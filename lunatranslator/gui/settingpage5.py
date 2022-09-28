@@ -37,9 +37,13 @@ def setTab5(self) :
 def changevoice(self,text):
     globalconfig['windowstts']['voice']=text
 def showvoicelist(self,vl):
-    print(vl)
+    self.voicecombo.blockSignals(True)
     self.voicecombo.clear()
     self.voicecombo.addItems(vl)
+    i=vl.index(globalconfig['windowstts']['voice'])
+    if i>=0:
+        self.voicecombo.setCurrentIndex(i)
+    self.voicecombo.blockSignals(False)
 def readerchange(self,who,checked):   
     if checked : 
         
