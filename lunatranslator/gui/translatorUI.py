@@ -1,21 +1,13 @@
 
 from PyQt5.QtWidgets import QWidget, QLabel, QPushButton, QVBoxLayout
-from PyQt5.QtCore import Qt, QPoint,pyqtSignal
-from PyQt5.QtGui import QFont, QCursor
+from PyQt5.QtCore import Qt, QPoint,pyqtSignal 
 import pyperclip 
-import qtawesome
-from email import message
-from threading import Thread
-from PyQt5.QtCore import pyqtSignal,Qt,QPoint,QRect,QSize ,QThread
-from PyQt5.QtGui import QPen,QColor,QFont,QTextCharFormat,QMouseEvent,QIcon,QPixmap
-from PyQt5.QtWidgets import  QMainWindow,QLabel,QTextBrowser,QPushButton,QStatusBar 
-import os
-import time
+import qtawesome 
+from PyQt5.QtCore import pyqtSignal,Qt,QPoint,QRect,QSize  
+from PyQt5.QtGui import QPen,QColor,QFont,QTextCharFormat ,QIcon,QPixmap
+from PyQt5.QtWidgets import  QLabel,QTextBrowser,QPushButton  
 import pyperclip
-import json
-import threading
-from PyQt5 import QtMultimedia
-from PyQt5.QtCore import QUrl 
+import json 
 from utils.config import globalconfig
  
 import gui.rangeselect
@@ -49,22 +41,10 @@ class QUnFrameWindow(QWidget):
     displayres =  pyqtSignal(str,str ) 
     displayraw1 =  pyqtSignal( str,str,int )
     displayraw =  pyqtSignal( str,str )
-    displaystatus=pyqtSignal(str)
-    playsoundsignal=pyqtSignal(str)
+    displaystatus=pyqtSignal(str) 
 
     hookfollowsignal=pyqtSignal(int,tuple)
-    def playsound(self,path):
-        def t():
-            #print(path)
-            file = QUrl.fromLocalFile(path) # 音频文件路径
-            content = QtMultimedia.QMediaContent(file)
-            player = QtMultimedia.QMediaPlayer()
-            player.setMedia(content)
-            player.setVolume(50)
-            player.play() 
-            time.sleep(60)
-            os.remove(path)
-        threading.Thread(target=t).start()
+     
     def hookfollowsignalsolve(self,code,other): 
         if code==1  : 
             self.showNormal() 
@@ -118,8 +98,7 @@ class QUnFrameWindow(QWidget):
             None, Qt.FramelessWindowHint|Qt.WindowStaysOnTopHint)  # 设置为顶级窗口，无边框
         self._padding = 5  # 设置边界宽度为5
         self.object = object
-        self.setAttribute(Qt.WA_TranslucentBackground)
-        self.playsoundsignal.connect(self.playsound)
+        self.setAttribute(Qt.WA_TranslucentBackground) 
         self.hookfollowsignal.connect(self.hookfollowsignalsolve) 
         self.displayres.connect(self.showres)
         self.displayraw1.connect(self.showraw)
@@ -136,7 +115,7 @@ class QUnFrameWindow(QWidget):
         self.initTitleLabel()  # 安放标题栏标签
          
         self.initLayout()  # 设置框架布局
-        self.setMinimumWidth(400)
+        self.setMinimumWidth(500)
         self.setMinimumHeight(100)
         self.setMouseTracking(True)  # 设置widget鼠标跟踪
         self.initDrag()  # 设置鼠标跟踪判断默认值
@@ -159,14 +138,7 @@ class QUnFrameWindow(QWidget):
           font: 100 10pt;
       }''')
           
-        self.buttons=[]
-        # self.takusanbuttons(b'4'.decode("utf-8"),"MinMaxButton",self.startTranslater,0,"翻译")
-        # self.takusanbuttons(b'8'.decode("utf-8"),"MinMaxButton",self.changeTranslateMode,1,"自动翻译")
-        # self.takusanbuttons(b'@'.decode("utf-8"),"MinMaxButton",self.clickSettin,2,"设置")
-        # self.takusanbuttons(b'`'.decode("utf-8"),"MinMaxButton",self.clickRange,3,"选取OCR范围")
-        # self.takusanbuttons(b'.'.decode("utf-8"),"MinMaxButton",lambda: pyperclip.copy(self.original),4,"复制到剪贴板") 
-        # self.takusanbuttons(b'0'.decode("utf-8"),"MinMaxButton",self.showMinimized,-2,"最小化")
-        # self.takusanbuttons(b'r'.decode("utf-8"),"CloseButton",self.quitf,-1,"退出")
+        self.buttons=[] 
         self.takusanbuttons(qtawesome.icon("fa.play" ,color="white"),"MinMaxButton",self.startTranslater,0,"翻译")
         self.takusanbuttons(qtawesome.icon("fa.forward" ,color="#FF69B4" if globalconfig['autorun'] else 'white'),"MinMaxButton",self.changeTranslateMode,1,"自动翻译",'automodebutton')
         self.takusanbuttons(qtawesome.icon("fa.gear",color="white" ),"MinMaxButton",self.clickSettin,2,"设置")
@@ -178,8 +150,7 @@ class QUnFrameWindow(QWidget):
         self.takusanbuttons(qtawesome.icon("fa.minus",color="white" ),"MinMaxButton",self.showMinimized,-2,"最小化")
         self.takusanbuttons(qtawesome.icon("fa.times" ,color="white"),"CloseButton",self.quitf,-1,"退出")
         self.resize(int(globalconfig['width']*self.rate), int(130*self.rate))
-        self.move(QPoint(*globalconfig['position']))
-        self.setMouseTracking(True)
+        self.move(QPoint(*globalconfig['position'])) 
         icon = QIcon()
         icon.addPixmap(QPixmap('./files/luna.jpg'), QIcon.Normal, QIcon.On)
         self.setWindowIcon(icon)
