@@ -1,4 +1,5 @@
 
+from asyncio import events
 from PyQt5.QtWidgets import QWidget, QLabel, QPushButton, QVBoxLayout
 from PyQt5.QtCore import Qt, QPoint,pyqtSignal 
 import pyperclip 
@@ -8,6 +9,7 @@ from PyQt5.QtGui import QPen,QColor,QFont,QTextCharFormat ,QIcon,QPixmap
 from PyQt5.QtWidgets import  QLabel,QTextBrowser,QPushButton  
 import pyperclip
 import json 
+import numpy as np
 from utils.config import globalconfig
  
 import gui.rangeselect
@@ -294,22 +296,34 @@ class QUnFrameWindow(QWidget):
                 button.adjast( ) 
         # 自定义窗口调整大小事件
         self._TitleLabel.setFixedWidth(self.width())  
-        self._right_rect = [QPoint(x, y) for x in range(self.width() - self._padding, self.width() + 1)
-                            for y in range(1, self.height() - self._padding)]
-        self._bottom_rect = [QPoint(x, y) for x in range(1, self.width() - self._padding)
-                             for y in range(self.height() - self._padding, self.height() + 1)]
-        self._corner_rect = [QPoint(x, y) for x in range(self.width() - self._padding, self.width() + 1)
-                             for y in range(self.height() - self._padding, self.height() + 1)]
 
+        if self._move_drag ==False:
+            # self._right_rect = [QPoint(x, y) for x in range(self.width() - self._padding, self.width() + 1)
+            #                     for y in range(1, self.height() - self._padding)]
+            # self._bottom_rect = [QPoint(x, y) for x in range(1, self.width() - self._padding)
+            #                     for y in range(self.height() - self._padding, self.height() + 1)]
+            # self._corner_rect = [QPoint(x, y) for x in range(self.width() - self._padding, self.width() + 1)
+            #                     for y in range(self.height() - self._padding, self.height() + 1)]
+            self._right_rect = [self.width() - self._padding, self.width() + 1 ,1, self.height() - self._padding]
+            self._bottom_rect = [1, self.width() - self._padding,self.height() - self._padding, self.height() + 1]
+            self._corner_rect = [self.width() - self._padding, self.width() + 1,self.height() - self._padding, self.height() + 1]
+    def isinrect(self,pos,rect):
+        x,y=pos.x(),pos.y()
+        x1,x2,y1,y2=rect
+        if x>=x1 and x<=x2 and y<=y2 and y>=y1:
+            return True
+        else:
+            return False
     def mousePressEvent(self, event):
         # 重写鼠标点击的事件
-        if (event.button() == Qt.LeftButton) and (event.pos() in self._corner_rect):
+         
+        if (event.button() == Qt.LeftButton) and (self.isinrect(event.pos(), self._corner_rect)):
             # 鼠标左键点击右下角边界区域
             self._corner_drag = True 
-        elif (event.button() == Qt.LeftButton) and (event.pos() in self._right_rect):
+        elif (event.button() == Qt.LeftButton) and (self.isinrect(event.pos(),self._right_rect)):
             # 鼠标左键点击右侧边界区域
             self._right_drag = True 
-        elif (event.button() == Qt.LeftButton) and (event.pos() in self._bottom_rect):
+        elif (event.button() == Qt.LeftButton) and (self.isinrect(event.pos(),self._bottom_rect)):
             # 鼠标左键点击下侧边界区域
             self._bottom_drag = True 
         # and (event.y() < self._TitleLabel.height()):
@@ -319,25 +333,27 @@ class QUnFrameWindow(QWidget):
             self.move_DragPosition = event.globalPos() - self.pos() 
 
     def mouseMoveEvent(self, QMouseEvent):
-        # 判断鼠标位置切换鼠标手势
-        if QMouseEvent.pos() in self._corner_rect:
-            self.setCursor(Qt.SizeFDiagCursor)
-        elif QMouseEvent.pos() in self._bottom_rect:
-            self.setCursor(Qt.SizeVerCursor)
-        elif QMouseEvent.pos() in self._right_rect:
-            self.setCursor(Qt.SizeHorCursor)
-        else:
-            self.setCursor(Qt.ArrowCursor)
+        # 判断鼠标位置切换鼠标手势 
+        pos=QMouseEvent.pos()
+        if self._move_drag ==False:
+            if self.isinrect( pos,self._corner_rect):
+                self.setCursor(Qt.SizeFDiagCursor)
+            elif self.isinrect(pos ,self._bottom_rect):
+                self.setCursor(Qt.SizeVerCursor)
+            elif self.isinrect(pos ,self._right_rect):
+                self.setCursor(Qt.SizeHorCursor)
+            else:
+                self.setCursor(Qt.ArrowCursor)
         if Qt.LeftButton and self._right_drag:
             # 右侧调整窗口宽度
-            self.resize(QMouseEvent.pos().x(), self.height())
+            self.resize(pos.x(), self.height())
            
         elif Qt.LeftButton and self._bottom_drag:
             # 下侧调整窗口高度
             self.resize(self.width(), QMouseEvent.pos().y()) 
         elif Qt.LeftButton and self._corner_drag:
             # 右下角同时调整高度和宽度
-            self.resize(QMouseEvent.pos().x(), QMouseEvent.pos().y()) 
+            self.resize(pos.x(),pos.y()) 
         elif Qt.LeftButton and self._move_drag:
             # 标题栏拖放窗口位置
             self.move(QMouseEvent.globalPos() - self.move_DragPosition) 
