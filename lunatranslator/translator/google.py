@@ -49,6 +49,7 @@ class TS(basetrans):
             res=re.search('<div class="result-container">(.*?)</div>',response.text).groups()
         except:
             print_exc()
+            print(response.text)
             return '出错了'
          
         return res[0]

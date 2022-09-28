@@ -473,12 +473,15 @@ class myocr:
     #@timer
     def ocr(self,img):
         t1=time.time()
-        box=mydetect(img)
-        if len(box)==0:
-            box = self.get_boxes(img) 
-            box=self.detpostpost(box)
+        #box=mydetect(img)
+        #if len(box)==0:
+        box = self.get_boxes(img) 
+        box=self.detpostpost(box)
+        
         if len(box)==0:
             return ''
+        index=np.argsort(box[:,1])
+        box=box[index]
         t2=time.time()
         imgs=simplecrop(img,box)
 
