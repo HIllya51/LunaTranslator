@@ -1,6 +1,6 @@
-nuitka --standalone    --nofollow-imports  --plugin-enable=numpy,pyqt5,upx   --nofollow-import-to=js2py --upx-binary=C:\tmp\upx-3.96-win64 --output-dir=C:\tmp\mytranslator\cmd main.py --windows-icon-from-ico=.\files\luna.jpg
+nuitka --standalone    --nofollow-imports  --plugin-enable=numpy,pyqt5,upx   --nofollow-import-to=js2py --upx-binary=C:\tmp\upx-3.96-win64 --output-dir=C:\tmp\lunatranslator\cmd main.py --windows-icon-from-ico=.\files\luna.jpg
 
-nuitka --standalone --windows-disable-console   --nofollow-imports  --plugin-enable=numpy,pyqt5,upx   --nofollow-import-to=js2py --upx-binary=C:\tmp\upx-3.96-win64 --output-dir=C:\tmp\mytranslator\gui main.py --windows-icon-from-ico=.\files\luna.jpg
+nuitka --standalone --windows-disable-console   --nofollow-imports  --plugin-enable=numpy,pyqt5,upx   --nofollow-import-to=js2py --upx-binary=C:\tmp\upx-3.96-win64 --output-dir=C:\tmp\lunatranslator\gui main.py --windows-icon-from-ico=.\files\luna.jpg
 
  
 
