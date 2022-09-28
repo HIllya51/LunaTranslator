@@ -200,9 +200,12 @@ def hookthreadf(self):
      
     while True: 
         ret=user32.GetMessageW(ctypes.byref(msg), 0, 0, 0) 
-        
+        if ret==0:
+            break
         user32.TranslateMessageW(msg)
         user32.DispatchMessageW(msg)
 
-    
-    #ole32.CoUninitialize()
+    for hook in self.hooks:
+        user32.UnhookWinEvent(hook)
+
+    ole32.CoUninitialize()

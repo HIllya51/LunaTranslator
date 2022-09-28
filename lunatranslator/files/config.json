@@ -120,6 +120,11 @@
                 "次数统计"
             ],
             "otherpath": "C:/dataH/baiduapi.json"
+        },
+        "xiaoniu": {
+            "use": false,
+            "color": "#0ff000",
+            "name": "小牛"
         }
     },
     "minifollow": true,

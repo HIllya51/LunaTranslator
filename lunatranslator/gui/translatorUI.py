@@ -425,7 +425,7 @@ class QUnFrameWindow(QWidget):
     def quitf(self) :  
         with open('./files/config.json','w',encoding='utf-8') as ff:
             ff.write(json.dumps(globalconfig,ensure_ascii=False,sort_keys=False, indent=4))
-        self.hide()
+        #self.hide()
         self.tray = None 
         self.object.range_ui.close()
         self.object.settin_ui.close()
@@ -436,10 +436,10 @@ class QUnFrameWindow(QWidget):
         #print(5)
         if 'textsource' in dir(self.object) and self.object.textsource and self.object.textsource.ending==False:
             self.object.textsource.end()
-            
-            self.object.textsource.p.kill()
-            self.object.textsource.p.terminate()
-            self.object.textsource.p.waitForFinished () 
+            if 'p' in dir(self.object.textsource):
+                self.object.textsource.p.kill()
+                self.object.textsource.p.terminate()
+                self.object.textsource.p.waitForFinished () 
          
         
         import ctypes 
