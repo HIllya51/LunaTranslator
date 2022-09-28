@@ -4,7 +4,7 @@
         613
     ],
     "width": 810.4,
-    "autorun": true,
+    "autorun": false,
     "transparent": 27,
     "fontsize": 16,
     "fonttype": "思源黑体 CN Medium",
@@ -20,8 +20,8 @@
         "guge": true
     },
     "sourcestatus": {
-        "copy": true,
-        "ocr": false,
+        "copy": false,
+        "ocr": true,
         "textractor": false,
         "textractor_pipe": false
     },

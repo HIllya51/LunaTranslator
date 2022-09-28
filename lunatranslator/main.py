@@ -23,6 +23,7 @@ class MAINUI() :
         self.screen_scale_rate = utils.screen_rate.getScreenRate() 
         self.translators={}
         self.reader=None
+        self.rect=None
     def textgetmethod(self,paste_str):
         if paste_str=='':
             return
@@ -78,7 +79,7 @@ class MAINUI() :
             elif use=='textractor':
                 pass
             elif use=='ocr':
-                self.rect=None
+                
                 self.textsource=classes[use](self.textgetmethod,self) 
             elif use=='textractor_pipe': 
                 

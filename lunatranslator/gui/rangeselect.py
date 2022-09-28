@@ -97,7 +97,7 @@ class rangeselct(QWidget) :
     def mouseReleaseEvent(self, event): 
         if event.button() == Qt.LeftButton:
             self.end_point = event.pos()
-            self.getRange()
+            self.getRange() 
             self.close() 
              
  
