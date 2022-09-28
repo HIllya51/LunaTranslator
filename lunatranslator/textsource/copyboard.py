@@ -20,4 +20,4 @@ class copyboard(basetext):
                 self.textgetmethod(paste_str)
     def runonce(self):
         paste_str = pyperclip.paste() 
-        self.textgetmethod(paste_str)
+        self.textgetmethod(paste_str,False)

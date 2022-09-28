@@ -33,10 +33,6 @@ class textractor(basetext):
         super( ).__init__(textgetmethod) 
         self.re=re.compile('\[([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):(.*):(.*@.*)\] (.*)\n')
     def inserthook(self,hookcode):
-        # self.hookselectdialog.getnewsentencesignal.emit('暂时不支持')
-        # if ' ' in hookcode or '\n' in hookcode or '\r' in hookcode or '\t' in hookcode:
-        #     self.hookselectdialog.getnewsentencesignal.emit('特殊码错误')
-        #     return 
         self.p.write( QByteArray((f'{hookcode} -P{self.pid}\r\r').encode(encoding='utf-16-le'))) 
         
     def exit(self):
@@ -77,7 +73,7 @@ class textractor(basetext):
             self.textgetmethod(paste_str)
     def runonce(self):
          
-        self.textgetmethod(self.runonce_line)
+        self.textgetmethod(self.runonce_line,False)
     def end(self):
          
         self.detach(self.pid)

@@ -31,17 +31,17 @@
     },
     "fanyi": {
         "baidu": {
-            "use": false,
+            "use": true,
             "color": "#ff65db",
             "name": "百度"
         },
         "bing": {
-            "use": false,
+            "use": true,
             "color": "#000ff0",
             "name": "必应"
         },
         "google": {
-            "use": true,
+            "use": false,
             "color": "#ff0000",
             "name": "谷歌"
         },
@@ -61,7 +61,7 @@
             "name": "有道2"
         },
         "google2": {
-            "use": false,
+            "use": true,
             "color": "#95a5ff",
             "name": "谷歌2"
         },
@@ -81,7 +81,7 @@
             "name": "deepl"
         },
         "jb7": {
-            "use": true,
+            "use": false,
             "color": "#1839f0",
             "name": "Jbeijing7",
             "args": {
@@ -99,7 +99,7 @@
             "name": "有道3"
         },
         "selfbuild": {
-            "use": true,
+            "use": false,
             "color": "#0ff000",
             "name": "自建"
         },
@@ -111,8 +111,8 @@
                 "注册网址": "https://fanyi-api.baidu.com/api/trans/product/desktop",
                 "APP ID": "",
                 "密钥": "",
-                "字数统计": "1666",
-                "次数统计": "63"
+                "字数统计": "1812",
+                "次数统计": "69"
             },
             "notwriteable": [
                 "注册网址",

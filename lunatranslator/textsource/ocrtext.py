@@ -135,4 +135,4 @@ class ocrtext(basetext):
         
         
         text=self.ocr.ocr(img)
-        self.textgetmethod(text)
+        self.textgetmethod(text,False)

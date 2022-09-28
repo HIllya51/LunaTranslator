@@ -25,10 +25,10 @@ class MAINUI() :
         self.translators={}
         self.reader=None
         self.rect=None
-    def textgetmethod(self,paste_str):
+    def textgetmethod(self,paste_str,shortlongskip=True):
         if paste_str=='':
             return
-        if len(paste_str)>2000:
+        if len(paste_str)>2000 or   len(paste_str.split('\n'))>20:
             return 
         
         postsolve=importlib.import_module('postprocess.post').POSTSOLVE
@@ -49,7 +49,8 @@ class MAINUI() :
             self.translation_ui.displayraw1.emit(paste_str,globalconfig['rawtextcolor'],1)
         else:
             self.translation_ui.displayraw1.emit(paste_str,globalconfig['rawtextcolor'],0)
-        if len(paste_str)>150 or len(paste_str.split('\n'))>5:
+         
+        if shortlongskip and  (len(paste_str)<6 or len(paste_str)>150 or len(paste_str.split('\n'))>5):
             return 
         for engine in self.translators:
             #print(engine)
