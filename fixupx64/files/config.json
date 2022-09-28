@@ -9,7 +9,7 @@
     "fontsize": 18.00000000000002,
     "fonttype": "思源黑体 CN Medium",
     "issolid": false,
-    "isshowrawtext": false,
+    "isshowrawtext": true,
     "rawtextcolor": "#000000",
     "backcolor": "#7a858b",
     "isshowhira": false,
@@ -41,7 +41,7 @@
             "name": "必应"
         },
         "google": {
-            "use": false,
+            "use": true,
             "color": "#ff0000",
             "name": "谷歌"
         },
@@ -71,12 +71,12 @@
             "name": "搜狗"
         },
         "caiyun": {
-            "use": true,
+            "use": false,
             "color": "#0ff000",
             "name": "彩云"
         },
         "deepl": {
-            "use": true,
+            "use": false,
             "color": "#0ff000",
             "name": "deepl"
         },
@@ -89,14 +89,19 @@
             }
         },
         "sougou2": {
-            "use": true,
+            "use": false,
             "color": "#0ff000",
             "name": "搜狗2"
         },
         "youdao3": {
-            "use": true,
+            "use": false,
             "color": "#0ff000",
             "name": "有道3"
+        },
+        "selfbuild": {
+            "use": true,
+            "color": "#0ff000",
+            "name": "自建"
         },
         "baiduapi": {
             "use": false,
