@@ -6,7 +6,7 @@ import pyperclip
 import qtawesome 
 from PyQt5.QtCore import pyqtSignal,Qt,QPoint,QRect,QSize  
 from PyQt5.QtGui import QPen,QColor,QFont,QTextCharFormat ,QIcon,QPixmap
-from PyQt5.QtWidgets import  QLabel,QTextBrowser,QPushButton  
+from PyQt5.QtWidgets import  QLabel,QTextBrowser,QPushButton ,QSystemTrayIcon ,QAction,QMenu
 import pyperclip
 import json  
 from utils.config import globalconfig
@@ -32,12 +32,13 @@ class QTitleButton(QPushButton):
         super(QTitleButton, self).__init__(*args)
         self.setFont(QFont("Webdings"))  # 特殊字体以不借助图片实现最小化最大化和关闭按钮
         
-
+ 
 
 class QUnFrameWindow(QWidget):
     """
     无边框窗口类
     """
+    
     clear_text_sign = pyqtSignal() 
     displayres =  pyqtSignal(str,str ) 
     displayraw1 =  pyqtSignal( str,str,int )
@@ -48,13 +49,13 @@ class QUnFrameWindow(QWidget):
      
     def hookfollowsignalsolve(self,code,other): 
         if code==1  : 
-            self.showNormal() 
+            self.show() 
         elif code==2  : 
-            self.showMinimized()
+            self.hide()
         elif code==3:
-            self.showNormal()
+            self.show()
         elif code==4:
-            self.showMinimized() 
+            self.hide() 
         elif code==5:
             print(self.pos())
             #self.move(self.pos() + self._endPos)
@@ -93,12 +94,21 @@ class QUnFrameWindow(QWidget):
         self.font.setFamily(globalconfig['fonttype'])
         self.font.setPointSize(globalconfig['fontsize'])
         self.translate_text.setFont(self.font) 
-  
+    def leftclicktray(self,reason):
+            #鼠标左键点击
+            if reason == QSystemTrayIcon.Trigger:
+                
+                if self.isHidden():
+                    self.show() 
+                else:
+                    self.hide()
+    
     def __init__(self, object):
         super(QUnFrameWindow, self).__init__(
-            None, Qt.FramelessWindowHint|Qt.WindowStaysOnTopHint)  # 设置为顶级窗口，无边框
+            None, Qt.FramelessWindowHint|Qt.WindowStaysOnTopHint|Qt.Tool)  # 设置为顶级窗口，无边框
         self._padding = 5  # 设置边界宽度为5
         self.object = object
+         
         self.setAttribute(Qt.WA_TranslucentBackground) 
         self.hookfollowsignal.connect(self.hookfollowsignalsolve) 
         self.displayres.connect(self.showres)
@@ -148,7 +158,7 @@ class QUnFrameWindow(QWidget):
         self.takusanbuttons(qtawesome.icon("fa.copy" ,color="white"),"MinMaxButton",lambda: pyperclip.copy(self.original),5,"复制到剪贴板") 
         self.takusanbuttons(qtawesome.icon("fa.music" ,color="white"),"MinMaxButton",self.langdu,6,"朗读") 
         self.takusanbuttons(qtawesome.icon("fa.lock" ,color="#FF69B4" if globalconfig['locktools'] else 'white'),"MinMaxButton",self.changetoolslockstate,7,"锁定工具栏",'locktoolsbutton') 
-        self.takusanbuttons(qtawesome.icon("fa.minus",color="white" ),"MinMaxButton",self.showMinimized,-2,"最小化")
+        self.takusanbuttons(qtawesome.icon("fa.minus",color="white" ),"MinMaxButton",self.hide,-2,"最小化到托盘")
         self.takusanbuttons(qtawesome.icon("fa.times" ,color="white"),"CloseButton",self.quitf,-1,"退出")
         self.resize(int(globalconfig['width']*self.rate), int(130*self.rate))
         self.move(QPoint(*globalconfig['position'])) 
@@ -156,7 +166,25 @@ class QUnFrameWindow(QWidget):
         icon.addPixmap(QPixmap('./files/luna.jpg'), QIcon.Normal, QIcon.On)
         self.setWindowIcon(icon)
         self.setWindowTitle('LunaTranslator')
-          
+
+        self.tray = QSystemTrayIcon()  
+        self.tray.setIcon(icon) 
+        showAction = QAction("&显示", self, triggered = self.show)
+        quitAction = QAction("&退出", self, triggered = self.quitf)
+                
+        
+        self.tray.activated.connect(self.leftclicktray)
+
+        # 创建菜单对象
+        self.trayMenu = QMenu(self)
+        # 将动作对象添加到菜单
+        self.trayMenu.addAction(showAction)
+        # 增加分割线
+        self.trayMenu.addSeparator()
+        self.trayMenu.addAction(quitAction)
+        # 将菜单栏加入到右键按钮中
+        self.tray.setContextMenu(self.trayMenu) 
+        self.tray.show()
         self.font = QFont() 
         self.font.setFamily(globalconfig['fonttype'])
         self.font.setPointSize(globalconfig['fontsize']) 
@@ -398,6 +426,7 @@ class QUnFrameWindow(QWidget):
         with open('./files/config.json','w',encoding='utf-8') as ff:
             ff.write(json.dumps(globalconfig,ensure_ascii=False,sort_keys=False, indent=4))
         self.hide()
+        self.tray = None 
         self.object.range_ui.close()
         self.object.settin_ui.close()
         #print(4)

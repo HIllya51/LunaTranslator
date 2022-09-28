@@ -188,7 +188,7 @@ def hookevents(self):
     self.hookthread.start()
     
 def hookthreadf(self):
-    
+    ole32.CoInitialize()
     WinEventProc = WinEventProcType(functools.partial(callback,self))
     user32.SetWinEventHook.restype = ctypes.wintypes.HANDLE
 

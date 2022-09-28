@@ -78,9 +78,6 @@ class basetrans:
                 if self.queue.empty():
                     break
             if globalconfig['fanyi'][self.typename]['use']==False:
-                 
-                continue
-            if len(content)<6:
                 continue
             if (set(content) -set('「…」、。？！―'))==set():
                 continue

@@ -151,6 +151,7 @@ class MAINUI() :
         t1=time.time()
         QCoreApplication.setAttribute(Qt.AA_UseHighDpiPixmaps, True)
         app = QApplication(sys.argv) 
+        app.setQuitOnLastWindowClosed(False)
         #print(time.time()-t1)
         self.aa()
         app.exit(app.exec_())
@@ -158,4 +159,5 @@ class MAINUI() :
 if __name__ == "__main__" :
  
     app = MAINUI()
+    
     app.main()

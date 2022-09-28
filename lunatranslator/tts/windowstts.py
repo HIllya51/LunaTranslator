@@ -9,10 +9,12 @@ import time
 import threading
 from win32com.client import Dispatch
 
-
+import pythoncom
 class tts():
     
     def __init__(self,showlist ): 
+        
+        pythoncom.CoInitialize()
         self.Windows_Speak = Dispatch('SAPI.Spvoice')
         self.voicelist=[]
         try:

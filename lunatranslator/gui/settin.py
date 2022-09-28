@@ -66,24 +66,15 @@ class Settin(QMainWindow) :
         object.setGeometry(QRect(int(x*self.rate),
                                  int(y*self.rate), int(w*self.rate),
                                  int(h*self.rate)))
-
-
-    # 根据分辨率定义图标位置尺寸
+ 
     def customSetIconSize(self, object, w, h) :
 
         object.setIconSize(QSize(int(w * self.rate),
                                  int(h * self.rate)))
- 
- 
-    # 窗口显示信号
-    def showEvent(self, e):
-        pass
-
-
-    # 窗口关闭处理
+   
     def closeEvent(self, event) : 
         self.closed=True
-
+        
             
     def ChangeTranslateColor(self, translate_type,button) :
             if translate_type=='raw':
