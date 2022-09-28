@@ -9,7 +9,7 @@
     "fontsize": 18.00000000000002,
     "fonttype": "思源黑体 CN Medium",
     "issolid": false,
-    "isshowrawtext": false,
+    "isshowrawtext": true,
     "rawtextcolor": "#000000",
     "backcolor": "#7a858b",
     "isshowhira": false,
@@ -25,8 +25,8 @@
     },
     "sourcestatus": {
         "copy": false,
-        "ocr": false,
-        "textractor": true,
+        "ocr": true,
+        "textractor": false,
         "textractor_pipe": false
     },
     "fanyi": {
@@ -71,12 +71,12 @@
             "name": "搜狗"
         },
         "caiyun": {
-            "use": true,
+            "use": false,
             "color": "#0ff000",
             "name": "彩云"
         },
         "deepl": {
-            "use": true,
+            "use": false,
             "color": "#0ff000",
             "name": "deepl"
         },
@@ -89,7 +89,7 @@
             }
         },
         "sougou2": {
-            "use": true,
+            "use": false,
             "color": "#0ff000",
             "name": "搜狗2"
         },
