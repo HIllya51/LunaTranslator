@@ -2,6 +2,7 @@
 import re
 import time
 import hashlib
+from traceback import print_exc
 import requests
 from urllib import request
 from urllib.parse import quote 
@@ -31,11 +32,14 @@ class TS(basetrans):
                 'sec-ch-ua-mobile': '?0',
                 'sec-ch-ua-platform': '"Windows"',
             }
-            res=requests.get('https://fanyi.sogou.com/text?keyword='+quote(content) +'&transfrom=ja&transto=zh-CHS&model=general',headers=headers, proxies=  {'http': None,'https': None})
-            res=re.search('<p id="trans-result" class="output-val" style="white-space: pre-line">([\\s\\S]*?)</p>', res.text)
-            
-            res=res.groups()[0]
-        
+            try:
+                res=requests.get('https://fanyi.sogou.com/text?keyword='+quote(content) +'&transfrom=ja&transto=zh-CHS&model=general',headers=headers, proxies=  {'http': None,'https': None})
+                res=re.search('<p id="trans-result" class="output-val" style="white-space: pre-line">([\\s\\S]*?)</p>', res.text)
+                
+                res=res.groups()[0]
+            except:
+                res='出错了'
+                print_exc()
             return res
 if __name__=='__main__':
     a=BINGFY()

@@ -1,4 +1,5 @@
- 
+
+from traceback import print_exc 
  
 import requests
 from urllib import parse 
@@ -41,13 +42,16 @@ class TS(basetrans):
         sign = hashlib.md5(sign.encode()).hexdigest()
         myurl = myurl + '?appid=' + appid + '&q=' + urllib.parse.quote(q) + '&from=' + fromLang + '&to=' + toLang + '&salt=' + str(
         salt) + '&sign=' + sign
-        res=requests.get('https://api.fanyi.baidu.com'+myurl,proxies=  {'http': None,'https': None}).json()  
-        globalconfig['fanyi'][self.typename]['args']['字数统计']=str(int(globalconfig['fanyi'][self.typename]['args']['字数统计'])+len(query))
-        globalconfig['fanyi'][self.typename]['args']['次数统计']=str(int(globalconfig['fanyi'][self.typename]['args']['次数统计'])+1)
-        with open('./files/config.json','w',encoding='utf-8') as ff:
-            ff.write(json.dumps(globalconfig,ensure_ascii=False,sort_keys=False, indent=4))
-        return res['trans_result'][0]['dst']
-        
+        try:
+            res=requests.get('https://api.fanyi.baidu.com'+myurl,proxies=  {'http': None,'https': None}).json()  
+            globalconfig['fanyi'][self.typename]['args']['字数统计']=str(int(globalconfig['fanyi'][self.typename]['args']['字数统计'])+len(query))
+            globalconfig['fanyi'][self.typename]['args']['次数统计']=str(int(globalconfig['fanyi'][self.typename]['args']['次数统计'])+1)
+            with open('./files/config.json','w',encoding='utf-8') as ff:
+                ff.write(json.dumps(globalconfig,ensure_ascii=False,sort_keys=False, indent=4))
+            return res['trans_result'][0]['dst']
+        except:
+            print_exc()
+            return '出错了'
      
 if __name__=='__main__':
     g=BD()

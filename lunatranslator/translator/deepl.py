@@ -136,6 +136,7 @@ class Deepl(Tse):
         self.query_count += 1
         return   ' '.join(item['beams'][0]['postprocessed_sentence'] for item in data['result']['translations'])
 
+from traceback import print_exc
 
 class TS(basetrans):
     def inittranslator(self): 
@@ -147,7 +148,7 @@ class TS(basetrans):
             return self.engine.deepl_api(content)
         except:
             print_exc()
-            return ''
+            return '出错了'
 if __name__=='__main__':
     a=BINGFY()
     a.gettask('はーい、おやすみなさい')

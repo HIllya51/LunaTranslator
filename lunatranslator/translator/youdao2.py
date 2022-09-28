@@ -1,5 +1,6 @@
 import time
-import hashlib 
+import hashlib
+from traceback import print_exc 
 from urllib.parse import quote
 from translator.basetranslator import basetrans  
 import random 
@@ -27,8 +28,12 @@ class TS(basetrans):
             'sec-ch-ua-mobile': '?0',
             'sec-ch-ua-platform': '"Windows"',
         }
-        response =requests.get('https://fanyi.youdao.com/translate?&doctype=json&type=ja2zh_cn&i='+quote(content),headers=headers, proxies=  {'http': None,'https': None})
-         
-        js=response.json()
+        try:
+            response =requests.get('https://fanyi.youdao.com/translate?&doctype=json&type=ja2zh_cn&i='+quote(content),headers=headers, proxies=  {'http': None,'https': None})
+
+            js=response.json()
         
-        return js['translateResult'][0][0]['tgt'] 
+            return js['translateResult'][0][0]['tgt'] 
+        except:
+            print_exc()
+            return '出错了'

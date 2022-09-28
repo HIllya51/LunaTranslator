@@ -40,4 +40,4 @@ class TS(basetrans):
             return re.search('<ul id="translateResult">([\\s\\S]*?)<li>([\\s\\S]*?)</li>([\\s\\S]*?)<\/ul>',response).groups()[1] 
         except:
             print_exc()
-            return ''
+            return '出错了'

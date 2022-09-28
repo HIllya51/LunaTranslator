@@ -1,4 +1,5 @@
  
+from traceback import print_exc
 import requests
 from urllib.parse import quote
 import re
@@ -27,18 +28,21 @@ class TS(basetrans):
         }
         
         data = 'f.req=%5B%5B%5B%22MkEWBc%22%2C%22%5B%5B%5C%22'+quote(content)+'%5C%22%2C%5C%22ja%5C%22%2C%5C%22zh-CN%5C%22%2Ctrue%5D%2C%5Bnull%5D%5D%22%2Cnull%2C%22generic%22%5D%5D%5D&'
-         
-        response = self.session.post('https://translate.google.cn/_/TranslateWebserverUi/data/batchexecute', params=params , data=data, proxies=  {'http': None,'https': None})
-        good=response.text.split('\n')[3]
-         
-        good=json.loads(good) 
-        res=good[0][2] 
-        res=json.loads(res)
-        #print(json.dumps(res,ensure_ascii=False))
-        #print(time.time()-t1)
-        res=res[1][0][0][-1][0][0]
-        return res
-   
+        
+        try:
+            response = self.session.post('https://translate.google.cn/_/TranslateWebserverUi/data/batchexecute', params=params , data=data, proxies=  {'http': None,'https': None})
+            good=response.text.split('\n')[3]
+            
+            good=json.loads(good) 
+            res=good[0][2] 
+            res=json.loads(res)
+            #print(json.dumps(res,ensure_ascii=False))
+            #print(time.time()-t1)
+            res=res[1][0][0][-1][0][0]
+            return res
+        except:
+            print_exc()
+            return '出错了'
     def realfy(self,content): 
         s=self.realfy1(content)
         #print(s,time.time()-t1)

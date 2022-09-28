@@ -1,5 +1,6 @@
 import time
-import hashlib 
+import hashlib
+from traceback import print_exc 
  
 from translator.basetranslator import basetrans  
 import random 
@@ -43,12 +44,12 @@ class TS(basetrans):
 
         response =self.session.post('https://fanyi.youdao.com/translate_o', params=params , data=data, proxies=  {'http': None,'https': None})
         try:
-            js=response.json()
-        except json.decoder.JSONDecodeError:
+            js=response.json()['translateResult'][0][0]['tgt']
+        except  :
               
-            time.sleep(30)
-            return None
-        return js['translateResult'][0][0]['tgt']
+            print_exc()
+            return '出错了'
+        return js 
     def show(self,res):
         print('有道','\033[0;33;47m',res,'\033[0m',flush=True)
 if __name__=="__main__":

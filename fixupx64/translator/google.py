@@ -1,4 +1,5 @@
  
+from traceback import print_exc
 import requests
 from urllib.parse import quote
 import re
@@ -23,14 +24,11 @@ class TS(basetrans):
         }
         try:
             response = self.session.get('https://translate.google.cn/m', params=params,  timeout=5, proxies=  {'http': None,'https': None})
-        except requests.exceptions.ConnectTimeout:
-            return ''
-        except requests.exceptions.ReadTimeout:
-            return ''
-        try:
+         
             res=re.search('<div class="result-container">(.*?)</div>',response.text).groups()
         except:
-            return ''
+            print_exc()
+            return '出错了'
          
         return res[0]
    

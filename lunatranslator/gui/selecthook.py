@@ -22,7 +22,7 @@ class hookselect(QMainWindow):
         self.setWindowFlags(Qt.WindowStaysOnTopHint |Qt.WindowCloseButtonHint)
         self.setWindowTitle('选择文本')
     def addnewhook(self,ss ):
-
+        self.save.append(ss)
         thread_handle,thread_tp_processId, thread_tp_addr, thread_tp_ctx, thread_tp_ctx2, thread_name,HookCode=ss 
         self.ttCombo.addItem('%s:%s:%s:%s:%s:%s (%s)' %(thread_handle,thread_tp_processId, thread_tp_addr, thread_tp_ctx, thread_tp_ctx2, thread_name,HookCode))
     def setupUi(self, hookselect):
@@ -39,6 +39,7 @@ class hookselect(QMainWindow):
 "       text-align: left;\n"
 "       }\n"
 "     ")
+        self.save=[]
         self.centralWidget = QWidget(hookselect)
         self.centralWidget.setObjectName("centralWidget")
         self.setWindowIcon(qtawesome.icon("fa.gear" ))
@@ -64,7 +65,7 @@ class hookselect(QMainWindow):
         self.vboxlayout.setSpacing(6)
         self.vboxlayout.setObjectName("vboxlayout")
         font = QFont()
-        font.setFamily("Arial Unicode MS")
+        #font.setFamily("Arial Unicode MS")
         font.setPointSize(13)
         self.ttCombo = QComboBox(self.centralWidget)
         self.ttCombo.setEditable(False)
@@ -77,10 +78,6 @@ class hookselect(QMainWindow):
         self.userhooklayout.setSpacing(6)
         self.vboxlayout.addLayout(self.userhooklayout)
         self.userhook=QLineEdit()
-        font = QFont()
-        font.setFamily("Arial Unicode MS")
-        font.setPointSize(13)
-        self.userhook.setFont(font)
         self.userhooklayout.addWidget(self.userhook)
         self.userhookinsert=QPushButton("插入特殊码")
         
@@ -94,9 +91,6 @@ class hookselect(QMainWindow):
         self.searchtextlayout.setSpacing(6)
         self.vboxlayout.addLayout(self.searchtextlayout)
         self.searchtext=QLineEdit()
-        font = QFont()
-        font.setFamily("Arial Unicode MS")
-        font.setPointSize(13)
         self.searchtext.setFont(font)
         self.searchtextlayout.addWidget(self.searchtext)
         self.searchtextbutton=QPushButton("搜索包含文本的条目")
@@ -136,6 +130,7 @@ class hookselect(QMainWindow):
             return 
         self.ttCombo.blockSignals(True)
         self.ttCombo.clear() 
+        self.save=[]
         for index in range(len(lst)):   
             ishide=True  
             for i in range(min(len(self.object.object.textsource.hookdatacollecter[lst[index]]),10)):
@@ -148,6 +143,7 @@ class hookselect(QMainWindow):
                 # thread_handle,thread_tp_processId, thread_tp_addr, thread_tp_ctx, thread_tp_ctx2, thread_name,HookCode=re.search('([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):(.*):(.*@.*)' ,lst[index][i]).groups()
                 # self.ttCombo.addItem('%s:%s:%s:%s:%s:%s (%s)' %(thread_handle,thread_tp_processId, thread_tp_addr, thread_tp_ctx, thread_tp_ctx2, thread_name,HookCode))
                 self.ttCombo.addItem('%s:%s:%s:%s:%s:%s (%s)' %lst[index])
+                self.save.append(lst[index])
         self.ttCombo.blockSignals(False)
 
             #self.ttCombo.setItemData(index,'',Qt.UserRole-(1 if ishide else 0))
@@ -207,9 +203,10 @@ class hookselect(QMainWindow):
             scrollbar.setValue(scrollbar.maximum())
     def ViewThread(self, index):  
         #print(self.combo_hook_map)
-        thread_handle,thread_tp_processId, thread_tp_addr, thread_tp_ctx, thread_tp_ctx2, thread_name,HookCode=re.search('(.*):(.*):(.*):(.*):(.*):(.*) \((.*)\)' ,self.ttCombo.currentText()).groups() 
-        self.object.object.textsource.selectinghook=(thread_handle,thread_tp_processId, thread_tp_addr, thread_tp_ctx, thread_tp_ctx2, thread_name,HookCode)
-        self.textOutput. setPlainText('\n'.join(self.object.object.textsource.hookdatacollecter[(thread_handle,thread_tp_processId, thread_tp_addr, thread_tp_ctx, thread_tp_ctx2, thread_name,HookCode)]))
+        key=self.save[ self.ttCombo.currentIndex()]
+         
+        self.object.object.textsource.selectinghook=key
+        self.textOutput. setPlainText('\n'.join(self.object.object.textsource.hookdatacollecter[key]))
         self.textOutput. moveCursor(QTextCursor.End)
         
 # if __name__=="__main__":

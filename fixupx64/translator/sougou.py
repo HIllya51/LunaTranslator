@@ -2,6 +2,7 @@
 import re
 import time
 import hashlib
+from traceback import print_exc
 import requests
 from urllib import request
 from urllib.parse import quote 
@@ -94,8 +95,9 @@ class TS(basetrans):
     def realfy(self,content): 
         try:
             ss=self.engine.sogou_api(content)  
-        except requests.exceptions.ReadTimeout:
-            ss=''
+        except  :
+            print_exc()
+            ss='出错了'
         return ss
 if __name__=='__main__':
     a=BINGFY()

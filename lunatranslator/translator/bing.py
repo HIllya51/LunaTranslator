@@ -1,4 +1,5 @@
- 
+
+from traceback import print_exc 
 import re
 import time
 from urllib.parse import quote 
@@ -31,17 +32,20 @@ class TS(basetrans):
         data = '&fromLang=ja&text='+quote(content)+'&to=zh-Hans&token='+self.token+'&key='+self.key
         self.iid_i+=1
          
-         
-        response = self.session.post('https://cn.bing.com/ttranslatev3?isVertical=1&&IG='+self.IG+'&IID='+self.iid+'.'+str(self.iid_i) , data=data, proxies=  {'http': None,'https': None})
-        js=response.json()
-        response2 = self.session.post('https://cn.bing.com/tlookupv3?isVertical=1&&IG='+self.IG+'&IID='+self.iid+'.'+str(self.iid_i) , data=data, proxies=  {'http': None,'https': None})
-        if 'statusCode'in js or 'ShowCaptcha' in js and js['ShowCaptcha']:
-           #print(js) 
-            self.__init__()
-            return ''
-        ch=js[0]['translations'][0]['text']
-        
-        return ch
+        try:
+            response = self.session.post('https://cn.bing.com/ttranslatev3?isVertical=1&&IG='+self.IG+'&IID='+self.iid+'.'+str(self.iid_i) , data=data, proxies=  {'http': None,'https': None})
+            js=response.json()
+            response2 = self.session.post('https://cn.bing.com/tlookupv3?isVertical=1&&IG='+self.IG+'&IID='+self.iid+'.'+str(self.iid_i) , data=data, proxies=  {'http': None,'https': None})
+            if 'statusCode'in js or 'ShowCaptcha' in js and js['ShowCaptcha']:
+            #print(js) 
+                self.__init__()
+                return ''
+            ch=js[0]['translations'][0]['text']
+            
+            return ch
+        except:
+            print_exc()
+            return '出错了'
 if __name__=='__main__':
     a=BINGFY()
     a.gettask('はーい、おやすみなさい')

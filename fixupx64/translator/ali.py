@@ -1,4 +1,5 @@
- 
+
+from traceback import print_exc 
 
 from translator.basetranslator import basetrans
 class TS(basetrans):
@@ -17,12 +18,15 @@ class TS(basetrans):
             'query':content,
             "_csrf": self.csrf
         }
-         
-        r = self.session.post('https://translate.alibaba.com/api/translate/text',   params =form_data , proxies=  {'http': None,'https': None})
+        try:
+            r = self.session.post('https://translate.alibaba.com/api/translate/text',   params =form_data , proxies=  {'http': None,'https': None})
         
-        data = r.json() 
+            data = r.json() 
         #print(data)
-        return  data['data']['translateText']
+            return  data['data']['translateText']
+        except:
+            print_exc()
+            return '出错了'
     def show(self,res):
         print('阿里','\033[0;33;47m',res,'\033[0m',flush=True)
 if __name__=="__main__":

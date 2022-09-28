@@ -1,5 +1,6 @@
  
  
+from traceback import print_exc
 import requests
 from urllib import parse 
 import os
@@ -54,9 +55,9 @@ class TS(basetrans):
         try:
             result = response.json()['trans_result']['data'][0]['dst']
         except:
-            print(response.text)
-            self.__init__()
-            result=''
+            print_exc()
+             
+            result='出错了'
         params = {
             'req': 'check',
             'fanyi_src': query,

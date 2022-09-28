@@ -141,6 +141,7 @@ class Caiyun(Tse):
         data['target'] = self.decrypt(data['target'])
         return   data['target']
 
+from traceback import print_exc
 
 class TS(basetrans):
     def inittranslator(self): 
@@ -148,8 +149,11 @@ class TS(basetrans):
         self.engine=Caiyun()
         self.engine._=None
     def realfy(self,content): 
-                 
-        return self.engine.caiyun_api(content)
+        try:
+            return self.engine.caiyun_api(content)
+        except:
+            print_exc()
+            return '出错了'
 if __name__=='__main__':
     a=BINGFY()
     a.gettask('はーい、おやすみなさい')
