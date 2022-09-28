@@ -1,4 +1,4 @@
-#LunaTranslator
+# LunaTranslator
 
 galgame翻译器
 
