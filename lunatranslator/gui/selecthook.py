@@ -28,7 +28,7 @@ class hookselect(QMainWindow):
     def setupUi(self, hookselect):
     
         hookselect.setObjectName("hookselect")
-        hookselect.resize(1000, 600)
+        hookselect.resize(1000, 400)
         hookselect.setStyleSheet("\n"
 "       QPushButton, QComboBox\n"
 "       {\n"
