@@ -3,17 +3,17 @@
         432,
         613
     ],
-    "width": 810.4,
+    "width": 792.0,
     "autorun": true,
-    "transparent": 27,
-    "fontsize": 16,
+    "transparent": 57,
+    "fontsize": 18.00000000000002,
     "fonttype": "思源黑体 CN Medium",
     "issolid": false,
-    "isshowrawtext": true,
+    "isshowrawtext": false,
     "rawtextcolor": "#000000",
     "backcolor": "#7a858b",
     "isshowhira": false,
-    "locktools": true,
+    "locktools": false,
     "showfanyisource": true,
     "reader": {
         "qq": false,
@@ -24,9 +24,9 @@
         "voice": "Microsoft Haruka Desktop - Japanese"
     },
     "sourcestatus": {
-        "copy": true,
+        "copy": false,
         "ocr": false,
-        "textractor": false,
+        "textractor": true,
         "textractor_pipe": false
     },
     "fanyi": {
@@ -71,12 +71,12 @@
             "name": "搜狗"
         },
         "caiyun": {
-            "use": false,
+            "use": true,
             "color": "#0ff000",
             "name": "彩云"
         },
         "deepl": {
-            "use": false,
+            "use": true,
             "color": "#0ff000",
             "name": "deepl"
         },
@@ -89,12 +89,12 @@
             }
         },
         "sougou2": {
-            "use": false,
+            "use": true,
             "color": "#0ff000",
             "name": "搜狗2"
         },
         "youdao3": {
-            "use": false,
+            "use": true,
             "color": "#0ff000",
             "name": "有道3"
         },
@@ -106,8 +106,8 @@
                 "注册网址": "https://fanyi-api.baidu.com/api/trans/product/desktop",
                 "APP ID": "",
                 "密钥": "",
-                "字数统计": "0",
-                "次数统计": "0"
+                "字数统计": "1666",
+                "次数统计": "63"
             },
             "notwriteable": [
                 "注册网址",

@@ -146,6 +146,7 @@ class TS(basetrans):
         try:
             return self.engine.deepl_api(content)
         except:
+            print_exc()
             return ''
 if __name__=='__main__':
     a=BINGFY()
