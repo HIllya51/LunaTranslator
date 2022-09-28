@@ -1,11 +1,7 @@
-# mytranslator
+#LunaTranslator
 
-自用版vnr
+galgame翻译器
 
 支持剪贴板、ocr、textractor作为文本输入源
 
-支持多种离线翻译
-
-支持语音朗读
-
-部分参考了paddleocr、textractor、dangotranslator
+支持10余种翻译

@@ -3,8 +3,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import Qt, QRect
 class MySwitch(QtWidgets.QPushButton):
     def __init__(self, parent = None,sign=True, textOn='On',textOff='off'):
-        super().__init__(parent)
-        print('init')
+        super().__init__(parent) 
         self.setCheckable(True)
         self.setChecked(sign)
         self.setMinimumWidth(66)
