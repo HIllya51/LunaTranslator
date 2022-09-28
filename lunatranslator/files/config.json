@@ -3,7 +3,7 @@
         432,
         613
     ],
-    "width": 597.6,
+    "width": 650.4,
     "autorun": false,
     "transparent": 27,
     "fontsize": 16,
@@ -13,7 +13,7 @@
     "rawtextcolor": "#000000",
     "backcolor": "#7a858b",
     "isshowhira": false,
-    "locktools": true,
+    "locktools": false,
     "showfanyisource": true,
     "reader": {
         "qq": false,
