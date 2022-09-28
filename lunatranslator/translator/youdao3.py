@@ -1,5 +1,6 @@
 import time
-import hashlib 
+import hashlib
+from traceback import print_exc 
 from urllib.parse import quote
 from translator.basetranslator import basetrans  
 import random 
@@ -33,6 +34,10 @@ class TS(basetrans):
             'sec-ch-ua-mobile': '?0',
             'sec-ch-ua-platform': '"Windows"',
         }
-        response = requests.post('https://m.youdao.com/translate',   data=data,headers=headers, proxies=  {'http': None,'https': None}).text
+        try:
+            response = requests.post('https://m.youdao.com/translate',   data=data,headers=headers, proxies=  {'http': None,'https': None}).text
          
-        return re.search('<ul id="translateResult">([\\s\\S]*?)<li>([\\s\\S]*?)</li>([\\s\\S]*?)<\/ul>',response).groups()[1] 
+            return re.search('<ul id="translateResult">([\\s\\S]*?)<li>([\\s\\S]*?)</li>([\\s\\S]*?)<\/ul>',response).groups()[1] 
+        except:
+            print_exc()
+            return ''

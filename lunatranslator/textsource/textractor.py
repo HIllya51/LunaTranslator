@@ -31,7 +31,7 @@ class textractor(basetext):
         self.userinserthookcode=[]
         self.runonce_line=''
         super( ).__init__(textgetmethod) 
- 
+        self.re=re.compile('\[([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):(.*):(.*@.*)\] (.*)\n')
     def inserthook(self,hookcode):
         # self.hookselectdialog.getnewsentencesignal.emit('暂时不支持')
         # if ' ' in hookcode or '\n' in hookcode or '\r' in hookcode or '\t' in hookcode:
@@ -48,7 +48,7 @@ class textractor(basetext):
     def handle_stdout(self):
         data = self.p.readAllStandardOutput()
         stdout = bytes(data).decode("utf16",errors='ignore') 
-        reres=re.findall('\[([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):(.*):(.*@.*)\] (.*)\n',stdout)
+        reres=self.re.findall(stdout) #re.findall('\[([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):(.*):(.*@.*)\] (.*)\n',stdout)
         for ares in reres:
             thread_handle,thread_tp_processId, thread_tp_addr, thread_tp_ctx, thread_tp_ctx2, thread_name,HookCode,output =ares
             if output[-2:]=='\r\n':
