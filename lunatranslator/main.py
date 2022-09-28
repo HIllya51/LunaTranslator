@@ -1,7 +1,8 @@
 from threading import Thread
 import time 
 import os
-import sys 
+import sys
+from traceback import print_exc 
 #sys.stdout = open("mylog.txt", "w")
 dirname, filename = os.path.split(os.path.abspath(__file__))
 sys.path.append(dirname) 
@@ -27,8 +28,18 @@ class MAINUI() :
     def textgetmethod(self,paste_str):
         if paste_str=='':
             return
+        if len(paste_str)>2000:
+            return 
         
-        
+        postsolve=importlib.import_module('postprocess.post').POSTSOLVE
+        try:
+            paste_str=postsolve(paste_str)
+        except:
+            print_exc()
+            
+
+
+
         self.translation_ui.original=paste_str 
         if globalconfig['isshowhira'] and globalconfig['isshowrawtext']:
             if 'hira_' in dir(self):

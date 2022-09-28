@@ -73,7 +73,7 @@ class QUnFrameWindow(QWidget):
             self.showline(res,color )
          
     def showline(self,res,color ): 
-          
+        
             
         if globalconfig['issolid'] == False :
             if self.lastcolor!=color:

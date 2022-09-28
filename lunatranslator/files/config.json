@@ -25,8 +25,8 @@
     },
     "sourcestatus": {
         "copy": false,
-        "ocr": true,
-        "textractor": false,
+        "ocr": false,
+        "textractor": true,
         "textractor_pipe": false
     },
     "fanyi": {
