@@ -4,9 +4,9 @@
         613
     ],
     "width": 650.4,
-    "autorun": false,
+    "autorun": true,
     "transparent": 27,
-    "fontsize": 16,
+    "fontsize": 18.00000000000002,
     "fonttype": "思源黑体 CN Medium",
     "issolid": false,
     "isshowrawtext": true,
@@ -24,9 +24,9 @@
         "voice": "Microsoft Haruka Desktop - Japanese"
     },
     "sourcestatus": {
-        "copy": true,
+        "copy": false,
         "ocr": false,
-        "textractor": false,
+        "textractor": true,
         "textractor_pipe": false
     },
     "fanyi": {
@@ -81,7 +81,7 @@
             "name": "deepl"
         },
         "jb7": {
-            "use": false,
+            "use": true,
             "color": "#1839f0",
             "name": "Jbeijing7",
             "args": {

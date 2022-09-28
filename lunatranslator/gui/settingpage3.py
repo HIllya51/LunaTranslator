@@ -2,7 +2,7 @@ import functools
 from PyQt5.QtCore import Qt 
 from PyQt5.QtGui import  QFont
 
-from PyQt5.QtWidgets import  QWidget,QLabel,QFrame,QPushButton ,QSlider,QSpinBox,QFontComboBox 
+from PyQt5.QtWidgets import  QWidget,QLabel,QFrame,QPushButton ,QSlider,QDoubleSpinBox,QFontComboBox 
 import qtawesome 
  
 from utils.config import globalconfig 
@@ -31,13 +31,15 @@ def setTabThree(self) :
         label = QLabel(self.tab_3)
         self.customSetGeometry(label, 20, 70, 145, 16)
         label.setText("字体大小:") 
-        self.fontSize_spinBox = QSpinBox(self.tab_3)
-        self.customSetGeometry(self.fontSize_spinBox, 95, 65, 40, 25)
-        self.fontSize_spinBox.setMinimum(10)
-        self.fontSize_spinBox.setMaximum(30)
+         
+        self.fontSize_spinBox = QDoubleSpinBox(self.tab_3)
+        self.customSetGeometry(self.fontSize_spinBox, 95, 65, 50, 25)
+        self.fontSize_spinBox.setRange(10,30) 
         self.fontSize_spinBox.setValue(globalconfig['fontsize']) 
+        self.fontSize_spinBox.setSingleStep(0.1)
+        self.fontSize_spinBox.setDecimals(1)
         self.fontSize_spinBox.valueChanged.connect(lambda x:globalconfig.__setitem__('fontsize',x))
- 
+        
         label = QLabel(self.tab_3)
         self.customSetGeometry(label, 275, 70, 145, 20)
         label.setText("字体类型:")
