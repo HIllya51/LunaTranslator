@@ -17,7 +17,11 @@
     "showfanyisource": true,
     "reader": {
         "qq": false,
-        "guge": true
+        "guge": true,
+        "windows": true
+    },
+    "windowstts": {
+        "voice": "Microsoft Haruka Desktop - Japanese"
     },
     "sourcestatus": {
         "copy": true,
