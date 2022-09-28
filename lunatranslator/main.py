@@ -43,20 +43,15 @@ class MAINUI() :
         for engine in self.translators:
             #print(engine)
             self.translators[engine].gettask(paste_str) 
-    # @threader
-    # def startreader(self):
-    #     if globalconfig['reader']:
-            
-    #        # from tts.qqtts import tts as qqtts
-    #         from tts.gugetts import tts as gugetts
-    #         classes={'guge':gugetts }
-    #         use=None  
-    #         for k in classes: 
-    #             if globalconfig['reader'][k]:
-    #                 use=k 
-    #         if use:
-
-    #             self.reader=classes[use](self.translation_ui.playsoundsignal, self.translation_ui.displayraw)
+    @threader
+    def startreader(self):
+        if globalconfig['reader']:
+             
+            from tts.windowstts import tts   
+            use=None  
+            if globalconfig['reader']['windows']:
+                     
+                self.reader=tts( self.settin_ui.voicelistsignal)
                   
            
     @threader
@@ -130,7 +125,7 @@ class MAINUI() :
         self.starthira()
         print(time.time()-t1)
         self.starttextsource() 
-        #self.startreader()
+        self.startreader()
         print(time.time()-t1) 
         # 设置界面
         self.settin_ui =gui.settin.Settin(self)

@@ -10,11 +10,12 @@ from gui.settingpage1 import setTabOne
 from gui.settingpage2 import setTabTwo
 from gui.settingpage3 import setTabThree
 from gui.settingpage4 import setTab4 
+from gui.settingpage5 import setTab5 
 from gui.rotatetab import customtabstyle
 class Settin(QMainWindow) :
     resetsourcesignal=pyqtSignal()
     loadtextractorfalse=pyqtSignal( ) 
-    
+    voicelistsignal=pyqtSignal(list)
     def __init__(self, object):
 
         super(Settin, self).__init__()
@@ -44,6 +45,7 @@ class Settin(QMainWindow) :
         setTabOne(self)
         setTabTwo(self)
         setTabThree(self) 
+        setTab5(self)
         setTab4(self)
 
         self.setStyle(customtabstyle()) #必须放后面 不然其他样式全都失效

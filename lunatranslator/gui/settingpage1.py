@@ -80,36 +80,12 @@ def setTabOne(self) :
 
         self.hookselectdialog=gui.selecthook.hookselect(self)
  
-        # label = QLabel(self.tab_1)
-        # self.customSetGeometry(label, 20, 150, 160, 20)
-        # label.setText("选择朗读器") 
-        # label = QLabel(self.tab_1)
-        # self.customSetGeometry(label, 20, 195, 60, 20)
-        # label.setText("谷歌") 
-        # self.gugettsswitch =gui.switch.SwitchButton(self.tab_1, sign=globalconfig['reader']['guge'], startX=(65-20)*self.rate,textOff='关闭',textOn='打开')
-        # self.customSetGeometry(self.gugettsswitch, 100, 195, 65, 20)
-        # self.gugettsswitch.checkedChanged.connect(functools.partial(readerchange,self,'guge')) 
-        
-        # label = QLabel(self.tab_1)
-        # self.customSetGeometry(label, 220, 195, 35, 20)
-        # label.setText("QQ") 
-        # self.qqttsswitch =gui.switch.SwitchButton(self.tab_1, sign=globalconfig['reader']['qq'], startX=(65-20)*self.rate,textOff='关闭',textOn='打开')
-        # self.customSetGeometry(self.qqttsswitch, 300, 195, 65, 20)
-        # self.qqttsswitch.checkedChanged.connect(functools.partial( readerchange,self,'qq')) 
- 
-        #self.readers={ 'guge':self.gugettsswitch}
+         
 
         self.resetsourcesignal.connect(functools.partial(resetsource,self))  
 def readerchange(self,who,checked):   
     if checked : 
         
-        
-        for k in self.readers:
-                if globalconfig['reader'][k]==True:
-                    
-                    self.readers[k].mousePressEvent(1)
-                    self.readers[k].updateValue()
-                    globalconfig['reader'][k]=False
         globalconfig['reader'][who]=True
     else:
         globalconfig['reader'][who]=False  

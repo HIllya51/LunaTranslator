@@ -4,7 +4,7 @@
         613
     ],
     "width": 810.4,
-    "autorun": false,
+    "autorun": true,
     "transparent": 27,
     "fontsize": 16,
     "fonttype": "思源黑体 CN Medium",
@@ -17,11 +17,15 @@
     "showfanyisource": true,
     "reader": {
         "qq": false,
-        "guge": true
+        "guge": true,
+        "windows": true
+    },
+    "windowstts": {
+        "voice": "Microsoft Zira Desktop - English (United States)"
     },
     "sourcestatus": {
-        "copy": false,
-        "ocr": true,
+        "copy": true,
+        "ocr": false,
         "textractor": false,
         "textractor_pipe": false
     },

@@ -173,7 +173,8 @@ class QUnFrameWindow(QWidget):
         self.takusanbuttons(qtawesome.icon("fa.crop" ,color="white"),"MinMaxButton",self.clickRange,3,"选取OCR范围")
         self.takusanbuttons(qtawesome.icon("fa.eye" ,color="white"),"MinMaxButton",self.showhide,4,"显示/隐藏范围框",'showhidebutton')
         self.takusanbuttons(qtawesome.icon("fa.copy" ,color="white"),"MinMaxButton",lambda: pyperclip.copy(self.original),5,"复制到剪贴板") 
-        self.takusanbuttons(qtawesome.icon("fa.lock" ,color="#FF69B4" if globalconfig['locktools'] else 'white'),"MinMaxButton",self.changetoolslockstate,6,"锁定工具栏",'locktoolsbutton') 
+        self.takusanbuttons(qtawesome.icon("fa.music" ,color="white"),"MinMaxButton",self.langdu,6,"朗读") 
+        self.takusanbuttons(qtawesome.icon("fa.lock" ,color="#FF69B4" if globalconfig['locktools'] else 'white'),"MinMaxButton",self.changetoolslockstate,7,"锁定工具栏",'locktoolsbutton') 
         self.takusanbuttons(qtawesome.icon("fa.minus",color="white" ),"MinMaxButton",self.showMinimized,-2,"最小化")
         self.takusanbuttons(qtawesome.icon("fa.times" ,color="white"),"CloseButton",self.quitf,-1,"退出")
         self.resize(int(globalconfig['width']*self.rate), int(130*self.rate))
@@ -255,7 +256,7 @@ class QUnFrameWindow(QWidget):
         print(self.original)
         
         if self.object.reader:
-            self.object.reader.read(self.original,self.object.settin_ui.usevoice)
+            self.object.reader.read(self.original )
         else:
             pass
     # 按下翻译键
