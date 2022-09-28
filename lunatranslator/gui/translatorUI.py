@@ -8,8 +8,7 @@ from PyQt5.QtCore import pyqtSignal,Qt,QPoint,QRect,QSize
 from PyQt5.QtGui import QPen,QColor,QFont,QTextCharFormat ,QIcon,QPixmap
 from PyQt5.QtWidgets import  QLabel,QTextBrowser,QPushButton  
 import pyperclip
-import json 
-import numpy as np
+import json  
 from utils.config import globalconfig
  
 import gui.rangeselect
