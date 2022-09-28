@@ -1,0 +1,109 @@
+{
+    "position": [
+        462,
+        582
+    ],
+    "width": 842.4,
+    "autorun": false,
+    "transparent": 40,
+    "fontsize": 16,
+    "fonttype": "思源黑体 CN Medium",
+    "issolid": false,
+    "isshowrawtext": true,
+    "rawtextcolor": "#000000",
+    "backcolor": "#483b39",
+    "isshowhira": false,
+    "showfanyisource": true,
+    "reader": {
+        "qq": false,
+        "guge": false
+    },
+    "sourcestatus": {
+        "copy": false,
+        "ocr": false,
+        "textractor": true,
+        "textractor_pipe": false
+    },
+    "fanyi": {
+        "baidu": {
+            "use": false,
+            "color": "#ff65db",
+            "name": "百度"
+        },
+        "bing": {
+            "use": false,
+            "color": "#000ff0",
+            "name": "必应"
+        },
+        "google": {
+            "use": false,
+            "color": "#ff0000",
+            "name": "谷歌"
+        },
+        "ali": {
+            "use": false,
+            "color": "#0000ff",
+            "name": "阿里"
+        },
+        "youdao": {
+            "use": false,
+            "color": "#0ff000",
+            "name": "有道"
+        },
+        "youdao2": {
+            "use": false,
+            "color": "#0ff000",
+            "name": "有道2"
+        },
+        "google2": {
+            "use": false,
+            "color": "#0ff000",
+            "name": "谷歌2"
+        },
+        "sougou": {
+            "use": false,
+            "color": "#0ff000",
+            "name": "搜狗"
+        },
+        "caiyun": {
+            "use": false,
+            "color": "#0ff000",
+            "name": "彩云"
+        },
+        "deepl": {
+            "use": false,
+            "color": "#0ff000",
+            "name": "deepl"
+        },
+        "jb7": {
+            "use": true,
+            "color": "#1839f0",
+            "name": "Jbeijing7",
+            "args": {
+                "路径": "C:\\dataH\\JBeijing7\\"
+            }
+        },
+        "sougou2": {
+            "use": false,
+            "color": "#0ff000",
+            "name": "搜狗2"
+        },
+        "youdao3": {
+            "use": false,
+            "color": "#0ff000",
+            "name": "有道3"
+        },
+        "baiduapi": {
+            "use": false,
+            "color": "#0ff000",
+            "name": "百度api",
+            "args": {
+                "APP ID": "",
+                "密钥": ""
+            },
+            "otherpath": "C:/dataH/baiduapi.json"
+        }
+    },
+    "minifollow": true,
+    "movefollow": true
+}
