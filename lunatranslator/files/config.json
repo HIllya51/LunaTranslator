@@ -24,9 +24,9 @@
         "voice": "Microsoft Haruka Desktop - Japanese"
     },
     "sourcestatus": {
-        "copy": false,
+        "copy": true,
         "ocr": false,
-        "textractor": true,
+        "textractor": false,
         "textractor_pipe": false
     },
     "fanyi": {

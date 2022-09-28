@@ -1,5 +1,3 @@
-
-from msilib.schema import Class
 import re
 
 def POSTSOLVE(line): 
