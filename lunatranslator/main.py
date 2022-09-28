@@ -2,14 +2,20 @@ from threading import Thread
 import time 
 import os
 import sys
-from traceback import print_exc 
-#sys.stdout = open("mylog.txt", "w")
+from traceback import print_exc  
 dirname, filename = os.path.split(os.path.abspath(__file__))
 sys.path.append(dirname) 
-from PyQt5.QtCore import QCoreApplication ,Qt,pyqtSignal
+from textsource.ocrtext import ocrtext
+from textsource.copyboard import copyboard
+from textsource.namepipe import namepipe
+from textsource.textractor import textractor 
+
+from tts.windowstts import tts   
+
+from utils.hira import hira   
+from PyQt5.QtCore import QCoreApplication ,Qt 
 from PyQt5.QtWidgets import  QApplication 
-import utils.screen_rate 
-from concurrent.futures import ThreadPoolExecutor,as_completed
+import utils.screen_rate  
 from utils.wrapper import timer,threader 
 import gui.rangeselect   
 import gui.settin   
@@ -18,6 +24,7 @@ import gui.translatorUI
 from utils.config import globalconfig 
 import importlib
 from functools import partial
+
 class MAINUI() :
     
     def __init__(self) -> None:
@@ -35,10 +42,7 @@ class MAINUI() :
         try:
             paste_str=postsolve(paste_str)
         except:
-            print_exc()
-            
-
-
+            print_exc() 
 
         self.translation_ui.original=paste_str 
         if globalconfig['isshowhira'] and globalconfig['isshowrawtext']:
@@ -59,20 +63,12 @@ class MAINUI() :
     def startreader(self):
         if globalconfig['reader']:
              
-            from tts.windowstts import tts   
             use=None  
-            if globalconfig['reader']['windows']:
-                     
-                self.reader=tts( self.settin_ui.voicelistsignal)
-                  
-           
+            if globalconfig['reader']['windows']: 
+                    self.reader=tts( self.settin_ui.voicelistsignal) 
     @threader
     def starttextsource(self):
         
-        from textsource.ocrtext import ocrtext
-        from textsource.copyboard import copyboard
-        from textsource.namepipe import namepipe
-        from textsource.textractor import textractor 
         if hasattr(self,'textsource') and self.textsource and self.textsource.ending==False :
             self.textsource.end()  
         if True:#try:
@@ -100,7 +96,6 @@ class MAINUI() :
             return True 
     @threader
     def starthira(self): 
-        from utils.hira import hira   
         self.hira_=hira()  
     
 
@@ -129,20 +124,14 @@ class MAINUI() :
         t1=time.time()
         self.translation_ui =gui.translatorUI.QUnFrameWindow(self)  
         self.translation_ui.show()  
-        self.translation_ui.displayraw.emit('加载中','#0000ff')
-        print(time.time()-t1)
+        self.translation_ui.displayraw.emit('加载中','#0000ff') 
         
-        self.prepare()
-        print(time.time()-t1)
-        self.starthira()
-        print(time.time()-t1)
+        self.prepare() 
+        self.starthira() 
         self.starttextsource() 
-        self.startreader()
-        print(time.time()-t1) 
-        # 设置界面
+         
         self.settin_ui =gui.settin.Settin(self)
-        # 翻译界面设置页面按键信号
-        print(time.time()-t1) 
+        self.startreader() 
         self.range_ui =gui.rangeselect.rangeadjust(self)  
         print(time.time()-t1) 
         self.translation_ui.displayraw.emit('加载完毕','#0000ff')
