@@ -30,8 +30,7 @@ class TS(basetrans):
         else:
             appid = globalconfig['fanyi'][self.typename]['args']['APP ID']
             secretKey = globalconfig['fanyi'][self.typename]['args']['密钥']
-
-        httpClient = None
+  
         myurl = '/api/trans/vip/translate'
 
         fromLang = 'auto'   #原文语种
@@ -43,6 +42,10 @@ class TS(basetrans):
         myurl = myurl + '?appid=' + appid + '&q=' + urllib.parse.quote(q) + '&from=' + fromLang + '&to=' + toLang + '&salt=' + str(
         salt) + '&sign=' + sign
         res=requests.get('https://api.fanyi.baidu.com'+myurl,proxies=  {'http': None,'https': None}).json()  
+        globalconfig['fanyi'][self.typename]['args']['字数统计']=int(globalconfig['fanyi'][self.typename]['args']['字数统计'])+len(query)
+        globalconfig['fanyi'][self.typename]['args']['次数统计']=int(globalconfig['fanyi'][self.typename]['args']['次数统计'])+1
+        with open('./files/config.json','w',encoding='utf-8') as ff:
+            ff.write(json.dumps(globalconfig,ensure_ascii=False,sort_keys=False, indent=4))
         return res['trans_result'][0]['dst']
         
      

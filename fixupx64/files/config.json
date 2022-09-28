@@ -1,27 +1,28 @@
 {
     "position": [
-        462,
-        582
+        432,
+        613
     ],
-    "width": 842.4,
-    "autorun": false,
-    "transparent": 40,
+    "width": 810.4,
+    "autorun": true,
+    "transparent": 27,
     "fontsize": 16,
     "fonttype": "思源黑体 CN Medium",
     "issolid": false,
     "isshowrawtext": true,
     "rawtextcolor": "#000000",
-    "backcolor": "#483b39",
+    "backcolor": "#7a858b",
     "isshowhira": false,
+    "locktools": true,
     "showfanyisource": true,
     "reader": {
         "qq": false,
-        "guge": false
+        "guge": true
     },
     "sourcestatus": {
-        "copy": false,
+        "copy": true,
         "ocr": false,
-        "textractor": true,
+        "textractor": false,
         "textractor_pipe": false
     },
     "fanyi": {
@@ -57,7 +58,7 @@
         },
         "google2": {
             "use": false,
-            "color": "#0ff000",
+            "color": "#95a5ff",
             "name": "谷歌2"
         },
         "sougou": {
@@ -98,9 +99,17 @@
             "color": "#0ff000",
             "name": "百度api",
             "args": {
+                "注册网址": "https://fanyi-api.baidu.com/api/trans/product/desktop",
                 "APP ID": "",
-                "密钥": ""
+                "密钥": "",
+                "字数统计": "0",
+                "次数统计": "0"
             },
+            "notwriteable": [
+                "注册网址",
+                "字数统计",
+                "次数统计"
+            ],
             "otherpath": "C:/dataH/baiduapi.json"
         }
     },
