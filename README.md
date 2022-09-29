@@ -1,5 +1,7 @@
 # LunaTranslator
 
+https://pan.baidu.com/s/1kBVtyIHG2CLYFvqvjUxCUw?pwd=7iqw
+
 galgame翻译器
 
 支持剪贴板、ocr、textractor作为文本输入源
