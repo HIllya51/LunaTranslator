@@ -137,6 +137,24 @@
                 "次数统计"
             ],
             "otherpath": "C:/dataH/baiduapi.json"
+        },
+        "tencentapi": {
+            "use": true,
+            "color": "#0ff000",
+            "name": "腾讯api",
+            "args": {
+                "注册网址": "https://console.cloud.tencent.com/cam/capi",
+                "SecretId": "",
+                "SecretKey": "",
+                "字数统计": "4",
+                "次数统计": "1"
+            },
+            "notwriteable": [
+                "注册网址",
+                "字数统计",
+                "次数统计"
+            ],
+            "otherpath": "C:/dataH/txapi.json"
         }
     },
     "minifollow": true,
