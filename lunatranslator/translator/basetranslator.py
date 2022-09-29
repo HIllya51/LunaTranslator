@@ -8,7 +8,6 @@ import requests
 import traceback
 from threading import Thread
 class basetrans:
- 
     def __init__(self) :
 
         self.queue=Queue() 
