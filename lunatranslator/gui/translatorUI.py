@@ -1,4 +1,4 @@
-
+import sys
 from asyncio import events
 from PyQt5.QtWidgets import QWidget, QLabel, QPushButton, QVBoxLayout
 from PyQt5.QtCore import Qt, QPoint,pyqtSignal 
@@ -451,7 +451,7 @@ class QUnFrameWindow(QWidget):
         
         self.close() 
         print('closed')
-        exit()
+        sys.exit()
         #self.quit()
         #self.quit()
         #报异常来退出，不然老是有僵尸进程。
