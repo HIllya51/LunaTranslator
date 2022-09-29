@@ -4,7 +4,7 @@
         613
     ],
     "width": 734.4,
-    "autorun": true,
+    "autorun": false,
     "transparent": 57,
     "fontsize": 17.699999999999996,
     "fonttype": "思源黑体 CN Medium",
@@ -26,8 +26,8 @@
         "volume": 100.0
     },
     "sourcestatus": {
-        "copy": true,
-        "ocr": false,
+        "copy": false,
+        "ocr": true,
         "textractor": false,
         "textractor_pipe": false
     },
@@ -111,12 +111,12 @@
             "name": "TX"
         },
         "ifly": {
-            "use": true,
+            "use": false,
             "color": "#0ff000",
             "name": "ifly"
         },
         "iciba": {
-            "use": true,
+            "use": false,
             "color": "#0ff000",
             "name": "iciba"
         },
@@ -139,7 +139,7 @@
             "otherpath": "C:/dataH/baiduapi.json"
         },
         "tencentapi": {
-            "use": true,
+            "use": false,
             "color": "#0ff000",
             "name": "腾讯api",
             "args": {

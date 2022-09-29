@@ -217,6 +217,7 @@ class DetResizeForTest(object):
             sys.exit(0)
         ratio_h = resize_h / float(h)
         ratio_w = resize_w / float(w)
+        print(img.shape)
         # return img, np.array([h, w])
         return img, [ratio_h, ratio_w]
 
@@ -282,34 +283,6 @@ class myocr:
         resized_image /= 0.5
          
         return resized_image
-    def resize_image_type0( self,img):
-        """
-        resize image to a size multiple of 32 which is required by the network
-        args:
-            img(array): array with shape [h, w, c]
-        return(tuple):
-            img, (ratio_h, ratio_w)
-        """
-        limit_side_len = 960
-        h, w, _ = img.shape
-
-        
-        resize_h = 640
-        resize_w = 640
-
-        resize_h = max(int(round(resize_h / 32) * 32), 32)
-        resize_w = max(int(round(resize_w / 32) * 32), 32)
-
-        try:
-            if int(resize_w) <= 0 or int(resize_h) <= 0:
-                return None, (None, None)
-            img = cv2.resize(img, (int(resize_w), int(resize_h)))
-        except:
-            print(img.shape, resize_w, resize_h)
-            sys.exit(0)
-        ratio_h = resize_h / float(h)
-        ratio_w = resize_w / float(w)
-        return img, [ratio_h, ratio_w]
      
     def transform(self, data, ops=None):
         """ transform """
