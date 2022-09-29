@@ -28,12 +28,12 @@ def setTabOne(self) :
         self.customSetGeometry(self.copyboardswitch, 100, 70, 66, 22) 
         self.copyboardswitch.clicked.connect(functools.partial(textsourcechange,self,'copy')) 
         
-        label = QLabel(self.tab_1)
-        self.customSetGeometry(label, 20, 105, 300, 20)
-        label.setText("Textractor插件") 
-        self.Textractor_forward_extension_switch =gui.switchbutton.MySwitch(self.tab_1, sign= globalconfig['sourcestatus']['textractor_pipe'], textOff='关闭',textOn='打开')
-        self.customSetGeometry(self.Textractor_forward_extension_switch, 130, 105, 66, 22)
-        self.Textractor_forward_extension_switch.clicked.connect(functools.partial(textsourcechange,self,'textractor_pipe')) 
+        # label = QLabel(self.tab_1)
+        # self.customSetGeometry(label, 20, 105, 300, 20)
+        # label.setText("Textractor插件") 
+        # self.Textractor_forward_extension_switch =gui.switchbutton.MySwitch(self.tab_1, sign= globalconfig['sourcestatus']['textractor_pipe'], textOff='关闭',textOn='打开')
+        # self.customSetGeometry(self.Textractor_forward_extension_switch, 130, 105, 66, 22)
+        # self.Textractor_forward_extension_switch.clicked.connect(functools.partial(textsourcechange,self,'textractor_pipe')) 
 
         label = QLabel(self.tab_1)
         self.customSetGeometry(label, 220, 70, 35, 20)
@@ -76,7 +76,7 @@ def setTabOne(self) :
         
         self.selecthookbutton.setIcon(qtawesome.icon("fa.gear", color="#FF69B4" if globalconfig['sourcestatus']['textractor'] else '#595959'))
         self.selecthookbutton.clicked.connect(functools.partial(settingsource,self) )
-        self.sourceswitchs={'copy':self.copyboardswitch,'ocr':self.ocrswitch,'textractor':self.textractorswitch ,'textractor_pipe':self.Textractor_forward_extension_switch}
+        self.sourceswitchs={'copy':self.copyboardswitch,'ocr':self.ocrswitch,'textractor':self.textractorswitch}# ,'textractor_pipe':self.Textractor_forward_extension_switch}
 
         self.hookselectdialog=gui.selecthook.hookselect(self)
  

@@ -425,7 +425,7 @@ class QUnFrameWindow(QWidget):
     def quitf(self) :  
         with open('./files/config.json','w',encoding='utf-8') as ff:
             ff.write(json.dumps(globalconfig,ensure_ascii=False,sort_keys=False, indent=4))
-        #self.hide()
+        self.hide()
         self.tray = None 
         self.object.range_ui.close()
         self.object.settin_ui.close()
@@ -441,13 +441,15 @@ class QUnFrameWindow(QWidget):
                 self.object.textsource.p.terminate()
                 self.object.textsource.p.waitForFinished () 
          
-        
-        import ctypes 
-        for hookID in self.object.settin_ui.hooks:
-            ctypes.windll.user32.UnhookWinEvent(hookID)
+        self.object.settin_ui.minmaxmoveoberve.kill()
+        # import ctypes 
+        # for hookID in self.object.settin_ui.hooks:
+        #     ctypes.windll.user32.UnhookWinEvent(hookID)
         #print(aa)  
         
         self.close() 
+        print('closed')
+        exit()
         #self.quit()
-        self.quit()
+        #self.quit()
         #报异常来退出，不然老是有僵尸进程。

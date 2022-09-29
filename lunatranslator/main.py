@@ -7,7 +7,7 @@ dirname, filename = os.path.split(os.path.abspath(__file__))
 sys.path.append(dirname) 
 from textsource.ocrtext import ocrtext
 from textsource.copyboard import copyboard
-from textsource.namepipe import namepipe
+#from textsource.namepipe import namepipe
 from textsource.textractor import textractor 
 
 from tts.windowstts import tts   
@@ -72,7 +72,7 @@ class MAINUI() :
         if hasattr(self,'textsource') and self.textsource and self.textsource.ending==False :
             self.textsource.end()  
         if True:#try:
-            classes={'ocr':ocrtext,'copy':copyboard,'textractor':textractor,'textractor_pipe':namepipe}
+            classes={'ocr':ocrtext,'copy':copyboard,'textractor':textractor}#,'textractor_pipe':namepipe}
             use=None  
             for k in classes: 
                 if globalconfig['sourcestatus'][k]:
