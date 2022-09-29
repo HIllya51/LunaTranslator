@@ -4,6 +4,7 @@ import win32pipe, win32file
 from multiprocessing import Queue 
 from PyQt5.QtCore import QProcess ,QByteArray
 import re  
+import time
 from textsource.textsourcebase import basetext 
 class textractor(basetext):
      
@@ -41,7 +42,7 @@ class textractor(basetext):
         self.p.write( QByteArray((f'attach -P{pid}\r\n').encode(encoding='utf-16-le'))) 
     def detach(self,pid):
         self.p.write( QByteArray((f'detach -P{pid}\r\n').encode(encoding='utf-16-le'))) 
-    def handle_stdout(self):
+    def handle_stdout(self): 
         data = self.p.readAllStandardOutput()
         stdout = bytes(data).decode("utf16",errors='ignore') 
         reres=self.re.findall(stdout) #re.findall('\[([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):(.*):(.*@.*)\] (.*)\n',stdout)
@@ -65,8 +66,7 @@ class textractor(basetext):
                 self.newline.put(output) 
                 self.runonce_line=output
             self.hookdatacollecter[key].append(output)
-            
-            
+             
     def gettextthread(self ):
 
             paste_str=self.newline.get()
