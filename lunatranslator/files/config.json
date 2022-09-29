@@ -36,7 +36,7 @@
             "name": "百度"
         },
         "bing": {
-            "use": true,
+            "use": false,
             "color": "#000ff0",
             "name": "必应"
         },
@@ -71,7 +71,7 @@
             "name": "搜狗"
         },
         "caiyun": {
-            "use": false,
+            "use": true,
             "color": "#0ff000",
             "name": "彩云"
         },

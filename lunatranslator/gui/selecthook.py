@@ -13,14 +13,18 @@ import sys
 class hookselect(QMainWindow):
     addnewhooksignal=pyqtSignal(tuple)
     getnewsentencesignal=pyqtSignal(str)
+    changeprocessclearsignal=pyqtSignal()
     def __init__(self,object):
         super(hookselect, self).__init__()
         self.setupUi(self)
         self.object=object
+        self.changeprocessclearsignal.connect(self.changeprocessclear)
         self.addnewhooksignal.connect(self.addnewhook)
         self.getnewsentencesignal.connect(self.getnewsentence)
         self.setWindowFlags(Qt.WindowStaysOnTopHint |Qt.WindowCloseButtonHint)
         self.setWindowTitle('选择文本')
+    def changeprocessclear(self):
+        self.ttCombo.clear()
     def addnewhook(self,ss ):
         self.save.append(ss)
         thread_handle,thread_tp_processId, thread_tp_addr, thread_tp_ctx, thread_tp_ctx2, thread_name,HookCode=ss 

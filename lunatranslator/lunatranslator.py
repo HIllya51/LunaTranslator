@@ -55,10 +55,12 @@ class MAINUI() :
             self.translation_ui.displayraw1.emit(paste_str,globalconfig['rawtextcolor'],0)
          
         if shortlongskip and  (len(paste_str)<6 or len(paste_str)>150 or len(paste_str.split('\n'))>5):
-            return 
+            skip=True 
+        else:
+            skip=False
         for engine in self.translators:
             #print(engine)
-            self.translators[engine].gettask(paste_str) 
+            self.translators[engine].gettask((paste_str,skip)) 
     @threader
     def startreader(self):
         if globalconfig['reader']:
@@ -133,7 +135,7 @@ class MAINUI() :
         self.startreader() 
         self.range_ui =gui.rangeselect.rangeadjust(self)  
         print(time.time()-t1) 
-        self.translation_ui.displayraw.emit('欢迎','#0000ff')
+        #self.translation_ui.displayraw.emit('欢迎','#0000ff')
     def main(self) : 
         # 自适应高分辨率
         t1=time.time()

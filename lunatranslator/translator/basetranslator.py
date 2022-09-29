@@ -74,9 +74,11 @@ class basetrans:
         while True:
             
             while True:
-                content=self.queue.get()
+                content,skip=self.queue.get()
                 if self.queue.empty():
                     break
+            if skip:
+                continue
             if globalconfig['fanyi'][self.typename]['use']==False:
                 continue
             if (set(content) -set('「…」、。？！―'))==set():

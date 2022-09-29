@@ -85,6 +85,8 @@ class QUnFrameWindow(QWidget):
             res = res.replace("\n", "<br>")
             self.lastcolor=''
             self.translate_text.append("<font color=%s>%s</font>"%(color,res))
+        
+        self.logff.write(res+'\n')
     def clearText(self) :
      
         # 翻译界面清屏
@@ -108,7 +110,7 @@ class QUnFrameWindow(QWidget):
             None, Qt.FramelessWindowHint|Qt.WindowStaysOnTopHint|Qt.Tool)  # 设置为顶级窗口，无边框
         self._padding = 5  # 设置边界宽度为5
         self.object = object
-         
+        self.logff=open('./files/log.txt','a',encoding='utf8')
         self.setAttribute(Qt.WA_TranslucentBackground) 
         self.hookfollowsignal.connect(self.hookfollowsignalsolve) 
         self.displayres.connect(self.showres)
@@ -189,6 +191,7 @@ class QUnFrameWindow(QWidget):
         self.font.setFamily(globalconfig['fonttype'])
         self.font.setPointSize(globalconfig['fontsize']) 
         self.translate_text = QTextBrowser(self) 
+        self.translate_text.setText('欢迎使用')
         self.translate_text.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         self.translate_text.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         self.translate_text.setFont(self.font)
@@ -424,6 +427,7 @@ class QUnFrameWindow(QWidget):
         with open('./files/config.json','w',encoding='utf-8') as ff:
             ff.write(json.dumps(globalconfig,ensure_ascii=False,sort_keys=False, indent=4))
         self.hide()
+        self.logff.close()
         self.tray = None 
         self.object.range_ui.close()
         self.object.settin_ui.close()

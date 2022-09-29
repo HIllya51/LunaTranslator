@@ -124,6 +124,8 @@ def settingtextractor(self):
                 self.show()
             arch='86' if win32process.IsWow64Process( process)  else '64' 
             self.hookpid=pid
+
+            self.hookselectdialog.changeprocessclearsignal.emit()
             self.object.textsource=textractor(self.object.textgetmethod,self.hookselectdialog,pid,pexe,arch) 
             # if not os.path.exists('./files/savehook.json'):
             #     js={}
@@ -132,16 +134,18 @@ def settingtextractor(self):
             # if pexe in js:
             #     self.object.textsource.selectedhook=js[pexe]
             # else:
+
             settingsource(self)
         else:
-            self.show()
+            self.show() 
 def settingsource(self):
-        if globalconfig['sourcestatus']['textractor']==False:
-            return 
-        self.hide()
-        self.hookselectdialog.show() 
-        self.hookselectdialog.hiding=False
+    if globalconfig['sourcestatus']['textractor']==False:
+                return 
+    self.hide()
+    self.hookselectdialog.show() 
+    self.hookselectdialog.hiding=False
 def resetsource(self):
+        self.hookselectdialog.changeprocessclearsignal.emit()
         for k in self.sourceswitchs:
                 if globalconfig['sourcestatus'][k]==True:
                     if k=='textractor':
