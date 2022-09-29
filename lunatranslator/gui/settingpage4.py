@@ -10,6 +10,10 @@ import threading
 import gui.switchbutton
 import gui.attachprocessdialog  
 import gui.selecthook  
+
+st=subprocess.STARTUPINFO()
+st.dwFlags=subprocess.STARTF_USESHOWWINDOW
+st.wShowWindow=subprocess.SW_HIDE
 def setTab4(self) :
      
         self.tab_4 = QWidget()
@@ -45,7 +49,7 @@ def setTab4(self) :
         # self.focusfollowswitch.checkedChanged.connect(lambda x:globalconfig.__setitem__('focusfollow',x)) 
         # #self.focusfollowswitch.checkedChanged.connect(lambda x:setss(self,x)) 
         self.hookpid=None
-        self.minmaxmoveoberve=subprocess.Popen('./files/minmaxmoveobserve.exe',stdout=subprocess.PIPE)
+        self.minmaxmoveoberve=subprocess.Popen('./files/minmaxmoveobserve.exe',stdout=subprocess.PIPE,startupinfo=st)
         self.minmaxmoveobservethread=threading.Thread(target=minmaxmoveobservefunc,args=(self,))
         self.minmaxmoveobservethread.start()
 def minmaxmoveobservefunc(self):
