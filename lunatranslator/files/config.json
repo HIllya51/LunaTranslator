@@ -3,7 +3,7 @@
         432,
         613
     ],
-    "width": 792.0,
+    "width": 734.4,
     "autorun": true,
     "transparent": 57,
     "fontsize": 18.00000000000002,
@@ -25,8 +25,8 @@
     },
     "sourcestatus": {
         "copy": false,
-        "ocr": true,
-        "textractor": false,
+        "ocr": false,
+        "textractor": true,
         "textractor_pipe": false
     },
     "fanyi": {

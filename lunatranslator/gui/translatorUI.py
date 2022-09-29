@@ -206,7 +206,7 @@ class QUnFrameWindow(QWidget):
                                            font-weight: bold;\
                                            background-color: rgba(%s, %s, %s, %s)"
                                            %(int(globalconfig['backcolor'][1:3],16),int(globalconfig['backcolor'][3:5],16),int(globalconfig['backcolor'][5:7],16),globalconfig['transparent']/200))
-        
+        self.translate_text.move(0,30*self.rate)
         self.format = QTextCharFormat() 
         # 翻译框根据内容自适应大小
         self.document = self.translate_text.document()
@@ -235,8 +235,7 @@ class QUnFrameWindow(QWidget):
         newHeight = self.document.size().height()
         
         width = self.width()
-        self.resize(width, newHeight + 30*self.rate)
-        self.translate_text.setGeometry(0, 30*self.rate, width, newHeight)
+        self.resize(width, newHeight + 30*self.rate) 
          
     def clickSettin(self) :
           
@@ -310,12 +309,11 @@ class QUnFrameWindow(QWidget):
                                            %(int(globalconfig['backcolor'][1:3],16),int(globalconfig['backcolor'][3:5],16),int(globalconfig['backcolor'][5:7],16),globalconfig['transparent']/200))
     def resizeEvent(self, QResizeEvent):
          
-        width = round((self.width() - 454*self.rate) / 2) 
-        
-        width = round((self.width() - 454*self.rate) / 2)
+         
         globalconfig['width']=self.width()/self.rate
         height = self.height() - 30*self.rate 
-         
+        
+        #self.translate_text.resize(self.width(), height )
         self.translate_text.setGeometry(0, 30 * self.rate, self.width(), height * self.rate)
          
         for button in self.buttons:

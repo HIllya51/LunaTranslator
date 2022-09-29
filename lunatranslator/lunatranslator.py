@@ -123,8 +123,7 @@ class MAINUI() :
     def aa(self):
         t1=time.time()
         self.translation_ui =gui.translatorUI.QUnFrameWindow(self)  
-        self.translation_ui.show()  
-        self.translation_ui.displayraw.emit('加载中','#0000ff') 
+        self.translation_ui.show()   
         
         self.prepare() 
         self.starthira() 
@@ -134,14 +133,14 @@ class MAINUI() :
         self.startreader() 
         self.range_ui =gui.rangeselect.rangeadjust(self)  
         print(time.time()-t1) 
-        self.translation_ui.displayraw.emit('加载完毕','#0000ff')
+        self.translation_ui.displayraw.emit('欢迎','#0000ff')
     def main(self) : 
         # 自适应高分辨率
         t1=time.time()
         QCoreApplication.setAttribute(Qt.AA_UseHighDpiPixmaps, True)
         app = QApplication(sys.argv) 
         app.setQuitOnLastWindowClosed(False)
-        #print(time.time()-t1)
+        print(time.time()-t1)
         self.aa()
         app.exit(app.exec_())
         
