@@ -30,6 +30,9 @@ class tts():
         if i==-1:
             return 
         self.Windows_Speak.Voice = self.Windows_Speak.GetVoices().Item(i)
-        self.Windows_Speak.Rate=rate
+        self.Windows_Speak.Rate=float(globalconfig['windowstts']['rate'])
+        self.Windows_Speak.Volume=float(globalconfig['windowstts']['volume'])
+        
+        print(dir(self.Windows_Speak))
         threading.Thread(target=self.Windows_Speak.Speak,args=(content,)).start() 
       

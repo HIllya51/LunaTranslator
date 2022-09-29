@@ -17,7 +17,7 @@ def setTabThree(self) :
         self.tab_widget.setTabText(self.tab_widget.indexOf(self.tab_3), " 显示设置") 
         label = QLabel(self.tab_3)
         self.customSetGeometry(label, 20, 20, 90, 20)
-        label.setText("翻译框透明度:") 
+        label.setText("不透明度:") 
         self.horizontal_slider = QSlider(self.tab_3)
         self.customSetGeometry(self.horizontal_slider, 120, 18, 320, 25)
         self.horizontal_slider.setMaximum(100)
@@ -46,11 +46,9 @@ def setTabThree(self) :
  
         self.font_comboBox = QFontComboBox(self.tab_3)
         self.customSetGeometry(self.font_comboBox, 350, 65, 185, 25)
-        self.font_comboBox.activated[str].connect(lambda x:globalconfig.__setitem__('fonttype',x))
+        self.font_comboBox.activated[str].connect(lambda x:globalconfig.__setitem__('fonttype',x))  
         self.comboBox_font = QFont(globalconfig['fonttype'])
         self.font_comboBox.setCurrentFont(self.comboBox_font)  
-        
- 
         label = QLabel(self.tab_3)
         self.customSetGeometry(label, 20, 170, 60, 20)
         label.setText("字体样式:")
@@ -58,7 +56,8 @@ def setTabThree(self) :
         self.font_type_switch =gui.switchbutton.MySwitch(self.tab_3, sign=globalconfig['issolid'] ,textOn='实心',textOff='空心')
         self.customSetGeometry(self.font_type_switch, 95, 170,66,22)
         self.font_type_switch.clicked.connect(lambda x:globalconfig.__setitem__('issolid',x)) 
-  
+
+        
         label = QLabel(self.tab_3)
         self.customSetGeometry(label, 275, 120, 60, 20)
         label.setText("显示原文:")

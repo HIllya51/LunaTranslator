@@ -58,9 +58,7 @@ class TS(basetrans):
         #     '_reqid': '86225',
         #     'rt': 'c',
         # }
-        
-        if self.ss is None:
-            self.inittranslator()
+         
         headers = {'Origin': 'https://translate.google.cn', 'Referer': 'https://translate.google.cn', 'X-Requested-With': 'XMLHttpRequest', 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8', 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36'}
         try:
             response =self.ss.post('https://translate.google.cn/_/TranslateWebserverUi/data/batchexecute', headers=headers,  data=freq, proxies=  {'http': None,'https': None})
@@ -71,6 +69,7 @@ class TS(basetrans):
             return ' '.join([x[0] for x in (data[1][0][0][5] or data[1][0])])
         except:
             self.ss=None
+            self.inittranslator()
             print_exc()
             print(response.text)
             return '出错了'

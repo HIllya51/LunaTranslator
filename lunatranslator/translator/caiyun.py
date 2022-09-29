@@ -153,6 +153,8 @@ class TS(basetrans):
             return self.engine.caiyun_api(content)
         except:
             print_exc()
+            
+            self.inittranslator()
             return '出错了'
 if __name__=='__main__':
     a=BINGFY()

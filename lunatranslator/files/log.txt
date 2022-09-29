@@ -1030,3 +1030,539 @@
 百度  “……知道了，我也要换衣服。”
 彩云  “... ... 好吧，我也去换衣服。”
 谷歌2  “ ...我明白。我也会换衣服。”
+ちょっと距離があるのが気がかりだ。
+谷歌2  我担心有一点距离。
+百度  我担心有点距离。
+彩云  我担心我们之间有点距离。
+「私、学園で――ううん、この町であの場所がいちばん気に入ってるの」
+百度  “我在学园——不，在这个城市最喜欢那个地方。”
+谷歌2  “我在学校 - 是的，我喜欢这个镇上的那个地方。”
+彩云  “我在学校里最喜欢那个地方。”
+「一度は夜の眺めを見てみたいって、ずっと思っていたのよ」
+Jbeijing7  「是一次试着看夜晚的景色说，一直想哟」
+彩云  “我一直想看看夜景。”
+百度  “我一直想看一次夜晚的景色。”
+谷歌2  “我一直认为我想至少一次看到一次夜晚的景色。”
+僕も、あの中庭の眺めは好きだった。
+Jbeijing7  我，那个里院的景色也喜欢。
+百度  我也喜欢那个院子的景色。
+彩云  我也喜欢那个院子的景色。
+谷歌2  我也喜欢那个庭院的景色。
+見納めという意味でも、最後に夜の学園を体験するのは、思い出として悪くないかもしれない。
+Jbeijing7  看最后一次这个意义也，最后体验夜晚的学园，作为回忆说不定不坏。
+百度  即使是最后一次看，最后体验夜晚的学园，作为回忆也不错。
+彩云  就算是最后一次见面，最后一次体验夜校，也许是个不错的回忆。
+谷歌2  从看着它的意义上，最后在夜间学校体验可能并不是一件记忆。
+「うん。じゃあ、僕も着替えてくる」
+Jbeijing7  「哼。那么，我也换衣服」
+百度  “嗯，那我也去换衣服。”
+谷歌2  “是的，那我也会换衣服。”
+彩云  “嗯。那我也去换衣服。”
+この時間であっても、学園に入りこむなら制服のほうがいいだろう。
+Jbeijing7  如果即使是这个时间，学园进入还是制服会。
+百度  即使是这个时间，如果要进入学园的话，还是制服比较好吧。
+彩云  即使在这个时候，如果你想进入学院，穿校服也更好。
+谷歌2  即使在这个时候，如果您进入学校，制服也会更好。
+「これからは、人に命じるのではなくて、お願いする練習をしなくちゃ」
+Jbeijing7  「今后，必须练习不是命令在(到)人，请求」
+谷歌2  出错了
+百度  “从现在开始，不是命令别人，而是要练习拜托别人。”
+「そうだね」
+Jbeijing7  「是那样」
+百度  “是啊。”
+谷歌2  出错了
+できるだけ命を長らえたい――そういう気持ちが、愛の中に芽生えたということだと思う。
+Jbeijing7  想我尽可能生命继续活着――想那样的心情，在爱中出芽了。
+谷歌2  出错了
+百度  想尽量延长生命——我想就是这种心情在爱中萌芽了。
+なにより、それが嬉しい。
+Jbeijing7  比什么都，那个高兴。
+谷歌2  出错了
+百度  最重要的是，我很高兴。
+「……ちなみにさ」
+Jbeijing7  「……顺便」
+百度  “……顺便说一下。”
+彩云  “从现在开始，不要命令别人，要练习如何求人。”
+「なあに？」
+Jbeijing7  「什么」？
+百度  “什么？”
+搜狗2  “什么？ ”
+「愛……なんだか、ちょっと雰囲気、変わったよね？」
+Jbeijing7  「爱……，稍微气氛，变了哟？」
+百度  “爱……总觉得，气氛有点变了吧？”
+搜狗2  “爱……总觉得气氛有点变化了吧？ ”
+僕が言うと、愛はきょとんとした表情になって、自分の頬のあたりに手をあてた。
+Jbeijing7  我说的话，爱变成作为发呆的表情，用手打了自己的脸颊附近。
+百度  我说了之后，爱露出了茫然的表情，把手放在了自己的脸颊附近。
+搜狗2  我一说，爱就露出了呆呆的表情，把手放在自己的脸颊附近。
+彩云  “... ... 顺便说一句。”
+「そう、かしら……？」
+Jbeijing7  「那样，头……？」
+百度  “是吗……？”
+搜狗2  “是啊，是吗……？ ”
+「さっき自分で鏡を見たけど、特に変わったとは思わなかったわよ」
+Jbeijing7  「刚才自己看镜子,不过，特别变没认为哟」
+百度  “刚才我自己照了镜子，没想到有什么特别的变化。”
+搜狗2  “我刚才自己照了镜子，没想到变了什么。”
+「変わったよ。なんだか、やわらかくなった」
+Jbeijing7  「变了哟。总觉得，柔软了」
+百度  “变了。总觉得变软了。”
+搜狗2  “变了哦。 不知怎么的，变软了”
+有道3  出错了
+「誠が言うなら、そうなのかしら」
+Jbeijing7  「如果真实叫，那样」
+百度  “如果是诚说的话，是这样吗？”
+搜狗2  “如果诚说的话，是这样吗？”
+有道3  出错了
+自分ではあまりぴんと来ないようだったけど、愛がそう言って目を細める。
+Jbeijing7  好象自己不太突然来,不过，爱那样叫弄细眼。
+百度  虽然自己好像不怎么来，但是爱这样说着眯着眼睛。
+搜狗2  虽然自己好像不太清楚，但爱这样说着，眯缝着眼睛。
+……ほら、やっぱり雰囲気が違う。
+Jbeijing7  ……喏，同样气氛不同。
+百度  ……看，果然气氛不一样。
+搜狗2  ……你看，气氛果然不一样。
+「うん。さっきだって、こころに自分から頭を下げてたよね」
+Jbeijing7  「哼。杀气腾腾，在心上(里)从自己拿下着头哟」
+百度  “嗯，刚才也是自己向心里低头的吧。”
+搜狗2  “嗯。 刚才，也是自己向心中低头的吧。”
+「前の愛だったら、ちょっと考えられない姿だなって思ったよ」
+Jbeijing7  「考虑是如果是前面的爱，不能考虑一下的身姿哟」
+百度  “如果是以前的爱的话，我觉得是有点无法想象的样子。”
+搜狗2  “如果是以前的爱的话，我觉得是有点难以想象的样子。”
+「…………」
+tab
+0190038681030
+Jbeijing7  0190038681030
+百度  0190038681030
+小牛  出错了
+搜狗2  0190038681030
+0190038681030
+Jbeijing7  0190038681030
+百度  0190038681030
+搜狗2  0190038681030
+小牛  出错了
+response.json()
+Jbeijing7  response.json()
+百度  response.json()
+小牛  出错了
+搜狗2  response.json ( )
+response.json()
+小牛  出错了
+搜狗2  response.json ( )
+onnection': 'keep-alive',
+搜狗2  onnection&#39;: &#39;keep-alive &#39;，
+小牛  出错了
+0.4706728458404541
+Jbeijing7  0.4706728458404541
+百度  0.4706728458404541
+小牛  出错了
+搜狗2  0.4706728458404541
+0.4706728458404541
+小牛  出错了
+搜狗2  0.4706728458404541
+print(sess.cookies,sess.headers)
+小牛  出错了
+搜狗2  print(sess.cookies，sess.headers )
+cookies = {
+    '__bid_n': '1832caceb688d916b14207',
+    'Hm_lvt_b0622cd752283bf08fa70c966ac2c3cd': '1662901873,1663768605,1664365358,1664453913',
+    'Hm_lpvt_b0622cd752283bf08fa70c966ac2c3cd': '1664453913',
+    'sensorsdata2015jssdkcross': '%7B%22distinct_id%22%3A%221832caceadef33-012c1c1d12e51d-78565475-1327104-1832caceadff88%22%2C%22first_id%22%3A%22%22%2C%22props%22%3A%7B%22%24latest_traffic_source_type%22%3A%22%E7%9B%B4%E6%8E%A5%E6%B5%81%E9%87%8F%22%2C%22%24latest_search_keyword%22%3A%22%E6%9C%AA%E5%8F%96%E5%88%B0%E5%80%BC_%E7%9B%B4%E6%8E%A5%E6%89%93%E5%BC%80%22%2C%22%24latest_referrer%22%3A%22%22%7D%2C%22%24device_id%22%3A%221832caceadef33-012c1c1d12e51d-78565475-1327104-1832caceadff88%22%7D',
+}
+cookies = {
+    '__bid_n': '1832caceb688d916b14207',
+    'Hm_lvt_b0622cd752283bf08fa70c966ac2c3cd': '1662901873,1663768605,1664365358,1664453913',
+    'Hm_lpvt_b0622cd752283bf08fa70c966ac2c3cd': '1664453913',
+    'sensorsdata2015jssdkcross': '%7B%22distinct_id%22%3A%221832caceadef33-012c1c1d12e51d-78565475-1327104-1832caceadff88%22%2C%22first_id%22%3A%22%22%2C%22props%22%3A%7B%22%24latest_traffic_source_type%22%3A%22%E7%9B%B4%E6%8E%A5%E6%B5%81%E9%87%8F%22%2C%22%24latest_search_keyword%22%3A%22%E6%9C%AA%E5%8F%96%E5%88%B0%E5%80%BC_%E7%9B%B4%E6%8E%A5%E6%89%93%E5%BC%80%22%2C%22%24latest_referrer%22%3A%22%22%7D%2C%22%24device_id%22%3A%221832caceadef33-012c1c1d12e51d-78565475-1327104-1832caceadff88%22%7D',
+}
+百度  cookies = {
+谷歌  出错了
+5%E6%B5%81%E9%87%8F%22%2C%22%24latest_search_keyword%22%3A%22%E6%9C%AA%E5%8F%96%E5%88%B0%E5%80%BC_%E7%9B%B4%E6%8E%A5%E6%
+谷歌  出错了
+百度  5%E6%B5%81%E9%87%8F%22%2C%22%24latest_search_keyword%22%3A%22%E6%9C%AA%E5%8F%96%E5%88%B0%E5%80%BC_%E7%9B%B4%E6%8E%A5%E6%
+5%E6%B5%81%E9%87%8F%22%2C%22%24latest_search_keyword%22%3A%22%E6%9C%AA%E5%8F%96%E5%88%B0%E5%80%BC_%E7%9B%B4%E6%8E%A5%E6%
+百度  5%E6%B5%81%E9%87%8F%22%2C%22%24latest_search_keyword%22%3A%22%E6%9C%AA%E5%8F%96%E5%88%B0%E5%80%BC_%E7%9B%B4%E6%8E%A5%E6%
+谷歌  出错了
+5%E6%B5%81%E9%87%8F%22%2C%22%24latest_search_keyword%22%3A%22%E6%9C%AA%E5%8F%96%E5%88%B0%E5%80%BC_%E7%9B%B4%E6%8E%A5%E6%
+百度  5%E6%B5%81%E9%87%8F%22%2C%22%24latest_search_keyword%22%3A%22%E6%9C%AA%E5%8F%96%E5%88%B0%E5%80%BC_%E7%9B%B4%E6%8E%A5%E6%
+5%E6%B5%81%E9%87%8F%22%2C%22%24latest_search_keyword%22%3A%22%E6%9C%AA%E5%8F%96%E5%88%B0%E5%80%BC_%E7%9B%B4%E6%8E%A5%E6%
+百度  5%E6%B5%81%E9%87%8F%22%2C%22%24latest_search_keyword%22%3A%22%E6%9C%AA%E5%8F%96%E5%88%B0%E5%80%BC_%E7%9B%B4%E6%8E%A5%E6%
+5%E6%B5%81%E9%87%8F%22%2C%22%24latest_search_keyword%22%3A%22%E6%9C%AA%E5%8F%96%E5%88%B0%E5%80%BC_%E7%9B%B4%E6%8E%A5%E6%
+5%E6%B5%81%E9%87%8F%22%2C%22%24latest_search_keyword%22%3A%22%E6%9C%AA%E5%8F%96%E5%88%B0%E5%80%BC_%E7%9B%B4%E6%8E%A5%E6%
+百度  5%E6%B5%81%E9%87%8F%22%2C%22%24latest_search_keyword%22%3A%22%E6%9C%AA%E5%8F%96%E5%88%B0%E5%80%BC_%E7%9B%B4%E6%8E%A5%E6%
+5%E6%B5%81%E9%87%8F%22%2C%22%24latest_search_keyword%22%3A%22%E6%9C%AA%E5%8F%96%E5%88%B0%E5%80%BC_%E7%9B%B4%E6%8E%A5%E6%
+5%E6%B5%81%E9%87%8F%22%2C%22%24latest_search_keyword%22%3A%22%E6%9C%AA%E5%8F%96%E5%88%B0%E5%80%BC_%E7%9B%B4%E6%8E%A5%E6%
+必应  出错了
+百度  5%E6%B5%81%E9%87%8F%22%2C%22%24latest_search_keyword%22%3A%22%E6%9C%AA%E5%8F%96%E5%88%B0%E5%80%BC_%E7%9B%B4%E6%8E%A5%E6%
+2B9D82B829D44C2B8649860EE3B76C82
+必应  出错了
+百度  2B9D82B829D44C2B8649860EE3B76C82
+2B9D82B829D44C2B8649860EE3B76C82
+2B9D82B829D44C2B8649860EE3B76C82
+必应  出错了
+百度  2B9D82B829D44C2B8649860EE3B76C82
+headers
+B9A7672CE42C4768806D9E47BA26581E
+百度  B9A7672CE42C4768806D9E47BA26581E
+必应  B9A7672CE42C4768806D9E47BA26581E
+B9A7672CE42C4768806D9E47BA26581E
+B9A7672CE42C4768806D9E47BA26581E
+有道  出错了
+谷歌  出错了
+阿里  B9A7672CE42C4768806D9E47BA26581E
+headers
+谷歌  标题
+headers
+有道  headers
+谷歌  标题
+headers
+有道  headers
+谷歌  标题
+headers
+谷歌  标题
+はーい、おやすみなさい
+有道  是的,晚安!
+阿里  好的,晚安。
+谷歌  你好，晚安
+はーい、おやすみなさい
+谷歌  出错了
+はーい、おやすみなさい
+有道  是的,晚安!
+阿里  好的,晚安。
+谷歌  你好，晚安
+はーい、おやすみなさい
+有道2  是的,晚安!
+搜狗  好的，晚安
+谷歌2  那晚安啦
+はーい、おやすみなさい
+有道2  是的,晚安!
+谷歌2  那晚安啦
+搜狗  好的，晚安
+はーい、おやすみなさい
+有道2  是的,晚安!
+谷歌2  那晚安啦
+搜狗  好的，晚安
+はーい、おやすみなさい
+有道2  是的,晚安!
+谷歌2  那晚安啦
+搜狗  好的，晚安
+彩云  好的，晚安
+はーい、おやすみなさい
+彩云  好的，晚安
+Jbeijing7  ha―在，晚安
+deepl  是的，晚安。
+はーい、おやすみなさい
+彩云  好的，晚安
+有道3  出错了
+搜狗2  好的，晚安
+はーい、おやすみなさい
+有道3  出错了
+彩云  好的，晚安
+搜狗2  好的，晚安
+deepl  是的，晚安。
+ '_yd_btn_fanyi_29': 'true',
+    '_yd_newbanner_day': '29',
+ '_yd_btn_fanyi_29': 'true',
+    '_yd_newbanner_day': '29',
+有道3  出错了
+translateResult
+requirements
+requirements
+translateResult
+\\s\\S
+[\\s\\S]*?
+requirements
+有道3  出错了
+requirements
+requirements
+有道3  
+                                    
+requirements
+有道3  
+                                    
+はーい、おやすみなさい
+有道3  
+                                    
+Content-Type: application/x-www-form-urlencoded; charset=UTF-8
+Content-Type: application/x-www-form-urlencoded; charset=UTF-8
+有道3  content-type: a p p l i c a t树/ x-www-form-urlencoded;charset = utf-8
+Content-Type: application/x-www-form-urlencoded; charset=UTF-8
+有道3  content-type: a p p l i c a t树/ x-www-form-urlencoded;charset = utf-8
+百度  Content-Type: application/x-www-form-urlencoded; charset=UTF-8
+Content-Type: application/x-www-form-urlencoded; charset=UTF-8
+有道3  content-type: a p p l i c a t树/ x-www-form-urlencoded;charset = utf-8
+百度  Content-Type: application/x-www-form-urlencoded; charset=UTF-8
+必应  Content-Type: application/x-www-form-urlencoded; charset=UTF-8
+Content-Type: application/x-www-form-urlencoded; charset=UTF-8
+有道3  content-type: a p p l i c a t树/ x-www-form-urlencoded;charset = utf-8
+必应  Content-Type: application/x-www-form-urlencoded; charset=UTF-8
+百度  Content-Type: application/x-www-form-urlencoded; charset=UTF-8
+谷歌  出错了
+Content-Type: application/x-www-form-urlencoded; charset=UTF-8
+谷歌  内容类型：application/x-www-form-urlencoded；charset=UTF-8
+Content-Type: application/x-www-form-urlencoded; charset=UTF-8
+谷歌  内容类型：application/x-www-form-urlencoded；charset=UTF-8
+Content-Type: application/x-www-form-urlencoded; charset=UTF-8
+Content-Type: application/x-www-form-urlencoded; charset=UTF-8
+谷歌  内容类型：application/x-www-form-urlencoded；charset=UTF-8
+Content-Type: application/x-www-form-urlencoded; charset=UTF-8
+谷歌  内容类型：application/x-www-form-urlencoded；charset=UTF-8
+Content-Type: application/x-www-form-urlencoded; charset=UTF-8
+谷歌  出错了
+Content-Type: application/x-www-form-urlencoded; charset=UTF-8
+谷歌  出错了
+Content-Type: application/x-www-form-urlencoded; charset=UTF-8
+谷歌  内容类型：application/x-www-form-urlencoded；charset=UTF-8
+"selfbuild": {
+            "use": false,
+            "color": "#0ff000",
+            "name": "自建"
+        },
+谷歌  出错了
+"selfbuild": {
+            "use": false,
+            "color": "#0ff000",
+            "name": "自建"
+        },
+谷歌  出错了
+"selfbuild": {
+            "use": false,
+            "color": "#0ff000",
+            "name": "自建"
+        },
+谷歌  出错了
+"selfbuild": {
+            "use": false,
+            "color": "#0ff000",
+            "name": "自建"
+        },
+谷歌  出错了
+"selfbuild": {
+            "use": false,
+            "color": "#0ff000",
+            "name": "自建"
+        },
+谷歌  出错了
+"selfbuild": {
+            "use": false,
+            "color": "#0ff000",
+            "name": "自建"
+        },
+谷歌  出错了
+"selfbuild": {
+            "use": false,
+            "color": "#0ff000",
+            "name": "自建"
+        },
+谷歌  出错了
+t:205px}p{margin
+TX  T：205px}p{margin
+t:205px}p{margin
+TX  T：205px}p{margin
+t:205px}p{margin
+TX  T：205px}p{margin
+t:205px}p{margin
+TX  T：205px}p{margin
+"tencent": {
+            "use": true,
+            "color": "#0ff000",
+            "name": "TX"
+        },
+"tencent": {
+            "use": true,
+            "color": "#0ff000",
+            "name": "TX"
+        },
+papago  出错了
+TX  “tencent”：{。
+“use”：true，
+“color”：“#0ff000”，
+“name”：“TX”
+}，
+"tencent": {
+            "use": true,
+            "color": "#0ff000",
+            "name": "TX"
+        },
+papago  出错了
+TX  “tencent”：{。
+“use”：true，
+“color”：“#0ff000”，
+“name”：“TX”
+}，
+"tencent": {
+            "use": true,
+            "color": "#0ff000",
+            "name": "TX"
+        },
+"tencent": {
+            "use": true,
+            "color": "#0ff000",
+            "name": "TX"
+        },
+papago  出错了
+TX  。
+。
+。
+。
+
+s\GitHub\LunaTranslator
+papago  出错了
+氷の入ったグラスに麦茶を注いで、僕は２人のところへ持っ
+papago  出错了
+氷の入ったグラスに麦茶を注いで、僕は２人のところへ持っ
+papago  出错了
+氷の入ったグラスに麦茶を注いで、僕は２人のところへ持っ
+papago  出错了
+氷の入ったグラスに麦茶を注いで、僕は２人のところへ持っ
+氷の入ったグラスに麦茶を注いで、僕は２人のところへ持っ
+氷の入ったグラスに麦茶を注いで、僕は２人のところへ持っ
+氷の入ったグラスに麦茶を注いで、僕は２人のところへ持っ
+氷の入ったグラスに麦茶を注いで、僕は２人のところへ持っ
+氷の入ったグラスに麦茶を注いで、僕は２人のところへ持っ
+氷の入ったグラスに麦茶を注いで、僕は２人のところへ持っ
+氷の入ったグラスに麦茶を注いで、僕は２人のところへ持っ
+搜狗2  在装冰的玻璃杯里倒入大麦茶，我拿给两个人
+氷の入ったグラスに麦茶を注いで、僕は２人のところへ持っ
+氷の入ったグラスに麦茶を注いで、僕は２人のところへ持っ
+氷の入ったグラスに麦茶を注いで、僕は２人のところへ持っ
+氷の入ったグラスに麦茶を注いで、僕は２人のところへ持っ
+http_error_msg
+氷の入ったグラスに麦茶を注いで、僕は２人のところへ持っていった。','ja','zh-CN
+TX  。
+ host_html = ss.get(self.host_url, headers=self.host_headers, timeout=timeout, proxies=proxies).text
+            if not self.language_map:
+                self.language_map = self.get_language_map(host_html, ss, self.host_headers, timeout, proxies)
+            if not self.language_map:
+                delete_temp_language_map_label += 1
+                self.language_map = self.make_temp_language_map(from_language, to_language)
+            from_language, to_language = self.check_language(from_language, to_language, self.language_map, output_zh=self.output_zh)
+
+            if if_translate_web_link:
+                return self.trans_web(from_language, to_language, query_text, ss, self.host_headers, proxies, timeout)
+
+氷の入ったグラスに麦茶を注いで、僕は２人のところへ持っていった
+氷の入ったグラスに麦茶を注いで、僕は２人のところへ持っていった
+papago  出错了
+return self.trans_web(from_language, to_language, query_text, ss, self.host_headers, proxies, timeout)
+return self.trans_web(from_language, to_language, query_text, ss, self.host_headers, proxies, timeout)
+papago  <!doctype html><html lang="ko" data-placeholders-focus="false"><head><!-- Google Tag Manager --><!-- <script>(function (w, d, s, l, i) {
+      w[l] = w[l] || []; w[l].push({
+        'gtm.start':
+          new Date().getTime(), event: 'gtm.js'
+      }); var f = d.getElementsByTagName(s)[0],
+        j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : ''; j.async = true; j.src =
+          'https://www.googletagmanager.com/gtm.js?id=' + i + dl; f.parentNode.insertBefore(j, f);
+    })(window, document, 'script', 'dataLayer', 'GTM-P4MDNNV');</script> --><!-- End Google Tag Manager --><meta http-equiv="Content-Type" content="text/html" charset="utf-8"/><meta http-equiv="X-XSS-Protection" content="1"/><meta http-equiv="X-UA-Compatible" content="IE=edge"/><meta name="referrer" content="origin"/><meta name="format-detection" content="telephone=no"/><meta name="theme-color" content="#ffffff"/><!-- mobile compatible --><meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,user-scalable=no"/><!--<meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />--><link rel="shortcut icon" href="/favicon.ico"/><!-- Android : 72*72(hdpi), 96*96(xhdpi), 144*144(xxhdpi), 192*192(xxxhdpi) --><link rel="apple-touch-icon-precomposed" sizes="72x72" href="/static/img/icon_72x72.png"/><link rel="apple-touch-icon-precomposed" sizes="96x96" href="/static/img/icon_96x96.png"/><link rel="apple-touch-icon-precomposed" sizes="144x144" href="/static/img/icon_144x144.png"/><link rel="apple-touch-icon-precomposed" sizes="192x192" href="/static/img/icon_192x192.png"/><!-- iPhone : 120*120, 180*180 --><link rel="apple-touch-icon-precomposed" sizes="120x120" href="/static/img/icon_120x120.png"/><link rel="apple-touch-icon-precomposed" sizes="180x180" href="/static/img/icon_180x180.png"/><!-- iPad : 76*76, 152*152, 167*167 --><link rel="apple-touch-icon-precomposed" sizes="76x76" href="/static/img/icon_76x76.png"/><link rel="apple-touch-icon-precomposed" sizes="152x152" href="/static/img/icon_152x152.png"/><link rel="apple-touch-icon-precomposed" sizes="167x167" href="/static/img/icon_167x167.png"/><!-- keywords & description --><meta name="keywords" content="파파고, 번역, 통역, 번역기, 통역기, 한국어번역, 영어번역, 일본어번역, 중국어번역, 중국어간체번역, 중국어번체번역, 스페인어번역, 프랑스어번역, 베트남어번역, 태국어번역, 인도네시아어번역, translate, translator, 翻訳, 通訳, 通訳機, 翻訳機, 翻译，口译，翻译器，口译器, traducción , Traductor, Traduction"/><meta name="description" content="똑똑한 AI 번역기 파파고, 언어 장벽 없이 대화하는 세상을 꿈꿉니다."/><!-- meta og --><meta property="og:description" content="번역을 부탁해 파파고"/><meta property="og:image" content="https://papago.naver.com/static/img/papago_og.png"/><meta property="og:site_name" content="Naver papago"/><meta property="og:title" content="네이버 파파고"/><meta property="og:type" content="website"/><!-- meta twitter --><meta name="twitter:card" content="summary"/><meta name="twitter:description" content="번역을 부탁해 파파고"/><meta name="twitter:image" content="https://papago.naver.com/static/img/papago_og.png"/><meta name="twitter:title" content="네이버 파파고"/><!-- <link rel="manifest" href="manifest.json" /> --><script type="text/javascript">document.all&&!document.addEventListener&&document.location.replace("/static/ie8.html");var console=window.console||{log:function(){},warn:function(){},error:function(){},time:function(){},timeEnd:function(){}};window.matchMedia=window.matchMedia||function(){return{matches:!1,addListener:function(){},removeListener:function(){}}}</script><script>if("net"==document.location.hostname.split(".").pop()){var script=document.createElement("script"),version="3.0.2";script.src="/site/apis/site-translator."+version+".js",script.charset="utf-8",document.head.appendChild(script)}</script><title>Papago</title><meta name="theme-color" content="#ffffff"/><link rel="manifest" href="/manifest.fd244897256b098d495d78cd5b418235.json"/><link href="/8.39bfe0d0.css" rel="stylesheet"><link rel="preload" href="/home.5b705fea2d6cfb345c59.chunk.js" as="script"/></head><body><!-- Google Tag Manager (noscript) --><!-- <noscript>
+    <iframe src="https://www.googletagmanager.com/ns.html?id=GTM-P4MDNNV" height="0" width="0"
+      style="display: none; visibility: hidden;"></iframe>
+  </noscript> --><!-- End Google Tag Manager (noscript) --><noscript>If you're seeing this message, that means <strong>JavaScript has been disabled on your browser</strong>, please <strong>enable JS</strong> to make this app work.</noscript><div id="root" class="main_layout"></div><script type="text/javascript" src="/runtime~main.45d908ed2014066d2cc1.js" defer="defer"></script><script type="text/javascript" src="/vendors~main.56309b2e7fa3b5a1e24a.chunk.js" defer="defer"></script><script type="text/javascript" src="/main.55e36459e92bdbcadbb9.chunk.js" defer="defer"></script></body></html>
+TX  Return self.trans_web(from_language，to_language，query_text，ss，self.host_headers，proxies，timeout)
+return self.trans_web(from_language, to_language, query_text, ss, self.host_headers, proxies, timeout)
+return self.trans_web(from_language, to_language, query_text, ss, self.host_headers, proxies, timeout)
+papago  出错了
+氷の入ったグラスに麦茶を注いで、僕は２人のところへ持っていった。
+papago  出错了
+translate
+translate
+papago  出错了
+translate
+氷の入ったグラスに麦茶を注いで、僕は２人のところへ持っていった。
+papago  出错了
+sess
+氷の入ったグラスに麦茶を注いで、僕は２人のところへ持っていった
+papago  出错了
+timeout=5
+        proxies={'http': None,'https': None}
+timeout=5
+        proxies={'http': None,'https': None}
+TX  。
+
+timeout=5
+        proxies={'http': None,'https': None}
+timeout=5
+        proxies={'http': None,'https': None}
+timeout=5
+        proxies={'http': None,'https': None}
+niutrans  出错了
+TX  。
+
+timeout=5
+        proxies={'http': None,'https': None}
+timeout=5
+        proxies={'http': None,'https': None}
+TX  。
+
+niutrans  出错了
+timeout=5
+        proxies={'http': None,'https': None}
+timeout=5
+        proxies={'http': None,'https': None}
+ifly  timeout=5proxies={'http'：无，'https'：无}
+hashlib
+hashlib
+rn self.engine.
+iciba  出错了
+ifly  rnself.engine.
+rn self.engine.
+rn self.engine.
+iciba  出错了
+ifly  rnself.engine.
+timeout=5
+            proxies={'http': None,'https': None}
+timeout=5
+            proxies={'http': None,'https': None}
+ifly  timeout=5proxies={'http'：无，'https'：无}
+iciba  出错了
+timeout=5
+            proxies={'http': None,'https': None}
+timeout=5
+            proxies={'http': None,'https': None}
+iciba  出错了
+ifly  timeout=5proxies={'http'：无，'https'：无}
+氷の入ったグラスに麦茶を注いで、僕は２人のところへ持っていった。
+iciba  出错了
+ifly  把麦茶倒进装着冰的玻璃杯里，我拿到了两个人那里。
+trans_result
+ifly  trans_result
+iciba  出错了
+trans_result
+trans_result
+ifly  trans_result
+iciba  出错了
+trans_result
+trans_result
+ifly  trans_result
+iciba  出错了
+print(data)
+ifly  print（data）
+iciba  出错了
+print(data)
+print(data)
+ifly  print（data）
+iciba  出错了
+氷の入ったグラスに麦茶を注いで、僕は２人のところへ持っていった。
+氷の入ったグラスに麦茶を注いで、僕は２人のところへ持っていった。
+氷の入ったグラスに麦茶を注いで、僕は２人のところへ持っていった。
+氷の入ったグラスに麦茶を注いで、僕は２人のところへ持っていった。
+氷の入ったグラスに麦茶を注いで、僕は２人のところへ持っていった。
+ifly  把麦茶倒进装着冰的玻璃杯里，我拿到了两个人那里。
+iciba  出错了
+氷の入ったグラスに麦茶を注いで、僕は２人のところへ持っていった。
+ifly  把麦茶倒进装着冰的玻璃杯里，我拿到了两个人那里。
+iciba  出错了
+氷の入ったグラスに麦茶を注いで、僕は２人のところへ持っていった。
+氷の入ったグラスに麦茶を注いで、僕は２人のところへ持っていった。
+ifly  把麦茶倒进装着冰的玻璃杯里，我拿到了两个人那里。
+iciba  出错了
+氷の入ったグラスに麦茶を注いで、僕は２人のところへ持っていった。
+iciba  出错了
+ifly  把麦茶倒进装着冰的玻璃杯里，我拿到了两个人那里。
+
+class TranslatorError(Exception):
+    pass
+氷の入ったグラスに麦茶を注いで、僕は２人のところへ持っていった。
+ifly  把麦茶倒进装着冰的玻璃杯里，我拿到了两个人那里。
+iciba  我把大麦茶倒入装有冰块的玻璃杯里，拿去给两个人。

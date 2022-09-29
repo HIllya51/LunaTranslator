@@ -44,11 +44,12 @@ class TS(basetrans):
             'q': content,
         }
         try:
-            response = requests.get('https://translate.google.cn/m', params=params,  timeout=5, proxies=  {'http': None,'https': None})
+            response = requests.get('https://translate.google.cn/m', params=params,headers=headers,  timeout=5, proxies=  {'http': None,'https': None})
          
             res=re.search('<div class="result-container">(.*?)</div>',response.text).groups()
         except:
             print_exc()
+            self.inittranslator()
             print(response.text)
             return '出错了'
          

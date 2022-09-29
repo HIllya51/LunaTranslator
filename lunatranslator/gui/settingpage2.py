@@ -28,7 +28,7 @@ def initfanyiswitchs_auto(self):
         num=0
         
         for fanyi in globalconfig['fanyi']:
-            y=70+50*(num//3)
+            y=70+40*(num//3)
             x=20+220*(num%3)
             initfanyiswitchs(self,fanyi,(x, y, 65, 20),(x+70, y, 66, 22),(x+145, y, 20,20),(x+175, y, 20,20))
             num+=1

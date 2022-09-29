@@ -1,9 +1,6 @@
-import functools
-from PyQt5.QtCore import Qt ,pyqtSignal
-from PyQt5.QtGui import  QFont
+import functools 
 
-from PyQt5.QtWidgets import  QWidget,QLabel,QFrame,QPushButton ,QSlider,QSpinBox,QFontComboBox ,QComboBox
-import qtawesome 
+from PyQt5.QtWidgets import  QWidget,QLabel, QComboBox,QDoubleSpinBox 
  
 from utils.config import globalconfig 
   
@@ -34,6 +31,31 @@ def setTab5(self) :
         self.customSetGeometry(self.voicecombo, 20, 115, 400, 20) 
         self.voicelistsignal.connect(lambda x: showvoicelist(self,x))
         self.voicecombo.currentTextChanged.connect(lambda x: changevoice(self,x))
+
+        label = QLabel(tab)
+        self.customSetGeometry(label, 20, 160, 145, 16)
+        label.setText("语速:(-10~10)") 
+         
+        self.voice_spinBox = QDoubleSpinBox(tab)
+        self.customSetGeometry(self.voice_spinBox, 120, 160, 50, 25)
+        self.voice_spinBox.setRange(-10,10) 
+        self.voice_spinBox.setValue(globalconfig['windowstts']['rate']) 
+        self.voice_spinBox.setSingleStep(0.1)
+        self.voice_spinBox.setDecimals(1)
+        self.voice_spinBox.valueChanged.connect(lambda x:globalconfig['windowstts'].__setitem__('rate',x))
+
+        
+        label = QLabel(tab)
+        self.customSetGeometry(label, 20, 200, 145, 16)
+        label.setText("音量:(0~100)") 
+         
+        self.volume_spinBox = QDoubleSpinBox(tab)
+        self.customSetGeometry(self.volume_spinBox, 120, 200, 50, 25)
+        self.volume_spinBox.setRange(0,100) 
+        self.volume_spinBox.setValue(globalconfig['windowstts']['volume']) 
+        self.volume_spinBox.setSingleStep(0.1)
+        self.volume_spinBox.setDecimals(1)
+        self.volume_spinBox.valueChanged.connect(lambda x:globalconfig['windowstts'].__setitem__('volume',x))
 def changevoice(self,text):
     globalconfig['windowstts']['voice']=text
 def showvoicelist(self,vl):
