@@ -17,7 +17,7 @@ class basetrans:
         self.t=Thread(target=self.fythread) 
         self.t.setDaemon(True)
         self.t.start()
-        
+        self.newline=None
     def gettask(self,content):
         self.queue.put((content))
      
@@ -44,6 +44,7 @@ class basetrans:
             
             while True:
                 content,skip=self.queue.get()
+                self.newline=content
                 if self.queue.empty():
                     break
             if skip:
@@ -55,7 +56,7 @@ class basetrans:
             res=self._1realfy(content)
             if res is None:
                 break
-            if self.queue.empty():
+            if self.queue.empty() and content==self.newline:
                 self.show__(res)
 
 
