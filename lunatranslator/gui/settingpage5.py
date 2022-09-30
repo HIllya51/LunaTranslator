@@ -40,8 +40,8 @@ def setTab5(self) :
         self.customSetGeometry(self.voice_spinBox, 120, 160, 50, 25)
         self.voice_spinBox.setRange(-10,10) 
         self.voice_spinBox.setValue(globalconfig['windowstts']['rate']) 
-        self.voice_spinBox.setSingleStep(0.1)
-        self.voice_spinBox.setDecimals(1)
+        self.voice_spinBox.setSingleStep(1)
+        self.voice_spinBox.setDecimals(0)
         self.voice_spinBox.valueChanged.connect(lambda x:globalconfig['windowstts'].__setitem__('rate',x))
 
         
@@ -53,8 +53,8 @@ def setTab5(self) :
         self.customSetGeometry(self.volume_spinBox, 120, 200, 50, 25)
         self.volume_spinBox.setRange(0,100) 
         self.volume_spinBox.setValue(globalconfig['windowstts']['volume']) 
-        self.volume_spinBox.setSingleStep(0.1)
-        self.volume_spinBox.setDecimals(1)
+        self.volume_spinBox.setSingleStep(1)
+        self.volume_spinBox.setDecimals(0)
         self.volume_spinBox.valueChanged.connect(lambda x:globalconfig['windowstts'].__setitem__('volume',x))
 def changevoice(self,text):
     globalconfig['windowstts']['voice']=text

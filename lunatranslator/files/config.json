@@ -11,7 +11,7 @@
     "issolid": false,
     "isshowrawtext": true,
     "rawtextcolor": "#000000",
-    "backcolor": "#7a858b",
+    "backcolor": "#7a8b8a",
     "isshowhira": false,
     "locktools": true,
     "showfanyisource": true,
@@ -21,8 +21,8 @@
         "windows": true
     },
     "windowstts": {
-        "voice": "Microsoft Haruka Desktop - Japanese",
-        "rate": 0.0,
+        "voice": "TTS_MS_JA-JP_HARUKA_11.0",
+        "rate": 1.0,
         "volume": 100.0
     },
     "sourcestatus": {

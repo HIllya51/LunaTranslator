@@ -87,7 +87,7 @@ class Settin(QMainWindow) :
             if not color.isValid() :
                 return
         
-            button.setIcon(qtawesome.icon("fa5s.paint-brush", color=color.name()))
+            button.setIcon(qtawesome.icon("fa.paint-brush", color=color.name()))
             if translate_type=='raw':
                 globalconfig['rawtextcolor']=color.name()
             elif translate_type=='back':
