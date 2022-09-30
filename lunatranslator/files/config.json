@@ -13,7 +13,7 @@
     "rawtextcolor": "#000000",
     "backcolor": "#7a858b",
     "isshowhira": false,
-    "locktools": false,
+    "locktools": true,
     "showfanyisource": true,
     "reader": {
         "qq": false,

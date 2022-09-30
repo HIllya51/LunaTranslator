@@ -23,6 +23,7 @@ class transhist(QMainWindow):
          
             self.hide()
     def setupUi(self):
+        self.setWindowIcon(qtawesome.icon("fa.rotate-left"  ))
         font = QFont()
         #font.setFamily("Arial Unicode MS")
         font.setFamily(globalconfig['fonttype'])
