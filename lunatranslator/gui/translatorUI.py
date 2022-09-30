@@ -170,6 +170,7 @@ class QUnFrameWindow(QWidget):
 
         self.tray = QSystemTrayIcon()  
         self.tray.setIcon(icon) 
+        
         showAction = QAction("&显示", self, triggered = self.show)
         quitAction = QAction("&退出", self, triggered = self.quitf)
                 
@@ -428,6 +429,7 @@ class QUnFrameWindow(QWidget):
             ff.write(json.dumps(globalconfig,ensure_ascii=False,sort_keys=False, indent=4))
         self.hide()
         self.logff.close()
+        self.tray.hide()
         self.tray = None 
         self.object.range_ui.close()
         self.object.settin_ui.close()
