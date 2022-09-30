@@ -1,34 +1,40 @@
-
-from PyQt5 import QtCore, QtWidgets
-from PyQt5.QtCore import Qt, QRect,pyqtSignal ,QSize
-import qtawesome
-import utils.screen_rate  
+from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtCore import Qt, QRect
 class MySwitch(QtWidgets.QPushButton):
-    realclicksignal=pyqtSignal(bool)
     def __init__(self, parent = None,sign=True, textOn='On',textOff='off'):
         super().__init__(parent) 
         self.setCheckable(True)
-        self.setChecked(sign) 
+        self.setChecked(sign)
+        self.setMinimumWidth(66)
+        self.setMinimumHeight(22)
         self.TextOff=textOff
         self.TextOn=textOn
-        self.setStyleSheet('''background-color: rgba(255, 255, 255, 0);
-          color: black;
-          border: 0px;
-          font: 100 10pt;''')
-        self.rate= utils.screen_rate.getScreenRate() 
-        self.clicked.connect(self.clickfunction)
-        self.clicked=self.realclicksignal
-        self.setIconSize(QSize(int(30*self.rate),
-                                 int(30*self.rate)))
-        #self.setIcon(qtawesome.icon("fa.check" ,color="#FF69B4" if self.isChecked() else '#dadbdc'))
-        self.setIcon(qtawesome.icon("fa.check" ,color="#FF69B4") if self.isChecked() else qtawesome.icon("fa.times" ,color='#dadbdc'))
-    def clickfunction(self,_):
-        #self.setIcon(qtawesome.icon("fa.check" ,color="#FF69B4" if self.isChecked() else '#dadbdc'))
-        self.setIcon(qtawesome.icon("fa.check" ,color="#FF69B4") if self.isChecked() else qtawesome.icon("fa.times" ,color='#dadbdc'))
-        self.realclicksignal.emit(_)
-    def setChecked(self,  a0)  :
-        super().setChecked(a0)
-        self.clickfunction(a0)
+    def paintEvent(self, event):
+        label = self.TextOn if self.isChecked() else self.TextOff
+        bg_color = QtGui.QColor('#FF69B4') if self.isChecked() else  QtGui.QColor("#f0f0f0")
+        radius = 10
+        width = 32
+        center = self.rect().center()
+        
+        painter = QtGui.QPainter(self)
+        painter.setRenderHint(QtGui.QPainter.Antialiasing)
+        painter.translate(center)
+        painter.setBrush(QtGui.QColor('white'))
+
+        #pen = QtGui.QPen(QtGui.QColor(192,192,192))
+        pen = QtGui.QPen(QtGui.QColor('gray'))
+        pen.setWidth(2)
+        painter.setPen(pen)
+
+        painter.drawRoundedRect(QRect(-width, -radius, 2*width, 2*radius), radius, radius)
+        painter.setBrush(QtGui.QBrush(bg_color))
+        sw_rect = QRect(-radius, -radius, width + radius, 2*radius)
+        if not self.isChecked():
+            sw_rect.moveLeft(-width)
+        painter.drawRoundedRect(sw_rect, radius, radius)
+        painter.drawText(sw_rect, Qt.AlignCenter, label)
+
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")

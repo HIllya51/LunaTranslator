@@ -20,7 +20,7 @@ def setTab5(self) :
         self.customSetGeometry(label, 20, 70, 160, 20)
         label.setText("windows TTS") 
         self.gugettsswitch =gui.switchbutton.MySwitch(tab, sign=globalconfig['reader']['windows'] ,textOff='关闭',textOn='打开')
-        self.customSetGeometry(self.gugettsswitch, 100, 70, 66,22)
+        self.customSetGeometry(self.gugettsswitch, 100, 70, 20,20)
         self.gugettsswitch.clicked.connect(functools.partial(readerchange,self,'windows')) 
 
         label = QLabel(tab)

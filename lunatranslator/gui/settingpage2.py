@@ -19,7 +19,7 @@ def setTabTwo(self) :
         self.customSetGeometry(label, 20, 25, 140, 20)
         label.setText("是否显示翻译器名称")
         p=gui.switchbutton.MySwitch(self.tab_2, sign=globalconfig['showfanyisource'], textOff='隐藏',textOn='显示')
-        self.customSetGeometry(p, 160, 25, 66, 22 )
+        self.customSetGeometry(p, 160, 25, 20,20 )
         p.clicked.connect(lambda x: globalconfig.__setitem__('showfanyisource',x))
 
         initfanyiswitchs_auto(self)
@@ -30,7 +30,7 @@ def initfanyiswitchs_auto(self):
         for fanyi in globalconfig['fanyi']:
             y=70+40*(num//3)
             x=20+220*(num%3)
-            initfanyiswitchs(self,fanyi,(x, y, 65, 20),(x+70, y, 66, 22),(x+145, y, 20,20),(x+175, y, 20,20))
+            initfanyiswitchs(self,fanyi,(x, y, 65, 20),(x+70, y, 20,20),(x+110, y, 20,20),(x+150, y, 20,20))
             num+=1
 
 def initfanyiswitchs(self,name,namepos,switchpos,colorpos,settingpos):

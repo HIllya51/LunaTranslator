@@ -26,17 +26,17 @@ def setTab4(self) :
 
         label = QLabel(self.tab_4)
         self.customSetGeometry(label, 20, 50, 200, 20)
-        label.setText("窗口最小化追随")
+        label.setText("窗口最小化跟随")
         self.minifollowswitch =gui.switchbutton.MySwitch(self.tab_4, sign= globalconfig['minifollow'],textOff='关闭',textOn='使用')
-        self.customSetGeometry(self.minifollowswitch, 200, 50, 66,22)
+        self.customSetGeometry(self.minifollowswitch, 200, 50, 20,20)
         self.minifollowswitch.clicked.connect(lambda x:globalconfig.__setitem__('minifollow',x)) 
 
         label = QLabel(self.tab_4)
         self.customSetGeometry(label, 20, 80, 200, 20)
-        label.setText("窗口移动追随")
+        label.setText("窗口移动跟随")
         
         self.movefollowswitch =gui.switchbutton.MySwitch(self.tab_4, sign= globalconfig['movefollow'],textOff='关闭',textOn='使用')
-        self.customSetGeometry(self.movefollowswitch, 200, 80,66, 22)
+        self.customSetGeometry(self.movefollowswitch, 200, 80,20,20)
         self.movefollowswitch.clicked.connect(lambda x:globalconfig.__setitem__('movefollow',x)) 
 
         

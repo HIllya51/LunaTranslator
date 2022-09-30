@@ -1,7 +1,7 @@
 from PyQt5.QtCore import Qt,QSize,pyqtSignal ,QRect 
  
 from PyQt5.QtWidgets import  QColorDialog
-from PyQt5.QtGui import QColor 
+from PyQt5.QtGui import QColor ,QFont
 from utils.config import globalconfig 
 from PyQt5.QtWidgets import  QTabWidget,QMainWindow 
 import qtawesome   
@@ -35,8 +35,9 @@ class Settin(QMainWindow) :
         self.setWindowTitle("设置")
         self.setWindowIcon(qtawesome.icon("fa.gear" ))
         
-        self.setStyleSheet("font: 11pt '黑体'; color: \"#595959\"" )
-         
+        self.setStyleSheet("font: 11pt '黑体' ; color: \"#595959\"" )
+        
+        #self.setFont((QFont("黑体",11,QFont.Bold)))
         self.tab_widget = QTabWidget(self)
         self.tab_widget.setGeometry(self.geometry()) 
         self.tab_widget.setTabPosition(QTabWidget.West)

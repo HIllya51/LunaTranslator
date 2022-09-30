@@ -25,14 +25,14 @@ def setTabOne(self) :
         self.customSetGeometry(label, 20, 70, 60, 20)
         label.setText("剪切板") 
         self.copyboardswitch =gui.switchbutton.MySwitch(self.tab_1, sign= globalconfig['sourcestatus']['copy'] ,textOff='关闭',textOn='打开')
-        self.customSetGeometry(self.copyboardswitch, 100, 70, 66, 22) 
+        self.customSetGeometry(self.copyboardswitch, 100, 70, 20,20) 
         self.copyboardswitch.clicked.connect(functools.partial(textsourcechange,self,'copy')) 
         
         # label = QLabel(self.tab_1)
         # self.customSetGeometry(label, 20, 105, 300, 20)
         # label.setText("Textractor插件") 
         # self.Textractor_forward_extension_switch =gui.switchbutton.MySwitch(self.tab_1, sign= globalconfig['sourcestatus']['textractor_pipe'], textOff='关闭',textOn='打开')
-        # self.customSetGeometry(self.Textractor_forward_extension_switch, 130, 105, 66, 22)
+        # self.customSetGeometry(self.Textractor_forward_extension_switch, 130, 105, 20,20)
         # self.Textractor_forward_extension_switch.clicked.connect(functools.partial(textsourcechange,self,'textractor_pipe')) 
 
         label = QLabel(self.tab_1)
@@ -40,7 +40,7 @@ def setTabOne(self) :
         label.setText("OCR")
 
         self.ocrswitch =gui.switchbutton.MySwitch(self.tab_1, sign= globalconfig['sourcestatus']['ocr'], textOff='关闭',textOn='使用')
-        self.customSetGeometry(self.ocrswitch, 300, 70, 66, 22)
+        self.customSetGeometry(self.ocrswitch, 300, 70, 20,20)
         self.ocrswitch.clicked.connect(functools.partial(textsourcechange,self,'ocr'))
  
         label = QLabel(self.tab_1)
@@ -48,7 +48,7 @@ def setTabOne(self) :
         label.setText("Textractor")
  
         self.textractorswitch =gui.switchbutton.MySwitch(self.tab_1, sign= globalconfig['sourcestatus']['textractor'], textOff='关闭',textOn='使用')
-        self.customSetGeometry(self.textractorswitch, 500, 70, 66, 22)
+        self.customSetGeometry(self.textractorswitch, 500, 70, 20,20)
         self.textractorswitch.clicked.connect(functools.partial(textsourcechange,self,'textractor')) 
 
          

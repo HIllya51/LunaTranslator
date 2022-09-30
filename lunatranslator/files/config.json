@@ -33,7 +33,7 @@
     },
     "fanyi": {
         "baidu": {
-            "use": true,
+            "use": false,
             "color": "#ff65db",
             "name": "百度"
         },
@@ -63,7 +63,7 @@
             "name": "有道2"
         },
         "google2": {
-            "use": true,
+            "use": false,
             "color": "#95a5ff",
             "name": "谷歌2"
         },

@@ -394,11 +394,9 @@ class QUnFrameWindow(QWidget):
         self._bottom_drag = False
         self._right_drag = False
     def takusanbuttons(self,iconname,objectname,clickfunc,adjast=None,tips=None,save=None): 
-        if type(iconname)==type(''):
-          button= QTitleButton(iconname,  self) 
-        else:
-          button=QTitleButton(self)
-          button.setIcon(iconname)
+        
+        button=QTitleButton(self)
+        button.setIcon(iconname)
         if tips:
             button.setToolTip(tips) 
         button.setIconSize(QSize(int(20*self.rate),
@@ -410,7 +408,7 @@ class QUnFrameWindow(QWidget):
         button.setMouseTracking(True)
         button.setFixedHeight( self._TitleLabel.height() )
         button.clicked.connect(clickfunc)
-        
+         
         if adjast<0: 
             button.adjast=lambda  :button.move(self.width() + adjast*button.width() , 0) 
         else: 

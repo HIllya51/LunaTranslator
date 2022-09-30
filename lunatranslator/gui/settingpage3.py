@@ -51,10 +51,10 @@ def setTabThree(self) :
         self.font_comboBox.setCurrentFont(self.comboBox_font)  
         label = QLabel(self.tab_3)
         self.customSetGeometry(label, 20, 170, 60, 20)
-        label.setText("字体样式:")
+        label.setText("空心字体:")
  
         self.font_type_switch =gui.switchbutton.MySwitch(self.tab_3, sign=globalconfig['issolid'] ,textOn='实心',textOff='空心')
-        self.customSetGeometry(self.font_type_switch, 95, 170,66,22)
+        self.customSetGeometry(self.font_type_switch, 95, 170,20,20)
         self.font_type_switch.clicked.connect(lambda x:globalconfig.__setitem__('issolid',x)) 
 
         
@@ -63,14 +63,14 @@ def setTabThree(self) :
         label.setText("显示原文:")
  
         self.show_original_switch =gui.switchbutton.MySwitch(self.tab_3, sign=globalconfig['isshowrawtext'],  textOn='显示',textOff='隐藏')
-        self.customSetGeometry(self.show_original_switch, 350, 120, 66,22)
+        self.customSetGeometry(self.show_original_switch, 350, 120, 20,20)
         self.show_original_switch.clicked.connect(lambda x:globalconfig.__setitem__('isshowrawtext',x))  
         label = QLabel(self.tab_3)
         self.customSetGeometry(label, 20, 120, 60, 20)
         label.setText("显示假名:")
  
         self.show_hira_switch =gui.switchbutton.MySwitch(self.tab_3, sign=globalconfig['isshowhira'],  textOn='显示',textOff='隐藏')
-        self.customSetGeometry(self.show_hira_switch, 95, 120,66,22)
+        self.customSetGeometry(self.show_hira_switch, 95, 120,20,20)
         self.show_hira_switch.clicked.connect(lambda x:globalconfig.__setitem__('isshowhira',x)) 
         
         label = QLabel(self.tab_3)

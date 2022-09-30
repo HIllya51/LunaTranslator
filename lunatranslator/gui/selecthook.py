@@ -63,9 +63,9 @@ class hookselect(QMainWindow):
         self.userhooklayout = QHBoxLayout() 
         self.vboxlayout.addLayout(self.userhooklayout)
         self.userhook=QLineEdit()
+        self.userhook.setFont(font)
         self.userhooklayout.addWidget(self.userhook)
         self.userhookinsert=QPushButton("插入特殊码")
-        
         self.userhookinsert.setFont(font)
         self.userhookinsert.clicked.connect(self.inserthook)
         self.userhooklayout.addWidget(self.userhookinsert)
