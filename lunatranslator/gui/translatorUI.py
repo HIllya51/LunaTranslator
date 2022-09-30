@@ -58,7 +58,7 @@ class QUnFrameWindow(QWidget):
         else:
             self.showline(res,globalconfig['fanyi'][_type]['color']  )
         
-        self.logff.write(globalconfig['fanyi'][_type]['name']+'  '+res)
+        self.logff.write(globalconfig['fanyi'][_type]['name']+'  '+res+'\n')
         
         self.transhis.getnewsentencesignal.emit(globalconfig['fanyi'][_type]['name']+'  '+res)
     def showraw(self,res,color,show ):
