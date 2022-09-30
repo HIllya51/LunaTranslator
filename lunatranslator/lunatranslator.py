@@ -1,16 +1,14 @@
-from copy import copy
+import time
+starttime=time.time() 
 from threading import Thread
-import time  
+
 import os
 import sys
 from traceback import print_exc  
 dirname, filename = os.path.split(os.path.abspath(__file__))
-sys.path.append(dirname) 
-
+sys.path.append(dirname)  
 
 from tts.windowstts import tts   
-
-from utils.hira import hira   
 from PyQt5.QtCore import QCoreApplication ,Qt 
 from PyQt5.QtWidgets import  QApplication 
 import utils.screen_rate  
@@ -22,6 +20,7 @@ import gui.translatorUI
 from utils.config import globalconfig 
 import importlib
 from functools import partial 
+print(time.time()-starttime)
 class MAINUI() :
     
     def __init__(self) -> None:
@@ -61,7 +60,7 @@ class MAINUI() :
     @threader
     def startreader(self):
         if globalconfig['reader']:
-             
+            
             use=None  
             if globalconfig['reader']['windows']: 
                     self.reader=tts( self.settin_ui.voicelistsignal) 
@@ -98,6 +97,9 @@ class MAINUI() :
             return True 
     @threader
     def starthira(self): 
+        
+
+        from utils.hira import hira   
         self.hira_=hira()  
     
 
@@ -135,6 +137,7 @@ class MAINUI() :
         self.startreader() 
         self.range_ui =gui.rangeselect.rangeadjust(self)   
         #self.translation_ui.displayraw.emit('欢迎','#0000ff')
+        print(time.time()-t1)
     def main(self) : 
         # 自适应高分辨率
         t1=time.time()
@@ -144,6 +147,7 @@ class MAINUI() :
         
         self.aa()
         print(time.time()-t1)
+        print(time.time()-starttime)
         app.exit(app.exec_())
         
 if __name__ == "__main__" :

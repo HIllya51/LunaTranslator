@@ -1,19 +1,20 @@
-import sys
-from asyncio import events
+import sys 
+import time
+t1=time.time()
 from PyQt5.QtWidgets import QWidget, QLabel, QPushButton, QVBoxLayout
-from PyQt5.QtCore import Qt, QPoint,pyqtSignal 
-import pyperclip 
+from PyQt5.QtCore import Qt, QPoint,pyqtSignal  
 import qtawesome 
 from PyQt5.QtCore import pyqtSignal,Qt,QPoint,QRect,QSize  
 from PyQt5.QtGui import QPen,QColor,QFont,QTextCharFormat ,QIcon,QPixmap 
 from PyQt5.QtWidgets import  QLabel,QTextBrowser,QPushButton ,QSystemTrayIcon ,QAction,QMenu
 import pyperclip
-import json  
+
+
 from utils.config import globalconfig
  
 import gui.rangeselect
 import gui.transhist
- 
+
 class QTitleButton(QPushButton):
     """
     新建标题栏按钮类
@@ -426,6 +427,7 @@ class QUnFrameWindow(QWidget):
                                  int(h * self.rate)))
   
     def quitf(self) :  
+        import json  
         with open('./files/config.json','w',encoding='utf-8') as ff:
             ff.write(json.dumps(globalconfig,ensure_ascii=False,sort_keys=False, indent=4))
         self.hide()

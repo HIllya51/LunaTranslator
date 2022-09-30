@@ -1,20 +1,15 @@
-   
-import os
-import re
-import requests 
-from traceback import print_exc
+    
 from utils.config import globalconfig 
 import time 
  
 import threading
 from win32com.client import Dispatch
-
-import pythoncom
+import ctypes 
 class tts():
     
     def __init__(self,showlist ): 
-        
-        pythoncom.CoInitialize()
+         
+        ctypes.windll.ole32.CoInitialize()
         self.Windows_Speak = Dispatch('SAPI.Spvoice')
         self.voicelist=[]
         try:
@@ -23,6 +18,7 @@ class tts():
                     
         except:
             pass 
+        ctypes.windll.ole32.CoUninitialize()
         showlist.emit(self.voicelist)
     def read(self,content,rate=1):
         print('reading',content)
