@@ -5,6 +5,14 @@
 
 一款兴趣使然的galgame翻译器
 
+<a href="#table1">功能支持</a>
+<a href="#table2">使用说明</a> 
+<a href="#table4">设置窗口</a>
+<a href="#table5">OCR说明</a>
+<a href="#table6">HOOK说明</a>
+
+<a id="table1"></a>
+
 ## 功能支持
 
 #### 文本源
@@ -30,6 +38,7 @@
 
 &emsp;&emsp;**WindowsTTS** 支持使用windows自带的语音合成系统，需要用户在windows系统设置中安装
   
+<a id="table2"></a>
 
 ## 使用说明
 
@@ -68,6 +77,8 @@
 <br>
 <div align="center"><img src='./docpics/3.jpg'><br>自动模式</div>
 
+ 
+
 ### 托盘图标
 
 鼠标左键点击图标程序窗口将显示，再次点击图标窗口将隐藏
@@ -75,6 +86,8 @@
 鼠标右键点击图标会弹出菜单，可以显示窗口或退出程序
 
 <div align="center"><img src='./docpics/4.jpg'><br>托盘菜单</div>
+
+<a id="table4"></a>
 
 ### 设置窗口
 
@@ -121,6 +134,8 @@
 
 <div align="center"><img src='./docpics/10.jpg'></div>
 
+<a id="table5"></a>
+
 ### OCR说明
 
 软件自带OCR，不需要任何部署。使用时先在基本设置中选择OCR，然后在工具栏中选择选取OCR范围，然后即可进行自动识别翻译。
@@ -128,6 +143,7 @@
 
 <div align="center"><img src='./docpics/12.jpg'></div>
 
+<a id="table6"></a>
 
 ### HOOK说明
 
