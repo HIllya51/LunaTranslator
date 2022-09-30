@@ -110,7 +110,7 @@ class QUnFrameWindow(QWidget):
             None, Qt.FramelessWindowHint|Qt.WindowStaysOnTopHint|Qt.Tool)  # 设置为顶级窗口，无边框
         self._padding = 5  # 设置边界宽度为5
         self.object = object
-        self.logff=open('./files/log.txt','a',encoding='utf8')
+        self.logff=open('./log.txt','a',encoding='utf8')
         self.setAttribute(Qt.WA_TranslucentBackground) 
         self.hookfollowsignal.connect(self.hookfollowsignalsolve) 
         self.displayres.connect(self.showres)

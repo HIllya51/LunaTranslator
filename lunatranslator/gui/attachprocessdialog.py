@@ -44,9 +44,10 @@ class AttachProcessDialog(QDialog):
                 classname = win32gui.GetClassName(hwnd)
                 title = win32gui.GetWindowText(hwnd)
                 #print(f'classname:{classname} title:{title}') 
-                pids=win32process.GetWindowThreadProcessId(hwnd) 
+                tid, pid=win32process.GetWindowThreadProcessId(hwnd) 
                  
-                for pid in pids:
+                #for pid in pids:
+                if True:
                     try:
                         hwnd=win32api.OpenProcess(win32con.PROCESS_ALL_ACCESS,False, (pid))
                         name_=win32process.GetModuleFileNameEx(hwnd,None) 
