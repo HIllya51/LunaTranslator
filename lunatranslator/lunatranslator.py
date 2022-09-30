@@ -1,14 +1,12 @@
+from copy import copy
 from threading import Thread
-import time 
+import time  
 import os
 import sys
 from traceback import print_exc  
 dirname, filename = os.path.split(os.path.abspath(__file__))
 sys.path.append(dirname) 
-from textsource.ocrtext import ocrtext
-from textsource.copyboard import copyboard
-#from textsource.namepipe import namepipe
-from textsource.textractor import textractor 
+
 
 from tts.windowstts import tts   
 
@@ -23,8 +21,7 @@ import gui.selecthook
 import gui.translatorUI
 from utils.config import globalconfig 
 import importlib
-from functools import partial
-
+from functools import partial 
 class MAINUI() :
     
     def __init__(self) -> None:
@@ -70,11 +67,12 @@ class MAINUI() :
                     self.reader=tts( self.settin_ui.voicelistsignal) 
     @threader
     def starttextsource(self):
-        
+         
         if hasattr(self,'textsource') and self.textsource and self.textsource.ending==False :
             self.textsource.end()  
         if True:#try:
-            classes={'ocr':ocrtext,'copy':copyboard,'textractor':textractor}#,'textractor_pipe':namepipe}
+            #classes={'ocr':ocrtext,'copy':copyboard,'textractor':textractor}#,'textractor_pipe':namepipe}
+            classes=['ocr','copy','textractor']
             use=None  
             for k in classes: 
                 if globalconfig['sourcestatus'][k]:
@@ -82,19 +80,21 @@ class MAINUI() :
             if use is None:
                 self.textsource=None
             elif use=='textractor':
+                #from textsource.textractor import textractor 
+                self.textsource=None
                 pass
             elif use=='ocr':
+                from textsource.ocrtext import ocrtext
+                self.textsource=ocrtext(self.textgetmethod,self) 
+            # elif use=='textractor_pipe': 
+                    #from textsource.namepipe import namepipe
+            #     self.textsource=classes[use](self.textgetmethod) 
+            #     return True
                 
-                self.textsource=classes[use](self.textgetmethod,self) 
-            elif use=='textractor_pipe': 
-                
-                self.textsource=classes[use](self.textgetmethod) 
-                return True
-                
-            else:
-                self.textsource=classes[use](self.textgetmethod) 
-             
-           
+            elif use=='copy': 
+                from textsource.copyboard import copyboard 
+                self.textsource=copyboard(self.textgetmethod) 
+              
             return True 
     @threader
     def starthira(self): 
@@ -125,16 +125,15 @@ class MAINUI() :
     def aa(self):
         t1=time.time()
         self.translation_ui =gui.translatorUI.QUnFrameWindow(self)  
-        self.translation_ui.show()   
-        
-        self.prepare() 
-        self.starthira() 
+        self.translation_ui.show()     
+
+        self.prepare()  
+        self.starthira()  
         self.starttextsource() 
          
-        self.settin_ui =gui.settin.Settin(self)
+        self.settin_ui =gui.settin.Settin(self) 
         self.startreader() 
-        self.range_ui =gui.rangeselect.rangeadjust(self)  
-        print(time.time()-t1) 
+        self.range_ui =gui.rangeselect.rangeadjust(self)   
         #self.translation_ui.displayraw.emit('欢迎','#0000ff')
     def main(self) : 
         # 自适应高分辨率
@@ -142,8 +141,9 @@ class MAINUI() :
         QCoreApplication.setAttribute(Qt.AA_UseHighDpiPixmaps, True)
         app = QApplication(sys.argv) 
         app.setQuitOnLastWindowClosed(False)
-        print(time.time()-t1)
+        
         self.aa()
+        print(time.time()-t1)
         app.exit(app.exec_())
         
 if __name__ == "__main__" :

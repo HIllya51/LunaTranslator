@@ -103,8 +103,11 @@ class QUnFrameWindow(QWidget):
     def __init__(self, object):
         super(QUnFrameWindow, self).__init__(
             None, Qt.FramelessWindowHint|Qt.WindowStaysOnTopHint|Qt.Tool)  # 设置为顶级窗口，无边框
-        self._padding = 5  # 设置边界宽度为5
         self.object = object
+        self.rate = self.object.screen_scale_rate 
+     
+        self._padding = 5  # 设置边界宽度为5
+        
         self.transhis=gui.transhist.transhist()
         self.logff=open('./log.txt','a',encoding='utf8')
         self.setAttribute(Qt.WA_TranslucentBackground) 
@@ -116,7 +119,7 @@ class QUnFrameWindow(QWidget):
         self.object = object 
         self.lastcolor='' 
         # 界面缩放比例
-        self.rate = self.object.screen_scale_rate 
+        
          
         self.original = ""    
         self._isTracking=False
