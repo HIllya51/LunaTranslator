@@ -26,14 +26,14 @@
         "volume": 100.0
     },
     "sourcestatus": {
-        "copy": true,
-        "ocr": false,
+        "copy": false,
+        "ocr": true,
         "textractor": false,
         "textractor_pipe": false
     },
     "fanyi": {
         "baidu": {
-            "use": false,
+            "use": true,
             "color": "#ff65db",
             "name": "百度"
         },
