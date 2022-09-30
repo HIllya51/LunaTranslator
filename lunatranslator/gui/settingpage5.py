@@ -62,8 +62,9 @@ def showvoicelist(self,vl):
     self.voicecombo.blockSignals(True)
     self.voicecombo.clear()
     self.voicecombo.addItems(vl)
-    i=vl.index(globalconfig['windowstts']['voice'])
-    if i>=0:
+    if globalconfig['windowstts']['voice'] in vl:
+        i=vl.index(globalconfig['windowstts']['voice'])
+    
         self.voicecombo.setCurrentIndex(i)
     self.voicecombo.blockSignals(False)
 def readerchange(self,who,checked):   
