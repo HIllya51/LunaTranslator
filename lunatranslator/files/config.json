@@ -4,7 +4,7 @@
         613
     ],
     "width": 734.4,
-    "autorun": false,
+    "autorun": true,
     "transparent": 57,
     "fontsize": 17.699999999999996,
     "fonttype": "思源黑体 CN Medium",
@@ -26,9 +26,9 @@
         "volume": 100.0
     },
     "sourcestatus": {
-        "copy": false,
+        "copy": true,
         "ocr": false,
-        "textractor": true,
+        "textractor": false,
         "textractor_pipe": false
     },
     "fanyi": {

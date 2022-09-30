@@ -5,24 +5,15 @@ from PyQt5.QtCore import Qt, QPoint,pyqtSignal
 import pyperclip 
 import qtawesome 
 from PyQt5.QtCore import pyqtSignal,Qt,QPoint,QRect,QSize  
-from PyQt5.QtGui import QPen,QColor,QFont,QTextCharFormat ,QIcon,QPixmap
+from PyQt5.QtGui import QPen,QColor,QFont,QTextCharFormat ,QIcon,QPixmap 
 from PyQt5.QtWidgets import  QLabel,QTextBrowser,QPushButton ,QSystemTrayIcon ,QAction,QMenu
 import pyperclip
 import json  
 from utils.config import globalconfig
  
 import gui.rangeselect
-class QTitleLabel(QLabel):
-    """
-    新建标题栏标签类
-    """
-
-    def __init__(self, *args):
-        super(QTitleLabel, self).__init__(*args)
-        self.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
-        
-
-
+import gui.transhist
+ 
 class QTitleButton(QPushButton):
     """
     新建标题栏按钮类
@@ -59,20 +50,25 @@ class QUnFrameWindow(QWidget):
         elif code==5:
             print(self.pos())
             #self.move(self.pos() + self._endPos)
-            self.move(self.pos().x()+other[0],self.pos().y()+other[1])
+            self.move(self.pos().x()+self.rate *other[0],self.pos().y()+self.rate *other[1])
     def showres(self,_type,res): 
         if globalconfig['showfanyisource']:
             #print(_type)
             self.showline(globalconfig['fanyi'][_type]['name']+'  '+res,globalconfig['fanyi'][_type]['color']  )
         else:
             self.showline(res,globalconfig['fanyi'][_type]['color']  )
-         
+        
+        self.logff.write(globalconfig['fanyi'][_type]['name']+'  '+res)
+        
+        self.transhis.getnewsentencesignal.emit(globalconfig['fanyi'][_type]['name']+'  '+res)
     def showraw(self,res,color,show ):
         self.clearText()
         self.original=res 
         if show==1: 
             self.showline(res,color )
-         
+        
+        self.logff.write('\n'+res+'\n')
+        self.transhis.getnewsentencesignal.emit('\n'+res)
     def showline(self,res,color ): 
         
             
@@ -86,7 +82,6 @@ class QUnFrameWindow(QWidget):
             self.lastcolor=''
             self.translate_text.append("<font color=%s>%s</font>"%(color,res))
         
-        self.logff.write(res+'\n')
     def clearText(self) :
      
         # 翻译界面清屏
@@ -110,6 +105,7 @@ class QUnFrameWindow(QWidget):
             None, Qt.FramelessWindowHint|Qt.WindowStaysOnTopHint|Qt.Tool)  # 设置为顶级窗口，无边框
         self._padding = 5  # 设置边界宽度为5
         self.object = object
+        self.transhis=gui.transhist.transhist()
         self.logff=open('./log.txt','a',encoding='utf8')
         self.setAttribute(Qt.WA_TranslucentBackground) 
         self.hookfollowsignal.connect(self.hookfollowsignalsolve) 
@@ -152,14 +148,17 @@ class QUnFrameWindow(QWidget):
       }''')
           
         self.buttons=[] 
+                 
         self.takusanbuttons(qtawesome.icon("fa.rotate-right" ,color="white"),"MinMaxButton",self.startTranslater,0,"重新翻译")
         self.takusanbuttons(qtawesome.icon("fa.forward" ,color="#FF69B4" if globalconfig['autorun'] else 'white'),"MinMaxButton",self.changeTranslateMode,1,"自动翻译",'automodebutton')
         self.takusanbuttons(qtawesome.icon("fa.gear",color="white" ),"MinMaxButton",self.clickSettin,2,"设置")
         self.takusanbuttons(qtawesome.icon("fa.crop" ,color="white"),"MinMaxButton",self.clickRange,3,"选取OCR范围")
         self.takusanbuttons(qtawesome.icon("fa.eye" ,color="white"),"MinMaxButton",self.showhide,4,"显示/隐藏范围框",'showhidebutton')
         self.takusanbuttons(qtawesome.icon("fa.copy" ,color="white"),"MinMaxButton",lambda: pyperclip.copy(self.original),5,"复制到剪贴板") 
-        self.takusanbuttons(qtawesome.icon("fa.music" ,color="white"),"MinMaxButton",self.langdu,6,"朗读") 
-        self.takusanbuttons(qtawesome.icon("fa.lock" ,color="#FF69B4" if globalconfig['locktools'] else 'white'),"MinMaxButton",self.changetoolslockstate,7,"锁定工具栏",'locktoolsbutton') 
+        
+        self.takusanbuttons(qtawesome.icon("fa.rotate-left" ,color="white"),"MinMaxButton", self.transhis.show  ,6,"显示历史翻译") 
+        self.takusanbuttons(qtawesome.icon("fa.music" ,color="white"),"MinMaxButton",self.langdu,7,"朗读") 
+        self.takusanbuttons(qtawesome.icon("fa.lock" ,color="#FF69B4" if globalconfig['locktools'] else 'white'),"MinMaxButton",self.changetoolslockstate,8,"锁定工具栏",'locktoolsbutton') 
         self.takusanbuttons(qtawesome.icon("fa.minus",color="white" ),"MinMaxButton",self.hide,-2,"最小化到托盘")
         self.takusanbuttons(qtawesome.icon("fa.times" ,color="white"),"CloseButton",self.quitf,-1,"退出")
         self.resize(int(globalconfig['width']*self.rate), int(130*self.rate))
@@ -276,7 +275,8 @@ class QUnFrameWindow(QWidget):
 
     def initTitleLabel(self):
         # 安放标题栏标签
-        self._TitleLabel = QTitleLabel(self)
+        self._TitleLabel = QLabel(self)
+        self._TitleLabel.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
         self._TitleLabel.setFixedHeight(30*self.rate)
         # 设置标题栏标签鼠标跟踪（如不设，则标题栏内在widget上层，无法实现跟踪）
         self._TitleLabel.setMouseTracking(True)

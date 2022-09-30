@@ -64,7 +64,6 @@ def _instance():
             ('fa',
              'fontawesome4.7-webfont.ttf',
              'fontawesome4.7-webfont-charmap.json'),
-             
         )
     return _resource['iconic']
 

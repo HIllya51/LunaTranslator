@@ -16,7 +16,7 @@ class hookselect(QMainWindow):
     changeprocessclearsignal=pyqtSignal()
     def __init__(self,object):
         super(hookselect, self).__init__()
-        self.setupUi(self)
+        self.setupUi( )
         self.object=object
         self.changeprocessclearsignal.connect(self.changeprocessclear)
         self.addnewhooksignal.connect(self.addnewhook)
@@ -29,31 +29,16 @@ class hookselect(QMainWindow):
         self.save.append(ss)
         thread_handle,thread_tp_processId, thread_tp_addr, thread_tp_ctx, thread_tp_ctx2, thread_name,HookCode=ss 
         self.ttCombo.addItem('%s:%s:%s:%s:%s:%s (%s)' %(thread_handle,thread_tp_processId, thread_tp_addr, thread_tp_ctx, thread_tp_ctx2, thread_name,HookCode))
-    def setupUi(self, hookselect):
-    
-        hookselect.setObjectName("hookselect")
-        hookselect.resize(1000, 400)
-        hookselect.setStyleSheet("\n"
-"       QPushButton, QComboBox\n"
-"       {\n"
-"       padding-top: 3px;\n"
-"       padding-bottom: 3px;\n"
-"       padding-right: 5px;\n"
-"       padding-left: 5px;\n"
-"       text-align: left;\n"
-"       }\n"
-"     ")
+    def setupUi(self  ):
+     
+        self.resize(1000, 400)
+         
         self.save=[]
-        self.centralWidget = QWidget(hookselect)
-        self.centralWidget.setObjectName("centralWidget")
+        self.centralWidget = QWidget(self) 
         self.setWindowIcon(qtawesome.icon("fa.gear" ))
-        self.hboxlayout = QHBoxLayout(self.centralWidget)
-        self.hboxlayout.setContentsMargins(6, 6, 6, 6)
-        self.hboxlayout.setSpacing(6)
-        self.hboxlayout.setObjectName("hboxlayout")
+        self.hboxlayout = QHBoxLayout(self.centralWidget)  
         self.processFrame = QFrame(self.centralWidget)
-        self.processFrame.setEnabled(True)
-        self.processFrame.setObjectName("processFrame")
+        self.processFrame.setEnabled(True) 
         # self.processLayout = QVBoxLayout(self.processFrame)
         # self.processLayout.setContentsMargins(0, 0, 0, 0)
         # self.processLayout.setSpacing(6)
@@ -65,21 +50,17 @@ class hookselect(QMainWindow):
         # # self.processCombo.setObjectName("processCombo")
         # self.processLayout.addWidget(self.processCombo)
         self.hboxlayout.addWidget(self.processFrame)
-        self.vboxlayout = QVBoxLayout()
-        self.vboxlayout.setSpacing(6)
-        self.vboxlayout.setObjectName("vboxlayout")
+        self.vboxlayout = QVBoxLayout() 
         font = QFont()
         #font.setFamily("Arial Unicode MS")
         font.setPointSize(13)
         self.ttCombo = QComboBox(self.centralWidget)
         self.ttCombo.setEditable(False)
-        self.ttCombo.setMaxVisibleItems(50)
-        self.ttCombo.setObjectName("ttCombo")         
+        #self.ttCombo.setMaxVisibleItems(50) 
         self.ttCombo.setFont(font)
         self.vboxlayout.addWidget(self.ttCombo)
 
-        self.userhooklayout = QHBoxLayout()
-        self.userhooklayout.setSpacing(6)
+        self.userhooklayout = QHBoxLayout() 
         self.vboxlayout.addLayout(self.userhooklayout)
         self.userhook=QLineEdit()
         self.userhooklayout.addWidget(self.userhook)
@@ -91,8 +72,7 @@ class hookselect(QMainWindow):
 
 
         #################
-        self.searchtextlayout = QHBoxLayout()
-        self.searchtextlayout.setSpacing(6)
+        self.searchtextlayout = QHBoxLayout() 
         self.vboxlayout.addLayout(self.searchtextlayout)
         self.searchtext=QLineEdit()
         self.searchtext.setFont(font)
@@ -110,11 +90,10 @@ class hookselect(QMainWindow):
         self.textOutput.setFont(font)
         self.textOutput.setContextMenuPolicy(Qt.CustomContextMenu)
         self.textOutput.setUndoRedoEnabled(False)
-        self.textOutput.setReadOnly(True)
-        self.textOutput.setObjectName("textOutput")
+        self.textOutput.setReadOnly(True) 
         self.vboxlayout.addWidget(self.textOutput)
         self.hboxlayout.addLayout(self.vboxlayout)
-        hookselect.setCentralWidget(self.centralWidget)
+        self.setCentralWidget(self.centralWidget)
   
 
         self.ttCombo.currentIndexChanged.connect(self.ViewThread)
