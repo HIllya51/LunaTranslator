@@ -38,7 +38,7 @@
 
 下载上方链接或者release中的压缩包解压，运行LunaTranslator.exe
 
-<img src='./docpics/1.jpg'>
+<div align="center"><img src='./docpics/1.jpg'></div>
 
 #### 工具栏介绍
 
@@ -66,3 +66,15 @@
 &emsp;&emsp;**最小化到托盘**  本软件不会在任务栏中显示，只会在任务栏中显示，按下这个按钮软件将会隐藏，可以在托盘图标中让软件重新显示。
 
 &emsp;&emsp;**退出**  按下这个按钮后，软件将会退出
+
+<div align="center"><img src='./docpics/2.jpg'><br>工具栏隐藏时</div>
+
+<div align="center"><img src='./docpics/3.jpg'><br>自动模式</div>
+
+#### 托盘图标
+
+鼠标左键点击图标程序窗口将显示，再次点击图标窗口将隐藏
+
+鼠标右键点击图标会弹出菜单，可以显示窗口或退出程序
+
+<div align="center"><img src='./docpics/4.jpg'><br>托盘菜单</div>
