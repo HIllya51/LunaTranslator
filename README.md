@@ -3,7 +3,7 @@
 >下载链接
 >https://pan.baidu.com/s/1kBVtyIHG2CLYFvqvjUxCUw?pwd=7iqw
 
-一款出于兴趣开发的galgame翻译器
+一款兴趣使然的galgame翻译器
 
 ## 功能支持
 
