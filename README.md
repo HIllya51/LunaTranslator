@@ -24,7 +24,7 @@
 
 &emsp;&emsp;**注册在线翻译** 支持使用用户注册的百度、腾讯翻译密钥翻译
 
-&emsp;&emsp;**支持自定义翻译扩展** 支持使用python语言的扩展其他翻译接口
+&emsp;&emsp;**支持自定义翻译扩展** 支持使用python语言扩展其他我不知道的翻译接口
 
 #### 语音合成
 
@@ -67,8 +67,8 @@
 
 &emsp;&emsp;**退出**  按下这个按钮后，软件将会退出
 
-<div align="center"><img src='./docpics/2.jpg'><br>工具栏隐藏时</div>
-
+<div align="center"><img src='./docpics/2.jpg'><br>工具栏隐藏</div>
+<br>
 <div align="center"><img src='./docpics/3.jpg'><br>自动模式</div>
 
 #### 托盘图标
@@ -78,3 +78,48 @@
 鼠标右键点击图标会弹出菜单，可以显示窗口或退出程序
 
 <div align="center"><img src='./docpics/4.jpg'><br>托盘菜单</div>
+
+#### 设置窗口
+
+##### 基本设置
+
+选取使用的文本输出源，粉色√表示已选取，灰色×表示未选取。只能同时有≤1个选项生效。
+
+选择OCR作为文本输入时，需要在工具栏中选取OCR识别范围。
+
+选择Textractor（HOOK）作为文本输入时，会弹出进程选择窗口，选择游戏后会弹出文本选择窗口。
+
+具体的后面令讲。
+
+<div align="center"><img src='./docpics/5.jpg'></div>
+
+##### 翻译设置
+
+一些翻译器的设置。不过作者比较懒就没有把各种类型的翻译器分开放。
+
+其中：Jbeijing7是离线翻译；百度api和腾讯api是需要用户自行申请注册才能使用；（自建可以忽略，如果你是大佬的话可以自己部署本地翻译模型）
+
+其余所有翻译器均可随意选择，数量也没有限制。
+
+<div align="center"><img src='./docpics/6.jpg'></div>
+
+##### 显示设置
+
+一些常见的显示设置，不再赘述
+
+<div align="center"><img src='./docpics/7.jpg'></div>
+
+##### 语音设置
+
+<div align="center"><img src='./docpics/8.jpg'></div>
+
+一般情况下可能只有两种语音（中文ZH-CN和英文EN-US），日文JA-JP需要在系统的语言设置里面安装支持。
+
+<div align="center"><img src='./docpics/9.jpg'><br>语音选择</div>
+
+##### 其他设置
+
+一些其他设置。
+目前只有这一点设置，即在HOOK模型下选取游戏后可以当游戏最小化/移动时，软件跟着一起最小化/移动。
+
+<div align="center"><img src='./docpics/10.jpg'></div>
