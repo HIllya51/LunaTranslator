@@ -170,6 +170,8 @@ class hookselect(QMainWindow):
         self.hiding=True
         self.hide()
         try:
+            if  self.object.object.textsource is None:
+                return 
             if self.object.object.textsource.selectinghook is None:
                 return
             self.object.object.textsource.selectedhook=self.object.object.textsource.selectinghook
