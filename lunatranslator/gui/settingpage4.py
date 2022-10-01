@@ -59,7 +59,7 @@ def minmaxmoveobservefunc(self):
                 x=x.replace('\r','').replace('\n','')
                  
                 x=x.split(' ')
-                print(x)
+                #print(x)
                 if len(x) not in [2,6]:
                         break
                 x=[int(_) for _ in x]

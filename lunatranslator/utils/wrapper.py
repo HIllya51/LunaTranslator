@@ -13,7 +13,7 @@ def retryer(**kw):
                 except Exception as ex:
                     traceback.print_exc()
                     time.sleep(random.randint(2,min(2**(_+2),32)))
-                    print('重试次数：',_+1) 
+                    #print('重试次数：',_+1) 
             
         return _wrapper
     return wrapper
@@ -29,7 +29,7 @@ def timer(func):
     def _wrapper(*args,**kwargs): 
         t=time.time()
         res=func(*args,**kwargs)
-        print(time.time()-t)
+        #print(time.time()-t)
         return res
 
         

@@ -49,7 +49,7 @@ class QUnFrameWindow(QWidget):
         elif code==4:
             self.hide() 
         elif code==5:
-            print(self.pos())
+            #print(self.pos())
             #self.move(self.pos() + self._endPos)
             self.move(self.pos().x()+self.rate *other[0],self.pos().y()+self.rate *other[1])
     def showres(self,_type,res): 
@@ -259,7 +259,7 @@ class QUnFrameWindow(QWidget):
         
         self.show()
     def langdu(self):
-        print(self.original)
+        #print(self.original)
         
         if self.object.reader:
             self.object.reader.read(self.original )
@@ -455,7 +455,7 @@ class QUnFrameWindow(QWidget):
         #print(aa)  
         
         self.close() 
-        print('closed')
+        #print('closed')
         sys.exit()
         #self.quit()
         #self.quit()

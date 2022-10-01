@@ -1,7 +1,6 @@
 import time
 starttime=time.time() 
 from threading import Thread
-import requests
 import os
 import sys
 from traceback import print_exc  
@@ -20,7 +19,7 @@ import gui.translatorUI
 from utils.config import globalconfig 
 import importlib
 from functools import partial 
-print(time.time()-starttime)
+#print(time.time()-starttime)
 class MAINUI() :
     
     def __init__(self) -> None:
@@ -107,6 +106,7 @@ class MAINUI() :
     def prepare(self,now=None):  
         
         
+        import requests
         if now:
             Thread(target=self.fanyiloader,args=(now,)).start()
         else:
