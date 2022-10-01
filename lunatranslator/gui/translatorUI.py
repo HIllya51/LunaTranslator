@@ -40,14 +40,12 @@ class QUnFrameWindow(QWidget):
     hookfollowsignal=pyqtSignal(int,tuple)
      
     def hookfollowsignalsolve(self,code,other): 
-        if code==1  : 
-            self.show() 
-        elif code==2  : 
-            self.hide()
-        elif code==3:
-            self.show()
+        if code==3:
+            if self.hideshownotauto:
+                self.show()
         elif code==4:
-            self.hide() 
+            if self.hideshownotauto:
+                self.hide() 
         elif code==5:
             #print(self.pos())
             #self.move(self.pos() + self._endPos)
@@ -97,10 +95,15 @@ class QUnFrameWindow(QWidget):
             if reason == QSystemTrayIcon.Trigger:
                 
                 if self.isHidden():
-                    self.show() 
+                    self.show_and_enableautohide() 
                 else:
-                    self.hide()
-    
+                    self.hide_and_disableautohide()
+    def hide_and_disableautohide(self):
+        self.hideshownotauto=False
+        self.hide()
+    def show_and_enableautohide(self):
+        self.hideshownotauto=True
+        self.show()
     def __init__(self, object):
         super(QUnFrameWindow, self).__init__(
             None, Qt.FramelessWindowHint|Qt.WindowStaysOnTopHint|Qt.Tool)  # 设置为顶级窗口，无边框
@@ -108,7 +111,7 @@ class QUnFrameWindow(QWidget):
         self.rate = self.object.screen_scale_rate 
      
         self._padding = 5  # 设置边界宽度为5
-        
+        self.hideshownotauto=True
         self.transhis=gui.transhist.transhist()
         self.logff=open('./log.txt','a',encoding='utf8')
         self.setAttribute(Qt.WA_TranslucentBackground) 
@@ -163,7 +166,7 @@ class QUnFrameWindow(QWidget):
         self.takusanbuttons(qtawesome.icon("fa.rotate-left" ,color="white"),"MinMaxButton", self.transhis.show  ,6,"显示历史翻译") 
         self.takusanbuttons(qtawesome.icon("fa.music" ,color="white"),"MinMaxButton",self.langdu,7,"朗读") 
         self.takusanbuttons(qtawesome.icon("fa.lock" ,color="#FF69B4" if globalconfig['locktools'] else 'white'),"MinMaxButton",self.changetoolslockstate,8,"锁定工具栏",'locktoolsbutton') 
-        self.takusanbuttons(qtawesome.icon("fa.minus",color="white" ),"MinMaxButton",self.hide,-2,"最小化到托盘")
+        self.takusanbuttons(qtawesome.icon("fa.minus",color="white" ),"MinMaxButton",self.hide_and_disableautohide,-2,"最小化到托盘")
         self.takusanbuttons(qtawesome.icon("fa.times" ,color="white"),"CloseButton",self.quitf,-1,"退出")
         self.resize(int(globalconfig['width']*self.rate), int(130*self.rate))
         self.move(QPoint(*globalconfig['position'])) 
@@ -175,7 +178,7 @@ class QUnFrameWindow(QWidget):
         self.tray = QSystemTrayIcon()  
         self.tray.setIcon(icon) 
         
-        showAction = QAction("&显示", self, triggered = self.show)
+        showAction = QAction("&显示", self, triggered = self.show_and_enableautohide)
         quitAction = QAction("&退出", self, triggered = self.quitf)
                 
         

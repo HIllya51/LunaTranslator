@@ -1,5 +1,6 @@
 
 from re import search
+from traceback import print_exc
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QWidget,QHBoxLayout,QMainWindow,QFrame,QVBoxLayout,QComboBox,QPlainTextEdit,QDialogButtonBox,QLineEdit,QPushButton
 from PyQt5.QtGui import QFont,QTextCursor
@@ -171,10 +172,14 @@ class hookselect(QMainWindow):
             self.object.object.textsource.selectedhook=self.object.object.textsource.selectinghook
             if not os.path.exists('./files/savehook.json'):
                     js={}
-            with open('./files/savehook.json','r',encoding='utf8') as ff:
-                js=json.load(ff)
+            else:
+                with open('./files/savehook.json','r',encoding='utf8') as ff:
+                    js=json.load(ff)
+            js[self.object.object.textsource.pname]=self.object.object.textsource.selectedhook
+            with open('./files/savehook.json','w',encoding='utf8') as ff:
+                ff.write(json.dumps(js,ensure_ascii=False))
         except:
-            pass
+            print_exc()
         self.object.show()
     def getnewsentence(self,sentence):
         scrollbar = self.textOutput.verticalScrollBar()

@@ -10,7 +10,9 @@ import threading
 import gui.switchbutton
 import gui.attachprocessdialog  
 import gui.selecthook  
-
+import os
+import win32con,win32api,win32process
+self_pid=os.getpid()
 st=subprocess.STARTUPINFO()
 st.dwFlags=subprocess.STARTF_USESHOWWINDOW
 st.wShowWindow=subprocess.SW_HIDE
@@ -26,19 +28,27 @@ def setTab4(self) :
 
         label = QLabel(self.tab_4)
         self.customSetGeometry(label, 20, 50, 200, 20)
-        label.setText("窗口最小化跟随")
+        label.setText("游戏不在最前时窗口隐藏")
         self.minifollowswitch =gui.switchbutton.MySwitch(self.tab_4, sign= globalconfig['minifollow'],textOff='关闭',textOn='使用')
         self.customSetGeometry(self.minifollowswitch, 200, 50, 20,20)
         self.minifollowswitch.clicked.connect(lambda x:globalconfig.__setitem__('minifollow',x)) 
 
         label = QLabel(self.tab_4)
         self.customSetGeometry(label, 20, 80, 200, 20)
-        label.setText("窗口移动跟随")
+        label.setText("游戏窗口移动时同步移动")
         
         self.movefollowswitch =gui.switchbutton.MySwitch(self.tab_4, sign= globalconfig['movefollow'],textOff='关闭',textOn='使用')
         self.customSetGeometry(self.movefollowswitch, 200, 80,20,20)
         self.movefollowswitch.clicked.connect(lambda x:globalconfig.__setitem__('movefollow',x)) 
-
+        
+        
+        label = QLabel(self.tab_4)
+        self.customSetGeometry(label, 20, 110, 200, 20)
+        label.setText("检测到游戏时自动开始提取文本")
+        
+        self.movefollowswitch =gui.switchbutton.MySwitch(self.tab_4, sign= globalconfig['autostarthook'],textOff='关闭',textOn='使用')
+        self.customSetGeometry(self.movefollowswitch, 200, 110,20,20)
+        self.movefollowswitch.clicked.connect(lambda x:globalconfig.__setitem__('autostarthook',x)) 
         
         # label = QLabel(self.tab_4)
         # self.customSetGeometry(label, 20, 110, 200, 20)
@@ -67,7 +77,8 @@ def minmaxmoveobservefunc(self):
                         pid,action=x
                 elif len(x)==6:
                         pid,action,x1,y1,x2,y2=x
-                 
+                
+
                 if pid==self.hookpid: 
                         if action==1 and globalconfig['movefollow']:
                             self.movestart=[x1,y1,x2,y2]
@@ -79,3 +90,14 @@ def minmaxmoveobservefunc(self):
                             self.object.translation_ui.hookfollowsignal.emit(4,(0,0))
                         elif action==4 and  globalconfig['minifollow']:
                             self.object.translation_ui.hookfollowsignal.emit(3,(0,0))
+                        if action==5 and globalconfig['minifollow']:
+                            self.object.translation_ui.hookfollowsignal.emit(3,(0,0))
+                elif pid!=self_pid:
+                        if action==5 and globalconfig['minifollow']:
+                            self.object.translation_ui.hookfollowsignal.emit(4,(0,0))
+
+                if globalconfig['autostarthook'] and action==5:
+                        #todo
+                        hwnd=win32api.OpenProcess(win32con.PROCESS_ALL_ACCESS,False, (pid))
+                        name_=win32process.GetModuleFileNameEx(hwnd,None)
+                        print(name_)

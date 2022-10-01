@@ -26,9 +26,9 @@
         "volume": 100.0
     },
     "sourcestatus": {
-        "copy": true,
+        "copy": false,
         "ocr": false,
-        "textractor": false,
+        "textractor": true,
         "textractor_pipe": false
     },
     "fanyi": {
@@ -128,8 +128,8 @@
                 "注册网址": "https://fanyi-api.baidu.com/api/trans/product/desktop",
                 "APP ID": "",
                 "密钥": "",
-                "字数统计": "1975",
-                "次数统计": "78"
+                "字数统计": "2609",
+                "次数统计": "106"
             },
             "notwriteable": [
                 "注册网址",
@@ -173,5 +173,6 @@
         }
     },
     "minifollow": true,
-    "movefollow": true
+    "movefollow": true,
+    "autostarthook": true
 }

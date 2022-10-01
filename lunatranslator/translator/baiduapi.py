@@ -46,7 +46,7 @@ class TS(basetrans):
             globalconfig['fanyi'][self.typename]['args']['次数统计']=str(int(globalconfig['fanyi'][self.typename]['args']['次数统计'])+1)
             with open('./files/config.json','w',encoding='utf-8') as ff:
                 ff.write(json.dumps(globalconfig,ensure_ascii=False,sort_keys=False, indent=4))
-            print(res['trans_result'][0]['dst'])
+            #print(res['trans_result'][0]['dst'])
             return res['trans_result'][0]['dst']
         except:
             print_exc()
