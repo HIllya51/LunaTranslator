@@ -39,6 +39,7 @@ class textractor(basetext):
     def exit(self):
         self.p.write( QByteArray((f'11\r\n').encode(encoding='utf-16-le'))) 
     def attach(self,pid): 
+         
         self.p.write( QByteArray((f'attach -P{pid}\r\n').encode(encoding='utf-16-le'))) 
     def detach(self,pid):
         self.p.write( QByteArray((f'detach -P{pid}\r\n').encode(encoding='utf-16-le'))) 
@@ -54,14 +55,17 @@ class textractor(basetext):
                 output=output[:-1]
             if output[-1]=='\r':
                 output=output[:-1]
-            key=(thread_handle,thread_tp_processId, thread_tp_addr, thread_tp_ctx, thread_tp_ctx2, thread_name,HookCode)
+            keyraw=(thread_handle,thread_tp_processId, thread_tp_addr, thread_tp_ctx, thread_tp_ctx2, thread_name,HookCode)
+
+            key=( thread_tp_addr, thread_tp_ctx, thread_tp_ctx2, thread_name,HookCode)
             if key not in self.hookdatacollecter:
                 self.hookdatacollecter[key]=[]
-                self.hookdatasort.append(key)
-                self.hookselectdialog.addnewhooksignal.emit(key ) 
+                self.hookdatasort.append(keyraw)
+                self.hookselectdialog.addnewhooksignal.emit(keyraw ) 
              
             if self.selectinghook and key==self.selectinghook:
                 self.hookselectdialog.getnewsentencesignal.emit(output)
+            #print(self.selectedhook)
             if self.selectedhook and key==self.selectedhook:
                 self.newline.put(output) 
                 self.runonce_line=output

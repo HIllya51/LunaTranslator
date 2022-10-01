@@ -107,11 +107,13 @@ def settingtextractor(self):
         
         if(self.a.exec_()): 
             try:
-                pid,pexe=( self.a.selectedp)   
+                pid,pexe,hwnd=( self.a.selectedp)   
             except:
                 self.show()
                 return 
-            
+            if pid==self.hookpid:
+                self.show()
+                return
             try:
                 process=win32api.OpenProcess(2097151,False, pid) #PROCESS_ALL_ACCESS
             except pywintypes.error:
@@ -124,7 +126,7 @@ def settingtextractor(self):
                 self.show()
             arch='86' if win32process.IsWow64Process( process)  else '64' 
             self.hookpid=pid
-
+            self.hookhwnd=hwnd
             self.hookselectdialog.changeprocessclearsignal.emit()
             self.object.textsource=textractor(self.object.textgetmethod,self.hookselectdialog,pid,pexe,arch) 
             # if not os.path.exists('./files/savehook.json'):

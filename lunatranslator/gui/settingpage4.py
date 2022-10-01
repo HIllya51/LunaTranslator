@@ -1,17 +1,17 @@
+ 
+from cmath import exp
 import functools
-from PyQt5.QtCore import Qt 
-from PyQt5.QtGui import  QFont
-
-from PyQt5.QtWidgets import  QWidget,QLabel,QFrame,QPushButton ,QSlider,QSpinBox,QFontComboBox 
-import qtawesome 
+from PyQt5.QtWidgets import  QWidget,QLabel 
+from PyQt5.QtCore import QThread
 import subprocess
 from utils.config import globalconfig 
 import threading
+import json
 import gui.switchbutton
 import gui.attachprocessdialog  
 import gui.selecthook  
 import os
-import win32con,win32api,win32process
+import win32con,win32api,win32process,win32gui
 self_pid=os.getpid()
 st=subprocess.STARTUPINFO()
 st.dwFlags=subprocess.STARTF_USESHOWWINDOW
@@ -28,7 +28,7 @@ def setTab4(self) :
 
         label = QLabel(self.tab_4)
         self.customSetGeometry(label, 20, 50, 200, 20)
-        label.setText("游戏不在最前时窗口隐藏")
+        label.setText("游戏最小化时窗口隐藏")
         self.minifollowswitch =gui.switchbutton.MySwitch(self.tab_4, sign= globalconfig['minifollow'],textOff='关闭',textOn='使用')
         self.customSetGeometry(self.minifollowswitch, 200, 50, 20,20)
         self.minifollowswitch.clicked.connect(lambda x:globalconfig.__setitem__('minifollow',x)) 
@@ -62,6 +62,33 @@ def setTab4(self) :
         self.minmaxmoveoberve=subprocess.Popen('./files/minmaxmoveobserve.exe',stdout=subprocess.PIPE,startupinfo=st)
         self.minmaxmoveobservethread=threading.Thread(target=minmaxmoveobservefunc,args=(self,))
         self.minmaxmoveobservethread.start()
+
+        self.autostarthooksignal.connect(functools.partial(autostarthookfunction,self))
+def autostarthookfunction(self,pid,pname,hookcode):
+        try:
+                process=win32api.OpenProcess(2097151,False, pid) #PROCESS_ALL_ACCESS
+        except  : 
+                return
+        
+        arch='86' if win32process.IsWow64Process( process)  else '64' 
+         
+        self.hookpid=pid
+        from textsource.textractor import textractor
+        self.hookselectdialog.changeprocessclearsignal.emit()
+        
+        self.object.textsource=textractor(self.object.textgetmethod,self.hookselectdialog,pid,pname,arch) 
+        self.object.textsource.selectedhook=self.object.textsource.selectinghook=tuple(hookcode)
+def getwindowlist():
+        windows_list=[]
+        pidlist=[]
+        win32gui.EnumWindows(lambda hWnd, param: param.append(hWnd), windows_list)
+        for hwnd in windows_list:
+                try:
+                        tid, pid=win32process.GetWindowThreadProcessId(hwnd) 
+                        pidlist.append(pid)
+                except:
+                        pass
+        return pidlist
 def minmaxmoveobservefunc(self):
         while(True):
                 x=self.minmaxmoveoberve.stdout.readline()
@@ -69,7 +96,7 @@ def minmaxmoveobservefunc(self):
                 x=x.replace('\r','').replace('\n','')
                  
                 x=x.split(' ')
-                #print(x)
+                 
                 if len(x) not in [2,6]:
                         break
                 x=[int(_) for _ in x]
@@ -78,26 +105,45 @@ def minmaxmoveobservefunc(self):
                 elif len(x)==6:
                         pid,action,x1,y1,x2,y2=x
                 
-
-                if pid==self.hookpid: 
+                if self.hookpid:
+                      
+                     if pid==self_pid:
+                            continue
+                     plist=getwindowlist()
+                     if self.hookpid not in plist:
+                            #print('game exit')
+                            self.hookpid=None
+                            self.object.textsource=None
+                            continue
+                     if pid==self.hookpid: 
                         if action==1 and globalconfig['movefollow']:
-                            self.movestart=[x1,y1,x2,y2]
-                             
+                                self.movestart=[x1,y1,x2,y2]
+                                
                         elif action==2 and globalconfig['movefollow']: 
-                            moveend=[x1,y1,x2,y2]
-                            self.object.translation_ui.hookfollowsignal.emit(5,(moveend[0]-self.movestart[0],moveend[1]-self.movestart[1]))
+                                moveend=[x1,y1,x2,y2]
+                                self.object.translation_ui.hookfollowsignal.emit(5,(moveend[0]-self.movestart[0],moveend[1]-self.movestart[1]))
                         elif action==3 and globalconfig['minifollow']: 
-                            self.object.translation_ui.hookfollowsignal.emit(4,(0,0))
+                                self.object.translation_ui.hookfollowsignal.emit(4,(0,0))
                         elif action==4 and  globalconfig['minifollow']:
-                            self.object.translation_ui.hookfollowsignal.emit(3,(0,0))
-                        if action==5 and globalconfig['minifollow']:
-                            self.object.translation_ui.hookfollowsignal.emit(3,(0,0))
-                elif pid!=self_pid:
-                        if action==5 and globalconfig['minifollow']:
-                            self.object.translation_ui.hookfollowsignal.emit(4,(0,0))
+                                self.object.translation_ui.hookfollowsignal.emit(3,(0,0))
+                #         elif action==5 and globalconfig['minifollow']:
+                #                 self.object.translation_ui.hookfollowsignal.emit(3,(0,0))
+                #      else:
+                #         if action==5 and globalconfig['minifollow']:
+                #             self.object.translation_ui.hookfollowsignal.emit(4,(0,0))
 
                 if globalconfig['autostarthook'] and action==5:
-                        #todo
-                        hwnd=win32api.OpenProcess(win32con.PROCESS_ALL_ACCESS,False, (pid))
-                        name_=win32process.GetModuleFileNameEx(hwnd,None)
-                        print(name_)
+                        if globalconfig['sourcestatus']['textractor']==False:
+                                continue 
+                        if  os.path.exists('./files/savehook.json'):
+                                if 'textsource' not in dir(self.object) or self.object.textsource is None:
+                                        with open('./files/savehook.json','r',encoding='utf8') as ff:
+                                                js=json.load(ff)
+                                        try:
+                                                hwnd=win32api.OpenProcess(win32con.PROCESS_ALL_ACCESS,False, (pid))
+                                                name_=win32process.GetModuleFileNameEx(hwnd,None)
+                                        except:
+                                                continue
+                                        if name_ in js:
+                                                        
+                                                self.autostarthooksignal.emit(pid,name_,tuple(js[name_]))

@@ -55,7 +55,7 @@ class AttachProcessDialog(QDialog):
                         if name[-4:]!='.exe' or ':\\windows\\'  in name   or '\\microsoft\\'  in name:
                             continue
                         import os
-                        ret.append([pid,name_])
+                        ret.append([pid,name_,hwnd])
                     except:
                         pass
         #print(windows_list)
@@ -80,7 +80,7 @@ class AttachProcessDialog(QDialog):
                     name_=win32process.GetModuleFileNameEx(hwnd,None) 
                     #print(name_) 
                     self.processEdit.setText(name_)
-                    self.selectedp=(pid,name_)
+                    self.selectedp=(pid,name_,hwnd)
                 except: 
                     pass
             hm.UnhookMouse()   
@@ -120,7 +120,7 @@ class AttachProcessDialog(QDialog):
         self.processlist=self.ListProcess()
         #print(time.time()-t1)
         self.processList.setModel(model)
-        for pid,pexe  in self.processlist: 
+        for pid,pexe,hwnd  in self.processlist: 
             if pexe in self.iconcache:
                 icon=self.iconcache[pexe]
             else:
