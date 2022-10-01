@@ -4,7 +4,7 @@
         613
     ],
     "width": 711.2,
-    "autorun": true,
+    "autorun": false,
     "transparent": 57,
     "fontsize": 17.699999999999996,
     "fonttype": "思源黑体 CN Medium",
@@ -157,7 +157,7 @@
             "otherpath": "C:/dataH/txapi.json"
         },
         "byte": {
-            "use": false,
+            "use": true,
             "color": "#0ff000",
             "name": "byte"
         },
@@ -165,6 +165,11 @@
             "use": false,
             "color": "#0ff000",
             "name": "cy2"
+        },
+        "qqimt": {
+            "use": false,
+            "color": "#0ff000",
+            "name": "qqimt"
         }
     },
     "minifollow": true,
