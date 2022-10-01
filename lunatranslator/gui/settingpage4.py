@@ -92,6 +92,8 @@ def getwindowlist():
 def minmaxmoveobservefunc(self):
         while(True):
                 x=self.minmaxmoveoberve.stdout.readline()
+                if globalconfig['sourcestatus']['textractor']==False:
+                        continue
                 x=str(x,encoding='utf8')
                 x=x.replace('\r','').replace('\n','')
                  
