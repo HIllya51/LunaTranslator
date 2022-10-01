@@ -71,13 +71,14 @@ class AttachProcessDialog(QDialog):
 
             hwnd=win32gui.WindowFromPoint(p)
 
-            pids=win32process.GetWindowThreadProcessId(hwnd)
-            for pid in pids:
+            tid, pid=win32process.GetWindowThreadProcessId(hwnd)
+            #for pid in pids:
+            if True:
                 try:
-                    print(pid,  win32gui.GetWindowText(hwnd))
+                    #print(pid,  win32gui.GetWindowText(hwnd))
                     hwnd=win32api.OpenProcess(win32con.PROCESS_ALL_ACCESS,False, pid)
                     name_=win32process.GetModuleFileNameEx(hwnd,None) 
-                    print(name_) 
+                    #print(name_) 
                     self.processEdit.setText(name_)
                     self.selectedp=(pid,name_)
                 except: 

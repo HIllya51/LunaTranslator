@@ -128,8 +128,8 @@ class QUnFrameWindow(QWidget):
         self.initTitleLabel()  # 安放标题栏标签
          
         self.initLayout()  # 设置框架布局
-        self.setMinimumWidth(500)
-        self.setMinimumHeight(100)
+        # self.setMinimumWidth(500)
+        # self.setMinimumHeight(100)
         self.setMouseTracking(True)  # 设置widget鼠标跟踪
         self.initDrag()  # 设置鼠标跟踪判断默认值
         self.setStyleSheet(''' 

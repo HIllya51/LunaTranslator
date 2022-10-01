@@ -3,7 +3,7 @@
         432,
         613
     ],
-    "width": 734.4,
+    "width": 711.2,
     "autorun": true,
     "transparent": 57,
     "fontsize": 17.699999999999996,
@@ -26,9 +26,9 @@
         "volume": 100.0
     },
     "sourcestatus": {
-        "copy": false,
+        "copy": true,
         "ocr": false,
-        "textractor": true,
+        "textractor": false,
         "textractor_pipe": false
     },
     "fanyi": {
@@ -128,8 +128,8 @@
                 "注册网址": "https://fanyi-api.baidu.com/api/trans/product/desktop",
                 "APP ID": "",
                 "密钥": "",
-                "字数统计": "1812",
-                "次数统计": "69"
+                "字数统计": "1939",
+                "次数统计": "75"
             },
             "notwriteable": [
                 "注册网址",
@@ -155,6 +155,16 @@
                 "次数统计"
             ],
             "otherpath": "C:/dataH/txapi.json"
+        },
+        "byte": {
+            "use": false,
+            "color": "#0ff000",
+            "name": "byte"
+        },
+        "caiyun2": {
+            "use": false,
+            "color": "#0ff000",
+            "name": "cy2"
         }
     },
     "minifollow": true,

@@ -87,7 +87,7 @@ def txfy(secretId,secretKey,content):
     requestUrl = "https://%s/?"%(uriData) 
     requestUrlWithArgs = requestUrl + dictToStr(actionArgs)
     
-    responseData = requests.get(requestUrlWithArgs).text
+    responseData = requests.get(requestUrlWithArgs,timeout=5, proxies=  {'http': None,'https': None}).text
 
     print(responseData)
      
