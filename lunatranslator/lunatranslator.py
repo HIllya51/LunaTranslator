@@ -137,7 +137,7 @@ class MAINUI() :
         self.startreader() 
         self.range_ui =gui.rangeselect.rangeadjust(self)   
         #self.translation_ui.displayraw.emit('欢迎','#0000ff')
-        print(time.time()-t1)
+        #print(time.time()-t1)
     def main(self) : 
         # 自适应高分辨率
         t1=time.time()
@@ -146,8 +146,8 @@ class MAINUI() :
         app.setQuitOnLastWindowClosed(False)
         
         self.aa()
-        print(time.time()-t1)
-        print(time.time()-starttime)
+        #print(time.time()-t1)
+        #print(time.time()-starttime)
         app.exit(app.exec_())
         
 if __name__ == "__main__" :
