@@ -49,13 +49,7 @@ def initfanyiswitchs(self,name,namepos,switchpos,colorpos,settingpos):
             else:
                 globalconfig['fanyi'][who]['use']=False 
         p.clicked.connect(functools.partial( fanyiselect,name))
-        s=QPushButton(qtawesome.icon('fa.paint-brush', color=globalconfig['fanyi'][name]['color']), "", self.tab_2)
-         
-        self.customSetIconSize(s, 20, 20)
-        self.customSetGeometry(s, *colorpos) 
-        s.setStyleSheet("background: transparent;" )
-        s.clicked.connect(lambda: self.ChangeTranslateColor(name,s))  
-     
+
 
         
         if 'args' in globalconfig['fanyi'][name]:
@@ -66,4 +60,11 @@ def initfanyiswitchs(self,name,namepos,switchpos,colorpos,settingpos):
             
             s.setIcon(qtawesome.icon("fa.gear", color="#FF69B4"  ))
             s.clicked.connect(lambda x:GetUserPlotItems(self,name))
+
+        s=QPushButton(qtawesome.icon('fa.paint-brush', color=globalconfig['fanyi'][name]['color']), "", self.tab_2)
+         
+        self.customSetIconSize(s, 20, 20)
+        self.customSetGeometry(s, *colorpos) 
+        s.setStyleSheet("background: transparent;" )
+        s.clicked.connect(lambda: self.ChangeTranslateColor(name,s))  
      
