@@ -10,10 +10,6 @@ import os
 from utils.config import globalconfig
 import subprocess
 
-st=subprocess.STARTUPINFO()
-st.dwFlags=subprocess.STARTF_USESHOWWINDOW
-st.wShowWindow=subprocess.SW_HIDE
-
 class TS(basetrans):
      
     def inittranslator(self ) :
@@ -36,6 +32,10 @@ class TS(basetrans):
                 continue
             if ress!='':
                 ress+='\n'
+                        
+            st=subprocess.STARTUPINFO()
+            st.dwFlags=subprocess.STARTF_USESHOWWINDOW
+            st.wShowWindow=subprocess.SW_HIDE
 
             p=subprocess.Popen(r'./files/jb7x64runner/win32dllforward.exe "'+self.path+'" '+line, stdout=subprocess.PIPE,startupinfo=st)
             ress+=str(p.stdout.readline(),encoding='GB2312',errors='ignore')

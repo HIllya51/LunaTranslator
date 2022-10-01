@@ -4,7 +4,12 @@ import subprocess
 class tts():
     
     def __init__(self,showlist ): 
-        p=subprocess.Popen('./files/tts/tts_l.exe',stdout=subprocess.PIPE)
+                
+        st=subprocess.STARTUPINFO()
+        st.dwFlags=subprocess.STARTF_USESHOWWINDOW
+        st.wShowWindow=subprocess.SW_HIDE
+
+        p=subprocess.Popen('./files/tts/tts_l.exe',stdout=subprocess.PIPE,startupinfo=st)
         
         count=str(p.stdout.readline(),encoding='utf8')
         count=count.replace('\r','').replace('\n','')
@@ -24,6 +29,11 @@ class tts():
             return 
         if self.speaking:
             self.speaking.kill()
-        self.speaking=subprocess.Popen(f'./files/tts/tts_s.exe {i} {globalconfig["windowstts"]["rate"]} {globalconfig["windowstts"]["volume"]} "content"' )
+                
+        st=subprocess.STARTUPINFO()
+        st.dwFlags=subprocess.STARTF_USESHOWWINDOW
+        st.wShowWindow=subprocess.SW_HIDE
+
+        self.speaking=subprocess.Popen(f'./files/tts/tts_s.exe {i} {globalconfig["windowstts"]["rate"]} {globalconfig["windowstts"]["volume"]} "{content}"',startupinfo=st )
         
       
