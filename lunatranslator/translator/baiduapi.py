@@ -16,12 +16,10 @@ import hashlib
 import urllib
 import random
 import json
-class TS(basetrans):
-    
-    def inittranslator(self)  : 
-        self.typename='baiduapi'
-         
-    def realfy(self,query): 
+class TS(basetrans): 
+    def inittranslator(self):
+        self.session=requests.session()
+    def translate(self,query): 
                 
         if os.path.exists(globalconfig['fanyi'][self.typename]['otherpath']) and globalconfig['fanyi'][self.typename]['args']['APP ID']=="":
             with open(globalconfig['fanyi'][self.typename]['otherpath'],'r',encoding='utf8') as ff:
@@ -43,11 +41,12 @@ class TS(basetrans):
         myurl = myurl + '?appid=' + appid + '&q=' + urllib.parse.quote(q) + '&from=' + fromLang + '&to=' + toLang + '&salt=' + str(
         salt) + '&sign=' + sign
         try:
-            res=requests.get('https://api.fanyi.baidu.com'+myurl,proxies=  {'http': None,'https': None}).json()  
+            res=self.session.get('https://api.fanyi.baidu.com'+myurl,timeout=5, proxies=  {'http': None,'https': None}).json()  
             globalconfig['fanyi'][self.typename]['args']['字数统计']=str(int(globalconfig['fanyi'][self.typename]['args']['字数统计'])+len(query))
             globalconfig['fanyi'][self.typename]['args']['次数统计']=str(int(globalconfig['fanyi'][self.typename]['args']['次数统计'])+1)
             with open('./files/config.json','w',encoding='utf-8') as ff:
                 ff.write(json.dumps(globalconfig,ensure_ascii=False,sort_keys=False, indent=4))
+            print(res['trans_result'][0]['dst'])
             return res['trans_result'][0]['dst']
         except:
             print_exc()

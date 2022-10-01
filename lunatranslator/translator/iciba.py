@@ -174,11 +174,10 @@ from traceback import print_exc
 
 from translator.basetranslator import basetrans
 class TS(basetrans):
-    def inittranslator(self): 
-        self.typename='iciba'
+    def inittranslator(self):  
         self.engine=Iciba()
         self.engine._=None
-    def realfy(self,content): 
+    def translate(self,content): 
         try:
             return self.engine.iciba_api(content)
         except:

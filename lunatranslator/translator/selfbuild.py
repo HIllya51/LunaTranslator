@@ -12,11 +12,9 @@ import functools
 import urllib
  
 
-class TS(basetrans):
-    def inittranslator(self): 
-         
-        self.typename='selfbuild' 
-    def realfy(self,content): 
+class TS(basetrans): 
+          
+    def translate(self,content): 
         try:
             ss=requests.get('http://127.0.0.1:14366',json= {'content':content}).json()
         except requests.exceptions.ReadTimeout:

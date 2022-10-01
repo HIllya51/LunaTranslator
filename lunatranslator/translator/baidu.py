@@ -10,8 +10,7 @@ from js2py import EvalJs
 import time
 class TS(basetrans):
     
-    def inittranslator(self)  : 
-        self.typename='baidu'
+    def inittranslator(self)  :  
         self.headers= {
                 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36',
                 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
@@ -34,7 +33,7 @@ class TS(basetrans):
         self.ctx=  EvalJs()
         self.ctx.execute(baidu_js)
         
-    def realfy(self,query): 
+    def translate(self,query): 
         #sign =self.jsrun.call('e', query, self.gtk)
         sign=self.ctx.e(query,self.gtk)
         translate_url = 'https://fanyi.baidu.com/#jp/zh/%s' % ( parse.quote(query))

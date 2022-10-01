@@ -12,8 +12,7 @@ import subprocess
 
 class TS(basetrans):
      
-    def inittranslator(self ) :
-        self.typename='jb7'
+    def inittranslator(self ) : 
         self.path=os.path.join(globalconfig['fanyi']['jb7']['args']['路径'],'JBJCT.dll')
         if platform.architecture()[0]=='32bit':
             self._x64=False
@@ -67,7 +66,7 @@ class TS(basetrans):
         except:
             pass
         return out.value
-    def realfy(self,content): 
+    def translate(self,content): 
         if self._x64:
             return self.x64(content)
         else:

@@ -11,10 +11,8 @@ import random
 import functools
 import urllib
  
-class TS(basetrans):
-    def inittranslator(self):  
-        self.typename='sougou2' 
-    def realfy(self,content): 
+class TS(basetrans): 
+    def translate(self,content): 
                         
             headers = {
                 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',

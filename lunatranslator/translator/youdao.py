@@ -13,8 +13,7 @@ class TS(basetrans):
         i=r+int(10*random.random())
         return {'ts':r,'bv':t,'salt':i,'sign':hashlib.md5(bytes("fanyideskweb" + str(e) + str(i) + "Ygy_4c=r#e#4EX^NUGUc5",encoding='utf-8')).hexdigest()}
         
-    def inittranslator(self):
-        self.typename='youdao'
+    def inittranslator(self): 
         self.headers=  {
             'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
             'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6',
@@ -37,7 +36,7 @@ class TS(basetrans):
         self.session.trust_env=False
         self.session.headers.update(self.headers) 
         self.session.get('https://fanyi.youdao.com')
-    def realfy(self, content):
+    def translate(self, content):
          
         params = {
             'smartresult': [

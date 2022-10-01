@@ -9,8 +9,7 @@ import requests
 import re
 class TS(basetrans):
      
-    def inittranslator(self):
-        self.typename='youdao3' 
+    def inittranslator(self): 
         self.ss=requests.session()
         self.ss.get('https://m.youdao.com/translate',headers =  {
             'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
@@ -29,7 +28,7 @@ class TS(basetrans):
             'sec-ch-ua-mobile': '?0',
             'sec-ch-ua-platform': '"Windows"',
         }, proxies=  {'http': None,'https': None}).text
-    def realfy(self, content):
+    def translate(self, content):
         data = {
             'inputtext': content,
             'type': 'JA2ZH_CN',

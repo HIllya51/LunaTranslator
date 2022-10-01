@@ -90,9 +90,8 @@ class Sogou(Tse):
 
 class TS(basetrans):
     def inittranslator(self): 
-        self.engine=Sogou()
-        self.typename='sougou' 
-    def realfy(self,content): 
+        self.engine=Sogou() 
+    def translate(self,content): 
         try:
             ss=self.engine.sogou_api(content)  
         except  :

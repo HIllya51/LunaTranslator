@@ -84,11 +84,10 @@ from traceback import print_exc
 
 from translator.basetranslator import basetrans
 class TS(basetrans):
-    def inittranslator(self): 
-        self.typename='tencent'
+    def inittranslator(self):  
         self.engine=Tencent()
         self.engine._=None
-    def realfy(self,content): 
+    def translate(self,content): 
         try:
             return self.engine.tencent_api(content)
         except:

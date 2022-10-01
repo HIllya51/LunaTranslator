@@ -93,11 +93,8 @@ def txfy(secretId,secretKey,content):
      
     return (json.loads(responseData)["Response"]["TargetText"])
 class TS(basetrans):
-    
-    def inittranslator(self)  : 
-        self.typename='tencentapi'
-         
-    def realfy(self,query): 
+     
+    def translate(self,query): 
                 
         if os.path.exists(globalconfig['fanyi'][self.typename]['otherpath']) and globalconfig['fanyi'][self.typename]['args']['SecretId']=="":
             with open(globalconfig['fanyi'][self.typename]['otherpath'],'r',encoding='utf8') as ff:

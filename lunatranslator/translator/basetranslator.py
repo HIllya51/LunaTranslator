@@ -8,6 +8,10 @@ import requests
 import traceback
 from threading import Thread
 class basetrans:
+
+    @classmethod
+    def settypename(self,typename):
+        self.typename=typename
     def __init__(self) :
 
         self.queue=Queue() 
@@ -22,37 +26,31 @@ class basetrans:
      
     def inittranslator(self):
         pass
-    def realfy(self,content):
+    def translate(self,content):
         pass
     def show(self,res):
         pass
     def show__(self,res):
         if res!='':
             self.show(res)
-    def _1realfy(self,content):
-        try:
-            return self.realfy(content)
-        except Exception as ex:
-             
-            traceback.print_exc()
-            
-            return ''
+     
     
     def fythread(self):
-        while True:
-            
+        while True: 
             while True:
                 content,skip=self.queue.get()
                 self.newline=content
                 if self.queue.empty():
                     break
+            
+            if globalconfig['fanyi'][self.typename]['use']==False:
+                 
+                break
             if skip:
                 continue
-            if globalconfig['fanyi'][self.typename]['use']==False:
-                continue
             if (set(content) -set('「…」、。？！―'))==set():
-                continue
-            res=self._1realfy(content)
+                continue 
+            res=self.translate(content)
             if res is None:
                 break
             if self.queue.empty() and content==self.newline:

@@ -7,11 +7,8 @@ import json
 from translator.basetranslator import basetrans
 import time
 class TS(basetrans):
-    
-    def inittranslator(self)  : 
-        self.typename='byte'
-          
-    def realfy(self,content): 
+     
+    def translate(self,content): 
                 
                 
         headers = {

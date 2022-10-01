@@ -9,12 +9,9 @@ from translator.basetranslator import basetrans
 from js2py import EvalJs
 import time
 class TS(basetrans):
-    
-    def inittranslator(self)  : 
-        self.typename='qqimt'
-         
+     
         
-    def realfy(self,query):  
+    def translate(self,query):  
         headers = {
             'authority': 'transmart.qq.com',
             'accept': '*/*',

@@ -3,11 +3,8 @@ from translator.basetranslator import basetrans
 import requests
 from traceback import print_exc
 
-class TS(basetrans):
-    def inittranslator(self): 
-        self.typename='caiyun2'
-         
-    def realfy(self,content): 
+class TS(basetrans): 
+    def translate(self,content): 
         try:
             
             headers = {

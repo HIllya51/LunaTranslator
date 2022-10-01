@@ -4,8 +4,7 @@ import requests
 from translator.basetranslator import basetrans
 class TS(basetrans):
     
-    def inittranslator(self):
-        self.typename='ali'
+    def inittranslator(self): 
         self.ss=requests.session()
         self.ss.get('https://translate.alibaba.com',headers = { 
                 'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
@@ -31,7 +30,7 @@ class TS(basetrans):
             }, proxies=  {'http': None,'https': None}).text
           
         self.csrf=self.ss.get('https://translate.alibaba.com/api/translate/csrftoken', proxies=  {'http': None,'https': None}).json()['token']
-    def realfy(self, content):
+    def translate(self, content):
         headers = { 
             'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
             'accept-language': 'zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6',

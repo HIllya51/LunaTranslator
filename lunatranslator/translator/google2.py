@@ -8,8 +8,7 @@ from translator.basetranslator import basetrans
 import time
 class TS(basetrans):
     
-    def inittranslator(self)  : 
-        self.typename='google2'
+    def inittranslator(self)  :  
         
         self.ss=requests.session()
         html=self.ss.get('https://translate.google.cn/',headers = {
@@ -73,7 +72,7 @@ class TS(basetrans):
             print_exc()
             print(response.text)
             return '出错了'
-    def realfy(self,content): 
+    def translate(self,content): 
         s=self.realfy1(content)
         #print(s,time.time()-t1)
         return s  

@@ -7,8 +7,7 @@ from urllib.parse import quote
 from translator.basetranslator import basetrans
 
 class TS(basetrans):
-    def inittranslator(self): 
-        self.typename='bing'
+    def inittranslator(self):  
         self.ss=requests.session()
         self.ss.get('https://cn.bing.com/translator/',headers = { 
                 'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
@@ -51,7 +50,7 @@ class TS(basetrans):
   
     def show(self,res):
         print('必应','\033[0;31;47m',res,'\033[0m',flush=True)
-    def realfy(self,content): 
+    def translate(self,content): 
          
         data = '&fromLang=ja&text='+quote(content)+'&to=zh-Hans&token='+self.token+'&key='+self.key
         self.iid_i+=1

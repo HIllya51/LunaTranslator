@@ -83,11 +83,10 @@ from traceback import print_exc
 
 from translator.basetranslator import basetrans
 class TS(basetrans):
-    def inittranslator(self): 
-        self.typename='ifly'
+    def inittranslator(self):  
         self.engine=IflytekV2()
         self.engine._=None
-    def realfy(self,content): 
+    def translate(self,content): 
         try:
             return self.engine.iflytek_api(content)
         except:

@@ -115,10 +115,9 @@ class MAINUI() :
                     Thread(target=self.fanyiloader,args=(source,)).start()
              
     def fanyiloader(self,classname):
-                if classname in self.translators:
-                    self.translators[classname].__init__()
-                else:
+                  
                     aclass=importlib.import_module('translator.'+classname).TS
+                    aclass.settypename(classname)
                     _=aclass()
                     _.show=partial(self.translation_ui.displayres.emit,classname)
                     self.translators[classname]=_ 

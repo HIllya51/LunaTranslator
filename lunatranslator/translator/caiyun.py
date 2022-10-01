@@ -144,11 +144,10 @@ class Caiyun(Tse):
 from traceback import print_exc
 
 class TS(basetrans):
-    def inittranslator(self): 
-        self.typename='caiyun'
+    def inittranslator(self):  
         self.engine=Caiyun()
         self.engine._=None
-    def realfy(self,content): 
+    def translate(self,content): 
         try:
             return self.engine.caiyun_api(content)
         except:
