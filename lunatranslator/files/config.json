@@ -3,9 +3,9 @@
         432,
         613
     ],
-    "width": 711.2,
+    "width": 672.8,
     "autorun": true,
-    "transparent": 57,
+    "transparent": 47,
     "fontsize": 17.699999999999996,
     "fonttype": "思源黑体 CN Medium",
     "issolid": false,
@@ -128,8 +128,8 @@
                 "注册网址": "https://fanyi-api.baidu.com/api/trans/product/desktop",
                 "APP ID": "",
                 "密钥": "",
-                "字数统计": "5490",
-                "次数统计": "219"
+                "字数统计": "10969",
+                "次数统计": "479"
             },
             "notwriteable": [
                 "注册网址",

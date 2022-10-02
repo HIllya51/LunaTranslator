@@ -58,17 +58,19 @@ class textractor(basetext):
             keyraw=(thread_handle,thread_tp_processId, thread_tp_addr, thread_tp_ctx, thread_tp_ctx2, thread_name,HookCode)
 
             key=keyraw[-4:]
+            
+            if key==self.selectedhook:
+                self.newline.put(output) 
+                self.runonce_line=output
+            if key==self.selectinghook:
+                self.hookselectdialog.getnewsentencesignal.emit(output)
             if key not in self.hookdatacollecter:
                 self.hookdatacollecter[key]=[]
                 self.hookdatasort.append(keyraw)
                 self.hookselectdialog.addnewhooksignal.emit(keyraw ) 
              
-            if self.selectinghook and key==self.selectinghook:
-                self.hookselectdialog.getnewsentencesignal.emit(output)
+            
             #print(self.selectedhook)
-            if self.selectedhook and key==self.selectedhook:
-                self.newline.put(output) 
-                self.runonce_line=output
             self.hookdatacollecter[key].append(output)
              
     def gettextthread(self ):

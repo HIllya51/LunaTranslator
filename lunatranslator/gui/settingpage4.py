@@ -44,7 +44,7 @@ def setTab4(self) :
         
         label = QLabel(self.tab_4)
         self.customSetGeometry(label, 20, 110, 200, 20)
-        label.setText("检测到游戏时自动开始提取文本")
+        label.setText("检测到游戏时自动开始")
         
         self.movefollowswitch =gui.switchbutton.MySwitch(self.tab_4, sign= globalconfig['autostarthook'],textOff='关闭',textOn='使用')
         self.customSetGeometry(self.movefollowswitch, 200, 110,20,20)
