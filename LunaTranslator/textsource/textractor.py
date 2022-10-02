@@ -48,7 +48,7 @@ class textractor(basetext):
          
         self.p.write( QByteArray((f'11\r\n').encode(encoding='utf-16-le'))) 
     def attach(self,pid): 
-        print(f'attach -P{pid}\r\n')
+        #print(f'attach -P{pid}\r\n')
         self.p.write( QByteArray((f'attach -P{pid}\r\n').encode(encoding='utf-16-le'))) 
     def detach(self,pid):
         self.p.write( QByteArray((f'detach -P{pid}\r\n').encode(encoding='utf-16-le'))) 
