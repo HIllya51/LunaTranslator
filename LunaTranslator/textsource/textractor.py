@@ -29,8 +29,8 @@ class textractor(basetext  ):
         self.hookselectdialog=hookselectdialog
         self.p = QProcess()    
         self.p.readyReadStandardOutput.connect(self.handle_stdout)  
-        #self.p.start(f"./files/Textractor/x{arch}/TextractorCLI.exe")
-        self.p.start(r"C:\tmp\textractor_src\Textractor-cmd\builds\RelWithDebInfo_x64\TextractorCLI.exe")
+        self.p.start(f"./files/Textractor/x{arch}/TextractorCLI.exe")
+        #self.p.start(r"C:\tmp\textractor_src\Textractor-cmd\builds\RelWithDebInfo_x64\TextractorCLI.exe")
         self.pid=pid
         self.pname=pname
         self.arch=arch
