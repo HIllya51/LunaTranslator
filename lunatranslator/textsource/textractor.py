@@ -57,7 +57,7 @@ class textractor(basetext):
                 output=output[:-1]
             keyraw=(thread_handle,thread_tp_processId, thread_tp_addr, thread_tp_ctx, thread_tp_ctx2, thread_name,HookCode)
 
-            key=( thread_tp_addr, thread_tp_ctx, thread_tp_ctx2, thread_name,HookCode)
+            key=keyraw[-4:]
             if key not in self.hookdatacollecter:
                 self.hookdatacollecter[key]=[]
                 self.hookdatasort.append(keyraw)

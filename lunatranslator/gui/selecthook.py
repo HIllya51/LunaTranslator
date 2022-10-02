@@ -118,9 +118,9 @@ class hookselect(QMainWindow):
         self.save=[]
         for index in range(len(lst)):   
             ishide=True  
-            for i in range(min(len(self.object.object.textsource.hookdatacollecter[lst[index][2:]]),10)):
+            for i in range(min(len(self.object.object.textsource.hookdatacollecter[lst[index][-4:]]),10)):
                 
-                if searchtext  in self.object.object.textsource.hookdatacollecter[lst[index][2:]][i]:
+                if searchtext  in self.object.object.textsource.hookdatacollecter[lst[index][-4:]][i]:
                     ishide=False
                     break
             if ishide==False:
@@ -191,7 +191,7 @@ class hookselect(QMainWindow):
         try:
             for i in range(len(self.save)):
                 #print(self.save[i][-5:],self.object.object.textsource.selectedhook[-5:])
-                if self.save[i][-5:]==self.object.object.textsource.selectedhook[-5:]:
+                if self.save[i][-4:]==self.object.object.textsource.selectedhook[-4:]:
                     self.ttCombo.setCurrentIndex(i)
                     break
         except:
@@ -211,8 +211,7 @@ class hookselect(QMainWindow):
         key=self.save[ self.ttCombo.currentIndex()]
          
         self.object.object.textsource.selectinghook=key
-        if len(key)==7:
-            key=key[2:]
+        key=key[-4:]
             ##有点晕了，就这么着吧。。
         self.textOutput. setPlainText('\n'.join(self.object.object.textsource.hookdatacollecter[key]))
         self.textOutput. moveCursor(QTextCursor.End)
