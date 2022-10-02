@@ -77,9 +77,14 @@ def autostarthookfunction(self,pid,pname,hookcode):
         self.hookselectdialog.changeprocessclearsignal.emit()
         
         self.object.textsource=textractor(self.object.textgetmethod,self.hookselectdialog,pid,pname,arch) 
-        self.object.textsource.inserthook(hookcode[-1] )
         self.object.textsource.autostart=True
         self.object.textsource.autostarthookcode=hookcode[-1]
+        x=subprocess.run(f'./files/hookcodecheck.exe {hookcode}',stdout=subprocess.PIPE)
+        #print(hookcode,x.stdout[0])
+        if(x.stdout[0]==ord('1')):
+            
+                self.object.textsource.inserthook(hookcode[-1] )
+        
 def getwindowlist():
         windows_list=[]
         pidlist=[]
