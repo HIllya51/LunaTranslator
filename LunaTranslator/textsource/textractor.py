@@ -2,11 +2,11 @@
 from threading import Thread
 import win32pipe, win32file 
 from multiprocessing import Queue 
-from PyQt5.QtCore import QProcess ,QByteArray
+from PyQt5.QtCore import QProcess ,QByteArray 
 import re  
 import time
 from textsource.textsourcebase import basetext 
-class textractor(basetext ):
+class textractor(basetext  ): 
     def __init__(self,textgetmethod,hookselectdialog,pid,pname,arch,autostart=False,autostarthookcode=None) :
         self.newline=Queue() 
         self.reset(textgetmethod,hookselectdialog,pid,pname,arch,autostart,autostarthookcode)
@@ -14,7 +14,7 @@ class textractor(basetext ):
         self.t=Thread(target=self.gettextthread_)
         self.t.setDaemon(True)
         self.t.start()
-        
+         
     def reset(self,textgetmethod,hookselectdialog,pid,pname,arch,autostart=False,autostarthookcode=None)  : 
         
         self.hookdatacollecter={}
@@ -29,7 +29,8 @@ class textractor(basetext ):
         self.hookselectdialog=hookselectdialog
         self.p = QProcess()    
         self.p.readyReadStandardOutput.connect(self.handle_stdout)  
-        self.p.start(f"./files/Textractor/x{arch}/TextractorCLI.exe")
+        #self.p.start(f"./files/Textractor/x{arch}/TextractorCLI.exe")
+        self.p.start(r"C:\tmp\textractor_src\Textractor-cmd\builds\RelWithDebInfo_x64\TextractorCLI.exe")
         self.pid=pid
         self.pname=pname
         self.arch=arch
@@ -49,18 +50,20 @@ class textractor(basetext ):
 
     def inserthook(self,hookcode):
         self.p.write( QByteArray((f'{hookcode} -P{self.pid}\r\r').encode(encoding='utf-16-le'))) 
-        
+        print(111111111111111111111111111111111111111111)
+        print(self.p)
+        #麻了 就是不知道为什么写入不进去。。。
     def exit(self):
         self.p.write( QByteArray((f'11\r\n').encode(encoding='utf-16-le'))) 
     def attach(self,pid): 
-         
+        print(self.p)
         self.p.write( QByteArray((f'attach -P{pid}\r\n').encode(encoding='utf-16-le'))) 
     def detach(self,pid):
         self.p.write( QByteArray((f'detach -P{pid}\r\n').encode(encoding='utf-16-le'))) 
     def handle_stdout(self): 
         data = self.p.readAllStandardOutput()
         stdout = bytes(data).decode("utf16",errors='ignore') 
-         
+        print(stdout)
         reres=self.re.findall(stdout) #re.findall('\[([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):(.*):(.*@.*)\] (.*)\n',stdout)
         for ares in reres:
             thread_handle,thread_tp_processId, thread_tp_addr, thread_tp_ctx, thread_tp_ctx2, thread_name,HookCode,output =ares
