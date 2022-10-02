@@ -17,6 +17,22 @@ import urllib
 import random
 import json
 class TS(basetrans): 
+    @classmethod
+    def defaultsetting(self):
+        return {
+            "args": {
+                "注册网址": "https://fanyi-api.baidu.com/api/trans/product/desktop",
+                "APP ID": "",
+                "密钥": "",
+                "字数统计": "0",
+                "次数统计": "0"
+            },
+            "notwriteable": [
+                "注册网址",
+                "字数统计",
+                "次数统计"
+            ]
+        }
     def inittranslator(self):
         self.session=requests.session()
     def translate(self,query): 

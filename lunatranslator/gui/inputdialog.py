@@ -2,6 +2,8 @@ from PyQt5.QtWidgets import QDialogButtonBox,QDialog,QComboBox,QFormLayout,QSpin
 from PyQt5.QtCore import Qt,QSize
 from utils.config import globalconfig
 import json
+import os
+import importlib
 def GetUserPlotItems(object,name) -> tuple: 
         dialog = QDialog(object)  # 自定义一个dialog
         dialog.setWindowTitle(globalconfig['fanyi'][name]['name']+'设置')
@@ -11,8 +13,12 @@ def GetUserPlotItems(object,name) -> tuple:
         d={}
 
         configfile=globalconfig['fanyi'][name]['argsfile']
-        with open(configfile,'r',encoding='utf8') as ff:
-            js=json.load(ff)
+        if os.path.exists(configfile)==False:
+            aclass=importlib.import_module('translator.'+name).TS
+            js=aclass.defalutsetting()
+        else:
+            with open(configfile,'r',encoding='utf8') as ff:
+                js=json.load(ff)
         for arg in js['args']:
              
             line=QLineEdit(js['args'][arg])

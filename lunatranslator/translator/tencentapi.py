@@ -94,7 +94,22 @@ def txfy(secretId,secretKey,content):
      
     return (json.loads(responseData)["Response"]["TargetText"])
 class TS(basetrans):
-     
+    @classmethod
+    def defalutsetting(self):
+        return {
+            "args": {
+                "注册网址": "https://console.cloud.tencent.com/cam/capi",
+                "SecretId": "",
+                "SecretKey": "",
+                "字数统计": "0",
+                "次数统计": "0"
+            },
+            "notwriteable": [
+                "注册网址",
+                "字数统计",
+                "次数统计"
+            ]
+        }
     def translate(self,query): 
         configfile=globalconfig['fanyi'][self.typename]['argsfile']
         with open(configfile,'r',encoding='utf8') as ff:
