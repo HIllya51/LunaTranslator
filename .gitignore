@@ -5,3 +5,5 @@ lunatranslator/log.txt
 *.pyc
 *.pyc
 *.pyc
+LunaTranslator/txapi.json
+LunaTranslator/txapi1.json
