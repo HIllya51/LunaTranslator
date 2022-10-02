@@ -1,0 +1,14 @@
+{
+    "args": {
+        "注册网址": "https://console.cloud.tencent.com/cam/capi",
+        "SecretId": "AKIDBGH9sSp5B6uXzD1hDVcXGjyzlKeqoY6O",
+        "SecretKey": "FJAmDSVN2UlqhZHrNuLhsqhLm185rRn1",
+        "字数统计": "36",
+        "次数统计": "5"
+    },
+    "notwriteable": [
+        "注册网址",
+        "字数统计",
+        "次数统计"
+    ]
+}

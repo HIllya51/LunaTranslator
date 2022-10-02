@@ -121,40 +121,16 @@
             "name": "iciba"
         },
         "baiduapi": {
-            "use": true,
+            "use": false,
             "color": "#0ff000",
             "name": "百度api",
-            "args": {
-                "注册网址": "https://fanyi-api.baidu.com/api/trans/product/desktop",
-                "APP ID": "",
-                "密钥": "",
-                "字数统计": "10969",
-                "次数统计": "479"
-            },
-            "notwriteable": [
-                "注册网址",
-                "字数统计",
-                "次数统计"
-            ],
-            "otherpath": "C:/dataH/baiduapi.json"
+            "argsfile": "./baiduapi.json"
         },
         "tencentapi": {
             "use": false,
             "color": "#0ff000",
             "name": "腾讯api",
-            "args": {
-                "注册网址": "https://console.cloud.tencent.com/cam/capi",
-                "SecretId": "",
-                "SecretKey": "",
-                "字数统计": "4",
-                "次数统计": "1"
-            },
-            "notwriteable": [
-                "注册网址",
-                "字数统计",
-                "次数统计"
-            ],
-            "otherpath": "C:/dataH/txapi.json"
+            "argsfile": "./txapi.json"
         },
         "byte": {
             "use": true,
@@ -167,7 +143,7 @@
             "name": "cy2"
         },
         "qqimt": {
-            "use": false,
+            "use": true,
             "color": "#0ff000",
             "name": "qqimt"
         }

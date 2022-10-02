@@ -58,7 +58,7 @@ def initfanyiswitchs(self,name,namepos,switchpos,colorpos,settingpos):
      
 
         
-        if 'args' in globalconfig['fanyi'][name]:
+        if 'argsfile' in globalconfig['fanyi'][name]:
             s1 = QPushButton( "", self.tab_2)
             self.customSetIconSize(s1, 20, 20)
             self.customSetGeometry(s1, *settingpos)

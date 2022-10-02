@@ -27,10 +27,9 @@ class hookselect(QMainWindow):
     def changeprocessclear(self):
         self.ttCombo.clear() 
     def addnewhook(self,ss ):
-        
-        thread_handle,thread_tp_processId, thread_tp_addr, thread_tp_ctx, thread_tp_ctx2, thread_name,HookCode=ss 
-        self.save.append((thread_tp_addr, thread_tp_ctx, thread_tp_ctx2, thread_name,HookCode))
-        self.ttCombo.addItem('%s:%s:%s:%s:%s:%s (%s)' %(thread_handle,thread_tp_processId, thread_tp_addr, thread_tp_ctx, thread_tp_ctx2, thread_name,HookCode))
+         
+        self.save.append(ss )
+        self.ttCombo.addItem('%s:%s:%s:%s:%s:%s (%s)' %(ss))
     def setupUi(self  ):
      
         self.resize(1000, 400)
@@ -118,9 +117,9 @@ class hookselect(QMainWindow):
         self.save=[]
         for index in range(len(lst)):   
             ishide=True  
-            for i in range(min(len(self.object.object.textsource.hookdatacollecter[lst[index][-4:]]),10)):
+            for i in range(min(len(self.object.object.textsource.hookdatacollecter[lst[index]]),10)):
                 
-                if searchtext  in self.object.object.textsource.hookdatacollecter[lst[index][-4:]][i]:
+                if searchtext  in self.object.object.textsource.hookdatacollecter[lst[index]][i]:
                     ishide=False
                     break
             if ishide==False:
@@ -138,7 +137,7 @@ class hookselect(QMainWindow):
         if len(hookcode)==0:
             return 
         x=subprocess.run(f'./files/hookcodecheck.exe {hookcode}',stdout=subprocess.PIPE)
-        print(hookcode,x.stdout[0])
+        #print(hookcode,x.stdout[0])
         if(x.stdout[0]==ord('0')):
             self.getnewsentence('！特殊码格式错误！')
             return
@@ -149,9 +148,7 @@ class hookselect(QMainWindow):
         else:
             self.getnewsentence('！未选定进程！')
     def hide(self):
-        if 'realclose' in dir(self):
-            print(3)
-        #print('hide')
+         
         self.hiding=True
         super(QMainWindow,self).hide()
         if 'closed' not in dir(self.object):
@@ -191,7 +188,7 @@ class hookselect(QMainWindow):
         try:
             for i in range(len(self.save)):
                 #print(self.save[i][-5:],self.object.object.textsource.selectedhook[-5:])
-                if self.save[i][-4:]==self.object.object.textsource.selectedhook[-4:]:
+                if self.save[i] ==self.object.object.textsource.selectedhook:
                     self.ttCombo.setCurrentIndex(i)
                     break
         except:
@@ -205,14 +202,14 @@ class hookselect(QMainWindow):
         if (atBottom):
             scrollbar.setValue(scrollbar.maximum())
     def ViewThread(self, index):  
-        #print(self.combo_hook_map)
+        #print(index)
         if  index==-1:
             return 
         key=self.save[ self.ttCombo.currentIndex()]
          
         self.object.object.textsource.selectinghook=key
-        key=key[-4:]
-            ##有点晕了，就这么着吧。。
+        
+        #print(self.save,self.object.object.textsource.hookdatacollecter )
         self.textOutput. setPlainText('\n'.join(self.object.object.textsource.hookdatacollecter[key]))
         self.textOutput. moveCursor(QTextCursor.End)
         

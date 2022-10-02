@@ -30,7 +30,7 @@ class MAINUI() :
     def textgetmethod(self,paste_str,shortlongskip=True):
         if paste_str=='':
             return
-        if len(paste_str)>2000 or   len(paste_str.split('\n'))>20:
+        if len(paste_str)>500 or   len(paste_str.split('\n'))>10:
             return 
         
         postsolve=importlib.import_module('postprocess.post').POSTSOLVE

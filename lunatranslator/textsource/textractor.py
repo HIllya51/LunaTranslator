@@ -28,6 +28,7 @@ class textractor(basetext):
         self.notarch='86' if arch=='64' else '64'
         self.attach(self.pid)
         self.textfilter=''
+        self.autostart=False
         self.HookCode=None 
         self.userinserthookcode=[]
         self.runonce_line=''
@@ -55,24 +56,27 @@ class textractor(basetext):
                 output=output[:-1]
             if output[-1]=='\r':
                 output=output[:-1]
-            keyraw=(thread_handle,thread_tp_processId, thread_tp_addr, thread_tp_ctx, thread_tp_ctx2, thread_name,HookCode)
-
-            key=keyraw[-4:]
+            key =(thread_handle,thread_tp_processId, thread_tp_addr, thread_tp_ctx, thread_tp_ctx2, thread_name,HookCode)
+ 
             
             if key==self.selectedhook:
                 self.newline.put(output) 
                 self.runonce_line=output
-            if key==self.selectinghook:
-                self.hookselectdialog.getnewsentencesignal.emit(output)
+            
             if key not in self.hookdatacollecter:
+                if self.autostart:
+                    if self.autostarthookcode==HookCode:
+
+                        self.selectedhook=self.selectinghook=key
+                        self.autostart=False
                 self.hookdatacollecter[key]=[]
-                self.hookdatasort.append(keyraw)
-                self.hookselectdialog.addnewhooksignal.emit(keyraw ) 
-             
+                self.hookdatasort.append(key)
+                self.hookselectdialog.addnewhooksignal.emit(key  ) 
             
             #print(self.selectedhook)
             self.hookdatacollecter[key].append(output)
-             
+            if key==self.selectinghook:
+                self.hookselectdialog.getnewsentencesignal.emit(output)
     def gettextthread(self ):
 
             paste_str=self.newline.get()

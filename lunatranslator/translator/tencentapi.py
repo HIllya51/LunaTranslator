@@ -1,4 +1,5 @@
 
+from distutils.command.config import config
 from traceback import print_exc 
  
 import requests
@@ -89,29 +90,30 @@ def txfy(secretId,secretKey,content):
     
     responseData = requests.get(requestUrlWithArgs,timeout=5, proxies=  {'http': None,'https': None}).text
 
-    print(responseData)
+    #print(responseData)
      
     return (json.loads(responseData)["Response"]["TargetText"])
 class TS(basetrans):
      
     def translate(self,query): 
-                
-        if os.path.exists(globalconfig['fanyi'][self.typename]['otherpath']) and globalconfig['fanyi'][self.typename]['args']['SecretId']=="":
-            with open(globalconfig['fanyi'][self.typename]['otherpath'],'r',encoding='utf8') as ff:
-                js=json.load(ff)
-            appid=js['SecretId']
-            secretKey=js['SecretKey']
+        configfile=globalconfig['fanyi'][self.typename]['argsfile']
+        with open(configfile,'r',encoding='utf8') as ff:
+            js=json.load(ff)
+        if js['args']['SecretId']=="":
+            return 
         else:
-            appid = globalconfig['fanyi'][self.typename]['args']['SecretId']
-            secretKey = globalconfig['fanyi'][self.typename]['args']['SecretKey']
+            appid = js['args']['SecretId']
+            secretKey =js['args']['SecretKey']
    
         try:
-            globalconfig['fanyi'][self.typename]['args']['字数统计']=str(int(globalconfig['fanyi'][self.typename]['args']['字数统计'])+len(query))
-            globalconfig['fanyi'][self.typename]['args']['次数统计']=str(int(globalconfig['fanyi'][self.typename]['args']['次数统计'])+1)
-            with open('./files/config.json','w',encoding='utf-8') as ff:
-                ff.write(json.dumps(globalconfig,ensure_ascii=False,sort_keys=False, indent=4))
-            return txfy(appid,secretKey,query)
+            js['args']['字数统计']=str(int(js['args']['字数统计'])+len(query))
+            js['args']['次数统计']=str(int(js['args']['次数统计'])+1)
+            with open(configfile,'w',encoding='utf-8') as ff:
+                ff.write(json.dumps(js,ensure_ascii=False,sort_keys=False, indent=4))
+            ret=txfy(appid,secretKey,query)
+            return ret
         except:
+
             print_exc()
             return '出错了'
      

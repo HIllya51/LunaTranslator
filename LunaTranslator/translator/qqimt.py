@@ -25,11 +25,14 @@ class TS(basetrans):
             'sec-fetch-site': 'none',
             'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36 Edg/105.0.1343.53',
         }
-        data = '{"header":{"fn":"auto_translation_block","client_key":"ddsdasdsadasuMzYg"},"source":{"lang":"ja","text_block":"'+query+'","orig_text_block":"","orig_url":"https://www.baidu.com/"},"target":{"lang":"zh"}}'.encode("utf-8").decode("latin1")
+        data = '{"header":{"fn":"auto_translation_block","client_key":"ddsdasdsadasuMzYg"},"source":{"lang":"ja","text_block":"'+query+'","orig_text_block":"","orig_url":"https://www.baidu.com/"},"target":{"lang":"zh"}}'
+        data=data.encode("utf-8").decode("latin1")
         try:
             response = requests.post('https://transmart.qq.com/api/imt',  headers=headers, data=data,timeout=5,proxies=  {'http': None,'https': None})
             return response.json()['auto_translation']
         except:
+            #print(response.json())
+            print_exc()
             return '出错了'
     def show(self,res):
         print('百度','\033[0;32;47m',res,'\033[0m',flush=True)

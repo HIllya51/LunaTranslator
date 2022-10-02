@@ -20,15 +20,14 @@ class TS(basetrans):
     def inittranslator(self):
         self.session=requests.session()
     def translate(self,query): 
-                
-        if os.path.exists(globalconfig['fanyi'][self.typename]['otherpath']) and globalconfig['fanyi'][self.typename]['args']['APP ID']=="":
-            with open(globalconfig['fanyi'][self.typename]['otherpath'],'r',encoding='utf8') as ff:
-                js=json.load(ff)
-            appid=js['APP ID']
-            secretKey=js['密钥']
+        configfile=globalconfig['fanyi'][self.typename]['argsfile']
+        with open(configfile,'r',encoding='utf8') as ff:
+            js=json.load(ff)
+        if js['args']['APP ID']=="":
+            return 
         else:
-            appid = globalconfig['fanyi'][self.typename]['args']['APP ID']
-            secretKey = globalconfig['fanyi'][self.typename]['args']['密钥']
+            appid = js['args']['APP ID']
+            secretKey = js['args']['密钥']
   
         myurl = '/api/trans/vip/translate'
 
@@ -42,10 +41,10 @@ class TS(basetrans):
         salt) + '&sign=' + sign
         try:
             res=self.session.get('https://api.fanyi.baidu.com'+myurl,timeout=5, proxies=  {'http': None,'https': None}).json()  
-            globalconfig['fanyi'][self.typename]['args']['字数统计']=str(int(globalconfig['fanyi'][self.typename]['args']['字数统计'])+len(query))
-            globalconfig['fanyi'][self.typename]['args']['次数统计']=str(int(globalconfig['fanyi'][self.typename]['args']['次数统计'])+1)
-            with open('./files/config.json','w',encoding='utf-8') as ff:
-                ff.write(json.dumps(globalconfig,ensure_ascii=False,sort_keys=False, indent=4))
+            js['args']['字数统计']=str(int(js['args']['字数统计'])+len(query))
+            js['args']['次数统计']=str(int(js['args']['次数统计'])+1)
+            with open(configfile,'w',encoding='utf-8') as ff:
+                ff.write(json.dumps(js,ensure_ascii=False,sort_keys=False, indent=4))
             #print(res['trans_result'][0]['dst'])
             return res['trans_result'][0]['dst']
         except:
