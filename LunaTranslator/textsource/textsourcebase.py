@@ -19,6 +19,7 @@ class basetext:
                 time.sleep(1)
                 continue
             self.gettextthread()
+         
     def gettextthread(self):
         pass
     def runonce(self):

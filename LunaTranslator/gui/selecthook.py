@@ -26,6 +26,7 @@ class hookselect(QMainWindow):
         self.setWindowTitle('选择文本')
     def changeprocessclear(self):
         self.ttCombo.clear() 
+        self.save=[]
     def addnewhook(self,ss ):
          
         self.save.append(ss )
@@ -172,6 +173,7 @@ class hookselect(QMainWindow):
             if self.object.object.textsource.selectinghook is None:
                 return
             self.object.object.textsource.selectedhook=self.object.object.textsource.selectinghook
+            
             if not os.path.exists('./files/savehook.json'):
                     js={}
             else:
@@ -209,7 +211,8 @@ class hookselect(QMainWindow):
          
         self.object.object.textsource.selectinghook=key
         
-        #print(self.save,self.object.object.textsource.hookdatacollecter )
+        #print(self.save,self.object.object.textsource.hookdatacollecter.keys() )
+        #print(self.object.object.textsource)
         self.textOutput. setPlainText('\n'.join(self.object.object.textsource.hookdatacollecter[key]))
         self.textOutput. moveCursor(QTextCursor.End)
         

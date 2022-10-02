@@ -60,7 +60,7 @@ def setTabOne(self) :
         label = QLabel(self.tab_1)
         self.customSetGeometry(label, 600, 70, 110, 20)
         label.setText("选择游戏")
-
+ 
         
         self.selecthookbutton = QPushButton( "", self.tab_1)
         self.customSetIconSize(self.selecthookbutton, 20, 20)
@@ -111,15 +111,17 @@ def settingtextractor(self):
             except:
                 self.show()
                 return 
-            if pid==self.hookpid:
-                self.show()
-                return
+            # if pid==self.hookpid:
+            #     self.show()
+            #     return
             try:
                 process=win32api.OpenProcess(2097151,False, pid) #PROCESS_ALL_ACCESS
             except pywintypes.error:
                 self.object.translation_ui.displayraw.emit(f'打开进程失败！','#ff0000') 
                 return
-            if 'textsource' in dir(self.object) and self.object.textsource and self.object.textsource.ending==False:
+
+            
+            if   self.object.textsource:
                 self.object.textsource.end() 
                 self.object.hookselectdialog=gui.selecthook.hookselect(self )
             else:
@@ -128,7 +130,13 @@ def settingtextractor(self):
             self.hookpid=pid
             self.hookhwnd=hwnd
             self.hookselectdialog.changeprocessclearsignal.emit()
-            self.object.textsource=textractor(self.object.textgetmethod,self.hookselectdialog,pid,pexe,arch) 
+            if self.object.savetextractor:
+                self.object.textsource=self.object.savetextractor
+                self.object.textsource.reset(self.object.textgetmethod,self.hookselectdialog,pid,pexe,arch)
+
+            else:
+                self.object.textsource=textractor(self.object.textgetmethod,self.hookselectdialog,pid,pexe,arch) 
+                self.object.savetextractor=self.object.textsource
             # if not os.path.exists('./files/savehook.json'):
             #     js={}
             # with open('./files/savehook.json','r',encoding='utf8') as ff:

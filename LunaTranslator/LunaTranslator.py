@@ -27,6 +27,8 @@ class MAINUI() :
         self.translators={}
         self.reader=None
         self.rect=None
+        self.textsource=None
+        self.savetextractor=None
     def textgetmethod(self,paste_str,shortlongskip=True):
         if paste_str=='':
             return
@@ -79,7 +81,7 @@ class MAINUI() :
                 self.textsource=None
             elif use=='textractor':
                 #from textsource.textractor import textractor 
-                self.textsource=None
+                 
                 pass
             elif use=='ocr':
                 from textsource.ocrtext import ocrtext
@@ -125,6 +127,7 @@ class MAINUI() :
      
     def aa(self):
         t1=time.time()
+        
         self.translation_ui =gui.translatorUI.QUnFrameWindow(self)  
         self.translation_ui.show()     
 

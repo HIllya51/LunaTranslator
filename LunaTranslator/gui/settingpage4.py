@@ -64,7 +64,7 @@ def setTab4(self) :
         self.minmaxmoveobservethread.start()
 
         self.autostarthooksignal.connect(functools.partial(autostarthookfunction,self))
-def autostarthookfunction(self,pid,pname,hookcode):
+def autostarthookfunction(self,pid,pexe,hookcode):
         try:
                 process=win32api.OpenProcess(2097151,False, pid) #PROCESS_ALL_ACCESS
         except  : 
@@ -75,11 +75,13 @@ def autostarthookfunction(self,pid,pname,hookcode):
         self.hookpid=pid
         from textsource.textractor import textractor
         self.hookselectdialog.changeprocessclearsignal.emit()
-        
-        self.object.textsource=textractor(self.object.textgetmethod,self.hookselectdialog,pid,pname,arch) 
-        self.object.textsource.inserthook(hookcode[-1] )
-        self.object.textsource.autostart=True
-        self.object.textsource.autostarthookcode=hookcode[-1]
+        if self.object.savetextractor:
+                self.object.textsource=self.object.savetextractor
+                self.object.textsource.reset(self.object.textgetmethod,self.hookselectdialog,pid,pexe,arch,True,hookcode[-1])
+
+        else:
+                self.object.textsource=textractor(self.object.textgetmethod,self.hookselectdialog,pid,pexe,arch,True,hookcode[-1]) 
+                self.object.savetextractor=self.object.textsource
 def getwindowlist():
         windows_list=[]
         pidlist=[]
