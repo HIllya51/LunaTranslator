@@ -4,6 +4,7 @@ import win32pipe, win32file
 from multiprocessing import Queue 
 from PyQt5.QtCore import QProcess ,QByteArray
 import re  
+import subprocess
 import time
 from textsource.textsourcebase import basetext 
 class textractor(basetext):
@@ -42,7 +43,12 @@ class textractor(basetext):
         print('end')
     def inserthook(self,hookcode):
         print(f'{hookcode} -P{self.pid}\r\n')
-        #self.p.write( QByteArray((f'{hookcode} -P{self.pid}\r\n').encode(encoding='utf-16-le'))) 
+        x=subprocess.run(f'./files/hookcodecheck.exe {hookcode}',stdout=subprocess.PIPE)
+        #print(hookcode,x.stdout[0])
+        if(x.stdout[0]==ord('0')):
+            print('error code')
+            return 
+        self.p.write( QByteArray((f'{hookcode} -P{self.pid}\r\n').encode(encoding='utf-16-le'))) 
         
     def exit(self):
          
