@@ -112,11 +112,8 @@ class TS(basetrans):
         }
     def translate(self,query): 
         configfile=globalconfig['fanyi'][self.typename]['argsfile']
-        if os.path.exists(configfile):
-            with open(configfile,'r',encoding='utf8') as ff:
-                js=json.load(ff)
-        else:
-            js=self.defaultsetting()
+        with open(configfile,'r',encoding='utf8') as ff:
+            js=json.load(ff)
         if js['args']['SecretId']=="":
             return 
         else:

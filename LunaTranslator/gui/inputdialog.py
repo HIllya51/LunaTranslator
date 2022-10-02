@@ -15,7 +15,7 @@ def GetUserPlotItems(object,name) -> tuple:
         configfile=globalconfig['fanyi'][name]['argsfile']
         if os.path.exists(configfile)==False:
             aclass=importlib.import_module('translator.'+name).TS
-            js=aclass.defaultsetting()
+            js=aclass.defalutsetting()
         else:
             with open(configfile,'r',encoding='utf8') as ff:
                 js=json.load(ff)

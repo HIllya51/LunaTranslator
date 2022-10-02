@@ -121,7 +121,7 @@
             "name": "iciba"
         },
         "baiduapi": {
-            "use": true,
+            "use": false,
             "color": "#0ff000",
             "name": "百度api",
             "argsfile": "./baiduapi.json"
@@ -133,7 +133,7 @@
             "argsfile": "./txapi.json"
         },
         "byte": {
-            "use": false,
+            "use": true,
             "color": "#0ff000",
             "name": "byte"
         },
@@ -143,7 +143,7 @@
             "name": "cy2"
         },
         "qqimt": {
-            "use": false,
+            "use": true,
             "color": "#0ff000",
             "name": "qqimt"
         }
