@@ -7,3 +7,4 @@ lunatranslator/log.txt
 *.pyc
 LunaTranslator/txapi.json
 LunaTranslator/txapi1.json
+LunaTranslator/baiduapi.json
