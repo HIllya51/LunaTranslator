@@ -476,8 +476,8 @@ class QUnFrameWindow(QWidget):
         # for hookID in self.object.settin_ui.hooks:
         #     ctypes.windll.user32.UnhookWinEvent(hookID)
         #print(aa)  
-        
-        self.object.textsource.end()
+        if self.object.textsource:
+            self.object.textsource.end()
         
         self.close() 
         #print('closed')

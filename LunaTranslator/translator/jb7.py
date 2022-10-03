@@ -7,13 +7,28 @@ import platform
 import ctypes
 import re
 import os
+import json
 from utils.config import globalconfig
 import subprocess
 
 class TS(basetrans):
-     
+    @classmethod
+    def defaultsetting(self):
+        return {
+            "args": {
+                "路径": "" 
+            } 
+        }
     def inittranslator(self ) : 
-        self.path=os.path.join(globalconfig['fanyi']['jb7']['args']['路径'],'JBJCT.dll')
+        configfile=globalconfig['fanyi'][self.typename]['argsfile']
+        with open(configfile,'r',encoding='utf8') as ff:
+            js=json.load(ff)
+        if js['args']['路径']=="":
+            return 
+        else:
+            path = js['args']['路径'] 
+  
+        self.path=os.path.join(path,'JBJCT.dll')
         if platform.architecture()[0]=='32bit':
             self._x64=False
             try:

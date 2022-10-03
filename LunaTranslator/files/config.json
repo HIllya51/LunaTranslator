@@ -31,6 +31,17 @@
         "textractor": false,
         "textractor_pipe": false
     },
+    "ocr": {
+        "local": {
+            "use": true,
+            "name": "本地OCR"
+        },
+        "baidu": {
+            "use": false,
+            "name": "baiduOCR",
+            "argsfile": "./userconfigs/baiduocr.json"
+        }
+    },
     "fanyi": {
         "baidu": {
             "use": true,
@@ -83,12 +94,10 @@
             "name": "deepl"
         },
         "jb7": {
-            "use": false,
+            "use": true,
             "color": "#1839f0",
             "name": "Jbeijing7",
-            "args": {
-                "路径": "C:\\dataH\\JBeijing7\\"
-            }
+            "argsfile": "./userconfigs/jbj7.json"
         },
         "sougou2": {
             "use": false,
@@ -124,13 +133,13 @@
             "use": false,
             "color": "#0ff000",
             "name": "百度api",
-            "argsfile": "./baiduapi.json"
+            "argsfile": "./userconfigs/baiduapi.json"
         },
         "tencentapi": {
             "use": true,
             "color": "#0ff000",
             "name": "腾讯api",
-            "argsfile": "./txapi.json"
+            "argsfile": "./userconfigs/txapi.json"
         },
         "byte": {
             "use": false,

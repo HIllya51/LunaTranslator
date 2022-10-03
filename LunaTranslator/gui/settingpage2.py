@@ -7,7 +7,7 @@ import qtawesome
 import gui.switchbutton
 import gui.attachprocessdialog  
 import gui.selecthook 
-
+import importlib
 from gui.inputdialog import GetUserPlotItems
 def setTabTwo(self) :
  
@@ -65,5 +65,7 @@ def initfanyiswitchs(self,name,namepos,switchpos,colorpos,settingpos):
             s1.setStyleSheet("background: transparent;") 
             
             s1.setIcon(qtawesome.icon("fa.gear", color="#FF69B4"  ))
-            s1.clicked.connect(lambda x:GetUserPlotItems(self,name))
+            aclass=importlib.import_module('translator.'+name).TS
+            df=aclass.defaultsetting()
+            s1.clicked.connect(lambda x:GetUserPlotItems(self,globalconfig['fanyi'][name]['argsfile'],df,globalconfig['fanyi'][name]['name']+'设置'))
      
