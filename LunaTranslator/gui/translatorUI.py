@@ -48,9 +48,11 @@ class QUnFrameWindow(QWidget):
         if code==3:
             if self.hideshownotauto:
                 self.show()
+                globalconfig['autorun']=True
         elif code==4:
             if self.hideshownotauto:
                 self.hide() 
+                globalconfig['autorun']=False
         elif code==5:
             #print(self.pos())
             #self.move(self.pos() + self._endPos)
@@ -105,9 +107,11 @@ class QUnFrameWindow(QWidget):
                     self.hide_and_disableautohide()
     def hide_and_disableautohide(self):
         self.hideshownotauto=False
+        globalconfig['autorun']=False
         self.hide()
     def show_and_enableautohide(self):
         self.hideshownotauto=True
+        globalconfig['autorun']=True
         self.show()
     def startprocessfunction(self,path,stdoutcallback):
         if 'p' in dir(self):
@@ -125,6 +129,7 @@ class QUnFrameWindow(QWidget):
         super(QUnFrameWindow, self).__init__(
             None, Qt.FramelessWindowHint|Qt.WindowStaysOnTopHint|Qt.Tool)  # 设置为顶级窗口，无边框
         self.object = object
+        
         self.rate = self.object.screen_scale_rate 
         self.startprocessignal.connect(self.startprocessfunction)
         self.writeprocesssignal.connect(self.writeprocess)
