@@ -95,7 +95,7 @@ def txfy(secretId,secretKey,content):
     return (json.loads(responseData)["Response"]["TargetText"])
 class TS(basetrans):
     @classmethod
-    def defalutsetting(self):
+    def defaultsetting(self):
         return {
             "args": {
                 "注册网址": "https://console.cloud.tencent.com/cam/capi",

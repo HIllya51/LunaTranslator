@@ -127,7 +127,7 @@
             "argsfile": "./baiduapi.json"
         },
         "tencentapi": {
-            "use": false,
+            "use": true,
             "color": "#0ff000",
             "name": "腾讯api",
             "argsfile": "./txapi.json"
