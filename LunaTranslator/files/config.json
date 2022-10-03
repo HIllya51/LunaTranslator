@@ -33,13 +33,23 @@
     },
     "ocr": {
         "local": {
-            "use": true,
+            "use": false,
             "name": "本地OCR"
         },
         "baiduocr": {
             "use": false,
             "name": "baiduOCR",
             "argsfile": "./userconfigs/baiduocr.json"
+        },
+        "ocrspace": {
+            "use": false,
+            "name": "ocrspace",
+            "argsfile": "./userconfigs/ocrspace.json"
+        },
+        "docsumo": {
+            "use": true,
+            "name": "docsumo",
+            "argsfile": "./userconfigs/docsumo.json"
         }
     },
     "fanyi": {

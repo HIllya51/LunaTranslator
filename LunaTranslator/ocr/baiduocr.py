@@ -69,7 +69,7 @@ def ocr(imgfile):
     with open(configfile,'w',encoding='utf-8') as ff:
         ff.write(json.dumps(js,ensure_ascii=False,sort_keys=False, indent=4))
     response = requests.post('https://aip.baidubce.com/rest/2.0/ocr/v1/general_basic', params=params, headers=headers, data=data, proxies=  {'http': None,'https': None})
-    return response.json()['words_result'][0]['words']
+    return ''.join([x['words']  for x in response.json()['words_result']])
 
 if __name__=="__main__":
     baiduocr('1.jpg')

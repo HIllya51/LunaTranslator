@@ -1,5 +1,6 @@
 import functools
-import sys 
+import sys
+from threading import Thread 
 import time
 t1=time.time()
 import os
@@ -290,8 +291,7 @@ class QUnFrameWindow(QWidget):
     # 按下翻译键
     def startTranslater(self) :
         if hasattr(self.object,'textsource') and  self.object.textsource :
-             
-            self.object.textsource.runonce()
+            Thread(target=self.object.textsource.runonce).start()
          
     def initDrag(self):
         # 设置鼠标跟踪判断扳机默认值

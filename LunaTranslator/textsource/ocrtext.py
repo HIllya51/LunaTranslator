@@ -1,5 +1,6 @@
  
-import time 
+import time
+from traceback import print_exc 
 
 from utils.config import globalconfig 
 def ssim_2(img1, img2):
@@ -151,7 +152,10 @@ class ocrtext(basetext):
         if use=='local':
             return self.ocr.ocr(img)
         else:
-
-            ocr=importlib.import_module('ocr.'+use).ocr
-            cv2.imwrite('./tmp.jpg',img)
-            return ocr('./tmp.jpg')
+            try:
+                ocr=importlib.import_module('ocr.'+use).ocr
+                cv2.imwrite('./tmp.jpg',img)
+                return ocr('./tmp.jpg')
+            except:
+                print_exc()
+                return ''
