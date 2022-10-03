@@ -21,6 +21,8 @@ class TS(basetrans):
         }
     def inittranslator(self ) : 
         configfile=globalconfig['fanyi'][self.typename]['argsfile']
+        if os.path.exists(configfile) ==False:
+            return 
         with open(configfile,'r',encoding='utf8') as ff:
             js=json.load(ff)
         if js['args']['路径']=="":

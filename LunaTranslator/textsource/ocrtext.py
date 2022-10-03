@@ -1,6 +1,7 @@
  
 import time 
- 
+
+from utils.config import globalconfig 
 def ssim_2(img1, img2):
     """Calculate SSIM (structural similarity) for one channel images.
     It is called by func:`calculate_ssim`.
@@ -32,7 +33,8 @@ def ssim_2(img1, img2):
                 (2 * sigma12 + C2)) / ((mu1_sq + mu2_sq + C1) *
                                        (sigma1_sq + sigma2_sq + C2))
     return ssim_map.mean()
- 
+
+import importlib
 import cv2
 from difflib import SequenceMatcher
 import numpy as np 
@@ -113,7 +115,7 @@ class ocrtext(basetext):
             else:
                 self.savelastimgsim=self.image_score
                 return 
-            text=self.ocr.ocr(imgr)
+            text=self.ocrtest(imgr)
             if self.savelasttext is not None:
                 sim=getEqualRate(self.savelasttext,text)
                 #print('text',sim)
@@ -134,5 +136,22 @@ class ocrtext(basetext):
         img=self.imageCut(self.object.rect[0][0],self.object.rect[0][1],self.object.rect[1][0],self.object.rect[1][1])
         
         
-        text=self.ocr.ocr(img)
+
+        text=self.ocrtest(img)
         self.textgetmethod(text,False)
+    def ocrtest(self,img):
+        use=None
+        for k in globalconfig['ocr']:
+            if globalconfig['ocr'][k]['use']==True:
+                use=k
+                break
+        if use is None:
+            return ''
+        
+        if use=='local':
+            return self.ocr.ocr(img)
+        else:
+
+            ocr=importlib.import_module('ocr.'+use).ocr
+            cv2.imwrite('./tmp.jpg',img)
+            return ocr('./tmp.jpg')

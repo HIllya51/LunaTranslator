@@ -37,6 +37,8 @@ class TS(basetrans):
         self.session=requests.session()
     def translate(self,query): 
         configfile=globalconfig['fanyi'][self.typename]['argsfile']
+        if os.path.exists(configfile) ==False:
+            return 
         with open(configfile,'r',encoding='utf8') as ff:
             js=json.load(ff)
         if js['args']['APP ID']=="":

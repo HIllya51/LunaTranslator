@@ -20,6 +20,7 @@ import urllib.request
 import time
 import random
 import requests
+import os
 def sign(secretKey, signStr, signMethod): 
     if sys.version_info[0] > 2:
         signStr = signStr.encode("utf-8")
@@ -105,6 +106,8 @@ class TS(basetrans):
         }
     def translate(self,query): 
         configfile=globalconfig['fanyi'][self.typename]['argsfile']
+        if os.path.exists(configfile) ==False:
+            return 
         with open(configfile,'r',encoding='utf8') as ff:
             js=json.load(ff)
         if js['args']['SecretId']=="":
