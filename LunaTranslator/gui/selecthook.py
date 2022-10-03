@@ -110,7 +110,7 @@ class hookselect(QMainWindow):
     def searchtextfunc(self):
         searchtext=self.searchtext.text()
         try:
-            lst=self.object.object.textsource.hookdatasort
+            lst=self.object.textsource.hookdatasort
         except:
             return 
         self.ttCombo.blockSignals(True)
@@ -118,9 +118,9 @@ class hookselect(QMainWindow):
         self.save=[]
         for index in range(len(lst)):   
             ishide=True  
-            for i in range(min(len(self.object.object.textsource.hookdatacollecter[lst[index]]),10)):
+            for i in range(min(len(self.object.textsource.hookdatacollecter[lst[index]]),10)):
                 
-                if searchtext  in self.object.object.textsource.hookdatacollecter[lst[index]][i]:
+                if searchtext  in self.object.textsource.hookdatacollecter[lst[index]][i]:
                     ishide=False
                     break
             if ishide==False:
@@ -143,9 +143,9 @@ class hookselect(QMainWindow):
             self.getnewsentence('！特殊码格式错误！')
             return
         
-        if 'textsource' in dir(self.object.object):
+        if 'textsource' in dir(self.object):
 
-            self.object.object.textsource.inserthook(hookcode)
+            self.object.textsource.inserthook(hookcode)
         else:
             self.getnewsentence('！未选定进程！')
     def hide(self):
@@ -153,7 +153,7 @@ class hookselect(QMainWindow):
         self.hiding=True
         super(QMainWindow,self).hide()
         if 'closed' not in dir(self.object):
-            self.object.show()
+            self.object.translation_ui.show()
     
     # 窗口关闭处理
     def closeEvent(self, event) : 
@@ -168,29 +168,29 @@ class hookselect(QMainWindow):
         self.hiding=True
         self.hide()
         try:
-            if  self.object.object.textsource is None:
+            if  self.object.textsource is None:
                 return 
-            if self.object.object.textsource.selectinghook is None:
+            if self.object.textsource.selectinghook is None:
                 return
-            self.object.object.textsource.selectedhook=self.object.object.textsource.selectinghook
+            self.object.textsource.selectedhook=self.object.textsource.selectinghook
             
             if not os.path.exists('./files/savehook.json'):
                     js={}
             else:
                 with open('./files/savehook.json','r',encoding='utf8') as ff:
                     js=json.load(ff)
-            js[self.object.object.textsource.pname]=self.object.object.textsource.selectedhook
+            js[self.object.textsource.pname]=self.object.textsource.selectedhook
             with open('./files/savehook.json','w',encoding='utf8') as ff:
                 ff.write(json.dumps(js,ensure_ascii=False))
         except:
             print_exc()
-        self.object.show()
+        self.object.translation_ui.show()
     def show(self):
         super(QMainWindow,self).show()
         try:
             for i in range(len(self.save)):
                 #print(self.save[i][-5:],self.object.object.textsource.selectedhook[-5:])
-                if self.save[i] ==self.object.object.textsource.selectedhook:
+                if self.save[i] ==self.object.textsource.selectedhook:
                     self.ttCombo.setCurrentIndex(i)
                     break
         except:
@@ -209,11 +209,11 @@ class hookselect(QMainWindow):
             return 
         key=self.save[ self.ttCombo.currentIndex()]
          
-        self.object.object.textsource.selectinghook=key
+        self.object.textsource.selectinghook=key
         
         #print(self.save,self.object.object.textsource.hookdatacollecter.keys() )
         #print(self.object.object.textsource)
-        self.textOutput. setPlainText('\n'.join(self.object.object.textsource.hookdatacollecter[key]))
+        self.textOutput. setPlainText('\n'.join(self.object.textsource.hookdatacollecter[key]))
         self.textOutput. moveCursor(QTextCursor.End)
         
 # if __name__=="__main__":

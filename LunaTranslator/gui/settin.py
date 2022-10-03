@@ -54,8 +54,8 @@ class Settin(QMainWindow) :
         self.usevoice=0
      
     def hideEvent(self,e):
-        if self.hookselectdialog.hiding==False:
-            self.hookselectdialog.hide()
+        if self.object.hookselectdialog.hiding==False:
+            self.object.hookselectdialog.hide()
         if 'a' in dir(self):
             self.a.close()
     

@@ -13,8 +13,8 @@ from PyQt5.QtWidgets import  QApplication
 import utils.screen_rate  
 from utils.wrapper import timer,threader 
 import gui.rangeselect   
-import gui.settin   
-import gui.selecthook   
+import gui.settin    
+import gui.selecthook
 import gui.translatorUI
 from utils.config import globalconfig 
 import importlib
@@ -138,6 +138,7 @@ class MAINUI() :
         self.settin_ui =gui.settin.Settin(self) 
         self.startreader() 
         self.range_ui =gui.rangeselect.rangeadjust(self)   
+        self.hookselectdialog=gui.selecthook.hookselect(self )
         #self.translation_ui.displayraw.emit('欢迎','#0000ff')
         #print(time.time()-t1)
     def main(self) : 

@@ -4,7 +4,7 @@ from PyQt5.QtCore import QProcess,QByteArray
 import sys
 
 
-class MainWindow(QMainWindow):
+class MainWindow(QWidget):
 
     def __init__(self):
         super().__init__()
@@ -19,11 +19,8 @@ class MainWindow(QMainWindow):
         l = QVBoxLayout()
         l.addWidget(self.btn)
         l.addWidget(self.text)
-
-        w = QWidget()
-        w.setLayout(l)
-
-        self.setCentralWidget(w)
+ 
+        self.setLayout(l)
 
     def message(self, s):
         self.text.appendPlainText(s)
@@ -38,11 +35,11 @@ class MainWindow(QMainWindow):
             self.p.finished.connect(self.process_finished)  # Clean up once complete.
             self.p.start(r'C:\dataH\Textractor5.20\x64\TextractorCLI.exe')
          
-            self.p.write(('attach -P21048\r\n'.encode('utf-16-le')))
+            self.p.write(('attach -P24512\r\n'.encode('utf-16-le')))
              
         else:
             ##inserthook必须重新手动按一下，一起写入就会结束？？？？
-            self.p.write(('HS-24@0:kernel32.dll:lstrcpyA -P21048\r\n'.encode('utf-16-le')))
+            self.p.write(('HS-24@0:kernel32.dll:lstrcpyA -P24512\r\n'.encode('utf-16-le')))
             
     def handle_stderr(self):
         data = self.p.readAllStandardError()
@@ -67,10 +64,4 @@ class MainWindow(QMainWindow):
         self.message("Process finished.")
         self.p = None
 
-
-app = QApplication(sys.argv)
-
-w = MainWindow()
-w.show()
-
-app.exec_()
+ 

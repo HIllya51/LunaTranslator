@@ -1,3 +1,4 @@
+import functools
 import sys 
 import time
 t1=time.time()
@@ -9,7 +10,7 @@ from PyQt5.QtGui import QPen,QColor,QFont,QTextCharFormat ,QIcon,QPixmap
 from PyQt5.QtWidgets import  QLabel,QTextBrowser,QPushButton ,QSystemTrayIcon ,QAction,QMenu
 import pyperclip
 
-
+from PyQt5.QtCore import QProcess ,QByteArray ,QTimer
 from utils.config import globalconfig
  
 import gui.rangeselect
@@ -36,9 +37,10 @@ class QUnFrameWindow(QWidget):
     displayraw1 =  pyqtSignal( str,str,int )
     displayraw =  pyqtSignal( str,str )
     displaystatus=pyqtSignal(str) 
-
+    startprocessignal=pyqtSignal(str,list)
+    writeprocesssignal=pyqtSignal(QByteArray)
     hookfollowsignal=pyqtSignal(int,tuple)
-     
+    
     def hookfollowsignalsolve(self,code,other): 
         if code==3:
             if self.hideshownotauto:
@@ -104,12 +106,20 @@ class QUnFrameWindow(QWidget):
     def show_and_enableautohide(self):
         self.hideshownotauto=True
         self.show()
+    def startprocessfunction(self,path,stdoutcallback):
+        self.p = QProcess()    
+        self.p.readyReadStandardOutput.connect(functools.partial(stdoutcallback[0],self.p))  
+        self.p.start(path)
+
+    def writeprocess(self,qb):
+        self.p.write(qb)
     def __init__(self, object):
         super(QUnFrameWindow, self).__init__(
             None, Qt.FramelessWindowHint|Qt.WindowStaysOnTopHint|Qt.Tool)  # 设置为顶级窗口，无边框
         self.object = object
         self.rate = self.object.screen_scale_rate 
-     
+        self.startprocessignal.connect(self.startprocessfunction)
+        self.writeprocesssignal.connect(self.writeprocess)
         self._padding = 5  # 设置边界宽度为5
         self.hideshownotauto=True
         self.transhis=gui.transhist.transhist()
@@ -165,6 +175,7 @@ class QUnFrameWindow(QWidget):
         
         self.takusanbuttons(qtawesome.icon("fa.rotate-left" ,color="white"),"MinMaxButton", self.transhis.show  ,6,"显示历史翻译") 
         self.takusanbuttons(qtawesome.icon("fa.music" ,color="white"),"MinMaxButton",self.langdu,7,"朗读") 
+         
         self.takusanbuttons(qtawesome.icon("fa.lock" ,color="#FF69B4" if globalconfig['locktools'] else 'white'),"MinMaxButton",self.changetoolslockstate,8,"锁定工具栏",'locktoolsbutton') 
         self.takusanbuttons(qtawesome.icon("fa.minus",color="white" ),"MinMaxButton",self.hide_and_disableautohide,-2,"最小化到托盘")
         self.takusanbuttons(qtawesome.icon("fa.times" ,color="white"),"CloseButton",self.quitf,-1,"退出")
@@ -440,9 +451,9 @@ class QUnFrameWindow(QWidget):
         self.object.range_ui.close()
         self.object.settin_ui.close()
         #print(4)
-        self.object.settin_ui.hookselectdialog.realclose=True
+        self.object.hookselectdialog.realclose=True
 
-        self.object.settin_ui.hookselectdialog.close()
+        self.object.hookselectdialog.close()
         #print(5)
         if 'textsource' in dir(self.object) and self.object.textsource and self.object.textsource.ending==False:
             self.object.textsource.end()
