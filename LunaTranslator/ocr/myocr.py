@@ -208,16 +208,14 @@ class DetResizeForTest(object):
         resize_h = int(round(resize_h / 32) * 32)
         resize_w = int(round(resize_w / 32) * 32)
 
-        try:
-            if int(resize_w) <= 0 or int(resize_h) <= 0:
-                return None, (None, None)
-            img = cv2.resize(img, (int(resize_w), int(resize_h)))
-        except:
-            print(img.shape, resize_w, resize_h)
-            sys.exit(0)
+    
+        if int(resize_w) <= 0 or int(resize_h) <= 0:
+            return None, (None, None)
+        img = cv2.resize(img, (int(resize_w), int(resize_h)))
+        
         ratio_h = resize_h / float(h)
         ratio_w = resize_w / float(w)
-        print(img.shape)
+       # print(img.shape)
         # return img, np.array([h, w])
         return img, [ratio_h, ratio_w]
 
@@ -448,20 +446,22 @@ class myocr:
         t1=time.time()
         #box=mydetect(img)
         #if len(box)==0:
-        box = self.get_boxes(img) 
-        box=self.detpostpost(box)
-        
-        if len(box)==0:
-            return ''
-        index=np.argsort(box[:,1])
-        box=box[index]
-        t2=time.time()
-        imgs=simplecrop(img,box)
+        try:
+            box = self.get_boxes(img) 
+            box=self.detpostpost(box)
+            
+            if len(box)==0:
+                return ''
+            index=np.argsort(box[:,1])
+            box=box[index]
+            t2=time.time()
+            imgs=simplecrop(img,box)
 
-        res=self.recognition_img_croped(imgs)
-        t3=time.time()
+            res=self.recognition_img_croped(imgs)
+            t3=time.time()
         #print(t3-t1,t3-t2,t2-t1)
-         
+        except:
+            return ''
         return  ''.join(res)
      
 

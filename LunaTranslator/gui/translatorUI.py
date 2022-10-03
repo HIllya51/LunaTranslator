@@ -2,6 +2,7 @@ import functools
 import sys 
 import time
 t1=time.time()
+import os
 from PyQt5.QtWidgets import QWidget, QLabel, QPushButton, QVBoxLayout
 from PyQt5.QtCore import Qt, QPoint,pyqtSignal  
 import qtawesome 
@@ -451,7 +452,8 @@ class QUnFrameWindow(QWidget):
         import json  
         with open('./files/config.json','w',encoding='utf-8') as ff:
             ff.write(json.dumps(globalconfig,ensure_ascii=False,sort_keys=False, indent=4))
-        self.hide()
+        #self.hide()
+         
         self.logff.close()
         self.tray.hide()
         self.tray = None 
@@ -474,10 +476,14 @@ class QUnFrameWindow(QWidget):
         # for hookID in self.object.settin_ui.hooks:
         #     ctypes.windll.user32.UnhookWinEvent(hookID)
         #print(aa)  
+        
         self.object.textsource.end()
+        
         self.close() 
         #print('closed')
-        sys.exit()
+        
+        #sys.exit()
+        os._exit(1) 
         #self.quit()
         #self.quit()
         #报异常来退出，不然老是有僵尸进程。
