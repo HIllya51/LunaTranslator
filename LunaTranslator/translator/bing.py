@@ -88,6 +88,7 @@ class TS(basetrans):
             return ch
         except:
             print(js)
+            self.inittranslator()
             print_exc()
             return '出错了'
 if __name__=='__main__':
