@@ -37,7 +37,7 @@
             "name": "本地OCR"
         },
         "baiduocr": {
-            "use": false,
+            "use": true,
             "name": "baiduOCR",
             "argsfile": "./userconfigs/baiduocr.json"
         },
@@ -47,7 +47,7 @@
             "argsfile": "./userconfigs/ocrspace.json"
         },
         "docsumo": {
-            "use": true,
+            "use": false,
             "name": "docsumo",
             "argsfile": "./userconfigs/docsumo.json"
         }
