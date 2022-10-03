@@ -122,7 +122,7 @@ class ocrtext(basetext):
                  
             self.savelasttext=text
             self.textgetmethod(text)
-                    
+            time.sleep(1)
     def runonce(self): 
         if self.object.rect is None:
             return
