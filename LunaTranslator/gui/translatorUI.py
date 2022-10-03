@@ -39,6 +39,7 @@ class QUnFrameWindow(QWidget):
     displaystatus=pyqtSignal(str) 
     startprocessignal=pyqtSignal(str,list)
     writeprocesssignal=pyqtSignal(QByteArray)
+    killprocesssignal=pyqtSignal()
     hookfollowsignal=pyqtSignal(int,tuple)
     
     def hookfollowsignalsolve(self,code,other): 
@@ -107,12 +108,17 @@ class QUnFrameWindow(QWidget):
         self.hideshownotauto=True
         self.show()
     def startprocessfunction(self,path,stdoutcallback):
+        if 'p' in dir(self):
+            self.p.kill()
         self.p = QProcess()    
         self.p.readyReadStandardOutput.connect(functools.partial(stdoutcallback[0],self.p))  
         self.p.start(path)
 
     def writeprocess(self,qb):
         self.p.write(qb)
+    def killprocess(self):
+        if 'p' in dir(self):
+            self.p.kill()
     def __init__(self, object):
         super(QUnFrameWindow, self).__init__(
             None, Qt.FramelessWindowHint|Qt.WindowStaysOnTopHint|Qt.Tool)  # 设置为顶级窗口，无边框
@@ -120,6 +126,7 @@ class QUnFrameWindow(QWidget):
         self.rate = self.object.screen_scale_rate 
         self.startprocessignal.connect(self.startprocessfunction)
         self.writeprocesssignal.connect(self.writeprocess)
+        self.killprocesssignal.connect(self.killprocess)
         self._padding = 5  # 设置边界宽度为5
         self.hideshownotauto=True
         self.transhis=gui.transhist.transhist()
@@ -452,17 +459,17 @@ class QUnFrameWindow(QWidget):
         self.object.settin_ui.close()
         #print(4)
         self.object.hookselectdialog.realclose=True
-
+        self.object.settin_ui.minmaxmoveoberve.kill()
+        self.object.translation_ui.killprocesssignal.emit()
         self.object.hookselectdialog.close()
         #print(5)
-        if 'textsource' in dir(self.object) and self.object.textsource and self.object.textsource.ending==False:
-            self.object.textsource.end()
-            if 'p' in dir(self.object.textsource):
-                self.object.textsource.p.kill()
-                self.object.textsource.p.terminate()
-                self.object.textsource.p.waitForFinished () 
-         
-        self.object.settin_ui.minmaxmoveoberve.kill()
+        # if 'textsource' in dir(self.object) and self.object.textsource and self.object.textsource.ending==False:
+        #     self.object.textsource.end()
+        #     if 'p' in dir(self.object.textsource):
+        #         self.object.textsource.p.kill()
+        #         self.object.textsource.p.terminate()
+        #         self.object.textsource.p.waitForFinished () 
+          
         # import ctypes 
         # for hookID in self.object.settin_ui.hooks:
         #     ctypes.windll.user32.UnhookWinEvent(hookID)

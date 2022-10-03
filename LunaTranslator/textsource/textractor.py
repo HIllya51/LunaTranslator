@@ -31,6 +31,7 @@ class textractor(basetext  ):
         # self.p.readyReadStandardOutput.connect(self.handle_stdout)  
         # self.p.start(f"./files/Textractor/x{arch}/TextractorCLI.exe")
         self.object=object
+        #self.object.translation_ui.killprocesssignal.emit()
         self.object.translation_ui.startprocessignal.emit(f"./files/Textractor/x{arch}/TextractorCLI.exe",[self.handle_stdout])
         #self.p.start(r"C:\tmp\textractor_src\Textractor-cmd\builds\RelWithDebInfo_x64\TextractorCLI.exe")
         self.pid=pid
@@ -48,7 +49,7 @@ class textractor(basetext  ):
                 self.inserthook(h)
                 t.stop()
             t.timeout.connect(lambda: __(self,autostarthookcode,t))
-            t.start(100)
+            t.start(1000)
         self.HookCode=None 
         self.userinserthookcode=[]
         self.runonce_line=''
@@ -77,7 +78,7 @@ class textractor(basetext  ):
     def handle_stdout(self,p): 
         data =  p.readAllStandardOutput()
         stdout = bytes(data).decode("utf16",errors='ignore') 
-        print(stdout)
+        #print(stdout)
         reres=self.re.findall(stdout) #re.findall('\[([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):(.*):(.*@.*)\] (.*)\n',stdout)
         for ares in reres:
             thread_handle,thread_tp_processId, thread_tp_addr, thread_tp_ctx, thread_tp_ctx2, thread_name,HookCode,output =ares
@@ -128,6 +129,6 @@ class textractor(basetext  ):
         
         self.detach(self.pid)
         self.exit()   
-         
+        self.object.translation_ui.killprocesssignal.emit()
         #self.ending=True
      
