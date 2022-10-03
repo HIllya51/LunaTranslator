@@ -3,6 +3,8 @@ from traceback import print_exc
 import requests
 from urllib.parse import quote
 import re
+
+from utils.config import globalconfig
 import json  
 from translator.basetranslator import basetrans
 import time
@@ -35,7 +37,7 @@ class TS(basetrans):
         }
         try:
                         
-            response = requests.post('https://translate-crx.bytedance.com/e1/flask/translation',   headers=headers, json=json_data,timeout=5, proxies=  {'http': None,'https': None})
+            response = requests.post('https://translate-crx.bytedance.com/e1/flask/translation',   headers=headers, json=json_data,timeout=globalconfig['translatortimeout'], proxies=  {'http': None,'https': None})
 
             return(response.json()['results'][0]['translate'][0])
         except:

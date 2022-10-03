@@ -3,6 +3,8 @@ import re
 import urllib
 import random
 import time
+
+from utils.config import globalconfig
 import js2py
 class Tse:
     def __init__(self):
@@ -65,7 +67,7 @@ class IflytekV2(Tse):
                 :param sleep_seconds: float, default `random.random()`.
         :return: str or dict
         """
-        timeout=5
+        timeout=  globalconfig['translatortimeout'] 
         proxies={'http': None,'https': None}
         with requests.Session() as ss:
             _ = ss.get(self.host_url, headers=self.host_headers, timeout=timeout, proxies=proxies).text

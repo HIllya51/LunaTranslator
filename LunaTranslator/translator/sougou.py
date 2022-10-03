@@ -7,6 +7,7 @@ import requests
 from urllib import request
 from urllib.parse import quote 
 from translator.basetranslator import basetrans
+from utils.config import globalconfig
 import random
 import functools
 import urllib
@@ -79,10 +80,10 @@ class Sogou(Tse):
     def sogou_api(self, query_text ) :
          
         with requests.Session() as ss:
-            _ = ss.get(self.host_url, headers=self.host_headers, timeout=5, proxies={'http': None,'https': None}).text 
+            _ = ss.get(self.host_url, headers=self.host_headers, timeout=globalconfig['translatortimeout'], proxies={'http': None,'https': None}).text 
             from_language,to_language='ja','zh-CHS'
             self.form_data = self.get_form(query_text, from_language, to_language)
-            r = ss.post(self.api_url, headers=self.api_headers, data=self.form_data, timeout=5, proxies={'http': None,'https': None})
+            r = ss.post(self.api_url, headers=self.api_headers, data=self.form_data, timeout=globalconfig['translatortimeout'], proxies={'http': None,'https': None})
             r.raise_for_status()
             data = r.json()  
         return   data['data']['translate']['dit']

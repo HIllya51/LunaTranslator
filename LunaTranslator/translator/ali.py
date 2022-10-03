@@ -1,6 +1,8 @@
 
 from traceback import print_exc 
 import requests
+
+from utils.config import globalconfig
 from translator.basetranslator import basetrans
 class TS(basetrans):
     
@@ -29,7 +31,7 @@ class TS(basetrans):
                 'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36 Edg/105.0.1343.53',
             }, proxies=  {'http': None,'https': None}).text
           
-        self.csrf=self.ss.get('https://translate.alibaba.com/api/translate/csrftoken', proxies=  {'http': None,'https': None}).json()['token']
+        self.csrf=self.ss.get('https://translate.alibaba.com/api/translate/csrftoken',timeout = globalconfig['translatortimeout'], proxies=  {'http': None,'https': None}).json()['token']
     def translate(self, content):
         headers = { 
             'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
@@ -62,7 +64,7 @@ class TS(basetrans):
             "_csrf": self.csrf
         }
         try:
-            r = self.ss.post('https://translate.alibaba.com/api/translate/text', headers= headers, params =form_data , proxies=  {'http': None,'https': None})
+            r = self.ss.post('https://translate.alibaba.com/api/translate/text', headers= headers,timeout = globalconfig['translatortimeout'], params =form_data , proxies=  {'http': None,'https': None})
         
             data = r.json()  
             return  data['data']['translateText']

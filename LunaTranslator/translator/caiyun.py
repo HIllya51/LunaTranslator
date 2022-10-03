@@ -6,6 +6,8 @@ from urllib.parse import quote
 from translator.basetranslator import basetrans
 import random
 import urllib
+
+from utils.config import globalconfig
 class Tse:
     def __init__(self):
         self.author = 'Ulion.Tse' 
@@ -99,7 +101,7 @@ class Caiyun(Tse):
                 :param sleep_seconds: float, default `random.random()`.
         :return: str or dict
         """
-        timeout=5
+        timeout = globalconfig['translatortimeout']
         proxies={'http': None,'https': None}
         with requests.Session() as ss:
             if self._ is None:

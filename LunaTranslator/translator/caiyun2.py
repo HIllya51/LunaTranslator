@@ -3,6 +3,7 @@ from translator.basetranslator import basetrans
 import requests
 from traceback import print_exc
 
+from utils.config import globalconfig
 class TS(basetrans): 
     def translate(self,content): 
         try:
@@ -32,7 +33,7 @@ class TS(basetrans):
                 'detect': False,
             }
 
-            response = requests.post('https://api.interpreter.caiyunai.com/v1/translator', headers=headers, json=json_data,timeout=5, proxies=  {'http': None,'https': None})
+            response = requests.post('https://api.interpreter.caiyunai.com/v1/translator', headers=headers, json=json_data,timeout=globalconfig['translatortimeout'], proxies=  {'http': None,'https': None})
             return response.json()['target'][0]
         except:
             print_exc()

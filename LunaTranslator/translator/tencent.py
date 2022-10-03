@@ -3,6 +3,8 @@ import re
 import urllib
 import random
 import time
+
+from utils.config import globalconfig
 import js2py
 class Tse:
     def __init__(self):
@@ -58,7 +60,7 @@ class Tencent(Tse):
 
     # @Tse.time_stat
     def tencent_api(self, query_text: str, from_language: str = 'jp', to_language: str = 'zh', **kwargs)  :
-        timeout=5
+        timeout=  globalconfig['translatortimeout']
         proxies={'http': None,'https': None}
         with requests.Session() as ss:
             if self._ is None:

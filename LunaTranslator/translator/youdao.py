@@ -4,6 +4,8 @@ from traceback import print_exc
 import requests
 from translator.basetranslator import basetrans  
 import random 
+
+from utils.config import globalconfig
 import json
 class TS(basetrans):
     def youdaoSIGN(self,useragent,e):
@@ -35,7 +37,7 @@ class TS(basetrans):
         self.session=requests.session( )
         self.session.trust_env=False
         self.session.headers.update(self.headers) 
-        self.session.get('https://fanyi.youdao.com')
+        self.session.get('https://fanyi.youdao.com',timeout = globalconfig['translatortimeout'], proxies=  {'http': None,'https': None})
     def translate(self, content):
          
         params = {
@@ -78,7 +80,7 @@ class TS(basetrans):
             'sec-ch-ua-mobile': '?0',
             'sec-ch-ua-platform': '"Windows"',
         }
-        response =self.session.post('https://fanyi.youdao.com/translate_o', params=params ,headers=headers, data=data, proxies=  {'http': None,'https': None})
+        response =self.session.post('https://fanyi.youdao.com/translate_o', params=params ,headers=headers, data=data, proxies=  {'http': None,'https': None},timeout = globalconfig['translatortimeout'])
         try:
             js=response.json()['translateResult'][0][0]['tgt']
         except  :

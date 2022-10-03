@@ -6,6 +6,7 @@ import requests
 from urllib.parse import quote 
 from translator.basetranslator import basetrans
 
+from utils.config import globalconfig
 class TS(basetrans):
     def inittranslator(self):  
         self.ss=requests.session()
@@ -32,7 +33,7 @@ class TS(basetrans):
                 'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36 Edg/105.0.1343.53',
             }, proxies=  {'http': None,'https': None}).text
          
-        response = self.ss.get('https://cn.bing.com/translator/' ,timeout=5, proxies=  {'http': None,'https': None})
+        response = self.ss.get('https://cn.bing.com/translator/' ,timeout = globalconfig['translatortimeout'], proxies=  {'http': None,'https': None})
         text=response.text
         
         res=re.search('var params_RichTranslateHelper = \[([0-9]+),"(([0-9a-zA-Z]|-|_)+)"',text).group()
@@ -79,7 +80,7 @@ class TS(basetrans):
             'x-edge-shopping-flag': '1',
         }
         try:
-            response = self.ss.post('https://cn.bing.com/ttranslatev3?isVertical=1&&IG='+self.IG+'&IID='+self.iid+'.'+str(self.iid_i) ,headers=headers, data=data, proxies=  {'http': None,'https': None})
+            response = self.ss.post('https://cn.bing.com/ttranslatev3?isVertical=1&&IG='+self.IG+'&IID='+self.iid+'.'+str(self.iid_i) ,headers=headers, data=data, proxies=  {'http': None,'https': None},timeout = globalconfig['translatortimeout'])
             js=response.json()
             print(self.ss.cookies)
             ch=js[0]['translations'][0]['text']

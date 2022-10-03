@@ -7,6 +7,8 @@ import os
 import re 
 from translator.basetranslator import basetrans 
 from js2py import EvalJs
+
+from utils.config import globalconfig
 import time
 class TS(basetrans):
     
@@ -20,7 +22,7 @@ class TS(basetrans):
         #self.session1= httpx.Client(headers=self.headers)
         index_url = 'https://fanyi.baidu.com/'
         
-        self.session.get(url=index_url, headers=self.headers, proxies=  {'http': None,'https': None} )  #session自动生成cookie
+        self.session.get(url=index_url, headers=self.headers, proxies=  {'http': None,'https': None},timeout = globalconfig['translatortimeout'] )  #session自动生成cookie
         response_index = self.session.get(url=index_url , proxies=  {'http': None,'https': None}  )
         
         self.token = re.findall(r"token: '([0-9a-z]+)'", response_index.text)[0]
@@ -51,7 +53,7 @@ class TS(basetrans):
          
         self.session.headers["Acs-Token"]=acs_token
         translate_api = 'https://fanyi.baidu.com/v2transapi'
-        response = self.session.post(url=translate_api,   data=data,timeout=5,proxies=  {'http': None,'https': None})
+        response = self.session.post(url=translate_api,   data=data,timeout = globalconfig['translatortimeout'],proxies=  {'http': None,'https': None})
         try:
             result = response.json()['trans_result']['data'][0]['dst']
         except:
@@ -66,7 +68,7 @@ class TS(basetrans):
             '_': int(time.time()*1000),
         }
 
-        response = self.session.get('https://fanyi.baidu.com/pcnewcollection', params=params,timeout=5,proxies=  {'http': None,'https': None} )
+        response = self.session.get('https://fanyi.baidu.com/pcnewcollection', params=params,timeout = globalconfig['translatortimeout'],proxies=  {'http': None,'https': None} )
         return result
     def show(self,res):
         print('百度','\033[0;32;47m',res,'\033[0m',flush=True)

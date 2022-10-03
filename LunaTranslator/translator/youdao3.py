@@ -5,6 +5,8 @@ from urllib.parse import quote
 from translator.basetranslator import basetrans  
 import random 
 import json
+
+from utils.config import globalconfig
 import requests
 import re
 class TS(basetrans):
@@ -27,7 +29,7 @@ class TS(basetrans):
             'sec-ch-ua': '"Microsoft Edge";v="105", "Not)A;Brand";v="8", "Chromium";v="105"',
             'sec-ch-ua-mobile': '?0',
             'sec-ch-ua-platform': '"Windows"',
-        }, proxies=  {'http': None,'https': None}).text
+        }, proxies=  {'http': None,'https': None},timeout = globalconfig['translatortimeout']).text
     def translate(self, content):
         data = {
             'inputtext': content,
@@ -56,7 +58,7 @@ class TS(basetrans):
         self.ss.cookies.update({ '_yd_btn_fanyi_29': 'true',
     '_yd_newbanner_day': '29',})
         try:
-            response = self.ss.post('https://m.youdao.com/translate',   data=data,headers=headers, proxies=  {'http': None,'https': None}).text
+            response = self.ss.post('https://m.youdao.com/translate',   data=data,headers=headers,timeout = globalconfig['translatortimeout'], proxies=  {'http': None,'https': None}).text
          
             return re.search('<ul id="translateResult">([\\s\\S]*?)<li>([\\s\\S]*?)</li>([\\s\\S]*?)<\/ul>',response).groups()[1] 
         except:

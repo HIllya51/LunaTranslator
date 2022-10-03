@@ -1,6 +1,5 @@
  
-import re
-from socket import timeout
+from utils.config import globalconfig
 import time
 from urllib.parse import quote 
 from translator.basetranslator import basetrans
@@ -107,7 +106,7 @@ class Deepl(Tse):
 
     # @Tse.time_stat
     def deepl_api(self, query_text): 
-        timeout = 5
+        timeout = globalconfig['translatortimeout']
         proxies ={'http': None,'https': None}   
         delete_temp_language_map_label = 0
         if not query_text:

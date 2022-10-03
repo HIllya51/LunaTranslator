@@ -4,6 +4,8 @@ from traceback import print_exc
 import requests
 from urllib import parse 
 import os
+
+from utils.config import globalconfig
 import re 
 from translator.basetranslator import basetrans 
 from js2py import EvalJs
@@ -28,7 +30,7 @@ class TS(basetrans):
         data = '{"header":{"fn":"auto_translation_block","client_key":"ddsdasdsadasuMzYg"},"source":{"lang":"ja","text_block":"'+query+'","orig_text_block":"","orig_url":"https://www.baidu.com/"},"target":{"lang":"zh"}}'
         data=data.encode("utf-8").decode("latin1")
         try:
-            response = requests.post('https://transmart.qq.com/api/imt',  headers=headers, data=data,timeout=5,proxies=  {'http': None,'https': None})
+            response = requests.post('https://transmart.qq.com/api/imt',  headers=headers, data=data,timeout=globalconfig['translatortimeout'],proxies=  {'http': None,'https': None})
             return response.json()['auto_translation']
         except:
             #print(response.json())

@@ -26,19 +26,19 @@
         "volume": 100.0
     },
     "sourcestatus": {
-        "copy": false,
-        "ocr": true,
+        "copy": true,
+        "ocr": false,
         "textractor": false,
         "textractor_pipe": false
     },
     "fanyi": {
         "baidu": {
-            "use": false,
+            "use": true,
             "color": "#ff65db",
             "name": "百度"
         },
         "bing": {
-            "use": false,
+            "use": true,
             "color": "#000ff0",
             "name": "必应"
         },
@@ -48,17 +48,17 @@
             "name": "谷歌"
         },
         "ali": {
-            "use": false,
+            "use": true,
             "color": "#0000ff",
             "name": "阿里"
         },
         "youdao": {
-            "use": false,
+            "use": true,
             "color": "#0ff000",
             "name": "有道"
         },
         "youdao2": {
-            "use": false,
+            "use": true,
             "color": "#0ff000",
             "name": "有道2"
         },
@@ -68,22 +68,22 @@
             "name": "谷歌2"
         },
         "sougou": {
-            "use": false,
+            "use": true,
             "color": "#0ff000",
             "name": "搜狗"
         },
         "caiyun": {
-            "use": false,
+            "use": true,
             "color": "#0ff000",
             "name": "彩云"
         },
         "deepl": {
-            "use": false,
+            "use": true,
             "color": "#0ff000",
             "name": "deepl"
         },
         "jb7": {
-            "use": false,
+            "use": true,
             "color": "#1839f0",
             "name": "Jbeijing7",
             "args": {
@@ -91,12 +91,12 @@
             }
         },
         "sougou2": {
-            "use": false,
+            "use": true,
             "color": "#0ff000",
             "name": "搜狗2"
         },
         "youdao3": {
-            "use": false,
+            "use": true,
             "color": "#0ff000",
             "name": "有道3"
         },
@@ -106,28 +106,28 @@
             "name": "自建"
         },
         "tencent": {
-            "use": false,
+            "use": true,
             "color": "#0ff000",
             "name": "TX"
         },
         "ifly": {
-            "use": false,
+            "use": true,
             "color": "#0ff000",
             "name": "ifly"
         },
         "iciba": {
-            "use": false,
+            "use": true,
             "color": "#0ff000",
             "name": "iciba"
         },
         "baiduapi": {
-            "use": false,
+            "use": true,
             "color": "#0ff000",
             "name": "百度api",
             "argsfile": "./baiduapi.json"
         },
         "tencentapi": {
-            "use": false,
+            "use": true,
             "color": "#0ff000",
             "name": "腾讯api",
             "argsfile": "./txapi.json"
@@ -138,7 +138,7 @@
             "name": "byte"
         },
         "caiyun2": {
-            "use": false,
+            "use": true,
             "color": "#0ff000",
             "name": "cy2"
         },
@@ -150,5 +150,6 @@
     },
     "minifollow": true,
     "movefollow": true,
-    "autostarthook": true
+    "autostarthook": true,
+    "translatortimeout": 5
 }

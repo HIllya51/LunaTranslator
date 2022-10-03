@@ -1,5 +1,7 @@
 import time
 import hashlib
+
+from utils.config import globalconfig
 from traceback import print_exc 
 from urllib.parse import quote
 from translator.basetranslator import basetrans  
@@ -31,7 +33,7 @@ class TS(basetrans):
                 'sec-fetch-user': '?1',
                 'upgrade-insecure-requests': '1',
                 'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36 Edg/105.0.1343.53',
-            }, proxies=  {'http': None,'https': None}).text
+            }, proxies=  {'http': None,'https': None},timeout=globalconfig['translatortimeout']).text
     def translate(self, content):
                 
         headers = {
@@ -51,7 +53,7 @@ class TS(basetrans):
             'sec-ch-ua-platform': '"Windows"',
         }
         try:
-            response =self.ss.get('https://fanyi.youdao.com/translate?&doctype=json&type=ja2zh_cn&i='+quote(content),headers=headers, proxies=  {'http': None,'https': None})
+            response =self.ss.get('https://fanyi.youdao.com/translate?&doctype=json&type=ja2zh_cn&i='+quote(content),headers=headers,timeout=globalconfig['translatortimeout'], proxies=  {'http': None,'https': None})
 
             js=response.json()
         

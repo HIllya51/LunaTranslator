@@ -4,6 +4,8 @@ import requests
 from urllib.parse import quote,urlencode
 import re
 import json  
+
+from utils.config import globalconfig
 from translator.basetranslator import basetrans
 import time
 class TS(basetrans):
@@ -33,7 +35,7 @@ class TS(basetrans):
                 'sec-fetch-user': '?1',
                 'upgrade-insecure-requests': '1',
                 'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36 Edg/105.0.1343.53',
-            }, proxies=  {'http': None,'https': None}).text
+            }, proxies=  {'http': None,'https': None},timeout = globalconfig['translatortimeout']).text
         #print(html)
         # self.bl=re.search('"cfb2h":"(.*?)"',html).groups()[0]
         # self.fsid=re.search('"FdrFJe":"(.*?)"',html).groups()[0]
@@ -60,7 +62,7 @@ class TS(basetrans):
          
         headers = {'Origin': 'https://translate.google.cn', 'Referer': 'https://translate.google.cn', 'X-Requested-With': 'XMLHttpRequest', 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8', 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36'}
         try:
-            response =self.ss.post('https://translate.google.cn/_/TranslateWebserverUi/data/batchexecute', headers=headers,  data=freq, proxies=  {'http': None,'https': None})
+            response =self.ss.post('https://translate.google.cn/_/TranslateWebserverUi/data/batchexecute', headers=headers,timeout = globalconfig['translatortimeout'],  data=freq, proxies=  {'http': None,'https': None})
             #good=response.text.split('\n')[3]
             #print(response.text)
             json_data = json.loads(response.text[6:])

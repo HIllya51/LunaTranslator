@@ -7,6 +7,7 @@ import requests
 from urllib import request
 from urllib.parse import quote 
 from translator.basetranslator import basetrans
+from utils.config import globalconfig
 import random
 import functools
 import urllib
@@ -31,7 +32,7 @@ class TS(basetrans):
                 'sec-ch-ua-platform': '"Windows"',
             }
             try:
-                res=requests.get('https://fanyi.sogou.com/text?keyword='+quote(content) +'&transfrom=ja&transto=zh-CHS&model=general',headers=headers, proxies=  {'http': None,'https': None})
+                res=requests.get('https://fanyi.sogou.com/text?keyword='+quote(content) +'&transfrom=ja&transto=zh-CHS&model=general',headers=headers, proxies=  {'http': None,'https': None} ,timeout=globalconfig['translatortimeout'])
                 res=re.search('<p id="trans-result" class="output-val" style="white-space: pre-line">([\\s\\S]*?)</p>', res.text)
                 
                 res=res.groups()[0]

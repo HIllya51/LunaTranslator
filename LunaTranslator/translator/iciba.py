@@ -7,6 +7,7 @@ import js2py
 import hashlib
 import functools
 
+from utils.config import globalconfig
 class TranslatorError(Exception):
     pass
 class Tse:
@@ -138,7 +139,7 @@ class Iciba(Tse):
         :return: str or dict
         """
         is_detail_result = kwargs.get('is_detail_result', False)
-        timeout=5
+        timeout= globalconfig['translatortimeout'] 
         proxies={'http': None,'https': None}
         sleep_seconds = kwargs.get('sleep_seconds', random.random())
         if_ignore_limit_of_length = kwargs.get('if_ignore_limit_of_length', False)

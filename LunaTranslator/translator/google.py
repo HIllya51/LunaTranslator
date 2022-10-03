@@ -4,6 +4,8 @@ import requests
 from urllib.parse import quote
 import re
 import json  
+
+from utils.config import globalconfig
 from translator.basetranslator import basetrans
 import time
 class TS(basetrans):
@@ -41,7 +43,7 @@ class TS(basetrans):
             'q': content,
         }
         try:
-            response = requests.get('https://translate.google.cn/m', params=params,headers=headers,  timeout=5, proxies=  {'http': None,'https': None})
+            response = requests.get('https://translate.google.cn/m', params=params,headers=headers,timeout = globalconfig['translatortimeout'], proxies=  {'http': None,'https': None})
          
             res=re.search('<div class="result-container">(.*?)</div>',response.text).groups()
         except:

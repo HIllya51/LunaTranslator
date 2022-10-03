@@ -56,7 +56,7 @@ class TS(basetrans):
         myurl = myurl + '?appid=' + appid + '&q=' + urllib.parse.quote(q) + '&from=' + fromLang + '&to=' + toLang + '&salt=' + str(
         salt) + '&sign=' + sign
         try:
-            res=self.session.get('https://api.fanyi.baidu.com'+myurl,timeout=5, proxies=  {'http': None,'https': None}).json()  
+            res=self.session.get('https://api.fanyi.baidu.com'+myurl,timeout=globalconfig['translatortimeout'], proxies=  {'http': None,'https': None}).json()  
             js['args']['字数统计']=str(int(js['args']['字数统计'])+len(query))
             js['args']['次数统计']=str(int(js['args']['次数统计'])+1)
             with open(configfile,'w',encoding='utf-8') as ff:
