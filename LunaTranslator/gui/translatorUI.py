@@ -460,7 +460,7 @@ class QUnFrameWindow(QWidget):
         #print(4)
         self.object.hookselectdialog.realclose=True
         self.object.settin_ui.minmaxmoveoberve.kill()
-        self.object.translation_ui.killprocesssignal.emit()
+        self.object.textsource.end()
         self.object.hookselectdialog.close()
         #print(5)
         # if 'textsource' in dir(self.object) and self.object.textsource and self.object.textsource.ending==False:
