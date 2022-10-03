@@ -1,18 +1,11 @@
-
-from distutils.command.config import config
+ 
 from traceback import print_exc 
  
-import requests
-from urllib import parse 
-import os
-
-from utils.config import globalconfig
-import re 
-from translator.basetranslator import basetrans 
-from js2py import EvalJs
+import requests  
+from utils.config import globalconfig 
+from translator.basetranslator import basetrans  
 import time
-
-import http.client
+ 
 import hashlib
 import urllib
 import random
