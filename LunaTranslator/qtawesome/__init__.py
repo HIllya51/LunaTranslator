@@ -18,13 +18,9 @@ Font-Awesome and other iconic fonts for PyQt / PySide applications.
 
 # Third party imports
 from unicodedata import name
-from qtpy import QtCore, QtWidgets, QtGui
+from PyQt5 import QtCore, QtWidgets, QtGui
 
-# Local imports
-from ._version import __version__, version_info
-from .animation import Pulse, Spin
 from .iconic_font import IconicFont, set_global_defaults
-from .styles import dark, light
 
 # Constants
 _resource = { 'iconic': None }
