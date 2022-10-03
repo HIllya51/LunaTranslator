@@ -42,9 +42,11 @@ def yuitsuocr(self,name,checked):
         globalconfig['ocr'][name]['use']=True
     else:
         globalconfig['ocr'][name]['use']=False  
-           
-def initocrswitchs(self,name,namepos,switchpos,colorpos,settingpos):
 
+import os
+def initocrswitchs(self,name,namepos,switchpos,colorpos,settingpos):
+        if os.path.exists('./userconfig')==False:
+            os.mkdir('./userconfig')
         label = QLabel(self.tab_6)
         self.customSetGeometry(label, *namepos)
         label.setText(globalconfig['ocr'][name]['name']+":")
