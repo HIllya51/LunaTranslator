@@ -460,7 +460,7 @@ class QUnFrameWindow(QWidget):
         #print(4)
         self.object.hookselectdialog.realclose=True
         self.object.settin_ui.minmaxmoveoberve.kill()
-        self.object.textsource.end()
+        
         self.object.hookselectdialog.close()
         #print(5)
         # if 'textsource' in dir(self.object) and self.object.textsource and self.object.textsource.ending==False:
@@ -474,7 +474,7 @@ class QUnFrameWindow(QWidget):
         # for hookID in self.object.settin_ui.hooks:
         #     ctypes.windll.user32.UnhookWinEvent(hookID)
         #print(aa)  
-        
+        self.object.textsource.end()
         self.close() 
         #print('closed')
         sys.exit()
