@@ -65,7 +65,7 @@ def initocrswitchs(self,name,namepos,switchpos,colorpos,settingpos):
             s1.setStyleSheet("background: transparent;") 
             
             s1.setIcon(qtawesome.icon("fa.gear", color="#FF69B4"  ))
-            df=importlib.import_module('ocr.'+name).default()
+            df=importlib.import_module('otherocr.'+name).default()
             s1.clicked.connect(lambda x:GetUserPlotItems(self,globalconfig['ocr'][name]['argsfile'],df,globalconfig['ocr'][name]['name']+'设置'))
      
       

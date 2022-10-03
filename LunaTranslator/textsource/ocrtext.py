@@ -153,7 +153,7 @@ class ocrtext(basetext):
             return self.ocr.ocr(img)
         else:
             try:
-                ocr=importlib.import_module('ocr.'+use).ocr
+                ocr=importlib.import_module('otherocr.'+use).ocr
                 cv2.imwrite('./tmp.jpg',img)
                 return ocr('./tmp.jpg')
             except:
