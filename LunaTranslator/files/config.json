@@ -39,17 +39,17 @@
         "baiduocr": {
             "use": true,
             "name": "baiduOCR",
-            "argsfile": "./userconfigs/baiduocr.json"
+            "argsfile": "./userconfig/baiduocr.json"
         },
         "ocrspace": {
             "use": false,
             "name": "ocrspace",
-            "argsfile": "./userconfigs/ocrspace.json"
+            "argsfile": "./userconfig/ocrspace.json"
         },
         "docsumo": {
             "use": false,
             "name": "docsumo",
-            "argsfile": "./userconfigs/docsumo.json"
+            "argsfile": "./userconfig/docsumo.json"
         }
     },
     "fanyi": {
@@ -107,7 +107,7 @@
             "use": true,
             "color": "#1839f0",
             "name": "Jbeijing7",
-            "argsfile": "./userconfigs/jbj7.json"
+            "argsfile": "./userconfig/jbj7.json"
         },
         "sougou2": {
             "use": false,
@@ -143,13 +143,13 @@
             "use": false,
             "color": "#0ff000",
             "name": "百度api",
-            "argsfile": "./userconfigs/baiduapi.json"
+            "argsfile": "./userconfig/baiduapi.json"
         },
         "tencentapi": {
             "use": true,
             "color": "#0ff000",
             "name": "腾讯api",
-            "argsfile": "./userconfigs/txapi.json"
+            "argsfile": "./userconfig/txapi.json"
         },
         "byte": {
             "use": false,
