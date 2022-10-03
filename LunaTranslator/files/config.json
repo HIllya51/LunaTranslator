@@ -4,7 +4,7 @@
         613
     ],
     "width": 672.8,
-    "autorun": true,
+    "autorun": false,
     "transparent": 47,
     "fontsize": 17.699999999999996,
     "fonttype": "思源黑体 CN Medium",
@@ -13,7 +13,7 @@
     "rawtextcolor": "#000000",
     "backcolor": "#7a8b8a",
     "isshowhira": false,
-    "locktools": true,
+    "locktools": false,
     "showfanyisource": true,
     "reader": {
         "qq": false,
@@ -27,8 +27,8 @@
     },
     "sourcestatus": {
         "copy": false,
-        "ocr": false,
-        "textractor": true,
+        "ocr": true,
+        "textractor": false,
         "textractor_pipe": false
     },
     "fanyi": {
