@@ -5,6 +5,7 @@ from PyQt5.QtWidgets import  QWidget,QLabel ,QLineEdit,QSpinBox
 from PyQt5.QtCore import QThread
 import subprocess
 from utils.config import globalconfig 
+from utils.getpidlist import getwindowlist
 import threading
 import json
 import gui.switchbutton
@@ -98,7 +99,9 @@ def setTab4(self) :
         self.minmaxmoveobservethread.start()
 
         self.autostarthooksignal.connect(functools.partial(autostarthookfunction,self))
+        
 def autostarthookfunction(self,pid,pexe,hookcode):
+         
         try:
                 process=win32api.OpenProcess(2097151,False, pid) #PROCESS_ALL_ACCESS
         except  : 
@@ -116,17 +119,7 @@ def autostarthookfunction(self,pid,pexe,hookcode):
         else:
                 self.object.textsource=textractor(self.object,self.object.textgetmethod,self.object.hookselectdialog,pid,pexe,arch,True,hookcode) 
                 self.object.savetextractor=self.object.textsource
-def getwindowlist():
-        windows_list=[]
-        pidlist=[]
-        win32gui.EnumWindows(lambda hWnd, param: param.append(hWnd), windows_list)
-        for hwnd in windows_list:
-                try:
-                        tid, pid=win32process.GetWindowThreadProcessId(hwnd) 
-                        pidlist.append(pid)
-                except:
-                        pass
-        return pidlist
+ 
 def minmaxmoveobservefunc(self):
         while(True):
                 x=self.minmaxmoveoberve.stdout.readline()
@@ -172,18 +165,18 @@ def minmaxmoveobservefunc(self):
                 #         if action==5 and globalconfig['minifollow']:
                 #             self.object.translation_ui.hookfollowsignal.emit(4,(0,0))
 
-                if globalconfig['autostarthook'] and action==5:
-                        if globalconfig['sourcestatus']['textractor']==False:
-                                continue 
-                        if  os.path.exists('./files/savehook.json'):
-                                if 'textsource' not in dir(self.object) or self.object.textsource is None:
-                                        with open('./files/savehook.json','r',encoding='utf8') as ff:
-                                                js=json.load(ff)
-                                        try:
-                                                hwnd=win32api.OpenProcess(win32con.PROCESS_ALL_ACCESS,False, (pid))
-                                                name_=win32process.GetModuleFileNameEx(hwnd,None)
-                                        except:
-                                                continue
-                                        if name_ in js:
+                # if globalconfig['autostarthook'] and action==5:
+                #         if globalconfig['sourcestatus']['textractor']==False:
+                #                 continue 
+                #         if  os.path.exists('./files/savehook.json'):
+                #                 if 'textsource' not in dir(self.object) or self.object.textsource is None:
+                #                         with open('./files/savehook.json','r',encoding='utf8') as ff:
+                #                                 js=json.load(ff)
+                #                         try:
+                #                                 hwnd=win32api.OpenProcess(win32con.PROCESS_ALL_ACCESS,False, (pid))
+                #                                 name_=win32process.GetModuleFileNameEx(hwnd,None)
+                #                         except:
+                #                                 continue
+                #                         if name_ in js:
                                                         
-                                                self.autostarthooksignal.emit(pid,name_,tuple(js[name_]))
+                #                                 self.autostarthooksignal.emit(pid,name_,tuple(js[name_]))

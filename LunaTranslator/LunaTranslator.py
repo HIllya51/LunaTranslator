@@ -2,6 +2,7 @@ import time
 starttime=time.time() 
 from threading import Thread
 import os
+import json
 import sys
 from traceback import print_exc  
 dirname, filename = os.path.split(os.path.abspath(__file__))
@@ -15,11 +16,13 @@ from utils.wrapper import timer,threader
 import gui.rangeselect   
 import gui.settin    
 import gui.selecthook
+from utils.getpidlist import getwindowlist
 import gui.translatorUI
 from utils.config import globalconfig 
 import importlib
 from functools import partial 
 #print(time.time()-starttime)
+import win32api,win32con,win32process
 class MAINUI() :
     
     def __init__(self) -> None:
@@ -129,20 +132,57 @@ class MAINUI() :
            
             win32gui.BringWindowToTop(int(self.translation_ui.winId()))
             time.sleep(0.5)
+    
+
+
+    def onwindowloadautohook(self):
+        if not(globalconfig['autostarthook'] and globalconfig['sourcestatus']['textractor']):
+            return False
+        else:
+            if 'textsource' not in dir(self) or self.textsource is None:
+                if os.path.exists('./files/savehook.json'):
+                                with open('./files/savehook.json', 'r', encoding='utf8') as ff:
+                                        js = json.load(ff)
+                else:
+                    return False
+                plist = getwindowlist() 
+                for pid in plist:
+                    #print(pid)
+                    try:
+                            hwnd = win32api.OpenProcess(
+                                win32con.PROCESS_ALL_ACCESS, False, (pid))
+                            name_ = win32process.GetModuleFileNameEx(
+                                hwnd, None)
+                    except:
+                        continue
+                    
+                    if name_ in js:
+                        self.settin_ui.autostarthooksignal.emit(pid, name_,tuple(js[name_]))
+                        return True
+        return False
+    def autohookmonitorthread(self):
+        while True:
+            if(self.onwindowloadautohook()):
+                #break
+                pass
+            time.sleep(0.5)
     def aa(self):
         t1=time.time()
         
         self.translation_ui =gui.translatorUI.QUnFrameWindow(self)  
         self.translation_ui.show()     
         threading.Thread(target=self.setontopthread).start()
+        
         self.prepare()  
         self.starthira()  
         self.starttextsource() 
          
         self.settin_ui =gui.settin.Settin(self) 
+        
         self.startreader() 
         self.range_ui =gui.rangeselect.rangeadjust(self)   
         self.hookselectdialog=gui.selecthook.hookselect(self )
+        threading.Thread(target=self.autohookmonitorthread).start()
         #self.translation_ui.displayraw.emit('欢迎','#0000ff')
         #print(time.time()-t1)
     def main(self) : 
@@ -158,7 +198,7 @@ class MAINUI() :
         app.exit(app.exec_())
         
 if __name__ == "__main__" :
- 
+     
     app = MAINUI()
     
     app.main()
