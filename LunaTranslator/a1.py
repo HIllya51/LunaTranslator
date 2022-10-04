@@ -1,67 +1,31 @@
-from PyQt5.QtWidgets import (QApplication, QMainWindow, QPushButton, QPlainTextEdit,
-                                QVBoxLayout, QWidget)
-from PyQt5.QtCore import QProcess,QByteArray
+import time
+starttime=time.time() 
+from threading import Thread
+import os
+import json
 import sys
 
+from utils.config import postprocessconfig 
+from traceback import print_exc  
+dirname, filename = os.path.split(os.path.abspath(__file__))
 
-class MainWindow(QWidget):
+from postprocess.post import POSTSOLVE 
+print(POSTSOLVE('神神様様だだろろううかか？？神神様様だだろろううかか？？'))
 
-    def __init__(self):
-        super().__init__()
-
-        self.p = None
-
-        self.btn = QPushButton("Execute")
-        self.btn.pressed.connect(self.start_process)
-        self.text = QPlainTextEdit()
-        self.text.setReadOnly(True)
-        self.i=1
-        l = QVBoxLayout()
-        l.addWidget(self.btn)
-        l.addWidget(self.text)
- 
-        self.setLayout(l)
-
-    def message(self, s):
-        self.text.appendPlainText(s)
-
-    def start_process(self):
-        if self.p is None:  # No process running.
-            self.message("Executing process")
-            self.p = QProcess()  # Keep a reference to the QProcess (e.g. on self) while it's running.
-            self.p.readyReadStandardOutput.connect(self.handle_stdout)
-            self.p.readyReadStandardError.connect(self.handle_stderr)
-            self.p.stateChanged.connect(self.handle_state)
-            self.p.finished.connect(self.process_finished)  # Clean up once complete.
-            self.p.start(r'C:\dataH\Textractor5.20\x64\TextractorCLI.exe')
-         
-            self.p.write(('attach -P24512\r\n'.encode('utf-16-le')))
-             
-        else:
-            ##inserthook必须重新手动按一下，一起写入就会结束？？？？
-            self.p.write(('HS-24@0:kernel32.dll:lstrcpyA -P24512\r\n'.encode('utf-16-le')))
-            
-    def handle_stderr(self):
-        data = self.p.readAllStandardError()
-        stderr = bytes(data).decode("utf16")
-        self.message(stderr)
-
-    def handle_stdout(self):
-        data = self.p.readAllStandardOutput()
-        stdout = bytes(data).decode("utf16")
-        self.message(stdout)
-
-    def handle_state(self, state):
-        states = {
-            QProcess.NotRunning: 'Not running',
-            QProcess.Starting: 'Starting',
-            QProcess.Running: 'Running',
-        }
-        state_name = states[state]
-        self.message(f"State changed: {state_name}")
-
-    def process_finished(self):
-        self.message("Process finished.")
-        self.p = None
-
- 
+print(POSTSOLVE('''
+<link rel="canonical" href="https://blog.csdn.net/jackandsnow/article/details/103885422"/>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta name="renderer" content="webkit"/>
+    <meta name="force-rendering" content="webkit"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="report" content='{"pid": "blog", "spm":"1001.2101"}'>
+    <meta name="referrer" content="always">
+    <meta http-equiv="Cache-Control" content="no-siteapp" /><link rel="alternate" media="handheld" href="#" />
+    <meta name="shenma-site-verification" content="5a59773ab8077d4a62bf469ab966a63b_1497598848">
+    <meta name="applicable-device" content="pc">
+    <link  href="https://g.csdnimg.cn/static/logo/favicon32.ico"  rel="shortcut icon" type="image/x-icon" />
+    <title>re.sub()用法的详细介绍_jackandsnow的博客-CSDN博客_re。sub</title>
+    <script>
+      (function(){ 
+'''))

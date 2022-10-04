@@ -12,6 +12,7 @@ from gui.settingpage3 import setTabThree
 from gui.settingpage4 import setTab4 
 from gui.settingpage5 import setTab5 
 from gui.settingpage6 import setTab6 
+from gui.settingpage7 import setTab7
 from gui.rotatetab import customtabstyle
 class Settin(QMainWindow) :
     resetsourcesignal=pyqtSignal()
@@ -51,6 +52,7 @@ class Settin(QMainWindow) :
         setTabThree(self) 
         setTab5(self)
         
+        setTab7(self)
         setTab4(self)
 
         self.setStyle(customtabstyle()) #必须放后面 不然其他样式全都失效

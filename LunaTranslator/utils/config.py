@@ -1,12 +1,10 @@
 import json
-import os 
+import os
+from turtle import pos 
+ 
+with open('./files/config.json','r',encoding='utf-8') as ff:
+    globalconfig=json.load(ff)
+              
 
-fname=os.path.join('./files/config.json')
-
-with open(fname,'r',encoding='utf-8') as ff:
-    config1=json.load(ff)
-            
-         
-             
-globalconfig=config1
-#print(globalconfig)
+with open('./files/postprocessconfig.json','r',encoding='utf-8') as ff:
+    postprocessconfig=json.load(ff)

@@ -1,10 +1,11 @@
  
 from cmath import exp
 import functools
-from PyQt5.QtWidgets import  QWidget,QLabel ,QLineEdit,QSpinBox
+from PyQt5.QtWidgets import  QWidget,QLabel ,QLineEdit,QSpinBox,QPushButton
+import qtawesome
 from PyQt5.QtCore import QThread
 import subprocess
-from utils.config import globalconfig 
+from utils.config import globalconfig ,postprocessconfig
 from utils.getpidlist import getwindowlist
 import threading
 import json
@@ -100,6 +101,7 @@ def setTab4(self) :
 
         self.autostarthooksignal.connect(functools.partial(autostarthookfunction,self))
         
+
 def autostarthookfunction(self,pid,pexe,hookcode):
          
         try:
