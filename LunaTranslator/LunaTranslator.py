@@ -6,7 +6,7 @@ import sys
 from traceback import print_exc  
 dirname, filename = os.path.split(os.path.abspath(__file__))
 sys.path.append(dirname)  
-
+import threading,win32gui
 from tts.windowstts import tts   
 from PyQt5.QtCore import QCoreApplication ,Qt 
 from PyQt5.QtWidgets import  QApplication 
@@ -124,13 +124,17 @@ class MAINUI() :
                     _.show=partial(self.translation_ui.displayres.emit,classname)
                     self.translators[classname]=_ 
     # 主函数
-     
+    def setontopthread(self):
+        while True:
+           
+            win32gui.BringWindowToTop(int(self.translation_ui.winId()))
+            time.sleep(0.5)
     def aa(self):
         t1=time.time()
         
         self.translation_ui =gui.translatorUI.QUnFrameWindow(self)  
         self.translation_ui.show()     
-
+        threading.Thread(target=self.setontopthread).start()
         self.prepare()  
         self.starthira()  
         self.starttextsource() 

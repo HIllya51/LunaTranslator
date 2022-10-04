@@ -4,7 +4,7 @@
         613
     ],
     "width": 672.8,
-    "autorun": false,
+    "autorun": true,
     "transparent": 47,
     "fontsize": 17.699999999999996,
     "fonttype": "思源黑体 CN Medium",
@@ -27,8 +27,8 @@
     },
     "sourcestatus": {
         "copy": false,
-        "ocr": true,
-        "textractor": false,
+        "ocr": false,
+        "textractor": true,
         "textractor_pipe": false
     },
     "ocr": {
@@ -54,7 +54,7 @@
     },
     "fanyi": {
         "baidu": {
-            "use": true,
+            "use": false,
             "color": "#ff65db",
             "name": "百度"
         },
@@ -104,7 +104,7 @@
             "name": "deepl"
         },
         "jb7": {
-            "use": true,
+            "use": false,
             "color": "#1839f0",
             "name": "Jbeijing7",
             "argsfile": "./userconfig/jbj7.json"
@@ -140,19 +140,19 @@
             "name": "iciba"
         },
         "baiduapi": {
-            "use": false,
+            "use": true,
             "color": "#0ff000",
             "name": "百度api",
             "argsfile": "./userconfig/baiduapi.json"
         },
         "tencentapi": {
-            "use": true,
+            "use": false,
             "color": "#0ff000",
             "name": "腾讯api",
             "argsfile": "./userconfig/txapi.json"
         },
         "byte": {
-            "use": false,
+            "use": true,
             "color": "#0ff000",
             "name": "byte"
         },

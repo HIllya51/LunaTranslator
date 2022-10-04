@@ -1,6 +1,8 @@
 import functools
+from string import whitespace
 import sys
-from threading import Thread 
+from threading import Thread
+import threading 
 import time
 t1=time.time()
 import os
@@ -14,7 +16,7 @@ import pyperclip
 
 from PyQt5.QtCore import QProcess ,QByteArray ,QTimer
 from utils.config import globalconfig
- 
+import win32api,win32gui,win32con
 import gui.rangeselect
 import gui.transhist
 
@@ -120,10 +122,15 @@ class QUnFrameWindow(QWidget):
         self.p.write(qb)
     def killprocess(self):
         if 'p' in dir(self):
-            self.p.kill()
+            self.p.kill() 
+           
     def __init__(self, object):
         super(QUnFrameWindow, self).__init__(
             None, Qt.FramelessWindowHint|Qt.WindowStaysOnTopHint|Qt.Tool)  # 设置为顶级窗口，无边框
+        #self.setFocusPolicy(Qt.StrongFocus)
+
+        
+        #  
         self.object = object
         self.rate = self.object.screen_scale_rate 
         self.startprocessignal.connect(self.startprocessfunction)
@@ -246,6 +253,7 @@ class QUnFrameWindow(QWidget):
         self.masklabel.setGeometry( 0, 30, 9999,9999)
         self.masklabel.setMouseTracking(True)
         self.showhidestate=True
+        
     def showhide(self):
         
         self.showhidestate=not self.showhidestate
