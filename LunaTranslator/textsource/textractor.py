@@ -48,7 +48,7 @@ class textractor(basetext  ):
             def __(self,h,t):
                 self.inserthook(h)
                 t.stop()
-            t.timeout.connect(lambda: __(self,autostarthookcode,t))
+            t.timeout.connect(lambda: __(self,autostarthookcode[-1],t))
             t.start(1000)
         self.HookCode=None 
         self.userinserthookcode=[]
@@ -101,8 +101,8 @@ class textractor(basetext  ):
                 #print(self.autostarthookcode,HookCode)
                 if self.autostart:
                     #print(self.autostarthookcode,HookCode)
-                    if self.autostarthookcode==HookCode and self.guessreal(output):
-
+                    #if self.autostarthookcode==HookCode and self.guessreal(output):
+                    if (thread_tp_ctx,thread_tp_ctx2,HookCode)==(self.autostarthookcode[-4],self.autostarthookcode[-3],self.autostarthookcode[-1]):
                         self.selectedhook=self.selectinghook=key
                         self.autostart=False
                 self.hookdatacollecter[key]=[]

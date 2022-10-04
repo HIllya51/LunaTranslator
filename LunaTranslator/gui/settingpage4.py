@@ -111,10 +111,10 @@ def autostarthookfunction(self,pid,pexe,hookcode):
         self.object.hookselectdialog.changeprocessclearsignal.emit()
         if self.object.savetextractor:
                 self.object.textsource=self.object.savetextractor
-                self.object.textsource.reset(self.object,self.object.textgetmethod,self.object.hookselectdialog,pid,pexe,arch,True,hookcode[-1])
+                self.object.textsource.reset(self.object,self.object.textgetmethod,self.object.hookselectdialog,pid,pexe,arch,True,hookcode)
 
         else:
-                self.object.textsource=textractor(self.object,self.object.textgetmethod,self.object.hookselectdialog,pid,pexe,arch,True,hookcode[-1]) 
+                self.object.textsource=textractor(self.object,self.object.textgetmethod,self.object.hookselectdialog,pid,pexe,arch,True,hookcode) 
                 self.object.savetextractor=self.object.textsource
 def getwindowlist():
         windows_list=[]
