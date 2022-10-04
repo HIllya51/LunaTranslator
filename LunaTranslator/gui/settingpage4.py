@@ -1,7 +1,7 @@
  
 from cmath import exp
 import functools
-from PyQt5.QtWidgets import  QWidget,QLabel 
+from PyQt5.QtWidgets import  QWidget,QLabel ,QLineEdit,QSpinBox
 from PyQt5.QtCore import QThread
 import subprocess
 from utils.config import globalconfig 
@@ -50,6 +50,40 @@ def setTab4(self) :
         self.customSetGeometry(self.movefollowswitch, 200, 110,20,20)
         self.movefollowswitch.clicked.connect(lambda x:globalconfig.__setitem__('autostarthook',x)) 
         
+        
+
+
+        label = QLabel(self.tab_4)
+        self.customSetGeometry(label, 20, 170, 200, 20)
+        label.setText("最短翻译字数")
+        self.minlength=QSpinBox(self.tab_4)
+        self.minlength.setMinimum(0)
+        self.minlength.setMaximum(500)
+        self.minlength.setValue(globalconfig['minlength']) 
+        self.customSetGeometry(self.minlength, 150,170,50,20)
+        self.minlength.valueChanged.connect(lambda x:globalconfig.__setitem__('minlength',x)) 
+
+
+
+        label = QLabel(self.tab_4)
+        self.customSetGeometry(label, 20, 200, 200, 20)
+        label.setText("最长翻译字数")
+        self.maxlength=QSpinBox(self.tab_4)
+        self.maxlength.setMinimum(0)
+        self.maxlength.setMaximum(500)
+        self.maxlength.setValue(globalconfig['maxlength']) 
+        self.customSetGeometry(self.maxlength, 150, 200,50,20)
+        self.maxlength.valueChanged.connect(lambda x:globalconfig.__setitem__('maxlength',x)) 
+
+        label = QLabel(self.tab_4)
+        self.customSetGeometry(label, 20, 250, 200, 20)
+        label.setText("在线翻译超时(s)")
+        self.translatortimeout=QSpinBox(self.tab_4)
+        self.translatortimeout.setMinimum(1)
+        self.translatortimeout.setMaximum(20)
+        self.translatortimeout.setValue(globalconfig['translatortimeout']) 
+        self.customSetGeometry(self.translatortimeout, 150,250,50,20)
+        self.translatortimeout.valueChanged.connect(lambda x:globalconfig.__setitem__('translatortimeout',x)) 
         # label = QLabel(self.tab_4)
         # self.customSetGeometry(label, 20, 110, 200, 20)
         # #label.setText("窗口失去焦点不再置顶")

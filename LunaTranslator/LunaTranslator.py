@@ -32,7 +32,7 @@ class MAINUI() :
     def textgetmethod(self,paste_str,shortlongskip=True):
         if paste_str=='':
             return
-        if len(paste_str)>500 or   len(paste_str.split('\n'))>10:
+        if len(paste_str)>500 or   len(paste_str.split('\n'))>20:
             return 
         
         postsolve=importlib.import_module('postprocess.post').POSTSOLVE
@@ -51,7 +51,7 @@ class MAINUI() :
         else:
             self.translation_ui.displayraw1.emit(paste_str,globalconfig['rawtextcolor'],0)
          
-        if shortlongskip and  (len(paste_str)<6 or len(paste_str)>150 or len(paste_str.split('\n'))>5):
+        if shortlongskip and  (len(paste_str)<globalconfig['minlength'] or len(paste_str)>globalconfig['maxlength'] ):
             skip=True 
         else:
             skip=False
