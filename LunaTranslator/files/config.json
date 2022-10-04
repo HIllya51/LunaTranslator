@@ -170,7 +170,7 @@
     "minifollow": true,
     "movefollow": true,
     "autostarthook": true,
-    "translatortimeout": 3,
+    "translatortimeout": 5,
     "minlength": 0,
     "maxlength": 150
 }
