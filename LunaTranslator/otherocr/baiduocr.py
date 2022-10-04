@@ -10,7 +10,7 @@ def default():
                 "API Key": "",
                 "Secret Key": "",
                 "access_token": "",
-                "备注":"可以只填写API Key和Secret Key,access_token可以自动获取;也可以只填写access_token", 
+                "备注":"可以只填写API Key和Secret Key;也可以只填写access_token;优先使用API Key和Secret Key", 
                 "次数统计": "0"
             },
             "notwriteable": [ 
@@ -19,7 +19,10 @@ def default():
                 "次数统计"
             ]
         }
+cacheapikey=("","")
+cacheaccstoken=""
 def ocr(imgfile):
+    global cacheapikey,cacheaccstoken
     configfile=globalconfig['ocr']['baiduocr']['argsfile']
     if os.path.exists(configfile) ==False:
             return ''
@@ -28,15 +31,20 @@ def ocr(imgfile):
 
     appid = js['args']['API Key']
     secretKey = js['args']['Secret Key']
-    access_token=js['args']['access_token']
-    if access_token=="":
-        if appid=="" or secretKey=="":
-            return ''
+    cacheaccstoken=js['args']['access_token']
+    if (appid,secretKey)!=cacheapikey:
         try:
-            access_token=requests.get('https://aip.baidubce.com/oauth/2.0/token?grant_type=client_credentials&client_id='+appid+'&client_secret='+secretKey, proxies=  {'http': None,'https': None}).json()['access_token']
+            cacheaccstoken=requests.get('https://aip.baidubce.com/oauth/2.0/token?grant_type=client_credentials&client_id='+appid+'&client_secret='+secretKey, proxies=  {'http': None,'https': None}).json()['access_token']
+            cacheapikey=(appid,secretKey)
         except:
-            return ''
-        js['args']['access_token']=access_token
+            #appid无效，则使用输入的accstoken，并清空
+            pass
+
+    if cacheaccstoken=="":
+        
+        return ''
+     
+        
         
     headers = {
         'authority': 'aip.baidubce.com',
@@ -55,7 +63,7 @@ def ocr(imgfile):
     }
 
     params = {
-        'access_token':access_token# '',
+        'access_token':cacheaccstoken# '',
     }
     with open(imgfile,'rb') as ff:
         f=ff.read()
