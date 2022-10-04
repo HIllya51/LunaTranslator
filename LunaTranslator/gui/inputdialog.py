@@ -7,7 +7,7 @@ import importlib
 def GetUserPlotItems(object,configfile,defaultsetting,title) -> tuple: 
         dialog = QDialog(object)  # 自定义一个dialog
         dialog.setWindowTitle(title)
-        dialog.setWindowModality(Qt.ApplicationModal)
+        #dialog.setWindowModality(Qt.ApplicationModal)
         dialog.resize(QSize(900,10))
         formLayout = QFormLayout(dialog)  # 配置layout
         d={}
