@@ -55,17 +55,17 @@ class basetrans:
             mp={}
             use=noundictconfig['use']
             if use:
-                for key in noundictconfig['dict']:
+                for key in noundictconfig['dict']: 
                     if key in content:
-                        content.replace(key,'{XX'++zhanweifu+'}')
-                        mp['{XX'++zhanweifu+'}']=key
-                        zhanweifu+=1
 
+                        content=content.replace(key,'{XX'+str(zhanweifu)+'}')
+                        mp['{XX'+str(zhanweifu)+'}']=key
+                        zhanweifu+=1
+             
             res=self.translate(content)
             if use:
                 for key in mp:
-                    res.replace(key,mp[key])
-
+                    res=res.replace(key,mp[key]) 
             if res is None:
                 break
             if self.queue.empty() and content==self.newline:

@@ -27,8 +27,8 @@
         "volume": 100.0
     },
     "sourcestatus": {
-        "copy": false,
-        "ocr": true,
+        "copy": true,
+        "ocr": false,
         "textractor": false,
         "textractor_pipe": false
     },
