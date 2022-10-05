@@ -2,6 +2,7 @@ import requests
 import base64
 import os
 import json
+import time
 from utils.config import globalconfig
 def default():
     return {
@@ -36,6 +37,7 @@ def ocr(imgfile):
         try:
             cacheaccstoken=requests.get('https://aip.baidubce.com/oauth/2.0/token?grant_type=client_credentials&client_id='+appid+'&client_secret='+secretKey, proxies=  {'http': None,'https': None}).json()['access_token']
             cacheapikey=(appid,secretKey)
+            
         except:
             #appid无效，则使用输入的accstoken，并清空
             pass
@@ -45,7 +47,7 @@ def ocr(imgfile):
         return ''
      
         
-        
+    #print(cacheaccstoken)
     headers = {
         'authority': 'aip.baidubce.com',
         'accept': '*/*',
@@ -77,7 +79,13 @@ def ocr(imgfile):
     with open(configfile,'w',encoding='utf-8') as ff:
         ff.write(json.dumps(js,ensure_ascii=False,sort_keys=False, indent=4))
     response = requests.post('https://aip.baidubce.com/rest/2.0/ocr/v1/general_basic', params=params, headers=headers, data=data, proxies=  {'http': None,'https': None})
-    return ''.join([x['words']  for x in response.json()['words_result']])
-
+    try:
+        return ''.join([x['words']  for x in response.json()['words_result']])
+    except:
+        print(response.text)
+        if 'error_msg' in response.json():
+            return response.json()['error_msg']
+        
+        return ''
 if __name__=="__main__":
     baiduocr('1.jpg')

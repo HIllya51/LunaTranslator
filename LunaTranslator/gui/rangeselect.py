@@ -21,12 +21,13 @@ class rangeadjust(QMainWindow) :
         self.label.setStyleSheet("border-width:1;\
                                   border:2px solid #000000;\
                                   background-color:rgba(62, 62, 62, 0.01)")
- 
+    
         self.drag_label = QLabel(self)
         self.drag_label.setGeometry(0, 0, 4000, 2000)
         self._isTracking=False
         self.statusbar = QStatusBar(self)
         self.setStatusBar(self.statusbar) 
+         
     def mouseMoveEvent(self, e ) :  
         if self._isTracking: 
             self._endPos = e.pos() - self._startPos
@@ -40,16 +41,20 @@ class rangeadjust(QMainWindow) :
                 self._isTracking = False
                 self._startPos = None
                 self._endPos = None 
+
+                
+                rect = self.geometry() 
+                self.object.rect=[(rect.left(),rect.top()),(rect.right(),rect.bottom())]  
     def enterEvent(self, QEvent) :  
         self.drag_label.setStyleSheet("background-color:rgba(62, 62, 62, 0.1)") 
     def leaveEvent(self, QEvent): 
         self.drag_label.setStyleSheet("background-color:none") 
-    def moveEvent(self, a0):
-        self.resizeEvent(a0)
+    #def moveEvent(self, a0):
+    #     self.resizeEvent(a0)
     def resizeEvent(self, a0 ) :
-        self.label.setGeometry(0, 0, self.width(), self.height())  
-        rect = self.geometry() 
-        self.object.rect=[(rect.left(),rect.top()),(rect.right(),rect.bottom())]  
+         self.label.setGeometry(0, 0, self.width(), self.height())  
+    #     rect = self.geometry() 
+    #     self.object.rect=[(rect.left(),rect.top()),(rect.right(),rect.bottom())]  
 class rangeselct(QWidget) :
 
     def __init__(self, object, parent=None) :
@@ -69,6 +74,7 @@ class rangeselct(QWidget) :
         self.end_point = QPoint()
         self.object = object 
 
+         
     def paintEvent(self, event):  
             if self.is_drawing:
                 self.mask = self.black_mask.copy()

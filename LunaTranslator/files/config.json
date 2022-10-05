@@ -27,8 +27,8 @@
         "volume": 100.0
     },
     "sourcestatus": {
-        "copy": true,
-        "ocr": false,
+        "copy": false,
+        "ocr": true,
         "textractor": false,
         "textractor_pipe": false
     },
@@ -38,7 +38,7 @@
             "name": "本地OCR"
         },
         "baiduocr": {
-            "use": true,
+            "use": false,
             "name": "baiduOCR",
             "argsfile": "./userconfig/baiduocr.json"
         },
@@ -48,7 +48,7 @@
             "argsfile": "./userconfig/ocrspace.json"
         },
         "docsumo": {
-            "use": false,
+            "use": true,
             "name": "docsumo",
             "argsfile": "./userconfig/docsumo.json"
         }
