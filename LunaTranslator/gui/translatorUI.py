@@ -281,7 +281,9 @@ class QUnFrameWindow(QWidget):
                                                                     background-color: rgba(%s, %s, %s, %s)"
                                             %(int(globalconfig['backcolor'][1:3],16),int(globalconfig['backcolor'][3:5],16),int(globalconfig['backcolor'][5:7],16),0))
             if globalconfig['locktools']==False:
-                self.locktoolsbutton.click()
+                globalconfig['locktools']=not globalconfig['locktools'] 
+                self.locktoolsbutton.setIcon(qtawesome.icon("fa.lock" ,color="#FF69B4" if globalconfig['locktools'] else 'white'))
+        
         else:
             self.object.translation_ui.translate_text.setStyleSheet("border-width:0;\
                                                                  border-style:outset;\
@@ -303,8 +305,11 @@ class QUnFrameWindow(QWidget):
         globalconfig['autorun']=not globalconfig['autorun'] 
         self.automodebutton.setIcon(qtawesome.icon("fa.forward" ,color="#FF69B4" if globalconfig['autorun'] else 'white'))
     def changetoolslockstate(self,checked):
+        if self.mousetransparent: 
+            self.mousetransbutton.click()
         globalconfig['locktools']=not globalconfig['locktools'] 
         self.locktoolsbutton.setIcon(qtawesome.icon("fa.lock" ,color="#FF69B4" if globalconfig['locktools'] else 'white'))
+        
     def textAreaChanged(self) :
         if globalconfig['fixedheight']:
             return

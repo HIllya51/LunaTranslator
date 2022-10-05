@@ -2,7 +2,9 @@
 from re import search
 from traceback import print_exc
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QWidget,QHBoxLayout,QMainWindow,QFrame,QVBoxLayout,QComboBox,QPlainTextEdit,QDialogButtonBox,QLineEdit,QPushButton
+from PyQt5.QtWidgets import QWidget,QHBoxLayout,QMainWindow,QFrame,QVBoxLayout,QComboBox,QPlainTextEdit,QDialogButtonBox,QLineEdit,QPushButton,QListView
+
+from PyQt5.QtGui import QStandardItem, QStandardItemModel
 from PyQt5.QtGui import QFont,QTextCursor
 from PyQt5.QtCore import Qt,pyqtSignal
 import qtawesome
@@ -58,6 +60,10 @@ class hookselect(QMainWindow):
         font.setPointSize(13)
         self.ttCombo = QComboBox(self.centralWidget)
         self.ttCombo.setEditable(False)
+        self.ttCombo.currentIndexChanged.connect(self.ViewThread)
+        self.ttCombomodel=QStandardItemModel()
+         
+        
         #self.ttCombo.setMaxVisibleItems(50) 
         self.ttCombo.setFont(font)
         self.vboxlayout.addWidget(self.ttCombo)
@@ -98,7 +104,7 @@ class hookselect(QMainWindow):
         self.setCentralWidget(self.centralWidget)
   
 
-        self.ttCombo.currentIndexChanged.connect(self.ViewThread)
+        
 
         self.buttonBox=QDialogButtonBox()
         self.buttonBox.setStandardButtons(QDialogButtonBox.Ok|QDialogButtonBox.Cancel)
