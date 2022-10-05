@@ -57,7 +57,7 @@ class TS(basetrans):
         }
         try:
             response = requests.post('https://api.niutrans.com/NiuTransServer/translation',  headers=headers, params=params, timeout=globalconfig['translatortimeout'],proxies=  {'http': None,'https': None})
-            print(response.json())
+           # print(response.json())
             js['args']['字数统计']=str(int(js['args']['字数统计'])+len(query))
             js['args']['次数统计']=str(int(js['args']['次数统计'])+1)
             with open(configfile,'w',encoding='utf-8') as ff:
