@@ -12,7 +12,7 @@ from PyQt5.QtGui import QStandardItem, QStandardItemModel
 import qtawesome
 from PyQt5.QtCore import QThread
 import subprocess
-from utils.config import globalconfig ,postprocessconfig
+from utils.config import globalconfig ,postprocessconfig,noundictconfig
 from PyQt5.QtWidgets import  QWidget,QLabel, QComboBox,QDoubleSpinBox 
  
 from PyQt5.QtWidgets import QWidget,QLabel,QFrame ,QPushButton,QColorDialog
@@ -33,7 +33,7 @@ def setTab7(self) :
      
         self.tab_7 = QWidget()
         self.tab_widget.addTab(self.tab_7, "")
-        self.tab_widget.setTabText(self.tab_widget.indexOf(self.tab_7), " 后处理设置")
+        self.tab_widget.setTabText(self.tab_widget.indexOf(self.tab_7), " 翻译预处理")
 
         
         initpostswitchs_auto(self)
@@ -41,12 +41,83 @@ def initpostswitchs_auto(self):
         num=0
         
         for post in postprocessconfig:
-            y=70+40*num
+            y=10+40*num
             x=20
             #print(post)
             initpostswitchs(self,post,(x, y, 270, 20),(x+270, y, 20,20),1,(x+300, y, 20,20))
             num+=1
 
+        x=20
+        y=300
+        initdictswitchs(self,(x, y, 270, 20),(x+270, y, 20,20),1,(x+300, y, 20,20))
+def initdictswitchs(self,namepos,switchpos,colorpos,settingpos):
+    label = QLabel(self.tab_7)
+    self.customSetGeometry(label, *namepos)
+    label.setText("使用专有名词手动翻译:")
+    p=gui.switchbutton.MySwitch(self.tab_7, sign=noundictconfig['use'] )
+    
+    self.customSetGeometry(p, *switchpos) 
+    p.clicked.connect(lambda x:noundictconfig.__setitem__('use',x)) 
+    
+    s1 = QPushButton( "", self.tab_7)
+    self.customSetIconSize(s1, 20, 20)
+    self.customSetGeometry(s1, *settingpos)
+    s1.setStyleSheet("background: transparent;")   
+    s1.setIcon(qtawesome.icon("fa.gear", color="#FF69B4"  ))
+    s1.clicked.connect(lambda x:noundictconfigdialog(self,noundictconfig,'专有名词翻译设置'))
+
+def noundictconfigdialog(object,configdict,title):
+    dialog = QDialog(object)  # 自定义一个dialog
+    dialog.setWindowTitle(title)
+    #dialog.setWindowModality(Qt.ApplicationModal)
+    
+    formLayout = QVBoxLayout(dialog)  # 配置layout
+        
+    model=QStandardItemModel(len(list(configdict['dict'].keys())),1 , dialog)
+    row=0
+    for key in  (configdict['dict']):                                   # 2
+            
+            item = QStandardItem( key )
+            model.setItem(row, 0, item)
+            item = QStandardItem(configdict['dict'][key] )
+            model.setItem(row, 1, item)
+            row+=1
+    model.setHorizontalHeaderLabels([ '原文','翻译'])
+    table = QTableView(dialog)
+    table.setModel(model)
+    table.horizontalHeader().setStretchLastSection(True)
+    #table.setEditTriggers(QAbstractItemView.NoEditTriggers)
+    #table.clicked.connect(self.show_info)
+    button=QPushButton(dialog)
+    button.setText('添加行')
+    def clicked1(): 
+        model.insertRow(model.rowCount(),[QStandardItem(''),QStandardItem('')]) 
+    button.clicked.connect(clicked1)
+    button2=QPushButton(dialog)
+    button2.setText('删除选中行')
+    def clicked2():
+        
+        model.removeRow(table.currentIndex().row())
+    button2.clicked.connect(clicked2)
+    button3=QPushButton(dialog)
+    button3.setText('保存并关闭')
+    def clicked3():
+        rows=model.rowCount() 
+        newdict={}
+        for row in range(rows):
+            if model.item(row,0).text()=="":
+                continue
+            newdict[model.item(row,0).text()]=model.item(row,1).text()
+        configdict['dict']=newdict
+        dialog.close()
+    button3.clicked.connect(clicked3)
+    formLayout.addWidget(table)
+    formLayout.addWidget(button)
+    formLayout.addWidget(button2)
+    formLayout.addWidget(button3)
+    dialog.resize(QSize(400,400))
+    dialog.show()
+ 
 def initpostswitchs(self,name,namepos,switchpos,colorpos,settingpos):
 
         label = QLabel(self.tab_7)
