@@ -1,0 +1,13 @@
+{
+    "args": {
+        "注册网址": "https://niutrans.com/text_trans",
+        "apikey": "728366cf1c8bb191f2e2fbe48d8f9777",
+        "字数统计": "0",
+        "次数统计": "0"
+    },
+    "notwriteable": [
+        "注册网址",
+        "字数统计",
+        "次数统计"
+    ]
+}

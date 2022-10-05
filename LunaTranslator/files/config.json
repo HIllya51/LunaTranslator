@@ -167,6 +167,12 @@
             "use": false,
             "color": "#0ff000",
             "name": "qqimt"
+        },
+        "xiaoniu": {
+            "use": true,
+            "color": "#0ff000",
+            "name": "小牛",
+            "argsfile": "./userconfig/xiaoniuapi.json"
         }
     },
     "minifollow": true,
