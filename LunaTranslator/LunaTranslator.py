@@ -144,8 +144,8 @@ class MAINUI() :
             return False
         else:
             if 'textsource' not in dir(self) or self.textsource is None:
-                if os.path.exists('./files/savehook.json'):
-                                with open('./files/savehook.json', 'r', encoding='utf8') as ff:
+                if os.path.exists('./files/savehook_new.json'):
+                                with open('./files/savehook_new.json', 'r', encoding='utf8') as ff:
                                         js = json.load(ff)
                 else:
                     return False
@@ -161,7 +161,7 @@ class MAINUI() :
                         continue
                     
                     if name_ in js:
-                        self.settin_ui.autostarthooksignal.emit(pid, name_,tuple(js[name_]))
+                        self.settin_ui.autostarthooksignal.emit(pid, name_,(js[name_]))
                         return True
         return False
     def autohookmonitorthread(self):

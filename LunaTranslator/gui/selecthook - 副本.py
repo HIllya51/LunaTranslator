@@ -2,7 +2,7 @@
 from re import search
 from traceback import print_exc
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QWidget,QHBoxLayout,QMainWindow,QFrame,QVBoxLayout,QComboBox,QPlainTextEdit,QDialogButtonBox,QLineEdit,QPushButton,QTableView,QAbstractItemView
+from PyQt5.QtWidgets import QWidget,QHBoxLayout,QMainWindow,QFrame,QVBoxLayout,QComboBox,QPlainTextEdit,QDialogButtonBox,QLineEdit,QPushButton,QListView
 
 from PyQt5.QtGui import QStandardItem, QStandardItemModel
 from PyQt5.QtGui import QFont,QTextCursor
@@ -17,7 +17,6 @@ class hookselect(QMainWindow):
     addnewhooksignal=pyqtSignal(tuple)
     getnewsentencesignal=pyqtSignal(str)
     changeprocessclearsignal=pyqtSignal()
-    update_item_new_line=pyqtSignal(tuple,str)
     def __init__(self,object):
         super(hookselect, self).__init__()
         self.setupUi( )
@@ -25,31 +24,18 @@ class hookselect(QMainWindow):
         self.changeprocessclearsignal.connect(self.changeprocessclear)
         self.addnewhooksignal.connect(self.addnewhook)
         self.getnewsentencesignal.connect(self.getnewsentence)
-        self.update_item_new_line.connect(self.update_item_new_line_function)
         self.setWindowFlags(Qt.WindowStaysOnTopHint |Qt.WindowCloseButtonHint)
-        self.setWindowTitle('选择文本，支持按住ctrl进行多项选择（一般选择一条即可）')
-    def update_item_new_line_function(self,hook,output):
-        if hook in self.save:
-            row=self.save.index(hook)
-            self.ttCombomodelmodel.item(row,1).setText(output) 
+        self.setWindowTitle('选择文本')
     def changeprocessclear(self):
-        #self.ttCombo.clear() 
-        self.ttCombomodelmodel.clear()
-        self.ttCombomodelmodel.setHorizontalHeaderLabels([ 'HOOK','文本'])
+        self.ttCombo.clear() 
         self.save=[]
     def addnewhook(self,ss ):
          
         self.save.append(ss )
-        #self.ttCombo.addItem('%s:%s:%s:%s:%s:%s (%s)' %(ss))
-
-        item = QStandardItem('%s:%s:%s:%s:%s:%s (%s)' %(ss) )
-        rown=self.ttCombomodelmodel.rowCount()
-        self.ttCombomodelmodel.setItem(rown, 0, item)
-        item = QStandardItem('output' )
-        self.ttCombomodelmodel.setItem(rown, 1, item)
+        self.ttCombo.addItem('%s:%s:%s:%s:%s:%s (%s)' %(ss))
     def setupUi(self  ):
      
-        self.resize(1000, 600)
+        self.resize(1000, 400)
          
         self.save=[]
         self.centralWidget = QWidget(self) 
@@ -72,37 +58,16 @@ class hookselect(QMainWindow):
         font = QFont()
         #font.setFamily("Arial Unicode MS")
         font.setPointSize(13)
-        # self.ttCombo = QComboBox(self.centralWidget)
-        # self.ttCombo.setEditable(False)
-        # self.ttCombo.currentIndexChanged.connect(self.ViewThread)
-        # self.ttCombo.setFont(font)
-        # self.vboxlayout.addWidget(self.ttCombo)
-
- 
-            
-        self.ttCombomodelmodel=QStandardItemModel(self) 
-        #self.ttCombomodelmodel.setColumnCount(2)
-        self.ttCombomodelmodel.setHorizontalHeaderLabels([ 'HOOK','文本'])
-        
-        
-        self.tttable = QTableView(self)
-        self.tttable .setModel(self.ttCombomodelmodel)
-        self.tttable .horizontalHeader().setStretchLastSection(True)
-        self.tttable.setWordWrap(False)  
-        self.tttable.setSelectionBehavior(QAbstractItemView.SelectRows)
-        self.tttable.setSelectionMode(QAbstractItemView.ContiguousSelection)
-        self.tttable.setEditTriggers(QAbstractItemView.NoEditTriggers)
- 
-        self.tttable.clicked.connect(self.ViewThread)
-        #self.tttable.setFont(font)
-        self.vboxlayout.addWidget(self.tttable)
-        #table.setEditTriggers(QAbstractItemView.NoEditTriggers)
-        #table.clicked.connect(self.show_info)
-        
-
+        self.ttCombo = QComboBox(self.centralWidget)
+        self.ttCombo.setEditable(False)
+        self.ttCombo.currentIndexChanged.connect(self.ViewThread)
+        self.ttCombomodel=QStandardItemModel()
+         
         
         #self.ttCombo.setMaxVisibleItems(50) 
-        
+        self.ttCombo.setFont(font)
+        self.vboxlayout.addWidget(self.ttCombo)
+
         self.userhooklayout = QHBoxLayout() 
         self.vboxlayout.addLayout(self.userhooklayout)
         self.userhook=QLineEdit()
@@ -154,13 +119,8 @@ class hookselect(QMainWindow):
             lst=self.object.textsource.hookdatasort
         except:
             return 
-        # self.ttCombo.blockSignals(True)
-        # self.ttCombo.clear() 
-
-        self.ttCombomodelmodel.blockSignals(True)
-         
-        self.ttCombomodelmodel.clear()
-        self.ttCombomodelmodel.setHorizontalHeaderLabels([ 'HOOK','文本'])
+        self.ttCombo.blockSignals(True)
+        self.ttCombo.clear() 
         self.save=[]
         for index in range(len(lst)):   
             ishide=True  
@@ -173,18 +133,10 @@ class hookselect(QMainWindow):
                     
                 # thread_handle,thread_tp_processId, thread_tp_addr, thread_tp_ctx, thread_tp_ctx2, thread_name,HookCode=re.search('([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):(.*):(.*@.*)' ,lst[index][i]).groups()
                 # self.ttCombo.addItem('%s:%s:%s:%s:%s:%s (%s)' %(thread_handle,thread_tp_processId, thread_tp_addr, thread_tp_ctx, thread_tp_ctx2, thread_name,HookCode))
-                
-                #self.ttCombo.addItem('%s:%s:%s:%s:%s:%s (%s)' %lst[index])
-                 
-                rown=self.ttCombomodelmodel.rowCount()
-                item = QStandardItem('%s:%s:%s:%s:%s:%s (%s)'%lst[index] )
-                rown=self.ttCombomodelmodel.rowCount()
-                self.ttCombomodelmodel.setItem(rown, 0, item)
-                item = QStandardItem(self.object.textsource.hookdatacollecter[lst[index]][-1] )
-                self.ttCombomodelmodel.setItem(rown, 1, item)
+                self.ttCombo.addItem('%s:%s:%s:%s:%s:%s (%s)' %lst[index])
                 self.save.append(lst[index])
-        #self.ttCombo.blockSignals(False)
-        self.ttCombomodelmodel.blockSignals(False)
+        self.ttCombo.blockSignals(False)
+
             #self.ttCombo.setItemData(index,'',Qt.UserRole-(1 if ishide else 0))
             #self.ttCombo.setRowHidden(index,ishide)
     def inserthook(self): 
@@ -224,17 +176,17 @@ class hookselect(QMainWindow):
         try:
             if  self.object.textsource is None:
                 return 
-            if self.object.textsource.batchselectinghook is None:
+            if self.object.textsource.selectinghook is None:
                 return
-            self.object.textsource.selectedhook=self.object.textsource.batchselectinghook
-            print(self.object.textsource.batchselectinghook)
-            if not os.path.exists('./files/savehook_new.json'):
+            self.object.textsource.selectedhook=self.object.textsource.selectinghook
+            
+            if not os.path.exists('./files/savehook.json'):
                     js={}
             else:
-                with open('./files/savehook_new.json','r',encoding='utf8') as ff:
+                with open('./files/savehook.json','r',encoding='utf8') as ff:
                     js=json.load(ff)
             js[self.object.textsource.pname]=self.object.textsource.selectedhook
-            with open('./files/savehook_new.json','w',encoding='utf8') as ff:
+            with open('./files/savehook.json','w',encoding='utf8') as ff:
                 ff.write(json.dumps(js,ensure_ascii=False))
         except:
             print_exc()
@@ -259,29 +211,16 @@ class hookselect(QMainWindow):
             scrollbar.setValue(scrollbar.maximum())
     def ViewThread(self, index):  
         #print(index)
-
-        self.object.textsource.selectinghook=self.save[self.tttable.currentIndex().row()]
-        self.textOutput. setPlainText('\n'.join(self.object.textsource.hookdatacollecter[self.save[self.tttable.currentIndex().row()]]))
-        self.textOutput. moveCursor(QTextCursor.End)
-        self.object.textsource.batchselectinghook=[]
-
-        dedup=[]
-        for m in (self.tttable.selectionModel().selectedIndexes()):
-            row=m.row() 
-            if row in dedup:
-                continue
-            self.object.textsource.batchselectinghook+=[self.save[row]]
-            
-        # if  index==-1:
-        #     return 
-        # key=self.save[ self.ttCombo.currentIndex()]
+        if  index==-1:
+            return 
+        key=self.save[ self.ttCombo.currentIndex()]
          
-        # self.object.textsource.selectinghook=key
+        self.object.textsource.selectinghook=key
         
-        # #print(self.save,self.object.object.textsource.hookdatacollecter.keys() )
-        # #print(self.object.object.textsource)
-        # self.textOutput. setPlainText('\n'.join(self.object.textsource.hookdatacollecter[key]))
-        # self.textOutput. moveCursor(QTextCursor.End)
+        #print(self.save,self.object.object.textsource.hookdatacollecter.keys() )
+        #print(self.object.object.textsource)
+        self.textOutput. setPlainText('\n'.join(self.object.textsource.hookdatacollecter[key]))
+        self.textOutput. moveCursor(QTextCursor.End)
         
 # if __name__=="__main__":
 #     app = QApplication(sys.argv) 

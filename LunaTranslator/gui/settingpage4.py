@@ -56,13 +56,13 @@ def autosaveshow(object):
                 
                 item = QStandardItem(k)
                 model.setItem(row, 0, item)
-                item = QStandardItem(str(js[k]))
+                item = QStandardItem(json.dumps(js[k],ensure_ascii=False))
                 model.setItem(row, 1, item)
                 row+=1
         model.setHorizontalHeaderLabels([ '游戏','HOOK'])
         table = QTableView(dialog)
         table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
-
+        table.setWordWrap(False) 
         table.setModel(model)
         table.horizontalHeader().setStretchLastSection(True)
         #table.setEditTriggers(QAbstractItemView.NoEditTriggers)
@@ -77,7 +77,7 @@ def autosaveshow(object):
         button3=QPushButton(dialog)
         button3.setText('保存并关闭')
         def clicked3():
-                with open('./files/savehook.json','w',encoding='utf8') as ff:
+                with open('./files/savehook_new.json','w',encoding='utf8') as ff:
                         ff.write(json.dumps(js,ensure_ascii=False))
         button3.clicked.connect(clicked3)
         formLayout.addWidget(table) 

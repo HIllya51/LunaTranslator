@@ -174,6 +174,7 @@ def postconfigdialog(object,configdict,title):
         model.setHorizontalHeaderLabels([ key])
         table = QTableView(dialog)
         table.setModel(model)
+        table.setWordWrap(False) 
         table.horizontalHeader().setStretchLastSection(True)
         #table.setEditTriggers(QAbstractItemView.NoEditTriggers)
         #table.clicked.connect(self.show_info)

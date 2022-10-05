@@ -22,7 +22,7 @@ class textractor(basetext  ):
         self.reverse={}
         self.forward=[]
         self.selectinghook=None
-        self.selectedhook=None
+        self.selectedhook=[]
         
         self.typename='textractor'
         self.ending=False 
@@ -91,7 +91,8 @@ class textractor(basetext  ):
             key =(thread_handle,thread_tp_processId, thread_tp_addr, thread_tp_ctx, thread_tp_ctx2, thread_name,HookCode)
  
             
-            if key==self.selectedhook:
+            #if key==self.selectedhook:
+            if key in self.selectedhook:
                 #print(11)
                 #print(key==self.selectedhook,key,self.selectedhook)
                 self.newline.put(output) 
@@ -100,11 +101,17 @@ class textractor(basetext  ):
             if key not in self.hookdatacollecter:
                 #print(self.autostarthookcode,HookCode)
                 if self.autostart:
+                    if key in self.selectedhook:
+                        continue
                     #print(self.autostarthookcode,HookCode)
                     #if self.autostarthookcode==HookCode and self.guessreal(output):
-                    if (thread_tp_ctx,thread_tp_ctx2,HookCode)==(self.autostarthookcode[-4],self.autostarthookcode[-3],self.autostarthookcode[-1]):
-                        self.selectedhook=self.selectinghook=key
-                        self.autostart=False
+                    for autostarthookcode in self.autostarthookcode:
+
+                        if (thread_tp_ctx,thread_tp_ctx2,HookCode)==(autostarthookcode[-4],autostarthookcode[-3],autostarthookcode[-1]):
+                            self.selectedhook+=[key]
+                            self.selectinghook=key
+                            if len(self.selectedhook)==len(self.autostarthookcode):
+                                self.autostart=False
                 self.hookdatacollecter[key]=[]
                 self.hookdatasort.append(key)
                 self.hookselectdialog.addnewhooksignal.emit(key  ) 
@@ -113,6 +120,7 @@ class textractor(basetext  ):
             self.hookdatacollecter[key].append(output)
             if key==self.selectinghook:
                 self.hookselectdialog.getnewsentencesignal.emit(output)
+            self.hookselectdialog.update_item_new_line.emit(key,output)
     def guessreal(self,line):
         if len(line)<100 and (re.match('「(.*)」',line) or\
             re.match('(.*)。',line)):
