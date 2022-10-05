@@ -69,15 +69,14 @@
 
 &emsp;&emsp;**锁定工具栏**  按下这个按钮后，这个按钮会由白色变成粉色，然后工具栏会不再自动隐藏；再次按下时会变回白色，工具栏会自动隐藏
 
+&emsp;&emsp;**鼠标穿透窗口**  点击后翻译框可以变得全透明，在上面点击鼠标会直接点击游戏窗口
+
 &emsp;&emsp;**最小化到托盘**  本软件不会在任务栏中显示，只会在任务栏中显示，按下这个按钮软件将会隐藏，可以在托盘图标中让软件重新显示。
 
 &emsp;&emsp;**退出**  按下这个按钮后，软件将会退出
 
 <div align="center"><img src='./docpics/2.jpg'><br>工具栏隐藏</div>
-<br>
-<div align="center"><img src='./docpics/3.jpg'><br>自动模式</div>
-
- 
+<br>  
 
 ### 托盘图标
 
@@ -111,7 +110,24 @@
 
 其余所有翻译器均可随意选择，数量也没有限制。
 
+下方的最短和最长翻译字数、在线翻译超时可以不用设置
+
 <div align="center"><img src='./docpics/6.jpg'></div>
+
+
+##### HOOK设置
+
+一些能优化使用体验的设置。
+已保存游戏里保存了之前HOOK过的游戏和特殊码。
+
+<div align="center"><img src='./docpics/21.jpg'></div>
+
+
+##### OCR设置
+
+在OCR模式下，可以选择使用的OCR源
+
+<div align="center"><img src='./docpics/22.jpg'></div>
 
 ##### 显示设置
 
