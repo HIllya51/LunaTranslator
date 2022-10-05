@@ -3,7 +3,12 @@ import functools
  
 from cmath import exp
 import functools
+
+from PyQt5.QtWidgets import QApplication, QWidget, QTableView, QAbstractItemView, QLabel, QVBoxLayout
+
 from PyQt5.QtWidgets import  QWidget,QLabel ,QLineEdit,QSpinBox,QPushButton,QTextEdit
+
+from PyQt5.QtGui import QStandardItem, QStandardItemModel
 import qtawesome
 from PyQt5.QtCore import QThread
 import subprocess
@@ -69,7 +74,7 @@ def postconfigdialog(object,configdict,title):
     dialog = QDialog(object)  # 自定义一个dialog
     dialog.setWindowTitle(title)
     #dialog.setWindowModality(Qt.ApplicationModal)
-    dialog.resize(QSize(400,1))
+    
     formLayout = QVBoxLayout(dialog)  # 配置layout
      
     key=list(configdict.keys())[0]
@@ -83,10 +88,51 @@ def postconfigdialog(object,configdict,title):
         spin.setValue(configdict[key])
         spin.valueChanged.connect(lambda x:configdict.__setitem__(key,x))
         formLayout.addWidget(spin)
+        dialog.resize(QSize(400,1))
     elif type(configdict[key])==type([]): 
-        lines=QTextEdit(dialog)
-        lines.setPlainText('\n'.join(configdict[key]))
-        lines.textChanged.connect(lambda   :configdict.__setitem__(key,lines.toPlainText().split('\n')))
-        formLayout.addWidget(lines)
+        # lines=QTextEdit(dialog)
+        # lines.setPlainText('\n'.join(configdict[key]))
+        # lines.textChanged.connect(lambda   :configdict.__setitem__(key,lines.toPlainText().split('\n')))
+        # formLayout.addWidget(lines)
+        model=QStandardItemModel(len(configdict[key]),1 , dialog)
+         
+        for row in range(len(configdict[key])):                                   # 2
+             
+                item = QStandardItem(configdict[key][row])
+                model.setItem(row, 0, item)
+        model.setHorizontalHeaderLabels([ key])
+        table = QTableView(dialog)
+        table.setModel(model)
+        table.horizontalHeader().setStretchLastSection(True)
+        #table.setEditTriggers(QAbstractItemView.NoEditTriggers)
+        #table.clicked.connect(self.show_info)
+        button=QPushButton(dialog)
+        button.setText('添加行')
+        def clicked1(): 
+            model.insertRow(model.rowCount(),[QStandardItem('')]) 
+        button.clicked.connect(clicked1)
+        button2=QPushButton(dialog)
+        button2.setText('删除选中行')
+        def clicked2():
+            
+            model.removeRow(table.currentIndex().row())
+        button2.clicked.connect(clicked2)
+        button3=QPushButton(dialog)
+        button3.setText('保存并关闭')
+        def clicked3():
+            rows=model.rowCount() 
+            newdict=[]
+            for row in range(rows):
+                if model.item(row,0).text()=="":
+                    continue
+                newdict.append(model.item(row,0).text())
+            configdict[key]=newdict
+            dialog.close()
+        button3.clicked.connect(clicked3)
+        formLayout.addWidget(table)
+        formLayout.addWidget(button)
+        formLayout.addWidget(button2)
+        formLayout.addWidget(button3)
+        dialog.resize(QSize(400,400))
     dialog.show()
  
