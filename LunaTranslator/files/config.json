@@ -15,11 +15,11 @@
     "isshowhira": false,
     "locktools": false,
     "showfanyisource": true,
-    "autoread": true,
+    "autoread": false,
     "reader": {
         "qq": false,
         "guge": true,
-        "windows": false
+        "windows": true
     },
     "windowstts": {
         "voice": "TTS_MS_EN-US_ZIRA_11.0",
