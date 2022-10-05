@@ -1,7 +1,7 @@
 
 from queue import Queue
 import time
-from utils.config import globalconfig
+from utils.config import globalconfig,noundictconfig
 import traceback
 import json
 import requests
@@ -50,11 +50,27 @@ class basetrans:
                 continue
             if (set(content) -set('「…」、。？！―'))==set():
                 continue 
+            
+            zhanweifu=0
+            mp={}
+            use=noundictconfig['use']
+            if use:
+                for key in noundictconfig['dict']:
+                    if key in content:
+                        content.replace(key,'{XX'++zhanweifu+'}')
+                        mp['{XX'++zhanweifu+'}']=key
+                        zhanweifu+=1
+
             res=self.translate(content)
+            if use:
+                for key in mp:
+                    res.replace(key,mp[key])
+
             if res is None:
                 break
             if self.queue.empty() and content==self.newline:
                 self.show__(res)
 
+    
 
             
