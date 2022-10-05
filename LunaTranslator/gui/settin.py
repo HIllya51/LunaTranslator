@@ -8,7 +8,7 @@ import qtawesome
       
 from gui.settingpage1 import setTabOne
 from gui.settingpage2 import setTabTwo
-from gui.settingpage3 import setTabThree
+from gui.settingpage_xianshishezhi import setTabThree
 from gui.settingpage4 import setTab4 
 from gui.settingpage5 import setTab5 
 from gui.settingpage6 import setTab6 

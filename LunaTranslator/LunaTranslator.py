@@ -15,6 +15,7 @@ import utils.screen_rate
 from utils.wrapper import timer,threader 
 import gui.rangeselect   
 import gui.settin    
+import zhconv
 import gui.selecthook
 from utils.getpidlist import getwindowlist
 import gui.translatorUI

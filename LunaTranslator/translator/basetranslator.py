@@ -5,6 +5,7 @@ from utils.config import globalconfig,noundictconfig
 import traceback
 import json
 import requests
+import zhconv
 import traceback
 from threading import Thread
 class basetrans:
@@ -63,11 +64,13 @@ class basetrans:
                         zhanweifu+=1
              
             res=self.translate(content)
+              
+            
             if use:
                 for key in mp:
                     res=res.replace(key,mp[key]) 
-            if res is None:
-                break
+            if globalconfig['fanjian']!=0:
+                res=zhconv.convert(res, ['zh-cn', 'zh-tw', 'zh-hk', 'zh-sg', 'zh-hans', 'zh-hant'][globalconfig['fanjian']])
             if self.queue.empty() and content==self.newline:
                 self.show__(res)
 

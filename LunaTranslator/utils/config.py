@@ -12,3 +12,7 @@ with open('./files/postprocessconfig.json','r',encoding='utf-8') as ff:
 
 with open('./files/noundictconfig.json','r',encoding='utf-8') as ff:
     noundictconfig=json.load(ff)
+
+
+if 'fanjian' not in globalconfig:
+    globalconfig['fanjian']=0

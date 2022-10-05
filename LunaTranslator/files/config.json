@@ -28,9 +28,9 @@
         "volume": 100.0
     },
     "sourcestatus": {
-        "copy": false,
+        "copy": true,
         "ocr": false,
-        "textractor": true,
+        "textractor": false,
         "textractor_pipe": false
     },
     "ocr": {
@@ -180,5 +180,6 @@
     "autostarthook": true,
     "translatortimeout": 5,
     "minlength": 0,
-    "maxlength": 150
+    "maxlength": 150,
+    "fanjian": 0
 }

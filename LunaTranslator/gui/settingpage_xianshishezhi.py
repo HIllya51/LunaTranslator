@@ -2,7 +2,7 @@ import functools
 from PyQt5.QtCore import Qt 
 from PyQt5.QtGui import  QFont
 
-from PyQt5.QtWidgets import  QWidget,QLabel,QFrame,QPushButton ,QSlider,QDoubleSpinBox,QFontComboBox 
+from PyQt5.QtWidgets import  QWidget,QLabel,QFrame,QPushButton ,QSlider,QDoubleSpinBox,QFontComboBox ,QComboBox
 import qtawesome 
  
 from utils.config import globalconfig 
@@ -10,6 +10,7 @@ from utils.config import globalconfig
 import gui.switchbutton
 import gui.attachprocessdialog  
 import gui.selecthook  
+
 def setTabThree(self) :
      
         self.tab_3 = QWidget()
@@ -65,6 +66,15 @@ def setTabThree(self) :
         self.customSetGeometry(self.fixedheight_switch, 120, 220,20,20)
         self.fixedheight_switch.clicked.connect(lambda x:globalconfig.__setitem__('fixedheight',x)) 
         
+        label=QLabel(self.tab_3)
+        label = QLabel(self.tab_3)
+        self.customSetGeometry(label, 20, 250, 100, 20)
+        label.setText("翻译结果繁简体显示:") 
+        self.fanjiancombo=QComboBox(self.tab_3)
+        self.fanjiancombo.addItems(['大陆简体','马新简体','台灣正體','香港繁體','简体','繁體'])
+        self.fanjiancombo.setCurrentIndex(globalconfig['fanjian'])
+        self.customSetGeometry(self.fanjiancombo, 150, 250,100,20)
+        self.fanjiancombo.currentIndexChanged.connect(lambda x:globalconfig.__setitem__('fanjian',x) )
 
         label = QLabel(self.tab_3)
         self.customSetGeometry(label, 275, 120, 60, 20)
