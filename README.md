@@ -143,12 +143,21 @@
 
 <div align="center"><img src='./docpics/9.jpg'><br>语音选择</div>
 
-##### 其他设置
+##### 翻译预处理设置
 
-一些其他设置。
-目前只有这一点设置，即在HOOK模型下选取游戏后可以当游戏最小化/移动时，软件跟着一起最小化/移动。
+对于HOOK提取到的文本，有时会有一些不好的内容，这里可以设置对文本进行一些简单的处理操作
 
-<div align="center"><img src='./docpics/10.jpg'></div>
+使用专有名词手动翻译选项，支持使用用户配置的特殊名词词典（例如一些人名地名等）来优化翻译
+
+<div align="center"><img src='./docpics/23.jpg'></div>
+
+<a id="table5"></a>
+
+##### 关于
+
+软件的一些基本信息
+
+<div align="center"><img src='./docpics/24.jpg'></div>
 
 <a id="table5"></a>
 

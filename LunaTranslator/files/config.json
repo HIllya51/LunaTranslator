@@ -35,11 +35,11 @@
     },
     "ocr": {
         "local": {
-            "use": false,
+            "use": true,
             "name": "本地OCR"
         },
         "baiduocr": {
-            "use": true,
+            "use": false,
             "name": "baiduOCR",
             "argsfile": "./userconfig/baiduocr.json"
         },
