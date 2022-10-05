@@ -31,7 +31,7 @@ class Settin(QMainWindow) :
         # 界面缩放比例
         self.rate = self.object.screen_scale_rate
         # 界面尺寸
-        self.window_width = int(800*self.rate)
+        self.window_width = int(900*self.rate)
         self.window_height = int(500*self.rate)
          
         self.setFixedSize(self.window_width, self.window_height) 
@@ -51,12 +51,13 @@ class Settin(QMainWindow) :
         self.hooks=[] 
         setTabOne(self)
         setTabTwo(self)
+        setTab4(self)
         setTab6(self)
         setTabThree(self) 
         setTab5(self)
         
         setTab7(self)
-        setTab4(self)
+        
         setTab_about(self)
         self.setStyle(customtabstyle()) #必须放后面 不然其他样式全都失效
         self.usevoice=0

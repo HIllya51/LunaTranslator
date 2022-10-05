@@ -14,7 +14,7 @@ class customtabstyle(QProxyStyle):
             size.transpose()
             rt = utils.screen_rate.getScreenRate() 
             size.setHeight(70*rt)
-            size.setWidth(150*rt)
+            size.setWidth(200*rt)
         return size
     def drawControl(self,element,option,painter,widget):
         if element == self.CE_TabBarTabLabel: 

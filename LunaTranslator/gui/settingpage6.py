@@ -29,7 +29,7 @@ def initocrswitchs_auto(self):
         for ocr in globalconfig['ocr']:
             y=70+40*(num//3)
             x=20+220*(num%3)
-            initocrswitchs(self,ocr,(x, y, 65, 20),(x+70, y, 20,20),(x+110, y, 20,20),(x+150, y, 20,20))
+            initocrswitchs(self,ocr,(x, y, 65, 20),(x+70, y, 20,20),0,(x+110, y, 20,20))
             num+=1
 def yuitsuocr(self,name,checked): 
     

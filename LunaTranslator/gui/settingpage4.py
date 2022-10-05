@@ -1,7 +1,29 @@
  
 from cmath import exp
 import functools
-from PyQt5.QtWidgets import  QWidget,QLabel ,QLineEdit,QSpinBox,QPushButton
+from PyQt5.QtWidgets import  QWidget,QLabel ,QLineEdit,QSpinBox,QPushButton,QDialog,QVBoxLayout ,QHeaderView
+from distutils.command.config import config
+import functools 
+ 
+from cmath import exp
+import functools
+
+from PyQt5.QtWidgets import QApplication, QWidget, QTableView, QAbstractItemView, QLabel, QVBoxLayout
+
+from PyQt5.QtWidgets import  QWidget,QLabel ,QLineEdit,QSpinBox,QPushButton,QTextEdit
+
+from PyQt5.QtGui import QStandardItem, QStandardItemModel
+import qtawesome
+from PyQt5.QtCore import QThread
+import subprocess
+from utils.config import globalconfig ,postprocessconfig,noundictconfig
+from PyQt5.QtWidgets import  QWidget,QLabel, QComboBox,QDoubleSpinBox 
+ 
+from PyQt5.QtWidgets import QWidget,QLabel,QFrame ,QPushButton,QColorDialog
+from PyQt5.QtGui import QColor,QFont
+import functools
+from PyQt5.QtWidgets import QDialogButtonBox,QDialog,QComboBox,QFormLayout,QSpinBox,QVBoxLayout,QLineEdit
+from PyQt5.QtCore import Qt,QSize
 import qtawesome
 from PyQt5.QtCore import QThread
 import subprocess
@@ -18,15 +40,61 @@ self_pid=os.getpid()
 st=subprocess.STARTUPINFO()
 st.dwFlags=subprocess.STARTF_USESHOWWINDOW
 st.wShowWindow=subprocess.SW_HIDE
+
+
+def autosaveshow(object):
+    with open('./files/savehook.json','r',encoding='utf8') as ff:
+        js=json.load(ff)
+    dialog = QDialog(object)  # 自定义一个dialog
+    dialog.setWindowTitle('已保存游戏')
+    #dialog.setWindowModality(Qt.ApplicationModal) 
+    formLayout = QVBoxLayout(dialog)  # 配置layout
+    if True:
+        model=QStandardItemModel(  dialog)
+        row=0
+        for k in js:                                   # 2
+                
+                item = QStandardItem(k)
+                model.setItem(row, 0, item)
+                item = QStandardItem(str(js[k]))
+                model.setItem(row, 1, item)
+                row+=1
+        model.setHorizontalHeaderLabels([ '游戏','HOOK'])
+        table = QTableView(dialog)
+        table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+
+        table.setModel(model)
+        table.horizontalHeader().setStretchLastSection(True)
+        #table.setEditTriggers(QAbstractItemView.NoEditTriggers)
+        #table.clicked.connect(self.show_info)
+         
+        button2=QPushButton(dialog)
+        button2.setText('删除游戏')
+        def clicked2(): 
+                js.pop(model.item(table.currentIndex().row(),0).text())
+                model.removeRow(table.currentIndex().row())
+        button2.clicked.connect(clicked2)
+        button3=QPushButton(dialog)
+        button3.setText('保存并关闭')
+        def clicked3():
+                with open('./files/savehook.json','w',encoding='utf8') as ff:
+                        ff.write(json.dumps(js,ensure_ascii=False))
+        button3.clicked.connect(clicked3)
+        formLayout.addWidget(table) 
+        formLayout.addWidget(button2)
+        formLayout.addWidget(button3)
+        dialog.resize(QSize(800,400))
+    dialog.show()
+ 
 def setTab4(self) :
      
         self.tab_4 = QWidget()
         self.tab_widget.addTab(self.tab_4, "")
-        self.tab_widget.setTabText(self.tab_widget.indexOf(self.tab_4), " 其他设置")
+        self.tab_widget.setTabText(self.tab_widget.indexOf(self.tab_4), " HOOK设置")
  
-        label = QLabel(self.tab_4)
-        self.customSetGeometry(label, 20, 20, 200, 20)
-        label.setText("textractor模式特殊设置")
+        # label = QLabel(self.tab_4)
+        # self.customSetGeometry(label, 20, 20, 200, 20)
+        # label.setText("textractor模式特殊设置")
 
         label = QLabel(self.tab_4)
         self.customSetGeometry(label, 20, 50, 200, 20)
@@ -53,39 +121,18 @@ def setTab4(self) :
         self.movefollowswitch.clicked.connect(lambda x:globalconfig.__setitem__('autostarthook',x)) 
         
         
-
-
         label = QLabel(self.tab_4)
-        self.customSetGeometry(label, 20, 170, 200, 20)
-        label.setText("最短翻译字数")
-        self.minlength=QSpinBox(self.tab_4)
-        self.minlength.setMinimum(0)
-        self.minlength.setMaximum(500)
-        self.minlength.setValue(globalconfig['minlength']) 
-        self.customSetGeometry(self.minlength, 150,170,50,20)
-        self.minlength.valueChanged.connect(lambda x:globalconfig.__setitem__('minlength',x)) 
+        self.customSetGeometry(label, 20, 140, 200, 20)
+        label.setText("已保存游戏")
+        s1 = QPushButton( "", self.tab_4)
+        self.customSetIconSize(s1, 20, 20)
+        self.customSetGeometry(s1, 200, 140,20,20)
+        s1.setStyleSheet("background: transparent;") 
+        
+        s1.setIcon(qtawesome.icon("fa.gear", color="#FF69B4"  )) 
+        s1.clicked.connect(lambda: autosaveshow(self))
 
 
-
-        label = QLabel(self.tab_4)
-        self.customSetGeometry(label, 20, 200, 200, 20)
-        label.setText("最长翻译字数")
-        self.maxlength=QSpinBox(self.tab_4)
-        self.maxlength.setMinimum(0)
-        self.maxlength.setMaximum(500)
-        self.maxlength.setValue(globalconfig['maxlength']) 
-        self.customSetGeometry(self.maxlength, 150, 200,50,20)
-        self.maxlength.valueChanged.connect(lambda x:globalconfig.__setitem__('maxlength',x)) 
-
-        label = QLabel(self.tab_4)
-        self.customSetGeometry(label, 20, 250, 200, 20)
-        label.setText("在线翻译超时(s)")
-        self.translatortimeout=QSpinBox(self.tab_4)
-        self.translatortimeout.setMinimum(1)
-        self.translatortimeout.setMaximum(20)
-        self.translatortimeout.setValue(globalconfig['translatortimeout']) 
-        self.customSetGeometry(self.translatortimeout, 150,250,50,20)
-        self.translatortimeout.valueChanged.connect(lambda x:globalconfig.__setitem__('translatortimeout',x)) 
         # label = QLabel(self.tab_4)
         # self.customSetGeometry(label, 20, 110, 200, 20)
         # #label.setText("窗口失去焦点不再置顶")
