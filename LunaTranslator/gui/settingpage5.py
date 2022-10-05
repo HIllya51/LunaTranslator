@@ -56,6 +56,13 @@ def setTab5(self) :
         self.volume_spinBox.setSingleStep(1)
         self.volume_spinBox.setDecimals(0)
         self.volume_spinBox.valueChanged.connect(lambda x:globalconfig['windowstts'].__setitem__('volume',x))
+
+        label = QLabel(tab)
+        self.customSetGeometry(label, 20, 250, 160, 20)
+        label.setText("自动朗读") 
+        self.autoreadswitch =gui.switchbutton.MySwitch(tab, sign=globalconfig['autoread'])
+        self.customSetGeometry(self.autoreadswitch, 100, 250, 20,20)
+        self.autoreadswitch.clicked.connect(lambda x:globalconfig.__setitem__('autoread',x)) 
 def changevoice(self,text):
     globalconfig['windowstts']['voice']=text
 def showvoicelist(self,vl):

@@ -15,10 +15,11 @@
     "isshowhira": false,
     "locktools": false,
     "showfanyisource": true,
+    "autoread": true,
     "reader": {
         "qq": false,
         "guge": true,
-        "windows": true
+        "windows": false
     },
     "windowstts": {
         "voice": "TTS_MS_EN-US_ZIRA_11.0",
@@ -26,9 +27,9 @@
         "volume": 100.0
     },
     "sourcestatus": {
-        "copy": false,
+        "copy": true,
         "ocr": false,
-        "textractor": true,
+        "textractor": false,
         "textractor_pipe": false
     },
     "ocr": {

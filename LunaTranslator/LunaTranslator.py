@@ -53,7 +53,10 @@ class MAINUI() :
             self.translation_ui.displayraw1.emit(paste_str,globalconfig['rawtextcolor'],1)
         else:
             self.translation_ui.displayraw1.emit(paste_str,globalconfig['rawtextcolor'],0)
-         
+        try:
+            self.reader.read(paste_str)
+        except:
+            pass
         if shortlongskip and  (len(paste_str)<globalconfig['minlength'] or len(paste_str)>globalconfig['maxlength'] ):
             skip=True 
         else:
