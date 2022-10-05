@@ -53,23 +53,31 @@ def setTabThree(self) :
         self.customSetGeometry(label, 20, 170, 60, 20)
         label.setText("空心字体:")
  
-        self.font_type_switch =gui.switchbutton.MySwitch(self.tab_3, sign=globalconfig['issolid'] ,textOn='实心',textOff='空心')
+        self.font_type_switch =gui.switchbutton.MySwitch(self.tab_3, sign=globalconfig['issolid'] )
         self.customSetGeometry(self.font_type_switch, 95, 170,20,20)
         self.font_type_switch.clicked.connect(lambda x:globalconfig.__setitem__('issolid',x)) 
 
+        label = QLabel(self.tab_3)
+        self.customSetGeometry(label, 20, 220, 100, 20)
+        label.setText("固定窗口尺寸:")
+ 
+        self.fixedheight_switch =gui.switchbutton.MySwitch(self.tab_3, sign=globalconfig['fixedheight'] )
+        self.customSetGeometry(self.fixedheight_switch, 120, 220,20,20)
+        self.fixedheight_switch.clicked.connect(lambda x:globalconfig.__setitem__('fixedheight',x)) 
         
+
         label = QLabel(self.tab_3)
         self.customSetGeometry(label, 275, 120, 60, 20)
         label.setText("显示原文:")
  
-        self.show_original_switch =gui.switchbutton.MySwitch(self.tab_3, sign=globalconfig['isshowrawtext'],  textOn='显示',textOff='隐藏')
+        self.show_original_switch =gui.switchbutton.MySwitch(self.tab_3, sign=globalconfig['isshowrawtext'])
         self.customSetGeometry(self.show_original_switch, 350, 120, 20,20)
         self.show_original_switch.clicked.connect(lambda x:globalconfig.__setitem__('isshowrawtext',x))  
         label = QLabel(self.tab_3)
         self.customSetGeometry(label, 20, 120, 60, 20)
         label.setText("显示假名:")
  
-        self.show_hira_switch =gui.switchbutton.MySwitch(self.tab_3, sign=globalconfig['isshowhira'],  textOn='显示',textOff='隐藏')
+        self.show_hira_switch =gui.switchbutton.MySwitch(self.tab_3, sign=globalconfig['isshowhira'])
         self.customSetGeometry(self.show_hira_switch, 95, 120,20,20)
         self.show_hira_switch.clicked.connect(lambda x:globalconfig.__setitem__('isshowhira',x)) 
         
@@ -115,7 +123,9 @@ def changeHorizontal(self) :
                                                                  font-weight: bold;\
                                                                 background-color: rgba(%s, %s, %s, %s)"
                                            %(int(globalconfig['backcolor'][1:3],16),int(globalconfig['backcolor'][3:5],16),int(globalconfig['backcolor'][5:7],16),globalconfig['transparent']/200))
-    
+        
+        if self.object.translation_ui.mousetransparent:
+                self.object.translation_ui.mousetransbutton.click()
         # # 重置状态栏界面
         # self.object.translation_ui.statusbar.setStyleSheet("font: 10pt %s;"
         #                            #  "color: %s;"

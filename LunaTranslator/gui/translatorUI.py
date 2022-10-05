@@ -129,7 +129,8 @@ class QUnFrameWindow(QWidget):
             None, Qt.FramelessWindowHint|Qt.WindowStaysOnTopHint|Qt.Tool)  # 设置为顶级窗口，无边框
         #self.setFocusPolicy(Qt.StrongFocus)
 
-        
+        self.setAttribute(Qt.WA_TranslucentBackground) 
+
         #  
         self.object = object
         self.rate = self.object.screen_scale_rate 
@@ -180,6 +181,18 @@ class QUnFrameWindow(QWidget):
           font: 100 10pt;
       }''')
           
+        
+        # label = QLabel(self.tab_3)
+        # self.customSetGeometry(label, 20, 270, 100, 20)
+        # label.setText("鼠标穿透窗口:")
+ 
+        # self.fixedheight_switch =gui.switchbutton.MySwitch(self.tab_3, sign=globalconfig['fixedheight'] )
+        # self.customSetGeometry(self.fixedheight_switch, 120, 270,20,20)
+        # self.fixedheight_switch.clicked.connect(lambda x:globalconfig.__setitem__('fixedheight',x)) 
+
+        # self.object.translation_ui.setAttribute(Qt.WA_TransparentForMouseEvents, True);
+
+        self.mousetransparent=False
         self.buttons=[] 
                  
         self.takusanbuttons(qtawesome.icon("fa.rotate-right" ,color="white"),"MinMaxButton",self.startTranslater,0,"重新翻译")
@@ -191,12 +204,14 @@ class QUnFrameWindow(QWidget):
         
         self.takusanbuttons(qtawesome.icon("fa.rotate-left" ,color="white"),"MinMaxButton", self.transhis.show  ,6,"显示历史翻译") 
         self.takusanbuttons(qtawesome.icon("fa.music" ,color="white"),"MinMaxButton",self.langdu,7,"朗读") 
+        self.takusanbuttons(qtawesome.icon("fa.mouse-pointer" ,color="white"),"MinMaxButton",self.changemousetransparentstate,8,"鼠标穿透窗口",'mousetransbutton') 
          
-        self.takusanbuttons(qtawesome.icon("fa.lock" ,color="#FF69B4" if globalconfig['locktools'] else 'white'),"MinMaxButton",self.changetoolslockstate,8,"锁定工具栏",'locktoolsbutton') 
+        self.takusanbuttons(qtawesome.icon("fa.lock" ,color="#FF69B4" if globalconfig['locktools'] else 'white'),"MinMaxButton",self.changetoolslockstate,9,"锁定工具栏",'locktoolsbutton') 
         self.takusanbuttons(qtawesome.icon("fa.minus",color="white" ),"MinMaxButton",self.hide_and_disableautohide,-2,"最小化到托盘")
         self.takusanbuttons(qtawesome.icon("fa.times" ,color="white"),"CloseButton",self.quitf,-1,"退出")
-        self.resize(int(globalconfig['width']*self.rate), int(130*self.rate))
-        self.move(QPoint(*globalconfig['position'])) 
+        self.resize(int(globalconfig['width']*self.rate), int(150*self.rate))
+        #self.move(QPoint(globalconfig['position'][0],globalconfig['position'][1])) 
+         
         icon = QIcon()
         icon.addPixmap(QPixmap('./files/luna.jpg'), QIcon.Normal, QIcon.On)
         self.setWindowIcon(icon)
@@ -253,7 +268,29 @@ class QUnFrameWindow(QWidget):
         self.masklabel.setGeometry( 0, 30, 9999,9999)
         self.masklabel.setMouseTracking(True)
         self.showhidestate=True
-        
+    def changemousetransparentstate(self,checked):
+        self.mousetransparent= not self.mousetransparent
+        if self.mousetransparent:
+            # self.masklabel.setAttribute(Qt.WA_TransparentForMouseEvents,  self.mousetransparent) 
+            # self.translate_text.setAttribute(Qt.WA_TransparentForMouseEvents,  self.mousetransparent)  
+            self.translate_text.setStyleSheet("border-width:0;\
+                                                                    border-style:outset;\
+                                                                    border-top:0px solid #e8f3f9;\
+                                                                    color:white;\
+                                                                    font-weight: bold;\
+                                                                    background-color: rgba(%s, %s, %s, %s)"
+                                            %(int(globalconfig['backcolor'][1:3],16),int(globalconfig['backcolor'][3:5],16),int(globalconfig['backcolor'][5:7],16),0))
+            if globalconfig['locktools']==False:
+                self.locktoolsbutton.click()
+        else:
+            self.object.translation_ui.translate_text.setStyleSheet("border-width:0;\
+                                                                 border-style:outset;\
+                                                                 border-top:0px solid #e8f3f9;\
+                                                                 color:white;\
+                                                                 font-weight: bold;\
+                                                                background-color: rgba(%s, %s, %s, %s)"
+                                           %(int(globalconfig['backcolor'][1:3],16),int(globalconfig['backcolor'][3:5],16),int(globalconfig['backcolor'][5:7],16),globalconfig['transparent']/100))
+        self.mousetransbutton.setIcon(qtawesome.icon("fa.mouse-pointer" ,color="#FF69B4" if self.mousetransparent else 'white'))
     def showhide(self):
         
         self.showhidestate=not self.showhidestate
@@ -269,7 +306,8 @@ class QUnFrameWindow(QWidget):
         globalconfig['locktools']=not globalconfig['locktools'] 
         self.locktoolsbutton.setIcon(qtawesome.icon("fa.lock" ,color="#FF69B4" if globalconfig['locktools'] else 'white'))
     def textAreaChanged(self) :
-         
+        if globalconfig['fixedheight']:
+            return
         newHeight = self.document.size().height()
         
         width = self.width()

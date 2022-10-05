@@ -3,9 +3,10 @@
         432,
         613
     ],
+    "fixedheight": false,
     "width": 672.8,
     "autorun": true,
-    "transparent": 47,
+    "transparent": 82,
     "fontsize": 17.699999999999996,
     "fonttype": "思源黑体 CN Medium",
     "issolid": false,
@@ -13,7 +14,7 @@
     "rawtextcolor": "#000000",
     "backcolor": "#7a8b8a",
     "isshowhira": false,
-    "locktools": false,
+    "locktools": true,
     "showfanyisource": true,
     "autoread": false,
     "reader": {
@@ -27,9 +28,9 @@
         "volume": 100.0
     },
     "sourcestatus": {
-        "copy": true,
+        "copy": false,
         "ocr": false,
-        "textractor": false,
+        "textractor": true,
         "textractor_pipe": false
     },
     "ocr": {
@@ -55,7 +56,7 @@
     },
     "fanyi": {
         "baidu": {
-            "use": false,
+            "use": true,
             "color": "#ff65db",
             "name": "百度"
         },
@@ -70,12 +71,12 @@
             "name": "谷歌"
         },
         "ali": {
-            "use": false,
+            "use": true,
             "color": "#0000ff",
             "name": "阿里"
         },
         "youdao": {
-            "use": false,
+            "use": true,
             "color": "#0ff000",
             "name": "有道"
         },
@@ -153,7 +154,7 @@
             "argsfile": "./userconfig/txapi.json"
         },
         "byte": {
-            "use": true,
+            "use": false,
             "color": "#0ff000",
             "name": "byte"
         },
