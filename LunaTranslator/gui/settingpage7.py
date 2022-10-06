@@ -108,7 +108,7 @@ def noundictconfigdialog(object,configdict,title,label=[ '日文','翻译'],fnam
     button=QPushButton(dialog)
     button.setText('添加行')
     def clicked1(): 
-        model.insertRow(model.rowCount(),[QStandardItem(''),QStandardItem('')]) 
+        model.insertRow(0,[QStandardItem(''),QStandardItem('')]) 
     button.clicked.connect(clicked1)
     button2=QPushButton(dialog)
     button2.setText('删除选中行')
@@ -201,7 +201,7 @@ def postconfigdialog(object,configdict,title):
         button=QPushButton(dialog)
         button.setText('添加行')
         def clicked1(): 
-            model.insertRow(model.rowCount(),[QStandardItem('')]) 
+            model.insertRow(0,[QStandardItem('')]) 
         button.clicked.connect(clicked1)
         button2=QPushButton(dialog)
         button2.setText('删除选中行')
