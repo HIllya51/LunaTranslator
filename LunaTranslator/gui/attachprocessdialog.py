@@ -1,6 +1,6 @@
  
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QDialog,QVBoxLayout,QLabel,QLineEdit,QListView,QDialogButtonBox ,QApplication,QPushButton
+from PyQt5.QtWidgets import QDialog,QVBoxLayout,QHBoxLayout,QLabel,QLineEdit,QListView,QDialogButtonBox ,QApplication,QPushButton
 from PyQt5.QtGui import  QStandardItemModel,QPixmap,QColor,QIcon,QStandardItem 
 from PyQt5.QtWinExtras  import QtWin 
 import win32gui 
@@ -80,6 +80,7 @@ class AttachProcessDialog(QDialog):
                     name_=win32process.GetModuleFileNameEx(hwnd,None) 
                     #print(name_) 
                     self.processEdit.setText(name_)
+                    self.processIdEdit.setText(pid)
                     self.selectedp=(pid,name_,hwnd)
                 except: 
                     pass
@@ -102,12 +103,19 @@ class AttachProcessDialog(QDialog):
         self.button.clicked.connect(self.selectwindow)
         self.layout1.addWidget(self.label)
         self.layout1.addWidget(self.button)
+        self.layout2=QHBoxLayout()
+        self.processIdEdit=QLineEdit()
+        self.layout2.addWidget(QLabel('进程号，可以手动输入'))
+        self.layout2.addWidget(self.processIdEdit)
         self.processEdit=QLineEdit()
+        self.layout3=QHBoxLayout()
+        self.layout3.addWidget(QLabel('程序名'))
+        self.layout3.addWidget(self.processEdit)
         self.processList=QListView()
         self.buttonBox=QDialogButtonBox()
         self.buttonBox.setStandardButtons(QDialogButtonBox.Ok|QDialogButtonBox.Cancel)
-        
-        self.layout1.addWidget(self.processEdit)
+        self.layout1.addLayout(self.layout2)
+        self.layout1.addLayout(self.layout3)
         self.layout1.addWidget(self.processList)
         self.layout1.addWidget(self.buttonBox)
         self.setLayout(self.layout1) 
@@ -138,18 +146,21 @@ class AttachProcessDialog(QDialog):
         self.buttonBox.rejected.connect(self.reject) 
         
         self.processList.clicked.connect(self.selectedfunc)
-        self.processList.doubleClicked.connect(self.accept)
+        #self.processList.doubleClicked.connect(self.accept)
         #print(time.time()-t1)
         def ff(process):
             for i in range(model.rowCount()):
                 self.processList.setRowHidden(i,not (process.lower() in model.item(i).text().lower()))
         self.processEdit.textEdited.connect(ff)
+        def gg(process):
+            self.selectedp=(int(process),'',0)
+        self.processIdEdit.textEdited.connect(gg)
         #print(time.time()-t1)
-        self.processEdit.returnPressed.connect(self.accept)
+        #self.processEdit.returnPressed.connect(self.accept)
         
     def selectedfunc(self,index): 
-        self.processEdit.setText(self.model.item(index.row()).text() )
-        
+        self.processEdit.setText(self.processlist[index.row()][1] )
+        self.processIdEdit.setText(str(self.processlist[index.row()][0]  ))
         self.selectedp=self.processlist[index.row()] 
         
 if __name__=='__main__':

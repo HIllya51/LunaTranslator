@@ -52,12 +52,10 @@ class TS(basetrans):
             st=subprocess.STARTUPINFO()
             st.dwFlags=subprocess.STARTF_USESHOWWINDOW
             st.wShowWindow=subprocess.SW_HIDE
-            if globalconfig['fanjian'] in [0,1,4]:
-                code='0'
-            else:
-                code='1'
-            p=subprocess.Popen(r'./files/jb7x64runner/win32dllforward.exe "'+self.path+'" '+code+'   "'+line+'"', stdout=subprocess.PIPE,startupinfo=st)
+            
+            p=subprocess.Popen(r'./files/jb7x64runner/win32dllforward.exe "'+self.path+'"  "'+line+'"', stdout=subprocess.PIPE,startupinfo=st)
             ress+=str(p.stdout.readline(),encoding='GB2312',errors='ignore')
+            
         ress=ress.replace('Translation(TaskNo = 1) is OK. (remainder threads = 0)\r\n','')
         return ress
     def x86(self,content):
@@ -65,10 +63,11 @@ class TS(basetrans):
         CODEPAGE_GB = 936
         CODEPAGE_BIG5 = 950
         BUFFER_SIZE = 3000
-        if globalconfig['fanjian'] in [0,1,4]:
-            code=CODEPAGE_GB
-        else:
-            code=CODEPAGE_BIG5
+        # if globalconfig['fanjian'] in [0,1,4]:
+        #     code=CODEPAGE_GB
+        # else:
+        #     code=CODEPAGE_BIG5
+        code=CODEPAGE_GB
             
         size = BUFFER_SIZE 
         out = ctypes.create_unicode_buffer(size) 

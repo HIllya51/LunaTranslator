@@ -43,8 +43,11 @@ st.wShowWindow=subprocess.SW_HIDE
 
 
 def autosaveshow(object):
-    with open('./files/savehook_new.json','r',encoding='utf8') as ff:
-        js=json.load(ff)
+    if os.path.exists('./files/savehook_new.json'):
+            with open('./files/savehook_new.json','r',encoding='utf8') as ff:
+                js=json.load(ff)
+    else:
+        js={}
     dialog = QDialog(object)  # 自定义一个dialog
     dialog.setWindowTitle('已保存游戏')
     #dialog.setWindowModality(Qt.ApplicationModal) 

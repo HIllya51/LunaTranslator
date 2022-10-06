@@ -43,13 +43,13 @@ class textractor(basetext  ):
         self.autostart=autostart
         self.autostarthookcode=autostarthookcode
         
-        if self.autostart:
-            t=QTimer()
-            def __(self,h,t):
-                self.inserthook(h)
-                t.stop()
-            t.timeout.connect(lambda: __(self,autostarthookcode[-1],t))
-            t.start(1000)
+        # if self.autostart:
+        #     t=QTimer()
+        #     def __(self,h,t):
+        #         self.inserthook(h)
+        #         t.stop()
+        #     t.timeout.connect(lambda: __(self,autostarthookcode[-1],t))
+        #     t.start(3000)
         self.HookCode=None 
         self.userinserthookcode=[]
         self.runonce_line=''
@@ -106,7 +106,7 @@ class textractor(basetext  ):
                     #print(self.autostarthookcode,HookCode)
                     #if self.autostarthookcode==HookCode and self.guessreal(output):
                     for autostarthookcode in self.autostarthookcode:
-
+                        #print((thread_tp_ctx,thread_tp_ctx2,HookCode)==(autostarthookcode[-4],autostarthookcode[-3],autostarthookcode[-1]),(thread_tp_ctx,thread_tp_ctx2,HookCode),(autostarthookcode[-4],autostarthookcode[-3],autostarthookcode[-1]))
                         if (thread_tp_ctx,thread_tp_ctx2,HookCode)==(autostarthookcode[-4],autostarthookcode[-3],autostarthookcode[-1]):
                             self.selectedhook+=[key]
                             self.selectinghook=key

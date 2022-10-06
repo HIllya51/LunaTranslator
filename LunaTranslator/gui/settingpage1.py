@@ -8,7 +8,7 @@ import json
 import os
 import gui.switchbutton 
 import gui.attachprocessdialog  
-
+import win32con
 import pywintypes
 from textsource.textractor import textractor
 def setTabOne(self) :
@@ -134,6 +134,9 @@ def settingtextractor(self):
             except:
                 self.show()
                 return 
+            if pexe=='':
+                hwnd=win32api.OpenProcess(win32con.PROCESS_ALL_ACCESS,False, (pid))
+                pexe=win32process.GetModuleFileNameEx(hwnd,None) 
             # if pid==self.hookpid:
             #     self.show()
             #     return
