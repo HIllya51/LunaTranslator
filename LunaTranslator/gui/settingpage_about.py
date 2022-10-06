@@ -5,7 +5,7 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QWidget,QLabel 
 import threading
 def getversion(self):
-    with open('version.txt','r',encoding='utf8') as ff:
+    with open('./files/version.txt','r',encoding='utf8') as ff:
         about=ff.read()
                 
     try:
