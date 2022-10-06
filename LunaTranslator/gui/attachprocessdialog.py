@@ -80,7 +80,7 @@ class AttachProcessDialog(QDialog):
                     name_=win32process.GetModuleFileNameEx(hwnd,None) 
                     #print(name_) 
                     self.processEdit.setText(name_)
-                    self.processIdEdit.setText(pid)
+                    self.processIdEdit.setText(str(pid))
                     self.selectedp=(pid,name_,hwnd)
                 except: 
                     pass

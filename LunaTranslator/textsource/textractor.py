@@ -43,20 +43,19 @@ class textractor(basetext  ):
         self.autostart=autostart
         self.autostarthookcode=autostarthookcode
         
-        # if self.autostart:
-        #     t=QTimer()
-        #     def __(self,h,t):
-        #         self.inserthook(h)
-        #         t.stop()
-        #     t.timeout.connect(lambda: __(self,autostarthookcode[-1],t))
-        #     t.start(3000)
+        if self.autostart:
+            self.autostarttimeout=QTimer()
+            self.autostarttimeout.timeout.connect(self.autostartinsert)
+            self.autostarttimeout.start(1000)
         self.HookCode=None 
         self.userinserthookcode=[]
         self.runonce_line=''
-        
+         
         self.re=re.compile('\[([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):(.*):(.*@.*)\] (.*)\n')
-     
-    
+    def autostartinsert(self):
+        for _h in self.autostarthookcode:
+                    self.inserthook(_h[-1])
+        self.autostarttimeout.stop()
     def inserthook(self,hookcode):
         # self.timer=QTimer()
         # self.timer.timeout.connect(self.insert)
@@ -64,6 +63,7 @@ class textractor(basetext  ):
         # self.p.write( QByteArray((f'{hookcode} -P{self.pid}\r\r').encode(encoding='utf-16-le'))) 
         # print(111111111111111111111111111111111111111111)
         # print(self.p)
+        print(f'{hookcode} -P{self.pid}\r\n')
         self.object.translation_ui.writeprocesssignal.emit( QByteArray((f'{hookcode} -P{self.pid}\r\n').encode(encoding='utf-16-le')))
         #麻了 就是不知道为什么写入不进去。。。
     def exit(self):
@@ -80,6 +80,7 @@ class textractor(basetext  ):
         stdout = bytes(data).decode("utf16",errors='ignore') 
         #print(stdout)
         reres=self.re.findall(stdout) #re.findall('\[([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):(.*):(.*@.*)\] (.*)\n',stdout)
+         
         for ares in reres:
             thread_handle,thread_tp_processId, thread_tp_addr, thread_tp_ctx, thread_tp_ctx2, thread_name,HookCode,output =ares
             if output[-2:]=='\r\n':
@@ -106,8 +107,11 @@ class textractor(basetext  ):
                     #print(self.autostarthookcode,HookCode)
                     #if self.autostarthookcode==HookCode and self.guessreal(output):
                     for autostarthookcode in self.autostarthookcode:
+                         
                         #print((thread_tp_ctx,thread_tp_ctx2,HookCode)==(autostarthookcode[-4],autostarthookcode[-3],autostarthookcode[-1]),(thread_tp_ctx,thread_tp_ctx2,HookCode),(autostarthookcode[-4],autostarthookcode[-3],autostarthookcode[-1]))
-                        if (thread_tp_ctx,thread_tp_ctx2,HookCode)==(autostarthookcode[-4],autostarthookcode[-3],autostarthookcode[-1]):
+                       
+                        #if (thread_tp_ctx,thread_tp_ctx2,HookCode)==(autostarthookcode[-4],autostarthookcode[-3],autostarthookcode[-1]):
+                        if (HookCode)==(autostarthookcode[-1]):
                             self.selectedhook+=[key]
                             self.selectinghook=key
                             if len(self.selectedhook)==len(self.autostarthookcode):
