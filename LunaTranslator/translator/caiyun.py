@@ -136,7 +136,7 @@ class Caiyun(Tse):
             } 
             _ = ss.options(self.api_url, headers=self.host_headers, timeout=timeout, proxies=proxies)
             r = ss.post(self.api_url, headers=self.api_headers, json=form_data, timeout=timeout, proxies=proxies)
-            r.raise_for_status()
+             
             data = r.json() 
         self.query_count += 1
         self.api_headers.pop('T-Authorization')

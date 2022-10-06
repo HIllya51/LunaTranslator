@@ -74,7 +74,7 @@ class IflytekV2(Tse):
  
             form_data = {'from': from_language, 'to': to_language, 'text': query_text}
             r = ss.post(self.api_url, headers=self.api_headers, data=form_data, timeout=timeout, proxies=proxies)
-            r.raise_for_status()
+          
             data = r.json()
             print(data)
         return   eval(data['data'])['trans_result']['dst']

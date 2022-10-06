@@ -119,14 +119,14 @@ class Deepl(Tse):
             ss_params, ss_data = self.split_sentences_param(query_text, from_language)
             # _ = ss.options(self.api_url, params=ss_params, headers=self.api_headers, timeout=timeout, proxies=proxies)
             r_ss = ss.post(self.api_url, params=ss_params, json=ss_data, headers=self.api_headers, timeout=timeout, proxies=proxies)
-            r_ss.raise_for_status()
+             
             ss_data = r_ss.json()
             ss_sentences = ss_data['result']['splitted_texts'][0]
 
             cs_params, cs_data = self.context_sentences_param(ss_sentences, from_language, to_language)
             # _ = ss.options(self.api_url, params=cs_params, headers=self.api_headers, timeout=timeout, proxies=proxies)
             r_cs = ss.post(self.api_url, params=cs_params, json=cs_data, headers=self.api_headers, timeout=timeout, proxies=proxies)
-            r_cs.raise_for_status()
+             
             data = r_cs.json()
 
         if delete_temp_language_map_label != 0:

@@ -49,7 +49,7 @@ class Tencent(Tse):
 
     def get_language_map(self, ss, language_url, timeout, proxies):
         r = ss.get(language_url, headers=self.host_headers, timeout=timeout, proxies=proxies)
-        r.raise_for_status()
+      
         lang_map_str = re.compile(pattern='C={(.*?)}|languagePair = {(.*?)}', flags=re.S).search(r.text).group(0)  # C=
         return js2py.eval(lang_map_str)
 

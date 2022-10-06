@@ -84,7 +84,7 @@ class Sogou(Tse):
             from_language,to_language='ja','zh-CHS'
             self.form_data = self.get_form(query_text, from_language, to_language)
             r = ss.post(self.api_url, headers=self.api_headers, data=self.form_data, timeout=globalconfig['translatortimeout'], proxies={'http': None,'https': None})
-            r.raise_for_status()
+          
             data = r.json()  
         return   data['data']['translate']['dit']
 

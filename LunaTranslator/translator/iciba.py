@@ -161,7 +161,7 @@ class Iciba(Tse):
             params = {'c': 'trans', 'm': 'fy', 'client': 6, 'auth_user': 'key_web_fanyi', 'sign': sign}
             form_data = {'from': from_language, 'to': to_language, 'q': query_text}
             r = ss.post(self.api_url, headers=self.api_headers, params=params, data=form_data, timeout=timeout, proxies=proxies)
-            r.raise_for_status()
+            
             data = r.json()
 
         if delete_temp_language_map_label != 0:
