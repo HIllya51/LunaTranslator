@@ -271,7 +271,8 @@ class hookselect(QMainWindow):
             if row in dedup:
                 continue
             self.object.textsource.batchselectinghook+=[self.save[row]]
-            
+            dedup.append(row)
+        #print(self.object.textsource.batchselectinghook)
         # if  index==-1:
         #     return 
         # key=self.save[ self.ttCombo.currentIndex()]
