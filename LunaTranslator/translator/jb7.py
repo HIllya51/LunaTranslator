@@ -53,7 +53,7 @@ class TS(basetrans):
             st.dwFlags=subprocess.STARTF_USESHOWWINDOW
             st.wShowWindow=subprocess.SW_HIDE
             
-            p=subprocess.Popen(r'./files/jb7x64runner/win32dllforward.exe "'+self.path+'"  "'+line+'"', stdout=subprocess.PIPE,startupinfo=st)
+            p=subprocess.Popen(r'./files/x64_x86_dll/jbj7.exe "'+self.path+'"  "'+line+'"', stdout=subprocess.PIPE,startupinfo=st)
             l=p.stdout.readline()[:-2]
             
             #print(l)

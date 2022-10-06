@@ -4,7 +4,7 @@
         613
     ],
     "fixedheight": false,
-    "width": 560.0,
+    "width": 768.8,
     "autorun": true,
     "transparent": 82,
     "fontsize": 17.699999999999996,
@@ -110,6 +110,12 @@
             "color": "#1839f0",
             "name": "Jbeijing7",
             "argsfile": "./userconfig/jbj7.json"
+        },
+        "kingsoft": {
+            "use": true,
+            "color": "#1839f0",
+            "name": "金山快译",
+            "argsfile": "./userconfig/ks.json"
         },
         "sougou2": {
             "use": false,
