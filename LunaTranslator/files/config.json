@@ -28,9 +28,9 @@
         "volume": 100.0
     },
     "sourcestatus": {
-        "copy": false,
+        "copy": true,
         "ocr": false,
-        "textractor": true,
+        "textractor": false,
         "textractor_pipe": false
     },
     "ocr": {
@@ -56,7 +56,7 @@
     },
     "fanyi": {
         "baidu": {
-            "use": true,
+            "use": false,
             "color": "#ff65db",
             "name": "百度"
         },
@@ -71,12 +71,12 @@
             "name": "谷歌"
         },
         "ali": {
-            "use": true,
+            "use": false,
             "color": "#0000ff",
             "name": "阿里"
         },
         "youdao": {
-            "use": true,
+            "use": false,
             "color": "#0ff000",
             "name": "有道"
         },
@@ -106,7 +106,7 @@
             "name": "deepl"
         },
         "jb7": {
-            "use": false,
+            "use": true,
             "color": "#1839f0",
             "name": "Jbeijing7",
             "argsfile": "./userconfig/jbj7.json"
@@ -142,7 +142,7 @@
             "name": "iciba"
         },
         "baiduapi": {
-            "use": true,
+            "use": false,
             "color": "#0ff000",
             "name": "百度api",
             "argsfile": "./userconfig/baiduapi.json"
@@ -181,6 +181,6 @@
     "translatortimeout": 5,
     "minlength": 0,
     "maxlength": 150,
-    "fanjian": 0,
+    "fanjian": 2,
     "rotation": 0
 }

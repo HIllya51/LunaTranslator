@@ -52,8 +52,11 @@ class TS(basetrans):
             st=subprocess.STARTUPINFO()
             st.dwFlags=subprocess.STARTF_USESHOWWINDOW
             st.wShowWindow=subprocess.SW_HIDE
-
-            p=subprocess.Popen(r'./files/jb7x64runner/win32dllforward.exe "'+self.path+'" '+line, stdout=subprocess.PIPE,startupinfo=st)
+            if globalconfig['fanjian'] in [0,1,4]:
+                code='0'
+            else:
+                code='1'
+            p=subprocess.Popen(r'./files/jb7x64runner/win32dllforward.exe "'+self.path+'" '+code+'   "'+line+'"', stdout=subprocess.PIPE,startupinfo=st)
             ress+=str(p.stdout.readline(),encoding='GB2312',errors='ignore')
         ress=ress.replace('Translation(TaskNo = 1) is OK. (remainder threads = 0)\r\n','')
         return ress
@@ -62,7 +65,10 @@ class TS(basetrans):
         CODEPAGE_GB = 936
         CODEPAGE_BIG5 = 950
         BUFFER_SIZE = 3000
-
+        if globalconfig['fanjian'] in [0,1,4]:
+            code=CODEPAGE_GB
+        else:
+            code=CODEPAGE_BIG5
             
         size = BUFFER_SIZE 
         out = ctypes.create_unicode_buffer(size) 
@@ -72,7 +78,7 @@ class TS(basetrans):
         try:
             self.dll.JC_Transfer_Unicode( 0, # int, unknown 
                 CODEPAGE_JA    , # uint     from, supposed to be 0x3a4 (cp932) 
-                CODEPAGE_GB, # uint to, eighter cp950 or cp932 
+                code, # uint to, eighter cp950 or cp932 
                 1, # int, unknown 
                 1, # int, unknown 
                 content, #python 默认unicode 所有不用u'
