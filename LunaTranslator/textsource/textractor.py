@@ -5,6 +5,7 @@ from multiprocessing import Queue
 from PyQt5.QtCore import QProcess ,QByteArray ,QTimer
 import re  
 import time
+import subprocess
 from textsource.textsourcebase import basetext 
 class textractor(basetext  ): 
     def __init__(self,object,textgetmethod,hookselectdialog,pid,pname,arch,autostart=False,autostarthookcode=None) :
@@ -54,6 +55,9 @@ class textractor(basetext  ):
         self.re=re.compile('\[([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):(.*):(.*@.*)\] (.*)\n')
     def autostartinsert(self):
         for _h in self.autostarthookcode:
+                    x=subprocess.run(f'./files/hookcodecheck.exe {_h[-1]}',stdout=subprocess.PIPE)
+                    if(x.stdout[0]==ord('0')):
+                        continue
                     self.inserthook(_h[-1])
         self.autostarttimeout.stop()
     def inserthook(self,hookcode):
@@ -110,8 +114,8 @@ class textractor(basetext  ):
                          
                         #print((thread_tp_ctx,thread_tp_ctx2,HookCode)==(autostarthookcode[-4],autostarthookcode[-3],autostarthookcode[-1]),(thread_tp_ctx,thread_tp_ctx2,HookCode),(autostarthookcode[-4],autostarthookcode[-3],autostarthookcode[-1]))
                        
-                        #if (thread_tp_ctx,thread_tp_ctx2,HookCode)==(autostarthookcode[-4],autostarthookcode[-3],autostarthookcode[-1]):
-                        if (HookCode)==(autostarthookcode[-1]):
+                        if (thread_tp_ctx,thread_tp_ctx2,HookCode)==(autostarthookcode[-4],autostarthookcode[-3],autostarthookcode[-1]):
+                        #if (HookCode)==(autostarthookcode[-1]):
                             self.selectedhook+=[key]
                             self.selectinghook=key
                             if len(self.selectedhook)==len(self.autostarthookcode):
