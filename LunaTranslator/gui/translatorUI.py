@@ -35,7 +35,7 @@ class QUnFrameWindow(QWidget):
     """
     无边框窗口类
     """
-    
+    keeptopsignal=pyqtSignal()
     clear_text_sign = pyqtSignal() 
     displayres =  pyqtSignal(str,str ) 
     displayraw1 =  pyqtSignal( str,str,int )
@@ -45,7 +45,8 @@ class QUnFrameWindow(QWidget):
     writeprocesssignal=pyqtSignal(QByteArray)
     killprocesssignal=pyqtSignal()
     hookfollowsignal=pyqtSignal(int,tuple)
-    
+    def keeptopfuntion(self):
+        win32gui.BringWindowToTop(int(self.winId()))
     def hookfollowsignalsolve(self,code,other): 
         if code==3:
             if self.hideshownotauto:
@@ -131,7 +132,7 @@ class QUnFrameWindow(QWidget):
 
         self.setAttribute(Qt.WA_TranslucentBackground) 
 
-        #  
+        
         self.object = object
         self.rate = self.object.screen_scale_rate 
         self.startprocessignal.connect(self.startprocessfunction)
@@ -142,6 +143,7 @@ class QUnFrameWindow(QWidget):
         self.transhis=gui.transhist.transhist()
         self.logff=open('./log.txt','a',encoding='utf8')
         self.setAttribute(Qt.WA_TranslucentBackground) 
+        self.keeptopsignal.connect(self.keeptopfuntion)
         self.hookfollowsignal.connect(self.hookfollowsignalsolve) 
         self.displayres.connect(self.showres)
         self.displayraw1.connect(self.showraw)
