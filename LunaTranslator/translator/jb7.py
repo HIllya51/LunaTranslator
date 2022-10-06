@@ -54,9 +54,12 @@ class TS(basetrans):
             st.wShowWindow=subprocess.SW_HIDE
             
             p=subprocess.Popen(r'./files/jb7x64runner/win32dllforward.exe "'+self.path+'"  "'+line+'"', stdout=subprocess.PIPE,startupinfo=st)
-            ress+=str(p.stdout.readline(),encoding='GB2312',errors='ignore')
+            l=p.stdout.readline()[:-2]
             
-        ress=ress.replace('Translation(TaskNo = 1) is OK. (remainder threads = 0)\r\n','')
+            #print(l)
+            ress+=str(l,encoding='utf16',errors='ignore').replace('\r','')
+            #print(1,ress,2)
+        #ress=ress.replace('Translation(TaskNo = 1) is OK. (remainder threads = 0)\r\n','')
         return ress
     def x86(self,content):
         CODEPAGE_JA = 932
