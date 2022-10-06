@@ -90,7 +90,7 @@ class hookselect(QMainWindow):
         self.tttable .horizontalHeader().setStretchLastSection(True)
         self.tttable.setWordWrap(False)  
         self.tttable.setSelectionBehavior(QAbstractItemView.SelectRows)
-        self.tttable.setSelectionMode(QAbstractItemView.ContiguousSelection)
+        self.tttable.setSelectionMode(QAbstractItemView.ExtendedSelection)
         self.tttable.setEditTriggers(QAbstractItemView.NoEditTriggers)
  
         self.tttable.clicked.connect(self.ViewThread)
