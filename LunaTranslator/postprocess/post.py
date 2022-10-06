@@ -32,13 +32,12 @@ def POSTSOLVE(line):
         line=''.join(newline)
     if postprocessconfig['_3']['use']:
         testforlongestnotdup=line
-        time=2
-        while time<len(line):
+        time=len(line)
+        while time>1:
                 if line[:len(line)//time]*time==line:
-                        testforlongestnotdup=line[:len(line)//time]
-                else:
+                        testforlongestnotdup=line[:len(line)//time] 
                         break
-                time+=1
+                time-=1
         line=testforlongestnotdup 
     if postprocessconfig['_4']['use']:  
         line =re.sub('<(.*?)>','',line) 
