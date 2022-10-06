@@ -76,6 +76,18 @@ def setTabThree(self) :
         self.customSetGeometry(self.fanjiancombo, 150, 250,100,20)
         self.fanjiancombo.currentIndexChanged.connect(lambda x:globalconfig.__setitem__('fanjian',x) )
 
+        
+        label=QLabel(self.tab_3)
+        label = QLabel(self.tab_3)
+        self.customSetGeometry(label, 20, 280, 220, 20)
+        label.setText("翻译窗口顺时针旋转(重启后生效)") 
+        self.anglecombo=QComboBox(self.tab_3)
+        self.anglecombo.addItems(['0','90','180','270'])
+        self.anglecombo.setCurrentIndex(globalconfig['rotation'])
+        self.customSetGeometry(self.anglecombo, 250, 280,100,20)
+        self.anglecombo.currentIndexChanged.connect(lambda x:globalconfig.__setitem__('rotation',x) )
+
+
         label = QLabel(self.tab_3)
         self.customSetGeometry(label, 275, 120, 60, 20)
         label.setText("显示原文:")

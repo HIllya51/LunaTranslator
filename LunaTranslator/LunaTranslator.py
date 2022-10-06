@@ -10,7 +10,7 @@ sys.path.append(dirname)
 import threading,win32gui
 from tts.windowstts import tts   
 from PyQt5.QtCore import QCoreApplication ,Qt 
-from PyQt5.QtWidgets import  QApplication 
+from PyQt5.QtWidgets import  QApplication ,QGraphicsScene,QGraphicsView,QDesktopWidget
 import utils.screen_rate  
 from utils.wrapper import timer,threader 
 import gui.rangeselect   
@@ -133,10 +133,11 @@ class MAINUI() :
     # 主函数
     def setontopthread(self):
         while True:
-            self.translation_ui.keeptopsignal.emit()
-            #win32gui.BringWindowToTop(int(self.translation_ui.winId()))
+            #self.translation_ui.keeptopsignal.emit() 
+             
+            win32gui.BringWindowToTop(int(self.translation_ui.winId())) 
+        
             time.sleep(0.5)
-    
 
 
     def onwindowloadautohook(self):
@@ -174,7 +175,20 @@ class MAINUI() :
         t1=time.time()
         
         self.translation_ui =gui.translatorUI.QUnFrameWindow(self)  
-        self.translation_ui.show()     
+        if globalconfig['rotation']==0:
+            self.translation_ui.show()  
+        else:
+            self.scene = QGraphicsScene()
+            
+            self.oneTestWidget = self.scene.addWidget(self.translation_ui) 
+            self.oneTestWidget.setRotation(globalconfig['rotation']*90)
+            self.view = QGraphicsView(self.scene)
+            self.view.setWindowFlags(Qt.FramelessWindowHint|Qt.WindowStaysOnTopHint|Qt.Tool)
+            self.view.setAttribute(Qt.WA_TranslucentBackground) 
+            self.view.setStyleSheet('background-color: rgba(255, 255, 255, 0);')
+            self.view.setGeometry(QDesktopWidget().screenGeometry())
+            self.view.show()      
+          
         threading.Thread(target=self.setontopthread).start()
         
         self.prepare()  

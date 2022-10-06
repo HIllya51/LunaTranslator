@@ -16,3 +16,7 @@ with open('./files/noundictconfig.json','r',encoding='utf-8') as ff:
 
 if 'fanjian' not in globalconfig:
     globalconfig['fanjian']=0
+
+
+if 'rotation' not in globalconfig:
+    globalconfig['rotation']=0
