@@ -13,8 +13,11 @@ class customtabstyle(QProxyStyle):
         if types == self.CT_TabBarTab:
             size.transpose()
             rt = utils.screen_rate.getScreenRate() 
-            size.setHeight(70*rt)
-            size.setWidth(200*rt)
+            # size.setHeight(70*rt)
+            # size.setWidth(200*rt)
+            size.scale(200,70,Qt.IgnoreAspectRatio)
+            # size.setHeight(70)
+            # size.setWidth(200)
         return size
     def drawControl(self,element,option,painter,widget):
         if element == self.CE_TabBarTabLabel: 
