@@ -20,7 +20,7 @@ from utils.config import globalconfig ,postprocessconfig,noundictconfig
 from PyQt5.QtWidgets import  QWidget,QLabel, QComboBox,QDoubleSpinBox 
  
 from PyQt5.QtWidgets import QWidget,QLabel,QFrame ,QPushButton,QColorDialog
-from PyQt5.QtGui import QColor,QFont
+from PyQt5.QtGui import QColor,QFont,QPixmap,QIcon
 import functools
 from PyQt5.QtWidgets import QDialogButtonBox,QDialog,QComboBox,QFormLayout,QSpinBox,QVBoxLayout,QLineEdit
 from PyQt5.QtCore import Qt,QSize
@@ -38,9 +38,17 @@ import os
 import win32con,win32api,win32process,win32gui
 self_pid=os.getpid()
 st=subprocess.STARTUPINFO()
+from PyQt5.QtWinExtras  import QtWin 
 st.dwFlags=subprocess.STARTF_USESHOWWINDOW
 st.wShowWindow=subprocess.SW_HIDE
-
+def getExeIcon( name ): 
+        
+        try:
+            large, small = win32gui.ExtractIconEx(name,0)
+            pixmap =QtWin.fromHICON(large[0])
+            return pixmap
+        except:
+            return None
 
 def autosaveshow(object):
     if os.path.exists('./files/savehook_new.json'):
@@ -56,25 +64,39 @@ def autosaveshow(object):
         model=QStandardItemModel(  dialog)
         row=0
         for k in js:                                   # 2
-                
-                item = QStandardItem(k)
+                item = QStandardItem('')
+                transparent=QPixmap(100,100)
+                transparent.fill(QColor.fromRgba(0))
+                icon=getExeIcon(k)
+                if icon is None:
+                    icon=transparent
+                icon=QIcon(icon)
+                item.setIcon(icon)
                 model.setItem(row, 0, item)
-                item = QStandardItem(json.dumps(js[k],ensure_ascii=False))
+                item = QStandardItem(k)
                 model.setItem(row, 1, item)
+                # item = QStandardItem(json.dumps(js[k],ensure_ascii=False))
+                # model.setItem(row, 2, item)
                 row+=1
-        model.setHorizontalHeaderLabels([ '游戏','HOOK'])
+        model.setHorizontalHeaderLabels(['图标', '游戏'])#,'HOOK'])
         table = QTableView(dialog)
-        table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+        #table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+        table.horizontalHeader().setSectionResizeMode(QHeaderView.Interactive)
+        table.setSelectionBehavior(QAbstractItemView.SelectRows)
         table.setWordWrap(False) 
         table.setModel(model)
         table.horizontalHeader().setStretchLastSection(True)
-        #table.setEditTriggers(QAbstractItemView.NoEditTriggers)
+        table.setEditTriggers(QAbstractItemView.NoEditTriggers)
         #table.clicked.connect(self.show_info)
-         
+        button=QPushButton(dialog)
+        button.setText('开始游戏')
+        def clicked(): 
+                subprocess.Popen(model.item(table.currentIndex().row(),1).text())
+        button.clicked.connect(clicked)
         button2=QPushButton(dialog)
         button2.setText('删除游戏')
         def clicked2(): 
-                js.pop(model.item(table.currentIndex().row(),0).text())
+                js.pop(model.item(table.currentIndex().row(),1).text())
                 model.removeRow(table.currentIndex().row())
         button2.clicked.connect(clicked2)
         button3=QPushButton(dialog)
@@ -85,6 +107,7 @@ def autosaveshow(object):
                 dialog.close()
         button3.clicked.connect(clicked3)
         formLayout.addWidget(table) 
+        formLayout.addWidget(button)
         formLayout.addWidget(button2)
         formLayout.addWidget(button3)
         dialog.resize(QSize(800,400))
