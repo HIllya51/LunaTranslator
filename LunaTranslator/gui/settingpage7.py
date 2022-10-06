@@ -12,7 +12,7 @@ from PyQt5.QtGui import QStandardItem, QStandardItemModel
 import qtawesome
 from PyQt5.QtCore import QThread
 import subprocess
-from utils.config import globalconfig ,postprocessconfig,noundictconfig
+from utils.config import globalconfig ,postprocessconfig,noundictconfig,transerrorfixdictconfig
 from PyQt5.QtWidgets import  QWidget,QLabel, QComboBox,QDoubleSpinBox 
  
 from PyQt5.QtWidgets import QWidget,QLabel,QFrame ,QPushButton,QColorDialog
@@ -50,6 +50,8 @@ def initpostswitchs_auto(self):
         x=20
         y=300
         initdictswitchs(self,(x, y, 270, 20),(x+270, y, 20,20),1,(x+300, y, 20,20))
+        y+=40
+        initdictswitchs2(self,(x, y, 270, 20),(x+270, y, 20,20),1,(x+300, y, 20,20))
 def initdictswitchs(self,namepos,switchpos,colorpos,settingpos):
     label = QLabel(self.tab_7)
     self.customSetGeometry(label, *namepos)
@@ -65,8 +67,23 @@ def initdictswitchs(self,namepos,switchpos,colorpos,settingpos):
     s1.setStyleSheet("background: transparent;")   
     s1.setIcon(qtawesome.icon("fa.gear", color="#FF69B4"  ))
     s1.clicked.connect(lambda x:noundictconfigdialog(self,noundictconfig,'专有名词翻译设置'))
+def initdictswitchs2(self,namepos,switchpos,colorpos,settingpos):
+    label = QLabel(self.tab_7)
+    self.customSetGeometry(label, *namepos)
+    label.setText("使用翻译结果替换")
+    p=gui.switchbutton.MySwitch(self.tab_7, sign=transerrorfixdictconfig['use'] )
+    
+    self.customSetGeometry(p, *switchpos) 
+    p.clicked.connect(lambda x:transerrorfixdictconfig.__setitem__('use',x)) 
+    
+    s1 = QPushButton( "", self.tab_7)
+    self.customSetIconSize(s1, 20, 20)
+    self.customSetGeometry(s1, *settingpos)
+    s1.setStyleSheet("background: transparent;")   
+    s1.setIcon(qtawesome.icon("fa.gear", color="#FF69B4"  ))
+    s1.clicked.connect(lambda x:noundictconfigdialog(self,transerrorfixdictconfig,'翻译结果替换设置',['翻译','替换'],'./files/transerrorfixdictconfig.json'))
 
-def noundictconfigdialog(object,configdict,title):
+def noundictconfigdialog(object,configdict,title,label=[ '日文','翻译'],fname='./files/noundictconfig.json'):
     dialog = QDialog(object)  # 自定义一个dialog
     dialog.setWindowTitle(title)
     #dialog.setWindowModality(Qt.ApplicationModal)
@@ -82,7 +99,7 @@ def noundictconfigdialog(object,configdict,title):
             item = QStandardItem(configdict['dict'][key] )
             model.setItem(row, 1, item)
             row+=1
-    model.setHorizontalHeaderLabels([ '原文','翻译'])
+    model.setHorizontalHeaderLabels(label)
     table = QTableView(dialog)
     table.setModel(model)
     table.horizontalHeader().setStretchLastSection(True)
@@ -109,6 +126,9 @@ def noundictconfigdialog(object,configdict,title):
                 continue
             newdict[model.item(row,0).text()]=model.item(row,1).text()
         configdict['dict']=newdict
+        with open(fname,'w',encoding='utf-8') as ff:
+            import json
+            ff.write(json.dumps(configdict,ensure_ascii=False,sort_keys=False, indent=4))
         dialog.close()
     button3.clicked.connect(clicked3)
     formLayout.addWidget(table)

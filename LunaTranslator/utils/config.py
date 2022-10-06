@@ -1,4 +1,5 @@
 import json
+from math import fabs
 import os
 from turtle import pos 
  
@@ -12,6 +13,12 @@ with open('./files/postprocessconfig.json','r',encoding='utf-8') as ff:
 
 with open('./files/noundictconfig.json','r',encoding='utf-8') as ff:
     noundictconfig=json.load(ff)
+
+if os.path.exists('./files/transerrorfixdictconfig.json'):
+    with open('./files/transerrorfixdictconfig.json','r',encoding='utf-8') as ff:
+        transerrorfixdictconfig=json.load(ff)
+else:
+    transerrorfixdictconfig={"use":False,"dict":{}}
 
 
 if 'fanjian' not in globalconfig:

@@ -1,7 +1,7 @@
 
 from queue import Queue
 import time
-from utils.config import globalconfig,noundictconfig
+from utils.config import globalconfig,noundictconfig,transerrorfixdictconfig
 import traceback
 import json
 import requests
@@ -51,7 +51,7 @@ class basetrans:
                 continue
             if (set(content) -set('「…」、。？！―'))==set():
                 continue 
-            
+            contentraw=content
             zhanweifu=0
             mp={}
             use=noundictconfig['use']
@@ -59,19 +59,24 @@ class basetrans:
                 for key in noundictconfig['dict']: 
                     if key in content:
 
-                        content=content.replace(key,'{XX'+str(zhanweifu)+'}')
-                        mp['{XX'+str(zhanweifu)+'}']=key
+                        content=content.replace(key,'{NAME'+str(zhanweifu)+'}')
+                        mp['{NAME'+str(zhanweifu)+'}']=key
                         zhanweifu+=1
              
             res=self.translate(content)
-              
-            
+                
             if use:
                 for key in mp:
-                    res=res.replace(key,mp[key]) 
+                    res=res.replace(key,noundictconfig['dict'][mp[key]])  
+            if transerrorfixdictconfig['use']:
+                for key in transerrorfixdictconfig['dict']:
+                    res=res.replace(key,transerrorfixdictconfig['dict'][key])
+
+
             if globalconfig['fanjian']!=0:
                 res=zhconv.convert(res, ['zh-cn', 'zh-tw', 'zh-hk', 'zh-sg', 'zh-hans', 'zh-hant'][globalconfig['fanjian']])
-            if self.queue.empty() and content==self.newline:
+            
+            if self.queue.empty() and contentraw==self.newline:
                 self.show__(res)
 
     

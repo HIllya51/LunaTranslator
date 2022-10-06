@@ -56,7 +56,7 @@
     },
     "fanyi": {
         "baidu": {
-            "use": false,
+            "use": true,
             "color": "#ff65db",
             "name": "百度"
         },
@@ -101,7 +101,7 @@
             "name": "彩云"
         },
         "deepl": {
-            "use": true,
+            "use": false,
             "color": "#0ff000",
             "name": "deepl"
         },

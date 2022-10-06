@@ -121,6 +121,7 @@ class Deepl(Tse):
             r_ss = ss.post(self.api_url, params=ss_params, json=ss_data, headers=self.api_headers, timeout=timeout, proxies=proxies)
              
             ss_data = r_ss.json()
+            print(ss_data)
             ss_sentences = ss_data['result']['splitted_texts'][0]
 
             cs_params, cs_data = self.context_sentences_param(ss_sentences, from_language, to_language)
