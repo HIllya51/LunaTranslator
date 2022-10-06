@@ -82,6 +82,7 @@ def autosaveshow(object):
         def clicked3():
                 with open('./files/savehook_new.json','w',encoding='utf8') as ff:
                         ff.write(json.dumps(js,ensure_ascii=False))
+                dialog.close()
         button3.clicked.connect(clicked3)
         formLayout.addWidget(table) 
         formLayout.addWidget(button2)
