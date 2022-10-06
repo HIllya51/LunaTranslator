@@ -207,7 +207,7 @@ class hookselect(QMainWindow):
         self.hiding=True
         super(QMainWindow,self).hide()
         if 'closed' not in dir(self.object):
-            self.object.translation_ui.show()
+            self.object.settin_ui.show()
     
     # 窗口关闭处理
     def closeEvent(self, event) : 
@@ -238,7 +238,7 @@ class hookselect(QMainWindow):
                 ff.write(json.dumps(js,ensure_ascii=False))
         except:
             print_exc()
-        self.object.translation_ui.show()
+        self.object.settin_ui.show()
     def show(self):
         super(QMainWindow,self).show()
         try:
