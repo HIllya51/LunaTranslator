@@ -91,7 +91,8 @@ def autosaveshow(object):
         button=QPushButton(dialog)
         button.setText('开始游戏')
         def clicked(): 
-                subprocess.Popen(model.item(table.currentIndex().row(),1).text())
+                if os.path.exists(model.item(table.currentIndex().row())):
+                        subprocess.Popen(model.item(table.currentIndex().row(),1).text())
         button.clicked.connect(clicked)
         button2=QPushButton(dialog)
         button2.setText('删除游戏')
