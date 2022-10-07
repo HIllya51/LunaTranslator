@@ -23,15 +23,18 @@ class TS(basetrans):
     def x64(self,content):
         try:
             configfile=globalconfig['fanyi'][self.typename]['argsfile']
+            
             if os.path.exists(configfile) ==False:
                 return ''
+            
             with open(configfile,'r',encoding='utf8') as ff:
                 js=json.load(ff)
+             
             if js['args']['路径']=="":
                 return ''
             else:
                 path = js['args']['路径'] 
-        
+             
             ress=''
             for line in content.split('\n'):
                 if len(line)==0:
@@ -42,15 +45,15 @@ class TS(basetrans):
                 st=subprocess.STARTUPINFO()
                 st.dwFlags=subprocess.STARTF_USESHOWWINDOW
                 st.wShowWindow=subprocess.SW_HIDE 
-                p=subprocess.Popen(r'./files/x64_x86_dll/dreye.exe "'+path+'"  "'+line+'"', stdout=subprocess.PIPE,startupinfo=st)
-                l=p.stdout.readline()  
+                p=subprocess.Popen(r'./files/x64_x86_dll/dreye.exe "'+path+'"  "'+line+'"',stderr=subprocess.PIPE, stdout=subprocess.PIPE,startupinfo=st)
+                l=p.stdout.readline()   
                 #print(l)
                  
                 ress+=str(l,encoding='gbk',errors='ignore').replace('\r','').replace('\n','').replace(chr(0),'')
                  
                 #print(1,ress,2)
             #ress=ress.replace('Translation(TaskNo = 1) is OK. (remainder threads = 0)\r\n','')
-            return ress
+            return ress 
         except:
             return ''
     def translate(self,content): 
