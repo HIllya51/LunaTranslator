@@ -25,35 +25,35 @@ def setTabTwo(self) :
         initfanyiswitchs_auto(self)
         
         label = QLabel(self.tab_2)
-        self.customSetGeometry(label, 20, 390, 200, 20)
+        self.customSetGeometry(label, 20, 450, 200, 20)
         label.setText("最短翻译字数")
         self.minlength=QSpinBox(self.tab_2)
         self.minlength.setMinimum(0)
         self.minlength.setMaximum(500)
         self.minlength.setValue(globalconfig['minlength']) 
-        self.customSetGeometry(self.minlength, 150,390,50,20)
+        self.customSetGeometry(self.minlength, 150,450,50,20)
         self.minlength.valueChanged.connect(lambda x:globalconfig.__setitem__('minlength',x)) 
 
 
 
         label = QLabel(self.tab_2)
-        self.customSetGeometry(label, 20, 420, 200, 20)
+        self.customSetGeometry(label, 220, 450, 200, 20)
         label.setText("最长翻译字数")
         self.maxlength=QSpinBox(self.tab_2)
         self.maxlength.setMinimum(0)
         self.maxlength.setMaximum(500)
         self.maxlength.setValue(globalconfig['maxlength']) 
-        self.customSetGeometry(self.maxlength, 150, 420,50,20)
+        self.customSetGeometry(self.maxlength, 350, 450,50,20)
         self.maxlength.valueChanged.connect(lambda x:globalconfig.__setitem__('maxlength',x)) 
 
         label = QLabel(self.tab_2)
-        self.customSetGeometry(label, 20, 450, 200, 20)
+        self.customSetGeometry(label, 420, 450, 200, 20)
         label.setText("在线翻译超时(s)")
         self.translatortimeout=QSpinBox(self.tab_2)
         self.translatortimeout.setMinimum(1)
         self.translatortimeout.setMaximum(20)
         self.translatortimeout.setValue(globalconfig['translatortimeout']) 
-        self.customSetGeometry(self.translatortimeout, 150,450,50,20)
+        self.customSetGeometry(self.translatortimeout, 550,450,50,20)
         self.translatortimeout.valueChanged.connect(lambda x:globalconfig.__setitem__('translatortimeout',x)) 
 def initfanyiswitchs_auto(self):
         num=0
