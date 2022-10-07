@@ -1,6 +1,7 @@
  
 import re
 import time
+from traceback import print_exc
 from urllib.parse import quote 
 from translator.basetranslator import basetrans
 import platform 
@@ -47,12 +48,22 @@ class TS(basetrans):
                 
                 p=subprocess.Popen(r'./files/x64_x86_dll/ks.exe "'+self.path+'"  "'+self.path2+'"  "'+line+'"', stdout=subprocess.PIPE,startupinfo=st)
                 l=p.stdout.readline()  
-                #print(l)
-                ress+=str(l,encoding='utf16',errors='ignore').replace('\r','').replace('\n','')
+                 
+                res=str(l,encoding='utf8',errors='ignore')
+                #print(res)
+                x=res.split(' ')
+                #print(x)
+                #print(x)
+                for _x in x:
+                    if _x=='0':
+                        break
+                    ress+=chr(int(_x)).replace('\r','').replace('\n','') 
+                #ress+=str(l,encoding='utf16',errors='ignore').replace('\r','').replace('\n','')
                 #print(1,ress,2)
             #ress=ress.replace('Translation(TaskNo = 1) is OK. (remainder threads = 0)\r\n','')
             return ress
         except:
+            print_exc()
             return ''
     def translate(self,content): 
         return self.x64(content)

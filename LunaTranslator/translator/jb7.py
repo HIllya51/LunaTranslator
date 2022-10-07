@@ -1,6 +1,7 @@
  
 import re
 import time
+from traceback import print_exc
 from urllib.parse import quote 
 from translator.basetranslator import basetrans
 import platform 
@@ -55,10 +56,21 @@ class TS(basetrans):
                 st.wShowWindow=subprocess.SW_HIDE
                 
                 p=subprocess.Popen(r'./files/x64_x86_dll/jbj7.exe "'+self.path+'"  "'+line+'"', stdout=subprocess.PIPE,startupinfo=st)
-                l=p.stdout.readline()[:-2]
+                l=p.stdout.readline() 
                 
+                res=str(l,encoding='utf8',errors='ignore').replace('\r','').replace('\n','') 
+                #print(res)
+                x=res.split(' ')
+                
+                #print(x)
+                for _x in x:
+                    if _x=='0':
+                        break
+                    ress+=chr(int(_x))
+                    #print(ress)
                 #print(l)
-                ress+=str(l,encoding='utf16',errors='ignore').replace('\r','')
+                
+                #ress+=str(l,encoding='utf16',errors='ignore').replace('\r','')
             #print(1,ress,2)
         #ress=ress.replace('Translation(TaskNo = 1) is OK. (remainder threads = 0)\r\n','')
             return ress

@@ -43,7 +43,7 @@ def POSTSOLVE(line):
         line =re.sub('<(.*?)>','',line) 
         line=re.sub('</(.*?)>',"*",line)
     if postprocessconfig['_6']['use']:
-        line=line.replace('\n','')
+        line=line.replace('\n','').replace('\r','')
     if postprocessconfig['_5']['use']:
         filters=postprocessconfig['_5']['args']['过滤内容']
         for fil in filters: 

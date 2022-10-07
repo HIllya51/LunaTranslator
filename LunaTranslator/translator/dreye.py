@@ -57,7 +57,7 @@ class TS(basetrans):
                 l=p.stdout.readline()   
                 #print(l)
                 
-                res=str(l,encoding='gbk',errors='ignore').replace('\r','').replace('\n','') 
+                res=str(l,encoding='utf8',errors='ignore').replace('\r','').replace('\n','') 
                 #print(res)
                 x=res.split(' ')
                 bs=[]
@@ -68,7 +68,7 @@ class TS(basetrans):
                     except:
                         break
                 #print(bs)
-                ress+=str(bytes(bs),encoding='gbk')
+                ress+=str(bytes(bs),encoding='gbk').replace(chr(0),'')
 
                 #print(1,ress,2)
             #ress=ress.replace('Translation(TaskNo = 1) is OK. (remainder threads = 0)\r\n','')
