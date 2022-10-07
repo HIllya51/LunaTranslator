@@ -19,29 +19,30 @@ class TS(basetrans):
                 "路径": "" 
             } 
         }
-    def inittranslator(self ) : 
-        configfile=globalconfig['fanyi'][self.typename]['argsfile']
-        if os.path.exists(configfile) ==False:
-            return 
-        with open(configfile,'r',encoding='utf8') as ff:
-            js=json.load(ff)
-        if js['args']['路径']=="":
-            return 
-        else:
-            path = js['args']['路径'] 
-  
-        self.path=os.path.join(path,'JBJCT.dll')
-        if platform.architecture()[0]=='32bit':
-            self._x64=False
-            try:
-                self.dll=  ctypes.CDLL(self.path)
-            except:
-                pass
-        else:
-            self._x64=True
-            self.x64('おはおよう')
+    # def inittranslator(self ) : 
+        
+    #     if platform.architecture()[0]=='32bit':
+    #         self._x64=False
+    #         try:
+    #             self.dll=  ctypes.CDLL(self.path)
+    #         except:
+    #             pass
+    #     else:
+    #         self._x64=True
+    #         self.x64('おはおよう')
     def x64(self,content):
         try:
+            configfile=globalconfig['fanyi'][self.typename]['argsfile']
+            if os.path.exists(configfile) ==False:
+                return 
+            with open(configfile,'r',encoding='utf8') as ff:
+                js=json.load(ff)
+            if js['args']['路径']=="":
+                return 
+            else:
+                path = js['args']['路径'] 
+    
+            self.path=os.path.join(path,'JBJCT.dll')
             ress=''
             for line in content.split('\n'):
                 if len(line)==0:
@@ -94,9 +95,8 @@ class TS(basetrans):
             pass
         return out.value
     def translate(self,content): 
-        if self._x64:
+         
             return self.x64(content)
-        else:
-            return self.x86(content)
+        
         
           

@@ -117,6 +117,12 @@
             "name": "金山快译",
             "argsfile": "./userconfig/ks.json"
         },
+        "dreye": {
+            "use": true,
+            "color": "#1839f0",
+            "name": "快译通",
+            "argsfile": "./userconfig/dreye.json"
+        },
         "sougou2": {
             "use": false,
             "color": "#0ff000",
