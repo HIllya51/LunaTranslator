@@ -1,9 +1,0 @@
-<div>
-版本号:1.8.2
-<br>
-最新版本:%s
-<br>
-项目网站:<a href="https://github.com/HIllya51/LunaTranslator">https://github.com/HIllya51/LunaTranslator</a>
-<br>
-网盘下载:<a href="https://pan.baidu.com/s/1kBVtyIHG2CLYFvqvjUxCUw?pwd=7iqw">https://pan.baidu.com/s/1kBVtyIHG2CLYFvqvjUxCUw?pwd=7iqw</a>
-</div>
