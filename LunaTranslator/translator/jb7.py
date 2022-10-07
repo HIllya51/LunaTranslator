@@ -41,26 +41,28 @@ class TS(basetrans):
             self._x64=True
             self.x64('おはおよう')
     def x64(self,content):
-         
-        ress=''
-        for line in content.split('\n'):
-            if len(line)==0:
-                continue
-            if ress!='':
-                ress+='\n'
-                        
-            st=subprocess.STARTUPINFO()
-            st.dwFlags=subprocess.STARTF_USESHOWWINDOW
-            st.wShowWindow=subprocess.SW_HIDE
-            
-            p=subprocess.Popen(r'./files/x64_x86_dll/jbj7.exe "'+self.path+'"  "'+line+'"', stdout=subprocess.PIPE,startupinfo=st)
-            l=p.stdout.readline()[:-2]
-            
-            #print(l)
-            ress+=str(l,encoding='utf16',errors='ignore').replace('\r','')
+        try:
+            ress=''
+            for line in content.split('\n'):
+                if len(line)==0:
+                    continue
+                if ress!='':
+                    ress+='\n'
+                            
+                st=subprocess.STARTUPINFO()
+                st.dwFlags=subprocess.STARTF_USESHOWWINDOW
+                st.wShowWindow=subprocess.SW_HIDE
+                
+                p=subprocess.Popen(r'./files/x64_x86_dll/jbj7.exe "'+self.path+'"  "'+line+'"', stdout=subprocess.PIPE,startupinfo=st)
+                l=p.stdout.readline()[:-2]
+                
+                #print(l)
+                ress+=str(l,encoding='utf16',errors='ignore').replace('\r','')
             #print(1,ress,2)
         #ress=ress.replace('Translation(TaskNo = 1) is OK. (remainder threads = 0)\r\n','')
-        return ress
+            return ress
+        except:
+            return ''
     def x86(self,content):
         CODEPAGE_JA = 932
         CODEPAGE_GB = 936
