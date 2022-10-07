@@ -45,7 +45,9 @@ class TS(basetrans):
                 p=subprocess.Popen(r'./files/x64_x86_dll/dreye.exe "'+path+'"  "'+line+'"', stdout=subprocess.PIPE,startupinfo=st)
                 l=p.stdout.readline()  
                 #print(l)
-                ress+=str(l,encoding='gbk',errors='ignore').replace('\r','').replace('\n','')
+                 
+                ress+=str(l,encoding='gbk',errors='ignore').replace('\r','').replace('\n','').replace(chr(0),'')
+                 
                 #print(1,ress,2)
             #ress=ress.replace('Translation(TaskNo = 1) is OK. (remainder threads = 0)\r\n','')
             return ress

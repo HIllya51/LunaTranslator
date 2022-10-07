@@ -57,17 +57,19 @@ class basetrans:
             use=noundictconfig['use']
             if use:
                 for key in noundictconfig['dict']: 
+                     
                     if key in content:
 
-                        content=content.replace(key,'{NAME'+str(zhanweifu)+'}')
-                        mp['{NAME'+str(zhanweifu)+'}']=key
+                        content=content.replace(key,'A-'+"%03d"%zhanweifu+'')
+                        mp['A-'+"%03d"%zhanweifu+'']=key
                         zhanweifu+=1
              
             res=self.translate(content)
-                
+            
             if use:
                 for key in mp:
                     res=res.replace(key,noundictconfig['dict'][mp[key]])  
+            
             if transerrorfixdictconfig['use']:
                 for key in transerrorfixdictconfig['dict']:
                     res=res.replace(key,transerrorfixdictconfig['dict'][key])
