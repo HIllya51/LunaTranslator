@@ -5,6 +5,8 @@ from traceback import print_exc
 
 from utils.config import globalconfig
 class TS(basetrans): 
+    def srclang(self):
+        return ['ja','en'][globalconfig['srclang']]
     def translate(self,content): 
         try:
             
@@ -29,7 +31,7 @@ class TS(basetrans):
                 'source': [
                     content,
                 ],
-                'trans_type': 'ja2zh',
+                'trans_type': self.srclang()+'2zh',
                 'detect': False,
             }
 

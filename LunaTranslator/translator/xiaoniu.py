@@ -11,7 +11,8 @@ from translator.basetranslator import basetrans
 from js2py import EvalJs
 import time
 class TS(basetrans):
-     
+    def srclang(self):
+        return ['ja','en'][globalconfig['srclang']]
     @classmethod
     def defaultsetting(self):
         return {
@@ -50,7 +51,7 @@ class TS(basetrans):
         }
          
         params={
-            'from':'ja',
+            'from':self.srclang(),
             'to':'zh',
             'src_text':query,
             'apikey':apikey

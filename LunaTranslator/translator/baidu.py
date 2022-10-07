@@ -11,7 +11,8 @@ from js2py import EvalJs
 from utils.config import globalconfig
 import time
 class TS(basetrans):
-    
+    def srclang(self):
+        return ['jp','en'][globalconfig['srclang']]
     def inittranslator(self)  :  
         self.headers= {
                 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36',
@@ -38,11 +39,11 @@ class TS(basetrans):
     def translate(self,query): 
         #sign =self.jsrun.call('e', query, self.gtk)
         sign=self.ctx.e(query,self.gtk)
-        translate_url = 'https://fanyi.baidu.com/#jp/zh/%s' % ( parse.quote(query))
+        translate_url = 'https://fanyi.baidu.com/#'+self.srclang()+'/zh/%s' % ( parse.quote(query))
         #acs_token = self.jsrun.call('ascToken', translate_url)
         acs_token=self.ctx.ascToken(translate_url)
         data = {
-            'from': 'jp',
+            'from': self.srclang(),
             'to': 'zh',
             'query': query,
             'transtype': 'realtime',
@@ -64,7 +65,7 @@ class TS(basetrans):
         params = {
             'req': 'check',
             'fanyi_src': query,
-            'direction': 'jp2zh',
+            'direction': self.srclang()+'2zh',
             '_': int(time.time()*1000),
         }
 

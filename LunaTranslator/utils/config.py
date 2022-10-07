@@ -27,3 +27,10 @@ if 'fanjian' not in globalconfig:
 
 if 'rotation' not in globalconfig:
     globalconfig['rotation']=0
+
+
+
+if 'srclang' not in globalconfig:
+    globalconfig['srclang']=0
+
+#0 ja  1 eng

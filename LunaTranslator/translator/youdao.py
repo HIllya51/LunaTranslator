@@ -8,6 +8,8 @@ import random
 from utils.config import globalconfig
 import json
 class TS(basetrans):
+    def srclang(self):
+        return ['ja','en'][globalconfig['srclang']]
     def youdaoSIGN(self,useragent,e):
         t=hashlib.md5(bytes(useragent,encoding='utf-8')).hexdigest()
         
@@ -49,7 +51,7 @@ class TS(basetrans):
         sign=self.youdaoSIGN(self.headers['User-Agent'],content)
         data = {
             'i': content,
-            'from': 'ja',
+            'from': self.srclang(),
             'to': 'zh-CHS',
             'smartresult': 'dict',
             'client': 'fanyideskweb',

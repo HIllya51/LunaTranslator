@@ -5,6 +5,8 @@ from urllib.parse import quote
 from translator.basetranslator import basetrans
 import random
 import urllib
+def srclang():
+        return ['JA','EN'][globalconfig['srclang']]
 class Tse:
     def __init__(self):
         self.author = 'Ulion.Tse' 
@@ -114,7 +116,7 @@ class Deepl(Tse):
 
         with requests.Session() as ss:
             
-            from_language, to_language='ja','zh'
+            from_language, to_language=srclang(),'ZH'
 
             ss_params, ss_data = self.split_sentences_param(query_text, from_language)
             # _ = ss.options(self.api_url, params=ss_params, headers=self.api_headers, timeout=timeout, proxies=proxies)

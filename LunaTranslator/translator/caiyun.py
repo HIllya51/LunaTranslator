@@ -8,6 +8,8 @@ import random
 import urllib
 
 from utils.config import globalconfig
+def srclang( ):
+        return ['ja','en'][globalconfig['srclang']]
 class Tse:
     def __init__(self):
         self.author = 'Ulion.Tse' 
@@ -132,7 +134,7 @@ class Caiyun(Tse):
                 "replaced": "true",
                 "request_id": "web_fanyi",
                 "source": query_text,
-                "trans_type": 'ja2zh',
+                "trans_type": srclang()+'2zh',
             } 
             _ = ss.options(self.api_url, headers=self.host_headers, timeout=timeout, proxies=proxies)
             r = ss.post(self.api_url, headers=self.api_headers, json=form_data, timeout=timeout, proxies=proxies)

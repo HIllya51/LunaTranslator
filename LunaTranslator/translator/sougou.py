@@ -11,6 +11,8 @@ from utils.config import globalconfig
 import random
 import functools
 import urllib
+def srclang( ):
+        return ['ja','en'][globalconfig['srclang']]
 class Tse:
     def __init__(self):
         self.author = 'Ulion.Tse' 
@@ -81,7 +83,7 @@ class Sogou(Tse):
          
         with requests.Session() as ss:
             _ = ss.get(self.host_url, headers=self.host_headers, timeout=globalconfig['translatortimeout'], proxies={'http': None,'https': None}).text 
-            from_language,to_language='ja','zh-CHS'
+            from_language,to_language=srclang(),'zh-CHS'
             self.form_data = self.get_form(query_text, from_language, to_language)
             r = ss.post(self.api_url, headers=self.api_headers, data=self.form_data, timeout=globalconfig['translatortimeout'], proxies={'http': None,'https': None})
           

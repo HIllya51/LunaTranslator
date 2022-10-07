@@ -8,6 +8,8 @@ import hashlib
 import functools
 
 from utils.config import globalconfig
+def srclang():
+        return ['ja','en'][globalconfig['srclang']]
 class TranslatorError(Exception):
     pass
 class Tse:
@@ -125,6 +127,7 @@ class Iciba(Tse):
 
     # @Tse.time_stat
     def iciba_api(self, query_text: str, from_language: str = 'ja', to_language: str = 'zh-CN', **kwargs)  :
+        from_language=srclang()
         """
         https://www.iciba.com/fy
         :param query_text: str, must.

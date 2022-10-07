@@ -1,5 +1,5 @@
  
-from PyQt5.QtWidgets import QWidget,QLabel,QFrame ,QPushButton,QColorDialog,QSpinBox
+from PyQt5.QtWidgets import QWidget,QLabel,QFrame ,QPushButton,QColorDialog,QSpinBox,QComboBox
 from PyQt5.QtGui import QColor,QFont
 import functools
 from utils.config import globalconfig 
@@ -55,6 +55,15 @@ def setTabTwo(self) :
         self.translatortimeout.setValue(globalconfig['translatortimeout']) 
         self.customSetGeometry(self.translatortimeout, 550,450,50,20)
         self.translatortimeout.valueChanged.connect(lambda x:globalconfig.__setitem__('translatortimeout',x)) 
+
+        label = QLabel(self.tab_2)
+        self.customSetGeometry(label, 20, 500, 200, 20)
+        label.setText("源语言")
+        self.srclangcom=QComboBox(self.tab_2) 
+        self.srclangcom.addItems(['日文','英文']) 
+        self.srclangcom.setCurrentIndex(globalconfig['srclang'])
+        self.customSetGeometry(self.srclangcom, 150,500,50,20)
+        self.srclangcom.currentIndexChanged.connect(lambda x:globalconfig.__setitem__('srclang',x)) 
 def initfanyiswitchs_auto(self):
         num=0
         

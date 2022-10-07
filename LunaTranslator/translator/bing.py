@@ -8,6 +8,8 @@ from translator.basetranslator import basetrans
 
 from utils.config import globalconfig
 class TS(basetrans):
+    def srclang(self):
+        return ['ja','en'][globalconfig['srclang']]
     def inittranslator(self):  
         self.ss=requests.session()
         self.ss.get('https://cn.bing.com/translator/',headers = { 
@@ -53,7 +55,7 @@ class TS(basetrans):
         print('必应','\033[0;31;47m',res,'\033[0m',flush=True)
     def translate(self,content): 
          
-        data = '&fromLang=ja&text='+quote(content)+'&to=zh-Hans&token='+self.token+'&key='+self.key
+        data = '&fromLang='++self.srclang()+'&text='+quote(content)+'&to=zh-Hans&token='+self.token+'&key='+self.key
         self.iid_i+=1
                 
         headers = {

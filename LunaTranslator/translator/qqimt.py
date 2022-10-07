@@ -12,7 +12,8 @@ from js2py import EvalJs
 import time
 class TS(basetrans):
      
-        
+    def srclang(self):
+        return ['ja','en'][globalconfig['srclang']]
     def translate(self,query):  
         headers = {
             'authority': 'transmart.qq.com',
@@ -27,7 +28,7 @@ class TS(basetrans):
             'sec-fetch-site': 'none',
             'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36 Edg/105.0.1343.53',
         }
-        data = '{"header":{"fn":"auto_translation_block","client_key":"ddsdasdsadasuMzYg"},"source":{"lang":"ja","text_block":"'+query+'","orig_text_block":"","orig_url":"https://www.baidu.com/"},"target":{"lang":"zh"}}'
+        data = '{"header":{"fn":"auto_translation_block","client_key":"ddsdasdsadasuMzYg"},"source":{"lang":"'+self.srclang()+'","text_block":"'+query+'","orig_text_block":"","orig_url":"https://www.baidu.com/"},"target":{"lang":"zh"}}'
         data=data.encode("utf-8").decode("latin1")
         try:
             response = requests.post('https://transmart.qq.com/api/imt',  headers=headers, data=data,timeout=globalconfig['translatortimeout'],proxies=  {'http': None,'https': None})

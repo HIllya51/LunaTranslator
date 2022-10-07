@@ -9,7 +9,8 @@ import random
 import json
 import requests
 class TS(basetrans):
-     
+    def srclang(self):
+        return ['ja','en'][globalconfig['srclang']]
     def inittranslator(self): 
         self.ss=requests.session()
         self.ss.get('https://fanyi.youdao.com',headers = { 
@@ -53,7 +54,7 @@ class TS(basetrans):
             'sec-ch-ua-platform': '"Windows"',
         }
         try:
-            response =self.ss.get('https://fanyi.youdao.com/translate?&doctype=json&type=ja2zh_cn&i='+quote(content),headers=headers,timeout=globalconfig['translatortimeout'], proxies=  {'http': None,'https': None})
+            response =self.ss.get('https://fanyi.youdao.com/translate?&doctype=json&type='+self.srclang()+'2zh_cn&i='+quote(content),headers=headers,timeout=globalconfig['translatortimeout'], proxies=  {'http': None,'https': None})
 
             js=response.json()
         

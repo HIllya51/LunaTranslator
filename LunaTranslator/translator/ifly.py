@@ -6,6 +6,8 @@ import time
 
 from utils.config import globalconfig
 import js2py
+def srclang():
+        return ['ja','en'][globalconfig['srclang']]
 class Tse:
     def __init__(self):
         self.author = 'Ulion.Tse' 
@@ -54,6 +56,7 @@ class IflytekV2(Tse):
 
     # @Tse.time_stat
     def iflytek_api(self, query_text: str, from_language: str = 'ja', to_language: str = 'cn', **kwargs)  :
+        from_language=srclang()
         """
         https://fanyi.xfyun.cn/console/trans/text
         :param query_text: str, must.

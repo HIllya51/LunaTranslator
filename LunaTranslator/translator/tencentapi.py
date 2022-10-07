@@ -21,6 +21,9 @@ import time
 import random
 import requests
 import os
+
+def srclang( ):
+        return ['ja','en'][globalconfig['srclang']]
 def sign(secretKey, signStr, signMethod): 
     if sys.version_info[0] > 2:
         signStr = signStr.encode("utf-8")
@@ -65,7 +68,7 @@ def txfy(secretId,secretKey,content):
         'Region' : regionData,
         'SecretId' : secretId,
         'SignatureMethod':signMethod,
-        'Source': "ja",
+        'Source': srclang(),
         'SourceText':content,
         'Target': "zh",
         'Timestamp' : int(timeData),
