@@ -114,7 +114,7 @@ class textractor(basetext  ):
                          
                         #print((thread_tp_ctx,thread_tp_ctx2,HookCode)==(autostarthookcode[-4],autostarthookcode[-3],autostarthookcode[-1]),(thread_tp_ctx,thread_tp_ctx2,HookCode),(autostarthookcode[-4],autostarthookcode[-3],autostarthookcode[-1]))
                        
-                        if (thread_tp_ctx,thread_tp_ctx2,HookCode)==(autostarthookcode[-4],autostarthookcode[-3],autostarthookcode[-1]):
+                        if (int(thread_tp_ctx,16)&0xffff,thread_tp_ctx2,HookCode)==(int(autostarthookcode[-4],16)&0xffff,autostarthookcode[-3],autostarthookcode[-1]):
                         #if (HookCode)==(autostarthookcode[-1]):
                             self.selectedhook+=[key]
                             self.selectinghook=key
