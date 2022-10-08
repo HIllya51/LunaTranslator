@@ -1,7 +1,6 @@
- 
+
 from PyQt5.QtWidgets import  QWidget,QLabel,QFrame,QPushButton
-import qtawesome 
-from PyQt5.QtCore import QProcess
+import qtawesome  
 import functools 
 from utils.config import globalconfig 
 import json
@@ -22,6 +21,9 @@ def setTabOne(self) :
         label = QLabel(self.tab_1)
         self.customSetGeometry(label, 20, 25, 160, 20)
         label.setText("选择文本输入源") 
+       
+
+
         label = QLabel(self.tab_1)
         self.customSetGeometry(label, 20, 70, 60, 20)
         label.setText("剪切板") 

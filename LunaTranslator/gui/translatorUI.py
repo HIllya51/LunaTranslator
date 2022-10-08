@@ -1,7 +1,5 @@
-from dis import show_code
-import functools
-from string import whitespace
-import sys
+ 
+import functools  
 from threading import Thread
 import threading 
 import time
@@ -11,7 +9,7 @@ from PyQt5.QtWidgets import QWidget, QLabel, QPushButton, QVBoxLayout
 from PyQt5.QtCore import Qt, QPoint,pyqtSignal  
 import qtawesome 
 from PyQt5.QtCore import pyqtSignal,Qt,QPoint,QRect,QSize  ,QPointF
-from PyQt5.QtGui import QPen,QColor,QFont,QTextCharFormat ,QIcon,QPixmap ,QPainter,QPainterPath
+from PyQt5.QtGui import QPen,QColor,QFont,QTextCharFormat ,QIcon,QPixmap ,QPainter,QPainterPath,QPalette
 from PyQt5.QtWidgets import  QLabel,QTextBrowser,QPushButton ,QSystemTrayIcon ,QAction,QMenu,QGraphicsDropShadowEffect
 import pyperclip
 
@@ -271,10 +269,14 @@ class QUnFrameWindow(QWidget):
         self.document.contentsChanged.connect(self.textAreaChanged) 
           
         self.masklabel = QLabel(self) 
+        self.masklabel.setText('aa')
+        self.masklabel.setAlignment(Qt.AlignTop)
+         
         self.masklabel.setGeometry( 0, 30, 9999,9999)
         self.masklabel.setMouseTracking(True)
         self.showhidestate=False
     def changemousetransparentstate(self,checked):
+         
         self.mousetransparent= not self.mousetransparent
         if self.mousetransparent:
             # self.masklabel.setAttribute(Qt.WA_TransparentForMouseEvents,  self.mousetransparent) 
