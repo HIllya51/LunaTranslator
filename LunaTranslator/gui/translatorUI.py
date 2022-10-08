@@ -201,14 +201,15 @@ class QUnFrameWindow(QWidget):
         self.takusanbuttons(qtawesome.icon("fa.forward" ,color="#FF69B4" if globalconfig['autorun'] else 'white'),"MinMaxButton",self.changeTranslateMode,1,"自动翻译",'automodebutton')
         self.takusanbuttons(qtawesome.icon("fa.gear",color="white" ),"MinMaxButton",self.clickSettin,2,"设置")
         self.takusanbuttons(qtawesome.icon("fa.crop" ,color="white"),"MinMaxButton",self.clickRange,3,"选取OCR范围")
-        self.takusanbuttons(qtawesome.icon("fa.eye" ,color="white"),"MinMaxButton",self.showhide,4,"显示/隐藏范围框",'showhidebutton')
+        self.takusanbuttons((qtawesome.icon("fa.square" ,color='white')),"MinMaxButton",self.showhide,4,"显示/隐藏范围框",'showhidebutton')
         self.takusanbuttons(qtawesome.icon("fa.copy" ,color="white"),"MinMaxButton",lambda: pyperclip.copy(self.original),5,"复制到剪贴板") 
+        self.takusanbuttons(qtawesome.icon("fa.eye"   if globalconfig['isshowrawtext'] else "fa.eye-slash" ,color="white"),"MinMaxButton", self.changeshowhideraw,6,"显示隐藏原文",'showhiderawbutton') 
         
-        self.takusanbuttons(qtawesome.icon("fa.rotate-left" ,color="white"),"MinMaxButton", self.transhis.show  ,6,"显示历史翻译") 
-        self.takusanbuttons(qtawesome.icon("fa.music" ,color="white"),"MinMaxButton",self.langdu,7,"朗读") 
-        self.takusanbuttons(qtawesome.icon("fa.mouse-pointer" ,color="white"),"MinMaxButton",self.changemousetransparentstate,8,"鼠标穿透窗口",'mousetransbutton') 
+        self.takusanbuttons(qtawesome.icon("fa.rotate-left" ,color="white"),"MinMaxButton", self.transhis.show  ,7,"显示历史翻译") 
+        self.takusanbuttons(qtawesome.icon("fa.music" ,color="white"),"MinMaxButton",self.langdu,8,"朗读") 
+        self.takusanbuttons(qtawesome.icon("fa.mouse-pointer" ,color="white"),"MinMaxButton",self.changemousetransparentstate,9,"鼠标穿透窗口",'mousetransbutton') 
          
-        self.takusanbuttons(qtawesome.icon("fa.lock" ,color="#FF69B4" if globalconfig['locktools'] else 'white'),"MinMaxButton",self.changetoolslockstate,9,"锁定工具栏",'locktoolsbutton') 
+        self.takusanbuttons(qtawesome.icon("fa.lock" ,color="#FF69B4" if globalconfig['locktools'] else 'white'),"MinMaxButton",self.changetoolslockstate,10,"锁定工具栏",'locktoolsbutton') 
         self.takusanbuttons(qtawesome.icon("fa.minus",color="white" ),"MinMaxButton",self.hide_and_disableautohide,-2,"最小化到托盘")
         self.takusanbuttons(qtawesome.icon("fa.times" ,color="white"),"CloseButton",self.quitf,-1,"退出")
         self.resize(int(globalconfig['width']*self.rate), int(150*self.rate))
@@ -269,7 +270,7 @@ class QUnFrameWindow(QWidget):
         self.masklabel = QLabel(self) 
         self.masklabel.setGeometry( 0, 30, 9999,9999)
         self.masklabel.setMouseTracking(True)
-        self.showhidestate=True
+        self.showhidestate=False
     def changemousetransparentstate(self,checked):
         self.mousetransparent= not self.mousetransparent
         if self.mousetransparent:
@@ -298,11 +299,15 @@ class QUnFrameWindow(QWidget):
     def showhide(self):
         
         self.showhidestate=not self.showhidestate
-        self.showhidebutton.setIcon(qtawesome.icon("fa.eye" if self.showhidestate else "fa.eye-slash" ,color="white"))
+        #self.showhidebutton.setIcon(qtawesome.icon("fa.eye" if self.showhidestate else "fa.eye-slash" ,color="white"))
+        self.showhidebutton.setIcon(qtawesome.icon("fa.square" ,color="#FF69B4" if self.showhidestate else 'white'))
         if self.showhidestate:
             self.object.range_ui.show()
         else:
             self.object.range_ui.hide()
+    def changeshowhideraw(self,checked):
+        self.object.settin_ui.show_original_switch.click()
+        
     def changeTranslateMode(self, checked) : 
         globalconfig['autorun']=not globalconfig['autorun'] 
         self.automodebutton.setIcon(qtawesome.icon("fa.forward" ,color="#FF69B4" if globalconfig['autorun'] else 'white'))
