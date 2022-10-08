@@ -172,6 +172,7 @@ def settingtextractor(self):
 
             settingsource(self)
         else:
+            self.object.textsource=None
             self.show() 
 def settingsource(self):
     if globalconfig['sourcestatus']['textractor']==False:
