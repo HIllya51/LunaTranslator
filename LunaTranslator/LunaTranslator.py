@@ -124,8 +124,10 @@ class MAINUI() :
                     Thread(target=self.fanyiloader,args=(source,)).start()
              
     def fanyiloader(self,classname):
-                  
-                    aclass=importlib.import_module('translator.'+classname).TS
+                    try:
+                        aclass=importlib.import_module('translator.'+classname).TS
+                    except:
+                        return
                     aclass.settypename(classname)
                     _=aclass()
                     _.show=partial(self.translation_ui.displayres.emit,classname)
@@ -175,8 +177,10 @@ class MAINUI() :
         t1=time.time()
         
         self.translation_ui =gui.translatorUI.QUnFrameWindow(self)  
+        #print(time.time()-t1)
         if globalconfig['rotation']==0:
-            self.translation_ui.show()  
+            self.translation_ui.show()
+            #print(time.time()-t1) 
         else:
             self.scene = QGraphicsScene()
             
@@ -188,20 +192,21 @@ class MAINUI() :
             self.view.setStyleSheet('background-color: rgba(255, 255, 255, 0);')
             self.view.setGeometry(QDesktopWidget().screenGeometry())
             self.view.show()      
-          
+        #print(time.time()-t1)
         threading.Thread(target=self.setontopthread).start()
-        
+        #print(time.time()-t1)
         self.prepare()  
         self.starthira()  
         self.starttextsource() 
-         
+        #print(time.time()-t1)
         self.settin_ui =gui.settin.Settin(self) 
-        
+        #print(time.time()-t1)
         self.startreader() 
         self.range_ui =gui.rangeselect.rangeadjust(self)   
         self.hookselectdialog=gui.selecthook.hookselect(self )
         threading.Thread(target=self.autohookmonitorthread).start()
         #self.translation_ui.displayraw.emit('欢迎','#0000ff')
+        ##print(time.time()-t1)
         #print(time.time()-t1)
     def main(self) : 
         # 自适应高分辨率
@@ -211,7 +216,7 @@ class MAINUI() :
         app.setQuitOnLastWindowClosed(False)
         
         self.aa()
-        #print(time.time()-t1)
+        ##print(time.time()-t1)
         #print(time.time()-starttime)
         app.exit(app.exec_())
         

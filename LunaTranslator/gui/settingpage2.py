@@ -21,9 +21,8 @@ def setTabTwo(self) :
         p=gui.switchbutton.MySwitch(self.tab_2, sign=globalconfig['showfanyisource'], textOff='隐藏',textOn='显示')
         self.customSetGeometry(p, 160, 25, 20,20 )
         p.clicked.connect(lambda x: globalconfig.__setitem__('showfanyisource',x))
-
-        initfanyiswitchs_auto(self)
-        
+ 
+        initfanyiswitchs_auto(self) 
         label = QLabel(self.tab_2)
         self.customSetGeometry(label, 20, 450, 200, 20)
         label.setText("最短翻译字数")
@@ -70,6 +69,10 @@ def initfanyiswitchs_auto(self):
         for fanyi in globalconfig['fanyi']:
             y=70+40*(num//3)
             x=20+220*(num%3)
+            try:
+                importlib.import_module('translator.'+fanyi)
+            except:
+                continue
             initfanyiswitchs(self,fanyi,(x, y, 65, 20),(x+70, y, 20,20),(x+110, y, 20,20),(x+150, y, 20,20))
             num+=1
 
