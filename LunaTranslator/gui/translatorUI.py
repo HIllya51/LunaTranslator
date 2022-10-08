@@ -1,3 +1,4 @@
+from dis import show_code
 import functools
 from string import whitespace
 import sys
@@ -9,9 +10,9 @@ import os
 from PyQt5.QtWidgets import QWidget, QLabel, QPushButton, QVBoxLayout
 from PyQt5.QtCore import Qt, QPoint,pyqtSignal  
 import qtawesome 
-from PyQt5.QtCore import pyqtSignal,Qt,QPoint,QRect,QSize  
-from PyQt5.QtGui import QPen,QColor,QFont,QTextCharFormat ,QIcon,QPixmap 
-from PyQt5.QtWidgets import  QLabel,QTextBrowser,QPushButton ,QSystemTrayIcon ,QAction,QMenu
+from PyQt5.QtCore import pyqtSignal,Qt,QPoint,QRect,QSize  ,QPointF
+from PyQt5.QtGui import QPen,QColor,QFont,QTextCharFormat ,QIcon,QPixmap ,QPainter,QPainterPath
+from PyQt5.QtWidgets import  QLabel,QTextBrowser,QPushButton ,QSystemTrayIcon ,QAction,QMenu,QGraphicsDropShadowEffect
 import pyperclip
 
 from PyQt5.QtCore import QProcess ,QByteArray ,QTimer
@@ -79,16 +80,18 @@ class QUnFrameWindow(QWidget):
     def showline(self,res,color ): 
         
             
-        if globalconfig['issolid'] == False :
-            if self.lastcolor!=color:
-                self.format.setTextOutline(QPen(QColor(color), 0.7, Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin))
+        if globalconfig['iskongxin'] == True :
+            if self.lastcolor!=color:  
+                self.format.setTextOutline(QPen(QColor(color), 1, Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin))
                 self.translate_text.mergeCurrentCharFormat(self.format)
+            
             self.translate_text.append(res)
+            
         else :
             res = res.replace("\n", "<br>")
             self.lastcolor=''
             self.translate_text.append("<font color=%s>%s</font>"%(color,res))
-        
+    
     def clearText(self) :
      
         # 翻译界面清屏
@@ -96,7 +99,7 @@ class QUnFrameWindow(QWidget):
 
         # 设定翻译时的字体类型和大小
         self.font.setFamily(globalconfig['fonttype'])
-        self.font.setPointSize(globalconfig['fontsize'])
+        self.font.setPointSizeF(globalconfig['fontsize'])
         self.translate_text.setFont(self.font) 
     def leftclicktray(self,reason):
             #鼠标左键点击

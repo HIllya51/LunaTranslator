@@ -13,6 +13,7 @@ defaultglobalconfig='''
     "fontsize": 17.699999999999996,
     "fonttype": "思源黑体 CN Medium",
     "issolid": false,
+    "iskongxin":true,
     "isshowrawtext": true,
     "rawtextcolor": "#000000",
     "backcolor": "#7a8b8a",

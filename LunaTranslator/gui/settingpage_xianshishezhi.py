@@ -54,9 +54,9 @@ def setTabThree(self) :
         self.customSetGeometry(label, 20, 170, 60, 20)
         label.setText("空心字体:")
  
-        self.font_type_switch =gui.switchbutton.MySwitch(self.tab_3, sign=globalconfig['issolid'] )
+        self.font_type_switch =gui.switchbutton.MySwitch(self.tab_3, sign=globalconfig['iskongxin'] )
         self.customSetGeometry(self.font_type_switch, 95, 170,20,20)
-        self.font_type_switch.clicked.connect(lambda x:globalconfig.__setitem__('issolid',x)) 
+        self.font_type_switch.clicked.connect(lambda x:globalconfig.__setitem__('iskongxin',x)) 
 
         label = QLabel(self.tab_3)
         self.customSetGeometry(label, 20, 220, 100, 20)

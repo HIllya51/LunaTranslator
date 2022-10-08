@@ -5,7 +5,7 @@
     ],
     "fixedheight": false,
     "width": 768.8,
-    "autorun": false,
+    "autorun": true,
     "transparent": 82,
     "fontsize": 17.699999999999996,
     "fonttype": "思源黑体 CN Medium",
@@ -195,5 +195,6 @@
     "maxlength": 150,
     "fanjian": 0,
     "rotation": 0,
-    "srclang": 0
+    "srclang": 0,
+    "iskongxin": true
 }
