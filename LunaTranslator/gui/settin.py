@@ -1,4 +1,3 @@
-import threading
 from PyQt5.QtCore import Qt,QSize,pyqtSignal ,QRect 
  
 from PyQt5.QtWidgets import  QColorDialog
@@ -22,7 +21,6 @@ class Settin(QMainWindow) :
     voicelistsignal=pyqtSignal(list)
     autostarthooksignal=pyqtSignal(int,str,list)
 
-    autoinitsettiingpages=pyqtSignal()
     versiontextsignal=pyqtSignal( )
     def __init__(self, object):
 
@@ -49,32 +47,21 @@ class Settin(QMainWindow) :
         self.tab_widget = QTabWidget(self)
         self.tab_widget.setGeometry(self.geometry()) 
         self.tab_widget.setTabPosition(QTabWidget.West)
-        
-
-        
-        self.autoinitsettiingpages.connect(self.initpagesthread)
-        self.hooks=[]  
-        self.usevoice=0
-        threading.Thread(target=lambda :self.autoinitsettiingpages.emit()).start()
-    def initpagesthread(self):
-        setTabOne(self)
-        #print(time.time()-t1)
-        setTabTwo(self)
          
-        #print(time.time()-t1)
+        self.hooks=[] 
+        setTabOne(self)
+        setTabTwo(self)
         setTab4(self)
-        #print(time.time()-t1)
         setTab6(self)
-        #print(time.time()-t1)
         setTabThree(self) 
-        #print(time.time()-t1)
         setTab5(self)
-        #print(time.time()-t1)
+        
         setTab7(self)
-        #print(time.time()-t1)
+        
         setTab_about(self)
-        #print(time.time()-t1)
         self.setStyle(customtabstyle()) #必须放后面 不然其他样式全都失效
+        self.usevoice=0
+     
     def hideEvent(self,e):
         if self.object.hookselectdialog.hiding==False:
             self.object.hookselectdialog.hide()
