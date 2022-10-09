@@ -1,7 +1,7 @@
 {
     "position": [
-        631,
-        677
+        626,
+        770
     ],
     "fixedheight": false,
     "width": 1094,
@@ -185,6 +185,11 @@
             "color": "#0ff000",
             "name": "小牛",
             "argsfile": "./userconfig/xiaoniuapi.json"
+        },
+        "youdao4": {
+            "use": false,
+            "color": "#0ff000",
+            "name": "有道4"
         }
     },
     "minifollow": true,

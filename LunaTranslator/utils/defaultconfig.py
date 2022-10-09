@@ -141,6 +141,16 @@ defaultglobalconfig='''
             "color": "#0ff000",
             "name": "有道3"
         },
+        "youdao4": {
+            "use": false,
+            "color": "#0ff000",
+            "name": "有道4"
+        },
+        "youdao5": {
+            "use": false,
+            "color": "#0ff000",
+            "name": "有道5"
+        },
         "selfbuild": {
             "use": false,
             "color": "#0ff000",
