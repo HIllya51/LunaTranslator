@@ -4,7 +4,7 @@
         613
     ],
     "fixedheight": false,
-    "width": 869.6,
+    "width": 542.4,
     "autorun": true,
     "transparent": 82,
     "fontsize": 17.699999999999996,
@@ -28,9 +28,9 @@
         "volume": 100.0
     },
     "sourcestatus": {
-        "copy": true,
+        "copy": false,
         "ocr": false,
-        "textractor": false,
+        "textractor": true,
         "textractor_pipe": false
     },
     "ocr": {

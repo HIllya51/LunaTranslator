@@ -136,7 +136,8 @@ class QUnFrameWindow(QWidget):
         self.startprocessignal.connect(self.startprocessfunction)
         self.writeprocesssignal.connect(self.writeprocess)
         self.killprocesssignal.connect(self.killprocess)
-        self._padding = 5  # 设置边界宽度为5
+        self._padding = 5*self.rate  # 设置边界宽度为5
+        self.setMinimumWidth(300)
         self.hideshownotauto=True
         self.transhis=gui.transhist.transhist()
         self.logff=open('./log.txt','a',encoding='utf8')
@@ -211,7 +212,7 @@ class QUnFrameWindow(QWidget):
         self.takusanbuttons(qtawesome.icon("fa.minus",color="white" ),"MinMaxButton",self.hide_and_disableautohide,-2,"最小化到托盘")
         self.takusanbuttons(qtawesome.icon("fa.times" ,color="white"),"CloseButton",self.quitf,-1,"退出")
         self.resize(int(globalconfig['width']*self.rate), int(150*self.rate))
-        #self.move(QPoint(globalconfig['position'][0],globalconfig['position'][1])) 
+        self.move(QPoint(globalconfig['position'][0],globalconfig['position'][1])) 
          
         icon = QIcon()
         icon.addPixmap(QPixmap('./files/luna.jpg'), QIcon.Normal, QIcon.On)
@@ -356,7 +357,9 @@ class QUnFrameWindow(QWidget):
         self._move_drag = False
         self._corner_drag = False
         self._bottom_drag = False
+        self._lcorner_drag = False
         self._right_drag = False
+        self._left_drag = False
 
     def initTitleLabel(self):
         # 安放标题栏标签
@@ -417,9 +420,11 @@ class QUnFrameWindow(QWidget):
             #                     for y in range(self.height() - self._padding, self.height() + 1)]
             # self._corner_rect = [QPoint(x, y) for x in range(self.width() - self._padding, self.width() + 1)
             #                     for y in range(self.height() - self._padding, self.height() + 1)]
-            self._right_rect = [self.width() - self._padding, self.width() + 1 ,1, self.height() - self._padding]
-            self._bottom_rect = [1, self.width() - self._padding,self.height() - self._padding, self.height() + 1]
+            self._right_rect = [self.width() - self._padding, self.width() + 1 ,30*self.rate, self.height() - self._padding]
+            self._left_rect = [-1, self._padding,30*self.rate, self.height() - self._padding]
+            self._bottom_rect = [self._padding, self.width() - self._padding,self.height() - self._padding, self.height() + 1]
             self._corner_rect = [self.width() - self._padding, self.width() + 1,self.height() - self._padding, self.height() + 1]
+            self._lcorner_rect = [-1, self._padding,self.height() - self._padding, self.height() + 1]
     def isinrect(self,pos,rect):
         x,y=pos.x(),pos.y()
         x1,x2,y1,y2=rect
@@ -436,9 +441,21 @@ class QUnFrameWindow(QWidget):
         elif (event.button() == Qt.LeftButton) and (self.isinrect(event.pos(),self._right_rect)):
             # 鼠标左键点击右侧边界区域
             self._right_drag = True 
+        elif (event.button() == Qt.LeftButton) and (self.isinrect(event.pos(),self._left_rect)):
+            # 鼠标左键点击右侧边界区域
+            self._left_drag = True 
+            self.startxp=(event.globalPos() - self.pos() ) 
+            self.startx=event.globalPos().x()
+            self.startw=self.width()
         elif (event.button() == Qt.LeftButton) and (self.isinrect(event.pos(),self._bottom_rect)):
             # 鼠标左键点击下侧边界区域
             self._bottom_drag = True 
+        elif (event.button() == Qt.LeftButton) and (self.isinrect(event.pos(),self._lcorner_rect)):
+            # 鼠标左键点击下侧边界区域
+            self._lcorner_drag = True 
+            self.startxp=(event.globalPos() - self.pos() ) 
+            self.startx=event.globalPos().x()
+            self.startw=self.width()
         # and (event.y() < self._TitleLabel.height()):
         elif (event.button() == Qt.LeftButton):
             # 鼠标左键点击标题栏区域
@@ -451,19 +468,30 @@ class QUnFrameWindow(QWidget):
         if self._move_drag ==False:
             if self.isinrect( pos,self._corner_rect):
                 self.setCursor(Qt.SizeFDiagCursor)
+            elif self.isinrect( pos,self._lcorner_rect):
+                self.setCursor(Qt.SizeBDiagCursor)
             elif self.isinrect(pos ,self._bottom_rect):
                 self.setCursor(Qt.SizeVerCursor)
             elif self.isinrect(pos ,self._right_rect):
                 self.setCursor(Qt.SizeHorCursor)
+            elif self.isinrect(pos ,self._left_rect):
+                self.setCursor(Qt.SizeHorCursor)
             else:
                 self.setCursor(Qt.ArrowCursor)
         if Qt.LeftButton and self._right_drag:
+            
             # 右侧调整窗口宽度
             self.resize(pos.x(), self.height())
-           
+        elif Qt.LeftButton and self._left_drag:
+            # 右侧调整窗口宽度  
+            self.setGeometry((QMouseEvent.globalPos() - self.startxp).x(),self.y(),self.startw-(QMouseEvent.globalPos().x() - self.startx),self.height())
+            #self.resize(pos.x(), self.height())
         elif Qt.LeftButton and self._bottom_drag:
             # 下侧调整窗口高度
             self.resize(self.width(), QMouseEvent.pos().y()) 
+        elif Qt.LeftButton and self._lcorner_drag:
+            # 下侧调整窗口高度
+            self.setGeometry((QMouseEvent.globalPos() - self.startxp).x(),self.y(),self.startw-(QMouseEvent.globalPos().x() - self.startx),QMouseEvent.pos().y())
         elif Qt.LeftButton and self._corner_drag:
             # 右下角同时调整高度和宽度
             self.resize(pos.x(),pos.y()) 
@@ -476,7 +504,9 @@ class QUnFrameWindow(QWidget):
         self._move_drag = False
         self._corner_drag = False
         self._bottom_drag = False
+        self._lcorner_drag = False
         self._right_drag = False
+        self._left_drag = False
     def takusanbuttons(self,iconname,objectname,clickfunc,adjast=None,tips=None,save=None): 
         
         button=QTitleButton(self)
