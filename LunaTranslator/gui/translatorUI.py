@@ -10,9 +10,8 @@ from PyQt5.QtCore import Qt, QPoint,pyqtSignal
 import qtawesome 
 from PyQt5.QtCore import pyqtSignal,Qt,QPoint,QRect,QSize  ,QPointF
 from PyQt5.QtGui import QPen,QColor,QFont,QTextCharFormat ,QIcon,QPixmap ,QPainter,QPainterPath,QPalette
-from PyQt5.QtWidgets import  QLabel,QTextBrowser,QPushButton ,QSystemTrayIcon ,QAction,QMenu,QGraphicsDropShadowEffect
-import pyperclip
-
+from PyQt5.QtWidgets import  QLabel,QTextBrowser,QPushButton ,QSystemTrayIcon ,QAction,QMenu,QGraphicsEffect
+import pyperclip 
 from PyQt5.QtCore import QProcess ,QByteArray ,QTimer
 from utils.config import globalconfig,postprocessconfig
 import win32api,win32gui,win32con
@@ -86,8 +85,9 @@ class QUnFrameWindow(QWidget):
             self.translate_text.append(res)
             
         else :
+             
+
             res = res.replace("\n", "<br>")
-            self.lastcolor=''
             self.translate_text.append("<font color=%s>%s</font>"%(color,res)) 
     
     def clearText(self) :
@@ -245,6 +245,7 @@ class QUnFrameWindow(QWidget):
         self.font.setPointSize(globalconfig['fontsize']) 
         self.translate_text = QTextBrowser(self) 
         self.translate_text.setText('欢迎使用')
+        self.translate_text.setObjectName('text')
         self.translate_text.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         self.translate_text.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         self.translate_text.setFont(self.font)
@@ -270,7 +271,7 @@ class QUnFrameWindow(QWidget):
           
         self.masklabel = QLabel(self)  
          
-        self.masklabel.setGeometry( 0, 30, 9999,9999)
+        self.masklabel.setGeometry( 0, 30,9999,9999)
         self.masklabel.setMouseTracking(True)
         self.showhidestate=False
     def changemousetransparentstate(self,checked):
