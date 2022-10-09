@@ -27,6 +27,7 @@ defaultglobalconfig='''
         "guge": true,
         "windows": true
     },
+    "LocaleEmulator":"",
     "verticalocr":false,
     "outputtopasteboard":false,
     "windowstts": {

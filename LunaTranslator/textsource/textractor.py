@@ -87,6 +87,7 @@ class textractor(basetext  ):
         reres=self.re.findall(stdout) #re.findall('\[([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):(.*):(.*@.*)\] (.*)\n',stdout)
          
         for ares in reres:
+            
             thread_handle,thread_tp_processId, thread_tp_addr, thread_tp_ctx, thread_tp_ctx2, thread_name,HookCode,output =ares
             if output[-2:]=='\r\n':
                 output=output[:-2]
@@ -123,13 +124,14 @@ class textractor(basetext  ):
             
             #print(self.selectedhook)
             self.hookdatacollecter[key].append(output)
-            
+             
             if (key in self.selectedhook):
                 #print(11)
                 #print(key==self.selectedhook,key,self.selectedhook)
                 self.newline.put(output) 
                 self.runonce_line=output
             else:
+                 
                 if globalconfig['extractalltext']:
                     #print(self.autostarthookcode+self.selectedhook)
                     for h in set(self.autostarthookcode+self.selectedhook):

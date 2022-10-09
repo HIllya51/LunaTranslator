@@ -31,6 +31,7 @@ from utils.config import globalconfig ,postprocessconfig
 from utils.getpidlist import getwindowlist
 import threading
 import json
+from gui.inputdialog import getlepath
 import gui.switchbutton
 import gui.attachprocessdialog  
 import gui.selecthook  
@@ -97,6 +98,19 @@ def autosaveshow(object):
                         object.close()
                          
         button.clicked.connect(clicked)
+        button4=QPushButton(dialog)
+        button4.setText('使用LocaleEmulator开始游戏')
+        def clicked4(): 
+                if os.path.exists(model.item(table.currentIndex().row(),1).text()):
+                        le=os.path.join(globalconfig['LocaleEmulator'],'LEProc.exe')
+                        if os.path.exists(le):
+                                subprocess.Popen('"'+le+'"  "'+ model.item(table.currentIndex().row(),1).text()+'"')
+                        else:   
+                                subprocess.Popen('"'+model.item(table.currentIndex().row(),1).text()+'"')
+                        dialog.close()
+                        object.close()
+                         
+        button4.clicked.connect(clicked4)
         button2=QPushButton(dialog)
         button2.setText('删除游戏')
         def clicked2(): 
@@ -112,6 +126,7 @@ def autosaveshow(object):
         button3.clicked.connect(clicked3)
         formLayout.addWidget(table) 
         formLayout.addWidget(button)
+        formLayout.addWidget(button4)
         formLayout.addWidget(button2)
         formLayout.addWidget(button3)
         dialog.resize(QSize(800,400))
@@ -160,16 +175,30 @@ def setTab4(self) :
         self.customSetGeometry(self.movefollowswitch, 200, 140,20,20)
         self.movefollowswitch.clicked.connect(lambda x:globalconfig.__setitem__('extractalltext',x)) 
         
-        
         label = QLabel(self.tab_4)
         self.customSetGeometry(label, 20, 170, 200, 20)
-        label.setText("已保存游戏")
+        label.setText("配置LocaleEmulator")
         s1 = QPushButton( "", self.tab_4)
         self.customSetIconSize(s1, 20, 20)
         self.customSetGeometry(s1, 200, 170,20,20)
         s1.setStyleSheet("background: transparent;") 
         
-        s1.setIcon(qtawesome.icon("fa.gear", color="#FF69B4"  )) 
+        s1.setIcon(qtawesome.icon("fa.gear", color="#FF69B4"  ))
+        s1.clicked.connect(lambda x: getlepath(self))
+     
+        self.movefollowswitch =gui.switchbutton.MySwitch(self.tab_4, sign= globalconfig['extractalltext'])
+        self.customSetGeometry(self.movefollowswitch, 200, 140,20,20)
+        self.movefollowswitch.clicked.connect(lambda x:globalconfig.__setitem__('extractalltext',x)) 
+        
+        label = QLabel(self.tab_4)
+        self.customSetGeometry(label, 20, 200, 200, 20)
+        label.setText("已保存游戏")
+        s1 = QPushButton( "", self.tab_4)
+        self.customSetIconSize(s1, 20, 20)
+        self.customSetGeometry(s1, 200, 200,20,20)
+        s1.setStyleSheet("background: transparent;") 
+        
+        s1.setIcon(qtawesome.icon("fa.gamepad", color="#FF69B4"  )) 
         s1.clicked.connect(lambda: autosaveshow(self))
 
 

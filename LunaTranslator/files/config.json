@@ -1,10 +1,10 @@
 {
     "position": [
-        792,
-        443
+        631,
+        677
     ],
     "fixedheight": false,
-    "width": 782,
+    "width": 1094,
     "autorun": true,
     "transparent": 82,
     "fontsize": 17.699999999999996,
@@ -28,9 +28,9 @@
         "volume": 100.0
     },
     "sourcestatus": {
-        "copy": false,
+        "copy": true,
         "ocr": false,
-        "textractor": true,
+        "textractor": false,
         "textractor_pipe": false
     },
     "ocr": {
@@ -106,19 +106,19 @@
             "name": "deepl"
         },
         "jb7": {
-            "use": true,
+            "use": false,
             "color": "#1839f0",
             "name": "Jbeijing7",
             "argsfile": "./userconfig/jbj7.json"
         },
         "kingsoft": {
-            "use": true,
+            "use": false,
             "color": "#1839f0",
             "name": "金山快译",
             "argsfile": "./userconfig/ks.json"
         },
         "dreye": {
-            "use": true,
+            "use": false,
             "color": "#1839f0",
             "name": "快译通",
             "argsfile": "./userconfig/dreye.json"
@@ -154,7 +154,7 @@
             "name": "iciba"
         },
         "baiduapi": {
-            "use": true,
+            "use": false,
             "color": "#0ff000",
             "name": "百度api",
             "argsfile": "./userconfig/baiduapi.json"
@@ -199,5 +199,6 @@
     "iskongxin": true,
     "outputtopasteboard": true,
     "verticalocr": false,
-    "extractalltext": true
+    "extractalltext": false,
+    "LocaleEmulator": "C:\\dataH\\Locale.Emulator.2.5.0.1"
 }

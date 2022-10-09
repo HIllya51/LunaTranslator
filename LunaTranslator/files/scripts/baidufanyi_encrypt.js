@@ -793,7 +793,7 @@ function ascToken(translate_url){
     var a0 = 'uyaqcsmsseqyosiy';
     var a1 = '1234567887654321';
     var ae = (new Date).getTime();
-    var a2 = '{"ua":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36","url":' + translate_url + '","platform":"Win32","clientTs":' + ae + ',"version":"2.2.0"}';
+    var a2 = '{"ua":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36","url":' + translate_url + '","platform":"Win32","clientTs":' + ae + ',"version":"2.2.0"}'; 
     // 这里开头的时间戳写死了，如果请求失败请更新这个值
-    return '1660546809505_' + ae + '_' + window.aes_encrypt(a2, a0, a1);
+    return '_' + ae + '_' + window.aes_encrypt(a2, a0, a1);
 }

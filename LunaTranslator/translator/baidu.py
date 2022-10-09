@@ -14,10 +14,23 @@ class TS(basetrans):
     def srclang(self):
         return ['jp','en'][globalconfig['srclang']]
     def inittranslator(self)  :  
-        self.headers= {
-                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36',
-                'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
-            }
+        self.headers = {
+            'Accept': '*/*',
+            'Accept-Language': 'zh-CN,zh;q=0.9',
+            'Connection': 'keep-alive',
+            'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+             'Origin': 'https://fanyi.baidu.com',
+            'Referer': 'https://fanyi.baidu.com/',
+            'Sec-Fetch-Dest': 'empty',
+            'Sec-Fetch-Mode': 'cors',
+            'Sec-Fetch-Site': 'same-origin',
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36',
+            'X-Requested-With': 'XMLHttpRequest',
+            'sec-ch-ua': '"Chromium";v="106", "Google Chrome";v="106", "Not;A=Brand";v="99"',
+            'sec-ch-ua-mobile': '?0',
+            'sec-ch-ua-platform': '"Windows"',
+        }
+
         self.session = requests.Session()
         self.session.headers.update(self.headers)
         #self.session1= httpx.Client(headers=self.headers)
@@ -35,13 +48,26 @@ class TS(basetrans):
         #self.jsrun=execjs.get('local_node').compile(baidu_js)
         self.ctx=  EvalJs()
         self.ctx.execute(baidu_js)
-        
+    
+    
+    
+    # 获取今天任意时刻的时间戳
+    def today_anytime_tsp(self,hour, minute, second=0):
+        from datetime import datetime, timedelta
+        now = datetime.now()
+        today_0 = now - timedelta(hours=now.hour, minutes=now.minute, seconds=now.second)
+        today_anytime = today_0 + timedelta(hours=hour, minutes=minute, seconds=second)
+        tsp = today_anytime.timestamp()
+         
+        return str(int(tsp*1000))
+ 
     def translate(self,query): 
         #sign =self.jsrun.call('e', query, self.gtk)
         sign=self.ctx.e(query,self.gtk)
         translate_url = 'https://fanyi.baidu.com/#'+self.srclang()+'/zh/%s' % ( parse.quote(query))
         #acs_token = self.jsrun.call('ascToken', translate_url)
-        acs_token=self.ctx.ascToken(translate_url)
+
+        acs_token=self.today_anytime_tsp(15,0,9)+ self.ctx.ascToken(translate_url)
         data = {
             'from': self.srclang(),
             'to': 'zh',
@@ -50,6 +76,7 @@ class TS(basetrans):
             'simple_means_flag': '3',
             'sign': sign,
             'token': self.token,
+            'domain': 'common'
         }
          
         self.session.headers["Acs-Token"]=acs_token
@@ -60,7 +87,8 @@ class TS(basetrans):
             result = response.json()['trans_result']['data'][0]['dst']
         except:
             self.inittranslator()
-            print_exc()
+            print(response.json())
+            #print_exc()
              
             result='出错了'
         params = {

@@ -36,3 +36,24 @@ def GetUserPlotItems(object,configfile,defaultsetting,title) -> tuple:
                 js['args'][arg]=d[arg].text()
             with open(configfile,'w',encoding='utf8') as ff:
                 ff.write(json.dumps(js,ensure_ascii=False,sort_keys=False, indent=4))
+def getlepath(object) -> tuple: 
+        dialog = QDialog(object)  # 自定义一个dialog
+        dialog.setWindowTitle('LocaleEmulator 路径')
+        #dialog.setWindowModality(Qt.ApplicationModal)
+        dialog.resize(QSize(900,10))
+        formLayout = QFormLayout(dialog)  # 配置layout
+        d={}
+ 
+             
+        line=QLineEdit(globalconfig['LocaleEmulator'])
+            
+        formLayout.addRow('LocaleEmulator:', line) 
+        button = QDialogButtonBox(QDialogButtonBox.Ok|QDialogButtonBox.Cancel)
+        formLayout.addRow(button)
+        dialog.show()
+
+        button.clicked.connect(dialog.accept)
+
+        if dialog.exec() == QDialog.Accepted:
+            globalconfig['LocaleEmulator']=line.text()
+             
