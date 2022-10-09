@@ -54,6 +54,14 @@ def setTabOne(self) :
         self.customSetGeometry(self.textractorswitch, 500, 70, 20,20)
         self.textractorswitch.clicked.connect(functools.partial(textsourcechange,self,'textractor')) 
 
+
+        label = QLabel(self.tab_1)
+        self.customSetGeometry(label, 20, 150,200, 20)
+        label.setText("提取的文本自动复制到剪贴板")
+ 
+        self.outputtopasteboard =gui.switchbutton.MySwitch(self.tab_1, sign= globalconfig['outputtopasteboard'] )
+        self.customSetGeometry(self.outputtopasteboard, 220, 150, 20,20)
+        self.outputtopasteboard.clicked.connect(lambda x:globalconfig.__setitem__('outputtopasteboard',x)) 
          
         self.selectbutton = QPushButton( "", self.tab_1)
         self.customSetIconSize(self.selectbutton, 20, 20)

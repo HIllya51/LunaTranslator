@@ -16,6 +16,7 @@ from utils.wrapper import timer,threader
 import gui.rangeselect   
 import gui.settin     
 import gui.selecthook
+import pyperclip
 from utils.getpidlist import getwindowlist
 import gui.translatorUI
 from utils.config import globalconfig 
@@ -43,6 +44,9 @@ class MAINUI() :
             paste_str=postsolve(paste_str)
         except:
             print_exc() 
+        if globalconfig['outputtopasteboard'] and globalconfig['sourcestatus']['copy']==False:
+            pyperclip.copy(paste_str)
+
 
         self.translation_ui.original=paste_str 
         if globalconfig['isshowhira'] and globalconfig['isshowrawtext']:

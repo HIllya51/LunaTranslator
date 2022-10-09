@@ -26,6 +26,7 @@ defaultglobalconfig='''
         "guge": true,
         "windows": true
     },
+    "outputtopasteboard":false,
     "windowstts": {
         "voice": "TTS_MS_EN-US_ZIRA_11.0",
         "rate": 1.0,

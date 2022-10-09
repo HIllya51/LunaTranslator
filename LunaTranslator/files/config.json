@@ -196,5 +196,6 @@
     "fanjian": 0,
     "rotation": 0,
     "srclang": 0,
-    "iskongxin": true
+    "iskongxin": true,
+    "outputtopasteboard": false
 }
