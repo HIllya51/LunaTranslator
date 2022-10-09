@@ -5,7 +5,7 @@
     ],
     "fixedheight": false,
     "width": 768.8,
-    "autorun": true,
+    "autorun": false,
     "transparent": 82,
     "fontsize": 17.699999999999996,
     "fonttype": "思源黑体 CN Medium",
@@ -28,8 +28,8 @@
         "volume": 100.0
     },
     "sourcestatus": {
-        "copy": true,
-        "ocr": false,
+        "copy": false,
+        "ocr": true,
         "textractor": false,
         "textractor_pipe": false
     },
@@ -197,5 +197,6 @@
     "rotation": 0,
     "srclang": 0,
     "iskongxin": true,
-    "outputtopasteboard": false
+    "outputtopasteboard": true,
+    "verticalocr": false
 }

@@ -109,7 +109,7 @@ class ocrtext(basetext):
             else:
                 self.image_score=0
             self.savelastimg=imgr
-            #print(image_score)
+            
             if self.image_score>0.95 and self.savelastimgsim<0.95:
                 
                 self.savelastimgsim=self.image_score

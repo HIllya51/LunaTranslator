@@ -1,6 +1,8 @@
  
-import sys 
+import sys
+from traceback import print_exc 
 import numpy as np
+from utils.config import globalconfig 
 import time 
 from utils.wrapper import timer
 import math
@@ -443,24 +445,40 @@ class myocr:
         return dt_boxes
     #@timer
     def ocr(self,img):
+         
         t1=time.time()
         #box=mydetect(img)
         #if len(box)==0:
         try:
+            
             box = self.get_boxes(img) 
-            box=self.detpostpost(box)
             
             if len(box)==0:
                 return ''
-            index=np.argsort(box[:,1])
-            box=box[index]
-            t2=time.time()
-            imgs=simplecrop(img,box)
-
+            if globalconfig['verticalocr']==False:
+                box=self.detpostpost(box)
+                
+                
+                index=np.argsort(box[:,1])
+                box=box[index]
+                t2=time.time()
+                imgs=simplecrop(img,box)
+            else:
+                boxx=[]
+                for b in box: 
+                    boxx.append([np.min(b[:,0]),np.min(b[:,1]),np.max(b[:,0]),np.max(b[:,1])]) 
+                index=np.argsort(-np.array(boxx)[:,1])
+                 
+                boxx=np.array(boxx,dtype=np.int)[index] 
+                imgs=simplecrop(img,boxx)
+                for i in range(len(imgs)):
+                    imgs[i]=cv2.rotate(imgs[i],cv2.ROTATE_90_COUNTERCLOCKWISE)
+                   
             res=self.recognition_img_croped(imgs)
             t3=time.time()
         #print(t3-t1,t3-t2,t2-t1)
         except:
+            print_exc()
             return ''
         return  ''.join(res)
      

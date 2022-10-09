@@ -20,6 +20,13 @@ def setTab6(self) :
         self.tab_widget.addTab(self.tab_6, "")
         self.tab_widget.setTabText(self.tab_widget.indexOf(self.tab_6), " OCR设置")
 
+        label = QLabel(self.tab_6)
+        self.customSetGeometry(label, 20, 150,200, 20)
+        label.setText("使用竖排OCR(效果不佳)")
+ 
+        self.verticalocr =gui.switchbutton.MySwitch(self.tab_6, sign= globalconfig['verticalocr'] )
+        self.customSetGeometry(self.verticalocr, 220, 150, 20,20)
+        self.verticalocr.clicked.connect(lambda x:globalconfig.__setitem__('verticalocr',x)) 
         self.ocrswitchs={}
         initocrswitchs_auto(self)
 
