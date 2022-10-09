@@ -177,7 +177,7 @@ def setTab4(self) :
         
         label = QLabel(self.tab_4)
         self.customSetGeometry(label, 20, 170, 200, 20)
-        label.setText("配置LocaleEmulator")
+        label.setText("LocaleEmulator路径设置")
         s1 = QPushButton( "", self.tab_4)
         self.customSetIconSize(s1, 20, 20)
         self.customSetGeometry(s1, 200, 170,20,20)
