@@ -3,7 +3,7 @@ from re import search
 from traceback import print_exc
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QWidget,QHBoxLayout,QMainWindow,QFrame,QVBoxLayout,QComboBox,QPlainTextEdit,QDialogButtonBox,QLineEdit,QPushButton,QTableView,QAbstractItemView
-
+from utils.config import savehook_new
 from PyQt5.QtGui import QStandardItem, QStandardItemModel
 from PyQt5.QtGui import QFont,QTextCursor
 from PyQt5.QtCore import Qt,pyqtSignal
@@ -229,14 +229,9 @@ class hookselect(QMainWindow):
             self.object.textsource.selectedhook=self.object.textsource.batchselectinghook
 
             self.object.textsource.autostarthookcode=[]
-            if not os.path.exists('./files/savehook_new.json'):
-                    js={}
-            else:
-                with open('./files/savehook_new.json','r',encoding='utf8') as ff:
-                    js=json.load(ff)
-            js[self.object.textsource.pname]=self.object.textsource.selectedhook
-            with open('./files/savehook_new.json','w',encoding='utf8') as ff:
-                ff.write(json.dumps(js,ensure_ascii=False))
+            savehook_new[self.object.textsource.pname]=self.object.textsource.selectedhook
+            with open('./userconfig/savehook_new.json','w',encoding='utf8') as ff:
+                ff.write(json.dumps(jsavehook_news,ensure_ascii=False))
         except:
             print_exc()
         self.object.settin_ui.show()

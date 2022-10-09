@@ -27,7 +27,7 @@ from PyQt5.QtCore import Qt,QSize
 import qtawesome
 from PyQt5.QtCore import QThread
 import subprocess
-from utils.config import globalconfig ,postprocessconfig
+from utils.config import globalconfig ,postprocessconfig,savehook_new
 from utils.getpidlist import getwindowlist
 import threading
 import json
@@ -52,11 +52,7 @@ def getExeIcon( name ):
             return None
 
 def autosaveshow(object):
-    if os.path.exists('./files/savehook_new.json'):
-            with open('./files/savehook_new.json','r',encoding='utf8') as ff:
-                js=json.load(ff)
-    else:
-        js={}
+     
     dialog = QDialog(object)  # 自定义一个dialog
     dialog.setWindowTitle('已保存游戏')
     #dialog.setWindowModality(Qt.ApplicationModal) 
@@ -64,7 +60,7 @@ def autosaveshow(object):
     if True:
         model=QStandardItemModel(  dialog)
         row=0
-        for k in js:                                   # 2
+        for k in savehook_new:                                   # 2
                 item = QStandardItem('')
                 transparent=QPixmap(100,100)
                 transparent.fill(QColor.fromRgba(0))
@@ -114,14 +110,14 @@ def autosaveshow(object):
         button2=QPushButton(dialog)
         button2.setText('删除游戏')
         def clicked2(): 
-                js.pop(model.item(table.currentIndex().row(),1).text())
+                savehook_new.pop(model.item(table.currentIndex().row(),1).text())
                 model.removeRow(table.currentIndex().row())
         button2.clicked.connect(clicked2)
         button3=QPushButton(dialog)
         button3.setText('保存并关闭')
         def clicked3():
-                with open('./files/savehook_new.json','w',encoding='utf8') as ff:
-                        ff.write(json.dumps(js,ensure_ascii=False))
+                with open('./userconfig/savehook_new.json','w',encoding='utf8') as ff:
+                        ff.write(json.dumps(savehook_new,ensure_ascii=False))
                 dialog.close()
         button3.clicked.connect(clicked3)
         formLayout.addWidget(table) 

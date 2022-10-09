@@ -1,11 +1,11 @@
 {
     "position": [
-        706,
-        661
+        582,
+        568
     ],
     "fixedheight": false,
     "width": 1094,
-    "autorun": false,
+    "autorun": true,
     "transparent": 82,
     "fontsize": 17.699999999999996,
     "fonttype": "思源黑体 CN Medium",
@@ -28,14 +28,14 @@
         "volume": 100.0
     },
     "sourcestatus": {
-        "copy": false,
-        "ocr": true,
+        "copy": true,
+        "ocr": false,
         "textractor": false,
         "textractor_pipe": false
     },
     "ocr": {
         "local": {
-            "use": false,
+            "use": true,
             "name": "本地OCR"
         },
         "baiduocr": {
@@ -58,7 +58,7 @@
             "name": "youdaocr"
         },
         "youdaocrtrans": {
-            "use": true,
+            "use": false,
             "name": "youdao图片翻译"
         }
     },

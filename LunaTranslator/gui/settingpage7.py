@@ -81,9 +81,9 @@ def initdictswitchs2(self,namepos,switchpos,colorpos,settingpos):
     self.customSetGeometry(s1, *settingpos)
     s1.setStyleSheet("background: transparent;")   
     s1.setIcon(qtawesome.icon("fa.gear", color="#FF69B4"  ))
-    s1.clicked.connect(lambda x:noundictconfigdialog(self,transerrorfixdictconfig,'翻译结果替换设置',['翻译','替换'],'./files/transerrorfixdictconfig.json'))
+    s1.clicked.connect(lambda x:noundictconfigdialog(self,transerrorfixdictconfig,'翻译结果替换设置',['翻译','替换'],'./userconfig/transerrorfixdictconfig.json'))
 
-def noundictconfigdialog(object,configdict,title,label=[ '日文','翻译'],fname='./files/noundictconfig.json'):
+def noundictconfigdialog(object,configdict,title,label=[ '日文','翻译'],fname='./userconfig/noundictconfig.json'):
     dialog = QDialog(object)  # 自定义一个dialog
     dialog.setWindowTitle(title)
     #dialog.setWindowModality(Qt.ApplicationModal)

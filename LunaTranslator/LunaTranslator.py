@@ -19,7 +19,7 @@ import gui.selecthook
 import pyperclip
 from utils.getpidlist import getwindowlist
 import gui.translatorUI
-from utils.config import globalconfig 
+from utils.config import globalconfig ,savehook_new
 import importlib
 from functools import partial 
 #print(time.time()-starttime)
@@ -154,11 +154,7 @@ class MAINUI() :
             return False
         else:
             if 'textsource' not in dir(self) or self.textsource is None:
-                if os.path.exists('./files/savehook_new.json'):
-                                with open('./files/savehook_new.json', 'r', encoding='utf8') as ff:
-                                        js = json.load(ff)
-                else:
-                    return False
+                 
                 plist = getwindowlist() 
                 for pid in plist:
                     #print(pid)
@@ -170,8 +166,8 @@ class MAINUI() :
                     except:
                         continue
                     
-                    if name_ in js:
-                        self.settin_ui.autostarthooksignal.emit(pid, name_,(js[name_]))
+                    if name_ in savehook_new:
+                        self.settin_ui.autostarthooksignal.emit(pid, name_,(savehook_new[name_]))
                         return True
         return False
     def autohookmonitorthread(self):

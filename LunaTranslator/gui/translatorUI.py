@@ -541,10 +541,10 @@ class QUnFrameWindow(QWidget):
         
         globalconfig['width']=self.width() 
         
-        with open('./files/config.json','w',encoding='utf-8') as ff:
+        with open('./userconfig/config.json','w',encoding='utf-8') as ff:
             ff.write(json.dumps(globalconfig,ensure_ascii=False,sort_keys=False, indent=4))
         #self.hide()
-        with open('./files/postprocessconfig.json','w',encoding='utf-8') as ff:
+        with open('./userconfig/postprocessconfig.json','w',encoding='utf-8') as ff:
             ff.write(json.dumps(postprocessconfig,ensure_ascii=False,sort_keys=False, indent=4))
         
         self.logff.close()
