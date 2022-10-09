@@ -84,10 +84,7 @@ class QUnFrameWindow(QWidget):
             
             self.translate_text.append(res)
             
-        else :
-             
-
-            res = res.replace("\n", "<br>")
+        else : 
             self.translate_text.append("<font color=%s>%s</font>"%(color,res)) 
     
     def clearText(self) :

@@ -4,7 +4,7 @@
         613
     ],
     "fixedheight": false,
-    "width": 768.8,
+    "width": 869.6,
     "autorun": true,
     "transparent": 82,
     "fontsize": 17.699999999999996,
@@ -196,7 +196,7 @@
     "fanjian": 0,
     "rotation": 0,
     "srclang": 0,
-    "iskongxin": false,
+    "iskongxin": true,
     "outputtopasteboard": true,
     "verticalocr": false
 }

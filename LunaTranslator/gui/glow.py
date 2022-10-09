@@ -17,7 +17,7 @@ from PyQt5.QtCore import QProcess ,QByteArray ,QTimer
 class QGlow(QGraphicsEffect):
     def __init__(self)  :
         self._extent = 5;
-        self._color = QColor(255, 255, 255);
+        self._color = QColor('blue');
         self._strength = 3;
         self._blurRadius = 5.0;
         super().__init__()
