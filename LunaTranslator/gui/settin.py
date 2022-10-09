@@ -106,7 +106,7 @@ class Settin(QMainWindow) :
                                             border-style: outset;\
                                             border-top: 0px solid #e8f3f9;\
                                             color: white;\
-                                            font-weight: bold;\
+                                             \
                                             background-color: rgba(%s, %s, %s, %s)"
                                             %(int(globalconfig['backcolor'][1:3],16),int(globalconfig['backcolor'][3:5],16),int(globalconfig['backcolor'][5:7],16),globalconfig['transparent']/100))
                 self.object.translation_ui._TitleLabel.setStyleSheet("border-width: 0;\

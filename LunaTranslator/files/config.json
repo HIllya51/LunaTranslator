@@ -5,13 +5,13 @@
     ],
     "fixedheight": false,
     "width": 768.8,
-    "autorun": false,
+    "autorun": true,
     "transparent": 82,
     "fontsize": 17.699999999999996,
     "fonttype": "思源黑体 CN Medium",
     "issolid": false,
     "isshowrawtext": true,
-    "rawtextcolor": "#000000",
+    "rawtextcolor": "#704019",
     "backcolor": "#7a8b8a",
     "isshowhira": false,
     "locktools": true,
@@ -29,8 +29,8 @@
     },
     "sourcestatus": {
         "copy": false,
-        "ocr": true,
-        "textractor": false,
+        "ocr": false,
+        "textractor": true,
         "textractor_pipe": false
     },
     "ocr": {
@@ -154,7 +154,7 @@
             "name": "iciba"
         },
         "baiduapi": {
-            "use": false,
+            "use": true,
             "color": "#0ff000",
             "name": "百度api",
             "argsfile": "./userconfig/baiduapi.json"

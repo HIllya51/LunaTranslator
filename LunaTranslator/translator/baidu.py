@@ -54,6 +54,7 @@ class TS(basetrans):
          
         self.session.headers["Acs-Token"]=acs_token
         translate_api = 'https://fanyi.baidu.com/v2transapi'
+        
         response = self.session.post(url=translate_api,   data=data,timeout = globalconfig['translatortimeout'],proxies=  {'http': None,'https': None})
         try:
             result = response.json()['trans_result']['data'][0]['dst']

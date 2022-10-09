@@ -88,7 +88,7 @@ class QUnFrameWindow(QWidget):
         else :
             res = res.replace("\n", "<br>")
             self.lastcolor=''
-            self.translate_text.append("<font color=%s>%s</font>"%(color,res))
+            self.translate_text.append("<font color=%s>%s</font>"%(color,res)) 
     
     def clearText(self) :
      
@@ -252,7 +252,7 @@ class QUnFrameWindow(QWidget):
                                            border-style: outset;\
                                            border-top: 0px solid #e8f3f9;\
                                            color: white;\
-                                           font-weight: bold;\
+                                            \
                                            background-color: rgba(%s, %s, %s, %s)"
                                            %(int(globalconfig['backcolor'][1:3],16),int(globalconfig['backcolor'][3:5],16),int(globalconfig['backcolor'][5:7],16),globalconfig['transparent']/100))
         self._TitleLabel.setStyleSheet("border-width: 0;\
@@ -283,7 +283,7 @@ class QUnFrameWindow(QWidget):
                                                                     border-style:outset;\
                                                                     border-top:0px solid #e8f3f9;\
                                                                     color:white;\
-                                                                    font-weight: bold;\
+                                                               \
                                                                     background-color: rgba(%s, %s, %s, %s)"
                                             %(int(globalconfig['backcolor'][1:3],16),int(globalconfig['backcolor'][3:5],16),int(globalconfig['backcolor'][5:7],16),0))
             if globalconfig['locktools']==False:
@@ -295,7 +295,6 @@ class QUnFrameWindow(QWidget):
                                                                  border-style:outset;\
                                                                  border-top:0px solid #e8f3f9;\
                                                                  color:white;\
-                                                                 font-weight: bold;\
                                                                 background-color: rgba(%s, %s, %s, %s)"
                                            %(int(globalconfig['backcolor'][1:3],16),int(globalconfig['backcolor'][3:5],16),int(globalconfig['backcolor'][5:7],16),globalconfig['transparent']/100))
         self.mousetransbutton.setIcon(qtawesome.icon("fa.mouse-pointer" ,color="#FF69B4" if self.mousetransparent else 'white'))
