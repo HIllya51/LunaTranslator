@@ -1,11 +1,11 @@
 {
     "position": [
-        626,
-        770
+        706,
+        661
     ],
     "fixedheight": false,
     "width": 1094,
-    "autorun": true,
+    "autorun": false,
     "transparent": 82,
     "fontsize": 17.699999999999996,
     "fonttype": "思源黑体 CN Medium",
@@ -28,14 +28,14 @@
         "volume": 100.0
     },
     "sourcestatus": {
-        "copy": true,
-        "ocr": false,
+        "copy": false,
+        "ocr": true,
         "textractor": false,
         "textractor_pipe": false
     },
     "ocr": {
         "local": {
-            "use": true,
+            "use": false,
             "name": "本地OCR"
         },
         "baiduocr": {
@@ -52,11 +52,19 @@
             "use": false,
             "name": "docsumo",
             "argsfile": "./userconfig/docsumo.json"
+        },
+        "youdaocr": {
+            "use": false,
+            "name": "youdaocr"
+        },
+        "youdaocrtrans": {
+            "use": true,
+            "name": "youdao图片翻译"
         }
     },
     "fanyi": {
         "baidu": {
-            "use": true,
+            "use": false,
             "color": "#ff65db",
             "name": "百度"
         },
@@ -76,12 +84,12 @@
             "name": "阿里"
         },
         "youdao": {
-            "use": false,
+            "use": true,
             "color": "#0ff000",
             "name": "有道"
         },
         "youdao2": {
-            "use": false,
+            "use": true,
             "color": "#0ff000",
             "name": "有道2"
         },
@@ -129,7 +137,7 @@
             "name": "搜狗2"
         },
         "youdao3": {
-            "use": false,
+            "use": true,
             "color": "#0ff000",
             "name": "有道3"
         },
@@ -187,9 +195,14 @@
             "argsfile": "./userconfig/xiaoniuapi.json"
         },
         "youdao4": {
-            "use": false,
+            "use": true,
             "color": "#0ff000",
             "name": "有道4"
+        },
+        "youdao5": {
+            "use": true,
+            "color": "#0ff000",
+            "name": "有道5"
         }
     },
     "minifollow": true,
@@ -204,6 +217,6 @@
     "iskongxin": true,
     "outputtopasteboard": true,
     "verticalocr": false,
-    "extractalltext": false,
+    "extractalltext": true,
     "LocaleEmulator": "C:\\dataH\\Locale.Emulator.2.5.0.1"
 }

@@ -34,6 +34,9 @@ class MAINUI() :
         self.textsource=None
         self.savetextractor=None
     def textgetmethod(self,paste_str,shortlongskip=True):
+        if paste_str[:len('<notrans>')]=='<notrans>':
+            self.translation_ui.displayraw1.emit(paste_str[len('<notrans>'):],globalconfig['rawtextcolor'],1)
+            return 
         if paste_str=='':
             return
         if len(paste_str)>500 or   len(paste_str.split('\n'))>20:

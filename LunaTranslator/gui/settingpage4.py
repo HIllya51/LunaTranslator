@@ -185,11 +185,7 @@ def setTab4(self) :
         
         s1.setIcon(qtawesome.icon("fa.gear", color="#FF69B4"  ))
         s1.clicked.connect(lambda x: getlepath(self))
-     
-        self.movefollowswitch =gui.switchbutton.MySwitch(self.tab_4, sign= globalconfig['extractalltext'])
-        self.customSetGeometry(self.movefollowswitch, 200, 140,20,20)
-        self.movefollowswitch.clicked.connect(lambda x:globalconfig.__setitem__('extractalltext',x)) 
-        
+      
         label = QLabel(self.tab_4)
         self.customSetGeometry(label, 20, 200, 200, 20)
         label.setText("已保存游戏")

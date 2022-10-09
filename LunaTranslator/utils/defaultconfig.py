@@ -60,6 +60,14 @@ defaultglobalconfig='''
             "use": false,
             "name": "docsumo",
             "argsfile": "./userconfig/docsumo.json"
+        },
+        "youdaocr": {
+            "use": false,
+            "name": "youdaocr" 
+        },
+        "youdaocrtrans": {
+            "use": false,
+            "name": "youdao图片翻译" 
         }
     },
     "fanyi": {
