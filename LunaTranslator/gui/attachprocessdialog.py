@@ -41,14 +41,15 @@ class AttachProcessDialog(QDialog):
         win32gui.EnumWindows(lambda hWnd, param: param.append(hWnd), windows_list)
         for hwnd in windows_list:
             if win32gui.IsWindow(hwnd) and win32gui.IsWindowEnabled(hwnd) and win32gui.IsWindowVisible(hwnd):
-                classname = win32gui.GetClassName(hwnd)
-                title = win32gui.GetWindowText(hwnd)
-                #print(f'classname:{classname} title:{title}') 
-                tid, pid=win32process.GetWindowThreadProcessId(hwnd) 
+                
                  
                 #for pid in pids:
                 if True:
                     try:
+                        classname = win32gui.GetClassName(hwnd)
+                        title = win32gui.GetWindowText(hwnd)
+                        #print(f'classname:{classname} title:{title}') 
+                        tid, pid=win32process.GetWindowThreadProcessId(hwnd) 
                         hwnd=win32api.OpenProcess(win32con.PROCESS_ALL_ACCESS,False, (pid))
                         name_=win32process.GetModuleFileNameEx(hwnd,None) 
                         name=name_.lower()
@@ -71,10 +72,11 @@ class AttachProcessDialog(QDialog):
 
             hwnd=win32gui.WindowFromPoint(p)
 
-            tid, pid=win32process.GetWindowThreadProcessId(hwnd)
+            
             #for pid in pids:
             if True:
                 try:
+                    tid, pid=win32process.GetWindowThreadProcessId(hwnd)
                     #print(pid,  win32gui.GetWindowText(hwnd))
                     hwnd=win32api.OpenProcess(win32con.PROCESS_ALL_ACCESS,False, pid)
                     name_=win32process.GetModuleFileNameEx(hwnd,None) 
