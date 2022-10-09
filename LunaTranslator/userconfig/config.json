@@ -1,7 +1,7 @@
 {
     "position": [
-        597,
-        399
+        557,
+        599
     ],
     "fixedheight": false,
     "width": 1094,
@@ -52,14 +52,6 @@
             "use": false,
             "name": "docsumo",
             "argsfile": "./userconfig/docsumo.json"
-        },
-        "youdaocr": {
-            "use": false,
-            "name": "youdaocr"
-        },
-        "youdaocrtrans": {
-            "use": false,
-            "name": "youdao图片翻译"
         }
     },
     "fanyi": {
@@ -177,11 +169,6 @@
             "use": false,
             "color": "#0ff000",
             "name": "byte"
-        },
-        "caiyun2": {
-            "use": false,
-            "color": "#0ff000",
-            "name": "cy2"
         },
         "qqimt": {
             "use": false,

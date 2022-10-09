@@ -29,7 +29,9 @@ def syncconfig(config,default):
             config[key]=default[key]
         if type(default[key])==dict:
             syncconfig(config[key],default[key])
-    
+    for key in list(config.keys()):
+        if key not in default:
+            config.pop(key)
         
 syncconfig(transerrorfixdictconfig,defaulterrorfix)
 syncconfig(postprocessconfig,defaultpost)
