@@ -21,6 +21,7 @@ defaultglobalconfig='''
     "locktools": true,
     "showfanyisource": true,
     "autoread": false,
+    "extractalltext":false,
     "reader": {
         "qq": false,
         "guge": true,

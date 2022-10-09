@@ -6,6 +6,7 @@ from PyQt5.QtCore import QProcess ,QByteArray ,QTimer
 import re  
 import time
 import subprocess
+from utils.config import globalconfig 
 from textsource.textsourcebase import basetext 
 class textractor(basetext  ): 
     def __init__(self,object,textgetmethod,hookselectdialog,pid,pname,arch,autostart=False,autostarthookcode=None) :
@@ -42,7 +43,7 @@ class textractor(basetext  ):
         self.attach(self.pid)
         self.textfilter=''
         self.autostart=autostart
-        self.autostarthookcode=autostarthookcode
+        self.autostarthookcode=[tuple(__) for __ in autostarthookcode]
         
         if self.autostart:
             self.autostarttimeout=QTimer()
@@ -97,11 +98,7 @@ class textractor(basetext  ):
  
             
             #if key==self.selectedhook:
-            if key in self.selectedhook:
-                #print(11)
-                #print(key==self.selectedhook,key,self.selectedhook)
-                self.newline.put(output) 
-                self.runonce_line=output
+            
                 
             if key not in self.hookdatacollecter:
                 #print(self.autostarthookcode,HookCode)
@@ -113,7 +110,7 @@ class textractor(basetext  ):
                     for autostarthookcode in self.autostarthookcode:
                          
                         #print((thread_tp_ctx,thread_tp_ctx2,HookCode)==(autostarthookcode[-4],autostarthookcode[-3],autostarthookcode[-1]),(thread_tp_ctx,thread_tp_ctx2,HookCode),(autostarthookcode[-4],autostarthookcode[-3],autostarthookcode[-1]))
-                       
+                       # print(thread_tp_ctx,thread_tp_ctx2,autostarthookcode)
                         if (int(thread_tp_ctx,16)&0xffff,thread_tp_ctx2,HookCode)==(int(autostarthookcode[-4],16)&0xffff,autostarthookcode[-3],autostarthookcode[-1]):
                         #if (HookCode)==(autostarthookcode[-1]):
                             self.selectedhook+=[key]
@@ -126,6 +123,20 @@ class textractor(basetext  ):
             
             #print(self.selectedhook)
             self.hookdatacollecter[key].append(output)
+            
+            if (key in self.selectedhook):
+                #print(11)
+                #print(key==self.selectedhook,key,self.selectedhook)
+                self.newline.put(output) 
+                self.runonce_line=output
+            else:
+                if globalconfig['extractalltext']:
+                    #print(self.autostarthookcode+self.selectedhook)
+                    for h in set(self.autostarthookcode+self.selectedhook):
+                        if key[-1]==h[-1]:
+                            self.newline.put(output)
+                            self.runonce_line=output
+                            #print(output)
             if key==self.selectinghook:
                 self.hookselectdialog.getnewsentencesignal.emit(output)
             self.hookselectdialog.update_item_new_line.emit(key,output)

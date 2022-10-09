@@ -1,7 +1,7 @@
 {
     "position": [
-        670,
-        710
+        792,
+        443
     ],
     "fixedheight": false,
     "width": 782,
@@ -198,5 +198,6 @@
     "srclang": 0,
     "iskongxin": true,
     "outputtopasteboard": true,
-    "verticalocr": false
+    "verticalocr": false,
+    "extractalltext": true
 }

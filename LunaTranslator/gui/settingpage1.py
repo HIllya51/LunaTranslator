@@ -170,7 +170,9 @@ def settingtextractor(self):
                 self.object.textsource.reset(self.object,self.object.textgetmethod,self.object.hookselectdialog,pid,pexe,arch)
 
             else:
+                
                 self.object.textsource=textractor(self.object,self.object.textgetmethod,self.object.hookselectdialog,pid,pexe,arch) 
+                
                 self.object.savetextractor=self.object.textsource
             # if not os.path.exists('./files/savehook.json'):
             #     js={}

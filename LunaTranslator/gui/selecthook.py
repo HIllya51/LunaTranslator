@@ -227,7 +227,8 @@ class hookselect(QMainWindow):
             if self.object.textsource.batchselectinghook is None:
                 return
             self.object.textsource.selectedhook=self.object.textsource.batchselectinghook
-            print(self.object.textsource.batchselectinghook)
+
+            self.object.textsource.autostarthookcode=[]
             if not os.path.exists('./files/savehook_new.json'):
                     js={}
             else:

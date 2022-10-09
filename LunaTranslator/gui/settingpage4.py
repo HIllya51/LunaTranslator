@@ -130,7 +130,7 @@ def setTab4(self) :
         label = QLabel(self.tab_4)
         self.customSetGeometry(label, 20, 50, 200, 20)
         label.setText("游戏最小化时窗口隐藏")
-        self.minifollowswitch =gui.switchbutton.MySwitch(self.tab_4, sign= globalconfig['minifollow'],textOff='关闭',textOn='使用')
+        self.minifollowswitch =gui.switchbutton.MySwitch(self.tab_4, sign= globalconfig['minifollow'])
         self.customSetGeometry(self.minifollowswitch, 200, 50, 20,20)
         self.minifollowswitch.clicked.connect(lambda x:globalconfig.__setitem__('minifollow',x)) 
 
@@ -138,7 +138,7 @@ def setTab4(self) :
         self.customSetGeometry(label, 20, 80, 200, 20)
         label.setText("游戏窗口移动时同步移动")
         
-        self.movefollowswitch =gui.switchbutton.MySwitch(self.tab_4, sign= globalconfig['movefollow'],textOff='关闭',textOn='使用')
+        self.movefollowswitch =gui.switchbutton.MySwitch(self.tab_4, sign= globalconfig['movefollow'])
         self.customSetGeometry(self.movefollowswitch, 200, 80,20,20)
         self.movefollowswitch.clicked.connect(lambda x:globalconfig.__setitem__('movefollow',x)) 
         
@@ -147,17 +147,26 @@ def setTab4(self) :
         self.customSetGeometry(label, 20, 110, 200, 20)
         label.setText("检测到游戏时自动开始")
         
-        self.movefollowswitch =gui.switchbutton.MySwitch(self.tab_4, sign= globalconfig['autostarthook'],textOff='关闭',textOn='使用')
+        self.movefollowswitch =gui.switchbutton.MySwitch(self.tab_4, sign= globalconfig['autostarthook'])
         self.customSetGeometry(self.movefollowswitch, 200, 110,20,20)
         self.movefollowswitch.clicked.connect(lambda x:globalconfig.__setitem__('autostarthook',x)) 
         
         
         label = QLabel(self.tab_4)
         self.customSetGeometry(label, 20, 140, 200, 20)
+        label.setText("提取hook线程全部文本")
+        
+        self.movefollowswitch =gui.switchbutton.MySwitch(self.tab_4, sign= globalconfig['extractalltext'])
+        self.customSetGeometry(self.movefollowswitch, 200, 140,20,20)
+        self.movefollowswitch.clicked.connect(lambda x:globalconfig.__setitem__('extractalltext',x)) 
+        
+        
+        label = QLabel(self.tab_4)
+        self.customSetGeometry(label, 20, 170, 200, 20)
         label.setText("已保存游戏")
         s1 = QPushButton( "", self.tab_4)
         self.customSetIconSize(s1, 20, 20)
-        self.customSetGeometry(s1, 200, 140,20,20)
+        self.customSetGeometry(s1, 200, 170,20,20)
         s1.setStyleSheet("background: transparent;") 
         
         s1.setIcon(qtawesome.icon("fa.gear", color="#FF69B4"  )) 
@@ -168,7 +177,7 @@ def setTab4(self) :
         # self.customSetGeometry(label, 20, 110, 200, 20)
         # #label.setText("窗口失去焦点不再置顶")
         # label.setText("窗口失去焦点最小化")
-        # self.focusfollowswitch =gui.switch.SwitchButton(self.tab_4, sign= globalconfig['focusfollow'], startX=(65-20)*self.rate,textOff='关闭',textOn='使用')
+        # self.focusfollowswitch =gui.switch.SwitchButton(self.tab_4, sign= globalconfig['focusfollow'], startX=(65-20)*self.rate)
         # self.customSetGeometry(self.focusfollowswitch, 200,110, 65, 20)
         # self.focusfollowswitch.checkedChanged.connect(lambda x:globalconfig.__setitem__('focusfollow',x)) 
         # #self.focusfollowswitch.checkedChanged.connect(lambda x:setss(self,x)) 
