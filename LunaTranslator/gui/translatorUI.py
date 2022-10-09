@@ -211,7 +211,7 @@ class QUnFrameWindow(QWidget):
         self.takusanbuttons(qtawesome.icon("fa.lock" ,color="#FF69B4" if globalconfig['locktools'] else 'white'),"MinMaxButton",self.changetoolslockstate,10,"锁定工具栏",'locktoolsbutton') 
         self.takusanbuttons(qtawesome.icon("fa.minus",color="white" ),"MinMaxButton",self.hide_and_disableautohide,-2,"最小化到托盘")
         self.takusanbuttons(qtawesome.icon("fa.times" ,color="white"),"CloseButton",self.quitf,-1,"退出")
-        self.resize(int(globalconfig['width']*self.rate), int(150*self.rate))
+        self.resize(int(globalconfig['width'] ), int(150*self.rate))
         self.move(QPoint(globalconfig['position'][0],globalconfig['position'][1])) 
          
         icon = QIcon()
@@ -401,7 +401,6 @@ class QUnFrameWindow(QWidget):
     def resizeEvent(self, QResizeEvent):
          
          
-        globalconfig['width']=self.width()/self.rate
         height = self.height() - 30*self.rate 
         
         #self.translate_text.resize(self.width(), height )
@@ -538,6 +537,10 @@ class QUnFrameWindow(QWidget):
   
     def quitf(self) :  
         import json  
+        globalconfig['position']=[self.pos().x(),self.pos().y()]
+        
+        globalconfig['width']=self.width() 
+        
         with open('./files/config.json','w',encoding='utf-8') as ff:
             ff.write(json.dumps(globalconfig,ensure_ascii=False,sort_keys=False, indent=4))
         #self.hide()
