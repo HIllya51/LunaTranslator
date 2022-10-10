@@ -163,13 +163,13 @@ def setTab4(self) :
         self.movefollowswitch.clicked.connect(lambda x:globalconfig.__setitem__('autostarthook',x)) 
         
         
-        label = QLabel(self.tab_4)
-        self.customSetGeometry(label, 20, 140, 200, 20)
-        label.setText("提取hook线程全部文本")
+        # label = QLabel(self.tab_4)
+        # self.customSetGeometry(label, 20, 140, 200, 20)
+        # label.setText("提取hook线程全部文本")
         
-        self.movefollowswitch =gui.switchbutton.MySwitch(self.tab_4, sign= globalconfig['extractalltext'])
-        self.customSetGeometry(self.movefollowswitch, 200, 140,20,20)
-        self.movefollowswitch.clicked.connect(lambda x:globalconfig.__setitem__('extractalltext',x)) 
+        # self.movefollowswitch =gui.switchbutton.MySwitch(self.tab_4, sign= globalconfig['extractalltext'])
+        # self.customSetGeometry(self.movefollowswitch, 200, 140,20,20)
+        # self.movefollowswitch.clicked.connect(lambda x:globalconfig.__setitem__('extractalltext',x)) 
         
         label = QLabel(self.tab_4)
         self.customSetGeometry(label, 20, 170, 200, 20)

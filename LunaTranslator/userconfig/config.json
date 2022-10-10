@@ -1,10 +1,10 @@
 {
     "position": [
-        801,
-        716
+        658,
+        470
     ],
     "fixedheight": false,
-    "width": 768,
+    "width": 778,
     "autorun": true,
     "transparent": 82,
     "fontsize": 17.699999999999996,
@@ -18,7 +18,7 @@
     "locktools": true,
     "showfanyisource": true,
     "autoread": false,
-    "extractalltext": true,
+    "extractalltext": false,
     "reader": {
         "qq": false,
         "guge": true,
@@ -114,7 +114,7 @@
             "name": "彩云"
         },
         "jb7": {
-            "use": true,
+            "use": false,
             "color": "#1839f0",
             "name": "Jbeijing7",
             "argsfile": "./userconfig/jbj7.json"
@@ -198,6 +198,11 @@
             "color": "#0ff000",
             "name": "小牛",
             "argsfile": "./userconfig/xiaoniuapi.json"
+        },
+        "deepl": {
+            "use": true,
+            "color": "#0ff000",
+            "name": "deepl"
         }
     },
     "minifollow": true,

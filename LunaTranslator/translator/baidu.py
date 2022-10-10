@@ -102,6 +102,7 @@ class TS(basetrans):
                     
         
             response = self.session.post(url=translate_api,headers=headers,   data=data,timeout = globalconfig['translatortimeout'],proxies=  {'http': None,'https': None})
+ 
             result = response.json()['trans_result']['data'][0]['dst']
             params = {
                 'req': 'check',

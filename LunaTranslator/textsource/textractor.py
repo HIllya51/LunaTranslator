@@ -130,14 +130,14 @@ class textractor(basetext  ):
                 #print(key==self.selectedhook,key,self.selectedhook)
                 self.newline.put(output) 
                 self.runonce_line=output
-            else:
+            # else:
                  
-                if globalconfig['extractalltext']:
-                    #print(self.autostarthookcode+self.selectedhook)
-                    for h in set(self.autostarthookcode+self.selectedhook):
-                        if key[-1]==h[-1]:
-                            self.newline.put(output)
-                            self.runonce_line=output
+            #     if globalconfig['extractalltext']:
+            #         #print(self.autostarthookcode+self.selectedhook)
+            #         for h in set(self.autostarthookcode+self.selectedhook):
+            #             if key[-1]==h[-1]:
+            #                 self.newline.put(output)
+            #                 self.runonce_line=output
                             #print(output)
             if key==self.selectinghook:
                 self.hookselectdialog.getnewsentencesignal.emit(output)
