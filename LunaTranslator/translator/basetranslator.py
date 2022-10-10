@@ -60,8 +60,8 @@ class basetrans:
                      
                     if key in content:
 
-                        content=content.replace(key,'A-'+"%03d"%zhanweifu+'')
-                        mp['A-'+"%03d"%zhanweifu+'']=key
+                        content=content.replace(key,'a-'+"%03d"%zhanweifu+'')
+                        mp['a-'+"%03d"%zhanweifu+'']=key
                         zhanweifu+=1
              
             res=self.translate(content)

@@ -1,7 +1,7 @@
 {
     "position": [
-        1063,
-        357
+        760,
+        582
     ],
     "fixedheight": false,
     "width": 778,
@@ -33,9 +33,9 @@
         "volume": 100.0
     },
     "sourcestatus": {
-        "copy": false,
+        "copy": true,
         "ocr": false,
-        "textractor": true,
+        "textractor": false,
         "textractor_pipe": false
     },
     "ocr": {
@@ -109,7 +109,7 @@
             "name": "搜狗"
         },
         "caiyun": {
-            "use": false,
+            "use": true,
             "color": "#0ff000",
             "name": "彩云"
         },
@@ -189,7 +189,7 @@
             "name": "byte"
         },
         "qqimt": {
-            "use": true,
+            "use": false,
             "color": "#0ff000",
             "name": "qqimt"
         },
@@ -205,12 +205,12 @@
             "name": "deepl"
         },
         "huoshan": {
-            "use": true,
+            "use": false,
             "color": "#0ff000",
             "name": "huoshan"
         },
         "yeekit": {
-            "use": true,
+            "use": false,
             "color": "#0ff000",
             "name": "yeekit"
         }
@@ -218,7 +218,7 @@
     "minifollow": true,
     "movefollow": true,
     "autostarthook": true,
-    "translatortimeout": 10,
+    "translatortimeout": 5,
     "minlength": 0,
     "maxlength": 150,
     "fanjian": 0,

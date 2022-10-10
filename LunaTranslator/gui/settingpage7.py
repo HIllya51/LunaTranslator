@@ -55,7 +55,7 @@ def initpostswitchs_auto(self):
 def initdictswitchs(self,namepos,switchpos,colorpos,settingpos):
     label = QLabel(self.tab_7)
     self.customSetGeometry(label, *namepos)
-    label.setText("使用专有名词手动翻译:")
+    label.setText("使用专有名词翻译:")
     p=gui.switchbutton.MySwitch(self.tab_7, sign=noundictconfig['use'] )
     
     self.customSetGeometry(p, *switchpos) 
@@ -70,7 +70,7 @@ def initdictswitchs(self,namepos,switchpos,colorpos,settingpos):
 def initdictswitchs2(self,namepos,switchpos,colorpos,settingpos):
     label = QLabel(self.tab_7)
     self.customSetGeometry(label, *namepos)
-    label.setText("使用翻译结果替换")
+    label.setText("使用翻译结果修正")
     p=gui.switchbutton.MySwitch(self.tab_7, sign=transerrorfixdictconfig['use'] )
     
     self.customSetGeometry(p, *switchpos) 
