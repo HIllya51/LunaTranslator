@@ -143,7 +143,6 @@ from traceback import print_exc
 class TS(basetrans):
     def inittranslator(self):  
         self.engine=Deepl()
-        self.engine._=None
     def translate(self,content): 
         try:
             return self.engine.deepl_api(content)
