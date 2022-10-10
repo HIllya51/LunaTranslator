@@ -1,7 +1,7 @@
 {
     "position": [
-        517,
-        780
+        469,
+        542
     ],
     "fixedheight": false,
     "width": 1121,
@@ -33,9 +33,9 @@
         "volume": 100.0
     },
     "sourcestatus": {
-        "copy": true,
+        "copy": false,
         "ocr": false,
-        "textractor": false,
+        "textractor": true,
         "textractor_pipe": false
     },
     "ocr": {
@@ -109,7 +109,7 @@
             "name": "搜狗"
         },
         "caiyun": {
-            "use": true,
+            "use": false,
             "color": "#0ff000",
             "name": "彩云"
         },
@@ -184,7 +184,7 @@
             "argsfile": "./userconfig/txapi.json"
         },
         "byte": {
-            "use": true,
+            "use": false,
             "color": "#0ff000",
             "name": "byte"
         },
@@ -215,7 +215,7 @@
             "name": "yeekit"
         },
         "caiyunapi": {
-            "use": true,
+            "use": false,
             "color": "#0ff000",
             "name": "彩云api",
             "argsfile": "./userconfig/caiyunapi.json"
@@ -229,5 +229,7 @@
     "maxlength": 150,
     "fanjian": 0,
     "rotation": 0,
-    "srclang": 0
+    "srclang": 0,
+    "transkiroku": true,
+    "transkirokuuse": "baidu"
 }

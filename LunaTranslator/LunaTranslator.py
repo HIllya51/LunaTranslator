@@ -24,6 +24,7 @@ import importlib
 from functools import partial 
 #print(time.time()-starttime)
 import win32api,win32con,win32process
+import sqlite3
 class MAINUI() :
     
     def __init__(self) -> None:
@@ -42,6 +43,13 @@ class MAINUI() :
         if len(paste_str)>500 or   len(paste_str.split('\n'))>20:
             return 
         
+
+        if globalconfig['transkiroku']  and 'sql' in dir(self.textsource):
+            self.textsource.sql.execute(f'INSERT INTO artificialtrans VALUES(NULL,"{paste_str}","",NULL);')
+            self.textsource.sql.commit() 
+
+
+
         postsolve=importlib.import_module('postprocess.post').POSTSOLVE
         try:
             paste_str=postsolve(paste_str)
@@ -129,7 +137,11 @@ class MAINUI() :
             for source in globalconfig['fanyi']: 
                 if globalconfig['fanyi'][source]['use']:
                     Thread(target=self.fanyiloader,args=(source,)).start()
-             
+    def _maybeyrengon(self,classname,contentraw,res):
+        if globalconfig['transkiroku'] and globalconfig['transkirokuuse']==classname:
+            self.textsource.sql.execute(f'UPDATE artificialtrans SET machineTrans = "{res}" WHERE source = "{contentraw}"')
+            self.textsource.sql.commit() 
+        self.translation_ui.displayres.emit(classname,res)
     def fanyiloader(self,classname):
                     try:
                         aclass=importlib.import_module('translator.'+classname).TS
@@ -137,7 +149,7 @@ class MAINUI() :
                         return
                     aclass.settypename(classname)
                     _=aclass()
-                    _.show=partial(self.translation_ui.displayres.emit,classname)
+                    _.show=partial(self._maybeyrengon,classname)
                     self.translators[classname]=_ 
     # 主函数
     def setontopthread(self):
@@ -178,9 +190,10 @@ class MAINUI() :
             time.sleep(0.5)
     def aa(self):
         t1=time.time()
-        
+        if os.path.exists('./transkiroku')==False:
+            os.mkdir('./transkiroku')
         self.translation_ui =gui.translatorUI.QUnFrameWindow(self)  
-        #print(time.time()-t1)
+        print(time.time()-t1)
         if globalconfig['rotation']==0:
             self.translation_ui.show()
             #print(time.time()-t1) 
@@ -195,21 +208,21 @@ class MAINUI() :
             self.view.setStyleSheet('background-color: rgba(255, 255, 255, 0);')
             self.view.setGeometry(QDesktopWidget().screenGeometry())
             self.view.show()      
-        #print(time.time()-t1)
+        print(time.time()-t1)
         threading.Thread(target=self.setontopthread).start()
-        #print(time.time()-t1)
+        print(time.time()-t1)
         self.prepare()  
         self.starthira()  
         self.starttextsource() 
-        #print(time.time()-t1)
+        print(time.time()-t1)
         self.settin_ui =gui.settin.Settin(self) 
-        #print(time.time()-t1)
+        print(time.time()-t1)
         self.startreader() 
         self.range_ui =gui.rangeselect.rangeadjust(self)   
         self.hookselectdialog=gui.selecthook.hookselect(self )
         threading.Thread(target=self.autohookmonitorthread).start()
         #self.translation_ui.displayraw.emit('欢迎','#0000ff')
-        ##print(time.time()-t1)
+        print(time.time()-t1)
         #print(time.time()-t1)
     def main(self) : 
         # 自适应高分辨率

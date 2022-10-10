@@ -29,11 +29,11 @@ class basetrans:
         pass
     def translate(self,content):
         pass
-    def show(self,res):
+    def show(self,contentraw,res):
         pass
-    def show__(self,res):
+    def show__(self,contentraw,res):
         if res!='':
-            self.show(res)
+            self.show(contentraw,res)
      
     
     def fythread(self):
@@ -79,7 +79,7 @@ class basetrans:
                 res=zhconv.convert(res, ['zh-cn', 'zh-tw', 'zh-hk', 'zh-sg', 'zh-hans', 'zh-hant'][globalconfig['fanjian']])
             
             if self.queue.empty() and contentraw==self.newline:
-                self.show__(res)
+                self.show__(contentraw,res)
 
     
 

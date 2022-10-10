@@ -1,10 +1,14 @@
   
+import sqlite3
 from threading import Thread
+from traceback import print_exc
 import win32pipe, win32file 
 from multiprocessing import Queue 
 from PyQt5.QtCore import QProcess ,QByteArray ,QTimer
 import re  
 import time
+import hashlib
+import os
 import subprocess
 from utils.config import globalconfig 
 from textsource.textsourcebase import basetext 
@@ -18,7 +22,14 @@ class textractor(basetext  ):
         self.t.start()
          
     def reset(self,object,textgetmethod,hookselectdialog,pid,pname,arch,autostart=False,autostarthookcode=[])  : 
-        
+        self.sqlfname='./transkiroku/'+hashlib.md5(bytes(pname,encoding='utf8')).hexdigest()+'_'+os.path.basename(pname).replace('.exe','.sqlite').replace('.EXE','.sqlite')
+         
+        if globalconfig['transkiroku']:
+            self.sql=sqlite3.connect(self.sqlfname,check_same_thread = False)
+            try:
+                self.sql.execute('CREATE TABLE artificialtrans(id INTEGER PRIMARY KEY AUTOINCREMENT,source TEXT,machineTrans TEXT,userTrans TEXT);')
+            except:
+                pass
         self.hookdatacollecter={}
         self.hookdatasort=[]
         self.reverse={}

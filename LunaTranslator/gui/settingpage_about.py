@@ -24,7 +24,7 @@ def getversion(self):
          
     except:
         version="获取失败"
-    self.versionlabel.setText(about %version)
+    self.versiontextsignal.emit(about %version)
 def setTab_about(self) :
 
         self.tab_about = QWidget()
@@ -37,6 +37,6 @@ def setTab_about(self) :
             
         self.versionlabel.setTextInteractionFlags(Qt.LinksAccessibleByMouse)
         self.customSetGeometry(self.versionlabel, 20, 20, 500, 500)
-        self.versiontextsignal.connect(lambda: getversion(self))
+        self.versiontextsignal.connect(lambda x:self.versionlabel.setText(x) )
         
-        self.versiontextsignal.emit()
+        threading.Thread(target=lambda :getversion(self)).start()

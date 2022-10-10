@@ -19,9 +19,8 @@ class Settin(QMainWindow) :
     resetsourcesignal=pyqtSignal()
     loadtextractorfalse=pyqtSignal( ) 
     voicelistsignal=pyqtSignal(list)
-    autostarthooksignal=pyqtSignal(int,str,list)
-
-    versiontextsignal=pyqtSignal( )
+    autostarthooksignal=pyqtSignal(int,str,list) 
+    versiontextsignal=pyqtSignal( str)
     def __init__(self, object):
 
         super(Settin, self).__init__()
