@@ -89,12 +89,12 @@
             "name": "阿里"
         },
         "youdao": {
-            "use": true,
+            "use": false,
             "color": "#0ff000",
             "name": "有道"
         },
         "youdao2": {
-            "use": false,
+            "use": true,
             "color": "#0ff000",
             "name": "有道2"
         },

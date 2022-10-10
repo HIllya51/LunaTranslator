@@ -57,8 +57,12 @@ class TS(basetrans):
             response =self.ss.get('https://fanyi.youdao.com/translate?&doctype=json&type='+self.srclang()+'2zh_cn&i='+quote(content),headers=headers,timeout=globalconfig['translatortimeout'], proxies=  {'http': None,'https': None})
 
             js=response.json()
-        
-            return js['translateResult'][0][0]['tgt'] 
+            
+            res=''
+            for x in  js['translateResult'][0]:
+                
+                res+=x['tgt'] 
+            return res
         except:
             self.inittranslator()
             print_exc()
