@@ -59,6 +59,8 @@ class TS(basetrans):
             self.iid_i+=1
                     
             headers = {
+                'path':'/ttranslatev3?isVertical=1&&IG='+self.IG+'&IID='+self.iid+'.'+str(self.iid_i),
+
                 'authority': 'cn.bing.com',
                 'accept': '*/*',
                 'accept-language': 'zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6',
@@ -90,6 +92,10 @@ class TS(basetrans):
         except:
             
             self.inittranslator()
+            try:
+                print(response.json())
+            except:
+                pass
             print_exc()
             return '出错了'
 if __name__=='__main__':

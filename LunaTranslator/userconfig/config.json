@@ -1,7 +1,7 @@
 {
     "position": [
-        658,
-        470
+        623,
+        551
     ],
     "fixedheight": false,
     "width": 778,
@@ -94,7 +94,7 @@
             "name": "有道"
         },
         "youdao2": {
-            "use": true,
+            "use": false,
             "color": "#0ff000",
             "name": "有道2"
         },
@@ -200,7 +200,7 @@
             "argsfile": "./userconfig/xiaoniuapi.json"
         },
         "deepl": {
-            "use": true,
+            "use": false,
             "color": "#0ff000",
             "name": "deepl"
         }
