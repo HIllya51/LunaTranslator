@@ -34,7 +34,10 @@ class TS(basetrans):
             response = requests.post('https://transmart.qq.com/api/imt',  headers=headers, data=data,timeout=globalconfig['translatortimeout'],proxies=  {'http': None,'https': None})
             return response.json()['auto_translation']
         except:
-            #print(response.json())
+            try:
+                print(response.json())
+            except:
+                pass
             print_exc()
             return '出错了'
     def show(self,res):

@@ -67,7 +67,7 @@ def initfanyiswitchs_auto(self):
         num=0
         
         for fanyi in globalconfig['fanyi']:
-            y=70+40*(num//3)
+            y=70+37*(num//3)
             x=20+220*(num%3)
             try:
                 importlib.import_module('translator.'+fanyi)

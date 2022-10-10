@@ -86,7 +86,7 @@ class textractor(basetext  ):
         stdout = bytes(data).decode("utf16",errors='ignore') 
         #print(stdout)
         reres=[]
-        
+      
         while True:
             ss=self.re.search(stdout)
             if ss is None:

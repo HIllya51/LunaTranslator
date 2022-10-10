@@ -1,7 +1,7 @@
 {
     "position": [
-        729,
-        553
+        1063,
+        357
     ],
     "fixedheight": false,
     "width": 778,
@@ -74,7 +74,7 @@
             "name": "百度"
         },
         "bing": {
-            "use": true,
+            "use": false,
             "color": "#000ff0",
             "name": "必应"
         },
@@ -184,12 +184,12 @@
             "argsfile": "./userconfig/txapi.json"
         },
         "byte": {
-            "use": false,
+            "use": true,
             "color": "#0ff000",
             "name": "byte"
         },
         "qqimt": {
-            "use": false,
+            "use": true,
             "color": "#0ff000",
             "name": "qqimt"
         },
@@ -203,6 +203,16 @@
             "use": false,
             "color": "#0ff000",
             "name": "deepl"
+        },
+        "huoshan": {
+            "use": true,
+            "color": "#0ff000",
+            "name": "huoshan"
+        },
+        "yeekit": {
+            "use": true,
+            "color": "#0ff000",
+            "name": "yeekit"
         }
     },
     "minifollow": true,
