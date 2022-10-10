@@ -19,8 +19,7 @@ globalconfig=tryreadconfig('config.json')
 postprocessconfig=tryreadconfig('postprocessconfig.json')
 noundictconfig=tryreadconfig('noundictconfig.json')
 transerrorfixdictconfig=tryreadconfig('transerrorfixdictconfig.json')
-savehook_new=tryreadconfig('savehook_new')
- 
+savehook_new=tryreadconfig('savehook_new.json') 
 
 
 def syncconfig(config,default):

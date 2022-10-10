@@ -231,7 +231,7 @@ class hookselect(QMainWindow):
             self.object.textsource.autostarthookcode=[]
             savehook_new[self.object.textsource.pname]=self.object.textsource.selectedhook
             with open('./userconfig/savehook_new.json','w',encoding='utf8') as ff:
-                ff.write(json.dumps(jsavehook_news,ensure_ascii=False))
+                ff.write(json.dumps(savehook_new,ensure_ascii=False))
         except:
             print_exc()
         self.object.settin_ui.show()

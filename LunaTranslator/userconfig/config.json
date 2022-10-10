@@ -1,27 +1,32 @@
 {
     "position": [
-        557,
-        599
+        584,
+        624
     ],
     "fixedheight": false,
-    "width": 1094,
+    "width": 768,
     "autorun": true,
     "transparent": 82,
     "fontsize": 17.699999999999996,
     "fonttype": "思源黑体 CN Medium",
     "issolid": false,
+    "iskongxin": true,
     "isshowrawtext": true,
-    "rawtextcolor": "#704019",
+    "rawtextcolor": "#000000",
     "backcolor": "#7a8b8a",
     "isshowhira": false,
     "locktools": true,
     "showfanyisource": true,
     "autoread": false,
+    "extractalltext": false,
     "reader": {
         "qq": false,
         "guge": true,
         "windows": true
     },
+    "LocaleEmulator": "",
+    "verticalocr": false,
+    "outputtopasteboard": false,
     "windowstts": {
         "voice": "TTS_MS_EN-US_ZIRA_11.0",
         "rate": 1.0,
@@ -52,11 +57,19 @@
             "use": false,
             "name": "docsumo",
             "argsfile": "./userconfig/docsumo.json"
+        },
+        "youdaocr": {
+            "use": false,
+            "name": "youdaocr"
+        },
+        "youdaocrtrans": {
+            "use": false,
+            "name": "youdao图片翻译"
         }
     },
     "fanyi": {
         "baidu": {
-            "use": false,
+            "use": true,
             "color": "#ff65db",
             "name": "百度"
         },
@@ -76,12 +89,12 @@
             "name": "阿里"
         },
         "youdao": {
-            "use": true,
+            "use": false,
             "color": "#0ff000",
             "name": "有道"
         },
         "youdao2": {
-            "use": true,
+            "use": false,
             "color": "#0ff000",
             "name": "有道2"
         },
@@ -100,25 +113,20 @@
             "color": "#0ff000",
             "name": "彩云"
         },
-        "deepl": {
-            "use": false,
-            "color": "#0ff000",
-            "name": "deepl"
-        },
         "jb7": {
-            "use": false,
+            "use": true,
             "color": "#1839f0",
             "name": "Jbeijing7",
             "argsfile": "./userconfig/jbj7.json"
         },
         "kingsoft": {
-            "use": false,
+            "use": true,
             "color": "#1839f0",
             "name": "金山快译",
             "argsfile": "./userconfig/ks.json"
         },
         "dreye": {
-            "use": false,
+            "use": true,
             "color": "#1839f0",
             "name": "快译通",
             "argsfile": "./userconfig/dreye.json"
@@ -129,9 +137,19 @@
             "name": "搜狗2"
         },
         "youdao3": {
-            "use": true,
+            "use": false,
             "color": "#0ff000",
             "name": "有道3"
+        },
+        "youdao4": {
+            "use": false,
+            "color": "#0ff000",
+            "name": "有道4"
+        },
+        "youdao5": {
+            "use": false,
+            "color": "#0ff000",
+            "name": "有道5"
         },
         "selfbuild": {
             "use": false,
@@ -180,16 +198,6 @@
             "color": "#0ff000",
             "name": "小牛",
             "argsfile": "./userconfig/xiaoniuapi.json"
-        },
-        "youdao4": {
-            "use": true,
-            "color": "#0ff000",
-            "name": "有道4"
-        },
-        "youdao5": {
-            "use": true,
-            "color": "#0ff000",
-            "name": "有道5"
         }
     },
     "minifollow": true,
@@ -200,10 +208,5 @@
     "maxlength": 150,
     "fanjian": 0,
     "rotation": 0,
-    "srclang": 0,
-    "iskongxin": true,
-    "outputtopasteboard": true,
-    "verticalocr": false,
-    "extractalltext": true,
-    "LocaleEmulator": "C:\\dataH\\Locale.Emulator.2.5.0.1"
+    "srclang": 0
 }

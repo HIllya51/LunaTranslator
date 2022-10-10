@@ -9,7 +9,7 @@ import subprocess
 from utils.config import globalconfig 
 from textsource.textsourcebase import basetext 
 class textractor(basetext  ): 
-    def __init__(self,object,textgetmethod,hookselectdialog,pid,pname,arch,autostart=False,autostarthookcode=None) :
+    def __init__(self,object,textgetmethod,hookselectdialog,pid,pname,arch,autostart=False,autostarthookcode=[]) :
         self.newline=Queue() 
         self.reset(object,textgetmethod,hookselectdialog,pid,pname,arch,autostart,autostarthookcode)
         self.textgetmethod=textgetmethod
@@ -17,7 +17,7 @@ class textractor(basetext  ):
         self.t.setDaemon(True)
         self.t.start()
          
-    def reset(self,object,textgetmethod,hookselectdialog,pid,pname,arch,autostart=False,autostarthookcode=None)  : 
+    def reset(self,object,textgetmethod,hookselectdialog,pid,pname,arch,autostart=False,autostarthookcode=[])  : 
         
         self.hookdatacollecter={}
         self.hookdatasort=[]
