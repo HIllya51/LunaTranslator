@@ -23,7 +23,9 @@ def getversion(self):
         version=version['data']['sign']
          
     except:
+         
         version="获取失败"
+     
     self.versiontextsignal.emit(about %version)
 def setTab_about(self) :
 

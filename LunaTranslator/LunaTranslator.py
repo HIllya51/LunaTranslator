@@ -4,7 +4,7 @@ from threading import Thread
 import os
 import json
 import sys
-from traceback import print_exc  
+from traceback import  print_exc  
 dirname, filename = os.path.split(os.path.abspath(__file__))
 sys.path.append(dirname)  
 import threading,win32gui
@@ -193,7 +193,7 @@ class MAINUI() :
         if os.path.exists('./transkiroku')==False:
             os.mkdir('./transkiroku')
         self.translation_ui =gui.translatorUI.QUnFrameWindow(self)  
-        print(time.time()-t1)
+        #print(time.time()-t1)
         if globalconfig['rotation']==0:
             self.translation_ui.show()
             #print(time.time()-t1) 
@@ -208,21 +208,21 @@ class MAINUI() :
             self.view.setStyleSheet('background-color: rgba(255, 255, 255, 0);')
             self.view.setGeometry(QDesktopWidget().screenGeometry())
             self.view.show()      
-        print(time.time()-t1)
+        #print(time.time()-t1)
         threading.Thread(target=self.setontopthread).start()
-        print(time.time()-t1)
+        #print(time.time()-t1)
         self.prepare()  
         self.starthira()  
         self.starttextsource() 
-        print(time.time()-t1)
+        #print(time.time()-t1)
         self.settin_ui =gui.settin.Settin(self) 
-        print(time.time()-t1)
+        #print(time.time()-t1)
         self.startreader() 
         self.range_ui =gui.rangeselect.rangeadjust(self)   
         self.hookselectdialog=gui.selecthook.hookselect(self )
         threading.Thread(target=self.autohookmonitorthread).start()
         #self.translation_ui.displayraw.emit('欢迎','#0000ff')
-        print(time.time()-t1)
+        #print(time.time()-t1)
         #print(time.time()-t1)
     def main(self) : 
         # 自适应高分辨率
