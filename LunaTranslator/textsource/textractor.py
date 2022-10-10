@@ -53,7 +53,8 @@ class textractor(basetext  ):
         self.userinserthookcode=[]
         self.runonce_line=''
          
-        self.re=re.compile('\[([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):(.*):(.*@.*)\] (.*)\n')
+        #self.re=re.compile('\[([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):(.*):(.*@.*)\] (.*)\n')
+        self.re=re.compile('\[([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):(.*):(.*@.*)\] ([\\s\\S]*)')
     def autostartinsert(self):
         for _h in self.autostarthookcode:
                     x=subprocess.run(f'./files/hookcodecheck.exe {_h[-1]}',stdout=subprocess.PIPE)
@@ -84,11 +85,23 @@ class textractor(basetext  ):
         data =  p.readAllStandardOutput()
         stdout = bytes(data).decode("utf16",errors='ignore') 
         #print(stdout)
-        reres=self.re.findall(stdout) #re.findall('\[([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):(.*):(.*@.*)\] (.*)\n',stdout)
+        reres=[]
+        
+        while True:
+            ss=self.re.search(stdout)
+            if ss is None:
+                break
+            if len(reres)>0:
+                reres[-1][-1]=reres[-1][-1][:ss.start()]
+            ares=ss.groups()
+            reres.append(list(ares))
+            stdout=ares[-1]
+        #reres=self.re.findall(stdout) #re.findall('\[([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):(.*):(.*@.*)\] (.*)\n',stdout)
          
         for ares in reres:
             
             thread_handle,thread_tp_processId, thread_tp_addr, thread_tp_ctx, thread_tp_ctx2, thread_name,HookCode,output =ares
+            output=output[:-1]
             if output[-2:]=='\r\n':
                 output=output[:-2]
             if output[-1]=='\n':
