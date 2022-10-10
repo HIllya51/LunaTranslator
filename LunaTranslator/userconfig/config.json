@@ -1,10 +1,10 @@
 {
     "position": [
-        760,
-        582
+        678,
+        460
     ],
     "fixedheight": false,
-    "width": 778,
+    "width": 1121,
     "autorun": true,
     "transparent": 82,
     "fontsize": 17.699999999999996,
@@ -213,6 +213,12 @@
             "use": false,
             "color": "#0ff000",
             "name": "yeekit"
+        },
+        "caiyunapi": {
+            "use": true,
+            "color": "#0ff000",
+            "name": "彩云api",
+            "argsfile": "./userconfig/caiyunapi.json"
         }
     },
     "minifollow": true,
