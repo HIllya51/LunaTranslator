@@ -1,7 +1,7 @@
 {
     "position": [
-        561,
-        548
+        801,
+        716
     ],
     "fixedheight": false,
     "width": 768,
@@ -18,7 +18,7 @@
     "locktools": true,
     "showfanyisource": true,
     "autoread": false,
-    "extractalltext": false,
+    "extractalltext": true,
     "reader": {
         "qq": false,
         "guge": true,
@@ -74,7 +74,7 @@
             "name": "百度"
         },
         "bing": {
-            "use": false,
+            "use": true,
             "color": "#000ff0",
             "name": "必应"
         },
@@ -203,7 +203,7 @@
     "minifollow": true,
     "movefollow": true,
     "autostarthook": true,
-    "translatortimeout": 5,
+    "translatortimeout": 10,
     "minlength": 0,
     "maxlength": 150,
     "fanjian": 0,
