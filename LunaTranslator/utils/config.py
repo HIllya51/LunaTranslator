@@ -26,6 +26,8 @@ def syncconfig(config,default):
     for key in default:
         if key not in config:
             config[key]=default[key]
+        elif key=='name':
+            config[key]=default[key]
         if type(default[key])==dict:
             syncconfig(config[key],default[key])
     # for key in list(config.keys()):

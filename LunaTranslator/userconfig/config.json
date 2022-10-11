@@ -196,7 +196,7 @@
         "xiaoniu": {
             "use": false,
             "color": "#0ff000",
-            "name": "小牛",
+            "name": "小牛api",
             "argsfile": "./userconfig/xiaoniuapi.json"
         },
         "deepl": {
