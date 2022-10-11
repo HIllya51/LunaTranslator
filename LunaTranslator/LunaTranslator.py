@@ -45,8 +45,11 @@ class MAINUI() :
         
 
         if globalconfig['transkiroku']  and 'sql' in dir(self.textsource):
-            self.textsource.sql.execute(f'INSERT INTO artificialtrans VALUES(NULL,"{paste_str}","",NULL);')
-            self.textsource.sql.commit() 
+            ret=self.textsource.sql.execute(f'SELECT * FROM artificialtrans WHERE source = "{paste_str}"').fetchone()
+            if ret is  None:                     
+                self.textsource.sql.execute(f'INSERT INTO artificialtrans VALUES(NULL,"{paste_str}","",NULL);')
+            
+                self.textsource.sql.commit() 
 
 
 

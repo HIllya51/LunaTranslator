@@ -142,7 +142,7 @@ def setTab4(self) :
         self.customSetGeometry(label, 20, 50, 200, 20)
         label.setText("游戏最小化时窗口隐藏")
         self.minifollowswitch =gui.switchbutton.MySwitch(self.tab_4, sign= globalconfig['minifollow'])
-        self.customSetGeometry(self.minifollowswitch, 200, 50, 20,20)
+        self.customSetGeometry(self.minifollowswitch, 250, 50, 20,20)
         self.minifollowswitch.clicked.connect(lambda x:globalconfig.__setitem__('minifollow',x)) 
 
         label = QLabel(self.tab_4)
@@ -150,7 +150,7 @@ def setTab4(self) :
         label.setText("游戏窗口移动时同步移动")
         
         self.movefollowswitch =gui.switchbutton.MySwitch(self.tab_4, sign= globalconfig['movefollow'])
-        self.customSetGeometry(self.movefollowswitch, 200, 80,20,20)
+        self.customSetGeometry(self.movefollowswitch, 250, 80,20,20)
         self.movefollowswitch.clicked.connect(lambda x:globalconfig.__setitem__('movefollow',x)) 
         
         
@@ -159,7 +159,7 @@ def setTab4(self) :
         label.setText("检测到游戏时自动开始")
         
         self.movefollowswitch =gui.switchbutton.MySwitch(self.tab_4, sign= globalconfig['autostarthook'])
-        self.customSetGeometry(self.movefollowswitch, 200, 110,20,20)
+        self.customSetGeometry(self.movefollowswitch, 250, 110,20,20)
         self.movefollowswitch.clicked.connect(lambda x:globalconfig.__setitem__('autostarthook',x)) 
         
         
@@ -176,7 +176,7 @@ def setTab4(self) :
         label.setText("LocaleEmulator路径设置")
         s1 = QPushButton( "", self.tab_4)
         self.customSetIconSize(s1, 20, 20)
-        self.customSetGeometry(s1, 200, 170,20,20)
+        self.customSetGeometry(s1, 250, 170,20,20)
         s1.setStyleSheet("background: transparent;") 
         
         s1.setIcon(qtawesome.icon("fa.gear", color="#FF69B4"  ))
@@ -187,13 +187,30 @@ def setTab4(self) :
         label.setText("已保存游戏")
         s1 = QPushButton( "", self.tab_4)
         self.customSetIconSize(s1, 20, 20)
-        self.customSetGeometry(s1, 200, 200,20,20)
+        self.customSetGeometry(s1, 250, 200,20,20)
         s1.setStyleSheet("background: transparent;") 
         
         s1.setIcon(qtawesome.icon("fa.gamepad", color="#FF69B4"  )) 
         s1.clicked.connect(lambda: autosaveshow(self))
 
+        label = QLabel(self.tab_4)
+        self.customSetGeometry(label, 20, 260, 200, 20)
+        label.setText("录制人工翻译文件(兼容Misaka)")
+        self.minifollowswitch =gui.switchbutton.MySwitch(self.tab_4, sign= globalconfig['transkiroku'])
+        self.customSetGeometry(self.minifollowswitch, 250, 260, 20,20)
+        self.minifollowswitch.clicked.connect(lambda x:globalconfig.__setitem__('transkiroku',x)) 
 
+        label = QLabel(self.tab_4)
+        self.customSetGeometry(label, 20, 290, 200, 20)
+        label.setText("录制的翻译源：")
+        transkirokuuse =QComboBox(self.tab_4)
+        
+        self.customSetGeometry(transkirokuuse, 250, 290, 100,20)
+        
+        transkirokuuse.addItems([globalconfig['fanyi'][k]['name'] for k  in globalconfig['fanyi']])
+        transkirokuuse.setCurrentIndex(list(globalconfig['fanyi'].keys()).index(globalconfig['transkirokuuse']))
+        transkirokuuse.currentIndexChanged.connect(lambda x:globalconfig.__setitem__('transkirokuuse',list(globalconfig['fanyi'].keys())[x]))
+        
         # label = QLabel(self.tab_4)
         # self.customSetGeometry(label, 20, 110, 200, 20)
         # #label.setText("窗口失去焦点不再置顶")
