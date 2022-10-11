@@ -12,9 +12,9 @@ def POSTSOLVE(line):
     if postprocessconfig['_2']['use']:
         times=postprocessconfig['_2']['args']['重复次数']
          
-        if times>=1:
+        if times>=2:
                 guesstimes=times
-        elif times==0:
+        else :
                 guesstimes=[]
                 t1=1
                 for i in range(1,len(line)):

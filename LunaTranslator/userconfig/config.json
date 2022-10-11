@@ -1,7 +1,7 @@
 {
     "position": [
-        606,
-        613
+        589,
+        630
     ],
     "fixedheight": false,
     "width": 1121,
@@ -242,6 +242,6 @@
     "fanjian": 0,
     "rotation": 0,
     "srclang": 0,
-    "transkiroku": true,
+    "transkiroku": false,
     "transkirokuuse": "baidu"
 }

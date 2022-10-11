@@ -174,7 +174,7 @@ def postconfigdialog(object,configdict,title):
     formLayout.addWidget(lb) 
     if type(configdict[key])==type(1): 
         spin=QSpinBox(dialog)
-        spin.setMinimum(0)
+        spin.setMinimum(1)
         spin.setMaximum(100)
         spin.setValue(configdict[key])
         spin.valueChanged.connect(lambda x:configdict.__setitem__(key,x))
