@@ -7,7 +7,7 @@ import threading
 def getversion(self):
     with open('./files/version.txt','r',encoding='utf8') as ff:
         about=ff.read()
-                
+    self.versiontextsignal.emit(about %'获取中')
     try:
                 
         headers = {
@@ -18,7 +18,7 @@ def getversion(self):
             'Upgrade-Insecure-Requests': '1',
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36',
         }
-        version=requests.get('http://api.bilibili.com/x/space/acc/info?mid=1144809437',timeout=2,headers=headers,proxies={'http':None,"https":None}).json()
+        version=requests.get('http://api.bilibili.com/x/space/acc/info?mid=1144809437', headers=headers,proxies={'http':None,"https":None}).json()
        # print(version)
         version=version['data']['sign']
          

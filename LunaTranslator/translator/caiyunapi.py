@@ -1,20 +1,11 @@
 
 from traceback import print_exc 
  
-import requests
-from urllib import parse 
+import requests 
 import os
 
-from utils.config import globalconfig
-import re 
-from translator.basetranslator import basetrans 
-from js2py import EvalJs
-import time
-
-import http.client
-import hashlib
-import urllib
-import random
+from utils.config import globalconfig 
+from translator.basetranslator import basetrans  
 import json
 class TS(basetrans): 
     @classmethod

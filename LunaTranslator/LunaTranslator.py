@@ -137,8 +137,8 @@ class MAINUI() :
             for source in globalconfig['fanyi']: 
                 if globalconfig['fanyi'][source]['use']:
                     Thread(target=self.fanyiloader,args=(source,)).start()
-    def _maybeyrengon(self,classname,contentraw,res):
-        if globalconfig['transkiroku'] and globalconfig['transkirokuuse']==classname:
+    def _maybeyrengong(self,classname,contentraw,res):
+        if globalconfig['sourcestatus']['textractor'] and globalconfig['transkiroku'] and globalconfig['transkirokuuse']==classname:
             self.textsource.sql.execute(f'UPDATE artificialtrans SET machineTrans = "{res}" WHERE source = "{contentraw}"')
             self.textsource.sql.commit() 
         self.translation_ui.displayres.emit(classname,res)
@@ -149,7 +149,7 @@ class MAINUI() :
                         return
                     aclass.settypename(classname)
                     _=aclass()
-                    _.show=partial(self._maybeyrengon,classname)
+                    _.show=partial(self._maybeyrengong,classname)
                     self.translators[classname]=_ 
     # 主函数
     def setontopthread(self):
