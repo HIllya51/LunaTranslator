@@ -16,27 +16,32 @@ class textractor(basetext  ):
     def __init__(self,object,textgetmethod,hookselectdialog,pid,pname,arch,autostart=False,autostarthookcode=[]) :
         self.newline=Queue() 
         self.reset(object,textgetmethod,hookselectdialog,pid,pname,arch,autostart,autostarthookcode)
-        self.textgetmethod=textgetmethod
+        
         self.t=Thread(target=self.gettextthread_)
         self.t.setDaemon(True)
         self.t.start()
          
     def reset(self,object,textgetmethod,hookselectdialog,pid,pname,arch,autostart=False,autostarthookcode=[])  : 
-        self.sqlfname='./transkiroku/'+hashlib.md5(bytes(pname,encoding='utf8')).hexdigest()+'_'+os.path.basename(pname).replace('.'+os.path.basename(pname).split('.')[-1],'.sqlite') 
-         
-        if globalconfig['transkiroku']:
-            self.sql=sqlite3.connect(self.sqlfname,check_same_thread = False)
-            try:
-                self.sql.execute('CREATE TABLE artificialtrans(id INTEGER PRIMARY KEY AUTOINCREMENT,source TEXT,machineTrans TEXT,userTrans TEXT);')
-            except:
-                pass
+        with open(pname,'rb') as ff:
+            bs=ff.read()
+        
+        
+        
+        self.sqlfname='./transkiroku/'+hashlib.md5(bs).hexdigest()+'_'+os.path.basename(pname).replace('.'+os.path.basename(pname).split('.')[-1],'.sqlite') 
+        
+        self.sqlwrite=sqlite3.connect(self.sqlfname,check_same_thread = False)
+        
+        try:
+            self.sqlwrite.execute('CREATE TABLE artificialtrans(id INTEGER PRIMARY KEY AUTOINCREMENT,source TEXT,machineTrans TEXT,userTrans TEXT);')
+        except:
+            pass
         self.hookdatacollecter={}
         self.hookdatasort=[]
         self.reverse={}
         self.forward=[]
         self.selectinghook=None
         self.selectedhook=[]
-        
+        self.textgetmethod=textgetmethod
         self.typename='textractor'
         self.ending=False 
         self.hookselectdialog=hookselectdialog
@@ -174,7 +179,7 @@ class textractor(basetext  ):
     def gettextthread(self ):
             #print(333333)
             paste_str=self.newline.get()
-            self.textgetmethod(paste_str)
+            return paste_str
     def runonce(self):
          
         self.textgetmethod(self.runonce_line,False)

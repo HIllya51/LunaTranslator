@@ -54,8 +54,8 @@ class basetrans:
             contentraw=content
             zhanweifu=0
             mp={}
-            use=noundictconfig['use']
-            if use:
+            use=noundictconfig['use'] and self.typename!='rengong'
+            if use :
                 for key in noundictconfig['dict']: 
                      
                     if key in content:
@@ -66,7 +66,7 @@ class basetrans:
              
             res=self.translate(content)
             
-            if use:
+            if use  :
                 for key in mp:
                     res=res.replace(key,noundictconfig['dict'][mp[key]])  
             

@@ -88,10 +88,10 @@ class ocrtext(basetext):
                  
             if self.object.rect is None:
                 time.sleep(1)
-                return
+                return None
             if self.object.rect[0][0]>self.object.rect[1][0] or self.object.rect[0][1]>self.object.rect[1][1]:
                 time.sleep(1)
-                return
+                return None
              
             #img=ImageGrab.grab((self.object.rect[0][0],self.object.rect[0][1],self.object.rect[1][0],self.object.rect[1][1]))
             #imgr = cv2.cvtColor(np.asarray(img), cv2.COLOR_RGB2BGR)
@@ -115,17 +115,18 @@ class ocrtext(basetext):
                 self.savelastimgsim=self.image_score
             else:
                 self.savelastimgsim=self.image_score
-                return 
+                return  None
             text=self.ocrtest(imgr)
             if self.savelasttext is not None:
                 sim=getEqualRate(self.savelasttext,text)
                 #print('text',sim)
                 if sim>0.9:
-                    return 
+                    return  None
                  
             self.savelasttext=text
-            self.textgetmethod(text)
             time.sleep(0.1)
+            return (text)
+            
     def runonce(self): 
         if self.object.rect is None:
             return

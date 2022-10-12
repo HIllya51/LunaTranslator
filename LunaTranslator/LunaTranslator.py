@@ -73,12 +73,12 @@ class MAINUI() :
         for engine in self.translators:
             #print(engine)
             self.translators[engine].gettask((paste_str,skip)) 
-        if skip==False and globalconfig['transkiroku']  and 'sql' in dir(self.textsource):
-            ret=self.textsource.sql.execute(f'SELECT * FROM artificialtrans WHERE source = "{paste_str}"').fetchone()
+        if skip==False and globalconfig['transkiroku']  and 'sqlwrite' in dir(self.textsource):
+            ret=self.textsource.sqlwrite.execute(f'SELECT * FROM artificialtrans WHERE source = "{paste_str}"').fetchone()
             if ret is  None:                     
-                self.textsource.sql.execute(f'INSERT INTO artificialtrans VALUES(NULL,"{paste_str}","","");')
+                self.textsource.sqlwrite.execute(f'INSERT INTO artificialtrans VALUES(NULL,"{paste_str}","","");')
             
-                self.textsource.sql.commit() 
+                self.textsource.sqlwrite.commit() 
     @threader
     def startreader(self):
         if globalconfig['reader']:
@@ -139,15 +139,15 @@ class MAINUI() :
     def _maybeyrengong(self,classname,contentraw,res):
         if globalconfig['sourcestatus']['textractor'] and globalconfig['transkiroku']:
             if globalconfig['transkirokuuse']==classname:
-                self.textsource.sql.execute(f'UPDATE artificialtrans SET machineTrans = "{res}" WHERE source = "{contentraw}"')
-                self.textsource.sql.commit() 
+                self.textsource.sqlwrite.execute(f'UPDATE artificialtrans SET machineTrans = "{res}" WHERE source = "{contentraw}"')
+                self.textsource.sqlwrite.commit() 
             elif classname!='rengong':
-                ret=self.textsource.sql.execute(f'SELECT * FROM artificialtrans WHERE source = "{contentraw}"').fetchone()
+                ret=self.textsource.sqlwrite.execute(f'SELECT * FROM artificialtrans WHERE source = "{contentraw}"').fetchone()
                 
                 if ret is None or ret[2] =='':                     
-                    self.textsource.sql.execute(f'UPDATE artificialtrans SET machineTrans = "{res}" WHERE source = "{contentraw}"')
+                    self.textsource.sqlwrite.execute(f'UPDATE artificialtrans SET machineTrans = "{res}" WHERE source = "{contentraw}"')
                 
-                    self.textsource.sql.commit() 
+                    self.textsource.sqlwrite.commit() 
         self.translation_ui.displayres.emit(classname,res)
     def fanyiloader(self,classname):
                     try:
@@ -155,7 +155,10 @@ class MAINUI() :
                     except:
                         return
                     aclass.settypename(classname)
-                    _=aclass()
+                    if classname=='rengong':
+                        _=aclass(self)
+                    else:
+                        _=aclass()
                     _.show=partial(self._maybeyrengong,classname)
                     self.translators[classname]=_ 
     # 主函数

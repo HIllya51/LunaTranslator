@@ -18,7 +18,10 @@ class basetext:
             if globalconfig['autorun']==False  :
                 time.sleep(1)
                 continue
-            self.gettextthread()
+            #print(globalconfig['autorun'])
+            t=self.gettextthread()
+            if t and globalconfig['autorun']:
+                self.textgetmethod(t)
          
     def gettextthread(self):
         pass

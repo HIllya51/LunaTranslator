@@ -1,7 +1,7 @@
 {
     "position": [
-        557,
-        489
+        543,
+        688
     ],
     "fixedheight": false,
     "width": 1121,
@@ -28,7 +28,7 @@
     "verticalocr": false,
     "outputtopasteboard": false,
     "windowstts": {
-        "voice": "TTS_MS_EN-US_ZIRA_11.0",
+        "voice": "TTS_MS_JA-JP_HARUKA_11.0",
         "rate": 1.0,
         "volume": 100.0
     },
@@ -69,12 +69,12 @@
     },
     "fanyi": {
         "baidu": {
-            "use": true,
+            "use": false,
             "color": "#ff65db",
             "name": "百度"
         },
         "bing": {
-            "use": true,
+            "use": false,
             "color": "#000ff0",
             "name": "必应"
         },
@@ -243,6 +243,6 @@
     "rotation": 0,
     "srclang": 0,
     "transkiroku": true,
-    "transkirokuuse": "sougou2",
+    "transkirokuuse": "baidu",
     "showatcenter": true
 }
