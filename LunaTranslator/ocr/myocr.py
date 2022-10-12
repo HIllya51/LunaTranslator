@@ -1,10 +1,8 @@
- 
-import sys
+  
 from traceback import print_exc 
 import numpy as np
 from utils.config import globalconfig 
-import time 
-from utils.wrapper import timer
+import time  
 import math
 from ocr.recpost import process_pred
 import cv2
