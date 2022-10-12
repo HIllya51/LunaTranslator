@@ -98,6 +98,14 @@ def setTabThree(self) :
         self.show_original_switch =gui.switchbutton.MySwitch(self.tab_3, sign=globalconfig['isshowrawtext'])
         self.customSetGeometry(self.show_original_switch, 350, 120, 20,20)
         self.show_original_switch.clicked.connect(lambda x: __changeuibuttonstate(self,x))  
+
+        label = QLabel(self.tab_3)
+        self.customSetGeometry(label, 450, 120, 60, 20)
+        label.setText("居中显示:")
+         
+        self.show_original_switch =gui.switchbutton.MySwitch(self.tab_3, sign=globalconfig['showatcenter'])
+        self.customSetGeometry(self.show_original_switch, 600, 120, 20,20)
+        self.show_original_switch.clicked.connect(lambda x:globalconfig.__setitem__('showatcenter',x))  
         label = QLabel(self.tab_3)
         self.customSetGeometry(label, 20, 120, 60, 20)
         label.setText("显示假名:")

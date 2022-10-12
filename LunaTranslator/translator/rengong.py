@@ -50,12 +50,15 @@ class TS(basetrans):
         ret=self.sql.execute(f'SELECT * FROM artificialtrans WHERE source = "{content}"').fetchone()
         if ret is  None: 
             return '无预翻译'
-        else: 
+        else:  
             _id,source,mt,ut=ret
-            if ut=='':
+
+            if ut!='':
                 return ut
-            else:
+            elif mt!='':
                 return mt 
+            else:
+                return '无预翻译'
 if __name__=='__main__':
     a=BINGFY()
     a.gettask('はーい、おやすみなさい')

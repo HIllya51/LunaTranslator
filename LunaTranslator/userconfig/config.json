@@ -1,7 +1,7 @@
 {
     "position": [
-        540,
-        658
+        557,
+        489
     ],
     "fixedheight": false,
     "width": 1121,
@@ -74,7 +74,7 @@
             "name": "百度"
         },
         "bing": {
-            "use": false,
+            "use": true,
             "color": "#000ff0",
             "name": "必应"
         },
@@ -243,5 +243,6 @@
     "rotation": 0,
     "srclang": 0,
     "transkiroku": true,
-    "transkirokuuse": "sougou2"
+    "transkirokuuse": "sougou2",
+    "showatcenter": true
 }

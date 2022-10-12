@@ -76,7 +76,7 @@ class MAINUI() :
         if skip==False and globalconfig['transkiroku']  and 'sql' in dir(self.textsource):
             ret=self.textsource.sql.execute(f'SELECT * FROM artificialtrans WHERE source = "{paste_str}"').fetchone()
             if ret is  None:                     
-                self.textsource.sql.execute(f'INSERT INTO artificialtrans VALUES(NULL,"{paste_str}","",NULL);')
+                self.textsource.sql.execute(f'INSERT INTO artificialtrans VALUES(NULL,"{paste_str}","","");')
             
                 self.textsource.sql.commit() 
     @threader

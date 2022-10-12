@@ -76,7 +76,10 @@ class QUnFrameWindow(QWidget):
         self.transhis.getnewsentencesignal.emit('\n'+res)
     def showline(self,res,color ): 
         
-            
+        if globalconfig['showatcenter']:
+            self.translate_text.setAlignment(Qt.AlignCenter)
+        else:
+            self.translate_text.setAlignment(Qt.AlignLeft)
         if globalconfig['iskongxin'] == True :
             if self.lastcolor!=color:  
                 self.format.setTextOutline(QPen(QColor(color), 1, Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin))
