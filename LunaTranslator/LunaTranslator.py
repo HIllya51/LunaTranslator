@@ -141,9 +141,16 @@ class MAINUI() :
                 if globalconfig['fanyi'][source]['use']:
                     Thread(target=self.fanyiloader,args=(source,)).start()
     def _maybeyrengong(self,classname,contentraw,res):
-        if globalconfig['sourcestatus']['textractor'] and globalconfig['transkiroku'] and globalconfig['transkirokuuse']==classname:
-            self.textsource.sql.execute(f'UPDATE artificialtrans SET machineTrans = "{res}" WHERE source = "{contentraw}"')
-            self.textsource.sql.commit() 
+        if globalconfig['sourcestatus']['textractor'] and globalconfig['transkiroku']:
+            if globalconfig['transkirokuuse']==classname:
+                self.textsource.sql.execute(f'UPDATE artificialtrans SET machineTrans = "{res}" WHERE source = "{contentraw}"')
+                self.textsource.sql.commit() 
+            elif classname!='rengong':
+                ret=self.textsource.sql.execute(f'SELECT * FROM artificialtrans WHERE source = "{contentraw}"').fetchone()
+                if ret[2] =='':                     
+                    self.textsource.sql.execute(f'UPDATE artificialtrans SET machineTrans = "{res}" WHERE source = "{contentraw}"')
+                
+                    self.textsource.sql.commit() 
         self.translation_ui.displayres.emit(classname,res)
     def fanyiloader(self,classname):
                     try:

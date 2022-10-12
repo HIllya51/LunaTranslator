@@ -96,15 +96,16 @@ def autosaveshow(object):
         button.clicked.connect(clicked)
         button4=QPushButton(dialog)
         button4.setText('使用LocaleEmulator开始游戏')
-        def clicked4(): 
+        def clicked4():  
                 if os.path.exists(model.item(table.currentIndex().row(),1).text()):
                         le=os.path.join(globalconfig['LocaleEmulator'],'LEProc.exe')
+                        print(le,os.path.exists(le))
                         if os.path.exists(le):
-                                subprocess.Popen('"'+le+'"  "'+ model.item(table.currentIndex().row(),1).text()+'"')
-                        else:   
-                                subprocess.Popen('"'+model.item(table.currentIndex().row(),1).text()+'"')
-                        dialog.close()
-                        object.close()
+                                print('"'+le+'"   "'+ model.item(table.currentIndex().row(),1).text()+'"')
+                                subprocess.Popen('"'+le+'"   "'+ model.item(table.currentIndex().row(),1).text()+'"')
+                         
+                                dialog.close()
+                                object.close()
                          
         button4.clicked.connect(clicked4)
         button2=QPushButton(dialog)
@@ -202,7 +203,7 @@ def setTab4(self) :
 
         label = QLabel(self.tab_4)
         self.customSetGeometry(label, 20, 290, 200, 20)
-        label.setText("录制的翻译源：")
+        label.setText("优先使用的翻译源：")
         transkirokuuse =QComboBox(self.tab_4)
         
         self.customSetGeometry(transkirokuuse, 250, 290, 100,20)

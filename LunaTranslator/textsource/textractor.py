@@ -22,7 +22,7 @@ class textractor(basetext  ):
         self.t.start()
          
     def reset(self,object,textgetmethod,hookselectdialog,pid,pname,arch,autostart=False,autostarthookcode=[])  : 
-        self.sqlfname='./transkiroku/'+hashlib.md5(bytes(pname,encoding='utf8')).hexdigest()+'_'+os.path.basename(pname).replace('.exe','.sqlite').replace('.EXE','.sqlite')
+        self.sqlfname='./transkiroku/'+hashlib.md5(bytes(pname,encoding='utf8')).hexdigest()+'_'+os.path.basename(pname).replace('.'+os.path.basename(pname).split('.')[-1],'.sqlite') 
          
         if globalconfig['transkiroku']:
             self.sql=sqlite3.connect(self.sqlfname,check_same_thread = False)

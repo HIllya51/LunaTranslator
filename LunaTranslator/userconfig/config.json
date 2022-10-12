@@ -1,7 +1,7 @@
 {
     "position": [
-        589,
-        630
+        605,
+        706
     ],
     "fixedheight": false,
     "width": 1121,
@@ -24,7 +24,7 @@
         "guge": true,
         "windows": true
     },
-    "LocaleEmulator": "",
+    "LocaleEmulator": "C:\\dataH\\Locale.Emulator.2.5.0.1",
     "verticalocr": false,
     "outputtopasteboard": false,
     "windowstts": {
@@ -242,6 +242,6 @@
     "fanjian": 0,
     "rotation": 0,
     "srclang": 0,
-    "transkiroku": false,
-    "transkirokuuse": "baidu"
+    "transkiroku": true,
+    "transkirokuuse": "sougou2"
 }
