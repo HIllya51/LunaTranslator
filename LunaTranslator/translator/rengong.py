@@ -20,7 +20,7 @@ class TS(basetrans):
         }
     def inittranslator(self):
         configfile=globalconfig['fanyi'][self.typename]['argsfile']
-        
+        self.path=''
         if os.path.exists(configfile) ==False:
             return ''
         

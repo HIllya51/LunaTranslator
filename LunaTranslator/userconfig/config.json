@@ -1,7 +1,7 @@
 {
     "position": [
-        515,
-        679
+        505,
+        662
     ],
     "fixedheight": false,
     "width": 1121,
@@ -34,13 +34,13 @@
     },
     "sourcestatus": {
         "copy": false,
-        "ocr": true,
-        "textractor": false,
+        "ocr": false,
+        "textractor": true,
         "textractor_pipe": false
     },
     "ocr": {
         "local": {
-            "use": true,
+            "use": false,
             "name": "本地OCR"
         },
         "baiduocr": {
@@ -63,13 +63,13 @@
             "name": "youdaocr"
         },
         "youdaocrtrans": {
-            "use": false,
+            "use": true,
             "name": "youdao图片翻译"
         }
     },
     "fanyi": {
         "baidu": {
-            "use": true,
+            "use": false,
             "color": "#ff65db",
             "name": "百度"
         },
@@ -241,7 +241,7 @@
     "maxlength": 150,
     "fanjian": 0,
     "rotation": 0,
-    "srclang": 1,
+    "srclang": 0,
     "transkiroku": true,
     "transkirokuuse": "baidu",
     "showatcenter": true,
