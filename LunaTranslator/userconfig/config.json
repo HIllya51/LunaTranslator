@@ -1,7 +1,7 @@
 {
     "position": [
-        475,
-        511
+        449,
+        597
     ],
     "fixedheight": false,
     "width": 1121,
@@ -34,8 +34,8 @@
     },
     "sourcestatus": {
         "copy": false,
-        "ocr": false,
-        "textractor": true,
+        "ocr": true,
+        "textractor": false,
         "textractor_pipe": false
     },
     "ocr": {
@@ -241,7 +241,7 @@
     "maxlength": 150,
     "fanjian": 0,
     "rotation": 0,
-    "srclang": 0,
+    "srclang": 1,
     "transkiroku": true,
     "transkirokuuse": "baidu",
     "showatcenter": true,

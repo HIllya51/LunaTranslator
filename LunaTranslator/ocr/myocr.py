@@ -250,20 +250,27 @@ class myocr:
     
     def __init__(self) -> None: 
         self.large_rec_file = os.path.join('./files/ocr','2.0jprec.onnx')
+        #self.large_rec_file2 = os.path.join('./files/ocr','en.onnx')
         self.det_file = os.path.join('./files/ocr','2.6chdet.onnx')  
         self.onet_rec_session = onnxruntime.InferenceSession(self.large_rec_file)
+        #self.onet_rec_session_en = onnxruntime.InferenceSession(self.large_rec_file2)
         self.onet_det_session = onnxruntime.InferenceSession(self.det_file)
         self.postprocess_op = process_pred(os.path.join('./files/ocr','japan_dict.txt'),   True) 
-         
+        #self.postprocess_op_en = process_pred(os.path.join('./files/ocr','en_dict.txt'),   True) 
         self.infer_before_process_op, self.det_re_process_op = self.get_process()
         self.statistic=[]
     def recognition_img_croped(self,img_list):
         results = []
         for pic in img_list:
-            #cv2.imshow(str(time.time()),pic)
+            # cv2.imshow(str(time.time()),pic)
+            # cv2.waitKey()
             res = self.get_img_res(self.onet_rec_session, pic, self.postprocess_op)
+            # if globalconfig['srclang']==0:
+            #     res = self.get_img_res(self.onet_rec_session, pic, self.postprocess_op)
+            # elif globalconfig['srclang']==1:
+            #     res = self.get_img_res(self.onet_rec_session_en, pic, self.postprocess_op_en)
             results.append(res)
-        #cv2.waitKey()
+        #
         return  results
     def resize_norm_img(self, img, max_wh_ratio):
         imgC, imgH, imgW = [int(v) for v in "3, 32, 100".split(",")]
@@ -473,7 +480,7 @@ class myocr:
                 imgs=simplecrop(img,boxx)
                 for i in range(len(imgs)):
                     imgs[i]=cv2.rotate(imgs[i],cv2.ROTATE_90_COUNTERCLOCKWISE)
-                   
+                    
             res=self.recognition_img_croped(imgs)
             t3=time.time()
         #print(t3-t1,t3-t2,t2-t1)
