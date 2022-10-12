@@ -22,7 +22,7 @@ transerrorfixdictconfig=tryreadconfig('transerrorfixdictconfig.json')
 savehook_new=tryreadconfig('savehook_new.json') 
 
 
-def syncconfig(config,default):
+def syncconfig(config,default,drop=False):
     for key in default:
         if key not in config:
             config[key]=default[key]
@@ -30,9 +30,12 @@ def syncconfig(config,default):
             config[key]=default[key]
         if type(default[key])==dict:
             syncconfig(config[key],default[key])
-    # for key in list(config.keys()):
-    #     if key not in default:
-    #         config.pop(key)
+    if drop:
+        for key in list(config.keys()):
+            if key not in default:
+                config.pop(key)
+            elif type(default[key])==dict:
+                syncconfig(config[key],default[key],drop)
         
 syncconfig(transerrorfixdictconfig,defaulterrorfix)
 syncconfig(postprocessconfig,defaultpost)

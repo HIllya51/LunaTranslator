@@ -1,6 +1,7 @@
   
 import sqlite3
 from threading import Thread
+import threading
 from traceback import print_exc
 import win32pipe, win32file 
 from multiprocessing import Queue 
@@ -12,6 +13,7 @@ import os
 import subprocess
 from utils.config import globalconfig 
 from textsource.textsourcebase import basetext 
+import json
 class textractor(basetext  ): 
     def __init__(self,object,textgetmethod,hookselectdialog,pid,pname,arch,autostart=False,autostarthookcode=[]) :
         self.newline=Queue() 
@@ -29,6 +31,14 @@ class textractor(basetext  ):
         
         self.sqlfname='./transkiroku/'+hashlib.md5(bs).hexdigest()+'_'+os.path.basename(pname).replace('.'+os.path.basename(pname).split('.')[-1],'.sqlite') 
         
+        self.jsonfname='./transkiroku/'+hashlib.md5(bs).hexdigest()+'_'+os.path.basename(pname).replace('.'+os.path.basename(pname).split('.')[-1],'.json')
+        def loadjson(self):
+            if os.path.exists(self.jsonfname):
+                with open(self.jsonfname,'r',encoding='utf8') as ff:
+                    self.json=json.load(ff)
+            else:
+                self.json={}
+        threading.Thread(target=loadjson,args=(self,)).start()
         self.sqlwrite=sqlite3.connect(self.sqlfname,check_same_thread = False)
         
         try:

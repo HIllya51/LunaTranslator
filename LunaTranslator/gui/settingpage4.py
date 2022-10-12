@@ -1,25 +1,22 @@
- 
-from cmath import exp
+  
 import functools
-from PyQt5.QtWidgets import  QWidget,QLabel ,QLineEdit,QSpinBox,QPushButton,QDialog,QVBoxLayout ,QHeaderView
-from distutils.command.config import config
+import sqlite3
+from PyQt5.QtWidgets import  QWidget,QLabel ,QLineEdit,QSpinBox,QPushButton,QDialog,QVBoxLayout ,QHeaderView,QFileDialog 
 import functools 
- 
-from cmath import exp
+  
 import functools
 
-from PyQt5.QtWidgets import QApplication, QWidget, QTableView, QAbstractItemView, QLabel, QVBoxLayout
+from PyQt5.QtWidgets import    QWidget, QTableView, QAbstractItemView, QLabel, QVBoxLayout
 
 from PyQt5.QtWidgets import  QWidget,QLabel ,QLineEdit,QSpinBox,QPushButton,QTextEdit
 
 from PyQt5.QtGui import QStandardItem, QStandardItemModel
-import qtawesome
-from PyQt5.QtCore import QThread
+import qtawesome 
 import subprocess
 from utils.config import globalconfig ,postprocessconfig,noundictconfig
-from PyQt5.QtWidgets import  QWidget,QLabel, QComboBox,QDoubleSpinBox 
+from PyQt5.QtWidgets import  QWidget,QLabel, QComboBox  
  
-from PyQt5.QtWidgets import QWidget,QLabel,QFrame ,QPushButton,QColorDialog
+from PyQt5.QtWidgets import QWidget,QLabel,QFrame ,QPushButton 
 from PyQt5.QtGui import QColor,QFont,QPixmap,QIcon
 import functools
 from PyQt5.QtWidgets import QDialogButtonBox,QDialog,QComboBox,QFormLayout,QSpinBox,QVBoxLayout,QLineEdit
@@ -196,7 +193,7 @@ def setTab4(self) :
 
         label = QLabel(self.tab_4)
         self.customSetGeometry(label, 20, 260, 200, 20)
-        label.setText("录制人工翻译文件(兼容Misaka)")
+        label.setText("录制人工翻译文件")
         self.minifollowswitch =gui.switchbutton.MySwitch(self.tab_4, sign= globalconfig['transkiroku'])
         self.customSetGeometry(self.minifollowswitch, 250, 260, 20,20)
         self.minifollowswitch.clicked.connect(lambda x:globalconfig.__setitem__('transkiroku',x)) 
@@ -204,14 +201,28 @@ def setTab4(self) :
         label = QLabel(self.tab_4)
         self.customSetGeometry(label, 20, 290, 200, 20)
         label.setText("优先使用的翻译源：")
-        transkirokuuse =QComboBox(self.tab_4)
-        
-        self.customSetGeometry(transkirokuuse, 250, 290, 100,20)
-        
+        transkirokuuse =QComboBox(self.tab_4) 
+        self.customSetGeometry(transkirokuuse, 250, 290, 100,20) 
         transkirokuuse.addItems([globalconfig['fanyi'][k]['name'] for k  in globalconfig['fanyi']])
         transkirokuuse.setCurrentIndex(list(globalconfig['fanyi'].keys()).index(globalconfig['transkirokuuse']))
         transkirokuuse.currentIndexChanged.connect(lambda x:globalconfig.__setitem__('transkirokuuse',list(globalconfig['fanyi'].keys())[x]))
         
+        bt = QPushButton(self.tab_4)
+        self.customSetGeometry(bt, 20, 320, 200, 20)
+        bt.setText("导出sqlite文件为json文件") 
+
+        def _sqlite2json():
+                f=QFileDialog.getOpenFileName()
+                if f[0]!='' and f[0].split('.')[-1].lower()=='sqlite':
+
+                        sql=sqlite3.connect(f[0],check_same_thread=False)
+                        ret=sql.execute(f'SELECT * FROM artificialtrans  ').fetchall()
+                        js={}
+                        for _id,source,mt,ut  in ret:
+                                js[source]={'userTrans':ut,'machineTrans':mt}
+                        with open(os.path.join(os.path.dirname(f[0]), os.path.basename(f[0]).replace('.'+os.path.basename(f[0]).split('.')[-1],'.json')),'w',encoding='utf8') as ff:
+                                ff.write(json.dumps(js,ensure_ascii=False,sort_keys=False, indent=4))
+        bt.clicked.connect(lambda x:_sqlite2json()) 
         # label = QLabel(self.tab_4)
         # self.customSetGeometry(label, 20, 110, 200, 20)
         # #label.setText("窗口失去焦点不再置顶")

@@ -1,7 +1,7 @@
 {
     "position": [
-        563,
-        789
+        475,
+        511
     ],
     "fixedheight": false,
     "width": 1121,
@@ -34,8 +34,8 @@
     },
     "sourcestatus": {
         "copy": false,
-        "ocr": true,
-        "textractor": false,
+        "ocr": false,
+        "textractor": true,
         "textractor_pipe": false
     },
     "ocr": {
@@ -69,7 +69,7 @@
     },
     "fanyi": {
         "baidu": {
-            "use": false,
+            "use": true,
             "color": "#ff65db",
             "name": "百度"
         },

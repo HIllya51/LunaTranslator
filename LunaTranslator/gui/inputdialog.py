@@ -1,7 +1,7 @@
 import functools
 from PyQt5.QtWidgets import QDialogButtonBox,QDialog,QComboBox,QFormLayout,QSpinBox,QHBoxLayout,QLineEdit,QFileDialog,QPushButton
 from PyQt5.QtCore import Qt,QSize
-from utils.config import globalconfig
+from utils.config import globalconfig,syncconfig
 import json
 import os
 import importlib
@@ -20,6 +20,8 @@ def GetUserPlotItems(object,configfile,defaultsetting,title) -> tuple:
         else:
             with open(configfile,'r',encoding='utf8') as ff:
                 js=json.load(ff)
+            print(js,defaultsetting)
+            syncconfig(js,defaultsetting,True)
         for arg in js['args']:
             
                 
@@ -34,7 +36,7 @@ def GetUserPlotItems(object,configfile,defaultsetting,title) -> tuple:
                         l.setText(f)
                 button.clicked.connect(functools.partial(__,line))
                 hori.addWidget(button)
-            elif arg=='sqlite文件':
+            elif arg=='json文件':
                 button=QPushButton('选择文件')
                 def __(l,_):
                     f=QFileDialog.getOpenFileName(directory= js['args'][arg])
