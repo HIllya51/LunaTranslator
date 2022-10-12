@@ -73,7 +73,7 @@ class MAINUI() :
         for engine in self.translators:
             #print(engine)
             self.translators[engine].gettask((paste_str,skip)) 
-        if globalconfig['transkiroku']  and 'sql' in dir(self.textsource):
+        if skip==False and globalconfig['transkiroku']  and 'sql' in dir(self.textsource):
             ret=self.textsource.sql.execute(f'SELECT * FROM artificialtrans WHERE source = "{paste_str}"').fetchone()
             if ret is  None:                     
                 self.textsource.sql.execute(f'INSERT INTO artificialtrans VALUES(NULL,"{paste_str}","",NULL);')
