@@ -83,6 +83,7 @@ class ocrtext(basetext):
         self.ocr=myocr()
         self.object=object
         self.ending=False
+        self.lastocrtime=0
         super( ).__init__(textgetmethod) 
     def gettextthread(self ):
                  
@@ -96,35 +97,40 @@ class ocrtext(basetext):
             #img=ImageGrab.grab((self.object.rect[0][0],self.object.rect[0][1],self.object.rect[1][0],self.object.rect[1][1]))
             #imgr = cv2.cvtColor(np.asarray(img), cv2.COLOR_RGB2BGR)
             imgr=self.imageCut(self.object.rect[0][0],self.object.rect[0][1],self.object.rect[1][0],self.object.rect[1][1])
-            
-            if self.savelastimg is not None:
-                h,w,c=self.savelastimg.shape
+             
+            if globalconfig['mustocr'] and  time.time()-self.lastocrtime>globalconfig['mustocr_interval']:
+                pass
+            else:
                 
-                if imgr.shape!=self.savelastimg.shape:
-                    self.image_score=0
+                if self.savelastimg is not None:
+                    h,w,c=self.savelastimg.shape
+                    
+                    if imgr.shape!=self.savelastimg.shape:
+                        self.image_score=0
+                    else:
+                        self.image_score =[ compareImage(imgr[i*h//3:(i+1)*h//3],self.savelastimg[i*h//3:(i+1)*h//3])  for i in range(3)]
+                        self.image_score=min(self.image_score)
+                        #self.image_score= compareImage(imgr ,self.savelastimg )
                 else:
-                    self.image_score =[ compareImage(imgr[i*h//3:(i+1)*h//3],self.savelastimg[i*h//3:(i+1)*h//3])  for i in range(3)]
-                    self.image_score=min(self.image_score)
-                    #self.image_score= compareImage(imgr ,self.savelastimg )
-            else:
-                self.image_score=0
-            self.savelastimg=imgr
-            
-            if self.image_score>0.95 and self.savelastimgsim<0.95:
+                    self.image_score=0
+                self.savelastimg=imgr
                 
-                self.savelastimgsim=self.image_score
-            else:
-                self.savelastimgsim=self.image_score
-                return  None
+                if self.image_score>0.95 and self.savelastimgsim<0.95:
+                    
+                    self.savelastimgsim=self.image_score
+                else:
+                    self.savelastimgsim=self.image_score
+                    return  None
             text=self.ocrtest(imgr)
+            
             if self.savelasttext is not None:
                 sim=getEqualRate(self.savelasttext,text)
                 #print('text',sim)
                 if sim>0.9:
                     return  None
-                 
+            self.lastocrtime=time.time()
             self.savelasttext=text
-            time.sleep(0.1)
+            time.sleep(globalconfig['ocrmininterval'])
             return (text)
             
     def runonce(self): 

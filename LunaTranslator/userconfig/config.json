@@ -34,8 +34,8 @@
     },
     "sourcestatus": {
         "copy": false,
-        "ocr": false,
-        "textractor": true,
+        "ocr": true,
+        "textractor": false,
         "textractor_pipe": false
     },
     "ocr": {
@@ -244,5 +244,8 @@
     "srclang": 0,
     "transkiroku": true,
     "transkirokuuse": "baidu",
-    "showatcenter": true
+    "showatcenter": true,
+    "mustocr": true,
+    "mustocr_interval": 5,
+    "ocrmininterval": 1
 }
