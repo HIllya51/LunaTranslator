@@ -40,17 +40,7 @@ class MAINUI() :
             return 
         if paste_str=='':
             return
-        if len(paste_str)>500 or   len(paste_str.split('\n'))>20:
-            return 
         
-
-        if globalconfig['transkiroku']  and 'sql' in dir(self.textsource):
-            ret=self.textsource.sql.execute(f'SELECT * FROM artificialtrans WHERE source = "{paste_str}"').fetchone()
-            if ret is  None:                     
-                self.textsource.sql.execute(f'INSERT INTO artificialtrans VALUES(NULL,"{paste_str}","",NULL);')
-            
-                self.textsource.sql.commit() 
-
 
 
         postsolve=importlib.import_module('postprocess.post').POSTSOLVE
@@ -83,6 +73,12 @@ class MAINUI() :
         for engine in self.translators:
             #print(engine)
             self.translators[engine].gettask((paste_str,skip)) 
+        if globalconfig['transkiroku']  and 'sql' in dir(self.textsource):
+            ret=self.textsource.sql.execute(f'SELECT * FROM artificialtrans WHERE source = "{paste_str}"').fetchone()
+            if ret is  None:                     
+                self.textsource.sql.execute(f'INSERT INTO artificialtrans VALUES(NULL,"{paste_str}","",NULL);')
+            
+                self.textsource.sql.commit() 
     @threader
     def startreader(self):
         if globalconfig['reader']:
@@ -147,7 +143,8 @@ class MAINUI() :
                 self.textsource.sql.commit() 
             elif classname!='rengong':
                 ret=self.textsource.sql.execute(f'SELECT * FROM artificialtrans WHERE source = "{contentraw}"').fetchone()
-                if ret[2] =='':                     
+                
+                if ret is None or ret[2] =='':                     
                     self.textsource.sql.execute(f'UPDATE artificialtrans SET machineTrans = "{res}" WHERE source = "{contentraw}"')
                 
                     self.textsource.sql.commit() 
