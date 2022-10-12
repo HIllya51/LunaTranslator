@@ -13,17 +13,16 @@ def GetUserPlotItems(object,configfile,defaultsetting,title) -> tuple:
         formLayout = QFormLayout(dialog)  # 配置layout
         d={}
         
-        hori=QHBoxLayout()
+        
         if os.path.exists(configfile)==False:
             
             js=defaultsetting
         else:
             with open(configfile,'r',encoding='utf8') as ff:
-                js=json.load(ff)
-            print(js,defaultsetting)
+                js=json.load(ff) 
             syncconfig(js,defaultsetting,True)
         for arg in js['args']:
-            
+            hori=QHBoxLayout()
                 
             
             line=QLineEdit(js['args'][arg])
