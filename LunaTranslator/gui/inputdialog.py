@@ -1,4 +1,5 @@
-from PyQt5.QtWidgets import QDialogButtonBox,QDialog,QComboBox,QFormLayout,QSpinBox,QHBoxLayout,QLineEdit
+import functools
+from PyQt5.QtWidgets import QDialogButtonBox,QDialog,QComboBox,QFormLayout,QSpinBox,QHBoxLayout,QLineEdit,QFileDialog,QPushButton
 from PyQt5.QtCore import Qt,QSize
 from utils.config import globalconfig
 import json
@@ -11,7 +12,8 @@ def GetUserPlotItems(object,configfile,defaultsetting,title) -> tuple:
         dialog.resize(QSize(900,10))
         formLayout = QFormLayout(dialog)  # 配置layout
         d={}
- 
+        
+        hori=QHBoxLayout()
         if os.path.exists(configfile)==False:
             
             js=defaultsetting
@@ -19,12 +21,32 @@ def GetUserPlotItems(object,configfile,defaultsetting,title) -> tuple:
             with open(configfile,'r',encoding='utf8') as ff:
                 js=json.load(ff)
         for arg in js['args']:
-             
+            
+                
+            
             line=QLineEdit(js['args'][arg])
+            hori.addWidget(line)
+            if arg=='路径'   :
+                button=QPushButton('选择路径')
+                def __(l,_):
+                    f=QFileDialog.getExistingDirectory(directory= js['args'][arg])
+                    if f!='':
+                        l.setText(f)
+                button.clicked.connect(functools.partial(__,line))
+                hori.addWidget(button)
+            elif arg=='sqlite文件':
+                button=QPushButton('选择文件')
+                def __(l,_):
+                    f=QFileDialog.getOpenFileName(directory= js['args'][arg])
+                    if f[0]!='':
+                        l.setText(f[0])
+                button.clicked.connect(functools.partial(__,line))
+                hori.addWidget(button)
             d[arg]=line 
             if 'notwriteable' in js and arg in js['notwriteable']:
                 line.setReadOnly(True) 
-            formLayout.addRow(arg, line) 
+            
+            formLayout.addRow(arg, hori) 
         button = QDialogButtonBox(QDialogButtonBox.Ok|QDialogButtonBox.Cancel)
         formLayout.addRow(button)
         dialog.show()
@@ -44,10 +66,17 @@ def getlepath(object) -> tuple:
         formLayout = QFormLayout(dialog)  # 配置layout
         d={}
  
-             
+        hori=QHBoxLayout()
         line=QLineEdit(globalconfig['LocaleEmulator'])
-            
-        formLayout.addRow('LocaleEmulator:', line) 
+        hori.addWidget(line)
+        button=QPushButton('选择路径')
+        def __(l,_):
+            f=QFileDialog.getExistingDirectory(directory= globalconfig['LocaleEmulator'])
+            if f!='':
+                l.setText(f)
+        button.clicked.connect(functools.partial(__,line))
+        hori.addWidget(button)
+        formLayout.addRow('LocaleEmulator:', hori) 
         button = QDialogButtonBox(QDialogButtonBox.Ok|QDialogButtonBox.Cancel)
         formLayout.addRow(button)
         dialog.show()
