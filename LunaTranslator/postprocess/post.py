@@ -9,6 +9,8 @@ def POSTSOLVE(line):
     if postprocessconfig['_1']['use']:
         r=re.compile('\{(.*?)/.*?\}')
         line=r.sub(lambda x:x.groups()[0],line)
+        r=re.compile('\{(.*?):.*?\}')
+        line=r.sub(lambda x:x.groups()[0],line)
     if postprocessconfig['_2']['use']:
         times=postprocessconfig['_2']['args']['重复次数']
          
@@ -26,7 +28,11 @@ def POSTSOLVE(line):
                                 guesstimes.append(t1)
                                 t1=1
                 x=Counter(guesstimes)
-                guesstimes=sorted(x.keys(),key= lambda x1:x[x1])[-1]
+              
+                if len(guesstimes)!=0:
+                        guesstimes=sorted(x.keys(),key= lambda x1:x[x1])[-1]
+                else:
+                        guesstimes=1
         
         newline=[line[i*guesstimes] for i in range(len(line)//guesstimes)]
         line=''.join(newline)

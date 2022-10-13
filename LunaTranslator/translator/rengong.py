@@ -67,15 +67,15 @@ class TS(basetrans):
         # for sql in sqls:
         #     ret=sql.execute(f'SELECT * FROM artificialtrans WHERE source = "{content}"').fetchone()
         for js in jsons:
-            if content not in js: 
-            #if ret is  None: 
-                continue
-            else:  
+            
+            if content   in js: 
+            #if ret is  None:  
                 #_id,source,mt,ut=ret 
-                if js[content]['userTrans']!='':
-                    js[content]['userTrans']
                 
-                elif js[content]['machineTrans']!='':
+                if js[content]['userTrans'] and js[content]['userTrans']!='':
+                    return js[content]['userTrans']
+                
+                elif js[content]['machineTrans'] and js[content]['machineTrans']!='':
                     return js[content]['machineTrans']
         return '无预翻译'
 if __name__=='__main__':
