@@ -10,7 +10,7 @@ from datetime import datetime
 import time
 import re
 import uuid 
-
+import os
 import time
 class tts():
     
@@ -25,7 +25,8 @@ class tts():
         self.mp3playsignal=mp3playsignal
     def read(self,content):
         fname=str(time.time())
-        
+        if os.path.exists('./ttscache/')==False:
+            os.mkdir('./ttscache/')
         threading.Thread(target=lambda:asyncio.run(transferMsTTSData(self.mp3playsignal,globalconfig["ttscommon"]["rate"],content, './ttscache/'+fname+'.mp3'))).start()
          
 
@@ -86,6 +87,7 @@ async def transferMsTTSData(signal,rate,content, outputPath):
                         pass
             else:
                 break
+       
         with open(outputPath, 'wb') as audio_out:
             audio_out.write(audio_stream)
         signal.emit(outputPath,globalconfig["ttscommon"]["volume"])
