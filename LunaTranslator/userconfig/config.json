@@ -1,7 +1,7 @@
 {
     "position": [
-        601,
-        647
+        560,
+        736
     ],
     "fixedheight": false,
     "width": 1121,
@@ -27,7 +27,7 @@
         "huoshan": true,
         "azuretts": {
             "use": true,
-            "voice": "ja-JP-KeitaNeural"
+            "voice": "zh-CN-liaoning-XiaobeiNeural"
         },
         "huoshantts": {
             "use": false,

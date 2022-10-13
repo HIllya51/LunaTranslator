@@ -15,7 +15,8 @@ import time
 class tts():
     
     def __init__(self,showlist,mp3playsignal): 
-        self.voicelist=['ja-JP-NanamiNeural','ja-JP-KeitaNeural','ja-JP-AoiNeural','ja-JP-DaichiNeural','ja-JP-MayuNeural','ja-JP-NaokiNeural','ja-JP-ShioriNeural']
+        self.voicelist=['ja-JP-NanamiNeural','ja-JP-KeitaNeural','ja-JP-AoiNeural','ja-JP-DaichiNeural','ja-JP-MayuNeural','ja-JP-NaokiNeural','ja-JP-ShioriNeural',
+                        'zh-CN-henan-YundengNeural','zh-CN-liaoning-XiaobeiNeural','zh-CN-shaanxi-XiaoniNeural','zh-CN-shandong-YunxiangNeural','zh-CN-sichuan-YunxiNeural',]
         
         showlist.emit(self.voicelist)
         if globalconfig['reader']['azuretts']['voice']=='' and len(self.voicelist)>0:
