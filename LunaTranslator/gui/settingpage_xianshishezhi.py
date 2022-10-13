@@ -140,8 +140,7 @@ def changeHorizontal(self) :
 
         globalconfig['transparent'] = self.horizontal_slider.value() 
         self.horizontal_slider_label.setText("{}%".format(globalconfig['transparent']))
-        if globalconfig['transparent'] == 0 :
-            globalconfig['transparent'] = 1 
+        #  
         self.object.translation_ui.translate_text.setStyleSheet("border-width:0;\
                                                                  border-style:outset;\
                                                                  border-top:0px solid #e8f3f9;\

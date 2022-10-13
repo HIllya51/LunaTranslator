@@ -43,6 +43,7 @@ class QUnFrameWindow(QWidget):
     writeprocesssignal=pyqtSignal(QByteArray)
     killprocesssignal=pyqtSignal()
     hookfollowsignal=pyqtSignal(int,tuple)
+    toolbarhidedelaysignal=pyqtSignal()
     def keeptopfuntion(self):
         win32gui.BringWindowToTop(int(self.winId()))
     def hookfollowsignalsolve(self,code,other): 
@@ -63,7 +64,7 @@ class QUnFrameWindow(QWidget):
         else:
             self.showline(res,globalconfig['fanyi'][_type]['color']  )
         
-        self.logff.write(globalconfig['fanyi'][_type]['name']+'  '+res+'\n')
+        print(globalconfig['fanyi'][_type]['name']+'  '+res+'\n')
         
         self.transhis.getnewsentencesignal.emit(globalconfig['fanyi'][_type]['name']+'  '+res)
     def showraw(self,res,color,show ):
@@ -72,7 +73,7 @@ class QUnFrameWindow(QWidget):
         if show==1: 
             self.showline(res,color )
         
-        self.logff.write('\n'+res+'\n')
+        print('\n'+res+'\n')
         self.transhis.getnewsentencesignal.emit('\n'+res)
     def showline(self,res,color ): 
         
@@ -139,11 +140,11 @@ class QUnFrameWindow(QWidget):
         self.startprocessignal.connect(self.startprocessfunction)
         self.writeprocesssignal.connect(self.writeprocess)
         self.killprocesssignal.connect(self.killprocess)
+        self.toolbarhidedelaysignal.connect(self.toolbarhidedelay)
         self._padding = 5*self.rate  # 设置边界宽度为5
         self.setMinimumWidth(300)
         self.hideshownotauto=True
         self.transhis=gui.transhist.transhist()
-        self.logff=open('./log.txt','a',encoding='utf8')
         self.setAttribute(Qt.WA_TranslucentBackground) 
         self.keeptopsignal.connect(self.keeptopfuntion)
         self.hookfollowsignal.connect(self.hookfollowsignalsolve) 
@@ -288,9 +289,9 @@ class QUnFrameWindow(QWidget):
                                                                \
                                                                     background-color: rgba(%s, %s, %s, %s)"
                                             %(int(globalconfig['backcolor'][1:3],16),int(globalconfig['backcolor'][3:5],16),int(globalconfig['backcolor'][5:7],16),0))
-            if globalconfig['locktools']==False:
-                globalconfig['locktools']=not globalconfig['locktools'] 
-                self.locktoolsbutton.setIcon(qtawesome.icon("fa.lock" ,color="#FF69B4" if globalconfig['locktools'] else 'white'))
+            # if globalconfig['locktools']==False:
+            #     globalconfig['locktools']=not globalconfig['locktools'] 
+            #     self.locktoolsbutton.setIcon(qtawesome.icon("fa.lock" ,color="#FF69B4" if globalconfig['locktools'] else 'white'))
         
         else:
             self.object.translation_ui.translate_text.setStyleSheet("border-width:0;\
@@ -316,8 +317,8 @@ class QUnFrameWindow(QWidget):
         globalconfig['autorun']=not globalconfig['autorun'] 
         self.automodebutton.setIcon(qtawesome.icon("fa.forward" ,color="#FF69B4" if globalconfig['autorun'] else 'white'))
     def changetoolslockstate(self,checked):
-        if self.mousetransparent: 
-            self.mousetransbutton.click()
+        # if self.mousetransparent: 
+        #     self.mousetransbutton.click()
         globalconfig['locktools']=not globalconfig['locktools'] 
         self.locktoolsbutton.setIcon(qtawesome.icon("fa.lock" ,color="#FF69B4" if globalconfig['locktools'] else 'white'))
         
@@ -383,15 +384,24 @@ class QUnFrameWindow(QWidget):
         self._MainLayout.addStretch()
         self.setLayout(self._MainLayout)
  
-  
-    def leaveEvent(self, QEvent) : 
-        if globalconfig['locktools']:
-            return 
+    def toolbarhidedelay(self):
+        
         for button in self.buttons:
             button.hide()    
         self._TitleLabel.setStyleSheet("  background-color: rgba(0,0,0,0)")
+    def leaveEvent(self, QEvent) : 
+        if globalconfig['locktools']:
+            return 
+        self.ison=False
+        def __(s):
+            time.sleep(0.5)
+            if self.ison==False:
+                s.toolbarhidedelaysignal.emit()
+        threading.Thread(target=lambda:__(self) ).start()
+        
     def enterEvent(self, QEvent) : 
- 
+        
+        self.ison=True
         for button in self.buttons:
             button.show()  
         self._TitleLabel.setStyleSheet("border-width:0;\
@@ -550,7 +560,6 @@ class QUnFrameWindow(QWidget):
         with open('./userconfig/postprocessconfig.json','w',encoding='utf-8') as ff:
             ff.write(json.dumps(postprocessconfig,ensure_ascii=False,sort_keys=False, indent=4))
         
-        self.logff.close()
         self.tray.hide()
         self.tray = None 
         self.object.range_ui.close()

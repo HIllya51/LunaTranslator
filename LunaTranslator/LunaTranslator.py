@@ -4,6 +4,10 @@ from threading import Thread
 import os
 import json
 import sys
+if os.path.exists('./debug')==False:
+    os.mkdir('./debug')
+sys.stderr=open('./debug/stderr.txt','a',encoding='utf8')
+#sys.stdout=open('./debug/stdout.txt','a',encoding='utf8')
 from traceback import  print_exc  
 dirname, filename = os.path.split(os.path.abspath(__file__))
 sys.path.append(dirname)  

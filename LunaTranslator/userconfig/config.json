@@ -1,12 +1,12 @@
 {
     "position": [
-        471,
-        705
+        218,
+        491
     ],
     "fixedheight": false,
     "width": 1121,
     "autorun": true,
-    "transparent": 82,
+    "transparent": 41,
     "fontsize": 17.699999999999996,
     "fonttype": "思源黑体 CN Medium",
     "issolid": false,
@@ -15,7 +15,7 @@
     "rawtextcolor": "#000000",
     "backcolor": "#7a8b8a",
     "isshowhira": false,
-    "locktools": true,
+    "locktools": false,
     "showfanyisource": true,
     "autoread": false,
     "extractalltext": false,
