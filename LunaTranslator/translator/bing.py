@@ -48,7 +48,7 @@ class TS(basetrans):
  
 
         self.iid=re.findall('<div id="rich_tta" data-iid="(.*)"\)">',text)[0] 
-        print( self.IG)
+        #print( self.IG)
         self.iid_i=1
   
     def show(self,res):

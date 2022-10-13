@@ -1,0 +1,12 @@
+Traceback (most recent call last):
+  File "LunaTranslator.py", line 257, in <module>
+    app.main()
+  File "LunaTranslator.py", line 248, in main
+    self.aa()
+  File "LunaTranslator.py", line 232, in aa
+    self.settin_ui =gui.settin.Settin(self) 
+  File "C:\Users\11737\Documents\GitHub\LunaTranslator\LunaTranslator\gui\settin.py", line 56, in __init__
+    setTab5(self)
+  File "C:\Users\11737\Documents\GitHub\LunaTranslator\LunaTranslator\gui\settingpage_tts.py", line 41, in setTab5
+    self.huoshanTTSswitch =gui.switchbutton.MySwitch(self.tab_1, sign= globalconfig['reader']['huoshan'] )
+KeyError: 'huoshan'

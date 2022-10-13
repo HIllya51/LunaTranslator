@@ -1,7 +1,7 @@
 {
     "position": [
-        218,
-        491
+        601,
+        647
     ],
     "fixedheight": false,
     "width": 1121,
@@ -22,7 +22,21 @@
     "reader": {
         "qq": false,
         "guge": true,
-        "windows": true
+        "windows": false,
+        "azure": false,
+        "huoshan": true,
+        "azuretts": {
+            "use": true,
+            "voice": "ja-JP-KeitaNeural"
+        },
+        "huoshantts": {
+            "use": false,
+            "voice": "jp_male_satoshi"
+        },
+        "windowstts": {
+            "use": false,
+            "voice": "TTS_MS_JA-JP_HARUKA_11.0"
+        }
     },
     "LocaleEmulator": "C:\\dataH\\Locale.Emulator.2.5.0.1",
     "verticalocr": false,
@@ -33,9 +47,9 @@
         "volume": 100.0
     },
     "sourcestatus": {
-        "copy": false,
+        "copy": true,
         "ocr": false,
-        "textractor": true,
+        "textractor": false,
         "textractor_pipe": false
     },
     "ocr": {
@@ -247,5 +261,9 @@
     "showatcenter": true,
     "mustocr": true,
     "mustocr_interval": 5,
-    "ocrmininterval": 1
+    "ocrmininterval": 1,
+    "ttscommon": {
+        "rate": 0.0,
+        "volume": 50.0
+    }
 }

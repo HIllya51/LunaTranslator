@@ -1,16 +1,17 @@
-from PyQt5.QtCore import Qt,QSize,pyqtSignal ,QRect 
+from PyQt5.QtCore import Qt,QSize,pyqtSignal ,QRect ,QUrl
  
 from PyQt5.QtWidgets import  QColorDialog
 from PyQt5.QtGui import QColor ,QFont
 from utils.config import globalconfig 
 from PyQt5.QtWidgets import  QTabWidget,QMainWindow 
 import qtawesome   
-      
+
+from PyQt5.QtMultimedia import QMediaPlayer,QMediaContent 
 from gui.settingpage1 import setTabOne
 from gui.settingpage2 import setTabTwo
 from gui.settingpage_xianshishezhi import setTabThree
 from gui.settingpage4 import setTab4 
-from gui.settingpage5 import setTab5 
+from gui.settingpage_tts import setTab5 
 from gui.settingpage6 import setTab6 
 from gui.settingpage7 import setTab7
 from gui.settingpage_about import setTab_about
@@ -19,12 +20,20 @@ class Settin(QMainWindow) :
     resetsourcesignal=pyqtSignal()
     loadtextractorfalse=pyqtSignal( ) 
     voicelistsignal=pyqtSignal(list)
+    mp3playsignal=pyqtSignal(str,int)
     autostarthooksignal=pyqtSignal(int,str,list) 
     versiontextsignal=pyqtSignal( str)
+   
+    def mp3playfunction(self,path,volume):
+        self.mp3player.stop()
+        self.mp3player.setMedia(QMediaContent(QUrl(path)))
+        self.mp3player.setVolume(volume)
+        self.mp3player.play()
     def __init__(self, object):
-
+        
         super(Settin, self).__init__()
-
+        self.mp3player=QMediaPlayer()
+        self.mp3playsignal.connect(self.mp3playfunction)
         self.object = object  
         
         # 界面缩放比例
@@ -40,8 +49,7 @@ class Settin(QMainWindow) :
         self.setWindowTitle("设置")
         self.setWindowIcon(qtawesome.icon("fa.gear" ))
         
-        self.setStyleSheet("font: 11pt '黑体' ; color: \"#595959\"" )
-        
+        self.setStyleSheet("font: 11pt '黑体' ; color: \"#595959\"" ) 
         #self.setFont((QFont("黑体",11,QFont.Bold)))
         self.tab_widget = QTabWidget(self)
         self.tab_widget.setGeometry(self.geometry()) 

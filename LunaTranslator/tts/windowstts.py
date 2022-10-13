@@ -3,7 +3,7 @@ from utils.config import globalconfig
 import subprocess
 class tts():
     
-    def __init__(self,showlist ): 
+    def __init__(self,showlist ,_): 
                 
         st=subprocess.STARTUPINFO()
         st.dwFlags=subprocess.STARTF_USESHOWWINDOW
@@ -21,12 +21,16 @@ class tts():
             res=str(p.stdout.readline(),encoding='utf8').replace('\r','').replace('\n','')
             self.voicelist.append(res.split('\\')[-1]) 
         showlist.emit(self.voicelist)
+        if globalconfig['reader']['windowstts']['voice']=='' and len(self.voicelist)>0:
+            globalconfig['reader']['windowstts']['voice']=self.voicelist[0]
         self.speaking=None
-    def read(self,content,rate=1):
-        print('reading',content)
-        i=self.voicelist.index(globalconfig['windowstts']['voice'])
-        if i==-1:
+    def read(self,content): 
+        if len(self.voicelist)==0:
             return 
+        if globalconfig['reader']['windowstts']['voice'] not in self.voicelist:
+            return
+        i=self.voicelist.index(globalconfig['reader']['windowstts']['voice'])
+         
         if self.speaking:
             self.speaking.kill()
                 
@@ -34,6 +38,6 @@ class tts():
         st.dwFlags=subprocess.STARTF_USESHOWWINDOW
         st.wShowWindow=subprocess.SW_HIDE
 
-        self.speaking=subprocess.Popen(f'./files/tts/tts_s.exe {i} {globalconfig["windowstts"]["rate"]} {globalconfig["windowstts"]["volume"]} "{content}"',startupinfo=st )
+        self.speaking=subprocess.Popen(f'./files/tts/tts_s.exe {i} {globalconfig["ttscommon"]["rate"]} {globalconfig["ttscommon"]["volume"]} "{content}"',stdout=subprocess.PIPE,startupinfo=st )
         
       

@@ -7,18 +7,20 @@ import sys
 if os.path.exists('./debug')==False:
     os.mkdir('./debug')
 sys.stderr=open('./debug/stderr.txt','a',encoding='utf8')
-#sys.stdout=open('./debug/stdout.txt','a',encoding='utf8')
+sys.stdout=open('./debug/stdout.txt','a',encoding='utf8')
 from traceback import  print_exc  
 dirname, filename = os.path.split(os.path.abspath(__file__))
 sys.path.append(dirname)  
 import threading,win32gui
-from tts.windowstts import tts   
-from PyQt5.QtCore import QCoreApplication ,Qt 
+from PyQt5.QtCore import QCoreApplication ,Qt ,pyqtSignal,QUrl
 from PyQt5.QtWidgets import  QApplication ,QGraphicsScene,QGraphicsView,QDesktopWidget
 import utils.screen_rate  
 from utils.wrapper import timer,threader 
 import gui.rangeselect   
 import gui.settin     
+from tts.windowstts import tts  as windowstts
+from tts.huoshantts import tts as huoshantts
+from tts.azuretts import tts as azuretts
 import gui.selecthook
 import pyperclip
 from utils.getpidlist import getwindowlist
@@ -38,6 +40,7 @@ class MAINUI() :
         self.rect=None
         self.textsource=None
         self.savetextractor=None
+        
     def textgetmethod(self,paste_str,shortlongskip=True):
         if paste_str[:len('<notrans>')]=='<notrans>':
             self.translation_ui.displayraw1.emit(paste_str[len('<notrans>'):],globalconfig['rawtextcolor'],1)
@@ -86,10 +89,20 @@ class MAINUI() :
     @threader
     def startreader(self):
         if globalconfig['reader']:
-            
-            use=None  
-            if globalconfig['reader']['windows']: 
-                    self.reader=tts( self.settin_ui.voicelistsignal) 
+            use=None
+            ttss={'windowstts':windowstts,
+                    'huoshantts':huoshantts,
+                    'azuretts':azuretts}
+            for key in ttss:
+                if globalconfig['reader'][key]['use']:
+                    use=key
+                    self.reader_usevoice=use
+                    break
+            if use:
+                
+                #from tts.
+                
+                self.reader=ttss[use]( self.settin_ui.voicelistsignal,self.settin_ui.mp3playsignal) 
     @threader
     def starttextsource(self):
          
@@ -102,6 +115,7 @@ class MAINUI() :
             for k in classes: 
                 if globalconfig['sourcestatus'][k]:
                     use=k 
+                    break
             if use is None:
                 self.textsource=None
             elif use=='textractor':

@@ -1,7 +1,7 @@
  
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QDialog,QVBoxLayout,QHBoxLayout,QLabel,QLineEdit,QListView,QDialogButtonBox ,QApplication,QPushButton
-from PyQt5.QtGui import  QStandardItemModel,QPixmap,QColor,QIcon,QStandardItem 
+from PyQt5.QtGui import  QStandardItemModel,QPixmap,QColor,QIcon,QStandardItem ,QFont
 from PyQt5.QtWinExtras  import QtWin 
 import win32gui 
 import win32api,win32process,win32con
@@ -97,6 +97,9 @@ class AttachProcessDialog(QDialog):
         self.selectedp=-1  
         self.setWindowTitle('选择进程')
         self.setWindowIcon(qtawesome.icon("fa.gear" ))
+        f=QFont() 
+        f.setPointSize(13)
+        self.setFont(f)
         self.setWindowFlags(Qt.WindowStaysOnTopHint |Qt.WindowCloseButtonHint)
         t1=time.time()
         self.layout1=QVBoxLayout()
@@ -107,7 +110,7 @@ class AttachProcessDialog(QDialog):
         self.layout1.addWidget(self.button)
         self.layout2=QHBoxLayout()
         self.processIdEdit=QLineEdit()
-        self.layout2.addWidget(QLabel('进程号，可以手动输入'))
+        self.layout2.addWidget(QLabel('进程号，找不到的情况下可以手动输入'))
         self.layout2.addWidget(self.processIdEdit)
         self.processEdit=QLineEdit()
         self.layout3=QHBoxLayout()

@@ -1,20 +1,26 @@
-   
-import os
-import re
-import base64
-import requests 
+import threading
 from traceback import print_exc
-from utils.config import globalconfig 
-import time 
+import requests
+from utils.config import globalconfig    
+import base64
+import os
+import time
 class tts():
     
-    def __init__(self,showlist): 
+    def __init__(self,showlist,mp3playsignal): 
         self.voicelist=['jp_male_satoshi','jp_female_mai']
         showlist.emit(self.voicelist)
+        if globalconfig['reader']['huoshantts']['voice']=='' and len(self.voicelist)>0:
+            globalconfig['reader']['huoshantts']['voice']=self.voicelist[0]
         self.speaking=None
-    def read(self,content,usevoice):
+        self.speaking=None
+        self.mp3playsignal=mp3playsignal
+    def read(self,content):
+        threading.Thread(target=self.read_t,args=(content,)).start()
+         
+    def read_t(self,content):
         print('reading',content)
-        i=self.voicelist.index(globalconfig['huoshantts']['voice'])
+         
         try: 
             headers = {
                 'authority': 'translate.volcengine.com',
@@ -28,16 +34,18 @@ class tts():
             }
 
             json_data = {
-                'text': 'おはよう',
-                'speaker': 'jp_male_satoshi',
+                'text': content,
+                'speaker': globalconfig['reader']['huoshantts']['voice'],
             }#
-            response = requests.post('https://translate.volcengine.com/crx/tts/v1/',  headers=headers, json=json_data)
+            response = requests.post('https://translate.volcengine.com/crx/tts/v1/',  headers=headers, json=json_data,proxies={'http':None,'https':None})
             fname=str(time.time())
             b64=base64.b64decode(response.json()['audio']['data'])
-            with open('./files/ttscache/'+fname+'.mp3','wb') as ff:
+            if os.path.exists('./ttscache')==False:
+                os.mkdir('./ttscache')
+            with open('./ttscache/'+fname+'.mp3','wb') as ff:
                 ff.write(b64)
                         
-            self.signal.emit('./files/ttscache/'+fname+'.mp3')
+            self.mp3playsignal.emit('./ttscache/'+fname+'.mp3',globalconfig["ttscommon"]["volume"])
             
         except:
             print_exc()
