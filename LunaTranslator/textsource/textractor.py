@@ -1,4 +1,5 @@
   
+from cgitb import Hook
 import sqlite3
 from threading import Thread
 import threading
@@ -128,6 +129,8 @@ class textractor(basetext  ):
         for ares in reres:
             
             thread_handle,thread_tp_processId, thread_tp_addr, thread_tp_ctx, thread_tp_ctx2, thread_name,HookCode,output =ares
+            if HookCode=='HB0@0':
+                continue
             output=output[:-1]
             if output[-2:]=='\r\n':
                 output=output[:-2]
