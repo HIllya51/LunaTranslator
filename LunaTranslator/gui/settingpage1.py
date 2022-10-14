@@ -222,4 +222,6 @@ def textsourcechange(self,who,checked):
         self.selecthookbutton.setIcon(qtawesome.icon("fa.gear", color="#FF69B4" if globalconfig['sourcestatus']['textractor'] else '#595959')) 
         if who=='textractor':
             settingtextractor(self,True)
+        
+        self.object.translation_ui.showhidetoolbuttons()
     # 翻译设定标签栏
