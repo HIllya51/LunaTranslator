@@ -28,7 +28,7 @@ def syncconfig(config,default,drop=False,deep=0):
             config[key]=default[key]
         elif key=='name':
             config[key]=default[key]
-        if type(default[key])!=type(config[key]):
+        if type(default[key])!=type(config[key]) and (type(default[key])==dict or type(default[key])==list):
             config[key]=default[key]
         elif type(default[key])==dict:
             syncconfig(config[key],default[key])

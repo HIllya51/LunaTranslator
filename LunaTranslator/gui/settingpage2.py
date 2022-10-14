@@ -51,9 +51,15 @@ def setTabTwo(self) :
         self.translatortimeout=QSpinBox(self.tab_2)
         self.translatortimeout.setMinimum(1)
         self.translatortimeout.setMaximum(20)
+        import socket
+        socket.setdefaulttimeout(globalconfig['translatortimeout'])
         self.translatortimeout.setValue(globalconfig['translatortimeout']) 
         self.customSetGeometry(self.translatortimeout, 550,470,50,20)
-        self.translatortimeout.valueChanged.connect(lambda x:globalconfig.__setitem__('translatortimeout',x)) 
+        def __timeout(x):
+
+            globalconfig.__setitem__('translatortimeout',x)
+            socket.setdefaulttimeout(globalconfig['translatortimeout'])
+        self.translatortimeout.valueChanged.connect(lambda x:__timeout(x)) 
 
         label = QLabel(self.tab_2)
         self.customSetGeometry(label, 20, 500, 200, 20)

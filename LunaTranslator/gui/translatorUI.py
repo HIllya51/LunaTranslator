@@ -215,9 +215,9 @@ class QUnFrameWindow(QWidget):
         self.takusanbuttons(qtawesome.icon("fa.lock" ,color="#FF69B4" if globalconfig['locktools'] else 'white'),"MinMaxButton",self.changetoolslockstate,10,"锁定工具栏",'locktoolsbutton') 
         self.takusanbuttons(qtawesome.icon("fa.minus",color="white" ),"MinMaxButton",self.hide_and_disableautohide,-2,"最小化到托盘")
         self.takusanbuttons(qtawesome.icon("fa.times" ,color="white"),"CloseButton",self.quitf,-1,"退出")
-        self.resize(int(globalconfig['width'] ), int(150*self.rate))
-        self.move(QPoint(globalconfig['position'][0],globalconfig['position'][1])) 
          
+        self.setGeometry( globalconfig['position'][0],globalconfig['position'][1],int(globalconfig['width'] ), int(150*self.rate)) 
+        print(self.width())
         icon = QIcon()
         icon.addPixmap(QPixmap('./files/luna.jpg'), QIcon.Normal, QIcon.On)
         self.setWindowIcon(icon)
