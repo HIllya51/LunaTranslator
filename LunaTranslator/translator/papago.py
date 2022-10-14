@@ -26,7 +26,7 @@ class TS(basetrans):
                 'upgrade-insecure-requests': '1',
                 'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36',
             
-            }, proxies=  {'http': None,'https': None}).text
+            },timeout = globalconfig['translatortimeout'], proxies=  {'http': None,'https': None}).text
         except:
             pass
         self.uuid=uuid.uuid4().__str__()

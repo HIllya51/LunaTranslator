@@ -13,7 +13,7 @@ from PyQt5.QtGui import QPen,QColor,QFont,QTextCharFormat ,QIcon,QPixmap ,QPaint
 from PyQt5.QtWidgets import  QLabel,QTextBrowser,QPushButton ,QSystemTrayIcon ,QAction,QMenu,QGraphicsEffect
 import pyperclip 
 from PyQt5.QtCore import QProcess ,QByteArray ,QTimer
-from utils.config import globalconfig,postprocessconfig
+from utils.config import globalconfig,postprocessconfig,transerrorfixdictconfig,noundictconfig
 import win32api,win32gui,win32con
 import gui.rangeselect
 import gui.transhist
@@ -559,7 +559,10 @@ class QUnFrameWindow(QWidget):
         #self.hide()
         with open('./userconfig/postprocessconfig.json','w',encoding='utf-8') as ff:
             ff.write(json.dumps(postprocessconfig,ensure_ascii=False,sort_keys=False, indent=4))
-        
+        with open('./userconfig/transerrorfixdictconfig.json','w',encoding='utf-8') as ff:
+            ff.write(json.dumps(transerrorfixdictconfig,ensure_ascii=False,sort_keys=False, indent=4))
+        with open('./userconfig/noundictconfig.json','w',encoding='utf-8') as ff:
+            ff.write(json.dumps(noundictconfig,ensure_ascii=False,sort_keys=False, indent=4))
         self.tray.hide()
         self.tray = None 
         self.object.range_ui.close()

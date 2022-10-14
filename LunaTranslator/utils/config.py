@@ -23,15 +23,20 @@ savehook_new=tryreadconfig('savehook_new.json')
 
 
 def syncconfig(config,default,drop=False,deep=0):
-    for key in default:
-        if key not in config:
+    
+    for key in default: 
+        if key not in config: 
             config[key]=default[key]
-        elif key=='name':
+            print(config[key],default[key])
+        elif key=='name': 
             config[key]=default[key]
-        if type(default[key])!=type(config[key]) and (type(default[key])==dict or type(default[key])==list):
+        if type(default[key])!=type(config[key]) and (type(default[key])==dict or type(default[key])==list): 
             config[key]=default[key]
-        elif type(default[key])==dict:
+            print(config[key],default[key])
+        elif type(default[key])==dict: 
+            print(config[key],default[key])
             syncconfig(config[key],default[key])
+             
     if drop:
         for key in list(config.keys()):
             if key not in default:
@@ -40,9 +45,10 @@ def syncconfig(config,default,drop=False,deep=0):
             elif type(default[key])==dict and deep!=1:
                 syncconfig(config[key],default[key],drop)
         
-syncconfig(transerrorfixdictconfig,defaulterrorfix)
 syncconfig(postprocessconfig,defaultpost ,True,1) 
-syncconfig(noundictconfig,defaultnoun)
 syncconfig(globalconfig,defaultglobalconfig)
  
+syncconfig(transerrorfixdictconfig,defaulterrorfix)
+
+syncconfig(noundictconfig,defaultnoun)
 #0 ja  1 eng
