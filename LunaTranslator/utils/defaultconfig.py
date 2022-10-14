@@ -15,6 +15,7 @@ defaultglobalconfig = {'position': [432, 613], 'fixedheight': False, 'width': 76
     'iciba': {'use': False, 'color': '#0ff000', 'name': 'iciba'}, 'baiduapi': {'use': False, 'color': '#0ff000', 'name': '百度api', 'argsfile': './userconfig/baiduapi.json'}, 'tencentapi': {'use': False, 'color': '#0ff000', 'name': '腾讯api', 'argsfile': './userconfig/txapi.json'}, 'byte': {'use': False, 'color': '#0ff000', 'name': 'byte'}, 'qqimt': {'use': False, 'color': '#0ff000', 'name': 'qqimt'}, 'xiaoniu': {'use': False, 'color': '#0ff000', 'name': '小牛api', 'argsfile': './userconfig/xiaoniuapi.json'},
     'huoshan': {'use': False, 'color': '#0ff000', 'name': 'huoshan' },
     'yeekit': {'use': False, 'color': '#0ff000', 'name': 'yeekit' }, 'caiyunapi': {'use': False, 'color': '#0ff000', 'name': '彩云api', 'argsfile': './userconfig/caiyunapi.json'}, 'huoshanapi': {'use': False, 'color': '#0ff000', 'name': '火山api', 'argsfile': './userconfig/huoshanapi.json'},
+    'papago': {'use': False, 'color': '#0ff000', 'name': 'papago'},
     'rengong': {'use': False, 'color': '#0ff000', 'name': '人工翻译', 'argsfile': './userconfig/rengong.json'}
     },
      'minifollow': True, 'movefollow': True, 'autostarthook': True, 'translatortimeout': 5, 'minlength': 0, 'maxlength': 150, 'fanjian': 0, 'rotation': 0, 'srclang': 0,

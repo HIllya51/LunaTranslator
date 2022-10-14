@@ -1,7 +1,7 @@
 {
     "position": [
-        599,
-        764
+        439,
+        535
     ],
     "fixedheight": false,
     "width": 768,
@@ -245,6 +245,11 @@
             "color": "#0ff000",
             "name": "人工翻译",
             "argsfile": "./userconfig/rengong.json"
+        },
+        "papago": {
+            "use": true,
+            "color": "#0ff000",
+            "name": "papago"
         }
     },
     "minifollow": true,
