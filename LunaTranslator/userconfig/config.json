@@ -1,7 +1,7 @@
 {
     "position": [
-        555,
-        540
+        491,
+        714
     ],
     "fixedheight": false,
     "width": 971,
@@ -15,7 +15,7 @@
     "rawtextcolor": "#000000",
     "backcolor": "#7a8b8a",
     "isshowhira": false,
-    "locktools": false,
+    "locktools": true,
     "showfanyisource": true,
     "autoread": false,
     "extractalltext": true,
@@ -44,8 +44,8 @@
         "volume": 100.0
     },
     "sourcestatus": {
-        "copy": false,
-        "ocr": true,
+        "copy": true,
+        "ocr": false,
         "textractor": false,
         "textractor_pipe": false
     },
