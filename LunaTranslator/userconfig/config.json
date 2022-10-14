@@ -1,7 +1,7 @@
 {
     "position": [
-        611,
-        747
+        599,
+        764
     ],
     "fixedheight": false,
     "width": 768,
@@ -26,7 +26,7 @@
         "azure": false,
         "huoshan": true,
         "azuretts": {
-            "use": true,
+            "use": false,
             "voice": "zh-CN-liaoning-XiaobeiNeural"
         },
         "huoshantts": {
@@ -34,7 +34,7 @@
             "voice": "jp_male_satoshi"
         },
         "windowstts": {
-            "use": false,
+            "use": true,
             "voice": "TTS_MS_JA-JP_HARUKA_11.0"
         }
     },
@@ -176,7 +176,7 @@
             "name": "TX"
         },
         "ifly": {
-            "use": false,
+            "use": true,
             "color": "#0ff000",
             "name": "ifly"
         },
