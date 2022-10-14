@@ -551,8 +551,9 @@ class QUnFrameWindow(QWidget):
                 continue
             button.move(showed*button.width() , 0) 
             self.showbuttons.append(button)
-            button.show()
+            #button.show()
             showed+=1
+        self.enterEvent(None)
     def takusanbuttons(self,iconname,objectname,clickfunc,adjast=None,tips=None,save=None): 
         
         button=QTitleButton(self)
