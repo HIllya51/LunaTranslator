@@ -17,7 +17,8 @@ from utils.config import globalconfig,postprocessconfig,transerrorfixdictconfig,
 import win32api,win32gui,win32con
 import gui.rangeselect
 import gui.transhist
-
+from gui.settingpage4 import autosaveshow
+from gui.settingpage1 import settingsource,settingtextractor
 class QTitleButton(QPushButton):
     """
     新建标题栏按钮类
@@ -199,11 +200,14 @@ class QUnFrameWindow(QWidget):
 
         self.mousetransparent=False
         self.buttons=[] 
-                 
+        buttoninfos=[
+
+        ]
+         
         self.takusanbuttons(qtawesome.icon("fa.rotate-right" ,color="white"),"MinMaxButton",self.startTranslater,0,"重新翻译")
         self.takusanbuttons(qtawesome.icon("fa.forward" ,color="#FF69B4" if globalconfig['autorun'] else 'white'),"MinMaxButton",self.changeTranslateMode,1,"自动翻译",'automodebutton')
         self.takusanbuttons(qtawesome.icon("fa.gear",color="white" ),"MinMaxButton",self.clickSettin,2,"设置")
-        self.takusanbuttons(qtawesome.icon("fa.crop" ,color="white"),"MinMaxButton",self.clickRange,3,"选取OCR范围")
+        self.takusanbuttons(qtawesome.icon("fa.crop" ,color="white"),"MinMaxButton",self.clickRange,3,"选取OCR范围(OCR激活后有效)")
         self.takusanbuttons((qtawesome.icon("fa.square" ,color='white')),"MinMaxButton",self.showhide,4,"显示/隐藏范围框",'showhidebutton')
         self.takusanbuttons(qtawesome.icon("fa.copy" ,color="white"),"MinMaxButton",lambda: pyperclip.copy(self.original),5,"复制到剪贴板") 
         self.takusanbuttons(qtawesome.icon("fa.eye"   if globalconfig['isshowrawtext'] else "fa.eye-slash" ,color="white"),"MinMaxButton", self.changeshowhideraw,6,"显示/隐藏原文",'showhiderawbutton') 
@@ -213,11 +217,20 @@ class QUnFrameWindow(QWidget):
         self.takusanbuttons(qtawesome.icon("fa.mouse-pointer" ,color="white"),"MinMaxButton",self.changemousetransparentstate,9,"鼠标穿透窗口",'mousetransbutton') 
          
         self.takusanbuttons(qtawesome.icon("fa.lock" ,color="#FF69B4" if globalconfig['locktools'] else 'white'),"MinMaxButton",self.changetoolslockstate,10,"锁定工具栏",'locktoolsbutton') 
+        
+        
+        self.takusanbuttons(qtawesome.icon("fa.gamepad" ,color= 'white'),"MinMaxButton",lambda: autosaveshow(None),11,"打开保存的游戏") 
+        self.takusanbuttons(qtawesome.icon("fa.link" ,color= 'white'),"MinMaxButton",lambda :settingtextractor(self.object.settin_ui),12,"选择游戏(textractor激活后有效)" ) 
+        self.takusanbuttons(qtawesome.icon("fa.tasks" ,color= 'white'),"MinMaxButton",lambda :settingsource(self.object.settin_ui),13,"选择文本(textractor激活后有效)" ) 
+        # self.takusanbuttons(qtawesome.icon("fa.lock" ,color="#FF69B4" if globalconfig['locktools'] else 'white'),"MinMaxButton",self.changetoolslockstate,10,"锁定工具栏",'locktoolsbutton') 
+        
+        
+        
         self.takusanbuttons(qtawesome.icon("fa.minus",color="white" ),"MinMaxButton",self.hide_and_disableautohide,-2,"最小化到托盘")
         self.takusanbuttons(qtawesome.icon("fa.times" ,color="white"),"CloseButton",self.quitf,-1,"退出")
          
         self.setGeometry( globalconfig['position'][0],globalconfig['position'][1],int(globalconfig['width'] ), int(150*self.rate)) 
-        print(self.width())
+         
         icon = QIcon()
         icon.addPixmap(QPixmap('./files/luna.jpg'), QIcon.Normal, QIcon.On)
         self.setWindowIcon(icon)
@@ -227,6 +240,7 @@ class QUnFrameWindow(QWidget):
         self.tray.setIcon(icon) 
         
         showAction = QAction("&显示", self, triggered = self.show_and_enableautohide)
+        settingAction = QAction("&设置", self, triggered = self.clickSettin)
         quitAction = QAction("&退出", self, triggered = self.quitf)
                 
         
@@ -236,6 +250,7 @@ class QUnFrameWindow(QWidget):
         self.trayMenu = QMenu(self)
         # 将动作对象添加到菜单
         self.trayMenu.addAction(showAction)
+        self.trayMenu.addAction(settingAction)
         # 增加分割线
         self.trayMenu.addSeparator()
         self.trayMenu.addAction(quitAction)
@@ -336,6 +351,8 @@ class QUnFrameWindow(QWidget):
         self.object.settin_ui.setFocus()
         # 按下范围框选键
     def clickRange(self): 
+        if globalconfig['sourcestatus']['ocr']==False:
+                return 
         self.showhidestate=False
         self.showhide()
         

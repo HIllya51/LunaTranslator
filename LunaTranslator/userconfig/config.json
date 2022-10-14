@@ -1,12 +1,12 @@
 {
     "position": [
-        626,
-        723
+        405,
+        674
     ],
     "fixedheight": false,
     "width": 1136,
     "autorun": true,
-    "transparent": 32,
+    "transparent": 42,
     "fontsize": 17.699999999999996,
     "fonttype": "思源黑体 CN Medium",
     "issolid": false,
@@ -44,7 +44,7 @@
         "volume": 100.0
     },
     "sourcestatus": {
-        "copy": true,
+        "copy": false,
         "ocr": false,
         "textractor": false,
         "textractor_pipe": false
@@ -268,5 +268,6 @@
     "ttscommon": {
         "rate": 1.0,
         "volume": 100.0
-    }
+    },
+    "mousetransparent": true
 }

@@ -88,7 +88,8 @@ def autosaveshow(object):
                 if os.path.exists(model.item(table.currentIndex().row(),1).text()):
                         subprocess.Popen(model.item(table.currentIndex().row(),1).text())
                         dialog.close()
-                        object.close()
+                        if object:
+                                object.close()
                          
         button.clicked.connect(clicked)
         button4=QPushButton(dialog)
@@ -102,7 +103,8 @@ def autosaveshow(object):
                                 subprocess.Popen('"'+le+'"   "'+ model.item(table.currentIndex().row(),1).text()+'"')
                          
                                 dialog.close()
-                                object.close()
+                                if object:
+                                        object.close()
                          
         button4.clicked.connect(clicked4)
         button2=QPushButton(dialog)
