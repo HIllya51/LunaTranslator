@@ -8,6 +8,7 @@ from typing import Dict
 
 from .properties import Ch, Configurations, Convert_Tables
 
+import zipfile, os
 
 class IConv:
 
@@ -293,8 +294,14 @@ class Jisyo:
 
     def __init__(self, dictname):
         src = Configurations.dictpath(dictname)
-        with open(src, "rb") as d:
-            self._dict = pickle.load(d)
+        if dictname=='kanwadict4.db':
+            zipFile=zipfile.ZipFile(src,'r')
+            data = zipFile.open(dictname)
+            
+            self._dict = pickle.loads(data.read())
+        else:
+            with open(src, "rb") as d:
+                self._dict = pickle.load(d)
 
     def haskey(self, key):
         return key in self._dict

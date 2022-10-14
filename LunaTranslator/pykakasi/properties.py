@@ -7,7 +7,7 @@ import os
 
 import pkg_resources
 
-
+import zipfile
 class Configurations:
 
     data_path = pkg_resources.resource_filename(__name__, "data")

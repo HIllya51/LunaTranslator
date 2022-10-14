@@ -78,6 +78,7 @@ class Itaiji:
             with self._lock:
                 if self._itaijidict is None:
                     itaijipath = Configurations.dictpath(Configurations.jisyo_itaiji)
+                     
                     with open(itaijipath, "rb") as d:
                         self._itaijidict = pickle.load(d)
 
@@ -86,7 +87,7 @@ class Itaiji:
 
     def convert(self, text: str) -> str:
         return text.translate(self._itaijidict)
-
+import zipfile
 
 # This class is Borg/Singleton
 # It provides same results becase lookup from a static dictionary.
@@ -104,9 +105,14 @@ class Kanwa:
             with self._lock:
                 if self._jisyo_table is None:
                     dictpath = Configurations.dictpath(Configurations.jisyo_kanwa)
-                    with open(dictpath, "rb") as d:
-                        self._jisyo_table = pickle.load(d)
-
+                    # with open(dictpath, "rb") as d:
+                    #     self._jisyo_table = pickle.load(d)
+                            
+                    zipFile=zipfile.ZipFile(dictpath,'r')
+                    data = zipFile.open(Configurations.jisyo_kanwa)
+                    
+                    self._jisyo_table = pickle.loads(data.read())
+       
     def load(self, char: str):
         key = ord(char[0])
         return self._jisyo_table.get(key, None)
