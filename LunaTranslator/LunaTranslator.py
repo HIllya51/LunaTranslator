@@ -42,6 +42,8 @@ class MAINUI() :
         self.savetextractor=None
         
     def textgetmethod(self,paste_str,shortlongskip=True):
+        if paste_str=='':
+            return 
         if paste_str[:len('<notrans>')]=='<notrans>':
             self.translation_ui.displayraw1.emit(paste_str[len('<notrans>'):],globalconfig['rawtextcolor'],1)
             return 
@@ -155,7 +157,7 @@ class MAINUI() :
                 if globalconfig['fanyi'][source]['use']:
                     Thread(target=self.fanyiloader,args=(source,)).start()
     def _maybeyrengong(self,classname,contentraw,res):
-        if globalconfig['sourcestatus']['textractor'] and globalconfig['transkiroku']:
+        if globalconfig['sourcestatus']['textractor'] and globalconfig['transkiroku'] and 'sqlwrite' in dir(self.textsource):
             if globalconfig['transkirokuuse']==classname:
                 self.textsource.sqlwrite.execute(f'UPDATE artificialtrans SET machineTrans = "{res}" WHERE source = "{contentraw}"')
                 self.textsource.sqlwrite.commit() 

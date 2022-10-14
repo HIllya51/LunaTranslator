@@ -1,7 +1,7 @@
 {
     "position": [
-        751,
-        632
+        595,
+        485
     ],
     "fixedheight": false,
     "width": 768,
@@ -14,7 +14,7 @@
     "isshowrawtext": true,
     "rawtextcolor": "#000000",
     "backcolor": "#7a8b8a",
-    "isshowhira": true,
+    "isshowhira": false,
     "locktools": false,
     "showfanyisource": true,
     "autoread": false,
@@ -44,9 +44,9 @@
         "volume": 100.0
     },
     "sourcestatus": {
-        "copy": true,
+        "copy": false,
         "ocr": false,
-        "textractor": false,
+        "textractor": true,
         "textractor_pipe": false
     },
     "ocr": {
@@ -85,7 +85,7 @@
             "name": "百度"
         },
         "bing": {
-            "use": true,
+            "use": false,
             "color": "#000ff0",
             "name": "必应"
         },
@@ -120,7 +120,7 @@
             "name": "搜狗"
         },
         "caiyun": {
-            "use": true,
+            "use": false,
             "color": "#0ff000",
             "name": "彩云"
         },
@@ -244,7 +244,7 @@
             "argsfile": "./userconfig/rengong.json"
         },
         "papago": {
-            "use": false,
+            "use": true,
             "color": "#0ff000",
             "name": "papago"
         }

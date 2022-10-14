@@ -24,27 +24,28 @@ class textractor(basetext  ):
         self.t.start()
          
     def reset(self,object,textgetmethod,hookselectdialog,pid,pname,arch,autostart=False,autostarthookcode=[])  : 
-        with open(pname,'rb') as ff:
-            bs=ff.read()
-        
-        
-        
-        self.sqlfname='./transkiroku/'+hashlib.md5(bs).hexdigest()+'_'+os.path.basename(pname).replace('.'+os.path.basename(pname).split('.')[-1],'.sqlite') 
-        
-        self.jsonfname='./transkiroku/'+hashlib.md5(bs).hexdigest()+'_'+os.path.basename(pname).replace('.'+os.path.basename(pname).split('.')[-1],'.json')
-        def loadjson(self):
-            if os.path.exists(self.jsonfname):
-                with open(self.jsonfname,'r',encoding='utf8') as ff:
-                    self.json=json.load(ff)
-            else:
-                self.json={}
-        threading.Thread(target=loadjson,args=(self,)).start()
-        self.sqlwrite=sqlite3.connect(self.sqlfname,check_same_thread = False)
-        
         try:
-            self.sqlwrite.execute('CREATE TABLE artificialtrans(id INTEGER PRIMARY KEY AUTOINCREMENT,source TEXT,machineTrans TEXT,userTrans TEXT);')
+            with open(pname,'rb') as ff:
+                bs=ff.read() 
+            
+            self.sqlfname='./transkiroku/'+hashlib.md5(bs).hexdigest()+'_'+os.path.basename(pname).replace('.'+os.path.basename(pname).split('.')[-1],'.sqlite') 
+            
+            self.jsonfname='./transkiroku/'+hashlib.md5(bs).hexdigest()+'_'+os.path.basename(pname).replace('.'+os.path.basename(pname).split('.')[-1],'.json')
+            def loadjson(self):
+                if os.path.exists(self.jsonfname):
+                    with open(self.jsonfname,'r',encoding='utf8') as ff:
+                        self.json=json.load(ff)
+                else:
+                    self.json={}
+            threading.Thread(target=loadjson,args=(self,)).start()
+            self.sqlwrite=sqlite3.connect(self.sqlfname,check_same_thread = False)
+            
+            try:
+                self.sqlwrite.execute('CREATE TABLE artificialtrans(id INTEGER PRIMARY KEY AUTOINCREMENT,source TEXT,machineTrans TEXT,userTrans TEXT);')
+            except:
+                pass
         except:
-            pass
+            print_exc()
         self.hookdatacollecter={}
         self.hookdatasort=[]
         self.reverse={}
