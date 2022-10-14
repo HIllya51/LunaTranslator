@@ -220,7 +220,7 @@ class QUnFrameWindow(QWidget):
         
         
         self.takusanbuttons(qtawesome.icon("fa.gamepad" ,color= 'white'),"MinMaxButton",lambda: autosaveshow(None),11,"打开保存的游戏") 
-        self.takusanbuttons(qtawesome.icon("fa.link" ,color= 'white'),"MinMaxButton",lambda :settingtextractor(self.object.settin_ui),12,"选择游戏(textractor激活后有效)" ) 
+        self.takusanbuttons(qtawesome.icon("fa.link" ,color= 'white'),"MinMaxButton",lambda :settingtextractor(self.object.settin_ui,False),12,"选择游戏(textractor激活后有效)" ) 
         self.takusanbuttons(qtawesome.icon("fa.tasks" ,color= 'white'),"MinMaxButton",lambda :settingsource(self.object.settin_ui),13,"选择文本(textractor激活后有效)" ) 
         # self.takusanbuttons(qtawesome.icon("fa.lock" ,color="#FF69B4" if globalconfig['locktools'] else 'white'),"MinMaxButton",self.changetoolslockstate,10,"锁定工具栏",'locktoolsbutton') 
         

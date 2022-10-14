@@ -202,12 +202,12 @@ class hookselect(QMainWindow):
             self.object.textsource.inserthook(hookcode)
         else:
             self.getnewsentence('！未选定进程！')
-    def hide(self):
+    # def hide(self):
          
-        self.hiding=True
-        super(QMainWindow,self).hide()
-        if 'closed' not in dir(self.object):
-            self.object.settin_ui.show()
+    #     self.hiding=True
+    #     super(QMainWindow,self).hide()
+    #     if 'closed' not in dir(self.object):
+    #         self.object.settin_ui.show()
     
     # 窗口关闭处理
     def closeEvent(self, event) : 
@@ -224,7 +224,7 @@ class hookselect(QMainWindow):
         try:
             if  self.object.textsource is None:
                 return 
-            if self.object.textsource.batchselectinghook is None:
+            if 'batchselectinghook' not in dir(self.object.textsource) or  self.object.textsource.batchselectinghook is None:
                 return
             self.object.textsource.selectedhook=self.object.textsource.batchselectinghook
 
@@ -234,7 +234,7 @@ class hookselect(QMainWindow):
                 ff.write(json.dumps(savehook_new,ensure_ascii=False))
         except:
             print_exc()
-        self.object.settin_ui.show()
+        #self.object.settin_ui.show()
     def show(self):
         super(QMainWindow,self).show()
         try:

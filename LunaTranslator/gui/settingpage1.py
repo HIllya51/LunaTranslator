@@ -91,7 +91,7 @@ def setTabOne(self) :
         label.setText("选择文本")
 
         self.selectbutton.setIcon(qtawesome.icon("fa.gear", color="#FF69B4" if globalconfig['sourcestatus']['textractor'] else '#595959'))
-        self.selectbutton.clicked.connect(functools.partial(settingtextractor,self) )
+        self.selectbutton.clicked.connect(functools.partial(settingtextractor,self,True) )
         
         self.selecthookbutton.setIcon(qtawesome.icon("fa.gear", color="#FF69B4" if globalconfig['sourcestatus']['textractor'] else '#595959'))
         self.selecthookbutton.clicked.connect(functools.partial(settingsource,self) )
@@ -129,20 +129,28 @@ def readerchange(self,who,checked):
             
         self.object.startreader()  
 
-def settingtextractor(self): 
+def settingtextractor(self,show1 ): 
+         
         if globalconfig['sourcestatus']['textractor']==False:
+            return 
+        if 'a' in dir(self) and self.a :
             return 
         self.object.hookselectdialog.hide()
         import win32process,win32api 
-        self.hide()
+        
+        if show1: 
+            self.hide()
         self.a=gui.attachprocessdialog.AttachProcessDialog()
         
-        
-        if(self.a.exec_()): 
+        ret=self.a.exec_()
+        if show1:
+                    self.show()
+        if(ret): 
             try:
                 pid,pexe,hwnd=( self.a.selectedp)   
             except:
-                self.show()
+                if show1:
+                    self.show()
                 return 
             if pexe=='':
                 hwnd=win32api.OpenProcess(win32con.PROCESS_ALL_ACCESS,False, (pid))
@@ -159,8 +167,7 @@ def settingtextractor(self):
             
             if   self.object.textsource:
                 self.object.textsource.end()  
-            else:
-                self.show()
+             
             arch='86' if win32process.IsWow64Process( process)  else '64' 
             self.hookpid=pid
             self.hookhwnd=hwnd
@@ -183,13 +190,12 @@ def settingtextractor(self):
             # else:
 
             settingsource(self)
-        else:
-            self.object.textsource=None
-            self.show() 
+         
+        self.a=None
 def settingsource(self):
     if globalconfig['sourcestatus']['textractor']==False:
                 return 
-    self.hide()
+    #self.hide()
     self.object.hookselectdialog.show() 
     self.object.hookselectdialog.hiding=False
 def resetsource(self):
@@ -215,5 +221,5 @@ def textsourcechange(self,who,checked):
         
         self.selecthookbutton.setIcon(qtawesome.icon("fa.gear", color="#FF69B4" if globalconfig['sourcestatus']['textractor'] else '#595959')) 
         if who=='textractor':
-            settingtextractor(self)
+            settingtextractor(self,True)
     # 翻译设定标签栏
