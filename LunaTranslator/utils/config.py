@@ -36,9 +36,8 @@ def syncconfig(config,default,drop=False,deep=0):
         for key in list(config.keys()):
             if key not in default:
                 config.pop(key) 
-            if deep==1:
-                return
-            elif type(default[key])==dict:
+            
+            elif type(default[key])==dict and deep!=1:
                 syncconfig(config[key],default[key],drop)
         
 syncconfig(transerrorfixdictconfig,defaulterrorfix)

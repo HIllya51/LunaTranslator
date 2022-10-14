@@ -1,12 +1,12 @@
 {
     "position": [
-        439,
-        535
+        813,
+        641
     ],
     "fixedheight": false,
     "width": 768,
     "autorun": true,
-    "transparent": 41,
+    "transparent": 32,
     "fontsize": 17.699999999999996,
     "fonttype": "思源黑体 CN Medium",
     "issolid": false,
@@ -18,27 +18,24 @@
     "locktools": false,
     "showfanyisource": true,
     "autoread": false,
-    "extractalltext": false,
+    "extractalltext": true,
     "reader": {
         "qq": false,
         "guge": true,
-        "windows": false,
-        "azure": false,
-        "huoshan": true,
+        "windows": true,
         "azuretts": {
             "use": false,
-            "voice": "zh-CN-liaoning-XiaobeiNeural"
+            "voice": "ja-JP-NanamiNeural"
         },
         "huoshantts": {
-            "use": false,
+            "use": true,
             "voice": "jp_male_satoshi"
         },
         "windowstts": {
-            "use": true,
-            "voice": "TTS_MS_JA-JP_HARUKA_11.0"
+            "use": false,
+            "voice": "TTS_MS_EN-US_ZIRA_11.0"
         }
     },
-    "LocaleEmulator": "C:\\dataH\\Locale.Emulator.2.5.0.1",
     "verticalocr": false,
     "outputtopasteboard": false,
     "windowstts": {
@@ -47,14 +44,14 @@
         "volume": 100.0
     },
     "sourcestatus": {
-        "copy": true,
+        "copy": false,
         "ocr": false,
-        "textractor": false,
+        "textractor": true,
         "textractor_pipe": false
     },
     "ocr": {
         "local": {
-            "use": false,
+            "use": true,
             "name": "本地OCR"
         },
         "baiduocr": {
@@ -77,18 +74,18 @@
             "name": "youdaocr"
         },
         "youdaocrtrans": {
-            "use": true,
+            "use": false,
             "name": "youdao图片翻译"
         }
     },
     "fanyi": {
         "baidu": {
-            "use": false,
+            "use": true,
             "color": "#ff65db",
             "name": "百度"
         },
         "bing": {
-            "use": false,
+            "use": true,
             "color": "#000ff0",
             "name": "必应"
         },
@@ -123,7 +120,7 @@
             "name": "搜狗"
         },
         "caiyun": {
-            "use": false,
+            "use": true,
             "color": "#0ff000",
             "name": "彩云"
         },
@@ -155,16 +152,6 @@
             "color": "#0ff000",
             "name": "有道3"
         },
-        "youdao4": {
-            "use": false,
-            "color": "#0ff000",
-            "name": "有道4"
-        },
-        "youdao5": {
-            "use": false,
-            "color": "#0ff000",
-            "name": "有道5"
-        },
         "selfbuild": {
             "use": false,
             "color": "#0ff000",
@@ -176,7 +163,7 @@
             "name": "TX"
         },
         "ifly": {
-            "use": true,
+            "use": false,
             "color": "#0ff000",
             "name": "ifly"
         },
@@ -213,6 +200,16 @@
             "name": "小牛api",
             "argsfile": "./userconfig/xiaoniuapi.json"
         },
+        "youdao4": {
+            "use": false,
+            "color": "#0ff000",
+            "name": "有道4"
+        },
+        "youdao5": {
+            "use": false,
+            "color": "#0ff000",
+            "name": "有道5"
+        },
         "deepl": {
             "use": false,
             "color": "#0ff000",
@@ -241,13 +238,13 @@
             "argsfile": "./userconfig/huoshanapi.json"
         },
         "rengong": {
-            "use": true,
+            "use": false,
             "color": "#0ff000",
             "name": "人工翻译",
             "argsfile": "./userconfig/rengong.json"
         },
         "papago": {
-            "use": true,
+            "use": false,
             "color": "#0ff000",
             "name": "papago"
         }
@@ -261,14 +258,15 @@
     "fanjian": 0,
     "rotation": 0,
     "srclang": 0,
-    "transkiroku": true,
+    "LocaleEmulator": "",
+    "transkiroku": false,
     "transkirokuuse": "baidu",
     "showatcenter": true,
-    "mustocr": true,
+    "mustocr": false,
     "mustocr_interval": 5,
     "ocrmininterval": 1,
     "ttscommon": {
-        "rate": 0.0,
-        "volume": 50.0
+        "rate": 1.0,
+        "volume": 100.0
     }
 }
