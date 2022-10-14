@@ -206,13 +206,6 @@ class QUnFrameWindow(QWidget):
         self.takusanbuttons(qtawesome.icon("fa.forward" ,color="#FF69B4" if globalconfig['autorun'] else 'white'),"MinMaxButton",self.changeTranslateMode,1,"自动翻译",'automodebutton')
         self.takusanbuttons(qtawesome.icon("fa.gear",color="white" ),"MinMaxButton",self.clickSettin,2,"设置")
 
-        self.takusanbuttons(qtawesome.icon("fa.gamepad" ,color= 'white'),"MinMaxButton",lambda: autosaveshow(None),3,"打开保存的游戏") 
-
-        self.takusanbuttons(qtawesome.icon("fa.link" ,color= 'white'),"MinMaxButton",lambda :settingtextractor(self.object.settin_ui,False),4,"选择游戏" ) 
-        self.takusanbuttons(qtawesome.icon("fa.tasks" ,color= 'white'),"MinMaxButton",lambda :settingsource(self.object.settin_ui),5,"选择文本" ) 
-
-        self.takusanbuttons(qtawesome.icon("fa.crop" ,color="white"),"MinMaxButton",self.clickRange,4,"选取OCR范围")
-        self.takusanbuttons((qtawesome.icon("fa.square" ,color='white')),"MinMaxButton",self.showhide,5,"显示/隐藏范围框",'showhidebutton')
 
         self.takusanbuttons(qtawesome.icon("fa.copy" ,color="white"),"MinMaxButton",lambda: pyperclip.copy(self.original),6,"复制到剪贴板") 
         self.takusanbuttons(qtawesome.icon("fa.eye"   if globalconfig['isshowrawtext'] else "fa.eye-slash" ,color="white"),"MinMaxButton", self.changeshowhideraw,7,"显示/隐藏原文",'showhiderawbutton') 
@@ -224,6 +217,13 @@ class QUnFrameWindow(QWidget):
         self.takusanbuttons(qtawesome.icon("fa.lock" ,color="#FF69B4" if globalconfig['locktools'] else 'white'),"MinMaxButton",self.changetoolslockstate,11,"锁定工具栏",'locktoolsbutton') 
         
         
+        self.takusanbuttons(qtawesome.icon("fa.gamepad" ,color= 'white'),"MinMaxButton",lambda: autosaveshow(None),3,"打开保存的游戏") 
+
+        self.takusanbuttons(qtawesome.icon("fa.link" ,color= 'white'),"MinMaxButton",lambda :settingtextractor(self.object.settin_ui,False),4,"选择游戏" ) 
+        self.takusanbuttons(qtawesome.icon("fa.tasks" ,color= 'white'),"MinMaxButton",lambda :settingsource(self.object.settin_ui),5,"选择文本" ) 
+
+        self.takusanbuttons(qtawesome.icon("fa.crop" ,color="white"),"MinMaxButton",self.clickRange,4,"选取OCR范围")
+        self.takusanbuttons((qtawesome.icon("fa.square" ,color='white')),"MinMaxButton",self.showhide,5,"显示/隐藏范围框",'showhidebutton')
         
         # self.takusanbuttons(qtawesome.icon("fa.lock" ,color="#FF69B4" if globalconfig['locktools'] else 'white'),"MinMaxButton",self.changetoolslockstate,10,"锁定工具栏",'locktoolsbutton') 
         
@@ -543,10 +543,10 @@ class QUnFrameWindow(QWidget):
         self.showbuttons=[]
         for i,button in enumerate(self.buttons[:-2]):
             
-            if i in [6,7] and globalconfig['sourcestatus']['ocr'] ==False:
+            if i in [12,13] and globalconfig['sourcestatus']['ocr'] ==False:
                 button.hide()
                 continue
-            if i in [4,5] and globalconfig['sourcestatus']['textractor'] ==False:
+            if i in [10,11] and globalconfig['sourcestatus']['textractor'] ==False:
                 button.hide()
                 continue
             button.move(showed*button.width() , 0) 
