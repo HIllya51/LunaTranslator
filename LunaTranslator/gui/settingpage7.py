@@ -48,7 +48,7 @@ def initpostswitchs_auto(self):
             num+=1
 
         x=20
-        y=300
+        y=350
         initdictswitchs(self,(x, y, 270, 20),(x+270, y, 20,20),1,(x+300, y, 20,20))
         y+=40
         initdictswitchs2(self,(x, y, 270, 20),(x+270, y, 20,20),1,(x+300, y, 20,20))
