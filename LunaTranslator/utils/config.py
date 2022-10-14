@@ -40,7 +40,7 @@ def syncconfig(config,default,drop=False):
                 syncconfig(config[key],default[key],drop)
         
 syncconfig(transerrorfixdictconfig,defaulterrorfix)
-syncconfig(postprocessconfig,defaultpost,True)
+syncconfig(postprocessconfig,defaultpost ) 
 syncconfig(noundictconfig,defaultnoun)
 syncconfig(globalconfig,defaultglobalconfig)
  

@@ -1,5 +1,6 @@
-from logging import Filterer
+ 
 import re
+from traceback import print_exc
 from typing import Counter
 
 from utils.config import postprocessconfig 
@@ -57,4 +58,16 @@ def POSTSOLVE(line):
                         continue
                 else:
                         line=line.replace(fil,filters[fil])
+    if postprocessconfig['_8']['use']:
+        filters=postprocessconfig['_8']['args']['替换内容']
+         
+        
+        for fil in filters: 
+                if fil=="":
+                        continue
+                else:  
+                        try:
+                                line=re.sub(fil,filters[fil],line)
+                        except:
+                                print_exc()
     return line

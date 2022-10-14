@@ -188,12 +188,13 @@ def postconfigdialog(object,configdict,title):
         # formLayout.addWidget(lines)
         model=QStandardItemModel(len(configdict[key]),1 , dialog)
         row=0
-        for key1,v in  ( (configdict[key])):                                   # 2
+         
+        for key1  in  ( (configdict[key])):                                   # 2
              
                 item = QStandardItem(key1)
                 model.setItem(row, 0, item)
                 
-                item = QStandardItem(v)
+                item = QStandardItem(configdict[key][key1])
                 model.setItem(row, 1, item)
                 row+=1
         model.setHorizontalHeaderLabels([ '原文内容','替换为'])
@@ -218,7 +219,7 @@ def postconfigdialog(object,configdict,title):
         button3.setText('保存并关闭')
         def clicked3():
             rows=model.rowCount() 
-            newdict=[]
+            newdict={}
             for row in range(rows):
                 if model.item(row,0).text()=="":
                     continue
