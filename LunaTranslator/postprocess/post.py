@@ -50,11 +50,11 @@ def POSTSOLVE(line):
         line=re.sub('</(.*?)>',"*",line)
     if postprocessconfig['_6']['use']:
         line=line.replace('\n','').replace('\r','')
-    if postprocessconfig['_5']['use']:
-        filters=postprocessconfig['_5']['args']['过滤内容']
+    if postprocessconfig['_7']['use']:
+        filters=postprocessconfig['_7']['args']['替换内容']
         for fil in filters: 
                 if fil=="":
                         continue
                 else:
-                        line=line.replace(fil,'')
+                        line=line.replace(fil,filters[fil])
     return line

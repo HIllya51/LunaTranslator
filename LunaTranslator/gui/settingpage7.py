@@ -180,18 +180,23 @@ def postconfigdialog(object,configdict,title):
         spin.valueChanged.connect(lambda x:configdict.__setitem__(key,x))
         formLayout.addWidget(spin)
         dialog.resize(QSize(400,1))
-    elif type(configdict[key])==type([]): 
+     
+    elif type(configdict[key])==type({}): 
         # lines=QTextEdit(dialog)
         # lines.setPlainText('\n'.join(configdict[key]))
         # lines.textChanged.connect(lambda   :configdict.__setitem__(key,lines.toPlainText().split('\n')))
         # formLayout.addWidget(lines)
         model=QStandardItemModel(len(configdict[key]),1 , dialog)
-         
-        for row in range(len(configdict[key])):                                   # 2
+        row=0
+        for key1,v in  ( (configdict[key])):                                   # 2
              
-                item = QStandardItem(configdict[key][row])
+                item = QStandardItem(key1)
                 model.setItem(row, 0, item)
-        model.setHorizontalHeaderLabels([ key])
+                
+                item = QStandardItem(v)
+                model.setItem(row, 1, item)
+                row+=1
+        model.setHorizontalHeaderLabels([ '原文内容','替换为'])
         table = QTableView(dialog)
         table.setModel(model)
         table.setWordWrap(False) 
@@ -201,7 +206,7 @@ def postconfigdialog(object,configdict,title):
         button=QPushButton(dialog)
         button.setText('添加行')
         def clicked1(): 
-            model.insertRow(0,[QStandardItem('')]) 
+            model.insertRow(0,[QStandardItem(''),QStandardItem('')])   
         button.clicked.connect(clicked1)
         button2=QPushButton(dialog)
         button2.setText('删除选中行')
@@ -217,7 +222,7 @@ def postconfigdialog(object,configdict,title):
             for row in range(rows):
                 if model.item(row,0).text()=="":
                     continue
-                newdict.append(model.item(row,0).text())
+                newdict[(model.item(row,0).text())]=(model.item(row,1).text())
             configdict[key]=newdict
             dialog.close()
         button3.clicked.connect(clicked3)

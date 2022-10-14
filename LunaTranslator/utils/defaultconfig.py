@@ -19,7 +19,7 @@ defaultglobalconfig = {'position': [432, 613], 'fixedheight': False, 'width': 76
     }
 
 defaultpost = {'_1': {'use': True, 'name': '去除花括号{}'}, '_2': {'use': True, 'name': '去除重复字符(若为1则自动分析去重)', 'args': {'重复次数': 1}}, '_3': {'use': True, 'name': '去除重复行'}, '_4': {
-    'use': True, 'name': '过滤HTML标签'}, '_6': {'use': True, 'name': '过滤换行符'}, '_5': {'use': True, 'name': '过滤指定内容每行一个', 'args': {'过滤内容': [' ']}}}
+    'use': True, 'name': '过滤HTML标签'}, '_6': {'use': True, 'name': '过滤换行符'}, '_7': {'use': True, 'name': '替换指定内容(若替换为空则直接过滤)', 'args': {'替换内容': {}}}}
 
 defaulterrorfix = {
     "use": True,
