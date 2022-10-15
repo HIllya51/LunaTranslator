@@ -1,5 +1,4 @@
-  
-from cgitb import Hook
+   
 import sqlite3
 from threading import Thread
 import threading
