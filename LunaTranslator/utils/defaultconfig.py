@@ -24,7 +24,8 @@ defaultglobalconfig = {'position': [432, 613], 'fixedheight': False, 'width': 76
     'showatcenter':False,
     "mustocr":False,
     "mustocr_interval":5,
-    "ocrmininterval":1
+    "ocrmininterval":1,
+    "selectable":False
     
     }
 

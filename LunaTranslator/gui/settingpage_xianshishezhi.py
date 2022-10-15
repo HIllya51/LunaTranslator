@@ -87,6 +87,14 @@ def setTabThree(self) :
         self.customSetGeometry(self.anglecombo, 250, 280,100,20)
         self.anglecombo.currentIndexChanged.connect(lambda x:globalconfig.__setitem__('rotation',x) )
 
+        label = QLabel(self.tab_3)
+        self.customSetGeometry(label, 20, 310, 160, 20)
+        label.setText("可选取模式(重启后生效)")
+         
+        s =gui.switchbutton.MySwitch(self.tab_3, sign=globalconfig['selectable'])
+        self.customSetGeometry(s ,180, 310, 20,20)
+        s .clicked.connect(lambda x:globalconfig.__setitem__('selectable',x))  
+
 
         label = QLabel(self.tab_3)
         self.customSetGeometry(label, 275, 80, 60, 20)

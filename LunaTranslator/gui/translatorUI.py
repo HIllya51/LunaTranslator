@@ -289,10 +289,11 @@ class QUnFrameWindow(QWidget):
         self.document = self.translate_text.document()
         self.document.contentsChanged.connect(self.textAreaChanged) 
           
-        self.masklabel = QLabel(self)  
-         
-        self.masklabel.setGeometry( 0, 30,9999,9999)
-        self.masklabel.setMouseTracking(True)
+        if globalconfig['selectable']==False:
+            self.masklabel = QLabel(self)  
+
+            self.masklabel.setGeometry( 0, 30,9999,9999)
+            self.masklabel.setMouseTracking(True)
         self.showhidestate=False
     def changemousetransparentstate(self,checked):
          

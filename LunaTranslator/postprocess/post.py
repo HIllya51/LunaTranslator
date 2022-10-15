@@ -51,8 +51,7 @@ def POSTSOLVE(line):
         line=re.sub('</(.*?)>',"*",line)
     if postprocessconfig['_6']['use']:
         line=line.replace('\n','').replace('\r','')
-    if postprocessconfig['_9']['use']:
-        line=re.sub('([0-9a-zA-Z]+)','',line)
+    
     if postprocessconfig['_7']['use']:
         filters=postprocessconfig['_7']['args']['替换内容']
         for fil in filters: 
@@ -72,4 +71,6 @@ def POSTSOLVE(line):
                                 line=re.sub(fil,filters[fil],line)
                         except:
                                 print_exc()
+    if postprocessconfig['_9']['use']:
+        line=re.sub('([0-9a-zA-Z]+)','',line)
     return line
