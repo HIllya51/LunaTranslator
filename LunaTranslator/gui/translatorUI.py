@@ -631,7 +631,7 @@ class QUnFrameWindow(QWidget):
             with open('./tmp/update.bat','w',encoding='utf8') as ff:
                 
                 ff.write('''
- 
+timeout 1
 xcopy tmp\LunaTranslator\ .\ /s /e /c /y /h /r
 exit
 
