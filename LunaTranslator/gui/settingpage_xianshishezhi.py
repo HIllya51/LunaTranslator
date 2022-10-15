@@ -20,7 +20,7 @@ def setTabThree(self) :
         self.customSetGeometry(label, 20, 20, 90, 20)
         label.setText("不透明度:") 
         self.horizontal_slider = QSlider(self.tab_3)
-        self.customSetGeometry(self.horizontal_slider, 120, 18, 320, 25)
+        self.customSetGeometry(self.horizontal_slider, 120, 20, 320, 20)
         self.horizontal_slider.setMaximum(100)
         self.horizontal_slider.setOrientation(Qt.Horizontal)
         self.horizontal_slider.setValue(0)
@@ -30,11 +30,11 @@ def setTabThree(self) :
         self.customSetGeometry(self.horizontal_slider_label, 450, 20, 30, 20)
         self.horizontal_slider_label.setText("{}%".format(globalconfig['transparent'])) 
         label = QLabel(self.tab_3)
-        self.customSetGeometry(label, 20, 70, 145, 16)
+        self.customSetGeometry(label, 20, 50, 145, 20)
         label.setText("字体大小:") 
          
         self.fontSize_spinBox = QDoubleSpinBox(self.tab_3)
-        self.customSetGeometry(self.fontSize_spinBox, 95, 65, 50, 25)
+        self.customSetGeometry(self.fontSize_spinBox, 95,50, 50, 25)
         self.fontSize_spinBox.setRange(10,30) 
         self.fontSize_spinBox.setValue(globalconfig['fontsize']) 
         self.fontSize_spinBox.setSingleStep(0.1)
@@ -42,20 +42,20 @@ def setTabThree(self) :
         self.fontSize_spinBox.valueChanged.connect(lambda x:globalconfig.__setitem__('fontsize',x))
         
         label = QLabel(self.tab_3)
-        self.customSetGeometry(label, 275, 70, 145, 20)
+        self.customSetGeometry(label, 275, 50, 145, 20)
         label.setText("字体类型:")
  
         self.font_comboBox = QFontComboBox(self.tab_3)
-        self.customSetGeometry(self.font_comboBox, 350, 65, 185, 25)
+        self.customSetGeometry(self.font_comboBox, 350, 50, 185, 20)
         self.font_comboBox.activated[str].connect(lambda x:globalconfig.__setitem__('fonttype',x))  
         self.comboBox_font = QFont(globalconfig['fonttype'])
         self.font_comboBox.setCurrentFont(self.comboBox_font)  
         label = QLabel(self.tab_3)
-        self.customSetGeometry(label, 20, 170, 60, 20)
+        self.customSetGeometry(label, 20, 110, 60, 20)
         label.setText("空心字体:")
  
         self.font_type_switch =gui.switchbutton.MySwitch(self.tab_3, sign=globalconfig['iskongxin'] )
-        self.customSetGeometry(self.font_type_switch, 95, 170,20,20)
+        self.customSetGeometry(self.font_type_switch, 95, 110,20,20)
         self.font_type_switch.clicked.connect(lambda x:globalconfig.__setitem__('iskongxin',x)) 
 
         label = QLabel(self.tab_3)
@@ -89,49 +89,49 @@ def setTabThree(self) :
 
 
         label = QLabel(self.tab_3)
-        self.customSetGeometry(label, 275, 120, 60, 20)
+        self.customSetGeometry(label, 275, 80, 60, 20)
         label.setText("显示原文:")
         
         def __changeuibuttonstate(self,x):
                 globalconfig.__setitem__('isshowrawtext',x)
                 self.object.translation_ui.showhiderawbutton.setIcon(qtawesome.icon("fa.eye"   if globalconfig['isshowrawtext'] else "fa.eye-slash" ,color="white"))
         self.show_original_switch =gui.switchbutton.MySwitch(self.tab_3, sign=globalconfig['isshowrawtext'])
-        self.customSetGeometry(self.show_original_switch, 350, 120, 20,20)
+        self.customSetGeometry(self.show_original_switch, 350, 80, 20,20)
         self.show_original_switch.clicked.connect(lambda x: __changeuibuttonstate(self,x))  
 
         label = QLabel(self.tab_3)
-        self.customSetGeometry(label, 450, 120, 60, 20)
+        self.customSetGeometry(label, 450, 80, 60, 20)
         label.setText("居中显示:")
          
         self.showatmiddleswitch =gui.switchbutton.MySwitch(self.tab_3, sign=globalconfig['showatcenter'])
-        self.customSetGeometry(self.showatmiddleswitch, 600, 120, 20,20)
+        self.customSetGeometry(self.showatmiddleswitch, 600, 80, 20,20)
         self.showatmiddleswitch.clicked.connect(lambda x:globalconfig.__setitem__('showatcenter',x))  
         label = QLabel(self.tab_3)
-        self.customSetGeometry(label, 20, 120, 60, 20)
+        self.customSetGeometry(label, 20, 80, 60, 20)
         label.setText("显示假名:")
  
         self.show_hira_switch =gui.switchbutton.MySwitch(self.tab_3, sign=globalconfig['isshowhira'])
-        self.customSetGeometry(self.show_hira_switch, 95, 120,20,20)
+        self.customSetGeometry(self.show_hira_switch, 95, 80,20,20)
         self.show_hira_switch.clicked.connect(lambda x:globalconfig.__setitem__('isshowhira',x)) 
         
         label = QLabel(self.tab_3)
-        self.customSetGeometry(label, 275, 170, 60, 20)
+        self.customSetGeometry(label, 275, 110, 60, 20)
         label.setText("原文颜色:")
 
         
         self.original_color_button = QPushButton(qtawesome.icon("fa.paint-brush", color=globalconfig['rawtextcolor']), "", self.tab_3)
         self.customSetIconSize(self.original_color_button, 20, 20)
-        self.customSetGeometry(self.original_color_button, 350, 170, 20, 20)
+        self.customSetGeometry(self.original_color_button, 350, 110, 20, 20)
         self.original_color_button.setStyleSheet("background: transparent;")
         self.original_color_button.clicked.connect(lambda: self.ChangeTranslateColor("raw", self.original_color_button)) 
 
 
         label = QLabel(self.tab_3)
-        self.customSetGeometry(label, 275, 220, 60, 20)
+        self.customSetGeometry(label,450, 110, 60, 20)
         label.setText("背景颜色:") 
         self.back_color_button = QPushButton(qtawesome.icon("fa.paint-brush", color=globalconfig['backcolor']), "", self.tab_3)
         self.customSetIconSize(self.back_color_button, 20, 20)
-        self.customSetGeometry(self.back_color_button, 350, 220, 20, 20)
+        self.customSetGeometry(self.back_color_button, 600, 110, 20, 20)
         self.back_color_button.setStyleSheet("background: transparent;")
         self.back_color_button.clicked.connect(lambda: self.ChangeTranslateColor("back", self.back_color_button)) 
  

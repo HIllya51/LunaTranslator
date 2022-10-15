@@ -66,7 +66,7 @@ def initocrswitchs_auto(self):
         num=0
         
         for ocr in globalconfig['ocr']:
-            y=70+40*(num//3)
+            y=70+30*(num//3)
             x=20+220*(num%3)
             initocrswitchs(self,ocr,(x, y, 100, 20),(x+105, y, 20,20),0,(x+145, y, 20,20))
             num+=1
