@@ -1,10 +1,10 @@
 {
     "position": [
-        506,
-        700
+        552,
+        748
     ],
     "fixedheight": false,
-    "width": 971,
+    "width": 790,
     "autorun": true,
     "transparent": 42,
     "fontsize": 17.699999999999996,
@@ -44,9 +44,9 @@
         "volume": 100.0
     },
     "sourcestatus": {
-        "copy": false,
+        "copy": true,
         "ocr": false,
-        "textractor": true,
+        "textractor": false,
         "textractor_pipe": false
     },
     "ocr": {

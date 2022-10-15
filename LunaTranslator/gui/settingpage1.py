@@ -215,6 +215,10 @@ def textsourcechange(self,who,checked):
             globalconfig['sourcestatus'][who]=False  
             if 'textsource' in dir(self.object) and self.object.textsource:
                 self.object.textsource.end() 
+            
+            if who=='ocr' and self.object.translation_ui.showhidestate:
+                self.object.translation_ui.showhide()
+
         if checked : 
             self.object.starttextsource() 
         self.selectbutton.setIcon(qtawesome.icon("fa.gear", color="#FF69B4" if globalconfig['sourcestatus']['textractor'] else '#595959')) 
