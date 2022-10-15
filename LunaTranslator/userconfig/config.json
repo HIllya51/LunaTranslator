@@ -1,7 +1,7 @@
 {
     "position": [
-        552,
-        748
+        573,
+        692
     ],
     "fixedheight": false,
     "width": 790,
@@ -11,11 +11,11 @@
     "fonttype": "思源黑体 CN Medium",
     "issolid": false,
     "iskongxin": true,
-    "isshowrawtext": true,
+    "isshowrawtext": false,
     "rawtextcolor": "#000000",
     "backcolor": "#7a8b8a",
     "isshowhira": false,
-    "locktools": false,
+    "locktools": true,
     "showfanyisource": true,
     "autoread": false,
     "extractalltext": true,
@@ -28,11 +28,11 @@
             "voice": "ja-JP-NanamiNeural"
         },
         "huoshantts": {
-            "use": true,
+            "use": false,
             "voice": "jp_male_satoshi"
         },
         "windowstts": {
-            "use": false,
+            "use": true,
             "voice": "TTS_MS_EN-US_ZIRA_11.0"
         }
     },

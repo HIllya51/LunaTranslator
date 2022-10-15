@@ -103,9 +103,9 @@ def setTabThree(self) :
         self.customSetGeometry(label, 450, 120, 60, 20)
         label.setText("居中显示:")
          
-        self.show_original_switch =gui.switchbutton.MySwitch(self.tab_3, sign=globalconfig['showatcenter'])
-        self.customSetGeometry(self.show_original_switch, 600, 120, 20,20)
-        self.show_original_switch.clicked.connect(lambda x:globalconfig.__setitem__('showatcenter',x))  
+        self.showatmiddleswitch =gui.switchbutton.MySwitch(self.tab_3, sign=globalconfig['showatcenter'])
+        self.customSetGeometry(self.showatmiddleswitch, 600, 120, 20,20)
+        self.showatmiddleswitch.clicked.connect(lambda x:globalconfig.__setitem__('showatcenter',x))  
         label = QLabel(self.tab_3)
         self.customSetGeometry(label, 20, 120, 60, 20)
         label.setText("显示假名:")
@@ -134,7 +134,6 @@ def setTabThree(self) :
         self.customSetGeometry(self.back_color_button, 350, 220, 20, 20)
         self.back_color_button.setStyleSheet("background: transparent;")
         self.back_color_button.clicked.connect(lambda: self.ChangeTranslateColor("back", self.back_color_button)) 
-
  
 def changeHorizontal(self) :
 

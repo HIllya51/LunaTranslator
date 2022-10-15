@@ -7,7 +7,7 @@ from utils.config import globalconfig
 def default():
     return {
             "args": {
-                "注册网址": "https://cloud.baidu.com/product/ocr",
+                "注册网址": "https://console.bce.baidu.com/ai/?fromai=1#/ai/ocr/app/list",
                 "API Key": "",
                 "Secret Key": "",
                 "access_token": "",

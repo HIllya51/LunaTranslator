@@ -559,6 +559,7 @@ class QUnFrameWindow(QWidget):
         button=QTitleButton(self)
         button.setIcon(iconname)
         if tips:
+            
             button.setToolTip(tips) 
         button.setIconSize(QSize(int(20*self.rate),
                                  int(20*self.rate)))
