@@ -1,7 +1,7 @@
 {
     "position": [
-        628,
-        425
+        652,
+        456
     ],
     "fixedheight": false,
     "width": 790,
@@ -270,5 +270,6 @@
         "volume": 100.0
     },
     "mousetransparent": true,
-    "selectable": true
+    "selectable": false,
+    "autoupdate": true
 }

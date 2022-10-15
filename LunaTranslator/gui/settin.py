@@ -23,7 +23,7 @@ class Settin(QMainWindow) :
     mp3playsignal=pyqtSignal(str,int)
     autostarthooksignal=pyqtSignal(int,str,list) 
     versiontextsignal=pyqtSignal( str)
-   
+    progresssignal=pyqtSignal(str,int)
     def mp3playfunction(self,path,volume):
         self.mp3player.stop()
         self.mp3player.setMedia(QMediaContent(QUrl(path)))
@@ -35,7 +35,7 @@ class Settin(QMainWindow) :
         self.mp3player=QMediaPlayer()
         self.mp3playsignal.connect(self.mp3playfunction)
         self.object = object  
-        
+        self.needupdate=False
         # 界面缩放比例
         self.rate = self.object.screen_scale_rate
         # 界面尺寸

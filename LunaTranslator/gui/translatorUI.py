@@ -627,7 +627,17 @@ class QUnFrameWindow(QWidget):
         #print('closed')
         
         #sys.exit()
+        if self.object.settin_ui.needupdate:
+            with open('./tmp/update.bat','w',encoding='utf8') as ff:
+                
+                ff.write('''
+ 
+xcopy tmp\LunaTranslator\ .\ /s /e /c /y /h /r
+exit
+
+                ''')
+            import subprocess
+
+            subprocess.Popen('tmp\\update.bat' ,shell=True)
         os._exit(1) 
-        #self.quit()
-        #self.quit()
-        #报异常来退出，不然老是有僵尸进程。
+         
