@@ -1,7 +1,7 @@
 {
     "position": [
-        482,
-        232
+        477,
+        596
     ],
     "fixedheight": false,
     "width": 971,
@@ -15,7 +15,7 @@
     "rawtextcolor": "#000000",
     "backcolor": "#7a8b8a",
     "isshowhira": false,
-    "locktools": true,
+    "locktools": false,
     "showfanyisource": true,
     "autoread": false,
     "extractalltext": true,
@@ -45,8 +45,8 @@
     },
     "sourcestatus": {
         "copy": false,
-        "ocr": true,
-        "textractor": false,
+        "ocr": false,
+        "textractor": true,
         "textractor_pipe": false
     },
     "ocr": {
@@ -258,7 +258,7 @@
     "fanjian": 0,
     "rotation": 0,
     "srclang": 0,
-    "LocaleEmulator": "",
+    "LocaleEmulator": "C:/dataH/Locale.Emulator.2.5.0.1",
     "transkiroku": false,
     "transkirokuuse": "baidu",
     "showatcenter": true,
