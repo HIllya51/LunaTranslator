@@ -78,11 +78,12 @@ class QUnFrameWindow(QWidget):
         self.transhis.getnewsentencesignal.emit('\n'+res)
     def showline(self,res,color ): 
         
-        if globalconfig['showatcenter']:
-            self.translate_text.setAlignment(Qt.AlignCenter)
-        else:
-            self.translate_text.setAlignment(Qt.AlignLeft)
+        
         if globalconfig['iskongxin'] == True :
+            if globalconfig['showatcenter']:
+                self.translate_text.setAlignment(Qt.AlignCenter)
+            else:
+                self.translate_text.setAlignment(Qt.AlignLeft)
             if self.lastcolor!=color:  
                 self.format.setTextOutline(QPen(QColor(color), globalconfig['miaobianwidth'], Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin))
                 self.translate_text.mergeCurrentCharFormat(self.format)
@@ -90,8 +91,12 @@ class QUnFrameWindow(QWidget):
             self.translate_text.append(res)
             
         else : 
-            self.translate_text.append("<font color=%s>%s</font>"%(color,res)) 
-    
+            #self.translate_text.append("<font color=%s>%s</font>"%(color,res)) 
+            if globalconfig['showatcenter']:
+                self.translate_text.append(f'<div style="color:{color};text-align:center">{res}</div>')
+            else:
+                self.translate_text.append(f'<div style="color:{color}">{res}</div>')
+            
     def clearText(self) :
      
         # 翻译界面清屏
