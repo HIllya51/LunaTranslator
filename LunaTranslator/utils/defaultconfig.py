@@ -1,5 +1,5 @@
  
-defaultglobalconfig = {'position': [432, 613], 'fixedheight': False, 'width': 768.8, 'autorun': True, 'transparent': 82, 'fontsize': 17.699999999999996, 'fonttype': '思源黑体 CN Medium',  
+defaultglobalconfig = {'position': [432, 613], 'fixedheight': False, 'width': 768.8, 'autorun': True, 'transparent': 82, 'fontsize': 17.699999999999996, 'fonttype': '思源黑体 CN Medium',  'miaobianwidth':1,
  'iskongxin': True, 'isshowrawtext': True, 'rawtextcolor': '#000000', 'backcolor': '#7a8b8a', 'isshowhira': False, 'locktools': True, 'showfanyisource': True, 'autoread': False, 'extractalltext': False, 'reader': {'azuretts':{'use':False,'voice':''}, 'huoshantts':{'use':False,'voice':''}, 'windowstts': {'use':False,'voice':''}}, 'LocaleEmulator': '', 'verticalocr': False, 'outputtopasteboard': False, 'ttscommon': { 'rate': 1.0, 'volume': 100.0},
 
  'sourcestatus': {'copy': True, 'ocr': False, 'textractor': False, 'textractor_pipe': False}, 'ocr': {'local': {'use': True, 'name': '本地OCR'}, 'baiduocr': {'use': False, 'name': 'baiduOCR', 'argsfile': './userconfig/baiduocr.json'}, 'ocrspace': {'use': False, 'name': 'ocrspace', 'argsfile': './userconfig/ocrspace.json'}, 'docsumo': {'use': False, 'name': 'docsumo', 'argsfile': './userconfig/docsumo.json'},

@@ -84,7 +84,7 @@ class QUnFrameWindow(QWidget):
             self.translate_text.setAlignment(Qt.AlignLeft)
         if globalconfig['iskongxin'] == True :
             if self.lastcolor!=color:  
-                self.format.setTextOutline(QPen(QColor(color), 1, Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin))
+                self.format.setTextOutline(QPen(QColor(color), globalconfig['miaobianwidth'], Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin))
                 self.translate_text.mergeCurrentCharFormat(self.format)
             
             self.translate_text.append(res)

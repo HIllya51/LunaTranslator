@@ -34,7 +34,7 @@ def setTabThree(self) :
         label.setText("字体大小:") 
          
         self.fontSize_spinBox = QDoubleSpinBox(self.tab_3)
-        self.customSetGeometry(self.fontSize_spinBox, 95,50, 50, 25)
+        self.customSetGeometry(self.fontSize_spinBox, 95,50, 50, 20)
         self.fontSize_spinBox.setRange(10,30) 
         self.fontSize_spinBox.setValue(globalconfig['fontsize']) 
         self.fontSize_spinBox.setSingleStep(0.1)
@@ -57,6 +57,19 @@ def setTabThree(self) :
         self.font_type_switch =gui.switchbutton.MySwitch(self.tab_3, sign=globalconfig['iskongxin'] )
         self.customSetGeometry(self.font_type_switch, 95, 110,20,20)
         self.font_type_switch.clicked.connect(lambda x:globalconfig.__setitem__('iskongxin',x)) 
+        
+        label = QLabel(self.tab_3)
+        self.customSetGeometry(label, 20, 140, 145, 20)
+        label.setText("描边宽度:") 
+         
+        self.miaobian_spinBox = QDoubleSpinBox(self.tab_3)
+        self.customSetGeometry(self.miaobian_spinBox, 95,140, 50, 20)
+        self.miaobian_spinBox.setRange(0,10) 
+        self.miaobian_spinBox.setValue(globalconfig['miaobianwidth']) 
+        self.miaobian_spinBox.setSingleStep(0.1)
+        self.miaobian_spinBox.setDecimals(1)
+        self.miaobian_spinBox.valueChanged.connect(lambda x:globalconfig.__setitem__('miaobianwidth',x))
+
 
         label = QLabel(self.tab_3)
         self.customSetGeometry(label, 20, 220, 100, 20)

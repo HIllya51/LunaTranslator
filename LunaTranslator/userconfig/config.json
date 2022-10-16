@@ -1,7 +1,7 @@
 {
     "position": [
-        652,
-        456
+        679,
+        646
     ],
     "fixedheight": false,
     "width": 790,
@@ -249,7 +249,7 @@
             "name": "papago"
         }
     },
-    "minifollow": true,
+    "minifollow": false,
     "movefollow": true,
     "autostarthook": true,
     "translatortimeout": 5,
@@ -271,5 +271,6 @@
     },
     "mousetransparent": true,
     "selectable": false,
-    "autoupdate": true
+    "autoupdate": false,
+    "miaobianwidth": 2.100000000000001
 }

@@ -84,9 +84,9 @@ def setTab_about(self) :
         label = QLabel(self.tab_about)
         self.customSetGeometry(label, 20, 50, 200, 20)
         label.setText("自动下载更新(需要连接github)")
-        self.minifollowswitch =gui.switchbutton.MySwitch(self.tab_about, sign= globalconfig['autoupdate'])
-        self.customSetGeometry(self.minifollowswitch, 250, 50, 20,20)
-        self.minifollowswitch.clicked.connect(lambda x:globalconfig.__setitem__('autoupdate',x)) 
+        self.updateswitch =gui.switchbutton.MySwitch(self.tab_about, sign= globalconfig['autoupdate'])
+        self.customSetGeometry(self.updateswitch , 250, 50, 20,20)
+        self.updateswitch.clicked.connect(lambda x:  globalconfig.__setitem__('autoupdate',x)) 
 
         self.downloadprogress=QProgressBar(self.tab_about)
         self.customSetGeometry(self.downloadprogress, 20, 80, 300, 20)
@@ -102,7 +102,7 @@ def setTab_about(self) :
         self.versionlabel.setOpenExternalLinks(True)
             
         self.versionlabel.setTextInteractionFlags(Qt.LinksAccessibleByMouse)
-        self.customSetGeometry(self.versionlabel, 20, 20, 500, 500)
+        self.customSetGeometry(self.versionlabel, 20, 150, 500, 500)
         self.versiontextsignal.connect(lambda x:self.versionlabel.setText(x) )
         self.versionlabel.setWordWrap(True)
         threading.Thread(target=lambda :getversion(self)).start()
