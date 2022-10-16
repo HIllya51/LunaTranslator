@@ -1,7 +1,7 @@
 {
     "position": [
-        838,
-        588
+        606,
+        497
     ],
     "fixedheight": false,
     "width": 942,
@@ -273,5 +273,6 @@
     "selectable": false,
     "autoupdate": false,
     "miaobianwidth": 10.0,
-    "miaobiancolor": "#dcaacc"
+    "miaobiancolor": "#dcdcdc",
+    "miaobianwidth2": 5
 }
