@@ -19,6 +19,7 @@ import gui.rangeselect
 import gui.transhist
 from gui.settingpage4 import autosaveshow
 from gui.settingpage1 import settingsource,settingtextractor
+from gui.textbrowser import Textbrowser
 class QTitleButton(QPushButton):
     """
     新建标题栏按钮类
@@ -83,11 +84,11 @@ class QUnFrameWindow(QWidget):
                 self.translate_text.setAlignment(Qt.AlignCenter)
             else:
                 self.translate_text.setAlignment(Qt.AlignLeft)
-            if self.lastcolor!=color:  
-                self.format.setForeground(QColor(globalconfig['miaobiancolor']))
-                self.format.setTextOutline(QPen(QColor(color), globalconfig['miaobianwidth'], Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin))
-                self.translate_text.mergeCurrentCharFormat(self.format)
             
+            # self.format.setForeground(QColor(globalconfig['miaobiancolor']))
+            # self.format.setTextOutline(QPen(QColor(color), globalconfig['miaobianwidth'], Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin))
+            # self.translate_text.mergeCurrentCharFormat(self.format)
+            self.translate_text.mergeCurrentCharFormat_out(globalconfig['miaobiancolor'],color, globalconfig['miaobianwidth'])
             self.translate_text.append(res)
             
         else : 
@@ -158,8 +159,7 @@ class QUnFrameWindow(QWidget):
         self.displayraw1.connect(self.showraw)
         self.displayraw.connect(self.showline) 
         self.clear_text_sign.connect(self.clearText)
-        self.object = object 
-        self.lastcolor='' 
+        self.object = object  
         # 界面缩放比例
         
          
@@ -268,9 +268,8 @@ class QUnFrameWindow(QWidget):
         self.font = QFont() 
         self.font.setFamily(globalconfig['fonttype'])
         self.font.setPointSize(globalconfig['fontsize']) 
-        self.translate_text = QTextBrowser(self) 
-        self.translate_text.setText('欢迎使用')
-        self.translate_text.setObjectName('text')
+        self.translate_text =  Textbrowser(self) 
+        self.translate_text.setText('欢迎使用') 
         self.translate_text.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         self.translate_text.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         self.translate_text.setFont(self.font)

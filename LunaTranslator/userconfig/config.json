@@ -1,7 +1,7 @@
 {
     "position": [
-        579,
-        511
+        654,
+        571
     ],
     "fixedheight": false,
     "width": 942,
@@ -125,7 +125,7 @@
             "name": "彩云"
         },
         "jb7": {
-            "use": false,
+            "use": true,
             "color": "#1839f0",
             "name": "Jbeijing7",
             "argsfile": "./userconfig/jbj7.json"
@@ -272,6 +272,6 @@
     "mousetransparent": true,
     "selectable": false,
     "autoupdate": false,
-    "miaobianwidth": 0.6999999999999993,
-    "miaobiancolor": "#dcdcdc"
+    "miaobianwidth": 5.0,
+    "miaobiancolor": "#dcaacc"
 }

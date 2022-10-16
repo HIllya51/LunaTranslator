@@ -1,0 +1,58 @@
+from PyQt5.QtWidgets import QWidget, QLabel, QPushButton, QVBoxLayout
+from PyQt5.QtCore import Qt, QPoint,pyqtSignal  
+import qtawesome 
+from PyQt5.QtCore import pyqtSignal,Qt,QPoint,QRect,QSize  ,QPointF
+from PyQt5.QtGui import QPen,QColor,QFont,QTextCharFormat ,QIcon,QPixmap ,QPainter,QPainterPath,QPalette,QGradient,QRadialGradient
+from PyQt5.QtWidgets import  QLabel,QTextBrowser,QPushButton ,QSystemTrayIcon ,QAction,QMenu,QGraphicsEffect
+import pyperclip 
+from PyQt5.QtCore import QProcess ,QByteArray ,QTimer
+
+class Textbrowser():
+    def __init__(self, parent ) : 
+        
+        self.textbrowserback=QTextBrowser(parent)
+        self.textbrowser=QTextBrowser(parent)
+    def setText(self,text):
+        self.textbrowser.setText(text)
+        self.textbrowserback.setText(text)
+    def setVerticalScrollBarPolicy(self,x):
+        self.textbrowser.setVerticalScrollBarPolicy(x)
+        self.textbrowserback.setVerticalScrollBarPolicy(x)
+    def setHorizontalScrollBarPolicy(self,x): 
+        self.textbrowser.setHorizontalScrollBarPolicy(x)
+        self.textbrowserback.setHorizontalScrollBarPolicy(x)
+    def setFont(self,x): 
+        self.textbrowser.setFont(x)
+        self.textbrowserback.setFont(x)
+    def setStyleSheet(self,x): 
+        self.textbrowser.setStyleSheet(x)
+        self.textbrowserback.setStyleSheet(x)
+    def move(self,x,y):
+        self.textbrowser.move(x,y)
+        self.textbrowserback.move(x,y)
+    def document(self):
+        return self.textbrowser.document()
+    def setGeometry(self,_1,_2,_3,_4):
+        self.textbrowser.setGeometry(_1,_2,_3,_4)
+        self.textbrowserback.setGeometry(_1,_2,_3,_4)
+    def setAlignment(self,x):
+        self.textbrowser.setAlignment(x)
+        self.textbrowserback.setAlignment(x)
+    def append(self,x):
+        self.textbrowserback.append(x)
+        
+        self.textbrowser.append(x)
+    def mergeCurrentCharFormat(self,x):
+        self.textbrowser.mergeCurrentCharFormat(x)
+        self.textbrowserback.mergeCurrentCharFormat(x)
+    def mergeCurrentCharFormat_out(self,colorinner,colormiao,width):
+        format1 = QTextCharFormat() 
+        format1.setForeground(QColor(colorinner))
+        format2=QTextCharFormat()
+        format2.setTextOutline(QPen(QColor(colormiao),width, Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin))
+        
+        self.textbrowser.mergeCurrentCharFormat(format1)
+        self.textbrowserback.mergeCurrentCharFormat(format2)
+    def clear(self):
+        self.textbrowser.clear()
+        self.textbrowserback.clear()
