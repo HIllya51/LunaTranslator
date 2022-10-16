@@ -52,7 +52,7 @@ def setTabThree(self) :
         self.font_comboBox.setCurrentFont(self.comboBox_font)  
         label = QLabel(self.tab_3)
         self.customSetGeometry(label, 20, 110, 60, 20)
-        label.setText("空心字体:")
+        label.setText("描边字体:")
  
         self.font_type_switch =gui.switchbutton.MySwitch(self.tab_3, sign=globalconfig['iskongxin'] )
         self.customSetGeometry(self.font_type_switch, 95, 110,20,20)
@@ -145,6 +145,17 @@ def setTabThree(self) :
         self.customSetGeometry(self.original_color_button, 350, 110, 20, 20)
         self.original_color_button.setStyleSheet("background: transparent;")
         self.original_color_button.clicked.connect(lambda: self.ChangeTranslateColor("raw", self.original_color_button)) 
+        
+        label = QLabel(self.tab_3)
+        self.customSetGeometry(label, 275, 140, 60, 20)
+        label.setText("填充颜色:")
+
+        
+        self.miaobian_color_button = QPushButton(qtawesome.icon("fa.paint-brush", color=globalconfig['miaobiancolor']), "", self.tab_3)
+        self.customSetIconSize(self.miaobian_color_button, 20, 20)
+        self.customSetGeometry(self.miaobian_color_button, 350, 140, 20, 20)
+        self.miaobian_color_button.setStyleSheet("background: transparent;")
+        self.miaobian_color_button.clicked.connect(lambda: self.ChangeTranslateColor("miaobian", self.miaobian_color_button)) 
 
 
         label = QLabel(self.tab_3)

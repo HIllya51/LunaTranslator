@@ -9,7 +9,7 @@ from PyQt5.QtWidgets import QWidget, QLabel, QPushButton, QVBoxLayout
 from PyQt5.QtCore import Qt, QPoint,pyqtSignal  
 import qtawesome 
 from PyQt5.QtCore import pyqtSignal,Qt,QPoint,QRect,QSize  ,QPointF
-from PyQt5.QtGui import QPen,QColor,QFont,QTextCharFormat ,QIcon,QPixmap ,QPainter,QPainterPath,QPalette
+from PyQt5.QtGui import QPen,QColor,QFont,QTextCharFormat ,QIcon,QPixmap ,QPainter,QPainterPath,QPalette,QGradient,QRadialGradient
 from PyQt5.QtWidgets import  QLabel,QTextBrowser,QPushButton ,QSystemTrayIcon ,QAction,QMenu,QGraphicsEffect
 import pyperclip 
 from PyQt5.QtCore import QProcess ,QByteArray ,QTimer
@@ -28,8 +28,7 @@ class QTitleButton(QPushButton):
         super(QTitleButton, self).__init__(*args)
         self.setFont(QFont("Webdings"))  # 特殊字体以不借助图片实现最小化最大化和关闭按钮
         
- 
-
+  
 class QUnFrameWindow(QWidget):
     """
     无边框窗口类
@@ -85,6 +84,7 @@ class QUnFrameWindow(QWidget):
             else:
                 self.translate_text.setAlignment(Qt.AlignLeft)
             if self.lastcolor!=color:  
+                self.format.setForeground(QColor(globalconfig['miaobiancolor']))
                 self.format.setTextOutline(QPen(QColor(color), globalconfig['miaobianwidth'], Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin))
                 self.translate_text.mergeCurrentCharFormat(self.format)
             

@@ -1,16 +1,16 @@
 {
     "position": [
-        628,
-        481
+        532,
+        507
     ],
     "fixedheight": false,
-    "width": 790,
+    "width": 942,
     "autorun": true,
     "transparent": 42,
     "fontsize": 17.699999999999996,
     "fonttype": "黑体",
     "issolid": false,
-    "iskongxin": false,
+    "iskongxin": true,
     "isshowrawtext": true,
     "rawtextcolor": "#000000",
     "backcolor": "#7a8b8a",
@@ -44,9 +44,9 @@
         "volume": 100.0
     },
     "sourcestatus": {
-        "copy": false,
+        "copy": true,
         "ocr": false,
-        "textractor": true,
+        "textractor": false,
         "textractor_pipe": false
     },
     "ocr": {
@@ -272,5 +272,6 @@
     "mousetransparent": true,
     "selectable": false,
     "autoupdate": false,
-    "miaobianwidth": 0.6999999999999993
+    "miaobianwidth": 0.6999999999999993,
+    "miaobiancolor": "#000000"
 }
