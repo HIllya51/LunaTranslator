@@ -1,12 +1,8 @@
-from PyQt5.QtWidgets import QWidget, QLabel, QPushButton, QVBoxLayout
-from PyQt5.QtCore import Qt, QPoint,pyqtSignal  
-import qtawesome 
-from PyQt5.QtCore import pyqtSignal,Qt,QPoint,QRect,QSize  ,QPointF
-from PyQt5.QtGui import QPen,QColor,QFont,QTextCharFormat ,QIcon,QPixmap ,QPainter,QPainterPath,QPalette,QGradient,QRadialGradient
-from PyQt5.QtWidgets import  QLabel,QTextBrowser,QPushButton ,QSystemTrayIcon ,QAction,QMenu,QGraphicsEffect
-import pyperclip 
-from PyQt5.QtCore import QProcess ,QByteArray ,QTimer
-
+ 
+from PyQt5.QtCore import Qt 
+from PyQt5.QtGui import QPen,QColor ,QTextCharFormat 
+from PyQt5.QtWidgets import  QTextBrowser 
+ 
 class Textbrowser():
     def __init__(self, parent ) : 
         

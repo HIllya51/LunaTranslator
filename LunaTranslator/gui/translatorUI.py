@@ -287,8 +287,7 @@ class QUnFrameWindow(QWidget):
                                            font-weight: bold;\
                                            background-color: rgba(%s, %s, %s, %s)"
                                            %(int(globalconfig['backcolor'][1:3],16),int(globalconfig['backcolor'][3:5],16),int(globalconfig['backcolor'][5:7],16),globalconfig['transparent']/200))
-        self.translate_text.move(0,30*self.rate)
-        self.format = QTextCharFormat() 
+        self.translate_text.move(0,30*self.rate) 
         # 翻译框根据内容自适应大小
         self.document = self.translate_text.document()
         self.document.contentsChanged.connect(self.textAreaChanged) 
