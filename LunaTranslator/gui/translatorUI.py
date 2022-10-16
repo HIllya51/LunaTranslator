@@ -6,15 +6,15 @@ import time
 t1=time.time()
 import os
 from PyQt5.QtWidgets import QWidget, QLabel, QPushButton, QVBoxLayout
-from PyQt5.QtCore import Qt, QPoint,pyqtSignal  
+from PyQt5.QtCore import Qt, pyqtSignal  
 import qtawesome 
-from PyQt5.QtCore import pyqtSignal,Qt,QPoint,QRect,QSize  ,QPointF
-from PyQt5.QtGui import QPen,QColor,QFont,QTextCharFormat ,QIcon,QPixmap ,QPainter,QPainterPath,QPalette,QGradient,QRadialGradient
-from PyQt5.QtWidgets import  QLabel,QTextBrowser,QPushButton ,QSystemTrayIcon ,QAction,QMenu,QGraphicsEffect
+from PyQt5.QtCore import pyqtSignal,Qt,QRect,QSize  
+from PyQt5.QtGui import  QFont  ,QIcon,QPixmap  
+from PyQt5.QtWidgets import  QLabel ,QPushButton ,QSystemTrayIcon ,QAction,QMenu 
 import pyperclip 
-from PyQt5.QtCore import QProcess ,QByteArray ,QTimer
+from PyQt5.QtCore import QProcess ,QByteArray  
 from utils.config import globalconfig,postprocessconfig,transerrorfixdictconfig,noundictconfig
-import win32api,win32gui,win32con
+import  win32gui 
 import gui.rangeselect
 import gui.transhist
 from gui.settingpage4 import autosaveshow
