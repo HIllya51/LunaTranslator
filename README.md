@@ -1,9 +1,6 @@
 # LunaTranslator 
 
->下载链接
->https://pan.baidu.com/s/1kBVtyIHG2CLYFvqvjUxCUw?pwd=7iqw
-
-一款兴趣使然的galgame翻译器
+一款galgame翻译器
 
 <a href="#table1">功能支持</a>
 <a href="#table2">使用说明</a> 
