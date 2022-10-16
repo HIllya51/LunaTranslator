@@ -65,10 +65,10 @@ def setTabThree(self) :
         self.miaobian_spinBox = QDoubleSpinBox(self.tab_3)
         self.customSetGeometry(self.miaobian_spinBox, 95,140, 50, 20)
         self.miaobian_spinBox.setRange(0,10) 
-        self.miaobian_spinBox.setValue(globalconfig['miaobianwidth']) 
+        self.miaobian_spinBox.setValue(globalconfig['miaobianwidth2']) 
         self.miaobian_spinBox.setSingleStep(0.1)
         self.miaobian_spinBox.setDecimals(1)
-        self.miaobian_spinBox.valueChanged.connect(lambda x:globalconfig.__setitem__('miaobianwidth',x))
+        self.miaobian_spinBox.valueChanged.connect(lambda x:globalconfig.__setitem__('miaobianwidth2',x))
 
 
         label = QLabel(self.tab_3)

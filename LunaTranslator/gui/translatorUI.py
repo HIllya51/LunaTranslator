@@ -88,7 +88,7 @@ class QUnFrameWindow(QWidget):
             # self.format.setForeground(QColor(globalconfig['miaobiancolor']))
             # self.format.setTextOutline(QPen(QColor(color), globalconfig['miaobianwidth'], Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin))
             # self.translate_text.mergeCurrentCharFormat(self.format)
-            self.translate_text.mergeCurrentCharFormat_out(globalconfig['miaobiancolor'],color, globalconfig['miaobianwidth'])
+            self.translate_text.mergeCurrentCharFormat_out(globalconfig['miaobiancolor'],color, globalconfig['miaobianwidth2'])
             self.translate_text.append(res)
             
         else : 
