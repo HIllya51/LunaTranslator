@@ -88,7 +88,7 @@ def getlepath(object) -> tuple:
             globalconfig['LocaleEmulator']=line.text()
 def getdictpath(object) -> tuple: 
         dialog = QDialog(object)  # 自定义一个dialog
-        dialog.setWindowTitle('LocaleEmulator 路径')
+        dialog.setWindowTitle('路径')
         #dialog.setWindowModality(Qt.ApplicationModal)
         dialog.resize(QSize(900,10))
         formLayout = QFormLayout(dialog)  # 配置layout
