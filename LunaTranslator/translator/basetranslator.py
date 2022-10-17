@@ -1,12 +1,6 @@
 
-from queue import Queue
-import time
-from utils.config import globalconfig,noundictconfig,transerrorfixdictconfig
-import traceback
-import json
-import requests
-import zhconv
-import traceback
+from queue import Queue 
+from utils.config import globalconfig  
 from threading import Thread
 class basetrans:
 
@@ -29,18 +23,13 @@ class basetrans:
         pass
     def translate(self,content):
         pass
-    def show(self,contentraw,res):
-        pass
-    def show__(self,contentraw,res):
-        if res!='':
-            self.show(contentraw,res)
      
     
     def fythread(self):
         while True: 
             while True:
-                content,skip=self.queue.get()
-                self.newline=content
+                contentraw,(contentsolved,mp),skip=self.queue.get()
+                self.newline=contentraw
                 if self.queue.empty():
                     break
             
@@ -49,37 +38,15 @@ class basetrans:
                 break
             if skip:
                 continue
-            if (set(content) -set('「…」、。？！―'))==set():
-                continue 
-            contentraw=content
-            zhanweifu=0
-            mp={}
-            use=noundictconfig['use'] and self.typename!='rengong'
-            if use :
-                for key in noundictconfig['dict']: 
-                     
-                    if key in content:
-
-                        content=content.replace(key,'a-'+"%03d"%zhanweifu+'')
-                        mp['a-'+"%03d"%zhanweifu+'']=key
-                        zhanweifu+=1
+            
+            if self.typename=='rengong':
+                res=self.translate(contentraw)
+            else:
+                res=self.translate(contentsolved)
              
-            res=self.translate(content)
             
-            if use  :
-                for key in mp:
-                    res=res.replace(key,noundictconfig['dict'][mp[key]])  
-            
-            if transerrorfixdictconfig['use']:
-                for key in transerrorfixdictconfig['dict']:
-                    res=res.replace(key,transerrorfixdictconfig['dict'][key])
-
-
-            if globalconfig['fanjian']!=0:
-                res=zhconv.convert(res, ['zh-cn', 'zh-tw', 'zh-hk', 'zh-sg', 'zh-hans', 'zh-hant'][globalconfig['fanjian']])
-            
-            if self.queue.empty() and contentraw==self.newline:
-                self.show__(contentraw,res)
+            if res!='' and self.queue.empty() and contentraw==self.newline:
+                self.show(contentraw,(self.typename,res,mp))
 
     
 

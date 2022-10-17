@@ -25,13 +25,13 @@ import gui.selecthook
 import pyperclip
 from utils.getpidlist import getwindowlist
 import gui.translatorUI
-from utils.config import globalconfig ,savehook_new
+from utils.config import globalconfig ,savehook_new,noundictconfig,transerrorfixdictconfig
 import importlib
 from functools import partial 
 #print(time.time()-starttime)
 import win32api,win32con,win32process
-import sqlite3
-
+import re
+import zhconv 
 class MAINUI() :
     
     def __init__(self) -> None:
@@ -41,7 +41,29 @@ class MAINUI() :
         self.rect=None
         self.textsource=None
         self.savetextractor=None
-        
+    def solvebeforetrans(self,content):
+    
+        zhanweifu=0
+        mp={} 
+        if noundictconfig['use'] :
+            for key in noundictconfig['dict']: 
+                    
+                if key in content:
+
+                    content=content.replace(key,'a-'+"%03d"%zhanweifu+'')
+                    mp['a-'+"%03d"%zhanweifu+'']=key
+                    zhanweifu+=1
+        return content,mp
+    def solveaftertrans(self,res,mp): 
+        print(res,mp)#hello
+        if noundictconfig['use']    :
+            for key in mp: 
+                reg=re.compile(re.escape(key), re.IGNORECASE)
+                res=reg.sub(noundictconfig['dict'][mp[key]],res)
+        if transerrorfixdictconfig['use']:
+            for key in transerrorfixdictconfig['dict']:
+                res=res.replace(key,transerrorfixdictconfig['dict'][key])
+        return res
     def textgetmethod(self,paste_str,shortlongskip=True):
         if paste_str=='':
             return 
@@ -76,13 +98,16 @@ class MAINUI() :
                 self.reader.read(paste_str)
         except:
             pass
+            
+        skip=False
         if shortlongskip and  (len(paste_str)<globalconfig['minlength'] or len(paste_str)>globalconfig['maxlength'] ):
+            skip=True  
+        if (set(paste_str) -set('「…」、。？！―'))==set():
             skip=True 
-        else:
-            skip=False
+             
         for engine in self.translators:
             #print(engine)
-            self.translators[engine].gettask((paste_str,skip)) 
+            self.translators[engine].gettask((paste_str,self.solvebeforetrans(paste_str),skip)) 
         try:
             if skip==False and globalconfig['transkiroku']  and 'sqlwrite' in dir(self.textsource):
                 ret=self.textsource.sqlwrite.execute(f'SELECT * FROM artificialtrans WHERE source = "{paste_str}"').fetchone()
@@ -160,7 +185,13 @@ class MAINUI() :
             for source in globalconfig['fanyi']: 
                 if globalconfig['fanyi'][source]['use']:
                     Thread(target=self.fanyiloader,args=(source,)).start()
-    def _maybeyrengong(self,classname,contentraw,res):
+    def _maybeyrengong(self,classname,contentraw,_):
+        
+        classname,res,mp=_
+        if classname!='rengong': 
+            res=self.solveaftertrans(res,mp)
+        if globalconfig['fanjian']!=0:
+            res=zhconv.convert(res, ['zh-cn', 'zh-tw', 'zh-hk', 'zh-sg', 'zh-hans', 'zh-hant'][globalconfig['fanjian']])
         self.translation_ui.displayres.emit(classname,res)
         res=res.replace('"','')
         try:

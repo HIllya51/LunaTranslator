@@ -1,7 +1,7 @@
 {
     "position": [
-        593,
-        488
+        732,
+        649
     ],
     "fixedheight": false,
     "width": 942,
@@ -275,5 +275,9 @@
     "miaobianwidth": 1.0,
     "miaobiancolor": "#dcdcdc",
     "miaobianwidth2": 5,
-    "zitiyangshi": 2
+    "zitiyangshi": 2,
+    "gongxiangcishu": {
+        "use": true,
+        "path": "C:/dataH/vnr/vnr/Caches/Sync/gamedic.xml"
+    }
 }

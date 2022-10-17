@@ -77,8 +77,7 @@ class QUnFrameWindow(QWidget):
         print('\n'+res+'\n')
         self.transhis.getnewsentencesignal.emit('\n'+res)
     def showline(self,res,color ): 
-        
-        print(globalconfig['zitiyangshi'])
+         
         if globalconfig['zitiyangshi'] ==2:
             if globalconfig['showatcenter']:
                 self.translate_text.setAlignment(Qt.AlignCenter)

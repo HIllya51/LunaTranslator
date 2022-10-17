@@ -25,7 +25,7 @@ import qtawesome
 from utils.config import globalconfig 
 
 import importlib
-from gui.inputdialog import GetUserPlotItems
+from gui.inputdialog import GetUserPlotItems,getdictpath
 import gui.switchbutton
 import gui.attachprocessdialog  
 import gui.selecthook  
@@ -33,7 +33,7 @@ def setTab7(self) :
      
         self.tab_7 = QWidget()
         self.tab_widget.addTab(self.tab_7, "")
-        self.tab_widget.setTabText(self.tab_widget.indexOf(self.tab_7), " 翻译预处理")
+        self.tab_widget.setTabText(self.tab_widget.indexOf(self.tab_7), " 翻译优化")
 
         
         initpostswitchs_auto(self)
@@ -52,6 +52,23 @@ def initpostswitchs_auto(self):
         initdictswitchs(self,(x, y, 270, 20),(x+270, y, 20,20),1,(x+300, y, 20,20))
         y+=40
         initdictswitchs2(self,(x, y, 270, 20),(x+270, y, 20,20),1,(x+300, y, 20,20))
+        y+=40
+        initdictswitchs3(self,(x, y, 270, 20),(x+270, y, 20,20),1,(x+300, y, 20,20))
+def initdictswitchs3(self,namepos,switchpos,colorpos,settingpos):
+    label = QLabel(self.tab_7)
+    self.customSetGeometry(label, *namepos)
+    label.setText("使用VNR共享辞书:")
+    p=gui.switchbutton.MySwitch(self.tab_7, sign=globalconfig['gongxiangcishu']['use'])
+    
+    self.customSetGeometry(p, *switchpos) 
+    p.clicked.connect(lambda x:globalconfig['gongxiangcishu'].__setitem__('use',x)) 
+    
+    s1 = QPushButton( "", self.tab_7)
+    self.customSetIconSize(s1, 20, 20)
+    self.customSetGeometry(s1, *settingpos)
+    s1.setStyleSheet("background: transparent;")   
+    s1.setIcon(qtawesome.icon("fa.gear", color="#FF69B4"  ))
+    s1.clicked.connect(lambda: getdictpath(self))
 def initdictswitchs(self,namepos,switchpos,colorpos,settingpos):
     label = QLabel(self.tab_7)
     self.customSetGeometry(label, *namepos)

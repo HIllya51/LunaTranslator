@@ -3,7 +3,7 @@ import functools
 import sqlite3
 from PyQt5.QtWidgets import  QWidget,QLabel ,QLineEdit,QSpinBox,QPushButton,QDialog,QVBoxLayout ,QHeaderView,QFileDialog 
 import functools 
-  
+from traceback import print_exc
 import functools
 
 from PyQt5.QtWidgets import    QWidget, QTableView, QAbstractItemView, QLabel, QVBoxLayout
@@ -85,17 +85,20 @@ def autosaveshow(object):
         button=QPushButton(dialog)
         button.setText('开始游戏')
         def clicked(): 
-                if os.path.exists(model.item(table.currentIndex().row(),1).text()):
+                try:
+                    if os.path.exists(model.item(table.currentIndex().row(),1).text()):
                         subprocess.Popen(model.item(table.currentIndex().row(),1).text())
                         dialog.close()
                         if object:
                                 object.close()
-                         
+                except:
+                        print_exc()
         button.clicked.connect(clicked)
         button4=QPushButton(dialog)
         button4.setText('使用LocaleEmulator开始游戏')
         def clicked4():  
-                if os.path.exists(model.item(table.currentIndex().row(),1).text()):
+                try:
+                    if os.path.exists(model.item(table.currentIndex().row(),1).text()):
                         le=os.path.join(globalconfig['LocaleEmulator'],'LEProc.exe')
                         print(le,os.path.exists(le))
                         if os.path.exists(le):
@@ -105,7 +108,8 @@ def autosaveshow(object):
                                 dialog.close()
                                 if object:
                                         object.close()
-                         
+                except:
+                        print_exc()
         button4.clicked.connect(clicked4)
         button2=QPushButton(dialog)
         button2.setText('删除游戏')

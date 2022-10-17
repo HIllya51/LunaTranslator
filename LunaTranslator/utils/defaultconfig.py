@@ -26,7 +26,11 @@ defaultglobalconfig = {'position': [432, 613], 'fixedheight': False, 'width': 76
     "mustocr_interval":5,
     "ocrmininterval":1,
     "selectable":False,
-    "autoupdate":False
+    "autoupdate":False,
+    'gongxiangcishu':{
+        'use':False,
+        'path':''
+    }
     
     }
 
