@@ -67,7 +67,8 @@ class MAINUI() :
                  
                 try:
                     regex=_.find('regex').text
-                    self.vnrsharedreg.append((re.compile(pattern),src,tgt,text))
+                    #搞不明白这个玩意
+                    #self.vnrsharedreg.append((re.compile(pattern),src,tgt,text))
                     #print(pattern,text,src,tgt)
                 except:
                     # if pattern not in self.vnrshareddict:
