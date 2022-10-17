@@ -39,7 +39,7 @@
 
 ## 使用说明
 
-下载上方链接或者release中的压缩包解压，运行LunaTranslator.exe
+从release中的压缩包解压，运行LunaTranslator.exe
 
 <div align="center"><img src='./docpics/1.jpg'></div>
 
