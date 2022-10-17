@@ -32,6 +32,9 @@ from functools import partial
 import win32api,win32con,win32process
 import re
 import zhconv 
+import xml.etree.ElementTree as ET
+from xml.etree.ElementTree import Element
+
 class MAINUI() :
     
     def __init__(self) -> None:
@@ -41,6 +44,15 @@ class MAINUI() :
         self.rect=None
         self.textsource=None
         self.savetextractor=None
+    @threader 
+    def loadvnrshareddict(self):
+        print('laod dict')
+         
+        if globalconfig['gongxiangcishu']['use'] and os.path.exists(globalconfig['gongxiangcishu']['path']) :
+            self.vnrshareddict=ET.parse(globalconfig['gongxiangcishu']['path'])
+        
+        else:
+            self.vnrshareddict={}
     def solvebeforetrans(self,content):
     
         zhanweifu=0
@@ -49,9 +61,9 @@ class MAINUI() :
             for key in noundictconfig['dict']: 
                     
                 if key in content:
-
-                    content=content.replace(key,'a-'+"%03d"%zhanweifu+'')
-                    mp['a-'+"%03d"%zhanweifu+'']=key
+                    xx=f'ZX{chr(ord("B")+zhanweifu)}Z'
+                    content=content.replace(key,xx)
+                    mp[xx]=key
                     zhanweifu+=1
         return content,mp
     def solveaftertrans(self,res,mp): 
@@ -288,6 +300,7 @@ class MAINUI() :
         self.settin_ui =gui.settin.Settin(self) 
         #print(time.time()-t1)
         self.startreader() 
+        self.loadvnrshareddict()
         self.range_ui =gui.rangeselect.rangeadjust(self)   
         self.hookselectdialog=gui.selecthook.hookselect(self )
         threading.Thread(target=self.autohookmonitorthread).start()

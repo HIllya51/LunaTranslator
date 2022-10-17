@@ -61,14 +61,20 @@ def initdictswitchs3(self,namepos,switchpos,colorpos,settingpos):
     p=gui.switchbutton.MySwitch(self.tab_7, sign=globalconfig['gongxiangcishu']['use'])
     
     self.customSetGeometry(p, *switchpos) 
-    p.clicked.connect(lambda x:globalconfig['gongxiangcishu'].__setitem__('use',x)) 
+    def __(x):
+        globalconfig['gongxiangcishu'].__setitem__('use',x)
+        self.object.loadvnrshareddict()
+    p.clicked.connect(lambda x:__(x)) 
     
     s1 = QPushButton( "", self.tab_7)
     self.customSetIconSize(s1, 20, 20)
     self.customSetGeometry(s1, *settingpos)
     s1.setStyleSheet("background: transparent;")   
     s1.setIcon(qtawesome.icon("fa.gear", color="#FF69B4"  ))
-    s1.clicked.connect(lambda: getdictpath(self))
+    def __2(self):
+        getdictpath(self)
+        self.object.loadvnrshareddict()
+    s1.clicked.connect(lambda: __2(self))
 def initdictswitchs(self,namepos,switchpos,colorpos,settingpos):
     label = QLabel(self.tab_7)
     self.customSetGeometry(label, *namepos)

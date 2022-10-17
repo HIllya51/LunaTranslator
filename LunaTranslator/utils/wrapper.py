@@ -29,7 +29,7 @@ def timer(func):
     def _wrapper(*args,**kwargs): 
         t=time.time()
         res=func(*args,**kwargs)
-        #print(time.time()-t)
+        print(time.time()-t)
         return res
 
         
