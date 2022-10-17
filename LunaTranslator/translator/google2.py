@@ -13,12 +13,12 @@ class TS(basetrans):
     def translate(self,content): 
                 
         headers = {
-            'authority': 'translate.google.cn',
+            'authority': 'translate.google.com',
             'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
             'accept-language': 'zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6',
             'cache-control': 'no-cache',
              'pragma': 'no-cache',
-            'referer': 'https://translate.google.cn/m',
+            'referer': 'https://translate.google.com/m',
             'sec-ch-ua': '"Microsoft Edge";v="105", "Not)A;Brand";v="8", "Chromium";v="105"',
             'sec-ch-ua-arch': '"x86"',
             'sec-ch-ua-bitness': '"64"',
@@ -43,7 +43,7 @@ class TS(basetrans):
             'q': content,
         }
         try:
-            response = requests.get('https://translate.google.cn/m', params=params,headers=headers,timeout = globalconfig['translatortimeout'], proxies=  {'http': None,'https': None})
+            response = requests.get('https://translate.google.com/m', params=params,headers=headers,timeout = globalconfig['translatortimeout'] )
          
             res=re.search('<div class="result-container">(.*?)</div>',response.text).groups()
         except:

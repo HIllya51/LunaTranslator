@@ -7,9 +7,9 @@ defaultglobalconfig = {'position': [432, 613], 'fixedheight': False, 'width': 76
  },
  'fanyi': {
     'baidu': {'use': True, 'color': '#ff65db', 'name': '百度'}, 'bing': {'use': False, 'color': '#000ff0', 'name': '必应'}, 
-    # 'google': {'use': False, 'color': '#ff0000', 'name': '谷歌'}, 
+     'google': {'use': False, 'color': '#ff0000', 'name': '谷歌'}, 
     'ali': {'use': False, 'color': '#0000ff', 'name': '阿里'}, 'youdao': {'use': False, 'color': '#0ff000', 'name': '有道'}, 'youdao2': {'use': False, 'color': '#0ff000', 'name': '有道2'},
-    #  'google2': {'use': False, 'color': '#95a5ff', 'name': '谷歌2'},
+       'google2': {'use': False, 'color': '#95a5ff', 'name': '谷歌2'},
       'sougou': {
     'use': False, 'color': '#0ff000', 'name': '搜狗'}, 'caiyun': {'use': False, 'color': '#0ff000', 'name': '彩云'},'deepl': {'use': False, 'color': '#0ff000', 'name': 'deepl'}, 'jb7': {'use': False, 'color': '#1839f0', 'name': 'Jbeijing7', 'argsfile': './userconfig/jbj7.json'}, 'kingsoft': {'use': False, 'color': '#1839f0', 'name': '金山快译', 'argsfile': './userconfig/ks.json'}, 'dreye': {'use': False, 'color': '#1839f0', 'name': '快译通', 'argsfile': './userconfig/dreye.json'}, 'sougou2': {'use': False, 'color': '#0ff000', 'name': '搜狗2'}, 'youdao3': {'use': False, 'color': '#0ff000', 'name': '有道3'}, 'youdao4': {'use': False, 'color': '#0ff000', 'name': '有道4'}, 'youdao5': {'use': False, 'color': '#0ff000', 'name': '有道5'},   'tencent': {'use': False, 'color': '#0ff000', 'name': 'TX'},
     # 'ifly': {'use': False, 'color': '#0ff000', 'name': 'ifly'}, 

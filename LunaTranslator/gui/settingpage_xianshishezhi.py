@@ -66,7 +66,7 @@ def setTabThree(self) :
          
         self.miaobian_spinBox = QDoubleSpinBox(self.tab_3)
         self.customSetGeometry(self.miaobian_spinBox, 350,140, 50, 20)
-        self.miaobian_spinBox.setRange(0,10) 
+        self.miaobian_spinBox.setRange(0,20) 
         self.miaobian_spinBox.setValue(globalconfig['miaobianwidth2']) 
         self.miaobian_spinBox.setSingleStep(0.1)
         self.miaobian_spinBox.setDecimals(1)
