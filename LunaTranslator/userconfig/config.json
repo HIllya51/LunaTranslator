@@ -1,7 +1,7 @@
 {
     "position": [
-        623,
-        524
+        630,
+        456
     ],
     "fixedheight": false,
     "width": 942,
@@ -275,5 +275,5 @@
     "miaobianwidth": 1.0,
     "miaobiancolor": "#dcdcdc",
     "miaobianwidth2": 5,
-    "zitiyangshi": 1
+    "zitiyangshi": 2
 }
