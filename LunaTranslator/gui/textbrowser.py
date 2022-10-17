@@ -38,17 +38,20 @@ class Textbrowser():
         self.textbrowserback.append(x)
         
         self.textbrowser.append(x)
-    def mergeCurrentCharFormat(self,x):
-        self.textbrowser.mergeCurrentCharFormat(x)
-        self.textbrowserback.mergeCurrentCharFormat(x)
+    def mergeCurrentCharFormat(self,colormiao,width):
+        format2=QTextCharFormat()
+        format2.setTextOutline(QPen(QColor(colormiao),width, Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin))
+         
+        self.textbrowser.setCurrentCharFormat(format2)
+        self.textbrowserback.setCurrentCharFormat(format2)
     def mergeCurrentCharFormat_out(self,colorinner,colormiao,width):
         format1 = QTextCharFormat() 
         format1.setForeground(QColor(colorinner))
         format2=QTextCharFormat()
         format2.setTextOutline(QPen(QColor(colormiao),width, Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin))
         
-        self.textbrowser.mergeCurrentCharFormat(format1)
-        self.textbrowserback.mergeCurrentCharFormat(format2)
+        self.textbrowser.setCurrentCharFormat(format1)
+        self.textbrowserback.setCurrentCharFormat(format2)
     def clear(self):
         self.textbrowser.clear()
         self.textbrowserback.clear()

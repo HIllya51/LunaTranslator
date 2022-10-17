@@ -78,8 +78,8 @@ class QUnFrameWindow(QWidget):
         self.transhis.getnewsentencesignal.emit('\n'+res)
     def showline(self,res,color ): 
         
-        
-        if globalconfig['iskongxin'] == True :
+        print(globalconfig['zitiyangshi'])
+        if globalconfig['zitiyangshi'] ==2:
             if globalconfig['showatcenter']:
                 self.translate_text.setAlignment(Qt.AlignCenter)
             else:
@@ -90,8 +90,18 @@ class QUnFrameWindow(QWidget):
             # self.translate_text.mergeCurrentCharFormat(self.format)
             self.translate_text.mergeCurrentCharFormat_out(globalconfig['miaobiancolor'],color, globalconfig['miaobianwidth2'])
             self.translate_text.append(res)
+        elif globalconfig['zitiyangshi'] ==1:
+            if globalconfig['showatcenter']:
+                self.translate_text.setAlignment(Qt.AlignCenter)
+            else:
+                self.translate_text.setAlignment(Qt.AlignLeft)
             
-        else : 
+            # self.format.setForeground(QColor(globalconfig['miaobiancolor']))
+            # self.format.setTextOutline(QPen(QColor(color), globalconfig['miaobianwidth'], Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin))
+            # self.translate_text.mergeCurrentCharFormat(self.format)
+            self.translate_text.mergeCurrentCharFormat( color, globalconfig['miaobianwidth'])
+            self.translate_text.append(res)
+        elif globalconfig['zitiyangshi'] ==0:
             #self.translate_text.append("<font color=%s>%s</font>"%(color,res)) 
             if globalconfig['showatcenter']:
                 self.translate_text.append(f'<div style="color:{color};text-align:center">{res}</div>')

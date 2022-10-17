@@ -1,7 +1,7 @@
 {
     "position": [
-        606,
-        497
+        623,
+        524
     ],
     "fixedheight": false,
     "width": 942,
@@ -272,7 +272,8 @@
     "mousetransparent": true,
     "selectable": false,
     "autoupdate": false,
-    "miaobianwidth": 10.0,
+    "miaobianwidth": 1.0,
     "miaobiancolor": "#dcdcdc",
-    "miaobianwidth2": 5
+    "miaobianwidth2": 5,
+    "zitiyangshi": 1
 }
