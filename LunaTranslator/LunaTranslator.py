@@ -45,33 +45,81 @@ class MAINUI() :
         self.textsource=None
         self.savetextractor=None
     @threader 
+    @timer
     def loadvnrshareddict(self):
-        print('laod dict')
          
+        self.vnrshareddict={}
+        self.vnrsharedreg=[]
         if globalconfig['gongxiangcishu']['use'] and os.path.exists(globalconfig['gongxiangcishu']['path']) :
-            self.vnrshareddict=ET.parse(globalconfig['gongxiangcishu']['path'])
-        
-        else:
-            self.vnrshareddict={}
+            xml=ET.parse(globalconfig['gongxiangcishu']['path']) 
+            
+            for _ in xml.find('terms').findall('term'):
+                
+                src=_.find('sourceLanguage').text
+                tgt=_.find('language').text
+                if tgt=='en':
+                    continue
+                pattern=_.find('pattern').text
+                try:
+                    text=_.find('text').text
+                except:
+                    text=''
+                 
+                try:
+                    regex=_.find('regex').text
+                    self.vnrsharedreg.append((re.compile(pattern),src,tgt,text))
+                    #print(pattern,text,src,tgt)
+                except:
+                    # if pattern not in self.vnrshareddict:
+                    #     self.vnrshareddict[pattern]=[{'src':src,'tgt':tgt,'text':text }]
+                    # else:
+                    #     self.vnrshareddict[pattern]+=[{'src':src,'tgt':tgt,'text':text }]
+                    if pattern in self.vnrshareddict and self.vnrshareddict[pattern]['tgt']=='zhs':
+                         
+                        continue
+                    self.vnrshareddict[pattern]={'src':src,'tgt':tgt,'text':text }
+        # print(len(list(self.vnrsharedreg)))
+        # print(len(list(self.vnrshareddict.keys())))
     def solvebeforetrans(self,content):
     
         zhanweifu=0
-        mp={} 
+        mp1={} 
+        mp2={}
+        mp3={}
         if noundictconfig['use'] :
             for key in noundictconfig['dict']: 
                     
                 if key in content:
                     xx=f'ZX{chr(ord("B")+zhanweifu)}Z'
                     content=content.replace(key,xx)
-                    mp[xx]=key
+                    mp1[xx]=key
                     zhanweifu+=1
-        return content,mp
+        if globalconfig['gongxiangcishu']['use']:
+            for key in self.vnrshareddict:
+                
+                if key in content:
+                    # print(key)
+                    # if self.vnrshareddict[key]['src']==self.vnrshareddict[key]['tgt']:
+                    #     content=content.replace(key,self.vnrshareddict[key]['text'])
+                    # else:
+                        xx=f'ZX{chr(ord("B")+zhanweifu)}Z'
+                        content=content.replace(key,xx)
+                        mp2[xx]=key
+                        zhanweifu+=1
+             
+        return content,(mp1,mp2,mp3)
     def solveaftertrans(self,res,mp): 
-        print(res,mp)#hello
-        if noundictconfig['use']    :
-            for key in mp: 
+        mp1,mp2,mp3=mp
+        #print(res,mp)#hello
+        if noundictconfig['use'] :
+            for key in mp1: 
                 reg=re.compile(re.escape(key), re.IGNORECASE)
-                res=reg.sub(noundictconfig['dict'][mp[key]],res)
+                res=reg.sub(noundictconfig['dict'][mp1[key]],res)
+        if globalconfig['gongxiangcishu']['use']:
+            for key in mp2: 
+                reg=re.compile(re.escape(key), re.IGNORECASE)
+                res=reg.sub(self.vnrshareddict[mp2[key]]['text'],res)
+             
         if transerrorfixdictconfig['use']:
             for key in transerrorfixdictconfig['dict']:
                 res=res.replace(key,transerrorfixdictconfig['dict'][key])
@@ -84,7 +132,8 @@ class MAINUI() :
             return 
         if paste_str=='':
             return
-        
+        if len(paste_str)>500:
+            return 
 
 
         postsolve=importlib.import_module('postprocess.post').POSTSOLVE
@@ -293,6 +342,7 @@ class MAINUI() :
         #print(time.time()-t1)
         threading.Thread(target=self.setontopthread).start()
         #print(time.time()-t1)
+        self.loadvnrshareddict()
         self.prepare()  
         self.starthira()  
         self.starttextsource() 
@@ -300,7 +350,7 @@ class MAINUI() :
         self.settin_ui =gui.settin.Settin(self) 
         #print(time.time()-t1)
         self.startreader() 
-        self.loadvnrshareddict()
+        
         self.range_ui =gui.rangeselect.rangeadjust(self)   
         self.hookselectdialog=gui.selecthook.hookselect(self )
         threading.Thread(target=self.autohookmonitorthread).start()
