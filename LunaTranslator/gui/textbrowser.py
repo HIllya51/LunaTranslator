@@ -9,6 +9,7 @@ class Textbrowser():
         self.textbrowserback=QTextBrowser(parent)
         self.textbrowser=QTextBrowser(parent)
         self.savetaglabels=[]
+        self.addtaged=False
         self.charformat=self.textbrowser.currentCharFormat()
     def simplecharformat(self,color):
         self.textbrowser.setCurrentCharFormat(self.charformat)
@@ -55,24 +56,37 @@ for(QTextBlock it = doc->begin(); it !=doc->end();it = it.next())
         self.textbrowser.setAlignment(x)
         self.textbrowserback.setAlignment(x)
       
-    def append(self,x): 
-        self.textbrowserback.append(x) 
-        self.textbrowser.append(x)
-        f1=QTextBlockFormat()
-        f1.setLineHeight(0,QTextBlockFormat.LineDistanceHeight)
-        f1.setAlignment(self.textbrowser.alignment()) 
-        cursor=self.textbrowser.textCursor() 
-        cursor.setBlockFormat(f1)
-        self.textbrowser.setTextCursor(cursor)
-        cursor=self.textbrowserback.textCursor() 
-        cursor.setBlockFormat(f1)
-        self.textbrowserback.setTextCursor(cursor)
+    def append(self,x ): 
+        
+        if self.addtaged:
+            self.addtaged=False
+            self.textbrowserback.append(' ') 
+            self.textbrowser.append(' ')
+        
+            f1=QTextBlockFormat()
+            f1.setLineHeight(0,QTextBlockFormat.LineDistanceHeight)
+            f1.setAlignment(self.textbrowser.alignment()) 
+            cursor=self.textbrowser.textCursor() 
+            cursor.setBlockFormat(f1)
+            self.textbrowser.setTextCursor(cursor)
+            cursor=self.textbrowserback.textCursor() 
+            cursor.setBlockFormat(f1)
+            self.textbrowserback.setTextCursor(cursor)
+            self.textbrowserback.insertPlainText(x) 
+            self.textbrowser.insertPlainText(x)
+        else:
+            self.textbrowserback.append(x) 
+            self.textbrowser.append(x)
+           
+        
+        
      
     def addtag(self,x): 
         if len(self.savetaglabels)<len(x):
             self.savetaglabels+=[QLabel(self.textbrowser) for i in range(len(x)-len(self.savetaglabels))]
         #print(x)
         pos=2
+        self.addtaged=True
         labeli=0 
         cursor=self.textbrowser.textCursor()
         cursor.setPosition(2)
@@ -125,8 +139,7 @@ for(QTextBlock it = doc->begin(); it !=doc->end();it = it.next())
             self.savetaglabels[labeli].setStyleSheet("color: %s;background-color:rgba(0,0,0,0)" %(globalconfig['rawtextcolor']))
             self.savetaglabels[labeli].show()
             labeli+=1
-        
-        
+       
     def mergeCurrentCharFormat(self,colormiao,width):
         format2=QTextCharFormat()
         format2.setTextOutline(QPen(QColor(colormiao),width, Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin))

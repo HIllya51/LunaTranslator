@@ -1,13 +1,13 @@
 {
     "position": [
-        167,
+        354,
         465
     ],
     "fixedheight": false,
     "width": 1436,
     "autorun": true,
     "transparent": 42,
-    "fontsize": 17.699999999999996,
+    "fontsize": 16.0,
     "fonttype": "黑体",
     "issolid": false,
     "iskongxin": true,
@@ -15,7 +15,7 @@
     "rawtextcolor": "#000000",
     "backcolor": "#b7babd",
     "isshowhira": true,
-    "locktools": true,
+    "locktools": false,
     "showfanyisource": true,
     "autoread": false,
     "extractalltext": true,
@@ -95,7 +95,7 @@
             "name": "谷歌"
         },
         "ali": {
-            "use": true,
+            "use": false,
             "color": "#0000ff",
             "name": "阿里"
         },

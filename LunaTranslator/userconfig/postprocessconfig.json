@@ -19,7 +19,7 @@
         "name": "过滤HTML标签"
     },
     "_6": {
-        "use": true,
+        "use": false,
         "name": "过滤换行符"
     },
     "_9": {
