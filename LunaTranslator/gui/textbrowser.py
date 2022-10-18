@@ -86,6 +86,7 @@ for(QTextBlock it = doc->begin(); it !=doc->end();it = it.next())
         self.textbrowserback.setTextCursor(cursor)
         font=QFont()
         font.setFamily(globalconfig['fonttype']) 
+        font.setPointSizeF(12) 
         for word in x:
             f1=QTextBlockFormat()
             f1.setLineHeight(20,QTextBlockFormat.LineDistanceHeight)

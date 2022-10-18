@@ -1,7 +1,7 @@
 {
     "position": [
-        421,
-        760
+        363,
+        522
     ],
     "fixedheight": false,
     "width": 1436,
@@ -13,7 +13,7 @@
     "iskongxin": true,
     "isshowrawtext": true,
     "rawtextcolor": "#000000",
-    "backcolor": "#7f8b76",
+    "backcolor": "#b7babd",
     "isshowhira": true,
     "locktools": true,
     "showfanyisource": true,
