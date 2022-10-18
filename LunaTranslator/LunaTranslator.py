@@ -6,13 +6,13 @@ import json
 import sys
 # if os.path.exists('./debug')==False:
 #     os.mkdir('./debug')
-# sys.stderr=open('./debug/stderr.txt','a',encoding='utf8')
+#sys.stderr=open('./stderr.txt','a',encoding='utf8')
 # sys.stdout=open('./debug/stdout.txt','a',encoding='utf8')
 from traceback import  print_exc  
 dirname, filename = os.path.split(os.path.abspath(__file__))
 sys.path.append(dirname)  
 import threading,win32gui
-from PyQt5.QtCore import QCoreApplication ,Qt ,pyqtSignal,QUrl
+from PyQt5.QtCore import QCoreApplication ,Qt 
 from PyQt5.QtWidgets import  QApplication ,QGraphicsScene,QGraphicsView,QDesktopWidget
 import utils.screen_rate  
 from utils.wrapper import timer,threader 
