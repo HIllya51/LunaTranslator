@@ -1,7 +1,7 @@
 {
     "position": [
-        363,
-        522
+        167,
+        465
     ],
     "fixedheight": false,
     "width": 1436,
@@ -278,6 +278,6 @@
     "zitiyangshi": 2,
     "gongxiangcishu": {
         "use": true,
-        "path": "C:/Users/11737/Downloads/gamedic.xml"
+        "path": "C:/dataH/vnr/vnr/Caches/Sync/gamedic.xml"
     }
 }

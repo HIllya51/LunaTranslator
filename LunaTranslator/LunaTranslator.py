@@ -47,7 +47,12 @@ class MAINUI() :
     @threader 
     @timer
     def loadvnrshareddict(self):
-         
+        cnt=0
+        cnt1=0
+        regcnt=0
+        cnt2=0
+        sim=0
+        skip=0
         self.vnrshareddict={}
         self.vnrsharedreg=[]
         if globalconfig['gongxiangcishu']['use'] and os.path.exists(globalconfig['gongxiangcishu']['path']) :
@@ -64,13 +69,16 @@ class MAINUI() :
                     text=_.find('text').text
                 except:
                     text=''
-                 
+                cnt+=1
+
                 try:
                     regex=_.find('regex').text
+                    regcnt+=1
                     #搞不明白这个玩意
                     #self.vnrsharedreg.append((re.compile(pattern),src,tgt,text))
                     #print(pattern,text,src,tgt)
                 except:
+                    cnt2+=1
                     # if pattern not in self.vnrshareddict:
                     #     self.vnrshareddict[pattern]=[{'src':src,'tgt':tgt,'text':text }]
                     # else:
@@ -79,10 +87,15 @@ class MAINUI() :
                          
                         continue
                     if src==tgt:# and tgt=='ja':
+                        sim+=1
+                        #print(pattern,{'src':src,'tgt':tgt,'text':text })
                         continue
                     if 'eos' in text or 'amp' in text or '&' in text:
+                        skip+=1
                         continue
                     self.vnrshareddict[pattern]={'src':src,'tgt':tgt,'text':text }
+                    cnt1+=1
+        #print(cnt1,cnt2,regcnt,cnt,sim,skip)
         # print(len(list(self.vnrsharedreg)))
         # print(len(list(self.vnrshareddict.keys())))
     def solvebeforetrans(self,content):
