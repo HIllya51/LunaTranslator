@@ -38,6 +38,7 @@ class QUnFrameWindow(QWidget):
     clear_text_sign = pyqtSignal() 
     displayres =  pyqtSignal(str,str ) 
     displayraw1 =  pyqtSignal( str,str,int )
+    displayraw2 =  pyqtSignal( str,list,str )
     displayraw =  pyqtSignal( str,str )
     displaystatus=pyqtSignal(str) 
     startprocessignal=pyqtSignal(str,list)
@@ -73,39 +74,30 @@ class QUnFrameWindow(QWidget):
         self.original=res 
         if show==1: 
             self.showline(res,color )
-        
-        print('\n'+res+'\n')
-        self.transhis.getnewsentencesignal.emit('\n'+res)
-    def showline(self,res,color ): 
          
-        if globalconfig['zitiyangshi'] ==2:
-            if globalconfig['showatcenter']:
-                self.translate_text.setAlignment(Qt.AlignCenter)
-            else:
-                self.translate_text.setAlignment(Qt.AlignLeft)
-            
-            # self.format.setForeground(QColor(globalconfig['miaobiancolor']))
-            # self.format.setTextOutline(QPen(QColor(color), globalconfig['miaobianwidth'], Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin))
-            # self.translate_text.mergeCurrentCharFormat(self.format)
-            self.translate_text.mergeCurrentCharFormat_out(globalconfig['miaobiancolor'],color, globalconfig['miaobianwidth2'])
+        self.transhis.getnewsentencesignal.emit('\n'+res)
+    def showraw2(self,color,res,show ):
+        self.clearText()
+        self.original=show 
+        self.showline((res,show),color ,type_=2 )
+        self.transhis.getnewsentencesignal.emit('\n'+show)
+    def showline(self,res,color ,type_=1): 
+        if globalconfig['showatcenter']:
+            self.translate_text.setAlignment(Qt.AlignCenter)
+        else:
+            self.translate_text.setAlignment(Qt.AlignLeft)
+        if globalconfig['zitiyangshi'] ==2: 
+            self.translate_text.mergeCurrentCharFormat_out(globalconfig['miaobiancolor'],color, globalconfig['miaobianwidth2']) 
+        elif globalconfig['zitiyangshi'] ==1:  
+            self.translate_text.mergeCurrentCharFormat( color, globalconfig['miaobianwidth']) 
+        elif globalconfig['zitiyangshi'] ==0: 
+            self.translate_text.simplecharformat(color)
+        if type_==1:
             self.translate_text.append(res)
-        elif globalconfig['zitiyangshi'] ==1:
-            if globalconfig['showatcenter']:
-                self.translate_text.setAlignment(Qt.AlignCenter)
-            else:
-                self.translate_text.setAlignment(Qt.AlignLeft)
-            
-            # self.format.setForeground(QColor(globalconfig['miaobiancolor']))
-            # self.format.setTextOutline(QPen(QColor(color), globalconfig['miaobianwidth'], Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin))
-            # self.translate_text.mergeCurrentCharFormat(self.format)
-            self.translate_text.mergeCurrentCharFormat( color, globalconfig['miaobianwidth'])
-            self.translate_text.append(res)
-        elif globalconfig['zitiyangshi'] ==0:
-            #self.translate_text.append("<font color=%s>%s</font>"%(color,res)) 
-            if globalconfig['showatcenter']:
-                self.translate_text.append(f'<div style="color:{color};text-align:center">{res}</div>')
-            else:
-                self.translate_text.append(f'<div style="color:{color}">{res}</div>')
+        else:
+            self.translate_text.append(' ')
+            self.translate_text.append(res[1]) 
+            self.translate_text.addtag(res[0])
             
     def clearText(self) :
      
@@ -166,6 +158,7 @@ class QUnFrameWindow(QWidget):
         self.hookfollowsignal.connect(self.hookfollowsignalsolve) 
         self.displayres.connect(self.showres)
         self.displayraw1.connect(self.showraw)
+        self.displayraw2.connect(self.showraw2)
         self.displayraw.connect(self.showline) 
         self.clear_text_sign.connect(self.clearText)
         self.object = object  

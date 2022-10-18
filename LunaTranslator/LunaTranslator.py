@@ -149,8 +149,8 @@ class MAINUI() :
         self.translation_ui.original=paste_str 
         if globalconfig['isshowhira'] and globalconfig['isshowrawtext']:
             if 'hira_' in dir(self):
-                hiratext2,hiratext1,rawtext,guiuse=self.hira_.fy(paste_str)  
-                self.translation_ui.displayraw1.emit(guiuse,globalconfig['rawtextcolor'],1)
+                result=self.hira_.fy(paste_str)  
+                self.translation_ui.displayraw2.emit(globalconfig['rawtextcolor'],result,paste_str)
         elif globalconfig['isshowrawtext']:
             self.translation_ui.displayraw1.emit(paste_str,globalconfig['rawtextcolor'],1)
         else:

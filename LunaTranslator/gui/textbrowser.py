@@ -1,13 +1,20 @@
  
 from PyQt5.QtCore import Qt 
-from PyQt5.QtGui import QPen,QColor ,QTextCharFormat ,QTextBlockFormat,QTextCursor
+from PyQt5.QtGui import QPen,QColor ,QTextCharFormat ,QTextBlockFormat,QTextCursor,QFont,QColor
 from PyQt5.QtWidgets import  QTextBrowser ,QLabel
- 
+from utils.config import globalconfig
 class Textbrowser():
     def __init__(self, parent ) : 
         self.parent=parent
         self.textbrowserback=QTextBrowser(parent)
         self.textbrowser=QTextBrowser(parent)
+        self.savetaglabels=[]
+        self.charformat=self.textbrowser.currentCharFormat()
+    def simplecharformat(self,color):
+        self.textbrowser.setCurrentCharFormat(self.charformat)
+        self.textbrowserback.setCurrentCharFormat(self.charformat)
+        self.textbrowser.setTextColor(QColor(color))
+        self.textbrowserback.setTextColor(QColor(color))
     def setText(self,text):
         self.textbrowser.setText(text)
         self.textbrowserback.setText(text)
@@ -47,25 +54,75 @@ for(QTextBlock it = doc->begin(); it !=doc->end();it = it.next())
     def setAlignment(self,x):
         self.textbrowser.setAlignment(x)
         self.textbrowserback.setAlignment(x)
-    def append(self,x):
-        self.textbrowserback.append(x)
-        f1=QTextBlockFormat()
-        f1.setLineHeight(10,QTextBlockFormat.LineDistanceHeight)
-        self.textbrowser.textCursor().setBlockFormat(f1)
+      
+    def append(self,x): 
+        self.textbrowserback.append(x) 
         self.textbrowser.append(x)
-        self.textbrowser.textCursor().movePosition(QTextCursor.End)
-        tl=self.textbrowser.cursorRect().topLeft()
-        label=QLabel(self.textbrowser)
-        label.setText('ssss')
-        label.move(tl)
-        print(tl)
-        label.adjustSize()
-        label.show()
+    def addtag(self,x): 
+        if len(self.savetaglabels)<len(x):
+            self.savetaglabels+=[QLabel(self.textbrowser) for i in range(len(x)-len(self.savetaglabels))]
+        
+        pos=2
+        labeli=0 
+        cursor=self.textbrowser.textCursor()
+        cursor.setPosition(2)
+        self.textbrowser.setTextCursor(cursor)
+        cursor.movePosition(QTextCursor.StartOfBlock)
+        self.textbrowser.setTextCursor(cursor)
+        cursor=self.textbrowserback.textCursor()
+        cursor.setPosition(2)
+        self.textbrowserback.setTextCursor(cursor)
+        cursor.movePosition(QTextCursor.StartOfBlock)
+        self.textbrowserback.setTextCursor(cursor)
+        for word in x:
+            f1=QTextBlockFormat()
+            f1.setLineHeight(20,QTextBlockFormat.LineDistanceHeight)
+            f1.setAlignment(self.textbrowser.alignment())
+            if word['orig']=='\r':
+                continue
+            l=len(word['orig'])
+            tl1=self.textbrowser.cursorRect(self.textbrowser.textCursor()).topLeft() 
+            cursor=self.textbrowser.textCursor()
+            cursor.setBlockFormat(f1)
+            cursor.setPosition(pos+l )
+            self.textbrowser.setTextCursor(cursor)
+            cursor=self.textbrowserback.textCursor()
+            cursor.setBlockFormat(f1)
+            cursor.setPosition(pos+l )
+            self.textbrowserback.setTextCursor(cursor)
+            pos+=l
+             
+            tl2=self.textbrowser.cursorRect(self.textbrowser.textCursor()).topLeft() 
+            self.savetaglabels[labeli].setText(word['hira'])
+            
+            self.savetaglabels[labeli].adjustSize()
+            w=self.savetaglabels[labeli].width()
+             
+            y=tl1.y()-20
+            x=tl1.x()/2+tl2.x()/2-w/2
+            self.savetaglabels[labeli].move(x,y)  
+            font=QFont()
+            font.setFamily(globalconfig['fonttype'])
+             
+            self.savetaglabels[labeli].setFont(font)
+            self.savetaglabels[labeli].setStyleSheet("color: %s;background-color:rgba(0,0,0,0)" %(globalconfig['rawtextcolor']))
+            self.savetaglabels[labeli].show()
+            labeli+=1
+        f1=QTextBlockFormat()
+        f1.setLineHeight(0,QTextBlockFormat.LineDistanceHeight)
+        f1.setAlignment(self.textbrowser.alignment()) 
+        cursor=self.textbrowser.textCursor()
+        cursor.setBlockFormat(f1)
+        self.textbrowser.setTextCursor(cursor)
+        cursor=self.textbrowserback.textCursor()
+        cursor.setBlockFormat(f1)
+        self.textbrowserback.setTextCursor(cursor)
+     
         
     def mergeCurrentCharFormat(self,colormiao,width):
         format2=QTextCharFormat()
         format2.setTextOutline(QPen(QColor(colormiao),width, Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin))
-       
+        
         self.textbrowser.setCurrentCharFormat(format2)
         self.textbrowserback.setCurrentCharFormat(format2)
     def mergeCurrentCharFormat_out(self,colorinner,colormiao,width):
@@ -77,5 +134,7 @@ for(QTextBlock it = doc->begin(); it !=doc->end();it = it.next())
         self.textbrowser.setCurrentCharFormat(format1)
         self.textbrowserback.setCurrentCharFormat(format2)
     def clear(self):
+        for label in self.savetaglabels:
+            label.hide()
         self.textbrowser.clear()
         self.textbrowserback.clear()

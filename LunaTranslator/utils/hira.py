@@ -11,7 +11,10 @@ class hira:
             else:
                 lenl+=2
         return lenl
-    def fy(self,text): 
+    def fy(self,text):
+        result =self.kks . convert ( text )
+        return result
+    def fy_depracated(self,text): 
         
         sp=text.split('\n')
         nsp=[]

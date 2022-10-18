@@ -1,10 +1,10 @@
 {
     "position": [
-        537,
-        494
+        92,
+        667
     ],
     "fixedheight": false,
-    "width": 942,
+    "width": 1700,
     "autorun": true,
     "transparent": 42,
     "fontsize": 17.699999999999996,
@@ -13,8 +13,8 @@
     "iskongxin": true,
     "isshowrawtext": true,
     "rawtextcolor": "#000000",
-    "backcolor": "#7a8b8a",
-    "isshowhira": false,
+    "backcolor": "#7f8b76",
+    "isshowhira": true,
     "locktools": true,
     "showfanyisource": true,
     "autoread": false,
@@ -244,7 +244,7 @@
             "argsfile": "./userconfig/rengong.json"
         },
         "papago": {
-            "use": true,
+            "use": false,
             "color": "#0ff000",
             "name": "papago"
         }
