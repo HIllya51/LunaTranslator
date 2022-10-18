@@ -58,10 +58,20 @@ for(QTextBlock it = doc->begin(); it !=doc->end();it = it.next())
     def append(self,x): 
         self.textbrowserback.append(x) 
         self.textbrowser.append(x)
+        f1=QTextBlockFormat()
+        f1.setLineHeight(0,QTextBlockFormat.LineDistanceHeight)
+        f1.setAlignment(self.textbrowser.alignment()) 
+        cursor=self.textbrowser.textCursor() 
+        cursor.setBlockFormat(f1)
+        self.textbrowser.setTextCursor(cursor)
+        cursor=self.textbrowserback.textCursor() 
+        cursor.setBlockFormat(f1)
+        self.textbrowserback.setTextCursor(cursor)
+     
     def addtag(self,x): 
         if len(self.savetaglabels)<len(x):
             self.savetaglabels+=[QLabel(self.textbrowser) for i in range(len(x)-len(self.savetaglabels))]
-        
+        #print(x)
         pos=2
         labeli=0 
         cursor=self.textbrowser.textCursor()
@@ -74,6 +84,8 @@ for(QTextBlock it = doc->begin(); it !=doc->end();it = it.next())
         self.textbrowserback.setTextCursor(cursor)
         cursor.movePosition(QTextCursor.StartOfBlock)
         self.textbrowserback.setTextCursor(cursor)
+        font=QFont()
+        font.setFamily(globalconfig['fonttype']) 
         for word in x:
             f1=QTextBlockFormat()
             f1.setLineHeight(20,QTextBlockFormat.LineDistanceHeight)
@@ -93,31 +105,26 @@ for(QTextBlock it = doc->begin(); it !=doc->end();it = it.next())
             pos+=l
              
             tl2=self.textbrowser.cursorRect(self.textbrowser.textCursor()).topLeft() 
+            #print(tl1,tl2,word['hira'],self.textbrowser.textCursor().position())
             self.savetaglabels[labeli].setText(word['hira'])
-            
+            self.savetaglabels[labeli].setFont(font)
             self.savetaglabels[labeli].adjustSize()
             w=self.savetaglabels[labeli].width()
-             
-            y=tl1.y()-20
-            x=tl1.x()/2+tl2.x()/2-w/2
+            
+            if tl1.y()!=tl2.y():
+                x=tl2.x()-w
+            else:
+                x=tl1.x()/2+tl2.x()/2-w/2
+            y=tl2.y()-20
+            
             self.savetaglabels[labeli].move(x,y)  
-            font=QFont()
-            font.setFamily(globalconfig['fonttype'])
+            
              
-            self.savetaglabels[labeli].setFont(font)
+            
             self.savetaglabels[labeli].setStyleSheet("color: %s;background-color:rgba(0,0,0,0)" %(globalconfig['rawtextcolor']))
             self.savetaglabels[labeli].show()
             labeli+=1
-        f1=QTextBlockFormat()
-        f1.setLineHeight(0,QTextBlockFormat.LineDistanceHeight)
-        f1.setAlignment(self.textbrowser.alignment()) 
-        cursor=self.textbrowser.textCursor()
-        cursor.setBlockFormat(f1)
-        self.textbrowser.setTextCursor(cursor)
-        cursor=self.textbrowserback.textCursor()
-        cursor.setBlockFormat(f1)
-        self.textbrowserback.setTextCursor(cursor)
-     
+        
         
     def mergeCurrentCharFormat(self,colormiao,width):
         format2=QTextCharFormat()

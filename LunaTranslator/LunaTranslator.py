@@ -78,6 +78,10 @@ class MAINUI() :
                     if pattern in self.vnrshareddict and self.vnrshareddict[pattern]['tgt']=='zhs':
                          
                         continue
+                    if src==tgt:# and tgt=='ja':
+                        continue
+                    if 'eos' in text or 'amp' in text or '&' in text:
+                        continue
                     self.vnrshareddict[pattern]={'src':src,'tgt':tgt,'text':text }
         # print(len(list(self.vnrsharedreg)))
         # print(len(list(self.vnrshareddict.keys())))
@@ -111,7 +115,7 @@ class MAINUI() :
         return content,(mp1,mp2,mp3)
     def solveaftertrans(self,res,mp): 
         mp1,mp2,mp3=mp
-        #print(res,mp)#hello
+        print(res,mp)#hello
         if noundictconfig['use'] :
             for key in mp1: 
                 reg=re.compile(re.escape(key), re.IGNORECASE)
