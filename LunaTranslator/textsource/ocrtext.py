@@ -57,17 +57,18 @@ def getEqualRate(  str1, str2):
         score = score 
 
         return score
-import win32gui ,math
+import win32gui ,math,qtawesome
 class ocrtext(basetext):
     def qimg2cv2(self,qimg):
         qimg=qimg.toImage() 
-
+         
         temp_shape = (qimg.height(), qimg.bytesPerLine() * 8 // qimg.depth())
         temp_shape += (4,)
         ptr = qimg.bits()
         ptr.setsize(qimg.byteCount())
         result = np.array(ptr, dtype=np.uint8).reshape(temp_shape)
         result = result[..., :3] 
+       
         return result
     def imageCut(self,x1,y1,x2,y2):
      
@@ -77,10 +78,16 @@ class ocrtext(basetext):
                 rect2=win32gui.GetClientRect(self.hwnd)
                 windowOffset = math.floor(((rect[2]-rect[0])-rect2[2])/2)
                 h= ((rect[3]-rect[1])-rect2[3]) - windowOffset
-        #        
+                # print(h)
+                # print(rect)
+                # print(rect2)
+                # print(x1-rect[0], y1-rect[1]-h, x2-x1, y2-y1)
                 pix = self.screen.grabWindow( (self.hwnd), x1-rect[0], y1-rect[1]-h, x2-x1, y2-y1) 
+                 
             except:
                 self.hwnd=None
+                print_exc()
+                self.object.translation_ui.bindcropwindowbutton.setIcon(qtawesome.icon("fa.windows" ,color="white" ))
                 pix = self.screen.grabWindow(QApplication.desktop().winId(), x1, y1, x2-x1, y2-y1)
         else:
             pix = self.screen.grabWindow(QApplication.desktop().winId(), x1, y1, x2-x1, y2-y1)

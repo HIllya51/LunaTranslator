@@ -233,7 +233,7 @@ class QUnFrameWindow(QWidget):
         self.takusanbuttons(qtawesome.icon("fa.crop" ,color="white"),"MinMaxButton",self.clickRange,4,"选取OCR范围")
         self.takusanbuttons((qtawesome.icon("fa.square" ,color='white')),"MinMaxButton",self.showhide,5,"显示/隐藏范围框",'showhidebutton')
          
-        self.takusanbuttons((qtawesome.icon("fa.windows" ,color='white')),"MinMaxButton",self.bindcropwindow,5,"绑定截图窗口，避免遮挡",'bindcropwindowbutton')
+        self.takusanbuttons((qtawesome.icon("fa.windows" ,color='white')),"MinMaxButton",self.bindcropwindow,5,"绑定截图窗口，避免遮挡（部分软件不支持）",'bindcropwindowbutton')
         
         # self.takusanbuttons(qtawesome.icon("fa.lock" ,color="#FF69B4" if globalconfig['locktools'] else 'white'),"MinMaxButton",self.changetoolslockstate,10,"锁定工具栏",'locktoolsbutton') 
         
