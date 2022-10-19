@@ -5,6 +5,7 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QWidget,QLabel ,QProgressBar
 import threading
 import os
+import shutil
 import zipfile
 from contextlib import closing
 from utils.config import globalconfig ,postprocessconfig,savehook_new
@@ -65,7 +66,8 @@ def getversion(self):
                                 file_size+=len(data)
                                 #print(f'正在下载webdriver 总大小{int(1000*(int(content_size/1024)/1024))/1000} MB 进度 {int(10000*(file_size/content_size))/100}%')
                                 self.progresssignal.emit(f'总大小{int(1000*(int(content_size/1024)/1024))/1000} MB 进度 {int(10000*(file_size/content_size))/100:.2f}%',int(10000*file_size/content_size))
-                    
+                    if os.path.exists('./tmp/LunaTranslator'):
+                        shutil.rmtree('./tmp/LunaTranslator')
                     zipf=zipfile.ZipFile('./tmp/update.zip')
                     zipf.extractall('./tmp')
                     self.needupdate=True
