@@ -1,52 +1,52 @@
 {
     "position": [
-        298,
-        766
+        457,
+        376
     ],
     "fixedheight": false,
-    "width": 1436,
+    "width": 979,
     "autorun": true,
-    "transparent": 42,
-    "fontsize": 16.0,
-    "fonttype": "黑体",
-    "issolid": false,
+    "transparent": 39,
+    "fontsize": 17.699999999999996,
+    "fonttype": "思源黑体 CN Medium",
+    "miaobianwidth2": 5,
+    "miaobianwidth": 1,
+    "miaobiancolor": "#ffffff",
+    "zitiyangshi": 1,
     "iskongxin": true,
     "isshowrawtext": true,
     "rawtextcolor": "#000000",
-    "backcolor": "#b7babd",
+    "backcolor": "#b5b5b5",
     "isshowhira": true,
     "locktools": false,
-    "showfanyisource": true,
+    "showfanyisource": false,
     "autoread": false,
-    "extractalltext": true,
+    "extractalltext": false,
     "reader": {
-        "qq": false,
-        "guge": true,
-        "windows": true,
         "azuretts": {
             "use": false,
-            "voice": "ja-JP-NanamiNeural"
+            "voice": ""
         },
         "huoshantts": {
             "use": false,
-            "voice": "jp_male_satoshi"
+            "voice": ""
         },
         "windowstts": {
-            "use": true,
-            "voice": "TTS_MS_EN-US_ZIRA_11.0"
+            "use": false,
+            "voice": ""
         }
     },
+    "LocaleEmulator": "",
     "verticalocr": false,
     "outputtopasteboard": false,
-    "windowstts": {
-        "voice": "TTS_MS_JA-JP_HARUKA_11.0",
+    "ttscommon": {
         "rate": 1.0,
         "volume": 100.0
     },
     "sourcestatus": {
         "copy": false,
-        "ocr": true,
-        "textractor": false,
+        "ocr": false,
+        "textractor": true,
         "textractor_pipe": false
     },
     "ocr": {
@@ -80,8 +80,8 @@
     },
     "fanyi": {
         "baidu": {
-            "use": true,
-            "color": "#ff65db",
+            "use": false,
+            "color": "#ff0004",
             "name": "百度"
         },
         "bing": {
@@ -124,8 +124,13 @@
             "color": "#0ff000",
             "name": "彩云"
         },
+        "deepl": {
+            "use": false,
+            "color": "#0ff000",
+            "name": "deepl"
+        },
         "jb7": {
-            "use": true,
+            "use": false,
             "color": "#1839f0",
             "name": "Jbeijing7",
             "argsfile": "./userconfig/jbj7.json"
@@ -152,20 +157,20 @@
             "color": "#0ff000",
             "name": "有道3"
         },
-        "selfbuild": {
+        "youdao4": {
             "use": false,
             "color": "#0ff000",
-            "name": "自建"
+            "name": "有道4"
+        },
+        "youdao5": {
+            "use": false,
+            "color": "#0ff000",
+            "name": "有道5"
         },
         "tencent": {
             "use": false,
             "color": "#0ff000",
             "name": "TX"
-        },
-        "ifly": {
-            "use": false,
-            "color": "#0ff000",
-            "name": "ifly"
         },
         "iciba": {
             "use": false,
@@ -173,8 +178,8 @@
             "name": "iciba"
         },
         "baiduapi": {
-            "use": false,
-            "color": "#0ff000",
+            "use": true,
+            "color": "#f003ec",
             "name": "百度api",
             "argsfile": "./userconfig/baiduapi.json"
         },
@@ -200,21 +205,6 @@
             "name": "小牛api",
             "argsfile": "./userconfig/xiaoniuapi.json"
         },
-        "youdao4": {
-            "use": false,
-            "color": "#0ff000",
-            "name": "有道4"
-        },
-        "youdao5": {
-            "use": false,
-            "color": "#0ff000",
-            "name": "有道5"
-        },
-        "deepl": {
-            "use": false,
-            "color": "#0ff000",
-            "name": "deepl"
-        },
         "huoshan": {
             "use": false,
             "color": "#0ff000",
@@ -237,47 +227,37 @@
             "name": "火山api",
             "argsfile": "./userconfig/huoshanapi.json"
         },
+        "papago": {
+            "use": true,
+            "color": "#0101f0",
+            "name": "papago"
+        },
         "rengong": {
             "use": false,
             "color": "#0ff000",
             "name": "人工翻译",
             "argsfile": "./userconfig/rengong.json"
-        },
-        "papago": {
-            "use": false,
-            "color": "#0ff000",
-            "name": "papago"
         }
     },
-    "minifollow": false,
+    "minifollow": true,
     "movefollow": true,
     "autostarthook": true,
     "translatortimeout": 5,
-    "minlength": 0,
+    "minlength": 5,
     "maxlength": 150,
     "fanjian": 0,
     "rotation": 0,
     "srclang": 0,
-    "LocaleEmulator": "C:/dataH/Locale.Emulator.2.5.0.1",
     "transkiroku": false,
     "transkirokuuse": "baidu",
     "showatcenter": true,
     "mustocr": false,
     "mustocr_interval": 5,
     "ocrmininterval": 1,
-    "ttscommon": {
-        "rate": 1.0,
-        "volume": 100.0
-    },
-    "mousetransparent": true,
     "selectable": false,
     "autoupdate": false,
-    "miaobianwidth": 1.0,
-    "miaobiancolor": "#dcdcdc",
-    "miaobianwidth2": 5,
-    "zitiyangshi": 2,
     "gongxiangcishu": {
-        "use": true,
+        "use": false,
         "path": "C:/dataH/vnr/vnr/Caches/Sync/gamedic.xml"
     }
 }

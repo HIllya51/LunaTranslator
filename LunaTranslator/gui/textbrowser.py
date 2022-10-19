@@ -60,20 +60,23 @@ for(QTextBlock it = doc->begin(); it !=doc->end();it = it.next())
         
         if self.addtaged:
             self.addtaged=False
-            self.textbrowserback.append(' ') 
-            self.textbrowser.append(' ')
+            # self.textbrowserback.append(' ') 
+            # self.textbrowser.append(' ')
         
+            
+            self.textbrowserback.append(x) 
+            self.textbrowser.append(x)
             f1=QTextBlockFormat()
             f1.setLineHeight(0,QTextBlockFormat.LineDistanceHeight)
             f1.setAlignment(self.textbrowser.alignment()) 
             cursor=self.textbrowser.textCursor() 
+            cursor.movePosition(QTextCursor.StartOfBlock)
             cursor.setBlockFormat(f1)
             self.textbrowser.setTextCursor(cursor)
             cursor=self.textbrowserback.textCursor() 
+            cursor.movePosition(QTextCursor.StartOfBlock)
             cursor.setBlockFormat(f1)
             self.textbrowserback.setTextCursor(cursor)
-            self.textbrowserback.insertPlainText(x) 
-            self.textbrowser.insertPlainText(x)
         else:
             self.textbrowserback.append(x) 
             self.textbrowser.append(x)
@@ -103,6 +106,7 @@ for(QTextBlock it = doc->begin(); it !=doc->end();it = it.next())
         font.setPointSizeF(12) 
         for word in x:
             f1=QTextBlockFormat()
+            
             f1.setLineHeight(20,QTextBlockFormat.LineDistanceHeight)
             f1.setAlignment(self.textbrowser.alignment())
             if word['orig']=='\r':

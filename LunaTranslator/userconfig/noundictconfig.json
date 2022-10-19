@@ -1,7 +1,4 @@
 {
-    "use": true,
-    "dict": {
-        "1": "1",
-        "hello": "你好"
-    }
+    "use": false,
+    "dict": {}
 }
