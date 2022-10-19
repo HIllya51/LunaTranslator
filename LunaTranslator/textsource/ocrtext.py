@@ -57,10 +57,11 @@ def getEqualRate(  str1, str2):
         score = score 
 
         return score
-
+import win32gui ,math
 class ocrtext(basetext):
     def qimg2cv2(self,qimg):
-        qimg=qimg.toImage()
+        qimg=qimg.toImage() 
+
         temp_shape = (qimg.height(), qimg.bytesPerLine() * 8 // qimg.depth())
         temp_shape += (4,)
         ptr = qimg.bits()
@@ -70,8 +71,19 @@ class ocrtext(basetext):
         return result
     def imageCut(self,x1,y1,x2,y2):
      
-        
-        pix = self.screen.grabWindow(QApplication.desktop().winId(), x1, y1, x2-x1, y2-y1)
+        if self.hwnd:
+            try:
+                rect=win32gui.GetWindowRect(self.hwnd)  
+                rect2=win32gui.GetClientRect(self.hwnd)
+                windowOffset = math.floor(((rect[2]-rect[0])-rect2[2])/2)
+                h= ((rect[3]-rect[1])-rect2[3]) - windowOffset
+        #        
+                pix = self.screen.grabWindow( (self.hwnd), x1-rect[0], y1-rect[1]-h, x2-x1, y2-y1) 
+            except:
+                self.hwnd=None
+                pix = self.screen.grabWindow(QApplication.desktop().winId(), x1, y1, x2-x1, y2-y1)
+        else:
+            pix = self.screen.grabWindow(QApplication.desktop().winId(), x1, y1, x2-x1, y2-y1)
          
         return self.qimg2cv2(pix)
     def __init__(self,textgetmethod,object)  :
@@ -84,6 +96,7 @@ class ocrtext(basetext):
         self.object=object
         self.ending=False
         self.lastocrtime=0
+        self.hwnd=None
         super( ).__init__(textgetmethod) 
     def gettextthread(self ):
                  

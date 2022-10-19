@@ -5,6 +5,7 @@ import threading
 import time
 t1=time.time()
 import os
+from traceback import print_exc
 from PyQt5.QtWidgets import QWidget, QLabel, QPushButton, QVBoxLayout
 from PyQt5.QtCore import Qt, pyqtSignal  
 import qtawesome 
@@ -14,7 +15,7 @@ from PyQt5.QtWidgets import  QLabel ,QPushButton ,QSystemTrayIcon ,QAction,QMenu
 import pyperclip 
 from PyQt5.QtCore import QProcess ,QByteArray  
 from utils.config import globalconfig,postprocessconfig,transerrorfixdictconfig,noundictconfig
-import  win32gui 
+import  win32gui,win32api,win32process,win32con
 import gui.rangeselect
 import gui.transhist
 from gui.settingpage4 import autosaveshow
@@ -231,6 +232,8 @@ class QUnFrameWindow(QWidget):
 
         self.takusanbuttons(qtawesome.icon("fa.crop" ,color="white"),"MinMaxButton",self.clickRange,4,"选取OCR范围")
         self.takusanbuttons((qtawesome.icon("fa.square" ,color='white')),"MinMaxButton",self.showhide,5,"显示/隐藏范围框",'showhidebutton')
+         
+        self.takusanbuttons((qtawesome.icon("fa.windows" ,color='white')),"MinMaxButton",self.bindcropwindow,5,"绑定截图窗口，避免遮挡",'bindcropwindowbutton')
         
         # self.takusanbuttons(qtawesome.icon("fa.lock" ,color="#FF69B4" if globalconfig['locktools'] else 'white'),"MinMaxButton",self.changetoolslockstate,10,"锁定工具栏",'locktoolsbutton') 
         
@@ -334,6 +337,26 @@ class QUnFrameWindow(QWidget):
             self.object.range_ui.show()
         else:
             self.object.range_ui.hide()
+    def bindcropwindow(self):
+        import PyHook3
+        hm = PyHook3.HookManager()
+        def OnMouseEvent(event): 
+            
+            p=win32api.GetCursorPos()
+
+            hwnd=win32gui.WindowFromPoint(p)
+
+            
+            #for pid in pids:
+        
+            self.object.textsource.hwnd= (hwnd) 
+            self.bindcropwindowbutton.setIcon(qtawesome.icon("fa.windows" ,color="#FF69B4" ))
+        
+            hm.UnhookMouse()   
+            return True
+        hm.MouseAllButtonsDown = OnMouseEvent
+        hm.HookMouse()
+     
     def changeshowhideraw(self,checked):
         self.object.settin_ui.show_original_switch.click()
         
@@ -549,7 +572,7 @@ class QUnFrameWindow(QWidget):
         self.showbuttons=[]
         for i,button in enumerate(self.buttons[:-2]):
             
-            if i in [12,13] and globalconfig['sourcestatus']['ocr'] ==False:
+            if i in [12,13,14] and globalconfig['sourcestatus']['ocr'] ==False:
                 button.hide()
                 continue
             if i in [10,11] and globalconfig['sourcestatus']['textractor'] ==False:
