@@ -1,23 +1,23 @@
 {
     "position": [
-        457,
-        376
+        500,
+        791
     ],
     "fixedheight": false,
     "width": 979,
-    "autorun": true,
+    "autorun": false,
     "transparent": 39,
     "fontsize": 17.699999999999996,
     "fonttype": "思源黑体 CN Medium",
     "miaobianwidth2": 5,
     "miaobianwidth": 1,
     "miaobiancolor": "#ffffff",
-    "zitiyangshi": 1,
+    "zitiyangshi": 0,
     "iskongxin": true,
     "isshowrawtext": true,
     "rawtextcolor": "#000000",
     "backcolor": "#b5b5b5",
-    "isshowhira": true,
+    "isshowhira": false,
     "locktools": false,
     "showfanyisource": false,
     "autoread": false,
@@ -45,13 +45,13 @@
     },
     "sourcestatus": {
         "copy": false,
-        "ocr": false,
-        "textractor": true,
+        "ocr": true,
+        "textractor": false,
         "textractor_pipe": false
     },
     "ocr": {
         "local": {
-            "use": true,
+            "use": false,
             "name": "本地OCR"
         },
         "baiduocr": {
@@ -76,6 +76,10 @@
         "youdaocrtrans": {
             "use": false,
             "name": "youdao图片翻译"
+        },
+        "windowsocr": {
+            "use": true,
+            "name": "WindowsOCR"
         }
     },
     "fanyi": {

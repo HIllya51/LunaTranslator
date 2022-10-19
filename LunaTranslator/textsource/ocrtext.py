@@ -68,12 +68,13 @@ class ocrtext(basetext):
         ptr.setsize(qimg.byteCount())
         result = np.array(ptr, dtype=np.uint8).reshape(temp_shape)
         result = result[..., :3] 
-       
+         
         return result
     def imageCut(self,x1,y1,x2,y2):
      
         if self.hwnd:
             try:
+                 
                 rect=win32gui.GetWindowRect(self.hwnd)  
                 rect2=win32gui.GetClientRect(self.hwnd)
                 windowOffset = math.floor(((rect[2]-rect[0])-rect2[2])/2)
@@ -83,16 +84,19 @@ class ocrtext(basetext):
                 # print(rect2)
                 # print(x1-rect[0], y1-rect[1]-h, x2-x1, y2-y1)
                 pix = self.screen.grabWindow( (self.hwnd), x1-rect[0], y1-rect[1]-h, x2-x1, y2-y1) 
-                 
+                res=self.qimg2cv2(pix)
+                if res.sum()==0:
+                    raise Exception
             except:
                 self.hwnd=None
                 print_exc()
                 self.object.translation_ui.bindcropwindowbutton.setIcon(qtawesome.icon("fa.windows" ,color="white" ))
                 pix = self.screen.grabWindow(QApplication.desktop().winId(), x1, y1, x2-x1, y2-y1)
+                res=self.qimg2cv2(pix)
         else:
             pix = self.screen.grabWindow(QApplication.desktop().winId(), x1, y1, x2-x1, y2-y1)
-         
-        return self.qimg2cv2(pix)
+            res=self.qimg2cv2(pix)
+        return res
     def __init__(self,textgetmethod,object)  :
         self.screen = QApplication.primaryScreen()
         self.typename='ocr'

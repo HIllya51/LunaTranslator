@@ -346,30 +346,16 @@ class QUnFrameWindow(QWidget):
 
             hwnd_=win32gui.WindowFromPoint(p)
 
-            windows_list = []
-            selfpid=win32api.GetCurrentProcessId()
             
-            win32gui.EnumWindows(lambda hWnd, param: param.append(hWnd), windows_list)
-            hwnd=0
-            for hwnd in windows_list:
-                if win32gui.IsWindow(hwnd) and win32gui.IsWindowEnabled(hwnd) and win32gui.IsWindowVisible(hwnd):
-                     
-                        try:
-                            classname = win32gui.GetClassName(hwnd)
-                            title = win32gui.GetWindowText(hwnd)
-                            #print(f'classname:{classname} title:{title}') 
-                            tid, pid=win32process.GetWindowThreadProcessId(hwnd) 
-                            if pid==selfpid:
-                                break
-                             
-                        except:
-                            pass
-            if hwnd==hwnd_:
+            selfpid=win32api.GetCurrentProcessId()
+            pid=win32process.GetWindowThreadProcessId(hwnd_) 
+             
+            if pid==selfpid  :
                 self.object.textsource.hwnd= None
                 self.bindcropwindowbutton.setIcon(qtawesome.icon("fa.windows" ,color="white" ))
             #for pid in pids:
             else:
-                self.object.textsource.hwnd= (hwnd) 
+                self.object.textsource.hwnd= (hwnd_) 
                 self.bindcropwindowbutton.setIcon(qtawesome.icon("fa.windows" ,color="#FF69B4" ))
             
             hm.UnhookMouse()   
