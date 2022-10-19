@@ -233,7 +233,7 @@ class QUnFrameWindow(QWidget):
         self.takusanbuttons(qtawesome.icon("fa.crop" ,color="white"),"MinMaxButton",self.clickRange,4,"选取OCR范围")
         self.takusanbuttons((qtawesome.icon("fa.square" ,color='white')),"MinMaxButton",self.showhide,5,"显示/隐藏范围框",'showhidebutton')
          
-        self.takusanbuttons((qtawesome.icon("fa.windows" ,color='white')),"MinMaxButton",self.bindcropwindow,5,"绑定截图窗口，避免遮挡（部分软件不支持）",'bindcropwindowbutton')
+        self.takusanbuttons((qtawesome.icon("fa.windows" ,color='white')),"MinMaxButton",self.bindcropwindow,5,"绑定截图窗口，避免遮挡（部分软件不支持）（点击自己取消）",'bindcropwindowbutton')
         
         # self.takusanbuttons(qtawesome.icon("fa.lock" ,color="#FF69B4" if globalconfig['locktools'] else 'white'),"MinMaxButton",self.changetoolslockstate,10,"锁定工具栏",'locktoolsbutton') 
         
@@ -344,14 +344,34 @@ class QUnFrameWindow(QWidget):
             
             p=win32api.GetCursorPos()
 
-            hwnd=win32gui.WindowFromPoint(p)
+            hwnd_=win32gui.WindowFromPoint(p)
 
+            windows_list = []
+            selfpid=win32api.GetCurrentProcessId()
             
+            win32gui.EnumWindows(lambda hWnd, param: param.append(hWnd), windows_list)
+            hwnd=0
+            for hwnd in windows_list:
+                if win32gui.IsWindow(hwnd) and win32gui.IsWindowEnabled(hwnd) and win32gui.IsWindowVisible(hwnd):
+                     
+                        try:
+                            classname = win32gui.GetClassName(hwnd)
+                            title = win32gui.GetWindowText(hwnd)
+                            #print(f'classname:{classname} title:{title}') 
+                            tid, pid=win32process.GetWindowThreadProcessId(hwnd) 
+                            if pid==selfpid:
+                                break
+                             
+                        except:
+                            pass
+            if hwnd==hwnd_:
+                self.object.textsource.hwnd= None
+                self.bindcropwindowbutton.setIcon(qtawesome.icon("fa.windows" ,color="white" ))
             #for pid in pids:
-        
-            self.object.textsource.hwnd= (hwnd) 
-            self.bindcropwindowbutton.setIcon(qtawesome.icon("fa.windows" ,color="#FF69B4" ))
-        
+            else:
+                self.object.textsource.hwnd= (hwnd) 
+                self.bindcropwindowbutton.setIcon(qtawesome.icon("fa.windows" ,color="#FF69B4" ))
+            
             hm.UnhookMouse()   
             return True
         hm.MouseAllButtonsDown = OnMouseEvent
