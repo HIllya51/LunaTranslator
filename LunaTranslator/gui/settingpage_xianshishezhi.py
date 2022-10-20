@@ -35,7 +35,7 @@ def setTabThree(self) :
          
         self.fontSize_spinBox = QDoubleSpinBox(self.tab_3)
         self.customSetGeometry(self.fontSize_spinBox, 95,50, 50, 20)
-        self.fontSize_spinBox.setRange(10,30) 
+        self.fontSize_spinBox.setRange(1,100) 
         self.fontSize_spinBox.setValue(globalconfig['fontsize']) 
         self.fontSize_spinBox.setSingleStep(0.1)
         self.fontSize_spinBox.setDecimals(1)
@@ -66,7 +66,7 @@ def setTabThree(self) :
          
         self.miaobian_spinBox = QDoubleSpinBox(self.tab_3)
         self.customSetGeometry(self.miaobian_spinBox, 350,140, 50, 20)
-        self.miaobian_spinBox.setRange(0,20) 
+        self.miaobian_spinBox.setRange(0,100) 
         self.miaobian_spinBox.setValue(globalconfig['miaobianwidth2']) 
         self.miaobian_spinBox.setSingleStep(0.1)
         self.miaobian_spinBox.setDecimals(1)
@@ -78,7 +78,7 @@ def setTabThree(self) :
          
         self.kongxin_spinBox = QDoubleSpinBox(self.tab_3)
         self.customSetGeometry(self.kongxin_spinBox, 95,140, 50, 20)
-        self.kongxin_spinBox.setRange(0,10) 
+        self.kongxin_spinBox.setRange(0,100) 
         self.kongxin_spinBox.setValue(globalconfig['miaobianwidth']) 
         self.kongxin_spinBox.setSingleStep(0.1)
         self.kongxin_spinBox.setDecimals(1)
