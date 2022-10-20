@@ -1,11 +1,11 @@
 {
     "position": [
-        635,
-        797
+        559,
+        873
     ],
     "fixedheight": false,
     "width": 979,
-    "autorun": false,
+    "autorun": true,
     "transparent": 39,
     "fontsize": 17.699999999999996,
     "fonttype": "思源黑体 CN Medium",
@@ -74,11 +74,11 @@
             "name": "youdaocr"
         },
         "youdaocrtrans": {
-            "use": false,
+            "use": true,
             "name": "youdao图片翻译"
         },
         "windowsocr": {
-            "use": true,
+            "use": false,
             "name": "WindowsOCR"
         }
     },
@@ -257,7 +257,7 @@
     "showatcenter": true,
     "mustocr": false,
     "mustocr_interval": 5,
-    "ocrmininterval": 1,
+    "ocrmininterval": 0.20000000000000015,
     "selectable": false,
     "autoupdate": false,
     "gongxiangcishu": {
