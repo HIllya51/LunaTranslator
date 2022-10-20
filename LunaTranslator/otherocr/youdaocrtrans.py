@@ -33,9 +33,12 @@ def ocr(imgfile):
 
     response = requests.post('https://aidemo.youdao.com/ocrtransapi1', headers=headers, data=data, proxies=  {'http': None,'https': None})
     res=''
-    for l in response.json()['lines']:
-        if res!='':
-            res+='\n'
-        res+=l['tranContent']
+    try:
+        for l in response.json()['lines']:
+            if res!='':
+                res+='\n'
+            res+=l['tranContent']
+    except:
+        print(response.json())
     return '<notrans>'+res
  

@@ -85,8 +85,11 @@ class ocrtext(basetext):
                 # print(x1-rect[0], y1-rect[1]-h, x2-x1, y2-y1)
                 pix = self.screen.grabWindow( (self.hwnd), x1-rect[0], y1-rect[1]-h, x2-x1, y2-y1) 
                 res=self.qimg2cv2(pix)
-                if res.sum()==0:
-                    raise Exception
+                if res.sum()==0: 
+                    pix = self.screen.grabWindow(QApplication.desktop().winId(), x1, y1, x2-x1, y2-y1)
+                    res=self.qimg2cv2(pix)
+                    if res.sum()!=0:
+                        raise Exception
             except:
                 self.hwnd=None
                 print_exc()
