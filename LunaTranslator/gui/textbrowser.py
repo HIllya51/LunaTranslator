@@ -8,6 +8,13 @@ class Textbrowser():
         self.parent=parent
         self.textbrowserback=QTextBrowser(parent)
         self.textbrowser=QTextBrowser(parent)
+        self.textbrowser.setStyleSheet("border-width: 0;\
+                                           border-style: outset;\
+                                           border-top: 0px solid #e8f3f9;\
+                                           color: white;\
+                                            \
+                                           background-color: rgba(%s, %s, %s, %s)"
+                                           %(0,0,0,0))
         self.savetaglabels=[]
         self.addtaged=False
         self.charformat=self.textbrowser.currentCharFormat()
@@ -29,7 +36,7 @@ class Textbrowser():
         self.textbrowser.setFont(x)
         self.textbrowserback.setFont(x)
     def setStyleSheet(self,x): 
-        self.textbrowser.setStyleSheet(x)
+        #self.textbrowser.setStyleSheet(x)
         self.textbrowserback.setStyleSheet(x)
     def move(self,x,y):
         self.textbrowser.move(x,y)
