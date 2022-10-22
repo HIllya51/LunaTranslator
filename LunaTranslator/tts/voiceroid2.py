@@ -4,6 +4,8 @@ import subprocess
 import time
 import os
 import threading
+import  multiprocessing
+from PyQt5.QtCore import QProcess
 class tts():
     
     def __init__(self,showlist ,mp3playsignal): 
@@ -49,8 +51,10 @@ class tts():
                 os.mkdir('./ttscache/')
             
             savepath=os.path.join(os.getcwd(),'ttscache',fname+'.wav')
-
-            self.speaking=subprocess.run(f'./files/voiceroid2/voice2.exe "{globalconfig["reader"]["voiceroid2"]["path"]}" ./files/voiceroid2/aitalked.dll {globalconfig["reader"]["voiceroid2"]["voice"]} 1 {(globalconfig["ttscommon"]["rate"]+10.0)/(20.0)*1+0.5} "{savepath}" {shift}', startupinfo=st )
+            dllpath=os.path.join(os.getcwd(),'files/voiceroid2/aitalked.dll')
+            print(f'./files/voiceroid2/voice2.exe "{globalconfig["reader"]["voiceroid2"]["path"]}" ./files/voiceroid2/aitalked.dll {globalconfig["reader"]["voiceroid2"]["voice"]} 1 {(globalconfig["ttscommon"]["rate"]+10.0)/(20.0)*1+0.5} "{savepath}" {shift}')
+            self.speaking=subprocess.run(f'./files/voiceroid2/voice2.exe "{globalconfig["reader"]["voiceroid2"]["path"]}" "{dllpath}" {globalconfig["reader"]["voiceroid2"]["voice"]} 1 {(globalconfig["ttscommon"]["rate"]+10.0)/(20.0)*1+0.5} "{savepath}" {shift}',  startupinfo=st,cwd= globalconfig["reader"]["voiceroid2"]["path"])
             self.speaking=None
             self.mp3playsignal.emit(savepath,globalconfig["ttscommon"]["volume"])
         threading.Thread(target=_).start()
+         
