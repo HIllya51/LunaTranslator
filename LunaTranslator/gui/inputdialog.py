@@ -113,4 +113,31 @@ def getdictpath(object) -> tuple:
 
         if dialog.exec() == QDialog.Accepted:
             globalconfig['gongxiangcishu']['path']=line.text()
-             
+
+def getvoiceroid2path(object) -> tuple: 
+        dialog = QDialog(object)  # 自定义一个dialog
+        dialog.setWindowTitle('voiceroid2 路径')
+        #dialog.setWindowModality(Qt.ApplicationModal)
+        dialog.resize(QSize(900,10))
+        formLayout = QFormLayout(dialog)  # 配置layout
+        d={}
+ 
+        hori=QHBoxLayout()
+        line=QLineEdit(globalconfig['reader']['voiceroid2']['path'])
+        hori.addWidget(line)
+        button=QPushButton('选择路径')
+        def __(l,_):
+            f=QFileDialog.getExistingDirectory(directory= globalconfig['reader']['voiceroid2']['path'])
+            if f!='':
+                l.setText(f)
+        button.clicked.connect(functools.partial(__,line))
+        hori.addWidget(button)
+        formLayout.addRow('voiceroid2:', hori) 
+        button = QDialogButtonBox(QDialogButtonBox.Ok|QDialogButtonBox.Cancel)
+        formLayout.addRow(button)
+        dialog.show()
+
+        button.clicked.connect(dialog.accept)
+
+        if dialog.exec() == QDialog.Accepted:
+            globalconfig['reader']['voiceroid2']['path']=line.text()

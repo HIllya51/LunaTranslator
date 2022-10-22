@@ -43,7 +43,7 @@ class TS(basetrans):
             'q': content,
         }
         try:
-            response = requests.get('https://translate.google.com/m', params=params,headers=headers,timeout = globalconfig['translatortimeout'] )
+            response = requests.get('https://translate.google.com/m', params=params,headers=headers,timeout = globalconfig['translatortimeout'],proxies=globalconfig['proxies'] if globalconfig['proxies'] else {'http': None,'https': None} )
          
             res=re.search('<div class="result-container">(.*?)</div>',response.text).groups()
         except:

@@ -34,7 +34,7 @@ def getversion(self):
             'Upgrade-Insecure-Requests': '1',
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36',
         }
-        res=requests.get('https://api.github.com/repos/HIllya51/LunaTranslator/releases/latest', headers=headers,proxies={'http':None,"https":None},verify = False).json()
+        res=requests.get('https://api.github.com/repos/HIllya51/LunaTranslator/releases/latest', headers=headers,proxies=globalconfig['proxies'] if globalconfig['proxies'] else {'http': None,'https': None},verify = False).json()
         version=res['tag_name']
        # print(version)
         url=res['assets'][0]['browser_download_url']
@@ -50,7 +50,7 @@ def getversion(self):
             try:
                 
                  
-                with closing(requests.get( url, stream=True,verify = False )) as response:
+                with closing(requests.get( url, stream=True,verify = False ,proxies=globalconfig['proxies'] if globalconfig['proxies'] else {'http': None,'https': None})) as response:
                     file_size=0
                     chunk_size = 1024  # 单次请求最大值
                     content_size = res['assets'][0]['size']#int(response.headers['content-length'])  # 内容体总大小
@@ -79,7 +79,7 @@ def updateprogress(self,text,val):
     self.downloadprogress.setFormat(text)
      
 def setTab_about(self) :
-        self.version='v1.14.3'
+        self.version='v1.15.0'
         self.tab_about = QWidget()
         self.tab_widget.addTab(self.tab_about, "")
         self.tab_widget.setTabText(self.tab_widget.indexOf(self.tab_about), " 关于")

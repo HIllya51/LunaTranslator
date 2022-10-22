@@ -1,5 +1,0 @@
- 
-兼容vnr的共享辞书、人工字母
- 
- 
- https://api.github.com/repos/HIllya51/LunaTranslator/releases/latest

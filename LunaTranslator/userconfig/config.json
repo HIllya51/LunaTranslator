@@ -1,7 +1,7 @@
 {
     "position": [
-        557,
-        737
+        612,
+        797
     ],
     "fixedheight": false,
     "width": 979,
@@ -25,15 +25,20 @@
     "reader": {
         "azuretts": {
             "use": false,
-            "voice": ""
+            "voice": "ja-JP-KeitaNeural"
         },
         "huoshantts": {
             "use": false,
-            "voice": ""
+            "voice": "jp_male_satoshi"
         },
         "windowstts": {
             "use": false,
-            "voice": ""
+            "voice": "TTS_MS_ZH-CN_HUIHUI_11.0"
+        },
+        "voiceroid2": {
+            "use": true,
+            "voice": "yukari_emo_44",
+            "path": "C:/dataH/Yukari2"
         }
     },
     "LocaleEmulator": "",
@@ -263,5 +268,6 @@
     "gongxiangcishu": {
         "use": false,
         "path": "C:/dataH/vnr/vnr/Caches/Sync/gamedic.xml"
-    }
+    },
+    "proxies": null
 }

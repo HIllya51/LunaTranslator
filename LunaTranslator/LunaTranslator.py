@@ -21,6 +21,7 @@ import gui.settin
 from tts.windowstts import tts  as windowstts
 from tts.huoshantts import tts as huoshantts
 from tts.azuretts import tts as azuretts
+from tts.voiceroid2 import tts as voiceroid2
 import gui.selecthook
 import pyperclip
 from utils.getpidlist import getwindowlist
@@ -202,7 +203,8 @@ class MAINUI() :
             use=None
             ttss={'windowstts':windowstts,
                     'huoshantts':huoshantts,
-                    'azuretts':azuretts}
+                    'azuretts':azuretts,
+                    'voiceroid2':voiceroid2}
             for key in ttss:
                 if globalconfig['reader'][key]['use']:
                     use=key

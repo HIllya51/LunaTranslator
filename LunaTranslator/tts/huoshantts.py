@@ -10,7 +10,8 @@ class tts():
     def __init__(self,showlist,mp3playsignal): 
         self.voicelist=['jp_male_satoshi','jp_female_mai','zh_male_rap','zh_female_sichuan','zh_male_xiaoming','zh_male_zhubo','zh_female_zhubo','zh_female_qingxin','zh_female_story','en_male_adam','en_male_bob','en_female_sarah']
         showlist.emit(self.voicelist)
-        if globalconfig['reader']['huoshantts']['voice']=='' and len(self.voicelist)>0:
+        
+        if  len(self.voicelist)>0 and globalconfig['reader']['huoshantts']['voice'] not in self.voicelist: 
             globalconfig['reader']['huoshantts']['voice']=self.voicelist[0]
         self.speaking=None
         self.speaking=None

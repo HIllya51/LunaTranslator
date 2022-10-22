@@ -19,7 +19,7 @@ class tts():
                         'zh-CN-henan-YundengNeural','zh-CN-liaoning-XiaobeiNeural','zh-CN-shaanxi-XiaoniNeural','zh-CN-shandong-YunxiangNeural','zh-CN-sichuan-YunxiNeural',]
         
         showlist.emit(self.voicelist)
-        if globalconfig['reader']['azuretts']['voice']=='' and len(self.voicelist)>0:
+        if  len(self.voicelist)>0 and globalconfig['reader']['azuretts']['voice'] not in self.voicelist: 
             globalconfig['reader']['azuretts']['voice']=self.voicelist[0]
         self.speaking=None
         self.speaking=None

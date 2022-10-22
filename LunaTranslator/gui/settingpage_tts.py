@@ -1,9 +1,9 @@
 import functools 
 
-from PyQt5.QtWidgets import  QWidget,QLabel, QComboBox,QDoubleSpinBox 
- 
+from PyQt5.QtWidgets import  QWidget,QLabel, QComboBox,QDoubleSpinBox ,QPushButton
+from gui.inputdialog import getvoiceroid2path
 from utils.config import globalconfig 
-  
+import qtawesome
 import gui.switchbutton
 import gui.attachprocessdialog  
 import gui.selecthook  
@@ -16,30 +16,47 @@ def setTab5(self) :
         
 
         label = QLabel(tab)
-        self.customSetGeometry(label, 20, 70, 120, 20)
+        self.customSetGeometry(label, 20, 20, 120, 20)
         label.setText("WindowsTTS(离线)") 
         self.WindowsTTSswitch =gui.switchbutton.MySwitch(tab, sign=globalconfig['reader']['windowstts']['use'] )
-        self.customSetGeometry(self.WindowsTTSswitch, 150, 70, 20,20)
+        self.customSetGeometry(self.WindowsTTSswitch, 150, 20, 20,20)
         self.WindowsTTSswitch.clicked.connect(functools.partial(readerchange,self,'windowstts'))  
-         
+        
         label = QLabel(tab)
-        self.customSetGeometry(label, 220, 70, 120, 20)
+        self.customSetGeometry(label, 20, 50, 120, 20)
+        label.setText("VoiceRoid2") 
+        self.VoiceRoid2TTSswitch =gui.switchbutton.MySwitch(tab, sign=globalconfig['reader']['voiceroid2']['use'] )
+        self.customSetGeometry(self.VoiceRoid2TTSswitch, 150, 50, 20,20)
+        self.VoiceRoid2TTSswitch.clicked.connect(functools.partial(readerchange,self,'voiceroid2'))  
+        s1 = QPushButton( "", tab)
+        self.customSetIconSize(s1, 20, 20)
+        self.customSetGeometry(s1, 180, 50, 20,20)
+        s1.setStyleSheet("background: transparent;")   
+        s1.setIcon(qtawesome.icon("fa.gear", color="#FF69B4"  ))
+        def __2(self):
+            getvoiceroid2path(self)
+            self.object.startreader()
+        s1.clicked.connect(lambda: __2(self))
+
+        label = QLabel(tab)
+        self.customSetGeometry(label, 220, 20, 120, 20)
         label.setText("AzureTTS")
         self.AzureTTSswitch =gui.switchbutton.MySwitch(tab, sign=globalconfig['reader']['azuretts']['use'] )
-        self.customSetGeometry(self.AzureTTSswitch,350, 70, 20,20)
+        self.customSetGeometry(self.AzureTTSswitch,350, 20, 20,20)
         self.AzureTTSswitch.clicked.connect(functools.partial(readerchange,self,'azuretts'))  
  
         label = QLabel(tab)
-        self.customSetGeometry(label, 400, 70, 120, 20)
+        self.customSetGeometry(label, 400, 20, 120, 20)
         label.setText("火山TTS")
  
         self.huoshanTTSswitch =gui.switchbutton.MySwitch(tab, sign= globalconfig['reader']['huoshantts']['use'] )
-        self.customSetGeometry(self.huoshanTTSswitch, 550, 70, 20,20)
+        self.customSetGeometry(self.huoshanTTSswitch, 550, 20, 20,20)
         self.huoshanTTSswitch.clicked.connect(functools.partial(readerchange,self,'huoshantts')) 
 
         self.readerwitchs={'huoshantts':self.huoshanTTSswitch,
                             'windowstts':self.WindowsTTSswitch,
-                            'azuretts':self.AzureTTSswitch}
+                            'azuretts':self.AzureTTSswitch,
+                            'voiceroid2':self.VoiceRoid2TTSswitch}
 
 
         label = QLabel(tab)

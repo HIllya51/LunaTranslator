@@ -1,12 +1,12 @@
-from PyQt5.QtCore import Qt,QSize,pyqtSignal ,QRect ,QUrl
+from PyQt5.QtCore import Qt,QSize,pyqtSignal ,QRect ,QUrl,QObject
  
 from PyQt5.QtWidgets import  QColorDialog
 from PyQt5.QtGui import QColor ,QFont
 from utils.config import globalconfig 
 from PyQt5.QtWidgets import  QTabWidget,QMainWindow 
 import qtawesome   
-
-from PyQt5.QtMultimedia import QMediaPlayer,QMediaContent 
+import os
+from PyQt5.QtMultimedia import QMediaPlayer,QMediaContent ,QSoundEffect 
 from gui.settingpage1 import setTabOne
 from gui.settingpage2 import setTabTwo
 from gui.settingpage_xianshishezhi import setTabThree
@@ -16,6 +16,25 @@ from gui.settingpage6 import setTab6
 from gui.settingpage7 import setTab7
 from gui.settingpage_about import setTab_about
 from gui.rotatetab import customtabstyle
+class wavmp3player(QObject):
+    def __init__(self):
+        super().__init__( )
+        self.mp3=QMediaPlayer()
+        self.wav=QSoundEffect()
+    def mp3playfunction(self,path,volume):
+        if os.path.exists(path)==False:
+            return
+        self.mp3.stop()
+        self.wav.stop() 
+        
+        if path[-4:]=='.wav':
+            self.wav.setSource(QUrl.fromLocalFile(path))#path))
+            self.wav.setVolume(volume)
+            self.wav.play()
+        elif path[-4:]=='.mp3': 
+            self.mp3.setMedia(QMediaContent(QUrl(path)))
+            self.mp3.setVolume(volume)
+            self.mp3.play()
 class Settin(QMainWindow) :
     resetsourcesignal=pyqtSignal()
     loadtextractorfalse=pyqtSignal( ) 
@@ -26,14 +45,17 @@ class Settin(QMainWindow) :
     progresssignal=pyqtSignal(str,int)
     def mp3playfunction(self,path,volume):
         self.mp3player.stop()
-        self.mp3player.setMedia(QMediaContent(QUrl(path)))
+        print(path)
+        self.mp3player.setSource(QUrl.fromLocalFile('./ttscache/1666458054.6688824.wav'))#path))
+        #self.mp3player.setMedia(QMediaContent(QUrl(path)))
+        print(path)
         self.mp3player.setVolume(volume)
         self.mp3player.play()
     def __init__(self, object):
         
-        super(Settin, self).__init__()
-        self.mp3player=QMediaPlayer()
-        self.mp3playsignal.connect(self.mp3playfunction)
+        super(Settin, self).__init__() 
+        self.mp3player=wavmp3player()
+        self.mp3playsignal.connect(self.mp3player.mp3playfunction)
         self.object = object  
         self.needupdate=False
         # 界面缩放比例

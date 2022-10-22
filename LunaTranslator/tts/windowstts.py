@@ -21,10 +21,12 @@ class tts():
             res=str(p.stdout.readline(),encoding='utf8').replace('\r','').replace('\n','')
             self.voicelist.append(res.split('\\')[-1]) 
         showlist.emit(self.voicelist)
-        if globalconfig['reader']['windowstts']['voice']=='' and len(self.voicelist)>0:
+        if  len(self.voicelist)>0 and globalconfig['reader']['windowstts']['voice'] not in self.voicelist:  
             globalconfig['reader']['windowstts']['voice']=self.voicelist[0]
         self.speaking=None
     def read(self,content): 
+        if len(content)==0:
+            return
         if len(self.voicelist)==0:
             return 
         if globalconfig['reader']['windowstts']['voice'] not in self.voicelist:
