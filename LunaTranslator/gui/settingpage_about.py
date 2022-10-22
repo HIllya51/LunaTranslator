@@ -50,7 +50,7 @@ def getversion(self):
             try:
                 
                  
-                with closing(requests.get( url, stream=True,verify = False ,proxies=globalconfig['proxies'] if globalconfig['proxies'] else {'http': None,'https': None})) as response:
+                with closing(requests.get( url, stream=True,verify = False)) as response:#,proxies=globalconfig['proxies'] if globalconfig['proxies'] else {'http': None,'https': None})) as response:
                     file_size=0
                     chunk_size = 1024  # 单次请求最大值
                     content_size = res['assets'][0]['size']#int(response.headers['content-length'])  # 内容体总大小
