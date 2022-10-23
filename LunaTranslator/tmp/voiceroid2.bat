@@ -1,0 +1,3 @@
+taskkill /im voice2.exe /F
+"C:\Users\11737\Documents\GitHub\LunaTranslator\LunaTranslator\files/voiceroid2/voice2.exe" "C:/dataH/Yukari2" "C:\Users\11737\Documents\GitHub\LunaTranslator\LunaTranslator\files/voiceroid2/aitalked.dll" yukari_emo_44 1 1.05 "C:\Users\11737\Documents\GitHub\LunaTranslator\LunaTranslator\ttscache\1666493255.919719.wav"  102 114 111 109 32 117 116 105 108 115 46 99 111 110 102 105 103 32 105 109 112 111 114 116 32 103 108 111 98 97 108 99 111 110 102 105 103 44 112 111 115 116 112 114 111 99 101 115 115 99 111 110 102 105 103 44 116 114 97 110 115 101 114 114 111 114 102 105 120 100 105 99 116 99 111 110 102 105 103 44 110 111 117 110 100 105 99 116 99 111 110 102 105 103 13 10
++exit

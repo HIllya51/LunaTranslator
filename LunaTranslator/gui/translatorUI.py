@@ -5,6 +5,7 @@ import threading
 import time
 t1=time.time()
 import os
+import subprocess
 from traceback import print_exc
 from PyQt5.QtWidgets import QWidget, QLabel, QPushButton, QVBoxLayout
 from PyQt5.QtCore import Qt, pyqtSignal  
@@ -659,7 +660,10 @@ class QUnFrameWindow(QWidget):
         
         self.close() 
         #print('closed')
-        
+        st=subprocess.STARTUPINFO()
+        st.dwFlags=subprocess.STARTF_USESHOWWINDOW
+        st.wShowWindow=subprocess.SW_HIDE
+        subprocess.run("taskkill /im voice2.exe /F",startupinfo=st)
         #sys.exit()
         if self.object.settin_ui.needupdate:
             with open('./tmp/update.bat','w',encoding='utf8') as ff:
@@ -670,7 +674,7 @@ xcopy tmp\LunaTranslator\ .\ /s /e /c /y /h /r
 exit
 
                 ''')
-            import subprocess
+            
 
             subprocess.Popen('tmp\\update.bat' ,shell=True)
         os._exit(1) 

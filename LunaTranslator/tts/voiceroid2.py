@@ -35,9 +35,8 @@ class tts():
         i=self.voicelist.index(globalconfig['reader']['voiceroid2']['voice'])
          
         
-        def _():
-            if self.speaking:
-                self.speaking.kill()
+        #def _():
+        if True:     
                     
             st=subprocess.STARTUPINFO()
             st.dwFlags=subprocess.STARTF_USESHOWWINDOW
@@ -52,9 +51,21 @@ class tts():
             
             savepath=os.path.join(os.getcwd(),'ttscache',fname+'.wav')
             dllpath=os.path.join(os.getcwd(),'files/voiceroid2/aitalked.dll')
-            print(f'./files/voiceroid2/voice2.exe "{globalconfig["reader"]["voiceroid2"]["path"]}" ./files/voiceroid2/aitalked.dll {globalconfig["reader"]["voiceroid2"]["voice"]} 1 {(globalconfig["ttscommon"]["rate"]+10.0)/(20.0)*1+0.5} "{savepath}" {shift}')
-            self.speaking=subprocess.run(f'./files/voiceroid2/voice2.exe "{globalconfig["reader"]["voiceroid2"]["path"]}" "{dllpath}" {globalconfig["reader"]["voiceroid2"]["voice"]} 1 {(globalconfig["ttscommon"]["rate"]+10.0)/(20.0)*1+0.5} "{savepath}" {shift}',  startupinfo=st,cwd= globalconfig["reader"]["voiceroid2"]["path"])
-            self.speaking=None
-            self.mp3playsignal.emit(savepath,globalconfig["ttscommon"]["volume"])
-        threading.Thread(target=_).start()
+            exepath=os.path.join(os.getcwd(),'files/voiceroid2/voice2.exe')
+            print(f'"{exepath}" "{globalconfig["reader"]["voiceroid2"]["path"]}" "{dllpath}" {globalconfig["reader"]["voiceroid2"]["voice"]} 1 {(globalconfig["ttscommon"]["rate"]+10.0)/(20.0)*1+0.5} "{savepath}" {shift}')
+            # self.speaking=subprocess.run(f'"{exepath}" "{globalconfig["reader"]["voiceroid2"]["path"]}" "{dllpath}" {globalconfig["reader"]["voiceroid2"]["voice"]} 1 {(globalconfig["ttscommon"]["rate"]+10.0)/(20.0)*1+0.5} "{savepath}" {shift}',shell=True,  startupinfo=st,cwd= globalconfig["reader"]["voiceroid2"]["path"])
+            # self.speaking=None
+            # self.mp3playsignal.emit(savepath,globalconfig["ttscommon"]["volume"])
+            if os.path.exists('./tmp')==False:
+                os.mkdir('./tmp')
+            with open('./tmp/voiceroid2.bat','w',encoding='utf8') as ff:
+                
+                ff.write('taskkill /im voice2.exe /F\n' f'"{exepath}" "{globalconfig["reader"]["voiceroid2"]["path"]}" "{dllpath}" {globalconfig["reader"]["voiceroid2"]["voice"]} 1 {(globalconfig["ttscommon"]["rate"]+10.0)/(20.0)*1+0.5} "{savepath}" {shift}'+'\n+exit')
+            
+            subprocess.run("taskkill /im voice2.exe /F",startupinfo=st)
+            import win32api 
+            win32api.WinExec(f'"{exepath}" "{globalconfig["reader"]["voiceroid2"]["path"]}" "{dllpath}" {globalconfig["reader"]["voiceroid2"]["voice"]} 1 {(globalconfig["ttscommon"]["rate"]+10.0)/(20.0)*1+0.5} "{savepath}" {shift}',0)
+             
+            #subprocess.Popen('tmp\\voiceroid2.bat' ,shell=True,startupinfo=st )
+        #threading.Thread(target=_).start()
          
