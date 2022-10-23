@@ -660,10 +660,14 @@ class QUnFrameWindow(QWidget):
         
         self.close() 
         #print('closed')
-        st=subprocess.STARTUPINFO()
-        st.dwFlags=subprocess.STARTF_USESHOWWINDOW
-        st.wShowWindow=subprocess.SW_HIDE
-        subprocess.run("taskkill /im voice2.exe /F",startupinfo=st)
+        import win32pipe,win32file
+        try:
+            win32pipe.WaitNamedPipe("\\\\.\\Pipe\\newsentence",win32con.NMPWAIT_WAIT_FOREVER)
+            hPipe = win32file.CreateFile( "\\\\.\\Pipe\\newsentence", win32con.GENERIC_READ | win32con.GENERIC_WRITE, 0,
+                    None, win32con.OPEN_EXISTING, win32con.FILE_ATTRIBUTE_NORMAL, None);
+            win32file.WriteFile(hPipe,"end".encode('utf8'))
+        except:
+            print_exc()
         #sys.exit()
         if self.object.settin_ui.needupdate:
             with open('./tmp/update.bat','w',encoding='utf8') as ff:
