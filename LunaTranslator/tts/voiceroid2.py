@@ -11,6 +11,7 @@ class tts():
         
         self.voicelist=[]
         if os.path.exists(globalconfig['reader']['voiceroid2']['path'])==False:
+            showlist.emit(self.voicelist)
             return
         l=os.listdir(os.path.join(globalconfig['reader']['voiceroid2']['path'],'Voice'))
         for _ in l:
