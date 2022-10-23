@@ -36,8 +36,12 @@ class tts():
         if True:     
                      
             shift=''
-            for _ in content.encode('shift-jis'):
-                shift+=' '+str(int(_))
+            try:
+                for _ in content.encode('shift-jis'):
+                    shift+=' '+str(int(_))
+            except:
+                return
+
             fname=str(time.time())
             if os.path.exists('./ttscache/')==False:
                 os.mkdir('./ttscache/')
