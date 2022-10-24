@@ -1,7 +1,7 @@
 {
     "position": [
-        708,
-        603
+        602,
+        621
     ],
     "fixedheight": false,
     "width": 979,
@@ -187,7 +187,7 @@
             "name": "iciba"
         },
         "baiduapi": {
-            "use": true,
+            "use": false,
             "color": "#f003ec",
             "name": "百度api",
             "argsfile": "./userconfig/baiduapi.json"
@@ -204,7 +204,7 @@
             "name": "byte"
         },
         "qqimt": {
-            "use": false,
+            "use": true,
             "color": "#0ff000",
             "name": "qqimt"
         },
@@ -237,7 +237,7 @@
             "argsfile": "./userconfig/huoshanapi.json"
         },
         "papago": {
-            "use": true,
+            "use": false,
             "color": "#0101f0",
             "name": "papago"
         },

@@ -85,9 +85,13 @@ class TS(basetrans):
         response =self.session.post('https://fanyi.youdao.com/translate_o', params=params ,headers=headers, data=data, proxies=  {'http': None,'https': None},timeout = globalconfig['translatortimeout'])
         try:
             res=''
-            js=response.json()['translateResult'][0]
-            for _ in js:
-                res+=_['tgt']
+            print(response.json())
+            for js in response.json()['translateResult']:
+                if res!='':
+                    res+='\n'
+                for _ in js:
+                    res+=_['tgt']
+                
             return res
         except  :
             self.inittranslator()

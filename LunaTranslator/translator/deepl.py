@@ -136,7 +136,7 @@ class Deepl(Tse):
             self.language_map = None 
         self.request_id += 3
         self.query_count += 1
-        return   ' '.join(item['beams'][0]['postprocessed_sentence'] for item in data['result']['translations'])
+        return   '\n'.join(item['beams'][0]['postprocessed_sentence'] for item in data['result']['translations'])
 
 from traceback import print_exc
 

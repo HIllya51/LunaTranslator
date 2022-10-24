@@ -343,7 +343,7 @@ def trans(TextList,k_access_key,k_secret_key):
         'TextList': [ TextList],
     }
     res = service.json('translate', {}, json.dumps(body) )
-    return (json.loads(res))['TranslationList'][0]['Translation']
+    return '\n'.join( [ _['Translation'] for _ in json.loads(res)['TranslationList'] ])
 
 class TS(basetrans): 
     @classmethod

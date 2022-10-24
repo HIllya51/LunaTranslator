@@ -59,9 +59,10 @@ class TS(basetrans):
             js=response.json()
             
             res=''
-            for x in  js['translateResult'][0]:
-                
-                res+=x['tgt'] 
+            for x in  js['translateResult'] :
+                if res!='':
+                    res+='\n'
+                res+=x[0]['tgt'] 
             return res
         except:
             self.inittranslator()

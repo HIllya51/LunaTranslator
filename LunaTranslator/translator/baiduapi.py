@@ -64,7 +64,7 @@ class TS(basetrans):
             with open(configfile,'w',encoding='utf-8') as ff:
                 ff.write(json.dumps(js,ensure_ascii=False,sort_keys=False, indent=4))
             #print(res['trans_result'][0]['dst'])
-            return res['trans_result'][0]['dst']
+            return '\n'.join([_['dst'] for _ in res['trans_result']])  
         except:
             print_exc()
             return '出错了'

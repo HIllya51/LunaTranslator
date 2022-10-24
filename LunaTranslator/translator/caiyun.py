@@ -108,6 +108,7 @@ class Caiyun(Tse):
         with requests.Session() as ss:
             if self._ is None:
                 host_html = ss.get(self.host_url, headers=self.host_headers, timeout=timeout, proxies=proxies).text
+                print(host_html)
                 if not self.get_tk_url:
                     self.get_tk_url = self.host_url + re.compile(self.get_tk_pattern).search(host_html).group()
                 self.tk = self.get_tk(ss, timeout, proxies)

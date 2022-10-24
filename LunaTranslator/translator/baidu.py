@@ -102,7 +102,7 @@ class TS(basetrans):
                     
         
             response = self.session.post(url=translate_api,headers=headers,   data=data,timeout = globalconfig['translatortimeout'],proxies=  {'http': None,'https': None})
-            #print(response.json())
+            print(response.json())
             result ='\n'.join([_['dst'] for _ in response.json()['trans_result']['data']])  
             params = {
                 'req': 'check',
@@ -110,7 +110,7 @@ class TS(basetrans):
                 'direction': self.srclang()+'2zh',
                 '_': int(time.time()*1000),
             }
-
+            print(result)
             #response = self.session.get('https://fanyi.baidu.com/pcnewcollection', params=params,timeout = globalconfig['translatortimeout'],proxies=  {'http': None,'https': None} )
             return result
         except:
