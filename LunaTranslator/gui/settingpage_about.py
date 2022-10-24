@@ -79,7 +79,8 @@ def updateprogress(self,text,val):
     self.downloadprogress.setFormat(text)
      
 def setTab_about(self) :
-        self.version='v1.15.0'
+        with open('files/version.txt','r')as ff:
+            self.version=ff.read() 
         self.tab_about = QWidget()
         self.tab_widget.addTab(self.tab_about, "")
         self.tab_widget.setTabText(self.tab_widget.indexOf(self.tab_about), " 关于")
