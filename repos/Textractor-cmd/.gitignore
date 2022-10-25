@@ -1,8 +1,0 @@
-/Textractor*
-/build/
-/builds/
-/out/
-*.vs/
-*.vscode/
-*.user
-*.aps
