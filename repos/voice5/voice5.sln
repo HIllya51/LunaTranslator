@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.2.32505.173
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "voice5", "voice5\voice5.csproj", "{885828C1-A7EE-4CAF-99B5-83F7B2C0062C}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|x86 = Debug|x86
+		Release|Any CPU = Release|Any CPU
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{885828C1-A7EE-4CAF-99B5-83F7B2C0062C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{885828C1-A7EE-4CAF-99B5-83F7B2C0062C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{885828C1-A7EE-4CAF-99B5-83F7B2C0062C}.Debug|x86.ActiveCfg = Release|x86
+		{885828C1-A7EE-4CAF-99B5-83F7B2C0062C}.Debug|x86.Build.0 = Release|x86
+		{885828C1-A7EE-4CAF-99B5-83F7B2C0062C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{885828C1-A7EE-4CAF-99B5-83F7B2C0062C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{885828C1-A7EE-4CAF-99B5-83F7B2C0062C}.Release|x86.ActiveCfg = Release|x86
+		{885828C1-A7EE-4CAF-99B5-83F7B2C0062C}.Release|x86.Build.0 = Release|x86
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {8C855F86-622A-465A-B53D-11D7ABB4CA69}
+	EndGlobalSection
+EndGlobal

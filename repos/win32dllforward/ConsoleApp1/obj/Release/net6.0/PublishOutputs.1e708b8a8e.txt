@@ -1,0 +1,5 @@
+C:\Users\11737\source\repos\win32dllforward\ConsoleApp1\bin\Release\net6.0\publish\dreye.exe
+C:\Users\11737\source\repos\win32dllforward\ConsoleApp1\bin\Release\net6.0\publish\dreye.dll
+C:\Users\11737\source\repos\win32dllforward\ConsoleApp1\bin\Release\net6.0\publish\dreye.deps.json
+C:\Users\11737\source\repos\win32dllforward\ConsoleApp1\bin\Release\net6.0\publish\dreye.runtimeconfig.json
+C:\Users\11737\source\repos\win32dllforward\ConsoleApp1\bin\Release\net6.0\publish\dreye.pdb

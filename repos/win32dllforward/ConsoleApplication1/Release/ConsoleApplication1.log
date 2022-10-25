@@ -1,0 +1,8 @@
+﻿C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Microsoft\VC\v170\Microsoft.CppBuild.targets(514,5): warning MSB8028: 中间目录(Release\)包含从另一个项目(ConsoleApplication1.vcxproj)共享的文件。   这会导致错误的清除和重新生成行为。
+  ConsoleApplication1.cpp
+  正在生成代码
+  4 of 4 functions (100.0%) were compiled.
+    2 functions were new in current compilation
+    0 functions had inline decision re-evaluated but remain unchanged
+  已完成代码的生成
+  ConsoleApplication1.vcxproj -> C:\Users\11737\source\repos\win32dllforward\Release\ks.exe

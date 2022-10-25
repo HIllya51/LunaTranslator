@@ -1,0 +1,15 @@
+C:\Users\11737\source\repos\voice5\voice5\bin\Release\net6.0\voice5.exe
+C:\Users\11737\source\repos\voice5\voice5\bin\Release\net6.0\voice5.deps.json
+C:\Users\11737\source\repos\voice5\voice5\bin\Release\net6.0\voice5.runtimeconfig.json
+C:\Users\11737\source\repos\voice5\voice5\bin\Release\net6.0\voice5.dll
+C:\Users\11737\source\repos\voice5\voice5\bin\Release\net6.0\voice5.pdb
+C:\Users\11737\source\repos\voice5\voice5\obj\Release\net6.0\voice5.csproj.AssemblyReference.cache
+C:\Users\11737\source\repos\voice5\voice5\obj\Release\net6.0\voice5.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\11737\source\repos\voice5\voice5\obj\Release\net6.0\voice5.AssemblyInfoInputs.cache
+C:\Users\11737\source\repos\voice5\voice5\obj\Release\net6.0\voice5.AssemblyInfo.cs
+C:\Users\11737\source\repos\voice5\voice5\obj\Release\net6.0\voice5.csproj.CoreCompileInputs.cache
+C:\Users\11737\source\repos\voice5\voice5\obj\Release\net6.0\voice5.dll
+C:\Users\11737\source\repos\voice5\voice5\obj\Release\net6.0\refint\voice5.dll
+C:\Users\11737\source\repos\voice5\voice5\obj\Release\net6.0\voice5.pdb
+C:\Users\11737\source\repos\voice5\voice5\obj\Release\net6.0\voice5.genruntimeconfig.cache
+C:\Users\11737\source\repos\voice5\voice5\obj\Release\net6.0\ref\voice5.dll

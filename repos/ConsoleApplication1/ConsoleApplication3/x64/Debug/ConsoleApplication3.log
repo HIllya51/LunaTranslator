@@ -1,0 +1,33 @@
+﻿  ConsoleApplication3.cpp
+C:\Users\11737\source\repos\ConsoleApplication1\ConsoleApplication3\ConsoleApplication3.cpp(59,43): warning C4311: “类型强制转换”: 从“LPVOID”到“int”的指针截断
+C:\Users\11737\source\repos\ConsoleApplication1\ConsoleApplication3\ConsoleApplication3.cpp(59,43): warning C4302: “类型强制转换”: 从“LPVOID”到“int”截断
+C:\Users\11737\source\repos\ConsoleApplication1\ConsoleApplication3\ConsoleApplication3.cpp(61,43): warning C4311: “类型强制转换”: 从“LPVOID”到“int”的指针截断
+C:\Users\11737\source\repos\ConsoleApplication1\ConsoleApplication3\ConsoleApplication3.cpp(61,43): warning C4302: “类型强制转换”: 从“LPVOID”到“int”截断
+C:\Users\11737\source\repos\ConsoleApplication1\ConsoleApplication3\ConsoleApplication3.cpp(63,43): warning C4311: “类型强制转换”: 从“LPVOID”到“int”的指针截断
+C:\Users\11737\source\repos\ConsoleApplication1\ConsoleApplication3\ConsoleApplication3.cpp(63,43): warning C4302: “类型强制转换”: 从“LPVOID”到“int”截断
+C:\Users\11737\source\repos\ConsoleApplication1\ConsoleApplication3\ConsoleApplication3.cpp(65,43): warning C4311: “类型强制转换”: 从“LPVOID”到“int”的指针截断
+C:\Users\11737\source\repos\ConsoleApplication1\ConsoleApplication3\ConsoleApplication3.cpp(65,43): warning C4302: “类型强制转换”: 从“LPVOID”到“int”截断
+C:\Users\11737\source\repos\ConsoleApplication1\ConsoleApplication3\ConsoleApplication3.cpp(67,43): warning C4311: “类型强制转换”: 从“LPVOID”到“int”的指针截断
+C:\Users\11737\source\repos\ConsoleApplication1\ConsoleApplication3\ConsoleApplication3.cpp(67,43): warning C4302: “类型强制转换”: 从“LPVOID”到“int”截断
+C:\Users\11737\source\repos\ConsoleApplication1\ConsoleApplication3\ConsoleApplication3.cpp(69,43): warning C4311: “类型强制转换”: 从“LPVOID”到“int”的指针截断
+C:\Users\11737\source\repos\ConsoleApplication1\ConsoleApplication3\ConsoleApplication3.cpp(69,43): warning C4302: “类型强制转换”: 从“LPVOID”到“int”截断
+C:\Users\11737\source\repos\ConsoleApplication1\ConsoleApplication3\ConsoleApplication3.cpp(71,43): warning C4311: “类型强制转换”: 从“LPVOID”到“int”的指针截断
+C:\Users\11737\source\repos\ConsoleApplication1\ConsoleApplication3\ConsoleApplication3.cpp(71,43): warning C4302: “类型强制转换”: 从“LPVOID”到“int”截断
+C:\Users\11737\source\repos\ConsoleApplication1\ConsoleApplication3\ConsoleApplication3.cpp(72,31): warning C4311: “类型强制转换”: 从“LPVOID”到“int”的指针截断
+C:\Users\11737\source\repos\ConsoleApplication1\ConsoleApplication3\ConsoleApplication3.cpp(72,31): warning C4302: “类型强制转换”: 从“LPVOID”到“int”截断
+C:\Users\11737\source\repos\ConsoleApplication1\ConsoleApplication3\ConsoleApplication3.cpp(72,50): warning C4311: “类型强制转换”: 从“LPVOID”到“int”的指针截断
+C:\Users\11737\source\repos\ConsoleApplication1\ConsoleApplication3\ConsoleApplication3.cpp(72,50): warning C4302: “类型强制转换”: 从“LPVOID”到“int”截断
+C:\Users\11737\source\repos\ConsoleApplication1\ConsoleApplication3\ConsoleApplication3.cpp(72,55): warning C4312: “类型强制转换”: 从“int”转换到更大的“LPVOID”
+C:\Users\11737\source\repos\ConsoleApplication1\ConsoleApplication3\ConsoleApplication3.cpp(74,43): warning C4311: “类型强制转换”: 从“LPVOID”到“int”的指针截断
+C:\Users\11737\source\repos\ConsoleApplication1\ConsoleApplication3\ConsoleApplication3.cpp(74,43): warning C4302: “类型强制转换”: 从“LPVOID”到“int”截断
+C:\Users\11737\source\repos\ConsoleApplication1\ConsoleApplication3\ConsoleApplication3.cpp(76,43): warning C4311: “类型强制转换”: 从“LPVOID”到“int”的指针截断
+C:\Users\11737\source\repos\ConsoleApplication1\ConsoleApplication3\ConsoleApplication3.cpp(76,43): warning C4302: “类型强制转换”: 从“LPVOID”到“int”截断
+C:\Users\11737\source\repos\ConsoleApplication1\ConsoleApplication3\ConsoleApplication3.cpp(76,47): warning C4312: “类型强制转换”: 从“int”转换到更大的“LPVOID”
+C:\Users\11737\source\repos\ConsoleApplication1\ConsoleApplication3\ConsoleApplication3.cpp(78,43): warning C4311: “类型强制转换”: 从“LPVOID”到“int”的指针截断
+C:\Users\11737\source\repos\ConsoleApplication1\ConsoleApplication3\ConsoleApplication3.cpp(78,43): warning C4302: “类型强制转换”: 从“LPVOID”到“int”截断
+C:\Users\11737\source\repos\ConsoleApplication1\ConsoleApplication3\ConsoleApplication3.cpp(79,33): warning C4311: “类型强制转换”: 从“LPVOID”到“int”的指针截断
+C:\Users\11737\source\repos\ConsoleApplication1\ConsoleApplication3\ConsoleApplication3.cpp(79,33): warning C4302: “类型强制转换”: 从“LPVOID”到“int”截断
+C:\Users\11737\source\repos\ConsoleApplication1\ConsoleApplication3\ConsoleApplication3.cpp(79,52): warning C4311: “类型强制转换”: 从“LPVOID”到“int”的指针截断
+C:\Users\11737\source\repos\ConsoleApplication1\ConsoleApplication3\ConsoleApplication3.cpp(79,52): warning C4302: “类型强制转换”: 从“LPVOID”到“int”截断
+C:\Users\11737\source\repos\ConsoleApplication1\ConsoleApplication3\ConsoleApplication3.cpp(79,57): warning C4312: “类型强制转换”: 从“int”转换到更大的“LPVOID”
+  ConsoleApplication3.vcxproj -> C:\Users\11737\source\repos\ConsoleApplication1\x64\Debug\ConsoleApplication3.exe

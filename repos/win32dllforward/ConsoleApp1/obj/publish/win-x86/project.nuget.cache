@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "Dov2cjtdEm8uVdWYQTkWboH9WpPIu92I9A6E22SrI4T1oCOFJTUp6onBYAPnB0Hz0z9x8XrAj73dQ2ImRhFmyw==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\11737\\source\\repos\\win32dllforward\\ConsoleApp1\\dreye.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\11737\\.nuget\\packages\\system.runtime.compilerservices.unsafe\\6.0.0\\system.runtime.compilerservices.unsafe.6.0.0.nupkg.sha512",
+    "C:\\Users\\11737\\.nuget\\packages\\system.text.encoding.codepages\\6.0.0\\system.text.encoding.codepages.6.0.0.nupkg.sha512"
+  ],
+  "logs": []
+}

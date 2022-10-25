@@ -1,0 +1,5 @@
+C:\Users\11737\source\repos\voice5\voice5\obj\x86\Release\netcoreapp2.0\voice5.csproj.AssemblyReference.cache
+C:\Users\11737\source\repos\voice5\voice5\obj\x86\Release\netcoreapp2.0\voice5.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\11737\source\repos\voice5\voice5\obj\x86\Release\netcoreapp2.0\voice5.AssemblyInfoInputs.cache
+C:\Users\11737\source\repos\voice5\voice5\obj\x86\Release\netcoreapp2.0\voice5.AssemblyInfo.cs
+C:\Users\11737\source\repos\voice5\voice5\obj\x86\Release\netcoreapp2.0\voice5.csproj.CoreCompileInputs.cache

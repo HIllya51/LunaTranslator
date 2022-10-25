@@ -1,0 +1,3 @@
+[submodule "texthook/minhook"]
+	path = texthook/minhook
+	url = https://github.com/TsudaKageyu/minhook.git

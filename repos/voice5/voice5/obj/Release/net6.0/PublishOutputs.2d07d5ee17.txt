@@ -1,0 +1,5 @@
+C:\Users\11737\source\repos\voice5\voice5\bin\Release\net6.0\publish\voice5.exe
+C:\Users\11737\source\repos\voice5\voice5\bin\Release\net6.0\publish\voice5.dll
+C:\Users\11737\source\repos\voice5\voice5\bin\Release\net6.0\publish\voice5.deps.json
+C:\Users\11737\source\repos\voice5\voice5\bin\Release\net6.0\publish\voice5.runtimeconfig.json
+C:\Users\11737\source\repos\voice5\voice5\bin\Release\net6.0\publish\voice5.pdb

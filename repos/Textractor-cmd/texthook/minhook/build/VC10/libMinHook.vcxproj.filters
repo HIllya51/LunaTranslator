@@ -1,0 +1,55 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="..\..\src\buffer.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\hook.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\trampoline.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\HDE\hde32.c">
+      <Filter>HDE</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\HDE\hde64.c">
+      <Filter>HDE</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\src\trampoline.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\buffer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\MinHook.h" />
+    <ClInclude Include="..\..\src\HDE\hde32.h">
+      <Filter>HDE</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\HDE\hde64.h">
+      <Filter>HDE</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\HDE\pstdint.h">
+      <Filter>HDE</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\HDE\table32.h">
+      <Filter>HDE</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\HDE\table64.h">
+      <Filter>HDE</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{9d24b740-be2e-4cfd-b9a4-340a50946ee9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{76381bc7-2863-4cc5-aede-926ec2c506e4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="HDE">
+      <UniqueIdentifier>{56ddb326-6179-430d-ae19-e13bfd767bfa}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
+  <metadata>
+    <id>dreye</id>
+    <version>1.0.0</version>
+    <authors>dreye</authors>
+    <description>Package Description</description>
+    <dependencies>
+      <group targetFramework="net6.0">
+        <dependency id="System.Text.Encoding.CodePages" version="6.0.0" exclude="Build,Analyzers" />
+      </group>
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="C:\Users\11737\source\repos\win32dllforward\ConsoleApp1\bin\Release\net6.0\dreye.runtimeconfig.json" target="lib\net6.0\dreye.runtimeconfig.json" />
+    <file src="C:\Users\11737\source\repos\win32dllforward\ConsoleApp1\bin\Release\net6.0\dreye.dll" target="lib\net6.0\dreye.dll" />
+  </files>
+</package>

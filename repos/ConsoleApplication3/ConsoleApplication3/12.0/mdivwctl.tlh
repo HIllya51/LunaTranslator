@@ -1,0 +1,1269 @@
+// Created by Microsoft (R) C/C++ Compiler Version 10.00.30319.01 (ed4bb4c5).
+//
+// c:\tmp\build-sakura-desktop-release\cpp\tests\ocrtest\release\mdivwctl.tlh
+//
+// C++ source equivalent of Win32 type library C:\\Program Files\\Common Files\\Microsoft Shared\\MODI\\12.0\\MDIVWCTL.DLL
+// compiler-generated file created 10/05/14 at 21:46:07 - DO NOT EDIT!
+
+#pragma once
+#pragma pack(push, 8)
+
+#include <comdef.h>
+
+//
+// Forward references and typedefs
+//
+
+struct __declspec(uuid("a5ededf4-2bbc-45f3-822b-e60c278a1a79"))
+/* LIBID */ __MODI;
+enum MiFONT_FAMILY;
+enum MiFONT_FACE_STYLE;
+enum MiFONT_SERIF_STYLE;
+enum MiTHUMBNAIL_SIZE;
+enum MiCOMP_LEVEL;
+enum MiCOMP_TYPE;
+enum MiFILE_FORMAT;
+enum MiPRINT_FITMODES;
+enum MiLANGUAGES;
+struct __declspec(uuid("1ffc9a7b-7606-4c97-8119-78673e9d4821"))
+/* dual interface */ IMiFont;
+struct __declspec(uuid("87d6fb47-7cfa-4db3-82cd-e8dcc5bda7ab"))
+/* dual interface */ IMiRect;
+struct __declspec(uuid("895c88a9-8598-44cc-91c4-8010ae2475eb"))
+/* dual interface */ IMiRects;
+struct __declspec(uuid("5612275b-b4f1-42af-b696-360d40df041d"))
+/* dual interface */ IWord;
+struct __declspec(uuid("d8363824-4b07-423b-8803-49b470434f3d"))
+/* dual interface */ IWords;
+struct __declspec(uuid("c300c846-a3fd-4a5b-ad65-4a6ab46b7821"))
+/* dual interface */ ILayout;
+struct __declspec(uuid("ac0d48a6-886d-4eb5-a8a1-093d60b9a84a"))
+/* dual interface */ IImage;
+struct __declspec(uuid("77096557-54ca-45c8-81c9-e70c2abaa0fb"))
+/* dual interface */ IImages;
+struct __declspec(uuid("d4073843-a58a-469a-a8e2-cff3ff77ee4e"))
+/* dual interface */ IDocument;
+struct __declspec(uuid("0cf31963-5e4d-4772-ae8d-82fe5a082b26"))
+/* dispinterface */ _IDocumentEvents;
+struct /* coclass */ Document;
+struct /* coclass */ Layout;
+struct __declspec(uuid("99f3a122-448f-4d36-8243-48bfe32d50b2"))
+/* dispinterface */ _IImageEvents;
+struct /* coclass */ Image;
+struct /* coclass */ Word;
+struct /* coclass */ MiFont;
+struct /* coclass */ Words;
+struct /* coclass */ Images;
+struct /* coclass */ MiRect;
+struct /* coclass */ MiRects;
+enum MiActionState;
+enum MiDocviewMode;
+enum MiVIEWLAYER;
+struct __declspec(uuid("ea280c3c-e4b7-42bf-acc8-fe3ad3581638"))
+/* dual interface */ IMiSelectRect;
+struct __declspec(uuid("3a1e1b7a-c041-4ddc-bf3b-042a0b95b82b"))
+/* dual interface */ IMiSelectRects;
+struct __declspec(uuid("01c4414a-d123-4bc7-a1fa-64e376c01655"))
+/* dual interface */ IMiSelectableItem;
+struct __declspec(uuid("f6379198-3b20-461a-b3a9-191945752557"))
+/* dual interface */ IMiSelectableImage;
+struct __declspec(uuid("8376d508-78ca-416d-a903-2ed62e91e29b"))
+/* interface */ IMiSearchCallback;
+enum MiFITMODE;
+struct __declspec(uuid("f958524a-8422-4b07-b69e-199f2421ed89"))
+/* dual interface */ IMiDocView;
+struct __declspec(uuid("9028b775-ec59-4118-862a-efdeaf5955a4"))
+/* dispinterface */ _IMiDocViewEvents;
+struct __declspec(uuid("bc06ed64-a40c-4fb4-a660-ac6dbc752292"))
+/* dual interface */ IMiDocSearch;
+struct /* coclass */ MiDocView;
+struct /* coclass */ MiDocSearch;
+struct /* coclass */ MiSelectRect;
+struct /* coclass */ MiSelectRects;
+
+//
+// Smart pointer typedef declarations
+//
+
+_COM_SMARTPTR_TYPEDEF(IMiFont, __uuidof(IMiFont));
+_COM_SMARTPTR_TYPEDEF(IMiRect, __uuidof(IMiRect));
+_COM_SMARTPTR_TYPEDEF(IMiRects, __uuidof(IMiRects));
+_COM_SMARTPTR_TYPEDEF(IWord, __uuidof(IWord));
+_COM_SMARTPTR_TYPEDEF(IWords, __uuidof(IWords));
+_COM_SMARTPTR_TYPEDEF(ILayout, __uuidof(ILayout));
+_COM_SMARTPTR_TYPEDEF(IImage, __uuidof(IImage));
+_COM_SMARTPTR_TYPEDEF(IImages, __uuidof(IImages));
+_COM_SMARTPTR_TYPEDEF(IDocument, __uuidof(IDocument));
+_COM_SMARTPTR_TYPEDEF(_IDocumentEvents, __uuidof(_IDocumentEvents));
+_COM_SMARTPTR_TYPEDEF(_IImageEvents, __uuidof(_IImageEvents));
+_COM_SMARTPTR_TYPEDEF(IMiSelectRect, __uuidof(IMiSelectRect));
+_COM_SMARTPTR_TYPEDEF(IMiSelectRects, __uuidof(IMiSelectRects));
+_COM_SMARTPTR_TYPEDEF(IMiSelectableItem, __uuidof(IMiSelectableItem));
+_COM_SMARTPTR_TYPEDEF(IMiSelectableImage, __uuidof(IMiSelectableImage));
+_COM_SMARTPTR_TYPEDEF(IMiSearchCallback, __uuidof(IMiSearchCallback));
+_COM_SMARTPTR_TYPEDEF(IMiDocView, __uuidof(IMiDocView));
+_COM_SMARTPTR_TYPEDEF(_IMiDocViewEvents, __uuidof(_IMiDocViewEvents));
+_COM_SMARTPTR_TYPEDEF(IMiDocSearch, __uuidof(IMiDocSearch));
+
+//
+// Type library items
+//
+
+enum MiFONT_FAMILY
+{
+    miFFamily_Helvetica = 1,
+    miFFamily_Times = 2,
+    miFFamily_Century = 3,
+    miFFamily_TimesCentury = 4,
+    miFFamily_HelveticaCentury = 5,
+    miFFamily_DEFAULT = 6
+};
+
+enum MiFONT_FACE_STYLE
+{
+    miFFace_ROMAN = 1,
+    miFFace_ITALIC = 2,
+    miFFace_BOLD = 3,
+    miFFace_BOLD_ITALIC = 4
+};
+
+enum MiFONT_SERIF_STYLE
+{
+    miFSerifSANS = 1,
+    miFSerifTHIN = 2,
+    miFSerifSQ = 3,
+    miFSerifRND = 4,
+    miFSerifSTYLE_UNKNOWN = 5
+};
+
+enum MiTHUMBNAIL_SIZE
+{
+    miTHUMB_SIZE_TINY = 0,
+    miTHUMB_SIZE_SMALL = 1,
+    miTHUMB_SIZE_MEDIUM = 2,
+    miTHUMB_SIZE_LARGE = 3,
+    miTHUMB_SIZE_MAXIMUM = 3
+};
+
+enum MiCOMP_LEVEL
+{
+    miCOMP_LEVEL_LOW = 0,
+    miCOMP_LEVEL_MEDIUM = 1,
+    miCOMP_LEVEL_HIGH = 2
+};
+
+enum MiCOMP_TYPE
+{
+    miCOMP_UNKNOWN = 0,
+    miCOMP_TIFF_NONE = 1,
+    miCOMP_TIFF_CCITT1D = 2,
+    miCOMP_TIFF_CCITT3 = 3,
+    miCOMP_TIFF_CCITT4 = 4,
+    miCOMP_TIFF_LZW = 5,
+    miCOMP_TIFF_JPEG6 = 6,
+    miCOMP_TIFF_JPEG = 7,
+    miCOMP_TIFF_PACK = 32773,
+    miCOMP_MODI_BLC = 34718,
+    miCOMP_MODI_VECTOR = 34719,
+    miCOMP_MODI_PTC = 34720
+};
+
+enum MiFILE_FORMAT
+{
+    miFILE_FORMAT_TIFF = 1,
+    miFILE_FORMAT_TIFF_LOSSLESS = 2,
+    miFILE_FORMAT_MDI = 4,
+    miFILE_FORMAT_DEFAULTVALUE = -1
+};
+
+enum MiPRINT_FITMODES
+{
+    miPRINT_ACTUALSIZE = 0,
+    miPRINT_PAGE = 1
+};
+
+enum MiLANGUAGES
+{
+    miLANG_CHINESE_SIMPLIFIED = 2052,
+    miLANG_CHINESE_TRADITIONAL = 1028,
+    miLANG_CZECH = 5,
+    miLANG_DANISH = 6,
+    miLANG_DUTCH = 19,
+    miLANG_ENGLISH = 9,
+    miLANG_FINNISH = 11,
+    miLANG_FRENCH = 12,
+    miLANG_GERMAN = 7,
+    miLANG_GREEK = 8,
+    miLANG_HUNGARIAN = 14,
+    miLANG_ITALIAN = 16,
+    miLANG_JAPANESE = 17,
+    miLANG_KOREAN = 18,
+    miLANG_NORWEGIAN = 20,
+    miLANG_POLISH = 21,
+    miLANG_PORTUGUESE = 22,
+    miLANG_RUSSIAN = 25,
+    miLANG_SPANISH = 10,
+    miLANG_SWEDISH = 29,
+    miLANG_TURKISH = 31,
+    miLANG_SYSDEFAULT = 2048
+};
+
+struct __declspec(uuid("1ffc9a7b-7606-4c97-8119-78673e9d4821"))
+IMiFont : IDispatch
+{
+    //
+    // Property data
+    //
+
+    __declspec(property(get=GetFamily))
+    enum MiFONT_FAMILY Family;
+    __declspec(property(get=GetFaceStyle))
+    enum MiFONT_FACE_STYLE FaceStyle;
+    __declspec(property(get=GetSerifStyle))
+    enum MiFONT_SERIF_STYLE SerifStyle;
+    __declspec(property(get=GetFontSize))
+    short FontSize;
+
+    //
+    // Wrapper methods for error-handling
+    //
+
+    enum MiFONT_FAMILY GetFamily ( );
+    enum MiFONT_FACE_STYLE GetFaceStyle ( );
+    enum MiFONT_SERIF_STYLE GetSerifStyle ( );
+    short GetFontSize ( );
+
+    //
+    // Raw methods provided by interface
+    //
+
+      virtual HRESULT __stdcall get_Family (
+        /*[out,retval]*/ enum MiFONT_FAMILY * pVal ) = 0;
+      virtual HRESULT __stdcall get_FaceStyle (
+        /*[out,retval]*/ enum MiFONT_FACE_STYLE * pVal ) = 0;
+      virtual HRESULT __stdcall get_SerifStyle (
+        /*[out,retval]*/ enum MiFONT_SERIF_STYLE * pVal ) = 0;
+      virtual HRESULT __stdcall get_FontSize (
+        /*[out,retval]*/ short * pVal ) = 0;
+};
+
+struct __declspec(uuid("87d6fb47-7cfa-4db3-82cd-e8dcc5bda7ab"))
+IMiRect : IDispatch
+{
+    //
+    // Property data
+    //
+
+    __declspec(property(get=GetTop))
+    long Top;
+    __declspec(property(get=GetLeft))
+    long Left;
+    __declspec(property(get=GetRight))
+    long Right;
+    __declspec(property(get=GetBottom))
+    long Bottom;
+
+    //
+    // Wrapper methods for error-handling
+    //
+
+    long GetTop ( );
+    long GetLeft ( );
+    long GetRight ( );
+    long GetBottom ( );
+
+    //
+    // Raw methods provided by interface
+    //
+
+      virtual HRESULT __stdcall get_Top (
+        /*[out,retval]*/ long * pVal ) = 0;
+      virtual HRESULT __stdcall get_Left (
+        /*[out,retval]*/ long * pVal ) = 0;
+      virtual HRESULT __stdcall get_Right (
+        /*[out,retval]*/ long * pVal ) = 0;
+      virtual HRESULT __stdcall get_Bottom (
+        /*[out,retval]*/ long * pVal ) = 0;
+};
+
+struct __declspec(uuid("895c88a9-8598-44cc-91c4-8010ae2475eb"))
+IMiRects : IDispatch
+{
+    //
+    // Property data
+    //
+
+    __declspec(property(get=GetItem))
+    IDispatch * Item[];
+    __declspec(property(get=GetCount))
+    long Count;
+    __declspec(property(get=Get_NewEnum))
+    IUnknown * _NewEnum;
+
+    //
+    // Wrapper methods for error-handling
+    //
+
+    long GetCount ( );
+    IUnknown * Get_NewEnum ( );
+    IDispatch * GetItem (
+        long Index );
+
+    //
+    // Raw methods provided by interface
+    //
+
+      virtual HRESULT __stdcall get_Count (
+        /*[out,retval]*/ long * pVal ) = 0;
+      virtual HRESULT __stdcall get__NewEnum (
+        /*[out,retval]*/ IUnknown * * pVal ) = 0;
+      virtual HRESULT __stdcall get_Item (
+        /*[in]*/ long Index,
+        /*[out,retval]*/ IDispatch * * pVal ) = 0;
+};
+
+struct __declspec(uuid("5612275b-b4f1-42af-b696-360d40df041d"))
+IWord : IDispatch
+{
+    //
+    // Property data
+    //
+
+    __declspec(property(get=GetRecognitionConfidence))
+    short RecognitionConfidence;
+    __declspec(property(get=GetFontId))
+    long FontId;
+    __declspec(property(get=GetLineId))
+    long LineId;
+    __declspec(property(get=GetRegionId))
+    long RegionId;
+    __declspec(property(get=GetText))
+    BSTR Text;
+    __declspec(property(get=GetFont))
+    struct IMiFont * Font;
+    __declspec(property(get=GetId))
+    long Id;
+    __declspec(property(get=GetRects))
+    struct IMiRects * Rects;
+
+    //
+    // Wrapper methods for error-handling
+    //
+
+    short GetRecognitionConfidence ( );
+    long GetFontId ( );
+    long GetLineId ( );
+    long GetRegionId ( );
+    BSTR GetText ( );
+    struct IMiFont * GetFont ( );
+    long GetId ( );
+    struct IMiRects * GetRects ( );
+
+    //
+    // Raw methods provided by interface
+    //
+
+      virtual HRESULT __stdcall get_RecognitionConfidence (
+        /*[out,retval]*/ short * pVal ) = 0;
+      virtual HRESULT __stdcall get_FontId (
+        /*[out,retval]*/ long * pVal ) = 0;
+      virtual HRESULT __stdcall get_LineId (
+        /*[out,retval]*/ long * pVal ) = 0;
+      virtual HRESULT __stdcall get_RegionId (
+        /*[out,retval]*/ long * pVal ) = 0;
+      virtual HRESULT __stdcall get_Text (
+        /*[out,retval]*/ BSTR * pVal ) = 0;
+      virtual HRESULT __stdcall get_Font (
+        /*[out,retval]*/ struct IMiFont * * pVal ) = 0;
+      virtual HRESULT __stdcall get_Id (
+        /*[out,retval]*/ long * pVal ) = 0;
+      virtual HRESULT __stdcall get_Rects (
+        /*[out,retval]*/ struct IMiRects * * ppVal ) = 0;
+};
+
+struct __declspec(uuid("d8363824-4b07-423b-8803-49b470434f3d"))
+IWords : IDispatch
+{
+    //
+    // Property data
+    //
+
+    __declspec(property(get=GetItem))
+    IDispatch * Item[];
+    __declspec(property(get=GetCount))
+    long Count;
+    __declspec(property(get=Get_NewEnum))
+    IUnknown * _NewEnum;
+
+    //
+    // Wrapper methods for error-handling
+    //
+
+    long GetCount ( );
+    IUnknown * Get_NewEnum ( );
+    IDispatch * GetItem (
+        long Index );
+
+    //
+    // Raw methods provided by interface
+    //
+
+      virtual HRESULT __stdcall get_Count (
+        /*[out,retval]*/ long * pVal ) = 0;
+      virtual HRESULT __stdcall get__NewEnum (
+        /*[out,retval]*/ IUnknown * * pVal ) = 0;
+      virtual HRESULT __stdcall get_Item (
+        /*[in]*/ long Index,
+        /*[out,retval]*/ IDispatch * * pVal ) = 0;
+};
+
+struct __declspec(uuid("c300c846-a3fd-4a5b-ad65-4a6ab46b7821"))
+ILayout : IDispatch
+{
+    //
+    // Property data
+    //
+
+    __declspec(property(get=GetLanguage))
+    long Language;
+    __declspec(property(get=GetNumChars))
+    long NumChars;
+    __declspec(property(get=GetNumWords))
+    long NumWords;
+    __declspec(property(get=GetNumFonts))
+    long NumFonts;
+    __declspec(property(get=GetText))
+    BSTR Text;
+    __declspec(property(get=GetWords))
+    struct IWords * Words;
+
+    //
+    // Wrapper methods for error-handling
+    //
+
+    long GetLanguage ( );
+    long GetNumChars ( );
+    long GetNumWords ( );
+    long GetNumFonts ( );
+    BSTR GetText ( );
+    struct IWords * GetWords ( );
+
+    //
+    // Raw methods provided by interface
+    //
+
+      virtual HRESULT __stdcall get_Language (
+        /*[out,retval]*/ long * pVal ) = 0;
+      virtual HRESULT __stdcall get_NumChars (
+        /*[out,retval]*/ long * pVal ) = 0;
+      virtual HRESULT __stdcall get_NumWords (
+        /*[out,retval]*/ long * pVal ) = 0;
+      virtual HRESULT __stdcall get_NumFonts (
+        /*[out,retval]*/ long * pVal ) = 0;
+      virtual HRESULT __stdcall get_Text (
+        /*[out,retval]*/ BSTR * pVal ) = 0;
+      virtual HRESULT __stdcall get_Words (
+        /*[out,retval]*/ struct IWords * * pVal ) = 0;
+};
+
+struct __declspec(uuid("ac0d48a6-886d-4eb5-a8a1-093d60b9a84a"))
+IImage : IDispatch
+{
+    //
+    // Property data
+    //
+
+    __declspec(property(get=GetLayout))
+    struct ILayout * Layout;
+    __declspec(property(get=GetPixelWidth))
+    long PixelWidth;
+    __declspec(property(get=GetPixelHeight))
+    long PixelHeight;
+    __declspec(property(get=GetXDPI))
+    long XDPI;
+    __declspec(property(get=GetYDPI))
+    long YDPI;
+    __declspec(property(get=GetBitsPerPixel))
+    long BitsPerPixel;
+    __declspec(property(get=GetThumbnail))
+    IPictureDisp * Thumbnail[];
+    __declspec(property(get=GetPicture))
+    IPictureDisp * Picture;
+    __declspec(property(get=GetCompression))
+    enum MiCOMP_TYPE Compression;
+
+    //
+    // Wrapper methods for error-handling
+    //
+
+    struct ILayout * GetLayout ( );
+    long GetPixelWidth ( );
+    long GetPixelHeight ( );
+    long GetXDPI ( );
+    long GetYDPI ( );
+    long GetBitsPerPixel ( );
+    IPictureDisp * GetThumbnail (
+        enum MiTHUMBNAIL_SIZE ThumbSize );
+    IPictureDisp * GetPicture ( );
+    enum MiCOMP_TYPE GetCompression ( );
+    HRESULT OCR (
+        enum MiLANGUAGES LangId,
+        VARIANT_BOOL OCROrientImage,
+        VARIANT_BOOL OCRStraightenImage );
+    HRESULT Rotate (
+        long Angle );
+
+    //
+    // Raw methods provided by interface
+    //
+
+      virtual HRESULT __stdcall get_Layout (
+        /*[out,retval]*/ struct ILayout * * pVal ) = 0;
+      virtual HRESULT __stdcall get_PixelWidth (
+        /*[out,retval]*/ long * pVal ) = 0;
+      virtual HRESULT __stdcall get_PixelHeight (
+        /*[out,retval]*/ long * pVal ) = 0;
+      virtual HRESULT __stdcall get_XDPI (
+        /*[out,retval]*/ long * pVal ) = 0;
+      virtual HRESULT __stdcall get_YDPI (
+        /*[out,retval]*/ long * pVal ) = 0;
+      virtual HRESULT __stdcall get_BitsPerPixel (
+        /*[out,retval]*/ long * pVal ) = 0;
+      virtual HRESULT __stdcall get_Thumbnail (
+        /*[in]*/ enum MiTHUMBNAIL_SIZE ThumbSize,
+        /*[out,retval]*/ IPictureDisp * * pVal ) = 0;
+      virtual HRESULT __stdcall get_Picture (
+        /*[out,retval]*/ IPictureDisp * * pVal ) = 0;
+      virtual HRESULT __stdcall get_Compression (
+        /*[out,retval]*/ enum MiCOMP_TYPE * pVal ) = 0;
+      virtual HRESULT __stdcall raw_OCR (
+        /*[in]*/ enum MiLANGUAGES LangId,
+        /*[in]*/ VARIANT_BOOL OCROrientImage,
+        /*[in]*/ VARIANT_BOOL OCRStraightenImage ) = 0;
+      virtual HRESULT __stdcall raw_Rotate (
+        /*[in]*/ long Angle ) = 0;
+};
+
+struct __declspec(uuid("77096557-54ca-45c8-81c9-e70c2abaa0fb"))
+IImages : IDispatch
+{
+    //
+    // Property data
+    //
+
+    __declspec(property(get=GetItem))
+    IDispatch * Item[];
+    __declspec(property(get=GetCount))
+    long Count;
+    __declspec(property(get=Get_NewEnum))
+    IUnknown * _NewEnum;
+
+    //
+    // Wrapper methods for error-handling
+    //
+
+    long GetCount ( );
+    HRESULT Add (
+        IDispatch * Page,
+        IDispatch * BeforePage );
+    IUnknown * Get_NewEnum ( );
+    IDispatch * GetItem (
+        long Index );
+    HRESULT Remove (
+        IDispatch * Page );
+
+    //
+    // Raw methods provided by interface
+    //
+
+      virtual HRESULT __stdcall get_Count (
+        /*[out,retval]*/ long * pVal ) = 0;
+      virtual HRESULT __stdcall raw_Add (
+        /*[in]*/ IDispatch * Page,
+        /*[in]*/ IDispatch * BeforePage ) = 0;
+      virtual HRESULT __stdcall get__NewEnum (
+        /*[out,retval]*/ IUnknown * * pVal ) = 0;
+      virtual HRESULT __stdcall get_Item (
+        /*[in]*/ long Index,
+        /*[out,retval]*/ IDispatch * * pVal ) = 0;
+      virtual HRESULT __stdcall raw_Remove (
+        /*[in]*/ IDispatch * Page ) = 0;
+};
+
+struct __declspec(uuid("d4073843-a58a-469a-a8e2-cff3ff77ee4e"))
+IDocument : IDispatch
+{
+    //
+    // Property data
+    //
+
+    __declspec(property(get=GetImages))
+    struct IImages * Images;
+    __declspec(property(get=GetBuiltInDocumentProperties))
+    IDispatch * BuiltInDocumentProperties;
+    __declspec(property(get=GetCustomDocumentProperties))
+    IDispatch * CustomDocumentProperties;
+    __declspec(property(get=GetDirty))
+    VARIANT_BOOL Dirty;
+
+    //
+    // Wrapper methods for error-handling
+    //
+
+    HRESULT Save ( );
+    HRESULT Close (
+        VARIANT_BOOL SaveChanges );
+    HRESULT SaveAs (
+        BSTR FileName,
+        enum MiFILE_FORMAT FileFormat,
+        enum MiCOMP_LEVEL CompLevel );
+    struct IImages * GetImages ( );
+    IDispatch * GetBuiltInDocumentProperties ( );
+    IDispatch * GetCustomDocumentProperties ( );
+    HRESULT Create (
+        BSTR FileOpen );
+    VARIANT_BOOL GetDirty ( );
+    HRESULT OCR (
+        enum MiLANGUAGES LangId,
+        VARIANT_BOOL OCROrientImage,
+        VARIANT_BOOL OCRStraightenImage );
+    HRESULT PrintOut (
+        long From,
+        long To,
+        long Copies,
+        BSTR PrinterName,
+        BSTR PrintToFileName,
+        VARIANT_BOOL PrintAnnotation,
+        enum MiPRINT_FITMODES FitMode );
+
+    //
+    // Raw methods provided by interface
+    //
+
+      virtual HRESULT __stdcall raw_Save ( ) = 0;
+      virtual HRESULT __stdcall raw_Close (
+        /*[in]*/ VARIANT_BOOL SaveChanges ) = 0;
+      virtual HRESULT __stdcall raw_SaveAs (
+        /*[in]*/ BSTR FileName,
+        /*[in]*/ enum MiFILE_FORMAT FileFormat,
+        /*[in]*/ enum MiCOMP_LEVEL CompLevel ) = 0;
+      virtual HRESULT __stdcall get_Images (
+        /*[out,retval]*/ struct IImages * * pVal ) = 0;
+      virtual HRESULT __stdcall get_BuiltInDocumentProperties (
+        /*[out,retval]*/ IDispatch * * pVal ) = 0;
+      virtual HRESULT __stdcall get_CustomDocumentProperties (
+        /*[out,retval]*/ IDispatch * * pVal ) = 0;
+      virtual HRESULT __stdcall raw_Create (
+        /*[in]*/ BSTR FileOpen ) = 0;
+      virtual HRESULT __stdcall get_Dirty (
+        /*[out,retval]*/ VARIANT_BOOL * pVal ) = 0;
+      virtual HRESULT __stdcall raw_OCR (
+        /*[in]*/ enum MiLANGUAGES LangId,
+        /*[in]*/ VARIANT_BOOL OCROrientImage,
+        /*[in]*/ VARIANT_BOOL OCRStraightenImage ) = 0;
+      virtual HRESULT __stdcall raw_PrintOut (
+        /*[in]*/ long From,
+        /*[in]*/ long To,
+        /*[in]*/ long Copies,
+        /*[in]*/ BSTR PrinterName,
+        /*[in]*/ BSTR PrintToFileName,
+        /*[in]*/ VARIANT_BOOL PrintAnnotation,
+        /*[in]*/ enum MiPRINT_FITMODES FitMode ) = 0;
+};
+
+struct __declspec(uuid("0cf31963-5e4d-4772-ae8d-82fe5a082b26"))
+_IDocumentEvents : IDispatch
+{
+    //
+    // Wrapper methods for error-handling
+    //
+
+    // Methods:
+    HRESULT OnOCRProgress (
+        int Progress,
+        VARIANT_BOOL * Cancel );
+};
+
+struct __declspec(uuid("40942a6c-1520-4132-bdf8-bdc1f71f547b"))
+Document;
+    // [ default ] interface IDocument
+    // [ default, source ] dispinterface _IDocumentEvents
+
+struct __declspec(uuid("1afc4117-128e-4314-9d53-64cbda5c7e02"))
+Layout;
+    // [ default ] interface ILayout
+
+struct __declspec(uuid("99f3a122-448f-4d36-8243-48bfe32d50b2"))
+_IImageEvents : IDispatch
+{};
+
+struct __declspec(uuid("56f963ec-6efc-4a6b-9a1e-5bfe545c89d0"))
+Image;
+    // [ default ] interface IImage
+    // [ default, source ] dispinterface _IImageEvents
+
+struct __declspec(uuid("5995e30f-59eb-42ae-bdcf-8908271c0b32"))
+Word;
+    // [ default ] interface IWord
+
+struct __declspec(uuid("c5eae79b-accc-4e51-8ed5-a16f42fb7b1f"))
+MiFont;
+    // [ default ] interface IMiFont
+
+struct __declspec(uuid("72acbce3-9067-4d5e-9539-3497fecd032d"))
+Words;
+    // [ default ] interface IWords
+
+struct __declspec(uuid("f961d185-2cc1-43db-80ab-567fa10251ec"))
+Images;
+    // [ default ] interface IImages
+
+struct __declspec(uuid("00607e44-15df-49bc-af0c-a9023e060791"))
+MiRect;
+    // [ default ] interface IMiRect
+
+struct __declspec(uuid("cb2fbd52-56c1-4dd8-897f-961d1543b877"))
+MiRects;
+    // [ default ] interface IMiRects
+
+enum MiActionState
+{
+    miASTATE_NONE = 0,
+    miASTATE_PAN = 1,
+    miASTATE_ZOOM = 2,
+    miASTATE_AnntSELECT = 3,
+    miASTATE_HIDDEN = 4,
+    miASTATE_SELECT = 5
+};
+
+enum MiDocviewMode
+{
+    miDOCVIEWMODE_CONTINOUSPAGEVIEW = 0,
+    miDOCVIEWMODE_SINGLEPAGEVIEW = 1,
+    miDOCVIEWMODE_TWOCOLUMNS_CONTINOUSPAGEVIEW = 4
+};
+
+enum MiVIEWLAYER
+{
+    miVIEWLAYER_RICHINK = 0
+};
+
+struct __declspec(uuid("ea280c3c-e4b7-42bf-acc8-fe3ad3581638"))
+IMiSelectRect : IDispatch
+{
+    //
+    // Property data
+    //
+
+    __declspec(property(get=GetPageNumber))
+    long PageNumber;
+    __declspec(property(get=GetLeft))
+    long Left;
+    __declspec(property(get=GetTop))
+    long Top;
+    __declspec(property(get=GetRight))
+    long Right;
+    __declspec(property(get=GetBottom))
+    long Bottom;
+
+    //
+    // Wrapper methods for error-handling
+    //
+
+    long GetPageNumber ( );
+    long GetLeft ( );
+    long GetTop ( );
+    long GetRight ( );
+    long GetBottom ( );
+
+    //
+    // Raw methods provided by interface
+    //
+
+      virtual HRESULT __stdcall get_PageNumber (
+        /*[out,retval]*/ long * pVal ) = 0;
+      virtual HRESULT __stdcall get_Left (
+        /*[out,retval]*/ long * pVal ) = 0;
+      virtual HRESULT __stdcall get_Top (
+        /*[out,retval]*/ long * pVal ) = 0;
+      virtual HRESULT __stdcall get_Right (
+        /*[out,retval]*/ long * pVal ) = 0;
+      virtual HRESULT __stdcall get_Bottom (
+        /*[out,retval]*/ long * pVal ) = 0;
+};
+
+struct __declspec(uuid("3a1e1b7a-c041-4ddc-bf3b-042a0b95b82b"))
+IMiSelectRects : IDispatch
+{
+    //
+    // Property data
+    //
+
+    __declspec(property(get=GetItem))
+    IDispatch * Item[];
+    __declspec(property(get=GetCount))
+    long Count;
+    __declspec(property(get=Get_NewEnum))
+    IUnknown * _NewEnum;
+
+    //
+    // Wrapper methods for error-handling
+    //
+
+    long GetCount ( );
+    IUnknown * Get_NewEnum ( );
+    IDispatch * GetItem (
+        long Index );
+
+    //
+    // Raw methods provided by interface
+    //
+
+      virtual HRESULT __stdcall get_Count (
+        /*[out,retval]*/ long * pVal ) = 0;
+      virtual HRESULT __stdcall get__NewEnum (
+        /*[out,retval]*/ IUnknown * * pVal ) = 0;
+      virtual HRESULT __stdcall get_Item (
+        /*[in]*/ long Index,
+        /*[out,retval]*/ IDispatch * * pVal ) = 0;
+};
+
+struct __declspec(uuid("01c4414a-d123-4bc7-a1fa-64e376c01655"))
+IMiSelectableItem : IDispatch
+{
+    //
+    // Property data
+    //
+
+    __declspec(property(get=GetText))
+    BSTR Text;
+    __declspec(property(get=GetWords))
+    IDispatch * Words;
+
+    //
+    // Wrapper methods for error-handling
+    //
+
+    HRESULT CopyToClipboard ( );
+    BSTR GetText ( );
+    IDispatch * GetWords ( );
+    struct IMiSelectRects * GetSelectRects ( );
+
+    //
+    // Raw methods provided by interface
+    //
+
+      virtual HRESULT __stdcall raw_CopyToClipboard ( ) = 0;
+      virtual HRESULT __stdcall get_Text (
+        /*[out,retval]*/ BSTR * p ) = 0;
+      virtual HRESULT __stdcall get_Words (
+        /*[out,retval]*/ IDispatch * * ppWords ) = 0;
+      virtual HRESULT __stdcall raw_GetSelectRects (
+        /*[out,retval]*/ struct IMiSelectRects * * pVal ) = 0;
+};
+
+struct __declspec(uuid("f6379198-3b20-461a-b3a9-191945752557"))
+IMiSelectableImage : IDispatch
+{
+    //
+    // Wrapper methods for error-handling
+    //
+
+    HRESULT CopyToClipboard (
+        long CopyAnnotation,
+        long AlwaysKeepAnnotationColor );
+    IPictureDisp * ExportToPicture (
+        long CopyAnnotation,
+        long AlwaysKeepAnnotationColor );
+    HRESULT GetBoundingRect (
+        long * plPageNum,
+        long * Left,
+        long * Top,
+        long * Right,
+        long * Bottom );
+
+    //
+    // Raw methods provided by interface
+    //
+
+      virtual HRESULT __stdcall raw_CopyToClipboard (
+        /*[in]*/ long CopyAnnotation,
+        /*[in]*/ long AlwaysKeepAnnotationColor ) = 0;
+      virtual HRESULT __stdcall raw_ExportToPicture (
+        /*[in]*/ long CopyAnnotation,
+        /*[in]*/ long AlwaysKeepAnnotationColor,
+        /*[out,retval]*/ IPictureDisp * * ppiPicture ) = 0;
+      virtual HRESULT __stdcall raw_GetBoundingRect (
+        /*[out]*/ long * plPageNum,
+        /*[out]*/ long * Left,
+        /*[out]*/ long * Top,
+        /*[out]*/ long * Right,
+        /*[out]*/ long * Bottom ) = 0;
+};
+
+struct __declspec(uuid("8376d508-78ca-416d-a903-2ed62e91e29b"))
+IMiSearchCallback : IUnknown
+{
+    //
+    // Wrapper methods for error-handling
+    //
+
+    HRESULT IsCancelled (
+        long * pfIsCancel );
+
+    //
+    // Raw methods provided by interface
+    //
+
+      virtual HRESULT __stdcall raw_IsCancelled (
+        /*[out]*/ long * pfIsCancel ) = 0;
+};
+
+enum MiFITMODE
+{
+    miFree = 0,
+    miByWidth = 1,
+    miByHeight = 2,
+    miByWindow = 3,
+    miByTextWidth = 4
+};
+
+struct __declspec(uuid("f958524a-8422-4b07-b69e-199f2421ed89"))
+IMiDocView : IDispatch
+{
+    //
+    // Property data
+    //
+
+    __declspec(property(get=GetDocument,put=PutDocument))
+    IUnknown * Document;
+    __declspec(property(get=GetFileName,put=PutFileName))
+    BSTR FileName;
+    __declspec(property(get=GetPageNum,put=PutPageNum))
+    long PageNum;
+    __declspec(property(get=GetNumPages))
+    long NumPages;
+    __declspec(property(get=GetFitMode,put=PutFitMode))
+    enum MiFITMODE FitMode;
+    __declspec(property(get=GetActionState,put=PutActionState))
+    enum MiActionState ActionState;
+    __declspec(property(get=GetTextSelection,put=PutTextSelection))
+    struct IMiSelectableItem * TextSelection;
+    __declspec(property(get=GetImageSelection,put=PutImageSelection))
+    struct IMiSelectableImage * ImageSelection;
+    __declspec(property(get=GetDocViewMode,put=PutDocViewMode))
+    enum MiDocviewMode DocViewMode;
+    __declspec(property(get=GetLayerVisible,put=PutLayerVisible))
+    VARIANT_BOOL LayerVisible[];
+
+    //
+    // Wrapper methods for error-handling
+    //
+
+    IUnknown * GetDocument ( );
+    void PutDocument (
+        IUnknown * pVal );
+    BSTR GetFileName ( );
+    void PutFileName (
+        BSTR pVal );
+    long GetNumPages ( );
+    HRESULT ClientToDocument (
+        long * plX,
+        long * plY );
+    HRESULT DocumentToClient (
+        long * plX,
+        long * plY );
+    HRESULT ClientToImage (
+        long lSX,
+        long lSY,
+        long * pnPage,
+        long * plX,
+        long * plY );
+    HRESULT ImageToClient (
+        long nPage,
+        long lX,
+        long lY,
+        long * plSX,
+        long * plSY );
+    HRESULT GetVisibleRect (
+        long * Left,
+        long * Top,
+        long * Right,
+        long * Bottom );
+    HRESULT MoveRectIntoView (
+        long Left,
+        long Top,
+        long Right,
+        long Bottom );
+    enum MiDocviewMode GetDocViewMode ( );
+    void PutDocViewMode (
+        enum MiDocviewMode pVal );
+    long GetPageNum ( );
+    void PutPageNum (
+        long pVal );
+    HRESULT GetScale (
+        double * pdScaleX,
+        double * pdScaleY );
+    HRESULT SetScale (
+        double dScaleX,
+        double dScaleY );
+    enum MiFITMODE GetFitMode ( );
+    void PutFitMode (
+        enum MiFITMODE pVal );
+    enum MiActionState GetActionState ( );
+    void PutActionState (
+        enum MiActionState pVal );
+    struct IMiSelectableItem * GetTextSelection ( );
+    void PutTextSelection (
+        struct IMiSelectableItem * pVal );
+    struct IMiSelectableImage * GetImageSelection ( );
+    void PutImageSelection (
+        struct IMiSelectableImage * pVal );
+    HRESULT SelectAll (
+        long nPage );
+    HRESULT MoveSelectionToView (
+        IDispatch * pdispSelection );
+    void PutLayerVisible (
+        enum MiVIEWLAYER Index,
+        VARIANT_BOOL pfVisible );
+    VARIANT_BOOL GetLayerVisible (
+        enum MiVIEWLAYER Index );
+
+    //
+    // Raw methods provided by interface
+    //
+
+      virtual HRESULT __stdcall get_Document (
+        /*[out,retval]*/ IUnknown * * pVal ) = 0;
+      virtual HRESULT __stdcall put_Document (
+        /*[in]*/ IUnknown * pVal ) = 0;
+      virtual HRESULT __stdcall get_FileName (
+        /*[out,retval]*/ BSTR * pVal ) = 0;
+      virtual HRESULT __stdcall put_FileName (
+        /*[in]*/ BSTR pVal ) = 0;
+      virtual HRESULT __stdcall get_NumPages (
+        /*[out,retval]*/ long * pVal ) = 0;
+      virtual HRESULT __stdcall raw_ClientToDocument (
+        /*[in,out]*/ long * plX,
+        /*[in,out]*/ long * plY ) = 0;
+      virtual HRESULT __stdcall raw_DocumentToClient (
+        /*[in,out]*/ long * plX,
+        /*[in,out]*/ long * plY ) = 0;
+      virtual HRESULT __stdcall raw_ClientToImage (
+        /*[in]*/ long lSX,
+        /*[in]*/ long lSY,
+        /*[out]*/ long * pnPage,
+        /*[out]*/ long * plX,
+        /*[out]*/ long * plY ) = 0;
+      virtual HRESULT __stdcall raw_ImageToClient (
+        /*[in]*/ long nPage,
+        /*[in]*/ long lX,
+        /*[in]*/ long lY,
+        /*[out]*/ long * plSX,
+        /*[out]*/ long * plSY ) = 0;
+      virtual HRESULT __stdcall raw_GetVisibleRect (
+        /*[out]*/ long * Left,
+        /*[out]*/ long * Top,
+        /*[out]*/ long * Right,
+        /*[out]*/ long * Bottom ) = 0;
+      virtual HRESULT __stdcall raw_MoveRectIntoView (
+        /*[in]*/ long Left,
+        /*[in]*/ long Top,
+        /*[in]*/ long Right,
+        /*[in]*/ long Bottom ) = 0;
+      virtual HRESULT __stdcall get_DocViewMode (
+        /*[out,retval]*/ enum MiDocviewMode * pVal ) = 0;
+      virtual HRESULT __stdcall put_DocViewMode (
+        /*[in]*/ enum MiDocviewMode pVal ) = 0;
+      virtual HRESULT __stdcall get_PageNum (
+        /*[out,retval]*/ long * pVal ) = 0;
+      virtual HRESULT __stdcall put_PageNum (
+        /*[in]*/ long pVal ) = 0;
+      virtual HRESULT __stdcall raw_GetScale (
+        double * pdScaleX,
+        double * pdScaleY ) = 0;
+      virtual HRESULT __stdcall raw_SetScale (
+        double dScaleX,
+        double dScaleY ) = 0;
+      virtual HRESULT __stdcall get_FitMode (
+        /*[out,retval]*/ enum MiFITMODE * pVal ) = 0;
+      virtual HRESULT __stdcall put_FitMode (
+        /*[in]*/ enum MiFITMODE pVal ) = 0;
+      virtual HRESULT __stdcall get_ActionState (
+        /*[out,retval]*/ enum MiActionState * pVal ) = 0;
+      virtual HRESULT __stdcall put_ActionState (
+        /*[in]*/ enum MiActionState pVal ) = 0;
+      virtual HRESULT __stdcall get_TextSelection (
+        /*[out,retval]*/ struct IMiSelectableItem * * pVal ) = 0;
+      virtual HRESULT __stdcall put_TextSelection (
+        /*[in]*/ struct IMiSelectableItem * pVal ) = 0;
+      virtual HRESULT __stdcall get_ImageSelection (
+        /*[out,retval]*/ struct IMiSelectableImage * * pVal ) = 0;
+      virtual HRESULT __stdcall put_ImageSelection (
+        /*[in]*/ struct IMiSelectableImage * pVal ) = 0;
+      virtual HRESULT __stdcall raw_SelectAll (
+        /*[in]*/ long nPage ) = 0;
+      virtual HRESULT __stdcall raw_MoveSelectionToView (
+        IDispatch * pdispSelection ) = 0;
+      virtual HRESULT __stdcall put_LayerVisible (
+        /*[in]*/ enum MiVIEWLAYER Index,
+        /*[in]*/ VARIANT_BOOL pfVisible ) = 0;
+      virtual HRESULT __stdcall get_LayerVisible (
+        /*[in]*/ enum MiVIEWLAYER Index,
+        /*[out,retval]*/ VARIANT_BOOL * pfVisible ) = 0;
+};
+
+struct __declspec(uuid("9028b775-ec59-4118-862a-efdeaf5955a4"))
+_IMiDocViewEvents : IDispatch
+{
+    //
+    // Wrapper methods for error-handling
+    //
+
+    // Methods:
+    HRESULT FitmodeChanged ( );
+    HRESULT ScaleChanged ( );
+    HRESULT SelectionChanged ( );
+    HRESULT PageChanged ( );
+    HRESULT PageCountChanged ( );
+    HRESULT CurPageNumChanged ( );
+    HRESULT VisibleRectChanged ( );
+};
+
+struct __declspec(uuid("bc06ed64-a40c-4fb4-a660-ac6dbc752292"))
+IMiDocSearch : IDispatch
+{
+    //
+    // Wrapper methods for error-handling
+    //
+
+    HRESULT Initialize (
+        IUnknown * piDoc,
+        BSTR strPattern,
+        VARIANT * PageNum,
+        VARIANT * WordIndex,
+        VARIANT * StartAfterIndex,
+        VARIANT * Backward,
+        VARIANT_BOOL MatchMinus,
+        VARIANT_BOOL MatchFullHalfWidthForm,
+        VARIANT_BOOL MatchHiraganaKatakana,
+        VARIANT_BOOL IgnoreSpace );
+    HRESULT Search (
+        struct IMiSearchCallback * pSearchCallback,
+        struct IMiSelectableItem * * ppiSearchResult );
+
+    //
+    // Raw methods provided by interface
+    //
+
+      virtual HRESULT __stdcall raw_Initialize (
+        IUnknown * piDoc,
+        BSTR strPattern,
+        VARIANT * PageNum,
+        VARIANT * WordIndex,
+        VARIANT * StartAfterIndex,
+        VARIANT * Backward,
+        /*[in]*/ VARIANT_BOOL MatchMinus,
+        /*[in]*/ VARIANT_BOOL MatchFullHalfWidthForm,
+        /*[in]*/ VARIANT_BOOL MatchHiraganaKatakana,
+        /*[in]*/ VARIANT_BOOL IgnoreSpace ) = 0;
+      virtual HRESULT __stdcall raw_Search (
+        struct IMiSearchCallback * pSearchCallback,
+        struct IMiSelectableItem * * ppiSearchResult ) = 0;
+};
+
+struct __declspec(uuid("ef347a62-ba21-42e4-94a0-1c0a6d7fdfe7"))
+MiDocView;
+    // [ default ] interface IMiDocView
+    // [ default, source ] dispinterface _IMiDocViewEvents
+
+struct __declspec(uuid("fa554db9-c806-46a9-aef8-b5af891a94f9"))
+MiDocSearch;
+    // [ default ] interface IMiDocSearch
+
+struct __declspec(uuid("a4d2b51f-809f-4c53-9147-5516871816bd"))
+MiSelectRect;
+    // [ default ] interface IMiSelectRect
+
+struct __declspec(uuid("23e9e94b-c202-4e9c-8c2e-f53bc536ff1d"))
+MiSelectRects;
+    // [ default ] interface IMiSelectRects
+
+//
+// Named GUID constants initializations
+//
+
+extern "C" const GUID __declspec(selectany) LIBID_MODI =
+    {0xa5ededf4,0x2bbc,0x45f3,{0x82,0x2b,0xe6,0x0c,0x27,0x8a,0x1a,0x79}};
+extern "C" const GUID __declspec(selectany) IID_IMiFont =
+    {0x1ffc9a7b,0x7606,0x4c97,{0x81,0x19,0x78,0x67,0x3e,0x9d,0x48,0x21}};
+extern "C" const GUID __declspec(selectany) IID_IMiRect =
+    {0x87d6fb47,0x7cfa,0x4db3,{0x82,0xcd,0xe8,0xdc,0xc5,0xbd,0xa7,0xab}};
+extern "C" const GUID __declspec(selectany) IID_IMiRects =
+    {0x895c88a9,0x8598,0x44cc,{0x91,0xc4,0x80,0x10,0xae,0x24,0x75,0xeb}};
+extern "C" const GUID __declspec(selectany) IID_IWord =
+    {0x5612275b,0xb4f1,0x42af,{0xb6,0x96,0x36,0x0d,0x40,0xdf,0x04,0x1d}};
+extern "C" const GUID __declspec(selectany) IID_IWords =
+    {0xd8363824,0x4b07,0x423b,{0x88,0x03,0x49,0xb4,0x70,0x43,0x4f,0x3d}};
+extern "C" const GUID __declspec(selectany) IID_ILayout =
+    {0xc300c846,0xa3fd,0x4a5b,{0xad,0x65,0x4a,0x6a,0xb4,0x6b,0x78,0x21}};
+extern "C" const GUID __declspec(selectany) IID_IImage =
+    {0xac0d48a6,0x886d,0x4eb5,{0xa8,0xa1,0x09,0x3d,0x60,0xb9,0xa8,0x4a}};
+extern "C" const GUID __declspec(selectany) IID_IImages =
+    {0x77096557,0x54ca,0x45c8,{0x81,0xc9,0xe7,0x0c,0x2a,0xba,0xa0,0xfb}};
+extern "C" const GUID __declspec(selectany) IID_IDocument =
+    {0xd4073843,0xa58a,0x469a,{0xa8,0xe2,0xcf,0xf3,0xff,0x77,0xee,0x4e}};
+extern "C" const GUID __declspec(selectany) DIID__IDocumentEvents =
+    {0x0cf31963,0x5e4d,0x4772,{0xae,0x8d,0x82,0xfe,0x5a,0x08,0x2b,0x26}};
+extern "C" const GUID __declspec(selectany) CLSID_Document =
+    {0x40942a6c,0x1520,0x4132,{0xbd,0xf8,0xbd,0xc1,0xf7,0x1f,0x54,0x7b}};
+extern "C" const GUID __declspec(selectany) CLSID_Layout =
+    {0x1afc4117,0x128e,0x4314,{0x9d,0x53,0x64,0xcb,0xda,0x5c,0x7e,0x02}};
+extern "C" const GUID __declspec(selectany) DIID__IImageEvents =
+    {0x99f3a122,0x448f,0x4d36,{0x82,0x43,0x48,0xbf,0xe3,0x2d,0x50,0xb2}};
+extern "C" const GUID __declspec(selectany) CLSID_Image =
+    {0x56f963ec,0x6efc,0x4a6b,{0x9a,0x1e,0x5b,0xfe,0x54,0x5c,0x89,0xd0}};
+extern "C" const GUID __declspec(selectany) CLSID_Word =
+    {0x5995e30f,0x59eb,0x42ae,{0xbd,0xcf,0x89,0x08,0x27,0x1c,0x0b,0x32}};
+extern "C" const GUID __declspec(selectany) CLSID_MiFont =
+    {0xc5eae79b,0xaccc,0x4e51,{0x8e,0xd5,0xa1,0x6f,0x42,0xfb,0x7b,0x1f}};
+extern "C" const GUID __declspec(selectany) CLSID_Words =
+    {0x72acbce3,0x9067,0x4d5e,{0x95,0x39,0x34,0x97,0xfe,0xcd,0x03,0x2d}};
+extern "C" const GUID __declspec(selectany) CLSID_Images =
+    {0xf961d185,0x2cc1,0x43db,{0x80,0xab,0x56,0x7f,0xa1,0x02,0x51,0xec}};
+extern "C" const GUID __declspec(selectany) CLSID_MiRect =
+    {0x00607e44,0x15df,0x49bc,{0xaf,0x0c,0xa9,0x02,0x3e,0x06,0x07,0x91}};
+extern "C" const GUID __declspec(selectany) CLSID_MiRects =
+    {0xcb2fbd52,0x56c1,0x4dd8,{0x89,0x7f,0x96,0x1d,0x15,0x43,0xb8,0x77}};
+extern "C" const GUID __declspec(selectany) IID_IMiSelectRect =
+    {0xea280c3c,0xe4b7,0x42bf,{0xac,0xc8,0xfe,0x3a,0xd3,0x58,0x16,0x38}};
+extern "C" const GUID __declspec(selectany) IID_IMiSelectRects =
+    {0x3a1e1b7a,0xc041,0x4ddc,{0xbf,0x3b,0x04,0x2a,0x0b,0x95,0xb8,0x2b}};
+extern "C" const GUID __declspec(selectany) IID_IMiSelectableItem =
+    {0x01c4414a,0xd123,0x4bc7,{0xa1,0xfa,0x64,0xe3,0x76,0xc0,0x16,0x55}};
+extern "C" const GUID __declspec(selectany) IID_IMiSelectableImage =
+    {0xf6379198,0x3b20,0x461a,{0xb3,0xa9,0x19,0x19,0x45,0x75,0x25,0x57}};
+extern "C" const GUID __declspec(selectany) IID_IMiSearchCallback =
+    {0x8376d508,0x78ca,0x416d,{0xa9,0x03,0x2e,0xd6,0x2e,0x91,0xe2,0x9b}};
+extern "C" const GUID __declspec(selectany) IID_IMiDocView =
+    {0xf958524a,0x8422,0x4b07,{0xb6,0x9e,0x19,0x9f,0x24,0x21,0xed,0x89}};
+extern "C" const GUID __declspec(selectany) DIID__IMiDocViewEvents =
+    {0x9028b775,0xec59,0x4118,{0x86,0x2a,0xef,0xde,0xaf,0x59,0x55,0xa4}};
+extern "C" const GUID __declspec(selectany) IID_IMiDocSearch =
+    {0xbc06ed64,0xa40c,0x4fb4,{0xa6,0x60,0xac,0x6d,0xbc,0x75,0x22,0x92}};
+extern "C" const GUID __declspec(selectany) CLSID_MiDocView =
+    {0xef347a62,0xba21,0x42e4,{0x94,0xa0,0x1c,0x0a,0x6d,0x7f,0xdf,0xe7}};
+extern "C" const GUID __declspec(selectany) CLSID_MiDocSearch =
+    {0xfa554db9,0xc806,0x46a9,{0xae,0xf8,0xb5,0xaf,0x89,0x1a,0x94,0xf9}};
+extern "C" const GUID __declspec(selectany) CLSID_MiSelectRect =
+    {0xa4d2b51f,0x809f,0x4c53,{0x91,0x47,0x55,0x16,0x87,0x18,0x16,0xbd}};
+extern "C" const GUID __declspec(selectany) CLSID_MiSelectRects =
+    {0x23e9e94b,0xc202,0x4e9c,{0x8c,0x2e,0xf5,0x3b,0xc5,0x36,0xff,0x1d}};
+
+//
+// Wrapper method implementations
+//
+
+#include "12.0/mdivwctl.tli"
+
+#pragma pack(pop)

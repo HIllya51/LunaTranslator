@@ -1,0 +1,1 @@
+windres -i ../../dll_resources/MinHook.rc -o MinHook_rc.o && dllwrap --driver-name g++ -o MinHook.dll -masm=intel --def ../../dll_resources/MinHook.def -Wl,-enable-stdcall-fixup -Wall MinHook_rc.o ../../src/*.c ../../src/HDE/*.c -I../../include -I../../src -Werror -std=c++11 -s -static-libgcc -static-libstdc++|| pause

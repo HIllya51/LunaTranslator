@@ -1,0 +1,792 @@
+// Created by Microsoft (R) C/C++ Compiler Version 10.00.30319.01 (ed4bb4c5).
+//
+// c:\tmp\build-sakura-desktop-release\cpp\tests\ocrtest\release\mdivwctl.tli
+//
+// Wrapper implementations for Win32 type library C:\\Program Files\\Common Files\\Microsoft Shared\\MODI\\12.0\\MDIVWCTL.DLL
+// compiler-generated file created 10/05/14 at 21:46:07 - DO NOT EDIT!
+
+#pragma once
+
+//
+// interface IMiFont wrapper method implementations
+//
+
+inline enum MiFONT_FAMILY IMiFont::GetFamily ( ) {
+    enum MiFONT_FAMILY _result;
+    HRESULT _hr = get_Family(&_result);
+    if (FAILED(_hr)) _com_issue_errorex(_hr, this, __uuidof(this));
+    return _result;
+}
+
+inline enum MiFONT_FACE_STYLE IMiFont::GetFaceStyle ( ) {
+    enum MiFONT_FACE_STYLE _result;
+    HRESULT _hr = get_FaceStyle(&_result);
+    if (FAILED(_hr)) _com_issue_errorex(_hr, this, __uuidof(this));
+    return _result;
+}
+
+inline enum MiFONT_SERIF_STYLE IMiFont::GetSerifStyle ( ) {
+    enum MiFONT_SERIF_STYLE _result;
+    HRESULT _hr = get_SerifStyle(&_result);
+    if (FAILED(_hr)) _com_issue_errorex(_hr, this, __uuidof(this));
+    return _result;
+}
+
+inline short IMiFont::GetFontSize ( ) {
+    short _result = 0;
+    HRESULT _hr = get_FontSize(&_result);
+    if (FAILED(_hr)) _com_issue_errorex(_hr, this, __uuidof(this));
+    return _result;
+}
+
+//
+// interface IMiRect wrapper method implementations
+//
+
+inline long IMiRect::GetTop ( ) {
+    long _result = 0;
+    HRESULT _hr = get_Top(&_result);
+    if (FAILED(_hr)) _com_issue_errorex(_hr, this, __uuidof(this));
+    return _result;
+}
+
+inline long IMiRect::GetLeft ( ) {
+    long _result = 0;
+    HRESULT _hr = get_Left(&_result);
+    if (FAILED(_hr)) _com_issue_errorex(_hr, this, __uuidof(this));
+    return _result;
+}
+
+inline long IMiRect::GetRight ( ) {
+    long _result = 0;
+    HRESULT _hr = get_Right(&_result);
+    if (FAILED(_hr)) _com_issue_errorex(_hr, this, __uuidof(this));
+    return _result;
+}
+
+inline long IMiRect::GetBottom ( ) {
+    long _result = 0;
+    HRESULT _hr = get_Bottom(&_result);
+    if (FAILED(_hr)) _com_issue_errorex(_hr, this, __uuidof(this));
+    return _result;
+}
+
+//
+// interface IMiRects wrapper method implementations
+//
+
+inline long IMiRects::GetCount ( ) {
+    long _result = 0;
+    HRESULT _hr = get_Count(&_result);
+    if (FAILED(_hr)) _com_issue_errorex(_hr, this, __uuidof(this));
+    return _result;
+}
+
+inline IUnknown * IMiRects::Get_NewEnum ( ) {
+    IUnknown * _result = 0;
+    HRESULT _hr = get__NewEnum(&_result);
+    if (FAILED(_hr)) _com_issue_errorex(_hr, this, __uuidof(this));
+    return _result;
+}
+
+inline IDispatch * IMiRects::GetItem ( long Index ) {
+    IDispatch * _result = 0;
+    HRESULT _hr = get_Item(Index, &_result);
+    if (FAILED(_hr)) _com_issue_errorex(_hr, this, __uuidof(this));
+    return _result;
+}
+
+//
+// interface IWord wrapper method implementations
+//
+
+inline short IWord::GetRecognitionConfidence ( ) {
+    short _result = 0;
+    HRESULT _hr = get_RecognitionConfidence(&_result);
+    if (FAILED(_hr)) _com_issue_errorex(_hr, this, __uuidof(this));
+    return _result;
+}
+
+inline long IWord::GetFontId ( ) {
+    long _result = 0;
+    HRESULT _hr = get_FontId(&_result);
+    if (FAILED(_hr)) _com_issue_errorex(_hr, this, __uuidof(this));
+    return _result;
+}
+
+inline long IWord::GetLineId ( ) {
+    long _result = 0;
+    HRESULT _hr = get_LineId(&_result);
+    if (FAILED(_hr)) _com_issue_errorex(_hr, this, __uuidof(this));
+    return _result;
+}
+
+inline long IWord::GetRegionId ( ) {
+    long _result = 0;
+    HRESULT _hr = get_RegionId(&_result);
+    if (FAILED(_hr)) _com_issue_errorex(_hr, this, __uuidof(this));
+    return _result;
+}
+
+inline BSTR IWord::GetText ( ) {
+    BSTR _result = 0;
+    HRESULT _hr = get_Text(&_result);
+    if (FAILED(_hr)) _com_issue_errorex(_hr, this, __uuidof(this));
+    return _result;
+}
+
+inline struct IMiFont * IWord::GetFont ( ) {
+    struct IMiFont * _result = 0;
+    HRESULT _hr = get_Font(&_result);
+    if (FAILED(_hr)) _com_issue_errorex(_hr, this, __uuidof(this));
+    return _result;
+}
+
+inline long IWord::GetId ( ) {
+    long _result = 0;
+    HRESULT _hr = get_Id(&_result);
+    if (FAILED(_hr)) _com_issue_errorex(_hr, this, __uuidof(this));
+    return _result;
+}
+
+inline struct IMiRects * IWord::GetRects ( ) {
+    struct IMiRects * _result = 0;
+    HRESULT _hr = get_Rects(&_result);
+    if (FAILED(_hr)) _com_issue_errorex(_hr, this, __uuidof(this));
+    return _result;
+}
+
+//
+// interface IWords wrapper method implementations
+//
+
+inline long IWords::GetCount ( ) {
+    long _result = 0;
+    HRESULT _hr = get_Count(&_result);
+    if (FAILED(_hr)) _com_issue_errorex(_hr, this, __uuidof(this));
+    return _result;
+}
+
+inline IUnknown * IWords::Get_NewEnum ( ) {
+    IUnknown * _result = 0;
+    HRESULT _hr = get__NewEnum(&_result);
+    if (FAILED(_hr)) _com_issue_errorex(_hr, this, __uuidof(this));
+    return _result;
+}
+
+inline IDispatch * IWords::GetItem ( long Index ) {
+    IDispatch * _result = 0;
+    HRESULT _hr = get_Item(Index, &_result);
+    if (FAILED(_hr)) _com_issue_errorex(_hr, this, __uuidof(this));
+    return _result;
+}
+
+//
+// interface ILayout wrapper method implementations
+//
+
+inline long ILayout::GetLanguage ( ) {
+    long _result = 0;
+    HRESULT _hr = get_Language(&_result);
+    if (FAILED(_hr)) _com_issue_errorex(_hr, this, __uuidof(this));
+    return _result;
+}
+
+inline long ILayout::GetNumChars ( ) {
+    long _result = 0;
+    HRESULT _hr = get_NumChars(&_result);
+    if (FAILED(_hr)) _com_issue_errorex(_hr, this, __uuidof(this));
+    return _result;
+}
+
+inline long ILayout::GetNumWords ( ) {
+    long _result = 0;
+    HRESULT _hr = get_NumWords(&_result);
+    if (FAILED(_hr)) _com_issue_errorex(_hr, this, __uuidof(this));
+    return _result;
+}
+
+inline long ILayout::GetNumFonts ( ) {
+    long _result = 0;
+    HRESULT _hr = get_NumFonts(&_result);
+    if (FAILED(_hr)) _com_issue_errorex(_hr, this, __uuidof(this));
+    return _result;
+}
+
+inline BSTR ILayout::GetText ( ) {
+    BSTR _result = 0;
+    HRESULT _hr = get_Text(&_result);
+    if (FAILED(_hr)) _com_issue_errorex(_hr, this, __uuidof(this));
+    return _result;
+}
+
+inline struct IWords * ILayout::GetWords ( ) {
+    struct IWords * _result = 0;
+    HRESULT _hr = get_Words(&_result);
+    if (FAILED(_hr)) _com_issue_errorex(_hr, this, __uuidof(this));
+    return _result;
+}
+
+//
+// interface IImage wrapper method implementations
+//
+
+inline struct ILayout * IImage::GetLayout ( ) {
+    struct ILayout * _result = 0;
+    HRESULT _hr = get_Layout(&_result);
+    if (FAILED(_hr)) _com_issue_errorex(_hr, this, __uuidof(this));
+    return _result;
+}
+
+inline long IImage::GetPixelWidth ( ) {
+    long _result = 0;
+    HRESULT _hr = get_PixelWidth(&_result);
+    if (FAILED(_hr)) _com_issue_errorex(_hr, this, __uuidof(this));
+    return _result;
+}
+
+inline long IImage::GetPixelHeight ( ) {
+    long _result = 0;
+    HRESULT _hr = get_PixelHeight(&_result);
+    if (FAILED(_hr)) _com_issue_errorex(_hr, this, __uuidof(this));
+    return _result;
+}
+
+inline long IImage::GetXDPI ( ) {
+    long _result = 0;
+    HRESULT _hr = get_XDPI(&_result);
+    if (FAILED(_hr)) _com_issue_errorex(_hr, this, __uuidof(this));
+    return _result;
+}
+
+inline long IImage::GetYDPI ( ) {
+    long _result = 0;
+    HRESULT _hr = get_YDPI(&_result);
+    if (FAILED(_hr)) _com_issue_errorex(_hr, this, __uuidof(this));
+    return _result;
+}
+
+inline long IImage::GetBitsPerPixel ( ) {
+    long _result = 0;
+    HRESULT _hr = get_BitsPerPixel(&_result);
+    if (FAILED(_hr)) _com_issue_errorex(_hr, this, __uuidof(this));
+    return _result;
+}
+
+inline IPictureDisp * IImage::GetThumbnail ( enum MiTHUMBNAIL_SIZE ThumbSize ) {
+    IPictureDisp * _result = 0;
+    HRESULT _hr = get_Thumbnail(ThumbSize, &_result);
+    if (FAILED(_hr)) _com_issue_errorex(_hr, this, __uuidof(this));
+    return _result;
+}
+
+inline IPictureDisp * IImage::GetPicture ( ) {
+    IPictureDisp * _result = 0;
+    HRESULT _hr = get_Picture(&_result);
+    if (FAILED(_hr)) _com_issue_errorex(_hr, this, __uuidof(this));
+    return _result;
+}
+
+inline enum MiCOMP_TYPE IImage::GetCompression ( ) {
+    enum MiCOMP_TYPE _result;
+    HRESULT _hr = get_Compression(&_result);
+    if (FAILED(_hr)) _com_issue_errorex(_hr, this, __uuidof(this));
+    return _result;
+}
+
+inline HRESULT IImage::OCR ( enum MiLANGUAGES LangId, VARIANT_BOOL OCROrientImage, VARIANT_BOOL OCRStraightenImage ) {
+    HRESULT _hr = raw_OCR(LangId, OCROrientImage, OCRStraightenImage);
+    if (FAILED(_hr)) _com_issue_errorex(_hr, this, __uuidof(this));
+    return _hr;
+}
+
+inline HRESULT IImage::Rotate ( long Angle ) {
+    HRESULT _hr = raw_Rotate(Angle);
+    if (FAILED(_hr)) _com_issue_errorex(_hr, this, __uuidof(this));
+    return _hr;
+}
+
+//
+// interface IImages wrapper method implementations
+//
+
+inline long IImages::GetCount ( ) {
+    long _result = 0;
+    HRESULT _hr = get_Count(&_result);
+    if (FAILED(_hr)) _com_issue_errorex(_hr, this, __uuidof(this));
+    return _result;
+}
+
+inline HRESULT IImages::Add ( IDispatch * Page, IDispatch * BeforePage ) {
+    HRESULT _hr = raw_Add(Page, BeforePage);
+    if (FAILED(_hr)) _com_issue_errorex(_hr, this, __uuidof(this));
+    return _hr;
+}
+
+inline IUnknown * IImages::Get_NewEnum ( ) {
+    IUnknown * _result = 0;
+    HRESULT _hr = get__NewEnum(&_result);
+    if (FAILED(_hr)) _com_issue_errorex(_hr, this, __uuidof(this));
+    return _result;
+}
+
+inline IDispatch * IImages::GetItem ( long Index ) {
+    IDispatch * _result = 0;
+    HRESULT _hr = get_Item(Index, &_result);
+    if (FAILED(_hr)) _com_issue_errorex(_hr, this, __uuidof(this));
+    return _result;
+}
+
+inline HRESULT IImages::Remove ( IDispatch * Page ) {
+    HRESULT _hr = raw_Remove(Page);
+    if (FAILED(_hr)) _com_issue_errorex(_hr, this, __uuidof(this));
+    return _hr;
+}
+
+//
+// interface IDocument wrapper method implementations
+//
+
+inline HRESULT IDocument::Save ( ) {
+    HRESULT _hr = raw_Save();
+    if (FAILED(_hr)) _com_issue_errorex(_hr, this, __uuidof(this));
+    return _hr;
+}
+
+inline HRESULT IDocument::Close ( VARIANT_BOOL SaveChanges ) {
+    HRESULT _hr = raw_Close(SaveChanges);
+    if (FAILED(_hr)) _com_issue_errorex(_hr, this, __uuidof(this));
+    return _hr;
+}
+
+inline HRESULT IDocument::SaveAs ( BSTR FileName, enum MiFILE_FORMAT FileFormat, enum MiCOMP_LEVEL CompLevel ) {
+    HRESULT _hr = raw_SaveAs(FileName, FileFormat, CompLevel);
+    if (FAILED(_hr)) _com_issue_errorex(_hr, this, __uuidof(this));
+    return _hr;
+}
+
+inline struct IImages * IDocument::GetImages ( ) {
+    struct IImages * _result = 0;
+    HRESULT _hr = get_Images(&_result);
+    if (FAILED(_hr)) _com_issue_errorex(_hr, this, __uuidof(this));
+    return _result;
+}
+
+inline IDispatch * IDocument::GetBuiltInDocumentProperties ( ) {
+    IDispatch * _result = 0;
+    HRESULT _hr = get_BuiltInDocumentProperties(&_result);
+    if (FAILED(_hr)) _com_issue_errorex(_hr, this, __uuidof(this));
+    return _result;
+}
+
+inline IDispatch * IDocument::GetCustomDocumentProperties ( ) {
+    IDispatch * _result = 0;
+    HRESULT _hr = get_CustomDocumentProperties(&_result);
+    if (FAILED(_hr)) _com_issue_errorex(_hr, this, __uuidof(this));
+    return _result;
+}
+
+inline HRESULT IDocument::Create ( BSTR FileOpen ) {
+    HRESULT _hr = raw_Create(FileOpen);
+    if (FAILED(_hr)) _com_issue_errorex(_hr, this, __uuidof(this));
+    return _hr;
+}
+
+inline VARIANT_BOOL IDocument::GetDirty ( ) {
+    VARIANT_BOOL _result = 0;
+    HRESULT _hr = get_Dirty(&_result);
+    if (FAILED(_hr)) _com_issue_errorex(_hr, this, __uuidof(this));
+    return _result;
+}
+
+inline HRESULT IDocument::OCR ( enum MiLANGUAGES LangId, VARIANT_BOOL OCROrientImage, VARIANT_BOOL OCRStraightenImage ) {
+    HRESULT _hr = raw_OCR(LangId, OCROrientImage, OCRStraightenImage);
+    if (FAILED(_hr)) _com_issue_errorex(_hr, this, __uuidof(this));
+    return _hr;
+}
+
+inline HRESULT IDocument::PrintOut ( long From, long To, long Copies, BSTR PrinterName, BSTR PrintToFileName, VARIANT_BOOL PrintAnnotation, enum MiPRINT_FITMODES FitMode ) {
+    HRESULT _hr = raw_PrintOut(From, To, Copies, PrinterName, PrintToFileName, PrintAnnotation, FitMode);
+    if (FAILED(_hr)) _com_issue_errorex(_hr, this, __uuidof(this));
+    return _hr;
+}
+
+//
+// dispinterface _IDocumentEvents wrapper method implementations
+//
+
+inline HRESULT _IDocumentEvents::OnOCRProgress ( int Progress, VARIANT_BOOL * Cancel ) {
+    HRESULT _result = 0;
+    _com_dispatch_method(this, 0x1, DISPATCH_METHOD, VT_ERROR, (void*)&_result,
+        L"\x0003\x400b", Progress, Cancel);
+    return _result;
+}
+
+//
+// interface IMiSelectRect wrapper method implementations
+//
+
+inline long IMiSelectRect::GetPageNumber ( ) {
+    long _result = 0;
+    HRESULT _hr = get_PageNumber(&_result);
+    if (FAILED(_hr)) _com_issue_errorex(_hr, this, __uuidof(this));
+    return _result;
+}
+
+inline long IMiSelectRect::GetLeft ( ) {
+    long _result = 0;
+    HRESULT _hr = get_Left(&_result);
+    if (FAILED(_hr)) _com_issue_errorex(_hr, this, __uuidof(this));
+    return _result;
+}
+
+inline long IMiSelectRect::GetTop ( ) {
+    long _result = 0;
+    HRESULT _hr = get_Top(&_result);
+    if (FAILED(_hr)) _com_issue_errorex(_hr, this, __uuidof(this));
+    return _result;
+}
+
+inline long IMiSelectRect::GetRight ( ) {
+    long _result = 0;
+    HRESULT _hr = get_Right(&_result);
+    if (FAILED(_hr)) _com_issue_errorex(_hr, this, __uuidof(this));
+    return _result;
+}
+
+inline long IMiSelectRect::GetBottom ( ) {
+    long _result = 0;
+    HRESULT _hr = get_Bottom(&_result);
+    if (FAILED(_hr)) _com_issue_errorex(_hr, this, __uuidof(this));
+    return _result;
+}
+
+//
+// interface IMiSelectRects wrapper method implementations
+//
+
+inline long IMiSelectRects::GetCount ( ) {
+    long _result = 0;
+    HRESULT _hr = get_Count(&_result);
+    if (FAILED(_hr)) _com_issue_errorex(_hr, this, __uuidof(this));
+    return _result;
+}
+
+inline IUnknown * IMiSelectRects::Get_NewEnum ( ) {
+    IUnknown * _result = 0;
+    HRESULT _hr = get__NewEnum(&_result);
+    if (FAILED(_hr)) _com_issue_errorex(_hr, this, __uuidof(this));
+    return _result;
+}
+
+inline IDispatch * IMiSelectRects::GetItem ( long Index ) {
+    IDispatch * _result = 0;
+    HRESULT _hr = get_Item(Index, &_result);
+    if (FAILED(_hr)) _com_issue_errorex(_hr, this, __uuidof(this));
+    return _result;
+}
+
+//
+// interface IMiSelectableItem wrapper method implementations
+//
+
+inline HRESULT IMiSelectableItem::CopyToClipboard ( ) {
+    HRESULT _hr = raw_CopyToClipboard();
+    if (FAILED(_hr)) _com_issue_errorex(_hr, this, __uuidof(this));
+    return _hr;
+}
+
+inline BSTR IMiSelectableItem::GetText ( ) {
+    BSTR _result = 0;
+    HRESULT _hr = get_Text(&_result);
+    if (FAILED(_hr)) _com_issue_errorex(_hr, this, __uuidof(this));
+    return _result;
+}
+
+inline IDispatch * IMiSelectableItem::GetWords ( ) {
+    IDispatch * _result = 0;
+    HRESULT _hr = get_Words(&_result);
+    if (FAILED(_hr)) _com_issue_errorex(_hr, this, __uuidof(this));
+    return _result;
+}
+
+inline struct IMiSelectRects * IMiSelectableItem::GetSelectRects ( ) {
+    struct IMiSelectRects * _result = 0;
+    HRESULT _hr = raw_GetSelectRects(&_result);
+    if (FAILED(_hr)) _com_issue_errorex(_hr, this, __uuidof(this));
+    return _result;
+}
+
+//
+// interface IMiSelectableImage wrapper method implementations
+//
+
+inline HRESULT IMiSelectableImage::CopyToClipboard ( long CopyAnnotation, long AlwaysKeepAnnotationColor ) {
+    HRESULT _hr = raw_CopyToClipboard(CopyAnnotation, AlwaysKeepAnnotationColor);
+    if (FAILED(_hr)) _com_issue_errorex(_hr, this, __uuidof(this));
+    return _hr;
+}
+
+inline IPictureDisp * IMiSelectableImage::ExportToPicture ( long CopyAnnotation, long AlwaysKeepAnnotationColor ) {
+    IPictureDisp * _result = 0;
+    HRESULT _hr = raw_ExportToPicture(CopyAnnotation, AlwaysKeepAnnotationColor, &_result);
+    if (FAILED(_hr)) _com_issue_errorex(_hr, this, __uuidof(this));
+    return _result;
+}
+
+inline HRESULT IMiSelectableImage::GetBoundingRect ( long * plPageNum, long * Left, long * Top, long * Right, long * Bottom ) {
+    HRESULT _hr = raw_GetBoundingRect(plPageNum, Left, Top, Right, Bottom);
+    if (FAILED(_hr)) _com_issue_errorex(_hr, this, __uuidof(this));
+    return _hr;
+}
+
+//
+// interface IMiSearchCallback wrapper method implementations
+//
+
+inline HRESULT IMiSearchCallback::IsCancelled ( long * pfIsCancel ) {
+    HRESULT _hr = raw_IsCancelled(pfIsCancel);
+    if (FAILED(_hr)) _com_issue_errorex(_hr, this, __uuidof(this));
+    return _hr;
+}
+
+//
+// interface IMiDocView wrapper method implementations
+//
+
+inline IUnknown * IMiDocView::GetDocument ( ) {
+    IUnknown * _result = 0;
+    HRESULT _hr = get_Document(&_result);
+    if (FAILED(_hr)) _com_issue_errorex(_hr, this, __uuidof(this));
+    return _result;
+}
+
+inline void IMiDocView::PutDocument ( IUnknown * pVal ) {
+    HRESULT _hr = put_Document(pVal);
+    if (FAILED(_hr)) _com_issue_errorex(_hr, this, __uuidof(this));
+}
+
+inline BSTR IMiDocView::GetFileName ( ) {
+    BSTR _result = 0;
+    HRESULT _hr = get_FileName(&_result);
+    if (FAILED(_hr)) _com_issue_errorex(_hr, this, __uuidof(this));
+    return _result;
+}
+
+inline void IMiDocView::PutFileName ( BSTR pVal ) {
+    HRESULT _hr = put_FileName(pVal);
+    if (FAILED(_hr)) _com_issue_errorex(_hr, this, __uuidof(this));
+}
+
+inline long IMiDocView::GetNumPages ( ) {
+    long _result = 0;
+    HRESULT _hr = get_NumPages(&_result);
+    if (FAILED(_hr)) _com_issue_errorex(_hr, this, __uuidof(this));
+    return _result;
+}
+
+inline HRESULT IMiDocView::ClientToDocument ( long * plX, long * plY ) {
+    HRESULT _hr = raw_ClientToDocument(plX, plY);
+    if (FAILED(_hr)) _com_issue_errorex(_hr, this, __uuidof(this));
+    return _hr;
+}
+
+inline HRESULT IMiDocView::DocumentToClient ( long * plX, long * plY ) {
+    HRESULT _hr = raw_DocumentToClient(plX, plY);
+    if (FAILED(_hr)) _com_issue_errorex(_hr, this, __uuidof(this));
+    return _hr;
+}
+
+inline HRESULT IMiDocView::ClientToImage ( long lSX, long lSY, long * pnPage, long * plX, long * plY ) {
+    HRESULT _hr = raw_ClientToImage(lSX, lSY, pnPage, plX, plY);
+    if (FAILED(_hr)) _com_issue_errorex(_hr, this, __uuidof(this));
+    return _hr;
+}
+
+inline HRESULT IMiDocView::ImageToClient ( long nPage, long lX, long lY, long * plSX, long * plSY ) {
+    HRESULT _hr = raw_ImageToClient(nPage, lX, lY, plSX, plSY);
+    if (FAILED(_hr)) _com_issue_errorex(_hr, this, __uuidof(this));
+    return _hr;
+}
+
+inline HRESULT IMiDocView::GetVisibleRect ( long * Left, long * Top, long * Right, long * Bottom ) {
+    HRESULT _hr = raw_GetVisibleRect(Left, Top, Right, Bottom);
+    if (FAILED(_hr)) _com_issue_errorex(_hr, this, __uuidof(this));
+    return _hr;
+}
+
+inline HRESULT IMiDocView::MoveRectIntoView ( long Left, long Top, long Right, long Bottom ) {
+    HRESULT _hr = raw_MoveRectIntoView(Left, Top, Right, Bottom);
+    if (FAILED(_hr)) _com_issue_errorex(_hr, this, __uuidof(this));
+    return _hr;
+}
+
+inline enum MiDocviewMode IMiDocView::GetDocViewMode ( ) {
+    enum MiDocviewMode _result;
+    HRESULT _hr = get_DocViewMode(&_result);
+    if (FAILED(_hr)) _com_issue_errorex(_hr, this, __uuidof(this));
+    return _result;
+}
+
+inline void IMiDocView::PutDocViewMode ( enum MiDocviewMode pVal ) {
+    HRESULT _hr = put_DocViewMode(pVal);
+    if (FAILED(_hr)) _com_issue_errorex(_hr, this, __uuidof(this));
+}
+
+inline long IMiDocView::GetPageNum ( ) {
+    long _result = 0;
+    HRESULT _hr = get_PageNum(&_result);
+    if (FAILED(_hr)) _com_issue_errorex(_hr, this, __uuidof(this));
+    return _result;
+}
+
+inline void IMiDocView::PutPageNum ( long pVal ) {
+    HRESULT _hr = put_PageNum(pVal);
+    if (FAILED(_hr)) _com_issue_errorex(_hr, this, __uuidof(this));
+}
+
+inline HRESULT IMiDocView::GetScale ( double * pdScaleX, double * pdScaleY ) {
+    HRESULT _hr = raw_GetScale(pdScaleX, pdScaleY);
+    if (FAILED(_hr)) _com_issue_errorex(_hr, this, __uuidof(this));
+    return _hr;
+}
+
+inline HRESULT IMiDocView::SetScale ( double dScaleX, double dScaleY ) {
+    HRESULT _hr = raw_SetScale(dScaleX, dScaleY);
+    if (FAILED(_hr)) _com_issue_errorex(_hr, this, __uuidof(this));
+    return _hr;
+}
+
+inline enum MiFITMODE IMiDocView::GetFitMode ( ) {
+    enum MiFITMODE _result;
+    HRESULT _hr = get_FitMode(&_result);
+    if (FAILED(_hr)) _com_issue_errorex(_hr, this, __uuidof(this));
+    return _result;
+}
+
+inline void IMiDocView::PutFitMode ( enum MiFITMODE pVal ) {
+    HRESULT _hr = put_FitMode(pVal);
+    if (FAILED(_hr)) _com_issue_errorex(_hr, this, __uuidof(this));
+}
+
+inline enum MiActionState IMiDocView::GetActionState ( ) {
+    enum MiActionState _result;
+    HRESULT _hr = get_ActionState(&_result);
+    if (FAILED(_hr)) _com_issue_errorex(_hr, this, __uuidof(this));
+    return _result;
+}
+
+inline void IMiDocView::PutActionState ( enum MiActionState pVal ) {
+    HRESULT _hr = put_ActionState(pVal);
+    if (FAILED(_hr)) _com_issue_errorex(_hr, this, __uuidof(this));
+}
+
+inline struct IMiSelectableItem * IMiDocView::GetTextSelection ( ) {
+    struct IMiSelectableItem * _result = 0;
+    HRESULT _hr = get_TextSelection(&_result);
+    if (FAILED(_hr)) _com_issue_errorex(_hr, this, __uuidof(this));
+    return _result;
+}
+
+inline void IMiDocView::PutTextSelection ( struct IMiSelectableItem * pVal ) {
+    HRESULT _hr = put_TextSelection(pVal);
+    if (FAILED(_hr)) _com_issue_errorex(_hr, this, __uuidof(this));
+}
+
+inline struct IMiSelectableImage * IMiDocView::GetImageSelection ( ) {
+    struct IMiSelectableImage * _result = 0;
+    HRESULT _hr = get_ImageSelection(&_result);
+    if (FAILED(_hr)) _com_issue_errorex(_hr, this, __uuidof(this));
+    return _result;
+}
+
+inline void IMiDocView::PutImageSelection ( struct IMiSelectableImage * pVal ) {
+    HRESULT _hr = put_ImageSelection(pVal);
+    if (FAILED(_hr)) _com_issue_errorex(_hr, this, __uuidof(this));
+}
+
+inline HRESULT IMiDocView::SelectAll ( long nPage ) {
+    HRESULT _hr = raw_SelectAll(nPage);
+    if (FAILED(_hr)) _com_issue_errorex(_hr, this, __uuidof(this));
+    return _hr;
+}
+
+inline HRESULT IMiDocView::MoveSelectionToView ( IDispatch * pdispSelection ) {
+    HRESULT _hr = raw_MoveSelectionToView(pdispSelection);
+    if (FAILED(_hr)) _com_issue_errorex(_hr, this, __uuidof(this));
+    return _hr;
+}
+
+inline void IMiDocView::PutLayerVisible ( enum MiVIEWLAYER Index, VARIANT_BOOL pfVisible ) {
+    HRESULT _hr = put_LayerVisible(Index, pfVisible);
+    if (FAILED(_hr)) _com_issue_errorex(_hr, this, __uuidof(this));
+}
+
+inline VARIANT_BOOL IMiDocView::GetLayerVisible ( enum MiVIEWLAYER Index ) {
+    VARIANT_BOOL _result = 0;
+    HRESULT _hr = get_LayerVisible(Index, &_result);
+    if (FAILED(_hr)) _com_issue_errorex(_hr, this, __uuidof(this));
+    return _result;
+}
+
+//
+// dispinterface _IMiDocViewEvents wrapper method implementations
+//
+
+inline HRESULT _IMiDocViewEvents::FitmodeChanged ( ) {
+    HRESULT _result = 0;
+    _com_dispatch_method(this, 0x1, DISPATCH_METHOD, VT_ERROR, (void*)&_result, NULL);
+    return _result;
+}
+
+inline HRESULT _IMiDocViewEvents::ScaleChanged ( ) {
+    HRESULT _result = 0;
+    _com_dispatch_method(this, 0x2, DISPATCH_METHOD, VT_ERROR, (void*)&_result, NULL);
+    return _result;
+}
+
+inline HRESULT _IMiDocViewEvents::SelectionChanged ( ) {
+    HRESULT _result = 0;
+    _com_dispatch_method(this, 0x3, DISPATCH_METHOD, VT_ERROR, (void*)&_result, NULL);
+    return _result;
+}
+
+inline HRESULT _IMiDocViewEvents::PageChanged ( ) {
+    HRESULT _result = 0;
+    _com_dispatch_method(this, 0x4, DISPATCH_METHOD, VT_ERROR, (void*)&_result, NULL);
+    return _result;
+}
+
+inline HRESULT _IMiDocViewEvents::PageCountChanged ( ) {
+    HRESULT _result = 0;
+    _com_dispatch_method(this, 0x5, DISPATCH_METHOD, VT_ERROR, (void*)&_result, NULL);
+    return _result;
+}
+
+inline HRESULT _IMiDocViewEvents::CurPageNumChanged ( ) {
+    HRESULT _result = 0;
+    _com_dispatch_method(this, 0x6, DISPATCH_METHOD, VT_ERROR, (void*)&_result, NULL);
+    return _result;
+}
+
+inline HRESULT _IMiDocViewEvents::VisibleRectChanged ( ) {
+    HRESULT _result = 0;
+    _com_dispatch_method(this, 0x7, DISPATCH_METHOD, VT_ERROR, (void*)&_result, NULL);
+    return _result;
+}
+
+//
+// interface IMiDocSearch wrapper method implementations
+//
+
+inline HRESULT IMiDocSearch::Initialize ( IUnknown * piDoc, BSTR strPattern, VARIANT * PageNum, VARIANT * WordIndex, VARIANT * StartAfterIndex, VARIANT * Backward, VARIANT_BOOL MatchMinus, VARIANT_BOOL MatchFullHalfWidthForm, VARIANT_BOOL MatchHiraganaKatakana, VARIANT_BOOL IgnoreSpace ) {
+    HRESULT _hr = raw_Initialize(piDoc, strPattern, PageNum, WordIndex, StartAfterIndex, Backward, MatchMinus, MatchFullHalfWidthForm, MatchHiraganaKatakana, IgnoreSpace);
+    if (FAILED(_hr)) _com_issue_errorex(_hr, this, __uuidof(this));
+    return _hr;
+}
+
+inline HRESULT IMiDocSearch::Search ( struct IMiSearchCallback * pSearchCallback, struct IMiSelectableItem * * ppiSearchResult ) {
+    HRESULT _hr = raw_Search(pSearchCallback, ppiSearchResult);
+    if (FAILED(_hr)) _com_issue_errorex(_hr, this, __uuidof(this));
+    return _hr;
+}

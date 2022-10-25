@@ -1,0 +1,3 @@
+﻿  ttslist.cpp
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.22000.0\um\sphelper.h(1319,13): warning C4996: 'GetVersionExW': 被声明为已否决
+  tts.vcxproj -> C:\Users\11737\source\repos\tts\x64\Debug\tts.exe

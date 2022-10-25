@@ -1,0 +1,8 @@
+﻿C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Microsoft\VC\v170\Microsoft.CppBuild.targets(514,5): warning MSB8028: 中间目录(x64\Release\)包含从另一个项目(tts.vcxproj)共享的文件。   这会导致错误的清除和重新生成行为。
+  ttslist.cpp
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.22000.0\um\sphelper.h(1319,13): warning C4996: 'GetVersionExW': 被声明为已否决
+  正在生成代码
+  Previous IPDB not found, fall back to full compilation.
+  All 166 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+  已完成代码的生成
+  tts.vcxproj -> C:\Users\11737\source\repos\tts\x64\Release\tts_l.exe

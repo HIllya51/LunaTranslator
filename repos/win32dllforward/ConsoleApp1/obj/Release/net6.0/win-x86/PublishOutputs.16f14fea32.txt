@@ -1,0 +1,2 @@
+C:\Users\11737\source\repos\win32dllforward\ConsoleApp1\bin\Release\net6.0\publish\win-x86\dreye.pdb
+C:\Users\11737\source\repos\win32dllforward\ConsoleApp1\bin\Release\net6.0\publish\win-x86\dreye.exe
