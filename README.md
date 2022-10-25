@@ -209,3 +209,6 @@
 然后选择OK，游戏就会开始翻译。如果后面发现选择的条目不符合要求，还可以自己在基本设置界面打卡选择文本按钮重新进行选择。
 
 <div align="center"><img src='./docpics/18.jpg'><br></div>
+
+
+[![Star History Chart](https://api.star-history.com/svg?repos=HIllya51/LunaTranslator&type=Date)](https://star-history.com/#HIllya51/LunaTranslator&Date)
