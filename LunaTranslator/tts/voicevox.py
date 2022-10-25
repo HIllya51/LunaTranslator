@@ -14,19 +14,14 @@ class tts():
         if voicevoxprocess:
             voicevoxprocess.kill()
             voicevoxprocess=None
-        st=subprocess.STARTUPINFO()
-        st.dwFlags=subprocess.STARTF_USESHOWWINDOW
-        st.wShowWindow=subprocess.SW_HIDE
-        print(os.path.join(globalconfig['reader']['voicevox']['path'],'run.exe'))
-        
-        
+          
         self.voicelist=[]
         showlist.emit(self.voicelist)
         if os.path.exists(globalconfig['reader']['voicevox']['path'])==False or \
             os.path.exists(os.path.join(globalconfig['reader']['voicevox']['path'],'run.exe'))==False   :
             return
         voicevoxprocess=subproc(os.path.join(globalconfig['reader']['voicevox']['path'],'run.exe'),cwd=globalconfig['reader']['voicevox']['path'] )
-        #voicevoxprocess=subprocess.Popen(os.path.join(globalconfig['reader']['voicevox']['path'],'run.exe'),cwd=globalconfig['reader']['voicevox']['path'], startupinfo=st)
+        
         while True:
             try:
                   
