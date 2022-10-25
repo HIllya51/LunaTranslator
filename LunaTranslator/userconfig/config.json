@@ -129,7 +129,7 @@
             "name": "搜狗"
         },
         "caiyun": {
-            "use": false,
+            "use": true,
             "color": "#0ff000",
             "name": "彩云"
         },
@@ -204,7 +204,7 @@
             "name": "byte"
         },
         "qqimt": {
-            "use": true,
+            "use": false,
             "color": "#0ff000",
             "name": "qqimt"
         },
