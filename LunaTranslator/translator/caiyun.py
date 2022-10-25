@@ -110,7 +110,7 @@ class TS(basetrans):
             }
             self.ss.options('https://api.interpreter.caiyunai.com/v1/translator', headers=headers, json=json_data,timeout=globalconfig['translatortimeout'],proxies={'http': None,'https': None})
             response = self.ss.post('https://api.interpreter.caiyunai.com/v1/translator', headers=headers, json=json_data,timeout=globalconfig['translatortimeout'],proxies={'http': None,'https': None})
-            print(response.json())
+             
             return  decrypt(response.json()['target'])
         except:
             print_exc()

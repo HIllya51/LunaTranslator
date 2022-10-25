@@ -17,13 +17,15 @@ def getversion(self):
     <br>
     最新版本:%s
     <br>
+    %s
+    <br>
     项目网站:<a href="https://github.com/HIllya51/LunaTranslator">https://github.com/HIllya51/LunaTranslator</a>
     <br>
     下载链接:<a href="%s">%s</a>
     </div> 
     '''
     url='https://github.com/HIllya51/LunaTranslator/releases/'
-    self.versiontextsignal.emit(about  %(self.version, '获取中',url,url))
+    self.versiontextsignal.emit(about  %(self.version, '获取中','',url,url))
     try:
         requests.packages.urllib3.disable_warnings()
         headers = {
@@ -43,12 +45,12 @@ def getversion(self):
         print_exc()
         version="获取失败"
         
-    self.versiontextsignal.emit(about %(self.version, version,url,url))
+    self.versiontextsignal.emit(about %(self.version, version,'更新内容：'+res['body'],url,url))
     if version!="获取失败" and self.version!=version:
         if globalconfig['autoupdate']:
             self.downloadprogress.show()
             try:
-                
+                savep='./tmp/update.zip'
                  
                 with closing(requests.get( url, stream=True,verify = False)) as response:#,proxies=globalconfig['proxies'] if globalconfig['proxies'] else {'http': None,'https': None})) as response:
                     file_size=0
@@ -56,12 +58,18 @@ def getversion(self):
                     content_size = res['assets'][0]['size']#int(response.headers['content-length'])  # 内容体总大小
                     if os.path.exists('tmp')==False:
                         os.mkdir('tmp')
-                    savep='./tmp/update.zip'
+                    
+                     
                     if os.path.exists(savep) and os.path.getsize(savep)==content_size:
-                            self.progresssignal.emit(f'总大小{int(1000*(int(content_size/1024)/1024))/1000} MB 进度 100%',int(10000 ))
+                        
+                        self.progresssignal.emit(f'总大小{int(1000*(int(content_size/1024)/1024))/1000} MB 进度 100%',int(10000 ))
                     else:
+                         
                         with open(savep, "wb") as file:
                             for data in response.iter_content(chunk_size=chunk_size):
+                                if globalconfig['autoupdate']==False:
+                                   
+                                    return
                                 file.write(data)
                                 file_size+=len(data)
                                 #print(f'正在下载webdriver 总大小{int(1000*(int(content_size/1024)/1024))/1000} MB 进度 {int(10000*(file_size/content_size))/100}%')
@@ -71,6 +79,7 @@ def getversion(self):
                     zipf=zipfile.ZipFile('./tmp/update.zip')
                     zipf.extractall('./tmp')
                     self.needupdate=True
+                
             except:
                 print_exc()
                 self.progresssignal.emit('自动更新失败，请手动更新',0)
@@ -89,7 +98,11 @@ def setTab_about(self) :
         label.setText("自动下载更新(需要连接github)")
         self.updateswitch =gui.switchbutton.MySwitch(self.tab_about, sign= globalconfig['autoupdate'])
         self.customSetGeometry(self.updateswitch , 250, 50, 20,20)
-        self.updateswitch.clicked.connect(lambda x:  globalconfig.__setitem__('autoupdate',x)) 
+        def changeupdate(x):
+            globalconfig.__setitem__('autoupdate',x)
+            if x:
+                threading.Thread(target=lambda :getversion(self)).start()
+        self.updateswitch.clicked.connect(lambda x:  changeupdate( x)) 
 
         self.downloadprogress=QProgressBar(self.tab_about)
         self.customSetGeometry(self.downloadprogress, 20, 80, 300, 20)
