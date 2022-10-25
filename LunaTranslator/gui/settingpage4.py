@@ -15,7 +15,7 @@ import qtawesome
 import subprocess
 from utils.config import globalconfig ,postprocessconfig,noundictconfig
 from PyQt5.QtWidgets import  QWidget,QLabel, QComboBox  
- 
+from utils.subproc import subproc
 from PyQt5.QtWidgets import QWidget,QLabel,QFrame ,QPushButton 
 from PyQt5.QtGui import QColor,QFont,QPixmap,QIcon
 import functools
@@ -34,11 +34,8 @@ import gui.attachprocessdialog
 import gui.selecthook  
 import os
 import win32con,win32api,win32process,win32gui
-self_pid=os.getpid()
-st=subprocess.STARTUPINFO()
-from PyQt5.QtWinExtras  import QtWin 
-st.dwFlags=subprocess.STARTF_USESHOWWINDOW
-st.wShowWindow=subprocess.SW_HIDE
+self_pid=os.getpid() 
+from PyQt5.QtWinExtras  import QtWin  
 def getExeIcon( name ): 
         
         try:
@@ -238,7 +235,7 @@ def setTab4(self) :
         # self.focusfollowswitch.checkedChanged.connect(lambda x:globalconfig.__setitem__('focusfollow',x)) 
         # #self.focusfollowswitch.checkedChanged.connect(lambda x:setss(self,x)) 
         self.hookpid=None
-        self.minmaxmoveoberve=subprocess.Popen('./files/minmaxmoveobserve.exe',stdout=subprocess.PIPE,startupinfo=st)
+        self.minmaxmoveoberve=subproc('./files/minmaxmoveobserve.exe',stdout=subprocess.PIPE)  
         self.minmaxmoveobservethread=threading.Thread(target=minmaxmoveobservefunc,args=(self,))
         self.minmaxmoveobservethread.start()
 

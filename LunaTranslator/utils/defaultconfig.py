@@ -5,7 +5,8 @@ defaultglobalconfig = {'position': [432, 613], 'fixedheight': False, 'width': 76
     'azuretts':{'use':False,'voice':''}, 
     'huoshantts':{'use':False,'voice':''}, 
     'windowstts': {'use':False,'voice':''},
-    'voiceroid2':{'use':False,'voice':'','path':''}
+    'voiceroid2':{'use':False,'voice':'','path':''},
+    'voicevox':{'use':False,'voice':'','path':''}
     }, 
 
 'LocaleEmulator': '', 'verticalocr': False, 'outputtopasteboard': False, 'ttscommon': { 'rate': 1.0, 'volume': 100.0},

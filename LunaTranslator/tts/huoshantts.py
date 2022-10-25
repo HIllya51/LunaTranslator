@@ -21,7 +21,8 @@ class tts():
          
     def read_t(self,content):
         print('reading',content)
-         
+        if len(content)=='':
+            return
         try: 
             headers = {
                 'authority': 'translate.volcengine.com',

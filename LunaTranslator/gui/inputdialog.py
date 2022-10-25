@@ -141,3 +141,32 @@ def getvoiceroid2path(object) -> tuple:
 
         if dialog.exec() == QDialog.Accepted:
             globalconfig['reader']['voiceroid2']['path']=line.text()
+
+
+def getvoicevoxpath(object) -> tuple: 
+        dialog = QDialog(object)  # 自定义一个dialog
+        dialog.setWindowTitle('VOICEVOX 路径')
+        #dialog.setWindowModality(Qt.ApplicationModal)
+        dialog.resize(QSize(900,10))
+        formLayout = QFormLayout(dialog)  # 配置layout
+        d={}
+ 
+        hori=QHBoxLayout()
+        line=QLineEdit(globalconfig['reader']['voicevox']['path'])
+        hori.addWidget(line)
+        button=QPushButton('VOICEVOX')
+        def __(l,_):
+            f=QFileDialog.getExistingDirectory(directory= globalconfig['reader']['voicevox']['path'])
+            if f!='':
+                l.setText(f)
+        button.clicked.connect(functools.partial(__,line))
+        hori.addWidget(button)
+        formLayout.addRow('voicevox:', hori) 
+        button = QDialogButtonBox(QDialogButtonBox.Ok|QDialogButtonBox.Cancel)
+        formLayout.addRow(button)
+        dialog.show()
+
+        button.clicked.connect(dialog.accept)
+
+        if dialog.exec() == QDialog.Accepted:
+            globalconfig['reader']['voicevox']['path']=line.text()

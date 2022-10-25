@@ -16,6 +16,7 @@ from PyQt5.QtWidgets import  QLabel ,QPushButton ,QSystemTrayIcon ,QAction,QMenu
 import pyperclip 
 from PyQt5.QtCore import QProcess ,QByteArray  
 from utils.config import globalconfig,postprocessconfig,transerrorfixdictconfig,noundictconfig
+from utils.subproc import endsubprocs
 import  win32gui,win32api,win32process,win32con
 import gui.rangeselect
 import gui.transhist
@@ -639,8 +640,7 @@ class QUnFrameWindow(QWidget):
         self.object.range_ui.close()
         self.object.settin_ui.close()
         #print(4)
-        self.object.hookselectdialog.realclose=True
-        self.object.settin_ui.minmaxmoveoberve.kill()
+        self.object.hookselectdialog.realclose=True 
         
         self.object.hookselectdialog.close()
         #print(5)
@@ -667,7 +667,8 @@ class QUnFrameWindow(QWidget):
                     None, win32con.OPEN_EXISTING, win32con.FILE_ATTRIBUTE_NORMAL, None);
             win32file.WriteFile(hPipe,"end".encode('utf8'))
         except:
-            print_exc()
+            pass
+         
         #sys.exit()
         if self.object.settin_ui.needupdate:
             with open('./tmp/update.bat','w',encoding='utf8') as ff:
@@ -681,5 +682,6 @@ exit
             
 
             subprocess.Popen('tmp\\update.bat' ,shell=True)
+        endsubprocs()
         os._exit(1) 
          

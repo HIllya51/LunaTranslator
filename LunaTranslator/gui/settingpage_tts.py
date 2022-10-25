@@ -1,7 +1,7 @@
 import functools 
 
 from PyQt5.QtWidgets import  QWidget,QLabel, QComboBox,QDoubleSpinBox ,QPushButton
-from gui.inputdialog import getvoiceroid2path
+from gui.inputdialog import getvoiceroid2path,getvoicevoxpath
 from utils.config import globalconfig 
 import qtawesome
 import gui.switchbutton
@@ -39,6 +39,22 @@ def setTab5(self) :
         s1.clicked.connect(lambda: __2(self))
 
         label = QLabel(tab)
+        self.customSetGeometry(label, 220, 50, 120, 20)
+        label.setText("VOICEVOX") 
+        self.voicevoxswitch =gui.switchbutton.MySwitch(tab, sign=globalconfig['reader']['voicevox']['use'] )
+        self.customSetGeometry(self.voicevoxswitch, 350, 50, 20,20)
+        self.voicevoxswitch.clicked.connect(functools.partial(readerchange,self,'voicevox'))  
+        s1 = QPushButton( "", tab)
+        self.customSetIconSize(s1, 20, 20)
+        self.customSetGeometry(s1, 380, 50, 20,20)
+        s1.setStyleSheet("background: transparent;")   
+        s1.setIcon(qtawesome.icon("fa.gear", color="#FF69B4"  ))
+        def __2(self):
+            getvoicevoxpath(self)
+            self.object.startreader()
+        s1.clicked.connect(lambda: __2(self))
+
+        label = QLabel(tab)
         self.customSetGeometry(label, 220, 20, 120, 20)
         label.setText("AzureTTS")
         self.AzureTTSswitch =gui.switchbutton.MySwitch(tab, sign=globalconfig['reader']['azuretts']['use'] )
@@ -56,7 +72,8 @@ def setTab5(self) :
         self.readerwitchs={'huoshantts':self.huoshanTTSswitch,
                             'windowstts':self.WindowsTTSswitch,
                             'azuretts':self.AzureTTSswitch,
-                            'voiceroid2':self.VoiceRoid2TTSswitch}
+                            'voiceroid2':self.VoiceRoid2TTSswitch,
+                            'voicevox':self.voicevoxswitch}
 
 
         label = QLabel(tab)
