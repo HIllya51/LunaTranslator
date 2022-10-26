@@ -1,23 +1,23 @@
 {
     "position": [
-        415,
-        672
+        339,
+        686
     ],
     "fixedheight": false,
-    "width": 979,
+    "width": 1443,
     "autorun": true,
-    "transparent": 50,
+    "transparent": 51,
     "fontsize": 17.699999999999996,
     "fonttype": "思源黑体 CN Medium",
     "miaobianwidth2": 5,
     "miaobianwidth": 1,
-    "miaobiancolor": "#ffffff",
+    "miaobiancolor": "#ccffc1",
     "zitiyangshi": 2,
     "iskongxin": true,
     "isshowrawtext": true,
     "rawtextcolor": "#000000",
     "backcolor": "#b5b5b5",
-    "isshowhira": false,
+    "isshowhira": true,
     "locktools": false,
     "showfanyisource": false,
     "autoread": false,
@@ -54,9 +54,9 @@
         "volume": 100.0
     },
     "sourcestatus": {
-        "copy": false,
+        "copy": true,
         "ocr": false,
-        "textractor": true,
+        "textractor": false,
         "textractor_pipe": false
     },
     "ocr": {
@@ -274,5 +274,9 @@
         "use": false,
         "path": "C:/dataH/vnr/vnr/Caches/Sync/gamedic.xml"
     },
-    "proxies": null
+    "proxies": null,
+    "xiaoxueguan": {
+        "use": true,
+        "path": "C:/dataH/MisakaTranslator.2.11/小学馆日中.db"
+    }
 }

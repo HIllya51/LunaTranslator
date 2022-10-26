@@ -12,39 +12,35 @@ import re
 import sys
 
 from utils.config import globalconfig
-class transhist(QMainWindow): 
+class searchwordW(QMainWindow): 
     getnewsentencesignal=pyqtSignal(str) 
-    def __init__(self):
-        super(transhist, self).__init__()
+    def __init__(self,p):
+        super(searchwordW, self).__init__(p)
         self.setupUi() 
         self.getnewsentencesignal.connect(self.getnewsentence) 
-        self.setWindowTitle('历史翻译')
-    def closeEvent(self, event) : 
-         
+        self.setWindowTitle('查词')
+    def closeEvent(self, event) :  
             self.hide()
     def setupUi(self):
-        self.setWindowIcon(qtawesome.icon("fa.rotate-left"  ))
+        self.setWindowIcon(qtawesome.icon("fa.search"  ))
         font = QFont()
         #font.setFamily("Arial Unicode MS")
         font.setFamily(globalconfig['fonttype'])
         font.setPointSize(15)
-        self.resize(1000,300)
+        self.resize(500,500)
         self.textOutput = QPlainTextEdit(self)
         self.textOutput.setFont(font)
         self.setCentralWidget(self.textOutput) 
         self.textOutput.setContextMenuPolicy(Qt.CustomContextMenu)
         self.textOutput.setUndoRedoEnabled(False)
         self.textOutput.setReadOnly(True)
-        self.textOutput.setObjectName("textOutput") 
    
         self.hiding=True
        
     def getnewsentence(self,sentence):
+        self.textOutput.clear()
+     
+        self.textOutput.appendHtml(sentence)
         scrollbar = self.textOutput.verticalScrollBar()
-        atBottom = scrollbar.value() + 3 > scrollbar.maximum() or scrollbar.value() / scrollbar.maximum() > 0.975 
-        cursor=QTextCursor (self.textOutput.document())
-        cursor.movePosition(QTextCursor.End)
-        cursor.insertText(sentence+'\n')
-        if (atBottom):
-            scrollbar.setValue(scrollbar.maximum())
+        scrollbar.setValue(0)
      

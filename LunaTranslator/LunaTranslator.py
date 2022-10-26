@@ -28,6 +28,7 @@ import pyperclip
 from utils.getpidlist import getwindowlist
 import gui.translatorUI
 from utils.config import globalconfig ,savehook_new,noundictconfig,transerrorfixdictconfig
+from utils.xiaoxueguan import xiaoxueguan
 import importlib
 from functools import partial 
 #print(time.time()-starttime)
@@ -148,7 +149,7 @@ class MAINUI() :
         if paste_str=='':
             return 
         if paste_str[:len('<notrans>')]=='<notrans>':
-            self.translation_ui.displayraw1.emit(paste_str[len('<notrans>'):],globalconfig['rawtextcolor'],1)
+            self.translation_ui.displayraw1.emit([],paste_str[len('<notrans>'):],globalconfig['rawtextcolor'],1)
             return 
         if paste_str=='':
             return
@@ -166,14 +167,15 @@ class MAINUI() :
 
 
         self.translation_ui.original=paste_str 
+        if 'hira_' in dir(self):
+                hira=self.hira_.fy(paste_str)
         if globalconfig['isshowhira'] and globalconfig['isshowrawtext']:
-            if 'hira_' in dir(self):
-                result=self.hira_.fy(paste_str)  
-                self.translation_ui.displayraw2.emit(globalconfig['rawtextcolor'],result,paste_str)
+              
+            self.translation_ui.displayraw1.emit(hira,paste_str,globalconfig['rawtextcolor'],2)
         elif globalconfig['isshowrawtext']:
-            self.translation_ui.displayraw1.emit(paste_str,globalconfig['rawtextcolor'],1)
+            self.translation_ui.displayraw1.emit(hira,paste_str,globalconfig['rawtextcolor'],1)
         else:
-            self.translation_ui.displayraw1.emit(paste_str,globalconfig['rawtextcolor'],0)
+            self.translation_ui.displayraw1.emit(hira,paste_str,globalconfig['rawtextcolor'],0)
         try:
             if globalconfig['autoread']:
                 self.reader.read(paste_str)
@@ -268,6 +270,9 @@ class MAINUI() :
             for source in globalconfig['fanyi']: 
                 if globalconfig['fanyi'][source]['use']:
                     Thread(target=self.fanyiloader,args=(source,)).start()
+    @threader
+    def startxiaoxueguan(self):
+        self.xiaoxueguan=xiaoxueguan()
     def _maybeyrengong(self,classname,contentraw,_):
         
         classname,res,mp=_
@@ -372,6 +377,7 @@ class MAINUI() :
         self.settin_ui =gui.settin.Settin(self) 
         #print(time.time()-t1)
         self.startreader() 
+        self.startxiaoxueguan()
         
         self.range_ui =gui.rangeselect.rangeadjust(self)   
         self.hookselectdialog=gui.selecthook.hookselect(self )
@@ -379,6 +385,7 @@ class MAINUI() :
         #self.translation_ui.displayraw.emit('欢迎','#0000ff')
         #print(time.time()-t1)
         #print(time.time()-t1)
+    
     def main(self) : 
         # 自适应高分辨率
         t1=time.time()

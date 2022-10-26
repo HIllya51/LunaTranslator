@@ -22,6 +22,7 @@ def setTabThree(self) :
         self.horizontal_slider = QSlider(self.tab_3)
         self.customSetGeometry(self.horizontal_slider, 120, 20, 320, 20)
         self.horizontal_slider.setMaximum(100)
+        self.horizontal_slider.setMinimum(1)
         self.horizontal_slider.setOrientation(Qt.Horizontal)
         self.horizontal_slider.setValue(0)
         self.horizontal_slider.setValue(globalconfig['transparent'])

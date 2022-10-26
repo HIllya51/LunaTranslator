@@ -1,8 +1,27 @@
  
 from PyQt5.QtCore import Qt 
-from PyQt5.QtGui import QPen,QColor ,QTextCharFormat ,QTextBlockFormat,QTextCursor,QFont,QColor
-from PyQt5.QtWidgets import  QTextBrowser ,QLabel
+from PyQt5.QtGui import QPen,QColor ,QTextCharFormat ,QTextBlockFormat,QTextCursor,QFont,QColor,QFontMetricsF
+from PyQt5.QtWidgets import  QTextBrowser ,QLabel,QPushButton
+import random
+import functools
 from utils.config import globalconfig
+from traceback import print_exc
+class Qlabel_c(QLabel):
+    
+    def mousePressEvent(self, ev   )  :
+        self.pr=True
+        return super().mousePressEvent(ev)
+    def mouseMoveEvent(self, ev) :
+        self.pr=False
+        return super().mouseMoveEvent(ev)
+    def mouseReleaseEvent(self, ev )  :
+        try:
+            if self.pr:
+                self.callback()
+            self.pr=False
+        except:
+            print_exc()
+        return super().mouseReleaseEvent(ev)
 class Textbrowser():
     def __init__(self, parent ) : 
         self.parent=parent
@@ -16,6 +35,7 @@ class Textbrowser():
                                            background-color: rgba(%s, %s, %s, %s)"
                                            %(0,0,0,0))
         self.savetaglabels=[]
+        self.searchmasklabels=[]
         self.addtaged=False
         self.charformat=self.textbrowser.currentCharFormat()
     def simplecharformat(self,color):
@@ -69,8 +89,12 @@ for(QTextBlock it = doc->begin(); it !=doc->end();it = it.next())
             self.addtaged=False
             # self.textbrowserback.append(' ') 
             # self.textbrowser.append(' ')
-        
-            
+            cursor=self.textbrowser.textCursor()
+            cursor.movePosition(QTextCursor.End)
+            self.textbrowser.setTextCursor(cursor)
+            cursor=self.textbrowserback.textCursor()
+            cursor.movePosition(QTextCursor.End)
+            self.textbrowserback.setTextCursor(cursor)
             self.textbrowserback.append(x) 
             self.textbrowser.append(x)
             f1=QTextBlockFormat()
@@ -90,7 +114,63 @@ for(QTextBlock it = doc->begin(); it !=doc->end();it = it.next())
            
         
         
-     
+    def addsearchwordmask(self,x,callback=None,start=2):
+        
+        #print(x)
+        pos=start
+         
+        labeli=0 
+        cursor=self.textbrowser.textCursor()
+        cursor.setPosition(start)
+        self.textbrowser.setTextCursor(cursor)
+        cursor.movePosition(QTextCursor.StartOfBlock)
+        self.textbrowser.setTextCursor(cursor)
+        cursor=self.textbrowserback.textCursor()
+        cursor.setPosition(start)
+        self.textbrowserback.setTextCursor(cursor)
+        cursor.movePosition(QTextCursor.StartOfBlock)
+        self.textbrowserback.setTextCursor(cursor)
+        
+        
+        for word in x:
+             
+            if word['orig']=='\r':
+                continue
+            l=len(word['orig'])
+            tl1=self.textbrowser.cursorRect(self.textbrowser.textCursor()).topLeft()
+            color=self.randomcolor()
+            
+            for i in range(1,l+1):
+                    
+                cursor=self.textbrowser.textCursor() 
+                cursor.setPosition(pos+i )
+                self.textbrowser.setTextCursor(cursor)
+                cursor=self.textbrowserback.textCursor() 
+                cursor.setPosition(pos+i )
+                self.textbrowserback.setTextCursor(cursor)
+                tl2=self.textbrowser.cursorRect(self.textbrowser.textCursor()).bottomRight() 
+                tl3=self.textbrowser.cursorRect(self.textbrowser.textCursor()).topLeft() 
+ 
+                if labeli>=len(self.searchmasklabels):
+                    ql=Qlabel_c(self.textbrowser) 
+                    ql.setMouseTracking(True)
+                    self.searchmasklabels.append(ql)
+                self.searchmasklabels[labeli].setGeometry(tl1.x(),tl1.y(),tl2.x()-tl1.x(),tl2.y()-tl1.y())
+                self.searchmasklabels[labeli].setStyleSheet(f"background-color: rgba{color};"  )
+                tl1=tl3 
+                if word['orig'] not in ['\n']:
+
+                    self.searchmasklabels[labeli].show()
+                if callback:
+                    self.searchmasklabels[labeli].callback=functools.partial(callback,word['orig'])
+                #self.searchmasklabels[labeli].clicked.connect(lambda x:print(111))
+                #self.searchmasklabels[labeli].mousePressEvent=(lambda x:print(111))
+                labeli+=1
+            pos+=l
+        
+                
+    def randomcolor(self):
+        return (random.randint(0,255),random.randint(0,255),random.randint(0,255),0.3)
     def addtag(self,x): 
         if len(self.savetaglabels)<len(x):
             self.savetaglabels+=[QLabel(self.textbrowser) for i in range(len(x)-len(self.savetaglabels))]
@@ -166,6 +246,8 @@ for(QTextBlock it = doc->begin(); it !=doc->end();it = it.next())
         self.textbrowser.setCurrentCharFormat(format1)
         self.textbrowserback.setCurrentCharFormat(format2)
     def clear(self):
+        for label in self.searchmasklabels:
+            label.hide()
         for label in self.savetaglabels:
             label.hide()
         self.textbrowser.clear()

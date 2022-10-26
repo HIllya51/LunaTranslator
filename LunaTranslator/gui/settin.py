@@ -16,6 +16,7 @@ from gui.settingpage6 import setTab6
 from gui.settingpage7 import setTab7
 from gui.settingpage_about import setTab_about
 from gui.rotatetab import customtabstyle
+from gui.settingpage_cishu import setTabcishu
 class wavmp3player(QObject):
     def __init__(self):
         super().__init__( )
@@ -86,7 +87,7 @@ class Settin(QMainWindow) :
         setTab5(self)
         
         setTab7(self)
-        
+        setTabcishu(self)
         setTab_about(self)
         self.setStyle(customtabstyle()) #必须放后面 不然其他样式全都失效
         self.usevoice=0

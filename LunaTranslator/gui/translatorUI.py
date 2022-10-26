@@ -23,6 +23,7 @@ import gui.transhist
 from gui.settingpage4 import autosaveshow
 from gui.settingpage1 import settingsource,settingtextractor
 from gui.textbrowser import Textbrowser
+from gui.showword import searchwordW
 class QTitleButton(QPushButton):
     """
     新建标题栏按钮类
@@ -40,8 +41,7 @@ class QUnFrameWindow(QWidget):
     keeptopsignal=pyqtSignal()
     clear_text_sign = pyqtSignal() 
     displayres =  pyqtSignal(str,str ) 
-    displayraw1 =  pyqtSignal( str,str,int )
-    displayraw2 =  pyqtSignal( str,list,str )
+    displayraw1 =  pyqtSignal(list, str,str,int ) 
     displayraw =  pyqtSignal( str,str )
     displaystatus=pyqtSignal(str) 
     startprocessignal=pyqtSignal(str,list)
@@ -65,30 +65,32 @@ class QUnFrameWindow(QWidget):
     def showres(self,_type,res): 
         if globalconfig['showfanyisource']:
             #print(_type)
-            self.showline(globalconfig['fanyi'][_type]['name']+'  '+res,globalconfig['fanyi'][_type]['color']  )
+            self.showline((None,globalconfig['fanyi'][_type]['name']+'  '+res),globalconfig['fanyi'][_type]['color']  )
         else:
-            self.showline(res,globalconfig['fanyi'][_type]['color']  )
+            self.showline((None,res),globalconfig['fanyi'][_type]['color']  )
         
         #print(globalconfig['fanyi'][_type]['name']+'  '+res+'\n')
         
         self.transhis.getnewsentencesignal.emit(globalconfig['fanyi'][_type]['name']+'  '+res)
-    def showraw(self,res,color,show ):
+    def showraw(self,hira,res,color,show ):
         self.clearText()
         self.original=res 
         if show==1: 
-            self.showline(res,color )
-         
+            self.showline((hira,res),color )
+        elif show==0:
+            pass
+        elif show==2:
+            self.showline((hira,res),color ,type_=2 )
         self.transhis.getnewsentencesignal.emit('\n'+res)
-    def showraw2(self,color,res,show ):
-        self.clearText()
-        self.original=show 
-        self.showline((res,show),color ,type_=2 )
-        self.transhis.getnewsentencesignal.emit('\n'+show)
+     
     def showline(self,res,color ,type_=1): 
+         
         if globalconfig['showatcenter']:
             self.translate_text.setAlignment(Qt.AlignCenter)
         else:
             self.translate_text.setAlignment(Qt.AlignLeft)
+
+         
         if globalconfig['zitiyangshi'] ==2: 
             self.translate_text.mergeCurrentCharFormat_out(globalconfig['miaobiancolor'],color, globalconfig['miaobianwidth2']) 
         elif globalconfig['zitiyangshi'] ==1:  
@@ -96,12 +98,23 @@ class QUnFrameWindow(QWidget):
         elif globalconfig['zitiyangshi'] ==0: 
             self.translate_text.simplecharformat(color)
         if type_==1:
-            self.translate_text.append(res)
+            self.translate_text.append(res[1])
+            if globalconfig['xiaoxueguan']['use'] and res[0]:
+                self.translate_text.addsearchwordmask(res[0],self.showsearchword,0)
         else:
+            
+
             self.translate_text.append(' ')
             self.translate_text.append(res[1]) 
             self.translate_text.addtag(res[0])
-            
+            if globalconfig['xiaoxueguan']['use'] and res[0]:
+                self.translate_text.addsearchwordmask(res[0],self.showsearchword)
+    def showsearchword(self,word): 
+        ret=self.object.xiaoxueguan.search(word)
+        if ret is None:
+            ret='未查到 '+word 
+        self.searchwordW.show()
+        self.searchwordW.getnewsentence(ret) 
     def clearText(self) :
      
         # 翻译界面清屏
@@ -160,13 +173,12 @@ class QUnFrameWindow(QWidget):
         self.keeptopsignal.connect(self.keeptopfuntion)
         self.hookfollowsignal.connect(self.hookfollowsignalsolve) 
         self.displayres.connect(self.showres)
-        self.displayraw1.connect(self.showraw)
-        self.displayraw2.connect(self.showraw2)
+        self.displayraw1.connect(self.showraw) 
         self.displayraw.connect(self.showline) 
         self.clear_text_sign.connect(self.clearText)
         self.object = object  
         # 界面缩放比例
-        
+        self.searchwordW=searchwordW(self)
          
         self.original = ""    
         self._isTracking=False
@@ -300,13 +312,21 @@ class QUnFrameWindow(QWidget):
         self.document.contentsChanged.connect(self.textAreaChanged) 
           
         
-        self.masklabel = QLabel(self)  
+        self.masklabel = QLabel(self.translate_text.textbrowser)  
 
-        self.masklabel.setGeometry( 0, 30,9999,9999)
+        self.masklabel.setGeometry( 0,0,9999,9999)
         self.masklabel.setMouseTracking(True)
+        
+        self.masklabelback = QLabel(self.translate_text.textbrowserback)  
+
+        self.masklabelback.setGeometry( 0, 0,9999,9999)
+        self.masklabelback.setMouseTracking(True)
+        self.masklabelback.setStyleSheet("background-color: rgba(0,0,0,0)")
         if globalconfig['selectable']:
             self.masklabel.hide()
         self.showhidestate=False
+
+
     def changemousetransparentstate(self,checked):
          
         self.mousetransparent= not self.mousetransparent
@@ -503,8 +523,7 @@ class QUnFrameWindow(QWidget):
         else:
             return False
     def mousePressEvent(self, event):
-        # 重写鼠标点击的事件
-         
+        # 重写鼠标点击的事件 
         if (event.button() == Qt.LeftButton) and (self.isinrect(event.pos(), self._corner_rect)):
             # 鼠标左键点击右下角边界区域
             self._corner_drag = True 
@@ -644,6 +663,7 @@ class QUnFrameWindow(QWidget):
         #print(4)
         self.object.hookselectdialog.realclose=True 
         
+        self.searchwordW.close()
         self.object.hookselectdialog.close()
         #print(5)
         # if 'textsource' in dir(self.object) and self.object.textsource and self.object.textsource.ending==False:

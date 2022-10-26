@@ -17,7 +17,7 @@ def setTab5(self) :
 
         label = QLabel(tab)
         self.customSetGeometry(label, 20, 20, 120, 20)
-        label.setText("WindowsTTS(离线)") 
+        label.setText("WindowsTTS") 
         self.WindowsTTSswitch =gui.switchbutton.MySwitch(tab, sign=globalconfig['reader']['windowstts']['use'] )
         self.customSetGeometry(self.WindowsTTSswitch, 150, 20, 20,20)
         self.WindowsTTSswitch.clicked.connect(functools.partial(readerchange,self,'windowstts'))  
