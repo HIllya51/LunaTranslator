@@ -1,7 +1,7 @@
 {
     "position": [
-        379,
-        503
+        252,
+        831
     ],
     "fixedheight": false,
     "width": 1443,
@@ -277,6 +277,6 @@
     "proxies": null,
     "xiaoxueguan": {
         "use": true,
-        "path": "C:/dataH/MisakaTranslator.2.11/小学馆日中.db"
+        "path": "C:/dataH/MisakaTranslator.2.11/小学馆.db"
     }
 }

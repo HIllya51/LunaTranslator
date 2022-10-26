@@ -28,7 +28,7 @@ class transhist(QMainWindow):
         #font.setFamily("Arial Unicode MS")
         font.setFamily(globalconfig['fonttype'])
         font.setPointSize(15)
-        self.resize(1000,300)
+        self.setGeometry(0,0,1000,300)
         self.textOutput = QPlainTextEdit(self)
         self.textOutput.setFont(font)
         self.setCentralWidget(self.textOutput) 

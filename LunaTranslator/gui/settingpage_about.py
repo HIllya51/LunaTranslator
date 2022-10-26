@@ -11,19 +11,8 @@ from contextlib import closing
 from utils.config import globalconfig ,postprocessconfig,savehook_new
 import gui.switchbutton
 def getversion(self):
-    about='''
-    <div>
-    版本号:%s
-    <br>
-    最新版本:%s
-    <br>
-    %s
-    <br>
-    项目网站:<a href="https://github.com/HIllya51/LunaTranslator">https://github.com/HIllya51/LunaTranslator</a>
-    <br>
-    下载链接:<a href="%s">%s</a>
-    </div> 
-    '''
+    with open('files/about.txt','r',encoding='utf8') as ff:
+        about=ff.read()
     url='https://github.com/HIllya51/LunaTranslator/releases/'
     self.versiontextsignal.emit(about  %(self.version, '获取中','',url,url))
     try:
@@ -40,12 +29,12 @@ def getversion(self):
         version=res['tag_name']
        # print(version)
         url=res['assets'][0]['browser_download_url']
-         
+        newcontent='更新内容：'+res['body']
     except:
         print_exc()
         version="获取失败"
-        
-    self.versiontextsignal.emit(about %(self.version, version,'更新内容：'+res['body'],url,url))
+        newcontent=''
+    self.versiontextsignal.emit(about %(self.version, version,'' if self.version== version else  newcontent,url,'LunaTranslator.zip'))
     if version!="获取失败" and self.version!=version:
         if globalconfig['autoupdate']:
             self.downloadprogress.show()
@@ -92,7 +81,7 @@ def setTab_about(self) :
             self.version=ff.read() 
         self.tab_about = QWidget()
         self.tab_widget.addTab(self.tab_about, "")
-        self.tab_widget.setTabText(self.tab_widget.indexOf(self.tab_about), " 关于")
+        self.tab_widget.setTabText(self.tab_widget.indexOf(self.tab_about), " 资源下载&更新")
         label = QLabel(self.tab_about)
         self.customSetGeometry(label, 20, 50, 200, 20)
         label.setText("自动下载更新(需要连接github)")
@@ -118,7 +107,10 @@ def setTab_about(self) :
         self.versionlabel.setOpenExternalLinks(True)
             
         self.versionlabel.setTextInteractionFlags(Qt.LinksAccessibleByMouse)
-        self.customSetGeometry(self.versionlabel, 20, 150, 500, 500)
+        self.customSetGeometry(self.versionlabel, 20, 150, 600, 500)
+
+        
         self.versiontextsignal.connect(lambda x:self.versionlabel.setText(x) )
         self.versionlabel.setWordWrap(True)
+        self.versionlabel.setAlignment(Qt.AlignTop)
         threading.Thread(target=lambda :getversion(self)).start()
