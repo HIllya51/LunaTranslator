@@ -115,11 +115,17 @@ def setTabThree(self) :
 
         label = QLabel(self.tab_3)
         self.customSetGeometry(label, 20, 310, 160, 20)
-        label.setText("可选取模式(重启后生效)")
+        label.setText("可选取模式")
          
         s =gui.switchbutton.MySwitch(self.tab_3, sign=globalconfig['selectable'])
-        self.customSetGeometry(s ,180, 310, 20,20)
-        s .clicked.connect(lambda x:globalconfig.__setitem__('selectable',x))  
+        self.customSetGeometry(s ,120, 310, 20,20)
+        def __changeselectmode(x):
+                globalconfig.__setitem__('selectable',x)
+                if x:
+                        self.object.translation_ui.masklabel.hide()
+                else:
+                        self.object.translation_ui.masklabel.show()
+        s .clicked.connect(lambda x:__changeselectmode(x))  
 
 
         label = QLabel(self.tab_3)

@@ -1,7 +1,7 @@
 {
     "position": [
-        791,
-        693
+        415,
+        672
     ],
     "fixedheight": false,
     "width": 979,
@@ -32,11 +32,11 @@
             "voice": "jp_male_satoshi"
         },
         "windowstts": {
-            "use": false,
+            "use": true,
             "voice": "TTS_MS_ZH-CN_HUIHUI_11.0"
         },
         "voiceroid2": {
-            "use": true,
+            "use": false,
             "voice": "yukari_emo_44",
             "path": "C:/dataH/VOICEVOX"
         },
@@ -54,9 +54,9 @@
         "volume": 100.0
     },
     "sourcestatus": {
-        "copy": true,
+        "copy": false,
         "ocr": false,
-        "textractor": false,
+        "textractor": true,
         "textractor_pipe": false
     },
     "ocr": {
