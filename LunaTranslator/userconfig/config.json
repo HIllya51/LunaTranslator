@@ -36,12 +36,12 @@
             "voice": "TTS_MS_ZH-CN_HUIHUI_11.0"
         },
         "voiceroid2": {
-            "use": false,
+            "use": true,
             "voice": "yukari_emo_44",
             "path": "C:/dataH/VOICEVOX"
         },
         "voicevox": {
-            "use": true,
+            "use": false,
             "voice": "ずんだもん",
             "path": "C:/dataH/VOICEVOX"
         }

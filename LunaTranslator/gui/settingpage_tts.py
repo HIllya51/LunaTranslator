@@ -49,10 +49,10 @@ def setTab5(self) :
         self.customSetGeometry(s1, 380, 50, 20,20)
         s1.setStyleSheet("background: transparent;")   
         s1.setIcon(qtawesome.icon("fa.gear", color="#FF69B4"  ))
-        def __2(self):
+        def __3(self):
             getvoicevoxpath(self)
             self.object.startreader()
-        s1.clicked.connect(lambda: __2(self))
+        s1.clicked.connect(lambda: __3(self))
 
         label = QLabel(tab)
         self.customSetGeometry(label, 220, 20, 120, 20)
