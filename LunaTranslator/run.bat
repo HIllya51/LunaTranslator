@@ -1,2 +1,3 @@
 @echo off
-python.exe LunaTranslator.py 
+python.exe LunaTranslator.py
+pause 

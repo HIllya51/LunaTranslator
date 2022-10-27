@@ -29,6 +29,8 @@ from utils.getpidlist import getwindowlist
 import gui.translatorUI
 from utils.config import globalconfig ,savehook_new,noundictconfig,transerrorfixdictconfig
 from utils.xiaoxueguan import xiaoxueguan
+from utils.edict import edict
+from utils.linggesi import linggesi
 import importlib
 from functools import partial 
 #print(time.time()-starttime)
@@ -130,7 +132,7 @@ class MAINUI() :
         return content,(mp1,mp2,mp3)
     def solveaftertrans(self,res,mp): 
         mp1,mp2,mp3=mp
-        print(res,mp)#hello
+        #print(res,mp)#hello
         if noundictconfig['use'] :
             for key in mp1: 
                 reg=re.compile(re.escape(key), re.IGNORECASE)
@@ -272,8 +274,17 @@ class MAINUI() :
                 if globalconfig['fanyi'][source]['use']:
                     Thread(target=self.fanyiloader,args=(source,)).start()
     @threader
-    def startxiaoxueguan(self):
-        self.xiaoxueguan=xiaoxueguan()
+    def startxiaoxueguan(self,type_=0):
+        if type_==0:
+            self.xiaoxueguan=xiaoxueguan()
+            self.edict=edict()
+            self.linggesi=linggesi()
+        elif type_==1:
+            self.xiaoxueguan=xiaoxueguan()
+        elif type_==2:
+            self.edict=edict()
+        elif type_==3:
+            self.linggesi=linggesi()
     def _maybeyrengong(self,classname,contentraw,_):
         
         classname,res,mp=_
@@ -282,7 +293,7 @@ class MAINUI() :
         if globalconfig['fanjian']!=0:
             res=zhconv.convert(res, ['zh-cn', 'zh-tw', 'zh-hk', 'zh-sg', 'zh-hans', 'zh-hant'][globalconfig['fanjian']])
         self.translation_ui.displayres.emit(classname,res)
-        res=res.replace('"','')
+        res=res.replace('"','\\"')
         try:
             if globalconfig['sourcestatus']['textractor'] and globalconfig['transkiroku'] and 'sqlwrite' in dir(self.textsource):
                 if globalconfig['transkirokuuse']==classname:

@@ -103,14 +103,14 @@ class QUnFrameWindow(QWidget):
             self.translate_text.simplecharformat(color)
         if type_==1: 
             self.translate_text.append(res[1])
-            if globalconfig['xiaoxueguan']['use'] and res[0]: 
+            if globalconfig['usesearchword'] and res[0]: 
                 self.translate_text.addsearchwordmask(res[0],self.showsearchword,0)
             
         else: 
             self.translate_text.append(' ')
             self.translate_text.append(res[1])  
             self.translate_text.addtag(res[0]) 
-            if globalconfig['xiaoxueguan']['use'] and res[0]:
+            if globalconfig['usesearchword'] and res[0]:
                 self.translate_text.addsearchwordmask(res[0],self.showsearchword) 
     def showsearchword(self,word):  
         self.searchwordW.show()

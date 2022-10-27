@@ -140,7 +140,8 @@ for(QTextBlock it = doc->begin(); it !=doc->end();it = it.next())
         
         for word in x:
              
-            
+            if word['orig']=='\n':
+                continue
             l=len(word['orig'])
             tl1=self.textbrowser.cursorRect(self.textbrowser.textCursor()).topLeft()
             color=self.randomcolor()
@@ -204,7 +205,8 @@ for(QTextBlock it = doc->begin(); it !=doc->end();it = it.next())
         f1.setAlignment(self.textbrowser.alignment())
         need=True
         for word in x:
-            
+            if word['orig']=='\n':
+                continue
             l=len(word['orig'])
             tl1=self.textbrowser.cursorRect(self.textbrowser.textCursor()).topLeft() 
             cursor=self.textbrowser.textCursor()
@@ -219,8 +221,7 @@ for(QTextBlock it = doc->begin(); it !=doc->end();it = it.next())
             self.textbrowserback.setTextCursor(cursor)
             pos+=l
             need=False
-            if word['orig']=='\r':
-                continue
+            
             tl2=self.textbrowser.cursorRect(self.textbrowser.textCursor()).topLeft() 
             #print(tl1,tl2,word['hira'],self.textbrowser.textCursor().position())
             self.savetaglabels[labeli].setText(word['hira'])

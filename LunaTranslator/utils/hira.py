@@ -25,10 +25,32 @@ class hira:
             else:
                 lenl+=2
         return lenl
+    def search(self,text):
+        if self.usemecab:
+            res=[]
+            for node in self.kks.parseToNodeList(text):
+                try:
+                    xx=str(node)+'-'+node.feature.kana.translate(self.h2k)
+                    xx+=f'<br>词性：{node.feature.pos1}-{node.feature.pos2}-{node.feature.pos3}-{node.feature.pos4}'
+                    if node.feature.cType!='*':
+                        xx+=f'<br>{node.feature.cType}'
+                    if node.feature.cForm!='*':
+                        xx+=f'<br>{node.feature.cForm}'
+                    xx+'<br>词根：{node.feature.orthbase}-{node.feature.pronbase.translate(self.h2k)}'
+                    res.append(xx)
+                except:
+                    pass
+            return '<hr>'.join(res)
+        else:
+            res=[]
+            xx=self.kks . convert ( text )
+            for x in xx:
+                res.append(x['orig']+'-'+x['hira'])
+            return '<hr>'.join(res)
     def fy(self,text): 
         if self.usemecab:
             result=[]
-            for node in self.kks.parseToNodeList(text):
+            for node in self.kks.parseToNodeList(text): 
                 try:
                     hira=node.feature.kana.translate(self.h2k)
                 except:

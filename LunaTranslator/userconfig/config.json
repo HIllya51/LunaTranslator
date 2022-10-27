@@ -1,7 +1,7 @@
 {
     "position": [
-        355,
-        681
+        219,
+        572
     ],
     "fixedheight": false,
     "width": 1443,
@@ -280,7 +280,16 @@
         "path": "C:/dataH/MisakaTranslator.2.11/小学馆.db"
     },
     "mecab": {
+        "use": true,
+        "path": "C:/dataH/Mecab1"
+    },
+    "usesearchword": true,
+    "edict": {
         "use": false,
-        "path": "C:/dataH/dicdir"
+        "path": ""
+    },
+    "linggesi": {
+        "use": false,
+        "path": "C:/dataH/vnr/vnr/Caches/Dictionaries/Lingoes"
     }
 }

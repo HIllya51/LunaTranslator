@@ -140,6 +140,60 @@ def getxiaoxueguanpath(object) -> tuple:
 
         if dialog.exec() == QDialog.Accepted:
             globalconfig['xiaoxueguan']['path']=line.text()
+def getedictpath(object) -> tuple: 
+        dialog = QDialog(object)  # 自定义一个dialog
+        dialog.setWindowTitle('edict辞书')
+        #dialog.setWindowModality(Qt.ApplicationModal)
+        dialog.resize(QSize(900,10))
+        formLayout = QFormLayout(dialog)  # 配置layout
+        d={}
+ 
+        hori=QHBoxLayout()
+        line=QLineEdit(globalconfig['edict']['path'])
+        hori.addWidget(line)
+        button=QPushButton('选择文件')
+        def __(l,_):
+            f=QFileDialog.getOpenFileName(directory= globalconfig['edict']['path'],filter='*.db')
+            if f[0]!='':
+                        l.setText(f[0]) 
+        button.clicked.connect(functools.partial(__,line))
+        hori.addWidget(button)
+        formLayout.addRow('edict辞书:', hori) 
+        button = QDialogButtonBox(QDialogButtonBox.Ok|QDialogButtonBox.Cancel)
+        formLayout.addRow(button)
+        dialog.show()
+
+        button.clicked.connect(dialog.accept)
+
+        if dialog.exec() == QDialog.Accepted:
+            globalconfig['edict']['path']=line.text()
+def getlinggesipath(object) -> tuple: 
+        dialog = QDialog(object)  # 自定义一个dialog
+        dialog.setWindowTitle('灵格斯路径')
+        #dialog.setWindowModality(Qt.ApplicationModal)
+        dialog.resize(QSize(900,10))
+        formLayout = QFormLayout(dialog)  # 配置layout
+        d={}
+ 
+        hori=QHBoxLayout()
+        line=QLineEdit(globalconfig['linggesi']['path'])
+        hori.addWidget(line)
+        button=QPushButton('选择路径')
+        def __(l,_):
+            f=QFileDialog.getExistingDirectory(directory=globalconfig['linggesi']['path'])
+            if f!='':
+                l.setText(f)
+        button.clicked.connect(functools.partial(__,line))
+        hori.addWidget(button)
+        formLayout.addRow('灵格斯:', hori) 
+        button = QDialogButtonBox(QDialogButtonBox.Ok|QDialogButtonBox.Cancel)
+        formLayout.addRow(button)
+        dialog.show()
+
+        button.clicked.connect(dialog.accept)
+
+        if dialog.exec() == QDialog.Accepted:
+            globalconfig['linggesi']['path']=line.text()
 def getvoiceroid2path(object) -> tuple: 
         dialog = QDialog(object)  # 自定义一个dialog
         dialog.setWindowTitle('voiceroid2 路径')

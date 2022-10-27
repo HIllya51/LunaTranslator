@@ -1,19 +1,15 @@
 
 from re import search
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QWidget,QHBoxLayout,QMainWindow,QFrame,QVBoxLayout,QComboBox,QPlainTextEdit,QDialogButtonBox,QLineEdit,QPushButton
+from PyQt5.QtWidgets import QWidget,QHBoxLayout,QMainWindow,QFrame,QVBoxLayout,QComboBox,QPlainTextEdit,QTextBrowser,QLineEdit,QPushButton,QTabWidget
 from PyQt5.QtGui import QFont,QTextCursor
 from PyQt5.QtCore import Qt,pyqtSignal
 import qtawesome
-import subprocess
-import json
-import os
-import re
-import sys
-
+import threading 
 from utils.config import globalconfig
 class searchwordW(QMainWindow): 
     getnewsentencesignal=pyqtSignal(str) 
+    searchthreadsignal=pyqtSignal(int,list,str)
     def __init__(self,p):
         super(searchwordW, self).__init__(p)
         self.setupUi() 
@@ -27,7 +23,7 @@ class searchwordW(QMainWindow):
         font = QFont()
         #font.setFamily("Arial Unicode MS")
         font.setFamily(globalconfig['fonttype'])
-        font.setPointSize(12)
+        font.setPointSize(10)
         self.setGeometry(0,0,500,300)
         self.centralWidget = QWidget(self) 
         self.setWindowIcon(qtawesome.icon("fa.gear" ))
@@ -46,32 +42,46 @@ class searchwordW(QMainWindow):
         self.userhookinsert.clicked.connect(lambda :self.search(self.userhook.text()))
         self.userhooklayout.addWidget(self.userhookinsert)
  
-        
+        self.tab=QTabWidget(self)
 
-        self.textOutput = QPlainTextEdit(self)
-        self.textOutput.setFont(font) 
-        self.textOutput.setContextMenuPolicy(Qt.CustomContextMenu)
-        self.textOutput.setUndoRedoEnabled(False)
-        self.textOutput.setReadOnly(True)
          
-        self.vboxlayout.addWidget(self.textOutput)
+        self.vboxlayout.addWidget(self.tab)
         self.hboxlayout.addLayout(self.vboxlayout)
         self.setCentralWidget(self.centralWidget)
   
- 
         
+        self.textbs=[]
+        _=['小学馆',"灵格斯词典","EDICT",'MeCab']
+        for i in range(4):
+
+            textOutput = QTextBrowser(self)
+            textOutput.setFont(font) 
+            textOutput.setContextMenuPolicy(Qt.CustomContextMenu)
+            textOutput.setUndoRedoEnabled(False)
+            textOutput.setReadOnly(True)
+            self.tab.addTab(textOutput,_[i])
+            self.textbs.append(textOutput)
    
         self.hiding=True
+        self.searchthreadsignal.connect(self.searchthread)
     def getnewsentence(self,sentence):
         self.userhook.setText(sentence)
         self.search(sentence)
-    def search(self,sentence):
-        self.textOutput.clear()
-        res=self.p.object.xiaoxueguan.search(sentence)
-        if res is None:
-            res='未查到'
-        
-        self.textOutput.appendHtml(res)
-        scrollbar = self.textOutput.verticalScrollBar()
+
+    def searchthread(self,i,_d,sentence):
+        self.textbs[i].clear()
+
+        res=_d[i].search(sentence) 
+        if res is None or res=='':
+            res='未查到' 
+        self.textbs[i].append(res) 
+        scrollbar = self.textbs[i].verticalScrollBar()
         scrollbar.setValue(0)
-     
+    def search(self,sentence):
+        if sentence=='':
+            return
+        _d=[self.p.object.xiaoxueguan,self.p.object.linggesi,self.p.object.edict,self.p.object.hira_]
+        for i in range(4):
+            
+            threading.Thread(target=self.searchthreadsignal.emit,args=(i,_d,sentence)).start()
+ 
