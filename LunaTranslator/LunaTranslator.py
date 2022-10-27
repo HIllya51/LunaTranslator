@@ -47,8 +47,7 @@ class MAINUI() :
         self.rect=None
         self.textsource=None
         self.savetextractor=None
-    @threader 
-    @timer
+    @threader  
     def loadvnrshareddict(self):
         cnt=0
         cnt1=0
@@ -169,6 +168,8 @@ class MAINUI() :
         self.translation_ui.original=paste_str 
         if 'hira_' in dir(self):
                 hira=self.hira_.fy(paste_str)
+        else:
+            hira=[]
         if globalconfig['isshowhira'] and globalconfig['isshowrawtext']:
               
             self.translation_ui.displayraw1.emit(hira,paste_str,globalconfig['rawtextcolor'],2)

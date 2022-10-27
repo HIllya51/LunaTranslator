@@ -1,8 +1,22 @@
+from utils.config import globalconfig
+
+import os
 
 class hira:
     def __init__(self) -> None: 
-        import pykakasi
-        self.kks = pykakasi . kakasi ()
+        
+        if globalconfig['mecab']['use'] and os.path.exists(globalconfig['mecab']['path']):
+            import fugashi
+            dic_dir_path = globalconfig['mecab']['path']
+            self.kks= fugashi.Tagger("-r nul -d {} -Owakati".format(dic_dir_path))
+            self.usemecab=True
+            keys='ァアィイゥウェエォオカガキギクグケゲコゴサザシジスズセゼソゾタダチヂッツヅテデトドナニヌネノハバパヒビピフブプヘベペホボポマミムメモャヤュユョヨラリルレロヮワヰヱヲンヴヵヶヽヾ'
+            vs='ぁあぃいぅうぇえぉおかがきぎくぐけげこごさざしじすずせぜそぞただちぢっつづてでとどなにぬねのはばぱひびぴふぶぷへべぺほぼぽまみむめもゃやゅゆょよらりるれろゎわゐゑをんゔゕゖゝゞ'
+            self.h2k=str.maketrans( keys,vs)
+        else:
+            import pykakasi
+            self.kks = pykakasi . kakasi ()
+            self.usemecab=False
     def guesslen(self,text):
         lenl=0
         for s in text:
@@ -11,8 +25,17 @@ class hira:
             else:
                 lenl+=2
         return lenl
-    def fy(self,text):
-        result =self.kks . convert ( text )
+    def fy(self,text): 
+        if self.usemecab:
+            result=[]
+            for node in self.kks.parseToNodeList(text):
+                try:
+                    hira=node.feature.kana.translate(self.h2k)
+                except:
+                    hira=''
+                result.append({'orig':str(node),"hira":hira}) 
+        else:
+            result =self.kks . convert ( text )
         return result
     def fy_depracated(self,text): 
         

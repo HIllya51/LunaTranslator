@@ -1,7 +1,7 @@
 {
     "position": [
-        252,
-        831
+        355,
+        681
     ],
     "fixedheight": false,
     "width": 1443,
@@ -11,7 +11,7 @@
     "fonttype": "思源黑体 CN Medium",
     "miaobianwidth2": 5,
     "miaobianwidth": 1,
-    "miaobiancolor": "#ccffc1",
+    "miaobiancolor": "#f8fffb",
     "zitiyangshi": 2,
     "iskongxin": true,
     "isshowrawtext": true,
@@ -94,7 +94,7 @@
     },
     "fanyi": {
         "baidu": {
-            "use": false,
+            "use": true,
             "color": "#ff0004",
             "name": "百度"
         },
@@ -134,7 +134,7 @@
             "name": "搜狗"
         },
         "caiyun": {
-            "use": true,
+            "use": false,
             "color": "#0ff000",
             "name": "彩云"
         },
@@ -144,7 +144,7 @@
             "name": "deepl"
         },
         "jb7": {
-            "use": false,
+            "use": true,
             "color": "#1839f0",
             "name": "Jbeijing7",
             "argsfile": "./userconfig/jbj7.json"
@@ -276,7 +276,11 @@
     },
     "proxies": null,
     "xiaoxueguan": {
-        "use": true,
+        "use": false,
         "path": "C:/dataH/MisakaTranslator.2.11/小学馆.db"
+    },
+    "mecab": {
+        "use": false,
+        "path": "C:/dataH/dicdir"
     }
 }

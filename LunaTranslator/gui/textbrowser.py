@@ -3,8 +3,9 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QPen,QColor ,QTextCharFormat ,QTextBlockFormat,QTextCursor,QFont,QColor,QFontMetricsF
 from PyQt5.QtWidgets import  QTextBrowser ,QLabel,QPushButton
 import random
-import functools
+import functools 
 from utils.config import globalconfig
+from utils.wrapper import timer
 from traceback import print_exc
 class Qlabel_c(QLabel):
     
@@ -82,38 +83,43 @@ for(QTextBlock it = doc->begin(); it !=doc->end();it = it.next())
     def setAlignment(self,x):
         self.textbrowser.setAlignment(x)
         self.textbrowserback.setAlignment(x)
-      
+    @timer
     def append(self,x ): 
         
         if self.addtaged:
-            self.addtaged=False
+            
             # self.textbrowserback.append(' ') 
             # self.textbrowser.append(' ')
-            cursor=self.textbrowser.textCursor()
-            cursor.movePosition(QTextCursor.End)
-            self.textbrowser.setTextCursor(cursor)
-            cursor=self.textbrowserback.textCursor()
-            cursor.movePosition(QTextCursor.End)
-            self.textbrowserback.setTextCursor(cursor)
-            self.textbrowserback.append(x) 
-            self.textbrowser.append(x)
+            # cursor=self.textbrowser.textCursor()
+            # cursor.movePosition(QTextCursor.End)
+            # self.textbrowser.setTextCursor(cursor)
+            # cursor=self.textbrowserback.textCursor()
+            # cursor.movePosition(QTextCursor.End)
+            # self.textbrowserback.setTextCursor(cursor)
+         
+            self.textbrowser.append('')
+            self.textbrowserback.append('')
+            self.addtaged=False
             f1=QTextBlockFormat()
             f1.setLineHeight(0,QTextBlockFormat.LineDistanceHeight)
             f1.setAlignment(self.textbrowser.alignment()) 
             cursor=self.textbrowser.textCursor() 
-            cursor.movePosition(QTextCursor.StartOfBlock)
-            cursor.setBlockFormat(f1)
+            #cursor.movePosition(QTextCursor.StartOfBlock)
+            #cursor.setBlockFormat(f1)
+            cursor.mergeBlockFormat(f1)
             self.textbrowser.setTextCursor(cursor)
             cursor=self.textbrowserback.textCursor() 
-            cursor.movePosition(QTextCursor.StartOfBlock)
-            cursor.setBlockFormat(f1)
+            #cursor.movePosition(QTextCursor.StartOfBlock)
+            cursor.mergeBlockFormat(f1)
             self.textbrowserback.setTextCursor(cursor)
+            self.textbrowserback.insertPlainText(x) 
+            self.textbrowser.insertPlainText(x)
         else:
             self.textbrowserback.append(x) 
             self.textbrowser.append(x)
            
         
-        
+    @timer
     def addsearchwordmask(self,x,callback=None,start=2):
         
         #print(x)
@@ -134,8 +140,7 @@ for(QTextBlock it = doc->begin(); it !=doc->end();it = it.next())
         
         for word in x:
              
-            if word['orig']=='\r':
-                continue
+            
             l=len(word['orig'])
             tl1=self.textbrowser.cursorRect(self.textbrowser.textCursor()).topLeft()
             color=self.randomcolor()
@@ -158,7 +163,8 @@ for(QTextBlock it = doc->begin(); it !=doc->end();it = it.next())
                 self.searchmasklabels[labeli].setGeometry(tl1.x(),tl1.y(),tl2.x()-tl1.x(),tl2.y()-tl1.y())
                 self.searchmasklabels[labeli].setStyleSheet(f"background-color: rgba{color};"  )
                 tl1=tl3 
-                if word['orig'] not in ['\n']:
+                 
+                if word['orig'] not in ['\n','\r'] :
 
                     self.searchmasklabels[labeli].show()
                 if callback:
@@ -171,6 +177,7 @@ for(QTextBlock it = doc->begin(); it !=doc->end();it = it.next())
                 
     def randomcolor(self):
         return (random.randint(0,255),random.randint(0,255),random.randint(0,255),0.3)
+    @timer
     def addtag(self,x): 
         if len(self.savetaglabels)<len(x):
             self.savetaglabels+=[QLabel(self.textbrowser) for i in range(len(x)-len(self.savetaglabels))]
@@ -191,25 +198,29 @@ for(QTextBlock it = doc->begin(); it !=doc->end();it = it.next())
         font=QFont()
         font.setFamily(globalconfig['fonttype']) 
         font.setPointSizeF(12) 
+        f1=QTextBlockFormat()
+        
+        f1.setLineHeight(20,QTextBlockFormat.LineDistanceHeight)
+        f1.setAlignment(self.textbrowser.alignment())
+        need=True
         for word in x:
-            f1=QTextBlockFormat()
             
-            f1.setLineHeight(20,QTextBlockFormat.LineDistanceHeight)
-            f1.setAlignment(self.textbrowser.alignment())
-            if word['orig']=='\r':
-                continue
             l=len(word['orig'])
             tl1=self.textbrowser.cursorRect(self.textbrowser.textCursor()).topLeft() 
             cursor=self.textbrowser.textCursor()
-            cursor.setBlockFormat(f1)
+            if need:
+                cursor.setBlockFormat(f1)
             cursor.setPosition(pos+l )
             self.textbrowser.setTextCursor(cursor)
             cursor=self.textbrowserback.textCursor()
-            cursor.setBlockFormat(f1)
+            if need:
+                cursor.setBlockFormat(f1)
             cursor.setPosition(pos+l )
             self.textbrowserback.setTextCursor(cursor)
             pos+=l
-             
+            need=False
+            if word['orig']=='\r':
+                continue
             tl2=self.textbrowser.cursorRect(self.textbrowser.textCursor()).topLeft() 
             #print(tl1,tl2,word['hira'],self.textbrowser.textCursor().position())
             self.savetaglabels[labeli].setText(word['hira'])
@@ -219,6 +230,7 @@ for(QTextBlock it = doc->begin(); it !=doc->end();it = it.next())
             
             if tl1.y()!=tl2.y():
                 x=tl2.x()-w
+                need=True
             else:
                 x=tl1.x()/2+tl2.x()/2-w/2
             y=tl2.y()-20
@@ -234,7 +246,7 @@ for(QTextBlock it = doc->begin(); it !=doc->end();it = it.next())
     def mergeCurrentCharFormat(self,colormiao,width):
         format2=QTextCharFormat()
         format2.setTextOutline(QPen(QColor(colormiao),width, Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin))
-        
+    
         self.textbrowser.setCurrentCharFormat(format2)
         self.textbrowserback.setCurrentCharFormat(format2)
     def mergeCurrentCharFormat_out(self,colorinner,colormiao,width):
@@ -250,5 +262,10 @@ for(QTextBlock it = doc->begin(); it !=doc->end();it = it.next())
             label.hide()
         for label in self.savetaglabels:
             label.hide()
-        self.textbrowser.clear()
-        self.textbrowserback.clear()
+            
+        # self.textbrowser.clear()
+        # self.textbrowserback.clear()
+
+        self.textbrowser.setText('')
+        self.textbrowserback.setText('')
+         

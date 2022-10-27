@@ -1,4 +1,4 @@
- 
+from queue import Queue 
 import functools  
 from threading import Thread
 import threading 
@@ -41,8 +41,7 @@ class QUnFrameWindow(QWidget):
     keeptopsignal=pyqtSignal()
     clear_text_sign = pyqtSignal() 
     displayres =  pyqtSignal(str,str ) 
-    displayraw1 =  pyqtSignal(list, str,str,int ) 
-    displayraw =  pyqtSignal( str,str )
+    displayraw1 =  pyqtSignal(list, str,str,int )  
     displaystatus=pyqtSignal(str) 
     startprocessignal=pyqtSignal(str,list)
     writeprocesssignal=pyqtSignal(QByteArray)
@@ -82,8 +81,13 @@ class QUnFrameWindow(QWidget):
         elif show==2:
             self.showline((hira,res),color ,type_=2 )
         self.transhis.getnewsentencesignal.emit('\n'+res)
-     
-    def showline(self,res,color ,type_=1): 
+    # def showtaskthreadfun(self):
+    #     while True:
+    #         res,color ,type_=self.showtask.get()
+    #         self.showline_real(res,color ,type_)
+    # def showline(self,res,color ,type_=1):
+    #     self.showtask.put((res,color ,type_))
+    def showline (self,res,color ,type_=1): 
          
         if globalconfig['showatcenter']:
             self.translate_text.setAlignment(Qt.AlignCenter)
@@ -97,24 +101,20 @@ class QUnFrameWindow(QWidget):
             self.translate_text.mergeCurrentCharFormat( color, globalconfig['miaobianwidth']) 
         elif globalconfig['zitiyangshi'] ==0: 
             self.translate_text.simplecharformat(color)
-        if type_==1:
+        if type_==1: 
             self.translate_text.append(res[1])
-            if globalconfig['xiaoxueguan']['use'] and res[0]:
+            if globalconfig['xiaoxueguan']['use'] and res[0]: 
                 self.translate_text.addsearchwordmask(res[0],self.showsearchword,0)
-        else:
             
-
+        else: 
             self.translate_text.append(' ')
-            self.translate_text.append(res[1]) 
-            self.translate_text.addtag(res[0])
+            self.translate_text.append(res[1])  
+            self.translate_text.addtag(res[0]) 
             if globalconfig['xiaoxueguan']['use'] and res[0]:
-                self.translate_text.addsearchwordmask(res[0],self.showsearchword)
-    def showsearchword(self,word): 
-        ret=self.object.xiaoxueguan.search(word)
-        if ret is None:
-            ret='未查到 '+word 
+                self.translate_text.addsearchwordmask(res[0],self.showsearchword) 
+    def showsearchword(self,word):  
         self.searchwordW.show()
-        self.searchwordW.getnewsentence(ret) 
+        self.searchwordW.getnewsentence(word) 
     def clearText(self) :
      
         # 翻译界面清屏
@@ -173,8 +173,9 @@ class QUnFrameWindow(QWidget):
         self.keeptopsignal.connect(self.keeptopfuntion)
         self.hookfollowsignal.connect(self.hookfollowsignalsolve) 
         self.displayres.connect(self.showres)
-        self.displayraw1.connect(self.showraw) 
-        self.displayraw.connect(self.showline) 
+        self.displayraw1.connect(self.showraw)  
+        # self.showtask=Queue()
+        # self.showtaskthread=threading.Thread(target=self.showtaskthreadfun).start()
         self.clear_text_sign.connect(self.clearText)
         self.object = object  
         # 界面缩放比例

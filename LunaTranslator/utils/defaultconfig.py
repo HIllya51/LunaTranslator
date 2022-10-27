@@ -9,6 +9,7 @@ defaultglobalconfig = {'position': [432, 613], 'fixedheight': False, 'width': 76
     'voicevox':{'use':False,'voice':'','path':''}
     }, 
 'xiaoxueguan':{'use':False,'path':''},
+'mecab':{'use':False,'path':''},
 'LocaleEmulator': '', 'verticalocr': False, 'outputtopasteboard': False, 'ttscommon': { 'rate': 1.0, 'volume': 100.0},
 
  'sourcestatus': {'copy': True, 'ocr': False, 'textractor': False, 'textractor_pipe': False}, 'ocr': {'local': {'use': True, 'name': '本地OCR'},'windowsocr': {'use': False, 'name': 'WindowsOCR'}, 'baiduocr': {'use': False, 'name': 'baiduOCR', 'argsfile': './userconfig/baiduocr.json'}, 'ocrspace': {'use': False, 'name': 'ocrspace', 'argsfile': './userconfig/ocrspace.json'}, 'docsumo': {'use': False, 'name': 'docsumo', 'argsfile': './userconfig/docsumo.json'},
