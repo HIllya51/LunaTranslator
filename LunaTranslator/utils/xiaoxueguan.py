@@ -10,19 +10,19 @@ class xiaoxueguan():
             pass
     def search(self,word):
         if self.sql:
- 
-            x=self.sql.execute(f"select word,explanation from xiaoxueguanrizhong where word like '%{word}%'")
-            exp=x.fetchall()
-            dis=9999
-            save=None
-            
-            for w,xx in exp:
-              
-                d=Levenshtein.distance(w,word)
-                if d<dis:
-                    dis=d
-                    save=xx
             try:
+                x=self.sql.execute(f"select word,explanation from xiaoxueguanrizhong where word like '%{word}%'")
+                exp=x.fetchall()
+                dis=9999
+                save=None
+                
+                for w,xx in exp:
+                
+                    d=Levenshtein.distance(w,word)
+                    if d<dis:
+                        dis=d
+                        save=xx
+            
                 return save.replace('\\n','')
             except:
                 return None

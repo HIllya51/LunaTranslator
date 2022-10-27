@@ -18,7 +18,7 @@ def setTabcishu(self) :
         self.tab_widget.setTabText(self.tab_widget.indexOf(self.tab_cishu), " 辞书设置") 
         label = QLabel(self.tab_cishu)
         self.customSetGeometry(label, 20, 20, 150, 20) 
-        label.setText("使用小学馆辞书:")
+        label.setText("使用小学馆辞书（查词）:")
         
         def __changexxgstate(self,x):
                 globalconfig['xiaoxueguan']['use']=x 
@@ -39,7 +39,7 @@ def setTabcishu(self) :
 
         label = QLabel(self.tab_cishu)
         self.customSetGeometry(label, 20, 50, 150, 20) 
-        label.setText("使用MeCab辞书:")
+        label.setText("使用MeCab辞书（假名）:")
         
         def __changemecabstate(self,x):
                 globalconfig['mecab']['use']=x 
@@ -48,12 +48,12 @@ def setTabcishu(self) :
         self.customSetGeometry(self.show_original_switch,  180,50, 20,20)
         self.show_original_switch.clicked.connect(lambda x: __changemecabstate(self,x))  
         
-        s1 = QPushButton( "", self.tab_cishu)
-        self.customSetIconSize(s1, 20, 20)
-        self.customSetGeometry(s1,  210,50,20,20)
-        s1.setStyleSheet("background: transparent;")   
-        s1.setIcon(qtawesome.icon("fa.gear", color="#FF69B4"  ))
+        s2 = QPushButton( "", self.tab_cishu)
+        self.customSetIconSize(s2, 20, 20)
+        self.customSetGeometry(s2,  210,50,20,20)
+        s2.setStyleSheet("background: transparent;")   
+        s2.setIcon(qtawesome.icon("fa.gear", color="#FF69B4"  ))
         def __getmecabpath(self):
                 getmecabpath(self)
                 self.object.starthira()
-        s1.clicked.connect(lambda :__getmecabpath(self))
+        s2.clicked.connect(lambda :__getmecabpath(self))

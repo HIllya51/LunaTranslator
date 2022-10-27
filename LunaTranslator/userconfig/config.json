@@ -276,7 +276,7 @@
     },
     "proxies": null,
     "xiaoxueguan": {
-        "use": false,
+        "use": true,
         "path": "C:/dataH/MisakaTranslator.2.11/小学馆.db"
     },
     "mecab": {
