@@ -74,12 +74,12 @@ def initfanyiswitchs_auto(self):
         
         for fanyi in globalconfig['fanyi']:
             y=70+35*(num//3)
-            x=20+220*(num%3)
+            x=20+200*(num%3)
             try:
                 importlib.import_module('translator.'+fanyi)
             except:
                 continue
-            initfanyiswitchs(self,fanyi,(x, y, 65, 20),(x+70, y, 20,20),(x+110, y, 20,20),(x+150, y, 20,20))
+            initfanyiswitchs(self,fanyi,(x, y, 85, 20),(x+80, y, 20,20),(x+110, y, 20,20),(x+140, y, 20,20))
             num+=1
 
 def initfanyiswitchs(self,name,namepos,switchpos,colorpos,settingpos):

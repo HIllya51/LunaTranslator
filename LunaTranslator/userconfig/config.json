@@ -1,7 +1,7 @@
 {
     "position": [
-        219,
-        572
+        350,
+        719
     ],
     "fixedheight": false,
     "width": 1443,
@@ -46,7 +46,7 @@
             "path": "C:/dataH/VOICEVOX"
         }
     },
-    "LocaleEmulator": "",
+    "LocaleEmulator": "C:/dataH/Locale.Emulator.2.5.0.1",
     "verticalocr": false,
     "outputtopasteboard": false,
     "ttscommon": {
@@ -54,9 +54,9 @@
         "volume": 100.0
     },
     "sourcestatus": {
-        "copy": true,
+        "copy": false,
         "ocr": false,
-        "textractor": false,
+        "textractor": true,
         "textractor_pipe": false
     },
     "ocr": {
@@ -251,6 +251,12 @@
             "color": "#0ff000",
             "name": "人工翻译",
             "argsfile": "./userconfig/rengong.json"
+        },
+        "premt": {
+            "use": true,
+            "color": "#0ff000",
+            "name": "机器预翻译",
+            "argsfile": "./userconfig/premt.json"
         }
     },
     "minifollow": true,
@@ -262,7 +268,7 @@
     "fanjian": 0,
     "rotation": 0,
     "srclang": 0,
-    "transkiroku": false,
+    "transkiroku": true,
     "transkirokuuse": "baidu",
     "showatcenter": true,
     "mustocr": false,

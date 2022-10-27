@@ -39,7 +39,7 @@ class basetrans:
             if skip:
                 continue
             
-            if self.typename=='rengong':
+            if self.typename in ['rengong','premt']:
                 res=self.translate(contentraw)
             else:
                 res=self.translate(contentsolved)

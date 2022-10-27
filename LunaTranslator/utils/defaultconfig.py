@@ -30,7 +30,8 @@ defaultglobalconfig = {'position': [432, 613], 'fixedheight': False, 'width': 76
     'huoshan': {'use': False, 'color': '#0ff000', 'name': 'huoshan' },
     'yeekit': {'use': False, 'color': '#0ff000', 'name': 'yeekit' }, 'caiyunapi': {'use': False, 'color': '#0ff000', 'name': '彩云api', 'argsfile': './userconfig/caiyunapi.json'}, 'huoshanapi': {'use': False, 'color': '#0ff000', 'name': '火山api', 'argsfile': './userconfig/huoshanapi.json'},
     'papago': {'use': False, 'color': '#0ff000', 'name': 'papago'},
-    'rengong': {'use': False, 'color': '#0ff000', 'name': '人工翻译', 'argsfile': './userconfig/rengong.json'}
+    'rengong': {'use': False, 'color': '#0ff000', 'name': '人工翻译', 'argsfile': './userconfig/rengong.json'},
+    'premt': {'use': False, 'color': '#0ff000', 'name': '机器预翻译', 'argsfile': './userconfig/premt.json'}
     },
      'minifollow': True, 'movefollow': True, 'autostarthook': True, 'translatortimeout': 5, 'minlength': 5, 'maxlength': 150, 'fanjian': 0, 'rotation': 0, 'srclang': 0,
     'transkiroku':False,'transkirokuuse':'baidu',

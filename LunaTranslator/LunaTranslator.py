@@ -195,12 +195,18 @@ class MAINUI() :
             #print(engine)
             self.translators[engine].gettask((paste_str,self.solvebeforetrans(paste_str),skip)) 
         try:
-            if skip==False and globalconfig['transkiroku']  and 'sqlwrite' in dir(self.textsource):
+            if skip==False and globalconfig['transkiroku']  and 'sqlwrite2' in dir(self.textsource):
                 ret=self.textsource.sqlwrite.execute(f'SELECT * FROM artificialtrans WHERE source = "{paste_str}"').fetchone()
                 if ret is  None:                     
                     self.textsource.sqlwrite.execute(f'INSERT INTO artificialtrans VALUES(NULL,"{paste_str}","","");')
                 
                     self.textsource.sqlwrite.commit() 
+                
+                ret=self.textsource.sqlwrite2.execute(f'SELECT * FROM artificialtrans WHERE source = "{paste_str}"').fetchone()
+                if ret is  None:                     
+                    self.textsource.sqlwrite2.execute(f'INSERT INTO artificialtrans VALUES(NULL,"{paste_str}","{json.dumps({})}");')
+                
+                    self.textsource.sqlwrite2.commit() 
         except:
             print_exc()
     @threader
@@ -267,6 +273,7 @@ class MAINUI() :
         
         
         import requests
+        #不能删
         if now:
             Thread(target=self.fanyiloader,args=(now,)).start()
         else:
@@ -288,34 +295,48 @@ class MAINUI() :
     def _maybeyrengong(self,classname,contentraw,_):
         
         classname,res,mp=_
-        if classname!='rengong': 
+        if classname not in ['rengong','premt']: 
             res=self.solveaftertrans(res,mp)
         if globalconfig['fanjian']!=0:
             res=zhconv.convert(res, ['zh-cn', 'zh-tw', 'zh-hk', 'zh-sg', 'zh-hans', 'zh-hant'][globalconfig['fanjian']])
         self.translation_ui.displayres.emit(classname,res)
-        res=res.replace('"','\\"')
-        try:
-            if globalconfig['sourcestatus']['textractor'] and globalconfig['transkiroku'] and 'sqlwrite' in dir(self.textsource):
-                if globalconfig['transkirokuuse']==classname:
-                    self.textsource.sqlwrite.execute(f'UPDATE artificialtrans SET machineTrans = "{res}" WHERE source = "{contentraw}"')
-                    self.textsource.sqlwrite.commit() 
-                elif classname!='rengong':
-                    ret=self.textsource.sqlwrite.execute(f'SELECT * FROM artificialtrans WHERE source = "{contentraw}"').fetchone()
-                    
-                    if ret is None or ret[2] =='':                     
-                        self.textsource.sqlwrite.execute(f'UPDATE artificialtrans SET machineTrans = "{res}" WHERE source = "{contentraw}"')
-                    
-                        self.textsource.sqlwrite.commit() 
-        except:
-            print_exc()
         
+        if classname not in ['rengong','premt']:
+            res=res.replace('"','""')   
+            try:
+                if globalconfig['sourcestatus']['textractor'] and globalconfig['transkiroku'] and 'sqlwrite' in dir(self.textsource):
+                    if globalconfig['transkirokuuse']==classname:
+                        self.textsource.sqlwrite.execute(f'UPDATE artificialtrans SET machineTrans = "{res}" WHERE source = "{contentraw}"')
+                        self.textsource.sqlwrite.commit() 
+                    elif classname not in ['rengong','premt']:
+                        ret=self.textsource.sqlwrite.execute(f'SELECT * FROM artificialtrans WHERE source = "{contentraw}"').fetchone()
+                        
+                        if ret is None or ret[2] =='':                     
+                            self.textsource.sqlwrite.execute(f'UPDATE artificialtrans SET machineTrans = "{res}" WHERE source = "{contentraw}"')
+                        
+                            self.textsource.sqlwrite.commit() 
+            except:
+                print_exc()
+            try:
+                if globalconfig['sourcestatus']['textractor'] and globalconfig['transkiroku'] and 'sqlwrite2' in dir(self.textsource):
+                    ret=self.textsource.sqlwrite2.execute(f'SELECT machineTrans FROM artificialtrans WHERE source = "{contentraw}"').fetchone() 
+                
+                    ret=json.loads(ret[0]) 
+                    ret[classname]=res
+                    ret=json.dumps(ret).replace('"','""') 
+                    
+                    self.textsource.sqlwrite2.execute(f'UPDATE artificialtrans SET machineTrans = "{ret}" WHERE source = "{contentraw}"')
+                
+                    self.textsource.sqlwrite2.commit() 
+            except:
+                print_exc()
     def fanyiloader(self,classname):
                     try:
                         aclass=importlib.import_module('translator.'+classname).TS
                     except:
                         return
                     aclass.settypename(classname)
-                    if classname=='rengong':
+                    if classname in ['rengong','premt']:
                         _=aclass(self)
                     else:
                         _=aclass()

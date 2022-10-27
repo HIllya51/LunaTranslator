@@ -35,7 +35,7 @@ def GetUserPlotItems(object,configfile,defaultsetting,title) -> tuple:
                         l.setText(f)
                 button.clicked.connect(functools.partial(__,line))
                 hori.addWidget(button)
-            elif arg=='json文件':
+            elif arg=='json文件' or arg=='sqlite文件':
                 button=QPushButton('选择文件')
                 def __(l,_):
                     f=QFileDialog.getOpenFileName(directory= js['args'][arg])
