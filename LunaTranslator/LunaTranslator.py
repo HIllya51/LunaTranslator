@@ -111,15 +111,16 @@ class MAINUI() :
         if noundictconfig['use'] :
             for key in noundictconfig['dict']: 
                 usedict=False
-                
-                if noundictconfig['dict'][key]=='0' :
+                if type(noundictconfig['dict'][key][0])==str:
                     usedict=True
                 else:
-                    try:
-                        if noundictconfig['dict'][key][0]==self.textsource.md5:
-                            usedict=True
-                    except:
-                        pass
+
+                    if noundictconfig['dict'][key][0]=='0' :
+                        usedict=True
+                
+                    if noundictconfig['dict'][key][0]==self.textsource.md5:
+                        usedict=True
+                     
                 if usedict and  key in content:
                     xx=f'ZX{chr(ord("B")+zhanweifu)}Z'
                     content=content.replace(key,xx)
