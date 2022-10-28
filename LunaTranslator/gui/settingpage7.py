@@ -215,10 +215,19 @@ def noundictconfigdialog(object,configdict,title,label=['游戏ID' ,'日文','�
             ff.write(json.dumps(configdict,ensure_ascii=False,sort_keys=False, indent=4))
         dialog.close()
     button3.clicked.connect(clicked3)
+
+    button4=QPushButton(dialog)
+    button4.setText('使用文本编辑器打开')
+    def clicked4():
+        import os
+        if os.path.exists("./userconfig/noundictconfig.json"):
+            os.startfile("./userconfig/noundictconfig.json")
+    button4.clicked.connect(clicked4)
     formLayout.addWidget(table)
     formLayout.addWidget(button)
     formLayout.addWidget(button2)
     formLayout.addWidget(button3)
+    formLayout.addWidget(button4)
     dialog.resize(QSize(600,400))
     dialog.show()
  

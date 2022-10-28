@@ -85,7 +85,7 @@ def autosaveshow(object):
         def clicked(): 
                 try:
                     if os.path.exists(model.item(table.currentIndex().row(),1).text()):
-                        subprocess.Popen(model.item(table.currentIndex().row(),1).text())
+                        subprocess.Popen(model.item(table.currentIndex().row(),1).text()) 
                         dialog.close()
                         if object:
                                 object.close()
@@ -101,8 +101,7 @@ def autosaveshow(object):
                         print(le,os.path.exists(le))
                         if os.path.exists(le):
                                 print('"'+le+'"   "'+ model.item(table.currentIndex().row(),1).text()+'"')
-                                subprocess.Popen('"'+le+'"   "'+ model.item(table.currentIndex().row(),1).text()+'"' )
-                         
+                                subprocess.Popen('"'+le+'"   "'+ model.item(table.currentIndex().row(),1).text()+'"' ) 
                                 dialog.close()
                                 if object:
                                         object.close()
