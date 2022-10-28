@@ -1,7 +1,7 @@
 {
     "position": [
         266,
-        685
+        687
     ],
     "fixedheight": false,
     "width": 1443,
@@ -287,7 +287,7 @@
     },
     "mecab": {
         "use": true,
-        "path": "C:/dataH/Mecab1"
+        "path": "C:/dataH/Mecab"
     },
     "usesearchword": true,
     "edict": {

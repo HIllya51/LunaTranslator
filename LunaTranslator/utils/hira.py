@@ -1,7 +1,7 @@
 from utils.config import globalconfig
 
 import os
-
+from traceback import print_exc
 class hira:
     def __init__(self) -> None: 
         
@@ -31,15 +31,25 @@ class hira:
             for node in self.kks.parseToNodeList(text):
                 try:
                     xx=str(node)+'-'+node.feature.kana.translate(self.h2k)
-                    xx+=f'<br>词性：{node.feature.pos1}-{node.feature.pos2}-{node.feature.pos3}-{node.feature.pos4}'
+
+                    xx+=f'<br>词性：'
+                    if node.feature.pos1!='*':
+                        xx+=f'{node.feature.pos1}'
+                    if node.feature.pos2!='*':
+                        xx+=f'-{node.feature.pos2}' 
+                    if node.feature.pos3!='*':
+                        xx+=f'-{node.feature.pos3}' 
+                    if node.feature.pos4!='*':
+                        xx+=f'-{node.feature.pos4}' 
                     if node.feature.cType!='*':
                         xx+=f'<br>{node.feature.cType}'
                     if node.feature.cForm!='*':
                         xx+=f'<br>{node.feature.cForm}'
-                    xx+='<br>词根：{node.feature.orthbase}-{node.feature.pronbase.translate(self.h2k)}'
+                    _=node.feature.pronBase.translate(self.h2k)
+                    xx+=f'<br>词根：{node.feature.orthBase}-{_}'
                     res.append(xx)
                 except:
-                    pass
+                    print_exc()
             return '<hr>'.join(res)
         else:
             res=[]
