@@ -44,9 +44,8 @@ class hira:
                     if node.feature.cType!='*':
                         xx+=f'<br>{node.feature.cType}'
                     if node.feature.cForm!='*':
-                        xx+=f'<br>{node.feature.cForm}'
-                    _=node.feature.pronBase.translate(self.h2k)
-                    xx+=f'<br>词根：{node.feature.orthBase}-{_}'
+                        xx+=f'<br>{node.feature.cForm}' 
+                    xx+=f'<br>词根：{node.feature.orthBase}'
                     res.append(xx)
                 except:
                     print_exc()
