@@ -4,7 +4,7 @@ import functools
 from cmath import exp
 import functools
 
-from PyQt5.QtWidgets import QApplication, QWidget, QTableView, QAbstractItemView, QLabel, QVBoxLayout
+from PyQt5.QtWidgets import QApplication, QWidget, QTableView, QAbstractItemView, QLabel, QVBoxLayout,QHBoxLayout
 
 from PyQt5.QtWidgets import  QWidget,QLabel ,QLineEdit,QSpinBox,QPushButton,QTextEdit
 
@@ -215,19 +215,36 @@ def noundictconfigdialog(object,configdict,title,label=['游戏ID' ,'日文','�
             ff.write(json.dumps(configdict,ensure_ascii=False,sort_keys=False, indent=4))
         dialog.close()
     button3.clicked.connect(clicked3)
-
+    search=QHBoxLayout(dialog)
+    searchcontent=QLineEdit(dialog)
+    search.addWidget(searchcontent)
     button4=QPushButton(dialog)
-    button4.setText('使用文本编辑器打开')
+    button4.setText('搜索')
     def clicked4():
-        import os
-        if os.path.exists("./userconfig/noundictconfig.json"):
-            os.startfile("./userconfig/noundictconfig.json")
+        text=searchcontent.text()
+         
+        rows=model.rowCount() 
+        cols=model.columnCount()
+        for row in range(rows):
+            ishide=True
+            for c in range(cols):
+                if text in model.item(row,c).text():
+                    table.showRow(row)
+                    ishide=False
+                    break
+            if ishide :
+                table.hideRow(row)
+
+             
     button4.clicked.connect(clicked4)
+    search.addWidget(button4)
+    
     formLayout.addWidget(table)
+    formLayout.addLayout(search)
     formLayout.addWidget(button)
     formLayout.addWidget(button2)
     formLayout.addWidget(button3)
-    formLayout.addWidget(button4)
+    
     dialog.resize(QSize(600,400))
     dialog.show()
  
