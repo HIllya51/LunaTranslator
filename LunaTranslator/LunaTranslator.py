@@ -145,7 +145,11 @@ class MAINUI() :
         if noundictconfig['use'] :
             for key in mp1: 
                 reg=re.compile(re.escape(key), re.IGNORECASE)
-                res=reg.sub(noundictconfig['dict'][mp1[key]][1],res)
+                if type(noundictconfig['dict'][mp1[key]])==str:
+                    v=noundictconfig['dict'][mp1[key]]
+                elif type(noundictconfig['dict'][mp1[key]])==list:
+                    v=noundictconfig['dict'][mp1[key]][1]
+                res=reg.sub(v,res)
         if globalconfig['gongxiangcishu']['use']:
             for key in mp2: 
                 reg=re.compile(re.escape(key), re.IGNORECASE)
