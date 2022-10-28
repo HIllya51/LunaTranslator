@@ -80,8 +80,7 @@ def setTab_about(self) :
         with open('files/version.txt','r')as ff:
             self.version=ff.read() 
         self.tab_about = QWidget()
-        self.tab_widget.addTab(self.tab_about, "")
-        self.tab_widget.setTabText(self.tab_widget.indexOf(self.tab_about), " 资源下载&更新")
+        self.tab_widget.addTab(self.tab_about, "资源下载&更新") 
         label = QLabel(self.tab_about)
         self.customSetGeometry(label, 20, 50, 200, 20)
         label.setText("自动下载更新(需要连接github)")

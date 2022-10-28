@@ -14,8 +14,7 @@ from gui.inputdialog import getxiaoxueguanpath,getmecabpath,getlinggesipath,gete
 def setTabcishu(self) :
      
         self.tab_cishu = QWidget()
-        self.tab_widget.addTab(self.tab_cishu, "")
-        self.tab_widget.setTabText(self.tab_widget.indexOf(self.tab_cishu), " 辞书设置") 
+        self.tab_widget.addTab(self.tab_cishu, "辞书设置") 
         
         label = QLabel(self.tab_cishu)
         self.customSetGeometry(label, 20, 20, 150, 20) 

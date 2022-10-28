@@ -17,8 +17,7 @@ import gui.selecthook
 def setTab6(self) :
      
         self.tab_6 = QWidget()
-        self.tab_widget.addTab(self.tab_6, "")
-        self.tab_widget.setTabText(self.tab_widget.indexOf(self.tab_6), " OCR设置")
+        self.tab_widget.addTab(self.tab_6, "OCR设置") 
 
         label = QLabel(self.tab_6)
         self.customSetGeometry(label, 20, 250,200, 20)

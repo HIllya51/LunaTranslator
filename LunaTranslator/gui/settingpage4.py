@@ -74,6 +74,7 @@ def autosaveshow(object):
         #table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
         table.horizontalHeader().setSectionResizeMode(QHeaderView.Interactive)
         table.setSelectionBehavior(QAbstractItemView.SelectRows)
+        table.setSelectionMode( (QAbstractItemView.SingleSelection)      )
         table.setWordWrap(False) 
         table.setModel(model)
         table.horizontalHeader().setStretchLastSection(True)
@@ -100,7 +101,7 @@ def autosaveshow(object):
                         print(le,os.path.exists(le))
                         if os.path.exists(le):
                                 print('"'+le+'"   "'+ model.item(table.currentIndex().row(),1).text()+'"')
-                                subprocess.Popen('"'+le+'"   "'+ model.item(table.currentIndex().row(),1).text()+'"')
+                                subprocess.Popen('"'+le+'"   "'+ model.item(table.currentIndex().row(),1).text()+'"' )
                          
                                 dialog.close()
                                 if object:
@@ -113,27 +114,21 @@ def autosaveshow(object):
         def clicked2(): 
                 savehook_new.pop(model.item(table.currentIndex().row(),1).text())
                 model.removeRow(table.currentIndex().row())
-        button2.clicked.connect(clicked2)
-        button3=QPushButton(dialog)
-        button3.setText('保存并关闭')
-        def clicked3():
                 with open('./userconfig/savehook_new.json','w',encoding='utf8') as ff:
                         ff.write(json.dumps(savehook_new,ensure_ascii=False))
-                dialog.close()
-        button3.clicked.connect(clicked3)
+        button2.clicked.connect(clicked2)
+         
         formLayout.addWidget(table) 
         formLayout.addWidget(button)
         formLayout.addWidget(button4)
-        formLayout.addWidget(button2)
-        formLayout.addWidget(button3)
+        formLayout.addWidget(button2) 
         dialog.resize(QSize(800,400))
     dialog.show()
  
 def setTab4(self) :
      
         self.tab_4 = QWidget()
-        self.tab_widget.addTab(self.tab_4, "")
-        self.tab_widget.setTabText(self.tab_widget.indexOf(self.tab_4), " HOOK设置")
+        self.tab_widget.addTab(self.tab_4, "HOOK设置") 
  
         # label = QLabel(self.tab_4)
         # self.customSetGeometry(label, 20, 20, 200, 20)
@@ -211,7 +206,7 @@ def setTab4(self) :
         transkirokuuse.currentIndexChanged.connect(lambda x:globalconfig.__setitem__('transkirokuuse',list(globalconfig['fanyi'].keys())[x]))
         
         bt = QPushButton(self.tab_4)
-        self.customSetGeometry(bt, 20, 320, 200, 20)
+        self.customSetGeometry(bt, 20, 320, 200, 25)
         bt.setText("导出sqlite文件为json文件") 
 
         def _sqlite2json():

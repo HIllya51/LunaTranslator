@@ -12,8 +12,7 @@ from gui.inputdialog import GetUserPlotItems
 def setTabTwo(self) :
  
         self.tab_2 = QWidget()
-        self.tab_widget.addTab(self.tab_2, "")
-        self.tab_widget.setTabText(self.tab_widget.indexOf(self.tab_2), " 翻译设置")
+        self.tab_widget.addTab(self.tab_2, "翻译设置") 
  
         label = QLabel(self.tab_2)
         self.customSetGeometry(label, 20, 25, 140, 20)

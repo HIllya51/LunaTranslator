@@ -27,10 +27,10 @@ class textractor(basetext  ):
         try:
             with open(pname,'rb') as ff:
                 bs=ff.read() 
-            
-            self.sqlfname='./transkiroku/'+hashlib.md5(bs).hexdigest()+'_'+os.path.basename(pname).replace('.'+os.path.basename(pname).split('.')[-1],'.sqlite') 
-            self.sqlfname_all='./transkiroku/'+hashlib.md5(bs).hexdigest()+'_'+os.path.basename(pname).replace('.'+os.path.basename(pname).split('.')[-1],'.premt_synthesize.sqlite') 
-            self.jsonfname='./transkiroku/'+hashlib.md5(bs).hexdigest()+'_'+os.path.basename(pname).replace('.'+os.path.basename(pname).split('.')[-1],'.json')
+            self.md5=hashlib.md5(bs).hexdigest()
+            self.sqlfname='./transkiroku/'+self.md5+'_'+os.path.basename(pname).replace('.'+os.path.basename(pname).split('.')[-1],'.sqlite') 
+            self.sqlfname_all='./transkiroku/'+self.md5+'_'+os.path.basename(pname).replace('.'+os.path.basename(pname).split('.')[-1],'.premt_synthesize.sqlite') 
+            self.jsonfname='./transkiroku/'+self.md5+'_'+os.path.basename(pname).replace('.'+os.path.basename(pname).split('.')[-1],'.json')
             def loadjson(self):
                 if os.path.exists(self.jsonfname):
                     with open(self.jsonfname,'r',encoding='utf8') as ff:

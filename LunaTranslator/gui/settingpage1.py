@@ -15,8 +15,7 @@ def setTabOne(self) :
         # 选项卡界面
         self.tab_1 = QWidget()
         self.customSetGeometry(self.tab_1, 0, 0, self.window_width, self.window_height)
-        self.tab_widget.addTab(self.tab_1, "")
-        self.tab_widget.setTabText(self.tab_widget.indexOf(self.tab_1), "基本设置")
+        self.tab_widget.addTab(self.tab_1,"基本设置") 
  
         label = QLabel(self.tab_1)
         self.customSetGeometry(label, 20, 25, 160, 20)
@@ -56,11 +55,11 @@ def setTabOne(self) :
 
 
         label = QLabel(self.tab_1)
-        self.customSetGeometry(label, 20, 150,200, 20)
+        self.customSetGeometry(label, 20, 150,220, 20)
         label.setText("提取的文本自动复制到剪贴板")
  
         self.outputtopasteboard =gui.switchbutton.MySwitch(self.tab_1, sign= globalconfig['outputtopasteboard'] )
-        self.customSetGeometry(self.outputtopasteboard, 220, 150, 20,20)
+        self.customSetGeometry(self.outputtopasteboard, 240, 150, 20,20)
         self.outputtopasteboard.clicked.connect(lambda x:globalconfig.__setitem__('outputtopasteboard',x)) 
          
         self.selectbutton = QPushButton( "", self.tab_1)

@@ -12,6 +12,7 @@ from PyQt5.QtGui import QStandardItem, QStandardItemModel
 import qtawesome
 from PyQt5.QtCore import QThread
 import subprocess
+from traceback import print_exc
 from utils.config import globalconfig ,postprocessconfig,noundictconfig,transerrorfixdictconfig
 from PyQt5.QtWidgets import  QWidget,QLabel, QComboBox,QDoubleSpinBox 
  
@@ -32,9 +33,7 @@ import gui.selecthook
 def setTab7(self) :
      
         self.tab_7 = QWidget()
-        self.tab_widget.addTab(self.tab_7, "")
-        self.tab_widget.setTabText(self.tab_widget.indexOf(self.tab_7), " 翻译优化")
-
+        self.tab_widget.addTab(self.tab_7,  "翻译优化") 
         
         initpostswitchs_auto(self)
 def initpostswitchs_auto(self):
@@ -89,7 +88,7 @@ def initdictswitchs(self,namepos,switchpos,colorpos,settingpos):
     self.customSetGeometry(s1, *settingpos)
     s1.setStyleSheet("background: transparent;")   
     s1.setIcon(qtawesome.icon("fa.gear", color="#FF69B4"  ))
-    s1.clicked.connect(lambda x:noundictconfigdialog(self,noundictconfig,'专有名词翻译设置'))
+    s1.clicked.connect(lambda x:noundictconfigdialog(self,noundictconfig,'专有名词翻译设置(游戏ID 0表示全局)'))
 def initdictswitchs2(self,namepos,switchpos,colorpos,settingpos):
     label = QLabel(self.tab_7)
     self.customSetGeometry(label, *namepos)
@@ -104,9 +103,9 @@ def initdictswitchs2(self,namepos,switchpos,colorpos,settingpos):
     self.customSetGeometry(s1, *settingpos)
     s1.setStyleSheet("background: transparent;")   
     s1.setIcon(qtawesome.icon("fa.gear", color="#FF69B4"  ))
-    s1.clicked.connect(lambda x:noundictconfigdialog(self,transerrorfixdictconfig,'翻译结果替换设置',['翻译','替换'],'./userconfig/transerrorfixdictconfig.json'))
+    s1.clicked.connect(lambda x:noundictconfigdialog1(self,transerrorfixdictconfig,'翻译结果替换设置',['翻译','替换'],'./userconfig/transerrorfixdictconfig.json'))
 
-def noundictconfigdialog(object,configdict,title,label=[ '日文','翻译'],fname='./userconfig/noundictconfig.json'):
+def noundictconfigdialog1(object,configdict,title,label=[  '日文','翻译'],fname='./userconfig/noundictconfig.json'):
     dialog = QDialog(object)  # 自定义一个dialog
     dialog.setWindowTitle(title)
     #dialog.setWindowModality(Qt.ApplicationModal)
@@ -131,7 +130,7 @@ def noundictconfigdialog(object,configdict,title,label=[ '日文','翻译'],fnam
     button=QPushButton(dialog)
     button.setText('添加行')
     def clicked1(): 
-        model.insertRow(0,[QStandardItem(''),QStandardItem('')]) 
+        model.insertRow(0,[ QStandardItem(''),QStandardItem('')]) 
     button.clicked.connect(clicked1)
     button2=QPushButton(dialog)
     button2.setText('删除选中行')
@@ -158,7 +157,69 @@ def noundictconfigdialog(object,configdict,title,label=[ '日文','翻译'],fnam
     formLayout.addWidget(button)
     formLayout.addWidget(button2)
     formLayout.addWidget(button3)
-    dialog.resize(QSize(400,400))
+    dialog.resize(QSize(600,400))
+    dialog.show()
+def noundictconfigdialog(object,configdict,title,label=['游戏ID' ,'日文','翻译'],fname='./userconfig/noundictconfig.json'):
+    dialog = QDialog(object)  # 自定义一个dialog
+    dialog.setWindowTitle(title)
+    #dialog.setWindowModality(Qt.ApplicationModal)
+    
+    formLayout = QVBoxLayout(dialog)  # 配置layout
+        
+    model=QStandardItemModel(len(list(configdict['dict'].keys())),1 , dialog)
+    row=0
+    for key in  (configdict['dict']):                                   # 2
+            if type(configdict['dict'][key])==str:
+                configdict['dict'][key]=["0",configdict['dict'][key]]
+            item = QStandardItem( configdict['dict'][key][0] )
+            model.setItem(row, 0, item)
+            item = QStandardItem(key  )
+            model.setItem(row, 1, item)
+            item = QStandardItem( configdict['dict'][key][1] )
+            model.setItem(row, 2, item)
+            row+=1
+    model.setHorizontalHeaderLabels(label)
+    table = QTableView(dialog)
+    table.setModel(model)
+    table.horizontalHeader().setStretchLastSection(True)
+    #table.setEditTriggers(QAbstractItemView.NoEditTriggers)
+    #table.clicked.connect(self.show_info)
+    button=QPushButton(dialog)
+    button.setText('添加行')
+    def clicked1(): 
+        try:
+            md5=object.object.textsource.md5
+            model.insertRow(0,[QStandardItem(md5),QStandardItem(''),QStandardItem('')]) 
+        except:
+            print_exc()
+            model.insertRow(0,[QStandardItem('0'),QStandardItem(''),QStandardItem('')]) 
+    button.clicked.connect(clicked1)
+    button2=QPushButton(dialog)
+    button2.setText('删除选中行')
+    def clicked2():
+        
+        model.removeRow(table.currentIndex().row())
+    button2.clicked.connect(clicked2)
+    button3=QPushButton(dialog)
+    button3.setText('保存并关闭')
+    def clicked3():
+        rows=model.rowCount() 
+        newdict={}
+        for row in range(rows):
+            if model.item(row,1).text()=="":
+                continue
+            newdict[model.item(row,1).text()]=[model.item(row,0).text(),model.item(row,2).text()]
+        configdict['dict']=newdict
+        with open(fname,'w',encoding='utf-8') as ff:
+            import json
+            ff.write(json.dumps(configdict,ensure_ascii=False,sort_keys=False, indent=4))
+        dialog.close()
+    button3.clicked.connect(clicked3)
+    formLayout.addWidget(table)
+    formLayout.addWidget(button)
+    formLayout.addWidget(button2)
+    formLayout.addWidget(button3)
+    dialog.resize(QSize(600,400))
     dialog.show()
  
 def initpostswitchs(self,name,namepos,switchpos,colorpos,settingpos):
@@ -202,7 +263,7 @@ def postconfigdialog(object,configdict,title):
         spin.setValue(configdict[key])
         spin.valueChanged.connect(lambda x:configdict.__setitem__(key,x))
         formLayout.addWidget(spin)
-        dialog.resize(QSize(400,1))
+        dialog.resize(QSize(600,1))
      
     elif type(configdict[key])==type({}): 
         # lines=QTextEdit(dialog)
@@ -254,6 +315,6 @@ def postconfigdialog(object,configdict,title):
         formLayout.addWidget(button)
         formLayout.addWidget(button2)
         formLayout.addWidget(button3)
-        dialog.resize(QSize(400,400))
+        dialog.resize(QSize(600,400))
     dialog.show()
  

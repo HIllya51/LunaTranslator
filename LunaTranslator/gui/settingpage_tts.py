@@ -10,10 +10,7 @@ import gui.selecthook
 def setTab5(self) :
      
         tab = QWidget()
-        self.tab_widget.addTab(tab, "")
-        self.tab_widget.setTabText(self.tab_widget.indexOf(tab), " 语音设置")
- 
-        
+        self.tab_widget.addTab(tab, "语音设置")  
 
         label = QLabel(tab)
         self.customSetGeometry(label, 20, 20, 120, 20)

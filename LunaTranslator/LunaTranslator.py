@@ -110,8 +110,17 @@ class MAINUI() :
         mp3={}
         if noundictconfig['use'] :
             for key in noundictconfig['dict']: 
-                    
-                if key in content:
+                usedict=False
+                
+                if noundictconfig['dict'][key]=='0' :
+                    usedict=True
+                else:
+                    try:
+                        if noundictconfig['dict'][key][0]==self.textsource.md5:
+                            usedict=True
+                    except:
+                        pass
+                if usedict and  key in content:
                     xx=f'ZX{chr(ord("B")+zhanweifu)}Z'
                     content=content.replace(key,xx)
                     mp1[xx]=key
@@ -136,7 +145,7 @@ class MAINUI() :
         if noundictconfig['use'] :
             for key in mp1: 
                 reg=re.compile(re.escape(key), re.IGNORECASE)
-                res=reg.sub(noundictconfig['dict'][mp1[key]],res)
+                res=reg.sub(noundictconfig['dict'][mp1[key]][1],res)
         if globalconfig['gongxiangcishu']['use']:
             for key in mp2: 
                 reg=re.compile(re.escape(key), re.IGNORECASE)

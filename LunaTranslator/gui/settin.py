@@ -15,7 +15,7 @@ from gui.settingpage_tts import setTab5
 from gui.settingpage6 import setTab6 
 from gui.settingpage7 import setTab7
 from gui.settingpage_about import setTab_about
-from gui.rotatetab import customtabstyle
+from gui.rotatetab import customtabstyle,rotatetab
 from gui.settingpage_cishu import setTabcishu
 class wavmp3player(QObject):
     def __init__(self):
@@ -76,8 +76,22 @@ class Settin(QMainWindow) :
         #self.setFont((QFont("黑体",11,QFont.Bold)))
         self.tab_widget = QTabWidget(self)
         self.tab_widget.setGeometry(self.geometry()) 
-        self.tab_widget.setTabPosition(QTabWidget.West)
+        tabbar=rotatetab(self.tab_widget)
          
+        
+        # tabbar.setStyleSheet("""   
+        #         font:18pt '黑体';       
+        #        """ )
+
+        self.tab_widget.setTabBar(tabbar) 
+        self.tab_widget.setStyleSheet(
+            '''QTabBar:tab { 
+                min-width: %spx;
+                min-height: %spx;
+                font:18pt  ;  }
+            '''%(60*self.rate,180*self.rate)
+        )
+        self.tab_widget.setTabPosition(QTabWidget.West)
         self.hooks=[] 
         setTabOne(self)
         setTabTwo(self)
@@ -89,7 +103,8 @@ class Settin(QMainWindow) :
         setTab7(self)
         setTabcishu(self)
         setTab_about(self)
-        self.setStyle(customtabstyle()) #必须放后面 不然其他样式全都失效
+        #self.setStyle(customtabstyle()) #必须放后面 不然其他样式全都失效
+        
         self.usevoice=0
      
     def hideEvent(self,e):

@@ -14,8 +14,7 @@ import gui.selecthook
 def setTabThree(self) :
      
         self.tab_3 = QWidget()
-        self.tab_widget.addTab(self.tab_3, "")
-        self.tab_widget.setTabText(self.tab_widget.indexOf(self.tab_3), " 显示设置") 
+        self.tab_widget.addTab(self.tab_3, "显示设置") 
         label = QLabel(self.tab_3)
         self.customSetGeometry(label, 20, 20, 90, 20)
         label.setText("不透明度:") 
@@ -95,19 +94,19 @@ def setTabThree(self) :
         
         label=QLabel(self.tab_3)
         label = QLabel(self.tab_3)
-        self.customSetGeometry(label, 20, 250, 100, 20)
+        self.customSetGeometry(label, 20, 250, 150, 20)
         label.setText("翻译结果繁简体显示:") 
         self.fanjiancombo=QComboBox(self.tab_3)
         self.fanjiancombo.addItems(['大陆简体','马新简体','台灣正體','香港繁體','简体','繁體'])
         self.fanjiancombo.setCurrentIndex(globalconfig['fanjian'])
-        self.customSetGeometry(self.fanjiancombo, 150, 250,100,20)
+        self.customSetGeometry(self.fanjiancombo, 170, 250,100,20)
         self.fanjiancombo.currentIndexChanged.connect(lambda x:globalconfig.__setitem__('fanjian',x) )
 
         
         label=QLabel(self.tab_3)
         label = QLabel(self.tab_3)
-        self.customSetGeometry(label, 20, 280, 220, 20)
-        label.setText("翻译窗口顺时针旋转(重启后生效)") 
+        self.customSetGeometry(label, 20, 280, 230, 20)
+        label.setText("翻译窗口顺时针旋转(重启生效)") 
         self.anglecombo=QComboBox(self.tab_3)
         self.anglecombo.addItems(['0','90','180','270'])
         self.anglecombo.setCurrentIndex(globalconfig['rotation'])
