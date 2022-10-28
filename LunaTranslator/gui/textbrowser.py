@@ -147,8 +147,7 @@ for(QTextBlock it = doc->begin(); it !=doc->end();it = it.next())
             tl1=self.textbrowser.cursorRect(self.textbrowser.textCursor()).topLeft()
             tl4=self.textbrowser.cursorRect(self.textbrowser.textCursor()).bottomRight()
             color=self.randomcolor()
-            
-            
+             
             for i in range(1,l+1):
                     
                 cursor=self.textbrowser.textCursor() 

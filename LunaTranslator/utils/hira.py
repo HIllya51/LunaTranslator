@@ -27,8 +27,9 @@ class hira:
         return lenl
     def search(self,text):
         if self.usemecab:
-            res=[]
+            res=[] 
             for node in self.kks.parseToNodeList(text):
+    
                 try:
                     xx=str(node)+'-'+node.feature.kana.translate(self.h2k)
 
@@ -58,13 +59,21 @@ class hira:
             return '<hr>'.join(res)
     def fy(self,text): 
         if self.usemecab:
-            result=[]
+            start=0
+            result=[] 
             for node in self.kks.parseToNodeList(text): 
+                l=0
+                if text[start]=='\n':
+                    start+=1
+                while str(node) not in text[start:start+l]:
+                    l+=1
+                orig=text[start:start+l]
+                start+=l
                 try:
                     hira=node.feature.kana.translate(self.h2k)
                 except:
                     hira=''
-                result.append({'orig':str(node),"hira":hira}) 
+                result.append({'orig':orig,"hira":hira}) 
         else:
             result =self.kks . convert ( text )
         return result
