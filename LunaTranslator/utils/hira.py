@@ -36,7 +36,7 @@ class hira:
                         xx+=f'<br>{node.feature.cType}'
                     if node.feature.cForm!='*':
                         xx+=f'<br>{node.feature.cForm}'
-                    xx+'<br>词根：{node.feature.orthbase}-{node.feature.pronbase.translate(self.h2k)}'
+                    xx+='<br>词根：{node.feature.orthbase}-{node.feature.pronbase.translate(self.h2k)}'
                     res.append(xx)
                 except:
                     pass
