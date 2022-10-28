@@ -161,6 +161,7 @@ class QUnFrameWindow(QWidget):
         
         self.object = object
         self.rate = self.object.screen_scale_rate 
+
         self.startprocessignal.connect(self.startprocessfunction)
         self.writeprocesssignal.connect(self.writeprocess)
         self.killprocesssignal.connect(self.killprocess)
@@ -180,10 +181,13 @@ class QUnFrameWindow(QWidget):
         self.object = object  
         # 界面缩放比例
         self.searchwordW=searchwordW(self)
-         
+        
         self.original = ""    
         self._isTracking=False
         self.isontop=True
+        self.atback=QLabel(self)
+        self.atback.setGeometry(0,30*self.rate,9999,9999)
+        self.atback.setMouseTracking(True)
         self.initTitleLabel()  # 安放标题栏标签
          
         self.initLayout()  # 设置框架布局
@@ -313,6 +317,7 @@ class QUnFrameWindow(QWidget):
         self.document.contentsChanged.connect(self.textAreaChanged) 
           
         
+
         self.masklabel = QLabel(self.translate_text.textbrowser)  
 
         self.masklabel.setGeometry( 0,0,9999,9999)

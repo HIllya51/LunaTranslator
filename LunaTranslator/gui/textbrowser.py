@@ -35,7 +35,15 @@ class Textbrowser():
                                             \
                                            background-color: rgba(%s, %s, %s, %s)"
                                            %(0,0,0,0))
+        self.textbrowserback.setStyleSheet("border-width: 0;\
+                                           border-style: outset;\
+                                           border-top: 0px solid #e8f3f9;\
+                                           color: white;\
+                                            \
+                                           background-color: rgba(%s, %s, %s, %s)"
+                                           %(0,0,0,0))
         self.savetaglabels=[]
+        self.searchmasklabels_clicked=[]
         self.searchmasklabels=[]
         self.addtaged=False
         self.lastcolor=None
@@ -59,28 +67,17 @@ class Textbrowser():
         self.textbrowserback.setFont(x)
     def setStyleSheet(self,x): 
         #self.textbrowser.setStyleSheet(x)
-        self.textbrowserback.setStyleSheet(x)
+        
+        #self.textbrowserback.setStyleSheet(x)
+        self.parent.atback.setStyleSheet(x)
     def move(self,x,y):
         self.textbrowser.move(x,y)
         self.textbrowserback.move(x,y)
-    def document(self):
-       
-        '''
-         QTextDocument *doc =  ui->textEdit_label->document();
-QTextCursor textcursor = ui->textEdit_label->textCursor();
-for(QTextBlock it = doc->begin(); it !=doc->end();it = it.next())
-{
-    QTextBlockFormat tbf = it.blockFormat();
-    tbf.setLineHeight(lineSpacing,QTextBlockFormat::LineDistanceHeight);
-    textcursor.setPosition(it.position());
-    textcursor.setBlockFormat(tbf);
-    ui->textEdit_label->setTextCursor(textcursor);
-}
-        '''
+    def document(self): 
         return self.textbrowser.document()
     def setGeometry(self,_1,_2,_3,_4):
         self.textbrowser.setGeometry(_1,_2,_3,_4)
-        self.textbrowserback.setGeometry(_1,_2,_3,_4)
+        self.textbrowserback.setGeometry(_1,_2,_3,_4) 
     def setAlignment(self,x):
         self.textbrowser.setAlignment(x)
         self.textbrowserback.setAlignment(x)
@@ -160,24 +157,29 @@ for(QTextBlock it = doc->begin(); it !=doc->end();it = it.next())
                 tl3=self.textbrowser.cursorRect(self.textbrowser.textCursor()).topLeft() 
  
                 if labeli>=len(self.searchmasklabels):
-                    ql=Qlabel_c(self.textbrowser) 
+                    ql=QLabel(self.parent.atback) 
                     ql.setMouseTracking(True)
                     self.searchmasklabels.append(ql)
 
+                    ql=Qlabel_c(self.textbrowser) 
+                    ql.setMouseTracking(True)
+                    ql.setStyleSheet("background-color: rgba(0,0,0,0);")
+                    self.searchmasklabels_clicked.append(ql)
                 if tl1.y()!=tl3.y():
-                     
-                    self.searchmasklabels[labeli].setGeometry(tl1.x(),tl1.y(),sum(guesswidth)//len(guesswidth),tl4.y()-tl1.y()) 
+                    self.searchmasklabels_clicked[labeli].setGeometry(tl1.x(),tl1.y() ,sum(guesswidth)//len(guesswidth),tl4.y()-tl1.y()) 
+                    self.searchmasklabels[labeli].setGeometry(tl1.x(),tl1.y() ,sum(guesswidth)//len(guesswidth),tl4.y()-tl1.y()) 
                 else:
                     guesswidth.append(tl2.x()-tl1.x())
-                    self.searchmasklabels[labeli].setGeometry(tl1.x(),tl1.y(),tl2.x()-tl1.x(),tl2.y()-tl1.y())
+                    self.searchmasklabels_clicked[labeli].setGeometry(tl1.x(),tl1.y() ,tl2.x()-tl1.x(),tl2.y()-tl1.y())
+                    self.searchmasklabels[labeli].setGeometry(tl1.x(),tl1.y() ,tl2.x()-tl1.x(),tl2.y()-tl1.y())
                 self.searchmasklabels[labeli].setStyleSheet(f"background-color: rgba{color};"  )
                 tl1=tl3 
                 tl4=tl2
                 if word['orig'] not in ['\n','\r'] :
-
+                    self.searchmasklabels_clicked[labeli].show()
                     self.searchmasklabels[labeli].show()
                 if callback:
-                    self.searchmasklabels[labeli].callback=functools.partial(callback,word['orig'])
+                    self.searchmasklabels_clicked[labeli].callback=functools.partial(callback,word['orig'])
                 #self.searchmasklabels[labeli].clicked.connect(lambda x:print(111))
                 #self.searchmasklabels[labeli].mousePressEvent=(lambda x:print(111))
                 labeli+=1
@@ -186,9 +188,9 @@ for(QTextBlock it = doc->begin(); it !=doc->end();it = it.next())
                 
     def randomcolor(self):
         if self.lastcolor is None:
-            self.lastcolor=(random.randint(0,255),random.randint(0,255),random.randint(0,255),0.3)
+            self.lastcolor=(random.randint(0,255),random.randint(0,255),random.randint(0,255),1)
         
-        self.lastcolor= ((self.lastcolor[0]+ random.randint(64,192))%255,(self.lastcolor[1]+ random.randint(64,192))%255,(self.lastcolor[2]+ random.randint(64,192))%255,0.3)
+        self.lastcolor= ((self.lastcolor[0]+ random.randint(64,192))%255,(self.lastcolor[1]+ random.randint(64,192))%255,(self.lastcolor[2]+ random.randint(64,192))%255,max(0.3,globalconfig['transparent']/100))
         return self.lastcolor
     @timer
     def addtag(self,x): 
@@ -272,6 +274,8 @@ for(QTextBlock it = doc->begin(); it !=doc->end();it = it.next())
         self.textbrowserback.setCurrentCharFormat(format2)
     def clear(self):
         for label in self.searchmasklabels:
+            label.hide()
+        for label in self.searchmasklabels_clicked:
             label.hide()
         for label in self.savetaglabels:
             label.hide()

@@ -1,12 +1,12 @@
 {
     "position": [
-        604,
-        476
+        522,
+        426
     ],
     "fixedheight": false,
     "width": 712,
     "autorun": true,
-    "transparent": 51,
+    "transparent": 37,
     "fontsize": 17.699999999999996,
     "fonttype": "思源黑体 CN Medium",
     "miaobianwidth2": 5,
@@ -54,9 +54,9 @@
         "volume": 100.0
     },
     "sourcestatus": {
-        "copy": false,
+        "copy": true,
         "ocr": false,
-        "textractor": true,
+        "textractor": false,
         "textractor_pipe": false
     },
     "ocr": {
