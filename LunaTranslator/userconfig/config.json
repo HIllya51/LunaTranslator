@@ -1,7 +1,7 @@
 {
     "position": [
-        711,
-        322
+        559,
+        517
     ],
     "fixedheight": false,
     "width": 759,
@@ -54,9 +54,9 @@
         "volume": 100.0
     },
     "sourcestatus": {
-        "copy": true,
+        "copy": false,
         "ocr": false,
-        "textractor": false,
+        "textractor": true,
         "textractor_pipe": false
     },
     "ocr": {
@@ -289,7 +289,7 @@
         "use": true,
         "path": "C:/dataH/Mecab"
     },
-    "usesearchword": true,
+    "usesearchword": false,
     "edict": {
         "use": false,
         "path": ""

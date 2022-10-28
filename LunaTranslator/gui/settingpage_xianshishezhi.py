@@ -132,12 +132,11 @@ def setTabThree(self) :
         self.customSetGeometry(label, 20, 80, 60, 20)
         label.setText("显示原文:")
         
-        def __changeuibuttonstate(self,x):
+        def __changeuibuttonstate(self,x): 
                 globalconfig.__setitem__('isshowrawtext',x)
-                self.object.translation_ui.showhiderawbutton.setIcon(qtawesome.icon("fa.eye"   if globalconfig['isshowrawtext'] else "fa.eye-slash" ,color="white"))
-                
-                self.show_hira_switch .setEnabled(globalconfig['isshowrawtext'])
-                self.showatmiddleswitch .setEnabled(x)
+                self.object.translation_ui.showhiderawbutton.setIcon(qtawesome.icon("fa.eye"   if globalconfig['isshowrawtext'] else "fa.eye-slash" ,color="white")) 
+                self.show_hira_switch .setEnabled(x)
+                self.showatmiddleswitch .setEnabled(x) 
         self.show_original_switch =gui.switchbutton.MySwitch(self.tab_3, sign=globalconfig['isshowrawtext'])
         self.customSetGeometry(self.show_original_switch, 95, 80, 20,20)
         self.show_original_switch.clicked.connect(lambda x: __changeuibuttonstate(self,x))  

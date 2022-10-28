@@ -23,9 +23,9 @@ def setTabcishu(self) :
         def __changemecabstate(self,x):
                 globalconfig['mecab']['use']=x 
                 self.object.starthira()
-        self.show_original_switch =gui.switchbutton.MySwitch(self.tab_cishu, sign=globalconfig['mecab']['use'])
-        self.customSetGeometry(self.show_original_switch,  180,20, 20,20)
-        self.show_original_switch.clicked.connect(lambda x: __changemecabstate(self,x))  
+        s =gui.switchbutton.MySwitch(self.tab_cishu, sign=globalconfig['mecab']['use'])
+        self.customSetGeometry(s,  180,20, 20,20)
+        s.clicked.connect(lambda x: __changemecabstate(self,x))  
         
         s2 = QPushButton( "", self.tab_cishu)
         self.customSetIconSize(s2, 20, 20)
@@ -41,9 +41,9 @@ def setTabcishu(self) :
         label = QLabel(self.tab_cishu)
         self.customSetGeometry(label, 20, 80, 250, 20) 
         label.setText("开启快捷查词(点击原文可查词)") 
-        self.show_original_switch =gui.switchbutton.MySwitch(self.tab_cishu, sign=globalconfig['usesearchword'])
-        self.customSetGeometry(self.show_original_switch,  280,80, 20,20)
-        self.show_original_switch.clicked.connect(lambda x: globalconfig.__setitem__('usesearchword',x))  
+        s =gui.switchbutton.MySwitch(self.tab_cishu, sign=globalconfig['usesearchword'])
+        self.customSetGeometry(s,  280,80, 20,20)
+        s.clicked.connect(lambda x: globalconfig.__setitem__('usesearchword',x))  
         
         s1 = QPushButton( "", self.tab_cishu)
         self.customSetIconSize(s1, 20, 20)
