@@ -1,10 +1,10 @@
 {
     "position": [
-        533,
-        531
+        711,
+        322
     ],
     "fixedheight": false,
-    "width": 712,
+    "width": 759,
     "autorun": true,
     "transparent": 37,
     "fontsize": 17.699999999999996,
@@ -61,7 +61,7 @@
     },
     "ocr": {
         "local": {
-            "use": false,
+            "use": true,
             "name": "本地OCR"
         },
         "baiduocr": {
@@ -84,7 +84,7 @@
             "name": "youdaocr"
         },
         "youdaocrtrans": {
-            "use": true,
+            "use": false,
             "name": "youdao图片翻译"
         },
         "windowsocr": {
@@ -297,5 +297,6 @@
     "linggesi": {
         "use": false,
         "path": "C:/dataH/vnr/vnr/Caches/Dictionaries/Lingoes"
-    }
+    },
+    "show_fenci": false
 }

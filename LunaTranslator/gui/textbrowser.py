@@ -163,21 +163,28 @@ class Textbrowser():
 
                     ql=Qlabel_c(self.textbrowser) 
                     ql.setMouseTracking(True)
-                    ql.setStyleSheet("background-color: rgba(0,0,0,0);")
+                    ql.setStyleSheet("background-color: rgba(0,0,0,0.01);")
                     self.searchmasklabels_clicked.append(ql)
                 if tl1.y()!=tl3.y():
-                    self.searchmasklabels_clicked[labeli].setGeometry(tl1.x(),tl1.y() ,sum(guesswidth)//len(guesswidth),tl4.y()-tl1.y()) 
-                    self.searchmasklabels[labeli].setGeometry(tl1.x(),tl1.y() ,sum(guesswidth)//len(guesswidth),tl4.y()-tl1.y()) 
+                    if globalconfig['usesearchword']:
+                        self.searchmasklabels_clicked[labeli].setGeometry(tl1.x(),tl1.y() ,sum(guesswidth)//len(guesswidth),tl4.y()-tl1.y()) 
+                    if globalconfig['show_fenci']:
+                        self.searchmasklabels[labeli].setGeometry(tl1.x(),tl1.y() ,sum(guesswidth)//len(guesswidth),tl4.y()-tl1.y()) 
                 else:
                     guesswidth.append(tl2.x()-tl1.x())
-                    self.searchmasklabels_clicked[labeli].setGeometry(tl1.x(),tl1.y() ,tl2.x()-tl1.x(),tl2.y()-tl1.y())
-                    self.searchmasklabels[labeli].setGeometry(tl1.x(),tl1.y() ,tl2.x()-tl1.x(),tl2.y()-tl1.y())
-                self.searchmasklabels[labeli].setStyleSheet(f"background-color: rgba{color};"  )
+                    if globalconfig['usesearchword']:
+                        self.searchmasklabels_clicked[labeli].setGeometry(tl1.x(),tl1.y() ,tl2.x()-tl1.x(),tl2.y()-tl1.y())
+                    if globalconfig['show_fenci']:
+                        self.searchmasklabels[labeli].setGeometry(tl1.x(),tl1.y() ,tl2.x()-tl1.x(),tl2.y()-tl1.y())
+                if globalconfig['show_fenci']:
+                    self.searchmasklabels[labeli].setStyleSheet(f"background-color: rgba{color};"  )
                 tl1=tl3 
                 tl4=tl2
                 if word['orig'] not in ['\n','\r'] :
-                    self.searchmasklabels_clicked[labeli].show()
-                    self.searchmasklabels[labeli].show()
+                    if globalconfig['usesearchword']:
+                        self.searchmasklabels_clicked[labeli].show()
+                    if globalconfig['show_fenci']:
+                        self.searchmasklabels[labeli].show()
                 if callback:
                     self.searchmasklabels_clicked[labeli].callback=functools.partial(callback,word['orig'])
                 #self.searchmasklabels[labeli].clicked.connect(lambda x:print(111))

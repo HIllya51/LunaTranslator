@@ -89,7 +89,7 @@ class Settin(QMainWindow) :
                 min-width: %spx;
                 min-height: %spx;
                 font:18pt  ;  }
-            '''%(60*self.rate,180*self.rate)
+            '''%(50*self.rate,180*self.rate)
         )
         self.tab_widget.setTabPosition(QTabWidget.West)
         self.hooks=[] 

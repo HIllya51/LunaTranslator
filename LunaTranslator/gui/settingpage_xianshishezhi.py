@@ -129,31 +129,45 @@ def setTabThree(self) :
 
 
         label = QLabel(self.tab_3)
-        self.customSetGeometry(label, 275, 80, 60, 20)
+        self.customSetGeometry(label, 20, 80, 60, 20)
         label.setText("显示原文:")
         
         def __changeuibuttonstate(self,x):
                 globalconfig.__setitem__('isshowrawtext',x)
                 self.object.translation_ui.showhiderawbutton.setIcon(qtawesome.icon("fa.eye"   if globalconfig['isshowrawtext'] else "fa.eye-slash" ,color="white"))
+                
+                self.show_hira_switch .setEnabled(globalconfig['isshowrawtext'])
+                self.showatmiddleswitch .setEnabled(x)
         self.show_original_switch =gui.switchbutton.MySwitch(self.tab_3, sign=globalconfig['isshowrawtext'])
-        self.customSetGeometry(self.show_original_switch, 350, 80, 20,20)
+        self.customSetGeometry(self.show_original_switch, 95, 80, 20,20)
         self.show_original_switch.clicked.connect(lambda x: __changeuibuttonstate(self,x))  
 
         label = QLabel(self.tab_3)
-        self.customSetGeometry(label, 450, 80, 60, 20)
+        self.customSetGeometry(label, 450, 80, 150, 20)
+        label.setText("显示分词结果:")
+         
+        self.showatmiddleswitch =gui.switchbutton.MySwitch(self.tab_3, sign=globalconfig['show_fenci'])
+        self.customSetGeometry(self.showatmiddleswitch, 600, 80, 20,20)
+        self.showatmiddleswitch.clicked.connect(lambda x:globalconfig.__setitem__('show_fenci',x))  
+         
+        self.showatmiddleswitch .setEnabled(globalconfig['isshowrawtext'])
+        
+        label = QLabel(self.tab_3)
+        self.customSetGeometry(label, 20, 170, 60, 20)
         label.setText("居中显示:")
          
-        self.showatmiddleswitch =gui.switchbutton.MySwitch(self.tab_3, sign=globalconfig['showatcenter'])
-        self.customSetGeometry(self.showatmiddleswitch, 600, 80, 20,20)
-        self.showatmiddleswitch.clicked.connect(lambda x:globalconfig.__setitem__('showatcenter',x))  
+        s1 =gui.switchbutton.MySwitch(self.tab_3, sign=globalconfig['showatcenter'])
+        self.customSetGeometry(s1, 95, 170, 20,20)
+        s1.clicked.connect(lambda x:globalconfig.__setitem__('showatcenter',x))  
+
         label = QLabel(self.tab_3)
-        self.customSetGeometry(label, 20, 80, 60, 20)
+        self.customSetGeometry(label, 275, 80, 60, 20)
         label.setText("显示假名:")
  
         self.show_hira_switch =gui.switchbutton.MySwitch(self.tab_3, sign=globalconfig['isshowhira'])
-        self.customSetGeometry(self.show_hira_switch, 95, 80,20,20)
+        self.customSetGeometry(self.show_hira_switch, 350, 80,20,20)
         self.show_hira_switch.clicked.connect(lambda x:globalconfig.__setitem__('isshowhira',x)) 
-        
+        self.show_hira_switch .setEnabled(globalconfig['isshowrawtext'])
         label = QLabel(self.tab_3)
         self.customSetGeometry(label, 275, 110, 60, 20)
         label.setText("原文颜色:")

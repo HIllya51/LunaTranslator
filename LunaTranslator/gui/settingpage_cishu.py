@@ -40,7 +40,7 @@ def setTabcishu(self) :
 
         label = QLabel(self.tab_cishu)
         self.customSetGeometry(label, 20, 80, 250, 20) 
-        label.setText("开启查词(点击翻译框原文可查词)") 
+        label.setText("开启快捷查词(点击原文可查词)") 
         self.show_original_switch =gui.switchbutton.MySwitch(self.tab_cishu, sign=globalconfig['usesearchword'])
         self.customSetGeometry(self.show_original_switch,  280,80, 20,20)
         self.show_original_switch.clicked.connect(lambda x: globalconfig.__setitem__('usesearchword',x))  
