@@ -188,7 +188,8 @@ for(QTextBlock it = doc->begin(); it !=doc->end();it = it.next())
         if self.lastcolor is None:
             self.lastcolor=(random.randint(0,255),random.randint(0,255),random.randint(0,255),0.3)
         
-        return ((self.lastcolor[0]+ random.randint(32,224))%255,(self.lastcolor[1]+ random.randint(32,224))%255,(self.lastcolor[2]+ random.randint(32,224))%255,0.3)
+        self.lastcolor= ((self.lastcolor[0]+ random.randint(64,192))%255,(self.lastcolor[1]+ random.randint(64,192))%255,(self.lastcolor[2]+ random.randint(64,192))%255,0.3)
+        return self.lastcolor
     @timer
     def addtag(self,x): 
         if len(self.savetaglabels)<len(x):
