@@ -24,15 +24,13 @@ class searchwordW(QMainWindow):
         #font.setFamily("Arial Unicode MS")
         font.setFamily(globalconfig['fonttype'])
         font.setPointSize(10)
-        self.setGeometry(0,0,500,300)
+        self.setGeometry(0,0,400,500)
         self.centralWidget = QWidget(self) 
         self.setWindowIcon(qtawesome.icon("fa.gear" ))
         self.hboxlayout = QHBoxLayout(self.centralWidget)  
-         
-        self.vboxlayout = QVBoxLayout()  
+        self.vboxlayout = QVBoxLayout()   
         
-        
-        self.userhooklayout = QHBoxLayout() 
+        self.userhooklayout = QHBoxLayout()  
         self.vboxlayout.addLayout(self.userhooklayout)
         self.userhook=QLineEdit()
         self.userhook.setFont(font)

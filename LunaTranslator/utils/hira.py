@@ -49,7 +49,7 @@ class hira:
                     xx+=f'<br>词根：{node.feature.orthBase}'
                     res.append(xx)
                 except:
-                    print_exc()
+                    pass
             return '<hr>'.join(res)
         else:
             res=[]
