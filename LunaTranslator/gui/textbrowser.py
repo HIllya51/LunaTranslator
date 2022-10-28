@@ -38,6 +38,7 @@ class Textbrowser():
         self.savetaglabels=[]
         self.searchmasklabels=[]
         self.addtaged=False
+        self.lastcolor=None
         self.charformat=self.textbrowser.currentCharFormat()
     def simplecharformat(self,color):
         self.textbrowser.setCurrentCharFormat(self.charformat)
@@ -137,14 +138,16 @@ for(QTextBlock it = doc->begin(); it !=doc->end();it = it.next())
         cursor.movePosition(QTextCursor.StartOfBlock)
         self.textbrowserback.setTextCursor(cursor)
         
-        
+        guesswidth=[]
         for word in x:
              
             if word['orig']=='\n':
                 continue
             l=len(word['orig'])
             tl1=self.textbrowser.cursorRect(self.textbrowser.textCursor()).topLeft()
+            tl4=self.textbrowser.cursorRect(self.textbrowser.textCursor()).bottomRight()
             color=self.randomcolor()
+            
             
             for i in range(1,l+1):
                     
@@ -161,10 +164,16 @@ for(QTextBlock it = doc->begin(); it !=doc->end();it = it.next())
                     ql=Qlabel_c(self.textbrowser) 
                     ql.setMouseTracking(True)
                     self.searchmasklabels.append(ql)
-                self.searchmasklabels[labeli].setGeometry(tl1.x(),tl1.y(),tl2.x()-tl1.x(),tl2.y()-tl1.y())
+
+                if tl1.y()!=tl3.y():
+                     
+                    self.searchmasklabels[labeli].setGeometry(tl1.x(),tl1.y(),sum(guesswidth)//len(guesswidth),tl4.y()-tl1.y()) 
+                else:
+                    guesswidth.append(tl2.x()-tl1.x())
+                    self.searchmasklabels[labeli].setGeometry(tl1.x(),tl1.y(),tl2.x()-tl1.x(),tl2.y()-tl1.y())
                 self.searchmasklabels[labeli].setStyleSheet(f"background-color: rgba{color};"  )
                 tl1=tl3 
-                 
+                tl4=tl2
                 if word['orig'] not in ['\n','\r'] :
 
                     self.searchmasklabels[labeli].show()
@@ -177,7 +186,10 @@ for(QTextBlock it = doc->begin(); it !=doc->end();it = it.next())
         
                 
     def randomcolor(self):
-        return (random.randint(0,255),random.randint(0,255),random.randint(0,255),0.3)
+        if self.lastcolor is None:
+            self.lastcolor=(random.randint(0,255),random.randint(0,255),random.randint(0,255),0.3)
+        
+        return ((self.lastcolor[0]+ random.randint(32,224))%255,(self.lastcolor[1]+ random.randint(32,224))%255,(self.lastcolor[2]+ random.randint(32,224))%255,0.3)
     @timer
     def addtag(self,x): 
         if len(self.savetaglabels)<len(x):
