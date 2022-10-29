@@ -317,7 +317,10 @@ class MAINUI() :
                 if globalconfig['fanjian']!=0:
                     res[k]=zhconv.convert(res[k], ['zh-cn', 'zh-tw', 'zh-hk', 'zh-sg', 'zh-hans', 'zh-hant'][globalconfig['fanjian']])
 
-                self.translation_ui.displayres.emit(k,res[k])
+                if k  in globalconfig['fanyi']:
+                    self.translation_ui.displayres.emit(k,res[k])
+                else:
+                    self.translation_ui.displayres.emit('premt',res[k])
         else:
             if globalconfig['fanjian']!=0:
                 res=zhconv.convert(res, ['zh-cn', 'zh-tw', 'zh-hk', 'zh-sg', 'zh-hans', 'zh-hant'][globalconfig['fanjian']])
