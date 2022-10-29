@@ -6,6 +6,7 @@ from utils.config import globalconfig
 import qtawesome
 import gui.switchbutton
 import gui.attachprocessdialog  
+from traceback import print_exc
 import gui.selecthook 
 import importlib
 from gui.inputdialog import GetUserPlotItems
@@ -77,6 +78,7 @@ def initfanyiswitchs_auto(self):
             try:
                 importlib.import_module('translator.'+fanyi)
             except:
+                print_exc()
                 continue
             initfanyiswitchs(self,fanyi,(x, y, 85, 20),(x+80, y, 20,20),(x+110, y, 20,20),(x+140, y, 20,20))
             num+=1

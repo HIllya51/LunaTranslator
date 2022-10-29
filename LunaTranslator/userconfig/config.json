@@ -1,7 +1,7 @@
 {
     "position": [
-        660,
-        720
+        798,
+        691
     ],
     "fixedheight": false,
     "width": 759,
@@ -54,9 +54,9 @@
         "volume": 100.0
     },
     "sourcestatus": {
-        "copy": false,
+        "copy": true,
         "ocr": false,
-        "textractor": true,
+        "textractor": false,
         "textractor_pipe": false
     },
     "ocr": {
@@ -192,7 +192,7 @@
             "name": "iciba"
         },
         "baiduapi": {
-            "use": true,
+            "use": false,
             "color": "#f003ec",
             "name": "百度api",
             "argsfile": "./userconfig/baiduapi.json"
@@ -236,13 +236,13 @@
             "argsfile": "./userconfig/caiyunapi.json"
         },
         "huoshanapi": {
-            "use": false,
+            "use": true,
             "color": "#0ff000",
             "name": "火山api",
             "argsfile": "./userconfig/huoshanapi.json"
         },
         "papago": {
-            "use": true,
+            "use": false,
             "color": "#0101f0",
             "name": "papago"
         },
