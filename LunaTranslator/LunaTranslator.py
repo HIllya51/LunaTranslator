@@ -37,8 +37,7 @@ from functools import partial
 #print(time.time()-starttime)
 import win32api,win32con,win32process
 import re
-import zhconv 
-import pytz
+import zhconv  
 import xml.etree.ElementTree as ET
 from xml.etree.ElementTree import Element
 
