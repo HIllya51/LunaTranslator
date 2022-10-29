@@ -1,11 +1,11 @@
 {
     "position": [
-        769,
-        697
+        425,
+        522
     ],
     "fixedheight": false,
     "width": 759,
-    "autorun": false,
+    "autorun": true,
     "transparent": 37,
     "fontsize": 17.699999999999996,
     "fonttype": "思源黑体 CN Medium",
@@ -54,8 +54,8 @@
         "volume": 100.0
     },
     "sourcestatus": {
-        "copy": false,
-        "ocr": true,
+        "copy": true,
+        "ocr": false,
         "textractor": false,
         "textractor_pipe": false
     },
@@ -289,7 +289,7 @@
         "use": true,
         "path": "C:/dataH/Mecab"
     },
-    "usesearchword": false,
+    "usesearchword": true,
     "edict": {
         "use": false,
         "path": ""
@@ -310,7 +310,7 @@
                     "",
                     ""
                 ],
-                "key1": 2,
+                "key1": 0,
                 "key2": 0
             },
             "_2": {

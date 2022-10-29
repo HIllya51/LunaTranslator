@@ -69,7 +69,7 @@ class Settin(QMainWindow) :
         self.setFixedSize(self.window_width, self.window_height) 
         
         #self.setWindowFlags(Qt.WindowStaysOnTopHint |Qt.WindowCloseButtonHint)
-        self.setWindowFlags( Qt.WindowCloseButtonHint)
+        #self.setWindowFlags( Qt.WindowCloseButtonHint)
         self.setWindowTitle("设置")
         self.setWindowIcon(qtawesome.icon("fa.gear" ))
         
