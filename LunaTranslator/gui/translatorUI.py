@@ -62,15 +62,18 @@ class QUnFrameWindow(QWidget):
             #self.move(self.pos() + self._endPos)
             self.move(self.pos().x()+self.rate *other[0],self.pos().y()+self.rate *other[1])
     def showres(self,_type,res): 
-        if globalconfig['showfanyisource']:
-            #print(_type)
-            self.showline((None,globalconfig['fanyi'][_type]['name']+'  '+res),globalconfig['fanyi'][_type]['color']  )
-        else:
-            self.showline((None,res),globalconfig['fanyi'][_type]['color']  )
-        
-        #print(globalconfig['fanyi'][_type]['name']+'  '+res+'\n')
-        
-        self.transhis.getnewsentencesignal.emit(globalconfig['fanyi'][_type]['name']+'  '+res)
+        try:
+            if globalconfig['showfanyisource']:
+                #print(_type)
+                self.showline((None,globalconfig['fanyi'][_type]['name']+'  '+res),globalconfig['fanyi'][_type]['color']  )
+            else:
+                self.showline((None,res),globalconfig['fanyi'][_type]['color']  )
+            
+            #print(globalconfig['fanyi'][_type]['name']+'  '+res+'\n')
+            
+            self.transhis.getnewsentencesignal.emit(globalconfig['fanyi'][_type]['name']+'  '+res)
+        except:
+            print_exc()
     def showraw(self,hira,res,color,show ):
         self.clearText()
         self.original=res 
