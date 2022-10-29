@@ -159,7 +159,7 @@ def noundictconfigdialog1(object,configdict,title,label=[  '日文','翻译'],fn
     formLayout.addWidget(button3)
     dialog.resize(QSize(600,400))
     dialog.show()
-def noundictconfigdialog(object,configdict,title,label=['游戏ID' ,'日文','翻译'],fname='./userconfig/noundictconfig.json'):
+def noundictconfigdialog(object,configdict,title,label=['游戏ID MD5' ,'日文','翻译'],fname='./userconfig/noundictconfig.json'):
     dialog = QDialog(object)  # 自定义一个dialog
     dialog.setWindowTitle(title)
     #dialog.setWindowModality(Qt.ApplicationModal)
