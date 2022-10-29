@@ -151,18 +151,24 @@ def settingtextractor(self,show1 ):
                 if show1:
                     self.show()
                 return 
-            if pexe=='':
-                hwnd=win32api.OpenProcess(win32con.PROCESS_ALL_ACCESS,False, (pid))
-                pexe=win32process.GetModuleFileNameEx(hwnd,None) 
+            
             # if pid==self.hookpid:
             #     self.show()
             #     return
             try:
-                process=win32api.OpenProcess(2097151,False, pid) #PROCESS_ALL_ACCESS
+                if True:
+                #try:
+
+                    process=win32api.OpenProcess(win32con.PROCESS_ALL_ACCESS,False, (pid))
+                # except:
+                #     process=win32api.OpenProcess(win32con.PROCESS_QUERY_LIMITED_INFORMATION,False, (pid))
+                
             except pywintypes.error:
                 self.object.translation_ui.displayraw.emit(f'打开进程失败！','#ff0000') 
                 return
-
+            if pexe=='':
+              
+                pexe=win32process.GetModuleFileNameEx(process,None) 
             
             if   self.object.textsource:
                 self.object.textsource.end()  

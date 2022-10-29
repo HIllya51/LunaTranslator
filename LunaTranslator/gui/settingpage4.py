@@ -239,7 +239,11 @@ def setTab4(self) :
 def autostarthookfunction(self,pid,pexe,hookcode):
          
         try:
-                process=win32api.OpenProcess(2097151,False, pid) #PROCESS_ALL_ACCESS
+                if True:#try:
+
+                    process=win32api.OpenProcess(win32con.PROCESS_ALL_ACCESS,False, (pid))
+                # except:
+                #     process=win32api.OpenProcess(win32con.PROCESS_QUERY_LIMITED_INFORMATION,False, (pid))
         except  : 
                 return
         

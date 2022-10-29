@@ -50,7 +50,12 @@ class AttachProcessDialog(QDialog):
                         title = win32gui.GetWindowText(hwnd)
                         #print(f'classname:{classname} title:{title}') 
                         tid, pid=win32process.GetWindowThreadProcessId(hwnd) 
-                        hwnd=win32api.OpenProcess(win32con.PROCESS_ALL_ACCESS,False, (pid))
+                        if True:
+                        #try:
+
+                            hwnd=win32api.OpenProcess(win32con.PROCESS_ALL_ACCESS,False, (pid))
+                        # except:
+                        #     hwnd=win32api.OpenProcess(win32con.PROCESS_QUERY_LIMITED_INFORMATION,False, (pid))
                         name_=win32process.GetModuleFileNameEx(hwnd,None) 
                         name=name_.lower()
                         if name[-4:]!='.exe' or ':\\windows\\'  in name   or '\\microsoft\\'  in name:
@@ -78,7 +83,12 @@ class AttachProcessDialog(QDialog):
                 try:
                     tid, pid=win32process.GetWindowThreadProcessId(hwnd)
                     #print(pid,  win32gui.GetWindowText(hwnd))
-                    hwnd=win32api.OpenProcess(win32con.PROCESS_ALL_ACCESS,False, pid)
+                    if True:
+                    #try:
+
+                        hwnd=win32api.OpenProcess(win32con.PROCESS_ALL_ACCESS,False, (pid))
+                    # except:
+                    #     hwnd=win32api.OpenProcess(win32con.PROCESS_QUERY_LIMITED_INFORMATION,False, (pid))
                     name_=win32process.GetModuleFileNameEx(hwnd,None) 
                     #print(name_) 
                     self.processEdit.setText(name_)
@@ -103,7 +113,7 @@ class AttachProcessDialog(QDialog):
         self.setWindowFlags(Qt.WindowStaysOnTopHint |Qt.WindowCloseButtonHint)
         t1=time.time()
         self.layout1=QVBoxLayout()
-        self.label=QLabel('如果没看见想要附加的进程，尝试使用管理员权限运行，也可以尝试点击下方按钮后点击游戏窗口') 
+        self.label=QLabel('如果没看见想要附加的进程，可以尝试点击下方按钮后点击游戏窗口，或者尝试使用管理员权限运行本软件！！') 
         self.button=QPushButton('点击此按钮后点击游戏窗口')
         self.button.clicked.connect(self.selectwindow)
         self.layout1.addWidget(self.label)

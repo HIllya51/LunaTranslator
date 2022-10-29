@@ -388,8 +388,8 @@ class MAINUI() :
                 for pid in plist:
                     #print(pid)
                     try:
-                            hwnd = win32api.OpenProcess(
-                                win32con.PROCESS_ALL_ACCESS, False, (pid))
+                            hwnd=win32api.OpenProcess(win32con.PROCESS_ALL_ACCESS,False, (pid))
+                            #hwnd=win32api.OpenProcess(win32con.PROCESS_QUERY_LIMITED_INFORMATION,False, (pid))
                             name_ = win32process.GetModuleFileNameEx(
                                 hwnd, None)
                     except:
