@@ -20,8 +20,8 @@ int main(int argc,char *argv[]) {
     printf("%s \n", argv[6]);
 
     ebyroid = Ebyroid::Create((const char*)argv[1],//"C:\\dataH\\Yukari2",
-        //(const char*)argv[2],
-        "C:\\Users\\11737\\Documents\\GitHub\\LunaTranslator\\LunaTranslator\\files\\voiceroid2\\aitalked.dll", 
+        (const char*)argv[2],
+        //"C:\\Users\\11737\\Documents\\GitHub\\LunaTranslator\\LunaTranslator\\files\\voiceroid2\\aitalked.dll", 
         (const char*)argv[3],//"yukari_emo_44",
         2,//atof((const char*)argv[4]),// 2, 
         atof((const char*)argv[5]));//1); //0.1-2,0.5-4
