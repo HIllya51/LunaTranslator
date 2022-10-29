@@ -48,6 +48,14 @@ class QUnFrameWindow(QWidget):
     killprocesssignal=pyqtSignal()
     hookfollowsignal=pyqtSignal(int,tuple)
     toolbarhidedelaysignal=pyqtSignal()
+    clickSettin_signal=pyqtSignal()
+    showsavegame_signal=pyqtSignal()
+    settingprocess_signal=pyqtSignal()
+    settinghookthread_signal=pyqtSignal()
+    clickRange_signal=pyqtSignal()
+    showhide_signal=pyqtSignal()
+    bindcropwindow_signal=pyqtSignal()
+    quitf_signal=pyqtSignal()
     def keeptopfuntion(self):
         win32gui.BringWindowToTop(int(self.winId()))
     def hookfollowsignalsolve(self,code,other): 
@@ -178,6 +186,15 @@ class QUnFrameWindow(QWidget):
         self.hookfollowsignal.connect(self.hookfollowsignalsolve) 
         self.displayres.connect(self.showres)
         self.displayraw1.connect(self.showraw)  
+        self.clickSettin_signal.connect(self.clickSettin_funtion)
+
+        self.showsavegame_signal.connect(self.showsavegame_function)
+        self.settinghookthread_signal.connect(self.settinghookthread_funtion)
+        self.settingprocess_signal.connect(self.settingprocess_function)
+        self.clickRange_signal.connect(self.clickRange_funtion)
+        self.showhide_signal.connect(self.showhide_function)
+        self.bindcropwindow_signal.connect(self.bindcropwindow_function)
+        self.quitf_signal.connect(self.quitf_funtion)
         # self.showtask=Queue()
         # self.showtaskthread=threading.Thread(target=self.showtaskthreadfun).start()
         self.clear_text_sign.connect(self.clearText)
@@ -234,13 +251,13 @@ class QUnFrameWindow(QWidget):
          
         self.takusanbuttons(qtawesome.icon("fa.rotate-right" ,color="white"),"MinMaxButton",self.startTranslater,0,"重新翻译")
         self.takusanbuttons(qtawesome.icon("fa.forward" ,color="#FF69B4" if globalconfig['autorun'] else 'white'),"MinMaxButton",self.changeTranslateMode,1,"自动翻译",'automodebutton')
-        self.takusanbuttons(qtawesome.icon("fa.gear",color="white" ),"MinMaxButton",self.clickSettin,2,"设置")
+        self.takusanbuttons(qtawesome.icon("fa.gear",color="white" ),"MinMaxButton",self.clickSettin,2,"打开设置")
 
 
         self.takusanbuttons(qtawesome.icon("fa.copy" ,color="white"),"MinMaxButton",lambda: pyperclip.copy(self.original),6,"复制到剪贴板") 
         self.takusanbuttons(qtawesome.icon("fa.eye"   if globalconfig['isshowrawtext'] else "fa.eye-slash" ,color="white"),"MinMaxButton", self.changeshowhideraw,7,"显示/隐藏原文",'showhiderawbutton') 
         
-        self.takusanbuttons(qtawesome.icon("fa.rotate-left" ,color="white"),"MinMaxButton", self.transhis.show  ,8,"显示历史翻译") 
+        self.takusanbuttons(qtawesome.icon("fa.rotate-left" ,color="white"),"MinMaxButton", self.transhis.showsignal.emit  ,8,"显示历史翻译") 
         self.takusanbuttons(qtawesome.icon("fa.music" ,color="white"),"MinMaxButton",self.langdu,9,"朗读") 
         self.takusanbuttons(qtawesome.icon("fa.mouse-pointer" ,color="white"),"MinMaxButton",self.changemousetransparentstate,10,"鼠标穿透窗口",'mousetransbutton') 
          
@@ -335,8 +352,9 @@ class QUnFrameWindow(QWidget):
             self.masklabel.hide()
         self.showhidestate=False
 
+    
 
-    def changemousetransparentstate(self,checked):
+    def changemousetransparentstate(self):
          
         self.mousetransparent= not self.mousetransparent
         if self.mousetransparent:
@@ -361,6 +379,8 @@ class QUnFrameWindow(QWidget):
                                                                 background-color: rgba(%s, %s, %s, %s)"
                                            %(int(globalconfig['backcolor'][1:3],16),int(globalconfig['backcolor'][3:5],16),int(globalconfig['backcolor'][5:7],16),globalconfig['transparent']/100))
         self.mousetransbutton.setIcon(qtawesome.icon("fa.mouse-pointer" ,color="#FF69B4" if self.mousetransparent else 'white'))
+    def showhide_function(self):
+        self.showhide()
     def showhide(self):
         
         self.showhidestate=not self.showhidestate
@@ -370,6 +390,8 @@ class QUnFrameWindow(QWidget):
             self.object.range_ui.show()
         else:
             self.object.range_ui.hide()
+    def bindcropwindow_function(self):
+        self.bindcropwindow()
     def bindcropwindow(self):
         import PyHook3
         hm = PyHook3.HookManager()
@@ -395,14 +417,19 @@ class QUnFrameWindow(QWidget):
             return True
         hm.MouseAllButtonsDown = OnMouseEvent
         hm.HookMouse()
-     
-    def changeshowhideraw(self,checked):
+    def showsavegame_function(self):
+        autosaveshow(None)
+    def settingprocess_function(self):
+        settingtextractor(self.object.settin_ui,False)
+    def settinghookthread_funtion(self):
+        settingsource(self.object.settin_ui)
+    def changeshowhideraw(self):
         self.object.settin_ui.show_original_switch.click()
         
-    def changeTranslateMode(self, checked) : 
+    def changeTranslateMode(self) : 
         globalconfig['autorun']=not globalconfig['autorun'] 
         self.automodebutton.setIcon(qtawesome.icon("fa.forward" ,color="#FF69B4" if globalconfig['autorun'] else 'white'))
-    def changetoolslockstate(self,checked):
+    def changetoolslockstate(self):
         # if self.mousetransparent: 
         #     self.mousetransbutton.click()
         globalconfig['locktools']=not globalconfig['locktools'] 
@@ -415,12 +442,15 @@ class QUnFrameWindow(QWidget):
         
         width = self.width()
         self.resize(width, newHeight + 30*self.rate) 
-         
-    def clickSettin(self) :
-          
+    def clickSettin_funtion(self):
         self.object.settin_ui.show()
         self.object.settin_ui.setFocus()
+    def clickSettin(self) :
+          
+        self.clickSettin_signal.emit()
         # 按下范围框选键
+    def clickRange_funtion(self):
+        self.clickRange()
     def clickRange(self): 
         if globalconfig['sourcestatus']['ocr']==False:
                 return 
@@ -649,7 +679,8 @@ class QUnFrameWindow(QWidget):
         object.setGeometry(QRect(int(x * self.rate),
                                  int(y * self.rate), int(w * self.rate),
                                  int(h * self.rate)))
-  
+    def quitf_funtion(self):
+        self.quitf()
     def quitf(self) :  
         import json  
         globalconfig['position']=[self.pos().x(),self.pos().y()]

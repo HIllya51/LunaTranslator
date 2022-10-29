@@ -17,6 +17,7 @@ from gui.settingpage7 import setTab7
 from gui.settingpage_about import setTab_about
 from gui.rotatetab import customtabstyle,rotatetab
 from gui.settingpage_cishu import setTabcishu
+from gui.settingpage_quick import setTab_quick
 class wavmp3player(QObject):
     def __init__(self):
         super().__init__( )
@@ -72,7 +73,7 @@ class Settin(QMainWindow) :
         self.setWindowTitle("设置")
         self.setWindowIcon(qtawesome.icon("fa.gear" ))
         
-        self.setStyleSheet("font: 11pt '黑体' ; color: \"#595959\"" ) 
+        self.setStyleSheet("font: 11pt '微软雅黑' ; color: \"#595959\"" ) 
         #self.setFont((QFont("黑体",11,QFont.Bold)))
         self.tab_widget = QTabWidget(self)
         self.tab_widget.setGeometry(self.geometry()) 
@@ -103,7 +104,7 @@ class Settin(QMainWindow) :
         setTab7(self)
         setTabcishu(self)
         setTab_about(self)
-        #self.setStyle(customtabstyle()) #必须放后面 不然其他样式全都失效
+        setTab_quick(self) 
         
         self.usevoice=0
      

@@ -14,10 +14,12 @@ import sys
 from utils.config import globalconfig
 class transhist(QMainWindow): 
     getnewsentencesignal=pyqtSignal(str) 
+    showsignal=pyqtSignal()
     def __init__(self):
         super(transhist, self).__init__()
         self.setupUi() 
         self.getnewsentencesignal.connect(self.getnewsentence) 
+        self.showsignal.connect(self.show)
         self.setWindowTitle('历史翻译')
     def closeEvent(self, event) : 
          

@@ -1,11 +1,11 @@
 {
     "position": [
-        798,
-        691
+        769,
+        697
     ],
     "fixedheight": false,
     "width": 759,
-    "autorun": true,
+    "autorun": false,
     "transparent": 37,
     "fontsize": 17.699999999999996,
     "fonttype": "思源黑体 CN Medium",
@@ -54,8 +54,8 @@
         "volume": 100.0
     },
     "sourcestatus": {
-        "copy": true,
-        "ocr": false,
+        "copy": false,
+        "ocr": true,
         "textractor": false,
         "textractor_pipe": false
     },
@@ -298,5 +298,117 @@
         "use": false,
         "path": "C:/dataH/vnr/vnr/Caches/Dictionaries/Lingoes"
     },
-    "show_fenci": false
+    "show_fenci": false,
+    "quick_setting": {
+        "use": true,
+        "all": {
+            "_1": {
+                "use": true,
+                "name": "重新翻译",
+                "key": [],
+                "keys": [
+                    "",
+                    ""
+                ],
+                "key1": 2,
+                "key2": 0
+            },
+            "_2": {
+                "use": true,
+                "name": "自动翻译",
+                "key1": 0,
+                "key2": 1
+            },
+            "_3": {
+                "use": true,
+                "name": "打开设置",
+                "key1": 0,
+                "key2": 2
+            },
+            "_4": {
+                "use": true,
+                "name": "复制到剪贴板",
+                "key1": 0,
+                "key2": 1
+            },
+            "_5": {
+                "use": true,
+                "name": "显示/隐藏原文",
+                "key1": 0,
+                "key2": 4
+            },
+            "_6": {
+                "use": true,
+                "name": "显示历史翻译",
+                "key1": 0,
+                "key2": 5
+            },
+            "_7": {
+                "use": true,
+                "name": "朗读",
+                "key1": 0,
+                "key2": 6
+            },
+            "_8": {
+                "use": true,
+                "name": "鼠标穿透窗口",
+                "key1": 0,
+                "key2": 7
+            },
+            "_9": {
+                "use": true,
+                "name": "锁定工具栏",
+                "key1": 0,
+                "key2": 8
+            },
+            "_10": {
+                "use": true,
+                "name": "打开保存的游戏",
+                "key1": 0,
+                "key2": 9
+            },
+            "_11": {
+                "use": true,
+                "name": "选择游戏",
+                "key1": 0,
+                "key2": 10
+            },
+            "_12": {
+                "use": true,
+                "name": "选择文本",
+                "key1": 0,
+                "key2": 11
+            },
+            "_13": {
+                "use": true,
+                "name": "选取OCR范围",
+                "key1": 1,
+                "key2": 0
+            },
+            "_14": {
+                "use": true,
+                "name": "显示/隐藏范围框",
+                "key1": 1,
+                "key2": 1
+            },
+            "_15": {
+                "use": true,
+                "name": "绑定截图窗口",
+                "key1": 1,
+                "key2": 4
+            },
+            "_16": {
+                "use": true,
+                "name": "最小化到托盘",
+                "key1": 1,
+                "key2": 3
+            },
+            "_17": {
+                "use": true,
+                "name": "退出",
+                "key1": 1,
+                "key2": 3
+            }
+        }
+    }
 }
