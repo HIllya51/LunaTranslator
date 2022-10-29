@@ -442,11 +442,11 @@ class QUnFrameWindow(QWidget):
         
         width = self.width()
         self.resize(width, newHeight + 30*self.rate) 
-    def clickSettin_funtion(self):
+    def clickSettin_funtion(self): 
         self.object.settin_ui.show()
-        self.object.settin_ui.setFocus()
-    def clickSettin(self) :
-          
+        self.object.settin_ui.showNormal() 
+
+    def clickSettin(self) : 
         self.clickSettin_signal.emit()
         # 按下范围框选键
     def clickRange_funtion(self):
