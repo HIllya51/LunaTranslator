@@ -33,7 +33,8 @@ class TS(basetrans):
             self.path = js['args']['sqlite文件']  
             try:
                 try:
-                    self.sql=sqlite3.connect(self.path,check_same_thread=False)
+                    if os.path.exists(self.path):
+                        self.sql=sqlite3.connect(self.path,check_same_thread=False)
                 except:
                     return '无效文件'
             except:
@@ -52,7 +53,8 @@ class TS(basetrans):
             if self.path!= js['args']['sqlite文件']  :
                 self.path = js['args']['sqlite文件']  
                 try:
-                    self.sql=sqlite3.connect(self.path,check_same_thread=False)
+                    if os.path.exists(self.path):
+                        self.sql=sqlite3.connect(self.path,check_same_thread=False)
                 except:
                     return '无效文件'
         
@@ -63,12 +65,10 @@ class TS(basetrans):
             return ''
         if ret:
             ret=json.loads(ret[0])
-            rr=[]
-            for k in ret:
-                rr.append(k+' '+ret[k])
-            return '\n'.join(rr)
+            
+            return ret 
         else:
-            return ''
+            return {}
              
 if __name__=='__main__':
     a=BINGFY()

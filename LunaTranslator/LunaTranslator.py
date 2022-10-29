@@ -311,9 +311,17 @@ class MAINUI() :
         classname,res,mp=_
         if classname not in ['rengong','premt']: 
             res=self.solveaftertrans(res,mp)
-        if globalconfig['fanjian']!=0:
-            res=zhconv.convert(res, ['zh-cn', 'zh-tw', 'zh-hk', 'zh-sg', 'zh-hans', 'zh-hant'][globalconfig['fanjian']])
-        self.translation_ui.displayres.emit(classname,res)
+        
+        if classname=='premt':
+            for k in res:
+                if globalconfig['fanjian']!=0:
+                    res[k]=zhconv.convert(res[k], ['zh-cn', 'zh-tw', 'zh-hk', 'zh-sg', 'zh-hans', 'zh-hant'][globalconfig['fanjian']])
+
+                self.translation_ui.displayres.emit(k,res[k])
+        else:
+            if globalconfig['fanjian']!=0:
+                res=zhconv.convert(res, ['zh-cn', 'zh-tw', 'zh-hk', 'zh-sg', 'zh-hans', 'zh-hant'][globalconfig['fanjian']])
+            self.translation_ui.displayres.emit(classname,res)
         
         if classname not in ['rengong','premt']:
             res=res.replace('"','""')   

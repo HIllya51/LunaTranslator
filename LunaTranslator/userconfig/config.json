@@ -1,7 +1,7 @@
 {
     "position": [
-        708,
-        738
+        660,
+        720
     ],
     "fixedheight": false,
     "width": 759,
@@ -94,7 +94,7 @@
     },
     "fanyi": {
         "baidu": {
-            "use": true,
+            "use": false,
             "color": "#ff0004",
             "name": "百度"
         },
@@ -144,7 +144,7 @@
             "name": "deepl"
         },
         "jb7": {
-            "use": true,
+            "use": false,
             "color": "#1839f0",
             "name": "Jbeijing7",
             "argsfile": "./userconfig/jbj7.json"
@@ -192,7 +192,7 @@
             "name": "iciba"
         },
         "baiduapi": {
-            "use": false,
+            "use": true,
             "color": "#f003ec",
             "name": "百度api",
             "argsfile": "./userconfig/baiduapi.json"
@@ -242,7 +242,7 @@
             "argsfile": "./userconfig/huoshanapi.json"
         },
         "papago": {
-            "use": false,
+            "use": true,
             "color": "#0101f0",
             "name": "papago"
         },
@@ -253,7 +253,7 @@
             "argsfile": "./userconfig/rengong.json"
         },
         "premt": {
-            "use": true,
+            "use": false,
             "color": "#0ff000",
             "name": "机器预翻译",
             "argsfile": "./userconfig/premt.json"
