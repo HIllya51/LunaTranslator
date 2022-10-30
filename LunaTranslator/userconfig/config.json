@@ -275,7 +275,7 @@
     "mustocr_interval": 5,
     "ocrmininterval": 0.20000000000000015,
     "selectable": false,
-    "autoupdate": true,
+    "autoupdate": false,
     "gongxiangcishu": {
         "use": false,
         "path": "C:/dataH/vnr/vnr/Caches/Sync/gamedic.xml"

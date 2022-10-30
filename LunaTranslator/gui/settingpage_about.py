@@ -56,6 +56,8 @@ def getversion(self):
                         #分多次下载数据
                         pos = start
                         for i in r.iter_content(chunk_size=1024):#设置每次获取的大小
+                            if globalconfig['autoupdate']==False: 
+                                    return
                             if i:#判断是否为空数据
                                 lock.acquire()  # 获得使用权
                                 file.seek(pos)
@@ -92,7 +94,8 @@ def getversion(self):
                     for t in ts:
                         t.join()
                     
-                                    
+                    if globalconfig['autoupdate']==False: 
+                        return
                     if os.path.exists('./update/LunaTranslator'):
                         shutil.rmtree('./update/LunaTranslator')
                     zipf=zipfile.ZipFile('./update/update.zip')
