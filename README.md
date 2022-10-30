@@ -7,9 +7,6 @@
     <a id="downloadlink" href="https://github.com/HIllya51/LunaTranslator/releases/download/v1.17.0/LunaTranslator.zip"><img src="https://img.shields.io/badge/%E4%B8%8B%E8%BD%BD-download-red"></a>
 </p>
 
-<script>
-    document.getElementById('downloadlink').href="https://baidu.com"
-</script>
 
 一款galgame翻译器
 
