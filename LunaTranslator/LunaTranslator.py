@@ -392,11 +392,12 @@ class MAINUI() :
                             #hwnd=win32api.OpenProcess(win32con.PROCESS_QUERY_LIMITED_INFORMATION,False, (pid))
                             name_ = win32process.GetModuleFileNameEx(
                                 hwnd, None)
+                            arch='86' if win32process.IsWow64Process( hwnd)  else '64' 
                     except:
                         continue
                     
                     if name_ in savehook_new:
-                        self.settin_ui.autostarthooksignal.emit(pid, name_,(savehook_new[name_]))
+                        self.settin_ui.autostarthooksignal.emit(arch,pid, name_,(savehook_new[name_]))
                         return True
         return False
     def autohookmonitorthread(self):

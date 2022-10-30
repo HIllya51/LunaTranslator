@@ -236,18 +236,8 @@ def setTab4(self) :
         self.autostarthooksignal.connect(functools.partial(autostarthookfunction,self))
         
 
-def autostarthookfunction(self,pid,pexe,hookcode):
-         
-        try:
-                if True:#try:
-
-                    process=win32api.OpenProcess(win32con.PROCESS_ALL_ACCESS,False, (pid))
-                # except:
-                #     process=win32api.OpenProcess(win32con.PROCESS_QUERY_LIMITED_INFORMATION,False, (pid))
-        except  : 
-                return
-        
-        arch='86' if win32process.IsWow64Process( process)  else '64' 
+def autostarthookfunction(self,arch,pid,pexe,hookcode):
+          
          
         self.hookpid=pid
         from textsource.textractor import textractor
@@ -299,24 +289,4 @@ def minmaxmoveobservefunc(self):
                                 self.object.translation_ui.hookfollowsignal.emit(4,(0,0))
                         elif action==4 and  globalconfig['minifollow']:
                                 self.object.translation_ui.hookfollowsignal.emit(3,(0,0))
-                #         elif action==5 and globalconfig['minifollow']:
-                #                 self.object.translation_ui.hookfollowsignal.emit(3,(0,0))
-                #      else:
-                #         if action==5 and globalconfig['minifollow']:
-                #             self.object.translation_ui.hookfollowsignal.emit(4,(0,0))
-
-                # if globalconfig['autostarthook'] and action==5:
-                #         if globalconfig['sourcestatus']['textractor']==False:
-                #                 continue 
-                #         if  os.path.exists('./files/savehook.json'):
-                #                 if 'textsource' not in dir(self.object) or self.object.textsource is None:
-                #                         with open('./files/savehook.json','r',encoding='utf8') as ff:
-                #                                 js=json.load(ff)
-                #                         try:
-                #                                 hwnd=win32api.OpenProcess(win32con.PROCESS_ALL_ACCESS,False, (pid))
-                #                                 name_=win32process.GetModuleFileNameEx(hwnd,None)
-                #                         except:
-                #                                 continue
-                #                         if name_ in js:
-                                                        
-                #                                 self.autostarthooksignal.emit(pid,name_,tuple(js[name_]))
+              

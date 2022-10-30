@@ -42,7 +42,7 @@ class Settin(QMainWindow) :
     loadtextractorfalse=pyqtSignal( ) 
     voicelistsignal=pyqtSignal(list)
     mp3playsignal=pyqtSignal(str,int)
-    autostarthooksignal=pyqtSignal(int,str,list) 
+    autostarthooksignal=pyqtSignal(str,int,str,list) 
     versiontextsignal=pyqtSignal( str)
     progresssignal=pyqtSignal(str,int)
     def mp3playfunction(self,path,volume):
