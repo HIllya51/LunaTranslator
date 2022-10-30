@@ -1,28 +1,53 @@
-import requests
+#!/usr/bin/python3
+# -*- coding: utf-8 -*-
 
-cookies = {
-    'DESKDICT_VENDOR': 'unknown',
-}
+'''
+QNetworkAccessManager in PyQt
 
-headers = {
-    'Accept': '*/*',
-    'Content-Type': 'text/plain;charset=UTF-8',
-    'User-Agent': 'Youdao Desktop Dict (Windows NT 10.0)',
-    'Host': 'fanyi.youdao.com',
-    'Cache-Control': 'no-cache',
-    # 'Cookie': 'DESKDICT_VENDOR=unknown',
-}
+In this example we get a web page.
 
-data = '/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAcFBQYFBAcGBgYIBwcICxILCwoKCxYPEA0SGhYbGhkW\nGRgcICgiHB4mHhgZIzAkJiorLS4tGyIyNTEsNSgsLSz/2wBDAQcICAsJCxULCxUsHRkdLCwsLCws\nLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCz/wAARCABWAMwDASIA\nAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQA\nAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3\nODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWm\np6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEA\nAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSEx\nBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElK\nU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3\nuLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwD17wj4\nX0zwJostjZT3EsMsxnJnZWbcVVcDAHHyir9xdSXR+b5Y+y/41y/9pXMz738Z+Fc9s54/8i1KL+bH\n/I5eE/1/+PVFmdVOVOGr3N6mSqWjIHWsKPWZ01rT7T+29D1RLt3Rksc702xs27/WNxlcdO9dDils\ndcJqWqLaGEaYgBIVl/Gsx12gAEnvk1OqsIym8hQTjFIqDb65qWtQjHlbILIB78yMQBGMD61tNdoo\nwAT9azUQRk7eM07FFhTgpu7HzOkr7ioB9qipcUyRtq/WmUlbREcjbj7CmVzo1fWF0611ZorGSwvN\nQayiiBkWfAnaMMOCD8qFz04Bro8VLT6jhNS2OI8R/DHRtf1i41e6ub9J59u9YnQKNqheMqT0A716\nJ58e0HOfpVIjIprTKOGb8KTXMJ0ovZGjHIssYdTkGn1T03ItiuDgMcZ9KuVk1Z2OeceWTQYqeGDP\nzN09KIId3zN07VaxVRj1Zk2QXMAljyB8wHFZbYXOelbeKw7qJ5L8wx4YRguwzjPfFFSr7OPMbUZd\nGLFNPFZPIG2QKchj9ayZ/FOjKXH2iS5kU7TsXcM/nXNeIvElz4hvJtHsVEdrEM4JxkryR79KyNLs\nY59TjiWNZnTaHZJCnlDOTt4OTzXhYis2+aTv+XyN1G+p6DZeKtEaGMyNJFIx27lGKt6jbPqtm0ll\nc7sdJcbiBXLavZ6bNoplihEDRuqBkGSQTjn1qLTNcuvD12u3Y1vxuG/hl9enWsaVdVUlNe7/AFuD\ng1qtzvNCsEt9OjgWYSJGc47596+fvH/w90rwr4ghsbK4vJInt1lJmdS2SzDso4+UV7fqkkkSw6pY\nSFYZfmwpwCPc15X8VL0XniWzniuFlRrJCCRg/ffivosPUUly9Ucc6enNc3Y9X8PkYPgzxMf+28//\nAMXU41nw/wD9CZ4o/wC/9x/8XW1FD417eJNP/wDAmL/5GqdYfG/OfE2ne3+kxf8AyNXYYX8zCt9U\n0C6vIrVPCHiFJpsiMS3ssQYgEkAtKB0BNbOi2MkGu3U8WmXmm2T28aLFc3n2gtIGclh87Y4Kjt0q\nvKuup4l0T+2tUt79DNL5SwTo2xvJfkgQoSMZHXvXUVDZ1UYp+9cQjiqF5qlnpcXm317b2kX9+eQI\nPzJrL8S3Ah1awiv9S1HTtImil86axQFvMG0qrEKzAFd/3cHIAqrYxwRT/afDXgyOOU/8xTXWZpT7\nhWLSn6EpStc0lVafLFXNJfGGiSJviupJ48Z3w28si49dyqRir2l6vZa5G76XPHeLGdr+WwOw+jDq\nD9akgs/FN3aieXxSkMrjIS30+MRKfTDlmI/4EK528muSl1r09vDa+JfDk6R30lsCqX1o2CSR6FCW\nAOSrIcGnp0Mvbyi9UdYY5Ez5gAPoDXNWd1rWuWAvYZdEtYPNkUi4unDqEdlO5dvHKnvXWX/ysfc1\nwnjPRtO/sS4aDTbMX164t4pRAu8yysEVs4znc+c1KepveUo8ydjR1jSLPSfDPhmyvfFunaTLp7NO\nryqr/aXKspZFLDP+tY5weoqHQ75rjWruG31W41ewW3iZLmW18kCUtIHVSEUMMBD1OK0LlI5PiDcx\nRACHStOgtUHozszsP++VjrnbO80u9gZtc1HxDfX5llRtL0+N4liCuygFogvBAzln5yKp66HNTvBK\nXfodlilsVRRKCoJVuuOa5r7Do00TpD8O5grqR5l5cxeZ0AyDvc5+p7VpeHYby00Owt7gF7qO3jim\nOcguqgMc/Ws5LTc64zdRNNWNDVL2W20y6miYCSKJ3XjIyASKq6FJqY1q1tr7UFvI7rTkvB+5WMox\nYAjjqOaNZIGiX4Jx/o8n/oJqTS1z4m0lvTQY/wD0IUKKsYVvdaSOpAwMCiiig5wPArk7vU1s7LVp\n2/1zxuqEckfLXT3EpiUYAJPrXLWLrqEerWdwiQebGyoWOOduM1wYxu8Eu/6HRSj7rbPJLC7uIYLu\n+iJSbK7GzyMkZPtXsvh3SLGDQLe+lhiFzNHmSUKBknua8YhQR3k+nTYRmPlofujcpyPz4/OvSPBX\niy2uNK/sTU02fZ1ILvyCvPX9a4aXKpvm+RrO7WhsaDoUOoaVJDc7XRt3PcMeD+GMVwd1ETZeXOqO\nbabaFzk8+o/Cux1jW9FtRBb6bqLRXWcRiLO36NWPLCl1uju7RIpi4fzljAJI9T3rnr1oUuWlbbqi\n6cZSvI3tHnW98CpDOx3xsRjHYeleOfECFpPESOWCq0OVX0Xe+BXsyRHR/BUVs5XzZH3ALyD9K8e8\nfRvL4kwAcRx+WD64dhmvQwkmq9l/KjKcnGDa7nbv4U8JJqN3aW/hTW777JL5MksNzCqFtqtgb5lP\nRh2qQeEvDO4D/hBfEWT/ANPdt/8AJFc/8Mo5dS0C7u9U0GfW7mS8Ym6nvSjkbEGDk5OPX8O1doNO\ns9yj/hBuWOB/xMv/AK9e2csY3WzM8+GfDtv4a1HW9H0/U9I1DTphARNcDerZQn7jspBV/Wu5rlb3\nUrGHwjqeh23h/UdNvJJ1xBHaTzpIcod/nKpTGBjk8ba6qpZtQur3Cqt9qNjp0Akvry3tI2yA08io\nDx6k1Z7Vl6vp11eSabe2LwLcWU5lCXClo5FKMjKwH+9n6gUjok2ldBa+O9CWzWKyuX1e4HCw6bE1\nyzH6plR9SQKx9Va9i0bUE1ONbbW/FlxHb29grB2gt1wpLEZHyoXdiOAWArYluPGN4RD/AGtp9lwM\n/Y7Es4+jSOV/8dp+keE10+6lvWkmub+cbZby7k82Zx6Z6Kv+yoA9qei1OR05Sd56Gjdz+c/Pb0rC\neH+1fHui6aBujst+pz+20bIh+LsW/wC2Zro20tVUuZGZhz7Vyd3aa/YXniFtMsreWTV4UhhvDclX\ntwqbQChXszOww3fpUrc2nJOHLAbo+oW/9n6x4lupRHb3t3NdmVucQp+7Q/8AfEanA9at23ibRru5\na2TUIkuU6wTZik/74fB/SiTw/BL4Z/sAM8MEcSxRsgBKhcY4IIPTuKSWXxBJGLfV9M0HxNAvAedT\nbyY91KyKT9Nv0o0e5b56aSiro0ZmHl4DdRkY9Ku2sIjQtzl+ea5hbDSsYf4XaHuB/gFuR+qD+VJb\nSXfhrwDqMkFlDaTWy313BbIAyR5kkljTC4GACowMVMlpoxe0nNWcbHQ6pZFtE1CaRgQLaXAx/smq\n+k/8jDpf/YCi/wDQxWVcazb3NlLav8QdFEcyGNsWXOCMH/lrWho19p154uhi0y+ivorTSUgaSM5G\nQ/f0OBmrSajqccpubR1ZIHU4oJwM1AYnllzIcIp4Ud6e+ZHEa9+tQy7IaI0u8hhwPwrmvEGliy1W\nK6RQ0My7WDkkdOnoM12EUSxLgfnUdzBFdwPDMgeNxgg1hiKCrU+R7jhVcZabHmPi3wdZ69Aur6Sy\nwzoAs0ROC5AwMfoK4GO212KZrKazc72UPuG3ODxz6V6vqum6jpEnnRgy264Cui7sDPAZe/1ApkXi\n9nUpcWVvdbRt34GSPTHavDqT5Xy11yv03OuKurw1POFe6tdkUNgwmwV2gF23H69PrXeeCbK6it3u\ntauMpAzkwytvIyB1B+lSL4gkQl4LSJJD1kMahvzrPmv5Lu5ZSTcSTfL5Nvgs3uSOB9TWMa0Ob90r\ns0cHb3tC9q+pO8zG2iDIj+XbQ4HzOf6Vw/xF0v8AsfV9OtGfzJFsEMjn+JjJJk16l4d8PSQXC6jq\nQU3OMRQj7sA9vU+9fM+snxZ9sT+2zrP2nYNv23zd+zJxjdzjOf1r3cDh3TTnPdnDXmn7q2PqGEcV\nKR+9i/3xUcNTY/fR+xzXedSJJf8AWGmYqSTmQ02kJbDT0pIwzQhiRg9AOwpzfdNOhhlNqjZATGfr\nTG3ZDEbybhJO3Q/StbINZTLkFTU0VyxjEZOGT9RUyelzKpHm1Rf4NZ9xFsk9j0qdbhh1ANK8kcyb\nWyD2qVJGcLxZR2jcGxzSFQeoqRhtYikqzpuRGIdjSACNhuNTUtuAb5AQCNp60WQ+bQhEoEqMCTtO\ncYNXoLmSefGwhAMkkYqyVjXkhRRvToGGfQUXOeU1JbCk8U+GPaCx+8aNuMDuaeT2FJI5mwJzSUUV\nQg6isu98NaTf5M9kmTzlMof0xWpRUyipK0lcpNrY50eBdAUgm2kOOxncj+daVpptlp67bS2jhH+y\nvJ/Gr5GRimGPC+9QqcI/CkiuZvdjK8W+MZz4wtf+vJP/AEZJXtNeLfGL/kcLX/ryT/0ZJVR3FLY9\nQh6VPHzcAeg/nUMPSp4B/rJPXgVZ29BT940lOxRikBG5xGx9qurCxso0U4YAVTkUttQdWOK1QMDA\noZnUdkjOaFo+GbcepNVpMiUOvUfrWjNah33s5CjnHvVCTHmFc5I60nsXTlcnjdZE3Cn1TUtG25fx\nFWUkWQZB+tYtWJlG2w2bqD6ZqEMRUsp6/lUNXHY0hsPEnqKf3z3qIcsKmSNpZ9gfbkccVaB2QoLE\ngDkmtC1tvLG5+WP6Ulra+T80hDN9Ksk8VRyVKl9Ijc5kPtRSJ3PrTqRkJRS0UAJRS0UAJTX3Y4p9\nFAEBUjrXivxi/wCRwtf+vJP/AEZJXt0h7V4l8Yx/xWFr/wBeSf8AoySktxvY9RiHFWIxtgC96KKo\n7eguKMUUUgCEbrxB/dBNaVFFDMKu6EIBGDWZLCiOcDknrRRUMKT1IFYPkgYGaUAg5U4NFFB1scxz\n+FNxRRQA5BlwK1re2WMBjy3rRRVROau2kTmkPSiiqOVDU+6KdRRSBhRRRQAUUUUAFFFFACFQTzXi\nnxlA/wCExtf+vFP/AEZJRRTQH//Z'
-import hashlib
-import time,random
-def youdaoSIGN(useragent,e):
-        t=hashlib.md5(bytes(useragent,encoding='utf-8')).hexdigest()
+Author: Jan Bodnar
+Website: zetcode.com
+Last edited: September 2017
+'''
+
+from PyQt5 import  QtNetwork
+from PyQt5.QtCore import QCoreApplication, QUrl
+import sys
+            
+class Example:
+  
+    def __init__(self):    
         
-        r=int(1000*time.time())
-        i=r+int(10*random.random())
-        return {'ts':r,'bv':t,'salt':i,'sign':hashlib.md5(bytes("fanyideskweb" + str(e) + str(i) + "Ygy_4c=r#e#4EX^NUGUc5",encoding='utf-8')).hexdigest()}
+        self.doRequest()
         
-response = requests.post('https://fanyi.youdao.com/ocr/tranocr?sign=0c80fc3dd26833b869747e86d0ff0d60&to=&keyfrom=deskdict.screenshot.trans&from=auto&clientele=deskdict&salt=1436944546724&client=deskdict&id=c02f046f3ac168185&vendor=unknown&in=&appVer=9.1.0.0&appZengqiang=0&abTest=1&model=LENOVO&screen=1920*1080&OsVersion=10.0.19042', cookies=cookies, headers=headers, data=data,proxies={'http':None,'https':None})
+        
+    def doRequest(self):   
+    
+        url = "https://www.google.com.hk/"
+        req = QtNetwork.QNetworkRequest(QUrl(url))
+        
+        self.nam = QtNetwork.QNetworkAccessManager()
+        self.nam.finished.connect(self.handleResponse)
+        self.nam.get(req)    
+             
+      
+    def handleResponse(self, reply):
 
-print(response.json())
+        er = reply.error()
+        
+        if er == QtNetwork.QNetworkReply.NoError:
+    
+            bytes_string = reply.readAll()
+            print(str(bytes_string, 'utf-8'))
+            
+        else:
+            print("Error occured: ", er)
+            print(reply.errorString())
+            
+        QCoreApplication.quit()    
+        
+
+app = QCoreApplication([])
+ex = Example()
+sys.exit(app.exec_())
