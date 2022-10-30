@@ -62,7 +62,7 @@ class TS(basetrans):
          
         headers = {'Origin': 'https://translate.google.com', 'Referer': 'https://translate.google.com', 'X-Requested-With': 'XMLHttpRequest', 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8', 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36'}
         try:
-            response =self.ss.post('https://translate.google.com/_/TranslateWebserverUi/data/batchexecute', headers=headers,timeout = globalconfig['translatortimeout'],  data=freq, proxies= globalconfig['proxies'] ) if globalconfig['proxies'] else self.ss.post('https://translate.google.com/_/TranslateWebserverUi/data/batchexecute', headers=headers,timeout = globalconfig['translatortimeout'],  data=freq )
+            response = self.ss.post('https://translate.google.com/_/TranslateWebserverUi/data/batchexecute', headers=headers,timeout = globalconfig['translatortimeout'],  data=freq )
             #good=response.text.split('\n')[3]
             #print(response.text)
             json_data = json.loads(response.text[6:])
