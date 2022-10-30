@@ -43,56 +43,29 @@ def getversion(self):
             self.progresssignal.emit('……',0)
             try:
                 savep='./update/update.zip'
-                if os.path.exists('update')==False:
-                        os.mkdir('update')
-                with open(savep, "wb") as file:
-                    global file_size
+                 
+                with closing(requests.get( url, stream=True,verify = False)) as response:#,proxies=globalconfig['proxies'] if globalconfig['proxies'] else {'http': None,'https': None})) as response:
                     file_size=0
-                    def download(start,end,sz):
-                        headers = {
-                            'Range': f'bytes={start}-{end}',
-                        }
-                        r = requests.get(url,stream=True,headers=headers,verify = False)#stream=True设置流式下载
-                        #分多次下载数据
-                        pos = start
-                        for i in r.iter_content(chunk_size=1024):#设置每次获取的大小
-                            if i:#判断是否为空数据
-                                lock.acquire()  # 获得使用权
-                                file.seek(pos)
-                                file.write(i)
-                                global file_size
-                                file_size+=len(i)
-                                lock.release()  # 释放使用权
-                                self.progresssignal.emit(f'总大小{int(1000*(int(sz/1024)/1024))/1000} MB 进度 {int(10000*(file_size/sz))/100:.2f}%',int(10000*file_size/sz))
-                                pos += 1024
-                                
-                        #print(f'正在下载webdriver 总大小{int(1000*(int(content_size/1024)/1024))/1000} MB 进度 {int(10000*(file_size/content_size))/100}%')
+                    chunk_size = 1024  # 单次请求最大值
+                    content_size = res['assets'][0]['size']#int(response.headers['content-length'])  # 内容体总大小
+                    if os.path.exists('update')==False:
+                        os.mkdir('update')
+                    self.progresssignal.emit(f'总大小{int(1000*(int(content_size/1024)/1024))/1000} MB 进度 {int(10000*(file_size/content_size))/100:.2f}%',int(10000*file_size/content_size))
+                     
+                    if os.path.exists(savep) and os.path.getsize(savep)==content_size:
                         
-                #=====获取资源大小=======
-                    r2 = requests.get(url,stream=True,verify = False)
-                    #print(r2.headers['Content-Length'])#5298163
-                    
-                    #=====分两段来下载视频=======
-                    lock = Lock()#创建锁的锁的对象
-                    
-                    # download(0,1298163)#开头，结尾(不包含)
-                    # download(1298163,5298163)
-                    thread_num = 8
-                    size = int(r2.headers['Content-Length'])
-                    ts=[]
-                    for i in range(thread_num):
-                        if i == thread_num-1:
-                            t1=threading.Thread(target=download,args=(i*(size//thread_num),size,size))
-                            t1.start()
-                            ts.append(t1)
-                        else:
-                            t1 = threading.Thread(target=download, args=(i*(size//thread_num), (i+1)*(size//thread_num),size))
-                            t1.start()
-                            ts.append(t1)
-                    for t in ts:
-                        t.join()
-                    
-                                    
+                        self.progresssignal.emit(f'总大小{int(1000*(int(content_size/1024)/1024))/1000} MB 进度 100%',int(10000 ))
+                    else:
+                         
+                        with open(savep, "wb") as file:
+                            for data in response.iter_content(chunk_size=chunk_size):
+                                if globalconfig['autoupdate']==False:
+                                   
+                                    return
+                                file.write(data)
+                                file_size+=len(data)
+                                #print(f'正在下载webdriver 总大小{int(1000*(int(content_size/1024)/1024))/1000} MB 进度 {int(10000*(file_size/content_size))/100}%')
+                                self.progresssignal.emit(f'总大小{int(1000*(int(content_size/1024)/1024))/1000} MB 进度 {int(10000*(file_size/content_size))/100:.2f}%',int(10000*file_size/content_size))
                     if os.path.exists('./update/LunaTranslator'):
                         shutil.rmtree('./update/LunaTranslator')
                     zipf=zipfile.ZipFile('./update/update.zip')
