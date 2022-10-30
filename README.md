@@ -8,11 +8,10 @@
 </p>
 
 
-一款galgame翻译器
+**一款galgame翻译器**
 
-<a href="./setsumei.md">使用说明</a> 
-
-<a id="table1"></a>
+## <a href="./setsumei.md">使用说明</a> 
+ 
 
 ## 功能支持
 
