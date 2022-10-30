@@ -115,10 +115,10 @@ def setTab_about(self) :
         self.tab_about = QWidget()
         self.tab_widget.addTab(self.tab_about, "资源下载&更新") 
         label = QLabel(self.tab_about)
-        self.customSetGeometry(label, 20, 50, 200, 20)
+        self.customSetGeometry(label, 20, 20, 200, 20)
         label.setText("自动下载更新(需要连接github)")
         self.updateswitch =gui.switchbutton.MySwitch(self.tab_about, sign= globalconfig['autoupdate'])
-        self.customSetGeometry(self.updateswitch , 250, 50, 20,20)
+        self.customSetGeometry(self.updateswitch , 250, 20, 20,20)
         def changeupdate(x):
             globalconfig.__setitem__('autoupdate',x)
             if x:
@@ -126,7 +126,7 @@ def setTab_about(self) :
         self.updateswitch.clicked.connect(lambda x:  changeupdate( x)) 
 
         self.downloadprogress=QProgressBar(self.tab_about)
-        self.customSetGeometry(self.downloadprogress, 20, 80, 300, 20)
+        self.customSetGeometry(self.downloadprogress, 20, 50, 300, 20)
         
         self.downloadprogress.hide()
         self.downloadprogress.setRange(0,10000)
@@ -139,7 +139,7 @@ def setTab_about(self) :
         self.versionlabel.setOpenExternalLinks(True)
             
         self.versionlabel.setTextInteractionFlags(Qt.LinksAccessibleByMouse)
-        self.customSetGeometry(self.versionlabel, 20, 150, 600, 500)
+        self.customSetGeometry(self.versionlabel, 20, 100, 600, 500)
 
         
         self.versiontextsignal.connect(lambda x:self.versionlabel.setText(x) )

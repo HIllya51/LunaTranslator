@@ -5,13 +5,16 @@
 <br>
 %s
 <br>
+<br>
 项目网站:<a href="https://github.com/HIllya51/LunaTranslator">https://github.com/HIllya51/LunaTranslator</a>
 <br>
 下载链接:<a href="%s">%s</a>
 <br>
 <br>
-资源下载（按需下载即可，下载并解压后在对应设置中指定路径）:
+<a href="https://hillya51.github.io/">使用说明</a>
 <br>
+<br>
+资源下载（按需下载即可，下载并解压后在对应设置中指定路径）:
 <table>
 <tr><td>辞书-MeCab</td><td><a href="https://github.com/HIllya51/LunaTranslator/releases/download/v1.0/Mecab.zip">Mecab.zip</a></td></tr>
 <tr><td>辞书-小学馆</td><td><a href="https://github.com/HIllya51/LunaTranslator/releases/download/v1.0/xiaoxueguan.db">xiaoxueguan.db</a></td></tr>
