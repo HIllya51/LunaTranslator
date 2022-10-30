@@ -733,17 +733,17 @@ class QUnFrameWindow(QWidget):
          
         #sys.exit()
         if self.object.settin_ui.needupdate:
-            with open('./tmp/update.bat','w',encoding='utf8') as ff:
+            with open('./update/update.bat','w',encoding='utf8') as ff:
                 
                 ff.write('''
 timeout 1
-xcopy tmp\LunaTranslator\ .\ /s /e /c /y /h /r
+xcopy update\LunaTranslator\ .\ /s /e /c /y /h /r
 exit
 
                 ''')
             
 
-            subprocess.Popen('tmp\\update.bat' ,shell=True)
+            subprocess.Popen('update\\update.bat' ,shell=True)
         endsubprocs()
         os._exit(1) 
          

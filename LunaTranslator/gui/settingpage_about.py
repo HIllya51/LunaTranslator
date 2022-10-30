@@ -38,16 +38,17 @@ def getversion(self):
     if version!="获取失败" and self.version!=version:
         if globalconfig['autoupdate']:
             self.downloadprogress.show()
+            self.progresssignal.emit('……',0)
             try:
-                savep='./tmp/update.zip'
+                savep='./update/update.zip'
                  
                 with closing(requests.get( url, stream=True,verify = False)) as response:#,proxies=globalconfig['proxies'] if globalconfig['proxies'] else {'http': None,'https': None})) as response:
                     file_size=0
                     chunk_size = 1024  # 单次请求最大值
                     content_size = res['assets'][0]['size']#int(response.headers['content-length'])  # 内容体总大小
-                    if os.path.exists('tmp')==False:
-                        os.mkdir('tmp')
-                    
+                    if os.path.exists('update')==False:
+                        os.mkdir('update')
+                    self.progresssignal.emit(f'总大小{int(1000*(int(content_size/1024)/1024))/1000} MB 进度 {int(10000*(file_size/content_size))/100:.2f}%',int(10000*file_size/content_size))
                      
                     if os.path.exists(savep) and os.path.getsize(savep)==content_size:
                         
@@ -63,10 +64,10 @@ def getversion(self):
                                 file_size+=len(data)
                                 #print(f'正在下载webdriver 总大小{int(1000*(int(content_size/1024)/1024))/1000} MB 进度 {int(10000*(file_size/content_size))/100}%')
                                 self.progresssignal.emit(f'总大小{int(1000*(int(content_size/1024)/1024))/1000} MB 进度 {int(10000*(file_size/content_size))/100:.2f}%',int(10000*file_size/content_size))
-                    if os.path.exists('./tmp/LunaTranslator'):
-                        shutil.rmtree('./tmp/LunaTranslator')
-                    zipf=zipfile.ZipFile('./tmp/update.zip')
-                    zipf.extractall('./tmp')
+                    if os.path.exists('./update/LunaTranslator'):
+                        shutil.rmtree('./update/LunaTranslator')
+                    zipf=zipfile.ZipFile('./update/update.zip')
+                    zipf.extractall('./update')
                     self.needupdate=True
                 
             except:

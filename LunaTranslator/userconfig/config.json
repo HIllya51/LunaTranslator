@@ -1,7 +1,7 @@
 {
     "position": [
-        765,
-        425
+        259,
+        554
     ],
     "fixedheight": false,
     "width": 759,
@@ -275,7 +275,7 @@
     "mustocr_interval": 5,
     "ocrmininterval": 0.20000000000000015,
     "selectable": false,
-    "autoupdate": false,
+    "autoupdate": true,
     "gongxiangcishu": {
         "use": false,
         "path": "C:/dataH/vnr/vnr/Caches/Sync/gamedic.xml"
