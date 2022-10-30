@@ -1,5 +1,5 @@
  
-defaultglobalconfig = {'position': [432, 613], 'fixedheight': False, 'width': 768.8, 'autorun': True, 'transparent': 35, 'fontsize': 17.699999999999996, 'fonttype': '微软雅黑',  'miaobianwidth2':5,'miaobianwidth':1,'miaobiancolor':'#eeeeee','zitiyangshi':2,
+defaultglobalconfig = {'position': [432, 613], 'fixedheight': False, 'width': 768.8, 'autorun': True, 'transparent': 35, 'fontsize': 17.0, 'fonttype': '微软雅黑',  'miaobianwidth2':3,'miaobianwidth':1,'miaobiancolor':'#eeeeee','zitiyangshi':2,
  'iskongxin': True, 'isshowrawtext': True, 'rawtextcolor': '#000000', 'backcolor': '#7a8b8a', 'isshowhira': False, 'locktools': True, 'showfanyisource': False, 'autoread': False, 'extractalltext': False, 
  'show_fenci':False,
  'quick_setting':{
