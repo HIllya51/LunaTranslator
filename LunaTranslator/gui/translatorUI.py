@@ -133,7 +133,8 @@ class QUnFrameWindow(QWidget):
 
         # 设定翻译时的字体类型和大小
         self.font.setFamily(globalconfig['fonttype'])
-        self.font.setPointSizeF(globalconfig['fontsize'])
+        self.font.setPointSizeF(globalconfig['fontsize']) 
+        self.font.setBold(globalconfig['showbold'])
         self.translate_text.setFont(self.font) 
     def leftclicktray(self,reason):
             #鼠标左键点击

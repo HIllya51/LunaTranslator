@@ -1,17 +1,17 @@
 {
     "position": [
-        278,
-        637
+        295,
+        494
     ],
     "fixedheight": false,
     "width": 1411,
     "autorun": true,
     "transparent": 37,
-    "fontsize": 17.699999999999996,
-    "fonttype": "思源黑体 CN Medium",
+    "fontsize": 17.7,
+    "fonttype": "微软雅黑",
     "miaobianwidth2": 5,
     "miaobianwidth": 1,
-    "miaobiancolor": "#bcffc2",
+    "miaobiancolor": "#ffffff",
     "zitiyangshi": 2,
     "iskongxin": true,
     "isshowrawtext": true,
@@ -412,5 +412,6 @@
         }
     },
     "showShadow": true,
-    "shadowcolor": "#ff8d30"
+    "shadowcolor": "#ff8d30",
+    "showbold": true
 }
