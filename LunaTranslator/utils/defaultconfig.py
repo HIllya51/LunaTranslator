@@ -8,6 +8,27 @@ defaultglobalconfig = {'position': [432, 613], 'fixedheight': False, 'width': 76
  'quick_setting':{
     'use':False,
     'all':{
+        '_A':{
+            'use':False,
+            'name':"选择翻译源-剪贴板",
+            'key1':-1,
+            'key2':-1,
+
+        },
+        '_B':{
+            'use':False,
+            'name':"选择翻译源-OCR",
+            'key1':-1,
+            'key2':-1,
+
+        },
+        '_C':{
+            'use':False,
+            'name':"选择翻译源-TEXTRACTOR",
+            'key1':-1,
+            'key2':-1,
+
+        },
         '_1':{
             'use':False,
             'name':'重新翻译',

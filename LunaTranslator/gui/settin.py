@@ -45,6 +45,7 @@ class Settin(QMainWindow) :
     autostarthooksignal=pyqtSignal(str,int,str,list) 
     versiontextsignal=pyqtSignal( str)
     progresssignal=pyqtSignal(str,int)
+    clicksourcesignal=pyqtSignal(int)
     def mp3playfunction(self,path,volume):
         self.mp3player.stop()
         print(path)
@@ -65,7 +66,8 @@ class Settin(QMainWindow) :
         # 界面尺寸
         self.window_width = int(900*self.rate)
         self.window_height = int(550*self.rate)
-         
+        
+        
         self.setFixedSize(self.window_width, self.window_height) 
         
         #self.setWindowFlags(Qt.WindowStaysOnTopHint |Qt.WindowCloseButtonHint)

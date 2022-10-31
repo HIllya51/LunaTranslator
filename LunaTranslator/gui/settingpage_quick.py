@@ -39,29 +39,33 @@ def setTab_quick(self) :
         self.hotkeys_savelast={}
         self.usedkey=[]
         self.bindfunctions={
-        '_1':self.object.translation_ui.startTranslater,
-        '_2':self.object.translation_ui.changeTranslateMode,
-        '_3':self.object.translation_ui.clickSettin,
-        '_4':lambda: pyperclip.copy(self.object.translation_ui.original) ,
-        '_5':self.object.translation_ui.changeshowhideraw,
-        '_6':self.object.translation_ui.transhis.showsignal.emit,
-        '_7':self.object.translation_ui.langdu,
-        '_8':self.object.translation_ui.changemousetransparentstate,
-        '_9':self.object.translation_ui.changetoolslockstate,
-        '_10':self.object.translation_ui.showsavegame_signal.emit,
-        '_11':self.object.translation_ui.settingprocess_signal.emit,
-        '_12':self.object.translation_ui.settinghookthread_signal.emit,
-        '_13':self.object.translation_ui.clickRange_signal.emit,
-        '_14':self.object.translation_ui.showhide_signal.emit,
-        '_15':self.object.translation_ui.bindcropwindow_signal.emit,
-        '_16':self.object.translation_ui.hide_and_disableautohide,
-        '_17':self.object.translation_ui.quitf_signal.emit
+            '_A':lambda :self.object.settin_ui.clicksourcesignal.emit(0),
+            '_B':lambda :self.object.settin_ui.clicksourcesignal.emit(1),
+            '_C':lambda :self.object.settin_ui.clicksourcesignal.emit(2),
+
+            '_1':self.object.translation_ui.startTranslater,
+            '_2':self.object.translation_ui.changeTranslateMode,
+            '_3':self.object.translation_ui.clickSettin,
+            '_4':lambda: pyperclip.copy(self.object.translation_ui.original) ,
+            '_5':self.object.translation_ui.changeshowhideraw,
+            '_6':self.object.translation_ui.transhis.showsignal.emit,
+            '_7':self.object.translation_ui.langdu,
+            '_8':self.object.translation_ui.changemousetransparentstate,
+            '_9':self.object.translation_ui.changetoolslockstate,
+            '_10':self.object.translation_ui.showsavegame_signal.emit,
+            '_11':self.object.translation_ui.settingprocess_signal.emit,
+            '_12':self.object.translation_ui.settinghookthread_signal.emit,
+            '_13':self.object.translation_ui.clickRange_signal.emit,
+            '_14':self.object.translation_ui.showhide_signal.emit,
+            '_15':self.object.translation_ui.bindcropwindow_signal.emit,
+            '_16':self.object.translation_ui.hide_and_disableautohide,
+            '_17':self.object.translation_ui.quitf_signal.emit
         }
         label = QLabel(tab)
-        self.customSetGeometry(label, 20, 25, 150, 20)
+        self.customSetGeometry(label, 20, 25, 200, 20)
         label.setText("是否使用快捷键")
         p=gui.switchbutton.MySwitch(tab, sign=globalconfig['quick_setting']['use'], textOff='隐藏',textOn='显示')
-        self.customSetGeometry(p, 170, 25, 20,20 )
+        self.customSetGeometry(p, 220, 25, 20,20 )
         def __enable(x ):
             globalconfig['quick_setting'].__setitem__('use',x)
             for quick in globalconfig['quick_setting']['all']:
@@ -78,7 +82,7 @@ def initfanyiswitchs_auto(self):
             initfanyiswitchs(self,quick,x,y)
             num+=1
         
-        self.tab_quick.setFixedHeight((y+30)*self.rate )
+        self.tab_quick.setFixedHeight((y+50)*self.rate )
 def regist_or_not_key(self,name,callback):
     if self.hotkeys[name] :
         self.hotkeys[name].unregister(self.hotkeys_savelast[name])
@@ -100,20 +104,20 @@ def regist_or_not_key(self,name,callback):
 def initfanyiswitchs(self,name,x,y):
         
         label = QLabel(self.tab_quick)
-        self.customSetGeometry(label,x,y,150,20)
+        self.customSetGeometry(label,x,y,200,20)
         label.setText(globalconfig['quick_setting']['all'][name]['name'])
         p=gui.switchbutton.MySwitch(self.tab_quick, sign=globalconfig['quick_setting']['all'][name]['use'] )
         
-        self.customSetGeometry(p,x+150,y,20,20) 
+        self.customSetGeometry(p,x+200,y,20,20) 
         def fanyiselect( who,checked): 
             globalconfig['quick_setting']['all'][who]['use']=checked 
             regist_or_not_key(self,name,self.bindfunctions[name])
         p.clicked.connect(functools.partial( fanyiselect,name))
         
         key1=QComboBox(self.tab_quick)
-        self.customSetGeometry(key1,x+180,y,100,20)
+        self.customSetGeometry(key1,x+230,y,100,20)
         key2=QComboBox(self.tab_quick)
-        self.customSetGeometry(key2,x+290,y,100,20)
+        self.customSetGeometry(key2,x+340,y,100,20)
 
         key1.addItems(key_first)
         key2.addItems(key_second)

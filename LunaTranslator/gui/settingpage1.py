@@ -10,8 +10,15 @@ import gui.attachprocessdialog
 import win32con
 import pywintypes
 from textsource.textractor import textractor
+def clicksourcefuntion(self,i):
+    if i==0:
+        self.copyboardswitch.click()
+    elif i==1:
+        self.ocrswitch.click()
+    elif i==2:
+        self.textractorswitch.click()
 def setTabOne(self) :
-    
+        self.clicksourcesignal.connect(functools.partial(clicksourcefuntion,self))
         # 选项卡界面
         self.tab_1 = QWidget()
         self.customSetGeometry(self.tab_1, 0, 0, self.window_width, self.window_height)
