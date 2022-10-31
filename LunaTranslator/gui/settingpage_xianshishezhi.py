@@ -158,6 +158,27 @@ def setTabThree(self) :
         s1 =gui.switchbutton.MySwitch(self.tab_3, sign=globalconfig['showatcenter'])
         self.customSetGeometry(s1, 95, 170, 20,20)
         s1.clicked.connect(lambda x:globalconfig.__setitem__('showatcenter',x))  
+        
+        # label = QLabel(self.tab_3)
+        # self.customSetGeometry(label, 275, 170, 60, 20)
+        # label.setText("文字背景")
+         
+        # s1 =gui.switchbutton.MySwitch(self.tab_3, sign=globalconfig['showShadow'])
+        # self.customSetGeometry(s1, 350, 170, 20,20)
+        # s1.clicked.connect(lambda x:globalconfig.__setitem__('showShadow',x))  
+
+        # label = QLabel(self.tab_3)
+        # self.customSetGeometry(label, 450, 170, 60, 20)
+        # label.setText("文字背景颜色:")
+
+        
+        # self.shadowcolor_button = QPushButton(qtawesome.icon("fa.paint-brush", color=globalconfig['shadowcolor']), "", self.tab_3)
+        # self.customSetIconSize(self.shadowcolor_button, 20, 20)
+        # self.customSetGeometry(self.shadowcolor_button, 600, 170, 20, 20)
+        # self.shadowcolor_button.setStyleSheet("background: transparent;")
+        # self.shadowcolor_button.clicked.connect(lambda: self.ChangeTranslateColor("shadowcolor", self.shadowcolor_button)) 
+
+
 
         label = QLabel(self.tab_3)
         self.customSetGeometry(label, 275, 80, 60, 20)

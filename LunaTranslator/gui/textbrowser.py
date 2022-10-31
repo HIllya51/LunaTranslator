@@ -1,7 +1,7 @@
  
 from PyQt5.QtCore import Qt 
 from PyQt5.QtGui import QPen,QColor ,QTextCharFormat ,QTextBlockFormat,QTextCursor,QFont,QColor,QFontMetricsF
-from PyQt5.QtWidgets import  QTextBrowser ,QLabel,QPushButton
+from PyQt5.QtWidgets import  QTextBrowser ,QLabel,QPushButton,QGraphicsDropShadowEffect
 import random
 import functools 
 from utils.config import globalconfig
@@ -26,6 +26,9 @@ class Qlabel_c(QLabel):
 class Textbrowser():
     def __init__(self, parent ) : 
         self.parent=parent
+        #self.shadowlabel=QLabel(parent)
+        #self.shadowlabel.savetext=''
+        self.align=False
         self.textbrowserback=QTextBrowser(parent)
         self.textbrowser=QTextBrowser(parent)
         self.textbrowser.setStyleSheet("border-width: 0;\
@@ -45,6 +48,7 @@ class Textbrowser():
         self.savetaglabels=[]
         self.searchmasklabels_clicked=[]
         self.searchmasklabels=[]
+        self.backcolorlabels=[]
         self.addtaged=False
         self.lastcolor=None
         self.charformat=self.textbrowser.currentCharFormat()
@@ -56,6 +60,7 @@ class Textbrowser():
     def setText(self,text):
         self.textbrowser.setText(text)
         self.textbrowserback.setText(text)
+        
     def setVerticalScrollBarPolicy(self,x):
         self.textbrowser.setVerticalScrollBarPolicy(x)
         self.textbrowserback.setVerticalScrollBarPolicy(x)
@@ -65,6 +70,7 @@ class Textbrowser():
     def setFont(self,x): 
         self.textbrowser.setFont(x)
         self.textbrowserback.setFont(x)
+        #self.shadowlabel.setFont(x) 
     def setStyleSheet(self,x): 
         #self.textbrowser.setStyleSheet(x)
         
@@ -73,14 +79,23 @@ class Textbrowser():
     def move(self,x,y):
         self.textbrowser.move(x,y)
         self.textbrowserback.move(x,y)
+        #self.shadowlabel.move(x,y)
+       
     def document(self): 
         return self.textbrowser.document()
     def setGeometry(self,_1,_2,_3,_4):
         self.textbrowser.setGeometry(_1,_2,_3,_4)
         self.textbrowserback.setGeometry(_1,_2,_3,_4) 
+        #self.shadowlabel.setGeometry(_1,_2,_3,_4)  
+        #self.shadowlabel.resize(_3,_4)
     def setAlignment(self,x):
         self.textbrowser.setAlignment(x)
         self.textbrowserback.setAlignment(x)
+        if Qt.AlignCenter==x:
+            self.align=True
+        else:
+            self.align=False
+        #self.shadowlabel.setAlignment(Qt.AlignTop )
     @timer
     def append(self,x ): 
         
@@ -97,6 +112,7 @@ class Textbrowser():
          
             self.textbrowser.append('')
             self.textbrowserback.append('')
+             
             self.addtaged=False
             f1=QTextBlockFormat()
             f1.setLineHeight(0,QTextBlockFormat.LineDistanceHeight)
@@ -112,11 +128,27 @@ class Textbrowser():
             self.textbrowserback.setTextCursor(cursor)
             self.textbrowserback.insertPlainText(x) 
             self.textbrowser.insertPlainText(x)
+             
         else:
             self.textbrowserback.append(x) 
-            self.textbrowser.append(x)
-           
-        
+            self.textbrowser.append(x) 
+        # if self.shadowlabel.savetext!='':
+        #     self.shadowlabel.savetext=(self.shadowlabel.savetext+'<br>'+ x)
+        # else:
+        #     self.shadowlabel.savetext=x
+        # if self.align:
+        #     self.shadowlabel.setText( '<html><p style="color:rgba(0,0,0)" align=\'center\'> %s</p></html>' %self.shadowlabel.savetext)
+        # else:
+        #     self.shadowlabel.setText( '<html><p > %s</p></html>' %self.shadowlabel.savetext)
+        # if globalconfig['showShadow']:
+        #     shadow = QGraphicsDropShadowEffect()
+        #     shadow.setBlurRadius(10)
+            
+        #     shadow.setColor(QColor(globalconfig['shadowcolor']))
+        #     shadow.setOffset(0)
+        #     # adding shadow to the label
+            
+        #     self.shadowlabel.setGraphicsEffect(shadow)
     @timer
     def addsearchwordmask(self,x,callback=None,start=2):
         
@@ -157,6 +189,7 @@ class Textbrowser():
                 tl3=self.textbrowser.cursorRect(self.textbrowser.textCursor()).topLeft() 
  
                 if labeli>=len(self.searchmasklabels):
+                     
                     ql=QLabel(self.parent.atback) 
                     ql.setMouseTracking(True)
                     self.searchmasklabels.append(ql)
@@ -292,4 +325,5 @@ class Textbrowser():
 
         self.textbrowser.setText('')
         self.textbrowserback.setText('')
-         
+        # self.shadowlabel.setText('')
+        # self.shadowlabel.savetext=''

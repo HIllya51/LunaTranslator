@@ -140,6 +140,8 @@ class Settin(QMainWindow) :
                 color = QColorDialog.getColor(QColor(globalconfig['backcolor']), self, "设定背景颜色")
             elif translate_type=='miaobian':
                 color = QColorDialog.getColor(QColor(globalconfig['miaobiancolor']), self, "设定描边颜色")
+            elif translate_type=='shadowcolor':
+                color = QColorDialog.getColor(QColor(globalconfig['shadowcolor']), self, "")
             else:
                 color = QColorDialog.getColor(QColor(globalconfig['fanyi'][translate_type]['color']), self, "设定所选翻译显示时的颜色")
             if not color.isValid() :
@@ -150,6 +152,8 @@ class Settin(QMainWindow) :
                 globalconfig['rawtextcolor']=color.name()
             elif translate_type=='miaobian':
                 globalconfig['miaobiancolor']=color.name()
+            elif translate_type=='shadowcolor':
+                globalconfig['shadowcolor']=color.name()
             elif translate_type=='back':
                 globalconfig['backcolor']=color.name()
                 self.object.translation_ui.translate_text.setStyleSheet("border-width: 0;\
