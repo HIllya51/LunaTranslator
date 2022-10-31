@@ -79,7 +79,7 @@ def getversion(self):
                     
                     # download(0,1298163)#开头，结尾(不包含)
                     # download(1298163,5298163)
-                    thread_num = 4
+                    thread_num = 8
                     size = int(r2.headers['Content-Length'])
                     ts=[]
                     for i in range(thread_num):
