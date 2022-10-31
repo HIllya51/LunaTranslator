@@ -372,9 +372,13 @@ class MAINUI() :
     def setontopthread(self):
         while True:
             #self.translation_ui.keeptopsignal.emit() 
-             
-            win32gui.BringWindowToTop(int(self.translation_ui.winId())) 
-        
+            
+            try:
+                 
+                win32gui.SetWindowPos(int(self.translation_ui.winId()), win32con.HWND_TOPMOST, 0, 0, 0, 0,win32con. SWP_NOSIZE | win32con.SWP_NOMOVE)  
+                #win32gui.BringWindowToTop(int(self.translation_ui.winId())) 
+            except:
+                print_exc() 
             time.sleep(0.5)
 
 
