@@ -26,7 +26,7 @@ import qtawesome
 from utils.config import globalconfig 
 
 import importlib
-from gui.inputdialog import GetUserPlotItems,getdictpath
+from gui.inputdialog import GetUserPlotItems,getsomepath
 import gui.switchbutton
 import gui.attachprocessdialog  
 import gui.selecthook  
@@ -71,7 +71,7 @@ def initdictswitchs3(self,namepos,switchpos,colorpos,settingpos):
     s1.setStyleSheet("background: transparent;")   
     s1.setIcon(qtawesome.icon("fa.gear", color="#FF69B4"  ))
     def __2(self):
-        getdictpath(self)
+        getsomepath(self,'共享辞书',globalconfig['gongxiangcishu']['path'],'共享辞书:',lambda x:globalconfig['gongxiangcishu'].__setitem__('path',x),False)
         self.object.loadvnrshareddict()
     s1.clicked.connect(lambda: __2(self))
 def initdictswitchs(self,namepos,switchpos,colorpos,settingpos):

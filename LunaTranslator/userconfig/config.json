@@ -1,15 +1,15 @@
 {
     "position": [
-        295,
-        494
+        104,
+        806
     ],
     "fixedheight": false,
-    "width": 1411,
+    "width": 1575,
     "autorun": true,
     "transparent": 37,
-    "fontsize": 17.7,
+    "fontsize": 20.0,
     "fonttype": "微软雅黑",
-    "miaobianwidth2": 5,
+    "miaobianwidth2": 3.0,
     "miaobianwidth": 1,
     "miaobiancolor": "#ffffff",
     "zitiyangshi": 2,
@@ -32,13 +32,13 @@
             "voice": "jp_male_satoshi"
         },
         "windowstts": {
-            "use": true,
+            "use": false,
             "voice": "TTS_MS_ZH-CN_HUIHUI_11.0"
         },
         "voiceroid2": {
-            "use": false,
+            "use": true,
             "voice": "yukari_emo_44",
-            "path": "C:/dataH/VOICEVOX"
+            "path": "C:/dataH/Yukari2"
         },
         "voicevox": {
             "use": false,
@@ -46,7 +46,7 @@
             "path": "C:/dataH/VOICEVOX"
         }
     },
-    "LocaleEmulator": "C:/dataH/Locale.Emulator.2.5.0.1",
+    "LocaleEmulator": "C:/dataH",
     "verticalocr": false,
     "outputtopasteboard": false,
     "ttscommon": {
@@ -278,7 +278,7 @@
     "autoupdate": false,
     "gongxiangcishu": {
         "use": false,
-        "path": "C:/dataH/vnr/vnr/Caches/Sync/gamedic.xml"
+        "path": "C:/dataH/vnr/vnr/Caches/Sync/1gamedic.xml"
     },
     "proxies": null,
     "xiaoxueguan": {
@@ -292,7 +292,7 @@
     "usesearchword": true,
     "edict": {
         "use": false,
-        "path": ""
+        "path": "C:/dataH/vnr/vnr/Caches/Dictionaries/EDICT/edict.db"
     },
     "linggesi": {
         "use": false,

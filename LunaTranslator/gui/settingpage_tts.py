@@ -1,7 +1,7 @@
 import functools 
 
 from PyQt5.QtWidgets import  QWidget,QLabel, QComboBox,QDoubleSpinBox ,QPushButton
-from gui.inputdialog import getvoiceroid2path,getvoicevoxpath
+from gui.inputdialog import getsomepath
 from utils.config import globalconfig 
 import qtawesome
 import gui.switchbutton
@@ -31,7 +31,7 @@ def setTab5(self) :
         s1.setStyleSheet("background: transparent;")   
         s1.setIcon(qtawesome.icon("fa.gear", color="#FF69B4"  ))
         def __2(self):
-            getvoiceroid2path(self)
+            getsomepath(self,'voiceroid2',globalconfig['reader']['voiceroid2']['path'],'voiceroid2:',lambda x:globalconfig['reader']['voiceroid2'].__setitem__('path',x),True)
             self.object.startreader()
         s1.clicked.connect(lambda: __2(self))
 
@@ -47,7 +47,7 @@ def setTab5(self) :
         s1.setStyleSheet("background: transparent;")   
         s1.setIcon(qtawesome.icon("fa.gear", color="#FF69B4"  ))
         def __3(self):
-            getvoicevoxpath(self)
+            getsomepath(self,'voicevox',globalconfig['reader']['voicevox']['path'],'voicevox:',lambda x:globalconfig['reader']['voicevox'].__setitem__('path',x),True)
             self.object.startreader()
         s1.clicked.connect(lambda: __3(self))
 

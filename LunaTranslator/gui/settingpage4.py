@@ -28,7 +28,7 @@ from utils.config import globalconfig ,postprocessconfig,savehook_new
 from utils.getpidlist import getwindowlist
 import threading
 import json
-from gui.inputdialog import getlepath
+from gui.inputdialog import getsomepath
 import gui.switchbutton
 import gui.attachprocessdialog  
 import gui.selecthook  
@@ -175,7 +175,7 @@ def setTab4(self) :
         s1.setStyleSheet("background: transparent;") 
         
         s1.setIcon(qtawesome.icon("fa.gear", color="#FF69B4"  ))
-        s1.clicked.connect(lambda x: getlepath(self))
+        s1.clicked.connect(lambda x: getsomepath(self,'LocaleEmulator 路径',globalconfig['LocaleEmulator'],'LocaleEmulator:',lambda x:globalconfig.__setitem__('LocaleEmulator',x),True))
       
         label = QLabel(self.tab_4)
         self.customSetGeometry(label, 20, 200, 200, 20)
@@ -190,7 +190,7 @@ def setTab4(self) :
 
         label = QLabel(self.tab_4)
         self.customSetGeometry(label, 20, 260, 200, 20)
-        label.setText("录制人工翻译文件")
+        label.setText("录制翻译文件")
         self.minifollowswitch =gui.switchbutton.MySwitch(self.tab_4, sign= globalconfig['transkiroku'])
         self.customSetGeometry(self.minifollowswitch, 250, 260, 20,20)
         self.minifollowswitch.clicked.connect(lambda x:globalconfig.__setitem__('transkiroku',x)) 
@@ -209,8 +209,8 @@ def setTab4(self) :
         bt.setText("导出sqlite文件为json文件") 
 
         def _sqlite2json():
-                f=QFileDialog.getOpenFileName()
-                if f[0]!='' and f[0].split('.')[-1].lower()=='sqlite':
+                f=QFileDialog.getOpenFileName(filter="*.sqlite")
+                if f[0]!='' :
 
                         sql=sqlite3.connect(f[0],check_same_thread=False)
                         ret=sql.execute(f'SELECT * FROM artificialtrans  ').fetchall()
