@@ -79,7 +79,7 @@ def getversion(self):
                     
                     # download(0,1298163)#开头，结尾(不包含)
                     # download(1298163,5298163)
-                    thread_num = 8
+                    thread_num = 4
                     size = int(r2.headers['Content-Length'])
                     ts=[]
                     for i in range(thread_num):
@@ -94,13 +94,13 @@ def getversion(self):
                     for t in ts:
                         t.join()
                     
-                    if globalconfig['autoupdate']==False: 
-                        return
-                    if os.path.exists('./update/LunaTranslator'):
-                        shutil.rmtree('./update/LunaTranslator')
-                    zipf=zipfile.ZipFile('./update/update.zip')
-                    zipf.extractall('./update')
-                    self.needupdate=True
+                if globalconfig['autoupdate']==False: 
+                    return
+                if os.path.exists('./update/LunaTranslator'):
+                    shutil.rmtree('./update/LunaTranslator')
+                zipf=zipfile.ZipFile('./update/update.zip')
+                zipf.extractall('./update')
+                self.needupdate=True
                 
             except:
                 print_exc()
