@@ -1,24 +1,17 @@
  
-from PyQt5.QtWidgets import QWidget,QLabel,QFrame ,QPushButton,QColorDialog,QSpinBox,QComboBox,QScrollArea,QScrollBar
-from PyQt5.QtGui import QColor,QFont
+from PyQt5.QtWidgets import QWidget,QLabel,QFrame ,QPushButton,QColorDialog,QSpinBox,QComboBox,QScrollArea 
 import functools
-from utils.config import globalconfig 
-import qtawesome
+from utils.config import globalconfig  
 import gui.switchbutton
 import gui.attachprocessdialog  
 from traceback import print_exc
-import gui.selecthook 
-import importlib
+import gui.selecthook  
 from system_hotkey import SystemHotkey
-import pyperclip
-from gui.inputdialog import GetUserPlotItems
-from gui.settingpage4 import autosaveshow
-from gui.settingpage1 import settingsource,settingtextractor
+import pyperclip   
 key_first=['Ctrl','Shift','Alt','Win' ]
 key_first_reg=['control','shift','alt','super' ]
 key_second=['F'+chr(ord('1')+i) for i in range(9)]+['F10','F11','F12']+[chr(ord('A')+i) for i in range(26)]+[chr(ord('0')+i) for i in range(10)]
 key_second_reg=['f'+chr(ord('1')+i) for i in range(9)]+['f10','f11','f12']+[chr(ord('a')+i) for i in range(26)]+[chr(ord('0')+i) for i in range(10)]
-
 def setTab_quick(self) :
  
         tab = QWidget()
@@ -58,8 +51,10 @@ def setTab_quick(self) :
             '_13':self.object.translation_ui.clickRange_signal.emit,
             '_14':self.object.translation_ui.showhide_signal.emit,
             '_15':self.object.translation_ui.bindcropwindow_signal.emit,
-            '_16':self.object.translation_ui.hide_and_disableautohide,
-            '_17':self.object.translation_ui.quitf_signal.emit
+            '_16':self.object.translation_ui.showhideui,
+            '_17':self.object.translation_ui.quitf_signal.emit,
+            '_18':lambda:self.object.settin_ui.fontbigsmallsignal.emit(1),
+            '_19':lambda:self.object.settin_ui.fontbigsmallsignal.emit(-1)
         }
         label = QLabel(tab)
         self.customSetGeometry(label, 20, 25, 200, 20)

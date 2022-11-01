@@ -1,18 +1,18 @@
 {
     "position": [
-        204,
-        602
+        227,
+        428
     ],
     "fixedheight": false,
-    "width": 1575,
+    "width": 1421,
     "autorun": true,
     "transparent": 37,
-    "fontsize": 20.0,
+    "fontsize": 18.3,
     "fonttype": "微软雅黑",
     "miaobianwidth2": 3.0,
     "miaobianwidth": 1,
     "miaobiancolor": "#ffffff",
-    "zitiyangshi": 2,
+    "zitiyangshi": 3,
     "iskongxin": true,
     "isshowrawtext": true,
     "rawtextcolor": "#000000",
@@ -46,7 +46,7 @@
             "path": "C:/dataH/VOICEVOX"
         }
     },
-    "LocaleEmulator": "C:/dataH",
+    "LocaleEmulator": "C:/dataH/Locale.Emulator.2.5.0.1",
     "verticalocr": false,
     "outputtopasteboard": false,
     "ttscommon": {
@@ -236,7 +236,7 @@
             "argsfile": "./userconfig/caiyunapi.json"
         },
         "huoshanapi": {
-            "use": true,
+            "use": false,
             "color": "#0ff000",
             "name": "火山api",
             "argsfile": "./userconfig/huoshanapi.json"
@@ -398,10 +398,10 @@
                 "key2": 4
             },
             "_16": {
-                "use": false,
-                "name": "最小化到托盘",
+                "use": true,
+                "name": "显示/隐藏翻译窗口",
                 "key1": 1,
-                "key2": 3
+                "key2": -1
             },
             "_17": {
                 "use": false,
@@ -426,10 +426,22 @@
                 "name": "选择翻译源-TEXTRACTOR",
                 "key1": 0,
                 "key2": 2
+            },
+            "_18": {
+                "use": true,
+                "name": "字体增大（可长按）",
+                "key1": 0,
+                "key2": 3
+            },
+            "_19": {
+                "use": true,
+                "name": "字体缩小（可长按）",
+                "key1": 0,
+                "key2": 4
             }
         }
     },
     "showShadow": true,
-    "shadowcolor": "#ff8d30",
+    "shadowcolor": "#0509ff",
     "showbold": true
 }

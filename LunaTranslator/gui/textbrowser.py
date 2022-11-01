@@ -1,6 +1,6 @@
  
 from PyQt5.QtCore import Qt 
-from PyQt5.QtGui import QPen,QColor ,QTextCharFormat ,QTextBlockFormat,QTextCursor,QFont,QColor,QFontMetricsF
+from PyQt5.QtGui import QPen,QColor ,QTextCharFormat ,QTextBlockFormat,QTextCursor,QFont,QColor,QFontMetricsF,QPalette
 from PyQt5.QtWidgets import  QTextBrowser ,QLabel,QPushButton,QGraphicsDropShadowEffect
 import random
 import functools 
@@ -49,8 +49,13 @@ class Textbrowser():
         self.searchmasklabels_clicked=[]
         self.searchmasklabels=[]
         self.backcolorlabels=[]
+        self.yinyinglabels=[]
         self.addtaged=False
+        self.yinyingpos=0
+        self.yinyingposline=0
         self.lastcolor=None
+
+        
         self.charformat=self.textbrowser.currentCharFormat()
     def simplecharformat(self,color):
         self.textbrowser.setCurrentCharFormat(self.charformat)
@@ -149,6 +154,78 @@ class Textbrowser():
         #     # adding shadow to the label
             
         #     self.shadowlabel.setGraphicsEffect(shadow)
+    def showyinyingtext(self,color,text):
+        
+        self.textbrowser.append(text) 
+         
+        #print(x)
+        start=self.yinyingpos
+        pos=start
+        labeli=0 
+        cursor=self.textbrowser.textCursor()
+        cursor.setPosition(start)
+        self.textbrowser.setTextCursor(cursor)
+        cursor.movePosition(QTextCursor.StartOfBlock)
+        self.textbrowser.setTextCursor(cursor)
+        linei=self.yinyingposline
+        savestart=self.textbrowser.cursorRect(self.textbrowser.textCursor()).topLeft()
+        print(start,savestart)
+        savep=0
+        texti=0
+        while texti <len(text):
+            word=text[texti]
+            tl1=self.textbrowser.cursorRect(self.textbrowser.textCursor()).topLeft()
+            
+            
+            cursor=self.textbrowser.textCursor() 
+            cursor.setPosition(pos+labeli)
+            self.textbrowser.setTextCursor(cursor)
+            
+            
+            tl3=self.textbrowser.cursorRect(self.textbrowser.textCursor()).topLeft() 
+            
+            if tl1.y()!=tl3.y() or texti==len(text)-1:  
+                if texti==len(text)-1:
+                    texti+=1
+                
+                if linei>=len(self.yinyinglabels):
+                        
+                    ql=QLabel(self.parent.atback) 
+                    ql.setMouseTracking(True)
+                    
+                    self.yinyinglabels.append(ql)
+                self.yinyinglabels[linei].move(savestart)
+                self.yinyinglabels[linei].setText(text[savep:texti] )
+                self.yinyinglabels[linei].setFont(self.textbrowser.font())
+                # p=self.yinyinglabels[labeli].palette()
+                # p.setColor(QPalette.Foreground, QColor("blue"))
+                # self.yinyinglabels[labeli].setPalette(p) 
+                print(text[savep:texti])
+                print(word,'-') 
+                print(savestart)
+                shadow2 = QGraphicsDropShadowEffect()
+                shadow2.setBlurRadius(globalconfig['fontsize'])
+                shadow2.setOffset(0) 
+                shadow2.setColor(QColor(color))
+
+                self.yinyinglabels[linei].setStyleSheet(f"color:{globalconfig['miaobiancolor']}; background-color:rgba(0,0,0,0)")
+                self.yinyinglabels[linei].setGraphicsEffect(shadow2)
+                self.yinyinglabels[linei].show()
+                linei+=1
+
+                savestart=tl3 
+                if word=='\n':
+                    texti+=1
+                 
+                savep=texti
+            #self.searchmasklabels[labeli].clicked.connect(lambda x:print(111))
+            #self.searchmasklabels[labeli].mousePressEvent=(lambda x:print(111))
+            
+            labeli+=1 
+             
+            texti+=1
+        self.yinyingpos=pos+labeli+1
+        self.yinyingposline=linei
     @timer
     def addsearchwordmask(self,x,callback=None,start=2):
         
@@ -291,9 +368,7 @@ class Textbrowser():
             y=tl2.y()-20
             
             self.savetaglabels[labeli].move(x,y)  
-            
              
-            
             self.savetaglabels[labeli].setStyleSheet("color: %s;background-color:rgba(0,0,0,0)" %(globalconfig['rawtextcolor']))
             self.savetaglabels[labeli].show()
             labeli+=1
@@ -319,10 +394,12 @@ class Textbrowser():
             label.hide()
         for label in self.savetaglabels:
             label.hide()
-            
+        for label in self.yinyinglabels:
+            label.hide()
         # self.textbrowser.clear()
         # self.textbrowserback.clear()
-
+        self.yinyingpos=0
+        self.yinyingposline=0
         self.textbrowser.setText('')
         self.textbrowserback.setText('')
         # self.shadowlabel.setText('')

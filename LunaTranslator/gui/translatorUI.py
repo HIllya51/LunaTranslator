@@ -105,13 +105,19 @@ class QUnFrameWindow(QWidget):
         else:
             self.translate_text.setAlignment(Qt.AlignLeft)
 
-         
+        
         if globalconfig['zitiyangshi'] ==2: 
             self.translate_text.mergeCurrentCharFormat_out(globalconfig['miaobiancolor'],color, globalconfig['miaobianwidth2']) 
         elif globalconfig['zitiyangshi'] ==1:  
             self.translate_text.mergeCurrentCharFormat( color, globalconfig['miaobianwidth']) 
         elif globalconfig['zitiyangshi'] ==0: 
             self.translate_text.simplecharformat(color)
+        elif globalconfig['zitiyangshi'] ==3: 
+            self.translate_text.textbrowser.show() 
+            self.translate_text.showyinyingtext(color,res[1])
+            self.translate_text.textbrowser.hide()
+            return 
+        self.translate_text.textbrowser.show()
         if type_==1: 
             self.translate_text.append(res[1])
             if (globalconfig['usesearchword'] or globalconfig['show_fenci']) and res[0]: 
@@ -136,6 +142,11 @@ class QUnFrameWindow(QWidget):
         self.font.setPointSizeF(globalconfig['fontsize']) 
         self.font.setBold(globalconfig['showbold'])
         self.translate_text.setFont(self.font) 
+    def showhideui(self):
+        if self.isHidden():
+            self.show_and_enableautohide() 
+        else:
+            self.hide_and_disableautohide()
     def leftclicktray(self,reason):
             #鼠标左键点击
             if reason == QSystemTrayIcon.Trigger:

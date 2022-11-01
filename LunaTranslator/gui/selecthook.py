@@ -229,6 +229,7 @@ class hookselect(QMainWindow):
             self.object.textsource.selectedhook=self.object.textsource.batchselectinghook
 
             self.object.textsource.autostarthookcode=[]
+            self.object.textsource.autostart=False
             savehook_new[self.object.textsource.pname]=self.object.textsource.selectedhook
             with open('./userconfig/savehook_new.json','w',encoding='utf8') as ff:
                 ff.write(json.dumps(savehook_new,ensure_ascii=False))

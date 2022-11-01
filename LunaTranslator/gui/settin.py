@@ -46,6 +46,7 @@ class Settin(QMainWindow) :
     versiontextsignal=pyqtSignal( str)
     progresssignal=pyqtSignal(str,int)
     clicksourcesignal=pyqtSignal(int)
+    fontbigsmallsignal=pyqtSignal(int)
     def mp3playfunction(self,path,volume):
         self.mp3player.stop()
         print(path)

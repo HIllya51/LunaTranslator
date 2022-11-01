@@ -10,7 +10,8 @@ from utils.config import globalconfig
 import gui.switchbutton
 import gui.attachprocessdialog  
 import gui.selecthook  
-
+def fontbigsmallfunction(self,t):
+        self.fontSize_spinBox.setValue(self.fontSize_spinBox.value()+0.1*t)
 def setTabThree(self) :
      
         self.tab_3 = QWidget()
@@ -38,9 +39,10 @@ def setTabThree(self) :
         self.fontSize_spinBox.setRange(1,100) 
         self.fontSize_spinBox.setValue(globalconfig['fontsize']) 
         self.fontSize_spinBox.setSingleStep(0.1)
-        self.fontSize_spinBox.setDecimals(1)
+        self.fontSize_spinBox.setDecimals(1) 
+        self.fontSize_spinBox.value()
         self.fontSize_spinBox.valueChanged.connect(lambda x:globalconfig.__setitem__('fontsize',x))
-        
+        self.fontbigsmallsignal.connect(functools.partial(fontbigsmallfunction,self))
         label = QLabel(self.tab_3)
         self.customSetGeometry(label, 275, 50, 145, 20)
         label.setText("字体类型:")
@@ -54,9 +56,9 @@ def setTabThree(self) :
         self.customSetGeometry(label, 20, 110, 60, 20)
         label.setText("字体样式")
         self.font_type_combo=QComboBox(self.tab_3)
-        self.font_type_combo.addItems(['普通字体','空心字体','描边字体'])
+        self.font_type_combo.addItems(['普通字体','空心字体','描边字体','阴影字体(不兼容部分功能)'])
         self.font_type_combo.setCurrentIndex(globalconfig['zitiyangshi'])
-        self.customSetGeometry(self.font_type_combo, 95, 110,100,20)
+        self.customSetGeometry(self.font_type_combo, 95, 110,175,20)
         self.font_type_combo.currentIndexChanged.connect(lambda x:globalconfig.__setitem__('zitiyangshi',x) )
  
         
@@ -197,7 +199,7 @@ def setTabThree(self) :
         self.customSetGeometry(self.miaobian_color_button, 600, 140, 20, 20)
         self.miaobian_color_button.setStyleSheet("background: transparent;")
         self.miaobian_color_button.clicked.connect(lambda: self.ChangeTranslateColor("miaobian", self.miaobian_color_button)) 
-
+ 
 
         label = QLabel(self.tab_3)
         self.customSetGeometry(label,450, 110, 60, 20)

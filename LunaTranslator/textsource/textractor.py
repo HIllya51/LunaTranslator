@@ -59,6 +59,7 @@ class textractor(basetext  ):
         self.textgetmethod=textgetmethod
         self.typename='textractor'
         self.ending=False 
+        self.is_strict_matched_hook=False
         self.hookselectdialog=hookselectdialog
         # self.p = QProcess()    
         # self.p.readyReadStandardOutput.connect(self.handle_stdout)  
@@ -157,16 +158,35 @@ class textractor(basetext  ):
                         continue
                     #print(self.autostarthookcode,HookCode)
                     #if self.autostarthookcode==HookCode and self.guessreal(output):
-                    for autostarthookcode in self.autostarthookcode:
-                         
-                        #print((thread_tp_ctx,thread_tp_ctx2,HookCode)==(autostarthookcode[-4],autostarthookcode[-3],autostarthookcode[-1]),(thread_tp_ctx,thread_tp_ctx2,HookCode),(autostarthookcode[-4],autostarthookcode[-3],autostarthookcode[-1]))
-                       # print(thread_tp_ctx,thread_tp_ctx2,autostarthookcode)
-                        if (int(thread_tp_ctx,16)&0xffff,thread_tp_ctx2,HookCode)==(int(autostarthookcode[-4],16)&0xffff,autostarthookcode[-3],autostarthookcode[-1]):
-                        #if (HookCode)==(autostarthookcode[-1]):
-                            self.selectedhook+=[key]
-                            self.selectinghook=key
-                            if len(self.selectedhook)==len(self.autostarthookcode):
+                    
+                    if len(self.autostarthookcode)==1:
+                        autostarthookcode= self.autostarthookcode[0]
+                        if self.is_strict_matched_hook:
+                            pass
+                        else:
+                            if (int(thread_tp_ctx,16)&0xffff,thread_tp_ctx2,HookCode)==(int(autostarthookcode[-4],16)&0xffff,autostarthookcode[-3],autostarthookcode[-1]):
+                                #if (HookCode)==(autostarthookcode[-1]):
+                                self.selectedhook=[key]
+                                self.selectinghook=key
+                                
                                 self.autostart=False
+                                self.is_strict_matched_hook=True
+                            else:
+                                if HookCode==autostarthookcode[-1]:
+                                    self.selectedhook=[key]
+                                    self.selectinghook=key
+                    else:
+                        for autostarthookcode in self.autostarthookcode:
+                            
+                            #print((thread_tp_ctx,thread_tp_ctx2,HookCode)==(autostarthookcode[-4],autostarthookcode[-3],autostarthookcode[-1]),(thread_tp_ctx,thread_tp_ctx2,HookCode),(autostarthookcode[-4],autostarthookcode[-3],autostarthookcode[-1]))
+                        # print(thread_tp_ctx,thread_tp_ctx2,autostarthookcode)
+                            
+                            if (int(thread_tp_ctx,16)&0xffff,thread_tp_ctx2,HookCode)==(int(autostarthookcode[-4],16)&0xffff,autostarthookcode[-3],autostarthookcode[-1]):
+                            #if (HookCode)==(autostarthookcode[-1]):
+                                self.selectedhook+=[key]
+                                self.selectinghook=key
+                                if len(self.selectedhook)==len(self.autostarthookcode):
+                                    self.autostart=False
                 self.hookdatacollecter[key]=[]
                 self.hookdatasort.append(key)
                 self.hookselectdialog.addnewhooksignal.emit(key  ) 

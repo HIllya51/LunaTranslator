@@ -4,7 +4,7 @@ defaultglobalconfig = {'position': [432, 613], 'fixedheight': False, 'width': 76
  'show_fenci':False,
  'showbold':False,
  'showShadow':False,
- 'shadowcolor':"white",
+ 'shadowcolor':"blue",
  'quick_setting':{
     'use':False,
     'all':{
@@ -121,7 +121,7 @@ defaultglobalconfig = {'position': [432, 613], 'fixedheight': False, 'width': 76
         },
         '_16':{
             'use':False,
-            'name':'最小化到托盘',
+            'name':'显示/隐藏翻译窗口',
             'key1':-1,
             'key2':-1
         },
@@ -130,8 +130,20 @@ defaultglobalconfig = {'position': [432, 613], 'fixedheight': False, 'width': 76
             'name':'退出',
             'key1':-1,
             'key2':-1
-        }
+        },
 
+        '_18':{
+            'use':False,
+            'name':'字体增大（可长按）',
+            'key1':-1,
+            'key2':-1
+        },
+        '_19':{
+            'use':False,
+            'name':'字体缩小（可长按）',
+            'key1':-1,
+            'key2':-1
+        },
     }
  },
  'reader': {
