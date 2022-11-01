@@ -31,6 +31,15 @@ class Textbrowser():
         self.align=False
         self.textbrowserback=QTextBrowser(parent)
         self.textbrowser=QTextBrowser(parent)
+        
+        self.toplabel2=QLabel(parent)
+        
+        self.toplabel2.setGeometry( 0,30*self.parent.rate,9999,9999)
+        self.toplabel2.setMouseTracking(True)
+        self.toplabel=QLabel(parent)
+        
+        self.toplabel.setGeometry( 0,30*self.parent.rate,9999,9999)
+        self.toplabel.setMouseTracking(True)
         self.textbrowser.setStyleSheet("border-width: 0;\
                                            border-style: outset;\
                                            border-top: 0px solid #e8f3f9;\
@@ -190,7 +199,7 @@ class Textbrowser():
                 
                 if linei>=len(self.yinyinglabels):
                         
-                    ql=QLabel(self.parent.atback) 
+                    ql=QLabel(self.toplabel2) 
                     ql.setMouseTracking(True)
                     
                     self.yinyinglabels.append(ql)
@@ -271,7 +280,7 @@ class Textbrowser():
                     ql.setMouseTracking(True)
                     self.searchmasklabels.append(ql)
 
-                    ql=Qlabel_c(self.textbrowser) 
+                    ql=Qlabel_c(self.toplabel) 
                     ql.setMouseTracking(True)
                     ql.setStyleSheet("background-color: rgba(0,0,0,0.01);")
                     self.searchmasklabels_clicked.append(ql)

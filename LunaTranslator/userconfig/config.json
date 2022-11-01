@@ -1,7 +1,7 @@
 {
     "position": [
-        227,
-        428
+        167,
+        502
     ],
     "fixedheight": false,
     "width": 1421,
@@ -94,7 +94,7 @@
     },
     "fanyi": {
         "baidu": {
-            "use": false,
+            "use": true,
             "color": "#ff0004",
             "name": "百度"
         },
@@ -298,7 +298,7 @@
         "use": false,
         "path": "C:/dataH/vnr/vnr/Caches/Dictionaries/Lingoes"
     },
-    "show_fenci": false,
+    "show_fenci": true,
     "quick_setting": {
         "use": true,
         "all": {
