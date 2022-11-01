@@ -1,9 +1,0 @@
-﻿  speak.cpp
-C:\Program Files (x86)\Windows Kits\10\Include\10.0.22000.0\um\sphelper.h(1319,13): warning C4996: 'GetVersionExW': 被声明为已否决
-C:\Users\11737\source\repos\tts\tts\speak.cpp(22,15): warning C4244: “=”: 从“__int64”转换到“long”，可能丢失数据
-  正在生成代码
-  Previous IPDB not found, fall back to full compilation.
-C:\Users\11737\source\repos\tts\tts\speak.cpp(26): warning C4715: “asNumeric”: 不是所有的控件路径都返回值
-  All 178 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
-  已完成代码的生成
-  tts_s.vcxproj -> C:\Users\11737\source\repos\tts\x64\Release\tts_s.exe

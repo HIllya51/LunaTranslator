@@ -1,5 +1,0 @@
-C:\Users\11737\source\repos\win32dllforward\ConsoleApp1\obj\Release\net5.0-windows\ConsoleApp1.csproj.AssemblyReference.cache
-C:\Users\11737\source\repos\win32dllforward\ConsoleApp1\obj\Release\net5.0-windows\ConsoleApp1.GeneratedMSBuildEditorConfig.editorconfig
-C:\Users\11737\source\repos\win32dllforward\ConsoleApp1\obj\Release\net5.0-windows\ConsoleApp1.AssemblyInfoInputs.cache
-C:\Users\11737\source\repos\win32dllforward\ConsoleApp1\obj\Release\net5.0-windows\ConsoleApp1.AssemblyInfo.cs
-C:\Users\11737\source\repos\win32dllforward\ConsoleApp1\obj\Release\net5.0-windows\ConsoleApp1.csproj.CoreCompileInputs.cache

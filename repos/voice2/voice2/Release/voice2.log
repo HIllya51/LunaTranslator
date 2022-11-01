@@ -1,9 +1,0 @@
-﻿  源.cpp
-C:\Users\11737\source\repos\voice2\voice2\源.cpp(27,13): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
-C:\Users\11737\source\repos\voice2\voice2\源.cpp(33,13): warning C4101: “input”: 未引用的局部变量
-  正在生成代码
-  1 of 331 functions ( 0.3%) were compiled, the rest were copied from previous compilation.
-    0 functions were new in current compilation
-    0 functions had inline decision re-evaluated but remain unchanged
-  已完成代码的生成
-  voice2.vcxproj -> C:\Users\11737\source\repos\voice2\Release\voice2.exe

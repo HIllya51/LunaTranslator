@@ -1,2 +1,0 @@
-﻿  inject.cpp
-LINK : fatal error LNK1104: 无法打开文件“C:\Users\11737\source\repos\ConsoleApplication1\x64\Debug\inject.dll”

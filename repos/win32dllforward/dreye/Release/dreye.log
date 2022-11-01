@@ -1,8 +1,0 @@
-﻿  dreye.cpp
-C:\Users\11737\source\repos\win32dllforward\dreye\dreye.cpp(54,16): warning C4477: “printf”: 格式字符串“%d”需要类型“int”的参数，但可变参数 1 拥有了类型“FILE *”
-  正在生成代码
-  0 of 207 functions ( 0.0%) were compiled, the rest were copied from previous compilation.
-    0 functions were new in current compilation
-    0 functions had inline decision re-evaluated but remain unchanged
-  已完成代码的生成
-  dreye.vcxproj -> C:\Users\11737\source\repos\win32dllforward\Release\dreye.exe
