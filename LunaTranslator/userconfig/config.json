@@ -1,13 +1,13 @@
 {
     "position": [
-        225,
-        374
+        152,
+        194
     ],
     "fixedheight": false,
     "width": 1421,
     "autorun": true,
     "transparent": 37,
-    "fontsize": 20.0,
+    "fontsize": 50.0,
     "fonttype": "微软雅黑",
     "miaobianwidth2": 3.0,
     "miaobianwidth": 1,
@@ -443,5 +443,6 @@
     },
     "showShadow": true,
     "shadowcolor": "#0509ff",
-    "showbold": true
+    "showbold": true,
+    "shadowforce": 1
 }

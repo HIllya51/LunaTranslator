@@ -5,6 +5,7 @@ defaultglobalconfig = {'position': [432, 613], 'fixedheight': False, 'width': 76
  'showbold':False,
  'showShadow':False,
  'shadowcolor':"blue",
+ 'shadowforce':1,
  'quick_setting':{
     'use':False,
     'all':{
@@ -166,17 +167,17 @@ defaultglobalconfig = {'position': [432, 613], 'fixedheight': False, 'width': 76
  'fanyi': {
     'baidu': {'use': True, 'color': '#ff65db', 'name': '百度'}, 'bing': {'use': False, 'color': '#000ff0', 'name': '必应'}, 
      'google': {'use': False, 'color': '#ff0000', 'name': '谷歌'}, 
-    'ali': {'use': False, 'color': '#0000ff', 'name': '阿里'}, 'youdao': {'use': False, 'color': '#0ff000', 'name': '有道'}, 'youdao2': {'use': False, 'color': '#0ff000', 'name': '有道2'},
+    'ali': {'use': False, 'color': '#0000ff', 'name': '阿里'}, 'youdao': {'use': False, 'color': 'blue', 'name': '有道'}, 'youdao2': {'use': False, 'color': 'blue', 'name': '有道2'},
        'google2': {'use': False, 'color': '#95a5ff', 'name': '谷歌2'},
       'sougou': {
-    'use': False, 'color': '#0ff000', 'name': '搜狗'}, 'caiyun': {'use': False, 'color': '#0ff000', 'name': '彩云'},'deepl': {'use': False, 'color': '#0ff000', 'name': 'deepl'}, 'jb7': {'use': False, 'color': '#1839f0', 'name': 'Jbeijing7', 'argsfile': './userconfig/jbj7.json'}, 'kingsoft': {'use': False, 'color': '#1839f0', 'name': '金山快译', 'argsfile': './userconfig/ks.json'}, 'dreye': {'use': False, 'color': '#1839f0', 'name': '快译通', 'argsfile': './userconfig/dreye.json'}, 'sougou2': {'use': False, 'color': '#0ff000', 'name': '搜狗2'}, 'youdao3': {'use': False, 'color': '#0ff000', 'name': '有道3'}, 'youdao4': {'use': False, 'color': '#0ff000', 'name': '有道4'}, 'youdao5': {'use': False, 'color': '#0ff000', 'name': '有道5'},   'tencent': {'use': False, 'color': '#0ff000', 'name': 'TX'},
-    # 'ifly': {'use': False, 'color': '#0ff000', 'name': 'ifly'}, 
-    'iciba': {'use': False, 'color': '#0ff000', 'name': 'iciba'}, 'baiduapi': {'use': False, 'color': '#0ff000', 'name': '百度api', 'argsfile': './userconfig/baiduapi.json'}, 'tencentapi': {'use': False, 'color': '#0ff000', 'name': '腾讯api', 'argsfile': './userconfig/txapi.json'}, 'byte': {'use': False, 'color': '#0ff000', 'name': 'byte'}, 'qqimt': {'use': False, 'color': '#0ff000', 'name': 'qqimt'}, 'xiaoniu': {'use': False, 'color': '#0ff000', 'name': '小牛api', 'argsfile': './userconfig/xiaoniuapi.json'},
-    'huoshan': {'use': False, 'color': '#0ff000', 'name': 'huoshan' },
-    'yeekit': {'use': False, 'color': '#0ff000', 'name': 'yeekit' }, 'caiyunapi': {'use': False, 'color': '#0ff000', 'name': '彩云api', 'argsfile': './userconfig/caiyunapi.json'}, 'huoshanapi': {'use': False, 'color': '#0ff000', 'name': '火山api', 'argsfile': './userconfig/huoshanapi.json'},
-    'papago': {'use': False, 'color': '#0ff000', 'name': 'papago'},
-    'rengong': {'use': False, 'color': '#0ff000', 'name': '人工翻译', 'argsfile': './userconfig/rengong.json'},
-    'premt': {'use': False, 'color': '#0ff000', 'name': '机器预翻译', 'argsfile': './userconfig/premt.json'}
+    'use': False, 'color': 'blue', 'name': '搜狗'}, 'caiyun': {'use': False, 'color': 'blue', 'name': '彩云'},'deepl': {'use': False, 'color': 'blue', 'name': 'deepl'}, 'jb7': {'use': False, 'color': '#1839f0', 'name': 'Jbeijing7', 'argsfile': './userconfig/jbj7.json'}, 'kingsoft': {'use': False, 'color': '#1839f0', 'name': '金山快译', 'argsfile': './userconfig/ks.json'}, 'dreye': {'use': False, 'color': '#1839f0', 'name': '快译通', 'argsfile': './userconfig/dreye.json'}, 'sougou2': {'use': False, 'color': 'blue', 'name': '搜狗2'}, 'youdao3': {'use': False, 'color': 'blue', 'name': '有道3'}, 'youdao4': {'use': False, 'color': 'blue', 'name': '有道4'}, 'youdao5': {'use': False, 'color': 'blue', 'name': '有道5'},   'tencent': {'use': False, 'color': 'blue', 'name': 'TX'},
+    # 'ifly': {'use': False, 'color': 'blue', 'name': 'ifly'}, 
+    'iciba': {'use': False, 'color': 'blue', 'name': 'iciba'}, 'baiduapi': {'use': False, 'color': 'blue', 'name': '百度api', 'argsfile': './userconfig/baiduapi.json'}, 'tencentapi': {'use': False, 'color': 'blue', 'name': '腾讯api', 'argsfile': './userconfig/txapi.json'}, 'byte': {'use': False, 'color': 'blue', 'name': 'byte'}, 'qqimt': {'use': False, 'color': 'blue', 'name': 'qqimt'}, 'xiaoniu': {'use': False, 'color': 'blue', 'name': '小牛api', 'argsfile': './userconfig/xiaoniuapi.json'},
+    'huoshan': {'use': False, 'color': 'blue', 'name': 'huoshan' },
+    'yeekit': {'use': False, 'color': 'blue', 'name': 'yeekit' }, 'caiyunapi': {'use': False, 'color': 'blue', 'name': '彩云api', 'argsfile': './userconfig/caiyunapi.json'}, 'huoshanapi': {'use': False, 'color': 'blue', 'name': '火山api', 'argsfile': './userconfig/huoshanapi.json'},
+    'papago': {'use': False, 'color': 'blue', 'name': 'papago'},
+    'rengong': {'use': False, 'color': 'blue', 'name': '人工翻译', 'argsfile': './userconfig/rengong.json'},
+    'premt': {'use': False, 'color': 'blue', 'name': '机器预翻译', 'argsfile': './userconfig/premt.json'}
     },
      'minifollow': True, 'movefollow': True, 'autostarthook': True, 'translatortimeout': 5, 'minlength': 5, 'maxlength': 150, 'fanjian': 0, 'rotation': 0, 'srclang': 0,
     'transkiroku':False,'transkirokuuse':'baidu',

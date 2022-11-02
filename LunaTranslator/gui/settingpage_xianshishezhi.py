@@ -2,7 +2,7 @@ import functools
 from PyQt5.QtCore import Qt 
 from PyQt5.QtGui import  QFont
 
-from PyQt5.QtWidgets import  QWidget,QLabel,QFrame,QPushButton ,QSlider,QDoubleSpinBox,QFontComboBox ,QComboBox
+from PyQt5.QtWidgets import  QWidget,QLabel,QFrame,QPushButton ,QSlider,QDoubleSpinBox,QFontComboBox ,QComboBox,QSpinBox
 import qtawesome 
  
 from utils.config import globalconfig 
@@ -194,12 +194,28 @@ def setTabThree(self) :
         label.setText("填充颜色:")
 
         
-        self.miaobian_color_button = QPushButton(qtawesome.icon("fa.paint-brush", color=globalconfig['miaobiancolor']), "", self.tab_3)
+        self.miaobian_color_button= QPushButton(qtawesome.icon("fa.paint-brush", color=globalconfig['miaobiancolor']), "", self.tab_3)
         self.customSetIconSize(self.miaobian_color_button, 20, 20)
         self.customSetGeometry(self.miaobian_color_button, 600, 140, 20, 20)
         self.miaobian_color_button.setStyleSheet("background: transparent;")
         self.miaobian_color_button.clicked.connect(lambda: self.ChangeTranslateColor("miaobian", self.miaobian_color_button)) 
- 
+        
+        
+        label = QLabel(self.tab_3)
+        self.customSetGeometry(label, 450, 170, 60, 20)
+        label.setText("阴影强度:")
+
+        
+        s=QSpinBox(self.tab_3) 
+        self.customSetGeometry(s, 600, 170,50, 20) 
+         
+        s.setRange(1,10) 
+        s.setValue(globalconfig['shadowforce']) 
+        s.setSingleStep(1) 
+        s.valueChanged.connect(lambda x:globalconfig.__setitem__('shadowforce',x))
+
+        self.fontbigsmallsignal.connect(functools.partial(fontbigsmallfunction,self))
+
 
         label = QLabel(self.tab_3)
         self.customSetGeometry(label,450, 110, 60, 20)

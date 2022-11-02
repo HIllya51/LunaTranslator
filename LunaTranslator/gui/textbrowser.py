@@ -198,28 +198,33 @@ class Textbrowser():
                     texti+=1
                 
                 if linei>=len(self.yinyinglabels):
-                        
-                    ql=QLabel(self.toplabel2) 
-                    ql.setMouseTracking(True)
+                    self.yinyinglabels.append([])
+                    for _ in range(globalconfig['shadowforce']):
+                        ql=QLabel(self.toplabel2) 
+                        ql.setMouseTracking(True)
                     
-                    self.yinyinglabels.append(ql)
-                self.yinyinglabels[linei].move(savestart)
-                self.yinyinglabels[linei].setText(text[savep:texti] )
-                self.yinyinglabels[linei].setFont(self.textbrowser.font())
-                # p=self.yinyinglabels[labeli].palette()
-                # p.setColor(QPalette.Foreground, QColor("blue"))
-                # self.yinyinglabels[labeli].setPalette(p) 
-                print(text[savep:texti])
-                print(word,'-') 
-                print(savestart)
-                shadow2 = QGraphicsDropShadowEffect()
-                shadow2.setBlurRadius(globalconfig['fontsize'])
-                shadow2.setOffset(0) 
-                shadow2.setColor(QColor(color))
+                        self.yinyinglabels[-1].append(ql)
+                elif len(self.yinyinglabels[linei])<globalconfig['shadowforce']:
+                    for _ in range(len(self.yinyinglabels[linei]),globalconfig['shadowforce']):
+                        ql=QLabel(self.toplabel2) 
+                        ql.setMouseTracking(True)
+                    
+                        self.yinyinglabels[linei].append(ql)
+                for _i,_ in enumerate(self.yinyinglabels[linei]):
+                    if _i>=globalconfig['shadowforce']:
+                        break
+                    _.move(savestart)
+                    _.setText(text[savep:texti] )
+                    _.setFont(self.textbrowser.font())
+                    
+                    shadow2 = QGraphicsDropShadowEffect()
+                    shadow2.setBlurRadius(globalconfig['fontsize'])
+                    shadow2.setOffset(0) 
+                    shadow2.setColor(QColor(color))
 
-                self.yinyinglabels[linei].setStyleSheet(f"color:{globalconfig['miaobiancolor']}; background-color:rgba(0,0,0,0)")
-                self.yinyinglabels[linei].setGraphicsEffect(shadow2)
-                self.yinyinglabels[linei].show()
+                    _.setStyleSheet(f"color:{globalconfig['miaobiancolor']}; background-color:rgba(0,0,0,0)")
+                    _.setGraphicsEffect(shadow2)
+                    _.show()
                 linei+=1
 
                 savestart=tl3 
@@ -404,7 +409,8 @@ class Textbrowser():
         for label in self.savetaglabels:
             label.hide()
         for label in self.yinyinglabels:
-            label.hide()
+            for _ in label:
+                _.hide()
         # self.textbrowser.clear()
         # self.textbrowserback.clear()
         self.yinyingpos=0
