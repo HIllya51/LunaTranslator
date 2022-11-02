@@ -242,7 +242,7 @@ class Textbrowser():
         self.yinyingposline=linei
     @timer
     def addsearchwordmask(self,x,callback=None,start=2):
-        
+         
         #print(x)
         pos=start
          
@@ -266,7 +266,7 @@ class Textbrowser():
             l=len(word['orig'])
             tl1=self.textbrowser.cursorRect(self.textbrowser.textCursor()).topLeft()
             tl4=self.textbrowser.cursorRect(self.textbrowser.textCursor()).bottomRight()
-            color=self.randomcolor()
+            color=self.randomcolor(word)
              
             for i in range(1,l+1):
                     
@@ -292,22 +292,22 @@ class Textbrowser():
                 if tl1.y()!=tl3.y():
                     if globalconfig['usesearchword']:
                         self.searchmasklabels_clicked[labeli].setGeometry(tl1.x(),tl1.y() ,sum(guesswidth)//len(guesswidth),tl4.y()-tl1.y()) 
-                    if globalconfig['show_fenci']:
+                    if globalconfig['show_fenci'] or globalconfig['showcixing']:
                         self.searchmasklabels[labeli].setGeometry(tl1.x(),tl1.y() ,sum(guesswidth)//len(guesswidth),tl4.y()-tl1.y()) 
                 else:
                     guesswidth.append(tl2.x()-tl1.x())
                     if globalconfig['usesearchword']:
                         self.searchmasklabels_clicked[labeli].setGeometry(tl1.x(),tl1.y() ,tl2.x()-tl1.x(),tl2.y()-tl1.y())
-                    if globalconfig['show_fenci']:
+                    if globalconfig['show_fenci'] or globalconfig['showcixing']:
                         self.searchmasklabels[labeli].setGeometry(tl1.x(),tl1.y() ,tl2.x()-tl1.x(),tl2.y()-tl1.y())
-                if globalconfig['show_fenci']:
+                if globalconfig['show_fenci'] or globalconfig['showcixing']:
                     self.searchmasklabels[labeli].setStyleSheet(f"background-color: rgba{color};"  )
                 tl1=tl3 
                 tl4=tl2
                 if word['orig'] not in ['\n','\r'] :
                     if globalconfig['usesearchword']:
                         self.searchmasklabels_clicked[labeli].show()
-                    if globalconfig['show_fenci']:
+                    if globalconfig['show_fenci'] or globalconfig['showcixing']:
                         self.searchmasklabels[labeli].show()
                 if callback:
                     self.searchmasklabels_clicked[labeli].callback=functools.partial(callback,word['orig'])
@@ -317,11 +317,18 @@ class Textbrowser():
             pos+=l
         
                 
-    def randomcolor(self):
+    def randomcolor(self,word):
+        if 'cixing' in word and globalconfig['showcixing']:
+            try:
+                c=QColor(globalconfig['cixingcolor'][word['cixing']])
+            except:
+                c=QColor("yellowgreen")
+                print_exc()
+            return (c.red(),c.green(),c.blue(), globalconfig['showcixing_touming']/100)
         if self.lastcolor is None:
             self.lastcolor=(random.randint(0,255),random.randint(0,255),random.randint(0,255),1)
-        
-        self.lastcolor= ((self.lastcolor[0]+ random.randint(64,192))%255,(self.lastcolor[1]+ random.randint(64,192))%255,(self.lastcolor[2]+ random.randint(64,192))%255,max(0.3,globalconfig['transparent']/100))
+         
+        self.lastcolor= ((self.lastcolor[0]+ random.randint(64,192))%255,(self.lastcolor[1]+ random.randint(64,192))%255,(self.lastcolor[2]+ random.randint(64,192))%255,globalconfig['showcixing_touming']/100)
         return self.lastcolor
     @timer
     def addtag(self,x): 

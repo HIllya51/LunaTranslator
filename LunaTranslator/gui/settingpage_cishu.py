@@ -6,7 +6,7 @@ from PyQt5.QtWidgets import  QWidget,QLabel,QFrame,QPushButton ,QSlider,QDoubleS
 import qtawesome 
  
 from utils.config import globalconfig 
-  
+from gui.inputdialog import multicolorset
 import gui.switchbutton
 import gui.attachprocessdialog  
 import gui.selecthook  
@@ -27,6 +27,7 @@ def setTabcishu(self) :
         self.customSetGeometry(s,  180,20, 20,20)
         s.clicked.connect(lambda x: __changemecabstate(self,x))  
         
+        
         s2 = QPushButton( "", self.tab_cishu)
         self.customSetIconSize(s2, 20, 20)
         self.customSetGeometry(s2,  210,20,20,20)
@@ -36,6 +37,23 @@ def setTabcishu(self) :
                 getsomepath(self,'mecab',globalconfig['mecab']['path'],'mecab',lambda x:globalconfig['mecab'].__setitem__('path',x),True)
                 self.object.starthira()
         s2.clicked.connect(lambda :__getmecabpath(self))
+ 
+        label = QLabel(self.tab_cishu)
+        self.customSetGeometry(label, 20, 50, 150, 20) 
+        label.setText("显示不同颜色词性:") 
+        s =gui.switchbutton.MySwitch(self.tab_cishu, sign=globalconfig['showcixing'])
+        self.customSetGeometry(s,  180,50, 20,20)
+        s.clicked.connect(lambda x:globalconfig.__setitem__("showcixing",x))  
+
+        
+        s2 = QPushButton( "", self.tab_cishu)
+        self.customSetIconSize(s2, 20, 20)
+        self.customSetGeometry(s2,  210,50,20,20)
+        s2.setStyleSheet("background: transparent;")   
+        s2.setIcon(qtawesome.icon("fa.gear", color="#FF69B4"  ))
+         
+        s2.clicked.connect(lambda :multicolorset(self))
+ 
 
 
         label = QLabel(self.tab_cishu)

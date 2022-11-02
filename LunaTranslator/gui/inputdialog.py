@@ -1,6 +1,8 @@
 import functools
-from PyQt5.QtWidgets import QDialogButtonBox,QDialog,QComboBox,QFormLayout,QSpinBox,QHBoxLayout,QLineEdit,QFileDialog,QPushButton
+from PyQt5.QtWidgets import QDialogButtonBox,QDialog,QComboBox,QFormLayout,QSpinBox,QHBoxLayout,QLineEdit,QFileDialog,QPushButton,QLabel,QColorDialog
 from PyQt5.QtCore import Qt,QSize
+from PyQt5.QtGui import QColor 
+import qtawesome
 from utils.config import globalconfig,syncconfig
 import json
 import os
@@ -93,5 +95,45 @@ def getsomepath(object,title,initpath,label,callback,isdir=False,filter1="*.db")
 
     if dialog.exec() == QDialog.Accepted:
         callback(line.text())
+
+def ChangeTranslateColor(self,button,item) :
+        color = QColorDialog.getColor(QColor(globalconfig['cixingcolor'][item]), self, item)
+        
     
-  
+        button.setIcon(qtawesome.icon("fa.paint-brush", color=color.name()))
+        globalconfig['cixingcolor'][item]=color.name() 
+
+def multicolorset(object ):
+    dialog = QDialog(object)  # 自定义一个dialog
+    dialog.setWindowTitle("颜色设置") 
+    dialog.resize(QSize(300,10))
+    formLayout = QFormLayout(dialog)  # 配置layout 
+    _hori=QHBoxLayout()
+    l=QLabel("透明度")
+    _hori.addWidget(l)
+    _s=QSpinBox()
+    _s.setValue(globalconfig['showcixing_touming'])
+    _s.setMinimum(1)
+    _s.setMaximum(100)
+    _hori.addWidget(_s)
+    formLayout.addRow(_hori)
+    _s.valueChanged.connect(lambda x:globalconfig.__setitem__('showcixing_touming',x))
+    for k in globalconfig['cixingcolor']:
+        hori=QHBoxLayout()
+         
+        l=QLabel()
+        l.setText(k)
+         
+        hori.addWidget(l)
+        
+        p=QPushButton(qtawesome.icon("fa.paint-brush", color=globalconfig['cixingcolor'][k]), "" )
+        
+        p.setIconSize(QSize(20*object.rate,20*object.rate))
+         
+        p.setStyleSheet("background: transparent;")
+        p.clicked.connect(functools.partial(ChangeTranslateColor,dialog,p,k))
+        hori.addWidget(p)
+        
+        formLayout.addRow(hori)
+    dialog.show()
+     

@@ -192,7 +192,7 @@ def setTabThree(self) :
         label = QLabel(self.tab_3)
         self.customSetGeometry(label, 450, 170, 60, 20)
         label.setText("填充颜色:")
-
+        
         
         self.miaobian_color_button= QPushButton(qtawesome.icon("fa.paint-brush", color=globalconfig['miaobiancolor']), "", self.tab_3)
         self.customSetIconSize(self.miaobian_color_button, 20, 20)

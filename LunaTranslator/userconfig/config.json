@@ -1,7 +1,7 @@
 {
     "position": [
-        298,
-        742
+        378,
+        710
     ],
     "fixedheight": false,
     "width": 1421,
@@ -12,7 +12,7 @@
     "miaobianwidth2": 3.0,
     "miaobianwidth": 1,
     "miaobiancolor": "#ffffff",
-    "zitiyangshi": 3,
+    "zitiyangshi": 0,
     "iskongxin": true,
     "isshowrawtext": true,
     "rawtextcolor": "#000000",
@@ -54,9 +54,9 @@
         "volume": 100.0
     },
     "sourcestatus": {
-        "copy": false,
+        "copy": true,
         "ocr": false,
-        "textractor": true,
+        "textractor": false,
         "textractor_pipe": false
     },
     "ocr": {
@@ -298,7 +298,7 @@
         "use": false,
         "path": "C:/dataH/vnr/vnr/Caches/Dictionaries/Lingoes"
     },
-    "show_fenci": false,
+    "show_fenci": true,
     "quick_setting": {
         "use": true,
         "all": {
@@ -444,5 +444,26 @@
     "showShadow": true,
     "shadowcolor": "#0509ff",
     "showbold": true,
-    "shadowforce": 1
+    "shadowforce": 1,
+    "showcixing": false,
+    "showcixing_touming": 30,
+    "cixingcolor": {
+        "形容詞": "aliceblue",
+        "形状詞": "antiquewhite",
+        "副詞": "aqua",
+        "名詞": "aquamarine",
+        "代名詞": "azure",
+        "動詞": "beige",
+        "助詞": "bisque",
+        "助動詞": "black",
+        "感動詞": "blanchedalmond",
+        "接頭辞": "blue",
+        "接尾辞": "blueviolet",
+        "接続詞": "brown",
+        "指示詞": "burlywood",
+        "連体詞": "cadetblue",
+        "判定詞": "chartreuse",
+        "補助記号": "chocolate",
+        "記号": "coral"
+    }
 }

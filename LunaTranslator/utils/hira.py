@@ -29,7 +29,7 @@ class hira:
         if self.usemecab:
             res=[] 
             for node in self.kks.parseToNodeList(text):
-    
+                print(node.feature)
                 try:
                     xx=str(node)+'-'+node.feature.kana.translate(self.h2k)
 
@@ -73,7 +73,7 @@ class hira:
                     hira=node.feature.kana.translate(self.h2k)
                 except:
                     hira=''
-                result.append({'orig':orig,"hira":hira}) 
+                result.append({'orig':orig,"hira":hira,"cixing":node.feature.pos1}) 
         else:
             result =self.kks . convert ( text )
         return result
