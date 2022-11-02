@@ -169,7 +169,7 @@ class MAINUI() :
             return 
         if paste_str=='':
             return
-        if len(paste_str)>500:
+        if len(paste_str)>10000:
             return 
 
 
@@ -201,14 +201,15 @@ class MAINUI() :
             pass
             
         skip=False
-        if shortlongskip and  (len(paste_str)<globalconfig['minlength'] or len(paste_str)>globalconfig['maxlength'] ):
+        paste_str_solve= self.solvebeforetrans(paste_str)
+        if shortlongskip and  (len(paste_str_solve[0])<globalconfig['minlength'] or len(paste_str_solve[0])>globalconfig['maxlength'] ):
             skip=True  
         if (set(paste_str) -set('「…」、。？！―'))==set():
             skip=True 
              
         for engine in self.translators:
             #print(engine)
-            self.translators[engine].gettask((paste_str,self.solvebeforetrans(paste_str),skip)) 
+            self.translators[engine].gettask((paste_str,paste_str_solve,skip)) 
         try:
             if skip==False and globalconfig['transkiroku']  and 'sqlwrite2' in dir(self.textsource):
                 ret=self.textsource.sqlwrite.execute(f'SELECT * FROM artificialtrans WHERE source = "{paste_str}"').fetchone()
