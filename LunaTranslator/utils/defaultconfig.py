@@ -5,7 +5,7 @@ defaultglobalconfig = {'position': [432, 613], 'fixedheight': False, 'width': 76
  'showbold':False,
  'showShadow':False,
  'shadowcolor':"blue",
- 'shadowforce':1,
+ 'shadowforce':5,
  'quick_setting':{
     'use':False,
     'all':{

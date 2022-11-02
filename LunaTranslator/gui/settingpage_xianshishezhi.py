@@ -56,9 +56,9 @@ def setTabThree(self) :
         self.customSetGeometry(label, 20, 110, 60, 20)
         label.setText("字体样式")
         self.font_type_combo=QComboBox(self.tab_3)
-        self.font_type_combo.addItems(['普通字体','空心字体','描边字体','阴影字体(不兼容部分功能)'])
+        self.font_type_combo.addItems(['普通字体','空心字体','描边字体','阴影字体'])
         self.font_type_combo.setCurrentIndex(globalconfig['zitiyangshi'])
-        self.customSetGeometry(self.font_type_combo, 95, 110,175,20)
+        self.customSetGeometry(self.font_type_combo, 95, 110,100,20)
         self.font_type_combo.currentIndexChanged.connect(lambda x:globalconfig.__setitem__('zitiyangshi',x) )
  
         
@@ -190,24 +190,24 @@ def setTabThree(self) :
         self.original_color_button.clicked.connect(lambda: self.ChangeTranslateColor("raw", self.original_color_button)) 
         
         label = QLabel(self.tab_3)
-        self.customSetGeometry(label, 450, 140, 60, 20)
+        self.customSetGeometry(label, 450, 170, 60, 20)
         label.setText("填充颜色:")
 
         
         self.miaobian_color_button= QPushButton(qtawesome.icon("fa.paint-brush", color=globalconfig['miaobiancolor']), "", self.tab_3)
         self.customSetIconSize(self.miaobian_color_button, 20, 20)
-        self.customSetGeometry(self.miaobian_color_button, 600, 140, 20, 20)
+        self.customSetGeometry(self.miaobian_color_button, 600, 170, 20, 20)
         self.miaobian_color_button.setStyleSheet("background: transparent;")
         self.miaobian_color_button.clicked.connect(lambda: self.ChangeTranslateColor("miaobian", self.miaobian_color_button)) 
         
         
         label = QLabel(self.tab_3)
-        self.customSetGeometry(label, 450, 170, 60, 20)
+        self.customSetGeometry(label, 450, 140, 60, 20)
         label.setText("阴影强度:")
 
         
         s=QSpinBox(self.tab_3) 
-        self.customSetGeometry(s, 600, 170,50, 20) 
+        self.customSetGeometry(s, 600, 140,50, 20) 
          
         s.setRange(1,10) 
         s.setValue(globalconfig['shadowforce']) 
