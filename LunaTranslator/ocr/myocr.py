@@ -259,9 +259,12 @@ class myocr:
         self.statistic=[]
     def recognition_img_croped(self,img_list):
         results = []
+        i=0
         for pic in img_list:
             # cv2.imshow(str(time.time()),pic)
             # cv2.waitKey()
+            #cv2.imwrite(f"{i}.jpg",pic)
+            i+=1
             res = self.get_img_res(self.onet_rec_session, pic, self.postprocess_op)
             # if globalconfig['srclang']==0:
             #     res = self.get_img_res(self.onet_rec_session, pic, self.postprocess_op)
@@ -463,8 +466,13 @@ class myocr:
             if globalconfig['verticalocr']==False:
                 box=self.detpostpost(box)
                 
-                
                 index=np.argsort(box[:,1])
+                if globalconfig['ocr_hori_extend']:
+                    for i in range(len(box)): 
+                        box[i][0]=0
+                        if i!=len(box)-1:
+                            box[i][2]=img.shape[1] 
+                 
                 box=box[index]
                 t2=time.time()
                 imgs=simplecrop(img,box)
