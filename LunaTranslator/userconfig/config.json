@@ -1,7 +1,7 @@
 {
     "position": [
-        282,
-        653
+        274,
+        349
     ],
     "fixedheight": false,
     "width": 1421,
@@ -12,12 +12,12 @@
     "miaobianwidth2": 3.0,
     "miaobianwidth": 1,
     "miaobiancolor": "#ffffff",
-    "zitiyangshi": 0,
+    "zitiyangshi": 3,
     "iskongxin": true,
     "isshowrawtext": true,
     "rawtextcolor": "#000000",
     "backcolor": "#989898",
-    "isshowhira": false,
+    "isshowhira": true,
     "locktools": false,
     "showfanyisource": false,
     "autoread": false,
@@ -94,7 +94,7 @@
     },
     "fanyi": {
         "baidu": {
-            "use": false,
+            "use": true,
             "color": "#ff0004",
             "name": "百度"
         },
@@ -247,13 +247,13 @@
             "name": "papago"
         },
         "rengong": {
-            "use": true,
+            "use": false,
             "color": "#0ff000",
             "name": "人工翻译",
             "argsfile": "./userconfig/rengong.json"
         },
         "premt": {
-            "use": true,
+            "use": false,
             "color": "#0ff000",
             "name": "机器预翻译",
             "argsfile": "./userconfig/premt.json"
@@ -298,7 +298,7 @@
         "use": false,
         "path": "C:/dataH/vnr/vnr/Caches/Dictionaries/Lingoes"
     },
-    "show_fenci": true,
+    "show_fenci": false,
     "quick_setting": {
         "use": true,
         "all": {
@@ -445,7 +445,7 @@
     "shadowcolor": "#0509ff",
     "showbold": true,
     "shadowforce": 1,
-    "showcixing": false,
+    "showcixing": true,
     "showcixing_touming": 30,
     "cixingcolor": {
         "形容詞": "aliceblue",
