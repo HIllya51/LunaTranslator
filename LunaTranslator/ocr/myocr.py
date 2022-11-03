@@ -467,13 +467,14 @@ class myocr:
                 box=self.detpostpost(box)
                 
                 index=np.argsort(box[:,1])
+                box=box[index]
                 if globalconfig['ocr_hori_extend']:
                     for i in range(len(box)): 
                         box[i][0]=0
                         if i!=len(box)-1:
                             box[i][2]=img.shape[1] 
                  
-                box=box[index]
+                
                 t2=time.time()
                 imgs=simplecrop(img,box)
             else:
