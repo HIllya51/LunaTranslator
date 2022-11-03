@@ -25,8 +25,36 @@ class hira:
             else:
                 lenl+=2
         return lenl
-    def search(self,text):
-        if self.usemecab:
+    def search(self,text ):
+        
+        text,line,idx=text 
+        if self.usemecab: 
+            if line:
+                x=self.kks.parseToNodeList(line)
+                node=x[idx]
+                try:
+                    xx=str(node)
+                    if node.feature.kana:
+                        xx+='-'+node.feature.kana.translate(self.h2k)
+
+                    xx+=f'<br>词性：'
+                    if node.feature.pos1!='*':
+                        xx+=f'{node.feature.pos1}'
+                    if node.feature.pos2!='*':
+                        xx+=f'-{node.feature.pos2}' 
+                    if node.feature.pos3!='*':
+                        xx+=f'-{node.feature.pos3}' 
+                    if node.feature.pos4!='*':
+                        xx+=f'-{node.feature.pos4}' 
+                    if node.feature.cType!='*':
+                        xx+=f'<br>{node.feature.cType}'
+                    if node.feature.cForm!='*':
+                        xx+=f'<br>{node.feature.cForm}' 
+                    if node.feature.orthBase:
+                        xx+=f'<br>词根：{node.feature.orthBase}'
+                    return xx
+                except:
+                    return ''
             res=[] 
             for node in self.kks.parseToNodeList(text):
                 #print(node.feature)
@@ -73,6 +101,7 @@ class hira:
                     hira=node.feature.kana.translate(self.h2k)
                 except:
                     hira=''
+                print(node.feature)
                 result.append({'orig':orig,"hira":hira,"cixing":node.feature.pos1}) 
         else:
             result =self.kks . convert ( text )

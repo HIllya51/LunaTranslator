@@ -9,7 +9,7 @@ import threading
 from utils.config import globalconfig
 class searchwordW(QMainWindow): 
     getnewsentencesignal=pyqtSignal(str) 
-    searchthreadsignal=pyqtSignal(int,list,str)
+    searchthreadsignal=pyqtSignal(int,list,tuple)
     def __init__(self,p):
         super(searchwordW, self).__init__(p)
         self.setupUi() 
@@ -37,7 +37,7 @@ class searchwordW(QMainWindow):
         self.userhooklayout.addWidget(self.userhook)
         self.userhookinsert=QPushButton("搜索")
         self.userhookinsert.setFont(font) 
-        self.userhookinsert.clicked.connect(lambda :self.search(self.userhook.text()))
+        self.userhookinsert.clicked.connect(lambda :self.search((self.userhook.text(),None,None)))
         self.userhooklayout.addWidget(self.userhookinsert)
  
         self.tab=QTabWidget(self)
@@ -63,23 +63,23 @@ class searchwordW(QMainWindow):
         self.hiding=True
         self.searchthreadsignal.connect(self.searchthread)
     def getnewsentence(self,sentence):
-        self.userhook.setText(sentence)
+        self.userhook.setText(sentence[0] )
+         
         self.search(sentence)
 
     def searchthread(self,i,_d,sentence):
         self.textbs[i].clear()
 
-        res=_d[i].search(sentence) 
+        res=_d[i].search(sentence if i==0 else sentence[0]) 
         if res is None or res=='':
             res='未查到' 
         self.textbs[i].append(res) 
         scrollbar = self.textbs[i].verticalScrollBar()
         scrollbar.setValue(0)
     def search(self,sentence):
-        if sentence=='':
+        if  sentence[0]=='':
             return
         _d=[self.p.object.hira_,self.p.object.xiaoxueguan,self.p.object.linggesi,self.p.object.edict]
-        for i in range(4):
-            
+        for i in range(4): 
             threading.Thread(target=self.searchthreadsignal.emit,args=(i,_d,sentence)).start()
  

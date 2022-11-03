@@ -241,7 +241,7 @@ class Textbrowser():
         self.yinyingpos=pos+labeli+1
         self.yinyingposline=linei
     @timer
-    def addsearchwordmask(self,x,callback=None,start=2):
+    def addsearchwordmask(self,x,raw,callback=None,start=2):
         if len(x)==0:
             return
         #print(x)
@@ -260,9 +260,9 @@ class Textbrowser():
         self.textbrowserback.setTextCursor(cursor)
         
         guesswidth=[]
-        
+        idx=0
         for word in x:
-             
+            idx+=1
             if word['orig']=='\n':
                 continue
             l=len(word['orig'])
@@ -312,7 +312,7 @@ class Textbrowser():
                     if globalconfig['show_fenci'] or globalconfig['showcixing']:
                         self.searchmasklabels[labeli].show()
                 if callback:
-                    self.searchmasklabels_clicked[labeli].callback=functools.partial(callback,word['orig'])
+                    self.searchmasklabels_clicked[labeli].callback=functools.partial(callback,(word['orig'],raw,idx-1))
                 #self.searchmasklabels[labeli].clicked.connect(lambda x:print(111))
                 #self.searchmasklabels[labeli].mousePressEvent=(lambda x:print(111))
                 labeli+=1
