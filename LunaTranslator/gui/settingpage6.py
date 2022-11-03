@@ -43,6 +43,7 @@ def setTab6(self) :
         maxinterval.setSingleStep(0.1)
         maxinterval.setValue(globalconfig['mustocr_interval']) 
         maxinterval.setDecimals(1)
+        maxinterval.setMinimum(0.1)
         self.customSetGeometry(maxinterval, 220, 310, 50,20)
         maxinterval.valueChanged.connect(lambda x:globalconfig.__setitem__('mustocr_interval',x)) 
 
@@ -53,6 +54,7 @@ def setTab6(self) :
  
         maxinterval =QDoubleSpinBox(self.tab_6  )
         maxinterval.setSingleStep(0.1)
+        maxinterval.setMinimum(0.1)
         maxinterval.setValue(globalconfig['ocrmininterval']) 
         maxinterval.setDecimals(1)
         self.customSetGeometry(maxinterval, 220, 340, 50,20)
