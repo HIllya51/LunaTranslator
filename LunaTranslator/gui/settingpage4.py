@@ -216,14 +216,16 @@ def setTab4(self) :
         def _sqlite2json():
                 f=QFileDialog.getOpenFileName(filter="*.sqlite")
                 if f[0]!='' :
-
-                        sql=sqlite3.connect(f[0],check_same_thread=False)
-                        ret=sql.execute(f'SELECT * FROM artificialtrans  ').fetchall()
-                        js={}
-                        for _id,source,mt,ut  in ret:
-                                js[source]={'userTrans':ut,'machineTrans':mt}
-                        with open(os.path.join(os.path.dirname(f[0]), os.path.basename(f[0]).replace('.'+os.path.basename(f[0]).split('.')[-1],'.json')),'w',encoding='utf8') as ff:
-                                ff.write(json.dumps(js,ensure_ascii=False,sort_keys=False, indent=4))
+                        try:
+                                sql=sqlite3.connect(f[0],check_same_thread=False)
+                                ret=sql.execute(f'SELECT * FROM artificialtrans  ').fetchall()
+                                js={}
+                                for _id,source,mt,ut  in ret:
+                                        js[source]={'userTrans':ut,'machineTrans':mt}
+                                with open(os.path.join(os.path.dirname(f[0]), os.path.basename(f[0]).replace('.'+os.path.basename(f[0]).split('.')[-1],'.json')),'w',encoding='utf8') as ff:
+                                        ff.write(json.dumps(js,ensure_ascii=False,sort_keys=False, indent=4))
+                        except:
+                                print_exc()
         bt.clicked.connect(lambda x:_sqlite2json()) 
         # label = QLabel(self.tab_4)
         # self.customSetGeometry(label, 20, 110, 200, 20)

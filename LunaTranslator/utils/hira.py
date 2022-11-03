@@ -29,7 +29,7 @@ class hira:
         if self.usemecab:
             res=[] 
             for node in self.kks.parseToNodeList(text):
-                print(node.feature)
+                #print(node.feature)
                 try:
                     xx=str(node)+'-'+node.feature.kana.translate(self.h2k)
 

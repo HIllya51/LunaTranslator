@@ -242,7 +242,8 @@ class Textbrowser():
         self.yinyingposline=linei
     @timer
     def addsearchwordmask(self,x,callback=None,start=2):
-         
+        if len(x)==0:
+            return
         #print(x)
         pos=start
          
@@ -259,6 +260,7 @@ class Textbrowser():
         self.textbrowserback.setTextCursor(cursor)
         
         guesswidth=[]
+        
         for word in x:
              
             if word['orig']=='\n':

@@ -169,7 +169,7 @@ class MAINUI() :
             return 
         if paste_str=='':
             return
-        if len(paste_str)>10000:
+        if len(paste_str)>100000:
             return 
 
 
@@ -329,9 +329,10 @@ class MAINUI() :
             self.translation_ui.displayres.emit(classname,res)
         
         if classname not in ['rengong','premt']:
+             
             res=res.replace('"','""')   
             try:
-                if globalconfig['sourcestatus']['textractor'] and globalconfig['transkiroku'] and 'sqlwrite' in dir(self.textsource):
+                if   globalconfig['transkiroku'] and 'sqlwrite' in dir(self.textsource):
                     if globalconfig['transkirokuuse']==classname:
                         self.textsource.sqlwrite.execute(f'UPDATE artificialtrans SET machineTrans = "{res}" WHERE source = "{contentraw}"')
                         self.textsource.sqlwrite.commit() 
@@ -345,7 +346,7 @@ class MAINUI() :
             except:
                 print_exc()
             try:
-                if globalconfig['sourcestatus']['textractor'] and globalconfig['transkiroku'] and 'sqlwrite2' in dir(self.textsource):
+                if  globalconfig['transkiroku'] and 'sqlwrite2' in dir(self.textsource):
                     ret=self.textsource.sqlwrite2.execute(f'SELECT machineTrans FROM artificialtrans WHERE source = "{contentraw}"').fetchone() 
                 
                     ret=json.loads(ret[0]) 

@@ -200,6 +200,13 @@ def noundictconfigdialog(object,configdict,title,label=['游戏ID MD5' ,'日文'
         
         model.removeRow(table.currentIndex().row())
     button2.clicked.connect(clicked2)
+    button5=QPushButton(dialog)
+    button5.setText('设置所有词条为全局词条')
+    def clicked5():
+        rows=model.rowCount()  
+        for row in range(rows):
+            model.item(row,0).setText('0')
+    button5.clicked.connect(clicked5)
     button3=QPushButton(dialog)
     button3.setText('保存并关闭')
     def clicked3():
@@ -215,10 +222,10 @@ def noundictconfigdialog(object,configdict,title,label=['游戏ID MD5' ,'日文'
             ff.write(json.dumps(configdict,ensure_ascii=False,sort_keys=False, indent=4))
         dialog.close()
     button3.clicked.connect(clicked3)
-    search=QHBoxLayout(dialog)
-    searchcontent=QLineEdit(dialog)
+    search=QHBoxLayout()
+    searchcontent=QLineEdit()
     search.addWidget(searchcontent)
-    button4=QPushButton(dialog)
+    button4=QPushButton()
     button4.setText('搜索')
     def clicked4():
         text=searchcontent.text()
@@ -243,6 +250,7 @@ def noundictconfigdialog(object,configdict,title,label=['游戏ID MD5' ,'日文'
     formLayout.addLayout(search)
     formLayout.addWidget(button)
     formLayout.addWidget(button2)
+    formLayout.addWidget(button5)
     formLayout.addWidget(button3)
     
     dialog.resize(QSize(600,400))

@@ -34,8 +34,11 @@ def ssim_2(img1, img2):
                 (2 * sigma12 + C2)) / ((mu1_sq + mu2_sq + C1) *
                                        (sigma1_sq + sigma2_sq + C2))
     return ssim_map.mean()
-
+import os
 import importlib
+import sqlite3
+import threading
+import json
 import cv2
 from difflib import SequenceMatcher
 import numpy as np 
@@ -111,6 +114,31 @@ class ocrtext(basetext):
         self.ending=False
         self.lastocrtime=0
         self.hwnd=None
+        try:
+             
+            self.md5='0'
+            self.sqlfname='./transkiroku/0_0.sqlite'
+            self.sqlfname_all='./transkiroku/0_0.premt_synthesize.sqlite'
+            self.jsonfname='./transkiroku/0_0.json'
+            def loadjson(self):
+                if os.path.exists(self.jsonfname):
+                    with open(self.jsonfname,'r',encoding='utf8') as ff:
+                        self.json=json.load(ff)
+                else:
+                    self.json={}
+            threading.Thread(target=loadjson,args=(self,)).start()
+            self.sqlwrite=sqlite3.connect(self.sqlfname,check_same_thread = False)
+            self.sqlwrite2=sqlite3.connect(self.sqlfname_all,check_same_thread = False)
+            try:
+                self.sqlwrite.execute('CREATE TABLE artificialtrans(id INTEGER PRIMARY KEY AUTOINCREMENT,source TEXT,machineTrans TEXT,userTrans TEXT);')
+            except:
+                pass
+            try:
+                self.sqlwrite2.execute('CREATE TABLE artificialtrans(id INTEGER PRIMARY KEY AUTOINCREMENT,source TEXT,machineTrans TEXT);')
+            except:
+                pass
+        except:
+            print_exc()
         super( ).__init__(textgetmethod) 
     def gettextthread(self ):
                  

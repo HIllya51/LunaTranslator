@@ -200,7 +200,7 @@ defaultglobalconfig = {'position': [432, 613], 'fixedheight': False, 'width': 76
     'rengong': {'use': False, 'color': 'blue', 'name': '人工翻译', 'argsfile': './userconfig/rengong.json'},
     'premt': {'use': False, 'color': 'blue', 'name': '机器预翻译', 'argsfile': './userconfig/premt.json'}
     },
-     'minifollow': True, 'movefollow': True, 'autostarthook': True, 'translatortimeout': 5, 'minlength': 5, 'maxlength': 150, 'fanjian': 0, 'rotation': 0, 'srclang': 0,
+     'minifollow': True, 'movefollow': True, 'autostarthook': True, 'translatortimeout': 5, 'minlength': 5, 'maxlength': 200, 'fanjian': 0, 'rotation': 0, 'srclang': 0,
     'transkiroku':False,'transkirokuuse':'baidu',
     'showatcenter':False,
     "mustocr":False,
