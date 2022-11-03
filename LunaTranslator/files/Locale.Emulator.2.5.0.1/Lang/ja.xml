@@ -1,0 +1,8 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<Strings>
+  <RunDefault>プロファイルで実行</RunDefault>
+  <Submenu>ロケールエミュレータ</Submenu>
+  <ManageApp>プロファイルを変更</ManageApp>
+  <ManageAll>汎用性プロファイルリストを編集</ManageAll>
+</Strings>
