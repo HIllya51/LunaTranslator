@@ -117,9 +117,9 @@ class ocrtext(basetext):
         try:
              
             self.md5='0'
-            self.sqlfname='./transkiroku/0_0.sqlite'
-            self.sqlfname_all='./transkiroku/0_0.premt_synthesize.sqlite'
-            self.jsonfname='./transkiroku/0_0.json'
+            self.sqlfname='./transkiroku/0_ocr.sqlite'
+            self.sqlfname_all='./transkiroku/0_ocr.premt_synthesize.sqlite'
+            self.jsonfname='./transkiroku/0_ocr.json'
             def loadjson(self):
                 if os.path.exists(self.jsonfname):
                     with open(self.jsonfname,'r',encoding='utf8') as ff:
