@@ -22,7 +22,8 @@ class basetext:
             t=self.gettextthread()
             if t and globalconfig['autorun']:
                 self.textgetmethod(t)
-         
+                if self.typename=='ocr':
+                    time.sleep(globalconfig['ocrmininterval'])
     def gettextthread(self):
         pass
     def runonce(self):

@@ -107,8 +107,8 @@ class ocrtext(basetext):
         self.screen = QApplication.primaryScreen()
         self.typename='ocr'
         self.savelastimg=None
-        self.savelasttext=None
-        self.savelastimgsim=0
+        self.savelastrecimg=None
+        self.savelasttext=None 
         self.ocr=myocr()
         self.object=object
         self.ending=False
@@ -148,44 +148,44 @@ class ocrtext(basetext):
             if self.object.rect[0][0]>self.object.rect[1][0] or self.object.rect[0][1]>self.object.rect[1][1]:
                 time.sleep(1)
                 return None
-             
+            time.sleep(0.1)
             #img=ImageGrab.grab((self.object.rect[0][0],self.object.rect[0][1],self.object.rect[1][0],self.object.rect[1][1]))
             #imgr = cv2.cvtColor(np.asarray(img), cv2.COLOR_RGB2BGR)
             imgr=self.imageCut(self.object.rect[0][0],self.object.rect[0][1],self.object.rect[1][0],self.object.rect[1][1])
-             
+            
             if globalconfig['mustocr'] and  time.time()-self.lastocrtime>globalconfig['mustocr_interval']:
                 pass
             else:
-                
-                if self.savelastimg is not None:
-                    h,w,c=self.savelastimg.shape
-                    
-                    if imgr.shape!=self.savelastimg.shape:
-                        self.image_score=0
-                    else:
-                        self.image_score =[ compareImage(imgr[i*h//3:(i+1)*h//3],self.savelastimg[i*h//3:(i+1)*h//3])  for i in range(3)]
-                        self.image_score=min(self.image_score)
-                        #self.image_score= compareImage(imgr ,self.savelastimg )
+                h,w,c=imgr.shape 
+                if self.savelastimg is not None and  (imgr.shape==self.savelastimg.shape) : 
+                    image_score =[ compareImage(imgr[i*h//3:(i+1)*h//3],self.savelastimg[i*h//3:(i+1)*h//3])  for i in range(3)]
+                    image_score=sum(image_score)/len(image_score)
                 else:
-                    self.image_score=0
+                    image_score=0
                 self.savelastimg=imgr
-                
-                if self.image_score>0.95 and self.savelastimgsim<0.95:
+                if image_score>0.95 :
                     
-                    self.savelastimgsim=self.image_score
+                    if self.savelastrecimg is not None and  (imgr.shape==self.savelastrecimg.shape   ) :
+
+                        image_score2 =[ compareImage(imgr[i*h//3:(i+1)*h//3],self.savelastrecimg[i*h//3:(i+1)*h//3])  for i in range(3)]
+                        image_score2=sum(image_score2)/len(image_score2)
+                    else:
+                        image_score2=0
+                    if image_score2>0.95:
+                        return None
+                    else:
+                        self.savelastrecimg=imgr
                 else:
-                    self.savelastimgsim=self.image_score
-                    return  None
-            text=self.ocrtest(imgr)
-            
+                    return  None 
+            text=self.ocrtest(imgr) 
             if self.savelasttext is not None:
                 sim=getEqualRate(self.savelasttext,text)
                 #print('text',sim)
-                if sim>0.9:
+                if sim>0.9: 
                     return  None
             self.lastocrtime=time.time()
             self.savelasttext=text
-            time.sleep(globalconfig['ocrmininterval'])
+            
             return (text)
             
     def runonce(self): 

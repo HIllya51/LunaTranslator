@@ -1,7 +1,7 @@
 {
     "position": [
-        307,
-        631
+        260,
+        572
     ],
     "fixedheight": false,
     "width": 1421,
@@ -17,7 +17,7 @@
     "isshowrawtext": true,
     "rawtextcolor": "#000000",
     "backcolor": "#989898",
-    "isshowhira": true,
+    "isshowhira": false,
     "locktools": false,
     "showfanyisource": false,
     "autoread": false,
@@ -54,8 +54,8 @@
         "volume": 100.0
     },
     "sourcestatus": {
-        "copy": true,
-        "ocr": false,
+        "copy": false,
+        "ocr": true,
         "textractor": false,
         "textractor_pipe": false
     },
@@ -271,9 +271,9 @@
     "transkiroku": true,
     "transkirokuuse": "baidu",
     "showatcenter": true,
-    "mustocr": false,
-    "mustocr_interval": 5,
-    "ocrmininterval": 0.20000000000000015,
+    "mustocr": true,
+    "mustocr_interval": 5.0,
+    "ocrmininterval": 1.0,
     "selectable": false,
     "autoupdate": false,
     "gongxiangcishu": {
@@ -289,7 +289,7 @@
         "use": true,
         "path": "C:/dataH/Mecab"
     },
-    "usesearchword": true,
+    "usesearchword": false,
     "edict": {
         "use": false,
         "path": "C:/dataH/vnr/vnr/Caches/Dictionaries/EDICT/edict.db"
@@ -445,7 +445,7 @@
     "shadowcolor": "#0509ff",
     "showbold": true,
     "shadowforce": 1,
-    "showcixing": true,
+    "showcixing": false,
     "showcixing_touming": 30,
     "cixingcolor": {
         "形容詞": "aliceblue",
