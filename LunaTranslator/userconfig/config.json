@@ -1,7 +1,7 @@
 {
     "position": [
-        316,
-        473
+        330,
+        657
     ],
     "fixedheight": false,
     "width": 1421,
@@ -46,7 +46,6 @@
             "path": "C:/dataH/VOICEVOX"
         }
     },
-    "LocaleEmulator": "C:/dataH/Locale.Emulator.2.5.0.1",
     "verticalocr": false,
     "outputtopasteboard": false,
     "ttscommon": {
@@ -466,5 +465,6 @@
         "補助記号": "chocolate",
         "記号": "coral"
     },
-    "ocr_hori_extend": true
+    "ocr_hori_extend": true,
+    "LocaleEmulator": "C:/dataH/Locale.Emulator.2.5.0.1"
 }

@@ -100,10 +100,11 @@ def autosaveshow(object):
         def clicked4():  
                 try:
                     if os.path.exists(model.item(table.currentIndex().row(),1).text()):
-                        le=os.path.join(globalconfig['LocaleEmulator'],'LEProc.exe')
-                        print(le,os.path.exists(le))
+                        
+                        le=os.path.join(os.path.abspath(globalconfig['LocaleEmulator']),'LEProc.exe')
+
                         if os.path.exists(le):
-                                print('"'+le+'"   "'+ model.item(table.currentIndex().row(),1).text()+'"')
+                                #print('"'+le+'"   "'+ model.item(table.currentIndex().row(),1).text()+'"')
                                 game=model.item(table.currentIndex().row(),1).text()
                                 win32api.ShellExecute(None, "open", le, f'-run "{game}"', os.path.dirname(game), win32con.SW_SHOW)
                                 #subprocess.Popen('"'+le+'"   "'+ model.item(table.currentIndex().row(),1).text()+'"' ) 
