@@ -101,7 +101,7 @@ class hira:
                     hira=node.feature.kana.translate(self.h2k)
                 except:
                     hira=''
-                print(node.feature)
+                #print(node.feature)
                 result.append({'orig':orig,"hira":hira,"cixing":node.feature.pos1}) 
         else:
             result =self.kks . convert ( text )

@@ -178,7 +178,7 @@ class Textbrowser():
         self.textbrowser.setTextCursor(cursor)
         linei=self.yinyingposline
         savestart=self.textbrowser.cursorRect(self.textbrowser.textCursor()).topLeft()
-        print(start,savestart)
+        #print(start,savestart)
         savep=0
         texti=0
         while texti <len(text):
