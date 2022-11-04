@@ -125,7 +125,12 @@ def setTabTwo(self) :
         l.setText(globalconfig['proxy'])
         b=QPushButton('确定',self.tab_2)
         self.customSetGeometry(b, 550, 110, 50, 20)
-        b.clicked.connect(lambda x: globalconfig.__setitem__('proxy',l.text()))
+        def __resetproxy(x):
+            globalconfig.__setitem__('proxy',l.text())
+            if globalconfig['useproxy']:
+                os.environ['https_proxy']=globalconfig['proxy'] 
+                os.environ['http_proxy']=globalconfig['proxy'] 
+        b.clicked.connect(lambda x: __resetproxy())
 def initfanyiswitchs_auto(self):
         
         y=170
