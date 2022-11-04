@@ -299,15 +299,16 @@ class QUnFrameWindow(QWidget):
             if ('moveresizegame'   in dir(self)) : 
                 if self.moveresizegame :
                     self.moveresizegame.close()
-            if self.object.settin_ui.hookpid :
+            
+            if (self.object.settin_ui.hookpid and globalconfig['sourcestatus']['textractor'])or (globalconfig['sourcestatus']['ocr'] and self,self.object.textsource.hwnd):
                 try: 
                     if globalconfig['sourcestatus']['ocr']:
                         self.moveresizegame=moveresizegame(self,self.object.textsource.hwnd)
                     elif globalconfig['sourcestatus']['textractor']:
                         self.moveresizegame=moveresizegame(self,getwindowhwnd(self.object.settin_ui.hookpid))
                 except:
-                    pass
-        self.takusanbuttons(qtawesome.icon("fa.expand" ,color= 'white'),"MinMaxButton",lambda :_moveresizegame(self),5,"调整游戏窗口" ) 
+                    print_exc()
+        self.takusanbuttons(qtawesome.icon("fa.expand" ,color= 'white'),"MinMaxButton",lambda :_moveresizegame(self),5,"调整游戏窗口(需要绑定ocr窗口，或选择hook进程)" ) 
         
         
         self.takusanbuttons(qtawesome.icon("fa.minus",color="white" ),"MinMaxButton",self.hide_and_disableautohide,-2,"最小化到托盘")
