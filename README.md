@@ -4,7 +4,7 @@
     <a href="./LICENSE"><img src="https://img.shields.io/badge/license-GPL%203.0-dfd.svg"></a>
     <a href="https://github.com/HIllya51/LunaTranslator/releases"><img src="https://img.shields.io/github/v/release/HIllya51/LunaTranslator?color=ffa"></a>
     <a href="https://github.com/HIllya51/LunaTranslator/stargazers"><img src="https://img.shields.io/github/stars/HIllya51/LunaTranslator?color=ccf"></a>
-    <a id="downloadlink" href="https://github.com/HIllya51/LunaTranslator/releases/download/v1.20.1/LunaTranslator.zip"><img src="https://img.shields.io/badge/download-%E4%B8%8B%E8%BD%BD-red"></a>
+    <a id="downloadlink" href="https://github.com/HIllya51/LunaTranslator/releases/download/v1.20.2/LunaTranslator.zip"><img src="https://img.shields.io/badge/download-%E4%B8%8B%E8%BD%BD-red"></a>
 </p>
 
 
@@ -32,7 +32,7 @@
 
 &emsp;&emsp;**免费在线翻译** 支持使用百度、必应、谷歌、阿里、有道、彩云、搜狗、DeepL、金山、讯飞、腾讯、字节、火山、papago、yeekit进行翻译
 
-&emsp;&emsp;**注册在线翻译** 支持使用用户注册的百度、腾讯、有道、小牛、彩云、火山翻译密钥翻译
+&emsp;&emsp;**注册在线翻译** 支持使用用户注册的百度、腾讯、有道、小牛、彩云、火山、deepl翻译密钥翻译
 
 &emsp;&emsp;**预翻译** 支持读取人工翻译和聚合机器预翻译文件
 
