@@ -9,26 +9,24 @@ class TS(basetrans):
     def srclang(self):
         return ['ja','en'][globalconfig['srclang']]
     def inittranslator(self): 
-        self.ss=requests.session()
-        try:
-            self.ss.get('https://papago.naver.com/', 
-            headers = {
-                'authority': 'papago.naver.com',
-                'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
-                'accept-language': 'zh-CN,zh;q=0.9', 
-                'sec-ch-ua': '"Chromium";v="106", "Google Chrome";v="106", "Not;A=Brand";v="99"',
-                'sec-ch-ua-mobile': '?0',
-                'sec-ch-ua-platform': '"Windows"',
-                'sec-fetch-dest': 'document',
-                'sec-fetch-mode': 'navigate',
-                'sec-fetch-site': 'none',
-                'sec-fetch-user': '?1',
-                'upgrade-insecure-requests': '1',
-                'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36',
-            
-            },timeout = globalconfig['translatortimeout'], proxies=  {'http': None,'https': None}).text
-        except:
-            pass
+        self.ss=requests.session() 
+        self.ss.get('https://papago.naver.com/', 
+        headers = {
+            'authority': 'papago.naver.com',
+            'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
+            'accept-language': 'zh-CN,zh;q=0.9', 
+            'sec-ch-ua': '"Chromium";v="106", "Google Chrome";v="106", "Not;A=Brand";v="99"',
+            'sec-ch-ua-mobile': '?0',
+            'sec-ch-ua-platform': '"Windows"',
+            'sec-fetch-dest': 'document',
+            'sec-fetch-mode': 'navigate',
+            'sec-fetch-site': 'none',
+            'sec-fetch-user': '?1',
+            'upgrade-insecure-requests': '1',
+            'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36',
+        
+        },timeout = globalconfig['translatortimeout'], proxies=  {'http': None,'https': None}).text
+        
         self.uuid=uuid.uuid4().__str__()
     def get_auth(self, url, auth_key, device_id, time_stamp): 
         auth = hmac.new(key=auth_key.encode(), msg=f'{device_id}\n{url}\n{time_stamp}'.encode(), digestmod='md5').digest()
@@ -68,16 +66,11 @@ class TS(basetrans):
             'target': 'zh-CN',
             'text': content,
         }
- 
-        try:
-            r = self.ss.post('https://papago.naver.com/apis/n2mt/translate', headers= headers,timeout = globalconfig['translatortimeout'], data =data , proxies=  {'http': None,'https': None})
-        
-            data = r.json()   
-            return  data['translatedText']
-        except:
-            print_exc()
-            self.inittranslator()
-            return '出错了'
+
+        r = self.ss.post('https://papago.naver.com/apis/n2mt/translate', headers= headers,timeout = globalconfig['translatortimeout'], data =data , proxies=  {'http': None,'https': None})
+    
+        data = r.json()   
+        return  data['translatedText'] 
     def show(self,res):
         print('阿里','\033[0;33;47m',res,'\033[0m',flush=True)
 if __name__=="__main__":

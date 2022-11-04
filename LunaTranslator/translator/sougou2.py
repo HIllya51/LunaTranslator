@@ -32,15 +32,12 @@ class TS(basetrans):
                 'sec-ch-ua': '"Microsoft Edge";v="105", " Not;A Brand";v="99", "Chromium";v="105"',
                 'sec-ch-ua-mobile': '?0',
                 'sec-ch-ua-platform': '"Windows"',
-            }
-            try:
-                res=requests.get('https://fanyi.sogou.com/text?keyword='+quote(content) +'&transfrom='+self.srclang()+'&transto=zh-CHS&model=general',headers=headers, proxies=  {'http': None,'https': None} ,timeout=globalconfig['translatortimeout'])
-                res=re.search('<p id="trans-result" class="output-val" style="white-space: pre-line">([\\s\\S]*?)</p>', res.text)
-                
-                res=res.groups()[0]
-            except:
-                res='出错了'
-                print_exc()
+            } 
+            res=requests.get('https://fanyi.sogou.com/text?keyword='+quote(content) +'&transfrom='+self.srclang()+'&transto=zh-CHS&model=general',headers=headers, proxies=  {'http': None,'https': None} ,timeout=globalconfig['translatortimeout'])
+            res=re.search('<p id="trans-result" class="output-val" style="white-space: pre-line">([\\s\\S]*?)</p>', res.text)
+            
+            res=res.groups()[0]
+            
             return res
 if __name__=='__main__':
     a=BINGFY()

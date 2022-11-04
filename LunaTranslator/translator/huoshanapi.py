@@ -373,17 +373,12 @@ class TS(basetrans):
             return 
         else:
             keyid = js['args']['Access Key ID']  
-            acckey = js['args']['Secret Access Key']  
-        
+            acckey = js['args']['Secret Access Key']   
+        res=trans(query,keyid,acckey)
+        js['args']['字数统计']=str(int(js['args']['字数统计'])+len(query))
+        js['args']['次数统计']=str(int(js['args']['次数统计'])+1)
+        with open(configfile,'w',encoding='utf-8') as ff:
+            ff.write(json.dumps(js,ensure_ascii=False,sort_keys=False, indent=4))
+        #print(res['trans_result'][0]['dst'])
+        return res
          
-        try:
-            res=trans(query,keyid,acckey)
-            js['args']['字数统计']=str(int(js['args']['字数统计'])+len(query))
-            js['args']['次数统计']=str(int(js['args']['次数统计'])+1)
-            with open(configfile,'w',encoding='utf-8') as ff:
-                ff.write(json.dumps(js,ensure_ascii=False,sort_keys=False, indent=4))
-            #print(res['trans_result'][0]['dst'])
-            return res
-        except:
-            print_exc()
-            return '出错了'

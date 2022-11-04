@@ -42,7 +42,7 @@ class TS(basetrans):
         
 
     def translate(self,content): 
-        try:
+        
             headers = {
                 'authority': 'api.interpreter.caiyunai.com',
                 'accept': 'application/json, text/plain, */*',
@@ -112,11 +112,7 @@ class TS(basetrans):
             response = self.ss.post('https://api.interpreter.caiyunai.com/v1/translator', headers=headers, json=json_data,timeout=globalconfig['translatortimeout'],proxies={'http': None,'https': None})
              
             return  decrypt(response.json()['target'])
-        except:
-            print_exc()
-            
-            self.inittranslator()
-            return '出错了'
+         
 if __name__=='__main__':
     a=BINGFY()
     a.gettask('はーい、おやすみなさい')

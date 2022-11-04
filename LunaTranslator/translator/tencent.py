@@ -92,10 +92,6 @@ class TS(basetrans):
     def inittranslator(self):  
         self.engine=Tencent()
         self.engine._=None
-    def translate(self,content): 
-        try:
+    def translate(self,content):  
             return self.engine.tencent_api(content)
-        except:
-            print_exc()
-            self.inittranslator()
-            return '出错了'
+        

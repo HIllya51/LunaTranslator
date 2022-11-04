@@ -58,12 +58,7 @@ class TS(basetrans):
         }
         self.ss.cookies.update({ '_yd_btn_fanyi_29': 'true',
     '_yd_newbanner_day': '29',})
-        try:
-            response = self.ss.post('https://m.youdao.com/translate',   data=data,headers=headers,timeout = globalconfig['translatortimeout'], proxies=  {'http': None,'https': None}).text
-         
-            return re.search('<ul id="translateResult">([\\s\\S]*?)<li>([\\s\\S]*?)</li>([\\s\\S]*?)<\/ul>',response).groups()[1] 
-        except:
-            print(response)
-            self.inittranslator()
-            print_exc()
-            return '出错了'
+    
+        response = self.ss.post('https://m.youdao.com/translate',   data=data,headers=headers,timeout = globalconfig['translatortimeout'], proxies=  {'http': None,'https': None}).text
+        
+        return re.search('<ul id="translateResult">([\\s\\S]*?)<li>([\\s\\S]*?)</li>([\\s\\S]*?)<\/ul>',response).groups()[1]  

@@ -5,7 +5,7 @@ from utils.config import globalconfig,syncconfig
 import os
 import json
 import sqlite3
-
+import Levenshtein
 class TS(basetrans): 
     def __init__(self,rootobject) :
         super(TS,self).__init__()
@@ -66,18 +66,34 @@ class TS(basetrans):
             jsons+=[(self.rootbobject.textsource.json)]
         # for sql in sqls:
         #     ret=sql.execute(f'SELECT * FROM artificialtrans WHERE source = "{content}"').fetchone()
-        for js in jsons:
-            
-            if content   in js: 
-            #if ret is  None:  
-                #_id,source,mt,ut=ret 
+        if globalconfig['premtsimiuse']:
+            mindis=9999999
+            savet='无预翻译'
+            for js in jsons:
+                for jc in js:
+                    dis=Levenshtein.distance(content,jc) 
+                    if dis<mindis:
+                        mindis=dis
+                        if mindis<globalconfig['premtsimi']:
+                            if js[jc]['userTrans'] and js[jc]['userTrans']!='':
+                                savet=js[jc]['userTrans']
+                            
+                            elif js[jc]['machineTrans'] and js[jc]['machineTrans']!='':
+                                savet= js[jc]['machineTrans']
+            return savet
+        else:
+            for js in jsons:
                 
-                if js[content]['userTrans'] and js[content]['userTrans']!='':
-                    return js[content]['userTrans']
-                
-                elif js[content]['machineTrans'] and js[content]['machineTrans']!='':
-                    return js[content]['machineTrans']
-        return '无预翻译'
+                if content   in js: 
+                #if ret is  None:  
+                    #_id,source,mt,ut=ret 
+                    
+                    if js[content]['userTrans'] and js[content]['userTrans']!='':
+                        return js[content]['userTrans']
+                    
+                    elif js[content]['machineTrans'] and js[content]['machineTrans']!='':
+                        return js[content]['machineTrans']
+            return '无预翻译'
 if __name__=='__main__':
     a=BINGFY()
     a.gettask('はーい、おやすみなさい')

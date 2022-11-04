@@ -181,10 +181,6 @@ class TS(basetrans):
     def inittranslator(self):  
         self.engine=Iciba()
         self.engine._=None
-    def translate(self,content): 
-        try:
+    def translate(self,content):  
             return self.engine.iciba_api(content)
-        except:
-            print_exc()
-            self.inittranslator()
-            return '出错了'
+         

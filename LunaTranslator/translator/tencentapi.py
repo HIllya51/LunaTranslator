@@ -87,13 +87,9 @@ def txfy(secretId,secretKey,content):
     
     responseData = requests.get(requestUrlWithArgs,timeout=globalconfig['translatortimeout'], proxies=  {'http': None,'https': None}).text
 
-    #print(responseData)
-    try:
-        return (json.loads(responseData)["Response"]["TargetText"])
-    except:
-        print_exc()
-        print(responseData)
-        return ''
+    #print(responseData) 
+    return (json.loads(responseData)["Response"]["TargetText"])
+     
 class TS(basetrans):
     @classmethod
     def defaultsetting(self):
@@ -122,18 +118,13 @@ class TS(basetrans):
         else:
             appid = js['args']['SecretId']
             secretKey =js['args']['SecretKey']
-   
-        try:
-            js['args']['字数统计']=str(int(js['args']['字数统计'])+len(query))
-            js['args']['次数统计']=str(int(js['args']['次数统计'])+1)
-            with open(configfile,'w',encoding='utf-8') as ff:
-                ff.write(json.dumps(js,ensure_ascii=False,sort_keys=False, indent=4))
-            ret=txfy(appid,secretKey,query)
-            return ret
-        except:
-            
-            print_exc()
-            return '出错了'
+
+        js['args']['字数统计']=str(int(js['args']['字数统计'])+len(query))
+        js['args']['次数统计']=str(int(js['args']['次数统计'])+1)
+        with open(configfile,'w',encoding='utf-8') as ff:
+            ff.write(json.dumps(js,ensure_ascii=False,sort_keys=False, indent=4))
+        ret=txfy(appid,secretKey,query)
+        return ret 
      
 if __name__=='__main__':
     g=BD()

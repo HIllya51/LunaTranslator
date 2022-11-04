@@ -42,16 +42,10 @@ class TS(basetrans):
             'hl': 'zh-CN',
             'q': content,
         }
-        try:
-            response = requests.get('https://translate.google.com/m', params=params,headers=headers,timeout = globalconfig['translatortimeout']  )
-         
-            res=re.search('<div class="result-container">(.*?)</div>',response.text).groups()
-        except:
-            print_exc()
-            self.inittranslator()
-            print(response.text)
-            return '出错了'
-         
+        
+        response = requests.get('https://translate.google.com/m', params=params,verify=False, headers=headers,timeout = globalconfig['translatortimeout']  )
+        
+        res=re.search('<div class="result-container">([\\s\\S]*?)</div>',response.text).groups() 
         return res[0]
    
 if __name__=='__main__':

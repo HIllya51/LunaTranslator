@@ -21,8 +21,7 @@ class TS(basetrans):
             } 
         }
      
-    def x64(self,content):
-        try:
+    def x64(self,content): 
             configfile=globalconfig['fanyi'][self.typename]['argsfile']
             if os.path.exists(configfile) ==False:
                 return 
@@ -61,10 +60,7 @@ class TS(basetrans):
                 #ress+=str(l,encoding='utf16',errors='ignore').replace('\r','').replace('\n','')
                 #print(1,ress,2)
             #ress=ress.replace('Translation(TaskNo = 1) is OK. (remainder threads = 0)\r\n','')
-            return ress
-        except:
-            print_exc()
-            return ''
+            return ress 
     def translate(self,content): 
         return self.x64(content)
          

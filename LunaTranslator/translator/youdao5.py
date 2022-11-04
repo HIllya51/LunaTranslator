@@ -57,11 +57,7 @@ class TS(basetrans):
         }
  
         response =self.session.post('https://aidemo.youdao.com/trans', data=data,headers=headers,   proxies=  {'http': None,'https': None},timeout = globalconfig['translatortimeout'])
-        try:
-            js=response.json()['translation'][0]
-        except  :
-            self.inittranslator()
-            print_exc()
-            return '出错了'
+        js=response.json()['translation'][0]
+        
         return js 
     

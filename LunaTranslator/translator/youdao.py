@@ -83,22 +83,16 @@ class TS(basetrans):
             'sec-ch-ua-platform': '"Windows"',
         }
         response =self.session.post('https://fanyi.youdao.com/translate_o', params=params ,headers=headers, data=data, proxies=  {'http': None,'https': None},timeout = globalconfig['translatortimeout'])
-        try:
-            res=''
-            print(response.json())
-            for js in response.json()['translateResult']:
-                if res!='':
-                    res+='\n'
-                for _ in js:
-                    res+=_['tgt']
-                
-            return res
-        except  :
-            self.inittranslator()
-            print(response.json())
-            print_exc()
-            return '出错了'
-        
+    
+        res=''
+        print(response.json())
+        for js in response.json()['translateResult']:
+            if res!='':
+                res+='\n'
+            for _ in js:
+                res+=_['tgt']
+            
+        return res 
     def show(self,res):
         print('有道','\033[0;33;47m',res,'\033[0m',flush=True)
 if __name__=="__main__":

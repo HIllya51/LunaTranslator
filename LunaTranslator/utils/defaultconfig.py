@@ -2,6 +2,10 @@
 defaultglobalconfig = {'position': [432, 613], 'fixedheight': False, 'width': 768.8, 'autorun': True, 'transparent': 35, 'fontsize': 17.0, 'fonttype': '微软雅黑',  'miaobianwidth2':3,'miaobianwidth':1,'miaobiancolor':'#eeeeee','zitiyangshi':2,
  'iskongxin': True, 'isshowrawtext': True, 'rawtextcolor': '#000000', 'backcolor': '#7a8b8a', 'isshowhira': False, 'locktools': True, 'showfanyisource': False, 'autoread': False, 'extractalltext': False, 
  'show_fenci':False,
+ 'premtsimiuse':False,
+ 'premtsimi':5,
+ 'useproxy':False,
+ 'proxy':'',
  'showbold':False,
  'showShadow':False,
  'shadowcolor':"blue",
@@ -199,7 +203,8 @@ defaultglobalconfig = {'position': [432, 613], 'fixedheight': False, 'width': 76
     'yeekit': {'use': False, 'color': 'blue', 'name': 'yeekit'}, 'caiyunapi': {'use': False, 'color': 'blue', 'name': '彩云api', 'argsfile': './userconfig/caiyunapi.json'}, 'huoshanapi': {'use': False, 'color': 'blue', 'name': '火山api', 'argsfile': './userconfig/huoshanapi.json'},
     'papago': {'use': False, 'color': 'blue', 'name': 'papago'},
     'rengong': {'use': False, 'color': 'blue', 'name': '人工翻译', 'argsfile': './userconfig/rengong.json'},
-    'premt': {'use': False, 'color': 'blue', 'name': '机器预翻译', 'argsfile': './userconfig/premt.json'}
+    'premt': {'use': False, 'color': 'blue', 'name': '机器预翻译', 'argsfile': './userconfig/premt.json'},
+    'deeplapi-free': {'use': False, 'color': 'blue', 'name': 'deeplapi-free', 'argsfile': './userconfig/deeplapi-free.json'}
     },
      'minifollow': True, 'movefollow': True, 'autostarthook': True, 'translatortimeout': 5, 'minlength': 5, 'maxlength': 200, 'fanjian': 0, 'rotation': 0, 'srclang': 0,
     'transkiroku':False,'transkirokuuse':'baidu',

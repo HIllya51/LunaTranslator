@@ -53,18 +53,14 @@ class TS(basetrans):
             'sec-ch-ua-mobile': '?0',
             'sec-ch-ua-platform': '"Windows"',
         }
-        try:
-            response =self.ss.get('https://fanyi.youdao.com/translate?&doctype=json&type='+self.srclang()+'2zh_cn&i='+quote(content),headers=headers,timeout=globalconfig['translatortimeout'], proxies=  {'http': None,'https': None})
+    
+        response =self.ss.get('https://fanyi.youdao.com/translate?&doctype=json&type='+self.srclang()+'2zh_cn&i='+quote(content),headers=headers,timeout=globalconfig['translatortimeout'], proxies=  {'http': None,'https': None})
 
-            js=response.json()
-            
-            res=''
-            for x in  js['translateResult'] :
-                if res!='':
-                    res+='\n'
-                res+=x[0]['tgt'] 
-            return res
-        except:
-            self.inittranslator()
-            print_exc()
-            return '出错了'
+        js=response.json()
+        
+        res=''
+        for x in  js['translateResult'] :
+            if res!='':
+                res+='\n'
+            res+=x[0]['tgt'] 
+        return res 

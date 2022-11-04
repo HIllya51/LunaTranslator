@@ -35,16 +35,10 @@ class TS(basetrans):
             'text': content,
             'browser': 0,
         }
-        try:
-                        
-            response = requests.post('https://translate-crx.bytedance.com/e1/flask/translation',   headers=headers, json=json_data,timeout=globalconfig['translatortimeout'], proxies=  {'http': None,'https': None})
+        
+        response = requests.post('https://translate-crx.bytedance.com/e1/flask/translation',   headers=headers, json=json_data,timeout=globalconfig['translatortimeout'], proxies=  {'http': None,'https': None})
 
-            return(response.json()['results'][0]['translate'][0])
-        except:
-            print_exc()
-            return '出错了'
-         
-        return res[0]
+        return(response.json()['results'][0]['translate'][0]) 
    
 if __name__=='__main__':
     g=GOO()

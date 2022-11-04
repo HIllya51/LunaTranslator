@@ -54,7 +54,7 @@ class TS(basetrans):
     def show(self,res):
         print('必应','\033[0;31;47m',res,'\033[0m',flush=True)
     def translate(self,content): 
-        try:
+         
             data = '&fromLang='+self.srclang()+'&text='+quote(content)+'&to=zh-Hans&token='+self.token+'&key='+self.key
             self.iid_i+=1
                     
@@ -89,15 +89,7 @@ class TS(basetrans):
             ch=js[0]['translations'][0]['text']
             
             return ch
-        except:
-            
-            self.inittranslator()
-            try:
-                print(response.json())
-            except:
-                pass
-            print_exc()
-            return '出错了'
+         
 if __name__=='__main__':
     a=BINGFY()
     a.gettask('はーい、おやすみなさい')

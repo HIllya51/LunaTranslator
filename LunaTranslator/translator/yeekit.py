@@ -37,25 +37,17 @@ class TS(basetrans):
             'sourceLang':self.srclang() ,
             'targetLang':'nzh' ,
         }
- 
-        try:
-                        
-            response = requests.post('https://www.yeekit.com/site/dotranslate',   headers=headers, data=data,timeout=globalconfig['translatortimeout'], proxies=  {'http': None,'https': None})
-            res=''
-            #print(response.json())
-            for _ in response.json():
-                 
-                _=json.loads(_)
-                #print(_)
-                res+=_['translation'][0]['translated'][0]['text']
-            #print(res)
-            return res
-        except:
-            print_exc()
-            return '出错了'
-         
-        return res[0]
-   
+
+        response = requests.post('https://www.yeekit.com/site/dotranslate',   headers=headers, data=data,timeout=globalconfig['translatortimeout'], proxies=  {'http': None,'https': None})
+        res=''
+        #print(response.json())
+        for _ in response.json():
+                
+            _=json.loads(_)
+            #print(_)
+            res+=_['translation'][0]['translated'][0]['text']
+        #print(res)
+        return res 
 if __name__=='__main__':
     g=GOO()
     print(g.gettask('あずきさんからアサリのスパゲティの作り方を学んだりもした。'))

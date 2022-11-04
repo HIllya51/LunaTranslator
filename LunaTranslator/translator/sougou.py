@@ -94,12 +94,8 @@ class Sogou(Tse):
 class TS(basetrans):
     def inittranslator(self): 
         self.engine=Sogou() 
-    def translate(self,content): 
-        try:
-            ss=self.engine.sogou_api(content)  
-        except  :
-            print_exc()
-            ss='出错了'
+    def translate(self,content):  
+        ss=self.engine.sogou_api(content)   
         return ss
 if __name__=='__main__':
     a=BINGFY()

@@ -30,16 +30,11 @@ class TS(basetrans):
                 'source': self.srclang(),
                 'target' : 'zh'
             } 
-        try:
-                        
-            response = requests.post('https://www.volcengine.com/api/exp/2/model-ii',   headers=headers, json=json_data,timeout=globalconfig['translatortimeout'], proxies=  {'http': None,'https': None})
-             
-            return '\n'.join([_['Translation'] for _ in response.json()['Result']['TranslationList'] ])
-        except:
-            print_exc()
-            return '出错了'
-         
-        return res[0]
+        
+        response = requests.post('https://www.volcengine.com/api/exp/2/model-ii',   headers=headers, json=json_data,timeout=globalconfig['translatortimeout'], proxies=  {'http': None,'https': None})
+            
+        return '\n'.join([_['Translation'] for _ in response.json()['Result']['TranslationList'] ])
+        
    
 if __name__=='__main__':
     g=GOO()

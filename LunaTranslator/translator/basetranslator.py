@@ -2,16 +2,20 @@
 from queue import Queue 
 from utils.config import globalconfig  
 from threading import Thread
+import os
+from traceback import print_exc
 class basetrans:
 
     @classmethod
     def settypename(self,typename):
         self.typename=typename
     def __init__(self) :
-
+         
         self.queue=Queue() 
-
-        self.inittranslator() 
+        try: 
+            self.inittranslator() 
+        except:
+            print_exc()
         self.t=Thread(target=self.fythread) 
         self.t.setDaemon(True)
         self.t.start()
@@ -39,11 +43,18 @@ class basetrans:
             if skip:
                 continue
             
-            if self.typename in ['rengong','premt']:
-                res=self.translate(contentraw)
-            else:
-                res=self.translate(contentsolved)
-             
+            try: 
+                if self.typename in ['rengong','premt']:
+                    res=self.translate(contentraw)
+                else:
+                    res=self.translate(contentsolved)
+            except:
+                print_exc()
+                try:
+                    self.inittranslator()
+                except:
+                    print_exc()
+                res='出错'
             
             if res!='' and self.queue.empty() and contentraw==self.newline:
                 self.show(contentraw,(self.typename,res,mp))

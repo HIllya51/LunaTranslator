@@ -1,11 +1,11 @@
 {
     "position": [
-        395,
-        382
+        250,
+        656
     ],
     "fixedheight": false,
     "width": 1421,
-    "autorun": false,
+    "autorun": true,
     "transparent": 37,
     "fontsize": 20.0,
     "fonttype": "微软雅黑",
@@ -53,8 +53,8 @@
         "volume": 100.0
     },
     "sourcestatus": {
-        "copy": false,
-        "ocr": true,
+        "copy": true,
+        "ocr": false,
         "textractor": false,
         "textractor_pipe": false
     },
@@ -93,7 +93,7 @@
     },
     "fanyi": {
         "baidu": {
-            "use": true,
+            "use": false,
             "color": "#ff0004",
             "name": "百度"
         },
@@ -103,7 +103,7 @@
             "name": "必应"
         },
         "google": {
-            "use": false,
+            "use": true,
             "color": "#ff0000",
             "name": "谷歌"
         },
@@ -123,7 +123,7 @@
             "name": "有道2"
         },
         "google2": {
-            "use": false,
+            "use": true,
             "color": "#95a5ff",
             "name": "谷歌2"
         },
@@ -256,6 +256,12 @@
             "color": "#0ff000",
             "name": "机器预翻译",
             "argsfile": "./userconfig/premt.json"
+        },
+        "deeplapi-free": {
+            "use": false,
+            "color": "blue",
+            "name": "deeplapi-free",
+            "argsfile": "./userconfig/deeplapi-free.json"
         }
     },
     "minifollow": true,
@@ -466,5 +472,9 @@
         "記号": "coral"
     },
     "ocr_hori_extend": true,
-    "LocaleEmulator": "C:/Users/11737/Documents/GitHub/LunaTranslator/LunaTranslator/files/Locale.Emulator.2.5.0.1"
+    "LocaleEmulator": "C:/Users/11737/Documents/GitHub/LunaTranslator/LunaTranslator/files/Locale.Emulator.2.5.0.1",
+    "premtsimiuse": true,
+    "premtsimi": 5,
+    "useproxy": false,
+    "proxy": "127.0.0.1:4780"
 }

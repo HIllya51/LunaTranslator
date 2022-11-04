@@ -144,11 +144,9 @@ class TS(basetrans):
     def inittranslator(self):  
         self.engine=Deepl()
     def translate(self,content): 
-        try:
+         
             return self.engine.deepl_api(content)
-        except:
-            print_exc()
-            return '出错了'
+         
 if __name__=='__main__':
     a=BINGFY()
     a.gettask('はーい、おやすみなさい')

@@ -31,16 +31,7 @@ class TS(basetrans):
             'sec-ch-ua': '"Chromium";v="106", "Google Chrome";v="106", "Not;A=Brand";v="99"',
             'sec-ch-ua-mobile': '?0',
             'sec-ch-ua-platform': '"Windows"',
-        }
-
-        try:
-            response = requests.get('https://www.youdao.com/w/'+self.srclang()+'/'+quote(content)+'/',headers=headers,timeout = globalconfig['translatortimeout'], proxies=  {'http': None,'https': None}).text
-
-             
-         
-            return re.search('<div class="trans-container">([\\s\\S]*?)<p>([\\s\\S]*?)</p>([\\s\\S]*?)<p>([\\s\\S]*?)</p>',response).groups()[3] 
-        except:
-            print(response)
-            self.inittranslator()
-            print_exc()
-            return '出错了'
+        } 
+        response = requests.get('https://www.youdao.com/w/'+self.srclang()+'/'+quote(content)+'/',headers=headers,timeout = globalconfig['translatortimeout'], proxies=  {'http': None,'https': None}).text
+        return re.search('<div class="trans-container">([\\s\\S]*?)<p>([\\s\\S]*?)</p>([\\s\\S]*?)<p>([\\s\\S]*?)</p>',response).groups()[3] 
+        

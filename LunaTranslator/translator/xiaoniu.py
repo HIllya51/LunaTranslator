@@ -56,17 +56,12 @@ class TS(basetrans):
             'src_text':query,
             'apikey':apikey
         }
-        try:
-            response = requests.post('https://api.niutrans.com/NiuTransServer/translation',  headers=headers, params=params, timeout=globalconfig['translatortimeout'],proxies=  {'http': None,'https': None})
-           # print(response.json())
-            js['args']['字数统计']=str(int(js['args']['字数统计'])+len(query))
-            js['args']['次数统计']=str(int(js['args']['次数统计'])+1)
-            with open(configfile,'w',encoding='utf-8') as ff:
-                ff.write(json.dumps(js,ensure_ascii=False,sort_keys=False, indent=4))
-            #print(res['trans_result'][0]['dst'])
-            return response.json()['tgt_text']
-        except:
-            #print(response.json())
-            print_exc()
-            return '出错了'
-     
+        
+        response = requests.post('https://api.niutrans.com/NiuTransServer/translation',  headers=headers, params=params, timeout=globalconfig['translatortimeout'],proxies=  {'http': None,'https': None})
+        # print(response.json())
+        js['args']['字数统计']=str(int(js['args']['字数统计'])+len(query))
+        js['args']['次数统计']=str(int(js['args']['次数统计'])+1)
+        with open(configfile,'w',encoding='utf-8') as ff:
+            ff.write(json.dumps(js,ensure_ascii=False,sort_keys=False, indent=4))
+        #print(res['trans_result'][0]['dst'])
+        return response.json()['tgt_text'] 

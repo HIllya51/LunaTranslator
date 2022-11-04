@@ -31,8 +31,7 @@ class TS(basetrans):
     #     else:
     #         self._x64=True
     #         self.x64('おはおよう')
-    def x64(self,content):
-        try:
+    def x64(self,content): 
             configfile=globalconfig['fanyi'][self.typename]['argsfile']
             if os.path.exists(configfile) ==False:
                 return 
@@ -69,13 +68,7 @@ class TS(basetrans):
                     ress+=chr(int(_x))
                     #print(ress)
                 #print(l)
-                
-                #ress+=str(l,encoding='utf16',errors='ignore').replace('\r','')
-            #print(1,ress,2)
-        #ress=ress.replace('Translation(TaskNo = 1) is OK. (remainder threads = 0)\r\n','')
-            return ress
-        except:
-            return ''
+                 
     def x86(self,content):
         CODEPAGE_JA = 932
         CODEPAGE_GB = 936
