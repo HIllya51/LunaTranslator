@@ -107,10 +107,9 @@ class rangeselct(QWidget) :
             self.close() 
              
 import win32gui,win32con,win32api
-from utils.getpidlist import getwindowhwnd
 class moveresizegame(QDialog) :
 
-    def __init__(self, object,pid ):
+    def __init__(self, object,hwnd ):
 
         super(moveresizegame, self).__init__(object)
         self.setWindowFlags(Qt.Dialog|Qt.WindowMaximizeButtonHint|Qt.WindowCloseButtonHint)
@@ -125,7 +124,7 @@ class moveresizegame(QDialog) :
         self._isTracking=False
          
  
-        self.hwnd=getwindowhwnd(pid)
+        self.hwnd=hwnd
         if self.hwnd==0:
             self.close()
         rect=win32gui.GetWindowRect(self.hwnd)  

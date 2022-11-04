@@ -20,6 +20,8 @@ from utils.subproc import endsubprocs
 import  win32gui,win32api,win32process,win32con
 import gui.rangeselect
 import gui.transhist
+
+from utils.getpidlist import getwindowhwnd
 from gui.settingpage4 import autosaveshow
 from gui.settingpage1 import settingsource,settingtextractor
 from gui.textbrowser import Textbrowser
@@ -284,17 +286,7 @@ class QUnFrameWindow(QWidget):
 
         self.takusanbuttons(qtawesome.icon("fa.link" ,color= 'white'),"MinMaxButton",lambda :settingtextractor(self.object.settin_ui,False),4,"选择游戏" ) 
         self.takusanbuttons(qtawesome.icon("fa.tasks" ,color= 'white'),"MinMaxButton",lambda :settingsource(self.object.settin_ui),5,"选择文本" ) 
-        def _moveresizegame(self):
-            
-            if ('moveresizegame'   in dir(self)) : 
-                if self.moveresizegame :
-                    self.moveresizegame.close()
-            if self.object.settin_ui.hookpid :
-                try: 
-                    self.moveresizegame=moveresizegame(self,self.object.settin_ui.hookpid)
-                except:
-                    pass
-        self.takusanbuttons(qtawesome.icon("fa.expand" ,color= 'white'),"MinMaxButton",lambda :_moveresizegame(self),5,"调整游戏窗口" ) 
+        
 
         self.takusanbuttons(qtawesome.icon("fa.crop" ,color="white"),"MinMaxButton",self.clickRange,4,"选取OCR范围")
         self.takusanbuttons((qtawesome.icon("fa.square" ,color='white')),"MinMaxButton",self.showhide,5,"显示/隐藏范围框",'showhidebutton')
@@ -302,7 +294,20 @@ class QUnFrameWindow(QWidget):
         self.takusanbuttons((qtawesome.icon("fa.windows" ,color='white')),"MinMaxButton",self.bindcropwindow,5,"绑定截图窗口，避免遮挡（部分软件不支持）（点击自己取消）",'bindcropwindowbutton')
         
         # self.takusanbuttons(qtawesome.icon("fa.lock" ,color="#FF69B4" if globalconfig['locktools'] else 'white'),"MinMaxButton",self.changetoolslockstate,10,"锁定工具栏",'locktoolsbutton') 
-        
+        def _moveresizegame(self):
+            
+            if ('moveresizegame'   in dir(self)) : 
+                if self.moveresizegame :
+                    self.moveresizegame.close()
+            if self.object.settin_ui.hookpid :
+                try: 
+                    if globalconfig['sourcestatus']['ocr']:
+                        self.moveresizegame=moveresizegame(self,self.object.textsource.hwnd)
+                    elif globalconfig['sourcestatus']['textractor']:
+                        self.moveresizegame=moveresizegame(self,getwindowhwnd(self.object.settin_ui.hookpid))
+                except:
+                    pass
+        self.takusanbuttons(qtawesome.icon("fa.expand" ,color= 'white'),"MinMaxButton",lambda :_moveresizegame(self),5,"调整游戏窗口" ) 
         
         
         self.takusanbuttons(qtawesome.icon("fa.minus",color="white" ),"MinMaxButton",self.hide_and_disableautohide,-2,"最小化到托盘")
@@ -437,7 +442,7 @@ class QUnFrameWindow(QWidget):
                 self.bindcropwindowbutton.setIcon(qtawesome.icon("fa.windows" ,color="white" ))
             #for pid in pids:
             else:
-                self.object.textsource.hwnd= (hwnd_) 
+                self.object.textsource.hwnd= (hwnd_)  
                 self.bindcropwindowbutton.setIcon(qtawesome.icon("fa.windows" ,color="#FF69B4" ))
             
             hm.UnhookMouse()   
@@ -666,10 +671,13 @@ class QUnFrameWindow(QWidget):
         self.showbuttons=[]
         for i,button in enumerate(self.buttons[:-2]):
             
-            if i in [15,13,14] and globalconfig['sourcestatus']['ocr'] ==False:
+            if i in [12,13,14] and globalconfig['sourcestatus']['ocr'] ==False:
                 button.hide()
                 continue
-            if i in [10,11,12] and globalconfig['sourcestatus']['textractor'] ==False:
+            if globalconfig['sourcestatus']['textractor'] ==False and globalconfig['sourcestatus']['ocr'] ==False and i==15:
+                button.hide()
+                continue
+            if i in [10,11] and globalconfig['sourcestatus']['textractor'] ==False:
                 button.hide()
                 continue
             button.move(showed*button.width() , 0) 
