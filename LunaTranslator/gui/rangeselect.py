@@ -114,7 +114,7 @@ class moveresizegame(QDialog) :
         super(moveresizegame, self).__init__(object)
         self.setWindowFlags(Qt.Dialog|Qt.WindowMaximizeButtonHint|Qt.WindowCloseButtonHint)
         self.object = object  
-        self.setWindowTitle("调整窗口")
+        self.setWindowTitle("调整窗口  "+ win32gui.GetWindowText(hwnd))
         # self.setWindowFlags(Qt.WindowStaysOnTopHint | Qt.FramelessWindowHint  )
         # self.setAttribute(Qt.WA_TranslucentBackground) 
         self.setWindowOpacity(0.5)
