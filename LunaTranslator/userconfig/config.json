@@ -1,7 +1,7 @@
 {
     "position": [
-        178,
-        613
+        312,
+        430
     ],
     "fixedheight": false,
     "width": 1435,
@@ -53,9 +53,9 @@
         "volume": 100.0
     },
     "sourcestatus": {
-        "copy": true,
+        "copy": false,
         "ocr": false,
-        "textractor": false,
+        "textractor": true,
         "textractor_pipe": false
     },
     "ocr": {
@@ -166,17 +166,17 @@
             "name": "搜狗2"
         },
         "youdao3": {
-            "use": true,
+            "use": false,
             "color": "#0ff000",
             "name": "有道3"
         },
         "youdao4": {
-            "use": true,
+            "use": false,
             "color": "#0ff000",
             "name": "有道4"
         },
         "youdao5": {
-            "use": true,
+            "use": false,
             "color": "#0ff000",
             "name": "有道5"
         },
