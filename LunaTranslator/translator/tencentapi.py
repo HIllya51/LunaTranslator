@@ -21,9 +21,7 @@ import time
 import random
 import requests
 import os
-
-def srclang( ):
-        return ['ja','en'][globalconfig['srclang']]
+ 
 def sign(secretKey, signStr, signMethod): 
     if sys.version_info[0] > 2:
         signStr = signStr.encode("utf-8")
@@ -49,7 +47,7 @@ def dictToStr(dictData):
     return "&".join(tempList)
 
  
-def txfy(secretId,secretKey,content):
+def txfy(secretId,secretKey,content,src,tgt):
          
     
     timeData = str(int(time.time())) # 时间戳
@@ -68,9 +66,9 @@ def txfy(secretId,secretKey,content):
         'Region' : regionData,
         'SecretId' : secretId,
         'SignatureMethod':signMethod,
-        'Source': srclang(),
+        'Source':src,
         'SourceText':content,
-        'Target': "zh",
+        'Target': tgt,
         'Timestamp' : int(timeData),
         'Version':versionData ,
     }
@@ -123,7 +121,7 @@ class TS(basetrans):
         js['args']['次数统计']=str(int(js['args']['次数统计'])+1)
         with open(configfile,'w',encoding='utf-8') as ff:
             ff.write(json.dumps(js,ensure_ascii=False,sort_keys=False, indent=4))
-        ret=txfy(appid,secretKey,query)
+        ret=txfy(appid,secretKey,query,self.srclang,self.tgtlang)
         return ret 
      
 if __name__=='__main__':

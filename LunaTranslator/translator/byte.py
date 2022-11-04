@@ -28,8 +28,8 @@ class TS(basetrans):
         }
 
         json_data = {
-            'src_lang': None,
-            'tgt_lang': 'zh',
+            'src_lang': self.srclang,
+            'tgt_lang': self.tgtlang,
             'mode': 0,
             'from': 'https://tieba.baidu.com/',
             'text': content,

@@ -9,8 +9,7 @@ import json
 from translator.basetranslator import basetrans
 import time
 class TS(basetrans):
-    def srclang(self):
-        return ['ja','en'][globalconfig['srclang']]
+    
     def translate(self,content): 
                 
                 
@@ -27,8 +26,8 @@ class TS(basetrans):
 
         json_data = {
                 'text' : content,
-                'source': self.srclang(),
-                'target' : 'zh'
+                'source': self.srclang ,
+                'target' : self.tgtlang
             } 
         
         response = requests.post('https://www.volcengine.com/api/exp/2/model-ii',   headers=headers, json=json_data,timeout=globalconfig['translatortimeout'], proxies=  {'http': None,'https': None})

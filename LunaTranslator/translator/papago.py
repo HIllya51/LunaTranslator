@@ -6,8 +6,7 @@ import uuid,time
 from utils.config import globalconfig
 from translator.basetranslator import basetrans
 class TS(basetrans):
-    def srclang(self):
-        return ['ja','en'][globalconfig['srclang']]
+     
     def inittranslator(self): 
         self.ss=requests.session() 
         self.ss.get('https://papago.naver.com/', 
@@ -56,14 +55,14 @@ class TS(basetrans):
 
         data = {
             'deviceId': self.uuid,
-            'locale': 'zh-CN',
+            'locale': self.tgtlang,
             'dict': 'true',
             'dictDisplay': '30',
             'honorific': 'false',
             'instant': 'false',
             'paging': 'false',
-            'source': self.srclang(),
-            'target': 'zh-CN',
+            'source': self.srclang ,
+            'target': self.tgtlang,
             'text': content,
         }
 

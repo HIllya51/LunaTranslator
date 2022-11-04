@@ -8,9 +8,7 @@ from utils.config import globalconfig
 import json  
 from translator.basetranslator import basetrans
 import time
-class TS(basetrans):
-    def srclang(self):
-        return ['nja','nen'][globalconfig['srclang']]
+class TS(basetrans): 
     def translate(self,content): 
                 
                 
@@ -34,8 +32,8 @@ class TS(basetrans):
 
         data = {
             'content[]': content,
-            'sourceLang':self.srclang() ,
-            'targetLang':'nzh' ,
+            'sourceLang':self.srclang  ,
+            'targetLang':self.tgtlang ,
         }
 
         response = requests.post('https://www.yeekit.com/site/dotranslate',   headers=headers, data=data,timeout=globalconfig['translatortimeout'], proxies=  {'http': None,'https': None})

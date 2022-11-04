@@ -50,7 +50,7 @@ class TS(basetrans):
         'Content-Type': 'application/x-www-form-urlencoded',
                 }
 
-        data = 'text='+parse.quote(query)+'&target_lang=ZH'
+        data = 'text='+parse.quote(query)+'&target_lang='+self.tgtlang+'&source_lang='+self.srclang
 
         response = requests.post('https://api-free.deepl.com/v2/translate', headers=headers, verify=False, data=data ).json()  
         js['args']['字数统计']=str(int(js['args']['字数统计'])+len(query))

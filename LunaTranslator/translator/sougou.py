@@ -10,9 +10,7 @@ from translator.basetranslator import basetrans
 from utils.config import globalconfig
 import random
 import functools
-import urllib
-def srclang( ):
-        return ['ja','en'][globalconfig['srclang']]
+import urllib 
 class Tse:
     def __init__(self):
         self.author = 'Ulion.Tse' 
@@ -55,7 +53,6 @@ class Sogou(Tse):
         self.language_map = None
         self.form_data = None
         self.query_count = 0
-        self.output_zh = 'zh-CHS'
         self.input_limit = 5000 
 
     def get_form(self, query_text, from_language, to_language):
@@ -79,11 +76,11 @@ class Sogou(Tse):
         return form
 
     # @Tse.time_stat
-    def sogou_api(self, query_text ) :
+    def sogou_api(self, query_text ,src,tgt) :
          
         with requests.Session() as ss:
             _ = ss.get(self.host_url, headers=self.host_headers, timeout=globalconfig['translatortimeout'], proxies={'http': None,'https': None}).text 
-            from_language,to_language=srclang(),'zh-CHS'
+            from_language,to_language=src,tgt
             self.form_data = self.get_form(query_text, from_language, to_language)
             r = ss.post(self.api_url, headers=self.api_headers, data=self.form_data, timeout=globalconfig['translatortimeout'], proxies={'http': None,'https': None})
           
@@ -95,7 +92,7 @@ class TS(basetrans):
     def inittranslator(self): 
         self.engine=Sogou() 
     def translate(self,content):  
-        ss=self.engine.sogou_api(content)   
+        ss=self.engine.sogou_api(content,self.srclang,self.tgtlang)   
         return ss
 if __name__=='__main__':
     a=BINGFY()

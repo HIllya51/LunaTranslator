@@ -7,9 +7,7 @@ import js2py
 import hashlib
 import functools
 
-from utils.config import globalconfig
-def srclang():
-        return ['ja','en'][globalconfig['srclang']]
+from utils.config import globalconfig 
 class TranslatorError(Exception):
     pass
 class Tse:
@@ -127,7 +125,7 @@ class Iciba(Tse):
 
     # @Tse.time_stat
     def iciba_api(self, query_text: str, from_language: str = 'ja', to_language: str = 'zh-CN', **kwargs)  :
-        from_language=srclang()
+         
         """
         https://www.iciba.com/fy
         :param query_text: str, must.
@@ -153,12 +151,7 @@ class Iciba(Tse):
 
         with requests.Session() as ss:
             _ = ss.get(self.host_url, headers=self.host_headers, timeout=timeout, proxies=proxies)
-            if not self.language_map:
-                self.language_map = self.get_language_map(self.api_url, ss, self.language_headers, timeout, proxies)
-            if not self.language_map:
-                delete_temp_language_map_label += 1
-                self.language_map = self.make_temp_language_map(from_language, to_language)
-            from_language, to_language = self.check_language(from_language, to_language, self.language_map, output_zh=self.output_zh)
+             
 
             sign = hashlib.md5(f"6key_web_fanyi{self.s_y2}{query_text}".encode()).hexdigest()[:16]  # strip()
             params = {'c': 'trans', 'm': 'fy', 'client': 6, 'auth_user': 'key_web_fanyi', 'sign': sign}
@@ -182,5 +175,5 @@ class TS(basetrans):
         self.engine=Iciba()
         self.engine._=None
     def translate(self,content):  
-            return self.engine.iciba_api(content)
+            return self.engine.iciba_api(content,self.srclang,self.tgtlang)
          

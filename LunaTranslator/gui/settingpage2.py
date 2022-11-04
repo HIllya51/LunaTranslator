@@ -84,6 +84,15 @@ def setTabTwo(self) :
         self.srclangcom.currentIndexChanged.connect(lambda x:globalconfig.__setitem__('srclang',x)) 
 
         label = QLabel(self.tab_2)
+        self.customSetGeometry(label, 420, 20, 200, 20)
+        label.setText("目标语言")
+        self.srclangcom=QComboBox(self.tab_2) 
+        self.srclangcom.addItems(['中文','英文']) 
+        self.srclangcom.setCurrentIndex(globalconfig['tgtlang'])
+        self.customSetGeometry(self.srclangcom, 550,20,50,20)
+        self.srclangcom.currentIndexChanged.connect(lambda x:globalconfig.__setitem__('tgtlang',x)) 
+
+        label = QLabel(self.tab_2)
         self.customSetGeometry(label, 20,80, 140, 20)
         label.setText("预翻译采用模糊匹配")
         p=gui.switchbutton.MySwitch(self.tab_2, sign=globalconfig['premtsimiuse'] )

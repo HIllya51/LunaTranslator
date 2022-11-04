@@ -98,7 +98,7 @@ class TS(basetrans):
 
             json_data = {
                 'source': content,
-                'trans_type': 'auto2zh',
+                'trans_type': self.srclang+'2'+self.tgtlang,
                 'request_id': 'web_fanyi',
                 'media': 'text',
                 'os_type': 'web',

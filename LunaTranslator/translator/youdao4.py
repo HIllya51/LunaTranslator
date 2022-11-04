@@ -10,10 +10,7 @@ import json
 from utils.config import globalconfig
 import requests
 import re
-class TS(basetrans):
-    def srclang(self):
-        return ['jap','eng'][globalconfig['srclang']]
-     
+class TS(basetrans): 
     def translate(self, content):
             
         headers =  {
@@ -32,6 +29,6 @@ class TS(basetrans):
             'sec-ch-ua-mobile': '?0',
             'sec-ch-ua-platform': '"Windows"',
         } 
-        response = requests.get('https://www.youdao.com/w/'+self.srclang()+'/'+quote(content)+'/',headers=headers,timeout = globalconfig['translatortimeout'], proxies=  {'http': None,'https': None}).text
+        response = requests.get('https://www.youdao.com/w/'+self.srclang+'/'+quote(content)+'/',headers=headers,timeout = globalconfig['translatortimeout'], proxies=  {'http': None,'https': None}).text
         return re.search('<div class="trans-container">([\\s\\S]*?)<p>([\\s\\S]*?)</p>([\\s\\S]*?)<p>([\\s\\S]*?)</p>',response).groups()[3] 
         

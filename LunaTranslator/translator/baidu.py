@@ -11,8 +11,7 @@ from js2py import EvalJs
 from utils.config import globalconfig
 import time
 class TS(basetrans):
-    def srclang(self):
-        return ['jp','en'][globalconfig['srclang']]
+     
     def inittranslator(self)  :  
         self.headers = {
             'Accept': '*/*',
@@ -63,13 +62,13 @@ class TS(basetrans):
         
         #sign =self.jsrun.call('e', query, self.gtk)
             sign=self.ctx.e(query,self.gtk)
-            translate_url = 'https://fanyi.baidu.com/#'+self.srclang()+'/zh/%s' % ( parse.quote(query))
+            translate_url = 'https://fanyi.baidu.com/#'+self.srclang +'/'+self.tgtlang +'/%s' % ( parse.quote(query))
             #acs_token = self.jsrun.call('ascToken', translate_url)
 
             acs_token=self.today_anytime_tsp(15,0,9)+ self.ctx.ascToken(translate_url)
             data = {
-                'from': self.srclang(),
-                'to': 'zh',
+                'from': self.srclang ,
+                'to': self.tgtlang ,
                 'query': query,
                 'transtype': 'realtime',
                 'simple_means_flag': '3',
@@ -102,12 +101,12 @@ class TS(basetrans):
             response = self.session.post(url=translate_api,headers=headers,   data=data,timeout = globalconfig['translatortimeout'],proxies=  {'http': None,'https': None})
             
             result ='\n'.join([_['dst'] for _ in response.json()['trans_result']['data']])  
-            params = {
-                'req': 'check',
-                'fanyi_src': query,
-                'direction': self.srclang()+'2zh',
-                '_': int(time.time()*1000),
-            }
+            # params = {
+            #     'req': 'check',
+            #     'fanyi_src': query,
+            #     'direction': self.srclang +'2'+self.tgtlang ,
+            #     '_': int(time.time()*1000),
+            # }
              
             #response = self.session.get('https://fanyi.baidu.com/pcnewcollection', params=params,timeout = globalconfig['translatortimeout'],proxies=  {'http': None,'https': None} )
             return result

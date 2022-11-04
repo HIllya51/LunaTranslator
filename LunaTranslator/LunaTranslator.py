@@ -178,9 +178,11 @@ class MAINUI() :
             paste_str=postsolve(paste_str)
         except:
             print_exc() 
+        if len(paste_str)>10000:
+            return 
         if globalconfig['outputtopasteboard'] and globalconfig['sourcestatus']['copy']==False:
             pyperclip.copy(paste_str)
-
+        
 
         self.translation_ui.original=paste_str 
         if 'hira_' in dir(self):
@@ -324,7 +326,7 @@ class MAINUI() :
                 else:
                     self.translation_ui.displayres.emit('premt',res[k])
         else:
-            if globalconfig['fanjian']!=0:
+            if globalconfig['fanjian']!=0 and globalconfig['tgtlang']==0:
                 res=zhconv.convert(res, ['zh-cn', 'zh-tw', 'zh-hk', 'zh-sg', 'zh-hans', 'zh-hant'][globalconfig['fanjian']])
             self.translation_ui.displayres.emit(classname,res)
         

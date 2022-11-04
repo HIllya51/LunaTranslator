@@ -292,10 +292,11 @@ class Textbrowser():
                     ql.setStyleSheet("background-color: rgba(0,0,0,0.01);")
                     self.searchmasklabels_clicked.append(ql)
                 if tl1.y()!=tl3.y():
-                    if globalconfig['usesearchword']:
-                        self.searchmasklabels_clicked[labeli].setGeometry(tl1.x(),tl1.y() ,sum(guesswidth)//len(guesswidth),tl4.y()-tl1.y()) 
-                    if globalconfig['show_fenci'] or globalconfig['showcixing']:
-                        self.searchmasklabels[labeli].setGeometry(tl1.x(),tl1.y() ,sum(guesswidth)//len(guesswidth),tl4.y()-tl1.y()) 
+                    if len(guesswidth)>0:
+                        if globalconfig['usesearchword']:
+                            self.searchmasklabels_clicked[labeli].setGeometry(tl1.x(),tl1.y() ,sum(guesswidth)//len(guesswidth),tl4.y()-tl1.y()) 
+                        if globalconfig['show_fenci'] or globalconfig['showcixing']:
+                            self.searchmasklabels[labeli].setGeometry(tl1.x(),tl1.y() ,sum(guesswidth)//len(guesswidth),tl4.y()-tl1.y()) 
                 else:
                     guesswidth.append(tl2.x()-tl1.x())
                     if globalconfig['usesearchword']:

@@ -5,9 +5,7 @@ import random
 import time
 
 from utils.config import globalconfig
-import js2py
-def srclang( ):
-        return ['jp','en'][globalconfig['srclang']]
+import js2py 
 class Tse:
     def __init__(self):
         self.author = 'Ulion.Tse' 
@@ -62,7 +60,7 @@ class Tencent(Tse):
 
     # @Tse.time_stat
     def tencent_api(self, query_text: str, from_language: str = 'jp', to_language: str = 'zh', **kwargs)  :
-        from_language=srclang()
+        
         timeout=  globalconfig['translatortimeout']
         proxies={'http': None,'https': None}
         with requests.Session() as ss:
@@ -93,5 +91,5 @@ class TS(basetrans):
         self.engine=Tencent()
         self.engine._=None
     def translate(self,content):  
-            return self.engine.tencent_api(content)
+            return self.engine.tencent_api(content,self.srclang,self.tgtlang)
         

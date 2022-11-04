@@ -10,7 +10,7 @@ import json
 import os
 import re
 import sys
-
+import win32gui
 from utils.config import globalconfig
 class transhist(QMainWindow): 
     getnewsentencesignal=pyqtSignal(str) 
@@ -19,8 +19,11 @@ class transhist(QMainWindow):
         super(transhist, self).__init__()
         self.setupUi() 
         self.getnewsentencesignal.connect(self.getnewsentence) 
-        self.showsignal.connect(self.show)
+        self.showsignal.connect(self.showfunction)
         self.setWindowTitle('历史翻译')
+    def showfunction(self): 
+        self.showNormal()
+        win32gui.BringWindowToTop(int(self.winId())) 
     def closeEvent(self, event) : 
          
             self.hide()

@@ -5,8 +5,7 @@ import requests
 from utils.config import globalconfig
 from translator.basetranslator import basetrans
 class TS(basetrans):
-    def srclang(self):
-        return ['ja','en'][globalconfig['srclang']]
+     
     def inittranslator(self): 
         self.ss=requests.session()
         
@@ -60,8 +59,8 @@ class TS(basetrans):
             'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36 Edg/105.0.1343.53',
         }
         form_data = {
-            "srcLang": self.srclang(),
-            "tgtLang": 'zh',
+            "srcLang": self.srclang ,
+            "tgtLang": self.tgtlang ,
             "domain": 'general',
             'query':content,
             "_csrf": self.csrf

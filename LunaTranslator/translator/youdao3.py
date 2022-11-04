@@ -9,9 +9,7 @@ import json
 from utils.config import globalconfig
 import requests
 import re
-class TS(basetrans):
-    def srclang(self):
-        return ['JA','EN'][globalconfig['srclang']]
+class TS(basetrans): 
     def inittranslator(self): 
         self.ss=requests.session()
         self.ss.get('https://m.youdao.com/translate',headers =  {
@@ -34,7 +32,7 @@ class TS(basetrans):
     def translate(self, content):
         data = {
             'inputtext': content,
-            'type': self.srclang()+'2ZH_CN',
+            'type': self.srclang +'2'+self.tgtlang,
         }
                 
         headers = {

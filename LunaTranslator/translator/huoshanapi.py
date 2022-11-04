@@ -320,7 +320,7 @@ class Service(object):
 
         return od
 
-def trans(TextList,k_access_key,k_secret_key):
+def trans(TextList,k_access_key,k_secret_key,src,tgt):
     # k_access_key = 'AKLTY2IzNTM1YzQzNDQ1NDFkMzk0MTRjNTE2YmEzNTgzNWY' # https://console.volcengine.com/iam/keymanage/
     # k_secret_key = 'TVRRMk1qaGxOMk14Tmpoa05EQXhZbUUwT1RFeU1qYzVPVEptTXpRMU9HRQ=='
   
@@ -339,7 +339,8 @@ def trans(TextList,k_access_key,k_secret_key):
     }
     service = Service(k_service_info, k_api_info)
     body = {
-        'TargetLanguage': 'zh',
+        'TargetLanguage': tgt,
+        'SourceLanguage':src,
         'TextList': [ TextList],
     }
     res = service.json('translate', {}, json.dumps(body) )
@@ -374,7 +375,7 @@ class TS(basetrans):
         else:
             keyid = js['args']['Access Key ID']  
             acckey = js['args']['Secret Access Key']   
-        res=trans(query,keyid,acckey)
+        res=trans(query,keyid,acckey,self.srclang,self.tgtlang)
         js['args']['字数统计']=str(int(js['args']['字数统计'])+len(query))
         js['args']['次数统计']=str(int(js['args']['次数统计'])+1)
         with open(configfile,'w',encoding='utf-8') as ff:

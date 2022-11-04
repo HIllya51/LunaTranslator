@@ -42,7 +42,7 @@ class TS(basetrans):
             token = Token
             payload = {
                 "source": source,
-                "trans_type": 'auto2zh',
+                "trans_type":  self.srclang+'2'+self.tgtlang,
                 "request_id": "demo",
                 "detect": True,
             }

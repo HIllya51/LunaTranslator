@@ -46,8 +46,22 @@ def initpostswitchs_auto(self):
             initpostswitchs(self,post,(x, y, 270, 20),(x+270, y, 20,20),1,(x+300, y, 20,20))
             num+=1
 
+        y=330
         x=20
-        y=350
+
+        p=QPushButton(self.tab_7)
+        p.setText("自定义python处理")
+
+        def _openfile():
+            import os
+            if os.path.exists('./LunaTranslator/postprocess/post.py'):
+                os.startfile( os.path.abspath('./LunaTranslator/postprocess/post.py'))
+            elif os.path.exists('./postprocess/post.py'):
+                os.startfile( os.path.abspath('./postprocess/post.py'))
+        p.clicked.connect(lambda x:_openfile())
+        self.customSetGeometry(p, x,y,200,25)
+
+        y+=40
         initdictswitchs(self,(x, y, 270, 20),(x+270, y, 20,20),1,(x+300, y, 20,20))
         y+=40
         initdictswitchs2(self,(x, y, 270, 20),(x+270, y, 20,20),1,(x+300, y, 20,20))

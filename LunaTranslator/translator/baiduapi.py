@@ -49,8 +49,8 @@ class TS(basetrans):
   
         myurl = '/api/trans/vip/translate'
 
-        fromLang = 'auto'   #原文语种
-        toLang = 'zh'   #译文语种
+        fromLang = self.srclang   #原文语种
+        toLang = self.tgtlang   #译文语种
         salt = random.randint(32768, 65536)
         q= query
         sign = appid + q + str(salt) + secretKey

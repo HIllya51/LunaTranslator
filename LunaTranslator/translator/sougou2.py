@@ -12,9 +12,7 @@ import random
 import functools
 import urllib
  
-class TS(basetrans): 
-    def srclang(self):
-        return ['ja','en'][globalconfig['srclang']]
+class TS(basetrans):  
     def translate(self,content): 
                         
             headers = {
@@ -33,7 +31,7 @@ class TS(basetrans):
                 'sec-ch-ua-mobile': '?0',
                 'sec-ch-ua-platform': '"Windows"',
             } 
-            res=requests.get('https://fanyi.sogou.com/text?keyword='+quote(content) +'&transfrom='+self.srclang()+'&transto=zh-CHS&model=general',headers=headers, proxies=  {'http': None,'https': None} ,timeout=globalconfig['translatortimeout'])
+            res=requests.get('https://fanyi.sogou.com/text?keyword='+quote(content) +'&transfrom='+self.srclang+'&transto'+self.tgtlang+'&model=general',headers=headers, proxies=  {'http': None,'https': None} ,timeout=globalconfig['translatortimeout'])
             res=re.search('<p id="trans-result" class="output-val" style="white-space: pre-line">([\\s\\S]*?)</p>', res.text)
             
             res=res.groups()[0]

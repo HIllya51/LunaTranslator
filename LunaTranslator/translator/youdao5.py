@@ -7,10 +7,7 @@ import random
 
 from utils.config import globalconfig
 import json
-class TS(basetrans):
-    def srclang(self):
-        return ['ja','en'][globalconfig['srclang']]
- 
+class TS(basetrans): 
     def inittranslator(self): 
         self.headers = {
             'authority': 'ai.youdao.com',
@@ -52,8 +49,8 @@ class TS(basetrans):
 
         data = {
             'q': content,
-            'from': self.srclang(),
-            'to': 'zh-CHS',
+            'from': self.srclang ,
+            'to': self.tgtlang,
         }
  
         response =self.session.post('https://aidemo.youdao.com/trans', data=data,headers=headers,   proxies=  {'http': None,'https': None},timeout = globalconfig['translatortimeout'])

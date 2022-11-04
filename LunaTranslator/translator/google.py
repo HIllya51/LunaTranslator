@@ -42,7 +42,7 @@ class TS(basetrans):
         # self.fsid=re.search('"FdrFJe":"(.*?)"',html).groups()[0]
     def realfy1(self,content): 
         t1=time.time()
-        param = json.dumps([[content, 'ja', 'zh-CN', True], [1]])
+        param = json.dumps([[content, self.srclang, self.tgtlang, True], [1]])
         #print([content, 'ja', 'zh-CN', True])
         freq = json.dumps([[['MkEWBc', param, None, "generic"]]]) 
         freq={'f.req': freq}

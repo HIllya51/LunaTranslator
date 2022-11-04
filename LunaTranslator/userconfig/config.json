@@ -1,7 +1,7 @@
 {
     "position": [
-        337,
-        686
+        178,
+        613
     ],
     "fixedheight": false,
     "width": 1435,
@@ -19,7 +19,7 @@
     "backcolor": "#989898",
     "isshowhira": false,
     "locktools": false,
-    "showfanyisource": false,
+    "showfanyisource": true,
     "autoread": false,
     "extractalltext": false,
     "reader": {
@@ -103,7 +103,7 @@
             "name": "必应"
         },
         "google": {
-            "use": true,
+            "use": false,
             "color": "#ff0000",
             "name": "谷歌"
         },
@@ -123,7 +123,7 @@
             "name": "有道2"
         },
         "google2": {
-            "use": true,
+            "use": false,
             "color": "#95a5ff",
             "name": "谷歌2"
         },
@@ -166,17 +166,17 @@
             "name": "搜狗2"
         },
         "youdao3": {
-            "use": false,
+            "use": true,
             "color": "#0ff000",
             "name": "有道3"
         },
         "youdao4": {
-            "use": false,
+            "use": true,
             "color": "#0ff000",
             "name": "有道4"
         },
         "youdao5": {
-            "use": false,
+            "use": true,
             "color": "#0ff000",
             "name": "有道5"
         },
@@ -213,7 +213,7 @@
             "name": "qqimt"
         },
         "xiaoniu": {
-            "use": false,
+            "use": true,
             "color": "#0ff000",
             "name": "小牛api",
             "argsfile": "./userconfig/xiaoniuapi.json"
@@ -280,7 +280,7 @@
     "mustocr_interval": 5.0,
     "ocrmininterval": 1.0,
     "selectable": false,
-    "autoupdate": true,
+    "autoupdate": false,
     "gongxiangcishu": {
         "use": false,
         "path": "C:/dataH/vnr/vnr/Caches/Sync/1gamedic.xml"
@@ -294,7 +294,7 @@
         "use": true,
         "path": "C:/dataH/Mecab"
     },
-    "usesearchword": false,
+    "usesearchword": true,
     "edict": {
         "use": false,
         "path": "C:/dataH/vnr/vnr/Caches/Dictionaries/EDICT/edict.db"
@@ -475,6 +475,7 @@
     "LocaleEmulator": "C:/Users/11737/Documents/GitHub/LunaTranslator/LunaTranslator/files/Locale.Emulator.2.5.0.1",
     "premtsimiuse": false,
     "premtsimi": 5,
-    "useproxy": false,
-    "proxy": "127.0.0.1:4780"
+    "useproxy": true,
+    "proxy": "127.0.0.1:4780",
+    "tgtlang": 1
 }
