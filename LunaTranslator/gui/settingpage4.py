@@ -141,10 +141,17 @@ def setTab4(self) :
 
         label = QLabel(self.tab_4)
         self.customSetGeometry(label, 20, 50, 200, 20)
-        label.setText("游戏失去焦点时窗口隐藏")
+        label.setText("游戏最小化时窗口隐藏")
         self.minifollowswitch =gui.switchbutton.MySwitch(self.tab_4, sign= globalconfig['minifollow'])
         self.customSetGeometry(self.minifollowswitch, 250, 50, 20,20)
         self.minifollowswitch.clicked.connect(lambda x:globalconfig.__setitem__('minifollow',x)) 
+
+        label = QLabel(self.tab_4)
+        self.customSetGeometry(label, 20, 140, 200, 20)
+        label.setText("游戏失去焦点时窗口隐藏")
+        self.minifollowswitch =gui.switchbutton.MySwitch(self.tab_4, sign= globalconfig['focusfollow'])
+        self.customSetGeometry(self.minifollowswitch, 250, 140, 20,20)
+        self.minifollowswitch.clicked.connect(lambda x:globalconfig.__setitem__('focusfollow',x)) 
 
         label = QLabel(self.tab_4)
         self.customSetGeometry(label, 20, 80, 200, 20)
@@ -237,10 +244,10 @@ def setTab4(self) :
         # self.focusfollowswitch.checkedChanged.connect(lambda x:globalconfig.__setitem__('focusfollow',x)) 
         # #self.focusfollowswitch.checkedChanged.connect(lambda x:setss(self,x)) 
         self.hookpid=None
-        #self.minmaxmoveoberve=subproc('./files/minmaxmoveobserve.exe',stdout=subprocess.PIPE)  
+        self.minmaxmoveoberve=subproc('./files/minmaxmoveobserve.exe',stdout=subprocess.PIPE)  
         self.minmaxmoveobservethread=threading.Thread(target=minmaxmoveobservefunc,args=(self,))
         self.minmaxmoveobservethread.start()
-
+        threading.Thread(target=minmaxmoveobservefunc2,args=(self,)).start() 
         self.autostarthooksignal.connect(functools.partial(autostarthookfunction,self))
         
 
@@ -258,7 +265,7 @@ def autostarthookfunction(self,arch,pid,pexe,hookcode):
                 self.object.textsource=textractor(self.object,self.object.textgetmethod,self.object.hookselectdialog,pid,pexe,arch,True,hookcode) 
                 self.object.savetextractor=self.object.textsource
 
-def minmaxmoveobservefunc(self):
+def minmaxmoveobservefunc2(self):
         while(True):
                 time.sleep(0.1)
                 if globalconfig['sourcestatus']['textractor']==False:
@@ -268,21 +275,21 @@ def minmaxmoveobservefunc(self):
 
                         pid=win32process.GetWindowThreadProcessId(hwnd) [1]
                         if self.hookpid :
-                                if globalconfig['minifollow']:
+                                if globalconfig['focusfollow']:
                                         if pid not in [self.hookpid,self_pid]:
                                                 self.object.translation_ui.hookfollowsignal.emit(4,(0,0))
                                         else:
                                                 if self.object.translation_ui.isHidden():
                                                         self.object.translation_ui.hookfollowsignal.emit(3,(0,0))
-                                if pid==self.hookpid and globalconfig['movefollow']:
-                                        rect=win32gui.GetWindowRect(hwnd) 
+                                # if pid==self.hookpid and globalconfig['movefollow']:
+                                #         rect=win32gui.GetWindowRect(hwnd) 
                                         
-                                        if self.savelastrect  : 
-                                                self.object.translation_ui.hookfollowsignal.emit(6,(rect[0]-self.savelastrect[0],rect[1]-self.savelastrect[1]))
-                                        self.savelastrect=rect
+                                #         if self.savelastrect  : 
+                                #                 self.object.translation_ui.hookfollowsignal.emit(6,(rect[0]-self.savelastrect[0],rect[1]-self.savelastrect[1]))
+                                #         self.savelastrect=rect
                 except:
                         print_exc()
-def minmaxmoveobservefunc2(self):
+def minmaxmoveobservefunc(self):
         while(True):
                 x=self.minmaxmoveoberve.stdout.readline()
                 if globalconfig['sourcestatus']['textractor']==False:

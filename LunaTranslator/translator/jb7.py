@@ -68,7 +68,7 @@ class TS(basetrans):
                     ress+=chr(int(_x))
                     #print(ress)
                 #print(l)
-                 
+            return ress
     def x86(self,content):
         CODEPAGE_JA = 932
         CODEPAGE_GB = 936

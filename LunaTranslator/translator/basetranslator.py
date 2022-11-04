@@ -91,8 +91,7 @@ class basetrans:
                     self.inittranslator()
                 except:
                     print_exc()
-                res='出错'
-            
+                res='出错' 
             if res!='' and self.queue.empty() and contentraw==self.newline:
                 self.show(contentraw,(self.typename,res,mp))
 

@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QWidget,QDesktopWidget,QMainWindow,QLabel,QPushButton,QStatusBar
+from PyQt5.QtWidgets import QWidget,QDesktopWidget,QMainWindow,QLabel,QPushButton,QStatusBar,QDialog
 from PyQt5.QtGui import  QBitmap,QPainter,QPen,QBrush,QFont
 from PyQt5.QtCore import Qt,QPoint,QRect
 import re
@@ -106,4 +106,67 @@ class rangeselct(QWidget) :
             self.getRange() 
             self.close() 
              
+import win32gui,win32con,win32api
+from utils.getpidlist import getwindowhwnd
+class moveresizegame(QDialog) :
+
+    def __init__(self, object,pid ):
+
+        super(moveresizegame, self).__init__(object)
+        self.setWindowFlags(Qt.Dialog|Qt.WindowMaximizeButtonHint|Qt.WindowCloseButtonHint)
+        self.object = object  
+        self.setWindowTitle("调整窗口")
+        # self.setWindowFlags(Qt.WindowStaysOnTopHint | Qt.FramelessWindowHint  )
+        # self.setAttribute(Qt.WA_TranslucentBackground) 
+        self.setWindowOpacity(0.5)
+
+        self.setMouseTracking(True)
+         
+        self._isTracking=False
+         
  
+        self.hwnd=getwindowhwnd(pid)
+        if self.hwnd==0:
+            self.close()
+        rect=win32gui.GetWindowRect(self.hwnd)  
+        self.setGeometry(rect[0],rect[1],rect[2]-rect[0],rect[3]-rect[1])
+        #win32gui.SetWindowPos(self.winId(),win32con.HWND_TOPMOST,rect[0],rect[1],1000,1000,  win32con.SWP_NOACTIVATE)
+        self.show()
+    def moveEvent(self, a0 ) -> None:
+        rect = self.geometry() 
+        if self.isMaximized()==False:
+            win32gui.MoveWindow(self.hwnd,  rect.left(),rect.top(),rect.right()-rect.left(), rect.bottom()-rect.top(),  False)
+        return super().moveEvent(a0)
+     
+    def closeEvent(self, a0 ) -> None:
+        self.object.moveresizegame=None
+        return super().closeEvent(a0)
+    def mouseMoveEvent(self, e ) :  
+        if self._isTracking: 
+            self._endPos = e.pos() - self._startPos
+            self.move(self.pos() + self._endPos) 
+            rect = self.geometry() 
+            if self.isMaximized()==False:
+                win32gui.MoveWindow(self.hwnd,  rect.left(),rect.top(),rect.right()-rect.left(), rect.bottom()-rect.top(),  False)
+    def mousePressEvent(self, e ) : 
+            if e.button() == Qt.LeftButton :
+                self._isTracking = True
+                self._startPos = QPoint(e.x(), e.y()) 
+    def mouseReleaseEvent(self, e ) : 
+            if e.button() == Qt.LeftButton:
+                self._isTracking = False
+                self._startPos = None
+                self._endPos = None 
+    def changeEvent(self, a0 ) -> None:
+        if self.isMaximized():
+            win32gui.ShowWindow(self.hwnd,win32con.SW_MAXIMIZE)
+            #win32gui.MoveWindow(self.hwnd,  0, 0, win32api.GetSystemMetrics(0), win32api.GetSystemMetrics(1),  False)
+            
+    #def moveEvent(self, a0):
+    #     self.resizeEvent(a0)
+    def resizeEvent(self, a0 ) :
+        if self.isMaximized()==False:
+            rect = self.geometry()
+            #win32gui.ShowWindow(self.hwnd,win32con.SW_SHOW)
+            win32gui.MoveWindow(self.hwnd,  rect.left(),rect.top(),rect.right()-rect.left(), rect.bottom()-rect.top(),  False)
+            

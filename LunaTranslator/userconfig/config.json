@@ -1,7 +1,7 @@
 {
     "position": [
-        312,
-        430
+        393,
+        681
     ],
     "fixedheight": false,
     "width": 1435,
@@ -12,7 +12,7 @@
     "miaobianwidth2": 3.0,
     "miaobianwidth": 1,
     "miaobiancolor": "#ffffff",
-    "zitiyangshi": 3,
+    "zitiyangshi": 0,
     "iskongxin": true,
     "isshowrawtext": true,
     "rawtextcolor": "#000000",
@@ -143,7 +143,7 @@
             "name": "deepl"
         },
         "jb7": {
-            "use": false,
+            "use": true,
             "color": "#1839f0",
             "name": "Jbeijing7",
             "argsfile": "./userconfig/jbj7.json"
@@ -477,5 +477,6 @@
     "premtsimi": 5,
     "useproxy": true,
     "proxy": "127.0.0.1:4780",
-    "tgtlang": 1
+    "tgtlang": 0,
+    "focusfollow": false
 }

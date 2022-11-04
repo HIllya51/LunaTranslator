@@ -24,6 +24,7 @@ from gui.settingpage4 import autosaveshow
 from gui.settingpage1 import settingsource,settingtextractor
 from gui.textbrowser import Textbrowser
 from gui.showword import searchwordW
+from gui.rangeselect  import moveresizegame
 class QTitleButton(QPushButton):
     """
     新建标题栏按钮类
@@ -196,8 +197,7 @@ class QUnFrameWindow(QWidget):
         self._padding = 5*self.rate  # 设置边界宽度为5
         self.setMinimumWidth(300)
         self.hideshownotauto=True
-        self.transhis=gui.transhist.transhist()
-        self.setAttribute(Qt.WA_TranslucentBackground) 
+        self.transhis=gui.transhist.transhist() 
         self.keeptopsignal.connect(self.keeptopfuntion)
         self.hookfollowsignal.connect(self.hookfollowsignalsolve) 
         self.displayres.connect(self.showres)
@@ -284,6 +284,17 @@ class QUnFrameWindow(QWidget):
 
         self.takusanbuttons(qtawesome.icon("fa.link" ,color= 'white'),"MinMaxButton",lambda :settingtextractor(self.object.settin_ui,False),4,"选择游戏" ) 
         self.takusanbuttons(qtawesome.icon("fa.tasks" ,color= 'white'),"MinMaxButton",lambda :settingsource(self.object.settin_ui),5,"选择文本" ) 
+        def _moveresizegame(self):
+            
+            if ('moveresizegame'   in dir(self)) : 
+                if self.moveresizegame :
+                    self.moveresizegame.close()
+            if self.object.settin_ui.hookpid :
+                try: 
+                    self.moveresizegame=moveresizegame(self,self.object.settin_ui.hookpid)
+                except:
+                    pass
+        self.takusanbuttons(qtawesome.icon("fa.expand" ,color= 'white'),"MinMaxButton",lambda :_moveresizegame(self),5,"调整游戏窗口" ) 
 
         self.takusanbuttons(qtawesome.icon("fa.crop" ,color="white"),"MinMaxButton",self.clickRange,4,"选取OCR范围")
         self.takusanbuttons((qtawesome.icon("fa.square" ,color='white')),"MinMaxButton",self.showhide,5,"显示/隐藏范围框",'showhidebutton')
@@ -655,10 +666,10 @@ class QUnFrameWindow(QWidget):
         self.showbuttons=[]
         for i,button in enumerate(self.buttons[:-2]):
             
-            if i in [12,13,14] and globalconfig['sourcestatus']['ocr'] ==False:
+            if i in [15,13,14] and globalconfig['sourcestatus']['ocr'] ==False:
                 button.hide()
                 continue
-            if i in [10,11] and globalconfig['sourcestatus']['textractor'] ==False:
+            if i in [10,11,12] and globalconfig['sourcestatus']['textractor'] ==False:
                 button.hide()
                 continue
             button.move(showed*button.width() , 0) 
