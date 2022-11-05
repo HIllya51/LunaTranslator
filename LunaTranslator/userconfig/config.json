@@ -1,7 +1,7 @@
 {
     "position": [
-        362,
-        311
+        159,
+        717
     ],
     "fixedheight": false,
     "width": 1435,
@@ -54,8 +54,8 @@
     },
     "sourcestatus": {
         "copy": false,
-        "ocr": false,
-        "textractor": true,
+        "ocr": true,
+        "textractor": false,
         "textractor_pipe": false
     },
     "ocr": {

@@ -220,6 +220,9 @@ class QUnFrameWindow(QWidget):
         # 界面缩放比例
         self.searchwordW=searchwordW(self)
         
+        self.HWNDStyle=None
+        self.HWNDStyleEx =None
+        self.isletgamefullscreened=False
         self.original = ""    
         self._isTracking=False
         self.isontop=True
@@ -303,12 +306,50 @@ class QUnFrameWindow(QWidget):
                 if (self.object.settin_ui.hookpid and globalconfig['sourcestatus']['textractor'])or (globalconfig['sourcestatus']['ocr'] and self.object.textsource.hwnd):
                 
                     if globalconfig['sourcestatus']['ocr']:
-                        self.moveresizegame=moveresizegame(self,self.object.textsource.hwnd)
+                        hwnd= self.object.textsource.hwnd 
                     elif globalconfig['sourcestatus']['textractor']:
-                        self.moveresizegame=moveresizegame(self,getwindowhwnd(self.object.settin_ui.hookpid))
+                        hwnd=getwindowhwnd(self.object.settin_ui.hookpid)
+                    self.moveresizegame=moveresizegame(self,hwnd)
             except:
                     print_exc()
         self.takusanbuttons(qtawesome.icon("fa.expand" ,color= 'white'),"MinMaxButton",lambda :_moveresizegame(self),5,"调整游戏窗口(需要绑定ocr窗口，或选择hook进程)" ) 
+        def _fullsgame(self):
+            
+            if ('moveresizegame'   in dir(self)) : 
+                if self.moveresizegame :
+                    self.moveresizegame.close()
+            try: 
+                if (self.object.settin_ui.hookpid and globalconfig['sourcestatus']['textractor'])or (globalconfig['sourcestatus']['ocr'] and self.object.textsource.hwnd):
+                
+                    if globalconfig['sourcestatus']['ocr']:
+                        hwnd= self.object.textsource.hwnd 
+                    elif globalconfig['sourcestatus']['textractor']:
+                        hwnd=getwindowhwnd(self.object.settin_ui.hookpid)
+
+                    self.isletgamefullscreened=not self.isletgamefullscreened
+                    self.letgamefullscreenbutton.setIcon(qtawesome.icon("fa.window-maximize" ,color="#FF69B4" if self.isletgamefullscreened else "white"))
+                    if self.isletgamefullscreened:
+                        self.wpc=win32gui. GetWindowPlacement( hwnd )
+                        self.HWNDStyle = win32gui.GetWindowLong( hwnd, win32con.GWL_STYLE )
+                        self.HWNDStyleEx = win32gui.GetWindowLong( hwnd, win32con.GWL_EXSTYLE  )
+                        NewHWNDStyle=self.HWNDStyle
+                        NewHWNDStyle &= ~win32con.WS_BORDER;
+                        NewHWNDStyle &= ~win32con.WS_DLGFRAME;
+                        NewHWNDStyle &= ~win32con.WS_THICKFRAME;
+                        NewHWNDStyleEx=self.HWNDStyleEx
+                        NewHWNDStyleEx &= ~win32con.WS_EX_WINDOWEDGE;
+                        win32gui.SetWindowLong( hwnd, win32con.GWL_STYLE, NewHWNDStyle | win32con.WS_POPUP );
+                        win32gui.SetWindowLong( hwnd, win32con.GWL_EXSTYLE, NewHWNDStyleEx | win32con.WS_EX_TOPMOST )
+                        win32gui.ShowWindow(hwnd,win32con.SW_SHOWMAXIMIZED )
+                    else:
+                        win32gui.SetWindowLong( hwnd, win32con.GWL_STYLE, self.HWNDStyle );
+                        win32gui.SetWindowLong( hwnd, win32con.GWL_EXSTYLE, self.HWNDStyleEx );
+                        win32gui.ShowWindow( hwnd, win32con.SW_SHOWNORMAL );
+                        win32gui.SetWindowPlacement( hwnd, self.wpc );
+                    
+            except:
+                    print_exc()
+        self.takusanbuttons(qtawesome.icon("fa.window-maximize" ,color= 'white'),"MinMaxButton",lambda :_fullsgame(self),5,"全屏/恢复游戏窗口(需要绑定ocr窗口，或选择hook进程)" ,"letgamefullscreenbutton") 
         
         
         self.takusanbuttons(qtawesome.icon("fa.minus",color="white" ),"MinMaxButton",self.hide_and_disableautohide,-2,"最小化到托盘")
@@ -675,7 +716,7 @@ class QUnFrameWindow(QWidget):
             if i in [12,13,14] and globalconfig['sourcestatus']['ocr'] ==False:
                 button.hide()
                 continue
-            if globalconfig['sourcestatus']['textractor'] ==False and globalconfig['sourcestatus']['ocr'] ==False and i==15:
+            if globalconfig['sourcestatus']['textractor'] ==False and globalconfig['sourcestatus']['ocr'] ==False and i in [15,16]:
                 button.hide()
                 continue
             if i in [10,11] and globalconfig['sourcestatus']['textractor'] ==False:
