@@ -1,56 +1,42 @@
-from distutils.command.config import config
+  
 import functools 
- 
-from cmath import exp
-import functools
-
-from PyQt5.QtWidgets import QApplication, QWidget, QTableView, QAbstractItemView, QLabel, QVBoxLayout,QHBoxLayout
+from PyQt5.QtWidgets import   QWidget, QTableView,  QLabel, QVBoxLayout,QHBoxLayout
 
 from PyQt5.QtWidgets import  QWidget,QLabel ,QLineEdit,QSpinBox,QPushButton,QTextEdit
 
 from PyQt5.QtGui import QStandardItem, QStandardItemModel
-import qtawesome
-from PyQt5.QtCore import QThread
-import subprocess
+import qtawesome 
 from traceback import print_exc
 from utils.config import globalconfig ,postprocessconfig,noundictconfig,transerrorfixdictconfig
-from PyQt5.QtWidgets import  QWidget,QLabel, QComboBox,QDoubleSpinBox 
- 
-from PyQt5.QtWidgets import QWidget,QLabel,QFrame ,QPushButton,QColorDialog
-from PyQt5.QtGui import QColor,QFont
+from PyQt5.QtWidgets import  QWidget,QLabel  
 import functools
-from PyQt5.QtWidgets import QDialogButtonBox,QDialog,QComboBox,QFormLayout,QSpinBox,QVBoxLayout,QLineEdit
-from PyQt5.QtCore import Qt,QSize
+from PyQt5.QtWidgets import QDialog ,QSpinBox,QVBoxLayout,QLineEdit,QGridLayout
+from PyQt5.QtCore import QSize
 from utils.config import globalconfig 
-import qtawesome
-from utils.config import globalconfig 
-
-import importlib
-from gui.inputdialog import GetUserPlotItems,getsomepath
+import qtawesome 
+ 
+from gui.inputdialog import getsomepath
 import gui.switchbutton
 import gui.attachprocessdialog  
 import gui.selecthook  
-def setTab7(self) :
-     
-        self.tab_7 = QWidget()
-        self.tab_widget.addTab(self.tab_7,  "翻译优化") 
-        
-        initpostswitchs_auto(self)
-def initpostswitchs_auto(self):
-        num=0
-        
+def setTab7(self) : 
+        t = QWidget()
+        self.tab_widget.addTab(t,  "翻译优化")  
+        lay=QGridLayout( )    
+        t.setLayout(lay)  
+
+        grids=[ 
+            [(QLabel(''),10)]
+        ] 
         for post in postprocessconfig:
-            y=10+40*num
-            x=20
-            #print(post)
-            initpostswitchs(self,post,(x, y, 270, 20),(x+270, y, 20,20),1,(x+300, y, 20,20))
-            num+=1
-
-        y=330
-        x=20
-
-        p=QPushButton(self.tab_7)
-        p.setText("自定义python处理")
+            l=[(QLabel(postprocessconfig[post]['name'] ),3),
+                self.getsimpleswitch(postprocessconfig[post],'use')]
+                
+            if 'args' in postprocessconfig[post]:
+                l.append(self.getcolorbutton(globalconfig,'',callback= functools.partial( postconfigdialog,self,postprocessconfig[post]['args'],postprocessconfig[post]['name']+'设置'),icon='fa.gear',constcolor="#FF69B4")) 
+            grids.append(l)
+        
+        p=QPushButton("自定义python处理" ) 
 
         def _openfile():
             import os
@@ -59,66 +45,30 @@ def initpostswitchs_auto(self):
             elif os.path.exists('./postprocess/post.py'):
                 os.startfile( os.path.abspath('./postprocess/post.py'))
         p.clicked.connect(lambda x:_openfile())
-        self.customSetGeometry(p, x,y,200,25)
 
-        y+=40
-        initdictswitchs(self,(x, y, 270, 20),(x+270, y, 20,20),1,(x+300, y, 20,20))
-        y+=40
-        initdictswitchs2(self,(x, y, 270, 20),(x+270, y, 20,20),1,(x+300, y, 20,20))
-        y+=40
-        initdictswitchs3(self,(x, y, 270, 20),(x+270, y, 20,20),1,(x+300, y, 20,20))
-def initdictswitchs3(self,namepos,switchpos,colorpos,settingpos):
-    label = QLabel(self.tab_7)
-    self.customSetGeometry(label, *namepos)
-    label.setText("使用VNR共享辞书:")
-    p=gui.switchbutton.MySwitch(self.tab_7, sign=globalconfig['gongxiangcishu']['use'])
-    
-    self.customSetGeometry(p, *switchpos) 
-    def __(x):
-        globalconfig['gongxiangcishu'].__setitem__('use',x)
-        self.object.loadvnrshareddict()
-    p.clicked.connect(lambda x:__(x)) 
-    
-    s1 = QPushButton( "", self.tab_7)
-    self.customSetIconSize(s1, 20, 20)
-    self.customSetGeometry(s1, *settingpos)
-    s1.setStyleSheet("background: transparent;")   
-    s1.setIcon(qtawesome.icon("fa.gear", color="#FF69B4"  ))
-    def __2(self):
-        getsomepath(self,'共享辞书',globalconfig['gongxiangcishu']['path'],'共享辞书:',lambda x:globalconfig['gongxiangcishu'].__setitem__('path',x),False)
-        self.object.loadvnrshareddict()
-    s1.clicked.connect(lambda: __2(self))
-def initdictswitchs(self,namepos,switchpos,colorpos,settingpos):
-    label = QLabel(self.tab_7)
-    self.customSetGeometry(label, *namepos)
-    label.setText("使用专有名词翻译:")
-    p=gui.switchbutton.MySwitch(self.tab_7, sign=noundictconfig['use'] )
-    
-    self.customSetGeometry(p, *switchpos) 
-    p.clicked.connect(lambda x:noundictconfig.__setitem__('use',x)) 
-    
-    s1 = QPushButton( "", self.tab_7)
-    self.customSetIconSize(s1, 20, 20)
-    self.customSetGeometry(s1, *settingpos)
-    s1.setStyleSheet("background: transparent;")   
-    s1.setIcon(qtawesome.icon("fa.gear", color="#FF69B4"  ))
-    s1.clicked.connect(lambda x:noundictconfigdialog(self,noundictconfig,'专有名词翻译设置(游戏ID 0表示全局)'))
-def initdictswitchs2(self,namepos,switchpos,colorpos,settingpos):
-    label = QLabel(self.tab_7)
-    self.customSetGeometry(label, *namepos)
-    label.setText("使用翻译结果修正")
-    p=gui.switchbutton.MySwitch(self.tab_7, sign=transerrorfixdictconfig['use'] )
-    
-    self.customSetGeometry(p, *switchpos) 
-    p.clicked.connect(lambda x:transerrorfixdictconfig.__setitem__('use',x)) 
-    
-    s1 = QPushButton( "", self.tab_7)
-    self.customSetIconSize(s1, 20, 20)
-    self.customSetGeometry(s1, *settingpos)
-    s1.setStyleSheet("background: transparent;")   
-    s1.setIcon(qtawesome.icon("fa.gear", color="#FF69B4"  ))
-    s1.clicked.connect(lambda x:noundictconfigdialog1(self,transerrorfixdictconfig,'翻译结果替换设置',['翻译','替换'],'./userconfig/transerrorfixdictconfig.json'))
+        grids.append([(p,5)])
+        def __(x):
+            globalconfig['gongxiangcishu'].__setitem__('use',x)
+            self.object.loadvnrshareddict()
+        def __2(self):
+            getsomepath(self,'共享辞书',globalconfig['gongxiangcishu']['path'],'共享辞书:',lambda x:globalconfig['gongxiangcishu'].__setitem__('path',x),False)
+            self.object.loadvnrshareddict()
+        grids+=[
 
+            [(QLabel('使用专有名词翻译' ),3),
+                self.getsimpleswitch(noundictconfig,'use'),
+                self.getcolorbutton(globalconfig,'',callback=lambda x:  noundictconfigdialog(self,noundictconfig,'专有名词翻译设置(游戏ID 0表示全局)'),icon='fa.gear',constcolor="#FF69B4")],
+            [(QLabel('使用翻译结果修正' ),3),
+                self.getsimpleswitch(transerrorfixdictconfig,'use'),
+                self.getcolorbutton(globalconfig,'',callback=lambda x:  noundictconfigdialog1(self,transerrorfixdictconfig,'翻译结果替换设置',['翻译','替换'],'./userconfig/transerrorfixdictconfig.json'),icon='fa.gear',constcolor="#FF69B4")],
+            [(QLabel('使用VNR共享辞书' ),3),
+                self.getsimpleswitch(globalconfig['gongxiangcishu'],'use',callback =lambda x:__(x)),
+                self.getcolorbutton(globalconfig,'',callback=lambda x:   __2(self),icon='fa.gear',constcolor="#FF69B4")],
+            [''],[''],[''],[''],[''],
+        ]
+        #initpostswitchs_auto(self)
+        self.automakegrid(lay,grids)
+ 
 def noundictconfigdialog1(object,configdict,title,label=[  '日文','翻译'],fname='./userconfig/noundictconfig.json'):
     dialog = QDialog(object)  # 自定义一个dialog
     dialog.setWindowTitle(title)

@@ -1,7 +1,7 @@
 {
     "position": [
-        351,
-        607
+        370,
+        883
     ],
     "fixedheight": true,
     "width": 1435,
@@ -32,7 +32,7 @@
             "voice": "jp_male_satoshi"
         },
         "windowstts": {
-            "use": false,
+            "use": true,
             "voice": "TTS_MS_ZH-CN_HUIHUI_11.0"
         },
         "voiceroid2": {
@@ -41,7 +41,7 @@
             "path": "C:/dataH/Yukari2"
         },
         "voicevox": {
-            "use": true,
+            "use": false,
             "voice": "ずんだもん",
             "path": "C:/dataH/VOICEVOX"
         }

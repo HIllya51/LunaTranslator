@@ -599,3 +599,43 @@
 2022-11-06 02:14:08.822|info|App.cpp:_RegisterWndClasses|已注册 DDF 窗口类
 2022-11-06 02:14:08.822|info|App.cpp:Initialize|App 初始化成功
 2022-11-06 02:14:08.822|info|Utils.cpp:Initialize|Utils::Hasher 初始化成功
+2022-11-06 02:15:10.497|info|App.cpp:Initialize|正在初始化 App
+2022-11-06 02:15:10.497|info|App.cpp:_RegisterWndClasses|已注册主窗口类
+2022-11-06 02:15:10.497|info|App.cpp:_RegisterWndClasses|已注册 DDF 窗口类
+2022-11-06 02:15:10.497|info|App.cpp:Initialize|App 初始化成功
+2022-11-06 02:15:10.497|info|Utils.cpp:Initialize|Utils::Hasher 初始化成功
+2022-11-06 02:23:40.049|info|App.cpp:Initialize|正在初始化 App
+2022-11-06 02:23:40.049|info|App.cpp:_RegisterWndClasses|已注册主窗口类
+2022-11-06 02:23:40.049|info|App.cpp:_RegisterWndClasses|已注册 DDF 窗口类
+2022-11-06 02:23:40.049|info|App.cpp:Initialize|App 初始化成功
+2022-11-06 02:23:40.050|info|Utils.cpp:Initialize|Utils::Hasher 初始化成功
+2022-11-06 02:27:27.416|info|App.cpp:Initialize|正在初始化 App
+2022-11-06 02:27:27.416|info|App.cpp:_RegisterWndClasses|已注册主窗口类
+2022-11-06 02:27:27.416|info|App.cpp:_RegisterWndClasses|已注册 DDF 窗口类
+2022-11-06 02:27:27.416|info|App.cpp:Initialize|App 初始化成功
+2022-11-06 02:27:27.416|info|Utils.cpp:Initialize|Utils::Hasher 初始化成功
+2022-11-06 02:27:51.747|info|App.cpp:Initialize|正在初始化 App
+2022-11-06 02:27:51.747|info|App.cpp:_RegisterWndClasses|已注册主窗口类
+2022-11-06 02:27:51.747|info|App.cpp:_RegisterWndClasses|已注册 DDF 窗口类
+2022-11-06 02:27:51.747|info|App.cpp:Initialize|App 初始化成功
+2022-11-06 02:27:51.747|info|Utils.cpp:Initialize|Utils::Hasher 初始化成功
+2022-11-06 02:29:52.800|info|App.cpp:Initialize|正在初始化 App
+2022-11-06 02:29:52.800|info|App.cpp:_RegisterWndClasses|已注册主窗口类
+2022-11-06 02:29:52.800|info|App.cpp:_RegisterWndClasses|已注册 DDF 窗口类
+2022-11-06 02:29:52.800|info|App.cpp:Initialize|App 初始化成功
+2022-11-06 02:29:52.800|info|Utils.cpp:Initialize|Utils::Hasher 初始化成功
+2022-11-06 02:33:34.467|info|App.cpp:Initialize|正在初始化 App
+2022-11-06 02:33:34.467|info|App.cpp:_RegisterWndClasses|已注册主窗口类
+2022-11-06 02:33:34.467|info|App.cpp:_RegisterWndClasses|已注册 DDF 窗口类
+2022-11-06 02:33:34.467|info|App.cpp:Initialize|App 初始化成功
+2022-11-06 02:33:34.468|info|Utils.cpp:Initialize|Utils::Hasher 初始化成功
+2022-11-06 02:34:17.374|info|App.cpp:Initialize|正在初始化 App
+2022-11-06 02:34:17.374|info|App.cpp:_RegisterWndClasses|已注册主窗口类
+2022-11-06 02:34:17.374|info|App.cpp:_RegisterWndClasses|已注册 DDF 窗口类
+2022-11-06 02:34:17.374|info|App.cpp:Initialize|App 初始化成功
+2022-11-06 02:34:17.374|info|Utils.cpp:Initialize|Utils::Hasher 初始化成功
+2022-11-06 02:34:59.631|info|App.cpp:Initialize|正在初始化 App
+2022-11-06 02:34:59.631|info|App.cpp:_RegisterWndClasses|已注册主窗口类
+2022-11-06 02:34:59.631|info|App.cpp:_RegisterWndClasses|已注册 DDF 窗口类
+2022-11-06 02:34:59.631|info|App.cpp:Initialize|App 初始化成功
+2022-11-06 02:34:59.631|info|Utils.cpp:Initialize|Utils::Hasher 初始化成功
