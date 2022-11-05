@@ -275,7 +275,7 @@ def initpostswitchs(self,name,namepos,switchpos,colorpos,settingpos):
         label = QLabel(self.tab_7)
         self.customSetGeometry(label, *namepos)
         label.setText(postprocessconfig[name]['name']+":")
-        p=gui.switchbutton.MySwitch(self.tab_7, sign=postprocessconfig[name]['use'], textOff='关闭',textOn='使用')
+        p=gui.switchbutton.MySwitch(self.tab_7, sign=postprocessconfig[name]['use'] )
         
         self.customSetGeometry(p, *switchpos)
         def fanyiselect( who,checked):

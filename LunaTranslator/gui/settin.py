@@ -1,11 +1,12 @@
 from PyQt5.QtCore import Qt,QSize,pyqtSignal ,QRect ,QUrl,QObject
  
-from PyQt5.QtWidgets import  QColorDialog
+from PyQt5.QtWidgets import  QColorDialog,QSpinBox,QDoubleSpinBox,QPushButton,QComboBox
 from PyQt5.QtGui import QColor ,QFont
 from utils.config import globalconfig 
 from PyQt5.QtWidgets import  QTabWidget,QMainWindow 
 import qtawesome   
 import os
+import gui.switchbutton
 from PyQt5.QtMultimedia import QMediaPlayer,QMediaContent ,QSoundEffect 
 from gui.settingpage1 import setTabOne
 from gui.settingpage2 import setTabTwo
@@ -55,9 +56,49 @@ class Settin(QMainWindow) :
         print(path)
         self.mp3player.setVolume(volume)
         self.mp3player.play()
+    def getspinbox(self,mini,maxi,d,key,double=False, step=1,callback=None,name=None ):
+        if double:
+            s=QDoubleSpinBox()
+            s.setDecimals(1)
+        else:
+            s=QSpinBox() 
+        s.setMinimum(mini)
+        s.setMaximum(maxi)
+        s.setSingleStep(step)
+        s.setValue(d[key])
+        if callback:
+            s.valueChanged.connect(lambda x:callback(x))
+        else:
+            s.valueChanged.connect(lambda x:d.__setitem__(key,x))
+        if name:
+            setattr(self,name,s)
+        return s
+    def getsimpleswitch(self,d,key,enable=True,callback=None,name=None):
+        b=gui.switchbutton.MySwitch(sign=d[key],enable=enable)
+        if callback:
+            b.clicked.connect( callback )
+        else:
+            b.clicked.connect(lambda x:d.__setitem__(key,x))
+        if name:
+            setattr(self,name,b)
+        return b
+    def getcolorbutton(self,d,key,callback,name=None):
+        b=QPushButton(qtawesome.icon("fa.paint-brush", color=d[key]), "" )
+        self.customSetIconSize(b, 20, 20)  
+        b.setStyleSheet("background: transparent;") 
+        b.clicked.connect(  callback)  
+        if name:
+            setattr(self,name,b)
+        return b
+    def getsimplecombobox(self,lst,d,k):
+        s=QComboBox( )  
+        s.addItems(lst)
+        s.setCurrentIndex(d[k])
+        s.currentIndexChanged.connect(lambda x:d.__setitem__(k,x))
+        return s
     def __init__(self, object):
         
-        super(Settin, self).__init__() 
+        super(Settin, self).__init__()#(object.translation_ui) 
         self.mp3player=wavmp3player()
         self.mp3playsignal.connect(self.mp3player.mp3playfunction)
         self.object = object  
@@ -69,7 +110,7 @@ class Settin(QMainWindow) :
         self.window_height = int(550*self.rate)
         
         self.savelastrect=None
-        self.setFixedSize(self.window_width, self.window_height) 
+        #self.setFixedSize(self.window_width, self.window_height) 
         
         #self.setWindowFlags(Qt.WindowStaysOnTopHint |Qt.WindowCloseButtonHint)
         #self.setWindowFlags( Qt.WindowCloseButtonHint)
@@ -79,7 +120,9 @@ class Settin(QMainWindow) :
         self.setStyleSheet("font: 11pt '微软雅黑' ; color: \"#595959\"" ) 
         #self.setFont((QFont("黑体",11,QFont.Bold)))
         self.tab_widget = QTabWidget(self)
-        self.tab_widget.setGeometry(self.geometry()) 
+        self.setCentralWidget(self.tab_widget)
+        
+        #self.tab_widget.setGeometry(self.geometry())  
         tabbar=rotatetab(self.tab_widget)
          
         
@@ -137,28 +180,21 @@ class Settin(QMainWindow) :
         
             
     def ChangeTranslateColor(self, translate_type,button) :
-            if translate_type=='raw':
-                color = QColorDialog.getColor(QColor(globalconfig['rawtextcolor']), self, "设定原文显示时的颜色")
-            elif translate_type=='back':
-                color = QColorDialog.getColor(QColor(globalconfig['backcolor']), self, "设定背景颜色")
-            elif translate_type=='miaobian':
-                color = QColorDialog.getColor(QColor(globalconfig['miaobiancolor']), self, "设定描边颜色")
-            elif translate_type=='shadowcolor':
-                color = QColorDialog.getColor(QColor(globalconfig['shadowcolor']), self, "")
+            nottransbutton=['rawtextcolor','backcolor','miaobiancolor','shadowcolor','buttoncolor']
+            if translate_type in nottransbutton:
+                color = QColorDialog.getColor(QColor(globalconfig[translate_type]), self )  
             else:
-                color = QColorDialog.getColor(QColor(globalconfig['fanyi'][translate_type]['color']), self, "设定所选翻译显示时的颜色")
+                color = QColorDialog.getColor(QColor(globalconfig['fanyi'][translate_type]['color']), self )
             if not color.isValid() :
                 return
         
             button.setIcon(qtawesome.icon("fa.paint-brush", color=color.name()))
-            if translate_type=='raw':
-                globalconfig['rawtextcolor']=color.name()
-            elif translate_type=='miaobian':
-                globalconfig['miaobiancolor']=color.name()
-            elif translate_type=='shadowcolor':
-                globalconfig['shadowcolor']=color.name()
-            elif translate_type=='back':
-                globalconfig['backcolor']=color.name()
+            nottransbutton=['rawtextcolor','backcolor','miaobiancolor','shadowcolor','buttoncolor']
+            if translate_type in nottransbutton: 
+                globalconfig[translate_type]=color.name()  
+            else:
+                globalconfig['fanyi'][translate_type]['color']=color.name() 
+            if translate_type=='backcolor': 
                 self.object.translation_ui.translate_text.setStyleSheet("border-width: 0;\
                                             border-style: outset;\
                                             border-top: 0px solid #e8f3f9;\
@@ -173,5 +209,4 @@ class Settin(QMainWindow) :
                                             font-weight: bold;\
                                             background-color: rgba(%s, %s, %s, %s)"
                                             %(int(globalconfig['backcolor'][1:3],16),int(globalconfig['backcolor'][3:5],16),int(globalconfig['backcolor'][5:7],16),globalconfig['transparent']/200))
-            else:
-                globalconfig['fanyi'][translate_type]['color']=color.name() 
+             

@@ -98,7 +98,7 @@ def initocrswitchs(self,name,namepos,switchpos,colorpos,settingpos):
         label = QLabel(self.tab_6)
         self.customSetGeometry(label, *namepos)
         label.setText(globalconfig['ocr'][name]['name']+":")
-        p=gui.switchbutton.MySwitch(self.tab_6, sign=globalconfig['ocr'][name]['use'], textOff='关闭',textOn='使用')
+        p=gui.switchbutton.MySwitch(self.tab_6, sign=globalconfig['ocr'][name]['use'] )
         
         self.customSetGeometry(p, *switchpos)
         

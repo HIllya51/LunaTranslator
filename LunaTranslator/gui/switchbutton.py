@@ -5,12 +5,10 @@ import qtawesome
 import utils.screen_rate  
 class MySwitch(QtWidgets.QPushButton):
     realclicksignal=pyqtSignal(bool)
-    def __init__(self, parent = None,sign=True, textOn='On',textOff='off'):
+    def __init__(self, parent = None,sign=True ,enable=True):
         super().__init__(parent) 
         self.setCheckable(True)
-        self.setChecked(sign) 
-        self.TextOff=textOff
-        self.TextOn=textOn
+        self.setChecked(sign)  
         self.setStyleSheet('''background-color: rgba(255, 255, 255, 0);
           color: black;
           border: 0px;
@@ -22,6 +20,7 @@ class MySwitch(QtWidgets.QPushButton):
                                  int(30*self.rate)))
         #self.setIcon(qtawesome.icon("fa.check" ,color="#FF69B4" if self.isChecked() else '#dadbdc'))
         self.setIcon(qtawesome.icon("fa.check" ,color="#FF69B4") if self.isChecked() else qtawesome.icon("fa.times" ,color='#dadbdc'))
+        self.setEnabled(enable)
     def clickfunction(self,_):
         #self.setIcon(qtawesome.icon("fa.check" ,color="#FF69B4" if self.isChecked() else '#dadbdc'))
         self.setIcon(qtawesome.icon("fa.check" ,color="#FF69B4") if self.isChecked() else qtawesome.icon("fa.times" ,color='#dadbdc'))

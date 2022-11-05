@@ -61,7 +61,7 @@ def setTab_quick(self) :
         label = QLabel(tab)
         self.customSetGeometry(label, 20, 25, 200, 20)
         label.setText("是否使用快捷键")
-        p=gui.switchbutton.MySwitch(tab, sign=globalconfig['quick_setting']['use'], textOff='隐藏',textOn='显示')
+        p=gui.switchbutton.MySwitch(tab, sign=globalconfig['quick_setting']['use'] )
         self.customSetGeometry(p, 220, 25, 20,20 )
         def __enable(x ):
             globalconfig['quick_setting'].__setitem__('use',x)

@@ -3,6 +3,7 @@ defaultglobalconfig = {'position': [432, 613], 'fixedheight': False, 'width': 76
  'iskongxin': True, 'isshowrawtext': True, 'rawtextcolor': '#000000', 'backcolor': '#7a8b8a', 'isshowhira': False, 'locktools': True, 'showfanyisource': False, 'autoread': False, 'extractalltext': False, 
  'show_fenci':False,
  'premtsimiuse':False,
+ 'buttoncolor':'white',
  'premtsimi':5,
  'magpiescalemethod':0,
  'magpiecapturemethod':0,

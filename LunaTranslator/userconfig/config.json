@@ -1,18 +1,18 @@
 {
     "position": [
-        318,
-        598
+        162,
+        624
     ],
-    "fixedheight": false,
+    "fixedheight": true,
     "width": 1435,
     "autorun": true,
-    "transparent": 37,
+    "transparent": 52,
     "fontsize": 20.0,
-    "fonttype": "微软雅黑",
+    "fonttype": "华文隶书",
     "miaobianwidth2": 3.0,
     "miaobianwidth": 1,
-    "miaobiancolor": "#ffffff",
-    "zitiyangshi": 0,
+    "miaobiancolor": "#fdf4ff",
+    "zitiyangshi": 3,
     "iskongxin": true,
     "isshowrawtext": true,
     "rawtextcolor": "#000000",
@@ -54,8 +54,8 @@
     },
     "sourcestatus": {
         "copy": false,
-        "ocr": false,
-        "textractor": true,
+        "ocr": true,
+        "textractor": false,
         "textractor_pipe": false
     },
     "ocr": {
@@ -270,7 +270,7 @@
     "translatortimeout": 5,
     "minlength": 5,
     "maxlength": 150,
-    "fanjian": 0,
+    "fanjian": 1,
     "rotation": 0,
     "srclang": 0,
     "transkiroku": true,
@@ -305,7 +305,7 @@
     },
     "show_fenci": false,
     "quick_setting": {
-        "use": true,
+        "use": false,
         "all": {
             "_1": {
                 "use": true,
@@ -461,7 +461,7 @@
     "showShadow": true,
     "shadowcolor": "#0509ff",
     "showbold": true,
-    "shadowforce": 6,
+    "shadowforce": 1,
     "showcixing": true,
     "showcixing_touming": 30,
     "cixingcolor": {
@@ -491,11 +491,12 @@
     "proxy": "127.0.0.1:4780",
     "tgtlang": 0,
     "focusfollow": false,
-    "usemagpie": true,
+    "usemagpie": false,
     "usefullscreenbutton": true,
     "useresizebutton": true,
     "magpiemethod": 6,
     "magpiescalemethod": 1,
     "magpiecapturemethod": 2,
-    "ocrautobindwindow": true
+    "ocrautobindwindow": true,
+    "buttoncolor": "#ff988f"
 }

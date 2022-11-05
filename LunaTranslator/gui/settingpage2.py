@@ -191,7 +191,7 @@ def initfanyiswitchs(self,name,namepos,switchpos,colorpos,settingpos):
         label = QLabel(self.tab_2)
         self.customSetGeometry(label, *namepos)
         label.setText(globalconfig['fanyi'][name]['name']+":")
-        p=gui.switchbutton.MySwitch(self.tab_2, sign=globalconfig['fanyi'][name]['use'], textOff='关闭',textOn='使用')
+        p=gui.switchbutton.MySwitch(self.tab_2, sign=globalconfig['fanyi'][name]['use'] )
         
         self.customSetGeometry(p, *switchpos)
         def fanyiselect( who,checked):
