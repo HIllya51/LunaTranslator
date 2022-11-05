@@ -1,7 +1,7 @@
   
 import functools
 import sqlite3
-from PyQt5.QtWidgets import  QWidget,QLabel ,QLineEdit,QSpinBox,QPushButton,QDialog,QVBoxLayout ,QHeaderView,QFileDialog 
+from PyQt5.QtWidgets import  QWidget,QLabel ,QLineEdit,QSpinBox,QPushButton,QDialog,QVBoxLayout ,QHeaderView,QFileDialog ,QGridLayout
 import functools 
 from traceback import print_exc
 import functools
@@ -133,93 +133,16 @@ def autosaveshow(object):
 def setTab4(self) :
      
         self.tab_4 = QWidget()
-        self.tab_widget.addTab(self.tab_4, "HOOK设置") 
- 
-        # label = QLabel(self.tab_4)
-        # self.customSetGeometry(label, 20, 20, 200, 20)
-        # label.setText("textractor模式特殊设置")
-
-        label = QLabel(self.tab_4)
-        self.customSetGeometry(label, 20, 50, 200, 20)
-        label.setText("游戏最小化时窗口隐藏")
-        self.minifollowswitch =gui.switchbutton.MySwitch(self.tab_4, sign= globalconfig['minifollow'])
-        self.customSetGeometry(self.minifollowswitch, 250, 50, 20,20)
-        self.minifollowswitch.clicked.connect(lambda x:globalconfig.__setitem__('minifollow',x)) 
-
-        label = QLabel(self.tab_4)
-        self.customSetGeometry(label, 20, 140, 200, 20)
-        label.setText("游戏失去焦点时窗口隐藏")
-        self.minifollowswitch =gui.switchbutton.MySwitch(self.tab_4, sign= globalconfig['focusfollow'])
-        self.customSetGeometry(self.minifollowswitch, 250, 140, 20,20)
-        self.minifollowswitch.clicked.connect(lambda x:globalconfig.__setitem__('focusfollow',x)) 
-
-        label = QLabel(self.tab_4)
-        self.customSetGeometry(label, 20, 80, 200, 20)
-        label.setText("游戏窗口移动时同步移动")
-        
-        self.movefollowswitch =gui.switchbutton.MySwitch(self.tab_4, sign= globalconfig['movefollow'])
-        self.customSetGeometry(self.movefollowswitch, 250, 80,20,20)
-        self.movefollowswitch.clicked.connect(lambda x:globalconfig.__setitem__('movefollow',x)) 
-        
-        
-        label = QLabel(self.tab_4)
-        self.customSetGeometry(label, 20, 110, 200, 20)
-        label.setText("检测到游戏时自动开始")
-        
-        self.movefollowswitch =gui.switchbutton.MySwitch(self.tab_4, sign= globalconfig['autostarthook'])
-        self.customSetGeometry(self.movefollowswitch, 250, 110,20,20)
-        self.movefollowswitch.clicked.connect(lambda x:globalconfig.__setitem__('autostarthook',x)) 
-        
-        
-        # label = QLabel(self.tab_4)
-        # self.customSetGeometry(label, 20, 140, 200, 20)
-        # label.setText("提取hook线程全部文本")
-        
-        # self.movefollowswitch =gui.switchbutton.MySwitch(self.tab_4, sign= globalconfig['extractalltext'])
-        # self.customSetGeometry(self.movefollowswitch, 200, 140,20,20)
-        # self.movefollowswitch.clicked.connect(lambda x:globalconfig.__setitem__('extractalltext',x)) 
-        
-        label = QLabel(self.tab_4)
-        self.customSetGeometry(label, 20, 170, 200, 20)
-        label.setText("LocaleEmulator路径设置")
-        s1 = QPushButton( "", self.tab_4)
-        self.customSetIconSize(s1, 20, 20)
-        self.customSetGeometry(s1, 250, 170,20,20)
-        s1.setStyleSheet("background: transparent;") 
-        
-        s1.setIcon(qtawesome.icon("fa.gear", color="#FF69B4"  ))
-        s1.clicked.connect(lambda x: getsomepath(self,'LocaleEmulator 路径',globalconfig['LocaleEmulator'],'LocaleEmulator:',lambda x:globalconfig.__setitem__('LocaleEmulator',x),True))
-      
-        label = QLabel(self.tab_4)
-        self.customSetGeometry(label, 20, 200, 200, 20)
-        label.setText("已保存游戏")
-        s1 = QPushButton( "", self.tab_4)
-        self.customSetIconSize(s1, 20, 20)
-        self.customSetGeometry(s1, 250, 200,20,20)
-        s1.setStyleSheet("background: transparent;") 
-        
-        s1.setIcon(qtawesome.icon("fa.gamepad", color="#FF69B4"  )) 
-        s1.clicked.connect(lambda: autosaveshow(self))
-
-        label = QLabel(self.tab_4)
-        self.customSetGeometry(label, 20, 260, 200, 20)
-        label.setText("录制翻译文件")
-        self.minifollowswitch =gui.switchbutton.MySwitch(self.tab_4, sign= globalconfig['transkiroku'])
-        self.customSetGeometry(self.minifollowswitch, 250, 260, 20,20)
-        self.minifollowswitch.clicked.connect(lambda x:globalconfig.__setitem__('transkiroku',x)) 
-
-        label = QLabel(self.tab_4)
-        self.customSetGeometry(label, 20, 290, 200, 20)
-        label.setText("优先使用的翻译源：")
-        transkirokuuse =QComboBox(self.tab_4) 
-        self.customSetGeometry(transkirokuuse, 250, 290, 100,20) 
+        self.tab_widget.addTab(self.tab_4, "HOOK设置")  
+        lay=QGridLayout( )    
+        self.tab_4.setLayout(lay)  
+        transkirokuuse =QComboBox( )  
         transkirokuuse.addItems([globalconfig['fanyi'][k]['name'] for k  in globalconfig['fanyi']])
         transkirokuuse.setCurrentIndex(list(globalconfig['fanyi'].keys()).index(globalconfig['transkirokuuse']))
         transkirokuuse.currentIndexChanged.connect(lambda x:globalconfig.__setitem__('transkirokuuse',list(globalconfig['fanyi'].keys())[x]))
+
         
-        bt = QPushButton(self.tab_4)
-        self.customSetGeometry(bt, 20, 320, 200, 25)
-        bt.setText("导出sqlite文件为json文件") 
+        bt = QPushButton("导出sqlite文件为json文件")  
 
         def _sqlite2json():
                 f=QFileDialog.getOpenFileName(filter="*.sqlite")
@@ -235,14 +158,26 @@ def setTab4(self) :
                         except:
                                 print_exc()
         bt.clicked.connect(lambda x:_sqlite2json()) 
-        # label = QLabel(self.tab_4)
-        # self.customSetGeometry(label, 20, 110, 200, 20)
-        # #label.setText("窗口失去焦点不再置顶")
-        # label.setText("窗口失去焦点最小化")
-        # self.focusfollowswitch =gui.switch.SwitchButton(self.tab_4, sign= globalconfig['focusfollow'], startX=(65-20)*self.rate)
-        # self.customSetGeometry(self.focusfollowswitch, 200,110, 65, 20)
-        # self.focusfollowswitch.checkedChanged.connect(lambda x:globalconfig.__setitem__('focusfollow',x)) 
-        # #self.focusfollowswitch.checkedChanged.connect(lambda x:setss(self,x)) 
+        grids=[
+                [(QLabel('游戏最小化时窗口隐藏'),1),(self.getsimpleswitch(globalconfig,'minifollow'),1),'','',''],
+                [(QLabel('游戏失去焦点时窗口隐藏'),1),(self.getsimpleswitch(globalconfig,'focusfollow'),1)],
+                [(QLabel('游戏窗口移动时同步移动'),1),(self.getsimpleswitch(globalconfig,'movefollow'),1)],
+                [(QLabel('检测到游戏时自动开始'),1),(self.getsimpleswitch(globalconfig,'autostarthook'),1)],
+                [(QLabel('LocaleEmulator路径设置'),1),(self.getcolorbutton(globalconfig,'',callback=lambda x: getsomepath(self,'LocaleEmulator 路径',globalconfig['LocaleEmulator'],'LocaleEmulator:',lambda x:globalconfig.__setitem__('LocaleEmulator',x),True),icon='fa.gear',constcolor="#FF69B4"),1)],
+                [(QLabel('已保存游戏'),1),(self.getcolorbutton(globalconfig,'autostarthook',icon='fa.gamepad',constcolor="#FF69B4",callback=lambda:autosaveshow(self)),1)],
+
+                [(QLabel('录制翻译文件'),1),(self.getsimpleswitch(globalconfig,'transkiroku'),1)],
+                [(QLabel('优先使用的翻译源'),1),(transkirokuuse,1)],
+                [bt],
+                [''],
+                [''],
+                [''],
+                [''],
+                ['']
+        ]
+        self.automakegrid(lay,grids)
+          
+  
         self.hookpid=None
         self.minmaxmoveoberve=subproc('./files/minmaxmoveobserve.exe',stdout=subprocess.PIPE)  
         self.minmaxmoveobservethread=threading.Thread(target=minmaxmoveobservefunc,args=(self,))

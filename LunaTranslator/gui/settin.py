@@ -1,6 +1,6 @@
 from PyQt5.QtCore import Qt,QSize,pyqtSignal ,QRect ,QUrl,QObject
  
-from PyQt5.QtWidgets import  QColorDialog,QSpinBox,QDoubleSpinBox,QPushButton,QComboBox
+from PyQt5.QtWidgets import  QColorDialog,QSpinBox,QDoubleSpinBox,QPushButton,QComboBox,QLabel
 from PyQt5.QtGui import QColor ,QFont
 from utils.config import globalconfig 
 from PyQt5.QtWidgets import  QTabWidget,QMainWindow 
@@ -13,7 +13,7 @@ from gui.settingpage2 import setTabTwo
 from gui.settingpage_xianshishezhi import setTabThree
 from gui.settingpage4 import setTab4 
 from gui.settingpage_tts import setTab5 
-from gui.settingpage6 import setTab6 
+from gui.settingpage_ocr import setTab6 
 from gui.settingpage7 import setTab7
 from gui.settingpage_about import setTab_about
 from gui.rotatetab import customtabstyle,rotatetab
@@ -47,15 +47,20 @@ class Settin(QMainWindow) :
     versiontextsignal=pyqtSignal( str)
     progresssignal=pyqtSignal(str,int)
     clicksourcesignal=pyqtSignal(int)
-    fontbigsmallsignal=pyqtSignal(int)
-    def mp3playfunction(self,path,volume):
-        self.mp3player.stop()
-        print(path)
-        self.mp3player.setSource(QUrl.fromLocalFile('./ttscache/1666458054.6688824.wav'))#path))
-        #self.mp3player.setMedia(QMediaContent(QUrl(path)))
-        print(path)
-        self.mp3player.setVolume(volume)
-        self.mp3player.play()
+    fontbigsmallsignal=pyqtSignal(int) 
+        
+    def automakegrid(self,grid,lis): 
+        for nowr,line in enumerate(lis):
+                nowc=0
+                for i in line:
+                        if type(i)==str:
+                                wid,cols=QLabel(""),1
+                        elif type(i)!=tuple:
+                                wid,cols=i,1
+                        elif len(i)==2:
+                                wid,cols=i
+                        grid.addWidget(wid,nowr,nowc,1,cols)
+                        nowc+=cols  
     def getspinbox(self,mini,maxi,d,key,double=False, step=1,callback=None,name=None ):
         if double:
             s=QDoubleSpinBox()
@@ -82,8 +87,9 @@ class Settin(QMainWindow) :
         if name:
             setattr(self,name,b)
         return b
-    def getcolorbutton(self,d,key,callback,name=None):
-        b=QPushButton(qtawesome.icon("fa.paint-brush", color=d[key]), "" )
+     
+    def getcolorbutton(self,d,key,callback,name=None,icon="fa.paint-brush",constcolor=None):
+        b=QPushButton(qtawesome.icon(icon, color=constcolor if constcolor else d[key]), "" )
         self.customSetIconSize(b, 20, 20)  
         b.setStyleSheet("background: transparent;") 
         b.clicked.connect(  callback)  

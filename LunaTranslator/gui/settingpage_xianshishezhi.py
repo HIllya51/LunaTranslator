@@ -2,35 +2,14 @@ import functools
 from PyQt5.QtCore import Qt 
 from PyQt5.QtGui import  QFont
 
-from PyQt5.QtWidgets import  QWidget,QLabel,QFrame,QPushButton ,QSlider,QDoubleSpinBox,QFontComboBox ,QComboBox,QSpinBox,QGridLayout,QHBoxLayout
+from PyQt5.QtWidgets import  QWidget,QLabel ,QSlider, QFontComboBox  ,QGridLayout
 import qtawesome 
  
 from utils.config import globalconfig 
-  
-import gui.switchbutton
-import gui.attachprocessdialog  
-import gui.selecthook  
+     
 def fontbigsmallfunction(self,t):
         self.fontSize_spinBox.setValue(self.fontSize_spinBox.value()+0.1*t)
-
-def autogrid(grid,wid,cols=1,newline=False):
-        if newline:
-                grid.nowr+=1
-                grid.nowc=0
-        grid.addWidget(wid,grid.nowr,grid.nowc,1,cols)
-        grid.nowc+=cols 
-def automakegrid(grid,lis): 
-        for nowr,line in enumerate(lis):
-                nowc=0
-                for i in line:
-                        if type(i)==str:
-                                wid,cols=QLabel(""),1
-                        elif type(i)!=tuple:
-                                wid,cols=i,1
-                        elif len(i)==2:
-                                wid,cols=i
-                        grid.addWidget(wid,nowr,nowc,1,cols)
-                        nowc+=cols  
+ 
 def __changeuibuttonstate(self,x): 
                 globalconfig.__setitem__('isshowrawtext',x)
                 self.object.translation_ui.showhiderawbutton.setIcon(qtawesome.icon("fa.eye"   if globalconfig['isshowrawtext'] else "fa.eye-slash" ,color=globalconfig['buttoncolor'])) 
@@ -42,12 +21,9 @@ def setTabThree(self) :
         self.tab_3 = QWidget()
         self.tab_widget.addTab(self.tab_3, "显示设置") 
         
-        self.fontbigsmallsignal.connect(functools.partial(fontbigsmallfunction,self)) 
-        self.xianshishezhilayout=QGridLayout(self.tab_3)    
-        self.tab_3.setLayout(self.xianshishezhilayout)
-        self.xianshishezhilayout.nowr=-1
-         
-        self.horizontal_slider = QSlider(self.tab_3 ) 
+        xianshishezhilayout=QGridLayout( )    
+        self.tab_3.setLayout(xianshishezhilayout) 
+        self.horizontal_slider = QSlider(  ) 
         self.horizontal_slider.setMaximum(100)
         self.horizontal_slider.setMinimum(1)
         self.horizontal_slider.setOrientation(Qt.Horizontal)
@@ -56,7 +32,7 @@ def setTabThree(self) :
         self.horizontal_slider.valueChanged.connect(functools.partial(changeHorizontal,self))  
         self.horizontal_slider_label = QLabel( ) 
         self.horizontal_slider_label.setText("{}%".format(globalconfig['transparent'])) 
-        self.font_comboBox = QFontComboBox(self.tab_3) 
+        self.font_comboBox = QFontComboBox( ) 
         self.font_comboBox.activated[str].connect(lambda x:globalconfig.__setitem__('fonttype',x))  
         self.comboBox_font = QFont(globalconfig['fonttype'])
         self.font_comboBox.setCurrentFont(self.comboBox_font)  
@@ -90,9 +66,9 @@ def setTabThree(self) :
                 [''],
                 ['']
         ]
-        automakegrid(self.xianshishezhilayout,buttongrid)
+        self.automakegrid(xianshishezhilayout,buttongrid)
                     
-
+         
         self.fontbigsmallsignal.connect(functools.partial(fontbigsmallfunction,self))
   
          

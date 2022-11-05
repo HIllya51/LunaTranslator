@@ -514,3 +514,63 @@
 2022-11-06 01:16:21.544|info|App.cpp:_RegisterWndClasses|已注册 DDF 窗口类
 2022-11-06 01:16:21.544|info|App.cpp:Initialize|App 初始化成功
 2022-11-06 01:16:21.545|info|Utils.cpp:Initialize|Utils::Hasher 初始化成功
+2022-11-06 01:18:30.024|info|App.cpp:Initialize|正在初始化 App
+2022-11-06 01:18:30.025|info|App.cpp:_RegisterWndClasses|已注册主窗口类
+2022-11-06 01:18:30.025|info|App.cpp:_RegisterWndClasses|已注册 DDF 窗口类
+2022-11-06 01:18:30.025|info|App.cpp:Initialize|App 初始化成功
+2022-11-06 01:18:30.025|info|Utils.cpp:Initialize|Utils::Hasher 初始化成功
+2022-11-06 01:23:41.881|info|App.cpp:Initialize|正在初始化 App
+2022-11-06 01:23:41.881|info|App.cpp:_RegisterWndClasses|已注册主窗口类
+2022-11-06 01:23:41.882|info|App.cpp:_RegisterWndClasses|已注册 DDF 窗口类
+2022-11-06 01:23:41.882|info|App.cpp:Initialize|App 初始化成功
+2022-11-06 01:23:41.882|info|Utils.cpp:Initialize|Utils::Hasher 初始化成功
+2022-11-06 01:28:07.152|info|App.cpp:Initialize|正在初始化 App
+2022-11-06 01:28:07.152|info|App.cpp:_RegisterWndClasses|已注册主窗口类
+2022-11-06 01:28:07.152|info|App.cpp:_RegisterWndClasses|已注册 DDF 窗口类
+2022-11-06 01:28:07.152|info|App.cpp:Initialize|App 初始化成功
+2022-11-06 01:28:07.152|info|Utils.cpp:Initialize|Utils::Hasher 初始化成功
+2022-11-06 01:28:40.526|info|App.cpp:Initialize|正在初始化 App
+2022-11-06 01:28:40.526|info|App.cpp:_RegisterWndClasses|已注册主窗口类
+2022-11-06 01:28:40.526|info|App.cpp:_RegisterWndClasses|已注册 DDF 窗口类
+2022-11-06 01:28:40.526|info|App.cpp:Initialize|App 初始化成功
+2022-11-06 01:28:40.526|info|Utils.cpp:Initialize|Utils::Hasher 初始化成功
+2022-11-06 01:42:22.966|info|App.cpp:Initialize|正在初始化 App
+2022-11-06 01:42:22.966|info|App.cpp:_RegisterWndClasses|已注册主窗口类
+2022-11-06 01:42:22.966|info|App.cpp:_RegisterWndClasses|已注册 DDF 窗口类
+2022-11-06 01:42:22.966|info|App.cpp:Initialize|App 初始化成功
+2022-11-06 01:42:22.966|info|Utils.cpp:Initialize|Utils::Hasher 初始化成功
+2022-11-06 01:43:01.410|info|App.cpp:Initialize|正在初始化 App
+2022-11-06 01:43:01.410|info|App.cpp:_RegisterWndClasses|已注册主窗口类
+2022-11-06 01:43:01.410|info|App.cpp:_RegisterWndClasses|已注册 DDF 窗口类
+2022-11-06 01:43:01.410|info|App.cpp:Initialize|App 初始化成功
+2022-11-06 01:43:01.411|info|Utils.cpp:Initialize|Utils::Hasher 初始化成功
+2022-11-06 01:43:39.199|info|App.cpp:Initialize|正在初始化 App
+2022-11-06 01:43:39.199|info|App.cpp:_RegisterWndClasses|已注册主窗口类
+2022-11-06 01:43:39.199|info|App.cpp:_RegisterWndClasses|已注册 DDF 窗口类
+2022-11-06 01:43:39.199|info|App.cpp:Initialize|App 初始化成功
+2022-11-06 01:43:39.199|info|Utils.cpp:Initialize|Utils::Hasher 初始化成功
+2022-11-06 01:46:48.418|info|App.cpp:Initialize|正在初始化 App
+2022-11-06 01:46:48.418|info|App.cpp:_RegisterWndClasses|已注册主窗口类
+2022-11-06 01:46:48.418|info|App.cpp:_RegisterWndClasses|已注册 DDF 窗口类
+2022-11-06 01:46:48.418|info|App.cpp:Initialize|App 初始化成功
+2022-11-06 01:46:48.418|info|Utils.cpp:Initialize|Utils::Hasher 初始化成功
+2022-11-06 01:47:27.250|info|App.cpp:Initialize|正在初始化 App
+2022-11-06 01:47:27.250|info|App.cpp:_RegisterWndClasses|已注册主窗口类
+2022-11-06 01:47:27.250|info|App.cpp:_RegisterWndClasses|已注册 DDF 窗口类
+2022-11-06 01:47:27.250|info|App.cpp:Initialize|App 初始化成功
+2022-11-06 01:47:27.250|info|Utils.cpp:Initialize|Utils::Hasher 初始化成功
+2022-11-06 01:57:01.851|info|App.cpp:Initialize|正在初始化 App
+2022-11-06 01:57:01.851|info|App.cpp:_RegisterWndClasses|已注册主窗口类
+2022-11-06 01:57:01.851|info|App.cpp:_RegisterWndClasses|已注册 DDF 窗口类
+2022-11-06 01:57:01.851|info|App.cpp:Initialize|App 初始化成功
+2022-11-06 01:57:01.852|info|Utils.cpp:Initialize|Utils::Hasher 初始化成功
+2022-11-06 01:57:38.708|info|App.cpp:Initialize|正在初始化 App
+2022-11-06 01:57:38.708|info|App.cpp:_RegisterWndClasses|已注册主窗口类
+2022-11-06 01:57:38.708|info|App.cpp:_RegisterWndClasses|已注册 DDF 窗口类
+2022-11-06 01:57:38.708|info|App.cpp:Initialize|App 初始化成功
+2022-11-06 01:57:38.708|info|Utils.cpp:Initialize|Utils::Hasher 初始化成功
+2022-11-06 01:57:56.271|info|App.cpp:Initialize|正在初始化 App
+2022-11-06 01:57:56.271|info|App.cpp:_RegisterWndClasses|已注册主窗口类
+2022-11-06 01:57:56.271|info|App.cpp:_RegisterWndClasses|已注册 DDF 窗口类
+2022-11-06 01:57:56.271|info|App.cpp:Initialize|App 初始化成功
+2022-11-06 01:57:56.271|info|Utils.cpp:Initialize|Utils::Hasher 初始化成功
