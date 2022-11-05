@@ -257,10 +257,10 @@ def setTabThree(self) :
          
         s =gui.switchbutton.MySwitch(self.tab_3, sign=globalconfig['usemagpie'])
         self.customSetGeometry(s ,230, 440, 20,20)
-        def _usefullscreenbutton(x):
+        def _usemagpiebutton(x):
                 globalconfig.__setitem__('usemagpie',x)
                 self.object.translation_ui.showhidetoolbuttons()
-        s .clicked.connect(lambda x:_usefullscreenbutton(x))  
+        s .clicked.connect(lambda x:_usemagpiebutton(x))  
 
         label = QLabel(self.tab_3)
         self.customSetGeometry(label, 20, 470, 200, 20)

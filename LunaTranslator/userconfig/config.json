@@ -1,7 +1,7 @@
 {
     "position": [
-        249,
-        544
+        258,
+        456
     ],
     "fixedheight": false,
     "width": 1435,
@@ -493,9 +493,9 @@
     "focusfollow": false,
     "usemagpie": true,
     "usefullscreenbutton": true,
-    "useresizebutton": false,
+    "useresizebutton": true,
     "magpiemethod": 6,
-    "magpiescalemethod": 5,
+    "magpiescalemethod": 1,
     "magpiecapturemethod": 2,
     "ocrautobindwindow": true
 }
