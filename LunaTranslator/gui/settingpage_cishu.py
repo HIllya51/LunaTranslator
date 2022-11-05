@@ -32,7 +32,7 @@ def setTabcishu(self) :
         def __getpath3(self):
                 getsomepath(self,'edict',globalconfig['edict']['path'],'edict',lambda x:globalconfig['edict'].__setitem__('path',x),False)
                 self.object.startxiaoxueguan(2)
-        grids=[
+        grids=[ 
                 [(QLabel('使用MeCab辞书分词'),4),(self.getsimpleswitch(globalconfig['mecab'],'use',callback= lambda x: __changemecabstate(self,x)),1),self.getcolorbutton(globalconfig,'',callback=lambda  : __getmecabpath(self),icon='fa.gear',constcolor="#FF69B4"),'','','',''],
                 [(QLabel('显示不同颜色词性(需要Mecab)'),4),(self.getsimpleswitch(globalconfig,'showcixing'),1),self.getcolorbutton(globalconfig,'',callback=lambda  : multicolorset(self),icon='fa.gear',constcolor="#FF69B4")],
                 [(QLabel('开启快捷查词(点击原文可查词)'),4),(self.getsimpleswitch(globalconfig,'usesearchword'),1),self.getcolorbutton(globalconfig,'',callback=self.object.translation_ui.searchwordW.show,icon='fa.search',constcolor="#FF69B4")],

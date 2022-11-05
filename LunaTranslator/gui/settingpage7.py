@@ -65,8 +65,7 @@ def setTab7(self) :
                 self.getsimpleswitch(globalconfig['gongxiangcishu'],'use',callback =lambda x:__(x)),
                 self.getcolorbutton(globalconfig,'',callback=lambda x:   __2(self),icon='fa.gear',constcolor="#FF69B4")],
             [''],[''],[''],[''],[''],
-        ]
-        #initpostswitchs_auto(self)
+        ] 
         self.automakegrid(lay,grids)
  
 def noundictconfigdialog1(object,configdict,title,label=[  '日文','翻译'],fname='./userconfig/noundictconfig.json'):
@@ -219,30 +218,7 @@ def noundictconfigdialog(object,configdict,title,label=['游戏ID MD5' ,'日文'
     
     dialog.resize(QSize(600,400))
     dialog.show()
- 
-def initpostswitchs(self,name,namepos,switchpos,colorpos,settingpos):
-
-        label = QLabel(self.tab_7)
-        self.customSetGeometry(label, *namepos)
-        label.setText(postprocessconfig[name]['name']+":")
-        p=gui.switchbutton.MySwitch(self.tab_7, sign=postprocessconfig[name]['use'] )
-        
-        self.customSetGeometry(p, *switchpos)
-        def fanyiselect( who,checked):
-            if checked : 
-                postprocessconfig[who]['use']=True  
-            else:
-                postprocessconfig[who]['use']=False 
-        p.clicked.connect(functools.partial( fanyiselect,name)) 
-        
-        if 'args' in postprocessconfig[name]:
-            s1 = QPushButton( "", self.tab_7)
-            self.customSetIconSize(s1, 20, 20)
-            self.customSetGeometry(s1, *settingpos)
-            s1.setStyleSheet("background: transparent;")   
-            s1.setIcon(qtawesome.icon("fa.gear", color="#FF69B4"  ))
-            s1.clicked.connect(lambda x:postconfigdialog(self,postprocessconfig[name]['args'],postprocessconfig[name]['name']+'设置'))
-
+  
 def postconfigdialog(object,configdict,title):
     dialog = QDialog(object)  # 自定义一个dialog
     dialog.setWindowTitle(title)
