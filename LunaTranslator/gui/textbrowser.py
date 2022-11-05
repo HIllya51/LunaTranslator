@@ -163,16 +163,14 @@ class Textbrowser():
         #     # adding shadow to the label
             
         #     self.shadowlabel.setGraphicsEffect(shadow)
-    def showyinyingtext(self,color,text):
-        
-        self.textbrowser.append(text) 
+    def showyinyingtext(self,color,text): 
          
         #print(x)
         start=self.yinyingpos
         pos=start
         labeli=0 
         cursor=self.textbrowser.textCursor()
-        cursor.setPosition(start)
+        cursor.setPosition(start )
         self.textbrowser.setTextCursor(cursor)
         cursor.movePosition(QTextCursor.StartOfBlock)
         self.textbrowser.setTextCursor(cursor)
@@ -187,7 +185,7 @@ class Textbrowser():
             
             
             cursor=self.textbrowser.textCursor() 
-            cursor.setPosition(pos+labeli)
+            cursor.setPosition(pos+labeli )
             self.textbrowser.setTextCursor(cursor)
             
             

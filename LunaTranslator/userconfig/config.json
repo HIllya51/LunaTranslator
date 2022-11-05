@@ -1,7 +1,7 @@
 {
     "position": [
-        -222,
-        396
+        228,
+        648
     ],
     "fixedheight": false,
     "width": 1435,
@@ -53,9 +53,9 @@
         "volume": 100.0
     },
     "sourcestatus": {
-        "copy": false,
+        "copy": true,
         "ocr": false,
-        "textractor": true,
+        "textractor": false,
         "textractor_pipe": false
     },
     "ocr": {
@@ -449,8 +449,8 @@
     "showShadow": true,
     "shadowcolor": "#0509ff",
     "showbold": true,
-    "shadowforce": 1,
-    "showcixing": false,
+    "shadowforce": 6,
+    "showcixing": true,
     "showcixing_touming": 30,
     "cixingcolor": {
         "形容詞": "aliceblue",

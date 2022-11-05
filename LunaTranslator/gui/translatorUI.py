@@ -122,10 +122,15 @@ class QUnFrameWindow(QWidget):
             self.translate_text.simplecharformat(color)
         elif globalconfig['zitiyangshi'] ==3: 
             self.translate_text.textbrowser.show() 
-            self.translate_text.showyinyingtext(color,res[1])
+            if type_==1: 
+                self.translate_text.append(res[1]) 
+            else:  
+                self.translate_text.append(res[1])  
+                #self.translate_text.addtag(res[0]) 
+            self.translate_text.showyinyingtext(color,res[1]  )
             self.translate_text.textbrowser.hide()
             if (globalconfig['usesearchword'] or globalconfig['show_fenci'] or globalconfig['showcixing']) and res[0]: 
-                self.translate_text.addsearchwordmask(res[0],res[1],self.showsearchword,0)
+                self.translate_text.addsearchwordmask(res[0],res[1],self.showsearchword,0  )
             return 
         self.translate_text.textbrowser.show()
         
@@ -136,7 +141,7 @@ class QUnFrameWindow(QWidget):
             self.translate_text.append(res[1])  
             self.translate_text.addtag(res[0]) 
         if (globalconfig['usesearchword'] or globalconfig['show_fenci'] or globalconfig['showcixing']) and res[0]:
-            self.translate_text.addsearchwordmask(res[0],res[1],self.showsearchword) 
+            self.translate_text.addsearchwordmask(res[0],res[1],self.showsearchword,0 if type_==1 else 2) 
     def showsearchword(self,word):   
         self.searchwordW.showNormal()
         self.searchwordW.getnewsentence(word) 
@@ -336,9 +341,9 @@ class QUnFrameWindow(QWidget):
                     if globalconfig['usemagpie']: 
                         
                         if self.callmagpie  : 
-                            self.isletgamefullscreened=not self.isletgamefullscreened
-                            self.letgamefullscreenbutton.setIcon(qtawesome.icon("fa.window-maximize" ,color="#FF69B4" if self.isletgamefullscreened else "white"))
-                            if self.isletgamefullscreened:
+                            # self.isletgamefullscreened=not self.isletgamefullscreened
+                            # self.letgamefullscreenbutton.setIcon(qtawesome.icon("fa.window-maximize" ,color="#FF69B4" if self.isletgamefullscreened else "white"))
+                            # if self.isletgamefullscreened:
                                
                                 win32gui.SetForegroundWindow(hwnd )   
                                 self.multiprocesshwnd.put(hwnd)  
@@ -352,8 +357,7 @@ class QUnFrameWindow(QWidget):
                                 if self.showhidestate:
                                     threading.Thread(target=__makerangetop).start()
                                 
-                            else:
-                                pass
+                             
                     else:
 
                         self.isletgamefullscreened=not self.isletgamefullscreened
