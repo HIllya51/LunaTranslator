@@ -1,7 +1,7 @@
 {
     "position": [
-        338,
-        829
+        351,
+        607
     ],
     "fixedheight": true,
     "width": 1435,
@@ -36,12 +36,12 @@
             "voice": "TTS_MS_ZH-CN_HUIHUI_11.0"
         },
         "voiceroid2": {
-            "use": true,
+            "use": false,
             "voice": "yukari_emo_44",
             "path": "C:/dataH/Yukari2"
         },
         "voicevox": {
-            "use": false,
+            "use": true,
             "voice": "ずんだもん",
             "path": "C:/dataH/VOICEVOX"
         }

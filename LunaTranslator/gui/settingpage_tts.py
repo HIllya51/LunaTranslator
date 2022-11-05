@@ -1,6 +1,6 @@
 import functools 
 
-from PyQt5.QtWidgets import  QWidget,QLabel, QComboBox,QDoubleSpinBox ,QPushButton
+from PyQt5.QtWidgets import  QWidget,QLabel, QComboBox,QDoubleSpinBox ,QPushButton,QGridLayout
 from gui.inputdialog import getsomepath
 from utils.config import globalconfig 
 import qtawesome
@@ -8,111 +8,48 @@ import gui.switchbutton
 import gui.attachprocessdialog  
 import gui.selecthook  
 def setTab5(self) :
-     
-        tab = QWidget()
-        self.tab_widget.addTab(tab, "语音设置")  
-
-        label = QLabel(tab)
-        self.customSetGeometry(label, 20, 20, 120, 20)
-        label.setText("WindowsTTS") 
-        self.WindowsTTSswitch =gui.switchbutton.MySwitch(tab, sign=globalconfig['reader']['windowstts']['use'] )
-        self.customSetGeometry(self.WindowsTTSswitch, 150, 20, 20,20)
-        self.WindowsTTSswitch.clicked.connect(functools.partial(readerchange,self,'windowstts'))  
+        t = QWidget()
+        self.tab_widget.addTab(t, "语音设置")  
+        lay=QGridLayout( )    
+        t.setLayout(lay)  
         
-        label = QLabel(tab)
-        self.customSetGeometry(label, 20, 50, 120, 20)
-        label.setText("VoiceRoid2") 
-        self.VoiceRoid2TTSswitch =gui.switchbutton.MySwitch(tab, sign=globalconfig['reader']['voiceroid2']['use'] )
-        self.customSetGeometry(self.VoiceRoid2TTSswitch, 150, 50, 20,20)
-        self.VoiceRoid2TTSswitch.clicked.connect(functools.partial(readerchange,self,'voiceroid2'))  
-        s1 = QPushButton( "", tab)
-        self.customSetIconSize(s1, 20, 20)
-        self.customSetGeometry(s1, 180, 50, 20,20)
-        s1.setStyleSheet("background: transparent;")   
-        s1.setIcon(qtawesome.icon("fa.gear", color="#FF69B4"  ))
         def __2(self):
             getsomepath(self,'voiceroid2',globalconfig['reader']['voiceroid2']['path'],'voiceroid2:',lambda x:globalconfig['reader']['voiceroid2'].__setitem__('path',x),True)
             self.object.startreader()
-        s1.clicked.connect(lambda: __2(self))
-
-        label = QLabel(tab)
-        self.customSetGeometry(label, 220, 50, 120, 20)
-        label.setText("VOICEVOX") 
-        self.voicevoxswitch =gui.switchbutton.MySwitch(tab, sign=globalconfig['reader']['voicevox']['use'] )
-        self.customSetGeometry(self.voicevoxswitch, 350, 50, 20,20)
-        self.voicevoxswitch.clicked.connect(functools.partial(readerchange,self,'voicevox'))  
-        s1 = QPushButton( "", tab)
-        self.customSetIconSize(s1, 20, 20)
-        self.customSetGeometry(s1, 380, 50, 20,20)
-        s1.setStyleSheet("background: transparent;")   
-        s1.setIcon(qtawesome.icon("fa.gear", color="#FF69B4"  ))
+         
         def __3(self):
             getsomepath(self,'voicevox',globalconfig['reader']['voicevox']['path'],'voicevox:',lambda x:globalconfig['reader']['voicevox'].__setitem__('path',x),True)
             self.object.startreader()
-        s1.clicked.connect(lambda: __3(self))
-
-        label = QLabel(tab)
-        self.customSetGeometry(label, 220, 20, 120, 20)
-        label.setText("AzureTTS")
-        self.AzureTTSswitch =gui.switchbutton.MySwitch(tab, sign=globalconfig['reader']['azuretts']['use'] )
-        self.customSetGeometry(self.AzureTTSswitch,350, 20, 20,20)
-        self.AzureTTSswitch.clicked.connect(functools.partial(readerchange,self,'azuretts'))  
- 
-        label = QLabel(tab)
-        self.customSetGeometry(label, 400, 20, 120, 20)
-        label.setText("火山TTS")
- 
-        self.huoshanTTSswitch =gui.switchbutton.MySwitch(tab, sign= globalconfig['reader']['huoshantts']['use'] )
-        self.customSetGeometry(self.huoshanTTSswitch, 550, 20, 20,20)
-        self.huoshanTTSswitch.clicked.connect(functools.partial(readerchange,self,'huoshantts')) 
-
+        self.voicecombo=QComboBox( ) 
+        self.voicelistsignal.connect(lambda x: showvoicelist(self,x))
+        self.voicecombo.currentTextChanged.connect(lambda x: changevoice(self,x))
+        grids=[
+                [   (QLabel('WindowsTTS'),3),(self.getsimpleswitch(globalconfig['reader']['windowstts'],'use',name='WindowsTTSswitch',callback=functools.partial(readerchange,self,'windowstts')),1),'','',
+                    (QLabel('火山TTS'),3),(self.getsimpleswitch(globalconfig['reader']['huoshantts'],'use',name='huoshanTTSswitch',callback=functools.partial(readerchange,self,'huoshantts')),1),'','',
+                    (QLabel('AzureTTS'),3),(self.getsimpleswitch(globalconfig['reader']['azuretts'],'use',name='AzureTTSswitch',callback=functools.partial(readerchange,self,'azuretts')),1),'',''],
+                [   (QLabel('VoiceRoid2'),3),(self.getsimpleswitch(globalconfig['reader']['voiceroid2'],'use',name='VoiceRoid2TTSswitch',callback=functools.partial(readerchange,self,'voiceroid2')),1),self.getcolorbutton(globalconfig,'',callback=lambda: __2(self),icon='fa.gear',constcolor="#FF69B4"),'',
+                   (QLabel('VOICEVOX'),3),(self.getsimpleswitch(globalconfig['reader']['voicevox'],'use',name='voicevoxswitch',callback=functools.partial(readerchange,self,'voicevox')),1),self.getcolorbutton(globalconfig,'',callback=lambda: __3(self),icon='fa.gear',constcolor="#FF69B4"),],
+                [''],
+                [(QLabel("选择声音"),3),(self.voicecombo,6)],
+                [(QLabel('语速:(-10~10)'),3),(self.getspinbox(-10,10,globalconfig['ttscommon'],'rate'  ),2)],
+                [(QLabel('音量:(0~100)'),3),(self.getspinbox(0,100,globalconfig['ttscommon'],'volume' ),2)],
+                [ (QLabel('自动朗读'),3),(self.getsimpleswitch(globalconfig,'autoread' ),1)],
+                [''],
+                [''],
+                [''],
+                [''],
+        ] 
+   
+        self.automakegrid(lay,grids)
+  
+         
         self.readerwitchs={'huoshantts':self.huoshanTTSswitch,
                             'windowstts':self.WindowsTTSswitch,
                             'azuretts':self.AzureTTSswitch,
                             'voiceroid2':self.VoiceRoid2TTSswitch,
                             'voicevox':self.voicevoxswitch}
-
-
-        label = QLabel(tab)
-        self.customSetGeometry(label, 20, 115, 160, 20)
-        label.setText("选择声音") 
-        self.voicecombo=QComboBox(tab)
-        
-        self.customSetGeometry(self.voicecombo, 20, 115, 400, 20) 
-        self.voicelistsignal.connect(lambda x: showvoicelist(self,x))
-        self.voicecombo.currentTextChanged.connect(lambda x: changevoice(self,x))
-
-        label = QLabel(tab)
-        self.customSetGeometry(label, 20, 160, 145, 16)
-        label.setText("语速:(-10~10)") 
-         
-        self.voice_spinBox = QDoubleSpinBox(tab)
-        self.customSetGeometry(self.voice_spinBox, 120, 160, 50, 25)
-        self.voice_spinBox.setRange(-10,10) 
-        self.voice_spinBox.setValue(globalconfig['ttscommon']['rate']) 
-        self.voice_spinBox.setSingleStep(1)
-        self.voice_spinBox.setDecimals(0)
-        self.voice_spinBox.valueChanged.connect(lambda x:globalconfig['ttscommon'].__setitem__('rate',x))
-
-        
-        label = QLabel(tab)
-        self.customSetGeometry(label, 20, 200, 145, 16)
-        label.setText("音量:(0~100)") 
-         
-        self.volume_spinBox = QDoubleSpinBox(tab)
-        self.customSetGeometry(self.volume_spinBox, 120, 200, 50, 25)
-        self.volume_spinBox.setRange(0,100) 
-        self.volume_spinBox.setValue(globalconfig['ttscommon']['volume']) 
-        self.volume_spinBox.setSingleStep(1)
-        self.volume_spinBox.setDecimals(0)
-        self.volume_spinBox.valueChanged.connect(lambda x:globalconfig['ttscommon'].__setitem__('volume',x))
-
-        label = QLabel(tab)
-        self.customSetGeometry(label, 20, 250, 160, 20)
-        label.setText("自动朗读") 
-        self.autoreadswitch =gui.switchbutton.MySwitch(tab, sign=globalconfig['autoread'])
-        self.customSetGeometry(self.autoreadswitch, 100, 250, 20,20)
-        self.autoreadswitch.clicked.connect(lambda x:globalconfig.__setitem__('autoread',x)) 
+   
+ 
 def changevoice(self,text):
     globalconfig['reader'][self.object.reader_usevoice]['voice']=text
 def showvoicelist(self,vl):
