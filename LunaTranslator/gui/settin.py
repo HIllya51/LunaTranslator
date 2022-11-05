@@ -110,7 +110,7 @@ class Settin(QMainWindow) :
         self.window_height = int(550*self.rate)
         
         self.savelastrect=None
-        #self.setFixedSize(self.window_width, self.window_height) 
+        self.setFixedSize(self.window_width, self.window_height) 
         
         #self.setWindowFlags(Qt.WindowStaysOnTopHint |Qt.WindowCloseButtonHint)
         #self.setWindowFlags( Qt.WindowCloseButtonHint)
