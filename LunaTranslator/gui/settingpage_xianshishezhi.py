@@ -261,6 +261,25 @@ def setTabThree(self) :
                 globalconfig.__setitem__('usemagpie',x)
                 self.object.translation_ui.showhidetoolbuttons()
         s .clicked.connect(lambda x:_usefullscreenbutton(x))  
+
+        label = QLabel(self.tab_3)
+        self.customSetGeometry(label, 20, 470, 200, 20)
+        label.setText("Magpie算法")
+        
+        s=QComboBox(self.tab_3) 
+        self.customSetGeometry(s ,150, 470, 200,25)
+        s.addItems(['Lanczos','FSR','FSRCNNX','ACNet','Anime4K','CRT-Geom','Integer Scale 2x','Integer Scale 3x'])
+        s.setCurrentIndex(globalconfig['magpiescalemethod'])
+        s.currentIndexChanged.connect(lambda x:globalconfig.__setitem__('magpiescalemethod',x))
+        label = QLabel(self.tab_3)
+        self.customSetGeometry(label, 20, 500, 200, 20)
+        label.setText("Magpie捕获模式")
+        
+        s=QComboBox(self.tab_3) 
+        self.customSetGeometry(s ,150, 500, 200,25)
+        s.addItems(['Graphics Capture','Desktop Duplication','GDI','DwmSharedSurface'])
+        s.setCurrentIndex(globalconfig['magpiecapturemethod'])
+        s.currentIndexChanged.connect(lambda x:globalconfig.__setitem__('magpiecapturemethod',x))
 def changeHorizontal(self) :
 
         globalconfig['transparent'] = self.horizontal_slider.value() 

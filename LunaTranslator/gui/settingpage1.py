@@ -68,6 +68,16 @@ def setTabOne(self) :
         self.outputtopasteboard =gui.switchbutton.MySwitch(self.tab_1, sign= globalconfig['outputtopasteboard'] )
         self.customSetGeometry(self.outputtopasteboard, 240, 150, 20,20)
         self.outputtopasteboard.clicked.connect(lambda x:globalconfig.__setitem__('outputtopasteboard',x)) 
+
+        
+
+        # label = QLabel(self.tab_1)
+        # self.customSetGeometry(label, 20, 180,220, 20)
+        # label.setText("OCR模式绑定前景窗口")
+ 
+        # b =gui.switchbutton.MySwitch(self.tab_1, sign= globalconfig['ocrautobindwindow'] )
+        # self.customSetGeometry(b, 240, 180, 20,20)
+        # b.clicked.connect(lambda x:globalconfig.__setitem__('ocrautobindwindow',x)) 
          
         self.selectbutton = QPushButton( "", self.tab_1)
         self.customSetIconSize(self.selectbutton, 20, 20)

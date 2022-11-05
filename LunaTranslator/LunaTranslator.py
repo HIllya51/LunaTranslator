@@ -382,7 +382,7 @@ class MAINUI() :
                 #win32gui.BringWindowToTop(int(self.translation_ui.winId())) 
             except:
                 print_exc() 
-            time.sleep(0.5)
+            time.sleep(0.3)
 
 
     def onwindowloadautohook(self):

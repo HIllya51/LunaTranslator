@@ -4,8 +4,11 @@ defaultglobalconfig = {'position': [432, 613], 'fixedheight': False, 'width': 76
  'show_fenci':False,
  'premtsimiuse':False,
  'premtsimi':5,
+ 'magpiescalemethod':0,
+ 'magpiecapturemethod':0,
  'useproxy':False,
- 'usemagpie':True,
+ 'usemagpie':True, 
+ 'ocrautobindwindow':True,
  'usefullscreenbutton':True,
  'useresizebutton':False,
  'proxy':'',
@@ -174,6 +177,18 @@ defaultglobalconfig = {'position': [432, 613], 'fixedheight': False, 'width': 76
             'key1':-1,
             'key2':-1
         },
+        '_20':{
+            'use':False,
+            'name':'全屏/恢复游戏窗口',
+            'key1':-1,
+            'key2':-1
+        },
+        '_21':{
+            'use':False,
+            'name':'前景窗口截屏',
+            'key1':-1,
+            'key2':-1
+        }
     }
  },
  'reader': {

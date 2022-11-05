@@ -7,7 +7,7 @@ t1=time.time()
 import os
 import subprocess
 from traceback import print_exc
-from PyQt5.QtWidgets import QWidget, QLabel, QPushButton, QVBoxLayout
+from PyQt5.QtWidgets import QWidget, QLabel, QPushButton, QVBoxLayout,QApplication
 from PyQt5.QtCore import Qt, pyqtSignal  
 import qtawesome 
 from PyQt5.QtCore import pyqtSignal,Qt,QRect,QSize  
@@ -58,7 +58,9 @@ class QUnFrameWindow(QWidget):
     settinghookthread_signal=pyqtSignal()
     clickRange_signal=pyqtSignal()
     showhide_signal=pyqtSignal()
+    grabwindowsignal=pyqtSignal()
     bindcropwindow_signal=pyqtSignal()
+    fullsgame_signal=pyqtSignal()
     quitf_signal=pyqtSignal()
     def keeptopfuntion(self):
         win32gui.BringWindowToTop(int(self.winId()))
@@ -218,7 +220,9 @@ class QUnFrameWindow(QWidget):
         self.clickRange_signal.connect(self.clickRange_funtion)
         self.showhide_signal.connect(self.showhide_function)
         self.bindcropwindow_signal.connect(self.bindcropwindow_function)
+        self.grabwindowsignal.connect(self.grabwindow)
         self.quitf_signal.connect(self.quitf_funtion)
+        self.fullsgame_signal.connect(self._fullsgame)
         # self.showtask=Queue()
         # self.showtaskthread=threading.Thread(target=self.showtaskthreadfun).start()
         self.clear_text_sign.connect(self.clearText)
@@ -322,68 +326,11 @@ class QUnFrameWindow(QWidget):
 
         def __initmulti(self):
             self.multiprocesshwnd=multiprocessing.Queue()
-            self.callmagpie=mutiproc(callmagpie,(self.multiprocesshwnd,r'./files/Magpie_v0.9.1' ))
+            self.callmagpie=mutiproc(callmagpie,(r'./files/Magpie_v0.9.1' ,self.multiprocesshwnd))
             self.callmagpie.start() 
         threading.Thread(target=__initmulti,args=(self,)).start() 
-        def _fullsgame(self):
-            
-            if ('moveresizegame'   in dir(self)) : 
-                if self.moveresizegame :
-                    self.moveresizegame.close()
-            try: 
-                if (self.object.settin_ui.hookpid and globalconfig['sourcestatus']['textractor'])or (globalconfig['sourcestatus']['ocr'] and self.object.textsource.hwnd):
-                
-                    if globalconfig['sourcestatus']['ocr']:
-                        hwnd= self.object.textsource.hwnd 
-                    elif globalconfig['sourcestatus']['textractor']:
-                        hwnd=getwindowhwnd(self.object.settin_ui.hookpid)
-
-                    if globalconfig['usemagpie']: 
-                        
-                        if self.callmagpie  : 
-                            # self.isletgamefullscreened=not self.isletgamefullscreened
-                            # self.letgamefullscreenbutton.setIcon(qtawesome.icon("fa.window-maximize" ,color="#FF69B4" if self.isletgamefullscreened else "white"))
-                            # if self.isletgamefullscreened:
-                               
-                                win32gui.SetForegroundWindow(hwnd )   
-                                self.multiprocesshwnd.put(hwnd)  
-                                def __makerangetop():
-                                    for i in range(3):
-                                        time.sleep(0.3)
-                                        try:    
-                                            win32gui.SetWindowPos(int(self.object.range_ui.winId()), win32con.HWND_TOPMOST, 0, 0, 0, 0,win32con. SWP_NOSIZE | win32con.SWP_NOMOVE)  
-                                        except:
-                                            pass
-                                if self.showhidestate:
-                                    threading.Thread(target=__makerangetop).start()
-                                
-                             
-                    else:
-
-                        self.isletgamefullscreened=not self.isletgamefullscreened
-                        self.letgamefullscreenbutton.setIcon(qtawesome.icon("fa.window-maximize" ,color="#FF69B4" if self.isletgamefullscreened else "white"))
-                        if self.isletgamefullscreened:
-                            self.wpc=win32gui. GetWindowPlacement( hwnd )
-                            self.HWNDStyle = win32gui.GetWindowLong( hwnd, win32con.GWL_STYLE )
-                            self.HWNDStyleEx = win32gui.GetWindowLong( hwnd, win32con.GWL_EXSTYLE  )
-                            NewHWNDStyle=self.HWNDStyle
-                            NewHWNDStyle &= ~win32con.WS_BORDER;
-                            NewHWNDStyle &= ~win32con.WS_DLGFRAME;
-                            NewHWNDStyle &= ~win32con.WS_THICKFRAME;
-                            NewHWNDStyleEx=self.HWNDStyleEx
-                            NewHWNDStyleEx &= ~win32con.WS_EX_WINDOWEDGE;
-                            win32gui.SetWindowLong( hwnd, win32con.GWL_STYLE, NewHWNDStyle | win32con.WS_POPUP );
-                            win32gui.SetWindowLong( hwnd, win32con.GWL_EXSTYLE, NewHWNDStyleEx | win32con.WS_EX_TOPMOST )
-                            win32gui.ShowWindow(hwnd,win32con.SW_SHOWMAXIMIZED )
-                        else:
-                            win32gui.SetWindowLong( hwnd, win32con.GWL_STYLE, self.HWNDStyle );
-                            win32gui.SetWindowLong( hwnd, win32con.GWL_EXSTYLE, self.HWNDStyleEx );
-                            win32gui.ShowWindow( hwnd, win32con.SW_SHOWNORMAL );
-                            win32gui.SetWindowPlacement( hwnd, self.wpc );
-                    
-            except:
-                    print_exc()
-        self.takusanbuttons(qtawesome.icon("fa.window-maximize" ,color= 'white'),"MinMaxButton",lambda :_fullsgame(self),5,"全屏/恢复游戏窗口(需要绑定ocr窗口，或选择hook进程)" ,"letgamefullscreenbutton") 
+        
+        self.takusanbuttons(qtawesome.icon("fa.window-maximize" ,color= 'white'),"MinMaxButton",self._fullsgame,5,"全屏/恢复游戏窗口(需要绑定ocr窗口，或选择hook进程)" ,"letgamefullscreenbutton") 
         
         
         self.takusanbuttons(qtawesome.icon("fa.minus",color="white" ),"MinMaxButton",self.hide_and_disableautohide,-2,"最小化到托盘")
@@ -460,8 +407,80 @@ class QUnFrameWindow(QWidget):
             self.masklabel.hide()
         self.showhidestate=False
 
-    
+    def grabwindow(self): 
+        if os.path.exists('./capture')==False:
+            os.mkdir('./capture')
 
+        try:
+            if self.isletgamefullscreened:
+                hwnd=QApplication.desktop().winId() 
+                self.hide()
+                QApplication.primaryScreen().grabWindow(hwnd).save(f'./capture/{time.time()}.png')
+                self.show()
+            else:
+                hwnd=win32gui.GetForegroundWindow()  
+                QApplication.primaryScreen().grabWindow(hwnd).save(f'./capture/{time.time()}.png')
+        except:
+            pass
+
+    def _fullsgame(self):
+            
+            if ('moveresizegame'   in dir(self)) : 
+                if self.moveresizegame :
+                    self.moveresizegame.close()
+            try: 
+                if (self.object.settin_ui.hookpid and globalconfig['sourcestatus']['textractor'])or (globalconfig['sourcestatus']['ocr'] and self.object.textsource.hwnd):
+                
+                    if globalconfig['sourcestatus']['ocr']:
+                        hwnd= self.object.textsource.hwnd 
+                    elif globalconfig['sourcestatus']['textractor']:
+                        hwnd=getwindowhwnd(self.object.settin_ui.hookpid)
+
+                    if globalconfig['usemagpie']: 
+                        
+                        if self.callmagpie  : 
+                            # self.isletgamefullscreened=not self.isletgamefullscreened
+                            # self.letgamefullscreenbutton.setIcon(qtawesome.icon("fa.window-maximize" ,color="#FF69B4" if self.isletgamefullscreened else "white"))
+                            # if self.isletgamefullscreened:
+                               
+                                win32gui.SetForegroundWindow(hwnd )   
+                                self.multiprocesshwnd.put([hwnd,globalconfig['magpiescalemethod'],0,globalconfig['magpiecapturemethod']])  
+                                def __makerangetop():
+                                    for i in range(3):
+                                        time.sleep(0.3)
+                                        try:    
+                                            win32gui.SetWindowPos(int(self.object.range_ui.winId()), win32con.HWND_TOPMOST, 0, 0, 0, 0,win32con. SWP_NOSIZE | win32con.SWP_NOMOVE)  
+                                        except:
+                                            pass
+                                if self.showhidestate:
+                                    threading.Thread(target=__makerangetop).start()
+                                
+                                self.isletgamefullscreened=True
+                    else:
+
+                        self.isletgamefullscreened=not self.isletgamefullscreened
+                        self.letgamefullscreenbutton.setIcon(qtawesome.icon("fa.window-maximize" ,color="#FF69B4" if self.isletgamefullscreened else "white"))
+                        if self.isletgamefullscreened:
+                            self.wpc=win32gui. GetWindowPlacement( hwnd )
+                            self.HWNDStyle = win32gui.GetWindowLong( hwnd, win32con.GWL_STYLE )
+                            self.HWNDStyleEx = win32gui.GetWindowLong( hwnd, win32con.GWL_EXSTYLE  )
+                            NewHWNDStyle=self.HWNDStyle
+                            NewHWNDStyle &= ~win32con.WS_BORDER;
+                            NewHWNDStyle &= ~win32con.WS_DLGFRAME;
+                            NewHWNDStyle &= ~win32con.WS_THICKFRAME;
+                            NewHWNDStyleEx=self.HWNDStyleEx
+                            NewHWNDStyleEx &= ~win32con.WS_EX_WINDOWEDGE;
+                            win32gui.SetWindowLong( hwnd, win32con.GWL_STYLE, NewHWNDStyle | win32con.WS_POPUP );
+                            win32gui.SetWindowLong( hwnd, win32con.GWL_EXSTYLE, NewHWNDStyleEx | win32con.WS_EX_TOPMOST )
+                            win32gui.ShowWindow(hwnd,win32con.SW_SHOWMAXIMIZED )
+                        else:
+                            win32gui.SetWindowLong( hwnd, win32con.GWL_STYLE, self.HWNDStyle );
+                            win32gui.SetWindowLong( hwnd, win32con.GWL_EXSTYLE, self.HWNDStyleEx );
+                            win32gui.ShowWindow( hwnd, win32con.SW_SHOWNORMAL );
+                            win32gui.SetWindowPlacement( hwnd, self.wpc );
+                    
+            except:
+                    print_exc()
     def changemousetransparentstate(self):
          
         self.mousetransparent= not self.mousetransparent

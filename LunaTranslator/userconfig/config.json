@@ -1,11 +1,11 @@
 {
     "position": [
-        228,
-        648
+        249,
+        544
     ],
     "fixedheight": false,
     "width": 1435,
-    "autorun": true,
+    "autorun": false,
     "transparent": 37,
     "fontsize": 20.0,
     "fonttype": "微软雅黑",
@@ -53,14 +53,14 @@
         "volume": 100.0
     },
     "sourcestatus": {
-        "copy": true,
-        "ocr": false,
+        "copy": false,
+        "ocr": true,
         "textractor": false,
         "textractor_pipe": false
     },
     "ocr": {
         "local": {
-            "use": true,
+            "use": false,
             "name": "本地OCR"
         },
         "baiduocr": {
@@ -87,7 +87,7 @@
             "name": "youdao图片翻译"
         },
         "windowsocr": {
-            "use": false,
+            "use": true,
             "name": "WindowsOCR"
         }
     },
@@ -308,20 +308,20 @@
         "use": true,
         "all": {
             "_1": {
-                "use": false,
+                "use": true,
                 "name": "重新翻译",
                 "key": [],
                 "keys": [
                     "",
                     ""
                 ],
-                "key1": 0,
-                "key2": 0
+                "key1": 2,
+                "key2": 1
             },
             "_2": {
                 "use": false,
                 "name": "自动翻译",
-                "key1": 0,
+                "key1": 3,
                 "key2": 1
             },
             "_3": {
@@ -403,7 +403,7 @@
                 "key2": 4
             },
             "_16": {
-                "use": true,
+                "use": false,
                 "name": "显示/隐藏翻译窗口",
                 "key1": 1,
                 "key2": -1
@@ -415,34 +415,46 @@
                 "key2": 3
             },
             "_A": {
-                "use": true,
+                "use": false,
                 "name": "选择翻译源-剪贴板",
                 "key1": 0,
                 "key2": 0
             },
             "_B": {
-                "use": true,
+                "use": false,
                 "name": "选择翻译源-OCR",
                 "key1": 0,
                 "key2": 1
             },
             "_C": {
-                "use": true,
+                "use": false,
                 "name": "选择翻译源-TEXTRACTOR",
                 "key1": 0,
                 "key2": 2
             },
             "_18": {
-                "use": true,
+                "use": false,
                 "name": "字体增大（可长按）",
-                "key1": 0,
+                "key1": 3,
                 "key2": 3
             },
             "_19": {
-                "use": true,
+                "use": false,
                 "name": "字体缩小（可长按）",
                 "key1": 0,
                 "key2": 4
+            },
+            "_20": {
+                "use": false,
+                "name": "全屏/恢复游戏窗口",
+                "key1": 0,
+                "key2": 0
+            },
+            "_21": {
+                "use": true,
+                "name": "前景窗口截屏",
+                "key1": 2,
+                "key2": 0
             }
         }
     },
@@ -481,5 +493,9 @@
     "focusfollow": false,
     "usemagpie": true,
     "usefullscreenbutton": true,
-    "useresizebutton": false
+    "useresizebutton": false,
+    "magpiemethod": 6,
+    "magpiescalemethod": 5,
+    "magpiecapturemethod": 2,
+    "ocrautobindwindow": true
 }
