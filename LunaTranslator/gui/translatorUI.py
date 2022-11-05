@@ -477,8 +477,8 @@ class QUnFrameWindow(QWidget):
 
             
             selfpid=win32api.GetCurrentProcessId()
-            pid=win32process.GetWindowThreadProcessId(hwnd_) 
-             
+            pid=win32process.GetWindowThreadProcessId(hwnd_) [1]
+            print(pid,selfpid)
             if pid==selfpid  :
                 self.object.textsource.hwnd= None
                 self.bindcropwindowbutton.setIcon(qtawesome.icon("fa.windows" ,color="white" ))
