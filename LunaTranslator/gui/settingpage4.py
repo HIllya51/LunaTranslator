@@ -328,4 +328,4 @@ def minmaxmoveobservefunc(self):
                                 self.object.translation_ui.hookfollowsignal.emit(4,(0,0))
                         elif action==4 and  globalconfig['minifollow']:
                                 self.object.translation_ui.hookfollowsignal.emit(3,(0,0))
-              
+                         

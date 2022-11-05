@@ -378,7 +378,7 @@ class MAINUI() :
             #self.translation_ui.keeptopsignal.emit() 
             
             try: 
-                win32gui.SetWindowPos(int(self.translation_ui.winId()), win32con.HWND_TOPMOST, 0, 0, 0, 0,win32con. SWP_NOSIZE | win32con.SWP_NOMOVE)  
+                win32gui.SetWindowPos(int(self.translation_ui.winId()), win32con.HWND_TOPMOST, 0, 0, 0, 0,win32con. SWP_NOACTIVATE |win32con. SWP_NOSIZE | win32con.SWP_NOMOVE)  
                 #win32gui.BringWindowToTop(int(self.translation_ui.winId())) 
             except:
                 print_exc() 

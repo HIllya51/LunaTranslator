@@ -61,7 +61,7 @@ class QUnFrameWindow(QWidget):
     grabwindowsignal=pyqtSignal()
     bindcropwindow_signal=pyqtSignal()
     fullsgame_signal=pyqtSignal()
-    quitf_signal=pyqtSignal()
+    quitf_signal=pyqtSignal() 
     def keeptopfuntion(self):
         win32gui.BringWindowToTop(int(self.winId()))
     def hookfollowsignalsolve(self,code,other): 
@@ -195,7 +195,7 @@ class QUnFrameWindow(QWidget):
         #self.setFocusPolicy(Qt.StrongFocus)
 
         self.setAttribute(Qt.WA_TranslucentBackground) 
-
+        self.setAttribute(Qt.WA_ShowWithoutActivating,True)
         
         self.object = object
         self.rate = self.object.screen_scale_rate 
@@ -208,7 +208,7 @@ class QUnFrameWindow(QWidget):
         self.setMinimumWidth(300)
         self.hideshownotauto=True
         self.transhis=gui.transhist.transhist() 
-        self.keeptopsignal.connect(self.keeptopfuntion)
+        self.keeptopsignal.connect(self.keeptopfuntion) 
         self.hookfollowsignal.connect(self.hookfollowsignalsolve) 
         self.displayres.connect(self.showres)
         self.displayraw1.connect(self.showraw)  
@@ -229,7 +229,7 @@ class QUnFrameWindow(QWidget):
         self.object = object  
         # 界面缩放比例
         self.searchwordW=searchwordW(self)
-        
+        self.selfpid=win32api.GetCurrentProcessId()
         self.HWNDStyle=None
         self.HWNDStyleEx =None
         self.isletgamefullscreened=False
@@ -406,7 +406,7 @@ class QUnFrameWindow(QWidget):
         if globalconfig['selectable']:
             self.masklabel.hide()
         self.showhidestate=False
-
+    
     def grabwindow(self): 
         if os.path.exists('./capture')==False:
             os.mkdir('./capture')
@@ -439,23 +439,21 @@ class QUnFrameWindow(QWidget):
                     if globalconfig['usemagpie']: 
                         
                         if self.callmagpie  : 
-                            # self.isletgamefullscreened=not self.isletgamefullscreened
-                            # self.letgamefullscreenbutton.setIcon(qtawesome.icon("fa.window-maximize" ,color="#FF69B4" if self.isletgamefullscreened else "white"))
-                            # if self.isletgamefullscreened:
-                               
+                            self.isletgamefullscreened=not self.isletgamefullscreened
+                            self.letgamefullscreenbutton.setIcon(qtawesome.icon("fa.window-maximize" ,color="#FF69B4" if self.isletgamefullscreened else "white"))
+                            if self.isletgamefullscreened:
+                                self.savefullscreentime=time.time()
                                 win32gui.SetForegroundWindow(hwnd )   
                                 self.multiprocesshwnd.put([hwnd,globalconfig['magpiescalemethod'],0,globalconfig['magpiecapturemethod']])  
                                 def __makerangetop():
                                     for i in range(3):
                                         time.sleep(0.3)
                                         try:    
-                                            win32gui.SetWindowPos(int(self.object.range_ui.winId()), win32con.HWND_TOPMOST, 0, 0, 0, 0,win32con. SWP_NOSIZE | win32con.SWP_NOMOVE)  
+                                            win32gui.SetWindowPos(int(self.object.range_ui.winId()), win32con.HWND_TOPMOST, 0, 0, 0, 0,win32con. SWP_NOACTIVATE | win32con. SWP_NOSIZE | win32con.SWP_NOMOVE)  
                                         except:
                                             pass
                                 if self.showhidestate:
-                                    threading.Thread(target=__makerangetop).start()
-                                
-                                self.isletgamefullscreened=True
+                                    threading.Thread(target=__makerangetop).start() 
                     else:
 
                         self.isletgamefullscreened=not self.isletgamefullscreened
@@ -529,10 +527,10 @@ class QUnFrameWindow(QWidget):
             hwnd_=win32gui.WindowFromPoint(p)
 
             
-            selfpid=win32api.GetCurrentProcessId()
+            
             pid=win32process.GetWindowThreadProcessId(hwnd_) [1]
             #print(pid,selfpid)
-            if pid==selfpid  :
+            if pid==self.selfpid  :
                 self.object.textsource.hwnd= None
                 self.bindcropwindowbutton.setIcon(qtawesome.icon("fa.windows" ,color="white" ))
             #for pid in pids:

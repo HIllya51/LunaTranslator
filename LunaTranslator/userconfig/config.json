@@ -1,11 +1,11 @@
 {
     "position": [
-        258,
-        456
+        318,
+        598
     ],
     "fixedheight": false,
     "width": 1435,
-    "autorun": false,
+    "autorun": true,
     "transparent": 37,
     "fontsize": 20.0,
     "fonttype": "微软雅黑",
@@ -54,8 +54,8 @@
     },
     "sourcestatus": {
         "copy": false,
-        "ocr": true,
-        "textractor": false,
+        "ocr": false,
+        "textractor": true,
         "textractor_pipe": false
     },
     "ocr": {
