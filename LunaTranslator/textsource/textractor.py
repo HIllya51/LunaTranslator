@@ -89,6 +89,12 @@ class textractor(basetext  ):
         self.re=re.compile('\[([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):(.*):(.*@.*)\] ([\\s\\S]*)')
     def autostartinsert(self):
         for _h in self.autostarthookcode:
+            ready=False
+            for _hh in self.hookdatacollecter:
+                if _h[-1]==_hh[-1]:
+                    ready=True
+                    break
+            if ready==False:
                     x=subprocess.run(f'./files/hookcodecheck.exe {_h[-1]}',stdout=subprocess.PIPE)
                     if(x.stdout[0]==ord('0')):
                         continue
@@ -192,8 +198,7 @@ class textractor(basetext  ):
                 self.hookselectdialog.addnewhooksignal.emit(key  ) 
             
             #print(self.selectedhook)
-            self.hookdatacollecter[key].append(output)
-             
+            self.hookdatacollecter[key].append(output) 
             if (key in self.selectedhook):
                 #print(11)
                 #print(key==self.selectedhook,key,self.selectedhook)

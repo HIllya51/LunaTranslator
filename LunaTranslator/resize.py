@@ -9,7 +9,7 @@ while True:
     hDC = win32gui.GetDC(0) 
     print(win32print.GetDeviceCaps(hDC, win32con.DESKTOPHORZRES) )
     print(win32api.GetSystemMetrics(0))
-    if pid==11464:
+    if pid==14936:
        
         win32gui.SetWindowPos(win32gui.GetForegroundWindow(),win32con.HWND_NOTOPMOST, 0, 0, win32api.GetSystemMetrics(0), win32api.GetSystemMetrics(1),  win32con.SWP_NOMOVE)
         #win32gui.MoveWindow(win32gui.GetForegroundWindow(),0,0,1200,600,False)

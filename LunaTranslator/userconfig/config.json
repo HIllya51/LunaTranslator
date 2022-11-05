@@ -1,11 +1,11 @@
 {
     "position": [
-        359,
-        531
+        362,
+        311
     ],
     "fixedheight": false,
     "width": 1435,
-    "autorun": false,
+    "autorun": true,
     "transparent": 37,
     "fontsize": 20.0,
     "fonttype": "微软雅黑",
