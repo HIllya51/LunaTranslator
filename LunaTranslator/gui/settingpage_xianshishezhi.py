@@ -225,7 +225,42 @@ def setTabThree(self) :
         self.customSetGeometry(self.back_color_button, 600, 110, 20, 20)
         self.back_color_button.setStyleSheet("background: transparent;")
         self.back_color_button.clicked.connect(lambda: self.ChangeTranslateColor("back", self.back_color_button)) 
- 
+        
+
+        label = QLabel(self.tab_3)
+        self.customSetGeometry(label, 20, 380, 200, 20)
+        label.setText("显示调整游戏窗口按钮")
+         
+        s =gui.switchbutton.MySwitch(self.tab_3, sign=globalconfig['useresizebutton'])
+        self.customSetGeometry(s ,230, 380, 20,20)
+        def _useresizebutton(x):
+                globalconfig.__setitem__('useresizebutton',x)
+                self.object.translation_ui.showhidetoolbuttons()
+        s .clicked.connect(lambda x:_useresizebutton(x))  
+
+        
+        label = QLabel(self.tab_3)
+        self.customSetGeometry(label, 20, 410, 200, 20)
+        label.setText("显示全屏/恢复游戏窗口按钮")
+         
+        s =gui.switchbutton.MySwitch(self.tab_3, sign=globalconfig['usefullscreenbutton'])
+        self.customSetGeometry(s ,230, 410, 20,20)
+        def _usefullscreenbutton(x):
+                globalconfig.__setitem__('usefullscreenbutton',x)
+                self.object.translation_ui.showhidetoolbuttons()
+        s .clicked.connect(lambda x:_usefullscreenbutton(x))  
+
+        
+        label = QLabel(self.tab_3)
+        self.customSetGeometry(label, 20, 440, 200, 20)
+        label.setText("使用Magpie全屏")
+         
+        s =gui.switchbutton.MySwitch(self.tab_3, sign=globalconfig['usemagpie'])
+        self.customSetGeometry(s ,230, 440, 20,20)
+        def _usefullscreenbutton(x):
+                globalconfig.__setitem__('usemagpie',x)
+                self.object.translation_ui.showhidetoolbuttons()
+        s .clicked.connect(lambda x:_usefullscreenbutton(x))  
 def changeHorizontal(self) :
 
         globalconfig['transparent'] = self.horizontal_slider.value() 

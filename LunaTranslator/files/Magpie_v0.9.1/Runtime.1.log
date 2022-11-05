@@ -1,0 +1,1660 @@
+2022-11-05 17:34:26.242|info|App.cpp:Initialize|正在初始化 App
+2022-11-05 17:34:26.243|info|App.cpp:_RegisterWndClasses|已注册主窗口类
+2022-11-05 17:34:26.243|info|App.cpp:_RegisterWndClasses|已注册 DDF 窗口类
+2022-11-05 17:34:26.243|info|App.cpp:Initialize|App 初始化成功
+2022-11-05 17:34:26.243|info|Utils.cpp:Initialize|Utils::Hasher 初始化成功
+2022-11-05 17:34:32.056|info|DllMain.cpp:Run|OS 版本：10.0.19042
+2022-11-05 17:34:32.056|info|DllMain.cpp:Run|源窗口标题：僋僫僪崙婰亂俢俴斉亃丂- 嫟捠侽侾 -
+2022-11-05 17:34:32.056|info|Config.cpp:Initialize|运行时配置:
+	IsAdjustCursorSpeed: false
+	IsDisableLowLatency: false
+	IsBreakpointMode: false
+	IsDisableWindowResizing: false
+	IsDisableDirectFlip: false
+	Is3DMode: false
+	AdapterIdx: -1
+	IsCropTitleBarOfUWP: false
+	GetMultiMonitorUsage: 0
+	IsNoCursor: false
+	IsDisableEffectCache: false
+	IsDisableVSync: false
+	IsSimulateExclusiveFullscreen: false
+	CursorInterpolationMode: 0
+	CropBorders: [0, 0, 0, 0]
+	IsShowFPS: false
+2022-11-05 17:34:32.064|info|App.cpp:_CreateHostWnd|主窗口尺寸：1920x1080
+2022-11-05 17:34:32.064|info|App.cpp:_CreateHostWnd|已创建主窗口
+2022-11-05 17:34:32.069|info|DeviceResources.cpp:Initialize|可变刷新率支持：是
+2022-11-05 17:34:32.094|info|DeviceResources.cpp:LogAdapter|当前图形适配器：
+	VendorId：0x1002
+	DeviceId：0x1636
+	描述：AMD Radeon(TM) Graphics
+2022-11-05 17:34:32.123|info|DeviceResources.cpp:Initialize|已创建 D3D Device
+	功能级别：11.1
+2022-11-05 17:34:32.126|info|DeviceResources.cpp:_CreateSwapChain|Hardware Composition 支持：否
+2022-11-05 17:34:32.126|info|DeviceResources.cpp:_CreateSwapChain|Multiplane Overlay 支持：否
+2022-11-05 17:34:32.126|info|App.cpp:_InitFrameSource|当前捕获模式：Graphics Capture
+2022-11-05 17:34:32.237|info|GraphicsCaptureFrameSource.cpp:Initialize|当前系统无 IsBorderRequired API
+2022-11-05 17:34:32.238|info|GraphicsCaptureFrameSource.cpp:Initialize|GraphicsCaptureFrameSource 初始化完成
+2022-11-05 17:34:32.238|info|App.cpp:_InitFrameSource|源窗口尺寸：1680x945
+2022-11-05 17:34:32.240|error|DeviceResources.cpp:CompileShader|编译计算着色器失败：D3DCompile: Invalid flags specified
+
+	HRESULT：0x8876086C
+2022-11-05 17:34:32.240|error|EffectCompiler.cpp:operator ()|编译 Pass1 失败
+2022-11-05 17:34:32.240|error|EffectCompiler.cpp:Compile|编译着色器失败
+2022-11-05 17:34:32.240|error|Renderer.cpp:operator ()|编译 effects\Lanczos.hlsl 失败
+2022-11-05 17:34:32.240|error|Renderer.cpp:Initialize|_ResolveEffectsJson 失败
+2022-11-05 17:34:32.240|critical|App.cpp:Run|初始化 Renderer 失败
+2022-11-05 17:34:32.241|info|App.cpp:_RunMessageLoop|开始接收窗口消息
+2022-11-05 17:34:32.282|info|DllMain.cpp:Run|App.Run 失败
+2022-11-05 17:35:37.453|info|App.cpp:Initialize|正在初始化 App
+2022-11-05 17:35:37.453|info|App.cpp:_RegisterWndClasses|已注册主窗口类
+2022-11-05 17:35:37.453|info|App.cpp:_RegisterWndClasses|已注册 DDF 窗口类
+2022-11-05 17:35:37.453|info|App.cpp:Initialize|App 初始化成功
+2022-11-05 17:35:37.453|info|Utils.cpp:Initialize|Utils::Hasher 初始化成功
+2022-11-05 17:35:38.601|info|DllMain.cpp:Run|OS 版本：10.0.19042
+2022-11-05 17:35:38.601|info|DllMain.cpp:Run|源窗口标题：僋僫僪崙婰亂俢俴斉亃丂- 嫟捠侽侾 -
+2022-11-05 17:35:38.601|info|Config.cpp:Initialize|运行时配置:
+	IsAdjustCursorSpeed: false
+	IsDisableLowLatency: false
+	IsBreakpointMode: false
+	IsDisableWindowResizing: false
+	IsDisableDirectFlip: false
+	Is3DMode: false
+	AdapterIdx: -1
+	IsCropTitleBarOfUWP: false
+	GetMultiMonitorUsage: 0
+	IsNoCursor: false
+	IsDisableEffectCache: false
+	IsDisableVSync: false
+	IsSimulateExclusiveFullscreen: false
+	CursorInterpolationMode: 0
+	CropBorders: [0, 0, 0, 0]
+	IsShowFPS: false
+2022-11-05 17:35:38.607|info|App.cpp:_CreateHostWnd|主窗口尺寸：1920x1080
+2022-11-05 17:35:38.608|info|App.cpp:_CreateHostWnd|已创建主窗口
+2022-11-05 17:35:38.612|info|DeviceResources.cpp:Initialize|可变刷新率支持：是
+2022-11-05 17:35:38.635|info|DeviceResources.cpp:LogAdapter|当前图形适配器：
+	VendorId：0x1002
+	DeviceId：0x1636
+	描述：AMD Radeon(TM) Graphics
+2022-11-05 17:35:38.666|info|DeviceResources.cpp:Initialize|已创建 D3D Device
+	功能级别：11.1
+2022-11-05 17:35:38.677|info|DeviceResources.cpp:_CreateSwapChain|Hardware Composition 支持：否
+2022-11-05 17:35:38.677|info|DeviceResources.cpp:_CreateSwapChain|Multiplane Overlay 支持：否
+2022-11-05 17:35:38.677|info|App.cpp:_InitFrameSource|当前捕获模式：Graphics Capture
+2022-11-05 17:35:38.783|info|GraphicsCaptureFrameSource.cpp:Initialize|当前系统无 IsBorderRequired API
+2022-11-05 17:35:38.784|info|GraphicsCaptureFrameSource.cpp:Initialize|GraphicsCaptureFrameSource 初始化完成
+2022-11-05 17:35:38.784|info|App.cpp:_InitFrameSource|源窗口尺寸：1680x945
+2022-11-05 17:35:38.785|error|DeviceResources.cpp:CompileShader|编译计算着色器失败：D3DCompile: Invalid flags specified
+
+	HRESULT：0x8876086C
+2022-11-05 17:35:38.785|error|EffectCompiler.cpp:operator ()|编译 Pass1 失败
+2022-11-05 17:35:38.785|error|EffectCompiler.cpp:Compile|编译着色器失败
+2022-11-05 17:35:38.785|error|Renderer.cpp:operator ()|编译 effects\Lanczos.hlsl 失败
+2022-11-05 17:35:38.785|error|Renderer.cpp:Initialize|_ResolveEffectsJson 失败
+2022-11-05 17:35:38.785|critical|App.cpp:Run|初始化 Renderer 失败
+2022-11-05 17:35:38.786|info|App.cpp:_RunMessageLoop|开始接收窗口消息
+2022-11-05 17:35:38.812|info|DllMain.cpp:Run|App.Run 失败
+2022-11-05 17:35:41.121|info|DllMain.cpp:Run|OS 版本：10.0.19042
+2022-11-05 17:35:41.121|info|DllMain.cpp:Run|源窗口标题：僋僫僪崙婰亂俢俴斉亃丂- 嫟捠侽侾 -
+2022-11-05 17:35:41.121|info|Config.cpp:Initialize|运行时配置:
+	IsAdjustCursorSpeed: false
+	IsDisableLowLatency: false
+	IsBreakpointMode: false
+	IsDisableWindowResizing: false
+	IsDisableDirectFlip: false
+	Is3DMode: false
+	AdapterIdx: -1
+	IsCropTitleBarOfUWP: false
+	GetMultiMonitorUsage: 0
+	IsNoCursor: false
+	IsDisableEffectCache: false
+	IsDisableVSync: false
+	IsSimulateExclusiveFullscreen: false
+	CursorInterpolationMode: 0
+	CropBorders: [0, 0, 0, 0]
+	IsShowFPS: false
+2022-11-05 17:35:41.127|info|App.cpp:_CreateHostWnd|主窗口尺寸：1920x1080
+2022-11-05 17:35:41.128|info|App.cpp:_CreateHostWnd|已创建主窗口
+2022-11-05 17:35:41.128|info|DeviceResources.cpp:Initialize|可变刷新率支持：是
+2022-11-05 17:35:41.150|info|DeviceResources.cpp:LogAdapter|当前图形适配器：
+	VendorId：0x1002
+	DeviceId：0x1636
+	描述：AMD Radeon(TM) Graphics
+2022-11-05 17:35:41.175|info|DeviceResources.cpp:Initialize|已创建 D3D Device
+	功能级别：11.1
+2022-11-05 17:35:41.192|info|DeviceResources.cpp:_CreateSwapChain|Hardware Composition 支持：否
+2022-11-05 17:35:41.192|info|DeviceResources.cpp:_CreateSwapChain|Multiplane Overlay 支持：否
+2022-11-05 17:35:41.192|info|App.cpp:_InitFrameSource|当前捕获模式：Graphics Capture
+2022-11-05 17:35:41.284|info|GraphicsCaptureFrameSource.cpp:Initialize|当前系统无 IsBorderRequired API
+2022-11-05 17:35:41.285|info|GraphicsCaptureFrameSource.cpp:Initialize|GraphicsCaptureFrameSource 初始化完成
+2022-11-05 17:35:41.285|info|App.cpp:_InitFrameSource|源窗口尺寸：1680x945
+2022-11-05 17:35:41.286|error|DeviceResources.cpp:CompileShader|编译计算着色器失败：D3DCompile: Invalid flags specified
+
+	HRESULT：0x8876086C
+2022-11-05 17:35:41.286|error|EffectCompiler.cpp:operator ()|编译 Pass1 失败
+2022-11-05 17:35:41.286|error|EffectCompiler.cpp:Compile|编译着色器失败
+2022-11-05 17:35:41.286|error|Renderer.cpp:operator ()|编译 effects\Lanczos.hlsl 失败
+2022-11-05 17:35:41.286|error|Renderer.cpp:Initialize|_ResolveEffectsJson 失败
+2022-11-05 17:35:41.286|critical|App.cpp:Run|初始化 Renderer 失败
+2022-11-05 17:35:41.287|info|App.cpp:_RunMessageLoop|开始接收窗口消息
+2022-11-05 17:35:41.312|info|DllMain.cpp:Run|App.Run 失败
+2022-11-05 17:35:42.777|info|DllMain.cpp:Run|OS 版本：10.0.19042
+2022-11-05 17:35:42.777|info|DllMain.cpp:Run|源窗口标题：僋僫僪崙婰亂俢俴斉亃丂- 嫟捠侽侾 -
+2022-11-05 17:35:42.777|info|Config.cpp:Initialize|运行时配置:
+	IsAdjustCursorSpeed: false
+	IsDisableLowLatency: false
+	IsBreakpointMode: false
+	IsDisableWindowResizing: false
+	IsDisableDirectFlip: false
+	Is3DMode: false
+	AdapterIdx: -1
+	IsCropTitleBarOfUWP: false
+	GetMultiMonitorUsage: 0
+	IsNoCursor: false
+	IsDisableEffectCache: false
+	IsDisableVSync: false
+	IsSimulateExclusiveFullscreen: false
+	CursorInterpolationMode: 0
+	CropBorders: [0, 0, 0, 0]
+	IsShowFPS: false
+2022-11-05 17:35:42.784|info|App.cpp:_CreateHostWnd|主窗口尺寸：1920x1080
+2022-11-05 17:35:42.785|info|App.cpp:_CreateHostWnd|已创建主窗口
+2022-11-05 17:35:42.785|info|DeviceResources.cpp:Initialize|可变刷新率支持：是
+2022-11-05 17:35:42.808|info|DeviceResources.cpp:LogAdapter|当前图形适配器：
+	VendorId：0x1002
+	DeviceId：0x1636
+	描述：AMD Radeon(TM) Graphics
+2022-11-05 17:35:42.834|info|DeviceResources.cpp:Initialize|已创建 D3D Device
+	功能级别：11.1
+2022-11-05 17:35:42.842|info|DeviceResources.cpp:_CreateSwapChain|Hardware Composition 支持：否
+2022-11-05 17:35:42.842|info|DeviceResources.cpp:_CreateSwapChain|Multiplane Overlay 支持：否
+2022-11-05 17:35:42.842|info|App.cpp:_InitFrameSource|当前捕获模式：Graphics Capture
+2022-11-05 17:35:42.933|info|GraphicsCaptureFrameSource.cpp:Initialize|当前系统无 IsBorderRequired API
+2022-11-05 17:35:42.934|info|GraphicsCaptureFrameSource.cpp:Initialize|GraphicsCaptureFrameSource 初始化完成
+2022-11-05 17:35:42.934|info|App.cpp:_InitFrameSource|源窗口尺寸：1680x945
+2022-11-05 17:35:42.935|error|DeviceResources.cpp:CompileShader|编译计算着色器失败：D3DCompile: Invalid flags specified
+
+	HRESULT：0x8876086C
+2022-11-05 17:35:42.935|error|EffectCompiler.cpp:operator ()|编译 Pass1 失败
+2022-11-05 17:35:42.935|error|EffectCompiler.cpp:Compile|编译着色器失败
+2022-11-05 17:35:42.935|error|Renderer.cpp:operator ()|编译 effects\Lanczos.hlsl 失败
+2022-11-05 17:35:42.935|error|Renderer.cpp:Initialize|_ResolveEffectsJson 失败
+2022-11-05 17:35:42.935|critical|App.cpp:Run|初始化 Renderer 失败
+2022-11-05 17:39:47.915|info|App.cpp:Initialize|正在初始化 App
+2022-11-05 17:39:47.916|info|App.cpp:_RegisterWndClasses|已注册主窗口类
+2022-11-05 17:39:47.916|info|App.cpp:_RegisterWndClasses|已注册 DDF 窗口类
+2022-11-05 17:39:47.916|info|App.cpp:Initialize|App 初始化成功
+2022-11-05 17:39:47.916|info|Utils.cpp:Initialize|Utils::Hasher 初始化成功
+2022-11-05 17:39:49.466|info|DllMain.cpp:Run|OS 版本：10.0.19042
+2022-11-05 17:39:49.466|info|DllMain.cpp:Run|源窗口标题：僋僫僪崙婰亂俢俴斉亃丂- 嫟捠侽侾 -
+2022-11-05 17:39:49.466|info|Config.cpp:Initialize|运行时配置:
+	IsAdjustCursorSpeed: false
+	IsDisableLowLatency: false
+	IsBreakpointMode: false
+	IsDisableWindowResizing: false
+	IsDisableDirectFlip: false
+	Is3DMode: false
+	AdapterIdx: -1
+	IsCropTitleBarOfUWP: false
+	GetMultiMonitorUsage: 0
+	IsNoCursor: false
+	IsDisableEffectCache: false
+	IsDisableVSync: false
+	IsSimulateExclusiveFullscreen: false
+	CursorInterpolationMode: 0
+	CropBorders: [0, 0, 0, 0]
+	IsShowFPS: false
+2022-11-05 17:39:49.474|info|App.cpp:_CreateHostWnd|主窗口尺寸：1920x1080
+2022-11-05 17:39:49.474|info|App.cpp:_CreateHostWnd|已创建主窗口
+2022-11-05 17:39:49.482|info|DeviceResources.cpp:Initialize|可变刷新率支持：是
+2022-11-05 17:39:49.505|info|DeviceResources.cpp:LogAdapter|当前图形适配器：
+	VendorId：0x1002
+	DeviceId：0x1636
+	描述：AMD Radeon(TM) Graphics
+2022-11-05 17:39:49.536|info|DeviceResources.cpp:Initialize|已创建 D3D Device
+	功能级别：11.1
+2022-11-05 17:39:49.544|info|DeviceResources.cpp:_CreateSwapChain|Hardware Composition 支持：否
+2022-11-05 17:39:49.544|info|DeviceResources.cpp:_CreateSwapChain|Multiplane Overlay 支持：否
+2022-11-05 17:39:49.544|info|App.cpp:_InitFrameSource|当前捕获模式：Graphics Capture
+2022-11-05 17:39:49.647|info|GraphicsCaptureFrameSource.cpp:Initialize|当前系统无 IsBorderRequired API
+2022-11-05 17:39:49.648|info|GraphicsCaptureFrameSource.cpp:Initialize|GraphicsCaptureFrameSource 初始化完成
+2022-11-05 17:39:49.648|info|App.cpp:_InitFrameSource|源窗口尺寸：1680x945
+2022-11-05 17:39:49.648|info|Utils.cpp:ReadFile|读取文件：.\cache\Lanczos_0162100735cc0daa6a164f08a3d361e76ac88c2426
+2022-11-05 17:39:49.649|info|EffectCacheManager.cpp:Load|已读取缓存 .\cache\Lanczos_0162100735cc0daa6a164f08a3d361e76ac88c2426
+2022-11-05 17:39:49.649|info|Renderer.cpp:operator ()|编译 effects\Lanczos.hlsl 用时 0.726 毫秒
+2022-11-05 17:39:49.651|info|CursorManager.cpp:Initialize|CursorManager 初始化完成
+2022-11-05 17:39:49.659|info|App.cpp:_RunMessageLoop|开始接收窗口消息
+2022-11-05 17:39:49.678|info|CursorManager.cpp:GetCursorTexture|已解析光标：0x10003
+	类型：Color
+2022-11-05 17:39:50.346|info|Renderer.cpp:_CheckSrcState|前台窗口已改变
+2022-11-05 17:39:50.346|info|Renderer.cpp:Render|源窗口状态改变，退出全屏
+2022-11-05 17:39:50.349|info|CursorManager.cpp:~CursorManager|CursorDrawer 已析构
+2022-11-05 17:39:50.377|info|DllMain.cpp:Run|即将退出
+2022-11-05 17:41:51.976|info|App.cpp:Initialize|正在初始化 App
+2022-11-05 17:41:51.977|info|App.cpp:_RegisterWndClasses|已注册主窗口类
+2022-11-05 17:41:51.977|info|App.cpp:_RegisterWndClasses|已注册 DDF 窗口类
+2022-11-05 17:41:51.977|info|App.cpp:Initialize|App 初始化成功
+2022-11-05 17:41:51.977|info|Utils.cpp:Initialize|Utils::Hasher 初始化成功
+2022-11-05 17:41:53.966|info|DllMain.cpp:Run|OS 版本：10.0.19042
+2022-11-05 17:41:53.966|info|DllMain.cpp:Run|源窗口标题：僋僫僪崙婰亂俢俴斉亃丂- 嫟捠侽侾 -
+2022-11-05 17:41:53.966|info|Config.cpp:Initialize|运行时配置:
+	IsAdjustCursorSpeed: false
+	IsDisableLowLatency: false
+	IsBreakpointMode: false
+	IsDisableWindowResizing: false
+	IsDisableDirectFlip: false
+	Is3DMode: false
+	AdapterIdx: -1
+	IsCropTitleBarOfUWP: false
+	GetMultiMonitorUsage: 0
+	IsNoCursor: false
+	IsDisableEffectCache: false
+	IsDisableVSync: false
+	IsSimulateExclusiveFullscreen: false
+	CursorInterpolationMode: 0
+	CropBorders: [0, 0, 0, 0]
+	IsShowFPS: false
+2022-11-05 17:41:53.973|info|App.cpp:_CreateHostWnd|主窗口尺寸：1920x1080
+2022-11-05 17:41:53.974|info|App.cpp:_CreateHostWnd|已创建主窗口
+2022-11-05 17:41:53.980|info|DeviceResources.cpp:Initialize|可变刷新率支持：是
+2022-11-05 17:41:54.002|info|DeviceResources.cpp:LogAdapter|当前图形适配器：
+	VendorId：0x1002
+	DeviceId：0x1636
+	描述：AMD Radeon(TM) Graphics
+2022-11-05 17:41:54.032|info|DeviceResources.cpp:Initialize|已创建 D3D Device
+	功能级别：11.1
+2022-11-05 17:41:54.044|info|DeviceResources.cpp:_CreateSwapChain|Hardware Composition 支持：否
+2022-11-05 17:41:54.044|info|DeviceResources.cpp:_CreateSwapChain|Multiplane Overlay 支持：否
+2022-11-05 17:41:54.044|info|App.cpp:_InitFrameSource|当前捕获模式：Graphics Capture
+2022-11-05 17:41:54.149|info|GraphicsCaptureFrameSource.cpp:Initialize|当前系统无 IsBorderRequired API
+2022-11-05 17:41:54.151|info|GraphicsCaptureFrameSource.cpp:Initialize|GraphicsCaptureFrameSource 初始化完成
+2022-11-05 17:41:54.151|info|App.cpp:_InitFrameSource|源窗口尺寸：1680x945
+2022-11-05 17:41:54.151|info|Utils.cpp:ReadFile|读取文件：.\cache\Lanczos_0162100735cc0daa6a164f08a3d361e76ac88c2426
+2022-11-05 17:41:54.152|info|EffectCacheManager.cpp:Load|已读取缓存 .\cache\Lanczos_0162100735cc0daa6a164f08a3d361e76ac88c2426
+2022-11-05 17:41:54.152|info|Renderer.cpp:operator ()|编译 effects\Lanczos.hlsl 用时 0.698 毫秒
+2022-11-05 17:41:54.153|info|CursorManager.cpp:Initialize|CursorManager 初始化完成
+2022-11-05 17:41:54.166|info|App.cpp:_RunMessageLoop|开始接收窗口消息
+2022-11-05 17:41:54.181|info|CursorManager.cpp:GetCursorTexture|已解析光标：0x10003
+	类型：Color
+2022-11-05 17:41:54.712|info|Renderer.cpp:_CheckSrcState|前台窗口已改变
+2022-11-05 17:41:54.712|info|Renderer.cpp:Render|源窗口状态改变，退出全屏
+2022-11-05 17:41:54.716|info|CursorManager.cpp:~CursorManager|CursorDrawer 已析构
+2022-11-05 17:41:54.743|info|DllMain.cpp:Run|即将退出
+2022-11-05 17:42:08.904|info|App.cpp:Initialize|正在初始化 App
+2022-11-05 17:42:08.905|info|App.cpp:_RegisterWndClasses|已注册主窗口类
+2022-11-05 17:42:08.905|info|App.cpp:_RegisterWndClasses|已注册 DDF 窗口类
+2022-11-05 17:42:08.905|info|App.cpp:Initialize|App 初始化成功
+2022-11-05 17:42:08.905|info|Utils.cpp:Initialize|Utils::Hasher 初始化成功
+2022-11-05 17:42:12.814|info|DllMain.cpp:Run|OS 版本：10.0.19042
+2022-11-05 17:42:12.814|info|DllMain.cpp:Run|源窗口标题：僋僫僪崙婰亂俢俴斉亃丂- 嫟捠侽侾 -
+2022-11-05 17:42:12.814|info|Config.cpp:Initialize|运行时配置:
+	IsAdjustCursorSpeed: false
+	IsDisableLowLatency: false
+	IsBreakpointMode: false
+	IsDisableWindowResizing: false
+	IsDisableDirectFlip: false
+	Is3DMode: false
+	AdapterIdx: -1
+	IsCropTitleBarOfUWP: false
+	GetMultiMonitorUsage: 0
+	IsNoCursor: false
+	IsDisableEffectCache: false
+	IsDisableVSync: false
+	IsSimulateExclusiveFullscreen: false
+	CursorInterpolationMode: 0
+	CropBorders: [0, 0, 0, 0]
+	IsShowFPS: false
+2022-11-05 17:42:12.820|info|App.cpp:_CreateHostWnd|主窗口尺寸：1920x1080
+2022-11-05 17:42:12.820|info|App.cpp:_CreateHostWnd|已创建主窗口
+2022-11-05 17:42:12.824|info|DeviceResources.cpp:Initialize|可变刷新率支持：是
+2022-11-05 17:42:12.849|info|DeviceResources.cpp:LogAdapter|当前图形适配器：
+	VendorId：0x1002
+	DeviceId：0x1636
+	描述：AMD Radeon(TM) Graphics
+2022-11-05 17:42:12.878|info|DeviceResources.cpp:Initialize|已创建 D3D Device
+	功能级别：11.1
+2022-11-05 17:42:12.894|info|DeviceResources.cpp:_CreateSwapChain|Hardware Composition 支持：否
+2022-11-05 17:42:12.894|info|DeviceResources.cpp:_CreateSwapChain|Multiplane Overlay 支持：否
+2022-11-05 17:42:12.894|info|App.cpp:_InitFrameSource|当前捕获模式：Graphics Capture
+2022-11-05 17:42:13.000|info|GraphicsCaptureFrameSource.cpp:Initialize|当前系统无 IsBorderRequired API
+2022-11-05 17:42:13.001|info|GraphicsCaptureFrameSource.cpp:Initialize|GraphicsCaptureFrameSource 初始化完成
+2022-11-05 17:42:13.001|info|App.cpp:_InitFrameSource|源窗口尺寸：1680x945
+2022-11-05 17:42:13.002|error|Utils.cpp:ReadTextFile|打开文件 effects\Lanczos.hlsl 失败
+2022-11-05 17:42:13.002|error|EffectCompiler.cpp:Compile|读取源文件失败
+2022-11-05 17:42:13.002|error|Renderer.cpp:operator ()|编译 effects\Lanczos.hlsl 失败
+2022-11-05 17:42:13.002|error|Renderer.cpp:Initialize|_ResolveEffectsJson 失败
+2022-11-05 17:42:13.002|critical|App.cpp:Run|初始化 Renderer 失败
+2022-11-05 17:42:13.003|info|App.cpp:_RunMessageLoop|开始接收窗口消息
+2022-11-05 17:42:13.028|info|DllMain.cpp:Run|App.Run 失败
+2022-11-05 17:42:27.672|info|App.cpp:Initialize|正在初始化 App
+2022-11-05 17:42:27.672|info|App.cpp:_RegisterWndClasses|已注册主窗口类
+2022-11-05 17:42:27.672|info|App.cpp:_RegisterWndClasses|已注册 DDF 窗口类
+2022-11-05 17:42:27.672|info|App.cpp:Initialize|App 初始化成功
+2022-11-05 17:42:27.672|info|Utils.cpp:Initialize|Utils::Hasher 初始化成功
+2022-11-05 17:42:28.917|info|DllMain.cpp:Run|OS 版本：10.0.19042
+2022-11-05 17:42:28.918|info|DllMain.cpp:Run|源窗口标题：僋僫僪崙婰亂俢俴斉亃丂- 嫟捠侽侾 -
+2022-11-05 17:42:28.918|info|Config.cpp:Initialize|运行时配置:
+	IsAdjustCursorSpeed: false
+	IsDisableLowLatency: false
+	IsBreakpointMode: false
+	IsDisableWindowResizing: false
+	IsDisableDirectFlip: false
+	Is3DMode: false
+	AdapterIdx: -1
+	IsCropTitleBarOfUWP: false
+	GetMultiMonitorUsage: 0
+	IsNoCursor: false
+	IsDisableEffectCache: false
+	IsDisableVSync: false
+	IsSimulateExclusiveFullscreen: false
+	CursorInterpolationMode: 0
+	CropBorders: [0, 0, 0, 0]
+	IsShowFPS: false
+2022-11-05 17:42:28.924|info|App.cpp:_CreateHostWnd|主窗口尺寸：1920x1080
+2022-11-05 17:42:28.925|info|App.cpp:_CreateHostWnd|已创建主窗口
+2022-11-05 17:42:28.930|info|DeviceResources.cpp:Initialize|可变刷新率支持：是
+2022-11-05 17:42:28.956|info|DeviceResources.cpp:LogAdapter|当前图形适配器：
+	VendorId：0x1002
+	DeviceId：0x1636
+	描述：AMD Radeon(TM) Graphics
+2022-11-05 17:42:28.987|info|DeviceResources.cpp:Initialize|已创建 D3D Device
+	功能级别：11.1
+2022-11-05 17:42:28.993|info|DeviceResources.cpp:_CreateSwapChain|Hardware Composition 支持：否
+2022-11-05 17:42:28.993|info|DeviceResources.cpp:_CreateSwapChain|Multiplane Overlay 支持：否
+2022-11-05 17:42:28.993|info|App.cpp:_InitFrameSource|当前捕获模式：Graphics Capture
+2022-11-05 17:42:29.101|info|GraphicsCaptureFrameSource.cpp:Initialize|当前系统无 IsBorderRequired API
+2022-11-05 17:42:29.103|info|GraphicsCaptureFrameSource.cpp:Initialize|GraphicsCaptureFrameSource 初始化完成
+2022-11-05 17:42:29.103|info|App.cpp:_InitFrameSource|源窗口尺寸：1680x945
+2022-11-05 17:42:29.103|info|Utils.cpp:ReadFile|读取文件：.\cache\Lanczos_0162100735cc0daa6a164f08a3d361e76ac88c2426
+2022-11-05 17:42:29.104|info|EffectCacheManager.cpp:Load|已读取缓存 .\cache\Lanczos_0162100735cc0daa6a164f08a3d361e76ac88c2426
+2022-11-05 17:42:29.104|info|Renderer.cpp:operator ()|编译 effects\Lanczos.hlsl 用时 1.144 毫秒
+2022-11-05 17:42:29.106|info|CursorManager.cpp:Initialize|CursorManager 初始化完成
+2022-11-05 17:42:29.118|info|App.cpp:_RunMessageLoop|开始接收窗口消息
+2022-11-05 17:42:29.132|info|CursorManager.cpp:GetCursorTexture|已解析光标：0x10003
+	类型：Color
+2022-11-05 17:42:30.546|info|CursorManager.cpp:GetCursorTexture|已解析光标：0x10007
+	类型：Color
+2022-11-05 17:42:31.779|info|Renderer.cpp:_CheckSrcState|前台窗口已改变
+2022-11-05 17:42:31.779|info|Renderer.cpp:Render|源窗口状态改变，退出全屏
+2022-11-05 17:42:31.783|info|CursorManager.cpp:~CursorManager|CursorDrawer 已析构
+2022-11-05 17:42:31.814|info|DllMain.cpp:Run|即将退出
+2022-11-05 17:42:33.121|info|DllMain.cpp:Run|OS 版本：10.0.19042
+2022-11-05 17:42:33.121|info|DllMain.cpp:Run|源窗口标题：僋僫僪崙婰亂俢俴斉亃丂- 嫟捠侽侾 -
+2022-11-05 17:42:33.121|info|Config.cpp:Initialize|运行时配置:
+	IsAdjustCursorSpeed: false
+	IsDisableLowLatency: false
+	IsBreakpointMode: false
+	IsDisableWindowResizing: false
+	IsDisableDirectFlip: false
+	Is3DMode: false
+	AdapterIdx: -1
+	IsCropTitleBarOfUWP: false
+	GetMultiMonitorUsage: 0
+	IsNoCursor: false
+	IsDisableEffectCache: false
+	IsDisableVSync: false
+	IsSimulateExclusiveFullscreen: false
+	CursorInterpolationMode: 0
+	CropBorders: [0, 0, 0, 0]
+	IsShowFPS: false
+2022-11-05 17:42:33.126|info|App.cpp:_CreateHostWnd|主窗口尺寸：1920x1080
+2022-11-05 17:42:33.127|info|App.cpp:_CreateHostWnd|已创建主窗口
+2022-11-05 17:42:33.128|info|DeviceResources.cpp:Initialize|可变刷新率支持：是
+2022-11-05 17:42:33.152|info|DeviceResources.cpp:LogAdapter|当前图形适配器：
+	VendorId：0x1002
+	DeviceId：0x1636
+	描述：AMD Radeon(TM) Graphics
+2022-11-05 17:42:33.178|info|DeviceResources.cpp:Initialize|已创建 D3D Device
+	功能级别：11.1
+2022-11-05 17:42:33.192|info|DeviceResources.cpp:_CreateSwapChain|Hardware Composition 支持：否
+2022-11-05 17:42:33.192|info|DeviceResources.cpp:_CreateSwapChain|Multiplane Overlay 支持：否
+2022-11-05 17:42:33.192|info|App.cpp:_InitFrameSource|当前捕获模式：Graphics Capture
+2022-11-05 17:42:33.286|info|GraphicsCaptureFrameSource.cpp:Initialize|当前系统无 IsBorderRequired API
+2022-11-05 17:42:33.287|info|GraphicsCaptureFrameSource.cpp:Initialize|GraphicsCaptureFrameSource 初始化完成
+2022-11-05 17:42:33.287|info|App.cpp:_InitFrameSource|源窗口尺寸：1680x945
+2022-11-05 17:42:33.288|info|EffectCacheManager.cpp:_LoadFromMemCache|已读取缓存 .\cache\Lanczos_0162100735cc0daa6a164f08a3d361e76ac88c2426
+2022-11-05 17:42:33.288|info|Renderer.cpp:operator ()|编译 effects\Lanczos.hlsl 用时 0.297 毫秒
+2022-11-05 17:42:33.291|info|CursorManager.cpp:Initialize|CursorManager 初始化完成
+2022-11-05 17:42:33.298|info|App.cpp:_RunMessageLoop|开始接收窗口消息
+2022-11-05 17:42:35.063|info|Renderer.cpp:_CheckSrcState|前台窗口已改变
+2022-11-05 17:42:35.063|info|Renderer.cpp:Render|源窗口状态改变，退出全屏
+2022-11-05 17:42:35.066|info|CursorManager.cpp:~CursorManager|CursorDrawer 已析构
+2022-11-05 17:42:35.099|info|DllMain.cpp:Run|即将退出
+2022-11-05 17:42:35.713|info|DllMain.cpp:Run|OS 版本：10.0.19042
+2022-11-05 17:42:35.713|info|DllMain.cpp:Run|源窗口标题：僋僫僪崙婰亂俢俴斉亃丂- 嫟捠侽侾 -
+2022-11-05 17:42:35.713|info|Config.cpp:Initialize|运行时配置:
+	IsAdjustCursorSpeed: false
+	IsDisableLowLatency: false
+	IsBreakpointMode: false
+	IsDisableWindowResizing: false
+	IsDisableDirectFlip: false
+	Is3DMode: false
+	AdapterIdx: -1
+	IsCropTitleBarOfUWP: false
+	GetMultiMonitorUsage: 0
+	IsNoCursor: false
+	IsDisableEffectCache: false
+	IsDisableVSync: false
+	IsSimulateExclusiveFullscreen: false
+	CursorInterpolationMode: 0
+	CropBorders: [0, 0, 0, 0]
+	IsShowFPS: false
+2022-11-05 17:42:35.719|info|App.cpp:_CreateHostWnd|主窗口尺寸：1920x1080
+2022-11-05 17:42:35.719|info|App.cpp:_CreateHostWnd|已创建主窗口
+2022-11-05 17:42:35.720|info|DeviceResources.cpp:Initialize|可变刷新率支持：是
+2022-11-05 17:42:35.742|info|DeviceResources.cpp:LogAdapter|当前图形适配器：
+	VendorId：0x1002
+	DeviceId：0x1636
+	描述：AMD Radeon(TM) Graphics
+2022-11-05 17:42:35.769|info|DeviceResources.cpp:Initialize|已创建 D3D Device
+	功能级别：11.1
+2022-11-05 17:42:35.775|info|DeviceResources.cpp:_CreateSwapChain|Hardware Composition 支持：否
+2022-11-05 17:42:35.775|info|DeviceResources.cpp:_CreateSwapChain|Multiplane Overlay 支持：否
+2022-11-05 17:42:35.775|info|App.cpp:_InitFrameSource|当前捕获模式：Graphics Capture
+2022-11-05 17:42:35.870|info|GraphicsCaptureFrameSource.cpp:Initialize|当前系统无 IsBorderRequired API
+2022-11-05 17:42:35.872|info|GraphicsCaptureFrameSource.cpp:Initialize|GraphicsCaptureFrameSource 初始化完成
+2022-11-05 17:42:35.872|info|App.cpp:_InitFrameSource|源窗口尺寸：1680x945
+2022-11-05 17:42:35.872|info|EffectCacheManager.cpp:_LoadFromMemCache|已读取缓存 .\cache\Lanczos_0162100735cc0daa6a164f08a3d361e76ac88c2426
+2022-11-05 17:42:35.872|info|Renderer.cpp:operator ()|编译 effects\Lanczos.hlsl 用时 0.37 毫秒
+2022-11-05 17:42:35.874|info|CursorManager.cpp:Initialize|CursorManager 初始化完成
+2022-11-05 17:42:35.881|info|App.cpp:_RunMessageLoop|开始接收窗口消息
+2022-11-05 17:42:36.547|info|Renderer.cpp:_CheckSrcState|前台窗口已改变
+2022-11-05 17:42:36.547|info|Renderer.cpp:Render|源窗口状态改变，退出全屏
+2022-11-05 17:42:36.550|info|CursorManager.cpp:~CursorManager|CursorDrawer 已析构
+2022-11-05 17:42:36.581|info|DllMain.cpp:Run|即将退出
+2022-11-05 17:42:55.936|info|App.cpp:Initialize|正在初始化 App
+2022-11-05 17:42:55.936|info|App.cpp:_RegisterWndClasses|已注册主窗口类
+2022-11-05 17:42:55.936|info|App.cpp:_RegisterWndClasses|已注册 DDF 窗口类
+2022-11-05 17:42:55.936|info|App.cpp:Initialize|App 初始化成功
+2022-11-05 17:42:55.936|info|Utils.cpp:Initialize|Utils::Hasher 初始化成功
+2022-11-05 17:42:57.814|info|DllMain.cpp:Run|OS 版本：10.0.19042
+2022-11-05 17:42:57.814|info|DllMain.cpp:Run|源窗口标题：僋僫僪崙婰亂俢俴斉亃丂- 嫟捠侽侾 -
+2022-11-05 17:42:57.814|info|Config.cpp:Initialize|运行时配置:
+	IsAdjustCursorSpeed: false
+	IsDisableLowLatency: false
+	IsBreakpointMode: false
+	IsDisableWindowResizing: false
+	IsDisableDirectFlip: false
+	Is3DMode: false
+	AdapterIdx: -1
+	IsCropTitleBarOfUWP: false
+	GetMultiMonitorUsage: 0
+	IsNoCursor: false
+	IsDisableEffectCache: false
+	IsDisableVSync: false
+	IsSimulateExclusiveFullscreen: false
+	CursorInterpolationMode: 0
+	CropBorders: [0, 0, 0, 0]
+	IsShowFPS: false
+2022-11-05 17:42:57.822|info|App.cpp:_CreateHostWnd|主窗口尺寸：1920x1080
+2022-11-05 17:42:57.822|info|App.cpp:_CreateHostWnd|已创建主窗口
+2022-11-05 17:42:57.828|info|DeviceResources.cpp:Initialize|可变刷新率支持：是
+2022-11-05 17:42:57.851|info|DeviceResources.cpp:LogAdapter|当前图形适配器：
+	VendorId：0x1002
+	DeviceId：0x1636
+	描述：AMD Radeon(TM) Graphics
+2022-11-05 17:42:57.879|info|DeviceResources.cpp:Initialize|已创建 D3D Device
+	功能级别：11.1
+2022-11-05 17:42:57.893|info|DeviceResources.cpp:_CreateSwapChain|Hardware Composition 支持：否
+2022-11-05 17:42:57.893|info|DeviceResources.cpp:_CreateSwapChain|Multiplane Overlay 支持：否
+2022-11-05 17:42:57.893|info|App.cpp:_InitFrameSource|当前捕获模式：Graphics Capture
+2022-11-05 17:42:57.998|info|GraphicsCaptureFrameSource.cpp:Initialize|当前系统无 IsBorderRequired API
+2022-11-05 17:42:57.999|info|GraphicsCaptureFrameSource.cpp:Initialize|GraphicsCaptureFrameSource 初始化完成
+2022-11-05 17:42:57.999|info|App.cpp:_InitFrameSource|源窗口尺寸：1680x945
+2022-11-05 17:42:58.000|info|Utils.cpp:ReadFile|读取文件：.\cache\Lanczos_0162100735cc0daa6a164f08a3d361e76ac88c2426
+2022-11-05 17:42:58.000|info|EffectCacheManager.cpp:Load|已读取缓存 .\cache\Lanczos_0162100735cc0daa6a164f08a3d361e76ac88c2426
+2022-11-05 17:42:58.000|info|Renderer.cpp:operator ()|编译 effects\Lanczos.hlsl 用时 0.707 毫秒
+2022-11-05 17:42:58.002|info|CursorManager.cpp:Initialize|CursorManager 初始化完成
+2022-11-05 17:42:58.014|info|App.cpp:_RunMessageLoop|开始接收窗口消息
+2022-11-05 17:43:00.230|info|Renderer.cpp:_CheckSrcState|前台窗口已改变
+2022-11-05 17:43:00.230|info|Renderer.cpp:Render|源窗口状态改变，退出全屏
+2022-11-05 17:43:00.238|info|CursorManager.cpp:~CursorManager|CursorDrawer 已析构
+2022-11-05 17:43:00.272|info|DllMain.cpp:Run|即将退出
+2022-11-05 17:43:14.009|info|DllMain.cpp:Run|OS 版本：10.0.19042
+2022-11-05 17:43:14.009|info|DllMain.cpp:Run|源窗口标题：僋僫僪崙婰亂俢俴斉亃丂- 嫟捠侽侾 -
+2022-11-05 17:43:14.009|info|Config.cpp:Initialize|运行时配置:
+	IsAdjustCursorSpeed: false
+	IsDisableLowLatency: false
+	IsBreakpointMode: false
+	IsDisableWindowResizing: false
+	IsDisableDirectFlip: false
+	Is3DMode: false
+	AdapterIdx: -1
+	IsCropTitleBarOfUWP: false
+	GetMultiMonitorUsage: 0
+	IsNoCursor: false
+	IsDisableEffectCache: false
+	IsDisableVSync: false
+	IsSimulateExclusiveFullscreen: false
+	CursorInterpolationMode: 0
+	CropBorders: [0, 0, 0, 0]
+	IsShowFPS: false
+2022-11-05 17:43:14.016|info|App.cpp:_CreateHostWnd|主窗口尺寸：1920x1080
+2022-11-05 17:43:14.017|info|App.cpp:_CreateHostWnd|已创建主窗口
+2022-11-05 17:43:14.017|info|DeviceResources.cpp:Initialize|可变刷新率支持：是
+2022-11-05 17:43:14.039|info|DeviceResources.cpp:LogAdapter|当前图形适配器：
+	VendorId：0x1002
+	DeviceId：0x1636
+	描述：AMD Radeon(TM) Graphics
+2022-11-05 17:43:14.067|info|DeviceResources.cpp:Initialize|已创建 D3D Device
+	功能级别：11.1
+2022-11-05 17:43:14.075|info|DeviceResources.cpp:_CreateSwapChain|Hardware Composition 支持：否
+2022-11-05 17:43:14.075|info|DeviceResources.cpp:_CreateSwapChain|Multiplane Overlay 支持：否
+2022-11-05 17:43:14.075|info|App.cpp:_InitFrameSource|当前捕获模式：Graphics Capture
+2022-11-05 17:43:14.172|info|GraphicsCaptureFrameSource.cpp:Initialize|当前系统无 IsBorderRequired API
+2022-11-05 17:43:14.173|info|GraphicsCaptureFrameSource.cpp:Initialize|GraphicsCaptureFrameSource 初始化完成
+2022-11-05 17:43:14.173|info|App.cpp:_InitFrameSource|源窗口尺寸：1680x945
+2022-11-05 17:43:14.174|info|EffectCacheManager.cpp:_LoadFromMemCache|已读取缓存 .\cache\Lanczos_0162100735cc0daa6a164f08a3d361e76ac88c2426
+2022-11-05 17:43:14.174|info|Renderer.cpp:operator ()|编译 effects\Lanczos.hlsl 用时 0.253 毫秒
+2022-11-05 17:43:14.176|info|CursorManager.cpp:Initialize|CursorManager 初始化完成
+2022-11-05 17:43:14.183|info|App.cpp:_RunMessageLoop|开始接收窗口消息
+2022-11-05 17:43:20.950|info|Renderer.cpp:_CheckSrcState|前台窗口已改变
+2022-11-05 17:43:20.950|info|Renderer.cpp:Render|源窗口状态改变，退出全屏
+2022-11-05 17:43:20.955|info|CursorManager.cpp:~CursorManager|CursorDrawer 已析构
+2022-11-05 17:43:20.994|info|DllMain.cpp:Run|即将退出
+2022-11-05 17:46:18.137|info|App.cpp:Initialize|正在初始化 App
+2022-11-05 17:46:18.137|info|App.cpp:_RegisterWndClasses|已注册主窗口类
+2022-11-05 17:46:18.137|info|App.cpp:_RegisterWndClasses|已注册 DDF 窗口类
+2022-11-05 17:46:18.137|info|App.cpp:Initialize|App 初始化成功
+2022-11-05 17:46:18.137|info|Utils.cpp:Initialize|Utils::Hasher 初始化成功
+2022-11-05 17:46:41.575|info|App.cpp:Initialize|正在初始化 App
+2022-11-05 17:46:41.575|info|App.cpp:_RegisterWndClasses|已注册主窗口类
+2022-11-05 17:46:41.575|info|App.cpp:_RegisterWndClasses|已注册 DDF 窗口类
+2022-11-05 17:46:41.575|info|App.cpp:Initialize|App 初始化成功
+2022-11-05 17:46:41.575|info|Utils.cpp:Initialize|Utils::Hasher 初始化成功
+2022-11-05 17:47:33.379|info|App.cpp:Initialize|正在初始化 App
+2022-11-05 17:47:33.379|info|App.cpp:_RegisterWndClasses|已注册主窗口类
+2022-11-05 17:47:33.379|info|App.cpp:_RegisterWndClasses|已注册 DDF 窗口类
+2022-11-05 17:47:33.379|info|App.cpp:Initialize|App 初始化成功
+2022-11-05 17:47:33.379|info|Utils.cpp:Initialize|Utils::Hasher 初始化成功
+2022-11-05 17:48:29.569|info|App.cpp:Initialize|正在初始化 App
+2022-11-05 17:48:29.570|info|App.cpp:_RegisterWndClasses|已注册主窗口类
+2022-11-05 17:48:29.570|info|App.cpp:_RegisterWndClasses|已注册 DDF 窗口类
+2022-11-05 17:48:29.570|info|App.cpp:Initialize|App 初始化成功
+2022-11-05 17:48:29.570|info|Utils.cpp:Initialize|Utils::Hasher 初始化成功
+2022-11-05 17:49:03.513|info|App.cpp:Initialize|正在初始化 App
+2022-11-05 17:49:03.513|info|App.cpp:_RegisterWndClasses|已注册主窗口类
+2022-11-05 17:49:03.513|info|App.cpp:_RegisterWndClasses|已注册 DDF 窗口类
+2022-11-05 17:49:03.513|info|App.cpp:Initialize|App 初始化成功
+2022-11-05 17:49:03.513|info|Utils.cpp:Initialize|Utils::Hasher 初始化成功
+2022-11-05 17:51:02.869|info|App.cpp:Initialize|正在初始化 App
+2022-11-05 17:51:02.869|info|App.cpp:_RegisterWndClasses|已注册主窗口类
+2022-11-05 17:51:02.869|info|App.cpp:_RegisterWndClasses|已注册 DDF 窗口类
+2022-11-05 17:51:02.869|info|App.cpp:Initialize|App 初始化成功
+2022-11-05 17:51:02.869|info|Utils.cpp:Initialize|Utils::Hasher 初始化成功
+2022-11-05 17:51:31.005|info|App.cpp:Initialize|正在初始化 App
+2022-11-05 17:51:31.005|info|App.cpp:_RegisterWndClasses|已注册主窗口类
+2022-11-05 17:51:31.005|info|App.cpp:_RegisterWndClasses|已注册 DDF 窗口类
+2022-11-05 17:51:31.005|info|App.cpp:Initialize|App 初始化成功
+2022-11-05 17:51:31.005|info|Utils.cpp:Initialize|Utils::Hasher 初始化成功
+2022-11-05 17:53:01.980|info|App.cpp:Initialize|正在初始化 App
+2022-11-05 17:53:01.980|info|App.cpp:_RegisterWndClasses|已注册主窗口类
+2022-11-05 17:53:01.980|info|App.cpp:_RegisterWndClasses|已注册 DDF 窗口类
+2022-11-05 17:53:01.980|info|App.cpp:Initialize|App 初始化成功
+2022-11-05 17:53:01.980|info|Utils.cpp:Initialize|Utils::Hasher 初始化成功
+2022-11-05 17:53:02.715|info|DllMain.cpp:Run|OS 版本：10.0.19042
+2022-11-05 17:53:02.715|info|DllMain.cpp:Run|源窗口标题：僋僫僪崙婰亂俢俴斉亃丂- 嫟捠侽侾 -
+2022-11-05 17:53:02.715|info|Config.cpp:Initialize|运行时配置:
+	IsAdjustCursorSpeed: false
+	IsDisableLowLatency: false
+	IsBreakpointMode: false
+	IsDisableWindowResizing: false
+	IsDisableDirectFlip: false
+	Is3DMode: false
+	AdapterIdx: -1
+	IsCropTitleBarOfUWP: false
+	GetMultiMonitorUsage: 0
+	IsNoCursor: false
+	IsDisableEffectCache: false
+	IsDisableVSync: false
+	IsSimulateExclusiveFullscreen: false
+	CursorInterpolationMode: 0
+	CropBorders: [0, 0, 0, 0]
+	IsShowFPS: false
+2022-11-05 17:53:02.721|info|App.cpp:_CreateHostWnd|主窗口尺寸：1920x1080
+2022-11-05 17:53:02.721|info|App.cpp:_CreateHostWnd|已创建主窗口
+2022-11-05 17:53:02.724|info|DeviceResources.cpp:Initialize|可变刷新率支持：是
+2022-11-05 17:53:02.749|info|DeviceResources.cpp:LogAdapter|当前图形适配器：
+	VendorId：0x1002
+	DeviceId：0x1636
+	描述：AMD Radeon(TM) Graphics
+2022-11-05 17:53:02.779|info|DeviceResources.cpp:Initialize|已创建 D3D Device
+	功能级别：11.1
+2022-11-05 17:53:02.811|info|DeviceResources.cpp:_CreateSwapChain|Hardware Composition 支持：否
+2022-11-05 17:53:02.811|info|DeviceResources.cpp:_CreateSwapChain|Multiplane Overlay 支持：否
+2022-11-05 17:53:02.811|info|App.cpp:_InitFrameSource|当前捕获模式：Graphics Capture
+2022-11-05 17:53:02.917|info|GraphicsCaptureFrameSource.cpp:Initialize|当前系统无 IsBorderRequired API
+2022-11-05 17:53:02.919|info|GraphicsCaptureFrameSource.cpp:Initialize|GraphicsCaptureFrameSource 初始化完成
+2022-11-05 17:53:02.919|info|App.cpp:_InitFrameSource|源窗口尺寸：1680x945
+2022-11-05 17:53:02.919|info|Utils.cpp:ReadFile|读取文件：.\cache\Lanczos_0162100735cc0daa6a164f08a3d361e76ac88c2426
+2022-11-05 17:53:02.920|info|EffectCacheManager.cpp:Load|已读取缓存 .\cache\Lanczos_0162100735cc0daa6a164f08a3d361e76ac88c2426
+2022-11-05 17:53:02.920|info|Renderer.cpp:operator ()|编译 effects\Lanczos.hlsl 用时 1.122 毫秒
+2022-11-05 17:53:02.922|info|CursorManager.cpp:Initialize|CursorManager 初始化完成
+2022-11-05 17:53:02.932|info|App.cpp:_RunMessageLoop|开始接收窗口消息
+2022-11-05 17:53:03.713|info|Renderer.cpp:_CheckSrcState|前台窗口已改变
+2022-11-05 17:53:03.713|info|Renderer.cpp:Render|源窗口状态改变，退出全屏
+2022-11-05 17:53:03.716|info|CursorManager.cpp:~CursorManager|CursorDrawer 已析构
+2022-11-05 17:53:03.749|info|DllMain.cpp:Run|即将退出
+2022-11-05 17:53:06.573|info|DllMain.cpp:Run|OS 版本：10.0.19042
+2022-11-05 17:53:06.573|info|DllMain.cpp:Run|源窗口标题：僋僫僪崙婰亂俢俴斉亃丂- 嫟捠侽侾 -
+2022-11-05 17:53:06.573|info|Config.cpp:Initialize|运行时配置:
+	IsAdjustCursorSpeed: false
+	IsDisableLowLatency: false
+	IsBreakpointMode: false
+	IsDisableWindowResizing: false
+	IsDisableDirectFlip: false
+	Is3DMode: false
+	AdapterIdx: -1
+	IsCropTitleBarOfUWP: false
+	GetMultiMonitorUsage: 0
+	IsNoCursor: false
+	IsDisableEffectCache: false
+	IsDisableVSync: false
+	IsSimulateExclusiveFullscreen: false
+	CursorInterpolationMode: 0
+	CropBorders: [0, 0, 0, 0]
+	IsShowFPS: false
+2022-11-05 17:53:06.580|info|App.cpp:_CreateHostWnd|主窗口尺寸：1920x1080
+2022-11-05 17:53:06.581|info|App.cpp:_CreateHostWnd|已创建主窗口
+2022-11-05 17:53:06.582|info|DeviceResources.cpp:Initialize|可变刷新率支持：是
+2022-11-05 17:53:06.612|info|DeviceResources.cpp:LogAdapter|当前图形适配器：
+	VendorId：0x1002
+	DeviceId：0x1636
+	描述：AMD Radeon(TM) Graphics
+2022-11-05 17:53:06.636|info|DeviceResources.cpp:Initialize|已创建 D3D Device
+	功能级别：11.1
+2022-11-05 17:53:06.642|info|DeviceResources.cpp:_CreateSwapChain|Hardware Composition 支持：否
+2022-11-05 17:53:06.642|info|DeviceResources.cpp:_CreateSwapChain|Multiplane Overlay 支持：否
+2022-11-05 17:53:06.642|info|App.cpp:_InitFrameSource|当前捕获模式：Graphics Capture
+2022-11-05 17:53:06.735|info|GraphicsCaptureFrameSource.cpp:Initialize|当前系统无 IsBorderRequired API
+2022-11-05 17:53:06.736|info|GraphicsCaptureFrameSource.cpp:Initialize|GraphicsCaptureFrameSource 初始化完成
+2022-11-05 17:53:06.736|info|App.cpp:_InitFrameSource|源窗口尺寸：1680x945
+2022-11-05 17:53:06.736|info|EffectCacheManager.cpp:_LoadFromMemCache|已读取缓存 .\cache\Lanczos_0162100735cc0daa6a164f08a3d361e76ac88c2426
+2022-11-05 17:53:06.736|info|Renderer.cpp:operator ()|编译 effects\Lanczos.hlsl 用时 0.346 毫秒
+2022-11-05 17:53:06.739|info|CursorManager.cpp:Initialize|CursorManager 初始化完成
+2022-11-05 17:53:06.743|info|App.cpp:_RunMessageLoop|开始接收窗口消息
+2022-11-05 17:53:07.014|info|CursorManager.cpp:GetCursorTexture|已解析光标：0x10003
+	类型：Color
+2022-11-05 17:53:07.942|info|Renderer.cpp:_CheckSrcState|前台窗口已改变
+2022-11-05 17:53:07.942|info|Renderer.cpp:Render|源窗口状态改变，退出全屏
+2022-11-05 17:53:07.947|info|CursorManager.cpp:~CursorManager|CursorDrawer 已析构
+2022-11-05 17:53:07.975|info|DllMain.cpp:Run|即将退出
+2022-11-05 17:54:08.079|info|App.cpp:Initialize|正在初始化 App
+2022-11-05 17:54:08.079|info|App.cpp:_RegisterWndClasses|已注册主窗口类
+2022-11-05 17:54:08.079|info|App.cpp:_RegisterWndClasses|已注册 DDF 窗口类
+2022-11-05 17:54:08.079|info|App.cpp:Initialize|App 初始化成功
+2022-11-05 17:54:08.079|info|Utils.cpp:Initialize|Utils::Hasher 初始化成功
+2022-11-05 17:54:10.097|info|DllMain.cpp:Run|OS 版本：10.0.19042
+2022-11-05 17:54:10.097|info|DllMain.cpp:Run|源窗口标题：僋僫僪崙婰亂俢俴斉亃丂- 嫟捠侽侾 -
+2022-11-05 17:54:10.097|info|Config.cpp:Initialize|运行时配置:
+	IsAdjustCursorSpeed: false
+	IsDisableLowLatency: false
+	IsBreakpointMode: false
+	IsDisableWindowResizing: false
+	IsDisableDirectFlip: false
+	Is3DMode: false
+	AdapterIdx: -1
+	IsCropTitleBarOfUWP: false
+	GetMultiMonitorUsage: 0
+	IsNoCursor: false
+	IsDisableEffectCache: false
+	IsDisableVSync: false
+	IsSimulateExclusiveFullscreen: false
+	CursorInterpolationMode: 0
+	CropBorders: [0, 0, 0, 0]
+	IsShowFPS: false
+2022-11-05 17:54:10.103|info|App.cpp:_CreateHostWnd|主窗口尺寸：1920x1080
+2022-11-05 17:54:10.104|info|App.cpp:_CreateHostWnd|已创建主窗口
+2022-11-05 17:54:10.108|info|DeviceResources.cpp:Initialize|可变刷新率支持：是
+2022-11-05 17:54:10.133|info|DeviceResources.cpp:LogAdapter|当前图形适配器：
+	VendorId：0x1002
+	DeviceId：0x1636
+	描述：AMD Radeon(TM) Graphics
+2022-11-05 17:54:10.162|info|DeviceResources.cpp:Initialize|已创建 D3D Device
+	功能级别：11.1
+2022-11-05 17:54:10.177|info|DeviceResources.cpp:_CreateSwapChain|Hardware Composition 支持：否
+2022-11-05 17:54:10.177|info|DeviceResources.cpp:_CreateSwapChain|Multiplane Overlay 支持：否
+2022-11-05 17:54:10.177|info|App.cpp:_InitFrameSource|当前捕获模式：Graphics Capture
+2022-11-05 17:54:10.282|info|GraphicsCaptureFrameSource.cpp:Initialize|当前系统无 IsBorderRequired API
+2022-11-05 17:54:10.284|info|GraphicsCaptureFrameSource.cpp:Initialize|GraphicsCaptureFrameSource 初始化完成
+2022-11-05 17:54:10.284|info|App.cpp:_InitFrameSource|源窗口尺寸：1680x945
+2022-11-05 17:54:10.284|info|Utils.cpp:ReadFile|读取文件：.\cache\Lanczos_0162100735cc0daa6a164f08a3d361e76ac88c2426
+2022-11-05 17:54:10.285|info|EffectCacheManager.cpp:Load|已读取缓存 .\cache\Lanczos_0162100735cc0daa6a164f08a3d361e76ac88c2426
+2022-11-05 17:54:10.285|info|Renderer.cpp:operator ()|编译 effects\Lanczos.hlsl 用时 1.167 毫秒
+2022-11-05 17:54:10.287|info|CursorManager.cpp:Initialize|CursorManager 初始化完成
+2022-11-05 17:54:10.298|info|App.cpp:_RunMessageLoop|开始接收窗口消息
+2022-11-05 17:54:10.980|info|Renderer.cpp:_CheckSrcState|前台窗口已改变
+2022-11-05 17:54:10.980|info|Renderer.cpp:Render|源窗口状态改变，退出全屏
+2022-11-05 17:54:10.984|info|CursorManager.cpp:~CursorManager|CursorDrawer 已析构
+2022-11-05 17:54:11.009|info|DllMain.cpp:Run|即将退出
+2022-11-05 17:54:11.513|info|DllMain.cpp:Run|OS 版本：10.0.19042
+2022-11-05 17:54:11.513|info|DllMain.cpp:Run|源窗口标题：僋僫僪崙婰亂俢俴斉亃丂- 嫟捠侽侾 -
+2022-11-05 17:54:11.513|info|Config.cpp:Initialize|运行时配置:
+	IsAdjustCursorSpeed: false
+	IsDisableLowLatency: false
+	IsBreakpointMode: false
+	IsDisableWindowResizing: false
+	IsDisableDirectFlip: false
+	Is3DMode: false
+	AdapterIdx: -1
+	IsCropTitleBarOfUWP: false
+	GetMultiMonitorUsage: 0
+	IsNoCursor: false
+	IsDisableEffectCache: false
+	IsDisableVSync: false
+	IsSimulateExclusiveFullscreen: false
+	CursorInterpolationMode: 0
+	CropBorders: [0, 0, 0, 0]
+	IsShowFPS: false
+2022-11-05 17:54:11.519|info|App.cpp:_CreateHostWnd|主窗口尺寸：1920x1080
+2022-11-05 17:54:11.520|info|App.cpp:_CreateHostWnd|已创建主窗口
+2022-11-05 17:54:11.520|info|DeviceResources.cpp:Initialize|可变刷新率支持：是
+2022-11-05 17:54:11.544|info|DeviceResources.cpp:LogAdapter|当前图形适配器：
+	VendorId：0x1002
+	DeviceId：0x1636
+	描述：AMD Radeon(TM) Graphics
+2022-11-05 17:54:11.569|info|DeviceResources.cpp:Initialize|已创建 D3D Device
+	功能级别：11.1
+2022-11-05 17:54:11.575|info|DeviceResources.cpp:_CreateSwapChain|Hardware Composition 支持：否
+2022-11-05 17:54:11.575|info|DeviceResources.cpp:_CreateSwapChain|Multiplane Overlay 支持：否
+2022-11-05 17:54:11.575|info|App.cpp:_InitFrameSource|当前捕获模式：Graphics Capture
+2022-11-05 17:54:11.667|info|GraphicsCaptureFrameSource.cpp:Initialize|当前系统无 IsBorderRequired API
+2022-11-05 17:54:11.668|info|GraphicsCaptureFrameSource.cpp:Initialize|GraphicsCaptureFrameSource 初始化完成
+2022-11-05 17:54:11.668|info|App.cpp:_InitFrameSource|源窗口尺寸：1680x945
+2022-11-05 17:54:11.669|info|EffectCacheManager.cpp:_LoadFromMemCache|已读取缓存 .\cache\Lanczos_0162100735cc0daa6a164f08a3d361e76ac88c2426
+2022-11-05 17:54:11.669|info|Renderer.cpp:operator ()|编译 effects\Lanczos.hlsl 用时 0.299 毫秒
+2022-11-05 17:54:11.671|info|CursorManager.cpp:Initialize|CursorManager 初始化完成
+2022-11-05 17:54:11.677|info|App.cpp:_RunMessageLoop|开始接收窗口消息
+2022-11-05 17:54:12.393|info|Renderer.cpp:_CheckSrcState|前台窗口已改变
+2022-11-05 17:54:12.393|info|Renderer.cpp:Render|源窗口状态改变，退出全屏
+2022-11-05 17:54:12.400|info|CursorManager.cpp:~CursorManager|CursorDrawer 已析构
+2022-11-05 17:54:12.422|info|DllMain.cpp:Run|即将退出
+2022-11-05 17:55:30.302|info|App.cpp:Initialize|正在初始化 App
+2022-11-05 17:55:30.302|info|App.cpp:_RegisterWndClasses|已注册主窗口类
+2022-11-05 17:55:30.302|info|App.cpp:_RegisterWndClasses|已注册 DDF 窗口类
+2022-11-05 17:55:30.302|info|App.cpp:Initialize|App 初始化成功
+2022-11-05 17:55:30.302|info|Utils.cpp:Initialize|Utils::Hasher 初始化成功
+2022-11-05 17:55:32.231|info|DllMain.cpp:Run|OS 版本：10.0.19042
+2022-11-05 17:55:32.231|info|DllMain.cpp:Run|源窗口标题：僋僫僪崙婰亂俢俴斉亃丂- 嫟捠侽侾 -
+2022-11-05 17:55:32.231|info|Config.cpp:Initialize|运行时配置:
+	IsAdjustCursorSpeed: false
+	IsDisableLowLatency: false
+	IsBreakpointMode: false
+	IsDisableWindowResizing: false
+	IsDisableDirectFlip: false
+	Is3DMode: false
+	AdapterIdx: -1
+	IsCropTitleBarOfUWP: false
+	GetMultiMonitorUsage: 0
+	IsNoCursor: false
+	IsDisableEffectCache: false
+	IsDisableVSync: false
+	IsSimulateExclusiveFullscreen: false
+	CursorInterpolationMode: 0
+	CropBorders: [0, 0, 0, 0]
+	IsShowFPS: false
+2022-11-05 17:55:32.238|info|App.cpp:_CreateHostWnd|主窗口尺寸：1920x1080
+2022-11-05 17:55:32.239|info|App.cpp:_CreateHostWnd|已创建主窗口
+2022-11-05 17:55:32.244|info|DeviceResources.cpp:Initialize|可变刷新率支持：是
+2022-11-05 17:55:32.270|info|DeviceResources.cpp:LogAdapter|当前图形适配器：
+	VendorId：0x1002
+	DeviceId：0x1636
+	描述：AMD Radeon(TM) Graphics
+2022-11-05 17:55:32.303|info|DeviceResources.cpp:Initialize|已创建 D3D Device
+	功能级别：11.1
+2022-11-05 17:55:32.310|info|DeviceResources.cpp:_CreateSwapChain|Hardware Composition 支持：否
+2022-11-05 17:55:32.311|info|DeviceResources.cpp:_CreateSwapChain|Multiplane Overlay 支持：否
+2022-11-05 17:55:32.311|info|App.cpp:_InitFrameSource|当前捕获模式：Graphics Capture
+2022-11-05 17:55:32.418|info|GraphicsCaptureFrameSource.cpp:Initialize|当前系统无 IsBorderRequired API
+2022-11-05 17:55:32.420|info|GraphicsCaptureFrameSource.cpp:Initialize|GraphicsCaptureFrameSource 初始化完成
+2022-11-05 17:55:32.420|info|App.cpp:_InitFrameSource|源窗口尺寸：1680x945
+2022-11-05 17:55:32.420|info|Utils.cpp:ReadFile|读取文件：.\cache\Lanczos_0162100735cc0daa6a164f08a3d361e76ac88c2426
+2022-11-05 17:55:32.421|info|EffectCacheManager.cpp:Load|已读取缓存 .\cache\Lanczos_0162100735cc0daa6a164f08a3d361e76ac88c2426
+2022-11-05 17:55:32.421|info|Renderer.cpp:operator ()|编译 effects\Lanczos.hlsl 用时 0.661 毫秒
+2022-11-05 17:55:32.423|info|CursorManager.cpp:Initialize|CursorManager 初始化完成
+2022-11-05 17:55:32.433|info|App.cpp:_RunMessageLoop|开始接收窗口消息
+2022-11-05 17:55:34.644|info|Renderer.cpp:_CheckSrcState|前台窗口已改变
+2022-11-05 17:55:34.644|info|Renderer.cpp:Render|源窗口状态改变，退出全屏
+2022-11-05 17:55:34.649|info|CursorManager.cpp:~CursorManager|CursorDrawer 已析构
+2022-11-05 17:55:34.672|info|DllMain.cpp:Run|即将退出
+2022-11-05 17:55:38.848|info|DllMain.cpp:Run|OS 版本：10.0.19042
+2022-11-05 17:55:38.848|info|DllMain.cpp:Run|源窗口标题：僋僫僪崙婰亂俢俴斉亃丂- 嫟捠侽侾 -
+2022-11-05 17:55:38.848|info|Config.cpp:Initialize|运行时配置:
+	IsAdjustCursorSpeed: false
+	IsDisableLowLatency: false
+	IsBreakpointMode: false
+	IsDisableWindowResizing: false
+	IsDisableDirectFlip: false
+	Is3DMode: false
+	AdapterIdx: -1
+	IsCropTitleBarOfUWP: false
+	GetMultiMonitorUsage: 0
+	IsNoCursor: false
+	IsDisableEffectCache: false
+	IsDisableVSync: false
+	IsSimulateExclusiveFullscreen: false
+	CursorInterpolationMode: 0
+	CropBorders: [0, 0, 0, 0]
+	IsShowFPS: false
+2022-11-05 17:55:38.855|info|App.cpp:_CreateHostWnd|主窗口尺寸：1920x1080
+2022-11-05 17:55:38.856|info|App.cpp:_CreateHostWnd|已创建主窗口
+2022-11-05 17:55:38.856|info|DeviceResources.cpp:Initialize|可变刷新率支持：是
+2022-11-05 17:55:38.885|info|DeviceResources.cpp:LogAdapter|当前图形适配器：
+	VendorId：0x1002
+	DeviceId：0x1636
+	描述：AMD Radeon(TM) Graphics
+2022-11-05 17:55:38.916|info|DeviceResources.cpp:Initialize|已创建 D3D Device
+	功能级别：11.1
+2022-11-05 17:55:38.926|info|DeviceResources.cpp:_CreateSwapChain|Hardware Composition 支持：否
+2022-11-05 17:55:38.926|info|DeviceResources.cpp:_CreateSwapChain|Multiplane Overlay 支持：否
+2022-11-05 17:55:38.926|info|App.cpp:_InitFrameSource|当前捕获模式：Graphics Capture
+2022-11-05 17:55:39.019|info|GraphicsCaptureFrameSource.cpp:Initialize|当前系统无 IsBorderRequired API
+2022-11-05 17:55:39.020|info|GraphicsCaptureFrameSource.cpp:Initialize|GraphicsCaptureFrameSource 初始化完成
+2022-11-05 17:55:39.021|info|App.cpp:_InitFrameSource|源窗口尺寸：1680x945
+2022-11-05 17:55:39.021|info|EffectCacheManager.cpp:_LoadFromMemCache|已读取缓存 .\cache\Lanczos_0162100735cc0daa6a164f08a3d361e76ac88c2426
+2022-11-05 17:55:39.021|info|Renderer.cpp:operator ()|编译 effects\Lanczos.hlsl 用时 0.273 毫秒
+2022-11-05 17:55:39.023|info|CursorManager.cpp:Initialize|CursorManager 初始化完成
+2022-11-05 17:55:39.029|info|App.cpp:_RunMessageLoop|开始接收窗口消息
+2022-11-05 17:55:41.049|info|CursorManager.cpp:GetCursorTexture|已解析光标：0x10003
+	类型：Color
+2022-11-05 17:55:41.897|info|Renderer.cpp:_CheckSrcState|前台窗口已改变
+2022-11-05 17:55:41.897|info|Renderer.cpp:Render|源窗口状态改变，退出全屏
+2022-11-05 17:55:41.905|info|CursorManager.cpp:~CursorManager|CursorDrawer 已析构
+2022-11-05 17:55:41.937|info|DllMain.cpp:Run|即将退出
+2022-11-05 17:55:46.905|info|DllMain.cpp:Run|OS 版本：10.0.19042
+2022-11-05 17:55:46.905|info|DllMain.cpp:Run|源窗口标题：僋僫僪崙婰亂俢俴斉亃丂- 嫟捠侽侾 -
+2022-11-05 17:55:46.905|info|Config.cpp:Initialize|运行时配置:
+	IsAdjustCursorSpeed: false
+	IsDisableLowLatency: false
+	IsBreakpointMode: false
+	IsDisableWindowResizing: false
+	IsDisableDirectFlip: false
+	Is3DMode: false
+	AdapterIdx: -1
+	IsCropTitleBarOfUWP: false
+	GetMultiMonitorUsage: 0
+	IsNoCursor: false
+	IsDisableEffectCache: false
+	IsDisableVSync: false
+	IsSimulateExclusiveFullscreen: false
+	CursorInterpolationMode: 0
+	CropBorders: [0, 0, 0, 0]
+	IsShowFPS: false
+2022-11-05 17:55:46.913|info|App.cpp:_CreateHostWnd|主窗口尺寸：1920x1080
+2022-11-05 17:55:46.914|info|App.cpp:_CreateHostWnd|已创建主窗口
+2022-11-05 17:55:46.914|info|DeviceResources.cpp:Initialize|可变刷新率支持：是
+2022-11-05 17:55:46.937|info|DeviceResources.cpp:LogAdapter|当前图形适配器：
+	VendorId：0x1002
+	DeviceId：0x1636
+	描述：AMD Radeon(TM) Graphics
+2022-11-05 17:55:46.965|info|DeviceResources.cpp:Initialize|已创建 D3D Device
+	功能级别：11.1
+2022-11-05 17:55:46.976|info|DeviceResources.cpp:_CreateSwapChain|Hardware Composition 支持：否
+2022-11-05 17:55:46.976|info|DeviceResources.cpp:_CreateSwapChain|Multiplane Overlay 支持：否
+2022-11-05 17:55:46.976|info|App.cpp:_InitFrameSource|当前捕获模式：Graphics Capture
+2022-11-05 17:55:47.074|info|GraphicsCaptureFrameSource.cpp:Initialize|当前系统无 IsBorderRequired API
+2022-11-05 17:55:47.076|info|GraphicsCaptureFrameSource.cpp:Initialize|GraphicsCaptureFrameSource 初始化完成
+2022-11-05 17:55:47.076|info|App.cpp:_InitFrameSource|源窗口尺寸：1680x945
+2022-11-05 17:55:47.076|info|EffectCacheManager.cpp:_LoadFromMemCache|已读取缓存 .\cache\Lanczos_0162100735cc0daa6a164f08a3d361e76ac88c2426
+2022-11-05 17:55:47.076|info|Renderer.cpp:operator ()|编译 effects\Lanczos.hlsl 用时 0.487 毫秒
+2022-11-05 17:55:47.079|info|CursorManager.cpp:Initialize|CursorManager 初始化完成
+2022-11-05 17:55:47.085|info|App.cpp:_RunMessageLoop|开始接收窗口消息
+2022-11-05 17:55:52.831|info|CursorManager.cpp:GetCursorTexture|已解析光标：0x10003
+	类型：Color
+2022-11-05 17:55:57.030|info|Renderer.cpp:_CheckSrcState|前台窗口已改变
+2022-11-05 17:55:57.030|info|Renderer.cpp:Render|源窗口状态改变，退出全屏
+2022-11-05 17:55:57.034|info|CursorManager.cpp:~CursorManager|CursorDrawer 已析构
+2022-11-05 17:55:57.061|info|DllMain.cpp:Run|即将退出
+2022-11-05 17:55:58.852|info|DllMain.cpp:Run|OS 版本：10.0.19042
+2022-11-05 17:55:58.852|info|DllMain.cpp:Run|源窗口标题：僋僫僪崙婰亂俢俴斉亃丂- 嫟捠侽侾 -
+2022-11-05 17:55:58.852|info|Config.cpp:Initialize|运行时配置:
+	IsAdjustCursorSpeed: false
+	IsDisableLowLatency: false
+	IsBreakpointMode: false
+	IsDisableWindowResizing: false
+	IsDisableDirectFlip: false
+	Is3DMode: false
+	AdapterIdx: -1
+	IsCropTitleBarOfUWP: false
+	GetMultiMonitorUsage: 0
+	IsNoCursor: false
+	IsDisableEffectCache: false
+	IsDisableVSync: false
+	IsSimulateExclusiveFullscreen: false
+	CursorInterpolationMode: 0
+	CropBorders: [0, 0, 0, 0]
+	IsShowFPS: false
+2022-11-05 17:55:58.858|info|App.cpp:_CreateHostWnd|主窗口尺寸：1920x1080
+2022-11-05 17:55:58.859|info|App.cpp:_CreateHostWnd|已创建主窗口
+2022-11-05 17:55:58.859|info|DeviceResources.cpp:Initialize|可变刷新率支持：是
+2022-11-05 17:55:58.886|info|DeviceResources.cpp:LogAdapter|当前图形适配器：
+	VendorId：0x1002
+	DeviceId：0x1636
+	描述：AMD Radeon(TM) Graphics
+2022-11-05 17:55:58.918|info|DeviceResources.cpp:Initialize|已创建 D3D Device
+	功能级别：11.1
+2022-11-05 17:55:58.926|info|DeviceResources.cpp:_CreateSwapChain|Hardware Composition 支持：否
+2022-11-05 17:55:58.926|info|DeviceResources.cpp:_CreateSwapChain|Multiplane Overlay 支持：否
+2022-11-05 17:55:58.926|info|App.cpp:_InitFrameSource|当前捕获模式：Graphics Capture
+2022-11-05 17:55:59.017|info|GraphicsCaptureFrameSource.cpp:Initialize|当前系统无 IsBorderRequired API
+2022-11-05 17:55:59.018|info|GraphicsCaptureFrameSource.cpp:Initialize|GraphicsCaptureFrameSource 初始化完成
+2022-11-05 17:55:59.018|info|App.cpp:_InitFrameSource|源窗口尺寸：1680x945
+2022-11-05 17:55:59.018|info|EffectCacheManager.cpp:_LoadFromMemCache|已读取缓存 .\cache\Lanczos_0162100735cc0daa6a164f08a3d361e76ac88c2426
+2022-11-05 17:55:59.018|info|Renderer.cpp:operator ()|编译 effects\Lanczos.hlsl 用时 0.34 毫秒
+2022-11-05 17:55:59.020|info|CursorManager.cpp:Initialize|CursorManager 初始化完成
+2022-11-05 17:55:59.025|info|App.cpp:_RunMessageLoop|开始接收窗口消息
+2022-11-05 17:55:59.714|info|CursorManager.cpp:GetCursorTexture|已解析光标：0x10003
+	类型：Color
+2022-11-05 17:56:04.764|info|Renderer.cpp:_CheckSrcState|前台窗口已改变
+2022-11-05 17:56:04.764|info|Renderer.cpp:Render|源窗口状态改变，退出全屏
+2022-11-05 17:56:04.770|info|CursorManager.cpp:~CursorManager|CursorDrawer 已析构
+2022-11-05 17:56:04.804|info|DllMain.cpp:Run|即将退出
+2022-11-05 17:57:10.147|info|App.cpp:Initialize|正在初始化 App
+2022-11-05 17:57:10.147|info|App.cpp:_RegisterWndClasses|已注册主窗口类
+2022-11-05 17:57:10.147|info|App.cpp:_RegisterWndClasses|已注册 DDF 窗口类
+2022-11-05 17:57:10.147|info|App.cpp:Initialize|App 初始化成功
+2022-11-05 17:57:10.147|info|Utils.cpp:Initialize|Utils::Hasher 初始化成功
+2022-11-05 17:57:13.610|info|DllMain.cpp:Run|OS 版本：10.0.19042
+2022-11-05 17:57:13.611|info|DllMain.cpp:Run|源窗口标题：僋僫僪崙婰亂俢俴斉亃丂- 嫟捠侽侾 -
+2022-11-05 17:57:13.611|info|Config.cpp:Initialize|运行时配置:
+	IsAdjustCursorSpeed: false
+	IsDisableLowLatency: false
+	IsBreakpointMode: false
+	IsDisableWindowResizing: false
+	IsDisableDirectFlip: false
+	Is3DMode: false
+	AdapterIdx: -1
+	IsCropTitleBarOfUWP: false
+	GetMultiMonitorUsage: 0
+	IsNoCursor: false
+	IsDisableEffectCache: false
+	IsDisableVSync: false
+	IsSimulateExclusiveFullscreen: false
+	CursorInterpolationMode: 0
+	CropBorders: [0, 0, 0, 0]
+	IsShowFPS: false
+2022-11-05 17:57:13.618|info|App.cpp:_CreateHostWnd|主窗口尺寸：1920x1080
+2022-11-05 17:57:13.619|info|App.cpp:_CreateHostWnd|已创建主窗口
+2022-11-05 17:57:13.624|info|DeviceResources.cpp:Initialize|可变刷新率支持：是
+2022-11-05 17:57:13.651|info|DeviceResources.cpp:LogAdapter|当前图形适配器：
+	VendorId：0x1002
+	DeviceId：0x1636
+	描述：AMD Radeon(TM) Graphics
+2022-11-05 17:57:13.707|info|DeviceResources.cpp:Initialize|已创建 D3D Device
+	功能级别：11.1
+2022-11-05 17:57:13.712|info|DeviceResources.cpp:_CreateSwapChain|Hardware Composition 支持：否
+2022-11-05 17:57:13.712|info|DeviceResources.cpp:_CreateSwapChain|Multiplane Overlay 支持：否
+2022-11-05 17:57:13.712|info|App.cpp:_InitFrameSource|当前捕获模式：Graphics Capture
+2022-11-05 17:57:13.827|info|GraphicsCaptureFrameSource.cpp:Initialize|当前系统无 IsBorderRequired API
+2022-11-05 17:57:13.829|info|GraphicsCaptureFrameSource.cpp:Initialize|GraphicsCaptureFrameSource 初始化完成
+2022-11-05 17:57:13.829|info|App.cpp:_InitFrameSource|源窗口尺寸：1680x945
+2022-11-05 17:57:13.829|info|Utils.cpp:ReadFile|读取文件：.\cache\Lanczos_0162100735cc0daa6a164f08a3d361e76ac88c2426
+2022-11-05 17:57:13.830|info|EffectCacheManager.cpp:Load|已读取缓存 .\cache\Lanczos_0162100735cc0daa6a164f08a3d361e76ac88c2426
+2022-11-05 17:57:13.830|info|Renderer.cpp:operator ()|编译 effects\Lanczos.hlsl 用时 0.661 毫秒
+2022-11-05 17:57:13.832|info|CursorManager.cpp:Initialize|CursorManager 初始化完成
+2022-11-05 17:57:13.840|info|App.cpp:_RunMessageLoop|开始接收窗口消息
+2022-11-05 17:57:16.514|info|Renderer.cpp:_CheckSrcState|前台窗口已改变
+2022-11-05 17:57:16.514|info|Renderer.cpp:Render|源窗口状态改变，退出全屏
+2022-11-05 17:57:16.518|info|CursorManager.cpp:~CursorManager|CursorDrawer 已析构
+2022-11-05 17:57:16.556|info|DllMain.cpp:Run|即将退出
+2022-11-05 17:58:16.884|info|App.cpp:Initialize|正在初始化 App
+2022-11-05 17:58:16.884|info|App.cpp:_RegisterWndClasses|已注册主窗口类
+2022-11-05 17:58:16.884|info|App.cpp:_RegisterWndClasses|已注册 DDF 窗口类
+2022-11-05 17:58:16.884|info|App.cpp:Initialize|App 初始化成功
+2022-11-05 17:58:16.885|info|Utils.cpp:Initialize|Utils::Hasher 初始化成功
+2022-11-05 17:58:21.541|info|DllMain.cpp:Run|OS 版本：10.0.19042
+2022-11-05 17:58:21.541|info|DllMain.cpp:Run|源窗口标题：僋僫僪崙婰亂俢俴斉亃丂- 嫟捠侽侾 -
+2022-11-05 17:58:21.541|info|Config.cpp:Initialize|运行时配置:
+	IsAdjustCursorSpeed: false
+	IsDisableLowLatency: false
+	IsBreakpointMode: false
+	IsDisableWindowResizing: false
+	IsDisableDirectFlip: false
+	Is3DMode: false
+	AdapterIdx: -1
+	IsCropTitleBarOfUWP: false
+	GetMultiMonitorUsage: 0
+	IsNoCursor: false
+	IsDisableEffectCache: false
+	IsDisableVSync: false
+	IsSimulateExclusiveFullscreen: false
+	CursorInterpolationMode: 0
+	CropBorders: [0, 0, 0, 0]
+	IsShowFPS: false
+2022-11-05 17:58:21.549|info|App.cpp:_CreateHostWnd|主窗口尺寸：1920x1080
+2022-11-05 17:58:21.550|info|App.cpp:_CreateHostWnd|已创建主窗口
+2022-11-05 17:58:21.555|info|DeviceResources.cpp:Initialize|可变刷新率支持：是
+2022-11-05 17:58:21.581|info|DeviceResources.cpp:LogAdapter|当前图形适配器：
+	VendorId：0x1002
+	DeviceId：0x1636
+	描述：AMD Radeon(TM) Graphics
+2022-11-05 17:58:21.613|info|DeviceResources.cpp:Initialize|已创建 D3D Device
+	功能级别：11.1
+2022-11-05 17:58:21.645|info|DeviceResources.cpp:_CreateSwapChain|Hardware Composition 支持：否
+2022-11-05 17:58:21.645|info|DeviceResources.cpp:_CreateSwapChain|Multiplane Overlay 支持：否
+2022-11-05 17:58:21.645|info|App.cpp:_InitFrameSource|当前捕获模式：Graphics Capture
+2022-11-05 17:58:21.748|info|GraphicsCaptureFrameSource.cpp:Initialize|当前系统无 IsBorderRequired API
+2022-11-05 17:58:21.749|info|GraphicsCaptureFrameSource.cpp:Initialize|GraphicsCaptureFrameSource 初始化完成
+2022-11-05 17:58:21.749|info|App.cpp:_InitFrameSource|源窗口尺寸：1680x945
+2022-11-05 17:58:21.750|info|Utils.cpp:ReadFile|读取文件：.\cache\Lanczos_0162100735cc0daa6a164f08a3d361e76ac88c2426
+2022-11-05 17:58:21.751|info|EffectCacheManager.cpp:Load|已读取缓存 .\cache\Lanczos_0162100735cc0daa6a164f08a3d361e76ac88c2426
+2022-11-05 17:58:21.751|info|Renderer.cpp:operator ()|编译 effects\Lanczos.hlsl 用时 1.184 毫秒
+2022-11-05 17:58:21.753|info|CursorManager.cpp:Initialize|CursorManager 初始化完成
+2022-11-05 17:58:21.764|info|App.cpp:_RunMessageLoop|开始接收窗口消息
+2022-11-05 17:58:23.414|info|CursorManager.cpp:GetCursorTexture|已解析光标：0x10003
+	类型：Color
+2022-11-05 17:58:24.364|info|Renderer.cpp:_CheckSrcState|前台窗口已改变
+2022-11-05 17:58:24.364|info|Renderer.cpp:Render|源窗口状态改变，退出全屏
+2022-11-05 17:58:24.368|info|CursorManager.cpp:~CursorManager|CursorDrawer 已析构
+2022-11-05 17:58:24.398|info|DllMain.cpp:Run|即将退出
+2022-11-05 17:58:26.493|info|DllMain.cpp:Run|OS 版本：10.0.19042
+2022-11-05 17:58:26.493|info|DllMain.cpp:Run|源窗口标题：僋僫僪崙婰亂俢俴斉亃丂- 嫟捠侽侾 -
+2022-11-05 17:58:26.493|info|Config.cpp:Initialize|运行时配置:
+	IsAdjustCursorSpeed: false
+	IsDisableLowLatency: false
+	IsBreakpointMode: false
+	IsDisableWindowResizing: false
+	IsDisableDirectFlip: false
+	Is3DMode: false
+	AdapterIdx: -1
+	IsCropTitleBarOfUWP: false
+	GetMultiMonitorUsage: 0
+	IsNoCursor: false
+	IsDisableEffectCache: false
+	IsDisableVSync: false
+	IsSimulateExclusiveFullscreen: false
+	CursorInterpolationMode: 0
+	CropBorders: [0, 0, 0, 0]
+	IsShowFPS: false
+2022-11-05 17:58:26.500|info|App.cpp:_CreateHostWnd|主窗口尺寸：1920x1080
+2022-11-05 17:58:26.501|info|App.cpp:_CreateHostWnd|已创建主窗口
+2022-11-05 17:58:26.501|info|DeviceResources.cpp:Initialize|可变刷新率支持：是
+2022-11-05 17:58:26.525|info|DeviceResources.cpp:LogAdapter|当前图形适配器：
+	VendorId：0x1002
+	DeviceId：0x1636
+	描述：AMD Radeon(TM) Graphics
+2022-11-05 17:58:26.553|info|DeviceResources.cpp:Initialize|已创建 D3D Device
+	功能级别：11.1
+2022-11-05 17:58:26.559|info|DeviceResources.cpp:_CreateSwapChain|Hardware Composition 支持：否
+2022-11-05 17:58:26.559|info|DeviceResources.cpp:_CreateSwapChain|Multiplane Overlay 支持：否
+2022-11-05 17:58:26.559|info|App.cpp:_InitFrameSource|当前捕获模式：Graphics Capture
+2022-11-05 17:58:26.655|info|GraphicsCaptureFrameSource.cpp:Initialize|当前系统无 IsBorderRequired API
+2022-11-05 17:58:26.657|info|GraphicsCaptureFrameSource.cpp:Initialize|GraphicsCaptureFrameSource 初始化完成
+2022-11-05 17:58:26.657|info|App.cpp:_InitFrameSource|源窗口尺寸：1680x945
+2022-11-05 17:58:26.657|info|EffectCacheManager.cpp:_LoadFromMemCache|已读取缓存 .\cache\Lanczos_0162100735cc0daa6a164f08a3d361e76ac88c2426
+2022-11-05 17:58:26.657|info|Renderer.cpp:operator ()|编译 effects\Lanczos.hlsl 用时 0.33 毫秒
+2022-11-05 17:58:26.659|info|CursorManager.cpp:Initialize|CursorManager 初始化完成
+2022-11-05 17:58:26.666|info|App.cpp:_RunMessageLoop|开始接收窗口消息
+2022-11-05 17:58:30.464|info|Renderer.cpp:_CheckSrcState|前台窗口已改变
+2022-11-05 17:58:30.464|info|Renderer.cpp:Render|源窗口状态改变，退出全屏
+2022-11-05 17:58:30.467|info|CursorManager.cpp:~CursorManager|CursorDrawer 已析构
+2022-11-05 17:58:30.508|info|DllMain.cpp:Run|即将退出
+2022-11-05 17:58:32.515|info|DllMain.cpp:Run|OS 版本：10.0.19042
+2022-11-05 17:58:32.515|info|DllMain.cpp:Run|源窗口标题：僋僫僪崙婰亂俢俴斉亃丂- 嫟捠侽侾 -
+2022-11-05 17:58:32.515|info|Config.cpp:Initialize|运行时配置:
+	IsAdjustCursorSpeed: false
+	IsDisableLowLatency: false
+	IsBreakpointMode: false
+	IsDisableWindowResizing: false
+	IsDisableDirectFlip: false
+	Is3DMode: false
+	AdapterIdx: -1
+	IsCropTitleBarOfUWP: false
+	GetMultiMonitorUsage: 0
+	IsNoCursor: false
+	IsDisableEffectCache: false
+	IsDisableVSync: false
+	IsSimulateExclusiveFullscreen: false
+	CursorInterpolationMode: 0
+	CropBorders: [0, 0, 0, 0]
+	IsShowFPS: false
+2022-11-05 17:58:32.521|info|App.cpp:_CreateHostWnd|主窗口尺寸：1920x1080
+2022-11-05 17:58:32.521|info|App.cpp:_CreateHostWnd|已创建主窗口
+2022-11-05 17:58:32.522|info|DeviceResources.cpp:Initialize|可变刷新率支持：是
+2022-11-05 17:58:32.545|info|DeviceResources.cpp:LogAdapter|当前图形适配器：
+	VendorId：0x1002
+	DeviceId：0x1636
+	描述：AMD Radeon(TM) Graphics
+2022-11-05 17:58:32.570|info|DeviceResources.cpp:Initialize|已创建 D3D Device
+	功能级别：11.1
+2022-11-05 17:58:32.576|info|DeviceResources.cpp:_CreateSwapChain|Hardware Composition 支持：否
+2022-11-05 17:58:32.576|info|DeviceResources.cpp:_CreateSwapChain|Multiplane Overlay 支持：否
+2022-11-05 17:58:32.576|info|App.cpp:_InitFrameSource|当前捕获模式：Graphics Capture
+2022-11-05 17:58:32.669|info|GraphicsCaptureFrameSource.cpp:Initialize|当前系统无 IsBorderRequired API
+2022-11-05 17:58:32.670|info|GraphicsCaptureFrameSource.cpp:Initialize|GraphicsCaptureFrameSource 初始化完成
+2022-11-05 17:58:32.670|info|App.cpp:_InitFrameSource|源窗口尺寸：1680x945
+2022-11-05 17:58:32.670|info|EffectCacheManager.cpp:_LoadFromMemCache|已读取缓存 .\cache\Lanczos_0162100735cc0daa6a164f08a3d361e76ac88c2426
+2022-11-05 17:58:32.670|info|Renderer.cpp:operator ()|编译 effects\Lanczos.hlsl 用时 0.263 毫秒
+2022-11-05 17:58:32.672|info|CursorManager.cpp:Initialize|CursorManager 初始化完成
+2022-11-05 17:58:32.678|info|App.cpp:_RunMessageLoop|开始接收窗口消息
+2022-11-05 17:58:33.877|info|Renderer.cpp:_CheckSrcState|前台窗口已改变
+2022-11-05 17:58:33.877|info|Renderer.cpp:Render|源窗口状态改变，退出全屏
+2022-11-05 17:58:33.884|info|CursorManager.cpp:~CursorManager|CursorDrawer 已析构
+2022-11-05 17:58:33.906|info|DllMain.cpp:Run|即将退出
+2022-11-05 17:58:35.872|info|DllMain.cpp:Run|OS 版本：10.0.19042
+2022-11-05 17:58:35.872|info|DllMain.cpp:Run|源窗口标题：僋僫僪崙婰亂俢俴斉亃丂- 嫟捠侽侾 -
+2022-11-05 17:58:35.872|info|Config.cpp:Initialize|运行时配置:
+	IsAdjustCursorSpeed: false
+	IsDisableLowLatency: false
+	IsBreakpointMode: false
+	IsDisableWindowResizing: false
+	IsDisableDirectFlip: false
+	Is3DMode: false
+	AdapterIdx: -1
+	IsCropTitleBarOfUWP: false
+	GetMultiMonitorUsage: 0
+	IsNoCursor: false
+	IsDisableEffectCache: false
+	IsDisableVSync: false
+	IsSimulateExclusiveFullscreen: false
+	CursorInterpolationMode: 0
+	CropBorders: [0, 0, 0, 0]
+	IsShowFPS: false
+2022-11-05 17:58:35.880|info|App.cpp:_CreateHostWnd|主窗口尺寸：1920x1080
+2022-11-05 17:58:35.881|info|App.cpp:_CreateHostWnd|已创建主窗口
+2022-11-05 17:58:35.881|info|DeviceResources.cpp:Initialize|可变刷新率支持：是
+2022-11-05 17:58:35.904|info|DeviceResources.cpp:LogAdapter|当前图形适配器：
+	VendorId：0x1002
+	DeviceId：0x1636
+	描述：AMD Radeon(TM) Graphics
+2022-11-05 17:58:35.940|info|DeviceResources.cpp:Initialize|已创建 D3D Device
+	功能级别：11.1
+2022-11-05 17:58:35.942|info|DeviceResources.cpp:_CreateSwapChain|Hardware Composition 支持：否
+2022-11-05 17:58:35.942|info|DeviceResources.cpp:_CreateSwapChain|Multiplane Overlay 支持：否
+2022-11-05 17:58:35.942|info|App.cpp:_InitFrameSource|当前捕获模式：Graphics Capture
+2022-11-05 17:58:36.049|info|GraphicsCaptureFrameSource.cpp:Initialize|当前系统无 IsBorderRequired API
+2022-11-05 17:58:36.051|info|GraphicsCaptureFrameSource.cpp:Initialize|GraphicsCaptureFrameSource 初始化完成
+2022-11-05 17:58:36.051|info|App.cpp:_InitFrameSource|源窗口尺寸：1680x945
+2022-11-05 17:58:36.051|info|EffectCacheManager.cpp:_LoadFromMemCache|已读取缓存 .\cache\Lanczos_0162100735cc0daa6a164f08a3d361e76ac88c2426
+2022-11-05 17:58:36.051|info|Renderer.cpp:operator ()|编译 effects\Lanczos.hlsl 用时 0.274 毫秒
+2022-11-05 17:58:36.053|info|CursorManager.cpp:Initialize|CursorManager 初始化完成
+2022-11-05 17:58:36.058|info|App.cpp:_RunMessageLoop|开始接收窗口消息
+2022-11-05 17:58:36.728|info|Renderer.cpp:_CheckSrcState|前台窗口已改变
+2022-11-05 17:58:36.728|info|Renderer.cpp:Render|源窗口状态改变，退出全屏
+2022-11-05 17:58:36.737|info|CursorManager.cpp:~CursorManager|CursorDrawer 已析构
+2022-11-05 17:58:36.759|info|DllMain.cpp:Run|即将退出
+2022-11-05 17:58:38.146|info|DllMain.cpp:Run|OS 版本：10.0.19042
+2022-11-05 17:58:38.147|info|DllMain.cpp:Run|源窗口标题：僋僫僪崙婰亂俢俴斉亃丂- 嫟捠侽侾 -
+2022-11-05 17:58:38.147|info|Config.cpp:Initialize|运行时配置:
+	IsAdjustCursorSpeed: false
+	IsDisableLowLatency: false
+	IsBreakpointMode: false
+	IsDisableWindowResizing: false
+	IsDisableDirectFlip: false
+	Is3DMode: false
+	AdapterIdx: -1
+	IsCropTitleBarOfUWP: false
+	GetMultiMonitorUsage: 0
+	IsNoCursor: false
+	IsDisableEffectCache: false
+	IsDisableVSync: false
+	IsSimulateExclusiveFullscreen: false
+	CursorInterpolationMode: 0
+	CropBorders: [0, 0, 0, 0]
+	IsShowFPS: false
+2022-11-05 17:58:38.152|info|App.cpp:_CreateHostWnd|主窗口尺寸：1920x1080
+2022-11-05 17:58:38.153|info|App.cpp:_CreateHostWnd|已创建主窗口
+2022-11-05 17:58:38.153|info|DeviceResources.cpp:Initialize|可变刷新率支持：是
+2022-11-05 17:58:38.176|info|DeviceResources.cpp:LogAdapter|当前图形适配器：
+	VendorId：0x1002
+	DeviceId：0x1636
+	描述：AMD Radeon(TM) Graphics
+2022-11-05 17:58:38.203|info|DeviceResources.cpp:Initialize|已创建 D3D Device
+	功能级别：11.1
+2022-11-05 17:58:38.209|info|DeviceResources.cpp:_CreateSwapChain|Hardware Composition 支持：否
+2022-11-05 17:58:38.209|info|DeviceResources.cpp:_CreateSwapChain|Multiplane Overlay 支持：否
+2022-11-05 17:58:38.209|info|App.cpp:_InitFrameSource|当前捕获模式：Graphics Capture
+2022-11-05 17:58:38.307|info|GraphicsCaptureFrameSource.cpp:Initialize|当前系统无 IsBorderRequired API
+2022-11-05 17:58:38.308|info|GraphicsCaptureFrameSource.cpp:Initialize|GraphicsCaptureFrameSource 初始化完成
+2022-11-05 17:58:38.308|info|App.cpp:_InitFrameSource|源窗口尺寸：1680x945
+2022-11-05 17:58:38.309|info|EffectCacheManager.cpp:_LoadFromMemCache|已读取缓存 .\cache\Lanczos_0162100735cc0daa6a164f08a3d361e76ac88c2426
+2022-11-05 17:58:38.309|info|Renderer.cpp:operator ()|编译 effects\Lanczos.hlsl 用时 0.329 毫秒
+2022-11-05 17:58:38.312|info|CursorManager.cpp:Initialize|CursorManager 初始化完成
+2022-11-05 17:58:38.319|info|App.cpp:_RunMessageLoop|开始接收窗口消息
+2022-11-05 17:58:39.865|info|CursorManager.cpp:GetCursorTexture|已解析光标：0x10003
+	类型：Color
+2022-11-05 17:58:45.929|info|Renderer.cpp:_CheckSrcState|前台窗口已改变
+2022-11-05 17:58:45.929|info|Renderer.cpp:Render|源窗口状态改变，退出全屏
+2022-11-05 17:58:45.933|info|CursorManager.cpp:~CursorManager|CursorDrawer 已析构
+2022-11-05 17:58:45.966|info|DllMain.cpp:Run|即将退出
+2022-11-05 17:58:46.801|info|DllMain.cpp:Run|OS 版本：10.0.19042
+2022-11-05 17:58:46.801|info|DllMain.cpp:Run|源窗口标题：僋僫僪崙婰亂俢俴斉亃丂- 嫟捠侽侾 -
+2022-11-05 17:58:46.801|info|Config.cpp:Initialize|运行时配置:
+	IsAdjustCursorSpeed: false
+	IsDisableLowLatency: false
+	IsBreakpointMode: false
+	IsDisableWindowResizing: false
+	IsDisableDirectFlip: false
+	Is3DMode: false
+	AdapterIdx: -1
+	IsCropTitleBarOfUWP: false
+	GetMultiMonitorUsage: 0
+	IsNoCursor: false
+	IsDisableEffectCache: false
+	IsDisableVSync: false
+	IsSimulateExclusiveFullscreen: false
+	CursorInterpolationMode: 0
+	CropBorders: [0, 0, 0, 0]
+	IsShowFPS: false
+2022-11-05 17:58:46.807|info|App.cpp:_CreateHostWnd|主窗口尺寸：1920x1080
+2022-11-05 17:58:46.807|info|App.cpp:_CreateHostWnd|已创建主窗口
+2022-11-05 17:58:46.808|info|DeviceResources.cpp:Initialize|可变刷新率支持：是
+2022-11-05 17:58:46.837|info|DeviceResources.cpp:LogAdapter|当前图形适配器：
+	VendorId：0x1002
+	DeviceId：0x1636
+	描述：AMD Radeon(TM) Graphics
+2022-11-05 17:58:46.863|info|DeviceResources.cpp:Initialize|已创建 D3D Device
+	功能级别：11.1
+2022-11-05 17:58:46.875|info|DeviceResources.cpp:_CreateSwapChain|Hardware Composition 支持：否
+2022-11-05 17:58:46.875|info|DeviceResources.cpp:_CreateSwapChain|Multiplane Overlay 支持：否
+2022-11-05 17:58:46.875|info|App.cpp:_InitFrameSource|当前捕获模式：Graphics Capture
+2022-11-05 17:58:46.974|info|GraphicsCaptureFrameSource.cpp:Initialize|当前系统无 IsBorderRequired API
+2022-11-05 17:58:46.975|info|GraphicsCaptureFrameSource.cpp:Initialize|GraphicsCaptureFrameSource 初始化完成
+2022-11-05 17:58:46.975|info|App.cpp:_InitFrameSource|源窗口尺寸：1680x945
+2022-11-05 17:58:46.976|info|EffectCacheManager.cpp:_LoadFromMemCache|已读取缓存 .\cache\Lanczos_0162100735cc0daa6a164f08a3d361e76ac88c2426
+2022-11-05 17:58:46.976|info|Renderer.cpp:operator ()|编译 effects\Lanczos.hlsl 用时 0.354 毫秒
+2022-11-05 17:58:46.979|info|CursorManager.cpp:Initialize|CursorManager 初始化完成
+2022-11-05 17:58:46.984|info|App.cpp:_RunMessageLoop|开始接收窗口消息
+2022-11-05 17:58:47.946|info|Renderer.cpp:_CheckSrcState|前台窗口已改变
+2022-11-05 17:58:47.946|info|Renderer.cpp:Render|源窗口状态改变，退出全屏
+2022-11-05 17:58:47.950|info|CursorManager.cpp:~CursorManager|CursorDrawer 已析构
+2022-11-05 17:58:47.994|info|DllMain.cpp:Run|即将退出
+2022-11-05 17:59:20.830|info|App.cpp:Initialize|正在初始化 App
+2022-11-05 17:59:20.830|info|App.cpp:_RegisterWndClasses|已注册主窗口类
+2022-11-05 17:59:20.830|info|App.cpp:_RegisterWndClasses|已注册 DDF 窗口类
+2022-11-05 17:59:20.830|info|App.cpp:Initialize|App 初始化成功
+2022-11-05 17:59:20.830|info|Utils.cpp:Initialize|Utils::Hasher 初始化成功
+2022-11-05 17:59:21.249|info|DllMain.cpp:Run|OS 版本：10.0.19042
+2022-11-05 17:59:21.249|info|DllMain.cpp:Run|源窗口标题：僋僫僪崙婰亂俢俴斉亃丂- 嫟捠侽侾 -
+2022-11-05 17:59:21.249|info|Config.cpp:Initialize|运行时配置:
+	IsAdjustCursorSpeed: false
+	IsDisableLowLatency: false
+	IsBreakpointMode: false
+	IsDisableWindowResizing: false
+	IsDisableDirectFlip: false
+	Is3DMode: false
+	AdapterIdx: -1
+	IsCropTitleBarOfUWP: false
+	GetMultiMonitorUsage: 0
+	IsNoCursor: false
+	IsDisableEffectCache: false
+	IsDisableVSync: false
+	IsSimulateExclusiveFullscreen: false
+	CursorInterpolationMode: 0
+	CropBorders: [0, 0, 0, 0]
+	IsShowFPS: false
+2022-11-05 17:59:21.255|info|App.cpp:_CreateHostWnd|主窗口尺寸：1920x1080
+2022-11-05 17:59:21.256|info|App.cpp:_CreateHostWnd|已创建主窗口
+2022-11-05 17:59:21.259|info|DeviceResources.cpp:Initialize|可变刷新率支持：是
+2022-11-05 17:59:21.283|info|DeviceResources.cpp:LogAdapter|当前图形适配器：
+	VendorId：0x1002
+	DeviceId：0x1636
+	描述：AMD Radeon(TM) Graphics
+2022-11-05 17:59:21.312|info|DeviceResources.cpp:Initialize|已创建 D3D Device
+	功能级别：11.1
+2022-11-05 17:59:21.344|info|DeviceResources.cpp:_CreateSwapChain|Hardware Composition 支持：否
+2022-11-05 17:59:21.344|info|DeviceResources.cpp:_CreateSwapChain|Multiplane Overlay 支持：否
+2022-11-05 17:59:21.344|info|App.cpp:_InitFrameSource|当前捕获模式：Graphics Capture
+2022-11-05 17:59:21.450|info|GraphicsCaptureFrameSource.cpp:Initialize|当前系统无 IsBorderRequired API
+2022-11-05 17:59:21.451|info|GraphicsCaptureFrameSource.cpp:Initialize|GraphicsCaptureFrameSource 初始化完成
+2022-11-05 17:59:21.451|info|App.cpp:_InitFrameSource|源窗口尺寸：1680x945
+2022-11-05 17:59:21.452|info|Utils.cpp:ReadFile|读取文件：.\cache\Lanczos_0162100735cc0daa6a164f08a3d361e76ac88c2426
+2022-11-05 17:59:21.452|info|EffectCacheManager.cpp:Load|已读取缓存 .\cache\Lanczos_0162100735cc0daa6a164f08a3d361e76ac88c2426
+2022-11-05 17:59:21.452|info|Renderer.cpp:operator ()|编译 effects\Lanczos.hlsl 用时 0.719 毫秒
+2022-11-05 17:59:21.454|info|CursorManager.cpp:Initialize|CursorManager 初始化完成
+2022-11-05 17:59:21.466|info|App.cpp:_RunMessageLoop|开始接收窗口消息
+2022-11-05 17:59:21.482|info|CursorManager.cpp:GetCursorTexture|已解析光标：0x10003
+	类型：Color
+2022-11-05 17:59:25.963|info|CursorManager.cpp:GetCursorTexture|已解析光标：0x10007
+	类型：Color
+2022-11-05 17:59:28.760|info|Renderer.cpp:_CheckSrcState|前台窗口已改变
+2022-11-05 17:59:28.760|info|Renderer.cpp:Render|源窗口状态改变，退出全屏
+2022-11-05 17:59:28.765|info|CursorManager.cpp:~CursorManager|CursorDrawer 已析构
+2022-11-05 17:59:28.791|info|DllMain.cpp:Run|即将退出
+2022-11-05 17:59:55.345|info|App.cpp:Initialize|正在初始化 App
+2022-11-05 17:59:55.345|info|App.cpp:_RegisterWndClasses|已注册主窗口类
+2022-11-05 17:59:55.345|info|App.cpp:_RegisterWndClasses|已注册 DDF 窗口类
+2022-11-05 17:59:55.345|info|App.cpp:Initialize|App 初始化成功
+2022-11-05 17:59:55.345|info|Utils.cpp:Initialize|Utils::Hasher 初始化成功
+2022-11-05 17:59:58.331|info|DllMain.cpp:Run|OS 版本：10.0.19042
+2022-11-05 17:59:58.331|info|DllMain.cpp:Run|源窗口标题：僋僫僪崙婰亂俢俴斉亃丂- 嫟捠侽侾 -
+2022-11-05 17:59:58.331|info|Config.cpp:Initialize|运行时配置:
+	IsAdjustCursorSpeed: false
+	IsDisableLowLatency: false
+	IsBreakpointMode: false
+	IsDisableWindowResizing: false
+	IsDisableDirectFlip: false
+	Is3DMode: false
+	AdapterIdx: -1
+	IsCropTitleBarOfUWP: false
+	GetMultiMonitorUsage: 0
+	IsNoCursor: false
+	IsDisableEffectCache: false
+	IsDisableVSync: false
+	IsSimulateExclusiveFullscreen: false
+	CursorInterpolationMode: 0
+	CropBorders: [0, 0, 0, 0]
+	IsShowFPS: false
+2022-11-05 17:59:58.336|info|App.cpp:_CreateHostWnd|主窗口尺寸：1920x1080
+2022-11-05 17:59:58.337|info|App.cpp:_CreateHostWnd|已创建主窗口
+2022-11-05 17:59:58.340|info|DeviceResources.cpp:Initialize|可变刷新率支持：是
+2022-11-05 17:59:58.365|info|DeviceResources.cpp:LogAdapter|当前图形适配器：
+	VendorId：0x1002
+	DeviceId：0x1636
+	描述：AMD Radeon(TM) Graphics
+2022-11-05 17:59:58.398|info|DeviceResources.cpp:Initialize|已创建 D3D Device
+	功能级别：11.1
+2022-11-05 17:59:58.410|info|DeviceResources.cpp:_CreateSwapChain|Hardware Composition 支持：否
+2022-11-05 17:59:58.410|info|DeviceResources.cpp:_CreateSwapChain|Multiplane Overlay 支持：否
+2022-11-05 17:59:58.410|info|App.cpp:_InitFrameSource|当前捕获模式：Graphics Capture
+2022-11-05 17:59:58.514|info|GraphicsCaptureFrameSource.cpp:Initialize|当前系统无 IsBorderRequired API
+2022-11-05 17:59:58.515|info|GraphicsCaptureFrameSource.cpp:Initialize|GraphicsCaptureFrameSource 初始化完成
+2022-11-05 17:59:58.515|info|App.cpp:_InitFrameSource|源窗口尺寸：1680x945
+2022-11-05 17:59:58.515|info|Utils.cpp:ReadFile|读取文件：.\cache\Lanczos_0162100735cc0daa6a164f08a3d361e76ac88c2426
+2022-11-05 17:59:58.516|info|EffectCacheManager.cpp:Load|已读取缓存 .\cache\Lanczos_0162100735cc0daa6a164f08a3d361e76ac88c2426
+2022-11-05 17:59:58.516|info|Renderer.cpp:operator ()|编译 effects\Lanczos.hlsl 用时 0.654 毫秒
+2022-11-05 17:59:58.519|info|CursorManager.cpp:Initialize|CursorManager 初始化完成
+2022-11-05 17:59:58.527|info|App.cpp:_RunMessageLoop|开始接收窗口消息
+2022-11-05 18:00:04.579|info|Renderer.cpp:_CheckSrcState|前台窗口已改变
+2022-11-05 18:00:04.579|info|Renderer.cpp:Render|源窗口状态改变，退出全屏
+2022-11-05 18:00:04.582|info|CursorManager.cpp:~CursorManager|CursorDrawer 已析构
+2022-11-05 18:00:04.612|info|DllMain.cpp:Run|即将退出
+2022-11-05 18:01:15.929|info|App.cpp:Initialize|正在初始化 App
+2022-11-05 18:01:15.929|info|App.cpp:_RegisterWndClasses|已注册主窗口类
+2022-11-05 18:01:15.929|info|App.cpp:_RegisterWndClasses|已注册 DDF 窗口类
+2022-11-05 18:01:15.929|info|App.cpp:Initialize|App 初始化成功
+2022-11-05 18:01:15.929|info|Utils.cpp:Initialize|Utils::Hasher 初始化成功
+2022-11-05 18:01:17.595|info|DllMain.cpp:Run|OS 版本：10.0.19042
+2022-11-05 18:01:17.595|info|DllMain.cpp:Run|源窗口标题：僋僫僪崙婰亂俢俴斉亃丂- 嫟捠侽侾 -
+2022-11-05 18:01:17.595|info|Config.cpp:Initialize|运行时配置:
+	IsAdjustCursorSpeed: false
+	IsDisableLowLatency: false
+	IsBreakpointMode: false
+	IsDisableWindowResizing: false
+	IsDisableDirectFlip: false
+	Is3DMode: false
+	AdapterIdx: -1
+	IsCropTitleBarOfUWP: false
+	GetMultiMonitorUsage: 0
+	IsNoCursor: false
+	IsDisableEffectCache: false
+	IsDisableVSync: false
+	IsSimulateExclusiveFullscreen: false
+	CursorInterpolationMode: 0
+	CropBorders: [0, 0, 0, 0]
+	IsShowFPS: false
+2022-11-05 18:01:17.602|info|App.cpp:_CreateHostWnd|主窗口尺寸：1920x1080
+2022-11-05 18:01:17.602|info|App.cpp:_CreateHostWnd|已创建主窗口
+2022-11-05 18:01:17.607|info|DeviceResources.cpp:Initialize|可变刷新率支持：是
+2022-11-05 18:01:17.632|info|DeviceResources.cpp:LogAdapter|当前图形适配器：
+	VendorId：0x1002
+	DeviceId：0x1636
+	描述：AMD Radeon(TM) Graphics
+2022-11-05 18:01:17.662|info|DeviceResources.cpp:Initialize|已创建 D3D Device
+	功能级别：11.1
+2022-11-05 18:01:17.677|info|DeviceResources.cpp:_CreateSwapChain|Hardware Composition 支持：否
+2022-11-05 18:01:17.677|info|DeviceResources.cpp:_CreateSwapChain|Multiplane Overlay 支持：否
+2022-11-05 18:01:17.677|info|App.cpp:_InitFrameSource|当前捕获模式：Graphics Capture
+2022-11-05 18:01:17.787|info|GraphicsCaptureFrameSource.cpp:Initialize|当前系统无 IsBorderRequired API
+2022-11-05 18:01:17.788|info|GraphicsCaptureFrameSource.cpp:Initialize|GraphicsCaptureFrameSource 初始化完成
+2022-11-05 18:01:17.788|info|App.cpp:_InitFrameSource|源窗口尺寸：1680x945
+2022-11-05 18:01:17.789|info|Utils.cpp:ReadFile|读取文件：.\cache\Lanczos_0162100735cc0daa6a164f08a3d361e76ac88c2426
+2022-11-05 18:01:17.790|info|EffectCacheManager.cpp:Load|已读取缓存 .\cache\Lanczos_0162100735cc0daa6a164f08a3d361e76ac88c2426
+2022-11-05 18:01:17.790|info|Renderer.cpp:operator ()|编译 effects\Lanczos.hlsl 用时 1.324 毫秒
+2022-11-05 18:01:17.792|info|CursorManager.cpp:Initialize|CursorManager 初始化完成
+2022-11-05 18:01:17.803|info|App.cpp:_RunMessageLoop|开始接收窗口消息
+2022-11-05 18:01:18.679|info|Renderer.cpp:_CheckSrcState|前台窗口已改变
+2022-11-05 18:01:18.679|info|Renderer.cpp:Render|源窗口状态改变，退出全屏
+2022-11-05 18:01:18.683|info|CursorManager.cpp:~CursorManager|CursorDrawer 已析构
+2022-11-05 18:01:18.712|info|DllMain.cpp:Run|即将退出
+2022-11-05 18:01:19.741|info|DllMain.cpp:Run|OS 版本：10.0.19042
+2022-11-05 18:01:19.741|info|DllMain.cpp:Run|源窗口标题：僋僫僪崙婰亂俢俴斉亃丂- 嫟捠侽侾 -
+2022-11-05 18:01:19.741|info|Config.cpp:Initialize|运行时配置:
+	IsAdjustCursorSpeed: false
+	IsDisableLowLatency: false
+	IsBreakpointMode: false
+	IsDisableWindowResizing: false
+	IsDisableDirectFlip: false
+	Is3DMode: false
+	AdapterIdx: -1
+	IsCropTitleBarOfUWP: false
+	GetMultiMonitorUsage: 0
+	IsNoCursor: false
+	IsDisableEffectCache: false
+	IsDisableVSync: false
+	IsSimulateExclusiveFullscreen: false
+	CursorInterpolationMode: 0
+	CropBorders: [0, 0, 0, 0]
+	IsShowFPS: false
+2022-11-05 18:01:19.749|info|App.cpp:_CreateHostWnd|主窗口尺寸：1920x1080
+2022-11-05 18:01:19.749|info|App.cpp:_CreateHostWnd|已创建主窗口
+2022-11-05 18:01:19.749|info|DeviceResources.cpp:Initialize|可变刷新率支持：是
+2022-11-05 18:01:19.771|info|DeviceResources.cpp:LogAdapter|当前图形适配器：
+	VendorId：0x1002
+	DeviceId：0x1636
+	描述：AMD Radeon(TM) Graphics
+2022-11-05 18:01:19.797|info|DeviceResources.cpp:Initialize|已创建 D3D Device
+	功能级别：11.1
+2022-11-05 18:01:19.809|info|DeviceResources.cpp:_CreateSwapChain|Hardware Composition 支持：否
+2022-11-05 18:01:19.809|info|DeviceResources.cpp:_CreateSwapChain|Multiplane Overlay 支持：否
+2022-11-05 18:01:19.809|info|App.cpp:_InitFrameSource|当前捕获模式：Graphics Capture
+2022-11-05 18:01:19.902|info|GraphicsCaptureFrameSource.cpp:Initialize|当前系统无 IsBorderRequired API
+2022-11-05 18:01:19.904|info|GraphicsCaptureFrameSource.cpp:Initialize|GraphicsCaptureFrameSource 初始化完成
+2022-11-05 18:01:19.904|info|App.cpp:_InitFrameSource|源窗口尺寸：1680x945
+2022-11-05 18:01:19.904|info|EffectCacheManager.cpp:_LoadFromMemCache|已读取缓存 .\cache\Lanczos_0162100735cc0daa6a164f08a3d361e76ac88c2426
+2022-11-05 18:01:19.904|info|Renderer.cpp:operator ()|编译 effects\Lanczos.hlsl 用时 0.422 毫秒
+2022-11-05 18:01:19.908|info|CursorManager.cpp:Initialize|CursorManager 初始化完成
+2022-11-05 18:01:19.913|info|App.cpp:_RunMessageLoop|开始接收窗口消息
+2022-11-05 18:01:21.163|info|Renderer.cpp:_CheckSrcState|前台窗口已改变
+2022-11-05 18:01:21.163|info|Renderer.cpp:Render|源窗口状态改变，退出全屏
+2022-11-05 18:01:21.166|info|CursorManager.cpp:~CursorManager|CursorDrawer 已析构
+2022-11-05 18:01:21.193|info|DllMain.cpp:Run|即将退出
+2022-11-05 18:01:25.101|info|DllMain.cpp:Run|OS 版本：10.0.19042
+2022-11-05 18:01:25.101|info|DllMain.cpp:Run|源窗口标题：僋僫僪崙婰亂俢俴斉亃丂- 嫟捠侽侾 -
+2022-11-05 18:01:25.101|info|Config.cpp:Initialize|运行时配置:
+	IsAdjustCursorSpeed: false
+	IsDisableLowLatency: false
+	IsBreakpointMode: false
+	IsDisableWindowResizing: false
+	IsDisableDirectFlip: false
+	Is3DMode: false
+	AdapterIdx: -1
+	IsCropTitleBarOfUWP: false
+	GetMultiMonitorUsage: 0
+	IsNoCursor: false
+	IsDisableEffectCache: false
+	IsDisableVSync: false
+	IsSimulateExclusiveFullscreen: false
+	CursorInterpolationMode: 0
+	CropBorders: [0, 0, 0, 0]
+	IsShowFPS: false
+2022-11-05 18:01:25.105|info|App.cpp:_CreateHostWnd|主窗口尺寸：1920x1080
+2022-11-05 18:01:25.106|info|App.cpp:_CreateHostWnd|已创建主窗口
+2022-11-05 18:01:25.106|info|DeviceResources.cpp:Initialize|可变刷新率支持：是
+2022-11-05 18:01:25.131|info|DeviceResources.cpp:LogAdapter|当前图形适配器：
+	VendorId：0x1002
+	DeviceId：0x1636
+	描述：AMD Radeon(TM) Graphics
+2022-11-05 18:01:25.156|info|DeviceResources.cpp:Initialize|已创建 D3D Device
+	功能级别：11.1
+2022-11-05 18:01:25.159|info|DeviceResources.cpp:_CreateSwapChain|Hardware Composition 支持：否
+2022-11-05 18:01:25.159|info|DeviceResources.cpp:_CreateSwapChain|Multiplane Overlay 支持：否
+2022-11-05 18:01:25.159|info|App.cpp:_InitFrameSource|当前捕获模式：Graphics Capture
+2022-11-05 18:01:25.254|info|GraphicsCaptureFrameSource.cpp:Initialize|当前系统无 IsBorderRequired API
+2022-11-05 18:01:25.256|info|GraphicsCaptureFrameSource.cpp:Initialize|GraphicsCaptureFrameSource 初始化完成
+2022-11-05 18:01:25.256|info|App.cpp:_InitFrameSource|源窗口尺寸：1680x945
+2022-11-05 18:01:25.256|info|EffectCacheManager.cpp:_LoadFromMemCache|已读取缓存 .\cache\Lanczos_0162100735cc0daa6a164f08a3d361e76ac88c2426
+2022-11-05 18:01:25.256|info|Renderer.cpp:operator ()|编译 effects\Lanczos.hlsl 用时 0.363 毫秒
+2022-11-05 18:01:25.259|info|CursorManager.cpp:Initialize|CursorManager 初始化完成
+2022-11-05 18:01:25.265|info|App.cpp:_RunMessageLoop|开始接收窗口消息
+2022-11-05 18:01:26.763|info|Renderer.cpp:_CheckSrcState|前台窗口已改变
+2022-11-05 18:01:26.763|info|Renderer.cpp:Render|源窗口状态改变，退出全屏
+2022-11-05 18:01:26.770|info|CursorManager.cpp:~CursorManager|CursorDrawer 已析构
+2022-11-05 18:01:26.797|info|DllMain.cpp:Run|即将退出
+2022-11-05 18:01:28.566|info|DllMain.cpp:Run|OS 版本：10.0.19042
+2022-11-05 18:01:28.566|info|DllMain.cpp:Run|源窗口标题：僋僫僪崙婰亂俢俴斉亃丂- 嫟捠侽侾 -
+2022-11-05 18:01:28.566|info|Config.cpp:Initialize|运行时配置:
+	IsAdjustCursorSpeed: false
+	IsDisableLowLatency: false
+	IsBreakpointMode: false
+	IsDisableWindowResizing: false
+	IsDisableDirectFlip: false
+	Is3DMode: false
+	AdapterIdx: -1
+	IsCropTitleBarOfUWP: false
+	GetMultiMonitorUsage: 0
+	IsNoCursor: false
+	IsDisableEffectCache: false
+	IsDisableVSync: false
+	IsSimulateExclusiveFullscreen: false
+	CursorInterpolationMode: 0
+	CropBorders: [0, 0, 0, 0]
+	IsShowFPS: false
+2022-11-05 18:01:28.572|info|App.cpp:_CreateHostWnd|主窗口尺寸：1920x1080
+2022-11-05 18:01:28.572|info|App.cpp:_CreateHostWnd|已创建主窗口
+2022-11-05 18:01:28.572|info|DeviceResources.cpp:Initialize|可变刷新率支持：是
+2022-11-05 18:01:28.598|info|DeviceResources.cpp:LogAdapter|当前图形适配器：
+	VendorId：0x1002
+	DeviceId：0x1636
+	描述：AMD Radeon(TM) Graphics
+2022-11-05 18:01:28.626|info|DeviceResources.cpp:Initialize|已创建 D3D Device
+	功能级别：11.1
+2022-11-05 18:01:28.643|info|DeviceResources.cpp:_CreateSwapChain|Hardware Composition 支持：否
+2022-11-05 18:01:28.643|info|DeviceResources.cpp:_CreateSwapChain|Multiplane Overlay 支持：否
+2022-11-05 18:01:28.643|info|App.cpp:_InitFrameSource|当前捕获模式：Graphics Capture
+2022-11-05 18:01:28.739|info|GraphicsCaptureFrameSource.cpp:Initialize|当前系统无 IsBorderRequired API
+2022-11-05 18:01:28.740|info|GraphicsCaptureFrameSource.cpp:Initialize|GraphicsCaptureFrameSource 初始化完成
+2022-11-05 18:01:28.740|info|App.cpp:_InitFrameSource|源窗口尺寸：1680x945
+2022-11-05 18:01:28.741|info|EffectCacheManager.cpp:_LoadFromMemCache|已读取缓存 .\cache\Lanczos_0162100735cc0daa6a164f08a3d361e76ac88c2426
+2022-11-05 18:01:28.741|info|Renderer.cpp:operator ()|编译 effects\Lanczos.hlsl 用时 0.262 毫秒
+2022-11-05 18:01:28.744|info|CursorManager.cpp:Initialize|CursorManager 初始化完成
+2022-11-05 18:01:28.751|info|App.cpp:_RunMessageLoop|开始接收窗口消息
+2022-11-05 18:01:29.247|info|Renderer.cpp:_CheckSrcState|前台窗口已改变
+2022-11-05 18:01:29.247|info|Renderer.cpp:Render|源窗口状态改变，退出全屏
+2022-11-05 18:01:29.252|info|CursorManager.cpp:~CursorManager|CursorDrawer 已析构
+2022-11-05 18:01:29.282|info|DllMain.cpp:Run|即将退出
+2022-11-05 18:01:34.937|info|DllMain.cpp:Run|OS 版本：10.0.19042
+2022-11-05 18:01:34.937|info|DllMain.cpp:Run|源窗口标题：僋僫僪崙婰亂俢俴斉亃丂- 嫟捠侽侾 -
+2022-11-05 18:01:34.937|info|Config.cpp:Initialize|运行时配置:
+	IsAdjustCursorSpeed: false
+	IsDisableLowLatency: false
+	IsBreakpointMode: false
+	IsDisableWindowResizing: false
+	IsDisableDirectFlip: false
+	Is3DMode: false
+	AdapterIdx: -1
+	IsCropTitleBarOfUWP: false
+	GetMultiMonitorUsage: 0
+	IsNoCursor: false
+	IsDisableEffectCache: false
+	IsDisableVSync: false
+	IsSimulateExclusiveFullscreen: false
+	CursorInterpolationMode: 0
+	CropBorders: [0, 0, 0, 0]
+	IsShowFPS: false
+2022-11-05 18:01:34.943|info|App.cpp:_CreateHostWnd|主窗口尺寸：1920x1080
+2022-11-05 18:01:34.944|info|App.cpp:_CreateHostWnd|已创建主窗口
+2022-11-05 18:01:34.945|info|DeviceResources.cpp:Initialize|可变刷新率支持：是
+2022-11-05 18:01:34.967|info|DeviceResources.cpp:LogAdapter|当前图形适配器：
+	VendorId：0x1002
+	DeviceId：0x1636
+	描述：AMD Radeon(TM) Graphics
+2022-11-05 18:01:34.993|info|DeviceResources.cpp:Initialize|已创建 D3D Device
+	功能级别：11.1
+2022-11-05 18:01:35.009|info|DeviceResources.cpp:_CreateSwapChain|Hardware Composition 支持：否
+2022-11-05 18:01:35.009|info|DeviceResources.cpp:_CreateSwapChain|Multiplane Overlay 支持：否
+2022-11-05 18:01:35.009|info|App.cpp:_InitFrameSource|当前捕获模式：Graphics Capture
+2022-11-05 18:01:35.101|info|GraphicsCaptureFrameSource.cpp:Initialize|当前系统无 IsBorderRequired API
+2022-11-05 18:01:35.103|info|GraphicsCaptureFrameSource.cpp:Initialize|GraphicsCaptureFrameSource 初始化完成
+2022-11-05 18:01:35.103|info|App.cpp:_InitFrameSource|源窗口尺寸：1680x945
+2022-11-05 18:01:35.103|info|EffectCacheManager.cpp:_LoadFromMemCache|已读取缓存 .\cache\Lanczos_0162100735cc0daa6a164f08a3d361e76ac88c2426
+2022-11-05 18:01:35.103|info|Renderer.cpp:operator ()|编译 effects\Lanczos.hlsl 用时 0.413 毫秒
+2022-11-05 18:01:35.106|info|CursorManager.cpp:Initialize|CursorManager 初始化完成
+2022-11-05 18:01:35.113|info|App.cpp:_RunMessageLoop|开始接收窗口消息
+2022-11-05 18:01:35.998|info|Renderer.cpp:_CheckSrcState|前台窗口已改变
+2022-11-05 18:01:35.998|info|Renderer.cpp:Render|源窗口状态改变，退出全屏
+2022-11-05 18:01:36.008|info|CursorManager.cpp:~CursorManager|CursorDrawer 已析构
+2022-11-05 18:01:36.035|info|DllMain.cpp:Run|即将退出
+2022-11-05 18:01:36.836|info|DllMain.cpp:Run|OS 版本：10.0.19042
+2022-11-05 18:01:36.836|info|DllMain.cpp:Run|源窗口标题：僋僫僪崙婰亂俢俴斉亃丂- 嫟捠侽侾 -
+2022-11-05 18:01:36.836|info|Config.cpp:Initialize|运行时配置:
+	IsAdjustCursorSpeed: false
+	IsDisableLowLatency: false
+	IsBreakpointMode: false
+	IsDisableWindowResizing: false
+	IsDisableDirectFlip: false
+	Is3DMode: false
+	AdapterIdx: -1
+	IsCropTitleBarOfUWP: false
+	GetMultiMonitorUsage: 0
+	IsNoCursor: false
+	IsDisableEffectCache: false
+	IsDisableVSync: false
+	IsSimulateExclusiveFullscreen: false
+	CursorInterpolationMode: 0
+	CropBorders: [0, 0, 0, 0]
+	IsShowFPS: false
+2022-11-05 18:01:36.841|info|App.cpp:_CreateHostWnd|主窗口尺寸：1920x1080
+2022-11-05 18:01:36.842|info|App.cpp:_CreateHostWnd|已创建主窗口
+2022-11-05 18:01:36.843|info|DeviceResources.cpp:Initialize|可变刷新率支持：是
+2022-11-05 18:01:36.870|info|DeviceResources.cpp:LogAdapter|当前图形适配器：
+	VendorId：0x1002
+	DeviceId：0x1636
+	描述：AMD Radeon(TM) Graphics
+2022-11-05 18:01:36.897|info|DeviceResources.cpp:Initialize|已创建 D3D Device
+	功能级别：11.1
+2022-11-05 18:01:36.909|info|DeviceResources.cpp:_CreateSwapChain|Hardware Composition 支持：否
+2022-11-05 18:01:36.909|info|DeviceResources.cpp:_CreateSwapChain|Multiplane Overlay 支持：否
+2022-11-05 18:01:36.909|info|App.cpp:_InitFrameSource|当前捕获模式：Graphics Capture
+2022-11-05 18:01:37.005|info|GraphicsCaptureFrameSource.cpp:Initialize|当前系统无 IsBorderRequired API
+2022-11-05 18:01:37.007|info|GraphicsCaptureFrameSource.cpp:Initialize|GraphicsCaptureFrameSource 初始化完成
+2022-11-05 18:01:37.007|info|App.cpp:_InitFrameSource|源窗口尺寸：1680x945
+2022-11-05 18:01:37.007|info|EffectCacheManager.cpp:_LoadFromMemCache|已读取缓存 .\cache\Lanczos_0162100735cc0daa6a164f08a3d361e76ac88c2426
+2022-11-05 18:01:37.007|info|Renderer.cpp:operator ()|编译 effects\Lanczos.hlsl 用时 0.33 毫秒
+2022-11-05 18:01:37.009|info|CursorManager.cpp:Initialize|CursorManager 初始化完成
+2022-11-05 18:01:37.017|info|App.cpp:_RunMessageLoop|开始接收窗口消息
+2022-11-05 18:01:37.981|info|CursorManager.cpp:GetCursorTexture|已解析光标：0x10003
+	类型：Color
+2022-11-05 18:01:39.796|info|Renderer.cpp:_CheckSrcState|前台窗口已改变
+2022-11-05 18:01:39.796|info|Renderer.cpp:Render|源窗口状态改变，退出全屏
+2022-11-05 18:01:39.801|info|CursorManager.cpp:~CursorManager|CursorDrawer 已析构
+2022-11-05 18:01:39.827|info|DllMain.cpp:Run|即将退出
+2022-11-05 18:01:40.869|info|DllMain.cpp:Run|OS 版本：10.0.19042
+2022-11-05 18:01:40.869|info|DllMain.cpp:Run|源窗口标题：僋僫僪崙婰亂俢俴斉亃丂- 嫟捠侽侾 -
+2022-11-05 18:01:40.869|info|Config.cpp:Initialize|运行时配置:
+	IsAdjustCursorSpeed: false
+	IsDisableLowLatency: false
+	IsBreakpointMode: false
+	IsDisableWindowResizing: false
+	IsDisableDirectFlip: false
+	Is3DMode: false
+	AdapterIdx: -1
+	IsCropTitleBarOfUWP: false
+	GetMultiMonitorUsage: 0
+	IsNoCursor: false
+	IsDisableEffectCache: false
+	IsDisableVSync: false
+	IsSimulateExclusiveFullscreen: false
+	CursorInterpolationMode: 0
+	CropBorders: [0, 0, 0, 0]
+	IsShowFPS: false
+2022-11-05 18:01:40.875|info|App.cpp:_CreateHostWnd|主窗口尺寸：1920x1080
+2022-11-05 18:01:40.876|info|App.cpp:_CreateHostWnd|已创建主窗口
+2022-11-05 18:01:40.876|info|DeviceResources.cpp:Initialize|可变刷新率支持：是
+2022-11-05 18:01:40.899|info|DeviceResources.cpp:LogAdapter|当前图形适配器：
+	VendorId：0x1002
+	DeviceId：0x1636
+	描述：AMD Radeon(TM) Graphics
+2022-11-05 18:01:40.925|info|DeviceResources.cpp:Initialize|已创建 D3D Device
+	功能级别：11.1
+2022-11-05 18:01:40.926|info|DeviceResources.cpp:_CreateSwapChain|Hardware Composition 支持：否
+2022-11-05 18:01:40.926|info|DeviceResources.cpp:_CreateSwapChain|Multiplane Overlay 支持：否
+2022-11-05 18:01:40.926|info|App.cpp:_InitFrameSource|当前捕获模式：Graphics Capture
+2022-11-05 18:01:41.016|info|GraphicsCaptureFrameSource.cpp:Initialize|当前系统无 IsBorderRequired API
+2022-11-05 18:01:41.018|info|GraphicsCaptureFrameSource.cpp:Initialize|GraphicsCaptureFrameSource 初始化完成
+2022-11-05 18:01:41.018|info|App.cpp:_InitFrameSource|源窗口尺寸：1680x945
+2022-11-05 18:01:41.018|info|EffectCacheManager.cpp:_LoadFromMemCache|已读取缓存 .\cache\Lanczos_0162100735cc0daa6a164f08a3d361e76ac88c2426
+2022-11-05 18:01:41.018|info|Renderer.cpp:operator ()|编译 effects\Lanczos.hlsl 用时 0.26 毫秒
+2022-11-05 18:01:41.020|info|CursorManager.cpp:Initialize|CursorManager 初始化完成

@@ -229,7 +229,8 @@ def textsourcechange(self,who,checked):
             if 'textsource' in dir(self.object) and self.object.textsource:
                 self.object.textsource.end() 
             
-            if who=='ocr' and self.object.translation_ui.showhidestate:
+            if who=='ocr'   :
+                self.object.translation_ui.showhidestate=True
                 self.object.translation_ui.showhide()
                 self.object.translation_ui.bindcropwindowbutton.setIcon((qtawesome.icon("fa.windows" ,color='white')))
 

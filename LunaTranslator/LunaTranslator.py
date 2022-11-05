@@ -377,8 +377,7 @@ class MAINUI() :
         while True:
             #self.translation_ui.keeptopsignal.emit() 
             
-            try:
-                 
+            try: 
                 win32gui.SetWindowPos(int(self.translation_ui.winId()), win32con.HWND_TOPMOST, 0, 0, 0, 0,win32con. SWP_NOSIZE | win32con.SWP_NOMOVE)  
                 #win32gui.BringWindowToTop(int(self.translation_ui.winId())) 
             except:
@@ -420,6 +419,7 @@ class MAINUI() :
             os.mkdir('./transkiroku')
         self.translation_ui =gui.translatorUI.QUnFrameWindow(self)  
         #print(time.time()-t1)
+        
         if globalconfig['rotation']==0:
             self.translation_ui.show()
             #print(time.time()-t1) 
@@ -433,7 +433,8 @@ class MAINUI() :
             self.view.setAttribute(Qt.WA_TranslucentBackground) 
             self.view.setStyleSheet('background-color: rgba(255, 255, 255, 0);')
             self.view.setGeometry(QDesktopWidget().screenGeometry())
-            self.view.show()      
+            self.view.show()       
+
         #print(time.time()-t1)
         threading.Thread(target=self.setontopthread).start()
         #print(time.time()-t1)

@@ -1,7 +1,7 @@
 from PyQt5.QtWidgets import QWidget,QDesktopWidget,QMainWindow,QLabel,QPushButton,QStatusBar,QDialog
 from PyQt5.QtGui import  QBitmap,QPainter,QPen,QBrush,QFont
 from PyQt5.QtCore import Qt,QPoint,QRect,QEvent
-import re
+import re,threading,time
  
 from utils.config import globalconfig
  
@@ -26,8 +26,7 @@ class rangeadjust(QMainWindow) :
         self.drag_label.setGeometry(0, 0, 4000, 2000)
         self._isTracking=False
         self.statusbar = QStatusBar(self)
-        self.setStatusBar(self.statusbar) 
-         
+        self.setStatusBar(self.statusbar)  
     def mouseMoveEvent(self, e ) :  
         if self._isTracking: 
             self._endPos = e.pos() - self._startPos
