@@ -13,7 +13,14 @@ def getwindowlist():
                 except:
                         pass
         return list(set(pidlist))
-
+def getarch(pid):
+        try: 
+                 process=win32api.OpenProcess(win32con.PROCESS_ALL_ACCESS,False, (pid))
+                  
+                 arch='86' if win32process.IsWow64Process( process)  else '64' 
+        except:
+                arch=None
+        return arch
 def getpidexe(pid):
         try:
                 hwnd1=win32api.OpenProcess(win32con.PROCESS_ALL_ACCESS,False, (pid))

@@ -29,7 +29,7 @@ from tts.voiceroid2 import tts as voiceroid2
 from tts.voicevox import tts as voicevox
 import  gui.selecthook   
 import pyperclip
-from utils.getpidlist import getwindowlist
+from utils.getpidlist import getwindowlist,getarch,getpidexe
  
 import gui.translatorUI
 from utils.config import globalconfig ,savehook_new,noundictconfig,transerrorfixdictconfig
@@ -412,14 +412,10 @@ class MAINUI(QObject) :
                 try:
                         hwnd=win32gui.GetForegroundWindow()
                         pid=win32process.GetWindowThreadProcessId(hwnd)[1]
-                        hwnd1=win32api.OpenProcess(win32con.PROCESS_ALL_ACCESS,False, (pid))
-                        #hwnd=win32api.OpenProcess(win32con.PROCESS_QUERY_LIMITED_INFORMATION,False, (pid))
-                        name_ = win32process.GetModuleFileNameEx(
-                            hwnd1, None)
+                        name_=getpidexe(pid)
                          
-                        if name_ in savehook_new:
-                            arch='86' if win32process.IsWow64Process( hwnd1)  else '64'
-                            self.settin_ui.autostarthooksignal.emit(arch,pid,hwnd, name_,(savehook_new[name_]))
+                        if name_ in savehook_new: 
+                            self.settin_ui.autostarthooksignal.emit(pid,hwnd, name_,(savehook_new[name_]))
                     
                 except:
                         print_exc()

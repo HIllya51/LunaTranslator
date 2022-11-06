@@ -12,18 +12,21 @@ import hashlib
 import os
 import subprocess
 from utils.config import globalconfig 
+from utils.getpidlist import getarch
 from textsource.textsourcebase import basetext 
 import json
 class textractor(basetext  ): 
-    def __init__(self,object,textgetmethod,hookselectdialog,pid,hwnd,pname,arch,autostart=False,autostarthookcode=[]) :
+    def __init__(self,object,textgetmethod,hookselectdialog,pid,hwnd,pname,autostart=False,autostarthookcode=[]) :
         self.newline=Queue() 
-        self.reset(object,textgetmethod,hookselectdialog,pid,hwnd,pname,arch,autostart,autostarthookcode)
+        self.reset(object,textgetmethod,hookselectdialog,pid,hwnd,pname,autostart,autostarthookcode)
         
         self.t=Thread(target=self.gettextthread_)
         self.t.setDaemon(True)
         self.t.start()
          
-    def reset(self,object,textgetmethod,hookselectdialog,pid,hwnd,pname,arch,autostart=False,autostarthookcode=[])  : 
+    def reset(self,object,textgetmethod,hookselectdialog,pid,hwnd,pname,autostart=False,autostarthookcode=[])  : 
+        
+        self.arch=getarch(pid) 
         try:
             with open(pname,'rb') as ff:
                 bs=ff.read() 
@@ -66,13 +69,14 @@ class textractor(basetext  ):
         # self.p.start(f"./files/Textractor/x{arch}/TextractorCLI.exe")
         self.object=object
         #self.object.translation_ui.killprocesssignal.emit()
-        self.object.translation_ui.startprocessignal.emit(f"./files/Textractor/x{arch}/TextractorCLI.exe",[self.handle_stdout])
+        
+        self.object.translation_ui.startprocessignal.emit(f"./files/Textractor/x{self.arch}/TextractorCLI.exe",[self.handle_stdout])
         #self.p.start(r"C:\tmp\textractor_src\Textractor-cmd\builds\RelWithDebInfo_x64\TextractorCLI.exe")
         self.pid=pid
         self.pname=pname
         self.hwnd=hwnd
-        self.arch=arch
-        self.notarch='86' if arch=='64' else '64'
+        
+        self.notarch='86' if self.arch=='64' else '64'
         self.attach(self.pid)
         self.textfilter=''
         self.autostart=autostart

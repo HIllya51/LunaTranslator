@@ -1,7 +1,7 @@
 {
     "position": [
-        393,
-        688
+        488,
+        715
     ],
     "fixedheight": false,
     "width": 1123,
@@ -492,7 +492,7 @@
     "proxy": "127.0.0.1:4780",
     "tgtlang": 0,
     "focusfollow": true,
-    "usemagpie": false,
+    "usemagpie": true,
     "usefullscreenbutton": true,
     "useresizebutton": true,
     "buttoncolor": "white",
@@ -520,7 +520,7 @@
     },
     "usemuteprocessbutton": true,
     "buttonuse": {
-        "fullscreen": false,
+        "fullscreen": true,
         "resize": false,
         "muteprocess": false,
         "showraw": false,

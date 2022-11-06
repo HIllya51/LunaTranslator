@@ -21,7 +21,7 @@ from PyQt5.QtWidgets import QDialogButtonBox,QDialog,QComboBox,QFormLayout,QSpin
 from PyQt5.QtCore import Qt,QSize 
 import subprocess
 from utils.config import globalconfig ,savehook_new
-from utils.getpidlist import getwindowlist
+from utils.getpidlist import getwindowlist,getExeIcon
 import threading
 import json
 from gui.inputdialog import autoinitdialog,getsomepath1
@@ -30,15 +30,7 @@ import os
 import win32con,win32api,win32process,win32gui
 self_pid=os.getpid() 
 from PyQt5.QtWinExtras  import QtWin  
-def getExeIcon( name ): 
-        
-        try:
-            large, small = win32gui.ExtractIconEx(name,0)
-            pixmap =QtWin.fromHICON(large[0])
-            return pixmap
-        except:
-            return None
-
+ 
 def autosaveshow(object):
      
     dialog = QDialog(object)  # 自定义一个dialog
@@ -147,21 +139,21 @@ def setTab4(self) :
         self.autostarthooksignal.connect(functools.partial(autostarthookfunction,self))
         
 
-def autostarthookfunction(self,arch,pid,hwnd,pexe,hookcode):
+def autostarthookfunction(self,pid,hwnd,pexe,hookcode):
            
         from textsource.textractor import textractor
         self.object.hookselectdialog.changeprocessclearsignal.emit()
         if self.object.savetextractor:
                 self.object.textsource=self.object.savetextractor
-                self.object.textsource.reset(self.object,self.object.textgetmethod,self.object.hookselectdialog,pid,hwnd,pexe,arch,True,hookcode)
+                self.object.textsource.reset(self.object,self.object.textgetmethod,self.object.hookselectdialog,pid,hwnd,pexe,True,hookcode)
 
         else:
-                self.object.textsource=textractor(self.object,self.object.textgetmethod,self.object.hookselectdialog,pid,hwnd,pexe,arch,True,hookcode) 
+                self.object.textsource=textractor(self.object,self.object.textgetmethod,self.object.hookselectdialog,pid,hwnd,pexe,True,hookcode) 
                 self.object.savetextractor=self.object.textsource
 
 def minmaxmoveobservefunc2(self):
         while(True):
-                time.sleep(0.1)
+                time.sleep(0.3)
                  
                 try:
                         hwnd=win32gui.GetForegroundWindow()
@@ -173,13 +165,7 @@ def minmaxmoveobservefunc2(self):
                                         self.object.translation_ui.hookfollowsignal.emit(4,(0,0))
                                 else:
                                         if self.object.translation_ui.isHidden():
-                                                self.object.translation_ui.hookfollowsignal.emit(3,(0,0))
-                                # if pid==self.hookpid and globalconfig['movefollow']:
-                                #         rect=win32gui.GetWindowRect(hwnd) 
-                                        
-                                #         if self.savelastrect  : 
-                                #                 self.object.translation_ui.hookfollowsignal.emit(6,(rect[0]-self.savelastrect[0],rect[1]-self.savelastrect[1]))
-                                #         self.savelastrect=rect
+                                                self.object.translation_ui.hookfollowsignal.emit(3,(0,0)) 
                 except:
                         #print_exc()
                         pass

@@ -22,7 +22,7 @@ class AttachProcessDialog(QDialog):
         super(AttachProcessDialog, self).__init__( ) 
         self.setWindowModality(Qt.WindowModal)
         self.resize(800,400)
-        self.selectedp=-1  
+        self.selectedp=(0,'',0)
         self.setWindowTitle('选择进程')
         self.setWindowIcon(qtawesome.icon("fa.gear" ))
         f=QFont() 
