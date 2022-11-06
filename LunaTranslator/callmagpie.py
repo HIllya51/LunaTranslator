@@ -12,7 +12,8 @@ from ctypes import c_int32,c_char_p,c_uint32,c_float
 import time,threading,multiprocessing
 import os
 import win32,win32event
-from utils.magpie import  callmagpie
+from queue import Queue
+from utils.magpie import  callmagpie1
 class Demo(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -37,18 +38,35 @@ class Demo(QWidget):
             m_hWnd=win32gui.GetForegroundWindow()
             pid=win32process.GetWindowThreadProcessId(m_hWnd) [1]
             title = win32gui.GetWindowText(m_hWnd)
+            print(title)
             if title.encode('utf8')[:10]==b'\xe5\x83\x8b\xe5\x83\xab\xe5\x83\xaa\xe5\xb4\x99\xe5\xa9\xb0\xe4\xba\x82\xe4\xbf\xa2\xe4\xbf\xb4\xe6\x96\x89\xe4\xba\x83\xe4\xb8\x82- \xe5\x83\x86\xe4\xb9\x95\xe5\x83\xbe\xe5\x83\xaf\xe5\x84\x9e\xe5\x83\x8c -'[:10]: 
             
                 flags=0x2000|0x2|0x200 
                 rect=win32gui.GetWindowRect(m_hWnd)
                 import os 
                 d=os.getcwd()
-               
-                lock=multiprocessing.Lock()
-
-                self.pr=multiprocessing.Process(target=callmagpie,args= (m_hWnd,r'C:\dataH\Magpie_v0.9.1',lock))
-                self.pr.start()
-                lock.acquire()
+                queue=Queue()
+                queue.put([m_hWnd,0,{
+        "NoCursor": False,
+        "AdjustCursorSpeed": True,
+        "DebugSaveEffectSources": False,
+        "DisableLowLatency": False,
+        "DebugBreakpointMode": False,
+        "DisableWindowResizing": False,
+        "DisableDirectFlip": False,
+        "Is3DMode": False,
+        "CropTitleBarOfUWP":True,
+        "DebugDisableEffectCache": False,
+        "SimulateExclusiveFullscreen": False,
+        "DebugWarningsAreErrors": False,
+        "VSync":True,
+        "ShowFPS": True,
+        "CursorZoomFactor": 1,
+        "CursorInterpolationMode": 0,
+        "AdapterIdx": -1,
+        "MultiMonitorUsage": 0
+    },0])
+                callmagpie1 ( r'C:\dataH\Magpie_v0.9.1',queue)  
                 break
             time.sleep(1)
 

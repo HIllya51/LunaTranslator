@@ -1,9 +1,7 @@
-from queue import Queue 
-import functools  
-from threading import Thread
+
+import time 
+import functools   
 import threading 
-import time
-t1=time.time()
 import os
 import subprocess
 from traceback import print_exc
@@ -27,7 +25,7 @@ from gui.settingpage1 import settingsource,settingtextractor
 from gui.textbrowser import Textbrowser
 from gui.showword import searchwordW
 from gui.rangeselect  import moveresizegame
-from utils.magpie import callmagpie
+from utils.magpie import callmagpie 
 class QTitleButton(QPushButton):
     def __init__(self, *args):
         super(QTitleButton, self).__init__(*args)
@@ -436,10 +434,9 @@ class QUnFrameWindow(QWidget):
                         if self.callmagpie  : 
                             self.isletgamefullscreened=not self.isletgamefullscreened
                             self.letgamefullscreenbutton.setIcon(qtawesome.icon("fa.window-maximize" ,color="#FF69B4" if self.isletgamefullscreened else globalconfig['buttoncolor']))
-                            if self.isletgamefullscreened:
-                                self.savefullscreentime=time.time()
+                            if self.isletgamefullscreened: 
                                 win32gui.SetForegroundWindow(hwnd )   
-                                self.multiprocesshwnd.put([hwnd,globalconfig['magpiescalemethod'],0,globalconfig['magpiecapturemethod']])  
+                                self.multiprocesshwnd.put([hwnd,globalconfig['magpiescalemethod'],globalconfig['magpieflags'],globalconfig['magpiecapturemethod']])  
                                 def __makerangetop():
                                     for i in range(3):
                                         time.sleep(0.3)
@@ -449,6 +446,8 @@ class QUnFrameWindow(QWidget):
                                             pass
                                 if self.showhidestate:
                                     threading.Thread(target=__makerangetop).start() 
+                            else:
+                                win32gui.SetForegroundWindow(self.winId() )   
                     else:
 
                         self.isletgamefullscreened=not self.isletgamefullscreened
@@ -591,7 +590,7 @@ class QUnFrameWindow(QWidget):
     # 按下翻译键
     def startTranslater(self) :
         if hasattr(self.object,'textsource') and  self.object.textsource :
-            Thread(target=self.object.textsource.runonce).start()
+            threading.Thread(target=self.object.textsource.runonce).start()
          
     def initDrag(self):
         # 设置鼠标跟踪判断扳机默认值

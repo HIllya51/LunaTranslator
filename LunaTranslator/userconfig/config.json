@@ -1,11 +1,11 @@
 {
     "position": [
-        365,
-        800
+        233,
+        506
     ],
     "fixedheight": false,
     "width": 1128,
-    "autorun": false,
+    "autorun": true,
     "transparent": 55,
     "fontsize": 17.99999999999997,
     "fonttype": "微软雅黑",
@@ -53,9 +53,9 @@
         "volume": 100.0
     },
     "sourcestatus": {
-        "copy": true,
+        "copy": false,
         "ocr": false,
-        "textractor": false,
+        "textractor": true,
         "textractor_pipe": false
     },
     "ocr": {
@@ -270,7 +270,7 @@
     "translatortimeout": 5,
     "minlength": 5,
     "maxlength": 350,
-    "fanjian": 0,
+    "fanjian": 5,
     "rotation": 0,
     "srclang": 0,
     "transkiroku": true,
@@ -440,16 +440,16 @@
                 "key2": -1
             },
             "_20": {
-                "use": false,
+                "use": true,
                 "name": "全屏/恢复游戏窗口",
-                "key1": -1,
-                "key2": -1
+                "key1": 2,
+                "key2": 1
             },
             "_21": {
-                "use": false,
+                "use": true,
                 "name": "前景窗口截屏",
-                "key1": -1,
-                "key2": -1
+                "key1": 2,
+                "key2": 2
             }
         }
     },
@@ -492,5 +492,25 @@
     "buttoncolor": "white",
     "magpiescalemethod": 0,
     "magpiecapturemethod": 0,
-    "ocrautobindwindow": true
+    "ocrautobindwindow": true,
+    "magpieflags": {
+        "NoCursor": false,
+        "AdjustCursorSpeed": true,
+        "DebugSaveEffectSources": false,
+        "DisableLowLatency": false,
+        "DebugBreakpointMode": false,
+        "DisableWindowResizing": false,
+        "DisableDirectFlip": false,
+        "Is3DMode": false,
+        "CropTitleBarOfUWP": true,
+        "DebugDisableEffectCache": false,
+        "SimulateExclusiveFullscreen": false,
+        "DebugWarningsAreErrors": false,
+        "VSync": true,
+        "ShowFPS": true,
+        "CursorZoomFactor": 1,
+        "CursorInterpolationMode": 0,
+        "AdapterIdx": -1,
+        "MultiMonitorUsage": 0
+    }
 }
