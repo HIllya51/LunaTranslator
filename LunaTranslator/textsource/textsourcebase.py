@@ -1,13 +1,17 @@
 from threading import Thread
-import time
+import time,os
 from utils.config import globalconfig
 class basetext:
     def __init__(self,textgetmethod)  : 
         self.suspending=False
         self.textgetmethod=textgetmethod
+        
+        if os.path.exists('./transkiroku')==False:
+            os.mkdir('./transkiroku')
         self.t=Thread(target=self.gettextthread_)
         self.t.setDaemon(True)
         self.t.start()
+         
     def gettextthread_(self):
         while True:
             if self.ending:

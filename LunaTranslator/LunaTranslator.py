@@ -13,7 +13,7 @@ from traceback import  print_exc
 dirname, filename = os.path.split(os.path.abspath(__file__))
 sys.path.append(dirname)  
 import threading,win32gui
-from PyQt5.QtCore import QCoreApplication ,Qt 
+from PyQt5.QtCore import QCoreApplication ,Qt ,QObject,pyqtSignal
 from PyQt5.QtWidgets import  QApplication ,QGraphicsScene,QGraphicsView,QDesktopWidget
 import utils.screen_rate  
 from utils.wrapper import timer,threader 
@@ -41,8 +41,8 @@ import zhconv
 import xml.etree.ElementTree as ET
 from xml.etree.ElementTree import Element
 
-class MAINUI() :
-    
+class MAINUI(QObject) :
+    mainuiloadok=pyqtSignal()
     def __init__(self) -> None:
         self.screen_scale_rate = utils.screen_rate.getScreenRate() 
         self.translators={}
@@ -50,6 +50,8 @@ class MAINUI() :
         self.rect=None
         self.textsource=None
         self.savetextractor=None
+        super(MAINUI,self).__init__( )
+        self.mainuiloadok.connect(self.mainuiloadafter)
     @threader  
     def loadvnrshareddict(self):
         cnt=0
@@ -417,11 +419,7 @@ class MAINUI() :
                 pass
             time.sleep(0.5)
     def aa(self):
-        t1=time.time()
-        if os.path.exists('./transkiroku')==False:
-            os.mkdir('./transkiroku')
-        self.translation_ui =gui.translatorUI.QUnFrameWindow(self)  
-        #print(time.time()-t1)
+        self.translation_ui =gui.translatorUI.QUnFrameWindow(self)   
         
         if globalconfig['rotation']==0:
             self.translation_ui.show()
@@ -437,8 +435,9 @@ class MAINUI() :
             self.view.setStyleSheet('background-color: rgba(255, 255, 255, 0);')
             self.view.setGeometry(QDesktopWidget().screenGeometry())
             self.view.show()       
-
-        #print(time.time()-t1)
+        threading.Thread(target=self.mainuiloadok.emit).start()
+#        self.mainuiloadok.emit()
+    def mainuiloadafter(self):   
         threading.Thread(target=self.setontopthread).start()
         #print(time.time()-t1)
         self.loadvnrshareddict()
@@ -453,25 +452,15 @@ class MAINUI() :
         
         self.range_ui =gui.rangeselect.rangeadjust(self)   
         self.hookselectdialog=gui.selecthook.hookselect(self )
-        threading.Thread(target=self.autohookmonitorthread).start()
-        #self.translation_ui.displayraw.emit('欢迎','#0000ff')
-        #print(time.time()-t1)
-        #print(time.time()-t1)
-    
-    def main(self) : 
-        # 自适应高分辨率
-        t1=time.time()
-        QCoreApplication.setAttribute(Qt.AA_UseHighDpiPixmaps, True)
-        app = QApplication(sys.argv) 
-        app.setQuitOnLastWindowClosed(False)
-        
-        self.aa()
-        ##print(time.time()-t1)
-        #print(time.time()-starttime)
-        app.exit(app.exec_())
+        threading.Thread(target=self.autohookmonitorthread).start()   
+     
         
 if __name__ == "__main__" :
-     
-    app = MAINUI()
+    QCoreApplication.setAttribute(Qt.AA_UseHighDpiPixmaps, True)
+    main = MAINUI()
+
+    app = QApplication(sys.argv) 
+    app.setQuitOnLastWindowClosed(False)
     
-    app.main()
+    main.aa()
+    app.exit(app.exec_())

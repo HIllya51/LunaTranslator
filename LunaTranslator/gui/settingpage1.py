@@ -132,19 +132,7 @@ def setTabOne(self) :
 #             ##inserthook必须重新手动按一下，一起写入就会结束？？？？
 #             self.p.write(('HS-24@0:kernel32.dll:lstrcpyA -P24512\r\n'.encode('utf-16-le')))
             
-def readerchange(self,who,checked):   
-    if checked : 
-        
-        globalconfig['reader'][who]=True
-    else:
-        globalconfig['reader'][who]=False  
-    
-    
-    
-    if checked : 
-            
-        self.object.startreader()  
-
+ 
 def settingtextractor(self,show1 ): 
          
         if globalconfig['sourcestatus']['textractor']==False:
