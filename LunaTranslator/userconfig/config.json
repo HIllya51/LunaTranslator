@@ -1,24 +1,24 @@
 {
     "position": [
-        233,
-        506
+        431,
+        585
     ],
     "fixedheight": false,
     "width": 1128,
     "autorun": true,
-    "transparent": 55,
+    "transparent": 48,
     "fontsize": 17.99999999999997,
     "fonttype": "微软雅黑",
     "miaobianwidth2": 3.0,
     "miaobianwidth": 0.7000000000000001,
-    "miaobiancolor": "#ffffff",
+    "miaobiancolor": "#e9ffd4",
     "zitiyangshi": 3,
     "iskongxin": true,
     "isshowrawtext": true,
-    "rawtextcolor": "#000000",
-    "backcolor": "#000000",
+    "rawtextcolor": "#8f1f6e",
+    "backcolor": "#aaffff",
     "isshowhira": false,
-    "locktools": false,
+    "locktools": true,
     "showfanyisource": false,
     "autoread": false,
     "extractalltext": false,
@@ -144,7 +144,7 @@
         },
         "jb7": {
             "use": false,
-            "color": "#1dda00",
+            "color": "#c54cda",
             "name": "Jbeijing7",
             "argsfile": ""
         },
@@ -220,7 +220,7 @@
         },
         "huoshan": {
             "use": false,
-            "color": "#1400f0",
+            "color": "#baf0c7",
             "name": "huoshan"
         },
         "yeekit": {
@@ -460,10 +460,10 @@
     "showcixing_touming": 100,
     "showcixing": false,
     "cixingcolor": {
-        "形容詞": "aliceblue",
+        "形容詞": "#16ff05",
         "形状詞": "antiquewhite",
         "副詞": "aqua",
-        "名詞": "aquamarine",
+        "名詞": "#ff9011",
         "代名詞": "azure",
         "動詞": "beige",
         "助詞": "bisque",
@@ -487,9 +487,9 @@
     "tgtlang": 0,
     "focusfollow": false,
     "usemagpie": true,
-    "usefullscreenbutton": true,
+    "usefullscreenbutton": false,
     "useresizebutton": false,
-    "buttoncolor": "white",
+    "buttoncolor": "#000000",
     "magpiescalemethod": 0,
     "magpiecapturemethod": 0,
     "ocrautobindwindow": true,

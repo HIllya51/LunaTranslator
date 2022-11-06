@@ -52,6 +52,7 @@ class QUnFrameWindow(QWidget):
     bindcropwindow_signal=pyqtSignal()
     fullsgame_signal=pyqtSignal()
     quitf_signal=pyqtSignal() 
+    refreshtooliconsignal=pyqtSignal()
     def keeptopfuntion(self):
         win32gui.BringWindowToTop(int(self.winId()))
     def hookfollowsignalsolve(self,code,other): 
@@ -178,7 +179,30 @@ class QUnFrameWindow(QWidget):
     def killprocess(self):
         if 'p' in dir(self):
             self.p.kill() 
-           
+    def refreshtoolicon(self):
+        icon=[
+            qtawesome.icon("fa.rotate-right" ,color=globalconfig['buttoncolor']),
+            qtawesome.icon("fa.forward" ,color="#FF69B4" if globalconfig['autorun'] else globalconfig['buttoncolor']),
+            qtawesome.icon("fa.gear",color=globalconfig['buttoncolor'] ),
+            qtawesome.icon("fa.copy" ,color=globalconfig['buttoncolor']),
+            qtawesome.icon("fa.eye"   if globalconfig['isshowrawtext'] else "fa.eye-slash" ,color=globalconfig['buttoncolor']),
+            qtawesome.icon("fa.rotate-left" ,color=globalconfig['buttoncolor']),
+            qtawesome.icon("fa.music" ,color=globalconfig['buttoncolor']),
+            qtawesome.icon("fa.mouse-pointer" ,color=globalconfig['buttoncolor']),
+            qtawesome.icon("fa.lock" ,color="#FF69B4" if globalconfig['locktools'] else globalconfig['buttoncolor']),
+            qtawesome.icon("fa.gamepad" ,color= globalconfig['buttoncolor']),
+            qtawesome.icon("fa.link" ,color=globalconfig['buttoncolor']),
+            qtawesome.icon("fa.tasks" ,color= globalconfig['buttoncolor']),
+            qtawesome.icon("fa.crop" ,color=globalconfig['buttoncolor']),
+            (qtawesome.icon("fa.square" ,color=globalconfig['buttoncolor'])),
+            (qtawesome.icon("fa.windows" ,color=globalconfig['buttoncolor'])),
+            qtawesome.icon("fa.expand" ,color= globalconfig['buttoncolor']),
+            qtawesome.icon("fa.window-maximize" ,color= globalconfig['buttoncolor']),
+            qtawesome.icon("fa.minus",color=globalconfig['buttoncolor'] ),
+            qtawesome.icon("fa.times" ,color=globalconfig['buttoncolor']),
+        ]
+        for i in range(len(self.buttons)):
+            self.buttons[i].setIcon(icon[i])
     def __init__(self, object):
         super(QUnFrameWindow, self).__init__(
             None, Qt.FramelessWindowHint|Qt.WindowStaysOnTopHint|Qt.Tool )  # 设置为顶级窗口，无边框
@@ -203,7 +227,7 @@ class QUnFrameWindow(QWidget):
         self.displayres.connect(self.showres)
         self.displayraw1.connect(self.showraw)  
         self.clickSettin_signal.connect(self.clickSettin_funtion)
-
+        self.refreshtooliconsignal.connect(self.refreshtoolicon)
         self.showsavegame_signal.connect(self.showsavegame_function)
         self.settinghookthread_signal.connect(self.settinghookthread_funtion)
         self.settingprocess_signal.connect(self.settingprocess_function)
@@ -269,32 +293,32 @@ class QUnFrameWindow(QWidget):
         self.mousetransparent=False
         self.buttons=[] 
         self.showbuttons=[]
+        
+        self.takusanbuttons("MinMaxButton",self.startTranslater,0,"重新翻译")
+        self.takusanbuttons("MinMaxButton",self.changeTranslateMode,1,"自动翻译",'automodebutton')
+        self.takusanbuttons("MinMaxButton",self.clickSettin,2,"打开设置")
+
+
+        self.takusanbuttons("MinMaxButton",lambda: pyperclip.copy(self.original),6,"复制到剪贴板") 
+        self.takusanbuttons("MinMaxButton", self.changeshowhideraw,7,"显示/隐藏原文",'showhiderawbutton') 
+        
+        self.takusanbuttons("MinMaxButton", self.transhis.showsignal.emit  ,8,"显示历史翻译") 
+        self.takusanbuttons("MinMaxButton",self.langdu,9,"朗读") 
+        self.takusanbuttons("MinMaxButton",self.changemousetransparentstate,10,"鼠标穿透窗口",'mousetransbutton') 
          
-        self.takusanbuttons(qtawesome.icon("fa.rotate-right" ,color=globalconfig['buttoncolor']),"MinMaxButton",self.startTranslater,0,"重新翻译")
-        self.takusanbuttons(qtawesome.icon("fa.forward" ,color="#FF69B4" if globalconfig['autorun'] else globalconfig['buttoncolor']),"MinMaxButton",self.changeTranslateMode,1,"自动翻译",'automodebutton')
-        self.takusanbuttons(qtawesome.icon("fa.gear",color=globalconfig['buttoncolor'] ),"MinMaxButton",self.clickSettin,2,"打开设置")
-
-
-        self.takusanbuttons(qtawesome.icon("fa.copy" ,color=globalconfig['buttoncolor']),"MinMaxButton",lambda: pyperclip.copy(self.original),6,"复制到剪贴板") 
-        self.takusanbuttons(qtawesome.icon("fa.eye"   if globalconfig['isshowrawtext'] else "fa.eye-slash" ,color=globalconfig['buttoncolor']),"MinMaxButton", self.changeshowhideraw,7,"显示/隐藏原文",'showhiderawbutton') 
+        self.takusanbuttons("MinMaxButton",self.changetoolslockstate,11,"锁定工具栏",'locktoolsbutton') 
         
-        self.takusanbuttons(qtawesome.icon("fa.rotate-left" ,color=globalconfig['buttoncolor']),"MinMaxButton", self.transhis.showsignal.emit  ,8,"显示历史翻译") 
-        self.takusanbuttons(qtawesome.icon("fa.music" ,color=globalconfig['buttoncolor']),"MinMaxButton",self.langdu,9,"朗读") 
-        self.takusanbuttons(qtawesome.icon("fa.mouse-pointer" ,color=globalconfig['buttoncolor']),"MinMaxButton",self.changemousetransparentstate,10,"鼠标穿透窗口",'mousetransbutton') 
+        
+        self.takusanbuttons("MinMaxButton",lambda: autosaveshow(None),3,"打开保存的游戏") 
+
+        self.takusanbuttons("MinMaxButton",lambda :settingtextractor(self.object.settin_ui,False),4,"选择游戏" ) 
+        self.takusanbuttons("MinMaxButton",lambda :settingsource(self.object.settin_ui),5,"选择文本" ) 
+        
+
+        self.takusanbuttons("MinMaxButton",self.clickRange,4,"选取OCR范围")
+        self.takusanbuttons("MinMaxButton",self.showhide,5,"显示/隐藏范围框",'showhidebutton')
          
-        self.takusanbuttons(qtawesome.icon("fa.lock" ,color="#FF69B4" if globalconfig['locktools'] else globalconfig['buttoncolor']),"MinMaxButton",self.changetoolslockstate,11,"锁定工具栏",'locktoolsbutton') 
-        
-        
-        self.takusanbuttons(qtawesome.icon("fa.gamepad" ,color= globalconfig['buttoncolor']),"MinMaxButton",lambda: autosaveshow(None),3,"打开保存的游戏") 
-
-        self.takusanbuttons(qtawesome.icon("fa.link" ,color=globalconfig['buttoncolor']),"MinMaxButton",lambda :settingtextractor(self.object.settin_ui,False),4,"选择游戏" ) 
-        self.takusanbuttons(qtawesome.icon("fa.tasks" ,color= globalconfig['buttoncolor']),"MinMaxButton",lambda :settingsource(self.object.settin_ui),5,"选择文本" ) 
-        
-
-        self.takusanbuttons(qtawesome.icon("fa.crop" ,color=globalconfig['buttoncolor']),"MinMaxButton",self.clickRange,4,"选取OCR范围")
-        self.takusanbuttons((qtawesome.icon("fa.square" ,color=globalconfig['buttoncolor'])),"MinMaxButton",self.showhide,5,"显示/隐藏范围框",'showhidebutton')
-         
-        self.takusanbuttons((qtawesome.icon("fa.windows" ,color=globalconfig['buttoncolor'])),"MinMaxButton",self.bindcropwindow,5,"绑定截图窗口，避免遮挡（部分软件不支持）（点击自己取消）",'bindcropwindowbutton')
+        self.takusanbuttons("MinMaxButton",self.bindcropwindow,5,"绑定截图窗口，避免遮挡（部分软件不支持）（点击自己取消）",'bindcropwindowbutton')
          
         def _moveresizegame(self):
             
@@ -311,7 +335,7 @@ class QUnFrameWindow(QWidget):
                     self.moveresizegame=moveresizegame(self,hwnd)
             except:
                     print_exc()
-        self.takusanbuttons(qtawesome.icon("fa.expand" ,color= globalconfig['buttoncolor']),"MinMaxButton",lambda :_moveresizegame(self),5,"调整游戏窗口(需要绑定ocr窗口，或选择hook进程)" ) 
+        self.takusanbuttons("MinMaxButton",lambda :_moveresizegame(self),5,"调整游戏窗口(需要绑定ocr窗口，或选择hook进程)" ) 
 
         def __initmulti(self):
             while True:
@@ -323,11 +347,13 @@ class QUnFrameWindow(QWidget):
             self.callmagpie.start() 
         threading.Thread(target=__initmulti,args=(self,)).start() 
         
-        self.takusanbuttons(qtawesome.icon("fa.window-maximize" ,color= globalconfig['buttoncolor']),"MinMaxButton",self._fullsgame,5,"全屏/恢复游戏窗口(需要绑定ocr窗口，或选择hook进程)" ,"letgamefullscreenbutton") 
+        self.takusanbuttons("MinMaxButton",self._fullsgame,5,"全屏/恢复游戏窗口(需要绑定ocr窗口，或选择hook进程)" ,"letgamefullscreenbutton") 
         
         
-        self.takusanbuttons(qtawesome.icon("fa.minus",color=globalconfig['buttoncolor'] ),"MinMaxButton",self.hide_and_disableautohide,-2,"最小化到托盘")
-        self.takusanbuttons(qtawesome.icon("fa.times" ,color=globalconfig['buttoncolor']),"CloseButton",self.quitf,-1,"退出")
+        self.takusanbuttons("MinMaxButton",self.hide_and_disableautohide,-2,"最小化到托盘")
+        self.takusanbuttons("CloseButton",self.quitf,-1,"退出")
+
+        self.refreshtoolicon()
         self.showhidetoolbuttons()
         self.setGeometry( globalconfig['position'][0],globalconfig['position'][1],int(globalconfig['width'] ), int(150*self.rate)) 
          
@@ -780,10 +806,9 @@ class QUnFrameWindow(QWidget):
             #button.show()
             showed+=1
         self.enterEvent(None)
-    def takusanbuttons(self,iconname,objectname,clickfunc,adjast=None,tips=None,save=None): 
-        
-        button=QTitleButton(self)
-        button.setIcon(iconname)
+    def takusanbuttons(self, objectname,clickfunc,adjast=None,tips=None,save=None): 
+         
+        button=QTitleButton(self) 
         if tips:
             
             button.setToolTip(tips) 
@@ -795,8 +820,7 @@ class QUnFrameWindow(QWidget):
         button.setFixedWidth(40*self.rate)
         button.setMouseTracking(True)
         button.setFixedHeight( self._TitleLabel.height() )
-        button.clicked.connect(clickfunc)
-         
+        button.clicked.connect(clickfunc) 
         if adjast<0: 
             button.adjast=lambda  :button.move(self.width() + adjast*button.width() , 0) 
         else:

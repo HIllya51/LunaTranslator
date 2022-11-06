@@ -45,12 +45,15 @@ def setTabThree(self) :
         def _usefullscreenbutton(x):
                 globalconfig.__setitem__('usefullscreenbutton',x)
                 self.object.translation_ui.showhidetoolbuttons() 
+        def _settoolbariconcolor( ):
+                self.ChangeTranslateColor("buttoncolor", self.buttoncolorbutton)
+                self.object.translation_ui.refreshtooliconsignal.emit()
         buttongrid=[
                 [(QLabel('不透明度'),2),(self.horizontal_slider,8),(self.horizontal_slider_label,2)],
-                [(QLabel('原文颜色'),3), self.getcolorbutton(globalconfig,'rawtextcolor',callback=lambda: self.ChangeTranslateColor("rawtextcolor", self.original_color_button),name='original_color_button'),'',(QLabel('翻译窗口背景颜色'),3),self.getcolorbutton(globalconfig,'backcolor',callback=lambda: self.ChangeTranslateColor("backcolor", self.back_color_button),name='back_color_button'),'',(QLabel('工具按钮颜色（重启生效）'),3),self.getcolorbutton(globalconfig,'buttoncolor',callback=lambda: self.ChangeTranslateColor("buttoncolor", self.back_color_button),name='buttoncolorbutton')],
+                [(QLabel('原文颜色'),3), self.getcolorbutton(globalconfig,'rawtextcolor',callback=lambda: self.ChangeTranslateColor("rawtextcolor", self.original_color_button),name='original_color_button'),'',(QLabel('翻译窗口背景颜色'),3),self.getcolorbutton(globalconfig,'backcolor',callback=lambda: self.ChangeTranslateColor("backcolor", self.back_color_button),name='back_color_button'),'',(QLabel('工具按钮颜色'),3),self.getcolorbutton(globalconfig,'buttoncolor',callback=_settoolbariconcolor ,name='buttoncolorbutton')],
                 [(QLabel('显示原文'),3),self.getsimpleswitch(globalconfig,'isshowrawtext',callback=lambda x: __changeuibuttonstate(self,x),name='show_original_switch'),'',(QLabel('显示假名'),3),self.getsimpleswitch(globalconfig,'isshowhira',enable=globalconfig['isshowrawtext'],name='show_hira_switch'),'',(QLabel('显示分词结果'),3 ),self.getsimpleswitch(globalconfig,'show_fenci',enable=globalconfig['isshowrawtext'],name='showatmiddleswitch')],
                 [(QLabel('字体大小'),2),(self.getspinbox(1,100,globalconfig,'fontsize',double=True,step=0.1,name='fontSize_spinBox'),2),'',(QLabel('字体类型'),2),(self.font_comboBox,2),'',(QLabel('加粗字体'),3),self.getsimpleswitch(globalconfig,'showbold' )],
-                [(QLabel('字体样式'),2),(self.getsimplecombobox(['普通字体','空心字体','描边字体','阴影字体'],globalconfig,'zitiyangshi'),2),'',(QLabel('特殊字体样式填充颜色'),3),self.getcolorbutton(globalconfig,'miaobiancolor',callback=lambda: self.ChangeTranslateColor("miaobiancolor", self.back_color_button),name='miaobian_color_button'),'',(QLabel('居中显示'),3),self.getsimpleswitch(globalconfig,'showatcenter')],
+                [(QLabel('字体样式'),2),(self.getsimplecombobox(['普通字体','空心字体','描边字体','阴影字体'],globalconfig,'zitiyangshi'),2),'',(QLabel('特殊字体样式填充颜色'),3),self.getcolorbutton(globalconfig,'miaobiancolor',callback=lambda: self.ChangeTranslateColor("miaobiancolor", self.miaobian_color_button),name='miaobian_color_button'),'',(QLabel('居中显示'),3),self.getsimpleswitch(globalconfig,'showatcenter')],
                 [(QLabel('空心线宽'),2),(self.getspinbox(1,100,globalconfig,'miaobianwidth',double=True,step=0.1),2),'',(QLabel('描边宽度'),2 ),(self.getspinbox(1,100,globalconfig,'miaobianwidth2',double=True,step=0.1),2),'',(QLabel('阴影强度'),2),(self.getspinbox(1,10,globalconfig,'shadowforce'),2)],
                 [''],
                 [(QLabel('固定窗口尺寸'),3),self.getsimpleswitch(globalconfig,'fixedheight'),'',(QLabel('可选取模式'),3),self.getsimpleswitch(globalconfig,'selectable',callback=__changeselectmode)],
