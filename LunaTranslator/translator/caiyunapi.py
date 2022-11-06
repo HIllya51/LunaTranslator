@@ -4,33 +4,14 @@ from traceback import print_exc
 import requests 
 import os
 
-from utils.config import globalconfig 
+from utils.config import globalconfig ,translatorsetting
 from translator.basetranslator import basetrans  
 import json
-class TS(basetrans): 
-    @classmethod
-    def defaultsetting(self):
-        return {
-            "args": {
-                "注册网址": "https://fanyi.caiyunapp.com/#/",
-                "Token": "", 
-                "字数统计": "0",
-                "次数统计": "0"
-            },
-            "notwriteable": [
-                "注册网址",
-                "字数统计",
-                "次数统计"
-            ]
-        }
+class TS(basetrans):  
     def inittranslator(self):
         self.session=requests.session()
     def translate(self,query): 
-        configfile=globalconfig['fanyi'][self.typename]['argsfile']
-        if os.path.exists(configfile) ==False:
-            return 
-        with open(configfile,'r',encoding='utf8') as ff:
-            js=json.load(ff)
+        js=translatorsetting[self.typename]
         if js['args']['Token']=="":
             return 
         else:
@@ -57,8 +38,7 @@ class TS(basetrans):
         res=tranlate(query,Token)
         js['args']['字数统计']=str(int(js['args']['字数统计'])+len(query))
         js['args']['次数统计']=str(int(js['args']['次数统计'])+1)
-        with open(configfile,'w',encoding='utf-8') as ff:
-            ff.write(json.dumps(js,ensure_ascii=False,sort_keys=False, indent=4))
+         
         #print(res['trans_result'][0]['dst'])
         return res
         

@@ -1,0 +1,78 @@
+{
+    "baiduapi": {
+        "args": {
+            "注册网址": "https://fanyi-api.baidu.com/api/trans/product/desktop",
+            "APP ID": "20151211000007653",
+            "密钥": "IFJB6jBORFuMmVGDRude",
+            "字数统计": "487080",
+            "次数统计": "20281"
+        }
+    },
+    "caiyunapi": {
+        "args": {
+            "注册网址": "https://fanyi.caiyunapp.com/#/",
+            "Token": "nayce5w4niupbzt7suwv",
+            "字数统计": "22478",
+            "次数统计": "864"
+        }
+    },
+    "deeplapi-free": {
+        "args": {
+            "注册网址": "https://www.deepl.com/translator",
+            "DeepL-Auth-Key": "842419a2-a0e9-f1ae-1870-5892754d2784:fx",
+            "字数统计": "1944",
+            "次数统计": "76"
+        }
+    },
+    "huoshanapi": {
+        "args": {
+            "注册网址": "https://www.volcengine.com/docs/4640/130872",
+            "Access Key ID": "AKLTY2IzNTM1YzQzNDQ1NDFkMzk0MTRjNTE2YmEzNTgzNWY",
+            "Secret Access Key": "TVRRMk1qaGxOMk14Tmpoa05EQXhZbUUwT1RFeU1qYzVPVEptTXpRMU9HRQ==",
+            "字数统计": "149",
+            "次数统计": "5"
+        }
+    },
+    "tencentapi": {
+        "args": {
+            "注册网址": "https://console.cloud.tencent.com/cam/capi",
+            "SecretId": "AKIDeBTjqnjXJ0a2Naf4RjtqcCZu3DIExUvA",
+            "SecretKey": "653rxzqSp4FE6qUI5sbDeplaCrOmyxkI",
+            "字数统计": "47219",
+            "次数统计": "1859"
+        }
+    },
+    "xiaoniu": {
+        "args": {
+            "注册网址": "https://niutrans.com/text_trans",
+            "apikey": "e6bc61094123576c9daf961192ffc61c",
+            "字数统计": "22045",
+            "次数统计": "848"
+        }
+    },
+    "jb7": {
+        "args": {
+            "路径": "C:\\dataH\\JBeijing7"
+        }
+    },
+    "kingsoft": {
+        "args": {
+            "路径": "C:\\dataH\\金山快译.2009.专业版\\FastAIT09_Setup.25269.4101"
+        }
+    },
+    "dreye": {
+        "args": {
+            "路径": "C:\\dataH\\DR.eye"
+        }
+    },
+    "rengong": {
+        "args": {
+            "json文件": "C:/Users/11737/Documents/GitHub/LunaTranslator/LunaTranslator/transkiroku/0_0.json"
+        }
+    },
+    "premt": {
+        "args": {
+            "sqlite文件": "C:/Users/11737/Documents/GitHub/LunaTranslator/LunaTranslator/transkiroku/0_copy.premt_synthesize.sqlite"
+        }
+    }
+}

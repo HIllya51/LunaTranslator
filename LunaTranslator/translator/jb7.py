@@ -9,17 +9,10 @@ import ctypes
 import re
 import os
 import json
-from utils.config import globalconfig
+from utils.config import translatorsetting
 import subprocess
 
-class TS(basetrans):
-    @classmethod
-    def defaultsetting(self):
-        return {
-            "args": {
-                "路径": "" 
-            } 
-        }
+class TS(basetrans): 
     # def inittranslator(self ) : 
         
     #     if platform.architecture()[0]=='32bit':
@@ -32,11 +25,7 @@ class TS(basetrans):
     #         self._x64=True
     #         self.x64('おはおよう')
     def x64(self,content): 
-            configfile=globalconfig['fanyi'][self.typename]['argsfile']
-            if os.path.exists(configfile) ==False:
-                return 
-            with open(configfile,'r',encoding='utf8') as ff:
-                js=json.load(ff)
+            js=translatorsetting[self.typename]
             if js['args']['路径']=="":
                 return 
             else:

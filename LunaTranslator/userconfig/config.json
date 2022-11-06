@@ -1,31 +1,31 @@
 {
     "position": [
-        334,
-        788
+        344,
+        591
     ],
     "fixedheight": false,
-    "width": 1435,
+    "width": 1123,
     "autorun": true,
-    "transparent": 32,
-    "fontsize": 20.0,
-    "fonttype": "幼圆",
+    "transparent": 55,
+    "fontsize": 17.99999999999997,
+    "fonttype": "微软雅黑",
     "miaobianwidth2": 3.0,
-    "miaobianwidth": 1,
-    "miaobiancolor": "#fdf4ff",
+    "miaobianwidth": 0.7000000000000001,
+    "miaobiancolor": "#ffffff",
     "zitiyangshi": 3,
     "iskongxin": true,
     "isshowrawtext": true,
     "rawtextcolor": "#000000",
-    "backcolor": "#989898",
+    "backcolor": "#000000",
     "isshowhira": false,
-    "locktools": true,
+    "locktools": false,
     "showfanyisource": false,
     "autoread": false,
     "extractalltext": false,
     "reader": {
         "azuretts": {
             "use": false,
-            "voice": "ja-JP-KeitaNeural"
+            "voice": "ja-JP-NanamiNeural"
         },
         "huoshantts": {
             "use": false,
@@ -33,7 +33,7 @@
         },
         "windowstts": {
             "use": false,
-            "voice": "TTS_MS_ZH-CN_HUIHUI_11.0"
+            "voice": "TTS_MS_JA-JP_HARUKA_11.0"
         },
         "voiceroid2": {
             "use": true,
@@ -42,7 +42,7 @@
         },
         "voicevox": {
             "use": false,
-            "voice": "ずんだもん",
+            "voice": "春日部つむぎ",
             "path": "C:/dataH/VOICEVOX"
         }
     },
@@ -53,14 +53,14 @@
         "volume": 100.0
     },
     "sourcestatus": {
-        "copy": false,
+        "copy": true,
         "ocr": false,
-        "textractor": true,
+        "textractor": false,
         "textractor_pipe": false
     },
     "ocr": {
         "local": {
-            "use": false,
+            "use": true,
             "name": "本地OCR"
         },
         "baiduocr": {
@@ -134,7 +134,7 @@
         },
         "caiyun": {
             "use": false,
-            "color": "#0ff000",
+            "color": "#f01b14",
             "name": "彩云"
         },
         "deepl": {
@@ -143,22 +143,22 @@
             "name": "deepl"
         },
         "jb7": {
-            "use": true,
-            "color": "#1839f0",
+            "use": false,
+            "color": "#1dda00",
             "name": "Jbeijing7",
-            "argsfile": "./userconfig/jbj7.json"
+            "argsfile": ""
         },
         "kingsoft": {
             "use": false,
-            "color": "#1839f0",
+            "color": "#f0e658",
             "name": "金山快译",
-            "argsfile": "./userconfig/ks.json"
+            "argsfile": ""
         },
         "dreye": {
             "use": false,
-            "color": "#1839f0",
+            "color": "#f05b5b",
             "name": "快译通",
-            "argsfile": "./userconfig/dreye.json"
+            "argsfile": ""
         },
         "sougou2": {
             "use": false,
@@ -194,13 +194,13 @@
             "use": false,
             "color": "#f003ec",
             "name": "百度api",
-            "argsfile": "./userconfig/baiduapi.json"
+            "argsfile": ""
         },
         "tencentapi": {
             "use": false,
-            "color": "#0ff000",
+            "color": "#070af0",
             "name": "腾讯api",
-            "argsfile": "./userconfig/txapi.json"
+            "argsfile": ""
         },
         "byte": {
             "use": false,
@@ -214,13 +214,13 @@
         },
         "xiaoniu": {
             "use": false,
-            "color": "#0ff000",
+            "color": "#f00000",
             "name": "小牛api",
-            "argsfile": "./userconfig/xiaoniuapi.json"
+            "argsfile": ""
         },
         "huoshan": {
             "use": false,
-            "color": "#0ff000",
+            "color": "#1400f0",
             "name": "huoshan"
         },
         "yeekit": {
@@ -230,26 +230,26 @@
         },
         "caiyunapi": {
             "use": false,
-            "color": "#0ff000",
+            "color": "#00e4f0",
             "name": "彩云api",
-            "argsfile": "./userconfig/caiyunapi.json"
+            "argsfile": ""
         },
         "huoshanapi": {
             "use": false,
             "color": "#0ff000",
             "name": "火山api",
-            "argsfile": "./userconfig/huoshanapi.json"
+            "argsfile": ""
         },
         "papago": {
             "use": false,
-            "color": "#0101f0",
+            "color": "#0101ff",
             "name": "papago"
         },
         "rengong": {
-            "use": false,
+            "use": true,
             "color": "#0ff000",
             "name": "人工翻译",
-            "argsfile": "./userconfig/rengong.json"
+            "argsfile": ""
         },
         "premt": {
             "use": false,
@@ -261,29 +261,29 @@
             "use": false,
             "color": "blue",
             "name": "deeplapi-free",
-            "argsfile": "./userconfig/deeplapi-free.json"
+            "argsfile": ""
         }
     },
-    "minifollow": false,
-    "movefollow": false,
+    "minifollow": true,
+    "movefollow": true,
     "autostarthook": true,
     "translatortimeout": 5,
     "minlength": 5,
-    "maxlength": 150,
-    "fanjian": 1,
+    "maxlength": 350,
+    "fanjian": 0,
     "rotation": 0,
     "srclang": 0,
-    "transkiroku": false,
+    "transkiroku": true,
     "transkirokuuse": "baidu",
     "showatcenter": true,
     "mustocr": false,
-    "mustocr_interval": 5.0,
-    "ocrmininterval": 1.0,
+    "mustocr_interval": 5,
+    "ocrmininterval": 0.9999999999999999,
     "selectable": false,
     "autoupdate": false,
     "gongxiangcishu": {
         "use": false,
-        "path": "C:/dataH/vnr/vnr/Caches/Sync/1gamedic.xml"
+        "path": "C:/dataH/vnr/vnr/Caches/Sync/gamedic.xml"
     },
     "proxies": null,
     "xiaoxueguan": {
@@ -291,10 +291,9 @@
         "path": "C:/dataH/MisakaTranslator.2.11/小学馆.db"
     },
     "mecab": {
-        "use": false,
+        "use": true,
         "path": "C:/dataH/Mecab"
     },
-    "usesearchword": false,
     "edict": {
         "use": false,
         "path": "C:/dataH/vnr/vnr/Caches/Dictionaries/EDICT/edict.db"
@@ -303,6 +302,7 @@
         "use": false,
         "path": "C:/dataH/vnr/vnr/Caches/Dictionaries/Lingoes"
     },
+    "usesearchword": true,
     "show_fenci": false,
     "quick_setting": {
         "use": true,
@@ -310,160 +310,155 @@
             "_1": {
                 "use": true,
                 "name": "重新翻译",
-                "key": [],
-                "keys": [
-                    "",
-                    ""
-                ],
                 "key1": 2,
-                "key2": 1
+                "key2": 0
             },
             "_2": {
                 "use": false,
                 "name": "自动翻译",
-                "key1": 3,
-                "key2": 1
+                "key1": -1,
+                "key2": -1
             },
             "_3": {
-                "use": false,
+                "use": true,
                 "name": "打开设置",
                 "key1": 0,
-                "key2": 2
+                "key2": 1
             },
             "_4": {
                 "use": false,
                 "name": "复制到剪贴板",
-                "key1": 0,
-                "key2": 1
+                "key1": -1,
+                "key2": 0
             },
             "_5": {
                 "use": false,
                 "name": "显示/隐藏原文",
-                "key1": 0,
-                "key2": 4
+                "key1": -1,
+                "key2": -1
             },
             "_6": {
                 "use": false,
                 "name": "显示历史翻译",
-                "key1": 0,
-                "key2": 5
+                "key1": -1,
+                "key2": 0
             },
             "_7": {
                 "use": false,
                 "name": "朗读",
-                "key1": 0,
-                "key2": 6
+                "key1": -1,
+                "key2": 4
             },
             "_8": {
                 "use": false,
                 "name": "鼠标穿透窗口",
-                "key1": 0,
-                "key2": 7
+                "key1": -1,
+                "key2": -1
             },
             "_9": {
                 "use": false,
                 "name": "锁定工具栏",
                 "key1": 0,
-                "key2": 8
+                "key2": 2
             },
             "_10": {
                 "use": false,
                 "name": "打开保存的游戏",
-                "key1": 0,
-                "key2": 9
+                "key1": -1,
+                "key2": -1
             },
             "_11": {
                 "use": false,
                 "name": "选择游戏",
-                "key1": 0,
-                "key2": 10
+                "key1": -1,
+                "key2": 12
             },
             "_12": {
                 "use": false,
                 "name": "选择文本",
-                "key1": 0,
-                "key2": 11
+                "key1": -1,
+                "key2": 14
             },
             "_13": {
                 "use": false,
                 "name": "选取OCR范围",
-                "key1": 1,
-                "key2": 0
+                "key1": -1,
+                "key2": -1
             },
             "_14": {
                 "use": false,
                 "name": "显示/隐藏范围框",
-                "key1": 1,
-                "key2": 1
+                "key1": -1,
+                "key2": -1
             },
             "_15": {
                 "use": false,
                 "name": "绑定截图窗口",
-                "key1": 1,
-                "key2": 4
+                "key1": -1,
+                "key2": -1
             },
             "_16": {
-                "use": false,
+                "use": true,
                 "name": "显示/隐藏翻译窗口",
-                "key1": 1,
-                "key2": -1
+                "key1": 0,
+                "key2": 0
             },
             "_17": {
                 "use": false,
                 "name": "退出",
-                "key1": 1,
-                "key2": 3
+                "key1": -1,
+                "key2": -1
             },
             "_A": {
                 "use": false,
                 "name": "选择翻译源-剪贴板",
-                "key1": 0,
-                "key2": 0
+                "key1": -1,
+                "key2": -1
             },
             "_B": {
                 "use": false,
                 "name": "选择翻译源-OCR",
-                "key1": 0,
-                "key2": 1
+                "key1": -1,
+                "key2": -1
             },
             "_C": {
                 "use": false,
                 "name": "选择翻译源-TEXTRACTOR",
-                "key1": 0,
-                "key2": 2
+                "key1": -1,
+                "key2": -1
             },
             "_18": {
                 "use": false,
                 "name": "字体增大（可长按）",
-                "key1": 3,
-                "key2": 3
+                "key1": -1,
+                "key2": -1
             },
             "_19": {
-                "use": true,
+                "use": false,
                 "name": "字体缩小（可长按）",
-                "key1": 2,
-                "key2": 4
+                "key1": -1,
+                "key2": -1
             },
             "_20": {
-                "use": true,
+                "use": false,
                 "name": "全屏/恢复游戏窗口",
-                "key1": 2,
-                "key2": 2
+                "key1": -1,
+                "key2": -1
             },
             "_21": {
-                "use": true,
+                "use": false,
                 "name": "前景窗口截屏",
-                "key1": 2,
-                "key2": 0
+                "key1": -1,
+                "key2": -1
             }
         }
     },
-    "showShadow": true,
-    "shadowcolor": "#0509ff",
-    "showbold": true,
-    "shadowforce": 1,
+    "showbold": false,
+    "showShadow": false,
+    "shadowcolor": "white",
+    "shadowforce": 5,
+    "showcixing_touming": 100,
     "showcixing": false,
-    "showcixing_touming": 30,
     "cixingcolor": {
         "形容詞": "aliceblue",
         "形状詞": "antiquewhite",
@@ -483,20 +478,19 @@
         "補助記号": "chocolate",
         "記号": "coral"
     },
-    "ocr_hori_extend": false,
-    "LocaleEmulator": "C:/Users/11737/Documents/GitHub/LunaTranslator/LunaTranslator/files/Locale.Emulator.2.5.0.1",
+    "ocr_hori_extend": true,
+    "LocaleEmulator": "./files/Locale.Emulator.2.5.0.1",
     "premtsimiuse": false,
     "premtsimi": 5,
-    "useproxy": false,
+    "useproxy": true,
     "proxy": "127.0.0.1:4780",
     "tgtlang": 0,
     "focusfollow": true,
     "usemagpie": true,
     "usefullscreenbutton": true,
     "useresizebutton": false,
-    "magpiemethod": 6,
-    "magpiescalemethod": 5,
-    "magpiecapturemethod": 2,
-    "ocrautobindwindow": true,
-    "buttoncolor": "#ff988f"
+    "buttoncolor": "white",
+    "magpiescalemethod": 0,
+    "magpiecapturemethod": 0,
+    "ocrautobindwindow": true
 }

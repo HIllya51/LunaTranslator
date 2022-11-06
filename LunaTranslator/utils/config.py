@@ -1,5 +1,5 @@
 import json 
-import os 
+import os ,importlib
 from utils.defaultconfig import *
 
 def tryreadconfig(path):
@@ -21,6 +21,7 @@ noundictconfig=tryreadconfig('noundictconfig.json')
 transerrorfixdictconfig=tryreadconfig('transerrorfixdictconfig.json')
 savehook_new=tryreadconfig('savehook_new.json') 
 
+translatorsetting=tryreadconfig('translatorsetting.json') 
 
 def syncconfig(config,default,drop=False,deep=0):
     
@@ -48,4 +49,19 @@ syncconfig(globalconfig,defaultglobalconfig)
 syncconfig(transerrorfixdictconfig,defaulterrorfix)
 
 syncconfig(noundictconfig,defaultnoun)
+syncconfig(translatorsetting,translatordfsetting)
+
+for name in translatorsetting: 
+    try:
+        configfile=globalconfig['fanyi'][name]['argsfile']
+        if os.path.exists(configfile) : 
+            with open(configfile,'r',encoding='utf8') as ff:
+                js=json.load(ff)  
+            for k in translatorsetting[name]['args']:
+                if k in js['args']:
+                    translatorsetting[name]['args'][k]=js['args'][k]  
+            #os.remove(configfile)
+            globalconfig['fanyi'][name]['argsfile']=''
+    except:
+        print('error',name)
 #0 ja  1 eng

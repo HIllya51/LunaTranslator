@@ -214,6 +214,7 @@ class MAINUI() :
             self.translators[engine].gettask((paste_str,paste_str_solve,skip)) 
         try:
             if skip==False and globalconfig['transkiroku']  and 'sqlwrite2' in dir(self.textsource):
+                paste_str=paste_str.replace('"','""')   
                 ret=self.textsource.sqlwrite.execute(f'SELECT * FROM artificialtrans WHERE source = "{paste_str}"').fetchone()
                 if ret is  None:                     
                     self.textsource.sqlwrite.execute(f'INSERT INTO artificialtrans VALUES(NULL,"{paste_str}","","");')
@@ -334,6 +335,7 @@ class MAINUI() :
         if classname not in ['rengong','premt']:
              
             res=res.replace('"','""')   
+            contentraw=contentraw.replace('"','""')   
             try:
                 if   globalconfig['transkiroku'] and 'sqlwrite' in dir(self.textsource):
                     if globalconfig['transkirokuuse']==classname:

@@ -1,7 +1,7 @@
- 
+from traceback import print_exc
 import requests 
 from translator.basetranslator import basetrans
-from utils.config import globalconfig,syncconfig
+from utils.config import globalconfig,translatorsetting
 import os
 import json
 import sqlite3
@@ -9,26 +9,11 @@ import Levenshtein
 class TS(basetrans): 
     def __init__(self,rootobject) :
         super(TS,self).__init__()
-        self.rootbobject=rootobject
-    @classmethod
-    def defaultsetting(self):
-        return {
-            "args": {
-                "sqlite文件": "" ,
-                
-            } 
-        }
+        self.rootbobject=rootobject 
     def inittranslator(self):
-        configfile=globalconfig['fanyi'][self.typename]['argsfile']
-        self.path=''
-        if os.path.exists(configfile) ==False:
-            return ''
-        
-        with open(configfile,'r',encoding='utf8') as ff:
-            js=json.load(ff)
-        syncconfig(js,self.defaultsetting())
+        js=translatorsetting[self.typename]
         if js['args']['sqlite文件']=="":
-            return ''
+            return '未指定文件'
         else:
             self.path = js['args']['sqlite文件']   
             try:
@@ -37,14 +22,7 @@ class TS(basetrans):
             except:
                 return '无效文件' 
     def translate(self,content): 
-        configfile=globalconfig['fanyi'][self.typename]['argsfile'] 
-        if os.path.exists(configfile) ==False:
-            return ''
-        with open(configfile,'r',encoding='utf8') as ff:
-            js=json.load(ff)
-        syncconfig(js,self.defaultsetting())
-       #sqls=[]
-         
+        js=translatorsetting[self.typename]
         if js['args']['sqlite文件']!="":
              
             if self.path!= js['args']['sqlite文件']  :
@@ -54,7 +32,8 @@ class TS(basetrans):
                         self.sql=sqlite3.connect(self.path,check_same_thread=False)
                 except:
                     return '无效文件'
-         
+        else:
+            return '未指定文件'
         if globalconfig['premtsimiuse']:
             mindis=9999999
             savet="{}"
@@ -71,10 +50,10 @@ class TS(basetrans):
             try:
                 ret=self.sql.execute(f'SELECT machineTrans FROM artificialtrans WHERE source = "{content}"').fetchone()
             
-                ret=json.loads(ret[0])
-                
+                ret=json.loads(ret[0]) 
                 return ret 
             except:
+                print_exc()
                 return {}
              
 if __name__=='__main__':

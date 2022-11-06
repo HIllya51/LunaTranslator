@@ -2,7 +2,7 @@
 from PyQt5.QtWidgets import QWidget,QLabel,QFrame ,QPushButton,QColorDialog,QSpinBox,QComboBox,QScrollArea,QLineEdit
 from PyQt5.QtGui import QColor,QFont
 import functools
-from utils.config import globalconfig 
+from utils.config import globalconfig ,translatorsetting
 import os
 import qtawesome
 import gui.switchbutton
@@ -10,7 +10,7 @@ import gui.attachprocessdialog
 from traceback import print_exc
 import gui.selecthook 
 import importlib
-from gui.inputdialog import GetUserPlotItems
+from gui.inputdialog import GetUserPlotItems,autoinitdialog
 def setTabTwo(self) :
   
         tab = QWidget()
@@ -217,8 +217,22 @@ def initfanyiswitchs(self,name,namepos,switchpos,colorpos,settingpos):
             self.customSetGeometry(s1, *settingpos)
             s1.setStyleSheet("background: transparent;") 
             
-            s1.setIcon(qtawesome.icon("fa.gear", color="#FF69B4"  ))
-            aclass=importlib.import_module('translator.'+name).TS
-            df=aclass.defaultsetting()
-            s1.clicked.connect(lambda x:GetUserPlotItems(self,globalconfig['fanyi'][name]['argsfile'],df,globalconfig['fanyi'][name]['name']+'设置'))
-     
+            s1.setIcon(qtawesome.icon("fa.gear", color="#FF69B4"  )) 
+            items=[] 
+            for arg in translatorsetting[name]['args']: 
+                items.append({
+                        't':'lineedit','l':arg,'d':translatorsetting[name]['args'],'k':arg
+                    })
+                if arg=='json文件' or arg=='sqlite文件':
+                    items[-1].update({
+                        't':'file',
+                        'dir':False,
+                        'filter':"*.json" if arg=='json文件' else "*.sqlite"
+                    }) 
+                elif arg=='路径':
+                    items[-1].update({
+                        't':'file',
+                        'dir':True 
+                    }) 
+            items.append({'t':'okcancel' })
+            s1.clicked.connect(functools.partial(autoinitdialog,self,globalconfig['fanyi'][name]['name']+'设置',900,items))

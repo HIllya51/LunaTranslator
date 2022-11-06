@@ -1,7 +1,7 @@
  
 import requests 
 from translator.basetranslator import basetrans
-from utils.config import globalconfig,syncconfig
+from utils.config import translatorsetting ,globalconfig
 import os
 import json
 import sqlite3
@@ -9,24 +9,9 @@ import Levenshtein
 class TS(basetrans): 
     def __init__(self,rootobject) :
         super(TS,self).__init__()
-        self.rootbobject=rootobject
-    @classmethod
-    def defaultsetting(self):
-        return {
-            "args": {
-                "json文件": "" ,
-                
-            } 
-        }
+        self.rootbobject=rootobject 
     def inittranslator(self):
-        configfile=globalconfig['fanyi'][self.typename]['argsfile']
-        self.path=''
-        if os.path.exists(configfile) ==False:
-            return ''
-        
-        with open(configfile,'r',encoding='utf8') as ff:
-            js=json.load(ff)
-        syncconfig(js,self.defaultsetting())
+        js=translatorsetting[self.typename]
         if js['args']['json文件']=="":
             return ''
         else:
@@ -38,12 +23,7 @@ class TS(basetrans):
             except:
                 return ''
     def translate(self,content): 
-        configfile=globalconfig['fanyi'][self.typename]['argsfile'] 
-        if os.path.exists(configfile) ==False:
-            return ''
-        with open(configfile,'r',encoding='utf8') as ff:
-            js=json.load(ff)
-        syncconfig(js,self.defaultsetting())
+        js=translatorsetting[self.typename]
        #sqls=[]
         jsons=[]
         if js['args']['json文件']!="":

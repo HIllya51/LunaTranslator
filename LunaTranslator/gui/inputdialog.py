@@ -5,8 +5,7 @@ from PyQt5.QtGui import QColor
 import qtawesome
 from utils.config import globalconfig,syncconfig
 import json
-import os
-import importlib
+import os 
 def autoinitdialog(object,title,width,lines):
     dialog=QDialog(object)
     dialog.setWindowTitle(title)

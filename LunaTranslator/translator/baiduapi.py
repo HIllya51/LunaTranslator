@@ -5,7 +5,7 @@ import requests
 from urllib import parse 
 import os
 
-from utils.config import globalconfig
+from utils.config import globalconfig,translatorsetting
 import re 
 from translator.basetranslator import basetrans 
 from js2py import EvalJs
@@ -16,31 +16,11 @@ import hashlib
 import urllib
 import random
 import json
-class TS(basetrans): 
-    @classmethod
-    def defaultsetting(self):
-        return {
-            "args": {
-                "注册网址": "https://fanyi-api.baidu.com/api/trans/product/desktop",
-                "APP ID": "",
-                "密钥": "",
-                "字数统计": "0",
-                "次数统计": "0"
-            },
-            "notwriteable": [
-                "注册网址",
-                "字数统计",
-                "次数统计"
-            ]
-        }
+class TS(basetrans):  
     def inittranslator(self):
         self.session=requests.session()
     def translate(self,query): 
-        configfile=globalconfig['fanyi'][self.typename]['argsfile']
-        if os.path.exists(configfile) ==False:
-            return 
-        with open(configfile,'r',encoding='utf8') as ff:
-            js=json.load(ff)
+        js=translatorsetting[self.typename]
         if js['args']['APP ID']=="":
             return 
         else:
@@ -61,9 +41,7 @@ class TS(basetrans):
         res=self.session.get('https://api.fanyi.baidu.com'+myurl,timeout=globalconfig['translatortimeout'], proxies=  {'http': None,'https': None}).json()  
         js['args']['字数统计']=str(int(js['args']['字数统计'])+len(query))
         js['args']['次数统计']=str(int(js['args']['次数统计'])+1)
-        with open(configfile,'w',encoding='utf-8') as ff:
-            ff.write(json.dumps(js,ensure_ascii=False,sort_keys=False, indent=4))
-        #print(res['trans_result'][0]['dst'])
+         
         return '\n'.join([_['dst'] for _ in res['trans_result']])  
          
      
