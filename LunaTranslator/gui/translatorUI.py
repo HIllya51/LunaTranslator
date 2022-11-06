@@ -324,6 +324,10 @@ class QUnFrameWindow(QWidget):
         self.takusanbuttons(qtawesome.icon("fa.expand" ,color= globalconfig['buttoncolor']),"MinMaxButton",lambda :_moveresizegame(self),5,"调整游戏窗口(需要绑定ocr窗口，或选择hook进程)" ) 
 
         def __initmulti(self):
+            while True:
+                if globalconfig['usemagpie']:
+                    break
+                time.sleep(1)
             self.multiprocesshwnd=multiprocessing.Queue()
             self.callmagpie=mutiproc(callmagpie,(r'./files/Magpie_v0.9.1' ,self.multiprocesshwnd))
             self.callmagpie.start() 

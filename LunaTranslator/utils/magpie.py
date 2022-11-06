@@ -24,7 +24,7 @@ def callmagpie( cwd,queue):# 0x2000|0x2|0x200):
         MagpieRT_Run=dll.Run
         MagpieRT_Run.argtypes=[ c_uint32,c_char_p,c_uint32,c_uint32,c_float,c_uint32,c_int32,c_uint32,c_uint32,c_uint32,c_uint32,c_uint32]
         MagpieRT_Run.restype=c_char_p  
-        print('magpie init',MagpieRT_Initialize(2,c_char_p('Runtime.log'.encode('utf8')),100000,1)) 
+        print('magpie init',MagpieRT_Initialize(6,c_char_p('Runtime.log'.encode('utf8')),100000,1)) 
         with open('ScaleModels.json','r')as ff:
             effectsJson= json.load(ff)   
          
