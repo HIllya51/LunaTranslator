@@ -161,8 +161,9 @@ class Settin(QMainWindow) :
         
         setTab7(self)
         setTabcishu(self)
-        setTab_about(self)
+        
         setTab_quick(self) 
+        setTab_about(self)
         
         self.usevoice=0
      
