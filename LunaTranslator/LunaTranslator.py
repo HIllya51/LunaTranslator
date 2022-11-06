@@ -239,6 +239,7 @@ class MAINUI() :
             for key in ttss:
                 if globalconfig['reader'][key]['use']:
                     use=key
+                    print("start",key)
                     self.reader_usevoice=use
                     break
             if use:

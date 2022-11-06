@@ -15,7 +15,7 @@ from PyQt5.QtCore import QSize
 from utils.config import globalconfig 
 import qtawesome 
  
-from gui.inputdialog import getsomepath
+from gui.inputdialog import getsomepath1
 import gui.switchbutton
 import gui.attachprocessdialog  
 import gui.selecthook  
@@ -50,9 +50,6 @@ def setTab7(self) :
         def __(x):
             globalconfig['gongxiangcishu'].__setitem__('use',x)
             self.object.loadvnrshareddict()
-        def __2(self):
-            getsomepath(self,'共享辞书',globalconfig['gongxiangcishu']['path'],'共享辞书:',lambda x:globalconfig['gongxiangcishu'].__setitem__('path',x),False)
-            self.object.loadvnrshareddict()
         grids+=[
 
             [(QLabel('使用专有名词翻译' ),3),
@@ -63,7 +60,7 @@ def setTab7(self) :
                 self.getcolorbutton(globalconfig,'',callback=lambda x:  noundictconfigdialog1(self,transerrorfixdictconfig,'翻译结果替换设置',['翻译','替换'],'./userconfig/transerrorfixdictconfig.json'),icon='fa.gear',constcolor="#FF69B4")],
             [(QLabel('使用VNR共享辞书' ),3),
                 self.getsimpleswitch(globalconfig['gongxiangcishu'],'use',callback =lambda x:__(x)),
-                self.getcolorbutton(globalconfig,'',callback=lambda x:   __2(self),icon='fa.gear',constcolor="#FF69B4")],
+                self.getcolorbutton(globalconfig,'',callback=lambda x:  getsomepath1(self,'共享辞书',globalconfig['gongxiangcishu'],'path','共享辞书:',self.object.loadvnrshareddict,False,'*.xml') ,icon='fa.gear',constcolor="#FF69B4")],
             [''],[''],[''],[''],[''],
         ] 
         self.automakegrid(lay,grids)

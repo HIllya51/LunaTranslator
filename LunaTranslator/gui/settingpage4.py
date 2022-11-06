@@ -11,27 +11,21 @@ from PyQt5.QtWidgets import    QWidget, QTableView, QAbstractItemView, QLabel, Q
 from PyQt5.QtWidgets import  QWidget,QLabel ,QLineEdit,QSpinBox,QPushButton,QTextEdit
 
 from PyQt5.QtGui import QStandardItem, QStandardItemModel
-import qtawesome 
-import subprocess
-from utils.config import globalconfig ,postprocessconfig,noundictconfig
+import subprocess 
 from PyQt5.QtWidgets import  QWidget,QLabel, QComboBox  
 from utils.subproc import subproc
 from PyQt5.QtWidgets import QWidget,QLabel,QFrame ,QPushButton 
 from PyQt5.QtGui import QColor,QFont,QPixmap,QIcon
 import functools
 from PyQt5.QtWidgets import QDialogButtonBox,QDialog,QComboBox,QFormLayout,QSpinBox,QVBoxLayout,QLineEdit
-from PyQt5.QtCore import Qt,QSize
-import qtawesome
-from PyQt5.QtCore import QThread
+from PyQt5.QtCore import Qt,QSize 
 import subprocess
-from utils.config import globalconfig ,postprocessconfig,savehook_new
+from utils.config import globalconfig ,savehook_new
 from utils.getpidlist import getwindowlist
 import threading
 import json
-from gui.inputdialog import getsomepath
-import gui.switchbutton
-import gui.attachprocessdialog  
-import gui.selecthook  
+from gui.inputdialog import autoinitdialog,getsomepath1
+
 import os
 import win32con,win32api,win32process,win32gui
 self_pid=os.getpid() 
@@ -158,16 +152,20 @@ def setTab4(self) :
                         except:
                                 print_exc()
         bt.clicked.connect(lambda x:_sqlite2json()) 
+
+        ds={'n':'1'}
         grids=[
                 [(QLabel('游戏最小化时窗口隐藏'),1),(self.getsimpleswitch(globalconfig,'minifollow'),1),'','',''],
                 [(QLabel('游戏失去焦点时窗口隐藏'),1),(self.getsimpleswitch(globalconfig,'focusfollow'),1)],
                 [(QLabel('游戏窗口移动时同步移动'),1),(self.getsimpleswitch(globalconfig,'movefollow'),1)],
                 [(QLabel('检测到游戏时自动开始'),1),(self.getsimpleswitch(globalconfig,'autostarthook'),1)],
-                [(QLabel('LocaleEmulator路径设置'),1),(self.getcolorbutton(globalconfig,'',callback=lambda x: getsomepath(self,'LocaleEmulator 路径',globalconfig['LocaleEmulator'],'LocaleEmulator:',lambda x:globalconfig.__setitem__('LocaleEmulator',x),True),icon='fa.gear',constcolor="#FF69B4"),1)],
-                [(QLabel('已保存游戏'),1),(self.getcolorbutton(globalconfig,'autostarthook',icon='fa.gamepad',constcolor="#FF69B4",callback=lambda:autosaveshow(self)),1)],
+                
+                [(QLabel('LocaleEmulator路径设置'),1),(self.getcolorbutton(globalconfig,'',callback=lambda x: getsomepath1(self,'LocaleEmulator 路径',globalconfig,'LocaleEmulator','LocaleEmulator:',isdir=True),icon='fa.gear',constcolor="#FF69B4"),1)],
+                [(QLabel('已保存游戏'),1),(self.getcolorbutton(globalconfig,'',icon='fa.gamepad',constcolor="#FF69B4",callback=lambda:autosaveshow(self)),1)],
 
                 [(QLabel('录制翻译文件'),1),(self.getsimpleswitch(globalconfig,'transkiroku'),1)],
                 [(QLabel('优先使用的翻译源'),1),(transkirokuuse,1)],
+                
                 [bt],
                 [''],
                 [''],

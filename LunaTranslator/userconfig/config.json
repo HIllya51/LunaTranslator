@@ -1,14 +1,14 @@
 {
     "position": [
-        330,
-        730
+        334,
+        788
     ],
-    "fixedheight": true,
+    "fixedheight": false,
     "width": 1435,
     "autorun": true,
     "transparent": 32,
     "fontsize": 20.0,
-    "fonttype": "华文隶书",
+    "fonttype": "幼圆",
     "miaobianwidth2": 3.0,
     "miaobianwidth": 1,
     "miaobiancolor": "#fdf4ff",
@@ -19,7 +19,7 @@
     "backcolor": "#989898",
     "isshowhira": false,
     "locktools": true,
-    "showfanyisource": true,
+    "showfanyisource": false,
     "autoread": false,
     "extractalltext": false,
     "reader": {
@@ -32,11 +32,11 @@
             "voice": "jp_male_satoshi"
         },
         "windowstts": {
-            "use": true,
+            "use": false,
             "voice": "TTS_MS_ZH-CN_HUIHUI_11.0"
         },
         "voiceroid2": {
-            "use": false,
+            "use": true,
             "voice": "yukari_emo_44",
             "path": "C:/dataH/Yukari2"
         },
@@ -54,8 +54,8 @@
     },
     "sourcestatus": {
         "copy": false,
-        "ocr": true,
-        "textractor": false,
+        "ocr": false,
+        "textractor": true,
         "textractor_pipe": false
     },
     "ocr": {
@@ -87,7 +87,7 @@
             "name": "youdao图片翻译"
         },
         "windowsocr": {
-            "use": true,
+            "use": false,
             "name": "WindowsOCR"
         }
     },
@@ -213,7 +213,7 @@
             "name": "qqimt"
         },
         "xiaoniu": {
-            "use": true,
+            "use": false,
             "color": "#0ff000",
             "name": "小牛api",
             "argsfile": "./userconfig/xiaoniuapi.json"
@@ -264,8 +264,8 @@
             "argsfile": "./userconfig/deeplapi-free.json"
         }
     },
-    "minifollow": true,
-    "movefollow": true,
+    "minifollow": false,
+    "movefollow": false,
     "autostarthook": true,
     "translatortimeout": 5,
     "minlength": 5,
@@ -273,10 +273,10 @@
     "fanjian": 1,
     "rotation": 0,
     "srclang": 0,
-    "transkiroku": true,
+    "transkiroku": false,
     "transkirokuuse": "baidu",
     "showatcenter": true,
-    "mustocr": true,
+    "mustocr": false,
     "mustocr_interval": 5.0,
     "ocrmininterval": 1.0,
     "selectable": false,
@@ -291,10 +291,10 @@
         "path": "C:/dataH/MisakaTranslator.2.11/小学馆.db"
     },
     "mecab": {
-        "use": true,
+        "use": false,
         "path": "C:/dataH/Mecab"
     },
-    "usesearchword": true,
+    "usesearchword": false,
     "edict": {
         "use": false,
         "path": "C:/dataH/vnr/vnr/Caches/Dictionaries/EDICT/edict.db"
@@ -305,7 +305,7 @@
     },
     "show_fenci": false,
     "quick_setting": {
-        "use": false,
+        "use": true,
         "all": {
             "_1": {
                 "use": true,
@@ -439,16 +439,16 @@
                 "key2": 3
             },
             "_19": {
-                "use": false,
+                "use": true,
                 "name": "字体缩小（可长按）",
-                "key1": 0,
+                "key1": 2,
                 "key2": 4
             },
             "_20": {
-                "use": false,
+                "use": true,
                 "name": "全屏/恢复游戏窗口",
-                "key1": 0,
-                "key2": 0
+                "key1": 2,
+                "key2": 2
             },
             "_21": {
                 "use": true,
@@ -462,7 +462,7 @@
     "shadowcolor": "#0509ff",
     "showbold": true,
     "shadowforce": 1,
-    "showcixing": true,
+    "showcixing": false,
     "showcixing_touming": 30,
     "cixingcolor": {
         "形容詞": "aliceblue",
@@ -483,19 +483,19 @@
         "補助記号": "chocolate",
         "記号": "coral"
     },
-    "ocr_hori_extend": true,
+    "ocr_hori_extend": false,
     "LocaleEmulator": "C:/Users/11737/Documents/GitHub/LunaTranslator/LunaTranslator/files/Locale.Emulator.2.5.0.1",
     "premtsimiuse": false,
     "premtsimi": 5,
-    "useproxy": true,
+    "useproxy": false,
     "proxy": "127.0.0.1:4780",
     "tgtlang": 0,
-    "focusfollow": false,
-    "usemagpie": false,
+    "focusfollow": true,
+    "usemagpie": true,
     "usefullscreenbutton": true,
-    "useresizebutton": true,
+    "useresizebutton": false,
     "magpiemethod": 6,
-    "magpiescalemethod": 1,
+    "magpiescalemethod": 5,
     "magpiecapturemethod": 2,
     "ocrautobindwindow": true,
     "buttoncolor": "#ff988f"
