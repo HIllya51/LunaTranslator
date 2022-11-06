@@ -68,8 +68,8 @@ def callmagpie( cwd,queue):# 0x2000|\0x2|\0x200):
                           settings.DebugDisableEffectCache *FlagMasks.DisableEffectCache   |\
                           settings.SimulateExclusiveFullscreen *FlagMasks.SimulateExclusiveFullscreen   |\
                           settings.DebugWarningsAreErrors *FlagMasks.WarningsAreErrors   |\
-                          (1-settings.VSync)*FlagMasks.DisableVSync | \
-                           settings.ShowFPS *FlagMasks.ShowFPS   #不知道为啥 就他不管用。。。但是不用多进程却管用
+                          (1-settings.VSync)*FlagMasks.DisableVSync #| \
+                           #settings.ShowFPS *FlagMasks.ShowFPS   #不知道为啥 就他不管用。。。但是不用多进程却管用
              
             win32gui.SetForegroundWindow(hwnd )   
             MagpieRT_Run(hwnd ,c_char_p(json.dumps(effectsJson[ScaleMode]['effects']).encode('utf8')),flags,captureMode,settings.CursorZoomFactor,settings.CursorInterpolationMode,settings.AdapterIdx,settings.MultiMonitorUsage,0,0,0,0)

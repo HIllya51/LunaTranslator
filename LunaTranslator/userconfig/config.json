@@ -1,24 +1,24 @@
 {
     "position": [
-        547,
-        769
+        342,
+        241
     ],
     "fixedheight": false,
-    "width": 1128,
+    "width": 1123,
     "autorun": true,
-    "transparent": 48,
+    "transparent": 55,
     "fontsize": 17.99999999999997,
     "fonttype": "微软雅黑",
     "miaobianwidth2": 3.0,
     "miaobianwidth": 0.7000000000000001,
-    "miaobiancolor": "#e9ffd4",
+    "miaobiancolor": "#ffffff",
     "zitiyangshi": 3,
     "iskongxin": true,
     "isshowrawtext": true,
-    "rawtextcolor": "#8f1f6e",
-    "backcolor": "#aaffff",
+    "rawtextcolor": "#000000",
+    "backcolor": "#000000",
     "isshowhira": false,
-    "locktools": true,
+    "locktools": false,
     "showfanyisource": false,
     "autoread": false,
     "extractalltext": false,
@@ -143,8 +143,8 @@
             "name": "deepl"
         },
         "jb7": {
-            "use": true,
-            "color": "#c54cda",
+            "use": false,
+            "color": "#1dda00",
             "name": "Jbeijing7",
             "argsfile": ""
         },
@@ -213,14 +213,14 @@
             "name": "qqimt"
         },
         "xiaoniu": {
-            "use": false,
+            "use": true,
             "color": "#f00000",
             "name": "小牛api",
             "argsfile": ""
         },
         "huoshan": {
             "use": false,
-            "color": "#baf0c7",
+            "color": "#1400f0",
             "name": "huoshan"
         },
         "yeekit": {
@@ -229,7 +229,7 @@
             "name": "yeekit"
         },
         "caiyunapi": {
-            "use": false,
+            "use": true,
             "color": "#00e4f0",
             "name": "彩云api",
             "argsfile": ""
@@ -270,7 +270,7 @@
     "translatortimeout": 5,
     "minlength": 5,
     "maxlength": 350,
-    "fanjian": 5,
+    "fanjian": 0,
     "rotation": 0,
     "srclang": 0,
     "transkiroku": true,
@@ -280,7 +280,7 @@
     "mustocr_interval": 5,
     "ocrmininterval": 0.9999999999999999,
     "selectable": false,
-    "autoupdate": true,
+    "autoupdate": false,
     "gongxiangcishu": {
         "use": false,
         "path": "C:/dataH/vnr/vnr/Caches/Sync/gamedic.xml"
@@ -310,14 +310,14 @@
             "_1": {
                 "use": true,
                 "name": "重新翻译",
-                "key1": 0,
+                "key1": 2,
                 "key2": 0
             },
             "_2": {
-                "use": true,
+                "use": false,
                 "name": "自动翻译",
-                "key1": 1,
-                "key2": 0
+                "key1": -1,
+                "key2": -1
             },
             "_3": {
                 "use": true,
@@ -398,7 +398,7 @@
                 "key2": -1
             },
             "_16": {
-                "use": false,
+                "use": true,
                 "name": "显示/隐藏翻译窗口",
                 "key1": 0,
                 "key2": 0
@@ -440,16 +440,16 @@
                 "key2": -1
             },
             "_20": {
-                "use": true,
+                "use": false,
                 "name": "全屏/恢复游戏窗口",
-                "key1": 2,
-                "key2": 1
+                "key1": -1,
+                "key2": -1
             },
             "_21": {
-                "use": true,
+                "use": false,
                 "name": "前景窗口截屏",
-                "key1": 2,
-                "key2": 2
+                "key1": -1,
+                "key2": -1
             }
         }
     },
@@ -460,10 +460,10 @@
     "showcixing_touming": 100,
     "showcixing": false,
     "cixingcolor": {
-        "形容詞": "#16ff05",
+        "形容詞": "aliceblue",
         "形状詞": "antiquewhite",
         "副詞": "aqua",
-        "名詞": "#ff9011",
+        "名詞": "aquamarine",
         "代名詞": "azure",
         "動詞": "beige",
         "助詞": "bisque",
@@ -485,11 +485,11 @@
     "useproxy": true,
     "proxy": "127.0.0.1:4780",
     "tgtlang": 0,
-    "focusfollow": false,
+    "focusfollow": true,
     "usemagpie": true,
-    "usefullscreenbutton": false,
+    "usefullscreenbutton": true,
     "useresizebutton": false,
-    "buttoncolor": "#000000",
+    "buttoncolor": "white",
     "magpiescalemethod": 0,
     "magpiecapturemethod": 0,
     "ocrautobindwindow": true,
@@ -507,7 +507,6 @@
         "SimulateExclusiveFullscreen": false,
         "DebugWarningsAreErrors": false,
         "VSync": true,
-        "ShowFPS": true,
         "CursorZoomFactor": 1,
         "CursorInterpolationMode": 0,
         "AdapterIdx": -1,
