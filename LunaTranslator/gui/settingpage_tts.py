@@ -8,10 +8,6 @@ import gui.switchbutton
 import gui.attachprocessdialog  
 import gui.selecthook  
 def setTab5(self) :
-        t = QWidget()
-        self.tab_widget.addTab(t, "语音设置")  
-        lay=QGridLayout( )    
-        t.setLayout(lay)  
          
         self.voicecombo=QComboBox( ) 
         self.voicelistsignal.connect(lambda x: showvoicelist(self,x))
@@ -27,15 +23,9 @@ def setTab5(self) :
                 [(QLabel('语速:(-10~10)'),3),(self.getspinbox(-10,10,globalconfig['ttscommon'],'rate'  ),2)],
                 [(QLabel('音量:(0~100)'),3),(self.getspinbox(0,100,globalconfig['ttscommon'],'volume' ),2)],
                 [ (QLabel('自动朗读'),3),(self.getsimpleswitch(globalconfig,'autoread' ),1)],
-                [''],
-                [''],
-                [''],
-                [''],
-        ] 
-   
-        self.automakegrid(lay,grids)
-  
-         
+                
+        ]  
+        self.yitiaolong("语音设置",grids)
         self.readerwitchs={'huoshantts':self.huoshanTTSswitch,
                             'windowstts':self.WindowsTTSswitch,
                             'azuretts':self.AzureTTSswitch,

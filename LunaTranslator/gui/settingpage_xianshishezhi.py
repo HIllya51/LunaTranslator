@@ -17,12 +17,8 @@ def __changeuibuttonstate(self,x):
                 self.showatmiddleswitch .setEnabled(x) 
 
 def setTabThree(self) :
-     
-        self.tab_3 = QWidget()
-        self.tab_widget.addTab(self.tab_3, "显示设置") 
-        
-        xianshishezhilayout=QGridLayout( )    
-        self.tab_3.setLayout(xianshishezhilayout) 
+      
+
         self.horizontal_slider = QSlider(  ) 
         self.horizontal_slider.setMaximum(100)
         self.horizontal_slider.setMinimum(1)
@@ -62,13 +58,9 @@ def setTabThree(self) :
                 [''],
                 [(QLabel('显示调整游戏窗口按钮'),3),self.getsimpleswitch(globalconfig,'useresizebutton' ,callback=_useresizebutton),'',(QLabel('显示全屏游戏窗口按钮'),3),self.getsimpleswitch(globalconfig,'usefullscreenbutton' ,callback=_usefullscreenbutton),'',(QLabel('使用Magpie全屏'),3),self.getsimpleswitch(globalconfig,'usemagpie' )],
                 [(QLabel('Magpie算法'),3),(self.getsimplecombobox(['Lanczos','FSR','FSRCNNX','ACNet','Anime4K','CRT-Geom','Integer Scale 2x','Integer Scale 3x'],globalconfig,'magpiescalemethod'),3),'',(QLabel('Magpie捕获模式'),3),(self.getsimplecombobox(['Graphics Capture','Desktop Duplication','GDI','DwmSharedSurface'],globalconfig,'magpiecapturemethod'),3)],
-                [''],
-                [''],
-                ['']
-        ]
-        self.automakegrid(xianshishezhilayout,buttongrid)
-                    
-         
+                
+        ] 
+        self.yitiaolong("显示设置",buttongrid) 
         self.fontbigsmallsignal.connect(functools.partial(fontbigsmallfunction,self))
   
          

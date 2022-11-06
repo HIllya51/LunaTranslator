@@ -19,12 +19,7 @@ from gui.inputdialog import getsomepath1
 import gui.switchbutton
 import gui.attachprocessdialog  
 import gui.selecthook  
-def setTab7(self) : 
-        t = QWidget()
-        self.tab_widget.addTab(t,  "翻译优化")  
-        lay=QGridLayout( )    
-        t.setLayout(lay)  
-
+def setTab7(self) :   
         grids=[  ] 
         for post in postprocessconfig:
             l=[(QLabel(postprocessconfig[post]['name'] ),4),
@@ -59,10 +54,9 @@ def setTab7(self) :
             [(QLabel('使用VNR共享辞书' ),4),
                 self.getsimpleswitch(globalconfig['gongxiangcishu'],'use',callback =lambda x:__(x)),
                 self.getcolorbutton(globalconfig,'',callback=lambda x:  getsomepath1(self,'共享辞书',globalconfig['gongxiangcishu'],'path','共享辞书:',self.object.loadvnrshareddict,False,'*.xml') ,icon='fa.gear',constcolor="#FF69B4"),'','','','','',''],
-            [''],[''],[''],[''],[''],
-        ] 
-        self.automakegrid(lay,grids)
- 
+            
+        ]  
+        self.yitiaolong("翻译优化",grids)
 def noundictconfigdialog1(object,configdict,title,label=[  '日文','翻译'],fname='./userconfig/noundictconfig.json'):
     dialog = QDialog(object)  # 自定义一个dialog
     dialog.setWindowTitle(title)

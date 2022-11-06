@@ -14,10 +14,7 @@ import gui.switchbutton
 import gui.attachprocessdialog  
 import gui.selecthook  
 def setTab6(self) :
-        t = QWidget()
-        self.tab_widget.addTab(t, "OCR设置")  
-        lay=QGridLayout( )    
-        t.setLayout(lay)  
+        
           
         grids=[ ] 
         i=0
@@ -56,14 +53,9 @@ def setTab6(self) :
             [(QLabel("每隔一段时间必然进行一次OCR"),5),self.getsimpleswitch(globalconfig ,'mustocr')],
             [(QLabel("OCR最长间隔时间(s)"),5),(self.getspinbox(0.1,100,globalconfig,'mustocr_interval',double=True,step=0.1  ),2)],
             [(QLabel("OCR最短间隔时间(s)"),5),(self.getspinbox(0.1,100,globalconfig,'ocrmininterval',double=True,step=0.1  ),2)],
-            [''],
-            [''],
-            [''],
-            [''],
-        ]
-        self.automakegrid(lay,grids)
           
-          
+        ] 
+        self.yitiaolong("OCR设置",grids)
 def yuitsuocr(self,name,checked): 
     
     if checked : 

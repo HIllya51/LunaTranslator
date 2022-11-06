@@ -1,109 +1,335 @@
 {
     "position": [
-        580,
-        669
+        335,
+        682
     ],
     "fixedheight": false,
-    "width": 942,
-    "autorun": true,
-    "transparent": 35,
-    "fontsize": 17.0,
+    "width": 1128,
+    "autorun": false,
+    "transparent": 55,
+    "fontsize": 17.99999999999997,
     "fonttype": "微软雅黑",
-    "miaobianwidth2": 3,
-    "miaobianwidth": 1,
-    "miaobiancolor": "#eeeeee",
-    "zitiyangshi": 2,
+    "miaobianwidth2": 3.0,
+    "miaobianwidth": 0.7000000000000001,
+    "miaobiancolor": "#ffffff",
+    "zitiyangshi": 3,
     "iskongxin": true,
     "isshowrawtext": true,
     "rawtextcolor": "#000000",
-    "backcolor": "#7a8b8a",
+    "backcolor": "#000000",
     "isshowhira": false,
-    "locktools": true,
+    "locktools": false,
     "showfanyisource": false,
     "autoread": false,
     "extractalltext": false,
-    "show_fenci": false,
-    "premtsimiuse": false,
-    "buttoncolor": "white",
-    "premtsimi": 5,
-    "magpiescalemethod": 0,
-    "magpiecapturemethod": 0,
-    "useproxy": false,
-    "usemagpie": true,
-    "ocrautobindwindow": true,
-    "usefullscreenbutton": true,
-    "useresizebutton": false,
-    "proxy": "",
-    "showbold": false,
-    "showShadow": false,
-    "shadowcolor": "blue",
-    "ocr_hori_extend": true,
-    "shadowforce": 5,
-    "showcixing_touming": 30,
-    "showcixing": false,
-    "cixingcolor": {
-        "形容詞": "aliceblue",
-        "形状詞": "antiquewhite",
-        "副詞": "aqua",
-        "名詞": "aquamarine",
-        "代名詞": "azure",
-        "動詞": "beige",
-        "助詞": "bisque",
-        "助動詞": "black",
-        "感動詞": "blanchedalmond",
-        "接頭辞": "blue",
-        "接尾辞": "blueviolet",
-        "接続詞": "brown",
-        "指示詞": "burlywood",
-        "連体詞": "cadetblue",
-        "判定詞": "chartreuse",
-        "補助記号": "chocolate",
-        "記号": "coral"
+    "reader": {
+        "azuretts": {
+            "use": false,
+            "voice": "ja-JP-NanamiNeural"
+        },
+        "huoshantts": {
+            "use": false,
+            "voice": "jp_male_satoshi"
+        },
+        "windowstts": {
+            "use": false,
+            "voice": "TTS_MS_JA-JP_HARUKA_11.0"
+        },
+        "voiceroid2": {
+            "use": true,
+            "voice": "yukari_emo_44",
+            "path": "C:/dataH/Yukari2"
+        },
+        "voicevox": {
+            "use": false,
+            "voice": "春日部つむぎ",
+            "path": "C:/dataH/VOICEVOX"
+        }
     },
-    "quick_setting": {
+    "verticalocr": false,
+    "outputtopasteboard": false,
+    "ttscommon": {
+        "rate": 1.0,
+        "volume": 100.0
+    },
+    "sourcestatus": {
+        "copy": true,
+        "ocr": false,
+        "textractor": false,
+        "textractor_pipe": false
+    },
+    "ocr": {
+        "local": {
+            "use": true,
+            "name": "本地OCR"
+        },
+        "baiduocr": {
+            "use": false,
+            "name": "baiduOCR",
+            "argsfile": ""
+        },
+        "ocrspace": {
+            "use": false,
+            "name": "ocrspace",
+            "argsfile": ""
+        },
+        "docsumo": {
+            "use": false,
+            "name": "docsumo",
+            "argsfile": ""
+        },
+        "youdaocr": {
+            "use": false,
+            "name": "youdaocr"
+        },
+        "youdaocrtrans": {
+            "use": false,
+            "name": "youdao图片翻译"
+        },
+        "windowsocr": {
+            "use": false,
+            "name": "WindowsOCR"
+        }
+    },
+    "fanyi": {
+        "baidu": {
+            "use": false,
+            "color": "#ff0004",
+            "name": "百度"
+        },
+        "bing": {
+            "use": false,
+            "color": "#000ff0",
+            "name": "必应"
+        },
+        "google": {
+            "use": false,
+            "color": "#ff0000",
+            "name": "谷歌"
+        },
+        "ali": {
+            "use": false,
+            "color": "#0000ff",
+            "name": "阿里"
+        },
+        "youdao": {
+            "use": false,
+            "color": "#0ff000",
+            "name": "有道"
+        },
+        "youdao2": {
+            "use": false,
+            "color": "#0ff000",
+            "name": "有道2"
+        },
+        "google2": {
+            "use": false,
+            "color": "#95a5ff",
+            "name": "谷歌2"
+        },
+        "sougou": {
+            "use": false,
+            "color": "#0ff000",
+            "name": "搜狗"
+        },
+        "caiyun": {
+            "use": false,
+            "color": "#f01b14",
+            "name": "彩云"
+        },
+        "deepl": {
+            "use": false,
+            "color": "#0ff000",
+            "name": "deepl"
+        },
+        "jb7": {
+            "use": false,
+            "color": "#1dda00",
+            "name": "Jbeijing7",
+            "argsfile": ""
+        },
+        "kingsoft": {
+            "use": false,
+            "color": "#f0e658",
+            "name": "金山快译",
+            "argsfile": ""
+        },
+        "dreye": {
+            "use": false,
+            "color": "#f05b5b",
+            "name": "快译通",
+            "argsfile": ""
+        },
+        "sougou2": {
+            "use": false,
+            "color": "#0ff000",
+            "name": "搜狗2"
+        },
+        "youdao3": {
+            "use": false,
+            "color": "#0ff000",
+            "name": "有道3"
+        },
+        "youdao4": {
+            "use": false,
+            "color": "#0ff000",
+            "name": "有道4"
+        },
+        "youdao5": {
+            "use": false,
+            "color": "#0ff000",
+            "name": "有道5"
+        },
+        "tencent": {
+            "use": false,
+            "color": "#0ff000",
+            "name": "TX"
+        },
+        "iciba": {
+            "use": false,
+            "color": "#0ff000",
+            "name": "iciba"
+        },
+        "baiduapi": {
+            "use": true,
+            "color": "#f003ec",
+            "name": "百度api",
+            "argsfile": ""
+        },
+        "tencentapi": {
+            "use": false,
+            "color": "#070af0",
+            "name": "腾讯api",
+            "argsfile": ""
+        },
+        "byte": {
+            "use": false,
+            "color": "#0ff000",
+            "name": "byte"
+        },
+        "qqimt": {
+            "use": false,
+            "color": "#0ff000",
+            "name": "qqimt"
+        },
+        "xiaoniu": {
+            "use": false,
+            "color": "#f00000",
+            "name": "小牛api",
+            "argsfile": ""
+        },
+        "huoshan": {
+            "use": false,
+            "color": "#1400f0",
+            "name": "huoshan"
+        },
+        "yeekit": {
+            "use": false,
+            "color": "#0ff000",
+            "name": "yeekit"
+        },
+        "caiyunapi": {
+            "use": false,
+            "color": "#00e4f0",
+            "name": "彩云api",
+            "argsfile": ""
+        },
+        "huoshanapi": {
+            "use": false,
+            "color": "#0ff000",
+            "name": "火山api",
+            "argsfile": ""
+        },
+        "papago": {
+            "use": false,
+            "color": "#0101ff",
+            "name": "papago"
+        },
+        "rengong": {
+            "use": false,
+            "color": "#0ff000",
+            "name": "人工翻译",
+            "argsfile": ""
+        },
+        "premt": {
+            "use": false,
+            "color": "#0ff000",
+            "name": "机器预翻译",
+            "argsfile": "./userconfig/premt.json"
+        },
+        "deeplapi-free": {
+            "use": false,
+            "color": "blue",
+            "name": "deeplapi-free",
+            "argsfile": ""
+        }
+    },
+    "minifollow": true,
+    "movefollow": true,
+    "autostarthook": true,
+    "translatortimeout": 5,
+    "minlength": 5,
+    "maxlength": 350,
+    "fanjian": 0,
+    "rotation": 0,
+    "srclang": 0,
+    "transkiroku": true,
+    "transkirokuuse": "baidu",
+    "showatcenter": true,
+    "mustocr": false,
+    "mustocr_interval": 5,
+    "ocrmininterval": 0.9999999999999999,
+    "selectable": false,
+    "autoupdate": true,
+    "gongxiangcishu": {
         "use": false,
+        "path": "C:/dataH/vnr/vnr/Caches/Sync/gamedic.xml"
+    },
+    "proxies": null,
+    "xiaoxueguan": {
+        "use": true,
+        "path": "C:/dataH/MisakaTranslator.2.11/小学馆.db"
+    },
+    "mecab": {
+        "use": true,
+        "path": "C:/dataH/Mecab"
+    },
+    "edict": {
+        "use": false,
+        "path": "C:/dataH/vnr/vnr/Caches/Dictionaries/EDICT/edict.db"
+    },
+    "linggesi": {
+        "use": false,
+        "path": "C:/dataH/vnr/vnr/Caches/Dictionaries/Lingoes"
+    },
+    "usesearchword": true,
+    "show_fenci": false,
+    "quick_setting": {
+        "use": true,
         "all": {
-            "_A": {
-                "use": false,
-                "name": "选择翻译源-剪贴板",
-                "key1": -1,
-                "key2": -1
-            },
-            "_B": {
-                "use": false,
-                "name": "选择翻译源-OCR",
-                "key1": -1,
-                "key2": -1
-            },
-            "_C": {
-                "use": false,
-                "name": "选择翻译源-TEXTRACTOR",
-                "key1": -1,
-                "key2": -1
-            },
             "_1": {
-                "use": false,
+                "use": true,
                 "name": "重新翻译",
-                "key1": -1,
-                "key2": -1
+                "key1": 0,
+                "key2": 0
             },
             "_2": {
-                "use": false,
+                "use": true,
                 "name": "自动翻译",
-                "key1": -1,
-                "key2": -1
+                "key1": 1,
+                "key2": 0
             },
             "_3": {
-                "use": false,
+                "use": true,
                 "name": "打开设置",
-                "key1": -1,
-                "key2": -1
+                "key1": 0,
+                "key2": 1
             },
             "_4": {
                 "use": false,
                 "name": "复制到剪贴板",
                 "key1": -1,
-                "key2": -1
+                "key2": 0
             },
             "_5": {
                 "use": false,
@@ -115,13 +341,13 @@
                 "use": false,
                 "name": "显示历史翻译",
                 "key1": -1,
-                "key2": -1
+                "key2": 0
             },
             "_7": {
                 "use": false,
                 "name": "朗读",
                 "key1": -1,
-                "key2": -1
+                "key2": 4
             },
             "_8": {
                 "use": false,
@@ -132,8 +358,8 @@
             "_9": {
                 "use": false,
                 "name": "锁定工具栏",
-                "key1": -1,
-                "key2": -1
+                "key1": 0,
+                "key2": 2
             },
             "_10": {
                 "use": false,
@@ -145,13 +371,13 @@
                 "use": false,
                 "name": "选择游戏",
                 "key1": -1,
-                "key2": -1
+                "key2": 12
             },
             "_12": {
                 "use": false,
                 "name": "选择文本",
                 "key1": -1,
-                "key2": -1
+                "key2": 14
             },
             "_13": {
                 "use": false,
@@ -174,12 +400,30 @@
             "_16": {
                 "use": false,
                 "name": "显示/隐藏翻译窗口",
-                "key1": -1,
-                "key2": -1
+                "key1": 0,
+                "key2": 0
             },
             "_17": {
                 "use": false,
                 "name": "退出",
+                "key1": -1,
+                "key2": -1
+            },
+            "_A": {
+                "use": false,
+                "name": "选择翻译源-剪贴板",
+                "key1": -1,
+                "key2": -1
+            },
+            "_B": {
+                "use": false,
+                "name": "选择翻译源-OCR",
+                "key1": -1,
+                "key2": -1
+            },
+            "_C": {
+                "use": false,
+                "name": "选择翻译源-TEXTRACTOR",
                 "key1": -1,
                 "key2": -1
             },
@@ -209,288 +453,44 @@
             }
         }
     },
-    "reader": {
-        "azuretts": {
-            "use": false,
-            "voice": ""
-        },
-        "huoshantts": {
-            "use": false,
-            "voice": ""
-        },
-        "windowstts": {
-            "use": true,
-            "voice": "TTS_MS_ZH-CN_HUIHUI_11.0"
-        },
-        "voiceroid2": {
-            "use": false,
-            "voice": "",
-            "path": ""
-        },
-        "voicevox": {
-            "use": false,
-            "voice": "",
-            "path": ""
-        }
+    "showbold": false,
+    "showShadow": false,
+    "shadowcolor": "white",
+    "shadowforce": 5,
+    "showcixing_touming": 100,
+    "showcixing": false,
+    "cixingcolor": {
+        "形容詞": "aliceblue",
+        "形状詞": "antiquewhite",
+        "副詞": "aqua",
+        "名詞": "aquamarine",
+        "代名詞": "azure",
+        "動詞": "beige",
+        "助詞": "bisque",
+        "助動詞": "black",
+        "感動詞": "blanchedalmond",
+        "接頭辞": "blue",
+        "接尾辞": "blueviolet",
+        "接続詞": "brown",
+        "指示詞": "burlywood",
+        "連体詞": "cadetblue",
+        "判定詞": "chartreuse",
+        "補助記号": "chocolate",
+        "記号": "coral"
     },
-    "xiaoxueguan": {
-        "use": false,
-        "path": ""
-    },
-    "mecab": {
-        "use": false,
-        "path": ""
-    },
-    "edict": {
-        "use": false,
-        "path": ""
-    },
-    "linggesi": {
-        "use": false,
-        "path": ""
-    },
-    "usesearchword": false,
+    "ocr_hori_extend": true,
     "LocaleEmulator": "./files/Locale.Emulator.2.5.0.1",
-    "verticalocr": false,
-    "outputtopasteboard": false,
-    "ttscommon": {
-        "rate": 1.0,
-        "volume": 100.0
-    },
-    "sourcestatus": {
-        "copy": true,
-        "ocr": false,
-        "textractor": false,
-        "textractor_pipe": false
-    },
-    "ocr": {
-        "local": {
-            "use": true,
-            "name": "本地OCR"
-        },
-        "windowsocr": {
-            "use": false,
-            "name": "WindowsOCR"
-        },
-        "baiduocr": {
-            "use": false,
-            "name": "baiduOCR",
-            "argsfile": "./userconfig/baiduocr.json"
-        },
-        "ocrspace": {
-            "use": false,
-            "name": "ocrspace",
-            "argsfile": "./userconfig/ocrspace.json"
-        },
-        "docsumo": {
-            "use": false,
-            "name": "docsumo",
-            "argsfile": "./userconfig/docsumo.json"
-        },
-        "youdaocr": {
-            "use": false,
-            "name": "youdaocr"
-        },
-        "youdaocrtrans": {
-            "use": false,
-            "name": "youdao图片翻译"
-        }
-    },
-    "fanyi": {
-        "baidu": {
-            "use": true,
-            "color": "#ff65db",
-            "name": "百度"
-        },
-        "bing": {
-            "use": false,
-            "color": "#000ff0",
-            "name": "必应"
-        },
-        "google": {
-            "use": false,
-            "color": "#ff0000",
-            "name": "谷歌"
-        },
-        "ali": {
-            "use": false,
-            "color": "#0000ff",
-            "name": "阿里"
-        },
-        "youdao": {
-            "use": false,
-            "color": "blue",
-            "name": "有道"
-        },
-        "youdao2": {
-            "use": false,
-            "color": "blue",
-            "name": "有道2"
-        },
-        "google2": {
-            "use": false,
-            "color": "#95a5ff",
-            "name": "谷歌2"
-        },
-        "sougou": {
-            "use": false,
-            "color": "blue",
-            "name": "搜狗"
-        },
-        "caiyun": {
-            "use": false,
-            "color": "blue",
-            "name": "彩云"
-        },
-        "deepl": {
-            "use": false,
-            "color": "blue",
-            "name": "deepl"
-        },
-        "jb7": {
-            "use": false,
-            "color": "#1839f0",
-            "name": "Jbeijing7",
-            "argsfile": "./userconfig/jbj7.json"
-        },
-        "kingsoft": {
-            "use": false,
-            "color": "#1839f0",
-            "name": "金山快译",
-            "argsfile": "./userconfig/ks.json"
-        },
-        "dreye": {
-            "use": false,
-            "color": "#1839f0",
-            "name": "快译通",
-            "argsfile": "./userconfig/dreye.json"
-        },
-        "sougou2": {
-            "use": false,
-            "color": "blue",
-            "name": "搜狗2"
-        },
-        "youdao3": {
-            "use": false,
-            "color": "blue",
-            "name": "有道3"
-        },
-        "youdao4": {
-            "use": false,
-            "color": "blue",
-            "name": "有道4"
-        },
-        "youdao5": {
-            "use": false,
-            "color": "blue",
-            "name": "有道5"
-        },
-        "tencent": {
-            "use": false,
-            "color": "blue",
-            "name": "TX"
-        },
-        "iciba": {
-            "use": false,
-            "color": "blue",
-            "name": "iciba"
-        },
-        "baiduapi": {
-            "use": false,
-            "color": "blue",
-            "name": "百度api",
-            "argsfile": "./userconfig/baiduapi.json"
-        },
-        "tencentapi": {
-            "use": false,
-            "color": "blue",
-            "name": "腾讯api",
-            "argsfile": "./userconfig/txapi.json"
-        },
-        "byte": {
-            "use": false,
-            "color": "blue",
-            "name": "byte"
-        },
-        "qqimt": {
-            "use": false,
-            "color": "blue",
-            "name": "qqimt"
-        },
-        "xiaoniu": {
-            "use": false,
-            "color": "blue",
-            "name": "小牛api",
-            "argsfile": "./userconfig/xiaoniuapi.json"
-        },
-        "huoshan": {
-            "use": false,
-            "color": "blue",
-            "name": "huoshan"
-        },
-        "yeekit": {
-            "use": false,
-            "color": "blue",
-            "name": "yeekit"
-        },
-        "caiyunapi": {
-            "use": false,
-            "color": "blue",
-            "name": "彩云api",
-            "argsfile": "./userconfig/caiyunapi.json"
-        },
-        "huoshanapi": {
-            "use": false,
-            "color": "blue",
-            "name": "火山api",
-            "argsfile": "./userconfig/huoshanapi.json"
-        },
-        "papago": {
-            "use": false,
-            "color": "blue",
-            "name": "papago"
-        },
-        "rengong": {
-            "use": false,
-            "color": "blue",
-            "name": "人工翻译",
-            "argsfile": "./userconfig/rengong.json"
-        },
-        "premt": {
-            "use": false,
-            "color": "blue",
-            "name": "机器预翻译",
-            "argsfile": "./userconfig/premt.json"
-        },
-        "deeplapi-free": {
-            "use": false,
-            "color": "blue",
-            "name": "deeplapi-free",
-            "argsfile": "./userconfig/deeplapi-free.json"
-        }
-    },
-    "minifollow": false,
-    "movefollow": false,
-    "focusfollow": false,
-    "autostarthook": true,
-    "translatortimeout": 5,
-    "minlength": 5,
-    "maxlength": 200,
-    "fanjian": 0,
-    "rotation": 0,
-    "srclang": 0,
+    "premtsimiuse": false,
+    "premtsimi": 5,
+    "useproxy": true,
+    "proxy": "127.0.0.1:4780",
     "tgtlang": 0,
-    "transkiroku": false,
-    "transkirokuuse": "baidu",
-    "showatcenter": false,
-    "mustocr": false,
-    "mustocr_interval": 5,
-    "ocrmininterval": 1,
-    "selectable": false,
-    "autoupdate": true,
-    "gongxiangcishu": {
-        "use": false,
-        "path": ""
-    },
-    "proxies": null
+    "focusfollow": false,
+    "usemagpie": true,
+    "usefullscreenbutton": true,
+    "useresizebutton": false,
+    "buttoncolor": "white",
+    "magpiescalemethod": 0,
+    "magpiecapturemethod": 0,
+    "ocrautobindwindow": true
 }

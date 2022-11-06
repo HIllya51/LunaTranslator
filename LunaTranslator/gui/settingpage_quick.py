@@ -13,21 +13,7 @@ key_first_reg=['control','shift','alt','super' ]
 key_second=['F'+chr(ord('1')+i) for i in range(9)]+['F10','F11','F12']+[chr(ord('A')+i) for i in range(26)]+[chr(ord('0')+i) for i in range(10)]
 key_second_reg=['f'+chr(ord('1')+i) for i in range(9)]+['f10','f11','f12']+[chr(ord('a')+i) for i in range(26)]+[chr(ord('0')+i) for i in range(10)]
 def setTab_quick(self) :
- 
-        tab = QWidget()
-        scroll = QScrollArea() 
-        self.tab_widget.addTab(scroll, "快捷键设置") 
-          
-        tab.resize(2000,scroll.height())
-        scroll.setWidget(tab)
-        scroll.setHorizontalScrollBarPolicy(1)
-        masklabel=QLabel(tab)
-        masklabel.setGeometry(0,0,2000,2000)
-        masklabel.setStyleSheet("color:white;background-color:white;")
-        
-
-        self.tab_quick=tab
-
+  
         self.hotkeys={}
         self.hotkeys_savelast={}
         self.usedkey=[]
@@ -58,28 +44,50 @@ def setTab_quick(self) :
             '_20':self.object.translation_ui.fullsgame_signal.emit,
             '_21':self.object.translation_ui.grabwindowsignal.emit
         }
-        label = QLabel(tab)
-        self.customSetGeometry(label, 20, 25, 200, 20)
-        label.setText("是否使用快捷键")
-        p=gui.switchbutton.MySwitch(tab, sign=globalconfig['quick_setting']['use'] )
-        self.customSetGeometry(p, 220, 25, 20,20 )
-        def __enable(x ):
+         
+        
+        
+         
+        grids=[
+            [(QLabel("是否使用快捷键"),4),self.getsimpleswitch(globalconfig['quick_setting']  ,'use',callback=functools.partial(__enable,self )  ),(QLabel(''),10)]
+        ]
+        for name in globalconfig['quick_setting']['all']: 
+            key1=QComboBox() 
+            key2=QComboBox() 
+            key1.addItems(key_first)
+            key2.addItems(key_second)
+    
+            key1.setCurrentIndex(globalconfig['quick_setting']['all'][name]['key1'])
+            key2.setCurrentIndex(globalconfig['quick_setting']['all'][name]['key2'])
+            
+            key1.currentIndexChanged.connect(functools.partial(__changekey,self,name,'key1',key1,key2))
+            key2.currentIndexChanged.connect(functools.partial(__changekey,self,name,'key2',key1,key2))
+            self.hotkeys[name]=None
+        
+            regist_or_not_key(self,name,self.bindfunctions[name])
+            grids.append(
+                [(QLabel(globalconfig['quick_setting']['all'][name]['name']),4),
+                self.getsimpleswitch(globalconfig['quick_setting']['all'][name] ,'use',callback=functools.partial(fanyiselect,self,name)),
+                (key1,3),
+                (key2,3)
+                ]
+            )
+        self.yitiaolong("快捷键设置",grids)
+def __enable(self,x ):
             globalconfig['quick_setting'].__setitem__('use',x)
             for quick in globalconfig['quick_setting']['all']:
                 regist_or_not_key(self,quick,self.bindfunctions[quick])
-        p.clicked.connect(lambda x: __enable(x))
-        initfanyiswitchs_auto(self) 
-         
-def initfanyiswitchs_auto(self):
-        num=0
-        
-        for quick in globalconfig['quick_setting']['all']:
-            y=70+35*num
-            x=20 
-            initfanyiswitchs(self,quick,x,y)
-            num+=1
-        
-        self.tab_quick.setFixedHeight((y+50)*self.rate )
+def fanyiselect( self,who,checked): 
+            globalconfig['quick_setting']['all'][who]['use']=checked 
+            regist_or_not_key(self,who,self.bindfunctions[who])
+def __changekey(self,who,keyn, key1,key2,x):
+    back=globalconfig['quick_setting']['all'][who][keyn]
+    globalconfig['quick_setting']['all'][who][keyn]=x
+    if (key_first_reg[globalconfig['quick_setting']['all'][who]['key1']],key_second_reg[globalconfig['quick_setting']['all'][who]['key2']]) in self.usedkey:
+        globalconfig['quick_setting']['all'][who][keyn]=back
+        {'key1':key1,'key2':key2}[keyn].setCurrentIndex(back)
+        return
+    regist_or_not_key(self,who,self.bindfunctions[who])
 def regist_or_not_key(self,name,callback):
     if self.hotkeys[name] :
         self.hotkeys[name].unregister(self.hotkeys_savelast[name])
@@ -98,40 +106,4 @@ def regist_or_not_key(self,name,callback):
             self.usedkey.append((key_first_reg[globalconfig['quick_setting']['all'][name]['key1']],key_second_reg[globalconfig['quick_setting']['all'][name]['key2']]))
         except:
             print_exc()
-def initfanyiswitchs(self,name,x,y):
-        
-        label = QLabel(self.tab_quick)
-        self.customSetGeometry(label,x,y,200,20)
-        label.setText(globalconfig['quick_setting']['all'][name]['name'])
-        p=gui.switchbutton.MySwitch(self.tab_quick, sign=globalconfig['quick_setting']['all'][name]['use'] )
-        
-        self.customSetGeometry(p,x+200,y,20,20) 
-        def fanyiselect( who,checked): 
-            globalconfig['quick_setting']['all'][who]['use']=checked 
-            regist_or_not_key(self,name,self.bindfunctions[name])
-        p.clicked.connect(functools.partial( fanyiselect,name))
-        
-        key1=QComboBox(self.tab_quick)
-        self.customSetGeometry(key1,x+230,y,100,20)
-        key2=QComboBox(self.tab_quick)
-        self.customSetGeometry(key2,x+340,y,100,20)
-
-        key1.addItems(key_first)
-        key2.addItems(key_second)
  
-        key1.setCurrentIndex(globalconfig['quick_setting']['all'][name]['key1'])
-        key2.setCurrentIndex(globalconfig['quick_setting']['all'][name]['key2'])
-        def __changekey(s,who,keyn,x):
-            back=globalconfig['quick_setting']['all'][who][keyn]
-            globalconfig['quick_setting']['all'][who][keyn]=x
-            if (key_first_reg[globalconfig['quick_setting']['all'][name]['key1']],key_second_reg[globalconfig['quick_setting']['all'][name]['key2']]) in self.usedkey:
-                globalconfig['quick_setting']['all'][who][keyn]=back
-                {'key1':key1,'key2':key2}[keyn].setCurrentIndex(back)
-                return
-            regist_or_not_key(s,who,self.bindfunctions[name])
-        key1.currentIndexChanged.connect(functools.partial(__changekey,self,name,'key1'))
-        key2.currentIndexChanged.connect(functools.partial(__changekey,self,name,'key2'))
-        self.hotkeys[name]=None
-      
-        regist_or_not_key(self,name,self.bindfunctions[name])
-        

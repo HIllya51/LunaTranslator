@@ -125,11 +125,6 @@ def autosaveshow(object):
     dialog.show()
  
 def setTab4(self) :
-     
-        self.tab_4 = QWidget()
-        self.tab_widget.addTab(self.tab_4, "HOOK设置")  
-        lay=QGridLayout( )    
-        self.tab_4.setLayout(lay)  
         transkirokuuse =QComboBox( )  
         transkirokuuse.addItems([globalconfig['fanyi'][k]['name'] for k  in globalconfig['fanyi']])
         transkirokuuse.setCurrentIndex(list(globalconfig['fanyi'].keys()).index(globalconfig['transkirokuuse']))
@@ -152,8 +147,7 @@ def setTab4(self) :
                         except:
                                 print_exc()
         bt.clicked.connect(lambda x:_sqlite2json()) 
-
-        ds={'n':'1'}
+ 
         grids=[
                 [(QLabel('游戏最小化时窗口隐藏'),1),(self.getsimpleswitch(globalconfig,'minifollow'),1),'','',''],
                 [(QLabel('游戏失去焦点时窗口隐藏'),1),(self.getsimpleswitch(globalconfig,'focusfollow'),1)],
@@ -167,15 +161,10 @@ def setTab4(self) :
                 [(QLabel('优先使用的翻译源'),1),(transkirokuuse,1)],
                 
                 [(bt,2)],
-                [''],
-                [''],
-                [''],
-                [''],
-                ['']
+                
         ]
-        self.automakegrid(lay,grids)
-          
-  
+         
+        self.yitiaolong("HOOK设置",grids)
         self.hookpid=None
         self.minmaxmoveoberve=subproc('./files/minmaxmoveobserve.exe',stdout=subprocess.PIPE)  
         self.minmaxmoveobservethread=threading.Thread(target=minmaxmoveobservefunc,args=(self,))

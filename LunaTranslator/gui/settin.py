@@ -1,6 +1,6 @@
 from PyQt5.QtCore import Qt,QSize,pyqtSignal ,QRect ,QUrl,QObject
  
-from PyQt5.QtWidgets import  QColorDialog,QSpinBox,QDoubleSpinBox,QPushButton,QComboBox,QLabel
+from PyQt5.QtWidgets import  QColorDialog,QSpinBox,QDoubleSpinBox,QPushButton,QComboBox,QLabel,QScrollArea,QWidget,QGridLayout
 from PyQt5.QtGui import QColor ,QFont
 from utils.config import globalconfig 
 from PyQt5.QtWidgets import  QTabWidget,QMainWindow 
@@ -60,7 +60,7 @@ class Settin(QMainWindow) :
                         elif len(i)==2:
                                 wid,cols=i
                         grid.addWidget(wid,nowr,nowc,1,cols)
-                        nowc+=cols  
+                        nowc+=cols   
     def getspinbox(self,mini,maxi,d,key,double=False, step=1,callback=None,name=None ):
         if double:
             s=QDoubleSpinBox()
@@ -135,7 +135,7 @@ class Settin(QMainWindow) :
         # tabbar.setStyleSheet("""   
         #         font:18pt '黑体';       
         #        """ )
-
+        
         self.tab_widget.setTabBar(tabbar) 
         self.tab_widget.setStyleSheet(
             '''QTabBar:tab { 
@@ -146,8 +146,14 @@ class Settin(QMainWindow) :
         )
         self.tab_widget.setTabPosition(QTabWidget.West)
         self.hooks=[] 
+
+        import time
+        t1=time.time()
+        
         setTabOne(self)
+        print(time.time()-t1)
         setTabTwo(self)
+        print(time.time()-t1)
         setTab4(self)
         setTab6(self)
         setTabThree(self) 
@@ -166,9 +172,30 @@ class Settin(QMainWindow) :
         if 'a' in dir(self) and self.a:
             self.a.close()
     
-    
-    
+    def yitiaolong(self,title,grid):
+        lay,t=self. getscrollwidgetlayout(title)
+        t.setFixedHeight(len(grid)*30*self.rate)
 
+        self.automakegrid(lay,grid) 
+    def getscrollwidgetlayout(self,title):
+        scroll = QScrollArea()  
+        self.tab_widget.addTab(scroll, title)   
+        
+        scroll.setHorizontalScrollBarPolicy(1)
+        scroll.setStyleSheet('''QScrollArea{
+background-color:transparent;
+}''')
+        t = QWidget() 
+        lay=QGridLayout( )     
+        t.setLayout(lay)  
+        scroll.setWidget(t)
+        sw=self.object.scrollwidth
+        
+        t.setFixedWidth(self.window_width-180*self.rate-sw)
+        masklabel=QLabel(t)
+        masklabel.setGeometry(0,0,2000,2000)
+        masklabel.setStyleSheet("color:white;background-color:white;")
+        return  lay,t
     # 根据分辨率定义控件位置尺寸
     def customSetGeometry(self, object, x, y, w, h) :
 
@@ -185,7 +212,7 @@ class Settin(QMainWindow) :
         self.closed=True
         
             
-    def ChangeTranslateColor(self, translate_type,button) :
+    def ChangeTranslateColor(self, translate_type,button,item=None,name=None) :
             nottransbutton=['rawtextcolor','backcolor','miaobiancolor','shadowcolor','buttoncolor']
             if translate_type in nottransbutton:
                 color = QColorDialog.getColor(QColor(globalconfig[translate_type]), self )  
@@ -193,8 +220,10 @@ class Settin(QMainWindow) :
                 color = QColorDialog.getColor(QColor(globalconfig['fanyi'][translate_type]['color']), self )
             if not color.isValid() :
                 return
-        
+            if button is None:
+                button=getattr(item,name)
             button.setIcon(qtawesome.icon("fa.paint-brush", color=color.name()))
+            
             nottransbutton=['rawtextcolor','backcolor','miaobiancolor','shadowcolor','buttoncolor']
             if translate_type in nottransbutton: 
                 globalconfig[translate_type]=color.name()  

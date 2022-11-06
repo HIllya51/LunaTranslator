@@ -29,19 +29,11 @@ from gui.showword import searchwordW
 from gui.rangeselect  import moveresizegame
 from utils.magpie import callmagpie
 class QTitleButton(QPushButton):
-    """
-    新建标题栏按钮类
-    """
-
     def __init__(self, *args):
         super(QTitleButton, self).__init__(*args)
-        self.setFont(QFont("Webdings"))  # 特殊字体以不借助图片实现最小化最大化和关闭按钮
-        
+        self.setFont(QFont("Webdings"))   
   
-class QUnFrameWindow(QWidget):
-    """
-    无边框窗口类
-    """
+class QUnFrameWindow(QWidget): 
     keeptopsignal=pyqtSignal()
     clear_text_sign = pyqtSignal() 
     displayres =  pyqtSignal(str,str ) 

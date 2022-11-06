@@ -1,5 +1,5 @@
 
-from PyQt5.QtWidgets import  QWidget,QLabel,QFrame,QPushButton
+from PyQt5.QtWidgets import  QWidget,QLabel,QFrame,QPushButton,QGridLayout
 import qtawesome  
 import functools 
 from utils.config import globalconfig 
@@ -19,118 +19,25 @@ def clicksourcefuntion(self,i):
         self.textractorswitch.click()
 def setTabOne(self) :
         self.clicksourcesignal.connect(functools.partial(clicksourcefuntion,self))
-        # 选项卡界面
-        self.tab_1 = QWidget()
-        self.customSetGeometry(self.tab_1, 0, 0, self.window_width, self.window_height)
-        self.tab_widget.addTab(self.tab_1,"基本设置") 
- 
-        label = QLabel(self.tab_1)
-        self.customSetGeometry(label, 20, 25, 160, 20)
-        label.setText("选择文本输入源") 
-       
-
-
-        label = QLabel(self.tab_1)
-        self.customSetGeometry(label, 20, 70, 60, 20)
-        label.setText("剪切板") 
-        self.copyboardswitch =gui.switchbutton.MySwitch(self.tab_1, sign= globalconfig['sourcestatus']['copy'] )
-        self.customSetGeometry(self.copyboardswitch, 100, 70, 20,20) 
-        self.copyboardswitch.clicked.connect(functools.partial(textsourcechange,self,'copy')) 
+  
+        grids=[
+                [ (QLabel('选择文本输入源'),3)],
+                [   (QLabel('剪贴板'),3),(self.getsimpleswitch(globalconfig['sourcestatus'],'copy',name='copyboardswitch',callback=functools.partial(textsourcechange,self,'copy')),1),'',
+                    (QLabel('OCR'),3),(self.getsimpleswitch(globalconfig['sourcestatus'],'ocr',name='ocrswitch',callback=functools.partial(textsourcechange,self,'ocr')),1),'',
+                    (QLabel('Textractor'),3),(self.getsimpleswitch(globalconfig['sourcestatus'],'textractor',name='textractorswitch',callback=functools.partial(textsourcechange,self,'textractor')),1)],
+                [(QLabel(''),10),(QLabel('选择游戏'),3),(self.getcolorbutton(globalconfig ,'',name='selectbutton',icon='fa.gear',constcolor="#FF69B4",callback=functools.partial(settingtextractor,self,True) ),1)],
+                [(QLabel(''),10),(QLabel('选择游戏'),3),(self.getcolorbutton(globalconfig ,'',name='selecthookbutton',icon='fa.gear',constcolor="#FF69B4",callback=functools.partial(settingsource,self)),1)],
+                [''], 
+                [(QLabel('提取的文本自动复制到剪贴板'),3),(self.getsimpleswitch(globalconfig ,'outputtopasteboard',name='outputtopasteboard'),1)],
+                
+        ] 
+        self.yitiaolong("基本设置",grids)
         
-        # label = QLabel(self.tab_1)
-        # self.customSetGeometry(label, 20, 105, 300, 20)
-        # label.setText("Textractor插件") 
-        # self.Textractor_forward_extension_switch =gui.switchbutton.MySwitch(self.tab_1, sign= globalconfig['sourcestatus']['textractor_pipe'], textOff='关闭',textOn='打开')
-        # self.customSetGeometry(self.Textractor_forward_extension_switch, 130, 105, 20,20)
-        # self.Textractor_forward_extension_switch.clicked.connect(functools.partial(textsourcechange,self,'textractor_pipe')) 
-
-        label = QLabel(self.tab_1)
-        self.customSetGeometry(label, 220, 70, 35, 20)
-        label.setText("OCR")
-
-        self.ocrswitch =gui.switchbutton.MySwitch(self.tab_1, sign= globalconfig['sourcestatus']['ocr'] )
-        self.customSetGeometry(self.ocrswitch, 300, 70, 20,20)
-        self.ocrswitch.clicked.connect(functools.partial(textsourcechange,self,'ocr'))
  
-        label = QLabel(self.tab_1)
-        self.customSetGeometry(label, 400, 70, 100, 20)
-        label.setText("Textractor")
- 
-        self.textractorswitch =gui.switchbutton.MySwitch(self.tab_1, sign= globalconfig['sourcestatus']['textractor'] )
-        self.customSetGeometry(self.textractorswitch, 500, 70, 20,20)
-        self.textractorswitch.clicked.connect(functools.partial(textsourcechange,self,'textractor')) 
-
-
-        label = QLabel(self.tab_1)
-        self.customSetGeometry(label, 20, 150,220, 20)
-        label.setText("提取的文本自动复制到剪贴板")
- 
-        self.outputtopasteboard =gui.switchbutton.MySwitch(self.tab_1, sign= globalconfig['outputtopasteboard'] )
-        self.customSetGeometry(self.outputtopasteboard, 240, 150, 20,20)
-        self.outputtopasteboard.clicked.connect(lambda x:globalconfig.__setitem__('outputtopasteboard',x)) 
-
-        
-
-        # label = QLabel(self.tab_1)
-        # self.customSetGeometry(label, 20, 180,220, 20)
-        # label.setText("OCR模式绑定前景窗口")
- 
-        # b =gui.switchbutton.MySwitch(self.tab_1, sign= globalconfig['ocrautobindwindow'] )
-        # self.customSetGeometry(b, 240, 180, 20,20)
-        # b.clicked.connect(lambda x:globalconfig.__setitem__('ocrautobindwindow',x)) 
-         
-        self.selectbutton = QPushButton( "", self.tab_1)
-        self.customSetIconSize(self.selectbutton, 20, 20)
-        self.customSetGeometry(self.selectbutton, 580, 70, 20, 20)
-        self.selectbutton.setStyleSheet("background: transparent;") 
-        
-        label = QLabel(self.tab_1)
-        self.customSetGeometry(label, 600, 70, 110, 20)
-        label.setText("选择游戏")
- 
-        
-        self.selecthookbutton = QPushButton( "", self.tab_1)
-        self.customSetIconSize(self.selecthookbutton, 20, 20)
-        self.customSetGeometry(self.selecthookbutton, 580, 105, 20, 20)
-        self.selecthookbutton.setStyleSheet("background: transparent;") 
-        
-         
-        # self.p=None
-        # self.qq = QPushButton( "wewq", self.tab_1)
-        # self.customSetIconSize(self.qq, 20, 20)
-        # self.customSetGeometry(self.qq, 580, 305, 20, 20)
-        # self.qq.setStyleSheet("background: transparent;") 
-        # self.qq.clicked.connect(lambda :start_process(self))
-
-        label = QLabel(self.tab_1)
-        self.customSetGeometry(label, 600, 105, 110, 20)
-        label.setText("选择文本")
-
-        self.selectbutton.setIcon(qtawesome.icon("fa.gear", color="#FF69B4" if globalconfig['sourcestatus']['textractor'] else '#595959'))
-        self.selectbutton.clicked.connect(functools.partial(settingtextractor,self,True) )
-        
-        self.selecthookbutton.setIcon(qtawesome.icon("fa.gear", color="#FF69B4" if globalconfig['sourcestatus']['textractor'] else '#595959'))
-        self.selecthookbutton.clicked.connect(functools.partial(settingsource,self) )
         self.sourceswitchs={'copy':self.copyboardswitch,'ocr':self.ocrswitch,'textractor':self.textractorswitch}# ,'textractor_pipe':self.Textractor_forward_extension_switch}
  
 
-        self.resetsourcesignal.connect(functools.partial(resetsource,self))  
-# def handle_stdout(self):
-#         data = self.p.readAllStandardOutput()
-#         stdout = bytes(data).decode("utf16")
-#         print(stdout)
-# def start_process(self):
-#         if self.p is None:  # No process running.
-             
-#             self.p = QProcess()  # Keep a reference to the QProcess (e.g. on self) while it's running.
-#             self.p.readyReadStandardOutput.connect(lambda : handle_stdout(self))  
-#             self.p.start(r'C:\dataH\Textractor5.20\x64\TextractorCLI.exe')
-         
-#             self.p.write(('attach -P24512\r\n'.encode('utf-16-le')))
-             
-#         else:
-#             ##inserthook必须重新手动按一下，一起写入就会结束？？？？
-#             self.p.write(('HS-24@0:kernel32.dll:lstrcpyA -P24512\r\n'.encode('utf-16-le')))
+        self.resetsourcesignal.connect(functools.partial(resetsource,self))   
             
  
 def settingtextractor(self,show1 ): 

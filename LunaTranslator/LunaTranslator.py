@@ -1,6 +1,5 @@
 import time
-starttime=time.time() 
-from threading import Thread
+t1=time.time()   
 import os
 import json
 
@@ -12,9 +11,9 @@ import sys
 from traceback import  print_exc  
 dirname, filename = os.path.split(os.path.abspath(__file__))
 sys.path.append(dirname)  
-import threading,win32gui
+import threading,win32gui 
 from PyQt5.QtCore import QCoreApplication ,Qt ,QObject,pyqtSignal
-from PyQt5.QtWidgets import  QApplication ,QGraphicsScene,QGraphicsView,QDesktopWidget
+from PyQt5.QtWidgets import  QApplication ,QGraphicsScene,QGraphicsView,QDesktopWidget,QStyle
 import utils.screen_rate  
 from utils.wrapper import timer,threader 
 import gui.rangeselect   
@@ -24,7 +23,7 @@ from tts.huoshantts import tts as huoshantts
 from tts.azuretts import tts as azuretts
 from tts.voiceroid2 import tts as voiceroid2
 from tts.voicevox import tts as voicevox
-import gui.selecthook
+import gui.selecthook 
 import pyperclip
 from utils.getpidlist import getwindowlist
 import gui.translatorUI
@@ -33,14 +32,15 @@ from utils.xiaoxueguan import xiaoxueguan
 from utils.edict import edict
 from utils.linggesi import linggesi
 import importlib
-from functools import partial 
+from functools import partial  
 #print(time.time()-starttime)
 import win32api,win32con,win32process
 import re
-import zhconv  
-import xml.etree.ElementTree as ET
-from xml.etree.ElementTree import Element
-
+import socket
+socket.setdefaulttimeout(globalconfig['translatortimeout'])
+ 
+import xml.etree.ElementTree as ET 
+print(time.time()-t1)
 class MAINUI(QObject) :
     mainuiloadok=pyqtSignal()
     def __init__(self) -> None:
@@ -174,7 +174,7 @@ class MAINUI(QObject) :
         if len(paste_str)>100000:
             return 
 
-
+        t1=time.time()
         postsolve=importlib.import_module('postprocess.post').POSTSOLVE
         try:
             paste_str=postsolve(paste_str)
@@ -204,8 +204,8 @@ class MAINUI(QObject) :
         except:
             pass
             
-        skip=False
-        paste_str_solve= self.solvebeforetrans(paste_str)
+        skip=False 
+        paste_str_solve= self.solvebeforetrans(paste_str) 
         if shortlongskip and  (len(paste_str_solve[0])<globalconfig['minlength'] or len(paste_str_solve[0])>globalconfig['maxlength'] ):
             skip=True  
         if (set(paste_str) -set('「…」、。？！―'))==set():
@@ -297,11 +297,11 @@ class MAINUI(QObject) :
         import requests
         #不能删
         if now:
-            Thread(target=self.fanyiloader,args=(now,)).start()
+            threading.Thread(target=self.fanyiloader,args=(now,)).start()
         else:
             for source in globalconfig['fanyi']: 
                 if globalconfig['fanyi'][source]['use']:
-                    Thread(target=self.fanyiloader,args=(source,)).start()
+                    threading.Thread(target=self.fanyiloader,args=(source,)).start()
     @threader
     def startxiaoxueguan(self,type_=0):
         if type_==0:
@@ -319,10 +319,12 @@ class MAINUI(QObject) :
         classname,res,mp=_
         if classname not in ['rengong','premt']: 
             res=self.solveaftertrans(res,mp)
-        
+        if globalconfig['fanjian']:
+            import zhconv  
         if classname=='premt':
             for k in res:
                 if globalconfig['fanjian']!=0:
+                    
                     res[k]=zhconv.convert(res[k], ['zh-cn', 'zh-tw', 'zh-hk', 'zh-sg', 'zh-hans', 'zh-hant'][globalconfig['fanjian']])
 
                 if k  in globalconfig['fanyi']:
@@ -418,7 +420,7 @@ class MAINUI(QObject) :
                 #break
                 pass
             time.sleep(0.5)
-    def aa(self):
+    def aa(self): 
         self.translation_ui =gui.translatorUI.QUnFrameWindow(self)   
         
         if globalconfig['rotation']==0:
@@ -436,7 +438,7 @@ class MAINUI(QObject) :
             self.view.setGeometry(QDesktopWidget().screenGeometry())
             self.view.show()       
         threading.Thread(target=self.mainuiloadok.emit).start()
-#        self.mainuiloadok.emit()
+#        self.mainuiloadok.emit() 
     def mainuiloadafter(self):   
         threading.Thread(target=self.setontopthread).start()
         #print(time.time()-t1)
@@ -461,6 +463,6 @@ if __name__ == "__main__" :
 
     app = QApplication(sys.argv) 
     app.setQuitOnLastWindowClosed(False)
-    
+    main.scrollwidth=(app.style().pixelMetric(QStyle.PM_ScrollBarExtent))
     main.aa()
     app.exit(app.exec_())
