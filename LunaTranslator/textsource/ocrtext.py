@@ -96,7 +96,8 @@ class ocrtext(basetext):
             except:
                 self.hwnd=None
                 print_exc()
-                self.object.translation_ui.bindcropwindowbutton.setIcon(qtawesome.icon("fa.windows" ,color="white" ))
+                self.object.translation_ui.isbindedwindow=False
+                self.object.translation_ui.refreshtooliconsignal.emit()
                 pix = self.screen.grabWindow(QApplication.desktop().winId(), x1, y1, x2-x1, y2-y1)
                 res=self.qimg2cv2(pix)
         else:

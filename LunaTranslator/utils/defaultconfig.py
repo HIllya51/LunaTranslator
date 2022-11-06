@@ -37,7 +37,8 @@ defaultglobalconfig = {'position': [432, 613], 'fixedheight': False, 'width': 76
     'showraw':True,
     'langdu':True,
     'copy':True,
-    'history':True
+    'history':True,
+    'gamepad':True
 
  },
  'proxy':'',

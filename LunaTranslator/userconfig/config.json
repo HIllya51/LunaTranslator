@@ -1,7 +1,7 @@
 {
     "position": [
-        594,
-        863
+        420,
+        868
     ],
     "fixedheight": false,
     "width": 1123,
@@ -54,8 +54,8 @@
     },
     "sourcestatus": {
         "copy": false,
-        "ocr": true,
-        "textractor": false,
+        "ocr": false,
+        "textractor": true,
         "textractor_pipe": false
     },
     "ocr": {
@@ -452,7 +452,7 @@
                 "key2": -1
             },
             "_22": {
-                "use": false,
+                "use": true,
                 "name": "游戏静音",
                 "key1": -1,
                 "key2": -1
@@ -526,6 +526,7 @@
         "showraw": false,
         "langdu": false,
         "copy": false,
-        "history": false
+        "history": false,
+        "gamepad": false
     }
 }

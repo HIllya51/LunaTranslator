@@ -12,7 +12,7 @@ def fontbigsmallfunction(self,t):
  
 def __changeuibuttonstate(self,x): 
                 globalconfig.__setitem__('isshowrawtext',x)
-                self.object.translation_ui.showhiderawbutton.setIcon(qtawesome.icon("fa.eye"   if globalconfig['isshowrawtext'] else "fa.eye-slash" ,color=globalconfig['buttoncolor'])) 
+                self.object.translation_ui.refreshtoolicon()
                 self.show_hira_switch .setEnabled(x)
                 self.showatmiddleswitch .setEnabled(x) 
 
@@ -59,7 +59,8 @@ def setTabThree(self) :
                 [(QLabel('翻译窗口顺时针旋转(重启生效)'),4),(self.getsimplecombobox(['0','90','180','270'],globalconfig,'rotation'),2)],
                 [''],
                 [(QLabel('显示显示原文按钮'),3),self.getsimpleswitch(globalconfig['buttonuse'],'showraw' ,callback=functools.partial(_usexxxbutton,'showraw')),'',(QLabel('显示复制原文按钮'),3),self.getsimpleswitch(globalconfig['buttonuse'],'copy' ,callback=functools.partial(_usexxxbutton,'copy')),'',(QLabel('显示朗读按钮'),3),self.getsimpleswitch(globalconfig['buttonuse'],'langdu' ,callback=functools.partial(_usexxxbutton,'langdu'))],
-                [(QLabel('显示翻译历史按钮'),3),self.getsimpleswitch(globalconfig['buttonuse'],'history' ,callback=functools.partial(_usexxxbutton,'history')) ],
+                [(QLabel('显示翻译历史按钮'),3),self.getsimpleswitch(globalconfig['buttonuse'],'history' ,callback=functools.partial(_usexxxbutton,'history')),'' ,
+                (QLabel('显示保存的游戏按钮'),3),self.getsimpleswitch(globalconfig['buttonuse'],'gamepad' ,callback=functools.partial(_usexxxbutton,'gamepad'))],
                 [(QLabel('显示调整游戏窗口按钮'),3),self.getsimpleswitch(globalconfig['buttonuse'],'resize' ,callback=functools.partial(_usexxxbutton,'resize')),'',(QLabel('显示全屏游戏窗口按钮'),3),self.getsimpleswitch(globalconfig['buttonuse'],'fullscreen' ,callback=functools.partial(_usexxxbutton,'fullscreen')),'',(QLabel('显示游戏静音按钮'),3),self.getsimpleswitch(globalconfig['buttonuse'],'muteprocess' ,callback=functools.partial(_usexxxbutton,'muteprocess'))],
                 [''],
                 [(QLabel('使用Magpie全屏'),3),self.getsimpleswitch(globalconfig,'usemagpie' )],
