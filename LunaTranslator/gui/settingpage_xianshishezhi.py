@@ -60,11 +60,14 @@ def setTabThree(self) :
                 [(QLabel('空心线宽'),2),(self.getspinbox(1,100,globalconfig,'miaobianwidth',double=True,step=0.1),2),'',(QLabel('描边宽度'),2 ),(self.getspinbox(1,100,globalconfig,'miaobianwidth2',double=True,step=0.1),2),'',(QLabel('阴影强度'),2),(self.getspinbox(1,10,globalconfig,'shadowforce'),2)],
                 [''],
                 [(QLabel('固定窗口尺寸'),3),self.getsimpleswitch(globalconfig,'fixedheight'),'',(QLabel('可选取模式'),3),self.getsimpleswitch(globalconfig,'selectable',callback=__changeselectmode)],
-                [(QLabel('翻译结果繁简体显示'),3),(self.getsimplecombobox(['大陆简体','马新简体','台灣正體','香港繁體','简体','繁體'],globalconfig,'fanjian'),3),'',(QLabel('翻译窗口顺时针旋转(重启生效)'),4),self.getsimplecombobox(['0','90','180','270'],globalconfig,'rotation')],
+                [(QLabel('翻译结果繁简体显示'),4),(self.getsimplecombobox(['大陆简体','马新简体','台灣正體','香港繁體','简体','繁體'],globalconfig,'fanjian'),2)],
+                [(QLabel('翻译窗口顺时针旋转(重启生效)'),4),(self.getsimplecombobox(['0','90','180','270'],globalconfig,'rotation'),2)],
                 [''],
                 [(QLabel('显示调整游戏窗口按钮'),3),self.getsimpleswitch(globalconfig,'useresizebutton' ,callback=_useresizebutton),'',(QLabel('显示全屏游戏窗口按钮'),3),self.getsimpleswitch(globalconfig,'usefullscreenbutton' ,callback=_usefullscreenbutton),'',(QLabel('显示游戏静音按钮'),3),self.getsimpleswitch(globalconfig,'usemuteprocessbutton' ,callback=_usemuteprocessbutton)],
+                [''],
                 [(QLabel('使用Magpie全屏'),3),self.getsimpleswitch(globalconfig,'usemagpie' )],
-                [(QLabel('Magpie算法'),3),(self.getsimplecombobox(['Lanczos','FSR','FSRCNNX','ACNet','Anime4K','CRT-Geom','Integer Scale 2x','Integer Scale 3x'],globalconfig,'magpiescalemethod'),3),'',(QLabel('Magpie捕获模式'),3),(self.getsimplecombobox(['Graphics Capture','Desktop Duplication','GDI','DwmSharedSurface'],globalconfig,'magpiecapturemethod'),3)],
+                [(QLabel('Magpie算法'),3),(self.getsimplecombobox(['Lanczos','FSR','FSRCNNX','ACNet','Anime4K','CRT-Geom','Integer Scale 2x','Integer Scale 3x'],globalconfig,'magpiescalemethod'),3)],
+                [(QLabel('Magpie捕获模式'),3),(self.getsimplecombobox(['Graphics Capture','Desktop Duplication','GDI','DwmSharedSurface'],globalconfig,'magpiecapturemethod'),3)],
                 
         ] 
         self.yitiaolong("显示设置",buttongrid) 

@@ -137,13 +137,12 @@ def textsourcechange(self,who,checked):
             if who=='ocr'   :
                 self.object.translation_ui.showhidestate=True
                 self.object.translation_ui.showhide()
-                self.object.translation_ui.bindcropwindowbutton.setIcon((qtawesome.icon("fa.windows" ,color='white')))
+                self.object.translation_ui.refreshtooliconsignal.emit()
 
         if checked : 
             self.object.starttextsource() 
-        self.selectbutton.setIcon(qtawesome.icon("fa.gear", color="#FF69B4" if globalconfig['sourcestatus']['textractor'] else '#595959')) 
-        
-        self.selecthookbutton.setIcon(qtawesome.icon("fa.gear", color="#FF69B4" if globalconfig['sourcestatus']['textractor'] else '#595959')) 
+        self.selectbutton.setEnabled(globalconfig['sourcestatus']['textractor']) 
+        self.selecthookbutton.setEnabled(globalconfig['sourcestatus']['textractor'])
         if who=='textractor':
             settingtextractor(self,True)
         
