@@ -1,3 +1,4 @@
+ 
 from PyQt5.QtCore import Qt,QSize,pyqtSignal ,QRect ,QUrl,QObject
  
 from PyQt5.QtWidgets import  QColorDialog,QSpinBox,QDoubleSpinBox,QPushButton,QComboBox,QLabel,QScrollArea,QWidget,QGridLayout
@@ -6,7 +7,7 @@ from utils.config import globalconfig
 from PyQt5.QtWidgets import  QTabWidget,QMainWindow 
 import qtawesome   
 import os
-import gui.switchbutton
+from gui.switchbutton import MySwitch
 from PyQt5.QtMultimedia import QMediaPlayer,QMediaContent ,QSoundEffect 
 from gui.settingpage1 import setTabOne
 from gui.settingpage2 import setTabTwo
@@ -16,7 +17,7 @@ from gui.settingpage_tts import setTab5
 from gui.settingpage_ocr import setTab6 
 from gui.settingpage7 import setTab7
 from gui.settingpage_about import setTab_about
-from gui.rotatetab import customtabstyle,rotatetab
+from gui.rotatetab import  rotatetab
 from gui.settingpage_cishu import setTabcishu
 from gui.settingpage_quick import setTab_quick
 class wavmp3player(QObject):
@@ -79,7 +80,7 @@ class Settin(QMainWindow) :
             setattr(self,name,s)
         return s
     def getsimpleswitch(self,d,key,enable=True,callback=None,name=None):
-        b=gui.switchbutton.MySwitch(sign=d[key],enable=enable)
+        b=MySwitch(sign=d[key],enable=enable)
         if callback:
             b.clicked.connect( callback )
         else:
@@ -150,10 +151,8 @@ class Settin(QMainWindow) :
         import time
         t1=time.time()
         
-        setTabOne(self)
-        print(time.time()-t1)
-        setTabTwo(self)
-        print(time.time()-t1)
+        setTabOne(self) 
+        setTabTwo(self) 
         setTab4(self)
         setTab6(self)
         setTabThree(self) 

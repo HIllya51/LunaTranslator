@@ -9,38 +9,43 @@ import sys
 #sys.stderr=open('./stderr.txt','a',encoding='utf8')
 # sys.stdout=open('./debug/stdout.txt','a',encoding='utf8')
 from traceback import  print_exc  
+
 dirname, filename = os.path.split(os.path.abspath(__file__))
 sys.path.append(dirname)  
+
 import threading,win32gui 
 from PyQt5.QtCore import QCoreApplication ,Qt ,QObject,pyqtSignal
 from PyQt5.QtWidgets import  QApplication ,QGraphicsScene,QGraphicsView,QDesktopWidget,QStyle
 import utils.screen_rate  
-from utils.wrapper import timer,threader 
-import gui.rangeselect   
-import gui.settin     
+ 
+from utils.wrapper import threader 
+from gui.rangeselect    import rangeadjust
+from  gui.settin   import Settin
+ 
 from tts.windowstts import tts  as windowstts
 from tts.huoshantts import tts as huoshantts
 from tts.azuretts import tts as azuretts
 from tts.voiceroid2 import tts as voiceroid2
 from tts.voicevox import tts as voicevox
-import gui.selecthook 
+import  gui.selecthook   
 import pyperclip
 from utils.getpidlist import getwindowlist
+ 
 import gui.translatorUI
 from utils.config import globalconfig ,savehook_new,noundictconfig,transerrorfixdictconfig
+ 
 from utils.xiaoxueguan import xiaoxueguan
 from utils.edict import edict
 from utils.linggesi import linggesi
 import importlib
 from functools import partial  
-#print(time.time()-starttime)
+
 import win32api,win32con,win32process
 import re
 import socket
 socket.setdefaulttimeout(globalconfig['translatortimeout'])
  
-import xml.etree.ElementTree as ET 
-print(time.time()-t1)
+import xml.etree.ElementTree as ET  
 class MAINUI(QObject) :
     mainuiloadok=pyqtSignal()
     def __init__(self) -> None:
@@ -242,7 +247,7 @@ class MAINUI(QObject) :
             for key in ttss:
                 if globalconfig['reader'][key]['use']:
                     use=key
-                    print("start",key)
+                    
                     self.reader_usevoice=use
                     break
             if use:
@@ -447,12 +452,12 @@ class MAINUI(QObject) :
         self.starthira()  
         self.starttextsource() 
         #print(time.time()-t1)
-        self.settin_ui =gui.settin.Settin(self) 
+        self.settin_ui = Settin(self) 
         #print(time.time()-t1)
         self.startreader() 
         self.startxiaoxueguan()
         
-        self.range_ui =gui.rangeselect.rangeadjust(self)   
+        self.range_ui = rangeadjust(self)   
         self.hookselectdialog=gui.selecthook.hookselect(self )
         threading.Thread(target=self.autohookmonitorthread).start()   
      
