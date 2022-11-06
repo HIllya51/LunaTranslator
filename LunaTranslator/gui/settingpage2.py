@@ -1,10 +1,10 @@
  
-from PyQt5.QtWidgets import QWidget,QLabel,QStyle ,QPushButton,QGridLayout,QSpinBox,QComboBox,QScrollArea,QLineEdit,QApplication
+from PyQt5.QtWidgets import QWidget,QLabel,QStyle ,QPushButton,QGridLayout,QSpinBox,QComboBox,QScrollArea,QLineEdit,QApplication,QFileDialog
 from PyQt5.QtGui import QColor 
 from PyQt5.QtCore import Qt 
-import functools
+import functools,sqlite3
 from utils.config import globalconfig ,translatorsetting
-import os
+import os,json
 import qtawesome,sys
 
 import gui.switchbutton
@@ -114,7 +114,27 @@ def setTabTwo(self) :
                 os.environ['https_proxy']=globalconfig['proxy'] 
                 os.environ['http_proxy']=globalconfig['proxy'] 
         btn.clicked.connect(lambda x: __resetproxy())
-        
+        transkirokuuse =QComboBox( )  
+        transkirokuuse.addItems([globalconfig['fanyi'][k]['name'] for k  in globalconfig['fanyi']])
+        transkirokuuse.setCurrentIndex(list(globalconfig['fanyi'].keys()).index(globalconfig['transkirokuuse']))
+        transkirokuuse.currentIndexChanged.connect(lambda x:globalconfig.__setitem__('transkirokuuse',list(globalconfig['fanyi'].keys())[x]))
+        bt = QPushButton("导出sqlite文件为json文件")  
+
+        def _sqlite2json():
+                f=QFileDialog.getOpenFileName(filter="*.sqlite")
+                if f[0]!='' :
+                        try:
+                                sql=sqlite3.connect(f[0],check_same_thread=False)
+                                ret=sql.execute(f'SELECT * FROM artificialtrans  ').fetchall()
+                                js={}
+                                for _id,source,mt,ut  in ret:
+                                        js[source]={'userTrans':ut,'machineTrans':mt}
+                                with open(os.path.join(os.path.dirname(f[0]), os.path.basename(f[0]).replace('.'+os.path.basename(f[0]).split('.')[-1],'.json')),'w',encoding='utf8') as ff:
+                                        ff.write(json.dumps(js,ensure_ascii=False,sort_keys=False, indent=4))
+                        except:
+                                print_exc()
+        bt.clicked.connect(lambda x:_sqlite2json()) 
+ 
   
 
         grids=[
@@ -134,8 +154,14 @@ def setTabTwo(self) :
                 (QLabel("模糊匹配相似度限制"),5),(self.getspinbox(0,500,globalconfig,'premtsimi'),2),'', 
             ],[
                 (QLabel("使用代理(ip:port)"),4),(self.getsimpleswitch(globalconfig  ,'useproxy',callback=lambda x: _setproxy(x)),1),
-                (proxy,6),(btn,2),'','','', 
+                (proxy,6),(btn,4),  
             ],
+            
+                [(QLabel('录制翻译文件'),4),(self.getsimpleswitch(globalconfig,'transkiroku'),1),
+                 (QLabel('优先录制的翻译源'),6),(transkirokuuse,4),
+                 
+                 (bt,6) ,
+                 ],
             ['']
         ] 
         initfanyiswitchs_auto11(self,grids)

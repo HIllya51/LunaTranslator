@@ -125,47 +125,21 @@ def autosaveshow(object):
     dialog.show()
  
 def setTab4(self) :
-        transkirokuuse =QComboBox( )  
-        transkirokuuse.addItems([globalconfig['fanyi'][k]['name'] for k  in globalconfig['fanyi']])
-        transkirokuuse.setCurrentIndex(list(globalconfig['fanyi'].keys()).index(globalconfig['transkirokuuse']))
-        transkirokuuse.currentIndexChanged.connect(lambda x:globalconfig.__setitem__('transkirokuuse',list(globalconfig['fanyi'].keys())[x]))
 
         
-        bt = QPushButton("导出sqlite文件为json文件")  
-
-        def _sqlite2json():
-                f=QFileDialog.getOpenFileName(filter="*.sqlite")
-                if f[0]!='' :
-                        try:
-                                sql=sqlite3.connect(f[0],check_same_thread=False)
-                                ret=sql.execute(f'SELECT * FROM artificialtrans  ').fetchall()
-                                js={}
-                                for _id,source,mt,ut  in ret:
-                                        js[source]={'userTrans':ut,'machineTrans':mt}
-                                with open(os.path.join(os.path.dirname(f[0]), os.path.basename(f[0]).replace('.'+os.path.basename(f[0]).split('.')[-1],'.json')),'w',encoding='utf8') as ff:
-                                        ff.write(json.dumps(js,ensure_ascii=False,sort_keys=False, indent=4))
-                        except:
-                                print_exc()
-        bt.clicked.connect(lambda x:_sqlite2json()) 
- 
+        
         grids=[
-                [(QLabel('游戏最小化时窗口隐藏'),1),(self.getsimpleswitch(globalconfig,'minifollow'),1),'','',''],
-                [(QLabel('游戏失去焦点时窗口隐藏'),1),(self.getsimpleswitch(globalconfig,'focusfollow'),1)],
-                [(QLabel('游戏窗口移动时同步移动'),1),(self.getsimpleswitch(globalconfig,'movefollow'),1)],
-                [(QLabel('检测到游戏时自动开始'),1),(self.getsimpleswitch(globalconfig,'autostarthook'),1)],
+                
+                [(QLabel('检测到游戏时自动开始'),1),(self.getsimpleswitch(globalconfig,'autostarthook'),1),'','','',''],
                 
                 [(QLabel('LocaleEmulator路径设置'),1),(self.getcolorbutton(globalconfig,'',callback=lambda x: getsomepath1(self,'LocaleEmulator 路径',globalconfig,'LocaleEmulator','LocaleEmulator:',isdir=True),icon='fa.gear',constcolor="#FF69B4"),1)],
                 [(QLabel('已保存游戏'),1),(self.getcolorbutton(globalconfig,'',icon='fa.gamepad',constcolor="#FF69B4",callback=lambda:autosaveshow(self)),1)],
 
-                [(QLabel('录制翻译文件'),1),(self.getsimpleswitch(globalconfig,'transkiroku'),1)],
-                [(QLabel('优先使用的翻译源'),1),(transkirokuuse,1)],
                 
-                [(bt,2)],
                 
         ]
          
-        self.yitiaolong("HOOK设置",grids)
-        self.hookpid=None
+        self.yitiaolong("HOOK设置",grids) 
         self.minmaxmoveoberve=subproc('./files/minmaxmoveobserve.exe',stdout=subprocess.PIPE,keep=True)  
         self.minmaxmoveobservethread=threading.Thread(target=minmaxmoveobservefunc,args=(self,))
         self.minmaxmoveobservethread.start()
@@ -174,9 +148,7 @@ def setTab4(self) :
         
 
 def autostarthookfunction(self,arch,pid,hwnd,pexe,hookcode):
-          
-        print(hwnd)
-        self.hookpid=pid
+           
         from textsource.textractor import textractor
         self.object.hookselectdialog.changeprocessclearsignal.emit()
         if self.object.savetextractor:
@@ -190,19 +162,18 @@ def autostarthookfunction(self,arch,pid,hwnd,pexe,hookcode):
 def minmaxmoveobservefunc2(self):
         while(True):
                 time.sleep(0.1)
-                if globalconfig['sourcestatus']['textractor']==False:
-                        continue
+                 
                 try:
                         hwnd=win32gui.GetForegroundWindow()
 
                         pid=win32process.GetWindowThreadProcessId(hwnd) [1]
-                        if self.hookpid :
-                                if globalconfig['focusfollow']:
-                                        if pid not in [self.hookpid,self_pid]:
-                                                self.object.translation_ui.hookfollowsignal.emit(4,(0,0))
-                                        else:
-                                                if self.object.translation_ui.isHidden():
-                                                        self.object.translation_ui.hookfollowsignal.emit(3,(0,0))
+                        
+                        if globalconfig['focusfollow']:
+                                if pid not in [self.object.textsource.pid,self_pid]:
+                                        self.object.translation_ui.hookfollowsignal.emit(4,(0,0))
+                                else:
+                                        if self.object.translation_ui.isHidden():
+                                                self.object.translation_ui.hookfollowsignal.emit(3,(0,0))
                                 # if pid==self.hookpid and globalconfig['movefollow']:
                                 #         rect=win32gui.GetWindowRect(hwnd) 
                                         
@@ -210,12 +181,12 @@ def minmaxmoveobservefunc2(self):
                                 #                 self.object.translation_ui.hookfollowsignal.emit(6,(rect[0]-self.savelastrect[0],rect[1]-self.savelastrect[1]))
                                 #         self.savelastrect=rect
                 except:
-                        print_exc()
+                        #print_exc()
+                        pass
 def minmaxmoveobservefunc(self):
         while(True):
                 x=self.minmaxmoveoberve.stdout.readline()
-                if globalconfig['sourcestatus']['textractor']==False:
-                        continue
+                 
                 x=str(x,encoding='utf8')
                 x=x.replace('\r','').replace('\n','')
                  
@@ -229,17 +200,17 @@ def minmaxmoveobservefunc(self):
                 elif len(x)==6:
                         pid,action,x1,y1,x2,y2=x
                 
-                if self.hookpid:
+                try:
+                  if self.object.textsource.pid:
                       
                      if pid==self_pid:
                             continue
                      plist=getwindowlist()
-                     if self.hookpid not in plist:
-                            #print('game exit')
-                            self.hookpid=None
+                     if self.object.textsource.pid not in plist:
+                            #print('game exit') 
                             self.object.textsource=None
                             continue
-                     if pid==self.hookpid: 
+                     if pid==self.object.textsource.pid: 
                         if action==1 and globalconfig['movefollow']:
                                 self.movestart=[x1,y1,x2,y2]
                                 
@@ -250,4 +221,6 @@ def minmaxmoveobservefunc(self):
                                 self.object.translation_ui.hookfollowsignal.emit(4,(0,0))
                         elif action==4 and  globalconfig['minifollow']:
                                 self.object.translation_ui.hookfollowsignal.emit(3,(0,0))
-                         
+                except:
+                  #print_exc()
+                  pass

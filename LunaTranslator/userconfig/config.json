@@ -1,7 +1,7 @@
 {
     "position": [
-        420,
-        868
+        393,
+        688
     ],
     "fixedheight": false,
     "width": 1123,
@@ -527,6 +527,6 @@
         "langdu": false,
         "copy": false,
         "history": false,
-        "gamepad": false
+        "gamepad": true
     }
 }

@@ -5,7 +5,7 @@ from PyQt5.QtWidgets import  QColorDialog,QSpinBox,QDoubleSpinBox,QPushButton,QC
 from PyQt5.QtGui import QColor ,QFont
 from utils.config import globalconfig 
 from PyQt5.QtWidgets import  QTabWidget,QMainWindow 
-import qtawesome   
+import qtawesome   ,win32con,win32gui
 import os
 from gui.switchbutton import MySwitch
 from PyQt5.QtMultimedia import QMediaPlayer,QMediaContent ,QSoundEffect 
@@ -49,7 +49,9 @@ class Settin(QMainWindow) :
     progresssignal=pyqtSignal(str,int)
     clicksourcesignal=pyqtSignal(int)
     fontbigsmallsignal=pyqtSignal(int) 
-        
+    def showEvent(self, a0   ) -> None:
+         win32gui.SetWindowPos(int(self. winId()), win32con.HWND_TOPMOST, 0, 0, 0, 0,win32con. SWP_NOACTIVATE |win32con. SWP_NOSIZE | win32con.SWP_NOMOVE) 
+         return super().showEvent(a0)
     def automakegrid(self,grid,lis): 
         for nowr,line in enumerate(lis):
                 nowc=0

@@ -29,7 +29,9 @@ def setTabOne(self) :
                 [(QLabel(''),10),(QLabel('选择文本'),3),(self.getcolorbutton(globalconfig ,'',enable=globalconfig['sourcestatus']['textractor'],name='selecthookbutton',icon='fa.gear',constcolor="#FF69B4",callback=functools.partial(settingsource,self)),1)],
                 [''], 
                 [(QLabel('提取的文本自动复制到剪贴板'),3),(self.getsimpleswitch(globalconfig ,'outputtopasteboard',name='outputtopasteboard'),1)],
-                
+                [(QLabel('游戏最小化时窗口隐藏'),3),(self.getsimpleswitch(globalconfig,'minifollow'),1)],
+                [(QLabel('游戏失去焦点时窗口隐藏'),3),(self.getsimpleswitch(globalconfig,'focusfollow'),1)],
+                [(QLabel('游戏窗口移动时同步移动'),3),(self.getsimpleswitch(globalconfig,'movefollow'),1)],
         ] 
         self.yitiaolong("基本设置",grids)
         
