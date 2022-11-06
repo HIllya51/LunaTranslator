@@ -1,10 +1,10 @@
 {
     "position": [
-        723,
-        675
+        641,
+        747
     ],
     "fixedheight": false,
-    "width": 768,
+    "width": 942,
     "autorun": true,
     "transparent": 35,
     "fontsize": 17.0,
@@ -219,8 +219,8 @@
             "voice": ""
         },
         "windowstts": {
-            "use": false,
-            "voice": ""
+            "use": true,
+            "voice": "TTS_MS_ZH-CN_HUIHUI_11.0"
         },
         "voiceroid2": {
             "use": false,
@@ -258,9 +258,9 @@
         "volume": 100.0
     },
     "sourcestatus": {
-        "copy": true,
+        "copy": false,
         "ocr": false,
-        "textractor": false,
+        "textractor": true,
         "textractor_pipe": false
     },
     "ocr": {
