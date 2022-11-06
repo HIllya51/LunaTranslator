@@ -5,8 +5,7 @@ class basetext:
     def __init__(self,textgetmethod)  : 
         self.suspending=False
         self.textgetmethod=textgetmethod 
-        if os.path.exists('./transkiroku')==False:
-            os.mkdir('./transkiroku')
+        
         self.t=Thread(target=self.gettextthread_)
         self.t.setDaemon(True)
         self.t.start()

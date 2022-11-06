@@ -1,7 +1,10 @@
 import json 
 import os ,importlib
 from utils.defaultconfig import *
-
+if os.path.exists('./userconfig')==False:
+    os.mkdir('./userconfig')
+if os.path.exists('./transkiroku')==False:
+    os.mkdir('./transkiroku')
 def tryreadconfig(path):
     if os.path.exists(os.path.join('./userconfig/',path)):
         path=os.path.join('./userconfig/',path)
@@ -85,7 +88,7 @@ for name in ocrsetting:
 
 
 def saveallconfig():
-    
+        
         with open('./userconfig/config.json','w',encoding='utf-8') as ff:
             ff.write(json.dumps(globalconfig,ensure_ascii=False,sort_keys=False, indent=4))
          
