@@ -85,9 +85,7 @@ class tts():
  
             response = requests.post('http://localhost:50021/audio_query', params=params, headers=headers,  proxies={'http':None,'https':None})
             print(response.json())
-            fname=str(time.time())
-            if os.path.exists('./ttscache/')==False:
-                os.mkdir('./ttscache/') 
+            fname=str(time.time()) 
             headers = {
                 'Content-Type': 'application/json',
             } 

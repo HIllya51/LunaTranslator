@@ -5,6 +5,8 @@ if os.path.exists('./userconfig')==False:
     os.mkdir('./userconfig')
 if os.path.exists('./transkiroku')==False:
     os.mkdir('./transkiroku')
+if os.path.exists('./ttscache/')==False:
+    os.mkdir('./ttscache/')
 def tryreadconfig(path):
     if os.path.exists(os.path.join('./userconfig/',path)):
         path=os.path.join('./userconfig/',path)

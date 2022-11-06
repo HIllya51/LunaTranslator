@@ -42,8 +42,7 @@ class tts():
             response = requests.post('https://translate.volcengine.com/crx/tts/v1/',  headers=headers, json=json_data,proxies={'http':None,'https':None})
             fname=str(time.time())
             b64=base64.b64decode(response.json()['audio']['data'])
-            if os.path.exists('./ttscache')==False:
-                os.mkdir('./ttscache')
+             
             with open('./ttscache/'+fname+'.mp3','wb') as ff:
                 ff.write(b64)
                         

@@ -43,10 +43,7 @@ class tts():
             except:
                 return
 
-            fname=str(time.time())
-            if os.path.exists('./ttscache/')==False:
-                os.mkdir('./ttscache/')
-            
+            fname=str(time.time()) 
             savepath=os.path.join(os.getcwd(),'ttscache',fname+'.wav')
             dllpath=os.path.join(os.getcwd(),'files/voiceroid2/aitalked.dll')
             exepath=os.path.join(os.getcwd(),'files/voiceroid2/voice2.exe')
