@@ -166,7 +166,7 @@ def setTab4(self) :
                 [(QLabel('录制翻译文件'),1),(self.getsimpleswitch(globalconfig,'transkiroku'),1)],
                 [(QLabel('优先使用的翻译源'),1),(transkirokuuse,1)],
                 
-                [bt],
+                [(bt,2)],
                 [''],
                 [''],
                 [''],

@@ -25,11 +25,9 @@ def setTab7(self) :
         lay=QGridLayout( )    
         t.setLayout(lay)  
 
-        grids=[ 
-            [(QLabel(''),10)]
-        ] 
+        grids=[  ] 
         for post in postprocessconfig:
-            l=[(QLabel(postprocessconfig[post]['name'] ),3),
+            l=[(QLabel(postprocessconfig[post]['name'] ),4),
                 self.getsimpleswitch(postprocessconfig[post],'use')]
                 
             if 'args' in postprocessconfig[post]:
@@ -52,15 +50,15 @@ def setTab7(self) :
             self.object.loadvnrshareddict()
         grids+=[
 
-            [(QLabel('使用专有名词翻译' ),3),
+            [(QLabel('使用专有名词翻译' ),4),
                 self.getsimpleswitch(noundictconfig,'use'),
                 self.getcolorbutton(globalconfig,'',callback=lambda x:  noundictconfigdialog(self,noundictconfig,'专有名词翻译设置(游戏ID 0表示全局)'),icon='fa.gear',constcolor="#FF69B4")],
-            [(QLabel('使用翻译结果修正' ),3),
+            [(QLabel('使用翻译结果修正' ),4),
                 self.getsimpleswitch(transerrorfixdictconfig,'use'),
                 self.getcolorbutton(globalconfig,'',callback=lambda x:  noundictconfigdialog1(self,transerrorfixdictconfig,'翻译结果替换设置',['翻译','替换'],'./userconfig/transerrorfixdictconfig.json'),icon='fa.gear',constcolor="#FF69B4")],
-            [(QLabel('使用VNR共享辞书' ),3),
+            [(QLabel('使用VNR共享辞书' ),4),
                 self.getsimpleswitch(globalconfig['gongxiangcishu'],'use',callback =lambda x:__(x)),
-                self.getcolorbutton(globalconfig,'',callback=lambda x:  getsomepath1(self,'共享辞书',globalconfig['gongxiangcishu'],'path','共享辞书:',self.object.loadvnrshareddict,False,'*.xml') ,icon='fa.gear',constcolor="#FF69B4")],
+                self.getcolorbutton(globalconfig,'',callback=lambda x:  getsomepath1(self,'共享辞书',globalconfig['gongxiangcishu'],'path','共享辞书:',self.object.loadvnrshareddict,False,'*.xml') ,icon='fa.gear',constcolor="#FF69B4"),'','','','','',''],
             [''],[''],[''],[''],[''],
         ] 
         self.automakegrid(lay,grids)

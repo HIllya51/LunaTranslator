@@ -3,17 +3,13 @@ import base64
 import os
 import json
 import time
-from utils.config import globalconfig
+from utils.config import globalconfig,ocrsetting
  
 cacheapikey=("","")
 cacheaccstoken=""
 def ocr(imgfile):
     global cacheapikey,cacheaccstoken
-    configfile=globalconfig['ocr']['baiduocr']['argsfile']
-    if os.path.exists(configfile) ==False:
-            return ''
-    with open(configfile,'r',encoding='utf8') as ff:
-        js=json.load(ff)
+    js=ocrsetting['baiduocr']
 
     appid = js['args']['API Key']
     secretKey = js['args']['Secret Key']
@@ -62,9 +58,7 @@ def ocr(imgfile):
         'detect_language': 'true',
     # 'language_type': 'CHN_ENG',
         }
-    js['args']['次数统计']=str(int(js['args']['次数统计'])+1)
-    with open(configfile,'w',encoding='utf-8') as ff:
-        ff.write(json.dumps(js,ensure_ascii=False,sort_keys=False, indent=4))
+    js['args']['次数统计']=str(int(js['args']['次数统计'])+1) 
     response = requests.post('https://aip.baidubce.com/rest/2.0/ocr/v1/general_basic', params=params, headers=headers, data=data, proxies=  {'http': None,'https': None})
     try:
         return ''.join([x['words']  for x in response.json()['words_result']])

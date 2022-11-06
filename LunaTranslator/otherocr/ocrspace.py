@@ -2,13 +2,9 @@ import requests
 import base64
 import os
 import json
-from utils.config import globalconfig 
+from utils.config import globalconfig ,ocrsetting
 def ocr(imgfile):
-    configfile=globalconfig['ocr']['ocrspace']['argsfile']
-    if os.path.exists(configfile) ==False:
-            return ''
-    with open(configfile,'r',encoding='utf8') as ff:
-        js=json.load(ff)
+    js=ocrsetting['ocrspace']
     if js['args']['apikey']=="":
         return ''
     apikey=js['args']['apikey']
@@ -37,9 +33,7 @@ def ocr(imgfile):
      
     response = requests.post('https://apipro3.ocr.space/parse/image', headers=headers, data=data, proxies=  {'http': None,'https': None})
     #print(response.text)
-    js['args']['次数统计']=str(int(js['args']['次数统计'])+1)
-    with open(configfile,'w',encoding='utf-8') as ff:
-        ff.write(json.dumps(js,ensure_ascii=False,sort_keys=False, indent=4))
+    js['args']['次数统计']=str(int(js['args']['次数统计'])+1) 
      
     return response.json()['ParsedResults'][0]['ParsedText']
 

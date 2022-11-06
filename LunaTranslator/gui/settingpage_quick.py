@@ -1,5 +1,5 @@
  
-from PyQt5.QtWidgets import QWidget,QLabel,QFrame ,QPushButton,QColorDialog,QSpinBox,QComboBox,QScrollArea 
+from PyQt5.QtWidgets import QWidget,QLabel ,QComboBox,QScrollArea 
 import functools
 from utils.config import globalconfig  
 import gui.switchbutton
