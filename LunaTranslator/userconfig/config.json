@@ -1,7 +1,7 @@
 {
     "position": [
-        555,
-        718
+        554,
+        760
     ],
     "fixedheight": false,
     "width": 1123,
@@ -53,8 +53,8 @@
         "volume": 100.0
     },
     "sourcestatus": {
-        "copy": true,
-        "ocr": false,
+        "copy": false,
+        "ocr": true,
         "textractor": false,
         "textractor_pipe": false
     },
@@ -143,7 +143,7 @@
             "name": "deepl"
         },
         "jb7": {
-            "use": false,
+            "use": true,
             "color": "#1dda00",
             "name": "Jbeijing7",
             "argsfile": ""

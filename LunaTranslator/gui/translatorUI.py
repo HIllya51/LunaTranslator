@@ -197,7 +197,7 @@ class QUnFrameWindow(QWidget):
             qtawesome.icon("fa.tasks" ,color= globalconfig['buttoncolor']),
             qtawesome.icon("fa.crop" ,color=globalconfig['buttoncolor']),
             (qtawesome.icon("fa.square" ,color=  "#FF69B4" if self.showhidestate else globalconfig['buttoncolor'])),
-            (qtawesome.icon("fa.windows" ,color=globalconfig['buttoncolor'])),
+            (qtawesome.icon("fa.windows" ,color= "#FF69B4"  if self.isbindedwindow else globalconfig['buttoncolor'])),
             qtawesome.icon("fa.expand" ,color= globalconfig['buttoncolor']),
             qtawesome.icon("fa.window-maximize" ,color=  "#FF69B4" if self.isletgamefullscreened else globalconfig['buttoncolor']),
             qtawesome.icon("fa.microphone-slash" ,color="#FF69B4" if self.processismuteed else globalconfig['buttoncolor']),
@@ -297,6 +297,7 @@ class QUnFrameWindow(QWidget):
         self.showhidestate=False
         self.processismuteed=False
         self.mousetransparent=False
+        self.isbindedwindow=False
         self.buttons=[] 
         self.showbuttons=[]
         
@@ -478,7 +479,7 @@ class QUnFrameWindow(QWidget):
                         
                         if self.callmagpie  : 
                             self.isletgamefullscreened=not self.isletgamefullscreened
-                            self.letgamefullscreenbutton.setIcon(qtawesome.icon("fa.window-maximize" ,color="#FF69B4" if self.isletgamefullscreened else globalconfig['buttoncolor']))
+                            self.refreshtoolicon()
                             if self.isletgamefullscreened: 
                                 win32gui.SetForegroundWindow(hwnd )   
                                 self.multiprocesshwnd.put([hwnd,globalconfig['magpiescalemethod'],globalconfig['magpieflags'],globalconfig['magpiecapturemethod']])  
@@ -496,7 +497,7 @@ class QUnFrameWindow(QWidget):
                     else:
 
                         self.isletgamefullscreened=not self.isletgamefullscreened
-                        self.letgamefullscreenbutton.setIcon(qtawesome.icon("fa.window-maximize" ,color="#FF69B4" if self.isletgamefullscreened else globalconfig['buttoncolor']))
+                        self.refreshtoolicon()
                         if self.isletgamefullscreened:
                             self.wpc=win32gui. GetWindowPlacement( hwnd )
                             self.HWNDStyle = win32gui.GetWindowLong( hwnd, win32con.GWL_STYLE )
@@ -531,10 +532,7 @@ class QUnFrameWindow(QWidget):
                                                                \
                                                                     background-color: rgba(%s, %s, %s, %s)"
                                             %(int(globalconfig['backcolor'][1:3],16),int(globalconfig['backcolor'][3:5],16),int(globalconfig['backcolor'][5:7],16),0))
-            # if globalconfig['locktools']==False:
-            #     globalconfig['locktools']=not globalconfig['locktools'] 
-            #     self.locktoolsbutton.setIcon(qtawesome.icon("fa.lock" ,color="#FF69B4" if globalconfig['locktools'] else 'white'))
-        
+           
         else:
             self.object.translation_ui.translate_text.setStyleSheet("border-width:0;\
                                                                  border-style:outset;\
@@ -547,8 +545,7 @@ class QUnFrameWindow(QWidget):
         self.showhide()
     def showhide(self):
         
-        self.showhidestate=not self.showhidestate
-        #self.showhidebutton.setIcon(qtawesome.icon("fa.eye" if self.showhidestate else "fa.eye-slash" ,color="white"))
+        self.showhidestate=not self.showhidestate 
         self.refreshtoolicon()
         if self.showhidestate:
             self.object.range_ui.show()
@@ -571,11 +568,12 @@ class QUnFrameWindow(QWidget):
             #print(pid,selfpid)
             if pid==self.selfpid  :
                 self.object.textsource.hwnd= None
-                self.bindcropwindowbutton.setIcon(qtawesome.icon("fa.windows" ,color=globalconfig['buttoncolor'] ))
+                self.isbindedwindow=True 
             #for pid in pids:
             else:
                 self.object.textsource.hwnd= (hwnd_)  
-                self.bindcropwindowbutton.setIcon(qtawesome.icon("fa.windows" ,color="#FF69B4" ))
+                self.isbindedwindow=False
+            self.refreshtoolicon() 
             
             hm.UnhookMouse()   
             return True
@@ -592,13 +590,12 @@ class QUnFrameWindow(QWidget):
         
     def changeTranslateMode(self) : 
         globalconfig['autorun']=not globalconfig['autorun'] 
-        self.automodebutton.setIcon(qtawesome.icon("fa.forward" ,color="#FF69B4" if globalconfig['autorun'] else globalconfig['buttoncolor']))
+        self.refreshtoolicon()
     def changetoolslockstate(self):
         # if self.mousetransparent: 
         #     self.mousetransbutton.click()
         globalconfig['locktools']=not globalconfig['locktools'] 
-        self.locktoolsbutton.setIcon(qtawesome.icon("fa.lock" ,color="#FF69B4" if globalconfig['locktools'] else globalconfig['buttoncolor']))
-        
+        self.refreshtoolicon()
     def textAreaChanged(self) :
         if globalconfig['fixedheight']:
             return
