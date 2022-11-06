@@ -161,6 +161,7 @@ def minmaxmoveobservefunc2(self):
                         pid=win32process.GetWindowThreadProcessId(hwnd) [1]
                         
                         if globalconfig['focusfollow']:
+                             if self.object.textsource.pid:
                                 if pid not in [self.object.textsource.pid,self_pid]:
                                         self.object.translation_ui.hookfollowsignal.emit(4,(0,0))
                                 else:

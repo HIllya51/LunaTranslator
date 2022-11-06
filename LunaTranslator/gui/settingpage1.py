@@ -45,8 +45,7 @@ def settingtextractor(self,show1 ):
         if globalconfig['sourcestatus']['textractor']==False:
             return 
          
-        self.object.hookselectdialog.hide()
-        import win32process,win32api 
+        self.object.hookselectdialog.hide() 
         
         if show1: 
             self.hide()

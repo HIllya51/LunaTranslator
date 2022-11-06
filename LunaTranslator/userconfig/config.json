@@ -1,7 +1,7 @@
 {
     "position": [
-        488,
-        715
+        446,
+        587
     ],
     "fixedheight": false,
     "width": 1123,
@@ -54,8 +54,8 @@
     },
     "sourcestatus": {
         "copy": false,
-        "ocr": false,
-        "textractor": true,
+        "ocr": true,
+        "textractor": false,
         "textractor_pipe": false
     },
     "ocr": {
@@ -522,7 +522,7 @@
     "buttonuse": {
         "fullscreen": true,
         "resize": false,
-        "muteprocess": false,
+        "muteprocess": true,
         "showraw": false,
         "langdu": false,
         "copy": false,
