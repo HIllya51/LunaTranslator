@@ -15,7 +15,7 @@ def autoinitdialog(object,title,width,lines):
     regist=[]
     def save(callback=None):
         for l in regist:
-            l[0][l[1]]=l[2].text() 
+            l[0][l[1]]=l[2]() 
         dialog.close()
         if callback:
             callback()
@@ -41,19 +41,20 @@ def autoinitdialog(object,title,width,lines):
             dd=line['d']
             key=line['k'] 
             e=QLineEdit(dd[key])
-            regist.append([dd,key,e])  
+            regist.append([dd,key,e.text])  
             formLayout.addRow((line['l']),e)
         elif line['t']=='file': 
             dd=line['d']
             key=line['k'] 
             e=QLineEdit(dd[key])
-            regist.append([dd,key,e])  
+            regist.append([dd,key,e.text])  
             bu=QPushButton('选择'+('文件夹' if line['dir'] else '文件')  )
             bu.clicked.connect(functools.partial(openfiledirectory,e,line['dir'],'' if line['dir'] else line['filter']  ))
             hori=QHBoxLayout()
             hori.addWidget(e)
             hori.addWidget(bu)
             formLayout.addRow((line['l']),hori)
+        #  
     dialog.show()
  
 def getsomepath1(object,title,d,k,label,callback=None,isdir=False,filter1="*.db"):

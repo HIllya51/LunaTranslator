@@ -1,7 +1,7 @@
 {
     "position": [
-        431,
-        585
+        547,
+        769
     ],
     "fixedheight": false,
     "width": 1128,
@@ -143,7 +143,7 @@
             "name": "deepl"
         },
         "jb7": {
-            "use": false,
+            "use": true,
             "color": "#c54cda",
             "name": "Jbeijing7",
             "argsfile": ""

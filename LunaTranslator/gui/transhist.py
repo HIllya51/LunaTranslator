@@ -30,14 +30,12 @@ class transhist(QMainWindow):
     def setupUi(self):
         self.setWindowIcon(qtawesome.icon("fa.rotate-left"  ))
         font = QFont()
-        #font.setFamily("Arial Unicode MS")
-        font.setFamily(globalconfig['fonttype'])
-        font.setPointSize(15)
+        #font.setFamily("Arial Unicode MS") 
+        font.setPointSize(12)
         self.setGeometry(0,0,1000,300)
         self.textOutput = QPlainTextEdit(self)
         self.textOutput.setFont(font)
-        self.setCentralWidget(self.textOutput) 
-        self.textOutput.setContextMenuPolicy(Qt.CustomContextMenu)
+        self.setCentralWidget(self.textOutput)  
         self.textOutput.setUndoRedoEnabled(False)
         self.textOutput.setReadOnly(True)
         self.textOutput.setObjectName("textOutput") 
@@ -46,10 +44,6 @@ class transhist(QMainWindow):
        
     def getnewsentence(self,sentence):
         scrollbar = self.textOutput.verticalScrollBar()
-        atBottom = scrollbar.value() + 3 > scrollbar.maximum() or scrollbar.value() / scrollbar.maximum() > 0.975 
-        cursor=QTextCursor (self.textOutput.document())
-        cursor.movePosition(QTextCursor.End)
-        cursor.insertText(sentence+'\n')
-        if (atBottom):
-            scrollbar.setValue(scrollbar.maximum())
+        self.textOutput.appendPlainText(sentence)
+        scrollbar.setValue(scrollbar.maximum())
      

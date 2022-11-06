@@ -85,7 +85,7 @@ def initfanyiswitchs_auto11(self,grids):
  
         initsome11(self, lixians,'离线翻译',grids)  
         grids.append([''])
-        initsome11(self, mianfei,'免费在线翻译',grids)
+        initsome11(self, mianfei,'在线翻译',grids)
         grids.append([''])
         initsome11(self, shoufei,'注册在线翻译',grids)
         grids.append([''])

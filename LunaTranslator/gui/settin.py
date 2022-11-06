@@ -203,15 +203,11 @@ background-color:transparent;
                                  int(y*self.rate), int(w*self.rate),
                                  int(h*self.rate)))
  
-    def customSetIconSize(self, object, w, h) :
-
+    def customSetIconSize(self, object, w, h) : 
         object.setIconSize(QSize(int(w * self.rate),
-                                 int(h * self.rate)))
-   
+                                 int(h * self.rate))) 
     def closeEvent(self, event) : 
-        self.closed=True
-        
-            
+        self.closed=True 
     def ChangeTranslateColor(self, translate_type,button,item=None,name=None) :
             nottransbutton=['rawtextcolor','backcolor','miaobiancolor','shadowcolor','buttoncolor']
             if translate_type in nottransbutton:
