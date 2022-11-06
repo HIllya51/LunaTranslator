@@ -4,22 +4,7 @@ import os
 import json
 import time
 from utils.config import globalconfig
-def default():
-    return {
-            "args": {
-                "注册网址": "https://console.bce.baidu.com/ai/?fromai=1#/ai/ocr/app/list",
-                "API Key": "",
-                "Secret Key": "",
-                "access_token": "",
-                "备注":"可以只填写API Key和Secret Key;也可以只填写access_token;优先使用API Key和Secret Key", 
-                "次数统计": "0"
-            },
-            "notwriteable": [ 
-                "备注",
-                "注册网址", 
-                "次数统计"
-            ]
-        }
+ 
 cacheapikey=("","")
 cacheaccstoken=""
 def ocr(imgfile):

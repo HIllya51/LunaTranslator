@@ -334,3 +334,29 @@ translatordfsetting={
         }
          
 }
+ocrdfsetting={
+        'baiduocr':{
+            "args": {
+                "注册网址": "https://console.bce.baidu.com/ai/?fromai=1#/ai/ocr/app/list",
+                "API Key": "",
+                "Secret Key": "",
+                "access_token": "",
+                "备注":"可以只填写API Key和Secret Key;也可以只填写access_token;优先使用API Key和Secret Key", 
+                "次数统计": "0"
+            }, 
+        },
+        'docsumo':{
+            "args": {
+                "注册网址": "https://docsumo.com/",
+                "token": "", 
+                "次数统计": "0"
+            }, 
+        },
+        'ocrspace':{
+            "args": {
+                "注册网址": "https://ocr.space/",
+                "apikey": "", 
+                "次数统计": "0"
+            }, 
+        } 
+}

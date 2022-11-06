@@ -66,17 +66,17 @@
         "baiduocr": {
             "use": false,
             "name": "baiduOCR",
-            "argsfile": "./userconfig/baiduocr.json"
+            "argsfile": ""
         },
         "ocrspace": {
             "use": false,
             "name": "ocrspace",
-            "argsfile": "./userconfig/ocrspace.json"
+            "argsfile": ""
         },
         "docsumo": {
             "use": false,
             "name": "docsumo",
-            "argsfile": "./userconfig/docsumo.json"
+            "argsfile": ""
         },
         "youdaocr": {
             "use": false,

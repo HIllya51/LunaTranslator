@@ -10,7 +10,7 @@ import gui.attachprocessdialog
 from traceback import print_exc
 import gui.selecthook 
 import importlib
-from gui.inputdialog import GetUserPlotItems,autoinitdialog
+from gui.inputdialog import autoinitdialog
 def setTabTwo(self) :
   
         tab = QWidget()

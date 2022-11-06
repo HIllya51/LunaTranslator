@@ -2,19 +2,7 @@ import requests
 import base64
 import os
 import json
-from utils.config import globalconfig
-def default():
-    return {
-            "args": {
-                "注册网址": "https://ocr.space/",
-                "apikey": "", 
-                "次数统计": "0"
-            },
-            "notwriteable": [  
-                "注册网址", 
-                "次数统计"
-            ]
-        }
+from utils.config import globalconfig 
 def ocr(imgfile):
     configfile=globalconfig['ocr']['ocrspace']['argsfile']
     if os.path.exists(configfile) ==False:

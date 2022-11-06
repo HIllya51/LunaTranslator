@@ -22,6 +22,7 @@ transerrorfixdictconfig=tryreadconfig('transerrorfixdictconfig.json')
 savehook_new=tryreadconfig('savehook_new.json') 
 
 translatorsetting=tryreadconfig('translatorsetting.json') 
+ocrsetting=tryreadconfig('ocrsetting.json') 
 
 def syncconfig(config,default,drop=False,deep=0):
     
@@ -50,6 +51,7 @@ syncconfig(transerrorfixdictconfig,defaulterrorfix)
 
 syncconfig(noundictconfig,defaultnoun)
 syncconfig(translatorsetting,translatordfsetting)
+syncconfig(ocrsetting,ocrdfsetting)
 
 for name in translatorsetting: 
     try:
@@ -64,4 +66,36 @@ for name in translatorsetting:
             globalconfig['fanyi'][name]['argsfile']=''
     except:
         print('error',name)
+
+
+for name in ocrsetting: 
+    #try:
+        configfile=globalconfig['ocr'][name]['argsfile']
+        if os.path.exists(configfile) : 
+            with open(configfile,'r',encoding='utf8') as ff:
+                js=json.load(ff)  
+            for k in ocrsetting[name]['args']:
+                if k in js['args']:
+                    ocrsetting[name]['args'][k]=js['args'][k]  
+            #os.remove(configfile)
+            globalconfig['ocr'][name]['argsfile']=''
+    #except:
+    #    print('error',name)
 #0 ja  1 eng
+
+
+def saveallconfig():
+    
+        with open('./userconfig/config.json','w',encoding='utf-8') as ff:
+            ff.write(json.dumps(globalconfig,ensure_ascii=False,sort_keys=False, indent=4))
+         
+        with open('./userconfig/postprocessconfig.json','w',encoding='utf-8') as ff:
+            ff.write(json.dumps(postprocessconfig,ensure_ascii=False,sort_keys=False, indent=4))
+        with open('./userconfig/transerrorfixdictconfig.json','w',encoding='utf-8') as ff:
+            ff.write(json.dumps(transerrorfixdictconfig,ensure_ascii=False,sort_keys=False, indent=4))
+        with open('./userconfig/noundictconfig.json','w',encoding='utf-8') as ff:
+            ff.write(json.dumps(noundictconfig,ensure_ascii=False,sort_keys=False, indent=4))
+        with open('./userconfig/translatorsetting.json','w',encoding='utf-8') as ff:
+            ff.write(json.dumps(translatorsetting,ensure_ascii=False,sort_keys=False, indent=4))
+        with open('./userconfig/ocrsetting.json','w',encoding='utf-8') as ff:
+            ff.write(json.dumps(ocrsetting,ensure_ascii=False,sort_keys=False, indent=4))

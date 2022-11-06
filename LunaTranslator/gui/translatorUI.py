@@ -15,7 +15,7 @@ from PyQt5.QtGui import  QFont  ,QIcon,QPixmap
 from PyQt5.QtWidgets import  QLabel ,QPushButton ,QSystemTrayIcon ,QAction,QMenu 
 import pyperclip 
 from PyQt5.QtCore import QProcess ,QByteArray  
-from utils.config import globalconfig,postprocessconfig,transerrorfixdictconfig,noundictconfig,translatorsetting
+from utils.config import globalconfig,saveallconfig
 from utils.subproc import endsubprocs,mutiproc
 import  win32gui,win32api,win32process,win32con,multiprocessing
 import gui.rangeselect
@@ -824,18 +824,7 @@ class QUnFrameWindow(QWidget):
         globalconfig['position']=[self.pos().x(),self.pos().y()]
         
         globalconfig['width']=self.width() 
-        
-        with open('./userconfig/config.json','w',encoding='utf-8') as ff:
-            ff.write(json.dumps(globalconfig,ensure_ascii=False,sort_keys=False, indent=4))
-        #self.hide()
-        with open('./userconfig/postprocessconfig.json','w',encoding='utf-8') as ff:
-            ff.write(json.dumps(postprocessconfig,ensure_ascii=False,sort_keys=False, indent=4))
-        with open('./userconfig/transerrorfixdictconfig.json','w',encoding='utf-8') as ff:
-            ff.write(json.dumps(transerrorfixdictconfig,ensure_ascii=False,sort_keys=False, indent=4))
-        with open('./userconfig/noundictconfig.json','w',encoding='utf-8') as ff:
-            ff.write(json.dumps(noundictconfig,ensure_ascii=False,sort_keys=False, indent=4))
-        with open('./userconfig/translatorsetting.json','w',encoding='utf-8') as ff:
-            ff.write(json.dumps(translatorsetting,ensure_ascii=False,sort_keys=False, indent=4))
+        saveallconfig()
         self.tray.hide()
         self.tray = None 
         self.object.range_ui.close()
