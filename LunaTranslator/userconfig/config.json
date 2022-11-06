@@ -1,7 +1,7 @@
 {
     "position": [
-        494,
-        716
+        594,
+        863
     ],
     "fixedheight": false,
     "width": 1123,
@@ -518,5 +518,14 @@
         "AdapterIdx": -1,
         "MultiMonitorUsage": 0
     },
-    "usemuteprocessbutton": true
+    "usemuteprocessbutton": true,
+    "buttonuse": {
+        "fullscreen": false,
+        "resize": false,
+        "muteprocess": false,
+        "showraw": false,
+        "langdu": false,
+        "copy": false,
+        "history": false
+    }
 }

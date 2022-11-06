@@ -136,15 +136,22 @@ class moveresizegame(QDialog) :
         self.maxed=False
         if self.hwnd==0:
             self.close()
-        rect=win32gui.GetWindowRect(self.hwnd)  
-        self.setGeometry(rect[0],rect[1],rect[2]-rect[0],rect[3]-rect[1])
+        try:
+            rect=win32gui.GetWindowRect(self.hwnd)  
+            self.setGeometry(rect[0],rect[1],rect[2]-rect[0],rect[3]-rect[1])
+            self.show()
+        except:
+            self.close()
         #win32gui.SetWindowPos(self.winId(),win32con.HWND_TOPMOST,rect[0],rect[1],1000,1000,  win32con.SWP_NOACTIVATE)
-        self.show()
+        
     def moveEvent(self, a0 ) -> None:
         rect = self.geometry() 
         if self.isMaximized()==False:
             #win32gui.ShowWindow(self.hwnd,win32con.SW_SHOW)
-            win32gui.MoveWindow(self.hwnd,  rect.left(),rect.top(),rect.right()-rect.left(), rect.bottom()-rect.top(),  False)
+            try:
+                win32gui.MoveWindow(self.hwnd,  rect.left(),rect.top(),rect.right()-rect.left(), rect.bottom()-rect.top(),  False)
+            except:
+                pass
         return super().moveEvent(a0)
      
     def closeEvent(self, a0 ) -> None:
@@ -157,7 +164,10 @@ class moveresizegame(QDialog) :
             rect = self.geometry() 
             if self.isMaximized()==False:
                 #win32gui.ShowWindow(self.hwnd,win32con.SW_SHOW)
-                win32gui.MoveWindow(self.hwnd,  rect.left(),rect.top(),rect.right()-rect.left(), rect.bottom()-rect.top(),  False)
+                try:
+                    win32gui.MoveWindow(self.hwnd,  rect.left(),rect.top(),rect.right()-rect.left(), rect.bottom()-rect.top(),  False)
+                except:
+                    pass
     def mousePressEvent(self, e ) : 
             if e.button() == Qt.LeftButton :
                 self._isTracking = True
@@ -169,17 +179,22 @@ class moveresizegame(QDialog) :
                 self._endPos = None 
     def changeEvent(self, a0 ) -> None:
         if a0.type() == QEvent.WindowStateChange:
-            if self.isMaximized():
-                win32gui.ShowWindow(self.hwnd,win32con.SW_MAXIMIZE)
-                self.maxed=True
+            try:
+                if self.isMaximized():
+                    win32gui.ShowWindow(self.hwnd,win32con.SW_MAXIMIZE) 
                 #win32gui.MoveWindow(self.hwnd,  0, 0, win32api.GetSystemMetrics(0), win32api.GetSystemMetrics(1),  False)
-            else:  
-                win32gui.ShowWindow(self.hwnd,win32con.SW_SHOWNORMAL)
+                else:  
+                    win32gui.ShowWindow(self.hwnd,win32con.SW_SHOWNORMAL)
+            except:
+                pass
     #def moveEvent(self, a0):
     #     self.resizeEvent(a0)
     def resizeEvent(self, a0 ) :
         if self.isMaximized()==False: 
             rect = self.geometry()
             #win32gui.ShowWindow(self.hwnd,win32con.SW_SHOW)
-            win32gui.MoveWindow(self.hwnd,  rect.left(),rect.top(),rect.right()-rect.left(), rect.bottom()-rect.top(),  False)
+            try:
+                win32gui.MoveWindow(self.hwnd,  rect.left(),rect.top(),rect.right()-rect.left(), rect.bottom()-rect.top(),  False)
+            except:
+                pass
             

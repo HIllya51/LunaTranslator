@@ -4,9 +4,7 @@ from utils.config import globalconfig
 class basetext:
     def __init__(self,textgetmethod)  : 
         self.suspending=False
-        self.textgetmethod=textgetmethod
-        self.pid=None
-        self.pname=None
+        self.textgetmethod=textgetmethod 
         if os.path.exists('./transkiroku')==False:
             os.mkdir('./transkiroku')
         self.t=Thread(target=self.gettextthread_)

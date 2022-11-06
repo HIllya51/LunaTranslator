@@ -29,10 +29,17 @@ defaultglobalconfig = {'position': [432, 613], 'fixedheight': False, 'width': 76
     'CursorInterpolationMode':0,
     'AdapterIdx':-1,
     'MultiMonitorUsage':0
+ }, 
+ 'buttonuse':{
+    'fullscreen':True,
+    'resize':True,
+    'muteprocess':True,
+    'showraw':True,
+    'langdu':True,
+    'copy':True,
+    'history':True
+
  },
- 'usefullscreenbutton':True,
- 'useresizebutton':False,
- 'usemuteprocessbutton':False,
  'proxy':'',
  'showbold':False,
  'showShadow':False,

@@ -39,18 +39,13 @@ def setTabThree(self) :
                         self.object.translation_ui.masklabel.hide()
                 else:
                         self.object.translation_ui.masklabel.show()
-        def _useresizebutton(x):
-                globalconfig.__setitem__('useresizebutton',x)
-                self.object.translation_ui.showhidetoolbuttons() 
-        def _usefullscreenbutton(x):
-                globalconfig.__setitem__('usefullscreenbutton',x)
-                self.object.translation_ui.showhidetoolbuttons() 
-        def _usemuteprocessbutton(x):
-                globalconfig.__setitem__('usemuteprocessbutton',x)
-                self.object.translation_ui.showhidetoolbuttons() 
+         
         def _settoolbariconcolor( ):
                 self.ChangeTranslateColor("buttoncolor", self.buttoncolorbutton)
                 self.object.translation_ui.refreshtooliconsignal.emit()
+        def _usexxxbutton(name,x):
+                globalconfig['buttonuse'].__setitem__(name,x)
+                self.object.translation_ui.showhidetoolbuttons() 
         buttongrid=[
                 [(QLabel('不透明度'),2),(self.horizontal_slider,8),(self.horizontal_slider_label,2)],
                 [(QLabel('原文颜色'),3), self.getcolorbutton(globalconfig,'rawtextcolor',callback=lambda: self.ChangeTranslateColor("rawtextcolor", self.original_color_button),name='original_color_button'),'',(QLabel('翻译窗口背景颜色'),3),self.getcolorbutton(globalconfig,'backcolor',callback=lambda: self.ChangeTranslateColor("backcolor", self.back_color_button),name='back_color_button'),'',(QLabel('工具按钮颜色'),3),self.getcolorbutton(globalconfig,'buttoncolor',callback=_settoolbariconcolor ,name='buttoncolorbutton')],
@@ -63,7 +58,9 @@ def setTabThree(self) :
                 [(QLabel('翻译结果繁简体显示'),4),(self.getsimplecombobox(['大陆简体','马新简体','台灣正體','香港繁體','简体','繁體'],globalconfig,'fanjian'),2)],
                 [(QLabel('翻译窗口顺时针旋转(重启生效)'),4),(self.getsimplecombobox(['0','90','180','270'],globalconfig,'rotation'),2)],
                 [''],
-                [(QLabel('显示调整游戏窗口按钮'),3),self.getsimpleswitch(globalconfig,'useresizebutton' ,callback=_useresizebutton),'',(QLabel('显示全屏游戏窗口按钮'),3),self.getsimpleswitch(globalconfig,'usefullscreenbutton' ,callback=_usefullscreenbutton),'',(QLabel('显示游戏静音按钮'),3),self.getsimpleswitch(globalconfig,'usemuteprocessbutton' ,callback=_usemuteprocessbutton)],
+                [(QLabel('显示显示原文按钮'),3),self.getsimpleswitch(globalconfig['buttonuse'],'showraw' ,callback=functools.partial(_usexxxbutton,'showraw')),'',(QLabel('显示复制原文按钮'),3),self.getsimpleswitch(globalconfig['buttonuse'],'copy' ,callback=functools.partial(_usexxxbutton,'copy')),'',(QLabel('显示朗读按钮'),3),self.getsimpleswitch(globalconfig['buttonuse'],'langdu' ,callback=functools.partial(_usexxxbutton,'langdu'))],
+                [(QLabel('显示翻译历史按钮'),3),self.getsimpleswitch(globalconfig['buttonuse'],'history' ,callback=functools.partial(_usexxxbutton,'history')) ],
+                [(QLabel('显示调整游戏窗口按钮'),3),self.getsimpleswitch(globalconfig['buttonuse'],'resize' ,callback=functools.partial(_usexxxbutton,'resize')),'',(QLabel('显示全屏游戏窗口按钮'),3),self.getsimpleswitch(globalconfig['buttonuse'],'fullscreen' ,callback=functools.partial(_usexxxbutton,'fullscreen')),'',(QLabel('显示游戏静音按钮'),3),self.getsimpleswitch(globalconfig['buttonuse'],'muteprocess' ,callback=functools.partial(_usexxxbutton,'muteprocess'))],
                 [''],
                 [(QLabel('使用Magpie全屏'),3),self.getsimpleswitch(globalconfig,'usemagpie' )],
                 [(QLabel('Magpie算法'),3),(self.getsimplecombobox(['Lanczos','FSR','FSRCNNX','ACNet','Anime4K','CRT-Geom','Integer Scale 2x','Integer Scale 3x'],globalconfig,'magpiescalemethod'),3)],

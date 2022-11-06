@@ -328,9 +328,7 @@ class QUnFrameWindow(QWidget):
          
         def _moveresizegame(self):
              
-            try: 
-                if (globalconfig['sourcestatus']['textractor'])or (globalconfig['sourcestatus']['ocr'] ):
-                
+            try:  
                     hwnd= self.object.textsource.hwnd 
                     moveresizegame(self,hwnd)
             except:
@@ -441,24 +439,18 @@ class QUnFrameWindow(QWidget):
                 QApplication.primaryScreen().grabWindow(hwnd).save(f'./capture/{time.time()}.png')
         except:
             pass
-    def muteprocessfuntion(self):
-        
-        if globalconfig['sourcestatus']['ocr']:
-            hwnd= self.object.textsource.hwnd 
-        elif globalconfig['sourcestatus']['textractor']:
-            hwnd=getwindowhwnd(self.object.settin_ui.hookpid)
-        else:
-            return 
+    def muteprocessfuntion(self): 
         try:
-            pid=win32process.GetWindowThreadProcessId(hwnd) [1]
+            
             self.processismuteed=not self.processismuteed
-            subproc(f'./files/muteprocess.exe {pid}  {int(self.processismuteed)}')
+            
             self.refreshtoolicon()
+            pid= self.object.textsource.pid 
+            subproc(f'./files/muteprocess.exe {pid}  {int(self.processismuteed)}')
         except:
             print_exc()
     def _fullsgame(self): 
-            try: 
-                if (globalconfig['sourcestatus']['textractor'])or (globalconfig['sourcestatus']['ocr']): 
+            try:  
                     self.isletgamefullscreened=not self.isletgamefullscreened
                     self.refreshtoolicon()
                     hwnd= self.object.textsource.hwnd 
@@ -719,21 +711,32 @@ class QUnFrameWindow(QWidget):
             if i in [12,13,14] and globalconfig['sourcestatus']['ocr'] ==False:
                 button.hide()
                 continue
-            
+            if i in [10,11] and globalconfig['sourcestatus']['textractor'] ==False:
+                button.hide()
+                continue
             if globalconfig['sourcestatus']['textractor'] ==False and globalconfig['sourcestatus']['ocr'] ==False and i in [15,16,17]:
                 button.hide()
                 
                 continue
-            if globalconfig['useresizebutton']==False and i==15:
+            if globalconfig['buttonuse']['resize']==False and i==15:
                 button.hide()
                 continue
-            if globalconfig['usefullscreenbutton']==False and i==16:
+            if globalconfig['buttonuse']['fullscreen']==False and i==16:
                 button.hide()
                 continue
-            if globalconfig['usemuteprocessbutton']==False and i==17:
+            if globalconfig['buttonuse']['muteprocess']==False and i==17:
                 button.hide()
                 continue
-            if i in [10,11] and globalconfig['sourcestatus']['textractor'] ==False:
+            if globalconfig['buttonuse']['showraw']==False and i==4:
+                button.hide()
+                continue
+            if globalconfig['buttonuse']['langdu']==False and i==6:
+                button.hide()
+                continue
+            if globalconfig['buttonuse']['copy']==False and i==3:
+                button.hide()
+                continue
+            if globalconfig['buttonuse']['history']==False and i==5:
                 button.hide()
                 continue
             button.move(showed*button.width() , 0) 
