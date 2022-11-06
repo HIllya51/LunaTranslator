@@ -217,8 +217,8 @@ class ocrtext(basetext):
         else:
             try:
                 ocr=importlib.import_module('otherocr.'+use).ocr
-                cv2.imwrite('./tmp.jpg',img)
-                return ocr('./tmp.jpg')
+                cv2.imwrite('./capture/tmp.jpg',img)
+                return ocr('./capture/tmp.jpg')
             except:
                 print_exc()
                 return ''

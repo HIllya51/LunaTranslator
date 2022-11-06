@@ -75,9 +75,7 @@ def autosaveshow(object):
                         game=model.item(table.currentIndex().row(),1).text()
                         win32api.ShellExecute(None, "open", game, "", os.path.dirname(game), win32con.SW_SHOW)
                          
-                        dialog.close()
-                        if object:
-                                object.close()
+                        dialog.close() 
                 except:
                         print_exc()
         button.clicked.connect(clicked)
@@ -94,9 +92,7 @@ def autosaveshow(object):
                                 game=model.item(table.currentIndex().row(),1).text()
                                 win32api.ShellExecute(None, "open", le, f'-run "{game}"', os.path.dirname(game), win32con.SW_SHOW)
                                 #subprocess.Popen('"'+le+'"   "'+ model.item(table.currentIndex().row(),1).text()+'"' ) 
-                                dialog.close()
-                                if object:
-                                        object.close()
+                                dialog.close() 
                 except:
                         print_exc()
         button4.clicked.connect(clicked4)

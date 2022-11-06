@@ -1,7 +1,7 @@
 {
     "position": [
-        485,
-        742
+        495,
+        311
     ],
     "fixedheight": false,
     "width": 1123,
@@ -60,7 +60,7 @@
     },
     "ocr": {
         "local": {
-            "use": true,
+            "use": false,
             "name": "本地OCR"
         },
         "baiduocr": {
@@ -87,7 +87,7 @@
             "name": "youdao图片翻译"
         },
         "windowsocr": {
-            "use": false,
+            "use": true,
             "name": "WindowsOCR"
         }
     },
