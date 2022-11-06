@@ -7,6 +7,9 @@ if os.path.exists('./transkiroku')==False:
     os.mkdir('./transkiroku')
 if os.path.exists('./ttscache/')==False:
     os.mkdir('./ttscache/')
+if os.path.exists('./capture')==False:
+    os.mkdir('./capture')
+
 def tryreadconfig(path):
     if os.path.exists(os.path.join('./userconfig/',path)):
         path=os.path.join('./userconfig/',path)
@@ -104,3 +107,6 @@ def saveallconfig():
             ff.write(json.dumps(translatorsetting,ensure_ascii=False,sort_keys=False, indent=4))
         with open('./userconfig/ocrsetting.json','w',encoding='utf-8') as ff:
             ff.write(json.dumps(ocrsetting,ensure_ascii=False,sort_keys=False, indent=4))
+
+        with open('./userconfig/savehook_new.json','w',encoding='utf8') as ff:
+                ff.write(json.dumps(savehook_new,ensure_ascii=False))

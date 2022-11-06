@@ -232,7 +232,7 @@ class QUnFrameWindow(QWidget):
         self.displayraw1.connect(self.showraw)  
         self.clickSettin_signal.connect(self.clickSettin_funtion)
         self.refreshtooliconsignal.connect(self.refreshtoolicon)
-        self.showsavegame_signal.connect(self.showsavegame_function)
+        self.showsavegame_signal.connect(lambda:autosaveshow(self))
         self.settinghookthread_signal.connect(self.settinghookthread_funtion)
         self.settingprocess_signal.connect(self.settingprocess_function)
         self.clickRange_signal.connect(self.clickRange_funtion)
@@ -316,7 +316,7 @@ class QUnFrameWindow(QWidget):
         self.takusanbuttons("MinMaxButton",self.changetoolslockstate,11,"锁定工具栏",'locktoolsbutton') 
         
         
-        self.takusanbuttons("MinMaxButton",lambda: autosaveshow(None),3,"打开保存的游戏",'gamepad') 
+        self.takusanbuttons("MinMaxButton",lambda: autosaveshow(self),3,"打开保存的游戏",'gamepad') 
 
         self.takusanbuttons("MinMaxButton",lambda :settingtextractor(self.object.settin_ui,False),4,"选择游戏" ) 
         self.takusanbuttons("MinMaxButton",lambda :settingsource(self.object.settin_ui),5,"选择文本" ) 
@@ -425,9 +425,7 @@ class QUnFrameWindow(QWidget):
         if globalconfig['selectable']:
             self.masklabel.hide()
     def grabwindow(self): 
-        if os.path.exists('./capture')==False:
-            os.mkdir('./capture')
-
+        
         try:
             if self.isletgamefullscreened:
                 hwnd=QApplication.desktop().winId() 
@@ -494,9 +492,7 @@ class QUnFrameWindow(QWidget):
             self.object.textsource.pid= pid if pid!=self.selfpid else None
             self.isbindedwindow=(pid!=self.selfpid)
             self.refreshtoolicon() 
-             
-    def showsavegame_function(self):
-        autosaveshow(None)
+              
     def settingprocess_function(self):
         settingtextractor(self.object.settin_ui,False)
     def settinghookthread_funtion(self):

@@ -105,8 +105,6 @@ def autosaveshow(object):
         def clicked2(): 
                 savehook_new.pop(model.item(table.currentIndex().row(),1).text())
                 model.removeRow(table.currentIndex().row())
-                with open('./userconfig/savehook_new.json','w',encoding='utf8') as ff:
-                        ff.write(json.dumps(savehook_new,ensure_ascii=False))
         button2.clicked.connect(clicked2)
          
         formLayout.addWidget(table) 
