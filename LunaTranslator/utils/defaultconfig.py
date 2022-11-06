@@ -32,6 +32,7 @@ defaultglobalconfig = {'position': [432, 613], 'fixedheight': False, 'width': 76
  },
  'usefullscreenbutton':True,
  'useresizebutton':False,
+ 'usemuteprocessbutton':False,
  'proxy':'',
  'showbold':False,
  'showShadow':False,
@@ -207,6 +208,12 @@ defaultglobalconfig = {'position': [432, 613], 'fixedheight': False, 'width': 76
         '_21':{
             'use':False,
             'name':'前景窗口截屏',
+            'key1':-1,
+            'key2':-1
+        },
+        '_22':{
+            'use':False,
+            'name':"游戏静音",
             'key1':-1,
             'key2':-1
         }

@@ -1,15 +1,12 @@
-    
+
+from utils.subproc import subproc
 from utils.config import globalconfig  
 import subprocess
 class tts():
     
     def __init__(self,showlist ,_): 
-                
-        st=subprocess.STARTUPINFO()
-        st.dwFlags=subprocess.STARTF_USESHOWWINDOW
-        st.wShowWindow=subprocess.SW_HIDE
-
-        p=subprocess.Popen('./files/tts/tts_l.exe',stdout=subprocess.PIPE,startupinfo=st)
+                 
+        p=subproc('./files/tts/tts_l.exe',stdout=subprocess.PIPE )
         
         count=str(p.stdout.readline(),encoding='utf8')
         count=count.replace('\r','').replace('\n','')
@@ -35,11 +32,8 @@ class tts():
          
         if self.speaking:
             self.speaking.kill()
-                
-        st=subprocess.STARTUPINFO()
-        st.dwFlags=subprocess.STARTF_USESHOWWINDOW
-        st.wShowWindow=subprocess.SW_HIDE
+                 
 
-        self.speaking=subprocess.Popen(f'./files/tts/tts_s.exe {i} {globalconfig["ttscommon"]["rate"]} {globalconfig["ttscommon"]["volume"]} "{content}"',stdout=subprocess.PIPE,startupinfo=st )
+        self.speaking=subproc(f'./files/tts/tts_s.exe {i} {globalconfig["ttscommon"]["rate"]} {globalconfig["ttscommon"]["volume"]} "{content}"',stdout=subprocess.PIPE  )
         
       

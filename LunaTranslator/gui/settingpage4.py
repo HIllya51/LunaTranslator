@@ -166,7 +166,7 @@ def setTab4(self) :
          
         self.yitiaolong("HOOK设置",grids)
         self.hookpid=None
-        self.minmaxmoveoberve=subproc('./files/minmaxmoveobserve.exe',stdout=subprocess.PIPE)  
+        self.minmaxmoveoberve=subproc('./files/minmaxmoveobserve.exe',stdout=subprocess.PIPE,keep=True)  
         self.minmaxmoveobservethread=threading.Thread(target=minmaxmoveobservefunc,args=(self,))
         self.minmaxmoveobservethread.start()
         threading.Thread(target=minmaxmoveobservefunc2,args=(self,)).start() 

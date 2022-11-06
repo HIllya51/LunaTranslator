@@ -1,8 +1,5 @@
- 
-import re
-import time
-from traceback import print_exc
-from urllib.parse import quote 
+
+from utils.subproc import subproc    
 from translator.basetranslator import basetrans
 import platform 
 import ctypes
@@ -39,11 +36,8 @@ class TS(basetrans):
                 if ress!='':
                     ress+='\n'
                             
-                st=subprocess.STARTUPINFO()
-                st.dwFlags=subprocess.STARTF_USESHOWWINDOW
-                st.wShowWindow=subprocess.SW_HIDE
-                
-                p=subprocess.Popen(r'./files/x64_x86_dll/jbj7.exe "'+self.path+'"  "'+line+'"', stdout=subprocess.PIPE,startupinfo=st)
+                 
+                p=subproc(r'./files/x64_x86_dll/jbj7.exe "'+self.path+'"  "'+line+'"', stdout=subprocess.PIPE )
                 l=p.stdout.readline() 
                 
                 res=str(l,encoding='utf8',errors='ignore').replace('\r','').replace('\n','') 

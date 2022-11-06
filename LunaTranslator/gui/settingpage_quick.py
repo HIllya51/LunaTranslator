@@ -42,7 +42,8 @@ def setTab_quick(self) :
             '_18':lambda:self.object.settin_ui.fontbigsmallsignal.emit(1),
             '_19':lambda:self.object.settin_ui.fontbigsmallsignal.emit(-1),
             '_20':self.object.translation_ui.fullsgame_signal.emit,
-            '_21':self.object.translation_ui.grabwindowsignal.emit
+            '_21':self.object.translation_ui.grabwindowsignal.emit,
+            '_22':self.object.translation_ui.muteprocessignal.emit
         }
          
         

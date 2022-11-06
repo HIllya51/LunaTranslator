@@ -20,7 +20,7 @@ class tts():
         if os.path.exists(globalconfig['reader']['voicevox']['path'])==False or \
             os.path.exists(os.path.join(globalconfig['reader']['voicevox']['path'],'run.exe'))==False   :
             return
-        voicevoxprocess=subproc(os.path.join(globalconfig['reader']['voicevox']['path'],'run.exe'),cwd=globalconfig['reader']['voicevox']['path'] )
+        voicevoxprocess=subproc(os.path.join(globalconfig['reader']['voicevox']['path'],'run.exe'),cwd=globalconfig['reader']['voicevox']['path'] ,keep=True)
         
         while True:
             try:

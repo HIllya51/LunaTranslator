@@ -89,8 +89,10 @@ class Settin(QMainWindow) :
             setattr(self,name,b)
         return b
      
-    def getcolorbutton(self,d,key,callback,name=None,icon="fa.paint-brush",constcolor=None):
-        b=QPushButton(qtawesome.icon(icon, color=constcolor if constcolor else d[key]), "" )
+    def getcolorbutton(self,d,key,callback,name=None,icon="fa.paint-brush",constcolor=None,enable=True):
+
+        b=QPushButton(qtawesome.icon(icon, color=constcolor if constcolor else d[key]), ""  )
+        b.setEnabled(enable)
         self.customSetIconSize(b, 20, 20)  
         b.setStyleSheet("background: transparent;") 
         b.clicked.connect(  callback)  

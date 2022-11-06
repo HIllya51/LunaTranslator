@@ -1,7 +1,7 @@
 {
     "position": [
-        342,
-        241
+        555,
+        718
     ],
     "fixedheight": false,
     "width": 1123,
@@ -32,11 +32,11 @@
             "voice": "jp_male_satoshi"
         },
         "windowstts": {
-            "use": false,
+            "use": true,
             "voice": "TTS_MS_JA-JP_HARUKA_11.0"
         },
         "voiceroid2": {
-            "use": true,
+            "use": false,
             "voice": "yukari_emo_44",
             "path": "C:/dataH/Yukari2"
         },
@@ -53,9 +53,9 @@
         "volume": 100.0
     },
     "sourcestatus": {
-        "copy": false,
+        "copy": true,
         "ocr": false,
-        "textractor": true,
+        "textractor": false,
         "textractor_pipe": false
     },
     "ocr": {
@@ -450,6 +450,12 @@
                 "name": "前景窗口截屏",
                 "key1": -1,
                 "key2": -1
+            },
+            "_22": {
+                "use": false,
+                "name": "游戏静音",
+                "key1": -1,
+                "key2": -1
             }
         }
     },
@@ -511,5 +517,6 @@
         "CursorInterpolationMode": 0,
         "AdapterIdx": -1,
         "MultiMonitorUsage": 0
-    }
+    },
+    "usemuteprocessbutton": true
 }

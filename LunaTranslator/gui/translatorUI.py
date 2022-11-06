@@ -17,8 +17,9 @@ from utils.config import globalconfig,saveallconfig
 from utils.subproc import endsubprocs,mutiproc
 import  win32gui,win32api,win32process,win32con,multiprocessing
 import gui.rangeselect
-import gui.transhist
+import gui.transhist 
 
+from utils.subproc import subproc
 from utils.getpidlist import getwindowhwnd
 from gui.settingpage4 import autosaveshow
 from gui.settingpage1 import settingsource,settingtextractor
@@ -53,6 +54,7 @@ class QUnFrameWindow(QWidget):
     fullsgame_signal=pyqtSignal()
     quitf_signal=pyqtSignal() 
     refreshtooliconsignal=pyqtSignal()
+    muteprocessignal=pyqtSignal()
     def keeptopfuntion(self):
         win32gui.BringWindowToTop(int(self.winId()))
     def hookfollowsignalsolve(self,code,other): 
@@ -188,16 +190,17 @@ class QUnFrameWindow(QWidget):
             qtawesome.icon("fa.eye"   if globalconfig['isshowrawtext'] else "fa.eye-slash" ,color=globalconfig['buttoncolor']),
             qtawesome.icon("fa.rotate-left" ,color=globalconfig['buttoncolor']),
             qtawesome.icon("fa.music" ,color=globalconfig['buttoncolor']),
-            qtawesome.icon("fa.mouse-pointer" ,color=globalconfig['buttoncolor']),
+            qtawesome.icon("fa.mouse-pointer" ,color="#FF69B4" if self.mousetransparent else globalconfig['buttoncolor']),
             qtawesome.icon("fa.lock" ,color="#FF69B4" if globalconfig['locktools'] else globalconfig['buttoncolor']),
             qtawesome.icon("fa.gamepad" ,color= globalconfig['buttoncolor']),
             qtawesome.icon("fa.link" ,color=globalconfig['buttoncolor']),
             qtawesome.icon("fa.tasks" ,color= globalconfig['buttoncolor']),
             qtawesome.icon("fa.crop" ,color=globalconfig['buttoncolor']),
-            (qtawesome.icon("fa.square" ,color=globalconfig['buttoncolor'])),
+            (qtawesome.icon("fa.square" ,color=  "#FF69B4" if self.showhidestate else globalconfig['buttoncolor'])),
             (qtawesome.icon("fa.windows" ,color=globalconfig['buttoncolor'])),
             qtawesome.icon("fa.expand" ,color= globalconfig['buttoncolor']),
-            qtawesome.icon("fa.window-maximize" ,color= globalconfig['buttoncolor']),
+            qtawesome.icon("fa.window-maximize" ,color=  "#FF69B4" if self.isletgamefullscreened else globalconfig['buttoncolor']),
+            qtawesome.icon("fa.microphone-slash" ,color="#FF69B4" if self.processismuteed else globalconfig['buttoncolor']),
             qtawesome.icon("fa.minus",color=globalconfig['buttoncolor'] ),
             qtawesome.icon("fa.times" ,color=globalconfig['buttoncolor']),
         ]
@@ -214,6 +217,7 @@ class QUnFrameWindow(QWidget):
         self.object = object
         self.rate = self.object.screen_scale_rate 
         self.callmagpie=None
+        self.muteprocessignal.connect(self.muteprocessfuntion)
         self.startprocessignal.connect(self.startprocessfunction)
         self.writeprocesssignal.connect(self.writeprocess)
         self.killprocesssignal.connect(self.killprocess)
@@ -289,7 +293,9 @@ class QUnFrameWindow(QWidget):
         # self.fixedheight_switch.clicked.connect(lambda x:globalconfig.__setitem__('fixedheight',x)) 
 
         # self.object.translation_ui.setAttribute(Qt.WA_TransparentForMouseEvents, True);
-
+        
+        self.showhidestate=False
+        self.processismuteed=False
         self.mousetransparent=False
         self.buttons=[] 
         self.showbuttons=[]
@@ -313,8 +319,7 @@ class QUnFrameWindow(QWidget):
 
         self.takusanbuttons("MinMaxButton",lambda :settingtextractor(self.object.settin_ui,False),4,"选择游戏" ) 
         self.takusanbuttons("MinMaxButton",lambda :settingsource(self.object.settin_ui),5,"选择文本" ) 
-        
-
+         
         self.takusanbuttons("MinMaxButton",self.clickRange,4,"选取OCR范围")
         self.takusanbuttons("MinMaxButton",self.showhide,5,"显示/隐藏范围框",'showhidebutton')
          
@@ -348,6 +353,8 @@ class QUnFrameWindow(QWidget):
         threading.Thread(target=__initmulti,args=(self,)).start() 
         
         self.takusanbuttons("MinMaxButton",self._fullsgame,5,"全屏/恢复游戏窗口(需要绑定ocr窗口，或选择hook进程)" ,"letgamefullscreenbutton") 
+        
+        self.takusanbuttons("MinMaxButton",self.muteprocessfuntion,5,"游戏静音(需要绑定ocr窗口，或选择hook进程)" ,"muteprocessbutton") 
         
         
         self.takusanbuttons("MinMaxButton",self.hide_and_disableautohide,-2,"最小化到托盘")
@@ -424,8 +431,6 @@ class QUnFrameWindow(QWidget):
         self.masklabelback.setStyleSheet("background-color: rgba(0,0,0,0)")
         if globalconfig['selectable']:
             self.masklabel.hide()
-        self.showhidestate=False
-    
     def grabwindow(self): 
         if os.path.exists('./capture')==False:
             os.mkdir('./capture')
@@ -441,7 +446,21 @@ class QUnFrameWindow(QWidget):
                 QApplication.primaryScreen().grabWindow(hwnd).save(f'./capture/{time.time()}.png')
         except:
             pass
-
+    def muteprocessfuntion(self):
+        
+        if globalconfig['sourcestatus']['ocr']:
+            hwnd= self.object.textsource.hwnd 
+        elif globalconfig['sourcestatus']['textractor']:
+            hwnd=getwindowhwnd(self.object.settin_ui.hookpid)
+        else:
+            return 
+        try:
+            pid=win32process.GetWindowThreadProcessId(hwnd) [1]
+            self.processismuteed=not self.processismuteed
+            subproc(f'./files/muteprocess.exe {pid}  {int(self.processismuteed)}')
+            self.refreshtoolicon()
+        except:
+            print_exc()
     def _fullsgame(self):
             
             if ('moveresizegame'   in dir(self)) : 
@@ -523,14 +542,14 @@ class QUnFrameWindow(QWidget):
                                                                  color:white;\
                                                                 background-color: rgba(%s, %s, %s, %s)"
                                            %(int(globalconfig['backcolor'][1:3],16),int(globalconfig['backcolor'][3:5],16),int(globalconfig['backcolor'][5:7],16),globalconfig['transparent']/100))
-        self.mousetransbutton.setIcon(qtawesome.icon("fa.mouse-pointer" ,color="#FF69B4" if self.mousetransparent else globalconfig['buttoncolor']))
+        self.refreshtoolicon()
     def showhide_function(self):
         self.showhide()
     def showhide(self):
         
         self.showhidestate=not self.showhidestate
         #self.showhidebutton.setIcon(qtawesome.icon("fa.eye" if self.showhidestate else "fa.eye-slash" ,color="white"))
-        self.showhidebutton.setIcon(qtawesome.icon("fa.square" ,color="#FF69B4" if self.showhidestate else globalconfig['buttoncolor']))
+        self.refreshtoolicon()
         if self.showhidestate:
             self.object.range_ui.show()
         else:
@@ -788,7 +807,7 @@ class QUnFrameWindow(QWidget):
                 button.hide()
                 continue
             
-            if globalconfig['sourcestatus']['textractor'] ==False and globalconfig['sourcestatus']['ocr'] ==False and i in [15,16]:
+            if globalconfig['sourcestatus']['textractor'] ==False and globalconfig['sourcestatus']['ocr'] ==False and i in [15,16,17]:
                 button.hide()
                 
                 continue
@@ -796,6 +815,9 @@ class QUnFrameWindow(QWidget):
                 button.hide()
                 continue
             if globalconfig['usefullscreenbutton']==False and i==16:
+                button.hide()
+                continue
+            if globalconfig['usemuteprocessbutton']==False and i==17:
                 button.hide()
                 continue
             if i in [10,11] and globalconfig['sourcestatus']['textractor'] ==False:

@@ -1,8 +1,5 @@
- 
-import re
-import time
-from traceback import print_exc
-from urllib.parse import quote 
+
+from utils.subproc import subproc       
 from translator.basetranslator import basetrans
 import platform 
 import ctypes
@@ -28,18 +25,14 @@ class TS(basetrans):
                 if len(line)==0:
                     continue
                 if ress!='':
-                    ress+='\n' 
-                st=subprocess.STARTUPINFO()
-                st.dwFlags=subprocess.STARTF_USESHOWWINDOW
-                st.wShowWindow=subprocess.SW_HIDE 
-
+                    ress+='\n'  
 
                 exec=r'./files/x64_x86_dll/dreyec.exe "'+path+'"  "'+path2+'" '
                 
                 linebyte=bytes(line,encoding='shift-jis')
                 for b in linebyte:
                     exec+=str(b)+' '
-                p=subprocess.Popen(exec,stdin=subprocess.PIPE,  stdout=subprocess.PIPE,startupinfo=st,cwd=path)
+                p=subproc(exec,stdin=subprocess.PIPE,  stdout=subprocess.PIPE ,cwd=path)
                 l=p.stdout.readline()   
                 #print(l)
                 
