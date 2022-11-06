@@ -91,11 +91,11 @@ def settingtextractor(self,show1 ):
             self.object.hookselectdialog.changeprocessclearsignal.emit()
             if self.object.savetextractor:
                 self.object.textsource=self.object.savetextractor
-                self.object.textsource.reset(self.object,self.object.textgetmethod,self.object.hookselectdialog,pid,pexe,arch)
+                self.object.textsource.reset(self.object,self.object.textgetmethod,self.object.hookselectdialog,pid,hwnd,pexe,arch)
 
             else:
                 
-                self.object.textsource=textractor(self.object,self.object.textgetmethod,self.object.hookselectdialog,pid,pexe,arch) 
+                self.object.textsource=textractor(self.object,self.object.textgetmethod,self.object.hookselectdialog,pid,hwnd,pexe,arch) 
                 
                 self.object.savetextractor=self.object.textsource
             # if not os.path.exists('./files/savehook.json'):

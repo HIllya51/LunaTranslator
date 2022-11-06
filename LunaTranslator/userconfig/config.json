@@ -1,7 +1,7 @@
 {
     "position": [
-        677,
-        656
+        494,
+        716
     ],
     "fixedheight": false,
     "width": 1123,
@@ -53,8 +53,8 @@
         "volume": 100.0
     },
     "sourcestatus": {
-        "copy": true,
-        "ocr": false,
+        "copy": false,
+        "ocr": true,
         "textractor": false,
         "textractor_pipe": false
     },
@@ -492,9 +492,9 @@
     "proxy": "127.0.0.1:4780",
     "tgtlang": 0,
     "focusfollow": true,
-    "usemagpie": true,
+    "usemagpie": false,
     "usefullscreenbutton": true,
-    "useresizebutton": false,
+    "useresizebutton": true,
     "buttoncolor": "white",
     "magpiescalemethod": 0,
     "magpiecapturemethod": 0,

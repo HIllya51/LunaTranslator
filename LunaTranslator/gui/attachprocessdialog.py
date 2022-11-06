@@ -4,102 +4,20 @@ from PyQt5.QtWidgets import QDialog,QVBoxLayout,QHBoxLayout,QLabel,QLineEdit,QLi
 from PyQt5.QtGui import  QStandardItemModel,QPixmap,QColor,QIcon,QStandardItem ,QFont
 from PyQt5.QtWinExtras  import QtWin 
 import win32gui 
-import win32api,win32process,win32con
+import functools
 import sys
 import time   
+from utils.getpidlist import getwindowhwnd,getpidexe,ListProcess,mouseselectwindow,getExeIcon
 import qtawesome
 class AttachProcessDialog(QDialog):
-    def getExeIcon(self,name ): 
-        try:
-            large, small = win32gui.ExtractIconEx(name,0)
-            pixmap =QtWin.fromHICON(large[0])
-            return pixmap
-        except:
-            return None
-       
-    def ListProcess(self):
-          
-        # def __(proc):
-        #     try: 
-        #         name=proc.exe().lower()
-        #         if name[-4:]=='.exe' and ':\\windows\\' not in name   and '\\microsoft\\' not in name:
-        #                     #print(pid,name)
-        #                     return True
-        #         else:
-        #             return False
-        #     except psutil.AccessDenied :
-        #         return False 
-        # t1=time.time()
-        # process=filter(__,psutil.process_iter()) 
-         
-        # a = [(proc.pid,proc.exe(),proc.name()) for proc in process] 
-         
-        # #print(1,time.time()-t1)
-
-        windows_list = []
-        ret=[]
-        win32gui.EnumWindows(lambda hWnd, param: param.append(hWnd), windows_list)
-        for hwnd in windows_list:
-            if win32gui.IsWindow(hwnd) and win32gui.IsWindowEnabled(hwnd) and win32gui.IsWindowVisible(hwnd):
-                
-                 
-                #for pid in pids:
-                if True:
-                    try:
-                        classname = win32gui.GetClassName(hwnd)
-                        title = win32gui.GetWindowText(hwnd)
-                        #print(f'classname:{classname} title:{title}') 
-                        tid, pid=win32process.GetWindowThreadProcessId(hwnd) 
-                        if True:
-                        #try:
-
-                            hwnd=win32api.OpenProcess(win32con.PROCESS_ALL_ACCESS,False, (pid))
-                        # except:
-                        #     hwnd=win32api.OpenProcess(win32con.PROCESS_QUERY_LIMITED_INFORMATION,False, (pid))
-                        name_=win32process.GetModuleFileNameEx(hwnd,None) 
-                        name=name_.lower()
-                        if name[-4:]!='.exe' or ':\\windows\\'  in name   or '\\microsoft\\'  in name:
-                            continue
-                        import os
-                        ret.append([pid,name_,hwnd])
-                    except:
-                        pass
-        #print(windows_list)
-        #print(ret)
-        return ret
+     
+        
     iconcache={}
-    def selectwindow(self):
-        import PyHook3
-        hm = PyHook3.HookManager()
-        def OnMouseEvent(event): 
-            
-            p=win32api.GetCursorPos()
-
-            hwnd=win32gui.WindowFromPoint(p)
-
-            
-            #for pid in pids:
-            if True:
-                try:
-                    tid, pid=win32process.GetWindowThreadProcessId(hwnd)
-                    #print(pid,  win32gui.GetWindowText(hwnd))
-                    if True:
-                    #try:
-
-                        hwnd=win32api.OpenProcess(win32con.PROCESS_ALL_ACCESS,False, (pid))
-                    # except:
-                    #     hwnd=win32api.OpenProcess(win32con.PROCESS_QUERY_LIMITED_INFORMATION,False, (pid))
-                    name_=win32process.GetModuleFileNameEx(hwnd,None) 
-                    #print(name_) 
+    def selectwindowcallback(self,pid,hwnd,name_): 
+         
                     self.processEdit.setText(name_)
                     self.processIdEdit.setText(str(pid))
-                    self.selectedp=(pid,name_,hwnd)
-                except: 
-                    pass
-            hm.UnhookMouse()   
-            return True
-        hm.MouseAllButtonsDown = OnMouseEvent
-        hm.HookMouse()
+                    self.selectedp=(pid,name_,hwnd) 
     def __init__(self ):
         super(AttachProcessDialog, self).__init__( ) 
         self.setWindowModality(Qt.WindowModal)
@@ -115,7 +33,7 @@ class AttachProcessDialog(QDialog):
         self.layout1=QVBoxLayout()
         self.label=QLabel('如果没看见想要附加的进程，可以尝试点击下方按钮后点击游戏窗口，或者尝试使用管理员权限运行本软件！！') 
         self.button=QPushButton('点击此按钮后点击游戏窗口')
-        self.button.clicked.connect(self.selectwindow)
+        self.button.clicked.connect(functools.partial(mouseselectwindow,self.selectwindowcallback))
         self.layout1.addWidget(self.label)
         self.layout1.addWidget(self.button)
         self.layout2=QHBoxLayout()
@@ -140,14 +58,14 @@ class AttachProcessDialog(QDialog):
         transparent=QPixmap(100,100)
         transparent.fill(QColor.fromRgba(0))
         #print(time.time()-t1)
-        self.processlist=self.ListProcess()
+        self.processlist= ListProcess()
         #print(time.time()-t1)
         self.processList.setModel(model)
         for pid,pexe,hwnd  in self.processlist: 
             if pexe in self.iconcache:
                 icon=self.iconcache[pexe]
             else:
-                icon=self.getExeIcon(pexe)
+                icon=getExeIcon(pexe)
 
                 if icon is None:
                     icon=transparent
@@ -168,7 +86,7 @@ class AttachProcessDialog(QDialog):
                 self.processList.setRowHidden(i,not (process.lower() in model.item(i).text().lower()))
         self.processEdit.textEdited.connect(ff)
         def gg(process):
-            self.selectedp=(int(process),'',0)
+            self.selectedp=(int(process),getpidexe(int(process)),getwindowhwnd(int(process)))
         self.processIdEdit.textEdited.connect(gg)
         #print(time.time()-t1)
         #self.processEdit.returnPressed.connect(self.accept)

@@ -15,15 +15,15 @@ from utils.config import globalconfig
 from textsource.textsourcebase import basetext 
 import json
 class textractor(basetext  ): 
-    def __init__(self,object,textgetmethod,hookselectdialog,pid,pname,arch,autostart=False,autostarthookcode=[]) :
+    def __init__(self,object,textgetmethod,hookselectdialog,pid,hwnd,pname,arch,autostart=False,autostarthookcode=[]) :
         self.newline=Queue() 
-        self.reset(object,textgetmethod,hookselectdialog,pid,pname,arch,autostart,autostarthookcode)
+        self.reset(object,textgetmethod,hookselectdialog,pid,hwnd,pname,arch,autostart,autostarthookcode)
         
         self.t=Thread(target=self.gettextthread_)
         self.t.setDaemon(True)
         self.t.start()
          
-    def reset(self,object,textgetmethod,hookselectdialog,pid,pname,arch,autostart=False,autostarthookcode=[])  : 
+    def reset(self,object,textgetmethod,hookselectdialog,pid,hwnd,pname,arch,autostart=False,autostarthookcode=[])  : 
         try:
             with open(pname,'rb') as ff:
                 bs=ff.read() 
@@ -70,6 +70,7 @@ class textractor(basetext  ):
         #self.p.start(r"C:\tmp\textractor_src\Textractor-cmd\builds\RelWithDebInfo_x64\TextractorCLI.exe")
         self.pid=pid
         self.pname=pname
+        self.hwnd=hwnd
         self.arch=arch
         self.notarch='86' if arch=='64' else '64'
         self.attach(self.pid)

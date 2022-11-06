@@ -389,8 +389,12 @@ class MAINUI(QObject) :
         while True:
             #self.translation_ui.keeptopsignal.emit() 
             
-            try: 
-                win32gui.SetWindowPos(int(self.translation_ui.winId()), win32con.HWND_TOPMOST, 0, 0, 0, 0,win32con. SWP_NOACTIVATE |win32con. SWP_NOSIZE | win32con.SWP_NOMOVE)  
+            try:  
+                
+                if self.settin_ui.isHidden():
+                    win32gui.SetWindowPos(int(self.translation_ui.winId()), win32con.HWND_TOPMOST, 0, 0, 0, 0,win32con. SWP_NOACTIVATE |win32con. SWP_NOSIZE | win32con.SWP_NOMOVE)  
+                else:
+                    win32gui.SetWindowPos(int(self.settin_ui.winId()), win32con.HWND_TOPMOST, 0, 0, 0, 0,win32con. SWP_NOACTIVATE |win32con. SWP_NOSIZE | win32con.SWP_NOMOVE)  
                 #win32gui.BringWindowToTop(int(self.translation_ui.winId())) 
             except:
                 print_exc() 
@@ -399,31 +403,30 @@ class MAINUI(QObject) :
 
     def onwindowloadautohook(self):
         if not(globalconfig['autostarthook'] and globalconfig['sourcestatus']['textractor']):
-            return False
+            return 
         else:
             if 'textsource' not in dir(self) or self.textsource is None:
-                 
-                plist = getwindowlist() 
-                for pid in plist:
-                    #print(pid)
-                    try:
-                            hwnd=win32api.OpenProcess(win32con.PROCESS_ALL_ACCESS,False, (pid))
-                            #hwnd=win32api.OpenProcess(win32con.PROCESS_QUERY_LIMITED_INFORMATION,False, (pid))
-                            name_ = win32process.GetModuleFileNameEx(
-                                hwnd, None)
-                            arch='86' if win32process.IsWow64Process( hwnd)  else '64' 
-                    except:
-                        continue
+                
+            
+                try:
+                        hwnd=win32gui.GetForegroundWindow()
+                        pid=win32process.GetWindowThreadProcessId(hwnd)[1]
+                        hwnd1=win32api.OpenProcess(win32con.PROCESS_ALL_ACCESS,False, (pid))
+                        #hwnd=win32api.OpenProcess(win32con.PROCESS_QUERY_LIMITED_INFORMATION,False, (pid))
+                        name_ = win32process.GetModuleFileNameEx(
+                            hwnd1, None)
+                         
+                        if name_ in savehook_new:
+                            arch='86' if win32process.IsWow64Process( hwnd1)  else '64'
+                            self.settin_ui.autostarthooksignal.emit(arch,pid,hwnd, name_,(savehook_new[name_]))
                     
-                    if name_ in savehook_new:
-                        self.settin_ui.autostarthooksignal.emit(arch,pid, name_,(savehook_new[name_]))
-                        return True
-        return False
+                except:
+                        print_exc()
+                
+                
     def autohookmonitorthread(self):
         while True:
-            if(self.onwindowloadautohook()):
-                #break
-                pass
+            self.onwindowloadautohook()
             time.sleep(0.5)
     def aa(self): 
         self.translation_ui =gui.translatorUI.QUnFrameWindow(self)   
@@ -445,7 +448,7 @@ class MAINUI(QObject) :
         threading.Thread(target=self.mainuiloadok.emit).start()
 #        self.mainuiloadok.emit() 
     def mainuiloadafter(self):   
-        threading.Thread(target=self.setontopthread).start()
+        
         #print(time.time()-t1)
         self.loadvnrshareddict()
         self.prepare()  
@@ -460,7 +463,7 @@ class MAINUI(QObject) :
         self.range_ui = rangeadjust(self)   
         self.hookselectdialog=gui.selecthook.hookselect(self )
         threading.Thread(target=self.autohookmonitorthread).start()   
-     
+        threading.Thread(target=self.setontopthread).start()
         
 if __name__ == "__main__" :
     QCoreApplication.setAttribute(Qt.AA_UseHighDpiPixmaps, True)

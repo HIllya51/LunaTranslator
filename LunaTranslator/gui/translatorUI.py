@@ -20,7 +20,7 @@ import gui.rangeselect
 import gui.transhist 
 
 from utils.subproc import subproc
-from utils.getpidlist import getwindowhwnd
+from utils.getpidlist import getwindowhwnd,mouseselectwindow,letfullscreen,recoverwindow
 from gui.settingpage4 import autosaveshow
 from gui.settingpage1 import settingsource,settingtextractor
 from gui.textbrowser import Textbrowser
@@ -237,7 +237,7 @@ class QUnFrameWindow(QWidget):
         self.settingprocess_signal.connect(self.settingprocess_function)
         self.clickRange_signal.connect(self.clickRange_funtion)
         self.showhide_signal.connect(self.showhide_function)
-        self.bindcropwindow_signal.connect(self.bindcropwindow_function)
+        self.bindcropwindow_signal.connect(functools.partial(mouseselectwindow, self.bindcropwindowcallback))
         self.grabwindowsignal.connect(self.grabwindow)
         self.quitf_signal.connect(self.quitf_funtion)
         self.fullsgame_signal.connect(self._fullsgame)
@@ -324,21 +324,15 @@ class QUnFrameWindow(QWidget):
         self.takusanbuttons("MinMaxButton",self.clickRange,4,"选取OCR范围")
         self.takusanbuttons("MinMaxButton",self.showhide,5,"显示/隐藏范围框",'showhidebutton')
          
-        self.takusanbuttons("MinMaxButton",self.bindcropwindow,5,"绑定截图窗口，避免遮挡（部分软件不支持）（点击自己取消）",'bindcropwindowbutton')
+        self.takusanbuttons("MinMaxButton",self.bindcropwindow_signal.emit,5,"绑定截图窗口，避免遮挡（部分软件不支持）（点击自己取消）",'bindcropwindowbutton')
          
         def _moveresizegame(self):
-            
-            if ('moveresizegame'   in dir(self)) : 
-                if self.moveresizegame :
-                    self.moveresizegame.close()
+             
             try: 
-                if (self.object.settin_ui.hookpid and globalconfig['sourcestatus']['textractor'])or (globalconfig['sourcestatus']['ocr'] and self.object.textsource.hwnd):
+                if (globalconfig['sourcestatus']['textractor'])or (globalconfig['sourcestatus']['ocr'] ):
                 
-                    if globalconfig['sourcestatus']['ocr']:
-                        hwnd= self.object.textsource.hwnd 
-                    elif globalconfig['sourcestatus']['textractor']:
-                        hwnd=getwindowhwnd(self.object.settin_ui.hookpid)
-                    self.moveresizegame=moveresizegame(self,hwnd)
+                    hwnd= self.object.textsource.hwnd 
+                    moveresizegame(self,hwnd)
             except:
                     print_exc()
         self.takusanbuttons("MinMaxButton",lambda :_moveresizegame(self),5,"调整游戏窗口(需要绑定ocr窗口，或选择hook进程)" ) 
@@ -462,123 +456,53 @@ class QUnFrameWindow(QWidget):
             self.refreshtoolicon()
         except:
             print_exc()
-    def _fullsgame(self):
-            
-            if ('moveresizegame'   in dir(self)) : 
-                if self.moveresizegame :
-                    self.moveresizegame.close()
+    def _fullsgame(self): 
             try: 
-                if (self.object.settin_ui.hookpid and globalconfig['sourcestatus']['textractor'])or (globalconfig['sourcestatus']['ocr'] and self.object.textsource.hwnd):
-                
-                    if globalconfig['sourcestatus']['ocr']:
-                        hwnd= self.object.textsource.hwnd 
-                    elif globalconfig['sourcestatus']['textractor']:
-                        hwnd=getwindowhwnd(self.object.settin_ui.hookpid)
-
-                    if globalconfig['usemagpie']: 
-                        
-                        if self.callmagpie  : 
-                            self.isletgamefullscreened=not self.isletgamefullscreened
-                            self.refreshtoolicon()
-                            if self.isletgamefullscreened: 
-                                win32gui.SetForegroundWindow(hwnd )   
-                                self.multiprocesshwnd.put([hwnd,globalconfig['magpiescalemethod'],globalconfig['magpieflags'],globalconfig['magpiecapturemethod']])  
-                                def __makerangetop():
-                                    for i in range(3):
-                                        time.sleep(0.3)
-                                        try:    
-                                            win32gui.SetWindowPos(int(self.object.range_ui.winId()), win32con.HWND_TOPMOST, 0, 0, 0, 0,win32con. SWP_NOACTIVATE | win32con. SWP_NOSIZE | win32con.SWP_NOMOVE)  
-                                        except:
-                                            pass
-                                if self.showhidestate:
-                                    threading.Thread(target=__makerangetop).start() 
-                            else:
-                                win32gui.SetForegroundWindow(self.winId() )   
-                    else:
-
-                        self.isletgamefullscreened=not self.isletgamefullscreened
-                        self.refreshtoolicon()
-                        if self.isletgamefullscreened:
-                            self.wpc=win32gui. GetWindowPlacement( hwnd )
-                            self.HWNDStyle = win32gui.GetWindowLong( hwnd, win32con.GWL_STYLE )
-                            self.HWNDStyleEx = win32gui.GetWindowLong( hwnd, win32con.GWL_EXSTYLE  )
-                            NewHWNDStyle=self.HWNDStyle
-                            NewHWNDStyle &= ~win32con.WS_BORDER;
-                            NewHWNDStyle &= ~win32con.WS_DLGFRAME;
-                            NewHWNDStyle &= ~win32con.WS_THICKFRAME;
-                            NewHWNDStyleEx=self.HWNDStyleEx
-                            NewHWNDStyleEx &= ~win32con.WS_EX_WINDOWEDGE;
-                            win32gui.SetWindowLong( hwnd, win32con.GWL_STYLE, NewHWNDStyle | win32con.WS_POPUP );
-                            win32gui.SetWindowLong( hwnd, win32con.GWL_EXSTYLE, NewHWNDStyleEx | win32con.WS_EX_TOPMOST )
-                            win32gui.ShowWindow(hwnd,win32con.SW_SHOWMAXIMIZED )
+                if (globalconfig['sourcestatus']['textractor'])or (globalconfig['sourcestatus']['ocr']): 
+                    self.isletgamefullscreened=not self.isletgamefullscreened
+                    self.refreshtoolicon()
+                    hwnd= self.object.textsource.hwnd 
+                    if globalconfig['usemagpie']:  
+                        if self.isletgamefullscreened: 
+                            win32gui.SetForegroundWindow(hwnd )   
+                            self.multiprocesshwnd.put([hwnd,globalconfig['magpiescalemethod'],globalconfig['magpieflags'],globalconfig['magpiecapturemethod']])   
+                            if self.showhidestate:
+                                self.object.range_ui.letontopisignal.emit() 
                         else:
-                            win32gui.SetWindowLong( hwnd, win32con.GWL_STYLE, self.HWNDStyle );
-                            win32gui.SetWindowLong( hwnd, win32con.GWL_EXSTYLE, self.HWNDStyleEx );
-                            win32gui.ShowWindow( hwnd, win32con.SW_SHOWNORMAL );
-                            win32gui.SetWindowPlacement( hwnd, self.wpc );
+                            win32gui.SetForegroundWindow(self.winId() )   
+                    else: 
+                        if self.isletgamefullscreened: 
+                            self.savewindowstatus=letfullscreen(hwnd)
+                        else:
+                            recoverwindow(hwnd,self.savewindowstatus)
                     
             except:
                     print_exc()
     def changemousetransparentstate(self):
          
+        
+        
+        self.translate_text.setStyleSheet("border-width:0;\
+                                                                border-style:outset;\
+                                                                border-top:0px solid #e8f3f9;\
+                                                                color:white;\
+                                                            background-color: rgba(%s, %s, %s, %s)"
+                                        %(int(globalconfig['backcolor'][1:3],16),int(globalconfig['backcolor'][3:5],16),int(globalconfig['backcolor'][5:7],16),globalconfig['transparent']*self.mousetransparent/100))
         self.mousetransparent= not self.mousetransparent
-        if self.mousetransparent:
-            # self.masklabel.setAttribute(Qt.WA_TransparentForMouseEvents,  self.mousetransparent) 
-            # self.translate_text.setAttribute(Qt.WA_TransparentForMouseEvents,  self.mousetransparent)  
-            self.translate_text.setStyleSheet("border-width:0;\
-                                                                    border-style:outset;\
-                                                                    border-top:0px solid #e8f3f9;\
-                                                                    color:white;\
-                                                               \
-                                                                    background-color: rgba(%s, %s, %s, %s)"
-                                            %(int(globalconfig['backcolor'][1:3],16),int(globalconfig['backcolor'][3:5],16),int(globalconfig['backcolor'][5:7],16),0))
-           
-        else:
-            self.object.translation_ui.translate_text.setStyleSheet("border-width:0;\
-                                                                 border-style:outset;\
-                                                                 border-top:0px solid #e8f3f9;\
-                                                                 color:white;\
-                                                                background-color: rgba(%s, %s, %s, %s)"
-                                           %(int(globalconfig['backcolor'][1:3],16),int(globalconfig['backcolor'][3:5],16),int(globalconfig['backcolor'][5:7],16),globalconfig['transparent']/100))
         self.refreshtoolicon()
     def showhide_function(self):
         self.showhide()
-    def showhide(self):
-        
+    def showhide(self): 
         self.showhidestate=not self.showhidestate 
         self.refreshtoolicon()
-        if self.showhidestate:
-            self.object.range_ui.show()
-        else:
-            self.object.range_ui.hide()
-    def bindcropwindow_function(self):
-        self.bindcropwindow()
-    def bindcropwindow(self):
-        import PyHook3
-        hm = PyHook3.HookManager()
-        def OnMouseEvent(event): 
+        self.object.range_ui.setVisible(self.showhidestate) 
+    def bindcropwindowcallback(self,pid,hwnd,name_): 
             
-            p=win32api.GetCursorPos()
-
-            hwnd_=win32gui.WindowFromPoint(p)
-
-            
-            
-            pid=win32process.GetWindowThreadProcessId(hwnd_) [1]
-            #print(pid,selfpid)
-            if pid==self.selfpid  :
-                self.object.textsource.hwnd= None
-                self.isbindedwindow=True 
-            #for pid in pids:
-            else:
-                self.object.textsource.hwnd= (hwnd_)  
-                self.isbindedwindow=False
+            self.object.textsource.hwnd= hwnd if pid!=self.selfpid else None
+            self.object.textsource.pid= pid if pid!=self.selfpid else None
+            self.isbindedwindow=(pid!=self.selfpid)
             self.refreshtoolicon() 
-            
-            hm.UnhookMouse()   
-            return True
-        hm.MouseAllButtonsDown = OnMouseEvent
-        hm.HookMouse()
+             
     def showsavegame_function(self):
         autosaveshow(None)
     def settingprocess_function(self):
@@ -622,14 +546,9 @@ class QUnFrameWindow(QWidget):
         self.object.screen_shot_ui.show()
         
         self.show()
-    def langdu(self):
-        #print(self.original)
-        
+    def langdu(self): 
         if self.object.reader:
-            self.object.reader.read(self.original )
-        else:
-            pass
-    # 按下翻译键
+            self.object.reader.read(self.original )  
     def startTranslater(self) :
         if hasattr(self.object,'textsource') and  self.object.textsource :
             threading.Thread(target=self.object.textsource.runonce).start()
@@ -680,6 +599,7 @@ class QUnFrameWindow(QWidget):
     def enterEvent(self, QEvent) : 
         
         self.ison=True
+ 
         for button in self.buttons[-2:] +self.showbuttons:
             button.show()  
         self._TitleLabel.setStyleSheet("border-width:0;\
@@ -702,13 +622,7 @@ class QUnFrameWindow(QWidget):
         # 自定义窗口调整大小事件
         self._TitleLabel.setFixedWidth(self.width())  
 
-        if self._move_drag ==False:
-            # self._right_rect = [QPoint(x, y) for x in range(self.width() - self._padding, self.width() + 1)
-            #                     for y in range(1, self.height() - self._padding)]
-            # self._bottom_rect = [QPoint(x, y) for x in range(1, self.width() - self._padding)
-            #                     for y in range(self.height() - self._padding, self.height() + 1)]
-            # self._corner_rect = [QPoint(x, y) for x in range(self.width() - self._padding, self.width() + 1)
-            #                     for y in range(self.height() - self._padding, self.height() + 1)]
+        if self._move_drag ==False: 
             self._right_rect = [self.width() - self._padding, self.width() + 1 ,30*self.rate, self.height() - self._padding]
             self._left_rect = [-1, self._padding,30*self.rate, self.height() - self._padding]
             self._bottom_rect = [self._padding, self.width() - self._padding,self.height() - self._padding, self.height() + 1]
@@ -798,6 +712,8 @@ class QUnFrameWindow(QWidget):
     def showhidetoolbuttons(self):
         showed=0
         self.showbuttons=[]
+        
+        
         for i,button in enumerate(self.buttons[:-2]):
             
             if i in [12,13,14] and globalconfig['sourcestatus']['ocr'] ==False:
@@ -867,19 +783,7 @@ class QUnFrameWindow(QWidget):
         self.object.hookselectdialog.realclose=True 
         
         self.searchwordW.close()
-        self.object.hookselectdialog.close()
-        #print(5)
-        # if 'textsource' in dir(self.object) and self.object.textsource and self.object.textsource.ending==False:
-        #     self.object.textsource.end()
-        #     if 'p' in dir(self.object.textsource):
-        #         self.object.textsource.p.kill()
-        #         self.object.textsource.p.terminate()
-        #         self.object.textsource.p.waitForFinished () 
-          
-        # import ctypes 
-        # for hookID in self.object.settin_ui.hooks:
-        #     ctypes.windll.user32.UnhookWinEvent(hookID)
-        #print(aa)  
+        self.object.hookselectdialog.close() 
         if self.object.textsource:
             self.object.textsource.end()
         

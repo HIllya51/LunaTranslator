@@ -1,17 +1,26 @@
 from PyQt5.QtWidgets import QWidget,QDesktopWidget,QMainWindow,QLabel,QPushButton,QStatusBar,QDialog
 from PyQt5.QtGui import  QBitmap,QPainter,QPen,QBrush,QFont
-from PyQt5.QtCore import Qt,QPoint,QRect,QEvent
+from PyQt5.QtCore import Qt,QPoint,QRect,QEvent,pyqtSignal
 import re,threading,time
  
 from utils.config import globalconfig
  
 
 class rangeadjust(QMainWindow) :
-
+    letontopisignal=pyqtSignal()
+    def __makerangetop(self):
+        for i in range(3):
+            time.sleep(0.3)
+            try:    
+                win32gui.SetWindowPos(int(self.winId()), win32con.HWND_TOPMOST, 0, 0, 0, 0,win32con. SWP_NOACTIVATE | win32con. SWP_NOSIZE | win32con.SWP_NOMOVE)  
+            except:
+                pass
+    def ontopfun(self):
+        threading.Thread(target=self.__makerangetop).start() 
     def __init__(self, object):
 
         super(rangeadjust, self).__init__()
-
+        self.letontopisignal.connect(self.ontopfun)
         self.object = object  
           
         self.setWindowFlags(Qt.WindowStaysOnTopHint | Qt.FramelessWindowHint | Qt.Tool)

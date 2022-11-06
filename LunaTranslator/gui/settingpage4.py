@@ -173,18 +173,18 @@ def setTab4(self) :
         self.autostarthooksignal.connect(functools.partial(autostarthookfunction,self))
         
 
-def autostarthookfunction(self,arch,pid,pexe,hookcode):
+def autostarthookfunction(self,arch,pid,hwnd,pexe,hookcode):
           
-         
+        print(hwnd)
         self.hookpid=pid
         from textsource.textractor import textractor
         self.object.hookselectdialog.changeprocessclearsignal.emit()
         if self.object.savetextractor:
                 self.object.textsource=self.object.savetextractor
-                self.object.textsource.reset(self.object,self.object.textgetmethod,self.object.hookselectdialog,pid,pexe,arch,True,hookcode)
+                self.object.textsource.reset(self.object,self.object.textgetmethod,self.object.hookselectdialog,pid,hwnd,pexe,arch,True,hookcode)
 
         else:
-                self.object.textsource=textractor(self.object,self.object.textgetmethod,self.object.hookselectdialog,pid,pexe,arch,True,hookcode) 
+                self.object.textsource=textractor(self.object,self.object.textgetmethod,self.object.hookselectdialog,pid,hwnd,pexe,arch,True,hookcode) 
                 self.object.savetextractor=self.object.textsource
 
 def minmaxmoveobservefunc2(self):
