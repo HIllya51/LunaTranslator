@@ -14,7 +14,7 @@ import os
 import win32,win32event
 from queue import Queue
 from utils.magpie import  callmagpie1
-
+ 
 while True:
     m_hWnd=win32gui.GetForegroundWindow()
     pid=win32process.GetWindowThreadProcessId(m_hWnd) [1]

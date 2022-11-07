@@ -25,7 +25,7 @@ defaultglobalconfig = {'position': [432, 613], 'fixedheight': False, 'width': 76
     'SimulateExclusiveFullscreen':False,
     'DebugWarningsAreErrors':False,
     'VSync':True,
-  #  'ShowFPS':False,
+    'ShowFPS':False,
     'CursorZoomFactor':1,
     'CursorInterpolationMode':0,
     'AdapterIdx':-1,

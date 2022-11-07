@@ -1,7 +1,7 @@
 {
     "position": [
-        507,
-        455
+        495,
+        344
     ],
     "fixedheight": false,
     "width": 1123,
@@ -516,7 +516,8 @@
         "CursorZoomFactor": 1,
         "CursorInterpolationMode": 0,
         "AdapterIdx": -1,
-        "MultiMonitorUsage": 0
+        "MultiMonitorUsage": 0,
+        "ShowFPS": true
     },
     "usemuteprocessbutton": true,
     "buttonuse": {
@@ -526,7 +527,7 @@
         "showraw": false,
         "langdu": false,
         "copy": false,
-        "history": false,
+        "history": true,
         "gamepad": true
     },
     "magpiepath": "C:/dataH/Magpie_v0.9.1"
