@@ -168,6 +168,7 @@ class QUnFrameWindow(QWidget):
         self.hide()
     def show_and_enableautohide(self):
         self.hideshownotauto=True
+        win32gui.SetForegroundWindow(self.winId() )   
         self.show()
     def startprocessfunction(self,path,stdoutcallback):
         if 'p' in dir(self):
