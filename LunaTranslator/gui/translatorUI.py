@@ -449,18 +449,20 @@ class QUnFrameWindow(QWidget):
         except:
             print_exc()
     def _fullsgame(self): 
+        
             try:  
                     self.isletgamefullscreened=not self.isletgamefullscreened
                     self.refreshtoolicon()
                     hwnd= self.object.textsource.hwnd 
                     if globalconfig['usemagpie']:  
-                        if self.isletgamefullscreened: 
+                        if True:#self.isletgamefullscreened:  
                             win32gui.SetForegroundWindow(hwnd )   
                             self.multiprocesshwnd.put([globalconfig['magpiepath'],hwnd,globalconfig['magpiescalemethod'],globalconfig['magpieflags'],globalconfig['magpiecapturemethod']])   
                             if self.showhidestate:
                                 self.object.range_ui.letontopisignal.emit() 
                         else:
-                            win32gui.SetForegroundWindow(self.winId() )   
+                            self.multiprocesshwnd.put([])
+                            #win32gui.SetForegroundWindow(self.winId() )   
                     else: 
                         if self.isletgamefullscreened: 
                             self.savewindowstatus=letfullscreen(hwnd)

@@ -1,7 +1,7 @@
 {
     "position": [
-        495,
-        344
+        393,
+        486
     ],
     "fixedheight": false,
     "width": 1123,
@@ -440,22 +440,22 @@
                 "key2": -1
             },
             "_20": {
-                "use": false,
+                "use": true,
                 "name": "全屏/恢复游戏窗口",
-                "key1": -1,
-                "key2": -1
+                "key1": 2,
+                "key2": 1
             },
             "_21": {
                 "use": false,
                 "name": "前景窗口截屏",
-                "key1": -1,
-                "key2": -1
+                "key1": 2,
+                "key2": 2
             },
             "_22": {
-                "use": true,
+                "use": false,
                 "name": "游戏静音",
-                "key1": -1,
-                "key2": -1
+                "key1": 2,
+                "key2": 2
             }
         }
     },

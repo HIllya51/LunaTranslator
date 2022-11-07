@@ -41,11 +41,14 @@ def callmagpie(  queue):# 0x2000|\0x2|\0x200):
           "ShowFPS":0x2000,
     }
     FlagMasks=Dict2Obj(FlagMasks)
+    savethread=None
     def _t():
         
          
         while True:
-            cwd,hwnd,ScaleMode,flags,captureMode=queue.get() 
+            _=queue.get()
+             
+            cwd,hwnd,ScaleMode,flags,captureMode=_
             settings=Dict2Obj(flags)
             flags=settings.NoCursor *FlagMasks.NoCursor   |\
                           settings.AdjustCursorSpeed *FlagMasks.AdjustCursorSpeed   |\
@@ -63,6 +66,7 @@ def callmagpie(  queue):# 0x2000|\0x2|\0x200):
                            settings.ShowFPS *FlagMasks.ShowFPS  
             os.chdir(cwd) 
             
+            
             dll=ctypes.CDLL('./MagpieRT.dll')
             MagpieRT_Initialize=dll.Initialize
             MagpieRT_Initialize.argtypes=[ c_uint32,  c_char_p,c_int32,c_int32]
@@ -72,8 +76,7 @@ def callmagpie(  queue):# 0x2000|\0x2|\0x200):
             with open('ScaleModels.json','r')as ff:
                 effectsJson= json.load(ff)   
             MagpieRT_Initialize(6,c_char_p('Runtime.log'.encode('utf8')),100000,1)
-            win32gui.SetForegroundWindow(hwnd )   
-            
+             
             threading.Thread(target=MagpieRT_Run,args=(hwnd,c_char_p(json.dumps(effectsJson[ScaleMode]['effects']).encode('utf8')),flags,captureMode,settings.CursorZoomFactor,settings.CursorInterpolationMode,settings.AdapterIdx,settings.MultiMonitorUsage,0,0,0,0)).start()
             #MagpieRT_Run(hwnd ,c_char_p(json.dumps(effectsJson[ScaleMode]['effects']).encode('utf8')),flags,captureMode,settings.CursorZoomFactor,settings.CursorInterpolationMode,settings.AdapterIdx,settings.MultiMonitorUsage,0,0,0,0)
             
