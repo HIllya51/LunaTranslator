@@ -441,11 +441,11 @@ class QUnFrameWindow(QWidget):
     def muteprocessfuntion(self): 
         try:
             pid= self.object.textsource.pid 
-            subproc(f'./files/muteprocess.exe {pid}  {int(self.processismuteed)}')
             self.processismuteed=not self.processismuteed
             
             self.refreshtoolicon()
             
+            subproc(f'./files/muteprocess.exe {pid}  {int(self.processismuteed)}')
         except:
             print_exc()
     def _fullsgame(self): 
