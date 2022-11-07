@@ -48,8 +48,7 @@ defaultglobalconfig = {'position': [432, 613], 'fixedheight': False, 'width': 76
  'shadowcolor':"blue",
  "ocr_hori_extend":True,
  'shadowforce':5,
- "showcixing_touming":30,
- "showcixing":False,
+ "showcixing_touming":30, 
     "cixingcolor":{
         "形容詞":"aliceblue",
         "形状詞":"antiquewhite",
