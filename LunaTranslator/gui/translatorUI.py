@@ -185,7 +185,7 @@ class QUnFrameWindow(QWidget):
     def refreshtoolicon(self):
         icon=[
             qtawesome.icon("fa.rotate-right" ,color=globalconfig['buttoncolor']),
-            qtawesome.icon("fa.forward" ,color="#FF69B4" if globalconfig['autorun'] else globalconfig['buttoncolor']),
+            qtawesome.icon("fa.forward" if globalconfig['autorun'] else 'fa.play' ,color="#FF69B4" if globalconfig['autorun'] else globalconfig['buttoncolor']),
             qtawesome.icon("fa.gear",color=globalconfig['buttoncolor'] ),
             qtawesome.icon("fa.copy" ,color=globalconfig['buttoncolor']),
             qtawesome.icon("fa.eye"   if globalconfig['isshowrawtext'] else "fa.eye-slash" ,color="#FF69B4" if globalconfig['isshowrawtext'] else globalconfig['buttoncolor']),
