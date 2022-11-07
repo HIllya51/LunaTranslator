@@ -293,22 +293,22 @@ class Textbrowser():
                     if len(guesswidth)>0:
                         if globalconfig['usesearchword']:
                             self.searchmasklabels_clicked[labeli].setGeometry(tl1.x(),tl1.y() ,sum(guesswidth)//len(guesswidth),tl4.y()-tl1.y()) 
-                        if globalconfig['show_fenci'] or globalconfig['mecab']['use']:
+                        if globalconfig['show_fenci']  :
                             self.searchmasklabels[labeli].setGeometry(tl1.x(),tl1.y() ,sum(guesswidth)//len(guesswidth),tl4.y()-tl1.y()) 
                 else:
                     guesswidth.append(tl2.x()-tl1.x())
                     if globalconfig['usesearchword']:
                         self.searchmasklabels_clicked[labeli].setGeometry(tl1.x(),tl1.y() ,tl2.x()-tl1.x(),tl2.y()-tl1.y())
-                    if globalconfig['show_fenci'] or globalconfig['mecab']['use']:
+                    if globalconfig['show_fenci']  :
                         self.searchmasklabels[labeli].setGeometry(tl1.x(),tl1.y() ,tl2.x()-tl1.x(),tl2.y()-tl1.y())
-                if globalconfig['show_fenci'] or globalconfig['mecab']['use']:
+                if globalconfig['show_fenci']  :
                     self.searchmasklabels[labeli].setStyleSheet(f"background-color: rgba{color};"  )
                 tl1=tl3 
                 tl4=tl2
                 if word['orig'] not in ['\n','\r'] :
                     if globalconfig['usesearchword']:
                         self.searchmasklabels_clicked[labeli].show()
-                    if globalconfig['show_fenci'] or globalconfig['mecab']['use']:
+                    if globalconfig['show_fenci']  :
                         self.searchmasklabels[labeli].show()
                 if callback:
                     self.searchmasklabels_clicked[labeli].callback=functools.partial(callback,(word['orig'],raw,idx-1))

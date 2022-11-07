@@ -124,7 +124,7 @@ class QUnFrameWindow(QWidget):
                 #self.translate_text.addtag(res[0]) 
             self.translate_text.showyinyingtext(color,res[1]  )
             self.translate_text.textbrowser.hide()
-            if (globalconfig['usesearchword'] or globalconfig['show_fenci'] or  globalconfig['mecab']['use']) and res[0]: 
+            if (globalconfig['usesearchword'] or globalconfig['show_fenci']  ) and res[0]: 
                 self.translate_text.addsearchwordmask(res[0],res[1],self.showsearchword,0  )
             return 
         self.translate_text.textbrowser.show()
@@ -135,7 +135,7 @@ class QUnFrameWindow(QWidget):
             self.translate_text.append(' ')
             self.translate_text.append(res[1])  
             self.translate_text.addtag(res[0]) 
-        if (globalconfig['usesearchword'] or globalconfig['show_fenci'] or globalconfig['mecab']['use']) and res[0]:
+        if (globalconfig['usesearchword'] or globalconfig['show_fenci']  ) and res[0]:
             self.translate_text.addsearchwordmask(res[0],res[1],self.showsearchword,0 if type_==1 else 2) 
     def showsearchword(self,word):   
         self.searchwordW.showNormal()
