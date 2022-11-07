@@ -1,7 +1,7 @@
 {
     "position": [
-        524,
-        398
+        406,
+        599
     ],
     "fixedheight": false,
     "width": 1123,
@@ -496,7 +496,7 @@
     "usefullscreenbutton": true,
     "useresizebutton": true,
     "buttoncolor": "white",
-    "magpiescalemethod": 0,
+    "magpiescalemethod": 1,
     "magpiecapturemethod": 0,
     "ocrautobindwindow": true,
     "magpieflags": {
@@ -528,5 +528,6 @@
         "copy": false,
         "history": false,
         "gamepad": true
-    }
+    },
+    "magpiepath": "C:/dataH/Magpie_v0.9.1"
 }

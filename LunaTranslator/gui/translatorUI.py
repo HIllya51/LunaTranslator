@@ -341,7 +341,7 @@ class QUnFrameWindow(QWidget):
                     break
                 time.sleep(1)
             self.multiprocesshwnd=multiprocessing.Queue()
-            self.callmagpie=mutiproc(callmagpie,(r'./files/Magpie_v0.9.1' ,self.multiprocesshwnd))
+            self.callmagpie=mutiproc(callmagpie,( globalconfig['magpiepath'],self.multiprocesshwnd))
             self.callmagpie.start() 
         threading.Thread(target=__initmulti,args=(self,)).start() 
         

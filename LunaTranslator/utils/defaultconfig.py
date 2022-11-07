@@ -10,6 +10,7 @@ defaultglobalconfig = {'position': [432, 613], 'fixedheight': False, 'width': 76
  'useproxy':False,
  'usemagpie':True, 
  'ocrautobindwindow':True,
+ 'magpiepath':'./files/Magpie_v0.9.1',
  'magpieflags':{
     'NoCursor':False,
     'AdjustCursorSpeed':True,

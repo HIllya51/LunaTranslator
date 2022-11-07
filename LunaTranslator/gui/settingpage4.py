@@ -156,11 +156,14 @@ def minmaxmoveobservefunc2(self):
                         
                         if globalconfig['focusfollow']:
                              if self.object.textsource.pid:
-                                if pid not in [self.object.textsource.pid,self_pid]:
-                                        self.object.translation_ui.hookfollowsignal.emit(4,(0,0))
-                                else:
+                                if pid==self_pid:
+                                        pass
+                                elif pid==self.object.textsource.pid: 
                                         if self.object.translation_ui.isHidden():
                                                 self.object.translation_ui.hookfollowsignal.emit(3,(0,0)) 
+                                        
+                                else:
+                                        self.object.translation_ui.hookfollowsignal.emit(4,(0,0))
                 except:
                         #print_exc()
                         pass
