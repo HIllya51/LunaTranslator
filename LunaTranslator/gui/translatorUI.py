@@ -335,16 +335,11 @@ class QUnFrameWindow(QWidget):
             except:
                     print_exc()
         self.takusanbuttons("MinMaxButton",lambda :_moveresizegame(self),5,"调整游戏窗口(需要绑定ocr窗口，或选择hook进程)",'resize' ) 
-
-        def __initmulti(self):
-            while True:
-                if globalconfig['usemagpie']:
-                    break
-                time.sleep(1)
-            self.multiprocesshwnd=multiprocessing.Queue()
-            self.callmagpie=mutiproc(callmagpie,( self.multiprocesshwnd,))
-            self.callmagpie.start() 
-        threading.Thread(target=__initmulti,args=(self,)).start() 
+ 
+        self.multiprocesshwnd=multiprocessing.Queue()
+        self.callmagpie=mutiproc(callmagpie,( self.multiprocesshwnd,))
+        self.callmagpie.start()  
+         
         
         self.takusanbuttons("MinMaxButton",self._fullsgame,5,"全屏/恢复游戏窗口(需要绑定ocr窗口，或选择hook进程)" ,"fullscreen") 
         
