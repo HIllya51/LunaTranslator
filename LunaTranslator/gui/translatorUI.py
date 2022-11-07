@@ -458,7 +458,7 @@ class QUnFrameWindow(QWidget):
                     if globalconfig['usemagpie']:  
                         if True:#self.isletgamefullscreened:  
                             win32gui.SetForegroundWindow(hwnd )   
-                            self.multiprocesshwnd.put([globalconfig['magpiepath'],hwnd,globalconfig['magpiescalemethod'],globalconfig['magpieflags'],globalconfig['magpiecapturemethod']])   
+                            self.multiprocesshwnd.put([os.path.abspath(globalconfig['magpiepath']),hwnd,globalconfig['magpiescalemethod'],globalconfig['magpieflags'],globalconfig['magpiecapturemethod']])   
                             if self.showhidestate:
                                 self.object.range_ui.letontopisignal.emit() 
                         else:
