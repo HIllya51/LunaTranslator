@@ -19,6 +19,10 @@ while True:
     m_hWnd=win32gui.GetForegroundWindow()
     pid=win32process.GetWindowThreadProcessId(m_hWnd) [1]
     title = win32gui.GetWindowText(m_hWnd)
+    j=win32api.OpenProcess(win32con.PROCESS_ALL_ACCESS,False, (pid))
+    name_ = win32process.GetModuleFileNameEx(
+                            j, None)
     print(m_hWnd)
-    print(win32gui.GetClassName(m_hWnd))  
+    print(win32gui.GetClassName(m_hWnd))
+    print(name_)  
     time.sleep(1)

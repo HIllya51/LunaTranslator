@@ -21,7 +21,7 @@ class Dict2Obj(dict):
             if isinstance(value,dict):
                 value = Dict2Obj(value)
             return value 
-def callmagpie( cwd,queue):# 0x2000|\0x2|\0x200):  
+def callmagpie(  queue):# 0x2000|\0x2|\0x200):  
     app1=QApplication(sys.argv)
     QCoreApplication.setAttribute(Qt.AA_UseHighDpiPixmaps, True)  
     FlagMasks={ 
@@ -42,19 +42,10 @@ def callmagpie( cwd,queue):# 0x2000|\0x2|\0x200):
     }
     FlagMasks=Dict2Obj(FlagMasks)
     def _t():
-        os.chdir(cwd) 
-        dll=ctypes.CDLL('./MagpieRT.dll')
-        MagpieRT_Initialize=dll.Initialize
-        MagpieRT_Initialize.argtypes=[ c_uint32,  c_char_p,c_int32,c_int32]
-        MagpieRT_Run=dll.Run
-        MagpieRT_Run.argtypes=[ c_uint32,c_char_p,c_uint32,c_uint32,c_float,c_uint32,c_int32,c_uint32,c_uint32,c_uint32,c_uint32,c_uint32]
-        MagpieRT_Run.restype=c_char_p  
-        MagpieRT_Initialize(6,c_char_p('Runtime.log'.encode('utf8')),100000,1)
-        with open('ScaleModels.json','r')as ff:
-            effectsJson= json.load(ff)   
+        
          
         while True:
-            hwnd,ScaleMode,flags,captureMode=queue.get() 
+            cwd,hwnd,ScaleMode,flags,captureMode=queue.get() 
             settings=Dict2Obj(flags)
             flags=settings.NoCursor *FlagMasks.NoCursor   |\
                           settings.AdjustCursorSpeed *FlagMasks.AdjustCursorSpeed   |\
@@ -70,7 +61,17 @@ def callmagpie( cwd,queue):# 0x2000|\0x2|\0x200):
                           settings.DebugWarningsAreErrors *FlagMasks.WarningsAreErrors   |\
                           (1-settings.VSync)*FlagMasks.DisableVSync #| \
                            #settings.ShowFPS *FlagMasks.ShowFPS   #不知道为啥 就他不管用。。。但是不用多进程却管用
-             
+            os.chdir(cwd) 
+            
+            dll=ctypes.CDLL('./MagpieRT.dll')
+            MagpieRT_Initialize=dll.Initialize
+            MagpieRT_Initialize.argtypes=[ c_uint32,  c_char_p,c_int32,c_int32]
+            MagpieRT_Run=dll.Run
+            MagpieRT_Run.argtypes=[ c_uint32,c_char_p,c_uint32,c_uint32,c_float,c_uint32,c_int32,c_uint32,c_uint32,c_uint32,c_uint32,c_uint32]
+            MagpieRT_Run.restype=c_char_p   
+            with open('ScaleModels.json','r')as ff:
+                effectsJson= json.load(ff)   
+            MagpieRT_Initialize(6,c_char_p('Runtime.log'.encode('utf8')),100000,1)
             win32gui.SetForegroundWindow(hwnd )   
             MagpieRT_Run(hwnd ,c_char_p(json.dumps(effectsJson[ScaleMode]['effects']).encode('utf8')),flags,captureMode,settings.CursorZoomFactor,settings.CursorInterpolationMode,settings.AdapterIdx,settings.MultiMonitorUsage,0,0,0,0)
          

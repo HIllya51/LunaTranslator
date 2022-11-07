@@ -342,7 +342,7 @@ class QUnFrameWindow(QWidget):
                     break
                 time.sleep(1)
             self.multiprocesshwnd=multiprocessing.Queue()
-            self.callmagpie=mutiproc(callmagpie,( globalconfig['magpiepath'],self.multiprocesshwnd))
+            self.callmagpie=mutiproc(callmagpie,( self.multiprocesshwnd,))
             self.callmagpie.start() 
         threading.Thread(target=__initmulti,args=(self,)).start() 
         
@@ -456,7 +456,7 @@ class QUnFrameWindow(QWidget):
                     if globalconfig['usemagpie']:  
                         if self.isletgamefullscreened: 
                             win32gui.SetForegroundWindow(hwnd )   
-                            self.multiprocesshwnd.put([hwnd,globalconfig['magpiescalemethod'],globalconfig['magpieflags'],globalconfig['magpiecapturemethod']])   
+                            self.multiprocesshwnd.put([globalconfig['magpiepath'],hwnd,globalconfig['magpiescalemethod'],globalconfig['magpieflags'],globalconfig['magpiecapturemethod']])   
                             if self.showhidestate:
                                 self.object.range_ui.letontopisignal.emit() 
                         else:

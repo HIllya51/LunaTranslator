@@ -69,7 +69,7 @@ def setTabThree(self) :
                 [(QLabel('显示调整游戏窗口按钮'),3),self.getsimpleswitch(globalconfig['buttonuse'],'resize' ,callback=functools.partial(_usexxxbutton,'resize')),'',(QLabel('显示全屏游戏窗口按钮'),3),self.getsimpleswitch(globalconfig['buttonuse'],'fullscreen' ,callback=functools.partial(_usexxxbutton,'fullscreen')),'',(QLabel('显示游戏静音按钮'),3),self.getsimpleswitch(globalconfig['buttonuse'],'muteprocess' ,callback=functools.partial(_usexxxbutton,'muteprocess'))],
                 [''],
                 [(QLabel('使用Magpie全屏'),3),self.getsimpleswitch(globalconfig,'usemagpie' ),],
-                [(QLabel("Magpie路径(重启生效)"),3),(self.getcolorbutton(globalconfig,'',callback=lambda x: getsomepath1(self,'Magpie路径',globalconfig,'magpiepath','Magpie路径',isdir=True),icon='fa.gear',constcolor="#FF69B4"),1)],
+                [(QLabel("Magpie路径"),3),(self.getcolorbutton(globalconfig,'',callback=lambda x: getsomepath1(self,'Magpie路径',globalconfig,'magpiepath','Magpie路径',isdir=True),icon='fa.gear',constcolor="#FF69B4"),1)],
                 [(QLabel('Magpie算法'),3),(self.getsimplecombobox(magpiemethod,globalconfig,'magpiescalemethod'),3)],
                 [(QLabel('Magpie捕获模式'),3),(self.getsimplecombobox(['Graphics Capture','Desktop Duplication','GDI','DwmSharedSurface'],globalconfig,'magpiecapturemethod'),3)],
                 [''],
