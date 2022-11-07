@@ -1,7 +1,7 @@
 {
     "position": [
-        576,
-        757
+        513,
+        338
     ],
     "fixedheight": false,
     "width": 1123,
@@ -14,7 +14,7 @@
     "miaobiancolor": "#ffffff",
     "zitiyangshi": 3,
     "iskongxin": true,
-    "isshowrawtext": true,
+    "isshowrawtext": false,
     "rawtextcolor": "#000000",
     "backcolor": "#000000",
     "isshowhira": false,
@@ -496,7 +496,7 @@
     "usefullscreenbutton": true,
     "useresizebutton": true,
     "buttoncolor": "white",
-    "magpiescalemethod": 1,
+    "magpiescalemethod": 0,
     "magpiecapturemethod": 0,
     "ocrautobindwindow": true,
     "magpieflags": {
@@ -524,11 +524,11 @@
         "fullscreen": true,
         "resize": true,
         "muteprocess": true,
-        "showraw": false,
+        "showraw": true,
         "langdu": false,
         "copy": false,
         "history": true,
         "gamepad": true
     },
-    "magpiepath": "C:/dataH/Magpie_v0.9.1"
+    "magpiepath": "C:/Users/11737/Documents/GitHub/LunaTranslator/LunaTranslator/files/Magpie_v0.9.1"
 }

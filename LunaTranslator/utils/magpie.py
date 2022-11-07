@@ -62,8 +62,8 @@ def callmagpie(  queue):# 0x2000|\0x2|\0x200):
                           settings.DebugDisableEffectCache *FlagMasks.DisableEffectCache   |\
                           settings.SimulateExclusiveFullscreen *FlagMasks.SimulateExclusiveFullscreen   |\
                           settings.DebugWarningsAreErrors *FlagMasks.WarningsAreErrors   |\
-                          (1-settings.VSync)*FlagMasks.DisableVSync  | \
-                           settings.ShowFPS *FlagMasks.ShowFPS  
+                          (1-settings.VSync)*FlagMasks.DisableVSync  #| \
+                         #  settings.ShowFPS *FlagMasks.ShowFPS  
             os.chdir(cwd) 
             
             

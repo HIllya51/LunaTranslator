@@ -124,7 +124,7 @@ class QUnFrameWindow(QWidget):
                 #self.translate_text.addtag(res[0]) 
             self.translate_text.showyinyingtext(color,res[1]  )
             self.translate_text.textbrowser.hide()
-            if (globalconfig['usesearchword'] or globalconfig['show_fenci'] or globalconfig['showcixing']) and res[0]: 
+            if (globalconfig['usesearchword'] or globalconfig['show_fenci'] or  globalconfig['mecab']['use']) and res[0]: 
                 self.translate_text.addsearchwordmask(res[0],res[1],self.showsearchword,0  )
             return 
         self.translate_text.textbrowser.show()
@@ -188,11 +188,11 @@ class QUnFrameWindow(QWidget):
             qtawesome.icon("fa.forward" ,color="#FF69B4" if globalconfig['autorun'] else globalconfig['buttoncolor']),
             qtawesome.icon("fa.gear",color=globalconfig['buttoncolor'] ),
             qtawesome.icon("fa.copy" ,color=globalconfig['buttoncolor']),
-            qtawesome.icon("fa.eye"   if globalconfig['isshowrawtext'] else "fa.eye-slash" ,color=globalconfig['buttoncolor']),
+            qtawesome.icon("fa.eye"   if globalconfig['isshowrawtext'] else "fa.eye-slash" ,color="#FF69B4" if globalconfig['isshowrawtext'] else globalconfig['buttoncolor']),
             qtawesome.icon("fa.rotate-left" ,color=globalconfig['buttoncolor']),
             qtawesome.icon("fa.music" ,color=globalconfig['buttoncolor']),
             qtawesome.icon("fa.mouse-pointer" ,color="#FF69B4" if self.mousetransparent else globalconfig['buttoncolor']),
-            qtawesome.icon("fa.lock" ,color="#FF69B4" if globalconfig['locktools'] else globalconfig['buttoncolor']),
+            qtawesome.icon("fa.lock" if globalconfig['locktools'] else 'fa.unlock',color="#FF69B4" if globalconfig['locktools'] else globalconfig['buttoncolor']),
             qtawesome.icon("fa.gamepad" ,color= globalconfig['buttoncolor']),
             qtawesome.icon("fa.link" ,color=globalconfig['buttoncolor']),
             qtawesome.icon("fa.tasks" ,color= globalconfig['buttoncolor']),
@@ -200,8 +200,8 @@ class QUnFrameWindow(QWidget):
             (qtawesome.icon("fa.square" ,color=  "#FF69B4" if self.showhidestate else globalconfig['buttoncolor'])),
             (qtawesome.icon("fa.windows" ,color= "#FF69B4"  if self.isbindedwindow else globalconfig['buttoncolor'])),
             qtawesome.icon("fa.expand" ,color= globalconfig['buttoncolor']),
-            qtawesome.icon("fa.window-maximize" ,color=  "#FF69B4" if self.isletgamefullscreened else globalconfig['buttoncolor']),
-            qtawesome.icon("fa.microphone-slash" ,color="#FF69B4" if self.processismuteed else globalconfig['buttoncolor']),
+            qtawesome.icon("fa.compress"  if self.isletgamefullscreened else 'fa.arrows-alt',color=    globalconfig['buttoncolor']),
+            qtawesome.icon("fa.volume-off"  if self.processismuteed else "fa.volume-up" ,color= globalconfig['buttoncolor']),
             qtawesome.icon("fa.minus",color=globalconfig['buttoncolor'] ),
             qtawesome.icon("fa.times" ,color=globalconfig['buttoncolor']),
         ]
@@ -440,20 +440,21 @@ class QUnFrameWindow(QWidget):
             pass
     def muteprocessfuntion(self): 
         try:
-            
+            pid= self.object.textsource.pid 
+            subproc(f'./files/muteprocess.exe {pid}  {int(self.processismuteed)}')
             self.processismuteed=not self.processismuteed
             
             self.refreshtoolicon()
-            pid= self.object.textsource.pid 
-            subproc(f'./files/muteprocess.exe {pid}  {int(self.processismuteed)}')
+            
         except:
             print_exc()
     def _fullsgame(self): 
         
             try:  
+                    hwnd= self.object.textsource.hwnd 
                     self.isletgamefullscreened=not self.isletgamefullscreened
                     self.refreshtoolicon()
-                    hwnd= self.object.textsource.hwnd 
+                    
                     if globalconfig['usemagpie']:  
                         if True:#self.isletgamefullscreened:  
                             win32gui.SetForegroundWindow(hwnd )   

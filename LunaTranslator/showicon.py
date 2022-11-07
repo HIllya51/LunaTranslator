@@ -1,5 +1,5 @@
 import qtawesome,json
-import sys
+import sys,functools
 
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QApplication, QWidget,QGridLayout,QPushButton
@@ -16,8 +16,9 @@ class Demo(QWidget):
         i=0
         for k in js:
             try: 
-
-                qg.addWidget(QPushButton(icon=qtawesome.icon('fa.'+k)),i//20,i%20)
+                b=QPushButton(icon=qtawesome.icon('fa.'+k))
+                b.clicked.connect(functools.partial(print,k))
+                qg.addWidget(b,i//30,i%30)
                 i+=1
             except:
                 1
