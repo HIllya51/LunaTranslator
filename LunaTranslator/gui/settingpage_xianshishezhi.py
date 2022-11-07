@@ -33,14 +33,14 @@ def setTabThree(self) :
         self.font_comboBox.activated[str].connect(lambda x:globalconfig.__setitem__('fonttype',x))  
         self.comboBox_font = QFont(globalconfig['fonttype'])
         self.font_comboBox.setCurrentFont(self.comboBox_font)  
-                
+        def __changeselectmode_():
+                self.object.translation_ui.masklabel.setHidden(globalconfig['selectable'])
+                self.object.translation_ui.translate_text.toplabel2.setHidden(globalconfig['selectable'] and globalconfig['zitiyangshi']!=3) 
+                self.object.translation_ui.translate_text.toplabel.setHidden(globalconfig['selectable'] and globalconfig['zitiyangshi']!=3)
         def __changeselectmode(x):
-                globalconfig.__setitem__('selectable',x)
-                if x:
-                        self.object.translation_ui.masklabel.hide()
-                else:
-                        self.object.translation_ui.masklabel.show()
-         
+                globalconfig.__setitem__('selectable',x) 
+                __changeselectmode_()
+        __changeselectmode_()
         def _settoolbariconcolor( ):
                 self.ChangeTranslateColor("buttoncolor", self.buttoncolorbutton)
                 self.object.translation_ui.refreshtooliconsignal.emit()
@@ -78,7 +78,7 @@ def setTabThree(self) :
                 [(QLabel('游戏窗口移动时同步移动'),3),(self.getsimpleswitch(globalconfig,'movefollow'),1)],
                 [''],
                 [(QLabel('固定窗口尺寸'),3),self.getsimpleswitch(globalconfig,'fixedheight'),],
-                [(QLabel('可选取模式'),3),self.getsimpleswitch(globalconfig,'selectable',callback=__changeselectmode)],
+                [(QLabel('可选取模式(阴影字体下无效)'),3),self.getsimpleswitch(globalconfig,'selectable',callback=__changeselectmode)],
                 [(QLabel('翻译结果繁简体显示'),4),(self.getsimplecombobox(['大陆简体','马新简体','台灣正體','香港繁體','简体','繁體'],globalconfig,'fanjian'),2)],
                 [(QLabel('翻译窗口顺时针旋转(重启生效)'),4),(self.getsimplecombobox(['0','90','180','270'],globalconfig,'rotation'),2)],
         ] 
