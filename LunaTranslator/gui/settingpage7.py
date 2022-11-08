@@ -195,8 +195,8 @@ def noundictconfigdialog(object,configdict,title,label=['游戏ID MD5' ,'日文'
                 table.hideRow(row)
 
              
-    button4.clicked.connect(clicked6)
-    search.addWidget(button6)
+    button4.clicked.connect(clicked4)
+    search.addWidget(button4)
     
     formLayout.addWidget(table)
     formLayout.addLayout(search)
