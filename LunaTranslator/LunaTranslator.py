@@ -456,9 +456,9 @@ class MAINUI(QObject) :
         #print(time.time()-t1)
         self.startreader() 
         self.startxiaoxueguan()
-        self.AttachProcessDialog=AttachProcessDialog(self.translation_ui)
+        self.AttachProcessDialog=AttachProcessDialog(self.settin_ui)
         self.range_ui = rangeadjust(self)   
-        self.hookselectdialog=gui.selecthook.hookselect(self ,self.translation_ui)
+        self.hookselectdialog=gui.selecthook.hookselect(self ,self.settin_ui)
         threading.Thread(target=self.autohookmonitorthread).start()   
         threading.Thread(target=self.setontopthread).start()
         

@@ -10,7 +10,7 @@ class rangeadjust(QMainWindow) :
  
     def __init__(self, object):
 
-        super(rangeadjust, self).__init__(object.translation_ui) 
+        super(rangeadjust, self).__init__(object.settin_ui) 
         self.object = object  
           
         self.setWindowFlags(Qt.WindowStaysOnTopHint | Qt.FramelessWindowHint | Qt.Tool)
