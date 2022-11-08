@@ -34,7 +34,10 @@ def setTabThree(self) :
         self.comboBox_font = QFont(globalconfig['fonttype'])
         self.font_comboBox.setCurrentFont(self.comboBox_font)  
         self.sfont_comboBox = QFontComboBox( ) 
-        self.sfont_comboBox.activated[str].connect(lambda x:globalconfig.__setitem__('settingfonttype',x))  
+        def callback(x):
+                globalconfig.__setitem__('settingfonttype',x)
+                self.setStyleSheet("font: 11pt '"+globalconfig['settingfonttype']+"' ; color: \"#595959\"" )  
+        self.sfont_comboBox.activated[str].connect(callback)  
         self.scomboBox_font = QFont(globalconfig['settingfonttype'])
         self.sfont_comboBox.setCurrentFont(self.scomboBox_font) 
         def __changeselectmode_():
@@ -62,7 +65,8 @@ def setTabThree(self) :
                 [(QLabel('不透明度'),2),(self.horizontal_slider,8),(self.horizontal_slider_label,2)],
                 [(QLabel('原文颜色'),4), self.getcolorbutton(globalconfig,'rawtextcolor',callback=lambda: self.ChangeTranslateColor("rawtextcolor", self.original_color_button),name='original_color_button'),'',(QLabel('翻译窗口背景颜色'),4),self.getcolorbutton(globalconfig,'backcolor',callback=lambda: self.ChangeTranslateColor("backcolor", self.back_color_button),name='back_color_button'),'',(QLabel('工具按钮颜色'),4),self.getcolorbutton(globalconfig,'buttoncolor',callback=_settoolbariconcolor ,name='buttoncolorbutton')],
                 [(QLabel('显示原文'),4),self.getsimpleswitch(globalconfig,'isshowrawtext',callback=lambda x: __changeuibuttonstate(self,x),name='show_original_switch'),'',(QLabel('显示假名'),4),self.getsimpleswitch(globalconfig,'isshowhira',enable=globalconfig['isshowrawtext'],name='show_hira_switch'),'',(QLabel('显示分词结果'),4 ),self.getsimpleswitch(globalconfig,'show_fenci',enable=globalconfig['isshowrawtext'],name='showatmiddleswitch')],
-                [(QLabel('字体大小'),3),(self.getspinbox(1,100,globalconfig,'fontsize',double=True,step=0.1,name='fontSize_spinBox'),2),'',(QLabel('字体类型'),3),(self.font_comboBox,2),'',(QLabel('加粗字体'),4),self.getsimpleswitch(globalconfig,'showbold' )],
+                [(QLabel('翻译器字体类型'),3),(self.font_comboBox,5),'',(QLabel('设置界面字体类型'),3),(self.sfont_comboBox,5)],
+                [(QLabel('字体大小'),3),(self.getspinbox(1,100,globalconfig,'fontsize',double=True,step=0.1,name='fontSize_spinBox'),2),'',(QLabel('加粗字体'),4),self.getsimpleswitch(globalconfig,'showbold' )],
                 [(QLabel('字体样式'),3),(self.getsimplecombobox(['普通字体','空心字体','描边字体','阴影字体'],globalconfig,'zitiyangshi'),2),'',(QLabel('特殊字体样式填充颜色'),4),self.getcolorbutton(globalconfig,'miaobiancolor',callback=lambda: self.ChangeTranslateColor("miaobiancolor", self.miaobian_color_button),name='miaobian_color_button'),'',(QLabel('居中显示'),4),self.getsimpleswitch(globalconfig,'showatcenter')],
                 [(QLabel('空心线宽'),3),(self.getspinbox(1,100,globalconfig,'miaobianwidth',double=True,step=0.1),2),'',(QLabel('描边宽度'),3 ),(self.getspinbox(1,100,globalconfig,'miaobianwidth2',double=True,step=0.1),2),'',(QLabel('阴影强度'),3),(self.getspinbox(1,10,globalconfig,'shadowforce'),2)],
                 
@@ -74,8 +78,8 @@ def setTabThree(self) :
                 [''],
                 [(QLabel('使用Magpie全屏'),4),self.getsimpleswitch(globalconfig,'usemagpie' ),],
                 [(QLabel("Magpie路径"),4),(self.getcolorbutton(globalconfig,'',callback=lambda x: getsomepath1(self,'Magpie路径',globalconfig,'magpiepath','Magpie路径',isdir=True),icon='fa.gear',constcolor="#FF69B4"),1)],
-                [(QLabel('Magpie算法'),4),(self.getsimplecombobox(magpiemethod,globalconfig,'magpiescalemethod'),3)],
-                [(QLabel('Magpie捕获模式'),4),(self.getsimplecombobox(['Graphics Capture','Desktop Duplication','GDI','DwmSharedSurface'],globalconfig,'magpiecapturemethod'),3)],
+                [(QLabel('Magpie算法'),4),(self.getsimplecombobox(magpiemethod,globalconfig,'magpiescalemethod'),6)],
+                [(QLabel('Magpie捕获模式'),4),(self.getsimplecombobox(['Graphics Capture','Desktop Duplication','GDI','DwmSharedSurface'],globalconfig,'magpiecapturemethod'),6)],
                 [''],
                 [(QLabel('游戏最小化时窗口隐藏'),4),(self.getsimpleswitch(globalconfig,'minifollow'),1)],
                 [(QLabel('游戏失去焦点时窗口隐藏'),4),(self.getsimpleswitch(globalconfig,'focusfollow'),1)],
@@ -85,7 +89,7 @@ def setTabThree(self) :
                 [(QLabel('可选取模式(阴影字体下无效)'),6),self.getsimpleswitch(globalconfig,'selectable',callback=__changeselectmode)],
                 [(QLabel('翻译结果繁简体显示'),6),(self.getsimplecombobox(['大陆简体','马新简体','台灣正體','香港繁體','简体','繁體'],globalconfig,'fanjian'),2)],
                 [(QLabel('翻译窗口顺时针旋转(重启生效)'),6),(self.getsimplecombobox(['0','90','180','270'],globalconfig,'rotation'),2)],
-                [(QLabel('设置界面字体类型(重启生效)'),6),(self.sfont_comboBox,2)]
+               
         ] 
         self.yitiaolong("显示设置",buttongrid) 
         self.fontbigsmallsignal.connect(functools.partial(fontbigsmallfunction,self))
