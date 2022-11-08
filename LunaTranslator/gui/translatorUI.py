@@ -206,9 +206,9 @@ class QUnFrameWindow(QWidget):
             self.buttons[i].setIcon(icon[i])
     def __init__(self, object):
         super(QUnFrameWindow, self).__init__(
-            None, Qt.FramelessWindowHint|Qt.WindowStaysOnTopHint|Qt.Tool )  # 设置为顶级窗口，无边框
+            None, Qt.FramelessWindowHint|Qt.WindowStaysOnTopHint )  # 设置为顶级窗口，无边框
         #self.setFocusPolicy(Qt.StrongFocus)
-
+        self.setWindowFlag(Qt.Tool,True)
         self.setAttribute(Qt.WA_TranslucentBackground) 
         self.setAttribute(Qt.WA_ShowWithoutActivating,True)
         
@@ -748,14 +748,10 @@ class QUnFrameWindow(QWidget):
         globalconfig['width']=self.width() 
         saveallconfig()
         self.tray.hide()
-        self.tray = None 
-        self.object.range_ui.close()
-        self.object.settin_ui.close()
+        self.tray = None  
         #print(4)
         self.object.hookselectdialog.realclose=True 
-        
-        self.searchwordW.close()
-        self.object.hookselectdialog.close() 
+         
         if self.object.textsource:
             self.object.textsource.end()
         

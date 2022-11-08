@@ -61,7 +61,7 @@ def initsome11(self,l,label,grids):
             last=self.getcolorbutton(globalconfig,'',callback=functools.partial(autoinitdialog,self,globalconfig['fanyi'][fanyi]['name']+'设置',900,items),icon='fa.gear',constcolor="#FF69B4")
         else:
             last=''
-        line+=[(QLabel(globalconfig['fanyi'][fanyi]['name']),4),
+        line+=[(QLabel(globalconfig['fanyi'][fanyi]['name']),5),
         self.getsimpleswitch(globalconfig['fanyi'][fanyi],'use',callback=functools.partial( fanyiselect,self,fanyi)),
         self.getcolorbutton(globalconfig['fanyi'][fanyi],'color',name="fanyicolor_"+fanyi,callback=functools.partial(self.ChangeTranslateColor,fanyi,None,self,"fanyicolor_"+fanyi)),last ] 
 
@@ -109,11 +109,11 @@ def setTabTwo(self) :
         proxy=QLineEdit(globalconfig['proxy'])
         btn=QPushButton('确定' )
         def __resetproxy(x):
-            globalconfig.__setitem__('proxy',l.text())
+            globalconfig.__setitem__('proxy',proxy.text())
             if globalconfig['useproxy']:
                 os.environ['https_proxy']=globalconfig['proxy'] 
                 os.environ['http_proxy']=globalconfig['proxy'] 
-        btn.clicked.connect(lambda x: __resetproxy())
+        btn.clicked.connect(lambda x: __resetproxy(x))
         transkirokuuse =QComboBox( )  
         transkirokuuse.addItems([globalconfig['fanyi'][k]['name'] for k  in globalconfig['fanyi']])
         transkirokuuse.setCurrentIndex(list(globalconfig['fanyi'].keys()).index(globalconfig['transkirokuuse']))
@@ -139,25 +139,25 @@ def setTabTwo(self) :
 
         grids=[
             [
-                (QLabel("是否显示翻译器名称"),4),(self.getsimpleswitch(globalconfig  ,'showfanyisource'),1),'','','',
-                (QLabel("源语言"),4),(self.getsimplecombobox(['日文','英文'],globalconfig,'srclang'),3),'',
-                (QLabel("目标语言"),4),(self.getsimplecombobox(['中文','英文'],globalconfig,'tgtlang'),3) ,
+                (QLabel("是否显示翻译器名称"),5),(self.getsimpleswitch(globalconfig  ,'showfanyisource'),1),'','','',
+                (QLabel("源语言"),5),(self.getsimplecombobox(['日文','英文'],globalconfig,'srclang'),3),'',
+                (QLabel("目标语言"),5),(self.getsimplecombobox(['中文','英文'],globalconfig,'tgtlang'),3) ,
             ],
             [
-                (QLabel("最短翻译字数"),4),(self.getspinbox(0,500,globalconfig,'minlength'),3),'',
-                (QLabel("最长翻译字数"),4),(self.getspinbox(0,500,globalconfig,'maxlength'),3),'',
-                (QLabel("在线翻译超时(s)"),4),(self.getspinbox(1,20,globalconfig,'translatortimeout',callback=lambda x:__timeout(x)),3),
+                (QLabel("最短翻译字数"),5),(self.getspinbox(0,500,globalconfig,'minlength'),3),'',
+                (QLabel("最长翻译字数"),5),(self.getspinbox(0,500,globalconfig,'maxlength'),3),'',
+                (QLabel("在线翻译超时(s)"),5),(self.getspinbox(1,20,globalconfig,'translatortimeout',callback=lambda x:__timeout(x)),3),
 
             ],
             [
-                (QLabel("预翻译采用模糊匹配"),4),(self.getsimpleswitch(globalconfig  ,'premtsimiuse'),1),'','','',
+                (QLabel("预翻译采用模糊匹配"),5),(self.getsimpleswitch(globalconfig  ,'premtsimiuse'),1),'','','',
                 (QLabel("模糊匹配相似度限制"),5),(self.getspinbox(0,500,globalconfig,'premtsimi'),2),'', 
             ],[
-                (QLabel("使用代理(ip:port)"),4),(self.getsimpleswitch(globalconfig  ,'useproxy',callback=lambda x: _setproxy(x)),1),
-                (proxy,6),(btn,4),  
+                (QLabel("使用代理(ip:port)"),5),(self.getsimpleswitch(globalconfig  ,'useproxy',callback=lambda x: _setproxy(x)),1),
+                (proxy,8),(btn,2),  
             ],
             
-                [(QLabel('录制翻译文件'),4),(self.getsimpleswitch(globalconfig,'transkiroku'),1),
+                [(QLabel('录制翻译文件'),5),(self.getsimpleswitch(globalconfig,'transkiroku'),1),
                  (QLabel('优先录制的翻译源'),6),(transkirokuuse,4),
                  
                  (bt,6) ,

@@ -1,7 +1,7 @@
  
 from PyQt5.QtCore import Qt,QSize,pyqtSignal ,QRect ,QUrl,QObject
  
-from PyQt5.QtWidgets import  QColorDialog,QSpinBox,QDoubleSpinBox,QPushButton,QComboBox,QLabel,QScrollArea,QWidget,QGridLayout
+from PyQt5.QtWidgets import  QColorDialog,QSpinBox,QDoubleSpinBox,QPushButton,QComboBox,QLabel,QScrollArea,QWidget,QGridLayout,QApplication
 from PyQt5.QtGui import QColor ,QFont
 from utils.config import globalconfig 
 from PyQt5.QtWidgets import  QTabWidget,QMainWindow 
@@ -110,7 +110,10 @@ class Settin(QMainWindow) :
     def __init__(self, object):
         
         super(Settin, self).__init__(object.translation_ui) 
+        #self.setWindowFlag(Qt.Tool,False)
+        self.setWindowFlags(self.windowFlags()&~Qt.WindowMinimizeButtonHint)
         self.mp3player=wavmp3player()
+         
         self.mp3playsignal.connect(self.mp3player.mp3playfunction)
         self.object = object  
         self.needupdate=False
@@ -122,7 +125,8 @@ class Settin(QMainWindow) :
         
         self.savelastrect=None
         self.setFixedSize(self.window_width, self.window_height) 
-        
+        d=QApplication.desktop()
+        self.move ((d.width()-self.width())/2,((d.height()-self.height())/2))
         #self.setWindowFlags(Qt.WindowStaysOnTopHint |Qt.WindowCloseButtonHint)
         #self.setWindowFlags( Qt.WindowCloseButtonHint)
         self.setWindowTitle("设置")

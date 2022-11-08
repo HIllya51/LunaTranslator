@@ -13,6 +13,7 @@ class searchwordW(QMainWindow):
     def __init__(self,p):
         super(searchwordW, self).__init__(p)
         self.setupUi() 
+        self.setWindowFlags(self.windowFlags()&~Qt.WindowMinimizeButtonHint)
         self.getnewsentencesignal.connect(self.getnewsentence) 
         self.setWindowTitle('查词')
         self.p=p

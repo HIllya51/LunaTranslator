@@ -18,6 +18,7 @@ class transhist(QMainWindow):
     def __init__(self,p):
         super(transhist, self).__init__(p)
         self.setupUi() 
+        self.setWindowFlags(self.windowFlags()&~Qt.WindowMinimizeButtonHint)
         self.getnewsentencesignal.connect(self.getnewsentence) 
         self.showsignal.connect(self.showfunction)
         self.setWindowTitle('历史翻译')

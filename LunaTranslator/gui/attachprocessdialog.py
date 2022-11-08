@@ -20,9 +20,10 @@ class AttachProcessDialog(QMainWindow):
                     self.selectedp=(pid,name_,hwnd) 
     def __init__(self ,p):
         super(AttachProcessDialog, self).__init__( p ) 
-        #self.setWindowModality(Qt.WindowModal)
+        self.setWindowFlags(self.windowFlags()&~Qt.WindowMinimizeButtonHint)
         self.resize(800,400)
-        
+        d=QApplication.desktop()
+        self.move ((d.width()-self.width())/2,((d.height()-self.height())/2))
         self.object=p.object
         self.setWindowTitle('选择进程')
         self.setWindowIcon(qtawesome.icon("fa.gear" ))

@@ -2,7 +2,7 @@
 from re import search
 from traceback import print_exc
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QWidget,QHBoxLayout,QMainWindow,QFrame,QVBoxLayout,QComboBox,QPlainTextEdit,QDialogButtonBox,QLineEdit,QPushButton,QTableView,QAbstractItemView
+from PyQt5.QtWidgets import QWidget,QHBoxLayout,QMainWindow,QFrame,QVBoxLayout,QComboBox,QPlainTextEdit,QDialogButtonBox,QLineEdit,QPushButton,QTableView,QAbstractItemView,QApplication
 from utils.config import savehook_new
 from PyQt5.QtGui import QStandardItem, QStandardItemModel
 from PyQt5.QtGui import QFont,QTextCursor
@@ -26,7 +26,7 @@ class hookselect(QMainWindow):
         self.addnewhooksignal.connect(self.addnewhook)
         self.getnewsentencesignal.connect(self.getnewsentence)
         self.update_item_new_line.connect(self.update_item_new_line_function)
-        #self.setWindowFlags(Qt.WindowStaysOnTopHint |Qt.WindowCloseButtonHint)
+        self.setWindowFlags(self.windowFlags()&~Qt.WindowMinimizeButtonHint)
         self.setWindowTitle('选择文本，支持按住ctrl进行多项选择（一般选择一条即可）')
     def update_item_new_line_function(self,hook,output):
         if hook in self.save:
@@ -48,9 +48,10 @@ class hookselect(QMainWindow):
         item = QStandardItem('output' )
         self.ttCombomodelmodel.setItem(rown, 1, item)
     def setupUi(self  ):
-     
+        
         self.resize(1000, 600)
-         
+        d=QApplication.desktop()
+        self.move ((d.width()-self.width())/2,((d.height()-self.height())/2))
         self.save=[]
         self.centralWidget = QWidget(self) 
         self.setWindowIcon(qtawesome.icon("fa.gear" ))
