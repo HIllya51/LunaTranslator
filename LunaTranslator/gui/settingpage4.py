@@ -178,7 +178,7 @@ def minmaxmoveobservefunc(self):
                                 pass
                          
                         if pid==self_pid:
-                                pass
+                                self.delayhideflag=False
                         
                         elif pid==self.object.textsource.pid: 
                                 if self.object.translation_ui.isHidden():
