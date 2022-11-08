@@ -226,7 +226,7 @@ class QUnFrameWindow(QWidget):
         self._padding = 5*self.rate  # 设置边界宽度为5
         self.setMinimumWidth(300)
         self.hideshownotauto=True
-        self.transhis=gui.transhist.transhist() 
+        self.transhis=gui.transhist.transhist(self) 
         self.keeptopsignal.connect(self.keeptopfuntion) 
         self.hookfollowsignal.connect(self.hookfollowsignalsolve) 
         self.displayres.connect(self.showres)

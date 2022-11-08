@@ -1,7 +1,7 @@
 
 from re import search
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QWidget,QHBoxLayout,QMainWindow,QFrame,QVBoxLayout,QComboBox,QPlainTextEdit,QDialogButtonBox,QLineEdit,QPushButton
+from PyQt5.QtWidgets import QWidget,QHBoxLayout,QMainWindow,QFrame,QVBoxLayout,QComboBox,QPlainTextEdit,QDialogButtonBox,QLineEdit,QPushButton,QDialog
 from PyQt5.QtGui import QFont,QTextCursor
 from PyQt5.QtCore import Qt,pyqtSignal
 import qtawesome
@@ -15,8 +15,8 @@ from utils.config import globalconfig
 class transhist(QMainWindow): 
     getnewsentencesignal=pyqtSignal(str) 
     showsignal=pyqtSignal()
-    def __init__(self):
-        super(transhist, self).__init__()
+    def __init__(self,p):
+        super(transhist, self).__init__(p)
         self.setupUi() 
         self.getnewsentencesignal.connect(self.getnewsentence) 
         self.showsignal.connect(self.showfunction)
@@ -35,7 +35,8 @@ class transhist(QMainWindow):
         self.setGeometry(0,0,1000,300)
         self.textOutput = QPlainTextEdit(self)
         self.textOutput.setFont(font)
-        self.setCentralWidget(self.textOutput)  
+        self.setCentralWidget(self.textOutput) 
+         
         self.textOutput.setUndoRedoEnabled(False)
         self.textOutput.setReadOnly(True)
         self.textOutput.setObjectName("textOutput") 
