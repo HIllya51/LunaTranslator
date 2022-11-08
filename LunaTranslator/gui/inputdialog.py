@@ -3,9 +3,8 @@ from PyQt5.QtWidgets import QDialogButtonBox,QDialog,QComboBox,QFormLayout,QSpin
 from PyQt5.QtCore import Qt,QSize
 from PyQt5.QtGui import QColor 
 import qtawesome
-from utils.config import globalconfig,syncconfig
-import json
-import os 
+from utils.config import globalconfig 
+from gui.switchbutton import MySwitch 
 def autoinitdialog(object,title,width,lines):
     dialog=QDialog(object ,Qt.WindowCloseButtonHint)
      
@@ -55,6 +54,26 @@ def autoinitdialog(object,title,width,lines):
             hori.addWidget(e)
             hori.addWidget(bu)
             formLayout.addRow((line['l']),hori)
+        elif line['t']=='switch':
+            dd=line['d']
+            key=line['k'] 
+            b=MySwitch(sign=dd[key] ) 
+            b.clicked.connect( functools.partial(dd.__setitem__,key))
+            formLayout.addRow((line['l']),b) 
+        elif line['t']=='combo':
+            dd=line['d']
+            key=line['k'] 
+            combo=QComboBox()
+            combo.addItems(line['list'])
+            if 'map' not in line:
+                combo.setCurrentIndex(dd[key])
+                combo.currentIndexChanged.connect(functools.partial(dd.__setitem__,key))
+            else:
+                combo.setCurrentIndex(line['map'].index(dd[key]))
+                def __(line,x):
+                    line['d'].__setitem__(line['k'] ,line['map'][x])
+                combo.currentIndexChanged.connect(functools.partial(__,line))
+            formLayout.addRow((line['l']),combo) 
         #  
     dialog.show()
  

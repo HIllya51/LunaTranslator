@@ -15,22 +15,22 @@ defaultglobalconfig = {'position': [432, 613], 'fixedheight': False, 'width': 76
  'magpieflags':{
     'NoCursor':False,
     'AdjustCursorSpeed':True,
-    'DebugSaveEffectSources':False,
+   # 'DebugSaveEffectSources':False,
     'DisableLowLatency':False,
-    'DebugBreakpointMode':False,
+  #  'DebugBreakpointMode':False,
     'DisableWindowResizing':False,
     'DisableDirectFlip':False,
     'Is3DMode':False,
     'CropTitleBarOfUWP':True,
-    'DebugDisableEffectCache':False,
+  #  'DebugDisableEffectCache':False,
     'SimulateExclusiveFullscreen':False,
-    'DebugWarningsAreErrors':False,
+  #  'DebugWarningsAreErrors':False,
     'VSync':True,
     'ShowFPS':False,
     'CursorZoomFactor':1,
     'CursorInterpolationMode':0,
-    'AdapterIdx':-1,
-    'MultiMonitorUsage':0
+   # 'AdapterIdx':-1,
+   # 'MultiMonitorUsage':0
  }, 
  'buttonuse':{
     'fullscreen':True,
