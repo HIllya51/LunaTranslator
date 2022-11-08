@@ -66,7 +66,7 @@ class Settin(QMainWindow) :
                         grid.addWidget(wid,nowr,nowc,1,cols)
                         nowc+=cols   
                 maxl=max(maxl,nowc)
-                print(nowc)
+                
         ww=self.window_width-180*self.rate-self.object.scrollwidth
         
         
