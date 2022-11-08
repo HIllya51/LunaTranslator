@@ -33,7 +33,7 @@ from PyQt5.QtWinExtras  import QtWin
  
 def autosaveshow(object):
      
-    dialog = QDialog(object)  # 自定义一个dialog
+    dialog = QDialog(object,Qt.WindowCloseButtonHint)  # 自定义一个dialog
     dialog.setWindowTitle('已保存游戏')
     #dialog.setWindowModality(Qt.ApplicationModal) 
     formLayout = QVBoxLayout(dialog)  # 配置layout

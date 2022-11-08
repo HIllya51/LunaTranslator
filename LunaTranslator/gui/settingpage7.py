@@ -11,7 +11,7 @@ from utils.config import globalconfig ,postprocessconfig,noundictconfig,transerr
 from PyQt5.QtWidgets import  QWidget,QLabel  
 import functools
 from PyQt5.QtWidgets import QDialog ,QSpinBox,QVBoxLayout,QLineEdit,QGridLayout
-from PyQt5.QtCore import QSize
+from PyQt5.QtCore import QSize,Qt
 from utils.config import globalconfig 
 import qtawesome 
  
@@ -58,7 +58,7 @@ def setTab7(self) :
         ]  
         self.yitiaolong("翻译优化",grids)
 def noundictconfigdialog1(object,configdict,title,label=[  '日文','翻译'],fname='./userconfig/noundictconfig.json'):
-    dialog = QDialog(object)  # 自定义一个dialog
+    dialog = QDialog(object,Qt.WindowCloseButtonHint)  # 自定义一个dialog
     dialog.setWindowTitle(title)
     #dialog.setWindowModality(Qt.ApplicationModal)
     
@@ -112,7 +112,7 @@ def noundictconfigdialog1(object,configdict,title,label=[  '日文','翻译'],fn
     dialog.resize(QSize(600,400))
     dialog.show()
 def noundictconfigdialog(object,configdict,title,label=['游戏ID MD5' ,'日文','翻译'],fname='./userconfig/noundictconfig.json'):
-    dialog = QDialog(object)  # 自定义一个dialog
+    dialog = QDialog(object,Qt.WindowCloseButtonHint)  # 自定义一个dialog
     dialog.setWindowTitle(title)
     #dialog.setWindowModality(Qt.ApplicationModal)
     
@@ -209,7 +209,7 @@ def noundictconfigdialog(object,configdict,title,label=['游戏ID MD5' ,'日文'
     dialog.show()
   
 def postconfigdialog(object,configdict,title):
-    dialog = QDialog(object)  # 自定义一个dialog
+    dialog = QDialog(object,Qt.WindowCloseButtonHint)  # 自定义一个dialog
     dialog.setWindowTitle(title)
     #dialog.setWindowModality(Qt.ApplicationModal)
     

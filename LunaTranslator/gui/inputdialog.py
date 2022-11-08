@@ -7,7 +7,8 @@ from utils.config import globalconfig,syncconfig
 import json
 import os 
 def autoinitdialog(object,title,width,lines):
-    dialog=QDialog(object)
+    dialog=QDialog(object ,Qt.WindowCloseButtonHint)
+     
     dialog.setWindowTitle(title)
     dialog.resize(QSize(width,10))
     formLayout = QFormLayout()
@@ -71,7 +72,7 @@ def ChangeTranslateColor(self,button,item) :
         globalconfig['cixingcolor'][item]=color.name() 
 
 def multicolorset(object ):
-    dialog = QDialog(object)  # 自定义一个dialog
+    dialog = QDialog(object,Qt.WindowCloseButtonHint)  # 自定义一个dialog
     dialog.setWindowTitle("颜色设置") 
     dialog.resize(QSize(300,10))
     formLayout = QFormLayout(dialog)  # 配置layout 
