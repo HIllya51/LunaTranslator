@@ -109,7 +109,7 @@ class Settin(QMainWindow) :
         return s
     def __init__(self, object):
         
-        super(Settin, self).__init__()#(object.translation_ui) 
+        super(Settin, self).__init__(object.translation_ui) 
         self.mp3player=wavmp3player()
         self.mp3playsignal.connect(self.mp3player.mp3playfunction)
         self.object = object  

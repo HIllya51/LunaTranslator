@@ -18,15 +18,15 @@ class hookselect(QMainWindow):
     getnewsentencesignal=pyqtSignal(str)
     changeprocessclearsignal=pyqtSignal()
     update_item_new_line=pyqtSignal(tuple,str)
-    def __init__(self,object):
-        super(hookselect, self).__init__()
+    def __init__(self,object,p):
+        super(hookselect, self).__init__(p)
         self.setupUi( )
         self.object=object
         self.changeprocessclearsignal.connect(self.changeprocessclear)
         self.addnewhooksignal.connect(self.addnewhook)
         self.getnewsentencesignal.connect(self.getnewsentence)
         self.update_item_new_line.connect(self.update_item_new_line_function)
-        self.setWindowFlags(Qt.WindowStaysOnTopHint |Qt.WindowCloseButtonHint)
+        #self.setWindowFlags(Qt.WindowStaysOnTopHint |Qt.WindowCloseButtonHint)
         self.setWindowTitle('选择文本，支持按住ctrl进行多项选择（一般选择一条即可）')
     def update_item_new_line_function(self,hook,output):
         if hook in self.save:

@@ -39,7 +39,7 @@ from utils.edict import edict
 from utils.linggesi import linggesi
 import importlib
 from functools import partial  
-
+from gui.attachprocessdialog import AttachProcessDialog
 import win32api,win32con,win32process
 import re
 import socket
@@ -391,11 +391,11 @@ class MAINUI(QObject) :
             
             try:  
                 
-                if self.settin_ui.isHidden():
+                #if self.settin_ui.isHidden():
                     win32gui.SetWindowPos(int(self.translation_ui.winId()), win32con.HWND_TOPMOST, 0, 0, 0, 0,win32con. SWP_NOACTIVATE |win32con. SWP_NOSIZE | win32con.SWP_NOMOVE)  
-                else:
+                #else:
                     #win32gui.SetWindowPos(int(self.settin_ui.winId()), win32con.HWND_TOPMOST, 0, 0, 0, 0,win32con. SWP_NOACTIVATE |win32con. SWP_NOSIZE | win32con.SWP_NOMOVE)  
-                    pass
+                 #   pass
                 #win32gui.BringWindowToTop(int(self.translation_ui.winId())) 
             except:
                 print_exc() 
@@ -456,9 +456,9 @@ class MAINUI(QObject) :
         #print(time.time()-t1)
         self.startreader() 
         self.startxiaoxueguan()
-        
+        self.AttachProcessDialog=AttachProcessDialog(self.translation_ui)
         self.range_ui = rangeadjust(self)   
-        self.hookselectdialog=gui.selecthook.hookselect(self )
+        self.hookselectdialog=gui.selecthook.hookselect(self ,self.translation_ui)
         threading.Thread(target=self.autohookmonitorthread).start()   
         threading.Thread(target=self.setontopthread).start()
         

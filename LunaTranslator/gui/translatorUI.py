@@ -319,8 +319,8 @@ class QUnFrameWindow(QWidget):
         
         self.takusanbuttons("MinMaxButton",lambda: autosaveshow(self),3,"打开保存的游戏",'gamepad') 
 
-        self.takusanbuttons("MinMaxButton",lambda :settingtextractor(self.object.settin_ui,False),4,"选择游戏" ) 
-        self.takusanbuttons("MinMaxButton",lambda :settingsource(self.object.settin_ui),5,"选择文本" ) 
+        self.takusanbuttons("MinMaxButton",lambda :settingtextractor(self),4,"选择游戏" ) 
+        self.takusanbuttons("MinMaxButton",lambda :settingsource(self),5,"选择文本" ) 
          
         self.takusanbuttons("MinMaxButton",self.clickRange,4,"选取OCR范围")
         self.takusanbuttons("MinMaxButton",self.showhide,5,"显示/隐藏范围框")

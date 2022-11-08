@@ -1,6 +1,6 @@
  
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QDialog,QVBoxLayout,QHBoxLayout,QLabel,QLineEdit,QListView,QDialogButtonBox ,QApplication,QPushButton
+from PyQt5.QtWidgets import QWidget,QVBoxLayout,QHBoxLayout,QLabel,QLineEdit,QListView,QDialogButtonBox ,QApplication,QPushButton,QMainWindow
 from PyQt5.QtGui import  QStandardItemModel,QPixmap,QColor,QIcon,QStandardItem ,QFont
 from PyQt5.QtWinExtras  import QtWin 
 import win32gui 
@@ -9,7 +9,7 @@ import sys
 import time   
 from utils.getpidlist import getwindowhwnd,getpidexe,ListProcess,mouseselectwindow,getExeIcon
 import qtawesome
-class AttachProcessDialog(QDialog):
+class AttachProcessDialog(QMainWindow):
      
         
     iconcache={}
@@ -18,20 +18,22 @@ class AttachProcessDialog(QDialog):
                     self.processEdit.setText(name_)
                     self.processIdEdit.setText(str(pid))
                     self.selectedp=(pid,name_,hwnd) 
-    def __init__(self ):
-        super(AttachProcessDialog, self).__init__( ) 
-        self.setWindowModality(Qt.WindowModal)
+    def __init__(self ,p):
+        super(AttachProcessDialog, self).__init__( p ) 
+        #self.setWindowModality(Qt.WindowModal)
         self.resize(800,400)
-        self.selectedp=(0,'',0)
+        
+        self.object=p.object
         self.setWindowTitle('选择进程')
         self.setWindowIcon(qtawesome.icon("fa.gear" ))
         f=QFont() 
         f.setPointSize(13)
         self.setFont(f)
-        self.setWindowFlags(Qt.WindowStaysOnTopHint |Qt.WindowCloseButtonHint)
+        #self.setWindowFlags(Qt.WindowStaysOnTopHint |Qt.WindowCloseButtonHint)
         t1=time.time()
+        w=QWidget()
         self.layout1=QVBoxLayout()
-        self.label=QLabel('如果没看见想要附加的进程，可以尝试点击下方按钮后点击游戏窗口，或者尝试使用管理员权限运行本软件！！') 
+        self.label=QLabel('如果没看见想要附加的进程，可以尝试点击下方按钮后点击游戏窗口,或者尝试使用管理员权限运行本软件') 
         self.button=QPushButton('点击此按钮后点击游戏窗口')
         self.button.clicked.connect(functools.partial(mouseselectwindow,self.selectwindowcallback))
         self.layout1.addWidget(self.label)
@@ -51,8 +53,25 @@ class AttachProcessDialog(QDialog):
         self.layout1.addLayout(self.layout3)
         self.layout1.addWidget(self.processList)
         self.layout1.addWidget(self.buttonBox)
-        self.setLayout(self.layout1) 
+        w.setLayout(self.layout1)
+        #self.setLayout(self.layout1) 
+        self.setCentralWidget(w)
         #print(time.time()-t1)
+        
+        self.buttonBox.accepted.connect(self.accept)
+        self.buttonBox.rejected.connect(self.close) 
+        
+        self.processList.clicked.connect(self.selectedfunc)
+        #self.processList.doubleClicked.connect(self.accept)
+        #print(time.time()-t1)
+        
+        def gg(process):
+            self.selectedp=(int(process),getpidexe(int(process)),getwindowhwnd(int(process)))
+        self.processIdEdit.textEdited.connect(gg)
+        #print(time.time()-t1)
+        #self.processEdit.returnPressed.connect(self.accept)
+    def show(self):
+        self.selectedp=(0,'',0)
         model=QStandardItemModel(self.processList)
         self.model=model 
         transparent=QPixmap(100,100)
@@ -74,28 +93,21 @@ class AttachProcessDialog(QDialog):
             item=QStandardItem(icon , pexe)
             item.setEditable(False)
             model.appendRow(item)
-        #print(time.time()-t1)
-        self.buttonBox.accepted.connect(self.accept)
-        self.buttonBox.rejected.connect(self.reject) 
-        
-        self.processList.clicked.connect(self.selectedfunc)
-        #self.processList.doubleClicked.connect(self.accept)
-        #print(time.time()-t1)
         def ff(process):
             for i in range(model.rowCount()):
                 self.processList.setRowHidden(i,not (process.lower() in model.item(i).text().lower()))
         self.processEdit.textEdited.connect(ff)
-        def gg(process):
-            self.selectedp=(int(process),getpidexe(int(process)),getwindowhwnd(int(process)))
-        self.processIdEdit.textEdited.connect(gg)
         #print(time.time()-t1)
-        #self.processEdit.returnPressed.connect(self.accept)
-        
+        super(AttachProcessDialog,self).show()
     def selectedfunc(self,index): 
         self.processEdit.setText(self.processlist[index.row()][1] )
         self.processIdEdit.setText(str(self.processlist[index.row()][0]  ))
         self.selectedp=self.processlist[index.row()] 
-        
+    def accept(self):
+        self.callback(self.selectedp)
+        self.close()
+    def closeEvent(self, a0 ) -> None:
+        self.hide()
 if __name__=='__main__':
     app = QApplication(sys.argv) 
     a=AttachProcessDialog()

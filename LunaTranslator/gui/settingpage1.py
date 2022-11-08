@@ -23,7 +23,7 @@ def setTabOne(self) :
                 [   (QLabel('剪贴板'),3),(self.getsimpleswitch(globalconfig['sourcestatus'],'copy',name='copyboardswitch',callback=functools.partial(textsourcechange,self,'copy')),1),'',
                     (QLabel('OCR'),3),(self.getsimpleswitch(globalconfig['sourcestatus'],'ocr',name='ocrswitch',callback=functools.partial(textsourcechange,self,'ocr')),1),'',
                     (QLabel('Textractor'),3),(self.getsimpleswitch(globalconfig['sourcestatus'],'textractor',name='textractorswitch',callback=functools.partial(textsourcechange,self,'textractor')),1)],
-                [(QLabel(''),10),(QLabel('选择游戏'),3),(self.getcolorbutton(globalconfig ,'',enable=globalconfig['sourcestatus']['textractor'],name='selectbutton',icon='fa.gear',constcolor="#FF69B4",callback=functools.partial(settingtextractor,self,True) ),1)],
+                [(QLabel(''),10),(QLabel('选择游戏'),3),(self.getcolorbutton(globalconfig ,'',enable=globalconfig['sourcestatus']['textractor'],name='selectbutton',icon='fa.gear',constcolor="#FF69B4",callback=functools.partial(settingtextractor,self) ),1)],
                 [(QLabel(''),10),(QLabel('选择文本'),3),(self.getcolorbutton(globalconfig ,'',enable=globalconfig['sourcestatus']['textractor'],name='selecthookbutton',icon='fa.gear',constcolor="#FF69B4",callback=functools.partial(settingsource,self)),1)],
                 [''], 
                 [(QLabel('提取的文本自动复制到剪贴板'),3),(self.getsimpleswitch(globalconfig ,'outputtopasteboard',name='outputtopasteboard'),1)],
@@ -37,30 +37,29 @@ def setTabOne(self) :
 
         self.resetsourcesignal.connect(functools.partial(resetsource,self))   
             
- 
-def settingtextractor(self,show1 ): 
+
+    
+def settingtextractor(self ): 
          
         if globalconfig['sourcestatus']['textractor']==False:
             return 
          
         self.object.hookselectdialog.hide() 
         
-        if show1: 
-            self.hide()
-        self.a=gui.attachprocessdialog.AttachProcessDialog()
+        # self.a=gui.attachprocessdialog.AttachProcessDialog(self.object.translation_ui)
+        # self.a.show()
+        #ret=self.a.exec_()
+        def callback(selectedp):
+            
+            #self.object.textsource=None
+            pid,pexe,hwnd=(  selectedp)   
         
-        ret=self.a.exec_()
-        if show1:
-            self.show()
-        if(ret):  
-            pid,pexe,hwnd=( self.a.selectedp)   
-         
             arch=getarch(pid)
             if arch is None:
                 return
             if   self.object.textsource:
                 self.object.textsource.end()  
-               
+            
             self.object.hookselectdialog.changeprocessclearsignal.emit()
             if self.object.savetextractor:
                 self.object.textsource=self.object.savetextractor
@@ -72,8 +71,8 @@ def settingtextractor(self,show1 ):
                 
                 self.object.savetextractor=self.object.textsource 
             settingsource(self)
-        else:
-            self.object.textsource=None
+        self.object.AttachProcessDialog.callback=callback
+        self.object.AttachProcessDialog.show() 
          
 def settingsource(self):
     if globalconfig['sourcestatus']['textractor']==False:
@@ -108,8 +107,8 @@ def textsourcechange(self,who,checked):
             self.object.starttextsource() 
         self.selectbutton.setEnabled(globalconfig['sourcestatus']['textractor']) 
         self.selecthookbutton.setEnabled(globalconfig['sourcestatus']['textractor'])
-        if who=='textractor':
-            settingtextractor(self,True)
+        if who=='textractor' and checked:
+            settingtextractor(self )
         
         self.object.translation_ui.showhidetoolbuttons()
     # 翻译设定标签栏
