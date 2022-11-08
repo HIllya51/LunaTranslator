@@ -49,8 +49,10 @@ def settingtextractor(self ):
         # self.a=gui.attachprocessdialog.AttachProcessDialog(self.object.translation_ui)
         # self.a.show()
         #ret=self.a.exec_()
-        def callback(selectedp):
-            
+        self.object.AttachProcessDialog.callback=functools.partial(callback,self)
+        self.object.AttachProcessDialog.show() 
+def callback(self,selectedp) :
+    
             #self.object.textsource=None
             pid,pexe,hwnd=(  selectedp)   
         
@@ -71,9 +73,7 @@ def settingtextractor(self ):
                 
                 self.object.savetextractor=self.object.textsource 
             settingsource(self)
-        self.object.AttachProcessDialog.callback=callback
-        self.object.AttachProcessDialog.show() 
-         
+        
 def settingsource(self):
     if globalconfig['sourcestatus']['textractor']==False:
                 return 
