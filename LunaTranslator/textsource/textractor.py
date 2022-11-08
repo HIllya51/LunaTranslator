@@ -25,32 +25,14 @@ class textractor(basetext  ):
     def reset(self,object,textgetmethod,hookselectdialog,pid,hwnd,pname,autostart=False,autostarthookcode=[])  : 
         
         self.arch=getarch(pid) 
-        try:
-            with open(pname,'rb') as ff:
-                bs=ff.read() 
-            self.md5=hashlib.md5(bs).hexdigest()
-            self.sqlfname='./transkiroku/'+self.md5+'_'+os.path.basename(pname).replace('.'+os.path.basename(pname).split('.')[-1],'.sqlite') 
-            self.sqlfname_all='./transkiroku/'+self.md5+'_'+os.path.basename(pname).replace('.'+os.path.basename(pname).split('.')[-1],'.premt_synthesize.sqlite') 
-            self.jsonfname='./transkiroku/'+self.md5+'_'+os.path.basename(pname).replace('.'+os.path.basename(pname).split('.')[-1],'.json')
-            def loadjson(self):
-                if os.path.exists(self.jsonfname):
-                    with open(self.jsonfname,'r',encoding='utf8') as ff:
-                        self.json=json.load(ff)
-                else:
-                    self.json={}
-            threading.Thread(target=loadjson,args=(self,)).start()
-            self.sqlwrite=sqlite3.connect(self.sqlfname,check_same_thread = False)
-            self.sqlwrite2=sqlite3.connect(self.sqlfname_all,check_same_thread = False)
-            try:
-                self.sqlwrite.execute('CREATE TABLE artificialtrans(id INTEGER PRIMARY KEY AUTOINCREMENT,source TEXT,machineTrans TEXT,userTrans TEXT);')
-            except:
-                pass
-            try:
-                self.sqlwrite2.execute('CREATE TABLE artificialtrans(id INTEGER PRIMARY KEY AUTOINCREMENT,source TEXT,machineTrans TEXT);')
-            except:
-                pass
-        except:
-            print_exc()
+        
+        with open(pname,'rb') as ff:
+            bs=ff.read() 
+        self.md5=hashlib.md5(bs).hexdigest()
+        self.sqlfname='./transkiroku/'+self.md5+'_'+os.path.basename(pname).replace('.'+os.path.basename(pname).split('.')[-1],'.sqlite') 
+        self.sqlfname_all='./transkiroku/'+self.md5+'_'+os.path.basename(pname).replace('.'+os.path.basename(pname).split('.')[-1],'.premt_synthesize.sqlite') 
+        self.jsonfname='./transkiroku/'+self.md5+'_'+os.path.basename(pname).replace('.'+os.path.basename(pname).split('.')[-1],'.json')
+            
         self.hookdatacollecter={}
         self.hookdatasort=[]
         self.reverse={}

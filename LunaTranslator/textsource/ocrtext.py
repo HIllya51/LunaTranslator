@@ -115,32 +115,13 @@ class ocrtext(basetext):
         self.ending=False
         self.lastocrtime=0
         self.hwnd=None
-        try:
-             
-            self.md5='0'
-            self.sqlfname='./transkiroku/0_ocr.sqlite'
-            self.sqlfname_all='./transkiroku/0_ocr.premt_synthesize.sqlite'
-            self.jsonfname='./transkiroku/0_ocr.json'
-            def loadjson(self):
-                if os.path.exists(self.jsonfname):
-                    with open(self.jsonfname,'r',encoding='utf8') as ff:
-                        self.json=json.load(ff)
-                else:
-                    self.json={}
-            threading.Thread(target=loadjson,args=(self,)).start()
-            self.sqlwrite=sqlite3.connect(self.sqlfname,check_same_thread = False)
-            self.sqlwrite2=sqlite3.connect(self.sqlfname_all,check_same_thread = False)
-            try:
-                self.sqlwrite.execute('CREATE TABLE artificialtrans(id INTEGER PRIMARY KEY AUTOINCREMENT,source TEXT,machineTrans TEXT,userTrans TEXT);')
-            except:
-                pass
-            try:
-                self.sqlwrite2.execute('CREATE TABLE artificialtrans(id INTEGER PRIMARY KEY AUTOINCREMENT,source TEXT,machineTrans TEXT);')
-            except:
-                pass
-        except:
-            print_exc()
-        super( ).__init__(textgetmethod) 
+        
+        self.md5='0'
+        self.sqlfname='./transkiroku/0_ocr.sqlite'
+        self.sqlfname_all='./transkiroku/0_ocr.premt_synthesize.sqlite'
+        self.jsonfname='./transkiroku/0_ocr.json'
+        
+        super(ocrtext,self ).__init__(textgetmethod) 
     def gettextthread(self ):
                  
             if self.object.rect is None:

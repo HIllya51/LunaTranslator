@@ -27,10 +27,9 @@ import json
 from gui.inputdialog import autoinitdialog,getsomepath1
 
 import os
-import win32con,win32api,win32process,win32gui
-self_pid=os.getpid() 
-from PyQt5.QtWinExtras  import QtWin  
- 
+import win32con,win32api 
+self_pid=os.getpid()  
+
 def autosaveshow(object):
      
     dialog = QDialog(object,Qt.WindowCloseButtonHint)  # 自定义一个dialog
@@ -129,8 +128,9 @@ def autostarthookfunction(self,pid,hwnd,pexe,hookcode):
         from textsource.textractor import textractor
         self.object.hookselectdialog.changeprocessclearsignal.emit() 
         self.object.textsource=textractor(self.object,self.object.textgetmethod,self.object.hookselectdialog,pid,hwnd,pexe,True,hookcode)  
- 
+
 def minmaxmoveobservefunc(self):
+        
         while(True):
                 x=self.minmaxmoveoberve.stdout.readline()
                  
@@ -168,6 +168,8 @@ def minmaxmoveobservefunc(self):
                                 self.object.translation_ui.hookfollowsignal.emit(4,(0,0))
                         elif action==4 and  globalconfig['minifollow']:
                                 self.object.translation_ui.hookfollowsignal.emit(3,(0,0))
+                                 
+                                self.delayhideflag=False
                      if action==5 and  globalconfig['focusfollow']: 
                         try:
                                 if pid==self.object.translation_ui.callmagpie.pid:
@@ -180,18 +182,21 @@ def minmaxmoveobservefunc(self):
                         
                         elif pid==self.object.textsource.pid: 
                                 if self.object.translation_ui.isHidden():
-                                        self.object.translation_ui.hookfollowsignal.emit(3,(0,0)) 
-                                
+                                        self.object.translation_ui.hookfollowsignal.emit(3,(0,0))  
+                                self.delayhideflag=False
                         else:
                                 
                                 def delayhide():
+                                         
+                                        self.delayhideflag=True
                                         time.sleep(0.3)
                                         plist=getwindowlist()
                                         if self.object.textsource.pid not in plist:
                                                 #print('game exit') 
                                                 self.object.textsource=None
                                         else:
-                                                self.object.translation_ui.hookfollowsignal.emit(4,(0,0))
+                                                if self.delayhideflag:       
+                                                        self.object.translation_ui.hookfollowsignal.emit(4,(0,0))
                                 threading.Thread(target=delayhide).start()
                 except:
                   #print_exc()
