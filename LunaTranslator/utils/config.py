@@ -28,6 +28,7 @@ postprocessconfig=tryreadconfig('postprocessconfig.json')
 noundictconfig=tryreadconfig('noundictconfig.json')
 transerrorfixdictconfig=tryreadconfig('transerrorfixdictconfig.json')
 savehook_new=tryreadconfig('savehook_new.json') 
+savehook_new2=tryreadconfig('savehook_new2.json') 
 
 translatorsetting=tryreadconfig('translatorsetting.json') 
 ocrsetting=tryreadconfig('ocrsetting.json') 
@@ -110,3 +111,5 @@ def saveallconfig():
 
         with open('./userconfig/savehook_new.json','w',encoding='utf8') as ff:
                 ff.write(json.dumps(savehook_new,ensure_ascii=False))
+        with open('./userconfig/savehook_new2.json','w',encoding='utf8') as ff:
+                ff.write(json.dumps(savehook_new2,ensure_ascii=False))

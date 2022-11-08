@@ -20,7 +20,7 @@ import functools
 from PyQt5.QtWidgets import QDialogButtonBox,QDialog,QComboBox,QFormLayout,QSpinBox,QVBoxLayout,QLineEdit
 from PyQt5.QtCore import Qt,QSize 
 import subprocess
-from utils.config import globalconfig ,savehook_new
+from utils.config import globalconfig ,savehook_new,savehook_new2
 from utils.getpidlist import getwindowlist,getExeIcon
 import threading
 import json
@@ -39,6 +39,15 @@ def autosaveshow(object):
     formLayout = QVBoxLayout(dialog)  # 配置layout
     if True:
         model=QStandardItemModel(  dialog)
+        table = QTableView(dialog)
+        #table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+        table.horizontalHeader().setSectionResizeMode(QHeaderView.Interactive)
+        table.setSelectionBehavior(QAbstractItemView.SelectRows)
+        table.setSelectionMode( (QAbstractItemView.SingleSelection)      )
+        table.setWordWrap(False) 
+        table.setModel(model)
+        table.horizontalHeader().setStretchLastSection(True)
+        table.setEditTriggers(QAbstractItemView.NoEditTriggers)
         row=0
         for k in savehook_new:                                   # 2
                 item = QStandardItem('')
@@ -49,63 +58,50 @@ def autosaveshow(object):
                     icon=transparent
                 icon=QIcon(icon)
                 item.setIcon(icon)
-                model.setItem(row, 0, item)
-                item = QStandardItem(k)
                 model.setItem(row, 1, item)
+                
+                item = QStandardItem(k)
+                model.setItem(row, 2, item)
+                item = QStandardItem('')
+                model.setItem(row, 0, item)
+                if k not in savehook_new2:
+                        savehook_new2[k]=False
+                table.setIndexWidget(model.index(row, 0),object.getsimpleswitch(savehook_new2,k))
                 # item = QStandardItem(json.dumps(js[k],ensure_ascii=False))
                 # model.setItem(row, 2, item)
                 row+=1
-        model.setHorizontalHeaderLabels(['图标', '游戏'])#,'HOOK'])
-        table = QTableView(dialog)
-        #table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
-        table.horizontalHeader().setSectionResizeMode(QHeaderView.Interactive)
-        table.setSelectionBehavior(QAbstractItemView.SelectRows)
-        table.setSelectionMode( (QAbstractItemView.SingleSelection)      )
-        table.setWordWrap(False) 
-        table.setModel(model)
-        table.horizontalHeader().setStretchLastSection(True)
-        table.setEditTriggers(QAbstractItemView.NoEditTriggers)
+        model.setHorizontalHeaderLabels(['使用LE','图标', '游戏'])#,'HOOK'])
+        
         #table.clicked.connect(self.show_info)
         button=QPushButton(dialog)
         button.setText('开始游戏')
         def clicked(): 
                 try:
-                    if os.path.exists(model.item(table.currentIndex().row(),1).text()):
+                    game=model.item(table.currentIndex().row(),2).text() 
+                    if os.path.exists(game):
                         #subprocess.Popen(model.item(table.currentIndex().row(),1).text()) 
-                        game=model.item(table.currentIndex().row(),1).text()
-                        win32api.ShellExecute(None, "open", game, "", os.path.dirname(game), win32con.SW_SHOW)
+                        print(game)
+                        le=os.path.join(os.path.abspath(globalconfig['LocaleEmulator']),'LEProc.exe')
+                        if savehook_new2[game] and os.path.exists(le):
+                                win32api.ShellExecute(None, "open", le, f'-run "{game}"', os.path.dirname(game), win32con.SW_SHOW)
+                        else:
+                                win32api.ShellExecute(None, "open", game, "", os.path.dirname(game), win32con.SW_SHOW)
+                                 
                          
                         dialog.close() 
                 except:
                         print_exc()
         button.clicked.connect(clicked)
-        button4=QPushButton(dialog)
-        button4.setText('使用LocaleEmulator开始游戏')
-        def clicked4():  
-                try:
-                    if os.path.exists(model.item(table.currentIndex().row(),1).text()):
-                        
-                        le=os.path.join(os.path.abspath(globalconfig['LocaleEmulator']),'LEProc.exe')
-
-                        if os.path.exists(le):
-                                #print('"'+le+'"   "'+ model.item(table.currentIndex().row(),1).text()+'"')
-                                game=model.item(table.currentIndex().row(),1).text()
-                                win32api.ShellExecute(None, "open", le, f'-run "{game}"', os.path.dirname(game), win32con.SW_SHOW)
-                                #subprocess.Popen('"'+le+'"   "'+ model.item(table.currentIndex().row(),1).text()+'"' ) 
-                                dialog.close() 
-                except:
-                        print_exc()
-        button4.clicked.connect(clicked4)
+         
         button2=QPushButton(dialog)
         button2.setText('删除游戏')
         def clicked2(): 
-                savehook_new.pop(model.item(table.currentIndex().row(),1).text())
+                savehook_new.pop(model.item(table.currentIndex().row(),2).text())
                 model.removeRow(table.currentIndex().row())
         button2.clicked.connect(clicked2)
          
         formLayout.addWidget(table) 
-        formLayout.addWidget(button)
-        formLayout.addWidget(button4)
+        formLayout.addWidget(button) 
         formLayout.addWidget(button2) 
         dialog.resize(QSize(800,400))
     dialog.show()
