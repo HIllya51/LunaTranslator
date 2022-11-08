@@ -22,7 +22,7 @@ import gui.selecthook
 def setTab7(self) :   
         grids=[  ] 
         for post in postprocessconfig:
-            l=[(QLabel(postprocessconfig[post]['name'] ),4),
+            l=[(QLabel(postprocessconfig[post]['name'] ),6),
                 self.getsimpleswitch(postprocessconfig[post],'use')]
                 
             if 'args' in postprocessconfig[post]:
@@ -39,19 +39,19 @@ def setTab7(self) :
                 os.startfile( os.path.abspath('./postprocess/post.py'))
         p.clicked.connect(lambda x:_openfile())
 
-        grids.append([(p,5)])
+        grids.append([(p,6)])
         def __(x):
             globalconfig['gongxiangcishu'].__setitem__('use',x)
             self.object.loadvnrshareddict()
         grids+=[
 
-            [(QLabel('使用专有名词翻译' ),4),
+            [(QLabel('使用专有名词翻译' ),6),
                 self.getsimpleswitch(noundictconfig,'use'),
                 self.getcolorbutton(globalconfig,'',callback=lambda x:  noundictconfigdialog(self,noundictconfig,'专有名词翻译设置(游戏ID 0表示全局)'),icon='fa.gear',constcolor="#FF69B4")],
-            [(QLabel('使用翻译结果修正' ),4),
+            [(QLabel('使用翻译结果修正' ),6),
                 self.getsimpleswitch(transerrorfixdictconfig,'use'),
                 self.getcolorbutton(globalconfig,'',callback=lambda x:  noundictconfigdialog1(self,transerrorfixdictconfig,'翻译结果替换设置',['翻译','替换'],'./userconfig/transerrorfixdictconfig.json'),icon='fa.gear',constcolor="#FF69B4")],
-            [(QLabel('使用VNR共享辞书' ),4),
+            [(QLabel('使用VNR共享辞书' ),6),
                 self.getsimpleswitch(globalconfig['gongxiangcishu'],'use',callback =lambda x:__(x)),
                 self.getcolorbutton(globalconfig,'',callback=lambda x:  getsomepath1(self,'共享辞书',globalconfig['gongxiangcishu'],'path','共享辞书:',self.object.loadvnrshareddict,False,'*.xml') ,icon='fa.gear',constcolor="#FF69B4"),'','','','','',''],
             
@@ -102,7 +102,7 @@ def noundictconfigdialog1(object,configdict,title,label=[  '日文','翻译'],fn
         configdict['dict']=newdict
         with open(fname,'w',encoding='utf-8') as ff:
             import json
-            ff.write(json.dumps(configdict,ensure_ascii=False,sort_keys=False, indent=4))
+            ff.write(json.dumps(configdict,ensure_ascii=False,sort_keys=False, indent=6))
         dialog.close()
     button3.clicked.connect(clicked3)
     formLayout.addWidget(table)
@@ -171,7 +171,7 @@ def noundictconfigdialog(object,configdict,title,label=['游戏ID MD5' ,'日文'
         configdict['dict']=newdict
         with open(fname,'w',encoding='utf-8') as ff:
             import json
-            ff.write(json.dumps(configdict,ensure_ascii=False,sort_keys=False, indent=4))
+            ff.write(json.dumps(configdict,ensure_ascii=False,sort_keys=False, indent=6))
         dialog.close()
     button3.clicked.connect(clicked3)
     search=QHBoxLayout()
@@ -195,8 +195,8 @@ def noundictconfigdialog(object,configdict,title,label=['游戏ID MD5' ,'日文'
                 table.hideRow(row)
 
              
-    button4.clicked.connect(clicked4)
-    search.addWidget(button4)
+    button4.clicked.connect(clicked6)
+    search.addWidget(button6)
     
     formLayout.addWidget(table)
     formLayout.addLayout(search)

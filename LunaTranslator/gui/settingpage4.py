@@ -116,10 +116,10 @@ def setTab4(self) :
         
         grids=[
                 
-                [(QLabel('检测到游戏时自动开始'),1),(self.getsimpleswitch(globalconfig,'autostarthook'),1),'','','',''],
+                [(QLabel('检测到游戏时自动开始'),5),(self.getsimpleswitch(globalconfig,'autostarthook'),1),'','','','','','','','',''],
                 
-                [(QLabel('LocaleEmulator路径设置'),1),(self.getcolorbutton(globalconfig,'',callback=lambda x: getsomepath1(self,'LocaleEmulator 路径',globalconfig,'LocaleEmulator','LocaleEmulator:',isdir=True),icon='fa.gear',constcolor="#FF69B4"),1)],
-                [(QLabel('已保存游戏'),1),(self.getcolorbutton(globalconfig,'',icon='fa.gamepad',constcolor="#FF69B4",callback=lambda:autosaveshow(self)),1)],
+                [(QLabel('LocaleEmulator路径设置'),5),(self.getcolorbutton(globalconfig,'',callback=lambda x: getsomepath1(self,'LocaleEmulator 路径',globalconfig,'LocaleEmulator','LocaleEmulator:',isdir=True),icon='fa.gear',constcolor="#FF69B4"),1)],
+                [(QLabel('已保存游戏'),5),(self.getcolorbutton(globalconfig,'',icon='fa.gamepad',constcolor="#FF69B4",callback=lambda:autosaveshow(self)),1)],
 
                 
                 

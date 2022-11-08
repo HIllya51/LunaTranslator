@@ -151,16 +151,16 @@ def setTabTwo(self) :
             ],
             [
                 (QLabel("预翻译采用模糊匹配"),5),(self.getsimpleswitch(globalconfig  ,'premtsimiuse'),1),'','','',
-                (QLabel("模糊匹配相似度限制"),5),(self.getspinbox(0,500,globalconfig,'premtsimi'),2),'', 
+                (QLabel("模糊匹配相似度限制"),6),(self.getspinbox(0,500,globalconfig,'premtsimi'),2),'', 
             ],[
-                (QLabel("使用代理(ip:port)"),5),(self.getsimpleswitch(globalconfig  ,'useproxy',callback=lambda x: _setproxy(x)),1),
+                (QLabel("使用代理(ip:port)"),5),(self.getsimpleswitch(globalconfig  ,'useproxy',callback=lambda x: _setproxy(x)),1),'',
                 (proxy,8),(btn,2),  
             ],
             
-                [(QLabel('录制翻译文件'),5),(self.getsimpleswitch(globalconfig,'transkiroku'),1),
-                 (QLabel('优先录制的翻译源'),6),(transkirokuuse,4),
+                [(QLabel('录制翻译文件'),5),(self.getsimpleswitch(globalconfig,'transkiroku'),1),'',
+                 (QLabel('优先录制的翻译源'),5),(transkirokuuse,5),
                  
-                 (bt,6) ,
+                 (bt,8) ,
                  ],
             ['']
         ] 

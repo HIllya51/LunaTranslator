@@ -53,6 +53,7 @@ class Settin(QMainWindow) :
          win32gui.SetWindowPos(int(self. winId()), win32con.HWND_TOPMOST, 0, 0, 0, 0,win32con. SWP_NOACTIVATE |win32con. SWP_NOSIZE | win32con.SWP_NOMOVE) 
          return super().showEvent(a0)
     def automakegrid(self,grid,lis): 
+        maxl=0
         for nowr,line in enumerate(lis):
                 nowc=0
                 for i in line:
@@ -64,6 +65,14 @@ class Settin(QMainWindow) :
                                 wid,cols=i
                         grid.addWidget(wid,nowr,nowc,1,cols)
                         nowc+=cols   
+                maxl=max(maxl,nowc)
+                print(nowc)
+        ww=self.window_width-180*self.rate-self.object.scrollwidth
+        
+        
+        for c in range(maxl):
+
+            grid.setColumnMinimumWidth(c,ww//maxl)
     def getspinbox(self,mini,maxi,d,key,double=False, step=1,callback=None,name=None ):
         if double:
             s=QDoubleSpinBox()

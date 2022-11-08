@@ -48,11 +48,11 @@ def setTab6(self) :
         grids+=[ 
             [''],
             [''],
-            [(QLabel("优化横向OCR漏字"),5),self.getsimpleswitch(globalconfig ,'ocr_hori_extend')],
-            [(QLabel("使用竖排OCR(效果不佳)"),5),self.getsimpleswitch(globalconfig ,'verticalocr')],
-            [(QLabel("每隔一段时间必然进行一次OCR"),5),self.getsimpleswitch(globalconfig ,'mustocr')],
-            [(QLabel("OCR最长间隔时间(s)"),5),(self.getspinbox(0.1,100,globalconfig,'mustocr_interval',double=True,step=0.1  ),2)],
-            [(QLabel("OCR最短间隔时间(s)"),5),(self.getspinbox(0.1,100,globalconfig,'ocrmininterval',double=True,step=0.1  ),2)],
+            [(QLabel("优化横向OCR漏字"),6),self.getsimpleswitch(globalconfig ,'ocr_hori_extend')],
+            [(QLabel("使用竖排OCR(效果不佳)"),6),self.getsimpleswitch(globalconfig ,'verticalocr')],
+            [(QLabel("每隔一段时间必然进行一次OCR"),6),self.getsimpleswitch(globalconfig ,'mustocr')],
+            [(QLabel("OCR最长间隔时间(s)"),6),(self.getspinbox(0.1,100,globalconfig,'mustocr_interval',double=True,step=0.1  ),2)],
+            [(QLabel("OCR最短间隔时间(s)"),6),(self.getspinbox(0.1,100,globalconfig,'ocrmininterval',double=True,step=0.1  ),2)],
           
         ] 
         self.yitiaolong("OCR设置",grids)
