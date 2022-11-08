@@ -9,8 +9,7 @@ import ctypes
 import json,win32api,win32gui
 from ctypes import c_int32,c_char_p,c_uint32,c_float
 import time,threading 
-import os
- 
+import os 
 class Dict2Obj(dict):
     
     def __getattr__(self, key): 
@@ -21,6 +20,7 @@ class Dict2Obj(dict):
             if isinstance(value,dict):
                 value = Dict2Obj(value)
             return value 
+ 
 def callmagpie(  queue):# 0x2000|\0x2|\0x200):  
     app1=QApplication(sys.argv)
     QCoreApplication.setAttribute(Qt.AA_UseHighDpiPixmaps, True)  

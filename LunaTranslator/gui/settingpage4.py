@@ -205,7 +205,7 @@ def minmaxmoveobservefunc(self):
                                 self.object.translation_ui.hookfollowsignal.emit(4,(0,0))
                         elif action==4 and  globalconfig['minifollow']:
                                 self.object.translation_ui.hookfollowsignal.emit(3,(0,0))
-                     if action==5: 
+                     if action==5 and  globalconfig['focusfollow']: 
                         try:
                                 if pid==self.object.translation_ui.callmagpie.pid:
                                         continue
