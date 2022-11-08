@@ -20,9 +20,7 @@ class textractor(basetext  ):
         self.newline=Queue() 
         self.reset(object,textgetmethod,hookselectdialog,pid,hwnd,pname,autostart,autostarthookcode)
         
-        self.t=Thread(target=self.gettextthread_)
-        self.t.setDaemon(True)
-        self.t.start()
+        super(textractor,self).__init__(textgetmethod)
          
     def reset(self,object,textgetmethod,hookselectdialog,pid,hwnd,pname,autostart=False,autostarthookcode=[])  : 
         

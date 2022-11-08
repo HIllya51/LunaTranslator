@@ -8,9 +8,8 @@ import os
 import shutil
 import zipfile
 import threading
-from threading import Lock
-from contextlib import closing
-from utils.config import globalconfig ,postprocessconfig,savehook_new
+from threading import Lock 
+from utils.config import globalconfig  
 import gui.switchbutton
 def getversion(self):
     with open('files/about.txt','r',encoding='utf8') as ff:
@@ -110,8 +109,8 @@ def updateprogress(self,text,val):
     self.downloadprogress.setFormat(text)
      
 def setTab_about(self) :
-        with open('files/version.txt','r')as ff:
-            self.version=ff.read() 
+        
+        self.version='v1.24.2'
         self.tab_about = QWidget()
         self.tab_widget.addTab(self.tab_about, "资源下载&更新") 
         label = QLabel(self.tab_about)

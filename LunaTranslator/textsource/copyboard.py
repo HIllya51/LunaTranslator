@@ -25,7 +25,7 @@ class copyboard(basetext):
                     self.json={}
             threading.Thread(target=loadjson,args=(self,)).start()
             self.sqlwrite=sqlite3.connect(self.sqlfname,check_same_thread = False)
-            self.sqlwrite2=sqlite3.connect(self.sqlfname_all,check_same_thread = False)
+            self.sqlwrite2=sqlite3.connect(self.sqlfname_all,check_same_thread = False) 
             try:
                 self.sqlwrite.execute('CREATE TABLE artificialtrans(id INTEGER PRIMARY KEY AUTOINCREMENT,source TEXT,machineTrans TEXT,userTrans TEXT);')
             except:

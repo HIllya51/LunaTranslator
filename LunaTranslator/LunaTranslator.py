@@ -53,8 +53,7 @@ class MAINUI(QObject) :
         self.translators={}
         self.reader=None
         self.rect=None
-        self.textsource=None
-        self.savetextractor=None
+        self.textsource=None 
         super(MAINUI,self).__init__( )
         self.mainuiloadok.connect(self.mainuiloadafter)
     @threader  
@@ -219,6 +218,7 @@ class MAINUI(QObject) :
         for engine in self.translators:
             #print(engine)
             self.translators[engine].gettask((paste_str,paste_str_solve,skip)) 
+        self.textsource.lock.acquire()
         try:
             if skip==False and globalconfig['transkiroku']  and 'sqlwrite2' in dir(self.textsource):
                 paste_str=paste_str.replace('"','""')   
@@ -235,6 +235,7 @@ class MAINUI(QObject) :
                     self.textsource.sqlwrite2.commit() 
         except:
             print_exc()
+        self.textsource.lock.release()
     @threader
     def startreader(self):
         if globalconfig['reader']:
@@ -345,11 +346,14 @@ class MAINUI(QObject) :
              
             res=res.replace('"','""')   
             contentraw=contentraw.replace('"','""')   
+            self.textsource.lock.acquire()
             try:
                 if   globalconfig['transkiroku'] and 'sqlwrite' in dir(self.textsource):
                     if globalconfig['transkirokuuse']==classname:
+                        
                         self.textsource.sqlwrite.execute(f'UPDATE artificialtrans SET machineTrans = "{res}" WHERE source = "{contentraw}"')
                         self.textsource.sqlwrite.commit() 
+                        
                     elif classname not in ['rengong','premt']:
                         ret=self.textsource.sqlwrite.execute(f'SELECT * FROM artificialtrans WHERE source = "{contentraw}"').fetchone()
                         
@@ -372,6 +376,7 @@ class MAINUI(QObject) :
                     self.textsource.sqlwrite2.commit() 
             except:
                 print_exc()
+            self.textsource.lock.release()
     def fanyiloader(self,classname):
                     try:
                         aclass=importlib.import_module('translator.'+classname).TS

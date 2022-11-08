@@ -120,45 +120,16 @@ def setTab4(self) :
         self.yitiaolong("HOOK设置",grids) 
         self.minmaxmoveoberve=subproc('./files/minmaxmoveobserve.exe',stdout=subprocess.PIPE,keep=True)  
         self.minmaxmoveobservethread=threading.Thread(target=minmaxmoveobservefunc,args=(self,))
-        self.minmaxmoveobservethread.start()
-        #threading.Thread(target=minmaxmoveobservefunc2,args=(self,)).start() 
+        self.minmaxmoveobservethread.start() 
         self.autostarthooksignal.connect(functools.partial(autostarthookfunction,self))
         
 
 def autostarthookfunction(self,pid,hwnd,pexe,hookcode):
            
         from textsource.textractor import textractor
-        self.object.hookselectdialog.changeprocessclearsignal.emit()
-        if self.object.savetextractor:
-                self.object.textsource=self.object.savetextractor
-                self.object.textsource.reset(self.object,self.object.textgetmethod,self.object.hookselectdialog,pid,hwnd,pexe,True,hookcode)
-
-        else:
-                self.object.textsource=textractor(self.object,self.object.textgetmethod,self.object.hookselectdialog,pid,hwnd,pexe,True,hookcode) 
-                self.object.savetextractor=self.object.textsource
-
-# def minmaxmoveobservefunc2(self):
-#         while(True):
-#                 time.sleep(0.3)
-                 
-#                 try:
-#                         hwnd=win32gui.GetForegroundWindow()
-
-#                         pid=win32process.GetWindowThreadProcessId(hwnd) [1]
-                        
-#                         if globalconfig['focusfollow']:
-#                              if self.object.textsource.pid:
-#                                 if pid==self_pid:
-#                                         pass
-#                                 elif pid==self.object.textsource.pid: 
-#                                         if self.object.translation_ui.isHidden():
-#                                                 self.object.translation_ui.hookfollowsignal.emit(3,(0,0)) 
-                                        
-#                                 else:
-#                                         self.object.translation_ui.hookfollowsignal.emit(4,(0,0))
-#                 except:
-#                         #print_exc()
-#                         pass
+        self.object.hookselectdialog.changeprocessclearsignal.emit() 
+        self.object.textsource=textractor(self.object,self.object.textgetmethod,self.object.hookselectdialog,pid,hwnd,pexe,True,hookcode)  
+ 
 def minmaxmoveobservefunc(self):
         while(True):
                 x=self.minmaxmoveoberve.stdout.readline()
@@ -203,15 +174,25 @@ def minmaxmoveobservefunc(self):
                                         continue
                         except:
                                 pass
+                         
                         if pid==self_pid:
                                 pass
-                         
+                        
                         elif pid==self.object.textsource.pid: 
                                 if self.object.translation_ui.isHidden():
                                         self.object.translation_ui.hookfollowsignal.emit(3,(0,0)) 
                                 
                         else:
-                                self.object.translation_ui.hookfollowsignal.emit(4,(0,0))
+                                
+                                def delayhide():
+                                        time.sleep(0.3)
+                                        plist=getwindowlist()
+                                        if self.object.textsource.pid not in plist:
+                                                #print('game exit') 
+                                                self.object.textsource=None
+                                        else:
+                                                self.object.translation_ui.hookfollowsignal.emit(4,(0,0))
+                                threading.Thread(target=delayhide).start()
                 except:
                   #print_exc()
                   pass

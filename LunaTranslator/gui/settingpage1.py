@@ -63,15 +63,8 @@ def callback(self,selectedp) :
                 self.object.textsource.end()  
             
             self.object.hookselectdialog.changeprocessclearsignal.emit()
-            if self.object.savetextractor:
-                self.object.textsource=self.object.savetextractor
-                self.object.textsource.reset(self.object,self.object.textgetmethod,self.object.hookselectdialog,pid,hwnd,pexe )
-
-            else:
-                
-                self.object.textsource=textractor(self.object,self.object.textgetmethod,self.object.hookselectdialog,pid,hwnd,pexe ) 
-                
-                self.object.savetextractor=self.object.textsource 
+            #  
+            self.object.textsource=textractor(self.object,self.object.textgetmethod,self.object.hookselectdialog,pid,hwnd,pexe )  
             settingsource(self)
         
 def settingsource(self):
