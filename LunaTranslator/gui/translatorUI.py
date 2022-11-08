@@ -32,8 +32,7 @@ class QTitleButton(QPushButton):
         super(QTitleButton, self).__init__(*args)
         self.setFont(QFont("Webdings"))   
   
-class QUnFrameWindow(QWidget): 
-    keeptopsignal=pyqtSignal()
+class QUnFrameWindow(QWidget):  
     clear_text_sign = pyqtSignal() 
     displayres =  pyqtSignal(str,str ) 
     displayraw1 =  pyqtSignal(list, str,str,int )  
@@ -54,9 +53,7 @@ class QUnFrameWindow(QWidget):
     fullsgame_signal=pyqtSignal()
     quitf_signal=pyqtSignal() 
     refreshtooliconsignal=pyqtSignal()
-    muteprocessignal=pyqtSignal()
-    def keeptopfuntion(self):
-        win32gui.BringWindowToTop(int(self.winId()))
+    muteprocessignal=pyqtSignal() 
     def hookfollowsignalsolve(self,code,other): 
         if code==3:
             if self.hideshownotauto:
@@ -226,8 +223,7 @@ class QUnFrameWindow(QWidget):
         self._padding = 5*self.rate  # 设置边界宽度为5
         self.setMinimumWidth(300)
         self.hideshownotauto=True
-        self.transhis=gui.transhist.transhist(self) 
-        self.keeptopsignal.connect(self.keeptopfuntion) 
+        self.transhis=gui.transhist.transhist(self)  
         self.hookfollowsignal.connect(self.hookfollowsignalsolve) 
         self.displayres.connect(self.showres)
         self.displayraw1.connect(self.showraw)  
@@ -454,8 +450,7 @@ class QUnFrameWindow(QWidget):
                         if True:#self.isletgamefullscreened:  
                             win32gui.SetForegroundWindow(hwnd )   
                             self.multiprocesshwnd.put([os.path.abspath(globalconfig['magpiepath']),hwnd,globalconfig['magpiescalemethod'],globalconfig['magpieflags'],globalconfig['magpiecapturemethod']])   
-                            if self.showhidestate:
-                                self.object.range_ui.letontopisignal.emit() 
+ 
                         else:
                             self.multiprocesshwnd.put([])
                             #win32gui.SetForegroundWindow(self.winId() )   

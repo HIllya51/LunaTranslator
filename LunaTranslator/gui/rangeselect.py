@@ -7,20 +7,10 @@ from utils.config import globalconfig
  
 
 class rangeadjust(QMainWindow) :
-    letontopisignal=pyqtSignal()
-    def __makerangetop(self):
-        for i in range(3):
-            time.sleep(0.3)
-            try:    
-                win32gui.SetWindowPos(int(self.winId()), win32con.HWND_TOPMOST, 0, 0, 0, 0,win32con. SWP_NOACTIVATE | win32con. SWP_NOSIZE | win32con.SWP_NOMOVE)  
-            except:
-                pass
-    def ontopfun(self):
-        threading.Thread(target=self.__makerangetop).start() 
+ 
     def __init__(self, object):
 
-        super(rangeadjust, self).__init__()
-        self.letontopisignal.connect(self.ontopfun)
+        super(rangeadjust, self).__init__(object.translation_ui) 
         self.object = object  
           
         self.setWindowFlags(Qt.WindowStaysOnTopHint | Qt.FramelessWindowHint | Qt.Tool)
@@ -63,11 +53,11 @@ class rangeadjust(QMainWindow) :
          self.label.setGeometry(0, 0, self.width(), self.height())  
     #     rect = self.geometry() 
     #     self.object.rect=[(rect.left(),rect.top()),(rect.right(),rect.bottom())]  
-class rangeselct(QWidget) :
+class rangeselct(QMainWindow) :
 
-    def __init__(self, object, parent=None) :
+    def __init__(self, object ) :
 
-        super(rangeselct, self).__init__(parent)
+        super(rangeselct, self).__init__(object.translation_ui)
         self.setWindowFlags(Qt.FramelessWindowHint | Qt.Tool)#|Qt.WindowStaysOnTopHint  )
         self.setStyleSheet('''background-color:black; ''')
         self.setWindowOpacity(0.6)
