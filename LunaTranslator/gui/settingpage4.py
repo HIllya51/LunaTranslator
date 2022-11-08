@@ -50,20 +50,16 @@ def autosaveshow(object):
         table.setEditTriggers(QAbstractItemView.NoEditTriggers)
         row=0
         for k in savehook_new:                                   # 2
-                item = QStandardItem('')
+                 
                 transparent=QPixmap(100,100)
                 transparent.fill(QColor.fromRgba(0))
                 icon=getExeIcon(k)
                 if icon is None:
                     icon=transparent
-                icon=QIcon(icon)
-                item.setIcon(icon)
-                model.setItem(row, 1, item)
-                
-                item = QStandardItem(k)
-                model.setItem(row, 2, item)
-                item = QStandardItem('')
-                model.setItem(row, 0, item)
+                icon=QIcon(icon) 
+                model.setItem(row, 1, QStandardItem(icon,'')) 
+                model.setItem(row, 2, QStandardItem(k)) 
+                model.setItem(row, 0, QStandardItem(''))
                 if k not in savehook_new2:
                         savehook_new2[k]=False
                 table.setIndexWidget(model.index(row, 0),object.getsimpleswitch(savehook_new2,k))
