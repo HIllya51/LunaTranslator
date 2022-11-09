@@ -1,5 +1,5 @@
   
-import functools
+import functools,win32api,win32gui,win32process
 import sqlite3
 from PyQt5.QtWidgets import  QWidget,QLabel ,QLineEdit,QSpinBox,QPushButton,QDialog,QVBoxLayout ,QHeaderView,QFileDialog ,QGridLayout
 import functools 
@@ -60,7 +60,7 @@ def autosaveshow(object):
                 model.setItem(row, 2, QStandardItem(k)) 
                 model.setItem(row, 0, QStandardItem(''))
                 if k not in savehook_new2:
-                        savehook_new2[k]=False
+                        savehook_new2[k]=True
                 table.setIndexWidget(model.index(row, 0),object.getsimpleswitch(savehook_new2,k))
                 # item = QStandardItem(json.dumps(js[k],ensure_ascii=False))
                 # model.setItem(row, 2, item)
@@ -121,14 +121,13 @@ def setTab4(self) :
         self.minmaxmoveobservethread=threading.Thread(target=minmaxmoveobservefunc,args=(self,))
         self.minmaxmoveobservethread.start() 
         self.autostarthooksignal.connect(functools.partial(autostarthookfunction,self))
-        
-
+         
 def autostarthookfunction(self,pid,hwnd,pexe,hookcode):
            
         from textsource.textractor import textractor
         self.object.hookselectdialog.changeprocessclearsignal.emit() 
         self.object.textsource=textractor(self.object,self.object.textgetmethod,self.object.hookselectdialog,pid,hwnd,pexe,True,hookcode)  
-
+ 
 def minmaxmoveobservefunc(self):
         
         while(True):
@@ -168,27 +167,22 @@ def minmaxmoveobservefunc(self):
                                 self.object.translation_ui.hookfollowsignal.emit(4,(0,0))
                         elif action==4 and  globalconfig['minifollow']:
                                 self.object.translation_ui.hookfollowsignal.emit(3,(0,0))
-                                 
-                                self.delayhideflag=False
+                                  
                      if action==5 and  globalconfig['focusfollow']: 
-                        try:
-                                if pid==self.object.translation_ui.callmagpie.pid:
-                                        continue
-                        except:
-                                pass
-                         
-                        if pid==self_pid:
-                                self.delayhideflag=False
                         
+                        if pid==self_pid:
+                                self.delayhideflag=False 
                         elif pid==self.object.textsource.pid: 
-                                if self.object.translation_ui.isHidden():
-                                        self.object.translation_ui.hookfollowsignal.emit(3,(0,0))  
+                                self.object.translation_ui.hookfollowsignal.emit(3,(0,0))  
+                                self.delayhideflag=False
+                        elif pid==self.object.translation_ui.callmagpie.pid:
+                                self.object.translation_ui.hookfollowsignal.emit(3,(0,0))  
                                 self.delayhideflag=False
                         else:
-                                
+                                self.delayhideflag=True
                                 def delayhide():
                                          
-                                        self.delayhideflag=True
+                                        
                                         time.sleep(0.3)
                                         plist=getwindowlist()
                                         if self.object.textsource.pid not in plist:

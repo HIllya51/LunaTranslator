@@ -396,7 +396,8 @@ class MAINUI(QObject) :
             
             try:  
                 
-                if self.settin_ui.isHidden():
+                if self.settin_ui.realishide:#isHidden(): 
+                    #子窗口未隐藏，导致为false（甚至是子窗口唤出的进程）
                     win32gui.SetWindowPos(int(self.translation_ui.winId()), win32con.HWND_TOPMOST, 0, 0, 0, 0,win32con. SWP_NOACTIVATE |win32con. SWP_NOSIZE | win32con.SWP_NOMOVE)  
                 else:
                     #win32gui.SetWindowPos(int(self.settin_ui.winId()), win32con.HWND_TOPMOST, 0, 0, 0, 0,win32con. SWP_NOACTIVATE |win32con. SWP_NOSIZE | win32con.SWP_NOMOVE)  

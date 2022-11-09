@@ -51,7 +51,11 @@ class Settin(QMainWindow) :
     fontbigsmallsignal=pyqtSignal(int) 
     def showEvent(self, a0   ) -> None:
          win32gui.SetWindowPos(int(self. winId()), win32con.HWND_TOPMOST, 0, 0, 0, 0,win32con. SWP_NOACTIVATE |win32con. SWP_NOSIZE | win32con.SWP_NOMOVE) 
+         self.realishide=False
          return super().showEvent(a0)
+    def hideEvent(self, a0 ) -> None:
+         self.realishide=True
+         return super().hideEvent(a0)
     def automakegrid(self,grid,lis): 
         maxl=0
         for nowr,line in enumerate(lis):
@@ -122,7 +126,7 @@ class Settin(QMainWindow) :
         #self.setWindowFlag(Qt.Tool,False)
         self.setWindowFlags(self.windowFlags()&~Qt.WindowMinimizeButtonHint)
         self.mp3player=wavmp3player()
-         
+        self.realishide=True
         self.mp3playsignal.connect(self.mp3player.mp3playfunction)
         self.object = object  
         self.needupdate=False
@@ -181,13 +185,7 @@ class Settin(QMainWindow) :
         setTab_about(self)
         
         self.usevoice=0
-     
-    def hideEvent(self,e):
-        if self.object.hookselectdialog.hiding==False:
-            self.object.hookselectdialog.hide()
-        if 'a' in dir(self) and self.a:
-            self.a.close()
-    
+      
     def yitiaolong(self,title,grid):
         lay,t=self. getscrollwidgetlayout(title)
         t.setFixedHeight(len(grid)*30*self.rate)
@@ -223,7 +221,7 @@ background-color:transparent;
         object.setIconSize(QSize(int(w * self.rate),
                                  int(h * self.rate))) 
     def closeEvent(self, event) : 
-        self.closed=True 
+        self.hide()
     def ChangeTranslateColor(self, translate_type,button,item=None,name=None) :
             nottransbutton=['rawtextcolor','backcolor','miaobiancolor','shadowcolor','buttoncolor']
             if translate_type in nottransbutton:

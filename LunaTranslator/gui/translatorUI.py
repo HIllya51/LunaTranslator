@@ -57,7 +57,7 @@ class QUnFrameWindow(QWidget):
     def hookfollowsignalsolve(self,code,other): 
         if code==3:
             if self.hideshownotauto:
-                self.show()
+                self.show() 
         elif code==4:
             if self.hideshownotauto:
                 self.hide() 
