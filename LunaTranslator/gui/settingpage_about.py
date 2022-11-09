@@ -11,6 +11,7 @@ import threading
 from threading import Lock 
 from utils.config import globalconfig  
 import gui.switchbutton
+from utils.downloader import mutithreaddownload
 def getversion(self):
     with open('files/about.txt','r',encoding='utf8') as ff:
         about=ff.read()
@@ -40,77 +41,26 @@ def getversion(self):
         if globalconfig['autoupdate']:
             self.downloadprogress.show()
             self.progresssignal.emit('……',0)
-            try:
-                savep='./update/update.zip'
-                if os.path.exists('update')==False:
-                        os.mkdir('update')
-                with open(savep, "wb") as file:
-                    global file_size
-                    file_size=0
-                    def download(start,end,sz):
-                        headers = {
-                            'Range': f'bytes={start}-{end}',
-                        }
-                        r = requests.get(url,stream=True,headers=headers,verify = False)#stream=True设置流式下载
-                        #分多次下载数据
-                        pos = start
-                        for i in r.iter_content(chunk_size=1024):#设置每次获取的大小
-                            if globalconfig['autoupdate']==False: 
-                                    return
-                            if i:#判断是否为空数据
-                                lock.acquire()  # 获得使用权
-                                file.seek(pos)
-                                file.write(i)
-                                global file_size
-                                file_size+=len(i)
-                                lock.release()  # 释放使用权
-                                self.progresssignal.emit(f'总大小{int(1000*(int(sz/1024)/1024))/1000} MB 进度 {int(10000*(file_size/sz))/100:.2f}%',int(10000*file_size/sz))
-                                pos += 1024
-                                
-                        #print(f'正在下载webdriver 总大小{int(1000*(int(content_size/1024)/1024))/1000} MB 进度 {int(10000*(file_size/content_size))/100}%')
-                        
-                #=====获取资源大小=======
-                    r2 = requests.get(url,stream=True,verify = False)
-                    #print(r2.headers['Content-Length'])#5298163
-                    
-                    #=====分两段来下载视频=======
-                    lock = Lock()#创建锁的锁的对象
-                    
-                    # download(0,1298163)#开头，结尾(不包含)
-                    # download(1298163,5298163)
-                    thread_num = 8
-                    size = int(r2.headers['Content-Length'])
-                    ts=[]
-                    for i in range(thread_num):
-                        if i == thread_num-1:
-                            t1=threading.Thread(target=download,args=(i*(size//thread_num),size,size))
-                            t1.start()
-                            ts.append(t1)
-                        else:
-                            t1 = threading.Thread(target=download, args=(i*(size//thread_num), (i+1)*(size//thread_num),size))
-                            t1.start()
-                            ts.append(t1)
-                    for t in ts:
-                        t.join()
-                    
-                if globalconfig['autoupdate']==False: 
-                    return
+        
+            savep='./update/LunaTranslator.zip'
+            if os.path.exists('update')==False:
+                    os.mkdir('update')
+            def endcallback():
                 if os.path.exists('./update/LunaTranslator'):
                     shutil.rmtree('./update/LunaTranslator')
-                zipf=zipfile.ZipFile('./update/update.zip')
+                zipf=zipfile.ZipFile('./update/LunaTranslator.zip')
                 zipf.extractall('./update')
                 self.needupdate=True
-                
-            except:
-                print_exc()
-                self.progresssignal.emit('自动更新失败，请手动更新',0)
+            mutithreaddownload(savep,url,self.progresssignal.emit,lambda: globalconfig.__getitem__('autoupdate'),endcallback) 
+             
+             
 def updateprogress(self,text,val):
     self.downloadprogress.setValue(val)
     self.downloadprogress.setFormat(text)
      
 def setTab_about(self) :
         
-        self.version='v1.24.2'
+        self.version='v1.24.3'
         self.tab_about = QWidget()
         self.tab_widget.addTab(self.tab_about, "资源下载&更新") 
         label = QLabel(self.tab_about)
@@ -125,7 +75,7 @@ def setTab_about(self) :
         self.updateswitch.clicked.connect(lambda x:  changeupdate( x)) 
 
         self.downloadprogress=QProgressBar(self.tab_about)
-        self.customSetGeometry(self.downloadprogress, 20, 50, 300, 20)
+        self.customSetGeometry(self.downloadprogress, 20, 50, 500, 20)
         
         self.downloadprogress.hide()
         self.downloadprogress.setRange(0,10000)

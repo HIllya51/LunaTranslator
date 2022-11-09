@@ -1,7 +1,5 @@
 <div>
-版本号:%s
-<br>
-最新版本:%s
+版本号:%s  最新版本:%s
 <br>
 %s
 <br>
@@ -9,9 +7,8 @@
 项目网站:<a href="https://github.com/HIllya51/LunaTranslator">https://github.com/HIllya51/LunaTranslator</a>
 <br>
 下载链接:<a href="%s">%s</a>
-<br>
-<br>
-<a href="https://hillya51.github.io/">使用说明</a>
+<br> 
+使用说明:<a href="https://hillya51.github.io/">https://hillya51.github.io/</a>
 <br>
 <br>
 资源下载（按需下载即可，下载并解压后在对应设置中指定路径）:

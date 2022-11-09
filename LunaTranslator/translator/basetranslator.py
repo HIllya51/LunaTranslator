@@ -16,6 +16,7 @@ class basetrans:
             'caiyun':['zh','ja','en'],
             'caiyunapi':['zh','ja','en'],
             'deepl':['ZH','JA','EN'],
+            'deeplapi':['ZH','JA','EN'],
             'deeplapi-free':['ZH','JA','EN'],
             'google':['zh-CN','ja','en'],
             'google2':['zh-CN','ja','en'],

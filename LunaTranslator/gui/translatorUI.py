@@ -767,7 +767,7 @@ class QUnFrameWindow(QWidget):
             pass
          
         #sys.exit()
-        if self.object.settin_ui.needupdate:
+        if self.object.settin_ui.needupdate and globalconfig['autoupdate']:
             with open('./update/update.bat','w',encoding='utf8') as ff:
                 
                 ff.write('''
