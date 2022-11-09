@@ -15,8 +15,10 @@ from utils.downloader import mutithreaddownload
 def getversion(self):
     with open('files/about.txt','r',encoding='utf8') as ff:
         about=ff.read()
+    with open('files/version.txt','r',encoding='utf8') as ff:
+        version=ff.read()
     url='https://github.com/HIllya51/LunaTranslator/releases/'
-    self.versiontextsignal.emit(about  %(self.version, '获取中','',url,url))
+    self.versiontextsignal.emit(about  %(version, '获取中','',url,url))
     try:
         requests.packages.urllib3.disable_warnings()
         headers = {
@@ -28,16 +30,16 @@ def getversion(self):
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36',
         }
         res= requests.get('https://api.github.com/repos/HIllya51/LunaTranslator/releases/latest', headers=headers,proxies={'http': None,'https': None} ,verify = False).json() 
-        version=res['tag_name']
+        _version=res['tag_name']
        # print(version)
         url=res['assets'][0]['browser_download_url']
         newcontent='更新内容：'+res['body']
     except:
         print_exc()
-        version="获取失败"
+        _version="获取失败"
         newcontent=''
-    self.versiontextsignal.emit(about %(self.version, version,'' if self.version== version else  newcontent,url,'LunaTranslator.zip'))
-    if version!="获取失败" and self.version!=version:
+    self.versiontextsignal.emit(about %(version, _version,'' if version== _version else  newcontent,url,'LunaTranslator.zip'))
+    if _version!="获取失败" and version!=_version:
         if globalconfig['autoupdate']:
             self.downloadprogress.show()
             self.progresssignal.emit('……',0)
@@ -59,8 +61,7 @@ def updateprogress(self,text,val):
     self.downloadprogress.setFormat(text)
      
 def setTab_about(self) :
-        
-        self.version='v1.24.3'
+         
         self.tab_about = QWidget()
         self.tab_widget.addTab(self.tab_about, "资源下载&更新") 
         label = QLabel(self.tab_about)
