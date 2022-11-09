@@ -85,6 +85,8 @@ class textractor(basetext  ):
                         continue
                     self.inserthook(_h[-1])
         self.autostarttimeout.stop()
+    def findhook(self ):
+        self.object.translation_ui.writeprocesssignal.emit( QByteArray((f'find -P{self.pid}\r\n').encode(encoding='utf-16-le')))
     def inserthook(self,hookcode):
         # self.timer=QTimer()
         # self.timer.timeout.connect(self.insert)

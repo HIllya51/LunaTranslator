@@ -54,6 +54,7 @@ class Settin(QMainWindow) :
     def showEvent(self, a0   ) -> None:
          win32gui.SetWindowPos(int(self. winId()), win32con.HWND_TOPMOST, 0, 0, 0, 0,win32con. SWP_NOACTIVATE |win32con. SWP_NOSIZE | win32con.SWP_NOMOVE) 
          self.realishide=False
+         print('show')
          return super().showEvent(a0)
     def hideEvent(self, a0 ) -> None:
          self.realishide=True
@@ -132,7 +133,7 @@ class Settin(QMainWindow) :
         
         super(Settin, self).__init__(object.translation_ui) 
         #self.setWindowFlag(Qt.Tool,False)
-        self.setWindowFlags(self.windowFlags()&~Qt.WindowMinimizeButtonHint)
+        #self.setWindowFlags(self.windowFlags()&~Qt.WindowMinimizeButtonHint)
         self.mp3player=wavmp3player()
         self.realishide=True
         self.mp3playsignal.connect(self.mp3player.mp3playfunction)

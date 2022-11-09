@@ -96,6 +96,8 @@ language=globalconfig['languageuse']
 with open(f'./files/lang/{language}.json','r',encoding='utf8') as ff:
     languageshow=json.load(ff)
 def _TR(k):
+    if language==0:
+        return k
     if k not in languageshow:
         print(k)
         return k
@@ -104,11 +106,7 @@ def _TR(k):
 def _TRL(kk):
     x=[]
     for k in kk:
-        if k not in languageshow:
-            print(k)
-            x.append(k)
-        else:
-            x.append(languageshow[k])
+        x.append(_TR(k))
     return x
 
 def saveallconfig():

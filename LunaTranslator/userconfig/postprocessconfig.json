@@ -1,6 +1,6 @@
 {
     "_1": {
-        "use": false,
+        "use": true,
         "name": "去除花括号{}"
     },
     "_2": {
@@ -12,7 +12,7 @@
     },
     "_3": {
         "use": false,
-        "name": "去除重复行"
+        "name": "去除重复行(ABCDABCDABCD->ABCD)"
     },
     "_4": {
         "use": false,
@@ -44,5 +44,9 @@
                 "\\\\f(.*)": ""
             }
         }
+    },
+    "_10": {
+        "use": true,
+        "name": "递减式重复行(ABCDBCDCDD->ABCD)"
     }
 }

@@ -20,13 +20,12 @@ class transhist(QMainWindow):
     def __init__(self,p):
         super(transhist, self).__init__(p)
         self.setupUi() 
-        self.setWindowFlags(self.windowFlags()&~Qt.WindowMinimizeButtonHint)
+        #self.setWindowFlags(self.windowFlags()&~Qt.WindowMinimizeButtonHint)
         self.getnewsentencesignal.connect(self.getnewsentence) 
         self.showsignal.connect(self.showfunction)
         self.setWindowTitle(_TR('历史翻译'))
     def showfunction(self): 
-        self.showNormal()
-        win32gui.BringWindowToTop(int(self.winId())) 
+        self.showNormal() 
     def closeEvent(self, event) : 
          
             self.hide()

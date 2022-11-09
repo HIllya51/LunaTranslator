@@ -1,4 +1,4 @@
-
+import threading
 from re import search
 from traceback import print_exc
 from PyQt5.QtCore import Qt
@@ -10,16 +10,16 @@ from PyQt5.QtCore import Qt,pyqtSignal
 import qtawesome
 import subprocess
 import json
-import os
+import os,time
 import re
-import sys
-
+import sys 
 from utils.config import globalconfig ,_TR,_TRL
 class hookselect(QMainWindow):
     addnewhooksignal=pyqtSignal(tuple)
     getnewsentencesignal=pyqtSignal(str)
     changeprocessclearsignal=pyqtSignal()
-    update_item_new_line=pyqtSignal(tuple,str)
+    okoksignal=pyqtSignal()
+    update_item_new_line=pyqtSignal(tuple,str) 
     def __init__(self,object,p):
         super(hookselect, self).__init__(p)
         self.setupUi( )
@@ -27,8 +27,9 @@ class hookselect(QMainWindow):
         self.changeprocessclearsignal.connect(self.changeprocessclear)
         self.addnewhooksignal.connect(self.addnewhook)
         self.getnewsentencesignal.connect(self.getnewsentence)
-        self.update_item_new_line.connect(self.update_item_new_line_function)
-        self.setWindowFlags(self.windowFlags()&~Qt.WindowMinimizeButtonHint)
+        self.update_item_new_line.connect(self.update_item_new_line_function) 
+        self.okoksignal.connect(self.okok)
+        #self.setWindowFlags(self.windowFlags()&~Qt.WindowMinimizeButtonHint)
         self.setWindowTitle(_TR('选择文本，支持按住ctrl进行多项选择（一般选择一条即可）'))
     def update_item_new_line_function(self,hook,output):
         if hook in self.save:
@@ -116,6 +117,11 @@ class hookselect(QMainWindow):
         self.userhookinsert.clicked.connect(self.inserthook)
         self.userhooklayout.addWidget(self.userhookinsert)
 
+        self.userhookfind=QPushButton(_TR("搜索特殊码"))
+        self.userhookfind.setFont(font)
+        self.userhookfind.clicked.connect(self.findhook)
+        self.userhooklayout.addWidget(self.userhookfind)
+
 
         #################
         self.searchtextlayout = QHBoxLayout() 
@@ -129,8 +135,35 @@ class hookselect(QMainWindow):
         self.searchtextbutton.clicked.connect(self.searchtextfunc)
         self.searchtextlayout.addWidget(self.searchtextbutton)
         ###################
-
-
+        self.ttCombomodelmodel2=QStandardItemModel(self) 
+        #self.ttCombomodelmodel.setColumnCount(2)
+        self.ttCombomodelmodel2.setHorizontalHeaderLabels(_TRL([ 'HOOK','文本']))
+        
+        
+        self.tttable2 = QTableView(self)
+        self.tttable2 .setModel(self.ttCombomodelmodel2)
+        self.tttable2 .horizontalHeader().setStretchLastSection(True)
+        self.tttable2.setWordWrap(False)  
+        self.tttable2.setSelectionBehavior(QAbstractItemView.SelectRows)
+        self.tttable2.setSelectionMode(QAbstractItemView.ExtendedSelection)
+        self.tttable2.setEditTriggers(QAbstractItemView.NoEditTriggers)
+        self.tttable2.hide()
+        self.tttable2.clicked.connect(self.ViewThread2)
+        #self.tttable.setFont(font)
+        
+        self.vboxlayout.addWidget(self.tttable2)
+        self.searchtextlayout2 = QHBoxLayout()   
+        self.vboxlayout.addLayout(self.searchtextlayout2)
+        self.searchtext2=QLineEdit()
+        self.searchtext2.setFont(font)
+        self.searchtextlayout2.addWidget(self.searchtext2)
+        self.searchtextbutton2=QPushButton(_TR("搜索包含文本的条目"))
+        
+        self.searchtextbutton2.setFont(font)
+        self.searchtextbutton2.clicked.connect(self.searchtextfunc2)
+        self.searchtextlayout2.addWidget(self.searchtextbutton2)
+        self.searchtextbutton2.hide()
+        self.searchtext2.hide()
         self.textOutput = QPlainTextEdit(self.centralWidget)
         
         self.textOutput.setFont(font)
@@ -151,42 +184,33 @@ class hookselect(QMainWindow):
         self.buttonBox.rejected.connect(self.hide) 
         self.buttonBox.setFont(font) 
         self.hiding=True
+    def searchtextfunc2(self):
+        searchtext=self.searchtext2.text()
+         
+        for index in range(len(self.allres)):   
+             
+            self.tttable2.setRowHidden(index,searchtext not in self.allres[index][1])  
+        self.tttable2.scrollToTop()
     def searchtextfunc(self):
         searchtext=self.searchtext.text()
         try:
             lst=self.object.textsource.hookdatasort
         except:
             return 
-        # self.ttCombo.blockSignals(True)
-        # self.ttCombo.clear() 
-
-        self.ttCombomodelmodel.blockSignals(True)
-         
-        self.ttCombomodelmodel.clear() 
-        self.save=[]
+ 
+        #self.ttCombomodelmodel.blockSignals(True)
+          
         for index in range(len(lst)):   
             ishide=True  
-            for i in range(min(len(self.object.textsource.hookdatacollecter[lst[index]]),10)):
+            for i in range(min(len(self.object.textsource.hookdatacollecter[lst[index]]),20)):
                 
-                if searchtext  in self.object.textsource.hookdatacollecter[lst[index]][i]:
+                if searchtext  in self.object.textsource.hookdatacollecter[lst[index]][-i]:
                     ishide=False
                     break
-            if ishide==False:
-                    
-                # thread_handle,thread_tp_processId, thread_tp_addr, thread_tp_ctx, thread_tp_ctx2, thread_name,HookCode=re.search('([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):(.*):(.*@.*)' ,lst[index][i]).groups()
-                # self.ttCombo.addItem('%s:%s:%s:%s:%s:%s (%s)' %(thread_handle,thread_tp_processId, thread_tp_addr, thread_tp_ctx, thread_tp_ctx2, thread_name,HookCode))
-                
-                #self.ttCombo.addItem('%s:%s:%s:%s:%s:%s (%s)' %lst[index])
-                 
-                rown=self.ttCombomodelmodel.rowCount()
-                item = QStandardItem('%s:%s:%s:%s:%s:%s (%s)'%lst[index] )
-                rown=self.ttCombomodelmodel.rowCount()
-                self.ttCombomodelmodel.setItem(rown, 0, item)
-                item = QStandardItem(self.object.textsource.hookdatacollecter[lst[index]][-1] )
-                self.ttCombomodelmodel.setItem(rown, 1, item)
-                self.save.append(lst[index])
-        #self.ttCombo.blockSignals(False)
-        self.ttCombomodelmodel.blockSignals(False)
+            self.tttable.setRowHidden(index,ishide) 
+         
+        #self.ttCombomodelmodel.blockSignals(False) 
+        self.tttable.scrollToTop()
             #self.ttCombo.setItemData(index,'',Qt.UserRole-(1 if ishide else 0))
             #self.ttCombo.setRowHidden(index,ishide)
     def inserthook(self): 
@@ -199,11 +223,75 @@ class hookselect(QMainWindow):
             self.getnewsentence(_TR('！特殊码格式错误！'))
             return
         
-        if 'textsource' in dir(self.object):
+        if 'textsource' in dir(self.object) and self.object.textsource:
 
             self.object.textsource.inserthook(hookcode)
         else:
             self.getnewsentence(_TR('！未选定进程！'))
+    def findhook(self): 
+        if os.path.exists('hook.txt'):
+            try:
+                os.remove('hook.txt')
+            except:
+                pass
+        if 'textsource' in dir(self.object) and self.object.textsource:
+
+            self.object.textsource.findhook( )
+            self.userhookfind.setEnabled(False)
+            self.userhookfind.setText(_TR("正在搜索特殊码，请让游戏显示更多文本"))
+                
+            self.tttable2.hide()
+            self.searchtextbutton2.hide()
+            self.searchtext2.hide()
+            threading.Thread(target=self.timewaitthread).start()
+            
+        else:
+            self.getnewsentence(_TR('！未选定进程！'))
+    def okok(self):
+        if self.isMaximized()==False:
+            self.showNormal()
+            self.resize(self.width(), self.height()+300)
+        self.userhookfind.setText(_TR("搜索完毕"))
+        #self.findhookoksignal.emit()
+        #self.userhookfind.setEnabled(True)
+        with open('hook.txt','r',encoding='utf8') as ff:
+            allres=ff.read().split('\n')
+        
+        self.allres=[]
+ 
+        for i,line in enumerate( allres):
+            try:
+                        hc,text=line.split('=>')
+                        self.allres.append((hc,text)) 
+            except:
+                pass
+        #self.ttCombomodelmodel2.blockSignals(True)  
+        for i,(hc,text ) in enumerate(self.allres):
+            item = QStandardItem(hc ) 
+            self.ttCombomodelmodel2.setItem(i, 0, item)
+            item = QStandardItem(text )
+            self.ttCombomodelmodel2.setItem(i, 1, item)
+        
+        #self.ttCombomodelmodel2.blockSignals(False) 
+        self.tttable2.setFocus()
+        self.tttable2.scrollToTop()
+        
+        self.tttable2.show()
+        self.searchtextbutton2.show()
+        self.searchtext2.show()
+    def timewaitthread(self):
+ 
+        while True:
+            if os.path.exists('hook.txt'):
+                big=os.path.getsize('hook.txt')
+                if big<10:
+                    pass
+                else:
+                    self.okoksignal.emit()
+                    break
+            else:
+                pass
+            time.sleep(1)
     # def hide(self):
          
     #     self.hiding=True
@@ -254,9 +342,13 @@ class hookselect(QMainWindow):
         cursor.insertText(sentence+'\n')
         if (atBottom):
             scrollbar.setValue(scrollbar.maximum())
+    def ViewThread2(self, index):   
+        self.userhook.setText(self.allres[self.tttable2.currentIndex().row()][0])
+        self.textOutput. setPlainText(self.allres[self.tttable2.currentIndex().row()][1])
+         
     def ViewThread(self, index):  
-        #print(index)
-
+        #print(index) 
+        print(self.tttable.currentIndex().row())
         self.object.textsource.selectinghook=self.save[self.tttable.currentIndex().row()]
         self.textOutput. setPlainText('\n'.join(self.object.textsource.hookdatacollecter[self.save[self.tttable.currentIndex().row()]]))
         self.textOutput. moveCursor(QTextCursor.End)
@@ -269,21 +361,4 @@ class hookselect(QMainWindow):
                 continue
             self.object.textsource.batchselectinghook+=[self.save[row]]
             dedup.append(row)
-        #print(self.object.textsource.batchselectinghook)
-        # if  index==-1:
-        #     return 
-        # key=self.save[ self.ttCombo.currentIndex()]
-         
-        # self.object.textsource.selectinghook=key
-        
-        # #print(self.save,self.object.object.textsource.hookdatacollecter.keys() )
-        # #print(self.object.object.textsource)
-        # self.textOutput. setPlainText('\n'.join(self.object.textsource.hookdatacollecter[key]))
-        # self.textOutput. moveCursor(QTextCursor.End)
-        
-# if __name__=="__main__":
-#     app = QApplication(sys.argv) 
-#     a=hookselect()
-#     a.show()
-
-#     app.exit(app.exec_())
+      

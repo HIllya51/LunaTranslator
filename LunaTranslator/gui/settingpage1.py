@@ -71,7 +71,7 @@ def settingsource(self):
     if globalconfig['sourcestatus']['textractor']==False:
                 return 
     #self.hide()
-    self.object.hookselectdialog.show() 
+    self.object.hookselectdialog.showNormal() 
     self.object.hookselectdialog.hiding=False
 def resetsource(self):
         self.object.hookselectdialog.changeprocessclearsignal.emit()

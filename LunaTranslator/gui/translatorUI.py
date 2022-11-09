@@ -508,6 +508,7 @@ class QUnFrameWindow(QWidget):
         width = self.width()
         self.resize(width, newHeight + 30*self.rate) 
     def clickSettin_funtion(self):  
+        self.object.settin_ui.show() 
         self.object.settin_ui.showNormal() 
         win32gui.BringWindowToTop(int(self.object.settin_ui.winId())) 
     def clickSettin(self) : 

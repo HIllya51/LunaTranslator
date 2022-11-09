@@ -21,10 +21,13 @@ import gui.attachprocessdialog
 import gui.selecthook  
 def setTab7(self) :   
         grids=[  ] 
-        for post in postprocessconfig:
+        sort=['_2','_3', '_10','_1',   '_4', '_6', '_9', '_7', '_8']
+         
+        for post in sort:#postprocessconfig:
             l=[((postprocessconfig[post]['name'] ),6),
                 self.getsimpleswitch(postprocessconfig[post],'use')]
-                
+            
+             
             if 'args' in postprocessconfig[post]:
                 l.append(self.getcolorbutton(globalconfig,'',callback= functools.partial( postconfigdialog,self,postprocessconfig[post]['args'],postprocessconfig[post]['name']+'设置'),icon='fa.gear',constcolor="#FF69B4")) 
             grids.append(l)
