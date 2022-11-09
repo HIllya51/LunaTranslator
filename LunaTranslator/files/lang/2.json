@@ -303,4 +303,9 @@
 "进程号，找不到的情况下可以手动输入":"The process number can be entered manually if it cannot be found",
 "程序名":"Program name",
 "替换内容":"replace content",
-"重复次数":"Repetitions"}
+"重复次数":"Repetitions",
+"绑定截图窗口，避免遮挡（部分软件不支持）（点击自己取消）":"Bind the screenshot window to avoid occlusion (not supported by some software) (click to cancel)",
+"调整游戏窗口(需要绑定ocr窗口，或选择hook进程)":"Adjust the game window (you need to bind the ocr window or select the hook process)",
+"全屏/恢复游戏窗口(需要绑定ocr窗口，或选择hook进程)":"Full screen/restore game window (you need to bind ocr window or select hook process)",
+"游戏静音(需要绑定ocr窗口，或选择hook进程)":"Game mute (you need to bind ocr window or select hook process)",
+"最小化到托盘":"Minimize to tray"}

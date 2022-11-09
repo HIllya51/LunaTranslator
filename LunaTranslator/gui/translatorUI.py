@@ -13,7 +13,7 @@ from PyQt5.QtGui import  QFont  ,QIcon,QPixmap
 from PyQt5.QtWidgets import  QLabel ,QPushButton ,QSystemTrayIcon ,QAction,QMenu 
 import pyperclip 
 from PyQt5.QtCore import QProcess ,QByteArray  
-from utils.config import globalconfig,saveallconfig
+from utils.config import globalconfig,saveallconfig,_TR
 from utils.subproc import endsubprocs,mutiproc
 import  win32gui,win32api,win32process,win32con,multiprocessing
 import gui.rangeselect
@@ -719,7 +719,7 @@ class QUnFrameWindow(QWidget):
         button=QTitleButton(self) 
         if tips:
             
-            button.setToolTip(tips) 
+            button.setToolTip(_TR(tips) )
         button.setIconSize(QSize(int(20*self.rate),
                                  int(20*self.rate)))
         button.name=save
