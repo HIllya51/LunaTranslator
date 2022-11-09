@@ -9,7 +9,7 @@ import shutil
 import zipfile
 import threading
 from threading import Lock 
-from utils.config import globalconfig  
+from utils.config import globalconfig  ,_TR
 import gui.switchbutton
 from utils.downloader import mutithreaddownload
 def getversion(self):
@@ -18,7 +18,7 @@ def getversion(self):
     with open('files/version.txt','r',encoding='utf8') as ff:
         version=ff.read()
     url='https://github.com/HIllya51/LunaTranslator/releases/'
-    self.versiontextsignal.emit(about  %(version, '获取中','',url,url))
+    self.versiontextsignal.emit(about  %(version, _TR('获取中'),'',url,url))
     try:
         requests.packages.urllib3.disable_warnings()
         headers = {
@@ -36,10 +36,10 @@ def getversion(self):
         newcontent='更新内容：'+res['body']
     except:
         print_exc()
-        _version="获取失败"
+        _version=_TR("获取失败")
         newcontent=''
     self.versiontextsignal.emit(about %(version, _version,'' if version== _version else  newcontent,url,'LunaTranslator.zip'))
-    if _version!="获取失败" and version!=_version:
+    if _version!=_TR("获取失败") and version!=_version:
         if globalconfig['autoupdate']:
             self.downloadprogress.show()
             self.progresssignal.emit('……',0)
@@ -63,10 +63,10 @@ def updateprogress(self,text,val):
 def setTab_about(self) :
          
         self.tab_about = QWidget()
-        self.tab_widget.addTab(self.tab_about, "资源下载&更新") 
+        self.tab_widget.addTab(self.tab_about, _TR("资源下载&更新") )
         label = QLabel(self.tab_about)
         self.customSetGeometry(label, 20, 20, 200, 20)
-        label.setText("自动下载更新(需要连接github)")
+        label.setText(_TR("自动下载更新(需要连接github)"))
         self.updateswitch =gui.switchbutton.MySwitch(self.tab_about, sign= globalconfig['autoupdate'])
         self.customSetGeometry(self.updateswitch , 250, 20, 20,20)
         def changeupdate(x):

@@ -3,12 +3,12 @@ from PyQt5.QtWidgets import QDialogButtonBox,QDialog,QComboBox,QFormLayout,QSpin
 from PyQt5.QtCore import Qt,QSize
 from PyQt5.QtGui import QColor 
 import qtawesome
-from utils.config import globalconfig 
+from utils.config import globalconfig ,_TR,_TRL
 from gui.switchbutton import MySwitch 
 def autoinitdialog(object,title,width,lines):
     dialog=QDialog(object ,Qt.WindowCloseButtonHint)
      
-    dialog.setWindowTitle(title)
+    dialog.setWindowTitle(_TR(title))
     dialog.resize(QSize(width,10))
     formLayout = QFormLayout()
     dialog.setLayout(formLayout)
@@ -35,36 +35,36 @@ def autoinitdialog(object,title,width,lines):
             button.rejected.connect(dialog.close)
             button.accepted.connect(functools.partial(save,None if 'callback' not in line else line['callback']))
 
-            button.button(QDialogButtonBox.Ok).setText('保存并关闭')
-            button.button(QDialogButtonBox.Cancel).setText('取消')
+            button.button(QDialogButtonBox.Ok).setText(_TR('保存并关闭'))
+            button.button(QDialogButtonBox.Cancel).setText(_TR('取消'))
         elif line['t']=='lineedit':   
             dd=line['d']
             key=line['k'] 
             e=QLineEdit(dd[key])
             regist.append([dd,key,e.text])  
-            formLayout.addRow((line['l']),e)
+            formLayout.addRow((_TR(line['l'])),e)
         elif line['t']=='file': 
             dd=line['d']
             key=line['k'] 
             e=QLineEdit(dd[key])
             regist.append([dd,key,e.text])  
-            bu=QPushButton('选择'+('文件夹' if line['dir'] else '文件')  )
+            bu=QPushButton(_TR('选择'+('文件夹' if line['dir'] else '文件')  ))
             bu.clicked.connect(functools.partial(openfiledirectory,e,line['dir'],'' if line['dir'] else line['filter']  ))
             hori=QHBoxLayout()
             hori.addWidget(e)
             hori.addWidget(bu)
-            formLayout.addRow((line['l']),hori)
+            formLayout.addRow((_TR(line['l'])),hori)
         elif line['t']=='switch':
             dd=line['d']
             key=line['k'] 
             b=MySwitch(sign=dd[key] ) 
             b.clicked.connect( functools.partial(dd.__setitem__,key))
-            formLayout.addRow((line['l']),b) 
+            formLayout.addRow((_TR(line['l'])),b) 
         elif line['t']=='combo':
             dd=line['d']
             key=line['k'] 
             combo=QComboBox()
-            combo.addItems(line['list'])
+            combo.addItems(_TRL((line['list'])))
             if 'map' not in line:
                 combo.setCurrentIndex(dd[key])
                 combo.currentIndexChanged.connect(functools.partial(dd.__setitem__,key))
@@ -73,7 +73,7 @@ def autoinitdialog(object,title,width,lines):
                 def __(line,x):
                     line['d'].__setitem__(line['k'] ,line['map'][x])
                 combo.currentIndexChanged.connect(functools.partial(__,line))
-            formLayout.addRow((line['l']),combo) 
+            formLayout.addRow(_TR(line['l']),combo) 
         #  
     dialog.show()
  
@@ -92,11 +92,11 @@ def ChangeTranslateColor(self,button,item) :
 
 def multicolorset(object ):
     dialog = QDialog(object,Qt.WindowCloseButtonHint)  # 自定义一个dialog
-    dialog.setWindowTitle("颜色设置") 
+    dialog.setWindowTitle(_TR("颜色设置") )
     dialog.resize(QSize(300,10))
     formLayout = QFormLayout(dialog)  # 配置layout 
     _hori=QHBoxLayout()
-    l=QLabel("透明度")
+    l=QLabel(_TR("透明度"))
     _hori.addWidget(l)
     _s=QSpinBox()
     _s.setValue(globalconfig['showcixing_touming'])
@@ -108,8 +108,7 @@ def multicolorset(object ):
     for k in globalconfig['cixingcolor']:
         hori=QHBoxLayout()
          
-        l=QLabel()
-        l.setText(k)
+        l=QLabel(_TR(k)) 
          
         hori.addWidget(l)
         

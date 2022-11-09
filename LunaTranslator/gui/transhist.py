@@ -10,6 +10,8 @@ import json
 import os
 import re
 import sys
+
+from utils.config import globalconfig ,_TR,_TRL
 import win32gui
 from utils.config import globalconfig
 class transhist(QMainWindow): 
@@ -21,7 +23,7 @@ class transhist(QMainWindow):
         self.setWindowFlags(self.windowFlags()&~Qt.WindowMinimizeButtonHint)
         self.getnewsentencesignal.connect(self.getnewsentence) 
         self.showsignal.connect(self.showfunction)
-        self.setWindowTitle('历史翻译')
+        self.setWindowTitle(_TR('历史翻译'))
     def showfunction(self): 
         self.showNormal()
         win32gui.BringWindowToTop(int(self.winId())) 

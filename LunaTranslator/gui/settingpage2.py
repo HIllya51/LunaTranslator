@@ -5,12 +5,9 @@ from PyQt5.QtCore import Qt
 import functools,sqlite3
 from utils.config import globalconfig ,translatorsetting
 import os,json
-import qtawesome,sys
-
-import gui.switchbutton
-import gui.attachprocessdialog  
 from traceback import print_exc
-import gui.selecthook 
+
+from utils.config import globalconfig ,_TR,_TRL
 import time
 import importlib
 import socket
@@ -23,7 +20,7 @@ def fanyiselect(self, who,checked ):
                 globalconfig['fanyi'][who]['use']=False 
 def initsome11(self,l,label,grids): 
     grids.append(
-        [(QLabel(label),4)]
+        [(label,4)]
     )
     i=0
     for fanyi in globalconfig['fanyi']:
@@ -58,10 +55,10 @@ def initsome11(self,l,label,grids):
                         'dir':True 
                     }) 
             items.append({'t':'okcancel' })
-            last=self.getcolorbutton(globalconfig,'',callback=functools.partial(autoinitdialog,self,globalconfig['fanyi'][fanyi]['name']+'设置',900,items),icon='fa.gear',constcolor="#FF69B4")
+            last=self.getcolorbutton(globalconfig,'',callback=functools.partial(autoinitdialog,self, (globalconfig['fanyi'][fanyi]['name'])+ ('设置'),900,items),icon='fa.gear',constcolor="#FF69B4")
         else:
             last=''
-        line+=[(QLabel(globalconfig['fanyi'][fanyi]['name']),5),
+        line+=[(globalconfig['fanyi'][fanyi]['name'],5),
         self.getsimpleswitch(globalconfig['fanyi'][fanyi],'use',callback=functools.partial( fanyiselect,self,fanyi)),
         self.getcolorbutton(globalconfig['fanyi'][fanyi],'color',name="fanyicolor_"+fanyi,callback=functools.partial(self.ChangeTranslateColor,fanyi,None,self,"fanyicolor_"+fanyi)),last ] 
 
@@ -107,7 +104,7 @@ def setTabTwo(self) :
         _setproxy(globalconfig['useproxy'])
 
         proxy=QLineEdit(globalconfig['proxy'])
-        btn=QPushButton('确定' )
+        btn=QPushButton(_TR('确定' ))
         def __resetproxy(x):
             globalconfig.__setitem__('proxy',proxy.text())
             if globalconfig['useproxy']:
@@ -115,10 +112,10 @@ def setTabTwo(self) :
                 os.environ['http_proxy']=globalconfig['proxy'] 
         btn.clicked.connect(lambda x: __resetproxy(x))
         transkirokuuse =QComboBox( )  
-        transkirokuuse.addItems([globalconfig['fanyi'][k]['name'] for k  in globalconfig['fanyi']])
+        transkirokuuse.addItems(_TRL([globalconfig['fanyi'][k]['name'] for k  in globalconfig['fanyi']]))
         transkirokuuse.setCurrentIndex(list(globalconfig['fanyi'].keys()).index(globalconfig['transkirokuuse']))
         transkirokuuse.currentIndexChanged.connect(lambda x:globalconfig.__setitem__('transkirokuuse',list(globalconfig['fanyi'].keys())[x]))
-        bt = QPushButton("导出sqlite文件为json文件")  
+        bt = QPushButton(_TR("导出sqlite文件为json文件")  )
 
         def _sqlite2json():
                 f=QFileDialog.getOpenFileName(filter="*.sqlite")
@@ -139,26 +136,26 @@ def setTabTwo(self) :
 
         grids=[
             [
-                (QLabel("是否显示翻译器名称"),5),(self.getsimpleswitch(globalconfig  ,'showfanyisource'),1),'','','',
-                (QLabel("源语言"),5),(self.getsimplecombobox(['日文','英文'],globalconfig,'srclang'),3),'',
-                (QLabel("目标语言"),5),(self.getsimplecombobox(['中文','英文'],globalconfig,'tgtlang'),3) ,
+                ("是否显示翻译器名称",5),(self.getsimpleswitch(globalconfig  ,'showfanyisource'),1),'','','',
+                ("源语言",5),(self.getsimplecombobox(_TRL(['日文','英文']),globalconfig,'srclang'),3),'',
+                ("目标语言",5),(self.getsimplecombobox(_TRL(['中文','英文']),globalconfig,'tgtlang'),3) ,
             ],
             [
-                (QLabel("最短翻译字数"),5),(self.getspinbox(0,500,globalconfig,'minlength'),3),'',
-                (QLabel("最长翻译字数"),5),(self.getspinbox(0,500,globalconfig,'maxlength'),3),'',
-                (QLabel("在线翻译超时(s)"),5),(self.getspinbox(1,20,globalconfig,'translatortimeout',callback=lambda x:__timeout(x)),3),
+                ("最短翻译字数",5),(self.getspinbox(0,500,globalconfig,'minlength'),3),'',
+                ("最长翻译字数",5),(self.getspinbox(0,500,globalconfig,'maxlength'),3),'',
+                ("在线翻译超时(s)",5),(self.getspinbox(1,20,globalconfig,'translatortimeout',callback=lambda x:__timeout(x)),3),
 
             ],
             [
-                (QLabel("预翻译采用模糊匹配"),5),(self.getsimpleswitch(globalconfig  ,'premtsimiuse'),1),'','','',
-                (QLabel("模糊匹配相似度限制"),6),(self.getspinbox(0,500,globalconfig,'premtsimi'),2),'', 
+                ("预翻译采用模糊匹配",5),(self.getsimpleswitch(globalconfig  ,'premtsimiuse'),1),'','','',
+                ("模糊匹配相似度限制",6),(self.getspinbox(0,500,globalconfig,'premtsimi'),2),'', 
             ],[
-                (QLabel("使用代理(ip:port)"),5),(self.getsimpleswitch(globalconfig  ,'useproxy',callback=lambda x: _setproxy(x)),1),'',
+                ("使用代理(ip:port)",5),(self.getsimpleswitch(globalconfig  ,'useproxy',callback=lambda x: _setproxy(x)),1),'',
                 (proxy,8),(btn,2),  
             ],
             
-                [(QLabel('录制翻译文件'),5),(self.getsimpleswitch(globalconfig,'transkiroku'),1),'',
-                 (QLabel('优先录制的翻译源'),5),(transkirokuuse,5),
+                [('录制翻译文件',5),(self.getsimpleswitch(globalconfig,'transkiroku'),1),'',
+                 ('优先录制的翻译源',5),(transkirokuuse,5),
                  
                  (bt,8) ,
                  ],

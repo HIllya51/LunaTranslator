@@ -1,8 +1,8 @@
 import functools 
 
-from PyQt5.QtWidgets import  QWidget,QLabel, QComboBox,QDoubleSpinBox 
+from PyQt5.QtWidgets import  QWidget, QComboBox,QDoubleSpinBox 
  
-from PyQt5.QtWidgets import QWidget,QLabel,QFrame ,QPushButton,QColorDialog,QGridLayout
+from PyQt5.QtWidgets import QWidget,QFrame ,QPushButton,QColorDialog,QGridLayout
 from PyQt5.QtGui import QColor,QFont
 import functools 
 import qtawesome
@@ -38,7 +38,7 @@ def setTab6(self) :
             else:
                 _3=''
             
-            line+=[(QLabel(globalconfig['ocr'][name]['name']),3),(self.getsimpleswitch(globalconfig['ocr'][name],'use',name=name+'_ocrswitch',callback=functools.partial(yuitsuocr,self,name)),1),_3,'']
+            line+=[((globalconfig['ocr'][name]['name']),3),(self.getsimpleswitch(globalconfig['ocr'][name],'use',name=name+'_ocrswitch',callback=functools.partial(yuitsuocr,self,name)),1),_3,'']
 
             if i%3==2 or i==lendict-1:
                 grids.append(line) 
@@ -48,11 +48,11 @@ def setTab6(self) :
         grids+=[ 
             [''],
             [''],
-            [(QLabel("优化横向OCR漏字"),6),self.getsimpleswitch(globalconfig ,'ocr_hori_extend')],
-            [(QLabel("使用竖排OCR(效果不佳)"),6),self.getsimpleswitch(globalconfig ,'verticalocr')],
-            [(QLabel("每隔一段时间必然进行一次OCR"),6),self.getsimpleswitch(globalconfig ,'mustocr')],
-            [(QLabel("OCR最长间隔时间(s)"),6),(self.getspinbox(0.1,100,globalconfig,'mustocr_interval',double=True,step=0.1  ),2)],
-            [(QLabel("OCR最短间隔时间(s)"),6),(self.getspinbox(0.1,100,globalconfig,'ocrmininterval',double=True,step=0.1  ),2)],
+            [(("优化横向OCR漏字"),6),self.getsimpleswitch(globalconfig ,'ocr_hori_extend')],
+            [(("使用竖排OCR(效果不佳)"),6),self.getsimpleswitch(globalconfig ,'verticalocr')],
+            [(("每隔一段时间必然进行一次OCR"),6),self.getsimpleswitch(globalconfig ,'mustocr')],
+            [(("OCR最长间隔时间(s)"),6),(self.getspinbox(0.1,100,globalconfig,'mustocr_interval',double=True,step=0.1  ),2)],
+            [(("OCR最短间隔时间(s)"),6),(self.getspinbox(0.1,100,globalconfig,'ocrmininterval',double=True,step=0.1  ),2)],
           
         ] 
         self.yitiaolong("OCR设置",grids)

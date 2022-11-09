@@ -26,6 +26,7 @@ import threading
 import json
 from gui.inputdialog import autoinitdialog,getsomepath1
 
+from utils.config import globalconfig ,_TR,_TRL
 import os
 import win32con,win32api 
 self_pid=os.getpid()  
@@ -33,7 +34,7 @@ self_pid=os.getpid()
 def autosaveshow(object):
      
     dialog = QDialog(object,Qt.WindowCloseButtonHint)  # 自定义一个dialog
-    dialog.setWindowTitle('已保存游戏')
+    dialog.setWindowTitle(_TR('已保存游戏'))
     #dialog.setWindowModality(Qt.ApplicationModal) 
     formLayout = QVBoxLayout(dialog)  # 配置layout
     if True:
@@ -65,11 +66,11 @@ def autosaveshow(object):
                 # item = QStandardItem(json.dumps(js[k],ensure_ascii=False))
                 # model.setItem(row, 2, item)
                 row+=1
-        model.setHorizontalHeaderLabels(['使用LE','图标', '游戏'])#,'HOOK'])
+        model.setHorizontalHeaderLabels(_TRL(['使用LE','图标', '游戏']))#,'HOOK'])
         
         #table.clicked.connect(self.show_info)
         button=QPushButton(dialog)
-        button.setText('开始游戏')
+        button.setText(_TR('开始游戏'))
         def clicked(): 
                 try:
                     game=model.item(table.currentIndex().row(),2).text() 
@@ -89,7 +90,7 @@ def autosaveshow(object):
         button.clicked.connect(clicked)
          
         button2=QPushButton(dialog)
-        button2.setText('删除游戏')
+        button2.setText(_TR('删除游戏'))
         def clicked2(): 
                 savehook_new.pop(model.item(table.currentIndex().row(),2).text())
                 model.removeRow(table.currentIndex().row())
@@ -107,10 +108,10 @@ def setTab4(self) :
         
         grids=[
                 
-                [(QLabel('检测到游戏时自动开始'),5),(self.getsimpleswitch(globalconfig,'autostarthook'),1),'','','','','','','','',''],
+                [('检测到游戏时自动开始',5),(self.getsimpleswitch(globalconfig,'autostarthook'),1),'','','','','','','','',''],
                 
-                [(QLabel('LocaleEmulator路径设置'),5),(self.getcolorbutton(globalconfig,'',callback=lambda x: getsomepath1(self,'LocaleEmulator 路径',globalconfig,'LocaleEmulator','LocaleEmulator:',isdir=True),icon='fa.gear',constcolor="#FF69B4"),1)],
-                [(QLabel('已保存游戏'),5),(self.getcolorbutton(globalconfig,'',icon='fa.gamepad',constcolor="#FF69B4",callback=lambda:autosaveshow(self)),1)],
+                [('LocaleEmulator路径设置',5),(self.getcolorbutton(globalconfig,'',callback=lambda x: getsomepath1(self,'LocaleEmulator',globalconfig,'LocaleEmulator','LocaleEmulator',isdir=True),icon='fa.gear',constcolor="#FF69B4"),1)],
+                [('已保存游戏',5),(self.getcolorbutton(globalconfig,'',icon='fa.gamepad',constcolor="#FF69B4",callback=lambda:autosaveshow(self)),1)],
 
                 
                 

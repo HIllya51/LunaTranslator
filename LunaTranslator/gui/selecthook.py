@@ -13,6 +13,8 @@ import json
 import os
 import re
 import sys
+
+from utils.config import globalconfig ,_TR,_TRL
 class hookselect(QMainWindow):
     addnewhooksignal=pyqtSignal(tuple)
     getnewsentencesignal=pyqtSignal(str)
@@ -27,7 +29,7 @@ class hookselect(QMainWindow):
         self.getnewsentencesignal.connect(self.getnewsentence)
         self.update_item_new_line.connect(self.update_item_new_line_function)
         self.setWindowFlags(self.windowFlags()&~Qt.WindowMinimizeButtonHint)
-        self.setWindowTitle('选择文本，支持按住ctrl进行多项选择（一般选择一条即可）')
+        self.setWindowTitle(_TR('选择文本，支持按住ctrl进行多项选择（一般选择一条即可）'))
     def update_item_new_line_function(self,hook,output):
         if hook in self.save:
             row=self.save.index(hook)
@@ -35,7 +37,7 @@ class hookselect(QMainWindow):
     def changeprocessclear(self):
         #self.ttCombo.clear() 
         self.ttCombomodelmodel.clear()
-        self.ttCombomodelmodel.setHorizontalHeaderLabels([ 'HOOK','文本'])
+        self.ttCombomodelmodel.setHorizontalHeaderLabels(_TRL([ 'HOOK','文本']))
         self.save=[]
     def addnewhook(self,ss ):
          
@@ -83,7 +85,7 @@ class hookselect(QMainWindow):
             
         self.ttCombomodelmodel=QStandardItemModel(self) 
         #self.ttCombomodelmodel.setColumnCount(2)
-        self.ttCombomodelmodel.setHorizontalHeaderLabels([ 'HOOK','文本'])
+        self.ttCombomodelmodel.setHorizontalHeaderLabels(_TRL([ 'HOOK','文本']))
         
         
         self.tttable = QTableView(self)
@@ -109,7 +111,7 @@ class hookselect(QMainWindow):
         self.userhook=QLineEdit()
         self.userhook.setFont(font)
         self.userhooklayout.addWidget(self.userhook)
-        self.userhookinsert=QPushButton("插入特殊码")
+        self.userhookinsert=QPushButton(_TR("插入特殊码"))
         self.userhookinsert.setFont(font)
         self.userhookinsert.clicked.connect(self.inserthook)
         self.userhooklayout.addWidget(self.userhookinsert)
@@ -121,7 +123,7 @@ class hookselect(QMainWindow):
         self.searchtext=QLineEdit()
         self.searchtext.setFont(font)
         self.searchtextlayout.addWidget(self.searchtext)
-        self.searchtextbutton=QPushButton("搜索包含文本的条目")
+        self.searchtextbutton=QPushButton(_TR("搜索包含文本的条目"))
         
         self.searchtextbutton.setFont(font)
         self.searchtextbutton.clicked.connect(self.searchtextfunc)
@@ -160,8 +162,7 @@ class hookselect(QMainWindow):
 
         self.ttCombomodelmodel.blockSignals(True)
          
-        self.ttCombomodelmodel.clear()
-        self.ttCombomodelmodel.setHorizontalHeaderLabels([ 'HOOK','文本'])
+        self.ttCombomodelmodel.clear() 
         self.save=[]
         for index in range(len(lst)):   
             ishide=True  
@@ -195,14 +196,14 @@ class hookselect(QMainWindow):
         x=subprocess.run(f'./files/hookcodecheck.exe {hookcode}',stdout=subprocess.PIPE)
         #print(hookcode,x.stdout[0])
         if(x.stdout[0]==ord('0')):
-            self.getnewsentence('！特殊码格式错误！')
+            self.getnewsentence(_TR('！特殊码格式错误！'))
             return
         
         if 'textsource' in dir(self.object):
 
             self.object.textsource.inserthook(hookcode)
         else:
-            self.getnewsentence('！未选定进程！')
+            self.getnewsentence(_TR('！未选定进程！'))
     # def hide(self):
          
     #     self.hiding=True

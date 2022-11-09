@@ -7,6 +7,8 @@ from PyQt5.QtCore import Qt,pyqtSignal
 import qtawesome
 import threading 
 from utils.config import globalconfig
+
+from utils.config import globalconfig ,_TR,_TRL
 class searchwordW(QMainWindow): 
     getnewsentencesignal=pyqtSignal(str) 
     searchthreadsignal=pyqtSignal(int,list,tuple)
@@ -15,7 +17,7 @@ class searchwordW(QMainWindow):
         self.setupUi() 
         self.setWindowFlags(self.windowFlags()&~Qt.WindowMinimizeButtonHint)
         self.getnewsentencesignal.connect(self.getnewsentence) 
-        self.setWindowTitle('查词')
+        self.setWindowTitle(_TR('查词'))
         self.p=p
     def closeEvent(self, event) :  
         self.hide()
@@ -36,7 +38,7 @@ class searchwordW(QMainWindow):
         self.userhook=QLineEdit()
         self.userhook.setFont(font)
         self.userhooklayout.addWidget(self.userhook)
-        self.userhookinsert=QPushButton("搜索")
+        self.userhookinsert=QPushButton(_TR("搜索"))
         self.userhookinsert.setFont(font) 
         self.userhookinsert.clicked.connect(lambda :self.search((self.userhook.text(),None,None)))
         self.userhooklayout.addWidget(self.userhookinsert)
@@ -50,7 +52,7 @@ class searchwordW(QMainWindow):
   
         
         self.textbs=[]
-        _=['MeCab','小学馆',"灵格斯词典","EDICT"]
+        _=_TRL(['MeCab','小学馆',"灵格斯词典","EDICT"])
         for i in range(4):
 
             textOutput = QTextBrowser(self)
@@ -73,7 +75,7 @@ class searchwordW(QMainWindow):
 
         res=_d[i].search(sentence if i==0 else sentence[0]) 
         if res is None or res=='':
-            res='未查到' 
+            res=_TR('未查到' )
         self.textbs[i].append(res) 
         scrollbar = self.textbs[i].verticalScrollBar()
         scrollbar.setValue(0)

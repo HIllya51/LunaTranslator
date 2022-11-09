@@ -50,7 +50,7 @@ def setTab_quick(self) :
         
          
         grids=[
-            [(QLabel("是否使用快捷键"),4),self.getsimpleswitch(globalconfig['quick_setting']  ,'use',callback=functools.partial(__enable,self )  ),(QLabel(''),10)]
+            [(("是否使用快捷键"),4),self.getsimpleswitch(globalconfig['quick_setting']  ,'use',callback=functools.partial(__enable,self )  ),((''),8)]
         ]
         for name in globalconfig['quick_setting']['all']: 
             key1=QComboBox() 
@@ -67,10 +67,10 @@ def setTab_quick(self) :
         
             regist_or_not_key(self,name,self.bindfunctions[name])
             grids.append(
-                [(QLabel(globalconfig['quick_setting']['all'][name]['name']),4),
+                [((globalconfig['quick_setting']['all'][name]['name']),4),
                 self.getsimpleswitch(globalconfig['quick_setting']['all'][name] ,'use',callback=functools.partial(fanyiselect,self,name)),
-                (key1,3),
-                (key2,3)
+                (key1,2),
+                (key2,2)
                 ]
             )
         self.yitiaolong("快捷键设置",grids)

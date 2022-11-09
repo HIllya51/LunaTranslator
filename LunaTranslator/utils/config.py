@@ -92,6 +92,24 @@ for name in ocrsetting:
     #    print('error',name)
 #0 ja  1 eng
 
+language=globalconfig['languageuse']
+with open(f'./files/lang/{language}.json','r',encoding='utf8') as ff:
+    languageshow=json.load(ff)
+def _TR(k):
+    if k not in languageshow:
+        print(k)
+        return k
+    else:
+        return languageshow[k]
+def _TRL(kk):
+    x=[]
+    for k in kk:
+        if k not in languageshow:
+            print(k)
+            x.append(k)
+        else:
+            x.append(languageshow[k])
+    return x
 
 def saveallconfig():
         

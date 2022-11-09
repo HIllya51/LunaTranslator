@@ -5,6 +5,8 @@ from PyQt5.QtGui import  QStandardItemModel,QPixmap,QColor,QIcon,QStandardItem ,
 from PyQt5.QtWinExtras  import QtWin 
 import win32gui 
 import functools
+
+from utils.config import globalconfig ,_TR,_TRL
 import sys
 import time   
 from utils.getpidlist import getwindowhwnd,getpidexe,ListProcess,mouseselectwindow,getExeIcon
@@ -25,7 +27,7 @@ class AttachProcessDialog(QMainWindow):
         d=QApplication.desktop()
         self.move ((d.width()-self.width())/2,((d.height()-self.height())/2))
         self.object=p.object
-        self.setWindowTitle('选择进程')
+        self.setWindowTitle(_TR('选择进程'))
         self.setWindowIcon(qtawesome.icon("fa.gear" ))
         f=QFont() 
         f.setPointSize(13)
@@ -34,18 +36,18 @@ class AttachProcessDialog(QMainWindow):
         t1=time.time()
         w=QWidget()
         self.layout1=QVBoxLayout()
-        self.label=QLabel('如果没看见想要附加的进程，可以尝试点击下方按钮后点击游戏窗口,或者尝试使用管理员权限运行本软件') 
-        self.button=QPushButton('点击此按钮后点击游戏窗口')
+        self.label=QLabel(_TR('如果没看见想要附加的进程，可以尝试点击下方按钮后点击游戏窗口,或者尝试使用管理员权限运行本软件') )
+        self.button=QPushButton(_TR('点击此按钮后点击游戏窗口'))
         self.button.clicked.connect(functools.partial(mouseselectwindow,self.selectwindowcallback))
         self.layout1.addWidget(self.label)
         self.layout1.addWidget(self.button)
         self.layout2=QHBoxLayout()
         self.processIdEdit=QLineEdit()
-        self.layout2.addWidget(QLabel('进程号，找不到的情况下可以手动输入'))
+        self.layout2.addWidget(QLabel(_TR('进程号，找不到的情况下可以手动输入')))
         self.layout2.addWidget(self.processIdEdit)
         self.processEdit=QLineEdit()
         self.layout3=QHBoxLayout()
-        self.layout3.addWidget(QLabel('程序名'))
+        self.layout3.addWidget(QLabel(_TR('程序名')))
         self.layout3.addWidget(self.processEdit)
         self.processList=QListView()
         self.buttonBox=QDialogButtonBox()

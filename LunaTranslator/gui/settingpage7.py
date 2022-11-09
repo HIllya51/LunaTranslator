@@ -12,7 +12,7 @@ from PyQt5.QtWidgets import  QWidget,QLabel
 import functools
 from PyQt5.QtWidgets import QDialog ,QSpinBox,QVBoxLayout,QLineEdit,QGridLayout
 from PyQt5.QtCore import QSize,Qt
-from utils.config import globalconfig 
+from utils.config import globalconfig ,_TR,_TRL
 import qtawesome 
  
 from gui.inputdialog import getsomepath1
@@ -22,14 +22,14 @@ import gui.selecthook
 def setTab7(self) :   
         grids=[  ] 
         for post in postprocessconfig:
-            l=[(QLabel(postprocessconfig[post]['name'] ),6),
+            l=[((postprocessconfig[post]['name'] ),6),
                 self.getsimpleswitch(postprocessconfig[post],'use')]
                 
             if 'args' in postprocessconfig[post]:
                 l.append(self.getcolorbutton(globalconfig,'',callback= functools.partial( postconfigdialog,self,postprocessconfig[post]['args'],postprocessconfig[post]['name']+'设置'),icon='fa.gear',constcolor="#FF69B4")) 
             grids.append(l)
         
-        p=QPushButton("自定义python处理" ) 
+        p=QPushButton(_TR("自定义python处理" ) )
 
         def _openfile():
             import os
@@ -45,21 +45,21 @@ def setTab7(self) :
             self.object.loadvnrshareddict()
         grids+=[
 
-            [(QLabel('使用专有名词翻译' ),6),
+            [(('使用专有名词翻译' ),6),
                 self.getsimpleswitch(noundictconfig,'use'),
                 self.getcolorbutton(globalconfig,'',callback=lambda x:  noundictconfigdialog(self,noundictconfig,'专有名词翻译设置(游戏ID 0表示全局)'),icon='fa.gear',constcolor="#FF69B4")],
-            [(QLabel('使用翻译结果修正' ),6),
+            [(('使用翻译结果修正' ),6),
                 self.getsimpleswitch(transerrorfixdictconfig,'use'),
                 self.getcolorbutton(globalconfig,'',callback=lambda x:  noundictconfigdialog1(self,transerrorfixdictconfig,'翻译结果替换设置',['翻译','替换'],'./userconfig/transerrorfixdictconfig.json'),icon='fa.gear',constcolor="#FF69B4")],
-            [(QLabel('使用VNR共享辞书' ),6),
+            [(('使用VNR共享辞书' ),6),
                 self.getsimpleswitch(globalconfig['gongxiangcishu'],'use',callback =lambda x:__(x)),
-                self.getcolorbutton(globalconfig,'',callback=lambda x:  getsomepath1(self,'共享辞书',globalconfig['gongxiangcishu'],'path','共享辞书:',self.object.loadvnrshareddict,False,'*.xml') ,icon='fa.gear',constcolor="#FF69B4"),'','','','','',''],
+                self.getcolorbutton(globalconfig,'',callback=lambda x:  getsomepath1(self,'共享辞书',globalconfig['gongxiangcishu'],'path','共享辞书',self.object.loadvnrshareddict,False,'*.xml') ,icon='fa.gear',constcolor="#FF69B4"),'','','','','',''],
             
         ]  
         self.yitiaolong("翻译优化",grids)
 def noundictconfigdialog1(object,configdict,title,label=[  '日文','翻译'],fname='./userconfig/noundictconfig.json'):
     dialog = QDialog(object,Qt.WindowCloseButtonHint)  # 自定义一个dialog
-    dialog.setWindowTitle(title)
+    dialog.setWindowTitle(_TR(title))
     #dialog.setWindowModality(Qt.ApplicationModal)
     
     formLayout = QVBoxLayout(dialog)  # 配置layout
@@ -73,25 +73,25 @@ def noundictconfigdialog1(object,configdict,title,label=[  '日文','翻译'],fn
             item = QStandardItem(configdict['dict'][key] )
             model.setItem(row, 1, item)
             row+=1
-    model.setHorizontalHeaderLabels(label)
+    model.setHorizontalHeaderLabels(_TRL(label))
     table = QTableView(dialog)
     table.setModel(model)
     table.horizontalHeader().setStretchLastSection(True)
     #table.setEditTriggers(QAbstractItemView.NoEditTriggers)
     #table.clicked.connect(self.show_info)
     button=QPushButton(dialog)
-    button.setText('添加行')
+    button.setText(_TR('添加行'))
     def clicked1(): 
         model.insertRow(0,[ QStandardItem(''),QStandardItem('')]) 
     button.clicked.connect(clicked1)
     button2=QPushButton(dialog)
-    button2.setText('删除选中行')
+    button2.setText(_TR('删除选中行'))
     def clicked2():
         
         model.removeRow(table.currentIndex().row())
     button2.clicked.connect(clicked2)
     button3=QPushButton(dialog)
-    button3.setText('保存并关闭')
+    button3.setText(_TR('保存并关闭'))
     def clicked3():
         rows=model.rowCount() 
         newdict={}
@@ -113,7 +113,7 @@ def noundictconfigdialog1(object,configdict,title,label=[  '日文','翻译'],fn
     dialog.show()
 def noundictconfigdialog(object,configdict,title,label=['游戏ID MD5' ,'日文','翻译'],fname='./userconfig/noundictconfig.json'):
     dialog = QDialog(object,Qt.WindowCloseButtonHint)  # 自定义一个dialog
-    dialog.setWindowTitle(title)
+    dialog.setWindowTitle(_TR(title))
     #dialog.setWindowModality(Qt.ApplicationModal)
     
     formLayout = QVBoxLayout(dialog)  # 配置layout
@@ -130,14 +130,14 @@ def noundictconfigdialog(object,configdict,title,label=['游戏ID MD5' ,'日文'
             item = QStandardItem( configdict['dict'][key][1] )
             model.setItem(row, 2, item)
             row+=1
-    model.setHorizontalHeaderLabels(label)
+    model.setHorizontalHeaderLabels(_TRL(label))
     table = QTableView(dialog)
     table.setModel(model)
     table.horizontalHeader().setStretchLastSection(True)
     #table.setEditTriggers(QAbstractItemView.NoEditTriggers)
     #table.clicked.connect(self.show_info)
     button=QPushButton(dialog)
-    button.setText('添加行')
+    button.setText(_TR('添加行'))
     def clicked1(): 
         try:
             md5=object.object.textsource.md5
@@ -147,20 +147,20 @@ def noundictconfigdialog(object,configdict,title,label=['游戏ID MD5' ,'日文'
             model.insertRow(0,[QStandardItem('0'),QStandardItem(''),QStandardItem('')]) 
     button.clicked.connect(clicked1)
     button2=QPushButton(dialog)
-    button2.setText('删除选中行')
+    button2.setText(_TR('删除选中行'))
     def clicked2():
         
         model.removeRow(table.currentIndex().row())
     button2.clicked.connect(clicked2)
     button5=QPushButton(dialog)
-    button5.setText('设置所有词条为全局词条')
+    button5.setText(_TR('设置所有词条为全局词条'))
     def clicked5():
         rows=model.rowCount()  
         for row in range(rows):
             model.item(row,0).setText('0')
     button5.clicked.connect(clicked5)
     button3=QPushButton(dialog)
-    button3.setText('保存并关闭')
+    button3.setText(_TR('保存并关闭'))
     def clicked3():
         rows=model.rowCount() 
         newdict={}
@@ -178,7 +178,7 @@ def noundictconfigdialog(object,configdict,title,label=['游戏ID MD5' ,'日文'
     searchcontent=QLineEdit()
     search.addWidget(searchcontent)
     button4=QPushButton()
-    button4.setText('搜索')
+    button4.setText(_TR('搜索'))
     def clicked4():
         text=searchcontent.text()
          
@@ -210,14 +210,14 @@ def noundictconfigdialog(object,configdict,title,label=['游戏ID MD5' ,'日文'
   
 def postconfigdialog(object,configdict,title):
     dialog = QDialog(object,Qt.WindowCloseButtonHint)  # 自定义一个dialog
-    dialog.setWindowTitle(title)
+    dialog.setWindowTitle(_TR(title))
     #dialog.setWindowModality(Qt.ApplicationModal)
     
     formLayout = QVBoxLayout(dialog)  # 配置layout
      
     key=list(configdict.keys())[0]
     lb=QLabel(dialog)
-    lb.setText(key) 
+    lb.setText(_TR(key) )
     formLayout.addWidget(lb) 
     if type(configdict[key])==type(1): 
         spin=QSpinBox(dialog)
@@ -244,7 +244,7 @@ def postconfigdialog(object,configdict,title):
                 item = QStandardItem(configdict[key][key1])
                 model.setItem(row, 1, item)
                 row+=1
-        model.setHorizontalHeaderLabels([ '原文内容','替换为'])
+        model.setHorizontalHeaderLabels(_TRL([ '原文内容','替换为']))
         table = QTableView(dialog)
         table.setModel(model)
         table.setWordWrap(False) 
@@ -252,18 +252,18 @@ def postconfigdialog(object,configdict,title):
         #table.setEditTriggers(QAbstractItemView.NoEditTriggers)
         #table.clicked.connect(self.show_info)
         button=QPushButton(dialog)
-        button.setText('添加行')
+        button.setText(_TR('添加行'))
         def clicked1(): 
             model.insertRow(0,[QStandardItem(''),QStandardItem('')])   
         button.clicked.connect(clicked1)
         button2=QPushButton(dialog)
-        button2.setText('删除选中行')
+        button2.setText(_TR('删除选中行'))
         def clicked2():
             
             model.removeRow(table.currentIndex().row())
         button2.clicked.connect(clicked2)
         button3=QPushButton(dialog)
-        button3.setText('保存并关闭')
+        button3.setText(_TR('保存并关闭'))
         def clicked3():
             rows=model.rowCount() 
             newdict={}

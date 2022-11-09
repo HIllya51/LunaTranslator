@@ -42,7 +42,7 @@ defaultglobalconfig = {'position': [432, 613], 'fixedheight': False, 'width': 76
     'history':True,
     'gamepad':True
 
- },
+ },'languageuse':0,
  'proxy':'',
  'showbold':False,
  'showShadow':False,

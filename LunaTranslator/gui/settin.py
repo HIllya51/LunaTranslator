@@ -11,6 +11,8 @@ from gui.switchbutton import MySwitch
 from PyQt5.QtMultimedia import QMediaPlayer,QMediaContent ,QSoundEffect 
 from gui.settingpage1 import setTabOne
 from gui.settingpage2 import setTabTwo
+
+from utils.config import globalconfig ,_TR
 from gui.settingpage_xianshishezhi import setTabThree
 from gui.settingpage4 import setTab4 
 from gui.settingpage_tts import setTab5 
@@ -66,7 +68,13 @@ class Settin(QMainWindow) :
                         elif type(i)!=tuple:
                                 wid,cols=i,1
                         elif len(i)==2:
+                                
                                 wid,cols=i
+                                if type(wid)==str  :
+                                    if wid=="":
+                                        wid=QLabel("")
+                                    else:
+                                        wid=QLabel(_TR(wid))
                         grid.addWidget(wid,nowr,nowc,1,cols)
                         nowc+=cols   
                 maxl=max(maxl,nowc)
@@ -142,7 +150,7 @@ class Settin(QMainWindow) :
         self.move ((d.width()-self.width())/2,((d.height()-self.height())/2))
         #self.setWindowFlags(Qt.WindowStaysOnTopHint |Qt.WindowCloseButtonHint)
         #self.setWindowFlags( Qt.WindowCloseButtonHint)
-        self.setWindowTitle("设置")
+        self.setWindowTitle(_TR("设置"))
         self.setWindowIcon(qtawesome.icon("fa.gear" ))
         
         self.setStyleSheet("font: 11pt '"+globalconfig['settingfonttype']+"' ; color: \"#595959\"" )  
@@ -160,8 +168,8 @@ class Settin(QMainWindow) :
         self.tab_widget.setTabBar(tabbar) 
         self.tab_widget.setStyleSheet(
             '''QTabBar:tab { 
-                min-width: %spx;
-                min-height: %spx;
+                width: %spx;
+                height: %spx;
                 font:18pt  ;  }
             '''%(50*self.rate,180*self.rate)
         )
@@ -193,7 +201,7 @@ class Settin(QMainWindow) :
         self.automakegrid(lay,grid) 
     def getscrollwidgetlayout(self,title):
         scroll = QScrollArea()  
-        self.tab_widget.addTab(scroll, title)   
+        self.tab_widget.addTab(scroll, _TR(title))   
         
         scroll.setHorizontalScrollBarPolicy(1)
         scroll.setStyleSheet('''QScrollArea{
