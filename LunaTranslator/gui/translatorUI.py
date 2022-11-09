@@ -357,9 +357,9 @@ class QUnFrameWindow(QWidget):
         self.tray = QSystemTrayIcon()  
         self.tray.setIcon(icon) 
         
-        showAction = QAction("&显示", self, triggered = self.show_and_enableautohide)
-        settingAction = QAction("&设置", self, triggered = self.clickSettin)
-        quitAction = QAction("&退出", self, triggered = self.quitf)
+        showAction = QAction(_TR("&显示"), self, triggered = self.show_and_enableautohide)
+        settingAction = QAction(_TR("&设置"), self, triggered = self.clickSettin)
+        quitAction = QAction(_TR("&退出"), self, triggered = self.quitf)
                 
         
         self.tray.activated.connect(self.leftclicktray)
@@ -379,7 +379,7 @@ class QUnFrameWindow(QWidget):
         self.font.setFamily(globalconfig['fonttype'])
         self.font.setPointSize(globalconfig['fontsize']) 
         self.translate_text =  Textbrowser(self) 
-        self.translate_text.setText('欢迎使用') 
+        self.translate_text.setText(_TR('欢迎使用')) 
         self.translate_text.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         self.translate_text.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         self.translate_text.setFont(self.font)

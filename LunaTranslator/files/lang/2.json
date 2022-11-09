@@ -308,4 +308,8 @@
 "调整游戏窗口(需要绑定ocr窗口，或选择hook进程)":"Adjust the game window (you need to bind the ocr window or select the hook process)",
 "全屏/恢复游戏窗口(需要绑定ocr窗口，或选择hook进程)":"Full screen/restore game window (you need to bind ocr window or select hook process)",
 "游戏静音(需要绑定ocr窗口，或选择hook进程)":"Game mute (you need to bind ocr window or select hook process)",
-"最小化到托盘":"Minimize to tray"}
+"最小化到托盘":"Minimize to tray",
+"&显示":"&Show",
+"&设置":"&Settings",
+"&退出":"&Exit",
+"欢迎使用":"Welcome"}
