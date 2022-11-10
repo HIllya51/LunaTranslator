@@ -1,6 +1,6 @@
   
 import functools 
-from PyQt5.QtWidgets import   QWidget, QTableView,  QLabel, QVBoxLayout,QHBoxLayout
+from PyQt5.QtWidgets import   QWidget, QTableView,  QLabel, QVBoxLayout,QHBoxLayout,QHeaderView
 
 from PyQt5.QtWidgets import  QWidget,QLabel ,QLineEdit,QSpinBox,QPushButton,QTextEdit
 
@@ -79,7 +79,7 @@ def noundictconfigdialog1(object,configdict,title,label=[  '日文','翻译'],fn
     model.setHorizontalHeaderLabels(_TRL(label))
     table = QTableView(dialog)
     table.setModel(model)
-    table.horizontalHeader().setStretchLastSection(True)
+    table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch) 
     #table.setEditTriggers(QAbstractItemView.NoEditTriggers)
     #table.clicked.connect(self.show_info)
     button=QPushButton(dialog)
@@ -136,7 +136,7 @@ def noundictconfigdialog(object,configdict,title,label=['游戏ID MD5' ,'日文'
     model.setHorizontalHeaderLabels(_TRL(label))
     table = QTableView(dialog)
     table.setModel(model)
-    table.horizontalHeader().setStretchLastSection(True)
+    table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch) 
     #table.setEditTriggers(QAbstractItemView.NoEditTriggers)
     #table.clicked.connect(self.show_info)
     button=QPushButton(dialog)
@@ -251,7 +251,7 @@ def postconfigdialog(object,configdict,title):
         table = QTableView(dialog)
         table.setModel(model)
         table.setWordWrap(False) 
-        table.horizontalHeader().setStretchLastSection(True)
+        table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch) 
         #table.setEditTriggers(QAbstractItemView.NoEditTriggers)
         #table.clicked.connect(self.show_info)
         button=QPushButton(dialog)

@@ -2,8 +2,8 @@ import threading
 from re import search
 from traceback import print_exc
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QWidget,QHBoxLayout,QMainWindow,QFrame,QVBoxLayout,QComboBox,QPlainTextEdit,QDialogButtonBox,QLineEdit,QPushButton,QTableView,QAbstractItemView,QApplication
-from utils.config import savehook_new
+from PyQt5.QtWidgets import QWidget,QHBoxLayout,QMainWindow,QFrame,QVBoxLayout,QComboBox,QPlainTextEdit,QDialogButtonBox,QLineEdit,QPushButton,QTableView,QAbstractItemView,QApplication,QHeaderView
+from utils.config import savehook_new,savehook_new2
 from PyQt5.QtGui import QStandardItem, QStandardItemModel
 from PyQt5.QtGui import QFont,QTextCursor
 from PyQt5.QtCore import Qt,pyqtSignal
@@ -12,7 +12,7 @@ import subprocess
 import json
 import os,time
 import re
-import sys 
+import sys ,win32gui
 from utils.config import globalconfig ,_TR,_TRL
 class hookselect(QMainWindow):
     addnewhooksignal=pyqtSignal(tuple)
@@ -91,7 +91,7 @@ class hookselect(QMainWindow):
         
         self.tttable = QTableView(self)
         self.tttable .setModel(self.ttCombomodelmodel)
-        self.tttable .horizontalHeader().setStretchLastSection(True)
+        self.tttable .horizontalHeader().setSectionResizeMode(QHeaderView.Stretch) 
         self.tttable.setWordWrap(False)  
         self.tttable.setSelectionBehavior(QAbstractItemView.SelectRows)
         self.tttable.setSelectionMode(QAbstractItemView.ExtendedSelection)
@@ -142,7 +142,7 @@ class hookselect(QMainWindow):
         
         self.tttable2 = QTableView(self)
         self.tttable2 .setModel(self.ttCombomodelmodel2)
-        self.tttable2 .horizontalHeader().setStretchLastSection(True)
+        self.tttable2 .horizontalHeader().setSectionResizeMode(QHeaderView.Stretch) 
         self.tttable2.setWordWrap(False)  
         self.tttable2.setSelectionBehavior(QAbstractItemView.SelectRows)
         self.tttable2.setSelectionMode(QAbstractItemView.ExtendedSelection)
@@ -321,6 +321,13 @@ class hookselect(QMainWindow):
             self.object.textsource.autostarthookcode=[]
             self.object.textsource.autostart=False
             savehook_new[self.object.textsource.pname]=self.object.textsource.selectedhook 
+            savehook_new2[self.object.textsource.pname]={}
+            savehook_new2[self.object.textsource.pname]['leuse']=True
+            try:
+                title=win32gui.GetWindowText(self.object.textsource.hwnd)
+            except:
+                title=''
+            savehook_new2[self.object.textsource.pname]['title']=title
         except:
             print_exc()
         #self.object.settin_ui.show()

@@ -35,10 +35,7 @@ def ssim_2(img1, img2):
                                        (sigma1_sq + sigma2_sq + C2))
     return ssim_map.mean()
 import os
-import importlib
-import sqlite3
-import threading
-import json
+import importlib 
 import cv2
 from difflib import SequenceMatcher
 import numpy as np 
@@ -46,6 +43,7 @@ import time
 from PyQt5.QtWidgets import QApplication 
 from textsource.textsourcebase import basetext
 from ocr.myocr import myocr
+from utils.getpidlist import getmagpiehwnd
 def compareImage(  imageA, imageB):
     
     grayA = cv2.cvtColor(imageA, cv2.COLOR_BGR2GRAY)
@@ -60,7 +58,7 @@ def getEqualRate(  str1, str2):
         score = score 
 
         return score
-import win32gui ,math,qtawesome
+import win32gui ,math,win32process
 class ocrtext(basetext):
     def qimg2cv2(self,qimg):
         qimg=qimg.toImage() 
@@ -77,16 +75,23 @@ class ocrtext(basetext):
      
         if self.hwnd:
             try:
-                 
-                rect=win32gui.GetWindowRect(self.hwnd)  
-                rect2=win32gui.GetClientRect(self.hwnd)
+                _hwnd_magpie=getmagpiehwnd(self.object.translation_ui.callmagpie.pid)
+                if _hwnd_magpie!=0:
+
+                    hwnduse=QApplication.desktop().winId()
+                else:
+                    hwnduse=self.hwnd
+                rect=win32gui.GetWindowRect(hwnduse)  
+                rect2=win32gui.GetClientRect(hwnduse)
                 windowOffset = math.floor(((rect[2]-rect[0])-rect2[2])/2)
                 h= ((rect[3]-rect[1])-rect2[3]) - windowOffset
                 # print(h)
                 # print(rect)
                 # print(rect2)
                 # print(x1-rect[0], y1-rect[1]-h, x2-x1, y2-y1)
-                pix = self.screen.grabWindow( (self.hwnd), x1-rect[0], y1-rect[1]-h, x2-x1, y2-y1) 
+ 
+                 
+                pix = self.screen.grabWindow(hwnduse, x1-rect[0], y1-rect[1]-h, x2-x1, y2-y1) 
                 res=self.qimg2cv2(pix)
                 if res.sum()==0: 
                     pix = self.screen.grabWindow(QApplication.desktop().winId(), x1, y1, x2-x1, y2-y1)

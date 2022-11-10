@@ -20,7 +20,7 @@ import gui.rangeselect
 import gui.transhist 
 
 from utils.subproc import subproc
-from utils.getpidlist import getwindowhwnd,mouseselectwindow,letfullscreen,recoverwindow
+from utils.getpidlist import getwindowhwnd,mouseselectwindow,letfullscreen,recoverwindow,getmagpiehwnd
 from gui.settingpage4 import autosaveshow
 from gui.settingpage1 import settingsource,settingtextractor
 from gui.textbrowser import Textbrowser
@@ -419,14 +419,18 @@ class QUnFrameWindow(QWidget):
     def grabwindow(self): 
         
         try:
-            if self.isletgamefullscreened:
+            _hwnd_magpie=getmagpiehwnd(self.object.translation_ui.callmagpie.pid)
+            if _hwnd_magpie!=0:
                 hwnd=QApplication.desktop().winId() 
                 self.hide()
                 QApplication.primaryScreen().grabWindow(hwnd).save(f'./capture/{time.time()}.png')
-                self.show()
+                self.show() 
+                
             else:
                 hwnd=win32gui.GetForegroundWindow()  
                 QApplication.primaryScreen().grabWindow(hwnd).save(f'./capture/{time.time()}.png')
+                
+                
         except:
             pass
     def muteprocessfuntion(self): 

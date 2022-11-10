@@ -40,13 +40,13 @@ def autosaveshow(object):
     if True:
         model=QStandardItemModel(  dialog)
         table = QTableView(dialog)
-        #table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
-        table.horizontalHeader().setSectionResizeMode(QHeaderView.Interactive)
+        table.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
+
+        
         table.setSelectionBehavior(QAbstractItemView.SelectRows)
         table.setSelectionMode( (QAbstractItemView.SingleSelection)      )
         table.setWordWrap(False) 
-        table.setModel(model)
-        table.horizontalHeader().setStretchLastSection(True)
+        table.setModel(model) 
         table.setEditTriggers(QAbstractItemView.NoEditTriggers)
         row=0
         for k in savehook_new:                                   # 2
@@ -58,27 +58,30 @@ def autosaveshow(object):
                     icon=transparent
                 icon=QIcon(icon) 
                 model.setItem(row, 1, QStandardItem(icon,'')) 
-                model.setItem(row, 2, QStandardItem(k)) 
+                model.setItem(row, 3, QStandardItem(k)) 
                 model.setItem(row, 0, QStandardItem(''))
                 if k not in savehook_new2:
-                        savehook_new2[k]=True
-                table.setIndexWidget(model.index(row, 0),object.getsimpleswitch(savehook_new2,k))
+                        savehook_new2[k]={}
+                        savehook_new2[k]['leuse']=True
+                        savehook_new2[k]['title']='' 
+                model.setItem(row, 2, QStandardItem(savehook_new2[k]['title']))
+                table.setIndexWidget(model.index(row, 0),object.getsimpleswitch(savehook_new2[k],'leuse'))
                 # item = QStandardItem(json.dumps(js[k],ensure_ascii=False))
                 # model.setItem(row, 2, item)
                 row+=1
-        model.setHorizontalHeaderLabels(_TRL(['使用LE','图标', '游戏']))#,'HOOK'])
+        model.setHorizontalHeaderLabels(_TRL(['使用LE','','标题', '游戏']))#,'HOOK'])
         
         #table.clicked.connect(self.show_info)
         button=QPushButton(dialog)
         button.setText(_TR('开始游戏'))
         def clicked(): 
                 try:
-                    game=model.item(table.currentIndex().row(),2).text() 
+                    game=model.item(table.currentIndex().row(),3).text() 
                     if os.path.exists(game):
                         #subprocess.Popen(model.item(table.currentIndex().row(),1).text()) 
                         print(game)
                         le=os.path.join(os.path.abspath(globalconfig['LocaleEmulator']),'LEProc.exe')
-                        if savehook_new2[game] and os.path.exists(le):
+                        if savehook_new2[game]['leuse'] and os.path.exists(le):
                                 win32api.ShellExecute(None, "open", le, f'-run "{game}"', os.path.dirname(game), win32con.SW_SHOW)
                         else:
                                 win32api.ShellExecute(None, "open", game, "", os.path.dirname(game), win32con.SW_SHOW)
@@ -92,7 +95,7 @@ def autosaveshow(object):
         button2=QPushButton(dialog)
         button2.setText(_TR('删除游戏'))
         def clicked2(): 
-                savehook_new.pop(model.item(table.currentIndex().row(),2).text())
+                savehook_new.pop(model.item(table.currentIndex().row(),3).text())
                 model.removeRow(table.currentIndex().row())
         button2.clicked.connect(clicked2)
          

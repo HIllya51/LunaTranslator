@@ -13,6 +13,18 @@ def getwindowlist():
                 except:
                         pass
         return list(set(pidlist))
+def getmagpiehwnd(pid):
+        windows_list=[]
+        pidlist=[]
+        win32gui.EnumWindows(lambda hWnd, param: param.append(hWnd), windows_list) 
+        for hwnd in windows_list:
+                try:
+                        tid, _pid=win32process.GetWindowThreadProcessId(hwnd) 
+                        if _pid==pid:
+                                return hwnd
+                except:
+                        pass
+        return 0
 def getarch(pid):
         try: 
                  process=win32api.OpenProcess(win32con.PROCESS_ALL_ACCESS,False, (pid))

@@ -118,7 +118,7 @@ class MAINUI(QObject) :
         if noundictconfig['use'] :
             for key in noundictconfig['dict']: 
                 usedict=False
-                if type(noundictconfig['dict'][key][0])==str:
+                if type(noundictconfig['dict'][key])==str:
                     usedict=True
                 else:
 
