@@ -1,6 +1,6 @@
  
 from PyQt5.QtCore import Qt 
-from PyQt5.QtGui import QPen,QColor ,QTextCharFormat ,QTextBlockFormat,QTextCursor,QFont,QColor,QFontMetricsF,QPalette
+from PyQt5.QtGui import QPen,QColor ,QTextCharFormat ,QTextBlockFormat,QTextCursor,QFont,QColor,QFontMetricsF,QPalette,QTextFormat
 from PyQt5.QtWidgets import  QTextBrowser ,QLabel,QPushButton,QGraphicsDropShadowEffect
 import random
 import functools 
@@ -163,10 +163,10 @@ class Textbrowser():
         #     # adding shadow to the label
             
         #     self.shadowlabel.setGraphicsEffect(shadow)
-    def showyinyingtext(self,color,text): 
+    def showyinyingtext(self,color,text,off): 
          
         #print(x)
-        start=self.yinyingpos
+        start=self.yinyingpos+off
         pos=start
         labeli=0 
         cursor=self.textbrowser.textCursor()
@@ -333,8 +333,12 @@ class Textbrowser():
         return self.lastcolor
     @timer
     def addtag(self,x): 
-        if len(self.savetaglabels)<len(x):
-            self.savetaglabels+=[QLabel(self.textbrowser) for i in range(len(x)-len(self.savetaglabels))]
+        if globalconfig['zitiyangshi'] in [0,1,2]:  
+            if len(self.savetaglabels)<len(x):
+                self.savetaglabels+=[QLabel(self.textbrowserback) for i in range(len(x)-len(self.savetaglabels))]
+        elif globalconfig['zitiyangshi'] ==3: 
+            if len(self.savetaglabels)<len(globalconfig['shadowforce']*x):
+                self.savetaglabels+=[QLabel(self.textbrowserback) for i in range(len(globalconfig['shadowforce']*x)-len(self.savetaglabels))]
         #print(x)
         pos=2
         self.addtaged=True
@@ -351,12 +355,17 @@ class Textbrowser():
         self.textbrowserback.setTextCursor(cursor)
         font=QFont()
         font.setFamily(globalconfig['fonttype']) 
-        font.setPointSizeF(12) 
+        
+        font.setPixelSize(int(globalconfig['fontsize'])  )
+        fm=QFontMetricsF(font)
+        fh=fm.height()  
         f1=QTextBlockFormat()
         
-        f1.setLineHeight(20,QTextBlockFormat.LineDistanceHeight)
+        f1.setLineHeight(fh,QTextBlockFormat.LineDistanceHeight)
         f1.setAlignment(self.textbrowser.alignment())
         need=True
+
+        _rawqlabel=QLabel() 
         for word in x:
             if word['orig']=='\n':
                 continue
@@ -376,23 +385,64 @@ class Textbrowser():
             need=False
             
             tl2=self.textbrowser.cursorRect(self.textbrowser.textCursor()).topLeft() 
+            if word['hira']==word['orig']:
+                continue
             #print(tl1,tl2,word['hira'],self.textbrowser.textCursor().position())
-            self.savetaglabels[labeli].setText(word['hira'])
-            self.savetaglabels[labeli].setFont(font)
-            self.savetaglabels[labeli].adjustSize()
-            w=self.savetaglabels[labeli].width()
             
-            if tl1.y()!=tl2.y():
-                x=tl2.x()-w
-                need=True
-            else:
-                x=tl1.x()/2+tl2.x()/2-w/2
-            y=tl2.y()-20
-            
-            self.savetaglabels[labeli].move(x,y)  
-             
-            self.savetaglabels[labeli].setStyleSheet("color: %s;background-color:rgba(0,0,0,0)" %(globalconfig['rawtextcolor']))
-            self.savetaglabels[labeli].show()
+            if globalconfig['zitiyangshi'] in [0,1,2]:  
+                self.savetaglabels[labeli].setGraphicsEffect(_rawqlabel.graphicsEffect() )
+                self.savetaglabels[labeli].clear()
+                self.savetaglabels[labeli].setText(word['hira'])
+                self.savetaglabels[labeli].setFont(font)
+                self.savetaglabels[labeli].adjustSize()
+                w=self.savetaglabels[labeli].width() 
+                if tl1.y()!=tl2.y():
+                    x=tl2.x()-w
+                    need=True
+                else:
+                    x=tl1.x()/2+tl2.x()/2-w/2
+                y=tl2.y()-fh 
+                self.savetaglabels[labeli].move(x,y)   
+                self.savetaglabels[labeli].setStyleSheet("color: %s;background-color:rgba(0,0,0,0)" %(globalconfig['jiamingcolor'])) 
+                self.savetaglabels[labeli].show()
+            elif globalconfig['zitiyangshi'] ==3: 
+    
+                for _i  in range(globalconfig['shadowforce']):
+                        self.savetaglabels[labeli*globalconfig['shadowforce']+_i].setText(word['hira'])
+                        self.savetaglabels[labeli*globalconfig['shadowforce']+_i].setFont(font)
+                        self.savetaglabels[labeli*globalconfig['shadowforce']+_i].adjustSize()
+                        w=self.savetaglabels[labeli*globalconfig['shadowforce']+_i].width()
+                        
+                        if tl1.y()!=tl2.y():
+                            x=tl2.x()-w
+                            need=True
+                        else:
+                            x=tl1.x()/2+tl2.x()/2-w/2
+                        y=tl2.y()-fh 
+                        
+                        shadow2 = QGraphicsDropShadowEffect()
+                        shadow2.setBlurRadius(globalconfig['fontsize'])
+                        shadow2.setOffset(0) 
+                        shadow2.setColor(QColor(globalconfig['jiamingcolor'])) 
+
+                        self.savetaglabels[labeli*globalconfig['shadowforce']+_i].move(x,y)   
+                        self.savetaglabels[labeli*globalconfig['shadowforce']+_i].setStyleSheet(f"color:{globalconfig['miaobiancolor']}; background-color:rgba(0,0,0,0)")
+                        self.savetaglabels[labeli*globalconfig['shadowforce']+_i].setGraphicsEffect(shadow2)
+                        self.savetaglabels[labeli*globalconfig['shadowforce']+_i].show() 
+                        
+
+
+
+
+
+
+
+
+
+
+
+
+
             labeli+=1
        
     def mergeCurrentCharFormat(self,colormiao,width):

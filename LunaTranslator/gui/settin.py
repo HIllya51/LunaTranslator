@@ -53,8 +53,7 @@ class Settin(QMainWindow) :
     fontbigsmallsignal=pyqtSignal(int) 
     def showEvent(self, a0   ) -> None:
          win32gui.SetWindowPos(int(self. winId()), win32con.HWND_TOPMOST, 0, 0, 0, 0,win32con. SWP_NOACTIVATE |win32con. SWP_NOSIZE | win32con.SWP_NOMOVE) 
-         self.realishide=False
-         print('show')
+         self.realishide=False 
          return super().showEvent(a0)
     def hideEvent(self, a0 ) -> None:
          self.realishide=True
@@ -232,8 +231,8 @@ background-color:transparent;
     def closeEvent(self, event) : 
         self.hide()
     def ChangeTranslateColor(self, translate_type,button,item=None,name=None) :
-            nottransbutton=['rawtextcolor','backcolor','miaobiancolor','shadowcolor','buttoncolor','ocrrangecolor']
-            if translate_type in nottransbutton:
+            nottransbutton=globalconfig['fanyi'].keys()
+            if translate_type not in nottransbutton:
                 color = QColorDialog.getColor(QColor(globalconfig[translate_type]), self )  
             else:
                 color = QColorDialog.getColor(QColor(globalconfig['fanyi'][translate_type]['color']), self )
@@ -243,7 +242,7 @@ background-color:transparent;
                 button=getattr(item,name)
             button.setIcon(qtawesome.icon("fa.paint-brush", color=color.name()))
              
-            if translate_type in nottransbutton: 
+            if translate_type not in nottransbutton: 
                 globalconfig[translate_type]=color.name()  
             else:
                 globalconfig['fanyi'][translate_type]['color']=color.name() 

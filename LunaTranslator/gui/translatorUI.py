@@ -113,18 +113,20 @@ class QUnFrameWindow(QWidget):
         elif globalconfig['zitiyangshi'] ==0: 
             self.translate_text.simplecharformat(color)
         elif globalconfig['zitiyangshi'] ==3: 
-            self.translate_text.textbrowser.show() 
-            if type_==1: 
-                self.translate_text.append(res[1]) 
-            else:  
-                self.translate_text.append(res[1])  
-                #self.translate_text.addtag(res[0]) 
-            self.translate_text.showyinyingtext(color,res[1]  )
-            self.translate_text.textbrowser.hide()
-            if (globalconfig['usesearchword'] or globalconfig['show_fenci']  ) and res[0]: 
-                self.translate_text.addsearchwordmask(res[0],res[1],self.showsearchword,0  )
-            return 
-        self.translate_text.textbrowser.show()
+            self.translate_text.simplecharformat(color)
+            # self.translate_text.textbrowser.show() 
+            # if type_==1: 
+            #     self.translate_text.append(res[1]) 
+            # else:  
+            #     self.translate_text.append(' ')
+            #     self.translate_text.append(res[1])  
+            #     self.translate_text.addtag(res[0])  
+            # self.translate_text.showyinyingtext(color,res[1] ,0 if type_==1 else 2 )
+            # self.translate_text.textbrowser.hide()
+            # if (globalconfig['usesearchword'] or globalconfig['show_fenci']  ) and res[0]: 
+            #     self.translate_text.addsearchwordmask(res[0],res[1],self.showsearchword,0 if type_==1 else 2 )
+            # return 
+        #self.translate_text.textbrowser.show()
         
         if type_==1: 
             self.translate_text.append(res[1]) 
@@ -132,6 +134,9 @@ class QUnFrameWindow(QWidget):
             self.translate_text.append(' ')
             self.translate_text.append(res[1])  
             self.translate_text.addtag(res[0]) 
+        if globalconfig['zitiyangshi'] ==3:
+            self.translate_text.showyinyingtext(color,res[1] ,0 if type_==1 else 2 )
+            #self.translate_text.textbrowser.hide()
         if (globalconfig['usesearchword'] or globalconfig['show_fenci']  ) and res[0]:
             self.translate_text.addsearchwordmask(res[0],res[1],self.showsearchword,0 if type_==1 else 2) 
     def showsearchword(self,word):   

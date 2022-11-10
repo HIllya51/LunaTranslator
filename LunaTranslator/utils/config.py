@@ -43,17 +43,14 @@ def syncconfig(config,default,drop=False,deep=0):
         if type(default[key])!=type(config[key]) and (type(default[key])==dict or type(default[key])==list): 
             config[key]=default[key] 
         elif type(default[key])==dict:  
-            syncconfig(config[key],default[key])
+            syncconfig(config[key],default[key],drop,deep-1)
              
-    if drop:
+    if drop and deep>0:
         for key in list(config.keys()):
             if key not in default:
                 config.pop(key) 
-            
-            elif type(default[key])==dict and deep!=1:
-                syncconfig(config[key],default[key],drop)
-        
-syncconfig(postprocessconfig,defaultpost ,True,1) 
+           
+syncconfig(postprocessconfig,defaultpost ,True,3) 
 syncconfig(globalconfig,defaultglobalconfig)
  
 syncconfig(transerrorfixdictconfig,defaulterrorfix)
