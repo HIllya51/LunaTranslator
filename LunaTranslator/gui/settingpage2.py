@@ -101,8 +101,10 @@ def setTabTwo(self) :
             else:
                 os.environ['https_proxy']='' 
                 os.environ['http_proxy']=''
-        _setproxy(globalconfig['useproxy'])
-
+        #_setproxy(globalconfig['useproxy'])
+        if globalconfig['useproxy']:
+                os.environ['https_proxy']=globalconfig['proxy'] 
+                os.environ['http_proxy']=globalconfig['proxy'] 
         proxy=QLineEdit(globalconfig['proxy'])
         btn=QPushButton(_TR('确定' ))
         def __resetproxy(x):
