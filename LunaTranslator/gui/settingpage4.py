@@ -151,7 +151,7 @@ def minmaxmoveobservefunc(self):
                   if self.object.textsource.pid:
                       
                      if pid==self_pid:
-                            continue
+                            self.object.translation_ui.hookfollowsignal.emit(3,(0,0))  
                      plist=getwindowlist()
                      if self.object.textsource.pid not in plist:
                             #print('game exit') 
@@ -173,6 +173,7 @@ def minmaxmoveobservefunc(self):
                         
                         if pid==self_pid:
                                 self.delayhideflag=False 
+                                self.object.translation_ui.hookfollowsignal.emit(3,(0,0))  
                         elif pid==self.object.textsource.pid: 
                                 self.object.translation_ui.hookfollowsignal.emit(3,(0,0))  
                                 self.delayhideflag=False

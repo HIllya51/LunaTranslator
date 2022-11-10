@@ -1,31 +1,28 @@
-from PyQt5.QtWidgets import QWidget,QDesktopWidget,QMainWindow,QLabel,QPushButton,QStatusBar,QDialog
+from PyQt5.QtWidgets import QWidget,QDesktopWidget,QMainWindow,QLabel,QPushButton,QStatusBar,QDialog,QSizeGrip
 from PyQt5.QtGui import  QBitmap,QPainter,QPen,QBrush,QFont
 from PyQt5.QtCore import Qt,QPoint,QRect,QEvent,pyqtSignal
 import re,threading,time
  
 from utils.config import globalconfig
- 
+from gui.resizeablemainwindow import Mainw
 
-class rangeadjust(QMainWindow) :
+class rangeadjust(Mainw) :
  
     def __init__(self, object):
 
-        super(rangeadjust, self).__init__(object.settin_ui) 
-        self.object = object  
-          
+        super(rangeadjust, self).__init__(object.translation_ui) 
+        self.object = object   
+        self.label = QLabel(self) 
+        self.label.setStyleSheet(" border:%spx solid %s; background-color: rgba(0,0,0, 0.01)"   %(globalconfig['ocrrangewidth'],globalconfig['ocrrangecolor'] ))
+        self.drag_label = QLabel(self)
+        self.drag_label.setGeometry(0, 0, 4000, 2000)
+        self._isTracking=False 
+        
         self.setWindowFlags(Qt.WindowStaysOnTopHint | Qt.FramelessWindowHint | Qt.Tool)
         self.setAttribute(Qt.WA_TranslucentBackground) 
 
-        self.label = QLabel(self) 
-        self.label.setStyleSheet("border-width:1;\
-                                  border:2px solid #000000;\
-                                  background-color:rgba(62, 62, 62, 0.01)")
-    
-        self.drag_label = QLabel(self)
-        self.drag_label.setGeometry(0, 0, 4000, 2000)
-        self._isTracking=False
-        self.statusbar = QStatusBar(self)
-        self.setStatusBar(self.statusbar)  
+        for s in self.cornerGrips: 
+            s.raise_()
     def mouseMoveEvent(self, e ) :  
         if self._isTracking: 
             self._endPos = e.pos() - self._startPos
@@ -38,21 +35,19 @@ class rangeadjust(QMainWindow) :
             if e.button() == Qt.LeftButton:
                 self._isTracking = False
                 self._startPos = None
-                self._endPos = None 
-
-                
+                self._endPos = None  
+    def moveEvent(self,e):
                 rect = self.geometry() 
                 self.object.rect=[(rect.left(),rect.top()),(rect.right(),rect.bottom())]  
     def enterEvent(self, QEvent) :  
-        self.drag_label.setStyleSheet("background-color:rgba(62, 62, 62, 0.1)") 
+        self.drag_label.setStyleSheet("background-color:rgba(0,0,0, 0.1)") 
     def leaveEvent(self, QEvent): 
-        self.drag_label.setStyleSheet("background-color:none") 
-    #def moveEvent(self, a0):
-    #     self.resizeEvent(a0)
+        self.drag_label.setStyleSheet("background-color:none")  
     def resizeEvent(self, a0 ) :
          self.label.setGeometry(0, 0, self.width(), self.height())  
-    #     rect = self.geometry() 
-    #     self.object.rect=[(rect.left(),rect.top()),(rect.right(),rect.bottom())]  
+         rect = self.geometry() 
+         self.object.rect=[(rect.left(),rect.top()),(rect.right(),rect.bottom())] 
+         super(rangeadjust, self).resizeEvent(a0)  
 class rangeselct(QMainWindow) :
 
     def __init__(self, object ) :

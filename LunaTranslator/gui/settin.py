@@ -232,7 +232,7 @@ background-color:transparent;
     def closeEvent(self, event) : 
         self.hide()
     def ChangeTranslateColor(self, translate_type,button,item=None,name=None) :
-            nottransbutton=['rawtextcolor','backcolor','miaobiancolor','shadowcolor','buttoncolor']
+            nottransbutton=['rawtextcolor','backcolor','miaobiancolor','shadowcolor','buttoncolor','ocrrangecolor']
             if translate_type in nottransbutton:
                 color = QColorDialog.getColor(QColor(globalconfig[translate_type]), self )  
             else:
@@ -242,8 +242,7 @@ background-color:transparent;
             if button is None:
                 button=getattr(item,name)
             button.setIcon(qtawesome.icon("fa.paint-brush", color=color.name()))
-            
-            nottransbutton=['rawtextcolor','backcolor','miaobiancolor','shadowcolor','buttoncolor']
+             
             if translate_type in nottransbutton: 
                 globalconfig[translate_type]=color.name()  
             else:

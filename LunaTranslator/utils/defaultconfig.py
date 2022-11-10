@@ -8,6 +8,8 @@ defaultglobalconfig = {'position': [432, 613], 'fixedheight': False, 'width': 76
  'premtsimi':5,
  'magpiescalemethod':0,
  'magpiecapturemethod':0,
+ 'ocrrangecolor':'#000000',
+ 'ocrrangewidth':2,
  'useproxy':False,
  'usemagpie':True, 
  'ocrautobindwindow':True,

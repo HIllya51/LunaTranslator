@@ -53,9 +53,17 @@ def setTab6(self) :
             [(("每隔一段时间必然进行一次OCR"),6),self.getsimpleswitch(globalconfig ,'mustocr')],
             [(("OCR最长间隔时间(s)"),6),(self.getspinbox(0.1,100,globalconfig,'mustocr_interval',double=True,step=0.1  ),2)],
             [(("OCR最短间隔时间(s)"),6),(self.getspinbox(0.1,100,globalconfig,'ocrmininterval',double=True,step=0.1  ),2)],
+            [(("OCR范围框颜色"),6),(self.getcolorbutton(globalconfig,'ocrrangecolor',callback=lambda  : changeocrcolorcallback(self),name='ocrrangecolor_button'),1)],
+            [(("OCR范围框宽度"),6),(self.getspinbox(1,100,globalconfig,'ocrrangewidth'  ,callback=lambda x: changeocrwidthcallback(self,x) ),2)],
           
         ] 
         self.yitiaolong("OCR设置",grids)
+def changeocrcolorcallback(self ):
+    self.ChangeTranslateColor("ocrrangecolor", self.ocrrangecolor_button) 
+    self.object.range_ui.label.setStyleSheet(" border:%spx solid %s; background-color: rgba(0,0,0, 0.01)"   %(globalconfig['ocrrangewidth'],globalconfig['ocrrangecolor'] ))
+def changeocrwidthcallback(self,x):
+    globalconfig.__setitem__('ocrrangewidth',x)
+    self.object.range_ui.label.setStyleSheet(" border:%spx solid %s; background-color: rgba(0,0,0, 0.01)"   %(globalconfig['ocrrangewidth'],globalconfig['ocrrangecolor'] ))
 def yuitsuocr(self,name,checked): 
     
     if checked : 
