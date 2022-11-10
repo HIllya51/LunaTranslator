@@ -41,7 +41,7 @@ def autosaveshow(object):
         model=QStandardItemModel(  dialog)
         table = QTableView(dialog)
         table.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
-
+        table.horizontalHeader().setStretchLastSection(True)
         
         table.setSelectionBehavior(QAbstractItemView.SelectRows)
         table.setSelectionMode( (QAbstractItemView.SingleSelection)      )

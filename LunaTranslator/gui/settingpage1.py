@@ -95,7 +95,7 @@ def textsourcechange(self,who,checked):
                 self.object.translation_ui.showhidestate=True
                 self.object.translation_ui.showhide()
                 self.object.translation_ui.refreshtooliconsignal.emit()
-
+        self.object.textsource=None
         if checked : 
             self.object.starttextsource() 
         self.selectbutton.setEnabled(globalconfig['sourcestatus']['textractor']) 

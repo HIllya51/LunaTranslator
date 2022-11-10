@@ -2,7 +2,7 @@ import threading
 from re import search
 from traceback import print_exc
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QWidget,QHBoxLayout,QMainWindow,QFrame,QVBoxLayout,QComboBox,QPlainTextEdit,QDialogButtonBox,QLineEdit,QPushButton,QTableView,QAbstractItemView,QApplication,QHeaderView
+from PyQt5.QtWidgets import QWidget,QHBoxLayout,QMainWindow,QFrame,QVBoxLayout,QComboBox,QPlainTextEdit,QDialogButtonBox,QLineEdit,QPushButton,QTableView,QAbstractItemView,QApplication,QHeaderView,QCheckBox
 from utils.config import savehook_new,savehook_new2
 from PyQt5.QtGui import QStandardItem, QStandardItemModel
 from PyQt5.QtGui import QFont,QTextCursor
@@ -72,10 +72,7 @@ class hookselect(QMainWindow):
         # # self.processCombo.setObjectName("processCombo")
         # self.processLayout.addWidget(self.processCombo)
         self.hboxlayout.addWidget(self.processFrame)
-        self.vboxlayout = QVBoxLayout() 
-        font = QFont()
-        #font.setFamily("Arial Unicode MS")
-        font.setPointSize(13)
+        self.vboxlayout = QVBoxLayout()  
         # self.ttCombo = QComboBox(self.centralWidget)
         # self.ttCombo.setEditable(False)
         # self.ttCombo.currentIndexChanged.connect(self.ViewThread)
@@ -109,16 +106,13 @@ class hookselect(QMainWindow):
         
         self.userhooklayout = QHBoxLayout() 
         self.vboxlayout.addLayout(self.userhooklayout)
-        self.userhook=QLineEdit()
-        self.userhook.setFont(font)
+        self.userhook=QLineEdit() 
         self.userhooklayout.addWidget(self.userhook)
-        self.userhookinsert=QPushButton(_TR("插入特殊码"))
-        self.userhookinsert.setFont(font)
+        self.userhookinsert=QPushButton(_TR("插入特殊码")) 
         self.userhookinsert.clicked.connect(self.inserthook)
         self.userhooklayout.addWidget(self.userhookinsert)
 
-        self.userhookfind=QPushButton(_TR("搜索特殊码"))
-        self.userhookfind.setFont(font)
+        self.userhookfind=QPushButton(_TR("搜索特殊码")) 
         self.userhookfind.clicked.connect(self.findhook)
         self.userhooklayout.addWidget(self.userhookfind)
 
@@ -126,12 +120,10 @@ class hookselect(QMainWindow):
         #################
         self.searchtextlayout = QHBoxLayout() 
         self.vboxlayout.addLayout(self.searchtextlayout)
-        self.searchtext=QLineEdit()
-        self.searchtext.setFont(font)
+        self.searchtext=QLineEdit() 
         self.searchtextlayout.addWidget(self.searchtext)
         self.searchtextbutton=QPushButton(_TR("搜索包含文本的条目"))
-        
-        self.searchtextbutton.setFont(font)
+         
         self.searchtextbutton.clicked.connect(self.searchtextfunc)
         self.searchtextlayout.addWidget(self.searchtextbutton)
         ###################
@@ -142,31 +134,44 @@ class hookselect(QMainWindow):
         
         self.tttable2 = QTableView(self)
         self.tttable2 .setModel(self.ttCombomodelmodel2)
-        self.tttable2 .horizontalHeader().setSectionResizeMode(QHeaderView.Stretch) 
+        self.tttable2 .horizontalHeader().setSectionResizeMode(QHeaderView.ResizeToContents) 
+        self.tttable2.horizontalHeader().setStretchLastSection(True)
         self.tttable2.setWordWrap(False)  
         self.tttable2.setSelectionBehavior(QAbstractItemView.SelectRows)
-        self.tttable2.setSelectionMode(QAbstractItemView.ExtendedSelection)
+        self.tttable2.setSelectionMode(QAbstractItemView.SingleSelection)
         self.tttable2.setEditTriggers(QAbstractItemView.NoEditTriggers)
         self.tttable2.hide()
-        self.tttable2.clicked.connect(self.ViewThread2)
-        #self.tttable.setFont(font)
+        self.tttable2.clicked.connect(self.ViewThread2) 
         
         self.vboxlayout.addWidget(self.tttable2)
         self.searchtextlayout2 = QHBoxLayout()   
         self.vboxlayout.addLayout(self.searchtextlayout2)
-        self.searchtext2=QLineEdit()
-        self.searchtext2.setFont(font)
+        self.searchtext2=QLineEdit() 
         self.searchtextlayout2.addWidget(self.searchtext2)
         self.searchtextbutton2=QPushButton(_TR("搜索包含文本的条目"))
+        self.checkfilt_notjapan=QCheckBox(_TR("过滤非日语"))
+        self.checkfilt_notpath=QCheckBox(_TR("过滤路径"))
+        self.checkfilt_notlatin=QCheckBox(_TR("过滤纯英文")) 
+        self.checkfilt_dumplicate=QCheckBox(_TR("过滤重复")) 
         
-        self.searchtextbutton2.setFont(font)
+        self.checkfilt_notjapan.setChecked(True)
+        self.checkfilt_notpath.setChecked(True)
+        self.checkfilt_notlatin.setChecked(True) 
+        self.checkfilt_dumplicate.setChecked(True)
+        self.checkfilt_notjapan.hide()
+        self.checkfilt_notpath.hide()
+        self.checkfilt_notlatin.hide() 
+        self.checkfilt_dumplicate.hide()
+        self.searchtextlayout2.addWidget(self.checkfilt_notjapan)
+        self.searchtextlayout2.addWidget(self.checkfilt_notpath)
+        self.searchtextlayout2.addWidget(self.checkfilt_notlatin)  
+        self.searchtextlayout2.addWidget(self.checkfilt_dumplicate)
         self.searchtextbutton2.clicked.connect(self.searchtextfunc2)
         self.searchtextlayout2.addWidget(self.searchtextbutton2)
         self.searchtextbutton2.hide()
         self.searchtext2.hide()
         self.textOutput = QPlainTextEdit(self.centralWidget)
-        
-        self.textOutput.setFont(font)
+         
         self.textOutput.setContextMenuPolicy(Qt.CustomContextMenu)
         self.textOutput.setUndoRedoEnabled(False)
         self.textOutput.setReadOnly(True) 
@@ -181,16 +186,38 @@ class hookselect(QMainWindow):
         self.buttonBox.setStandardButtons(QDialogButtonBox.Ok|QDialogButtonBox.Cancel)
         self.vboxlayout.addWidget(self.buttonBox)
         self.buttonBox.accepted.connect(self.accept)
-        self.buttonBox.rejected.connect(self.hide) 
-        self.buttonBox.setFont(font) 
+        self.buttonBox.rejected.connect(self.hide)  
         self.hiding=True
     def searchtextfunc2(self):
         searchtext=self.searchtext2.text()
-         
+        savedump=set()
         for index in range(len(self.allres)):   
-             
-            self.tttable2.setRowHidden(index,searchtext not in self.allres[index][1])  
-        self.tttable2.scrollToTop()
+            hide=False
+            res=self.allres[index][1]
+            if searchtext not in res:
+                hide=True
+            
+            if self.checkfilt_notlatin.isChecked():
+                try:
+                    res.encode('latin-1')
+                    hide=True
+                except:
+                    pass
+            
+            if self.checkfilt_notjapan.isChecked():
+                try:
+                    res.encode('shift-jis')
+                except:
+                    hide=True
+            if self.checkfilt_notpath.isChecked():
+                if os.path.isdir(res) or os.path.isfile(res): 
+                    hide=True 
+            if self.checkfilt_dumplicate.isChecked():
+                if res in savedump:
+                    hide=True
+                else:
+                    savedump.add(res)
+            self.tttable2.setRowHidden(index,hide)  
     def searchtextfunc(self):
         searchtext=self.searchtext.text()
         try:
@@ -209,8 +236,7 @@ class hookselect(QMainWindow):
                     break
             self.tttable.setRowHidden(index,ishide) 
          
-        #self.ttCombomodelmodel.blockSignals(False) 
-        self.tttable.scrollToTop()
+        #self.ttCombomodelmodel.blockSignals(False)  
             #self.ttCombo.setItemData(index,'',Qt.UserRole-(1 if ishide else 0))
             #self.ttCombo.setRowHidden(index,ishide)
     def inserthook(self): 
@@ -234,15 +260,20 @@ class hookselect(QMainWindow):
                 os.remove('hook.txt')
             except:
                 pass
-        if 'textsource' in dir(self.object) and self.object.textsource:
-
+        if 'textsource' in dir(self.object) and self.object.textsource: 
             self.object.textsource.findhook( )
             self.userhookfind.setEnabled(False)
             self.userhookfind.setText(_TR("正在搜索特殊码，请让游戏显示更多文本"))
-                
+            
             self.tttable2.hide()
             self.searchtextbutton2.hide()
             self.searchtext2.hide()
+            self.checkfilt_notjapan.hide()
+            self.checkfilt_notpath.hide()
+            self.checkfilt_notlatin.hide() 
+            self.checkfilt_dumplicate.hide()
+            self.ttCombomodelmodel2.clear()
+            self.ttCombomodelmodel2.setHorizontalHeaderLabels(_TRL([ 'HOOK','文本']))
             threading.Thread(target=self.timewaitthread).start()
             
         else:
@@ -250,10 +281,12 @@ class hookselect(QMainWindow):
     def okok(self):
         if self.isMaximized()==False:
             self.showNormal()
-            self.resize(self.width(), self.height()+300)
-        self.userhookfind.setText(_TR("搜索完毕"))
+            if self.height()<600+300:
+                
+                self.resize(self.width(),900)
+        self.userhookfind.setText(_TR("搜索特殊码"))
         #self.findhookoksignal.emit()
-        #self.userhookfind.setEnabled(True)
+        self.userhookfind.setEnabled(True)
         with open('hook.txt','r',encoding='utf8') as ff:
             allres=ff.read().split('\n')
         
@@ -262,6 +295,8 @@ class hookselect(QMainWindow):
         for i,line in enumerate( allres):
             try:
                         hc,text=line.split('=>')
+                        if text.strip()=='':
+                            continue
                         self.allres.append((hc,text)) 
             except:
                 pass
@@ -272,13 +307,17 @@ class hookselect(QMainWindow):
             item = QStandardItem(text )
             self.ttCombomodelmodel2.setItem(i, 1, item)
         
-        #self.ttCombomodelmodel2.blockSignals(False) 
-        self.tttable2.setFocus()
-        self.tttable2.scrollToTop()
+        #self.ttCombomodelmodel2.blockSignals(False)  
         
         self.tttable2.show()
         self.searchtextbutton2.show()
-        self.searchtext2.show()
+        self.searchtext2.show() 
+        self.searchtext2.setText('')
+        self.searchtextfunc2()
+        self.checkfilt_notjapan.show()
+        self.checkfilt_notpath.show()
+        self.checkfilt_notlatin.show() 
+        self.checkfilt_dumplicate.show()
     def timewaitthread(self):
  
         while True:

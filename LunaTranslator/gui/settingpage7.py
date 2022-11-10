@@ -190,12 +190,10 @@ def noundictconfigdialog(object,configdict,title,label=['游戏ID MD5' ,'日文'
         for row in range(rows):
             ishide=True
             for c in range(cols):
-                if text in model.item(row,c).text():
-                    table.showRow(row)
+                if text in model.item(row,c).text(): 
                     ishide=False
-                    break
-            if ishide :
-                table.hideRow(row)
+                    break 
+            table.setRowHidden(row,ishide)
 
              
     button4.clicked.connect(clicked4)
