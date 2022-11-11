@@ -29,7 +29,7 @@ from tts.voiceroid2 import tts as voiceroid2
 from tts.voicevox import tts as voicevox
 import  gui.selecthook   
 import pyperclip
-from utils.getpidlist import getwindowlist,getarch,getpidexe
+from utils.getpidlist import getpidexe
  
 import gui.translatorUI
 from utils.config import globalconfig ,savehook_new,noundictconfig,transerrorfixdictconfig
@@ -430,7 +430,7 @@ class MAINUI(QObject) :
     def autohookmonitorthread(self):
         while True:
             self.onwindowloadautohook()
-            time.sleep(0.5)
+            time.sleep(0.3)
     def aa(self): 
         self.translation_ui =gui.translatorUI.QUnFrameWindow(self)   
         
