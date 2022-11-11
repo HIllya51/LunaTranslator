@@ -4,14 +4,14 @@
         "name": "去除花括号{}"
     },
     "_2": {
-        "use": true,
+        "use": false,
         "name": "去除重复字符(AAAABBBBCCCC->ABC)",
         "args": {
             "重复次数(若为1则自动分析去重)": 1
         }
     },
     "_3": {
-        "use": true,
+        "use": false,
         "name": "去除重复行(ABCDABCDABCD->ABCD)",
         "args": {
             "重复次数(若为1则自动分析去重)": 1
@@ -46,7 +46,7 @@
         }
     },
     "_10": {
-        "use": true,
+        "use": false,
         "name": "递减式重复行(ABCDBCDCDD->ABCD)"
     }
 }

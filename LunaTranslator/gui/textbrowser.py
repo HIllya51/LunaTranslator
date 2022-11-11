@@ -113,8 +113,7 @@ class Textbrowser():
     @timer
     def append(self,x ): 
         
-        self.textbrowserback.append(x) 
-        self.textbrowser.append(x) 
+        
         if self.addtaged:
             self.addtaged=False
             f1=QTextBlockFormat()
@@ -129,7 +128,8 @@ class Textbrowser():
             #cursor.movePosition(QTextCursor.StartOfBlock)
             cursor.setBlockFormat(f1)
             self.textbrowserback.setTextCursor(cursor)
- 
+        self.textbrowserback.append(x) 
+        self.textbrowser.append(x) 
     def showyinyingtext(self,color,text,off): 
          
         #print(x)
