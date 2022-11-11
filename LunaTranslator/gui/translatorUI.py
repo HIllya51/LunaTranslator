@@ -117,9 +117,12 @@ class QUnFrameWindow(QWidget):
         if type_==1: 
             self.translate_text.append(res[1]) 
         else: 
-            self.translate_text.append(' ')
+            #self.translate_text.append(' ')
+            self.translate_text.addline()
             self.translate_text.append(res[1])  
             self.translate_text.addtag(res[0]) 
+            #self.translate_text.addline()
+            #self.translate_text.addline()
         if globalconfig['zitiyangshi'] ==3:
             self.translate_text.showyinyingtext(color,res[1] ,0 if type_==1 else 2 )
             #self.translate_text.textbrowser.hide()
@@ -271,17 +274,7 @@ class QUnFrameWindow(QWidget):
           font: 100 10pt;
       }''')
           
-        
-        # label = QLabel(self.tab_3)
-        # self.customSetGeometry(label, 20, 270, 100, 20)
-        # label.setText("鼠标穿透窗口:")
- 
-        # self.fixedheight_switch =gui.switchbutton.MySwitch(self.tab_3, sign=globalconfig['fixedheight'] )
-        # self.customSetGeometry(self.fixedheight_switch, 120, 270,20,20)
-        # self.fixedheight_switch.clicked.connect(lambda x:globalconfig.__setitem__('fixedheight',x)) 
-
-        # self.object.translation_ui.setAttribute(Qt.WA_TransparentForMouseEvents, True);
-        
+         
         self.showhidestate=False
         self.processismuteed=False
         self.mousetransparent=False

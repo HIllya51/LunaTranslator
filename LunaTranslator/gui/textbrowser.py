@@ -33,7 +33,7 @@ class Textbrowser():
         self.textbrowser=QTextBrowser(parent)
         
         self.toplabel2=QLabel(parent)
-        
+        self.font=QFont()
         self.toplabel2.setGeometry( 0,30*self.parent.rate,9999,9999)
         self.toplabel2.setMouseTracking(True)
         self.toplabel=QLabel(parent)
@@ -370,6 +370,35 @@ class Textbrowser():
                          
 
             labeli+=1
+    def addline(self):
+ 
+        cf=self.textbrowser.currentCharFormat() 
+        
+        self.font.setFamily(globalconfig['fonttype'])
+        self.font.setPointSizeF(0.1) 
+        self.font.setBold(globalconfig['showbold'])
+        cf.setFont(self.font)
+        self.textbrowser.mergeCurrentCharFormat(cf)
+        self.textbrowserback.mergeCurrentCharFormat(cf)
+        self.append(' ')
+        self.font.setFamily(globalconfig['fonttype'])
+        self.font.setPointSizeF(globalconfig['fontsize']) 
+        self.font.setBold(globalconfig['showbold'])
+        cf.setFont(self.font)  
+        self.textbrowser.mergeCurrentCharFormat(cf)
+        self.textbrowserback.mergeCurrentCharFormat(cf)
+        f1=QTextBlockFormat()
+        f1.setLineHeight(0,QTextBlockFormat.LineDistanceHeight)
+        f1.setAlignment(self.textbrowser.alignment()) 
+        cursor=self.textbrowser.textCursor() 
+        #cursor.movePosition(QTextCursor.StartOfBlock)
+        #cursor.setBlockFormat(f1)
+        cursor.setBlockFormat(f1)
+        self.textbrowser.setTextCursor(cursor)
+        cursor=self.textbrowserback.textCursor() 
+        #cursor.movePosition(QTextCursor.StartOfBlock)
+        cursor.setBlockFormat(f1)
+        self.textbrowserback.setTextCursor(cursor)
     def solvejiaminglabel(self,label,word,font,tl1,tl2,fh,effect,color):
         if effect==False:
             label.setGraphicsEffect(self._rawqlabel.graphicsEffect() ) 
