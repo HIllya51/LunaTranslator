@@ -261,13 +261,13 @@ class Textbrowser():
                         if globalconfig['usesearchword']:
                             self.searchmasklabels_clicked[labeli].setGeometry(tl1.x(),tl1.y() ,sum(guesswidth)//len(guesswidth),tl4.y()-tl1.y()) 
                         if globalconfig['show_fenci']  :
-                            self.searchmasklabels[labeli].setGeometry(tl1.x()+(i==1),tl1.y() ,sum(guesswidth)//len(guesswidth)-2*(i==l),tl4.y()-tl1.y()) 
+                            self.searchmasklabels[labeli].setGeometry(tl1.x()+2*(i==1),tl1.y() ,sum(guesswidth)//len(guesswidth)-2*(i==l)-2*(i==1),tl4.y()-tl1.y()) 
                 else:
                     guesswidth.append(tl2.x()-tl1.x())
                     if globalconfig['usesearchword']:
                         self.searchmasklabels_clicked[labeli].setGeometry(tl1.x(),tl1.y() ,tl2.x()-tl1.x(),tl2.y()-tl1.y())
                     if globalconfig['show_fenci']  :
-                        self.searchmasklabels[labeli].setGeometry(tl1.x()+(i==1),tl1.y() ,tl2.x()-tl1.x()-2*(i==l),tl2.y()-tl1.y())
+                        self.searchmasklabels[labeli].setGeometry(tl1.x()+2*(i==1),tl1.y() ,tl2.x()-tl1.x()-2*(i==l)-2*(i==1),tl2.y()-tl1.y())
                 if globalconfig['show_fenci']  :
                     self.searchmasklabels[labeli].setStyleSheet(f"background-color: rgba{color};"  )
                 tl1=tl3 
