@@ -136,7 +136,7 @@ def minmaxmoveobservefunc(self):
         
         while(True):
                 x=self.minmaxmoveoberve.stdout.readline()
-                 
+                #print(x)
                 x=str(x,encoding='utf8')
                 x=x.replace('\r','').replace('\n','')
                  
@@ -174,29 +174,26 @@ def minmaxmoveobservefunc(self):
                                   
                      if action==5 and  globalconfig['focusfollow']: 
                         
-                        if pid==self_pid:
-                                self.delayhideflag=False 
+ 
+                        if pid==self_pid: 
                                 self.object.translation_ui.hookfollowsignal.emit(3,(0,0))  
                         elif pid==self.object.textsource.pid: 
-                                self.object.translation_ui.hookfollowsignal.emit(3,(0,0))  
-                                self.delayhideflag=False
+                                self.object.translation_ui.hookfollowsignal.emit(3,(0,0))   
                         elif pid==self.object.translation_ui.callmagpie.pid:
-                                self.object.translation_ui.hookfollowsignal.emit(3,(0,0))  
-                                self.delayhideflag=False
-                        else:
-                                self.delayhideflag=True
-                                def delayhide():
-                                         
-                                        
-                                        time.sleep(0.3)
-                                        plist=getwindowlist()
-                                        if self.object.textsource.pid not in plist:
-                                                #print('game exit') 
-                                                self.object.textsource=None
-                                        else:
-                                                if self.delayhideflag:       
-                                                        self.object.translation_ui.hookfollowsignal.emit(4,(0,0))
-                                threading.Thread(target=delayhide).start()
+                                self.object.translation_ui.hookfollowsignal.emit(3,(0,0))   
+                        else: 
+                                try:
+                                        cn=win32gui.GetClassName(win32gui.GetForegroundWindow()) 
+                                        if cn=='Shell_TrayWnd':
+                                                continue 
+                                except:
+                                        pass
+                                plist=getwindowlist()
+                                if self.object.textsource.pid not in plist:
+                                        #print('game exit') 
+                                        self.object.textsource=None
+                                else:
+                                        self.object.translation_ui.hookfollowsignal.emit(4,(0,0)) 
                 except:
                   #print_exc()
                   pass
