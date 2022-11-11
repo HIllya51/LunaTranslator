@@ -190,10 +190,13 @@ class hookselect(QMainWindow):
         self.hiding=True
     def searchtextfunc2(self):
         searchtext=self.searchtext2.text()
-        savedump=set()
+        savedumpt=set()
+        savedumphc=set()
         for index in range(len(self.allres)):   
+            _index=len(self.allres)-1-index
             hide=False
-            res=self.allres[index][1]
+            res=self.allres[_index][1]
+            hc=self.allres[_index][0]
             if searchtext not in res:
                 hide=True
             
@@ -213,11 +216,15 @@ class hookselect(QMainWindow):
                 if os.path.isdir(res) or os.path.isfile(res): 
                     hide=True 
             if self.checkfilt_dumplicate.isChecked():
-                if res in savedump:
+                if res in savedumpt:
                     hide=True
                 else:
-                    savedump.add(res)
-            self.tttable2.setRowHidden(index,hide)  
+                    savedumpt.add(res)
+                if hc in savedumphc:
+                    hide=True
+                else:
+                    savedumphc.add(hc)
+            self.tttable2.setRowHidden(_index,hide)  
     def searchtextfunc(self):
         searchtext=self.searchtext.text()
         try:
