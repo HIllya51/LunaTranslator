@@ -113,20 +113,9 @@ class Textbrowser():
     @timer
     def append(self,x ): 
         
+        self.textbrowserback.append(x) 
+        self.textbrowser.append(x) 
         if self.addtaged:
-            
-            # self.textbrowserback.append(' ') 
-            # self.textbrowser.append(' ')
-            # cursor=self.textbrowser.textCursor()
-            # cursor.movePosition(QTextCursor.End)
-            # self.textbrowser.setTextCursor(cursor)
-            # cursor=self.textbrowserback.textCursor()
-            # cursor.movePosition(QTextCursor.End)
-            # self.textbrowserback.setTextCursor(cursor)
-         
-            self.textbrowser.append('')
-            self.textbrowserback.append('')
-             
             self.addtaged=False
             f1=QTextBlockFormat()
             f1.setLineHeight(0,QTextBlockFormat.LineDistanceHeight)
@@ -134,35 +123,13 @@ class Textbrowser():
             cursor=self.textbrowser.textCursor() 
             #cursor.movePosition(QTextCursor.StartOfBlock)
             #cursor.setBlockFormat(f1)
-            cursor.mergeBlockFormat(f1)
+            cursor.setBlockFormat(f1)
             self.textbrowser.setTextCursor(cursor)
             cursor=self.textbrowserback.textCursor() 
             #cursor.movePosition(QTextCursor.StartOfBlock)
-            cursor.mergeBlockFormat(f1)
+            cursor.setBlockFormat(f1)
             self.textbrowserback.setTextCursor(cursor)
-            self.textbrowserback.insertPlainText(x) 
-            self.textbrowser.insertPlainText(x)
-             
-        else:
-            self.textbrowserback.append(x) 
-            self.textbrowser.append(x) 
-        # if self.shadowlabel.savetext!='':
-        #     self.shadowlabel.savetext=(self.shadowlabel.savetext+'<br>'+ x)
-        # else:
-        #     self.shadowlabel.savetext=x
-        # if self.align:
-        #     self.shadowlabel.setText( '<html><p style="color:rgba(0,0,0)" align=\'center\'> %s</p></html>' %self.shadowlabel.savetext)
-        # else:
-        #     self.shadowlabel.setText( '<html><p > %s</p></html>' %self.shadowlabel.savetext)
-        # if globalconfig['showShadow']:
-        #     shadow = QGraphicsDropShadowEffect()
-        #     shadow.setBlurRadius(10)
-            
-        #     shadow.setColor(QColor(globalconfig['shadowcolor']))
-        #     shadow.setOffset(0)
-        #     # adding shadow to the label
-            
-        #     self.shadowlabel.setGraphicsEffect(shadow)
+ 
     def showyinyingtext(self,color,text,off): 
          
         #print(x)
@@ -265,6 +232,7 @@ class Textbrowser():
                 continue
             l=len(word['orig'])
             tl1=self.textbrowser.cursorRect(self.textbrowser.textCursor()).topLeft()
+             
             tl4=self.textbrowser.cursorRect(self.textbrowser.textCursor()).bottomRight()
             color=self.randomcolor(word)
              
@@ -277,8 +245,7 @@ class Textbrowser():
                 cursor.setPosition(pos+i )
                 self.textbrowserback.setTextCursor(cursor)
                 tl2=self.textbrowser.cursorRect(self.textbrowser.textCursor()).bottomRight() 
-                tl3=self.textbrowser.cursorRect(self.textbrowser.textCursor()).topLeft() 
- 
+                tl3=self.textbrowser.cursorRect(self.textbrowser.textCursor()).topLeft()  
                 if labeli>=len(self.searchmasklabels):
                      
                     ql=QLabel(self.parent.atback) 
@@ -294,13 +261,13 @@ class Textbrowser():
                         if globalconfig['usesearchword']:
                             self.searchmasklabels_clicked[labeli].setGeometry(tl1.x(),tl1.y() ,sum(guesswidth)//len(guesswidth),tl4.y()-tl1.y()) 
                         if globalconfig['show_fenci']  :
-                            self.searchmasklabels[labeli].setGeometry(tl1.x(),tl1.y() ,sum(guesswidth)//len(guesswidth),tl4.y()-tl1.y()) 
+                            self.searchmasklabels[labeli].setGeometry(tl1.x()+(i==1),tl1.y() ,sum(guesswidth)//len(guesswidth)-2*(i==l),tl4.y()-tl1.y()) 
                 else:
                     guesswidth.append(tl2.x()-tl1.x())
                     if globalconfig['usesearchword']:
                         self.searchmasklabels_clicked[labeli].setGeometry(tl1.x(),tl1.y() ,tl2.x()-tl1.x(),tl2.y()-tl1.y())
                     if globalconfig['show_fenci']  :
-                        self.searchmasklabels[labeli].setGeometry(tl1.x(),tl1.y() ,tl2.x()-tl1.x(),tl2.y()-tl1.y())
+                        self.searchmasklabels[labeli].setGeometry(tl1.x()+(i==1),tl1.y() ,tl2.x()-tl1.x()-2*(i==l),tl2.y()-tl1.y())
                 if globalconfig['show_fenci']  :
                     self.searchmasklabels[labeli].setStyleSheet(f"background-color: rgba{color};"  )
                 tl1=tl3 
@@ -319,11 +286,15 @@ class Textbrowser():
         
                 
     def randomcolor(self,word):
+        c=QColor("white") 
         if 'cixing' in word and globalconfig['mecab']['use']:
             try:
                 c=QColor(globalconfig['cixingcolor'][word['cixing']])
             except:
-                c=QColor("yellowgreen") 
+                c=QColor("white") 
+            return (c.red(),c.green(),c.blue(), globalconfig['showcixing_touming']/100)
+        else:
+            c=QColor("white") 
             return (c.red(),c.green(),c.blue(), globalconfig['showcixing_touming']/100)
         if self.lastcolor is None:
             self.lastcolor=(random.randint(0,255),random.randint(0,255),random.randint(0,255),1)
@@ -429,19 +400,7 @@ class Textbrowser():
                         self.savetaglabels[labeli*globalconfig['shadowforce']+_i].setStyleSheet(f"color:{globalconfig['miaobiancolor']}; background-color:rgba(0,0,0,0)")
                         self.savetaglabels[labeli*globalconfig['shadowforce']+_i].setGraphicsEffect(shadow2)
                         self.savetaglabels[labeli*globalconfig['shadowforce']+_i].show() 
-                        
-
-
-
-
-
-
-
-
-
-
-
-
+                         
 
             labeli+=1
        

@@ -113,21 +113,7 @@ class QUnFrameWindow(QWidget):
         elif globalconfig['zitiyangshi'] ==0: 
             self.translate_text.simplecharformat(color)
         elif globalconfig['zitiyangshi'] ==3: 
-            self.translate_text.simplecharformat(color)
-            # self.translate_text.textbrowser.show() 
-            # if type_==1: 
-            #     self.translate_text.append(res[1]) 
-            # else:  
-            #     self.translate_text.append(' ')
-            #     self.translate_text.append(res[1])  
-            #     self.translate_text.addtag(res[0])  
-            # self.translate_text.showyinyingtext(color,res[1] ,0 if type_==1 else 2 )
-            # self.translate_text.textbrowser.hide()
-            # if (globalconfig['usesearchword'] or globalconfig['show_fenci']  ) and res[0]: 
-            #     self.translate_text.addsearchwordmask(res[0],res[1],self.showsearchword,0 if type_==1 else 2 )
-            # return 
-        #self.translate_text.textbrowser.show()
-        
+            self.translate_text.simplecharformat(color) 
         if type_==1: 
             self.translate_text.append(res[1]) 
         else: 
@@ -285,17 +271,7 @@ class QUnFrameWindow(QWidget):
           font: 100 10pt;
       }''')
           
-        
-        # label = QLabel(self.tab_3)
-        # self.customSetGeometry(label, 20, 270, 100, 20)
-        # label.setText("鼠标穿透窗口:")
- 
-        # self.fixedheight_switch =gui.switchbutton.MySwitch(self.tab_3, sign=globalconfig['fixedheight'] )
-        # self.customSetGeometry(self.fixedheight_switch, 120, 270,20,20)
-        # self.fixedheight_switch.clicked.connect(lambda x:globalconfig.__setitem__('fixedheight',x)) 
-
-        # self.object.translation_ui.setAttribute(Qt.WA_TransparentForMouseEvents, True);
-        
+         
         self.showhidestate=False
         self.processismuteed=False
         self.mousetransparent=False
