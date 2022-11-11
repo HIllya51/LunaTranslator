@@ -40,7 +40,8 @@ class TS(basetrans):
         }
 
         r = requests.get(youdao_url, params = data,proxies={"https":None}).json()   # 获取返回的json()内容
-         
+        js['args']['字数统计']=str(int(js['args']['字数统计'])+len(content))
+        js['args']['次数统计']=str(int(js['args']['次数统计'])+1)
         
         return r["translation"][0]
     
