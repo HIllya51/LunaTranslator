@@ -116,15 +116,13 @@ class QUnFrameWindow(QWidget):
             self.translate_text.simplecharformat(color) 
         if type_==1: 
             self.translate_text.append(res[1]) 
-        else:  
-            self.translate_text.addline()
+        else:   
             self.translate_text.append(res[1])  
-            self.translate_text.addtag(res[0])  
+            self.translate_text.addtag(res[0])   
         if globalconfig['zitiyangshi'] ==3:
-            self.translate_text.showyinyingtext(color,res[1] ,0 if type_==1 else 2 )
-            #self.translate_text.textbrowser.hide()
+            self.translate_text.showyinyingtext(color,res[1]  ) 
         if (globalconfig['usesearchword'] or globalconfig['show_fenci']  ) and res[0]:
-            self.translate_text.addsearchwordmask(res[0],res[1],self.showsearchword,0 if type_==1 else 2) 
+            self.translate_text.addsearchwordmask(res[0],res[1],self.showsearchword  ) 
     def showsearchword(self,word):   
         self.searchwordW.showNormal()
         self.searchwordW.getnewsentence(word) 
