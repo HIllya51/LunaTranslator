@@ -322,18 +322,14 @@ class Textbrowser():
             if len(self.savetaglabels)<len(globalconfig['shadowforce']*x):
                 self.savetaglabels+=[QLabel(self.textbrowserback) for i in range(len(globalconfig['shadowforce']*x)-len(self.savetaglabels))]
         #print(x)
-        pos=2
+        pos=0
         self.addtaged=True
         labeli=0 
         cursor=self.textbrowser.textCursor()
-        cursor.setPosition(pos)
-        self.textbrowser.setTextCursor(cursor)
-        cursor.movePosition(QTextCursor.StartOfBlock)
+        cursor.setPosition(pos) 
         self.textbrowser.setTextCursor(cursor)
         cursor=self.textbrowserback.textCursor()
-        cursor.setPosition(pos)
-        self.textbrowserback.setTextCursor(cursor)
-        cursor.movePosition(QTextCursor.StartOfBlock)
+        cursor.setPosition(pos) 
         self.textbrowserback.setTextCursor(cursor)
         font=QFont()
         font.setFamily(globalconfig['fonttype']) 
