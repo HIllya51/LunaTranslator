@@ -356,7 +356,8 @@ class Textbrowser():
         font=QFont()
         font.setFamily(globalconfig['fonttype']) 
         
-        font.setPixelSize(int(globalconfig['fontsize'])  )
+        #font.setPixelSize(int(globalconfig['fontsize'])  )
+        font.setPointSizeF((globalconfig['fontsize'])  /2)
         fm=QFontMetricsF(font)
         fh=fm.height()  
         f1=QTextBlockFormat()
