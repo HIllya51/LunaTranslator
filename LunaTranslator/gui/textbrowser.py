@@ -336,7 +336,7 @@ class Textbrowser():
         f1.setAlignment(self.textbrowser.alignment())
         need=True
 
-        _rawqlabel=QLabel() 
+        self._rawqlabel=QLabel() 
         for word in x:
             if word['orig']=='\n':
                 continue
@@ -361,59 +361,47 @@ class Textbrowser():
             #print(tl1,tl2,word['hira'],self.textbrowser.textCursor().position())
             
             if globalconfig['zitiyangshi'] in [0,1,2]:  
-                self.savetaglabels[labeli].setGraphicsEffect(_rawqlabel.graphicsEffect() )
-                self.savetaglabels[labeli].clear()
-                self.savetaglabels[labeli].setText(word['hira'])
-                self.savetaglabels[labeli].setFont(font)
-                self.savetaglabels[labeli].adjustSize()
-                w=self.savetaglabels[labeli].width() 
-                if tl1.y()!=tl2.y():
-                    if x+w<self.textbrowser.width():
-                        x=tl1.x() 
-                        y=tl1.y()-fh 
-                    else:
-                        x=tl2.x() -w
-                        y=tl2.y()-fh 
-                    need=True
-                else:
-                    x=tl1.x()/2+tl2.x()/2-w/2
-                    y=tl2.y()-fh 
-                self.savetaglabels[labeli].move(x,y)   
-                self.savetaglabels[labeli].setStyleSheet("color: %s;background-color:rgba(0,0,0,0)" %(globalconfig['jiamingcolor'])) 
-                self.savetaglabels[labeli].show()
+                need=self.solvejiaminglabel(self.savetaglabels[labeli ],word,font,tl1,tl2,fh,False,color=(globalconfig['jiamingcolor']))
             elif globalconfig['zitiyangshi'] ==3: 
     
-                for _i  in range(globalconfig['shadowforce']):
-                        self.savetaglabels[labeli*globalconfig['shadowforce']+_i].setText(word['hira'])
-                        self.savetaglabels[labeli*globalconfig['shadowforce']+_i].setFont(font)
-                        self.savetaglabels[labeli*globalconfig['shadowforce']+_i].adjustSize()
-                        w=self.savetaglabels[labeli*globalconfig['shadowforce']+_i].width()
-                        
-                        if tl1.y()!=tl2.y():
-                            
-                            if x+w<self.textbrowser.width():
-                                x=tl1.x() 
-                                y=tl1.y()-fh 
-                            else:
-                                x=tl2.x() -w
-                                y=tl2.y()-fh 
-                            need=True
-                        else:
-                            x=tl1.x()/2+tl2.x()/2-w/2
-                            y=tl2.y()-fh 
-                        shadow2 = QGraphicsDropShadowEffect()
-                        shadow2.setBlurRadius(globalconfig['fontsize'])
-                        shadow2.setOffset(0) 
-                        shadow2.setColor(QColor(globalconfig['jiamingcolor'])) 
-
-                        self.savetaglabels[labeli*globalconfig['shadowforce']+_i].move(x,y)   
-                        self.savetaglabels[labeli*globalconfig['shadowforce']+_i].setStyleSheet(f"color:{globalconfig['miaobiancolor']}; background-color:rgba(0,0,0,0)")
-                        self.savetaglabels[labeli*globalconfig['shadowforce']+_i].setGraphicsEffect(shadow2)
-                        self.savetaglabels[labeli*globalconfig['shadowforce']+_i].show() 
+                for _i  in range(globalconfig['shadowforce']): 
+                        need=self.solvejiaminglabel(self.savetaglabels[labeli*globalconfig['shadowforce']+_i],word,font,tl1,tl2,fh,True,color=globalconfig['miaobiancolor'])
+                         
                          
 
             labeli+=1
-       
+    def solvejiaminglabel(self,label,word,font,tl1,tl2,fh,effect,color):
+        if effect==False:
+            label.setGraphicsEffect(self._rawqlabel.graphicsEffect() ) 
+        label.setText(word['hira'])
+        label.setFont(font)
+        label.adjustSize()
+        w=label.width()
+        
+        if tl1.y()!=tl2.y():
+            x=tl1.x() 
+            if x+w<self.textbrowser.width():
+                x=tl1.x() 
+                y=tl1.y()-fh 
+            else:
+                x=tl2.x() -w
+                y=tl2.y()-fh 
+            need=True
+        else:
+            x=tl1.x()/2+tl2.x()/2-w/2
+            y=tl2.y()-fh 
+            need=False
+        if effect:
+            shadow2 = QGraphicsDropShadowEffect()
+            shadow2.setBlurRadius(globalconfig['fontsize'])
+            shadow2.setOffset(0) 
+            shadow2.setColor(QColor(globalconfig['jiamingcolor'])) 
+            label.setGraphicsEffect(shadow2)
+        label.move(x,y)   
+        label.setStyleSheet(f"color:{color}; background-color:(0,0,0,0)")
+        
+        label.show() 
+        return need
     def mergeCurrentCharFormat(self,colormiao,width):
         format2=QTextCharFormat()
         format2.setTextOutline(QPen(QColor(colormiao),width, Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin))
