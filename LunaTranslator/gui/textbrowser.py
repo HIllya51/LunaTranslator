@@ -128,22 +128,14 @@ class Textbrowser():
             fm=QFontMetricsF(font)
             fh=fm.height()  
             for i in range(self.blockcount, self.textbrowser.document().blockCount()):
-                b=self.textbrowser.document().findBlockByNumber(i)
-                 
-
-                print(i,b.lineCount(),self.textbrowser.document().blockCount())
-                tf=b.blockFormat()
-
-                tf.setLineHeight(fh,QTextBlockFormat.FixedHeight)
-                # else:
-                #     tf.setLineHeight(0,QTextBlockFormat.LineDistanceHeight)
-                
+                b=self.textbrowser.document().findBlockByNumber(i) 
+                tf=b.blockFormat() 
+                tf.setLineHeight(fh,QTextBlockFormat.FixedHeight) 
                 cursor=self.textbrowserback.textCursor() 
                 cursor.setPosition(b.position()) 
                 cursor.setBlockFormat(tf)
                 
-                self.textbrowserback.setTextCursor(cursor)
-                print(b.position())
+                self.textbrowserback.setTextCursor(cursor) 
                 
                 cursor=self.textbrowser.textCursor()
                 cursor.setPosition(b.position()) 
