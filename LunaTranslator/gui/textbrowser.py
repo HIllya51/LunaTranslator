@@ -323,8 +323,7 @@ class Textbrowser():
             try:
                 c=QColor(globalconfig['cixingcolor'][word['cixing']])
             except:
-                c=QColor("yellowgreen")
-                print_exc()
+                c=QColor("yellowgreen") 
             return (c.red(),c.green(),c.blue(), globalconfig['showcixing_touming']/100)
         if self.lastcolor is None:
             self.lastcolor=(random.randint(0,255),random.randint(0,255),random.randint(0,255),1)

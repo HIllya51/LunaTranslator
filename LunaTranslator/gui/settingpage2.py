@@ -58,7 +58,7 @@ def initsome11(self,l,label,grids):
             last=self.getcolorbutton(globalconfig,'',callback=functools.partial(autoinitdialog,self, (globalconfig['fanyi'][fanyi]['name'])+ ('设置'),900,items),icon='fa.gear',constcolor="#FF69B4")
         else:
             last=''
-        line+=[(globalconfig['fanyi'][fanyi]['name'],5),
+        line+=[(globalconfig['fanyi'][fanyi]['name'],6),
         self.getsimpleswitch(globalconfig['fanyi'][fanyi],'use',callback=functools.partial( fanyiselect,self,fanyi)),
         self.getcolorbutton(globalconfig['fanyi'][fanyi],'color',name="fanyicolor_"+fanyi,callback=functools.partial(self.ChangeTranslateColor,fanyi,None,self,"fanyicolor_"+fanyi)),last ] 
 
@@ -138,26 +138,26 @@ def setTabTwo(self) :
 
         grids=[
             [
-                ("是否显示翻译器名称",5),(self.getsimpleswitch(globalconfig  ,'showfanyisource'),1),'','','',
-                ("源语言",5),(self.getsimplecombobox(_TRL(['日文','英文']),globalconfig,'srclang'),3),'',
-                ("目标语言",5),(self.getsimplecombobox(_TRL(['中文','英文']),globalconfig,'tgtlang'),3) ,
+                ("是否显示翻译器名称",6),(self.getsimpleswitch(globalconfig  ,'showfanyisource'),1),'','','',
+                ("源语言",6),(self.getsimplecombobox(_TRL(['日文','英文']),globalconfig,'srclang'),3),'',
+                ("目标语言",6),(self.getsimplecombobox(_TRL(['中文','英文']),globalconfig,'tgtlang'),3) ,
             ],
             [
-                ("最短翻译字数",5),(self.getspinbox(0,500,globalconfig,'minlength'),3),'',
-                ("最长翻译字数",5),(self.getspinbox(0,500,globalconfig,'maxlength'),3),'',
-                ("在线翻译超时(s)",5),(self.getspinbox(1,20,globalconfig,'translatortimeout',callback=lambda x:__timeout(x)),3),
+                ("最短翻译字数",6),(self.getspinbox(0,500,globalconfig,'minlength'),3),'',
+                ("最长翻译字数",6),(self.getspinbox(0,500,globalconfig,'maxlength'),3),'',
+                ("在线翻译超时(s)",6),(self.getspinbox(1,20,globalconfig,'translatortimeout',callback=lambda x:__timeout(x)),3),
 
             ],
             [
-                ("预翻译采用模糊匹配",5),(self.getsimpleswitch(globalconfig  ,'premtsimiuse'),1),'','','',
-                ("模糊匹配相似度限制",6),(self.getspinbox(0,500,globalconfig,'premtsimi'),2),'', 
+                ("预翻译采用模糊匹配",6),(self.getsimpleswitch(globalconfig  ,'premtsimiuse'),1),'','','',
+                ("模糊匹配相似度限制",6),(self.getspinbox(0,500,globalconfig,'premtsimi'),3),'', 
             ],[
-                ("使用代理(ip:port)",5),(self.getsimpleswitch(globalconfig  ,'useproxy',callback=lambda x: _setproxy(x)),1),'',
-                (proxy,8),(btn,2),  
+                ("使用代理(ip:port)",6),(self.getsimpleswitch(globalconfig  ,'useproxy',callback=lambda x: _setproxy(x)),1),'',
+                (proxy,8),(btn,3),  
             ],
             
-                [('录制翻译文件',5),(self.getsimpleswitch(globalconfig,'transkiroku'),1),'',
-                 ('优先录制的翻译源',5),(transkirokuuse,5),
+                [('录制翻译文件',6),(self.getsimpleswitch(globalconfig,'transkiroku'),1),'',
+                 ('优先录制的翻译源',6),(transkirokuuse,6),
                  
                  (bt,8) ,
                  ],

@@ -392,9 +392,7 @@ class hookselect(QMainWindow):
         self.userhook.setText(self.allres[self.tttable2.currentIndex().row()][0])
         self.textOutput. setPlainText(self.allres[self.tttable2.currentIndex().row()][1])
          
-    def ViewThread(self, index):  
-        #print(index) 
-        print(self.tttable.currentIndex().row())
+    def ViewThread(self, index):   
         self.object.textsource.selectinghook=self.save[self.tttable.currentIndex().row()]
         self.textOutput. setPlainText('\n'.join(self.object.textsource.hookdatacollecter[self.save[self.tttable.currentIndex().row()]]))
         self.textOutput. moveCursor(QTextCursor.End)
