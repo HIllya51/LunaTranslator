@@ -220,10 +220,10 @@ class hookselect(QMainWindow):
                     hide=True
                 else:
                     savedumpt.add(res)
-                if hc in savedumphc:
-                    hide=True
-                else:
-                    savedumphc.add(hc)
+                # if hc in savedumphc:
+                #     hide=True
+                # else:
+                #     savedumphc.add(hc)
             self.tttable2.setRowHidden(_index,hide)  
     def searchtextfunc(self):
         searchtext=self.searchtext.text()
