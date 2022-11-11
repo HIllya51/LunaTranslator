@@ -314,12 +314,12 @@ class Textbrowser():
         self.addtaged=True
         labeli=0 
         cursor=self.textbrowser.textCursor()
-        cursor.setPosition(2)
+        cursor.setPosition(pos)
         self.textbrowser.setTextCursor(cursor)
         cursor.movePosition(QTextCursor.StartOfBlock)
         self.textbrowser.setTextCursor(cursor)
         cursor=self.textbrowserback.textCursor()
-        cursor.setPosition(2)
+        cursor.setPosition(pos)
         self.textbrowserback.setTextCursor(cursor)
         cursor.movePosition(QTextCursor.StartOfBlock)
         self.textbrowserback.setTextCursor(cursor)
