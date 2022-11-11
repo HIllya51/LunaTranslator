@@ -782,7 +782,9 @@ class QUnFrameWindow(QWidget):
                 
                 ff.write('''
 timeout 1
-taskkill /IM LunaTranslator.exe
+taskkill /F /IM LunaTranslator.exe
+taskkill /F /IM LunaTranslator_no_Admin.exe
+taskkill /F /IM minmaxmoveobserve.exe
 xcopy update\LunaTranslator\ .\ /s /e /c /y /h /r
 exit
 
