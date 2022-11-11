@@ -1,6 +1,5 @@
 import json 
-import os ,importlib
-from utils.defaultconfig import *
+import os 
 if os.path.exists('./userconfig')==False:
     os.mkdir('./userconfig')
 if os.path.exists('./transkiroku')==False:
@@ -22,6 +21,17 @@ def tryreadconfig(path):
     else:
         x={}
     return x 
+def tryreadconfig2(path): 
+    path=os.path.join('./files/defaultconfig/',path)
+    with open(path,'r',encoding='utf-8') as ff:
+        x=json.load(ff) 
+    return x 
+defaultpost=tryreadconfig2('postprocessconfig.json')
+defaultglobalconfig=tryreadconfig2('config.json')
+defaulterrorfix=tryreadconfig2('transerrorfixdictconfig.json')
+defaultnoun=tryreadconfig2('noundictconfig.json')
+translatordfsetting=tryreadconfig2('translatorsetting.json')
+ocrdfsetting=tryreadconfig2('ocrsetting.json')
 
 globalconfig=tryreadconfig('config.json')
 postprocessconfig=tryreadconfig('postprocessconfig.json')
