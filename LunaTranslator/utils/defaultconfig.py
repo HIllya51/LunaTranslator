@@ -262,7 +262,8 @@ defaultglobalconfig = {'position': [432, 613], 'fixedheight': False, 'width': 76
     'rengong': {'use': False, 'color': 'blue', 'name': '人工翻译', 'argsfile': './userconfig/rengong.json'},
     'premt': {'use': False, 'color': 'blue', 'name': '机器预翻译', 'argsfile': './userconfig/premt.json'},
     'deeplapi-free': {'use': False, 'color': 'blue', 'name': 'deeplapi-free', 'argsfile': './userconfig/deeplapi-free.json'},
-    'deeplapi': {'use': False, 'color': 'blue', 'name': 'deeplapi', 'argsfile': './userconfig/deeplapi.json'}
+    'deeplapi': {'use': False, 'color': 'blue', 'name': 'deeplapi', 'argsfile': './userconfig/deeplapi.json'},
+    'youdaoapi': {'use': False, 'color': 'blue', 'name': '有道api', 'argsfile': './userconfig/youdaoapi.json'}
     },
      'minifollow': False, 'movefollow': False, 'focusfollow': False, 'autostarthook': True, 'translatortimeout': 5, 'minlength': 5, 'maxlength': 200, 'fanjian': 0, 'rotation': 0, 'srclang': 0,'tgtlang':0,
     'transkiroku':False,'transkirokuuse':'baidu',
@@ -279,7 +280,7 @@ defaultglobalconfig = {'position': [432, 613], 'fixedheight': False, 'width': 76
     "proxies":None
 }
 
-defaultpost = {'_1': {'use': False, 'name': '去除花括号{}'}, '_2': {'use': False, 'name': '去除重复字符(AAAABBBBCCCC->ABC)', 'args': {'重复次数(若为1则自动分析去重)': 1}}, '_3': {'use': False, 'name': '去除重复行(ABCDABCDABCD->ABCD)'}, '_4': {
+defaultpost = {'_1': {'use': False, 'name': '去除花括号{}'}, '_2': {'use': False, 'name': '去除重复字符(AAAABBBBCCCC->ABC)', 'args': {'重复次数(若为1则自动分析去重)': 1}}, '_3': {'use': False, 'name': '去除重复行(ABCDABCDABCD->ABCD)', 'args': {'重复次数(若为1则自动分析去重)': 1}}, '_4': {
     'use': False, 'name': '过滤HTML标签'}, '_6': {'use': False, 'name': '过滤换行符'},'_9': {'use': False, 'name': '过滤数字和英文字母'}, '_7': {'use': False, 'name': '简单替换内容(若替换为空则直接过滤)', 'args': {'替换内容': {}}},'_8': {'use': False, 'name': '使用正则表达式替换', 'args': {'替换内容': {}}},
     '_10':{'use':False,'name':'递减式重复行(ABCDBCDCDD->ABCD)'}
     }
@@ -352,6 +353,15 @@ translatordfsetting={
             "args": {
                 "注册网址": "https://niutrans.com/text_trans",
                 "apikey": "" ,
+                "字数统计": "0",
+                "次数统计": "0"
+            }, 
+        },
+        'youdaoapi':{
+            "args": {
+                "注册网址": "https://ai.youdao.com/product-fanyi-text.s",
+                "APP_KEY": "" ,
+                "APP_SECRET": "" ,
                 "字数统计": "0",
                 "次数统计": "0"
             }, 

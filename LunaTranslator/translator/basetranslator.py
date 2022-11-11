@@ -36,6 +36,7 @@ class basetrans:
             'youdao4':['','jap','eng'],
             'youdao3':['ZH_CN','JA','EN'],
             'youdao5':['zh-CHS','ja','en'],
+            'youdaoapi':['zh-CHS','ja','en'],
 
         }
     @property

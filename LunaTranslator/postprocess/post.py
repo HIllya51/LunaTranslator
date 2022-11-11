@@ -10,7 +10,7 @@ def POSTSOLVE(line):
         return ""
     
     if postprocessconfig['_2']['use']:
-        times=postprocessconfig['_2']['args']['重复次数']
+        times=postprocessconfig['_2']['args']['重复次数(若为1则自动分析去重)']
          
         if times>=2:
                 guesstimes=times
@@ -35,14 +35,18 @@ def POSTSOLVE(line):
         newline=[line[i*guesstimes] for i in range(len(line)//guesstimes)]
         line=''.join(newline)
     if postprocessconfig['_3']['use']:
-        testforlongestnotdup=line
-        time=len(line)
-        while time>1:
-                if line[:len(line)//time]*time==line:
-                        testforlongestnotdup=line[:len(line)//time] 
-                        break
-                time-=1
-        line=testforlongestnotdup 
+        times=postprocessconfig['_3']['args']['重复次数(若为1则自动分析去重)']
+         
+        if times>=2:
+                guesstimes=times
+        else :
+                guesstimes=len(line) 
+                while guesstimes>=1:
+                        if line[:len(line)//guesstimes]*guesstimes==line: 
+                                break
+                        guesstimes-=1
+        line=line[:len(line)//guesstimes] 
+         
     if postprocessconfig['_10']['use']:
         cnt=Counter(line)
         saveline=[]
