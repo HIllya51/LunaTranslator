@@ -368,11 +368,16 @@ class Textbrowser():
                 self.savetaglabels[labeli].adjustSize()
                 w=self.savetaglabels[labeli].width() 
                 if tl1.y()!=tl2.y():
-                    x=tl2.x()-w
+                    if x+w<self.textbrowser.width():
+                        x=tl1.x() 
+                        y=tl1.y()-fh 
+                    else:
+                        x=tl2.x() -w
+                        y=tl2.y()-fh 
                     need=True
                 else:
                     x=tl1.x()/2+tl2.x()/2-w/2
-                y=tl2.y()-fh 
+                    y=tl2.y()-fh 
                 self.savetaglabels[labeli].move(x,y)   
                 self.savetaglabels[labeli].setStyleSheet("color: %s;background-color:rgba(0,0,0,0)" %(globalconfig['jiamingcolor'])) 
                 self.savetaglabels[labeli].show()
@@ -385,12 +390,17 @@ class Textbrowser():
                         w=self.savetaglabels[labeli*globalconfig['shadowforce']+_i].width()
                         
                         if tl1.y()!=tl2.y():
-                            x=tl2.x()-w
+                            
+                            if x+w<self.textbrowser.width():
+                                x=tl1.x() 
+                                y=tl1.y()-fh 
+                            else:
+                                x=tl2.x() -w
+                                y=tl2.y()-fh 
                             need=True
                         else:
                             x=tl1.x()/2+tl2.x()/2-w/2
-                        y=tl2.y()-fh 
-                        
+                            y=tl2.y()-fh 
                         shadow2 = QGraphicsDropShadowEffect()
                         shadow2.setBlurRadius(globalconfig['fontsize'])
                         shadow2.setOffset(0) 
