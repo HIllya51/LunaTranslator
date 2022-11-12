@@ -160,8 +160,7 @@ class ocrtext(basetext):
                     image_score=sum(image_score)/len(image_score)
                     
                 else:
-                    image_score=0
-                print(image_score)
+                    image_score=0 
                 self.savelastimg=imgr1
                 if image_score>0.95 : 
                     if self.savelastrecimg is not None and  (imgr1.shape==self.savelastrecimg.shape   ) :
@@ -213,7 +212,9 @@ class ocrtext(basetext):
                 hPipe = win32file.CreateFile( "\\\\.\\Pipe\\ocrwaitsignal", win32con.GENERIC_READ | win32con.GENERIC_WRITE, 0,
                         None, win32con.OPEN_EXISTING, win32con.FILE_ATTRIBUTE_NORMAL, None);
                 #win32file.WriteFile(hPipe,'haha'.encode('utf8'))
-                return (win32file.ReadFile(hPipe, 65535, None)[1].decode('utf8')).replace('\n','')
+                s=(win32file.ReadFile(hPipe, 65535, None)[1].decode('utf8'))
+                print(s)
+                return s.replace('\n','')
             else:
             
                 ocr=importlib.import_module('otherocr.'+use).ocr 
