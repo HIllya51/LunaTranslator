@@ -13,10 +13,73 @@ from PyQt5.QtGui import QImage
 from PyQt5.QtCore import QPoint
 from textsource.textsourcebase import basetext 
 from utils.getpidlist import getmagpiehwnd
-def compareImage(  imageA :QImage, imageB):
-    h,w=imageA.height(),imageA.width()
-    sample =sum([sum([ imageA.pixel(i*w//128,j*h//16)==imageB.pixel(i*w//128,j*h//16) for i in range(128)]) for j in range(16)]  )
-    return sample/(128*16)
+import numpy as np
+def qimge2np( qimg): 
+         
+        temp_shape = (qimg.height(), qimg.bytesPerLine() * 8 // qimg.depth())
+        temp_shape += (4,)
+        ptr = qimg.bits()
+        ptr.setsize(qimg.byteCount())
+        result = np.array(ptr, dtype=np.uint8).reshape(temp_shape)
+        result = result[..., :3] 
+         
+        return result
+
+def rgb2gray(rgb):
+
+    r, g, b = rgb[:,:,0], rgb[:,:,1], rgb[:,:,2]
+    gray = 0.2989 * r + 0.5870 * g + 0.1140 * b
+
+    return gray
+def ssim_1(img1, img2, L=255):
+    """Calculate SSIM (structural similarity) for one channel images.
+    Args:
+        img1 (ndarray): Images with range [0, 255].
+        img2 (ndarray): Images with range [0, 255].
+    Returns:
+        float: ssim result.
+    """
+    K1 = 0.01
+    K2 = 0.03
+    C1 = (K1 * L)**2
+    C2 = (K2 * L)**2
+    C3 = C2/2
+
+    img1 = img1.astype(np.float64)
+    img2 = img2.astype(np.float64)
+    # ux
+    ux = img1.mean()
+    # uy
+    uy = img2.mean()
+    # ux^2
+    ux_sq = ux**2
+    # uy^2
+    uy_sq = uy**2
+    # ux*uy
+    uxuy = ux * uy
+    # ox、oy方差计算
+    ox_sq = img1.var()
+    oy_sq = img2.var()
+    ox = np.sqrt(ox_sq)
+    oy = np.sqrt(oy_sq)
+    oxoy = ox * oy
+    oxy = np.mean((img1 - ux) * (img2 - uy))
+    # 公式一计算
+    L = (2 * uxuy + C1) / (ux_sq + uy_sq + C1)
+    C = (2 * ox * oy + C2) / (ox_sq + oy_sq + C2)
+    S = (oxy + C3) / (oxoy + C3)
+    ssim = L * C * S
+    # 验证结果输出
+    # print('ssim:', ssim, ",L:", L, ",C:", C, ",S:", S)
+    return ssim 
+def compareImage(  imageA, imageB):
+    
+    grayA = rgb2gray(imageA)
+    grayB =  rgb2gray(imageB)
+
+    (score ) = ssim_1(grayA, grayB )
+    score = float(score)  
+    return score
 def getEqualRate(  str1, str2):
     
         score = SequenceMatcher(None, str1, str2).quick_ratio()
@@ -86,27 +149,31 @@ class ocrtext(basetext):
             #img=ImageGrab.grab((self.object.rect[0][0],self.object.rect[0][1],self.object.rect[1][0],self.object.rect[1][1]))
             #imgr = cv2.cvtColor(np.asarray(img), cv2.COLOR_RGB2BGR)
             imgr=self.imageCut(self.object.rect[0][0],self.object.rect[0][1],self.object.rect[1][0],self.object.rect[1][1])
-            imgr.shape=imgr.height(),imgr.width(),imgr.depth()
+             
             if globalconfig['mustocr'] and  time.time()-self.lastocrtime>globalconfig['mustocr_interval']:
                 pass
             else:
-                 
-                
-                if self.savelastimg is not None and  (imgr.shape==self.savelastimg.shape) : 
-                    image_score = compareImage(imgr,self.savelastimg)
+                imgr1=qimge2np(imgr)
+                h,w,c=imgr1.shape 
+                if self.savelastimg is not None and  (imgr1.shape==self.savelastimg.shape) : 
+                    image_score =[ compareImage(imgr1[i*h//3:(i+1)*h//3],self.savelastimg[i*h//3:(i+1)*h//3])  for i in range(3)]
+                    image_score=sum(image_score)/len(image_score)
+                    
                 else:
                     image_score=0
-                self.savelastimg=imgr
+                print(image_score)
+                self.savelastimg=imgr1
                 if image_score>0.95 : 
-                    if self.savelastrecimg is not None and  (imgr.shape==self.savelastrecimg.shape   ) :
+                    if self.savelastrecimg is not None and  (imgr1.shape==self.savelastrecimg.shape   ) :
 
-                        image_score2 = compareImage(imgr,self.savelastrecimg)
+                        image_score2 =[ compareImage(imgr1[i*h//3:(i+1)*h//3],self.savelastrecimg[i*h//3:(i+1)*h//3])  for i in range(3)]
+                        image_score2=sum(image_score2)/len(image_score2)
                     else:
                         image_score2=0
                     if image_score2>0.95:
                         return None
                     else: 
-                        self.savelastrecimg=imgr
+                        self.savelastrecimg=imgr1
                 else:
                     return  None 
             text=self.ocrtest(imgr) 
