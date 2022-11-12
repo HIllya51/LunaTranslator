@@ -54,7 +54,7 @@ async def transferMsTTSData(signal,rate,content, outputPath):
     req_id = uuid.uuid4().hex.upper()
      
     endpoint2 = f"wss://eastus.api.speech.microsoft.com/cognitiveservices/websocket/v1?TrafficType=AzureDemo&Authorization=bearer%20undefined&X-ConnectionId={req_id}"
-    async with websockets.connect(endpoint2) as websocket:
+    async with websockets.connect(endpoint2,extra_headers={'Origin':'https://azure.microsoft.com'}) as websocket:
         payload_1 = '{"context":{"system":{"name":"SpeechSDK","version":"1.12.1-rc.1","build":"JavaScript","lang":"JavaScript","os":{"platform":"Browser/Linux x86_64","name":"Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101 Firefox/78.0","version":"5.0 (X11)"}}}}'
         message_1 = 'Path : speech.config\r\nX-RequestId: ' + req_id + '\r\nX-Timestamp: ' + \
             getXTime() + '\r\nContent-Type: application/json\r\n\r\n' + payload_1
