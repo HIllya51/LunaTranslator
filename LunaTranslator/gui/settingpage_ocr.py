@@ -48,8 +48,8 @@ def setTab6(self) :
         grids+=[ 
             [''],
             [''],
-            [(("优化横向OCR漏字"),6),self.getsimpleswitch(globalconfig ,'ocr_hori_extend')],
-            [(("使用竖排OCR(效果不佳)"),6),self.getsimpleswitch(globalconfig ,'verticalocr')],
+           # [(("优化横向OCR漏字"),6),self.getsimpleswitch(globalconfig ,'ocr_hori_extend')],
+         #   [(("使用竖排OCR(效果不佳)"),6),self.getsimpleswitch(globalconfig ,'verticalocr')],
             [(("每隔一段时间必然进行一次OCR"),6),self.getsimpleswitch(globalconfig ,'mustocr')],
             [(("OCR最长间隔时间(s)"),6),(self.getspinbox(0.1,100,globalconfig,'mustocr_interval',double=True,step=0.1  ),2)],
             [(("OCR最短间隔时间(s)"),6),(self.getspinbox(0.1,100,globalconfig,'ocrmininterval',double=True,step=0.1  ),2)],

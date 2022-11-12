@@ -200,7 +200,7 @@ class QUnFrameWindow(QWidget):
         self.setWindowFlag(Qt.Tool,True)
         self.setAttribute(Qt.WA_TranslucentBackground) 
         self.setAttribute(Qt.WA_ShowWithoutActivating,True)
-        
+        subproc("files/ocr.exe  --models ./files/ocr --det 2.6chdet.onnx --cls ch_ppocr_mobile_v2.0_cls_infer.onnx --rec 2.0jprec.onnx --keys japan_dict.txt --image ./capture/tmp.jpg -b 0.01 -u 2 -o 0.01",keep=True)
         self.object = object
         self.rate = self.object.screen_scale_rate 
         self.callmagpie=None
