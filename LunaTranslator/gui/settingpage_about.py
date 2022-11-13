@@ -17,7 +17,7 @@ def getversion(self):
         about=ff.read()
     # with open('files/version.txt','r',encoding='utf8') as ff:
     #     version=ff.read()
-    version='v1.26.3'
+    version='v1.26.5'
     url='https://github.com/HIllya51/LunaTranslator/releases/'
     self.versiontextsignal.emit(about  %(version, _TR('获取中'),'',url,url))
     try:
