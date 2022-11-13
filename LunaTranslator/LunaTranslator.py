@@ -381,6 +381,7 @@ class MAINUI(QObject) :
                     try:
                         aclass=importlib.import_module('translator.'+classname).TS
                     except:
+                        print_exc()
                         return
                     aclass.settypename(classname)
                     if classname in ['rengong','premt']:
