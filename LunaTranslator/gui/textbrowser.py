@@ -309,10 +309,10 @@ class Textbrowser():
     def addtag(self,x): 
         if globalconfig['zitiyangshi'] in [0,1,2]:  
             if len(self.savetaglabels)<len(x):
-                self.savetaglabels+=[QLabel(self.textbrowserback) for i in range(len(x)-len(self.savetaglabels))]
+                self.savetaglabels+=[QLabel(self.parent) for i in range(len(x)-len(self.savetaglabels))]
         elif globalconfig['zitiyangshi'] ==3: 
             if len(self.savetaglabels)<len(globalconfig['shadowforce']*x):
-                self.savetaglabels+=[QLabel(self.textbrowserback) for i in range(len(globalconfig['shadowforce']*x)-len(self.savetaglabels))]
+                self.savetaglabels+=[QLabel(self.parent) for i in range(len(globalconfig['shadowforce']*x)-len(self.savetaglabels))]
         #print(x)
         pos=0
         self.addtaged=True
@@ -327,17 +327,23 @@ class Textbrowser():
         font.setFamily(globalconfig['fonttype']) 
         
         #font.setPixelSize(int(globalconfig['fontsize'])  )
+        font.setPointSizeF((globalconfig['fontsize'])  )
+        fm=QFontMetricsF(font)
+        fhall=fm.height()  
+          
+        font.setFamily(globalconfig['fonttype']) 
+        
+        #font.setPixelSize(int(globalconfig['fontsize'])  )
         font.setPointSizeF((globalconfig['fontsize'])  /2)
         fm=QFontMetricsF(font)
-        fh=fm.height()  
-          
+        fhhalf=fm.height()   
         self.blockcount=self.textbrowser.document().blockCount() 
         for i in range(0,self.blockcount):
             b=self.textbrowser.document().findBlockByNumber(i)
                  
             tf=b.blockFormat()
             #tf.setLineHeight(fh,QTextBlockFormat.LineDistanceHeight)
-            tf.setLineHeight(fh*3,QTextBlockFormat.FixedHeight)
+            tf.setLineHeight(fhall+fhhalf,QTextBlockFormat.FixedHeight)
             cursor=self.textbrowserback.textCursor() 
             cursor.setPosition(b.position()) 
             cursor.setBlockFormat(tf)
@@ -369,11 +375,11 @@ class Textbrowser():
             #print(tl1,tl2,word['hira'],self.textbrowser.textCursor().position())
             
             if globalconfig['zitiyangshi'] in [0,1,2]:  
-                self.solvejiaminglabel(self.savetaglabels[labeli ],word,font,tl1,tl2,fh,False,color=(globalconfig['jiamingcolor']))
+                self.solvejiaminglabel(self.savetaglabels[labeli ],word,font,tl1,tl2,fhhalf,False,color=(globalconfig['jiamingcolor']))
             elif globalconfig['zitiyangshi'] ==3: 
     
                 for _i  in range(globalconfig['shadowforce']): 
-                        self.solvejiaminglabel(self.savetaglabels[labeli*globalconfig['shadowforce']+_i],word,font,tl1,tl2,fh,True,color=globalconfig['miaobiancolor'])
+                        self.solvejiaminglabel(self.savetaglabels[labeli*globalconfig['shadowforce']+_i],word,font,tl1,tl2,fhhalf,True,color=globalconfig['miaobiancolor'])
                          
                          
 
@@ -400,6 +406,7 @@ class Textbrowser():
         else:
             x=tl1.x()/2+tl2.x()/2-w/2
             y=tl2.y()-fh   
+        y+=30*self.parent.rate
         if effect:
             shadow2 = QGraphicsDropShadowEffect()
             shadow2.setBlurRadius(globalconfig['fontsize'])
