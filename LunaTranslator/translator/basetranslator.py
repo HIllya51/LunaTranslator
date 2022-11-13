@@ -95,7 +95,7 @@ class basetrans:
                     print_exc()
                 res='' 
                 
-            print(res)
+            
             if res is not None and res!=''   and self.queue.empty() and contentraw==self.newline:
                 self.show(contentraw,(self.typename,res,mp))
 
