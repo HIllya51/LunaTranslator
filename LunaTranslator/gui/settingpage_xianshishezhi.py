@@ -63,7 +63,7 @@ def setTabThree(self) :
                 magpiemethod=[]#['Lanczos','FSR','FSRCNNX','ACNet','Anime4K','CRT-Geom','Integer Scale 2x','Integer Scale 3x']
         
         def singleton_():
-                if globalconfig['allowmulti']:
+                if globalconfig['allowmulti']==False:
                         with open('files/single.txt','w') as ff:
                                 pass
                 else:
