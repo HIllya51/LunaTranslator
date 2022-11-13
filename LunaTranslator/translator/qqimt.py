@@ -1,15 +1,10 @@
  
  
 from traceback import print_exc
-import requests
-from urllib import parse 
-import os
+import requests 
 
-from utils.config import globalconfig
-import re 
-from translator.basetranslator import basetrans 
-from js2py import EvalJs
-import time
+from utils.config import globalconfig 
+from translator.basetranslator import basetrans  
 class TS(basetrans):
       
     def translate(self,query):  

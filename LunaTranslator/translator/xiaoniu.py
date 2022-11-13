@@ -7,8 +7,7 @@ import os
 import json
 from utils.config import globalconfig,translatorsetting
 import re 
-from translator.basetranslator import basetrans 
-from js2py import EvalJs
+from translator.basetranslator import basetrans  
 import time
 class TS(basetrans):  
     def translate(self,query):

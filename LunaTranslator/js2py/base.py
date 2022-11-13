@@ -8,7 +8,7 @@ from types import FunctionType, ModuleType, GeneratorType, BuiltinFunctionType, 
 from math import floor, log10
 import traceback
 try:
-    import numpy
+     
     NUMPY_AVAILABLE = True
 except:
     NUMPY_AVAILABLE = False
@@ -153,10 +153,10 @@ def Js(val, Clamped=False):
     elif isinstance(val, bool):
         return true if val else false
     elif isinstance(val, float) or isinstance(val, int) or isinstance(
-            val, long) or (NUMPY_AVAILABLE and isinstance(
-                val,
-                (numpy.int8, numpy.uint8, numpy.int16, numpy.uint16,
-                 numpy.int32, numpy.uint32, numpy.float32, numpy.float64))):
+             val, long) :#or (NUMPY_AVAILABLE and isinstance(
+            #     val,
+            #     (numpy.int8, numpy.uint8, numpy.int16, numpy.uint16,
+            #      numpy.int32, numpy.uint32, numpy.float32, numpy.float64))):
         # This is supposed to speed things up. may not be the case
         if val in NUM_BANK:
             return NUM_BANK[val]
@@ -188,27 +188,27 @@ def Js(val, Clamped=False):
     # convert to typedarray
     elif isinstance(val, JsObjectWrapper):
         return val.__dict__['_obj']
-    elif NUMPY_AVAILABLE and isinstance(val, numpy.ndarray):
-        if val.dtype == numpy.int8:
-            return PyJsInt8Array(val, Int8ArrayPrototype)
-        elif val.dtype == numpy.uint8 and not Clamped:
-            return PyJsUint8Array(val, Uint8ArrayPrototype)
-        elif val.dtype == numpy.uint8 and Clamped:
-            return PyJsUint8ClampedArray(val, Uint8ClampedArrayPrototype)
-        elif val.dtype == numpy.int16:
-            return PyJsInt16Array(val, Int16ArrayPrototype)
-        elif val.dtype == numpy.uint16:
-            return PyJsUint16Array(val, Uint16ArrayPrototype)
+    # elif NUMPY_AVAILABLE and isinstance(val, numpy.ndarray):
+    #     if val.dtype == numpy.int8:
+    #         return PyJsInt8Array(val, Int8ArrayPrototype)
+    #     elif val.dtype == numpy.uint8 and not Clamped:
+    #         return PyJsUint8Array(val, Uint8ArrayPrototype)
+    #     elif val.dtype == numpy.uint8 and Clamped:
+    #         return PyJsUint8ClampedArray(val, Uint8ClampedArrayPrototype)
+    #     elif val.dtype == numpy.int16:
+    #         return PyJsInt16Array(val, Int16ArrayPrototype)
+    #     elif val.dtype == numpy.uint16:
+    #         return PyJsUint16Array(val, Uint16ArrayPrototype)
 
-        elif val.dtype == numpy.int32:
-            return PyJsInt32Array(val, Int32ArrayPrototype)
-        elif val.dtype == numpy.uint32:
-            return PyJsUint16Array(val, Uint32ArrayPrototype)
+    #     elif val.dtype == numpy.int32:
+    #         return PyJsInt32Array(val, Int32ArrayPrototype)
+    #     elif val.dtype == numpy.uint32:
+    #         return PyJsUint16Array(val, Uint32ArrayPrototype)
 
-        elif val.dtype == numpy.float32:
-            return PyJsFloat32Array(val, Float32ArrayPrototype)
-        elif val.dtype == numpy.float64:
-            return PyJsFloat64Array(val, Float64ArrayPrototype)
+    #     elif val.dtype == numpy.float32:
+    #         return PyJsFloat32Array(val, Float32ArrayPrototype)
+    #     elif val.dtype == numpy.float64:
+    #         return PyJsFloat64Array(val, Float64ArrayPrototype)
     else:  # try to convert to js object
         return py_wrap(val)
         #raise RuntimeError('Cant convert python type to js (%s)' % repr(val))
@@ -323,9 +323,9 @@ class PyJs(object):
         if not isinstance(prop, basestring):
             prop = prop.to_string().value
         if not isinstance(prop, basestring): raise RuntimeError('Bug')
-        if NUMPY_AVAILABLE and prop.isdigit():
-            if isinstance(self.buff, numpy.ndarray):
-                self.update_array()
+        # if NUMPY_AVAILABLE and prop.isdigit():
+        #     if isinstance(self.buff, numpy.ndarray):
+        #         self.update_array()
         cand = self.get_property(prop)
         if cand is None:
             return Js(None)
@@ -364,32 +364,32 @@ class PyJs(object):
                             'Undefined and null don\'t have properties (tried setting property %s)' % repr(prop))
         if not isinstance(prop, basestring):
             prop = prop.to_string().value
-        if NUMPY_AVAILABLE and prop.isdigit():
-            if self.Class == 'Int8Array':
-                val = Js(numpy.int8(val.to_number().value))
-            elif self.Class == 'Uint8Array':
-                val = Js(numpy.uint8(val.to_number().value))
-            elif self.Class == 'Uint8ClampedArray':
-                if val < Js(numpy.uint8(0)):
-                    val = Js(numpy.uint8(0))
-                elif val > Js(numpy.uint8(255)):
-                    val = Js(numpy.uint8(255))
-                else:
-                    val = Js(numpy.uint8(val.to_number().value))
-            elif self.Class == 'Int16Array':
-                val = Js(numpy.int16(val.to_number().value))
-            elif self.Class == 'Uint16Array':
-                val = Js(numpy.uint16(val.to_number().value))
-            elif self.Class == 'Int32Array':
-                val = Js(numpy.int32(val.to_number().value))
-            elif self.Class == 'Uint32Array':
-                val = Js(numpy.uint32(val.to_number().value))
-            elif self.Class == 'Float32Array':
-                val = Js(numpy.float32(val.to_number().value))
-            elif self.Class == 'Float64Array':
-                val = Js(numpy.float64(val.to_number().value))
-            if isinstance(self.buff, numpy.ndarray):
-                self.buff[int(prop)] = int(val.to_number().value)
+        # if NUMPY_AVAILABLE and prop.isdigit():
+        #     if self.Class == 'Int8Array':
+        #         val = Js(numpy.int8(val.to_number().value))
+        #     elif self.Class == 'Uint8Array':
+        #         val = Js(numpy.uint8(val.to_number().value))
+        #     elif self.Class == 'Uint8ClampedArray':
+        #         if val < Js(numpy.uint8(0)):
+        #             val = Js(numpy.uint8(0))
+        #         elif val > Js(numpy.uint8(255)):
+        #             val = Js(numpy.uint8(255))
+        #         else:
+        #             val = Js(numpy.uint8(val.to_number().value))
+        #     elif self.Class == 'Int16Array':
+        #         val = Js(numpy.int16(val.to_number().value))
+        #     elif self.Class == 'Uint16Array':
+        #         val = Js(numpy.uint16(val.to_number().value))
+        #     elif self.Class == 'Int32Array':
+        #         val = Js(numpy.int32(val.to_number().value))
+        #     elif self.Class == 'Uint32Array':
+        #         val = Js(numpy.uint32(val.to_number().value))
+        #     elif self.Class == 'Float32Array':
+        #         val = Js(numpy.float32(val.to_number().value))
+        #     elif self.Class == 'Float64Array':
+        #         val = Js(numpy.float64(val.to_number().value))
+        #     if isinstance(self.buff, numpy.ndarray):
+        #         self.buff[int(prop)] = int(val.to_number().value)
         #we need to set the value to the incremented one
         if op is not None:
             val = getattr(self.get(prop), OP_METHODS[op])(val)

@@ -2,8 +2,7 @@ import requests
 import re
 import urllib
 import random
-import time
-import js2py
+import time 
 import hashlib
 import functools
 
