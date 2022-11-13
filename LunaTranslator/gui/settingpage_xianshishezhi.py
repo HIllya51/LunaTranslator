@@ -61,8 +61,8 @@ def setTabThree(self) :
 
         except:
                 magpiemethod=[]#['Lanczos','FSR','FSRCNNX','ACNet','Anime4K','CRT-Geom','Integer Scale 2x','Integer Scale 3x']
-        def singleton(x):
-                globalconfig['allowmulti']=x
+        
+        def singleton_():
                 if globalconfig['allowmulti']:
                         with open('files/single.txt','w') as ff:
                                 pass
@@ -71,6 +71,10 @@ def setTabThree(self) :
                                 os.remove('files/single.txt')
                         except:
                                 pass
+        def singleton(x):
+                globalconfig['allowmulti']=x
+                singleton_()
+        singleton_()
         magpiesettingdialog=[
                 {'t':'switch','d':globalconfig['magpieflags'],'k':'Is3DMode','l':'3D游戏模式'},
                 {'t':'switch','d':globalconfig['magpieflags'],'k':'DisableWindowResizing','l':'缩放时禁用窗口大小调整'},
