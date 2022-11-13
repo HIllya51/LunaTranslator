@@ -290,6 +290,7 @@
         "rate": 1.0,
         "volume": 100.0
     },
+	"allowmulti":true,
     "sourcestatus": {
         "copy": true,
         "ocr": false,
