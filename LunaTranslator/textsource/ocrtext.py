@@ -9,28 +9,20 @@ import importlib
 from difflib import SequenceMatcher 
 import time  
 from PyQt5.QtWidgets import QApplication 
-from PyQt5.QtGui import QImage
-from PyQt5.QtCore import QPoint
+from PyQt5.QtGui import QImage,QPixelFormat
+from PyQt5.QtCore import QPoint,Qt
 from textsource.textsourcebase import basetext 
 from utils.getpidlist import getmagpiehwnd
-import numpy as np
-def qimge2np( qimg): 
-         
-        temp_shape = (qimg.height(), qimg.bytesPerLine() * 8 // qimg.depth())
-        temp_shape += (4,)
+import numpy as np 
+def qimge2np( qimg:QImage): 
+        qimg=qimg.convertToFormat(  QImage.Format_Grayscale8,Qt.AutoColor)
+        temp_shape = (qimg.height(), qimg.bytesPerLine() * 8 // qimg.depth()) 
         ptr = qimg.bits()
         ptr.setsize(qimg.byteCount())
         result = np.array(ptr, dtype=np.uint8).reshape(temp_shape)
-        result = result[..., :3] 
-         
+          
         return result
-
-def rgb2gray(rgb):
-
-    r, g, b = rgb[:,:,0], rgb[:,:,1], rgb[:,:,2]
-    gray = 0.2989 * r + 0.5870 * g + 0.1140 * b
-
-    return gray
+ 
 def ssim_1(img1, img2, L=255):
     """Calculate SSIM (structural similarity) for one channel images.
     Args:
@@ -74,10 +66,10 @@ def ssim_1(img1, img2, L=255):
     return ssim 
 def compareImage(  imageA, imageB):
     
-    grayA = rgb2gray(imageA)
-    grayB =  rgb2gray(imageB)
+    # grayA = rgb2gray(imageA)
+    # grayB =  rgb2gray(imageB)
 
-    (score ) = ssim_1(grayA, grayB )
+    (score ) = ssim_1(imageA, imageB )
     score = float(score)  
     return score
 def getEqualRate(  str1, str2):
@@ -154,7 +146,7 @@ class ocrtext(basetext):
                 pass
             else:
                 imgr1=qimge2np(imgr)
-                h,w,c=imgr1.shape 
+                h,w =imgr1.shape 
                 if self.savelastimg is not None and  (imgr1.shape==self.savelastimg.shape) : 
                     image_score =[ compareImage(imgr1[i*h//3:(i+1)*h//3],self.savelastimg[i*h//3:(i+1)*h//3])  for i in range(3)]
                     image_score=sum(image_score)/len(image_score)
@@ -162,7 +154,9 @@ class ocrtext(basetext):
                 else:
                     image_score=0 
                 self.savelastimg=imgr1
+                print(image_score)
                 if image_score>0.95 : 
+                    print("stable")
                     if self.savelastrecimg is not None and  (imgr1.shape==self.savelastrecimg.shape   ) :
 
                         image_score2 =[ compareImage(imgr1[i*h//3:(i+1)*h//3],self.savelastrecimg[i*h//3:(i+1)*h//3])  for i in range(3)]
@@ -207,13 +201,12 @@ class ocrtext(basetext):
             return ''
         img.save('./capture/tmp.jpg')
         try:
-            if use=='local':
+            if use=='local': 
                 win32pipe.WaitNamedPipe("\\\\.\\Pipe\\ocrwaitsignal",win32con.NMPWAIT_WAIT_FOREVER)
                 hPipe = win32file.CreateFile( "\\\\.\\Pipe\\ocrwaitsignal", win32con.GENERIC_READ | win32con.GENERIC_WRITE, 0,
                         None, win32con.OPEN_EXISTING, win32con.FILE_ATTRIBUTE_NORMAL, None);
                 #win32file.WriteFile(hPipe,'haha'.encode('utf8'))
-                s=(win32file.ReadFile(hPipe, 65535, None)[1].decode('utf8'))
-                print(s)
+                s=(win32file.ReadFile(hPipe, 65535, None)[1].decode('utf8')) 
                 return s.replace('\n','')
             else:
             
