@@ -5,8 +5,7 @@
 #
 import enum
 from typing import Dict, List, Tuple
-
-import jaconv
+ 
 
 from .kanji import JConv
 from .properties import Ch
@@ -36,9 +35,6 @@ class Kakasi:
         self._jconv = JConv()
         self._iconv = IConv()
 
-    @classmethod
-    def normalize(cls, text):
-        return jaconv.normalize(text)
 
     def convert(self, text: str) -> List[Dict[str, str]]:
         """Convert input text to dictionary contains KANA, HIRA and romaji results."""
