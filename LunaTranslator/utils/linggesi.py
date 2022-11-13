@@ -1,7 +1,6 @@
 from utils.config import globalconfig
 import sqlite3
-import Levenshtein
-import numpy as np
+import Levenshtein 
 import os
 from traceback import print_exc
 class linggesi():

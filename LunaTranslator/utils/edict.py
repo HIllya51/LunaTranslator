@@ -1,7 +1,7 @@
 from utils.config import globalconfig
 import sqlite3
 import Levenshtein,re
-import numpy as np
+from utils.argsort import argsort
 from traceback import print_exc
 class edict():
     def __init__(self):
@@ -22,7 +22,7 @@ class edict():
                     d=Levenshtein.distance(w,word)
                     dis.append(d)
                 save=[]
-                srt=np.argsort(dis) 
+                srt=argsort(dis)
                 for ii in srt:
                     if exp[ii][1] not in save:
                         save.append(exp[ii][1])

@@ -1,7 +1,7 @@
 from utils.config import globalconfig
 import sqlite3
 import Levenshtein
-import numpy as np
+from utils.argsort import argsort
 class xiaoxueguan():
     def __init__(self):
         self.sql=None
@@ -21,7 +21,7 @@ class xiaoxueguan():
                     d=Levenshtein.distance(w,word)
                     dis.append(d)
                      
-                srt=np.argsort(dis)[:10]
+                srt=argsort(dis)[:10]
                 save=['<span h>'+exp[i][1].replace('\\n','') for i in srt]
                 return '<hr>'.join(save)
             except:
