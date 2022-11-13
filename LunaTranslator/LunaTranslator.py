@@ -470,10 +470,7 @@ class MAINUI(QObject) :
         threading.Thread(target=self.setontopthread).start()
         
 if __name__ == "__main__" :
-    if globalconfig['allowmulti']==False: 
-        mutex=win32event.CreateMutex(None,1,"keepSingletonmutex")
-        if win32api.GetLastError() ==183:# winerror.ERROR_ALREADY_EXISTS:
-            exit(1)
+    
     QCoreApplication.setAttribute(Qt.AA_UseHighDpiPixmaps, True)
     main = MAINUI()
 

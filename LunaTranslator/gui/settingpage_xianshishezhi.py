@@ -61,6 +61,13 @@ def setTabThree(self) :
 
         except:
                 magpiemethod=[]#['Lanczos','FSR','FSRCNNX','ACNet','Anime4K','CRT-Geom','Integer Scale 2x','Integer Scale 3x']
+        def singleton(x):
+                globalconfig['allowmulti']=x
+                if globalconfig['allowmulti']:
+                        with open('files/single.txt','w') as ff:
+                                pass
+                else:
+                        os.remove('files/single.txt')
         magpiesettingdialog=[
                 {'t':'switch','d':globalconfig['magpieflags'],'k':'Is3DMode','l':'3D游戏模式'},
                 {'t':'switch','d':globalconfig['magpieflags'],'k':'DisableWindowResizing','l':'缩放时禁用窗口大小调整'},
@@ -102,7 +109,7 @@ def setTabThree(self) :
                 [('翻译结果繁简体显示',6),(self.getsimplecombobox(['大陆简体','马新简体','台灣正體','香港繁體','简体','繁體'],globalconfig,'fanjian'),4)],
                 [('翻译窗口顺时针旋转(重启生效)',6),(self.getsimplecombobox(['0','90','180','270'],globalconfig,'rotation'),4)],
                 [('翻译器显示语言(重启生效)',6),(self.getsimplecombobox(_TRL([ '简体中文','繁体中文','英文']),globalconfig,'languageuse'),4)],
-                [('允许多开软件(重启生效)',6),self.getsimpleswitch(globalconfig,'allowmulti')],
+                [('允许多开软件(重启生效)',6),self.getsimpleswitch(globalconfig,'allowmulti',callback=singleton)],
                
         ] 
         self.yitiaolong("显示设置",buttongrid) 
