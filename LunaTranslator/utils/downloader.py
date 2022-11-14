@@ -10,13 +10,13 @@ def mutithreaddownload(savep,url,progresscallback,internalsignal,endcallback):
         try:
             r2 = requests.get(url,stream=True,verify = False) 
             size = int(r2.headers['Content-Length'])
-                        
-            stats = os.stat(savep) 
-             
-            if stats.st_size==size:
-                progresscallback(f'总大小{int(1000*(int(size/1024)/1024))/1000} MB 进度 {int(10000*(size/size))/100:.2f}% ',10000)
-                endcallback()
-                return 
+            if os.path.exists(savep):
+                stats = os.stat(savep) 
+                
+                if stats.st_size==size:
+                    progresscallback(f'总大小{int(1000*(int(size/1024)/1024))/1000} MB 进度 {int(10000*(size/size))/100:.2f}% ',10000)
+                    endcallback()
+                    return 
             with open(savep, "wb") as file:
                 global file_size
                 global sizecollect
