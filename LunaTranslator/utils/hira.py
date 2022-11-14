@@ -8,7 +8,7 @@ class hira:
         if globalconfig['mecab']['use'] and os.path.exists(globalconfig['mecab']['path']):
             import fugashi
             dic_dir_path = globalconfig['mecab']['path']
-            self.kks= fugashi.Tagger("-r nul -d {} -Owakati".format(dic_dir_path))
+            self.kks= fugashi.Tagger('-r nul -d "{}" -Owakati'.format(dic_dir_path))
             self.usemecab=True
             keys='ァアィイゥウェエォオカガキギクグケゲコゴサザシジスズセゼソゾタダチヂッツヅテデトドナニヌネノハバパヒビピフブプヘベペホボポマミムメモャヤュユョヨラリルレロヮワヰヱヲンヴヵヶヽヾ'
             vs='ぁあぃいぅうぇえぉおかがきぎくぐけげこごさざしじすずせぜそぞただちぢっつづてでとどなにぬねのはばぱひびぴふぶぷへべぺほぼぽまみむめもゃやゅゆょよらりるれろゎわゐゑをんゔゕゖゝゞ'
