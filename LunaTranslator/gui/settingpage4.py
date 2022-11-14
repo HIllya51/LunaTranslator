@@ -174,7 +174,7 @@ def minmaxmoveobservefunc(self):
                                   
                      if action==5 and  globalconfig['focusfollow']: 
                         
-                        print(pid)
+                        #print(pid)
                         if pid==self_pid: 
                                 self.object.translation_ui.hookfollowsignal.emit(3,(0,0))  
                         elif pid==self.object.textsource.pid: 
