@@ -5,6 +5,8 @@
     ],
     "fixedheight": false,
     "width": 768,
+	"ocr_stable_sim":0.95,
+	"ocr_diff_sim":0.95,
     "autorun": true,
     "transparent": 35,
     "fontsize": 17.0,

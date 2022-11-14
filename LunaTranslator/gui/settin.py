@@ -84,10 +84,10 @@ class Settin(QMainWindow) :
         for c in range(maxl):
 
             grid.setColumnMinimumWidth(c,ww//maxl)
-    def getspinbox(self,mini,maxi,d,key,double=False, step=1,callback=None,name=None ):
+    def getspinbox(self,mini,maxi,d,key,double=False, step=1,callback=None,name=None,dec=1 ):
         if double:
             s=QDoubleSpinBox()
-            s.setDecimals(1)
+            s.setDecimals(dec)
         else:
             s=QSpinBox() 
         s.setMinimum(mini)

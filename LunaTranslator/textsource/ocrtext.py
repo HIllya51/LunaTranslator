@@ -176,13 +176,12 @@ class ocrtext(basetext):
                     image_score=0 
                 self.savelastimg=imgr1
                 
-                if image_score>0.95 : 
+                if image_score>globalconfig['ocr_stable_sim'] : 
                     if self.savelastrecimg is not None and  (imgr1.shape==self.savelastrecimg.shape   ) :
                         image_score2=compareImage(imgr1 ,self.savelastrecimg ) 
                     else:
-                        image_score2=0
-                        
-                    if image_score2>0.95:
+                        image_score2=0 
+                    if image_score2>globalconfig['ocr_diff_sim']:
                         return None
                     else: 
                         self.savelastrecimg=imgr1
@@ -250,8 +249,7 @@ class ocrtext(basetext):
                         continue
                     for j in range(i+1,len(box)):
                         if j in passed:
-                            continue
-                        print( mids[i],ranges[j],mids[j],ranges[i])
+                            continue 
                         if mids[i]>ranges[j][0] and mids[i]<ranges[j][1] \
                             and mids[j]>ranges[i][0] and mids[j]<ranges[i][1]:
                              
