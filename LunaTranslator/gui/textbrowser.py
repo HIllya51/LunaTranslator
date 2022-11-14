@@ -286,11 +286,7 @@ class Textbrowser():
         else:
             c=QColor("white") 
             return (c.red(),c.green(),c.blue(), globalconfig['showcixing_touming']/100)
-        if self.lastcolor is None:
-            self.lastcolor=(random.randint(0,255),random.randint(0,255),random.randint(0,255),1)
          
-        self.lastcolor= ((self.lastcolor[0]+ random.randint(64,192))%255,(self.lastcolor[1]+ random.randint(64,192))%255,(self.lastcolor[2]+ random.randint(64,192))%255,globalconfig['showcixing_touming']/100)
-        return self.lastcolor
     def getfh(self,half):
         
         font=QFont()
