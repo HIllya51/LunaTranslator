@@ -21,7 +21,7 @@ from PyQt5.QtWidgets import QDialogButtonBox,QDialog,QComboBox,QFormLayout,QSpin
 from PyQt5.QtCore import Qt,QSize 
 import subprocess
 from utils.config import globalconfig ,savehook_new,savehook_new2
-from utils.getpidlist import getwindowlist,getExeIcon
+from utils.getpidlist import getwindowlist,getExeIcon,getpidexe
 import threading
 import json
 from gui.inputdialog import autoinitdialog,getsomepath1
@@ -174,7 +174,7 @@ def minmaxmoveobservefunc(self):
                                   
                      if action==5 and  globalconfig['focusfollow']: 
                         
- 
+                        print(pid)
                         if pid==self_pid: 
                                 self.object.translation_ui.hookfollowsignal.emit(3,(0,0))  
                         elif pid==self.object.textsource.pid: 
@@ -184,8 +184,12 @@ def minmaxmoveobservefunc(self):
                         else: 
                                 try:
                                         cn=win32gui.GetClassName(win32gui.GetForegroundWindow()) 
+                                         
                                         if cn=='Shell_TrayWnd':
                                                 continue 
+                                        exe=getpidexe(pid)
+                                        if os.path.basename(exe).lower()=='magpie.exe':
+                                                continue
                                 except:
                                         pass
                                 plist=getwindowlist()
