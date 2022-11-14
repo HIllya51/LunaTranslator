@@ -227,9 +227,47 @@ class ocrtext(basetext):
                         None, win32con.OPEN_EXISTING, win32con.FILE_ATTRIBUTE_NORMAL, None);
                 #win32file.WriteFile(hPipe,'haha'.encode('utf8'))
                 s=(win32file.ReadFile(hPipe, 65535, None)[1].decode('utf8'))
-                print(time.time()-t1)
-                print(s)
-                return s.replace('\n','')
+                ls=s.split('\n')[:-1] 
+                juhe=[]
+                box=[]
+                mids=[]
+                ranges=[]
+                text=[]
+                reverse={}
+                for i in range(len(ls)//2):
+                    box.append([int(_)  for _ in ls[i*2].split(',')])
+                    text.append(ls[i*2+1]) 
+                for i in range(len(box)):
+                    mid=box[i][1]+box[i][3]+box[i][5]+box[i][7]
+                    mid/=4
+                    mids.append(mid)
+                    range_=((box[i][1]+box[i][3])/2,(box[i][7]+box[i][5])/2)
+                    ranges.append(range_) 
+                passed=[] 
+                for i in range(len(box)):
+                    ls=[i]
+                    if i in passed:
+                        continue
+                    for j in range(i+1,len(box)):
+                        if j in passed:
+                            continue
+                        print( mids[i],ranges[j],mids[j],ranges[i])
+                        if mids[i]>ranges[j][0] and mids[i]<ranges[j][1] \
+                            and mids[j]>ranges[i][0] and mids[j]<ranges[i][1]:
+                             
+                            passed.append(j)
+                            ls.append(j)
+                    juhe.append(ls)
+                
+                for i in range(len(juhe)):
+                    juhe[i].sort(key=lambda x:box[x][0])
+                juhe.sort(key=lambda x:box[x[0]][1])
+                lines=[]
+                for _j in juhe:
+                     
+                    lines.append(''.join([text[_] for _ in _j])) 
+
+                return ''.join(lines)
             else:
             
                 ocr=importlib.import_module('otherocr.'+use).ocr 
