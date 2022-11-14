@@ -104,7 +104,7 @@ class QUnFrameWindow(QWidget):
     #         self.showline_real(res,color ,type_)
     # def showline(self,res,color ,type_=1):
     #     self.showtask.put((res,color ,type_))
-    def showline (self,res,color ,type_=1):  
+    def showline (self,res,color ,type_=1):   
         if globalconfig['showatcenter']:
             self.translate_text.setAlignment(Qt.AlignCenter)
         else:
@@ -118,14 +118,13 @@ class QUnFrameWindow(QWidget):
         elif globalconfig['zitiyangshi'] ==0: 
             self.translate_text.simplecharformat(color)
         elif globalconfig['zitiyangshi'] ==3: 
-            self.translate_text.simplecharformat(color) 
+            self.translate_text.simplecharformat(color)  
         if type_==1: 
-            self.translate_text.append(res[1]) 
+            self.translate_text.append (res[1],[]) 
         else:   
-            self.translate_text.append(res[1])  
-            self.translate_text.addtag(res[0])   
+            self.translate_text.append (res[1],res[0])    
         if globalconfig['zitiyangshi'] ==3:
-            self.translate_text.showyinyingtext(color,res[1]  ) 
+            self.translate_text.showyinyingtext(color  ) 
         if (globalconfig['usesearchword'] or globalconfig['show_fenci']  ) and res[0]:
             self.translate_text.addsearchwordmask(res[0],res[1],self.showsearchword  ) 
          

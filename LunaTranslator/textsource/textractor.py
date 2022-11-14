@@ -189,6 +189,7 @@ class textractor(basetext  ):
                 #print(key==self.selectedhook,key,self.selectedhook)
                 self.newline.put(output) 
                 self.runonce_line=output
+ 
             # else:
                  
             #     if globalconfig['extractalltext']:

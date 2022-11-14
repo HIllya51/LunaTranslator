@@ -1,5 +1,5 @@
  
-from PyQt5.QtCore import Qt ,pyqtSignal
+from PyQt5.QtCore import Qt ,pyqtSignal,QObject
 from PyQt5.QtGui import QPen,QColor ,QTextCharFormat ,QTextBlockFormat,QTextCursor,QFont,QColor,QFontMetricsF,QPalette,QTextFormat
 from PyQt5.QtWidgets import  QTextBrowser ,QLabel,QPushButton,QGraphicsDropShadowEffect
 import random
@@ -23,8 +23,8 @@ class Qlabel_c(QLabel):
         except:
             print_exc()
         return super().mouseReleaseEvent(ev)
-class Textbrowser(): 
-    def __init__(self, parent ) : 
+class Textbrowser( ):  
+    def __init__(self, parent ) :  
         self.parent=parent
         #self.shadowlabel=QLabel(parent)
         #self.shadowlabel.savetext=''
@@ -36,8 +36,7 @@ class Textbrowser():
         self.font=QFont()
         self.toplabel2.setGeometry( 0,30*self.parent.rate,9999,9999)
         self.toplabel2.setMouseTracking(True)
-        self.toplabel=QLabel(parent)
-        
+        self.toplabel=QLabel(parent) 
         self.toplabel.setGeometry( 0,30*self.parent.rate,9999,9999)
         self.toplabel.setMouseTracking(True)
         self.textbrowser.setStyleSheet("border-width: 0;\
@@ -63,8 +62,7 @@ class Textbrowser():
         self.yinyingpos=0
         self.yinyingposline=0
         self.lastcolor=None
-
-        
+ 
         self.charformat=self.textbrowser.currentCharFormat()
     def simplecharformat(self,color):
         self.textbrowser.setCurrentCharFormat(self.charformat)
@@ -110,13 +108,19 @@ class Textbrowser():
         else:
             self.align=False
         #self.shadowlabel.setAlignment(Qt.AlignTop )
-    @timer
-    def append(self,x ,xx=True): 
+     
+    def append(self,x ,tag ): 
+        
+        if self.cleared:
+            self.b1=0
+        else:
+            self.b1=self.textbrowser.document().blockCount()
         self.cleared=False
         self.textbrowserback.append(x) 
         self.textbrowser.append(x) 
+        self.b2=self.textbrowser.document().blockCount()
         
-        if xx and self.addtaged:
+        if   self.addtaged:
             
             self.addtaged=False
               
@@ -135,48 +139,43 @@ class Textbrowser():
                 cursor.setPosition(b.position()) 
                 cursor.setBlockFormat(tf)
                 self.textbrowser.setTextCursor(cursor) 
+        if len(tag)>0:
+            self.addtag(tag)
+    def showyinyingtext(self,color ):   
          
-    def showyinyingtext(self,color,text):  
-        start=self.yinyingpos 
-        pos=start
-        labeli=0 
-        cursor=self.textbrowser.textCursor()
-        cursor.setPosition(start )
-        self.textbrowser.setTextCursor(cursor)
-        cursor.movePosition(QTextCursor.StartOfBlock)
-        self.textbrowser.setTextCursor(cursor)
         linei=self.yinyingposline
-        savestart=self.textbrowser.cursorRect(self.textbrowser.textCursor()).topLeft()
-        #print(start,savestart)
-        savep=0
-        texti=0
-        while texti <len(text):
-            word=text[texti]
-            tl1=self.textbrowser.cursorRect(self.textbrowser.textCursor()).topLeft()
-            
-            
-            cursor=self.textbrowser.textCursor() 
-            cursor.setPosition(pos+labeli )
-            self.textbrowser.setTextCursor(cursor)
-            
-            
-            tl3=self.textbrowser.cursorRect(self.textbrowser.textCursor()).topLeft() 
-            
-            if tl1.y()!=tl3.y() or texti==len(text)-1:  
-                if texti==len(text)-1:
-                    texti+=1
-                 
+        
+        doc=self.textbrowser.document()
+        block=doc.findBlockByNumber(0)
+         
+        start=self.b1
+        end=self.b2 
+        
+        cursor=self.textbrowser.textCursor() 
+        for blocki in range(start,end):
+            block=doc.findBlockByNumber(blocki)
+            layout=block.layout()
+            blockstart=block.position()
+            lc=layout.lineCount()
+            for lineii in range(lc):
+                line=layout.lineAt(lineii)
+                
+                s=line.textStart()
+                l=line.textLength()
+                #print(blockstart,s,block.text()[s:s+l])
+                cursor.setPosition(blockstart+s)
+                self.textbrowser.setTextCursor(cursor)
+                tl1=self.textbrowser.cursorRect(self.textbrowser.textCursor()).topLeft()
+                #print(tl1)
+                if globalconfig['shadowforce']*(lc+linei)>len(self.yinyinglabels):
+                    self.yinyinglabels+=[QLabel(self.toplabel2) for i in range(globalconfig['shadowforce']*(lc+linei)-len(self.yinyinglabels))]
                 for i in range(globalconfig['shadowforce']):
-                    index=globalconfig['shadowforce']*linei+i
-                    if index>=len(self.yinyinglabels):
-                        ql=QLabel(self.toplabel2) 
-                        ql.setMouseTracking(True)
-                        self.yinyinglabels.append(ql)
+                    index=globalconfig['shadowforce']*linei+i 
                     _=self.yinyinglabels[index]
-                    _.move(savestart)
-                    _.setText(text[savep:texti] )
+                    _.move(tl1)
+                    _.setText(block.text()[s:s+l] )
                     _.setFont(self.textbrowser.font())
-                    
+                     
                     shadow2 = QGraphicsDropShadowEffect()
                     shadow2.setBlurRadius(globalconfig['fontsize'])
                     shadow2.setOffset(0) 
@@ -186,21 +185,9 @@ class Textbrowser():
                     _.setGraphicsEffect(shadow2)
                     _.show()
                 linei+=1
-
-                savestart=tl3 
-                if word=='\n':
-                    texti+=1
-                 
-                savep=texti
-            #self.searchmasklabels[labeli].clicked.connect(lambda x:print(111))
-            #self.searchmasklabels[labeli].mousePressEvent=(lambda x:print(111))
-            
-            labeli+=1 
-             
-            texti+=1
-        self.yinyingpos=pos+labeli+1
         self.yinyingposline=linei
-    @timer
+         
+    
     def addsearchwordmask(self,x,raw,callback=None ):
         if len(x)==0:
             return
@@ -281,11 +268,8 @@ class Textbrowser():
             try:
                 c=QColor(globalconfig['cixingcolor'][word['cixing']])
             except:
-                c=QColor("white") 
-            return (c.red(),c.green(),c.blue(), globalconfig['showcixing_touming']/100)
-        else:
-            c=QColor("white") 
-            return (c.red(),c.green(),c.blue(), globalconfig['showcixing_touming']/100)
+                pass
+        return (c.red(),c.green(),c.blue(), globalconfig['showcixing_touming']/100)
          
     def getfh(self,half):
         
@@ -303,7 +287,7 @@ class Textbrowser():
             return fhall,font
         else:
             return fhall
-    @timer
+     
     def addtag(self,x): 
         if globalconfig['zitiyangshi'] in [0,1,2]:  
             if len(self.savetaglabels)<len(x):
@@ -363,8 +347,7 @@ class Textbrowser():
                 for _i  in range(globalconfig['shadowforce']): 
                         self.solvejiaminglabel(self.savetaglabels[labeli*globalconfig['shadowforce']+_i],word,font,tl1,tl2,fhhalf,True,color=globalconfig['miaobiancolor'])
                          
-                         
-
+                          
             labeli+=1
         
         
@@ -372,6 +355,7 @@ class Textbrowser():
     def solvejiaminglabel(self,label,word,font,tl1,tl2,fh,effect,color):
         if effect==False:
             label.setGraphicsEffect(self._rawqlabel.graphicsEffect() ) 
+            label.savelastfontandcolor=None
         label.setText(word['hira'])
         label.setFont(font)
         label.adjustSize()
@@ -390,11 +374,13 @@ class Textbrowser():
             y=tl2.y()-fh   
         y+=30*self.parent.rate
         if effect:
-            shadow2 = QGraphicsDropShadowEffect()
-            shadow2.setBlurRadius(globalconfig['fontsize'])
-            shadow2.setOffset(0) 
-            shadow2.setColor(QColor(globalconfig['jiamingcolor'])) 
-            label.setGraphicsEffect(shadow2)
+            if 'savelastfontandcolor' not in dir(label) or label.savelastfontandcolor!=(globalconfig['fontsize'],globalconfig['jiamingcolor']):
+                shadow2 = QGraphicsDropShadowEffect()
+                shadow2.setBlurRadius(globalconfig['fontsize'])
+                shadow2.setOffset(0) 
+                shadow2.setColor(QColor(globalconfig['jiamingcolor'])) 
+                label.setGraphicsEffect(shadow2)
+                label.savelastfontandcolor =(globalconfig['fontsize'],globalconfig['jiamingcolor'])
         label.move(x,y)   
         label.setStyleSheet(f"color:{color}; background-color:(0,0,0,0)")
         
