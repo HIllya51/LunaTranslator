@@ -59,7 +59,7 @@ class QUnFrameWindow(QWidget):
     fullsgame_signal=pyqtSignal()
     quitf_signal=pyqtSignal() 
     refreshtooliconsignal=pyqtSignal()
-    muteprocessignal=pyqtSignal() 
+    muteprocessignal=pyqtSignal()  
     def hookfollowsignalsolve(self,code,other): 
         if code==3:
             if self.hideshownotauto:
@@ -75,7 +75,7 @@ class QUnFrameWindow(QWidget):
             #print(self.pos())
             #self.move(self.pos() + self._endPos)
             self.move(self.pos().x()+ other[0],self.pos().y()+ other[1])
-    def showres(self,_type,res): 
+    def showres(self,_type,res):  
         try:
             if globalconfig['showfanyisource']:
                 #print(_type)
@@ -87,8 +87,8 @@ class QUnFrameWindow(QWidget):
             
             self.transhis.getnewsentencesignal.emit(globalconfig['fanyi'][_type]['name']+'  '+res)
         except:
-            print_exc()
-    def showraw(self,hira,res,color,show ):
+            print_exc() 
+    def showraw(self,hira,res,color,show ): 
         self.clearText()
         self.original=res 
         if show==1: 
@@ -97,15 +97,14 @@ class QUnFrameWindow(QWidget):
             pass
         elif show==2:
             self.showline((hira,res),color ,type_=2 )
-        self.transhis.getnewsentencesignal.emit('\n'+res)
+        self.transhis.getnewsentencesignal.emit('\n'+res) 
     # def showtaskthreadfun(self):
     #     while True:
     #         res,color ,type_=self.showtask.get()
     #         self.showline_real(res,color ,type_)
     # def showline(self,res,color ,type_=1):
     #     self.showtask.put((res,color ,type_))
-    def showline (self,res,color ,type_=1): 
-         
+    def showline (self,res,color ,type_=1):  
         if globalconfig['showatcenter']:
             self.translate_text.setAlignment(Qt.AlignCenter)
         else:
@@ -129,6 +128,7 @@ class QUnFrameWindow(QWidget):
             self.translate_text.showyinyingtext(color,res[1]  ) 
         if (globalconfig['usesearchword'] or globalconfig['show_fenci']  ) and res[0]:
             self.translate_text.addsearchwordmask(res[0],res[1],self.showsearchword  ) 
+         
     def showsearchword(self,word):   
         self.searchwordW.showNormal()
         self.searchwordW.getnewsentence(word) 
@@ -387,8 +387,7 @@ class QUnFrameWindow(QWidget):
         # 翻译框根据内容自适应大小
         self.document = self.translate_text.document()
         self.document.contentsChanged.connect(self.textAreaChanged) 
-          
-        
+           
 
         self.masklabel = QLabel(self.translate_text.textbrowser)  
 
@@ -492,6 +491,8 @@ class QUnFrameWindow(QWidget):
         self.refreshtoolicon()
     def textAreaChanged(self) :
         if globalconfig['fixedheight']:
+            return
+        if self.translate_text.cleared:
             return
         newHeight = self.document.size().height()
         

@@ -1,5 +1,5 @@
  
-from PyQt5.QtCore import Qt 
+from PyQt5.QtCore import Qt ,pyqtSignal
 from PyQt5.QtGui import QPen,QColor ,QTextCharFormat ,QTextBlockFormat,QTextCursor,QFont,QColor,QFontMetricsF,QPalette,QTextFormat
 from PyQt5.QtWidgets import  QTextBrowser ,QLabel,QPushButton,QGraphicsDropShadowEffect
 import random
@@ -23,7 +23,7 @@ class Qlabel_c(QLabel):
         except:
             print_exc()
         return super().mouseReleaseEvent(ev)
-class Textbrowser():
+class Textbrowser(): 
     def __init__(self, parent ) : 
         self.parent=parent
         #self.shadowlabel=QLabel(parent)
@@ -31,7 +31,7 @@ class Textbrowser():
         self.align=False
         self.textbrowserback=QTextBrowser(parent)
         self.textbrowser=QTextBrowser(parent)
-        
+        self.cleared=False
         self.toplabel2=QLabel(parent)
         self.font=QFont()
         self.toplabel2.setGeometry( 0,30*self.parent.rate,9999,9999)
@@ -112,21 +112,15 @@ class Textbrowser():
         #self.shadowlabel.setAlignment(Qt.AlignTop )
     @timer
     def append(self,x ,xx=True): 
-        
+        self.cleared=False
         self.textbrowserback.append(x) 
         self.textbrowser.append(x) 
         
         if xx and self.addtaged:
             
             self.addtaged=False
-             
-            font=QFont()
-            font.setFamily(globalconfig['fonttype']) 
-            
-            #font.setPixelSize(int(globalconfig['fontsize'])  )
-            font.setPointSizeF((globalconfig['fontsize']) )
-            fm=QFontMetricsF(font)
-            fh=fm.height()  
+              
+            fh=self.getfh(False)
             for i in range(self.blockcount, self.textbrowser.document().blockCount()):
                 b=self.textbrowser.document().findBlockByNumber(i) 
                 tf=b.blockFormat() 
@@ -140,7 +134,8 @@ class Textbrowser():
                 cursor=self.textbrowser.textCursor()
                 cursor.setPosition(b.position()) 
                 cursor.setBlockFormat(tf)
-                self.textbrowser.setTextCursor(cursor)
+                self.textbrowser.setTextCursor(cursor) 
+         
     def showyinyingtext(self,color,text):  
         start=self.yinyingpos 
         pos=start
@@ -170,23 +165,14 @@ class Textbrowser():
             if tl1.y()!=tl3.y() or texti==len(text)-1:  
                 if texti==len(text)-1:
                     texti+=1
-                
-                if linei>=len(self.yinyinglabels):
-                    self.yinyinglabels.append([])
-                    for _ in range(globalconfig['shadowforce']):
+                 
+                for i in range(globalconfig['shadowforce']):
+                    index=globalconfig['shadowforce']*linei+i
+                    if index>=len(self.yinyinglabels):
                         ql=QLabel(self.toplabel2) 
                         ql.setMouseTracking(True)
-                    
-                        self.yinyinglabels[-1].append(ql)
-                elif len(self.yinyinglabels[linei])<globalconfig['shadowforce']:
-                    for _ in range(len(self.yinyinglabels[linei]),globalconfig['shadowforce']):
-                        ql=QLabel(self.toplabel2) 
-                        ql.setMouseTracking(True)
-                    
-                        self.yinyinglabels[linei].append(ql)
-                for _i,_ in enumerate(self.yinyinglabels[linei]):
-                    if _i>=globalconfig['shadowforce']:
-                        break
+                        self.yinyinglabels.append(ql)
+                    _=self.yinyinglabels[index]
                     _.move(savestart)
                     _.setText(text[savep:texti] )
                     _.setFont(self.textbrowser.font())
@@ -305,6 +291,22 @@ class Textbrowser():
          
         self.lastcolor= ((self.lastcolor[0]+ random.randint(64,192))%255,(self.lastcolor[1]+ random.randint(64,192))%255,(self.lastcolor[2]+ random.randint(64,192))%255,globalconfig['showcixing_touming']/100)
         return self.lastcolor
+    def getfh(self,half):
+        
+        font=QFont()
+        font.setFamily(globalconfig['fonttype']) 
+        
+        #font.setPixelSize(int(globalconfig['fontsize'])  )
+        if half:
+            font.setPointSizeF((globalconfig['fontsize']) /2 )
+        else:
+            font.setPointSizeF((globalconfig['fontsize'])  )
+        fm=QFontMetricsF(font)
+        fhall=fm.height()  
+        if half:
+            return fhall,font
+        else:
+            return fhall
     @timer
     def addtag(self,x): 
         if globalconfig['zitiyangshi'] in [0,1,2]:  
@@ -317,26 +319,10 @@ class Textbrowser():
         pos=0
         self.addtaged=True
         labeli=0 
-        cursor=self.textbrowser.textCursor()
-        cursor.setPosition(pos) 
-        self.textbrowser.setTextCursor(cursor)
-        cursor=self.textbrowserback.textCursor()
-        cursor.setPosition(pos) 
-        self.textbrowserback.setTextCursor(cursor)
-        font=QFont()
-        font.setFamily(globalconfig['fonttype']) 
-        
-        #font.setPixelSize(int(globalconfig['fontsize'])  )
-        font.setPointSizeF((globalconfig['fontsize'])  )
-        fm=QFontMetricsF(font)
-        fhall=fm.height()  
-          
-        font.setFamily(globalconfig['fonttype']) 
-        
-        #font.setPixelSize(int(globalconfig['fontsize'])  )
-        font.setPointSizeF((globalconfig['fontsize'])  /2)
-        fm=QFontMetricsF(font)
-        fhhalf=fm.height()   
+         
+        fhall=self.getfh(False)
+           
+        fhhalf,font=self.getfh(True)
         self.blockcount=self.textbrowser.document().blockCount() 
         for i in range(0,self.blockcount):
             b=self.textbrowser.document().findBlockByNumber(i)
@@ -439,13 +425,14 @@ class Textbrowser():
         for label in self.savetaglabels:
             label.hide()
         for label in self.yinyinglabels:
-            for _ in label:
-                _.hide()
+            label.hide()
         # self.textbrowser.clear()
         # self.textbrowserback.clear()
         self.yinyingpos=0
         self.yinyingposline=0
+        self.cleared=True
         self.textbrowser.setText('')
         self.textbrowserback.setText('')
+        
         # self.shadowlabel.setText('')
         # self.shadowlabel.savetext=''

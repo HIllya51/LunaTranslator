@@ -132,15 +132,8 @@ def setTab4(self) :
         self.yitiaolong("HOOK设置",grids) 
         self.minmaxmoveoberve=subproc('./files/minmaxmoveobserve.exe',stdout=subprocess.PIPE,keep=True)  
         self.minmaxmoveobservethread=threading.Thread(target=minmaxmoveobservefunc,args=(self,))
-        self.minmaxmoveobservethread.start() 
-        self.autostarthooksignal.connect(functools.partial(autostarthookfunction,self))
-         
-def autostarthookfunction(self,pid,hwnd,pexe,hookcode):
-           
-        from textsource.textractor import textractor
-        self.object.hookselectdialog.changeprocessclearsignal.emit() 
-        self.object.textsource=textractor(self.object,self.object.textgetmethod,self.object.hookselectdialog,pid,hwnd,pexe,True,hookcode)  
- 
+        self.minmaxmoveobservethread.start()  
+          
 def minmaxmoveobservefunc(self):
         
         while(True):

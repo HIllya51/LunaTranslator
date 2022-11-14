@@ -17,13 +17,7 @@ from textsource.textsourcebase import basetext
 import json
 class textractor(basetext  ): 
     def __init__(self,object,textgetmethod,hookselectdialog,pid,hwnd,pname,autostart=False,autostarthookcode=[]) :
-        self.newline=Queue() 
-        self.reset(object,textgetmethod,hookselectdialog,pid,hwnd,pname,autostart,autostarthookcode)
-        
-        super(textractor,self).__init__(textgetmethod)
-         
-    def reset(self,object,textgetmethod,hookselectdialog,pid,hwnd,pname,autostart=False,autostarthookcode=[])  : 
-        
+        self.newline=Queue()  
         self.arch=getarch(pid) 
         
         with open(pname,'rb') as ff:
@@ -55,7 +49,9 @@ class textractor(basetext  ):
         self.pid=pid
         self.pname=pname
         self.hwnd=hwnd
-        
+        self.userinserthookcode=[]
+        self.runonce_line=''
+        self.re=re.compile('\[([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):(.*):(.*@.*)\] ([\\s\\S]*)')
         self.notarch='86' if self.arch=='64' else '64'
         self.attach(self.pid)
         self.textfilter=''
@@ -63,15 +59,17 @@ class textractor(basetext  ):
         self.autostarthookcode=[tuple(__) for __ in autostarthookcode]
         
         if self.autostart:
-            self.autostarttimeout=QTimer()
-            self.autostarttimeout.timeout.connect(self.autostartinsert)
-            self.autostarttimeout.start(1000)
+            # self.autostarttimeout=QTimer()
+            # self.autostarttimeout.timeout.connect(self.autostartinsert)
+            # self.autostarttimeout.start(1000)
+            time.sleep(1)
+            self.autostartinsert()
         self.HookCode=None 
-        self.userinserthookcode=[]
-        self.runonce_line=''
          
         #self.re=re.compile('\[([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):(.*):(.*@.*)\] (.*)\n')
-        self.re=re.compile('\[([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):(.*):(.*@.*)\] ([\\s\\S]*)')
+        
+
+        super(textractor,self).__init__(textgetmethod)
     def autostartinsert(self):
         for _h in self.autostarthookcode:
             ready=False
@@ -84,7 +82,7 @@ class textractor(basetext  ):
                     if(x.stdout[0]==ord('0')):
                         continue
                     self.inserthook(_h[-1])
-        self.autostarttimeout.stop()
+        #self.autostarttimeout.stop()
     def findhook(self ):
         self.object.translation_ui.writeprocesssignal.emit( QByteArray((f'find -P{self.pid}\r\n').encode(encoding='utf-16-le')))
     def inserthook(self,hookcode):

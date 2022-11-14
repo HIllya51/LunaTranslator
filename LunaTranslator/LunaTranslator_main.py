@@ -420,9 +420,12 @@ class MAINUI(QObject) :
                         hwnd=win32gui.GetForegroundWindow()
                         pid=win32process.GetWindowThreadProcessId(hwnd)[1]
                         name_=getpidexe(pid)
-                         
+                          
+                
                         if name_ in savehook_new: 
-                            self.settin_ui.autostarthooksignal.emit(pid,hwnd, name_,(savehook_new[name_]))
+                            from textsource.textractor import textractor
+                            self.hookselectdialog.changeprocessclearsignal.emit() 
+                            self.textsource=textractor(self,self.textgetmethod,self.hookselectdialog,pid,hwnd,name_,True,savehook_new[name_])
                     
                 except:
                         print_exc()
