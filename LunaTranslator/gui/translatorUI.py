@@ -759,19 +759,18 @@ class QUnFrameWindow(QWidget):
          
         #sys.exit()
         if self.object.settin_ui.needupdate and globalconfig['autoupdate']:
-            with open('./update/update.bat','w',encoding='utf8') as ff:
+            os.system('explorer '+os.path.dirname(os.path.abspath(self.object.settin_ui.updatefile)))
+#             with open('./update/update.bat','w',encoding='utf8') as ff:
                 
-                ff.write('''
-timeout 1
-taskkill /F /IM LunaTranslator.exe
-taskkill /F /IM LunaTranslator_no_Admin.exe
-taskkill /F /IM minmaxmoveobserve.exe
-xcopy update\LunaTranslator\ .\ /s /e /c /y /h /r
-exit
+#                 ff.write('''
+# timeout 1
+# taskkill /F /IM LunaTranslator.exe
+# taskkill /F /IM LunaTranslator_no_Admin.exe
+# taskkill /F /IM minmaxmoveobserve.exe
+# xcopy update\LunaTranslator\ .\ /s /e /c /y /h /r
+# exit
 
-                ''')
-            
-
-            subprocess.Popen('update\\update.bat' ,shell=True)
+#                 ''') 
+            # subprocess.Popen('update\\update.bat' ,shell=True)
         endsubprocs()
         os._exit(1) 

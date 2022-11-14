@@ -2,12 +2,21 @@
 from traceback import print_exc
 import requests 
 import threading 
-import time
+import time,os
 import threading
 from threading import Lock 
 from utils.config import globalconfig  
 def mutithreaddownload(savep,url,progresscallback,internalsignal,endcallback):
         try:
+            r2 = requests.get(url,stream=True,verify = False) 
+            size = int(r2.headers['Content-Length'])
+                        
+            stats = os.stat(savep) 
+             
+            if stats.st_size==size:
+                progresscallback(f'总大小{int(1000*(int(size/1024)/1024))/1000} MB 进度 {int(10000*(size/size))/100:.2f}% ',10000)
+                endcallback()
+                return 
             with open(savep, "wb") as file:
                 global file_size
                 global sizecollect
@@ -49,10 +58,10 @@ def mutithreaddownload(savep,url,progresscallback,internalsignal,endcallback):
                             speed=(counter/1024)/2
                             progresscallback(f'总大小{int(1000*(int(sz/1024)/1024))/1000} MB 进度 {int(10000*(file_size/sz))/100:.2f}% 速度 {speed:.2f}KB/s',int(10000*file_size/sz))
                             pos += 1024 
-                r2 = requests.get(url,stream=True,verify = False) 
+                
                 lock = Lock() 
                 thread_num = 8
-                size = int(r2.headers['Content-Length'])
+                
                 ts=[]
                 for i in range(thread_num):
                     if i == thread_num-1:

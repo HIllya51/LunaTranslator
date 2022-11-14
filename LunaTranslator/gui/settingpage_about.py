@@ -13,6 +13,8 @@ from utils.config import globalconfig  ,_TR
 import gui.switchbutton
 from utils.downloader import mutithreaddownload
 def getversion(self):
+    
+
     with open('files/about.txt','r',encoding='utf8') as ff:
         about=ff.read()
     # with open('files/version.txt','r',encoding='utf8') as ff:
@@ -45,18 +47,18 @@ def getversion(self):
             self.downloadprogress.show()
             self.progresssignal.emit('……',0)
         
-            savep='./update/LunaTranslator.zip'
+            savep=f'./update/LunaTranslator_{_version}.zip'
             if os.path.exists('update')==False:
                     os.mkdir('update')
             def endcallback():
                 if os.path.exists('./update/LunaTranslator'):
                     shutil.rmtree('./update/LunaTranslator')
-                zipf=zipfile.ZipFile('./update/LunaTranslator.zip')
-                zipf.extractall('./update')
+                # zipf=zipfile.ZipFile('./update/LunaTranslator.zip')
+                # zipf.extractall('./update')
                 self.needupdate=True
+                self.updatefile=savep
             mutithreaddownload(savep,url,self.progresssignal.emit,lambda: globalconfig.__getitem__('autoupdate'),endcallback) 
-             
-             
+     
 def updateprogress(self,text,val):
     self.downloadprogress.setValue(val)
     self.downloadprogress.setFormat(text)
