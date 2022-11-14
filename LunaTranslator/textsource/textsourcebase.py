@@ -5,8 +5,7 @@ from utils.config import globalconfig
 class basetext:
     def __init__(self,textgetmethod)  : 
         self.suspending=False
-        self.textgetmethod=textgetmethod 
-        self.lock=threading.Lock()
+        self.textgetmethod=textgetmethod  
         self.t=threading.Thread(target=self.gettextthread_)
         self.t.setDaemon(True)
         self.t.start()

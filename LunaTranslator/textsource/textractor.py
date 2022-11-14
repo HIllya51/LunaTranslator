@@ -182,7 +182,7 @@ class textractor(basetext  ):
                 self.hookdatasort.append(key)
                 self.hookselectdialog.addnewhooksignal.emit(key  ) 
             
-            #print(self.selectedhook)
+            #print(key,self.selectedhook,output)
             self.hookdatacollecter[key].append(output) 
             if (key in self.selectedhook):
                 #print(11)

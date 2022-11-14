@@ -218,7 +218,7 @@ class MAINUI(QObject) :
         for engine in self.translators:
             #print(engine)
             self.translators[engine].gettask((paste_str,paste_str_solve,skip)) 
-        self.textsource.lock.acquire()
+        
         try:
             if skip==False and globalconfig['transkiroku']  and 'sqlwrite2' in dir(self.textsource):
                 paste_str=paste_str.replace('"','""')   
@@ -235,7 +235,7 @@ class MAINUI(QObject) :
                     self.textsource.sqlwrite2.commit() 
         except:
             print_exc()
-        self.textsource.lock.release()
+         
     @threader
     def startreader(self):
         if globalconfig['reader']:
