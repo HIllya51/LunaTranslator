@@ -346,7 +346,7 @@ class MAINUI(QObject) :
              
             res=res.replace('"','""')   
             contentraw=contentraw.replace('"','""')   
-            self.textsource.lock.acquire()
+             
             try:
                 if   globalconfig['transkiroku'] and 'sqlwrite' in dir(self.textsource):
                     if globalconfig['transkirokuuse']==classname:
@@ -375,8 +375,7 @@ class MAINUI(QObject) :
                 
                     self.textsource.sqlwrite2.commit() 
             except:
-                print_exc()
-            self.textsource.lock.release()
+                print_exc() 
     def fanyiloader(self,classname):
                     try:
                         aclass=importlib.import_module('translator.'+classname).TS
