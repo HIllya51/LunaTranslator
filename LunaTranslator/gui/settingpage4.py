@@ -29,14 +29,21 @@ from gui.inputdialog import autoinitdialog,getsomepath1
 from utils.config import globalconfig ,_TR,_TRL
 import os
 import win32con,win32api 
-self_pid=os.getpid()  
-
+self_pid=os.getpid()   
 def autosaveshow(object):
      
     dialog = QDialog(object,Qt.WindowCloseButtonHint)  # 自定义一个dialog
     dialog.setWindowTitle(_TR('已保存游戏'))
     #dialog.setWindowModality(Qt.ApplicationModal) 
     formLayout = QVBoxLayout(dialog)  # 配置layout
+    def closeEvent(  a0  ) -> None:
+                rows=model.rowCount() 
+                 
+                for row in range(rows): 
+                        savehook_new2[model.item(row,3).text()]['title']=model.item(row,2).text()
+                 
+                return QDialog().closeEvent(a0)
+    dialog.closeEvent=closeEvent
     if True:
         model=QStandardItemModel(  dialog)
         table = QTableView(dialog)
@@ -47,7 +54,8 @@ def autosaveshow(object):
         table.setSelectionMode( (QAbstractItemView.SingleSelection)      )
         table.setWordWrap(False) 
         table.setModel(model) 
-        table.setEditTriggers(QAbstractItemView.NoEditTriggers)
+        table
+        #table.setEditTriggers(QAbstractItemView.NoEditTriggers)
         row=0
         for k in savehook_new:                                   # 2
                  
@@ -60,6 +68,7 @@ def autosaveshow(object):
                 model.setItem(row, 1, QStandardItem(icon,'')) 
                 model.setItem(row, 3, QStandardItem(k)) 
                 model.setItem(row, 0, QStandardItem(''))
+                
                 if k not in savehook_new2:
                         savehook_new2[k]={}
                         savehook_new2[k]['leuse']=True
