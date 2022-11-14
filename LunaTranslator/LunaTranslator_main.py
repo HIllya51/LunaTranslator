@@ -435,6 +435,7 @@ class MAINUI(QObject) :
             self.onwindowloadautohook()
             time.sleep(0.3)
     def aa(self): 
+        self.timestamp=str(time.time())
         self.translation_ui =gui.translatorUI.QUnFrameWindow(self)   
         
         if globalconfig['rotation']==0:

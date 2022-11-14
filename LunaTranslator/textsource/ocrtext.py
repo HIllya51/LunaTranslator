@@ -175,13 +175,13 @@ class ocrtext(basetext):
                 else:
                     image_score=0 
                 self.savelastimg=imgr1
-                print(1,image_score)
+                
                 if image_score>0.95 : 
                     if self.savelastrecimg is not None and  (imgr1.shape==self.savelastrecimg.shape   ) :
                         image_score2=compareImage(imgr1 ,self.savelastrecimg ) 
                     else:
                         image_score2=0
-                    print(2,image_score2)
+                        
                     if image_score2>0.95:
                         return None
                     else: 
@@ -218,20 +218,22 @@ class ocrtext(basetext):
                 break
         if use is None:
             return ''
-        img.save('./capture/tmp.jpg')
+        img.save(f'./capture/{self.object.timestamp}.jpg')
         try:
             if use=='local':
-                win32pipe.WaitNamedPipe("\\\\.\\Pipe\\ocrwaitsignal",win32con.NMPWAIT_WAIT_FOREVER)
-                hPipe = win32file.CreateFile( "\\\\.\\Pipe\\ocrwaitsignal", win32con.GENERIC_READ | win32con.GENERIC_WRITE, 0,
+                t1=time.time()
+                win32pipe.WaitNamedPipe("\\\\.\\Pipe\\ocrwaitsignal_"+self.object.timestamp,win32con.NMPWAIT_WAIT_FOREVER)
+                hPipe = win32file.CreateFile( "\\\\.\\Pipe\\ocrwaitsignal_"+self.object.timestamp, win32con.GENERIC_READ | win32con.GENERIC_WRITE, 0,
                         None, win32con.OPEN_EXISTING, win32con.FILE_ATTRIBUTE_NORMAL, None);
                 #win32file.WriteFile(hPipe,'haha'.encode('utf8'))
                 s=(win32file.ReadFile(hPipe, 65535, None)[1].decode('utf8'))
+                print(time.time()-t1)
                 print(s)
                 return s.replace('\n','')
             else:
             
                 ocr=importlib.import_module('otherocr.'+use).ocr 
-                return ocr('./capture/tmp.jpg')
+                return ocr(f'./capture/{self.object.timestamp}.jpg')
         except:
             print_exc()
             return ''
