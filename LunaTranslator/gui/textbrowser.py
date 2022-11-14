@@ -23,6 +23,16 @@ class Qlabel_c(QLabel):
         except:
             print_exc()
         return super().mouseReleaseEvent(ev)
+    def enterEvent(self, a0 ) -> None: 
+        if self.company:
+            self.company.setStyleSheet("background-color: rgba(0,0,0,0.5);")
+        self.setStyleSheet("background-color: rgba(0,0,0,0.5);")
+        return super().enterEvent(a0)
+    def leaveEvent(self, a0 ) -> None:
+        if self.company:
+            self.company.setStyleSheet("background-color: rgba(0,0,0,0.01);")
+        self.setStyleSheet("background-color: rgba(0,0,0,0.01);")
+        return super().leaveEvent(a0)
 class Textbrowser( ):  
     def __init__(self, parent ) :  
         self.parent=parent
@@ -186,8 +196,7 @@ class Textbrowser( ):
                     _.show()
                 linei+=1
         self.yinyingposline=linei
-         
-    
+          
     def addsearchwordmask(self,x,raw,callback=None ):
         if len(x)==0:
             return
@@ -196,82 +205,124 @@ class Textbrowser( ):
         labeli=0 
         cursor=self.textbrowser.textCursor()
         cursor.setPosition(0)
-        self.textbrowser.setTextCursor(cursor)  
-        cursor=self.textbrowserback.textCursor()
-        cursor.setPosition(0) 
-        self.textbrowserback.setTextCursor(cursor)
+        self.textbrowser.setTextCursor(cursor)   
         
-        guesswidth=[]
+        
         idx=0
+        guesswidth=[]
+        guesslinehead=None
+        wwww=self.parent.width()
         for word in x:
             idx+=1
             if word['orig']=='\n':
+                guesslinehead=None 
                 continue
             l=len(word['orig'])
             tl1=self.textbrowser.cursorRect(self.textbrowser.textCursor()).topLeft()
              
             tl4=self.textbrowser.cursorRect(self.textbrowser.textCursor()).bottomRight()
-            color=self.randomcolor(word)
-             
-            for i in range(1,l+1):
-                    
+            if guesslinehead is None:
+                guesslinehead=tl1.x()
+            if True: 
                 cursor=self.textbrowser.textCursor() 
-                cursor.setPosition(pos+i )
+                cursor.setPosition(pos+l )
                 self.textbrowser.setTextCursor(cursor)
-                cursor=self.textbrowserback.textCursor() 
-                cursor.setPosition(pos+i )
-                self.textbrowserback.setTextCursor(cursor)
+                 
                 tl2=self.textbrowser.cursorRect(self.textbrowser.textCursor()).bottomRight() 
-                tl3=self.textbrowser.cursorRect(self.textbrowser.textCursor()).topLeft()  
-                if labeli>=len(self.searchmasklabels):
-                     
-                    ql=QLabel(self.parent.atback) 
-                    ql.setMouseTracking(True)
-                    self.searchmasklabels.append(ql)
+                tl3=self.textbrowser.cursorRect(self.textbrowser.textCursor()).topLeft()   
+                color=self.randomcolor(word)
+                if color:
+                    if word['orig'] not in ['\n','\r'] :
+                        if labeli >=len(self.searchmasklabels)-1:
+                            ql=QLabel(self.parent.atback) 
+                            ql.setMouseTracking(True)
+                            self.searchmasklabels.append(ql)
 
-                    ql=Qlabel_c(self.toplabel) 
-                    ql.setMouseTracking(True)
-                    ql.setStyleSheet("background-color: rgba(0,0,0,0.01);")
-                    self.searchmasklabels_clicked.append(ql)
-                if tl1.y()!=tl3.y():
-                    if len(guesswidth)>0:
-                        if globalconfig['usesearchword']:
-                            self.searchmasklabels_clicked[labeli].setGeometry(tl1.x(),tl1.y() ,sum(guesswidth)//len(guesswidth),tl4.y()-tl1.y()) 
-                        if globalconfig['show_fenci']  :
-                            self.searchmasklabels[labeli].setGeometry(tl1.x()+2*(i==1),tl1.y() ,sum(guesswidth)//len(guesswidth)-2*(i==l)-2*(i==1),tl4.y()-tl1.y()) 
+                            ql=Qlabel_c(self.toplabel) 
+                            ql.setMouseTracking(True)
+                            ql.setStyleSheet("background-color: rgba(0,0,0,0.01);")
+                            self.searchmasklabels_clicked.append(ql)
+                            
+                            ql=QLabel(self.parent.atback) 
+                            ql.setMouseTracking(True)
+                            self.searchmasklabels.append(ql)
+
+                            ql=Qlabel_c(self.toplabel) 
+                            ql.setMouseTracking(True)
+                            ql.setStyleSheet("background-color: rgba(0,0,0,0.01);")
+                            self.searchmasklabels_clicked.append(ql)
+                        if tl1.y()!=tl3.y():
+                            if len(guesswidth)==0:
+                                gw=30
+                            else:
+                                gw=sum(guesswidth)/len(guesswidth)
+                            guesswidth1=gw*len(word['orig'])
+                            tailx=wwww-guesslinehead
+                            pos1=tl1.x()+2 ,tl1.y() ,tailx-tl1.x()-4,tl4.y()-tl1.y()   
+                            xx=guesswidth1 -(tailx- tl1.x())  
+                            guesslinehead=None
+                            pos2=tl3.x()-xx+2,tl3.y() ,xx-4,tl4.y()-tl1.y()    
+                            if globalconfig['usesearchword']:
+                                self.searchmasklabels_clicked[labeli].setGeometry(*pos1) 
+                                self.searchmasklabels_clicked[labeli].show()
+                                self.searchmasklabels_clicked[labeli].company=self.searchmasklabels_clicked[labeli+1]
+                                if callback:
+                                    self.searchmasklabels_clicked[labeli].callback=functools.partial(callback,(word['orig'],raw,idx-1)) 
+
+                                self.searchmasklabels_clicked[labeli+1].setGeometry(*pos2) 
+                                self.searchmasklabels_clicked[labeli+1].show()
+                                self.searchmasklabels_clicked[labeli+1].company=self.searchmasklabels_clicked[labeli]
+                                if callback:
+                                    self.searchmasklabels_clicked[labeli+1].callback=functools.partial(callback,(word['orig'],raw,idx-1)) 
+
+                            if globalconfig['show_fenci']  :
+                                self.searchmasklabels[labeli].setGeometry(*pos1) 
+                                self.searchmasklabels[labeli].setStyleSheet(f"background-color: rgba{color};"  )
+                                self.searchmasklabels[labeli].show()
+
+                                self.searchmasklabels[labeli+1].setGeometry(*pos2) 
+                                self.searchmasklabels[labeli+1].setStyleSheet(f"background-color: rgba{color};"  )
+                                self.searchmasklabels[labeli+1].show()
+                            labeli+=2
+                        else: 
+                             
+                            guesswidth+=[(tl2.x()-tl1.x())/len(word['orig'])]*(len(word['orig']))
+                            pos1=tl1.x()+2,tl1.y() ,tl2.x()-tl1.x()-4,tl2.y()-tl1.y() 
+                            if globalconfig['usesearchword']:
+                                self.searchmasklabels_clicked[labeli].setGeometry(*pos1)
+                                self.searchmasklabels_clicked[labeli].company=None
+                                self.searchmasklabels_clicked[labeli].show()
+                                if callback:
+                                    self.searchmasklabels_clicked[labeli].callback=functools.partial(callback,(word['orig'],raw,idx-1)) 
+                            if globalconfig['show_fenci']  :
+                                self.searchmasklabels[labeli].setGeometry(*pos1)
+                                self.searchmasklabels[labeli].setStyleSheet(f"background-color: rgba{color};"  )
+                                self.searchmasklabels[labeli].show()
+                            labeli+=1
+                        
+                        
                 else:
-                    guesswidth.append(tl2.x()-tl1.x())
-                    if globalconfig['usesearchword']:
-                        self.searchmasklabels_clicked[labeli].setGeometry(tl1.x(),tl1.y() ,tl2.x()-tl1.x(),tl2.y()-tl1.y())
-                    if globalconfig['show_fenci']  :
-                        self.searchmasklabels[labeli].setGeometry(tl1.x()+2*(i==1),tl1.y() ,tl2.x()-tl1.x()-2*(i==l)-2*(i==1),tl2.y()-tl1.y())
-                if globalconfig['show_fenci']  :
-                    self.searchmasklabels[labeli].setStyleSheet(f"background-color: rgba{color};"  )
+                    if tl1.y()!=tl3.y():
+                        guesslinehead=None
                 tl1=tl3 
                 tl4=tl2
-                if word['orig'] not in ['\n','\r'] :
-                    if globalconfig['usesearchword']:
-                        self.searchmasklabels_clicked[labeli].show()
-                    if globalconfig['show_fenci']  :
-                        self.searchmasklabels[labeli].show()
-                if callback:
-                    self.searchmasklabels_clicked[labeli].callback=functools.partial(callback,(word['orig'],raw,idx-1))
-                #self.searchmasklabels[labeli].clicked.connect(lambda x:print(111))
-                #self.searchmasklabels[labeli].mousePressEvent=(lambda x:print(111))
-                labeli+=1
-            pos+=l
+                
+                pos+=l
         
                 
     def randomcolor(self,word):
         c=QColor("white") 
         if 'cixing' in word and globalconfig['mecab']['use']:
+            
             try:
+                if globalconfig['cixingcolorshow'][word['cixing']]==False:
+                    return None
                 c=QColor(globalconfig['cixingcolor'][word['cixing']])
             except:
                 pass
         return (c.red(),c.green(),c.blue(), globalconfig['showcixing_touming']/100)
          
-    def getfh(self,half):
+    def getfh(self,half,h=True,w=''):
         
         font=QFont()
         font.setFamily(globalconfig['fonttype']) 
@@ -282,7 +333,10 @@ class Textbrowser( ):
         else:
             font.setPointSizeF((globalconfig['fontsize'])  )
         fm=QFontMetricsF(font)
-        fhall=fm.height()  
+        if h:
+            fhall=fm.height()  
+        else:
+            fhall=fm.width(w)
         if half:
             return fhall,font
         else:

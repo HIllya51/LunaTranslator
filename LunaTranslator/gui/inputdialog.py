@@ -105,6 +105,10 @@ def multicolorset(object ):
     _hori.addWidget(_s)
     formLayout.addRow(_hori)
     _s.valueChanged.connect(lambda x:globalconfig.__setitem__('showcixing_touming',x))
+    hori=QHBoxLayout()
+    hori.addWidget(QLabel(_TR("词性")))
+    hori.addWidget(QLabel(_TR("是否显示")))
+    hori.addWidget(QLabel(_TR("颜色")))
     for k in globalconfig['cixingcolor']:
         hori=QHBoxLayout()
          
@@ -112,12 +116,18 @@ def multicolorset(object ):
          
         hori.addWidget(l)
         
+        b=MySwitch(sign=globalconfig['cixingcolorshow'][k] ) 
+        b.clicked.connect(lambda x:globalconfig['cixingcolorshow'].__setitem__(k,x))
+         
+     
+
         p=QPushButton(qtawesome.icon("fa.paint-brush", color=globalconfig['cixingcolor'][k]), "" )
         
         p.setIconSize(QSize(20*object.rate,20*object.rate))
          
         p.setStyleSheet("background: transparent;")
         p.clicked.connect(functools.partial(ChangeTranslateColor,dialog,p,k))
+        hori.addWidget(b)
         hori.addWidget(p)
         
         formLayout.addRow(hori)

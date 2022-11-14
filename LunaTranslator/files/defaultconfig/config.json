@@ -87,6 +87,25 @@
         "補助記号": "chocolate",
         "記号": "coral"
     },
+	"cixingcolorshow": {
+        "形容詞": true,
+        "形状詞": true,
+        "副詞": true,
+        "名詞": true,
+        "代名詞": true,
+        "動詞": true,
+        "助詞": true,
+        "助動詞": true,
+        "感動詞": true,
+        "接頭辞": true,
+        "接尾辞": true,
+        "接続詞": true,
+        "指示詞": true,
+        "連体詞": true,
+        "判定詞": true,
+        "補助記号": false,
+        "記号": false
+    },
     "quick_setting": {
         "use": false,
         "all": {

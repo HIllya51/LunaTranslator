@@ -493,8 +493,7 @@ class QUnFrameWindow(QWidget):
             return
         if self.translate_text.cleared:
             return
-        newHeight = self.document.size().height()
-        
+        newHeight = self.document.size().height() 
         width = self.width()
         self.resize(width, newHeight + 30*self.rate) 
     def clickSettin_funtion(self):  
