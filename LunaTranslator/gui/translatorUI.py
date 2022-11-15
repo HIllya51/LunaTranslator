@@ -335,7 +335,7 @@ class QUnFrameWindow(QWidget):
 
         self.refreshtoolicon()
         self.showhidetoolbuttons()
-        self.setGeometry( globalconfig['position'][0],globalconfig['position'][1],int(globalconfig['width'] ), int(150*self.rate)) 
+        self.setGeometry( globalconfig['position'][0],globalconfig['position'][1],int(globalconfig['width'] ), int(globalconfig['height'] )) 
          
         icon = QIcon()
         icon.addPixmap(QPixmap('./files/luna.jpg'), QIcon.Normal, QIcon.On)
@@ -739,6 +739,7 @@ class QUnFrameWindow(QWidget):
         globalconfig['position']=[self.pos().x(),self.pos().y()]
         
         globalconfig['width']=self.width() 
+        globalconfig['height']=self.height() 
         saveallconfig()
         self.tray.hide()
         self.tray = None  
@@ -752,8 +753,8 @@ class QUnFrameWindow(QWidget):
         #print('closed')
         import win32pipe,win32file
         try:
-            win32pipe.WaitNamedPipe("\\\\.\\Pipe\\newsentence",win32con.NMPWAIT_WAIT_FOREVER)
-            hPipe = win32file.CreateFile( "\\\\.\\Pipe\\newsentence", win32con.GENERIC_READ | win32con.GENERIC_WRITE, 0,
+            win32pipe.WaitNamedPipe("\\\\.\\Pipe\\newsentence"+self.object.timestamp,win32con.NMPWAIT_WAIT_FOREVER)
+            hPipe = win32file.CreateFile( "\\\\.\\Pipe\\newsentence"+self.object.timestamp, win32con.GENERIC_READ | win32con.GENERIC_WRITE, 0,
                     None, win32con.OPEN_EXISTING, win32con.FILE_ATTRIBUTE_NORMAL, None);
             win32file.WriteFile(hPipe,"end".encode('utf8'))
         except:

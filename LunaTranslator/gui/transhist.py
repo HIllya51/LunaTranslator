@@ -27,14 +27,14 @@ class transhist(QMainWindow):
     def showfunction(self): 
         self.showNormal() 
     def closeEvent(self, event) : 
-         
+            globalconfig['hist_geo']=list(self.geometry().getRect())
             self.hide()
     def setupUi(self):
         self.setWindowIcon(qtawesome.icon("fa.rotate-left"  ))
         font = QFont()
         #font.setFamily("Arial Unicode MS") 
         font.setPointSize(12)
-        self.setGeometry(0,0,1000,300)
+        self.setGeometry(*globalconfig['hist_geo'])
         self.textOutput = QPlainTextEdit(self)
         self.textOutput.setFont(font)
         self.setCentralWidget(self.textOutput) 

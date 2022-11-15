@@ -5,10 +5,10 @@ import os
 from traceback import print_exc
 class tts():
     
-    def __init__(self,showlist ,mp3playsignal): 
+    def __init__(self,showlist ,mp3playsignal,tm): 
         
        
-        
+        self.tm=tm
         self.voicelist=[]
         if os.path.exists(globalconfig['reader']['voiceroid2']['path'])==False:
             showlist.emit(self.voicelist)
@@ -50,8 +50,8 @@ class tts():
             
             import win32pipe, win32file,win32con
             try:
-                win32pipe.WaitNamedPipe("\\\\.\\Pipe\\newsentence",win32con.NMPWAIT_WAIT_FOREVER)
-                hPipe = win32file.CreateFile( "\\\\.\\Pipe\\newsentence", win32con.GENERIC_READ | win32con.GENERIC_WRITE, 0,
+                win32pipe.WaitNamedPipe("\\\\.\\Pipe\\newsentence"+self.tm,win32con.NMPWAIT_WAIT_FOREVER)
+                hPipe = win32file.CreateFile( "\\\\.\\Pipe\\newsentence"+self.tm, win32con.GENERIC_READ | win32con.GENERIC_WRITE, 0,
                         None, win32con.OPEN_EXISTING, win32con.FILE_ATTRIBUTE_NORMAL, None);
                 win32file.WriteFile(hPipe,f'"{exepath}" "{globalconfig["reader"]["voiceroid2"]["path"]}" "{dllpath}" {globalconfig["reader"]["voiceroid2"]["voice"]} 1 {(globalconfig["ttscommon"]["rate"]+10.0)/(20.0)*1+0.5} "{savepath}" {shift}'.encode('utf8'))
             except:

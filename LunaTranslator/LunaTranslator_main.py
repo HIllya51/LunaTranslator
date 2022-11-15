@@ -254,8 +254,8 @@ class MAINUI(QObject) :
             if use:
                 
                 #from tts.
-                
-                self.reader=ttss[use]( self.settin_ui.voicelistsignal,self.settin_ui.mp3playsignal) 
+                if use=='voiceroid2':
+                    self.reader=ttss[use]( self.settin_ui.voicelistsignal,self.settin_ui.mp3playsignal,self.timestamp) 
     @threader
     def starttextsource(self):
          
@@ -475,8 +475,8 @@ class MAINUI(QObject) :
 if __name__ == "__main__" :
     
     QCoreApplication.setAttribute(Qt.AA_UseHighDpiPixmaps, True)
-    main = MAINUI()
-
+    main = MAINUI() 
+    main.timestamp=sys.argv[1]
     app = QApplication(sys.argv) 
     app.setQuitOnLastWindowClosed(False)
     main.scrollwidth=(app.style().pixelMetric(QStyle.PM_ScrollBarExtent))
