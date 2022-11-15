@@ -776,6 +776,7 @@ class QUnFrameWindow(QWidget):
 taskkill /F /IM LunaTranslator.exe
 taskkill /F /IM LunaTranslator_no_Admin.exe
 taskkill /F /IM minmaxmoveobserve.exe
+taskkill /F /IM ocr.exe
 xcopy update\LunaTranslator\ .\ /s /e /c /y /h /r
 exit
 
