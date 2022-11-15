@@ -576,6 +576,13 @@
             "name": "云译", 
 			"lang":["zh-cn","ja","en"]
         }
+		,
+		"yunyi2": {
+            "use": false,
+            "color": "blue",
+            "name": "云译2", 
+			"lang":["zh-cn","ja","en-us"]
+        }
     },
     "minifollow": false,
     "movefollow": false,

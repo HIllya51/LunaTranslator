@@ -2,9 +2,7 @@
 from traceback import print_exc
 import requests
 from urllib.parse import quote
-import re
-import sys
-sys.path.append('./')
+import re 
 from utils.config import globalconfig
 import json  
 from translator.basetranslator import basetrans
