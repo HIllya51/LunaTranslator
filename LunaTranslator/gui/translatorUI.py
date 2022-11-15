@@ -773,10 +773,9 @@ class QUnFrameWindow(QWidget):
             with open('./update/update.bat','w',encoding='utf8') as ff:
                 
                 ff.write('''
+taskkill /F /IM LunaTranslator_main.exe
 taskkill /F /IM LunaTranslator.exe
-taskkill /F /IM LunaTranslator_no_Admin.exe
-taskkill /F /IM minmaxmoveobserve.exe
-taskkill /F /IM ocr.exe
+taskkill /F /IM LunaTranslator_no_Admin.exe 
 xcopy update\LunaTranslator\ .\ /s /e /c /y /h /r
 exit
 
