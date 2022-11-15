@@ -58,11 +58,11 @@ class tts():
                 print_exc()
             #subprocess.Popen('tmp\\voiceroid2.bat' ,shell=True,startupinfo=st )
         #threading.Thread(target=_).start()
-            def waitfile():
-                while True:
+            def waitfile(): 
+                while True: 
                     if os.path.exists(savepath):
                         self.mp3playsignal.emit(savepath,globalconfig["ttscommon"]["volume"])
-                    break
-                time.sleep(0.05)
+                        break
+                    time.sleep(0.05)
             threading.Thread(target=waitfile).start()
             
