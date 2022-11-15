@@ -190,8 +190,8 @@ class QUnFrameWindow(QWidget):
             qtawesome.icon("fa.crop" ,color=globalconfig['buttoncolor']),
             (qtawesome.icon("fa.square" ,color=  "#FF69B4" if self.showhidestate else globalconfig['buttoncolor'])),
             (qtawesome.icon("fa.windows" ,color= "#FF69B4"  if self.isbindedwindow else globalconfig['buttoncolor'])),
-            qtawesome.icon("fa.expand" ,color= globalconfig['buttoncolor']),
-            qtawesome.icon("fa.compress"  if self.isletgamefullscreened else 'fa.arrows-alt',color=    globalconfig['buttoncolor']),
+            qtawesome.icon("fa.arrows" ,color= globalconfig['buttoncolor']),
+            qtawesome.icon("fa.compress"  if self.isletgamefullscreened else 'fa.expand',color=    globalconfig['buttoncolor']),
             qtawesome.icon("fa.volume-off"  if self.processismuteed else "fa.volume-up" ,color= globalconfig['buttoncolor']),
             qtawesome.icon("fa.minus",color=globalconfig['buttoncolor'] ),
             qtawesome.icon("fa.times" ,color=globalconfig['buttoncolor']),
@@ -437,7 +437,7 @@ class QUnFrameWindow(QWidget):
                     self.isletgamefullscreened=not self.isletgamefullscreened
                     self.refreshtoolicon()
                     
-                    if globalconfig['usemagpie']:  
+                    if globalconfig['fullscreenmethod']==0:  
                         if True:#self.isletgamefullscreened:  
                             win32gui.SetForegroundWindow(hwnd )   
                             self.multiprocesshwnd.put([os.path.abspath(globalconfig['magpiepath']),hwnd,globalconfig['magpiescalemethod'],globalconfig['magpieflags'],globalconfig['magpiecapturemethod']])   
@@ -445,7 +445,14 @@ class QUnFrameWindow(QWidget):
                         else:
                             self.multiprocesshwnd.put([])
                             #win32gui.SetForegroundWindow(self.winId() )   
-                    else: 
+                    elif globalconfig['fullscreenmethod']==1:  
+                        win32gui.SetForegroundWindow(hwnd )   
+                        win32api.keybd_event(18,0,0,0)     # alt
+                        win32api.keybd_event(13,0,0,0)     # enter
+                                            
+                        win32api.keybd_event(13, 0, win32con.KEYEVENTF_KEYUP, 0)
+                        win32api.keybd_event(18, 0, win32con.KEYEVENTF_KEYUP, 0)
+                    elif globalconfig['fullscreenmethod']==2: 
                         if self.isletgamefullscreened: 
                             self.savewindowstatus=letfullscreen(hwnd)
                         else:
