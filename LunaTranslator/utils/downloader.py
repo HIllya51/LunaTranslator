@@ -77,8 +77,13 @@ def mutithreaddownload(savep,url,progresscallback,internalsignal,endcallback):
                 
             if internalsignal()==False: 
                 return
-             
-            endcallback()
+            if os.path.exists(savep):
+                stats = os.stat(savep) 
+                
+                if stats.st_size==size:
+                    progresscallback(f'总大小{int(1000*(int(size/1024)/1024))/1000} MB 进度 {int(10000*(size/size))/100:.2f}% ',10000)
+                    endcallback()
+                    return  
             
         except:
             print_exc()
