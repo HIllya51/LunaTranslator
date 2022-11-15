@@ -7,7 +7,7 @@
 	"height":200,
     "width": 768,
 	"hist_geo":[0,0,1000,300],
-	
+
 	"ocr_stable_sim":0.95,
 	"ocr_diff_sim":0.95,
     "autorun": true,
@@ -361,52 +361,62 @@
         "baidu": {
             "use": true,
             "color": "#ff65db",
-            "name": "百度"
+            "name": "百度",
+			"lang":["zh", "jp", "en"]
         },
         "bing": {
             "use": false,
             "color": "#000ff0",
-            "name": "必应"
+            "name": "必应",
+			"lang":["zh-Hans", "ja", "en"]
         },
         "google": {
             "use": false,
             "color": "#ff0000",
-            "name": "谷歌"
+            "name": "谷歌",
+			"lang":["zh-CN", "ja", "en"]
         },
         "ali": {
             "use": false,
             "color": "#0000ff",
-            "name": "阿里"
+            "name": "阿里",
+			"lang":["zh", "ja", "en"]
         },
         "youdao": {
             "use": false,
             "color": "blue",
-            "name": "有道"
+            "name": "有道",
+			"lang":["zh-CHS", "ja", "en"]
         },
         "youdao2": {
             "use": false,
             "color": "blue",
-            "name": "有道2"
+            "name": "有道2",
+			"lang":["zh-cn", "ja", "en"]
         },
         "google2": {
             "use": false,
             "color": "#95a5ff",
-            "name": "谷歌2"
+            "name": "谷歌2",
+			"lang":["zh-CN", "ja", "en"]
         },
         "sougou": {
             "use": false,
             "color": "blue",
-            "name": "搜狗"
+            "name": "搜狗",
+			"lang": ["zh-CHS", "ja", "en"]
         },
         "caiyun": {
             "use": false,
             "color": "blue",
-            "name": "彩云"
+            "name": "彩云",
+			"lang":["zh", "ja", "en"]
         },
         "deepl": {
             "use": false,
             "color": "blue",
-            "name": "deepl"
+            "name": "deepl",
+			"lang":["ZH", "JA", "EN"]
         },
         "jb7": {
             "use": false,
@@ -429,82 +439,97 @@
         "sougou2": {
             "use": false,
             "color": "blue",
-            "name": "搜狗2"
+            "name": "搜狗2",
+			"lang":["zh-CHS", "ja", "en"]
         },
         "youdao3": {
             "use": false,
             "color": "blue",
-            "name": "有道3"
+            "name": "有道3",
+			"lang":["ZH_CN", "JA", "EN"]
         },
         "youdao4": {
             "use": false,
             "color": "blue",
-            "name": "有道4"
+            "name": "有道4",
+			"lang":["", "jap", "eng"]
         },
         "youdao5": {
             "use": false,
             "color": "blue",
-            "name": "有道5"
+            "name": "有道5",
+			"lang": ["zh-CHS", "ja", "en"]
         },
         "tencent": {
             "use": false,
             "color": "blue",
-            "name": "TX"
+            "name": "TX",
+			"lang":["zh", "jp", "en"]
         },
         "iciba": {
             "use": false,
             "color": "blue",
-            "name": "iciba"
+            "name": "iciba",
+			"lang":["zh", "ja", "en"]
         },
         "baiduapi": {
             "use": false,
             "color": "blue",
             "name": "百度api",
-            "argsfile": "./userconfig/baiduapi.json"
+            "argsfile": "./userconfig/baiduapi.json",
+			"lang":["zh", "jp", "en"]
         },
         "tencentapi": {
             "use": false,
             "color": "blue",
             "name": "腾讯api",
-            "argsfile": "./userconfig/txapi.json"
+            "argsfile": "./userconfig/txapi.json",
+			"lang":["zh", "ja", "en"]
         },
         "byte": {
             "use": false,
             "color": "blue",
-            "name": "byte"
+            "name": "byte",
+			"lang":["zh", "ja", "en"]
         },
         "qqimt": {
             "use": false,
             "color": "blue",
-            "name": "qqimt"
+            "name": "qqimt",
+			"lang":["zh", "ja", "en"]
         },
         "xiaoniu": {
             "use": false,
             "color": "blue",
             "name": "小牛api",
-            "argsfile": "./userconfig/xiaoniuapi.json"
+            "argsfile": "./userconfig/xiaoniuapi.json",
+			"lang":["zh", "ja", "en"]
         },
         "huoshan": {
             "use": false,
             "color": "blue",
-            "name": "huoshan"
+            "name": "huoshan",
+			"lang":["zh", "ja", "en"]
         },
         "yeekit": {
             "use": false,
             "color": "blue",
-            "name": "yeekit"
+            "name": "yeekit",
+			"lang":["nzh", "nja", "nen"]
         },
         "caiyunapi": {
             "use": false,
             "color": "blue",
             "name": "彩云api",
-            "argsfile": "./userconfig/caiyunapi.json"
+            "argsfile": "./userconfig/caiyunapi.json",
+			"lang":["zh", "ja", "en"]
         },
         "huoshanapi": {
             "use": false,
             "color": "blue",
             "name": "火山api",
-            "argsfile": "./userconfig/huoshanapi.json"
+            "argsfile": "./userconfig/huoshanapi.json",
+			"lang":["zh", "ja", "en"]
         },
         "papago": {
             "use": false,
@@ -515,7 +540,8 @@
             "use": false,
             "color": "blue",
             "name": "人工翻译",
-            "argsfile": "./userconfig/rengong.json"
+            "argsfile": "./userconfig/rengong.json",
+			"lang":["zh-CN", "ja", "en"]
         },
         "premt": {
             "use": false,
@@ -527,19 +553,28 @@
             "use": false,
             "color": "blue",
             "name": "deeplapi-free",
-            "argsfile": "./userconfig/deeplapi-free.json"
+            "argsfile": "./userconfig/deeplapi-free.json",
+			"lang":["ZH", "JA", "EN"]
         },
         "deeplapi": {
             "use": false,
             "color": "blue",
             "name": "deeplapi",
-            "argsfile": "./userconfig/deeplapi.json"
+            "argsfile": "./userconfig/deeplapi.json",
+			"lang":["ZH", "JA", "EN"]
         },
         "youdaoapi": {
             "use": false,
             "color": "blue",
             "name": "有道api",
-            "argsfile": "./userconfig/youdaoapi.json"
+            "argsfile": "./userconfig/youdaoapi.json",
+			"lang":["zh-CHS", "ja", "en"]
+        },
+		"yunyi": {
+            "use": false,
+            "color": "blue",
+            "name": "云译", 
+			"lang":["zh-cn","ja","en"]
         }
     },
     "minifollow": false,
