@@ -217,7 +217,7 @@ class ocrtext(basetext):
                 break
         if use is None:
             return ''
-        img.save(f'./capture/{self.object.timestamp}.jpg')
+        img.save(f'./capture/{self.object.timestamp}.png')
         try:
             if use=='local':
                 t1=time.time()
@@ -269,7 +269,7 @@ class ocrtext(basetext):
             else:
             
                 ocr=importlib.import_module('otherocr.'+use).ocr 
-                return ocr(f'./capture/{self.object.timestamp}.jpg')
+                return ocr(f'./capture/{self.object.timestamp}.png')
         except:
             print_exc()
             return ''

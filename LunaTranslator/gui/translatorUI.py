@@ -209,7 +209,7 @@ class QUnFrameWindow(QWidget):
         
          
         self.object = object
-        subproc(f'files/ocr.exe  --zz "{self.object.timestamp}" --models ./files/ocr --det 2.6chdet.onnx --cls ch_ppocr_mobile_v2.0_cls_infer.onnx --rec 2.0jprec.onnx --keys japan_dict.txt --image ./capture/{self.object.timestamp}.jpg -b 0.01 -u 2 -o 0.01',keep=True)
+        subproc(f'files/ocr.exe  --zz "{self.object.timestamp}" --models ./files/ocr --det 2.6chdet.onnx --cls ch_ppocr_mobile_v2.0_cls_infer.onnx --rec 2.0jprec.onnx --keys japan_dict.txt --image ./capture/{self.object.timestamp}.png -b 0.01 -u 2 -o 0.01',keep=True)
         self.rate = self.object.screen_scale_rate 
         self.callmagpie=None
         self.keeptop=True
