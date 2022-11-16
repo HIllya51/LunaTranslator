@@ -151,7 +151,7 @@ class hookselect(QMainWindow):
         self.searchtext2=QLineEdit() 
         self.searchtextlayout2.addWidget(self.searchtext2)
         self.searchtextbutton2=QPushButton(_TR("搜索包含文本的条目"))
-        self.checkfilt_notjapan=QCheckBox(_TR("过滤非日语"))
+        self.checkfilt_notjapan=QCheckBox(_TR("过滤控制字符"))
         self.checkfilt_notpath=QCheckBox(_TR("过滤路径"))
         self.checkfilt_notlatin=QCheckBox(_TR("过滤纯英文")) 
         self.checkfilt_dumplicate=QCheckBox(_TR("过滤重复")) 
@@ -210,10 +210,14 @@ class hookselect(QMainWindow):
                     pass
             
             if self.checkfilt_notjapan.isChecked():
-                try:
-                    res.encode('shift-jis')
-                except:
-                    hide=True
+                lres=list(res)
+                
+                for r in lres:
+                    _ord=ord(r)
+                    if _ord<0x20 or (_ord>0x80 and _ord<0xa0):
+
+                        hide=True
+                        break
             if self.checkfilt_notpath.isChecked():
                 if os.path.isdir(res) or os.path.isfile(res): 
                     hide=True 
