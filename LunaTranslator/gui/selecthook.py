@@ -14,6 +14,8 @@ import os,time
 import re
 import sys ,win32gui
 from utils.config import globalconfig ,_TR,_TRL
+
+from utils.chaos import checkchaos
 class hookselect(QMainWindow):
     addnewhooksignal=pyqtSignal(tuple)
     getnewsentencesignal=pyqtSignal(str)
@@ -303,6 +305,8 @@ class hookselect(QMainWindow):
             try:
                         hc,text=line.split('=>')
                         if text.strip()=='':
+                            continue
+                        if globalconfig['filter_chaos_code'] and checkchaos(text):
                             continue
                         self.allres.append((hc,text)) 
             except:

@@ -14,6 +14,7 @@ import subprocess
 from utils.config import globalconfig 
 from utils.getpidlist import getarch
 from textsource.textsourcebase import basetext 
+from utils.chaos import checkchaos
 import json
 class textractor(basetext  ): 
     def __init__(self,object,textgetmethod,hookselectdialog,pid,hwnd,pname,autostart=False,autostarthookcode=[]) :
@@ -105,16 +106,7 @@ class textractor(basetext  ):
         self.object.translation_ui.writeprocesssignal.emit( QByteArray((f'detach -P{pid}\r\n').encode(encoding='utf-16-le'))) 
     # def handle_stdout(self): 
     #     data = self.p.readAllStandardOutput()
-    def checkchaos(self,text,code):
-        chaos=True
-        for c in code:
-            try:
-                text.encode(c)
-                chaos=False
-                break
-            except:
-                pass
-        return chaos
+    
     def handle_stdout(self,p): 
         data =  p.readAllStandardOutput()
         stdout = bytes(data).decode("utf16",errors='ignore') 
@@ -136,13 +128,8 @@ class textractor(basetext  ):
             
             thread_handle,thread_tp_processId, thread_tp_addr, thread_tp_ctx, thread_tp_ctx2, thread_name,HookCode,output =ares
             if HookCode=='HB0@0':
-                continue
-            is_chaos=globalconfig['filter_chaos_code']
-            if globalconfig['filter_chaos_code']:
-                is_chaos=self.checkchaos(output,['gbk','shift-jis'])
-            else:
-                is_chaos=False 
-            if is_chaos:
+                continue 
+            if globalconfig['filter_chaos_code'] and checkchaos(output): 
                 continue
             
             try:
