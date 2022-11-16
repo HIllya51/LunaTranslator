@@ -30,6 +30,7 @@
     "show_fenci": false,
     "jiamingcolor": "black",
     "settingfonttype": "黑体",
+	"filter_chaos_code":true,
     "premtsimiuse": false,
     "buttoncolor": "white",
     "premtsimi": 5,

@@ -125,7 +125,7 @@ def setTab4(self) :
                 [('LocaleEmulator路径设置',5),(self.getcolorbutton(globalconfig,'',callback=lambda x: getsomepath1(self,'LocaleEmulator',globalconfig,'LocaleEmulator','LocaleEmulator',isdir=True),icon='fa.gear',constcolor="#FF69B4"),1)],
                 [('已保存游戏',5),(self.getcolorbutton(globalconfig,'',icon='fa.gamepad',constcolor="#FF69B4",callback=lambda:autosaveshow(self)),1)],
 
-                
+                [('过滤乱码文本',5),(self.getsimpleswitch(globalconfig,'filter_chaos_code'),1)],
                 
         ]
          

@@ -37,6 +37,7 @@ class textractor(basetext  ):
         self.typename='textractor'
         self.ending=False 
         self.is_strict_matched_hook=False
+        self.use_relax_match=False
         self.hookselectdialog=hookselectdialog
         # self.p = QProcess()    
         # self.p.readyReadStandardOutput.connect(self.handle_stdout)  
@@ -104,6 +105,16 @@ class textractor(basetext  ):
         self.object.translation_ui.writeprocesssignal.emit( QByteArray((f'detach -P{pid}\r\n').encode(encoding='utf-16-le'))) 
     # def handle_stdout(self): 
     #     data = self.p.readAllStandardOutput()
+    def checkchaos(self,text,code):
+        chaos=True
+        for c in code:
+            try:
+                text.encode(c)
+                chaos=False
+                break
+            except:
+                pass
+        return chaos
     def handle_stdout(self,p): 
         data =  p.readAllStandardOutput()
         stdout = bytes(data).decode("utf16",errors='ignore') 
@@ -126,6 +137,14 @@ class textractor(basetext  ):
             thread_handle,thread_tp_processId, thread_tp_addr, thread_tp_ctx, thread_tp_ctx2, thread_name,HookCode,output =ares
             if HookCode=='HB0@0':
                 continue
+            is_chaos=globalconfig['filter_chaos_code']
+            if globalconfig['filter_chaos_code']:
+                is_chaos=self.checkchaos(output,['gbk','shift-jis'])
+            else:
+                is_chaos=False 
+            if is_chaos:
+                continue
+            
             try:
                 output=output[:-1]
                 if output[-2:]=='\r\n':
@@ -162,7 +181,7 @@ class textractor(basetext  ):
                                 
                                 self.autostart=False
                                 self.is_strict_matched_hook=True
-                            else:
+                            elif self.use_relax_match:
                                 if HookCode==autostarthookcode[-1]:
                                     self.selectedhook=[key]
                                     self.selectinghook=key
