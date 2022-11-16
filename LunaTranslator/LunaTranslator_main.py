@@ -65,12 +65,26 @@ class MAINUI(QObject) :
         sim=0
         skip=0
         self.vnrshareddict={}
+        self.vnrshareddict_pre={}
+        self.vnrshareddict_post={}
         self.vnrsharedreg=[]
+        s=set()
         if globalconfig['gongxiangcishu']['use'] and os.path.exists(globalconfig['gongxiangcishu']['path']) :
             xml=ET.parse(globalconfig['gongxiangcishu']['path']) 
             
             for _ in xml.find('terms').findall('term'):
-                
+                #print(_.get('type'))
+                #macro 宏(正则) 忽略
+                #yomi 人名读音 可忽略
+                #input 直接替换
+                #trans 翻译优化
+                #output 输出替换
+                #tts 忽略
+                #game #游戏名 忽略
+                #name #人名 忽略
+                #suffix #后缀（们）等 忽略
+                #prefix #前缀 忽略
+                _type=_.get('type')
                 src=_.find('sourceLanguage').text
                 tgt=_.find('language').text
                 if tgt=='en':
