@@ -7,7 +7,7 @@
 	"height":200,
     "width": 768,
 	"hist_geo":[0,0,1000,300],
-
+	"transtimeinternal":0.1,
 	"ocr_stable_sim":0.95,
 	"ocr_diff_sim":0.95,
     "autorun": true,

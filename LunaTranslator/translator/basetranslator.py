@@ -2,7 +2,7 @@
 from queue import Queue 
 from utils.config import globalconfig  
 from threading import Thread
-import os
+import os,time
 from traceback import print_exc
 class basetrans:
      
@@ -24,6 +24,7 @@ class basetrans:
         self.t=Thread(target=self.fythread) 
         self.t.setDaemon(True)
         self.t.start()
+        self.lastrequeststime=0
         self.newline=None
     def gettask(self,content):
         self.queue.put((content))
@@ -52,7 +53,12 @@ class basetrans:
                 if self.typename in ['rengong','premt']:
                     res=self.translate(contentraw)
                 else:
+                    t=time.time()
+                    if self.typename not in ['jbj7','kingsoft','dreye'] and t-self.lastrequeststime <globalconfig['transtimeinternal']:
+                        time.sleep(t-self.lastrequeststime)
+                    self.lastrequeststime=t
                     res=self.translate(contentsolved)
+                    
             except:
                 print_exc()
                 try:
