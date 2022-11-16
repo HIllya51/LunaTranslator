@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<Strings>
+  <RunDefault>เปิดด้วยโปรไฟล์แอป</RunDefault>
+  <Submenu>Locale Emulator</Submenu>
+  <ManageApp>แก้ไขโปรไฟล์แอป</ManageApp>
+  <ManageAll>แก้ไขโปรไฟล์โดยรวม</ManageAll>
+</Strings>

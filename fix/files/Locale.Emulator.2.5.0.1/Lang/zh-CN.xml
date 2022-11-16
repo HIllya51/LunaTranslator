@@ -1,0 +1,8 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<Strings>
+  <RunDefault>以此程序配置运行</RunDefault>
+  <Submenu>Locale Emulator</Submenu>
+  <ManageApp>修改此程序的配置</ManageApp>
+  <ManageAll>管理通用配置列表</ManageAll>
+</Strings>

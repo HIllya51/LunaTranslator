@@ -1,0 +1,24 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:system="clr-namespace:System;assembly=mscorlib">
+    <FontFamily x:Key="UIFont">Segoe UI</FontFamily>
+    <system:String x:Key="EnterArgument">Escriure arguments aquí (si n'hi ha)</system:String>
+    <system:String x:Key="Save">Desar</system:String>
+    <system:String x:Key="Shortcut">Crear accés directe</system:String>
+    <system:String x:Key="Cancel">Cancel·lar</system:String>
+    <system:String x:Key="SaveAs">Desar com...</system:String>
+    <system:String x:Key="SaveAsInstruction">Nom del nou perfil:</system:String>
+    <system:String x:Key="Delete">Esborrar</system:String>
+    <system:String x:Key="ConfirmDel">Segur que vol eliminar aquest perfil?</system:String>
+    <system:String x:Key="Location">Ubicació</system:String>
+    <system:String x:Key="LocationSettings">Configuració de la Ubicació</system:String>
+    <system:String x:Key="TimezoneSettings">Configuració de la Zona Horària</system:String>
+    <system:String x:Key="Timezone">Zona Horària</system:String>
+    <system:String x:Key="DebugOptions">Opcions Avançades</system:String>
+    <system:String x:Key="AsAdmin">Executar com a administrador</system:String>
+    <system:String x:Key="RedirectRegistry">Falsificar registre</system:String>
+    <system:String x:Key="IsAdvancedRedirection">Falsificar llenguatge del sistema</system:String>
+    <system:String x:Key="WithCREATESUSPENDED">Crear procés amb CREATE__SUSPENDED</system:String>
+    <system:String x:Key="Miscellaneous">Divers</system:String>
+    <system:String x:Key="ShowInMainMenu">Mostrar aquest perfil al menú principal</system:String>
+</ResourceDictionary>

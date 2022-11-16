@@ -1,0 +1,24 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:system="clr-namespace:System;assembly=mscorlib">
+    <FontFamily x:Key="UIFont">Segoe UI</FontFamily>
+    <system:String x:Key="EnterArgument">Čia įveskite programos argumentus (jei reikia)</system:String>
+    <system:String x:Key="Save">Įrašyti</system:String>
+    <system:String x:Key="Shortcut">Kurti nuorodą</system:String>
+    <system:String x:Key="Cancel">Atšaukti</system:String>
+    <system:String x:Key="SaveAs">Įrašyti kaip…</system:String>
+    <system:String x:Key="SaveAsInstruction">Naujojo profilio pavadinimas:</system:String>
+    <system:String x:Key="Delete">Naikinti</system:String>
+    <system:String x:Key="ConfirmDel">Ar tikrai norite naikinti šį profilį?</system:String>
+    <system:String x:Key="Location">Lokalė</system:String>
+    <system:String x:Key="LocationSettings">Lokalės parinktys</system:String>
+    <system:String x:Key="TimezoneSettings">Laiko juostos parinktys</system:String>
+    <system:String x:Key="Timezone">Laiko juosta</system:String>
+    <system:String x:Key="DebugOptions">Sudėtingesnės parinktys</system:String>
+    <system:String x:Key="AsAdmin">Vykdyti administratoriaus teisėmis</system:String>
+    <system:String x:Key="RedirectRegistry">Netikras registras</system:String>
+    <system:String x:Key="IsAdvancedRedirection">Netikra sistemos rodymo kalba</system:String>
+    <system:String x:Key="WithCREATESUSPENDED">Kurti procesą su CREATE__SUSPENDED gaire</system:String>
+    <system:String x:Key="Miscellaneous">Kita</system:String>
+    <system:String x:Key="ShowInMainMenu">Rodyti šį profilį pagrindiniame meniu</system:String>
+</ResourceDictionary>

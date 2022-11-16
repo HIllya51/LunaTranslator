@@ -1,0 +1,8 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<Strings>
+  <RunDefault>Запустить с профилем приложения</RunDefault>
+  <Submenu>Эмулятор локали</Submenu>
+  <ManageApp>Изменить профиль приложения</ManageApp>
+  <ManageAll>Изменить общий список профилей</ManageAll>
+</Strings>

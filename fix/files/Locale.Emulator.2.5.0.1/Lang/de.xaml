@@ -1,0 +1,24 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:system="clr-namespace:System;assembly=mscorlib">
+    <FontFamily x:Key="UIFont">Segoe UI</FontFamily>
+    <system:String x:Key="EnterArgument">Parameter (falls benötigt)</system:String>
+    <system:String x:Key="Save">Speichern</system:String>
+    <system:String x:Key="Shortcut">Verknüpfung anlegen</system:String>
+    <system:String x:Key="Cancel">Abbrechen</system:String>
+    <system:String x:Key="SaveAs">Speichern unter...</system:String>
+    <system:String x:Key="SaveAsInstruction">Neuer Profilname:</system:String>
+    <system:String x:Key="Delete">Löschen</system:String>
+    <system:String x:Key="ConfirmDel">Möchten Sie dieses Profil wirklich löschen?</system:String>
+    <system:String x:Key="Location">Sprachumgebung</system:String>
+    <system:String x:Key="LocationSettings">Sprachumgebung</system:String>
+    <system:String x:Key="TimezoneSettings">Zeitzone</system:String>
+    <system:String x:Key="Timezone">Zeitzone</system:String>
+    <system:String x:Key="DebugOptions">Erweitert</system:String>
+    <system:String x:Key="AsAdmin">Als Administrator ausführen</system:String>
+    <system:String x:Key="RedirectRegistry">Registrierungseinträge vortäuschen</system:String>
+    <system:String x:Key="IsAdvancedRedirection">System-UI Sprache vortäuschen</system:String>
+    <system:String x:Key="WithCREATESUSPENDED">Prozess mit CREATE__SUSPENDED aufrufen</system:String>
+    <system:String x:Key="Miscellaneous">Sonstiges</system:String>
+    <system:String x:Key="ShowInMainMenu">Profil im Kontextmenü anzeigen</system:String>
+</ResourceDictionary>

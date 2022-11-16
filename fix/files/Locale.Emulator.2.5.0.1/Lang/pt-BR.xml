@@ -1,0 +1,8 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<Strings>
+  <RunDefault>Executar com Perfil de Aplicativo</RunDefault>
+  <Submenu>Locale Emulator</Submenu>
+  <ManageApp>Modificar Perfil de Aplicativo</ManageApp>
+  <ManageAll>Editar lista Global de Perfis</ManageAll>
+</Strings>

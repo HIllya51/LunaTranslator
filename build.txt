@@ -1,0 +1,11 @@
+nuitka --standalone    --nofollow-imports  --plugin-enable=numpy,pyqt5,upx   --nofollow-import-to=js2py --upx-binary=C:\tmp\upx-3.96-win64 --output-dir=D:\LunaTranslator_test LunaTranslator.py --windows-icon-from-ico=.\files\luna.jpg
+ 
+ 
+
+upx完将fixupx覆盖进去
+
+
+nuitka   --nofollow-imports  --plugin-enable=numpy,pyqt5,upx   --output-dir=c:\tmp\LunaTranslator LunaTranslator.py --windows-icon-from-ico=.\files\luna.jpg
+
+
+nuitka --standalone   --windows-disable-console   --nofollow-imports  --plugin-enable=pyqt5,upx   --nofollow-import-to=wrapt,js2py,cryptography,OpenSSL,websockets,idna,charset_normalizer,chardet,urllib3,requests,certifi   --upx-binary=C:\tmp\upx-3.96-win64 --output-dir=c:\tmp\LunaTranslatorbuild LunaTranslator_main.py --windows-icon-from-ico=.\files\luna.jpg

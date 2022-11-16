@@ -1,0 +1,24 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:system="clr-namespace:System;assembly=mscorlib">
+    <FontFamily x:Key="UIFont">Segoe UI</FontFamily>
+    <system:String x:Key="EnterArgument">명령 입력</system:String>
+    <system:String x:Key="Save">저장</system:String>
+    <system:String x:Key="Shortcut">바로가기 생성</system:String>
+    <system:String x:Key="Cancel">취소</system:String>
+    <system:String x:Key="SaveAs">새 프로필로 저장</system:String>
+    <system:String x:Key="SaveAsInstruction">새 프로필 이름:</system:String>
+    <system:String x:Key="Delete">삭제</system:String>
+    <system:String x:Key="ConfirmDel">이 프로필을 정말로 삭제 하시겠습니까?</system:String>
+    <system:String x:Key="Location">위치</system:String>
+    <system:String x:Key="LocationSettings">위치 설정</system:String>
+    <system:String x:Key="TimezoneSettings">시간대 설정</system:String>
+    <system:String x:Key="Timezone">시간대</system:String>
+    <system:String x:Key="DebugOptions">고급사용자 옵션</system:String>
+    <system:String x:Key="AsAdmin">관리자 권한으로 실행</system:String>
+    <system:String x:Key="RedirectRegistry">레지스트리 위조</system:String>
+    <system:String x:Key="IsAdvancedRedirection">시스템 UI 언어 위조</system:String>
+    <system:String x:Key="WithCREATESUSPENDED">CREATE__SUSPENDED로 프로세스를 실행</system:String>
+    <system:String x:Key="Miscellaneous">기타</system:String>
+    <system:String x:Key="ShowInMainMenu">메인 메뉴에 이 프로필을 보이기</system:String>
+</ResourceDictionary>
