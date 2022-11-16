@@ -21,10 +21,11 @@ class basetrans:
             self.inittranslator() 
         except:
             print_exc()
+        self.lastrequeststime=0
         self.t=Thread(target=self.fythread) 
         self.t.setDaemon(True)
         self.t.start()
-        self.lastrequeststime=0
+        
         self.newline=None
     def gettask(self,content):
         self.queue.put((content))
