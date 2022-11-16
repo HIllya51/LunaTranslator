@@ -37,6 +37,10 @@ class basetrans:
     
     def fythread(self):
         while True: 
+            t=time.time()
+            if self.typename not in ['jbj7','kingsoft','dreye','rengong','premt'] and t-self.lastrequeststime <globalconfig['transtimeinternal']:
+                time.sleep(t-self.lastrequeststime)
+            self.lastrequeststime=t
             while True:
                 contentraw,(contentsolved,mp),skip=self.queue.get()
                 self.newline=contentraw
@@ -53,10 +57,7 @@ class basetrans:
                 if self.typename in ['rengong','premt']:
                     res=self.translate(contentraw)
                 else:
-                    t=time.time()
-                    if self.typename not in ['jbj7','kingsoft','dreye'] and t-self.lastrequeststime <globalconfig['transtimeinternal']:
-                        time.sleep(t-self.lastrequeststime)
-                    self.lastrequeststime=t
+                    
                     res=self.translate(contentsolved)
                     
             except:
