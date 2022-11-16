@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-
-<Strings>
-  <RunDefault>Jalankan dengan Profil Aplikasi</RunDefault>
-  <Submenu>Locale Emulator</Submenu>
-  <ManageApp>Ubah Profil Aplikasi</ManageApp>
-  <ManageAll>Ubah daftar profil global</ManageAll>
-</Strings>
