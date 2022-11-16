@@ -146,8 +146,8 @@ def setTabTwo(self) :
                 ("最短翻译字数",6),(self.getspinbox(0,500,globalconfig,'minlength'),3),'',
                 ("最长翻译字数",6),(self.getspinbox(0,500,globalconfig,'maxlength'),3),],
             [
-                ("在线翻译超时(s)",6),(self.getspinbox(1,20,globalconfig,'translatortimeout',double=True,callback=lambda x:__timeout(x)),3),'',
-                 ("翻译请求间隔(s)",6),(self.getspinbox(0,10,globalconfig,'transtimeinternal',double=True),3),
+                ("在线翻译超时(s)",6),(self.getspinbox(1,20,globalconfig,'translatortimeout',step=0.1,double=True,callback=lambda x:__timeout(x)),3),'',
+                 ("翻译请求间隔(s)",6),(self.getspinbox(0,10,globalconfig,'transtimeinternal',step=0.1,double=True),3),
             ],
             [
                 ("预翻译采用模糊匹配",6),(self.getsimpleswitch(globalconfig  ,'premtsimiuse'),1),'','','',
