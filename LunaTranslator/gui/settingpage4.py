@@ -25,7 +25,7 @@ from utils.getpidlist import getwindowlist,getExeIcon,getpidexe
 import threading
 import json
 from gui.inputdialog import autoinitdialog,getsomepath1
-
+from utils.chaos import checkencoding
 from utils.config import globalconfig ,_TR,_TRL
 import os
 import win32con,win32api 
@@ -113,7 +113,56 @@ def autosaveshow(object):
         formLayout.addWidget(button2) 
         dialog.resize(QSize(800,400))
     dialog.show()
- 
+
+def codeacceptdialog(object ,title=  '接受的编码' ,label=[  '接受的编码'] ):
+    dialog = QDialog(object,Qt.WindowCloseButtonHint)  # 自定义一个dialog
+    dialog.setWindowTitle(_TR(title))
+    #dialog.setWindowModality(Qt.ApplicationModal)
+    
+    formLayout = QVBoxLayout(dialog)  # 配置layout
+        
+    model=QStandardItemModel(len(globalconfig['accept_encoding']),1 , dialog)
+    row=0
+    for key in  (globalconfig['accept_encoding']):                                   # 2
+            
+            item = QStandardItem( key )
+            model.setItem(row, 0, item)
+            row+=1
+    model.setHorizontalHeaderLabels(_TRL(label))
+    table = QTableView(dialog)
+    table.setModel(model)
+    table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch) 
+    #table.setEditTriggers(QAbstractItemView.NoEditTriggers)
+    #table.clicked.connect(self.show_info)
+    button=QPushButton(dialog)
+    button.setText(_TR('添加行'))
+    def clicked1(): 
+        model.insertRow(0,[ QStandardItem('')]) 
+    button.clicked.connect(clicked1)
+    button2=QPushButton(dialog)
+    button2.setText(_TR('删除选中行'))
+    def clicked2():
+        
+        model.removeRow(table.currentIndex().row())
+    button2.clicked.connect(clicked2)
+    button3=QPushButton(dialog)
+    button3.setText(_TR('保存并关闭'))
+    def clicked3():
+        rows=model.rowCount() 
+        ll=[]
+        for row in range(rows):
+            code=model.item(row,0).text()
+            if checkencoding(code):
+                ll.append(code) 
+        globalconfig['accept_encoding']=ll 
+        dialog.close()
+    button3.clicked.connect(clicked3)
+    formLayout.addWidget(table)
+    formLayout.addWidget(button)
+    formLayout.addWidget(button2)
+    formLayout.addWidget(button3)
+    dialog.resize(QSize(600,400))
+    dialog.show()
 def setTab4(self) :
 
         
@@ -125,7 +174,7 @@ def setTab4(self) :
                 [('LocaleEmulator路径设置',5),(self.getcolorbutton(globalconfig,'',callback=lambda x: getsomepath1(self,'LocaleEmulator',globalconfig,'LocaleEmulator','LocaleEmulator',isdir=True),icon='fa.gear',constcolor="#FF69B4"),1)],
                 [('已保存游戏',5),(self.getcolorbutton(globalconfig,'',icon='fa.gamepad',constcolor="#FF69B4",callback=lambda:autosaveshow(self)),1)],
 
-                [('过滤乱码文本',5),(self.getsimpleswitch(globalconfig,'filter_chaos_code'),1)],
+                [('过滤乱码文本',5),(self.getsimpleswitch(globalconfig,'filter_chaos_code'),1),(self.getcolorbutton(globalconfig,'',icon='fa.gear',constcolor="#FF69B4",callback=lambda:codeacceptdialog(self)),1)],
                 
         ]
          
