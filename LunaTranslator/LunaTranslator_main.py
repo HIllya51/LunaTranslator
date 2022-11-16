@@ -58,17 +58,12 @@ class MAINUI(QObject) :
         self.mainuiloadok.connect(self.mainuiloadafter)
     @threader  
     def loadvnrshareddict(self):
-        cnt=0
-        cnt1=0
-        regcnt=0
-        cnt2=0
-        sim=0
-        skip=0
+        
         self.vnrshareddict={}
         self.vnrshareddict_pre={}
         self.vnrshareddict_post={}
         self.vnrsharedreg=[]
-        s=set()
+        
         if globalconfig['gongxiangcishu']['use'] and os.path.exists(globalconfig['gongxiangcishu']['path']) :
             xml=ET.parse(globalconfig['gongxiangcishu']['path']) 
             
@@ -94,32 +89,25 @@ class MAINUI(QObject) :
                     text=_.find('text').text
                 except:
                     text=''
-                cnt+=1
+                    
 
                 try:
                     regex=_.find('regex').text
-                    regcnt+=1
-                    #搞不明白这个玩意
-                    #self.vnrsharedreg.append((re.compile(pattern),src,tgt,text))
-                    #print(pattern,text,src,tgt)
+                    
                 except:
-                    cnt2+=1
-                    # if pattern not in self.vnrshareddict:
-                    #     self.vnrshareddict[pattern]=[{'src':src,'tgt':tgt,'text':text }]
-                    # else:
-                    #     self.vnrshareddict[pattern]+=[{'src':src,'tgt':tgt,'text':text }]
-                    if pattern in self.vnrshareddict and self.vnrshareddict[pattern]['tgt']=='zhs':
-                         
-                        continue
-                    if src==tgt:# and tgt=='ja':
-                        sim+=1
-                        #print(pattern,{'src':src,'tgt':tgt,'text':text })
-                        continue
+                    
+                     
                     if 'eos' in text or 'amp' in text or '&' in text:
-                        skip+=1
+                        
                         continue
-                    self.vnrshareddict[pattern]={'src':src,'tgt':tgt,'text':text }
-                    cnt1+=1
+                    if _type=='trans':
+                        self.vnrshareddict[pattern]={'src':src,'tgt':tgt,'text':text }
+                    elif _type=='input':
+                        self.vnrshareddict_pre[pattern]={'src':src,'tgt':tgt,'text':text }
+                    elif _type=='output':
+                        self.vnrshareddict_post[pattern]={'src':src,'tgt':tgt,'text':text }
+                  
+                  
         #print(cnt1,cnt2,regcnt,cnt,sim,skip)
         # print(len(list(self.vnrsharedreg)))
         # print(len(list(self.vnrshareddict.keys())))
@@ -148,6 +136,10 @@ class MAINUI(QObject) :
                     mp1[xx]=key
                     zhanweifu+=1
         if globalconfig['gongxiangcishu']['use']:
+            for key in self.vnrshareddict_pre:
+                
+                if key in content:
+                    content=content.replace(key,self.vnrshareddict_pre[key]['text']) 
             for key in self.vnrshareddict:
                 
                 if key in content:
@@ -159,7 +151,7 @@ class MAINUI(QObject) :
                         content=content.replace(key,xx)
                         mp2[xx]=key
                         zhanweifu+=1
-             
+        
         return content,(mp1,mp2,mp3)
     def solveaftertrans(self,res,mp): 
         mp1,mp2,mp3=mp
@@ -176,7 +168,9 @@ class MAINUI(QObject) :
             for key in mp2: 
                 reg=re.compile(re.escape(key), re.IGNORECASE)
                 res=reg.sub(self.vnrshareddict[mp2[key]]['text'],res)
-             
+            for key in self.vnrshareddict_post: 
+                if key in res:
+                    res=res.replace(key,self.vnrshareddict_pre[key]['text']) 
         if transerrorfixdictconfig['use']:
             for key in transerrorfixdictconfig['dict']:
                 res=res.replace(key,transerrorfixdictconfig['dict'][key])

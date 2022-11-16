@@ -38,15 +38,18 @@ class rangeadjust(Mainw) :
                 self._endPos = None  
     def moveEvent(self,e):
                 rect = self.geometry() 
-                self.object.rect=[(rect.left(),rect.top()),(rect.right(),rect.bottom())]  
+                if self.object.rect:    
+                    self.object.rect=[(rect.left(),rect.top()),(rect.right(),rect.bottom())]  
     def enterEvent(self, QEvent) :  
         self.drag_label.setStyleSheet("background-color:rgba(0,0,0, 0.1)") 
     def leaveEvent(self, QEvent): 
         self.drag_label.setStyleSheet("background-color:none")  
     def resizeEvent(self, a0 ) :
+          
          self.label.setGeometry(0, 0, self.width(), self.height())  
          rect = self.geometry() 
-         self.object.rect=[(rect.left(),rect.top()),(rect.right(),rect.bottom())] 
+         if self.object.rect:    
+             self.object.rect=[(rect.left(),rect.top()),(rect.right(),rect.bottom())]  
          super(rangeadjust, self).resizeEvent(a0)  
 class rangeselct(QMainWindow) :
 
@@ -67,7 +70,7 @@ class rangeselct(QMainWindow) :
         self.end_point = QPoint()
         self.object = object 
 
-         
+        self.object.rect=None
     def paintEvent(self, event):  
             if self.is_drawing:
                 self.mask = self.black_mask.copy()
@@ -98,7 +101,7 @@ class rangeselct(QMainWindow) :
             self.end_point = event.pos()
             self.getRange() 
             self.close() 
-             
+            self.callback()
 import win32gui,win32con,win32api
 class moveresizegame(QDialog) :
 

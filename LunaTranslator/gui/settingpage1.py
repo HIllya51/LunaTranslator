@@ -91,10 +91,12 @@ def textsourcechange(self,who,checked):
             if 'textsource' in dir(self.object) and self.object.textsource:
                 self.object.textsource.end() 
             
-            if who=='ocr'   :
-                self.object.translation_ui.showhidestate=True
-                self.object.translation_ui.showhide()
-                self.object.translation_ui.refreshtooliconsignal.emit()
+        self.object.rect=None
+        self.object.translation_ui.showhidestate=False
+        self.object.translation_ui.showhide()
+        self.object.translation_ui.refreshtooliconsignal.emit()
+        
+
         self.object.textsource=None
         if checked : 
             self.object.starttextsource() 

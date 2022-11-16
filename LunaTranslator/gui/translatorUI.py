@@ -473,11 +473,13 @@ class QUnFrameWindow(QWidget):
         self.mousetransparent= not self.mousetransparent
         self.refreshtoolicon()
     def showhide_function(self):
+        
         self.showhide()
     def showhide(self): 
-        self.showhidestate=not self.showhidestate 
-        self.refreshtoolicon()
-        self.object.range_ui.setVisible(self.showhidestate) 
+        if self.object.rect:
+            self.showhidestate=not self.showhidestate 
+            self.refreshtoolicon()
+            self.object.range_ui.setVisible(self.showhidestate) 
     def bindcropwindowcallback(self,pid,hwnd,name_): 
             
             self.object.textsource.hwnd= hwnd if pid!=self.selfpid else None
@@ -519,13 +521,13 @@ class QUnFrameWindow(QWidget):
         if globalconfig['sourcestatus']['ocr']==False:
                 return 
         self.showhidestate=False
-        self.showhide()
+        
         
         self.object.range_ui.hide()
         self.object.screen_shot_ui =gui.rangeselect.rangeselct(self.object)
         self.object.screen_shot_ui.show()
+        self.object.screen_shot_ui.callback=self.showhide
         
-        self.show()
     def langdu(self): 
         if self.object.reader:
             self.object.reader.read(self.original )  
