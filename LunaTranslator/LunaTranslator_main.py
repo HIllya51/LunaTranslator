@@ -170,7 +170,7 @@ class MAINUI(QObject) :
                 res=reg.sub(self.vnrshareddict[mp2[key]]['text'],res)
             for key in self.vnrshareddict_post: 
                 if key in res:
-                    res=res.replace(key,self.vnrshareddict_pre[key]['text']) 
+                    res=res.replace(key,self.vnrshareddict_post[key]['text']) 
         if transerrorfixdictconfig['use']:
             for key in transerrorfixdictconfig['dict']:
                 res=res.replace(key,transerrorfixdictconfig['dict'][key])
