@@ -97,7 +97,7 @@ class QUnFrameWindow(QWidget):
             pass
         elif show==2:
             self.showline((hira,res),color ,type_=2 )
-        self.transhis.getnewsentencesignal.emit('\n'+res) 
+        self.transhis.getnewsentencesignal.emit('<hr>'+res) 
     # def showtaskthreadfun(self):
     #     while True:
     #         res,color ,type_=self.showtask.get()

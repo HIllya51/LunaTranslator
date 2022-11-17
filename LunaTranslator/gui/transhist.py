@@ -1,7 +1,7 @@
 
 from re import search
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QWidget,QHBoxLayout,QMainWindow,QFrame,QVBoxLayout,QComboBox,QPlainTextEdit,QDialogButtonBox,QLineEdit,QPushButton,QDialog
+from PyQt5.QtWidgets import QWidget,QTextBrowser,QMainWindow,QFrame,QVBoxLayout,QComboBox,QPlainTextEdit,QDialogButtonBox,QLineEdit,QPushButton,QDialog
 from PyQt5.QtGui import QFont,QTextCursor
 from PyQt5.QtCore import Qt,pyqtSignal
 import qtawesome
@@ -40,7 +40,7 @@ class transhist(QMainWindow):
         #font.setFamily("Arial Unicode MS") 
         font.setPointSize(12)
         self.setGeometry(*globalconfig['hist_geo'])
-        self.textOutput = QPlainTextEdit(self)
+        self.textOutput = QTextBrowser(self)
         self.textOutput.setFont(font)
         self.setCentralWidget(self.textOutput) 
          
@@ -51,7 +51,5 @@ class transhist(QMainWindow):
         self.hiding=True
        
     def getnewsentence(self,sentence):
-        scrollbar = self.textOutput.verticalScrollBar()
-        self.textOutput.appendPlainText(sentence)
-        scrollbar.setValue(scrollbar.maximum())
-     
+         
+        self.textOutput.append(sentence) 
