@@ -9,7 +9,7 @@ cacheapikey=("","")
 cacheaccstoken=""
 def ocr(imgfile):
     global cacheapikey,cacheaccstoken
-    js=ocrsetting['baiduocr']
+    js=ocrsetting['baiduocr_accurate']
 
     appid = js['args']['API Key']
     secretKey = js['args']['Secret Key']
@@ -24,7 +24,7 @@ def ocr(imgfile):
         except:
             #appid无效，则使用输入的accstoken，并清空
             pass
-
+    
     if cacheaccstoken=="":
         
         return ''
@@ -54,22 +54,14 @@ def ocr(imgfile):
         f=ff.read()
     b64=base64.b64encode(f)
 
-    if globalconfig['verticalocr']:
-        print(globalconfig['ocr']['baiduocr']['lang'][[1,2][globalconfig['srclang']]] )
-        data = {
-            'image': b64 ,
-            #'detect_language': 'true',
-            'detect_direction':'true',
-            'language_type':globalconfig['ocr']['baiduocr']['lang'][[1,2][globalconfig['srclang']]] 
-            }
-    else:
-        data = {
-            'image': b64 ,
-            'detect_language': 'true',
-            'detect_direction':'true',
-            }
+    data = {
+        'image': b64 ,
+        #'detect_language': 'true',
+        'detect_direction':'true',
+        'language_type':globalconfig['ocr']['baiduocr_accurate']['lang'][[1,2][globalconfig['srclang']]] 
+        } 
     js['args']['次数统计']=str(int(js['args']['次数统计'])+1) 
-    response = requests.post('https://aip.baidubce.com/rest/2.0/ocr/v1/general_basic', params=params, headers=headers, data=data, proxies=  {'http': None,'https': None})
+    response = requests.post('https://aip.baidubce.com/rest/2.0/ocr/v1/accurate_basic', params=params, headers=headers, data=data, proxies=  {'http': None,'https': None})
     try:
         return ''.join([x['words']  for x in response.json()['words_result']])
     except:

@@ -51,6 +51,7 @@ def autosaveshow(object):
                 savehook_new[item.text()]=savehook_new[item.origin]
                 savehook_new.pop(item.origin)
                 savehook_new2.pop(item.origin)
+                item.origin=item.text()
     if True:
         model=QStandardItemModel(  dialog)
         table = QTableView(dialog)
@@ -115,12 +116,8 @@ def autosaveshow(object):
                                                         dll=os.path.join(os.path.abspath(globalconfig['Locale_Remulator']),'LRHookx64.dll')
                                                 else:
                                                         return 
-                                                with open('./update/lr.bat','w',encoding='utf8') as ff: 
-                                                        ff.write(f'cd "{os.path.dirname(game)}"\npowershell {le} "{dll}" 5f4c9504-8e76-46e3-921b-684d7826db71 "{(game)}"') 
-                                                        
-                                                 
-                                                subproc('update\\lr.bat',encoding='utf8')
-                                                 
+                                                
+                                                win32api.ShellExecute(None, "open", 'powershell', f'{le} "{dll}" 5f4c9504-8e76-46e3-921b-684d7826db71 "{ (game)}"', os.path.dirname(game), win32con.SW_HIDE)
                         else:
                                 win32api.ShellExecute(None, "open", game, "", os.path.dirname(game), win32con.SW_SHOW)
                                  
@@ -203,7 +200,7 @@ def setTab4(self) :
                 [('检测到游戏时自动开始',5),(self.getsimpleswitch(globalconfig,'autostarthook'),1),'','','','','','','','',''],
                 [('转区方式',5),(self.getsimplecombobox(_TRL(['Locale.Emulator','Locale_Remulator']),globalconfig,'localeswitchmethod'),5)],
                 [('LocaleEmulator路径设置',5),(self.getcolorbutton(globalconfig,'',callback=lambda x: getsomepath1(self,'LocaleEmulator',globalconfig,'LocaleEmulator','LocaleEmulator',isdir=True),icon='fa.gear',constcolor="#FF69B4"),1),("不支持64位",5)],
-                [('Locale_Remulator路径设置',5),(self.getcolorbutton(globalconfig,'',callback=lambda x: getsomepath1(self,'Locale_Remulator',globalconfig,'Locale_Remulator','Locale_Remulator',isdir=True),icon='fa.gear',constcolor="#FF69B4"),1),("64支持位，但是不稳定",5)],
+                [('Locale_Remulator路径设置',5),(self.getcolorbutton(globalconfig,'',callback=lambda x: getsomepath1(self,'Locale_Remulator',globalconfig,'Locale_Remulator','Locale_Remulator',isdir=True),icon='fa.gear',constcolor="#FF69B4"),1),("支持64位，但是不稳定且不支持特殊路径格式",8)],
                 [('已保存游戏',5),(self.getcolorbutton(globalconfig,'',icon='fa.gamepad',constcolor="#FF69B4",callback=lambda:autosaveshow(self)),1)],
 
                 [('过滤乱码文本',5),(self.getsimpleswitch(globalconfig,'filter_chaos_code'),1),(self.getcolorbutton(globalconfig,'',icon='fa.gear',constcolor="#FF69B4",callback=lambda:codeacceptdialog(self)),1)],

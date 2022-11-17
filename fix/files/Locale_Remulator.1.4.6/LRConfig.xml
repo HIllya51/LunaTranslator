@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<LRConfig>
+  <Profiles>
+    <Profile Name="Run in Japanese" Guid="5f4c9504-8e76-46e3-921b-684d7826db71">
+      <Location>ja-JP</Location>
+      <CodePage>932</CodePage>
+      <Font>None</Font>
+      <RunAsAdmin>false</RunAsAdmin>
+      <HookIME>false</HookIME>
+    </Profile>
+    <Profile Name="Run in Japanese (Admin)" Guid="af51e8db-d1b9-4b51-98f6-b3ed04210fb9">
+      <Location>ja-JP</Location>
+      <CodePage>932</CodePage>
+      <Font>None</Font>
+      <RunAsAdmin>true</RunAsAdmin>
+      <HookIME>true</HookIME>
+    </Profile>
+    <Profile Name="Run in Taiwan (Admin)" Guid="5e8b7c16-f70e-43c0-ba45-9fdc3222eee2">
+      <Location>zh-TW</Location>
+      <CodePage>950</CodePage>
+      <Font>None</Font>
+      <RunAsAdmin>true</RunAsAdmin>
+      <HookIME>true</HookIME>
+    </Profile>
+    <Profile Name="Run in Korean (Admin)" Guid="60485267-4b9f-443d-9213-eada77cf5cdc">
+      <Location>ko-KR</Location>
+      <CodePage>949</CodePage>
+      <Font>Gulim</Font>
+      <RunAsAdmin>true</RunAsAdmin>
+      <HookIME>true</HookIME>
+    </Profile>
+  </Profiles>
+</LRConfig>

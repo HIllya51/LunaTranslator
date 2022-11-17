@@ -38,7 +38,7 @@ def setTab6(self) :
             else:
                 _3=''
             
-            line+=[((globalconfig['ocr'][name]['name']),3),(self.getsimpleswitch(globalconfig['ocr'][name],'use',name=name+'_ocrswitch',callback=functools.partial(yuitsuocr,self,name)),1),_3,'']
+            line+=[((globalconfig['ocr'][name]['name']),6),(self.getsimpleswitch(globalconfig['ocr'][name],'use',name=name+'_ocrswitch',callback=functools.partial(yuitsuocr,self,name)),1),_3,'']
 
             if i%3==2 or i==lendict-1:
                 grids.append(line) 

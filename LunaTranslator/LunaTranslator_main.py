@@ -80,33 +80,35 @@ class MAINUI(QObject) :
                 #suffix #后缀（们）等 忽略
                 #prefix #前缀 忽略
                 _type=_.get('type')
-                src=_.find('sourceLanguage').text
-                tgt=_.find('language').text
-                if tgt=='en':
-                    continue
-                pattern=_.find('pattern').text
                 try:
-                    text=_.find('text').text
-                except:
-                    text=''
-                    
-
-                try:
-                    regex=_.find('regex').text
-                    
-                except:
-                    
-                     
-                    if 'eos' in text or 'amp' in text or '&' in text:
-                        
+                    src=_.find('sourceLanguage').text
+                    tgt=_.find('language').text
+                    if tgt=='en':
                         continue
-                    if _type=='trans':
-                        self.vnrshareddict[pattern]={'src':src,'tgt':tgt,'text':text }
-                    elif _type=='input':
-                        self.vnrshareddict_pre[pattern]={'src':src,'tgt':tgt,'text':text }
-                    elif _type=='output':
-                        self.vnrshareddict_post[pattern]={'src':src,'tgt':tgt,'text':text }
-                  
+                    pattern=_.find('pattern').text
+                    try:
+                        text=_.find('text').text
+                    except:
+                        text=''
+                        
+
+                    try:
+                        regex=_.find('regex').text
+                        
+                    except:
+                        
+                        
+                        if 'eos' in text or 'amp' in text or '&' in text:
+                            
+                            continue
+                        if _type=='trans':
+                            self.vnrshareddict[pattern]={'src':src,'tgt':tgt,'text':text }
+                        elif _type=='input':
+                            self.vnrshareddict_pre[pattern]={'src':src,'tgt':tgt,'text':text }
+                        elif _type=='output':
+                            self.vnrshareddict_post[pattern]={'src':src,'tgt':tgt,'text':text }
+                except:
+                    pass
                   
         #print(cnt1,cnt2,regcnt,cnt,sim,skip)
         # print(len(list(self.vnrsharedreg)))

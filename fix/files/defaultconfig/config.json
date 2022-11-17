@@ -3,6 +3,8 @@
         500,
         500
     ],
+	"hist_split":false,
+	"hist_fontsize":12, 
     "fixedheight": false,
 	"height":200,
     "width": 768,
@@ -13,6 +15,7 @@
     "autorun": true,
     "transparent": 35,
     "fontsize": 17.0,
+	"localeswitchmethod":0,
     "fonttype": "黑体",
     "miaobianwidth2": 3,
     "miaobianwidth": 1,
@@ -313,6 +316,7 @@
     },
     "usesearchword": false,
     "LocaleEmulator": "./files/Locale.Emulator.2.5.0.1",
+    "Locale_Remulator": "./files/Locale_Remulator.1.4.6",
     "verticalocr": false,
     "outputtopasteboard": false,
     "ttscommon": {
@@ -326,6 +330,7 @@
         "textractor": false,
         "textractor_pipe": false
     },
+	"verticalocr":false,
     "ocr": {
         "local": {
             "use": true,
@@ -338,7 +343,16 @@
         "baiduocr": {
             "use": false,
             "name": "baiduOCR",
-            "argsfile": "./userconfig/baiduocr.json"
+            "argsfile": "./userconfig/baiduocr.json",
+			"lang":["CHN_ENG","JAP","ENG"]
+
+        },
+		"baiduocr_accurate": {
+            "use": false,
+            "name": "baiduOCR_高精度",
+            "argsfile": "./userconfig/baiduocr.json",
+			"lang":["CHN_ENG","JAP","ENG"]
+
         },
         "ocrspace": {
             "use": false,
