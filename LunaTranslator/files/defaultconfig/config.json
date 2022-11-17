@@ -7,7 +7,7 @@
 	"hist_fontsize":12, 
     "fixedheight": false,
 	"height":200,
-    "width": 768,
+    "width": 1000,
 	"hist_geo":[0,0,1000,300],
 	"transtimeinternal":0.1,
 	"ocr_stable_sim":0.95,
