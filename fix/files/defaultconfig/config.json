@@ -47,6 +47,11 @@
     "ocrautobindwindow": true,
     "magpiepath": "./files/Magpie_v0.9.1",
     "magpieflags": {
+		"MultiMonitorUsage":0,
+		"DebugSaveEffectSources":false,
+		"DebugBreakpointMode":false,
+		"DebugDisableEffectCache":false,
+		"DebugWarningsAreErrors":false,
         "NoCursor": false,
         "AdjustCursorSpeed": true,
         "DisableLowLatency": false,
@@ -58,7 +63,8 @@
         "VSync": true,
         "ShowFPS": false,
         "CursorZoomFactor": 1,
-        "CursorInterpolationMode": 0
+        "CursorInterpolationMode": 0,
+		"AdapterIdx":-1
     },
     "buttonuse": {
         "fullscreen": true,
