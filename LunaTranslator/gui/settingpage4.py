@@ -16,7 +16,7 @@ from PyQt5.QtWidgets import  QWidget,QLabel, QComboBox
 from utils.subproc import subproc
 from PyQt5.QtWidgets import QWidget,QLabel,QFrame ,QPushButton 
 from PyQt5.QtGui import QColor,QFont,QPixmap,QIcon
-import functools
+import functools,win32file
 from PyQt5.QtWidgets import QDialogButtonBox,QDialog,QComboBox,QFormLayout,QSpinBox,QVBoxLayout,QLineEdit
 from PyQt5.QtCore import Qt,QSize 
 import subprocess
@@ -40,10 +40,17 @@ def autosaveshow(object):
                 rows=model.rowCount() 
                  
                 for row in range(rows): 
+                        checkitempath(model.item(row,3))
                         savehook_new2[model.item(row,3).text()]['title']=model.item(row,2).text()
                  
                 return QDialog().closeEvent(a0)
     dialog.closeEvent=closeEvent
+    def checkitempath(item):
+        if item.text()!=item.origin:
+                savehook_new2[item.text()]=savehook_new2[item.origin]
+                savehook_new[item.text()]=savehook_new[item.origin]
+                savehook_new.pop(item.origin)
+                savehook_new2.pop(item.origin)
     if True:
         model=QStandardItemModel(  dialog)
         table = QTableView(dialog)
@@ -54,7 +61,7 @@ def autosaveshow(object):
         table.setSelectionMode( (QAbstractItemView.SingleSelection)      )
         table.setWordWrap(False) 
         table.setModel(model) 
-        table
+        
         #table.setEditTriggers(QAbstractItemView.NoEditTriggers)
         row=0
         for k in savehook_new:                                   # 2
@@ -66,33 +73,54 @@ def autosaveshow(object):
                     icon=transparent
                 icon=QIcon(icon) 
                 model.setItem(row, 1, QStandardItem(icon,'')) 
-                model.setItem(row, 3, QStandardItem(k)) 
+                item=QStandardItem(k)
+                item.origin=k
+                model.setItem(row, 3, item) 
                 model.setItem(row, 0, QStandardItem(''))
                 
-                if k not in savehook_new2:
-                        savehook_new2[k]={}
-                        savehook_new2[k]['leuse']=True
-                        savehook_new2[k]['title']='' 
+                
                 model.setItem(row, 2, QStandardItem(savehook_new2[k]['title']))
                 table.setIndexWidget(model.index(row, 0),object.getsimpleswitch(savehook_new2[k],'leuse'))
                 # item = QStandardItem(json.dumps(js[k],ensure_ascii=False))
                 # model.setItem(row, 2, item)
                 row+=1
-        model.setHorizontalHeaderLabels(_TRL(['使用LE','','标题', '游戏']))#,'HOOK'])
-        
+        model.setHorizontalHeaderLabels(_TRL(['转区','','标题', '游戏']))#,'HOOK'])
+        model
         #table.clicked.connect(self.show_info)
         button=QPushButton(dialog)
         button.setText(_TR('开始游戏'))
         def clicked(): 
                 try:
+                    checkitempath(model.item(table.currentIndex().row(),3))
                     game=model.item(table.currentIndex().row(),3).text() 
                     if os.path.exists(game):
                         #subprocess.Popen(model.item(table.currentIndex().row(),1).text()) 
                         print(game)
-                        le=os.path.join(os.path.abspath(globalconfig['LocaleEmulator']),'LEProc.exe')
-                        if savehook_new2[game]['leuse'] and os.path.exists(le):
-                                #win32api.ShellExecute(None, "open", le, f'-run "{game}"', os.path.dirname(game), win32con.SW_SHOW)
-                                win32api.ShellExecute(None, "open", "C:\\dataH\\Locale_Remulator.1.4.6\\LRProc.exe", f'C:\\dataH\\Locale_Remulator.1.4.6\\LRHookx64.dll 5f4c9504-8e76-46e3-921b-684d7826db71 "{game}"', os.path.dirname(game), win32con.SW_SHOW)
+                        if game not in savehook_new2:
+                                savehook_new2[game]={}
+                                savehook_new2[game]['leuse']=True
+                                savehook_new2[game]['title']='' 
+                        if savehook_new2[game]['leuse'] :
+                                if globalconfig['localeswitchmethod']==0:
+                                        le=os.path.join(os.path.abspath(globalconfig['LocaleEmulator']),'LEProc.exe')
+                                        if os.path.exists(le): 
+                                                win32api.ShellExecute(None, "open", le, f'-run "{game}"', os.path.dirname(game), win32con.SW_SHOW)
+                                elif globalconfig['localeswitchmethod']==1:
+                                        le=os.path.join(os.path.abspath(globalconfig['Locale_Remulator']),'LRProc.exe')
+                                        if os.path.exists(le): 
+                                                b=win32file.GetBinaryType(game)
+                                                if b==0:
+                                                        dll=os.path.join(os.path.abspath(globalconfig['Locale_Remulator']),'LRHookx32.dll')
+                                                elif b==6: 
+                                                        dll=os.path.join(os.path.abspath(globalconfig['Locale_Remulator']),'LRHookx64.dll')
+                                                else:
+                                                        return 
+                                                with open('./update/lr.bat','w',encoding='utf8') as ff: 
+                                                        ff.write(f'cd "{os.path.dirname(game)}"\npowershell {le} "{dll}" 5f4c9504-8e76-46e3-921b-684d7826db71 "{(game)}"') 
+                                                        
+                                                 
+                                                subproc('update\\lr.bat',encoding='utf8')
+                                                 
                         else:
                                 win32api.ShellExecute(None, "open", game, "", os.path.dirname(game), win32con.SW_SHOW)
                                  
@@ -105,7 +133,9 @@ def autosaveshow(object):
         button2=QPushButton(dialog)
         button2.setText(_TR('删除游戏'))
         def clicked2(): 
+                checkitempath(model.item(table.currentIndex().row()))
                 savehook_new.pop(model.item(table.currentIndex().row(),3).text())
+                
                 model.removeRow(table.currentIndex().row())
         button2.clicked.connect(clicked2)
          
@@ -171,8 +201,9 @@ def setTab4(self) :
         grids=[
                 
                 [('检测到游戏时自动开始',5),(self.getsimpleswitch(globalconfig,'autostarthook'),1),'','','','','','','','',''],
-                
-                [('LocaleEmulator路径设置',5),(self.getcolorbutton(globalconfig,'',callback=lambda x: getsomepath1(self,'LocaleEmulator',globalconfig,'LocaleEmulator','LocaleEmulator',isdir=True),icon='fa.gear',constcolor="#FF69B4"),1)],
+                [('转区方式',5),(self.getsimplecombobox(_TRL(['Locale.Emulator','Locale_Remulator']),globalconfig,'localeswitchmethod'),5)],
+                [('LocaleEmulator路径设置',5),(self.getcolorbutton(globalconfig,'',callback=lambda x: getsomepath1(self,'LocaleEmulator',globalconfig,'LocaleEmulator','LocaleEmulator',isdir=True),icon='fa.gear',constcolor="#FF69B4"),1),("不支持64位",5)],
+                [('Locale_Remulator路径设置',5),(self.getcolorbutton(globalconfig,'',callback=lambda x: getsomepath1(self,'Locale_Remulator',globalconfig,'Locale_Remulator','Locale_Remulator',isdir=True),icon='fa.gear',constcolor="#FF69B4"),1),("64支持位，但是不稳定",5)],
                 [('已保存游戏',5),(self.getcolorbutton(globalconfig,'',icon='fa.gamepad',constcolor="#FF69B4",callback=lambda:autosaveshow(self)),1)],
 
                 [('过滤乱码文本',5),(self.getsimpleswitch(globalconfig,'filter_chaos_code'),1),(self.getcolorbutton(globalconfig,'',icon='fa.gear',constcolor="#FF69B4",callback=lambda:codeacceptdialog(self)),1)],
