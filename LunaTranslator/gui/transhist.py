@@ -25,7 +25,12 @@ class transhist(QMainWindow):
         self.showsignal.connect(self.showfunction)
         self.setWindowTitle(_TR('历史翻译'))
     def showfunction(self): 
-        self.showNormal() 
+        if self.isMinimized():
+            self.showNormal()
+        elif self.isHidden(): 
+            self.show() 
+        else:
+            self.hide()
     def closeEvent(self, event) : 
             globalconfig['hist_geo']=list(self.geometry().getRect())
             self.hide()

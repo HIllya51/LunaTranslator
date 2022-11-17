@@ -294,7 +294,7 @@ class QUnFrameWindow(QWidget):
         self.takusanbuttons("MinMaxButton",lambda: pyperclip.copy(self.original),6,"复制到剪贴板",'copy') 
         self.takusanbuttons("MinMaxButton", self.changeshowhideraw,7,"显示/隐藏原文",'showraw') 
         
-        self.takusanbuttons("MinMaxButton", self.transhis.showsignal.emit  ,8,"显示历史翻译",'history') 
+        self.takusanbuttons("MinMaxButton", self.transhis.showsignal.emit  ,8,"显示/隐藏历史翻译",'history') 
         self.takusanbuttons("MinMaxButton",self.langdu,9,"朗读",'langdu') 
         self.takusanbuttons("MinMaxButton",self.changemousetransparentstate,10,"鼠标穿透窗口",'mousetransbutton') 
          
