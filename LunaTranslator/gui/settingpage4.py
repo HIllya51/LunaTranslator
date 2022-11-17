@@ -39,25 +39,29 @@ def autosaveshow(object):
     def closeEvent(  a0  ) -> None:
                 rows=model.rowCount() 
                  
-                for row in range(rows): 
-                        checkitempath(model.item(row,3))
+                for row in range(rows):  
                         savehook_new2[model.item(row,3).text()]['title']=model.item(row,2).text()
                  
                 return QDialog().closeEvent(a0)
     dialog.closeEvent=closeEvent
-    def checkitempath(item):
-        if item.text()!=item.origin:
-                savehook_new2[item.text()]=savehook_new2[item.origin]
-                savehook_new[item.text()]=savehook_new[item.origin]
-                savehook_new.pop(item.origin)
-                savehook_new2.pop(item.origin)
-                item.origin=item.text()
+    def selectexe(item,button):
+        f=QFileDialog.getOpenFileName(directory=item.text() )
+        res=f[0]
+        if res!='':
+                res=res.replace('/','\\')
+                savehook_new[res]=savehook_new[item.text()]
+                savehook_new.pop(item.text())
+                savehook_new2[res]=savehook_new2[item.text()]
+                savehook_new2.pop(item.text())
+                item.setText(res)
+                button.setText(res)
+
     if True:
         model=QStandardItemModel(  dialog)
         table = QTableView(dialog)
         table.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
         table.horizontalHeader().setStretchLastSection(True)
-        
+        #table.setEditTriggers(QAbstractItemView.NoEditTriggers);
         table.setSelectionBehavior(QAbstractItemView.SelectRows)
         table.setSelectionMode( (QAbstractItemView.SingleSelection)      )
         table.setWordWrap(False) 
@@ -73,15 +77,16 @@ def autosaveshow(object):
                 if icon is None:
                     icon=transparent
                 icon=QIcon(icon) 
-                model.setItem(row, 1, QStandardItem(icon,'')) 
-                item=QStandardItem(k)
-                item.origin=k
-                model.setItem(row, 3, item) 
-                model.setItem(row, 0, QStandardItem(''))
-                
-                
-                model.setItem(row, 2, QStandardItem(savehook_new2[k]['title']))
+                model.setItem(row, 1, QStandardItem(icon,''))  
+                keyitem=QStandardItem(k)
+                model.setItem(row, 3, keyitem) 
+                model.setItem(row, 0, QStandardItem(''))  
+                model.setItem(row, 2,QStandardItem(savehook_new2[k]['title']) ) 
                 table.setIndexWidget(model.index(row, 0),object.getsimpleswitch(savehook_new2[k],'leuse'))
+                
+                _=QPushButton(k)
+                _.clicked.connect(functools.partial(selectexe,keyitem,_))
+                table.setIndexWidget(model.index(row, 3),_) 
                 # item = QStandardItem(json.dumps(js[k],ensure_ascii=False))
                 # model.setItem(row, 2, item)
                 row+=1
@@ -92,7 +97,7 @@ def autosaveshow(object):
         button.setText(_TR('开始游戏'))
         def clicked(): 
                 try:
-                    checkitempath(model.item(table.currentIndex().row(),3))
+                        
                     game=model.item(table.currentIndex().row(),3).text() 
                     if os.path.exists(game):
                         #subprocess.Popen(model.item(table.currentIndex().row(),1).text()) 
@@ -126,11 +131,46 @@ def autosaveshow(object):
                 except:
                         print_exc()
         button.clicked.connect(clicked)
-         
+        button3=QPushButton(dialog)
+        button3.setText(_TR('添加游戏'))
+        
+        def clicked3(): 
+                
+                f=QFileDialog.getOpenFileName(directory= (k) )
+                res=f[0]
+                if res!='':
+                        row=model.rowCount() 
+                        res=res.replace('/','\\')
+                        if res in savehook_new:
+                                return
+                        transparent=QPixmap(100,100)
+                        transparent.fill(QColor.fromRgba(0))
+                        icon=getExeIcon(res)
+                        if icon is None:
+                                icon=transparent
+                        icon=QIcon(icon) 
+                        
+                        model.setItem(row, 1, QStandardItem(icon,''))  
+                        keyitem=QStandardItem(res)
+                        model.setItem(row, 3, keyitem) 
+                        model.setItem(row, 0, QStandardItem(''))  
+                        model.setItem(row, 2,QStandardItem('') ) 
+                        savehook_new2[res]={}
+                        savehook_new2[res]['leuse']=True
+                        savehook_new2[res]['title']='' 
+                        savehook_new[res]=[]
+                        table.setIndexWidget(model.index(row, 0),object.getsimpleswitch(savehook_new2[res],'leuse'))
+                        
+                        _=QPushButton(res)
+                        _.clicked.connect(functools.partial(selectexe,keyitem,_))
+                        table.setIndexWidget(model.index(row, 3),_) 
+                        table.setCurrentIndex(model.index(row,0)) 
+                        
+        button3.clicked.connect(clicked3)
         button2=QPushButton(dialog)
         button2.setText(_TR('删除游戏'))
         def clicked2(): 
-                checkitempath(model.item(table.currentIndex().row()))
+                
                 savehook_new.pop(model.item(table.currentIndex().row(),3).text())
                 
                 model.removeRow(table.currentIndex().row())
@@ -138,6 +178,7 @@ def autosaveshow(object):
          
         formLayout.addWidget(table) 
         formLayout.addWidget(button) 
+        formLayout.addWidget(button3) 
         formLayout.addWidget(button2) 
         dialog.resize(QSize(800,400))
     dialog.show()
