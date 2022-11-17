@@ -3,6 +3,7 @@
         500,
         500
     ],
+	"hist_split":false,
     "fixedheight": false,
 	"height":200,
     "width": 768,
@@ -326,6 +327,7 @@
         "textractor": false,
         "textractor_pipe": false
     },
+	"verticalocr":false,
     "ocr": {
         "local": {
             "use": true,
@@ -338,7 +340,16 @@
         "baiduocr": {
             "use": false,
             "name": "baiduOCR",
-            "argsfile": "./userconfig/baiduocr.json"
+            "argsfile": "./userconfig/baiduocr.json",
+			"lang":["CHN_ENG","JAP","ENG"]
+
+        },
+		"baiduocr_accurate": {
+            "use": false,
+            "name": "baiduOCR_高精度",
+            "argsfile": "./userconfig/baiduocr.json",
+			"lang":["CHN_ENG","JAP","ENG"]
+
         },
         "ocrspace": {
             "use": false,

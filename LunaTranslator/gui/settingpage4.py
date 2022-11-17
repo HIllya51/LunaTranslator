@@ -91,7 +91,8 @@ def autosaveshow(object):
                         print(game)
                         le=os.path.join(os.path.abspath(globalconfig['LocaleEmulator']),'LEProc.exe')
                         if savehook_new2[game]['leuse'] and os.path.exists(le):
-                                win32api.ShellExecute(None, "open", le, f'-run "{game}"', os.path.dirname(game), win32con.SW_SHOW)
+                                #win32api.ShellExecute(None, "open", le, f'-run "{game}"', os.path.dirname(game), win32con.SW_SHOW)
+                                win32api.ShellExecute(None, "open", "C:\\dataH\\Locale_Remulator.1.4.6\\LRProc.exe", f'C:\\dataH\\Locale_Remulator.1.4.6\\LRHookx64.dll 5f4c9504-8e76-46e3-921b-684d7826db71 "{game}"', os.path.dirname(game), win32con.SW_SHOW)
                         else:
                                 win32api.ShellExecute(None, "open", game, "", os.path.dirname(game), win32con.SW_SHOW)
                                  
