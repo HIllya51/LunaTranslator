@@ -4,6 +4,7 @@
         500
     ],
 	"hist_split":false,
+	"hist_fontsize":12, 
     "fixedheight": false,
 	"height":200,
     "width": 768,
