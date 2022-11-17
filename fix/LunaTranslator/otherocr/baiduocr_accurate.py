@@ -13,10 +13,7 @@ def ocr(imgfile):
 
     appid = js['args']['API Key']
     secretKey = js['args']['Secret Key']
-    if appid=="" or secretKey=="":
-
-        cacheaccstoken=js['args']['access_token']
-    elif (appid,secretKey)!=cacheapikey:
+    if (appid,secretKey)!=cacheapikey:
         try:
             cacheaccstoken=requests.get('https://aip.baidubce.com/oauth/2.0/token?grant_type=client_credentials&client_id='+appid+'&client_secret='+secretKey, proxies=  {'http': None,'https': None}).json()['access_token']
             cacheapikey=(appid,secretKey)
