@@ -136,7 +136,7 @@ def autosaveshow(object):
         
         def clicked3(): 
                 
-                f=QFileDialog.getOpenFileName(directory= (k) )
+                f=QFileDialog.getOpenFileName(directory='' )
                 res=f[0]
                 if res!='':
                         row=model.rowCount() 
