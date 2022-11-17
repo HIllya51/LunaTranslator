@@ -26,7 +26,7 @@ def setTab6(self) :
             if i%3==0:
                 line=[]
             
-            if 'argsfile' in globalconfig['ocr'][name]:
+            if name in ocrsetting:
                 items=[] 
                 for arg in ocrsetting[name]['args']: 
                     items.append({

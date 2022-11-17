@@ -36,7 +36,7 @@ def initsome11(self,l,label,grids):
             continue
         
         
-        if 'argsfile' in globalconfig['fanyi'][fanyi]:
+        if fanyi in translatorsetting :
              
             items=[] 
             for arg in translatorsetting[fanyi]['args']: 
@@ -75,7 +75,7 @@ def initfanyiswitchs_auto11(self,grids):
 
         mianfei=set()
         for _ in online:
-            if 'argsfile' not in globalconfig['fanyi'][_]:
+            if _ not in translatorsetting : 
                 mianfei.add(_)
         
         shoufei=online-mianfei 

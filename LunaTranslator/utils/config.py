@@ -67,38 +67,9 @@ syncconfig(transerrorfixdictconfig,defaulterrorfix)
 
 syncconfig(noundictconfig,defaultnoun)
 syncconfig(translatorsetting,translatordfsetting)
-syncconfig(ocrsetting,ocrdfsetting)
-
-for name in translatorsetting: 
-    try:
-        configfile=globalconfig['fanyi'][name]['argsfile']
-        if os.path.exists(configfile) : 
-            with open(configfile,'r',encoding='utf8') as ff:
-                js=json.load(ff)  
-            for k in translatorsetting[name]['args']:
-                if k in js['args']:
-                    translatorsetting[name]['args'][k]=js['args'][k]  
-            #os.remove(configfile)
-            globalconfig['fanyi'][name]['argsfile']=''
-    except:
-        print('error',name)
 
 
-for name in ocrsetting: 
-    #try:
-        configfile=globalconfig['ocr'][name]['argsfile']
-        if os.path.exists(configfile) : 
-            with open(configfile,'r',encoding='utf8') as ff:
-                js=json.load(ff)  
-            for k in ocrsetting[name]['args']:
-                if k in js['args']:
-                    ocrsetting[name]['args'][k]=js['args'][k]  
-            #os.remove(configfile)
-            globalconfig['ocr'][name]['argsfile']=''
-    #except:
-    #    print('error',name)
-#0 ja  1 eng
-
+syncconfig(ocrsetting,ocrdfsetting,True,3)
 language=globalconfig['languageuse']
 with open(f'./files/lang/{language}.json','r',encoding='utf8') as ff:
     languageshow=json.load(ff)

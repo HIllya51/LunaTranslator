@@ -343,26 +343,22 @@
         "baiduocr": {
             "use": false,
             "name": "baiduOCR",
-            "argsfile": "./userconfig/baiduocr.json",
 			"lang":["CHN_ENG","JAP","ENG"]
 
         },
 		"baiduocr_accurate": {
             "use": false,
             "name": "baiduOCR_高精度",
-            "argsfile": "./userconfig/baiduocr.json",
 			"lang":["CHN_ENG","JAP","ENG"]
 
         },
         "ocrspace": {
             "use": false,
-            "name": "ocrspace",
-            "argsfile": "./userconfig/ocrspace.json"
+            "name": "ocrspace"
         },
         "docsumo": {
             "use": false,
-            "name": "docsumo",
-            "argsfile": "./userconfig/docsumo.json"
+            "name": "docsumo"
         },
         "youdaocr": {
             "use": false,
@@ -437,20 +433,17 @@
         "jb7": {
             "use": false,
             "color": "#1839f0",
-            "name": "Jbeijing7",
-            "argsfile": "./userconfig/jbj7.json"
+            "name": "Jbeijing7"
         },
         "kingsoft": {
             "use": false,
             "color": "#1839f0",
-            "name": "金山快译",
-            "argsfile": "./userconfig/ks.json"
+            "name": "金山快译"
         },
         "dreye": {
             "use": false,
             "color": "#1839f0",
-            "name": "快译通",
-            "argsfile": "./userconfig/dreye.json"
+            "name": "快译通"
         },
         "sougou2": {
             "use": false,
@@ -492,14 +485,12 @@
             "use": false,
             "color": "blue",
             "name": "百度api",
-            "argsfile": "./userconfig/baiduapi.json",
 			"lang":["zh", "jp", "en"]
         },
         "tencentapi": {
             "use": false,
             "color": "blue",
             "name": "腾讯api",
-            "argsfile": "./userconfig/txapi.json",
 			"lang":["zh", "ja", "en"]
         },
         "byte": {
@@ -518,7 +509,6 @@
             "use": false,
             "color": "blue",
             "name": "小牛api",
-            "argsfile": "./userconfig/xiaoniuapi.json",
 			"lang":["zh", "ja", "en"]
         },
         "huoshan": {
@@ -537,14 +527,12 @@
             "use": false,
             "color": "blue",
             "name": "彩云api",
-            "argsfile": "./userconfig/caiyunapi.json",
 			"lang":["zh", "ja", "en"]
         },
         "huoshanapi": {
             "use": false,
             "color": "blue",
             "name": "火山api",
-            "argsfile": "./userconfig/huoshanapi.json",
 			"lang":["zh", "ja", "en"]
         },
         "papago": {
@@ -556,34 +544,29 @@
             "use": false,
             "color": "blue",
             "name": "人工翻译",
-            "argsfile": "./userconfig/rengong.json",
 			"lang":["zh-CN", "ja", "en"]
         },
         "premt": {
             "use": false,
             "color": "blue",
-            "name": "机器预翻译",
-            "argsfile": "./userconfig/premt.json"
+            "name": "机器预翻译"
         },
         "deeplapi-free": {
             "use": false,
             "color": "blue",
             "name": "deeplapi-free",
-            "argsfile": "./userconfig/deeplapi-free.json",
 			"lang":["ZH", "JA", "EN"]
         },
         "deeplapi": {
             "use": false,
             "color": "blue",
             "name": "deeplapi",
-            "argsfile": "./userconfig/deeplapi.json",
 			"lang":["ZH", "JA", "EN"]
         },
         "youdaoapi": {
             "use": false,
             "color": "blue",
             "name": "有道api",
-            "argsfile": "./userconfig/youdaoapi.json",
 			"lang":["zh-CHS", "ja", "en"]
         },
 		"yunyi": {
