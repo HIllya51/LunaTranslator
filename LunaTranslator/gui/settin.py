@@ -55,10 +55,13 @@ class Settin(QMainWindow) :
          return super().showEvent(a0)
     def hideEvent(self, a0 ) -> None:
          return super().hideEvent(a0)
-    def automakegrid(self,grid,lis): 
+    def automakegrid(self,grid,lis,save=False,savelist=None): 
         maxl=0
+    
         for nowr,line in enumerate(lis):
                 nowc=0
+                if save:
+                    ll=[]
                 for i in line:
                         if type(i)==str:
                                 wid,cols=QLabel(""),1
@@ -73,9 +76,13 @@ class Settin(QMainWindow) :
                                     else:
                                         wid=QLabel(_TR(wid))
                         grid.addWidget(wid,nowr,nowc,1,cols)
+                        if save:
+                            ll.append(wid)
                         nowc+=cols   
                 maxl=max(maxl,nowc)
-                
+                if save:
+                    savelist.append(ll)
+
         ww=self.window_width-180*self.rate-self.object.scrollwidth
         
         
@@ -191,11 +198,13 @@ class Settin(QMainWindow) :
         
         self.usevoice=0
       
-    def yitiaolong(self,title,grid):
+    def yitiaolong(self,title,grid,save=False,savelist=None,savelay=None):
         lay,t=self. getscrollwidgetlayout(title)
         t.setFixedHeight(len(grid)*30*self.rate)
 
-        self.automakegrid(lay,grid) 
+        self.automakegrid(lay,grid,save,savelist) 
+        if save:
+            savelay.append(lay)
     def getscrollwidgetlayout(self,title):
         scroll = QScrollArea()  
         self.tab_widget.addTab(scroll, _TR(title))   

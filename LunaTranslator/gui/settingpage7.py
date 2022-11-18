@@ -19,17 +19,53 @@ from gui.inputdialog import getsomepath1
 import gui.switchbutton
 import gui.attachprocessdialog  
 import gui.selecthook  
+
+
 def setTab7(self) :   
-        grids=[  ] 
-        sort=['_2','_3', '_10','_1',   '_4', '_6', '_9', '_7', '_8']
-         
-        for post in sort:#postprocessconfig:
-            l=[((postprocessconfig[post]['name'] ),6),
-                self.getsimpleswitch(postprocessconfig[post],'use')]
-            
+        grids=[
+            [('文本预处理',6),'','',('调整执行顺序',6)]
+        ] 
+        sortlist=globalconfig['postprocess_rank']
+        savelist=[]
+        savelay=[]
+        def changerank( item,up):
+
+            ii=sortlist.index(item)
+            if up and ii==0:
+                return
+            if up==False and ii==len(sortlist)-1:
+                return
+           
+            toexchangei=ii+(-1 if up else 1)
+            sortlist[ii],sortlist[toexchangei]=sortlist[toexchangei],sortlist[ii] 
+            for i,ww in enumerate(savelist[ii+1]):
+
+                w1=(savelay[0].indexOf(ww))
+                w2=savelay[0].indexOf(savelist[toexchangei+1][i])
+                p1=savelay[0].getItemPosition(w1)
+                p2=savelay[0].getItemPosition(w2) 
+                savelay[0].removeWidget(ww)
+                savelay[0].removeWidget(savelist[toexchangei+1][i])
+                 
+                savelay[0].addWidget(savelist[toexchangei+1][i],*p1)
+                savelay[0].addWidget(ww,*p2)
+            savelist[ii+1],savelist[toexchangei+1]=savelist[toexchangei+1],savelist[ii+1] 
+        for i,post in enumerate(sortlist): 
              
             if 'args' in postprocessconfig[post]:
-                l.append(self.getcolorbutton(globalconfig,'',callback= functools.partial( postconfigdialog,self,postprocessconfig[post]['args'],postprocessconfig[post]['name']+'设置'),icon='fa.gear',constcolor="#FF69B4")) 
+                config=(self.getcolorbutton(globalconfig,'',callback= functools.partial( postconfigdialog,self,postprocessconfig[post]['args'],postprocessconfig[post]['name']+'设置'),icon='fa.gear',constcolor="#FF69B4")) 
+            else:
+                config=('')
+             
+            button_up=(self.getcolorbutton(globalconfig,'',callback= functools.partial(changerank, post,True),icon='fa.arrow-up',constcolor="#FF69B4"))
+            button_down=(self.getcolorbutton(globalconfig,'',callback= functools.partial(changerank, post,False),icon='fa.arrow-down',constcolor="#FF69B4")) 
+             
+            l=[((postprocessconfig[post]['name'] ),6),
+                self.getsimpleswitch(postprocessconfig[post],'use'),
+                config,
+                button_up,
+                button_down
+            ]
             grids.append(l)
         
         p=QPushButton(_TR("自定义python处理" ) )
@@ -47,7 +83,7 @@ def setTab7(self) :
             globalconfig['gongxiangcishu'].__setitem__('use',x)
             self.object.loadvnrshareddict()
         grids+=[
-
+            [('翻译优化',6)],
             [(('使用专有名词翻译' ),6),
                 self.getsimpleswitch(noundictconfig,'use'),
                 self.getcolorbutton(globalconfig,'',callback=lambda x:  noundictconfigdialog(self,noundictconfig,'专有名词翻译设置(游戏ID 0表示全局)'),icon='fa.gear',constcolor="#FF69B4")],
@@ -59,7 +95,7 @@ def setTab7(self) :
                 self.getcolorbutton(globalconfig,'',callback=lambda x:  getsomepath1(self,'共享辞书',globalconfig['gongxiangcishu'],'path','共享辞书',self.object.loadvnrshareddict,False,'*.xml') ,icon='fa.gear',constcolor="#FF69B4"),'','','','','',''],
             
         ]  
-        self.yitiaolong("翻译优化",grids)
+        self.yitiaolong("翻译优化",grids,True,savelist,savelay )
 def noundictconfigdialog1(object,configdict,title,label=[  '日文','翻译'],fname='./userconfig/noundictconfig.json'):
     dialog = QDialog(object,Qt.WindowCloseButtonHint)  # 自定义一个dialog
     dialog.setWindowTitle(_TR(title))
