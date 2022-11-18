@@ -6,10 +6,7 @@ import os
 import json
 import sqlite3
 import Levenshtein
-class TS(basetrans): 
-    def __init__(self,rootobject) :
-        super(TS,self).__init__()
-        self.rootbobject=rootobject 
+class TS(basetrans):  
     def inittranslator(self):
         js=translatorsetting[self.typename]
         if js['args']['sqlite文件']=="":

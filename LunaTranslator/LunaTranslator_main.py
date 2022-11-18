@@ -385,10 +385,7 @@ class MAINUI(QObject) :
                         print_exc()
                         return
                     aclass.settypename(classname)
-                    if classname in ['rengong','premt']:
-                        _=aclass(self)
-                    else:
-                        _=aclass()
+                    _=aclass()
                     _.show=partial(self._maybeyrengong,classname)
                     self.translators[classname]=_ 
    

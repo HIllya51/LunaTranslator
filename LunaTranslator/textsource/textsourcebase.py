@@ -11,15 +11,8 @@ class basetext:
         self.t.start()
         self.sqlfname='./transkiroku/'+self.prefix+'.sqlite'
         self.sqlfname_all='./transkiroku/'+self.prefix+'.premt_synthesize.sqlite'
-        self.jsonfname='./transkiroku/'+self.prefix+'.json'
+        
         try:
-            def loadjson(self):
-                if os.path.exists(self.jsonfname):
-                    with open(self.jsonfname,'r',encoding='utf8') as ff:
-                        self.json=json.load(ff)
-                else:
-                    self.json={}
-            threading.Thread(target=loadjson,args=(self,)).start()
             
             self.sqlwrite=sqlite3.connect(self.sqlfname,check_same_thread = False, isolation_level=None)
             self.sqlwrite2=sqlite3.connect(self.sqlfname_all,check_same_thread = False, isolation_level=None)

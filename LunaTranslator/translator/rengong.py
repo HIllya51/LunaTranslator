@@ -7,9 +7,7 @@ import json
 import sqlite3
 import Levenshtein
 class TS(basetrans): 
-    def __init__(self,rootobject) :
-        super(TS,self).__init__()
-        self.rootbobject=rootobject 
+   
     def inittranslator(self):
         js=translatorsetting[self.typename]
         if js['args']['json文件']=="":
@@ -40,12 +38,8 @@ class TS(basetrans):
             jsons+=[self.json]
         except:
             pass
-        # if 'sqlwrite' in dir(self.rootbobject.textsource):
-        #     sqls+=[self.rootbobject.textsource.sqlwrite]
-        if 'json' in dir(self.rootbobject.textsource):
-            jsons+=[(self.rootbobject.textsource.json)]
-        # for sql in sqls:
-        #     ret=sql.execute(f'SELECT * FROM artificialtrans WHERE source = "{content}"').fetchone()
+       
+       
         if globalconfig['premtsimiuse']:
             mindis=9999999
             savet='无预翻译'
