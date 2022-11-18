@@ -236,14 +236,9 @@ class MAINUI(QObject) :
                 ret=self.textsource.sqlwrite.execute(f'SELECT * FROM artificialtrans WHERE source = "{paste_str}"').fetchone()
                 if ret is  None:                     
                     self.textsource.sqlwrite.execute(f'INSERT INTO artificialtrans VALUES(NULL,"{paste_str}","","");')
-                
-                    self.textsource.sqlwrite.commit() 
-                
                 ret=self.textsource.sqlwrite2.execute(f'SELECT * FROM artificialtrans WHERE source = "{paste_str}"').fetchone()
                 if ret is  None:                     
                     self.textsource.sqlwrite2.execute(f'INSERT INTO artificialtrans VALUES(NULL,"{paste_str}","{json.dumps({})}");')
-                
-                    self.textsource.sqlwrite2.commit() 
         except:
             print_exc()
          
@@ -364,17 +359,12 @@ class MAINUI(QObject) :
             try:
                 if   globalconfig['transkiroku'] and 'sqlwrite' in dir(self.textsource):
                     if globalconfig['transkirokuuse']==classname:
-                        
                         self.textsource.sqlwrite.execute(f'UPDATE artificialtrans SET machineTrans = "{res}" WHERE source = "{contentraw}"')
-                        self.textsource.sqlwrite.commit() 
-                        
                     elif classname not in ['rengong','premt']:
                         ret=self.textsource.sqlwrite.execute(f'SELECT * FROM artificialtrans WHERE source = "{contentraw}"').fetchone()
                         
                         if ret is None or ret[2] =='':                     
                             self.textsource.sqlwrite.execute(f'UPDATE artificialtrans SET machineTrans = "{res}" WHERE source = "{contentraw}"')
-                        
-                            self.textsource.sqlwrite.commit() 
             except:
                 print_exc()
             try:
@@ -386,8 +376,6 @@ class MAINUI(QObject) :
                     ret=json.dumps(ret).replace('"','""') 
                     
                     self.textsource.sqlwrite2.execute(f'UPDATE artificialtrans SET machineTrans = "{ret}" WHERE source = "{contentraw}"')
-                
-                    self.textsource.sqlwrite2.commit() 
             except:
                 print_exc() 
     def fanyiloader(self,classname):
