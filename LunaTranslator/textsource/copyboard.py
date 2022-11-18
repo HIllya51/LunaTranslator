@@ -12,11 +12,8 @@ class copyboard(basetext):
         self.ending=False
         self.typename='copy'
     
-        self.md5='0'
-        self.sqlfname='./transkiroku/0_copy.sqlite'
-        self.sqlfname_all='./transkiroku/0_copy.premt_synthesize.sqlite'
-        self.jsonfname='./transkiroku/0_copy.json'
-            
+        self.md5='0' 
+        self.prefix='0_copy'
         super(copyboard,self).__init__(textgetmethod)
     
     def gettextthread(self ):

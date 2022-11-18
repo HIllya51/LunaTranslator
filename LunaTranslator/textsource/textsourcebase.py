@@ -9,6 +9,9 @@ class basetext:
         self.t=threading.Thread(target=self.gettextthread_)
         self.t.setDaemon(True)
         self.t.start()
+        self.sqlfname='./transkiroku/'+self.prefix+'.sqlite'
+        self.sqlfname_all='./transkiroku/'+self.prefix++'.premt_synthesize.sqlite'
+        self.jsonfname='./transkiroku/'+self.prefix+'.json'
         try:
             def loadjson(self):
                 if os.path.exists(self.jsonfname):

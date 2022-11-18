@@ -4,6 +4,8 @@ from utils.config import globalconfig
 from threading import Thread
 import os,time
 from traceback import print_exc
+
+
 class basetrans:
      
     @property
@@ -22,6 +24,8 @@ class basetrans:
         except:
             print_exc()
         self.lastrequeststime=0
+        self._cache={}
+        self._MAXCACHE = 512
         self.t=Thread(target=self.fythread) 
         self.t.setDaemon(True)
         self.t.start()
@@ -34,8 +38,25 @@ class basetrans:
         pass
     def translate(self,content):
         pass
-     
-    
+      
+    def cached_translate(self,contentsolved):
+        try:
+            return self._cache[contentsolved]
+        except KeyError:
+            pass
+        
+        if len(self._cache) >= self._MAXCACHE:
+            # Drop the oldest item
+            try:
+                del self._cache[next(iter(self._cache))]
+            except  :
+                pass
+        try:
+            res=self.translate(contentsolved)
+            self._cache[contentsolved] = res
+        except:
+            res=''
+        return res
     def fythread(self):
         while True: 
             t=time.time()
@@ -59,7 +80,7 @@ class basetrans:
                     res=self.translate(contentraw)
                 else:
                     
-                    res=self.translate(contentsolved)
+                    res=self.cached_translate(contentsolved)
                     
             except:
                 print_exc()

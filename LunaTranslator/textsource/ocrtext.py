@@ -144,10 +144,8 @@ class ocrtext(basetext):
         self.lastocrtime=0
         self.hwnd=None
         
-        self.md5='0'
-        self.sqlfname='./transkiroku/0_ocr.sqlite'
-        self.sqlfname_all='./transkiroku/0_ocr.premt_synthesize.sqlite'
-        self.jsonfname='./transkiroku/0_ocr.json'
+        self.md5='0' 
+        self.prefix='0_ocr'
         
         super(ocrtext,self ).__init__(textgetmethod) 
     def gettextthread(self ):

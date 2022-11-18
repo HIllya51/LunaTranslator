@@ -24,9 +24,8 @@ class textractor(basetext  ):
         with open(pname,'rb') as ff:
             bs=ff.read() 
         self.md5=hashlib.md5(bs).hexdigest()
-        self.sqlfname='./transkiroku/'+self.md5+'_'+os.path.basename(pname).replace('.'+os.path.basename(pname).split('.')[-1],'.sqlite') 
-        self.sqlfname_all='./transkiroku/'+self.md5+'_'+os.path.basename(pname).replace('.'+os.path.basename(pname).split('.')[-1],'.premt_synthesize.sqlite') 
-        self.jsonfname='./transkiroku/'+self.md5+'_'+os.path.basename(pname).replace('.'+os.path.basename(pname).split('.')[-1],'.json')
+        self.prefix=self.md5+'_'+os.path.basename(pname).replace('.'+os.path.basename(pname).split('.')[-1],'') 
+        
             
         self.hookdatacollecter={}
         self.hookdatasort=[]
