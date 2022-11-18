@@ -13,11 +13,11 @@ import importlib
 import socket
 from gui.inputdialog import autoinitdialog
 def fanyiselect(self, who,checked ):
-            if checked : 
-                globalconfig['fanyi'][who]['use']=True
-                self.object.prepare(who) 
-            else:
-                globalconfig['fanyi'][who]['use']=False 
+            if checked :  
+                self.object.prepare(who)  
+            globalconfig['fanyi'][who]['use']=checked 
+            
+            
 def initsome11(self,l,label,grids): 
     grids.append(
         [(label,4)]
@@ -116,7 +116,12 @@ def setTabTwo(self) :
         transkirokuuse =QComboBox( )  
         transkirokuuse.addItems(_TRL([globalconfig['fanyi'][k]['name'] for k  in globalconfig['fanyi']]))
         transkirokuuse.setCurrentIndex(list(globalconfig['fanyi'].keys()).index(globalconfig['transkirokuuse']))
-        transkirokuuse.currentIndexChanged.connect(lambda x:globalconfig.__setitem__('transkirokuuse',list(globalconfig['fanyi'].keys())[x]))
+       
+        def changerengong(x):
+            globalconfig.__setitem__('transkirokuuse',list(globalconfig['fanyi'].keys())[x])
+            self.object.translation_ui.startTranslater()
+        transkirokuuse.currentIndexChanged.connect(changerengong)
+        self.transkirokuuse=transkirokuuse
         bt = QPushButton(_TR("导出sqlite文件为json文件")  )
 
         def _sqlite2json():

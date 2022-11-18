@@ -32,14 +32,10 @@ class TS(basetrans):
             return json.loads(savet)
         else:
 
-            try:
-                ret=self.sql.execute(f'SELECT machineTrans FROM artificialtrans WHERE source = "{content}"').fetchone()
-            
-                ret=json.loads(ret[0]) 
-                return ret 
-            except:
-                print_exc()
-                return {}
+            ret=self.sql.execute(f'SELECT machineTrans FROM artificialtrans WHERE source = "{content}"').fetchone()
+        
+            ret=json.loads(ret[0]) 
+            return ret  
              
 if __name__=='__main__':
     a=BINGFY()

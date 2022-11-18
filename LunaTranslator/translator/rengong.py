@@ -24,7 +24,7 @@ class TS(basetrans):
         js=self.json
         if globalconfig['premtsimiuse']:
             mindis=9999999
-            savet='无预翻译' 
+            
             for jc in self.json:
                 dis=Levenshtein.distance(content,jc) 
                 if dis<mindis:
@@ -37,14 +37,13 @@ class TS(basetrans):
                             savet= js[jc]['machineTrans']
             return savet
         else:
+        
+            if js[content]['userTrans'] and js[content]['userTrans']!='':
+                return js[content]['userTrans']
             
-            if content   in self.json:  
-                if js[content]['userTrans'] and js[content]['userTrans']!='':
-                    return js[content]['userTrans']
+            elif js[content]['machineTrans'] and js[content]['machineTrans']!='':
+                return js[content]['machineTrans']
                 
-                elif js[content]['machineTrans'] and js[content]['machineTrans']!='':
-                    return js[content]['machineTrans']
-            return '无预翻译'
 if __name__=='__main__':
     a=BINGFY()
     a.gettask('はーい、おやすみなさい')
