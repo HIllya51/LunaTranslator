@@ -105,7 +105,7 @@ def setTabThree(self) :
                 [('翻译结果繁简体显示',6),(self.getsimplecombobox(['大陆简体','马新简体','台灣正體','香港繁體','简体','繁體'],globalconfig,'fanjian'),4)],
                 [('翻译窗口顺时针旋转(重启生效)',6),(self.getsimplecombobox(['0','90','180','270'],globalconfig,'rotation'),4)],
                 [('翻译器显示语言(重启生效)',6),(self.getsimplecombobox(_TRL([ '简体中文','繁体中文','英文']),globalconfig,'languageuse'),4)], 
-               [('强制窗口保持总在最前',6),self.getsimpleswitch(globalconfig,'forcekeepontop'),],
+               #[('强制窗口保持总在最前',6),self.getsimpleswitch(globalconfig,'forcekeepontop'),],
         ] 
         self.yitiaolong("显示设置",buttongrid) 
         self.fontbigsmallsignal.connect(functools.partial(fontbigsmallfunction,self))
