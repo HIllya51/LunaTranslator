@@ -11,7 +11,7 @@ class TS(basetrans):
         if self.path!=p:
             if os.path.exists(self.path):
                     self.sql=sqlite3.connect(self.path,check_same_thread=False)
-            
+                    self.path=p
     def inittranslator(self):
         self.path=''
         js=translatorsetting[self.typename]

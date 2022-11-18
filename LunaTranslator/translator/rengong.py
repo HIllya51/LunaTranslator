@@ -12,6 +12,7 @@ class TS(basetrans):
             if os.path.exists(self.path):
                 with open(self.path,'r',encoding='utf8') as f:
                     self.json=json.load(f)
+                self.path=p
     def inittranslator(self):
         self.path=''
         js=translatorsetting[self.typename]
