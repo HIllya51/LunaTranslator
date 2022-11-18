@@ -45,7 +45,7 @@ import win32event,win32con,win32process,win32api
 import re
 import socket
 socket.setdefaulttimeout(globalconfig['translatortimeout'])
- 
+from utils.post import POSTSOLVE
 import xml.etree.ElementTree as ET  
 class MAINUI(QObject) :
     mainuiloadok=pyqtSignal()
@@ -190,16 +190,15 @@ class MAINUI(QObject) :
             return 
 
         t1=time.time()
-        postsolve=importlib.import_module('postprocess.post').POSTSOLVE
+         
         try:
-            paste_str=postsolve(paste_str)
+            paste_str=POSTSOLVE(paste_str)
         except:
             print_exc() 
         if len(paste_str)>10000:
             return 
         if globalconfig['outputtopasteboard'] and globalconfig['sourcestatus']['copy']==False:
-            pyperclip.copy(paste_str)
-        
+            pyperclip.copy(paste_str) 
 
         self.translation_ui.original=paste_str 
         if 'hira_' in dir(self):

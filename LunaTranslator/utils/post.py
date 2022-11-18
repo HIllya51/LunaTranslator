@@ -3,13 +3,9 @@ import re
 from traceback import print_exc
 from typing import Counter
 from collections import Counter
-
-from utils.config import postprocessconfig 
-def POSTSOLVE(line): 
-    if line=="":
-        return ""
-    
-    if postprocessconfig['_2']['use']:
+import importlib
+from utils.config import postprocessconfig,globalconfig 
+def _2_f(line):
         times=postprocessconfig['_2']['args']['重复次数(若为1则自动分析去重)']
          
         if times>=2:
@@ -34,7 +30,8 @@ def POSTSOLVE(line):
         
         newline=[line[i*guesstimes] for i in range(len(line)//guesstimes)]
         line=''.join(newline)
-    if postprocessconfig['_3']['use']:
+        return line
+def _3_f(line):
         times=postprocessconfig['_3']['args']['重复次数(若为1则自动分析去重)']
          
         if times>=2:
@@ -46,8 +43,8 @@ def POSTSOLVE(line):
                                 break
                         guesstimes-=1
         line=line[:len(line)//guesstimes] 
-         
-    if postprocessconfig['_10']['use']:
+        return line
+def _10_f(line):
         cnt=Counter(line)
         saveline=[]
         for k in sorted(cnt.keys(),key= lambda x :-cnt[x]) :
@@ -65,30 +62,35 @@ def POSTSOLVE(line):
                         else:
                                 break
                 saveline.append(line[last-length:last+1])
+         
         line=sorted(saveline, key=len, reverse=True)[0]
-    if postprocessconfig['_1']['use']:
+        return line
+def _1_f(line):
         r=re.compile('\{(.*?)/.*?\}')
         line=r.sub(lambda x:x.groups()[0],line)
         r=re.compile('\{(.*?):.*?\}')
         line=r.sub(lambda x:x.groups()[0],line)
-    if postprocessconfig['_4']['use']:  
+        return line
+def _4_f(line):
         line =re.sub('<(.*?)>','',line) 
         line=re.sub('</(.*?)>',"*",line)
-    if postprocessconfig['_6']['use']:
+        return line
+def _6_f(line):
         line=line.replace('\n','').replace('\r','')
-    if postprocessconfig['_9']['use']:
+        return line
+def _9_f(line):
         line=re.sub('([0-9a-zA-Z]+)','',line)
-    if postprocessconfig['_7']['use']:
+        return line
+def _7_f(line):
         filters=postprocessconfig['_7']['args']['替换内容']
         for fil in filters: 
                 if fil=="":
                         continue
                 else:
                         line=line.replace(fil,filters[fil])
-    if postprocessconfig['_8']['use']:
-        filters=postprocessconfig['_8']['args']['替换内容']
-         
-        
+        return line
+def _8_f(line):
+        filters=postprocessconfig['_8']['args']['替换内容'] 
         for fil in filters: 
                 if fil=="":
                         continue
@@ -97,5 +99,28 @@ def POSTSOLVE(line):
                                 line=re.sub(fil,filters[fil],line)
                         except:
                                 print_exc()
-    
+        return line
+
+def POSTSOLVE(line): 
+    if line=="":
+        return ""
+    functions={
+        '_2':_2_f,
+        '_3':_3_f,
+        '_10':_10_f,
+        '_1':_1_f,
+        '_4':_4_f,
+        '_6':_6_f,
+        '_9':_9_f,
+        '_7':_7_f,
+        '_8':_8_f,
+        '_11':importlib.import_module('postprocess.mypost').POSTSOLVE
+    }
+    for postitem in globalconfig['postprocess_rank']:
+        if postprocessconfig[postitem]['use']:
+                try:
+                        line=functions[postitem](line)
+                except:
+                        pass 
+        
     return line

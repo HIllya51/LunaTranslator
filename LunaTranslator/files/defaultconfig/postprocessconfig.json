@@ -46,5 +46,9 @@
     "_10": {
         "use": false,
         "name": "递减式重复行(ABCDBCDCDD->ABCD)"
-    }
+    },
+	"_11":{
+		"use":false,
+		"name":"自定义python处理"
+	}
 }

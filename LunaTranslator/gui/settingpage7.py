@@ -19,7 +19,7 @@ from gui.inputdialog import getsomepath1
 import gui.switchbutton
 import gui.attachprocessdialog  
 import gui.selecthook  
-
+import os
 
 def setTab7(self) :   
         grids=[
@@ -28,6 +28,11 @@ def setTab7(self) :
         sortlist=globalconfig['postprocess_rank']
         savelist=[]
         savelay=[]
+        def _openfile():
+            if os.path.exists('./LunaTranslator/postprocess/mypost.py'):
+                os.startfile( os.path.abspath('./LunaTranslator/postprocess/mypost.py'))
+            elif os.path.exists('./postprocess/mypost.py'):
+                os.startfile( os.path.abspath('./postprocess/mypost.py'))
         def changerank( item,up):
 
             ii=sortlist.index(item)
@@ -51,11 +56,14 @@ def setTab7(self) :
                 savelay[0].addWidget(ww,*p2)
             savelist[ii+1],savelist[toexchangei+1]=savelist[toexchangei+1],savelist[ii+1] 
         for i,post in enumerate(sortlist): 
-             
-            if 'args' in postprocessconfig[post]:
-                config=(self.getcolorbutton(globalconfig,'',callback= functools.partial( postconfigdialog,self,postprocessconfig[post]['args'],postprocessconfig[post]['name']+'设置'),icon='fa.gear',constcolor="#FF69B4")) 
+            if post=='_11':
+                config=(self.getcolorbutton(globalconfig,'',callback= _openfile,icon='fa.gear',constcolor="#FF69B4")) 
             else:
-                config=('')
+                if 'args' in postprocessconfig[post]:
+                    
+                    config=(self.getcolorbutton(globalconfig,'',callback= functools.partial( postconfigdialog,self,postprocessconfig[post]['args'],postprocessconfig[post]['name']+'设置'),icon='fa.gear',constcolor="#FF69B4")) 
+                else:
+                    config=('')
              
             button_up=(self.getcolorbutton(globalconfig,'',callback= functools.partial(changerank, post,True),icon='fa.arrow-up',constcolor="#FF69B4"))
             button_down=(self.getcolorbutton(globalconfig,'',callback= functools.partial(changerank, post,False),icon='fa.arrow-down',constcolor="#FF69B4")) 
@@ -67,18 +75,9 @@ def setTab7(self) :
                 button_down
             ]
             grids.append(l)
-        
-        p=QPushButton(_TR("自定义python处理" ) )
+         
 
-        def _openfile():
-            import os
-            if os.path.exists('./LunaTranslator/postprocess/post.py'):
-                os.startfile( os.path.abspath('./LunaTranslator/postprocess/post.py'))
-            elif os.path.exists('./postprocess/post.py'):
-                os.startfile( os.path.abspath('./postprocess/post.py'))
-        p.clicked.connect(lambda x:_openfile())
-
-        grids.append([(p,6)])
+        grids.append([''])
         def __(x):
             globalconfig['gongxiangcishu'].__setitem__('use',x)
             self.object.loadvnrshareddict()

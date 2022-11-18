@@ -3,7 +3,7 @@
         500,
         500
     ],
-	"postprocess_rank":["_2","_3", "_10","_1",   "_4", "_6", "_9", "_7", "_8"],
+	"postprocess_rank":["_2","_3", "_10","_1",   "_4", "_6", "_9", "_7", "_8","_11"],
 	"hist_split":false,
 	"hist_fontsize":12, 
     "fixedheight": false,
