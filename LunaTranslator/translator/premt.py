@@ -7,30 +7,18 @@ import json
 import sqlite3
 import Levenshtein
 class TS(basetrans):  
-    def inittranslator(self):
-        js=translatorsetting[self.typename]
-        if js['args']['sqlite文件']=="":
-            return '未指定文件'
-        else:
-            self.path = js['args']['sqlite文件']   
-            try:
-                if os.path.exists(self.path):
+    def checkfilechanged(self,p):
+        if self.path!=p:
+            if os.path.exists(self.path):
                     self.sql=sqlite3.connect(self.path,check_same_thread=False)
-            except:
-                return '无效文件' 
+            
+    def inittranslator(self):
+        self.path=''
+        js=translatorsetting[self.typename]
+        self.checkfilechanged(js['args']['sqlite文件'])
     def translate(self,content): 
         js=translatorsetting[self.typename]
-        if js['args']['sqlite文件']!="":
-             
-            if self.path!= js['args']['sqlite文件']  :
-                self.path = js['args']['sqlite文件']  
-                try:
-                    if os.path.exists(self.path):
-                        self.sql=sqlite3.connect(self.path,check_same_thread=False)
-                except:
-                    return '无效文件'
-        else:
-            return '未指定文件'
+        self.checkfilechanged(js['args']['sqlite文件'])
         if globalconfig['premtsimiuse']:
             mindis=9999999
             savet="{}"
