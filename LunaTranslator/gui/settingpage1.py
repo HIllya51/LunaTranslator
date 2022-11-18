@@ -4,7 +4,7 @@ import functools
 from utils.config import globalconfig 
 from traceback import print_exc
 import os
-import gui.switchbutton 
+
 from utils.getpidlist import getarch
 import gui.attachprocessdialog   
 from textsource.textractor import textractor
@@ -91,12 +91,11 @@ def textsourcechange(self,who,checked):
             if 'textsource' in dir(self.object) and self.object.textsource:
                 self.object.textsource.end() 
             
-        self.object.rect=None
-        self.object.translation_ui.showhidestate=False
-        self.object.translation_ui.showhide()
-        self.object.translation_ui.refreshtooliconsignal.emit()
         
-
+        self.object.translation_ui.showhidestate=False 
+        self.object.translation_ui.refreshtooliconsignal.emit()
+        self.object.rect=None
+        self.object.range_ui.hide()
         self.object.textsource=None
         if checked : 
             self.object.starttextsource() 

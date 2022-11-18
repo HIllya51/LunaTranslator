@@ -264,7 +264,7 @@ def minmaxmoveobservefunc(self):
                         pid,action=x
                 elif len(x)==6:
                         pid,action,x1,y1,x2,y2=x
-                
+                win32gui.SetWindowPos(int(self.object.translation_ui.winId()), win32con.HWND_TOPMOST, 0, 0, 0, 0,win32con. SWP_NOACTIVATE |win32con. SWP_NOSIZE | win32con.SWP_NOMOVE)  
                 try:
                   if self.object.textsource.pid:
                       

@@ -41,7 +41,11 @@ class basetext:
                 time.sleep(1)
                 continue
             #print(globalconfig['autorun'])
-            t=self.gettextthread()
+            try:
+                t=self.gettextthread()
+            except:
+                t=''
+                print_exc()
             if t and globalconfig['autorun']:
                 self.textgetmethod(t)
                 if self.typename=='ocr':

@@ -21,7 +21,8 @@ import utils.screen_rate
 from utils.wrapper import threader 
 from gui.rangeselect    import rangeadjust
 from  gui.settin   import Settin
- 
+
+from utils.subproc import subproc
 from tts.windowstts import tts  as windowstts
 from tts.huoshantts import tts as huoshantts
 from tts.azuretts import tts as azuretts
@@ -292,7 +293,10 @@ class MAINUI(QObject) :
                     #from textsource.namepipe import namepipe
             #     self.textsource=classes[use](self.textgetmethod) 
             #     return True
-                
+                 
+                if self.localocrstarted==False:
+                    subproc(f'files/ocr.exe  --zz "{self.timestamp}" --models ./files/ocr --det 2.6chdet.onnx --cls ch_ppocr_mobile_v2.0_cls_infer.onnx --rec 2.0jprec.onnx --keys japan_dict.txt --image ./capture/{self.timestamp}.png -b 0.01 -u 2 -o 0.01',keep=True)
+                    self.localocrstarted=True
             elif use=='copy': 
                 from textsource.copyboard import copyboard 
                 self.textsource=copyboard(self.textgetmethod) 
@@ -399,25 +403,7 @@ class MAINUI(QObject) :
                         _=aclass()
                     _.show=partial(self._maybeyrengong,classname)
                     self.translators[classname]=_ 
-    # 主函数
-    def setontopthread(self):
-        while True:
-            #self.translation_ui.keeptopsignal.emit() 
-            
-            try:  
-               
-                if self.settin_ui.realishide and self.translation_ui.keeptop:#isHidden(): 
-                    #子窗口未隐藏，导致为false（甚至是子窗口唤出的进程）
-                    win32gui.SetWindowPos(int(self.translation_ui.winId()), win32con.HWND_TOPMOST, 0, 0, 0, 0,win32con. SWP_NOACTIVATE |win32con. SWP_NOSIZE | win32con.SWP_NOMOVE)  
-                else:
-                    #win32gui.SetWindowPos(int(self.settin_ui.winId()), win32con.HWND_TOPMOST, 0, 0, 0, 0,win32con. SWP_NOACTIVATE |win32con. SWP_NOSIZE | win32con.SWP_NOMOVE)  
-                    pass
-                #win32gui.BringWindowToTop(int(self.translation_ui.winId())) 
-            except:
-                print_exc() 
-            time.sleep(0.3)
-
-
+   
     def onwindowloadautohook(self):
         if not(globalconfig['autostarthook'] and globalconfig['sourcestatus']['textractor']):
             return 
@@ -464,7 +450,7 @@ class MAINUI(QObject) :
         threading.Thread(target=self.mainuiloadok.emit).start()
 #        self.mainuiloadok.emit() 
     def mainuiloadafter(self):   
-        
+        self.localocrstarted=False
         #print(time.time()-t1)
         self.loadvnrshareddict()
         self.prepare()  
@@ -479,8 +465,7 @@ class MAINUI(QObject) :
         self.range_ui = rangeadjust(self)   
         self.hookselectdialog=gui.selecthook.hookselect(self ,self.settin_ui)
         threading.Thread(target=self.autohookmonitorthread).start()   
-        threading.Thread(target=self.setontopthread).start()
-        
+       
 if __name__ == "__main__" :
     
     QCoreApplication.setAttribute(Qt.AA_UseHighDpiPixmaps, True)
