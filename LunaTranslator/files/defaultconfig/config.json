@@ -8,6 +8,7 @@
     "fixedheight": false,
 	"height":200,
     "width": 1000,
+	"forcekeepontop":false,
 	"hist_geo":[0,0,1000,300],
 	"transtimeinternal":0.1,
 	"ocr_stable_sim":0.95,

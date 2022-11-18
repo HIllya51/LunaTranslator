@@ -425,7 +425,22 @@ class MAINUI(QObject) :
                 except:
                         print_exc()
                 
-                
+    def setontopthread(self):
+        while True:
+            #self.translation_ui.keeptopsignal.emit() 
+            
+            try:  
+               
+                if globalconfig['forcekeepontop']:
+                    #子窗口未隐藏，导致为false（甚至是子窗口唤出的进程）
+                    win32gui.SetWindowPos(int(self.translation_ui.winId()), win32con.HWND_TOPMOST, 0, 0, 0, 0,win32con. SWP_NOACTIVATE |win32con. SWP_NOSIZE | win32con.SWP_NOMOVE)  
+                else:
+                    #win32gui.SetWindowPos(int(self.settin_ui.winId()), win32con.HWND_TOPMOST, 0, 0, 0, 0,win32con. SWP_NOACTIVATE |win32con. SWP_NOSIZE | win32con.SWP_NOMOVE)  
+                    pass
+                #win32gui.BringWindowToTop(int(self.translation_ui.winId())) 
+            except:
+                print_exc() 
+            time.sleep(0.3)            
     def autohookmonitorthread(self):
         while True:
             self.onwindowloadautohook()
@@ -448,6 +463,7 @@ class MAINUI(QObject) :
             self.view.setGeometry(QDesktopWidget().screenGeometry())
             self.view.show()       
         threading.Thread(target=self.mainuiloadok.emit).start()
+        threading.Thread(target=self.setontopthread).start()
 #        self.mainuiloadok.emit() 
     def mainuiloadafter(self):   
         self.localocrstarted=False
