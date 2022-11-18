@@ -9,8 +9,8 @@ import Levenshtein
 class TS(basetrans):  
     def checkfilechanged(self,p):
         if self.path!=p:
-            if os.path.exists(self.path):
-                    self.sql=sqlite3.connect(self.path,check_same_thread=False)
+            if os.path.exists(p):
+                    self.sql=sqlite3.connect(p,check_same_thread=False)
                     self.path=p
     def inittranslator(self):
         self.path=''

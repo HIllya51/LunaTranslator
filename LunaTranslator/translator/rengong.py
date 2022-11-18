@@ -9,8 +9,8 @@ import Levenshtein
 class TS(basetrans): 
     def checkfilechanged(self,p):
         if self.path!=p:
-            if os.path.exists(self.path):
-                with open(self.path,'r',encoding='utf8') as f:
+            if os.path.exists(p):
+                with open(p,'r',encoding='utf8') as f:
                     self.json=json.load(f)
                 self.path=p
     def inittranslator(self):
@@ -21,7 +21,7 @@ class TS(basetrans):
         js=translatorsetting[self.typename]
         self.checkfilechanged(js['args']['json文件'] )
        
-       
+        js=self.json
         if globalconfig['premtsimiuse']:
             mindis=9999999
             savet='无预翻译' 
@@ -38,10 +38,7 @@ class TS(basetrans):
             return savet
         else:
             
-            if content   in self.json: 
-            #if ret is  None:  
-                #_id,source,mt,ut=ret 
-                
+            if content   in self.json:  
                 if js[content]['userTrans'] and js[content]['userTrans']!='':
                     return js[content]['userTrans']
                 
