@@ -6,34 +6,19 @@ import os
 import json
 import sqlite3
 import Levenshtein
-class TS(basetrans): 
-    def __init__(self,rootobject) :
-        super(TS,self).__init__()
-        self.rootbobject=rootobject 
+class TS(basetrans):  
+    def checkfilechanged(self,p):
+        if self.path!=p:
+            if os.path.exists(p):
+                    self.sql=sqlite3.connect(p,check_same_thread=False)
+                    self.path=p
     def inittranslator(self):
+        self.path=''
         js=translatorsetting[self.typename]
-        if js['args']['sqlite文件']=="":
-            return '未指定文件'
-        else:
-            self.path = js['args']['sqlite文件']   
-            try:
-                if os.path.exists(self.path):
-                    self.sql=sqlite3.connect(self.path,check_same_thread=False)
-            except:
-                return '无效文件' 
+        self.checkfilechanged(js['args']['sqlite文件'])
     def translate(self,content): 
         js=translatorsetting[self.typename]
-        if js['args']['sqlite文件']!="":
-             
-            if self.path!= js['args']['sqlite文件']  :
-                self.path = js['args']['sqlite文件']  
-                try:
-                    if os.path.exists(self.path):
-                        self.sql=sqlite3.connect(self.path,check_same_thread=False)
-                except:
-                    return '无效文件'
-        else:
-            return '未指定文件'
+        self.checkfilechanged(js['args']['sqlite文件'])
         if globalconfig['premtsimiuse']:
             mindis=9999999
             savet="{}"
@@ -47,14 +32,10 @@ class TS(basetrans):
             return json.loads(savet)
         else:
 
-            try:
-                ret=self.sql.execute(f'SELECT machineTrans FROM artificialtrans WHERE source = "{content}"').fetchone()
-            
-                ret=json.loads(ret[0]) 
-                return ret 
-            except:
-                print_exc()
-                return {}
+            ret=self.sql.execute(f'SELECT machineTrans FROM artificialtrans WHERE source = "{content}"').fetchone()
+        
+            ret=json.loads(ret[0]) 
+            return ret  
              
 if __name__=='__main__':
     a=BINGFY()
