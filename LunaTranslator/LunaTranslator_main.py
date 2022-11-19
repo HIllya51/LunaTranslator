@@ -261,6 +261,8 @@ class MAINUI(QObject) :
                 #from tts.
                 if use=='voiceroid2':
                     self.reader=ttss[use]( self.settin_ui.voicelistsignal,self.settin_ui.mp3playsignal,self.timestamp) 
+                else:
+                    self.reader=ttss[use]( self.settin_ui.voicelistsignal,self.settin_ui.mp3playsignal) 
     @threader
     def starttextsource(self):
          
