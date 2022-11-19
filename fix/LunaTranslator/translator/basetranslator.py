@@ -55,6 +55,7 @@ class basetrans:
             res=self.translate(contentsolved)
             self._cache[contentsolved] = res
         except:
+            print_exc()
             res=''
         return res
     def fythread(self):
