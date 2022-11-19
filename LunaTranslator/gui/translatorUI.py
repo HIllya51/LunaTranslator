@@ -436,7 +436,6 @@ class QUnFrameWindow(QWidget):
                     if globalconfig['fullscreenmethod']==0:  
                         if True:#self.isletgamefullscreened:  
                             win32gui.SetForegroundWindow(hwnd )   
-                            time.sleep(0.1)
                             self.multiprocesshwnd.put([os.path.abspath(globalconfig['magpiepath']),hwnd,globalconfig['magpiescalemethod'],globalconfig['magpieflags'],globalconfig['magpiecapturemethod']])   
  
                         else:
