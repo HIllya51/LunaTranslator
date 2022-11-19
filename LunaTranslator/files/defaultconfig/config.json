@@ -546,7 +546,8 @@
         "papago": {
             "use": false,
             "color": "blue",
-            "name": "papago"
+            "name": "papago",
+			"lang":["zh-CN","ja","en"]
         },
         "rengong": {
             "use": false,

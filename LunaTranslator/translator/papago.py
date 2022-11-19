@@ -68,7 +68,7 @@ class TS(basetrans):
 
         r = self.ss.post('https://papago.naver.com/apis/n2mt/translate', headers= headers,timeout = globalconfig['translatortimeout'], data =data , proxies=  {'http': None,'https': None})
     
-        data = r.json()   
+        data = r.json()    
         return  data['translatedText'] 
     def show(self,res):
         print('阿里','\033[0;33;47m',res,'\033[0m',flush=True)
