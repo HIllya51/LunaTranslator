@@ -7,7 +7,7 @@ from traceback import print_exc
 import functools
 import time
 from PyQt5.QtWidgets import    QWidget, QTableView, QAbstractItemView, QLabel, QVBoxLayout
-
+import qtawesome
 from PyQt5.QtWidgets import  QWidget,QLabel ,QLineEdit,QSpinBox,QPushButton,QTextEdit
 
 from PyQt5.QtGui import QStandardItem, QStandardItemModel
@@ -40,21 +40,20 @@ def autosaveshow(object):
                 rows=model.rowCount() 
                  
                 for row in range(rows):  
-                        savehook_new2[model.item(row,3).text()]['title']=model.item(row,2).text()
+                        savehook_new2[model.item(row,2).savetext]['title']=model.item(row,3).text()
                  
                 return QDialog().closeEvent(a0)
     dialog.closeEvent=closeEvent
-    def selectexe(item,button):
-        f=QFileDialog.getOpenFileName(directory=item.text() )
+    def selectexe(item):
+        f=QFileDialog.getOpenFileName(directory=item.savetext )
         res=f[0]
         if res!='':
                 res=res.replace('/','\\')
-                savehook_new[res]=savehook_new[item.text()]
-                savehook_new.pop(item.text())
-                savehook_new2[res]=savehook_new2[item.text()]
-                savehook_new2.pop(item.text())
-                item.setText(res)
-                button.setText(res)
+                savehook_new[res]=savehook_new[item.savetext]
+                savehook_new.pop(item.savetext)
+                savehook_new2[res]=savehook_new2[item.savetext]
+                savehook_new2.pop(item.savetext)
+                item.savetext=res 
 
     if True:
         model=QStandardItemModel(  dialog)
@@ -78,19 +77,21 @@ def autosaveshow(object):
                     icon=transparent
                 icon=QIcon(icon) 
                 model.setItem(row, 1, QStandardItem(icon,''))  
-                keyitem=QStandardItem(k)
-                model.setItem(row, 3, keyitem) 
+                keyitem=QStandardItem()
+                keyitem.savetext=k
+                model.setItem(row, 2, keyitem) 
                 model.setItem(row, 0, QStandardItem(''))  
-                model.setItem(row, 2,QStandardItem(savehook_new2[k]['title']) ) 
+                model.setItem(row, 3,QStandardItem(savehook_new2[k]['title']) ) 
                 table.setIndexWidget(model.index(row, 0),object.getsimpleswitch(savehook_new2[k],'leuse'))
-                
-                _=QPushButton(k)
-                _.clicked.connect(functools.partial(selectexe,keyitem,_))
-                table.setIndexWidget(model.index(row, 3),_) 
+                _=QPushButton()
+                _.setIcon(qtawesome.icon( 'fa.gear', color="#FF69B4"))  
+                _.setStyleSheet("background: transparent;") 
+                _.clicked.connect(functools.partial(selectexe,keyitem ))
+                table.setIndexWidget(model.index(row, 2),_) 
                 # item = QStandardItem(json.dumps(js[k],ensure_ascii=False))
                 # model.setItem(row, 2, item)
                 row+=1
-        model.setHorizontalHeaderLabels(_TRL(['转区','','标题', '游戏']))#,'HOOK'])
+        model.setHorizontalHeaderLabels(_TRL(['转区','','路径', '游戏']))#,'HOOK'])
         model
         #table.clicked.connect(self.show_info)
         button=QPushButton(dialog)
@@ -98,14 +99,14 @@ def autosaveshow(object):
         def clicked(): 
                 try:
                         
-                    game=model.item(table.currentIndex().row(),3).text() 
+                    game=model.item(table.currentIndex().row(),2).savetext
                     if os.path.exists(game):
                         #subprocess.Popen(model.item(table.currentIndex().row(),1).text()) 
                         print(game)
                         if game not in savehook_new2:
                                 savehook_new2[game]={}
                                 savehook_new2[game]['leuse']=True
-                                savehook_new2[game]['title']='' 
+                                savehook_new2[game]['title']=game
                         if savehook_new2[game]['leuse'] :
                                 b=win32file.GetBinaryType(game)
                                 if b==0: 
@@ -145,19 +146,23 @@ def autosaveshow(object):
                         icon=QIcon(icon) 
                         
                         model.setItem(row, 1, QStandardItem(icon,''))  
-                        keyitem=QStandardItem(res)
-                        model.setItem(row, 3, keyitem) 
+                        keyitem=QStandardItem()
+                        keyitem.savetext=res
+                        model.setItem(row, 2, keyitem) 
                         model.setItem(row, 0, QStandardItem(''))  
-                        model.setItem(row, 2,QStandardItem('') ) 
+                        model.setItem(row, 3,QStandardItem(res) ) 
                         savehook_new2[res]={}
                         savehook_new2[res]['leuse']=True
-                        savehook_new2[res]['title']='' 
+                        savehook_new2[res]['title']=res 
                         savehook_new[res]=[]
                         table.setIndexWidget(model.index(row, 0),object.getsimpleswitch(savehook_new2[res],'leuse'))
                         
-                        _=QPushButton(res)
-                        _.clicked.connect(functools.partial(selectexe,keyitem,_))
-                        table.setIndexWidget(model.index(row, 3),_) 
+                        _=QPushButton()
+                        _.setIcon(qtawesome.icon( 'fa.gear', color="#FF69B4"))
+                        
+                        _.setStyleSheet("background: transparent;") 
+                        _.clicked.connect(functools.partial(selectexe,keyitem ))
+                        table.setIndexWidget(model.index(row, 2),_) 
                         table.setCurrentIndex(model.index(row,0)) 
                         
         button3.clicked.connect(clicked3)
@@ -165,7 +170,7 @@ def autosaveshow(object):
         button2.setText(_TR('删除游戏'))
         def clicked2(): 
                 
-                savehook_new.pop(model.item(table.currentIndex().row(),3).text())
+                savehook_new.pop(model.item(table.currentIndex().row(),2).savetext)
                 
                 model.removeRow(table.currentIndex().row())
         button2.clicked.connect(clicked2)
