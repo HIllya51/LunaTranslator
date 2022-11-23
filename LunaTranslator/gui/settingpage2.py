@@ -152,8 +152,8 @@ def setTabTwo(self) :
                                             if  _i==0 or _t==transkirokuuse:
                                                 js[source]['machineTrans']=mtjs[_t]
                                                 
-                                            js[source]['machineTrans'+str(_i)]=mtjs[_t]
-                                            js[source]['source'+str(_i)]=_t
+                                            js[source]['inferrence_'+str(_i)]=mtjs[_t]
+                                            js[source]['api_'+str(_i)]=_t
                                 with open(os.path.join(os.path.dirname(f[0]), os.path.basename(f[0]).replace('.'+os.path.basename(f[0]).split('.')[-1],'.json')),'w',encoding='utf8') as ff:
                                         ff.write(json.dumps(js,ensure_ascii=False,sort_keys=False, indent=4))
                         except:
