@@ -131,8 +131,24 @@ def setTabTwo(self) :
                                 sql=sqlite3.connect(f[0],check_same_thread=False)
                                 ret=sql.execute(f'SELECT * FROM artificialtrans  ').fetchall()
                                 js={}
-                                for _id,source,mt,ut  in ret:
+
+                                for _aret  in ret:
+                                    if len(_aret)==4:
+                                        #旧版兼容
+                                         
+                                        _id,source,mt,ut=_aret
                                         js[source]={'userTrans':ut,'machineTrans':mt}
+                                    elif len(_aret)==3: 
+                                        _id,source,mt =_aret
+                                        js[source]={'userTrans':'','machineTrans':''}
+                                        mtjs=json.loads(mt)
+                                        for _i,_t in enumerate(mtjs):
+                                            if _i==0:
+                                                js[source]['machineTrans']=mtjs[_t]
+                                                
+                                            else:
+                                                js[source]['machineTrans'+str(_i)]=mtjs[_t]
+                                            js[source]['source'+str(_i)]=_t
                                 with open(os.path.join(os.path.dirname(f[0]), os.path.basename(f[0]).replace('.'+os.path.basename(f[0]).split('.')[-1],'.json')),'w',encoding='utf8') as ff:
                                         ff.write(json.dumps(js,ensure_ascii=False,sort_keys=False, indent=4))
                         except:
@@ -163,7 +179,7 @@ def setTabTwo(self) :
             ],
             
                 [('录制翻译文件',6),(self.getsimpleswitch(globalconfig,'transkiroku'),1),'',
-                 ('优先录制的翻译源',6),(transkirokuuse,6),
+                # ('优先录制的翻译源',6),(transkirokuuse,6),
                  
                  (bt,8) ,
                  ],

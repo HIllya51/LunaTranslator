@@ -232,9 +232,9 @@ class MAINUI(QObject) :
         try:
             if skip==False and globalconfig['transkiroku']  and 'sqlwrite2' in dir(self.textsource):
                 paste_str=paste_str.replace('"','""')   
-                ret=self.textsource.sqlwrite.execute(f'SELECT * FROM artificialtrans WHERE source = "{paste_str}"').fetchone()
-                if ret is  None:                     
-                    self.textsource.sqlwrite.execute(f'INSERT INTO artificialtrans VALUES(NULL,"{paste_str}","","");')
+                # ret=self.textsource.sqlwrite.execute(f'SELECT * FROM artificialtrans WHERE source = "{paste_str}"').fetchone()
+                # if ret is  None:                     
+                #     self.textsource.sqlwrite.execute(f'INSERT INTO artificialtrans VALUES(NULL,"{paste_str}","","");')
                 ret=self.textsource.sqlwrite2.execute(f'SELECT * FROM artificialtrans WHERE source = "{paste_str}"').fetchone()
                 if ret is  None:                     
                     self.textsource.sqlwrite2.execute(f'INSERT INTO artificialtrans VALUES(NULL,"{paste_str}","{json.dumps({})}");')
@@ -357,17 +357,17 @@ class MAINUI(QObject) :
             res=res.replace('"','""')   
             contentraw=contentraw.replace('"','""')   
              
-            try:
-                if   globalconfig['transkiroku'] and 'sqlwrite' in dir(self.textsource):
-                    if globalconfig['transkirokuuse']==classname:
-                        self.textsource.sqlwrite.execute(f'UPDATE artificialtrans SET machineTrans = "{res}" WHERE source = "{contentraw}"')
-                    elif classname not in ['rengong','premt']:
-                        ret=self.textsource.sqlwrite.execute(f'SELECT * FROM artificialtrans WHERE source = "{contentraw}"').fetchone()
+            # try:
+            #     if   globalconfig['transkiroku'] and 'sqlwrite' in dir(self.textsource):
+            #         if globalconfig['transkirokuuse']==classname:
+            #             self.textsource.sqlwrite.execute(f'UPDATE artificialtrans SET machineTrans = "{res}" WHERE source = "{contentraw}"')
+            #         elif classname not in ['rengong','premt']:
+            #             ret=self.textsource.sqlwrite.execute(f'SELECT * FROM artificialtrans WHERE source = "{contentraw}"').fetchone()
                         
-                        if ret is None or ret[2] =='':                     
-                            self.textsource.sqlwrite.execute(f'UPDATE artificialtrans SET machineTrans = "{res}" WHERE source = "{contentraw}"')
-            except:
-                print_exc()
+            #             if ret is None or ret[2] =='':                     
+            #                 self.textsource.sqlwrite.execute(f'UPDATE artificialtrans SET machineTrans = "{res}" WHERE source = "{contentraw}"')
+            # except:
+            #     print_exc()
             try:
                 if  globalconfig['transkiroku'] and 'sqlwrite2' in dir(self.textsource):
                     ret=self.textsource.sqlwrite2.execute(f'SELECT machineTrans FROM artificialtrans WHERE source = "{contentraw}"').fetchone() 
