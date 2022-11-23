@@ -552,8 +552,18 @@
         "rengong": {
             "use": false,
             "color": "blue",
-            "name": "人工翻译",
-			"lang":["zh-CN", "ja", "en"]
+            "name": "人工翻译" 
+			 
+        },"rengong_vnr": {
+            "use": false,
+            "color": "blue",
+            "name": "人工翻译_VNR" 
+			 
+        },"rengong_msk": {
+            "use": false,
+            "color": "blue",
+            "name": "人工翻译_Misaka" 
+			 
         },
         "premt": {
             "use": false,

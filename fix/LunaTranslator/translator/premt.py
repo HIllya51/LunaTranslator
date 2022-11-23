@@ -29,13 +29,20 @@ class TS(basetrans):
                     mindis=dis
                     if mindis<globalconfig['premtsimi']:
                         savet=mt
-            return json.loads(savet)
+            try:
+                ret=json.loads(savet) 
+            except:
+                #旧版兼容
+                ret= savet
+
         else:
 
             ret=self.sql.execute(f'SELECT machineTrans FROM artificialtrans WHERE source = "{content}"').fetchone()
-        
-            ret=json.loads(ret[0]) 
-            return ret  
+            try:
+                ret=json.loads(ret[0]) 
+            except:
+                ret= ret[0]
+        return ret  
              
 if __name__=='__main__':
     a=BINGFY()

@@ -29,7 +29,7 @@ class TS(basetrans):
                 dis=Levenshtein.distance(content,jc) 
                 if dis<mindis:
                     mindis=dis
-                    if mindis<globalconfig['premtsimi']:
+                    if mindis<globalconfig['premtsimi']: 
                         if js[jc]['userTrans'] and js[jc]['userTrans']!='':
                             savet=js[jc]['userTrans']
                         

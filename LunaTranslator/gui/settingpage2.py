@@ -37,17 +37,23 @@ def initsome11(self,l,label,grids):
         
         
         if fanyi in translatorsetting :
-             
+            fileselect={
+                'json文件':{'dir':False,'filter':'*.json'},
+                'sqlite文件':{'dir':False,'filter':'*.sqlite'},
+                'xml文件':{'dir':False,'filter':'*.xml'},
+                'txt文件':{'dir':False,'filter':'*.txt'},
+                'xml目录':{'dir':True,'filter':''},
+            }
             items=[] 
             for arg in translatorsetting[fanyi]['args']: 
                 items.append({
                         't':'lineedit','l':arg,'d':translatorsetting[fanyi]['args'],'k':arg
                     })
-                if arg=='json文件' or arg=='sqlite文件':
+                if arg in fileselect:
                     items[-1].update({
                         't':'file',
-                        'dir':False,
-                        'filter':"*.json" if arg=='json文件' else "*.sqlite"
+                        'dir':fileselect[arg]['dir'],
+                        'filter':fileselect[arg]['filter']
                     }) 
                 elif arg=='路径':
                     items[-1].update({
@@ -70,7 +76,7 @@ def initsome11(self,l,label,grids):
 def initfanyiswitchs_auto11(self,grids):  
         lixians=set(('jb7','dreye','kingsoft'))
         alls=set(globalconfig['fanyi'].keys())
-        mt=set(('rengong','premt'))
+        mt=set(('rengong','premt','rengong_vnr','rengong_msk'))
         online=alls-lixians-mt
 
         mianfei=set()

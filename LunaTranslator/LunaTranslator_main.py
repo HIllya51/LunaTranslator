@@ -333,7 +333,7 @@ class MAINUI(QObject) :
     def _maybeyrengong(self,classname,contentraw,_):
         
         classname,res,mp=_
-        if classname not in ['rengong','premt']: 
+        if classname not in ['rengong','premt','rengong_vnr','rengong_msk']: 
             res=self.solveaftertrans(res,mp)
         if globalconfig['fanjian']:
             import zhconv  
@@ -352,7 +352,7 @@ class MAINUI(QObject) :
                 res=zhconv.convert(res, ['zh-cn', 'zh-tw', 'zh-hk', 'zh-sg', 'zh-hans', 'zh-hant'][globalconfig['fanjian']])
             self.translation_ui.displayres.emit(classname,res)
         
-        if classname not in ['rengong','premt']:
+        if classname not in ['rengong','premt','rengong_vnr','rengong_msk']:
              
             res=res.replace('"','""')   
             contentraw=contentraw.replace('"','""')   
@@ -387,6 +387,7 @@ class MAINUI(QObject) :
                         return
                     aclass.settypename(classname)
                     _=aclass()
+                    _.object=self
                     _.show=partial(self._maybeyrengong,classname)
                     self.translators[classname]=_ 
    

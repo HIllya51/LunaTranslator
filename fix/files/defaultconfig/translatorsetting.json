@@ -86,6 +86,16 @@
         "args": {
             "json文件": ""
         }
+    },"rengong_vnr": {
+        "args": {
+            "xml文件": "",
+			"xml目录":"",
+			"说明":"可以指定xml文件，或根据从目录中根据md5读取"
+        }
+    },"rengong_msk": {
+        "args": {
+            "txt文件": "" 
+        }
     },
     "premt": {
         "args": {
