@@ -118,7 +118,7 @@ class Deepl(Tse):
 
             ss_params, ss_data = self.split_sentences_param(query_text, from_language)
             # _ = ss.options(self.api_url, params=ss_params, headers=self.api_headers, timeout=timeout, proxies=proxies)
-            r_ss = ss.post(self.api_url, params=ss_params, json=ss_data, headers=self.api_headers, timeout=timeout, proxies=proxies)
+            r_ss = ss.post(self.api_url, params=ss_params, json=ss_data, headers=self.api_headers, timeout=timeout )
              
             ss_data = r_ss.json()
             print(ss_data)
@@ -126,7 +126,7 @@ class Deepl(Tse):
 
             cs_params, cs_data = self.context_sentences_param(ss_sentences, from_language, to_language)
             # _ = ss.options(self.api_url, params=cs_params, headers=self.api_headers, timeout=timeout, proxies=proxies)
-            r_cs = ss.post(self.api_url, params=cs_params, json=cs_data, headers=self.api_headers, timeout=timeout, proxies=proxies)
+            r_cs = ss.post(self.api_url, params=cs_params, json=cs_data, headers=self.api_headers, timeout=timeout )
              
             data = r_cs.json()
 

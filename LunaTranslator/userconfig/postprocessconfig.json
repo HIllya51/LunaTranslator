@@ -54,5 +54,9 @@
     "_11": {
         "use": false,
         "name": "自定义python处理"
+    },
+    "_13": {
+        "use": true,
+        "name": "递增式重复行(AABABCABCD->ABCD)"
     }
 }

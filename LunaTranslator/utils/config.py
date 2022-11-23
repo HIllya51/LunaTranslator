@@ -70,6 +70,10 @@ syncconfig(translatorsetting,translatordfsetting)
 
 
 syncconfig(ocrsetting,ocrdfsetting,True,3)
+
+if( len(globalconfig['postprocess_rank'])!=len(defaultglobalconfig['postprocess_rank'])):
+    globalconfig['postprocess_rank']=defaultglobalconfig['postprocess_rank']
+
 language=globalconfig['languageuse']
 with open(f'./files/lang/{language}.json','r',encoding='utf8') as ff:
     languageshow=json.load(ff)

@@ -40,20 +40,23 @@ class basetrans:
         pass
       
     def cached_translate(self,contentsolved):
+        langkey=(self.srclang,self.tgtlang)
+        if langkey not in self._cache:
+            self._cache[langkey]={}
         try:
-            return self._cache[contentsolved]
+            return self._cache[langkey][contentsolved]
         except KeyError:
             pass
         
-        if len(self._cache) >= self._MAXCACHE:
+        if len(self._cache[langkey]) >= self._MAXCACHE:
             # Drop the oldest item
             try:
-                del self._cache[next(iter(self._cache))]
+                del self._cache[langkey][next(iter(self._cache))]
             except  :
                 pass
         try:
             res=self.translate(contentsolved)
-            self._cache[contentsolved] = res
+            self._cache[langkey][contentsolved] = res
         except:
             print_exc()
             res=''

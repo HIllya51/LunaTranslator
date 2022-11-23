@@ -65,6 +65,28 @@ def _10_f(line):
          
         line=sorted(saveline, key=len, reverse=True)[0]
         return line
+def _13_f(line:str): #递增式
+        cnt=Counter(line)
+        saveline=[]
+        for k in sorted(cnt.keys(),key= lambda x :-cnt[x]) :
+                 
+                first=line.find(k)
+                length=1
+                while True:
+                        if first+length>=len(line):
+                          break
+                        
+                        if line[first]==line[first+length]:
+                            first+=length
+                        if first+length<len(line):
+                               
+                                length+=1
+                        else:
+                                break
+                saveline.append(line[first:first+length])
+         
+        line=sorted(saveline, key=len, reverse=True)[0]
+        return line
 def _1_f(line):
         r=re.compile('\{(.*?)/.*?\}')
         line=r.sub(lambda x:x.groups()[0],line)
@@ -114,6 +136,7 @@ def POSTSOLVE(line):
         '_9':_9_f,
         '_7':_7_f,
         '_8':_8_f,
+        '_13':_13_f,
         '_11':importlib.import_module('postprocess.mypost').POSTSOLVE
     }
     for postitem in globalconfig['postprocess_rank']:
