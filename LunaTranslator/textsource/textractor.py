@@ -196,12 +196,13 @@ class textractor(basetext  ):
                 self.runonce_line=output
             else:
                 if globalconfig['remove_useless_hook']:
-                    hookaddress=[_[2] for _ in self.selectedhook]
+                    hookcodes=[_[-1] for _ in self.selectedhook]+[_[-1] for _ in self.autostarthookcode]
                     address=key[2]
-                    if address in hookaddress:
+                    if key[-1] not in hookcodes:
                         if address not in self.removedaddress: 
                             self.removedaddress.append(address)
                             address=int(address,16) 
+                            print(key)
                             self.object.translation_ui.writeprocesssignal.emit( QByteArray((f'-{address} -P{self.pid}\r\n').encode(encoding='utf-16-le'))) 
             # else:
                  
