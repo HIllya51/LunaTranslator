@@ -10,10 +10,16 @@ class basetrans:
      
     @property
     def srclang(self):
-        return globalconfig['fanyi'][self.typename]['lang'][[1,2][globalconfig['srclang']]] 
+        try:
+            return globalconfig['fanyi'][self.typename]['lang'][[1,2][globalconfig['srclang']]] 
+        except:
+            return ''
     @property
     def tgtlang(self):
-        return globalconfig['fanyi'][self.typename]['lang'][[0,2][globalconfig['tgtlang']]] 
+        try:
+            return globalconfig['fanyi'][self.typename]['lang'][[0,2][globalconfig['tgtlang']]] 
+        except:
+            return ''
     @classmethod
     def settypename(self,typename):
         self.typename=typename
@@ -62,7 +68,7 @@ class basetrans:
             res=''
         return res
     def fythread(self):
-        while True: 
+        while True:  
             t=time.time()
             if self.typename not in ['jbj7','kingsoft','dreye','rengong','premt','rengong_vnr','rengong_msk'] and t-self.lastrequeststime <globalconfig['transtimeinternal']:
                 time.sleep(t-self.lastrequeststime)
@@ -80,7 +86,7 @@ class basetrans:
                 continue
             
             try: 
-                if self.typename in ['rengong','rengong_vnr','rengong_msk','premt']:
+                if self.typename in ['jbj7','kingsoft','dreye','rengong','premt','rengong_vnr','rengong_msk']:
                     res=self.translate(contentraw)
                 else:
                     
