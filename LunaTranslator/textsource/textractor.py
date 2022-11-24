@@ -58,7 +58,7 @@ class textractor(basetext  ):
         self.textfilter=''
         self.autostart=autostart
         self.autostarthookcode=[tuple(__) for __ in autostarthookcode]
-        
+        self.removedaddress=[]
         if self.autostart:
             # self.autostarttimeout=QTimer()
             # self.autostarttimeout.timeout.connect(self.autostartinsert)
@@ -194,7 +194,15 @@ class textractor(basetext  ):
                 #print(key==self.selectedhook,key,self.selectedhook)
                 self.newline.put(output) 
                 self.runonce_line=output
- 
+            else:
+                if globalconfig['remove_useless_hook']:
+                    hookaddress=[_[2] for _ in self.selectedhook]
+                    address=key[2]
+                    if address in hookaddress:
+                        if address not in self.removedaddress: 
+                            self.removedaddress.append(address)
+                            address=int(address,16) 
+                            self.object.translation_ui.writeprocesssignal.emit( QByteArray((f'-{address} -P{self.pid}\r\n').encode(encoding='utf-16-le'))) 
             # else:
                  
             #     if globalconfig['extractalltext']:

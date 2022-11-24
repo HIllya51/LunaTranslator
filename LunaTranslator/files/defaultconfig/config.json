@@ -7,6 +7,7 @@
 	"hist_split":false,
 	"hist_fontsize":12, 
     "fixedheight": false,
+	"remove_useless_hook":false,
 	"height":200,
     "width": 1000,
 	"forcekeepontop":true,
