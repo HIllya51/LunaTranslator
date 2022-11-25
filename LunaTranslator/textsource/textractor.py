@@ -197,13 +197,14 @@ class textractor(basetext  ):
             else:
                 if globalconfig['remove_useless_hook']:
                     hookcodes=[_[-1] for _ in self.selectedhook]+[_[-1] for _ in self.autostarthookcode]
-                    address=key[2]
-                    if key[-1] not in hookcodes:
-                        if address not in self.removedaddress: 
-                            self.removedaddress.append(address)
-                            address=int(address,16) 
-                            print(key)
-                            self.object.translation_ui.writeprocesssignal.emit( QByteArray((f'-{address} -P{self.pid}\r\n').encode(encoding='utf-16-le'))) 
+                    if len(hookcodes)>0:
+                        address=key[2]
+                        if key[-1] not in hookcodes:
+                            if address not in self.removedaddress: 
+                                self.removedaddress.append(address)
+                                address=int(address,16) 
+                                print(key)
+                                self.object.translation_ui.writeprocesssignal.emit( QByteArray((f'-{address} -P{self.pid}\r\n').encode(encoding='utf-16-le'))) 
             # else:
                  
             #     if globalconfig['extractalltext']:
