@@ -137,13 +137,13 @@ def POSTSOLVE(line):
         '_7':_7_f,
         '_8':_8_f,
         '_13':_13_f,
-        '_11':importlib.import_module('postprocess.mypost').POSTSOLVE
+        '_11':importlib.import_module(globalconfig['postprocessf']).POSTSOLVE
     }
     for postitem in globalconfig['postprocess_rank']:
         if postprocessconfig[postitem]['use']:
                 try:
                         line=functions[postitem](line)
                 except:
-                        pass 
+                        print_exc() 
         
     return line

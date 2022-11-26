@@ -52,11 +52,11 @@
         "name": "递减式重复行(ABCDBCDCDD->ABCD)"
     },
     "_11": {
-        "use": false,
+        "use": true,
         "name": "自定义python处理"
     },
     "_13": {
-        "use": true,
+        "use": false,
         "name": "递增式重复行(AABABCABCD->ABCD)"
     }
 }

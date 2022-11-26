@@ -9,6 +9,7 @@
     "fixedheight": false,
 	"remove_useless_hook":false,
 	"height":200,
+	"postprocessf":"postprocess.mypost",
     "width": 1000,
 	"forcekeepontop":true,
 	"hist_geo":[0,0,1000,300],

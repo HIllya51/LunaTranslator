@@ -33,15 +33,19 @@ class TS(basetrans):
         self.checkstates(js)
     
     def checkstates(self,js):
+        self.jsons=[]
         try:
             self.checkfilechanged(js['args']['xml文件'] )
+            self.jsons.append(self.json)
         except:
             pass
         try:
 
             self.checkmd5changedordirchanged(self,js['args']['xml目录'] )
+            self.jsons.append(self.json2)
         except:
             pass
+
     def translate(self,content): 
         js=translatorsetting[self.typename]
         self.checkstates(js)
@@ -49,7 +53,7 @@ class TS(basetrans):
         if globalconfig['premtsimiuse']:
             mindis=9999999
             
-            for js in [self.json,self.json2]:
+            for js in self.jsons:
                 for jc in self.json:
                     dis=Levenshtein.distance(content,jc) 
                     if dis<mindis:
@@ -62,7 +66,7 @@ class TS(basetrans):
                                 savet= js[jc]['machineTrans']
             return savet
         else:
-            for js in [self.json,self.json2]:
+            for js in self.jsons:
                 if js[content]['userTrans'] and js[content]['userTrans']!='':
                     return js[content]['userTrans']
                 
