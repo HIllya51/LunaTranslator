@@ -338,8 +338,10 @@
         "copy": true,
         "ocr": false,
         "textractor": false,
-        "textractor_pipe": false
+        "textractor_pipe": false,
+		"txt":false
     },
+	"txtreadlineinterval":5,
 	"verticalocr":false,
     "ocr": {
         "local": {
