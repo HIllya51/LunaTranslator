@@ -39,8 +39,7 @@ class txt(basetext):
             self.writetxt(line)
             time.sleep(globalconfig['txtreadlineinterval'])
     def gettextthread(self ):
-                 
-            time.sleep(0.1)
+                  
             return self.queue.get()
     def runonce(self):  
         self.textgetmethod(self.runonceline,False)
