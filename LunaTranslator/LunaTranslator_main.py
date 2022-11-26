@@ -263,14 +263,14 @@ class MAINUI(QObject) :
                     self.reader=ttss[use]( self.settin_ui.voicelistsignal,self.settin_ui.mp3playsignal,self.timestamp) 
                 else:
                     self.reader=ttss[use]( self.settin_ui.voicelistsignal,self.settin_ui.mp3playsignal) 
-    @threader
+    #@threader
     def starttextsource(self):
          
         if hasattr(self,'textsource') and self.textsource and self.textsource.ending==False :
             self.textsource.end()  
         if True:#try:
             #classes={'ocr':ocrtext,'copy':copyboard,'textractor':textractor}#,'textractor_pipe':namepipe}
-            classes=['ocr','copy','textractor']
+            classes=['ocr','copy','textractor','txt']
             use=None  
             for k in classes: 
                 if globalconfig['sourcestatus'][k]:
@@ -296,7 +296,9 @@ class MAINUI(QObject) :
             elif use=='copy': 
                 from textsource.copyboard import copyboard 
                 self.textsource=copyboard(self.textgetmethod) 
-              
+            elif use=='txt':
+                from textsource.txt import txt 
+                self.textsource=txt(self.textgetmethod) 
             return True 
     @threader
     def starthira(self): 
@@ -351,7 +353,13 @@ class MAINUI(QObject) :
             if globalconfig['fanjian']!=0 and globalconfig['tgtlang']==0:
                 res=zhconv.convert(res, ['zh-cn', 'zh-tw', 'zh-hk', 'zh-sg', 'zh-hans', 'zh-hant'][globalconfig['fanjian']])
             self.translation_ui.displayres.emit(classname,res)
-        
+        if  self.textsource.typename=='txt':
+            if globalconfig['showfanyisource']:
+                self.textsource.writetxt(globalconfig['fanyi'][classname]['name']+'  '+res) 
+                 
+            else:
+                self.textsource.writetxt( res )
+            
         if classname not in ['rengong','premt','rengong_vnr','rengong_msk']:
              
             res=res.replace('"','""')   

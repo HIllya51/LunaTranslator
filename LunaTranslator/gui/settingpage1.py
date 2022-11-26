@@ -4,7 +4,6 @@ import functools
 from utils.config import globalconfig 
 from traceback import print_exc
 import os
-from PyQt5.QtWidgets import  QWidget,QLabel ,QLineEdit,QSpinBox,QPushButton,QDialog,QVBoxLayout ,QHeaderView,QFileDialog ,QGridLayout
 
 from utils.getpidlist import getarch
 import gui.attachprocessdialog   
