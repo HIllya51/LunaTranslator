@@ -4,6 +4,7 @@ import functools
 from utils.config import globalconfig 
 from traceback import print_exc
 import os
+from PyQt5.QtWidgets import  QWidget,QLabel ,QLineEdit,QSpinBox,QPushButton,QDialog,QVBoxLayout ,QHeaderView,QFileDialog ,QGridLayout
 
 from utils.getpidlist import getarch
 import gui.attachprocessdialog   
@@ -23,22 +24,20 @@ def setTabOne(self) :
                 [   ('剪贴板',3),(self.getsimpleswitch(globalconfig['sourcestatus'],'copy',name='copyboardswitch',callback=functools.partial(textsourcechange,self,'copy')),1),'',
                     ('OCR',3),(self.getsimpleswitch(globalconfig['sourcestatus'],'ocr',name='ocrswitch',callback=functools.partial(textsourcechange,self,'ocr')),1),'',
                     ('Textractor',3),(self.getsimpleswitch(globalconfig['sourcestatus'],'textractor',name='textractorswitch',callback=functools.partial(textsourcechange,self,'textractor')),1)],
-                [('',10),('选择游戏',3),(self.getcolorbutton(globalconfig ,'',enable=globalconfig['sourcestatus']['textractor'],name='selectbutton',icon='fa.gear',constcolor="#FF69B4",callback=functools.partial(settingtextractor,self) ),1)],
+                
+                [('TXT文件',3),(self.getsimpleswitch(globalconfig['sourcestatus'],'txt',name='txtswitch',callback=functools.partial(textsourcechange,self,'txt')),1),('',6),('选择游戏',3),(self.getcolorbutton(globalconfig ,'',enable=globalconfig['sourcestatus']['textractor'],name='selectbutton',icon='fa.gear',constcolor="#FF69B4",callback=functools.partial(settingtextractor,self) ),1)],
                 [('',10),('选择文本',3),(self.getcolorbutton(globalconfig ,'',enable=globalconfig['sourcestatus']['textractor'],name='selecthookbutton',icon='fa.gear',constcolor="#FF69B4",callback=functools.partial(settingsource,self)),1)],
                 [''], 
-                [('提取的文本自动复制到剪贴板',5),(self.getsimpleswitch(globalconfig ,'outputtopasteboard',name='outputtopasteboard'),1)],
-                
+                [('提取的文本自动复制到剪贴板',5),(self.getsimpleswitch(globalconfig ,'outputtopasteboard',name='outputtopasteboard'),1)], 
         ] 
         self.yitiaolong("基本设置",grids)
         
  
-        self.sourceswitchs={'copy':self.copyboardswitch,'ocr':self.ocrswitch,'textractor':self.textractorswitch}# ,'textractor_pipe':self.Textractor_forward_extension_switch}
+        self.sourceswitchs={'copy':self.copyboardswitch,'ocr':self.ocrswitch,'textractor':self.textractorswitch ,'txt':self.txtswitch}# ,'textractor_pipe':self.Textractor_forward_extension_switch}
  
 
         self.resetsourcesignal.connect(functools.partial(resetsource,self))   
-            
-
-    
+             
 def settingtextractor(self ): 
          
         if globalconfig['sourcestatus']['textractor']==False:
