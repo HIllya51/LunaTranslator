@@ -353,12 +353,7 @@ class MAINUI(QObject) :
             if globalconfig['fanjian']!=0 and globalconfig['tgtlang']==0:
                 res=zhconv.convert(res, ['zh-cn', 'zh-tw', 'zh-hk', 'zh-sg', 'zh-hans', 'zh-hant'][globalconfig['fanjian']])
             self.translation_ui.displayres.emit(classname,res)
-        if  self.textsource.typename=='txt':
-            if globalconfig['showfanyisource']:
-                self.textsource.writetxt(globalconfig['fanyi'][classname]['name']+'  '+res) 
-                 
-            else:
-                self.textsource.writetxt( res )
+         
             
         if classname not in ['rengong','premt','rengong_vnr','rengong_msk']:
              

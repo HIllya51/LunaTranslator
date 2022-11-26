@@ -16,8 +16,7 @@ class txt(basetext):
         if res!='':
             with open(res,'r',encoding='utf8') as ff:
                 self.txtlines=ff.read().split('\n')
-            self.txtsavename=res+'.trans.txt'
-             
+            
         self.ending=False
         self.typename='txt'
         self.runonceline=''
@@ -26,17 +25,11 @@ class txt(basetext):
         self.prefix='0_txt'
         super(txt,self).__init__(textgetmethod)
         threading.Thread(target=self.txtgetline).start()
-    def writetxt(self,xx):
-        with open(self.txtsavename,'a',encoding='utf8') as ff:
-            ff.write(xx)
-            ff.write('\n')
+     
     def txtgetline(self):
-        for line in self.txtlines:
-            print(line)
+        for line in self.txtlines: 
             self.queue.put(line)
-            self.runonceline=line
-            self.writetxt('')
-            self.writetxt(line)
+            self.runonceline=line 
             time.sleep(globalconfig['txtreadlineinterval'])
     def gettextthread(self ):
                   
