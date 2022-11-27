@@ -16,7 +16,8 @@ class txt(basetext):
         if res!='':
             with open(res,'r',encoding='utf8') as ff:
                 self.txtlines=ff.read().split('\n')
-            
+        else:
+            self.txtlines=[]
         self.ending=False
         self.typename='txt'
         self.runonceline=''

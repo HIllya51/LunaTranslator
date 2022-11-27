@@ -82,7 +82,7 @@ class QUnFrameWindow(QWidget):
             
             #print(globalconfig['fanyi'][_type]['name']+'  '+res+'\n')
             
-            self.transhis.getnewsentencesignal.emit(globalconfig['fanyi'][_type]['name']+'  '+res)
+            self.transhis.getnewtranssignal.emit(globalconfig['fanyi'][_type]['name'],res)
         except:
             print_exc() 
     def showraw(self,hira,res,color,show ): 
@@ -94,7 +94,7 @@ class QUnFrameWindow(QWidget):
             pass
         elif show==2:
             self.showline((hira,res),color ,type_=2 )
-        self.transhis.getnewsentencesignal.emit('<hr>' if globalconfig['hist_split'] else '\n'+res) 
+        self.transhis.getnewsentencesignal.emit(res) 
     # def showtaskthreadfun(self):
     #     while True:
     #         res,color ,type_=self.showtask.get()
