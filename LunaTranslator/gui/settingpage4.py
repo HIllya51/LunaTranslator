@@ -231,6 +231,12 @@ def codeacceptdialog(object ,title=  '接受的编码' ,label=[  '接受的编�
     formLayout.addWidget(button3)
     dialog.resize(QSize(600,400))
     dialog.show()
+def setcodepage(self,_):
+        try:
+                globalconfig['codepage']=_
+                self.object.textsource.setcodepage()
+        except:
+                pass
 def setTab4(self) :
 
         
@@ -243,6 +249,7 @@ def setTab4(self) :
                 [('Locale_Remulator路径设置',5),(self.getcolorbutton(globalconfig,'',callback=lambda x: getsomepath1(self,'Locale_Remulator',globalconfig,'Locale_Remulator','Locale_Remulator',isdir=True),icon='fa.gear',constcolor="#FF69B4"),1),("支持64位，但是不一定管用",8)],
                 [('已保存游戏',5),(self.getcolorbutton(globalconfig,'',icon='fa.gamepad',constcolor="#FF69B4",callback=lambda:autosaveshow(self)),1)],
 
+                [('代码页',5),(self.getspinbox(0,99999,globalconfig,'codepage',callback=functools.partial(setcodepage,self)),3)],
                 [('过滤乱码文本',5),(self.getsimpleswitch(globalconfig,'filter_chaos_code'),1),(self.getcolorbutton(globalconfig,'',icon='fa.gear',constcolor="#FF69B4",callback=lambda:codeacceptdialog(self)),1)],
                 [('移除非选定HOOK',5),(self.getsimpleswitch(globalconfig,'remove_useless_hook'),1) ],
         ]

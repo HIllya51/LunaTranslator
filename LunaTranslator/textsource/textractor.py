@@ -54,6 +54,7 @@ class textractor(basetext  ):
         self.runonce_line=''
         self.re=re.compile('\[([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):(.*):(.*@.*)\] ([\\s\\S]*)')
         self.notarch='86' if self.arch=='64' else '64'
+        self.setcodepage()
         self.attach(self.pid)
         self.textfilter=''
         self.autostart=autostart
@@ -84,6 +85,9 @@ class textractor(basetext  ):
                         continue
                     self.inserthook(_h[-1])
         #self.autostarttimeout.stop()
+    def setcodepage(self):
+        cp=globalconfig["codepage"]
+        self.object.translation_ui.writeprocesssignal.emit( QByteArray((f'={cp} -P{self.pid}\r\n').encode(encoding='utf-16-le')))
     def findhook(self ):
         self.object.translation_ui.writeprocesssignal.emit( QByteArray((f'find -P{self.pid}\r\n').encode(encoding='utf-16-le')))
     def inserthook(self,hookcode):
