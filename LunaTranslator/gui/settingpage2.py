@@ -137,7 +137,7 @@ def setTabTwo(self) :
                                 sql=sqlite3.connect(f[0],check_same_thread=False)
                                 ret=sql.execute(f'SELECT * FROM artificialtrans  ').fetchall()
                                 js={}
-                                transkirokuuse=list(globalconfig['fanyi'].keys())[globalconfig['transkirokuuse']]
+                                transkirokuuse=list(globalconfig['fanyi'].keys())[list(globalconfig['fanyi'].keys()).index(globalconfig['transkirokuuse'])]
                                 for _aret  in ret:
                                     if len(_aret)==4:
                                         #旧版兼容
