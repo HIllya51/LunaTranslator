@@ -1,5 +1,6 @@
 import json 
 import os 
+from collections import OrderedDict
 if os.path.exists('./userconfig')==False:
     os.mkdir('./userconfig')
 if os.path.exists('./transkiroku')==False:
@@ -37,7 +38,7 @@ globalconfig=tryreadconfig('config.json')
 postprocessconfig=tryreadconfig('postprocessconfig.json')
 noundictconfig=tryreadconfig('noundictconfig.json')
 transerrorfixdictconfig=tryreadconfig('transerrorfixdictconfig.json')
-savehook_new=tryreadconfig('savehook_new.json') 
+savehook_new=OrderedDict(tryreadconfig('savehook_new.json') )
 savehook_new2=tryreadconfig('savehook_new3.json') 
 
 translatorsetting=tryreadconfig('translatorsetting.json') 

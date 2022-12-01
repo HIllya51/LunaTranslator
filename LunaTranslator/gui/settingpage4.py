@@ -4,7 +4,7 @@ import sqlite3
 from PyQt5.QtWidgets import  QWidget,QLabel ,QLineEdit,QSpinBox,QPushButton,QDialog,QVBoxLayout ,QHeaderView,QFileDialog ,QGridLayout
 import functools 
 from traceback import print_exc
-import functools
+from collections import OrderedDict
 import time
 from PyQt5.QtWidgets import    QWidget, QTableView, QAbstractItemView, QLabel, QVBoxLayout
 import qtawesome
@@ -121,7 +121,8 @@ def autosaveshow(object):
                         else:
                                 win32api.ShellExecute(None, "open", game, "", os.path.dirname(game), win32con.SW_SHOW)
                                  
-                         
+                                 
+                        savehook_new.move_to_end(game,False)
                         dialog.close() 
                 except:
                         print_exc()
@@ -134,9 +135,10 @@ def autosaveshow(object):
                 f=QFileDialog.getOpenFileName(directory='' )
                 res=f[0]
                 if res!='':
-                        row=model.rowCount() 
+                        row=0#model.rowCount() 
                         res=res.replace('/','\\')
                         if res in savehook_new:
+     
                                 return
                         transparent=QPixmap(100,100)
                         transparent.fill(QColor.fromRgba(0))
@@ -145,16 +147,20 @@ def autosaveshow(object):
                                 icon=transparent
                         icon=QIcon(icon) 
                         
-                        model.setItem(row, 1, QStandardItem(icon,''))  
+                        #model.setItem(row, 1, QStandardItem(icon,''))  
                         keyitem=QStandardItem()
                         keyitem.savetext=res
-                        model.setItem(row, 2, keyitem) 
-                        model.setItem(row, 0, QStandardItem(''))  
-                        model.setItem(row, 3,QStandardItem(res) ) 
+                        # model.setItem(row, 2, keyitem) 
+                        # model.setItem(row, 0, QStandardItem(''))  
+                        # model.setItem(row, 3,QStandardItem(res) ) 
+
+                        model.insertRow(0,[QStandardItem(''),QStandardItem(icon,''),keyitem,QStandardItem(res)])
                         savehook_new2[res]={}
                         savehook_new2[res]['leuse']=True
                         savehook_new2[res]['title']=res 
+ 
                         savehook_new[res]=[]
+                        savehook_new.move_to_end(res,False)
                         table.setIndexWidget(model.index(row, 0),object.getsimpleswitch(savehook_new2[res],'leuse'))
                         
                         _=QPushButton()
