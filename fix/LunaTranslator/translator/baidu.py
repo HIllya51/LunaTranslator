@@ -63,8 +63,7 @@ class TS(basetrans):
         #sign =self.jsrun.call('e', query, self.gtk)
             sign=self.ctx.e(query,self.gtk)
             translate_url = 'https://fanyi.baidu.com/#'+self.srclang +'/'+self.tgtlang +'/%s' % ( parse.quote(query))
-            #acs_token = self.jsrun.call('ascToken', translate_url)
-
+            #acs_token = self.jsrun.call('ascToken', translate_url) 
             acs_token=self.today_anytime_tsp(15,0,9)+ self.ctx.ascToken(translate_url)
             data = {
                 'from': self.srclang ,

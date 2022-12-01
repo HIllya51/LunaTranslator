@@ -161,12 +161,12 @@ def setTabTwo(self) :
         bt.clicked.connect(lambda x:_sqlite2json()) 
  
   
-
+        langlist=['中文','日文','英文']
         grids=[
             [
                 ("是否显示翻译器名称",6),(self.getsimpleswitch(globalconfig  ,'showfanyisource'),1),'','','',
-                ("源语言",6),(self.getsimplecombobox(_TRL(['日文','中文','英文']),globalconfig,'srclang2'),3),'',
-                ("目标语言",6),(self.getsimplecombobox(_TRL(['日文','中文','英文']),globalconfig,'tgtlang2'),3) ,
+                ("源语言",6),(self.getsimplecombobox(_TRL(langlist),globalconfig,'srclang2'),3),'',
+                ("目标语言",6),(self.getsimplecombobox(_TRL(langlist),globalconfig,'tgtlang2'),3) ,
             ],
             [
                 ("最短翻译字数",6),(self.getspinbox(0,500,globalconfig,'minlength'),3),'',
