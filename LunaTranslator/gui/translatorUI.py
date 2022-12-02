@@ -331,11 +331,13 @@ class QUnFrameWindow(QWidget):
 
         self.refreshtoolicon()
         self.showhidetoolbuttons()
-
+        globalconfig['position'][0]=max(globalconfig['position'][0],0)
+        globalconfig['position'][1]=max(globalconfig['position'][1],0)
         if globalconfig['fixedheight']:
             self.setGeometry( globalconfig['position'][0],globalconfig['position'][1],int(globalconfig['width'] ), int(globalconfig['height'] )) 
         else:
             self.setGeometry( globalconfig['position'][0],globalconfig['position'][1],int(globalconfig['width'] ), 200) 
+         
         icon = QIcon()
         icon.addPixmap(QPixmap('./files/luna.jpg'), QIcon.Normal, QIcon.On)
         self.setWindowIcon(icon)
