@@ -27,7 +27,7 @@ def ocr(imgfile):
             #appid无效，则使用输入的accstoken，并清空
             
             pass
-    print(cacheaccstoken)
+     
     if cacheaccstoken=="":
         
         return ''
