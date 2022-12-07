@@ -104,8 +104,7 @@ def _TR(k):
     if k=='':
         return ''
     if k not in languageshow or languageshow[k]=='':
-        languageshow[k]=''
-        language=globalconfig['languageuse']
+        languageshow[k]='' 
         with open(f'./files/lang/{globalconfig["language_list"][language]}.json','w',encoding='utf8') as ff:
             ff.write( json.dumps(languageshow,ensure_ascii=False,sort_keys=False, indent=4))
         return k
