@@ -4,7 +4,12 @@ import os
 import json
 import time
 from utils.config import globalconfig,ocrsetting
- 
+def lang():
+    l=globalconfig['normallanguagelist'][globalconfig['srclang2']]
+    if l in globalconfig['ocr']['baiduocr']['lang']:
+        return globalconfig['ocr']['baiduocr']['lang'][l]
+    else:
+        return l
 cacheapikey=("","")
 cacheaccstoken=""
 def ocr(imgfile):
@@ -20,8 +25,9 @@ def ocr(imgfile):
             
         except:
             #appid无效，则使用输入的accstoken，并清空
+            
             pass
-
+    print(cacheaccstoken)
     if cacheaccstoken=="":
         
         return ''
@@ -52,12 +58,12 @@ def ocr(imgfile):
     b64=base64.b64encode(f)
 
     if globalconfig['verticalocr']:
-        print(globalconfig['ocr']['baiduocr']['lang'][[1,2][globalconfig['srclang']]] )
+         
         data = {
             'image': b64 ,
-            #'detect_language': 'true',
+            'detect_language': 'true' if lang()=="auto_detect" else 'false',
             'detect_direction':'true',
-            'language_type':globalconfig['ocr']['baiduocr']['lang'][[1,2][globalconfig['srclang']]] 
+            'language_type':lang()
             }
     else:
         data = {

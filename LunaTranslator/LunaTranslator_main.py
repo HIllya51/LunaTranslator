@@ -481,7 +481,7 @@ if __name__ == "__main__" :
     screen_scale_rate = utils.screen_rate.getScreenRate()  
     app = QApplication(sys.argv) 
     app.setQuitOnLastWindowClosed(False)
-    if True:#globalconfig['language_setted']==False:
+    if  globalconfig['language_setted']==False:
         from gui.languageset import languageset
         x=languageset(globalconfig['language_list'])
         x.exec()

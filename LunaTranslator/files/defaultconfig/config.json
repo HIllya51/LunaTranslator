@@ -361,13 +361,13 @@
         "baiduocr": {
             "use": false,
             "name": "baiduOCR",
-			"lang":["CHN_ENG","JAP","ENG"]
+			"lang":{"zh":"CHN_ENG","en":"ENG","auto":"auto_detect","ja":"JAP","en":"ENG","ko":"KOR","fr":"FRE","es":"SPA"}
 
         },
 		"baiduocr_accurate": {
             "use": false,
             "name": "baiduOCR_高精度",
-			"lang":["CHN_ENG","JAP","ENG"]
+			"lang":{"zh":"CHN_ENG","en":"ENG","auto":"auto_detect","ja":"JAP","en":"ENG","ko":"KOR","fr":"FRE","es":"SPA"}
 
         },
         "ocrspace": {

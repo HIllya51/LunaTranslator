@@ -103,6 +103,13 @@ def setTab_about(self) :
         self.versionlabel.setOpenExternalLinks(True)
         self.versionlabel.setTextInteractionFlags(Qt.LinksAccessibleByMouse) 
         self.versiontextsignal.connect(lambda x:self.versionlabel.setText(x) )
+
+        self.versionlabel1 = QLabel('项目网站:<a href="https://github.com/HIllya51/LunaTranslator">https://github.com/HIllya51/LunaTranslator</a>')
+        self.versionlabel1.setOpenExternalLinks(True)
+        self.versionlabel1.setTextInteractionFlags(Qt.LinksAccessibleByMouse)  
+        self.versionlabel2 = QLabel('使用说明:<a href="https://hillya51.github.io/">https://hillya51.github.io/</a>')
+        self.versionlabel2.setOpenExternalLinks(True)
+        self.versionlabel2.setTextInteractionFlags(Qt.LinksAccessibleByMouse)  
         grids=[ 
             [
                 ("使用代理",5),(self.getsimpleswitch(globalconfig  ,'useproxy',callback=lambda x: _setproxy(x)),1),''],
@@ -114,7 +121,9 @@ def setTab_about(self) :
                 [('自动下载更新(需要连接github)',5),(self.getsimpleswitch(globalconfig ,'autoupdate',callback= lambda x:changeupdate(x)),1) ],
                 [(self.versionlabel,10)],
                 
-                []
+                [''],
+                [(self.versionlabel1,10)],
+                [(self.versionlabel2,10)]
         ]  
         self.yitiaolong("其他设置",grids ) 
 
