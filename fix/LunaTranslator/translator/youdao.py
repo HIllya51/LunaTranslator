@@ -92,7 +92,4 @@ class TS(basetrans):
         return res 
     def show(self,res):
         print('有道','\033[0;33;47m',res,'\033[0m',flush=True)
-if __name__=="__main__":
-    #youdaoSIGN("5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36 Edg/105.0.1343.33",'')
-    a=youdaots()
-    a.gettask('はーい、おやすみなさい')
+ 

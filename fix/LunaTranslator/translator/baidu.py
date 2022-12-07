@@ -98,7 +98,7 @@ class TS(basetrans):
                     
         
             response = self.session.post(url=translate_api,headers=headers,   data=data,timeout = globalconfig['translatortimeout'],proxies=  {'http': None,'https': None})
-            
+             
             result ='\n'.join([_['dst'] for _ in response.json()['trans_result']['data']])  
             # params = {
             #     'req': 'check',
@@ -114,6 +114,3 @@ class TS(basetrans):
     def show(self,res):
         print('百度','\033[0;32;47m',res,'\033[0m',flush=True)
      
-if __name__=='__main__':
-    g=BD()
-    print(g.realfy('あずきさんからアサリのスパゲティの作り方を学んだりもした。'))

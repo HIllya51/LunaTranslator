@@ -11,13 +11,23 @@ class basetrans:
     @property
     def srclang(self):
         try:
-            return globalconfig['fanyi'][self.typename]['lang'][globalconfig['srclang2']]
+            l=globalconfig['normallanguagelist'][globalconfig['srclang2']]
+            if l in globalconfig['fanyi'][self.typename]['lang']:
+                return globalconfig['fanyi'][self.typename]['lang'][l]
+            else:
+                return l
+             
         except:
             return ''
     @property
     def tgtlang(self):
         try:
-            return globalconfig['fanyi'][self.typename]['lang'][globalconfig['tgtlang2']]
+            l=globalconfig['normallanguagelist'][globalconfig['tgtlang2']]
+            if l in globalconfig['fanyi'][self.typename]['lang']:
+                return globalconfig['fanyi'][self.typename]['lang'][l]
+            else:
+                return l
+             
         except:
             return ''
     @classmethod
