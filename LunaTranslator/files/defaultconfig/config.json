@@ -387,66 +387,67 @@
             "name": "youdao图片翻译"
         }
     },
+	"normallanguagelist":["auto","zh", "ja", "en","ru","es","ko","fr"],
     "fanyi": {
         "baidu": {
             "use": true,
             "color": "#ff65db",
             "name": "百度",
-			"lang":["zh", "jp", "en"]
+			"lang":{"es":"spa","ko":"kor","fr":"fra","ja":"jp"}
         },
         "bing": {
             "use": false,
             "color": "#000ff0",
             "name": "必应",
-			"lang":["zh-Hans", "ja", "en"]
+			"lang":{"auto":"auto-detect","zh":"zh-Hans"} 
         },
         "google": {
             "use": false,
             "color": "#ff0000",
             "name": "谷歌",
-			"lang":["zh-CN", "ja", "en"]
+			"lang":{ "zh":"zh-CN"} 
         },
         "ali": {
             "use": false,
             "color": "#0000ff",
             "name": "阿里",
-			"lang":["zh", "ja", "en"]
+			"lang":{ }
         },
         "youdao": {
             "use": false,
             "color": "blue",
             "name": "有道",
-			"lang":["zh-CHS", "ja", "en"]
+			"lang":{"zh":"zh-CHS"}
         },
         "youdao2": {
             "use": false,
             "color": "blue",
             "name": "有道2",
-			"lang":["zh-cn", "ja", "en"]
+			"lang":{"zh":"zh-cn"}
         },
         "google2": {
             "use": false,
             "color": "#95a5ff",
             "name": "谷歌2",
-			"lang":["zh-CN", "ja", "en"]
+			"lang":{"zh":"zh-CN"}
         },
         "sougou": {
             "use": false,
             "color": "blue",
             "name": "搜狗",
-			"lang": ["zh-CHS", "ja", "en"]
+			"lang":{"zh":"zh-CHS"}
         },
         "caiyun": {
             "use": false,
             "color": "blue",
             "name": "彩云",
-			"lang":["zh", "ja", "en"]
+			"lang":{}
         },
         "deepl": {
             "use": false,
             "color": "blue",
             "name": "deepl",
-			"lang":["ZH", "JA", "EN"]
+			"lang":{"zh":"ZH","ja":"JA","en":"EN","es":"ES","fr":"FR","ru":"RU"}
         },
         "jb7": {
             "use": false,
@@ -467,97 +468,91 @@
             "use": false,
             "color": "blue",
             "name": "搜狗2",
-			"lang":["zh-CHS", "ja", "en"]
+			"lang":{"zh":"zh-CHS"}
         },
         "youdao3": {
             "use": false,
             "color": "blue",
             "name": "有道3",
-			"lang":["ZH_CN", "JA", "EN"]
-        },
-        "youdao4": {
-            "use": false,
-            "color": "blue",
-            "name": "有道4",
-			"lang":["", "jap", "eng"]
+			"lang":{"auto":"AUTO","zh":"ZH_CN", "ja":"JA", "en":"EN","ko":"KR","es":"SP","ru":"RU"}
         },
         "youdao5": {
             "use": false,
             "color": "blue",
             "name": "有道5",
-			"lang": ["zh-CHS", "ja", "en"]
+			"lang": {"auto":"Auto","zh":"zh-CHS"}
         },
         "tencent": {
             "use": false,
             "color": "blue",
             "name": "TX",
-			"lang":["zh", "jp", "en"]
+			"lang":{}
         },
         "iciba": {
             "use": false,
             "color": "blue",
             "name": "iciba",
-			"lang":["zh", "ja", "en"]
+			"lang":{}
         },
         "baiduapi": {
             "use": false,
             "color": "blue",
             "name": "百度api",
-			"lang":["zh", "jp", "en"]
+			"lang":{"es":"spa","ko":"kor","fr":"fra","ja":"jp"}
         },
         "tencentapi": {
             "use": false,
             "color": "blue",
             "name": "腾讯api",
-			"lang":["zh", "ja", "en"]
+			"lang":{}
         },
         "byte": {
             "use": false,
             "color": "blue",
             "name": "byte",
-			"lang":["zh", "ja", "en"]
+			"lang":{"auto":"detect"}
         },
         "qqimt": {
             "use": false,
             "color": "blue",
             "name": "qqimt",
-			"lang":["zh", "ja", "en"]
+			"lang":{}
         },
         "xiaoniu": {
             "use": false,
             "color": "blue",
             "name": "小牛api",
-			"lang":["zh", "ja", "en"]
+			"lang":{"auto":"yue"}
         },
         "huoshan": {
             "use": false,
             "color": "blue",
             "name": "huoshan",
-			"lang":["zh", "ja", "en"]
+			"lang":{"auto":"detect"}
         },
         "yeekit": {
             "use": false,
             "color": "blue",
             "name": "yeekit",
-			"lang":["nzh", "nja", "nen"]
+			"lang":{"zh":"nzh","ja":"nja","en":"nen"} 
         },
         "caiyunapi": {
             "use": false,
             "color": "blue",
             "name": "彩云api",
-			"lang":["zh", "ja", "en"]
+			"lang":{}
         },
         "huoshanapi": {
             "use": false,
             "color": "blue",
             "name": "火山api",
-			"lang":["zh", "ja", "en"]
+			"lang":{"auto":"detect"}
         },
         "papago": {
             "use": false,
             "color": "blue",
             "name": "papago",
-			"lang":["zh-CN","ja","en"]
+			"lang":{"zh":"zh-CN"} 
         },
         "rengong": {
             "use": false,
@@ -584,32 +579,32 @@
             "use": false,
             "color": "blue",
             "name": "deeplapi-free",
-			"lang":["ZH", "JA", "EN"]
+			"lang":{"zh":"ZH","ja":"JA","en":"EN","es":"ES","fr":"FR","ru":"RU"}
         },
         "deeplapi": {
             "use": false,
             "color": "blue",
             "name": "deeplapi",
-			"lang":["ZH", "JA", "EN"]
+			"lang":{"zh":"ZH","ja":"JA","en":"EN","es":"ES","fr":"FR","ru":"RU"}
         },
         "youdaoapi": {
             "use": false,
             "color": "blue",
             "name": "有道api",
-			"lang":["zh-CHS", "ja", "en"]
+			"lang":{"zh":"zh-CHS"}
         },
 		"yunyi": {
             "use": false,
             "color": "blue",
             "name": "云译", 
-			"lang":["zh-cn","ja","en"]
+			"lang":{"zh":"zh-cn"}
         }
 		,
 		"yunyi2": {
             "use": false,
             "color": "blue",
             "name": "云译2", 
-			"lang":["zh-cn","ja","en-us"]
+			"lang":{"zh":"zh-cn"}
         }
     },
     "minifollow": false,

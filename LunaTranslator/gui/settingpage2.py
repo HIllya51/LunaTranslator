@@ -23,18 +23,19 @@ def initsome11(self,l,label,grids):
         [(label,4)]
     )
     i=0
+    bad=0
     for fanyi in globalconfig['fanyi']:
         if i%3==0:
             line=[]
         if fanyi not in l:
             continue
-        i+=1
+        
         try:
             importlib.import_module('translator.'+fanyi)
-        except:
-            print_exc()
+        except: 
+            bad+=1
             continue
-        
+        i+=1
         
         if fanyi in translatorsetting :
             fileselect={
@@ -69,7 +70,7 @@ def initsome11(self,l,label,grids):
         self.getcolorbutton(globalconfig['fanyi'][fanyi],'color',name="fanyicolor_"+fanyi,callback=functools.partial(self.ChangeTranslateColor,fanyi,None,self,"fanyicolor_"+fanyi)),last ] 
 
 
-        if i%3==0 or i==len(l):
+        if i%3==0 or i==len(l)-bad:
             grids.append(line)
         else:
             line+=['']

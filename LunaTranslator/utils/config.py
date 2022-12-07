@@ -79,12 +79,17 @@ syncconfig(ocrsetting,ocrdfsetting,True,3)
 listlengthsync(globalconfig,defaultglobalconfig,'postprocess_rank') 
 listlengthsync(globalconfig,defaultglobalconfig,'language_list',True) 
 listlengthsync(globalconfig,defaultglobalconfig,'language_list_translator',True) 
+listlengthsync(globalconfig,defaultglobalconfig,'normallanguagelist',True) 
 for fanyi in globalconfig['fanyi']:
     try:
         listlengthsync(globalconfig['fanyi'][fanyi],defaultglobalconfig['fanyi'][fanyi],'lang',True) 
     except:
         pass
-
+for fanyi in globalconfig['ocr']:
+    try:
+        listlengthsync(globalconfig['ocr'][fanyi],defaultglobalconfig['ocr'][fanyi],'lang',True) 
+    except:
+        pass
 
 def setlanguage():
     global language,languageshow
