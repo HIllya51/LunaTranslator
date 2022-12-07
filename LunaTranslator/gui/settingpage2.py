@@ -99,26 +99,7 @@ def setTabTwo(self) :
             globalconfig.__setitem__('translatortimeout',x)
             socket.setdefaulttimeout(globalconfig['translatortimeout'])
 
-        def _setproxy(x):
-            globalconfig.__setitem__('useproxy',x)
-            if x:
-                os.environ['https_proxy']=globalconfig['proxy'] 
-                os.environ['http_proxy']=globalconfig['proxy'] 
-            else:
-                os.environ['https_proxy']='' 
-                os.environ['http_proxy']=''
-        #_setproxy(globalconfig['useproxy'])
-        if globalconfig['useproxy']:
-                os.environ['https_proxy']=globalconfig['proxy'] 
-                os.environ['http_proxy']=globalconfig['proxy'] 
-        proxy=QLineEdit(globalconfig['proxy'])
-        btn=QPushButton(_TR('确定' ))
-        def __resetproxy(x):
-            globalconfig.__setitem__('proxy',proxy.text())
-            if globalconfig['useproxy']:
-                os.environ['https_proxy']=globalconfig['proxy'] 
-                os.environ['http_proxy']=globalconfig['proxy'] 
-        btn.clicked.connect(lambda x: __resetproxy(x))
+        
         transkirokuuse =QComboBox( )  
         transkirokuuse.addItems(_TRL([globalconfig['fanyi'][k]['name'] for k  in globalconfig['fanyi']]))
         transkirokuuse.setCurrentIndex(list(globalconfig['fanyi'].keys()).index(globalconfig['transkirokuuse']))
@@ -152,7 +133,7 @@ def setTabTwo(self) :
                                             if  _i==0 or _t==transkirokuuse:
                                                 js[source]['machineTrans']=mtjs[_t]
                                                 
-                                            js[source]['inferrence_'+str(_i)]=mtjs[_t]
+                                            js[source]['result_'+str(_i)]=mtjs[_t]
                                             js[source]['api_'+str(_i)]=_t
                                 with open(os.path.join(os.path.dirname(f[0]), os.path.basename(f[0]).replace('.'+os.path.basename(f[0]).split('.')[-1],'.json')),'w',encoding='utf8') as ff:
                                         ff.write(json.dumps(js,ensure_ascii=False,sort_keys=False, indent=4))
@@ -161,13 +142,9 @@ def setTabTwo(self) :
         bt.clicked.connect(lambda x:_sqlite2json()) 
  
   
-        langlist=['中文','日文','英文']
+        langlist=globalconfig['language_list_translator']
         grids=[
-            [
-                ("是否显示翻译器名称",6),(self.getsimpleswitch(globalconfig  ,'showfanyisource'),1),'','','',
-                ("源语言",6),(self.getsimplecombobox(_TRL(langlist),globalconfig,'srclang2'),3),'',
-                ("目标语言",6),(self.getsimplecombobox(_TRL(langlist),globalconfig,'tgtlang2'),3) ,
-            ],
+            
             [
                 ("最短翻译字数",6),(self.getspinbox(0,500,globalconfig,'minlength'),3),'',
                 ("最长翻译字数",6),(self.getspinbox(0,500,globalconfig,'maxlength'),3),],
@@ -179,9 +156,6 @@ def setTabTwo(self) :
             [
                 ("预翻译采用模糊匹配",6),(self.getsimpleswitch(globalconfig  ,'premtsimiuse'),1),'','','',
                 ("模糊匹配相似度限制",6),(self.getspinbox(0,500,globalconfig,'premtsimi'),3),'', 
-            ],[
-                ("使用代理(ip:port)",6),(self.getsimpleswitch(globalconfig  ,'useproxy',callback=lambda x: _setproxy(x)),1),'',
-                (proxy,8),(btn,3),  
             ],
             
                 [('录制翻译文件',6),(self.getsimpleswitch(globalconfig,'transkiroku'),1),'',

@@ -22,6 +22,7 @@ from gui.settingpage_about import setTab_about
 from gui.rotatetab import  rotatetab
 from gui.settingpage_cishu import setTabcishu
 from gui.settingpage_quick import setTab_quick
+from gui.setting_lang import setTablang
 class wavmp3player(QObject):
     def __init__(self):
         super().__init__( )
@@ -146,7 +147,7 @@ class Settin(QMainWindow) :
         self.rate = self.object.screen_scale_rate
         # 界面尺寸
         self.window_width = int(900*self.rate)
-        self.window_height = int(550*self.rate)
+        self.window_height = int(600*self.rate)
         
         self.savelastrect=None
         self.setFixedSize(self.window_width, self.window_height) 
@@ -186,10 +187,12 @@ class Settin(QMainWindow) :
         setTabOne(self) 
         setTabTwo(self) 
         setTab4(self)
+        
         setTab6(self)
+        
         setTabThree(self) 
         setTab5(self)
-        
+        setTablang(self)
         setTab7(self)
         setTabcishu(self)
         
@@ -205,6 +208,7 @@ class Settin(QMainWindow) :
         self.automakegrid(lay,grid,save,savelist) 
         if save:
             savelay.append(lay)
+        return t
     def getscrollwidgetlayout(self,title):
         scroll = QScrollArea()  
         self.tab_widget.addTab(scroll, _TR(title))   

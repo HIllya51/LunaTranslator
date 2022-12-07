@@ -2,7 +2,7 @@
 from traceback import print_exc
 import requests
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QWidget,QLabel ,QProgressBar
+from PyQt5.QtWidgets import QWidget,QLabel ,QProgressBar,QLineEdit,QPushButton
 import threading
 import os
 import shutil
@@ -14,13 +14,13 @@ import gui.switchbutton
 from utils.downloader import mutithreaddownload
 def getversion(self):
     
-
-    with open('files/about.txt','r',encoding='utf8') as ff:
-        about=ff.read()
+    about='版本号:%s  最新版本:%s'
+    # with open('files/about.txt','r',encoding='utf8') as ff:
+    #     about=ff.read()
     with open('files/version.txt','r',encoding='utf8') as ff:
         version=ff.read() 
     url='https://github.com/HIllya51/LunaTranslator/releases/'
-    self.versiontextsignal.emit(about  %(version, _TR('获取中'),'',url,url))
+    self.versiontextsignal.emit(about  %(version, _TR('获取中')))#,'',url,url))
     try:
         requests.packages.urllib3.disable_warnings()
         headers = {
@@ -40,7 +40,7 @@ def getversion(self):
         print_exc()
         _version=_TR("获取失败")
         newcontent=''
-    self.versiontextsignal.emit(about %(version, _version,'' if version== _version else  newcontent,url,'LunaTranslator.zip'))
+    self.versiontextsignal.emit(about %(version, _version))#,'' if version== _version else  newcontent,url,'LunaTranslator.zip'))
     if _version!=_TR("获取失败") and version!=_version:
         if globalconfig['autoupdate']:
             self.downloadprogress.show()
@@ -63,23 +63,13 @@ def updateprogress(self,text,val):
     self.downloadprogress.setFormat(text)
      
 def setTab_about(self) :
-         
-        self.tab_about = QWidget()
-        self.tab_widget.addTab(self.tab_about, _TR("资源下载&更新") )
-        label = QLabel(self.tab_about)
-        self.customSetGeometry(label, 20, 20, 200, 20)
-        label.setText(_TR("自动下载更新(需要连接github)"))
-        self.updateswitch =gui.switchbutton.MySwitch(self.tab_about, sign= globalconfig['autoupdate'])
-        self.customSetGeometry(self.updateswitch , 250, 20, 20,20)
         def changeupdate(x):
             globalconfig.__setitem__('autoupdate',x)
             if x:
                 threading.Thread(target=lambda :getversion(self)).start()
-        self.updateswitch.clicked.connect(lambda x:  changeupdate( x)) 
-
-        self.downloadprogress=QProgressBar(self.tab_about)
-        self.customSetGeometry(self.downloadprogress, 20, 50, 500, 20)
         
+        self.downloadprogress=QProgressBar()
+         
         self.downloadprogress.hide()
         self.downloadprogress.setRange(0,10000)
 
@@ -87,14 +77,54 @@ def setTab_about(self) :
         self.progresssignal.connect(lambda text,val:updateprogress(self,text,val))
 
 
-        self.versionlabel = QLabel(self.tab_about)
+
+        def _setproxy(x):
+            globalconfig.__setitem__('useproxy',x)
+            if x:
+                os.environ['https_proxy']=globalconfig['proxy'] 
+                os.environ['http_proxy']=globalconfig['proxy'] 
+            else:
+                os.environ['https_proxy']='' 
+                os.environ['http_proxy']=''
+        #_setproxy(globalconfig['useproxy'])
+        if globalconfig['useproxy']:
+                os.environ['https_proxy']=globalconfig['proxy'] 
+                os.environ['http_proxy']=globalconfig['proxy'] 
+        proxy=QLineEdit(globalconfig['proxy'])
+        btn=QPushButton(_TR('确定' ))
+        def __resetproxy(x):
+            globalconfig.__setitem__('proxy',proxy.text())
+            if globalconfig['useproxy']:
+                os.environ['https_proxy']=globalconfig['proxy'] 
+                os.environ['http_proxy']=globalconfig['proxy'] 
+        btn.clicked.connect(lambda x: __resetproxy(x))
+
+        self.versionlabel = QLabel()
         self.versionlabel.setOpenExternalLinks(True)
-            
-        self.versionlabel.setTextInteractionFlags(Qt.LinksAccessibleByMouse)
-        self.customSetGeometry(self.versionlabel, 20, 100, 600, 500)
+        self.versionlabel.setTextInteractionFlags(Qt.LinksAccessibleByMouse) 
+        self.versiontextsignal.connect(lambda x:self.versionlabel.setText(x) )
+        grids=[ 
+            [
+                ("使用代理",5),(self.getsimpleswitch(globalconfig  ,'useproxy',callback=lambda x: _setproxy(x)),1),''],
+            [        ("代理设置(ip:port)",5),        (proxy,5),(btn,2),  
+            ],
+            [''],
+
+                [(self.downloadprogress,10)],
+                [('自动下载更新(需要连接github)',5),(self.getsimpleswitch(globalconfig ,'autoupdate',callback= lambda x:changeupdate(x)),1) ],
+                [(self.versionlabel,10)],
+                
+                []
+        ]  
+        self.yitiaolong("其他设置",grids ) 
 
         
-        self.versiontextsignal.connect(lambda x:self.versionlabel.setText(x) )
-        self.versionlabel.setWordWrap(True)
-        self.versionlabel.setAlignment(Qt.AlignTop)
+        # self.versionlabel = QLabel(widget )
+        # self.versionlabel.setGeometry(0,500,600,500)
+        # self.versionlabel.setOpenExternalLinks(True)
+            
+        # self.versionlabel.setTextInteractionFlags(Qt.LinksAccessibleByMouse) 
+        # self.versiontextsignal.connect(lambda x:self.versionlabel.setText(x) )
+        # self.versionlabel.setWordWrap(True)
+        # self.versionlabel.setAlignment(Qt.AlignTop)
         threading.Thread(target=lambda :getversion(self)).start()

@@ -82,7 +82,8 @@ def setTabThree(self) :
                 [('字体大小',3),(self.getspinbox(1,100,globalconfig,'fontsize',double=True,step=0.1,name='fontSize_spinBox'),2),'',('特殊字体样式填充颜色',4),self.getcolorbutton(globalconfig,'miaobiancolor',callback=lambda: self.ChangeTranslateColor("miaobiancolor", self.miaobian_color_button),name='miaobian_color_button'),'',('假名颜色',4),self.getcolorbutton(globalconfig,'jiamingcolor',callback=lambda: self.ChangeTranslateColor("jiamingcolor", self.jiamingcolor_b),name='jiamingcolor_b')],
                 [('字体样式',3),(self.getsimplecombobox(_TRL(['普通字体','空心字体','描边字体','阴影字体']),globalconfig,'zitiyangshi'),2),'',('加粗字体',4),self.getsimpleswitch(globalconfig,'showbold' ),'',('居中显示',4),self.getsimpleswitch(globalconfig,'showatcenter')],
                 [('空心线宽',3),(self.getspinbox(1,100,globalconfig,'miaobianwidth',double=True,step=0.1),2),'',('描边宽度',3 ),(self.getspinbox(1,100,globalconfig,'miaobianwidth2',double=True,step=0.1),2),'',('阴影强度',3),(self.getspinbox(1,10,globalconfig,'shadowforce'),2)],
-                
+                [''],
+                [("显示翻译器名称",4),(self.getsimpleswitch(globalconfig  ,'showfanyisource'),1)],
                 [''],
                 [('显示显示原文按钮',4),self.getsimpleswitch(globalconfig['buttonuse'],'showraw' ,callback=functools.partial(_usexxxbutton,'showraw')),'',('显示复制原文按钮',4),self.getsimpleswitch(globalconfig['buttonuse'],'copy' ,callback=functools.partial(_usexxxbutton,'copy')),'',('显示朗读按钮',4),self.getsimpleswitch(globalconfig['buttonuse'],'langdu' ,callback=functools.partial(_usexxxbutton,'langdu'))],
                 [('显示翻译历史按钮',4),self.getsimpleswitch(globalconfig['buttonuse'],'history' ,callback=functools.partial(_usexxxbutton,'history')),'' ,
@@ -102,9 +103,9 @@ def setTabThree(self) :
                 
                 [('固定窗口尺寸',6),self.getsimpleswitch(globalconfig,'fixedheight'),],
                 [('可选取模式(阴影字体下无效)',6),self.getsimpleswitch(globalconfig,'selectable',callback=__changeselectmode)],
-                [('翻译结果繁简体显示',6),(self.getsimplecombobox(['大陆简体','马新简体','台灣正體','香港繁體','简体','繁體'],globalconfig,'fanjian'),4)],
+                
                 [('翻译窗口顺时针旋转(重启生效)',6),(self.getsimplecombobox(['0','90','180','270'],globalconfig,'rotation'),4)],
-                [('翻译器显示语言(重启生效)',6),(self.getsimplecombobox((globalconfig['language_list']),globalconfig,'languageuse'),4),(self.getcolorbutton(globalconfig,'',callback=lambda :os.startfile(os.path.abspath(f'./files/lang/{globalconfig["language_list"][globalconfig["languageuse"]]}.json')),icon='fa.gear',constcolor="#FF69B4"),1)], 
+                
                [('强制窗口保持总在最前',6),self.getsimpleswitch(globalconfig,'forcekeepontop'),],
         ] 
         self.yitiaolong("显示设置",buttongrid) 
