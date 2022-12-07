@@ -13,6 +13,7 @@
     "width": 1000,
 	"codepage":932,
 	"codepage_index":0,
+	"textthreaddelay":50,
 	"forcekeepontop":true,
 	"hist_geo":[0,0,1000,300],
 	"transtimeinternal":0.1,

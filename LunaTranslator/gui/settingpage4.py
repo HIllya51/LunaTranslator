@@ -237,17 +237,20 @@ def codeacceptdialog(object ,title=  '接受的编码' ,label=[  '接受的编�
     formLayout.addWidget(button3)
     dialog.resize(QSize(600,400))
     dialog.show()
-def setcodepage(self,_):
-        try:
-                globalconfig['codepage']=_
-                self.object.textsource.setcodepage()
-        except:
-                pass
+
+
 def changecodepage(self,_):
         try:
 
                 globalconfig['codepage_index']=_
                 self.object.textsource.setcodepage()
+        except:
+                pass
+def changedelay(self,_):
+        try:
+
+                globalconfig['textthreaddelay']=_
+                self.object.textsource.setdelay()
         except:
                 pass
 def setTab4(self) :
@@ -267,6 +270,7 @@ def setTab4(self) :
                 [('已保存游戏',5),(self.getcolorbutton(globalconfig,'',icon='fa.gamepad',constcolor="#FF69B4",callback=lambda:autosaveshow(self)),1)],
 
                 [('代码页',5),(codepagecombo,5)],
+                [('刷新延迟(ms)',5),(self.getspinbox(0,10000,globalconfig,'textthreaddelay',callback=functools.partial(changedelay,self)),3)],
                 [('过滤乱码文本',5),(self.getsimpleswitch(globalconfig,'filter_chaos_code'),1),(self.getcolorbutton(globalconfig,'',icon='fa.gear',constcolor="#FF69B4",callback=lambda:codeacceptdialog(self)),1)],
                 [('移除非选定HOOK',5),(self.getsimpleswitch(globalconfig,'remove_useless_hook'),1) ],
         ]
