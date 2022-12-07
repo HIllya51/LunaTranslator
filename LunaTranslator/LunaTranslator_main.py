@@ -12,6 +12,7 @@ from traceback import  print_exc
 
 dirname, filename = os.path.split(os.path.abspath(__file__))
 sys.path.append(dirname)  
+from utils.config import globalconfig ,savehook_new,noundictconfig,transerrorfixdictconfig,setlanguage
 
 import threading,win32gui 
 from PyQt5.QtCore import QCoreApplication ,Qt ,QObject,pyqtSignal
@@ -33,7 +34,6 @@ import pyperclip
 from utils.getpidlist import getpidexe,ListProcess
  
 import gui.translatorUI
-from utils.config import globalconfig ,savehook_new,noundictconfig,transerrorfixdictconfig
  
 from utils.xiaoxueguan import xiaoxueguan
 from utils.edict import edict
@@ -50,7 +50,7 @@ import xml.etree.ElementTree as ET
 class MAINUI(QObject) :
     mainuiloadok=pyqtSignal()
     def __init__(self) -> None:
-        self.screen_scale_rate = utils.screen_rate.getScreenRate() 
+        
         self.translators={}
         self.reader=None
         self.rect=None
@@ -476,10 +476,21 @@ class MAINUI(QObject) :
 if __name__ == "__main__" :
     
     QCoreApplication.setAttribute(Qt.AA_UseHighDpiPixmaps, True)
-    main = MAINUI() 
-    main.timestamp=sys.argv[1]
+    
+    
+    screen_scale_rate = utils.screen_rate.getScreenRate()  
     app = QApplication(sys.argv) 
     app.setQuitOnLastWindowClosed(False)
+    if globalconfig['language_setted']==False:
+        from gui.languageset import languageset
+        x=languageset(globalconfig['language_list'])
+        x.exec()
+        globalconfig['language_setted']=True
+        globalconfig['languageuse']=x.current
+        setlanguage()
+    main = MAINUI() 
+    main.screen_scale_rate =screen_scale_rate
+    main.timestamp=sys.argv[1]
     main.scrollwidth=(app.style().pixelMetric(QStyle.PM_ScrollBarExtent))
     main.aa()
     app.exit(app.exec_())

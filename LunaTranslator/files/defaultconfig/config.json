@@ -3,6 +3,8 @@
         500,
         500
     ],
+	"language_setted":false,
+	"language_list":["简体中文","繁體中文","English","Русский язык","Français","Español","한국어"],
 	"postprocess_rank":["_2","_3", "_10","_1",   "_4", "_6", "_9", "_7", "_8","_11","_13"],
 	"hist_split":false,
 	"hist_fontsize":12, 

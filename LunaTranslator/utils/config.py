@@ -60,7 +60,9 @@ def syncconfig(config,default,drop=False,deep=0):
         for key in list(config.keys()):
             if key not in default:
                 config.pop(key) 
-           
+def listlengthsync(d1,d2,key):
+    if len(d1[key])!=len(d2[key]):
+        d1[key]=d2[key]
 syncconfig(postprocessconfig,defaultpost ,True,3) 
 syncconfig(globalconfig,defaultglobalconfig)
  
@@ -72,17 +74,29 @@ syncconfig(translatorsetting,translatordfsetting)
 
 syncconfig(ocrsetting,ocrdfsetting,True,3)
 
-if( len(globalconfig['postprocess_rank'])!=len(defaultglobalconfig['postprocess_rank'])):
-    globalconfig['postprocess_rank']=defaultglobalconfig['postprocess_rank']
 
-language=globalconfig['languageuse']
-with open(f'./files/lang/{language}.json','r',encoding='utf8') as ff:
-    languageshow=json.load(ff)
+listlengthsync(globalconfig,defaultglobalconfig,'postprocess_rank') 
+listlengthsync(globalconfig,defaultglobalconfig,'language_list') 
+ 
+
+
+def setlanguage():
+    global language,languageshow
+    language=globalconfig['languageuse']
+    with open(f'./files/lang/{globalconfig["language_list"][language]}.json','r',encoding='utf8') as ff:
+        languageshow=json.load(ff)
+setlanguage()
 def _TR(k):
+    global language,languageshow
     if language==0:
         return k
-    if k not in languageshow:
-        print(k)
+    if k=='':
+        return ''
+    if k not in languageshow or languageshow[k]=='':
+        languageshow[k]=''
+        language=globalconfig['languageuse']
+        with open(f'./files/lang/{globalconfig["language_list"][language]}.json','w',encoding='utf8') as ff:
+            ff.write( json.dumps(languageshow,ensure_ascii=False,sort_keys=False, indent=4))
         return k
     else:
         return languageshow[k]
@@ -91,6 +105,8 @@ def _TRL(kk):
     for k in kk:
         x.append(_TR(k))
     return x
+
+
 
 def saveallconfig():
         
@@ -109,6 +125,6 @@ def saveallconfig():
             ff.write(json.dumps(ocrsetting,ensure_ascii=False,sort_keys=False, indent=4))
 
         with open('./userconfig/savehook_new.json','w',encoding='utf8') as ff:
-                ff.write(json.dumps(savehook_new,ensure_ascii=False))
+                ff.write(json.dumps(savehook_new,ensure_ascii=False,sort_keys=False, indent=4))
         with open('./userconfig/savehook_new3.json','w',encoding='utf8') as ff:
-                ff.write(json.dumps(savehook_new2,ensure_ascii=False))
+                ff.write(json.dumps(savehook_new2,ensure_ascii=False,sort_keys=False, indent=4))
