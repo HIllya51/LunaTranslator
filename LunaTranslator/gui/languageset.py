@@ -21,7 +21,7 @@ class languageset(QDialog):
         self.setMinimumSize(400,100)
         self.setWindowTitle('语言设置 LanguageSetting')
         font = QFont()
-        #font.setFamily("Arial Unicode MS") 
+        font.setFamily("Arial") 
         font.setPointSize(20)
         self.setFont(font)
         self.current=0
