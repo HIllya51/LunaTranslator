@@ -4,7 +4,7 @@ import os
 import json
 from utils.config import globalconfig
  
-def ocr(imgfile):
+def ocr(imgfile,_):
      
 
     headers = {

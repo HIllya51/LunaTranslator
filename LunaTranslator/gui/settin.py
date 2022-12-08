@@ -87,7 +87,7 @@ class Settin(QMainWindow) :
 
         ww=self.window_width*0.8-self.object.scrollwidth
         
-        if True:#globalconfig['languageuse'] in [0,1]:
+        if  globalconfig['languageuse'] in [0,1]:
             for c in range(maxl):
 
                 grid.setColumnMinimumWidth(c,ww//maxl)

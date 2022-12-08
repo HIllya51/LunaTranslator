@@ -61,9 +61,9 @@ def setTab6(self) :
             [(("OCR范围框宽度"),9),(self.getspinbox(1,100,globalconfig,'ocrrangewidth'  ,callback=lambda x: changeocrwidthcallback(self,x) ),2)],
             [''],
             [(("OCR区域稳定性阈值"),9),(self.getspinbox(0.8,1,globalconfig,'ocr_stable_sim'  ,double=True,step=0.01 ,dec=3),2),],
-             [("判断区域内图片是否稳定，值越高要求区域内变化越小，若稳定性较低则暂时先不ocr",22)], 
+             [("判断区域内图片是否稳定，值越高要求区域内变化越小，若稳定性较低则暂时先不ocr",25)], 
             [(("OCR前次区分度阈值"),9),(self.getspinbox(0.8,1,globalconfig,'ocr_diff_sim'  ,double=True,step=0.01 ,dec=3),2),],
-            [("图像稳定后判断当前图片和上次ocr图片是否一致，如果一致性过高则不ocr",22)],
+            [("图像稳定后判断当前图片和上次ocr图片是否一致，如果一致性过高则不ocr",25)],
         ] 
         self.yitiaolong("OCR设置",grids)
 def changeocrcolorcallback(self ):

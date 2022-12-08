@@ -4,15 +4,10 @@ import os
 import json
 import time
 from utils.config import globalconfig,ocrsetting
-def lang():
-    l=globalconfig['normallanguagelist'][globalconfig['srclang2']]
-    if l in globalconfig['ocr']['baiduocr_accurate']['lang']:
-        return globalconfig['ocr']['baiduocr_accurate']['lang'][l]
-    else:
-        return l
+ 
 cacheapikey=("","")
 cacheaccstoken=""
-def ocr(imgfile):
+def ocr(imgfile,lang):
     global cacheapikey,cacheaccstoken
     js=ocrsetting['baiduocr_accurate']
 
@@ -60,7 +55,7 @@ def ocr(imgfile):
         'image': b64 ,
         #'detect_language': 'true',
         'detect_direction':'true',
-        'language_type':lang() 
+        'language_type':lang 
         } 
     js['args']['次数统计']=str(int(js['args']['次数统计'])+1) 
     response = requests.post('https://aip.baidubce.com/rest/2.0/ocr/v1/accurate_basic', params=params, headers=headers, data=data, proxies=  {'http': None,'https': None})

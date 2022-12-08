@@ -1,10 +1,10 @@
 
 from re import search
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QWidget,QHBoxLayout,QMainWindow,QFrame,QVBoxLayout,QComboBox,QPlainTextEdit,QTextBrowser,QLineEdit,QPushButton,QTabWidget
+from PyQt5.QtWidgets import QWidget,QHBoxLayout,QMainWindow,QFrame,QVBoxLayout,QComboBox,QPlainTextEdit,QTextBrowser,QLineEdit,QPushButton,QTabWidget,QMenu,QAction
 from PyQt5.QtGui import QFont,QTextCursor
 from PyQt5.QtCore import Qt,pyqtSignal
-import qtawesome
+import qtawesome,functools
 import threading 
 from utils.config import globalconfig
 
@@ -63,8 +63,20 @@ class searchwordW(QMainWindow):
             self.tab.addTab(textOutput,_[i])
             self.textbs.append(textOutput)
    
+            textOutput.setContextMenuPolicy(Qt.CustomContextMenu)
+        
+        
+            textOutput.customContextMenuRequested.connect(functools.partial( self.showmenu ,_[i],textOutput) )
         self.hiding=True
         self.searchthreadsignal.connect(self.searchthread)
+    def showmenu(self,m,to:QTextBrowser,p):  
+        menu=QMenu(self ) 
+        save=QAction(_TR("保存"))  
+        menu.addAction(save) 
+        action=menu.exec( to.mapToGlobal(p))
+        if action==save: 
+            with open('dict_result.txt','a',encoding='utf8') as ff:
+                ff.write(to.toPlainText())
     def getnewsentence(self,sentence):
         self.userhook.setText(sentence[0] )
          

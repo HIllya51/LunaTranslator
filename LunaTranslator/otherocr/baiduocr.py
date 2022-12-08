@@ -4,15 +4,10 @@ import os
 import json
 import time
 from utils.config import globalconfig,ocrsetting
-def lang():
-    l=globalconfig['normallanguagelist'][globalconfig['srclang2']]
-    if l in globalconfig['ocr']['baiduocr']['lang']:
-        return globalconfig['ocr']['baiduocr']['lang'][l]
-    else:
-        return l
+ 
 cacheapikey=("","")
 cacheaccstoken=""
-def ocr(imgfile):
+def ocr(imgfile,lang):
     global cacheapikey,cacheaccstoken
     js=ocrsetting['baiduocr']
 
@@ -61,9 +56,9 @@ def ocr(imgfile):
          
         data = {
             'image': b64 ,
-            'detect_language': 'true' if lang()=="auto_detect" else 'false',
+            'detect_language': 'true' if lang =="auto_detect" else 'false',
             'detect_direction':'true',
-            'language_type':lang()
+            'language_type':lang 
             }
     else:
         data = {
