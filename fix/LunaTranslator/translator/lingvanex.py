@@ -46,34 +46,39 @@ class Tse:
             api_headers.pop('Content-Type')
         return host_headers if not if_api else api_headers
  
- 
-class Tencent(Tse):
+class Lingvanex(Tse):
     def __init__(self):
         super().__init__()
-        self.host_url = 'https://fanyi.qq.com'
-        self.api_url = 'https://fanyi.qq.com/api/translate'
-        self.get_language_url = 'https://fanyi.qq.com/js/index.js'
-        self.get_qt_url = 'https://fanyi.qq.com/api/reauth12f'
+        self.host_url = 'https://lingvanex.com/demo/'
+        self.api_url = None
+        self.language_url = None
+        self.auth_url = 'https://lingvanex.com/lingvanex_demo_page/js/api-base.js'
         self.host_headers = self.get_headers(self.host_url, if_api=False)
-        self.api_headers = self.get_headers(self.host_url, if_api=True)
-        self.qt_headers = self.get_headers(self.host_url, if_api=True, if_json_for_api=True)
-        self.language_map = None
+        self.api_headers = self.get_headers(self.host_url, if_api=True, if_json_for_api=False)
         self.session = None
-        self.qtv_qtk = None
+        self.language_map = None
+        self.detail_language_map = None
+        self.auth_info = None
+        self.mode = None
+        self.model_pool = ('B2B', 'B2C',)
         self.query_count = 0
-        self.output_zh = 'zh'
-        self.input_limit = 2000
+        self.output_zh = 'zh-Hans_CN'
+        self.input_limit = 10000
  
+    def get_d_lang_map(self, lang_url, ss, headers, timeout, proxies):
+        params = {'all': 'true', 'code': 'en_GB', 'platform': 'dp', '_': int(time.time() * 1000)}
+        return ss.get(lang_url, params=params, headers=headers, timeout=timeout, proxies=proxies).json()
 
-    def get_qt(self, ss, timeout, proxies):
-        return ss.post(self.get_qt_url, headers=self.qt_headers, json=self.qtv_qtk, timeout=timeout, proxies=proxies).json()
+    def get_auth(self, auth_url, ss, headers, timeout, proxies):
+        js_html = ss.get(auth_url, headers=headers, timeout=timeout, proxies=proxies).text
+        return {k: v for k, v in re.compile(',(.*?)="(.*?)"').findall(js_html)}
  
-    def tencent_api(self, query_text: str, from_language: str = 'auto', to_language: str = 'en', **kwargs)  :
+    def lingvanex_api(self, query_text: str, from_language: str = 'auto', to_language: str = 'en', **kwargs)  :
         """
-        https://fanyi.qq.com
+        https://lingvanex.com/demo/
         :param query_text: str, must.
         :param from_language: str, default 'auto'.
-        :param to_language: str, default 'en'.
+        :param to_language: str, default 'zh'.
         :param **kwargs:
                 :param timeout: float, default None.
                 :param proxies: dict, default None.
@@ -85,45 +90,59 @@ class Tencent(Tse):
                 :param update_session_after_seconds: float, default 1500.
                 :param if_show_time_stat: boolean, default False.
                 :param show_time_stat_precision: int, default 4.
+                :param lingvanex_mode: str, default "B2C", choose from ("B2B", "B2C").
         :return: str or dict
         """
 
+        mode = kwargs.get('lingvanex_mode', 'B2C')
         timeout = kwargs.get('timeout', None)
         proxies = kwargs.get('proxies', None)
         is_detail_result = kwargs.get('is_detail_result', False)
         sleep_seconds = kwargs.get('sleep_seconds', random.random())
         update_session_after_seconds = kwargs.get('update_session_after_seconds', self.default_session_seconds)
+ 
 
         not_update_cond_time = 1 if time.time() - self.begin_time < update_session_after_seconds else 0
-        if not (self.session and not_update_cond_time and self.language_map and self.qtv_qtk):
+        if not (self.session and not_update_cond_time and self.language_map and self.auth_info and self.mode == mode):
             self.session = requests.Session()
-            _ = self.session.get(self.host_url, headers=self.host_headers, timeout=timeout, proxies=proxies).text
-            self.qtv_qtk = self.get_qt(self.session, timeout, proxies)
-             
+            _ = self.session.get(self.host_url, headers=self.host_headers, timeout=timeout, proxies=proxies)
+            self.auth_info = self.get_auth(self.auth_url, self.session, self.host_headers, timeout, proxies)
+
+            if mode != self.mode:
+                self.mode = mode
+                self.api_url = ''.join([self.auth_info[f'{mode}_BASE_URL'], self.auth_info['TRANSLATE_URL']])
+                self.language_url = ''.join([self.auth_info[f'{mode}_BASE_URL'], self.auth_info['GET_LANGUAGES_URL']])
+                self.host_headers.update({'authorization': self.auth_info[f'{mode}_AUTH_TOKEN']})
+                self.api_headers.update({'authorization': self.auth_info[f'{mode}_AUTH_TOKEN']})
+                self.api_headers.update({'referer': urllib.parse.urlparse(self.auth_info[f'{mode}_BASE_URL']).netloc})
+ 
+            self.detail_language_map = self.get_d_lang_map(self.language_url, self.session, self.host_headers, timeout, proxies)
+  
+
         form_data = {
-            'source': from_language,
-            'target': to_language,
-            'sourceText': query_text,
-            'qtv': self.qtv_qtk.get('qtv', ''),
-            'qtk': self.qtv_qtk.get('qtk', ''),
-            'ticket': '',
-            'randstr': '',
-            'sessionUuid': 'translate_uuid' + str(int(time.time() * 1000)),
+            'from': from_language,
+            'to': to_language,
+            'text': query_text,
+            'platform': 'dp',
+            'is_return_text_split_ranges': 'true'
         }
-        r = self.session.post(self.api_url, headers=self.api_headers, data=form_data, timeout=timeout, proxies=proxies)
-        r.raise_for_status()
+        
+        form_data = urllib.parse.urlencode(form_data)
+        r = self.session.post(self.api_url, data=form_data, headers=self.api_headers, timeout=timeout, proxies=proxies)
+         
         data = r.json()
         time.sleep(sleep_seconds)
         self.query_count += 1
-        return data if is_detail_result else ''.join(item['targetText'] for item in data['translate']['records'])  # auto whitespace
+        return data if is_detail_result else data['result'] if self.mode == 'B2C' else data['result']['text']
+
 
 from traceback import print_exc
 
 from translator.basetranslator import basetrans
 class TS(basetrans):
     def inittranslator(self):  
-        self.engine=Tencent()
+        self.engine=Lingvanex()
         self.engine._=None
     def translate(self,content):  
-            return self.engine.tencent_api(content,self.srclang,self.tgtlang)
+            return self.engine.lingvanex_api(content,self.srclang,self.tgtlang)
         

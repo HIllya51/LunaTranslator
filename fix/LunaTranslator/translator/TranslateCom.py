@@ -46,31 +46,26 @@ class Tse:
             api_headers.pop('Content-Type')
         return host_headers if not if_api else api_headers
  
- 
-class Tencent(Tse):
+
+class TranslateCom(Tse):
     def __init__(self):
         super().__init__()
-        self.host_url = 'https://fanyi.qq.com'
-        self.api_url = 'https://fanyi.qq.com/api/translate'
-        self.get_language_url = 'https://fanyi.qq.com/js/index.js'
-        self.get_qt_url = 'https://fanyi.qq.com/api/reauth12f'
+        self.host_url = 'https://www.translate.com/machine-translation'
+        self.api_url = 'https://www.translate.com/translator/translate_mt'
+        self.lang_detect_url = 'https://www.translate.com/translator/ajax_lang_auto_detect'
+        self.language_url = 'https://www.translate.com/ajax/language/ht/all'
         self.host_headers = self.get_headers(self.host_url, if_api=False)
-        self.api_headers = self.get_headers(self.host_url, if_api=True)
-        self.qt_headers = self.get_headers(self.host_url, if_api=True, if_json_for_api=True)
-        self.language_map = None
+        self.api_headers = self.get_headers(self.host_url, if_api=True, if_json_for_api=False)
         self.session = None
-        self.qtv_qtk = None
+        self.language_map = None
+        self.language_description = None
         self.query_count = 0
         self.output_zh = 'zh'
-        self.input_limit = 2000
+        self.input_limit = 15000  # fifteen thousand letters left today.
  
-
-    def get_qt(self, ss, timeout, proxies):
-        return ss.post(self.get_qt_url, headers=self.qt_headers, json=self.qtv_qtk, timeout=timeout, proxies=proxies).json()
- 
-    def tencent_api(self, query_text: str, from_language: str = 'auto', to_language: str = 'en', **kwargs)  :
+    def translateCom_api(self, query_text: str, from_language: str = 'auto', to_language: str = 'en', **kwargs) :
         """
-        https://fanyi.qq.com
+        https://www.translate.com/machine-translation
         :param query_text: str, must.
         :param from_language: str, default 'auto'.
         :param to_language: str, default 'en'.
@@ -95,35 +90,39 @@ class Tencent(Tse):
         update_session_after_seconds = kwargs.get('update_session_after_seconds', self.default_session_seconds)
 
         not_update_cond_time = 1 if time.time() - self.begin_time < update_session_after_seconds else 0
-        if not (self.session and not_update_cond_time and self.language_map and self.qtv_qtk):
+        if not (self.session and not_update_cond_time and self.language_map and self.language_description):
             self.session = requests.Session()
-            _ = self.session.get(self.host_url, headers=self.host_headers, timeout=timeout, proxies=proxies).text
-            self.qtv_qtk = self.get_qt(self.session, timeout, proxies)
-             
+            _ = self.session.get(self.host_url, headers=self.host_headers, timeout=timeout, proxies=proxies)
+            lang_r = self.session.get(self.language_url, headers=self.host_headers, timeout=timeout, proxies=proxies)
+            self.language_description = lang_r.json()
+            
+        if from_language == 'auto':
+            detect_form = {'text_to_translate': query_text}
+            r_detect = self.session.post(self.lang_detect_url, data=detect_form, headers=self.api_headers, timeout=timeout, proxies=proxies)
+            from_language = r_detect.json()['language']
+ 
         form_data = {
-            'source': from_language,
-            'target': to_language,
-            'sourceText': query_text,
-            'qtv': self.qtv_qtk.get('qtv', ''),
-            'qtk': self.qtv_qtk.get('qtk', ''),
-            'ticket': '',
-            'randstr': '',
-            'sessionUuid': 'translate_uuid' + str(int(time.time() * 1000)),
+            'text_to_translate': query_text,
+            'source_lang': from_language,
+            'translated_lang': to_language,
+            'use_cache_only': 'false',
         }
-        r = self.session.post(self.api_url, headers=self.api_headers, data=form_data, timeout=timeout, proxies=proxies)
+        r = self.session.post(self.api_url, data=form_data, headers=self.api_headers, timeout=timeout, proxies=proxies)
         r.raise_for_status()
         data = r.json()
         time.sleep(sleep_seconds)
         self.query_count += 1
-        return data if is_detail_result else ''.join(item['targetText'] for item in data['translate']['records'])  # auto whitespace
+        return data if is_detail_result else data['translated_text']  # translation_source is microsoft, wtf!
+
+
 
 from traceback import print_exc
 
 from translator.basetranslator import basetrans
 class TS(basetrans):
     def inittranslator(self):  
-        self.engine=Tencent()
+        self.engine=TranslateCom()
         self.engine._=None
     def translate(self,content):  
-            return self.engine.tencent_api(content,self.srclang,self.tgtlang)
+            return self.engine.translateCom_api(content,self.srclang,self.tgtlang)
         
