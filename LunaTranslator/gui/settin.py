@@ -1,12 +1,12 @@
  
 from PyQt5.QtCore import Qt,QSize,pyqtSignal ,QRect ,QUrl,QObject
  
-from PyQt5.QtWidgets import  QColorDialog,QSpinBox,QDoubleSpinBox,QPushButton,QComboBox,QLabel,QScrollArea,QWidget,QGridLayout,QApplication
-from PyQt5.QtGui import QColor ,QFont
+from PyQt5.QtWidgets import  QColorDialog,QSpinBox,QDoubleSpinBox,QPushButton,QComboBox,QLabel,QScrollArea,QWidget,QGridLayout,QApplication,QTabBar
+from PyQt5.QtGui import QColor ,QFont,QResizeEvent
 from utils.config import globalconfig 
 from PyQt5.QtWidgets import  QTabWidget,QMainWindow 
 import qtawesome   ,win32con,win32gui
-import os
+import os,time,threading
 from gui.switchbutton import MySwitch
 from PyQt5.QtMultimedia import QMediaPlayer,QMediaContent ,QSoundEffect 
 from gui.settingpage1 import setTabOne
@@ -50,6 +50,7 @@ class Settin(QMainWindow) :
     versiontextsignal=pyqtSignal( str)
     progresssignal=pyqtSignal(str,int)
     clicksourcesignal=pyqtSignal(int)
+    
     fontbigsmallsignal=pyqtSignal(int) 
     def showEvent(self, a0   ) -> None:
          win32gui.SetWindowPos(int(self. winId()), win32con.HWND_TOPMOST, 0, 0, 0, 0,win32con. SWP_NOACTIVATE |win32con. SWP_NOSIZE | win32con.SWP_NOMOVE) 
@@ -84,12 +85,12 @@ class Settin(QMainWindow) :
                 if save:
                     savelist.append(ll)
 
-        ww=self.window_width-180*self.rate-self.object.scrollwidth
+        ww=self.window_width*0.8-self.object.scrollwidth
         
-        
-        for c in range(maxl):
+        if True:#globalconfig['languageuse'] in [0,1]:
+            for c in range(maxl):
 
-            grid.setColumnMinimumWidth(c,ww//maxl)
+                grid.setColumnMinimumWidth(c,ww//maxl)
     def getspinbox(self,mini,maxi,d,key,double=False, step=1,callback=None,name=None,dec=1 ):
         if double:
             s=QDoubleSpinBox()
@@ -140,15 +141,16 @@ class Settin(QMainWindow) :
         #self.setWindowFlags(self.windowFlags()&~Qt.WindowMinimizeButtonHint)
         self.mp3player=wavmp3player() 
         self.localocrstarted=False
-        self.mp3playsignal.connect(self.mp3player.mp3playfunction)
+        self.mp3playsignal.connect(self.mp3player.mp3playfunction) 
         self.object = object  
         self.needupdate=False
         # 界面缩放比例
         self.rate = self.object.screen_scale_rate
         # 界面尺寸
-        self.window_width = int(900*self.rate)
+        self.window_width = int((900 if globalconfig['languageuse'] in [0,1] else 1200)*self.rate)
+         
         self.window_height = int(600*self.rate)
-        
+         
         self.savelastrect=None
         self.setFixedSize(self.window_width, self.window_height) 
         d=QApplication.desktop()
@@ -156,27 +158,26 @@ class Settin(QMainWindow) :
         #self.setWindowFlags(Qt.WindowStaysOnTopHint |Qt.WindowCloseButtonHint)
         #self.setWindowFlags( Qt.WindowCloseButtonHint)
         self.setWindowTitle(_TR("设置"))
-        self.setWindowIcon(qtawesome.icon("fa.gear" ))
-        
-        self.setStyleSheet("font: 11pt '"+globalconfig['settingfonttype']+"' ; color: \"#595959\"" )  
+        self.setWindowIcon(qtawesome.icon("fa.gear" )) 
+        self.setStyleSheet("font: %spt '"%(11 if globalconfig['languageuse'] in [0,1] else 10)+(globalconfig['settingfonttype']  )+"' ; color: \"#595959\"" )  
         self.tab_widget = QTabWidget(self)
         self.setCentralWidget(self.tab_widget)
-        
+         
         #self.tab_widget.setGeometry(self.geometry())  
-        tabbar=rotatetab(self.tab_widget)
+        self.tabbar=rotatetab(self.tab_widget)
          
         
         # tabbar.setStyleSheet("""   
         #         font:18pt '黑体';       
         #        """ )
         
-        self.tab_widget.setTabBar(tabbar) 
+        self.tab_widget.setTabBar(self.tabbar) 
         self.tab_widget.setStyleSheet(
             '''QTabBar:tab { 
                 width: %spx;
                 height: %spx;
-                font:18pt  ;  }
-            '''%(50*self.rate,180*self.rate)
+                font:%spt  ;  }
+            '''%(50*self.rate,self.window_width*0.2,18 if globalconfig['languageuse'] in [0,1] else 10  )
         )
         self.tab_widget.setTabPosition(QTabWidget.West)
         self.hooks=[] 
@@ -200,7 +201,8 @@ class Settin(QMainWindow) :
         setTab_about(self)
         
         self.usevoice=0
-      
+     
+     
     def yitiaolong(self,title,grid,save=False,savelist=None,savelay=None):
         lay,t=self. getscrollwidgetlayout(title)
         t.setFixedHeight(len(grid)*30*self.rate)
@@ -223,7 +225,7 @@ background-color:transparent;
         scroll.setWidget(t)
         sw=self.object.scrollwidth
         
-        t.setFixedWidth(self.window_width-180*self.rate-sw)
+        t.setFixedWidth(self.window_width*0.8-sw)
         masklabel=QLabel(t)
         masklabel.setGeometry(0,0,2000,2000)
         masklabel.setStyleSheet("color:white;background-color:white;")

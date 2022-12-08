@@ -36,7 +36,7 @@ def setTabThree(self) :
         self.sfont_comboBox = QFontComboBox( ) 
         def callback(x):
                 globalconfig.__setitem__('settingfonttype',x)
-                self.setStyleSheet("font: 11pt '"+globalconfig['settingfonttype']+"' ; color: \"#595959\"" )  
+                self.setStyleSheet("font: %spt '"%(11 if globalconfig['languageuse'] in [0,1] else 10)+globalconfig['settingfonttype']+"' ; color: \"#595959\"" )  
         self.sfont_comboBox.activated[str].connect(callback)  
         self.scomboBox_font = QFont(globalconfig['settingfonttype'])
         self.sfont_comboBox.setCurrentFont(self.scomboBox_font) 
