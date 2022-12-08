@@ -93,6 +93,9 @@ class rangeselct(QMainWindow) :
                 self.update() 
     def getRange(self) :
         x1,y1,x2,y2=(self.start_point.x(),self.start_point.y() ,self.end_point.x(),self.end_point.y())
+        
+        x1,x2=min(x1,x2),max(x1,x2)
+        y1,y2=min(y1,y2),max(y1,y2)
         self.object.rect=[(x1,y1),(x2,y2)]
         self.object.range_ui.setGeometry(x1,y1,x2-x1,y2-y1) 
         self.object.range_ui.show() 
