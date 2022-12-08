@@ -34,6 +34,7 @@ def initsome11(self,l,label,grids):
             importlib.import_module('translator.'+fanyi)
         except: 
             bad+=1
+            print_exc()
             continue
         i+=1
         

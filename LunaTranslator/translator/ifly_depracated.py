@@ -3,7 +3,7 @@ import re
 import urllib
 import random
 import time
-
+import lxml
 from utils.config import globalconfig
 import js2py 
 class Tse:
@@ -46,31 +46,26 @@ class Tse:
             api_headers.pop('Content-Type')
         return host_headers if not if_api else api_headers
  
- 
-class Tencent(Tse):
+class IflytekV2(Tse):
     def __init__(self):
         super().__init__()
-        self.host_url = 'https://fanyi.qq.com'
-        self.api_url = 'https://fanyi.qq.com/api/translate'
-        self.get_language_url = 'https://fanyi.qq.com/js/index.js'
-        self.get_qt_url = 'https://fanyi.qq.com/api/reauth12f'
+        self.host_url = 'https://fanyi.xfyun.cn/console/trans/text'  # https://www.iflyrec.com/html/translate.html
+        self.api_url = 'https://fanyi.xfyun.cn/api-tran/trans/its'
+        self.detect_language_url = 'https://fanyi.xfyun.cn/api-tran/trans/detection'
+        self.language_url_pattern = '/js/trans-text/index.(.*?).js'
+        self.language_url = None
         self.host_headers = self.get_headers(self.host_url, if_api=False)
         self.api_headers = self.get_headers(self.host_url, if_api=True)
-        self.qt_headers = self.get_headers(self.host_url, if_api=True, if_json_for_api=True)
         self.language_map = None
         self.session = None
-        self.qtv_qtk = None
         self.query_count = 0
-        self.output_zh = 'zh'
+        self.output_zh = 'cn'
         self.input_limit = 2000
  
-
-    def get_qt(self, ss, timeout, proxies):
-        return ss.post(self.get_qt_url, headers=self.qt_headers, json=self.qtv_qtk, timeout=timeout, proxies=proxies).json()
  
-    def tencent_api(self, query_text: str, from_language: str = 'auto', to_language: str = 'en', **kwargs)  :
+    def iflytek_api(self, query_text: str, from_language: str = 'auto', to_language: str = 'en', **kwargs)  :
         """
-        https://fanyi.qq.com
+        https://fanyi.xfyun.cn/console/trans/text
         :param query_text: str, must.
         :param from_language: str, default 'auto'.
         :param to_language: str, default 'en'.
@@ -95,35 +90,37 @@ class Tencent(Tse):
         update_session_after_seconds = kwargs.get('update_session_after_seconds', self.default_session_seconds)
 
         not_update_cond_time = 1 if time.time() - self.begin_time < update_session_after_seconds else 0
-        if not (self.session and not_update_cond_time and self.language_map and self.qtv_qtk):
+        if not (self.session and not_update_cond_time and self.language_map):
             self.session = requests.Session()
-            _ = self.session.get(self.host_url, headers=self.host_headers, timeout=timeout, proxies=proxies).text
-            self.qtv_qtk = self.get_qt(self.session, timeout, proxies)
+            host_html = self.session.get(self.host_url, headers=self.host_headers, timeout=timeout, proxies=proxies).text
              
-        form_data = {
-            'source': from_language,
-            'target': to_language,
-            'sourceText': query_text,
-            'qtv': self.qtv_qtk.get('qtv', ''),
-            'qtk': self.qtv_qtk.get('qtk', ''),
-            'ticket': '',
-            'randstr': '',
-            'sessionUuid': 'translate_uuid' + str(int(time.time() * 1000)),
-        }
+
+        if from_language == 'auto':
+            params = {'text': query_text}
+            detect_r = self.session.get(self.detect_language_url, params=params, headers=self.host_headers, timeout=timeout, proxies=proxies)
+            from_language = detect_r.json()['data'] if detect_r.status_code == 200 and detect_r.text.strip() != '' else self.output_zh
+         
+        form_data = {'from': from_language, 'to': to_language, 'text': query_text}
         r = self.session.post(self.api_url, headers=self.api_headers, data=form_data, timeout=timeout, proxies=proxies)
         r.raise_for_status()
         data = r.json()
         time.sleep(sleep_seconds)
         self.query_count += 1
-        return data if is_detail_result else ''.join(item['targetText'] for item in data['translate']['records'])  # auto whitespace
+        print(data)
+        return data if is_detail_result else eval(data['data'])['trans_result']['dst']
+
 
 from traceback import print_exc
 
 from translator.basetranslator import basetrans
 class TS(basetrans):
     def inittranslator(self):  
-        self.engine=Tencent()
+        self.engine=IflytekV2()
         self.engine._=None
-    def translate(self,content):  
-            return self.engine.tencent_api(content,self.srclang,self.tgtlang)
-        
+    def translate(self,content): 
+        try:
+            return self.engine.iflytek_api(content)
+        except:
+            print_exc()
+            self.inittranslator()
+            return '出错了'
