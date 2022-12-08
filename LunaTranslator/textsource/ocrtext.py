@@ -218,7 +218,7 @@ class ocrtext(basetext):
         img.save(f'./capture/{self.object.timestamp}.png')
         try:
             lang=self.language(use)
-            if globalconfig['ocrmergelines']:
+            if globalconfig['ocrmergelines']==False:
                 space='\n'
             elif lang in ['zh','ja']:
                 space=''

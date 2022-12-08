@@ -4,10 +4,10 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QWidget,QHBoxLayout,QMainWindow,QFrame,QVBoxLayout,QComboBox,QPlainTextEdit,QTextBrowser,QLineEdit,QPushButton,QTabWidget,QMenu,QAction
 from PyQt5.QtGui import QFont,QTextCursor
 from PyQt5.QtCore import Qt,pyqtSignal
-import qtawesome,functools
+import qtawesome,functools,json
 import threading 
 from utils.config import globalconfig
-
+from traceback import print_exc
 from utils.config import globalconfig ,_TR,_TRL
 class searchwordW(QMainWindow): 
     getnewsentencesignal=pyqtSignal(str) 
@@ -52,7 +52,9 @@ class searchwordW(QMainWindow):
   
         
         self.textbs=[]
+
         _=_TRL(['MeCab','小学馆',"灵格斯词典","EDICT"])
+        self._=_
         for i in range(4):
 
             textOutput = QTextBrowser(self)
@@ -75,8 +77,33 @@ class searchwordW(QMainWindow):
         menu.addAction(save) 
         action=menu.exec( to.mapToGlobal(p))
         if action==save: 
-            with open('dict_result.txt','a',encoding='utf8') as ff:
-                ff.write(to.toPlainText())
+            try:
+                try:
+                    with open('dict_result.json','r',encoding='utf8') as ff:
+                        js=json.loads(ff.read())
+                except:
+                    js={"note":[]}
+                
+                word=self.userhook.text()
+                gana=self.textbs[0].toPlainText().split('\n')[0][len(word)+1:]
+                meaning=[]
+
+                for i in range(1,len(self.textbs)):
+                    if self.textbs[i].firsttext!='':
+                        meaning+=['\n'.join([self._[i],self.textbs[i].firsttext])]
+                item={ 
+                    "fields": {
+                        "Expression": word,
+                        "Meaning": '\n'.join(meaning),
+                        "Furigana": gana,
+                        "Sentence": self.p.original,
+                    }
+                }
+                js['note'].append(item)
+                with open('dict_result.json','w',encoding='utf8') as ff:
+                    ff.write(json.dumps(js,ensure_ascii=False,sort_keys=False, indent=4))
+            except:
+                print_exc()
     def getnewsentence(self,sentence):
         self.userhook.setText(sentence[0] )
          
@@ -88,7 +115,11 @@ class searchwordW(QMainWindow):
         res=_d[i].search(sentence if i==0 else sentence[0]) 
         if res is None or res=='':
             res=_TR('未查到' )
-        self.textbs[i].append(res) 
+        
+        first=res.split('<hr>')[0]
+        self.textbs[i].insertHtml(first)  
+        self.textbs[i].firsttext=self.textbs[i].toPlainText()
+        self.textbs[i].insertHtml(res[len(first):])  
         scrollbar = self.textbs[i].verticalScrollBar()
         scrollbar.setValue(0)
     def search(self,sentence):

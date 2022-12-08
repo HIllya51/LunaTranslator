@@ -395,5 +395,7 @@
     "颜色": "colour",
     "空白": "blank",
     "baiduOCR_高精度设置": "baiduOCR_ High precision setting",
-    "合并多行识别结果": ""
+    "合并多行识别结果": "",
+    "未查到": "",
+    "保存": ""
 }
