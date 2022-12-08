@@ -8,8 +8,8 @@ from traceback import print_exc
 import gui.selecthook  
 from system_hotkey import SystemHotkey
 import pyperclip   
-key_first=['Ctrl','Shift','Alt','Win' ]
-key_first_reg=['control','shift','alt','super' ]
+key_first=['Ctrl','Shift','Alt','Win' ]+['']
+key_first_reg=['control','shift','alt','super' ]+['']
 key_second=['F'+chr(ord('1')+i) for i in range(9)]+['F10','F11','F12']+[chr(ord('A')+i) for i in range(26)]+[chr(ord('0')+i) for i in range(10)]#+['']
 key_second_reg=['f'+chr(ord('1')+i) for i in range(9)]+['f10','f11','f12']+[chr(ord('a')+i) for i in range(26)]+[chr(ord('0')+i) for i in range(10)]#+['']
 def setTab_quick(self) :
@@ -93,7 +93,11 @@ def regist_or_not_key(self,name,callback):
     
     if self.hotkeys[name] :
         try:
-            self.hotkeys[name].unregister(self.hotkeys_savelast[name])
+            k1,k2=self.hotkeys_savelast[name]
+            if k1=="":
+                self.hotkeys[name].unregister((k2,))
+            else:
+                self.hotkeys[name].unregister((k1,k2))
             self.usedkey.remove(self.hotkeys_savelast[name])
         except:
             pass
@@ -110,9 +114,9 @@ def regist_or_not_key(self,name,callback):
             return
         hk=SystemHotkey()
         try:
-            if k2=="":
+            if k1=="":
 
-                hk.register((k1,),callback=lambda x: callback()) 
+                hk.register((k2,),callback=lambda x: callback()) 
             else:
                 hk.register((k1,k2),callback=lambda x: callback()) 
             self.hotkeys_savelast[name]=(k1,k2)
