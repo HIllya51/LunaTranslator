@@ -500,6 +500,30 @@
             "name": "iciba",
 			"lang":{}
         },
+		"itrans": {
+            "use": false,
+            "color": "blue",
+            "name": "itrans",
+			"lang":{"en":"en-UK","zh":"zh-CN","es":"es-ES","fr":"fr-FR"}
+        },
+		"lingvanex": {
+            "use": false,
+            "color": "blue",
+            "name": "lingvanex",
+			"lang":{"zh":"zh-Hans_CN","en":"en_GB","es":"es_ES","fr":"fr_FR","ko":"ko_KR","ru":"ru_RU","ja":"ja_JP"}
+        },
+		"reverso": {
+            "use": false,
+            "color": "blue",
+            "name": "reverso",
+			"lang":{"zh":"chi","en":"eng","es":"spa","fr":"fra","ko":"kor","ru":"rus","ja":"jpn"}
+        },
+		"TranslateCom": {
+            "use": false,
+            "color": "blue",
+            "name": "TranslateCom",
+			"lang":{}
+        },
         "baiduapi": {
             "use": false,
             "color": "blue",

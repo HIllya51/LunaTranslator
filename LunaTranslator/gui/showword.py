@@ -68,10 +68,10 @@ class searchwordW(QMainWindow):
             textOutput.setContextMenuPolicy(Qt.CustomContextMenu)
         
         
-            textOutput.customContextMenuRequested.connect(functools.partial( self.showmenu ,_[i],textOutput) )
+            textOutput.customContextMenuRequested.connect(functools.partial( self.showmenu ,i,textOutput) )
         self.hiding=True
         self.searchthreadsignal.connect(self.searchthread)
-    def showmenu(self,m,to:QTextBrowser,p):  
+    def showmenu(self,ii,to:QTextBrowser,p):  
         menu=QMenu(self ) 
         save=QAction(_TR("保存"))  
         menu.addAction(save) 
@@ -86,15 +86,17 @@ class searchwordW(QMainWindow):
                 
                 word=self.userhook.text()
                 gana=self.textbs[0].toPlainText().split('\n')[0][len(word)+1:]
-                meaning=[]
+                meaning=''
 
                 for i in range(1,len(self.textbs)):
+                    if i!=ii:
+                        continue
                     if self.textbs[i].firsttext!='':
-                        meaning+=['\n'.join([self._[i],self.textbs[i].firsttext])]
+                        meaning= self.textbs[i].firsttext 
                 item={ 
                     "fields": {
                         "Expression": word,
-                        "Meaning": '\n'.join(meaning),
+                        "Meaning": meaning,
                         "Furigana": gana,
                         "Sentence": self.p.original,
                     }
