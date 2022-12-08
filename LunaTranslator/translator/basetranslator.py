@@ -12,6 +12,8 @@ class basetrans:
     def srclang(self):
         try:
             l=globalconfig['normallanguagelist'][globalconfig['srclang2']]
+            if l=='cht' and l not in globalconfig['fanyi'][self.typename]['lang']:
+                l='zh'
             if l in globalconfig['fanyi'][self.typename]['lang']:
                 return globalconfig['fanyi'][self.typename]['lang'][l]
             else:
@@ -23,6 +25,8 @@ class basetrans:
     def tgtlang(self):
         try:
             l=globalconfig['normallanguagelist'][globalconfig['tgtlang2']]
+            if l=='cht' and l not in globalconfig['fanyi'][self.typename]['lang']:
+                l='zh'
             if l in globalconfig['fanyi'][self.typename]['lang']:
                 return globalconfig['fanyi'][self.typename]['lang'][l]
             else:

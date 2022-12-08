@@ -233,6 +233,8 @@ class ocrtext(basetext):
             return ''
     def language(self,tp):
         l=globalconfig['normallanguagelist'][globalconfig['srclang2']]
+        if l=='cht' and l not in globalconfig['fanyi'][self.typename]['lang']:
+            l='zh'
         if l in globalconfig['ocr'][tp]['lang']:
             return globalconfig['ocr'][tp]['lang'][l]
         else:
