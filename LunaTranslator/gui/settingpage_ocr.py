@@ -50,7 +50,7 @@ def setTab6(self) :
             [''],
             
             [(("百度OCR使用竖排OCR"),9),self.getsimpleswitch(globalconfig ,'verticalocr')],
-            [''],
+            [(("合并多行识别结果"),9),self.getsimpleswitch(globalconfig ,'ocrmergelines')],
             [''],
            # [(("优化横向OCR漏字"),6),self.getsimpleswitch(globalconfig ,'ocr_hori_extend')],
          #   [(("使用竖排OCR(效果不佳)"),6),self.getsimpleswitch(globalconfig ,'verticalocr')],

@@ -2,7 +2,7 @@
 from utils.config import globalconfig
 import subprocess
 
-def ocr(imgfile,lang):
+def ocr(imgfile,lang,space):
         st=subprocess.STARTUPINFO()
         st.dwFlags=subprocess.STARTF_USESHOWWINDOW
         st.wShowWindow=subprocess.SW_HIDE
@@ -21,7 +21,9 @@ def ocr(imgfile,lang):
                 ress[ (line.split(' ')[1])]=int(line.split(' ')[0])
                 ress2.append( (line.split(' ')[1]))
             ress2.sort(key= lambda x:ress[x])
-            xx=''.join(ress2)
+
+             
+            xx=space.join(ress2)
         except:
             xx=''
         return xx

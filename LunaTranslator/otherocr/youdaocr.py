@@ -4,7 +4,7 @@ import os
 import json
 from utils.config import globalconfig
  
-def ocr(imgfile,_):
+def ocr(imgfile,_,space):
      
 
     headers = {
@@ -34,6 +34,8 @@ def ocr(imgfile,_):
     response = requests.post('https://aidemo.youdao.com/ocrapi1', headers=headers, data=data, proxies=  {'http': None,'https': None})
     res=''
     for l in response.json()['lines']:
+        if res!='':
+                res+=space
         res+=l['words']
     return res
  

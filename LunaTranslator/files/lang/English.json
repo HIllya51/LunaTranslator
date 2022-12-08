@@ -394,5 +394,6 @@
     "是否显示": "Whether to display",
     "颜色": "colour",
     "空白": "blank",
-    "baiduOCR_高精度设置": "baiduOCR_ High precision setting"
+    "baiduOCR_高精度设置": "baiduOCR_ High precision setting",
+    "合并多行识别结果": ""
 }

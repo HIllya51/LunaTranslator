@@ -217,10 +217,17 @@ class ocrtext(basetext):
             return ''
         img.save(f'./capture/{self.object.timestamp}.png')
         try:
+            lang=self.language(use)
+            if globalconfig['ocrmergelines']:
+                space='\n'
+            elif lang in ['zh','ja']:
+                space=''
+            else:
+                space=' '
             
         
             ocr=importlib.import_module('otherocr.'+use).ocr 
-            return ocr(f'./capture/{self.object.timestamp}.png',self.language(use))
+            return ocr(f'./capture/{self.object.timestamp}.png',lang,space)
         except:
             print_exc()
             return ''

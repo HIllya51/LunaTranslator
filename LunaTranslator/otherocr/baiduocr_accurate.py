@@ -7,7 +7,7 @@ from utils.config import globalconfig,ocrsetting
  
 cacheapikey=("","")
 cacheaccstoken=""
-def ocr(imgfile,lang):
+def ocr(imgfile,lang,space):
     global cacheapikey,cacheaccstoken
     js=ocrsetting['baiduocr_accurate']
 
@@ -60,7 +60,7 @@ def ocr(imgfile,lang):
     js['args']['次数统计']=str(int(js['args']['次数统计'])+1) 
     response = requests.post('https://aip.baidubce.com/rest/2.0/ocr/v1/accurate_basic', params=params, headers=headers, data=data, proxies=  {'http': None,'https': None})
     try:
-        return ''.join([x['words']  for x in response.json()['words_result']])
+        return space.join([x['words']  for x in response.json()['words_result']])
     except:
         print(response.text)
         if 'error_msg' in response.json():

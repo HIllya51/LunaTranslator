@@ -1,6 +1,8 @@
 import time
 import win32pipe,win32file,win32con
-def ocr(imgfile,lang): 
+ 
+from utils.config import globalconfig
+def ocr(imgfile,lang,space): 
     timestamp=imgfile[10:-4]
     t1=time.time()
     win32pipe.WaitNamedPipe("\\\\.\\Pipe\\ocrwaitsignal_"+timestamp,win32con.NMPWAIT_WAIT_FOREVER)
@@ -43,8 +45,10 @@ def ocr(imgfile,lang):
         juhe[i].sort(key=lambda x:box[x][0])
     juhe.sort(key=lambda x:box[x[0]][1])
     lines=[]
+    
     for _j in juhe:
-            
-        lines.append(''.join([text[_] for _ in _j])) 
+        
 
-    return ''.join(lines)
+        lines.append(' '.join([text[_] for _ in _j])) 
+
+    return space.join(lines)

@@ -349,6 +349,7 @@
     },
 	"txtreadlineinterval":5,
 	"verticalocr":false,
+	"ocrmergelines":true,
     "ocr": {
         "local": {
             "use": true,

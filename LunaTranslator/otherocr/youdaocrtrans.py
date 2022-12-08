@@ -4,7 +4,7 @@ import os
 import json
 from utils.config import globalconfig
  
-def ocr(imgfile,_):
+def ocr(imgfile,_,space):
      
 
     headers = {
@@ -36,7 +36,7 @@ def ocr(imgfile,_):
     try:
         for l in response.json()['lines']:
             if res!='':
-                res+='\n'
+                res+=space
             res+=l['tranContent']
     except:
         print(response.json())
