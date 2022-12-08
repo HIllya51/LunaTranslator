@@ -344,21 +344,27 @@ class MAINUI(QObject) :
         classname,res,mp=_
         if classname not in ['rengong','premt','rengong_vnr','rengong_msk']: 
             res=self.solveaftertrans(res,mp)
-        if globalconfig['fanjian']:
+         
+
+        l=globalconfig['normallanguagelist'][globalconfig['srclang2']]
+        if l=='cht' and l not in globalconfig['fanyi'][classname]['lang']:
+            needconv=True
+        else:
+            needconv=False
+        if needconv:
             import zhconv  
         if classname=='premt':
             for k in res:
-                if globalconfig['fanjian']!=0:
-                    
-                    res[k]=zhconv.convert(res[k], ['zh-cn', 'zh-tw', 'zh-hk', 'zh-sg', 'zh-hans', 'zh-hant'][globalconfig['fanjian']])
+                if needconv: 
+                    res[k]=zhconv.convert(res[k],  'zh-hant' )
 
                 if k  in globalconfig['fanyi']:
                     self.translation_ui.displayres.emit(k,res[k])
                 else:
                     self.translation_ui.displayres.emit('premt',res[k])
         else:
-            if globalconfig['fanjian']!=0 and globalconfig['tgtlang']==0:
-                res=zhconv.convert(res, ['zh-cn', 'zh-tw', 'zh-hk', 'zh-sg', 'zh-hans', 'zh-hant'][globalconfig['fanjian']])
+            if needconv: 
+                res=zhconv.convert(res, 'zh-hant')
             self.translation_ui.displayres.emit(classname,res)
          
             

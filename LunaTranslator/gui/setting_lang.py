@@ -26,7 +26,7 @@ def setTablang(self) :
                 ("目标语言",5),(self.getsimplecombobox(_TRL(langlist),globalconfig,'tgtlang2'),5) ,
             ],
             [('翻译器显示语言(重启生效)',8),(self.getsimplecombobox((globalconfig['language_list']),globalconfig,'languageuse'),5),(self.getcolorbutton(globalconfig,'',callback=lambda :os.startfile(os.path.abspath(f'./files/lang/{globalconfig["language_list"][globalconfig["languageuse"]]}.json')),icon='fa.gear',constcolor="#FF69B4"),1)], 
-            [('汉语翻译结果繁简转换',8),(self.getsimplecombobox(['大陆简体','马新简体','台灣正體','香港繁體','简体','繁體'],globalconfig,'fanjian'),5)],
+           
             [''],
         ]
          
