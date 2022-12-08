@@ -349,14 +349,17 @@
     },
 	"txtreadlineinterval":5,
 	"verticalocr":false,
+	"ocrmergelines":true,
     "ocr": {
         "local": {
             "use": true,
-            "name": "本地OCR"
+            "name": "本地OCR",
+			"lang":{}
         },
         "windowsocr": {
             "use": false,
-            "name": "WindowsOCR"
+            "name": "WindowsOCR",
+			"lang":{"zh":"zh-Hans-CN"}
         },
         "baiduocr": {
             "use": false,
@@ -372,19 +375,22 @@
         },
         "ocrspace": {
             "use": false,
-            "name": "ocrspace"
+            "name": "ocrspace",
+			"lang":{"ja":"jpn","zh":"chs","en":"eng","ko":"kor","es":"spa","fr":"fre","ru":"rus"}
         },
         "docsumo": {
             "use": false,
-            "name": "docsumo"
+            "name": "docsumo","lang":{}
         },
         "youdaocr": {
             "use": false,
-            "name": "youdaocr"
+            "name": "youdaocr",
+			"lang":{}
         },
         "youdaocrtrans": {
             "use": false,
-            "name": "youdao图片翻译"
+            "name": "youdao图片翻译",
+			"lang":{}
         }
     },
 	"normallanguagelist":["auto","zh", "ja", "en","ru","es","ko","fr"],

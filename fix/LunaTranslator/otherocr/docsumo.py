@@ -3,7 +3,7 @@ import base64
 import os
 import json
 from utils.config import globalconfig ,ocrsetting
-def ocr(imgfile):
+def ocr(imgfile,_,space):
     js=ocrsetting['docsumo']
     if js['args']['token']=="":
         return ''

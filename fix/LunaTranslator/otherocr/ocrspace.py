@@ -3,7 +3,7 @@ import base64
 import os
 import json
 from utils.config import globalconfig ,ocrsetting
-def ocr(imgfile):
+def ocr(imgfile,lang,_):
     js=ocrsetting['ocrspace']
     if js['args']['apikey']=="":
         return ''
@@ -29,7 +29,7 @@ def ocr(imgfile):
     with open(imgfile,'rb') as ff:
         f=ff.read()
     b64=base64.b64encode(f)
-    data={'language':'jpn','base64Image':'data:image/jpeg;base64,'+str(b64,encoding='utf8'),'isOverlayRequired':'true','OCREngine':1,'apikey':apikey}
+    data={'language':lang,'base64Image':'data:image/jpeg;base64,'+str(b64,encoding='utf8'),'isOverlayRequired':'true','OCREngine':1,'apikey':apikey}
      
     response = requests.post('https://apipro3.ocr.space/parse/image', headers=headers, data=data, proxies=  {'http': None,'https': None})
     #print(response.text)
