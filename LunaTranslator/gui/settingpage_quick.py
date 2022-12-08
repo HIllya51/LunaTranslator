@@ -10,8 +10,8 @@ from system_hotkey import SystemHotkey
 import pyperclip   
 key_first=['Ctrl','Shift','Alt','Win' ]
 key_first_reg=['control','shift','alt','super' ]
-key_second=['F'+chr(ord('1')+i) for i in range(9)]+['F10','F11','F12']+[chr(ord('A')+i) for i in range(26)]+[chr(ord('0')+i) for i in range(10)]
-key_second_reg=['f'+chr(ord('1')+i) for i in range(9)]+['f10','f11','f12']+[chr(ord('a')+i) for i in range(26)]+[chr(ord('0')+i) for i in range(10)]
+key_second=['F'+chr(ord('1')+i) for i in range(9)]+['F10','F11','F12']+[chr(ord('A')+i) for i in range(26)]+[chr(ord('0')+i) for i in range(10)]+['']
+key_second_reg=['f'+chr(ord('1')+i) for i in range(9)]+['f10','f11','f12']+[chr(ord('a')+i) for i in range(26)]+[chr(ord('0')+i) for i in range(10)]+['']
 def setTab_quick(self) :
   
         self.hotkeys={}
@@ -90,21 +90,34 @@ def __changekey(self,who,keyn, key1,key2,x):
         return
     regist_or_not_key(self,who,self.bindfunctions[who])
 def regist_or_not_key(self,name,callback):
+    
     if self.hotkeys[name] :
-        self.hotkeys[name].unregister(self.hotkeys_savelast[name])
-        self.usedkey.remove(self.hotkeys_savelast[name])
+        try:
+            self.hotkeys[name].unregister(self.hotkeys_savelast[name])
+            self.usedkey.remove(self.hotkeys_savelast[name])
+        except:
+            pass
     self.hotkeys[name]=None
     if globalconfig['quick_setting']['all'][name]['use'] and globalconfig['quick_setting']['use'] : 
-        if  globalconfig['quick_setting']['all'][name]['key1']==-1 or globalconfig['quick_setting']['all'][name]['key2']==-1:
+        
+        k1index=globalconfig['quick_setting']['all'][name]['key1']
+        k2index=globalconfig['quick_setting']['all'][name]['key2']
+        if k1index==-1 or k2index==-1:
             return
-        if (key_first_reg[globalconfig['quick_setting']['all'][name]['key1']],key_second_reg[globalconfig['quick_setting']['all'][name]['key2']]) in self.usedkey:
+        k1=key_first_reg[k1index]
+        k2=key_second_reg[k2index]
+        if (k1,k2) in self.usedkey:
             return
         hk=SystemHotkey()
         try:
-            hk.register((key_first_reg[globalconfig['quick_setting']['all'][name]['key1']],key_second_reg[globalconfig['quick_setting']['all'][name]['key2']]),callback=lambda x: callback()) 
-            self.hotkeys_savelast[name]=(key_first_reg[globalconfig['quick_setting']['all'][name]['key1']],key_second_reg[globalconfig['quick_setting']['all'][name]['key2']])
+            if k2=="":
+
+                hk.register((k1,),callback=lambda x: callback()) 
+            else:
+                hk.register((k1,k2),callback=lambda x: callback()) 
+            self.hotkeys_savelast[name]=(k1,k2)
             self.hotkeys[name]=hk
-            self.usedkey.append((key_first_reg[globalconfig['quick_setting']['all'][name]['key1']],key_second_reg[globalconfig['quick_setting']['all'][name]['key2']]))
+            self.usedkey.append((k1,k2))
         except:
             print_exc()
  
