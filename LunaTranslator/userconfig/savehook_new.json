@@ -10,6 +10,28 @@
             "HAC@4F123:cmvs32.exe"
         ]
     ],
+    "C:\\dataH\\CHRONOCLOCK\\cmvs64.exe": [
+        [
+            "35",
+            "63E0",
+            "7FF9053FE300",
+            "14005BB8B",
+            "0",
+            "lstrcpyA",
+            "HS-24@0:kernel32.dll:lstrcpyA"
+        ]
+    ],
+    "C:\\dataH\\雪夜\\雪夜_CHS.exe": [
+        [
+            "12",
+            "42C0",
+            "AADB5D",
+            "AE7AAC39",
+            "0",
+            "UserHook1",
+            "HW-1C@1DDB5D:SiglusEngine.exe"
+        ]
+    ],
     "C:\\dataH\\俺たちに翼はない\\ORE_TUBA.EXE": [
         [
             "8",
@@ -32,29 +54,7 @@
             "HAC@4F123:cmvs32c2.exe"
         ]
     ],
-    "C:\\dataH\\CHRONOCLOCK\\cmvs64.exe": [
-        [
-            "35",
-            "63E0",
-            "7FF9053FE300",
-            "14005BB8B",
-            "0",
-            "lstrcpyA",
-            "HS-24@0:kernel32.dll:lstrcpyA"
-        ]
-    ],
     "C:\\dataH\\LunaTranslator\\LunaTranslator_no_Admin.exe": [],
-    "C:\\dataH\\GameData\\SiglusEngine.exe": [
-        [
-            "12",
-            "42C0",
-            "AADB5D",
-            "AE7AAC39",
-            "0",
-            "UserHook1",
-            "HW-1C@1DDB5D:SiglusEngine.exe"
-        ]
-    ],
     "C:\\Users\\11737\\Downloads\\彼女のベッドの下の盗聴器\\斵彈偺儀僢僪偺壓偺搻挳婍\\斵彈偺儀僢僪偺壓偺搻挳婍.eXe": [
         [
             "6",
