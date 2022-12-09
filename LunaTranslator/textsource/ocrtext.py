@@ -206,6 +206,11 @@ class ocrtext(basetext):
         
 
         text=self.ocrtest(img)
+        imgr1=qimge2np(img)
+        self.savelastimg=imgr1
+        self.savelastrecimg=imgr1
+        self.lastocrtime=time.time()
+        self.savelasttext=text
         self.textgetmethod(text,False)
     def ocrtest(self,img):
         use=None

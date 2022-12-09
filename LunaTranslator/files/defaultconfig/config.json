@@ -3,6 +3,7 @@
         500,
         500
     ],
+	"ocrafterrangeselect":true,
 	"autodisappear":false,
 	"disappear_delay":5,
 	"language_setted":false,

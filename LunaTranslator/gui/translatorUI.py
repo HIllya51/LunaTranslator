@@ -541,10 +541,11 @@ class QUnFrameWindow(QWidget):
             self.object.screen_shot_ui.immediateendsignal.emit()
         except:
             pass
-    def quickrange(self):
-        print(self.quickrangestatus)
+    def quickrange(self): 
         if self.quickrangestatus:
             self.rangeend()
+            # if globalconfig['autorun']==False:
+            #     self.startTranslater()
         else:
             self.clickRange(True)
         
@@ -557,11 +558,15 @@ class QUnFrameWindow(QWidget):
         self.object.range_ui.hide()
         self.object.screen_shot_ui =gui.rangeselect.rangeselct(self.object)
         self.object.screen_shot_ui.show()
-        self.object.screen_shot_ui.callback=self.showhide
+        self.object.screen_shot_ui.callback=self.afterrange
         win32gui.SetFocus(self.object.screen_shot_ui.winId() )   
          
         self.object.screen_shot_ui.startauto=auto
         self.object.screen_shot_ui.clickrelease=auto
+    def afterrange(self): 
+        self.showhide()
+        if globalconfig['ocrafterrangeselect']:
+            self.startTranslater()
     def langdu(self): 
         if self.object.reader:
             self.object.reader.read(self.original )  
