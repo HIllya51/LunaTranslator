@@ -394,5 +394,16 @@
     "是否显示": "Afficher ou non",
     "颜色": "Couleur",
     "空白": "Blanc",
-    "baiduOCR_高精度设置": "Baiduocr Réglage de haute précision"
+    "baiduOCR_高精度设置": "Baiduocr Réglage de haute précision",
+    "ifly": "Ifly",
+    "itrans": "Itrans",
+    "lingvanex": "Lingvanex",
+    "reverso": "Reverso",
+    "TranslateCom": "Translatecom",
+    "合并多行识别结果": "Fusionner les résultats de l'identification multiligne",
+    "选取OCR范围后立即进行一次识别": "Identification une fois que la plage OCR est sélectionnée",
+    "选取OCR范围后主动显示范围框": "Afficher activement la zone de plage après avoir sélectionné la plage ocr",
+    "自动隐藏窗口": "Masquer automatiquement la fenêtre",
+    "隐藏延迟(s)": "Masquer le délai",
+    "选取OCR范围——立即": "Sélectionnez la plage OCR - maintenant"
 }

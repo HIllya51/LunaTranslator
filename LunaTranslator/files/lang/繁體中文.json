@@ -394,5 +394,16 @@
     "是否显示": "是否顯示",
     "颜色": "顏色",
     "空白": "空白",
-    "baiduOCR_高精度设置": "baiduOCR_ 高精度設定"
+    "baiduOCR_高精度设置": "baiduOCR_ 高精度設定",
+    "ifly": "ifly",
+    "itrans": "itrans",
+    "lingvanex": "lingvanex",
+    "reverso": "reverso",
+    "TranslateCom": "TranslateCom",
+    "合并多行识别结果": "合併多行識別結果",
+    "选取OCR范围后立即进行一次识别": "選取OCR範圍後立即進行一次識別",
+    "选取OCR范围后主动显示范围框": "選取OCR範圍後主動顯示範圍框",
+    "自动隐藏窗口": "自動隱藏視窗",
+    "隐藏延迟(s)": "隱藏延遲（s）",
+    "选取OCR范围——立即": "選取OCR範圍——立即"
 }

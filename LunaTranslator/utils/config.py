@@ -99,8 +99,7 @@ def setlanguage():
 setlanguage()
 def _TR(k):
     global language,languageshow
-    if language==0:
-        return k
+     
     if k=='':
         return ''
     if k not in languageshow or languageshow[k]=='':
