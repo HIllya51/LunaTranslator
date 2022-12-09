@@ -53,7 +53,7 @@ class searchwordW(QMainWindow):
         
         self.textbs=[]
 
-        _=_TRL(['MeCab','小学馆',"灵格斯词典","EDICT","EDICT2"])
+        _=_TRL(['MeCab','小学馆',"灵格斯词典","EDICT","EDICT2"])#,"JMdict"])
         self._=_
         for i in range(len(_)):
 
@@ -64,7 +64,7 @@ class searchwordW(QMainWindow):
             textOutput.setReadOnly(True)
             self.tab.addTab(textOutput,_[i])
             self.textbs.append(textOutput)
-   
+            
             textOutput.setContextMenuPolicy(Qt.CustomContextMenu)
         
         
@@ -117,7 +117,9 @@ class searchwordW(QMainWindow):
         res=_d[i].search(sentence if i==0 else sentence[0]) 
         if res is None or res=='':
             res=_TR('未查到' )
-        
+            self.tab.setTabVisible(i,False)
+        else:
+            self.tab.setTabVisible(i,True)
         first=res.split('<hr>')[0]
         self.textbs[i].insertHtml(first)  
         self.textbs[i].firsttext=self.textbs[i].toPlainText()
@@ -127,7 +129,7 @@ class searchwordW(QMainWindow):
     def search(self,sentence):
         if  sentence[0]=='':
             return
-        _d=[self.p.object.hira_,self.p.object.xiaoxueguan,self.p.object.linggesi,self.p.object.edict,self.p.object.edict2]
+        _d=[self.p.object.hira_,self.p.object.xiaoxueguan,self.p.object.linggesi,self.p.object.edict,self.p.object.edict2,self.p.object.jmdict]
         for i in range(len(_d)): 
             threading.Thread(target=self.searchthreadsignal.emit,args=(i,_d,sentence)).start()
  

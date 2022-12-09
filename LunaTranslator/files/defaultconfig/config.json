@@ -338,6 +338,9 @@
     },"edict2": {
         "use": false,
         "path": ""
+    },"jmdict": {
+        "use": false,
+        "path": ""
     },
     "linggesi": {
         "use": false,

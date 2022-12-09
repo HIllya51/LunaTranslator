@@ -38,6 +38,7 @@ import gui.translatorUI
 from utils.xiaoxueguan import xiaoxueguan
 from utils.edict import edict
 from utils.edict2 import edict2
+from utils.jmdict import jmdict
 from utils.linggesi import linggesi
 import importlib
 from functools import partial  
@@ -336,6 +337,7 @@ class MAINUI(QObject) :
             self.xiaoxueguan=xiaoxueguan()
             self.edict=edict()
             self.edict2=edict2()
+            self.jmdict=jmdict()
             self.linggesi=linggesi()
         elif type_==1:
             self.xiaoxueguan=xiaoxueguan()
@@ -345,6 +347,8 @@ class MAINUI(QObject) :
             self.linggesi=linggesi()
         elif type_==4:
             self.edict2=edict2()
+        elif type_==5:
+            self.jmdict=jmdict()
     def _maybeyrengong(self,classname,contentraw,_):
         
         classname,res,mp=_
@@ -496,12 +500,12 @@ class MAINUI(QObject) :
         self.settin_ui = Settin(self) 
         #print(time.time()-t1)
         self.startreader() 
-        self.startxiaoxueguan()
+        
         self.AttachProcessDialog=AttachProcessDialog(self.settin_ui)
         self.range_ui = rangeadjust(self)   
         self.hookselectdialog=gui.selecthook.hookselect(self ,self.settin_ui)
         threading.Thread(target=self.autohookmonitorthread).start()   
-       
+        self.startxiaoxueguan()
 if __name__ == "__main__" :
     
     QCoreApplication.setAttribute(Qt.AA_UseHighDpiPixmaps, True)

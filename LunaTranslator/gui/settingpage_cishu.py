@@ -26,6 +26,7 @@ def setTabcishu(self) :
                 [('灵格斯词典',10),'',self.getcolorbutton(globalconfig,'',callback=lambda  :getsomepath1(self,'灵格斯',globalconfig['linggesi'],'path' ,'灵格斯',lambda  :self.object.startxiaoxueguan(3),True) ,icon='fa.gear',constcolor="#FF69B4")],
                 [('EDICT',10),'',self.getcolorbutton(globalconfig,'',callback=lambda  :getsomepath1(self,'edict',globalconfig['edict'],'path' ,'edict',lambda  :self.object.startxiaoxueguan(2),False),icon='fa.gear',constcolor="#FF69B4")],
                 [('EDICT2',10),'',self.getcolorbutton(globalconfig,'',callback=lambda  :getsomepath1(self,'edict2',globalconfig['edict2'],'path' ,'edict2',lambda  :self.object.startxiaoxueguan(4),False,filter1=""),icon='fa.gear',constcolor="#FF69B4")],
+                #[('JMdict',10),'',self.getcolorbutton(globalconfig,'',callback=lambda  :getsomepath1(self,'edict2',globalconfig['jmdict'],'path' ,'jmdict',lambda  :self.object.startxiaoxueguan(5),False,filter1="*.xml"),icon='fa.gear',constcolor="#FF69B4")],
         ] 
    
         self.yitiaolong("辞书设置",grids)
