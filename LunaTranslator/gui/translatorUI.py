@@ -50,7 +50,7 @@ class QUnFrameWindow(QWidget):
     settingprocess_signal=pyqtSignal()
     settinghookthread_signal=pyqtSignal()
     clickRange_signal=pyqtSignal(bool)
-    rangeendsignal=pyqtSignal()
+    rangequick=pyqtSignal()
     showhide_signal=pyqtSignal()
     grabwindowsignal=pyqtSignal()
     bindcropwindow_signal=pyqtSignal()
@@ -228,7 +228,7 @@ class QUnFrameWindow(QWidget):
         self.settinghookthread_signal.connect(self.settinghookthread_funtion)
         self.settingprocess_signal.connect(self.settingprocess_function)
         self.clickRange_signal.connect(self.clickRange )
-        self.rangeendsignal.connect(self.rangeend)
+        self.rangequick.connect(self.quickrange)
         self.showhide_signal.connect(self.showhide_function)
         self.bindcropwindow_signal.connect(functools.partial(mouseselectwindow, self.bindcropwindowcallback))
         self.grabwindowsignal.connect(self.grabwindow)
@@ -246,6 +246,7 @@ class QUnFrameWindow(QWidget):
         self.isletgamefullscreened=False
         self.original = ""    
         self._isTracking=False
+        self.quickrangestatus=False
         self.isontop=True
         self.atback=QLabel(self)
         self.atback.setGeometry(0,30*self.rate,9999,9999)
@@ -522,12 +523,19 @@ class QUnFrameWindow(QWidget):
             self.object.screen_shot_ui.immediateendsignal.emit()
         except:
             pass
+    def quickrange(self):
+        print(self.quickrangestatus)
+        if self.quickrangestatus:
+            self.rangeend()
+        else:
+            self.clickRange(True)
+        
     def clickRange(self,auto): 
         if globalconfig['sourcestatus']['ocr']==False:
                 return 
         self.showhidestate=False
         
-        
+        self.quickrangestatus=not self.quickrangestatus
         self.object.range_ui.hide()
         self.object.screen_shot_ui =gui.rangeselect.rangeselct(self.object)
         self.object.screen_shot_ui.show()

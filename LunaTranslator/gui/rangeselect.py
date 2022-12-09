@@ -76,6 +76,7 @@ class rangeselct(QMainWindow) :
          
         self.getRange() 
         self.close() 
+        self.object.translation_ui.quickrangestatus=not self.object.translation_ui.quickrangestatus
         self.callback() 
     def paintEvent(self, event):  
              
@@ -120,6 +121,7 @@ class rangeselct(QMainWindow) :
             self.end_point = event.pos()
             self.getRange() 
             self.close() 
+            self.object.translation_ui.quickrangestatus=not self.object.translation_ui.quickrangestatus
             self.callback() 
 import win32gui,win32con,win32api
 class moveresizegame(QDialog) :

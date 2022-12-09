@@ -44,8 +44,8 @@ def setTab_quick(self) :
             '_20':self.object.translation_ui.fullsgame_signal.emit,
             '_21':self.object.translation_ui.grabwindowsignal.emit,
             '_22':self.object.translation_ui.muteprocessignal.emit,
-            "_23":lambda: self.object.translation_ui.clickRange_signal.emit(True),
-            "_24":self.object.translation_ui.rangeendsignal.emit
+            "_23":  self.object.translation_ui.rangequick.emit ,
+            
         }
          
         
@@ -55,26 +55,29 @@ def setTab_quick(self) :
             [(("是否使用快捷键"),4),self.getsimpleswitch(globalconfig['quick_setting']  ,'use',callback=functools.partial(__enable,self )  ),((''),8)]
         ]
         for name in globalconfig['quick_setting']['all']: 
-            key1=QComboBox() 
-            key2=QComboBox() 
-            key1.addItems(key_first)
-            key2.addItems(key_second)
-    
-            key1.setCurrentIndex(globalconfig['quick_setting']['all'][name]['key1'])
-            key2.setCurrentIndex(globalconfig['quick_setting']['all'][name]['key2'])
-            
-            key1.currentIndexChanged.connect(functools.partial(__changekey,self,name,'key1',key1,key2))
-            key2.currentIndexChanged.connect(functools.partial(__changekey,self,name,'key2',key1,key2))
-            self.hotkeys[name]=None
+                if name not in self.bindfunctions:
+                    continue
+                key1=QComboBox() 
+                key2=QComboBox() 
+                key1.addItems(key_first)
+                key2.addItems(key_second)
         
-            regist_or_not_key(self,name,self.bindfunctions[name])
-            grids.append(
-                [((globalconfig['quick_setting']['all'][name]['name']),4),
-                self.getsimpleswitch(globalconfig['quick_setting']['all'][name] ,'use',callback=functools.partial(fanyiselect,self,name)),
-                (key1,2),
-                (key2,2)
-                ]
-            )
+                key1.setCurrentIndex(globalconfig['quick_setting']['all'][name]['key1'])
+                key2.setCurrentIndex(globalconfig['quick_setting']['all'][name]['key2'])
+                
+                key1.currentIndexChanged.connect(functools.partial(__changekey,self,name,'key1',key1,key2))
+                key2.currentIndexChanged.connect(functools.partial(__changekey,self,name,'key2',key1,key2))
+                self.hotkeys[name]=None
+            
+                regist_or_not_key(self,name,self.bindfunctions[name])
+                grids.append(
+                    [((globalconfig['quick_setting']['all'][name]['name']),4),
+                    self.getsimpleswitch(globalconfig['quick_setting']['all'][name] ,'use',callback=functools.partial(fanyiselect,self,name)),
+                    (key1,2),
+                    (key2,2)
+                    ]
+                )
+             
         self.yitiaolong("快捷键设置",grids)
 def __enable(self,x ):
             globalconfig['quick_setting'].__setitem__('use',x)
