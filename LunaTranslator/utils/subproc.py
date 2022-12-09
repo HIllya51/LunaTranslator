@@ -1,4 +1,5 @@
-import subprocess
+import subprocess,os
+from traceback import print_exc
 import multiprocessing
 st=subprocess.STARTUPINFO()
 st.dwFlags=subprocess.STARTF_USESHOWWINDOW
@@ -8,7 +9,9 @@ allsubprocessmap={}
 def subproc(cmd,cwd=None,stdin=None,encoding=None, stdout=None,keep=False,key=None): 
     try:
         ss=subprocess.Popen(cmd,cwd=cwd,stdin=stdin, stdout=stdout,  startupinfo=st)
+         
     except:
+        print_exc()
         ss=None
     if keep:
         if key:
@@ -23,7 +26,7 @@ def subproc(cmd,cwd=None,stdin=None,encoding=None, stdout=None,keep=False,key=No
  
 def mutiproc(target,args): 
     try:
-        ss=multiprocessing.Process(target=target,args=args)
+        ss=multiprocessing.Process(target=target,args=args,daemon=True)
         allsubprocess.append(ss)
         return ss
     except:

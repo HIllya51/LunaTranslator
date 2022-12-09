@@ -13,10 +13,10 @@ from traceback import  print_exc
 dirname, filename = os.path.split(os.path.abspath(__file__))
 sys.path.append(dirname)  
 from utils.config import globalconfig ,savehook_new,noundictconfig,transerrorfixdictconfig,setlanguage
-
+from PyQt5.QtGui import  QFont  ,QIcon,QPixmap  ,QMouseEvent
 import threading,win32gui 
 from PyQt5.QtCore import QCoreApplication ,Qt ,QObject,pyqtSignal
-from PyQt5.QtWidgets import  QApplication ,QGraphicsScene,QGraphicsView,QDesktopWidget,QStyle
+from PyQt5.QtWidgets import  QApplication ,QGraphicsScene,QGraphicsView,QDesktopWidget,QStyle,QMainWindow
 import utils.screen_rate  
  
 from utils.wrapper import threader 
@@ -47,6 +47,20 @@ import socket
 socket.setdefaulttimeout(globalconfig['translatortimeout'])
 from utils.post import POSTSOLVE
 import xml.etree.ElementTree as ET  
+class rootwindow(QMainWindow):
+    def __init__(self):
+        super().__init__( ) 
+         
+        self.setWindowFlags(Qt.FramelessWindowHint)
+        self.setGeometry(-1,-1,1,1)
+        icon = QIcon()
+        icon.addPixmap(QPixmap('./files/luna.jpg'), QIcon.Normal, QIcon.On)
+        self.setWindowIcon(icon)
+        self.setWindowTitle('LunaTranslator')
+     
+    def closeEvent(self, a0 ) -> None:
+        self.quitf_signal.emit()
+        return super().closeEvent(a0)
 class MAINUI(QObject) :
     mainuiloadok=pyqtSignal()
     def __init__(self) -> None:
@@ -399,10 +413,11 @@ class MAINUI(QObject) :
         if not(globalconfig['autostarthook'] and globalconfig['sourcestatus']['textractor']):
             return 
         else:
-            if 'textsource' not in dir(self) or self.textsource is None:
-                
+            try:
+                if 'textsource' not in dir(self) or self.textsource is None:
+                 
             
-                try:
+               
                         hwnd=win32gui.GetForegroundWindow()
                         pid=win32process.GetWindowThreadProcessId(hwnd)[1]
                         name_=getpidexe(pid)
@@ -413,9 +428,15 @@ class MAINUI(QObject) :
                             self.hookselectdialog.changeprocessclearsignal.emit() 
                             self.textsource=textractor(self,self.textgetmethod,self.hookselectdialog,pid,hwnd,name_,True,savehook_new[name_])
                     
-                except:
-                        print_exc()
                 
+                else: 
+                    hwnd=self.textsource.hwnd
+                    if win32process.GetWindowThreadProcessId(hwnd)[0]==0:
+                        hwnd=win32gui.GetForegroundWindow()
+                        if win32process.GetWindowThreadProcessId(hwnd)[1]==self.textsource.pid:
+                            self.textsource.hwnd=hwnd
+            except:
+                        print_exc()
     def setontopthread(self):
         while True:
             #self.translation_ui.keeptopsignal.emit() 
@@ -438,8 +459,11 @@ class MAINUI(QObject) :
             self.onwindowloadautohook()
             time.sleep(0.3)
     def aa(self):  
-        self.translation_ui =gui.translatorUI.QUnFrameWindow(self)   
         
+        self.translation_ui =gui.translatorUI.QUnFrameWindow(self)   
+        self.rootwindow=rootwindow()
+        self.rootwindow.show()
+        self.rootwindow.quitf_signal=self.translation_ui.quitf_signal
         if globalconfig['rotation']==0:
             self.translation_ui.show()
             #print(time.time()-t1) 

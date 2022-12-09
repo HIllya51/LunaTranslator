@@ -212,14 +212,15 @@ class QUnFrameWindow(QWidget):
         for i in range(len(self.buttons)):
             self.buttons[i].setIcon(icon[i])
     def __init__(self, object):
+        
         super(QUnFrameWindow, self).__init__(
             None, Qt.FramelessWindowHint|Qt.WindowStaysOnTopHint )  # 设置为顶级窗口，无边框
         #self.setFocusPolicy(Qt.StrongFocus)
         self.setWindowFlag(Qt.Tool,True)
+ 
         self.setAttribute(Qt.WA_TranslucentBackground) 
         self.setAttribute(Qt.WA_ShowWithoutActivating,True)
-
-        
+ 
         self.hidesignal.connect(self.hide)
         self.object = object
         self.lastrefreshtime=time.time()
@@ -250,7 +251,7 @@ class QUnFrameWindow(QWidget):
         self.showhide_signal.connect(self.showhide )
         self.bindcropwindow_signal.connect(functools.partial(mouseselectwindow, self.bindcropwindowcallback))
         self.grabwindowsignal.connect(self.grabwindow)
-        self.quitf_signal.connect(self.quitf_funtion)
+        self.quitf_signal.connect(self.quitf)
         self.fullsgame_signal.connect(self._fullsgame)
         # self.showtask=Queue()
         # self.showtaskthread=threading.Thread(target=self.showtaskthreadfun).start()
@@ -780,8 +781,7 @@ class QUnFrameWindow(QWidget):
         object.setGeometry(QRect(int(x * self.rate),
                                  int(y * self.rate), int(w * self.rate),
                                  int(h * self.rate)))
-    def quitf_funtion(self):
-        self.quitf()
+    
     def quitf(self) :  
         import json  
         globalconfig['position']=[self.pos().x(),self.pos().y()]
@@ -823,4 +823,4 @@ exit
                 ''') 
             subprocess.Popen('update\\update.bat' ,shell=True)
         endsubprocs()
-        os._exit(1) 
+        os._exit(0) 
