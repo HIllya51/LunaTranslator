@@ -24,8 +24,8 @@ def setTabcishu(self) :
                 [('开启快捷查词(点击原文可查词)',10),(self.getsimpleswitch(globalconfig,'usesearchword'),1),self.getcolorbutton(globalconfig,'',callback=self.object.translation_ui.searchwordW.show,icon='fa.search',constcolor="#FF69B4")],
                 [('小学馆辞书',10),'',self.getcolorbutton(globalconfig,'',callback=lambda  :getsomepath1(self,'小学馆',globalconfig['xiaoxueguan'],'path' ,'小学馆',lambda  :self.object.startxiaoxueguan(1),False) ,icon='fa.gear',constcolor="#FF69B4")],
                 [('灵格斯词典',10),'',self.getcolorbutton(globalconfig,'',callback=lambda  :getsomepath1(self,'灵格斯',globalconfig['linggesi'],'path' ,'灵格斯',lambda  :self.object.startxiaoxueguan(3),True) ,icon='fa.gear',constcolor="#FF69B4")],
-                [('DICT词典(日英)',10),'',self.getcolorbutton(globalconfig,'',callback=lambda  :getsomepath1(self,'edict',globalconfig['edict'],'path' ,'edict',lambda  :self.object.startxiaoxueguan(2),False),icon='fa.gear',constcolor="#FF69B4")],
-              
+                [('EDICT',10),'',self.getcolorbutton(globalconfig,'',callback=lambda  :getsomepath1(self,'edict',globalconfig['edict'],'path' ,'edict',lambda  :self.object.startxiaoxueguan(2),False),icon='fa.gear',constcolor="#FF69B4")],
+                [('EDICT2',10),'',self.getcolorbutton(globalconfig,'',callback=lambda  :getsomepath1(self,'edict2',globalconfig['edict2'],'path' ,'edict2',lambda  :self.object.startxiaoxueguan(4),False,filter1=""),icon='fa.gear',constcolor="#FF69B4")],
         ] 
    
         self.yitiaolong("辞书设置",grids)

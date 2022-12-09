@@ -37,6 +37,7 @@ import gui.translatorUI
  
 from utils.xiaoxueguan import xiaoxueguan
 from utils.edict import edict
+from utils.edict2 import edict2
 from utils.linggesi import linggesi
 import importlib
 from functools import partial  
@@ -334,6 +335,7 @@ class MAINUI(QObject) :
         if type_==0:
             self.xiaoxueguan=xiaoxueguan()
             self.edict=edict()
+            self.edict2=edict2()
             self.linggesi=linggesi()
         elif type_==1:
             self.xiaoxueguan=xiaoxueguan()
@@ -341,6 +343,8 @@ class MAINUI(QObject) :
             self.edict=edict()
         elif type_==3:
             self.linggesi=linggesi()
+        elif type_==4:
+            self.edict2=edict2()
     def _maybeyrengong(self,classname,contentraw,_):
         
         classname,res,mp=_

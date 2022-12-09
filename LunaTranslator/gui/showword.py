@@ -53,9 +53,9 @@ class searchwordW(QMainWindow):
         
         self.textbs=[]
 
-        _=_TRL(['MeCab','小学馆',"灵格斯词典","EDICT"])
+        _=_TRL(['MeCab','小学馆',"灵格斯词典","EDICT","EDICT2"])
         self._=_
-        for i in range(4):
+        for i in range(len(_)):
 
             textOutput = QTextBrowser(self)
             textOutput.setFont(font) 
@@ -127,7 +127,7 @@ class searchwordW(QMainWindow):
     def search(self,sentence):
         if  sentence[0]=='':
             return
-        _d=[self.p.object.hira_,self.p.object.xiaoxueguan,self.p.object.linggesi,self.p.object.edict]
-        for i in range(4): 
+        _d=[self.p.object.hira_,self.p.object.xiaoxueguan,self.p.object.linggesi,self.p.object.edict,self.p.object.edict2]
+        for i in range(len(_d)): 
             threading.Thread(target=self.searchthreadsignal.emit,args=(i,_d,sentence)).start()
  
