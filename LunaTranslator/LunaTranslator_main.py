@@ -285,15 +285,8 @@ class MAINUI(QObject) :
             elif use=='ocr':
                 from textsource.ocrtext import ocrtext
                 self.textsource=ocrtext(self.textgetmethod,self) 
-            # elif use=='textractor_pipe': 
-                    #from textsource.namepipe import namepipe
-            #     self.textsource=classes[use](self.textgetmethod) 
-            #     return True
-                 
-                if self.localocrstarted==False:
-                    self.localocrstarter()
-                    self.localocrstarted=True
-                    
+          
+                  
             elif use=='copy': 
                 from textsource.copyboard import copyboard 
                 self.textsource=copyboard(self.textgetmethod) 
@@ -301,12 +294,7 @@ class MAINUI(QObject) :
                 from textsource.txt import txt 
                 self.textsource=txt(self.textgetmethod) 
             return True 
-    def localocrstarter(self):
-        path=f'./files/ocr/{globalconfig["normallanguagelist"][globalconfig["srclang2"]]}'
-        if os.path.exists(os.path.join( path,'det.onnx')) and os.path.exists(os.path.join( path,'rec.onnx')) and os.path.exists(os.path.join( path,'dict.txt')):
-            subproc(f'files/ocr.exe  --zz "{self.timestamp}" --models {path} --det det.onnx --cls ch_ppocr_mobile_v2.0_cls_infer.onnx --rec rec.onnx --keys dict.txt --image ./capture/{self.timestamp}.png -b 0.01 -u 2 -o 0.01',keep=True,key='ocr')
-        else:
-            subproc('',keep=True,key='ocr')
+    
     @threader
     def starthira(self): 
         

@@ -82,6 +82,8 @@ def setTab_quick(self) :
 def __enable(self,x ):
             globalconfig['quick_setting'].__setitem__('use',x)
             for quick in globalconfig['quick_setting']['all']:
+                if quick not in self.bindfunctions:
+                    continue
                 regist_or_not_key(self,quick,self.bindfunctions[quick])
 def fanyiselect( self,who,checked): 
             globalconfig['quick_setting']['all'][who]['use']=checked 

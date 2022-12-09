@@ -1,16 +1,19 @@
 import time
 import win32pipe,win32file,win32con
- 
+from utils.ocrdll import ocrwrapper
 from utils.config import globalconfig
+_ocr=ocrwrapper()
+_savelang=None
 def ocr(imgfile,lang,space): 
-    timestamp=imgfile[10:-4]
-    t1=time.time()
-    win32pipe.WaitNamedPipe("\\\\.\\Pipe\\ocrwaitsignal_"+timestamp,win32con.NMPWAIT_WAIT_FOREVER)
-    hPipe = win32file.CreateFile( "\\\\.\\Pipe\\ocrwaitsignal_"+timestamp, win32con.GENERIC_READ | win32con.GENERIC_WRITE, 0,
-            None, win32con.OPEN_EXISTING, win32con.FILE_ATTRIBUTE_NORMAL, None);
-    #win32file.WriteFile(hPipe,'haha'.encode('utf8'))
-    s=(win32file.ReadFile(hPipe, 65535, None)[1].decode('utf8'))
-    ls=s.split('\n')[:-1] 
+    global _savelang,_ocr
+    if _savelang!=lang: 
+        path=f'./files/ocr/{globalconfig["normallanguagelist"][globalconfig["srclang2"]]}'
+        _ocr.init(f'{path}/det.onnx',f'{path}/rec.onnx',f'{path}/dict.txt')
+        _savelang=lang
+        
+    s=_ocr.ocr('./capture/',imgfile[10:])
+   
+    ls=s.split('\n') 
     juhe=[]
     box=[]
     mids=[]
@@ -50,5 +53,5 @@ def ocr(imgfile,lang,space):
         
 
         lines.append(' '.join([text[_] for _ in _j])) 
-
+    
     return space.join(lines)

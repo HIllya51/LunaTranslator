@@ -15,8 +15,7 @@ from gui.inputdialog import autoinitdialog
  
 def setTablang(self) :
         def changelang_restartocr(idx):
-            globalconfig['srclang2']=idx
-            self.object.localocrstarter()
+            globalconfig['srclang2']=idx 
         langlist=globalconfig['language_list_translator']
         srclangcombo=self.getsimplecombobox(_TRL(langlist),globalconfig,'srclang2')
         srclangcombo.currentIndexChanged.connect(changelang_restartocr)
