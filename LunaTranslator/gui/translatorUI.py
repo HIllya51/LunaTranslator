@@ -57,6 +57,7 @@ class QUnFrameWindow(QWidget):
     fullsgame_signal=pyqtSignal()
     quitf_signal=pyqtSignal() 
     refreshtooliconsignal=pyqtSignal()
+    hidesignal=pyqtSignal()
     muteprocessignal=pyqtSignal()  
     def hookfollowsignalsolve(self,code,other): 
         if code==3:
@@ -125,7 +126,24 @@ class QUnFrameWindow(QWidget):
             self.translate_text.showyinyingtext(color  ) 
         if (globalconfig['usesearchword'] or globalconfig['show_fenci']  ) and res[0]:
             self.translate_text.addsearchwordmask(res[0],res[1],self.showsearchword  ) 
-         
+        
+        
+        if globalconfig['autodisappear']:
+            if self.hideshownotauto:
+                if self.isHidden():
+                    self.show() 
+            self.lastrefreshtime=time.time()
+            self.autohidestart=True
+    def autohidedelaythread(self):
+        while True:
+            if globalconfig['autodisappear'] and self.autohidestart:
+                tnow=time.time()
+                if tnow-self.lastrefreshtime>=globalconfig['disappear_delay']:
+                    self.hidesignal.emit() 
+                    self.autohidestart=False
+                    self.lastrefreshtime=tnow
+                    
+            time.sleep(0.3)
     def showsearchword(self,word):   
         self.searchwordW.showNormal()
         self.searchwordW.getnewsentence(word) 
@@ -147,11 +165,8 @@ class QUnFrameWindow(QWidget):
     def leftclicktray(self,reason):
             #鼠标左键点击
             if reason == QSystemTrayIcon.Trigger:
-                
-                if self.isHidden():
-                    self.show_and_enableautohide() 
-                else:
-                    self.hide_and_disableautohide()
+                self.showhideui()
+                 
     def hide_and_disableautohide(self):
         self.hideshownotauto=False
         self.hide()
@@ -205,9 +220,11 @@ class QUnFrameWindow(QWidget):
         self.setAttribute(Qt.WA_ShowWithoutActivating,True)
 
         
-         
+        self.hidesignal.connect(self.hide)
         self.object = object
-        
+        self.lastrefreshtime=time.time()
+        self.autohidestart=False
+        threading.Thread(target=self.autohidedelaythread).start()
         self.rate = self.object.screen_scale_rate 
         self.callmagpie=None
         self.muteprocessignal.connect(self.muteprocessfuntion)
@@ -218,6 +235,7 @@ class QUnFrameWindow(QWidget):
         self._padding = 5*self.rate  # 设置边界宽度为5
         self.setMinimumWidth(300)
         self.hideshownotauto=True
+        
         self.transhis=gui.transhist.transhist(self)  
         self.hookfollowsignal.connect(self.hookfollowsignalsolve) 
         self.displayres.connect(self.showres)

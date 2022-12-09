@@ -74,12 +74,10 @@ class basetrans:
                 del self._cache[langkey][next(iter(self._cache))]
             except  :
                 pass
-        try:
-            res=self.translate(contentsolved)
-            self._cache[langkey][contentsolved] = res
-        except:
-            print_exc()
-            res=''
+    
+        res=self.translate(contentsolved)
+        self._cache[langkey][contentsolved] = res
+         
         return res
     def fythread(self):
         while True:  
