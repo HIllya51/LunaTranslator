@@ -1,12 +1,14 @@
 from utils.config import globalconfig
-import sqlite3
+import sqlite3,os
 import Levenshtein
 from utils.argsort import argsort
 class xiaoxueguan():
     def __init__(self):
         self.sql=None
         try:
-            self.sql=sqlite3.connect(globalconfig['xiaoxueguan']['path'],check_same_thread=False)
+            path=(globalconfig['xiaoxueguan']['path'] )
+            if os.path.exists(path):
+                self.sql=sqlite3.connect( path,check_same_thread=False) 
         except:
             pass
     def search(self,word): 

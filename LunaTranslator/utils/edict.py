@@ -1,5 +1,5 @@
 from utils.config import globalconfig
-import sqlite3
+import sqlite3,os
 import Levenshtein,re
 from utils.argsort import argsort
 from traceback import print_exc
@@ -7,7 +7,9 @@ class edict():
     def __init__(self):
         self.sql=None
         try:
-            self.sql=sqlite3.connect( (globalconfig['edict']['path'] ),check_same_thread=False)
+            path=(globalconfig['edict']['path'] )
+            if os.path.exists(path):
+                self.sql=sqlite3.connect( path,check_same_thread=False)
         except:
             pass
     
