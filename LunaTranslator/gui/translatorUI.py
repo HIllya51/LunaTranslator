@@ -9,7 +9,7 @@ from PyQt5.QtWidgets import QWidget, QLabel, QPushButton, QVBoxLayout,QApplicati
 from PyQt5.QtCore import Qt, pyqtSignal  
 import qtawesome 
 from PyQt5.QtCore import pyqtSignal,Qt,QRect,QSize  
-from PyQt5.QtGui import  QFont  ,QIcon,QPixmap  
+from PyQt5.QtGui import  QFont  ,QIcon,QPixmap  ,QMouseEvent
 from PyQt5.QtWidgets import  QLabel ,QPushButton ,QSystemTrayIcon ,QAction,QMenu 
 import pyperclip 
 from PyQt5.QtCore import QProcess ,QByteArray  
@@ -49,7 +49,8 @@ class QUnFrameWindow(QWidget):
     showsavegame_signal=pyqtSignal()
     settingprocess_signal=pyqtSignal()
     settinghookthread_signal=pyqtSignal()
-    clickRange_signal=pyqtSignal()
+    clickRange_signal=pyqtSignal(bool)
+    rangeendsignal=pyqtSignal()
     showhide_signal=pyqtSignal()
     grabwindowsignal=pyqtSignal()
     bindcropwindow_signal=pyqtSignal()
@@ -226,7 +227,8 @@ class QUnFrameWindow(QWidget):
         self.showsavegame_signal.connect(lambda:autosaveshow(self.object.settin_ui))
         self.settinghookthread_signal.connect(self.settinghookthread_funtion)
         self.settingprocess_signal.connect(self.settingprocess_function)
-        self.clickRange_signal.connect(self.clickRange_funtion)
+        self.clickRange_signal.connect(self.clickRange )
+        self.rangeendsignal.connect(self.rangeend)
         self.showhide_signal.connect(self.showhide_function)
         self.bindcropwindow_signal.connect(functools.partial(mouseselectwindow, self.bindcropwindowcallback))
         self.grabwindowsignal.connect(self.grabwindow)
@@ -302,7 +304,7 @@ class QUnFrameWindow(QWidget):
         self.takusanbuttons("MinMaxButton",lambda :settingtextractor(self),4,"选择游戏" ) 
         self.takusanbuttons("MinMaxButton",lambda :settingsource(self),5,"选择文本" ) 
          
-        self.takusanbuttons("MinMaxButton",self.clickRange,4,"选取OCR范围")
+        self.takusanbuttons("MinMaxButton",lambda :self.clickRange(False),4,"选取OCR范围")
         self.takusanbuttons("MinMaxButton",self.showhide,5,"显示/隐藏范围框")
          
         self.takusanbuttons("MinMaxButton",self.bindcropwindow_signal.emit,5,"绑定截图窗口，避免遮挡（部分软件不支持）（点击自己取消）")
@@ -515,10 +517,12 @@ class QUnFrameWindow(QWidget):
         win32gui.BringWindowToTop(int(self.object.settin_ui.winId())) 
     def clickSettin(self) : 
         self.clickSettin_signal.emit()
-        # 按下范围框选键
-    def clickRange_funtion(self):
-        self.clickRange()
-    def clickRange(self): 
+    def rangeend(self):
+        try:
+            self.object.screen_shot_ui.immediateendsignal.emit()
+        except:
+            pass
+    def clickRange(self,auto): 
         if globalconfig['sourcestatus']['ocr']==False:
                 return 
         self.showhidestate=False
@@ -528,7 +532,10 @@ class QUnFrameWindow(QWidget):
         self.object.screen_shot_ui =gui.rangeselect.rangeselct(self.object)
         self.object.screen_shot_ui.show()
         self.object.screen_shot_ui.callback=self.showhide
-        
+        win32gui.SetFocus(self.object.screen_shot_ui.winId() )   
+         
+        self.object.screen_shot_ui.startauto=auto
+        self.object.screen_shot_ui.clickrelease=auto
     def langdu(self): 
         if self.object.reader:
             self.object.reader.read(self.original )  

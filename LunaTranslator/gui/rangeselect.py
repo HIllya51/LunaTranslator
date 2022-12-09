@@ -1,5 +1,5 @@
 from PyQt5.QtWidgets import QWidget,QDesktopWidget,QMainWindow,QLabel,QPushButton,QStatusBar,QDialog,QSizeGrip
-from PyQt5.QtGui import  QBitmap,QPainter,QPen,QBrush,QFont
+from PyQt5.QtGui import  QBitmap,QPainter,QPen,QBrush,QFont,QMouseEvent
 from PyQt5.QtCore import Qt,QPoint,QRect,QEvent,pyqtSignal
 import re,threading,time
  
@@ -52,7 +52,7 @@ class rangeadjust(Mainw) :
              self.object.rect=[(rect.left(),rect.top()),(rect.right(),rect.bottom())]  
          super(rangeadjust, self).resizeEvent(a0)  
 class rangeselct(QMainWindow) :
-
+    immediateendsignal=pyqtSignal()
     def __init__(self, object ) :
 
         super(rangeselct, self).__init__(object.translation_ui)
@@ -62,32 +62,48 @@ class rangeselct(QMainWindow) :
         desktop_rect = QDesktopWidget().screenGeometry()
         self.setGeometry(desktop_rect)
         self.setCursor(Qt.CrossCursor)
-        self.black_mask = QBitmap(desktop_rect.size())
-        self.black_mask.fill(Qt.black)
-        self.mask = self.black_mask.copy()
+         
         self.is_drawing = False
+        self.setMouseTracking(True)
         self.start_point = QPoint()
         self.end_point = QPoint()
         self.object = object 
-
+        self.startauto=False
+        self.clickrelease=False
         self.object.rect=None
+        self.immediateendsignal.connect(self.immediateend)
+    def immediateend(self):
+         
+        self.getRange() 
+        self.close() 
+        self.callback() 
     def paintEvent(self, event):  
+             
             if self.is_drawing:
-                self.mask = self.black_mask.copy()
-                pp = QPainter(self.mask)
+                
+                pp = QPainter(self )
                 pen = QPen()
                 pen.setStyle(Qt.NoPen)
                 pp.setPen(pen)
                 brush = QBrush(Qt.white)
                 pp.setBrush(brush)
                 pp.drawRect(QRect(self.start_point, self.end_point))
-                self.setMask(QBitmap(self.mask)) 
+                 
     def mousePressEvent(self, event) : 
             if event.button() == Qt.LeftButton:
-                self.start_point = event.pos()
-                self.end_point = self.start_point
-                self.is_drawing = True 
+                if self.clickrelease:
+                    self.clickrelease=False
+                    self.mouseReleaseEvent(event)
+                else:
+                    self.start_point = event.pos()
+                    self.end_point = self.start_point
+                    self.is_drawing = True 
     def mouseMoveEvent(self, event) : 
+            
+            if self.startauto and self.is_drawing==False:
+                self.is_drawing=True
+                self.end_point = self.start_point=event.pos()
+                self.startauto=False
             if self.is_drawing:
                 self.end_point = event.pos()
                 self.update() 
@@ -104,7 +120,7 @@ class rangeselct(QMainWindow) :
             self.end_point = event.pos()
             self.getRange() 
             self.close() 
-            self.callback()
+            self.callback() 
 import win32gui,win32con,win32api
 class moveresizegame(QDialog) :
 

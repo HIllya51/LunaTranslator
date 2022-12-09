@@ -34,7 +34,7 @@ def setTab_quick(self) :
             '_10':self.object.translation_ui.showsavegame_signal.emit,
             '_11':self.object.translation_ui.settingprocess_signal.emit,
             '_12':self.object.translation_ui.settinghookthread_signal.emit,
-            '_13':self.object.translation_ui.clickRange_signal.emit,
+            '_13':lambda: self.object.translation_ui.clickRange_signal.emit(False),
             '_14':self.object.translation_ui.showhide_signal.emit,
             '_15':self.object.translation_ui.bindcropwindow_signal.emit,
             '_16':self.object.translation_ui.showhideui,
@@ -43,7 +43,9 @@ def setTab_quick(self) :
             '_19':lambda:self.object.settin_ui.fontbigsmallsignal.emit(-1),
             '_20':self.object.translation_ui.fullsgame_signal.emit,
             '_21':self.object.translation_ui.grabwindowsignal.emit,
-            '_22':self.object.translation_ui.muteprocessignal.emit
+            '_22':self.object.translation_ui.muteprocessignal.emit,
+            "_23":lambda: self.object.translation_ui.clickRange_signal.emit(True),
+            "_24":self.object.translation_ui.rangeendsignal.emit
         }
          
         
