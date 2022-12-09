@@ -247,7 +247,7 @@ class QUnFrameWindow(QWidget):
         self.settingprocess_signal.connect(self.settingprocess_function)
         self.clickRange_signal.connect(self.clickRange )
         self.rangequick.connect(self.quickrange)
-        self.showhide_signal.connect(self.showhide_function)
+        self.showhide_signal.connect(self.showhide )
         self.bindcropwindow_signal.connect(functools.partial(mouseselectwindow, self.bindcropwindowcallback))
         self.grabwindowsignal.connect(self.grabwindow)
         self.quitf_signal.connect(self.quitf_funtion)
@@ -494,9 +494,7 @@ class QUnFrameWindow(QWidget):
                                         %(int(globalconfig['backcolor'][1:3],16),int(globalconfig['backcolor'][3:5],16),int(globalconfig['backcolor'][5:7],16),globalconfig['transparent']*self.mousetransparent/100))
         self.mousetransparent= not self.mousetransparent
         self.refreshtoolicon()
-    def showhide_function(self):
-        
-        self.showhide()
+     
     def showhide(self): 
         if self.object.rect:
             self.showhidestate=not self.showhidestate 
@@ -565,6 +563,8 @@ class QUnFrameWindow(QWidget):
         self.object.screen_shot_ui.clickrelease=auto
     def afterrange(self): 
         self.showhide()
+        if globalconfig['showrangeafterrangeselect']==False:
+            self.showhide()
         if globalconfig['ocrafterrangeselect']:
             self.startTranslater()
     def langdu(self): 

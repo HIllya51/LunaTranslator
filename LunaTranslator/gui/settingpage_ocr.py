@@ -56,7 +56,8 @@ def setTab6(self) :
          #   [(("使用竖排OCR(效果不佳)"),6),self.getsimpleswitch(globalconfig ,'verticalocr')],
          
             [(("选取OCR范围后立即进行一次识别"),9),self.getsimpleswitch(globalconfig ,'ocrafterrangeselect')],
-            
+            [(("选取OCR范围后主动显示范围框"),9),self.getsimpleswitch(globalconfig ,'showrangeafterrangeselect')],
+            [''],
             [(("每隔一段时间必然进行一次OCR"),9),self.getsimpleswitch(globalconfig ,'mustocr')],
             [(("OCR最长间隔时间(s)"),9),(self.getspinbox(0.1,100,globalconfig,'mustocr_interval',double=True,step=0.1  ),2)],
             [(("OCR最短间隔时间(s)"),9),(self.getspinbox(0.1,100,globalconfig,'ocrmininterval',double=True,step=0.1  ),2)],
