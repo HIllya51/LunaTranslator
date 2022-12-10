@@ -49,20 +49,7 @@ import socket
 socket.setdefaulttimeout(globalconfig['translatortimeout'])
 from utils.post import POSTSOLVE
 import xml.etree.ElementTree as ET  
-class rootwindow(QMainWindow):
-    def __init__(self):
-        super().__init__( ) 
-         
-        self.setWindowFlags(Qt.FramelessWindowHint)
-        self.setGeometry(-1,-1,1,1)
-        icon = QIcon()
-        icon.addPixmap(QPixmap('./files/luna.jpg'), QIcon.Normal, QIcon.On)
-        self.setWindowIcon(icon)
-        self.setWindowTitle('LunaTranslator')
-     
-    def closeEvent(self, a0 ) -> None:
-        self.quitf_signal.emit()
-        return super().closeEvent(a0)
+ 
 class MAINUI(QObject) :
     mainuiloadok=pyqtSignal()
     def __init__(self) -> None:
@@ -469,9 +456,7 @@ class MAINUI(QObject) :
     def aa(self):  
         
         self.translation_ui =gui.translatorUI.QUnFrameWindow(self)   
-        self.rootwindow=rootwindow()
-        self.rootwindow.show()
-        self.rootwindow.quitf_signal=self.translation_ui.quitf_signal
+        
         if globalconfig['rotation']==0:
             self.translation_ui.show()
             #print(time.time()-t1) 

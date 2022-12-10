@@ -533,6 +533,11 @@
             "color": "blue",
             "name": "reverso",
 			"lang":{"zh":"chi","en":"eng","es":"spa","fr":"fra","ko":"kor","ru":"rus","ja":"jpn"}
+        },"reverso_context": {
+            "use": false,
+            "color": "blue",
+            "name": "reverso_context",
+			"lang":{"zh":"chi","en":"eng","es":"spa","fr":"fra","ko":"kor","ru":"rus","ja":"jpn"}
         },
 		"TranslateCom": {
             "use": false,

@@ -216,7 +216,7 @@ class QUnFrameWindow(QWidget):
         super(QUnFrameWindow, self).__init__(
             None, Qt.FramelessWindowHint|Qt.WindowStaysOnTopHint )  # 设置为顶级窗口，无边框
         #self.setFocusPolicy(Qt.StrongFocus)
-        self.setWindowFlag(Qt.Tool,True)
+        #self.setWindowFlag(Qt.Tool,True)
  
         self.setAttribute(Qt.WA_TranslucentBackground) 
         self.setAttribute(Qt.WA_ShowWithoutActivating,True)
