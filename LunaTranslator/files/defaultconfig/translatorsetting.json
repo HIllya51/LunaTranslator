@@ -24,12 +24,16 @@
             "次数统计": "0"
         }
     },
-    "deeplapi": {
+ "deeplapi": {
         "args": {
             "注册网址": "https://www.deepl.com/translator",
             "DeepL-Auth-Key": "",
             "字数统计": "0",
             "次数统计": "0"
+        }
+    }, "yandexapi": {
+        "args": {
+            "key": ""
         }
     },
     "huoshanapi": {

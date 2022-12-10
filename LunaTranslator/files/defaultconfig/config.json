@@ -556,6 +556,11 @@
             "color": "blue",
             "name": "腾讯api",
 			"lang":{}
+        },"yandexapi": {
+            "use": false,
+            "color": "blue",
+            "name": "yandex_api",
+			"lang":{}
         },
         "byte": {
             "use": false,
