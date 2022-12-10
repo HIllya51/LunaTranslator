@@ -28,8 +28,11 @@ class ocrwrapper:
     def ocr(self,path,name):
         self._OcrDetect(path,name) 
         return self._OcrGet().decode('utf8')
-    def destroy(self):
-        self._OcrDestroy()
+    def trydestroy(self):
+        try:
+            self._OcrDestroy()
+        except:
+            pass
 # ocr=ocrwrapper()
 # ocr.init('./files/ocr/ja/det.onnx','./files/ocr/ja/rec.onnx','./files/ocr/ja/dict.txt')
 # print(ocr.ocr('./capture/','1668516425.0008786.jpg').decode('utf8'))

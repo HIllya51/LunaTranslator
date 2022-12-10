@@ -7,6 +7,7 @@ _savelang=None
 def ocr(imgfile,lang,space): 
     global _savelang,_ocr
     if _savelang!=lang: 
+        _ocr.trydestroy()
         path=f'./files/ocr/{globalconfig["normallanguagelist"][globalconfig["srclang2"]]}'
         _ocr.init(f'{path}/det.onnx',f'{path}/rec.onnx',f'{path}/dict.txt')
         _savelang=lang
