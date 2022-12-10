@@ -128,9 +128,8 @@ def noundictconfigdialog1(object,configdict,title,label=[  '日文','翻译'],fn
         
         model.removeRow(table.currentIndex().row())
     button2.clicked.connect(clicked2)
-    button3=QPushButton(dialog)
-    button3.setText(_TR('保存并关闭'))
-    def clicked3():
+     
+    def clicked3(_):
         rows=model.rowCount() 
         newdict={}
         for row in range(rows):
@@ -141,12 +140,11 @@ def noundictconfigdialog1(object,configdict,title,label=[  '日文','翻译'],fn
         with open(fname,'w',encoding='utf-8') as ff:
             import json
             ff.write(json.dumps(configdict,ensure_ascii=False,sort_keys=False, indent=6))
-        dialog.close()
-    button3.clicked.connect(clicked3)
+        
+    dialog.closeEvent=clicked3
     formLayout.addWidget(table)
     formLayout.addWidget(button)
-    formLayout.addWidget(button2)
-    formLayout.addWidget(button3)
+    formLayout.addWidget(button2) 
     dialog.resize(QSize(600,400))
     dialog.show()
 def noundictconfigdialog(object,configdict,title,label=['游戏ID MD5' ,'日文','翻译'],fname='./userconfig/noundictconfig.json'):
@@ -197,9 +195,8 @@ def noundictconfigdialog(object,configdict,title,label=['游戏ID MD5' ,'日文'
         for row in range(rows):
             model.item(row,0).setText('0')
     button5.clicked.connect(clicked5)
-    button3=QPushButton(dialog)
-    button3.setText(_TR('保存并关闭'))
-    def clicked3():
+     
+    def clicked3(_):
         rows=model.rowCount() 
         newdict={}
         for row in range(rows):
@@ -210,8 +207,9 @@ def noundictconfigdialog(object,configdict,title,label=['游戏ID MD5' ,'日文'
         with open(fname,'w',encoding='utf-8') as ff:
             import json
             ff.write(json.dumps(configdict,ensure_ascii=False,sort_keys=False, indent=6))
-        dialog.close()
-    button3.clicked.connect(clicked3)
+         
+
+    dialog.closeEvent=clicked3 
     search=QHBoxLayout()
     searchcontent=QLineEdit()
     search.addWidget(searchcontent)
@@ -238,8 +236,7 @@ def noundictconfigdialog(object,configdict,title,label=['游戏ID MD5' ,'日文'
     formLayout.addLayout(search)
     formLayout.addWidget(button)
     formLayout.addWidget(button2)
-    formLayout.addWidget(button5)
-    formLayout.addWidget(button3)
+    formLayout.addWidget(button5) 
     
     dialog.resize(QSize(600,400))
     dialog.show()
@@ -298,9 +295,8 @@ def postconfigdialog(object,configdict,title):
             
             model.removeRow(table.currentIndex().row())
         button2.clicked.connect(clicked2)
-        button3=QPushButton(dialog)
-        button3.setText(_TR('保存并关闭'))
-        def clicked3():
+       
+        def clicked3(_):
             rows=model.rowCount() 
             newdict={}
             for row in range(rows):
@@ -309,11 +305,10 @@ def postconfigdialog(object,configdict,title):
                 newdict[(model.item(row,0).text())]=(model.item(row,1).text())
             configdict[key]=newdict
             dialog.close()
-        button3.clicked.connect(clicked3)
+        dialog.closeEvent=(clicked3)
         formLayout.addWidget(table)
         formLayout.addWidget(button)
-        formLayout.addWidget(button2)
-        formLayout.addWidget(button3)
+        formLayout.addWidget(button2) 
         dialog.resize(QSize(600,400))
     dialog.show()
  

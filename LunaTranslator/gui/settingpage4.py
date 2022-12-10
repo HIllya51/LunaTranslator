@@ -218,10 +218,8 @@ def codeacceptdialog(object ,title=  '接受的编码' ,label=[  '接受的编�
     def clicked2():
         
         model.removeRow(table.currentIndex().row())
-    button2.clicked.connect(clicked2)
-    button3=QPushButton(dialog)
-    button3.setText(_TR('保存并关闭'))
-    def clicked3():
+    button2.clicked.connect(clicked2) 
+    def clicked3(_):
         rows=model.rowCount() 
         ll=[]
         for row in range(rows):
@@ -229,12 +227,11 @@ def codeacceptdialog(object ,title=  '接受的编码' ,label=[  '接受的编�
             if checkencoding(code):
                 ll.append(code) 
         globalconfig['accept_encoding']=ll 
-        dialog.close()
-    button3.clicked.connect(clicked3)
+         
+    dialog.closeEvent=(clicked3)
     formLayout.addWidget(table)
     formLayout.addWidget(button)
-    formLayout.addWidget(button2)
-    formLayout.addWidget(button3)
+    formLayout.addWidget(button2) 
     dialog.resize(QSize(600,400))
     dialog.show()
 
