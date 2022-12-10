@@ -824,5 +824,4 @@ function ascToken(translate_url){
     // 这里开头的时间戳写死了，如果请求失败请更新这个值
     return '_' + ae + '_' + window.aes_encrypt(a2, a0, a1);
 }
-
-console.log(e("これは"))
+ 

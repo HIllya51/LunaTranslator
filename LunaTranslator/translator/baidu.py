@@ -15,6 +15,7 @@ class TS(basetrans):
     def inittranslator(self)  :  
         self.headers = {
             'Accept': '*/*',
+            'Host': 'fanyi.baidu.com',
             'Accept-Language': 'zh-CN,zh;q=0.9',
             'Connection': 'keep-alive',
             'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
@@ -42,17 +43,31 @@ class TS(basetrans):
          
         with open(os.path.join('./files/scripts/baidufanyi_encrypt.js'), 'r', encoding='utf-8') as f:
             baidu_js = f.read()
-        #self.jsrun=execjs.get('local_node').compile(baidu_js)
+         
         self.ctx=  EvalJs()
         self.ctx.execute(baidu_js)
         
         url = 'https://dlswbr.baidu.com/heicha/mm/2060/acs-2060.js'
      
-        res = self.session.get(url,headers= self.headers )
+        res = self.session.get(url,headers= 
+     {
+    'authority': 'dlswbr.baidu.com',
+    'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
+    'accept-language': 'zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6',
+    'cache-control': 'no-cache',
+    'pragma': 'no-cache',
+    'sec-ch-ua': '"Not?A_Brand";v="8", "Chromium";v="108", "Microsoft Edge";v="108"',
+    'sec-ch-ua-mobile': '?0',
+    'sec-ch-ua-platform': '"Windows"',
+    'sec-fetch-dest': 'document',
+    'sec-fetch-mode': 'navigate',
+    'sec-fetch-site': 'none',
+    'sec-fetch-user': '?1',
+    'upgrade-insecure-requests': '1',
+     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36',
+} ) 
         encrypt = re.findall("\w{10,16}", re.findall('p.run\(\[(.*?)\]\)', res.text, re.DOTALL)[0])
-        self.timestamp = encrypt[0]
-        self.timestamp=str(int(self.timestamp *1000))
-  
+        self.timestamp = encrypt[0] 
     def translate(self,query):  
         
         #sign =self.jsrun.call('e', query, self.gtk)
@@ -60,6 +75,11 @@ class TS(basetrans):
             translate_url = 'https://fanyi.baidu.com/#'+self.srclang +'/'+self.tgtlang +'/%s' % ''#( parse.quote(query))
             #acs_token = self.jsrun.call('ascToken', translate_url) 
             acs_token=self.timestamp+ self.ctx.ascToken(translate_url,self.timestamp )
+                        
+            params = {
+                'from': self.srclang ,
+                'to': self.tgtlang ,
+            }
             data = {
                 'from': self.srclang ,
                 'to': self.tgtlang ,
@@ -70,10 +90,11 @@ class TS(basetrans):
                 'token': self.token,
                 'domain': 'common'
             }
-            
+            print(data)
             
             headers = {
                 'Accept': '*/*',
+                'Host': 'fanyi.baidu.com',
                 'Accept-Language': 'zh-CN,zh;q=0.9',
                 'Connection': 'keep-alive',
                 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
@@ -91,8 +112,9 @@ class TS(basetrans):
             headers["Acs-Token"]=acs_token
             translate_api = 'https://fanyi.baidu.com/v2transapi'
                     
-        
-            response = self.session.post(url=translate_api,headers=headers,   data=data,timeout = globalconfig['translatortimeout'],proxies=  {'http': None,'https': None})
+            response = self.session.post(url='https://fanyi.baidu.com/langdetect',headers=headers,   data={'query':query},timeout = globalconfig['translatortimeout'],proxies=  {'http': None,'https': None})
+             
+            response = self.session.post(url=translate_api,headers=headers,params=params,   data=data,timeout = globalconfig['translatortimeout'],proxies=  {'http': None,'https': None})
             
             result ='\n'.join([_['dst'] for _ in response.json()['trans_result']['data']])  
             # params = {
