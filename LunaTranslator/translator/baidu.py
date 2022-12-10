@@ -46,7 +46,12 @@ class TS(basetrans):
         #self.jsrun=execjs.get('local_node').compile(baidu_js)
         self.ctx=  EvalJs()
         self.ctx.execute(baidu_js)
-         
+        
+        url = 'https://dlswbr.baidu.com/heicha/mm/2060/acs-2060.js'
+     
+        res = self.session.get(url,headers= self.headers )
+        encrypt = re.findall("\w{10,16}", re.findall('p.run\(\[(.*?)\]\)', res.text, re.DOTALL)[0])
+        self.timestamp = encrypt[0]
     
     # 获取今天任意时刻的时间戳
     def today_anytime_tsp(self,hour, minute, second=0):
@@ -64,7 +69,7 @@ class TS(basetrans):
             sign=self.ctx.e(query,self.gtk)
             translate_url = 'https://fanyi.baidu.com/#'+self.srclang +'/'+self.tgtlang +'/%s' % ( parse.quote(query))
             #acs_token = self.jsrun.call('ascToken', translate_url) 
-            acs_token=self.today_anytime_tsp(15,0,9)+ self.ctx.ascToken(translate_url)
+            acs_token=self.today_anytime_tsp(15,0,9)+ self.ctx.ascToken(translate_url, self.timestamp)
             data = {
                 'from': self.srclang ,
                 'to': self.tgtlang ,
@@ -98,7 +103,7 @@ class TS(basetrans):
                     
         
             response = self.session.post(url=translate_api,headers=headers,   data=data,timeout = globalconfig['translatortimeout'],proxies=  {'http': None,'https': None})
-             
+            print(response.json())
             result ='\n'.join([_['dst'] for _ in response.json()['trans_result']['data']])  
             # params = {
             #     'req': 'check',

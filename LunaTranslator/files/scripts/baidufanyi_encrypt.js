@@ -788,12 +788,12 @@ var window =  Object;
         cb);
     } ();
 })()
-function ascToken(translate_url){
+function ascToken(translate_url,t){
     // 部分参数直接写死了，不同网站参数值不同，如果在项目中使用，请灵活处理
-    var a0 = 'uyaqcsmsseqyosiy';
+    var a0 = 'caoacysyuaaaucag';
     var a1 = '1234567887654321';
-    var ae = (new Date).getTime();
-    var a2 = '{"ua":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36","url":' + translate_url + '","platform":"Win32","clientTs":' + ae + ',"version":"2.2.0"}'; 
+    var ae = t;
+    var a2 = '{"ua":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36","url":' + translate_url + '","platform":"Win32","clientTs":' + ae + ',"version":"1.0.0.6"}'; 
     // 这里开头的时间戳写死了，如果请求失败请更新这个值
     return '_' + ae + '_' + window.aes_encrypt(a2, a0, a1);
 }
