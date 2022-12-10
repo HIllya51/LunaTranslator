@@ -39,8 +39,7 @@ class TS(basetrans):
         
         self.token = re.findall(r"token: '([0-9a-z]+)'", response_index.text)[0]
         self.gtk = re.findall(r'gtk = "(.*?)"', response_index.text)[0]
-        dirname, filename = os.path.split(os.path.abspath(__file__))
-        #print(self.gtk)
+         
         with open(os.path.join('./files/scripts/baidufanyi_encrypt.js'), 'r', encoding='utf-8') as f:
             baidu_js = f.read()
         #self.jsrun=execjs.get('local_node').compile(baidu_js)
@@ -52,24 +51,15 @@ class TS(basetrans):
         res = self.session.get(url,headers= self.headers )
         encrypt = re.findall("\w{10,16}", re.findall('p.run\(\[(.*?)\]\)', res.text, re.DOTALL)[0])
         self.timestamp = encrypt[0]
-        print(self.timestamp)
-    # 获取今天任意时刻的时间戳
-    def today_anytime_tsp(self,hour, minute, second=0):
-        from datetime import datetime, timedelta
-        now = datetime.now()
-        today_0 = now - timedelta(hours=now.hour, minutes=now.minute, seconds=now.second)
-        today_anytime = today_0 + timedelta(hours=hour, minutes=minute, seconds=second)
-        tsp = today_anytime.timestamp()
-         
-        return str(int(tsp*1000))
- 
+        self.timestamp=str(int(self.timestamp *1000))
+  
     def translate(self,query):  
         
         #sign =self.jsrun.call('e', query, self.gtk)
             sign=self.ctx.e(query,self.gtk)
-            translate_url = 'https://fanyi.baidu.com/#'+self.srclang +'/'+self.tgtlang +'/%s' % ( parse.quote(query))
+            translate_url = 'https://fanyi.baidu.com/#'+self.srclang +'/'+self.tgtlang +'/%s' % ''#( parse.quote(query))
             #acs_token = self.jsrun.call('ascToken', translate_url) 
-            acs_token=self.today_anytime_tsp(15,0,9)+ self.ctx.ascToken(translate_url )
+            acs_token=self.timestamp+ self.ctx.ascToken(translate_url,self.timestamp )
             data = {
                 'from': self.srclang ,
                 'to': self.tgtlang ,
@@ -103,7 +93,7 @@ class TS(basetrans):
                     
         
             response = self.session.post(url=translate_api,headers=headers,   data=data,timeout = globalconfig['translatortimeout'],proxies=  {'http': None,'https': None})
-            print(response.json())
+            
             result ='\n'.join([_['dst'] for _ in response.json()['trans_result']['data']])  
             # params = {
             #     'req': 'check',

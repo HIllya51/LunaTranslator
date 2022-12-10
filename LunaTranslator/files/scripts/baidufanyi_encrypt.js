@@ -822,7 +822,7 @@ function ascToken(translate_url){
     var ae = (new Date).getTime();
     var a2 = '{"ua":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36","url":' + translate_url + '","platform":"Win32","clientTs":' + ae + ',"version":"2.2.0"}';
     // 这里开头的时间戳写死了，如果请求失败请更新这个值
-    return '1667631819676_' + ae + '_' + window.aes_encrypt(a2, a0, a1);
+    return '_' + ae + '_' + window.aes_encrypt(a2, a0, a1);
 }
 
 console.log(e("これは"))
