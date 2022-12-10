@@ -251,7 +251,7 @@ class QUnFrameWindow(QWidget):
         self.showhide_signal.connect(self.showhide )
         self.bindcropwindow_signal.connect(functools.partial(mouseselectwindow, self.bindcropwindowcallback))
         self.grabwindowsignal.connect(self.grabwindow)
-        self.quitf_signal.connect(self.quitf)
+        self.quitf_signal.connect(self.close)
         self.fullsgame_signal.connect(self._fullsgame)
         # self.showtask=Queue()
         # self.showtaskthread=threading.Thread(target=self.showtaskthreadfun).start()
@@ -349,7 +349,7 @@ class QUnFrameWindow(QWidget):
         
         
         self.takusanbuttons("MinMaxButton",self.hide_and_disableautohide,-2,"最小化到托盘")
-        self.takusanbuttons("CloseButton",self.quitf,-1,"退出")
+        self.takusanbuttons("CloseButton",self.close,-1,"退出")
 
         self.refreshtoolicon()
         self.showhidetoolbuttons()
@@ -370,7 +370,7 @@ class QUnFrameWindow(QWidget):
         
         showAction = QAction(_TR("&显示"), self, triggered = self.show_and_enableautohide)
         settingAction = QAction(_TR("&设置"), self, triggered = self.clickSettin)
-        quitAction = QAction(_TR("&退出"), self, triggered = self.quitf)
+        quitAction = QAction(_TR("&退出"), self, triggered = self.close)
                 
         
         self.tray.activated.connect(self.leftclicktray)
@@ -781,8 +781,8 @@ class QUnFrameWindow(QWidget):
         object.setGeometry(QRect(int(x * self.rate),
                                  int(y * self.rate), int(w * self.rate),
                                  int(h * self.rate)))
-    
-    def quitf(self) :  
+     
+    def closeEvent(self, a0 ) -> None:
         import json  
         globalconfig['position']=[self.pos().x(),self.pos().y()]
         
@@ -797,7 +797,7 @@ class QUnFrameWindow(QWidget):
         if self.object.textsource:
             self.object.textsource.end()
         
-        self.close() 
+         
         #print('closed')
         import win32pipe,win32file
         try:
