@@ -343,7 +343,7 @@ class MAINUI(QObject) :
             res=self.solveaftertrans(res,mp)
          
 
-        l=globalconfig['normallanguagelist'][globalconfig['srclang2']]
+        l=globalconfig['normallanguagelist'][globalconfig['tgtlang2']] 
         if l=='cht' and l not in globalconfig['fanyi'][classname]['lang']:
             needconv=True
         else:

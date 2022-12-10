@@ -14,6 +14,7 @@
 	"hist_split":false,
 	"hist_fontsize":12, 
     "fixedheight": false,
+	"showintab":false,
 	"remove_useless_hook":false,
 	"height":200,
 	"postprocessf":"postprocess.mypost",

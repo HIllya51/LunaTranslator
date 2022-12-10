@@ -74,6 +74,8 @@ def setTabThree(self) :
                 {'t':'combo','d':globalconfig['magpieflags'],'k':'CursorZoomFactor','l':'光标缩放系数','list':['0.5x','0.75x','1x','1.25x','1.5x','2x','2.5x','3x','和源窗口相同'],'map':[0.5,0.75,1,1.25,1.5,2,2.5,3,0]},
                 {'t':'combo','d':globalconfig['magpieflags'],'k':'CursorInterpolationMode','l':'插值算法','list':['最邻近','双线性']},
         ]
+
+         
         buttongrid=[
                 [('不透明度',2),(self.horizontal_slider,8),(self.horizontal_slider_label,2)],
                 [('原文颜色',4), self.getcolorbutton(globalconfig,'rawtextcolor',callback=lambda: self.ChangeTranslateColor("rawtextcolor", self.original_color_button),name='original_color_button'),'',('翻译窗口背景颜色',4),self.getcolorbutton(globalconfig,'backcolor',callback=lambda: self.ChangeTranslateColor("backcolor", self.back_color_button),name='back_color_button'),'',('工具按钮颜色',4),self.getcolorbutton(globalconfig,'buttoncolor',callback=_settoolbariconcolor ,name='buttoncolorbutton')],
@@ -105,8 +107,9 @@ def setTabThree(self) :
                 [''],
                 
                 [('固定窗口尺寸',6),self.getsimpleswitch(globalconfig,'fixedheight'),],
-                [('可选取模式(阴影字体下无效)',6),self.getsimpleswitch(globalconfig,'selectable',callback=__changeselectmode)],
                 
+                [('可选取模式(阴影字体下无效)',6),self.getsimpleswitch(globalconfig,'selectable',callback=__changeselectmode)],
+                [('任务栏中显示(重启生效)',6),self.getsimpleswitch(globalconfig,'showintab' ),],
                 [('翻译窗口顺时针旋转(重启生效)',6),(self.getsimplecombobox(['0','90','180','270'],globalconfig,'rotation'),4)],
                 
                [('强制窗口保持总在最前',6),self.getsimpleswitch(globalconfig,'forcekeepontop'),],
