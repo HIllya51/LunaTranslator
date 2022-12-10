@@ -37,8 +37,8 @@ class TS(basetrans):
         self.session.get(url=index_url, headers=self.headers, proxies=  {'http': None,'https': None},timeout = globalconfig['translatortimeout'] )  #session自动生成cookie
         response_index = self.session.get(url=index_url ,headers=self.headers, proxies=  {'http': None,'https': None}  )
         self.starttime=int(time.time()*1000)
-        self.token ='4b44e5046ae246ebdec0f80803071966'#  re.findall(r"token: '([0-9a-z]+)'", response_index.text)[0]
-        self.gtk = '320305.131321201'# re.findall(r'gtk = "(.*?)"', response_index.text)[0]
+        self.token =   re.findall(r"token: '([0-9a-z]+)'", response_index.text)[0]
+        self.gtk =   re.findall(r'gtk = "(.*?)"', response_index.text)[0]
         self.systime=int(re.findall(r"systime: '([0-9]+)'", response_index.text)[0])
         with open(os.path.join('./files/scripts/baidufanyi_encrypt.js'), 'r', encoding='utf-8') as f:
             baidu_js = f.read()
@@ -74,14 +74,43 @@ class TS(basetrans):
         self.step=20
         self.k2=array[3][8]
         print(self.timestamp,self.k1,self.k2,self.version)
-        
+        print(self.session.cookies)
+
+        hm=re.findall(r'hm.src = "//(.*)"', response_index.text)[0]
+                
+        headers = {
+            'Accept': '*/*',
+            'Accept-Language': 'zh-CN,zh;q=0.9',
+            'Cache-Control': 'no-cache',
+            'Connection': 'keep-alive', 
+            'Pragma': 'no-cache',
+            'Referer': 'https://fanyi.baidu.com/',
+            'Sec-Fetch-Dest': 'script',
+            'Sec-Fetch-Mode': 'no-cors',
+            'Sec-Fetch-Site': 'same-site',
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36 Edg/108.0.1462.46',
+            'sec-ch-ua': '"Not?A_Brand";v="8", "Chromium";v="108", "Microsoft Edge";v="108"',
+            'sec-ch-ua-mobile': '?0',
+            'sec-ch-ua-platform': '"Windows"',
+        }
+
+        _ = self.session.get('https://'+hm, headers=headers)
+        print(self.session.cookies)
+        self.session.cookies.update({
+            'APPGUIDE_10_0_2': '1',
+    'REALTIME_TRANS_SWITCH': '1',
+    'FANYI_WORD_SWITCH': '1',
+    'HISTORY_SWITCH': '1',
+    'SOUND_SPD_SWITCH': '1',
+    'SOUND_PREFER_SWITCH': '1',
+        })
     def translate(self,query):  
         
         #sign =self.jsrun.call('e', query, self.gtk)
             sign=self.ctx.e(query,self.gtk)
             translate_url = 'https://fanyi.baidu.com/#'+self.srclang +'/'+self.tgtlang +'/%s' %  ( parse.quote(query))
              
-            acs_token=self.timestamp+ self.ctx.ascToken(translate_url, self.k1,self.k2,self.version, '1670686798324')#str(int((time.time())*1000)-self.starttime+self.systime))
+            acs_token=self.timestamp+ self.ctx.ascToken(translate_url, self.k1,self.k2,self.version,  str(int((time.time())*1000)-self.starttime+self.systime))
             #print(acs_token)
             params = {
                 'from': self.srclang ,
