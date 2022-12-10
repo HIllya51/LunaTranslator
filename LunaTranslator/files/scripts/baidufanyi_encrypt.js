@@ -1,30 +1,57 @@
-function n(r, o) {
-    for (var t = 0; t < o.length - 2; t += 3) {
-        var a = o.charAt(t + 2);
-        a = a >= "a" ? a.charCodeAt(0) - 87 : Number(a), a = "+" === o.charAt(t + 1) ? r >>> a : r << a, r = "+" === o.charAt(t) ? r + a & 4294967295 : r ^ a
-    }
-    return r
-}
+var r = '320305.131321201'
 
-function e(r, i) {
-    var o = r.match(/[\uD800-\uDBFF][\uDC00-\uDFFF]/g);
-    if (null === o) {
-        var t = r.length;
-        t > 30 && (r = "" + r.substr(0, 10) + r.substr(Math.floor(t / 2) - 5, 10) + r.substr(-10, 10))
-    } else {
-        for (var e = r.split(/[\uD800-\uDBFF][\uDC00-\uDFFF]/), C = 0, h = e.length, f = []; h > C; C++) "" !== e[C] && f.push.apply(f, a(e[C].split(""))), C !== h - 1 && f.push(o[C]);
-        var g = f.length;
-        g > 30 && (r = f.slice(0, 10).join("") + f.slice(Math.floor(g / 2) - 5, Math.floor(g / 2) + 5).join("") + f.slice(-10).join(""))
-    }
-    var u = void 0, l = "" + String.fromCharCode(103) + String.fromCharCode(116) + String.fromCharCode(107);
-    u = null !== i ? i : (i = window[l] || "") || "";
-    for (var d = u.split("."), m = Number(d[0]) || 0, s = Number(d[1]) || 0, S = [], c = 0, v = 0; v < r.length; v++) {
-        var A = r.charCodeAt(v);
-        128 > A ? S[c++] = A : (2048 > A ? S[c++] = A >> 6 | 192 : (55296 === (64512 & A) && v + 1 < r.length && 56320 === (64512 & r.charCodeAt(v + 1)) ? (A = 65536 + ((1023 & A) << 10) + (1023 & r.charCodeAt(++v)), S[c++] = A >> 18 | 240, S[c++] = A >> 12 & 63 | 128) : S[c++] = A >> 12 | 224, S[c++] = A >> 6 & 63 | 128), S[c++] = 63 & A | 128)
-    }
-    for (var p = m, F = "" + String.fromCharCode(43) + String.fromCharCode(45) + String.fromCharCode(97) + ("" + String.fromCharCode(94) + String.fromCharCode(43) + String.fromCharCode(54)), D = "" + String.fromCharCode(43) + String.fromCharCode(45) + String.fromCharCode(51) + ("" + String.fromCharCode(94) + String.fromCharCode(43) + String.fromCharCode(98)) + ("" + String.fromCharCode(43) + String.fromCharCode(45) + String.fromCharCode(102)), b = 0; b < S.length; b++) p += S[b], p = n(p, F);
-    return p = n(p, D), p ^= s, 0 > p && (p = (2147483647 & p) + 2147483648), p %= 1e6, p.toString() + "." + (p ^ m)
-}
+function n(t, e) {
+            for (var n = 0; n < e.length - 2; n += 3) {
+                var r = e.charAt(n + 2);
+                r = "a" <= r ? r.charCodeAt(0) - 87 : Number(r),
+                r = "+" === e.charAt(n + 1) ? t >>> r : t << r,
+                t = "+" === e.charAt(n) ? t + r & 4294967295 : t ^ r
+            }
+            return t
+        }
+
+function e(t) {
+            var o, i = t.match(/[\uD800-\uDBFF][\uDC00-\uDFFF]/g);
+            if (null === i) {
+                var a = t.length;
+                a > 30 && (t = "".concat(t.substr(0, 10)).concat(t.substr(Math.floor(a / 2) - 5, 10)).concat(t.substr(-10, 10)))
+            } else {
+                for (var s = t.split(/[\uD800-\uDBFF][\uDC00-\uDFFF]/), c = 0, u = s.length, l = []; c < u; c++)
+                    "" !== s[c] && l.push.apply(l, function(t) {
+                        if (Array.isArray(t))
+                            return e(t)
+                    }(o = s[c].split("")) || function(t) {
+                        if ("undefined" != typeof Symbol && null != t[Symbol.iterator] || null != t["@@iterator"])
+                            return Array.from(t)
+                    }(o) || function(t, n) {
+                        if (t) {
+                            if ("string" == typeof t)
+                                return e(t, n);
+                            var r = Object.prototype.toString.call(t).slice(8, -1);
+                            return "Object" === r && t.constructor && (r = t.constructor.name),
+                            "Map" === r || "Set" === r ? Array.from(t) : "Arguments" === r || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(r) ? e(t, n) : void 0
+                        }
+                    }(o) || function() {
+                        throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.")
+                    }()),
+                    c !== u - 1 && l.push(i[c]);
+                var p = l.length;
+                p > 30 && (t = l.slice(0, 10).join("") + l.slice(Math.floor(p / 2) - 5, Math.floor(p / 2) + 5).join("") + l.slice(-10).join(""))
+            }
+            for (var d = "".concat(String.fromCharCode(103)).concat(String.fromCharCode(116)).concat(String.fromCharCode(107)), h = (null !== r ? r : (r = window[d] || "") || "").split("."), f = Number(h[0]) || 0, m = Number(h[1]) || 0, g = [], y = 0, v = 0; v < t.length; v++) {
+                var _ = t.charCodeAt(v);
+                _ < 128 ? g[y++] = _ : (_ < 2048 ? g[y++] = _ >> 6 | 192 : (55296 == (64512 & _) && v + 1 < t.length && 56320 == (64512 & t.charCodeAt(v + 1)) ? (_ = 65536 + ((1023 & _) << 10) + (1023 & t.charCodeAt(++v)),
+                g[y++] = _ >> 18 | 240,
+                g[y++] = _ >> 12 & 63 | 128) : g[y++] = _ >> 12 | 224,
+                g[y++] = _ >> 6 & 63 | 128),
+                g[y++] = 63 & _ | 128)
+            }
+            for (var b = f, w = "".concat(String.fromCharCode(43)).concat(String.fromCharCode(45)).concat(String.fromCharCode(97)) + "".concat(String.fromCharCode(94)).concat(String.fromCharCode(43)).concat(String.fromCharCode(54)), k = "".concat(String.fromCharCode(43)).concat(String.fromCharCode(45)).concat(String.fromCharCode(51)) + "".concat(String.fromCharCode(94)).concat(String.fromCharCode(43)).concat(String.fromCharCode(98)) + "".concat(String.fromCharCode(43)).concat(String.fromCharCode(45)).concat(String.fromCharCode(102)), x = 0; x < g.length; x++)
+                b = n(b += g[x], w);
+            return b = n(b, k),
+            (b ^= m) < 0 && (b = 2147483648 + (2147483647 & b)),
+            "".concat((b %= 1e6).toString(), ".").concat(b ^ f)
+        }
 
 var window =  Object;
 (function() {
@@ -788,12 +815,14 @@ var window =  Object;
         cb);
     } ();
 })()
-function ascToken(translate_url,t){
+function ascToken(translate_url){
     // 部分参数直接写死了，不同网站参数值不同，如果在项目中使用，请灵活处理
-    var a0 = 'caoacysyuaaaucag';
+    var a0 = 'uyaqcsmsseqyosiy';
     var a1 = '1234567887654321';
-    var ae = t;
-    var a2 = '{"ua":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36","url":' + translate_url + '","platform":"Win32","clientTs":' + ae + ',"version":"1.0.0.6"}'; 
+    var ae = (new Date).getTime();
+    var a2 = '{"ua":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36","url":' + translate_url + '","platform":"Win32","clientTs":' + ae + ',"version":"2.2.0"}';
     // 这里开头的时间戳写死了，如果请求失败请更新这个值
-    return '_' + ae + '_' + window.aes_encrypt(a2, a0, a1);
+    return '1667631819676_' + ae + '_' + window.aes_encrypt(a2, a0, a1);
 }
+
+console.log(e("これは"))
