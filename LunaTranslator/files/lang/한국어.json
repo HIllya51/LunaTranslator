@@ -405,5 +405,19 @@
     "选取OCR范围后主动显示范围框": "OCR 범위를 선택한 후 범위 상자를 능동적으로 표시합니다.",
     "自动隐藏窗口": "자동으로 창 숨기기",
     "隐藏延迟(s)": "지연 숨기기 (s)",
-    "选取OCR范围——立即": "OCR 범위 선택 - 지금"
+    "选取OCR范围——立即": "OCR 범위 선택 - 지금",
+    "EDICT2": "EDICT2",
+    "edict2": "edict2",
+    "未查到": "찾을 수 없음",
+    "JMdict": "JMdict",
+    "jmdict": "jmdict",
+    "reverso_context": "reverso_context",
+    "yandex_api": "yandex_api",
+    "yandex_api设置": "yandex_api 설정",
+    "key": "key",
+    "任务栏中显示(重启生效)": "작업 표시줄에 표시 (재시작 적용)",
+    "lingva": "lingva",
+    "OCR识别易错内容修正": "OCR 인식 오류 수정 내용",
+    "OCR识别易错内容修正设置": "OCR 인식 오류 콘텐츠 수정 설정",
+    "保存": "저장"
 }

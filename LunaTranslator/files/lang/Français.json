@@ -405,5 +405,19 @@
     "选取OCR范围后主动显示范围框": "Afficher activement la zone de plage après avoir sélectionné la plage ocr",
     "自动隐藏窗口": "Masquer automatiquement la fenêtre",
     "隐藏延迟(s)": "Masquer le délai",
-    "选取OCR范围——立即": "Sélectionnez la plage OCR - maintenant"
+    "选取OCR范围——立即": "Sélectionnez la plage OCR - maintenant",
+    "EDICT2": "Edict2",
+    "edict2": "Edit2",
+    "未查到": "Non trouvé",
+    "JMdict": "Jmdict",
+    "jmdict": "Jmdict",
+    "reverso_context": "Reverso Contexte",
+    "yandex_api": "Yandex API",
+    "yandex_api设置": "Yandex Paramètres de l'API",
+    "key": "Clé",
+    "任务栏中显示(重启生效)": "Afficher dans la barre des tâches (redémarrer en vigueur)",
+    "lingva": "Lingva",
+    "OCR识别易错内容修正": "Correction des erreurs de reconnaissance ocr",
+    "OCR识别易错内容修正设置": "OCR identifier les paramètres de correction du contenu sujets aux erreurs",
+    "保存": "Enregistrer"
 }
