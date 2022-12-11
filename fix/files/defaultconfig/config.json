@@ -522,6 +522,11 @@
             "color": "blue",
             "name": "itrans",
 			"lang":{"en":"en-UK","zh":"zh-CN","es":"es-ES","fr":"fr-FR","cht":"zh-TW"}
+        },"lingva": {
+            "use": false,
+            "color": "blue",
+            "name": "lingva",
+			"lang":{ "cht":"zh_HANT"}
         },
 		"lingvanex": {
             "use": false,
