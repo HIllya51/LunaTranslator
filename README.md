@@ -7,9 +7,9 @@
     <a id="downloadlink" href="https://github.com/HIllya51/LunaTranslator/releases/download/v1.20.2/LunaTranslator.zip"><img src="https://img.shields.io/badge/download-%E4%B8%8B%E8%BD%BD-red"></a>
 </p>
  
-### 简体中文 | [Русский](README_ru.md) 
+## 简体中文 | [Русский](README_ru.md) 
 
-**一款galgame翻译器**
+> **一款galgame翻译器**
 
 ## <a href="http://hillya51.github.io/">使用说明</a> 
  
