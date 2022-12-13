@@ -77,3 +77,7 @@
 <tr><td>语音-VoiceRoid2</td><td><a href="https://github.com/HIllya51/LunaTranslator/releases/download/v1.0/Yukari2.zip">Yukari2.zip</a></td></tr>
 <tr><td>语音-VOICEVOX</td><td><a href="https://github.com/VOICEVOX/voicevox/releases/download/0.13.3/voicevox-windows-cpu-0.13.3.zip">voicevox-windows-cpu-0.13.3.zip</a></td></tr>
 </table>  
+
+## 支持作者
+
+如果你感觉该软件对你有帮助，欢迎前往[爱发电](https://afdian.net/a/HIllya51)赞助我，谢谢，么么哒~
