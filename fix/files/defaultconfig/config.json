@@ -414,7 +414,7 @@
 			"lang":{}
         }
     }, 
-	"normallanguagelist":["zh", "ja", "en","ru","es","ko","fr","cht"],
+	"normallanguagelist":["auto","zh", "ja", "en","ru","es","ko","fr","cht"],
     "fanyi": {
         "baidu": {
             "use": true,
