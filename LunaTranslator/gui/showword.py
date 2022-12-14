@@ -113,7 +113,7 @@ class searchwordW(QMainWindow):
 
     def searchthread(self,i,_d,sentence):
         self.textbs[i].clear()
-
+        
         res=_d[i].search(sentence if i==0 else sentence[0]) 
         if res is None or res=='':
             res=_TR('未查到' )
@@ -129,7 +129,7 @@ class searchwordW(QMainWindow):
     def search(self,sentence):
         if  sentence[0]=='':
             return
-        _d=[self.p.object.hira_,self.p.object.xiaoxueguan,self.p.object.linggesi,self.p.object.edict,self.p.object.edict2,self.p.object.jmdict]
+        _d=[self.p.object.hira_,self.p.object.xiaoxueguan,self.p.object.linggesi,self.p.object.edict,self.p.object.edict2]#,self.p.object.jmdict]
         for i in range(len(_d)): 
             threading.Thread(target=self.searchthreadsignal.emit,args=(i,_d,sentence)).start()
  
