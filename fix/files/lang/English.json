@@ -419,5 +419,11 @@
     "任务栏中显示(重启生效)": "Displayed in the taskbar (effective after restart)",
     "lingva": "lingva",
     "OCR识别易错内容修正": "Correction of error prone content identified by OCR",
-    "OCR识别易错内容修正设置": "Correction settings for OCR identification error prone content"
+    "OCR识别易错内容修正设置": "Correction settings for OCR identification error prone content",
+    "sougouocr": "sougouocr",
+    "当前版本": "current version",
+    "最新版本": "Latest version",
+    "项目网站": "Project website",
+    "使用说明": "instructions",
+    "支持作者": "Support authors"
 }

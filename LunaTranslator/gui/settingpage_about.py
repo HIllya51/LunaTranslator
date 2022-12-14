@@ -13,14 +13,13 @@ from utils.config import globalconfig  ,_TR
 import gui.switchbutton
 from utils.downloader import mutithreaddownload
 def getversion(self):
-    
-    about='版本号:%s  最新版本:%s'
+     
     # with open('files/about.txt','r',encoding='utf8') as ff:
     #     about=ff.read()
     with open('files/version.txt','r',encoding='utf8') as ff:
         version=ff.read() 
     url='https://github.com/HIllya51/LunaTranslator/releases/'
-    self.versiontextsignal.emit(about  %(version, _TR('获取中')))#,'',url,url))
+    self.versiontextsignal.emit(_TR('当前版本')+':'+  version+'  '+_TR("最新版本")+':'+ _TR('获取中'))#,'',url,url))
     try:
         requests.packages.urllib3.disable_warnings()
         headers = {
@@ -40,7 +39,7 @@ def getversion(self):
         print_exc()
         _version=_TR("获取失败")
         newcontent=''
-    self.versiontextsignal.emit(about %(version, _version))#,'' if version== _version else  newcontent,url,'LunaTranslator.zip'))
+    self.versiontextsignal.emit((_TR('当前版本')+':'+  version+'  '+_TR("最新版本")+':'+ _version) ) #,'' if version== _version else  newcontent,url,'LunaTranslator.zip'))
     if _version!=_TR("获取失败") and version!=_version:
         if globalconfig['autoupdate']:
             self.downloadprogress.show()
@@ -104,12 +103,15 @@ def setTab_about(self) :
         self.versionlabel.setTextInteractionFlags(Qt.LinksAccessibleByMouse) 
         self.versiontextsignal.connect(lambda x:self.versionlabel.setText(x) )
 
-        self.versionlabel1 = QLabel('项目网站:<a href="https://github.com/HIllya51/LunaTranslator">https://github.com/HIllya51/LunaTranslator</a>')
+        self.versionlabel1 = QLabel(_TR('项目网站')+':<a href="https://github.com/HIllya51/LunaTranslator">https://github.com/HIllya51/LunaTranslator</a>')
         self.versionlabel1.setOpenExternalLinks(True)
         self.versionlabel1.setTextInteractionFlags(Qt.LinksAccessibleByMouse)  
-        self.versionlabel2 = QLabel('使用说明:<a href="https://hillya51.github.io/">https://hillya51.github.io/</a>')
+        self.versionlabel2 = QLabel(_TR('使用说明')+':<a href="https://hillya51.github.io/">https://hillya51.github.io/</a>')
         self.versionlabel2.setOpenExternalLinks(True)
         self.versionlabel2.setTextInteractionFlags(Qt.LinksAccessibleByMouse)  
+        self.versionlabel3 = QLabel(_TR('支持作者')+':<a href="https://afdian.net/a/HIllya51">https://afdian.net/a/HIllya51</a>')
+        self.versionlabel3.setOpenExternalLinks(True)
+        self.versionlabel3.setTextInteractionFlags(Qt.LinksAccessibleByMouse)  
         grids=[ 
             [
                 ("使用代理",5),(self.getsimpleswitch(globalconfig  ,'useproxy',callback=lambda x: _setproxy(x)),1),''],
@@ -123,7 +125,8 @@ def setTab_about(self) :
                 
                 [''],
                 [(self.versionlabel1,10)],
-                [(self.versionlabel2,10)]
+                [(self.versionlabel2,10)],
+                [(self.versionlabel3,10)]
         ]  
         self.yitiaolong("其他设置",grids ) 
 
