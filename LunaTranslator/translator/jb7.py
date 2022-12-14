@@ -37,7 +37,8 @@ class TS(basetrans):
                     ress+='\n'
                             
                  
-                p=subproc(r'./files/x64_x86_dll/jbj7.exe "'+self.path+'"  "'+line+'"', stdout=subprocess.PIPE )
+                p=subproc(r'./files/x64_x86_dll/jbj7.exe "'+self.path+'" '+self.tgtlang+' "'+line+'"', stdout=subprocess.PIPE )
+                
                 l=p.stdout.readline() 
                 
                 res=str(l,encoding='utf8',errors='ignore').replace('\r','').replace('\n','') 

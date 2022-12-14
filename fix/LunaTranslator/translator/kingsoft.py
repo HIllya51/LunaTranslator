@@ -13,9 +13,18 @@ class TS(basetrans):
                 return 
             else:
                 path = js['args']['路径'] 
-    
-            self.path=os.path.join(path,'GTS/JapaneseSChinese/JPNSCHSDK.dll')
-            self.path2=os.path.join(path,'GTS/JapaneseSChinese/DCT')
+            base=os.path.join(path,'GTS/'+self.srclang+self.tgtlang)
+            if os.path.exists(base)==False:
+                return 
+            dll=None
+            for f in os.listdir(base):
+                if f.split('.')[-1]=='dll':
+                    dll=f
+                    break
+            if dll is None:
+                return 
+            self.path=os.path.join(base,dll)
+            self.path2=os.path.join(base,'DCT')
             ress=''
             for line in content.split('\n'):
                 if len(line)==0:

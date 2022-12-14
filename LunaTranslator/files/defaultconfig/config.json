@@ -413,8 +413,8 @@
             "name": "sougouocr",
 			"lang":{}
         }
-    },
-	"normallanguagelist":["auto","zh", "ja", "en","ru","es","ko","fr","cht"],
+    }, 
+	"normallanguagelist":["zh", "ja", "en","ru","es","ko","fr","cht"],
     "fanyi": {
         "baidu": {
             "use": true,
@@ -479,17 +479,21 @@
         "jb7": {
             "use": false,
             "color": "#1839f0",
-            "name": "Jbeijing7"
+            "name": "Jbeijing7",
+			"lang":{"zh":"936","cht":"950"}
         },
         "kingsoft": {
             "use": false,
             "color": "#1839f0",
-            "name": "金山快译"
+            "name": "金山快译",
+			"lang":{"zh":"SChinese","cht":"TChinese","en":"English","ja":"Japanese"}
+			
         },
         "dreye": {
             "use": false,
             "color": "#1839f0",
-            "name": "快译通"
+            "name": "快译通",
+			"lang":{}
         },
         "sougou2": {
             "use": false,

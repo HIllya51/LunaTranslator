@@ -19,7 +19,14 @@ class TS(basetrans):
             else:
                 path = js['args']['路径'] 
             path=os.path.join(path,'DreyeMT\\SDK\\bin')
-            path2=os.path.join(path,"TransCOM.dll")
+             
+            path2=os.path.join(path,'HJIMT.dll')
+            pairs=(self.srclang,self.tgtlang)
+            mp={('zh','en'):2,('en','zh'):1,('zh','ja'):3,('ja','zh'):10}
+            if pairs not in mp:
+                
+                return
+            codes={'zh':'gbk','ja':'shift-jis','en':'utf8'}
             ress=''
             for line in content.split('\n'):
                 if len(line)==0:
@@ -27,9 +34,9 @@ class TS(basetrans):
                 if ress!='':
                     ress+='\n'  
 
-                exec=r'./files/x64_x86_dll/dreyec.exe "'+path+'"  "'+path2+'" '
-                
-                linebyte=bytes(line,encoding='shift-jis')
+                exec=r'./files/x64_x86_dll/dreyec.exe "'+path+'"  "'+path2+'" '+str(mp[pairs])+' '#+apiinit+' '+apitrans+' '
+                 
+                linebyte=bytes(line,encoding=codes[self.srclang])
                 for b in linebyte:
                     exec+=str(b)+' '
                 p=subproc(exec,stdin=subprocess.PIPE,  stdout=subprocess.PIPE ,cwd=path)
@@ -45,9 +52,8 @@ class TS(basetrans):
                     try:
                         bs.append(int(_x))
                     except:
-                        break
-                #print(bs)
-                ress+=str(bytes(bs),encoding='gbk').replace(chr(0),'')
+                        break 
+                ress+=str(bytes(bs),encoding=codes[self.tgtlang]).replace(chr(0),'')
 
                 #print(1,ress,2)
             #ress=ress.replace('Translation(TaskNo = 1) is OK. (remainder threads = 0)\r\n','')
