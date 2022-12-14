@@ -407,6 +407,11 @@
             "use": false,
             "name": "youdao图片翻译",
 			"lang":{}
+        },
+		"sougouocr": {
+            "use": false,
+            "name": "sougouocr",
+			"lang":{}
         }
     },
 	"normallanguagelist":["auto","zh", "ja", "en","ru","es","ko","fr","cht"],
