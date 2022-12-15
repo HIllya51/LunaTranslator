@@ -100,8 +100,11 @@ def _4_f(line):
 def _6_f(line):
         line=line.replace('\n','').replace('\r','')
         return line
-def _9_f(line):
-        line=re.sub('([0-9a-zA-Z]+)','',line)
+def _91_f(line):
+        line=re.sub('([0-9]+)','',line)
+        return line
+def _92_f(line):
+        line=re.sub('([a-zA-Z]+)','',line)
         return line
 def _7_f(line):
         filters=postprocessconfig['_7']['args']['替换内容']
@@ -140,7 +143,8 @@ def POSTSOLVE(line):
         '_1':_1_f,
         '_4':_4_f,
         '_6':_6_f,
-        '_9':_9_f,
+        '_91':_91_f,
+        '_92':_92_f,
         '_7':_7_f,
         '_8':_8_f,
         '_13':_13_f,
