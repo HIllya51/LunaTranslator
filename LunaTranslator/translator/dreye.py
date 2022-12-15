@@ -20,12 +20,16 @@ class TS(basetrans):
                 path = js['args']['路径'] 
             path=os.path.join(path,'DreyeMT\\SDK\\bin')
              
-            path2=os.path.join(path,'HJIMT.dll')
+            path2=os.path.join(path,'TransCOM.dll')
             pairs=(self.srclang,self.tgtlang)
             mp={('zh','en'):2,('en','zh'):1,('zh','ja'):3,('ja','zh'):10}
             if pairs not in mp:
                 
                 return
+            if mp[pairs] in [3,10]:
+                path2=os.path.join(path,'TransCOM.dll')
+            else:
+                path2=os.path.join(path,'TransCOMEC.dll')
             codes={'zh':'gbk','ja':'shift-jis','en':'utf8'}
             ress=''
             for line in content.split('\n'):
@@ -40,6 +44,8 @@ class TS(basetrans):
                 for b in linebyte:
                     exec+=str(b)+' '
                 p=subproc(exec,stdin=subprocess.PIPE,  stdout=subprocess.PIPE ,cwd=path)
+                
+
                 l=p.stdout.readline()   
                 #print(l)
                 
