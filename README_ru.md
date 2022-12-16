@@ -4,14 +4,15 @@
     <a href="./LICENSE"><img src="https://img.shields.io/badge/license-GPL%203.0-dfd.svg"></a>
     <a href="https://github.com/HIllya51/LunaTranslator/releases"><img src="https://img.shields.io/github/v/release/HIllya51/LunaTranslator?color=ffa"></a>
     <a href="https://github.com/HIllya51/LunaTranslator/stargazers"><img src="https://img.shields.io/github/stars/HIllya51/LunaTranslator?color=ccf"></a>
-    <a id="downloadlink" href="https://github.com/HIllya51/LunaTranslator/releases/download/v1.34.10/LunaTranslator.zip"><img src="https://img.shields.io/badge/download-%E4%B8%8B%E8%BD%BD-red"></a>
+    <a id="downloadlink" href="https://github.com/HIllya51/LunaTranslator/releases/download/v1.34.6/LunaTranslator.zip"><img src="https://img.shields.io/badge/download-%E4%B8%8B%E8%BD%BD-red"></a>
 </p>
 
 ## [简体中文](README.md)  |  Русский язык
 
-> **Переводчик для игр**
+> **Переводчик текста с экрана для игр и не только!**
 
-## <a href="https://hillya51.github.io/#/ru/">Инструкция по применению</a> 
+
+## <a href="https://hillya51.github.io/#/ru/">Инструкция по настройке программы (Полностью на русском языке)</a> 
  
 
 ## Основные функции:
@@ -51,7 +52,7 @@
 
 &emsp;&emsp;**Оптимизация перевода** Поддерживает использование собственных корректировок перевода и импорт общих словарей VNR.
 
-#### Японское исследование
+#### Японская письменность
 
 &emsp;&emsp;**Сегментация японских слов и отображение каны** Поддержка использования встроенных бесплатных загружаемых инструментов сегментации слов и отображения каны, поддержка использования Mecab для оптимизации сегментации слов и отображения каны.
 
@@ -61,8 +62,8 @@
 
 <table>
 
-<tr><td>OCR- упрощенный китайский язык</td><td><a href="https://github.com/HIllya51/LunaTranslator/releases/download/v1.34.5/zh.zip">zh.zip</a></td></tr>
-<tr><td>OCR- китайский язык</td><td><a href="https://github.com/HIllya51/LunaTranslator/releases/download/v1.34.5/cht.zip">cht.zip</a></td></tr>
+<tr><td>OCR- упрощенный китайский язык</td><td><a href="https://github.com/HIllya51/LunaTranslator/releases/download/v1.34.5/zh.zip">zh.zip</a></td></tr>
+<tr><td>OCR- китайский язык</td><td><a href="https://github.com/HIllya51/LunaTranslator/releases/download/v1.34.5/cht.zip">cht.zip</a></td></tr>
 <tr><td>OCR- корейский</td><td><a href="https://github.com/HIllya51/LunaTranslator/releases/download/v1.34.5/ko.zip">ko.zip</a></td></tr>
 <tr><td>Словарь MeCab</td><td><a href="https://github.com/HIllya51/LunaTranslator/releases/download/v1.0/Mecab.zip">Mecab.zip</a></td></tr>
 <tr><td>Словарь Xiaoxiaoguan</td><td><a href="https://github.com/HIllya51/LunaTranslator/releases/download/v1.0/xiaoxueguan.db">xiaoxueguan.db</a></td></tr>
@@ -80,11 +81,11 @@
 </table>  
 
 
-##  Выражение признательности 
+##  Отдельная благодарность: 
 
 
-* [@KirpichKrasniy](https://github.com/KirpichKrasniy) 
+* [@KirpichKrasniy](https://github.com/KirpichKrasniy) (Также можете зайти в русскоязычные сообщества программы: [VK](https://vk.com/lunatranslator) и [Telegram](https://t.me/LunaTranslator))
 
-##  Поддержать автора 
+##  Поддержать автора 
  
-Если вы чувствуете, что программное обеспечение помогает вам, добро пожаловать в [afdian](https://afdian.net/a/HIllya51) спонсировать меня, спасибо 
+Если вы считаете, что программное обеспечение помогает Вам, Вы можете проспонсировать меня на [afdian](https://afdian.net/a/HIllya51). Спасибо за поддержку!
