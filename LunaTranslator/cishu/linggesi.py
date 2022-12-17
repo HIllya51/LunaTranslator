@@ -7,16 +7,15 @@ class linggesi():
     def __init__(self):
         self.sql=None
         try:
-            if os.path.exists(os.path.join(globalconfig['linggesi']['path'] ,'ja-zh.db'))==False or \
-                os.path.exists(os.path.join(globalconfig['linggesi']['path'] ,'ja-zh-gbk.db'))==False:
+            if os.path.exists(os.path.join(globalconfig['cishu']['linggesi']['path'] ,'ja-zh.db'))==False or \
+                os.path.exists(os.path.join(globalconfig['cishu']['linggesi']['path'] ,'ja-zh-gbk.db'))==False:
                 return 
-            self.sql=sqlite3.connect(os.path.join(globalconfig['linggesi']['path'] ,'ja-zh.db'),check_same_thread=False)
-            self.sql2=sqlite3.connect(os.path.join(globalconfig['linggesi']['path'] ,'ja-zh-gbk.db'),check_same_thread=False)
+            self.sql=sqlite3.connect(os.path.join(globalconfig['cishu']['linggesi']['path'] ,'ja-zh.db'),check_same_thread=False)
+            self.sql2=sqlite3.connect(os.path.join(globalconfig['cishu']['linggesi']['path'] ,'ja-zh-gbk.db'),check_same_thread=False)
         except:
             pass
     def search(self,word):
-        
-            try: 
+         
                 mp={}
                 for sql in [self.sql,self.sql2]:
                     x=sql.execute(f"select word,content from entry where word like '%{word}%'")
@@ -34,5 +33,4 @@ class linggesi():
                 x=sorted(list(mp.keys()),key=lambda x: mp[x][1])[:10]
                 save=[w+'<br>'+mp[w][0] for w in x]
                 return '<hr>'.join(save)
-            except: 
-                return None
+             

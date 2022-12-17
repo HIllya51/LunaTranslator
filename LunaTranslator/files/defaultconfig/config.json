@@ -325,28 +325,36 @@
             "path": ""
         }
     },
-    "xiaoxueguan": {
-        "use": false,
-        "path": ""
-    },
     "mecab": {
         "use": false,
         "path": ""
     },
-    "edict": {
-        "use": false,
-        "path": ""
-    },"edict2": {
-        "use": false,
-        "path": ""
-    },"jmdict": {
-        "use": false,
-        "path": ""
-    },
-    "linggesi": {
-        "use": false,
-        "path": ""
-    },
+	"cishu":{
+		"xiaoxueguan": {
+			"use": true,
+			"path": "",
+			"name":"小学馆",
+			"filter":"*.db",
+			"isdir":false 
+		},
+		
+		"edict": {
+			"use": true,
+			"path": "",
+			"name":"EDICT","filter":"*.db","isdir":false 
+		},"edict2": {
+			"use": true,
+			"path": "","name":"EDICT2","filter":"","isdir":false 
+		},
+		"linggesi": {
+			"use": true,
+			"path": "","name":"灵格斯词典","filter":"","isdir":true
+		},
+		"youdao":{
+			"use":true,
+			"name":"youdao"
+		}
+	},
     "usesearchword": false,
     "LocaleEmulator": "./files/Locale.Emulator.2.5.0.1",
     "Locale_Remulator": "./files/Locale_Remulator.1.4.6",

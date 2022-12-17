@@ -7,15 +7,14 @@ class edict():
     def __init__(self):
         self.sql=None
         try:
-            path=(globalconfig['edict']['path'] )
+            path=(globalconfig['cishu']['edict']['path'] )
             if os.path.exists(path):
                 self.sql=sqlite3.connect( path,check_same_thread=False)
         except:
             pass
     
     def search(self,word):
-         
-            try:
+          
                 x=self.sql.execute(f"select text, entry_id from surface where  text like '%{word}%'")
                 exp=x.fetchall()
                 dis=9999
@@ -36,6 +35,4 @@ class edict():
                     saveres.append(x[0]+'<br>'+re.sub('/EntL.*/','', x[1][1:]))
                 
                 return '<hr>'.join(saveres)
-            except: 
-                return None
-         
+            

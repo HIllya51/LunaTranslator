@@ -11,7 +11,7 @@ from traceback import print_exc
 from utils.config import globalconfig ,_TR,_TRL
 class searchwordW(QMainWindow): 
     getnewsentencesignal=pyqtSignal(str) 
-    searchthreadsignal=pyqtSignal(int,list,tuple)
+    searchthreadsignal=pyqtSignal(str,dict,tuple)
     def __init__(self,p):
         super(searchwordW, self).__init__(p)
         self.setupUi() 
@@ -51,19 +51,25 @@ class searchwordW(QMainWindow):
         self.setCentralWidget(self.centralWidget)
   
         
-        self.textbs=[]
+        self.textbs={}
 
-        _=_TRL(['MeCab','小学馆',"灵格斯词典","EDICT","EDICT2"])#,"JMdict"])
-        self._=_
-        for i in range(len(_)):
+        _k=['MeCab']
+        _name=['MeCab']
+        for cishu in globalconfig['cishu']:
+            _name.append(globalconfig['cishu'][cishu]['name'])
+            _k.append(cishu)
+        self._k=_k
+        _name=_TRL(_name)
+        
+        for i in range(len(_name)):
 
             textOutput = QTextBrowser(self)
             textOutput.setFont(font) 
             textOutput.setContextMenuPolicy(Qt.CustomContextMenu)
             textOutput.setUndoRedoEnabled(False)
             textOutput.setReadOnly(True)
-            self.tab.addTab(textOutput,_[i])
-            self.textbs.append(textOutput)
+            self.tab.addTab(textOutput,_name[i])
+            self.textbs[self._k[i]]=(textOutput)
             
             textOutput.setContextMenuPolicy(Qt.CustomContextMenu)
         
@@ -111,25 +117,34 @@ class searchwordW(QMainWindow):
          
         self.search(sentence)
 
-    def searchthread(self,i,_d,sentence):
-        self.textbs[i].clear()
+    def searchthread(self,k,_mp,sentence):
+        self.textbs[k].clear()
+        self.tab.setTabVisible(self._k.index(k),False)
+        try:
+            res=_mp[k].search(sentence if k=='MeCab' else sentence[0]) 
+        except:
+            print_exc()
+            return 
+        if res is None or res=='':  
+            return 
         
-        res=_d[i].search(sentence if i==0 else sentence[0]) 
-        if res is None or res=='':
-            res=_TR('未查到' )
-            self.tab.setTabVisible(i,False)
-        else:
-            self.tab.setTabVisible(i,True)
         first=res.split('<hr>')[0]
-        self.textbs[i].insertHtml(first)  
-        self.textbs[i].firsttext=self.textbs[i].toPlainText()
-        self.textbs[i].insertHtml(res[len(first):])  
-        scrollbar = self.textbs[i].verticalScrollBar()
+        self.textbs[k].insertHtml(first)  
+        self.textbs[k].firsttext=self.textbs[k].toPlainText()
+        self.textbs[k].insertHtml(res[len(first):])  
+        scrollbar = self.textbs[k].verticalScrollBar()
         scrollbar.setValue(0)
+        self.tab.setTabVisible(self._k.index(k),True)
     def search(self,sentence):
         if  sentence[0]=='':
             return
-        _d=[self.p.object.hira_,self.p.object.xiaoxueguan,self.p.object.linggesi,self.p.object.edict,self.p.object.edict2]#,self.p.object.jmdict]
-        for i in range(len(_d)): 
-            threading.Thread(target=self.searchthreadsignal.emit,args=(i,_d,sentence)).start()
+         
+        _mp={'MeCab':self.p.object.hira_}
+        _mp.update(self.p.object.cishus)
+         
+        for k in self._k : 
+            if k not in _mp:
+                self.tab.setTabVisible(self._k.index(k),False)
+            else:
+                threading.Thread(target=self.searchthreadsignal.emit,args=(k,_mp,sentence)).start()
  

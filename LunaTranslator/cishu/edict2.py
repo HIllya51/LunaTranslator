@@ -2,23 +2,28 @@ from utils.config import globalconfig
 import sqlite3,os
 import Levenshtein,re
 from utils.argsort import argsort
-import xml.etree.ElementTree as ET  
 from traceback import print_exc
-class jmdict():
+class edict2():
     def __init__(self):
-        return
         self.sql=None
         try:
-            path=(globalconfig['jmdict']['path'] )
+            path=(globalconfig['cishu']['edict2']['path'] )
             if os.path.exists(path):
-                self.xml= ET.parse(globalconfig['jmdict']['path']) 
+                with open(path,'r',encoding='euc-jp') as ff:
+                    _=ff.read()
+                _=_.split('\n')[1:]
+                self.save={}
+                for _l in _:
+                    try:
+                        _s=_l.index(' ')
+                    except:
+                        continue
+                    self.save[_l[:_s]]=_l[_s:]
         except:
             print_exc()
     
     def search(self,word):
-         
-            try:
-                 
+          
                 dis=9999
                 dis=[]
                 savew=[]
@@ -34,7 +39,4 @@ class jmdict():
                     if len(saveres)>=10:
                         break
                 return '<hr>'.join(saveres)
-            except: 
-                print_exc()
-                return None
-         
+             

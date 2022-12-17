@@ -75,6 +75,13 @@ syncconfig(translatorsetting,translatordfsetting)
 
 syncconfig(ocrsetting,ocrdfsetting,True,3)
 
+def synccishu():
+    for k in ['xiaoxueguan','edict','edict2','linggesi']:
+        if k in globalconfig:
+            
+                globalconfig['cishu'][k]['path']=(globalconfig[k]['path'])
+                globalconfig.pop(k)
+synccishu()
 
 listlengthsync(globalconfig,defaultglobalconfig,'postprocess_rank') 
 listlengthsync(globalconfig,defaultglobalconfig,'language_list',True) 

@@ -6,13 +6,13 @@ class xiaoxueguan():
     def __init__(self):
         self.sql=None
         try:
-            path=(globalconfig['xiaoxueguan']['path'] )
+            path=(globalconfig['cishu']['xiaoxueguan']['path'] )
             if os.path.exists(path):
                 self.sql=sqlite3.connect( path,check_same_thread=False) 
         except:
             pass
     def search(self,word): 
-            try:
+            
                 x=self.sql.execute(f"select word,explanation from xiaoxueguanrizhong where word like '%{word}%'")
                 exp=x.fetchall()
                 dis=9999
@@ -26,5 +26,4 @@ class xiaoxueguan():
                 srt=argsort(dis)[:10]
                 save=['<span h>'+exp[i][1].replace('\\n','') for i in srt]
                 return '<hr>'.join(save)
-            except:
-                return None 
+             

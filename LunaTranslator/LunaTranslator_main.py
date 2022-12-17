@@ -2,7 +2,7 @@ import time
 t1=time.time()   
 import os
 import json
-
+import Levenshtein
 import sys
 # if os.path.exists('./debug')==False:
 #     os.mkdir('./debug')
@@ -34,12 +34,7 @@ import pyperclip
 from utils.getpidlist import getpidexe,ListProcess
  
 import gui.translatorUI
- 
-from utils.xiaoxueguan import xiaoxueguan
-from utils.edict import edict
-from utils.edict2 import edict2
-from utils.jmdict import jmdict
-from utils.linggesi import linggesi
+  
 import importlib
 from functools import partial  
 from gui.attachprocessdialog import AttachProcessDialog
@@ -55,6 +50,7 @@ class MAINUI(QObject) :
     def __init__(self) -> None:
         
         self.translators={}
+        self.cishus={}
         self.reader=None
         self.rect=None
         self.textsource=None 
@@ -319,23 +315,30 @@ class MAINUI(QObject) :
                 if globalconfig['fanyi'][source]['use']:
                     threading.Thread(target=self.fanyiloader,args=(source,)).start()
     @threader
-    def startxiaoxueguan(self,type_=0):
-        if type_==0:
-            self.xiaoxueguan=xiaoxueguan()
-            self.edict=edict()
-            self.edict2=edict2()
-            self.jmdict=jmdict()
-            self.linggesi=linggesi()
-        elif type_==1:
-            self.xiaoxueguan=xiaoxueguan()
-        elif type_==2:
-            self.edict=edict()
-        elif type_==3:
-            self.linggesi=linggesi()
-        elif type_==4:
-            self.edict2=edict2()
-        elif type_==5:
-            self.jmdict=jmdict()
+    def startxiaoxueguan(self,type_=None):
+        if type_:
+            if globalconfig['cishu'][type_]['use']:
+                threading.Thread(target=self.cishuloader,args=(type_,)).start()
+            else:
+                if type_ in self.cishus:
+                    _=self.cishus.pop(type_)
+                    del _
+        else:
+            for source in globalconfig['cishu']: 
+                if globalconfig['cishu'][source]['use']:
+                    threading.Thread(target=self.cishuloader,args=(source,)).start()
+         
+    def cishuloader(self,type_):
+                try:
+                    aclass=importlib.import_module('cishu.'+type_)
+                    aclass=getattr(aclass,type_)
+                except:
+                    print_exc()
+                    return
+                
+                _=aclass()
+                
+                self.cishus[type_]=_ 
     def _maybeyrengong(self,classname,contentraw,_):
         
         classname,res,mp=_
