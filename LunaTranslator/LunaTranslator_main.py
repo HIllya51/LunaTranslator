@@ -44,7 +44,7 @@ import socket
 socket.setdefaulttimeout(globalconfig['translatortimeout'])
 from utils.post import POSTSOLVE
 import xml.etree.ElementTree as ET  
- 
+from utils.argsort import argsort
 class MAINUI(QObject) :
     mainuiloadok=pyqtSignal()
     def __init__(self) -> None:
