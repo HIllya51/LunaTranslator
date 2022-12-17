@@ -427,5 +427,9 @@
     "使用说明": "Mode d'emploi",
     "支持作者": "Soutien aux auteurs",
     "过滤数字": "Filtrer les chiffres",
-    "过滤英文字母": "Filtrer les lettres anglaises"
+    "过滤英文字母": "Filtrer les lettres anglaises",
+    "分词器": "Diviseur de mots",
+    "辞书": "Dictionnaire",
+    "分词": "Participant",
+    "youdao": "YouDao"
 }
