@@ -75,7 +75,7 @@ def changeocrcolorcallback(self ):
     self.object.range_ui.label.setStyleSheet(" border:%spx solid %s; background-color: rgba(0,0,0, 0.01)"   %(globalconfig['ocrrangewidth'],globalconfig['ocrrangecolor'] ))
 def changeocrwidthcallback(self,x):
     globalconfig.__setitem__('ocrrangewidth',x)
-    self.object.range_ui.label.setStyleSheet(" border:%spx solid %s; background-color: rgba(0,0,0, 0.01)"   %(globalconfig['ocrrangewidth'],globalconfig['ocrrangecolor'] ))
+    self.object.range_ui.setstyle()
 def yuitsuocr(self,name,checked): 
     
     if checked : 

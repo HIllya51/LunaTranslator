@@ -13,7 +13,7 @@ class rangeadjust(Mainw) :
         super(rangeadjust, self).__init__(object.translation_ui) 
         self.object = object   
         self.label = QLabel(self) 
-        self.label.setStyleSheet(" border:%spx solid %s; background-color: rgba(0,0,0, 0.01)"   %(globalconfig['ocrrangewidth'],globalconfig['ocrrangecolor'] ))
+        self.setstyle()
         self.drag_label = QLabel(self)
         self.drag_label.setGeometry(0, 0, 4000, 2000)
         self._isTracking=False 
@@ -23,6 +23,8 @@ class rangeadjust(Mainw) :
 
         for s in self.cornerGrips: 
             s.raise_()
+    def setstyle(self):
+        self.label.setStyleSheet(" border:%spx solid %s; background-color: rgba(0,0,0, 0.01)"   %(globalconfig['ocrrangewidth'],globalconfig['ocrrangecolor'] ))
     def mouseMoveEvent(self, e ) :  
         if self._isTracking: 
             self._endPos = e.pos() - self._startPos
@@ -39,7 +41,7 @@ class rangeadjust(Mainw) :
     def moveEvent(self,e):
                 rect = self.geometry() 
                 if self.object.rect:    
-                    self.object.rect=[(rect.left(),rect.top()),(rect.right(),rect.bottom())]  
+                    self.object.rect=[(rect.left()+globalconfig['ocrrangewidth'],rect.top()+globalconfig['ocrrangewidth']),(rect.right()-2*globalconfig['ocrrangewidth'],rect.bottom()-2*globalconfig['ocrrangewidth'])]  
     def enterEvent(self, QEvent) :  
         self.drag_label.setStyleSheet("background-color:rgba(0,0,0, 0.1)") 
     def leaveEvent(self, QEvent): 
@@ -49,7 +51,7 @@ class rangeadjust(Mainw) :
          self.label.setGeometry(0, 0, self.width(), self.height())  
          rect = self.geometry() 
          if self.object.rect:    
-             self.object.rect=[(rect.left(),rect.top()),(rect.right(),rect.bottom())]  
+             self.object.rect=[(rect.left()+globalconfig['ocrrangewidth'],rect.top()+globalconfig['ocrrangewidth']),(rect.right()-2*globalconfig['ocrrangewidth'],rect.bottom()-2*globalconfig['ocrrangewidth'])]  
          super(rangeadjust, self).resizeEvent(a0)  
 class rangeselct(QMainWindow) :
     immediateendsignal=pyqtSignal()
@@ -114,7 +116,7 @@ class rangeselct(QMainWindow) :
         x1,x2=min(x1,x2),max(x1,x2)
         y1,y2=min(y1,y2),max(y1,y2)
         self.object.rect=[(x1,y1),(x2,y2)]
-        self.object.range_ui.setGeometry(x1,y1,x2-x1,y2-y1) 
+        self.object.range_ui.setGeometry(x1-globalconfig['ocrrangewidth'],y1-globalconfig['ocrrangewidth'],x2-x1+2*globalconfig['ocrrangewidth'],y2-y1+2*globalconfig['ocrrangewidth']) 
         self.object.range_ui.show() 
     def mouseReleaseEvent(self, event): 
         if event.button() == Qt.LeftButton:
