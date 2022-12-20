@@ -19,7 +19,7 @@
     },
     "_4": {
         "use": false,
-        "name": "过滤HTML标签"
+        "name": "过滤尖括号<>"
     },
     "_6": {
         "use": false,

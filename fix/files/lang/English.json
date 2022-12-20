@@ -431,5 +431,7 @@
     "分词器": "Tokenizer ",
     "辞书": "Lexicographical book",
     "分词": "participle",
-    "youdao": "youdao"
+    "youdao": "youdao",
+    "过滤尖括号<>": "Filter angle brackets<>",
+    "竖向OCR识别": "Vertical OCR identification"
 }

@@ -431,5 +431,7 @@
     "分词器": "Participador",
     "辞书": "Diccionario",
     "分词": "Participio",
-    "youdao": "Youdao"
+    "youdao": "Youdao",
+    "过滤尖括号<>": "Soporte puntiagudo de filtro < >",
+    "竖向OCR识别": "Identificación vertical OCR"
 }
