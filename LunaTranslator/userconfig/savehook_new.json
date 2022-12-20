@@ -1,4 +1,15 @@
 {
+    "C:\\dataH\\CHRONOCLOCK\\cmvs32c2.exe": [
+        [
+            "5",
+            "4DF8",
+            "44F123",
+            "19FC74",
+            "0",
+            "CMVS2",
+            "HAC@4F123:cmvs32c2.exe"
+        ]
+    ],
     "C:\\dataH\\CHRONOCLOCK\\cmvs32.exe": [
         [
             "3",
@@ -41,17 +52,6 @@
             "944FDFC",
             "Lucifen:HS8",
             "-14@5180:GDI32.dll"
-        ]
-    ],
-    "C:\\dataH\\CHRONOCLOCK\\cmvs32c2.exe": [
-        [
-            "5",
-            "4DF8",
-            "44F123",
-            "19FC74",
-            "0",
-            "CMVS2",
-            "HAC@4F123:cmvs32c2.exe"
         ]
     ],
     "C:\\dataH\\LunaTranslator\\LunaTranslator_no_Admin.exe": [],
