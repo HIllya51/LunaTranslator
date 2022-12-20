@@ -98,6 +98,8 @@
 
 * [RapidAI/RapidOcrOnnx](https://github.com/RapidAI/RapidOcrOnnx)
 
+* [PaddlePaddle/PaddleOCR](https://github.com/PaddlePaddle/PaddleOCR)
+
 * [UlionTse/translators](https://github.com/UlionTse/translators)
 
 * [Blinue/Magpie](https://github.com/Blinue/Magpie)
