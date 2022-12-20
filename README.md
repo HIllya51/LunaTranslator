@@ -78,6 +78,14 @@
 <tr><td>语音-VOICEVOX</td><td><a href="https://github.com/VOICEVOX/voicevox/releases/download/0.13.3/voicevox-windows-cpu-0.13.3.zip">voicevox-windows-cpu-0.13.3.zip</a></td></tr>
 </table>  
 
+## References
+
+* [Artikash/Textractor](https://github.com/Artikash/Textractor)
+
+* [RapidAI/RapidOcrOnnx](https://github.com/RapidAI/RapidOcrOnnx)
+
+* [UlionTse/translators](https://github.com/UlionTse/translators)
+
  
 ## 支持作者
 
