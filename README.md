@@ -27,10 +27,7 @@
 
 #### 翻译器
 
-支持几乎所有能想得到的翻译引擎，包括：
-
-<details>
-<summary>查看全部</summary>
+支持几乎所有能想得到的翻译引擎，包括： 
 
 &emsp;&emsp;**离线翻译** 支持使用J北京7、金山快译、译典通进行离线翻译 
 
@@ -42,8 +39,7 @@
 
 &emsp;&emsp;**支持自定义翻译扩展** 支持使用python语言扩展其他我不知道的翻译接口
 
-
-</details>
+ 
 
 
 #### 语音合成
@@ -68,7 +64,7 @@
 
 
 <details>
-<summary>查看全部</summary>
+<summary>点击查看</summary>
 
 <table>
 <tr><td>OCR-简体中文</td><td><a href="https://github.com/HIllya51/LunaTranslator/releases/download/v1.34.5/zh.zip">zh.zip</a></td></tr>
@@ -96,7 +92,7 @@
 ## References
 
 <details>
-<summary>查看全部</summary>
+<summary>点击查看</summary>
 
 * [Artikash/Textractor](https://github.com/Artikash/Textractor)
 
@@ -107,6 +103,8 @@
 * [Blinue/Magpie](https://github.com/Blinue/Magpie)
 
 * [nanokina/ebyroid](https://github.com/nanokina/ebyroid)
+
+* [@KirpichKrasniy](https://github.com/KirpichKrasniy)
 
 </details>
 
