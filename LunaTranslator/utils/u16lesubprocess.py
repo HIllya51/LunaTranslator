@@ -5,8 +5,11 @@ from PyQt5.QtCore import QProcess,QByteArray
 class u16lesubprocess():
     def __init__(self,command) -> None:
         self.cache=bytearray()
-        self.process=subprocess.Popen(command,stdin=subprocess.PIPE,stdout=subprocess.PIPE)
-         
+        
+        st=subprocess.STARTUPINFO()
+        st.dwFlags=subprocess.STARTF_USESHOWWINDOW
+        st.wShowWindow=subprocess.SW_HIDE
+        self.process=subprocess.Popen(command,stdin=subprocess.PIPE,stdout=subprocess.PIPE, startupinfo=st)
         threading.Thread(target=self.cacheread).start()
         threading.Thread(target=self.readokmonitor).start()
         self.isstart=True
