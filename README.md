@@ -79,6 +79,13 @@
 </table>  
 
  
+## References
+
+* [Artikash/Textractor](https://github.com/jsc723/MisakaPatcher)
+
+* [RapidAI/RapidOcrOnnx](https://github.com/RapidAI/RapidOcrOnnx)
+
+
 ## 支持作者
 
 如果你感觉该软件对你有帮助，欢迎前往[爱发电](https://afdian.net/a/HIllya51)赞助我，谢谢，么么哒~
