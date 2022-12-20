@@ -86,6 +86,8 @@
 
 * [UlionTse/translators](https://github.com/UlionTse/translators)
 
+* [Blinue/Magpie](https://github.com/Blinue/Magpie)
+
 * [nanokina/ebyroid](https://github.com/nanokina/ebyroid)
 
  
