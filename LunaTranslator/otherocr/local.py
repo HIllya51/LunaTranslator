@@ -12,8 +12,8 @@ def ocr(imgfile,lang,space):
         _ocr.init(f'{path}/det.onnx',f'{path}/rec.onnx',f'{path}/dict.txt')
         _savelang=lang
         
-    s=_ocr.ocr('./capture/',imgfile[10:])
-   
+    s=_ocr.ocr('./capture/',imgfile[10:],globalconfig['verticalocr'])
+     
     ls=s.split('\n') 
     juhe=[]
     box=[]
@@ -25,10 +25,16 @@ def ocr(imgfile,lang,space):
         box.append([int(_)  for _ in ls[i*2].split(',')])
         text.append(ls[i*2+1]) 
     for i in range(len(box)):
-        mid=box[i][1]+box[i][3]+box[i][5]+box[i][7]
+        if globalconfig['verticalocr']:
+            mid=box[i][0]+box[i][2]+box[i][4]+box[i][6]
+        else:
+            mid=box[i][1]+box[i][3]+box[i][5]+box[i][7]
         mid/=4
         mids.append(mid)
-        range_=((box[i][1]+box[i][3])/2,(box[i][7]+box[i][5])/2)
+        if globalconfig['verticalocr']:
+            range_=((box[i][0]+box[i][6])/2,(box[i][2]+box[i][4])/2)
+        else:
+            range_=((box[i][1]+box[i][3])/2,(box[i][7]+box[i][5])/2)
         ranges.append(range_) 
     passed=[] 
     for i in range(len(box)):
@@ -46,8 +52,14 @@ def ocr(imgfile,lang,space):
         juhe.append(ls)
     
     for i in range(len(juhe)):
-        juhe[i].sort(key=lambda x:box[x][0])
-    juhe.sort(key=lambda x:box[x[0]][1])
+        if globalconfig['verticalocr']:
+            juhe[i].sort(key=lambda x:box[x][1])
+        else:
+            juhe[i].sort(key=lambda x:box[x][0])
+    if globalconfig['verticalocr']:
+        juhe.sort(key=lambda x:-box[x[0]][0])
+    else:
+        juhe.sort(key=lambda x:box[x[0]][1])
     lines=[]
     
     for _j in juhe:
