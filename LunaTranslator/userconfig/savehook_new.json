@@ -1,15 +1,4 @@
 {
-    "C:\\dataH\\CHRONOCLOCK\\cmvs32c2.exe": [
-        [
-            "5",
-            "4DF8",
-            "44F123",
-            "19FC74",
-            "0",
-            "CMVS2",
-            "HAC@4F123:cmvs32c2.exe"
-        ]
-    ],
     "C:\\dataH\\CHRONOCLOCK\\cmvs32.exe": [
         [
             "3",
@@ -19,6 +8,17 @@
             "0",
             "CMVS2",
             "HAC@4F123:cmvs32.exe"
+        ]
+    ],
+    "C:\\dataH\\CHRONOCLOCK\\cmvs32c2.exe": [
+        [
+            "5",
+            "4DF8",
+            "44F123",
+            "19FC74",
+            "0",
+            "CMVS2",
+            "HAC@4F123:cmvs32c2.exe"
         ]
     ],
     "C:\\dataH\\CHRONOCLOCK\\cmvs64.exe": [

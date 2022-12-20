@@ -768,13 +768,15 @@ class QUnFrameWindow(QWidget):
      
     def closeEvent(self, a0 ) -> None:
         import json  
+        self.tray.hide()
+        self.tray = None  
+        self.hide()
         globalconfig['position']=[self.pos().x(),self.pos().y()]
         
         globalconfig['width']=self.width() 
         globalconfig['height']=self.height() 
         saveallconfig()
-        self.tray.hide()
-        self.tray = None  
+        
         #print(4)
         self.object.hookselectdialog.realclose=True 
          
