@@ -29,6 +29,9 @@
 
 支持几乎所有能想得到的翻译引擎，包括：
 
+<details>
+<summary>查看全部</summary>
+
 &emsp;&emsp;**离线翻译** 支持使用J北京7、金山快译、译典通进行离线翻译 
 
 &emsp;&emsp;**免费在线翻译** 支持使用百度、必应、谷歌、阿里、有道、彩云、搜狗、DeepL、金山、讯飞、腾讯、字节、火山、papago、yeekit进行翻译
@@ -38,6 +41,10 @@
 &emsp;&emsp;**预翻译** 支持读取人工翻译和聚合机器预翻译文件
 
 &emsp;&emsp;**支持自定义翻译扩展** 支持使用python语言扩展其他我不知道的翻译接口
+
+
+</details>
+
 
 #### 语音合成
 
@@ -59,6 +66,10 @@
 
 ## 资源下载
 
+
+<details>
+<summary>查看全部</summary>
+
 <table>
 <tr><td>OCR-简体中文</td><td><a href="https://github.com/HIllya51/LunaTranslator/releases/download/v1.34.5/zh.zip">zh.zip</a></td></tr>
 <tr><td>OCR-繁体中文</td><td><a href="https://github.com/HIllya51/LunaTranslator/releases/download/v1.34.5/cht.zip">cht.zip</a></td></tr>
@@ -78,7 +89,14 @@
 <tr><td>语音-VOICEVOX</td><td><a href="https://github.com/VOICEVOX/voicevox/releases/download/0.13.3/voicevox-windows-cpu-0.13.3.zip">voicevox-windows-cpu-0.13.3.zip</a></td></tr>
 </table>  
 
+</details>
+
+
+
 ## References
+
+<details>
+<summary>查看全部</summary>
 
 * [Artikash/Textractor](https://github.com/Artikash/Textractor)
 
@@ -89,6 +107,9 @@
 * [Blinue/Magpie](https://github.com/Blinue/Magpie)
 
 * [nanokina/ebyroid](https://github.com/nanokina/ebyroid)
+
+</details>
+
 
  
 ## 支持作者
