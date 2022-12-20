@@ -16,14 +16,9 @@ class u16lesubprocess():
         self.readyread=None
     def cacheread(self):
         while self.process:
-            _=self.process.stdout.readline()
-            if self.isstart:
-                self.cache+=bytearray(_ )
-            else:
-                self.cache+=bytearray(_[1:] ) 
+            _=self.process.stdout.readline() 
+            self.cache+=bytearray(_ )
             
-            self.cache+=bytearray([0])
-            self.isstart=False
     def readokmonitor(self):
         while self.process:
             
@@ -33,8 +28,12 @@ class u16lesubprocess():
             if l1==l2 and l1:
                 if self.readyread:
                     
-                    #print(self.cache)
-                    self.readyread((self.cache).decode('utf-16-le',errors='ignore')) 
+                    self.cache+=bytearray([0])
+                    
+                    if self.isstart==False:    
+                        self.cache=self.cache[1:]
+                    self.isstart=False 
+                    self.readyread((self.cache).decode('utf-16-le' ,errors='ignore')) 
                     
                 self.cache.clear()
         
