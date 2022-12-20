@@ -180,12 +180,14 @@ class QUnFrameWindow(QWidget):
         self.p = QProcess()    
         self.p.readyReadStandardOutput.connect(functools.partial(stdoutcallback[0],self.p))  
         self.p.start(path)
-
+        print(self.p,self.p.processId())
     def writeprocess(self,qb):
         self.p.write(qb)
+        print(self.p)
     def killprocess(self):
         if 'p' in dir(self):
             self.p.kill() 
+            print('killed',self.p,self.p.processId())
     def refreshtoolicon(self):
         icon=[
             qtawesome.icon("fa.rotate-right" ,color=globalconfig['buttoncolor']),

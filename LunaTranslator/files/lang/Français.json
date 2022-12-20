@@ -431,5 +431,7 @@
     "分词器": "Diviseur de mots",
     "辞书": "Dictionnaire",
     "分词": "Participant",
-    "youdao": "YouDao"
+    "youdao": "YouDao",
+    "过滤尖括号<>": "Filtrer les crochets d'angle < >",
+    "竖向OCR识别": "Reconnaissance verticale de la Roc"
 }
