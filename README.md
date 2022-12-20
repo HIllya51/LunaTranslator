@@ -86,6 +86,8 @@
 
 * [UlionTse/translators](https://github.com/UlionTse/translators)
 
+* [nanokina/ebyroid](https://github.com/nanokina/ebyroid)
+
  
 ## 支持作者
 
