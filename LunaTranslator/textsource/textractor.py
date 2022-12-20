@@ -12,6 +12,7 @@ import hashlib
 import os
 import subprocess
 from utils.config import globalconfig 
+from utils.u16lesubprocess import u16lesubprocess
 from utils.getpidlist import getarch
 from textsource.textsourcebase import basetext 
 from utils.chaos import checkchaos
@@ -45,7 +46,9 @@ class textractor(basetext  ):
         self.object=object
         #self.object.translation_ui.killprocesssignal.emit()
         
-        self.object.translation_ui.startprocessignal.emit(f"./files/Textractor/x{self.arch}/TextractorCLI.exe",[self.handle_stdout])
+        #self.object.translation_ui.startprocessignal.emit(f"./files/Textractor/x{self.arch}/TextractorCLI.exe",[self.handle_stdout])
+        self.u16lesubprocess=u16lesubprocess(f"./files/Textractor/x{self.arch}/TextractorCLI.exe")
+        self.u16lesubprocess.readyread=self.handle_stdout
         #self.p.start(r"C:\tmp\textractor_src\Textractor-cmd\builds\RelWithDebInfo_x64\TextractorCLI.exe")
         self.pid=pid
         self.pname=pname
@@ -88,15 +91,18 @@ class textractor(basetext  ):
         #self.autostarttimeout.stop()
     def setdelay(self):
         delay=globalconfig['textthreaddelay']
-        self.object.translation_ui.writeprocesssignal.emit( QByteArray((f'+{delay} -P{self.pid}\r\n').encode(encoding='utf-16-le')))
+        #self.object.translation_ui.writeprocesssignal.emit( QByteArray((f'+{delay} -P{self.pid}\r\n').encode(encoding='utf-16-le')))
+        self.u16lesubprocess.writer(f'+{delay} -P{self.pid}\r\n')
     def setcodepage(self):
         #cp=globalconfig["codepage"]
         
         cpi=globalconfig["codepage_index"]
         cp= [932,65001,936,950,949,1258,874,1256,1255,1254,1253,1257,1250,1251,1252][cpi]
-        self.object.translation_ui.writeprocesssignal.emit( QByteArray((f'={cp} -P{self.pid}\r\n').encode(encoding='utf-16-le')))
+        #self.object.translation_ui.writeprocesssignal.emit( QByteArray((f'={cp} -P{self.pid}\r\n').encode(encoding='utf-16-le')))
+        self.u16lesubprocess.writer(f'={cp} -P{self.pid}\r\n')
     def findhook(self ):
-        self.object.translation_ui.writeprocesssignal.emit( QByteArray((f'find -P{self.pid}\r\n').encode(encoding='utf-16-le')))
+        #self.object.translation_ui.writeprocesssignal.emit( QByteArray((f'find -P{self.pid}\r\n').encode(encoding='utf-16-le')))
+        self.u16lesubprocess.writer((f'find -P{self.pid}\r\n'))
     def inserthook(self,hookcode):
         # self.timer=QTimer()
         # self.timer.timeout.connect(self.insert)
@@ -105,21 +111,22 @@ class textractor(basetext  ):
         # print(111111111111111111111111111111111111111111)
         # print(self.p)
         print(f'{hookcode} -P{self.pid}\r\n')
-        self.object.translation_ui.writeprocesssignal.emit( QByteArray((f'{hookcode} -P{self.pid}\r\n').encode(encoding='utf-16-le')))
-        #麻了 就是不知道为什么写入不进去。。。
+        #self.object.translation_ui.writeprocesssignal.emit( QByteArray((f'{hookcode} -P{self.pid}\r\n').encode(encoding='utf-16-le')))
+        self.u16lesubprocess.writer((f'{hookcode} -P{self.pid}\r\n'))
     def exit(self):
-        self.object.translation_ui.writeprocesssignal.emit( QByteArray((f'11\r\n').encode(encoding='utf-16-le'))) 
+        #self.object.translation_ui.writeprocesssignal.emit( QByteArray((f'11\r\n').encode(encoding='utf-16-le'))) 
+        self.u16lesubprocess.writer(f'11\r\n')
     def attach(self,pid):  
-        self.object.translation_ui.writeprocesssignal.emit( QByteArray((f'attach -P{pid}\r\n').encode(encoding='utf-16-le')))
-        #self.p.write( QByteArray((f'attach -P{pid}\r\n').encode(encoding='utf-16-le'))) 
+        #self.object.translation_ui.writeprocesssignal.emit( QByteArray((f'attach -P{pid}\r\n').encode(encoding='utf-16-le')))
+        self.u16lesubprocess.writer(f'attach -P{pid}\r\n')
     def detach(self,pid):
-        self.object.translation_ui.writeprocesssignal.emit( QByteArray((f'detach -P{pid}\r\n').encode(encoding='utf-16-le'))) 
-    # def handle_stdout(self): 
-    #     data = self.p.readAllStandardOutput()
-    
-    def handle_stdout(self,p): 
-        data =  p.readAllStandardOutput()
-        stdout = bytes(data).decode("utf16",errors='ignore') 
+        #self.object.translation_ui.writeprocesssignal.emit( QByteArray((f'detach -P{pid}\r\n').encode(encoding='utf-16-le'))) 
+        self.u16lesubprocess.writer(f'detach -P{pid}\r\n')
+        print(f'detach -P{pid}\r\n')
+    def handle_stdout(self,stdout):#p): 
+        #data =  p.readAllStandardOutput()
+        #stdout = bytes(data).decode("utf16",errors='ignore') 
+        #print(stdout)
         #print(stdout)
         reres=[]
       
@@ -215,7 +222,8 @@ class textractor(basetext  ):
                                 self.removedaddress.append(address)
                                 address=int(address,16) 
                                 print(key)
-                                self.object.translation_ui.writeprocesssignal.emit( QByteArray((f'-{address} -P{self.pid}\r\n').encode(encoding='utf-16-le'))) 
+                                #self.object.translation_ui.writeprocesssignal.emit( QByteArray((f'-{address} -P{self.pid}\r\n').encode(encoding='utf-16-le'))) 
+                                self.u16lesubprocess.writer(f'-{address} -P{self.pid}\r\n')
             # else:
                  
             #     if globalconfig['extractalltext']:
@@ -228,6 +236,7 @@ class textractor(basetext  ):
             if key==self.selectinghook:
                 self.hookselectdialog.getnewsentencesignal.emit(output)
             self.hookselectdialog.update_item_new_line.emit(key,output)
+             
     def guessreal(self,line):
         if len(line)<100 and (re.match('「(.*)」',line) or\
             re.match('(.*)。',line)):
@@ -241,9 +250,13 @@ class textractor(basetext  ):
          
         self.textgetmethod(self.runonce_line,False)
     def end(self):
-        
-        self.detach(self.pid)
-        self.exit()   
-        self.object.translation_ui.killprocesssignal.emit()
-        #self.ending=True
+        try:
+            self.detach(self.pid)
+        except:
+            pass
+        #self.exit()   
+        time.sleep(0.1)
+        self.u16lesubprocess.kill()
+        #self.object.translation_ui.killprocesssignal.emit()
+        self.ending=True
      

@@ -40,9 +40,7 @@ class QUnFrameWindow(QWidget):
     displayres =  pyqtSignal(str,str ) 
     displayraw1 =  pyqtSignal(list, str,str,int )  
     displaystatus=pyqtSignal(str) 
-    startprocessignal=pyqtSignal(str,list)
-    writeprocesssignal=pyqtSignal(QByteArray)
-    killprocesssignal=pyqtSignal()
+     
     hookfollowsignal=pyqtSignal(int,tuple)
     toolbarhidedelaysignal=pyqtSignal()
     clickSettin_signal=pyqtSignal()
@@ -174,20 +172,7 @@ class QUnFrameWindow(QWidget):
         self.hideshownotauto=True
         win32gui.SetForegroundWindow(self.winId() )   
         self.show()
-    def startprocessfunction(self,path,stdoutcallback):
-        if 'p' in dir(self):
-            self.p.kill()
-        self.p = QProcess()    
-        self.p.readyReadStandardOutput.connect(functools.partial(stdoutcallback[0],self.p))  
-        self.p.start(path)
-        print(self.p,self.p.processId())
-    def writeprocess(self,qb):
-        self.p.write(qb)
-        print(self.p)
-    def killprocess(self):
-        if 'p' in dir(self):
-            self.p.kill() 
-            print('killed',self.p,self.p.processId())
+     
     def refreshtoolicon(self):
         icon=[
             qtawesome.icon("fa.rotate-right" ,color=globalconfig['buttoncolor']),
@@ -230,10 +215,7 @@ class QUnFrameWindow(QWidget):
         threading.Thread(target=self.autohidedelaythread).start()
         self.rate = self.object.screen_scale_rate 
         self.callmagpie=None
-        self.muteprocessignal.connect(self.muteprocessfuntion)
-        self.startprocessignal.connect(self.startprocessfunction)
-        self.writeprocesssignal.connect(self.writeprocess)
-        self.killprocesssignal.connect(self.killprocess)
+        self.muteprocessignal.connect(self.muteprocessfuntion) 
         self.toolbarhidedelaysignal.connect(self.toolbarhidedelay)
         self._padding = 5*self.rate  # 设置边界宽度为5
         self.setMinimumWidth(300)

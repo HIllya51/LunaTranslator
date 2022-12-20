@@ -1,23 +1,12 @@
 {
-    "C:\\dataH\\雪夜\\SiglusEngine_CHS.exe": [
-        [
-            "12",
-            "42C0",
-            "AADB5D",
-            "AE7AAC39",
-            "0",
-            "UserHook1",
-            "HW-1C@1DDB5D:SiglusEngine.exe"
-        ]
-    ],
     "C:\\dataH\\CHRONOCLOCK\\cmvs32.exe": [
         [
-            "2",
-            "281C",
+            "3",
+            "1650",
             "44F123",
             "19FC74",
             "0",
-            "UserHook2",
+            "CMVS2",
             "HAC@4F123:cmvs32.exe"
         ]
     ],
@@ -30,6 +19,17 @@
             "0",
             "lstrcpyA",
             "HS-24@0:kernel32.dll:lstrcpyA"
+        ]
+    ],
+    "C:\\dataH\\雪夜\\SiglusEngine_CHS.exe": [
+        [
+            "B",
+            "6D4",
+            "66D2DC",
+            "54FED78",
+            "0",
+            "SiglusEngine3",
+            "HW-4@15D2DC:SiglusEngine_CHS.exe"
         ]
     ],
     "C:\\dataH\\俺たちに翼はない\\ORE_TUBA.EXE": [
@@ -54,5 +54,16 @@
             "HAC@4F123:cmvs32c2.exe"
         ]
     ],
-    "C:\\dataH\\LunaTranslator\\LunaTranslator_no_Admin.exe": []
+    "C:\\dataH\\LunaTranslator\\LunaTranslator_no_Admin.exe": [],
+    "C:\\dataH\\Please Be Happy\\Please Be Happy.exe": [
+        [
+            "3",
+            "568",
+            "177CF42C820",
+            "177D2535043",
+            "0",
+            "TextMeshProUGUI_set_text",
+            "HQX14+-24@177CF42C820"
+        ]
+    ]
 }

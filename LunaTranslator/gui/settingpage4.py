@@ -267,7 +267,7 @@ def setTab4(self) :
                 [('已保存游戏',5),(self.getcolorbutton(globalconfig,'',icon='fa.gamepad',constcolor="#FF69B4",callback=lambda:autosaveshow(self)),1)],
 
                 [('代码页',5),(codepagecombo,5)],
-                [('刷新延迟(ms)',5),(self.getspinbox(0,10000,globalconfig,'textthreaddelay',callback=functools.partial(changedelay,self)),3)],
+                [('刷新延迟(ms)',5),(self.getspinbox(10,10000,globalconfig,'textthreaddelay',callback=functools.partial(changedelay,self)),3)],
                 [('过滤乱码文本',5),(self.getsimpleswitch(globalconfig,'filter_chaos_code'),1),(self.getcolorbutton(globalconfig,'',icon='fa.gear',constcolor="#FF69B4",callback=lambda:codeacceptdialog(self)),1)],
                 [('移除非选定HOOK',5),(self.getsimpleswitch(globalconfig,'remove_useless_hook'),1) ],
         ]
@@ -302,7 +302,10 @@ def minmaxmoveobservefunc(self):
                             self.object.translation_ui.hookfollowsignal.emit(3,(0,0))  
                      plist=getwindowlist()
                      if self.object.textsource.pid not in plist:
-                            #print('game exit') 
+                            try:
+                                self.object.textsource.end()  
+                            except:
+                                print_exc()
                             self.object.textsource=None
                             continue
                      if pid==self.object.textsource.pid: 

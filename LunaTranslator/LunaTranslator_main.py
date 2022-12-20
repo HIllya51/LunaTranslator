@@ -406,7 +406,7 @@ class MAINUI(QObject) :
                     _.object=self
                     _.show=partial(self._maybeyrengong,classname)
                     self.translators[classname]=_ 
-   
+     
     def onwindowloadautohook(self):
         if not(globalconfig['autostarthook'] and globalconfig['sourcestatus']['textractor']):
             return 
@@ -423,9 +423,11 @@ class MAINUI(QObject) :
                 
                         if name_ in savehook_new: 
                             from textsource.textractor import textractor
+                            
+            
                             self.hookselectdialog.changeprocessclearsignal.emit() 
                             self.textsource=textractor(self,self.textgetmethod,self.hookselectdialog,pid,hwnd,name_,True,savehook_new[name_])
-                    
+                            print('change')
                 
                 else: 
                     hwnd=self.textsource.hwnd

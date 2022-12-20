@@ -409,6 +409,7 @@ class hookselect(QMainWindow):
          
     def ViewThread(self, index):   
         self.object.textsource.selectinghook=self.save[self.tttable.currentIndex().row()]
+         
         self.textOutput. setPlainText('\n'.join(self.object.textsource.hookdatacollecter[self.save[self.tttable.currentIndex().row()]]))
         self.textOutput. moveCursor(QTextCursor.End)
         self.object.textsource.batchselectinghook=[]
