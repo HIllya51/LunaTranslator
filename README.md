@@ -66,7 +66,6 @@
 <tr><td>辞书-MeCab</td><td><a href="https://github.com/HIllya51/LunaTranslator/releases/download/v1.0/Mecab.zip">Mecab.zip</a></td></tr>
 <tr><td>辞书-小学馆</td><td><a href="https://github.com/HIllya51/LunaTranslator/releases/download/v1.0/xiaoxueguan.db">xiaoxueguan.db</a></td></tr>
 <tr><td>辞书-EDICT</td><td><a href="https://github.com/HIllya51/LunaTranslator/releases/download/v1.0/edict.db">edict.db</a></td></tr>
-
 <tr><td>辞书-EDICT2</td><td><a href="https://github.com/HIllya51/LunaTranslator/releases/download/v1.1.2/edict2">edict2</a></td></tr>
 <tr><td>辞书-JMdict</td><td><a href="https://github.com/HIllya51/LunaTranslator/releases/download/v1.1.2/JMdict.xml">JMdict.xml</a></td></tr>
 <tr><td>辞书-灵格斯词典</td><td><a href="https://github.com/HIllya51/LunaTranslator/releases/download/v1.0/Lingoes.zip">Lingoes.zip</a></td></tr>
@@ -74,6 +73,7 @@
 <tr><td>翻译-金山快译</td><td><a href="https://github.com/HIllya51/LunaTranslator/releases/download/v1.0/FastAIT09_Setup.25269.4101.zip">FastAIT09_Setup.25269.4101.zip</a></td></tr>
 <tr><td>翻译-快译通</td><td><a href="https://github.com/HIllya51/LunaTranslator/releases/download/v1.0/DR.eye.zip">DR.eye.zip</a></td></tr>
 <tr><td>转区-Locale-Emulator</td><td><a href="https://github.com/xupefei/Locale-Emulator/releases/download/v2.5.0.1/Locale.Emulator.2.5.0.1.zip">Locale.Emulator.2.5.0.1.zip</a></td></tr>
+<tr><td>转区-Locale_Remulator</td><td><a href="https://github.com/InWILL/Locale_Remulator/releases/download/v1.4.6/Locale_Remulator.1.4.6.zip">Locale_Remulator.1.4.6.zip</a></td></tr>
 <tr><td>语音-VoiceRoid2</td><td><a href="https://github.com/HIllya51/LunaTranslator/releases/download/v1.0/Yukari2.zip">Yukari2.zip</a></td></tr>
 <tr><td>语音-VOICEVOX</td><td><a href="https://github.com/VOICEVOX/voicevox/releases/download/0.13.3/voicevox-windows-cpu-0.13.3.zip">voicevox-windows-cpu-0.13.3.zip</a></td></tr>
 </table>  
