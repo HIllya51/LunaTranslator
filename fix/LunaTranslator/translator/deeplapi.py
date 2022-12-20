@@ -10,8 +10,7 @@ import re
 from translator.basetranslator import basetrans  
 import json
 class TS(basetrans):  
-    def inittranslator(self):
-        self.session=requests.session()
+     
     def translate(self,query): 
         js=translatorsetting[self.typename]
         if js['args']['DeepL-Auth-Key']=="":

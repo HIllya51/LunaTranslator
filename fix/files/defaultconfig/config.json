@@ -441,6 +441,11 @@
             "color": "#ff0000",
             "name": "谷歌",
 			"lang":{ "zh":"zh-CN","cht":"zh-TW"} 
+        },"googleapi": {
+            "use": false,
+            "color": "#ff0000",
+            "name": "google_api",
+			"lang":{ "zh":"zh-CN","cht":"zh-TW"} 
         },
         "ali": {
             "use": false,
@@ -464,7 +469,7 @@
             "use": false,
             "color": "#95a5ff",
             "name": "谷歌2",
-			"lang":{"zh":"zh-CN"}
+			"lang":{"zh":"zh-CN","cht":"zh-TW"}
         },
         "sougou": {
             "use": false,

@@ -35,6 +35,10 @@
         "args": {
             "key": ""
         }
+    },"googleapi": {
+        "args": { 
+            "key": "" 
+        }
     },
     "huoshanapi": {
         "args": {
