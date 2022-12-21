@@ -433,5 +433,10 @@
     "分词": "Participant",
     "youdao": "YouDao",
     "过滤尖括号<>": "Filtrer les crochets d'angle < >",
-    "竖向OCR识别": "Reconnaissance verticale de la Roc"
+    "竖向OCR识别": "Reconnaissance verticale de la Roc",
+    "谷歌设置": "Paramètres Google",
+    "google_api": "Google API",
+    "google_api设置": "Google Paramètres de l'API",
+    "weblio": "Weblio",
+    "goo": "Bon."
 }

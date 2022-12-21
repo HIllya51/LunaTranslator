@@ -353,6 +353,12 @@
 		"youdao":{
 			"use":true,
 			"name":"youdao"
+		},"weblio":{
+			"use":true,
+			"name":"weblio"
+		},"goo":{
+			"use":true,
+			"name":"goo"
 		}
 	},
     "usesearchword": false,

@@ -433,5 +433,10 @@
     "分词": "분사",
     "youdao": "youdao",
     "过滤尖括号<>": "괄호 필터링 <>",
-    "竖向OCR识别": "세로 OCR 인식"
+    "竖向OCR识别": "세로 OCR 인식",
+    "谷歌设置": "구글 설정",
+    "google_api": "google_api",
+    "google_api设置": "google_api 설정",
+    "weblio": "weblio",
+    "goo": "goo"
 }

@@ -129,9 +129,11 @@ class searchwordW(QMainWindow):
             return 
         
         first=res.split('<hr>')[0]
+     
         self.textbs[k].insertHtml(first)  
         self.textbs[k].firsttext=self.textbs[k].toPlainText()
         self.textbs[k].insertHtml(res[len(first):])  
+        
         scrollbar = self.textbs[k].verticalScrollBar()
         scrollbar.setValue(0)
         self.tab.setTabVisible(self._k.index(k),True)

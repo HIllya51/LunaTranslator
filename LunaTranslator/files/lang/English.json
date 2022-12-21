@@ -433,5 +433,10 @@
     "分词": "participle",
     "youdao": "youdao",
     "过滤尖括号<>": "Filter angle brackets<>",
-    "竖向OCR识别": "Vertical OCR identification"
+    "竖向OCR识别": "Vertical OCR identification",
+    "谷歌设置": "Google Settings",
+    "google_api": "google_ api",
+    "google_api设置": "google_ Api settings",
+    "weblio": "weblio",
+    "goo": "goo"
 }

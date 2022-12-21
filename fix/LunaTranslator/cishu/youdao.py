@@ -31,9 +31,9 @@ class youdao:
             save.append(''.join(asave))
         except:
             print_exc()
-        print(text)
+         
         fnd=re.findall('<div class="each-sense"(.*?)>([\\s\\S]*?)</div></div></div>',text)
-        print(fnd)
+         
         try:
             for _,ares in fnd:
                 asave=[]
