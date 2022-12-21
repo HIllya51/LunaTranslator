@@ -159,6 +159,7 @@ class textractor(basetext  ):
                     output=output[:-1]
             except:
                 pass
+                 
             key =(thread_handle,thread_tp_processId, thread_tp_addr, thread_tp_ctx, thread_tp_ctx2, thread_name,HookCode)
  
             
@@ -236,12 +237,7 @@ class textractor(basetext  ):
             if key==self.selectinghook:
                 self.hookselectdialog.getnewsentencesignal.emit(output)
             self.hookselectdialog.update_item_new_line.emit(key,output)
-             
-    def guessreal(self,line):
-        if len(line)<100 and (re.match('「(.*)」',line) or\
-            re.match('(.*)。',line)):
-            return True
-        return False
+              
     def gettextthread(self ):
             #print(333333)
             paste_str=self.newline.get()

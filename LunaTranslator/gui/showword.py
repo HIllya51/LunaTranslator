@@ -27,6 +27,7 @@ class searchwordW(QMainWindow):
     
     def showresfun(self,k,res):
             first=res.split('<hr>')[0]
+            
             self.textbs[k].insertHtml(first)  
             self.textbs[k].firsttext=self.textbs[k].toPlainText()
             self.textbs[k].insertHtml(res[len(first):])  

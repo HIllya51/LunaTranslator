@@ -40,7 +40,7 @@ class QUnFrameWindow(QWidget):
     displayres =  pyqtSignal(str,str ) 
     displayraw1 =  pyqtSignal(list, str,str,int )  
     displaystatus=pyqtSignal(str) 
-     
+    showhideuisignal=pyqtSignal()
     hookfollowsignal=pyqtSignal(int,tuple)
     toolbarhidedelaysignal=pyqtSignal()
     clickSettin_signal=pyqtSignal()
@@ -58,6 +58,8 @@ class QUnFrameWindow(QWidget):
     hidesignal=pyqtSignal()
     muteprocessignal=pyqtSignal()  
     def hookfollowsignalsolve(self,code,other): 
+        if self._move_drag:
+            return 
         if code==3:
             if self.hideshownotauto:
                 self.show() 
@@ -155,7 +157,9 @@ class QUnFrameWindow(QWidget):
         self.font.setPointSizeF(globalconfig['fontsize']) 
         self.font.setBold(globalconfig['showbold'])
         self.translate_text.setFont(self.font) 
-    def showhideui(self):
+    def showhideui(self): 
+        if self._move_drag:
+            return 
         if self.isHidden():
             self.show_and_enableautohide() 
         else:
@@ -220,7 +224,7 @@ class QUnFrameWindow(QWidget):
         self._padding = 5*self.rate  # 设置边界宽度为5
         self.setMinimumWidth(300)
         self.hideshownotauto=True
-        
+        self.showhideuisignal.connect(self.showhideui)
         self.transhis=gui.transhist.transhist(self)  
         self.hookfollowsignal.connect(self.hookfollowsignalsolve) 
         self.displayres.connect(self.showres)

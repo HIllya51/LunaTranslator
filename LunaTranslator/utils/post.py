@@ -98,7 +98,7 @@ def _4_f(line):
         line=re.sub('</(.*?)>',"*",line)
         return line
 def _6_f(line):
-        line=line.replace('\n','').replace('\r','')
+        line=line.replace('\r','').replace('\n','')
         return line
 def _91_f(line):
         line=re.sub('([0-9]+)','',line)

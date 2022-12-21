@@ -8,7 +8,14 @@ class weblio:
     def search(self,word):
         url='https://www.weblio.jp/content/'+ quote(word)
         x=(requests.get(url).text)
-        
-        xx=re.findall('<div class=kijiWrp>([\\s\\S]*?)<br class=clr>',x)[0]
-        
-        return xx
+        _all=[]
+        _xx=re.findall('<div class=kijiWrp>([\\s\\S]*?)<br class=clr>',x)
+        for xx in _xx:
+            
+            xx=re.sub('<a(.*?)>','',xx)
+            
+            xx=re.sub('</a>','',xx)
+            
+            xx=re.sub('class="(.*?)"','',xx) 
+            _all.append(xx) 
+        return '<br>'.join(_all)

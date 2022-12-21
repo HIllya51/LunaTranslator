@@ -37,7 +37,7 @@ def setTab_quick(self) :
             '_13':lambda: self.object.translation_ui.clickRange_signal.emit(False),
             '_14':self.object.translation_ui.showhide_signal.emit,
             '_15':self.object.translation_ui.bindcropwindow_signal.emit,
-            '_16':self.object.translation_ui.showhideui,
+            '_16':self.object.translation_ui.showhideuisignal.emit,
             '_17':self.object.translation_ui.quitf_signal.emit,
             '_18':lambda:self.object.settin_ui.fontbigsmallsignal.emit(1),
             '_19':lambda:self.object.settin_ui.fontbigsmallsignal.emit(-1),

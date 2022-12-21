@@ -10,4 +10,10 @@ class goo:
         x=(requests.get(url).text)
         xx=re.findall('<section>([\\s\\S]*?)</section>',x) 
          
-        return ''.join(xx)
+        xx=''.join(xx)
+        xx=re.sub('<h1>([\\s\\S]*?)</h1>','',xx)
+        xx=re.sub('<a([\\s\\S]*?)>','',xx)
+         
+        xx=re.sub('</a>','',xx)
+        
+        return xx

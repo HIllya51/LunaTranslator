@@ -60,7 +60,7 @@ def mutithreaddownload(savep,url,progresscallback,internalsignal,endcallback):
                             pos += 1024 
                 
                 lock = Lock() 
-                thread_num = 8
+                thread_num =4
                 
                 ts=[]
                 for i in range(thread_num):
