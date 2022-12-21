@@ -433,5 +433,10 @@
     "分词": "Participio",
     "youdao": "Youdao",
     "过滤尖括号<>": "Soporte puntiagudo de filtro < >",
-    "竖向OCR识别": "Identificación vertical OCR"
+    "竖向OCR识别": "Identificación vertical OCR",
+    "谷歌设置": "Configuración de Google",
+    "google_api": "Google API",
+    "google_api设置": "Google Configuración de la API",
+    "weblio": "Weblio",
+    "goo": "Bueno"
 }
