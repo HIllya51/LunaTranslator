@@ -34,6 +34,7 @@ import pyperclip
 from utils.getpidlist import getpidexe,ListProcess
  
 import gui.translatorUI
+from queue import Queue
   
 import importlib
 from functools import partial  
@@ -336,8 +337,29 @@ class MAINUI(QObject) :
                     print_exc()
                     return
                 
-                _=aclass()
-                
+                #_=aclass()
+                class cishuwrapper:
+                    def __init__(self,_type) -> None:
+                        self._=_type()
+                        self.queue=Queue()
+                        threading.Thread(target=self.monitor).start()
+                    def search(self,sentence):
+                         
+                        self.queue.put(sentence)
+                    def monitor(self):
+                        while True:
+                            s=self.queue.get() 
+                             
+                            try:
+                                res=self._.search(s)
+                            except:
+                                print_exc()
+                                continue
+                            if res is None or res=='':  
+                                continue
+                             
+                            self.callback(res)
+                _=cishuwrapper(aclass)
                 self.cishus[type_]=_ 
     def _maybeyrengong(self,classname,contentraw,_):
         

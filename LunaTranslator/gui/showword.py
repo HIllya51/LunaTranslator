@@ -3,15 +3,17 @@ from re import search
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QWidget,QHBoxLayout,QMainWindow,QFrame,QVBoxLayout,QComboBox,QPlainTextEdit,QTextBrowser,QLineEdit,QPushButton,QTabWidget,QMenu,QAction
 from PyQt5.QtGui import QFont,QTextCursor
-from PyQt5.QtCore import Qt,pyqtSignal
+from PyQt5.QtCore import Qt,pyqtSignal,QThread
 import qtawesome,functools,json
 import threading 
+from queue import Queue
 from utils.config import globalconfig
 from traceback import print_exc
 from utils.config import globalconfig ,_TR,_TRL
 class searchwordW(QMainWindow): 
     getnewsentencesignal=pyqtSignal(str) 
     searchthreadsignal=pyqtSignal(str,dict,tuple)
+    showsignal=pyqtSignal(str,str)
     def __init__(self,p):
         super(searchwordW, self).__init__(p)
         self.setupUi() 
@@ -21,13 +23,26 @@ class searchwordW(QMainWindow):
         self.p=p
     def closeEvent(self, event) :  
         self.hide()
+     
+    
+    def showresfun(self,k,res):
+            first=res.split('<hr>')[0]
+            self.textbs[k].insertHtml(first)  
+            self.textbs[k].firsttext=self.textbs[k].toPlainText()
+            self.textbs[k].insertHtml(res[len(first):])  
+            
+            scrollbar = self.textbs[k].verticalScrollBar()
+            scrollbar.setValue(0)
+            self.tab.setTabVisible(self._k.index(k),True)
     def setupUi(self):
         self.setWindowIcon(qtawesome.icon("fa.search"  ))
         font = QFont()
+         
+        self.showsignal.connect(self.showresfun)
         #font.setFamily("Arial Unicode MS")
         font.setFamily(globalconfig['fonttype'])
         font.setPointSize(10)
-        self.setGeometry(0,0,400,500)
+        self.setGeometry(0,0,500,500)
         self.centralWidget = QWidget(self) 
         self.setWindowIcon(qtawesome.icon("fa.gear" ))
         self.hboxlayout = QHBoxLayout(self.centralWidget)  
@@ -68,6 +83,7 @@ class searchwordW(QMainWindow):
             textOutput.setContextMenuPolicy(Qt.CustomContextMenu)
             textOutput.setUndoRedoEnabled(False)
             textOutput.setReadOnly(True)
+            textOutput.setOpenLinks(False)
             self.tab.addTab(textOutput,_name[i])
             self.textbs[self._k[i]]=(textOutput)
             
@@ -77,6 +93,7 @@ class searchwordW(QMainWindow):
             textOutput.customContextMenuRequested.connect(functools.partial( self.showmenu ,i,textOutput) )
         self.hiding=True
         self.searchthreadsignal.connect(self.searchthread)
+ 
     def showmenu(self,ii,to:QTextBrowser,p):  
         menu=QMenu(self ) 
         save=QAction(_TR("保存"))  
@@ -118,25 +135,11 @@ class searchwordW(QMainWindow):
         self.search(sentence)
 
     def searchthread(self,k,_mp,sentence):
-        self.textbs[k].clear()
-        self.tab.setTabVisible(self._k.index(k),False)
-        try:
-            res=_mp[k].search(sentence if k=='MeCab' else sentence[0]) 
-        except:
-            print_exc()
-            return 
-        if res is None or res=='':  
-            return 
         
-        first=res.split('<hr>')[0]
-     
-        self.textbs[k].insertHtml(first)  
-        self.textbs[k].firsttext=self.textbs[k].toPlainText()
-        self.textbs[k].insertHtml(res[len(first):])  
+        _mp[k].callback=functools.partial(self.showsignal.emit,k)
+        _mp[k].search(sentence if k=='MeCab' else sentence[0]) 
         
-        scrollbar = self.textbs[k].verticalScrollBar()
-        scrollbar.setValue(0)
-        self.tab.setTabVisible(self._k.index(k),True)
+    
     def search(self,sentence):
         if  sentence[0]=='':
             return
@@ -145,8 +148,8 @@ class searchwordW(QMainWindow):
         _mp.update(self.p.object.cishus)
          
         for k in self._k : 
-            if k not in _mp:
-                self.tab.setTabVisible(self._k.index(k),False)
-            else:
+            self.tab.setTabVisible(self._k.index(k),False)
+            self.textbs[k].clear()
+            if k  in _mp:                 
                 threading.Thread(target=self.searchthreadsignal.emit,args=(k,_mp,sentence)).start()
  
