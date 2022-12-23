@@ -1,13 +1,31 @@
 {
     "C:\\dataH\\CHRONOCLOCK\\cmvs32.exe": [
         [
-            "3",
-            "1650",
+            "2",
+            "25D8",
             "44F123",
             "19FC74",
             "0",
-            "CMVS2",
+            "UserHook2",
             "HAC@4F123:cmvs32.exe"
+        ],
+        [
+            "3",
+            "25D8",
+            "7644D550",
+            "44F199",
+            "0",
+            "UserHook1",
+            "HA8@0:gdi32.dll:GetGlyphOutlineA"
+        ],
+        [
+            "4",
+            "25D8",
+            "7644D550",
+            "44F1EB",
+            "0",
+            "UserHook1",
+            "HA8@0:gdi32.dll:GetGlyphOutlineA"
         ]
     ],
     "C:\\dataH\\CHRONOCLOCK\\cmvs32c2.exe": [

@@ -129,7 +129,7 @@ class textractor(basetext  ):
         #print(stdout)
         #print(stdout)
         reres=[]
-      
+        
         while True:
             ss=self.re.search(stdout)
             if ss is None:
@@ -140,7 +140,7 @@ class textractor(basetext  ):
             reres.append(list(ares))
             stdout=ares[-1]
         #reres=self.re.findall(stdout) #re.findall('\[([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):(.*):(.*@.*)\] (.*)\n',stdout)
-         
+        newline=[]
         for ares in reres:
             
             thread_handle,thread_tp_processId, thread_tp_addr, thread_tp_ctx, thread_tp_ctx2, thread_name,HookCode,output =ares
@@ -208,11 +208,12 @@ class textractor(basetext  ):
             
             #print(key,self.selectedhook,output)
             self.hookdatacollecter[key].append(output) 
+
+            
             if (key in self.selectedhook):
-                #print(11)
-                #print(key==self.selectedhook,key,self.selectedhook)
-                self.newline.put(output) 
-                self.runonce_line=output
+                newline.append(output)
+                #self.newline.put(output) 
+                 
             else:
                 if globalconfig['remove_useless_hook']:
                     hookcodes=[_[-1] for _ in self.selectedhook]+[_[-1] for _ in self.autostarthookcode]
@@ -237,7 +238,11 @@ class textractor(basetext  ):
             if key==self.selectinghook:
                 self.hookselectdialog.getnewsentencesignal.emit(output)
             self.hookselectdialog.update_item_new_line.emit(key,output)
-              
+        
+        if len(newline):
+            real='\n'.join(newline)
+            self.newline.put(real) 
+            self.runonce_line=real
     def gettextthread(self ):
             #print(333333)
             paste_str=self.newline.get()

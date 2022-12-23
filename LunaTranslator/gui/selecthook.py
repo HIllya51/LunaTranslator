@@ -415,10 +415,11 @@ class hookselect(QMainWindow):
         self.object.textsource.batchselectinghook=[]
 
         dedup=[]
+        
         for m in (self.tttable.selectionModel().selectedIndexes()):
             row=m.row() 
             if row in dedup:
                 continue
             self.object.textsource.batchselectinghook+=[self.save[row]]
             dedup.append(row)
-      
+            
