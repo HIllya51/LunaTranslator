@@ -141,6 +141,7 @@ class textractor(basetext  ):
             stdout=ares[-1]
         #reres=self.re.findall(stdout) #re.findall('\[([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):(.*):(.*@.*)\] (.*)\n',stdout)
         newline=[]
+        linekey=[]
         for ares in reres:
             
             thread_handle,thread_tp_processId, thread_tp_addr, thread_tp_ctx, thread_tp_ctx2, thread_name,HookCode,output =ares
@@ -213,7 +214,7 @@ class textractor(basetext  ):
             if (key in self.selectedhook):
                 newline.append(output)
                 #self.newline.put(output) 
-                 
+                linekey.append(key)
             else:
                 if globalconfig['remove_useless_hook']:
                     hookcodes=[_[-1] for _ in self.selectedhook]+[_[-1] for _ in self.autostarthookcode]
@@ -238,8 +239,11 @@ class textractor(basetext  ):
             if key==self.selectinghook:
                 self.hookselectdialog.getnewsentencesignal.emit(output)
             self.hookselectdialog.update_item_new_line.emit(key,output)
-        
+         
         if len(newline):
+             
+            newline_copy=newline.copy()
+            newline.sort(key=lambda x: self.selectedhook.index(linekey[newline_copy.index(x)])  )
             real='\n'.join(newline)
             self.newline.put(real) 
             self.runonce_line=real
