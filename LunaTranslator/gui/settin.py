@@ -109,7 +109,7 @@ class Settin(QMainWindow) :
             setattr(self,name,s)
         return s
     def getsimpleswitch(self,d,key,enable=True,callback=None,name=None):
-        b=MySwitch(sign=d[key],enable=enable)
+        b=MySwitch(self.rate,sign=d[key],enable=enable)
         if callback:
             b.clicked.connect( callback )
         else:
@@ -122,7 +122,9 @@ class Settin(QMainWindow) :
 
         b=QPushButton(qtawesome.icon(icon, color=constcolor if constcolor else d[key]), ""  )
         b.setEnabled(enable)
-        self.customSetIconSize(b, 20, 20)  
+         
+        b.setIconSize(QSize(int(20*self.rate),
+                                 int(20*self.rate)))
         b.setStyleSheet("background: transparent;") 
         b.clicked.connect(  callback)  
         if name:
@@ -230,16 +232,8 @@ background-color:transparent;
         masklabel.setGeometry(0,0,2000,2000)
         masklabel.setStyleSheet("color:white;background-color:white;")
         return  lay,t
-    # 根据分辨率定义控件位置尺寸
-    def customSetGeometry(self, object, x, y, w, h) :
-
-        object.setGeometry(QRect(int(x*self.rate),
-                                 int(y*self.rate), int(w*self.rate),
-                                 int(h*self.rate)))
- 
-    def customSetIconSize(self, object, w, h) : 
-        object.setIconSize(QSize(int(w * self.rate),
-                                 int(h * self.rate))) 
+     
+  
     def closeEvent(self, event) : 
         self.hide()
     def ChangeTranslateColor(self, translate_type,button,item=None,name=None) :

@@ -57,7 +57,7 @@ def autoinitdialog(object,title,width,lines):
         elif line['t']=='switch':
             dd=line['d']
             key=line['k'] 
-            b=MySwitch(sign=dd[key] ) 
+            b=MySwitch(object.rate,sign=dd[key] ) 
             b.clicked.connect( functools.partial(dd.__setitem__,key))
             formLayout.addRow((_TR(line['l'])),b) 
         elif line['t']=='combo':
@@ -116,7 +116,7 @@ def multicolorset(object ):
          
         hori.addWidget(l)
         
-        b=MySwitch(sign=globalconfig['cixingcolorshow'][k] ) 
+        b=MySwitch(object.rate,sign=globalconfig['cixingcolorshow'][k] ) 
         b.clicked.connect(lambda x:globalconfig['cixingcolorshow'].__setitem__(k,x))
          
      

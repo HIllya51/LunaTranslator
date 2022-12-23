@@ -536,10 +536,12 @@ class MAINUI(QObject) :
         self.startxiaoxueguan()
 if __name__ == "__main__" :
     
-    QCoreApplication.setAttribute(Qt.AA_UseHighDpiPixmaps, True)
+    
     
     
     screen_scale_rate = utils.screen_rate.getScreenRate()  
+     
+    QCoreApplication.setAttribute(Qt.AA_UseHighDpiPixmaps, True)
     app = QApplication(sys.argv) 
     app.setQuitOnLastWindowClosed(False)
     if  globalconfig['language_setted']==False:
@@ -550,6 +552,7 @@ if __name__ == "__main__" :
         globalconfig['languageuse']=x.current
         setlanguage()
     main = MAINUI() 
+    
     main.screen_scale_rate =screen_scale_rate
     main.timestamp=sys.argv[1]
     main.scrollwidth=(app.style().pixelMetric(QStyle.PM_ScrollBarExtent))

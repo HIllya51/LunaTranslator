@@ -10,9 +10,11 @@ def checkchaos(text ):
             except:
                 pass
         return chaos
+import codecs
 def checkencoding(code):
+     
     try:
-        ''.encode(code)
+        codecs.lookup(code)
         return True
     except LookupError:
         return False
