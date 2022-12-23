@@ -22,7 +22,7 @@ import utils.screen_rate
 from utils.wrapper import threader 
 from gui.rangeselect    import rangeadjust
 from  gui.settin   import Settin
-
+from utils.getpidlist import getwindowlist
 from utils.subproc import subproc
 from tts.windowstts import tts  as windowstts
 from tts.huoshantts import tts as huoshantts
@@ -444,12 +444,15 @@ class MAINUI(QObject) :
                     _.object=self
                     _.show=partial(self._maybeyrengong,classname)
                     self.translators[classname]=_ 
-     
+      
+
     def onwindowloadautohook(self):
         if not(globalconfig['autostarthook'] and globalconfig['sourcestatus']['textractor']):
             return 
         else:
             try:
+                plist=getwindowlist()
+                
                 if 'textsource' not in dir(self) or self.textsource is None:
                  
             
@@ -465,14 +468,22 @@ class MAINUI(QObject) :
             
                             self.hookselectdialog.changeprocessclearsignal.emit() 
                             self.textsource=textractor(self,self.textgetmethod,self.hookselectdialog,pid,hwnd,name_,True,savehook_new[name_])
-                            print('change')
+                            
                 
                 else: 
-                    hwnd=self.textsource.hwnd
-                    if win32process.GetWindowThreadProcessId(hwnd)[0]==0:
-                        hwnd=win32gui.GetForegroundWindow()
-                        if win32process.GetWindowThreadProcessId(hwnd)[1]==self.textsource.pid:
-                            self.textsource.hwnd=hwnd
+                    if self.textsource.pid not in plist:
+                            try:
+                                self.textsource.end()  
+                            except:
+                                print_exc()
+                            self.textsource=None 
+                            
+                    else:
+                        hwnd=self.textsource.hwnd
+                        if win32process.GetWindowThreadProcessId(hwnd)[0]==0:
+                            hwnd=win32gui.GetForegroundWindow()
+                            if win32process.GetWindowThreadProcessId(hwnd)[1]==self.textsource.pid:
+                                self.textsource.hwnd=hwnd
             except:
                         print_exc()
     def setontopthread(self):

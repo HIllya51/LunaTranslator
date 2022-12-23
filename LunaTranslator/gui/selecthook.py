@@ -377,11 +377,13 @@ class hookselect(QMainWindow):
             savehook_new[self.object.textsource.pname]=self.object.textsource.selectedhook 
             savehook_new2[self.object.textsource.pname]={}
             savehook_new2[self.object.textsource.pname]['leuse']=True
-            try:
-                title=win32gui.GetWindowText(self.object.textsource.hwnd)
-            except:
-                title=''
-            savehook_new2[self.object.textsource.pname]['title']=title
+            
+            if savehook_new2[self.object.textsource.pname]['title']=='':
+                try:
+                    title=win32gui.GetWindowText(self.object.textsource.hwnd)
+                except:
+                    title=''
+                savehook_new2[self.object.textsource.pname]['title']=title
         except:
             print_exc()
         #self.object.settin_ui.show()

@@ -77,6 +77,7 @@ class textractor(basetext  ):
 
         super(textractor,self).__init__(textgetmethod)
     def autostartinsert(self):
+        dumpling=[]
         for _h in self.autostarthookcode:
             ready=False
             for _hh in self.hookdatacollecter:
@@ -84,10 +85,15 @@ class textractor(basetext  ):
                     ready=True
                     break
             if ready==False:
+                    if _h[-1] in dumpling:
+                        continue
+                    else:
+                        dumpling.append(_h[-1])
                     x=subprocess.run(f'./files/hookcodecheck.exe {_h[-1]}',stdout=subprocess.PIPE)
                     if(x.stdout[0]==ord('0')):
                         continue
                     self.inserthook(_h[-1])
+                     
         #self.autostarttimeout.stop()
     def setdelay(self):
         delay=globalconfig['textthreaddelay']

@@ -19,6 +19,17 @@
             "HAC@4F123:cmvs32.exe"
         ]
     ],
+    "C:\\dataH\\CHRONOCLOCK\\cmvs64.exe": [
+        [
+            "38",
+            "50E4",
+            "7FFAF256AAB0",
+            "14005BB6E",
+            "0",
+            "lstrlenA",
+            "HS-1C@0:kernel32.dll:lstrlenA"
+        ]
+    ],
     "C:\\dataH\\CHRONOCLOCK\\cmvs32c2.exe": [
         [
             "5",
@@ -28,17 +39,6 @@
             "0",
             "CMVS2",
             "HAC@4F123:cmvs32c2.exe"
-        ]
-    ],
-    "C:\\dataH\\CHRONOCLOCK\\cmvs64.exe": [
-        [
-            "35",
-            "63E0",
-            "7FF9053FE300",
-            "14005BB8B",
-            "0",
-            "lstrcpyA",
-            "HS-24@0:kernel32.dll:lstrcpyA"
         ]
     ],
     "C:\\dataH\\雪夜\\SiglusEngine_CHS.exe": [

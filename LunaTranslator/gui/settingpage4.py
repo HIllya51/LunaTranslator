@@ -300,14 +300,7 @@ def minmaxmoveobservefunc(self):
                       
                      if pid==self_pid:
                             self.object.translation_ui.hookfollowsignal.emit(3,(0,0))  
-                     plist=getwindowlist()
-                     if self.object.textsource.pid not in plist:
-                            try:
-                                self.object.textsource.end()  
-                            except:
-                                print_exc()
-                            self.object.textsource=None
-                            continue
+                     
                      if pid==self.object.textsource.pid: 
                         if action==1 and globalconfig['movefollow']:
                                 self.movestart=[x1,y1,x2,y2]
@@ -340,12 +333,7 @@ def minmaxmoveobservefunc(self):
                                                 continue
                                 except:
                                         pass
-                                plist=getwindowlist()
-                                if self.object.textsource.pid not in plist:
-                                        #print('game exit') 
-                                        self.object.textsource=None
-                                else:
-                                        self.object.translation_ui.hookfollowsignal.emit(4,(0,0)) 
+                                self.object.translation_ui.hookfollowsignal.emit(4,(0,0)) 
                 except:
                   #print_exc()
                   pass
