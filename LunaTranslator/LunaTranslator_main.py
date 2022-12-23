@@ -178,66 +178,82 @@ class MAINUI(QObject) :
             for key in transerrorfixdictconfig['dict']:
                 res=res.replace(key,transerrorfixdictconfig['dict'][key])
         return res
-    def textgetmethod(self,paste_str,shortlongskip=True):
-        if paste_str=='':
-            return 
-        if paste_str[:len('<notrans>')]=='<notrans>':
-            self.translation_ui.displayraw1.emit([],paste_str[len('<notrans>'):],globalconfig['rawtextcolor'],1)
-            return 
-        if paste_str=='':
-            return
-        if len(paste_str)>100000:
-            return 
 
-        t1=time.time()
+    
+    def textgetmethod(self,paste_str,shortlongskip=True):
+        if type(paste_str)==str:
+            if paste_str[:len('<notrans>')]=='<notrans>':
+                self.translation_ui.displayraw1.emit([],paste_str[len('<notrans>'):],globalconfig['rawtextcolor'],1)
+                return 
+        
+        if type(paste_str)==list:
+            _paste_str='\n'.join(paste_str)
+        else:
+            _paste_str=paste_str
+        if _paste_str=='':
+            return  
+        if _paste_str=='':
+            return
+        if len(_paste_str)>100000:
+            return 
+ 
          
         try:
-            paste_str=POSTSOLVE(paste_str)
+            if type(paste_str)==list:
+                paste_str=[POSTSOLVE(_) for _ in paste_str] 
+            else:
+                paste_str=POSTSOLVE(paste_str)
         except:
             print_exc() 
-        if len(paste_str)>10000:
+        
+        if type(paste_str)==list:
+            _paste_str='\n'.join(paste_str)
+        else:
+            _paste_str=paste_str
+         
+        if len(_paste_str)>10000:
             return 
         if globalconfig['outputtopasteboard'] and globalconfig['sourcestatus']['copy']==False:
-            pyperclip.copy(paste_str) 
+            pyperclip.copy(_paste_str) 
 
-        self.translation_ui.original=paste_str 
+        self.translation_ui.original=_paste_str 
         if 'hira_' in dir(self):
-                hira=self.hira_.fy(paste_str)
+                hira=self.hira_.fy(_paste_str)
         else:
             hira=[]
         if globalconfig['isshowhira'] and globalconfig['isshowrawtext']:
               
-            self.translation_ui.displayraw1.emit(hira,paste_str,globalconfig['rawtextcolor'],2)
+            self.translation_ui.displayraw1.emit(hira,_paste_str,globalconfig['rawtextcolor'],2)
         elif globalconfig['isshowrawtext']:
-            self.translation_ui.displayraw1.emit(hira,paste_str,globalconfig['rawtextcolor'],1)
+            self.translation_ui.displayraw1.emit(hira,_paste_str,globalconfig['rawtextcolor'],1)
         else:
-            self.translation_ui.displayraw1.emit(hira,paste_str,globalconfig['rawtextcolor'],0)
+            self.translation_ui.displayraw1.emit(hira,_paste_str,globalconfig['rawtextcolor'],0)
         try:
             if globalconfig['autoread']:
-                self.reader.read(paste_str)
+                self.reader.read(_paste_str)
         except:
             pass
             
         skip=False 
-        paste_str_solve= self.solvebeforetrans(paste_str) 
+        paste_str_solve= self.solvebeforetrans(_paste_str) 
         if shortlongskip and  (len(paste_str_solve[0])<globalconfig['minlength'] or len(paste_str_solve[0])>globalconfig['maxlength'] ):
             skip=True  
-        if (set(paste_str) -set('「…」、。？！―'))==set():
+        if (set(_paste_str) -set('「…」、。？！―'))==set():
             skip=True 
              
         for engine in self.translators:
             #print(engine)
-            self.translators[engine].gettask((paste_str,paste_str_solve,skip)) 
+            self.translators[engine].gettask((_paste_str,paste_str_solve,skip)) 
         
         try:
             if skip==False and globalconfig['transkiroku']  and 'sqlwrite2' in dir(self.textsource):
-                paste_str=paste_str.replace('"','""')   
+                _paste_str=_paste_str.replace('"','""')   
                 # ret=self.textsource.sqlwrite.execute(f'SELECT * FROM artificialtrans WHERE source = "{paste_str}"').fetchone()
                 # if ret is  None:                     
                 #     self.textsource.sqlwrite.execute(f'INSERT INTO artificialtrans VALUES(NULL,"{paste_str}","","");')
-                ret=self.textsource.sqlwrite2.execute(f'SELECT * FROM artificialtrans WHERE source = "{paste_str}"').fetchone()
+                ret=self.textsource.sqlwrite2.execute(f'SELECT * FROM artificialtrans WHERE source = "{_paste_str}"').fetchone()
                 if ret is  None:                     
-                    self.textsource.sqlwrite2.execute(f'INSERT INTO artificialtrans VALUES(NULL,"{paste_str}","{json.dumps({})}");')
+                    self.textsource.sqlwrite2.execute(f'INSERT INTO artificialtrans VALUES(NULL,"{_paste_str}","{json.dumps({})}");')
         except:
             print_exc()
          

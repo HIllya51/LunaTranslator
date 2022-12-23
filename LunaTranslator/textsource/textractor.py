@@ -244,9 +244,11 @@ class textractor(basetext  ):
              
             newline_copy=newline.copy()
             newline.sort(key=lambda x: self.selectedhook.index(linekey[newline_copy.index(x)])  )
-            real='\n'.join(newline)
-            self.newline.put(real) 
-            self.runonce_line=real
+            #real='\n'.join(newline)
+            #self.newline.put(real) 
+            #self.runonce_line=real
+            self.newline.put(newline) 
+            self.runonce_line=newline
     def gettextthread(self ):
             #print(333333)
             paste_str=self.newline.get()
