@@ -368,6 +368,7 @@ class MAINUI(QObject) :
                              
                             try:
                                 res=self._.search(s)
+                                 
                             except:
                                 print_exc()
                                 continue
