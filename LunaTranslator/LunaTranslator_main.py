@@ -30,7 +30,7 @@ from tts.azuretts import tts as azuretts
 from tts.voiceroid2 import tts as voiceroid2
 from tts.voicevox import tts as voicevox
 import  gui.selecthook   
-import pyperclip
+import pyperclip,psutil
 from utils.getpidlist import getpidexe,ListProcess
  
 import gui.translatorUI
@@ -465,10 +465,10 @@ class MAINUI(QObject) :
             return 
         else:
             try:
-                plist=getprocesslist()#getwindowlist()
+                
                 
                 if 'textsource' not in dir(self) or self.textsource is None:
-                 
+                         
             
                
                         hwnd=win32gui.GetForegroundWindow()
@@ -489,7 +489,7 @@ class MAINUI(QObject) :
                             
                 
                 else: 
-                    if self.textsource.pid not in plist:
+                    if psutil.pid_exists(self.textsource.pid)==False:
                             try:
                                 self.textsource.end()  
                                  
