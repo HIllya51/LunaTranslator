@@ -63,6 +63,9 @@ class MAINUI(QObject) :
         self.vnrshareddict={}
         self.vnrshareddict_pre={}
         self.vnrshareddict_post={}
+        self.sorted_vnrshareddict=[]
+        self.sorted_vnrshareddict_pre=[]
+        self.sorted_vnrshareddict_post=[]
         self.vnrsharedreg=[]
         
         if globalconfig['gongxiangcishu']['use'] and os.path.exists(globalconfig['gongxiangcishu']['path']) :
@@ -111,6 +114,16 @@ class MAINUI(QObject) :
                 except:
                     pass
                   
+            keys=list(self.vnrshareddict.keys())
+            keys.sort(key=lambda key:len(key),reverse=True)
+            self.sorted_vnrshareddict=[(key,self.vnrshareddict[key]) for key in keys]
+            keys=list(self.vnrshareddict_pre.keys())
+            keys.sort(key=lambda key:len(key),reverse=True)
+            self.sorted_vnrshareddict_pre=[(key,self.vnrshareddict_pre[key]) for key in keys]
+            keys=list(self.vnrshareddict_post.keys())
+            keys.sort(key=lambda key:len(key),reverse=True)
+            self.sorted_vnrshareddict_post=[(key,self.vnrshareddict_post[key]) for key in keys]
+                  
         #print(cnt1,cnt2,regcnt,cnt,sim,skip)
         # print(len(list(self.vnrsharedreg)))
         # print(len(list(self.vnrshareddict.keys())))
@@ -139,21 +152,21 @@ class MAINUI(QObject) :
                     mp1[xx]=key
                     zhanweifu+=1
         if globalconfig['gongxiangcishu']['use']:
-            for key in self.vnrshareddict_pre:
+            for key,value in self.sorted_vnrshareddict_pre:
                 
                 if key in content:
-                    content=content.replace(key,self.vnrshareddict_pre[key]['text']) 
-            for key in self.vnrshareddict:
+                    content=content.replace(key,value['text']) 
+            for key,value in self.sorted_vnrshareddict:
                 
                 if key in content:
                     # print(key)
                     # if self.vnrshareddict[key]['src']==self.vnrshareddict[key]['tgt']:
                     #     content=content.replace(key,self.vnrshareddict[key]['text'])
                     # else:
-                        xx=f'ZX{chr(ord("B")+zhanweifu)}Z'
-                        content=content.replace(key,xx)
-                        mp2[xx]=key
-                        zhanweifu+=1
+                    xx=f'ZX{chr(ord("B")+zhanweifu)}Z'
+                    content=content.replace(key,xx)
+                    mp2[xx]=key
+                    zhanweifu+=1
         
         return content,(mp1,mp2,mp3)
     def solveaftertrans(self,res,mp): 
@@ -171,9 +184,9 @@ class MAINUI(QObject) :
             for key in mp2: 
                 reg=re.compile(re.escape(key), re.IGNORECASE)
                 res=reg.sub(self.vnrshareddict[mp2[key]]['text'],res)
-            for key in self.vnrshareddict_post: 
+            for key,value in self.sorted_vnrshareddict_post: 
                 if key in res:
-                    res=res.replace(key,self.vnrshareddict_post[key]['text']) 
+                    res=res.replace(key,value['text']) 
         if transerrorfixdictconfig['use']:
             for key in transerrorfixdictconfig['dict']:
                 res=res.replace(key,transerrorfixdictconfig['dict'][key])
