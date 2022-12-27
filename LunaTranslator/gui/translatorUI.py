@@ -62,10 +62,10 @@ class QUnFrameWindow(QWidget):
             return 
         if code==3:
             if self.hideshownotauto:
-                self.show() 
+                self.show_()
         elif code==4:
             if self.hideshownotauto:
-                self.hide() 
+                self.hide_()
         elif code==5:
             #print(self.pos())
             #self.move(self.pos() + self._endPos)
@@ -130,8 +130,10 @@ class QUnFrameWindow(QWidget):
         
         if globalconfig['autodisappear']:
             if self.hideshownotauto:
-                if self.isHidden():
-                    self.show() 
+                flag=(self.showintab and self.isMinimized()) or (not self.showintab and self.isHidden())
+        
+                if flag:
+                    self.show_()
             self.lastrefreshtime=time.time()
             self.autohidestart=True
     def autohidedelaythread(self):
@@ -160,7 +162,10 @@ class QUnFrameWindow(QWidget):
     def showhideui(self): 
         if self._move_drag:
             return 
-        if self.isHidden():
+         
+        flag=(self.showintab and self.isMinimized()) or (not self.showintab and self.isHidden())
+        
+        if flag:
             self.show_and_enableautohide() 
         else:
             self.hide_and_disableautohide()
@@ -171,12 +176,11 @@ class QUnFrameWindow(QWidget):
                  
     def hide_and_disableautohide(self):
         self.hideshownotauto=False
-        self.hide()
-         
+        self.hide_()
     def show_and_enableautohide(self):
         self.hideshownotauto=True
         win32gui.SetForegroundWindow(self.winId() )   
-        self.show()
+        self.show_()
      
     def refreshtoolicon(self):
         icon=[
@@ -203,6 +207,17 @@ class QUnFrameWindow(QWidget):
         ]
         for i in range(len(self.buttons)):
             self.buttons[i].setIcon(icon[i])
+    def hide_(self):
+        if self.showintab:
+        
+            win32gui.ShowWindow(self.winId(),win32con.SW_SHOWMINIMIZED )
+        else:
+            self.hide()
+    def show_(self):
+        if self.showintab:
+            win32gui.ShowWindow(self.winId(),win32con.SW_SHOWNORMAL )
+        else:
+            self.show()
     def __init__(self, object):
         
         super(QUnFrameWindow, self).__init__(
@@ -212,8 +227,8 @@ class QUnFrameWindow(QWidget):
         
         self.setAttribute(Qt.WA_TranslucentBackground) 
         self.setAttribute(Qt.WA_ShowWithoutActivating,True)
- 
-        self.hidesignal.connect(self.hide)
+        self.showintab=  globalconfig['showintab']
+        self.hidesignal.connect(self.hide_)
         self.object = object
         self.lastrefreshtime=time.time()
         self.autohidestart=False
