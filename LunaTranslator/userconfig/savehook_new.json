@@ -2,32 +2,12 @@
     "C:\\dataH\\CHRONOCLOCK\\cmvs32.exe": [
         [
             "4",
-            "4944",
-            "44F123",
-            "19FCC4",
-            "0",
-            "UserHook1",
-            "HAC@4F123:cmvs32.exe"
-        ],
-        [
-            "5",
-            "4944",
+            "D50",
             "44F123",
             "19FC74",
             "0",
-            "UserHook1",
+            "CMVS2",
             "HAC@4F123:cmvs32.exe"
-        ]
-    ],
-    "C:\\dataH\\CHRONOCLOCK\\cmvs64.exe": [
-        [
-            "38",
-            "50E4",
-            "7FFAF256AAB0",
-            "14005BB6E",
-            "0",
-            "lstrlenA",
-            "HS-1C@0:kernel32.dll:lstrlenA"
         ]
     ],
     "C:\\dataH\\CHRONOCLOCK\\cmvs32c2.exe": [
@@ -41,6 +21,28 @@
             "HAC@4F123:cmvs32c2.exe"
         ]
     ],
+    "C:\\Users\\11737\\Downloads\\The Counterwar of Queen Ilyss Ver.1.06\\Game.exe": [
+        [
+            "2",
+            "2CDC",
+            "E1FC50",
+            "2022DFF",
+            "0",
+            "JavaScript",
+            "HQX-8@22FC50:Game.exe"
+        ]
+    ],
+    "C:\\dataH\\CHRONOCLOCK\\cmvs64.exe": [
+        [
+            "38",
+            "50E4",
+            "7FFAF256AAB0",
+            "14005BB6E",
+            "0",
+            "lstrlenA",
+            "HS-1C@0:kernel32.dll:lstrlenA"
+        ]
+    ],
     "C:\\dataH\\雪夜\\SiglusEngine_CHS.exe": [
         [
             "B",
@@ -50,40 +52,6 @@
             "0",
             "SiglusEngine3",
             "HW-4@15D2DC:SiglusEngine_CHS.exe"
-        ]
-    ],
-    "C:\\dataH\\俺たちに翼はない\\ORE_TUBA.EXE": [
-        [
-            "8",
-            "2D98",
-            "75285180",
-            "44C6C6",
-            "944FDFC",
-            "Lucifen:HS8",
-            "-14@5180:GDI32.dll"
-        ]
-    ],
-    "C:\\dataH\\LunaTranslator\\LunaTranslator_no_Admin.exe": [],
-    "C:\\dataH\\Please Be Happy\\Please Be Happy.exe": [
-        [
-            "3",
-            "568",
-            "177CF42C820",
-            "177D2535043",
-            "0",
-            "TextMeshProUGUI_set_text",
-            "HQX14+-24@177CF42C820"
-        ]
-    ],
-    "C:\\Users\\11737\\Downloads\\サメと生きる七日間\\サメと生きる七日間.exe": [
-        [
-            "2",
-            "476C",
-            "632B90",
-            "634CB2",
-            "2D",
-            "KiriKiriZ:HW-8*14",
-            "-8*0@172B90:サメと生きる七日間.exe"
         ]
     ]
 }

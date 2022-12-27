@@ -350,6 +350,10 @@
 			"use": true,
 			"path": "","name":"灵格斯词典","filter":"","isdir":true
 		},
+        "mojidict":{
+            "use":true,
+            "name":"Moji辞书"
+        },
 		"youdao":{
 			"use":true,
 			"name":"youdao"

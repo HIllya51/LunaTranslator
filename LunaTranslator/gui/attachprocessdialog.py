@@ -69,7 +69,11 @@ class AttachProcessDialog(QMainWindow):
         #print(time.time()-t1)
         
         def gg(process):
-            self.selectedp=(int(process),getpidexe(int(process)),getwindowhwnd(int(process)))
+            try:
+                self.selectedp=(int(process),getpidexe(int(process)),getwindowhwnd(int(process)))
+                self.processEdit.setText(self.selectedp[1])
+            except:
+                pass
         self.processIdEdit.textEdited.connect(gg)
         #print(time.time()-t1)
         #self.processEdit.returnPressed.connect(self.accept)

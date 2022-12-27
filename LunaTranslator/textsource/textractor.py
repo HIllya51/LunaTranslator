@@ -125,6 +125,7 @@ class textractor(basetext  ):
     def attach(self,pid):  
         #self.object.translation_ui.writeprocesssignal.emit( QByteArray((f'attach -P{pid}\r\n').encode(encoding='utf-16-le')))
         self.u16lesubprocess.writer(f'attach -P{pid}\r\n')
+        print(f'attach -P{pid}\r\n')
     def detach(self,pid):
         #self.object.translation_ui.writeprocesssignal.emit( QByteArray((f'detach -P{pid}\r\n').encode(encoding='utf-16-le'))) 
         self.u16lesubprocess.writer(f'detach -P{pid}\r\n')
@@ -262,13 +263,14 @@ class textractor(basetext  ):
     def runonce(self):
          
         self.textgetmethod(self.runonce_line,False)
-    def end(self):
-        try:
-            self.detach(self.pid)
-        except:
-            pass
-        #self.exit()   
-        time.sleep(0.1)
+    def end(self,direct=False):
+        if direct==False:
+            try:
+                self.detach(self.pid)
+            except:
+                pass
+            #self.exit()   
+            time.sleep(0.1)
         self.u16lesubprocess.kill()
         #self.object.translation_ui.killprocesssignal.emit()
         self.ending=True

@@ -22,7 +22,7 @@ import utils.screen_rate
 from utils.wrapper import threader 
 from gui.rangeselect    import rangeadjust
 from  gui.settin   import Settin
-from utils.getpidlist import getwindowlist
+from utils.getpidlist import pid_running
 from utils.subproc import subproc
 from tts.windowstts import tts  as windowstts
 from tts.huoshantts import tts as huoshantts
@@ -30,7 +30,7 @@ from tts.azuretts import tts as azuretts
 from tts.voiceroid2 import tts as voiceroid2
 from tts.voicevox import tts as voicevox
 import  gui.selecthook   
-import pyperclip
+import pyperclip 
 from utils.getpidlist import getpidexe,ListProcess
  
 import gui.translatorUI
@@ -465,10 +465,10 @@ class MAINUI(QObject) :
             return 
         else:
             try:
-                plist=getwindowlist()
+                
                 
                 if 'textsource' not in dir(self) or self.textsource is None:
-                 
+                         
             
                
                         hwnd=win32gui.GetForegroundWindow()
@@ -479,15 +479,20 @@ class MAINUI(QObject) :
                         if name_ in savehook_new: 
                             from textsource.textractor import textractor
                             
-            
-                            self.hookselectdialog.changeprocessclearsignal.emit() 
-                            self.textsource=textractor(self,self.textgetmethod,self.hookselectdialog,pid,hwnd,name_,True,savehook_new[name_])
+                            lps=ListProcess()
+                            for pid_real,_exe,_ in lps:
+                                if _exe==name_:
+                                     
+                    
+                                    self.hookselectdialog.changeprocessclearsignal.emit() 
+                                    self.textsource=textractor(self,self.textgetmethod,self.hookselectdialog,pid_real,hwnd,name_,True,savehook_new[name_])
                             
                 
                 else: 
-                    if self.textsource.pid not in plist:
+                    if pid_running(self.textsource.pid)==False:
                             try:
-                                self.textsource.end()  
+                                self.textsource.end(True)  
+                                 
                             except:
                                 print_exc()
                             self.textsource=None 
