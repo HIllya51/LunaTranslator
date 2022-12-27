@@ -329,7 +329,7 @@ class Textbrowser( ):
         
         #font.setPixelSize(int(globalconfig['fontsize'])  )
         if half:
-            font.setPointSizeF((globalconfig['fontsize']) /2 )
+            font.setPointSizeF((globalconfig['fontsize']) * globalconfig['kanarate'])
         else:
             font.setPointSizeF((globalconfig['fontsize'])  )
         fm=QFontMetricsF(font)
