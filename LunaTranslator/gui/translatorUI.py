@@ -172,7 +172,7 @@ class QUnFrameWindow(QWidget):
     def hide_and_disableautohide(self):
         self.hideshownotauto=False
         self.hide()
-     
+         
     def show_and_enableautohide(self):
         self.hideshownotauto=True
         win32gui.SetForegroundWindow(self.winId() )   

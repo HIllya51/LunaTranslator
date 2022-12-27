@@ -125,6 +125,7 @@ class textractor(basetext  ):
     def attach(self,pid):  
         #self.object.translation_ui.writeprocesssignal.emit( QByteArray((f'attach -P{pid}\r\n').encode(encoding='utf-16-le')))
         self.u16lesubprocess.writer(f'attach -P{pid}\r\n')
+        print(f'attach -P{pid}\r\n')
     def detach(self,pid):
         #self.object.translation_ui.writeprocesssignal.emit( QByteArray((f'detach -P{pid}\r\n').encode(encoding='utf-16-le'))) 
         self.u16lesubprocess.writer(f'detach -P{pid}\r\n')

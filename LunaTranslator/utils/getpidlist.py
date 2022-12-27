@@ -2,6 +2,7 @@
 import win32gui,win32process,win32api,win32con
 from traceback import print_exc
 from PyQt5.QtWinExtras  import QtWin
+from utils.argsort import argsort
 def getwindowlist():
         windows_list=[]
         pidlist=[]
@@ -13,6 +14,11 @@ def getwindowlist():
                 except:
                         pass
         return list(set(pidlist))
+def getprocesslist():
+        
+        pids=win32process.EnumProcesses()
+        return pids
+
 def getmagpiehwnd(pid):
         windows_list=[]
         pidlist=[]
@@ -56,7 +62,7 @@ def getwindowhwnd(pid):
                 except:
                         pass
         return 0
-def ListProcess(): 
+def ListProcess_old(): 
         windows_list = []
         ret=[]
         win32gui.EnumWindows(lambda hWnd, param: param.append(hWnd), windows_list)
@@ -72,7 +78,7 @@ def ListProcess():
                         name_=getpidexe(pid)
  
                         name=name_.lower()
-                        if name[-4:]!='.exe' or ':\\windows\\'  in name   or '\\microsoft\\'  in name:
+                        if name[-4:]!='.exe' or ':\\windows\\'  in name   or '\\microsoft\\'  in name or '\\windowsapps\\'  in name:
                             continue
                         import os
                         ret.append([pid,name_,hwnd])
@@ -81,6 +87,52 @@ def ListProcess():
         #print(windows_list)
         #print(ret)
         return ret
+  
+def getprocessmem(pid):
+        try:
+                process=win32api.OpenProcess(win32con.PROCESS_ALL_ACCESS,False, pid)
+                memory_info = win32process.GetProcessMemoryInfo( process )
+                return memory_info['WorkingSetSize']
+        except:
+                return 0
+def ListProcess(): 
+        pid_exe_hwnd= ListProcess_old()
+
+        ret=[]
+        pids=win32process.EnumProcesses()
+        for pid in pids: 
+                    try: 
+                        name_=getpidexe(pid)
+ 
+                        name=name_.lower()
+                        if name[-4:]!='.exe' or ':\\windows\\'  in name   or '\\microsoft\\'  in name or '\\windowsapps\\'  in name:
+                            continue
+                        import os
+                        ret.append([pid,name_ ])
+                    except:
+                        pass
+        #print(windows_list)
+        #print(ret)
+        
+        kv={}
+        for pid,exe in ret:
+                if exe in kv:
+                        kv[exe]['pid'].append(pid)
+                else:
+                        kv[exe]={'pid':[pid],'hwnd':0}
+        for exe in kv:
+                if len(kv[exe]['pid'])>1:
+                        mems=[getprocessmem(_) for _ in kv[exe]['pid']]
+                        _i=argsort(mems)
+                        kv[exe]['pid']=[kv[exe]['pid'][_i[-1]]]
+        for pid,exe,hwnd in pid_exe_hwnd:
+                if exe in kv:
+                        kv[exe]['hwnd']=hwnd
+
+        xxx=[]
+        for exe in kv:
+                xxx.append([kv[exe]['pid'][0],exe,kv[exe]['hwnd']])
+        return xxx
 def getExeIcon( name ): 
         try:
             large, small = win32gui.ExtractIconEx(name,0)
