@@ -5,7 +5,7 @@ from PyQt5.QtWidgets import  QWidget,QLabel ,QLineEdit,QSpinBox,QPushButton,QDia
 import functools 
 from traceback import print_exc
 from collections import OrderedDict
-import time
+import time,uuid
 from PyQt5.QtWidgets import    QWidget, QTableView, QAbstractItemView, QLabel, QVBoxLayout
 import qtawesome
 from PyQt5.QtWidgets import  QWidget,QLabel ,QLineEdit,QSpinBox,QPushButton,QTextEdit
@@ -112,6 +112,9 @@ def autosaveshow(object):
                                 if b==0: 
                                         le=os.path.join(os.path.abspath(globalconfig['LocaleEmulator']),'LEProc.exe')
                                         if os.path.exists(le): 
+                                                if os.path.exists(game+'.le.config')==False:
+                                                        writeleconfig(game)
+                                                         
                                                 win32api.ShellExecute(None, "open", le, f'-run "{game}"', os.path.dirname(game), win32con.SW_SHOW)
                                 elif b==6: 
                                         le=os.path.join(os.path.abspath(globalconfig['Locale_Remulator']),'LRProc.exe')
@@ -187,7 +190,25 @@ def autosaveshow(object):
         formLayout.addWidget(button2) 
         dialog.resize(QSize(800,400))
     dialog.show()
-
+def writeleconfig(game):
+         
+        leconfig='''<?xml version="1.0" encoding="utf-8"?>
+<LEConfig>
+  <Profiles>
+    <Profile Name="%s.le.config" Guid="%s" MainMenu="false">
+      <Parameter></Parameter>
+      <Location>ja-JP</Location>
+      <Timezone>Tokyo Standard Time</Timezone>
+      <RunAsAdmin>false</RunAsAdmin>
+      <RedirectRegistry>true</RedirectRegistry>
+      <IsAdvancedRedirection>false</IsAdvancedRedirection>
+      <RunWithSuspend>false</RunWithSuspend>
+    </Profile>
+  </Profiles>
+</LEConfig>
+'''     
+        with open(game+'.le.config','w',encoding='utf8') as ff :
+                ff.write(leconfig %(os.path.basename(game),uuid.uuid1()))
 def codeacceptdialog(object ,title=  '接受的编码' ,label=[  '接受的编码'] ):
     dialog = QDialog(object,Qt.WindowCloseButtonHint)  # 自定义一个dialog
     dialog.setWindowTitle(_TR(title))
@@ -273,10 +294,10 @@ def setTab4(self) :
         ]
          
         self.yitiaolong("HOOK设置",grids) 
-        self.minmaxmoveoberve=subproc('./files/minmaxmoveobserve.exe',stdout=subprocess.PIPE,keep=True)  
+        #self.minmaxmoveoberve=subproc('./files/minmaxmoveobserve.exe',stdout=subprocess.PIPE,keep=True)  
         self.minmaxmoveobservethread=threading.Thread(target=minmaxmoveobservefunc,args=(self,))
         self.minmaxmoveobservethread.start()  
-          
+ 
 def minmaxmoveobservefunc(self):
         
         while(True):
@@ -294,7 +315,7 @@ def minmaxmoveobservefunc(self):
                         pid,action=x
                 elif len(x)==6:
                         pid,action,x1,y1,x2,y2=x
-                win32gui.SetWindowPos(int(self.object.translation_ui.winId()), win32con.HWND_TOPMOST, 0, 0, 0, 0,win32con. SWP_NOACTIVATE |win32con. SWP_NOSIZE | win32con.SWP_NOMOVE)  
+                 
                 try:
                   if self.object.textsource.pid:
                       
