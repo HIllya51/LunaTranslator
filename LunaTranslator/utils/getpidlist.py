@@ -1,5 +1,5 @@
 
-import win32gui,win32process,win32api,win32con
+import win32gui,win32process,win32api,win32con,psutil
 from traceback import print_exc
 from PyQt5.QtWinExtras  import QtWin
 from utils.argsort import argsort
@@ -16,7 +16,7 @@ def getwindowlist():
         return list(set(pidlist))
 def getprocesslist():
         
-        pids=win32process.EnumProcesses()
+        pids=psutil.pids()#win32process.EnumProcesses()
         return pids
 
 def getmagpiehwnd(pid):
@@ -99,7 +99,7 @@ def ListProcess():
         pid_exe_hwnd= ListProcess_old()
 
         ret=[]
-        pids=win32process.EnumProcesses()
+        pids=getprocesslist()
         for pid in pids: 
                     try: 
                         name_=getpidexe(pid)
