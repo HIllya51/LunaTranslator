@@ -172,6 +172,7 @@ class QUnFrameWindow(QWidget):
     def hide_and_disableautohide(self):
         self.hideshownotauto=False
         self.hide()
+     
     def show_and_enableautohide(self):
         self.hideshownotauto=True
         win32gui.SetForegroundWindow(self.winId() )   
@@ -205,10 +206,10 @@ class QUnFrameWindow(QWidget):
     def __init__(self, object):
         
         super(QUnFrameWindow, self).__init__(
-            None, Qt.FramelessWindowHint|Qt.WindowStaysOnTopHint )  # 设置为顶级窗口，无边框
+            None, Qt.FramelessWindowHint|Qt.WindowStaysOnTopHint|Qt.WindowSystemMenuHint|Qt.WindowMinimizeButtonHint)  # 设置为顶级窗口，无边框
         #self.setFocusPolicy(Qt.StrongFocus)
         self.setWindowFlag(Qt.Tool,not globalconfig['showintab'])
- 
+        
         self.setAttribute(Qt.WA_TranslucentBackground) 
         self.setAttribute(Qt.WA_ShowWithoutActivating,True)
  

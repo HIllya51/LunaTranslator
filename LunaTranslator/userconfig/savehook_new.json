@@ -1,24 +1,5 @@
 {
-    "C:\\dataH\\CHRONOCLOCK\\cmvs32.exe": [
-        [
-            "4",
-            "4944",
-            "44F123",
-            "19FCC4",
-            "0",
-            "UserHook1",
-            "HAC@4F123:cmvs32.exe"
-        ],
-        [
-            "5",
-            "4944",
-            "44F123",
-            "19FC74",
-            "0",
-            "UserHook1",
-            "HAC@4F123:cmvs32.exe"
-        ]
-    ],
+    "C:\\dataH\\CHRONOCLOCK\\cmvs32.exe": [],
     "C:\\dataH\\CHRONOCLOCK\\cmvs64.exe": [
         [
             "38",
@@ -50,40 +31,6 @@
             "0",
             "SiglusEngine3",
             "HW-4@15D2DC:SiglusEngine_CHS.exe"
-        ]
-    ],
-    "C:\\dataH\\俺たちに翼はない\\ORE_TUBA.EXE": [
-        [
-            "8",
-            "2D98",
-            "75285180",
-            "44C6C6",
-            "944FDFC",
-            "Lucifen:HS8",
-            "-14@5180:GDI32.dll"
-        ]
-    ],
-    "C:\\dataH\\LunaTranslator\\LunaTranslator_no_Admin.exe": [],
-    "C:\\dataH\\Please Be Happy\\Please Be Happy.exe": [
-        [
-            "3",
-            "568",
-            "177CF42C820",
-            "177D2535043",
-            "0",
-            "TextMeshProUGUI_set_text",
-            "HQX14+-24@177CF42C820"
-        ]
-    ],
-    "C:\\Users\\11737\\Downloads\\サメと生きる七日間\\サメと生きる七日間.exe": [
-        [
-            "2",
-            "476C",
-            "632B90",
-            "634CB2",
-            "2D",
-            "KiriKiriZ:HW-8*14",
-            "-8*0@172B90:サメと生きる七日間.exe"
         ]
     ]
 }
