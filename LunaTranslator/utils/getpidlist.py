@@ -1,8 +1,21 @@
 
-import win32gui,win32process,win32api,win32con,psutil
+import win32gui,win32process,win32api,win32con 
 from traceback import print_exc
 from PyQt5.QtWinExtras  import QtWin
 from utils.argsort import argsort
+def pid_running(pid):
+    import ctypes
+    kernel32 = ctypes.windll.kernel32
+    SYNCHRONIZE = 0x100000
+    try:
+        process = kernel32.OpenProcess(SYNCHRONIZE, 0, pid)
+        if process != 0:
+                kernel32.CloseHandle(process)
+                return True
+        else:
+                return False
+    except:
+        return False
 def getwindowlist():
         windows_list=[]
         pidlist=[]
@@ -16,7 +29,7 @@ def getwindowlist():
         return list(set(pidlist))
 def getprocesslist():
         
-        pids=psutil.pids()#win32process.EnumProcesses()
+        pids= win32process.EnumProcesses()
         return pids
 
 def getmagpiehwnd(pid):

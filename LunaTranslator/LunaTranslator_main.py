@@ -22,7 +22,7 @@ import utils.screen_rate
 from utils.wrapper import threader 
 from gui.rangeselect    import rangeadjust
 from  gui.settin   import Settin
-from utils.getpidlist import getwindowlist,getprocesslist
+from utils.getpidlist import pid_running
 from utils.subproc import subproc
 from tts.windowstts import tts  as windowstts
 from tts.huoshantts import tts as huoshantts
@@ -30,7 +30,7 @@ from tts.azuretts import tts as azuretts
 from tts.voiceroid2 import tts as voiceroid2
 from tts.voicevox import tts as voicevox
 import  gui.selecthook   
-import pyperclip,psutil
+import pyperclip 
 from utils.getpidlist import getpidexe,ListProcess
  
 import gui.translatorUI
@@ -489,9 +489,9 @@ class MAINUI(QObject) :
                             
                 
                 else: 
-                    if psutil.pid_exists(self.textsource.pid)==False:
+                    if pid_running(self.textsource.pid)==False:
                             try:
-                                self.textsource.end()  
+                                self.textsource.end(True)  
                                  
                             except:
                                 print_exc()

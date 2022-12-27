@@ -263,13 +263,14 @@ class textractor(basetext  ):
     def runonce(self):
          
         self.textgetmethod(self.runonce_line,False)
-    def end(self):
-        try:
-            self.detach(self.pid)
-        except:
-            pass
-        #self.exit()   
-        time.sleep(0.1)
+    def end(self,direct=False):
+        if direct==False:
+            try:
+                self.detach(self.pid)
+            except:
+                pass
+            #self.exit()   
+            time.sleep(0.1)
         self.u16lesubprocess.kill()
         #self.object.translation_ui.killprocesssignal.emit()
         self.ending=True
