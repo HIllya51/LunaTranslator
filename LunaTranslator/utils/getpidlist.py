@@ -3,14 +3,10 @@ import win32gui,win32process,win32api,win32con
 from traceback import print_exc
 from PyQt5.QtWinExtras  import QtWin
 from utils.argsort import argsort
-def pid_running(pid):
-    import ctypes
-    kernel32 = ctypes.windll.kernel32
-    SYNCHRONIZE = 0x100000
+def pid_running(pid): 
     try:
-        process = kernel32.OpenProcess(SYNCHRONIZE, 0, pid)
-        if process != 0:
-                kernel32.CloseHandle(process)
+        process=win32api.OpenProcess(win32con.PROCESS_ALL_ACCESS,False, (pid))
+        if process != 0: 
                 return True
         else:
                 return False

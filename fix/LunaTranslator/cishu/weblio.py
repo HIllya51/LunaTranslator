@@ -8,7 +8,7 @@ class weblio:
     def search(self,word):
         url='https://www.weblio.jp/content/'+ quote(word)
         x=(requests.get(url).text)
-        x=re.sub('<img src="(.*?)" (.*?)>','',x)
+        x=re.sub('<img(.*?)>','',x)
         _all=[]
         _xx=re.findall('<div class=kijiWrp>([\\s\\S]*?)<br class=clr>',x)
         

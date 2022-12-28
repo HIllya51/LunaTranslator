@@ -439,5 +439,10 @@
     "google_api设置": "Google Paramètres de l'API",
     "weblio": "Weblio",
     "goo": "Bon.",
-    "Moji辞书": "Moji dict"
+    "Moji辞书": "Moji dict",
+    "假名字体缩放": "Zoom de police pseudonyme",
+    "清空": "Vider",
+    "不显示原文": "Ne pas afficher l'original",
+    "不显示api": "Ne pas afficher l'API",
+    "字体": "Les polices"
 }

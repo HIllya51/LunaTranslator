@@ -439,5 +439,10 @@
     "google_api设置": "google_api 설정",
     "weblio": "weblio",
     "goo": "goo",
-    "Moji辞书": "Moji dict"
+    "Moji辞书": "Moji dict",
+    "假名字体缩放": "가명 글꼴 크기 조절",
+    "清空": "비우기",
+    "不显示原文": "원문을 나타내지 않다",
+    "不显示api": "api 표시 안 함",
+    "字体": "글꼴"
 }
