@@ -42,7 +42,7 @@ class searchwordW(QMainWindow):
         self.showsignal.connect(self.showresfun)
         #font.setFamily("Arial Unicode MS")
         font.setFamily(globalconfig['fonttype'])
-        font.setPointSize(10)
+        font.setPixelSize(18)
         self.setGeometry(0,0,500,500)
         self.centralWidget = QWidget(self) 
         self.setWindowIcon(qtawesome.icon("fa.gear" ))

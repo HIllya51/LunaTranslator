@@ -42,7 +42,7 @@ class transhist(QMainWindow):
         self.setWindowIcon(qtawesome.icon("fa.rotate-left"  ))
         font = QFont()
         #font.setFamily("Arial Unicode MS") 
-        font.setPointSize(globalconfig['hist_fontsize'])
+        font.setPixelSize(20)
         font.setFamily(globalconfig['fonttype'])
         self.setGeometry(*globalconfig['hist_geo'])
         self.textOutput = QTextBrowser(self)
