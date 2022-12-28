@@ -1,7 +1,7 @@
 
 from re import search
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QWidget,QTextBrowser,QMainWindow,QFrame,QVBoxLayout,QComboBox,QPlainTextEdit,QDialogButtonBox,QLineEdit,QPushButton,QDialog,QAction,QMenu
+from PyQt5.QtWidgets import QWidget,QTextBrowser,QMainWindow,QFontDialog,QAction,QMenu
 from PyQt5.QtGui import QFont,QTextCursor
 from PyQt5.QtCore import Qt,pyqtSignal
 import qtawesome
@@ -40,10 +40,8 @@ class transhist(QMainWindow):
             self.hide()
     def setupUi(self):
         self.setWindowIcon(qtawesome.icon("fa.rotate-left"  ))
-        font = QFont()
-        #font.setFamily("Arial Unicode MS") 
-        font.setPixelSize(20)
-        font.setFamily(globalconfig['fonttype'])
+        font = QFont() 
+        font.fromString(globalconfig['hist_fontstring'])
         self.setGeometry(*globalconfig['hist_geo'])
         self.textOutput = QTextBrowser(self)
         self.textOutput.setFont(font)
@@ -63,9 +61,11 @@ class transhist(QMainWindow):
         qingkong=QAction(_TR("清空")) 
         hideshowraw=QAction(_TR("显示原文"    if self.hiderawflag else "不显示原文") ) 
         hideshowapi=QAction(_TR("显示api"    if self.hideapiflag else "不显示api") ) 
+        ziti=QAction(_TR("字体") ) 
         menu.addAction(qingkong)
         menu.addAction(hideshowraw)
         menu.addAction(hideshowapi)
+        menu.addAction(ziti)
         action=menu.exec(self.mapToGlobal(p))
         if action==qingkong:
             self.textOutput.clear()
@@ -75,6 +75,14 @@ class transhist(QMainWindow):
         elif action==hideshowapi:
             
             self.hideapiflag=not self.hideapiflag
+        elif action==ziti :
+            
+            font, ok = QFontDialog.getFont(self.textOutput.font(), parent=self)
+            
+             
+            if ok : 
+                globalconfig['hist_fontstring']=font.toString()
+                self.textOutput.setFont(font)
     def getnewsentence(self,sentence):
         
         sentence= '<hr>' if globalconfig['hist_split'] else '\n'+sentence

@@ -1,7 +1,7 @@
 
 from re import search
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QWidget,QHBoxLayout,QMainWindow,QFrame,QVBoxLayout,QComboBox,QPlainTextEdit,QTextBrowser,QLineEdit,QPushButton,QTabWidget,QMenu,QAction
+from PyQt5.QtWidgets import QWidget,QHBoxLayout,QMainWindow,QFrame,QVBoxLayout,QFontDialog,QTextBrowser,QLineEdit,QPushButton,QTabWidget,QMenu,QAction
 from PyQt5.QtGui import QFont,QTextCursor
 from PyQt5.QtCore import Qt,pyqtSignal,QThread
 import qtawesome,functools,json
@@ -37,12 +37,11 @@ class searchwordW(QMainWindow):
             self.tab.setTabVisible(self._k.index(k),True)
     def setupUi(self):
         self.setWindowIcon(qtawesome.icon("fa.search"  ))
-        font = QFont()
+         
          
         self.showsignal.connect(self.showresfun)
-        #font.setFamily("Arial Unicode MS")
-        font.setFamily(globalconfig['fonttype'])
-        font.setPixelSize(18)
+        font = QFont() 
+        font.fromString(globalconfig['sw_fontstring'])
         self.setGeometry(0,0,500,500)
         self.centralWidget = QWidget(self) 
         self.setWindowIcon(qtawesome.icon("fa.gear" ))
@@ -52,16 +51,16 @@ class searchwordW(QMainWindow):
         self.userhooklayout = QHBoxLayout()  
         self.vboxlayout.addLayout(self.userhooklayout)
         self.userhook=QLineEdit()
-        self.userhook.setFont(font)
+        #self.userhook.setFont(font)
         self.userhooklayout.addWidget(self.userhook)
         self.userhookinsert=QPushButton(_TR("搜索"))
-        self.userhookinsert.setFont(font) 
+        #self.userhookinsert.setFont(font) 
         self.userhookinsert.clicked.connect(lambda :self.search((self.userhook.text(),None,None)))
         self.userhooklayout.addWidget(self.userhookinsert)
  
         self.tab=QTabWidget(self)
 
-         
+        self.setFont(font)
         self.vboxlayout.addWidget(self.tab)
         self.hboxlayout.addLayout(self.vboxlayout)
         self.setCentralWidget(self.centralWidget)
@@ -80,7 +79,7 @@ class searchwordW(QMainWindow):
         for i in range(len(_name)):
 
             textOutput = QTextBrowser(self)
-            textOutput.setFont(font) 
+            #textOutput.setFont(font) 
             textOutput.setContextMenuPolicy(Qt.CustomContextMenu)
             textOutput.setUndoRedoEnabled(False)
             textOutput.setReadOnly(True)
@@ -98,7 +97,9 @@ class searchwordW(QMainWindow):
     def showmenu(self,ii,to:QTextBrowser,p):  
         menu=QMenu(self ) 
         save=QAction(_TR("保存"))  
+        ziti=QAction(_TR("字体") ) 
         menu.addAction(save) 
+        menu.addAction(ziti)
         action=menu.exec( to.mapToGlobal(p))
         if action==save: 
             try:
@@ -130,6 +131,17 @@ class searchwordW(QMainWindow):
                     ff.write(json.dumps(js,ensure_ascii=False,sort_keys=False, indent=4))
             except:
                 print_exc()
+        elif action==ziti :
+            
+            font, ok = QFontDialog.getFont(self.font(), parent=self)
+            
+             
+            if ok : 
+                globalconfig['sw_fontstring']=font.toString()
+                self.setFont(font)
+                 
+                for _ in self.textbs:
+                    self.textbs[_].setFont(font)
     def getnewsentence(self,sentence):
         self.userhook.setText(sentence[0] )
          
