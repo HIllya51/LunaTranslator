@@ -2,8 +2,8 @@
 from re import search
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QWidget,QHBoxLayout,QMainWindow,QFrame,QVBoxLayout,QFontDialog,QTextBrowser,QLineEdit,QPushButton,QTabWidget,QMenu,QAction
-from PyQt5.QtGui import QFont,QTextCursor
-from PyQt5.QtCore import Qt,pyqtSignal,QThread
+from PyQt5.QtGui import QFont,QTextCursor,QFontMetrics
+from PyQt5.QtCore import Qt,pyqtSignal,QSize
 import qtawesome,functools,json
 import threading 
 from queue import Queue
@@ -48,16 +48,28 @@ class searchwordW(QMainWindow):
         self.hboxlayout = QHBoxLayout(self.centralWidget)  
         self.vboxlayout = QVBoxLayout()   
         
-        self.userhooklayout = QHBoxLayout()  
-        self.vboxlayout.addLayout(self.userhooklayout)
-        self.userhook=QLineEdit()
-        #self.userhook.setFont(font)
-        self.userhooklayout.addWidget(self.userhook)
-        self.userhookinsert=QPushButton(_TR("搜索"))
-        #self.userhookinsert.setFont(font) 
-        self.userhookinsert.clicked.connect(lambda :self.search((self.userhook.text(),None,None)))
-        self.userhooklayout.addWidget(self.userhookinsert)
- 
+        self.searchlayout = QHBoxLayout()  
+        self.vboxlayout.addLayout(self.searchlayout)
+        self.searchtext=QLineEdit()
+        #self.searchtext.setFont(font)
+        self.searchlayout.addWidget(self.searchtext)
+        self.searchbutton=QPushButton(qtawesome.icon("fa.search"),'')#_TR("搜索"))
+
+        fm=QFontMetrics(font)
+        self.searchbutton.setIconSize(QSize(fm.height(),fm.height() ))
+
+
+        #self.searchbutton.setFont(font) 
+        self.searchbutton.clicked.connect(lambda :self.search((self.searchtext.text(),None,None)))
+        self.searchlayout.addWidget(self.searchbutton)
+
+        self.soundbutton=QPushButton(qtawesome.icon("fa.music"), "")
+        self.soundbutton.setIconSize(QSize(fm.height(),fm.height() ))
+        #self.searchbutton.setFont(font) 
+        self.soundbutton.clicked.connect(self.langdu)
+        self.searchlayout.addWidget(self.soundbutton)
+
+
         self.tab=QTabWidget(self)
 
         self.setFont(font)
@@ -93,7 +105,9 @@ class searchwordW(QMainWindow):
             textOutput.customContextMenuRequested.connect(functools.partial( self.showmenu ,i,textOutput) )
         self.hiding=True
         self.searchthreadsignal.connect(self.searchthread)
- 
+    def langdu(self): 
+        if self.p.object.reader:
+            self.p.object.reader.read(self.searchtext.text() )  
     def showmenu(self,ii,to:QTextBrowser,p):  
         menu=QMenu(self ) 
         save=QAction(_TR("保存"))  
@@ -109,7 +123,7 @@ class searchwordW(QMainWindow):
                 except:
                     js={"note":[]}
                 
-                word=self.userhook.text()
+                word=self.searchtext.text()
                 gana=self.textbs[0].toPlainText().split('\n')[0][len(word)+1:]
                 meaning=''
 
@@ -143,7 +157,7 @@ class searchwordW(QMainWindow):
                 for _ in self.textbs:
                     self.textbs[_].setFont(font)
     def getnewsentence(self,sentence):
-        self.userhook.setText(sentence[0] )
+        self.searchtext.setText(sentence[0] )
          
         self.search(sentence)
 
