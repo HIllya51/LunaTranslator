@@ -444,5 +444,9 @@
     "清空": "empty",
     "不显示原文": "Don't show original text",
     "不显示api": "Do not display api",
-    "字体": "typeface"
+    "字体": "typeface",
+    "飞书": "anonymous letter",
+    "飞书设置": "Flying book setting",
+    "app_id": "app_ id",
+    "app_secret": "app_ secret"
 }

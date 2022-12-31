@@ -408,6 +408,11 @@
             "name": "baiduOCR_高精度",
 			"lang":{"zh":"CHN_ENG","en":"ENG","auto":"auto_detect","ja":"JAP","en":"ENG","ko":"KOR","fr":"FRE","es":"SPA"}
 
+        }, "feishu": {
+            "use": false,
+            "name": "飞书",
+			"lang":{}
+
         },
         "ocrspace": {
             "use": false,
@@ -642,6 +647,11 @@
             "color": "blue",
             "name": "火山api",
 			"lang":{"auto":"detect","cht":"zh-Hant"}
+        },"feishu": {
+            "use": false,
+            "color": "blue",
+            "name": "飞书",
+			"lang":{"cht":"zh-Hant"}
         },
         "papago": {
             "use": false,

@@ -444,5 +444,9 @@
     "清空": "Vider",
     "不显示原文": "Ne pas afficher l'original",
     "不显示api": "Ne pas afficher l'API",
-    "字体": "Les polices"
+    "字体": "Les polices",
+    "飞书": "Le livre volant",
+    "飞书设置": "Configuration du livre volant",
+    "app_id": "App Id",
+    "app_secret": "App Le secret"
 }
