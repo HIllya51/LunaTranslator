@@ -1,9 +1,9 @@
 
 from re import search
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QWidget,QTextBrowser,QMainWindow,QFontDialog,QAction,QMenu
+from PyQt5.QtWidgets import QApplication,QTextBrowser,QMainWindow,QFontDialog,QAction,QMenu
 from PyQt5.QtGui import QFont,QTextCursor
-from PyQt5.QtCore import Qt,pyqtSignal
+from PyQt5.QtCore import Qt,pyqtSignal 
 import qtawesome
 import subprocess
 import json
@@ -42,6 +42,12 @@ class transhist(QMainWindow):
         self.setWindowIcon(qtawesome.icon("fa.rotate-left"  ))
         font = QFont() 
         font.fromString(globalconfig['hist_fontstring'])
+
+
+        d=QApplication.desktop()
+
+        globalconfig['hist_geo'][0]=min(max(globalconfig['hist_geo'][0],0),d.width()-globalconfig['hist_geo'][2])
+        globalconfig['hist_geo'][1]=min(max(globalconfig['hist_geo'][1],0),d.height()-globalconfig['hist_geo'][3])
         self.setGeometry(*globalconfig['hist_geo'])
         self.textOutput = QTextBrowser(self)
         self.textOutput.setFont(font)

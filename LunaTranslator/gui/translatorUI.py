@@ -357,8 +357,10 @@ class QUnFrameWindow(QWidget):
 
         self.refreshtoolicon()
         self.showhidetoolbuttons()
-        globalconfig['position'][0]=max(globalconfig['position'][0],0)
-        globalconfig['position'][1]=max(globalconfig['position'][1],0)
+        d=QApplication.desktop()
+
+        globalconfig['position'][0]=min(max(globalconfig['position'][0],0),d.width()-globalconfig['width'])
+        globalconfig['position'][1]=min(max(globalconfig['position'][1],0),d.height()-200)
         if globalconfig['fixedheight']:
             self.setGeometry( globalconfig['position'][0],globalconfig['position'][1],int(globalconfig['width'] ), int(globalconfig['height'] )) 
         else:

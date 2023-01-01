@@ -1,7 +1,7 @@
 
 from re import search
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QWidget,QHBoxLayout,QMainWindow,QFrame,QVBoxLayout,QFontDialog,QTextBrowser,QLineEdit,QPushButton,QTabWidget,QMenu,QAction
+from PyQt5.QtWidgets import QWidget,QHBoxLayout,QMainWindow,QApplication,QVBoxLayout,QFontDialog,QTextBrowser,QLineEdit,QPushButton,QTabWidget,QMenu,QAction
 from PyQt5.QtGui import QFont,QTextCursor,QFontMetrics
 from PyQt5.QtCore import Qt,pyqtSignal,QSize
 import qtawesome,functools,json
@@ -22,6 +22,7 @@ class searchwordW(QMainWindow):
         self.setWindowTitle(_TR('查词'))
         self.p=p
     def closeEvent(self, event) :  
+        globalconfig['sw_geo']=list(self.geometry().getRect())
         self.hide()
      
     
@@ -42,7 +43,12 @@ class searchwordW(QMainWindow):
         self.showsignal.connect(self.showresfun)
         font = QFont() 
         font.fromString(globalconfig['sw_fontstring'])
-        self.setGeometry(0,0,500,500)
+
+        d=QApplication.desktop()
+
+        globalconfig['sw_geo'][0]=min(max(globalconfig['sw_geo'][0],0),d.width()-globalconfig['sw_geo'][2])
+        globalconfig['sw_geo'][1]=min(max(globalconfig['sw_geo'][1],0),d.height()-globalconfig['sw_geo'][3])
+        self.setGeometry(*globalconfig['sw_geo'])
         self.centralWidget = QWidget(self) 
         self.setWindowIcon(qtawesome.icon("fa.gear" ))
         self.hboxlayout = QHBoxLayout(self.centralWidget)  

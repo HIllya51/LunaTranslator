@@ -155,8 +155,12 @@ class Settin(QMainWindow) :
          
         self.savelastrect=None
         self.setFixedSize(self.window_width, self.window_height) 
+        
         d=QApplication.desktop()
-        self.move ((d.width()-self.width())/2,((d.height()-self.height())/2))
+
+        globalconfig['setting_geo'][0]=min(max(globalconfig['setting_geo'][0],0),d.width()-self.width())
+        globalconfig['setting_geo'][1]=min(max(globalconfig['setting_geo'][1],0),d.height()-self.height())
+        self.move (*globalconfig['setting_geo'])
         #self.setWindowFlags(Qt.WindowStaysOnTopHint |Qt.WindowCloseButtonHint)
         #self.setWindowFlags( Qt.WindowCloseButtonHint)
         self.setWindowTitle(_TR("设置"))
@@ -235,6 +239,7 @@ background-color:transparent;
      
   
     def closeEvent(self, event) : 
+        globalconfig['setting_geo']=(self.geometry().topLeft().x(),self.geometry().topLeft().y())
         self.hide()
     def ChangeTranslateColor(self, translate_type,button,item=None,name=None) :
             nottransbutton=globalconfig['fanyi'].keys()
