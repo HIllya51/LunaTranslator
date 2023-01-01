@@ -11,6 +11,7 @@ def pid_running(pid):
         return (ret == win32con.WAIT_TIMEOUT);
 
     except:
+         
         return False
 def getwindowlist():
         windows_list=[]

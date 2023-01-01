@@ -1,3 +1,4 @@
+WAIT_TIMEOUT                        = 258
 
 SW_HIDE = 0
 SW_SHOWNORMAL = 1
