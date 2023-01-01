@@ -1,15 +1,15 @@
 
-import win32gui,win32process,win32api,win32con 
+import win32gui,win32process,win32api,win32con ,win32event
 from traceback import print_exc
 from PyQt5.QtWinExtras  import QtWin
 from utils.argsort import argsort
 def pid_running(pid): 
     try:
-        process=win32api.OpenProcess(win32con.PROCESS_ALL_ACCESS,False, (pid))
-        if process != 0: 
-                return True
-        else:
-                return False
+        process =win32api.OpenProcess(win32con.SYNCHRONIZE, False, pid);
+        ret =win32event.WaitForSingleObject(process, 0);
+        win32api.CloseHandle(process);
+        return (ret == win32con.WAIT_TIMEOUT);
+
     except:
         return False
 def getwindowlist():
