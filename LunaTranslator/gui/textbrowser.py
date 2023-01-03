@@ -166,6 +166,7 @@ class Textbrowser( ):
                 self.toplabel.move(0,self.savey )
                 self.toplabel2.move(0,self.savey ) 
                 self.textbrowserback.move(0,self.savey) 
+                self.parent.atback.move(0,self.savey) 
                 self.jiaming_y_delta=0
     def showyinyingtext(self,color ):   
          
@@ -398,12 +399,14 @@ class Textbrowser( ):
             self.toplabel.move(0,self.savey+fhhalf-tl1 )
             self.toplabel2.move(0,self.savey+fhhalf-tl1 ) 
             self.textbrowserback.move(0,self.savey+fhhalf-tl1 ) 
+            self.parent.atback.move(0,self.savey+fhhalf-tl1) 
             self.jiaming_y_delta=fhhalf-tl1
         else:
             self.textbrowser.move(0,self.savey)
             self.toplabel.move(0,self.savey )
             self.toplabel2.move(0,self.savey ) 
             self.textbrowserback.move(0,self.savey) 
+            self.parent.atback.move(0,self.savey) 
             self.jiaming_y_delta=0 
         for word in x:
             if word['orig']=='\n':
