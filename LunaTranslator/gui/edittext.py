@@ -2,8 +2,8 @@
 from re import search
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QApplication,QTextBrowser,QMainWindow,QFontDialog,QAction,QMenu,QHBoxLayout,QWidget,QPushButton,QVBoxLayout
-from PyQt5.QtGui import QFont,QTextCursor
-from PyQt5.QtCore import Qt,pyqtSignal ,QSize
+from PyQt5.QtGui import QFont
+from PyQt5.QtCore import Qt,pyqtSignal ,QSize,QPoint
 import qtawesome
 import subprocess
 import json,threading
@@ -91,13 +91,13 @@ class edittext(QMainWindow):
     def changestate(self):
         self.sync=not self.sync 
         self.bt2.setIcon(qtawesome.icon("fa.forward" if self.sync else 'fa.play' ,color="#FF69B4" if self.sync else globalconfig['buttoncolor']))
-    def showmenu(self,p):  
-        menu=QMenu(self ) 
+    def showmenu(self,p:QPoint):  
+        menu=QMenu(self.textOutput ) 
         qingkong=QAction(_TR("清空"))  
         ziti=QAction(_TR("字体") ) 
         menu.addAction(qingkong)  
         menu.addAction(ziti)
-        action=menu.exec(self.mapToGlobal(p))
+        action=menu.exec(self.mapToGlobal(self.textOutput.pos())+p)
         if action==qingkong:
             self.textOutput.clear()
          
