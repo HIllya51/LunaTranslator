@@ -647,8 +647,8 @@ class QUnFrameWindow(QWidget):
         height = self.height() - 30*self.rate 
         
         #self.translate_text.resize(self.width(), height )
-        self.translate_text.setGeometry(0, 30 * self.rate, self.width(), height * self.rate)
-         
+        #self.translate_text.setGeometry(0, 30 * self.rate, self.width(), height * self.rate)
+        self.translate_text.resize(self.width(), height * self.rate)
         for button in self.buttons[-2:]:
               button.adjast( ) 
         # 自定义窗口调整大小事件
