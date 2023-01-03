@@ -135,6 +135,7 @@ class Textbrowser( ):
             self.addtaged=False
               
             fh=self.getfh(False)
+              
             for i in range(self.blockcount, self.textbrowser.document().blockCount()):
                 b=self.textbrowser.document().findBlockByNumber(i) 
                 tf=b.blockFormat() 
@@ -355,8 +356,8 @@ class Textbrowser( ):
         labeli=0 
          
         fhall=self.getfh(False)
-           
-        fhhalf,font=self.getfh(True)
+        
+        fhhalf,font=self.getfh(True) 
         self.blockcount=self.textbrowser.document().blockCount() 
         for i in range(0,self.blockcount):
             b=self.textbrowser.document().findBlockByNumber(i)

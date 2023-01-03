@@ -786,6 +786,8 @@ class QUnFrameWindow(QWidget):
             button.adjast=None
         self.buttons.append(button)
         
+        if save=='mousetransbutton':
+            self.mousetransbutton=button
     def customSetGeometry(self, object, x, y, w, h):
     
         object.setGeometry(QRect(int(x * self.rate),
