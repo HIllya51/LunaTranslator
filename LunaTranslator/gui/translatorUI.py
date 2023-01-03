@@ -18,7 +18,7 @@ from utils.subproc import endsubprocs,mutiproc
 import  win32gui,win32api,win32process,win32con,multiprocessing
 import gui.rangeselect
 import gui.transhist 
-
+import gui.edittext
 from utils.subproc import subproc
 from utils.getpidlist import getwindowhwnd,mouseselectwindow,letfullscreen,recoverwindow,getmagpiehwnd
 from gui.settingpage4 import autosaveshow
@@ -97,6 +97,7 @@ class QUnFrameWindow(QWidget):
         elif show==2:
             self.showline((hira,res),color ,type_=2 )
         self.transhis.getnewsentencesignal.emit(res) 
+        self.edittextui.getnewsentencesignal.emit(res) 
     # def showtaskthreadfun(self):
     #     while True:
     #         res,color ,type_=self.showtask.get()
@@ -188,6 +189,7 @@ class QUnFrameWindow(QWidget):
             qtawesome.icon("fa.forward" if globalconfig['autorun'] else 'fa.play' ,color="#FF69B4" if globalconfig['autorun'] else globalconfig['buttoncolor']),
             qtawesome.icon("fa.gear",color=globalconfig['buttoncolor'] ),
             qtawesome.icon("fa.copy" ,color=globalconfig['buttoncolor']),
+            qtawesome.icon("fa.edit" ,color=globalconfig['buttoncolor']),
             qtawesome.icon("fa.eye"   if globalconfig['isshowrawtext'] else "fa.eye-slash" ,color="#FF69B4" if globalconfig['isshowrawtext'] else globalconfig['buttoncolor']),
             qtawesome.icon("fa.rotate-left" ,color=globalconfig['buttoncolor']),
             qtawesome.icon("fa.music" ,color=globalconfig['buttoncolor']),
@@ -242,6 +244,7 @@ class QUnFrameWindow(QWidget):
         self.hideshownotauto=True
         self.showhideuisignal.connect(self.showhideui)
         self.transhis=gui.transhist.transhist(self)  
+        self.edittextui=gui.edittext.edittext(self)  
         self.hookfollowsignal.connect(self.hookfollowsignalsolve) 
         self.displayres.connect(self.showres)
         self.displayraw1.connect(self.showraw)  
@@ -314,6 +317,7 @@ class QUnFrameWindow(QWidget):
 
 
         self.takusanbuttons("MinMaxButton",lambda: pyperclip.copy(self.original),6,"复制到剪贴板",'copy') 
+        self.takusanbuttons("MinMaxButton",self.edittextui.showsignal.emit,6,"编辑",'edit') 
         self.takusanbuttons("MinMaxButton", self.changeshowhideraw,7,"显示/隐藏原文",'showraw') 
         
         self.takusanbuttons("MinMaxButton", self.transhis.showsignal.emit  ,8,"显示/隐藏历史翻译",'history') 
@@ -744,13 +748,13 @@ class QUnFrameWindow(QWidget):
         
         for i,button in enumerate(self.buttons[:-2]):
             
-            if i in [12,13,14] and globalconfig['sourcestatus']['ocr'] ==False:
+            if i in [13,14,15] and globalconfig['sourcestatus']['ocr'] ==False:
                 button.hide()
                 continue
-            if i in [10,11] and globalconfig['sourcestatus']['textractor'] ==False:
+            if i in [11,12] and globalconfig['sourcestatus']['textractor'] ==False:
                 button.hide()
                 continue
-            if globalconfig['sourcestatus']['textractor'] ==False and globalconfig['sourcestatus']['ocr'] ==False and i in [15,16,17]:
+            if globalconfig['sourcestatus']['textractor'] ==False and globalconfig['sourcestatus']['ocr'] ==False and i in [16,17,18]:
                 button.hide()
                 
                 continue

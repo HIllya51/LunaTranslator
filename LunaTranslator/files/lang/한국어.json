@@ -448,5 +448,7 @@
     "飞书": "비서",
     "飞书设置": "플라이 북 설정",
     "app_id": "app_id",
-    "app_secret": "app_secret"
+    "app_secret": "app_secret",
+    "编辑": "편집",
+    "显示编辑按钮": "편집 버튼 표시"
 }

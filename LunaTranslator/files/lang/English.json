@@ -448,5 +448,7 @@
     "飞书": "anonymous letter",
     "飞书设置": "Flying book setting",
     "app_id": "app_ id",
-    "app_secret": "app_ secret"
+    "app_secret": "app_ secret",
+    "编辑": "edit",
+    "显示编辑按钮": "Show Edit Button"
 }

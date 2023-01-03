@@ -448,5 +448,7 @@
     "飞书": "Libro volador",
     "飞书设置": "Configuración del libro volador",
     "app_id": "App ID",
-    "app_secret": "App Secreto"
+    "app_secret": "App Secreto",
+    "编辑": "Edición",
+    "显示编辑按钮": "Mostrar el botón de edición"
 }

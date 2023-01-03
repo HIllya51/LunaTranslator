@@ -448,5 +448,7 @@
     "飞书": "Le livre volant",
     "飞书设置": "Configuration du livre volant",
     "app_id": "App Id",
-    "app_secret": "App Le secret"
+    "app_secret": "App Le secret",
+    "编辑": "Modifier",
+    "显示编辑按钮": "Afficher le bouton Modifier"
 }

@@ -14,6 +14,7 @@
 	"hist_split":false,
 	"hist_fontstring":"Arial,12,-1,5,50,0,0,0,0,0,Regular", 
 	"sw_fontstring":"Arial,12,-1,5,50,0,0,0,0,0,Regular", 
+	"edit_fontstring":"Arial,12,-1,5,50,0,0,0,0,0,Regular", 
     "fixedheight": false,
 	"showintab":false,
 	"remove_useless_hook":false,
@@ -25,6 +26,7 @@
 	"textthreaddelay":50,
 	"forcekeepontop":true,
 	"hist_geo":[0,0,1000,300],
+	"edit_geo":[0,0,1000,300],
 	"sw_geo":[0,0,500,500],
 	"setting_geo":[0,0],
 	"transtimeinternal":0.1,
@@ -93,7 +95,8 @@
         "langdu": true,
         "copy": true,
         "history": true,
-        "gamepad": true
+        "gamepad": true,
+        "edit": true
     },
     "languageuse": 0,
     "proxy": "",
