@@ -52,7 +52,7 @@ class edittext(QMainWindow):
         self.textOutput.setFont(font)
         self.textOutput.setContextMenuPolicy(Qt.CustomContextMenu)
         
-        
+        self.charformat=self.textOutput.currentCharFormat()
         self.textOutput.customContextMenuRequested.connect(self.showmenu  )
         #self.setCentralWidget(self.textOutput) 
         
@@ -110,7 +110,7 @@ class edittext(QMainWindow):
                 globalconfig['edit_fontstring']=font.toString()
                 self.textOutput.setFont(font)
     def getnewsentence(self,sentence):
-        if self.sync:
-            self.textOutput.clear()
-            self.textOutput.append(sentence) 
+        if self.sync: 
+            self.textOutput.setCurrentCharFormat(self.charformat)
+            self.textOutput.setPlainText(sentence) 
     
