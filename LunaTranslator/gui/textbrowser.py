@@ -39,6 +39,16 @@ class Textbrowser( ):
         #self.shadowlabel=QLabel(parent)
         #self.shadowlabel.savetext=''
         self.align=False
+        
+        self.atback=QLabel(parent)
+        self.atback.setGeometry(0,30*self.parent.rate,9999,9999)
+        self.atback.setMouseTracking(True)
+
+        
+        self.atback2=QLabel(parent)
+        self.atback2.setGeometry(0,30*self.parent.rate,9999,9999)
+        self.atback2.setMouseTracking(True)
+
         self.textbrowserback=QTextBrowser(parent)
         self.textbrowser=QTextBrowser(parent)
         self.cleared=False
@@ -97,7 +107,7 @@ class Textbrowser( ):
         #self.textbrowser.setStyleSheet(x)
         
         #self.textbrowserback.setStyleSheet(x)
-        self.parent.atback.setStyleSheet(x)
+        self.atback.setStyleSheet(x)
     def move(self,x,y):
         self.textbrowser.move(x,y)
         self.textbrowserback.move(x,y)
@@ -165,8 +175,8 @@ class Textbrowser( ):
                 self.textbrowser.move(0,self.savey)
                 self.toplabel.move(0,self.savey )
                 self.toplabel2.move(0,self.savey ) 
-                self.textbrowserback.move(0,self.savey) 
-                self.parent.atback.move(0,self.savey) 
+                self.atback2.move(0,self.savey ) 
+                self.textbrowserback.move(0,self.savey)  
                 self.jiaming_y_delta=0
     def showyinyingtext(self,color ):   
          
@@ -251,7 +261,7 @@ class Textbrowser( ):
                 if color:
                     if word['orig'] not in ['\n','\r'] :
                         if labeli >=len(self.searchmasklabels)-1:
-                            ql=QLabel(self.parent.atback) 
+                            ql=QLabel(self.atback2) 
                             ql.setMouseTracking(True)
                             self.searchmasklabels.append(ql)
 
@@ -260,7 +270,7 @@ class Textbrowser( ):
                             ql.setStyleSheet("background-color: rgba(0,0,0,0.01);")
                             self.searchmasklabels_clicked.append(ql)
                             
-                            ql=QLabel(self.parent.atback) 
+                            ql=QLabel(self.atback2) 
                             ql.setMouseTracking(True)
                             self.searchmasklabels.append(ql)
 
@@ -398,15 +408,17 @@ class Textbrowser( ):
             self.textbrowser.move(0,self.savey+fhhalf-tl1 )
             self.toplabel.move(0,self.savey+fhhalf-tl1 )
             self.toplabel2.move(0,self.savey+fhhalf-tl1 ) 
-            self.textbrowserback.move(0,self.savey+fhhalf-tl1 ) 
-            self.parent.atback.move(0,self.savey+fhhalf-tl1) 
+            
+            self.atback2.move(0,self.savey+fhhalf-tl1 ) 
+            self.textbrowserback.move(0,self.savey+fhhalf-tl1 )  
             self.jiaming_y_delta=fhhalf-tl1
         else:
             self.textbrowser.move(0,self.savey)
             self.toplabel.move(0,self.savey )
+            
+            self.atback2.move(0,self.savey  ) 
             self.toplabel2.move(0,self.savey ) 
-            self.textbrowserback.move(0,self.savey) 
-            self.parent.atback.move(0,self.savey) 
+            self.textbrowserback.move(0,self.savey)  
             self.jiaming_y_delta=0 
         for word in x:
             if word['orig']=='\n':

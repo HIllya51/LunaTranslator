@@ -273,10 +273,7 @@ class QUnFrameWindow(QWidget):
         self.original = ""    
         self._isTracking=False
         self.quickrangestatus=False
-        self.isontop=True
-        self.atback=QLabel(self)
-        self.atback.setGeometry(0,30*self.rate,9999,9999)
-        self.atback.setMouseTracking(True)
+        self.isontop=True 
         self.initTitleLabel()  # 安放标题栏标签
          
         self.initLayout()  # 设置框架布局

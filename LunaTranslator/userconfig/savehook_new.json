@@ -1,8 +1,8 @@
 {
     "C:\\dataH\\(18禁ゲーム) [200828] [パープルソフトウェア] 青春フラジャイル\\cmvs32_crack.exe": [
         [
-            "5",
-            "3AF0",
+            "7",
+            "5584",
             "4613B3",
             "19FA8C",
             "0",
@@ -12,24 +12,35 @@
     ],
     "C:\\dataH\\(一般ゲーム) [220929] [Key] 終のステラ 初回限定版\\SiglusEngine.exe": [
         [
-            "16",
-            "33A0",
-            "D3E55C",
-            "7AF040",
+            "6",
+            "1DD4",
+            "798B79",
             "0",
-            "SiglusEngine3",
-            "HW-4@15E55C:SiglusEngine.exe"
+            "10004",
+            "SiglusEngine4",
+            "HWNX0@278B79:SiglusEngine.exe"
         ]
     ],
     "C:\\dataH\\俺たちに翼はない\\ORE_TUBA.EXE": [
         [
-            "A",
-            "4F7C",
-            "76385180",
+            "8",
+            "23D4",
+            "76445180",
             "44C6C6",
-            "8ECFDFC",
+            "89BFDFC",
             "Lucifen:HS8",
             "-14@5180:GDI32.dll"
+        ]
+    ],
+    "C:\\dataH\\雪夜\\雪夜妹果_CHS.exe": [
+        [
+            "12",
+            "42C0",
+            "AADB5D",
+            "AE7AAC39",
+            "0",
+            "UserHook1",
+            "HW-1C@1DDB5D:SiglusEngine.exe"
         ]
     ]
 }
