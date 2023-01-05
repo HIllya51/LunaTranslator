@@ -55,8 +55,8 @@ class hookselect(QMainWindow):
     def setupUi(self  ):
         
         self.resize(1000, 600)
-        d=QApplication.desktop()
-        self.move ((d.width()-self.width())/2,((d.height()-self.height())/2))
+        # d=QApplication.desktop()
+        # self.move ((d.width()-self.width())/2,((d.height()-self.height())/2))
         self.save=[]
         self.centralWidget = QWidget(self) 
         self.setWindowIcon(qtawesome.icon("fa.gear" ))
