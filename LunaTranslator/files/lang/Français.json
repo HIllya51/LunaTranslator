@@ -450,5 +450,10 @@
     "app_id": "App Id",
     "app_secret": "App Le secret",
     "编辑": "Modifier",
-    "显示编辑按钮": "Afficher le bouton Modifier"
+    "显示编辑按钮": "Afficher le bouton Modifier",
+    "移动": "Mobile",
+    "显示移动按钮": "Afficher le bouton mobile",
+    "编辑专有名词": "Modifier un nom propre",
+    "专有名词翻译设置": "Paramètres de traduction des noms propriétaires",
+    "显示专有名词翻译设置按钮": "Afficher le bouton paramètres de traduction des noms propres"
 }

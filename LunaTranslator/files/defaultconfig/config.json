@@ -88,6 +88,8 @@
 		"AdapterIdx":-1
     },
     "buttonuse": {
+		"noundict":false,
+		"move":false,
         "fullscreen": true,
         "resize": true,
         "muteprocess": true,

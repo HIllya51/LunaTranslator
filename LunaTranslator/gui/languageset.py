@@ -18,7 +18,7 @@ class languageset(QDialog):
         
         super(languageset, self).__init__(
             None, Qt.WindowStaysOnTopHint )  # 设置为顶级窗口，无边框
-        self.setWindowIcon(qtawesome.icon("fa.gear"  ))
+        self.setWindowIcon(qtawesome.icon("fa.language"  ))
         self.setMinimumSize(400,100)
         self.setWindowTitle('语言设置 LanguageSetting')
         font = QFont()

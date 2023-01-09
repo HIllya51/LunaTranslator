@@ -185,6 +185,7 @@ class QUnFrameWindow(QWidget):
      
     def refreshtoolicon(self):
         icon=[
+            qtawesome.icon("fa.hand-paper-o" ,color=globalconfig['buttoncolor']),
             qtawesome.icon("fa.rotate-right" ,color=globalconfig['buttoncolor']),
             qtawesome.icon("fa.forward" if globalconfig['autorun'] else 'fa.play' ,color="#FF69B4" if globalconfig['autorun'] else globalconfig['buttoncolor']),
             qtawesome.icon("fa.gear",color=globalconfig['buttoncolor'] ),
@@ -192,6 +193,7 @@ class QUnFrameWindow(QWidget):
             qtawesome.icon("fa.edit" ,color=globalconfig['buttoncolor']),
             qtawesome.icon("fa.eye"   if globalconfig['isshowrawtext'] else "fa.eye-slash" ,color="#FF69B4" if globalconfig['isshowrawtext'] else globalconfig['buttoncolor']),
             qtawesome.icon("fa.rotate-left" ,color=globalconfig['buttoncolor']),
+            qtawesome.icon("fa.book" ,color=globalconfig['buttoncolor']),
             qtawesome.icon("fa.music" ,color=globalconfig['buttoncolor']),
             qtawesome.icon("fa.mouse-pointer" ,color="#FF69B4" if self.mousetransparent else globalconfig['buttoncolor']),
             qtawesome.icon("fa.lock" if globalconfig['locktools'] else 'fa.unlock',color="#FF69B4" if globalconfig['locktools'] else globalconfig['buttoncolor']),
@@ -220,6 +222,8 @@ class QUnFrameWindow(QWidget):
             win32gui.ShowWindow(self.winId(),win32con.SW_SHOWNORMAL )
         else:
             self.show()
+    def settin_ui_button_noundict_click(self):
+        self.object.settin_ui.button_noundict.click()
     def __init__(self, object):
         
         super(QUnFrameWindow, self).__init__(
@@ -307,7 +311,7 @@ class QUnFrameWindow(QWidget):
         self.isbindedwindow=False
         self.buttons=[] 
         self.showbuttons=[]
-        
+        self.takusanbuttons("MinMaxButton",None,0,"移动","move")
         self.takusanbuttons("MinMaxButton",self.startTranslater,0,"重新翻译")
         self.takusanbuttons("MinMaxButton",self.changeTranslateMode,1,"自动翻译",'automodebutton')
         self.takusanbuttons("MinMaxButton",self.clickSettin,2,"打开设置")
@@ -318,6 +322,7 @@ class QUnFrameWindow(QWidget):
         self.takusanbuttons("MinMaxButton", self.changeshowhideraw,7,"显示/隐藏原文",'showraw') 
         
         self.takusanbuttons("MinMaxButton", self.transhis.showsignal.emit  ,8,"显示/隐藏历史翻译",'history') 
+        self.takusanbuttons("MinMaxButton", self.settin_ui_button_noundict_click  ,8,"专有名词翻译设置",'noundict') 
         self.takusanbuttons("MinMaxButton",self.langdu,9,"朗读",'langdu') 
         self.takusanbuttons("MinMaxButton",self.changemousetransparentstate,10,"鼠标穿透窗口",'mousetransbutton') 
          
@@ -666,6 +671,7 @@ class QUnFrameWindow(QWidget):
             return False
     def mousePressEvent(self, event):
         # 重写鼠标点击的事件 
+         
         if (event.button() == Qt.LeftButton) and (self.isinrect(event.pos(), self._corner_rect)):
             # 鼠标左键点击右下角边界区域
             self._corner_drag = True 
@@ -695,7 +701,9 @@ class QUnFrameWindow(QWidget):
 
     def mouseMoveEvent(self, QMouseEvent):
         # 判断鼠标位置切换鼠标手势 
+        
         pos=QMouseEvent.pos()
+         
         if self._move_drag ==False:
             if self.isinrect( pos,self._corner_rect):
                 self.setCursor(Qt.SizeFDiagCursor)
@@ -745,13 +753,13 @@ class QUnFrameWindow(QWidget):
         
         for i,button in enumerate(self.buttons[:-2]):
             
-            if i in [13,14,15] and globalconfig['sourcestatus']['ocr'] ==False:
+            if i in [17,15,16] and globalconfig['sourcestatus']['ocr'] ==False:
                 button.hide()
                 continue
-            if i in [11,12] and globalconfig['sourcestatus']['textractor'] ==False:
+            if i in [14,13] and globalconfig['sourcestatus']['textractor'] ==False:
                 button.hide()
                 continue
-            if globalconfig['sourcestatus']['textractor'] ==False and globalconfig['sourcestatus']['ocr'] ==False and i in [16,17,18]:
+            if globalconfig['sourcestatus']['textractor'] ==False and globalconfig['sourcestatus']['ocr'] ==False and i in [20,18,19]:
                 button.hide()
                 
                 continue
@@ -776,7 +784,8 @@ class QUnFrameWindow(QWidget):
         button.setFixedWidth(40*self.rate)
         button.setMouseTracking(True)
         button.setFixedHeight( self._TitleLabel.height() )
-        button.clicked.connect(clickfunc) 
+        if clickfunc:
+            button.clicked.connect(clickfunc) 
         if adjast<0: 
             button.adjast=lambda  :button.move(self.width() + adjast*button.width() , 0) 
         else:
@@ -785,6 +794,11 @@ class QUnFrameWindow(QWidget):
         
         if save=='mousetransbutton':
             self.mousetransbutton=button
+        
+        if save=='move':
+            button.lower()
+             
+            
     def customSetGeometry(self, object, x, y, w, h):
     
         object.setGeometry(QRect(int(x * self.rate),
