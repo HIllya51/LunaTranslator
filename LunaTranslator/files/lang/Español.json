@@ -465,5 +465,9 @@
     "内置": "Incorporado",
     "token设置": "Configuración Token",
     "不同词性颜色(需要Mecab)": "Diferentes colores del habla (se necesita mecab)",
-    "词性颜色(需要Mecab)": "Color del habla (se necesita mecab)"
+    "词性颜色(需要Mecab)": "Color del habla (se necesita mecab)",
+    "！未选定进程！": "¡! ¡Proceso no seleccionado!",
+    "正在搜索特殊码，请让游戏显示更多文本": "Buscando Código especial, deje que el juego muestre más texto",
+    "该功能可能会导致游戏崩溃！": "¡¡ esta función puede causar un colapso del juego!",
+    "警告": "Aviso"
 }

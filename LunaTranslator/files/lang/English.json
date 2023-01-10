@@ -465,5 +465,9 @@
     "内置": "built-in",
     "token设置": "Token settings",
     "不同词性颜色(需要Mecab)": "Different parts of speech colors (Mecab required)",
-    "词性颜色(需要Mecab)": "Part of speech color (Mecab required)"
+    "词性颜色(需要Mecab)": "Part of speech color (Mecab required)",
+    "！未选定进程！": "！ No process selected!",
+    "正在搜索特殊码，请让游戏显示更多文本": "Searching for special code, please let the game display more text",
+    "该功能可能会导致游戏崩溃！": "This function may cause the game to crash!",
+    "警告": "warning"
 }

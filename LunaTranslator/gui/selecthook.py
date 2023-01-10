@@ -2,7 +2,7 @@ import threading
 from re import search
 from traceback import print_exc
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QWidget,QHBoxLayout,QMainWindow,QFrame,QVBoxLayout,QComboBox,QPlainTextEdit,QDialogButtonBox,QLineEdit,QPushButton,QTableView,QAbstractItemView,QApplication,QHeaderView,QCheckBox
+from PyQt5.QtWidgets import QWidget,QHBoxLayout,QMainWindow,QFrame,QVBoxLayout,QMessageBox,QPlainTextEdit,QDialogButtonBox,QLineEdit,QPushButton,QTableView,QAbstractItemView,QApplication,QHeaderView,QCheckBox
 from utils.config import savehook_new,savehook_new2
 from PyQt5.QtGui import QStandardItem, QStandardItemModel
 from PyQt5.QtGui import QFont,QTextCursor
@@ -268,29 +268,37 @@ class hookselect(QMainWindow):
         else:
             self.getnewsentence(_TR('！未选定进程！'))
     def findhook(self): 
-        if os.path.exists('hook.txt'):
-            try:
-                os.remove('hook.txt')
-            except:
-                pass
-        if 'textsource' in dir(self.object) and self.object.textsource: 
-            self.object.textsource.findhook( )
-            self.userhookfind.setEnabled(False)
-            self.userhookfind.setText(_TR("正在搜索特殊码，请让游戏显示更多文本"))
-            
-            self.tttable2.hide()
-            self.searchtextbutton2.hide()
-            self.searchtext2.hide()
-            self.checkfilt_notjapan.hide()
-            self.checkfilt_notpath.hide()
-            self.checkfilt_notlatin.hide() 
-            self.checkfilt_dumplicate.hide()
-            self.ttCombomodelmodel2.clear()
-            self.ttCombomodelmodel2.setHorizontalHeaderLabels(_TRL([ 'HOOK','文本']))
-            threading.Thread(target=self.timewaitthread).start()
-            
-        else:
-            self.getnewsentence(_TR('！未选定进程！'))
+        msgBox=QMessageBox(self)
+        msgBox.setWindowTitle('警告！')
+        msgBox.setText(_TR('该功能可能会导致游戏崩溃！')) 
+        msgBox.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel);
+        msgBox.setDefaultButton(QMessageBox.Ok);
+        ret=msgBox.exec()
+        if ret==QMessageBox.Ok: 
+
+            if os.path.exists('hook.txt'):
+                try:
+                    os.remove('hook.txt')
+                except:
+                    pass
+            if 'textsource' in dir(self.object) and self.object.textsource: 
+                self.object.textsource.findhook( )
+                self.userhookfind.setEnabled(False)
+                self.userhookfind.setText(_TR("正在搜索特殊码，请让游戏显示更多文本"))
+                
+                self.tttable2.hide()
+                self.searchtextbutton2.hide()
+                self.searchtext2.hide()
+                self.checkfilt_notjapan.hide()
+                self.checkfilt_notpath.hide()
+                self.checkfilt_notlatin.hide() 
+                self.checkfilt_dumplicate.hide()
+                self.ttCombomodelmodel2.clear()
+                self.ttCombomodelmodel2.setHorizontalHeaderLabels(_TRL([ 'HOOK','文本']))
+                threading.Thread(target=self.timewaitthread).start()
+                
+            else:
+                self.getnewsentence(_TR('！未选定进程！'))
     def okok(self):
         if self.isMaximized()==False:
             self.showNormal()
