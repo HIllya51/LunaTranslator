@@ -34,7 +34,10 @@ class basetext:
             if globalconfig['sourcestatus'][self.typename]==False:
                 break
             if globalconfig['autorun']==False  :
-                time.sleep(1)
+                try:
+                    self.gettextthread()
+                except:
+                    time.sleep(0.1)
                 continue
             #print(globalconfig['autorun'])
             try:

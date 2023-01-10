@@ -44,6 +44,8 @@
     "iskongxin": true,
     "isshowrawtext": true,
     "kanarate": 0.5,
+    "usemojinlt": false,
+    "mojinlttoken": "",
     "rawtextcolor": "#000000",
     "backcolor": "#7f7f7f",
     "isshowhira": false,
