@@ -2,7 +2,7 @@ import functools
 from PyQt5.QtCore import Qt 
 from PyQt5.QtGui import  QFont
 
-from PyQt5.QtWidgets import  QWidget,QLabel ,QSlider, QFontComboBox  ,QGridLayout
+from PyQt5.QtWidgets import  QWidget,QLabel ,QSlider, QFontComboBox  ,QGridLayout,QLineEdit,QPushButton
 import json,os
  
 from utils.config import globalconfig ,_TR,_TRL
@@ -75,12 +75,16 @@ def setTabThree(self) :
                 {'t':'combo','d':globalconfig['magpieflags'],'k':'CursorInterpolationMode','l':'插值算法','list':['最邻近','双线性']},
         ]
 
-         
+        token=QLineEdit(globalconfig['mojinlttoken'])
+        btn=QPushButton(_TR('设置Token' ))
+        btn.clicked.connect(lambda x:globalconfig.__setitem__('mojinlttoken',token.text()))
+        
         buttongrid=[
                 [('不透明度',2),(self.horizontal_slider,8),(self.horizontal_slider_label,2)],
                 [('原文颜色',4), self.getcolorbutton(globalconfig,'rawtextcolor',callback=lambda: self.ChangeTranslateColor("rawtextcolor", self.original_color_button),name='original_color_button'),'',('翻译窗口背景颜色',4),self.getcolorbutton(globalconfig,'backcolor',callback=lambda: self.ChangeTranslateColor("backcolor", self.back_color_button),name='back_color_button'),'',('工具按钮颜色',4),self.getcolorbutton(globalconfig,'buttoncolor',callback=_settoolbariconcolor ,name='buttoncolorbutton')],
                 [('显示原文',4),self.getsimpleswitch(globalconfig,'isshowrawtext',callback=lambda x: __changeuibuttonstate(self,x),name='show_original_switch'),'',('显示分词结果',4 ),self.getsimpleswitch(globalconfig,'show_fenci',enable=globalconfig['isshowrawtext'],name='showatmiddleswitch')],
-                
+                [('使用Moji在线文本分析',4),(self.getsimpleswitch(globalconfig,'usemojinlt'),1)],
+                [('Moji NLT Token',4),(token,8),(btn,3)],
                 [('翻译器字体类型',3),(self.font_comboBox,5),'',('设置界面字体类型',3),(self.sfont_comboBox,5)],
                 [('字体大小',3),(self.getspinbox(1,100,globalconfig,'fontsize',double=True,step=0.1,name='fontSize_spinBox'),2),'',('居中显示',4),self.getsimpleswitch(globalconfig,'showatcenter'),'',('加粗字体',4),self.getsimpleswitch(globalconfig,'showbold' )],
                 [''],

@@ -46,6 +46,7 @@ socket.setdefaulttimeout(globalconfig['translatortimeout'])
 from utils.post import POSTSOLVE
 import xml.etree.ElementTree as ET  
 from utils.argsort import argsort
+from utils.mojinlt import nlt
 class MAINUI(QObject) :
     mainuiloadok=pyqtSignal()
     def __init__(self) -> None:
@@ -231,6 +232,9 @@ class MAINUI(QObject) :
 
         self.translation_ui.original=_paste_str 
         if 'hira_' in dir(self):
+            if globalconfig['usemojinlt']:
+                hira=nlt(_paste_str,globalconfig['mojinlttoken'])
+            else:
                 hira=self.hira_.fy(_paste_str)
         else:
             hira=[]
