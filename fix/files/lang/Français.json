@@ -465,5 +465,9 @@
     "内置": "Intégré",
     "token设置": "Paramètres token",
     "不同词性颜色(需要Mecab)": "Différentes couleurs lexicales (mecab requis)",
-    "词性颜色(需要Mecab)": "Couleur des mots (mecab requis)"
+    "词性颜色(需要Mecab)": "Couleur des mots (mecab requis)",
+    "！未选定进程！": "- Oui! Aucun processus sélectionné!",
+    "正在搜索特殊码，请让游戏显示更多文本": "Recherche de codes spéciaux, veuillez laisser le jeu afficher plus de texte",
+    "该功能可能会导致游戏崩溃！": "Cette fonctionnalité peut provoquer un crash du jeu!",
+    "警告": "Avertissement"
 }
