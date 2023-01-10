@@ -6,6 +6,12 @@
             "Secret Key": "", 
             "次数统计": "0"
         }
+    },"feishu": {
+        "args": {
+            "注册网址": "https://open.feishu.cn/document/ukTMukTMukTM/ukDNz4SO0MjL5QzM/auth-v3/auth/tenant_access_token_internal",
+            "app_id": "",
+            "app_secret": ""
+        }
     },
 	"baiduocr_accurate": {
         "args": {

@@ -85,7 +85,7 @@ def setTab7(self) :
             [('翻译优化',6)],
             [(('使用专有名词翻译' ),6),
                 self.getsimpleswitch(noundictconfig,'use'),
-                self.getcolorbutton(globalconfig,'',callback=lambda x:  noundictconfigdialog(self,noundictconfig,'专有名词翻译设置(游戏ID 0表示全局)'),icon='fa.gear',constcolor="#FF69B4")],
+                self.getcolorbutton(globalconfig,'',name="button_noundict",callback=lambda x:  noundictconfigdialog(self,noundictconfig,'专有名词翻译设置(游戏ID 0表示全局)'),icon='fa.gear',constcolor="#FF69B4")],
             [(('使用翻译结果修正' ),6),
                 self.getsimpleswitch(transerrorfixdictconfig,'use'),
                 self.getcolorbutton(globalconfig,'',callback=lambda x:  noundictconfigdialog1(self,transerrorfixdictconfig,'翻译结果替换设置',['翻译','替换'],'./userconfig/transerrorfixdictconfig.json'),icon='fa.gear',constcolor="#FF69B4")],

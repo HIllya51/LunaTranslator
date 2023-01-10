@@ -444,5 +444,16 @@
     "清空": "empty",
     "不显示原文": "Don't show original text",
     "不显示api": "Do not display api",
-    "字体": "typeface"
+    "字体": "typeface",
+    "飞书": "anonymous letter",
+    "飞书设置": "Flying book setting",
+    "app_id": "app_ id",
+    "app_secret": "app_ secret",
+    "编辑": "edit",
+    "显示编辑按钮": "Show Edit Button",
+    "移动": "move",
+    "显示移动按钮": "Show Move Button",
+    "编辑专有名词": "Edit proper nouns",
+    "专有名词翻译设置": "Proper noun translation settings",
+    "显示专有名词翻译设置按钮": "Display proper noun translation settings button"
 }

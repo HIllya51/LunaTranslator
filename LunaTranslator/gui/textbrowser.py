@@ -39,6 +39,16 @@ class Textbrowser( ):
         #self.shadowlabel=QLabel(parent)
         #self.shadowlabel.savetext=''
         self.align=False
+        
+        self.atback=QLabel(parent)
+        self.atback.setGeometry(0,30*self.parent.rate,9999,9999)
+        self.atback.setMouseTracking(True)
+
+        
+        self.atback2=QLabel(parent)
+        self.atback2.setGeometry(0,30*self.parent.rate,9999,9999)
+        self.atback2.setMouseTracking(True)
+
         self.textbrowserback=QTextBrowser(parent)
         self.textbrowser=QTextBrowser(parent)
         self.cleared=False
@@ -72,7 +82,7 @@ class Textbrowser( ):
         self.yinyingpos=0
         self.yinyingposline=0
         self.lastcolor=None
- 
+        self.jiaming_y_delta=0
         self.charformat=self.textbrowser.currentCharFormat()
     def simplecharformat(self,color):
         self.textbrowser.setCurrentCharFormat(self.charformat)
@@ -97,17 +107,23 @@ class Textbrowser( ):
         #self.textbrowser.setStyleSheet(x)
         
         #self.textbrowserback.setStyleSheet(x)
-        self.parent.atback.setStyleSheet(x)
+        self.atback.setStyleSheet(x)
     def move(self,x,y):
         self.textbrowser.move(x,y)
         self.textbrowserback.move(x,y)
         #self.shadowlabel.move(x,y)
-       
+        self.savey=y
     def document(self): 
         return self.textbrowser.document()
+    def resize(self,_1,_2):
+        self.textbrowser.resize(_1,_2)
+        self.textbrowserback.resize(_1,_2)
+
     def setGeometry(self,_1,_2,_3,_4):
         self.textbrowser.setGeometry(_1,_2,_3,_4)
         self.textbrowserback.setGeometry(_1,_2,_3,_4) 
+
+        self.savey=_2
         #self.shadowlabel.setGeometry(_1,_2,_3,_4)  
         #self.shadowlabel.resize(_3,_4)
     def setAlignment(self,x):
@@ -135,6 +151,7 @@ class Textbrowser( ):
             self.addtaged=False
               
             fh=self.getfh(False)
+              
             for i in range(self.blockcount, self.textbrowser.document().blockCount()):
                 b=self.textbrowser.document().findBlockByNumber(i) 
                 tf=b.blockFormat() 
@@ -149,8 +166,18 @@ class Textbrowser( ):
                 cursor.setPosition(b.position()) 
                 cursor.setBlockFormat(tf)
                 self.textbrowser.setTextCursor(cursor) 
+        
         if len(tag)>0:
             self.addtag(tag)
+
+        if globalconfig['isshowhira']==False or globalconfig['isshowrawtext']==False: 
+            if self.jiaming_y_delta>0:
+                self.textbrowser.move(0,self.savey)
+                self.toplabel.move(0,self.savey )
+                self.toplabel2.move(0,self.savey ) 
+                self.atback2.move(0,self.savey ) 
+                self.textbrowserback.move(0,self.savey)  
+                self.jiaming_y_delta=0
     def showyinyingtext(self,color ):   
          
         linei=self.yinyingposline
@@ -234,7 +261,7 @@ class Textbrowser( ):
                 if color:
                     if word['orig'] not in ['\n','\r'] :
                         if labeli >=len(self.searchmasklabels)-1:
-                            ql=QLabel(self.parent.atback) 
+                            ql=QLabel(self.atback2) 
                             ql.setMouseTracking(True)
                             self.searchmasklabels.append(ql)
 
@@ -243,7 +270,7 @@ class Textbrowser( ):
                             ql.setStyleSheet("background-color: rgba(0,0,0,0.01);")
                             self.searchmasklabels_clicked.append(ql)
                             
-                            ql=QLabel(self.parent.atback) 
+                            ql=QLabel(self.atback2) 
                             ql.setMouseTracking(True)
                             self.searchmasklabels.append(ql)
 
@@ -355,15 +382,15 @@ class Textbrowser( ):
         labeli=0 
          
         fhall=self.getfh(False)
-           
-        fhhalf,font=self.getfh(True)
+        
+        fhhalf,font=self.getfh(True) 
         self.blockcount=self.textbrowser.document().blockCount() 
         for i in range(0,self.blockcount):
             b=self.textbrowser.document().findBlockByNumber(i)
                  
             tf=b.blockFormat()
             #tf.setLineHeight(fh,QTextBlockFormat.LineDistanceHeight)
-            tf.setLineHeight(fhall+fhhalf,QTextBlockFormat.FixedHeight)
+            tf.setLineHeight(fhall+fhhalf ,QTextBlockFormat.FixedHeight)
             cursor=self.textbrowserback.textCursor() 
             cursor.setPosition(b.position()) 
             cursor.setBlockFormat(tf)
@@ -375,6 +402,24 @@ class Textbrowser( ):
             cursor.setBlockFormat(tf)
             self.textbrowser.setTextCursor(cursor)
         self._rawqlabel=QLabel() 
+
+        tl1=self.textbrowser.cursorRect(self.textbrowser.textCursor()).topLeft().y() 
+        if tl1-fhhalf<0: 
+            self.textbrowser.move(0,self.savey+fhhalf-tl1 )
+            self.toplabel.move(0,self.savey+fhhalf-tl1 )
+            self.toplabel2.move(0,self.savey+fhhalf-tl1 ) 
+            
+            self.atback2.move(0,self.savey+fhhalf-tl1 ) 
+            self.textbrowserback.move(0,self.savey+fhhalf-tl1 )  
+            self.jiaming_y_delta=fhhalf-tl1
+        else:
+            self.textbrowser.move(0,self.savey)
+            self.toplabel.move(0,self.savey )
+            
+            self.atback2.move(0,self.savey  ) 
+            self.toplabel2.move(0,self.savey ) 
+            self.textbrowserback.move(0,self.savey)  
+            self.jiaming_y_delta=0 
         for word in x:
             if word['orig']=='\n':
                 continue
@@ -427,6 +472,7 @@ class Textbrowser( ):
             x=tl1.x()/2+tl2.x()/2-w/2
             y=tl2.y()-fh   
         y+=30*self.parent.rate
+        y+=self.jiaming_y_delta
         if effect:
             if 'savelastfontandcolor' not in dir(label) or label.savelastfontandcolor!=(globalconfig['fontsize'],globalconfig['jiamingcolor']):
                 shadow2 = QGraphicsDropShadowEffect()
