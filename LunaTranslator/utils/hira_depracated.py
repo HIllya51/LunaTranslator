@@ -4,19 +4,22 @@ import os
 from traceback import print_exc
 class hira:
     def __init__(self) -> None: 
-        
-        if globalconfig['mecab']['use'] and os.path.exists(globalconfig['mecab']['path']):
-            import fugashi
-            dic_dir_path = globalconfig['mecab']['path']
-            self.kks= fugashi.Tagger('-r nul -d "{}" -Owakati'.format(dic_dir_path))
-            self.usemecab=True
-            keys='ァアィイゥウェエォオカガキギクグケゲコゴサザシジスズセゼソゾタダチヂッツヅテデトドナニヌネノハバパヒビピフブプヘベペホボポマミムメモャヤュユョヨラリルレロヮワヰヱヲンヴヵヶヽヾ'
-            vs='ぁあぃいぅうぇえぉおかがきぎくぐけげこごさざしじすずせぜそぞただちぢっつづてでとどなにぬねのはばぱひびぴふぶぷへべぺほぼぽまみむめもゃやゅゆょよらりるれろゎわゐゑをんゔゕゖゝゞ'
-            self.h2k=str.maketrans( keys,vs)
-        else:
+        hirasettingbase=globalconfig['hirasetting']
+        if hirasettingbase['mecab']['use']:
+            mecabpath=hirasettingbase['mecab']['path']
+            if os.path.exists(mecabpath):
+                import fugashi 
+                self.kks= fugashi.Tagger('-r nul -d "{}" -Owakati'.format(mecabpath))
+                self.usemecab=True
+                keys='ァアィイゥウェエォオカガキギクグケゲコゴサザシジスズセゼソゾタダチヂッツヅテデトドナニヌネノハバパヒビピフブプヘベペホボポマミムメモャヤュユョヨラリルレロヮワヰヱヲンヴヵヶヽヾ'
+                vs='ぁあぃいぅうぇえぉおかがきぎくぐけげこごさざしじすずせぜそぞただちぢっつづてでとどなにぬねのはばぱひびぴふぶぷへべぺほぼぽまみむめもゃやゅゆょよらりるれろゎわゐゑをんゔゕゖゝゞ'
+                self.h2k=str.maketrans( keys,vs)
+        elif hirasettingbase['local']['use']:
             import pykakasi
             self.kks = pykakasi . kakasi ()
             self.usemecab=False
+         
+                
     def guesslen(self,text):
         lenl=0
         for s in text:

@@ -12,7 +12,7 @@ from traceback import print_exc
 from utils.config import globalconfig ,_TR,_TRL
 class searchwordW(QMainWindow): 
     getnewsentencesignal=pyqtSignal(str) 
-    searchthreadsignal=pyqtSignal(str,dict,tuple)
+    searchthreadsignal=pyqtSignal(str,dict,str)
     showsignal=pyqtSignal(str,str)
     def __init__(self,p):
         super(searchwordW, self).__init__(p)
@@ -86,8 +86,8 @@ class searchwordW(QMainWindow):
         
         self.textbs={}
 
-        _k=['MeCab']
-        _name=['MeCab']
+        _k=[ ]
+        _name=[ ]
         for cishu in globalconfig['cishu']:
             _name.append(globalconfig['cishu'][cishu]['name'])
             _k.append(cishu)
@@ -163,21 +163,21 @@ class searchwordW(QMainWindow):
                 for _ in self.textbs:
                     self.textbs[_].setFont(font)
     def getnewsentence(self,sentence):
-        self.searchtext.setText(sentence[0] )
+        self.searchtext.setText(sentence  )
          
         self.search(sentence)
 
     def searchthread(self,k,_mp,sentence):
         
         _mp[k].callback=functools.partial(self.showsignal.emit,k)
-        _mp[k].search(sentence if k=='MeCab' else sentence[0]) 
+        _mp[k].search( sentence ) 
         
     
     def search(self,sentence):
-        if  sentence[0]=='':
+        if  sentence =='':
             return
          
-        _mp={'MeCab':self.p.object.hira_}
+        _mp={ }
         _mp.update(self.p.object.cishus)
          
         for k in self._k : 

@@ -5,6 +5,7 @@ from PyQt5.QtGui import  QFont
 from PyQt5.QtWidgets import  QWidget,QLabel ,QSlider, QFontComboBox  ,QGridLayout,QLineEdit,QPushButton
 import json,os
  
+from gui.inputdialog import multicolorset
 from utils.config import globalconfig ,_TR,_TRL
 
 from gui.inputdialog import autoinitdialog,getsomepath1
@@ -74,23 +75,20 @@ def setTabThree(self) :
                 {'t':'combo','d':globalconfig['magpieflags'],'k':'CursorZoomFactor','l':'光标缩放系数','list':['0.5x','0.75x','1x','1.25x','1.5x','2x','2.5x','3x','和源窗口相同'],'map':[0.5,0.75,1,1.25,1.5,2,2.5,3,0]},
                 {'t':'combo','d':globalconfig['magpieflags'],'k':'CursorInterpolationMode','l':'插值算法','list':['最邻近','双线性']},
         ]
-
-        token=QLineEdit(globalconfig['mojinlttoken'])
-        btn=QPushButton(_TR('设置Token' ))
-        btn.clicked.connect(lambda x:globalconfig.__setitem__('mojinlttoken',token.text()))
-        
+ 
         buttongrid=[
                 [('不透明度',2),(self.horizontal_slider,8),(self.horizontal_slider_label,2)],
                 [('原文颜色',4), self.getcolorbutton(globalconfig,'rawtextcolor',callback=lambda: self.ChangeTranslateColor("rawtextcolor", self.original_color_button),name='original_color_button'),'',('翻译窗口背景颜色',4),self.getcolorbutton(globalconfig,'backcolor',callback=lambda: self.ChangeTranslateColor("backcolor", self.back_color_button),name='back_color_button'),'',('工具按钮颜色',4),self.getcolorbutton(globalconfig,'buttoncolor',callback=_settoolbariconcolor ,name='buttoncolorbutton')],
-                [('显示原文',4),self.getsimpleswitch(globalconfig,'isshowrawtext',callback=lambda x: __changeuibuttonstate(self,x),name='show_original_switch'),'',('显示分词结果',4 ),self.getsimpleswitch(globalconfig,'show_fenci',enable=globalconfig['isshowrawtext'],name='showatmiddleswitch')],
-                [('使用Moji在线文本分析',4),(self.getsimpleswitch(globalconfig,'usemojinlt'),1)],
-                [('Moji NLT Token',4),(token,8),(btn,3)],
+                [('显示原文',4),self.getsimpleswitch(globalconfig,'isshowrawtext',callback=lambda x: __changeuibuttonstate(self,x),name='show_original_switch')],
+                 
                 [('翻译器字体类型',3),(self.font_comboBox,5),'',('设置界面字体类型',3),(self.sfont_comboBox,5)],
                 [('字体大小',3),(self.getspinbox(1,100,globalconfig,'fontsize',double=True,step=0.1,name='fontSize_spinBox'),2),'',('居中显示',4),self.getsimpleswitch(globalconfig,'showatcenter'),'',('加粗字体',4),self.getsimpleswitch(globalconfig,'showbold' )],
                 [''],
                 [('字体样式',3),(self.getsimplecombobox(_TRL(['普通字体','空心字体','描边字体','阴影字体']),globalconfig,'zitiyangshi'),2),'',('特殊字体样式填充颜色',4),self.getcolorbutton(globalconfig,'miaobiancolor',callback=lambda: self.ChangeTranslateColor("miaobiancolor", self.miaobian_color_button),name='miaobian_color_button')],
                 [('空心线宽',3),(self.getspinbox(1,100,globalconfig,'miaobianwidth',double=True,step=0.1),2),'',('描边宽度',3 ),(self.getspinbox(1,100,globalconfig,'miaobianwidth2',double=True,step=0.1),2),'',('阴影强度',3),(self.getspinbox(1,10,globalconfig,'shadowforce'),2)],
                 [''],
+                [('显示分词结果',4 ),self.getsimpleswitch(globalconfig,'show_fenci',enable=globalconfig['isshowrawtext'],name='showatmiddleswitch'),'',
+                 ('词性颜色(需要Mecab)',4), self.getcolorbutton(globalconfig,'',callback=lambda  : multicolorset(self),icon='fa.gear',constcolor="#FF69B4") ,],
                 [('显示假名',4),self.getsimpleswitch(globalconfig,'isshowhira',enable=globalconfig['isshowrawtext'],name='show_hira_switch'),'',('假名颜色',4),self.getcolorbutton(globalconfig,'jiamingcolor',callback=lambda: self.ChangeTranslateColor("jiamingcolor", self.jiamingcolor_b),name='jiamingcolor_b'),'',('假名字体缩放',3),(self.getspinbox(0.05,1,globalconfig,'kanarate',double=True,step=0.05,dec=2),2)],
                 [''],
                 [("自动隐藏窗口",4),(self.getsimpleswitch(globalconfig  ,'autodisappear'),1),'',("隐藏延迟(s)",3),(self.getspinbox(1,100,globalconfig  ,'disappear_delay'),2)],

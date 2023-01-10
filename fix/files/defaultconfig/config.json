@@ -43,7 +43,7 @@
     "zitiyangshi": 2,
     "iskongxin": true,
     "isshowrawtext": true,
-    "kanarate": 0.5,
+    "kanarate": 0.5,  
     "rawtextcolor": "#000000",
     "backcolor": "#7f7f7f",
     "isshowhira": false,
@@ -334,10 +334,19 @@
             "path": ""
         }
     },
-    "mecab": {
-        "use": false,
-        "path": ""
-    },
+	"hirasetting":{
+		"local":{
+			"use":true
+		},
+		"mecab":{
+				"use":false,
+				"path": ""
+		},
+		"mojinlt":{
+			"use":false,
+			"token":"" 
+		}
+	}, 
 	"cishu":{
 		"xiaoxueguan": {
 			"use": true,

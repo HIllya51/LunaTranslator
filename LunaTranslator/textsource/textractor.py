@@ -256,6 +256,9 @@ class textractor(basetext  ):
             #self.runonce_line=real
             self.newline.put(newline) 
             self.runonce_line=newline
+    def ignoretext(self):
+        while self.newline.empty()==False:
+            self.newline.get() 
     def gettextthread(self ):
             #print(333333)
             paste_str=self.newline.get()
@@ -271,6 +274,7 @@ class textractor(basetext  ):
                 pass
             #self.exit()   
             time.sleep(0.1)
+        
         self.u16lesubprocess.kill()
         #self.object.translation_ui.killprocesssignal.emit()
         self.ending=True

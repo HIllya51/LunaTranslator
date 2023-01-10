@@ -14,7 +14,7 @@ class youdao:
         except:
             return ''
     def search(self,word):
-        text=requests.get(f'https://dict.youdao.com/result?word={quote(word)}&lang={self.srclang}').text
+        text=requests.get(f'https://dict.youdao.com/result?word={quote(word)}&lang={self.srclang}', proxies=  {'http': None,'https': None}).text
         
         fnd=re.findall('<div class="head-content"(.*?)>([\\s\\S]*?)</span>(.*?)</div>',text)
         save=[] 

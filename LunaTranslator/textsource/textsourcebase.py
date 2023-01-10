@@ -33,22 +33,26 @@ class basetext:
                 break
             if globalconfig['sourcestatus'][self.typename]==False:
                 break
+            
             if globalconfig['autorun']==False  :
-                try:
-                    self.gettextthread()
-                except:
-                    time.sleep(0.1)
+                self.ignoretext()
+                time.sleep(0.1)
                 continue
+
             #print(globalconfig['autorun'])
             try:
                 t=self.gettextthread()
             except:
                 t=''
                 print_exc()
+            
+            
             if t and globalconfig['autorun']:
                 self.textgetmethod(t)
                 if self.typename=='ocr':
                     time.sleep(globalconfig['ocrmininterval'])
+    def ignoretext(self):
+        pass
     def gettextthread(self):
         pass
     def runonce(self):

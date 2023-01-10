@@ -4,7 +4,7 @@
     <a href="./LICENSE"><img src="https://img.shields.io/badge/license-GPL%203.0-dfd.svg"></a>
     <a href="https://github.com/HIllya51/LunaTranslator/releases"><img src="https://img.shields.io/github/v/release/HIllya51/LunaTranslator?color=ffa"></a>
     <a href="https://github.com/HIllya51/LunaTranslator/stargazers"><img src="https://img.shields.io/github/stars/HIllya51/LunaTranslator?color=ccf"></a>
-    <a id="downloadlink" href="https://github.com/HIllya51/LunaTranslator/releases/download/v1.36.3/LunaTranslator.zip"><img src="https://img.shields.io/badge/download-%E4%B8%8B%E8%BD%BD-red"></a>
+    <a id="downloadlink" href="https://github.com/HIllya51/LunaTranslator/releases/download/v1.37.0/LunaTranslator.zip"><img src="https://img.shields.io/badge/download-%E4%B8%8B%E8%BD%BD-red"></a>
 </p>
 
 ## [简体中文](README.md)  |  Русский язык

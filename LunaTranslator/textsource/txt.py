@@ -26,7 +26,9 @@ class txt(basetext):
         self.prefix='0_txt'
         super(txt,self).__init__(textgetmethod)
         threading.Thread(target=self.txtgetline).start()
-     
+    def ignoretext(self):
+        while self.queue.empty()==False:
+            self.queue.get()
     def txtgetline(self):
         for line in self.txtlines: 
             self.queue.put(line)

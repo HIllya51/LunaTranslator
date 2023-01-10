@@ -294,13 +294,13 @@ class Textbrowser( ):
                                 self.searchmasklabels_clicked[labeli].show()
                                 self.searchmasklabels_clicked[labeli].company=self.searchmasklabels_clicked[labeli+1]
                                 if callback:
-                                    self.searchmasklabels_clicked[labeli].callback=functools.partial(callback,(word['orig'],raw,idx-1)) 
+                                    self.searchmasklabels_clicked[labeli].callback=functools.partial(callback,(word['orig'] )) 
 
                                 self.searchmasklabels_clicked[labeli+1].setGeometry(*pos2) 
                                 self.searchmasklabels_clicked[labeli+1].show()
                                 self.searchmasklabels_clicked[labeli+1].company=self.searchmasklabels_clicked[labeli]
                                 if callback:
-                                    self.searchmasklabels_clicked[labeli+1].callback=functools.partial(callback,(word['orig'],raw,idx-1)) 
+                                    self.searchmasklabels_clicked[labeli+1].callback=functools.partial(callback,(word['orig'] )) 
 
                             if globalconfig['show_fenci']  :
                                 self.searchmasklabels[labeli].setGeometry(*pos1) 
@@ -320,7 +320,7 @@ class Textbrowser( ):
                                 self.searchmasklabels_clicked[labeli].company=None
                                 self.searchmasklabels_clicked[labeli].show()
                                 if callback:
-                                    self.searchmasklabels_clicked[labeli].callback=functools.partial(callback,(word['orig'],raw,idx-1)) 
+                                    self.searchmasklabels_clicked[labeli].callback=functools.partial(callback,(word['orig'])) 
                             if globalconfig['show_fenci']  :
                                 self.searchmasklabels[labeli].setGeometry(*pos1)
                                 self.searchmasklabels[labeli].setStyleSheet(f"background-color: rgba{color};"  )
@@ -339,8 +339,7 @@ class Textbrowser( ):
                 
     def randomcolor(self,word):
         c=QColor("white") 
-        if 'cixing' in word and globalconfig['mecab']['use']:
-            
+        if 'cixing' in word : 
             try:
                 if globalconfig['cixingcolorshow'][word['cixing']]==False:
                     return None

@@ -82,7 +82,13 @@ def synccishu():
                 globalconfig['cishu'][k]['path']=(globalconfig[k]['path'])
                 globalconfig.pop(k)
 synccishu()
-
+try:
+    if 'mecab' in globalconfig  :
+        globalconfig['hirasetting']['mecab']['path']=globalconfig['mecab']['path']
+        globalconfig['hirasetting']['mecab']['use']=globalconfig['mecab']['use']
+        globalconfig.pop('mecab')
+except:
+    pass
 listlengthsync(globalconfig,defaultglobalconfig,'postprocess_rank') 
 listlengthsync(globalconfig,defaultglobalconfig,'language_list',True) 
 listlengthsync(globalconfig,defaultglobalconfig,'language_list_translator',True) 

@@ -37,5 +37,6 @@ class u16lesubprocess():
         self.process.stdin.write(xx )
         self.process.stdin.flush()
     def kill(self):
-        self.process.kill()
+        if self.process:
+            self.process.kill() 
         self.process=None 
