@@ -66,7 +66,7 @@ class searchwordW(QMainWindow):
 
 
         #self.searchbutton.setFont(font) 
-        self.searchbutton.clicked.connect(lambda :self.search((self.searchtext.text(),None,None)))
+        self.searchbutton.clicked.connect(lambda :self.search((self.searchtext.text() )))
         self.searchlayout.addWidget(self.searchbutton)
 
         self.soundbutton=QPushButton(qtawesome.icon("fa.music"), "")
