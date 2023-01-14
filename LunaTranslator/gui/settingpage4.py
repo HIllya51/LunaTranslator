@@ -36,14 +36,7 @@ def autosaveshow(object):
     dialog.setWindowTitle(_TR('已保存游戏'))
     #dialog.setWindowModality(Qt.ApplicationModal) 
     formLayout = QVBoxLayout(dialog)  # 配置layout
-    def closeEvent(  a0  ) -> None:
-                rows=model.rowCount() 
-                 
-                for row in range(rows):  
-                        savehook_new2[model.item(row,2).savetext]['title']=model.item(row,3).text()
-                 
-                return QDialog().closeEvent(a0)
-    dialog.closeEvent=closeEvent
+    
     def selectexe(item):
         f=QFileDialog.getOpenFileName(directory=item.savetext )
         res=f[0]
@@ -92,7 +85,7 @@ def autosaveshow(object):
                 # model.setItem(row, 2, item)
                 row+=1
         model.setHorizontalHeaderLabels(_TRL(['转区','','路径', '游戏']))#,'HOOK'])
-        model
+         
         #table.clicked.connect(self.show_info)
         button=QPushButton(dialog)
         button.setText(_TR('开始游戏'))
@@ -189,6 +182,15 @@ def autosaveshow(object):
         formLayout.addWidget(button3) 
         formLayout.addWidget(button2) 
         dialog.resize(QSize(800,400))
+        def closeEvent(  a0  ) -> None:
+                button.setFocus()
+                rows=model.rowCount() 
+                 
+                for row in range(rows):  
+                        savehook_new2[model.item(row,2).savetext]['title']=model.item(row,3).text()
+                 
+                return QDialog().closeEvent(a0)
+    dialog.closeEvent=closeEvent
     dialog.show()
 def writeleconfig(game):
          
@@ -240,11 +242,14 @@ def codeacceptdialog(object ,title=  '接受的编码' ,label=[  '接受的编�
         
         model.removeRow(table.currentIndex().row())
     button2.clicked.connect(clicked2) 
-    def clicked3(_):
+    def clicked3(_): 
+        button.setFocus() 
         rows=model.rowCount() 
         ll=[]
         for row in range(rows):
+                
             code=model.item(row,0).text()
+            
             if checkencoding(code):
                 ll.append(code) 
         globalconfig['accept_encoding']=ll 

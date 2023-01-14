@@ -130,6 +130,7 @@ def noundictconfigdialog1(object,configdict,title,label=[  '日文','翻译'],fn
     button2.clicked.connect(clicked2)
      
     def clicked3(_):
+        button.setFocus()
         rows=model.rowCount() 
         newdict={}
         for row in range(rows):
@@ -197,6 +198,7 @@ def noundictconfigdialog(object,configdict,title,label=['游戏ID MD5' ,'日文'
     button5.clicked.connect(clicked5)
      
     def clicked3(_):
+        button.setFocus()
         rows=model.rowCount() 
         newdict={}
         for row in range(rows):
@@ -297,6 +299,7 @@ def postconfigdialog(object,configdict,title):
         button2.clicked.connect(clicked2)
        
         def clicked3(_):
+            button.setFocus()
             rows=model.rowCount() 
             newdict={}
             for row in range(rows):
