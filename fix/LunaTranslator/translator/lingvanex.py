@@ -93,7 +93,7 @@ class Lingvanex(Tse):
                 :param lingvanex_mode: str, default "B2C", choose from ("B2B", "B2C").
         :return: str or dict
         """
-
+        print(query_text,from_language,to_language)
         mode = kwargs.get('lingvanex_mode', 'B2C')
         timeout = kwargs.get('timeout', None)
         proxies = kwargs.get('proxies', None)
@@ -133,9 +133,9 @@ class Lingvanex(Tse):
         data = r.json()
         time.sleep(sleep_seconds)
         self.query_count += 1
-        return data if is_detail_result else data['result'] if self.mode == 'B2C' else data['result']['text']
-
-
+        #return data if is_detail_result else data['result'] if self.mode == 'B2C' else data['result']['text']
+        print(data if is_detail_result else data['result'] if self.mode == 'B2C' else data['result']['text'])
+        return data['result']['text']
 from traceback import print_exc
 
 from translator.basetranslator import basetrans
