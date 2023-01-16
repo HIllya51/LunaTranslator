@@ -215,15 +215,15 @@ class MAINUI(QObject) :
         try:
             if type(paste_str)==list:
                 paste_str=[POSTSOLVE(_) for _ in paste_str] 
+                _paste_str='\n'.join(paste_str)
             else:
-                paste_str=POSTSOLVE(paste_str)
+                _paste_str=POSTSOLVE(paste_str)
+                
+                
         except:
-            print_exc() 
-        
-        if type(paste_str)==list:
-            _paste_str='\n'.join(paste_str)
-        else:
-            _paste_str=paste_str
+            return 
+        if set(_paste_str)-set('\r\n \t')==set():
+            return 
          
         if len(_paste_str)>10000:
             return 
