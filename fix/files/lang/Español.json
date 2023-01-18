@@ -469,5 +469,17 @@
     "！未选定进程！": "¡! ¡Proceso no seleccionado!",
     "正在搜索特殊码，请让游戏显示更多文本": "Buscando Código especial, deje que el juego muestre más texto",
     "该功能可能会导致游戏崩溃！": "¡¡ esta función puede causar un colapso del juego!",
-    "警告": "Aviso"
+    "警告": "Aviso",
+    "OCR稳定性阈值": "Umbral de estabilidad OCR",
+    "OCR一致性阈值": "Umbral de coherencia OCR",
+    "OCR自动化方法": "Método de automatización OCR",
+    "文字更新分析": "Análisis de actualización de texto",
+    "时间间隔": "Intervalo de tiempo",
+    "时间周期执行": "Ejecución del ciclo de tiempo",
+    "分析图像更新": "Actualización de la imagen de análisis",
+    "周期执行": "Ejecución del ciclo",
+    "执行周期": "Ciclo de ejecución",
+    "图像稳定性阈值": "Umbral de estabilidad de la imagen",
+    "图像一致性阈值": "Umbral de consistencia de la imagen",
+    "执行周期(s)": "Ciclo de ejecución (s)"
 }

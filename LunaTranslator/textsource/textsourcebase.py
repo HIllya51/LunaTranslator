@@ -48,9 +48,7 @@ class basetext:
             
             
             if t and globalconfig['autorun']:
-                self.textgetmethod(t)
-                if self.typename=='ocr':
-                    time.sleep(globalconfig['ocrmininterval'])
+                self.textgetmethod(t) 
     def ignoretext(self):
         pass
     def gettextthread(self):

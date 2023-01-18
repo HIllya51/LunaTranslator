@@ -469,5 +469,17 @@
     "！未选定进程！": "！ No process selected!",
     "正在搜索特殊码，请让游戏显示更多文本": "Searching for special code, please let the game display more text",
     "该功能可能会导致游戏崩溃！": "This function may cause the game to crash!",
-    "警告": "warning"
+    "警告": "warning",
+    "OCR稳定性阈值": "OCR stability threshold",
+    "OCR一致性阈值": "OCR consistency threshold",
+    "OCR自动化方法": "OCR automation method",
+    "文字更新分析": "Text update analysis",
+    "时间间隔": "time interval",
+    "时间周期执行": "Time cycle execution",
+    "分析图像更新": "Analyze image updates",
+    "周期执行": "Periodic execution",
+    "执行周期": "Execution cycle",
+    "图像稳定性阈值": "Image stability threshold",
+    "图像一致性阈值": "Image consistency threshold",
+    "执行周期(s)": "Execution cycle (s)"
 }

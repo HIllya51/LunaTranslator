@@ -95,10 +95,13 @@ class ocrtext(basetext):
             #img=ImageGrab.grab((self.object.rect[0][0],self.object.rect[0][1],self.object.rect[1][0],self.object.rect[1][1]))
             #imgr = cv2.cvtColor(np.asarray(img), cv2.COLOR_RGB2BGR)
             imgr=self.imageCut(self.object.rect[0][0],self.object.rect[0][1],self.object.rect[1][0],self.object.rect[1][1])
-             
-            if globalconfig['mustocr'] and  time.time()-self.lastocrtime>globalconfig['mustocr_interval']:
-                pass
-            else:
+            
+            if globalconfig['ocr_auto_method'] ==1:
+                if time.time()-self.lastocrtime>globalconfig['ocr_interval']:
+                    pass
+                else:
+                    return None
+            elif globalconfig['ocr_auto_method'] ==0: 
                 imgr1=qimge2np(imgr)
                 h,w,c=imgr1.shape 
                 if self.savelastimg is not None and  (imgr1.shape==self.savelastimg.shape) : 

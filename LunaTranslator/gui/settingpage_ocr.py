@@ -6,7 +6,7 @@ from PyQt5.QtWidgets import QWidget,QFrame ,QPushButton,QColorDialog,QGridLayout
 from PyQt5.QtGui import QColor,QFont
 import functools 
 import qtawesome
-from utils.config import globalconfig ,ocrsetting
+from utils.config import globalconfig ,ocrsetting,_TRL
 
 import importlib
 from gui.inputdialog import autoinitdialog
@@ -55,19 +55,17 @@ def setTab6(self) :
            # [(("优化横向OCR漏字"),6),self.getsimpleswitch(globalconfig ,'ocr_hori_extend')],
          #   [(("使用竖排OCR(效果不佳)"),6),self.getsimpleswitch(globalconfig ,'verticalocr')],
          
-            [(("选取OCR范围后立即进行一次识别"),12),self.getsimpleswitch(globalconfig ,'ocrafterrangeselect')],
-            [(("选取OCR范围后主动显示范围框"),12),self.getsimpleswitch(globalconfig ,'showrangeafterrangeselect')],
+            
+            [('OCR自动化方法',8),'',(self.getsimplecombobox(_TRL(['分析图像更新','周期执行']),globalconfig,'ocr_auto_method'),8)], 
+            [(("执行周期(s)"),12),(self.getspinbox(0.1,100,globalconfig,'ocr_interval',double=True,step=0.1  ),2)],  
+            [(("图像稳定性阈值"),12),(self.getspinbox(0.8,1,globalconfig,'ocr_stable_sim'  ,double=True,step=0.01 ,dec=3),2),], 
+            [(("图像一致性阈值"),12),(self.getspinbox(0.8,1,globalconfig,'ocr_diff_sim'  ,double=True,step=0.01 ,dec=3),2),], 
+
             [''],
-            [(("每隔一段时间必然进行一次OCR"),12),self.getsimpleswitch(globalconfig ,'mustocr')],
-            [(("OCR最长间隔时间(s)"),12),(self.getspinbox(0.1,100,globalconfig,'mustocr_interval',double=True,step=0.1  ),2)],
-            [(("OCR最短间隔时间(s)"),12),(self.getspinbox(0.1,100,globalconfig,'ocrmininterval',double=True,step=0.1  ),2)],
             [(("OCR范围框颜色"),12),(self.getcolorbutton(globalconfig,'ocrrangecolor',callback=lambda  : changeocrcolorcallback(self),name='ocrrangecolor_button'),1)],
             [(("OCR范围框宽度"),12),(self.getspinbox(1,100,globalconfig,'ocrrangewidth'  ,callback=lambda x: changeocrwidthcallback(self,x) ),2)],
-            [''],
-            [(("OCR区域稳定性阈值"),12),(self.getspinbox(0.8,1,globalconfig,'ocr_stable_sim'  ,double=True,step=0.01 ,dec=3),2),],
-             [("判断区域内图片是否稳定，值越高要求区域内变化越小，若稳定性较低则暂时先不ocr",25)], 
-            [(("OCR前次区分度阈值"),12),(self.getspinbox(0.8,1,globalconfig,'ocr_diff_sim'  ,double=True,step=0.01 ,dec=3),2),],
-            [("图像稳定后判断当前图片和上次ocr图片是否一致，如果一致性过高则不ocr",25)],
+            [(("选取OCR范围后立即进行一次识别"),12),self.getsimpleswitch(globalconfig ,'ocrafterrangeselect')],
+            [(("选取OCR范围后主动显示范围框"),12),self.getsimpleswitch(globalconfig ,'showrangeafterrangeselect')],
         ] 
         self.yitiaolong("OCR设置",grids)
 def changeocrcolorcallback(self ):

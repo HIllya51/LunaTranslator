@@ -209,9 +209,10 @@ class Settin(QMainWindow) :
         self.usevoice=0
      
      
-    def yitiaolong(self,title,grid,save=False,savelist=None,savelay=None):
+    def yitiaolong(self,title,grid,save=False,savelist=None,savelay=None,fixheight=True):
         lay,t=self. getscrollwidgetlayout(title)
-        t.setFixedHeight(len(grid)*30*self.rate)
+        if fixheight:
+            t.setFixedHeight(len(grid)*30*self.rate)
 
         self.automakegrid(lay,grid,save,savelist) 
         if save:

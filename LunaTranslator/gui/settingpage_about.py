@@ -109,9 +109,11 @@ def setTab_about(self) :
         self.versionlabel2 = QLabel(_TR('使用说明')+':<a href="https://hillya51.github.io/">https://hillya51.github.io/</a>')
         self.versionlabel2.setOpenExternalLinks(True)
         self.versionlabel2.setTextInteractionFlags(Qt.LinksAccessibleByMouse)  
-        self.versionlabel3 = QLabel(_TR('支持作者')+':<a href="https://afdian.net/a/HIllya51">https://afdian.net/a/HIllya51</a>')
+        
+        self.versionlabel3 = QLabel('如果你感觉该软件对你有帮助，欢迎微信扫码或者前往<a href="https://afdian.net/a/HIllya51">爱发电</a>赞助，谢谢，么么哒~')
         self.versionlabel3.setOpenExternalLinks(True)
         self.versionlabel3.setTextInteractionFlags(Qt.LinksAccessibleByMouse)  
+        self.versionlabel4 = QLabel('<img src="./files/zan.jpg" heigth=500 width=500>' ) 
         grids=[ 
             [
                 ("使用代理",5),(self.getsimpleswitch(globalconfig  ,'useproxy',callback=lambda x: _setproxy(x)),1),''],
@@ -126,11 +128,13 @@ def setTab_about(self) :
                 [''],
                 [(self.versionlabel1,10)],
                 [(self.versionlabel2,10)],
-                [(self.versionlabel3,10)]
+                [(self.versionlabel3,10)] ,
+                [(self.versionlabel4,10)] 
         ]  
-        self.yitiaolong("其他设置",grids ) 
+        w=self.yitiaolong("其他设置",grids,fixheight=False ) 
 
-        
+        w.setFixedHeight(len(grids)*30*self.rate+500)
+         
         # self.versionlabel = QLabel(widget )
         # self.versionlabel.setGeometry(0,500,600,500)
         # self.versionlabel.setOpenExternalLinks(True)
