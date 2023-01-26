@@ -24,7 +24,7 @@ def setTab_quick(self) :
 
             '_1':self.object.translation_ui.startTranslater,
             '_2':self.object.translation_ui.changeTranslateMode,
-            '_3':self.object.translation_ui.clickSettin,
+            '_3':self.showsignal.emit,
             '_4':lambda: pyperclip.copy(self.object.translation_ui.original) ,
             '_5':self.object.translation_ui.changeshowhideraw,
             '_6':self.object.translation_ui.transhis.showsignal.emit,

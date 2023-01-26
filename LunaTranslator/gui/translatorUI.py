@@ -42,8 +42,7 @@ class QUnFrameWindow(QWidget):
     displaystatus=pyqtSignal(str) 
     showhideuisignal=pyqtSignal()
     hookfollowsignal=pyqtSignal(int,tuple)
-    toolbarhidedelaysignal=pyqtSignal()
-    clickSettin_signal=pyqtSignal()
+    toolbarhidedelaysignal=pyqtSignal() 
     showsavegame_signal=pyqtSignal()
     settingprocess_signal=pyqtSignal()
     settinghookthread_signal=pyqtSignal()
@@ -251,8 +250,7 @@ class QUnFrameWindow(QWidget):
         self.edittextui=gui.edittext.edittext(self)  
         self.hookfollowsignal.connect(self.hookfollowsignalsolve) 
         self.displayres.connect(self.showres)
-        self.displayraw1.connect(self.showraw)  
-        self.clickSettin_signal.connect(self.clickSettin_funtion)
+        self.displayraw1.connect(self.showraw)   
         self.refreshtooliconsignal.connect(self.refreshtoolicon)
         self.showsavegame_signal.connect(lambda:autosaveshow(self.object.settin_ui))
         self.settinghookthread_signal.connect(self.settinghookthread_funtion)
@@ -314,7 +312,9 @@ class QUnFrameWindow(QWidget):
         self.takusanbuttons("MinMaxButton",None,0,"移动","move")
         self.takusanbuttons("MinMaxButton",self.startTranslater,0,"重新翻译")
         self.takusanbuttons("MinMaxButton",self.changeTranslateMode,1,"自动翻译",'automodebutton')
-        self.takusanbuttons("MinMaxButton",self.clickSettin,2,"打开设置")
+        def _delaysettinuishowsignal():
+            self.object.settin_ui.showsignal.emit()
+        self.takusanbuttons("MinMaxButton",_delaysettinuishowsignal,2,"打开设置")
 
 
         self.takusanbuttons("MinMaxButton",lambda: pyperclip.copy(self.original),6,"复制到剪贴板",'copy') 
@@ -381,7 +381,7 @@ class QUnFrameWindow(QWidget):
         self.tray.setIcon(icon) 
         
         showAction = QAction(_TR("&显示"), self, triggered = self.show_and_enableautohide)
-        settingAction = QAction(_TR("&设置"), self, triggered = self.clickSettin)
+        settingAction = QAction(_TR("&设置"), self, triggered = _delaysettinuishowsignal)
         quitAction = QAction(_TR("&退出"), self, triggered = self.close)
                 
         
@@ -541,12 +541,7 @@ class QUnFrameWindow(QWidget):
         newHeight = self.document.size().height() 
         width = self.width()
         self.resize(width, newHeight + 30*self.rate) 
-    def clickSettin_funtion(self):  
-        self.object.settin_ui.show() 
-        self.object.settin_ui.showNormal() 
-        win32gui.BringWindowToTop(int(self.object.settin_ui.winId())) 
-    def clickSettin(self) : 
-        self.clickSettin_signal.emit()
+     
     def rangeend(self):
         try:
             self.object.screen_shot_ui.immediateendsignal.emit()

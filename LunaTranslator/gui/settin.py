@@ -50,8 +50,15 @@ class Settin(QMainWindow) :
     versiontextsignal=pyqtSignal( str)
     progresssignal=pyqtSignal(str,int)
     clicksourcesignal=pyqtSignal(int)
-    
+    showsignal=pyqtSignal()
     fontbigsmallsignal=pyqtSignal(int) 
+    def showfunction(self): 
+        if self.isMinimized():
+            self.showNormal()
+        elif self.isHidden(): 
+            self.show() 
+        else:
+            self.hide()
     def showEvent(self, a0   ) -> None:
          win32gui.SetWindowPos(int(self. winId()), win32con.HWND_TOPMOST, 0, 0, 0, 0,win32con. SWP_NOACTIVATE |win32con. SWP_NOSIZE | win32con.SWP_NOMOVE) 
          return super().showEvent(a0)
@@ -144,6 +151,7 @@ class Settin(QMainWindow) :
         self.mp3player=wavmp3player() 
         self.localocrstarted=False
         self.mp3playsignal.connect(self.mp3player.mp3playfunction) 
+        self.showsignal.connect(self.showfunction) 
         self.object = object  
         self.needupdate=False
         # 界面缩放比例

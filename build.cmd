@@ -6,6 +6,11 @@ xcopy C:\Users\11737\Documents\GitHub\LunaTranslator\dependence C:\tmp\LunaTrans
 del C:\tmp\LunaTranslator\LunaTranslator\qt5qml.dll
 del C:\tmp\LunaTranslator\LunaTranslator\qt5qmlmodels.dll
 del C:\tmp\LunaTranslator\LunaTranslator\qt5quick.dll
+del C:\tmp\LunaTranslator\LunaTranslator\qt5printsupport.dll
+del C:\tmp\LunaTranslator\LunaTranslator\qt5network.dll
+del C:\tmp\LunaTranslator\LunaTranslator\qt5websockets.dll
+del C:\tmp\LunaTranslator\LunaTranslator\qt5dbus.dll
+del C:\tmp\LunaTranslator\LunaTranslator\PyQt5\QtNetwork.pyd
 rmdir /S /Q C:\tmp\LunaTranslator\LunaTranslator\translator\__pycache__
 rmdir /S /Q C:\tmp\LunaTranslator\LunaTranslator\otherocr\__pycache__
 rmdir /S /Q C:\tmp\LunaTranslator\LunaTranslator\postprocess\__pycache__
