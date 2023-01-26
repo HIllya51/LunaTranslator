@@ -8,10 +8,10 @@ from PyQt5.QtWidgets import  QTabWidget,QMainWindow
 import qtawesome   ,win32con,win32gui
 import os,time,threading
 from gui.switchbutton import MySwitch
-from PyQt5.QtMultimedia import QMediaPlayer,QMediaContent ,QSoundEffect 
+#from PyQt5.QtMultimedia import QMediaPlayer,QMediaContent ,QSoundEffect 
 from gui.settingpage1 import setTabOne
 from gui.settingpage2 import setTabTwo
-
+from traceback import print_exc
 from utils.config import globalconfig ,_TR
 from gui.settingpage_xianshishezhi import setTabThree
 from gui.settingpage4 import setTab4 
@@ -23,25 +23,50 @@ from gui.rotatetab import  rotatetab
 from gui.settingpage_cishu import setTabcishu
 from gui.settingpage_quick import setTab_quick
 from gui.setting_lang import setTablang
-class wavmp3player(QObject):
+# class wavmp3player(QObject):
+#     def __init__(self):
+#         super().__init__( )
+#         self.mp3=QMediaPlayer()
+#         self.wav=QSoundEffect()
+#     def mp3playfunction(self,path,volume):
+#         if os.path.exists(path)==False:
+#             return
+#         self.mp3.stop()
+#         self.wav.stop() 
+        
+#         if path[-4:]=='.wav':
+#             self.wav.setSource(QUrl.fromLocalFile(path))#path))
+#             self.wav.setVolume(volume)
+#             self.wav.play()
+#         elif path[-4:]=='.mp3': 
+#             self.mp3.setMedia(QMediaContent(QUrl(path)))
+#             self.mp3.setVolume(volume)
+#             self.mp3.play()
+
+
+
+class wavmp3player( ):
     def __init__(self):
-        super().__init__( )
-        self.mp3=QMediaPlayer()
-        self.wav=QSoundEffect()
+        self.i=0
     def mp3playfunction(self,path,volume):
         if os.path.exists(path)==False:
-            return
-        self.mp3.stop()
-        self.wav.stop() 
+            return 
+        self._playsoundWin(path,volume)
+    def _playsoundWin(self,sound,volume ): 
+        from ctypes import  windll 
+        from sys    import getfilesystemencoding
         
-        if path[-4:]=='.wav':
-            self.wav.setSource(QUrl.fromLocalFile(path))#path))
-            self.wav.setVolume(volume)
-            self.wav.play()
-        elif path[-4:]=='.mp3': 
-            self.mp3.setMedia(QMediaContent(QUrl(path)))
-            self.mp3.setVolume(volume)
-            self.mp3.play()
+        try:
+            windll.winmm.mciSendStringA((f"stop lunatranslator_mci_{self.i}").encode(getfilesystemencoding()), 0, 0, 0);
+            windll.winmm.mciSendStringA((f"close lunatranslator_mci_{self.i}").encode(getfilesystemencoding()), 0, 0, 0);
+            self.i+=1 
+
+            windll.winmm.mciSendStringA(f'open "{sound}" alias lunatranslator_mci_{self.i}'.encode(getfilesystemencoding()), 0, 0, 0);  
+            windll.winmm.mciSendStringA(f'setaudio lunatranslator_mci_{self.i} volume to {volume*10}'.encode(getfilesystemencoding()), 0, 0, 0); 
+            windll.winmm.mciSendStringA((f'play lunatranslator_mci_{self.i}').encode(getfilesystemencoding()),0,0,0)
+            
+        except:
+            print_exc()
 class Settin(QMainWindow) :
     resetsourcesignal=pyqtSignal()
     loadtextractorfalse=pyqtSignal( ) 

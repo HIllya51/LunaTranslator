@@ -1,9 +1,7 @@
  
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QWidget,QVBoxLayout,QHBoxLayout,QLabel,QLineEdit,QListView,QDialogButtonBox ,QApplication,QPushButton,QMainWindow
-from PyQt5.QtGui import  QStandardItemModel,QPixmap,QColor,QIcon,QStandardItem ,QFont
-from PyQt5.QtWinExtras  import QtWin 
-import win32gui 
+from PyQt5.QtGui import  QStandardItemModel,QPixmap,QColor,QIcon,QStandardItem ,QFont 
 import functools
 
 from utils.config import globalconfig ,_TR,_TRL
@@ -95,6 +93,7 @@ class AttachProcessDialog(QMainWindow):
 
                 if icon is None:
                     icon=transparent
+                 
                 icon=QIcon(icon)
                 self.iconcache[pexe]=icon
             item=QStandardItem(icon , pexe)

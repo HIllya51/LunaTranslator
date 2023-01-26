@@ -10,7 +10,10 @@ del C:\tmp\LunaTranslator\LunaTranslator\qt5printsupport.dll
 del C:\tmp\LunaTranslator\LunaTranslator\qt5network.dll
 del C:\tmp\LunaTranslator\LunaTranslator\qt5websockets.dll
 del C:\tmp\LunaTranslator\LunaTranslator\qt5dbus.dll
-del C:\tmp\LunaTranslator\LunaTranslator\PyQt5\QtNetwork.pyd
+del C:\tmp\LunaTranslator\LunaTranslator\qt5multimedia.dll
+rmdir /S /Q C:\tmp\LunaTranslator\LunaTranslator\PyQt5\qt-plugins\mediaservice
+rmdir /S /Q C:\tmp\LunaTranslator\LunaTranslator\PyQt5\qt-plugins\printsupport
+
 rmdir /S /Q C:\tmp\LunaTranslator\LunaTranslator\translator\__pycache__
 rmdir /S /Q C:\tmp\LunaTranslator\LunaTranslator\otherocr\__pycache__
 rmdir /S /Q C:\tmp\LunaTranslator\LunaTranslator\postprocess\__pycache__
