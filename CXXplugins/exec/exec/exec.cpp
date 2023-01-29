@@ -1,7 +1,6 @@
 ﻿#include <windows.h>
 #include<string>
-#include<thread>
-#include<tlhelp32.h>
+#include<thread> 
 using std::string;
 #define BUFSIZE 4096
 #pragma comment( linker, "/subsystem:windows /entry:mainCRTStartup" )
@@ -35,8 +34,7 @@ int main() {
 				, PIPE_UNLIMITED_INSTANCES, 0, 0, NMPWAIT_WAIT_FOREVER, 0);
 			if (ConnectNamedPipe(hPipe, NULL) == NULL) {
 				continue;
-			}
-			//printf("connected\n");
+			} 
 			BOOL fSuccess = false;
 			DWORD len = 0;
 			char buffer[BUFSIZE];
@@ -49,15 +47,13 @@ int main() {
 				recvData.append(buffer2);
 				if (!fSuccess || len < BUFSIZE)
 					break;
-			} while (true);
-			printf(recvData.c_str());
+			} while (true); 
 			if (strcmp(recvData.c_str(), "end") == 0) {
 				break;
 			}
 			//WinExec("taskkill /IM voice2.exe /F", SW_HIDE);
 			//WinExec("./files/voiceroid2/voice2.exe C:/dataH/Yukari2 C:/tmp/LunaTranslator/files/voiceroid2/aitalked.dll yukari_emo_44 1 1.05 C:/tmp/LunaTranslator/ttscache/1.wav  86 111 105 99 101 82 111 105 100 50 32", SW_HIDE);
-			WinExec(recvData.c_str(), SW_HIDE);
-			printf("exec\n");
+			WinExec(recvData.c_str(), SW_HIDE); 
 		}
 
 		});
@@ -65,7 +61,7 @@ int main() {
 		WinExec((std::string("./LunaTranslator/LunaTranslator_main.exe ")+starttime).c_str(), SW_SHOW);
 		 
 		});
-	//t1.join();
+	t1.join();
 	t2.join();
 }
  
