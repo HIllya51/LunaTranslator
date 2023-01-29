@@ -5,50 +5,7 @@
 using std::string;
 #define BUFSIZE 4096
 #pragma comment( linker, "/subsystem:windows /entry:mainCRTStartup" )
-bool is_existing_file(const wchar_t* path)
-{
-	HANDLE hfile(NULL); // 文件句柄
-
-	// 重新设置错误代码，避免发生意外
-	::SetLastError(ERROR_SUCCESS);
-
-	// 直接打开文件
-	hfile = ::CreateFileW //
-	(
-		path,
-		FILE_READ_EA,
-		FILE_SHARE_READ | FILE_SHARE_WRITE,
-		NULL,
-		OPEN_EXISTING, // 打开一个存在的文件
-		0,
-		NULL //
-	);
-
-	DWORD error = ::GetLastError();
-
-#ifdef DEBUG
-	printf("hfile: %p\n", hfile);
-	printf("lastError: %lu\n", error);
-#endif
-
-	if (hfile == NULL || hfile == INVALID_HANDLE_VALUE)
-	{
-		// 打开文件失败，检查错误代码
-		// 注意：有时候即使文件存在，也可能会打开失败，如拒绝访问的情况
-		return error != ERROR_PATH_NOT_FOUND &&
-			error != ERROR_FILE_NOT_FOUND;
-	}
-	else
-	{
-		// 打开成功，文件存在
-
-		// 记得关闭句柄释放资源
-		::CloseHandle(hfile);
-		hfile = NULL;
-
-		return true;
-	}
-} 
+ 
 static UINT64 getCurrentMilliSecTimestamp() {
 	FILETIME file_time;
 	GetSystemTimeAsFileTime(&file_time);
@@ -61,42 +18,7 @@ static UINT64 getCurrentMilliSecTimestamp() {
 	return (UINT64)((time - EPOCH) / 10000LL);
 }
 int main() { 
-	//if (is_existing_file(L"./files/single.txt")) {
-	//	
-	//	LPCWSTR pwszProcName = NULL;
-	//	HANDLE hProcess = NULL;
-	//	HANDLE hProcSnap = INVALID_HANDLE_VALUE;
-	//	PROCESSENTRY32W pe32w;
-
-	//	hProcSnap = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
-	//	if (hProcSnap != INVALID_HANDLE_VALUE) {
-
-	//		ZeroMemory(&pe32w, sizeof(PROCESSENTRY32W));
-	//		pe32w.dwSize = sizeof(PROCESSENTRY32W);
-	//		if (Process32FirstW(hProcSnap, &pe32w)) {
-	//			//wprintf(L"PID \t	ProcessName\t\n");
-	//			do {
-	//				//wprintf(L"%u \t	%s\t\n", pe32w.th32ProcessID, pe32w.szExeFile);
-	//				if (wcscmp(pe32w.szExeFile, L"LunaTranslator_main.exe") == 0) {
-	//					exit(0);
-	//				}
-
-	//			} while (Process32NextW(hProcSnap, &pe32w));
-	//		}
-
-	//		
-	//	}
-
-	//	 
-	//}
-	/*fopen_s(&f,"./files/single.txt", "r");
-		if (f) {
-			CreateMutex(NULL, 1, L"keepSingletonmutex");
-			if (GetLastError() == 183) {
-				exit(1);
-			}
-
-	}*/
+	 
 	
 	UINT64 tm = getCurrentMilliSecTimestamp();
 	wchar_t buffw[32];
@@ -143,7 +65,7 @@ int main() {
 		WinExec((std::string("./LunaTranslator/LunaTranslator_main.exe ")+starttime).c_str(), SW_SHOW);
 		 
 		});
-	t1.join();
+	//t1.join();
 	t2.join();
 }
  

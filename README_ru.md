@@ -4,10 +4,10 @@
     <a href="./LICENSE"><img src="https://img.shields.io/badge/license-GPL%203.0-dfd.svg"></a>
     <a href="https://github.com/HIllya51/LunaTranslator/releases"><img src="https://img.shields.io/github/v/release/HIllya51/LunaTranslator?color=ffa"></a>
     <a href="https://github.com/HIllya51/LunaTranslator/stargazers"><img src="https://img.shields.io/github/stars/HIllya51/LunaTranslator?color=ccf"></a>
-    <a id="downloadlink" href="https://github.com/HIllya51/LunaTranslator/releases/download/v1.37.4/LunaTranslator.zip"><img src="https://img.shields.io/badge/download-%E4%B8%8B%E8%BD%BD-red"></a>
+    <a id="downloadlink" href="https://github.com/HIllya51/LunaTranslator/releases/download/v1.37.5/LunaTranslator.zip"><img src="https://img.shields.io/badge/download-%E4%B8%8B%E8%BD%BD-red"></a>
 </p>
 
-## [简体中文](README.md)  |  Русский язык
+## [简体中文](README.md)  |  Русский язык | [English](README_en.md) 
 
 > **Переводчик текста с экрана для игр и не только!**
 
@@ -60,6 +60,8 @@
 
 ## Скачать дополнительные файлы:
 
+<details>
+<summary>Нажмите на детали</summary>
 <table>
 
 <tr><td>OCR- упрощенный китайский язык</td><td><a href="https://github.com/HIllya51/LunaTranslator/releases/download/v1.34.5/zh.zip">zh.zip</a></td></tr>
@@ -80,11 +82,13 @@
 <tr><td>Голос VOICEVOX</td><td><a href="https://github.com/VOICEVOX/voicevox/releases/download/0.13.3/voicevox-windows-cpu-0.13.3.zip">voicevox-windows-cpu-0.13.3.zip</a></td></tr>
 </table>  
 
+</details>
 
 ##  Отдельная благодарность: 
 
 
 * [@KirpichKrasniy](https://github.com/KirpichKrasniy) (Также можете зайти в русскоязычные сообщества программы: [VK](https://vk.com/lunatranslator) и [Telegram](https://t.me/LunaTranslator))
+
 
 ##  Поддержать автора 
  
