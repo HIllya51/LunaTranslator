@@ -10,7 +10,7 @@ class basetext:
         self.t.setDaemon(True)
         self.t.start()
         #self.sqlfname='./transkiroku/'+self.prefix+'.sqlite'
-        self.sqlfname_all='./transkiroku/'+self.prefix+'.pretrans_common.sqlite'
+        self.sqlfname_all='./translation_record/'+self.prefix+'.pretrans_common.sqlite'
         
         try:
             

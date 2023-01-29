@@ -3,8 +3,10 @@ import os
 from collections import OrderedDict
 if os.path.exists('./userconfig')==False:
     os.mkdir('./userconfig')
-if os.path.exists('./transkiroku')==False:
-    os.mkdir('./transkiroku') 
+if os.path.exists('./transkiroku'):
+    os.rename('transkiroku','translation_record')
+if os.path.exists('./translation_record')==False:
+    os.mkdir('./translation_record') 
 if os.path.exists('./cache')==False:
     os.mkdir('./cache')
 if os.path.exists('./cache/ocr')==False:
