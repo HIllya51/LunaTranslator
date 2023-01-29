@@ -18,6 +18,8 @@ from utils.subproc import endsubprocs,mutiproc
 import  win32gui,win32api,win32process,win32con,multiprocessing
 import gui.rangeselect
 import gui.transhist 
+
+from utils.minmaxmove import minmaxmoveobservefunc
 import gui.edittext
 from utils.subproc import subproc
 from utils.getpidlist import getwindowhwnd,mouseselectwindow,letfullscreen,recoverwindow,getmagpiehwnd
@@ -62,7 +64,7 @@ class QUnFrameWindow(QWidget):
         if code==3:
             if self.hideshownotauto:
                 self.show_()
-        elif code==4:
+        elif code==4: 
             if self.hideshownotauto:
                 self.hide_()
         elif code==5:
@@ -177,7 +179,7 @@ class QUnFrameWindow(QWidget):
     def hide_and_disableautohide(self):
         self.hideshownotauto=False
         self.hide_()
-    def show_and_enableautohide(self):
+    def show_and_enableautohide(self): 
         self.hideshownotauto=True
         win32gui.SetForegroundWindow(self.winId() )   
         self.show_()
@@ -210,13 +212,12 @@ class QUnFrameWindow(QWidget):
         ]
         for i in range(len(self.buttons)):
             self.buttons[i].setIcon(icon[i])
-    def hide_(self):
-        if self.showintab:
-        
+    def hide_(self):  
+        if self.showintab: 
             win32gui.ShowWindow(self.winId(),win32con.SW_SHOWMINIMIZED )
         else:
             self.hide()
-    def show_(self):
+    def show_(self):   
         if self.showintab:
             win32gui.ShowWindow(self.winId(),win32con.SW_SHOWNORMAL )
         else:
@@ -438,6 +439,12 @@ class QUnFrameWindow(QWidget):
         self.masklabelback.setStyleSheet("background-color: rgba(0,0,0,0)")
         if globalconfig['selectable']:
             self.masklabel.hide()
+
+
+        self.minmaxmoveoberve=subproc('./files/minmaxmoveobserve.exe',stdout=subprocess.PIPE,keep=True)  
+        self.minmaxmoveobservethread=threading.Thread(target=minmaxmoveobservefunc,args=(self,))
+        self.minmaxmoveobservethread.start()  
+ 
     def grabwindow(self): 
         
         try:

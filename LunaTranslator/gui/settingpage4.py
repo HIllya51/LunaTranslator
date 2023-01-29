@@ -24,12 +24,12 @@ from utils.config import globalconfig ,savehook_new,savehook_new2
 from utils.getpidlist import getwindowlist,getExeIcon,getpidexe
 import threading
 import json
-from gui.inputdialog import autoinitdialog,getsomepath1
+from utils.le3264 import le3264run 
 from utils.chaos import checkencoding
 from utils.config import globalconfig ,_TR,_TRL
 import os
 import win32con,win32api 
-self_pid=os.getpid()   
+
 def autosaveshow(object):
      
     dialog = QDialog(object,Qt.WindowCloseButtonHint)  # 自定义一个dialog
@@ -108,22 +108,7 @@ def autosaveshow(object):
                                 savehook_new2[game]['leuse']=True
                                 savehook_new2[game]['title']=game
                         if savehook_new2[game]['leuse'] :
-                                b=win32file.GetBinaryType(game)
-                                if b==0: 
-                                        #le=os.path.join(os.path.abspath(globalconfig['LocaleEmulator']),'LEProc.exe')
-                                        le=os.path.join(os.path.abspath('./files/Locale.Emulator.2.5.0.1'),'LEProc.exe')
-                                        if os.path.exists(le): 
-                                                if os.path.exists(game+'.le.config')==False:
-                                                        writeleconfig(game)
-                                                         
-                                                win32api.ShellExecute(None, "open", le, f'-run "{game}"', os.path.dirname(game), win32con.SW_SHOW)
-                                elif b==6: 
-                                        #le=os.path.join(os.path.abspath(globalconfig['Locale_Remulator']),'LRProc.exe')
-                                        le=os.path.join(os.path.abspath('./files/Locale_Remulator.1.5.0'),'LRProc.exe')
-                                        if os.path.exists(le): 
-                                                #dll=os.path.join(os.path.abspath(globalconfig['Locale_Remulator']),'LRHookx64.dll')
-                                                #win32api.ShellExecute(None, "open", 'powershell', f'{le} {dll} 5f4c9504-8e76-46e3-921b-684d7826db71 "{ (game)}"', os.path.dirname(game), win32con.SW_HIDE)
-                                                win32api.ShellExecute(None, "open", le, f'5f4c9504-8e76-46e3-921b-684d7826db71 "{ (game)}"', os.path.dirname(game), win32con.SW_HIDE)
+                                le3264run(game)
                         else:
                                 win32api.ShellExecute(None, "open", game, "", os.path.dirname(game), win32con.SW_SHOW)
                                  
@@ -202,25 +187,7 @@ def autosaveshow(object):
                 return QDialog().closeEvent(a0)
     dialog.closeEvent=closeEvent
     dialog.show()
-def writeleconfig(game):
-         
-        leconfig='''<?xml version="1.0" encoding="utf-8"?>
-<LEConfig>
-  <Profiles>
-    <Profile Name="%s.le.config" Guid="%s" MainMenu="false">
-      <Parameter></Parameter>
-      <Location>ja-JP</Location>
-      <Timezone>Tokyo Standard Time</Timezone>
-      <RunAsAdmin>false</RunAsAdmin>
-      <RedirectRegistry>true</RedirectRegistry>
-      <IsAdvancedRedirection>false</IsAdvancedRedirection>
-      <RunWithSuspend>false</RunWithSuspend>
-    </Profile>
-  </Profiles>
-</LEConfig>
-'''     
-        with open(game+'.le.config','w',encoding='utf8') as ff :
-                ff.write(leconfig %(os.path.basename(game),uuid.uuid1()))
+
 def codeacceptdialog(object ,title=  '接受的编码' ,label=[  '接受的编码'] ):
     dialog = QDialog(object,Qt.WindowCloseButtonHint)  # 自定义一个dialog
     dialog.setWindowTitle(_TR(title))
@@ -309,67 +276,4 @@ def setTab4(self) :
         ]
          
         self.yitiaolong("HOOK设置",grids) 
-        self.minmaxmoveoberve=subproc('./files/minmaxmoveobserve.exe',stdout=subprocess.PIPE,keep=True)  
-        self.minmaxmoveobservethread=threading.Thread(target=minmaxmoveobservefunc,args=(self,))
-        self.minmaxmoveobservethread.start()  
- 
-def minmaxmoveobservefunc(self):
         
-        while(True):
-                x=self.minmaxmoveoberve.stdout.readline()
-                #print(x)
-                x=str(x,encoding='utf8')
-                x=x.replace('\r','').replace('\n','')
-                 
-                x=x.split(' ')
-                 
-                if len(x) not in [2,6]:
-                        break
-                x=[int(_) for _ in x]
-                if len(x)==2:
-                        pid,action=x
-                elif len(x)==6:
-                        pid,action,x1,y1,x2,y2=x
-                 
-                try:
-                  if self.object.textsource.pid:
-                      
-                     if pid==self_pid:
-                            self.object.translation_ui.hookfollowsignal.emit(3,(0,0))  
-                     
-                     if pid==self.object.textsource.pid: 
-                        if action==1 and globalconfig['movefollow']:
-                                self.movestart=[x1,y1,x2,y2]
-                                
-                        elif action==2 and globalconfig['movefollow']: 
-                                moveend=[x1,y1,x2,y2]
-                                self.object.translation_ui.hookfollowsignal.emit(5,(moveend[0]-self.movestart[0],moveend[1]-self.movestart[1]))
-                        elif action==3 and globalconfig['minifollow']: 
-                                self.object.translation_ui.hookfollowsignal.emit(4,(0,0))
-                        elif action==4 and  globalconfig['minifollow']:
-                                self.object.translation_ui.hookfollowsignal.emit(3,(0,0))
-                                  
-                     if action==5 and  globalconfig['focusfollow']: 
-                        
-                        #print(pid)
-                        if pid==self_pid: 
-                                self.object.translation_ui.hookfollowsignal.emit(3,(0,0))  
-                        elif pid==self.object.textsource.pid: 
-                                self.object.translation_ui.hookfollowsignal.emit(3,(0,0))   
-                        elif pid==self.object.translation_ui.callmagpie.pid:
-                                self.object.translation_ui.hookfollowsignal.emit(3,(0,0))   
-                        else: 
-                                try:
-                                        cn=win32gui.GetClassName(win32gui.GetForegroundWindow()) 
-                                         
-                                        if cn=='Shell_TrayWnd':
-                                                continue 
-                                        exe=getpidexe(pid)
-                                        if os.path.basename(exe).lower()=='magpie.exe':
-                                                continue
-                                except:
-                                        pass
-                                self.object.translation_ui.hookfollowsignal.emit(4,(0,0)) 
-                except:
-                  #print_exc()
-                  pass
