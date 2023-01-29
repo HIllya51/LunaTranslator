@@ -6,7 +6,7 @@ import functools,sqlite3
 from utils.config import globalconfig ,translatorsetting
 import os,json
 from traceback import print_exc
-
+from gui.pretransfile import _sqlite2json
 from utils.config import globalconfig ,_TR,_TRL
 import time
 import importlib
@@ -102,46 +102,11 @@ def setTabTwo(self) :
             socket.setdefaulttimeout(globalconfig['translatortimeout'])
 
         
-        transkirokuuse =QComboBox( )  
-        transkirokuuse.addItems(_TRL([globalconfig['fanyi'][k]['name'] for k  in globalconfig['fanyi']]))
-        transkirokuuse.setCurrentIndex(list(globalconfig['fanyi'].keys()).index(globalconfig['transkirokuuse']))
-       
-        def changerengong(x):
-            globalconfig.__setitem__('transkirokuuse',list(globalconfig['fanyi'].keys())[x])
-            self.object.translation_ui.startTranslater()
-        transkirokuuse.currentIndexChanged.connect(changerengong)
-        self.transkirokuuse=transkirokuuse
-        bt = QPushButton(_TR("导出sqlite文件为json文件")  )
+         
+        bt = QPushButton(_TR("导出翻译记录为json文件")  )
 
-        def _sqlite2json():
-                f=QFileDialog.getOpenFileName(filter="*.sqlite")
-                if f[0]!='' :
-                        try:
-                                sql=sqlite3.connect(f[0],check_same_thread=False)
-                                ret=sql.execute(f'SELECT * FROM artificialtrans  ').fetchall()
-                                js={}
-                                transkirokuuse=list(globalconfig['fanyi'].keys())[list(globalconfig['fanyi'].keys()).index(globalconfig['transkirokuuse'])]
-                                for _aret  in ret:
-                                    if len(_aret)==4:
-                                        #旧版兼容
-                                         
-                                        _id,source,mt,ut=_aret
-                                        js[source]={'userTrans':ut,'machineTrans':mt}
-                                    elif len(_aret)==3: 
-                                        _id,source,mt =_aret
-                                        js[source]={'userTrans':'','machineTrans':''}
-                                        mtjs=json.loads(mt)
-                                        for _i,_t in enumerate(mtjs):
-                                            if  _i==0 or _t==transkirokuuse:
-                                                js[source]['machineTrans']=mtjs[_t]
-                                                
-                                            js[source]['result_'+str(_i)]=mtjs[_t]
-                                            js[source]['api_'+str(_i)]=_t
-                                with open(os.path.join(os.path.dirname(f[0]), os.path.basename(f[0]).replace('.'+os.path.basename(f[0]).split('.')[-1],'.json')),'w',encoding='utf8') as ff:
-                                        ff.write(json.dumps(js,ensure_ascii=False,sort_keys=False, indent=4))
-                        except:
-                                print_exc()
-        bt.clicked.connect(lambda x:_sqlite2json()) 
+        
+        bt.clicked.connect(lambda x:_sqlite2json(self)) 
  
   
         langlist=globalconfig['language_list_translator']
@@ -160,10 +125,11 @@ def setTabTwo(self) :
                 ("模糊匹配相似度限制",6),(self.getspinbox(0,500,globalconfig,'premtsimi'),3),'', 
             ],
             
-                [('录制翻译文件',6),(self.getsimpleswitch(globalconfig,'transkiroku'),1),'',
-                 ('导出的第一翻译源',6),(transkirokuuse,6),
+                [
+                    #('录制翻译文件',6),(self.getsimpleswitch(globalconfig,'transkiroku'),1),'',
+                # ('导出的第一翻译源',6),(transkirokuuse,6),
                  
-                 (bt,8) ,
+                 (bt,12) ,
                  ],
             ['']
         ] 

@@ -481,5 +481,10 @@
     "执行周期": "Execution cycle",
     "图像稳定性阈值": "Image stability threshold",
     "图像一致性阈值": "Image consistency threshold",
-    "执行周期(s)": "Execution cycle (s)"
+    "执行周期(s)": "Execution cycle (s)",
+    "导出翻译记录为json文件": "Export translation records as json files",
+    "选择路径": "Select path",
+    "保存路径": "Save Path",
+    "格式错误！": "Format error!",
+    "首选翻译": "Preferred translation"
 }

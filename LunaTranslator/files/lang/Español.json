@@ -481,5 +481,10 @@
     "执行周期": "Ciclo de ejecución",
     "图像稳定性阈值": "Umbral de estabilidad de la imagen",
     "图像一致性阈值": "Umbral de consistencia de la imagen",
-    "执行周期(s)": "Ciclo de ejecución (s)"
+    "执行周期(s)": "Ciclo de ejecución (s)",
+    "导出翻译记录为json文件": "Exportar el registro de traducción como archivo json",
+    "选择路径": "Elegir el camino",
+    "保存路径": "Guardar ruta",
+    "格式错误！": "¡Error de formato!",
+    "首选翻译": "Traducción preferida"
 }

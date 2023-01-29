@@ -260,7 +260,7 @@ class MAINUI(QObject) :
             self.translators[engine].gettask((_paste_str,paste_str_solve,skip)) 
         
         try:
-            if skip==False and globalconfig['transkiroku']  and 'sqlwrite2' in dir(self.textsource):
+            if skip==False :#and globalconfig['transkiroku']  and 'sqlwrite2' in dir(self.textsource):
                 _paste_str=_paste_str.replace('"','""')   
                 # ret=self.textsource.sqlwrite.execute(f'SELECT * FROM artificialtrans WHERE source = "{paste_str}"').fetchone()
                 # if ret is  None:                     
@@ -432,21 +432,9 @@ class MAINUI(QObject) :
         if classname not in ['rengong','premt','rengong_vnr','rengong_msk']:
              
             res=res.replace('"','""')   
-            contentraw=contentraw.replace('"','""')   
-             
-            # try:
-            #     if   globalconfig['transkiroku'] and 'sqlwrite' in dir(self.textsource):
-            #         if globalconfig['transkirokuuse']==classname:
-            #             self.textsource.sqlwrite.execute(f'UPDATE artificialtrans SET machineTrans = "{res}" WHERE source = "{contentraw}"')
-            #         elif classname not in ['rengong','premt']:
-            #             ret=self.textsource.sqlwrite.execute(f'SELECT * FROM artificialtrans WHERE source = "{contentraw}"').fetchone()
-                        
-            #             if ret is None or ret[2] =='':                     
-            #                 self.textsource.sqlwrite.execute(f'UPDATE artificialtrans SET machineTrans = "{res}" WHERE source = "{contentraw}"')
-            # except:
-            #     print_exc()
+            contentraw=contentraw.replace('"','""')    
             try:
-                if  globalconfig['transkiroku'] and 'sqlwrite2' in dir(self.textsource):
+                #if  globalconfig['transkiroku'] and 'sqlwrite2' in dir(self.textsource):
                     ret=self.textsource.sqlwrite2.execute(f'SELECT machineTrans FROM artificialtrans WHERE source = "{contentraw}"').fetchone() 
                 
                     ret=json.loads(ret[0]) 

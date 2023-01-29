@@ -481,5 +481,10 @@
     "执行周期": "Cycle d'exécution",
     "图像稳定性阈值": "Seuil de stabilité de l'image",
     "图像一致性阈值": "Seuil de cohérence de l'image",
-    "执行周期(s)": "Cycle d'exécution (s)"
+    "执行周期(s)": "Cycle d'exécution (s)",
+    "导出翻译记录为json文件": "Exporter les enregistrements de traduction en tant que fichiers json",
+    "选择路径": "Choisir un chemin",
+    "保存路径": "Sauvegarder le chemin",
+    "格式错误！": "Erreur de format!",
+    "首选翻译": "Traduction préférée"
 }
