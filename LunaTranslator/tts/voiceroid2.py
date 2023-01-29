@@ -44,7 +44,7 @@ class tts():
                 return
 
             fname=str(time.time()) 
-            savepath=os.path.join(os.getcwd(),'ttscache',fname+'.wav')
+            savepath=os.path.join(os.getcwd(),'cache/tts',fname+'.wav')
             dllpath=os.path.join(os.getcwd(),'files/voiceroid2/aitalked.dll')
             exepath=os.path.join(os.getcwd(),'files/voiceroid2/voice2.exe')
             

@@ -158,7 +158,7 @@ class ocrtext(basetext):
                 break
         if use is None:
             return ''
-        img.save(f'./capture/{self.object.timestamp}.png')
+        img.save(f'./cache/ocr/{self.object.timestamp}.png')
         try:
             lang=self.language(use)
             if globalconfig['ocrmergelines']==False:
@@ -170,7 +170,7 @@ class ocrtext(basetext):
             
         
             ocr=importlib.import_module('otherocr.'+use).ocr 
-            return ocr(f'./capture/{self.object.timestamp}.png',lang,space)
+            return ocr(f'./cache/ocr/{self.object.timestamp}.png',lang,space)
         except:
             print_exc()
             return ''

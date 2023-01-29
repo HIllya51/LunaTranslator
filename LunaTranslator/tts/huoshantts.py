@@ -43,10 +43,10 @@ class tts():
             fname=str(time.time())
             b64=base64.b64decode(response.json()['audio']['data'])
              
-            with open('./ttscache/'+fname+'.mp3','wb') as ff:
+            with open('./cache/tts/'+fname+'.mp3','wb') as ff:
                 ff.write(b64)
                         
-            self.mp3playsignal.emit('./ttscache/'+fname+'.mp3',globalconfig["ttscommon"]["volume"])
+            self.mp3playsignal.emit('./cache/tts/'+fname+'.mp3',globalconfig["ttscommon"]["volume"])
             
         except:
             print_exc()

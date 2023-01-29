@@ -1,5 +1,4 @@
-import time
-import win32pipe,win32file,win32con
+import os 
 from utils.ocrdll import ocrwrapper
 from utils.config import globalconfig
 _ocr=ocrwrapper()
@@ -12,7 +11,7 @@ def ocr(imgfile,lang,space):
         _ocr.init(f'{path}/det.onnx',f'{path}/rec.onnx',f'{path}/dict.txt')
         _savelang=lang
         
-    s=_ocr.ocr('./capture/',imgfile[10:],globalconfig['verticalocr'])
+    s=_ocr.ocr(os.path.dirname(imgfile)+'/',os.path.basename(imgfile),globalconfig['verticalocr'])
      
     ls=s.split('\n') 
     juhe=[]

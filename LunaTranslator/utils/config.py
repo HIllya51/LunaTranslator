@@ -4,11 +4,15 @@ from collections import OrderedDict
 if os.path.exists('./userconfig')==False:
     os.mkdir('./userconfig')
 if os.path.exists('./transkiroku')==False:
-    os.mkdir('./transkiroku')
-if os.path.exists('./ttscache/')==False:
-    os.mkdir('./ttscache/')
-if os.path.exists('./capture')==False:
-    os.mkdir('./capture')
+    os.mkdir('./transkiroku') 
+if os.path.exists('./cache')==False:
+    os.mkdir('./cache')
+if os.path.exists('./cache/ocr')==False:
+    os.mkdir('./cache/ocr')
+if os.path.exists('./cache/screenshot')==False:
+    os.mkdir('./cache/screenshot')
+if os.path.exists('./cache/tts')==False:
+    os.mkdir('./cache/tts')
 
 def tryreadconfig(path):
     if os.path.exists(os.path.join('./userconfig/',path)):

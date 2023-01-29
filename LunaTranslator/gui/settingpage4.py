@@ -37,16 +37,23 @@ def autosaveshow(object):
     #dialog.setWindowModality(Qt.ApplicationModal) 
     formLayout = QVBoxLayout(dialog)  # 配置layout
     
-    def selectexe(item):
+    def selectexe(item,mm,r):
         f=QFileDialog.getOpenFileName(directory=item.savetext )
         res=f[0]
         if res!='':
                 res=res.replace('/','\\')
                 savehook_new[res]=savehook_new[item.savetext]
-                savehook_new.pop(item.savetext)
+                savehook_new.pop(item.savetext) 
                 savehook_new2[res]=savehook_new2[item.savetext]
                 savehook_new2.pop(item.savetext)
                 item.savetext=res 
+                transparent=QPixmap(100,100)
+                transparent.fill(QColor.fromRgba(0))
+                icon=getExeIcon(res)
+                if icon is None:
+                    icon=transparent
+                icon=QIcon(icon) 
+                mm.setItem(r, 1, QStandardItem(icon,''))  
 
     if True:
         model=QStandardItemModel(  dialog)
@@ -79,7 +86,7 @@ def autosaveshow(object):
                 _=QPushButton()
                 _.setIcon(qtawesome.icon( 'fa.gear', color="#FF69B4"))  
                 _.setStyleSheet("background: transparent;") 
-                _.clicked.connect(functools.partial(selectexe,keyitem ))
+                _.clicked.connect(functools.partial(selectexe,keyitem,model,row ))
                 table.setIndexWidget(model.index(row, 2),_) 
                 # item = QStandardItem(json.dumps(js[k],ensure_ascii=False))
                 # model.setItem(row, 2, item)
@@ -103,17 +110,20 @@ def autosaveshow(object):
                         if savehook_new2[game]['leuse'] :
                                 b=win32file.GetBinaryType(game)
                                 if b==0: 
-                                        le=os.path.join(os.path.abspath(globalconfig['LocaleEmulator']),'LEProc.exe')
+                                        #le=os.path.join(os.path.abspath(globalconfig['LocaleEmulator']),'LEProc.exe')
+                                        le=os.path.join(os.path.abspath('./files/Locale.Emulator.2.5.0.1'),'LEProc.exe')
                                         if os.path.exists(le): 
                                                 if os.path.exists(game+'.le.config')==False:
                                                         writeleconfig(game)
                                                          
                                                 win32api.ShellExecute(None, "open", le, f'-run "{game}"', os.path.dirname(game), win32con.SW_SHOW)
                                 elif b==6: 
-                                        le=os.path.join(os.path.abspath(globalconfig['Locale_Remulator']),'LRProc.exe')
+                                        #le=os.path.join(os.path.abspath(globalconfig['Locale_Remulator']),'LRProc.exe')
+                                        le=os.path.join(os.path.abspath('./files/Locale_Remulator.1.5.0'),'LRProc.exe')
                                         if os.path.exists(le): 
-                                                dll=os.path.join(os.path.abspath(globalconfig['Locale_Remulator']),'LRHookx64.dll')
-                                                win32api.ShellExecute(None, "open", 'powershell', f'{le} "{dll}" 5f4c9504-8e76-46e3-921b-684d7826db71 "{ (game)}"', os.path.dirname(game), win32con.SW_HIDE)
+                                                #dll=os.path.join(os.path.abspath(globalconfig['Locale_Remulator']),'LRHookx64.dll')
+                                                #win32api.ShellExecute(None, "open", 'powershell', f'{le} {dll} 5f4c9504-8e76-46e3-921b-684d7826db71 "{ (game)}"', os.path.dirname(game), win32con.SW_HIDE)
+                                                win32api.ShellExecute(None, "open", le, f'5f4c9504-8e76-46e3-921b-684d7826db71 "{ (game)}"', os.path.dirname(game), win32con.SW_HIDE)
                         else:
                                 win32api.ShellExecute(None, "open", game, "", os.path.dirname(game), win32con.SW_SHOW)
                                  
@@ -288,8 +298,8 @@ def setTab4(self) :
                 
                 [('检测到游戏时自动开始',5),(self.getsimpleswitch(globalconfig,'autostarthook'),1),'','','','','','','','',''],
                # [('转区方式',5),(self.getsimplecombobox(_TRL(['Locale.Emulator','Locale_Remulator']),globalconfig,'localeswitchmethod'),5)],
-                [('LocaleEmulator路径设置',5),(self.getcolorbutton(globalconfig,'',callback=lambda x: getsomepath1(self,'LocaleEmulator',globalconfig,'LocaleEmulator','LocaleEmulator',isdir=True),icon='fa.gear',constcolor="#FF69B4"),1),("不支持64位",5)],
-                [('Locale_Remulator路径设置',5),(self.getcolorbutton(globalconfig,'',callback=lambda x: getsomepath1(self,'Locale_Remulator',globalconfig,'Locale_Remulator','Locale_Remulator',isdir=True),icon='fa.gear',constcolor="#FF69B4"),1),("支持64位，但是不一定管用",8)],
+               # [('LocaleEmulator路径设置',5),(self.getcolorbutton(globalconfig,'',callback=lambda x: getsomepath1(self,'LocaleEmulator',globalconfig,'LocaleEmulator','LocaleEmulator',isdir=True),icon='fa.gear',constcolor="#FF69B4"),1),("不支持64位",5)],
+              #  [('Locale_Remulator路径设置',5),(self.getcolorbutton(globalconfig,'',callback=lambda x: getsomepath1(self,'Locale_Remulator',globalconfig,'Locale_Remulator','Locale_Remulator',isdir=True),icon='fa.gear',constcolor="#FF69B4"),1),("支持64位，但是不一定管用",8)],
                 [('已保存游戏',5),(self.getcolorbutton(globalconfig,'',icon='fa.gamepad',constcolor="#FF69B4",callback=lambda:autosaveshow(self)),1)],
 
                 [('代码页',5),(codepagecombo,5)],

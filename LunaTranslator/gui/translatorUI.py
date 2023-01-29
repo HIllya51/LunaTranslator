@@ -442,15 +442,18 @@ class QUnFrameWindow(QWidget):
         
         try:
             _hwnd_magpie=getmagpiehwnd(self.object.translation_ui.callmagpie.pid)
+            tm=time.localtime()
             if _hwnd_magpie!=0:
                 hwnd=QApplication.desktop().winId() 
                 self.hide()
-                QApplication.primaryScreen().grabWindow(hwnd).save(f'./capture/{time.time()}.png')
+                QApplication.primaryScreen().grabWindow(hwnd).save(f'./cache/screenshot/{tm.tm_year}-{tm.tm_mon}-{tm.tm_mday}-{tm.tm_hour}-{tm.tm_min}-{tm.tm_sec}.png')
                 self.show() 
                 
             else:
-                hwnd=win32gui.GetForegroundWindow()  
-                QApplication.primaryScreen().grabWindow(hwnd).save(f'./capture/{time.time()}.png')
+                hwnd=win32gui.GetForegroundWindow()   
+                if hwnd==int(self.winId()):
+                    hwnd=self.object.textsource.hwnd 
+                QApplication.primaryScreen().grabWindow(hwnd).save(f'./cache/screenshot/{tm.tm_year}-{tm.tm_mon}-{tm.tm_mday}-{tm.tm_hour}-{tm.tm_min}-{tm.tm_sec}.png')
                 
                 
         except:

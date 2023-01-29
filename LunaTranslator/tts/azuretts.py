@@ -27,7 +27,7 @@ class tts():
     def read(self,content):
         fname=str(time.time())
         
-        threading.Thread(target=lambda:asyncio.run(transferMsTTSData(self.mp3playsignal,globalconfig["ttscommon"]["rate"],content, './ttscache/'+fname+'.mp3'))).start()
+        threading.Thread(target=lambda:asyncio.run(transferMsTTSData(self.mp3playsignal,globalconfig["ttscommon"]["rate"],content, './cache/tts/'+fname+'.mp3'))).start()
          
 
 # Fix the time to match Americanisms
