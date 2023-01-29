@@ -9,7 +9,7 @@ from utils.config import globalconfig,_TR
 
 
 def _sqlite2json(self):
-    f=QFileDialog.getOpenFileName(filter="*.sqlite")
+    f=QFileDialog.getOpenFileName(directory='./translation_record', filter="*.sqlite")
     if f[0]=='' :
         return
     
