@@ -510,3 +510,4 @@ LunaTranslator/files/ocr/ko/dict.txt
 LunaTranslator/files/ocr/ko/rec.onnx
 LunaTranslator/files/ocr/ko/ko.zip
 *.mp3
+*.sqlite
