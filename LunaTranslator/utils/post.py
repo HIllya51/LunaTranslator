@@ -107,7 +107,7 @@ def _92_f(line):
         line=re.sub('([a-zA-Z]+)','',line)
         return line
 def _7_zhuanyi_f(line): 
-        filters=postprocessconfig['_7']['args']['替换内容']
+        filters=postprocessconfig['_7_zhuanyi']['args']['替换内容']
         for fil in filters: 
                 if fil=="":
                         continue
