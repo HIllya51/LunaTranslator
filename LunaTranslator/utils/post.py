@@ -129,7 +129,7 @@ def _8_f(line):
                         continue
                 else:  
                         try:
-                                line=re.sub(fil,filters[fil],line)
+                                line=re.sub(codecs.unicode_escape_decode(fil)[0],codecs.unicode_escape_decode(filters[fil])[0],line)
                         except:
                                 print_exc()
         return line
