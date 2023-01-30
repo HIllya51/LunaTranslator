@@ -492,20 +492,13 @@ class MAINUI(QObject) :
                             
                 
                 else: 
-                    if pid_running(self.textsource.pid)==False:
+                    if pid_running(self.textsource.pid)==False or win32process.GetWindowThreadProcessId( self.textsource.hwnd )[0]==0:
                             try:
                                 self.textsource.end(True)  
                                  
                             except:
                                 print_exc()
-                            self.textsource=None 
-                            
-                    else:
-                        hwnd=self.textsource.hwnd
-                        if win32process.GetWindowThreadProcessId(hwnd)[0]==0:
-                            hwnd=win32gui.GetForegroundWindow()
-                            if win32process.GetWindowThreadProcessId(hwnd)[1]==self.textsource.pid:
-                                self.textsource.hwnd=hwnd
+                            self.textsource=None  
             except:
                         print_exc()
     def setontopthread(self):
