@@ -4,9 +4,8 @@ import multiprocessing
 st=subprocess.STARTUPINFO()
 st.dwFlags=subprocess.STARTF_USESHOWWINDOW
 st.wShowWindow=subprocess.SW_HIDE
-allsubprocess=[]
-allsubprocessmap={}
-def subproc(cmd,cwd=None,stdin=None,encoding=None, stdout=None,keep=False,key=None): 
+allsubprocess=[] 
+def subproc(cmd,cwd=None,stdin=None,encoding=None, stdout=None,keep=False): 
     try:
         ss=subprocess.Popen(cmd,cwd=cwd,stdin=stdin, stdout=stdout,  startupinfo=st)
          
@@ -14,13 +13,6 @@ def subproc(cmd,cwd=None,stdin=None,encoding=None, stdout=None,keep=False,key=No
         print_exc()
         ss=None
     if keep:
-        if key:
-            try:
-                allsubprocessmap[key].kill()
-            except:
-                pass
-            allsubprocessmap[key]=ss
-        else:
             allsubprocess.append(ss) 
     return ss
  
@@ -37,8 +29,4 @@ def endsubprocs():
             sub.kill()
         except:
             pass
-    for sub in allsubprocessmap:
-        try:
-            allsubprocessmap[sub].kill()
-        except:
-            pass
+    

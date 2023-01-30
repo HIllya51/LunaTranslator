@@ -76,7 +76,7 @@ def callmagpie(  queue):# 0x2000|\0x2|\0x200):
             with open('ScaleModels.json','r')as ff:
                 effectsJson= json.load(ff)   
             MagpieRT_Initialize(6,c_char_p('Runtime.log'.encode('utf8')),100000,1)
-             
+            print((hwnd, (json.dumps(effectsJson[ScaleMode]['effects']) ),flags,captureMode,settings.CursorZoomFactor,settings.CursorInterpolationMode,settings.AdapterIdx,settings.MultiMonitorUsage,0,0,0,0))
             threading.Thread(target=MagpieRT_Run,args=(hwnd,c_char_p(json.dumps(effectsJson[ScaleMode]['effects']).encode('utf8')),flags,captureMode,settings.CursorZoomFactor,settings.CursorInterpolationMode,settings.AdapterIdx,settings.MultiMonitorUsage,0,0,0,0)).start()
             #MagpieRT_Run(hwnd ,c_char_p(json.dumps(effectsJson[ScaleMode]['effects']).encode('utf8')),flags,captureMode,settings.CursorZoomFactor,settings.CursorInterpolationMode,settings.AdapterIdx,settings.MultiMonitorUsage,0,0,0,0)
             
