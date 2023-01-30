@@ -156,18 +156,8 @@ class textractor(basetext  ):
                 continue 
             if globalconfig['filter_chaos_code'] and checkchaos(output): 
                 continue
+             
             
-            try:
-                output=output[:-1]
-                if output[-2:]=='\r\n':
-                    output=output[:-2]
-                if output[-1]=='\n':
-                    output=output[:-1]
-                if output[-1]=='\r':
-                    output=output[:-1]
-            except:
-                pass
-                 
             key =(thread_handle,thread_tp_processId, thread_tp_addr, thread_tp_ctx, thread_tp_ctx2, thread_name,HookCode)
  
             

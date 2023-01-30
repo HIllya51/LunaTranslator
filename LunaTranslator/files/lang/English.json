@@ -486,5 +486,8 @@
     "选择路径": "Select path",
     "保存路径": "Save Path",
     "格式错误！": "Format error!",
-    "首选翻译": "Preferred translation"
+    "首选翻译": "Preferred translation",
+    "转移字符串替换": "Transfer string replacement",
+    "转义字符串替换": "Escape string replacement",
+    "简单字符串替换": "Simple string replacement"
 }

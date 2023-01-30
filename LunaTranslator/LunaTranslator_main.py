@@ -218,11 +218,13 @@ class MAINUI(QObject) :
                 paste_str=[POSTSOLVE(_) for _ in paste_str] 
                 _paste_str='\n'.join(paste_str)
             else:
-                _paste_str=POSTSOLVE(paste_str)
-                
-                
+                _paste_str=POSTSOLVE(paste_str) 
+            
         except:
             return 
+        while len(_paste_str) and _paste_str[-1] in '\r\n \t':  #在后处理之后在去除换行，这样换行符可以当作行结束符给后处理用
+            _paste_str=_paste_str[:-1]  
+
         if set(_paste_str)-set('\r\n \t')==set():
             return 
          

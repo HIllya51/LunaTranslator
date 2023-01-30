@@ -1,5 +1,5 @@
  
-import re
+import re,codecs
 from traceback import print_exc
 from typing import Counter
 from collections import Counter
@@ -106,13 +106,21 @@ def _91_f(line):
 def _92_f(line):
         line=re.sub('([a-zA-Z]+)','',line)
         return line
-def _7_f(line):
+def _7_zhuanyi_f(line): 
         filters=postprocessconfig['_7']['args']['替换内容']
         for fil in filters: 
                 if fil=="":
                         continue
-                else:
-                        line=line.replace(fil,filters[fil])
+                else:  
+                        line=line.replace(codecs.unicode_escape_decode(fil)[0],codecs.unicode_escape_decode(filters[fil])[0])
+        return line
+def _7_f(line): 
+        filters=postprocessconfig['_7']['args']['替换内容']
+        for fil in filters: 
+                if fil=="":
+                        continue
+                else:  
+                        line=line.replace( fil ,filters[fil])
         return line
 def _8_f(line):
         filters=postprocessconfig['_8']['args']['替换内容'] 
@@ -149,6 +157,7 @@ def POSTSOLVE(line):
         '_8':_8_f,
         '_13':_13_f,
         '_100':_100_f,
+        '_7_zhuanyi':_7_zhuanyi_f,
         '_11':importlib.import_module(globalconfig['postprocessf']).POSTSOLVE
     }
     for postitem in globalconfig['postprocess_rank']:

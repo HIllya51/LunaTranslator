@@ -486,5 +486,8 @@
     "选择路径": "Choisir un chemin",
     "保存路径": "Sauvegarder le chemin",
     "格式错误！": "Erreur de format!",
-    "首选翻译": "Traduction préférée"
+    "首选翻译": "Traduction préférée",
+    "转移字符串替换": "Remplacement de chaîne de transfert",
+    "转义字符串替换": "Remplacement de chaîne d'échappement",
+    "简单字符串替换": "Remplacement de chaîne simple"
 }
