@@ -117,7 +117,7 @@ def multicolorset(object ):
         hori.addWidget(l)
         
         b=MySwitch(object.rate,sign=globalconfig['cixingcolorshow'][k] ) 
-        b.clicked.connect(lambda x:globalconfig['cixingcolorshow'].__setitem__(k,x))
+        b.clicked.connect(functools.partial(globalconfig['cixingcolorshow'].__setitem__,k))
          
      
 
