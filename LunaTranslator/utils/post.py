@@ -111,8 +111,8 @@ def _7_zhuanyi_f(line):
         for fil in filters: 
                 if fil=="":
                         continue
-                else:  
-                        line=line.replace(codecs.unicode_escape_decode(fil)[0],codecs.unicode_escape_decode(filters[fil])[0])
+                else:   
+                        line=line.replace(codecs.escape_decode(bytes(fil, "utf-8"))[0].decode("utf-8"),codecs.escape_decode(bytes(filters[fil], "utf-8"))[0].decode("utf-8"))
         return line
 def _7_f(line): 
         filters=postprocessconfig['_7']['args']['替换内容']
@@ -129,7 +129,7 @@ def _8_f(line):
                         continue
                 else:  
                         try:
-                                line=re.sub(codecs.unicode_escape_decode(fil)[0],codecs.unicode_escape_decode(filters[fil])[0],line)
+                                line=re.sub(codecs.escape_decode(bytes(fil, "utf-8"))[0].decode("utf-8"),codecs.escape_decode(bytes(filters[fil], "utf-8"))[0].decode("utf-8"),line)
                         except:
                                 print_exc()
         return line
@@ -165,8 +165,9 @@ def POSTSOLVE(line):
                 if postitem=='_100' and globalconfig['sourcestatus']['ocr']==False:
                         continue
                 try:
-                        line=functions[postitem](line)
+                         
+                        line=functions[postitem](line) 
+                        
                 except:
-                        print_exc() 
-        
+                        print_exc()  
     return line

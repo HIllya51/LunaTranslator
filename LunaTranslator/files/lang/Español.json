@@ -491,5 +491,8 @@
     "转义字符串替换": "Reemplazo de cadena de escape",
     "简单字符串替换": "Reemplazo de cadena simple",
     "正则表达式替换": "Sustitución de expresiones regulares",
-    "正则表达式替换设置": "Configuración de sustitución de expresiones regulares"
+    "正则表达式替换设置": "Configuración de sustitución de expresiones regulares",
+    "！特殊码格式错误！": "¡! ¡Formato de código especial incorrecto!",
+    "简单字符串替换设置": "Configuración de reemplazo de cadena simple",
+    "转义字符串替换设置": "Configuración de sustitución de cadena de escape"
 }

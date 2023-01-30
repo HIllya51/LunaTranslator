@@ -201,7 +201,7 @@ class MAINUI(QObject) :
                 self.translation_ui.displayraw1.emit([],paste_str[len('<notrans>'):],globalconfig['rawtextcolor'],1)
                 return 
         
-        if type(paste_str)==list:
+        if type(paste_str)==list: 
             _paste_str='\n'.join(paste_str)
         else:
             _paste_str=paste_str
@@ -228,12 +228,11 @@ class MAINUI(QObject) :
         if set(_paste_str)-set('\r\n \t')==set():
             return 
          
-        if len(_paste_str)>10000:
-            return 
-
+        if len(_paste_str)>1000:
+            return  
         if shortlongskip and _paste_str==self.last_paste_str:
             return 
-        self.last_paste_str=_paste_str
+        self.last_paste_str=_paste_str  
         if globalconfig['outputtopasteboard'] and globalconfig['sourcestatus']['copy']==False:
             pyperclip.copy(_paste_str) 
 

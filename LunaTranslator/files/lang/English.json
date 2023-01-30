@@ -491,5 +491,8 @@
     "转义字符串替换": "Escape string replacement",
     "简单字符串替换": "Simple string replacement",
     "正则表达式替换": "Regular expression replacement",
-    "正则表达式替换设置": "Regular expression replacement settings"
+    "正则表达式替换设置": "Regular expression replacement settings",
+    "！特殊码格式错误！": "！ Special code format error!",
+    "简单字符串替换设置": "Simple string replacement settings",
+    "转义字符串替换设置": "Escape string replacement settings"
 }
