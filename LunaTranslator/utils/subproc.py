@@ -1,11 +1,12 @@
 import subprocess,os
 from traceback import print_exc
 import multiprocessing
-st=subprocess.STARTUPINFO()
-st.dwFlags=subprocess.STARTF_USESHOWWINDOW
-st.wShowWindow=subprocess.SW_HIDE
+
 allsubprocess=[] 
 def subproc(cmd,cwd=None,stdin=None,encoding=None, stdout=None,keep=False): 
+    st=subprocess.STARTUPINFO()
+    st.dwFlags=subprocess.STARTF_USESHOWWINDOW
+    st.wShowWindow=subprocess.SW_HIDE
     try:
         ss=subprocess.Popen(cmd,cwd=cwd,stdin=stdin, stdout=stdout,  startupinfo=st)
          

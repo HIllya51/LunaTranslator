@@ -441,7 +441,7 @@ class QUnFrameWindow(QWidget):
             self.masklabel.hide()
 
 
-        self.minmaxmoveoberve=subproc('./files/minmaxmoveobserve.exe',stdout=subprocess.PIPE,keep=True)  
+       
         self.minmaxmoveobservethread=threading.Thread(target=minmaxmoveobservefunc,args=(self,))
         self.minmaxmoveobservethread.start()  
  

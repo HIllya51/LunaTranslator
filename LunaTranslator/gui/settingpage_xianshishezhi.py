@@ -111,7 +111,7 @@ def setTabThree(self) :
                 [('Magpie捕获模式',4),(self.getsimplecombobox(['Graphics Capture','Desktop Duplication','GDI','DwmSharedSurface'],globalconfig,'magpiecapturemethod'),6)],
                 [''],
                 [('游戏最小化时窗口隐藏',4),(self.getsimpleswitch(globalconfig,'minifollow'),1)],
-                [('游戏失去焦点时窗口隐藏',4),(self.getsimpleswitch(globalconfig,'focusfollow'),1)],
+                #[('游戏失去焦点时窗口隐藏',4),(self.getsimpleswitch(globalconfig,'focusfollow'),1)],
                 [('游戏窗口移动时同步移动',4),(self.getsimpleswitch(globalconfig,'movefollow'),1)],
                 [''],
                 
