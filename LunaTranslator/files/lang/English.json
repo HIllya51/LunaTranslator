@@ -489,5 +489,7 @@
     "首选翻译": "Preferred translation",
     "转移字符串替换": "Transfer string replacement",
     "转义字符串替换": "Escape string replacement",
-    "简单字符串替换": "Simple string replacement"
+    "简单字符串替换": "Simple string replacement",
+    "正则表达式替换": "Regular expression replacement",
+    "正则表达式替换设置": "Regular expression replacement settings"
 }
