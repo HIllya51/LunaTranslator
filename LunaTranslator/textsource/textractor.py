@@ -1,22 +1,14 @@
-   
-import sqlite3
-from threading import Thread
-import threading
-from traceback import print_exc
-import win32pipe, win32file 
-from multiprocessing import Queue 
-from PyQt5.QtCore import QProcess ,QByteArray ,QTimer
+ 
+from multiprocessing import Queue  
 import re  
 import time
 import hashlib
-import os
-import subprocess
+import os 
 from utils.config import globalconfig 
 from utils.u16lesubprocess import u16lesubprocess
 from utils.getpidlist import getarch
 from textsource.textsourcebase import basetext 
-from utils.chaos import checkchaos
-import json
+from utils.chaos import checkchaos 
 class textractor(basetext  ): 
     def __init__(self,object,textgetmethod,hookselectdialog,pid,hwnd,pname,autostart=False,autostarthookcode=[]) :
         self.newline=Queue()  
@@ -88,10 +80,7 @@ class textractor(basetext  ):
                     if _h[-1] in dumpling:
                         continue
                     else:
-                        dumpling.append(_h[-1])
-                    x=subprocess.run(f'./files/hookcodecheck.exe {_h[-1]}',stdout=subprocess.PIPE)
-                    if(x.stdout[0]==ord('0')):
-                        continue
+                        dumpling.append(_h[-1]) 
                     self.inserthook(_h[-1])
                      
         #self.autostarttimeout.stop()
