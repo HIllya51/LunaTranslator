@@ -11,6 +11,8 @@ if os.path.exists('./cache')==False:
     os.mkdir('./cache')
 if os.path.exists('./cache/ocr')==False:
     os.mkdir('./cache/ocr')
+if os.path.exists('./cache/update')==False:
+    os.mkdir('./cache/update')
 if os.path.exists('./cache/screenshot')==False:
     os.mkdir('./cache/screenshot')
 if os.path.exists('./cache/tts')==False:

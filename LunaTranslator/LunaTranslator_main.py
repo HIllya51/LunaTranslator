@@ -55,6 +55,7 @@ class MAINUI(QObject) :
         self.cishus={}
         self.reader=None
         self.rect=None
+        self.last_paste_str=''
         self.textsource=None 
         super(MAINUI,self).__init__( )
         self.mainuiloadok.connect(self.mainuiloadafter)
@@ -227,6 +228,10 @@ class MAINUI(QObject) :
          
         if len(_paste_str)>10000:
             return 
+
+        if shortlongskip and _paste_str==self.last_paste_str:
+            return 
+        self.last_paste_str=_paste_str
         if globalconfig['outputtopasteboard'] and globalconfig['sourcestatus']['copy']==False:
             pyperclip.copy(_paste_str) 
 

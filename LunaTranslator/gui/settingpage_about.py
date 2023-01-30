@@ -45,14 +45,12 @@ def getversion(self):
             self.downloadprogress.show()
             self.progresssignal.emit('……',0)
         
-            savep=f'./update/LunaTranslator.zip'
-            if os.path.exists('update')==False:
-                    os.mkdir('update')
+            savep=f'./cache/update/LunaTranslator.zip' 
             def endcallback():
-                if os.path.exists('./update/LunaTranslator'):
-                    shutil.rmtree('./update/LunaTranslator')
-                zipf=zipfile.ZipFile('./update/LunaTranslator.zip')
-                zipf.extractall('./update')
+                if os.path.exists('./cache/update/LunaTranslator'):
+                    shutil.rmtree('./cache/update/LunaTranslator')
+                zipf=zipfile.ZipFile('./cache/update/LunaTranslator.zip')
+                zipf.extractall('./cache/update')
                 self.needupdate=True
                 self.updatefile=savep
             mutithreaddownload(savep,url,self.progresssignal.emit,lambda: globalconfig.__getitem__('autoupdate'),endcallback) 
