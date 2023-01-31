@@ -574,7 +574,7 @@ if __name__ == "__main__" :
     app.setQuitOnLastWindowClosed(False)
     if  globalconfig['language_setted']==False:
         from gui.languageset import languageset
-        x=languageset(globalconfig['language_list'])
+        x=languageset(globalconfig['language_list_show'])
         x.exec()
         globalconfig['language_setted']=True
         globalconfig['languageuse']=x.current
