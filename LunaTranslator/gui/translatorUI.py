@@ -70,7 +70,8 @@ class QUnFrameWindow(QWidget):
         elif code==5:
             #print(self.pos())
             #self.move(self.pos() + self._endPos)
-            self.move(self.pos().x()+self.rate *other[0],self.pos().y()+self.rate *other[1])
+            self.move(self.pos().x()+ other[0],self.pos().y()+ other[1])
+            #self.move(self.pos().x()+self.rate *other[0],self.pos().y()+self.rate *other[1])
         elif code==6:
             #print(self.pos())
             #self.move(self.pos() + self._endPos)
