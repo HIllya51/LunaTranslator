@@ -69,7 +69,8 @@ int main() {
 		HANDLE hProcess = OpenProcess(SYNCHRONIZE, FALSE, pi.dwProcessId);
 		WaitForSingleObject(hProcess, INFINITE); // 等待进程对象处于触发状态，即等待进程结束。
 		CloseHandle(hProcess);
-	}
-
+	} 
+	exit(0);
+	return 0;
 }
  
