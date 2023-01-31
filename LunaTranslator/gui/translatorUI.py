@@ -864,7 +864,7 @@ del LunaTranslator_no_Admin.exe
 if exist LunaTranslator_no_Admin.exe goto trydel2
 :trydel3
 del LunaTranslator.exe
-if exist LunaTranslator.exe goto trydel2
+if exist LunaTranslator.exe goto trydel3
 
 xcopy .\cache\update\LunaTranslator\ .\ /s /e /c /y /h /r 
 exit
