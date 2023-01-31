@@ -125,8 +125,7 @@ def _TR(k):
         return ''
     if k not in languageshow or languageshow[k]=='':
         languageshow[k]='' 
-        with open(f'./files/lang/{globalconfig["language_list"][language]}.json','w',encoding='utf8') as ff:
-            ff.write( json.dumps(languageshow,ensure_ascii=False,sort_keys=False, indent=4))
+        
         return k
     else:
         return languageshow[k]
@@ -158,3 +157,6 @@ def saveallconfig():
                 ff.write(json.dumps(savehook_new,ensure_ascii=False,sort_keys=False, indent=4))
         with open('./userconfig/savehook_new3.json','w',encoding='utf8') as ff:
                 ff.write(json.dumps(savehook_new2,ensure_ascii=False,sort_keys=False, indent=4))
+
+        with open(f'./files/lang/{globalconfig["language_list"][language]}.json','w',encoding='utf8') as ff:
+            ff.write( json.dumps(languageshow,ensure_ascii=False,sort_keys=False, indent=4))

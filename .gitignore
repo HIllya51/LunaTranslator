@@ -511,3 +511,11 @@ LunaTranslator/files/ocr/ko/rec.onnx
 LunaTranslator/files/ocr/ko/ko.zip
 *.mp3
 *.sqlite
+*.tlog
+*.log
+*.iobj
+*.ipdb
+*.obj
+*.res
+*.pdb
+*.recipe

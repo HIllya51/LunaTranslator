@@ -16,6 +16,12 @@ static UINT64 getCurrentMilliSecTimestamp() {
 
 	return (UINT64)((time - EPOCH) / 10000LL);
 }
+int pid_running(int pid) {
+	HANDLE handle = OpenProcess(SYNCHRONIZE, FALSE, pid);
+	int ret = WaitForSingleObject(handle, 0);
+	CloseHandle(handle);
+	return ret == WAIT_TIMEOUT;
+} 
 int main() { 
 	 
 	
@@ -24,9 +30,7 @@ int main() {
 	swprintf_s(buffw, 32, L"%lld", tm);
 	std::wstring starttimew= std::wstring(buffw);
 
-	char buff[32];
-	sprintf_s(buff, 32,  "%lld", tm);
-	std::string starttime = std::string(buff);
+
 	std::thread t1= std::thread([starttimew]() {
 		
 		while (true) { 
@@ -57,11 +61,23 @@ int main() {
 		}
 
 		});
-	std::thread t2 = std::thread([starttime]() {
-		WinExec((std::string("./LunaTranslator/LunaTranslator_main.exe ")+starttime).c_str(), SW_SHOW);
-		 
-		});
-	t1.join();
-	t2.join();
+	 
+
+	STARTUPINFO si = {0}; 
+	si.cb = sizeof(STARTUPINFO);
+	si.dwFlags = STARTF_USESHOWWINDOW;
+	si.wShowWindow = SW_SHOW;
+	PROCESS_INFORMATION pi; 
+	if (CreateProcessW(L".\\LunaTranslator\\LunaTranslator_main.exe", (LPWSTR)starttimew.c_str(), NULL,
+		NULL, FALSE, 0, NULL, NULL, &si, &pi)) { 
+		while (true)
+		{  
+			if (pid_running(pi.dwProcessId) == 0) {
+				break;
+			} 
+			Sleep(100);
+		}
+	}
+
 }
  
