@@ -1,13 +1,9 @@
  
 from PyQt5.QtWidgets import QWidget,QLabel ,QComboBox,QScrollArea 
 import functools
-from utils.config import globalconfig  
-import gui.switchbutton
-import gui.attachprocessdialog  
-from traceback import print_exc
-import gui.selecthook  
-from system_hotkey import SystemHotkey
-import pyperclip   
+from utils.config import globalconfig   
+from traceback import print_exc 
+from system_hotkey import SystemHotkey 
 key_first=['Ctrl','Shift','Alt','Win' ]+['None']
 key_first_reg=['control','shift','alt','super' ]+['']
 key_second=['F'+chr(ord('1')+i) for i in range(9)]+['F10','F11','F12']+[chr(ord('A')+i) for i in range(26)]+[chr(ord('0')+i) for i in range(10)]#+['']
@@ -25,7 +21,7 @@ def setTab_quick(self) :
             '_1':self.object.translation_ui.startTranslater,
             '_2':self.object.translation_ui.changeTranslateMode,
             '_3':self.showsignal.emit,
-            '_4':lambda: pyperclip.copy(self.object.translation_ui.original) ,
+            '_4':lambda:self.object.setclipboardsignal.emit( self.object.translation_ui.original) ,
             '_5':self.object.translation_ui.changeshowhideraw,
             '_6':self.object.translation_ui.transhis.showsignal.emit,
             '_7':self.object.translation_ui.langdu,

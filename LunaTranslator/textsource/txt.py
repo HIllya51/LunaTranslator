@@ -1,12 +1,9 @@
-
-import os
-import time 
-import pyperclip
+ 
+import time  
 from queue import Queue
-from PyQt5.QtWidgets import  QWidget,QLabel ,QLineEdit,QSpinBox,QPushButton,QDialog,QVBoxLayout ,QHeaderView,QFileDialog ,QGridLayout
+from PyQt5.QtWidgets import  QFileDialog 
 from utils.config import globalconfig
-import json,sqlite3,threading
-from traceback import print_exc
+import  threading 
 from textsource.textsourcebase import basetext
 class txt(basetext):
     def __init__(self,textgetmethod) -> None:

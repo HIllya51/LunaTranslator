@@ -11,7 +11,7 @@ import qtawesome
 from PyQt5.QtCore import pyqtSignal,Qt,QRect,QSize  
 from PyQt5.QtGui import  QFont  ,QIcon,QPixmap  ,QMouseEvent
 from PyQt5.QtWidgets import  QLabel ,QPushButton ,QSystemTrayIcon ,QAction,QMenu 
-import pyperclip 
+
 from PyQt5.QtCore import QProcess ,QByteArray  
 from utils.config import globalconfig,saveallconfig,_TR
 from utils.subproc import endsubprocs,mutiproc
@@ -319,7 +319,7 @@ class QUnFrameWindow(QWidget):
         self.takusanbuttons("MinMaxButton",_delaysettinuishowsignal,2,"打开设置")
 
 
-        self.takusanbuttons("MinMaxButton",lambda: pyperclip.copy(self.original),6,"复制到剪贴板",'copy') 
+        self.takusanbuttons("MinMaxButton",lambda:self.object.setclipboardsignal.emit(self.original),6,"复制到剪贴板",'copy') 
         self.takusanbuttons("MinMaxButton",self.edittextui.showsignal.emit,6,"编辑",'edit') 
         self.takusanbuttons("MinMaxButton", self.changeshowhideraw,7,"显示/隐藏原文",'showraw') 
         

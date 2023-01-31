@@ -29,8 +29,7 @@ from tts.huoshantts import tts as huoshantts
 from tts.azuretts import tts as azuretts
 from tts.voiceroid2 import tts as voiceroid2
 from tts.voicevox import tts as voicevox
-import  gui.selecthook   
-import pyperclip 
+import  gui.selecthook    
 from utils.getpidlist import getpidexe,ListProcess
  
 import gui.translatorUI
@@ -49,6 +48,7 @@ from utils.argsort import argsort
 
 class MAINUI(QObject) :
     mainuiloadok=pyqtSignal()
+    setclipboardsignal=pyqtSignal(str)
     def __init__(self) -> None:
         
         self.translators={}
@@ -59,6 +59,9 @@ class MAINUI(QObject) :
         self.textsource=None 
         super(MAINUI,self).__init__( )
         self.mainuiloadok.connect(self.mainuiloadafter)
+        self.setclipboardsignal.connect(self.setclipboard)
+    def setclipboard(self,_paste_str):
+        QApplication.clipboard().setText(_paste_str)
     @threader  
     def loadvnrshareddict(self):
         
@@ -233,9 +236,8 @@ class MAINUI(QObject) :
         if shortlongskip and _paste_str==self.last_paste_str:
             return 
         self.last_paste_str=_paste_str  
-        if globalconfig['outputtopasteboard'] and globalconfig['sourcestatus']['copy']==False:
-            pyperclip.copy(_paste_str) 
-
+        if globalconfig['outputtopasteboard'] and globalconfig['sourcestatus']['copy']==False:  
+            self.setclipboardsignal.emit(_paste_str)
         self.translation_ui.original=_paste_str 
         try:
             hira=self.hira_.fy(_paste_str)
