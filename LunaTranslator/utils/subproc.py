@@ -1,4 +1,4 @@
-import subprocess,os,time
+import subprocess,os,time,win32event,win32api,win32con
 from traceback import print_exc
 import multiprocessing,threading
 from utils.getpidlist import pid_running
@@ -16,14 +16,10 @@ def subproc(cmd,cwd=None,stdin=None,encoding=None, stdout=None,keep=False):
     if keep:
             allsubprocess.append(ss) 
     return ss
-def __wrap(pid,target,args):
-            def __processrunningcheck(pid ):
-                while True:
-                    if pid_running(pid)==False:
-                        os._exit(0) 
-                    time.sleep(0.1)
-            threading.Thread(target=__processrunningcheck,args=(pid,)).start()
-            target(*args)
+def __wrap(pid,target,args): 
+            threading.Thread(target=target,args=args).start()  
+            win32event.WaitForSingleObject(win32api.OpenProcess(win32con.SYNCHRONIZE,0, pid),win32event.INFINITE) 
+            os._exit(0)
 def mutiproc(target,args): 
     try:
         pid=os.getpid()
@@ -32,6 +28,7 @@ def mutiproc(target,args):
         ss=multiprocessing.Process(target=__wrap,args=(pid,target,args),daemon=True)
         #ss=multiprocessing.Process(target=target,args=args,daemon=True)
         #allsubprocess.append(ss)
+        ss.start()
         return ss
     except:
         print_exc()

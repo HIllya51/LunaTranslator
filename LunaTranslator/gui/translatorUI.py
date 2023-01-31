@@ -352,8 +352,7 @@ class QUnFrameWindow(QWidget):
  
         self.multiprocesshwnd=multiprocessing.Queue()
         self.callmagpie=mutiproc(callmagpie,( self.multiprocesshwnd,))
-        self.callmagpie.start()  
-         
+        
         
         self.takusanbuttons("MinMaxButton",self._fullsgame,5,"全屏/恢复游戏窗口(需要绑定ocr窗口，或选择hook进程)" ,"fullscreen") 
         
@@ -827,18 +826,7 @@ class QUnFrameWindow(QWidget):
          
         if self.object.textsource:
             self.object.textsource.end()
-        
-         
-        #print('closed')
-        import win32pipe,win32file
-        try:
-            win32pipe.WaitNamedPipe("\\\\.\\Pipe\\newsentence"+self.object.timestamp,win32con.NMPWAIT_WAIT_FOREVER)
-            hPipe = win32file.CreateFile( "\\\\.\\Pipe\\newsentence"+self.object.timestamp, win32con.GENERIC_READ | win32con.GENERIC_WRITE, 0,
-                    None, win32con.OPEN_EXISTING, win32con.FILE_ATTRIBUTE_NORMAL, None);
-            win32file.WriteFile(hPipe,"end".encode('utf8'))
-        except:
-            pass
-         
+          
         #sys.exit()
         if self.object.settin_ui.needupdate and globalconfig['autoupdate']:
             #os.system('explorer '+os.path.dirname(os.path.abspath(self.object.settin_ui.updatefile)))
