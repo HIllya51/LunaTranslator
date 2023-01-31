@@ -68,7 +68,7 @@ int main() {
 	si.dwFlags = STARTF_USESHOWWINDOW;
 	si.wShowWindow = SW_SHOW;
 	PROCESS_INFORMATION pi; 
-	if (CreateProcessW(L".\\LunaTranslator\\LunaTranslator_main.exe", (LPWSTR)starttimew.c_str(), NULL,
+	if (CreateProcessW(L".\\LunaTranslator\\LunaTranslator_main.exe", (LPWSTR)(std::wstring(L".\\LunaTranslator\\LunaTranslator_main.exe ") + starttimew).c_str(), NULL,
 		NULL, FALSE, 0, NULL, NULL, &si, &pi)) { 
 		while (true)
 		{  
