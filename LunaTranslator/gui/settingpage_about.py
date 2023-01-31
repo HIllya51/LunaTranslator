@@ -49,12 +49,12 @@ def getversion(self):
             def endcallback():
                 if os.path.exists('./cache/update/LunaTranslator'):
                     shutil.rmtree('./cache/update/LunaTranslator')
-                zipf=zipfile.ZipFile('./cache/update/LunaTranslator.zip')
+                zipf=(zipfile.ZipFile('./cache/update/LunaTranslator.zip'))
                 zipf.extractall('./cache/update')
                 self.needupdate=True
                 self.updatefile=savep
             mutithreaddownload(savep,url,self.progresssignal.emit,lambda: globalconfig.__getitem__('autoupdate'),endcallback) 
-     
+ 
 def updateprogress(self,text,val):
     self.downloadprogress.setValue(val)
     self.downloadprogress.setFormat(text)

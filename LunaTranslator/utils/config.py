@@ -99,6 +99,7 @@ except:
     pass
 listlengthsync(globalconfig,defaultglobalconfig,'postprocess_rank') 
 listlengthsync(globalconfig,defaultglobalconfig,'language_list',True) 
+listlengthsync(globalconfig,defaultglobalconfig,'language_list_show',True) 
 listlengthsync(globalconfig,defaultglobalconfig,'language_list_translator',True) 
 listlengthsync(globalconfig,defaultglobalconfig,'normallanguagelist',True) 
 for fanyi in globalconfig['fanyi']:

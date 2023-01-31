@@ -845,7 +845,6 @@ class QUnFrameWindow(QWidget):
             with open('./cache/update/update.bat','w',encoding='utf8') as ff:
                 
                 ff.write(r'''
-timeout 1
 taskkill /F /IM LunaTranslator_main.exe
 taskkill /F /IM LunaTranslator.exe
 taskkill /F /IM LunaTranslator_no_Admin.exe 
