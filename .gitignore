@@ -520,3 +520,4 @@ LunaTranslator/files/ocr/ko/ko.zip
 *.pdb
 *.recipe
 CXXplugins/exec/.vs/exec/v16/.suo
+LunaTranslator/hook.txt

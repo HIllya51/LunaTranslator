@@ -21,7 +21,7 @@ class hookselect(QMainWindow):
     getnewsentencesignal=pyqtSignal(str)
     changeprocessclearsignal=pyqtSignal()
     okoksignal=pyqtSignal()
-    update_item_new_line=pyqtSignal(tuple,str) 
+    update_item_new_line=pyqtSignal(tuple,str)  
     def __init__(self,object,p):
         super(hookselect, self).__init__(p)
         self.setupUi( )
@@ -144,7 +144,7 @@ class hookselect(QMainWindow):
         self.tttable2.setEditTriggers(QAbstractItemView.NoEditTriggers)
         self.tttable2.hide()
         self.tttable2.clicked.connect(self.ViewThread2) 
-        
+         
         self.vboxlayout.addWidget(self.tttable2)
         self.searchtextlayout2 = QHBoxLayout()   
         self.vboxlayout.addLayout(self.searchtextlayout2)
@@ -154,7 +154,7 @@ class hookselect(QMainWindow):
         self.checkfilt_notcontrol=QCheckBox(_TR("过滤控制字符"))
         self.checkfilt_notpath=QCheckBox(_TR("过滤路径"))
         self.checkfilt_notascii=QCheckBox(_TR("过滤纯英文")) 
-        self.checkfilt_notshiftjis=QCheckBox(_TR("过滤非shiftjis")) 
+        self.checkfilt_notshiftjis=QCheckBox(_TR("过滤乱码文本")) 
         self.checkfilt_dumplicate=QCheckBox(_TR("过滤重复")) 
         
         self.checkfilt_notcontrol.setChecked(True)
@@ -194,50 +194,47 @@ class hookselect(QMainWindow):
         self.buttonBox.accepted.connect(self.accept)
         self.buttonBox.rejected.connect(self.hide)  
         self.hiding=True
+    def gethide(self,res,savedumpt):
+        hide=False
+    
+        if self.checkfilt_notascii.isChecked():
+            try:
+                res.encode('ascii')
+                hide=True
+            except:
+                pass
+        if self.checkfilt_notshiftjis.isChecked():
+            if checkchaos(res):
+                hide=True
+
+        if self.checkfilt_notcontrol.isChecked():
+            lres=list(res)
+            
+            for r in lres:
+                _ord=ord(r)
+                if _ord<0x20 or (_ord>0x80 and _ord<0xa0):
+
+                    hide=True
+                    break
+        if self.checkfilt_notpath.isChecked():
+            if os.path.isdir(res) or os.path.isfile(res): 
+                hide=True 
+        if self.checkfilt_dumplicate.isChecked():
+            if res in savedumpt:
+                hide=True
+            else:
+                savedumpt.add(res)
+        return hide
     def searchtextfunc2(self):
         searchtext=self.searchtext2.text()
         savedumpt=set() 
         for index in range(len(self.allres)):   
             _index=len(self.allres)-1-index
-            hide=False
+            
             res=self.allres[_index][1]
             hc=self.allres[_index][0]
-            if searchtext not in res:
-                hide=True
-            
-            if self.checkfilt_notascii.isChecked():
-                try:
-                    res.encode('ascii')
-                    hide=True
-                except:
-                    pass
-            if self.checkfilt_notshiftjis.isChecked():
-                try:
-                    res.encode('shift-jis') 
-                except:
-                    hide=True
-
-            if self.checkfilt_notcontrol.isChecked():
-                lres=list(res)
-                
-                for r in lres:
-                    _ord=ord(r)
-                    if _ord<0x20 or (_ord>0x80 and _ord<0xa0):
-
-                        hide=True
-                        break
-            if self.checkfilt_notpath.isChecked():
-                if os.path.isdir(res) or os.path.isfile(res): 
-                    hide=True 
-            if self.checkfilt_dumplicate.isChecked():
-                if res in savedumpt:
-                    hide=True
-                else:
-                    savedumpt.add(res)
-                # if hc in savedumphc:
-                #     hide=True
-                # else:
-                #     savedumphc.add(hc)
+             
+            hide=searchtext not in res or self.gethide(res,savedumpt)
             self.tttable2.setRowHidden(_index,hide)  
     def searchtextfunc(self):
         searchtext=self.searchtext.text()
@@ -321,36 +318,41 @@ class hookselect(QMainWindow):
             allres=ff.read().split('\n')
         
         self.allres=[]
- 
+
+        savedumpt=set()
+        realrow=0
         for i,line in enumerate( allres):
             try:
-                        hc,text=line.split('=>')
+                        x=line.split('=>')
+                        if len(x)!=2:
+                            continue
+                        hc,text=x
                         if text.strip()=='':
-                            continue
-                        if globalconfig['filter_chaos_code'] and checkchaos(text):
-                            continue
+                            continue 
                         self.allres.append((hc,text)) 
+                        
+                        item = QStandardItem(hc ) 
+                        self.ttCombomodelmodel2.setItem(realrow, 0, item)
+                        item = QStandardItem(text )
+                        self.ttCombomodelmodel2.setItem(realrow, 1, item)
+
+                        # if self.gethide(text,savedumpt):
+                        #     self.tttable2.setRowHidden(realrow,True)   
+                            
+                        realrow+=1
             except:
-                pass
-        #self.ttCombomodelmodel2.blockSignals(True)  
-        for i,(hc,text ) in enumerate(self.allres):
-            item = QStandardItem(hc ) 
-            self.ttCombomodelmodel2.setItem(i, 0, item)
-            item = QStandardItem(text )
-            self.ttCombomodelmodel2.setItem(i, 1, item)
-        
-        #self.ttCombomodelmodel2.blockSignals(False)  
-        
+                pass 
+        self.searchtextfunc2()
         self.tttable2.show()
         self.searchtextbutton2.show()
         self.searchtext2.show() 
-        self.searchtext2.setText('')
-        self.searchtextfunc2()
+        self.searchtext2.setText('') 
         self.checkfilt_notcontrol.show()
         self.checkfilt_notpath.show()
         self.checkfilt_notascii.show() 
         self.checkfilt_notshiftjis.show() 
         self.checkfilt_dumplicate.show()
+        
     def timewaitthread(self):
  
         while True:

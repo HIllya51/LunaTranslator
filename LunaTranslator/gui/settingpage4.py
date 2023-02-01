@@ -304,7 +304,7 @@ def codeacceptdialog(object ,title=  '接受的编码'  ):
     _hb.addWidget(liwai) 
     
     formLayout.addLayout(_hb)
-    dialog.resize(QSize(600,400))
+    dialog.resize(QSize(600,500))
     dialog.show()
 
 
