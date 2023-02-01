@@ -1,22 +1,16 @@
-
-from re import search
+ 
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QApplication,QTextBrowser,QMainWindow,QFontDialog,QAction,QMenu,QHBoxLayout,QWidget,QPushButton,QVBoxLayout
 from PyQt5.QtGui import QFont
 from PyQt5.QtCore import Qt,pyqtSignal ,QSize,QPoint
-import qtawesome
-import subprocess
-import json,threading
-import os
-import re
-import sys
+import qtawesome 
+import json,threading 
 
 from utils.config import globalconfig ,_TR,_TRL
-import win32gui
+from gui.closeashidewindow import closeashidewindow
 from utils.config import globalconfig
-class edittext(QMainWindow): 
-    getnewsentencesignal=pyqtSignal(str)  
-    showsignal=pyqtSignal()
+class edittext(closeashidewindow): 
+    getnewsentencesignal=pyqtSignal(str)   
     def __init__(self,p):
         super(edittext, self).__init__(p)
         self.p=p
@@ -24,19 +18,11 @@ class edittext(QMainWindow):
         self.setupUi() 
         
         #self.setWindowFlags(self.windowFlags()&~Qt.WindowMinimizeButtonHint)
-        self.getnewsentencesignal.connect(self.getnewsentence)  
-        self.showsignal.connect(self.showfunction) 
-        self.setWindowTitle(_TR('编辑'))
-    def showfunction(self): 
-        if self.isMinimized():
-            self.showNormal()
-        elif self.isHidden(): 
-            self.show() 
-        else:
-            self.hide()
+        self.getnewsentencesignal.connect(self.getnewsentence)   
+        self.setWindowTitle(_TR('编辑')) 
     def closeEvent(self, event) : 
             globalconfig['edit_geo']=list(self.geometry().getRect())
-            self.hide()
+            super( ).closeEvent(event)
     def setupUi(self):
         self.setWindowIcon(qtawesome.icon("fa.edit"  ))
         font = QFont() 

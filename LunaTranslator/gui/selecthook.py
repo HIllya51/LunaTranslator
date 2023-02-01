@@ -15,13 +15,14 @@ import re
 import sys ,win32gui
 from utils.config import globalconfig ,_TR,_TRL
 
+from gui.closeashidewindow import closeashidewindow
 from utils.chaos import checkchaos
-class hookselect(QMainWindow):
+class hookselect(closeashidewindow):
     addnewhooksignal=pyqtSignal(tuple)
     getnewsentencesignal=pyqtSignal(str)
     changeprocessclearsignal=pyqtSignal()
-    okoksignal=pyqtSignal()
-    update_item_new_line=pyqtSignal(tuple,str)  
+    okoksignal=pyqtSignal() 
+    update_item_new_line=pyqtSignal(tuple,str)   
     def __init__(self,object,p):
         super(hookselect, self).__init__(p)
         self.setupUi( )
@@ -30,7 +31,7 @@ class hookselect(QMainWindow):
         self.addnewhooksignal.connect(self.addnewhook)
         self.getnewsentencesignal.connect(self.getnewsentence)
         self.update_item_new_line.connect(self.update_item_new_line_function) 
-        self.okoksignal.connect(self.okok)
+        self.okoksignal.connect(self.okok) 
         #self.setWindowFlags(self.windowFlags()&~Qt.WindowMinimizeButtonHint)
         self.setWindowTitle(_TR('选择文本，支持按住ctrl进行多项选择（一般选择一条即可）'))
     def update_item_new_line_function(self,hook,output):
@@ -192,8 +193,7 @@ class hookselect(QMainWindow):
         self.buttonBox.setStandardButtons(QDialogButtonBox.Ok|QDialogButtonBox.Cancel)
         self.vboxlayout.addWidget(self.buttonBox)
         self.buttonBox.accepted.connect(self.accept)
-        self.buttonBox.rejected.connect(self.hide)  
-        self.hiding=True
+        self.buttonBox.rejected.connect(self.hide)   
     def gethide(self,res,savedumpt):
         hide=False
     
@@ -365,25 +365,8 @@ class hookselect(QMainWindow):
                     break
             else:
                 pass
-            time.sleep(1)
-    # def hide(self):
-         
-    #     self.hiding=True
-    #     super(QMainWindow,self).hide()
-    #     if 'closed' not in dir(self.object):
-    #         self.object.settin_ui.show()
-    
-    # 窗口关闭处理
-    def closeEvent(self, event) : 
-        if 'realclose' in dir(self):
-            #print(2)
-            event.accept()
-        else:
-            #print(1)
-            self.hide()
-    def accept(self):
-        #print('show')
-        self.hiding=True
+            time.sleep(1)  
+    def accept(self): 
         self.hide()
         try:
             if  self.object.textsource is None:

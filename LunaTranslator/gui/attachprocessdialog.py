@@ -9,7 +9,11 @@ import sys
 import time   
 from utils.getpidlist import getwindowhwnd,getpidexe,ListProcess,mouseselectwindow,getExeIcon
 import qtawesome
-class AttachProcessDialog(QMainWindow):
+
+from utils.getpidlist import getarch 
+from textsource.textractor import textractor
+from gui.closeashidewindow import closeashidewindow
+class AttachProcessDialog(closeashidewindow):
      
         
     iconcache={}
@@ -75,7 +79,27 @@ class AttachProcessDialog(QMainWindow):
         self.processIdEdit.textEdited.connect(gg)
         #print(time.time()-t1)
         #self.processEdit.returnPressed.connect(self.accept)
+    def callback(self,selectedp) :
+    
+            #self.object.textsource=None
+            pid,pexe,hwnd=(  selectedp)   
+        
+            arch=getarch(pid)
+            if arch is None:
+                return
+            if   self.object.textsource:
+                self.object.textsource.end()  
+            
+            
+            #  
+            self.object.textsource=textractor(self.object,self.object.textgetmethod,self.object.hookselectdialog,pid,hwnd,pexe )  
+            self.object.hookselectdialog.changeprocessclearsignal.emit()
+            self.object.hookselectdialog.showsignal.emit()
+         
     def show(self):
+
+        self.object.hookselectdialog.hide()  
+        ###########################
         self.selectedp=(0,'',0)
         model=QStandardItemModel(self.processList)
         self.model=model 
@@ -111,9 +135,7 @@ class AttachProcessDialog(QMainWindow):
         self.selectedp=self.processlist[index.row()] 
     def accept(self):
         self.callback(self.selectedp)
-        self.close()
-    def closeEvent(self, a0 ) -> None:
-        self.hide()
+        self.close() 
 if __name__=='__main__':
     app = QApplication(sys.argv) 
     a=AttachProcessDialog()

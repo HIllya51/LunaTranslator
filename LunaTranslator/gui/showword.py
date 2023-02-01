@@ -10,10 +10,12 @@ from queue import Queue
 from utils.config import globalconfig
 from traceback import print_exc
 from utils.config import globalconfig ,_TR,_TRL
-class searchwordW(QMainWindow): 
+
+from gui.closeashidewindow import closeashidewindow
+class searchwordW(closeashidewindow): 
     getnewsentencesignal=pyqtSignal(str) 
     searchthreadsignal=pyqtSignal(str,dict,str)
-    showsignal=pyqtSignal(str,str)
+    showtabsignal=pyqtSignal(str,str)
     def __init__(self,p):
         super(searchwordW, self).__init__(p)
         self.setupUi() 
@@ -23,8 +25,7 @@ class searchwordW(QMainWindow):
         self.p=p
     def closeEvent(self, event) :  
         globalconfig['sw_geo']=list(self.geometry().getRect())
-        self.hide()
-     
+        super( ).closeEvent(event) 
     
     def showresfun(self,k,res):
             first=res.split('<hr>')[0]
@@ -40,7 +41,7 @@ class searchwordW(QMainWindow):
         self.setWindowIcon(qtawesome.icon("fa.search"  ))
          
          
-        self.showsignal.connect(self.showresfun)
+        self.showtabsignal.connect(self.showresfun)
         font = QFont() 
         font.fromString(globalconfig['sw_fontstring'])
 
@@ -169,7 +170,7 @@ class searchwordW(QMainWindow):
 
     def searchthread(self,k,_mp,sentence):
         
-        _mp[k].callback=functools.partial(self.showsignal.emit,k)
+        _mp[k].callback=functools.partial(self.showtabsignal.emit,k)
         _mp[k].search( sentence ) 
         
     

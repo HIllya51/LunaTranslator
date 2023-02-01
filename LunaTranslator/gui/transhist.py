@@ -11,33 +11,26 @@ import os
 import re
 import sys
 
+from gui.closeashidewindow import closeashidewindow
 from utils.config import globalconfig ,_TR,_TRL
 import win32gui
 from utils.config import globalconfig
-class transhist(QMainWindow): 
+class transhist(closeashidewindow): 
     getnewsentencesignal=pyqtSignal(str) 
-    getnewtranssignal=pyqtSignal(str,str) 
-    showsignal=pyqtSignal()
+    getnewtranssignal=pyqtSignal(str,str)  
     def __init__(self,p):
         super(transhist, self).__init__(p)
         self.setupUi() 
         #self.setWindowFlags(self.windowFlags()&~Qt.WindowMinimizeButtonHint)
         self.getnewsentencesignal.connect(self.getnewsentence) 
-        self.getnewtranssignal.connect(self.getnewtrans) 
-        self.showsignal.connect(self.showfunction)
+        self.getnewtranssignal.connect(self.getnewtrans)  
         self.hiderawflag=False
         self.hideapiflag=False
         self.setWindowTitle(_TR('历史翻译'))
-    def showfunction(self): 
-        if self.isMinimized():
-            self.showNormal()
-        elif self.isHidden(): 
-            self.show() 
-        else:
-            self.hide()
+    
     def closeEvent(self, event) : 
             globalconfig['hist_geo']=list(self.geometry().getRect())
-            self.hide()
+            super( ).closeEvent(event) 
     def setupUi(self):
         self.setWindowIcon(qtawesome.icon("fa.rotate-left"  ))
         font = QFont() 

@@ -23,8 +23,7 @@ from utils.minmaxmove import minmaxmoveobservefunc
 import gui.edittext
 from utils.subproc import subproc
 from utils.getpidlist import getwindowhwnd,mouseselectwindow,letfullscreen,recoverwindow,getmagpiehwnd
-from gui.settingpage4 import autosaveshow
-from gui.settingpage1 import settingsource,settingtextractor
+from gui.settingpage4 import autosaveshow 
 from gui.textbrowser import Textbrowser
 from gui.showword import searchwordW
 from gui.rangeselect  import moveresizegame
@@ -45,9 +44,7 @@ class QUnFrameWindow(QWidget):
     showhideuisignal=pyqtSignal()
     hookfollowsignal=pyqtSignal(int,tuple)
     toolbarhidedelaysignal=pyqtSignal() 
-    showsavegame_signal=pyqtSignal()
-    settingprocess_signal=pyqtSignal()
-    settinghookthread_signal=pyqtSignal()
+    showsavegame_signal=pyqtSignal() 
     clickRange_signal=pyqtSignal(bool)
     rangequick=pyqtSignal()
     showhide_signal=pyqtSignal()
@@ -254,9 +251,7 @@ class QUnFrameWindow(QWidget):
         self.displayres.connect(self.showres)
         self.displayraw1.connect(self.showraw)   
         self.refreshtooliconsignal.connect(self.refreshtoolicon)
-        self.showsavegame_signal.connect(lambda:autosaveshow(self.object.settin_ui))
-        self.settinghookthread_signal.connect(self.settinghookthread_funtion)
-        self.settingprocess_signal.connect(self.settingprocess_function)
+        self.showsavegame_signal.connect(lambda:autosaveshow(self.object.settin_ui))  
         self.clickRange_signal.connect(self.clickRange )
         self.rangequick.connect(self.quickrange)
         self.showhide_signal.connect(self.showhide )
@@ -313,10 +308,8 @@ class QUnFrameWindow(QWidget):
         self.showbuttons=[]
         self.takusanbuttons("MinMaxButton",None,0,"移动","move")
         self.takusanbuttons("MinMaxButton",self.startTranslater,0,"重新翻译")
-        self.takusanbuttons("MinMaxButton",self.changeTranslateMode,1,"自动翻译",'automodebutton')
-        def _delaysettinuishowsignal():
-            self.object.settin_ui.showsignal.emit()
-        self.takusanbuttons("MinMaxButton",_delaysettinuishowsignal,2,"打开设置")
+        self.takusanbuttons("MinMaxButton",self.changeTranslateMode,1,"自动翻译",'automodebutton') 
+        self.takusanbuttons("MinMaxButton",lambda:self.object.settin_ui.showsignal.emit(),2,"打开设置")
 
 
         self.takusanbuttons("MinMaxButton",lambda:self.object.setclipboardsignal.emit(self.original),6,"复制到剪贴板",'copy') 
@@ -333,8 +326,8 @@ class QUnFrameWindow(QWidget):
         
         self.takusanbuttons("MinMaxButton",lambda: autosaveshow(self.object.settin_ui),3,"打开保存的游戏",'gamepad') 
 
-        self.takusanbuttons("MinMaxButton",lambda :settingtextractor(self),4,"选择游戏" ) 
-        self.takusanbuttons("MinMaxButton",lambda :settingsource(self),5,"选择文本" ) 
+        self.takusanbuttons("MinMaxButton",lambda :self.object.AttachProcessDialog.showsignal.emit(),4,"选择游戏" )  
+        self.takusanbuttons("MinMaxButton",lambda:self.object.hookselectdialog.showsignal.emit(),5,"选择文本" ) 
          
         self.takusanbuttons("MinMaxButton",lambda :self.clickRange(False),4,"选取OCR范围")
         self.takusanbuttons("MinMaxButton",self.showhide,5,"显示/隐藏范围框")
@@ -382,7 +375,7 @@ class QUnFrameWindow(QWidget):
         self.tray.setIcon(icon) 
         
         showAction = QAction(_TR("&显示"), self, triggered = self.show_and_enableautohide)
-        settingAction = QAction(_TR("&设置"), self, triggered = _delaysettinuishowsignal)
+        settingAction = QAction(_TR("&设置"), self, triggered = lambda: self.object.settin_ui.showsignal.emit())
         quitAction = QAction(_TR("&退出"), self, triggered = self.close)
                 
         
@@ -529,11 +522,7 @@ class QUnFrameWindow(QWidget):
             self.object.textsource.pid= pid if pid!=self.selfpid else None
             self.isbindedwindow=(pid!=self.selfpid)
             self.refreshtoolicon() 
-              
-    def settingprocess_function(self):
-        settingtextractor(self.object.settin_ui)
-    def settinghookthread_funtion(self):
-        settingsource(self.object.settin_ui)
+               
     def changeshowhideraw(self):
         self.object.settin_ui.show_original_switch.click()
         
@@ -820,9 +809,7 @@ class QUnFrameWindow(QWidget):
         globalconfig['width']=self.width() 
         globalconfig['height']=self.height() 
         saveallconfig()
-        
-        #print(4)
-        self.object.hookselectdialog.realclose=True 
+         
          
         if self.object.textsource:
             self.object.textsource.end()
