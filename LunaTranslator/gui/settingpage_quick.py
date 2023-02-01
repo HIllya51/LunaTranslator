@@ -23,7 +23,7 @@ def setTab_quick(self) :
             '_3':self.showsignal.emit,
             '_4':lambda:self.object.setclipboardsignal.emit( self.object.translation_ui.original) ,
             '_5':self.object.translation_ui.changeshowhideraw,
-            '_6':self.object.translation_ui.transhis.showsignal.emit,
+            '_6':lambda: self.object.transhis.showsignal.emit(),
             '_7':self.object.translation_ui.langdu,
             '_8':self.object.translation_ui.changemousetransparentstate,
             '_9':self.object.translation_ui.changetoolslockstate,

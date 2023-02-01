@@ -126,11 +126,13 @@ class rangeselct(QMainWindow) :
             self.object.translation_ui.quickrangestatus=not self.object.translation_ui.quickrangestatus
             self.callback() 
 import win32gui,win32con,win32api
+
+from utils.wrapper import Singleton_close
+@Singleton_close
 class moveresizegame(QDialog) :
 
-    def __init__(self, object,hwnd ):
-
-        super(moveresizegame, self).__init__(object)
+    def __init__(self, object,hwnd ): 
+        super().__init__(object)
         self.setWindowFlags(Qt.Dialog|Qt.WindowMaximizeButtonHint|Qt.WindowCloseButtonHint)
         self.object = object  
         self.setWindowTitle("调整窗口  "+ win32gui.GetWindowText(hwnd))

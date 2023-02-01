@@ -17,16 +17,13 @@ from utils.config import globalconfig,saveallconfig,_TR
 from utils.subproc import endsubprocs,mutiproc
 import  win32gui,win32api,win32process,win32con,multiprocessing
 import gui.rangeselect
-import gui.transhist 
 from utils.update import update
-from utils.minmaxmove import minmaxmoveobservefunc
-import gui.edittext
 from utils.subproc import subproc
 from utils.getpidlist import getwindowhwnd,mouseselectwindow,letfullscreen,recoverwindow,getmagpiehwnd
 
 from gui.dialog_savedgame import dialog_savedgame
 from gui.textbrowser import Textbrowser
-from gui.showword import searchwordW
+ 
 from gui.rangeselect  import moveresizegame
 from utils.magpie import callmagpie 
 class QTitleButton(QPushButton):
@@ -84,7 +81,7 @@ class QUnFrameWindow(QWidget):
             
             #print(globalconfig['fanyi'][_type]['name']+'  '+res+'\n')
             
-            self.transhis.getnewtranssignal.emit(globalconfig['fanyi'][_type]['name'],res)
+            self.object.transhis.getnewtranssignal.emit(globalconfig['fanyi'][_type]['name'],res)
         except:
             print_exc() 
     def showraw(self,hira,res,color,show ): 
@@ -96,8 +93,8 @@ class QUnFrameWindow(QWidget):
             pass
         elif show==2:
             self.showline((hira,res),color ,type_=2 )
-        self.transhis.getnewsentencesignal.emit(res) 
-        self.edittextui.getnewsentencesignal.emit(res) 
+        self.object.transhis.getnewsentencesignal.emit(res) 
+        self.object.edittextui.getnewsentencesignal.emit(res) 
     # def showtaskthreadfun(self):
     #     while True:
     #         res,color ,type_=self.showtask.get()
@@ -148,8 +145,8 @@ class QUnFrameWindow(QWidget):
                     
             time.sleep(0.3)
     def showsearchword(self,word):   
-        self.searchwordW.showNormal()
-        self.searchwordW.getnewsentence(word) 
+        self.object.searchwordW.showNormal()
+        self.object.searchwordW.getnewsentence(word) 
     def clearText(self) :
      
         # 翻译界面清屏
@@ -251,8 +248,6 @@ class QUnFrameWindow(QWidget):
         self.setMinimumWidth(300)
         self.hideshownotauto=True
         self.showhideuisignal.connect(self.showhideui)
-        self.transhis=gui.transhist.transhist(self)  
-        self.edittextui=gui.edittext.edittext(self)  
         self.hookfollowsignal.connect(self.hookfollowsignalsolve) 
         self.displayres.connect(self.showres)
         self.displayraw1.connect(self.showraw)   
@@ -269,21 +264,14 @@ class QUnFrameWindow(QWidget):
         # self.showtaskthread=threading.Thread(target=self.showtaskthreadfun).start()
         self.clear_text_sign.connect(self.clearText)
         self.object = object  
-        # 界面缩放比例
-        self.searchwordW=searchwordW(self)
-        self.selfpid=win32api.GetCurrentProcessId()
-        self.HWNDStyle=None
-        self.HWNDStyleEx =None
+        
         self.isletgamefullscreened=False
         self.original = ""    
         self._isTracking=False
         self.quickrangestatus=False
         self.isontop=True 
         self.initTitleLabel()  # 安放标题栏标签
-         
-        self.initLayout()  # 设置框架布局
-        # self.setMinimumWidth(500)
-        # self.setMinimumHeight(100)
+          
         self.setMouseTracking(True)  # 设置widget鼠标跟踪
         self.initDrag()  # 设置鼠标跟踪判断默认值
         self.setStyleSheet(''' 
@@ -319,10 +307,10 @@ class QUnFrameWindow(QWidget):
 
 
         self.takusanbuttons("MinMaxButton",lambda:self.object.setclipboardsignal.emit(self.original),6,"复制到剪贴板",'copy') 
-        self.takusanbuttons("MinMaxButton",self.edittextui.showsignal.emit,6,"编辑",'edit') 
+        self.takusanbuttons("MinMaxButton",lambda: self.object.edittextui.showsignal.emit(),6,"编辑",'edit') 
         self.takusanbuttons("MinMaxButton", self.changeshowhideraw,7,"显示/隐藏原文",'showraw') 
         
-        self.takusanbuttons("MinMaxButton", self.transhis.showsignal.emit  ,8,"显示/隐藏历史翻译",'history') 
+        self.takusanbuttons("MinMaxButton",lambda: self.object.transhis.showsignal.emit() ,8,"显示/隐藏历史翻译",'history') 
         self.takusanbuttons("MinMaxButton", self.settin_ui_button_noundict_click  ,8,"专有名词翻译设置",'noundict') 
         self.takusanbuttons("MinMaxButton",self.langdu,9,"朗读",'langdu') 
         self.takusanbuttons("MinMaxButton",self.changemousetransparentstate,10,"鼠标穿透窗口",'mousetransbutton') 
@@ -435,10 +423,6 @@ class QUnFrameWindow(QWidget):
         if globalconfig['selectable']:
             self.masklabel.hide()
 
-
-       
-        self.minmaxmoveobservethread=threading.Thread(target=minmaxmoveobservefunc,args=(self,))
-        self.minmaxmoveobservethread.start()  
  
     def grabwindow(self): 
         
@@ -500,9 +484,7 @@ class QUnFrameWindow(QWidget):
                     
             except:
                     print_exc()
-    def changemousetransparentstate(self):
-         
-        
+    def changemousetransparentstate(self): 
         
         self.translate_text.setStyleSheet("border-width:0;\
                                                                 border-style:outset;\
@@ -519,12 +501,11 @@ class QUnFrameWindow(QWidget):
             self.refreshtoolicon()
             self.object.range_ui.setVisible(self.showhidestate) 
     def bindcropwindowcallback(self,pid,hwnd,name_): 
-            
-            self.object.textsource.hwnd= hwnd if pid!=self.selfpid else None
-            self.object.textsource.pid= pid if pid!=self.selfpid else None
-            self.isbindedwindow=(pid!=self.selfpid)
-            self.refreshtoolicon() 
-               
+            _pid=os.getpid()
+            self.object.textsource.hwnd= hwnd if pid!=_pid else None
+            self.object.textsource.pid= pid if pid!=_pid else None
+            self.isbindedwindow=(pid!=_pid)
+            self.refreshtoolicon()  
     def changeshowhideraw(self):
         self.object.settin_ui.show_original_switch.click()
         
@@ -592,24 +573,11 @@ class QUnFrameWindow(QWidget):
         self._right_drag = False
         self._left_drag = False
 
-    def initTitleLabel(self):
-        # 安放标题栏标签
-        self._TitleLabel = QLabel(self)
-        self._TitleLabel.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
-        self._TitleLabel.setFixedHeight(30*self.rate)
-        # 设置标题栏标签鼠标跟踪（如不设，则标题栏内在widget上层，无法实现跟踪）
-        self._TitleLabel.setMouseTracking(True)
-        self._TitleLabel.setIndent(10)  # 设置标题栏文本缩进
-        self._TitleLabel.move(0, 0)  # 标题栏安放到左上角
-
-    def initLayout(self):
-        # 设置框架布局
-        self._MainLayout = QVBoxLayout()
-        self._MainLayout.setSpacing(0)
-        # 顶一个QLabel在竖放框架第一行，以免正常内容挤占到标题范围里
-        self._MainLayout.addWidget(QLabel(), Qt.AlignLeft)
-        self._MainLayout.addStretch()
-        self.setLayout(self._MainLayout)
+    def initTitleLabel(self): 
+        self._TitleLabel = QLabel(self) 
+        self._TitleLabel.setFixedHeight(30*self.rate) 
+        self._TitleLabel.setMouseTracking(True) 
+        self._TitleLabel.move(0, 0)  
  
     def toolbarhidedelay(self):
         

@@ -136,7 +136,7 @@ class dialog_savedgame(QDialog):
                 table.setSelectionMode( (QAbstractItemView.SingleSelection)      )
                 table.setWordWrap(False) 
                 table.setModel(model) 
-
+                self.table=table
                 for row,k in enumerate(savehook_new):                                   # 2
                         
                         transparent=QPixmap(100,100)

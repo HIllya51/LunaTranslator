@@ -18,8 +18,10 @@ import threading,win32gui
 from PyQt5.QtCore import QCoreApplication ,Qt ,QObject,pyqtSignal
 from PyQt5.QtWidgets import  QApplication ,QGraphicsScene,QGraphicsView,QDesktopWidget,QStyle,QMainWindow
 import utils.screen_rate  
- 
+
+from utils.minmaxmove import minmaxmoveobservefunc
 from utils.wrapper import threader 
+from gui.showword import searchwordW
 from gui.rangeselect    import rangeadjust
 from  gui.settin   import Settin
 from utils.getpidlist import pid_running
@@ -34,7 +36,9 @@ from utils.getpidlist import getpidexe,ListProcess
  
 import gui.translatorUI
 from queue import Queue
-  
+
+import gui.transhist 
+import gui.edittext
 import importlib
 from functools import partial  
 from gui.attachprocessdialog import AttachProcessDialog
@@ -557,10 +561,17 @@ class MAINUI(QObject) :
         #print(time.time()-t1)
         self.startreader() 
         
+        self.transhis=gui.transhist.transhist(self.settin_ui)  
+        self.edittextui=gui.edittext.edittext(self.settin_ui)  
+        self.searchwordW=searchwordW(self.settin_ui)
         self.AttachProcessDialog=AttachProcessDialog(self.settin_ui)
         self.range_ui = rangeadjust(self)   
         self.hookselectdialog=gui.selecthook.hookselect(self ,self.settin_ui)
         threading.Thread(target=self.autohookmonitorthread).start()   
+        
+
+       
+        threading.Thread(target=minmaxmoveobservefunc,args=(self.translation_ui,)).start()   
         self.startxiaoxueguan()
 if __name__ == "__main__" :
     

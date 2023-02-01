@@ -47,7 +47,7 @@ def setTabcishu(self) :
                 [''],
                 
                 [''],
-                [('开启快捷查词(点击原文可查词)',10),(self.getsimpleswitch(globalconfig,'usesearchword'),1),self.getcolorbutton(globalconfig,'',callback=self.object.translation_ui.searchwordW.showsignal.emit,icon='fa.search',constcolor="#FF69B4")],
+                [('开启快捷查词(点击原文可查词)',10),(self.getsimpleswitch(globalconfig,'usesearchword'),1),self.getcolorbutton(globalconfig,'',callback=lambda: self.object.searchwordW.showsignal.emit(),icon='fa.search',constcolor="#FF69B4")],
 
                 [''],
                 [('辞书',10)],
