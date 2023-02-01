@@ -18,12 +18,13 @@ from utils.subproc import endsubprocs,mutiproc
 import  win32gui,win32api,win32process,win32con,multiprocessing
 import gui.rangeselect
 import gui.transhist 
-
+from utils.update import update
 from utils.minmaxmove import minmaxmoveobservefunc
 import gui.edittext
 from utils.subproc import subproc
 from utils.getpidlist import getwindowhwnd,mouseselectwindow,letfullscreen,recoverwindow,getmagpiehwnd
-from gui.settingpage4 import autosaveshow 
+
+from gui.dialog_savedgame import dialog_savedgame
 from gui.textbrowser import Textbrowser
 from gui.showword import searchwordW
 from gui.rangeselect  import moveresizegame
@@ -232,6 +233,11 @@ class QUnFrameWindow(QWidget):
         self.setAttribute(Qt.WA_TranslucentBackground) 
         self.setAttribute(Qt.WA_ShowWithoutActivating,True)
         self.showintab=  globalconfig['showintab']
+        
+        icon = QIcon()
+        icon.addPixmap(QPixmap('./files/luna.jpg'), QIcon.Normal, QIcon.On)
+        self.setWindowIcon(icon)
+        self.setWindowTitle('LunaTranslator')
         self.hidesignal.connect(self.hide_)
         self.object = object
         self.lastrefreshtime=time.time()
@@ -251,7 +257,7 @@ class QUnFrameWindow(QWidget):
         self.displayres.connect(self.showres)
         self.displayraw1.connect(self.showraw)   
         self.refreshtooliconsignal.connect(self.refreshtoolicon)
-        self.showsavegame_signal.connect(lambda:autosaveshow(self.object.settin_ui))  
+        self.showsavegame_signal.connect(lambda:dialog_savedgame(self.object.settin_ui))  
         self.clickRange_signal.connect(self.clickRange )
         self.rangequick.connect(self.quickrange)
         self.showhide_signal.connect(self.showhide )
@@ -324,7 +330,7 @@ class QUnFrameWindow(QWidget):
         self.takusanbuttons("MinMaxButton",self.changetoolslockstate,11,"锁定工具栏",'locktoolsbutton') 
         
         
-        self.takusanbuttons("MinMaxButton",lambda: autosaveshow(self.object.settin_ui),3,"打开保存的游戏",'gamepad') 
+        self.takusanbuttons("MinMaxButton",lambda: dialog_savedgame(self.object.settin_ui),3,"打开保存的游戏",'gamepad') 
 
         self.takusanbuttons("MinMaxButton",lambda :self.object.AttachProcessDialog.showsignal.emit(),4,"选择游戏" )  
         self.takusanbuttons("MinMaxButton",lambda:self.object.hookselectdialog.showsignal.emit(),5,"选择文本" ) 
@@ -366,10 +372,6 @@ class QUnFrameWindow(QWidget):
         else:
             self.setGeometry( globalconfig['position'][0],globalconfig['position'][1],int(globalconfig['width'] ), 200) 
          
-        icon = QIcon()
-        icon.addPixmap(QPixmap('./files/luna.jpg'), QIcon.Normal, QIcon.On)
-        self.setWindowIcon(icon)
-        self.setWindowTitle('LunaTranslator')
 
         self.tray = QSystemTrayIcon()  
         self.tray.setIcon(icon) 
@@ -817,35 +819,6 @@ class QUnFrameWindow(QWidget):
         #sys.exit()
         if self.object.settin_ui.needupdate and globalconfig['autoupdate']:
             #os.system('explorer '+os.path.dirname(os.path.abspath(self.object.settin_ui.updatefile)))
-            with open('./cache/update/update.bat','w',encoding='utf8') as ff:
-                
-                ff.write(r'''
-
-:rekill1
-taskkill /F /IM LunaTranslator_main.exe
-tasklist | find /i "LunaTranslator_main.exe" && go rekill || echo "fuck"
-:rekill2
-taskkill /F /IM LunaTranslator.exe
-tasklist | find /i "LunaTranslator.exe" && go rekill || echo "fuck"
-:rekill
-taskkill /F /IM LunaTranslator_no_Admin.exe  
-tasklist | find /i "LunaTranslator_no_Admin.exe" && go rekill || echo "fuck"
-
-:trydel1
-del LunaTranslator\LunaTranslator_main.exe
-if exist LunaTranslator\LunaTranslator_main.exe goto trydel1
-:trydel2
-del LunaTranslator_no_Admin.exe
-if exist LunaTranslator_no_Admin.exe goto trydel2
-:trydel3
-del LunaTranslator.exe
-if exist LunaTranslator.exe goto trydel3
-
-xcopy .\cache\update\LunaTranslator\ .\ /s /e /c /y /h /r 
-exit
-                
-                ''') 
-            #subprocess.Popen('cache\\update\\update.bat' ,shell=True)
-            win32api.ShellExecute(None, "open", 'cache\\update\\update.bat', "", os.path.dirname('.'), win32con.SW_HIDE)
+            update()
         endsubprocs()
         os._exit(0) 

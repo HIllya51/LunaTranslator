@@ -8,7 +8,7 @@ import os
 from utils.config import globalconfig,_TR
 
 
-def _sqlite2json(self):
+def sqlite2json(self):
     f=QFileDialog.getOpenFileName(directory='./translation_record', filter="*.sqlite")
     if f[0]=='' :
         return

@@ -6,7 +6,7 @@ import functools,sqlite3
 from utils.config import globalconfig ,translatorsetting
 import os,json
 from traceback import print_exc
-from gui.pretransfile import _sqlite2json
+from gui.pretransfile import sqlite2json
 from utils.config import globalconfig ,_TR,_TRL
 import time
 import importlib
@@ -106,7 +106,7 @@ def setTabTwo(self) :
         bt = QPushButton(_TR("导出翻译记录为json文件")  )
 
         
-        bt.clicked.connect(lambda x:_sqlite2json(self)) 
+        bt.clicked.connect(lambda x:sqlite2json(self)) 
  
   
         langlist=globalconfig['language_list_translator']

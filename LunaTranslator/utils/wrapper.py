@@ -3,6 +3,31 @@ import time
 import random
 from threading import Thread
 import time
+def Singleton(cls,**kw):
+        _instance={}
+        def _singleton(*args,**kwagrs):
+                if cls not in  _instance: 
+                        _instance[cls]=cls(*args,**kwagrs) 
+                else: 
+                        if _instance[cls] .isHidden():
+                            _instance[cls]=cls(*args,**kwagrs)
+                        else: 
+                            _instance[cls].activateWindow() 
+                            _instance[cls].show() 
+                return _instance[cls]
+        return _singleton
+def Singleton_close(cls,**kw):
+        _instance={}
+        def _singleton(*args,**kwagrs):
+                if cls not in  _instance: 
+                        _instance[cls]=cls(*args,**kwagrs) 
+                else: 
+                        if _instance[cls].isHidden():
+                            _instance[cls]=cls(*args,**kwagrs)
+                        else: 
+                            _instance[cls].close()
+                return _instance[cls]
+        return _singleton
 def retryer(**kw):
     def wrapper(func):
         def _wrapper(*args,**kwargs): 
