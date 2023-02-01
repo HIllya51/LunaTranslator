@@ -521,3 +521,16 @@ LunaTranslator/files/ocr/ko/ko.zip
 *.recipe
 CXXplugins/exec/.vs/exec/v16/.suo
 LunaTranslator/hook.txt
+LunaTranslator/userconfig/noundictconfig.json
+LunaTranslator/userconfig1/config.json
+LunaTranslator/userconfig1/noundictconfig.json
+LunaTranslator/userconfig1/ocrsetting.json
+LunaTranslator/userconfig1/postprocessconfig.json
+LunaTranslator/userconfig1/savehook_new.json
+LunaTranslator/userconfig1/savehook_new3.json
+LunaTranslator/userconfig1/transerrorfixdictconfig.json
+LunaTranslator/userconfig1/translatorsetting.json
+LunaTranslator/userconfig/savehook_new3.json
+LunaTranslator/userconfig/transerrorfixdictconfig.json
+LunaTranslator/userconfig/savehook_new.json
+LunaTranslator/userconfig/postprocessconfig.json
