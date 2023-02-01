@@ -151,22 +151,26 @@ class hookselect(QMainWindow):
         self.searchtext2=QLineEdit() 
         self.searchtextlayout2.addWidget(self.searchtext2)
         self.searchtextbutton2=QPushButton(_TR("搜索包含文本的条目"))
-        self.checkfilt_notjapan=QCheckBox(_TR("过滤控制字符"))
+        self.checkfilt_notcontrol=QCheckBox(_TR("过滤控制字符"))
         self.checkfilt_notpath=QCheckBox(_TR("过滤路径"))
-        self.checkfilt_notlatin=QCheckBox(_TR("过滤纯英文")) 
+        self.checkfilt_notascii=QCheckBox(_TR("过滤纯英文")) 
+        self.checkfilt_notshiftjis=QCheckBox(_TR("过滤非shiftjis")) 
         self.checkfilt_dumplicate=QCheckBox(_TR("过滤重复")) 
         
-        self.checkfilt_notjapan.setChecked(True)
+        self.checkfilt_notcontrol.setChecked(True)
         self.checkfilt_notpath.setChecked(True)
-        self.checkfilt_notlatin.setChecked(True) 
+        self.checkfilt_notascii.setChecked(True) 
+        self.checkfilt_notshiftjis.setChecked(True) 
         self.checkfilt_dumplicate.setChecked(True)
-        self.checkfilt_notjapan.hide()
+        self.checkfilt_notcontrol.hide()
         self.checkfilt_notpath.hide()
-        self.checkfilt_notlatin.hide() 
+        self.checkfilt_notascii.hide() 
+        self.checkfilt_notshiftjis.hide() 
         self.checkfilt_dumplicate.hide()
-        self.searchtextlayout2.addWidget(self.checkfilt_notjapan)
+        self.searchtextlayout2.addWidget(self.checkfilt_notcontrol)
         self.searchtextlayout2.addWidget(self.checkfilt_notpath)
-        self.searchtextlayout2.addWidget(self.checkfilt_notlatin)  
+        self.searchtextlayout2.addWidget(self.checkfilt_notascii)  
+        self.searchtextlayout2.addWidget(self.checkfilt_notshiftjis)  
         self.searchtextlayout2.addWidget(self.checkfilt_dumplicate)
         self.searchtextbutton2.clicked.connect(self.searchtextfunc2)
         self.searchtextlayout2.addWidget(self.searchtextbutton2)
@@ -192,8 +196,7 @@ class hookselect(QMainWindow):
         self.hiding=True
     def searchtextfunc2(self):
         searchtext=self.searchtext2.text()
-        savedumpt=set()
-        savedumphc=set()
+        savedumpt=set() 
         for index in range(len(self.allres)):   
             _index=len(self.allres)-1-index
             hide=False
@@ -202,14 +205,19 @@ class hookselect(QMainWindow):
             if searchtext not in res:
                 hide=True
             
-            if self.checkfilt_notlatin.isChecked():
+            if self.checkfilt_notascii.isChecked():
                 try:
-                    res.encode('latin-1')
+                    res.encode('ascii')
                     hide=True
                 except:
                     pass
-            
-            if self.checkfilt_notjapan.isChecked():
+            if self.checkfilt_notshiftjis.isChecked():
+                try:
+                    res.encode('shift-jis') 
+                except:
+                    hide=True
+
+            if self.checkfilt_notcontrol.isChecked():
                 lres=list(res)
                 
                 for r in lres:
@@ -289,9 +297,10 @@ class hookselect(QMainWindow):
                 self.tttable2.hide()
                 self.searchtextbutton2.hide()
                 self.searchtext2.hide()
-                self.checkfilt_notjapan.hide()
+                self.checkfilt_notcontrol.hide()
                 self.checkfilt_notpath.hide()
-                self.checkfilt_notlatin.hide() 
+                self.checkfilt_notascii.hide() 
+                self.checkfilt_notshiftjis.hide() 
                 self.checkfilt_dumplicate.hide()
                 self.ttCombomodelmodel2.clear()
                 self.ttCombomodelmodel2.setHorizontalHeaderLabels(_TRL([ 'HOOK','文本']))
@@ -337,9 +346,10 @@ class hookselect(QMainWindow):
         self.searchtext2.show() 
         self.searchtext2.setText('')
         self.searchtextfunc2()
-        self.checkfilt_notjapan.show()
+        self.checkfilt_notcontrol.show()
         self.checkfilt_notpath.show()
-        self.checkfilt_notlatin.show() 
+        self.checkfilt_notascii.show() 
+        self.checkfilt_notshiftjis.show() 
         self.checkfilt_dumplicate.show()
     def timewaitthread(self):
  

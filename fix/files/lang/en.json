@@ -494,5 +494,19 @@
     "正则表达式替换设置": "Regular expression replacement settings",
     "！特殊码格式错误！": "！ Special code format error!",
     "简单字符串替换设置": "Simple string replacement settings",
-    "转义字符串替换设置": "Escape string replacement settings"
+    "转义字符串替换设置": "Escape string replacement settings",
+    "Unicode": "Unicode",
+    "过滤非shiftjis": "Filter non-shiftjis",
+    "日语(SHIFT-JIS)": "Japanese (SHIFT-JIS)",
+    "简体中文(GBK)": "Simplified Chinese (GBK)",
+    "繁体中文(BIG5)": "Traditional Chinese (BIG5)",
+    "韩语(EUC-KR)": "Korean (EUC-KR)",
+    "英语(ASCII)": "English (ASCII)",
+    "其他": "other",
+    "全字符(UTF-8)": "Full character (UTF-8)",
+    "例外允许的字符": "Characters allowed by exception",
+    "添加编码": "Add code",
+    "删除选中编码": "Delete the selected code",
+    "使用Unicode范围过滤": "Use Unicode range filtering",
+    "Unicode范围": "Unicode range"
 }

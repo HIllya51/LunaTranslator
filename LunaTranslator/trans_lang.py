@@ -16,13 +16,14 @@ if __name__=='__main__':
     
     import os,json
     
-    f='简体中文.json'
+    f='chs.json'
     with open('./files/lang/'+f,'r',encoding='utf8')  as ff:
         js=ff.read()
         js=json.loads(js)
     
-    xxx={'Русский язык':'ru','English':'en',
-    "Español":"spa","한국어":"kor","Français":"fra" ,"繁體中文":"cht"}
+    xxx={'ru':'ru','en':'en',
+    "es":"spa","ko":"kor","fr":"fra" ,"cht":"cht"}
+
     for kk in xxx:
         with open(f'./files/lang/{kk}.json','r',encoding='utf8')  as ff:
             

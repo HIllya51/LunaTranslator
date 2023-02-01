@@ -494,5 +494,19 @@
     "正则表达式替换设置": "Configuración de sustitución de expresiones regulares",
     "！特殊码格式错误！": "¡! ¡Formato de código especial incorrecto!",
     "简单字符串替换设置": "Configuración de reemplazo de cadena simple",
-    "转义字符串替换设置": "Configuración de sustitución de cadena de escape"
+    "转义字符串替换设置": "Configuración de sustitución de cadena de escape",
+    "Unicode": "Unicode",
+    "过滤非shiftjis": "Filtrar no shiftjis",
+    "日语(SHIFT-JIS)": "Japonés (shift - jis)",
+    "简体中文(GBK)": "Chino simplificado (gbk)",
+    "繁体中文(BIG5)": "Chino tradicional (big5)",
+    "韩语(EUC-KR)": "Coreano (euc - kr)",
+    "英语(ASCII)": "Inglés (ascii)",
+    "其他": "Otros",
+    "全字符(UTF-8)": "Carácter completo (utf - 8)",
+    "例外允许的字符": "Caracteres permitidos por excepciones",
+    "添加编码": "Añadir codificación",
+    "删除选中编码": "Eliminar el Código seleccionado",
+    "使用Unicode范围过滤": "Filtrar con el rango Unicode",
+    "Unicode范围": "Alcance Unicode"
 }
