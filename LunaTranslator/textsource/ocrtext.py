@@ -1,7 +1,8 @@
  
 import time
 from traceback import print_exc 
- 
+
+from utils.ocrdll import ocrwrapper
 from utils.config import globalconfig  
 import importlib  
 from difflib import SequenceMatcher 
