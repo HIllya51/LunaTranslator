@@ -2,10 +2,8 @@
 //
 
 #include <iostream>
-#include<windows.h>
-#include<thread>
-#include<winuser.h>
-#include<SIGNAL.h>
+#include<windows.h> 
+
 typedef BOOL (*Initialize)(
 	UINT logLevel,
 	const char* logFileName,
@@ -38,8 +36,7 @@ int main(int argc,char* argv[])
 	int flags, captureMode, CursorInterpolationMode, AdapterIdx, MultiMonitorUsage;
 	float CursorZoomFactor;
 	fgets(magpiepath, 4096, fp);
-	magpiepath[strlen(magpiepath) - 1] = 0;
-	printf("%s\n", magpiepath);
+	magpiepath[strlen(magpiepath) - 1] = 0; 
 	fgets(cache, 4096, fp);
 	sscanf_s(cache, "%lld\n", &m_hWnd); 
 	fgets(effect, 4096, fp);
@@ -49,16 +46,22 @@ int main(int argc,char* argv[])
 		&flags, &captureMode, &CursorZoomFactor, &CursorInterpolationMode, &AdapterIdx, &MultiMonitorUsage);
 
 	fclose(fp); 
+
+
+	/*printf("%s\n%s\n", magpiepath, effect);
+	printf("%d,%d,%d,%d,%d,%d,%d", m_hWnd, flags, captureMode, CursorInterpolationMode, AdapterIdx, MultiMonitorUsage, CursorZoomFactor);*/
 	SetForegroundWindow(m_hWnd);
 	SetCurrentDirectoryA(magpiepath);
+	SetDllDirectoryA(magpiepath);
 	HMODULE h = LoadLibrary(L".\\MagpieRT.dll");
+	//printf("%d\n", h);
 	if (h == 0) return 0; 
 	Initialize Initialize_f = (Initialize)GetProcAddress(h, "Initialize");
 	Run Run_f = (Run)GetProcAddress(h, "Run");
 	SetProcessDPIAware();
-	Initialize_f(6, "./Runtime.log", 100000, 1);
-	Run_f(m_hWnd, effect, flags, captureMode, CursorZoomFactor, CursorInterpolationMode, AdapterIdx, MultiMonitorUsage, 0, 0, 0, 0);
-	
+	auto _1=Initialize_f(6, "./Runtime.log", 100000, 1);
+	auto _2=Run_f(m_hWnd, effect, flags, captureMode, CursorZoomFactor, CursorInterpolationMode, AdapterIdx, MultiMonitorUsage, 0, 0, 0, 0);
+	//printf("%d %s\n", _1, _2);
  
 }
  
