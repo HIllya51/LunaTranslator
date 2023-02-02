@@ -298,12 +298,7 @@ class MAINUI(QObject) :
                     
                     self.reader_usevoice=use
                     break
-            if use:
-                
-                #from tts.
-                if use=='voiceroid2':
-                    self.reader=ttss[use]( self.settin_ui.voicelistsignal,self.settin_ui.mp3playsignal,self.timestamp) 
-                else:
+            if use: 
                     self.reader=ttss[use]( self.settin_ui.voicelistsignal,self.settin_ui.mp3playsignal) 
     #@threader
     def starttextsource(self):
@@ -592,8 +587,7 @@ if __name__ == "__main__" :
         setlanguage()
     main = MAINUI() 
     
-    main.screen_scale_rate =screen_scale_rate
-    main.timestamp=sys.argv[1]
+    main.screen_scale_rate =screen_scale_rate 
     main.scrollwidth=(app.style().pixelMetric(QStyle.PM_ScrollBarExtent))
     main.aa()
     app.exit(app.exec_())

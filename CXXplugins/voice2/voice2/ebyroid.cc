@@ -188,7 +188,8 @@ ApiAdapter* NewAdapter(const string& base_dir, const string& dllpath, const stri
       }
       return pair<bool, string>(false, string());
       });*/
-  bool x=SetCurrentDirectory(settings.base_dir);
+  bool x = SetCurrentDirectoryA(settings.base_dir);
+  SetDllDirectoryA(settings.base_dir);
   printf("%d\n", x);
   wchar_t buffer[1000] = { 0 };
   DWORD sz = 1000;

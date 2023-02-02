@@ -25,7 +25,7 @@ inline T LoadProc(const HINSTANCE& handle, const char* proc_name) {
 }  // namespace
 
 ApiAdapter* ApiAdapter::Create( const char* dllpath ) {
-    
+    printf("dllpath %s\n", dllpath);
   HINSTANCE handle = LoadLibraryA(dllpath);
   if (handle == nullptr) {
     char m[128];
