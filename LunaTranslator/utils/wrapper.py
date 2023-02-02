@@ -10,6 +10,7 @@ def Singleton(cls,**kw):
                         _instance[cls]=cls(*args,**kwagrs) 
                 else: 
                         if _instance[cls] .isHidden():
+                            _instance[cls].destroy() 
                             _instance[cls]=cls(*args,**kwagrs)
                         else: 
                             _instance[cls].activateWindow() 
@@ -23,6 +24,7 @@ def Singleton_close(cls,**kw):
                         _instance[cls]=cls(*args,**kwagrs) 
                 else: 
                         if _instance[cls].isHidden():
+                            _instance[cls].destroy() 
                             _instance[cls]=cls(*args,**kwagrs)
                         else: 
                             _instance[cls].close()
