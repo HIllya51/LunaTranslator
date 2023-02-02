@@ -41,10 +41,8 @@ class searchwordW(closeashidewindow):
         self.setWindowIcon(qtawesome.icon("fa.search"  ))
          
          
-        self.showtabsignal.connect(self.showresfun)
-        font = QFont() 
-        font.fromString(globalconfig['sw_fontstring'])
-
+        self.showtabsignal.connect(self.showresfun) 
+        
         d=QApplication.desktop()
 
         globalconfig['sw_geo'][0]=min(max(globalconfig['sw_geo'][0],0),d.width()-globalconfig['sw_geo'][2])
@@ -62,8 +60,6 @@ class searchwordW(closeashidewindow):
         self.searchlayout.addWidget(self.searchtext)
         self.searchbutton=QPushButton(qtawesome.icon("fa.search"),'')#_TR("搜索"))
 
-        fm=QFontMetrics(font)
-        self.searchbutton.setIconSize(QSize(fm.height(),fm.height() ))
 
 
         #self.searchbutton.setFont(font) 
@@ -71,7 +67,6 @@ class searchwordW(closeashidewindow):
         self.searchlayout.addWidget(self.searchbutton)
 
         self.soundbutton=QPushButton(qtawesome.icon("fa.music"), "")
-        self.soundbutton.setIconSize(QSize(fm.height(),fm.height() ))
         #self.searchbutton.setFont(font) 
         self.soundbutton.clicked.connect(self.langdu)
         self.searchlayout.addWidget(self.soundbutton)
@@ -79,11 +74,12 @@ class searchwordW(closeashidewindow):
 
         self.tab=QTabWidget(self)
 
-        self.setFont(font)
+        
         self.vboxlayout.addWidget(self.tab)
         self.hboxlayout.addLayout(self.vboxlayout)
         self.setCentralWidget(self.centralWidget)
-  
+ 
+        
         
         self.textbs={}
 
@@ -112,6 +108,19 @@ class searchwordW(closeashidewindow):
             textOutput.customContextMenuRequested.connect(functools.partial( self.showmenu ,i,textOutput) )
         self.hiding=True
         self.searchthreadsignal.connect(self.searchthread)
+        self.setfonts( )
+    def setfonts(self):
+        font = QFont() 
+        font.fromString(globalconfig['sw_fontstring'])
+        fm=QFontMetrics(font)
+        self.searchbutton.setIconSize(QSize(fm.height(),fm.height() )) 
+        self.soundbutton.setIconSize(QSize(fm.height(),fm.height() ))
+        self.setFont(font)
+        self.tab.setFont(font)
+        self.searchtext.setFont(font)
+
+        for _ in self.textbs:
+            self.textbs[_].setFont(font)
     def langdu(self): 
         if self.p.object.reader:
             self.p.object.reader.read(self.searchtext.text() )  
@@ -159,10 +168,8 @@ class searchwordW(closeashidewindow):
              
             if ok : 
                 globalconfig['sw_fontstring']=font.toString()
-                self.setFont(font)
+                self.setfonts()
                  
-                for _ in self.textbs:
-                    self.textbs[_].setFont(font)
     def getnewsentence(self,sentence):
         self.searchtext.setText(sentence  )
          

@@ -1,7 +1,7 @@
  
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QApplication,QTextBrowser,QMainWindow,QFontDialog,QAction,QMenu,QHBoxLayout,QWidget,QPushButton,QVBoxLayout
-from PyQt5.QtGui import QFont
+from PyQt5.QtGui import QFont,QFontMetrics
 from PyQt5.QtCore import Qt,pyqtSignal ,QSize,QPoint
 import qtawesome 
 import json,threading 
@@ -35,7 +35,7 @@ class edittext(closeashidewindow):
         globalconfig['edit_geo'][1]=min(max(globalconfig['edit_geo'][1],0),d.height()-globalconfig['edit_geo'][3])
         self.setGeometry(*globalconfig['edit_geo'])
         self.textOutput = QTextBrowser(self)
-        self.textOutput.setFont(font)
+        
         self.textOutput.setContextMenuPolicy(Qt.CustomContextMenu)
         
         self.charformat=self.textOutput.currentCharFormat()
@@ -53,13 +53,11 @@ class edittext(closeashidewindow):
 
 
        
-        bt1=QPushButton(icon=qtawesome.icon("fa.rotate-right" ,color=globalconfig['buttoncolor']))
-        bt1.setIconSize(QSize(int(20*self.p.rate),
-                                 int(20*self.p.rate)))
+        bt1=QPushButton(icon=qtawesome.icon("fa.rotate-right" ,color=globalconfig['buttoncolor'])) 
         bt2=QPushButton(icon=qtawesome.icon("fa.forward" if self.sync else 'fa.play' ,color="#FF69B4" if self.sync else globalconfig['buttoncolor']))
-        bt2.setIconSize(QSize(int(20*self.p.rate),
-                                 int(20*self.p.rate)))
+         
         self.bt2=bt2
+        self.bt1=bt1
         bt2.clicked.connect(self.changestate)
         bt1.clicked.connect(self.run)
         qvb=QVBoxLayout()
@@ -72,6 +70,14 @@ class edittext(closeashidewindow):
         
 
         self.hiding=True
+        self.setfonts()
+    def setfonts(self):
+        font = QFont() 
+        font.fromString(globalconfig['sw_fontstring'])
+        fm=QFontMetrics(font)
+        self.bt1.setIconSize(QSize(fm.height(),fm.height() )) 
+        self.bt2.setIconSize(QSize(fm.height(),fm.height() ))
+        self.textOutput.setFont(font) 
     def run(self):
         threading.Thread(target=self.p.object.textgetmethod,args=(self.textOutput.toPlainText(),False)).start()
     def changestate(self):
@@ -94,7 +100,7 @@ class edittext(closeashidewindow):
              
             if ok : 
                 globalconfig['edit_fontstring']=font.toString()
-                self.textOutput.setFont(font)
+                self.setfonts()
     def getnewsentence(self,sentence):
         if self.sync: 
             self.textOutput.setCurrentCharFormat(self.charformat)
