@@ -50,7 +50,7 @@ class tts():
              
             info=win32process.STARTUPINFO() 
             info.wShowWindow=win32con.SW_HIDE
-            handle=win32process.CreateProcess(exepath, f'"{exepath}" "{globalconfig["reader"]["voiceroid2"]["path"]}" "{dllpath}" {globalconfig["reader"]["voiceroid2"]["voice"]} 1 {(globalconfig["ttscommon"]["rate"]+10.0)/(20.0)*1+0.5} "{savepath}" {shift}', None , None , 0 ,False , None , None ,info)
+            handle=win32process.CreateProcess(exepath, f'"{exepath}" "{globalconfig["reader"]["voiceroid2"]["path"]}" "{dllpath}" {globalconfig["reader"]["voiceroid2"]["voice"]} 1 {(globalconfig["ttscommon"]["rate"]+10.0)/(20.0)*1+0.5} "{savepath}" {shift}',None , None , 0 ,win32process.CREATE_NO_WINDOW , None , None ,info)
             win32event.WaitForSingleObject(win32api.OpenProcess(win32con.SYNCHRONIZE,0, handle[2]),win32event.INFINITE) 
         
             if os.path.exists(savepath):
