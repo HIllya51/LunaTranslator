@@ -5,6 +5,7 @@
     ],
 	"ocrafterrangeselect":true,
 	"showrangeafterrangeselect":true,
+	"ocrmagpiekeep":false,
 	"autodisappear":false,
 	"disappear_delay":5,
 	"language_setted":false,

@@ -508,5 +508,6 @@
     "添加编码": "Añadir codificación",
     "删除选中编码": "Eliminar el Código seleccionado",
     "使用Unicode范围过滤": "Filtrar con el rango Unicode",
-    "Unicode范围": "Alcance Unicode"
+    "Unicode范围": "Alcance Unicode",
+    "Magpie全屏时仍截取原窗口": "Magpie todavía intercepta la ventana original en pantalla completa"
 }

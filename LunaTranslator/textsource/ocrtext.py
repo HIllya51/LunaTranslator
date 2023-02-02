@@ -35,9 +35,9 @@ class ocrtext(basetext):
     def imageCut(self,x1,y1,x2,y2):
      
         if self.hwnd:
-            try: 
+            try:  
                 hwnd=win32gui.FindWindow('Window_Magpie_967EB565-6F73-4E94-AE53-00CC42592A22',None) 
-                if hwnd:  
+                if hwnd and globalconfig['ocrmagpiekeep']==False:  
                     hwnduse=QApplication.desktop().winId()
                 else:
                     hwnduse=self.hwnd

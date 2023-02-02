@@ -51,6 +51,7 @@ def setTab6(self) :
             
             [(("竖向OCR识别"),12),self.getsimpleswitch(globalconfig ,'verticalocr')],
             [(("合并多行识别结果"),12),self.getsimpleswitch(globalconfig ,'ocrmergelines')],
+            [(("Magpie全屏时仍截取原窗口"),12),self.getsimpleswitch(globalconfig ,'ocrmagpiekeep')],
             [''],
            # [(("优化横向OCR漏字"),6),self.getsimpleswitch(globalconfig ,'ocr_hori_extend')],
          #   [(("使用竖排OCR(效果不佳)"),6),self.getsimpleswitch(globalconfig ,'verticalocr')],
