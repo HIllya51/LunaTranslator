@@ -1,5 +1,5 @@
 
-import win32api
+import win32api,os,win32con
 def update():
     with open('./cache/update/update.bat','w',encoding='utf8') as ff:
                 
