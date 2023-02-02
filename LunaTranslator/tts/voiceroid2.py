@@ -21,7 +21,9 @@ class tts():
             globalconfig['reader']['voiceroid2']['voice']=self.voicelist[0]
         self.speaking=None
         self.mp3playsignal=mp3playsignal
-    def read(self,content):  
+    def read(self,content):
+        threading.Thread(target=self.read_t,args=(content,)).start()
+    def read_t(self,content):  
         if len(content)==0:
             return
         if len(self.voicelist)==0:
