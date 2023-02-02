@@ -1,19 +1,14 @@
  
 import time
 from traceback import print_exc 
-
-from utils.ocrdll import ocrwrapper
-from utils.config import globalconfig 
-import win32file,win32pipe,win32con
-import os
+ 
+from utils.config import globalconfig  
 import importlib  
 from difflib import SequenceMatcher 
 import time  
 from PyQt5.QtWidgets import QApplication 
 from PyQt5.QtGui import QImage,QPixmap
-from PyQt5.QtCore import QPoint
 from textsource.textsourcebase import basetext  
-from utils.getpidlist import getpidhwnds
 def qimge2np(img:QImage):
     #img=img.convertToFormat(QImage.Format_Grayscale8)
     shape=img.height(),img.width(),1
@@ -40,8 +35,8 @@ class ocrtext(basetext):
      
         if self.hwnd:
             try: 
-                hwnds=getpidhwnds( self.object.translation_ui.fullscreenmanager.savemagpie_pid)  
-                if len(hwnds): 
+                hwnd=win32gui.FindWindow('Window_Magpie_967EB565-6F73-4E94-AE53-00CC42592A22',None) 
+                if hwnd==0: 
 
                     hwnduse=QApplication.desktop().winId()
                 else:

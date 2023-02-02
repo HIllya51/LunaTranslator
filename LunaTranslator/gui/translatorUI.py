@@ -19,7 +19,7 @@ import  win32gui,win32api,win32process,win32con,multiprocessing
 import gui.rangeselect
 from utils.update import update
 from utils.subproc import subproc
-from utils.getpidlist import getpidhwnds,mouseselectwindow 
+from utils.getpidlist import mouseselectwindow 
 from gui.dialog_savedgame import dialog_savedgame
 from gui.textbrowser import Textbrowser
 from utils.fullscreen import fullscreen
@@ -421,9 +421,9 @@ class QUnFrameWindow(QWidget):
     def grabwindow(self): 
         
         try:
-            hwnds=getpidhwnds( self.fullscreenmanager.savemagpie_pid) 
+            hwnd=win32gui.FindWindow('Window_Magpie_967EB565-6F73-4E94-AE53-00CC42592A22',None) 
             tm=time.localtime()
-            if len(hwnds):
+            if hwnd==0:
                 hwnd=QApplication.desktop().winId() 
                 self.hide()
                 QApplication.primaryScreen().grabWindow(hwnd).save(f'./cache/screenshot/{tm.tm_year}-{tm.tm_mon}-{tm.tm_mday}-{tm.tm_hour}-{tm.tm_min}-{tm.tm_sec}.png')

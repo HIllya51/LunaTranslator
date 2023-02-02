@@ -1,9 +1,7 @@
 import os,win32gui,win32api,win32con,win32process
-from utils.config import globalconfig
-from traceback import print_exc
-import subprocess
+from utils.config import globalconfig 
 from utils.magpie import callmagpie
-from utils.getpidlist import getpidhwnds,mouseselectwindow,letfullscreen,recoverwindow 
+from utils.getpidlist import  letfullscreen,recoverwindow 
 class fullscreen():
     def __init__(self) -> None:
         self.savewindowstatus=None 
@@ -16,12 +14,12 @@ class fullscreen():
                 else:
                     if self.savemagpie_pid is None:
                         return  
-                    hwnds=getpidhwnds(self.savemagpie_pid)
-                    if len(hwnds)==0:
+                     
+                    hwnd=win32gui.FindWindow('Window_Magpie_967EB565-6F73-4E94-AE53-00CC42592A22',None) 
+                    if hwnd==0:
                         return
                     WM_DESTORYHOST=win32api.RegisterWindowMessage( "MAGPIE_WM_DESTORYHOST") 
-                    for hwnd in hwnds:
-                        win32api.SendMessage(hwnd, WM_DESTORYHOST)
+                    win32api.SendMessage(hwnd, WM_DESTORYHOST)
             elif globalconfig['fullscreenmethod']==1:  
                 win32gui.SetForegroundWindow(hwnd )   
                 win32api.keybd_event(18,0,0,0)     # alt
