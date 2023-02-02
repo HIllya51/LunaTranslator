@@ -536,3 +536,4 @@ LunaTranslator/userconfig/savehook_new.json
 LunaTranslator/userconfig/postprocessconfig.json
 LunaTranslator/cache/magpieparam.txt
 *.wav
+LunaTranslator/dict_result.json

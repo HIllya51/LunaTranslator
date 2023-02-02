@@ -36,8 +36,7 @@ class ocrtext(basetext):
         if self.hwnd:
             try: 
                 hwnd=win32gui.FindWindow('Window_Magpie_967EB565-6F73-4E94-AE53-00CC42592A22',None) 
-                if hwnd==0: 
-
+                if hwnd:  
                     hwnduse=QApplication.desktop().winId()
                 else:
                     hwnduse=self.hwnd

@@ -423,7 +423,7 @@ class QUnFrameWindow(QWidget):
         try:
             hwnd=win32gui.FindWindow('Window_Magpie_967EB565-6F73-4E94-AE53-00CC42592A22',None) 
             tm=time.localtime()
-            if hwnd==0:
+            if hwnd:
                 hwnd=QApplication.desktop().winId() 
                 self.hide()
                 QApplication.primaryScreen().grabWindow(hwnd).save(f'./cache/screenshot/{tm.tm_year}-{tm.tm_mon}-{tm.tm_mday}-{tm.tm_hour}-{tm.tm_min}-{tm.tm_sec}.png')
