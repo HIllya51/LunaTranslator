@@ -556,9 +556,9 @@ class MAINUI(QObject) :
         #print(time.time()-t1)
         self.startreader() 
         
-        self.transhis=gui.transhist.transhist(self.settin_ui)  
-        self.edittextui=gui.edittext.edittext(self.settin_ui)  
-        self.searchwordW=searchwordW(self.settin_ui)
+        self.transhis=gui.transhist.transhist(self.translation_ui)  
+        self.edittextui=gui.edittext.edittext(self.translation_ui)  
+        self.searchwordW=searchwordW(self.translation_ui)
         self.AttachProcessDialog=AttachProcessDialog(self.settin_ui)
         self.range_ui = rangeadjust(self)   
         self.hookselectdialog=gui.selecthook.hookselect(self ,self.settin_ui)
