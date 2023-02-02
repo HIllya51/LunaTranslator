@@ -12,9 +12,8 @@ import time
 from PyQt5.QtWidgets import QApplication 
 from PyQt5.QtGui import QImage,QPixmap
 from PyQt5.QtCore import QPoint
-from textsource.textsourcebase import basetext 
-from utils.getpidlist import getmagpiehwnd
- 
+from textsource.textsourcebase import basetext  
+from utils.getpidlist import getpidhwnds
 def qimge2np(img:QImage):
     #img=img.convertToFormat(QImage.Format_Grayscale8)
     shape=img.height(),img.width(),1
@@ -40,9 +39,9 @@ class ocrtext(basetext):
     def imageCut(self,x1,y1,x2,y2):
      
         if self.hwnd:
-            try:
-                _hwnd_magpie=getmagpiehwnd(self.object.translation_ui.callmagpie.pid)
-                if _hwnd_magpie!=0:
+            try: 
+                hwnds=getpidhwnds( self.object.translation_ui.fullscreenmanager.savemagpie_pid)  
+                if len(hwnds): 
 
                     hwnduse=QApplication.desktop().winId()
                 else:

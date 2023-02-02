@@ -4,6 +4,7 @@ import ctypes
 from ctypes import c_int32,c_char_p,c_uint32,c_float
 import time,threading 
 import os 
+from utils.subproc import subproc
 class Dict2Obj(dict):
     
     def __getattr__(self, key): 
@@ -15,15 +16,8 @@ class Dict2Obj(dict):
                 value = Dict2Obj(value)
             return value 
  
-def callmagpie(  queue):# 0x2000|\0x2|\0x200):  
-        
-    try:
-        ctypes.windll.user32.SetProcessDPIAware()
-    except:
-        try:
-            ctypes.windll.shcore.SetProcessDpiAwareness(2)
-        except:
-            pass
+def callmagpie( cwd,hwnd,ScaleMode,flags,captureMode):# 0x2000|\0x2|\0x200):  
+         
 
     FlagMasks={ 
           "NoCursor":0x1,
@@ -42,37 +36,29 @@ def callmagpie(  queue):# 0x2000|\0x2|\0x200):
           "ShowFPS":0x2000,
     }
     FlagMasks=Dict2Obj(FlagMasks) 
-
-    while True:
-        _=queue.get()
+ 
             
-        cwd,hwnd,ScaleMode,flags,captureMode=_
-        settings=Dict2Obj(flags)
-        flags=settings.NoCursor *FlagMasks.NoCursor   |\
-                        settings.AdjustCursorSpeed *FlagMasks.AdjustCursorSpeed   |\
-                        settings.DebugSaveEffectSources *FlagMasks.SaveEffectSources   |\
-                        settings.DisableLowLatency *FlagMasks.DisableLowLatency   |\
-                        settings.DebugBreakpointMode *FlagMasks.BreakpointMode   |\
-                        settings.DisableWindowResizing *FlagMasks.DisableWindowResizing   |\
-                        settings.DisableDirectFlip *FlagMasks.DisableDirectFlip   |\
-                        settings.Is3DMode *FlagMasks.Is3DMode   |\
-                        settings.CropTitleBarOfUWP *FlagMasks.CropTitleBarOfUWP   |\
-                        settings.DebugDisableEffectCache *FlagMasks.DisableEffectCache   |\
-                        settings.SimulateExclusiveFullscreen *FlagMasks.SimulateExclusiveFullscreen   |\
-                        settings.DebugWarningsAreErrors *FlagMasks.WarningsAreErrors   |\
-                        (1-settings.VSync)*FlagMasks.DisableVSync   | \
-                        settings.ShowFPS *FlagMasks.ShowFPS  
-        os.chdir(cwd)  
-        dll=ctypes.CDLL('./MagpieRT.dll')
-        MagpieRT_Initialize=dll.Initialize
-        MagpieRT_Initialize.argtypes=[ c_uint32,  c_char_p,c_int32,c_int32]
-        MagpieRT_Run=dll.Run
-        MagpieRT_Run.argtypes=[ c_uint32,c_char_p,c_uint32,c_uint32,c_float,c_uint32,c_int32,c_uint32,c_uint32,c_uint32,c_uint32,c_uint32]
-        MagpieRT_Run.restype=c_char_p   
-        with open('ScaleModels.json','r')as ff:
-            effectsJson= json.load(ff)   
-        MagpieRT_Initialize(6,c_char_p('Runtime.log'.encode('utf8')),100000,1)
-        print((hwnd, (json.dumps(effectsJson[ScaleMode]['effects']) ),flags,captureMode,settings.CursorZoomFactor,settings.CursorInterpolationMode,settings.AdapterIdx,settings.MultiMonitorUsage,0,0,0,0))
-        threading.Thread(target=MagpieRT_Run,args=(hwnd,c_char_p(json.dumps(effectsJson[ScaleMode]['effects']).encode('utf8')),flags,captureMode,settings.CursorZoomFactor,settings.CursorInterpolationMode,settings.AdapterIdx,settings.MultiMonitorUsage,0,0,0,0)).start()
-        #MagpieRT_Run(hwnd ,c_char_p(json.dumps(effectsJson[ScaleMode]['effects']).encode('utf8')),flags,captureMode,settings.CursorZoomFactor,settings.CursorInterpolationMode,settings.AdapterIdx,settings.MultiMonitorUsage,0,0,0,0)
-         
+    settings=Dict2Obj(flags)
+    flags=settings.NoCursor *FlagMasks.NoCursor   |\
+                    settings.AdjustCursorSpeed *FlagMasks.AdjustCursorSpeed   |\
+                    settings.DebugSaveEffectSources *FlagMasks.SaveEffectSources   |\
+                    settings.DisableLowLatency *FlagMasks.DisableLowLatency   |\
+                    settings.DebugBreakpointMode *FlagMasks.BreakpointMode   |\
+                    settings.DisableWindowResizing *FlagMasks.DisableWindowResizing   |\
+                    settings.DisableDirectFlip *FlagMasks.DisableDirectFlip   |\
+                    settings.Is3DMode *FlagMasks.Is3DMode   |\
+                    settings.CropTitleBarOfUWP *FlagMasks.CropTitleBarOfUWP   |\
+                    settings.DebugDisableEffectCache *FlagMasks.DisableEffectCache   |\
+                    settings.SimulateExclusiveFullscreen *FlagMasks.SimulateExclusiveFullscreen   |\
+                    settings.DebugWarningsAreErrors *FlagMasks.WarningsAreErrors   |\
+                    (1-settings.VSync)*FlagMasks.DisableVSync   | \
+                    settings.ShowFPS *FlagMasks.ShowFPS  
+      
+    cwd=os.path.abspath(cwd) 
+    with open(os.path.join(cwd,'ScaleModels.json'),'r')as ff:
+        effectsJson= json.load(ff)    
+
+    with open("./cache/magpieparam.txt",'w',encoding='utf8') as ff:
+        ff.write(f"{cwd}\n{hwnd}\n{json.dumps(effectsJson[ScaleMode]['effects'])}\n{flags},{captureMode},{settings.CursorZoomFactor},{settings.CursorInterpolationMode},{settings.AdapterIdx},{settings.MultiMonitorUsage}")
+    s=subproc('./files/magpiecmdrunner.exe  ./cache/magpieparam.txt')
+    return s.pid

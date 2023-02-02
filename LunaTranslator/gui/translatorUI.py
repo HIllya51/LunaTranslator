@@ -19,13 +19,11 @@ import  win32gui,win32api,win32process,win32con,multiprocessing
 import gui.rangeselect
 from utils.update import update
 from utils.subproc import subproc
-from utils.getpidlist import getwindowhwnd,mouseselectwindow,letfullscreen,recoverwindow,getmagpiehwnd
-
+from utils.getpidlist import getpidhwnds,mouseselectwindow 
 from gui.dialog_savedgame import dialog_savedgame
 from gui.textbrowser import Textbrowser
- 
-from gui.rangeselect  import moveresizegame
-from utils.magpie import callmagpie 
+from utils.fullscreen import fullscreen
+from gui.rangeselect  import moveresizegame 
 class QTitleButton(QPushButton):
     def __init__(self, parent):
         super(QTitleButton, self).__init__(parent)
@@ -240,8 +238,7 @@ class QUnFrameWindow(QWidget):
         self.lastrefreshtime=time.time()
         self.autohidestart=False
         threading.Thread(target=self.autohidedelaythread).start()
-        self.rate = self.object.screen_scale_rate 
-        self.callmagpie=None
+        self.rate = self.object.screen_scale_rate  
         self.muteprocessignal.connect(self.muteprocessfuntion) 
         self.toolbarhidedelaysignal.connect(self.toolbarhidedelay)
         self._padding = 5*self.rate  # 设置边界宽度为5
@@ -266,6 +263,7 @@ class QUnFrameWindow(QWidget):
         self.object = object  
         
         self.isletgamefullscreened=False
+        self.fullscreenmanager=fullscreen()
         self.original = ""    
         self._isTracking=False
         self.quickrangestatus=False
@@ -336,11 +334,7 @@ class QUnFrameWindow(QWidget):
             except:
                     print_exc()
         self.takusanbuttons("MinMaxButton",lambda :_moveresizegame(self),5,"调整游戏窗口(需要绑定ocr窗口，或选择hook进程)",'resize' ) 
- 
-        self.multiprocesshwnd=multiprocessing.Queue()
-        self.callmagpie=mutiproc(callmagpie,( self.multiprocesshwnd,))
-        
-        
+  
         self.takusanbuttons("MinMaxButton",self._fullsgame,5,"全屏/恢复游戏窗口(需要绑定ocr窗口，或选择hook进程)" ,"fullscreen") 
         
         self.takusanbuttons("MinMaxButton",self.muteprocessfuntion,5,"游戏静音(需要绑定ocr窗口，或选择hook进程)" ,"muteprocess") 
@@ -427,9 +421,9 @@ class QUnFrameWindow(QWidget):
     def grabwindow(self): 
         
         try:
-            _hwnd_magpie=getmagpiehwnd(self.object.translation_ui.callmagpie.pid)
+            hwnds=getpidhwnds( self.fullscreenmanager.savemagpie_pid) 
             tm=time.localtime()
-            if _hwnd_magpie!=0:
+            if len(hwnds):
                 hwnd=QApplication.desktop().winId() 
                 self.hide()
                 QApplication.primaryScreen().grabWindow(hwnd).save(f'./cache/screenshot/{tm.tm_year}-{tm.tm_mon}-{tm.tm_mday}-{tm.tm_hour}-{tm.tm_min}-{tm.tm_sec}.png')
@@ -454,36 +448,15 @@ class QUnFrameWindow(QWidget):
             subproc(f'./files/muteprocess.exe {pid}  {int(self.processismuteed)}')
         except:
             print_exc()
+    
     def _fullsgame(self): 
-        
-            try:  
-                    hwnd= self.object.textsource.hwnd 
-                    self.isletgamefullscreened=not self.isletgamefullscreened
-                    self.refreshtoolicon()
-                    
-                    if globalconfig['fullscreenmethod']==0:  
-                        if True:#self.isletgamefullscreened:  
-                            win32gui.SetForegroundWindow(hwnd )   
-                            self.multiprocesshwnd.put([os.path.abspath(globalconfig['magpiepath']),hwnd,globalconfig['magpiescalemethod'],globalconfig['magpieflags'],globalconfig['magpiecapturemethod']])   
- 
-                        else:
-                            self.multiprocesshwnd.put([])
-                            #win32gui.SetForegroundWindow(self.winId() )   
-                    elif globalconfig['fullscreenmethod']==1:  
-                        win32gui.SetForegroundWindow(hwnd )   
-                        win32api.keybd_event(18,0,0,0)     # alt
-                        win32api.keybd_event(13,0,0,0)     # enter
-                                            
-                        win32api.keybd_event(13, 0, win32con.KEYEVENTF_KEYUP, 0)
-                        win32api.keybd_event(18, 0, win32con.KEYEVENTF_KEYUP, 0)
-                    elif globalconfig['fullscreenmethod']==2: 
-                        if self.isletgamefullscreened: 
-                            self.savewindowstatus=letfullscreen(hwnd)
-                        else:
-                            recoverwindow(hwnd,self.savewindowstatus)
-                    
-            except:
-                    print_exc()
+        self.isletgamefullscreened=not self.isletgamefullscreened
+        self.refreshtoolicon()
+        try:
+            self.fullscreenmanager(self.object.textsource.hwnd,self.isletgamefullscreened)
+        except:
+            print_exc()
+     
     def changemousetransparentstate(self): 
         
         self.translate_text.setStyleSheet("border-width:0;\
