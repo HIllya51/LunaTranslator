@@ -205,19 +205,15 @@ class hookselect(closeashidewindow):
             hide=searchtext not in res or self.gethide(res,savedumpt)
             self.tttable2.setRowHidden(_index,hide)  
     def searchtextfunc(self):
-        searchtext=self.searchtext.text()
-        try:
-            lst=self.object.textsource.hookdatasort
-        except:
-            return 
+        searchtext=self.searchtext.text() 
  
         #self.ttCombomodelmodel.blockSignals(True)
           
-        for index in range(len(lst)):   
+        for index,key in enumerate(self.object.textsource.hookdatacollecter):   
             ishide=True  
-            for i in range(min(len(self.object.textsource.hookdatacollecter[lst[index]]),20)):
+            for i in range(min(len(self.object.textsource.hookdatacollecter[key]),20)):
                 
-                if searchtext  in self.object.textsource.hookdatacollecter[lst[index]][-i]:
+                if searchtext  in self.object.textsource.hookdatacollecter[key][-i]:
                     ishide=False
                     break
             self.tttable.setRowHidden(index,ishide) 
@@ -333,16 +329,20 @@ class hookselect(closeashidewindow):
         try: 
             if  self.object.textsource.batchselectinghook is None:
                 return
+
+            self.object.textsource.lock.acquire()
             self.object.textsource.selectedhook=self.object.textsource.batchselectinghook
 
             self.object.textsource.autostarthookcode=[]
-            self.object.textsource.autostart=False
+            self.object.textsource.autostarting=False
+            
             if self.object.textsource.pname not in savehook_new_list:
                 savehook_new_list.insert(0,self.object.textsource.pname)  
             if self.object.textsource.pname not in savehook_new_data:
                 savehook_new_data[self.object.textsource.pname]={'leuse':True,'title':os.path.basename(self.object.textsource.pname),'hook':self.object.textsource.selectedhook }  
             else:
                 savehook_new_data[self.object.textsource.pname].update({ 'hook':self.object.textsource.selectedhook } )
+            self.object.textsource.lock.release()
         except:
             print_exc()
         #self.object.settin_ui.show()

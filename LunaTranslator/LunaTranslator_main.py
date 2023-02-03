@@ -476,15 +476,17 @@ class MAINUI(QObject) :
                             lps=ListProcess()
                             for pid_real,_exe,_ in lps:
                                 if _exe==name_: 
-                    
+                                    
                                     self.hookselectdialog.changeprocessclearsignal.emit() 
                                     if len(savehook_new_data[name_]['hook'])==0:
                                         self.hookselectdialog.realshowhide.emit(True)
-                                    self.textsource=textractor(self,self.textgetmethod,self.hookselectdialog,pid_real,hwnd,name_,True,savehook_new_data[name_]['hook'])
+                                    print("进程found",pid)
+                                    self.textsource=textractor(self,self.textgetmethod,self.hookselectdialog,pid_real,hwnd,name_,savehook_new_data[name_]['hook'])
                             
                 
                 else: 
                     if pid_running(self.textsource.pid)==False or win32process.GetWindowThreadProcessId( self.textsource.hwnd )[0]==0:
+                            print("进程end",self.textsource.pid,pid_running(self.textsource.pid),win32process.GetWindowThreadProcessId( self.textsource.hwnd )[0])
                             try:
                                 self.textsource.end(True)  
                                  

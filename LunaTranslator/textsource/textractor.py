@@ -1,8 +1,9 @@
- 
-from multiprocessing import Queue  
+import threading
+from queue import Queue  
 import re  
 import time
 import hashlib
+from collections import OrderedDict
 import os 
 from utils.config import globalconfig 
 from utils.u16lesubprocess import u16lesubprocess
@@ -10,27 +11,26 @@ from utils.getpidlist import getarch
 from textsource.textsourcebase import basetext 
 from utils.chaos import checkchaos 
 class textractor(basetext  ): 
-    def __init__(self,object,textgetmethod,hookselectdialog,pid,hwnd,pname,autostart=False,autostarthookcode=[]) :
+    def __init__(self,object,textgetmethod,hookselectdialog,pid,hwnd,pname ,autostarthookcode=[]) :
         self.newline=Queue()  
         self.arch=getarch(pid) 
-        
+        self.lock=threading.Lock()
         with open(pname,'rb') as ff:
             bs=ff.read() 
         self.md5=hashlib.md5(bs).hexdigest()
         self.prefix=self.md5+'_'+os.path.basename(pname).replace('.'+os.path.basename(pname).split('.')[-1],'') 
         
             
-        self.hookdatacollecter={}
-        self.hookdatasort=[]
+        self.hookdatacollecter=OrderedDict() 
         self.reverse={}
         self.forward=[]
         self.selectinghook=None
         self.selectedhook=[]
+        self.strictmatchedhook=[]
         self.textgetmethod=textgetmethod
         self.typename='textractor'
         self.ending=False 
-        self.is_strict_matched_hook=False
-        self.use_relax_match=False
+        self.is_strict_matched_hook=False 
         self.hookselectdialog=hookselectdialog
         # self.p = QProcess()    
         # self.p.readyReadStandardOutput.connect(self.handle_stdout)  
@@ -53,15 +53,12 @@ class textractor(basetext  ):
         self.setdelay()
         self.attach(self.pid)
         self.textfilter=''
-        self.autostart=autostart
+        self.matched_hook_num=0 
         self.autostarthookcode=[tuple(__) for __ in autostarthookcode]
+        self.autostarting=len(self.autostarthookcode)>0
         self.removedaddress=[]
-        if self.autostart:
-            # self.autostarttimeout=QTimer()
-            # self.autostarttimeout.timeout.connect(self.autostartinsert)
-            # self.autostarttimeout.start(1000)
-            time.sleep(1)
-            self.autostartinsert()
+        if self.autostarting: 
+            threading.Thread(target=self.autostartinsert,daemon=True).start() 
         self.HookCode=None 
          
         #self.re=re.compile('\[([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):(.*):(.*@.*)\] (.*)\n')
@@ -69,12 +66,17 @@ class textractor(basetext  ):
 
         super(textractor,self).__init__(textgetmethod)
     def autostartinsert(self):
+        time.sleep(3)
         dumpling=[]
+        if self.ending:
+            return 
+        self.lock.acquire() 
         for _h in self.autostarthookcode:
             ready=False
-            for _hh in self.hookdatacollecter:
+
+            for _hh in self.hookdatacollecter: 
                 if _h[-1]==_hh[-1]:
-                    ready=True
+                    ready=True 
                     break
             if ready==False:
                     if _h[-1] in dumpling:
@@ -82,7 +84,7 @@ class textractor(basetext  ):
                     else:
                         dumpling.append(_h[-1]) 
                     self.inserthook(_h[-1])
-                     
+        self.lock.release()
         #self.autostarttimeout.stop()
     def setdelay(self):
         delay=globalconfig['textthreaddelay']
@@ -105,7 +107,7 @@ class textractor(basetext  ):
         # self.p.write( QByteArray((f'{hookcode} -P{self.pid}\r\r').encode(encoding='utf-16-le'))) 
         # print(111111111111111111111111111111111111111111)
         # print(self.p)
-        print(f'{hookcode} -P{self.pid}\r\n')
+        print(f'{hookcode} -P{self.pid}')
         #self.object.translation_ui.writeprocesssignal.emit( QByteArray((f'{hookcode} -P{self.pid}\r\n').encode(encoding='utf-16-le')))
         self.u16lesubprocess.writer((f'{hookcode} -P{self.pid}\r\n'))
     def exit(self):
@@ -114,11 +116,14 @@ class textractor(basetext  ):
     def attach(self,pid):  
         #self.object.translation_ui.writeprocesssignal.emit( QByteArray((f'attach -P{pid}\r\n').encode(encoding='utf-16-le')))
         self.u16lesubprocess.writer(f'attach -P{pid}\r\n')
-        print(f'attach -P{pid}\r\n')
+        print(f'attach -P{pid} ')
     def detach(self,pid):
         #self.object.translation_ui.writeprocesssignal.emit( QByteArray((f'detach -P{pid}\r\n').encode(encoding='utf-16-le'))) 
         self.u16lesubprocess.writer(f'detach -P{pid}\r\n')
-        print(f'detach -P{pid}\r\n')
+        print(f'detach -P{pid} ')
+    def strictmatch(self,thread_tp_ctx,thread_tp_ctx2,HookCode,autostarthookcode):
+        return (int(thread_tp_ctx,16)&0xffff,thread_tp_ctx2,HookCode)==(int(autostarthookcode[-4],16)&0xffff,autostarthookcode[-3],autostarthookcode[-1])
+
     def handle_stdout(self,stdout):#p): 
         #data =  p.readAllStandardOutput()
         #stdout = bytes(data).decode("utf16",errors='ignore') 
@@ -137,7 +142,8 @@ class textractor(basetext  ):
             stdout=ares[-1]
         #reres=self.re.findall(stdout) #re.findall('\[([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):(.*):(.*@.*)\] (.*)\n',stdout)
         newline={} 
-         
+        
+        self.lock.acquire()
         for ares in reres:
             
             thread_handle,thread_tp_processId, thread_tp_addr, thread_tp_ctx, thread_tp_ctx2, thread_name,HookCode,output =ares
@@ -155,42 +161,22 @@ class textractor(basetext  ):
                 
             if key not in self.hookdatacollecter:
                 #print(self.autostarthookcode,HookCode)
-                if self.autostart:
-                    if key in self.selectedhook:
-                        continue
-                    #print(self.autostarthookcode,HookCode)
-                    #if self.autostarthookcode==HookCode and self.guessreal(output):
+                 
+                if self.autostarting: 
                     
-                    if len(self.autostarthookcode)==1:
-                        autostarthookcode= self.autostarthookcode[0]
-                        if self.is_strict_matched_hook:
-                            pass
-                        else:
-                            if (int(thread_tp_ctx,16)&0xffff,thread_tp_ctx2,HookCode)==(int(autostarthookcode[-4],16)&0xffff,autostarthookcode[-3],autostarthookcode[-1]):
-                                #if (HookCode)==(autostarthookcode[-1]):
-                                self.selectedhook=[key]
-                                self.selectinghook=key
-                                
-                                self.autostart=False
-                                self.is_strict_matched_hook=True
-                            elif self.use_relax_match:
-                                if HookCode==autostarthookcode[-1]:
-                                    self.selectedhook=[key]
-                                    self.selectinghook=key
-                    else:
-                        for autostarthookcode in self.autostarthookcode:
-                            
-                            #print((thread_tp_ctx,thread_tp_ctx2,HookCode)==(autostarthookcode[-4],autostarthookcode[-3],autostarthookcode[-1]),(thread_tp_ctx,thread_tp_ctx2,HookCode),(autostarthookcode[-4],autostarthookcode[-3],autostarthookcode[-1]))
-                        # print(thread_tp_ctx,thread_tp_ctx2,autostarthookcode)
-                            
-                            if (int(thread_tp_ctx,16)&0xffff,thread_tp_ctx2,HookCode)==(int(autostarthookcode[-4],16)&0xffff,autostarthookcode[-3],autostarthookcode[-1]):
-                            #if (HookCode)==(autostarthookcode[-1]):
-                                self.selectedhook+=[key]
-                                self.selectinghook=key
-                                if len(self.selectedhook)==len(self.autostarthookcode):
-                                    self.autostart=False
-                self.hookdatacollecter[key]=[]
-                self.hookdatasort.append(key)
+                    for autostarthookcode in self.autostarthookcode:  
+                        if self.strictmatch(thread_tp_ctx,thread_tp_ctx2,HookCode,autostarthookcode ): 
+                            self.selectedhook+=[key]
+                            self.strictmatchedhook+=[key]
+                            self.selectinghook=key
+                            self.matched_hook_num+=1 
+                        elif HookCode==autostarthookcode[-1] and len(self.selectedhook)!=len(self.autostarthookcode): 
+                            self.selectedhook+=[key]
+                            self.selectinghook=key 
+                    if len(self.autostarthookcode)==self.matched_hook_num:
+                        self.autostarting=False
+                        self.selectedhook=self.strictmatchedhook
+                self.hookdatacollecter[key]=[] 
                 self.hookselectdialog.addnewhooksignal.emit(key  ) 
             
             #print(key,self.selectedhook,output)
@@ -228,17 +214,21 @@ class textractor(basetext  ):
                 self.hookselectdialog.getnewsentencesignal.emit(output)
             self.hookselectdialog.update_item_new_line.emit(key,output)
          
-        if len(newline): 
-            newline_copy=['\n'.join(newline[k])  for k in newline]  
-            
+        if len(newline):  
+        
+            newline_copy=['\n'.join(newline[k])  for k in newline]   
             linekey=list(newline.keys())
             newline=newline_copy.copy()
-            newline.sort(key=lambda x: self.selectedhook.index(linekey[newline_copy.index(x)])  )
+            try:
+                newline.sort(key=lambda x: self.selectedhook.index(linekey[newline_copy.index(x)])  )
+            except:
+                pass
             #real='\n'.join(newline)
             #self.newline.put(real) 
             #self.runonce_line=real
             self.newline.put(newline) 
             self.runonce_line=newline
+        self.lock.release()
     def ignoretext(self):
         while self.newline.empty()==False:
             self.newline.get() 
