@@ -67,7 +67,7 @@ class Settin(closeashidewindow) :
     def callbackwrap(self,d,k,call,_):
         d[k]=_
         if call:
-            try:
+            try: 
                 call(_)
             except:
                 print_exc()
@@ -87,10 +87,7 @@ class Settin(closeashidewindow) :
         return s
     def getsimpleswitch(self,d,key,enable=True,callback=None,name=None,pair=None):
         b=MySwitch(self.rate,sign=d[key],enable=enable)
-        if callback:
-            b.clicked.connect( callback )
-        else:
-            b.clicked.connect(lambda x:d.__setitem__(key,x))
+        b.clicked.connect(functools.partial(self.callbackwrap,d,key,callback) )
         
         if pair:
             if pair not in dir(self):
@@ -99,19 +96,20 @@ class Settin(closeashidewindow) :
         elif name:
             setattr(self,name,b)
         return b
-    def yuitsu_switch(self,configdictkey,dictobjectn,key,callback,checked): 
+    def yuitsu_switch(self,configdictkey,dictobjectn,key,callback,checked):  
         dictobject=getattr(self,dictobjectn)  
         if checked :  
             for k in dictobject:
                 if k==key:
                     continue
-                if  globalconfig[configdictkey][k]==True if configdictkey=='sourcestatus' else globalconfig[configdictkey][k]['use']==True: 
+                if  ( configdictkey=='sourcestatus' and globalconfig[configdictkey][k]==True) or (configdictkey!='sourcestatus' and globalconfig[configdictkey][k]['use']==True  ): 
+                     
                     dictobject[k].setChecked(False)    
         if configdictkey=='sourcestatus':
             globalconfig[configdictkey][key] =checked
         else:
             globalconfig[configdictkey][key]['use']=checked
-        if callback :
+        if callback : 
             callback(key,checked)
     def getcolorbutton(self,d,key,callback,name=None,icon="fa.paint-brush",constcolor=None,enable=True):
 

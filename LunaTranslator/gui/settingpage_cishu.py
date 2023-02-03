@@ -27,14 +27,11 @@ def setTabcishu(self) :
 
                 [''],
                 [('辞书',10)],
-        ] 
-        def cishuselect(self, who,checked ): 
-            globalconfig['cishu'][who]['use']=checked 
-            self.object.startxiaoxueguan(who) 
+        ]  
         for cishu in globalconfig['cishu']:
                 grids.append([
                         (globalconfig['cishu'][cishu]['name'],10),
-                        self.getsimpleswitch(globalconfig['cishu'][cishu],'use',callback=functools.partial( cishuselect,self,cishu)),
+                        self.getsimpleswitch(globalconfig['cishu'][cishu],'use',callback=functools.partial( self.object.startxiaoxueguan,cishu)),
                         self.getcolorbutton(globalconfig,'',
                                 callback= functools.partial(getsomepath1,self,globalconfig['cishu'][cishu]['name'],globalconfig['cishu'][cishu],'path' ,globalconfig['cishu'][cishu]['name'],functools.partial(self.object.startxiaoxueguan,cishu),globalconfig['cishu'][cishu]['isdir'],globalconfig['cishu'][cishu]['filter']) ,icon='fa.gear',constcolor="#FF69B4") 
                                 if 'path' in globalconfig['cishu'][cishu] else ''

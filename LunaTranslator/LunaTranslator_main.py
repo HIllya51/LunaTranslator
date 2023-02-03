@@ -314,7 +314,7 @@ class MAINUI(QObject) :
             self.hookselectdialog.showsignal.emit()
          
     #@threader
-    def starttextsource(self,use=None,pop=True,checked=True):  
+    def starttextsource(self,use=None,checked=True,pop=True):   
         if checked:
             classes={'ocr':ocrtext,'copy':copyboard,'textractor':None,'txt':txt} 
             use=list(filter(lambda _ :globalconfig['sourcestatus'][_],classes.keys()) )
@@ -326,7 +326,7 @@ class MAINUI(QObject) :
                     self.AttachProcessDialog.showsignal.emit() 
             else:
                 self.textsource=classes[use](self.textgetmethod,self)   
-        else:
+        else: 
             if  self.textsource and self.textsource.ending==False :
                 self.textsource.end()  
                 self.textsource=None
@@ -364,7 +364,7 @@ class MAINUI(QObject) :
         _.show=partial(self._maybeyrengong,classname)
         return _
      
-    def prepare(self,now=None):    
+    def prepare(self,now=None,_=None):    
         self.commonloader('fanyi',self.translators,self.fanyiinitmethod,now)
          
     def commonloader(self,fanyiorcishu,dictobject,initmethod,_type=None):
@@ -387,7 +387,7 @@ class MAINUI(QObject) :
         except:
             print_exc()
  
-    def startxiaoxueguan(self,type_=None):  
+    def startxiaoxueguan(self,type_=None,_=None):  
         self.commonloader('cishu',self.cishus,self.cishuinitmethod,type_) 
     def cishuinitmethod(self,type_):
                 try:
@@ -458,6 +458,7 @@ class MAINUI(QObject) :
       
 
     def onwindowloadautohook(self):
+        #print(globalconfig['sourcestatus'])
         if not(globalconfig['autostarthook'] and globalconfig['sourcestatus']['textractor']):
             return 
         else:

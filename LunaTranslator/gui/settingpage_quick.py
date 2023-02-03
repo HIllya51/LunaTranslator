@@ -53,14 +53,8 @@ def setTab_quick(self) :
         for name in globalconfig['quick_setting']['all']: 
                 if name not in self.bindfunctions:
                     continue
-                key1=QComboBox() 
-                key2=QComboBox() 
-                key1.addItems(key_first)
-                key2.addItems(key_second)
-        
-                key1.setCurrentIndex(globalconfig['quick_setting']['all'][name]['key1'])
-                key2.setCurrentIndex(globalconfig['quick_setting']['all'][name]['key2'])
-                
+                key1=self.getsimplecombobox(key_first,globalconfig['quick_setting']['all'][name],'key1')
+                key2=self.getsimplecombobox(key_second,globalconfig['quick_setting']['all'][name],'key2') 
                 key1.currentIndexChanged.connect(functools.partial(__changekey,self,name,'key1',key1,key2))
                 key2.currentIndexChanged.connect(functools.partial(__changekey,self,name,'key2',key1,key2))
                 self.hotkeys[name]=None
@@ -75,14 +69,12 @@ def setTab_quick(self) :
                 )
              
         self.yitiaolong("快捷键设置",grids)
-def __enable(self,x ):
-            globalconfig['quick_setting'].__setitem__('use',x)
+def __enable(self,x ): 
             for quick in globalconfig['quick_setting']['all']:
                 if quick not in self.bindfunctions:
                     continue
                 regist_or_not_key(self,quick,self.bindfunctions[quick])
-def fanyiselect( self,who,checked): 
-            globalconfig['quick_setting']['all'][who]['use']=checked 
+def fanyiselect( self,who,checked):  
             regist_or_not_key(self,who,self.bindfunctions[who])
 def __changekey(self,who,keyn, key1,key2,x):
     back=globalconfig['quick_setting']['all'][who][keyn]

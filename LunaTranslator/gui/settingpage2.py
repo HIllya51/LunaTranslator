@@ -10,10 +10,7 @@ from gui.pretransfile import sqlite2json
 from utils.config import globalconfig ,_TR,_TRL
 from utils.utils import selectdebugfile
 import socket
-from gui.inputdialog import autoinitdialog
-def fanyiselect(self, who,checked ): 
-            globalconfig['fanyi'][who]['use']=checked 
-            self.object.prepare(who)
+from gui.inputdialog import autoinitdialog 
 def initsome11(self,l,label,grids): 
     grids.append(
         [(label,4)]
@@ -63,7 +60,7 @@ def initsome11(self,l,label,grids):
         else:
             last=''
         line+=[(globalconfig['fanyi'][fanyi]['name'],6),
-        self.getsimpleswitch(globalconfig['fanyi'][fanyi],'use',callback=functools.partial( fanyiselect,self,fanyi)),
+        self.getsimpleswitch(globalconfig['fanyi'][fanyi],'use',callback=functools.partial( self.object.prepare ,fanyi)),
         self.getcolorbutton(globalconfig['fanyi'][fanyi],'color',name="fanyicolor_"+fanyi,callback=functools.partial(self.ChangeTranslateColor,fanyi,None,self,"fanyicolor_"+fanyi)),last ] 
 
 

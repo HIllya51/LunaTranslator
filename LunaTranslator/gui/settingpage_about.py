@@ -9,9 +9,10 @@ import shutil
 import zipfile
 import threading
 from threading import Lock 
-from utils.config import globalconfig  ,_TR
-import gui.switchbutton
+from utils.config import globalconfig  ,_TR 
+from utils.wrapper import threader
 from utils.downloader import mutithreaddownload
+@threader
 def getversion(self):
      
     # with open('files/about.txt','r',encoding='utf8') as ff:
@@ -59,12 +60,7 @@ def updateprogress(self,text,val):
     self.downloadprogress.setValue(val)
     self.downloadprogress.setFormat(text)
      
-def setTab_about(self) :
-        def changeupdate(x):
-            globalconfig.__setitem__('autoupdate',x)
-            if x:
-                threading.Thread(target=lambda :getversion(self)).start()
-        
+def setTab_about(self) : 
         self.downloadprogress=QProgressBar()
          
         self.downloadprogress.hide()
@@ -75,8 +71,7 @@ def setTab_about(self) :
 
 
 
-        def _setproxy(x):
-            globalconfig.__setitem__('useproxy',x)
+        def _setproxy(x): 
             if x:
                 os.environ['https_proxy']=globalconfig['proxy'] 
                 os.environ['http_proxy']=globalconfig['proxy'] 
@@ -120,7 +115,7 @@ def setTab_about(self) :
             [''],
 
                 [(self.downloadprogress,10)],
-                [('自动下载更新(需要连接github)',5),(self.getsimpleswitch(globalconfig ,'autoupdate',callback= lambda x:changeupdate(x)),1) ],
+                [('自动下载更新(需要连接github)',5),(self.getsimpleswitch(globalconfig ,'autoupdate',callback= lambda x:getversion(self)),1) ],
                 [(self.versionlabel,10)],
                 
                 [''],
