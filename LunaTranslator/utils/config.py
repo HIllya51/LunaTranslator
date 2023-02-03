@@ -22,11 +22,7 @@ def tryreadconfig(path,default={}):
     if os.path.exists(os.path.join('./userconfig/',path)):
         path=os.path.join('./userconfig/',path)
         with open(path,'r',encoding='utf-8') as ff:
-            x=json.load(ff)
-    elif os.path.exists(os.path.join('./files/',path)):
-        path=os.path.join('./files/',path)
-        with open(path,'r',encoding='utf-8') as ff:
-            x=json.load(ff)
+            x=json.load(ff) 
     else:
         x=default
     return x 
@@ -59,8 +55,8 @@ def sycnsavehook():
             if _ not in savehook_new_list:
                 savehook_new_list.append(_)
                 savehook_new_data[_]['hook']=savehook_new_0[_]  
-        os.remove('savehook_new.json')
-        os.remove('savehook_new3.json')
+        os.remove('./userconfig/savehook_new.json')
+        os.remove('./userconfig/savehook_new3.json')
     except:
         pass
 sycnsavehook()
