@@ -82,12 +82,12 @@ class ocrtext(basetext):
             if self.object.rect is None:
                 time.sleep(1)
                 return None
-            if self.object.rect[0][0]>self.object.rect[1][0] or self.object.rect[0][1]>self.object.rect[1][1]:
-                time.sleep(1)
-                return None
+            
             time.sleep(0.1)
             #img=ImageGrab.grab((self.object.rect[0][0],self.object.rect[0][1],self.object.rect[1][0],self.object.rect[1][1]))
             #imgr = cv2.cvtColor(np.asarray(img), cv2.COLOR_RGB2BGR)
+            if self.object.rect is None:
+                return None
             imgr=self.imageCut(self.object.rect[0][0],self.object.rect[0][1],self.object.rect[1][0],self.object.rect[1][1])
             
             if globalconfig['ocr_auto_method'] ==1:

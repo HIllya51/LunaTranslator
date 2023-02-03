@@ -1,18 +1,8 @@
 import functools 
-
-from PyQt5.QtWidgets import  QWidget, QComboBox,QDoubleSpinBox 
- 
-from PyQt5.QtWidgets import QWidget,QFrame ,QPushButton,QColorDialog,QGridLayout
-from PyQt5.QtGui import QColor,QFont
-import functools 
-import qtawesome
+  
 from utils.config import globalconfig ,ocrsetting,_TRL
-
-import importlib
-from gui.inputdialog import autoinitdialog
-import gui.switchbutton
-import gui.attachprocessdialog  
-import gui.selecthook  
+ 
+from gui.inputdialog import autoinitdialog   
 def setTab6(self) :
         
           
@@ -20,7 +10,7 @@ def setTab6(self) :
         i=0
         lendict=len(list(globalconfig['ocr'].keys()))
 
-
+        self.ocrswitchs={}
         for name in globalconfig['ocr']:
              
             if i%3==0:
@@ -35,11 +25,11 @@ def setTab6(self) :
                     
                 items.append({'t':'okcancel' })
                 _3=self.getcolorbutton(globalconfig,'',callback=functools.partial(autoinitdialog,self,globalconfig['ocr'][name]['name']+'设置',900,items),icon='fa.gear',constcolor="#FF69B4")
+                
             else:
                 _3=''
             
-            line+=[((globalconfig['ocr'][name]['name']),6),(self.getsimpleswitch(globalconfig['ocr'][name],'use',name=name+'_ocrswitch',callback=functools.partial(yuitsuocr,self,name)),1),_3,'']
-
+            line+=[((globalconfig['ocr'][name]['name']),6),(self.getsimpleswitch(globalconfig['ocr'][name],'use',name=name,callback=functools.partial(self.yuitsu_switch,'ocr','ocrswitchs',name,None),pair='ocrswitchs'),1),_3,''] 
             if i%3==2 or i==lendict-1:
                 grids.append(line) 
             i+=1
@@ -65,21 +55,12 @@ def setTab6(self) :
             [(("选取OCR范围后立即进行一次识别"),12),self.getsimpleswitch(globalconfig ,'ocrafterrangeselect')],
             [(("选取OCR范围后主动显示范围框"),12),self.getsimpleswitch(globalconfig ,'showrangeafterrangeselect')],
         ] 
+
         self.yitiaolong("OCR设置",grids)
+        
 def changeocrcolorcallback(self ):
     self.ChangeTranslateColor("ocrrangecolor", self.ocrrangecolor_button) 
     self.object.range_ui.label.setStyleSheet(" border:%spx solid %s; background-color: rgba(0,0,0, 0.01)"   %(globalconfig['ocrrangewidth'],globalconfig['ocrrangecolor'] ))
 def changeocrwidthcallback(self,x):
     globalconfig.__setitem__('ocrrangewidth',x)
-    self.object.range_ui.setstyle()
-def yuitsuocr(self,name,checked): 
-    
-    if checked : 
-        for k in globalconfig['ocr']:
-            if globalconfig['ocr'][k]['use']==True:
-                getattr(self,k+'_ocrswitch').setChecked(False)  
-                globalconfig['ocr'][k]['use']=False
-        globalconfig['ocr'][name]['use']=True
-    else:
-        globalconfig['ocr'][name]['use']=False  
- 
+    self.object.range_ui.setstyle() 

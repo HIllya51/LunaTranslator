@@ -14,9 +14,9 @@ def setTab_quick(self) :
         self.hotkeys_savelast={}
         self.usedkey=[]
         self.bindfunctions={
-            '_A':lambda :self.object.settin_ui.clicksourcesignal.emit(0),
-            '_B':lambda :self.object.settin_ui.clicksourcesignal.emit(1),
-            '_C':lambda :self.object.settin_ui.clicksourcesignal.emit(2),
+            '_A':lambda :self.object.settin_ui.clicksourcesignal.emit('copy'),
+            '_B':lambda :self.object.settin_ui.clicksourcesignal.emit('ocr'),
+            '_C':lambda :self.object.settin_ui.clicksourcesignal.emit('textractor'),
 
             '_1':self.object.translation_ui.startTranslater,
             '_2':self.object.translation_ui.changeTranslateMode,

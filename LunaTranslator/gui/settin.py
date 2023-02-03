@@ -25,14 +25,13 @@ from gui.setting_lang import setTablang
 from utils.wavmp3player import wavmp3player
 from gui.closeashidewindow import closeashidewindow
 
-class Settin(closeashidewindow) :
-    resetsourcesignal=pyqtSignal()
+class Settin(closeashidewindow) : 
     loadtextractorfalse=pyqtSignal( ) 
     voicelistsignal=pyqtSignal(list)
     mp3playsignal=pyqtSignal(str,int) 
     versiontextsignal=pyqtSignal( str)
     progresssignal=pyqtSignal(str,int)
-    clicksourcesignal=pyqtSignal(int) 
+    clicksourcesignal=pyqtSignal(str) 
     fontbigsmallsignal=pyqtSignal(int)  
     def automakegrid(self,grid,lis,save=False,savelist=None): 
         maxl=0
@@ -82,16 +81,40 @@ class Settin(closeashidewindow) :
         if name:
             setattr(self,name,s)
         return s
-    def getsimpleswitch(self,d,key,enable=True,callback=None,name=None):
+    def getsimpleswitch(self,d,key,enable=True,callback=None,name=None,pair=None):
         b=MySwitch(self.rate,sign=d[key],enable=enable)
         if callback:
             b.clicked.connect( callback )
         else:
             b.clicked.connect(lambda x:d.__setitem__(key,x))
-        if name:
+        
+        if pair:
+            if pair not in dir(self):
+                setattr(self,pair,{})
+            getattr(self,pair)[name]=b 
+        elif name:
             setattr(self,name,b)
         return b
-     
+    def yuitsu_switch(self,configdictkey,dictobjectn,key,callback,checked): 
+        dictobject=getattr(self,dictobjectn) 
+        if configdictkey=='sourcestatus':
+            if checked : 
+                for k in dictobject:
+                    if globalconfig[configdictkey][k]==True:  
+                        dictobject[k].setChecked(False)   
+                globalconfig[configdictkey][key]=True
+            else:
+                globalconfig[configdictkey][key]=False  
+        else:
+            if checked : 
+                for k in dictobject:
+                    if globalconfig[configdictkey][k]['use']==True:  
+                        dictobject[k].setChecked(False)   
+                globalconfig[configdictkey][key]['use']=True
+            else:
+                globalconfig[configdictkey][key]['use']=False  
+        if callback :
+            callback(key,checked)
     def getcolorbutton(self,d,key,callback,name=None,icon="fa.paint-brush",constcolor=None,enable=True):
 
         b=QPushButton(qtawesome.icon(icon, color=constcolor if constcolor else d[key]), ""  )

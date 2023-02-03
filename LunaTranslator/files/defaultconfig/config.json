@@ -56,7 +56,7 @@
     "show_fenci": false,
     "jiamingcolor": "black",
     "settingfonttype": "Arial",
-	"filter_chaos_code":true, 
+	"filter_chaos_code":false, 
 	"accept_encoding":["shift-jis"],
 	"accept_character":"♪",
 	"accept_use_unicode":false,

@@ -277,68 +277,86 @@ class MAINUI(QObject) :
             self.translators[engine].gettask((_paste_str,paste_str_solve,skip)) 
          
     @threader
-    def startreader(self):
-        if globalconfig['reader']:
-            use=None
+    def startreader(self,use=None,checked=True):
+        if checked:
             ttss={'windowstts':windowstts,
                     'huoshantts':huoshantts,
                     'azuretts':azuretts,
                     'voiceroid2':voiceroid2,
                     'voicevox':voicevox}
-            for key in ttss:
-                if globalconfig['reader'][key]['use']:
-                    use=key
-                    
-                    self.reader_usevoice=use
-                    break
-            if use: 
-                    self.reader=ttss[use]( self.settin_ui.voicelistsignal,self.settin_ui.mp3playsignal) 
-    #@threader
-    def starttextsource(self): 
-        if  self.textsource and self.textsource.ending==False :
-            self.textsource.end()  
-        
-        classes={'ocr':ocrtext,'copy':copyboard,'textractor':None,'txt':txt} 
-        use=list(filter(lambda _ :globalconfig['sourcestatus'][_],classes.keys()) )
-        use=None if len(use)==0 else use[0]
-        if use is None:
-            self.textsource=None
-        elif use=='textractor': 
-            pass
+            if use is None:
+                
+                for key in ttss:
+                    if globalconfig['reader'][key]['use']:
+                        use=key  
+                        break
+            if use:
+                self.reader_usevoice=use
+                self.reader=ttss[use]( self.settin_ui.voicelistsignal,self.settin_ui.mp3playsignal) 
+            else:
+                self.reader=None
         else:
-            self.textsource=classes[use](self.textgetmethod,self)   
+            self.reader=None
+         
+    #@threader
+    def starttextsource(self,use=None,pop=True,checked=True):  
+        if checked:
+            classes={'ocr':ocrtext,'copy':copyboard,'textractor':None,'txt':txt} 
+            use=list(filter(lambda _ :globalconfig['sourcestatus'][_],classes.keys()) )
+            use=None if len(use)==0 else use[0]
+            if use is None:
+                self.textsource=None
+            elif use=='textractor':
+                if pop:     
+                    self.AttachProcessDialog.showsignal.emit() 
+            else:
+                self.textsource=classes[use](self.textgetmethod,self)   
+        else:
+            if  self.textsource and self.textsource.ending==False :
+                self.textsource.end()  
+                self.textsource=None
+        
+        self.rect=None
+        self.translation_ui.showhidestate=False 
+        self.translation_ui.refreshtooliconsignal.emit()
+        self.range_ui.hide()
+        self.settin_ui.selectbutton.setEnabled(globalconfig['sourcestatus']['textractor']) 
+        self.settin_ui.selecthookbutton.setEnabled(globalconfig['sourcestatus']['textractor']) 
+        self.translation_ui.showhidetoolbuttons()
     
     @threader
-    def starthira(self): 
-         
-        hirasettingbase=globalconfig['hirasetting']
-        if hirasettingbase['local']['use']:
-            from hiraparse.localhira import hira 
-        elif hirasettingbase['mecab']['use']:
-            from hiraparse.mecab import hira 
-        elif hirasettingbase['mojinlt']['use']:
-            from hiraparse.mojinlt import hira 
+    def starthira(self,use=None,checked=True): 
+        if checked:
+            hirasettingbase=globalconfig['hirasetting']
+            if hirasettingbase['local']['use']:
+                from hiraparse.localhira import hira 
+            elif hirasettingbase['mecab']['use']:
+                from hiraparse.mecab import hira 
+            elif hirasettingbase['mojinlt']['use']:
+                from hiraparse.mojinlt import hira 
+            else:
+                self.hira_=None
+                return 
+            try:
+                self.hira_=hira()  
+            except:
+                pass
         else:
             self.hira_=None
-            return 
-        self.hira_=hira()  
-    
-    
-    @threader
-    def prepare(self,now=None):   
-        def initx(classname):
-            aclass=importlib.import_module('translator.'+classname).TS 
-            _=aclass(classname)  
-            _.show=partial(self._maybeyrengong,classname)
-            return _
-        self.commonloader('fanyi',self.translators,initx,now)
+    def fanyiinitmethod(self,classname):
+        aclass=importlib.import_module('translator.'+classname).TS 
+        _=aclass(classname)  
+        _.show=partial(self._maybeyrengong,classname)
+        return _
+     
+    def prepare(self,now=None):    
+        self.commonloader('fanyi',self.translators,self.fanyiinitmethod,now)
          
     def commonloader(self,fanyiorcishu,dictobject,initmethod,_type=None):
         if _type:
             self.commonloader_warp(fanyiorcishu,dictobject,initmethod,_type)
         else:
-            for key in globalconfig[fanyiorcishu]:
-                print(key)
+            for key in globalconfig[fanyiorcishu]: 
                 self.commonloader_warp(fanyiorcishu,dictobject,initmethod,key)
     @threader
     def commonloader_warp(self,fanyiorcishu,dictobject,initmethod,_type):
@@ -353,10 +371,8 @@ class MAINUI(QObject) :
                 dictobject[_type]=item
         except:
             print_exc()
-
-    @threader
-    def startxiaoxueguan(self,type_=None): 
-
+ 
+    def startxiaoxueguan(self,type_=None):  
         self.commonloader('cishu',self.cishus,self.cishuinitmethod,type_) 
     def cishuinitmethod(self,type_):
                 try:
@@ -367,26 +383,16 @@ class MAINUI(QObject) :
                     return 
                 class cishuwrapper:
                     def __init__(self,_type) -> None:
-                        self._=_type()
-                        self.queue=Queue()
-                        threading.Thread(target=self.monitor).start()
+                        self._=_type() 
+                    @threader
                     def search(self,sentence):
-                         
-                        self.queue.put(sentence)
-                    def monitor(self):
-                        while True:
-                            s=self.queue.get() 
-                             
-                            try:
-                                res=self._.search(s)
-                                 
-                            except:
-                                print_exc()
-                                continue
+                        try:
+                            res=self._.search(sentence) 
                             if res is None or res=='':  
-                                continue
-                             
+                                return 
                             self.callback(res)
+                        except:
+                            pass 
                 _=cishuwrapper(aclass)
                 return _
     def _maybeyrengong(self,classname,contentraw,_):
@@ -514,8 +520,8 @@ class MAINUI(QObject) :
         #print(time.time()-t1)
         self.loadvnrshareddict()
         self.prepare()  
+        self.startxiaoxueguan()
         self.starthira()  
-        self.starttextsource() 
         #print(time.time()-t1)
         self.settin_ui = Settin(self) 
         #print(time.time()-t1)
@@ -527,12 +533,10 @@ class MAINUI(QObject) :
         self.AttachProcessDialog=AttachProcessDialog(self.settin_ui)
         self.range_ui = rangeadjust(self)   
         self.hookselectdialog=gui.selecthook.hookselect(self ,self.settin_ui)
-        threading.Thread(target=self.autohookmonitorthread).start()   
-        
-
-       
+        threading.Thread(target=self.autohookmonitorthread).start()    
         threading.Thread(target=minmaxmoveobservefunc,args=(self.translation_ui,)).start()   
-        self.startxiaoxueguan()
+        
+        self.starttextsource(pop=False) 
 if __name__ == "__main__" :
     
     

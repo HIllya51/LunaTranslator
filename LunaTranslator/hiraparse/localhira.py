@@ -1,7 +1,4 @@
-from utils.config import globalconfig
-
-import os
-from traceback import print_exc
+\
 class hira:
     def __init__(self) -> None: 
         import pykakasi

@@ -1,30 +1,6 @@
 import functools 
-from utils.config import globalconfig 
-import functools
-
-from traceback import print_exc
-import gui.selecthook  
-from gui.inputdialog import getsomepath1,autoinitdialog
-def hirachange(self,who,checked):   
-     
-    if checked : 
-         
-        for k in self.hiraswitchs: 
-                
-                if globalconfig['hirasetting'][k]['use']==True:
-                     
-                    self.hiraswitchs[k].setChecked(False) 
-                    globalconfig['hirasetting'][k]['use']=False
-        globalconfig['hirasetting'][who]['use']=True
-    else:
-        globalconfig['hirasetting'][who]['use']=False  
-         
-    
-    if checked : 
-        try:
-                self.object.starthira()  
-        except:
-                print_exc()
+from utils.config import globalconfig   
+from gui.inputdialog import getsomepath1,autoinitdialog 
 def setTabcishu(self) :
         
         mojiconfigitems=[{
@@ -34,14 +10,14 @@ def setTabcishu(self) :
         grids=[ 
                 [('分词&假名分析器',10)],
                 [       
-                        ('内置',4),(self.getsimpleswitch(globalconfig['hirasetting']['local'],'use',name='localhiraswitch',callback= functools.partial(hirachange,self,'local')),1),'',
+                        ('内置',4),(self.getsimpleswitch(globalconfig['hirasetting']['local'],'use',name='local',callback= functools.partial(self.yuitsu_switch,'hirasetting','hiraswitchs','local',self.object.starthira),pair='hiraswitchs'),1),'',
 
                         ('MeCab',4),
-                        (self.getsimpleswitch(globalconfig['hirasetting']['mecab'],'use',name='mecabhiraswitch',callback= functools.partial(hirachange,self,'mecab')),1),
+                        (self.getsimpleswitch(globalconfig['hirasetting']['mecab'],'use',name='mecab',callback= functools.partial(self.yuitsu_switch,'hirasetting','hiraswitchs','mecab',self.object.starthira),pair='hiraswitchs'),1),
                         self.getcolorbutton(globalconfig,'',callback=lambda  :getsomepath1(self,'mecab',globalconfig['hirasetting']['mecab'],'path' ,'mecab',lambda  :self.object.starthira(),True) ,icon='fa.gear',constcolor="#FF69B4"),'',
 
                         ('mojinlt',4),
-                        (self.getsimpleswitch(globalconfig['hirasetting']['mojinlt'],'use',name='mojinlthiraswitch',callback= functools.partial(hirachange,self,'mojinlt')),1),
+                        (self.getsimpleswitch(globalconfig['hirasetting']['mojinlt'],'use',name='mojinlt',callback= functools.partial(self.yuitsu_switch,'hirasetting','hiraswitchs','mojinlt',self.object.starthira),pair='hiraswitchs'),1),
                         self.getcolorbutton(globalconfig,'',callback= functools.partial(autoinitdialog,self,  ('token设置'),900,mojiconfigitems) ,icon='fa.gear',constcolor="#FF69B4")
                 ],
                 [''],
@@ -51,10 +27,7 @@ def setTabcishu(self) :
 
                 [''],
                 [('辞书',10)],
-        ]
-        self.hiraswitchs={'local':self.localhiraswitch,
-                            'mecab':self.mecabhiraswitch, 
-                            'mojinlt':self.mojinlthiraswitch }
+        ] 
         def cishuselect(self, who,checked ): 
             globalconfig['cishu'][who]['use']=checked 
             self.object.startxiaoxueguan(who) 
