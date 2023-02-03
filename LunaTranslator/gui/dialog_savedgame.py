@@ -49,10 +49,12 @@ class dialog_savedgame(QDialog):
                         
                         self.model.setItem(self.model.indexFromItem(item).row(), 1, QStandardItem(icon,''))  
         def clicked2(self): 
+                try:
+                        savehook_new.pop(self.model.item(self.table.currentIndex().row(),2).savetext)
                 
-                savehook_new.pop(self.model.item(self.table.currentIndex().row(),2).savetext)
-                
-                self.model.removeRow(self.table.currentIndex().row())
+                        self.model.removeRow(self.table.currentIndex().row())
+                except:
+                        pass
         def clicked3(self): 
                 
                 f=QFileDialog.getOpenFileName(directory='' )
@@ -80,7 +82,7 @@ class dialog_savedgame(QDialog):
                         self.model.insertRow(0,[QStandardItem(''),QStandardItem(icon,''),keyitem,QStandardItem(res)])
                         savehook_new2[res]={}
                         savehook_new2[res]['leuse']=True
-                        savehook_new2[res]['title']=res 
+                        savehook_new2[res]['title']=os.path.basename(res )
  
                         savehook_new[res]=[]
                         savehook_new.move_to_end(res,False)
@@ -95,8 +97,7 @@ class dialog_savedgame(QDialog):
                         self.table.setCurrentIndex(self.model.index(row,0)) 
                         
         def clicked(self): 
-                try:
-                        
+                try: 
                     game=self.model.item(self.table.currentIndex().row(),2).savetext
                     if os.path.exists(game):
                         #subprocess.Popen(model.item(table.currentIndex().row(),1).text()) 
