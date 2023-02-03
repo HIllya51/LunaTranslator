@@ -54,7 +54,11 @@ def sycnsavehook():
         for _ in savehook_new_0:
             if _ not in savehook_new_list:
                 savehook_new_list.append(_)
+        for _ in savehook_new_data:
+            if _ in savehook_new_0:
                 savehook_new_data[_]['hook']=savehook_new_0[_]  
+            else:
+                savehook_new_data[_]['hook']=[]
         os.remove('./userconfig/savehook_new.json')
         os.remove('./userconfig/savehook_new3.json')
     except:
