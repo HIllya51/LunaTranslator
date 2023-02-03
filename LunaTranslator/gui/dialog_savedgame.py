@@ -79,11 +79,10 @@ class dialog_savedgame(QDialog):
                         # model.setItem(row, 0, QStandardItem(''))  
                         # model.setItem(row, 3,QStandardItem(res) ) 
 
-                        self.model.insertRow(0,[QStandardItem(''),QStandardItem(icon,''),keyitem,QStandardItem(res)])
+                        self.model.insertRow(0,[QStandardItem(''),QStandardItem(icon,''),keyitem,QStandardItem(os.path.basename(res ) )])
                         savehook_new2[res]={}
-                        savehook_new2[res]['leuse']=True
-                        savehook_new2[res]['title']=os.path.basename(res )
- 
+                        savehook_new2[res]['leuse']=True 
+                        savehook_new2[res]['title']=os.path.basename(res ) 
                         savehook_new[res]=[]
                         savehook_new.move_to_end(res,False)
                         self.table.setIndexWidget(self.model.index(row, 0),self.object.getsimpleswitch(savehook_new2[res],'leuse'))
@@ -105,7 +104,7 @@ class dialog_savedgame(QDialog):
                         if game not in savehook_new2:
                                 savehook_new2[game]={}
                                 savehook_new2[game]['leuse']=True
-                                savehook_new2[game]['title']=game
+                                savehook_new2[game]['title']=os.path.basename(game)
                         if savehook_new2[game]['leuse'] :
                                 le3264run(game)
                         else:
@@ -137,7 +136,7 @@ class dialog_savedgame(QDialog):
                 table.setSelectionMode( (QAbstractItemView.SingleSelection)      )
                 table.setWordWrap(False) 
                 table.setModel(model) 
-                self.table=table
+                self.table=table 
                 for row,k in enumerate(savehook_new):                                   # 2
                         
                         transparent=QPixmap(100,100)
@@ -151,6 +150,7 @@ class dialog_savedgame(QDialog):
                         keyitem.savetext=k
                         model.setItem(row, 2, keyitem) 
                         model.setItem(row, 0, QStandardItem(''))  
+                        
                         model.setItem(row, 3,QStandardItem(savehook_new2[k]['title']) ) 
                         table.setIndexWidget(model.index(row, 0),object.getsimpleswitch(savehook_new2[k],'leuse'))
                         _=QPushButton()
