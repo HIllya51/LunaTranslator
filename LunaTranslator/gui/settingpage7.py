@@ -21,6 +21,7 @@ import gui.attachprocessdialog
 import gui.selecthook  
 import os
 
+from utils.utils import selectdebugfile
 from utils.wrapper import Singleton
 def setTab7(self) :   
         grids=[
@@ -28,12 +29,7 @@ def setTab7(self) :
         ] 
         sortlist=globalconfig['postprocess_rank']
         savelist=[]
-        savelay=[]
-        def _openfile():
-            if os.path.exists('./LunaTranslator/postprocess/mypost.py'):
-                os.startfile( os.path.abspath('./LunaTranslator/postprocess/mypost.py'))
-            elif os.path.exists('./postprocess/mypost.py'):
-                os.startfile( os.path.abspath('./postprocess/mypost.py'))
+        savelay=[] 
         def changerank( item,up):
 
             ii=sortlist.index(item)
@@ -58,7 +54,7 @@ def setTab7(self) :
             savelist[ii+1],savelist[toexchangei+1]=savelist[toexchangei+1],savelist[ii+1] 
         for i,post in enumerate(sortlist): 
             if post=='_11':
-                config=(self.getcolorbutton(globalconfig,'',callback= _openfile,icon='fa.gear',constcolor="#FF69B4")) 
+                config=(self.getcolorbutton(globalconfig,'',callback=lambda:selectdebugfile('postprocess/mypost.py',True),icon='fa.gear',constcolor="#FF69B4")) 
             else:
                 if 'args' in postprocessconfig[post]:
                     

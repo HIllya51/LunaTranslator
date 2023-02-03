@@ -1,7 +1,7 @@
 from utils.config import globalconfig
 import sqlite3,os
 import Levenshtein
-from utils.argsort import argsort
+from utils.utils import argsort
 class xiaoxueguan():
     def __init__(self):
         self.sql=None

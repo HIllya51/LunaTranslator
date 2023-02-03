@@ -1,8 +1,8 @@
 
-import win32gui,win32process,win32api,win32con ,win32event
+import win32gui,win32process,win32api,win32con ,win32event,win32print
 from traceback import print_exc
 from PyQt5.QtWinExtras  import QtWin
-from utils.argsort import argsort
+from utils.utils import argsort
 def pid_running(pid): 
     try:
         process =win32api.OpenProcess(win32con.SYNCHRONIZE, False, pid);
@@ -149,7 +149,11 @@ def getExeIcon( name ):
             return pixmap
         except:
             return None
-        
+
+def getScreenRate() :
+    hDC = win32gui.GetDC(0) 
+    screen_scale_rate = round(win32print.GetDeviceCaps(hDC, win32con.DESKTOPHORZRES) /  win32api.GetSystemMetrics(0), 2) 
+    return screen_scale_rate
 def mouseselectwindow(callback):
         import PyHook3
         hm = PyHook3.HookManager()

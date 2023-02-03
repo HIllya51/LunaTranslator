@@ -509,5 +509,7 @@
     "删除选中编码": "Delete the selected code",
     "使用Unicode范围过滤": "Use Unicode range filtering",
     "Unicode范围": "Unicode range",
-    "Magpie全屏时仍截取原窗口": "The original window is still captured when Magpie is full screen"
+    "Magpie全屏时仍截取原窗口": "The original window is still captured when Magpie is full screen",
+    "繁简转换": "Simplification",
+    "自定义翻译": "Custom translation"
 }

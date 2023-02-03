@@ -11,8 +11,7 @@ sys.path.append(dirname)
 from utils.config import globalconfig ,savehook_new,noundictconfig,transerrorfixdictconfig,setlanguage 
 import threading,win32gui 
 from PyQt5.QtCore import QCoreApplication ,Qt ,QObject,pyqtSignal
-from PyQt5.QtWidgets import  QApplication ,QGraphicsScene,QGraphicsView,QDesktopWidget,QStyle 
-import utils.screen_rate  
+from PyQt5.QtWidgets import  QApplication ,QGraphicsScene,QGraphicsView,QDesktopWidget,QStyle  
 
 from utils.minmaxmove import minmaxmoveobservefunc
 from utils.wrapper import threader 
@@ -30,7 +29,7 @@ from textsource.copyboard import copyboard
 from textsource.ocrtext import ocrtext
 from textsource.txt import txt 
 import  gui.selecthook    
-from utils.getpidlist import getpidexe,ListProcess
+from utils.getpidlist import getpidexe,ListProcess,getScreenRate
  
 import gui.translatorUI
 from queue import Queue
@@ -45,8 +44,7 @@ import re
 import socket
 socket.setdefaulttimeout(globalconfig['translatortimeout'])
 from utils.post import POSTSOLVE
-import xml.etree.ElementTree as ET  
-from utils.argsort import argsort
+import xml.etree.ElementTree as ET   
 
 class MAINUI(QObject) :
     mainuiloadok=pyqtSignal()
@@ -402,7 +400,7 @@ class MAINUI(QObject) :
         if classname=='premt':
             for k in res:
                 if needconv: 
-                    res[k]=zhconv.convert(res[k],  'zh-hant' )
+                    res[k]=zhconv.convert(res[k],  'zh-tw' )
 
                 if k  in globalconfig['fanyi']:
                     self.translation_ui.displayres.emit(k,res[k])
@@ -410,7 +408,7 @@ class MAINUI(QObject) :
                     self.translation_ui.displayres.emit('premt',res[k])
         else:
             if needconv: 
-                res=zhconv.convert(res, 'zh-hant')
+                res=zhconv.convert(res, 'zh-tw')
             self.translation_ui.displayres.emit(classname,res)
          
             
@@ -543,7 +541,7 @@ if __name__ == "__main__" :
     
     
     
-    screen_scale_rate = utils.screen_rate.getScreenRate()  
+    screen_scale_rate = getScreenRate()  
      
     QCoreApplication.setAttribute(Qt.AA_UseHighDpiPixmaps, True)
     app = QApplication(sys.argv) 

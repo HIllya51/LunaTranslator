@@ -82,7 +82,7 @@ class basetrans:
     def fythread(self):
         while True:  
             t=time.time()
-            if self.typename not in ['jbj7','kingsoft','dreye','rengong','premt','rengong_vnr','rengong_msk'] and t-self.lastrequeststime <globalconfig['transtimeinternal']:
+            if self.typename not in globalconfig['fanyi_offline']+globalconfig['fanyi_pre'] and t-self.lastrequeststime <globalconfig['transtimeinternal']:
                 time.sleep(t-self.lastrequeststime)
             self.lastrequeststime=t
             while True:
@@ -98,7 +98,7 @@ class basetrans:
                 continue
             
             try: 
-                if self.typename in ['jbj7','kingsoft','dreye','rengong','premt','rengong_vnr','rengong_msk']:
+                if self.typename in globalconfig['fanyi_offline']+globalconfig['fanyi_pre']:
                     res=self.translate(contentraw)
                 else:
                     

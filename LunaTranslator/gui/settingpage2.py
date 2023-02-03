@@ -8,15 +8,13 @@ import os,json
 from traceback import print_exc
 from gui.pretransfile import sqlite2json
 from utils.config import globalconfig ,_TR,_TRL
-import time
-import importlib
+from utils.utils import selectdebugfile
 import socket
 from gui.inputdialog import autoinitdialog
 def fanyiselect(self, who,checked ):
             if checked :  
                 self.object.prepare(who)  
             globalconfig['fanyi'][who]['use']=checked 
-            
             
 def initsome11(self,l,label,grids): 
     grids.append(
@@ -30,12 +28,10 @@ def initsome11(self,l,label,grids):
         if fanyi not in l:
             continue
         
-        try:
-            importlib.import_module('translator.'+fanyi)
-        except: 
-            bad+=1
-            print_exc()
-            continue
+        _f=selectdebugfile(f'./translator/{fanyi}.py') 
+        if _f is None:
+            bad+=1 
+            continue 
         i+=1
         
         if fanyi in translatorsetting :
@@ -64,6 +60,8 @@ def initsome11(self,l,label,grids):
                     }) 
             items.append({'t':'okcancel' })
             last=self.getcolorbutton(globalconfig,'',callback=functools.partial(autoinitdialog,self, (globalconfig['fanyi'][fanyi]['name'])+ ('设置'),900,items),icon='fa.gear',constcolor="#FF69B4")
+        elif fanyi=='selfbuild': 
+            last=self.getcolorbutton(globalconfig,'',callback=lambda:selectdebugfile('postprocess/mypost.py',True),icon='fa.gear',constcolor="#FF69B4")
         else:
             last=''
         line+=[(globalconfig['fanyi'][fanyi]['name'],6),
@@ -76,9 +74,9 @@ def initsome11(self,l,label,grids):
         else:
             line+=['']
 def initfanyiswitchs_auto11(self,grids):  
-        lixians=set(('jb7','dreye','kingsoft'))
+        lixians=set(globalconfig['fanyi_offline'])
         alls=set(globalconfig['fanyi'].keys())
-        mt=set(('rengong','premt','rengong_vnr','rengong_msk'))
+        mt=set(globalconfig['fanyi_pre'])
         online=alls-lixians-mt
 
         mianfei=set()
