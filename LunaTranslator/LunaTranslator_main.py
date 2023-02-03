@@ -3,20 +3,15 @@ t1=time.time()
 import os
 import json
 import Levenshtein
-import sys
-# if os.path.exists('./debug')==False:
-#     os.mkdir('./debug')
-#sys.stderr=open('./stderr.txt','a',encoding='utf8')
-# sys.stdout=open('./debug/stdout.txt','a',encoding='utf8')
+import sys 
 from traceback import  print_exc  
-
+import requests
 dirname, filename = os.path.split(os.path.abspath(__file__))
 sys.path.append(dirname)  
-from utils.config import globalconfig ,savehook_new,noundictconfig,transerrorfixdictconfig,setlanguage
-from PyQt5.QtGui import  QFont  ,QIcon,QPixmap  ,QMouseEvent
+from utils.config import globalconfig ,savehook_new,noundictconfig,transerrorfixdictconfig,setlanguage 
 import threading,win32gui 
 from PyQt5.QtCore import QCoreApplication ,Qt ,QObject,pyqtSignal
-from PyQt5.QtWidgets import  QApplication ,QGraphicsScene,QGraphicsView,QDesktopWidget,QStyle,QMainWindow
+from PyQt5.QtWidgets import  QApplication ,QGraphicsScene,QGraphicsView,QDesktopWidget,QStyle 
 import utils.screen_rate  
 
 from utils.minmaxmove import minmaxmoveobservefunc
@@ -25,12 +20,15 @@ from gui.showword import searchwordW
 from gui.rangeselect    import rangeadjust
 from  gui.settin   import Settin
 from utils.getpidlist import pid_running
-from utils.subproc import subproc
 from tts.windowstts import tts  as windowstts
 from tts.huoshantts import tts as huoshantts
 from tts.azuretts import tts as azuretts
 from tts.voiceroid2 import tts as voiceroid2
 from tts.voicevox import tts as voicevox
+
+from textsource.copyboard import copyboard   
+from textsource.ocrtext import ocrtext
+from textsource.txt import txt 
 import  gui.selecthook    
 from utils.getpidlist import getpidexe,ListProcess
  
@@ -58,6 +56,7 @@ class MAINUI(QObject) :
         self.translators={}
         self.cishus={}
         self.reader=None
+        self.textsource=None
         self.rect=None
         self.last_paste_str=''
         self.textsource=None 
@@ -301,36 +300,19 @@ class MAINUI(QObject) :
             if use: 
                     self.reader=ttss[use]( self.settin_ui.voicelistsignal,self.settin_ui.mp3playsignal) 
     #@threader
-    def starttextsource(self):
-         
-        if hasattr(self,'textsource') and self.textsource and self.textsource.ending==False :
+    def starttextsource(self): 
+        if  self.textsource and self.textsource.ending==False :
             self.textsource.end()  
-        if True:#try:
-            #classes={'ocr':ocrtext,'copy':copyboard,'textractor':textractor}#,'textractor_pipe':namepipe}
-            classes=['ocr','copy','textractor','txt']
-            use=None  
-            for k in classes: 
-                if globalconfig['sourcestatus'][k]:
-                    use=k 
-                    break
-            if use is None:
-                self.textsource=None
-            elif use=='textractor':
-                #from textsource.textractor import textractor 
-                 
-                pass
-            elif use=='ocr':
-                from textsource.ocrtext import ocrtext
-                self.textsource=ocrtext(self.textgetmethod,self) 
-          
-                  
-            elif use=='copy': 
-                from textsource.copyboard import copyboard 
-                self.textsource=copyboard(self.textgetmethod) 
-            elif use=='txt':
-                from textsource.txt import txt 
-                self.textsource=txt(self.textgetmethod) 
-            return True 
+        
+        classes={'ocr':ocrtext,'copy':copyboard,'textractor':None,'txt':txt} 
+        use=list(filter(lambda _ :globalconfig['sourcestatus'][_],classes.keys()) )
+        use=None if len(use)==0 else use[0]
+        if use is None:
+            self.textsource=None
+        elif use=='textractor': 
+            pass
+        else:
+            self.textsource=classes[use](self.textgetmethod,self)   
     
     @threader
     def starthira(self): 
@@ -349,11 +331,7 @@ class MAINUI(QObject) :
     
 
     @threader
-    def prepare(self,now=None):  
-        
-        
-        import requests
-        #不能删
+    def prepare(self,now=None):   
         if now:
             threading.Thread(target=self.fanyiloader,args=(now,)).start()
         else:
@@ -455,12 +433,11 @@ class MAINUI(QObject) :
                     try:
                         aclass=importlib.import_module('translator.'+classname).TS
                     except:
-                        print_exc()
                         return
                     aclass.settypename(classname)
                     _=aclass()
                     _.object=self
-                    _.show=partial(self._maybeyrengong,classname)
+                    _.show=partial(self._maybeyrengong,classname) 
                     self.translators[classname]=_ 
       
 
@@ -471,10 +448,7 @@ class MAINUI(QObject) :
             try:
                 
                 
-                if 'textsource' not in dir(self) or self.textsource is None:
-                         
-            
-               
+                if   self.textsource is None: 
                         hwnd=win32gui.GetForegroundWindow()
                         pid=win32process.GetWindowThreadProcessId(hwnd)[1]
                         name_=getpidexe(pid)
@@ -510,11 +484,7 @@ class MAINUI(QObject) :
                
                 if globalconfig['forcekeepontop']:
                     if win32process.GetWindowThreadProcessId(win32gui.GetForegroundWindow())[1] !=os.getpid():
-                    #子窗口未隐藏，导致为false（甚至是子窗口唤出的进程）
                         win32gui.SetWindowPos(int(self.translation_ui.winId()), win32con.HWND_TOPMOST, 0, 0, 0, 0,win32con. SWP_NOACTIVATE |win32con. SWP_NOSIZE | win32con.SWP_NOMOVE)  
-                else:
-                    #win32gui.SetWindowPos(int(self.settin_ui.winId()), win32con.HWND_TOPMOST, 0, 0, 0, 0,win32con. SWP_NOACTIVATE |win32con. SWP_NOSIZE | win32con.SWP_NOMOVE)  
-                    pass
                 #win32gui.BringWindowToTop(int(self.translation_ui.winId())) 
             except:
                 print_exc() 

@@ -107,9 +107,7 @@ def setTabTwo(self) :
 
         
         bt.clicked.connect(lambda x:sqlite2json(self)) 
- 
   
-        langlist=globalconfig['language_list_translator']
         grids=[
             
             [
@@ -125,10 +123,7 @@ def setTabTwo(self) :
                 ("模糊匹配相似度限制",6),(self.getspinbox(0,500,globalconfig,'premtsimi'),3),'', 
             ],
             
-                [
-                    #('录制翻译文件',6),(self.getsimpleswitch(globalconfig,'transkiroku'),1),'',
-                # ('导出的第一翻译源',6),(transkirokuuse,6),
-                 
+                [ 
                  (bt,12) ,
                  ],
             ['']

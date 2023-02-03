@@ -3,7 +3,7 @@ import time
 from PyQt5.QtWidgets import  QApplication 
 from textsource.textsourcebase import basetext
 class copyboard(basetext):
-    def __init__(self,textgetmethod) -> None:
+    def __init__(self,textgetmethod,_) -> None:
         self.last_paste_str = '' 
         
         self.ending=False
