@@ -1,21 +1,19 @@
 
 from traceback import print_exc 
  
-import requests 
-import os
+import requests  
 
-from utils.config import globalconfig ,translatorsetting
+from utils.config import globalconfig  
 from translator.basetranslator import basetrans  
 import json
 class TS(basetrans):  
     def inittranslator(self):
         self.session=requests.session()
-    def translate(self,query): 
-        js=translatorsetting[self.typename]
-        if js['args']['Token']=="":
+    def translate(self,query):  
+        if self.config['args']['Token']=="":
             return 
         else:
-            Token = js['args']['Token']  
+            Token = self.config['args']['Token']  
         def tranlate(source,   Token):
             url = "http://api.interpreter.caiyunai.com/v1/translator"
             # WARNING, this token is a test token for new developers,
@@ -36,13 +34,9 @@ class TS(basetrans):
          
     
         res=tranlate(query,Token)
-        js['args']['字数统计']=str(int(js['args']['字数统计'])+len(query))
-        js['args']['次数统计']=str(int(js['args']['次数统计'])+1)
+        self.config['args']['字数统计']=str(int(self.config['args']['字数统计'])+len(query))
+        self.config['args']['次数统计']=str(int(self.config['args']['次数统计'])+1)
          
         #print(res['trans_result'][0]['dst'])
         return res
-        
-     
-if __name__=='__main__':
-    g=BD()
-    print(g.realfy('あずきさんからアサリのスパゲティの作り方を学んだりもした。'))
+         

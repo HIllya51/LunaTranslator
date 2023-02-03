@@ -1,12 +1,8 @@
 
 from utils.subproc import subproc    
-from translator.basetranslator import basetrans
-import platform 
-import ctypes
-import re
-import os
-import json
-from utils.config import translatorsetting
+from translator.basetranslator import basetrans 
+import ctypes 
+import os 
 import subprocess
 
 class TS(basetrans): 
@@ -21,12 +17,11 @@ class TS(basetrans):
     #     else:
     #         self._x64=True
     #         self.x64('おはおよう')
-    def x64(self,content): 
-            js=translatorsetting[self.typename]
-            if js['args']['路径']=="":
+    def x64(self,content):  
+            if self.config['args']['路径']=="":
                 return 
             else:
-                path = js['args']['路径'] 
+                path = self.config['args']['路径'] 
     
             self.path=os.path.join(path,'JBJCT.dll')
             ress=''

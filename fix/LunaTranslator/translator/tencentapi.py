@@ -2,7 +2,7 @@
 from traceback import print_exc 
  
 import requests  
-from utils.config import globalconfig ,translatorsetting
+from utils.config import globalconfig  
 from translator.basetranslator import basetrans  
 import time
  
@@ -89,20 +89,15 @@ def txfy(secretId,secretKey,content,src,tgt):
     return (json.loads(responseData)["Response"]["TargetText"])
      
 class TS(basetrans): 
-    def translate(self,query): 
-        js=translatorsetting[self.typename]
-        if js['args']['SecretId']=="":
+    def translate(self,query):  
+        if self.config['args']['SecretId']=="":
             return 
         else:
-            appid = js['args']['SecretId']
-            secretKey =js['args']['SecretKey']
+            appid = self.config['args']['SecretId']
+            secretKey =self.config['args']['SecretKey']
 
-        js['args']['字数统计']=str(int(js['args']['字数统计'])+len(query))
-        js['args']['次数统计']=str(int(js['args']['次数统计'])+1)
+        self.config['args']['字数统计']=str(int(self.config['args']['字数统计'])+len(query))
+        self.config['args']['次数统计']=str(int(self.config['args']['次数统计'])+1)
          
         ret=txfy(appid,secretKey,query,self.srclang,self.tgtlang)
-        return ret 
-     
-if __name__=='__main__':
-    g=BD()
-    print(g.realfy('あずきさんからアサリのスパゲティの作り方を学んだりもした。'))
+        return ret  

@@ -92,12 +92,7 @@ def initfanyiswitchs_auto11(self,grids):
         grids.append([''])
         initsome11(self,mt,'预翻译',grids) 
 def setTabTwo(self) :
-        def __timeout(x):
-    
-            globalconfig.__setitem__('translatortimeout',x)
-            socket.setdefaulttimeout(globalconfig['translatortimeout'])
-
-        
+         
          
         bt = QPushButton(_TR("导出翻译记录为json文件")  )
 
@@ -110,7 +105,7 @@ def setTabTwo(self) :
                 ("最短翻译字数",6),(self.getspinbox(0,500,globalconfig,'minlength'),3),'',
                 ("最长翻译字数",6),(self.getspinbox(0,500,globalconfig,'maxlength'),3),],
             [
-                ("在线翻译超时(s)",6),(self.getspinbox(1,20,globalconfig,'translatortimeout',step=0.1,double=True,callback=lambda x:__timeout(x)),3),'',
+                ("在线翻译超时(s)",6),(self.getspinbox(1,20,globalconfig,'translatortimeout',step=0.1,double=True,callback=socket.setdefaulttimeout),3),'',
                  ("翻译请求间隔(s)",6),(self.getspinbox(0,10,globalconfig,'transtimeinternal',step=0.1,double=True),3),'',
                  ("TXT读取间隔(s)",6),(self.getspinbox(0,10,globalconfig,'txtreadlineinterval',step=0.1,double=True),3),
             ],

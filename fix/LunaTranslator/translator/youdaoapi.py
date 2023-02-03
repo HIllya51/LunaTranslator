@@ -1,21 +1,16 @@
 import time
-import hashlib
-from traceback import print_exc 
+import hashlib 
 import requests
 from translator.basetranslator import basetrans  
-import uuid 
-
-from utils.config import translatorsetting
-import json
+import uuid  
 class TS(basetrans): 
      
-    def translate(self, content):
-        js=translatorsetting[self.typename]
-        if js['args']['APP_KEY']=="":
+    def translate(self, content): 
+        if self.config['args']['APP_KEY']=="":
             return 
         else:
-            APP_KEY = js['args']['APP_KEY']
-            APP_SECRET = js['args']['APP_SECRET']
+            APP_KEY = self.config['args']['APP_KEY']
+            APP_SECRET = self.config['args']['APP_SECRET']
         youdao_url = 'https://openapi.youdao.com/api'    
  
         translate_text = content  
@@ -40,8 +35,8 @@ class TS(basetrans):
         }
 
         r = requests.get(youdao_url, params = data,proxies={"https":None}).json()   # 获取返回的json()内容
-        js['args']['字数统计']=str(int(js['args']['字数统计'])+len(content))
-        js['args']['次数统计']=str(int(js['args']['次数统计'])+1)
+        self.config['args']['字数统计']=str(int(self.config['args']['字数统计'])+len(content))
+        self.config['args']['次数统计']=str(int(self.config['args']['次数统计'])+1)
         
         return r["translation"][0]
     

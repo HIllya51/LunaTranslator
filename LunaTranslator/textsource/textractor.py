@@ -92,7 +92,7 @@ class textractor(basetext  ):
         #cp=globalconfig["codepage"]
         
         cpi=globalconfig["codepage_index"]
-        cp= [932,65001,936,950,949,1258,874,1256,1255,1254,1253,1257,1250,1251,1252][cpi]
+        cp= globalconfig["codepage_real"][cpi]
         #self.object.translation_ui.writeprocesssignal.emit( QByteArray((f'={cp} -P{self.pid}\r\n').encode(encoding='utf-16-le')))
         self.u16lesubprocess.writer(f'={cp} -P{self.pid}\r\n')
     def findhook(self ):

@@ -1,18 +1,15 @@
 
 from utils.subproc import subproc  
 from translator.basetranslator import basetrans 
-import os
-import json
-from utils.config import translatorsetting
+import os 
 import subprocess
 
 class TS(basetrans): 
-    def x64(self,content): 
-            js=translatorsetting[self.typename]
-            if js['args']['路径']=="":
+    def x64(self,content):  
+            if self.config['args']['路径']=="":
                 return 
             else:
-                path = js['args']['路径'] 
+                path = self.config['args']['路径'] 
             base=os.path.join(path,'GTS/'+self.srclang+self.tgtlang)
             if os.path.exists(base)==False:
                 return 

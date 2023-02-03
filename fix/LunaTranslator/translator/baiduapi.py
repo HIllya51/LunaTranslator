@@ -1,31 +1,20 @@
-
-from traceback import print_exc 
  
-import requests
-from urllib import parse 
-import os
+import requests 
 
-from utils.config import globalconfig,translatorsetting
-import re 
-from translator.basetranslator import basetrans  
-import time
-
-import http.client
+from utils.config import globalconfig  
+from translator.basetranslator import basetrans   
 import hashlib
 import urllib
-import random
-import json
+import random 
 class TS(basetrans):  
     def inittranslator(self):
         self.session=requests.session()
-    def translate(self,query): 
-        
-        js=translatorsetting[self.typename]
-        if js['args']['APP ID']=="":
+    def translate(self,query):  
+        if self.config['args']['APP ID']=="":
             return 
         else:
-            appid = js['args']['APP ID']
-            secretKey = js['args']['密钥']
+            appid = self.config['args']['APP ID']
+            secretKey = self.config['args']['密钥']
   
         myurl = '/api/trans/vip/translate'
 
@@ -39,12 +28,8 @@ class TS(basetrans):
         salt) + '&sign=' + sign
         
         res=self.session.get('https://api.fanyi.baidu.com'+myurl,timeout=globalconfig['translatortimeout'], proxies=  {'http': None,'https': None}).json()  
-        js['args']['字数统计']=str(int(js['args']['字数统计'])+len(query))
-        js['args']['次数统计']=str(int(js['args']['次数统计'])+1)
+        self.config['args']['字数统计']=str(int(self.config['args']['字数统计'])+len(query))
+        self.config['args']['次数统计']=str(int(self.config['args']['次数统计'])+1)
          
         return '\n'.join([_['dst'] for _ in res['trans_result']])  
-         
-     
-if __name__=='__main__':
-    g=BD()
-    print(g.realfy('あずきさんからアサリのスパゲティの作り方を学んだりもした。'))
+          

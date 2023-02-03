@@ -6,7 +6,7 @@ from PyQt5.QtGui import QColor ,QFont,QResizeEvent
 from utils.config import globalconfig 
 from PyQt5.QtWidgets import  QTabWidget,QMainWindow 
 import qtawesome   ,win32con,win32gui
-import os,time,threading
+import functools
 from gui.switchbutton import MySwitch 
 from gui.settingpage1 import setTabOne
 from gui.settingpage2 import setTabTwo
@@ -64,6 +64,13 @@ class Settin(closeashidewindow) :
             for c in range(maxl):
 
                 grid.setColumnMinimumWidth(c,ww//maxl)
+    def callbackwrap(self,d,k,call,_):
+        d[k]=_
+        if call:
+            try:
+                call(_)
+            except:
+                print_exc()
     def getspinbox(self,mini,maxi,d,key,double=False, step=1,callback=None,name=None,dec=1 ):
         if double:
             s=QDoubleSpinBox()
@@ -74,10 +81,7 @@ class Settin(closeashidewindow) :
         s.setMaximum(maxi)
         s.setSingleStep(step)
         s.setValue(d[key])
-        if callback:
-            s.valueChanged.connect(lambda x:callback(x))
-        else:
-            s.valueChanged.connect(lambda x:d.__setitem__(key,x))
+        s.valueChanged.connect(functools.partial(self.callbackwrap,d,key,callback)) 
         if name:
             setattr(self,name,s)
         return s
@@ -96,23 +100,17 @@ class Settin(closeashidewindow) :
             setattr(self,name,b)
         return b
     def yuitsu_switch(self,configdictkey,dictobjectn,key,callback,checked): 
-        dictobject=getattr(self,dictobjectn) 
+        dictobject=getattr(self,dictobjectn)  
+        if checked :  
+            for k in dictobject:
+                if k==key:
+                    continue
+                if  globalconfig[configdictkey][k]==True if configdictkey=='sourcestatus' else globalconfig[configdictkey][k]['use']==True: 
+                    dictobject[k].setChecked(False)    
         if configdictkey=='sourcestatus':
-            if checked : 
-                for k in dictobject:
-                    if globalconfig[configdictkey][k]==True:  
-                        dictobject[k].setChecked(False)   
-                globalconfig[configdictkey][key]=True
-            else:
-                globalconfig[configdictkey][key]=False  
+            globalconfig[configdictkey][key] =checked
         else:
-            if checked : 
-                for k in dictobject:
-                    if globalconfig[configdictkey][k]['use']==True:  
-                        dictobject[k].setChecked(False)   
-                globalconfig[configdictkey][key]['use']=True
-            else:
-                globalconfig[configdictkey][key]['use']=False  
+            globalconfig[configdictkey][key]['use']=checked
         if callback :
             callback(key,checked)
     def getcolorbutton(self,d,key,callback,name=None,icon="fa.paint-brush",constcolor=None,enable=True):
@@ -127,11 +125,11 @@ class Settin(closeashidewindow) :
         if name:
             setattr(self,name,b)
         return b
-    def getsimplecombobox(self,lst,d,k):
+    def getsimplecombobox(self,lst,d,k,callback=None):
         s=QComboBox( )  
         s.addItems(lst)
         s.setCurrentIndex(d[k])
-        s.currentIndexChanged.connect(lambda x:d.__setitem__(k,x))
+        s.currentIndexChanged.connect(functools.partial(self.callbackwrap,d,k,callback) )
         return s
     def __init__(self, object):
         

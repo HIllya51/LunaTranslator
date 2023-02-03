@@ -51,7 +51,7 @@ def setTab6(self) :
 
             [''],
             [(("OCR范围框颜色"),12),(self.getcolorbutton(globalconfig,'ocrrangecolor',callback=lambda  : changeocrcolorcallback(self),name='ocrrangecolor_button'),1)],
-            [(("OCR范围框宽度"),12),(self.getspinbox(1,100,globalconfig,'ocrrangewidth'  ,callback=lambda x: changeocrwidthcallback(self,x) ),2)],
+            [(("OCR范围框宽度"),12),(self.getspinbox(1,100,globalconfig,'ocrrangewidth'  ,callback=lambda x: self.object.range_ui.setstyle()  ),2)],
             [(("选取OCR范围后立即进行一次识别"),12),self.getsimpleswitch(globalconfig ,'ocrafterrangeselect')],
             [(("选取OCR范围后主动显示范围框"),12),self.getsimpleswitch(globalconfig ,'showrangeafterrangeselect')],
         ] 
@@ -61,6 +61,4 @@ def setTab6(self) :
 def changeocrcolorcallback(self ):
     self.ChangeTranslateColor("ocrrangecolor", self.ocrrangecolor_button) 
     self.object.range_ui.label.setStyleSheet(" border:%spx solid %s; background-color: rgba(0,0,0, 0.01)"   %(globalconfig['ocrrangewidth'],globalconfig['ocrrangecolor'] ))
-def changeocrwidthcallback(self,x):
-    globalconfig.__setitem__('ocrrangewidth',x)
-    self.object.range_ui.setstyle() 
+ 
