@@ -401,9 +401,13 @@ class QUnFrameWindow(QWidget):
         self.masklabelback.setGeometry( 0, 0,9999,9999)
         self.masklabelback.setMouseTracking(True)
         self.masklabelback.setStyleSheet("background-color: rgba(0,0,0,0)")
-        if globalconfig['selectable']:
-            self.masklabel.hide()
-
+        
+        
+        self.setselectable()
+    def setselectable(self):
+        self.masklabel.setHidden(globalconfig['selectable'])
+        self.translate_text.toplabel2.setHidden(globalconfig['selectable'] and globalconfig['zitiyangshi']!=3) 
+        self.translate_text.toplabel.setHidden(globalconfig['selectable'] and globalconfig['zitiyangshi']!=3)
     def set_color_transparency(self ):
         self.translate_text.setStyleSheet("border-width: 0;\
                                            border-style: outset;\

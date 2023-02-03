@@ -41,14 +41,10 @@ def setTabThree(self) :
         self.sfont_comboBox.activated[str].connect(callback)  
         self.scomboBox_font = QFont(globalconfig['settingfonttype'])
         self.sfont_comboBox.setCurrentFont(self.scomboBox_font) 
-        def __changeselectmode_():
-                self.object.translation_ui.masklabel.setHidden(globalconfig['selectable'])
-                self.object.translation_ui.translate_text.toplabel2.setHidden(globalconfig['selectable'] and globalconfig['zitiyangshi']!=3) 
-                self.object.translation_ui.translate_text.toplabel.setHidden(globalconfig['selectable'] and globalconfig['zitiyangshi']!=3)
+         
         def __changeselectmode(x):
                 globalconfig.__setitem__('selectable',x) 
-                __changeselectmode_()
-        __changeselectmode_()
+                self.object.translation_ui.setselectable() 
         def _settoolbariconcolor( ):
                 self.ChangeTranslateColor("buttoncolor", self.buttoncolorbutton)
                 self.object.translation_ui.refreshtooliconsignal.emit()
