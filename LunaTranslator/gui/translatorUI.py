@@ -318,13 +318,13 @@ class QUnFrameWindow(QWidget):
         
         self.takusanbuttons("MinMaxButton",lambda: dialog_savedgame(self.object.settin_ui),3,"打开保存的游戏",'gamepad') 
 
-        self.takusanbuttons("MinMaxButton",lambda :self.object.AttachProcessDialog.showsignal.emit(),4,"选择游戏" )  
-        self.takusanbuttons("MinMaxButton",lambda:self.object.hookselectdialog.showsignal.emit(),5,"选择文本" ) 
+        self.takusanbuttons("MinMaxButton",lambda :self.object.AttachProcessDialog.showsignal.emit(),4,"选择游戏",None,["textractor"] )  
+        self.takusanbuttons("MinMaxButton",lambda:self.object.hookselectdialog.showsignal.emit(),5,"选择文本",None ,["textractor"]) 
          
-        self.takusanbuttons("MinMaxButton",lambda :self.clickRange(False),4,"选取OCR范围")
-        self.takusanbuttons("MinMaxButton",self.showhide,5,"显示/隐藏范围框")
+        self.takusanbuttons("MinMaxButton",lambda :self.clickRange(False),4,"选取OCR范围",None,[ "ocr"])
+        self.takusanbuttons("MinMaxButton",self.showhide,5,"显示/隐藏范围框",None,["ocr"])
          
-        self.takusanbuttons("MinMaxButton",self.bindcropwindow_signal.emit,5,"绑定截图窗口，避免遮挡（部分软件不支持）（点击自己取消）")
+        self.takusanbuttons("MinMaxButton",self.bindcropwindow_signal.emit,5,"绑定截图窗口，避免遮挡（部分软件不支持）（点击自己取消）",None,["ocr"])
          
         def _moveresizegame(self):
              
@@ -333,11 +333,11 @@ class QUnFrameWindow(QWidget):
                     moveresizegame(self,hwnd)
             except:
                     print_exc()
-        self.takusanbuttons("MinMaxButton",lambda :_moveresizegame(self),5,"调整游戏窗口(需要绑定ocr窗口，或选择hook进程)",'resize' ) 
+        self.takusanbuttons("MinMaxButton",lambda :_moveresizegame(self),5,"调整游戏窗口(需要绑定ocr窗口，或选择hook进程)",'resize' ,["textractor","ocr"]) 
   
-        self.takusanbuttons("MinMaxButton",self._fullsgame,5,"全屏/恢复游戏窗口(需要绑定ocr窗口，或选择hook进程)" ,"fullscreen") 
+        self.takusanbuttons("MinMaxButton",self._fullsgame,5,"全屏/恢复游戏窗口(需要绑定ocr窗口，或选择hook进程)" ,"fullscreen",["textractor","ocr"]) 
         
-        self.takusanbuttons("MinMaxButton",self.muteprocessfuntion,5,"游戏静音(需要绑定ocr窗口，或选择hook进程)" ,"muteprocess") 
+        self.takusanbuttons("MinMaxButton",self.muteprocessfuntion,5,"游戏静音(需要绑定ocr窗口，或选择hook进程)" ,"muteprocess",["textractor","ocr"]) 
         
         
         self.takusanbuttons("MinMaxButton",self.hide_and_disableautohide,-2,"最小化到托盘")
@@ -683,26 +683,25 @@ class QUnFrameWindow(QWidget):
         
         
         for i,button in enumerate(self.buttons[:-2]):
-            
-            if i in [17,15,16] and globalconfig['sourcestatus']['ocr'] ==False:
-                button.hide()
-                continue
-            if i in [14,13] and globalconfig['sourcestatus']['textractor'] ==False:
-                button.hide()
-                continue
-            if globalconfig['sourcestatus']['textractor'] ==False and globalconfig['sourcestatus']['ocr'] ==False and i in [20,18,19]:
-                button.hide()
-                
-                continue
-            if 'name' in dir(button) and button.name in globalconfig['buttonuse'] and globalconfig['buttonuse'][button.name]==False: 
+            if button.belong:
+                hide=True
+                for k in button.belong:
+                    if globalconfig['sourcestatus'][k]:
+                        hide=False
+                        break
+                if hide:
+                    button.hide()
+                    continue 
+            if  button.name in globalconfig['buttonuse'] and globalconfig['buttonuse'][button.name]==False: 
                 button.hide()
                 continue 
+
             button.move(showed*button.width() , 0) 
             self.showbuttons.append(button)
             #button.show()
             showed+=1
         self.enterEvent(None)
-    def takusanbuttons(self, objectname,clickfunc,adjast=None,tips=None,save=None): 
+    def takusanbuttons(self, objectname,clickfunc,adjast=None,tips=None,save=None,belong=None): 
          
         button=QTitleButton(self) 
         if tips:
@@ -711,6 +710,7 @@ class QUnFrameWindow(QWidget):
         button.setIconSize(QSize(int(20*self.rate),
                                  int(20*self.rate)))
         button.name=save
+        button.belong=belong
         button.setObjectName(objectname)
         button.setFixedWidth(40*self.rate)
         button.setMouseTracking(True)
@@ -721,10 +721,7 @@ class QUnFrameWindow(QWidget):
             button.adjast=lambda  :button.move(self.width() + adjast*button.width() , 0) 
         else:
             button.adjast=None
-        self.buttons.append(button)
-        
-        if save=='mousetransbutton':
-            self.mousetransbutton=button
+        self.buttons.append(button) 
         
         if save=='move':
             button.lower()
