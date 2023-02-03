@@ -1,6 +1,6 @@
   
 import functools,win32api 
-from PyQt5.QtWidgets import  QCheckBox,QLabel ,QLineEdit,QSpinBox,QPushButton,QDialog,QVBoxLayout ,QHeaderView,QFileDialog ,QGridLayout
+from PyQt5.QtWidgets import  QPushButton,QDialog,QVBoxLayout ,QHeaderView,QFileDialog ,QGridLayout
 import functools 
 from traceback import print_exc 
 from PyQt5.QtWidgets import    QHBoxLayout, QTableView, QAbstractItemView, QLabel, QVBoxLayout
@@ -8,12 +8,11 @@ import qtawesome
 
 from PyQt5.QtGui import QStandardItem, QStandardItemModel  
 from PyQt5.QtGui import QColor,QFont,QPixmap,QIcon 
-from PyQt5.QtCore import Qt,QSize 
-import subprocess
-from utils.config import globalconfig ,savehook_new,savehook_new2
-from utils.getpidlist import getwindowlist,getExeIcon,getpidexe 
+from PyQt5.QtCore import Qt,QSize  
+from utils.config import   savehook_new_list,savehook_new_data
+from utils.getpidlist import getExeIcon 
 from utils.le3264 import le3264run  
-from utils.config import globalconfig ,_TR,_TRL
+from utils.config import _TR,_TRL
 import os
 import win32con,win32api  
 from utils.wrapper import Singleton_close
@@ -26,7 +25,7 @@ class dialog_savedgame(QDialog):
                 rows=self.model.rowCount() 
                  
                 for row in range(rows):  
-                        savehook_new2[self.model.item(row,2).savetext]['title']=self.model.item(row,3).text()
+                        savehook_new_data[self.model.item(row,2).savetext]['title']=self.model.item(row,3).text()
                # dialog_savedgame._sigleton=False
                 return QDialog().closeEvent(a0)
                 
@@ -35,10 +34,8 @@ class dialog_savedgame(QDialog):
                 res=f[0]
                 if res!='':
                         res=res.replace('/','\\')
-                        savehook_new[res]=savehook_new[item.savetext]
-                        savehook_new.pop(item.savetext) 
-                        savehook_new.move_to_end(res,False) 
-                        savehook_new2[res]=savehook_new2[item.savetext] 
+                        savehook_new_list[savehook_new_list.index(item.savetext)]=res 
+                        savehook_new_data[res]=savehook_new_data[item.savetext] 
                         item.savetext=res 
                         transparent=QPixmap(100,100)
                         transparent.fill(QColor.fromRgba(0))
@@ -49,9 +46,8 @@ class dialog_savedgame(QDialog):
                         
                         self.model.setItem(self.model.indexFromItem(item).row(), 1, QStandardItem(icon,''))  
         def clicked2(self): 
-                try:
-                        savehook_new.pop(self.model.item(self.table.currentIndex().row(),2).savetext)
-                
+                try: 
+                        savehook_new_list.pop(self.table.currentIndex().row())
                         self.model.removeRow(self.table.currentIndex().row())
                 except:
                         pass
@@ -62,11 +58,10 @@ class dialog_savedgame(QDialog):
                 if res!='':
                         row=0#model.rowCount() 
                         res=res.replace('/','\\')
-                        if res in savehook_new: 
+                        if res in savehook_new_list: 
                                 return
-                        savehook_new[res]=[]
-                        savehook_new.move_to_end(res,False) 
-                        savehook_new2[res]={'leuse':True,'title':os.path.basename(res) } 
+                        savehook_new_list.insert(0,res)
+                        savehook_new_data[res]={'leuse':True,'title':os.path.basename(res),'hook':[] } 
                         transparent=QPixmap(100,100)
                         transparent.fill(QColor.fromRgba(0))
                         icon=getExeIcon(res)
@@ -83,7 +78,7 @@ class dialog_savedgame(QDialog):
 
                         self.model.insertRow(0,[QStandardItem(''),QStandardItem(icon,''),keyitem,QStandardItem(os.path.basename(res ) )])
                         
-                        self.table.setIndexWidget(self.model.index(row, 0),self.object.getsimpleswitch(savehook_new2[res],'leuse'))
+                        self.table.setIndexWidget(self.model.index(row, 0),self.object.getsimpleswitch(savehook_new_data[res],'leuse'))
                         
                         _=QPushButton()
                         _.setIcon(qtawesome.icon( 'fa.gear', color="#FF69B4"))
@@ -95,15 +90,14 @@ class dialog_savedgame(QDialog):
                         
         def clicked(self): 
                 try: 
-                    game=self.model.item(self.table.currentIndex().row(),2).savetext
+                    game=self.model.item(self.table.currentIndex().row(),2).savetext 
                     if os.path.exists(game):
                         #subprocess.Popen(model.item(table.currentIndex().row(),1).text())  
-                        if savehook_new2[game]['leuse'] :
+                        if savehook_new_data[game]['leuse'] :
                                 le3264run(game)
                         else:
                                 win32api.ShellExecute(None, "open", game, "", os.path.dirname(game), win32con.SW_SHOW) 
-                                 
-                        savehook_new.move_to_end(game,False)
+                        savehook_new_list.insert(0,savehook_new_list.pop(self.table.currentIndex().row())) 
                         self.close() 
                 except:
                         print_exc()
@@ -129,7 +123,7 @@ class dialog_savedgame(QDialog):
                 table.setWordWrap(False) 
                 table.setModel(model) 
                 self.table=table 
-                for row,k in enumerate(savehook_new):                                   # 2
+                for row,k in enumerate(savehook_new_list):                                   # 2
                         
                         transparent=QPixmap(100,100)
                         transparent.fill(QColor.fromRgba(0))
@@ -143,8 +137,8 @@ class dialog_savedgame(QDialog):
                         model.setItem(row, 2, keyitem) 
                         model.setItem(row, 0, QStandardItem(''))  
                         
-                        model.setItem(row, 3,QStandardItem(savehook_new2[k]['title']) ) 
-                        table.setIndexWidget(model.index(row, 0),object.getsimpleswitch(savehook_new2[k],'leuse'))
+                        model.setItem(row, 3,QStandardItem(savehook_new_data[k]['title']) ) 
+                        table.setIndexWidget(model.index(row, 0),object.getsimpleswitch(savehook_new_data[k],'leuse'))
                         _=QPushButton()
                         _.setIcon(qtawesome.icon( 'fa.gear', color="#FF69B4"))  
                         _.setStyleSheet("background: transparent;") 

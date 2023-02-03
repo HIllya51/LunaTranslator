@@ -66,7 +66,7 @@ class AttachProcessDialog(closeashidewindow):
          
     def showEvent(self,e):
 
-        self.hookselectdialog.hide()  
+        self.hookselectdialog.realshowhide.emit(False)  
         ########################### 
         self.model=QStandardItemModel(self.processList) 
         transparent=QPixmap(100,100)

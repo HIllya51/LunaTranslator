@@ -8,7 +8,7 @@ from traceback import  print_exc
 import requests
 dirname, filename = os.path.split(os.path.abspath(__file__))
 sys.path.append(dirname)  
-from utils.config import globalconfig ,savehook_new,noundictconfig,transerrorfixdictconfig,setlanguage 
+from utils.config import globalconfig ,savehook_new_list,savehook_new_data,noundictconfig,transerrorfixdictconfig,setlanguage 
 import threading,win32gui 
 from PyQt5.QtCore import QCoreApplication ,Qt ,QObject,pyqtSignal
 from PyQt5.QtWidgets import  QApplication ,QGraphicsScene,QGraphicsView,QDesktopWidget,QStyle  
@@ -311,7 +311,7 @@ class MAINUI(QObject) :
             #  
             self.textsource=textractor(self,self.textgetmethod,self.hookselectdialog,pid,hwnd,pexe )  
             self.hookselectdialog.changeprocessclearsignal.emit()
-            self.hookselectdialog.showsignal.emit()
+            self.hookselectdialog.realshowhide.emit(True)
          
     #@threader
     def starttextsource(self,use=None,checked=True,pop=True):   
@@ -323,7 +323,7 @@ class MAINUI(QObject) :
                 self.textsource=None
             elif use=='textractor':
                 if pop:     
-                    self.AttachProcessDialog.showsignal.emit() 
+                    self.AttachProcessDialog.showNormal()
             else:
                 self.textsource=classes[use](self.textgetmethod,self)   
         else: 
@@ -471,15 +471,16 @@ class MAINUI(QObject) :
                         name_=getpidexe(pid)
                           
                 
-                        if name_ in savehook_new:  
+                        if name_ in savehook_new_list:  
                             
                             lps=ListProcess()
                             for pid_real,_exe,_ in lps:
-                                if _exe==name_:
-                                     
+                                if _exe==name_: 
                     
                                     self.hookselectdialog.changeprocessclearsignal.emit() 
-                                    self.textsource=textractor(self,self.textgetmethod,self.hookselectdialog,pid_real,hwnd,name_,True,savehook_new[name_])
+                                    if len(savehook_new_data[name_]['hook'])==0:
+                                        self.hookselectdialog.realshowhide.emit(True)
+                                    self.textsource=textractor(self,self.textgetmethod,self.hookselectdialog,pid_real,hwnd,name_,True,savehook_new_data[name_]['hook'])
                             
                 
                 else: 

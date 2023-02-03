@@ -2,7 +2,7 @@ import threading
 from traceback import print_exc
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QWidget,QHBoxLayout,QMainWindow,QFrame,QVBoxLayout,QMessageBox,QPlainTextEdit,QDialogButtonBox,QLineEdit,QPushButton,QTableView,QAbstractItemView,QApplication,QHeaderView,QCheckBox
-from utils.config import savehook_new,savehook_new2
+from utils.config import savehook_new_list,savehook_new_data
 from PyQt5.QtGui import QStandardItem, QStandardItemModel
 from PyQt5.QtGui import QFont,QTextCursor
 from PyQt5.QtCore import Qt,pyqtSignal
@@ -19,7 +19,7 @@ class hookselect(closeashidewindow):
     getnewsentencesignal=pyqtSignal(str)
     changeprocessclearsignal=pyqtSignal()
     okoksignal=pyqtSignal() 
-    update_item_new_line=pyqtSignal(tuple,str)   
+    update_item_new_line=pyqtSignal(tuple,str)  
     def __init__(self,object,p):
         super(hookselect, self).__init__(p)
         self.setupUi( )
@@ -30,6 +30,7 @@ class hookselect(closeashidewindow):
         self.update_item_new_line.connect(self.update_item_new_line_function) 
         self.okoksignal.connect(self.okok)  
         self.setWindowTitle(_TR('选择文本，支持按住ctrl进行多项选择（一般选择一条即可）'))
+         
     def update_item_new_line_function(self,hook,output):
         if hook in self.save:
             row=self.save.index(hook)
@@ -336,15 +337,17 @@ class hookselect(closeashidewindow):
 
             self.object.textsource.autostarthookcode=[]
             self.object.textsource.autostart=False
-            savehook_new[self.object.textsource.pname]=self.object.textsource.selectedhook 
-            savehook_new.move_to_end(self.object.textsource.pname,False)
-            if self.object.textsource.pname not in savehook_new2:
-                savehook_new2[self.object.textsource.pname]={'leuse':True,'title':os.path.basename(self.object.textsource.pname) }  
+            if self.object.textsource.pname not in savehook_new_list:
+                savehook_new_list.insert(0,self.object.textsource.pname)  
+            if self.object.textsource.pname not in savehook_new_data:
+                savehook_new_data[self.object.textsource.pname]={'leuse':True,'title':os.path.basename(self.object.textsource.pname),'hook':self.object.textsource.selectedhook }  
+            else:
+                savehook_new_data[self.object.textsource.pname].update({ 'hook':self.object.textsource.selectedhook } )
         except:
             print_exc()
         #self.object.settin_ui.show()
     def showEvent(self,e):   
-        self.object.AttachProcessDialog.hide()
+        self.object.AttachProcessDialog.realshowhide.emit(False)
         try: 
             for i in range(len(self.save)):  
                 if self.save[i] in self.object.textsource.selectedhook: 

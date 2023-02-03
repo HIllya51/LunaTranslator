@@ -18,7 +18,7 @@ if os.path.exists('./cache/screenshot')==False:
 if os.path.exists('./cache/tts')==False:
     os.mkdir('./cache/tts')
 
-def tryreadconfig(path):
+def tryreadconfig(path,default={}):
     if os.path.exists(os.path.join('./userconfig/',path)):
         path=os.path.join('./userconfig/',path)
         with open(path,'r',encoding='utf-8') as ff:
@@ -28,7 +28,7 @@ def tryreadconfig(path):
         with open(path,'r',encoding='utf-8') as ff:
             x=json.load(ff)
     else:
-        x={}
+        x=default
     return x 
 def tryreadconfig2(path): 
     path=os.path.join('./files/defaultconfig/',path)
@@ -46,8 +46,26 @@ globalconfig=tryreadconfig('config.json')
 postprocessconfig=tryreadconfig('postprocessconfig.json')
 noundictconfig=tryreadconfig('noundictconfig.json')
 transerrorfixdictconfig=tryreadconfig('transerrorfixdictconfig.json')
-savehook_new=OrderedDict(tryreadconfig('savehook_new.json') )
-savehook_new2=tryreadconfig('savehook_new3.json') 
+savehook_new_0=OrderedDict(tryreadconfig('savehook_new.json') )
+savehook_new_2=tryreadconfig('savehook_new3.json') 
+_savehook=tryreadconfig('savehook_new_1.39.4.json',default=[[],{}])
+savehook_new_list= _savehook[0]
+savehook_new_data= _savehook[1]
+
+def sycnsavehook():
+    try:
+        savehook_new_data.update(savehook_new_2)
+        for _ in savehook_new_0:
+            if _ not in savehook_new_list:
+                savehook_new_list.append(_)
+                savehook_new_data[_]['hook']=savehook_new_0[_]  
+        os.remove('savehook_new.json')
+        os.remove('savehook_new3.json')
+    except:
+        pass
+sycnsavehook()
+
+
 
 translatorsetting=tryreadconfig('translatorsetting.json') 
 ocrsetting=tryreadconfig('ocrsetting.json') 
@@ -154,10 +172,13 @@ def saveallconfig():
         with open('./userconfig/ocrsetting.json','w',encoding='utf-8') as ff:
             ff.write(json.dumps(ocrsetting,ensure_ascii=False,sort_keys=False, indent=4))
 
-        with open('./userconfig/savehook_new.json','w',encoding='utf8') as ff:
-                ff.write(json.dumps(savehook_new,ensure_ascii=False,sort_keys=False, indent=4))
-        with open('./userconfig/savehook_new3.json','w',encoding='utf8') as ff:
-                ff.write(json.dumps(savehook_new2,ensure_ascii=False,sort_keys=False, indent=4))
+        
+        with open('./userconfig/savehook_new_1.39.4.json','w',encoding='utf-8') as ff:
+            ff.write(json.dumps([savehook_new_list,savehook_new_data],ensure_ascii=False,sort_keys=False, indent=4))
+        # with open('./userconfig/savehook_new.json','w',encoding='utf8') as ff:
+        #         ff.write(json.dumps(savehook_new,ensure_ascii=False,sort_keys=False, indent=4))
+        # with open('./userconfig/savehook_new3.json','w',encoding='utf8') as ff:
+        #         ff.write(json.dumps(savehook_new2,ensure_ascii=False,sort_keys=False, indent=4))
 
         with open(f'./files/lang/{globalconfig["language_list"][language]}.json','w',encoding='utf8') as ff:
             ff.write( json.dumps(languageshow,ensure_ascii=False,sort_keys=False, indent=4))
