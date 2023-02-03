@@ -84,7 +84,7 @@ class dialog_savedgame(QDialog):
  
                         savehook_new[res]=[]
                         savehook_new.move_to_end(res,False)
-                        self.table.setIndexWidget(self.model.index(row, 0),object.getsimpleswitch(savehook_new2[res],'leuse'))
+                        self.table.setIndexWidget(self.model.index(row, 0),self.object.getsimpleswitch(savehook_new2[res],'leuse'))
                         
                         _=QPushButton()
                         _.setIcon(qtawesome.icon( 'fa.gear', color="#FF69B4"))
@@ -121,7 +121,7 @@ class dialog_savedgame(QDialog):
                 # dialog_savedgame._sigleton=True 
                 super().__init__(object, Qt.WindowCloseButtonHint)
                 self.setWindowTitle(_TR('已保存游戏'))
-
+                self.object=object
                 formLayout = QVBoxLayout(self)  # 
                 model=QStandardItemModel(   )
                 model.setHorizontalHeaderLabels(_TRL(['转区','','路径', '游戏']))#,'HOOK'])
