@@ -14,11 +14,12 @@ from PyQt5.QtCore import QCoreApplication ,Qt ,QObject,pyqtSignal
 from PyQt5.QtWidgets import  QApplication ,QGraphicsScene,QGraphicsView,QDesktopWidget,QStyle  
 
 from utils.minmaxmove import minmaxmoveobservefunc
+ 
 from utils.wrapper import threader 
 from gui.showword import searchwordW
 from gui.rangeselect    import rangeadjust
 from  gui.settin   import Settin
-from utils.getpidlist import pid_running
+from utils.getpidlist import pid_running,getarch
 from tts.windowstts import tts  as windowstts
 from tts.huoshantts import tts as huoshantts
 from tts.azuretts import tts as azuretts
@@ -26,6 +27,7 @@ from tts.voiceroid2 import tts as voiceroid2
 from tts.voicevox import tts as voicevox
 
 from textsource.copyboard import copyboard   
+from textsource.textractor import textractor   
 from textsource.ocrtext import ocrtext
 from textsource.txt import txt 
 import  gui.selecthook    
@@ -297,6 +299,19 @@ class MAINUI(QObject) :
                 self.reader=None
         else:
             self.reader=None
+    def selectprocess(self,selectedp): 
+            #self.object.textsource=None
+            pid,pexe,hwnd=(  selectedp)   
+        
+            arch=getarch(pid)
+            if arch is None:
+                return
+            if self.textsource:
+                self.textsource.end()  
+            #  
+            self.textsource=textractor(self,self.textgetmethod,self.hookselectdialog,pid,hwnd,pexe )  
+            self.hookselectdialog.changeprocessclearsignal.emit()
+            self.hookselectdialog.showsignal.emit()
          
     #@threader
     def starttextsource(self,use=None,pop=True,checked=True):  
@@ -455,8 +470,7 @@ class MAINUI(QObject) :
                         name_=getpidexe(pid)
                           
                 
-                        if name_ in savehook_new: 
-                            from textsource.textractor import textractor
+                        if name_ in savehook_new:  
                             
                             lps=ListProcess()
                             for pid_real,_exe,_ in lps:
@@ -530,9 +544,9 @@ class MAINUI(QObject) :
         self.transhis=gui.transhist.transhist(self.translation_ui)  
         self.edittextui=gui.edittext.edittext(self.translation_ui)  
         self.searchwordW=searchwordW(self.translation_ui)
-        self.AttachProcessDialog=AttachProcessDialog(self.settin_ui)
         self.range_ui = rangeadjust(self)   
-        self.hookselectdialog=gui.selecthook.hookselect(self ,self.settin_ui)
+        self.hookselectdialog=gui.selecthook.hookselect(self ,self.settin_ui) 
+        self.AttachProcessDialog=AttachProcessDialog(self.settin_ui,self.selectprocess,self.hookselectdialog)
         threading.Thread(target=self.autohookmonitorthread).start()    
         threading.Thread(target=minmaxmoveobservefunc,args=(self.translation_ui,)).start()   
         

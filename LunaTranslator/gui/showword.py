@@ -171,6 +171,7 @@ class searchwordW(closeashidewindow):
                 self.setfonts()
                  
     def getnewsentence(self,sentence):
+        self.showNormal()
         self.searchtext.setText(sentence  )
          
         self.search(sentence)

@@ -234,7 +234,7 @@ class hookselect(closeashidewindow):
             self.getnewsentence(_TR('！特殊码格式错误！'))
             return
         
-        if 'textsource' in dir(self.object) and self.object.textsource:
+        if  self.object.textsource:
 
             self.object.textsource.inserthook(hookcode)
         else:
@@ -263,7 +263,7 @@ class hookselect(closeashidewindow):
                     os.remove('hook.txt')
                 except:
                     pass
-            if 'textsource' in dir(self.object) and self.object.textsource: 
+            if  self.object.textsource: 
                 self.object.textsource.findhook( )
                 self.userhookfind.setEnabled(False)
                 self.userhookfind.setText(_TR("正在搜索特殊码，请让游戏显示更多文本"))
@@ -345,6 +345,7 @@ class hookselect(closeashidewindow):
             print_exc()
         #self.object.settin_ui.show()
     def showEvent(self,e):   
+        self.object.AttachProcessDialog.hide()
         try: 
             for i in range(len(self.save)):  
                 if self.save[i] in self.object.textsource.selectedhook: 

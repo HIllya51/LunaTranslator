@@ -10,11 +10,9 @@ import time
 from utils.getpidlist import getwindowhwnd,getpidexe,ListProcess,mouseselectwindow,getExeIcon
 import qtawesome
 
-from utils.getpidlist import getarch 
 from textsource.textractor import textractor
 from gui.closeashidewindow import closeashidewindow
-class AttachProcessDialog(closeashidewindow):
-     
+class AttachProcessDialog(closeashidewindow): 
         
     iconcache={}
     def selectwindowcallback(self,pid,hwnd,name_): 
@@ -22,20 +20,17 @@ class AttachProcessDialog(closeashidewindow):
                     self.processEdit.setText(name_)
                     self.processIdEdit.setText(str(pid))
                     self.selectedp=(pid,name_,hwnd) 
-    def __init__(self ,p):
+    def __init__(self ,p,callback,hookselectdialog):
         super(AttachProcessDialog, self).__init__( p ) 
         self.setWindowFlags(self.windowFlags()&~Qt.WindowMinimizeButtonHint)
         self.resize(800,400)
         # d=QApplication.desktop()
         # self.move ((d.width()-self.width())/2,((d.height()-self.height())/2))
-        self.object=p.object
+        self.callback=callback
+        self.hookselectdialog=hookselectdialog
+        self.selectedp=(0,'',0)
         self.setWindowTitle(_TR('选择进程'))
-        self.setWindowIcon(qtawesome.icon("fa.gear" ))
-        f=QFont() 
-        f.setPointSize(13)
-        self.setFont(f)
-        #self.setWindowFlags(Qt.WindowStaysOnTopHint |Qt.WindowCloseButtonHint)
-        t1=time.time()
+        self.setWindowIcon(qtawesome.icon("fa.gear" )) 
         w=QWidget()
         self.layout1=QVBoxLayout()
         self.label=QLabel(_TR('如果没看见想要附加的进程，可以尝试点击下方按钮后点击游戏窗口,或者尝试使用管理员权限运行本软件') )
@@ -64,51 +59,22 @@ class AttachProcessDialog(closeashidewindow):
         #print(time.time()-t1)
         
         self.buttonBox.accepted.connect(self.accept)
-        self.buttonBox.rejected.connect(self.close) 
-        
-        self.processList.clicked.connect(self.selectedfunc)
-        #self.processList.doubleClicked.connect(self.accept)
-        #print(time.time()-t1)
-        
-        def gg(process):
-            try:
-                self.selectedp=(int(process),getpidexe(int(process)),getwindowhwnd(int(process)))
-                self.processEdit.setText(self.selectedp[1])
-            except:
-                pass
-        self.processIdEdit.textEdited.connect(gg)
-        #print(time.time()-t1)
-        #self.processEdit.returnPressed.connect(self.accept)
-    def callback(self,selectedp) :
-    
-            #self.object.textsource=None
-            pid,pexe,hwnd=(  selectedp)   
-        
-            arch=getarch(pid)
-            if arch is None:
-                return
-            if   self.object.textsource:
-                self.object.textsource.end()  
-            
-            
-            #  
-            self.object.textsource=textractor(self.object,self.object.textgetmethod,self.object.hookselectdialog,pid,hwnd,pexe )  
-            self.object.hookselectdialog.changeprocessclearsignal.emit()
-            self.object.hookselectdialog.showsignal.emit()
+        self.buttonBox.rejected.connect(self.close)  
+        self.processList.clicked.connect(self.selectedfunc)  
+        self.processIdEdit.textEdited.connect(self.editpid)  
+        self.processEdit.textEdited.connect(self.editexe)
          
-    def show(self):
+    def showEvent(self,e):
 
-        self.object.hookselectdialog.hide()  
-        ###########################
-        self.selectedp=(0,'',0)
-        model=QStandardItemModel(self.processList)
-        self.model=model 
+        self.hookselectdialog.hide()  
+        ########################### 
+        self.model=QStandardItemModel(self.processList) 
         transparent=QPixmap(100,100)
         transparent.fill(QColor.fromRgba(0))
         #print(time.time()-t1)
         self.processlist= ListProcess()
         #print(time.time()-t1)
-        self.processList.setModel(model)
+        self.processList.setModel(self.model)
         for pid,pexe,hwnd  in self.processlist: 
             if pexe in self.iconcache:
                 icon=self.iconcache[pexe]
@@ -122,13 +88,18 @@ class AttachProcessDialog(closeashidewindow):
                 self.iconcache[pexe]=icon
             item=QStandardItem(icon , pexe)
             item.setEditable(False)
-            model.appendRow(item)
-        def ff(process):
-            for i in range(model.rowCount()):
-                self.processList.setRowHidden(i,not (process.lower() in model.item(i).text().lower()))
-        self.processEdit.textEdited.connect(ff)
-        #print(time.time()-t1)
-        super(AttachProcessDialog,self).show()
+            self.model.appendRow(item)
+        
+        #print(time.time()-t1) 
+    def editpid(self,process):
+            try:
+                self.selectedp=(int(process),getpidexe(int(process)),getwindowhwnd(int(process)))
+                self.processEdit.setText(self.selectedp[1])
+            except:
+                pass
+    def editexe(self,process):
+            for i in range(self.model.rowCount()):
+                self.processList.setRowHidden(i,not (process.lower() in self.model.item(i).text().lower()))
     def selectedfunc(self,index): 
         self.processEdit.setText(self.processlist[index.row()][1] )
         self.processIdEdit.setText(str(self.processlist[index.row()][0]  ))

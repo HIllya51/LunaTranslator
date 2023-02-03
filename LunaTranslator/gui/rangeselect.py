@@ -75,11 +75,13 @@ class rangeselct(QMainWindow) :
         self.object.rect=None
         self.immediateendsignal.connect(self.immediateend)
     def immediateend(self):
-         
-        self.getRange() 
-        self.close() 
-        self.object.translation_ui.quickrangestatus=not self.object.translation_ui.quickrangestatus
-        self.callback() 
+        try:
+            self.getRange() 
+            self.close() 
+            self.object.translation_ui.quickrangestatus=not self.object.translation_ui.quickrangestatus
+            self.callback() 
+        except:
+            pass
     def paintEvent(self, event):  
              
             if self.is_drawing:

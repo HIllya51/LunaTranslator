@@ -73,6 +73,21 @@ class Textbrowser( ):
                                             \
                                            background-color: rgba(%s, %s, %s, %s)"
                                            %(0,0,0,0))
+
+        
+        self.textbrowser.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        self.textbrowserback.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        self.textbrowser.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        self.textbrowserback.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        self.masklabel = QLabel(self.textbrowser)   
+        self.masklabel.setGeometry( 0,0,9999,9999)
+        self.masklabel.setMouseTracking(True)
+        
+        self.masklabelback = QLabel(self.textbrowserback)   
+        self.masklabelback.setGeometry( 0, 0,9999,9999)
+        self.masklabelback.setMouseTracking(True)
+        self.masklabelback.setStyleSheet("background-color: rgba(0,0,0,0)")
+        
         self.savetaglabels=[]
         self.searchmasklabels_clicked=[]
         self.searchmasklabels=[]
@@ -84,6 +99,11 @@ class Textbrowser( ):
         self.lastcolor=None
         self.jiaming_y_delta=0
         self.charformat=self.textbrowser.currentCharFormat()
+        self.setselectable() 
+    def setselectable(self):
+        self.masklabel.setHidden(globalconfig['selectable'])
+        self.toplabel2.setHidden(globalconfig['selectable'] and globalconfig['zitiyangshi']!=3) 
+        self.toplabel.setHidden(globalconfig['selectable'] and globalconfig['zitiyangshi']!=3)
     def simplecharformat(self,color):
         self.textbrowser.setCurrentCharFormat(self.charformat)
         self.textbrowserback.setCurrentCharFormat(self.charformat)
@@ -92,20 +112,13 @@ class Textbrowser( ):
     def setText(self,text):
         self.textbrowser.setText(text)
         self.textbrowserback.setText(text)
-        
-    def setVerticalScrollBarPolicy(self,x):
-        self.textbrowser.setVerticalScrollBarPolicy(x)
-        self.textbrowserback.setVerticalScrollBarPolicy(x)
-    def setHorizontalScrollBarPolicy(self,x): 
-        self.textbrowser.setHorizontalScrollBarPolicy(x)
-        self.textbrowserback.setHorizontalScrollBarPolicy(x)
+         
     def setFont(self,x): 
         self.textbrowser.setFont(x)
         self.textbrowserback.setFont(x)
         #self.shadowlabel.setFont(x) 
     def setStyleSheet(self,x): 
-        #self.textbrowser.setStyleSheet(x)
-        
+        #self.textbrowser.setStyleSheet(x) 
         #self.textbrowserback.setStyleSheet(x)
         self.atback.setStyleSheet(x)
     def move(self,x,y):
@@ -118,7 +131,13 @@ class Textbrowser( ):
     def resize(self,_1,_2):
         self.textbrowser.resize(_1,_2)
         self.textbrowserback.resize(_1,_2)
-
+    def clear_and_setfont(self):
+        self.clear()
+ 
+        self.font.setFamily(globalconfig['fonttype'])
+        self.font.setPointSizeF(globalconfig['fontsize']) 
+        self.font.setBold(globalconfig['showbold'])
+        self.setFont(self.font) 
     def setGeometry(self,_1,_2,_3,_4):
         self.textbrowser.setGeometry(_1,_2,_3,_4)
         self.textbrowserback.setGeometry(_1,_2,_3,_4) 

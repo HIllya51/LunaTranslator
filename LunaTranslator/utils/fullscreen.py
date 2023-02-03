@@ -7,6 +7,7 @@ class fullscreen():
         self.savewindowstatus=None 
         self.savemagpie_pid=None
     def __call__(self, hwnd,full):  
+        try:
             if globalconfig['fullscreenmethod']==0:  
                 if full:
                     win32gui.SetForegroundWindow(hwnd )    
@@ -32,4 +33,5 @@ class fullscreen():
                     self.savewindowstatus=letfullscreen(hwnd)
                 else:
                     recoverwindow(hwnd,self.savewindowstatus)
-             
+        except:
+            pass

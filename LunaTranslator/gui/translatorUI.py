@@ -32,8 +32,7 @@ class QTitleButton(QPushButton):
         return super().enterEvent(a0)
     def leaveEvent(self, a0 ) -> None:
         return super().leaveEvent(a0)
-class QUnFrameWindow(QWidget):  
-    clear_text_sign = pyqtSignal() 
+class QUnFrameWindow(QWidget):   
     displayres =  pyqtSignal(str,str ) 
     displayraw1 =  pyqtSignal(list, str,str,int )  
     displaystatus=pyqtSignal(str) 
@@ -83,7 +82,7 @@ class QUnFrameWindow(QWidget):
         except:
             print_exc() 
     def showraw(self,hira,res,color,show ): 
-        self.clearText()
+        self.translate_text.clear_and_setfont()
         self.original=res 
         if show==1: 
             self.showline((hira,res),color )
@@ -121,7 +120,7 @@ class QUnFrameWindow(QWidget):
         if globalconfig['zitiyangshi'] ==3:
             self.translate_text.showyinyingtext(color  ) 
         if (globalconfig['usesearchword'] or globalconfig['show_fenci']  ) and res[0]:
-            self.translate_text.addsearchwordmask(res[0],res[1],self.showsearchword  ) 
+            self.translate_text.addsearchwordmask(res[0],res[1],self.object.searchwordW.getnewsentencesignal.emit   ) 
         
         
         if globalconfig['autodisappear']:
@@ -141,20 +140,8 @@ class QUnFrameWindow(QWidget):
                     self.autohidestart=False
                     self.lastrefreshtime=tnow
                     
-            time.sleep(0.3)
-    def showsearchword(self,word):   
-        self.object.searchwordW.showNormal()
-        self.object.searchwordW.getnewsentence(word) 
-    def clearText(self) :
+            time.sleep(0.3) 
      
-        # 翻译界面清屏
-        self.translate_text.clear()
-
-        # 设定翻译时的字体类型和大小
-        self.font.setFamily(globalconfig['fonttype'])
-        self.font.setPointSizeF(globalconfig['fontsize']) 
-        self.font.setBold(globalconfig['showbold'])
-        self.translate_text.setFont(self.font) 
     def showhideui(self): 
         if self._move_drag:
             return 
@@ -216,8 +203,7 @@ class QUnFrameWindow(QWidget):
             win32gui.ShowWindow(self.winId(),win32con.SW_SHOWNORMAL )
         else:
             self.show()
-    def settin_ui_button_noundict_click(self):
-        self.object.settin_ui.button_noundict.click()
+     
     def __init__(self, object):
         
         super(QUnFrameWindow, self).__init__(
@@ -256,10 +242,8 @@ class QUnFrameWindow(QWidget):
         self.bindcropwindow_signal.connect(functools.partial(mouseselectwindow, self.bindcropwindowcallback))
         self.grabwindowsignal.connect(self.grabwindow)
         self.quitf_signal.connect(self.close)
-        self.fullsgame_signal.connect(self._fullsgame)
-        # self.showtask=Queue()
-        # self.showtaskthread=threading.Thread(target=self.showtaskthreadfun).start()
-        self.clear_text_sign.connect(self.clearText)
+        self.fullsgame_signal.connect(self._fullsgame) 
+
         self.object = object  
         
         self.isletgamefullscreened=False
@@ -309,7 +293,7 @@ class QUnFrameWindow(QWidget):
         self.takusanbuttons("MinMaxButton", self.changeshowhideraw,7,"显示/隐藏原文",'showraw') 
         
         self.takusanbuttons("MinMaxButton",lambda: self.object.transhis.showsignal.emit() ,8,"显示/隐藏历史翻译",'history') 
-        self.takusanbuttons("MinMaxButton", self.settin_ui_button_noundict_click  ,8,"专有名词翻译设置",'noundict') 
+        self.takusanbuttons("MinMaxButton",lambda: self.object.settin_ui.button_noundict.click() ,8,"专有名词翻译设置",'noundict') 
         self.takusanbuttons("MinMaxButton",self.langdu,9,"朗读",'langdu') 
         self.takusanbuttons("MinMaxButton",self.changemousetransparentstate,10,"鼠标穿透窗口",'mousetransbutton') 
          
@@ -342,11 +326,8 @@ class QUnFrameWindow(QWidget):
 
         globalconfig['position'][0]=min(max(globalconfig['position'][0],0),d.width()-globalconfig['width'])
         globalconfig['position'][1]=min(max(globalconfig['position'][1],0),d.height()-200)
-        if globalconfig['fixedheight']:
-            self.setGeometry( globalconfig['position'][0],globalconfig['position'][1],int(globalconfig['width'] ), int(globalconfig['height'] )) 
-        else:
-            self.setGeometry( globalconfig['position'][0],globalconfig['position'][1],int(globalconfig['width'] ), 200) 
-         
+        
+        self.setGeometry( globalconfig['position'][0],globalconfig['position'][1],int(globalconfig['width'] ),globalconfig['fixedheight']*int(globalconfig['height'] ) + (not globalconfig['fixedheight'])*200) 
 
         self.tray = QSystemTrayIcon()  
         self.tray.setIcon(icon) 
@@ -369,38 +350,16 @@ class QUnFrameWindow(QWidget):
         # 将菜单栏加入到右键按钮中
         self.tray.setContextMenu(self.trayMenu) 
         self.tray.show()
-        self.font = QFont() 
-        self.font.setFamily(globalconfig['fonttype'])
-        self.font.setPointSize(globalconfig['fontsize']) 
+         
         self.translate_text =  Textbrowser(self) 
-        self.translate_text.setText(_TR('欢迎使用')) 
-        self.translate_text.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-        self.translate_text.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-        self.translate_text.setFont(self.font)
-        self.set_color_transparency()
+        self.translate_text.clear_and_setfont()
+        self.translate_text.setText(_TR('欢迎使用'))  
+        
         self.translate_text.move(0,30*self.rate) 
         # 翻译框根据内容自适应大小
         self.document = self.translate_text.document()
-        self.document.contentsChanged.connect(self.textAreaChanged) 
-           
-
-        self.masklabel = QLabel(self.translate_text.textbrowser)  
-
-        self.masklabel.setGeometry( 0,0,9999,9999)
-        self.masklabel.setMouseTracking(True)
-        
-        self.masklabelback = QLabel(self.translate_text.textbrowserback)  
-
-        self.masklabelback.setGeometry( 0, 0,9999,9999)
-        self.masklabelback.setMouseTracking(True)
-        self.masklabelback.setStyleSheet("background-color: rgba(0,0,0,0)")
-        
-        
-        self.setselectable()
-    def setselectable(self):
-        self.masklabel.setHidden(globalconfig['selectable'])
-        self.translate_text.toplabel2.setHidden(globalconfig['selectable'] and globalconfig['zitiyangshi']!=3) 
-        self.translate_text.toplabel.setHidden(globalconfig['selectable'] and globalconfig['zitiyangshi']!=3)
+        self.document.contentsChanged.connect(self.textAreaChanged)  
+        self.set_color_transparency()
     def set_color_transparency(self ):
         self.translate_text.setStyleSheet("border-width: 0;\
                                            border-style: outset;\
@@ -450,10 +409,8 @@ class QUnFrameWindow(QWidget):
     def _fullsgame(self): 
         self.isletgamefullscreened=not self.isletgamefullscreened
         self.refreshtoolicon()
-        try:
-            self.fullscreenmanager(self.object.textsource.hwnd,self.isletgamefullscreened)
-        except:
-            print_exc()
+        if self.object.textsource:
+            self.fullscreenmanager(self.object.textsource.hwnd,self.isletgamefullscreened) 
      
     def changemousetransparentstate(self): 
         self.mousetransparent= not self.mousetransparent
@@ -489,15 +446,10 @@ class QUnFrameWindow(QWidget):
         newHeight = self.document.size().height() 
         width = self.width()
         self.resize(width, newHeight + 30*self.rate) 
-     
-    def rangeend(self):
-        try:
-            self.object.screen_shot_ui.immediateendsignal.emit()
-        except:
-            pass
+      
     def quickrange(self): 
         if self.quickrangestatus:
-            self.rangeend()
+            self.object.screen_shot_ui.immediateendsignal.emit()
             # if globalconfig['autorun']==False:
             #     self.startTranslater()
         else:
@@ -527,7 +479,7 @@ class QUnFrameWindow(QWidget):
         if self.object.reader:
             self.object.reader.read(self.original )  
     def startTranslater(self) :
-        if hasattr(self.object,'textsource') and  self.object.textsource :
+        if self.object.textsource :
             threading.Thread(target=self.object.textsource.runonce).start()
          
     def initDrag(self):
@@ -697,8 +649,7 @@ class QUnFrameWindow(QWidget):
     def takusanbuttons(self, objectname,clickfunc,adjast=None,tips=None,save=None,belong=None): 
          
         button=QTitleButton(self) 
-        if tips:
-            
+        if tips: 
             button.setToolTip(_TR(tips) )
         button.setIconSize(QSize(int(20*self.rate),
                                  int(20*self.rate)))
@@ -717,17 +668,9 @@ class QUnFrameWindow(QWidget):
         self.buttons.append(button) 
         
         if save=='move':
-            button.lower()
-             
-            
-    def customSetGeometry(self, object, x, y, w, h):
-    
-        object.setGeometry(QRect(int(x * self.rate),
-                                 int(y * self.rate), int(w * self.rate),
-                                 int(h * self.rate)))
+            button.lower() 
      
-    def closeEvent(self, a0 ) -> None:
-        import json  
+    def closeEvent(self, a0 ) -> None: 
         self.tray.hide()
         self.tray = None  
         self.hide()
@@ -735,15 +678,12 @@ class QUnFrameWindow(QWidget):
         
         globalconfig['width']=self.width() 
         globalconfig['height']=self.height() 
-        saveallconfig()
-         
+        saveallconfig() 
          
         if self.object.textsource:
             self.object.textsource.end()
-          
-        #sys.exit()
-        if self.object.settin_ui.needupdate and globalconfig['autoupdate']:
-            #os.system('explorer '+os.path.dirname(os.path.abspath(self.object.settin_ui.updatefile)))
+           
+        if self.object.settin_ui.needupdate and globalconfig['autoupdate']: 
             update()
         endsubprocs()
         os._exit(0) 

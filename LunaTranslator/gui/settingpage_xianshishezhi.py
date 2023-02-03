@@ -44,7 +44,7 @@ def setTabThree(self) :
          
         def __changeselectmode(x):
                 globalconfig.__setitem__('selectable',x) 
-                self.object.translation_ui.setselectable() 
+                self.object.translation_ui.translate_text.setselectable() 
         def _settoolbariconcolor( ):
                 self.ChangeTranslateColor("buttoncolor", self.buttoncolorbutton)
                 self.object.translation_ui.refreshtooliconsignal.emit()
