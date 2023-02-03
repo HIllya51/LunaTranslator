@@ -49,16 +49,13 @@ savehook_new_list= _savehook[0]
 savehook_new_data= _savehook[1]
 
 def sycnsavehook():
-    try:
-        savehook_new_data.update(savehook_new_2)
+    try: 
         for _ in savehook_new_0:
             if _ not in savehook_new_list:
-                savehook_new_list.append(_)
-        for _ in savehook_new_data:
-            if _ in savehook_new_0:
-                savehook_new_data[_]['hook']=savehook_new_0[_]  
-            else:
-                savehook_new_data[_]['hook']=[]
+                savehook_new_list.append(_) 
+                savehook_new_data[_]['hook']=savehook_new_0[_]   
+                savehook_new_data[_]['leuse']=savehook_new_2['leuse']
+                savehook_new_data[_]['title']=savehook_new_2['title']
         os.remove('./userconfig/savehook_new.json')
         os.remove('./userconfig/savehook_new3.json')
     except:
