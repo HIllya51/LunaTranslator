@@ -325,15 +325,8 @@ class QUnFrameWindow(QWidget):
         self.takusanbuttons("MinMaxButton",self.showhide,5,"显示/隐藏范围框",None,["ocr"])
          
         self.takusanbuttons("MinMaxButton",self.bindcropwindow_signal.emit,5,"绑定截图窗口，避免遮挡（部分软件不支持）（点击自己取消）",None,["ocr"])
-         
-        def _moveresizegame(self):
-             
-            try:  
-                    hwnd= self.object.textsource.hwnd 
-                    moveresizegame(self,hwnd)
-            except:
-                    print_exc()
-        self.takusanbuttons("MinMaxButton",lambda :_moveresizegame(self),5,"调整游戏窗口(需要绑定ocr窗口，或选择hook进程)",'resize' ,["textractor","ocr"]) 
+          
+        self.takusanbuttons("MinMaxButton",lambda :moveresizegame(self,self.object.textsource.hwnd),5,"调整游戏窗口(需要绑定ocr窗口，或选择hook进程)",'resize' ,["textractor","ocr"]) 
   
         self.takusanbuttons("MinMaxButton",self._fullsgame,5,"全屏/恢复游戏窗口(需要绑定ocr窗口，或选择hook进程)" ,"fullscreen",["textractor","ocr"]) 
         
