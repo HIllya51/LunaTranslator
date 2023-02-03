@@ -11,11 +11,9 @@ from utils.config import globalconfig ,_TR,_TRL
 from utils.utils import selectdebugfile
 import socket
 from gui.inputdialog import autoinitdialog
-def fanyiselect(self, who,checked ):
-            if checked :  
-                self.object.prepare(who)  
+def fanyiselect(self, who,checked ): 
             globalconfig['fanyi'][who]['use']=checked 
-            
+            self.object.prepare(who)
 def initsome11(self,l,label,grids): 
     grids.append(
         [(label,4)]

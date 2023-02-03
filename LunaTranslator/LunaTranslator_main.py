@@ -263,22 +263,18 @@ class MAINUI(QObject) :
             skip=True  
         if (set(_paste_str) -set('「…」、。？！―'))==set():
             skip=True 
-             
-        for engine in self.translators:
-            #print(engine)
-            self.translators[engine].gettask((_paste_str,paste_str_solve,skip)) 
-        
+              
         try:
-            if skip==False :#and globalconfig['transkiroku']  and 'sqlwrite2' in dir(self.textsource):
-                _paste_str=_paste_str.replace('"','""')   
-                # ret=self.textsource.sqlwrite.execute(f'SELECT * FROM artificialtrans WHERE source = "{paste_str}"').fetchone()
-                # if ret is  None:                     
-                #     self.textsource.sqlwrite.execute(f'INSERT INTO artificialtrans VALUES(NULL,"{paste_str}","","");')
+            if skip==False : 
+                _paste_str=_paste_str.replace('"','""')    
                 ret=self.textsource.sqlwrite2.execute(f'SELECT * FROM artificialtrans WHERE source = "{_paste_str}"').fetchone()
                 if ret is  None:                     
                     self.textsource.sqlwrite2.execute(f'INSERT INTO artificialtrans VALUES(NULL,"{_paste_str}","{json.dumps({})}");')
         except:
             print_exc()
+        
+        for engine in self.translators: 
+            self.translators[engine].gettask((_paste_str,paste_str_solve,skip)) 
          
     @threader
     def startreader(self):
@@ -327,38 +323,48 @@ class MAINUI(QObject) :
             return 
         self.hira_=hira()  
     
-
+    
     @threader
     def prepare(self,now=None):   
-        if now:
-            threading.Thread(target=self.fanyiloader,args=(now,)).start()
-        else:
-            for source in globalconfig['fanyi']: 
-                if globalconfig['fanyi'][source]['use']:
-                    threading.Thread(target=self.fanyiloader,args=(source,)).start()
-    @threader
-    def startxiaoxueguan(self,type_=None):
-        if type_:
-            if globalconfig['cishu'][type_]['use']:
-                threading.Thread(target=self.cishuloader,args=(type_,)).start()
-            else:
-                if type_ in self.cishus:
-                    _=self.cishus.pop(type_)
-                    del _
-        else:
-            for source in globalconfig['cishu']: 
-                if globalconfig['cishu'][source]['use']:
-                    threading.Thread(target=self.cishuloader,args=(source,)).start()
+        def initx(classname):
+            aclass=importlib.import_module('translator.'+classname).TS 
+            _=aclass(classname)  
+            _.show=partial(self._maybeyrengong,classname)
+            return _
+        self.commonloader('fanyi',self.translators,initx,now)
          
-    def cishuloader(self,type_):
+    def commonloader(self,fanyiorcishu,dictobject,initmethod,_type=None):
+        if _type:
+            self.commonloader_warp(fanyiorcishu,dictobject,initmethod,_type)
+        else:
+            for key in globalconfig[fanyiorcishu]:
+                print(key)
+                self.commonloader_warp(fanyiorcishu,dictobject,initmethod,key)
+    @threader
+    def commonloader_warp(self,fanyiorcishu,dictobject,initmethod,_type):
+        try:
+            if _type in dictobject:
+                _=dictobject.pop(_type)
+                del _
+            if globalconfig[fanyiorcishu][_type]['use']==False:
+                return
+            item=initmethod(_type)
+            if item:
+                dictobject[_type]=item
+        except:
+            print_exc()
+
+    @threader
+    def startxiaoxueguan(self,type_=None): 
+
+        self.commonloader('cishu',self.cishus,self.cishuinitmethod,type_) 
+    def cishuinitmethod(self,type_):
                 try:
                     aclass=importlib.import_module('cishu.'+type_)
                     aclass=getattr(aclass,type_)
                 except:
                     print_exc()
-                    return
-                
-                #_=aclass()
+                    return 
                 class cishuwrapper:
                     def __init__(self,_type) -> None:
                         self._=_type()
@@ -382,7 +388,7 @@ class MAINUI(QObject) :
                              
                             self.callback(res)
                 _=cishuwrapper(aclass)
-                self.cishus[type_]=_ 
+                return _
     def _maybeyrengong(self,classname,contentraw,_):
         
         classname,res,mp=_
@@ -427,15 +433,7 @@ class MAINUI(QObject) :
                     self.textsource.sqlwrite2.execute(f'UPDATE artificialtrans SET machineTrans = "{ret}" WHERE source = "{contentraw}"')
             except:
                 print_exc() 
-    def fanyiloader(self,classname):
-                    try:
-                        aclass=importlib.import_module('translator.'+classname).TS
-                    except:
-                        return 
-                    _=aclass(classname)
-                    _.object=self
-                    _.show=partial(self._maybeyrengong,classname) 
-                    self.translators[classname]=_ 
+    
       
 
     def onwindowloadautohook(self):

@@ -17,35 +17,23 @@ class TS(basetrans):
             _context=_.find('context').text
             jsxml[_text]=_context
         return jsxml
-    
-    def checkmd5changedordirchanged(self,p):
-        if self.path2!=p or self.md5 !=self.object.textsource.md5:
-            self.path2=p
-            self.md5=self.object.textsource.md5
-            self.json2=self.loadxml(os.path.join(self.path2,self.md5+'.xml'))
-
+     
     def inittranslator(self):
         self.path=''
         self.md5=''
         self.path2='' 
-        self.checkstates(self.config) 
+        self.checkstates( ) 
     
-    def checkstates(self,js):
+    def checkstates(self ):
         self.jsons=[]
         try:
             self.checkfilechanged(self.config['args']['xml文件'] )
             self.jsons.append(self.json)
         except:
-            pass
-        try:
-
-            self.checkmd5changedordirchanged(self,self.config['args']['xml目录'] )
-            self.jsons.append(self.json2)
-        except:
-            pass
+            pass 
 
     def translate(self,content):  
-        self.checkstates(self.config)
+        self.checkstates( )
         
         if globalconfig['premtsimiuse']:
             mindis=9999999

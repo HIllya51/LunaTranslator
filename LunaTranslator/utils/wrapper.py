@@ -46,8 +46,7 @@ def retryer(**kw):
     return wrapper
 def threader(func):
     def _wrapper(*args,**kwargs): 
-        t=Thread(target=func,args=args,kwargs=kwargs)
-        t.setDaemon(True)
+        t=Thread(target=func,args=args,kwargs=kwargs) 
         t.start() 
         
     return _wrapper 

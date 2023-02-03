@@ -41,7 +41,7 @@ class basetrans:
             return translatorsetting[self.typename]
         except:
             return {}
-    def __init__(self,typename) : 
+    def __init__(self,typename ) :  
         self.typename=typename
         self.queue=Queue() 
         try: 
@@ -50,20 +50,16 @@ class basetrans:
             print_exc()
         self.lastrequeststime=0
         self._cache={}
-        self._MAXCACHE = 512
-        self.t=Thread(target=self.fythread) 
-        self.t.setDaemon(True)
-        self.t.start()
-        
+        self._MAXCACHE = 512 
         self.newline=None
+        Thread(target=self.fythread).start() 
     def gettask(self,content):
-        self.queue.put((content))
-     
+        self.queue.put((content)) 
     def inittranslator(self):
         pass
     def translate(self,content):
         pass
-      
+    
     def cached_translate(self,contentsolved):
         langkey=(self.srclang,self.tgtlang)
         if langkey not in self._cache:
@@ -96,8 +92,7 @@ class basetrans:
                 if self.queue.empty():
                     break
             
-            if globalconfig['fanyi'][self.typename]['use']==False:
-                 
+            if globalconfig['fanyi'][self.typename]['use']==False: 
                 break
             if skip:
                 continue
