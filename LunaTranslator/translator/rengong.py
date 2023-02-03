@@ -1,10 +1,8 @@
- 
-import requests 
+  
 from translator.basetranslator import basetrans
-from utils.config import translatorsetting ,globalconfig
+from utils.config import globalconfig
 import os
-import json
-import sqlite3
+import json 
 import Levenshtein
 class TS(basetrans): 
     def checkfilechanged(self,p):
@@ -14,12 +12,10 @@ class TS(basetrans):
                     self.json=json.load(f)
                 self.path=p
     def inittranslator(self):
-        self.path=''
-        js=translatorsetting[self.typename]
-        self.checkfilechanged(js['args']['json文件'] )
-    def translate(self,content): 
-        js=translatorsetting[self.typename]
-        self.checkfilechanged(js['args']['json文件'] )
+        self.path='' 
+        self.checkfilechanged(self.config['args']['json文件'] )
+    def translate(self,content):  
+        self.checkfilechanged(self.config['args']['json文件'] )
        
         js=self.json
         if globalconfig['premtsimiuse']:
@@ -30,20 +26,17 @@ class TS(basetrans):
                 if dis<mindis:
                     mindis=dis
                     if mindis<globalconfig['premtsimi']: 
-                        if js[jc]['userTrans'] and js[jc]['userTrans']!='':
-                            savet=js[jc]['userTrans']
+                        if self.config[jc]['userTrans'] and self.config[jc]['userTrans']!='':
+                            savet=self.config[jc]['userTrans']
                         
-                        elif js[jc]['machineTrans'] and js[jc]['machineTrans']!='':
-                            savet= js[jc]['machineTrans']
+                        elif self.config[jc]['machineTrans'] and self.config[jc]['machineTrans']!='':
+                            savet= self.config[jc]['machineTrans']
             return savet
         else:
         
-            if js[content]['userTrans'] and js[content]['userTrans']!='':
-                return js[content]['userTrans']
+            if self.config[content]['userTrans'] and self.config[content]['userTrans']!='':
+                return self.config[content]['userTrans']
             
-            elif js[content]['machineTrans'] and js[content]['machineTrans']!='':
-                return js[content]['machineTrans']
-                
-if __name__=='__main__':
-    a=BINGFY()
-    a.gettask('はーい、おやすみなさい')
+            elif self.config[content]['machineTrans'] and self.config[content]['machineTrans']!='':
+                return self.config[content]['machineTrans']
+                 

@@ -386,7 +386,7 @@ class MAINUI(QObject) :
     def _maybeyrengong(self,classname,contentraw,_):
         
         classname,res,mp=_
-        if classname not in ['rengong','premt','rengong_vnr','rengong_msk']: 
+        if classname not in globalconfig['fanyi_pre']: 
             res=self.solveaftertrans(res,mp)
          
 
@@ -412,7 +412,7 @@ class MAINUI(QObject) :
             self.translation_ui.displayres.emit(classname,res)
          
             
-        if classname not in ['rengong','premt','rengong_vnr','rengong_msk']:
+        if classname not in globalconfig['fanyi_pre']:
              
             res=res.replace('"','""')   
             contentraw=contentraw.replace('"','""')    
@@ -431,9 +431,8 @@ class MAINUI(QObject) :
                     try:
                         aclass=importlib.import_module('translator.'+classname).TS
                     except:
-                        return
-                    aclass.settypename(classname)
-                    _=aclass()
+                        return 
+                    _=aclass(classname)
                     _.object=self
                     _.show=partial(self._maybeyrengong,classname) 
                     self.translators[classname]=_ 

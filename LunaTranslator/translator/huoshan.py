@@ -1,13 +1,8 @@
- 
-from traceback import print_exc
-import requests
-from urllib.parse import quote
-import re
+  
+import requests  
 
-from utils.config import globalconfig
-import json  
-from translator.basetranslator import basetrans
-import time
+from utils.config import globalconfig 
+from translator.basetranslator import basetrans 
 class TS(basetrans):
     
     def translate(self,content): 

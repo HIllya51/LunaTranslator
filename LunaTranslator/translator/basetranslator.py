@@ -1,6 +1,7 @@
 
-from queue import Queue 
-from utils.config import globalconfig  
+from queue import Queue  
+
+from utils.config import globalconfig,translatorsetting
 from threading import Thread
 import os,time
 from traceback import print_exc
@@ -33,11 +34,15 @@ class basetrans:
                 return l
              
         except:
-            return ''
-    @classmethod
-    def settypename(self,typename):
+            return '' 
+    @property
+    def config(self):
+        try:
+            return translatorsetting[self.typename]
+        except:
+            return {}
+    def __init__(self,typename) : 
         self.typename=typename
-    def __init__(self) : 
         self.queue=Queue() 
         try: 
             self.inittranslator() 

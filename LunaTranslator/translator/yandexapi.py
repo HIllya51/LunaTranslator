@@ -1,20 +1,12 @@
-import time
-import hashlib
-from traceback import print_exc 
 import requests
-from translator.basetranslator import basetrans  
-import uuid 
-
-from utils.config import translatorsetting
-import json
+from translator.basetranslator import basetrans   
 class TS(basetrans): 
      
-    def translate(self, content):
-        js=translatorsetting[self.typename]
-        if js['args']['key']=="":
+    def translate(self, content): 
+        if self.config['args']['key']=="":
             return 
         else:
-            key = js['args']['key'] 
+            key = self.config['args']['key'] 
         url = 'https://translate.yandex.net/api/v1.5/tr.json/translate'    
     
         params = {

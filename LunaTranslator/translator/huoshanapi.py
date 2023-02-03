@@ -5,10 +5,7 @@ import  requests
 
 from traceback import print_exc 
  
-import requests 
-import os
-
-from utils.config import globalconfig ,translatorsetting
+import requests  
 from translator.basetranslator import basetrans 
 from urllib.parse import urlencode 
 from functools import reduce
@@ -349,15 +346,14 @@ def trans(TextList,k_access_key,k_secret_key,src,tgt):
 class TS(basetrans):  
      
     def translate(self,query): 
-        js=translatorsetting[self.typename]
-        if js['args']['Access Key ID']=="":
+        if self.config['args']['Access Key ID']=="":
             return 
         else:
-            keyid = js['args']['Access Key ID']  
-            acckey = js['args']['Secret Access Key']   
+            keyid = self.config['args']['Access Key ID']  
+            acckey = self.config['args']['Secret Access Key']   
         res=trans(query,keyid,acckey,self.srclang,self.tgtlang)
-        js['args']['字数统计']=str(int(js['args']['字数统计'])+len(query))
-        js['args']['次数统计']=str(int(js['args']['次数统计'])+1) 
+        self.config['args']['字数统计']=str(int(self.config['args']['字数统计'])+len(query))
+        self.config['args']['次数统计']=str(int(self.config['args']['次数统计'])+1) 
         #print(res['trans_result'][0]['dst'])
         return res
          

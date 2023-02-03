@@ -1,23 +1,16 @@
 
 from utils.subproc import subproc       
-from translator.basetranslator import basetrans
-import platform 
-import ctypes
-import re
-import os
-import json
-from utils.config import globalconfig,translatorsetting
+from translator.basetranslator import basetrans 
+import os 
 import subprocess
 
 class TS(basetrans): 
      
-    def x64(self,content): 
-        
-            js=translatorsetting[self.typename]
-            if js['args']['路径']=="":
+    def x64(self,content):  
+            if self.config['args']['路径']=="":
                 return ''
             else:
-                path = js['args']['路径'] 
+                path = self.config['args']['路径'] 
             path=os.path.join(path,'DreyeMT\\SDK\\bin')
              
             path2=os.path.join(path,'TransCOM.dll')

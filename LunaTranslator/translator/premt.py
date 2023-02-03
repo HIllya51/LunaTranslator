@@ -1,7 +1,6 @@
 from traceback import print_exc
-import requests 
 from translator.basetranslator import basetrans
-from utils.config import globalconfig,translatorsetting
+from utils.config import globalconfig
 import os
 import json
 import sqlite3
@@ -14,11 +13,9 @@ class TS(basetrans):
                     self.path=p
     def inittranslator(self):
         self.path=''
-        js=translatorsetting[self.typename]
-        self.checkfilechanged(js['args']['sqlite文件'])
+        self.checkfilechanged(self.config['args']['sqlite文件'])
     def translate(self,content): 
-        js=translatorsetting[self.typename]
-        self.checkfilechanged(js['args']['sqlite文件'])
+        self.checkfilechanged(self.config['args']['sqlite文件'])
         if globalconfig['premtsimiuse']:
             mindis=9999999
             savet="{}"
