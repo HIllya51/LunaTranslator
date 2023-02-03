@@ -480,7 +480,7 @@ class MAINUI(QObject) :
                                     self.hookselectdialog.changeprocessclearsignal.emit() 
                                     if len(savehook_new_data[name_]['hook'])==0:
                                         self.hookselectdialog.realshowhide.emit(True)
-                                    print("进程found",pid)
+                                    print("进程found",pid,(time.time()))
                                     self.textsource=textractor(self,self.textgetmethod,self.hookselectdialog,pid_real,hwnd,name_,savehook_new_data[name_]['hook'])
                             
                 

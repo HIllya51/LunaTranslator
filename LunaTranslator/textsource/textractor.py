@@ -26,7 +26,9 @@ class textractor(basetext  ):
         self.forward=[]
         self.selectinghook=None
         self.selectedhook=[]
+        self.selectedhookidx=[]
         self.strictmatchedhook=[]
+        self.strictmatchidx=[]
         self.textgetmethod=textgetmethod
         self.typename='textractor'
         self.ending=False 
@@ -129,8 +131,7 @@ class textractor(basetext  ):
         #stdout = bytes(data).decode("utf16",errors='ignore') 
         #print(stdout)
         #print(stdout)
-        reres=[]
-        
+        reres=[] 
         while True:
             ss=self.re.search(stdout)
             if ss is None:
@@ -143,7 +144,7 @@ class textractor(basetext  ):
         #reres=self.re.findall(stdout) #re.findall('\[([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):(.*):(.*@.*)\] (.*)\n',stdout)
         newline={} 
         
-        self.lock.acquire()
+        self.lock.acquire() 
         for ares in reres:
             
             thread_handle,thread_tp_processId, thread_tp_addr, thread_tp_ctx, thread_tp_ctx2, thread_name,HookCode,output =ares
@@ -164,18 +165,33 @@ class textractor(basetext  ):
                  
                 if self.autostarting: 
                     
-                    for autostarthookcode in self.autostarthookcode:  
+                    for _i,autostarthookcode in enumerate(self.autostarthookcode):  
+                        if _i in self.strictmatchidx:
+                            continue
                         if self.strictmatch(thread_tp_ctx,thread_tp_ctx2,HookCode,autostarthookcode ): 
                             self.selectedhook+=[key]
                             self.strictmatchedhook+=[key]
+                            self.strictmatchidx.append(_i)
+                            self.selectedhookidx.append(_i)
                             self.selectinghook=key
                             self.matched_hook_num+=1 
+                            __=self.strictmatchedhook.copy()
+                            self.strictmatchedhook.sort(key=lambda x:self.strictmatchidx[__.index(x)])
+                            self.strictmatchidx.sort()
+                            __=self.selectedhook.copy()
+                            self.selectedhook.sort(key=lambda x:self.selectedhookidx[__.index(x)])
+                            self.selectedhookidx.sort()
                         elif HookCode==autostarthookcode[-1] and len(self.selectedhook)!=len(self.autostarthookcode): 
+                            
                             self.selectedhook+=[key]
-                            self.selectinghook=key 
+                            self.selectedhookidx.append(_i)
+                            self.selectinghook=key   
+                            __=self.selectedhook.copy()
+                            self.selectedhook.sort(key=lambda x:self.selectedhookidx[__.index(x)])
+                            self.selectedhookidx.sort()
                     if len(self.autostarthookcode)==self.matched_hook_num:
                         self.autostarting=False
-                        self.selectedhook=self.strictmatchedhook
+                        self.selectedhook=self.strictmatchedhook 
                 self.hookdatacollecter[key]=[] 
                 self.hookselectdialog.addnewhooksignal.emit(key  ) 
             
@@ -228,7 +244,7 @@ class textractor(basetext  ):
             #self.runonce_line=real
             self.newline.put(newline) 
             self.runonce_line=newline
-        self.lock.release()
+        self.lock.release() 
     def ignoretext(self):
         while self.newline.empty()==False:
             self.newline.get() 
