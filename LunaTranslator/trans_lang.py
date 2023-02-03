@@ -28,10 +28,8 @@ if __name__=='__main__':
         with open(f'./files/lang/{kk}.json','r',encoding='utf8')  as ff:
             
             jsen=json.loads(ff.read())
-        
-        TS1.settypename('baiduapi')
-
-        a=TS1()
+         
+        a=TS1('baiduapi')
         a.tgtlang=xxx[kk] 
         for k in js:
             

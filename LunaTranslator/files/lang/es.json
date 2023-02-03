@@ -511,5 +511,12 @@
     "Unicode范围": "Alcance Unicode",
     "Magpie全屏时仍截取原窗口": "Magpie todavía intercepta la ventana original en pantalla completa",
     "繁简转换": "Conversión complicada y simple",
-    "自定义翻译": "Traducción personalizada"
+    "自定义翻译": "Traducción personalizada",
+    "人工翻译_VNR设置": "Traducción manual Configuración vnr",
+    "xml文件": "Archivos XML",
+    "xml目录": "Catálogo XML",
+    "说明": "Explicación",
+    "人工翻译_Misaka设置": "Traducción manual Configuración de Misaka",
+    "txt文件": "Archivo txt",
+    "分析图像更新+周期执行": "Actualización de la imagen de análisis + Ejecución del ciclo"
 }

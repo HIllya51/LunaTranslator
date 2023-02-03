@@ -44,7 +44,7 @@ def setTab6(self) :
             [(("Magpie全屏时仍截取原窗口"),12),self.getsimpleswitch(globalconfig ,'ocrmagpiekeep')],
             [''],
             
-            [('OCR自动化方法',8),'',(self.getsimplecombobox(_TRL(['分析图像更新','周期执行']),globalconfig,'ocr_auto_method'),8)], 
+            [('OCR自动化方法',8),'',(self.getsimplecombobox(_TRL(['分析图像更新','周期执行','分析图像更新+周期执行']),globalconfig,'ocr_auto_method'),8)], 
             [(("执行周期(s)"),12),(self.getspinbox(0.1,100,globalconfig,'ocr_interval',double=True,step=0.1  ),2)],  
             [(("图像稳定性阈值"),12),(self.getspinbox(0.8,1,globalconfig,'ocr_stable_sim'  ,double=True,step=0.01 ,dec=3),2),], 
             [(("图像一致性阈值"),12),(self.getspinbox(0.8,1,globalconfig,'ocr_diff_sim'  ,double=True,step=0.01 ,dec=3),2),], 

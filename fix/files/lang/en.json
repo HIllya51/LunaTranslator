@@ -511,5 +511,12 @@
     "Unicode范围": "Unicode range",
     "Magpie全屏时仍截取原窗口": "The original window is still captured when Magpie is full screen",
     "繁简转换": "Simplification",
-    "自定义翻译": "Custom translation"
+    "自定义翻译": "Custom translation",
+    "人工翻译_VNR设置": "Manual translation_ VNR setting",
+    "xml文件": "Xml file",
+    "xml目录": "Xml directory",
+    "说明": "explain",
+    "人工翻译_Misaka设置": "Manual translation_ Misaka Settings",
+    "txt文件": "Txt file",
+    "分析图像更新+周期执行": "Analysis image update+periodic execution"
 }

@@ -90,12 +90,9 @@ class ocrtext(basetext):
                 return None
             imgr=self.imageCut(self.object.rect[0][0],self.object.rect[0][1],self.object.rect[1][0],self.object.rect[1][1])
             
-            if globalconfig['ocr_auto_method'] ==1:
-                if time.time()-self.lastocrtime>globalconfig['ocr_interval']:
-                    pass
-                else:
-                    return None
-            elif globalconfig['ocr_auto_method'] ==0: 
+            ok=True
+            
+            if globalconfig['ocr_auto_method'] in [0,2]: 
                 imgr1=qimge2np(imgr)
                 h,w,c=imgr1.shape 
                 if self.savelastimg is not None and  (imgr1.shape==self.savelastimg.shape) : 
@@ -112,19 +109,27 @@ class ocrtext(basetext):
                     else:
                         image_score2=0 
                     if image_score2>globalconfig['ocr_diff_sim']:
-                        return None
+                        ok=False
                     else: 
                         self.savelastrecimg=imgr1
                 else:
-                    return  None 
-            text=self.ocrtest(imgr) 
+                    ok=False
+            if globalconfig['ocr_auto_method'] in [1,2]:
+                if time.time()-self.lastocrtime>globalconfig['ocr_interval']:
+                    ok=True
+                else:
+                    ok=False
+            if ok==False:
+                return None
+            text=self.ocrtest(imgr)  
+            self.lastocrtime=time.time()
+            self.savelasttext=text
             if self.savelasttext is not None:
                 sim=getEqualRate(self.savelasttext,text)
                 #print('text',sim)
                 if sim>0.9: 
                     return  None
-            self.lastocrtime=time.time()
-            self.savelasttext=text
+            
             
             return (text)
             
