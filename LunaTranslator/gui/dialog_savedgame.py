@@ -37,8 +37,8 @@ class dialog_savedgame(QDialog):
                         res=res.replace('/','\\')
                         savehook_new[res]=savehook_new[item.savetext]
                         savehook_new.pop(item.savetext) 
-                        savehook_new2[res]=savehook_new2[item.savetext]
-                        savehook_new2.pop(item.savetext)
+                        savehook_new.move_to_end(res,False) 
+                        savehook_new2[res]=savehook_new2[item.savetext] 
                         item.savetext=res 
                         transparent=QPixmap(100,100)
                         transparent.fill(QColor.fromRgba(0))
@@ -62,9 +62,11 @@ class dialog_savedgame(QDialog):
                 if res!='':
                         row=0#model.rowCount() 
                         res=res.replace('/','\\')
-                        if res in savehook_new:
-     
+                        if res in savehook_new: 
                                 return
+                        savehook_new[res]=[]
+                        savehook_new.move_to_end(res,False) 
+                        savehook_new2[res]={'leuse':True,'title':os.path.basename(res) } 
                         transparent=QPixmap(100,100)
                         transparent.fill(QColor.fromRgba(0))
                         icon=getExeIcon(res)
@@ -80,11 +82,7 @@ class dialog_savedgame(QDialog):
                         # model.setItem(row, 3,QStandardItem(res) ) 
 
                         self.model.insertRow(0,[QStandardItem(''),QStandardItem(icon,''),keyitem,QStandardItem(os.path.basename(res ) )])
-                        savehook_new2[res]={}
-                        savehook_new2[res]['leuse']=True 
-                        savehook_new2[res]['title']=os.path.basename(res ) 
-                        savehook_new[res]=[]
-                        savehook_new.move_to_end(res,False)
+                        
                         self.table.setIndexWidget(self.model.index(row, 0),self.object.getsimpleswitch(savehook_new2[res],'leuse'))
                         
                         _=QPushButton()
@@ -99,17 +97,11 @@ class dialog_savedgame(QDialog):
                 try: 
                     game=self.model.item(self.table.currentIndex().row(),2).savetext
                     if os.path.exists(game):
-                        #subprocess.Popen(model.item(table.currentIndex().row(),1).text()) 
-                        print(game)
-                        if game not in savehook_new2:
-                                savehook_new2[game]={}
-                                savehook_new2[game]['leuse']=True
-                                savehook_new2[game]['title']=os.path.basename(game)
+                        #subprocess.Popen(model.item(table.currentIndex().row(),1).text())  
                         if savehook_new2[game]['leuse'] :
                                 le3264run(game)
                         else:
-                                win32api.ShellExecute(None, "open", game, "", os.path.dirname(game), win32con.SW_SHOW)
-                                 
+                                win32api.ShellExecute(None, "open", game, "", os.path.dirname(game), win32con.SW_SHOW) 
                                  
                         savehook_new.move_to_end(game,False)
                         self.close() 

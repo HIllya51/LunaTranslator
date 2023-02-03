@@ -339,8 +339,7 @@ class hookselect(closeashidewindow):
             savehook_new[self.object.textsource.pname]=self.object.textsource.selectedhook 
             savehook_new.move_to_end(self.object.textsource.pname,False)
             if self.object.textsource.pname not in savehook_new2:
-                savehook_new2[self.object.textsource.pname]={'leuse':True} 
-                savehook_new2[self.object.textsource.pname]['title']=os.path.basename(self.object.textsource.pname) 
+                savehook_new2[self.object.textsource.pname]={'leuse':True,'title':os.path.basename(self.object.textsource.pname) }  
         except:
             print_exc()
         #self.object.settin_ui.show()
