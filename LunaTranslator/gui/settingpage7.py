@@ -31,9 +31,7 @@ def setTab7(self) :
         savelay=[]
         def _openfile():
             if os.path.exists('./LunaTranslator/postprocess/mypost.py'):
-                os.startfile( os.path.abspath('./LunaTranslator/postprocess/mypost.py'))
-            elif os.path.exists('./postprocess/mypost.py'):
-                os.startfile( os.path.abspath('./postprocess/mypost.py'))
+                os.startfile( os.path.abspath('./LunaTranslator/postprocess/mypost.py')) 
         def changerank( item,up):
 
             ii=sortlist.index(item)
