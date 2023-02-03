@@ -462,6 +462,8 @@
         }
     }, 
 	"normallanguagelist":["auto","zh", "ja", "en","ru","es","ko","fr","cht"],
+	"fanyi_offline":["jb7","dreye","kingsoft","hanshant"],
+	"fanyi_pre":["rengong","premt","rengong_vnr","rengong_msk"],
     "fanyi": {
         "baidu": {
             "use": true,

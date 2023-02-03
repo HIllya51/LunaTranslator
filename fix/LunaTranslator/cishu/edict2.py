@@ -1,7 +1,7 @@
 from utils.config import globalconfig
 import sqlite3,os
 import Levenshtein,re
-from utils.argsort import argsort
+from utils.utils import argsort
 from traceback import print_exc
 class edict2():
     def __init__(self):
