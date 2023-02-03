@@ -2,7 +2,7 @@ import functools
 from PyQt5.QtCore import Qt 
 from PyQt5.QtGui import  QFont
 
-from PyQt5.QtWidgets import  QWidget,QLabel ,QSlider, QFontComboBox  ,QGridLayout,QLineEdit,QPushButton
+from PyQt5.QtWidgets import  QWidget,QLabel ,QSlider, QFontComboBox  
 import json,os
  
 from gui.inputdialog import multicolorset
@@ -10,10 +10,9 @@ from utils.config import globalconfig ,_TR,_TRL
 
 from gui.inputdialog import autoinitdialog,getsomepath1
 def fontbigsmallfunction(self,t):
-        self.fontSize_spinBox.setValue(self.fontSize_spinBox.value()+0.1*t)
+        self.fontSize_spinBox.setValue(self.fontSize_spinBox.value()+0.5*t)
  
-def __changeuibuttonstate(self,x): 
-                globalconfig.__setitem__('isshowrawtext',x)
+def __changeuibuttonstate(self,x):  
                 self.object.translation_ui.refreshtoolicon()
                 self.show_hira_switch .setEnabled(x)
                 self.showatmiddleswitch .setEnabled(x) 
@@ -41,16 +40,11 @@ def setTabThree(self) :
         self.sfont_comboBox.activated[str].connect(callback)  
         self.scomboBox_font = QFont(globalconfig['settingfonttype'])
         self.sfont_comboBox.setCurrentFont(self.scomboBox_font) 
-         
-        def __changeselectmode(x):
-                globalconfig.__setitem__('selectable',x) 
-                self.object.translation_ui.translate_text.setselectable() 
+          
         def _settoolbariconcolor( ):
                 self.ChangeTranslateColor("buttoncolor", self.buttoncolorbutton)
                 self.object.translation_ui.refreshtooliconsignal.emit()
-        def _usexxxbutton(name,x):
-                globalconfig['buttonuse'].__setitem__(name,x)
-                self.object.translation_ui.showhidetoolbuttons() 
+         
         try:
                 with open(os.path.join(globalconfig['magpiepath'],'ScaleModels.json'),'r') as ff:
                         _magpiemethod=json.load(ff)
@@ -91,14 +85,14 @@ def setTabThree(self) :
                 [''],
                 [("显示翻译器名称",4),(self.getsimpleswitch(globalconfig  ,'showfanyisource'),1)],
                 [''],
-                [('显示显示原文按钮',4),self.getsimpleswitch(globalconfig['buttonuse'],'showraw' ,callback=functools.partial(_usexxxbutton,'showraw')),'',('显示复制原文按钮',4),self.getsimpleswitch(globalconfig['buttonuse'],'copy' ,callback=functools.partial(_usexxxbutton,'copy')),'',('显示朗读按钮',4),self.getsimpleswitch(globalconfig['buttonuse'],'langdu' ,callback=functools.partial(_usexxxbutton,'langdu'))],
-                [       ('显示移动按钮',4),self.getsimpleswitch(globalconfig['buttonuse'],'move' ,callback=functools.partial(_usexxxbutton,'move')),'',
-                        ('显示专有名词翻译设置按钮',4),self.getsimpleswitch(globalconfig['buttonuse'],'noundict' ,callback=functools.partial(_usexxxbutton,'noundict')),'',
+                [('显示显示原文按钮',4),self.getsimpleswitch(globalconfig['buttonuse'],'showraw' ,callback=lambda _: self.object.translation_ui.showhidetoolbuttons() ),'',('显示复制原文按钮',4),self.getsimpleswitch(globalconfig['buttonuse'],'copy' ,callback=lambda _:self.object.translation_ui.showhidetoolbuttons()),'',('显示朗读按钮',4),self.getsimpleswitch(globalconfig['buttonuse'],'langdu' ,callback=lambda _:self.object.translation_ui.showhidetoolbuttons())],
+                [       ('显示移动按钮',4),self.getsimpleswitch(globalconfig['buttonuse'],'move' ,callback=lambda _:self.object.translation_ui.showhidetoolbuttons() ),'',
+                        ('显示专有名词翻译设置按钮',4),self.getsimpleswitch(globalconfig['buttonuse'],'noundict' ,callback=lambda _:self.object.translation_ui.showhidetoolbuttons() ),'',
                 ],
-                [('显示翻译历史按钮',4),self.getsimpleswitch(globalconfig['buttonuse'],'history' ,callback=functools.partial(_usexxxbutton,'history')),'' ,
-                ('显示编辑按钮',4),self.getsimpleswitch(globalconfig['buttonuse'],'edit' ,callback=functools.partial(_usexxxbutton,'edit')),'' ,
-                ('显示保存的游戏按钮',4),self.getsimpleswitch(globalconfig['buttonuse'],'gamepad' ,callback=functools.partial(_usexxxbutton,'gamepad'))],
-                [('显示调整游戏窗口按钮',4),self.getsimpleswitch(globalconfig['buttonuse'],'resize' ,callback=functools.partial(_usexxxbutton,'resize')),'',('显示全屏游戏窗口按钮',4),self.getsimpleswitch(globalconfig['buttonuse'],'fullscreen' ,callback=functools.partial(_usexxxbutton,'fullscreen')),'',('显示游戏静音按钮',4),self.getsimpleswitch(globalconfig['buttonuse'],'muteprocess' ,callback=functools.partial(_usexxxbutton,'muteprocess'))],
+                [('显示翻译历史按钮',4),self.getsimpleswitch(globalconfig['buttonuse'],'history' ,callback=lambda _:self.object.translation_ui.showhidetoolbuttons() ),'' ,
+                ('显示编辑按钮',4),self.getsimpleswitch(globalconfig['buttonuse'],'edit' ,callback=lambda _:self.object.translation_ui.showhidetoolbuttons() ),'' ,
+                ('显示保存的游戏按钮',4),self.getsimpleswitch(globalconfig['buttonuse'],'gamepad' ,callback=lambda _:self.object.translation_ui.showhidetoolbuttons() )],
+                [('显示调整游戏窗口按钮',4),self.getsimpleswitch(globalconfig['buttonuse'],'resize' ,callback=lambda _:self.object.translation_ui.showhidetoolbuttons() ),'',('显示全屏游戏窗口按钮',4),self.getsimpleswitch(globalconfig['buttonuse'],'fullscreen' ,callback=lambda _:self.object.translation_ui.showhidetoolbuttons()),'',('显示游戏静音按钮',4),self.getsimpleswitch(globalconfig['buttonuse'],'muteprocess' ,callback=lambda _:self.object.translation_ui.showhidetoolbuttons())],
                 [''],
                 [('全屏化方式',4),(self.getsimplecombobox(_TRL(['Magpie','游戏原生全屏', 'SW_SHOWMAXIMIZED']),globalconfig,'fullscreenmethod'),6)],
                 [''],
@@ -113,7 +107,7 @@ def setTabThree(self) :
                 
                 [('固定窗口尺寸',6),self.getsimpleswitch(globalconfig,'fixedheight'),],
                 
-                [('可选取模式(阴影字体下无效)',6),self.getsimpleswitch(globalconfig,'selectable',callback=__changeselectmode)],
+                [('可选取模式(阴影字体下无效)',6),self.getsimpleswitch(globalconfig,'selectable',callback=lambda x:self.object.translation_ui.translate_text.setselectable() )],
                 [('任务栏中显示(重启生效)',6),self.getsimpleswitch(globalconfig,'showintab' ),],
                 [('翻译窗口顺时针旋转(重启生效)',6),(self.getsimplecombobox(['0','90','180','270'],globalconfig,'rotation'),4)],
                 

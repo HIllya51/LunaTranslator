@@ -1,11 +1,10 @@
  
-from PyQt5.QtCore import Qt,QSize,pyqtSignal ,QRect ,QUrl,QObject
- 
+from PyQt5.QtCore import Qt,QSize,pyqtSignal  
 from PyQt5.QtWidgets import  QColorDialog,QSpinBox,QDoubleSpinBox,QPushButton,QComboBox,QLabel,QScrollArea,QWidget,QGridLayout,QApplication,QTabBar
-from PyQt5.QtGui import QColor ,QFont,QResizeEvent
+from PyQt5.QtGui import QColor  
 from utils.config import globalconfig 
-from PyQt5.QtWidgets import  QTabWidget,QMainWindow 
-import qtawesome   ,win32con,win32gui
+from PyQt5.QtWidgets import  QTabWidget 
+import qtawesome  
 import functools
 from gui.switchbutton import MySwitch 
 from gui.settingpage1 import setTabOne

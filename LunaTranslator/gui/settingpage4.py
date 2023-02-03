@@ -1,6 +1,4 @@
-  
-import functools  
-from PyQt5.QtWidgets import   QComboBox    
+   
 from utils.config import globalconfig  
 from utils.config import globalconfig ,_TR,_TRL 
 from gui.dialog_savedgame import dialog_savedgame
