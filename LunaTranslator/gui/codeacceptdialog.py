@@ -9,25 +9,12 @@ from utils.chaos import checkencoding
 from utils.config import globalconfig ,_TR,_TRL
 
 from utils.wrapper import Singleton
+
+nowsuppertcodes=_TRL(['日语(SHIFT-JIS)','简体中文(GBK)','繁体中文(BIG5)','韩语(EUC-KR)','英语(ASCII)' ,'其他'])
+nowsuppertcodespy=['SHIFT-JIS','GBK','BIG5','EUC-KR','ASCII' ]
 @Singleton
 class codeacceptdialog(QDialog):
-    def __init__(dialog, object ) -> None:
-        super().__init__(object,Qt.WindowCloseButtonHint)
-    
-        title=  '接受的编码' 
-        dialog.setWindowTitle(_TR(title))
-        #dialog.setWindowModality(Qt.ApplicationModal)
-        
-        formLayout = QVBoxLayout(dialog)  # 配置layout
-            
-        model=QStandardItemModel(len(globalconfig['accept_encoding']),1 , dialog)
-        nowsuppertcodes=_TRL(['日语(SHIFT-JIS)','简体中文(GBK)','繁体中文(BIG5)','韩语(EUC-KR)','英语(ASCII)' ,'其他'])
-        nowsuppertcodespy=['SHIFT-JIS','GBK','BIG5','EUC-KR','ASCII' ]
-        model.setHorizontalHeaderLabels(_TRL(['接受的编码']))
-        table = QTableView(dialog)
-        table.setModel(model)
-        table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch) 
-        def _setcode_i(combox:QComboBox, itemsaver_,code='',idx=0): 
+    def _setcode_i(self,combox:QComboBox, itemsaver_,code='',idx=0): 
                     itemsaver_.saveidx=idx
                     if idx<len(nowsuppertcodespy):
                             itemsaver_.setText(nowsuppertcodespy[idx])
@@ -37,9 +24,24 @@ class codeacceptdialog(QDialog):
                             combox.setCurrentText(code)
                             combox.setEditable(True) 
                             combox.setEditText(code) 
-        def _setcode_c(combox:QComboBox, itemsaver_,code='' ):  
-                    if combox.currentIndex()==len(nowsuppertcodespy):
-                            itemsaver_.setText(code)
+    def _setcode_c(self,combox:QComboBox, itemsaver_,code='' ):  
+                if combox.currentIndex()==len(nowsuppertcodespy):
+                        itemsaver_.setText(code)
+    def __init__(self, object ) -> None:
+        super().__init__(object,Qt.WindowCloseButtonHint) 
+        title=  '接受的编码' 
+        self.setWindowTitle(_TR(title))
+        #self.setWindowModality(Qt.ApplicationModal)
+        
+        formLayout = QVBoxLayout(self)  # 配置layout
+            
+        self.model=QStandardItemModel(len(globalconfig['accept_encoding']),1 , self)
+        
+        self.model.setHorizontalHeaderLabels(_TRL(['接受的编码']))
+        self.table = QTableView(self)
+        self.table.setModel(self.model)
+        self.table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch) 
+        
         row=0
         for code in  (globalconfig['accept_encoding']):                                   # 2
             
@@ -48,65 +50,30 @@ class codeacceptdialog(QDialog):
             else:
                     idx=len(nowsuppertcodespy)
             itemsaver=QStandardItem('')
-            model.setItem(row,0,itemsaver) 
-            index=model.index(row,0)
+            self.model.setItem(row,0,itemsaver) 
+            index=self.model.index(row,0)
             codecombox=QComboBox() 
             codecombox.addItems((nowsuppertcodes)) 
             codecombox.setCurrentIndex(idx)
-            table.setIndexWidget(index,codecombox)
-            _setcode_i(codecombox,itemsaver,code,idx)
+            self.table.setIndexWidget(index,codecombox)
+            self._setcode_i(codecombox,itemsaver,code,idx)
             
-            codecombox.currentIndexChanged.connect(functools.partial(_setcode_i,codecombox, itemsaver,''))
-            codecombox.currentTextChanged.connect(functools.partial(_setcode_c,codecombox, itemsaver ))
+            codecombox.currentIndexChanged.connect(functools.partial(self._setcode_i,codecombox, itemsaver,''))
+            codecombox.currentTextChanged.connect(functools.partial(self._setcode_c,codecombox, itemsaver ))
 
             row+=1
         
-        button=QPushButton(dialog)
+        button=QPushButton(self)
         button.setText(_TR('添加行'))
-        def clicked1(): 
-            itemsaver=QStandardItem('')
-            model.insertRow(0,[itemsaver]) 
-            codecombox=QComboBox() 
-            codecombox.addItems((nowsuppertcodes)) 
-            _setcode_i(codecombox,itemsaver)
-            codecombox.currentIndexChanged.connect(functools.partial(_setcode_i,codecombox, itemsaver,''))
-            codecombox.currentTextChanged.connect(functools.partial(_setcode_c,codecombox, itemsaver ))
-            index=model.index(0,0) 
-            table.setIndexWidget(index,codecombox)
+        
             
-        button.clicked.connect(clicked1)
-        button2=QPushButton(dialog)
+        button.clicked.connect(self.clicked1)
+        button2=QPushButton(self)
         button2.setText(_TR('删除选中行'))
-        def clicked2():
-            
-            model.removeRow(table.currentIndex().row())
-        button2.clicked.connect(clicked2) 
-
         
-        
-        def clicked3(_): 
-            button.setFocus() 
-            rows=model.rowCount() 
-            ll=[]
-            for row in range(rows):
-                print(row)
-                code=model.item(row,0).text() 
-                idx=model.item(row,0).saveidx
-                print(idx,code)
-                
-                if idx==len(nowsuppertcodespy) :
-                    if code.upper() in nowsuppertcodespy:
-                            code=code.upper()
-                    elif checkencoding(code)==False:
-                            continue
-                else:
-                    code=nowsuppertcodespy[idx]
-                if code in ll:
-                    continue
-                ll.append(code) 
-            globalconfig['accept_encoding']=ll  
-        dialog.closeEvent=(clicked3)
-        formLayout.addWidget(table)
+        button2.clicked.connect(self.clicked2) 
+        self.button=button
+        formLayout.addWidget(self.table)
         formLayout.addWidget(button)
         formLayout.addWidget(button2) 
         formLayout.addWidget(QLabel()) 
@@ -129,6 +96,39 @@ class codeacceptdialog(QDialog):
         _hb.addWidget(liwai) 
         
         formLayout.addLayout(_hb)
-        dialog.resize(QSize(600,500))
-        dialog.show()
-
+        self.resize(QSize(600,500))
+        self.show()
+    def clicked1(self): 
+            itemsaver=QStandardItem('')
+            self.model.insertRow(0,[itemsaver]) 
+            codecombox=QComboBox() 
+            codecombox.addItems((nowsuppertcodes)) 
+            self._setcode_i(codecombox,itemsaver)
+            codecombox.currentIndexChanged.connect(functools.partial(self._setcode_i,codecombox, itemsaver,''))
+            codecombox.currentTextChanged.connect(functools.partial(self._setcode_c,codecombox, itemsaver ))
+            index=self.model.index(0,0) 
+            self.table.setIndexWidget(index,codecombox)
+    def clicked2(self):
+            
+            self.model.removeRow(self.table.currentIndex().row())
+    def closeEvent(self,_): 
+            self.button.setFocus() 
+            rows=self.model.rowCount() 
+            ll=[]
+            for row in range(rows):
+                print(row)
+                code=self.model.item(row,0).text() 
+                idx=self.model.item(row,0).saveidx
+                print(idx,code)
+                
+                if idx==len(nowsuppertcodespy) :
+                    if code.upper() in nowsuppertcodespy:
+                            code=code.upper()
+                    elif checkencoding(code)==False:
+                            continue
+                else:
+                    code=nowsuppertcodespy[idx]
+                if code in ll:
+                    continue
+                ll.append(code) 
+            globalconfig['accept_encoding']=ll  

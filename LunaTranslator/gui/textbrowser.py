@@ -231,18 +231,18 @@ class Textbrowser( ):
                     _.move(tl1)
                     _.setText(block.text()[s:s+l] )
                     _.setFont(self.textbrowser.font())
-                     
-                    shadow2 = QGraphicsDropShadowEffect()
-                    shadow2.setBlurRadius(globalconfig['fontsize'])
-                    shadow2.setOffset(0) 
-                    shadow2.setColor(QColor(color))
-
+                      
                     _.setStyleSheet(f"color:{globalconfig['miaobiancolor']}; background-color:rgba(0,0,0,0)")
-                    _.setGraphicsEffect(shadow2)
+                    _.setGraphicsEffect(self.geteffect(globalconfig['fontsize'],color))
                     _.show()
                 linei+=1
         self.yinyingposline=linei
-          
+    def geteffect(self,fontsize,color):
+        shadow2 = QGraphicsDropShadowEffect()
+        shadow2.setBlurRadius(fontsize)
+        shadow2.setOffset(0) 
+        shadow2.setColor(QColor(color))
+        return shadow2
     def addsearchwordmask(self,x,raw,callback=None ):
         if len(x)==0:
             return
@@ -493,11 +493,8 @@ class Textbrowser( ):
         y+=self.jiaming_y_delta
         if effect:
             if 'savelastfontandcolor' not in dir(label) or label.savelastfontandcolor!=(globalconfig['fontsize'],globalconfig['jiamingcolor']):
-                shadow2 = QGraphicsDropShadowEffect()
-                shadow2.setBlurRadius(globalconfig['fontsize'])
-                shadow2.setOffset(0) 
-                shadow2.setColor(QColor(globalconfig['jiamingcolor'])) 
-                label.setGraphicsEffect(shadow2)
+                
+                label.setGraphicsEffect(self.geteffect(globalconfig['fontsize'],globalconfig['jiamingcolor']) )
                 label.savelastfontandcolor =(globalconfig['fontsize'],globalconfig['jiamingcolor'])
         label.move(x,y)   
         label.setStyleSheet(f"color:{color}; background-color:(0,0,0,0)")
