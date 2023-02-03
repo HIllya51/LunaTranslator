@@ -37,7 +37,7 @@ def setTabThree(self) :
         self.sfont_comboBox = QFontComboBox( ) 
         def callback(x):
                 globalconfig.__setitem__('settingfonttype',x)
-                self.setStyleSheet("font: %spt '"%(11 if globalconfig['languageuse'] in [0,1] else 10)+globalconfig['settingfonttype']+"' ; color: \"#595959\"" )  
+                self.setstylesheet()
         self.sfont_comboBox.activated[str].connect(callback)  
         self.scomboBox_font = QFont(globalconfig['settingfonttype'])
         self.sfont_comboBox.setCurrentFont(self.scomboBox_font) 
@@ -132,21 +132,5 @@ def changeHorizontal(self) :
         globalconfig['transparent'] = self.horizontal_slider.value() 
         self.horizontal_slider_label.setText("{}%".format(globalconfig['transparent']))
         #  
-        self.object.translation_ui.translate_text.setStyleSheet("border-width:0;\
-                                                                 border-style:outset;\
-                                                                 border-top:0px solid #e8f3f9;\
-                                                                 color:white;\
-                                                              \
-                                                                background-color: rgba(%s, %s, %s, %s)"
-                                           %(int(globalconfig['backcolor'][1:3],16),int(globalconfig['backcolor'][3:5],16),int(globalconfig['backcolor'][5:7],16),globalconfig['transparent']/100))
-        self.object.translation_ui._TitleLabel.setStyleSheet("border-width:0;\
-                                                                 border-style:outset;\
-                                                                 border-top:0px solid #e8f3f9;\
-                                                                 color:white;\
-                                                                 font-weight: bold;\
-                                                                background-color: rgba(%s, %s, %s, %s)"
-                                           %(int(globalconfig['backcolor'][1:3],16),int(globalconfig['backcolor'][3:5],16),int(globalconfig['backcolor'][5:7],16),globalconfig['transparent']/200))
-        
-        if self.object.translation_ui.mousetransparent:
-                self.object.translation_ui.mousetransbutton.click()
-        
+        self.object.translation_ui.set_color_transparency()
+         

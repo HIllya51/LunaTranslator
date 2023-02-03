@@ -98,7 +98,7 @@ def setTab7(self) :
         self.yitiaolong("翻译优化",grids,True,savelist,savelay )
 @Singleton
 class noundictconfigdialog1(QDialog):
-    def __init__(dialog,object,configdict,title,label=[  '日文','翻译'],fname='./userconfig/noundictconfig.json',_=None) -> None:
+    def __init__(dialog,object,configdict,title,label=[  '日文','翻译'] ,_=None) -> None:
         super().__init__(object,Qt.WindowCloseButtonHint)
             
         dialog.setWindowTitle(_TR(title))
@@ -141,10 +141,7 @@ class noundictconfigdialog1(QDialog):
                 if model.item(row,0).text()=="":
                     continue
                 newdict[model.item(row,0).text()]=model.item(row,1).text()
-            configdict['dict']=newdict
-            with open(fname,'w',encoding='utf-8') as ff:
-                import json
-                ff.write(json.dumps(configdict,ensure_ascii=False,sort_keys=False, indent=6))
+            configdict['dict']=newdict 
             
         dialog.closeEvent=clicked3
         formLayout.addWidget(table)
@@ -154,7 +151,7 @@ class noundictconfigdialog1(QDialog):
         dialog.show()
 @Singleton
 class noundictconfigdialog(QDialog):
-    def __init__(dialog,object,configdict,title,label=['游戏ID MD5' ,'日文','翻译'],fname='./userconfig/noundictconfig.json',_=None) -> None:
+    def __init__(dialog,object,configdict,title,label=['游戏ID MD5' ,'日文','翻译'] ,_=None) -> None:
         super().__init__(object,Qt.WindowCloseButtonHint)
         
         dialog.setWindowTitle(_TR(title))
@@ -212,11 +209,7 @@ class noundictconfigdialog(QDialog):
                 if model.item(row,1).text()=="":
                     continue
                 newdict[model.item(row,1).text()]=[model.item(row,0).text(),model.item(row,2).text()]
-            configdict['dict']=newdict
-            with open(fname,'w',encoding='utf-8') as ff:
-                import json
-                ff.write(json.dumps(configdict,ensure_ascii=False,sort_keys=False, indent=6))
-            
+            configdict['dict']=newdict  
 
         dialog.closeEvent=clicked3 
         search=QHBoxLayout()
@@ -315,8 +308,7 @@ class postconfigdialog(QDialog):
                     if model.item(row,0).text()=="":
                         continue
                     newdict[(model.item(row,0).text())]=(model.item(row,1).text())
-                configdict[key]=newdict
-                dialog.close()
+                configdict[key]=newdict 
             dialog.closeEvent=(clicked3)
             formLayout.addWidget(table)
             formLayout.addWidget(button)

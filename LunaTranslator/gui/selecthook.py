@@ -1,5 +1,4 @@
-import threading
-from re import search
+import threading 
 from traceback import print_exc
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QWidget,QHBoxLayout,QMainWindow,QFrame,QVBoxLayout,QMessageBox,QPlainTextEdit,QDialogButtonBox,QLineEdit,QPushButton,QTableView,QAbstractItemView,QApplication,QHeaderView,QCheckBox
@@ -10,9 +9,7 @@ from PyQt5.QtCore import Qt,pyqtSignal
 import qtawesome
 import subprocess
 import json
-import os,time
-import re
-import sys ,win32gui
+import os,time 
 from utils.config import globalconfig ,_TR,_TRL
 
 from gui.closeashidewindow import closeashidewindow
@@ -31,8 +28,7 @@ class hookselect(closeashidewindow):
         self.addnewhooksignal.connect(self.addnewhook)
         self.getnewsentencesignal.connect(self.getnewsentence)
         self.update_item_new_line.connect(self.update_item_new_line_function) 
-        self.okoksignal.connect(self.okok) 
-        #self.setWindowFlags(self.windowFlags()&~Qt.WindowMinimizeButtonHint)
+        self.okoksignal.connect(self.okok)  
         self.setWindowTitle(_TR('选择文本，支持按住ctrl进行多项选择（一般选择一条即可）'))
     def update_item_new_line_function(self,hook,output):
         if hook in self.save:
@@ -55,35 +51,15 @@ class hookselect(closeashidewindow):
         self.ttCombomodelmodel.setItem(rown, 1, item)
     def setupUi(self  ):
         
-        self.resize(1000, 600)
-        # d=QApplication.desktop()
-        # self.move ((d.width()-self.width())/2,((d.height()-self.height())/2))
+        self.resize(1000, 600) 
         self.save=[]
         self.centralWidget = QWidget(self) 
         self.setWindowIcon(qtawesome.icon("fa.gear" ))
         self.hboxlayout = QHBoxLayout(self.centralWidget)  
         self.processFrame = QFrame(self.centralWidget)
-        self.processFrame.setEnabled(True) 
-        # self.processLayout = QVBoxLayout(self.processFrame)
-        # self.processLayout.setContentsMargins(0, 0, 0, 0)
-        # self.processLayout.setSpacing(6)
-        # self.processLayout.setObjectName("processLayout")
-        # # self.processCombo = QComboBox(self.processFrame)
-        # # self.processCombo.setEditable(False)
-        # # self.processCombo.setInsertPolicy(QComboBox.InsertAtBottom)
-        # # self.processCombo.setSizeAdjustPolicy(QComboBox.AdjustToContents)
-        # # self.processCombo.setObjectName("processCombo")
-        # self.processLayout.addWidget(self.processCombo)
+        self.processFrame.setEnabled(True)  
         self.hboxlayout.addWidget(self.processFrame)
-        self.vboxlayout = QVBoxLayout()  
-        # self.ttCombo = QComboBox(self.centralWidget)
-        # self.ttCombo.setEditable(False)
-        # self.ttCombo.currentIndexChanged.connect(self.ViewThread)
-        # self.ttCombo.setFont(font)
-        # self.vboxlayout.addWidget(self.ttCombo)
-
- 
-            
+        self.vboxlayout = QVBoxLayout()    
         self.ttCombomodelmodel=QStandardItemModel(self) 
         #self.ttCombomodelmodel.setColumnCount(2)
         self.ttCombomodelmodel.setHorizontalHeaderLabels(_TRL([ 'HOOK','文本']))
@@ -142,8 +118,7 @@ class hookselect(closeashidewindow):
         self.tttable2.setWordWrap(False)  
         self.tttable2.setSelectionBehavior(QAbstractItemView.SelectRows)
         self.tttable2.setSelectionMode(QAbstractItemView.SingleSelection)
-        self.tttable2.setEditTriggers(QAbstractItemView.NoEditTriggers)
-        self.tttable2.hide()
+        self.tttable2.setEditTriggers(QAbstractItemView.NoEditTriggers) 
         self.tttable2.clicked.connect(self.ViewThread2) 
          
         self.vboxlayout.addWidget(self.tttable2)
@@ -162,21 +137,14 @@ class hookselect(closeashidewindow):
         self.checkfilt_notpath.setChecked(True)
         self.checkfilt_notascii.setChecked(True) 
         self.checkfilt_notshiftjis.setChecked(True) 
-        self.checkfilt_dumplicate.setChecked(True)
-        self.checkfilt_notcontrol.hide()
-        self.checkfilt_notpath.hide()
-        self.checkfilt_notascii.hide() 
-        self.checkfilt_notshiftjis.hide() 
-        self.checkfilt_dumplicate.hide()
+        self.checkfilt_dumplicate.setChecked(True) 
         self.searchtextlayout2.addWidget(self.checkfilt_notcontrol)
         self.searchtextlayout2.addWidget(self.checkfilt_notpath)
         self.searchtextlayout2.addWidget(self.checkfilt_notascii)  
         self.searchtextlayout2.addWidget(self.checkfilt_notshiftjis)  
         self.searchtextlayout2.addWidget(self.checkfilt_dumplicate)
         self.searchtextbutton2.clicked.connect(self.searchtextfunc2)
-        self.searchtextlayout2.addWidget(self.searchtextbutton2)
-        self.searchtextbutton2.hide()
-        self.searchtext2.hide()
+        self.searchtextlayout2.addWidget(self.searchtextbutton2) 
         self.textOutput = QPlainTextEdit(self.centralWidget)
          
         self.textOutput.setContextMenuPolicy(Qt.CustomContextMenu)
@@ -186,7 +154,7 @@ class hookselect(closeashidewindow):
         self.hboxlayout.addLayout(self.vboxlayout)
         self.setCentralWidget(self.centralWidget)
   
-
+        self.hidesearchhookbuttons()
         
 
         self.buttonBox=QDialogButtonBox()
@@ -231,8 +199,7 @@ class hookselect(closeashidewindow):
         for index in range(len(self.allres)):   
             _index=len(self.allres)-1-index
             
-            res=self.allres[_index][1]
-            hc=self.allres[_index][0]
+            res=self.allres[_index][1] 
              
             hide=searchtext not in res or self.gethide(res,savedumpt)
             self.tttable2.setRowHidden(_index,hide)  
@@ -272,6 +239,16 @@ class hookselect(closeashidewindow):
             self.object.textsource.inserthook(hookcode)
         else:
             self.getnewsentence(_TR('！未选定进程！'))
+    def hidesearchhookbuttons(self,hide=True):
+         
+        self.tttable2.setHidden(hide)
+        self.searchtextbutton2.setHidden(hide)
+        self.searchtext2.setHidden(hide)
+        self.checkfilt_notcontrol.setHidden(hide)
+        self.checkfilt_notpath.setHidden(hide)
+        self.checkfilt_notascii.setHidden(hide)
+        self.checkfilt_notshiftjis.setHidden(hide) 
+        self.checkfilt_dumplicate.setHidden(hide) 
     def findhook(self): 
         msgBox=QMessageBox(self)
         msgBox.setWindowTitle('警告！')
@@ -291,14 +268,7 @@ class hookselect(closeashidewindow):
                 self.userhookfind.setEnabled(False)
                 self.userhookfind.setText(_TR("正在搜索特殊码，请让游戏显示更多文本"))
                 
-                self.tttable2.hide()
-                self.searchtextbutton2.hide()
-                self.searchtext2.hide()
-                self.checkfilt_notcontrol.hide()
-                self.checkfilt_notpath.hide()
-                self.checkfilt_notascii.hide() 
-                self.checkfilt_notshiftjis.hide() 
-                self.checkfilt_dumplicate.hide()
+                self.hidesearchhookbuttons()
                 self.ttCombomodelmodel2.clear()
                 self.ttCombomodelmodel2.setHorizontalHeaderLabels(_TRL([ 'HOOK','文本']))
                 threading.Thread(target=self.timewaitthread).start()
@@ -317,9 +287,7 @@ class hookselect(closeashidewindow):
         with open('hook.txt','r',encoding='utf8') as ff:
             allres=ff.read().split('\n')
         
-        self.allres=[]
-
-        savedumpt=set()
+        self.allres=[] 
         realrow=0
         for i,line in enumerate( allres):
             try:
@@ -343,15 +311,8 @@ class hookselect(closeashidewindow):
             except:
                 pass 
         self.searchtextfunc2()
-        self.tttable2.show()
-        self.searchtextbutton2.show()
-        self.searchtext2.show() 
-        self.searchtext2.setText('') 
-        self.checkfilt_notcontrol.show()
-        self.checkfilt_notpath.show()
-        self.checkfilt_notascii.show() 
-        self.checkfilt_notshiftjis.show() 
-        self.checkfilt_dumplicate.show()
+        
+        self.hidesearchhookbuttons(False)
         
     def timewaitthread(self):
  
@@ -368,10 +329,8 @@ class hookselect(closeashidewindow):
             time.sleep(1)  
     def accept(self): 
         self.hide()
-        try:
-            if  self.object.textsource is None:
-                return 
-            if 'batchselectinghook' not in dir(self.object.textsource) or  self.object.textsource.batchselectinghook is None:
+        try: 
+            if  self.object.textsource.batchselectinghook is None:
                 return
             self.object.textsource.selectedhook=self.object.textsource.batchselectinghook
 
@@ -380,25 +339,19 @@ class hookselect(closeashidewindow):
             savehook_new[self.object.textsource.pname]=self.object.textsource.selectedhook 
             savehook_new.move_to_end(self.object.textsource.pname,False)
             if self.object.textsource.pname not in savehook_new2:
-                savehook_new2[self.object.textsource.pname]={'leuse':True}
-                try:
-                    title=win32gui.GetWindowText(self.object.textsource.hwnd)
-                except:
-                    title=''
-                savehook_new2[self.object.textsource.pname]['title']=title 
+                savehook_new2[self.object.textsource.pname]={'leuse':True} 
+                savehook_new2[self.object.textsource.pname]['title']=os.path.basename(self.object.textsource.pname) 
         except:
             print_exc()
         #self.object.settin_ui.show()
-    def show(self):
-        super(QMainWindow,self).show()
-        try:
-            for i in range(len(self.save)):
-                #print(self.save[i][-5:],self.object.object.textsource.selectedhook[-5:])
-                if self.save[i] ==self.object.textsource.selectedhook:
-                    self.ttCombo.setCurrentIndex(i)
+    def showEvent(self,e):   
+        try: 
+            for i in range(len(self.save)):  
+                if self.save[i] in self.object.textsource.selectedhook: 
+                    self.tttable.setCurrentIndex(self.ttCombomodelmodel.index(i,0)) 
                     break
         except:
-            pass
+            print_exc()
     def getnewsentence(self,sentence):
         scrollbar = self.textOutput.verticalScrollBar()
         atBottom = scrollbar.value() + 3 > scrollbar.maximum() or scrollbar.value() / scrollbar.maximum() > 0.975 
@@ -411,15 +364,14 @@ class hookselect(closeashidewindow):
         self.userhook.setText(self.allres[self.tttable2.currentIndex().row()][0])
         self.textOutput. setPlainText(self.allres[self.tttable2.currentIndex().row()][1])
          
-    def ViewThread(self, index):   
+    def ViewThread(self, index):    
         self.object.textsource.selectinghook=self.save[self.tttable.currentIndex().row()]
          
         self.textOutput. setPlainText('\n'.join(self.object.textsource.hookdatacollecter[self.save[self.tttable.currentIndex().row()]]))
         self.textOutput. moveCursor(QTextCursor.End)
         self.object.textsource.batchselectinghook=[]
 
-        dedup=[]
-        
+        dedup=[] 
         for m in (self.tttable.selectionModel().selectedIndexes()):
             row=m.row() 
             if row in dedup:

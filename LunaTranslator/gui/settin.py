@@ -34,9 +34,6 @@ class Settin(closeashidewindow) :
     progresssignal=pyqtSignal(str,int)
     clicksourcesignal=pyqtSignal(int) 
     fontbigsmallsignal=pyqtSignal(int)  
-    def showEvent(self, a0   ) -> None:
-         win32gui.SetWindowPos(int(self. winId()), win32con.HWND_TOPMOST, 0, 0, 0, 0,win32con. SWP_NOACTIVATE |win32con. SWP_NOSIZE | win32con.SWP_NOMOVE) 
-         return super().showEvent(a0) 
     def automakegrid(self,grid,lis,save=False,savelist=None): 
         maxl=0
     
@@ -53,10 +50,7 @@ class Settin(closeashidewindow) :
                                 
                                 wid,cols=i
                                 if type(wid)==str  :
-                                    if wid=="":
-                                        wid=QLabel("")
-                                    else:
-                                        wid=QLabel(_TR(wid))
+                                    wid=QLabel(_TR(wid))
                         grid.addWidget(wid,nowr,nowc,1,cols)
                         if save:
                             ll.append(wid)
@@ -145,7 +139,7 @@ class Settin(closeashidewindow) :
         #self.setWindowFlags( Qt.WindowCloseButtonHint)
         self.setWindowTitle(_TR("设置"))
         self.setWindowIcon(qtawesome.icon("fa.gear" )) 
-        self.setStyleSheet("font: %spt '"%(11 if globalconfig['languageuse'] in [0,1] else 10)+(globalconfig['settingfonttype']  )+"' ; color: \"#595959\"" )  
+        self.setstylesheet()
         self.tab_widget = QTabWidget(self)
         self.setCentralWidget(self.tab_widget)
          
@@ -188,7 +182,8 @@ class Settin(closeashidewindow) :
         
         self.usevoice=0
      
-     
+    def setstylesheet(self):
+        self.setStyleSheet("font: %spt '"%(11 if globalconfig['languageuse'] in [0,1] else 10)+(globalconfig['settingfonttype']  )+"' ; color: \"#595959\"" )  
     def yitiaolong(self,title,grid,save=False,savelist=None,savelay=None,fixheight=True):
         lay,t=self. getscrollwidgetlayout(title)
         if fixheight:
@@ -238,18 +233,5 @@ background-color:transparent;
             else:
                 globalconfig['fanyi'][translate_type]['color']=color.name() 
             if translate_type=='backcolor': 
-                self.object.translation_ui.translate_text.setStyleSheet("border-width: 0;\
-                                            border-style: outset;\
-                                            border-top: 0px solid #e8f3f9;\
-                                            color: white;\
-                                             \
-                                            background-color: rgba(%s, %s, %s, %s)"
-                                            %(int(globalconfig['backcolor'][1:3],16),int(globalconfig['backcolor'][3:5],16),int(globalconfig['backcolor'][5:7],16),globalconfig['transparent']/100))
-                self.object.translation_ui._TitleLabel.setStyleSheet("border-width: 0;\
-                                            border-style: outset;\
-                                            border-top: 0px solid #e8f3f9;\
-                                            color: white;\
-                                            font-weight: bold;\
-                                            background-color: rgba(%s, %s, %s, %s)"
-                                            %(int(globalconfig['backcolor'][1:3],16),int(globalconfig['backcolor'][3:5],16),int(globalconfig['backcolor'][5:7],16),globalconfig['transparent']/200))
+                self.object.translation_ui.set_color_transparency()
              

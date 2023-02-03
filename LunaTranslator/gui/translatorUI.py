@@ -384,20 +384,7 @@ class QUnFrameWindow(QWidget):
         self.translate_text.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         self.translate_text.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         self.translate_text.setFont(self.font)
-        self.translate_text.setStyleSheet("border-width: 0;\
-                                           border-style: outset;\
-                                           border-top: 0px solid #e8f3f9;\
-                                           color: white;\
-                                            \
-                                           background-color: rgba(%s, %s, %s, %s)"
-                                           %(int(globalconfig['backcolor'][1:3],16),int(globalconfig['backcolor'][3:5],16),int(globalconfig['backcolor'][5:7],16),globalconfig['transparent']/100))
-        self._TitleLabel.setStyleSheet("border-width: 0;\
-                                           border-style: outset;\
-                                           border-top: 0px solid #e8f3f9;\
-                                           color: white;\
-                                           font-weight: bold;\
-                                           background-color: rgba(%s, %s, %s, %s)"
-                                           %(int(globalconfig['backcolor'][1:3],16),int(globalconfig['backcolor'][3:5],16),int(globalconfig['backcolor'][5:7],16),globalconfig['transparent']/200))
+        self.set_color_transparency()
         self.translate_text.move(0,30*self.rate) 
         # 翻译框根据内容自适应大小
         self.document = self.translate_text.document()
@@ -417,7 +404,21 @@ class QUnFrameWindow(QWidget):
         if globalconfig['selectable']:
             self.masklabel.hide()
 
- 
+    def set_color_transparency(self ):
+        self.translate_text.setStyleSheet("border-width: 0;\
+                                           border-style: outset;\
+                                           border-top: 0px solid #e8f3f9;\
+                                           color: white;\
+                                            \
+                                           background-color: rgba(%s, %s, %s, %s)"
+                                           %(int(globalconfig['backcolor'][1:3],16),int(globalconfig['backcolor'][3:5],16),int(globalconfig['backcolor'][5:7],16),globalconfig['transparent']*(not self.mousetransparent)/100))
+        self._TitleLabel.setStyleSheet("border-width: 0;\
+                                           border-style: outset;\
+                                           border-top: 0px solid #e8f3f9;\
+                                           color: white;\
+                                           font-weight: bold;\
+                                           background-color: rgba(%s, %s, %s, %s)"
+                                           %(int(globalconfig['backcolor'][1:3],16),int(globalconfig['backcolor'][3:5],16),int(globalconfig['backcolor'][5:7],16),globalconfig['transparent']/200))
     def grabwindow(self): 
         
         try:
@@ -458,14 +459,9 @@ class QUnFrameWindow(QWidget):
             print_exc()
      
     def changemousetransparentstate(self): 
-        
-        self.translate_text.setStyleSheet("border-width:0;\
-                                                                border-style:outset;\
-                                                                border-top:0px solid #e8f3f9;\
-                                                                color:white;\
-                                                            background-color: rgba(%s, %s, %s, %s)"
-                                        %(int(globalconfig['backcolor'][1:3],16),int(globalconfig['backcolor'][3:5],16),int(globalconfig['backcolor'][5:7],16),globalconfig['transparent']*self.mousetransparent/100))
         self.mousetransparent= not self.mousetransparent
+        self.set_color_transparency()
+        
         self.refreshtoolicon()
      
     def showhide(self): 
@@ -556,7 +552,7 @@ class QUnFrameWindow(QWidget):
         
         for button in self.buttons:
             button.hide()    
-        self._TitleLabel.setStyleSheet("  background-color: rgba(0,0,0,0)")
+        self._TitleLabel.hide()
     def leaveEvent(self, QEvent) : 
         if globalconfig['locktools']:
             return 
@@ -573,13 +569,7 @@ class QUnFrameWindow(QWidget):
  
         for button in self.buttons[-2:] +self.showbuttons:
             button.show()  
-        self._TitleLabel.setStyleSheet("border-width:0;\
-                                                                 border-style:outset;\
-                                                                 border-top:0px solid #e8f3f9;\
-                                                                 color:white;\
-                                                                 font-weight: bold;\
-                                                                background-color: rgba(%s, %s, %s, %s)"
-                                           %(int(globalconfig['backcolor'][1:3],16),int(globalconfig['backcolor'][3:5],16),int(globalconfig['backcolor'][5:7],16),globalconfig['transparent']/200))
+        self._TitleLabel.show()
     def resizeEvent(self, QResizeEvent):
          
          
