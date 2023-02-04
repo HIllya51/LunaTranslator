@@ -151,11 +151,11 @@ class hookselect(closeashidewindow):
         
         self.tttable2 = QTableView(self)
         self.tttable2 .setModel(self.ttCombomodelmodel2)
-        #self.tttable2 .horizontalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)  
+        #self.tttable2 .horizontalHeader().setSectionResizeMode(QHeaderView.ResizeToContents) 
+        self.tttable2.horizontalHeader().setStretchLastSection(True) 
         self.tttable2.setSelectionBehavior(QAbstractItemView.SelectRows)
         self.tttable2.setSelectionMode(QAbstractItemView.SingleSelection)
         self.tttable2.setEditTriggers(QAbstractItemView.NoEditTriggers) 
-        
         self.tttable2.clicked.connect(self.ViewThread2) 
          
         self.vboxlayout.addWidget(self.tttable2)
