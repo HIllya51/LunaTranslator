@@ -8,10 +8,10 @@ from PyQt5.QtGui import QFont,QTextCursor
 from PyQt5.QtCore import Qt,pyqtSignal
 import qtawesome
 import subprocess
-import json
+import re
 import os,time 
 from utils.config import globalconfig ,_TR,_TRL
-
+from collections import OrderedDict
 from gui.closeashidewindow import closeashidewindow
 from utils.chaos import checkchaos
 class hookselect(closeashidewindow):
@@ -130,20 +130,19 @@ class hookselect(closeashidewindow):
         self.searchtextbutton2=QPushButton(_TR("搜索包含文本的条目"))
         self.checkfilt_notcontrol=QCheckBox(_TR("过滤控制字符"))
         self.checkfilt_notpath=QCheckBox(_TR("过滤路径"))
-        self.checkfilt_notascii=QCheckBox(_TR("过滤纯英文")) 
-        self.checkfilt_notshiftjis=QCheckBox(_TR("过滤乱码文本")) 
         self.checkfilt_dumplicate=QCheckBox(_TR("过滤重复")) 
-        
+        self.checkfilt_notascii=QCheckBox(_TR("过滤纯英文")) 
+        self.checkfilt_notshiftjis=QCheckBox(_TR("过滤乱码文本"))  
+        self.checkfilt_dumplicate.setChecked(True) 
         self.checkfilt_notcontrol.setChecked(True)
         self.checkfilt_notpath.setChecked(True)
         self.checkfilt_notascii.setChecked(True) 
-        self.checkfilt_notshiftjis.setChecked(True) 
-        self.checkfilt_dumplicate.setChecked(True) 
+        self.checkfilt_notshiftjis.setChecked(True)  
         self.searchtextlayout2.addWidget(self.checkfilt_notcontrol)
         self.searchtextlayout2.addWidget(self.checkfilt_notpath)
-        self.searchtextlayout2.addWidget(self.checkfilt_notascii)  
-        self.searchtextlayout2.addWidget(self.checkfilt_notshiftjis)  
         self.searchtextlayout2.addWidget(self.checkfilt_dumplicate)
+        self.searchtextlayout2.addWidget(self.checkfilt_notascii)  
+        self.searchtextlayout2.addWidget(self.checkfilt_notshiftjis)   
         self.searchtextbutton2.clicked.connect(self.searchtextfunc2)
         self.searchtextlayout2.addWidget(self.searchtextbutton2) 
         self.textOutput = QPlainTextEdit(self.centralWidget)
@@ -163,9 +162,13 @@ class hookselect(closeashidewindow):
         self.vboxlayout.addWidget(self.buttonBox)
         self.buttonBox.accepted.connect(self.accept)
         self.buttonBox.rejected.connect(self.hide)   
-    def gethide(self,res,savedumpt):
+    def gethide(self,res,savedumpt ):
         hide=False
-    
+        if self.checkfilt_dumplicate.isChecked():
+            if res in savedumpt:
+                hide=True
+            else:
+                savedumpt.add(res)
         if self.checkfilt_notascii.isChecked():
             try:
                 res.encode('ascii')
@@ -175,7 +178,7 @@ class hookselect(closeashidewindow):
         if self.checkfilt_notshiftjis.isChecked():
             if checkchaos(res):
                 hide=True
-
+             
         if self.checkfilt_notcontrol.isChecked():
             lres=list(res)
             
@@ -188,22 +191,19 @@ class hookselect(closeashidewindow):
         if self.checkfilt_notpath.isChecked():
             if os.path.isdir(res) or os.path.isfile(res): 
                 hide=True 
-        if self.checkfilt_dumplicate.isChecked():
-            if res in savedumpt:
-                hide=True
-            else:
-                savedumpt.add(res)
+         
         return hide
     def searchtextfunc2(self):
-        searchtext=self.searchtext2.text()
-        savedumpt=set() 
+        searchtext=self.searchtext2.text() 
+        savedumpt=set()
         for index in range(len(self.allres)):   
             _index=len(self.allres)-1-index
             
-            res=self.allres[_index][1] 
+            resbatch=self.allres[self.allres_k[_index]] 
              
-            hide=searchtext not in res or self.gethide(res,savedumpt)
+            hide=all([ (searchtext not in res) or self.gethide(res ,savedumpt) for res in resbatch]) 
             self.tttable2.setRowHidden(_index,hide)  
+            
     def searchtextfunc(self):
         searchtext=self.searchtext.text() 
  
@@ -244,7 +244,7 @@ class hookselect(closeashidewindow):
         self.checkfilt_notcontrol.setHidden(hide)
         self.checkfilt_notpath.setHidden(hide)
         self.checkfilt_notascii.setHidden(hide)
-        self.checkfilt_notshiftjis.setHidden(hide) 
+        self.checkfilt_notshiftjis.setHidden(hide)  
         self.checkfilt_dumplicate.setHidden(hide) 
     def findhook(self): 
         msgBox=QMessageBox(self)
@@ -282,31 +282,30 @@ class hookselect(closeashidewindow):
         #self.findhookoksignal.emit()
         self.userhookfind.setEnabled(True)
         with open('hook.txt','r',encoding='utf8') as ff:
-            allres=ff.read().split('\n')
+            allres=ff.read()#.split('\n')
         
-        self.allres=[] 
-        realrow=0
-        for i,line in enumerate( allres):
-            try:
-                        x=line.split('=>')
-                        if len(x)!=2:
-                            continue
-                        hc,text=x
+        self.allres=OrderedDict()  
+        for hc,text in re.findall("(.*)=>(.*)",allres): 
+            try: 
                         if text.strip()=='':
-                            continue 
-                        self.allres.append((hc,text)) 
-                        
-                        item = QStandardItem(hc ) 
-                        self.ttCombomodelmodel2.setItem(realrow, 0, item)
-                        item = QStandardItem(text )
-                        self.ttCombomodelmodel2.setItem(realrow, 1, item)
-
-                        # if self.gethide(text,savedumpt):
-                        #     self.tttable2.setRowHidden(realrow,True)   
-                            
-                        realrow+=1
+                            continue  
+                        if hc not in self.allres:
+                            self.allres[hc]=[text]
+                        else:
+                            self.allres[hc].append(text)
             except:
-                pass 
+                print_exc() 
+         
+        self.allres_k=list(self.allres.keys())
+         
+        for i,hc in enumerate( self.allres):
+            try:  
+                        item = QStandardItem(hc ) 
+                        self.ttCombomodelmodel2.setItem(i, 0, item)
+                        item = QStandardItem(self.allres[hc][0] )
+                        self.ttCombomodelmodel2.setItem(i, 1, item) 
+            except:
+                print_exc() 
         self.searchtextfunc2()
         
         self.hidesearchhookbuttons(False)
@@ -364,9 +363,8 @@ class hookselect(closeashidewindow):
         if (atBottom):
             scrollbar.setValue(scrollbar.maximum())
     def ViewThread2(self, index):   
-        self.userhook.setText(self.allres[self.tttable2.currentIndex().row()][0])
-        self.textOutput. setPlainText(self.allres[self.tttable2.currentIndex().row()][1])
-         
+        self.userhook.setText(self.allres_k[self.tttable2.currentIndex().row()])
+        self.textOutput. setPlainText('\n'.join(self.allres[self.allres_k[self.tttable2.currentIndex().row()]] )) 
     def ViewThread(self, index):    
         self.object.textsource.selectinghook=self.save[self.tttable.currentIndex().row()]
          
