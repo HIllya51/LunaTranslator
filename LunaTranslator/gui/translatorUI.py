@@ -264,12 +264,12 @@ class QUnFrameWindow(QWidget):
           font: 100 10pt;
       }
       QTitleButton#MinMaxButton:hover{
-          background-color: #D0D0D1;
+          background-color: white;
           border: 0px;
           font: 100 10pt;
       }
       QTitleButton#CloseButton:hover{
-          background-color: #D32424;
+          background-color: rgb(232,17,35);
           color: white;
           border: 0px;
           font: 100 10pt;

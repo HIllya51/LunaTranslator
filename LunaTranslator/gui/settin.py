@@ -201,7 +201,7 @@ class Settin(closeashidewindow) :
         self.usevoice=0
      
     def setstylesheet(self):
-        self.setStyleSheet("font: %spt '"%(11 if globalconfig['languageuse'] in [0,1] else 10)+(globalconfig['settingfonttype']  )+"' ; color: \"#595959\"" )  
+        self.setStyleSheet("font: %spt '"%(11 if globalconfig['languageuse'] in [0,1] else 10)+(globalconfig['settingfonttype']  )+"' ;  " )  
     def yitiaolong(self,title,grid,save=False,savelist=None,savelay=None,fixheight=True):
         lay,t=self. getscrollwidgetlayout(title)
         if fixheight:

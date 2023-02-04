@@ -1,11 +1,11 @@
 import threading 
 from traceback import print_exc
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QWidget,QHBoxLayout,QMainWindow,QFrame,QVBoxLayout,QMessageBox,QPlainTextEdit,QDialogButtonBox,QLineEdit,QPushButton,QTableView,QAbstractItemView,QApplication,QHeaderView,QCheckBox
+from PyQt5.QtWidgets import QWidget,QHBoxLayout,QStyledItemDelegate,QFrame,QVBoxLayout,QMessageBox,QPlainTextEdit,QDialogButtonBox,QLineEdit,QPushButton,QTableView,QAbstractItemView,QApplication,QHeaderView,QCheckBox,QStyleOptionViewItem,QStyle ,QLabel
 from utils.config import savehook_new_list,savehook_new_data
-from PyQt5.QtGui import QStandardItem, QStandardItemModel
+from PyQt5.QtGui import QStandardItem, QStandardItemModel,QTextDocument,QAbstractTextDocumentLayout,QPalette 
 from PyQt5.QtGui import QFont,QTextCursor
-from PyQt5.QtCore import Qt,pyqtSignal
+from PyQt5.QtCore import Qt,pyqtSignal,QSize
 import qtawesome
 import subprocess
 import re
@@ -15,6 +15,40 @@ from collections import OrderedDict
 from gui.closeashidewindow import closeashidewindow
 from utils.chaos import checkchaos
 from utils.subproc import subproc
+class HTMLDelegate(QStyledItemDelegate):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.doc = QTextDocument(self)
+        f=QFont()
+        f.setFamily(globalconfig['settingfonttype'])
+        f.setPointSizeF(11) 
+        self.doc.setDefaultFont(f) 
+    def paint(self, painter, option, index):
+        painter.save()
+
+        options = QStyleOptionViewItem(option)
+        self.initStyleOption(options, index) 
+        self.doc.setHtml(options.text)
+        options.text = ""
+
+        style = QApplication.style() if options.widget is None \
+            else options.widget.style()
+        style.drawControl(QStyle.CE_ItemViewItem, options, painter)
+
+        ctx = QAbstractTextDocumentLayout.PaintContext()
+
+        if option.state & QStyle.State_Selected:
+            ctx.palette.setColor(QPalette.Text, option.palette.color(
+                                QPalette.Active, QPalette.HighlightedText))
+
+        textRect = style.subElementRect(QStyle.SE_ItemViewItemText, options)
+        #textRect.adjust(0, 0, 0, 0)
+        painter.translate(textRect.topLeft())
+        self.doc.documentLayout().draw(painter, ctx) 
+        painter.restore()
+
+    def sizeHint(self, option, index):
+        return QSize(self.doc.idealWidth(), self.doc.size().height())
 class hookselect(closeashidewindow):
     addnewhooksignal=pyqtSignal(tuple)
     getnewsentencesignal=pyqtSignal(str)
@@ -32,7 +66,7 @@ class hookselect(closeashidewindow):
         self.okoksignal.connect(self.okok)  
         self.setWindowTitle(_TR('选择文本，支持按住ctrl进行多项选择（一般选择一条即可）'))
          
-    def update_item_new_line_function(self,hook,output):
+    def update_item_new_line_function(self,hook,output): 
         if hook in self.save:
             row=self.save.index(hook)
             self.ttCombomodelmodel.item(row,1).setText(output) 
@@ -46,7 +80,8 @@ class hookselect(closeashidewindow):
         self.save.append(ss )
         #self.ttCombo.addItem('%s:%s:%s:%s:%s:%s (%s)' %(ss))
 
-        item = QStandardItem('%s:%s:%s:%s:%s:%s (%s)' %(ss) )
+        #item = QStandardItem('%s:%s:%s:%s:%s:%s (%s)' %(ss) )
+        item = QStandardItem( ss[-1]  )
         rown=self.ttCombomodelmodel.rowCount()
         self.ttCombomodelmodel.setItem(rown, 0, item)
         item = QStandardItem('output' )
@@ -69,8 +104,9 @@ class hookselect(closeashidewindow):
         self.at1=1
         self.tttable = QTableView(self)
         self.tttable .setModel(self.ttCombomodelmodel)
-        self.tttable .horizontalHeader().setSectionResizeMode(QHeaderView.Stretch) 
-        self.tttable.setWordWrap(False)  
+        #self.tttable .horizontalHeader().setSectionResizeMode(QHeaderView.Stretch) 
+        self.tttable .horizontalHeader().setStretchLastSection(True) 
+        
         self.tttable.setSelectionBehavior(QAbstractItemView.SelectRows)
         self.tttable.setSelectionMode(QAbstractItemView.ExtendedSelection)
         self.tttable.setEditTriggers(QAbstractItemView.NoEditTriggers)
@@ -115,7 +151,7 @@ class hookselect(closeashidewindow):
         
         self.tttable2 = QTableView(self)
         self.tttable2 .setModel(self.ttCombomodelmodel2)
-        self.tttable2 .horizontalHeader().setSectionResizeMode(QHeaderView.ResizeToContents) 
+        #self.tttable2 .horizontalHeader().setSectionResizeMode(QHeaderView.ResizeToContents) 
         self.tttable2.horizontalHeader().setStretchLastSection(True)
         self.tttable2.setWordWrap(False)  
         self.tttable2.setSelectionBehavior(QAbstractItemView.SelectRows)
@@ -163,6 +199,8 @@ class hookselect(closeashidewindow):
         self.vboxlayout.addWidget(self.buttonBox)
         self.buttonBox.accepted.connect(self.accept)
         self.buttonBox.rejected.connect(self.hide)   
+        self.tttable.setItemDelegateForColumn(1,HTMLDelegate(self))
+        self.tttable2.setItemDelegateForColumn(1,HTMLDelegate(self))
     def gethide(self,res,savedumpt ):
         hide=False
         if self.checkfilt_dumplicate.isChecked():
@@ -209,16 +247,17 @@ class hookselect(closeashidewindow):
         searchtext=self.searchtext.text() 
  
         #self.ttCombomodelmodel.blockSignals(True)
-          
-        for index,key in enumerate(self.object.textsource.hookdatacollecter):   
-            ishide=True  
-            for i in range(min(len(self.object.textsource.hookdatacollecter[key]),20)):
-                
-                if searchtext  in self.object.textsource.hookdatacollecter[key][-i]:
-                    ishide=False
-                    break
-            self.tttable.setRowHidden(index,ishide) 
-         
+        try:
+            for index,key in enumerate(self.object.textsource.hookdatacollecter):   
+                ishide=True  
+                for i in range(min(len(self.object.textsource.hookdatacollecter[key]),20)):
+                    
+                    if searchtext  in self.object.textsource.hookdatacollecter[key][-i]:
+                        ishide=False
+                        break
+                self.tttable.setRowHidden(index,ishide) 
+        except:
+            pass
         #self.ttCombomodelmodel.blockSignals(False)  
             #self.ttCombo.setItemData(index,'',Qt.UserRole-(1 if ishide else 0))
             #self.ttCombo.setRowHidden(index,ishide)
@@ -228,7 +267,7 @@ class hookselect(closeashidewindow):
             return 
         x=subproc(f'./files/hookcodecheck.exe {hookcode}',stdout=subprocess.PIPE)
         #print(hookcode,x.stdout[0])
-        if(x.stdout[0]==ord('0')):
+        if(x.stdout.read()[0]==ord('0')):
             self.getnewsentence(_TR('！特殊码格式错误！'))
             return
         
