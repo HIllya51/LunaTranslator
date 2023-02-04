@@ -123,13 +123,13 @@ class ocrtext(basetext):
                 return None
             text=self.ocrtest(imgr)  
             self.lastocrtime=time.time()
-            self.savelasttext=text
+            
             if self.savelasttext is not None:
                 sim=getEqualRate(self.savelasttext,text)
                 #print('text',sim)
                 if sim>0.9: 
                     return  None
-            
+            self.savelasttext=text
             
             return (text)
             

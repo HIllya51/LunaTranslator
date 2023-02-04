@@ -107,8 +107,8 @@ def setTabTwo(self) :
                  ("TXT读取间隔(s)",6),(self.getspinbox(0,10,globalconfig,'txtreadlineinterval',step=0.1,double=True),3),
             ],
             [
-                ("预翻译采用模糊匹配",6),(self.getsimpleswitch(globalconfig  ,'premtsimiuse'),1),'','','',
-                ("模糊匹配相似度限制",6),(self.getspinbox(0,500,globalconfig,'premtsimi'),3),'', 
+                ("预翻译采用模糊匹配",8),(self.getsimpleswitch(globalconfig  ,'premtsimiuse'),1),'',
+                ("模糊匹配相似度",6),(self.getspinbox(0,500,globalconfig,'premtsimi'),3),'', 
             ],
             
                 [ 

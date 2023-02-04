@@ -205,7 +205,7 @@ class Settin(closeashidewindow) :
     def yitiaolong(self,title,grid,save=False,savelist=None,savelay=None,fixheight=True):
         lay,t=self. getscrollwidgetlayout(title)
         if fixheight:
-            t.setFixedHeight(len(grid)*30*self.rate)
+            t.setFixedHeight(len(grid)*35*self.rate)
 
         self.automakegrid(lay,grid,save,savelist) 
         if save:

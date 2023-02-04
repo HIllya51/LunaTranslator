@@ -518,5 +518,11 @@
     "说明": "Description",
     "人工翻译_Misaka设置": "Traduction humaine Paramètres Misaka",
     "txt文件": "Fichier txt",
-    "分析图像更新+周期执行": "Mise à jour de l'image analytique + exécution du cycle"
+    "分析图像更新+周期执行": "Mise à jour de l'image analytique + exécution du cycle",
+    "模糊匹配相似度": "Similarité de correspondance floue",
+    "翻译器字体": "Police du traducteur",
+    "设置界面字体": "Définir les polices d'interface",
+    "专有名词翻译设置按钮": "Bouton de configuration de traduction nom propre",
+    "调整游戏窗口按钮": "Ajuster le bouton de la fenêtre de jeu",
+    "游戏窗口全屏按钮": "Bouton plein écran de la fenêtre de jeu"
 }
