@@ -65,7 +65,7 @@ class hookselect(closeashidewindow):
         #self.ttCombomodelmodel.setColumnCount(2)
         self.ttCombomodelmodel.setHorizontalHeaderLabels(_TRL([ 'HOOK','文本']))
         
-        
+        self.at1=1
         self.tttable = QTableView(self)
         self.tttable .setModel(self.ttCombomodelmodel)
         self.tttable .horizontalHeader().setSectionResizeMode(QHeaderView.Stretch) 
@@ -355,6 +355,8 @@ class hookselect(closeashidewindow):
         except:
             print_exc()
     def getnewsentence(self,sentence):
+        if self.at1==2:
+            return 
         scrollbar = self.textOutput.verticalScrollBar()
         atBottom = scrollbar.value() + 3 > scrollbar.maximum() or scrollbar.value() / scrollbar.maximum() > 0.975 
         cursor=QTextCursor (self.textOutput.document())
@@ -363,9 +365,11 @@ class hookselect(closeashidewindow):
         if (atBottom):
             scrollbar.setValue(scrollbar.maximum())
     def ViewThread2(self, index):   
+        self.at1=2
         self.userhook.setText(self.allres_k[self.tttable2.currentIndex().row()])
         self.textOutput. setPlainText('\n'.join(self.allres[self.allres_k[self.tttable2.currentIndex().row()]] )) 
     def ViewThread(self, index):    
+        self.at1=1
         self.object.textsource.selectinghook=self.save[self.tttable.currentIndex().row()]
          
         self.textOutput. setPlainText('\n'.join(self.object.textsource.hookdatacollecter[self.save[self.tttable.currentIndex().row()]]))
