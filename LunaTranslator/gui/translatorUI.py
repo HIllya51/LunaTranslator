@@ -264,16 +264,16 @@ class QUnFrameWindow(QWidget):
           font: 100 10pt;
       }
       QTitleButton#MinMaxButton:hover{
-          background-color: white;
+          background-color: %s;
           border: 0px;
           font: 100 10pt;
       }
       QTitleButton#CloseButton:hover{
-          background-color: rgb(232,17,35);
+          background-color: %s;
           color: white;
           border: 0px;
           font: 100 10pt;
-      }''')
+      }'''%(globalconfig['button_color_normal'],globalconfig['button_color_close']))
           
          
         self.showhidestate=False
