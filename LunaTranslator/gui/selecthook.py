@@ -14,6 +14,7 @@ from utils.config import globalconfig ,_TR,_TRL
 from collections import OrderedDict
 from gui.closeashidewindow import closeashidewindow
 from utils.chaos import checkchaos
+from utils.subproc import subproc
 class hookselect(closeashidewindow):
     addnewhooksignal=pyqtSignal(tuple)
     getnewsentencesignal=pyqtSignal(str)
@@ -225,7 +226,7 @@ class hookselect(closeashidewindow):
         hookcode=self.userhook.text()
         if len(hookcode)==0:
             return 
-        x=subprocess.run(f'./files/hookcodecheck.exe {hookcode}',stdout=subprocess.PIPE)
+        x=subproc(f'./files/hookcodecheck.exe {hookcode}',stdout=subprocess.PIPE)
         #print(hookcode,x.stdout[0])
         if(x.stdout[0]==ord('0')):
             self.getnewsentence(_TR('！特殊码格式错误！'))
