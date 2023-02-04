@@ -18,13 +18,13 @@ if os.path.exists('./cache/screenshot')==False:
 if os.path.exists('./cache/tts')==False:
     os.mkdir('./cache/tts')
 
-def tryreadconfig(path,default={}):
+def tryreadconfig(path,default=None):
     if os.path.exists(os.path.join('./userconfig/',path)):
         path=os.path.join('./userconfig/',path)
         with open(path,'r',encoding='utf-8') as ff:
             x=json.load(ff) 
     else:
-        x=default
+        x=default if default else {}
     return x 
 def tryreadconfig2(path): 
     path=os.path.join('./files/defaultconfig/',path)
@@ -67,29 +67,28 @@ sycnsavehook()
 translatorsetting=tryreadconfig('translatorsetting.json') 
 ocrsetting=tryreadconfig('ocrsetting.json') 
 
-def syncconfig(config,default,drop=False,deep=0):
-    
+def syncconfig(config1,default,drop=False,deep=0): 
     for key in default: 
-        if key not in config: 
-            config[key]=default[key] 
+        if key not in config1: 
+            config1[key]=default[key] 
+             
         elif key=='name': 
-            config[key]=default[key]
-        if type(default[key])!=type(config[key]) and (type(default[key])==dict or type(default[key])==list): 
-            config[key]=default[key] 
+            config1[key]=default[key]
+        if type(default[key])!=type(config1[key]) and (type(default[key])==dict or type(default[key])==list): 
+            config1[key]=default[key] 
         elif type(default[key])==dict:  
-            syncconfig(config[key],default[key],drop,deep-1)
+            syncconfig(config1[key],default[key],drop,deep-1)
              
     if drop and deep>0:
-        for key in list(config.keys()):
+        for key in list(config1.keys()):
             if key not in default:
-                config.pop(key) 
-def listlengthsync(d1,d2,key,force=False):
-    
-    if force or  len(d1[key])!=len(d2[key]):
+                config1.pop(key) 
+def listlengthsync(d1,d2,key,force=False): 
+    if force or (key not in d1) or  len(d1[key])!=len(d2[key]):
         d1[key]=d2[key]
-syncconfig(postprocessconfig,defaultpost ,True,3) 
-syncconfig(globalconfig,defaultglobalconfig)
- 
+
+syncconfig(globalconfig,defaultglobalconfig) 
+syncconfig(postprocessconfig,defaultpost ,True,3)  
 syncconfig(transerrorfixdictconfig,defaulterrorfix)
 
 syncconfig(noundictconfig,defaultnoun)
