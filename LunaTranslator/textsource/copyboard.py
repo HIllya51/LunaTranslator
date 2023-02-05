@@ -1,7 +1,7 @@
  
-import time 
-from PyQt5.QtWidgets import  QApplication 
+import time  
 from textsource.textsourcebase import basetext
+import pyperclip
 class copyboard(basetext):
     def __init__(self,textgetmethod,_) -> None:
         self.last_paste_str = '' 
@@ -16,10 +16,11 @@ class copyboard(basetext):
     def gettextthread(self ):
                  
             time.sleep(0.1)
-            paste_str = QApplication.clipboard().text()
+            paste_str = pyperclip.paste()
             if self.last_paste_str != paste_str:
                 self.last_paste_str =paste_str
                 return (paste_str)
     def runonce(self):
-        paste_str =QApplication.clipboard().text()
+        paste_str =pyperclip.paste()
+        print(paste_str)
         self.textgetmethod(paste_str,False)

@@ -47,10 +47,9 @@ import socket
 socket.setdefaulttimeout(globalconfig['translatortimeout'])
 from utils.post import POSTSOLVE
 import xml.etree.ElementTree as ET   
-
+import pyperclip
 class MAINUI(QObject) :
-    mainuiloadok=pyqtSignal()
-    setclipboardsignal=pyqtSignal(str)
+    mainuiloadok=pyqtSignal() 
     def __init__(self) -> None:
         
         self.translators={}
@@ -61,10 +60,7 @@ class MAINUI(QObject) :
         self.last_paste_str=''
         self.textsource=None 
         super(MAINUI,self).__init__( )
-        self.mainuiloadok.connect(self.mainuiloadafter)
-        self.setclipboardsignal.connect(self.setclipboard)
-    def setclipboard(self,_paste_str):
-        QApplication.clipboard().setText(_paste_str)
+        self.mainuiloadok.connect(self.mainuiloadafter)  
     @threader  
     def loadvnrshareddict(self):
         
@@ -240,7 +236,7 @@ class MAINUI(QObject) :
             return 
         self.last_paste_str=_paste_str  
         if globalconfig['outputtopasteboard'] and globalconfig['sourcestatus']['copy']==False:  
-            self.setclipboardsignal.emit(_paste_str)
+            pyperclip.copy(_paste_str)
         self.translation_ui.original=_paste_str 
         try:
             hira=self.hira_.fy(_paste_str)
