@@ -21,6 +21,5 @@ class copyboard(basetext):
                 self.last_paste_str =paste_str
                 return (paste_str)
     def runonce(self):
-        paste_str =pyperclip.paste()
-        print(paste_str)
+        paste_str =pyperclip.paste() 
         self.textgetmethod(paste_str,False)
