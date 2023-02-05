@@ -11,7 +11,7 @@
 
 > **A galgame translator**
 
-## <a href="http://hillya51.github.io/" target="_blank">Instructions</a> 
+## <a href="http://hillya51.github.io/#/en/" target="_blank">Instructions</a> 
 
 ## Function support
 
