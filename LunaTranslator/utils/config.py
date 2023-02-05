@@ -47,23 +47,23 @@ savehook_new_2=tryreadconfig('savehook_new3.json')
 _savehook=tryreadconfig('savehook_new_1.39.4.json',default=[[],{}])
 savehook_new_list= _savehook[0]
 savehook_new_data= _savehook[1]
-
+ 
 def sycnsavehook():
     try: 
         for _ in savehook_new_0:
             if _ not in savehook_new_list:
                 savehook_new_list.append(_) 
-                savehook_new_data[_]['hook']=savehook_new_0[_]   
-                savehook_new_data[_]['leuse']=savehook_new_2['leuse']
-                savehook_new_data[_]['title']=savehook_new_2['title']
-        os.remove('./userconfig/savehook_new.json')
-        os.remove('./userconfig/savehook_new3.json')
+                savehook_new_data[_]={
+                    'hook':savehook_new_0[_],
+                    'leuse':savehook_new_2[_]['leuse'],
+                    'title':savehook_new_2[_]['title']
+                } 
+        os.rename('./userconfig/savehook_new.json','./userconfig/savehook_new_backup.json')
+        os.rename('./userconfig/savehook_new3.json','./userconfig/savehook_new3_backup.json')
     except:
         pass
 sycnsavehook()
-
-
-
+  
 translatorsetting=tryreadconfig('translatorsetting.json') 
 ocrsetting=tryreadconfig('ocrsetting.json') 
 
