@@ -14,9 +14,9 @@ class embedtranslater():
         t.start()
          
         
-        #self.proc=subprocess.Popen('./files/embedded/main.exe '+str(pid),cwd='./files/embedded/')
+        self.proc=subprocess.Popen('./files/embedded/main.exe '+str(pid),cwd='./files/embedded/')
         
-        self.proc=subprocess.Popen('C:\\Python27_32\\python.exe -B C:\\Users\\11737\\Documents\\GitHub\\vnr_embedded_translation\\main.py '+str(pid),cwd='C:\\Users\\11737\\Documents\\GitHub\\vnr_embedded_translation')
+        #self.proc=subprocess.Popen('C:\\Python27_32\\python.exe -B C:\\Users\\11737\\Documents\\GitHub\\vnr_embedded_translation\\main.py '+str(pid),cwd='C:\\Users\\11737\\Documents\\GitHub\\vnr_embedded_translation')
         t.join()
     def end(self):
         self.engine.send(json.dumps({"commmand":"end"}))

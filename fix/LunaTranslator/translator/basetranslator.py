@@ -87,7 +87,7 @@ class basetrans:
                 time.sleep(t-self.lastrequeststime)
             self.lastrequeststime=t
             while True:
-                contentraw,(contentsolved,mp),skip=self.queue.get()
+                contentraw,(contentsolved,mp),skip,embedcallback=self.queue.get()
                 self.newline=contentraw
                 if self.queue.empty():
                     break
@@ -114,8 +114,7 @@ class basetrans:
                 
             
             if res is not None  and self.queue.empty() and contentraw==self.newline:
-                self.show(contentraw,(self.typename,res,mp))
-
+                self.show(contentraw,(self.typename,res,mp),embedcallback) 
     
 
             
