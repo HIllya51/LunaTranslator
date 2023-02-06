@@ -43,8 +43,7 @@ class textractor(basetext  ):
         #self.object.translation_ui.killprocesssignal.emit()
         
         #self.object.translation_ui.startprocessignal.emit(f"./files/Textractor/x{self.arch}/TextractorCLI.exe",[self.handle_stdout])
-        self.u16lesubprocess=u16lesubprocess(f"./files/Textractor/x{self.arch}/TextractorCLI.exe")
-        self.u16lesubprocess.readyread=self.handle_stdout
+        
         #self.p.start(r"C:\tmp\textractor_src\Textractor-cmd\builds\RelWithDebInfo_x64\TextractorCLI.exe")
         self.pid=pid
         self.pname=pname
@@ -52,24 +51,31 @@ class textractor(basetext  ):
         self.userinserthookcode=[]
         self.runonce_line=''
         self.re=re.compile('\[([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):(.*):(.*@.*)\] ([\\s\\S]*)')
-        self.notarch='86' if self.arch=='64' else '64'
-        self.setcodepage()
-        self.setdelay()
-        self.attach(self.pid)
+         
+        #
         self.textfilter=''
         self.matched_hook_num=0 
         self.autostarthookcode=[tuple(__) for __ in autostarthookcode]
         self.autostarting=len(self.autostarthookcode)>0
         self.removedaddress=[]
-        if self.autostarting: 
-            threading.Thread(target=self.autostartinsert,daemon=True).start() 
+        
         self.HookCode=None 
          
         #self.re=re.compile('\[([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):(.*):(.*@.*)\] (.*)\n')
-        
+         
         if globalconfig['embedded']['use']:
             self.startembedengine()
+        else:
+            self.textractor_init()
         super(textractor,self).__init__(textgetmethod)
+    def textractor_init(self):
+        self.u16lesubprocess=u16lesubprocess(f"./files/Textractor/x{self.arch}/TextractorCLI.exe")
+        self.u16lesubprocess.readyread=self.handle_stdout
+        self.attach(self.pid)
+        self.setcodepage()
+        self.setdelay()
+        if self.autostarting: 
+            threading.Thread(target=self.autostartinsert,daemon=True).start() 
     def startembedengine(self,_=None):
         try:  
                 self.embeddedengine=embedtranslater(self.pid,self.textgetmethod,self.append)
@@ -109,7 +115,10 @@ class textractor(basetext  ):
         self.u16lesubprocess.writer(f'={cp} -P{self.pid}\r\n')
     def findhook(self ):
         #self.object.translation_ui.writeprocesssignal.emit( QByteArray((f'find -P{self.pid}\r\n').encode(encoding='utf-16-le')))
-        self.u16lesubprocess.writer((f'find -P{self.pid}\r\n'))
+        try:
+            self.u16lesubprocess.writer((f'find -P{self.pid}\r\n'))
+        except:
+            pass
     def inserthook(self,hookcode):
         # self.timer=QTimer()
         # self.timer.timeout.connect(self.insert)
@@ -119,10 +128,10 @@ class textractor(basetext  ):
         # print(self.p)
         print(f'{hookcode} -P{self.pid}')
         #self.object.translation_ui.writeprocesssignal.emit( QByteArray((f'{hookcode} -P{self.pid}\r\n').encode(encoding='utf-16-le')))
-        self.u16lesubprocess.writer((f'{hookcode} -P{self.pid}\r\n'))
-    def exit(self):
-        #self.object.translation_ui.writeprocesssignal.emit( QByteArray((f'11\r\n').encode(encoding='utf-16-le'))) 
-        self.u16lesubprocess.writer(f'11\r\n')
+        try:
+            self.u16lesubprocess.writer((f'{hookcode} -P{self.pid}\r\n'))
+        except:
+            pass 
     def attach(self,pid):  
         #self.object.translation_ui.writeprocesssignal.emit( QByteArray((f'attach -P{pid}\r\n').encode(encoding='utf-16-le')))
         self.u16lesubprocess.writer(f'attach -P{pid}\r\n')
@@ -171,7 +180,7 @@ class textractor(basetext  ):
             if key not in self.hookdatacollecter:
                 #print(self.autostarthookcode,HookCode)
                  
-                if self.autostarting: 
+                if self.autostarting  : 
                     
                     for _i,autostarthookcode in enumerate(self.autostarthookcode):  
                         if _i in self.strictmatchidx:
@@ -265,19 +274,18 @@ class textractor(basetext  ):
     def runonce(self):
          
         self.textgetmethod(self.runonce_line,False)
-    def end(self,direct=False):
-        if direct==False:
-            try:
-                self.detach(self.pid)
-            except:
-                pass
-            #self.exit()   
-            time.sleep(0.1)
+    def end(self):
+
+        try:
+            self.detach(self.pid)
+            self.u16lesubprocess.kill()
+        except:
+            pass  
         try:
             self.embeddedengine.end()
         except:
             print_exc()
-        self.u16lesubprocess.kill()
+         
         #self.object.translation_ui.killprocesssignal.emit()
         self.ending=True
      
