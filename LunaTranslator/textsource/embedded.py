@@ -7,9 +7,9 @@ import threading,time ,json
 from utils.subproc import subproc
 import subprocess,queue,functools
 class embedtranslater():
-    def __init__(self,pid,waitfortransfunction=None,parentgetline=None) -> None:
+    def __init__(self,pid,waitfortransfunction ,parentgetline ,callfornoconnect) -> None:
         def _():
-            self.engine=embedtranslater_(waitfortransfunction,parentgetline) 
+            self.engine=embedtranslater_(waitfortransfunction,parentgetline,callfornoconnect) 
         t=threading.Thread(target=_)
         t.start()
          
@@ -22,11 +22,12 @@ class embedtranslater():
         self.engine.send(json.dumps({"commmand":"end"}))
         self.proc.kill()
 class embedtranslater_():
-    def __init__(self,waitfortransfunction,parentgetline) -> None: 
+    def __init__(self,waitfortransfunction,parentgetline,callfornoconnect) -> None: 
         t1=threading.Thread(target=self._creater1) 
         t2=threading.Thread(target=self._creater2)
         self.waitfortransfunction=waitfortransfunction
         self.parentgetline=parentgetline
+        self.callfornoconnect=callfornoconnect
         t1.start()
         t2.start()
         t1.join()
@@ -50,8 +51,9 @@ class embedtranslater_():
         try:
                 while True:
                     rd=win32file.ReadFile(self.pipe_get, 65535, None)[1].decode('utf8',errors='ignore')
-                    print("received",rd )
+                    print('raw',rd)
                     rd=json.loads(rd)
+                    print("received",type(rd),rd )
                     self._onreceive_callback(rd) 
         except: 
             print_exc()
@@ -68,7 +70,9 @@ class embedtranslater_():
                 t=time.time()
                 self.parentgetline(rd['text'])
                 self.waitfortransfunction(rd['text'],False,functools.partial(self.embedcallback,rd,t))
-                
+        elif rd['command']=="no_connection":
+            print("embed failt")
+            self.callfornoconnect()
 
 if __name__=='__main__':
     threading.Thread(target=lambda: embedtranslater()).start() 

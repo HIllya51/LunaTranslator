@@ -425,11 +425,7 @@ class MAINUI(QObject) :
                 else: 
                     if pid_running(self.textsource.pid)==False or win32process.GetWindowThreadProcessId( self.textsource.hwnd )[0]==0:
                             print("进程end",self.textsource.pid,pid_running(self.textsource.pid),win32process.GetWindowThreadProcessId( self.textsource.hwnd )[0])
-                            try:
-                                self.textsource.end(True)  
-                                 
-                            except:
-                                print_exc()
+                            self.textsource.end( )  
                             self.textsource=None  
             except:
                         print_exc()

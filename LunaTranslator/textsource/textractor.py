@@ -58,17 +58,24 @@ class textractor(basetext  ):
         self.autostarthookcode=[tuple(__) for __ in autostarthookcode]
         self.autostarting=len(self.autostarthookcode)>0
         self.removedaddress=[]
-        
+        self.embed_failed=False
         self.HookCode=None 
          
         #self.re=re.compile('\[([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):(.*):(.*@.*)\] (.*)\n')
          
+        
+        
+        threading.Thread(target=self.textractor_init).start()
+        super(textractor,self).__init__(textgetmethod)
+    def callfornoconnect_embed(self):
+        self.embed_failed=True
+    def textractor_init(self):
         if globalconfig['embedded']['use']:
             self.startembedengine()
-        else:
-            self.textractor_init()
-        super(textractor,self).__init__(textgetmethod)
-    def textractor_init(self):
+        while True: 
+            if self.embed_failed:
+                break
+            time.sleep(0.1)
         self.u16lesubprocess=u16lesubprocess(f"./files/Textractor/x{self.arch}/TextractorCLI.exe")
         self.u16lesubprocess.readyread=self.handle_stdout
         self.attach(self.pid)
@@ -78,7 +85,7 @@ class textractor(basetext  ):
             threading.Thread(target=self.autostartinsert,daemon=True).start() 
     def startembedengine(self,_=None):
         try:  
-                self.embeddedengine=embedtranslater(self.pid,self.textgetmethod,self.append)
+                self.embeddedengine=embedtranslater(self.pid,self.textgetmethod,self.append,self.callfornoconnect_embed)
         except:
             print_exc()
     def autostartinsert(self):
