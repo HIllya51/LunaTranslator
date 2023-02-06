@@ -529,5 +529,7 @@
     "使用内嵌翻译": "Use embedded translation",
     "内嵌的翻译器": "Embedded translator",
     "--实验性的--": "--Experimental--",
-    "使用最快翻译而非指定翻译器": "Use the fastest translation instead of specifying the translator"
+    "使用最快翻译而非指定翻译器": "Use the fastest translation instead of specifying the translator",
+    "使用内嵌翻译(重启游戏或翻译器后生效)": "Use embedded translation (takes effect after restarting the game or translator)",
+    "使用内嵌翻译(重启后生效)": "Use embedded translation (takes effect after restart)"
 }

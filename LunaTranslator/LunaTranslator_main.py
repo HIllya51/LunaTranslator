@@ -245,7 +245,7 @@ class MAINUI(QObject) :
             
             self.hookselectdialog.changeprocessclearsignal.emit()
             self.hookselectdialog.realshowhide.emit(True)
-    
+     
     #@threader
     def starttextsource(self,use=None,checked=True,pop=True):   
         if checked:
@@ -419,14 +419,17 @@ class MAINUI(QObject) :
                                         if len(savehook_new_data[name_]['hook'])==0:
                                             self.hookselectdialog.realshowhide.emit(True)
                                     print("进程found",pid,(time.time()))
-                                    self.textsource=textractor(self,self.textgetmethod,self.hookselectdialog,pid_real,hwnd,name_,savehook_new_data[name_]['hook'])
+                                    self.textsource=textractor(self,self.textgetmethod,self.hookselectdialog,pid_real,hwnd,name_ ,autostarthookcode=savehook_new_data[name_]['hook'])
                                      
                 
                 else: 
-                    if pid_running(self.textsource.pid)==False or win32process.GetWindowThreadProcessId( self.textsource.hwnd )[0]==0:
-                            print("进程end",self.textsource.pid,pid_running(self.textsource.pid),win32process.GetWindowThreadProcessId( self.textsource.hwnd )[0])
-                            self.textsource.end( )  
-                            self.textsource=None  
+                    pid=self.textsource.pid
+                    hwnd=self.textsource.hwnd
+                    if pid_running(pid)==False or win32process.GetWindowThreadProcessId( hwnd )[0]==0:
+                            print("进程end",pid,pid_running(pid),win32process.GetWindowThreadProcessId( hwnd )[0])
+                            if self.textsource.pid==pid:
+                                self.textsource.end( )  
+                                self.textsource=None  
             except:
                         print_exc()
     def setontopthread(self):
@@ -445,7 +448,7 @@ class MAINUI(QObject) :
     def autohookmonitorthread(self):
         while True:
             self.onwindowloadautohook()
-            time.sleep(0.3)
+            time.sleep(0.5)#太短了的话，中间存在一瞬间，后台进程比前台窗口内存占用要大。。。
     def aa(self):  
         
         self.translation_ui =gui.translatorUI.QUnFrameWindow(self)   

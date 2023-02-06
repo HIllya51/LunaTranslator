@@ -18,11 +18,10 @@ def setTab4(self) :
                 [''],
                 [''],
                 [('--实验性的--',5)],
-                [('使用内嵌翻译',5),(self.getsimpleswitch( globalconfig['embedded'],'use',callback=lambda x:self.object.textsource.startembedengine()),1) ],
+                [('使用内嵌翻译(重启后生效)',5),(self.getsimpleswitch( globalconfig['embedded'],'use' ),1) ],
                 [('内嵌的翻译器',5),(self.getsimplecombobox([globalconfig['fanyi'][x]['name'] for x in globalconfig['fanyi']],globalconfig['embedded'],'use',name="embedded_translator_select"),5) ],
                 [('使用最快翻译而非指定翻译器',5),(self.getsimpleswitch( globalconfig['embedded'] ,'as_fast_as_posible'),1) ],
         ]
-        
-        self.embedded_translator_select.currentIndexChanged
+         
         self.yitiaolong("HOOK设置",grids) 
         

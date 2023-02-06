@@ -409,17 +409,19 @@ class hookselect(closeashidewindow):
         self.textOutput. setPlainText('\n'.join(self.allres[self.allres_k[self.tttable2.currentIndex().row()]] )) 
     def ViewThread(self, index):    
         self.at1=1
-        self.object.textsource.selectinghook=self.save[self.tttable.currentIndex().row()]
-         
-        self.textOutput. setPlainText('\n'.join(self.object.textsource.hookdatacollecter[self.save[self.tttable.currentIndex().row()]]))
-        self.textOutput. moveCursor(QTextCursor.End)
-        self.object.textsource.batchselectinghook=[]
-
-        dedup=[] 
-        for m in (self.tttable.selectionModel().selectedIndexes()):
-            row=m.row() 
-            if row in dedup:
-                continue
-            self.object.textsource.batchselectinghook+=[self.save[row]]
-            dedup.append(row)
+        try:
+            self.object.textsource.selectinghook=self.save[self.tttable.currentIndex().row()]
             
+            self.textOutput. setPlainText('\n'.join(self.object.textsource.hookdatacollecter[self.save[self.tttable.currentIndex().row()]]))
+            self.textOutput. moveCursor(QTextCursor.End)
+            self.object.textsource.batchselectinghook=[]
+
+            dedup=[] 
+            for m in (self.tttable.selectionModel().selectedIndexes()):
+                row=m.row() 
+                if row in dedup:
+                    continue
+                self.object.textsource.batchselectinghook+=[self.save[row]]
+                dedup.append(row)
+        except:
+            print_exc()

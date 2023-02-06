@@ -5,35 +5,43 @@ PIPE_TEXT_EMBED_host2agent="\\\\.\\Pipe\\PIPE_TEXT_EMBED_host2agent"
 from traceback import print_exc
 import threading,time ,json
 from utils.subproc import subproc
+from utils.getpidlist import pid_running
 import subprocess,queue,functools
 class embedtranslater():
-    def __init__(self,pid,waitfortransfunction ,parentgetline ,callfornoconnect) -> None:
+    def __init__(self,pid,waitfortransfunction ,parentgetline  ) -> None:
         def _():
-            self.engine=embedtranslater_(waitfortransfunction,parentgetline,callfornoconnect) 
+            self.engine=embedtranslater_(waitfortransfunction,parentgetline ) 
+            self.engine.parent=self
         t=threading.Thread(target=_)
         t.start()
          
         
-        self.proc=subprocess.Popen('./files/embedded/main.exe '+str(pid),cwd='./files/embedded/')
+        self.proc=subproc('./files/embedded/main.exe '+str(pid),cwd='./files/embedded/' )
         
         #self.proc=subprocess.Popen('C:\\Python27_32\\python.exe -B C:\\Users\\11737\\Documents\\GitHub\\vnr_embedded_translation\\main.py '+str(pid),cwd='C:\\Users\\11737\\Documents\\GitHub\\vnr_embedded_translation')
+
         t.join()
+        self.end()
     def end(self):
-        self.engine.send(json.dumps({"commmand":"end"}))
+        try:
+            self.engine.send(json.dumps({"command":"end"}))
+        except:
+            pass
         self.proc.kill()
 class embedtranslater_():
-    def __init__(self,waitfortransfunction,parentgetline,callfornoconnect) -> None: 
+    def __init__(self,waitfortransfunction,parentgetline ) -> None: 
         t1=threading.Thread(target=self._creater1) 
         t2=threading.Thread(target=self._creater2)
         self.waitfortransfunction=waitfortransfunction
-        self.parentgetline=parentgetline
-        self.callfornoconnect=callfornoconnect
+        self.parentgetline=parentgetline 
         t1.start()
         t2.start()
         t1.join()
         t2.join()
         self.donestamp=set()
-        threading.Thread(target=self._listener).start()  
+        t=threading.Thread(target=self._listener)
+        t.start()  
+        t.join()
     def send(self,s):
         try: 
             print("host send",s)
@@ -54,7 +62,8 @@ class embedtranslater_():
                     print('raw',rd)
                     rd=json.loads(rd)
                     print("received",type(rd),rd )
-                    self._onreceive_callback(rd) 
+                    if self._onreceive_callback(rd) ==False:
+                        break
         except: 
             print_exc()
     
@@ -70,11 +79,10 @@ class embedtranslater_():
                 t=time.time()
                 self.parentgetline(rd['text'])
                 self.waitfortransfunction(rd['text'],False,functools.partial(self.embedcallback,rd,t))
+                return True
         elif rd['command']=="no_connection":
-            print("embed failt")
-            self.callfornoconnect()
-
-if __name__=='__main__':
-    threading.Thread(target=lambda: embedtranslater()).start() 
-    import subprocess 
-    subprocess.Popen('./files/embedded/main.exe 4660',cwd='./files/embedded/')
+            return False
+        elif rd['command']=="badengine":
+            return False 
+        elif rd['command']=="disconnect":
+            return False

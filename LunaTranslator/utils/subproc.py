@@ -3,12 +3,16 @@ from traceback import print_exc
 import multiprocessing,threading
 from utils.getpidlist import pid_running
 allsubprocess=[] 
-def subproc(cmd,cwd=None,stdin=None,encoding=None, stdout=None,keep=False): 
+def subproc(cmd,cwd=None,stdin=None,encoding=None, stdout=None,keep=False,run=False): 
     st=subprocess.STARTUPINFO()
     st.dwFlags=subprocess.STARTF_USESHOWWINDOW
     st.wShowWindow=subprocess.SW_HIDE
     try:
-        ss=subprocess.Popen(cmd,cwd=cwd,stdin=stdin, stdout=stdout,  startupinfo=st)
+        if run:
+            xx=subprocess.run
+        else:
+            xx=subprocess.Popen
+        ss=xx(cmd,cwd=cwd,stdin=stdin, stdout=stdout,  startupinfo=st)
          
     except:
         print_exc()
