@@ -72,7 +72,7 @@ class textractor(basetext  ):
         super(textractor,self).__init__(textgetmethod)
     def startembedengine(self,_=None):
         try:  
-                self.embeddedengine=embedtranslater(self.pid,self.textgetmethod)
+                self.embeddedengine=embedtranslater(self.pid,self.textgetmethod,self.append)
         except:
             print_exc()
     def autostartinsert(self):
@@ -250,9 +250,11 @@ class textractor(basetext  ):
             #real='\n'.join(newline)
             #self.newline.put(real) 
             #self.runonce_line=real
-            self.newline.put(newline) 
-            self.runonce_line=newline
+            self.append(newline)
         self.lock.release() 
+    def append(self,t):
+        self.newline.put(t)
+        self.runonce_line=t
     def ignoretext(self):
         while self.newline.empty()==False:
             self.newline.get() 

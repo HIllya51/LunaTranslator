@@ -61,7 +61,8 @@ class dialog_savedgame(QDialog):
                         if res in savehook_new_list: 
                                 return
                         savehook_new_list.insert(0,res)
-                        savehook_new_data[res]={'leuse':True,'title':os.path.basename(res),'hook':[] } 
+                        if res not in savehook_new_data:
+                                savehook_new_data[res]={'leuse':True,'title':os.path.basename(res),'hook':[] } 
                         transparent=QPixmap(100,100)
                         transparent.fill(QColor.fromRgba(0))
                         icon=getExeIcon(res)

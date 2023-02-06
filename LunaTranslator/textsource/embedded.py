@@ -7,23 +7,26 @@ import threading,time ,json
 from utils.subproc import subproc
 import subprocess,queue,functools
 class embedtranslater():
-    def __init__(self,pid,waitfortransfunction=None) -> None:
+    def __init__(self,pid,waitfortransfunction=None,parentgetline=None) -> None:
         def _():
-            self.engine=embedtranslater_(waitfortransfunction) 
+            self.engine=embedtranslater_(waitfortransfunction,parentgetline) 
         t=threading.Thread(target=_)
         t.start()
          
         
-        self.proc=subprocess.Popen('./files/embedded/main.exe '+str(pid),cwd='./files/embedded/')
+        #self.proc=subprocess.Popen('./files/embedded/main.exe '+str(pid),cwd='./files/embedded/')
+        
+        self.proc=subprocess.Popen('C:\\Python27_32\\python.exe -B C:\\Users\\11737\\Documents\\GitHub\\vnr_embedded_translation\\main.py '+str(pid),cwd='C:\\Users\\11737\\Documents\\GitHub\\vnr_embedded_translation')
         t.join()
     def end(self):
         self.engine.send(json.dumps({"commmand":"end"}))
         self.proc.kill()
 class embedtranslater_():
-    def __init__(self,waitfortransfunction) -> None: 
+    def __init__(self,waitfortransfunction,parentgetline) -> None: 
         t1=threading.Thread(target=self._creater1) 
         t2=threading.Thread(target=self._creater2)
         self.waitfortransfunction=waitfortransfunction
+        self.parentgetline=parentgetline
         t1.start()
         t2.start()
         t1.join()
@@ -63,6 +66,7 @@ class embedtranslater_():
         if rd['command']=='trans': 
                 self.now_wait_sentence=rd['text']
                 t=time.time()
+                self.parentgetline(rd['text'])
                 self.waitfortransfunction(rd['text'],False,functools.partial(self.embedcallback,rd,t))
                 
 

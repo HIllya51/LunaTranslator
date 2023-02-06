@@ -28,12 +28,8 @@ import os
 import sys
 import re
 import json
-
-try:
-    from pkg_resources import resource_stream
-    get_module_res = lambda *res: resource_stream(__name__, os.path.join(*res))
-except ImportError:
-    get_module_res = lambda *res: open(os.path.normpath(
+ 
+get_module_res = lambda *res: open(os.path.normpath(
         os.path.join(os.getcwd(), os.path.dirname(__file__), *res)), 'rb')
 
 # Locale fallback order lookup dictionary
@@ -254,6 +250,7 @@ def convert(s, locale, update=None):
         return s
     zhdict = getdict(locale)
     pfset = pfsdict[locale]
+     
     newset = set()
     if update:
         # TODO: some sort of caching

@@ -200,9 +200,11 @@ class MAINUI(QObject) :
                     self.textsource.sqlwrite2.execute(f'INSERT INTO artificialtrans VALUES(NULL,"{_paste_str}","{json.dumps({})}");')
         except:
             print_exc()
-        
-        for engine in self.translators: 
-            self.translators[engine].gettask((_paste_str,paste_str_solve,skip,embedcallback)) 
+        if (embedcallback and globalconfig['autorun']==False)  :
+            embedcallback(_paste_str)
+        else:
+            for engine in self.translators:  
+                self.translators[engine].gettask((_paste_str,paste_str_solve,skip,embedcallback)) 
          
     @threader
     def startreader(self,use=None,checked=True):
@@ -236,6 +238,11 @@ class MAINUI(QObject) :
                 self.textsource.end()  
             #  
             self.textsource=textractor(self,self.textgetmethod,self.hookselectdialog,pid,hwnd,pexe )  
+            if pexe not in savehook_new_list:
+                savehook_new_list.insert(0,pexe)  
+            if pexe not in savehook_new_data:
+                savehook_new_data[pexe]={'leuse':True,'title':os.path.basename(pexe),'hook':[] }  
+            
             self.hookselectdialog.changeprocessclearsignal.emit()
             self.hookselectdialog.realshowhide.emit(True)
     
