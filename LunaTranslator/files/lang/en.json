@@ -525,5 +525,9 @@
     "专有名词翻译设置按钮": "Proper noun translation setting button",
     "调整游戏窗口按钮": "Adjust game window buttons",
     "游戏窗口全屏按钮": "Full screen button of game window",
-    "未下载该语言的OCR模型": "OCR model for this language is not downloaded"
+    "未下载该语言的OCR模型": "OCR model for this language is not downloaded",
+    "使用内嵌翻译": "Use embedded translation",
+    "内嵌的翻译器": "Embedded translator",
+    "--实验性的--": "--Experimental--",
+    "使用最快翻译而非指定翻译器": "Use the fastest translation instead of specifying the translator"
 }

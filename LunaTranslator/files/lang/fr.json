@@ -525,5 +525,9 @@
     "专有名词翻译设置按钮": "Bouton de configuration de traduction nom propre",
     "调整游戏窗口按钮": "Ajuster le bouton de la fenêtre de jeu",
     "游戏窗口全屏按钮": "Bouton plein écran de la fenêtre de jeu",
-    "未下载该语言的OCR模型": "Aucun modèle OCR n'a été téléchargé pour cette langue"
+    "未下载该语言的OCR模型": "Aucun modèle OCR n'a été téléchargé pour cette langue",
+    "使用内嵌翻译": "Utiliser la traduction intégrée",
+    "内嵌的翻译器": "Traducteur intégré",
+    "--实验性的--": "- - expérimental - -",
+    "使用最快翻译而非指定翻译器": "Utiliser la traduction la plus rapide au lieu du traducteur spécifié"
 }
