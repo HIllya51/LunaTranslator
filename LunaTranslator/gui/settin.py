@@ -122,11 +122,15 @@ class Settin(closeashidewindow) :
         if name:
             setattr(self,name,b)
         return b
-    def getsimplecombobox(self,lst,d,k,callback=None):
+    def getsimplecombobox(self,lst,d,k,callback=None,name=None):
         s=QComboBox( )  
         s.addItems(lst)
+        if d[k]>=len(lst):
+            d[k]=0
         s.setCurrentIndex(d[k])
         s.currentIndexChanged.connect(functools.partial(self.callbackwrap,d,k,callback) )
+        if name:
+            setattr(self,name,s)
         return s
     def __init__(self, object):
         

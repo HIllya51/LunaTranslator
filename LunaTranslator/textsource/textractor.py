@@ -2,7 +2,7 @@ import threading
 from queue import Queue  
 import re  
 import time
-import hashlib
+import hashlib,subprocess
 from collections import OrderedDict
 import os 
 from utils.config import globalconfig 
@@ -10,6 +10,8 @@ from utils.u16lesubprocess import u16lesubprocess
 from utils.getpidlist import getarch
 from textsource.textsourcebase import basetext 
 from utils.chaos import checkchaos 
+from traceback import print_exc
+from textsource.embedded import embedtranslater
 class textractor(basetext  ): 
     def __init__(self,object,textgetmethod,hookselectdialog,pid,hwnd,pname ,autostarthookcode=[]) :
         self.newline=Queue()  
@@ -20,7 +22,7 @@ class textractor(basetext  ):
         self.md5=hashlib.md5(bs).hexdigest()
         self.prefix=self.md5+'_'+os.path.basename(pname).replace('.'+os.path.basename(pname).split('.')[-1],'') 
         
-            
+        
         self.hookdatacollecter=OrderedDict() 
         self.reverse={}
         self.forward=[]
@@ -65,8 +67,14 @@ class textractor(basetext  ):
          
         #self.re=re.compile('\[([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):(.*):(.*@.*)\] (.*)\n')
         
-
+        if globalconfig['embedded']['use']:
+            self.startembedengine()
         super(textractor,self).__init__(textgetmethod)
+    def startembedengine(self,_=None):
+        try:  
+                self.embeddedengine=embedtranslater(self.pid,self.textgetmethod)
+        except:
+            print_exc()
     def autostartinsert(self):
         time.sleep(3)
         dumpling=[]
@@ -263,7 +271,10 @@ class textractor(basetext  ):
                 pass
             #self.exit()   
             time.sleep(0.1)
-        
+        try:
+            self.embeddedengine.end()
+        except:
+            print_exc()
         self.u16lesubprocess.kill()
         #self.object.translation_ui.killprocesssignal.emit()
         self.ending=True

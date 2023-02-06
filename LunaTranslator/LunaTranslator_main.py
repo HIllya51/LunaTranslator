@@ -46,7 +46,7 @@ import re
 import socket
 socket.setdefaulttimeout(globalconfig['translatortimeout'])
 from utils.post import POSTSOLVE
-import xml.etree.ElementTree as ET   
+from utils.vnrshareddict import vnrshareddict 
 import pyperclip
 class MAINUI(QObject) :
     mainuiloadok=pyqtSignal() 
@@ -58,79 +58,12 @@ class MAINUI(QObject) :
         self.textsource=None
         self.rect=None
         self.last_paste_str=''
-        self.textsource=None 
+        self.textsource=None  
         super(MAINUI,self).__init__( )
         self.mainuiloadok.connect(self.mainuiloadafter)  
     @threader  
     def loadvnrshareddict(self):
-        
-        self.vnrshareddict={}
-        self.vnrshareddict_pre={}
-        self.vnrshareddict_post={}
-        self.sorted_vnrshareddict=[]
-        self.sorted_vnrshareddict_pre=[]
-        self.sorted_vnrshareddict_post=[]
-        self.vnrsharedreg=[]
-        
-        if globalconfig['gongxiangcishu']['use'] and os.path.exists(globalconfig['gongxiangcishu']['path']) :
-            xml=ET.parse(globalconfig['gongxiangcishu']['path']) 
-            
-            for _ in xml.find('terms').findall('term'):
-                #print(_.get('type'))
-                #macro 宏(正则) 忽略
-                #yomi 人名读音 可忽略
-                #input 直接替换
-                #trans 翻译优化
-                #output 输出替换
-                #tts 忽略
-                #game #游戏名 忽略
-                #name #人名 忽略
-                #suffix #后缀（们）等 忽略
-                #prefix #前缀 忽略
-                _type=_.get('type')
-                try:
-                    src=_.find('sourceLanguage').text
-                    tgt=_.find('language').text
-                    if tgt=='en':
-                        continue
-                    pattern=_.find('pattern').text
-                    try:
-                        text=_.find('text').text
-                    except:
-                        text=''
-                        
-
-                    try:
-                        regex=_.find('regex').text
-                        
-                    except:
-                        
-                        
-                        if 'eos' in text or 'amp' in text or '&' in text:
-                            
-                            continue
-                        if _type=='trans':
-                            self.vnrshareddict[pattern]={'src':src,'tgt':tgt,'text':text }
-                        elif _type=='input':
-                            self.vnrshareddict_pre[pattern]={'src':src,'tgt':tgt,'text':text }
-                        elif _type=='output':
-                            self.vnrshareddict_post[pattern]={'src':src,'tgt':tgt,'text':text }
-                except:
-                    pass
-                  
-            keys=list(self.vnrshareddict.keys())
-            keys.sort(key=lambda key:len(key),reverse=True)
-            self.sorted_vnrshareddict=[(key,self.vnrshareddict[key]) for key in keys]
-            keys=list(self.vnrshareddict_pre.keys())
-            keys.sort(key=lambda key:len(key),reverse=True)
-            self.sorted_vnrshareddict_pre=[(key,self.vnrshareddict_pre[key]) for key in keys]
-            keys=list(self.vnrshareddict_post.keys())
-            keys.sort(key=lambda key:len(key),reverse=True)
-            self.sorted_vnrshareddict_post=[(key,self.vnrshareddict_post[key]) for key in keys]
-                  
-        #print(cnt1,cnt2,regcnt,cnt,sim,skip)
-        # print(len(list(self.vnrsharedreg)))
-        # print(len(list(self.vnrshareddict.keys())))
+        vnrshareddict(self)  
     def solvebeforetrans(self,content):
     
         zhanweifu=0
@@ -197,21 +130,18 @@ class MAINUI(QObject) :
         return res
 
     
-    def textgetmethod(self,paste_str,shortlongskip=True):
+    def textgetmethod(self,paste_str,shortlongskip=True,embedcallback=None):
         if type(paste_str)==str:
             if paste_str[:len('<notrans>')]=='<notrans>':
                 self.translation_ui.displayraw1.emit([],paste_str[len('<notrans>'):],globalconfig['rawtextcolor'],1)
-                return 
+                return  
         
         if type(paste_str)==list: 
             _paste_str='\n'.join(paste_str)
         else:
             _paste_str=paste_str
-        if _paste_str=='':
-            return  
-        if _paste_str=='':
-            return
-        if len(_paste_str)>100000:
+        
+        if _paste_str=='' or len(_paste_str)>100000:
             return 
  
          
@@ -272,7 +202,7 @@ class MAINUI(QObject) :
             print_exc()
         
         for engine in self.translators: 
-            self.translators[engine].gettask((_paste_str,paste_str_solve,skip)) 
+            self.translators[engine].gettask((_paste_str,paste_str_solve,skip,embedcallback)) 
          
     @threader
     def startreader(self,use=None,checked=True):
@@ -308,7 +238,7 @@ class MAINUI(QObject) :
             self.textsource=textractor(self,self.textgetmethod,self.hookselectdialog,pid,hwnd,pexe )  
             self.hookselectdialog.changeprocessclearsignal.emit()
             self.hookselectdialog.realshowhide.emit(True)
-         
+    
     #@threader
     def starttextsource(self,use=None,checked=True,pop=True):   
         if checked:
@@ -320,13 +250,14 @@ class MAINUI(QObject) :
             elif use=='textractor':
                 if pop:     
                     self.AttachProcessDialog.showNormal()
+                
             else:
                 self.textsource=classes[use](self.textgetmethod,self)   
         else: 
             if  self.textsource and self.textsource.ending==False :
                 self.textsource.end()  
                 self.textsource=None
-        
+         
         self.rect=None
         self.translation_ui.showhidestate=False 
         self.translation_ui.refreshtooliconsignal.emit()
@@ -406,7 +337,7 @@ class MAINUI(QObject) :
                             pass 
                 _=cishuwrapper(aclass)
                 return _
-    def _maybeyrengong(self,classname,contentraw,_):
+    def _maybeyrengong(self,classname,contentraw,_,embedcallback):
         
         classname,res,mp=_
         if classname not in globalconfig['fanyi_pre']: 
@@ -433,7 +364,9 @@ class MAINUI(QObject) :
             if needconv: 
                 res=zhconv.convert(res, 'zh-tw')
             self.translation_ui.displayres.emit(classname,res)
-         
+            if embedcallback:
+                if globalconfig['embedded']['as_fast_as_posible'] or classname==list(globalconfig['fanyi'])[globalconfig['embedded']['translator']]:  
+                    embedcallback(res) 
             
         if classname not in globalconfig['fanyi_pre']:
              
@@ -474,11 +407,13 @@ class MAINUI(QObject) :
                                 if _exe==name_: 
                                     
                                     self.hookselectdialog.changeprocessclearsignal.emit() 
-                                    if len(savehook_new_data[name_]['hook'])==0:
-                                        self.hookselectdialog.realshowhide.emit(True)
+
+                                    if globalconfig['embedded']['use']==False:
+                                        if len(savehook_new_data[name_]['hook'])==0:
+                                            self.hookselectdialog.realshowhide.emit(True)
                                     print("进程found",pid,(time.time()))
                                     self.textsource=textractor(self,self.textgetmethod,self.hookselectdialog,pid_real,hwnd,name_,savehook_new_data[name_]['hook'])
-                            
+                                     
                 
                 else: 
                     if pid_running(self.textsource.pid)==False or win32process.GetWindowThreadProcessId( self.textsource.hwnd )[0]==0:

@@ -4,19 +4,35 @@ PIPE_TEXT_EMBED_agent2host="\\\\.\\Pipe\\PIPE_TEXT_EMBED_agent2host"
 PIPE_TEXT_EMBED_host2agent="\\\\.\\Pipe\\PIPE_TEXT_EMBED_host2agent" 
 from traceback import print_exc
 import threading,time ,json
+from utils.subproc import subproc
+import subprocess,queue,functools
 class embedtranslater():
-    def __init__(self) -> None: 
+    def __init__(self,pid,waitfortransfunction=None) -> None:
+        def _():
+            self.engine=embedtranslater_(waitfortransfunction) 
+        t=threading.Thread(target=_)
+        t.start()
+         
+        
+        self.proc=subprocess.Popen('./files/embedded/main.exe '+str(pid),cwd='./files/embedded/')
+        t.join()
+    def end(self):
+        self.engine.send(json.dumps({"commmand":"end"}))
+        self.proc.kill()
+class embedtranslater_():
+    def __init__(self,waitfortransfunction) -> None: 
         t1=threading.Thread(target=self._creater1) 
         t2=threading.Thread(target=self._creater2)
-        
+        self.waitfortransfunction=waitfortransfunction
         t1.start()
         t2.start()
         t1.join()
         t2.join()
-        threading.Thread(target=self._listener).start() 
+        self.donestamp=set()
+        threading.Thread(target=self._listener).start()  
     def send(self,s):
         try: 
-            print("send",s)
+            print("host send",s)
             win32file.WriteFile(self.pipe_send,s.encode('utf8'))
         except:
             print_exc()
@@ -33,15 +49,24 @@ class embedtranslater():
                     rd=win32file.ReadFile(self.pipe_get, 65535, None)[1].decode('utf8',errors='ignore')
                     print("received",rd )
                     rd=json.loads(rd)
-                    
-                    if rd['command']=='trans':
-                        import random
-                        x=list(rd['text'])
-                        random.shuffle(x)
-                        rd['text']=''.join(x)
-                        time.sleep(3)
-                        self.send(json.dumps(rd))
-                        
+                    self._onreceive_callback(rd) 
         except: 
             print_exc()
-embedtranslater()
+    
+    def embedcallback(self,rd,timestamp,ts):
+        if timestamp in self.donestamp:
+            return 
+        self.donestamp.add(timestamp)
+        rd['text']=ts 
+        self.send(json.dumps(rd,ensure_ascii=False))
+    def _onreceive_callback(self,rd):
+        if rd['command']=='trans': 
+                self.now_wait_sentence=rd['text']
+                t=time.time()
+                self.waitfortransfunction(rd['text'],False,functools.partial(self.embedcallback,rd,t))
+                
+
+if __name__=='__main__':
+    threading.Thread(target=lambda: embedtranslater()).start() 
+    import subprocess 
+    subprocess.Popen('./files/embedded/main.exe 4660',cwd='./files/embedded/')
