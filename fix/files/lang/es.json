@@ -529,5 +529,7 @@
     "使用内嵌翻译": "Usar traducción incorporada",
     "内嵌的翻译器": "Traductor incorporado",
     "--实验性的--": "- - experimental -",
-    "使用最快翻译而非指定翻译器": "Use la traducción más rápida en lugar del traductor especificado"
+    "使用最快翻译而非指定翻译器": "Use la traducción más rápida en lugar del traductor especificado",
+    "使用内嵌翻译(重启游戏或翻译器后生效)": "Uso de traductores incrustados (efectivo después de reiniciar el juego o el traductor)",
+    "使用内嵌翻译(重启后生效)": "Usar traducción incorporada (efectiva después del reinicio)"
 }
