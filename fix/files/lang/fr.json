@@ -524,5 +524,6 @@
     "设置界面字体": "Définir les polices d'interface",
     "专有名词翻译设置按钮": "Bouton de configuration de traduction nom propre",
     "调整游戏窗口按钮": "Ajuster le bouton de la fenêtre de jeu",
-    "游戏窗口全屏按钮": "Bouton plein écran de la fenêtre de jeu"
+    "游戏窗口全屏按钮": "Bouton plein écran de la fenêtre de jeu",
+    "未下载该语言的OCR模型": "Aucun modèle OCR n'a été téléchargé pour cette langue"
 }

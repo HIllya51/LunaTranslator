@@ -1,13 +1,20 @@
 import os 
 from utils.ocrdll import ocrwrapper
-from utils.config import globalconfig
+from utils.config import globalconfig,_TR
 _ocr=ocrwrapper()
 _savelang=None
 def ocr(imgfile,lang,space): 
     global _savelang,_ocr
     if _savelang!=lang: 
-        _ocr.trydestroy()
+        _ocr.trydestroy() 
+        if lang=='auto':
+            lang='ja'
         path=f'./files/ocr/{globalconfig["normallanguagelist"][globalconfig["srclang2"]]}'
+        if os.path.exists(f'{path}/det.onnx') and os.path.exists(f'{path}/rec.onnx') and os.path.exists(f'{path}/dict.txt') :
+            pass
+        else:
+            return _TR('未下载该语言的OCR模型')
+        
         _ocr.init(f'{path}/det.onnx',f'{path}/rec.onnx',f'{path}/dict.txt')
         _savelang=lang
         
