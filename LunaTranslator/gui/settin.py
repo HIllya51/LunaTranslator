@@ -1,6 +1,6 @@
  
 from PyQt5.QtCore import Qt,QSize,pyqtSignal  
-from PyQt5.QtWidgets import  QColorDialog,QSpinBox,QDoubleSpinBox,QPushButton,QComboBox,QLabel,QScrollArea,QWidget,QGridLayout,QApplication,QTabBar
+from PyQt5.QtWidgets import  QColorDialog,QSpinBox,QDoubleSpinBox,QPushButton,QComboBox,QLabel,QScrollArea,QWidget,QGridLayout,QApplication,QTabBar,QVBoxLayout
 from PyQt5.QtGui import QColor  
 from utils.config import globalconfig 
 from PyQt5.QtWidgets import  QTabWidget 
@@ -33,7 +33,7 @@ class Settin(closeashidewindow) :
     progresssignal=pyqtSignal(str,int)
     clicksourcesignal=pyqtSignal(str) 
     fontbigsmallsignal=pyqtSignal(int)  
-    def automakegrid(self,grid,lis,save=False,savelist=None,automakegrid=0): 
+    def automakegrid(self,grid,lis,save=False,savelist=None,ww=0): 
         maxl=0
     
         for nowr,line in enumerate(lis):
@@ -58,7 +58,7 @@ class Settin(closeashidewindow) :
                 if save:
                     savelist.append(ll)
 
-        ww=self.window_width*0.8-automakegrid
+         
         
         if  globalconfig['languageuse'] in [0,1]:
             for c in range(maxl):
@@ -208,40 +208,68 @@ class Settin(closeashidewindow) :
      
     def setstylesheet(self):
         self.setStyleSheet("font: %spt '"%(11 if globalconfig['languageuse'] in [0,1] else 10)+(globalconfig['settingfonttype']  )+"' ;  " )  
-    def yitiaolong(self,title,grid,save=False,savelist=None,savelay=None): 
+    def makegrid(self,grid,save=False,savelist=None,savelay=None ):
         scrollwidth=20*self.rate
-        basewidget=QWidget()
-        basewidget.setObjectName("basewidget")
-        basewidget.setStyleSheet(("QWidget#basewidget:{color:white;background-color:white;}"))
-         
-        self.tab_widget.addTab(basewidget, _TR(title)) 
-
-
-        scroll = QScrollArea(basewidget)   
-        scroll.setHorizontalScrollBarPolicy(1)
-        scroll.setStyleSheet('''QScrollArea{background-color:transparent;}''') 
-        scroll.setGeometry(0,0,self.window_width*0.8 ,self.window_height)
-        scroll.verticalScrollBar().setStyleSheet("QScrollBar{width:%spx;}"%scrollwidth)
-       
-
-        gridlayoutwidget = QWidget()  
+        gridlayoutwidget = QWidget( )  
         gridlay=QGridLayout( )     
         gridlayoutwidget.setLayout(gridlay)   
-        masklabel=QLabel(gridlayoutwidget)
-        masklabel.setGeometry(0,0,2000,2000)
-        masklabel.setStyleSheet("color:white;background-color:white;")  
-
-
+        
         gridlayoutwidget.setFixedWidth( self.window_width*0.8-scrollwidth)
-        gridlayoutwidget.setFixedHeight(  len(grid)*35*self.rate)
-
-        self.automakegrid(gridlay,grid,save,savelist,scrollwidth) 
-
-        scroll.setWidget(gridlayoutwidget) 
+        gridlayoutwidget.setFixedHeight(len(grid)*35*self.rate)
+        self.automakegrid(gridlay,grid,save,savelist,gridlayoutwidget.width()) 
         if save:
             savelay.append(gridlay)
         return gridlayoutwidget
-    
+    def makescroll(self,widgets=[]):
+        
+        scroll = QScrollArea( )   
+        scrollwidth=20*self.rate
+        scroll.setHorizontalScrollBarPolicy(1)
+        scroll.setStyleSheet('''QScrollArea{background-color:transparent;border:0px}''')  
+        scroll.verticalScrollBar().setStyleSheet("QScrollBar{width:%spx;}"%scrollwidth)
+        
+        scrollwidget=QWidget()
+        scrollwidgetlayout=QVBoxLayout()
+        scrollwidgetlayout.setContentsMargins(0,0,0,0)
+        scrollwidget.setLayout(scrollwidgetlayout) 
+        masklabel=QLabel(scrollwidget)
+        masklabel.setGeometry(0,0,2000,2000)
+        masklabel.setStyleSheet("color:white;background-color:white;")  
+        scrollh=0
+        for wid in widgets:
+            if wid:
+                
+                scrollwidgetlayout.addWidget(wid) 
+                scrollh=scrollh+wid.height() 
+
+        scrollwidget.setGeometry(0,0,self.window_width*0.8 , scrollh) 
+
+        scroll.setWidget(scrollwidget) 
+        return scroll
+    def makesubtab(self,titles,widgets):
+        tab=QTabWidget()
+        for i,wid in enumerate(widgets):
+            tab.addTab(titles[i],wid)
+        return tab
+    def tabadd(self,tab,title,widgets): 
+        basewidget=QWidget()
+        basewidget.setObjectName("basewidget")
+        basewidget.setStyleSheet(("QWidget#basewidget:{color:white;background-color:white;}")) 
+        tab.addTab(basewidget, _TR(title)) 
+
+        baselayout=QVBoxLayout()
+        baselayout.setContentsMargins(0,0,0,0)
+        basewidget.setLayout(baselayout) 
+        for wid in widgets:
+            baselayout.addWidget(wid)
+    def yitiaolong(self,title,grid,save=False,savelist=None,savelay=None,appendwidget_in_scroll=None): 
+         
+
+        gridlayoutwidget=self.makegrid(grid,save,savelist,savelay) 
+
+        scroll=self.makescroll([gridlayoutwidget,appendwidget_in_scroll])
+        
+        self.tabadd(self.tab_widget,_TR(title),[scroll]) 
     def closeEvent(self, event) : 
             globalconfig['setting_geo']=(self.geometry().topLeft().x(),self.geometry().topLeft().y())
             super( ).closeEvent(event)  

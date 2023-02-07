@@ -17,7 +17,7 @@ def setTabOne(self) :
                  
                 
         ] 
-
+        
         
         self.yitiaolong("基本设置",grids)
          
