@@ -21,6 +21,7 @@ from gui.rotatetab import  rotatetab
 from gui.settingpage_cishu import setTabcishu
 from gui.settingpage_quick import setTab_quick
 from gui.setting_lang import setTablang
+from gui.settingpage_clipboard import setTabclip
 from utils.wavmp3player import wavmp3player
 from gui.closeashidewindow import closeashidewindow
 
@@ -32,7 +33,7 @@ class Settin(closeashidewindow) :
     progresssignal=pyqtSignal(str,int)
     clicksourcesignal=pyqtSignal(str) 
     fontbigsmallsignal=pyqtSignal(int)  
-    def automakegrid(self,grid,lis,save=False,savelist=None): 
+    def automakegrid(self,grid,lis,save=False,savelist=None,automakegrid=0): 
         maxl=0
     
         for nowr,line in enumerate(lis):
@@ -57,7 +58,7 @@ class Settin(closeashidewindow) :
                 if save:
                     savelist.append(ll)
 
-        ww=self.window_width*0.8-self.object.scrollwidth
+        ww=self.window_width*0.8-automakegrid
         
         if  globalconfig['languageuse'] in [0,1]:
             for c in range(maxl):
@@ -188,6 +189,7 @@ class Settin(closeashidewindow) :
         t1=time.time()
         
         setTabOne(self) 
+        setTabclip(self)
         setTabTwo(self) 
         setTab4(self)
         
@@ -206,35 +208,40 @@ class Settin(closeashidewindow) :
      
     def setstylesheet(self):
         self.setStyleSheet("font: %spt '"%(11 if globalconfig['languageuse'] in [0,1] else 10)+(globalconfig['settingfonttype']  )+"' ;  " )  
-    def yitiaolong(self,title,grid,save=False,savelist=None,savelay=None,fixheight=True):
-        lay,t=self. getscrollwidgetlayout(title)
-        if fixheight:
-            t.setFixedHeight(len(grid)*35*self.rate)
+    def yitiaolong(self,title,grid,save=False,savelist=None,savelay=None): 
+        scrollwidth=20*self.rate
+        basewidget=QWidget()
+        basewidget.setObjectName("basewidget")
+        basewidget.setStyleSheet(("QWidget#basewidget:{color:white;background-color:white;}"))
+         
+        self.tab_widget.addTab(basewidget, _TR(title)) 
 
-        self.automakegrid(lay,grid,save,savelist) 
-        if save:
-            savelay.append(lay)
-        return t
-    def getscrollwidgetlayout(self,title):
-        scroll = QScrollArea()  
-        self.tab_widget.addTab(scroll, _TR(title))   
-        
+
+        scroll = QScrollArea(basewidget)   
         scroll.setHorizontalScrollBarPolicy(1)
-        scroll.setStyleSheet('''QScrollArea{
-background-color:transparent;
-}''')
-        t = QWidget() 
-        lay=QGridLayout( )     
-        t.setLayout(lay)  
-        scroll.setWidget(t)
-        sw=self.object.scrollwidth
-        
-        t.setFixedWidth(self.window_width*0.8-sw)
-        masklabel=QLabel(t)
+        scroll.setStyleSheet('''QScrollArea{background-color:transparent;}''') 
+        scroll.setGeometry(0,0,self.window_width*0.8 ,self.window_height)
+        scroll.verticalScrollBar().setStyleSheet("QScrollBar{width:%spx;}"%scrollwidth)
+       
+
+        gridlayoutwidget = QWidget()  
+        gridlay=QGridLayout( )     
+        gridlayoutwidget.setLayout(gridlay)   
+        masklabel=QLabel(gridlayoutwidget)
         masklabel.setGeometry(0,0,2000,2000)
-        masklabel.setStyleSheet("color:white;background-color:white;")
-        return  lay,t
-     
+        masklabel.setStyleSheet("color:white;background-color:white;")  
+
+
+        gridlayoutwidget.setFixedWidth( self.window_width*0.8-scrollwidth)
+        gridlayoutwidget.setFixedHeight(  len(grid)*35*self.rate)
+
+        self.automakegrid(gridlay,grid,save,savelist,scrollwidth) 
+
+        scroll.setWidget(gridlayoutwidget) 
+        if save:
+            savelay.append(gridlay)
+        return gridlayoutwidget
+    
     def closeEvent(self, event) : 
             globalconfig['setting_geo']=(self.geometry().topLeft().x(),self.geometry().topLeft().y())
             super( ).closeEvent(event)  

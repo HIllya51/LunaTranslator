@@ -111,20 +111,18 @@ def setTab_about(self) :
             [
                 ("使用代理",5),(self.getsimpleswitch(globalconfig  ,'useproxy',callback=lambda x: _setproxy(x)),1),''],
             [        ("代理设置(ip:port)",5),        (proxy,5),(btn,2),  
-            ],
-            [''],
+            ], 
 
                 [(self.downloadprogress,10)],
                 [('自动下载更新(需要连接github)',5),(self.getsimpleswitch(globalconfig ,'autoupdate',callback= lambda x:getversion(self)),1) ],
                 [(self.versionlabel,10)],
-                
-                [''],
+                 
                 [(self.versionlabel1,10)],
                 [(self.versionlabel2,10)],
                 [(self.versionlabel3,10)] ,
                 [(self.versionlabel4,10)] 
         ]  
-        w=self.yitiaolong("其他设置",grids,fixheight=False ) 
+        w=self.yitiaolong("其他设置",grids ) 
 
         w.setFixedHeight(len(grids)*30*self.rate+500)
          

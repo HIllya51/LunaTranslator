@@ -511,7 +511,6 @@ if __name__ == "__main__" :
         setlanguage()
     main = MAINUI() 
     
-    main.screen_scale_rate =screen_scale_rate 
-    main.scrollwidth=(app.style().pixelMetric(QStyle.PM_ScrollBarExtent))
+    main.screen_scale_rate =screen_scale_rate  
     main.aa()
     app.exit(app.exec_())
