@@ -2,6 +2,8 @@
 import win32gui,win32process,win32api,win32con ,win32event,win32print
 from traceback import print_exc
 from PyQt5.QtWinExtras  import QtWin
+from PyQt5.QtGui import   QPixmap,QColor ,QIcon
+
 from utils.utils import argsort
 def pid_running(pid): 
     try:
@@ -146,9 +148,11 @@ def getExeIcon( name ):
         try:
             large, small = win32gui.ExtractIconEx(name,0)
             pixmap =QtWin.fromHICON(large[0])
-            return pixmap
+            return QIcon(pixmap)
         except:
-            return None
+                icon=QPixmap(100,100)
+                icon.fill(QColor.fromRgba(0))
+                return QIcon(icon)
 
 def getScreenRate() :
     hDC = win32gui.GetDC(0) 

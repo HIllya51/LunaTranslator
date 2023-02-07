@@ -109,9 +109,10 @@ class Settin(closeashidewindow) :
             globalconfig[configdictkey][key]['use']=checked
         if callback : 
             callback(key,checked)
-    def getcolorbutton(self,d,key,callback,name=None,icon="fa.paint-brush",constcolor=None,enable=True,transparent=True):
-
-        b=QPushButton(qtawesome.icon(icon, color=constcolor if constcolor else d[key]), ""  )
+    def getcolorbutton(self,d,key,callback,name=None,icon="fa.paint-brush",constcolor=None,enable=True,transparent=True,qicon=None):
+        if qicon is None:
+            qicon=qtawesome.icon(icon, color=constcolor if constcolor else d[key])
+        b=QPushButton(qicon, ""  )
         b.setEnabled(enable)
          
         b.setIconSize(QSize(int(20*self.rate),

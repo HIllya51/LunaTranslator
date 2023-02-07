@@ -36,15 +36,9 @@ class dialog_savedgame(QDialog):
                         res=res.replace('/','\\')
                         savehook_new_list[savehook_new_list.index(item.savetext)]=res 
                         savehook_new_data[res]=savehook_new_data[item.savetext] 
-                        item.savetext=res 
-                        transparent=QPixmap(100,100)
-                        transparent.fill(QColor.fromRgba(0))
-                        icon=getExeIcon(res)
-                        if icon is None:
-                                icon=transparent
-                        icon=QIcon(icon)  
-                        
-                        self.model.setItem(self.model.indexFromItem(item).row(), 1, QStandardItem(icon,''))  
+                        item.savetext=res   
+                        self.table.setIndexWidget(self.model.index(self.model.indexFromItem(item).row(), 1),self.object.getcolorbutton('','',functools.partial(self._opendir,res),qicon=getExeIcon(res) ))
+                
         def clicked2(self): 
                 try: 
                         savehook_new_list.pop(self.table.currentIndex().row())
@@ -63,31 +57,8 @@ class dialog_savedgame(QDialog):
                         savehook_new_list.insert(0,res)
                         if res not in savehook_new_data:
                                 savehook_new_data[res]={'leuse':True,'title':os.path.basename(res),'hook':[] } 
-                        transparent=QPixmap(100,100)
-                        transparent.fill(QColor.fromRgba(0))
-                        icon=getExeIcon(res)
-                        if icon is None:
-                                icon=transparent
-                        icon=QIcon(icon) 
-                        
-                        #model.setItem(row, 1, QStandardItem(icon,''))  
-                        keyitem=QStandardItem()
-                        keyitem.savetext=res
-                        # model.setItem(row, 2, keyitem) 
-                        # model.setItem(row, 0, QStandardItem(''))  
-                        # model.setItem(row, 3,QStandardItem(res) ) 
-
-                        self.model.insertRow(0,[QStandardItem(''),QStandardItem(icon,''),keyitem,QStandardItem(os.path.basename(res ) )])
-                        
-                        self.table.setIndexWidget(self.model.index(row, 0),self.object.getsimpleswitch(savehook_new_data[res],'leuse'))
-                        
-                        _=QPushButton()
-                        _.setIcon(qtawesome.icon( 'fa.gear', color="#FF69B4"))
-                        
-                        _.setStyleSheet("background: transparent;") 
-                        _.clicked.connect(functools.partial(self.selectexe,keyitem ))
-                        self.table.setIndexWidget(self.model.index(row, 2),_) 
-                        self.table.setCurrentIndex(self.model.index(row,0)) 
+                        self.newline(0,res)
+                         
                         
         def clicked(self): 
                 try: 
@@ -102,6 +73,16 @@ class dialog_savedgame(QDialog):
                         self.close() 
                 except:
                         print_exc()
+        def _opendir(self,k):
+                os.startfile(os.path.dirname(k))
+        def newline(self,row,k): 
+                keyitem=QStandardItem()
+                keyitem.savetext=k
+                self.model.insertRow(row,[QStandardItem( ),QStandardItem( ),keyitem,QStandardItem(os.path.basename(savehook_new_data[k]['title'] ) )])  
+                self.table.setIndexWidget(self.model.index(row, 0),self.object.getsimpleswitch(savehook_new_data[k],'leuse'))
+                self.table.setIndexWidget(self.model.index(row, 1),self.object.getcolorbutton('','',functools.partial(self._opendir,k),qicon=getExeIcon(k) ))
+                
+                self.table.setIndexWidget(self.model.index(row, 2),self.object.getcolorbutton('','',functools.partial(self.selectexe,keyitem),icon='fa.gear',constcolor="#FF69B4")) 
         def __init__(self, object ) -> None:
                 # if dialog_savedgame._sigleton :
                 #         return
@@ -125,30 +106,7 @@ class dialog_savedgame(QDialog):
                 table.setModel(model) 
                 self.table=table 
                 for row,k in enumerate(savehook_new_list):                                   # 2
-                        
-                        transparent=QPixmap(100,100)
-                        transparent.fill(QColor.fromRgba(0))
-                        icon=getExeIcon(k)
-                        if icon is None:
-                                icon=transparent
-                        icon=QIcon(icon) 
-                        model.setItem(row, 1, QStandardItem(icon,''))  
-                        keyitem=QStandardItem()
-                        keyitem.savetext=k
-                        model.setItem(row, 2, keyitem) 
-                        model.setItem(row, 0, QStandardItem(''))  
-                        
-                        model.setItem(row, 3,QStandardItem(savehook_new_data[k]['title']) ) 
-                        table.setIndexWidget(model.index(row, 0),object.getsimpleswitch(savehook_new_data[k],'leuse'))
-                        _=QPushButton()
-                        _.setIcon(qtawesome.icon( 'fa.gear', color="#FF69B4"))  
-                        _.setStyleSheet("background: transparent;") 
-                        _.clicked.connect(functools.partial(self.selectexe,keyitem))
-                        table.setIndexWidget(model.index(row, 2),_) 
-                        # item = QStandardItem(json.dumps(js[k],ensure_ascii=False))
-                        # model.setItem(row, 2, item)
-                        row+=1
-
+                        self.newline(row,k) 
                 button=QPushButton( )
                 button.setText(_TR('开始游戏'))
                 self.button=button

@@ -68,9 +68,7 @@ class AttachProcessDialog(closeashidewindow):
 
         self.hookselectdialog.realshowhide.emit(False)  
         ########################### 
-        self.model=QStandardItemModel(self.processList) 
-        transparent=QPixmap(100,100)
-        transparent.fill(QColor.fromRgba(0))
+        self.model=QStandardItemModel(self.processList)  
         #print(time.time()-t1)
         self.processlist= ListProcess()
         #print(time.time()-t1)
@@ -79,12 +77,7 @@ class AttachProcessDialog(closeashidewindow):
             if pexe in self.iconcache:
                 icon=self.iconcache[pexe]
             else:
-                icon=getExeIcon(pexe)
-
-                if icon is None:
-                    icon=transparent
-                 
-                icon=QIcon(icon)
+                icon=getExeIcon(pexe)  
                 self.iconcache[pexe]=icon
             item=QStandardItem(icon , pexe)
             item.setEditable(False)
