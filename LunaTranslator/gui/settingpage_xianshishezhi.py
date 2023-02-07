@@ -116,7 +116,7 @@ def setTabThree(self) :
         for  ocrgrid in [ textgrid, uigrid,fullscreengrid  ]: 
                 gridlayoutwidget=self.makegrid(ocrgrid )   
                 pages.append(gridlayoutwidget)
-        tab=self.makesubtab(['文本设置', '界面设置','全屏化设置'],pages) 
+        tab=self.makesubtab(['文本设置', '界面设置','游戏全屏'],pages) 
  
         
         self.tabadd(self.tab_widget, ('显示设置'),[tab ]) 

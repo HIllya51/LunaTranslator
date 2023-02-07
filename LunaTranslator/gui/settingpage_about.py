@@ -115,9 +115,8 @@ def setTab_about(self) :
         
         pages=[]
         for  ocrgrid in [ grid2,grid1]: 
-                gridlayoutwidget=self.makegrid(ocrgrid )  
-                scroll=self.makescroll( gridlayoutwidget  )
-                pages.append(scroll)
+                gridlayoutwidget=self.makegrid(ocrgrid )   
+                pages.append(gridlayoutwidget)
         tab=self.makesubtab(['自动更新','代理设置' ],pages) 
  
         img= QLabel('<img src="./files/zan.jpg" heigth=450 width=450>' ) 

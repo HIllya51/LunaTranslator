@@ -4,6 +4,9 @@
         500
     ],
 	"ocrafterrangeselect":true,
+	"excule_from_self":true,
+	"excule_from_exe":[],
+	"only_from_exe":[],
 	"showrangeafterrangeselect":true,
 	"ocrmagpiekeep":false,
 	"autodisappear":false,

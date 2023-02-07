@@ -217,10 +217,9 @@ class Settin(closeashidewindow) :
         if save:
             savelay.append(gridlay)
         return gridlayoutwidget
-    def makescroll(self,widget ):
-        
-        scroll = QScrollArea( )   
+    def makescroll(self,widget ):  
         scrollwidth=20*self.rate
+        scroll = QScrollArea( )   
         scroll.setHorizontalScrollBarPolicy(1)
         scroll.setStyleSheet('''QScrollArea{background-color:transparent;border:0px}''')  
         scroll.verticalScrollBar().setStyleSheet("QScrollBar{width:%spx;}"%scrollwidth)
@@ -262,7 +261,7 @@ class Settin(closeashidewindow) :
                 baselayout.addWidget(wid)
     def yitiaolong(self,title,grid ):  
         gridlayoutwidget=self.makegrid(grid )  
-        if gridlayoutwidget.height()>self.height():
+        if gridlayoutwidget.height()>self.height(): 
             gridlayoutwidget=self.makescroll( gridlayoutwidget  )
         
         self.tabadd(self.tab_widget,_TR(title),[gridlayoutwidget]) 

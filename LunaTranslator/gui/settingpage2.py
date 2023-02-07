@@ -11,10 +11,11 @@ from utils.config import globalconfig ,_TR,_TRL
 from utils.utils import selectdebugfile
 import socket
 from gui.inputdialog import autoinitdialog 
-def initsome11(self,l,label,grids): 
-    grids.append(
-        [(label,8)]
-    )
+def initsome11(self,l,grids,label=None): 
+    if label:
+        grids.append(
+            [(label,8)]
+        )
     i=0
     bad=0
     for fanyi in globalconfig['fanyi']:
@@ -68,53 +69,61 @@ def initsome11(self,l,label,grids):
             grids.append(line)
         else:
             line+=['']
-def initfanyiswitchs_auto11(self,grids):  
-        lixians=set(globalconfig['fanyi_offline'])
-        alls=set(globalconfig['fanyi'].keys())
-        mt=set(globalconfig['fanyi_pre'])
-        online=alls-lixians-mt
-
-        mianfei=set()
-        for _ in online:
-            if _ not in translatorsetting : 
-                mianfei.add(_)
-        
-        shoufei=online-mianfei 
  
-        initsome11(self, lixians,'离线翻译',grids)  
-        grids.append([''])
-        initsome11(self, mianfei,'在线翻译',grids)
-        grids.append([''])
-        initsome11(self, shoufei,'注册在线翻译',grids)
-        grids.append([''])
-        initsome11(self,mt,'预翻译',grids) 
 def setTabTwo(self) :
          
          
-        bt = QPushButton(_TR("导出翻译记录为json文件")  )
-
-        
+        bt = QPushButton(_TR("导出翻译记录为json文件")  ) 
         bt.clicked.connect(lambda x:sqlite2json(self)) 
-  
-        grids=[
-            
+    
+
+
+        grids=[[
+                ("最短翻译字数",8),(self.getspinbox(0,500,globalconfig,'minlength'),3),'',
+                ("最长翻译字数",8),(self.getspinbox(0,500,globalconfig,'maxlength'),3)  ,('',10)]
+        ] 
+
+        onlinegrid=[
             [
-                ("最短翻译字数",6),(self.getspinbox(0,500,globalconfig,'minlength'),3),'',
-                ("最长翻译字数",6),(self.getspinbox(0,500,globalconfig,'maxlength'),3),],
-            [
-                ("在线翻译超时(s)",6),(self.getspinbox(1,20,globalconfig,'translatortimeout',step=0.1,double=True,callback=socket.setdefaulttimeout),3),'',
-                 ("翻译请求间隔(s)",6),(self.getspinbox(0,10,globalconfig,'transtimeinternal',step=0.1,double=True),3),'',
-            ],
+                ("在线翻译等待时间(s)",8),(self.getspinbox(1,20,globalconfig,'translatortimeout',step=0.1,double=True,callback=socket.setdefaulttimeout),3),'',
+                 ("翻译请求间隔(s)",8),(self.getspinbox(0,10,globalconfig,'transtimeinternal',step=0.1,double=True),3) ,
+            ], 
+        ]
+        offlinegrid=[
+
+        ]
+        pretransgrid=[
             [
                 ("预翻译采用模糊匹配",8),(self.getsimpleswitch(globalconfig  ,'premtsimiuse'),1),'',
-                ("模糊匹配相似度",6),(self.getspinbox(0,500,globalconfig,'premtsimi'),3),'', 
-            ],
-            
-                [ 
+                ("模糊匹配相似度",8),(self.getspinbox(0,500,globalconfig,'premtsimi'),3) , 
+            ],[ 
                  (bt,12) ,
-                 ],
-            ['']
-        ] 
-        initfanyiswitchs_auto11(self,grids)
-         
-        self.yitiaolong("翻译设置",grids)
+            ],['']
+        ]
+
+        lixians=set(globalconfig['fanyi_offline'])
+        alls=set(globalconfig['fanyi'].keys())
+        mt=set(globalconfig['fanyi_pre'])
+        online=alls-lixians-mt 
+        mianfei=set()
+        for _ in online:
+            if _ not in translatorsetting : 
+                mianfei.add(_) 
+        shoufei=online-mianfei  
+        initsome11(self, lixians ,offlinegrid)   
+        initsome11(self, mianfei,onlinegrid, '在线翻译',) 
+        initsome11(self, shoufei,onlinegrid,'注册在线翻译') 
+        initsome11(self,mt ,pretransgrid) 
+
+        pages=[]
+        for  i,ocrgrid in enumerate([ onlinegrid,offlinegrid,pretransgrid]):
+                 
+                gridlayoutwidget=self.makegrid(ocrgrid )  
+                if i==0:
+                        gridlayoutwidget=self.makescroll( gridlayoutwidget  )
+                pages.append(gridlayoutwidget)
+        tab=self.makesubtab(['在线翻译','离线翻译','预翻译'],pages) 
+
+        gridlayoutwidget=self.makegrid(grids )   
+        
+        self.tabadd(self.tab_widget, ('翻译设置'),[gridlayoutwidget,tab ]) 

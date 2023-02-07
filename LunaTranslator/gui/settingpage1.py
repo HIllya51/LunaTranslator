@@ -22,12 +22,13 @@ def setTabOne(self) :
  
         
         pages=[]
-        for  gridmaker in [ gethookgrid ,getocrgrid ,setTabclip,txtsettings]:
+        for  i,gridmaker in enumerate([ gethookgrid ,getocrgrid ,setTabclip,txtsettings]):
                 
                 ocrgrid=gridmaker(self)
                 gridlayoutwidget=self.makegrid(ocrgrid )  
-                scroll=self.makescroll( gridlayoutwidget  )
-                pages.append(scroll)
+                if i==1:
+                        gridlayoutwidget=self.makescroll( gridlayoutwidget  )
+                pages.append(gridlayoutwidget)
         tab=self.makesubtab(['HOOK设置','OCR设置','剪贴板设置','TXT设置'],pages) 
 
         gridlayoutwidget=self.makegrid(grids )   
