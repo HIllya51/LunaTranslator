@@ -264,7 +264,7 @@ class Settin(closeashidewindow) :
         if gridlayoutwidget.height()>self.height(): 
             gridlayoutwidget=self.makescroll( gridlayoutwidget  )
         
-        self.tabadd(self.tab_widget,_TR(title),[gridlayoutwidget]) 
+        self.tabadd(self.tab_widget, (title),[gridlayoutwidget]) 
     def closeEvent(self, event) : 
             globalconfig['setting_geo']=(self.geometry().topLeft().x(),self.geometry().topLeft().y())
             super( ).closeEvent(event)  
