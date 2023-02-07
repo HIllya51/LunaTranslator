@@ -22,23 +22,12 @@ class dialog_savedgame(QDialog):
         def closeEvent( self, a0  ) -> None:
                 
                 self.button.setFocus()
-                rows=self.model.rowCount() 
-                 
+                rows=self.model.rowCount()  
                 for row in range(rows):  
-                        savehook_new_data[self.model.item(row,2).savetext]['title']=self.model.item(row,3).text()
-               # dialog_savedgame._sigleton=False
+                        savehook_new_data[self.model.item(row,0).savetext]['title']=self.model.item(row,2).text()
+                        
                 return QDialog().closeEvent(a0)
-                
-        def selectexe(self,item:QStandardItem ):
-                f=QFileDialog.getOpenFileName(directory=item.savetext )
-                res=f[0]
-                if res!='':
-                        res=res.replace('/','\\')
-                        savehook_new_list[savehook_new_list.index(item.savetext)]=res 
-                        savehook_new_data[res]=savehook_new_data[item.savetext] 
-                        item.savetext=res   
-                        self.table.setIndexWidget(self.model.index(self.model.indexFromItem(item).row(), 1),self.object.getcolorbutton('','',functools.partial(self._opendir,res),qicon=getExeIcon(res) ))
-                
+                 
         def clicked2(self): 
                 try: 
                         savehook_new_list.pop(self.table.currentIndex().row())
@@ -78,11 +67,10 @@ class dialog_savedgame(QDialog):
         def newline(self,row,k): 
                 keyitem=QStandardItem()
                 keyitem.savetext=k
-                self.model.insertRow(row,[QStandardItem( ),QStandardItem( ),keyitem,QStandardItem(os.path.basename(savehook_new_data[k]['title'] ) )])  
+                self.model.insertRow(row,[keyitem,QStandardItem( ),QStandardItem(os.path.basename(savehook_new_data[k]['title'] ) )])  
                 self.table.setIndexWidget(self.model.index(row, 0),self.object.getsimpleswitch(savehook_new_data[k],'leuse'))
                 self.table.setIndexWidget(self.model.index(row, 1),self.object.getcolorbutton('','',functools.partial(self._opendir,k),qicon=getExeIcon(k) ))
-                
-                self.table.setIndexWidget(self.model.index(row, 2),self.object.getcolorbutton('','',functools.partial(self.selectexe,keyitem),icon='fa.gear',constcolor="#FF69B4")) 
+                 
         def __init__(self, object ) -> None:
                 # if dialog_savedgame._sigleton :
                 #         return
@@ -92,7 +80,7 @@ class dialog_savedgame(QDialog):
                 self.object=object
                 formLayout = QVBoxLayout(self)  # 
                 model=QStandardItemModel(   )
-                model.setHorizontalHeaderLabels(_TRL(['转区','','路径', '游戏']))#,'HOOK'])
+                model.setHorizontalHeaderLabels(_TRL(['转区','路径', '标题']))#,'HOOK'])
          
                 self.model=model
                 
@@ -107,18 +95,13 @@ class dialog_savedgame(QDialog):
                 self.table=table 
                 for row,k in enumerate(savehook_new_list):                                   # 2
                         self.newline(row,k) 
-                button=QPushButton( )
-                button.setText(_TR('开始游戏'))
+                button=QPushButton( _TR('开始游戏')) 
                 self.button=button
                 button.clicked.connect(self.clicked)
-                button3=QPushButton( )
-                button3.setText(_TR('添加游戏'))
-
+                button3=QPushButton(_TR('添加游戏') ) 
                         
                 button3.clicked.connect(self.clicked3)
-                button2=QPushButton( )
-                button2.setText(_TR('删除游戏'))
-                
+                button2=QPushButton(_TR('删除游戏')) 
                 button2.clicked.connect(self.clicked2)
                 
                 formLayout.addWidget(table) 
