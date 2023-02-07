@@ -25,7 +25,7 @@ from utils.utils import selectdebugfile
 from utils.wrapper import Singleton
 def setTab7(self) :   
         grids=[
-            [('文本预处理',6),'','',('调整执行顺序',6)]
+            [('预处理方法',6),'','',('调整执行顺序',6)]
         ] 
         sortlist=globalconfig['postprocess_rank']
         savelist=[]
@@ -73,13 +73,8 @@ def setTab7(self) :
             ]
             grids.append(l)
          
-
-        grids.append([''])
-        def __(x):
-            globalconfig['gongxiangcishu'].__setitem__('use',x)
-            self.object.loadvnrshareddict()
-        grids+=[
-            [('翻译优化',6)],
+  
+        grids2=[ 
             [(('使用专有名词翻译' ),6),
                 self.getsimpleswitch(noundictconfig,'use'),
                 self.getcolorbutton(globalconfig,'',name="button_noundict",callback=lambda x:  noundictconfigdialog(self,noundictconfig,'专有名词翻译设置(游戏ID 0表示全局)'),icon='fa.gear',constcolor="#FF69B4")],
@@ -87,11 +82,17 @@ def setTab7(self) :
                 self.getsimpleswitch(transerrorfixdictconfig,'use'),
                 self.getcolorbutton(globalconfig,'',callback=lambda x:  noundictconfigdialog1(self,transerrorfixdictconfig,'翻译结果替换设置',['翻译','替换'],'./userconfig/transerrorfixdictconfig.json'),icon='fa.gear',constcolor="#FF69B4")],
             [(('使用VNR共享辞书' ),6),
-                self.getsimpleswitch(globalconfig['gongxiangcishu'],'use',callback =lambda x:__(x)),
+                self.getsimpleswitch(globalconfig['gongxiangcishu'],'use',callback = self.object.loadvnrshareddict ),
                 self.getcolorbutton(globalconfig,'',callback=lambda x:  getsomepath1(self,'共享辞书',globalconfig['gongxiangcishu'],'path','共享辞书',self.object.loadvnrshareddict,False,'*.xml') ,icon='fa.gear',constcolor="#FF69B4"),'','','','','',''],
             
         ]  
-        self.yitiaolong("翻译优化",grids,True,savelist,savelay )
+        pages=[
+            self.makegrid(grids,True,savelist,savelay )   ,
+            self.makegrid(grids2 )  
+        ]
+         
+        tab=self.makesubtab(['文本预处理', '翻译优化'],pages)   
+        self.tabadd(self.tab_widget, ('文本处理'),[tab ])  
 @Singleton
 class noundictconfigdialog1(QDialog):
     def __init__(dialog,object,configdict,title,label=[  '日文','翻译'] ,_=None) -> None:

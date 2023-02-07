@@ -1,8 +1,10 @@
  
 import functools 
-from utils.config import globalconfig  
+from utils.config import globalconfig  ,_TR
+from gui.settingpage_ocr import getocrgrid 
+from gui.settingpage_hook import gethookgrid
 
-from PyQt5.QtWidgets import  QTabWidget 
+from gui.settingpage_clipboard import setTabclip ,txtsettings
 def setTabOne(self) :
         self.clicksourcesignal.connect(lambda k: getattr(self,'sourceswitchs')[k].click())
   
@@ -17,7 +19,17 @@ def setTabOne(self) :
                  
                 
         ] 
+ 
         
+        pages=[]
+        for  gridmaker in [ gethookgrid ,getocrgrid ,setTabclip,txtsettings]:
+                
+                ocrgrid=gridmaker(self)
+                gridlayoutwidget=self.makegrid(ocrgrid )  
+                scroll=self.makescroll( gridlayoutwidget  )
+                pages.append(scroll)
+        tab=self.makesubtab(['HOOK设置','OCR设置','剪贴板设置','TXT设置'],pages) 
+
+        gridlayoutwidget=self.makegrid(grids )   
         
-        self.yitiaolong("基本设置",grids)
-         
+        self.tabadd(self.tab_widget, ('文本源设置'),[gridlayoutwidget,tab ]) 

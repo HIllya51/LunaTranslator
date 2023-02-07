@@ -3,7 +3,7 @@ from utils.config import globalconfig
 from utils.config import globalconfig ,_TR,_TRL 
 from gui.dialog_savedgame import dialog_savedgame
 from gui.codeacceptdialog import codeacceptdialog 
-def setTab4(self) :
+def gethookgrid(self) :
  
         grids=[
                 
@@ -14,8 +14,7 @@ def setTab4(self) :
                 [('刷新延迟(ms)',5),(self.getspinbox(1,10000,globalconfig,'textthreaddelay',callback=lambda x:self.object.textsource.setdelay()),3)],
                 [('过滤乱码文本',5),(self.getsimpleswitch(globalconfig,'filter_chaos_code'),1),(self.getcolorbutton(globalconfig,'',icon='fa.gear',constcolor="#FF69B4",callback=lambda:codeacceptdialog(self)),1)],
                 [('移除非选定HOOK',5),(self.getsimpleswitch(globalconfig,'remove_useless_hook'),1) ],
-
-                [''],
+ 
                 [''],
                 [('--实验性的--',5)],
                 [('使用内嵌翻译(重启后生效)',5),(self.getsimpleswitch( globalconfig['embedded'],'use' ),1) ],
@@ -23,5 +22,5 @@ def setTab4(self) :
                 [('使用最快翻译而非指定翻译器',5),(self.getsimpleswitch( globalconfig['embedded'] ,'as_fast_as_posible'),1) ],
         ]
          
-        self.yitiaolong("HOOK设置",grids) 
+        return grids
         

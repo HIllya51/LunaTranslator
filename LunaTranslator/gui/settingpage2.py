@@ -13,7 +13,7 @@ import socket
 from gui.inputdialog import autoinitdialog 
 def initsome11(self,l,label,grids): 
     grids.append(
-        [(label,4)]
+        [(label,8)]
     )
     i=0
     bad=0
@@ -104,7 +104,6 @@ def setTabTwo(self) :
             [
                 ("在线翻译超时(s)",6),(self.getspinbox(1,20,globalconfig,'translatortimeout',step=0.1,double=True,callback=socket.setdefaulttimeout),3),'',
                  ("翻译请求间隔(s)",6),(self.getspinbox(0,10,globalconfig,'transtimeinternal',step=0.1,double=True),3),'',
-                 ("TXT读取间隔(s)",6),(self.getspinbox(0,10,globalconfig,'txtreadlineinterval',step=0.1,double=True),3),
             ],
             [
                 ("预翻译采用模糊匹配",8),(self.getsimpleswitch(globalconfig  ,'premtsimiuse'),1),'',

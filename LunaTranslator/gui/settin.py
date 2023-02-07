@@ -11,17 +11,15 @@ from gui.settingpage1 import setTabOne
 from gui.settingpage2 import setTabTwo
 from traceback import print_exc
 from utils.config import globalconfig ,_TR
-from gui.settingpage_xianshishezhi import setTabThree
-from gui.settingpage4 import setTab4 
+from gui.settingpage_xianshishezhi import setTabThree 
 from gui.settingpage_tts import setTab5 
-from gui.settingpage_ocr import setTab6 
+
 from gui.settingpage7 import setTab7
 from gui.settingpage_about import setTab_about
 from gui.rotatetab import  rotatetab
 from gui.settingpage_cishu import setTabcishu
 from gui.settingpage_quick import setTab_quick
 from gui.setting_lang import setTablang
-from gui.settingpage_clipboard import setTabclip
 from utils.wavmp3player import wavmp3player
 from gui.closeashidewindow import closeashidewindow
 
@@ -111,14 +109,15 @@ class Settin(closeashidewindow) :
             globalconfig[configdictkey][key]['use']=checked
         if callback : 
             callback(key,checked)
-    def getcolorbutton(self,d,key,callback,name=None,icon="fa.paint-brush",constcolor=None,enable=True):
+    def getcolorbutton(self,d,key,callback,name=None,icon="fa.paint-brush",constcolor=None,enable=True,transparent=True):
 
         b=QPushButton(qtawesome.icon(icon, color=constcolor if constcolor else d[key]), ""  )
         b.setEnabled(enable)
          
         b.setIconSize(QSize(int(20*self.rate),
                                  int(20*self.rate)))
-        b.setStyleSheet("background: transparent;") 
+        if transparent:
+            b.setStyleSheet("background: transparent;") 
         b.clicked.connect(  callback)  
         if name:
             setattr(self,name,b)
@@ -175,8 +174,9 @@ class Settin(closeashidewindow) :
         #        """ )
         
         self.tab_widget.setTabBar(self.tabbar) 
+        self.tab_widget.tabBar().setObjectName("basetabbar")
         self.tab_widget.setStyleSheet(
-            '''QTabBar:tab { 
+            '''QTabBar#basetabbar:tab { 
                 width: %spx;
                 height: %spx;
                 font:%spt  ;  }
@@ -188,12 +188,9 @@ class Settin(closeashidewindow) :
         import time
         t1=time.time()
         
-        setTabOne(self) 
-        setTabclip(self)
-        setTabTwo(self) 
-        setTab4(self)
-        
-        setTab6(self)
+        setTabOne(self)  
+        setTabTwo(self)  
+         
         
         setTabThree(self) 
         setTab5(self)
@@ -220,7 +217,7 @@ class Settin(closeashidewindow) :
         if save:
             savelay.append(gridlay)
         return gridlayoutwidget
-    def makescroll(self,widgets=[]):
+    def makescroll(self,widget ):
         
         scroll = QScrollArea( )   
         scrollwidth=20*self.rate
@@ -236,11 +233,9 @@ class Settin(closeashidewindow) :
         masklabel.setGeometry(0,0,2000,2000)
         masklabel.setStyleSheet("color:white;background-color:white;")  
         scrollh=0
-        for wid in widgets:
-            if wid:
-                
-                scrollwidgetlayout.addWidget(wid) 
-                scrollh=scrollh+wid.height() 
+    
+        scrollwidgetlayout.addWidget(widget) 
+        scrollh=scrollh+widget.height() 
 
         scrollwidget.setGeometry(0,0,self.window_width*0.8 , scrollh) 
 
@@ -248,28 +243,29 @@ class Settin(closeashidewindow) :
         return scroll
     def makesubtab(self,titles,widgets):
         tab=QTabWidget()
-        for i,wid in enumerate(widgets):
-            tab.addTab(titles[i],wid)
+        for i,wid in enumerate(widgets): 
+            self.tabadd(tab,titles[i],[wid])
         return tab
     def tabadd(self,tab,title,widgets): 
-        basewidget=QWidget()
-        basewidget.setObjectName("basewidget")
-        basewidget.setStyleSheet(("QWidget#basewidget:{color:white;background-color:white;}")) 
-        tab.addTab(basewidget, _TR(title)) 
+        if len(widgets)==1:
+            tab.addTab(widgets[0],_TR(title))
+        else:
+            basewidget=QWidget()
+            basewidget.setObjectName("basewidget")
+            basewidget.setStyleSheet(("QWidget#basewidget:{color:white;background-color:white;}")) 
+            tab.addTab(basewidget, _TR(title)) 
 
-        baselayout=QVBoxLayout()
-        baselayout.setContentsMargins(0,0,0,0)
-        basewidget.setLayout(baselayout) 
-        for wid in widgets:
-            baselayout.addWidget(wid)
-    def yitiaolong(self,title,grid,save=False,savelist=None,savelay=None,appendwidget_in_scroll=None): 
-         
-
-        gridlayoutwidget=self.makegrid(grid,save,savelist,savelay) 
-
-        scroll=self.makescroll([gridlayoutwidget,appendwidget_in_scroll])
+            baselayout=QVBoxLayout()
+            baselayout.setContentsMargins(0,0,0,0)
+            basewidget.setLayout(baselayout) 
+            for wid in widgets:
+                baselayout.addWidget(wid)
+    def yitiaolong(self,title,grid ):  
+        gridlayoutwidget=self.makegrid(grid )  
+        if gridlayoutwidget.height()>self.height():
+            gridlayoutwidget=self.makescroll( gridlayoutwidget  )
         
-        self.tabadd(self.tab_widget,_TR(title),[scroll]) 
+        self.tabadd(self.tab_widget,_TR(title),[gridlayoutwidget]) 
     def closeEvent(self, event) : 
             globalconfig['setting_geo']=(self.geometry().topLeft().x(),self.geometry().topLeft().y())
             super( ).closeEvent(event)  

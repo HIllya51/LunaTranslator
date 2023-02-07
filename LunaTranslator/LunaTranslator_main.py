@@ -62,7 +62,7 @@ class MAINUI(QObject) :
         super(MAINUI,self).__init__( )
         self.mainuiloadok.connect(self.mainuiloadafter)  
     @threader  
-    def loadvnrshareddict(self):
+    def loadvnrshareddict(self,_=None):
         vnrshareddict(self)  
     def solvebeforetrans(self,content):
     

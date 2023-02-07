@@ -96,45 +96,35 @@ def setTab_about(self) :
         self.versionlabel.setTextInteractionFlags(Qt.LinksAccessibleByMouse) 
         self.versiontextsignal.connect(lambda x:self.versionlabel.setText(x) )
 
-        self.versionlabel1 = QLabel(_TR('项目网站')+':<a href="https://github.com/HIllya51/LunaTranslator">https://github.com/HIllya51/LunaTranslator</a>')
-        self.versionlabel1.setOpenExternalLinks(True)
-        self.versionlabel1.setTextInteractionFlags(Qt.LinksAccessibleByMouse)  
-        self.versionlabel2 = QLabel(_TR('使用说明')+':<a href="https://hillya51.github.io/">https://hillya51.github.io/</a>')
-        self.versionlabel2.setOpenExternalLinks(True)
-        self.versionlabel2.setTextInteractionFlags(Qt.LinksAccessibleByMouse)  
         
-        self.versionlabel3 = QLabel('如果你感觉该软件对你有帮助，欢迎微信扫码或者前往<a href="https://afdian.net/a/HIllya51">爱发电</a>赞助，谢谢，么么哒~')
-        self.versionlabel3.setOpenExternalLinks(True)
-        self.versionlabel3.setTextInteractionFlags(Qt.LinksAccessibleByMouse)  
         
-        grids=[ 
+        grid1=[ 
             [
                 ("使用代理",5),(self.getsimpleswitch(globalconfig  ,'useproxy',callback=lambda x: _setproxy(x)),1),''],
             [        ("代理设置(ip:port)",5),        (proxy,5),(btn,2),  
             ], 
-
-                [(self.downloadprogress,10)],
+        ]
+        grid2=[                
                 [('自动下载更新(需要连接github)',5),(self.getsimpleswitch(globalconfig ,'autoupdate',callback= lambda x:getversion(self)),1) ],
-                [(self.versionlabel,10)],
-                 
-                [(self.versionlabel1,10)],
-                [(self.versionlabel2,10)],
-                [(self.versionlabel3,10)] ,
+                [(self.versionlabel,10)], 
+                [(self.downloadprogress,10)],
                 #[(self.versionlabel4,10)] 
         ]  
         
-        self.versionlabel4 = QLabel('<img src="./files/zan.jpg" heigth=500 width=500>' ) 
-        self.versionlabel4.resize(500,500)
-
-        self.yitiaolong("其他设置",grids ,appendwidget_in_scroll=self.versionlabel4) 
-        #w.setFixedHeight(len(grids)*30*self.rate+500)
          
-        # self.versionlabel = QLabel(widget )
-        # self.versionlabel.setGeometry(0,500,600,500)
-        # self.versionlabel.setOpenExternalLinks(True)
-            
-        # self.versionlabel.setTextInteractionFlags(Qt.LinksAccessibleByMouse) 
-        # self.versiontextsignal.connect(lambda x:self.versionlabel.setText(x) )
-        # self.versionlabel.setWordWrap(True)
-        # self.versionlabel.setAlignment(Qt.AlignTop)
+        
+        pages=[]
+        for  ocrgrid in [ grid2,grid1]: 
+                gridlayoutwidget=self.makegrid(ocrgrid )  
+                scroll=self.makescroll( gridlayoutwidget  )
+                pages.append(scroll)
+        tab=self.makesubtab(['自动更新','代理设置' ],pages) 
+ 
+        img= QLabel('<img src="./files/zan.jpg" heigth=450 width=450>' ) 
+        img.resize(450,450)
+        shuoming = QLabel(_TR('项目网站')+':<a href="https://github.com/HIllya51/LunaTranslator">https://github.com/HIllya51/LunaTranslator</a><br>' +
+                    _TR('使用说明')+':<a href="https://hillya51.github.io/">https://hillya51.github.io/</a><br>' +
+                    '如果你感觉该软件对你有帮助，欢迎微信扫码或者前往<a href="https://afdian.net/a/HIllya51">爱发电</a>赞助，谢谢，么么哒~') 
+        self.tabadd(self.tab_widget, ('其他设置'),[tab,shuoming,img ]) 
+
         threading.Thread(target=lambda :getversion(self)).start()

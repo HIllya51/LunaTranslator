@@ -9,8 +9,6 @@ from gui.inputdialog import multicolorset
 from utils.config import globalconfig ,_TR,_TRL
 
 from gui.inputdialog import autoinitdialog,getsomepath1
-def fontbigsmallfunction(self,t):
-        self.fontSize_spinBox.setValue(self.fontSize_spinBox.value()+0.5*t)
  
 def __changeuibuttonstate(self,x):  
                 self.object.translation_ui.refreshtoolicon()
@@ -66,26 +64,30 @@ def setTabThree(self) :
                 {'t':'combo','d':globalconfig['magpieflags'],'k':'CursorInterpolationMode','l':'插值算法','list':['最邻近','双线性']},
         ]
  
-        buttongrid=[
-                [('不透明度',2),(self.horizontal_slider,8),(self.horizontal_slider_label,2)],
-                [('原文颜色',4), self.getcolorbutton(globalconfig,'rawtextcolor',callback=lambda: self.ChangeTranslateColor("rawtextcolor", self.original_color_button),name='original_color_button'),'',('翻译窗口背景颜色',4),self.getcolorbutton(globalconfig,'backcolor',callback=lambda: self.ChangeTranslateColor("backcolor", self.back_color_button),name='back_color_button'),'',('工具按钮颜色',4),self.getcolorbutton(globalconfig,'buttoncolor',callback=_settoolbariconcolor ,name='buttoncolorbutton')],
-                [('显示原文',4),self.getsimpleswitch(globalconfig,'isshowrawtext',callback=lambda x: __changeuibuttonstate(self,x),name='show_original_switch')],
-                 
-                [('翻译器字体',3),(self.font_comboBox,5),'',('设置界面字体',3),(self.sfont_comboBox,5)],
+        
+        self.fontbigsmallsignal.connect(lambda t:self.fontSize_spinBox.setValue(self.fontSize_spinBox.value()+0.5*t))
+        textgrid=[
+                [('文本字体',3),(self.font_comboBox,5)],
                 [('字体大小',3),(self.getspinbox(1,100,globalconfig,'fontsize',double=True,step=0.1,name='fontSize_spinBox'),2),'',('居中显示',4),self.getsimpleswitch(globalconfig,'showatcenter'),'',('加粗字体',4),self.getsimpleswitch(globalconfig,'showbold' )],
-                [''],
-                [('字体样式',3),(self.getsimplecombobox(_TRL(['普通字体','空心字体','描边字体','阴影字体']),globalconfig,'zitiyangshi'),3),'',('特殊字体样式填充颜色',4),self.getcolorbutton(globalconfig,'miaobiancolor',callback=lambda: self.ChangeTranslateColor("miaobiancolor", self.miaobian_color_button),name='miaobian_color_button')],
+                 [ '',],
+                 [('字体样式',3),(self.getsimplecombobox(_TRL(['普通字体','空心字体','描边字体','阴影字体']),globalconfig,'zitiyangshi'),5)],
+                [('特殊字体样式填充颜色',4),self.getcolorbutton(globalconfig,'miaobiancolor',transparent=False,callback=lambda: self.ChangeTranslateColor("miaobiancolor", self.miaobian_color_button),name='miaobian_color_button')],
                 [('空心线宽',3),(self.getspinbox(1,100,globalconfig,'miaobianwidth',double=True,step=0.1),2),'',('描边宽度',3 ),(self.getspinbox(1,100,globalconfig,'miaobianwidth2',double=True,step=0.1),2),'',('阴影强度',3),(self.getspinbox(1,10,globalconfig,'shadowforce'),2)],
                 [''],
-                [('显示分词结果',4 ),self.getsimpleswitch(globalconfig,'show_fenci',enable=globalconfig['isshowrawtext'],name='showatmiddleswitch'),'',
+                [('显示原文',4),self.getsimpleswitch(globalconfig,'isshowrawtext',callback=lambda x: __changeuibuttonstate(self,x),name='show_original_switch'),'',('原文颜色',4), self.getcolorbutton(globalconfig,'rawtextcolor',callback=lambda: self.ChangeTranslateColor("rawtextcolor", self.original_color_button),name='original_color_button')],
+                [('显示假名',4),self.getsimpleswitch(globalconfig,'isshowhira',enable=globalconfig['isshowrawtext'],name='show_hira_switch'),'',('假名颜色',4),self.getcolorbutton(globalconfig,'jiamingcolor',callback=lambda: self.ChangeTranslateColor("jiamingcolor", self.jiamingcolor_b),name='jiamingcolor_b'),'',('假名字体缩放',3),(self.getspinbox(0.05,1,globalconfig,'kanarate',double=True,step=0.05,dec=2),2)],  
+                [('语法加亮',4 ),self.getsimpleswitch(globalconfig,'show_fenci',enable=globalconfig['isshowrawtext'],name='showatmiddleswitch'),'',
                  ('词性颜色(需要Mecab)',4), self.getcolorbutton(globalconfig,'',callback=lambda  : multicolorset(self),icon='fa.gear',constcolor="#FF69B4") ,],
-                [('显示假名',4),self.getsimpleswitch(globalconfig,'isshowhira',enable=globalconfig['isshowrawtext'],name='show_hira_switch'),'',('假名颜色',4),self.getcolorbutton(globalconfig,'jiamingcolor',callback=lambda: self.ChangeTranslateColor("jiamingcolor", self.jiamingcolor_b),name='jiamingcolor_b'),'',('假名字体缩放',3),(self.getspinbox(0.05,1,globalconfig,'kanarate',double=True,step=0.05,dec=2),2)],
-                [''],
-                [("自动隐藏窗口",4),(self.getsimpleswitch(globalconfig  ,'autodisappear'),1),'',("隐藏延迟(s)",3),(self.getspinbox(1,100,globalconfig  ,'disappear_delay'),2)],
-                [''],
                 [("显示翻译器名称",4),(self.getsimpleswitch(globalconfig  ,'showfanyisource'),1)],
                 [''],
-                [('显示显示原文按钮',4),self.getsimpleswitch(globalconfig['buttonuse'],'showraw' ,callback=lambda _: self.object.translation_ui.showhidetoolbuttons() ),'',('显示复制原文按钮',4),self.getsimpleswitch(globalconfig['buttonuse'],'copy' ,callback=lambda _:self.object.translation_ui.showhidetoolbuttons()),'',('显示朗读按钮',4),self.getsimpleswitch(globalconfig['buttonuse'],'langdu' ,callback=lambda _:self.object.translation_ui.showhidetoolbuttons())],
+                [('可选取模式(阴影字体下无效)',6),self.getsimpleswitch(globalconfig,'selectable',callback=lambda x:self.object.translation_ui.translate_text.setselectable() )],
+        ]
+        uigrid=[
+                [('设置界面字体',4),(self.sfont_comboBox,5)],
+               [ ('不透明度',4),(self.horizontal_slider,8),(self.horizontal_slider_label,2)],
+               
+               [('翻译窗口背景颜色',4),self.getcolorbutton(globalconfig,'backcolor',callback=lambda: self.ChangeTranslateColor("backcolor", self.back_color_button),name='back_color_button'),'',('工具按钮颜色',4),self.getcolorbutton(globalconfig,'buttoncolor',callback=_settoolbariconcolor ,name='buttoncolorbutton')],
+               [('显示显示原文按钮',4),self.getsimpleswitch(globalconfig['buttonuse'],'showraw' ,callback=lambda _: self.object.translation_ui.showhidetoolbuttons() ),'',('显示复制原文按钮',4),self.getsimpleswitch(globalconfig['buttonuse'],'copy' ,callback=lambda _:self.object.translation_ui.showhidetoolbuttons()),'',('显示朗读按钮',4),self.getsimpleswitch(globalconfig['buttonuse'],'langdu' ,callback=lambda _:self.object.translation_ui.showhidetoolbuttons())],
                 [       ('显示移动按钮',4),self.getsimpleswitch(globalconfig['buttonuse'],'move' ,callback=lambda _:self.object.translation_ui.showhidetoolbuttons() ),'',
                         ('专有名词翻译设置按钮',4),self.getsimpleswitch(globalconfig['buttonuse'],'noundict' ,callback=lambda _:self.object.translation_ui.showhidetoolbuttons() ),'',
                 ],
@@ -93,29 +95,31 @@ def setTabThree(self) :
                 ('显示编辑按钮',4),self.getsimpleswitch(globalconfig['buttonuse'],'edit' ,callback=lambda _:self.object.translation_ui.showhidetoolbuttons() ),'' ,
                 ('显示保存的游戏按钮',4),self.getsimpleswitch(globalconfig['buttonuse'],'gamepad' ,callback=lambda _:self.object.translation_ui.showhidetoolbuttons() )],
                 [('调整游戏窗口按钮',4),self.getsimpleswitch(globalconfig['buttonuse'],'resize' ,callback=lambda _:self.object.translation_ui.showhidetoolbuttons() ),'',('游戏窗口全屏按钮',4),self.getsimpleswitch(globalconfig['buttonuse'],'fullscreen' ,callback=lambda _:self.object.translation_ui.showhidetoolbuttons()),'',('显示游戏静音按钮',4),self.getsimpleswitch(globalconfig['buttonuse'],'muteprocess' ,callback=lambda _:self.object.translation_ui.showhidetoolbuttons())],
-                [''],
+                [('游戏最小化时窗口隐藏',6),(self.getsimpleswitch(globalconfig,'minifollow'),1)], 
+                [('游戏窗口移动时同步移动',6),(self.getsimpleswitch(globalconfig,'movefollow'),1)],
+                [('固定窗口尺寸',6),self.getsimpleswitch(globalconfig,'fixedheight'),],
+                [("自动隐藏窗口",6),(self.getsimpleswitch(globalconfig  ,'autodisappear'),1),'',("隐藏延迟(s)",3),(self.getspinbox(1,100,globalconfig  ,'disappear_delay'),2)],
+                
+                [('任务栏中显示(重启生效)',6),self.getsimpleswitch(globalconfig,'showintab' ),],
+                [('翻译窗口顺时针旋转(重启生效)',6),(self.getsimplecombobox(['0','90','180','270'],globalconfig,'rotation'),4)],
+                
+               [('强制窗口保持总在最前',6),self.getsimpleswitch(globalconfig,'forcekeepontop'),],
+        ]
+        fullscreengrid=[
                 [('全屏化方式',4),(self.getsimplecombobox(_TRL(['Magpie','游戏原生全屏', 'SW_SHOWMAXIMIZED']),globalconfig,'fullscreenmethod'),6)],
                 [''],
                 [("Magpie路径",4),(self.getcolorbutton(globalconfig,'',callback=lambda x: getsomepath1(self,'Magpie路径',globalconfig,'magpiepath','Magpie路径',isdir=True),icon='fa.gear',constcolor="#FF69B4"),1),'',("Magpie设置",4),(self.getcolorbutton(globalconfig,'',callback=lambda x: autoinitdialog(self,'Magpie设置',500,magpiesettingdialog),icon='fa.gear',constcolor="#FF69B4"),1)],
                 [('Magpie算法',4),(self.getsimplecombobox(magpiemethod,globalconfig,'magpiescalemethod'),6)],
                 [('Magpie捕获模式',4),(self.getsimplecombobox(['Graphics Capture','Desktop Duplication','GDI','DwmSharedSurface'],globalconfig,'magpiecapturemethod'),6)],
-                [''],
-                [('游戏最小化时窗口隐藏',6),(self.getsimpleswitch(globalconfig,'minifollow'),1)],
-                #[('游戏失去焦点时窗口隐藏',4),(self.getsimpleswitch(globalconfig,'focusfollow'),1)],
-                [('游戏窗口移动时同步移动',6),(self.getsimpleswitch(globalconfig,'movefollow'),1)],
-                [''],
-                
-                [('固定窗口尺寸',6),self.getsimpleswitch(globalconfig,'fixedheight'),],
-                
-                [('可选取模式(阴影字体下无效)',6),self.getsimpleswitch(globalconfig,'selectable',callback=lambda x:self.object.translation_ui.translate_text.setselectable() )],
-                [('任务栏中显示(重启生效)',6),self.getsimpleswitch(globalconfig,'showintab' ),],
-                [('翻译窗口顺时针旋转(重启生效)',6),(self.getsimplecombobox(['0','90','180','270'],globalconfig,'rotation'),4)],
-                
-               [('强制窗口保持总在最前',6),self.getsimpleswitch(globalconfig,'forcekeepontop'),],
-        ] 
-        self.yitiaolong("显示设置",buttongrid) 
-        self.fontbigsmallsignal.connect(functools.partial(fontbigsmallfunction,self))
-  
+        ]
+        pages=[]
+        for  ocrgrid in [ textgrid, uigrid,fullscreengrid  ]: 
+                gridlayoutwidget=self.makegrid(ocrgrid )   
+                pages.append(gridlayoutwidget)
+        tab=self.makesubtab(['文本设置', '界面设置','全屏化设置'],pages) 
+ 
+        
+        self.tabadd(self.tab_widget, ('显示设置'),[tab ]) 
          
 def changeHorizontal(self) :
 

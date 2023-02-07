@@ -21,7 +21,7 @@ def setTab5(self) :
                 [ ('自动朗读',3),(self.getsimpleswitch(globalconfig,'autoread' ),1)],
                 
         ]  
-        self.yitiaolong("语音设置",grids) 
+        self.yitiaolong("语音合成",grids) 
  
 def changevoice(self,text):
     globalconfig['reader'][self.object.reader_usevoice]['voice']=text

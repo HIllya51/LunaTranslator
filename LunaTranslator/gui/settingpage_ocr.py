@@ -3,7 +3,7 @@ import functools
 from utils.config import globalconfig ,ocrsetting,_TRL
  
 from gui.inputdialog import autoinitdialog   
-def setTab6(self) :
+def getocrgrid(self) :
         
           
         grids=[ ] 
@@ -35,8 +35,7 @@ def setTab6(self) :
             i+=1
 
 
-        grids+=[ 
-            [''],
+        grids+=[  
             [''],
             
             [(("竖向OCR识别"),12),self.getsimpleswitch(globalconfig ,'verticalocr')],
@@ -55,8 +54,8 @@ def setTab6(self) :
             [(("选取OCR范围后立即进行一次识别"),12),self.getsimpleswitch(globalconfig ,'ocrafterrangeselect')],
             [(("选取OCR范围后主动显示范围框"),12),self.getsimpleswitch(globalconfig ,'showrangeafterrangeselect')],
         ] 
-
-        self.yitiaolong("OCR设置",grids)
+        return grids
+       
         
 def changeocrcolorcallback(self ):
     self.ChangeTranslateColor("ocrrangecolor", self.ocrrangecolor_button) 
