@@ -1,0 +1,4 @@
+*.pyc
+*.sh
+release/kanjic2j
+release/kanjic2j_web

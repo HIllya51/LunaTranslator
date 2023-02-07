@@ -1,0 +1,2 @@
+It's a django app with a name as 'kanjic2j_web'.
+Use kanjic2j_web.views.index to get to the page.
