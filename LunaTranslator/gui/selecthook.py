@@ -77,11 +77,9 @@ class hookselect(closeashidewindow):
         self.save=[]
     def addnewhook(self,ss ):
          
-        self.save.append(ss )
-        #self.ttCombo.addItem('%s:%s:%s:%s:%s:%s (%s)' %(ss))
+        self.save.append(ss ) 
 
-        #item = QStandardItem('%s:%s:%s:%s:%s:%s (%s)' %(ss) )
-        item = QStandardItem( ss[-1]  )
+        item = QStandardItem('%s %s:%s' %(ss[-1],ss[-4],ss[-3]) ) 
         rown=self.ttCombomodelmodel.rowCount()
         self.ttCombomodelmodel.setItem(rown, 0, item)
         item = QStandardItem('output' )

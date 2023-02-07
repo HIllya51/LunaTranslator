@@ -1,0 +1,228 @@
+# engines.yaml
+# 6/9/2014 jichi
+
+- name: EmbedARCGameEngine # 6/2/2015, compatible with ARCGameEngine
+  exist: AGERC.DLL
+  #encoding: sjis
+
+- name: EmbedBGI # 5/11/2014 jichi
+  exist: BGI.*|BGVC.exe|sysgrp.arc
+  #encoding: sjis
+  #vnrlocale: true # not implemented
+
+- name: EmbedCatSystem2 # 6/21/2015 jichi
+  exist: "*.int"
+  #encoding: sjis
+
+- name: EmbedCircus  # 6/5/2014  CIRCUS2
+  exist: AdvData/GRP/NAMES.DAT
+  #exist: AdvData/DAT/NAMES.DAT
+  #encoding: sjis
+
+- name: EmbedCMVS  # 6/5/2014  CMVS
+  exist: data/pack/*.cpz
+  #encoding: sjis
+
+- name: EmbedCotopha  # 6/5/2014  CIRCUS2
+  exist: "*.noa|data/*.noa"
+  #exist: AdvData/DAT/NAMES.DAT
+  #encoding: utf16
+
+- name: EmbedDebonosu # 6/18/2015 jichi
+  exist:
+    - bmp.pak
+    - dsetup.dll
+  #encoding: sjis
+
+- name: EmbedElf # 5/31/2014
+  exist:
+    - data.arc
+    - effect.arc
+    - mes.arc
+  #encoding: sjis
+
+- name: EmbedEscude # 7/23/2015
+  exist:
+    - configure.cfg
+    - gfx.bin
+  #encoding: sjis
+
+- name: EmbedFVP # 7/28/2015
+  exist: "*.hcb"
+  #encoding: sjis
+
+- name: EmbedGXP # 8/15/2015
+  exist: "*.gxp"
+  #encoding: utf16
+
+- name: EmbedLCScriptEngine # 8/6/2015
+  exist: lcsebody*
+  #encoding: sjis
+
+- name: EmbedLeaf # 6/24/2015
+  exist: bak.pak
+  #encoding: sjis
+
+- name: EmbedLucifen # 6/26/2015
+  exist: "*.lpk"
+  #encoding: sjis
+
+- name: EmbedLunaSoft # 8/2/2015
+  exist: Pac/*.pac
+  #vnrboot: true
+  #encoding: sjis
+
+- name: EmbedMalie # 8/8/2015
+  exist: Malie* # Malie.ini or Malie.exe or MalieCfg.exe
+  #encoding: utf16
+
+- name: EmbedMinori # 8/29/2015
+  exist: "*.paz"
+  #encoding: sjis
+
+- name: EmbedMono # 7/27/2015
+  exist: '*/Mono/mono.dll'
+  #encoding: sjis
+
+- name: EmbedNexton  # 7/30/2015
+  exist: aInfo.db
+  #encoding: sjis
+
+- name: EmbedNitroplus  # 11/22/2015  Nitroplus2
+  exist: "*.npk"
+  #encoding: sjis
+
+- name: EmbedPal # 7/18/2015
+  exist: dll/Pal.dll
+  #encoding: sjis
+
+- name: EmbedPensil # 8/1/2015
+  exist: PSetup.exe|MovieTexture.dll|PENCIL.*
+  #encoding: sjis
+
+- name: EmbedQLiE # 7/5/2015
+  exist: GameData/data*.pack # mostly data0.pack, data1.pack, ...
+  #encoding: sjis
+
+#- name: EmbedRio # 7/11/2015, for ShinaRio
+#  exist: rio.ini
+#  #encoding: sjis
+
+- name: EmbedRetouch # 6/27/2014, for Retouch
+  exist: resident.dll
+  #encoding: sjis
+
+- name: EmbedRGSS # 6/7/2015
+  exist: System/RGSS3*.dll # such as RGSS301.dll
+  #encoding: utf16
+
+- name: EmbedSiglusEngine # 5/25/2014, for SiglusEngine2
+  exist: Siglus*.exe
+  #encoding: utf16
+
+- name: EmbedSilkysPlus # 6/17/2015, compatible with SilkysPlus
+  exist:
+    - data.arc
+    - effect.arc
+    - Script.arc
+  #encoding: sjis
+
+- name: EmbedSystem4 # 5/25/2015, compatible with System4
+  exist: AliceStart.ini
+  #encoding: sjis
+
+- name: EmbedSystemAoiA # 6/5/2015, compatible with SystemAoi
+  exist:
+    - AoiLib.dll
+    - Ags.dll
+  #encoding: sjis
+- name: EmbedSystemAoiW # 6/5/2015, compatible with SystemAoi2
+  exist:
+    - Ags*.dll
+    - Aoi*.dll
+  #encoding: utf16
+
+- name: EmbedTaskforce2 # 8/4/2015
+  exist: Taskforce2.exe
+  #encoding: sjis
+
+- name: EmbedUnicorn # 6/22/2015 jichi Unicorn
+  exist: "*.szs|data/*.szs"
+  #encoding: sjis
+
+- name: EmbedWaffle # 8/18/2015
+  exist: cfg.pak
+  #encoding: sjis
+
+- name: EmbedWillPlus # 7/3/2015
+  exist:
+    - Rio.arc
+    - Chip*.arc
+  #encoding: sjis|utf16
+
+- name: EmbedWolfRPG # 6/9/2015
+  exist: data.wolf|data/*.wolf
+  #encoding: sjis
+
+# Game-specific engines
+
+- name: EmbedLova # 7/19/2015
+  exist:
+    - awesomium_process.exe
+    - UE3ShaderCompileWorker.exe
+
+# EOF
+
+#- name: EmbedTamamo # 8/23/2015
+#  exist:
+#    - sprite.pck
+#    - image.pck
+#  #encoding: sjis
+
+#- name: EmbedYukaSystem # 7/19/2015
+#  exist: "*.ykc"
+#  #encoding: utf8
+
+#- name: EmbedSystemC  # 6/5/2014  CIRCUS2
+#  exist: "*.fpk|data/*.fpk" #"!SystemC.exe"
+#  #encoding: sjis
+
+#- name: EmbedHorkEye # 6/24/2015 HorkEye
+#  exist:
+#  - arc0.dat
+#  - arc1.dat
+#  - arc2.dat
+#  - script.dat
+#  #encoding: sjis
+
+#-
+#  name: Majiro  # 4/20/2014
+#  exist:
+#    - data*.arc
+#    - stream*.arc
+#-
+#  name: SideB # 8/2/2014
+#  exist:
+#    - lua5.1.dll
+#    - dat/0001.dat
+
+#-
+#  name: AMUSE CRAFT # 6/3/2014
+#  exist:
+#    - *.pac
+#    - dll/resource.dll
+#    - dll/pal.dll
+#-
+#  name: CMVS # 5/10/2014
+#  exist: data/pack/*.cpz
+#-
+#  name: YU-RIS # 5/10/2014
+#  exist: (*.ypf or pac/*.ypf) and not ("nobelsse.exe")
+#-
+#  name: GCP # 5/11/2014
+#  wideChar: false
+#  exist: *.gxp
+#-
+#  name: NeXAS  # 7/6/2014
+#  exist:
+#    - Thumbnail.pac
