@@ -1,8 +1,7 @@
 # coding: utf8
 # engines.py
 # 7/11/2015 jichi
-import os
-from sakurakit.skdebug import dprint
+import os 
 
 class Engine:
   name = '' # str
@@ -58,7 +57,7 @@ class ShinaRioEngine(Engine):
             ret += int(minor1) * 10
           if str.isdigit(minor2):
             ret += int(minor2)
-          dprint("version = %s" % ret)
+          print("version = %s" % ret)
           return ret
     except Exception: pass
     return 0

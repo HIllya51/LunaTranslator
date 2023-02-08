@@ -6,9 +6,7 @@
 if __name__ == '__main__': # DEBUG
   import sys
   sys.path.append("..")
-
-import os 
-from  embedded.sakurakit.skdebug import dprint
+ 
 
 #ENGINE_YAML = os.path.join(os.path.dirname(__file__), 'engines.yaml')
 ENGINE_json ='./files/embedded/engines.json'
@@ -22,8 +20,7 @@ def _complete_path(path):
   if path and len(path) > 2 and path[0] == '\\' and path[1] != '\\':
     path = '\\' + path
   return path
-
-from  embedded.sakurakit.skdebug import dwarn 
+ 
 import win32api,win32con,win32process
 def get_engine_data():
   import json
@@ -40,7 +37,7 @@ def get_process_path(pid):
         # This function returns WCHAR
         path = win32process.GetModuleFileNameEx(h, 0)
         win32api.CloseHandle(h)
-    except Exception  as e: dwarn(e)
+    except Exception  as e: print(e)
     return path
 def match(pid=0, path=None):
   """
@@ -52,17 +49,17 @@ def match(pid=0, path=None):
       path =  get_process_path(pid)
   from  embedded.vnragent.engine import Engine, EngineFinder
   path = _complete_path(path)
-  dprint("match pid path",path)
+  print("match pid path",path)
   finder = EngineFinder(pid=pid, exepath=path)
   for eng in get_engine_data():
     if finder.eval(eng['exist']): #or True:
-      dprint("engine = %s" % eng['name'])
+      print("engine = %s" % eng['name'])
       return Engine(**eng)
-  dprint("matching engine")
+  print("matching engine")
   from  embedded.vnragent import engines
   for eng in engines.ENGINES:
     if eng.match(finder):
-      dprint("engine = %s" % eng.name)
+      print("engine = %s" % eng.name)
       return Engine(name=eng.name)
 
 # EOF

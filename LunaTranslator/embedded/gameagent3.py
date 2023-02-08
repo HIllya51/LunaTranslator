@@ -4,8 +4,7 @@
  
 from PyQt5.QtCore import QObject, pyqtSignal, QTimer  
 from  embedded.vnragent import vnragent  
-import   embedded.sharedmem3 as sharedmem
-from  embedded.sakurakit.skdebug import dprint, dwarn
+import   embedded.sharedmem3 as sharedmem 
 
 def global_(): return GameAgent()
 
@@ -42,10 +41,9 @@ class GameAgent(QObject):
       from embedded  import inject
       ok = inject.inject_vnragent(pid=pid)
       if ok:
-        d.injectedPid = pid
-        print("1")
+        d.injectedPid = pid 
         d.injectTimer.start()
-        print("2")
+        print("injectTimer")
       return ok
 
   def detachProcess(self):
@@ -77,7 +75,7 @@ class GameAgent(QObject):
     d.mem.quit()
     if d.connectedPid:
       d.rpc.disableAgent()
-    dprint("quit")
+    print("quit")
 
   #def setGameLanguage(self, v):
   #  self.__d.gameLanguage = v
@@ -142,8 +140,7 @@ class GameAgent(QObject):
       m.notify(hash,role)
     if m.isAttached(): # and m.lock(): 
       # Due to the logic, locking is not needed
-      index = m.nextIndex()
-      from sakurakit.skdebug import   dwarn    
+      index = m.nextIndex() 
       m.setDataStatus(index, m.STATUS_BUSY)
       m.setDataHash(index, hash)
       m.setDataRole(index, role)
@@ -251,12 +248,13 @@ class _GameAgent(object):
   def connectedPid(self): return self.rpc.agentProcessId()
 
   def _onInjectTimeout(self):
+    print("connect timeout")
     if self.injectedPid:
       self.q.processAttachTimeout.emit(self.injectedPid)
       self.injectedPid = 0
 
   def _onAttached(self,_):
-    dwarn("attached")
+    print("attached")
     self.injectTimer.stop()
     self.sendSettings()
     #self.rpc.enableAgent()
@@ -271,9 +269,9 @@ class _GameAgent(object):
     if name and self.connectedPid:
       self.mem.attachProcess(self.connectedPid)
 
-      dwarn("%s: %s" % ( ("Detect game engine"), name))
+      print("%s: %s" % ( ("Detect game engine"), name))
     else:
-      dwarn( ("Unrecognized game engine. Fallback to ITH."))
+      print( ("Unrecognized game engine. Fallback to ITH."))
       self.q.callbadengine.emit()
   def sendSettings(self):
     # ss = settings.global_()

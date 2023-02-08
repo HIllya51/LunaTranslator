@@ -16,7 +16,7 @@ def createSocketServer(parent=None, usetcp=ENABLE_TCP_SOCKET):
     ret = LocalSocketServer(parent)
     print("localsvc created")
     ret.setServerName(APP_SOCKET_NAME)
-    dwarn("rpcname",APP_SOCKET_NAME) 
+    print("rpcname",APP_SOCKET_NAME) 
     return ret
 # Client
  
@@ -26,7 +26,7 @@ def _unmarshalInteger(s): # str -> int, use hex
   #try: return int(s, 16) #if s.startswith('0x') else int(s)
   try: return int(s)
   except ValueError:
-    dwarn("failed to marshal number %s" % s)
+    print("failed to marshal number %s" % s)
     return 0
 
 def _marshalInteger(v): # int -> str, use hex
@@ -42,8 +42,7 @@ def _marshalBool(v): # int -> str, use hex
 #from ctypes import c_intint
 from functools import partial
 import json
-from PyQt5.QtCore import pyqtSignal, Qt, QObject 
-from  embedded.sakurakit.skdebug import dwarn, dprint     
+from PyQt5.QtCore import pyqtSignal, Qt, QObject  
   
 def manager(): return RpcServer()
 
@@ -56,7 +55,7 @@ class RpcServer(QObject):
     self.__d =_RpcServer(self)
     print(3)
     self.__d.q=self 
-    dwarn("rpcserver_Created")
+    print("rpcserver_Created")
   
   activated = pyqtSignal()
 
@@ -64,7 +63,7 @@ class RpcServer(QObject):
     self.__d.server.stop()
   def start(self):
     """@return  bool"""
-    dwarn("start")
+    print("start")
     return self.__d.server.start()
   def isActive(self):
     """@return  bool"""
@@ -112,7 +111,7 @@ class RpcServer(QObject):
       data = json.dumps(data) #, ensure_ascii=False) # the json parser in vnragent don't enforce ascii
       self.__d.callAgent('window.text', data)
     except TypeError as e:
-      dwarn("failed to encode json: %s" % e)
+      print("failed to encode json: %s" % e)
 
   #def sendEngineTranslation(self, text, hash, role):
   #  """
@@ -141,23 +140,23 @@ class _RpcServer(object):
   def callAgent(self, *args):
     if self.agentSocket:
       data = socketpack.packstrlist(args)
-      dwarn("senddata",bytes(data))
+      print("senddata",bytes(data))
       self.server.sendData(data, self.agentSocket, waitTime=RPC_WAIT_TIME)
 
   # Receive
 
   def _onDisconnected(self, socket):
     if socket is self.agentSocket:
-      dprint("pass: pid = %s" % self.agentPid)
+      print("pass: pid = %s" % self.agentPid)
       self.agentSocket = None
       self.q.agentDisconnected.emit(self.agentPid)
       self.agentPid  = 0
 
   def _onDataReceived(self, data, socket):
     args = socketpack.unpackstrlist(data)
-    dwarn("datareceived",args)
+    print("datareceived",args)
     if not args:
-      dwarn("unpack data failed")
+      print("unpack data failed")
       return
     self._onCall(socket, *args)
 
@@ -167,7 +166,7 @@ class _RpcServer(object):
     @param  cmd  str
     @param  params  [unicode]
     """
-    dwarn(cmd)
+    print(cmd)
     if cmd == 'app.activate':
       self.q.activated.emit()
  
@@ -184,13 +183,13 @@ class _RpcServer(object):
         self.q.engineReceived.emit(params[0])
     elif cmd == 'agent.engine.text':
       if len(params) == 5:
-        dwarn("solveenginetext",*params)
+        print("solveenginetext",*params)
         self._onEngineText(*params)
       else:
-        dwarn("invalid parameter count:", params)
+        print("invalid parameter count:", params)
 
     else:
-      dwarn("unknown command: %s" % cmd)
+      print("unknown command: %s" % cmd)
 
   def closeAgentSocket(self):
     pid = self.agentPid
@@ -221,10 +220,10 @@ class _RpcServer(object):
         d = {int(k):v for k,v in d.items()}
         self.q.windowTextsReceived.emit(d)
       else:
-        dwarn("error: json is not a map: %s" % data)
+        print("error: json is not a map: %s" % data)
     except (ValueError, TypeError, AttributeError) as e:
-      dwarn(e)
-      #dwarn("error: malformed json: %s" % data)
+      print(e)
+      #print("error: malformed json: %s" % data)
 
   def _onEngineText(self, text, hash, sig, role, trans):
     """
@@ -249,6 +248,6 @@ class _RpcServer(object):
       #  self.callAgent('engine.text',
       #      text, _marshalInteger(hash), _marshalInteger(role))
     except ValueError:
-      dwarn("failed to convert text hash or role to integer")
+      print("failed to convert text hash or role to integer")
  
  

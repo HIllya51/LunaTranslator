@@ -2,8 +2,7 @@
 # socketio.py
 # jichi 4/28/2014
 
-import os 
-from embedded. sakurakit.skdebug import dprint, dwarn
+import os  
 from embedded. socketsvc import socketpack3 as socketpack
 
 MESSAGE_HEAD_SIZE = socketpack.INT_SIZE # = 4
@@ -27,7 +26,7 @@ def writesocket(data, socket, pack=True):
   if pack:
     data = socketpack.packdata(data)
   ok = len(data) == socket.write(data)
-  dprint("pass: ok = %s" % ok)
+  print("pass: ok = %s" % ok)
   return ok
 
 def readsocket(socket):
@@ -41,26 +40,26 @@ def readsocket(socket):
   bytesAvailable = socket.bytesAvailable()
   if not socket.messageSize:
     if bytesAvailable < headSize:
-      dprint("insufficient head size")
+      print("insufficient head size")
       return
     ba = socket.read(headSize)
     size = socketpack.unpackuint32(ba)
     if not size:
-      dwarn("empty message size")
+      print("empty message size")
       return
     socket.messageSize = size
     bytesAvailable -= headSize
 
   bodySize = socket.messageSize
   if bodySize == 0:
-    dwarn("zero data size")
+    print("zero data size")
     return ''
 
   if bytesAvailable < bodySize:
-    dprint("insufficient message size: %s < %s" % (bytesAvailable, bodySize))
+    print("insufficient message size: %s < %s" % (bytesAvailable, bodySize))
     return
 
-  dprint("message size = %s" % socket.messageSize)
+  print("message size = %s" % socket.messageSize)
 
   data = socket.read(bodySize)
   socket.messageSize = 0

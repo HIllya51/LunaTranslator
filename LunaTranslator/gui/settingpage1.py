@@ -24,18 +24,22 @@ def setTabOne(self) :
   
         grids=[
                 [ ('选择文本输入源',3)],
-                [   ('剪贴板',3),(self.getsimpleswitch(globalconfig['sourcestatus'],'copy',name='copy',callback= functools.partial(self.yuitsu_switch,'sourcestatus','sourceswitchs','copy',self.object.starttextsource),pair='sourceswitchs'),1),'',
+                [
+                        ('剪贴板',3),(self.getsimpleswitch(globalconfig['sourcestatus'],'copy',name='copy',callback= functools.partial(self.yuitsu_switch,'sourcestatus','sourceswitchs','copy',self.object.starttextsource),pair='sourceswitchs'),1),'',
+                        ('HOOK',3),(self.getsimpleswitch(globalconfig['sourcestatus'],'textractor',name='textractor',callback= functools.partial(self.yuitsu_switch,'sourcestatus','sourceswitchs','textractor',self.object.starttextsource),pair='sourceswitchs'),1),'',
+                    ('选择游戏',3),(self.getcolorbutton(globalconfig ,'',enable=globalconfig['sourcestatus']['textractor'],name='selectbutton',icon='fa.gear',constcolor="#FF69B4",callback=lambda :self.object.AttachProcessDialog.showsignal.emit()),1)
+                ],
+                [   
                     ('OCR',3),(self.getsimpleswitch(globalconfig['sourcestatus'],'ocr',name='ocr',callback= functools.partial(self.yuitsu_switch,'sourcestatus','sourceswitchs','ocr',self.object.starttextsource),pair='sourceswitchs'),1),'',
-                    ('HOOK',3),(self.getsimpleswitch(globalconfig['sourcestatus'],'textractor',name='textractor',callback= functools.partial(self.yuitsu_switch,'sourcestatus','sourceswitchs','textractor',self.object.starttextsource),pair='sourceswitchs'),1)],
+                    ('HOOK_内嵌',3),(self.getsimpleswitch(globalconfig['sourcestatus'],'embedded',name='embedded',callback= functools.partial(self.yuitsu_switch,'sourcestatus','sourceswitchs','embedded',self.object.starttextsource),pair='sourceswitchs'),1),'',
+                        ('选择文本',3),(self.getcolorbutton(globalconfig ,'',enable=globalconfig['sourcestatus']['textractor'],name='selecthookbutton',icon='fa.gear',constcolor="#FF69B4",callback=lambda  : self.object.hookselectdialog.showsignal.emit() ),1)
+                ],
                 
                 [
-                        ('TXT文件',3),(self.getsimpleswitch(globalconfig['sourcestatus'],'txt',name='txt',callback= functools.partial(self.yuitsu_switch,'sourcestatus','sourceswitchs','txt',self.object.starttextsource),pair='sourceswitchs'),1), '',
-                        ('HOOK_内嵌',3),(self.getsimpleswitch(globalconfig['sourcestatus'],'embedded',name='embedded',callback= functools.partial(self.yuitsu_switch,'sourcestatus','sourceswitchs','embedded',self.object.starttextsource),pair='sourceswitchs'),1),'',
-
-                        ('选择游戏',3),(self.getcolorbutton(globalconfig ,'',enable=globalconfig['sourcestatus']['textractor'],name='selectbutton',icon='fa.gear',constcolor="#FF69B4",callback=lambda :self.object.AttachProcessDialog.showsignal.emit()),1)
-                ],
-                [('',10),('选择文本',3),(self.getcolorbutton(globalconfig ,'',enable=globalconfig['sourcestatus']['textractor'],name='selecthookbutton',icon='fa.gear',constcolor="#FF69B4",callback=lambda  : self.object.hookselectdialog.showsignal.emit() ),1)],
-                  
+                        ('TXT文件',3),(self.getsimpleswitch(globalconfig['sourcestatus'],'txt',name='txt',callback= functools.partial(self.yuitsu_switch,'sourcestatus','sourceswitchs','txt',self.object.starttextsource),pair='sourceswitchs'),1) 
+                        
+                        
+                ]
         ] 
  
         

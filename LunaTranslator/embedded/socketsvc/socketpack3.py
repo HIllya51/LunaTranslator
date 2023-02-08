@@ -6,8 +6,7 @@
 if __name__ == '__main__':
   import sys
   sys.path.append('..')
-
-from  embedded.sakurakit.skdebug import dwarn
+ 
 from  embedded.sakurakit.skunicode import qunicode
 #from PySide.QtCore import QByteArray
 
@@ -104,22 +103,22 @@ def unpackstrlist(data, encoding='utf8'):
   """
   dataSize = len(data)
   if dataSize < INT32_SIZE:
-    dwarn("insufficient list size")
+    print("insufficient list size")
     return []
   offset = 0
   count = unpackuint32(data, offset); offset += INT32_SIZE
   if count == 0:
-    dwarn("empty list")
+    print("empty list")
     return []
   if count * INT32_SIZE > dataSize - offset:
-    dwarn("insufficient head size")
+    print("insufficient head size")
     return []
   sizes = [] # [int]
   for i in range(0, count):
     size = unpackuint32(data, offset); offset += INT32_SIZE
     sizes.append(size)
   if sum(sizes) > dataSize - offset:
-    dwarn("insufficient body size")
+    print("insufficient body size")
     return []
   ret = []
   for size in sizes:

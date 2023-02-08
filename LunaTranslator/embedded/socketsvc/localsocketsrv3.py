@@ -10,8 +10,7 @@ if __name__ == '__main__':
 
 import weakref
 from functools import partial
-from PyQt5.QtCore import QObject, pyqtSignal 
-from embedded.sakurakit.skdebug import dprint, dwarn
+from PyQt5.QtCore import QObject, pyqtSignal  
 from embedded.socketsvc import socketio3 as socketio
 
 class LocalSocketServer(QObject):
@@ -83,17 +82,17 @@ class _LocalSocketServer(object):
   def start(self): # -> bool
     
     if not self.server:
-      dwarn("bad")
+      print("bad")
       self.server = self._createServer()
     ok = self.server.listen(self.name)
-    dwarn("start",ok,self.name)
-    dprint("pass: ok = %s" % ok)
+    print("start",ok,self.name)
+    print("pass: ok = %s" % ok)
     return ok
 
   def stop(self):
     if self.server:
       self.server.close()
-      dprint("pass")
+      print("pass")
 
   def _onNewConnection(self):
     #assert self.server
@@ -119,7 +118,7 @@ class _LocalSocketServer(object):
       socket.readyRead.connect(partial(lambda ref:
           self.readSocket(ref()),
           ref))
-    dprint("pass");
+    print("pass");
     #self.readSocket(socket)
 
   def deleteSocket(self, socket):
@@ -136,7 +135,7 @@ class _LocalSocketServer(object):
         else:
           self.q.dataReceived.emit(data, socket)
     except Exception as e: # might raise runtime exception since the socket has been deleted
-      dwarn(e)
+      print(e)
 
   def writeSocket(self, data, socket):
     if isinstance(data, str):
