@@ -6,11 +6,9 @@ import os
 from utils.subproc import subproc
 def inject_vnragent(pid): 
   ret = True
-  for dllpath in ['msvcr100.dll',
-                  'msvcp100.dll',
-                  'qtcore4.dll',
-                  'qtnetwork4.dll',
-                  'vnragent']:
+  for dllpath in os.listdir('./files/embedded'):
+    if dllpath[-4:]!='.dll':
+      continue
     dllpath='./files/embedded/'+dllpath
     dllpath = os.path.abspath(dllpath)
     
