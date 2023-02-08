@@ -14,7 +14,7 @@ from PyQt5.QtCore import QCoreApplication ,Qt ,QObject,pyqtSignal
 from PyQt5.QtWidgets import  QApplication ,QGraphicsScene,QGraphicsView,QDesktopWidget  
 
 from utils.minmaxmove import minmaxmoveobservefunc
- 
+from utils.simplekanji import kanjitrans
 from utils.wrapper import threader 
 from gui.showword import searchwordW
 from gui.rangeselect    import rangeadjust
@@ -370,6 +370,16 @@ class MAINUI(QObject) :
                             pass 
                 _=cishuwrapper(aclass)
                 return _
+    def _singletrans(self,needconv,needconvshow,res,cls,):
+                if needconv:
+                    import zhconv   
+                    print(res)
+                    res1=zhconv.convert(res,  'zh-tw' ) 
+                    print(res)
+                if needconvshow:
+                    res=res1
+                self.translation_ui.displayres.emit(cls,res)
+                return res1
     def _maybeyrengong(self,classname,contentraw,_,embedcallback):
         
         classname,res,mp=_
@@ -378,27 +388,27 @@ class MAINUI(QObject) :
          
 
         l=globalconfig['normallanguagelist'][globalconfig['tgtlang2']] 
-        if l=='cht' and l not in globalconfig['fanyi'][classname]['lang']:
-            needconv=True
+        if (l=='cht' and l not in globalconfig['fanyi'][classname]['lang'])  :
+            needconv=needconvshow=True
         else:
-            needconv=False
-        if needconv:
-            import zhconv  
+            needconv=needconvshow=False
+        if  globalconfig['embedded']['trans_kanji']   and embedcallback:
+            needconv=True
+            needja=True
+        else:
+            needja=False
+        
         if classname=='premt':
             for k in res:
-                if needconv: 
-                    res[k]=zhconv.convert(res[k],  'zh-tw' )
-
-                if k  in globalconfig['fanyi']:
-                    self.translation_ui.displayres.emit(k,res[k])
-                else:
-                    self.translation_ui.displayres.emit('premt',res[k])
+                self._singletrans(needconv,needconvshow,res[k],'premt-'+k) 
         else:
-            if needconv: 
-                res=zhconv.convert(res, 'zh-tw')
-            self.translation_ui.displayres.emit(classname,res)
+            res=self._singletrans(needconv,needconvshow,res,classname)  
             if embedcallback: 
                 if globalconfig['embedded']['as_fast_as_posible'] or classname==list(globalconfig['fanyi'])[globalconfig['embedded']['translator']]:   
+                    if needja: 
+                        print(res)
+                        res=kanjitrans(res)
+                        print(res)
                     embedcallback('zhs', res) 
             
         if classname not in globalconfig['fanyi_pre']:

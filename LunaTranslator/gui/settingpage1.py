@@ -31,6 +31,7 @@ def gethookembedgrid(self) :
                 [('翻译等待时间(s)',5),(self.getspinbox(1,30,globalconfig['embedded'],'timeout_translate'),3) ],
                 [('使用最快翻译而非指定翻译器',5),(self.getsimpleswitch( globalconfig['embedded'] ,'as_fast_as_posible'),1) ],
                 [('内嵌的翻译器',5),(self.getsimplecombobox([globalconfig['fanyi'][x]['name'] for x in globalconfig['fanyi']],globalconfig['embedded'],'translator'),5) ],
+                [('将汉字转换成繁体/日式汉字',5),(self.getsimpleswitch( globalconfig['embedded'] ,'trans_kanji'),1) ],
         ]
         
         return grids
