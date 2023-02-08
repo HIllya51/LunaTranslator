@@ -3,3 +3,4 @@ kv={'谈': '談', '挂': '掛', '临': '臨', '线': '線', '纸': '紙', '话':
 kv=str.maketrans(kv)
 def kanjitrans(k):
     return k.translate(kv) 
+ 

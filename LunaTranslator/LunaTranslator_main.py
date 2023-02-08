@@ -12,7 +12,7 @@ from utils.config import globalconfig ,savehook_new_list,savehook_new_data,nound
 import threading,win32gui 
 from PyQt5.QtCore import QCoreApplication ,Qt ,QObject,pyqtSignal
 from PyQt5.QtWidgets import  QApplication ,QGraphicsScene,QGraphicsView,QDesktopWidget  
-
+ 
 from utils.minmaxmove import minmaxmoveobservefunc
 from utils.simplekanji import kanjitrans
 from utils.wrapper import threader 
@@ -25,7 +25,7 @@ from tts.huoshantts import tts as huoshantts
 from tts.azuretts import tts as azuretts
 from tts.voiceroid2 import tts as voiceroid2
 from tts.voicevox import tts as voicevox
-
+   
 from textsource.copyboard import copyboard   
 from textsource.textractor import textractor   
 from textsource.embedded import embedded
@@ -33,10 +33,10 @@ from textsource.ocrtext import ocrtext
 from textsource.txt import txt 
 import  gui.selecthook    
 from utils.getpidlist import getpidexe,ListProcess,getScreenRate
- 
+
 import gui.translatorUI
 from queue import Queue
-
+import zhconv
 import gui.transhist 
 import gui.edittext
 import importlib
@@ -44,15 +44,17 @@ from functools import partial
 from gui.attachprocessdialog import AttachProcessDialog
 import win32event,win32con,win32process,win32api 
 import re
+
 import socket
 socket.setdefaulttimeout(globalconfig['translatortimeout'])
 from utils.post import POSTSOLVE
 from utils.vnrshareddict import vnrshareddict 
- 
-import pyperclip
 
+import pyperclip
+from utils.simplekanji import kanjitrans
 from embedded.rpcman3 import RpcServer
 from embedded.gameagent3 import GameAgent 
+
 class MAINUI(QObject) :
     startembedsignal=pyqtSignal(int,embedded)
     def startembed(self,pid,engine:embedded): 
@@ -60,9 +62,8 @@ class MAINUI(QObject) :
             self.rpc=RpcServer()  
             self.ga=GameAgent(self.rpc ) 
             self.rpc.engineTextReceived.connect(self.ga.sendEmbeddedTranslation)
-        
-        self.ga.hostengine=engine
-        self.rpc.start() 
+            self.rpc.start() 
+        self.ga.hostengine=engine 
         self.ga.attachProcess(pid) 
         self.rpc.clearAgentTranslation()  
     def __init__(self) -> None:
@@ -76,7 +77,7 @@ class MAINUI(QObject) :
         self.rpc=self.ga=None
         self.startembedsignal.connect(self.startembed)
         self.last_paste_str=''
-        self.textsource=None    
+        self.textsource=None     
     @threader  
     def loadvnrshareddict(self,_=None):
         vnrshareddict(self)  
@@ -375,8 +376,7 @@ class MAINUI(QObject) :
                 return _
     def _singletrans(self,needconv,needconvshow,res,cls,):
                 if needconv:
-                    import zhconv    
-                    res1=zhconv.convert(res,  'zh-tw' )  
+                    res1=zhconv.convert(res,  'zh-tw' )   
                 else:
                     res1=res
                 if needconvshow:
@@ -409,7 +409,10 @@ class MAINUI(QObject) :
             if embedcallback: 
                 if globalconfig['embedded']['as_fast_as_posible'] or classname==list(globalconfig['fanyi'])[globalconfig['embedded']['translator']]:   
                     if needja:  
-                        res=kanjitrans(res) 
+                        res=zhconv.convert(res,  'zh-tw' )   
+                        if needconv==False:
+                            res=kanjitrans(res)
+                        
                     embedcallback('zhs', res) 
             
         if classname not in globalconfig['fanyi_pre']:
@@ -492,7 +495,7 @@ class MAINUI(QObject) :
             self.onwindowloadautohook()
             time.sleep(0.5)#太短了的话，中间存在一瞬间，后台进程比前台窗口内存占用要大。。。
     def aa(self):  
-        
+         
         self.translation_ui =gui.translatorUI.QUnFrameWindow(self)   
         
         if globalconfig['rotation']==0:
@@ -513,15 +516,12 @@ class MAINUI(QObject) :
         self.mainuiloadafter()
         threading.Thread(target=self.setontopthread).start() 
     def mainuiloadafter(self):   
-        self.localocrstarted=False
-        #print(time.time()-t1)
+        self.localocrstarted=False 
         self.loadvnrshareddict()
         self.prepare()  
         self.startxiaoxueguan()
-        self.starthira()  
-        #print(time.time()-t1)
-        self.settin_ui = Settin(self) 
-        #print(time.time()-t1)
+        self.starthira()   
+        self.settin_ui = Settin(self)  
         self.startreader() 
         
         self.transhis=gui.transhist.transhist(self.translation_ui)  
@@ -534,7 +534,7 @@ class MAINUI(QObject) :
         threading.Thread(target=self.autohookmonitorthread).start()    
         threading.Thread(target=minmaxmoveobservefunc,args=(self.translation_ui,)).start()   
         
-        self.starttextsource(pop=False) 
+        self.starttextsource(pop=False)  
 if __name__ == "__main__" :
     
     

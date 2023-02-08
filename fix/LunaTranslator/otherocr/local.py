@@ -13,7 +13,7 @@ def ocr(imgfile,lang,space):
         if os.path.exists(f'{path}/det.onnx') and os.path.exists(f'{path}/rec.onnx') and os.path.exists(f'{path}/dict.txt') :
             pass
         else:
-            return _TR('未下载该语言的OCR模型')
+            return '<error>'+_TR('未下载该语言的OCR模型')
         
         _ocr.init(f'{path}/det.onnx',f'{path}/rec.onnx',f'{path}/dict.txt')
         _savelang=lang

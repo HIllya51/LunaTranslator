@@ -146,7 +146,7 @@ class _RpcServer(object):
 
   def _onDataReceived(self, data, socket):
     args = socketpack.unpackstrlist(data)
-    print("datareceived",args)
+    #print("datareceived",args)
     if not args:
       print("unpack data failed")
       return
@@ -158,7 +158,7 @@ class _RpcServer(object):
     @param  cmd  str
     @param  params  [unicode]
     """
-    print(cmd)
+    #print(cmd)
     if cmd == 'app.activate':
       self.q.activated.emit()
  
@@ -229,8 +229,7 @@ class _RpcServer(object):
       sig = _unmarshalInteger(sig)
       trans = _unmarshalBool(trans) 
       if trans:
-        print(text)
-  
+        #print(text) 
         self.q.engineTextReceived.emit(text, hash,   role )
       #if trans:
       #  print role, len(text)

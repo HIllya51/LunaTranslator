@@ -44,7 +44,7 @@ class GameAgent(QObject):
       if ok:
         d.injectedPid = pid 
         d.injectTimer.start()
-        print("injectTimer")
+        #print("injectTimer")
       return ok
 
   def detachProcess(self):
@@ -201,8 +201,7 @@ class _GameAgent(object):
     self.rpc.agentDisconnected.connect(q.processDetached)
     self.rpc.engineReceived.connect(self._onEngineReceived)
 
-    t = self.injectTimer = QTimer(q)
-    print("newtimer",t)
+    t = self.injectTimer = QTimer(q) 
     t.setSingleShot(False)
     from utils.config import globalconfig
     t.setInterval(globalconfig['embedded']['timeout']*1000)
@@ -250,22 +249,19 @@ class _GameAgent(object):
   @property # read only
   def connectedPid(self): return self.rpc.agentProcessId()
 
-  def _onInjectTimeout(self):
-    print("connect timeout",self.injectTimer)
+  def _onInjectTimeout(self): 
     if self.injectedPid:
       self.q.processAttachTimeout.emit(self.injectedPid)
       self.injectedPid = 0
       self.q.hostengine.timeout()
 
-  def _onAttached(self,_):
-    print("attached",self.injectTimer)
+  def _onAttached(self,_): 
     self.injectTimer.stop()
     
     self.sendSettings()
     #self.rpc.enableAgent()
 
-  def _onDetached(self, pid): # int ->
-    print("detached")
+  def _onDetached(self, pid): # int -> 
     if self.injectedPid :
       self.mem.detachProcess(pid)
       self.q.hostengine.detach()
@@ -276,9 +272,9 @@ class _GameAgent(object):
     if name and self.connectedPid:
       self.mem.attachProcess(self.connectedPid)
       self.q.hostengine.getenginename(name)
-      print("%s: %s" % ( ("Detect game engine"), name))
+      #print("%s: %s" % ( ("Detect game engine"), name))
     else:
-      print( ("Unrecognized game engine. Fallback to ITH.")) 
+      #print( ("Unrecognized game engine. Fallback to ITH.")) 
        
       self.q.hostengine.unrecognizedengine()
       if self.injectedPid :
