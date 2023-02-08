@@ -74,7 +74,10 @@ class dialog_savedgame(QDialog):
                 except:
                         print_exc()
         def _opendir(self,k):
-                os.startfile(os.path.dirname(k))
+                try:
+                        os.startfile(os.path.dirname(k))
+                except:
+                        pass
         def newline(self,row,k): 
                 keyitem=QStandardItem()
                 keyitem.savetext=k

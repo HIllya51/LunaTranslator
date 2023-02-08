@@ -17,4 +17,4 @@ setuptools==56.0.0
 Shapely==1.7.1
 six==1.15.0
 tzlocal==4.1
-win32gui==221.6
+pywin32

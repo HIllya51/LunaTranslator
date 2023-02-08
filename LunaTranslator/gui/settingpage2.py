@@ -80,7 +80,7 @@ def setTabTwo(self) :
 
         grids=[[
                 ("最短翻译字数",8),(self.getspinbox(0,500,globalconfig,'minlength'),3),'',
-                ("最长翻译字数",8),(self.getspinbox(0,500,globalconfig,'maxlength'),3)  ,('',10)]
+                ("最长翻译字数",8),(self.getspinbox(0,500,globalconfig,'maxlength'),3)  ,('',7)]
         ] 
 
         onlinegrid=[
@@ -89,6 +89,7 @@ def setTabTwo(self) :
                  ("翻译请求间隔(s)",8),(self.getspinbox(0,10,globalconfig,'transtimeinternal',step=0.1,double=True),3) ,
             ], 
         ]
+       
         offlinegrid=[
 
         ]
@@ -113,8 +114,7 @@ def setTabTwo(self) :
         initsome11(self, lixians ,offlinegrid)   
         initsome11(self, mianfei,onlinegrid, '在线翻译',) 
         initsome11(self, shoufei,onlinegrid,'注册在线翻译') 
-        initsome11(self,mt ,pretransgrid) 
-
+        initsome11(self,mt ,pretransgrid)  
         pages=[]
         for  i,ocrgrid in enumerate([ onlinegrid,offlinegrid,pretransgrid]):
                  
