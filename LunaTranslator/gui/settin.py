@@ -40,8 +40,7 @@ class Settin(closeashidewindow) :
                 grid.setColumnMinimumWidth(c,self.size().width()- self.window_width*0.2-self.scrollwidth//maxl)
          
     def resizeEvent(self, a0: QResizeEvent) -> None: 
-        if self.isVisible()==False:
-            return
+        
         self.resizefunction()
         return super().resizeEvent(a0)
     def automakegrid(self,grid,lis,save=False,savelist=None,ww=0): 
@@ -68,13 +67,7 @@ class Settin(closeashidewindow) :
                 maxl=max(maxl,nowc)
                 if save:
                     savelist.append(ll)
-
-         
-        
-        if  globalconfig['languageuse'] in [0,1]:
-            for c in range(maxl):
-
-                grid.setColumnMinimumWidth(c,ww//maxl)
+ 
         self.needfitcols.append([grid,maxl])
     def callbackwrap(self,d,k,call,_):
         d[k]=_ 
@@ -253,7 +246,7 @@ class Settin(closeashidewindow) :
         scrollwidgetlayout.addWidget(widget) 
         scrollh=scrollh+widget.height() 
 
-        scrollwidget.setGeometry(0,0,self.window_width*0.8 , scrollh) 
+        scrollwidget.setFixedWidth( scrollh) 
         self.needfitwidgets.append(scrollwidget)
         scroll.setWidget(scrollwidget) 
         return scroll
