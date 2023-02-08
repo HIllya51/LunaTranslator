@@ -21,19 +21,18 @@ def gethookgrid(self) :
          
         return grids
 
-def gethookembedgrid(self) :
- 
+def gethookembedgrid(self) : 
         grids=[
                  
                 [('仅支持部分游戏',5)],
                 [('内嵌失败时自动回到普通HOOK',5),(self.getsimpleswitch( globalconfig['embedded'],'fallbacktonormalhook' ),1) ],
                 
-                [('内嵌失败等待时间(s)',5),(self.getspinbox(3,30,globalconfig['embedded'],'timeout'),3) ],
-                
+                [('内嵌失败等待时间(s)',5),(self.getspinbox(3,30,globalconfig['embedded'],'timeout_connect'),3) ],
+                [('翻译等待时间(s)',5),(self.getspinbox(1,30,globalconfig['embedded'],'timeout_translate'),3) ],
                 [('使用最快翻译而非指定翻译器',5),(self.getsimpleswitch( globalconfig['embedded'] ,'as_fast_as_posible'),1) ],
-                [('内嵌的翻译器',5),(self.getsimplecombobox([globalconfig['fanyi'][x]['name'] for x in globalconfig['fanyi']],globalconfig['embedded'],'use',name="embedded_translator_select"),5) ],
+                [('内嵌的翻译器',5),(self.getsimplecombobox([globalconfig['fanyi'][x]['name'] for x in globalconfig['fanyi']],globalconfig['embedded'],'translator'),5) ],
         ]
-         
+        
         return grids
         
 def setTabclip(self) :

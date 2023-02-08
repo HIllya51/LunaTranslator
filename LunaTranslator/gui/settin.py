@@ -63,7 +63,7 @@ class Settin(closeashidewindow) :
 
                 grid.setColumnMinimumWidth(c,ww//maxl)
     def callbackwrap(self,d,k,call,_):
-        d[k]=_
+        d[k]=_ 
         if call:
             try: 
                 call(_)

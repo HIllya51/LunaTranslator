@@ -144,7 +144,6 @@ class MAINUI(QObject) :
 
     
     def textgetmethod(self,paste_str,shortlongskip=True,embedcallback=None):
-        print(paste_str,shortlongskip,embedcallback)
         if type(paste_str)==str:
             if paste_str[:len('<notrans>')]=='<notrans>':
                 self.translation_ui.displayraw1.emit([],paste_str[len('<notrans>'):],globalconfig['rawtextcolor'],1)
@@ -222,6 +221,7 @@ class MAINUI(QObject) :
                     self.textsource.sqlwrite2.execute(f'INSERT INTO artificialtrans VALUES(NULL,"{_paste_str}","{json.dumps({})}");')
         except:
             print_exc()
+         
         for engine in self.translators:  
                 self.translators[engine].gettask((_paste_str,paste_str_solve,skip,embedcallback)) 
          
@@ -259,7 +259,7 @@ class MAINUI(QObject) :
             if globalconfig['sourcestatus']['textractor']:
                 self.textsource=textractor(self.textgetmethod,self.hookselectdialog,pid,hwnd,pexe )  
             elif globalconfig['sourcestatus']['embedded']:
-                self.textsource=embedded(self.textgetmethod,pid,hwnd,pexe, lambda:self.embeddedfailed(pid,hwnd,pexe),self)  
+                self.textsource=embedded(self.textgetmethod,self.hookselectdialog,pid,hwnd,pexe, lambda:self.embeddedfailed(pid,hwnd,pexe),self)  
             
             if pexe not in savehook_new_list:
                 savehook_new_list.insert(0,pexe)  
@@ -397,9 +397,9 @@ class MAINUI(QObject) :
             if needconv: 
                 res=zhconv.convert(res, 'zh-tw')
             self.translation_ui.displayres.emit(classname,res)
-            if embedcallback:
-                if globalconfig['embedded']['as_fast_as_posible'] or classname==list(globalconfig['fanyi'])[globalconfig['embedded']['translator']]:  
-                    embedcallback(globalconfig['fanyi'][classname]['lang'], res) 
+            if embedcallback: 
+                if globalconfig['embedded']['as_fast_as_posible'] or classname==list(globalconfig['fanyi'])[globalconfig['embedded']['translator']]:   
+                    embedcallback('zhs', res) 
             
         if classname not in globalconfig['fanyi_pre']:
              
@@ -444,7 +444,7 @@ class MAINUI(QObject) :
                                     if globalconfig['sourcestatus']['textractor']:
                                         self.textsource=textractor(self.textgetmethod,self.hookselectdialog,pid_real,hwnd,name_ ,autostarthookcode=savehook_new_data[name_]['hook'])
                                     else:  
-                                        self.textsource=embedded(self.textgetmethod,pid_real,hwnd,name_ ,
+                                        self.textsource=embedded(self.textgetmethod,self.hookselectdialog,pid_real,hwnd,name_ ,
                                         lambda :self.embeddedfailed(pid_real,hwnd,name_),self)
                                     
                 

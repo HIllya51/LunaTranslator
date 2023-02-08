@@ -3,9 +3,11 @@ from utils.config import globalconfig ,_TR
 from textsource.textsourcebase import basetext   
 import functools,queue
 class embedded(basetext  ): 
-    def __init__(self,textgetmethod,pid,hwnd,pname,fallbackfunction,parent) : 
+    def __init__(self,textgetmethod,hookselectdialog,pid,hwnd,pname,fallbackfunction,parent) : 
         self.textgetmethod, self.pid,self.hwnd,self.pname,self.fallbackfunction =textgetmethod,pid,hwnd,pname,fallbackfunction 
         self.parent=parent 
+        hookselectdialog.changeprocessclearsignal.emit()
+        self.hookselectdialog=hookselectdialog
         self.newline=queue.Queue()
         self.agentreceiveddata=''
         self.newline.put("<handling-1>"+_TR("连接进程")+str(self.pid)) 
@@ -19,9 +21,15 @@ class embedded(basetext  ):
         self.embeddedfailed()
     def getenginename(self,name): 
         self.newline.put("<handling>"+_TR("识别到引擎")+name)
+        self.enginename=name 
     def translate(self,text ,embedcallback):
         self.agentreceiveddata=text
-        self.newline.put((self.agentreceiveddata,False, embedcallback))
+        self.hookselectdialog.getnewsentencesignal.emit(text)
+        if globalconfig['autorun']:
+            self.newline.put((self.agentreceiveddata,False, embedcallback))
+        else:
+            embedcallback('zhs',text)
+    
     def gettextthread(self ):
             #print(333333)
             paste_str=self.newline.get()

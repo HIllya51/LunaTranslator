@@ -15,7 +15,8 @@
 		"translator":0,
 		"as_fast_as_posible":true,
 		"fallbacktonormalhook":true,
-		"timeout":10
+		"timeout_connect":10,
+		"timeout_translate":10
 	},
 	"language_setted":false,
 	"language_list_show":["简体中文","繁體中文","English","Русский язык","Français","Español","한국어"],

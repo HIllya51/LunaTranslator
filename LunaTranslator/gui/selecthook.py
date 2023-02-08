@@ -284,6 +284,8 @@ class hookselect(closeashidewindow):
         self.checkfilt_notshiftjis.setHidden(hide)  
         self.checkfilt_dumplicate.setHidden(hide) 
     def findhook(self): 
+        if globalconfig['sourcestatus']['textractor']==False:
+            return 
         msgBox=QMessageBox(self)
         msgBox.setWindowTitle('警告！')
         msgBox.setText(_TR('该功能可能会导致游戏崩溃！')) 

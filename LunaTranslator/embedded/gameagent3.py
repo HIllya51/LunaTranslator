@@ -293,9 +293,10 @@ class _GameAgent(object):
     # data['embeddedFontFamily'] = ss.embeddedFontFamily() if ss.isEmbeddedFontEnabled() else ''
     # data['embeddedFontScale'] = ss.embeddedFontScale() if ss.isEmbeddedFontScaleEnabled() else 0
     # data['embeddedFontWeight'] = ss.embeddedFontWeight() * 100 if ss.isEmbeddedFontWeightEnabled() else 0
+    from utils.config import globalconfig
     data=  {"embeddedScenarioTranscodingEnabled": False, 
             "embeddedFontCharSetEnabled": True, 
-            "embeddedTranslationWaitTime": 2000, 
+            "embeddedTranslationWaitTime": globalconfig['embedded']['timeout_translate'], 
             "embeddedOtherTranscodingEnabled": False, 
             "embeddedSpacePolicyEncoding": "", 
             "windowTranslationEnabled": False, 
