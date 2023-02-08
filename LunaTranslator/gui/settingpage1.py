@@ -22,13 +22,15 @@ def gethookgrid(self) :
         return grids
 
 def gethookembedgrid(self) : 
+        def __changetimeout(x):
+                self.object.ga.settimeout(x*1000)
         grids=[
                  
                 [('仅支持部分游戏',5)],
                 [('内嵌失败时自动回到普通HOOK',5),(self.getsimpleswitch( globalconfig['embedded'],'fallbacktonormalhook' ),1) ],
                 
-                [('内嵌失败等待时间(s)',5),(self.getspinbox(3,30,globalconfig['embedded'],'timeout_connect'),3) ],
-                [('翻译等待时间(s)',5),(self.getspinbox(1,30,globalconfig['embedded'],'timeout_translate'),3) ],
+                [('内嵌失败等待时间(s)',5),(self.getspinbox(1,30,globalconfig['embedded'],'timeout_connect'),3) ],
+                [('翻译等待时间(s)',5),(self.getspinbox(0,30,globalconfig['embedded'],'timeout_translate',double=True,step=0.1,callback=__changetimeout),3) ],
                 [('使用最快翻译而非指定翻译器',5),(self.getsimpleswitch( globalconfig['embedded'] ,'as_fast_as_posible'),1) ],
                 [('内嵌的翻译器',5),(self.getsimplecombobox([globalconfig['fanyi'][x]['name'] for x in globalconfig['fanyi']],globalconfig['embedded'],'translator'),5) ],
                 [('将汉字转换成繁体/日式汉字',5),(self.getsimpleswitch( globalconfig['embedded'] ,'trans_kanji'),1) ],

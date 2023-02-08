@@ -97,7 +97,11 @@ class GameAgent(QObject):
       d.gameEncoding = v
       if d.connectedPid:
         d.sendSetting('gameEncoding', v)
-
+  
+  def settimeout(self, v):
+    d = self.__d
+    if d.connectedPid:
+        d.sendSetting('embeddedTranslationWaitTime', v)
   def scenarioSignature(self): return self.__d.scenarioSignature
 
   def setScenarioSignature(self, v):
@@ -295,40 +299,8 @@ class _GameAgent(object):
     # data['embeddedFontScale'] = ss.embeddedFontScale() if ss.isEmbeddedFontScaleEnabled() else 0
     # data['embeddedFontWeight'] = ss.embeddedFontWeight() * 100 if ss.isEmbeddedFontWeightEnabled() else 0
     from utils.config import globalconfig
-    data=  {"embeddedScenarioTranscodingEnabled": False, 
-            "embeddedFontCharSetEnabled": True, 
-            "embeddedTranslationWaitTime": globalconfig['embedded']['timeout_translate'], 
-            "embeddedOtherTranscodingEnabled": False, 
-            "embeddedSpacePolicyEncoding": "", 
-            "windowTranslationEnabled": False, 
-            "windowTextVisible": True, 
-            "embeddedNameTranscodingEnabled": False, 
-            "gameEncoding": "shift-jis", 
-            "embeddedOtherTranslationEnabled": True, 
-            "embeddedSpaceSmartInserted": False, 
-            "embeddedFontCharSet": 128, 
-            "embeddedScenarioWidth": 0, 
-            "embeddedScenarioTextVisible": True, 
-            "windowTranscodingEnabled": False, 
-            "nameSignature": 0, 
-            "embeddedScenarioTranslationEnabled": True, 
-            "embeddedScenarioVisible": True, 
-            "embeddedFontScale": 0, 
-            "embeddedAllTextsExtracted": False, 
-            "embeddedOtherVisible": True,
-            "embeddedFontFamily": "", 
-            "embeddedTextEnabled": True, 
-            "scenarioSignature": 0, 
-            "embeddedOtherTextVisible": True, 
-            "embeddedNameTextVisible": True, 
-            "embeddedSpaceAlwaysInserted": False, 
-            "embeddedNameTranslationEnabled": True, 
-            "debug": False, 
-            "embeddedNameVisible": True, 
-            "embeddedFontWeight": 0}
-    data={"embeddedScenarioTranscodingEnabled": False, "embeddedFontCharSetEnabled": True, "embeddedTranslationWaitTime": 2000, "embeddedOtherTranscodingEnabled": False, "embeddedSpacePolicyEncoding": "", "windowTranslationEnabled": True, "windowTextVisible": True, "embeddedNameTranscodingEnabled": False, "gameEncoding": "shift-jis", "embeddedOtherTranslationEnabled": True, "embeddedSpaceSmartInserted": False, "embeddedFontCharSet": 128, "embeddedScenarioWidth": 0, "embeddedScenarioTextVisible": True, "windowTranscodingEnabled": False, "nameSignature": 0, "embeddedScenarioTranslationEnabled": True, "embeddedScenarioVisible": True, "embeddedFontScale": 0, "embeddedAllTextsExtracted": False, "embeddedOtherVisible": True, "embeddedFontFamily": "", "embeddedTextEnabled": True, "scenarioSignature": 0, "embeddedOtherTextVisible": True, "embeddedNameTextVisible": True, "embeddedSpaceAlwaysInserted": False, "embeddedNameTranslationEnabled": True, "debug": False, "embeddedNameVisible": True, "embeddedFontWeight": 0}
-
-    data={"embeddedScenarioTranscodingEnabled": False, "embeddedFontCharSetEnabled": True, "embeddedTranslationWaitTime": 2000, "embeddedOtherTranscodingEnabled": False, "embeddedSpacePolicyEncoding": "", "windowTranslationEnabled": True, "windowTextVisible": True, "embeddedNameTranscodingEnabled": False, "gameEncoding": "shift-jis", "embeddedOtherTranslationEnabled": False, "embeddedSpaceSmartInserted": False, "embeddedFontCharSet": 128, "embeddedScenarioWidth": 0, "embeddedScenarioTextVisible": False, "windowTranscodingEnabled": False, "nameSignature": 0, "embeddedScenarioTranslationEnabled": True, "embeddedScenarioVisible": True, "embeddedFontScale": 0, "embeddedAllTextsExtracted": False, "embeddedOtherVisible": True, "embeddedFontFamily": "", "embeddedTextEnabled": True, "scenarioSignature": 0, "embeddedOtherTextVisible": False, "embeddedNameTextVisible": False, "embeddedSpaceAlwaysInserted": False, "embeddedNameTranslationEnabled": True, "debug": True, "embeddedNameVisible": True, "embeddedFontWeight": 0}
+     
+    data={"embeddedScenarioTranscodingEnabled": False, "embeddedFontCharSetEnabled": True, "embeddedTranslationWaitTime":1000* globalconfig['embedded']['timeout_translate'], "embeddedOtherTranscodingEnabled": False, "embeddedSpacePolicyEncoding": "", "windowTranslationEnabled": True, "windowTextVisible": True, "embeddedNameTranscodingEnabled": False, "gameEncoding": "shift-jis", "embeddedOtherTranslationEnabled": False, "embeddedSpaceSmartInserted": False, "embeddedFontCharSet": 128, "embeddedScenarioWidth": 0, "embeddedScenarioTextVisible": False, "windowTranscodingEnabled": False, "nameSignature": 0, "embeddedScenarioTranslationEnabled": True, "embeddedScenarioVisible": True, "embeddedFontScale": 0, "embeddedAllTextsExtracted": False, "embeddedOtherVisible": True, "embeddedFontFamily": "", "embeddedTextEnabled": True, "scenarioSignature": 0, "embeddedOtherTextVisible": False, "embeddedNameTextVisible": False, "embeddedSpaceAlwaysInserted": False, "embeddedNameTranslationEnabled": True, "debug": True, "embeddedNameVisible": True, "embeddedFontWeight": 0}
     self.rpc.setAgentSettings(data)
 
   def sendSetting(self, k, v):
