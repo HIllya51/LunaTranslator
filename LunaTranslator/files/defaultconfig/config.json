@@ -19,6 +19,7 @@
 		"timeout_translate":2,
 		"trans_kanji":true
 	},
+	
 	"language_setted":false,
 	"language_list_show":["简体中文","繁體中文","English","Русский язык","Français","Español","한국어"],
 	"language_list":["chs","cht","en","ru","fr","es","ko"],
@@ -67,6 +68,8 @@
     "show_fenci": false,
     "jiamingcolor": "black",
     "settingfonttype": "Arial",
+	"setting_geo_2":[0,0,1200,600],
+	"settingfontsize":12,
 	"filter_chaos_code":false, 
 	"accept_encoding":["shift-jis"],
 	"accept_character":"♪",

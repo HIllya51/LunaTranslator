@@ -82,11 +82,10 @@ def setTabOne(self) :
         for  i,ocrgrid in enumerate([ gethookgrid ,getocrgrid ,setTabclip,txtsettings,gethookembedgrid]):
                  
                 gridlayoutwidget=self.makegrid(ocrgrid(self))  
-                if i==1:
-                        gridlayoutwidget=self.makescroll( gridlayoutwidget  )
+                gridlayoutwidget=self.makescroll( gridlayoutwidget  )
                 pages.append(gridlayoutwidget)
         tab=self.makesubtab(['HOOK设置','OCR设置','剪贴板设置','TXT设置','内嵌设置'],pages) 
 
         gridlayoutwidget=self.makegrid(grids )   
         
-        self.tabadd(self.tab_widget, ('文本源设置'),[gridlayoutwidget,tab ]) 
+        self.tabadd(self.tab_widget, ('文本输入'),[gridlayoutwidget,tab ]) 

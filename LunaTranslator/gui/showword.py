@@ -17,16 +17,13 @@ class searchwordW(closeashidewindow):
     searchthreadsignal=pyqtSignal(str,dict,str)
     showtabsignal=pyqtSignal(str,str)
     def __init__(self,p):
-        super(searchwordW, self).__init__(p)
+        super(searchwordW, self).__init__(p,globalconfig,'sw_geo')
         self.setupUi() 
         #self.setWindowFlags(self.windowFlags()&~Qt.WindowMinimizeButtonHint)
         self.getnewsentencesignal.connect(self.getnewsentence) 
         self.setWindowTitle(_TR('查词'))
         self.p=p
-    def closeEvent(self, event) :  
-        globalconfig['sw_geo']=list(self.geometry().getRect())
-        super( ).closeEvent(event) 
-    
+     
     def showresfun(self,k,res):
             first=res.split('<hr>')[0]
             
@@ -42,12 +39,7 @@ class searchwordW(closeashidewindow):
          
          
         self.showtabsignal.connect(self.showresfun) 
-        
-        d=QApplication.desktop()
-
-        globalconfig['sw_geo'][0]=min(max(globalconfig['sw_geo'][0],0),d.width()-globalconfig['sw_geo'][2])
-        globalconfig['sw_geo'][1]=min(max(globalconfig['sw_geo'][1],0),d.height()-globalconfig['sw_geo'][3])
-        self.setGeometry(*globalconfig['sw_geo'])
+         
         self.centralWidget = QWidget(self) 
         self.setWindowIcon(qtawesome.icon("fa.gear" ))
         self.hboxlayout = QHBoxLayout(self.centralWidget)  

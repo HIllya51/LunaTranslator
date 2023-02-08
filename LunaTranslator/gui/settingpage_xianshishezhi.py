@@ -82,10 +82,13 @@ def setTabThree(self) :
                 [''],
                 [('可选取模式(阴影字体下无效)',6),self.getsimpleswitch(globalconfig,'selectable',callback=lambda x:self.object.translation_ui.translate_text.setselectable() )],
         ]
+        def __changefontsize(x):
+                self.setstylesheet()
+                self.resizefunction()
         uigrid=[
                 [('设置界面字体',4),(self.sfont_comboBox,5)],
-               [ ('不透明度',4),(self.horizontal_slider,8),(self.horizontal_slider_label,2)],
-               
+               [ ('字体大小',4),(self.getspinbox(1,100,globalconfig  ,'settingfontsize',callback=__changefontsize),2)], 
+               [ ('不透明度',4),(self.horizontal_slider,8),(self.horizontal_slider_label,2)], 
                [('翻译窗口背景颜色',4),self.getcolorbutton(globalconfig,'backcolor',callback=lambda: self.ChangeTranslateColor("backcolor", self.back_color_button),name='back_color_button'),'',('工具按钮颜色',4),self.getcolorbutton(globalconfig,'buttoncolor',callback=_settoolbariconcolor ,name='buttoncolorbutton')],
                [('显示显示原文按钮',4),self.getsimpleswitch(globalconfig['buttonuse'],'showraw' ,callback=lambda _: self.object.translation_ui.showhidetoolbuttons() ),'',('显示复制原文按钮',4),self.getsimpleswitch(globalconfig['buttonuse'],'copy' ,callback=lambda _:self.object.translation_ui.showhidetoolbuttons()),'',('显示朗读按钮',4),self.getsimpleswitch(globalconfig['buttonuse'],'langdu' ,callback=lambda _:self.object.translation_ui.showhidetoolbuttons())],
                 [       ('显示移动按钮',4),self.getsimpleswitch(globalconfig['buttonuse'],'move' ,callback=lambda _:self.object.translation_ui.showhidetoolbuttons() ),'',
@@ -114,7 +117,7 @@ def setTabThree(self) :
         ]
         pages=[]
         for  ocrgrid in [ textgrid, uigrid,fullscreengrid  ]: 
-                gridlayoutwidget=self.makegrid(ocrgrid )   
+                gridlayoutwidget=self.makescroll(self.makegrid(ocrgrid )   )
                 pages.append(gridlayoutwidget)
         tab=self.makesubtab(['文本设置', '界面设置','游戏全屏'],pages) 
  

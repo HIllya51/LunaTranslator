@@ -569,5 +569,9 @@
     "HOOK_内嵌 连接进程": "HOOK_ Embedded connection process",
     "HOOK 连接进程": "HOOK connection process",
     "HOOK_内嵌 进程结束": "HOOK_ End of embedded process",
-    "HOOK 离开进程": "HOOK leaves the process"
+    "HOOK 离开进程": "HOOK leaves the process",
+    "文本源": "Text source",
+    "快捷键": "Shortcut keys",
+    "文本输入": "Text input",
+    "快捷按键": "Shortcut keys"
 }

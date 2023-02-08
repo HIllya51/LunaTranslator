@@ -119,8 +119,7 @@ def setTabTwo(self) :
         for  i,ocrgrid in enumerate([ onlinegrid,offlinegrid,pretransgrid]):
                  
                 gridlayoutwidget=self.makegrid(ocrgrid )  
-                if i==0:
-                        gridlayoutwidget=self.makescroll( gridlayoutwidget  )
+                gridlayoutwidget=self.makescroll( gridlayoutwidget  )
                 pages.append(gridlayoutwidget)
         tab=self.makesubtab(['在线翻译','离线翻译','预翻译'],pages) 
 

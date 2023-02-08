@@ -68,7 +68,7 @@ def setTab_quick(self) :
                     ]
                 )
              
-        self.yitiaolong("快捷键设置",grids)
+        self.yitiaolong("快捷按键",grids)
 def __enable(self,x ): 
             for quick in globalconfig['quick_setting']['all']:
                 if quick not in self.bindfunctions:

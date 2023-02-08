@@ -569,5 +569,9 @@
     "HOOK_内嵌 连接进程": "Hook Proceso de conexión incorporado",
     "HOOK 连接进程": "Proceso de conexión Hook",
     "HOOK_内嵌 进程结束": "Hook Fin del proceso de incrustación",
-    "HOOK 离开进程": "Proceso de salida de Hook"
+    "HOOK 离开进程": "Proceso de salida de Hook",
+    "文本源": "Fuente literaria",
+    "快捷键": "Teclas de acceso rápido",
+    "文本输入": "Entrada de texto",
+    "快捷按键": "Teclas de acceso rápido"
 }

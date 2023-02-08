@@ -12,28 +12,19 @@ from utils.config import globalconfig
 class edittext(closeashidewindow): 
     getnewsentencesignal=pyqtSignal(str)   
     def __init__(self,p):
-        super(edittext, self).__init__(p)
+        super(edittext, self).__init__(p,globalconfig,'edit_geo')
         self.p=p
         self.sync=True
         self.setupUi() 
         
         #self.setWindowFlags(self.windowFlags()&~Qt.WindowMinimizeButtonHint)
         self.getnewsentencesignal.connect(self.getnewsentence)   
-        self.setWindowTitle(_TR('编辑')) 
-    def closeEvent(self, event) : 
-            globalconfig['edit_geo']=list(self.geometry().getRect())
-            super( ).closeEvent(event)
+        self.setWindowTitle(_TR('编辑'))  
     def setupUi(self):
         self.setWindowIcon(qtawesome.icon("fa.edit"  ))
         font = QFont() 
         font.fromString(globalconfig['edit_fontstring'])
-
-
-        d=QApplication.desktop()
-
-        globalconfig['edit_geo'][0]=min(max(globalconfig['edit_geo'][0],0),d.width()-globalconfig['edit_geo'][2])
-        globalconfig['edit_geo'][1]=min(max(globalconfig['edit_geo'][1],0),d.height()-globalconfig['edit_geo'][3])
-        self.setGeometry(*globalconfig['edit_geo'])
+ 
         self.textOutput = QTextBrowser(self)
         
         self.textOutput.setContextMenuPolicy(Qt.CustomContextMenu)

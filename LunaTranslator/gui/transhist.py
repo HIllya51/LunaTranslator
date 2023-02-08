@@ -19,7 +19,7 @@ class transhist(closeashidewindow):
     getnewsentencesignal=pyqtSignal(str) 
     getnewtranssignal=pyqtSignal(str,str)  
     def __init__(self,p):
-        super(transhist, self).__init__(p)
+        super(transhist, self).__init__(p,globalconfig,'hist_geo')
         self.setupUi() 
         #self.setWindowFlags(self.windowFlags()&~Qt.WindowMinimizeButtonHint)
         self.getnewsentencesignal.connect(self.getnewsentence) 
@@ -27,21 +27,12 @@ class transhist(closeashidewindow):
         self.hiderawflag=False
         self.hideapiflag=False
         self.setWindowTitle(_TR('历史翻译'))
-    
-    def closeEvent(self, event) : 
-            globalconfig['hist_geo']=list(self.geometry().getRect())
-            super( ).closeEvent(event) 
+     
     def setupUi(self):
         self.setWindowIcon(qtawesome.icon("fa.rotate-left"  ))
         font = QFont() 
         font.fromString(globalconfig['hist_fontstring'])
-
-
-        d=QApplication.desktop()
-
-        globalconfig['hist_geo'][0]=min(max(globalconfig['hist_geo'][0],0),d.width()-globalconfig['hist_geo'][2])
-        globalconfig['hist_geo'][1]=min(max(globalconfig['hist_geo'][1],0),d.height()-globalconfig['hist_geo'][3])
-        self.setGeometry(*globalconfig['hist_geo'])
+ 
         self.textOutput = QTextBrowser(self)
         self.textOutput.setFont(font)
         self.textOutput.setContextMenuPolicy(Qt.CustomContextMenu)

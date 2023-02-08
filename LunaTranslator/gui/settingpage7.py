@@ -87,8 +87,8 @@ def setTab7(self) :
             
         ]  
         pages=[
-            self.makegrid(grids,True,savelist,savelay )   ,
-            self.makegrid(grids2 )  
+            self.makescroll(self.makegrid(grids,True,savelist,savelay )  ) ,
+            self.makescroll(self.makegrid(grids2 )  )
         ]
          
         tab=self.makesubtab(['文本预处理', '翻译优化'],pages)   

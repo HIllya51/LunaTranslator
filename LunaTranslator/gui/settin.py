@@ -1,7 +1,7 @@
  
 from PyQt5.QtCore import Qt,QSize,pyqtSignal  
 from PyQt5.QtWidgets import  QColorDialog,QSpinBox,QDoubleSpinBox,QPushButton,QComboBox,QLabel,QScrollArea,QWidget,QGridLayout,QApplication,QTabBar,QVBoxLayout
-from PyQt5.QtGui import QColor  
+from PyQt5.QtGui import QColor  ,QResizeEvent 
 from utils.config import globalconfig 
 from PyQt5.QtWidgets import  QTabWidget 
 import qtawesome  
@@ -31,6 +31,19 @@ class Settin(closeashidewindow) :
     progresssignal=pyqtSignal(str,int)
     clicksourcesignal=pyqtSignal(str) 
     fontbigsmallsignal=pyqtSignal(int)  
+    
+    def resizefunction(self):
+        for w in self.needfitwidgets:
+            w.setFixedWidth(self.size().width()- self.window_width*0.2-self.scrollwidth)
+        for grid,maxl in self.needfitcols:
+            for c in range(maxl):
+                grid.setColumnMinimumWidth(c,self.size().width()- self.window_width*0.2-self.scrollwidth//maxl)
+         
+    def resizeEvent(self, a0: QResizeEvent) -> None: 
+        if self.isVisible()==False:
+            return
+        self.resizefunction()
+        return super().resizeEvent(a0)
     def automakegrid(self,grid,lis,save=False,savelist=None,ww=0): 
         maxl=0
     
@@ -62,6 +75,7 @@ class Settin(closeashidewindow) :
             for c in range(maxl):
 
                 grid.setColumnMinimumWidth(c,ww//maxl)
+        self.needfitcols.append([grid,maxl])
     def callbackwrap(self,d,k,call,_):
         d[k]=_ 
         if call:
@@ -135,7 +149,7 @@ class Settin(closeashidewindow) :
         return s
     def __init__(self, object):
         
-        super(Settin, self).__init__(object.translation_ui) 
+        super(Settin, self).__init__(object.translation_ui,globalconfig,'setting_geo_2') 
         #self.setWindowFlag(Qt.Tool,False)
         #self.setWindowFlags(self.windowFlags()&~Qt.WindowMinimizeButtonHint)
         self.mp3player=wavmp3player() 
@@ -143,21 +157,20 @@ class Settin(closeashidewindow) :
         self.mp3playsignal.connect(self.mp3player.mp3playfunction)  
         self.object = object  
         self.needupdate=False
+        self.needfitwidgets=[]
+        self.needfitcols=[]
         # 界面缩放比例
         self.rate = self.object.screen_scale_rate
         # 界面尺寸
         self.window_width = int((900 if globalconfig['languageuse'] in [0,1] else 1200)*self.rate)
          
-        self.window_height = int(600*self.rate)
+        self.window_height = int(500*self.rate)
+        self.scrollwidth=20*self.rate
+        self.savelastrect=None 
+        x=QLabel()
+        self.setMinimumHeight(100)
+        self.setMinimumWidth(100)
          
-        self.savelastrect=None
-        self.setFixedSize(self.window_width, self.window_height) 
-        
-        d=QApplication.desktop()
-
-        globalconfig['setting_geo'][0]=min(max(globalconfig['setting_geo'][0],0),d.width()-self.width())
-        globalconfig['setting_geo'][1]=min(max(globalconfig['setting_geo'][1],0),d.height()-self.height())
-        self.move (*globalconfig['setting_geo'])
         #self.setWindowFlags(Qt.WindowStaysOnTopHint |Qt.WindowCloseButtonHint)
         #self.setWindowFlags( Qt.WindowCloseButtonHint)
         self.setWindowTitle(_TR("设置"))
@@ -194,36 +207,39 @@ class Settin(closeashidewindow) :
          
         
         setTabThree(self) 
-        setTab5(self)
-        setTablang(self)
+        
         setTab7(self)
+        
         setTabcishu(self)
+        setTab5(self)
         
         setTab_quick(self) 
+        
+        setTablang(self)
         setTab_about(self)
         
         self.usevoice=0
      
     def setstylesheet(self):
-        self.setStyleSheet("font: %spt '"%(11 if globalconfig['languageuse'] in [0,1] else 10)+(globalconfig['settingfonttype']  )+"' ;  " )  
+        self.setStyleSheet("font: %spt '"%(globalconfig['settingfontsize'])+(globalconfig['settingfonttype']  )+"' ;  " )  
     def makegrid(self,grid,save=False,savelist=None,savelay=None ):
-        scrollwidth=20*self.rate
+        
         gridlayoutwidget = QWidget( )  
         gridlay=QGridLayout( )     
         gridlayoutwidget.setLayout(gridlay)   
         
-        gridlayoutwidget.setFixedWidth( self.window_width*0.8-scrollwidth)
+        #gridlayoutwidget.setFixedWidth( self.window_width*0.8-self.scrollwidth)
+        self.needfitwidgets.append(gridlayoutwidget)
         gridlayoutwidget.setFixedHeight(len(grid)*35*self.rate)
         self.automakegrid(gridlay,grid,save,savelist,gridlayoutwidget.width()) 
         if save:
             savelay.append(gridlay)
         return gridlayoutwidget
-    def makescroll(self,widget ):  
-        scrollwidth=20*self.rate
+    def makescroll(self,widget ):   
         scroll = QScrollArea( )   
         scroll.setHorizontalScrollBarPolicy(1)
         scroll.setStyleSheet('''QScrollArea{background-color:transparent;border:0px}''')  
-        scroll.verticalScrollBar().setStyleSheet("QScrollBar{width:%spx;}"%scrollwidth)
+        scroll.verticalScrollBar().setStyleSheet("QScrollBar{width:%spx;}"%self.scrollwidth)
         
         scrollwidget=QWidget()
         scrollwidgetlayout=QVBoxLayout()
@@ -238,7 +254,7 @@ class Settin(closeashidewindow) :
         scrollh=scrollh+widget.height() 
 
         scrollwidget.setGeometry(0,0,self.window_width*0.8 , scrollh) 
-
+        self.needfitwidgets.append(scrollwidget)
         scroll.setWidget(scrollwidget) 
         return scroll
     def makesubtab(self,titles,widgets):
@@ -262,13 +278,9 @@ class Settin(closeashidewindow) :
                 baselayout.addWidget(wid)
     def yitiaolong(self,title,grid ):  
         gridlayoutwidget=self.makegrid(grid )  
-        if gridlayoutwidget.height()>self.height(): 
-            gridlayoutwidget=self.makescroll( gridlayoutwidget  )
+        gridlayoutwidget=self.makescroll( gridlayoutwidget  )
         
-        self.tabadd(self.tab_widget, (title),[gridlayoutwidget]) 
-    def closeEvent(self, event) : 
-            globalconfig['setting_geo']=(self.geometry().topLeft().x(),self.geometry().topLeft().y())
-            super( ).closeEvent(event)  
+        self.tabadd(self.tab_widget, (title),[gridlayoutwidget])  
     def ChangeTranslateColor(self, translate_type,button,item=None,name=None) :
             nottransbutton=globalconfig['fanyi'].keys()
             if translate_type not in nottransbutton:

@@ -19,7 +19,7 @@ def getversion(self):
     #     about=ff.read()
     # with open('files/version.txt','r',encoding='utf8') as ff:
     #     version=ff.read() 
-    version="2.2.0"
+    version="v2.2.0"
     url='https://github.com/HIllya51/LunaTranslator/releases/'
     self.versiontextsignal.emit(_TR('当前版本')+':'+  version+'  '+_TR("最新版本")+':'+ _TR('获取中'))#,'',url,url))
     try:
@@ -33,6 +33,7 @@ def getversion(self):
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36',
         }
         res= requests.get('https://api.github.com/repos/HIllya51/LunaTranslator/releases/latest', headers=headers,proxies={'http': None,'https': None} ,verify = False).json() 
+        #print(res)
         _version=res['tag_name']
        # print(version)
         url=res['assets'][0]['browser_download_url']
@@ -116,15 +117,15 @@ def setTab_about(self) :
         
         pages=[]
         for  ocrgrid in [ grid2,grid1]: 
-                gridlayoutwidget=self.makegrid(ocrgrid )   
+                gridlayoutwidget=self.makescroll(self.makegrid(ocrgrid )   )
                 pages.append(gridlayoutwidget)
         tab=self.makesubtab(['自动更新','代理设置' ],pages) 
- 
-        img= QLabel('<img src="./files/zan.jpg" heigth=450 width=450>' ) 
-        img.resize(450,450)
-        shuoming = QLabel(_TR('项目网站')+':<a href="https://github.com/HIllya51/LunaTranslator">https://github.com/HIllya51/LunaTranslator</a><br>' +
+
+        wh=self.rate*360
+         
+        shuoming = (QLabel(_TR('项目网站')+':<a href="https://github.com/HIllya51/LunaTranslator">https://github.com/HIllya51/LunaTranslator</a><br>' +
                     _TR('使用说明')+':<a href="https://hillya51.github.io/">https://hillya51.github.io/</a><br>' +
-                    '如果你感觉该软件对你有帮助，欢迎微信扫码或者前往<a href="https://afdian.net/a/HIllya51">爱发电</a>赞助，谢谢，么么哒~') 
-        self.tabadd(self.tab_widget, ('其他设置'),[tab,shuoming,img ]) 
+                    '如果你感觉该软件对你有帮助，欢迎微信扫码或者前往<a href="https://afdian.net/a/HIllya51">爱发电</a>赞助，谢谢，么么哒~<br>'+f'<img src="./files/zan.jpg" heigth={wh} width={wh}>') )
+        self.tabadd(self.tab_widget, ('其他设置'),[tab,shuoming ]) 
 
         threading.Thread(target=lambda :getversion(self)).start()

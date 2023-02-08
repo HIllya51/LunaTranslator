@@ -521,9 +521,11 @@ class MAINUI(QObject) :
         self.prepare()  
         self.startxiaoxueguan()
         self.starthira()   
-        self.settin_ui = Settin(self)  
-        self.startreader() 
         
+        t=time.time()
+        self.settin_ui = Settin(self)  
+        print(time.time()-t)
+        self.startreader()  
         self.transhis=gui.transhist.transhist(self.translation_ui)  
         self.edittextui=gui.edittext.edittext(self.translation_ui)  
         self.searchwordW=searchwordW(self.translation_ui)
