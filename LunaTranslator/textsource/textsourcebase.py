@@ -1,11 +1,12 @@
-import threading  
+import threading ,hashlib
 import time,sqlite3,json,os
 from traceback import print_exc
 from utils.config import globalconfig
 class basetext:
-    def __init__(self,textgetmethod)  : 
-        self.suspending=False
+    def __init__(self,textgetmethod,md5,prefix)  :  
         self.textgetmethod=textgetmethod  
+        self.ending=False
+        self.md5,self.prefix=md5,prefix
         self.t=threading.Thread(target=self.gettextthread_)
         self.t.setDaemon(True)
         self.t.start()
@@ -26,14 +27,16 @@ class basetext:
                 pass
         except:
             print_exc
+    def checkmd5prefix(self,pname):
+        with open(pname,'rb') as ff:
+            bs=ff.read() 
+        md5=hashlib.md5(bs).hexdigest()
+        prefix= md5+'_'+os.path.basename(pname).replace('.'+os.path.basename(pname).split('.')[-1],'') 
+        return md5,prefix
     def gettextthread_(self):
         while True:
-            if self.ending:
-                
-                break
-            if globalconfig['sourcestatus'][self.typename]==False:
-                break
-            
+            if self.ending: 
+                break 
             if globalconfig['autorun']==False  :
                 self.ignoretext()
                 time.sleep(0.1)
@@ -44,8 +47,7 @@ class basetext:
                 t=self.gettextthread()
             except:
                 t=''
-                print_exc()
-            
+                print_exc() 
             
             if t and globalconfig['autorun']:
                 self.textgetmethod(t) 

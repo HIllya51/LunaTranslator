@@ -4,12 +4,7 @@ if sys.version_info.major==3:
     from PyQt5.QtCore import QCoreApplication 
     from PyQt5.QtWidgets import QMainWindow,QApplication
     from rpcman3 import RpcServer
-    from gameagent3 import GameAgent
-else:
-    from PySide.QtCore import QCoreApplication 
-    from PySide.QtGui import QMainWindow,QApplication
-    from rpcman import RpcServer
-    from gameagent import GameAgent
+    from gameagent3 import GameAgent 
 if __name__=="__main__":
     app =  QApplication(sys.argv) 
     rpc=RpcServer()

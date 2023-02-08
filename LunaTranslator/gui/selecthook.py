@@ -384,7 +384,7 @@ class hookselect(closeashidewindow):
         #self.object.settin_ui.show()
     def showEvent(self,e):   
         self.object.AttachProcessDialog.realshowhide.emit(False)
-        try: 
+        try:  
             for i in range(len(self.save)):  
                 if self.save[i] in self.object.textsource.selectedhook: 
                     self.tttable.setCurrentIndex(self.ttCombomodelmodel.index(i,0)) 

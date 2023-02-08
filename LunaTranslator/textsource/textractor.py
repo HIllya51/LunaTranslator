@@ -2,30 +2,25 @@ import threading
 from queue import Queue  
 import re  
 import time
-import hashlib,subprocess
+from traceback import print_exc
 from collections import OrderedDict
 import os 
-from utils.config import globalconfig 
-from utils.wrapper import threader
+from utils.config import globalconfig ,_TR 
 from utils.u16lesubprocess import u16lesubprocess
 from utils.getpidlist import getarch
 from textsource.textsourcebase import basetext 
-from utils.chaos import checkchaos 
-from traceback import print_exc
-from textsource.embedded import embedtranslater
+from utils.chaos import checkchaos  
 class textractor(basetext  ): 
-    def __init__(self,object,textgetmethod,hookselectdialog,pid,hwnd,pname  ,autostarthookcode=None) :
+    def __init__(self,textgetmethod,hookselectdialog,pid,hwnd,pname  ,autostarthookcode=None) :
         if autostarthookcode is None:
             autostarthookcode=[]
+        hookselectdialog.changeprocessclearsignal.emit()
+        if len(autostarthookcode)==0:
+            hookselectdialog.realshowhide.emit(True)
         self.newline=Queue()  
         self.arch=getarch(pid) 
         self.lock=threading.Lock()
-        with open(pname,'rb') as ff:
-            bs=ff.read() 
-        self.md5=hashlib.md5(bs).hexdigest()
-        self.prefix=self.md5+'_'+os.path.basename(pname).replace('.'+os.path.basename(pname).split('.')[-1],'') 
-        
-        
+         
         self.hookdatacollecter=OrderedDict() 
         self.reverse={}
         self.forward=[]
@@ -34,21 +29,10 @@ class textractor(basetext  ):
         self.selectedhookidx=[]
         self.batchselectinghook=None
         self.strictmatchedhook=[]
-        self.strictmatchidx=[]
-        self.textgetmethod=textgetmethod
-        self.typename='textractor'
-        self.ending=False 
+        self.strictmatchidx=[] 
         self.is_strict_matched_hook=False 
         self.hookselectdialog=hookselectdialog
-        # self.p = QProcess()    
-        # self.p.readyReadStandardOutput.connect(self.handle_stdout)  
-        # self.p.start(f"./files/Textractor/x{arch}/TextractorCLI.exe")
-        self.object=object
-        #self.object.translation_ui.killprocesssignal.emit()
         
-        #self.object.translation_ui.startprocessignal.emit(f"./files/Textractor/x{self.arch}/TextractorCLI.exe",[self.handle_stdout])
-        
-        #self.p.start(r"C:\tmp\textractor_src\Textractor-cmd\builds\RelWithDebInfo_x64\TextractorCLI.exe")
         self.pid=pid
         self.pname=pname
         self.hwnd=hwnd
@@ -65,33 +49,21 @@ class textractor(basetext  ):
         self.HookCode=None 
          
         #self.re=re.compile('\[([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):(.*):(.*@.*)\] (.*)\n')
-          
-        self.startembedengine (globalconfig['embedded']['use']  ) 
-        super(textractor,self).__init__(textgetmethod)
+        self.textractor_init()
+        #embedtranslater(self.pid,self.textgetmethod,self.append ) 
+        super(textractor,self).__init__(textgetmethod,*self.checkmd5prefix(pname))
      
     def textractor_init(self): 
         self.u16lesubprocess=u16lesubprocess(f"./files/Textractor/x{self.arch}/TextractorCLI.exe")
         self.u16lesubprocess.readyread=self.handle_stdout
         self.attach(self.pid)
+        
         self.setcodepage()
+         
         self.setdelay()
         if self.autostarting: 
             threading.Thread(target=self.autostartinsert,daemon=True).start() 
-    def startembedengine(self, _=None):
-
-        t=threading.Thread(target=self.startembedengine_,args=(_,))
-        t.start()
-         
-    def startembedengine_(self,_=None):
-        try:   
-            if _:  
-                embedtranslater(self.pid,self.textgetmethod,self.append ) 
-            else:
-                print_exc()
-            
-            self.textractor_init()
-        except: 
-            print_exc()
+     
     def autostartinsert(self):
         time.sleep(3)
         dumpling=[]
@@ -115,50 +87,34 @@ class textractor(basetext  ):
         #self.autostarttimeout.stop()
     def setdelay(self):
         delay=globalconfig['textthreaddelay']
-        #self.object.translation_ui.writeprocesssignal.emit( QByteArray((f'+{delay} -P{self.pid}\r\n').encode(encoding='utf-16-le')))
         self.u16lesubprocess.writer(f'+{delay} -P{self.pid}\r\n')
+        self.newline.put("<handling>"+_TR("设置刷新延迟")+str(delay))
     def setcodepage(self):
         #cp=globalconfig["codepage"]
         
         cpi=globalconfig["codepage_index"]
         cp= globalconfig["codepage_real"][cpi]
-        #self.object.translation_ui.writeprocesssignal.emit( QByteArray((f'={cp} -P{self.pid}\r\n').encode(encoding='utf-16-le')))
         self.u16lesubprocess.writer(f'={cp} -P{self.pid}\r\n')
-    def findhook(self ):
-        #self.object.translation_ui.writeprocesssignal.emit( QByteArray((f'find -P{self.pid}\r\n').encode(encoding='utf-16-le')))
-        try:
-            self.u16lesubprocess.writer((f'find -P{self.pid}\r\n'))
-        except:
-            pass
-    def inserthook(self,hookcode):
-        # self.timer=QTimer()
-        # self.timer.timeout.connect(self.insert)
-        # self.timer.start(1000)
-        # self.p.write( QByteArray((f'{hookcode} -P{self.pid}\r\r').encode(encoding='utf-16-le'))) 
-        # print(111111111111111111111111111111111111111111)
-        # print(self.p)
+        self.newline.put("<handling>"+_TR("设置代码页")+str(cp))
+    def findhook(self ): 
+        self.u16lesubprocess.writer((f'find -P{self.pid}\r\n'))
+        self.newline.put("<handling>"+_TR("搜索特殊码")) 
+    def inserthook(self,hookcode): 
         print(f'{hookcode} -P{self.pid}')
-        #self.object.translation_ui.writeprocesssignal.emit( QByteArray((f'{hookcode} -P{self.pid}\r\n').encode(encoding='utf-16-le')))
-        try:
-            self.u16lesubprocess.writer((f'{hookcode} -P{self.pid}\r\n'))
-        except:
-            pass 
+        self.u16lesubprocess.writer((f'{hookcode} -P{self.pid}\r\n'))
+        self.newline.put("<handling>"+_TR("插入特殊码")+f'{hookcode} -P{self.pid}') 
     def attach(self,pid):  
-        #self.object.translation_ui.writeprocesssignal.emit( QByteArray((f'attach -P{pid}\r\n').encode(encoding='utf-16-le')))
         self.u16lesubprocess.writer(f'attach -P{pid}\r\n')
+        self.newline.put("<handling-1>"+_TR("连接进程")+str(self.pid))
         print(f'attach -P{pid} ')
     def detach(self,pid):
-        #self.object.translation_ui.writeprocesssignal.emit( QByteArray((f'detach -P{pid}\r\n').encode(encoding='utf-16-le'))) 
         self.u16lesubprocess.writer(f'detach -P{pid}\r\n')
+        self.newline.put("<handling>"+_TR("离开进程")+str(self.pid))
         print(f'detach -P{pid} ')
     def strictmatch(self,thread_tp_ctx,thread_tp_ctx2,HookCode,autostarthookcode):
         return (int(thread_tp_ctx,16)&0xffff,thread_tp_ctx2,HookCode)==(int(autostarthookcode[-4],16)&0xffff,autostarthookcode[-3],autostarthookcode[-1])
 
     def handle_stdout(self,stdout):#p): 
-        #data =  p.readAllStandardOutput()
-        #stdout = bytes(data).decode("utf16",errors='ignore') 
-        #print(stdout)
-        #print(stdout)
         reres=[] 
         while True:
             ss=self.re.search(stdout)
@@ -169,11 +125,9 @@ class textractor(basetext  ):
             ares=ss.groups()
             reres.append(list(ares))
             stdout=ares[-1]
-        #reres=self.re.findall(stdout) #re.findall('\[([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):(.*):(.*@.*)\] (.*)\n',stdout)
         newline={} 
         
         self.lock.acquire() 
-        #print(reres)
         for ares in reres:
             
             thread_handle,thread_tp_processId, thread_tp_addr, thread_tp_ctx, thread_tp_ctx2, thread_name,HookCode,output =ares
@@ -185,9 +139,6 @@ class textractor(basetext  ):
             
             key =(thread_handle,thread_tp_processId, thread_tp_addr, thread_tp_ctx, thread_tp_ctx2, thread_name,HookCode)
  
-            
-            #if key==self.selectedhook:
-            
                 
             if key not in self.hookdatacollecter:
                 #print(self.autostarthookcode,HookCode)
@@ -244,17 +195,10 @@ class textractor(basetext  ):
                                 self.removedaddress.append(address)
                                 address=int(address,16) 
                                 print(key)
-                                #self.object.translation_ui.writeprocesssignal.emit( QByteArray((f'-{address} -P{self.pid}\r\n').encode(encoding='utf-16-le'))) 
+                                
                                 self.u16lesubprocess.writer(f'-{address} -P{self.pid}\r\n')
-            # else:
-                 
-            #     if globalconfig['extractalltext']:
-            #         #print(self.autostarthookcode+self.selectedhook)
-            #         for h in set(self.autostarthookcode+self.selectedhook):
-            #             if key[-1]==h[-1]:
-            #                 self.newline.put(output)
-            #                 self.runonce_line=output
-                            #print(output)
+         
+         
             if key==self.selectinghook:
                 self.hookselectdialog.getnewsentencesignal.emit(output)
             self.hookselectdialog.update_item_new_line.emit(key,output)
@@ -271,11 +215,9 @@ class textractor(basetext  ):
             #real='\n'.join(newline)
             #self.newline.put(real) 
             #self.runonce_line=real
-            self.append(newline)
-        self.lock.release() 
-    def append(self,t):
-        self.newline.put(t)
-        self.runonce_line=t
+            self.newline.put(newline)
+            self.runonce_line=newline
+        self.lock.release()  
     def ignoretext(self):
         while self.newline.empty()==False:
             self.newline.get() 
@@ -292,9 +234,8 @@ class textractor(basetext  ):
             self.detach(self.pid)
             self.u16lesubprocess.kill()
         except:
-            pass  
+            print_exc()  
          
          
-        #self.object.translation_ui.killprocesssignal.emit()
         self.ending=True
      

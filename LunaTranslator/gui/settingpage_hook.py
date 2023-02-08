@@ -14,12 +14,20 @@ def gethookgrid(self) :
                 [('刷新延迟(ms)',5),(self.getspinbox(1,10000,globalconfig,'textthreaddelay',callback=lambda x:self.object.textsource.setdelay()),3)],
                 [('过滤乱码文本',5),(self.getsimpleswitch(globalconfig,'filter_chaos_code'),1),(self.getcolorbutton(globalconfig,'',icon='fa.gear',constcolor="#FF69B4",callback=lambda:codeacceptdialog(self)),1)],
                 [('移除非选定HOOK',5),(self.getsimpleswitch(globalconfig,'remove_useless_hook'),1) ],
+  
+        ]
+         
+        return grids
+
+def gethookembedgrid(self) :
  
-                [''],
-                [('--实验性的--',5)],
-                [('使用内嵌翻译(重启后生效)',5),(self.getsimpleswitch( globalconfig['embedded'],'use' ),1) ],
-                [('内嵌的翻译器',5),(self.getsimplecombobox([globalconfig['fanyi'][x]['name'] for x in globalconfig['fanyi']],globalconfig['embedded'],'use',name="embedded_translator_select"),5) ],
+        grids=[
+                 
+                [('仅支持部分游戏',5)],
+                [('内嵌失败时自动回到普通HOOK',5),(self.getsimpleswitch( globalconfig['embedded'],'fallbacktonormalhook' ),1) ],
+                
                 [('使用最快翻译而非指定翻译器',5),(self.getsimpleswitch( globalconfig['embedded'] ,'as_fast_as_posible'),1) ],
+                [('内嵌的翻译器',5),(self.getsimplecombobox([globalconfig['fanyi'][x]['name'] for x in globalconfig['fanyi']],globalconfig['embedded'],'use',name="embedded_translator_select"),5) ],
         ]
          
         return grids

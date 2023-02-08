@@ -3,7 +3,7 @@
 # 10/5/2012 jichi
 
 import locale
-from windefs import winlocale
+from  embedded.windefs import winlocale
 
 # ja_JP, cp932 on Windows (Japanese)
 # en_US, UTF-8 on Mac (English)

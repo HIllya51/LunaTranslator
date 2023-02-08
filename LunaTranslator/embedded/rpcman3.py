@@ -6,13 +6,13 @@ __all__ = 'RpcServer'
  
 RPC_WAIT_TIME = 3000 # wait time after sending data
 
-from socketsvc import socketpack3 as socketpack 
+from embedded.socketsvc import socketpack3 as socketpack 
 APP_SOCKET_TYPE='local'
 APP_SOCKET_NAME='vnr.socket'
 ENABLE_TCP_SOCKET = APP_SOCKET_TYPE == 'tcp'
  
 def createSocketServer(parent=None, usetcp=ENABLE_TCP_SOCKET): 
-    from socketsvc.localsocketsrv3 import LocalSocketServer
+    from  embedded.socketsvc.localsocketsrv3 import LocalSocketServer
     ret = LocalSocketServer(parent)
     ret.setServerName(APP_SOCKET_NAME)
     dwarn("rpcname",APP_SOCKET_NAME) 
@@ -42,7 +42,7 @@ def _marshalBool(v): # int -> str, use hex
 from functools import partial
 import json
 from PyQt5.QtCore import pyqtSignal, Qt, QObject 
-from sakurakit.skdebug import dwarn, dprint     
+from  embedded.sakurakit.skdebug import dwarn, dprint     
   
 def manager(): return RpcServer()
 

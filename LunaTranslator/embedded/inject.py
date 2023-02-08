@@ -10,9 +10,8 @@ def inject_vnragent(pid):
                   'qtcore4.dll',
                   'qtnetwork4.dll',
                   'vnragent']:
-    
-    #dllpath = os.path.abspath(dllpath)
+    dllpath+'./files/embedded/'
+    dllpath = os.path.abspath(dllpath)
     dllpath = os.path.abspath(dllpath)   
-    os.system('dllinject32.exe '+str(pid)+' "'+dllpath+'"') 
-    print('dllinject32.exe '+str(pid)+' "'+dllpath+'"')
+    os.system('.\\files\\embedded\\dllinject32.exe '+str(pid)+' "'+dllpath+'"')  
   return ret

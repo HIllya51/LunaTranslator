@@ -28,6 +28,7 @@ from tts.voicevox import tts as voicevox
 
 from textsource.copyboard import copyboard   
 from textsource.textractor import textractor   
+from textsource.embedded import embedded
 from textsource.ocrtext import ocrtext
 from textsource.txt import txt 
 import  gui.selecthook    
@@ -135,7 +136,15 @@ class MAINUI(QObject) :
             if paste_str[:len('<notrans>')]=='<notrans>':
                 self.translation_ui.displayraw1.emit([],paste_str[len('<notrans>'):],globalconfig['rawtextcolor'],1)
                 return  
-        
+            elif paste_str[:len('<error>')]=='<error>':
+                self.translation_ui.displaystatus.emit(paste_str[len('<error>'):],'red',True)
+                return  
+            elif paste_str[:len('<handling>')]=='<handling>':
+                self.translation_ui.displaystatus.emit(paste_str[len('<handling>'):],'red',False)
+                return  
+            elif paste_str[:len('<handling-1>')]=='<handling-1>':
+                self.translation_ui.displaystatus.emit(paste_str[len('<handling-1>'):],'red',True)
+                return  
         if type(paste_str)==list: 
             _paste_str='\n'.join(paste_str)
         else:
@@ -236,43 +245,50 @@ class MAINUI(QObject) :
                 return
             if self.textsource:
                 self.textsource.end()  
-            #  
-            self.textsource=textractor(self,self.textgetmethod,self.hookselectdialog,pid,hwnd,pexe )  
+            #   
+            if globalconfig['sourcestatus']['textractor']:
+                self.textsource=textractor(self.textgetmethod,self.hookselectdialog,pid,hwnd,pexe )  
+            elif globalconfig['sourcestatus']['embedded']:
+                self.textsource=embedded(self.textgetmethod,self.hookselectdialog,pid,hwnd,pexe, lambda:self.embeddedfailed(pid,hwnd,pexe))  
+            
             if pexe not in savehook_new_list:
                 savehook_new_list.insert(0,pexe)  
             if pexe not in savehook_new_data:
                 savehook_new_data[pexe]={'leuse':True,'title':os.path.basename(pexe),'hook':[] }  
-            
-            self.hookselectdialog.changeprocessclearsignal.emit()
-            self.hookselectdialog.realshowhide.emit(True)
+             
      
     #@threader
     def starttextsource(self,use=None,checked=True,pop=True):   
         if checked:
-            classes={'ocr':ocrtext,'copy':copyboard,'textractor':None,'txt':txt} 
-            use=list(filter(lambda _ :globalconfig['sourcestatus'][_],classes.keys()) )
-            use=None if len(use)==0 else use[0]
+            classes={'ocr':ocrtext,'copy':copyboard,'textractor':None,'embedded':None,'txt':txt} 
+            if use is None:
+                use=list(filter(lambda _ :globalconfig['sourcestatus'][_],classes.keys()) )
+                use=None if len(use)==0 else use[0]
             if use is None:
                 self.textsource=None
-            elif use=='textractor':
+            elif use=='textractor' or use=='embedded':
                 if pop:     
-                    self.AttachProcessDialog.showNormal()
-                
-            else:
+                    self.AttachProcessDialog.showNormal() 
+            elif use=='ocr':
                 self.textsource=classes[use](self.textgetmethod,self)   
+            else:
+                self.textsource=classes[use](self.textgetmethod)
         else: 
-            if  self.textsource and self.textsource.ending==False :
-                self.textsource.end()  
+            if  self.textsource: 
+                if self.textsource.ending==False :
+                    self.textsource.end()  
                 self.textsource=None
          
         self.rect=None
         self.translation_ui.showhidestate=False 
         self.translation_ui.refreshtooliconsignal.emit()
         self.range_ui.hide()
-        self.settin_ui.selectbutton.setEnabled(globalconfig['sourcestatus']['textractor']) 
-        self.settin_ui.selecthookbutton.setEnabled(globalconfig['sourcestatus']['textractor']) 
+        self.settin_ui.selectbutton.setEnabled(globalconfig['sourcestatus']['textractor'] or globalconfig['sourcestatus']['embedded']) 
+        self.settin_ui.selecthookbutton.setEnabled(globalconfig['sourcestatus']['textractor'] or globalconfig['sourcestatus']['embedded']) 
         self.translation_ui.showhidetoolbuttons()
-    
+    def embeddedfailed(self,pid_real,hwnd,name_): 
+        self.textsource= textractor(self.textgetmethod,self.hookselectdialog,pid_real,hwnd,name_ ,autostarthookcode=savehook_new_data[name_]['hook'])
+         
     @threader
     def starthira(self,use=None,checked=True): 
         if checked:
@@ -379,8 +395,7 @@ class MAINUI(QObject) :
              
             res=res.replace('"','""')   
             contentraw=contentraw.replace('"','""')    
-            try:
-                #if  globalconfig['transkiroku'] and 'sqlwrite2' in dir(self.textsource):
+            try: 
                     ret=self.textsource.sqlwrite2.execute(f'SELECT machineTrans FROM artificialtrans WHERE source = "{contentraw}"').fetchone() 
                 
                     ret=json.loads(ret[0]) 
@@ -395,7 +410,7 @@ class MAINUI(QObject) :
 
     def onwindowloadautohook(self):
         #print(globalconfig['sourcestatus'])
-        if not(globalconfig['autostarthook'] and globalconfig['sourcestatus']['textractor']):
+        if not(globalconfig['autostarthook'] and (globalconfig['sourcestatus']['textractor'] or globalconfig['sourcestatus']['embedded'])):
             return 
         else:
             try:
@@ -415,18 +430,18 @@ class MAINUI(QObject) :
                                     
                                     self.hookselectdialog.changeprocessclearsignal.emit() 
 
-                                    if globalconfig['embedded']['use']==False:
-                                        if len(savehook_new_data[name_]['hook'])==0:
-                                            self.hookselectdialog.realshowhide.emit(True)
-                                    print("进程found",pid,(time.time()))
-                                    self.textsource=textractor(self,self.textgetmethod,self.hookselectdialog,pid_real,hwnd,name_ ,autostarthookcode=savehook_new_data[name_]['hook'])
                                      
+                                    if globalconfig['sourcestatus']['textractor']:
+                                        self.textsource=textractor(self.textgetmethod,self.hookselectdialog,pid_real,hwnd,name_ ,autostarthookcode=savehook_new_data[name_]['hook'])
+                                    else:
+                                        self.textsource=embedded(self.textgetmethod,self.hookselectdialog,pid_real,hwnd,name_ ,
+                                        lambda :self.embeddedfailed(pid_real,hwnd,name_),autostarthookcode=savehook_new_data[name_]['hook'])
+                                    
                 
                 else: 
                     pid=self.textsource.pid
                     hwnd=self.textsource.hwnd
-                    if pid_running(pid)==False or win32process.GetWindowThreadProcessId( hwnd )[0]==0:
-                            print("进程end",pid,pid_running(pid),win32process.GetWindowThreadProcessId( hwnd )[0])
+                    if pid_running(pid)==False or win32process.GetWindowThreadProcessId( hwnd )[0]==0: 
                             if self.textsource.pid==pid:
                                 self.textsource.end( )  
                                 self.textsource=None  

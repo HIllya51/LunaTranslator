@@ -3,9 +3,9 @@
 # 5/2/2014 jichi
  
 from PyQt5.QtCore import QObject, pyqtSignal, QTimer  
-from vnragent import vnragent  
-import  sharedmem3 as sharedmem
-from sakurakit.skdebug import dprint, dwarn
+from  embedded.vnragent import vnragent  
+import   embedded.sharedmem3 as sharedmem
+from  embedded.sakurakit.skdebug import dprint, dwarn
 
 def global_(): return GameAgent()
 
@@ -39,7 +39,7 @@ class GameAgent(QObject):
       if d.connectedPid:
         self.detachProcess()
       d.clear()
-      import inject
+      from embedded  import inject
       ok = inject.inject_vnragent(pid=pid)
       if ok:
         d.injectedPid = pid

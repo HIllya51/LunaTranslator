@@ -1,9 +1,8 @@
 # coding: utf8
 # sharedmem.py
 # 5/8/2014 jichi
- 
-from sakurakit.skdebug import dprint, dwarn
-from pyvnrmem3 import VnrSharedMemory
+  
+from embedded.pyvnrmem3 import VnrSharedMemory
  
 
 class VnrAgentSharedMemory:

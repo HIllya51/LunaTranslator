@@ -11,8 +11,8 @@ if __name__ == '__main__':
 import weakref
 from functools import partial
 from PyQt5.QtCore import QObject, pyqtSignal 
-from sakurakit.skdebug import dprint, dwarn
-from socketsvc import socketio3 as socketio
+from embedded.sakurakit.skdebug import dprint, dwarn
+from embedded.socketsvc import socketio3 as socketio
 
 class LocalSocketServer(QObject):
   """

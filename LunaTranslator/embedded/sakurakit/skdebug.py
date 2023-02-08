@@ -4,7 +4,7 @@
 
 from __future__ import print_function
 import functools, inspect, os, sys 
-from sakurakit import skinspect
+from  embedded.sakurakit import skinspect
 
 DEBUG = True
 

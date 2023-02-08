@@ -3,8 +3,8 @@
 # jichi 4/28/2014
 
 import os 
-from sakurakit.skdebug import dprint, dwarn
-from socketsvc import socketpack3 as socketpack
+from embedded. sakurakit.skdebug import dprint, dwarn
+from embedded. socketsvc import socketpack3 as socketpack
 
 MESSAGE_HEAD_SIZE = socketpack.INT_SIZE # = 4
 

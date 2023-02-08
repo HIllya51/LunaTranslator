@@ -35,7 +35,7 @@ class QTitleButton(QPushButton):
 class QUnFrameWindow(QWidget):   
     displayres =  pyqtSignal(str,str ) 
     displayraw1 =  pyqtSignal(list, str,str,int )  
-    displaystatus=pyqtSignal(str) 
+    displaystatus=pyqtSignal(str,str,bool) 
     showhideuisignal=pyqtSignal()
     hookfollowsignal=pyqtSignal(int,tuple)
     toolbarhidedelaysignal=pyqtSignal() 
@@ -98,6 +98,10 @@ class QUnFrameWindow(QWidget):
     #         self.showline_real(res,color ,type_)
     # def showline(self,res,color ,type_=1):
     #     self.showtask.put((res,color ,type_))
+    def showstatus(self,res,color,clear):
+        if clear:
+            self.translate_text.clear_and_setfont()
+        self.showline([None,res],color)
     def showline (self,res,color ,type_=1):   
         if globalconfig['showatcenter']:
             self.translate_text.setAlignment(Qt.AlignCenter)
@@ -230,6 +234,7 @@ class QUnFrameWindow(QWidget):
         self._padding = 5*self.rate  # 设置边界宽度为5
         self.setMinimumWidth(300)
         self.hideshownotauto=True
+        self.displaystatus.connect(self.showstatus)
         self.showhideuisignal.connect(self.showhideui)
         self.hookfollowsignal.connect(self.hookfollowsignalsolve) 
         self.displayres.connect(self.showres)
@@ -302,19 +307,19 @@ class QUnFrameWindow(QWidget):
         
         self.takusanbuttons("MinMaxButton",lambda: dialog_savedgame(self.object.settin_ui),3,"打开保存的游戏",'gamepad') 
 
-        self.takusanbuttons("MinMaxButton",lambda :self.object.AttachProcessDialog.showsignal.emit(),4,"选择游戏",None,["textractor"] )  
-        self.takusanbuttons("MinMaxButton",lambda:self.object.hookselectdialog.showsignal.emit(),5,"选择文本",None ,["textractor"]) 
+        self.takusanbuttons("MinMaxButton",lambda :self.object.AttachProcessDialog.showsignal.emit(),4,"选择游戏",None,["textractor","embedded"] )  
+        self.takusanbuttons("MinMaxButton",lambda:self.object.hookselectdialog.showsignal.emit(),5,"选择文本",None ,["textractor","embedded"]) 
          
         self.takusanbuttons("MinMaxButton",lambda :self.clickRange(False),4,"选取OCR范围",None,[ "ocr"])
         self.takusanbuttons("MinMaxButton",self.showhide,5,"显示/隐藏范围框",None,["ocr"])
          
         self.takusanbuttons("MinMaxButton",self.bindcropwindow_signal.emit,5,"绑定截图窗口，避免遮挡（部分软件不支持）（点击自己取消）",None,["ocr"])
           
-        self.takusanbuttons("MinMaxButton",lambda :moveresizegame(self,self.object.textsource.hwnd),5,"调整游戏窗口(需要绑定ocr窗口，或选择hook进程)",'resize' ,["textractor","ocr"]) 
+        self.takusanbuttons("MinMaxButton",lambda :moveresizegame(self,self.object.textsource.hwnd),5,"调整游戏窗口(需要绑定ocr窗口，或选择hook进程)",'resize' ,["textractor","ocr","embedded"]) 
   
-        self.takusanbuttons("MinMaxButton",self._fullsgame,5,"全屏/恢复游戏窗口(需要绑定ocr窗口，或选择hook进程)" ,"fullscreen",["textractor","ocr"]) 
+        self.takusanbuttons("MinMaxButton",self._fullsgame,5,"全屏/恢复游戏窗口(需要绑定ocr窗口，或选择hook进程)" ,"fullscreen",["textractor","ocr","embedded"]) 
         
-        self.takusanbuttons("MinMaxButton",self.muteprocessfuntion,5,"游戏静音(需要绑定ocr窗口，或选择hook进程)" ,"muteprocess",["textractor","ocr"]) 
+        self.takusanbuttons("MinMaxButton",self.muteprocessfuntion,5,"游戏静音(需要绑定ocr窗口，或选择hook进程)" ,"muteprocess",["textractor","ocr",'embedded']) 
         
         
         self.takusanbuttons("MinMaxButton",self.hide_and_disableautohide,-2,"最小化到托盘")

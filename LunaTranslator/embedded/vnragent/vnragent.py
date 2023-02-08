@@ -8,10 +8,10 @@ if __name__ == '__main__': # DEBUG
   sys.path.append("..")
 
 import os 
-from sakurakit.skdebug import dprint
+from  embedded.sakurakit.skdebug import dprint
 
 #ENGINE_YAML = os.path.join(os.path.dirname(__file__), 'engines.yaml')
-ENGINE_json ='engines.json'
+ENGINE_json ='./files/embedded/engines.json'
 
 # TODO: Apply this transformation for all paths at Python side
 def _complete_path(path):
@@ -23,7 +23,7 @@ def _complete_path(path):
     path = '\\' + path
   return path
 
-from sakurakit.skdebug import dwarn 
+from  embedded.sakurakit.skdebug import dwarn 
 import win32api,win32con,win32process
 def get_engine_data():
   import json
@@ -50,7 +50,7 @@ def match(pid=0, path=None):
   """
   if not path and pid:
       path =  get_process_path(pid)
-  from engine import Engine, EngineFinder
+  from  embedded.vnragent.engine import Engine, EngineFinder
   path = _complete_path(path)
   dprint("match pid path",path)
   finder = EngineFinder(pid=pid, exepath=path)
@@ -59,7 +59,7 @@ def match(pid=0, path=None):
       dprint("engine = %s" % eng['name'])
       return Engine(**eng)
   dprint("matching engine")
-  import engines
+  from  embedded.vnragent import engines
   for eng in engines.ENGINES:
     if eng.match(finder):
       dprint("engine = %s" % eng.name)

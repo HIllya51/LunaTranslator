@@ -63,20 +63,15 @@ class ocrtext(basetext):
             pix = self.screen.grabWindow(QApplication.desktop().winId(), x1, y1, x2-x1, y2-y1) 
         return pix.toImage()
     def __init__(self,textgetmethod,object)  :
-        self.screen = QApplication.primaryScreen()
-        self.typename='ocr'
+        self.screen = QApplication.primaryScreen() 
         self.savelastimg=None
         self.savelastrecimg=None
         self.savelasttext=None  
-        self.object=object
-        self.ending=False
+        self.object=object 
         self.lastocrtime=0
         self.hwnd=None
-        self.timestamp=time.time()
-        self.md5='0' 
-        self.prefix='0_ocr'
-        
-        super(ocrtext,self ).__init__(textgetmethod) 
+        self.timestamp=time.time() 
+        super(ocrtext,self ).__init__(textgetmethod,'0','0_ocr') 
     def gettextthread(self ):
                  
             if self.object.rect is None:

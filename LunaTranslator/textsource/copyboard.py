@@ -3,15 +3,10 @@ import time
 from textsource.textsourcebase import basetext
 import pyperclip,ctypes,win32process,os
 class copyboard(basetext):
-    def __init__(self,textgetmethod,_) -> None:
+    def __init__(self,textgetmethod) -> None:
         self.last_paste_str = '' 
-        
-        self.ending=False
-        self.typename='copy'
-    
-        self.md5='0' 
-        self.prefix='0_copy'
-        super(copyboard,self).__init__(textgetmethod)
+          
+        super(copyboard,self).__init__(textgetmethod,'0','0_copy')
     
     def gettextthread(self ):
                  

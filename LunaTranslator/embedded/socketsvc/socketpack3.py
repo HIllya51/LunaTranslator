@@ -7,8 +7,8 @@ if __name__ == '__main__':
   import sys
   sys.path.append('..')
 
-from sakurakit.skdebug import dwarn
-from sakurakit.skunicode import qunicode
+from  embedded.sakurakit.skdebug import dwarn
+from  embedded.sakurakit.skunicode import qunicode
 #from PySide.QtCore import QByteArray
 
 # Little endian
