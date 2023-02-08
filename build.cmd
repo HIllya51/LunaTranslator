@@ -1,7 +1,9 @@
 rmdir /S /Q C:\tmp\LunaTranslator
 del C:\tmp\LunaTranslator.zip
 xcopy C:\tmp\LunaTranslatorbuild\LunaTranslator_main.dist C:\tmp\LunaTranslator\LunaTranslator /e /y /I
-xcopy C:\Users\11737\Documents\GitHub\LunaTranslator\fix C:\tmp\LunaTranslator /e /y /I
+xcopy C:\Users\11737\Documents\GitHub\LunaTranslator\LunaTranslator\files C:\tmp\LunaTranslator\files /e /y /I
+xcopy C:\Users\11737\Documents\GitHub\LunaTranslator\LICENSE C:\tmp\LunaTranslator\ /e /y /I
+xcopy C:\Users\11737\Documents\GitHub\LunaTranslator\fix C:\tmp\LunaTranslator\ /e /y /I
 xcopy C:\Users\11737\Documents\GitHub\LunaTranslator\dependence C:\tmp\LunaTranslator\LunaTranslator /e /y /I
 del C:\tmp\LunaTranslator\LunaTranslator\qt5qml.dll
 del C:\tmp\LunaTranslator\LunaTranslator\qt5qmlmodels.dll

@@ -1,8 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-
-<Strings>
-  <RunDefault>Spustit s profilem aplikace</RunDefault>
-  <Submenu>Locale Emulator</Submenu>
-  <ManageApp>Změnit profil aplikace</ManageApp>
-  <ManageAll>Upravit seznam globálních profilů</ManageAll>
-</Strings>
