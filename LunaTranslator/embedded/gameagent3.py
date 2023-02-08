@@ -204,7 +204,7 @@ class _GameAgent(object):
     t = self.injectTimer = QTimer(q) 
     t.setSingleShot(False)
     from utils.config import globalconfig
-    t.setInterval(globalconfig['embedded']['timeout']*1000)
+    t.setInterval(globalconfig['embedded']['timeout_connect']*1000)
     t.timeout.connect(self._onInjectTimeout)
 
     q.processAttached.connect(self._onAttached)
