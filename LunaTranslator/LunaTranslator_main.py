@@ -11,7 +11,7 @@ sys.path.append(dirname)
 from utils.config import globalconfig ,savehook_new_list,savehook_new_data,noundictconfig,transerrorfixdictconfig,setlanguage 
 import threading,win32gui 
 from PyQt5.QtCore import QCoreApplication ,Qt ,QObject,pyqtSignal
-from PyQt5.QtWidgets import  QApplication ,QGraphicsScene,QGraphicsView,QDesktopWidget,QStyle  
+from PyQt5.QtWidgets import  QApplication ,QGraphicsScene,QGraphicsView,QDesktopWidget  
 
 from utils.minmaxmove import minmaxmoveobservefunc
  
@@ -48,20 +48,33 @@ import socket
 socket.setdefaulttimeout(globalconfig['translatortimeout'])
 from utils.post import POSTSOLVE
 from utils.vnrshareddict import vnrshareddict 
+ 
 import pyperclip
+
+from embedded.rpcman3 import RpcServer
+from embedded.gameagent3 import GameAgent 
 class MAINUI(QObject) :
-    mainuiloadok=pyqtSignal() 
+    startembedsignal=pyqtSignal(int)
+    def startembed(self,pid):
+        print("staring")
+        self.rpc=RpcServer() 
+        print("staring")
+        self.rpc.start()
+        print('rpcstarted')
+        self.ga=GameAgent(self.rpc)
+        self.ga.attachProcess(pid)
+        self.rpc.engineTextReceived.connect(self.ga.sendEmbeddedTranslation)
+        self.rpc.clearAgentTranslation()  
     def __init__(self) -> None:
-        
+        super().__init__()
+        self.startembedsignal.connect(self.startembed)
         self.translators={}
         self.cishus={}
         self.reader=None
         self.textsource=None
         self.rect=None
         self.last_paste_str=''
-        self.textsource=None  
-        super(MAINUI,self).__init__( )
-        self.mainuiloadok.connect(self.mainuiloadafter)  
+        self.textsource=None    
     @threader  
     def loadvnrshareddict(self,_=None):
         vnrshareddict(self)  
@@ -249,7 +262,7 @@ class MAINUI(QObject) :
             if globalconfig['sourcestatus']['textractor']:
                 self.textsource=textractor(self.textgetmethod,self.hookselectdialog,pid,hwnd,pexe )  
             elif globalconfig['sourcestatus']['embedded']:
-                self.textsource=embedded(self.textgetmethod,self.hookselectdialog,pid,hwnd,pexe, lambda:self.embeddedfailed(pid,hwnd,pexe))  
+                self.textsource=embedded(self.textgetmethod,pid,hwnd,pexe, lambda:self.embeddedfailed(pid,hwnd,pexe),self)  
             
             if pexe not in savehook_new_list:
                 savehook_new_list.insert(0,pexe)  
@@ -433,9 +446,9 @@ class MAINUI(QObject) :
                                      
                                     if globalconfig['sourcestatus']['textractor']:
                                         self.textsource=textractor(self.textgetmethod,self.hookselectdialog,pid_real,hwnd,name_ ,autostarthookcode=savehook_new_data[name_]['hook'])
-                                    else:
-                                        self.textsource=embedded(self.textgetmethod,self.hookselectdialog,pid_real,hwnd,name_ ,
-                                        lambda :self.embeddedfailed(pid_real,hwnd,name_),autostarthookcode=savehook_new_data[name_]['hook'])
+                                    else:  
+                                        self.textsource=embedded(self.textgetmethod,pid_real,hwnd,name_ ,
+                                        lambda :self.embeddedfailed(pid_real,hwnd,name_),self)
                                     
                 
                 else: 
@@ -482,9 +495,9 @@ class MAINUI(QObject) :
             self.view.setStyleSheet('background-color: rgba(255, 255, 255, 0);')
             self.view.setGeometry(QDesktopWidget().screenGeometry())
             self.view.show()       
-        threading.Thread(target=self.mainuiloadok.emit).start()
-        threading.Thread(target=self.setontopthread).start()
-#        self.mainuiloadok.emit() 
+        
+        self.mainuiloadafter()
+        threading.Thread(target=self.setontopthread).start() 
     def mainuiloadafter(self):   
         self.localocrstarted=False
         #print(time.time()-t1)
@@ -503,6 +516,7 @@ class MAINUI(QObject) :
         self.range_ui = rangeadjust(self)   
         self.hookselectdialog=gui.selecthook.hookselect(self ,self.settin_ui) 
         self.AttachProcessDialog=AttachProcessDialog(self.settin_ui,self.selectprocess,self.hookselectdialog)
+         
         threading.Thread(target=self.autohookmonitorthread).start()    
         threading.Thread(target=minmaxmoveobservefunc,args=(self.translation_ui,)).start()   
         

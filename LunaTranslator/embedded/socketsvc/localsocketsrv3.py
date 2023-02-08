@@ -50,8 +50,10 @@ class LocalSocketServer(QObject):
     return len(self.__d.sockets)
 
   def serverName(self): return self.__d.name # -> str
-  def setServerName(self, v): self.__d.name = socketio.pipename(v)
-
+  def setServerName(self, v): 
+    print("setingservername",v)
+    self.__d.name =s = "\\\\.\\pipe\\" + v
+    print("setedservername",self.__d.name)
   def start(self): return self.__d.start() # -> bool
   def stop(self): self.__d.stop()
 

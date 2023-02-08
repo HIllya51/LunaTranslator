@@ -7,18 +7,7 @@ from embedded. sakurakit.skdebug import dprint, dwarn
 from embedded. socketsvc import socketpack3 as socketpack
 
 MESSAGE_HEAD_SIZE = socketpack.INT_SIZE # = 4
-
-def pipename(s): # s -> s
-  if not s:
-    return s
-  if os.name == 'nt':
-    if not s.startswith('\\'):
-      s = "\\\\.\\pipe\\" + s
-  else:
-    if not s.startswith('/'):
-      s = "/tmp/" + s
-  dwarn("namepipe",s)
-  return s 
+  
 def initsocket(socket):
   """
   @param  socket  QIODevice

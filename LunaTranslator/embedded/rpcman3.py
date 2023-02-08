@@ -14,6 +14,7 @@ ENABLE_TCP_SOCKET = APP_SOCKET_TYPE == 'tcp'
 def createSocketServer(parent=None, usetcp=ENABLE_TCP_SOCKET): 
     from  embedded.socketsvc.localsocketsrv3 import LocalSocketServer
     ret = LocalSocketServer(parent)
+    print("localsvc created")
     ret.setServerName(APP_SOCKET_NAME)
     dwarn("rpcname",APP_SOCKET_NAME) 
     return ret
@@ -46,14 +47,17 @@ from  embedded.sakurakit.skdebug import dwarn, dprint
   
 def manager(): return RpcServer()
 
-class RpcServer(QObject):
-
+class RpcServer(QObject): 
   def __init__(self, parent=None):
+    print(1)
     super(RpcServer, self).__init__(parent)
+    print(2)
     self.app=parent
     self.__d =_RpcServer(self)
-    self.__d.q=self
+    print(3)
+    self.__d.q=self 
     dwarn("rpcserver_Created")
+  
   activated = pyqtSignal()
 
   def stop(self):
@@ -124,7 +128,7 @@ class RpcServer(QObject):
 class _RpcServer(object):
   def __init__(self, q):
     self.server = createSocketServer(parent=q)
-
+    print(4)
     self.server.dataReceived.connect(self._onDataReceived)
 
     self.server.disconnected.connect(self._onDisconnected)

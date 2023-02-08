@@ -13,13 +13,13 @@ class GameAgent(QObject):
   def __init__(self,rpc, parent=None):
     super(GameAgent, self).__init__(parent)
     self.__d = _GameAgent(self,rpc)
-    self.__d.q=self
+    self.__d.q=self 
   processAttached = pyqtSignal(int) # pid
   processDetached = pyqtSignal(int) # pid
 
   processAttachTimeout = pyqtSignal(int)
   engineChanged = pyqtSignal(str) # name
-
+ 
   # Not used
   #def clear(self): self.__d.clear()
 
@@ -43,7 +43,9 @@ class GameAgent(QObject):
       ok = inject.inject_vnragent(pid=pid)
       if ok:
         d.injectedPid = pid
+        print("1")
         d.injectTimer.start()
+        print("2")
       return ok
 
   def detachProcess(self):
