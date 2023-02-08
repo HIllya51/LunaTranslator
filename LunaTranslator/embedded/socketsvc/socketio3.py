@@ -26,7 +26,7 @@ def writesocket(data, socket, pack=True):
   if pack:
     data = socketpack.packdata(data)
   ok = len(data) == socket.write(data)
-  print("pass: ok = %s" % ok)
+  #print("pass: ok = %s" % ok)
   return ok
 
 def readsocket(socket):

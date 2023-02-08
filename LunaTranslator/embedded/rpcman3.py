@@ -132,14 +132,14 @@ class _RpcServer(object):
   def callAgent(self, *args):
     if self.agentSocket:
       data = socketpack.packstrlist(args)
-      print("senddata",bytes(data))
+      #print("senddata",bytes(data))
       self.server.sendData(data, self.agentSocket, waitTime=RPC_WAIT_TIME)
 
   # Receive
 
   def _onDisconnected(self, socket):
     if socket is self.agentSocket:
-      print("pass: pid = %s" % self.agentPid)
+      #print("pass: pid = %s" % self.agentPid)
       self.agentSocket = None
       self.q.agentDisconnected.emit(self.agentPid)
       self.agentPid  = 0

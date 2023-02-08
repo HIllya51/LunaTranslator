@@ -56,22 +56,25 @@ from embedded.gameagent3 import GameAgent
 class MAINUI(QObject) :
     startembedsignal=pyqtSignal(int,embedded)
     def startembed(self,pid,engine:embedded): 
-        self.rpc=RpcServer()  
-        self.ga=GameAgent(self.rpc,engine)
+        if self.rpc is None:
+            self.rpc=RpcServer()  
+            self.ga=GameAgent(self.rpc ) 
+            self.rpc.engineTextReceived.connect(self.ga.sendEmbeddedTranslation)
         
-        self.rpc.engineTextReceived.connect(self.ga.sendEmbeddedTranslation)
-        
+        self.ga.hostengine=engine
         self.rpc.start() 
         self.ga.attachProcess(pid) 
         self.rpc.clearAgentTranslation()  
     def __init__(self) -> None:
         super().__init__()
-        self.startembedsignal.connect(self.startembed)
+        
         self.translators={}
         self.cishus={}
         self.reader=None
         self.textsource=None
         self.rect=None
+        self.rpc=self.ga=None
+        self.startembedsignal.connect(self.startembed)
         self.last_paste_str=''
         self.textsource=None    
     @threader  
@@ -148,7 +151,7 @@ class MAINUI(QObject) :
             if paste_str[:len('<notrans>')]=='<notrans>':
                 self.translation_ui.displayraw1.emit([],paste_str[len('<notrans>'):],globalconfig['rawtextcolor'],1)
                 return  
-            elif paste_str[:len('<error>')]=='<error>':
+            elif paste_str[:len('<error>')]=='<error>': 
                 self.translation_ui.displaystatus.emit(paste_str[len('<error>'):],'red',True)
                 return  
             elif paste_str[:len('<handling>')]=='<handling>':
@@ -372,10 +375,10 @@ class MAINUI(QObject) :
                 return _
     def _singletrans(self,needconv,needconvshow,res,cls,):
                 if needconv:
-                    import zhconv   
-                    print(res)
-                    res1=zhconv.convert(res,  'zh-tw' ) 
-                    print(res)
+                    import zhconv    
+                    res1=zhconv.convert(res,  'zh-tw' )  
+                else:
+                    res1=res
                 if needconvshow:
                     res=res1
                 self.translation_ui.displayres.emit(cls,res)
@@ -405,10 +408,8 @@ class MAINUI(QObject) :
             res=self._singletrans(needconv,needconvshow,res,classname)  
             if embedcallback: 
                 if globalconfig['embedded']['as_fast_as_posible'] or classname==list(globalconfig['fanyi'])[globalconfig['embedded']['translator']]:   
-                    if needja: 
-                        print(res)
-                        res=kanjitrans(res)
-                        print(res)
+                    if needja:  
+                        res=kanjitrans(res) 
                     embedcallback('zhs', res) 
             
         if classname not in globalconfig['fanyi_pre']:
@@ -461,10 +462,16 @@ class MAINUI(QObject) :
                 else: 
                     pid=self.textsource.pid
                     hwnd=self.textsource.hwnd
-                    if pid_running(pid)==False or win32process.GetWindowThreadProcessId( hwnd )[0]==0: 
-                            if self.textsource.pid==pid:
-                                self.textsource.end( )  
-                                self.textsource=None  
+                    needend=False
+                    if pid_running(pid)==False :
+                        needend=True
+                    elif win32process.GetWindowThreadProcessId( hwnd )[0]==0: 
+                            time.sleep(0.5)
+                            if self.textsource.pid==pid and   pid_running(pid)==False:
+                                needend=True
+                    if needend:
+                        self.textsource.end( )  
+                        self.textsource=None  
             except:
                         print_exc()
     def setontopthread(self):
@@ -479,7 +486,7 @@ class MAINUI(QObject) :
                 #win32gui.BringWindowToTop(int(self.translation_ui.winId())) 
             except:
                 print_exc() 
-            time.sleep(0.3)            
+            time.sleep(0.5)            
     def autohookmonitorthread(self):
         while True:
             self.onwindowloadautohook()

@@ -15,8 +15,8 @@
 		"translator":0,
 		"as_fast_as_posible":true,
 		"fallbacktonormalhook":true,
-		"timeout_connect":10,
-		"timeout_translate":10,
+		"timeout_connect":5,
+		"timeout_translate":2,
 		"trans_kanji":true
 	},
 	"language_setted":false,

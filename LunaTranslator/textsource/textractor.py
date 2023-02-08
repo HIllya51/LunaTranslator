@@ -49,11 +49,13 @@ class textractor(basetext  ):
         self.HookCode=None 
          
         #self.re=re.compile('\[([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):(.*):(.*@.*)\] (.*)\n')
-        self.textractor_init()
+        
         #embedtranslater(self.pid,self.textgetmethod,self.append ) 
         super(textractor,self).__init__(textgetmethod,*self.checkmd5prefix(pname))
-     
-    def textractor_init(self): 
+        self.textractor_init()
+    def textractor_init(self):  
+        if self.arch is None:
+            return 
         self.u16lesubprocess=u16lesubprocess(f"./files/Textractor/x{self.arch}/TextractorCLI.exe")
         self.u16lesubprocess.readyread=self.handle_stdout
         self.attach(self.pid)
@@ -87,29 +89,26 @@ class textractor(basetext  ):
         #self.autostarttimeout.stop()
     def setdelay(self):
         delay=globalconfig['textthreaddelay']
-        self.u16lesubprocess.writer(f'+{delay} -P{self.pid}\r\n')
-        self.newline.put("<handling>"+_TR("设置刷新延迟")+str(delay))
+        self.u16lesubprocess.writer(f'+{delay} -P{self.pid}\r\n') 
     def setcodepage(self):
         #cp=globalconfig["codepage"]
         
         cpi=globalconfig["codepage_index"]
         cp= globalconfig["codepage_real"][cpi]
-        self.u16lesubprocess.writer(f'={cp} -P{self.pid}\r\n')
-        self.newline.put("<handling>"+_TR("设置代码页")+str(cp))
+        self.u16lesubprocess.writer(f'={cp} -P{self.pid}\r\n') 
     def findhook(self ): 
-        self.u16lesubprocess.writer((f'find -P{self.pid}\r\n'))
-        self.newline.put("<handling>"+_TR("搜索特殊码")) 
+        self.u16lesubprocess.writer((f'find -P{self.pid}\r\n')) 
     def inserthook(self,hookcode): 
         print(f'{hookcode} -P{self.pid}')
         self.u16lesubprocess.writer((f'{hookcode} -P{self.pid}\r\n'))
-        self.newline.put("<handling>"+_TR("插入特殊码")+f'{hookcode} -P{self.pid}') 
+        self.textgetmethod("<handling>"+_TR("插入特殊码")+f'{hookcode} -P{self.pid}') 
     def attach(self,pid):  
         self.u16lesubprocess.writer(f'attach -P{pid}\r\n')
-        self.newline.put("<handling-1>"+_TR("连接进程")+str(self.pid))
+        self.textgetmethod("<handling>"+_TR("HOOK 连接进程")+str(self.pid))
         print(f'attach -P{pid} ')
     def detach(self,pid):
         self.u16lesubprocess.writer(f'detach -P{pid}\r\n')
-        self.newline.put("<handling>"+_TR("离开进程")+str(self.pid))
+        self.textgetmethod("<handling>"+_TR("HOOK 离开进程")+str(self.pid))
         print(f'detach -P{pid} ')
     def strictmatch(self,thread_tp_ctx,thread_tp_ctx2,HookCode,autostarthookcode):
         return (int(thread_tp_ctx,16)&0xffff,thread_tp_ctx2,HookCode)==(int(autostarthookcode[-4],16)&0xffff,autostarthookcode[-3],autostarthookcode[-1])
@@ -220,7 +219,7 @@ class textractor(basetext  ):
         self.lock.release()  
     def ignoretext(self):
         while self.newline.empty()==False:
-            self.newline.get() 
+            paste_str=self.newline.get()  
     def gettextthread(self ):
             #print(333333)
             paste_str=self.newline.get()

@@ -9,11 +9,11 @@ import   embedded.sharedmem3 as sharedmem
 def global_(): return GameAgent()
 
 class GameAgent(QObject):
-  def __init__(self,rpc, hostengine):
+  def __init__(self,rpc ):
     super(GameAgent, self).__init__( )
-    self.__d = _GameAgent(self,rpc,hostengine)
+    self.__d = _GameAgent(self ,rpc )
     self.__d.q=self 
-    self.hostengine=hostengine
+     
   processAttached = pyqtSignal(int) # pid
   processDetached = pyqtSignal(int) # pid
 
@@ -75,8 +75,7 @@ class GameAgent(QObject):
     d = self.__d
     d.mem.quit()
     if d.connectedPid:
-      d.rpc.disableAgent()
-    print("quit")
+      d.rpc.disableAgent() 
 
   #def setGameLanguage(self, v):
   #  self.__d.gameLanguage = v
@@ -193,9 +192,9 @@ _SETTINGS_DICT = {
 }
  
 class _GameAgent(object):
-  def __init__(self, q,rpc,hostengine):
+  def __init__(self, q,rpc):
     self.mem = sharedmem.VnrAgentSharedMemory(q)
-    self.hostengine=hostengine
+     
     self.rpc =rpc
 
     self.rpc.agentConnected.connect(q.processAttached)
@@ -203,6 +202,7 @@ class _GameAgent(object):
     self.rpc.engineReceived.connect(self._onEngineReceived)
 
     t = self.injectTimer = QTimer(q)
+    print("newtimer",t)
     t.setSingleShot(False)
     from utils.config import globalconfig
     t.setInterval(globalconfig['embedded']['timeout']*1000)
@@ -251,34 +251,39 @@ class _GameAgent(object):
   def connectedPid(self): return self.rpc.agentProcessId()
 
   def _onInjectTimeout(self):
-    print("connect timeout")
+    print("connect timeout",self.injectTimer)
     if self.injectedPid:
       self.q.processAttachTimeout.emit(self.injectedPid)
       self.injectedPid = 0
-      self.hostengine.timeout()
+      self.q.hostengine.timeout()
 
   def _onAttached(self,_):
-    print("attached")
+    print("attached",self.injectTimer)
     self.injectTimer.stop()
+    
     self.sendSettings()
     #self.rpc.enableAgent()
 
   def _onDetached(self, pid): # int ->
     print("detached")
-    self.mem.detachProcess(pid)
-
+    if self.injectedPid :
+      self.mem.detachProcess(pid)
+      self.q.hostengine.detach()
   def _onEngineReceived(self, name): # str
     self.engineName = name
     self.q.engineChanged.emit(name)
 
     if name and self.connectedPid:
       self.mem.attachProcess(self.connectedPid)
-      self.hostengine.getenginename(name)
+      self.q.hostengine.getenginename(name)
       print("%s: %s" % ( ("Detect game engine"), name))
     else:
-      print( ("Unrecognized game engine. Fallback to ITH."))
-      self.q.callbadengine.emit()
-      self.hostengine.unrecognizedengine()
+      print( ("Unrecognized game engine. Fallback to ITH.")) 
+       
+      self.q.hostengine.unrecognizedengine()
+      if self.injectedPid :
+        self.mem.detachProcess(self.injectedPid)
+        self.injectedPid=0
   def sendSettings(self):
     # ss = settings.global_()
     # data = {k:apply(getattr(ss, v)) for k,v in _SETTINGS_DICT.iteritems()}

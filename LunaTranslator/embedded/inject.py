@@ -14,6 +14,6 @@ def inject_vnragent(pid):
     dllpath='./files/embedded/'+dllpath
     dllpath = os.path.abspath(dllpath)
     
-    print('.\\files\\embedded\\dllinject32.exe '+str(pid)+' "'+dllpath+'"')
+    #print('.\\files\\embedded\\dllinject32.exe '+str(pid)+' "'+dllpath+'"')
     subproc('.\\files\\embedded\\dllinject32.exe '+str(pid)+' "'+dllpath+'"')  
   return ret

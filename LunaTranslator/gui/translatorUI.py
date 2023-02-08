@@ -144,7 +144,7 @@ class QUnFrameWindow(QWidget):
                     self.autohidestart=False
                     self.lastrefreshtime=tnow
                     
-            time.sleep(0.3) 
+            time.sleep(0.5) 
      
     def showhideui(self): 
         if self._move_drag:
