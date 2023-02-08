@@ -1,25 +1,14 @@
 
-from  PyQt5.QtCore import QSharedMemory,QObject
-from ctypes import Structure,c_int8,c_int64,c_int8,c_char,c_int32,c_wchar,c_char_p,c_wchar_p,POINTER,cast,byref,create_string_buffer,create_unicode_buffer
-LanguageCapacity=4
-import struct,ctypes 
-class Cell(Structure):
+from  PyQt5.QtCore import QSharedMemory,QObject 
+LanguageCapacity=4  
         # _fields_=[
-        #     ('status',c_int8),  
-        #     ('hash',c_int64),   
-        #     ('role',c_int8),    
-        #     ('language',c_char*LanguageCapacity), 
-        #     ('textSize',c_int32),
-        #     ('text',c_wchar_p)
+        #     ('status',c_int8),  #8
+        #     ('hash',c_int64),   #8
+        #     ('role',c_int8),    #1
+        #     ('language',c_char*LanguageCapacity), #8
+        #     ('textSize',c_int32),#4
+        #     ('text',c_wchar_p) 
         # ]
-        _fields_=[
-            ('status',c_int8),  #8
-            ('hash',c_int64),   #8
-            ('role',c_int8),    #1
-            ('language',c_char*LanguageCapacity), #8
-            ('textSize',c_int32),#4
-            ('text',c_wchar_p) 
-        ]
 class VnrSharedMemory(QObject):
      
     def __init__(self,p=None ) :
@@ -27,24 +16,13 @@ class VnrSharedMemory(QObject):
         self.cellCount_=0
         self.cellSize_=0   
         self.memory=QSharedMemory()
-    def textCapacity(self):
-        return int(max(0,(self.cellSize_-4)/2))
-    
-    def cellCount(self):
-        return self.cellCount_
-    
-    def cellSize(self):
-        return self.cellSize_
-    def constData(self,i): 
-        self.memory.constData()+(self.cellSize_*i)
-    def cell(self,i):  
-        return cast(POINTER(self.memory.data().asarray() ),POINTER(Cell)).contents 
-        
+     
     def key(self):
         return self.memory.key()
     def setKey(self,v):
         self.memory.setKey(v)
-    
+    def cellCount(self):
+        return self.cellCount_
     def create(self,size,count,readOnly):
         self.cellSize_=size
         self.cellCount_=count
@@ -78,31 +56,20 @@ class VnrSharedMemory(QObject):
             mv[i+8]=ord(v[i]  )
     
     def setDataStatus(self,i,v ):  
-        print(type(v),v)
-        v=self.packuint(v,8)
-        print(type(v),v)
+        v=self.packuint(v,8) 
         mv=memoryview(self.memory.data()) 
         for i in range(8):
             mv[i]=ord(v[i])   
     def setDataRole(self,i,v):
         v=self.packuint(v,1) 
         mv=memoryview(self.memory.data()) 
-        mv[16]=ord(v[0])
-        print("role",v[0]) 
-        cache=[]
-        for i in range(100):
-            cache.append((mv[i]))
-        print((cache) )
+        mv[16]=ord(v[0])   
     def setDataLanguage(self,i,v):
+        return
         v=v.encode('ascii')
         mv=memoryview(self.memory.data()) 
         for i in range(min(8,len(v))):
-            mv[i+17]= (v[i] )
-        print("lang")
-        cache=[]
-        for i in range(100):
-            cache.append((mv[i]))
-        print((cache) )
+            mv[i+17]= (v[i] ) 
     def setDataText(self,i,v): 
         l=len(v)
         uv=v.encode('utf-16-le') 
@@ -113,15 +80,4 @@ class VnrSharedMemory(QObject):
 
         for i in range(len(uv)):
             mv[i+28]= (uv[i])
-            
-        cache=[]
-        for i in range(100):
-            cache.append((mv[i]))
-        print((cache) )
-        # cache=[]    
-        # print((mv[24]))
-        # for i in range((mv[24])):
-        #     cache.append((mv[i]))
-
-        
-        #print((cache) )
+             

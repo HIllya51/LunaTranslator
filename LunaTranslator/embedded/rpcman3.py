@@ -13,10 +13,8 @@ ENABLE_TCP_SOCKET = APP_SOCKET_TYPE == 'tcp'
  
 def createSocketServer(parent=None, usetcp=ENABLE_TCP_SOCKET): 
     from  embedded.socketsvc.localsocketsrv3 import LocalSocketServer
-    ret = LocalSocketServer(parent)
-    print("localsvc created")
-    ret.setServerName(APP_SOCKET_NAME)
-    print("rpcname",APP_SOCKET_NAME) 
+    ret = LocalSocketServer(parent) 
+    ret.setServerName(APP_SOCKET_NAME) 
     return ret
 # Client
  
@@ -47,23 +45,18 @@ from PyQt5.QtCore import pyqtSignal, Qt, QObject
 def manager(): return RpcServer()
 
 class RpcServer(QObject): 
-  def __init__(self, parent=None):
-    print(1)
-    super(RpcServer, self).__init__(parent)
-    print(2)
+  def __init__(self, parent=None): 
+    super(RpcServer, self).__init__(parent) 
     self.app=parent
-    self.__d =_RpcServer(self)
-    print(3)
-    self.__d.q=self 
-    print("rpcserver_Created")
+    self.__d =_RpcServer(self) 
+    self.__d.q=self  
   
   activated = pyqtSignal()
 
   def stop(self):
     self.__d.server.stop()
   def start(self):
-    """@return  bool"""
-    print("start")
+    """@return  bool""" 
     return self.__d.server.start()
   def isActive(self):
     """@return  bool"""
@@ -126,8 +119,7 @@ class RpcServer(QObject):
  
 class _RpcServer(object):
   def __init__(self, q):
-    self.server = createSocketServer(parent=q)
-    print(4)
+    self.server = createSocketServer(parent=q) 
     self.server.dataReceived.connect(self._onDataReceived)
 
     self.server.disconnected.connect(self._onDisconnected)
@@ -182,8 +174,7 @@ class _RpcServer(object):
       if params:
         self.q.engineReceived.emit(params[0])
     elif cmd == 'agent.engine.text':
-      if len(params) == 5:
-        print("solveenginetext",*params)
+      if len(params) == 5: 
         self._onEngineText(*params)
       else:
         print("invalid parameter count:", params)

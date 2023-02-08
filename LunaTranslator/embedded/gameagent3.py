@@ -9,10 +9,11 @@ import   embedded.sharedmem3 as sharedmem
 def global_(): return GameAgent()
 
 class GameAgent(QObject):
-  def __init__(self,rpc, parent=None):
-    super(GameAgent, self).__init__(parent)
-    self.__d = _GameAgent(self,rpc)
+  def __init__(self,rpc, hostengine):
+    super(GameAgent, self).__init__( )
+    self.__d = _GameAgent(self,rpc,hostengine)
     self.__d.q=self 
+    self.hostengine=hostengine
   processAttached = pyqtSignal(int) # pid
   processDetached = pyqtSignal(int) # pid
 
@@ -125,19 +126,20 @@ class GameAgent(QObject):
 
   # Shared memory
 
-  def sendEmbeddedTranslation(self, text, hash, role, language="zhs"):
+  def sendEmbeddedTranslation(self, text, hash, role ):
     """
     @param  text  unicode
     @param  hash  str or int64
     @param  role  int
     @param  language  str
     """
-    text=text+'xsxs'
-    
+     
+    import functools
+    self.hostengine.translate(text,functools.partial(self.sendEmbeddedTranslation_,hash,role))
+  def sendEmbeddedTranslation_(self,  hash, role, language,trans):
     hash = int(hash)
     m = self.__d.mem
-    if language=="0000":
-      m.notify(hash,role)
+     
     if m.isAttached(): # and m.lock(): 
       # Due to the logic, locking is not needed
       index = m.nextIndex() 
@@ -146,7 +148,7 @@ class GameAgent(QObject):
       m.setDataRole(index, role)
       m.setDataLanguage(index, language)
       
-      m.setDataText(index, text) 
+      m.setDataText(index, trans) 
       m.setDataStatus(index, m.STATUS_READY)  
       m.notify(hash, role)
 
@@ -191,9 +193,9 @@ _SETTINGS_DICT = {
 }
  
 class _GameAgent(object):
-  def __init__(self, q,rpc):
+  def __init__(self, q,rpc,hostengine):
     self.mem = sharedmem.VnrAgentSharedMemory(q)
- 
+    self.hostengine=hostengine
     self.rpc =rpc
 
     self.rpc.agentConnected.connect(q.processAttached)
@@ -202,7 +204,8 @@ class _GameAgent(object):
 
     t = self.injectTimer = QTimer(q)
     t.setSingleShot(False)
-    t.setInterval(5000)
+    from utils.config import globalconfig
+    t.setInterval(globalconfig['embedded']['timeout']*1000)
     t.timeout.connect(self._onInjectTimeout)
 
     q.processAttached.connect(self._onAttached)
@@ -252,6 +255,7 @@ class _GameAgent(object):
     if self.injectedPid:
       self.q.processAttachTimeout.emit(self.injectedPid)
       self.injectedPid = 0
+      self.hostengine.timeout()
 
   def _onAttached(self,_):
     print("attached")
@@ -260,6 +264,7 @@ class _GameAgent(object):
     #self.rpc.enableAgent()
 
   def _onDetached(self, pid): # int ->
+    print("detached")
     self.mem.detachProcess(pid)
 
   def _onEngineReceived(self, name): # str
@@ -268,11 +273,12 @@ class _GameAgent(object):
 
     if name and self.connectedPid:
       self.mem.attachProcess(self.connectedPid)
-
+      self.hostengine.getenginename(name)
       print("%s: %s" % ( ("Detect game engine"), name))
     else:
       print( ("Unrecognized game engine. Fallback to ITH."))
       self.q.callbadengine.emit()
+      self.hostengine.unrecognizedengine()
   def sendSettings(self):
     # ss = settings.global_()
     # data = {k:apply(getattr(ss, v)) for k,v in _SETTINGS_DICT.iteritems()}

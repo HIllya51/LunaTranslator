@@ -54,16 +54,15 @@ import pyperclip
 from embedded.rpcman3 import RpcServer
 from embedded.gameagent3 import GameAgent 
 class MAINUI(QObject) :
-    startembedsignal=pyqtSignal(int)
-    def startembed(self,pid):
-        print("staring")
-        self.rpc=RpcServer() 
-        print("staring")
-        self.rpc.start()
-        print('rpcstarted')
-        self.ga=GameAgent(self.rpc)
-        self.ga.attachProcess(pid)
+    startembedsignal=pyqtSignal(int,embedded)
+    def startembed(self,pid,engine:embedded): 
+        self.rpc=RpcServer()  
+        self.ga=GameAgent(self.rpc,engine)
+        
         self.rpc.engineTextReceived.connect(self.ga.sendEmbeddedTranslation)
+        
+        self.rpc.start() 
+        self.ga.attachProcess(pid) 
         self.rpc.clearAgentTranslation()  
     def __init__(self) -> None:
         super().__init__()
@@ -145,6 +144,7 @@ class MAINUI(QObject) :
 
     
     def textgetmethod(self,paste_str,shortlongskip=True,embedcallback=None):
+        print(paste_str,shortlongskip,embedcallback)
         if type(paste_str)==str:
             if paste_str[:len('<notrans>')]=='<notrans>':
                 self.translation_ui.displayraw1.emit([],paste_str[len('<notrans>'):],globalconfig['rawtextcolor'],1)
@@ -222,10 +222,7 @@ class MAINUI(QObject) :
                     self.textsource.sqlwrite2.execute(f'INSERT INTO artificialtrans VALUES(NULL,"{_paste_str}","{json.dumps({})}");')
         except:
             print_exc()
-        if (embedcallback and globalconfig['autorun']==False)  :
-            embedcallback(_paste_str)
-        else:
-            for engine in self.translators:  
+        for engine in self.translators:  
                 self.translators[engine].gettask((_paste_str,paste_str_solve,skip,embedcallback)) 
          
     @threader
@@ -402,7 +399,7 @@ class MAINUI(QObject) :
             self.translation_ui.displayres.emit(classname,res)
             if embedcallback:
                 if globalconfig['embedded']['as_fast_as_posible'] or classname==list(globalconfig['fanyi'])[globalconfig['embedded']['translator']]:  
-                    embedcallback(res) 
+                    embedcallback(globalconfig['fanyi'][classname]['lang'], res) 
             
         if classname not in globalconfig['fanyi_pre']:
              

@@ -45,12 +45,15 @@ class basetext:
             #print(globalconfig['autorun'])
             try:
                 t=self.gettextthread()
-            except:
-                t=''
+                if t and globalconfig['autorun']:
+                    if type(t)==str:
+                        self.textgetmethod(t) 
+                    else:
+                        self.textgetmethod(*t)
+            except: 
                 print_exc() 
             
-            if t and globalconfig['autorun']:
-                self.textgetmethod(t) 
+            
     def ignoretext(self):
         pass
     def gettextthread(self):

@@ -58,8 +58,7 @@ def readsocket(socket):
   if bytesAvailable < bodySize:
     print("insufficient message size: %s < %s" % (bytesAvailable, bodySize))
     return
-
-  print("message size = %s" % socket.messageSize)
+ 
 
   data = socket.read(bodySize)
   socket.messageSize = 0

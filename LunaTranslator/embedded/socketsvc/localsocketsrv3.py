@@ -49,10 +49,8 @@ class LocalSocketServer(QObject):
     return len(self.__d.sockets)
 
   def serverName(self): return self.__d.name # -> str
-  def setServerName(self, v): 
-    print("setingservername",v)
-    self.__d.name =s = "\\\\.\\pipe\\" + v
-    print("setedservername",self.__d.name)
+  def setServerName(self, v):  
+    self.__d.name =s = "\\\\.\\pipe\\" + v 
   def start(self): return self.__d.start() # -> bool
   def stop(self): self.__d.stop()
 
@@ -81,18 +79,14 @@ class _LocalSocketServer(object):
 
   def start(self): # -> bool
     
-    if not self.server:
-      print("bad")
+    if not self.server: 
       self.server = self._createServer()
-    ok = self.server.listen(self.name)
-    print("start",ok,self.name)
-    print("pass: ok = %s" % ok)
+    ok = self.server.listen(self.name) 
     return ok
 
   def stop(self):
     if self.server:
-      self.server.close()
-      print("pass")
+      self.server.close() 
 
   def _onNewConnection(self):
     #assert self.server
@@ -117,8 +111,7 @@ class _LocalSocketServer(object):
 
       socket.readyRead.connect(partial(lambda ref:
           self.readSocket(ref()),
-          ref))
-    print("pass");
+          ref)) 
     #self.readSocket(socket)
 
   def deleteSocket(self, socket):

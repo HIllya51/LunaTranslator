@@ -32,8 +32,7 @@ def unpackuint(s): #
   @param  s  str|bytearray|QByteArray
   @return  int
   """
-  #return sum(ord(c) << (i * 8) for i,c in enumerate(s[::-1])) # reverse sign does not work for QByteArray
-  print("unpackuint")
+  #return sum(ord(c) << (i * 8) for i,c in enumerate(s[::-1])) # reverse sign does not work for QByteArray 
   size = len(s)
   return sum((ord(c) << (8 * (size - i - 1))) for i,c in enumerate(s))
 
@@ -42,16 +41,14 @@ def unpackuint32(s, i=0): #
   @param  s  str|bytearray|QByteArray
   @param*  i  int  start index
   @return  int
-  """
-  print("unpackuint32")
+  """ 
   return ( (s[i]) << 24) | ( (s[i+1]) << 16) | ( (s[i+2]) << 8) |  (s[i+3]) if len(s) >= 4 + i else 0
  
 def packuint32(i): # int -> str
   """
   @param  number  i
   @return  str  4 bytes
-  """
-  print("packint32")
+  """ 
   return bytes(chr((i >> 24) & 0xff) + chr((i >> 16) & 0xff) + chr((i >> 8) & 0xff) + chr(i & 0xff),encoding='latin-1')
  
 
@@ -89,11 +86,7 @@ def packstrlist(l, encoding='utf8'):
 
     s = s.encode(encoding, errors='ignore')
     head.append(len(s))
-    body.append(s)
-  print(body)
-  print(head)
-   
-  print(list(map(packuint32, head))  )
+    body.append(s) 
   return b''.join(map(packuint32, head)) + b''.join(body)
 
 def unpackstrlist(data, encoding='utf8'):
