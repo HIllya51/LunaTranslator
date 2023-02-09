@@ -511,8 +511,7 @@ class MAINUI(QObject) :
             self.view.setAttribute(Qt.WA_TranslucentBackground) 
             self.view.setStyleSheet('background-color: rgba(255, 255, 255, 0);')
             self.view.setGeometry(QDesktopWidget().screenGeometry())
-            self.view.show()       
-        
+            self.view.show()        
         self.mainuiloadafter()
         threading.Thread(target=self.setontopthread).start() 
     def mainuiloadafter(self):   

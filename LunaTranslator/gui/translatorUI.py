@@ -232,7 +232,8 @@ class QUnFrameWindow(QWidget):
         self.muteprocessignal.connect(self.muteprocessfuntion) 
         self.toolbarhidedelaysignal.connect(self.toolbarhidedelay)
         self._padding = 5*self.rate  # 设置边界宽度为5
-        self.setMinimumWidth(300)
+        self.setMinimumWidth(100)
+        self.setMinimumHeight(100)
         self.hideshownotauto=True
         self.displaystatus.connect(self.showstatus)
         self.showhideuisignal.connect(self.showhideui)
@@ -330,9 +331,9 @@ class QUnFrameWindow(QWidget):
         d=QApplication.desktop()
 
         globalconfig['position'][0]=min(max(globalconfig['position'][0],0),d.width()-globalconfig['width'])
-        globalconfig['position'][1]=min(max(globalconfig['position'][1],0),d.height()-200)
+        globalconfig['position'][1]=min(max(globalconfig['position'][1],0),d.height()-globalconfig['height'])
         
-        self.setGeometry( globalconfig['position'][0],globalconfig['position'][1],int(globalconfig['width'] ),globalconfig['fixedheight']*int(globalconfig['height'] ) + (not globalconfig['fixedheight'])*200) 
+        self.setGeometry( globalconfig['position'][0],globalconfig['position'][1],int(globalconfig['width'] ), int(globalconfig['height'])) 
 
         self.tray = QSystemTrayIcon()  
         self.tray.setIcon(icon) 
