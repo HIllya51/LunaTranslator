@@ -1,27 +1,25 @@
  
 from traceback import print_exc
-import requests
+
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QWidget,QLabel ,QProgressBar,QLineEdit,QPushButton,QVBoxLayout
-import threading
-import os
-import shutil
-import zipfile
-import threading
-from threading import Lock 
+from PyQt5.QtWidgets import QWidget,QLabel ,QProgressBar,QLineEdit,QPushButton 
+import os 
 from utils.config import globalconfig  ,_TR 
 from utils.wrapper import threader
-from utils.downloader import mutithreaddownload
+ 
 @threader
 def getversion(self):
-     
+    import requests 
+    import shutil
+    import zipfile
+    from utils.downloader import mutithreaddownload
     # with open('files/about.txt','r',encoding='utf8') as ff:
     #     about=ff.read()
     # with open('files/version.txt','r',encoding='utf8') as ff:
     #     version=ff.read() 
     version="v2.2.2"
     url='https://github.com/HIllya51/LunaTranslator/releases/'
-    self.versiontextsignal.emit(_TR('当前版本')+':'+  version+'  '+_TR("最新版本")+':'+ _TR('获取中'))#,'',url,url))
+    self.versiontextsignal.emit(_TR('当前版本')+':'+  version+'  '+_TR("最新版本")+':'+ _TR('获取中'))#,'',url,url)) 
     try:
         requests.packages.urllib3.disable_warnings()
         headers = {
@@ -36,12 +34,10 @@ def getversion(self):
         #print(res)
         _version=res['tag_name']
        # print(version)
-        url=res['assets'][0]['browser_download_url']
-        newcontent='更新内容：'+res['body']
+        url=res['assets'][0]['browser_download_url'] 
     except:
         print_exc()
-        _version=_TR("获取失败")
-        newcontent=''
+        _version=_TR("获取失败") 
     self.versiontextsignal.emit((_TR('当前版本')+':'+  version+'  '+_TR("最新版本")+':'+ _version) ) #,'' if version== _version else  newcontent,url,'LunaTranslator.zip'))
     if _version!=_TR("获取失败") and version!=_version:
         if globalconfig['autoupdate']:
@@ -61,17 +57,27 @@ def getversion(self):
 def updateprogress(self,text,val):
     self.downloadprogress.setValue(val)
     self.downloadprogress.setFormat(text)
-     
+    
+
+def setTab_about_dicrect(self) : 
+    
+    self.versionlabel = QLabel()
+    self.versionlabel.setOpenExternalLinks(True)
+    self.versionlabel.setTextInteractionFlags(Qt.LinksAccessibleByMouse) 
+    self.versiontextsignal.connect(lambda x:self.versionlabel.setText(x) )
+    self.downloadprogress=QProgressBar()
+        
+    self.downloadprogress.hide()
+    self.downloadprogress.setRange(0,10000)
+
+    self.downloadprogress.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
+    self.progresssignal.connect(lambda text,val:updateprogress(self,text,val))
+    getversion(self)
 def setTab_about(self) : 
-        self.downloadprogress=QProgressBar()
-         
-        self.downloadprogress.hide()
-        self.downloadprogress.setRange(0,10000)
-
-        self.downloadprogress.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
-        self.progresssignal.connect(lambda text,val:updateprogress(self,text,val))
-
-
+    self.tabadd_lazy(self.tab_widget, ('其他设置'), lambda :setTab_aboutlazy(self)) 
+def setTab_aboutlazy(self) : 
+        
+ 
 
         def _setproxy(x): 
             if x:
@@ -93,11 +99,6 @@ def setTab_about(self) :
                 os.environ['http_proxy']=globalconfig['proxy'] 
         btn.clicked.connect(lambda x: __resetproxy(x))
 
-        self.versionlabel = QLabel()
-        self.versionlabel.setOpenExternalLinks(True)
-        self.versionlabel.setTextInteractionFlags(Qt.LinksAccessibleByMouse) 
-        self.versiontextsignal.connect(lambda x:self.versionlabel.setText(x) )
-
         
         
         grid1=[ 
@@ -112,7 +113,6 @@ def setTab_about(self) :
                 [(self.downloadprogress,10)],
                 #[(self.versionlabel4,10)] 
         ]  
-        
          
         
         pages=[]
@@ -126,7 +126,6 @@ def setTab_about(self) :
         shuoming = (QLabel(_TR('项目网站')+':<a href="https://github.com/HIllya51/LunaTranslator">https://github.com/HIllya51/LunaTranslator</a><br>' +
                     _TR('使用说明')+':<a href="https://hillya51.github.io/">https://hillya51.github.io/</a><br>' +
                     '如果你感觉该软件对你有帮助，欢迎微信扫码或者前往<a href="https://afdian.net/a/HIllya51">爱发电</a>赞助，谢谢，么么哒~<br>'+f'<img src="./files/zan.jpg" heigth={wh} width={wh}>') )
-         
-        self.tabadd(self.tab_widget, ('其他设置'),self.makevbox([tab,shuoming ])) 
-
-        threading.Thread(target=lambda :getversion(self)).start()
+          
+        
+        return self.makevbox([tab,shuoming ])

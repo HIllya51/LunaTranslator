@@ -1,8 +1,8 @@
-import functools 
-  
+import functools  
 from utils.config import globalconfig ,ocrsetting,_TRL
  
 from gui.inputdialog import autoinitdialog   
+ 
 def getocrgrid(self) :
         
           

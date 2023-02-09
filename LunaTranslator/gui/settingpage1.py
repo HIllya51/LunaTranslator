@@ -1,11 +1,9 @@
  
-import functools   
-
-from gui.settingpage_ocr import getocrgrid 
-    
-from utils.config import globalconfig ,_TR,_TRL 
-from gui.dialog_savedgame import dialog_savedgame
-from gui.codeacceptdialog import codeacceptdialog 
+import functools    
+from gui.settingpage_ocr import getocrgrid  
+from utils.config import globalconfig ,_TR,_TRL  
+from gui.dialog_savedgame import dialog_savedgame 
+from gui.codeacceptdialog import codeacceptdialog  
 def gethookgrid(self) :
  
         grids=[
@@ -27,7 +25,7 @@ def gethookembedgrid(self) :
                 self.object.ga.settimeout(x*1000)
         grids=[
                  
-                [('仅支持部分游戏',15)],
+                [('仅支持部分游戏',12)],
                 [('内嵌失败时自动回到普通HOOK',5),(self.getsimpleswitch( globalconfig['embedded'],'fallbacktonormalhook' ),1) ],
                 
                 [('内嵌失败等待时间(s)',5),(self.getspinbox(1,30,globalconfig['embedded'],'timeout_connect'),3) ],
@@ -55,9 +53,9 @@ def txtsettings(self):
     grids=[[("TXT读取间隔(s)",6),(self.getspinbox(0,10,globalconfig,'txtreadlineinterval',step=0.1,double=True),3),('',10)],['']]
     return grids
 
-def setTabOne(self) :
-        self.clicksourcesignal.connect(lambda k: getattr(self,'sourceswitchs')[k].click())
-  
+def setTabOne(self) :  
+        self.tabadd_lazy(self.tab_widget, ('文本输入'), lambda :setTabOne_lazy(self)) 
+def setTabOne_lazy(self) : 
         grids=[
                 [ ('选择文本输入源',3)],
                 [
@@ -76,8 +74,7 @@ def setTabOne(self) :
                         
                         
                 ]
-        ] 
- 
+        ]  
         
         pages=[]
         for  i,ocrgrid in enumerate([ gethookgrid ,getocrgrid ,setTabclip,txtsettings,gethookembedgrid]):
@@ -88,4 +85,4 @@ def setTabOne(self) :
         tab=self.makesubtab(['HOOK设置','OCR设置','剪贴板设置','TXT设置','内嵌设置'],pages) 
 
         gridlayoutwidget=self.makegrid(grids )    
-        self.tabadd(self.tab_widget, ('文本输入'), self.makevbox([gridlayoutwidget,tab]) ) 
+        return self.makevbox([gridlayoutwidget,tab]) 

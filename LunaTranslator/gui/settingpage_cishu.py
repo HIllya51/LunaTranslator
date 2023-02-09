@@ -1,7 +1,10 @@
 import functools 
 from utils.config import globalconfig   
 from gui.inputdialog import getsomepath1,autoinitdialog 
-def setTabcishu(self) :
+
+def setTabcishu(self) : 
+    self.tabadd_lazy(self.tab_widget, ('辞书设置'), lambda :setTabcishu_l(self)) 
+def setTabcishu_l(self) :
         
         mojiconfigitems=[{
                         't':'lineedit','l':'Moji NLT Token','d':globalconfig['hirasetting']['mojinlt'],'k':'token'
@@ -47,5 +50,7 @@ def setTabcishu(self) :
                 else:
                         line+=['']
         
-   
-        self.yitiaolong("辞书设置",grids)
+        gridlayoutwidget=self.makegrid(grids )  
+        gridlayoutwidget=self.makescroll( gridlayoutwidget  )
+        
+        return gridlayoutwidget

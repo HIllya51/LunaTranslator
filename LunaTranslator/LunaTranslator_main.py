@@ -1,31 +1,29 @@
 import time
-t1=time.time()   
+filestart=time.time()   
 import os
 import json
 import Levenshtein
 import sys 
 from traceback import  print_exc  
-import requests
+ 
 dirname, filename = os.path.split(os.path.abspath(__file__))
 sys.path.append(dirname)  
 from utils.config import globalconfig ,savehook_new_list,savehook_new_data,noundictconfig,transerrorfixdictconfig,setlanguage 
 import threading,win32gui 
 from PyQt5.QtCore import QCoreApplication ,Qt ,QObject,pyqtSignal
 from PyQt5.QtWidgets import  QApplication ,QGraphicsScene,QGraphicsView,QDesktopWidget  
- 
+
 from utils.minmaxmove import minmaxmoveobservefunc
 from utils.simplekanji import kanjitrans
 from utils.wrapper import threader 
+ 
 from gui.showword import searchwordW
 from gui.rangeselect    import rangeadjust
-from  gui.settin   import Settin
+ 
+ 
 from utils.getpidlist import pid_running,getarch
-from tts.windowstts import tts  as windowstts
-from tts.huoshantts import tts as huoshantts
-from tts.azuretts import tts as azuretts
-from tts.voiceroid2 import tts as voiceroid2
-from tts.voicevox import tts as voicevox
-   
+
+ 
 from textsource.copyboard import copyboard   
 from textsource.textractor import textractor   
 from textsource.embedded import embedded
@@ -33,7 +31,7 @@ from textsource.ocrtext import ocrtext
 from textsource.txt import txt 
 import  gui.selecthook    
 from utils.getpidlist import getpidexe,ListProcess,getScreenRate
-
+ 
 import gui.translatorUI
 from queue import Queue
 import zhconv
@@ -41,10 +39,11 @@ import gui.transhist
 import gui.edittext
 import importlib
 from functools import partial  
+from gui.settin import Settin 
 from gui.attachprocessdialog import AttachProcessDialog
 import win32event,win32con,win32process,win32api 
 import re
-
+ 
 import socket
 socket.setdefaulttimeout(globalconfig['translatortimeout'])
 from utils.post import POSTSOLVE
@@ -54,7 +53,7 @@ import pyperclip
 from utils.simplekanji import kanjitrans
 from embedded.rpcman3 import RpcServer
 from embedded.gameagent3 import GameAgent 
-
+print('loadimports',time.time()-filestart)
 class MAINUI(QObject) :
     startembedsignal=pyqtSignal(int,embedded)
     def startembed(self,pid,engine:embedded): 
@@ -232,6 +231,11 @@ class MAINUI(QObject) :
     @threader
     def startreader(self,use=None,checked=True):
         if checked:
+            from tts.windowstts import tts  as windowstts
+            from tts.huoshantts import tts as huoshantts
+            from tts.azuretts import tts as azuretts
+            from tts.voiceroid2 import tts as voiceroid2
+            from tts.voicevox import tts as voicevox
             ttss={'windowstts':windowstts,
                     'huoshantts':huoshantts,
                     'azuretts':azuretts,
@@ -297,8 +301,11 @@ class MAINUI(QObject) :
         self.translation_ui.showhidestate=False 
         self.translation_ui.refreshtooliconsignal.emit()
         self.range_ui.hide()
-        self.settin_ui.selectbutton.setEnabled(globalconfig['sourcestatus']['textractor'] or globalconfig['sourcestatus']['embedded']) 
-        self.settin_ui.selecthookbutton.setEnabled(globalconfig['sourcestatus']['textractor'] or globalconfig['sourcestatus']['embedded']) 
+        try:
+            self.settin_ui.selectbutton.setEnabled(globalconfig['sourcestatus']['textractor'] or globalconfig['sourcestatus']['embedded']) 
+            self.settin_ui.selecthookbutton.setEnabled(globalconfig['sourcestatus']['textractor'] or globalconfig['sourcestatus']['embedded']) 
+        except:
+            pass
         self.translation_ui.showhidetoolbuttons()
     def embeddedfailed(self,pid_real,hwnd,name_): 
         self.textsource= textractor(self.textgetmethod,self.hookselectdialog,pid_real,hwnd,name_ ,autostarthookcode=savehook_new_data[name_]['hook'])
@@ -494,13 +501,12 @@ class MAINUI(QObject) :
         while True:
             self.onwindowloadautohook()
             time.sleep(0.5)#太短了的话，中间存在一瞬间，后台进程比前台窗口内存占用要大。。。
-    def aa(self):  
-         
+    def aa(self):   
         self.translation_ui =gui.translatorUI.QUnFrameWindow(self)   
-        
+        print('uistart',time.time()-filestart) 
+        print(time.time())
         if globalconfig['rotation']==0:
-            self.translation_ui.show()
-            #print(time.time()-t1) 
+            self.translation_ui.show() 
         else:
             self.scene = QGraphicsScene()
             
@@ -512,18 +518,18 @@ class MAINUI(QObject) :
             self.view.setStyleSheet('background-color: rgba(255, 255, 255, 0);')
             self.view.setGeometry(QDesktopWidget().screenGeometry())
             self.view.show()        
+        print('uiok',time.time()-filestart)
+         
         self.mainuiloadafter()
         threading.Thread(target=self.setontopthread).start() 
-    def mainuiloadafter(self):   
+    def mainuiloadafter(self):    
         self.localocrstarted=False 
         self.loadvnrshareddict()
         self.prepare()  
         self.startxiaoxueguan()
-        self.starthira()   
-        
-        t=time.time()
+        self.starthira()     
         self.settin_ui = Settin(self)  
-        print(time.time()-t)
+        print('all',time.time()-filestart) 
         self.startreader()  
         self.transhis=gui.transhist.transhist(self.translation_ui)  
         self.edittextui=gui.edittext.edittext(self.translation_ui)  
@@ -531,7 +537,7 @@ class MAINUI(QObject) :
         self.range_ui = rangeadjust(self)   
         self.hookselectdialog=gui.selecthook.hookselect(self ,self.settin_ui) 
         self.AttachProcessDialog=AttachProcessDialog(self.settin_ui,self.selectprocess,self.hookselectdialog)
-         
+          
         threading.Thread(target=self.autohookmonitorthread).start()    
         threading.Thread(target=minmaxmoveobservefunc,args=(self.translation_ui,)).start()   
         
@@ -539,8 +545,7 @@ class MAINUI(QObject) :
 if __name__ == "__main__" :
     
     
-    
-    
+    print(time.time()-filestart) 
     screen_scale_rate = getScreenRate()  
      
     QCoreApplication.setAttribute(Qt.AA_UseHighDpiPixmaps, True)
@@ -553,8 +558,10 @@ if __name__ == "__main__" :
         globalconfig['language_setted']=True
         globalconfig['languageuse']=x.current
         setlanguage()
+    print('before', time.time()-filestart)
     main = MAINUI() 
-    
+    print('MAINUI', time.time()-filestart)
     main.screen_scale_rate =screen_scale_rate  
     main.aa()
+    print(time.time()-filestart)
     app.exit(app.exec_())

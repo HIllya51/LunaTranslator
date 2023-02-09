@@ -1,5 +1,5 @@
  
-from PyQt5.QtWidgets import QPushButton  
+from PyQt5.QtWidgets import QPushButton  ,QWidget,QVBoxLayout
 import functools 
 from utils.config import globalconfig ,translatorsetting 
  
@@ -66,8 +66,11 @@ def initsome11(self,l,grids,label=None):
             grids.append(line)
         else:
             line+=['']
- 
-def setTabTwo(self) :
+
+
+def setTabTwo(self) : 
+    self.tabadd_lazy(self.tab_widget, ('翻译设置'), lambda :setTabTwo_lazy(self)) 
+def setTabTwo_lazy(self) :
          
          
         bt = QPushButton(_TR("导出翻译记录为json文件")  ) 
@@ -121,4 +124,4 @@ def setTabTwo(self) :
         tab=self.makesubtab(['在线翻译','离线翻译','预翻译'],pages) 
 
         gridlayoutwidget=self.makegrid(grids )    
-        self.tabadd(self.tab_widget, ('翻译设置'),self.makevbox([gridlayoutwidget,tab])) 
+        return self.makevbox([gridlayoutwidget,tab])

@@ -23,7 +23,11 @@ import os
 
 from utils.utils import selectdebugfile
 from utils.wrapper import Singleton
-def setTab7(self) :   
+def settab7direct(self):
+    self.button_noundict=self.getcolorbutton(globalconfig,'' ,callback=lambda x:  noundictconfigdialog(self,noundictconfig,'专有名词翻译设置(游戏ID 0表示全局)'),icon='fa.gear',constcolor="#FF69B4")
+def setTab7(self) :  
+        self.tabadd_lazy(self.tab_widget, ('文本处理'), lambda :setTab7_lazy(self)) 
+def setTab7_lazy(self) :   
         grids=[
             [('预处理方法',6),'','',('调整执行顺序',6)]
         ] 
@@ -77,7 +81,7 @@ def setTab7(self) :
         grids2=[ 
             [(('使用专有名词翻译' ),6),
                 self.getsimpleswitch(noundictconfig,'use'),
-                self.getcolorbutton(globalconfig,'',name="button_noundict",callback=lambda x:  noundictconfigdialog(self,noundictconfig,'专有名词翻译设置(游戏ID 0表示全局)'),icon='fa.gear',constcolor="#FF69B4")],
+                self.button_noundict],
             [(('使用翻译结果修正' ),6),
                 self.getsimpleswitch(transerrorfixdictconfig,'use'),
                 self.getcolorbutton(globalconfig,'',callback=lambda x:  noundictconfigdialog1(self,transerrorfixdictconfig,'翻译结果替换设置',['翻译','替换'],'./userconfig/transerrorfixdictconfig.json'),icon='fa.gear',constcolor="#FF69B4")],
@@ -92,7 +96,7 @@ def setTab7(self) :
         ]
          
         tab=self.makesubtab(['文本预处理', '翻译优化'],pages)   
-        self.tabadd(self.tab_widget, ('文本处理'), tab )  
+        return tab
 @Singleton
 class noundictconfigdialog1(QDialog):
     def __init__(dialog,object,configdict,title,label=[  '日文','翻译'] ,_=None) -> None:

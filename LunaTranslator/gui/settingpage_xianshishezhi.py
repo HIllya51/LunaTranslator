@@ -2,7 +2,7 @@ import functools
 from PyQt5.QtCore import Qt 
 from PyQt5.QtGui import  QFont
 
-from PyQt5.QtWidgets import  QWidget,QLabel ,QSlider, QFontComboBox  
+from PyQt5.QtWidgets import  QWidget,QLabel ,QSlider, QFontComboBox  ,QVBoxLayout
 import json,os
  
 from gui.inputdialog import multicolorset
@@ -13,9 +13,18 @@ from gui.inputdialog import autoinitdialog,getsomepath1
 def __changeuibuttonstate(self,x):  
                 self.object.translation_ui.refreshtoolicon()
                 self.show_hira_switch .setEnabled(x)
-                self.showatmiddleswitch .setEnabled(x) 
-
+                self.show_fenciswitch .setEnabled(x) 
+def setTabThree_direct(self):
+        self.fontSize_spinBox=self.getspinbox(1,100,globalconfig,'fontsize',double=True,step=0.1 )
+        self.fontbigsmallsignal.connect(lambda t:self.fontSize_spinBox.setValue(self.fontSize_spinBox.value()+0.5*t))
+        self.show_original_switch=self.getsimpleswitch(globalconfig,'isshowrawtext',callback=lambda x: __changeuibuttonstate(self,x))
+        self.show_hira_switch=self.getsimpleswitch(globalconfig,'isshowhira',enable=globalconfig['isshowrawtext'])
+        self.show_fenciswitch=self.getsimpleswitch(globalconfig,'show_fenci',enable=globalconfig['isshowrawtext'])
+ 
 def setTabThree(self) :
+       
+        self.tabadd_lazy(self.tab_widget, ('显示设置'), lambda :setTabThree_lazy(self))  
+def setTabThree_lazy(self) :
       
 
         self.horizontal_slider = QSlider(  ) 
@@ -65,18 +74,18 @@ def setTabThree(self) :
         ]
  
         
-        self.fontbigsmallsignal.connect(lambda t:self.fontSize_spinBox.setValue(self.fontSize_spinBox.value()+0.5*t))
+        
         textgrid=[
                 [('文本字体',3),(self.font_comboBox,5)],
-                [('字体大小',3),(self.getspinbox(1,100,globalconfig,'fontsize',double=True,step=0.1,name='fontSize_spinBox'),2),'',('居中显示',4),self.getsimpleswitch(globalconfig,'showatcenter'),'',('加粗字体',4),self.getsimpleswitch(globalconfig,'showbold' )],
+                [('字体大小',3),(self.fontSize_spinBox,2),'',('居中显示',4),self.getsimpleswitch(globalconfig,'showatcenter'),'',('加粗字体',4),self.getsimpleswitch(globalconfig,'showbold' )],
                  [ '',],
                  [('字体样式',3),(self.getsimplecombobox(_TRL(['普通字体','空心字体','描边字体','阴影字体']),globalconfig,'zitiyangshi'),5)],
                 [('特殊字体样式填充颜色',4),self.getcolorbutton(globalconfig,'miaobiancolor',transparent=False,callback=lambda: self.ChangeTranslateColor("miaobiancolor", self.miaobian_color_button),name='miaobian_color_button')],
                 [('空心线宽',3),(self.getspinbox(1,100,globalconfig,'miaobianwidth',double=True,step=0.1),2),'',('描边宽度',3 ),(self.getspinbox(1,100,globalconfig,'miaobianwidth2',double=True,step=0.1),2),'',('阴影强度',3),(self.getspinbox(1,10,globalconfig,'shadowforce'),2)],
                 [''],
-                [('显示原文',4),self.getsimpleswitch(globalconfig,'isshowrawtext',callback=lambda x: __changeuibuttonstate(self,x),name='show_original_switch'),'',('原文颜色',4), self.getcolorbutton(globalconfig,'rawtextcolor',callback=lambda: self.ChangeTranslateColor("rawtextcolor", self.original_color_button),name='original_color_button')],
-                [('显示假名',4),self.getsimpleswitch(globalconfig,'isshowhira',enable=globalconfig['isshowrawtext'],name='show_hira_switch'),'',('假名颜色',4),self.getcolorbutton(globalconfig,'jiamingcolor',callback=lambda: self.ChangeTranslateColor("jiamingcolor", self.jiamingcolor_b),name='jiamingcolor_b'),'',('假名字体缩放',3),(self.getspinbox(0.05,1,globalconfig,'kanarate',double=True,step=0.05,dec=2),2)],  
-                [('语法加亮',4 ),self.getsimpleswitch(globalconfig,'show_fenci',enable=globalconfig['isshowrawtext'],name='showatmiddleswitch'),'',
+                [('显示原文',4),self.show_original_switch,'',('原文颜色',4), self.getcolorbutton(globalconfig,'rawtextcolor',callback=lambda: self.ChangeTranslateColor("rawtextcolor", self.original_color_button),name='original_color_button')],
+                [('显示假名',4),self.show_hira_switch,'',('假名颜色',4),self.getcolorbutton(globalconfig,'jiamingcolor',callback=lambda: self.ChangeTranslateColor("jiamingcolor", self.jiamingcolor_b),name='jiamingcolor_b'),'',('假名字体缩放',3),(self.getspinbox(0.05,1,globalconfig,'kanarate',double=True,step=0.05,dec=2),2)],  
+                [('语法加亮',4 ),self.show_fenciswitch,'',
                  ('词性颜色(需要Mecab)',4), self.getcolorbutton(globalconfig,'',callback=lambda  : multicolorset(self),icon='fa.gear',constcolor="#FF69B4") ,],
                 [("显示翻译器名称",4),(self.getsimpleswitch(globalconfig  ,'showfanyisource'),1)],
                 [''],
@@ -122,7 +131,7 @@ def setTabThree(self) :
         tab=self.makesubtab(['文本设置', '界面设置','游戏全屏'],pages) 
  
         
-        self.tabadd(self.tab_widget, ('显示设置'), tab ) 
+        return tab
          
 def changeHorizontal(self) :
 

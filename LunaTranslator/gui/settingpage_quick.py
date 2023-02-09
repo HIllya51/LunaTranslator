@@ -1,5 +1,5 @@
  
-from PyQt5.QtWidgets import QWidget,QLabel ,QComboBox,QScrollArea 
+from PyQt5.QtWidgets import QWidget,QVBoxLayout
 import functools
 from utils.config import globalconfig   
 from traceback import print_exc 
@@ -8,16 +8,12 @@ key_first=['Ctrl','Shift','Alt','Win' ]+['None']
 key_first_reg=['control','shift','alt','super' ]+['']
 key_second=['F'+chr(ord('1')+i) for i in range(9)]+['F10','F11','F12']+[chr(ord('A')+i) for i in range(26)]+[chr(ord('0')+i) for i in range(10)]#+['']
 key_second_reg=['f'+chr(ord('1')+i) for i in range(9)]+['f10','f11','f12']+[chr(ord('a')+i) for i in range(26)]+[chr(ord('0')+i) for i in range(10)]#+['']
-def setTab_quick(self) :
-  
-        self.hotkeys={}
-        self.hotkeys_savelast={}
-        self.usedkey=[]
-        self.bindfunctions={
-            '_A':lambda :self.object.settin_ui.clicksourcesignal.emit('copy'),
-            '_B':lambda :self.object.settin_ui.clicksourcesignal.emit('ocr'),
-            '_C':lambda :self.object.settin_ui.clicksourcesignal.emit('textractor'),
-
+def setTab_quick_direct(self):
+    self.hotkeys={}
+    self.hotkeys_savelast={}
+    self.usedkey=[] 
+        
+    self.bindfunctions={ 
             '_1':self.object.translation_ui.startTranslater,
             '_2':self.object.translation_ui.changeTranslateMode,
             '_3':self.showsignal.emit,
@@ -43,7 +39,18 @@ def setTab_quick(self) :
             "_23":  self.object.translation_ui.rangequick.emit ,
             
         }
-         
+    for name in globalconfig['quick_setting']['all']: 
+        if name not in self.bindfunctions:
+                    continue
+        self.hotkeys[name]=None
+        regist_or_not_key(self,name,self.bindfunctions[name])
+
+def setTab_quick(self):
+    
+ 
+    self.tabadd_lazy(self.tab_widget, ('快捷按键'), lambda :setTab_quick_lazy(self))   
+def setTab_quick_lazy(self) :
+  
         
         
          
@@ -57,9 +64,7 @@ def setTab_quick(self) :
                 key2=self.getsimplecombobox(key_second,globalconfig['quick_setting']['all'][name],'key2') 
                 key1.currentIndexChanged.connect(functools.partial(__changekey,self,name,'key1',key1,key2))
                 key2.currentIndexChanged.connect(functools.partial(__changekey,self,name,'key2',key1,key2))
-                self.hotkeys[name]=None
-            
-                regist_or_not_key(self,name,self.bindfunctions[name])
+                
                 grids.append(
                     [((globalconfig['quick_setting']['all'][name]['name']),4),
                     self.getsimpleswitch(globalconfig['quick_setting']['all'][name] ,'use',callback=functools.partial(fanyiselect,self,name)),
@@ -67,8 +72,10 @@ def setTab_quick(self) :
                     (key2,2)
                     ]
                 )
-             
-        self.yitiaolong("快捷按键",grids)
+        gridlayoutwidget=self.makegrid(grids )  
+        gridlayoutwidget=self.makescroll( gridlayoutwidget  )
+        return gridlayoutwidget
+        #self.yitiaolong("快捷按键",grids)
 def __enable(self,x ): 
             for quick in globalconfig['quick_setting']['all']:
                 if quick not in self.bindfunctions:

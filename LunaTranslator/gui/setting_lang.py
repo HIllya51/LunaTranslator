@@ -1,8 +1,11 @@
   
 import os 
 from utils.config import globalconfig ,_TR,_TRL 
- 
+
+
 def setTablang(self) : 
+    self.tabadd_lazy(self.tab_widget, ('语言设置'), lambda :setTablanglz(self)) 
+def setTablanglz(self) : 
         langlist=globalconfig['language_list_translator'] 
         grids=[
             [ 
@@ -14,5 +17,7 @@ def setTablang(self) :
             [''],
         ]
          
-         
-        self.yitiaolong("语言设置",grids)
+        gridlayoutwidget=self.makegrid(grids )  
+        gridlayoutwidget=self.makescroll( gridlayoutwidget  )
+        
+        return gridlayoutwidget

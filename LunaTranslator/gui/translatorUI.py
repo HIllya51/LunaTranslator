@@ -187,8 +187,8 @@ class QUnFrameWindow(QWidget):
             qtawesome.icon("fa.link" ,color=globalconfig['buttoncolor']),
             qtawesome.icon("fa.tasks" ,color= globalconfig['buttoncolor']),
             qtawesome.icon("fa.crop" ,color=globalconfig['buttoncolor']),
-            (qtawesome.icon("fa.square" ,color=  "#FF69B4" if self.showhidestate else globalconfig['buttoncolor'])),
-            (qtawesome.icon("fa.windows" ,color= "#FF69B4"  if self.isbindedwindow else globalconfig['buttoncolor'])),
+            qtawesome.icon("fa.square" ,color=  "#FF69B4" if self.showhidestate else globalconfig['buttoncolor']),
+            qtawesome.icon("fa.windows" ,color= "#FF69B4"  if self.isbindedwindow else globalconfig['buttoncolor']),
             qtawesome.icon("fa.arrows" ,color= globalconfig['buttoncolor']),
             qtawesome.icon("fa.compress"  if self.isletgamefullscreened else 'fa.expand',color=    globalconfig['buttoncolor']),
             qtawesome.icon("fa.volume-off"  if self.processismuteed else "fa.volume-up" ,color= globalconfig['buttoncolor']),
@@ -197,6 +197,44 @@ class QUnFrameWindow(QWidget):
         ]
         for i in range(len(self.buttons)):
             self.buttons[i].setIcon(icon[i])
+    def addbuttons(self):
+        self.takusanbuttons("MinMaxButton",None,0,"移动","move")
+        self.takusanbuttons("MinMaxButton",self.startTranslater,0,"重新翻译")
+        self.takusanbuttons("MinMaxButton",self.changeTranslateMode,1,"自动翻译",'automodebutton') 
+        self.takusanbuttons("MinMaxButton",lambda:self.object.settin_ui.showsignal.emit(),2,"打开设置")
+
+
+        self.takusanbuttons("MinMaxButton",lambda:pyperclip.copy( self.original),6,"复制到剪贴板",'copy') 
+        self.takusanbuttons("MinMaxButton",lambda: self.object.edittextui.showsignal.emit(),6,"编辑",'edit') 
+        self.takusanbuttons("MinMaxButton", self.changeshowhideraw,7,"显示/隐藏原文",'showraw') 
+        
+        self.takusanbuttons("MinMaxButton",lambda: self.object.transhis.showsignal.emit() ,8,"显示/隐藏历史翻译",'history') 
+        self.takusanbuttons("MinMaxButton",lambda: self.object.settin_ui.button_noundict.click() ,8,"专有名词翻译设置",'noundict') 
+        self.takusanbuttons("MinMaxButton",self.langdu,9,"朗读",'langdu') 
+        self.takusanbuttons("MinMaxButton",self.changemousetransparentstate,10,"鼠标穿透窗口",'mousetransbutton') 
+         
+        self.takusanbuttons("MinMaxButton",self.changetoolslockstate,11,"锁定工具栏",'locktoolsbutton') 
+        
+        
+        self.takusanbuttons("MinMaxButton",lambda: dialog_savedgame(self.object.settin_ui),3,"打开保存的游戏",'gamepad') 
+
+        self.takusanbuttons("MinMaxButton",lambda :self.object.AttachProcessDialog.showsignal.emit(),4,"选择游戏",None,["textractor","embedded"] )  
+        self.takusanbuttons("MinMaxButton",lambda:self.object.hookselectdialog.showsignal.emit(),5,"选择文本",None ,["textractor","embedded"]) 
+         
+        self.takusanbuttons("MinMaxButton",lambda :self.clickRange(False),4,"选取OCR范围",None,[ "ocr"])
+        self.takusanbuttons("MinMaxButton",self.showhide,5,"显示/隐藏范围框",None,["ocr"])
+         
+        self.takusanbuttons("MinMaxButton",self.bindcropwindow_signal.emit,5,"绑定截图窗口，避免遮挡（部分软件不支持）（点击自己取消）",None,["ocr"])
+          
+        self.takusanbuttons("MinMaxButton",lambda :moveresizegame(self,self.object.textsource.hwnd),5,"调整游戏窗口(需要绑定ocr窗口，或选择hook进程)",'resize' ,["textractor","ocr","embedded"]) 
+  
+        self.takusanbuttons("MinMaxButton",self._fullsgame,5,"全屏/恢复游戏窗口(需要绑定ocr窗口，或选择hook进程)" ,"fullscreen",["textractor","ocr","embedded"]) 
+        
+        self.takusanbuttons("MinMaxButton",self.muteprocessfuntion,5,"游戏静音(需要绑定ocr窗口，或选择hook进程)" ,"muteprocess",["textractor","ocr",'embedded']) 
+        
+        
+        self.takusanbuttons("MinMaxButton",self.hide_and_disableautohide,-2,"最小化到托盘")
+        self.takusanbuttons("CloseButton",self.close,-1,"退出")
     def hide_(self):  
         if self.showintab: 
             win32gui.ShowWindow(self.winId(),win32con.SW_SHOWMINIMIZED )
@@ -207,21 +245,46 @@ class QUnFrameWindow(QWidget):
             win32gui.ShowWindow(self.winId(),win32con.SW_SHOWNORMAL )
         else:
             self.show()
-     
+    def showEvent(self, a0 ) -> None: 
+        if self.isfirstshow:
+            icon = QIcon()
+            icon.addPixmap(QPixmap('./files/luna.jpg'), QIcon.Normal, QIcon.On)
+            self.setWindowIcon(icon)
+            self.tray = QSystemTrayIcon()  
+            self.tray.setIcon(icon) 
+            
+            showAction = QAction(_TR("&显示"), self, triggered = self.show_and_enableautohide)
+            settingAction = QAction(_TR("&设置"), self, triggered = lambda: self.object.settin_ui.showsignal.emit())
+            quitAction = QAction(_TR("&退出"), self, triggered = self.close)
+                    
+            
+            self.tray.activated.connect(self.leftclicktray)
+
+            # 创建菜单对象
+            self.trayMenu = QMenu(self)
+            # 将动作对象添加到菜单
+            self.trayMenu.addAction(showAction)
+            self.trayMenu.addAction(settingAction)
+            # 增加分割线
+            self.trayMenu.addSeparator()
+            self.trayMenu.addAction(quitAction)
+            # 将菜单栏加入到右键按钮中
+            self.tray.setContextMenu(self.trayMenu) 
+            self.tray.show()
+            self.isfirstshow=False 
+        return super().showEvent(a0)
     def __init__(self, object):
         
         super(QUnFrameWindow, self).__init__(
             None, Qt.FramelessWindowHint|Qt.WindowStaysOnTopHint|Qt.WindowSystemMenuHint|Qt.WindowMinimizeButtonHint)  # 设置为顶级窗口，无边框
         #self.setFocusPolicy(Qt.StrongFocus)
         self.setWindowFlag(Qt.Tool,not globalconfig['showintab'])
-        
+        self.isfirstshow=True
         self.setAttribute(Qt.WA_TranslucentBackground) 
         self.setAttribute(Qt.WA_ShowWithoutActivating,True)
         self.showintab=  globalconfig['showintab']
         
-        icon = QIcon()
-        icon.addPixmap(QPixmap('./files/luna.jpg'), QIcon.Normal, QIcon.On)
-        self.setWindowIcon(icon)
+        
         self.setWindowTitle('LunaTranslator')
         self.hidesignal.connect(self.hide_)
         self.object = object
@@ -287,45 +350,8 @@ class QUnFrameWindow(QWidget):
         self.mousetransparent=False
         self.isbindedwindow=False
         self.buttons=[] 
-        self.showbuttons=[]
-        self.takusanbuttons("MinMaxButton",None,0,"移动","move")
-        self.takusanbuttons("MinMaxButton",self.startTranslater,0,"重新翻译")
-        self.takusanbuttons("MinMaxButton",self.changeTranslateMode,1,"自动翻译",'automodebutton') 
-        self.takusanbuttons("MinMaxButton",lambda:self.object.settin_ui.showsignal.emit(),2,"打开设置")
-
-
-        self.takusanbuttons("MinMaxButton",lambda:pyperclip.copy( self.original),6,"复制到剪贴板",'copy') 
-        self.takusanbuttons("MinMaxButton",lambda: self.object.edittextui.showsignal.emit(),6,"编辑",'edit') 
-        self.takusanbuttons("MinMaxButton", self.changeshowhideraw,7,"显示/隐藏原文",'showraw') 
-        
-        self.takusanbuttons("MinMaxButton",lambda: self.object.transhis.showsignal.emit() ,8,"显示/隐藏历史翻译",'history') 
-        self.takusanbuttons("MinMaxButton",lambda: self.object.settin_ui.button_noundict.click() ,8,"专有名词翻译设置",'noundict') 
-        self.takusanbuttons("MinMaxButton",self.langdu,9,"朗读",'langdu') 
-        self.takusanbuttons("MinMaxButton",self.changemousetransparentstate,10,"鼠标穿透窗口",'mousetransbutton') 
-         
-        self.takusanbuttons("MinMaxButton",self.changetoolslockstate,11,"锁定工具栏",'locktoolsbutton') 
-        
-        
-        self.takusanbuttons("MinMaxButton",lambda: dialog_savedgame(self.object.settin_ui),3,"打开保存的游戏",'gamepad') 
-
-        self.takusanbuttons("MinMaxButton",lambda :self.object.AttachProcessDialog.showsignal.emit(),4,"选择游戏",None,["textractor","embedded"] )  
-        self.takusanbuttons("MinMaxButton",lambda:self.object.hookselectdialog.showsignal.emit(),5,"选择文本",None ,["textractor","embedded"]) 
-         
-        self.takusanbuttons("MinMaxButton",lambda :self.clickRange(False),4,"选取OCR范围",None,[ "ocr"])
-        self.takusanbuttons("MinMaxButton",self.showhide,5,"显示/隐藏范围框",None,["ocr"])
-         
-        self.takusanbuttons("MinMaxButton",self.bindcropwindow_signal.emit,5,"绑定截图窗口，避免遮挡（部分软件不支持）（点击自己取消）",None,["ocr"])
-          
-        self.takusanbuttons("MinMaxButton",lambda :moveresizegame(self,self.object.textsource.hwnd),5,"调整游戏窗口(需要绑定ocr窗口，或选择hook进程)",'resize' ,["textractor","ocr","embedded"]) 
-  
-        self.takusanbuttons("MinMaxButton",self._fullsgame,5,"全屏/恢复游戏窗口(需要绑定ocr窗口，或选择hook进程)" ,"fullscreen",["textractor","ocr","embedded"]) 
-        
-        self.takusanbuttons("MinMaxButton",self.muteprocessfuntion,5,"游戏静音(需要绑定ocr窗口，或选择hook进程)" ,"muteprocess",["textractor","ocr",'embedded']) 
-        
-        
-        self.takusanbuttons("MinMaxButton",self.hide_and_disableautohide,-2,"最小化到托盘")
-        self.takusanbuttons("CloseButton",self.close,-1,"退出")
-
+        self.showbuttons=[] 
+        self.addbuttons() 
         self.refreshtoolicon()
         self.showhidetoolbuttons()
         d=QApplication.desktop()
@@ -335,27 +361,7 @@ class QUnFrameWindow(QWidget):
         
         self.setGeometry( globalconfig['position'][0],globalconfig['position'][1],int(globalconfig['width'] ), int(globalconfig['height'])) 
 
-        self.tray = QSystemTrayIcon()  
-        self.tray.setIcon(icon) 
         
-        showAction = QAction(_TR("&显示"), self, triggered = self.show_and_enableautohide)
-        settingAction = QAction(_TR("&设置"), self, triggered = lambda: self.object.settin_ui.showsignal.emit())
-        quitAction = QAction(_TR("&退出"), self, triggered = self.close)
-                
-        
-        self.tray.activated.connect(self.leftclicktray)
-
-        # 创建菜单对象
-        self.trayMenu = QMenu(self)
-        # 将动作对象添加到菜单
-        self.trayMenu.addAction(showAction)
-        self.trayMenu.addAction(settingAction)
-        # 增加分割线
-        self.trayMenu.addSeparator()
-        self.trayMenu.addAction(quitAction)
-        # 将菜单栏加入到右键按钮中
-        self.tray.setContextMenu(self.trayMenu) 
-        self.tray.show()
          
         self.translate_text =  Textbrowser(self) 
         self.translate_text.clear_and_setfont()
@@ -529,9 +535,7 @@ class QUnFrameWindow(QWidget):
          
          
         height = self.height() - 30*self.rate 
-        
-        #self.translate_text.resize(self.width(), height )
-        #self.translate_text.setGeometry(0, 30 * self.rate, self.width(), height * self.rate)
+         
         self.translate_text.resize(self.width(), height * self.rate)
         for button in self.buttons[-2:]:
               button.adjast( ) 

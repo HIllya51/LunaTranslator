@@ -2,26 +2,27 @@
 from PyQt5.QtCore import Qt,QSize,pyqtSignal  
 from PyQt5.QtWidgets import  QColorDialog,QSpinBox,QDoubleSpinBox,QPushButton,QComboBox,QLabel,QScrollArea,QWidget,QGridLayout,QApplication,QTabBar,QVBoxLayout
 from PyQt5.QtGui import QColor  ,QResizeEvent 
-from utils.config import globalconfig 
 from PyQt5.QtWidgets import  QTabWidget 
 import qtawesome  
 import functools
-from gui.switchbutton import MySwitch 
+from traceback import print_exc 
+from utils.config import globalconfig ,_TR
+from utils.wavmp3player import wavmp3player
+from utils.config import globalconfig 
+
 from gui.settingpage1 import setTabOne
 from gui.settingpage2 import setTabTwo
-from traceback import print_exc
-from utils.config import globalconfig ,_TR
-from gui.settingpage_xianshishezhi import setTabThree 
-from gui.settingpage_tts import setTab5 
-
-from gui.settingpage7 import setTab7
-from gui.settingpage_about import setTab_about
-from gui.rotatetab import  rotatetab
+from gui.settingpage_xianshishezhi import setTabThree ,setTabThree_direct
+from gui.settingpage_tts import setTab5 ,setTab5_direct 
 from gui.settingpage_cishu import setTabcishu
-from gui.settingpage_quick import setTab_quick
+from gui.settingpage_quick import setTab_quick,setTab_quick_direct
 from gui.setting_lang import setTablang
-from utils.wavmp3player import wavmp3player
-from gui.closeashidewindow import closeashidewindow
+from gui.settingpage7 import setTab7 ,settab7direct
+from gui.settingpage_about import setTab_about,setTab_about_dicrect 
+
+from gui.switchbutton import MySwitch 
+from gui.rotatetab import  rotatetab
+from gui.closeashidewindow import closeashidewindow   
 class gridwidget(QWidget):
     pass
 class Settin(closeashidewindow) : 
@@ -29,8 +30,7 @@ class Settin(closeashidewindow) :
     voicelistsignal=pyqtSignal(list)
     mp3playsignal=pyqtSignal(str,int) 
     versiontextsignal=pyqtSignal( str)
-    progresssignal=pyqtSignal(str,int)
-    clicksourcesignal=pyqtSignal(str) 
+    progresssignal=pyqtSignal(str,int) 
     fontbigsmallsignal=pyqtSignal(int)  
     
     def resizefunction(self):
@@ -45,7 +45,7 @@ class Settin(closeashidewindow) :
         
         self.resizefunction()
         return super().resizeEvent(a0)
-    def automakegrid(self,grid,lis,save=False,savelist=None,ww=0): 
+    def automakegrid(self,grid,lis,save=False,savelist=None ): 
         maxl=0
     
         for nowr,line in enumerate(lis):
@@ -162,68 +162,54 @@ class Settin(closeashidewindow) :
         self.window_height = int(500*self.rate)
         self.scrollwidth=20*self.rate
         self.savelastrect=None 
-        x=QLabel()
+         
         self.setMinimumHeight(100)
         self.setMinimumWidth(100)
-         
-        #self.setWindowFlags(Qt.WindowStaysOnTopHint |Qt.WindowCloseButtonHint)
-        #self.setWindowFlags( Qt.WindowCloseButtonHint)
-        self.setWindowTitle(_TR("设置"))
-        self.setWindowIcon(qtawesome.icon("fa.gear" )) 
-        self.setstylesheet()
-        self.tab_widget = QTabWidget(self)
-        self.setCentralWidget(self.tab_widget)
-         
-        #self.tab_widget.setGeometry(self.geometry())  
-        self.tabbar=rotatetab(self.tab_widget)
-         
+          
         
-        # tabbar.setStyleSheet("""   
-        #         font:18pt '黑体';       
-        #        """ )
-        
-        self.tab_widget.setTabBar(self.tabbar) 
-        self.tab_widget.tabBar().setObjectName("basetabbar")
-        self.tab_widget.setStyleSheet(
-            '''QTabBar#basetabbar:tab { 
-                width: %spx;
-                height: %spx;
-                font:%spt  ;  }
-            '''%(50*self.rate,self.window_width*0.2,18 if globalconfig['languageuse'] in [0,1] else 10  )
-        )
-        self.tab_widget.setTabPosition(QTabWidget.West)
         self.hooks=[] 
 
-        import time
-        t1=time.time()
-        
-        setTabOne(self)  
-        print(time.time()-t1)
-        setTabTwo(self)  
-        print(time.time()-t1)
          
-        
-        setTabThree(self) 
-        
-        print(time.time()-t1)
-        setTab7(self)
-        
-        print(time.time()-t1)
-        setTabcishu(self)
-        print(time.time()-t1)
-        setTab5(self)
-        
-        print(time.time()-t1)
-        setTab_quick(self) 
-        
-        print(time.time()-t1)
-        setTablang(self)
-        print(time.time()-t1)
-        setTab_about(self)
-        
-        print(time.time()-t1)
         self.usevoice=0
-     
+        self.isfirstshow=True
+        settab7direct(self)
+        setTabThree_direct(self)
+        setTab5_direct(self)
+        setTab_quick_direct(self)
+        setTab_about_dicrect(self)
+        self.setstylesheet()
+    def showEvent(self,e):
+        if self.isfirstshow:
+            self.setWindowTitle(_TR("设置"))
+            self.setWindowIcon(qtawesome.icon("fa.gear" )) 
+            
+            self.tab_widget = QTabWidget(self)
+            self.setCentralWidget(self.tab_widget)
+            self.tabbar=rotatetab(self.tab_widget)
+            self.tab_widget.setTabBar(self.tabbar) 
+            self.tab_widget.tabBar().setObjectName("basetabbar")
+            self.tab_widget.currentChanged.connect(self.basetabchanged)
+            self.tab_widget.setStyleSheet(
+                '''QTabBar#basetabbar:tab { 
+                    width: %spx;
+                    height: %spx;
+                    font:%spt  ;  }
+                '''%(50*self.rate,self.window_width*0.2,18 if globalconfig['languageuse'] in [0,1] else 10  )
+            )
+            self.tab_widget.setTabPosition(QTabWidget.West)
+            setTabOne(self)   
+            setTabTwo(self)  
+            
+            setTabThree(self)  
+            setTab7(self) 
+            setTabcishu(self) 
+            setTab5(self)
+            
+            setTab_quick(self) 
+            
+            setTablang(self) 
+            setTab_about(self)
+            self.isfirstshow=False
     def setstylesheet(self):
         self.setStyleSheet("font: %spt '"%(globalconfig['settingfontsize'])+(globalconfig['settingfonttype']  )+"' ;  " )  
     def makevbox(self,wids): 
@@ -243,7 +229,7 @@ class Settin(closeashidewindow) :
         gridlayoutwidget.setStyleSheet("gridwidget{background-color:transparent;}") 
         self.needfitwidgets.append(gridlayoutwidget)
         gridlayoutwidget.setFixedHeight(len(grid)*35*self.rate)
-        self.automakegrid(gridlay,grid,save,savelist,gridlayoutwidget.width()) 
+        self.automakegrid(gridlay,grid,save,savelist ) 
         if save:
             savelay.append(gridlay)
         return gridlayoutwidget
@@ -255,20 +241,31 @@ class Settin(closeashidewindow) :
          
         self.needfitwidgets.append(widget)
         scroll.setWidget(widget) 
-        return scroll
+        return scroll 
+    def basetabchanged(self,i):
+        try:
+            w=self.tab_widget.currentWidget()
+            if 'lazyfunction' in dir(w):
+                w.lazyfunction()
+                delattr(w,'lazyfunction') 
+                self.resizefunction()  
+        except: 
+            print_exc()
     def makesubtab(self,titles,widgets):
         tab=QTabWidget()
         for i,wid in enumerate(widgets): 
             self.tabadd(tab,titles[i], wid )
         return tab
-    def tabadd(self,tab,title,widgets): 
-         
+    def tabadd_lazy(self,tab,title,getrealwidgetfunction):
+        q=QWidget()
+        v=QVBoxLayout()
+        q.setLayout(v)
+        v.setContentsMargins(0,0,0,0) 
+        q.lazyfunction=lambda :v.addWidget(getrealwidgetfunction()) 
+        self.tabadd(tab,title, q )  
+    def tabadd(self,tab,title,widgets):  
             tab.addTab(widgets,_TR(title)) 
-    def yitiaolong(self,title,grid ):  
-        gridlayoutwidget=self.makegrid(grid )  
-        gridlayoutwidget=self.makescroll( gridlayoutwidget  )
-        
-        self.tabadd(self.tab_widget, (title), gridlayoutwidget )  
+     
     def ChangeTranslateColor(self, translate_type,button,item=None,name=None) :
             nottransbutton=globalconfig['fanyi'].keys()
             if translate_type not in nottransbutton:

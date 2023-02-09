@@ -57,8 +57,9 @@ class hookselect(closeashidewindow):
     update_item_new_line=pyqtSignal(tuple,str)  
     def __init__(self,object,p):
         super(hookselect, self).__init__(p)
-        self.setupUi( )
         self.object=object
+        self.setupUi( )
+        
         self.changeprocessclearsignal.connect(self.changeprocessclear)
         self.addnewhooksignal.connect(self.addnewhook)
         self.getnewsentencesignal.connect(self.getnewsentence)
