@@ -2,7 +2,7 @@
 from traceback import print_exc
 import requests
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QWidget,QLabel ,QProgressBar,QLineEdit,QPushButton
+from PyQt5.QtWidgets import QWidget,QLabel ,QProgressBar,QLineEdit,QPushButton,QVBoxLayout
 import threading
 import os
 import shutil
@@ -126,6 +126,7 @@ def setTab_about(self) :
         shuoming = (QLabel(_TR('项目网站')+':<a href="https://github.com/HIllya51/LunaTranslator">https://github.com/HIllya51/LunaTranslator</a><br>' +
                     _TR('使用说明')+':<a href="https://hillya51.github.io/">https://hillya51.github.io/</a><br>' +
                     '如果你感觉该软件对你有帮助，欢迎微信扫码或者前往<a href="https://afdian.net/a/HIllya51">爱发电</a>赞助，谢谢，么么哒~<br>'+f'<img src="./files/zan.jpg" heigth={wh} width={wh}>') )
-        self.tabadd(self.tab_widget, ('其他设置'),[tab,shuoming ]) 
+         
+        self.tabadd(self.tab_widget, ('其他设置'),self.makevbox([tab,shuoming ])) 
 
         threading.Thread(target=lambda :getversion(self)).start()

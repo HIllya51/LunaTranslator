@@ -1,11 +1,8 @@
  
-from PyQt5.QtWidgets import QWidget,QLabel,QStyle ,QPushButton,QGridLayout,QSpinBox,QComboBox,QScrollArea,QLineEdit,QApplication,QFileDialog
-from PyQt5.QtGui import QColor 
-from PyQt5.QtCore import Qt 
-import functools,sqlite3
-from utils.config import globalconfig ,translatorsetting
-import os,json
-from traceback import print_exc
+from PyQt5.QtWidgets import QPushButton  
+import functools 
+from utils.config import globalconfig ,translatorsetting 
+ 
 from gui.pretransfile import sqlite2json
 from utils.config import globalconfig ,_TR,_TRL
 from utils.utils import selectdebugfile
@@ -123,6 +120,5 @@ def setTabTwo(self) :
                 pages.append(gridlayoutwidget)
         tab=self.makesubtab(['在线翻译','离线翻译','预翻译'],pages) 
 
-        gridlayoutwidget=self.makegrid(grids )   
-        
-        self.tabadd(self.tab_widget, ('翻译设置'),[gridlayoutwidget,tab ]) 
+        gridlayoutwidget=self.makegrid(grids )    
+        self.tabadd(self.tab_widget, ('翻译设置'),self.makevbox([gridlayoutwidget,tab])) 

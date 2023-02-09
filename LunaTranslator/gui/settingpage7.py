@@ -92,7 +92,7 @@ def setTab7(self) :
         ]
          
         tab=self.makesubtab(['文本预处理', '翻译优化'],pages)   
-        self.tabadd(self.tab_widget, ('文本处理'),[tab ])  
+        self.tabadd(self.tab_widget, ('文本处理'), tab )  
 @Singleton
 class noundictconfigdialog1(QDialog):
     def __init__(dialog,object,configdict,title,label=[  '日文','翻译'] ,_=None) -> None:

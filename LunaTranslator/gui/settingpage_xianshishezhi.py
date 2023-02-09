@@ -122,7 +122,7 @@ def setTabThree(self) :
         tab=self.makesubtab(['文本设置', '界面设置','游戏全屏'],pages) 
  
         
-        self.tabadd(self.tab_widget, ('显示设置'),[tab ]) 
+        self.tabadd(self.tab_widget, ('显示设置'), tab ) 
          
 def changeHorizontal(self) :
 

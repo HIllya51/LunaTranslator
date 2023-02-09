@@ -1,5 +1,6 @@
  
-import functools  
+import functools   
+
 from gui.settingpage_ocr import getocrgrid 
     
 from utils.config import globalconfig ,_TR,_TRL 
@@ -26,7 +27,7 @@ def gethookembedgrid(self) :
                 self.object.ga.settimeout(x*1000)
         grids=[
                  
-                [('仅支持部分游戏',5)],
+                [('仅支持部分游戏',15)],
                 [('内嵌失败时自动回到普通HOOK',5),(self.getsimpleswitch( globalconfig['embedded'],'fallbacktonormalhook' ),1) ],
                 
                 [('内嵌失败等待时间(s)',5),(self.getspinbox(1,30,globalconfig['embedded'],'timeout_connect'),3) ],
@@ -86,6 +87,5 @@ def setTabOne(self) :
                 pages.append(gridlayoutwidget)
         tab=self.makesubtab(['HOOK设置','OCR设置','剪贴板设置','TXT设置','内嵌设置'],pages) 
 
-        gridlayoutwidget=self.makegrid(grids )   
-        
-        self.tabadd(self.tab_widget, ('文本输入'),[gridlayoutwidget,tab ]) 
+        gridlayoutwidget=self.makegrid(grids )    
+        self.tabadd(self.tab_widget, ('文本输入'), self.makevbox([gridlayoutwidget,tab]) ) 

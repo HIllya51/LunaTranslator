@@ -22,7 +22,8 @@ from gui.settingpage_quick import setTab_quick
 from gui.setting_lang import setTablang
 from utils.wavmp3player import wavmp3player
 from gui.closeashidewindow import closeashidewindow
-
+class gridwidget(QWidget):
+    pass
 class Settin(closeashidewindow) : 
     loadtextractorfalse=pyqtSignal( ) 
     voicelistsignal=pyqtSignal(list)
@@ -33,8 +34,9 @@ class Settin(closeashidewindow) :
     fontbigsmallsignal=pyqtSignal(int)  
     
     def resizefunction(self):
+         
         for w in self.needfitwidgets:
-            w.setFixedWidth(self.size().width()- self.window_width*0.2-self.scrollwidth)
+            w.setFixedWidth(self.size().width()- self.window_width*0.2 -self.scrollwidth)
         for grid,maxl in self.needfitcols:
             for c in range(maxl):
                 grid.setColumnMinimumWidth(c,self.size().width()- self.window_width*0.2-self.scrollwidth//maxl)
@@ -196,32 +198,49 @@ class Settin(closeashidewindow) :
         t1=time.time()
         
         setTabOne(self)  
+        print(time.time()-t1)
         setTabTwo(self)  
+        print(time.time()-t1)
          
         
         setTabThree(self) 
         
+        print(time.time()-t1)
         setTab7(self)
         
+        print(time.time()-t1)
         setTabcishu(self)
+        print(time.time()-t1)
         setTab5(self)
         
+        print(time.time()-t1)
         setTab_quick(self) 
         
+        print(time.time()-t1)
         setTablang(self)
+        print(time.time()-t1)
         setTab_about(self)
         
+        print(time.time()-t1)
         self.usevoice=0
      
     def setstylesheet(self):
         self.setStyleSheet("font: %spt '"%(globalconfig['settingfontsize'])+(globalconfig['settingfonttype']  )+"' ;  " )  
+    def makevbox(self,wids): 
+        q=QWidget()
+        v=QVBoxLayout()
+        q.setLayout(v)
+        v.setContentsMargins(0,0,0,0)
+        for wid in wids:
+            v.addWidget(wid)
+        return q
     def makegrid(self,grid,save=False,savelist=None,savelay=None ):
         
-        gridlayoutwidget = QWidget( )  
+         
+        gridlayoutwidget = gridwidget(  )  
         gridlay=QGridLayout( )     
         gridlayoutwidget.setLayout(gridlay)   
-        
-        #gridlayoutwidget.setFixedWidth( self.window_width*0.8-self.scrollwidth)
+        gridlayoutwidget.setStyleSheet("gridwidget{background-color:transparent;}") 
         self.needfitwidgets.append(gridlayoutwidget)
         gridlayoutwidget.setFixedHeight(len(grid)*35*self.rate)
         self.automakegrid(gridlay,grid,save,savelist,gridlayoutwidget.width()) 
@@ -233,47 +252,23 @@ class Settin(closeashidewindow) :
         scroll.setHorizontalScrollBarPolicy(1)
         scroll.setStyleSheet('''QScrollArea{background-color:transparent;border:0px}''')  
         scroll.verticalScrollBar().setStyleSheet("QScrollBar{width:%spx;}"%self.scrollwidth)
-        
-        scrollwidget=QWidget()
-        scrollwidgetlayout=QVBoxLayout()
-        scrollwidgetlayout.setContentsMargins(0,0,0,0)
-        scrollwidget.setLayout(scrollwidgetlayout) 
-        masklabel=QLabel(scrollwidget)
-        masklabel.setGeometry(0,0,2000,2000)
-        masklabel.setStyleSheet("color:white;background-color:white;")  
-        scrollh=0
-    
-        scrollwidgetlayout.addWidget(widget) 
-        scrollh=scrollh+widget.height() 
-
-        scrollwidget.setFixedWidth( scrollh) 
-        self.needfitwidgets.append(scrollwidget)
-        scroll.setWidget(scrollwidget) 
+         
+        self.needfitwidgets.append(widget)
+        scroll.setWidget(widget) 
         return scroll
     def makesubtab(self,titles,widgets):
         tab=QTabWidget()
         for i,wid in enumerate(widgets): 
-            self.tabadd(tab,titles[i],[wid])
+            self.tabadd(tab,titles[i], wid )
         return tab
     def tabadd(self,tab,title,widgets): 
-        if len(widgets)==1:
-            tab.addTab(widgets[0],_TR(title))
-        else:
-            basewidget=QWidget()
-            basewidget.setObjectName("basewidget")
-            basewidget.setStyleSheet(("QWidget#basewidget:{color:white;background-color:white;}")) 
-            tab.addTab(basewidget, _TR(title)) 
-
-            baselayout=QVBoxLayout()
-            baselayout.setContentsMargins(0,0,0,0)
-            basewidget.setLayout(baselayout) 
-            for wid in widgets:
-                baselayout.addWidget(wid)
+         
+            tab.addTab(widgets,_TR(title)) 
     def yitiaolong(self,title,grid ):  
         gridlayoutwidget=self.makegrid(grid )  
         gridlayoutwidget=self.makescroll( gridlayoutwidget  )
         
-        self.tabadd(self.tab_widget, (title),[gridlayoutwidget])  
+        self.tabadd(self.tab_widget, (title), gridlayoutwidget )  
     def ChangeTranslateColor(self, translate_type,button,item=None,name=None) :
             nottransbutton=globalconfig['fanyi'].keys()
             if translate_type not in nottransbutton:
