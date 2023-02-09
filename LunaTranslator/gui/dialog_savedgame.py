@@ -54,9 +54,7 @@ class dialog_savedgame(QDialog):
                         res=res.replace('/','\\')
                         if res in savehook_new_list: 
                                 return
-                        savehook_new_list.insert(0,res)
-                        if res not in savehook_new_data:
-                                savehook_new_data[res]={'leuse':True,'title':os.path.basename(res),'hook':[] } 
+                        savehook_new_list.insert(0,res) 
                         self.newline(0,res)
                          
                         
@@ -81,7 +79,12 @@ class dialog_savedgame(QDialog):
         def newline(self,row,k): 
                 keyitem=QStandardItem()
                 keyitem.savetext=k
-                self.model.insertRow(row,[QStandardItem( ),QStandardItem( ),keyitem,QStandardItem(os.path.basename(savehook_new_data[k]['title'] ) )])  
+                k=k.replace('/','\\')
+                 
+                if k not in savehook_new_data:
+                        savehook_new_data[k]={'leuse':True,'title':os.path.basename(os.path.dirname(k))+'/'+ os.path.basename(k),'hook':[] } 
+                        print(k,savehook_new_data[k])
+                self.model.insertRow(row,[QStandardItem( ),QStandardItem( ),keyitem,QStandardItem( (savehook_new_data[k]['title'] ) )])  
                 self.table.setIndexWidget(self.model.index(row, 0),self.object.getsimpleswitch(savehook_new_data[k],'leuse'))
                 self.table.setIndexWidget(self.model.index(row, 1),self.object.getcolorbutton('','',functools.partial(self._opendir,k),qicon=getExeIcon(k) ))
                 

@@ -268,7 +268,7 @@ class MAINUI(QObject) :
             if pexe not in savehook_new_list:
                 savehook_new_list.insert(0,pexe)  
             if pexe not in savehook_new_data:
-                savehook_new_data[pexe]={'leuse':True,'title':os.path.basename(pexe),'hook':[] }  
+                savehook_new_data[pexe]={'leuse':True,'title':os.path.basename(os.path.dirname(pexe))+'/'+ os.path.basename(pexe),'hook':[] }  
              
      
     #@threader

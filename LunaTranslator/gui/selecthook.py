@@ -377,7 +377,7 @@ class hookselect(closeashidewindow):
             if self.object.textsource.pname not in savehook_new_list:
                 savehook_new_list.insert(0,self.object.textsource.pname)  
             if self.object.textsource.pname not in savehook_new_data:
-                savehook_new_data[self.object.textsource.pname]={'leuse':True,'title':os.path.basename(self.object.textsource.pname),'hook':self.object.textsource.selectedhook }  
+                savehook_new_data[self.object.textsource.pname]={'leuse':True,'title':os.path.basename(os.path.dirname(self.object.textsource.pname))+'/'+ os.path.basename(self.object.textsource.pname) ,'hook':self.object.textsource.selectedhook }  
             else:
                 savehook_new_data[self.object.textsource.pname].update({ 'hook':self.object.textsource.selectedhook } )
             self.object.textsource.lock.release()
