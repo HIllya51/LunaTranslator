@@ -573,5 +573,6 @@
     "文本源": "Text source",
     "快捷键": "Shortcut keys",
     "文本输入": "Text input",
-    "快捷按键": "Shortcut keys"
+    "快捷按键": "Shortcut keys",
+    "未下载该语言的OCR模型,请从软件主页下载模型解压到files/ocr路径后使用": "The OCR model of this language is not downloaded. Please download the model from the software home page and extract it to the files/ocr path before use"
 }

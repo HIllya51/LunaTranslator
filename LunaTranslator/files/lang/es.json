@@ -573,5 +573,6 @@
     "文本源": "Fuente literaria",
     "快捷键": "Teclas de acceso rápido",
     "文本输入": "Entrada de texto",
-    "快捷按键": "Teclas de acceso rápido"
+    "快捷按键": "Teclas de acceso rápido",
+    "未下载该语言的OCR模型,请从软件主页下载模型解压到files/ocr路径后使用": "El modelo OCR del idioma no se ha descargado, por favor descargue el modelo desde la página principal del software y descomprimirlo en la ruta files / OCR para usarlo"
 }
