@@ -33,7 +33,7 @@ from utils.getpidlist import getpidexe,ListProcess,getScreenRate
 
 import gui.translatorUI
 from queue import Queue
-import zhconv
+import zhconv,functools
 import gui.transhist 
 import gui.edittext
 import importlib
@@ -267,7 +267,7 @@ class MAINUI(QObject) :
             if globalconfig['sourcestatus']['textractor']:
                 self.textsource=textractor(self.textgetmethod,self.hookselectdialog,pid,hwnd,pexe )  
             elif globalconfig['sourcestatus']['embedded']:
-                self.textsource=embedded(self.textgetmethod,self.hookselectdialog,pid,hwnd,pexe, lambda:self.embeddedfailed(pid,hwnd,pexe),self)  
+                self.textsource=embedded(self.textgetmethod,self.hookselectdialog,pid,hwnd,pexe,functools.partial(self.embeddedfailed,pid,hwnd,pexe),self)  
             
             if pexe not in savehook_new_list:
                 savehook_new_list.insert(0,pexe)  
@@ -464,8 +464,9 @@ class MAINUI(QObject) :
                                     if globalconfig['sourcestatus']['textractor']:
                                         self.textsource=textractor(self.textgetmethod,self.hookselectdialog,pid_real,hwnd,name_ ,autostarthookcode=savehook_new_data[name_]['hook'])
                                     else:  
+                                        print("pid",pid_real)
                                         self.textsource=embedded(self.textgetmethod,self.hookselectdialog,pid_real,hwnd,name_ ,
-                                        lambda :self.embeddedfailed(pid_real,hwnd,name_),self)
+                                        functools.partial(self.embeddedfailed,pid_real,hwnd,name_),self)
                                     
                 
                 else: 
