@@ -48,7 +48,7 @@ class Textbrowser( ):
         self.atback2=QLabel(parent)
         self.atback2.setGeometry(0,30*self.parent.rate,9999,9999)
         self.atback2.setMouseTracking(True)
-
+        self._rawqlabel=QLabel() 
         self.textbrowserback=QTextBrowser(parent)
         self.textbrowser=QTextBrowser(parent)
         self.cleared=False
@@ -74,7 +74,8 @@ class Textbrowser( ):
                                            background-color: rgba(%s, %s, %s, %s)"
                                            %(0,0,0,0))
 
-        
+        self.textcursor=self.textbrowser.textCursor()
+        self.textcursorback=self.textbrowserback.textCursor()
         self.textbrowser.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         self.textbrowserback.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         self.textbrowser.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
@@ -87,7 +88,7 @@ class Textbrowser( ):
         self.masklabelback.setGeometry( 0, 0,9999,9999)
         self.masklabelback.setMouseTracking(True)
         self.masklabelback.setStyleSheet("background-color: rgba(0,0,0,0)")
-        
+         
         self.savetaglabels=[]
         self.searchmasklabels_clicked=[]
         self.searchmasklabels=[]
@@ -179,16 +180,14 @@ class Textbrowser( ):
                 b=self.textbrowser.document().findBlockByNumber(i) 
                 tf=b.blockFormat() 
                 tf.setLineHeight(fh,QTextBlockFormat.FixedHeight) 
-                if self.needdouble:
-                    cursor=self.textbrowserback.textCursor() 
-                    cursor.setPosition(b.position()) 
-                    cursor.setBlockFormat(tf) 
-                    self.textbrowserback.setTextCursor(cursor) 
-                
-                cursor=self.textbrowser.textCursor()
-                cursor.setPosition(b.position()) 
-                cursor.setBlockFormat(tf)
-                self.textbrowser.setTextCursor(cursor) 
+                if self.needdouble: 
+                    self.textcursorback.setPosition(b.position()) 
+                    self.textcursorback.setBlockFormat(tf) 
+                    self.textbrowserback.setTextCursor(self.textcursorback) 
+                 
+                self.textcursor.setPosition(b.position()) 
+                self.textcursor.setBlockFormat(tf)
+                self.textbrowser.setTextCursor(self.textcursor) 
         
         if len(tag)>0:
             self.addtag(tag)
@@ -210,8 +209,7 @@ class Textbrowser( ):
          
         start=self.b1
         end=self.b2 
-        
-        cursor=self.textbrowser.textCursor() 
+         
         for blocki in range(start,end):
             block=doc.findBlockByNumber(blocki)
             layout=block.layout()
@@ -223,9 +221,9 @@ class Textbrowser( ):
                 s=line.textStart()
                 l=line.textLength()
                 #print(blockstart,s,block.text()[s:s+l])
-                cursor.setPosition(blockstart+s)
-                self.textbrowser.setTextCursor(cursor)
-                tl1=self.textbrowser.cursorRect(self.textbrowser.textCursor()).topLeft()
+                self.textcursor.setPosition(blockstart+s)
+                self.textbrowser.setTextCursor(self.textcursor)
+                tl1=self.textbrowser.cursorRect(self.textcursor).topLeft()
                 #print(tl1)
                 if globalconfig['shadowforce']*(lc+linei)>len(self.yinyinglabels):
                     self.yinyinglabels+=[QLabel(self.toplabel2) for i in range(globalconfig['shadowforce']*(lc+linei)-len(self.yinyinglabels))]
@@ -252,10 +250,9 @@ class Textbrowser( ):
             return
         #print(x)
         pos=0
-        labeli=0 
-        cursor=self.textbrowser.textCursor()
-        cursor.setPosition(0)
-        self.textbrowser.setTextCursor(cursor)   
+        labeli=0  
+        self.textcursor.setPosition(0)
+        self.textbrowser.setTextCursor(self.textcursor)   
         
         
         idx=0
@@ -268,18 +265,17 @@ class Textbrowser( ):
                 guesslinehead=None 
                 continue
             l=len(word['orig'])
-            tl1=self.textbrowser.cursorRect(self.textbrowser.textCursor()).topLeft()
+            tl1=self.textbrowser.cursorRect(self.textcursor).topLeft()
              
-            tl4=self.textbrowser.cursorRect(self.textbrowser.textCursor()).bottomRight()
+            tl4=self.textbrowser.cursorRect(self.textcursor).bottomRight()
             if guesslinehead is None:
                 guesslinehead=tl1.x()
-            if True: 
-                cursor=self.textbrowser.textCursor() 
-                cursor.setPosition(pos+l )
-                self.textbrowser.setTextCursor(cursor)
+            if True:  
+                self.textcursor.setPosition(pos+l )
+                self.textbrowser.setTextCursor(self.textcursor)
                  
-                tl2=self.textbrowser.cursorRect(self.textbrowser.textCursor()).bottomRight() 
-                tl3=self.textbrowser.cursorRect(self.textbrowser.textCursor()).topLeft()   
+                tl2=self.textbrowser.cursorRect(self.textcursor).bottomRight() 
+                tl3=self.textbrowser.cursorRect(self.textcursor).topLeft()   
                 color=self.randomcolor(word)
                 if color:
                     if word['orig'] not in ['\n','\r'] :
@@ -371,7 +367,7 @@ class Textbrowser( ):
                 pass
         return (c.red(),c.green(),c.blue(), globalconfig['showcixing_touming']/100)
          
-    def getfh(self,half,h=True,w=''):
+    def getfh(self,half   ):
         
         font=QFont()
         font.setFamily(globalconfig['fonttype']) 
@@ -382,23 +378,27 @@ class Textbrowser( ):
         else:
             font.setPointSizeF((globalconfig['fontsize'])  )
         fm=QFontMetricsF(font)
-        if h:
-            fhall=fm.height()  
-        else:
-            fhall=fm.width(w)
+        print(fm.widthChar(' '))
+        print(fm.widthChar('a'))
+        print(fm.widthChar('i'))
+        print(fm.widthChar('我'))
+        fhall=fm.height()  
+        
         if half:
             return fhall,font
         else:
             return fhall
      
     def addtag(self,x): 
+        import time
+        t=time.time()
         if globalconfig['zitiyangshi'] in [0,1,2]:  
             if len(self.savetaglabels)<len(x):
                 self.savetaglabels+=[QLabel(self.parent) for i in range(len(x)-len(self.savetaglabels))]
         elif globalconfig['zitiyangshi'] ==3: 
             if len(self.savetaglabels)<len(globalconfig['shadowforce']*x):
                 self.savetaglabels+=[QLabel(self.parent) for i in range(len(globalconfig['shadowforce']*x)-len(self.savetaglabels))]
-        #print(x)
+        print('prepare',time.time()-t)
         pos=0
         self.addtaged=True
         labeli=0 
@@ -406,6 +406,7 @@ class Textbrowser( ):
         fhall=self.getfh(False)
         
         fhhalf,font=self.getfh(True) 
+        print('preparefh',time.time()-t)
         self.blockcount=self.textbrowser.document().blockCount() 
         for i in range(0,self.blockcount):
             b=self.textbrowser.document().findBlockByNumber(i)
@@ -413,52 +414,42 @@ class Textbrowser( ):
             tf=b.blockFormat()
             #tf.setLineHeight(fh,QTextBlockFormat.LineDistanceHeight)
             tf.setLineHeight(fhall+fhhalf ,QTextBlockFormat.FixedHeight)
-            if self.needdouble:
-                cursor=self.textbrowserback.textCursor() 
-                cursor.setPosition(b.position()) 
-                cursor.setBlockFormat(tf)
+            
+            self.textcursor.setPosition(b.position()) 
+            self.textcursor.setBlockFormat(tf)
+            self.textbrowser.setTextCursor(self.textcursor)
+            if self.needdouble: 
+                self.textcursorback.setPosition(b.position()) 
+                self.textcursorback.setBlockFormat(tf) 
+                self.textbrowserback.setTextCursor(self.textcursorback) 
+        print('setheigt',time.time()-t)
 
-                self.textbrowserback.setTextCursor(cursor) 
-            
-            cursor=self.textbrowser.textCursor()
-            cursor.setPosition(b.position()) 
-            cursor.setBlockFormat(tf)
-            self.textbrowser.setTextCursor(cursor)
-        self._rawqlabel=QLabel() 
-
-        tl1=self.textbrowser.cursorRect(self.textbrowser.textCursor()).topLeft().y() 
-        if tl1-fhhalf<0: 
-            self.textbrowser.move(0,self.savey+fhhalf-tl1 )
-            self.toplabel.move(0,self.savey+fhhalf-tl1 )
-            self.toplabel2.move(0,self.savey+fhhalf-tl1 ) 
-            
-            self.atback2.move(0,self.savey+fhhalf-tl1 ) 
-            self.textbrowserback.move(0,self.savey+fhhalf-tl1 )  
-            self.jiaming_y_delta=fhhalf-tl1
-        else:
-            self.textbrowser.move(0,self.savey)
-            self.toplabel.move(0,self.savey )
-            
-            self.atback2.move(0,self.savey  ) 
-            self.toplabel2.move(0,self.savey ) 
-            self.textbrowserback.move(0,self.savey)  
-            self.jiaming_y_delta=0 
+        tl1=self.textbrowser.cursorRect(self.textcursor).topLeft().y() 
+         
+        if self.jiaming_y_delta+tl1-fhhalf!=0: 
+            if tl1-fhhalf<0:  
+                self.textbrowser.move(0,self.savey+fhhalf-tl1 )
+                self.toplabel.move(0,self.savey+fhhalf-tl1 )
+                self.toplabel2.move(0,self.savey+fhhalf-tl1 ) 
+                
+                self.atback2.move(0,self.savey+fhhalf-tl1 ) 
+                self.textbrowserback.move(0,self.savey+fhhalf-tl1 )  
+                self.jiaming_y_delta=fhhalf-tl1
+              
         for word in x:
             if word['orig']=='\n':
                 continue
             l=len(word['orig'])
-            tl1=self.textbrowser.cursorRect(self.textbrowser.textCursor()).topLeft() 
-            cursor=self.textbrowser.textCursor()
+            tl1=self.textbrowser.cursorRect(self.textcursor).topLeft()  
              
-            cursor.setPosition(pos+l )
-            self.textbrowser.setTextCursor(cursor)
-            if self.needdouble:
-                cursor=self.textbrowserback.textCursor() 
-                cursor.setPosition(pos+l )
-                self.textbrowserback.setTextCursor(cursor)
+            self.textcursor.setPosition(pos+l )
+            self.textbrowser.setTextCursor(self.textcursor)
+            if self.needdouble: 
+                self.textcursorback.setPosition(pos+l )
+                self.textbrowserback.setTextCursor(self.textcursorback)
             pos+=l 
             
-            tl2=self.textbrowser.cursorRect(self.textbrowser.textCursor()).topLeft() 
+            tl2=self.textbrowser.cursorRect(self.textcursor).topLeft() 
             if word['hira']==word['orig']:
                 continue
             #print(tl1,tl2,word['hira'],self.textbrowser.textCursor().position())
@@ -472,7 +463,7 @@ class Textbrowser( ):
                          
                           
             labeli+=1
-        
+        print('addlabel',time.time()-t)
         
          
     def solvejiaminglabel(self,label,word,font,tl1,tl2,fh,effect,color):
