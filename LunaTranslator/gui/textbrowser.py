@@ -498,7 +498,7 @@ class Textbrowser( ):
         #self.textbrowserback.setCurrentCharFormat(format2)
     def mergeCurrentCharFormat_out(self,colorinner,colormiao,width):
         self.needdouble=True
-        if self.lastformat!=(colorinner,colorinner,width):
+        if self.lastformat!=(colorinner,colormiao,width):
             format1 = QTextCharFormat() 
             format1.setForeground(QColor(colorinner))
             format2=QTextCharFormat()
