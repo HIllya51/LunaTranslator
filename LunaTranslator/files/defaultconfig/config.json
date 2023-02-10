@@ -783,7 +783,7 @@
     "focusfollow": false,
     "autostarthook": true,
     "translatortimeout": 5,
-    "minlength": 5,
+    "minlength": 0,
     "maxlength": 200, 
     "rotation": 0,
     "srclang2": 2,
