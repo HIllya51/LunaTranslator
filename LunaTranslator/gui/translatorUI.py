@@ -110,7 +110,7 @@ class QUnFrameWindow(QWidget):
         else:
             self.translate_text.setAlignment(Qt.AlignLeft)
 
-        print(time.time()-t1)
+        
         if globalconfig['zitiyangshi'] ==2: 
             self.translate_text.mergeCurrentCharFormat_out(globalconfig['miaobiancolor'],color, globalconfig['miaobianwidth2']) 
         elif globalconfig['zitiyangshi'] ==1:  
@@ -119,18 +119,15 @@ class QUnFrameWindow(QWidget):
             self.translate_text.simplecharformat(color)
         elif globalconfig['zitiyangshi'] ==3: 
             self.translate_text.simplecharformat(color)  
-        print('format',time.time()-t1)
-        self.translate_text.append (res[1]) 
-        print('append',time.time()-t1)
-        if type_!=1:  
-            self.translate_text.addtag (res[0])    
-        print('tag',time.time()-t1)
+        if type_==1: 
+            self.translate_text.append (res[1],[]) 
+        else:   
+            self.translate_text.append (res[1],res[0])    
         if globalconfig['zitiyangshi'] ==3:
             self.translate_text.showyinyingtext(color  ) 
-        print('yinying',time.time()-t1)
         if (globalconfig['usesearchword'] or globalconfig['show_fenci']  ) and res[0]:
             self.translate_text.addsearchwordmask(res[0],res[1],self.object.searchwordW.getnewsentencesignal.emit   ) 
-        print('search',time.time()-t1)
+        
         
         if globalconfig['autodisappear']:
             if self.hideshownotauto:
