@@ -367,7 +367,7 @@ class Textbrowser( ):
                 pass
         return (c.red(),c.green(),c.blue(), globalconfig['showcixing_touming']/100)
          
-    def getfh(self,half   ):
+    def getfh(self,half    ):
         
         font=QFont()
         font.setFamily(globalconfig['fonttype']) 
@@ -378,10 +378,7 @@ class Textbrowser( ):
         else:
             font.setPointSizeF((globalconfig['fontsize'])  )
         fm=QFontMetricsF(font)
-        print(fm.widthChar(' '))
-        print(fm.widthChar('a'))
-        print(fm.widthChar('i'))
-        print(fm.widthChar('我'))
+          
         fhall=fm.height()  
         
         if half:
@@ -390,23 +387,23 @@ class Textbrowser( ):
             return fhall
      
     def addtag(self,x): 
-        import time
+        import time  
         t=time.time()
+
         if globalconfig['zitiyangshi'] in [0,1,2]:  
             if len(self.savetaglabels)<len(x):
                 self.savetaglabels+=[QLabel(self.parent) for i in range(len(x)-len(self.savetaglabels))]
         elif globalconfig['zitiyangshi'] ==3: 
             if len(self.savetaglabels)<len(globalconfig['shadowforce']*x):
                 self.savetaglabels+=[QLabel(self.parent) for i in range(len(globalconfig['shadowforce']*x)-len(self.savetaglabels))]
-        print('prepare',time.time()-t)
+         
         pos=0
         self.addtaged=True
         labeli=0 
          
         fhall=self.getfh(False)
         
-        fhhalf,font=self.getfh(True) 
-        print('preparefh',time.time()-t)
+        fhhalf,font=self.getfh(True)  
         self.blockcount=self.textbrowser.document().blockCount() 
         for i in range(0,self.blockcount):
             b=self.textbrowser.document().findBlockByNumber(i)
@@ -422,8 +419,7 @@ class Textbrowser( ):
                 self.textcursorback.setPosition(b.position()) 
                 self.textcursorback.setBlockFormat(tf) 
                 self.textbrowserback.setTextCursor(self.textcursorback) 
-        print('setheigt',time.time()-t)
-
+         
         tl1=self.textbrowser.cursorRect(self.textcursor).topLeft().y() 
          
         if self.jiaming_y_delta+tl1-fhhalf!=0: 
@@ -435,7 +431,7 @@ class Textbrowser( ):
                 self.atback2.move(0,self.savey+fhhalf-tl1 ) 
                 self.textbrowserback.move(0,self.savey+fhhalf-tl1 )  
                 self.jiaming_y_delta=fhhalf-tl1
-              
+         
         for word in x:
             if word['orig']=='\n':
                 continue
@@ -462,9 +458,7 @@ class Textbrowser( ):
                         self.solvejiaminglabel(self.savetaglabels[labeli*globalconfig['shadowforce']+_i],word,font,tl1,tl2,fhhalf,True,color=globalconfig['miaobiancolor'])
                          
                           
-            labeli+=1
-        print('addlabel',time.time()-t)
-        
+            labeli+=1 
          
     def solvejiaminglabel(self,label,word,font,tl1,tl2,fh,effect,color):
         if effect==False:

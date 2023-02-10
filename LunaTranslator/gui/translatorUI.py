@@ -6,13 +6,13 @@ import os
 import subprocess
 from traceback import print_exc
 from PyQt5.QtWidgets import QWidget, QLabel, QPushButton, QVBoxLayout,QApplication
-from PyQt5.QtCore import Qt, pyqtSignal  
+from PyQt5.QtCore import Qt, pyqtSignal  ,QThread
 import qtawesome 
 from PyQt5.QtCore import pyqtSignal,Qt,QRect,QSize  
 from PyQt5.QtGui import  QFont  ,QIcon,QPixmap  ,QMouseEvent
 from PyQt5.QtWidgets import  QLabel ,QPushButton ,QSystemTrayIcon ,QAction,QMenu 
 
-import pyperclip
+import pyperclip,queue
 from utils.config import globalconfig,saveallconfig,_TR
 from utils.subproc import endsubprocs,mutiproc
 import  win32gui,win32api,win32process,win32con,multiprocessing
@@ -50,6 +50,8 @@ class QUnFrameWindow(QWidget):
     refreshtooliconsignal=pyqtSignal()
     hidesignal=pyqtSignal()
     muteprocessignal=pyqtSignal()  
+    showlinesignal=pyqtSignal(list,str,int)
+    clearsignal=pyqtSignal()
     def hookfollowsignalsolve(self,code,other): 
         if self._move_drag:
             return 
@@ -72,24 +74,29 @@ class QUnFrameWindow(QWidget):
         try:
             if globalconfig['showfanyisource']:
                 #print(_type)
-                self.showline((None,globalconfig['fanyi'][_type]['name']+'  '+res),globalconfig['fanyi'][_type]['color']  )
+                #self.showline((None,globalconfig['fanyi'][_type]['name']+'  '+res),globalconfig['fanyi'][_type]['color']  )
+                self.showtask.put(([None,globalconfig['fanyi'][_type]['name']+'  '+res],globalconfig['fanyi'][_type]['color']  ))
             else:
-                self.showline((None,res),globalconfig['fanyi'][_type]['color']  )
-            
+                #self.showline((None,res),globalconfig['fanyi'][_type]['color']  )
+                self.showtask.put(([None,res],globalconfig['fanyi'][_type]['color']  ))
             #print(globalconfig['fanyi'][_type]['name']+'  '+res+'\n')
             
             self.object.transhis.getnewtranssignal.emit(globalconfig['fanyi'][_type]['name'],res)
         except:
             print_exc() 
     def showraw(self,hira,res,color,show ): 
-        self.translate_text.clear_and_setfont()
+        #self.translate_text.clear_and_setfont()
+        self.showtask.queue.clear()
+        self.showtask.put(1)
         self.original=res 
         if show==1: 
-            self.showline((hira,res),color )
+            #self.showline((hira,res),color )
+            self.showtask.put(([hira,res],color))
         elif show==0:
             pass
         elif show==2:
-            self.showline((hira,res),color ,type_=2 )
+            #self.showline((hira,res),color ,type_=2 )
+            self.showtask.put(([hira,res],color , 2 ))
         self.object.transhis.getnewsentencesignal.emit(res) 
         self.object.edittextui.getnewsentencesignal.emit(res) 
     # def showtaskthreadfun(self):
@@ -100,11 +107,13 @@ class QUnFrameWindow(QWidget):
     #     self.showtask.put((res,color ,type_))
     def showstatus(self,res,color,clear):
         if clear:
-            self.translate_text.clear_and_setfont()
-        self.showline([None,res],color)
+            #self.translate_text.clear_and_setfont()
+            self.showtask.queue.clear()
+            self.showtask.put(1)
+        #self.showline([None,res],color)
+        self.showtask.put(([None,res],color))
     def showline (self,res,color ,type_=1):   
-         
-        t1=time.time()
+          
         if globalconfig['showatcenter']:
             self.translate_text.setAlignment(Qt.AlignCenter)
         else:
@@ -136,8 +145,7 @@ class QUnFrameWindow(QWidget):
                 if flag:
                     self.show_()
             self.lastrefreshtime=time.time()
-            self.autohidestart=True
-        print('all',time.time()-t1)
+            self.autohidestart=True 
     def autohidedelaythread(self):
         while True:
             if globalconfig['autodisappear'] and self.autohidestart:
@@ -276,6 +284,19 @@ class QUnFrameWindow(QWidget):
             self.tray.show()
             self.isfirstshow=False 
         return super().showEvent(a0)
+    def realshowthread(self):
+        while True:
+            task=self.showtask.get()
+            print(task)
+            if type(task)==int:
+                self.clearsignal.emit()
+                continue
+            if len(task)==3:
+                res,color ,type1=task
+            else:
+                res,color =task
+                type1=1 
+            self.showlinesignal.emit(res,color ,type1)
     def __init__(self, object):
         
         super(QUnFrameWindow, self).__init__(
@@ -286,8 +307,9 @@ class QUnFrameWindow(QWidget):
         self.setAttribute(Qt.WA_TranslucentBackground) 
         self.setAttribute(Qt.WA_ShowWithoutActivating,True)
         self.showintab=  globalconfig['showintab']
-        
-        
+        self.showlinesignal.connect(self.showline)
+        self.showtask=queue.Queue() 
+        threading.Thread(target=self.realshowthread).start()
         self.setWindowTitle('LunaTranslator')
         self.hidesignal.connect(self.hide_)
         self.object = object
@@ -365,11 +387,11 @@ class QUnFrameWindow(QWidget):
         self.setGeometry( globalconfig['position'][0],globalconfig['position'][1],int(globalconfig['width'] ), int(globalconfig['height'])) 
 
         
-         
-        self.translate_text =  Textbrowser(self) 
-        self.translate_text.clear_and_setfont()
-        self.translate_text.setText(_TR('欢迎使用'))  
+        self.translate_text =  Textbrowser(self)  
         
+        self.clearsignal.connect(self.translate_text.clear_and_setfont)
+        self.showtask.put(1)
+        self.showtask.put(([None,_TR('欢迎使用')],''))
         self.translate_text.move(0,30*self.rate) 
         # 翻译框根据内容自适应大小
         self.document = self.translate_text.document()
