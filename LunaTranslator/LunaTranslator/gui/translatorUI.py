@@ -287,7 +287,7 @@ class QUnFrameWindow(QWidget):
     def realshowthread(self):
         while True:
             task=self.showtask.get()
-            print(task)
+            #print(task)
             if type(task)==int:
                 self.clearsignal.emit()
                 continue

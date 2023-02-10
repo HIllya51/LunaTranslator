@@ -1,2 +1,2 @@
 @echo off
-python.exe LunaTranslator_main.py  11
+python.exe LunaTranslator\LunaTranslator_main.py  11

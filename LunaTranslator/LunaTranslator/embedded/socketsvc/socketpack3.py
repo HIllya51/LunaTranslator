@@ -6,8 +6,7 @@
 if __name__ == '__main__':
   import sys
   sys.path.append('..')
- 
-from  embedded.sakurakit.skunicode import qunicode
+  
 #from PySide.QtCore import QByteArray
 
 # Little endian
@@ -68,11 +67,7 @@ def packdata(data):
 # String list
 
 def _unicode(data, encoding): # str|QByteArray, str -> unicode
-  return data.decode(encoding,errors='ignore')
-  if isinstance(data, str):
-    return data.decode(encoding, errors='ignore')
-  else:
-    return qunicode(data, encoding)
+  return data.decode(encoding,errors='ignore') 
 import sys
 def packstrlist(l, encoding='utf8'):
   """

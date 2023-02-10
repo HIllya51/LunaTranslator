@@ -1,3 +1,4 @@
+
 import time
 filestart=time.time()   
 import os
@@ -5,9 +6,9 @@ import json
 import Levenshtein
 import sys 
 from traceback import  print_exc  
- 
+
 dirname, filename = os.path.split(os.path.abspath(__file__))
-sys.path.append(dirname)  
+sys.path.append(dirname)   
 from utils.config import globalconfig ,savehook_new_list,savehook_new_data,noundictconfig,transerrorfixdictconfig,setlanguage 
 import threading,win32gui 
 from PyQt5.QtCore import QCoreApplication ,Qt ,QObject,pyqtSignal
@@ -16,14 +17,13 @@ from PyQt5.QtWidgets import  QApplication ,QGraphicsScene,QGraphicsView,QDesktop
 from utils.minmaxmove import minmaxmoveobservefunc
 from utils.simplekanji import kanjitrans
 from utils.wrapper import threader 
- 
+
 from gui.showword import searchwordW
 from gui.rangeselect    import rangeadjust
- 
- 
+
 from utils.getpidlist import pid_running,getarch
 
- 
+
 from textsource.copyboard import copyboard   
 from textsource.textractor import textractor   
 from textsource.embedded import embedded
@@ -31,7 +31,7 @@ from textsource.ocrtext import ocrtext
 from textsource.txt import txt 
 import  gui.selecthook    
 from utils.getpidlist import getpidexe,ListProcess,getScreenRate
- 
+
 import gui.translatorUI
 from queue import Queue
 import zhconv
@@ -43,7 +43,7 @@ from gui.settin import Settin
 from gui.attachprocessdialog import AttachProcessDialog
 import win32event,win32con,win32process,win32api 
 import re
- 
+
 import socket
 socket.setdefaulttimeout(globalconfig['translatortimeout'])
 from utils.post import POSTSOLVE
@@ -54,6 +54,7 @@ from utils.simplekanji import kanjitrans
 from embedded.rpcman3 import RpcServer
 from embedded.gameagent3 import GameAgent 
 print('loadimports',time.time()-filestart)
+ 
 class MAINUI(QObject) :
     startembedsignal=pyqtSignal(int,embedded)
     def startembed(self,pid,engine:embedded): 
@@ -528,8 +529,9 @@ class MAINUI(QObject) :
         self.prepare()  
         self.startxiaoxueguan()
         self.starthira()     
+        print('load',time.time()-filestart) 
         self.settin_ui = Settin(self)  
-        print('all',time.time()-filestart) 
+        print('seting',time.time()-filestart) 
         self.startreader()  
         self.transhis=gui.transhist.transhist(self.translation_ui)  
         self.edittextui=gui.edittext.edittext(self.translation_ui)  
