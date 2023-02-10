@@ -49,8 +49,7 @@ class QUnFrameWindow(QWidget):
     quitf_signal=pyqtSignal() 
     refreshtooliconsignal=pyqtSignal()
     hidesignal=pyqtSignal()
-    muteprocessignal=pyqtSignal()  
-    showlinesignal=pyqtSignal(bool,list,str,int) 
+    muteprocessignal=pyqtSignal()   
     def hookfollowsignalsolve(self,code,other): 
         if self._move_drag:
             return 
@@ -74,39 +73,29 @@ class QUnFrameWindow(QWidget):
             if globalconfig['showfanyisource']:
                 #print(_type)
                 #self.showline((None,globalconfig['fanyi'][_type]['name']+'  '+res),globalconfig['fanyi'][_type]['color']  )
-                self.showtask.put((False,[None,globalconfig['fanyi'][_type]['name']+'  '+res],globalconfig['fanyi'][_type]['color'] ,1 ))
+                self.showline(False,[None,globalconfig['fanyi'][_type]['name']+'  '+res],globalconfig['fanyi'][_type]['color'] ,1 )
             else:
                 #self.showline((None,res),globalconfig['fanyi'][_type]['color']  )
-                self.showtask.put((False,[None,res],globalconfig['fanyi'][_type]['color']  ,1))
+                self.showline(False,[None,res],globalconfig['fanyi'][_type]['color']  ,1)
             #print(globalconfig['fanyi'][_type]['name']+'  '+res+'\n')
             
             self.object.transhis.getnewtranssignal.emit(globalconfig['fanyi'][_type]['name'],res)
         except:
             print_exc() 
-    def showraw(self,hira,res,color,show ):  
-        self.showtask.queue.clear() 
+    def showraw(self,hira,res,color,show ):   
         self.original=res 
         if show==1: 
             #self.showline((hira,res),color )
-            self.showtask.put((True,[hira,res],color,1))
+            self.showline(True,[hira,res],color,1)
         elif show==0:
             pass
         elif show==2:
             #self.showline((hira,res),color ,type_=2 )
-            self.showtask.put((True,[hira,res],color , 2 ))
+            self.showline(True,[hira,res],color , 2 )
         self.object.transhis.getnewsentencesignal.emit(res) 
-        self.object.edittextui.getnewsentencesignal.emit(res) 
-    # def showtaskthreadfun(self):
-    #     while True:
-    #         res,color ,type_=self.showtask.get()
-    #         self.showline_real(res,color ,type_)
-    # def showline(self,res,color ,type_=1):
-    #     self.showtask.put((res,color ,type_))
-    def showstatus(self,res,color,clear):
-        if clear: 
-            self.showtask.queue.clear() 
-        #self.showline([None,res],color)
-        self.showtask.put((clear,[None,res],color,1))
+        self.object.edittextui.getnewsentencesignal.emit(res)  
+    def showstatus(self,res,color,clear): 
+        self.showline(clear,[None,res],color,1)
     def showline (self,clear,res,color ,type_=1):   
         if clear:
             self.translate_text.clear_and_setfont()
@@ -141,8 +130,7 @@ class QUnFrameWindow(QWidget):
                 if flag:
                     self.show_()
             self.lastrefreshtime=time.time()
-            self.autohidestart=True 
-        self.showtextlock.release()
+            self.autohidestart=True  
     def autohidedelaythread(self):
         while True:
             if globalconfig['autodisappear'] and self.autohidestart:
@@ -255,6 +243,7 @@ class QUnFrameWindow(QWidget):
             self.show()
     def showEvent(self, a0 ) -> None: 
         if self.isfirstshow:
+            self.showline(True,[None,_TR('欢迎使用')],'',1)
             icon = QIcon()
             icon.addPixmap(QPixmap('./files/luna.jpg'), QIcon.Normal, QIcon.On)
             self.setWindowIcon(icon)
@@ -281,15 +270,7 @@ class QUnFrameWindow(QWidget):
             self.tray.show()
             self.isfirstshow=False 
         return super().showEvent(a0)
-    def realshowthread(self):
-        self.showtextlock=threading.Lock()
-        self.showtextlock.acquire()
-        while True:
-            task=self.showtask.get()
-             
-            clear,res,color ,type1=task
-            self.showlinesignal.emit(clear,res,color ,type1)
-            self.showtextlock.acquire()
+    
     def __init__(self, object):
         
         super(QUnFrameWindow, self).__init__(
@@ -299,10 +280,7 @@ class QUnFrameWindow(QWidget):
         self.isfirstshow=True
         self.setAttribute(Qt.WA_TranslucentBackground) 
         self.setAttribute(Qt.WA_ShowWithoutActivating,True)
-        self.showintab=  globalconfig['showintab']
-        self.showlinesignal.connect(self.showline)
-        self.showtask=queue.Queue() 
-        threading.Thread(target=self.realshowthread).start()
+        self.showintab=  globalconfig['showintab'] 
         self.setWindowTitle('LunaTranslator')
         self.hidesignal.connect(self.hide_)
         self.object = object
@@ -382,12 +360,13 @@ class QUnFrameWindow(QWidget):
         
         self.translate_text =  Textbrowser(self)  
          
-        self.showtask.put((True,[None,_TR('欢迎使用')],'',1))
+        
         self.translate_text.move(0,30*self.rate) 
         # 翻译框根据内容自适应大小
         self.document = self.translate_text.document()
         self.document.contentsChanged.connect(self.textAreaChanged)  
         self.set_color_transparency() 
+         
     def set_color_transparency(self ):
         self.translate_text.setStyleSheet("border-width: 0;\
                                            border-style: outset;\
