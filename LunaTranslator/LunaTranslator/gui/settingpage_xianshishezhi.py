@@ -108,6 +108,7 @@ def setTabThree_lazy(self) :
                 ('显示保存的游戏按钮',4),self.getsimpleswitch(globalconfig['buttonuse'],'gamepad' ,callback=lambda _:self.object.translation_ui.showhidetoolbuttons() )],
                 [('调整游戏窗口按钮',4),self.getsimpleswitch(globalconfig['buttonuse'],'resize' ,callback=lambda _:self.object.translation_ui.showhidetoolbuttons() ),'',('游戏窗口全屏按钮',4),self.getsimpleswitch(globalconfig['buttonuse'],'fullscreen' ,callback=lambda _:self.object.translation_ui.showhidetoolbuttons()),'',('显示游戏静音按钮',4),self.getsimpleswitch(globalconfig['buttonuse'],'muteprocess' ,callback=lambda _:self.object.translation_ui.showhidetoolbuttons())],
                 [('游戏最小化时窗口隐藏',6),(self.getsimpleswitch(globalconfig,'minifollow'),1)], 
+                [('游戏失去焦点时窗口隐藏',6),(self.getsimpleswitch(globalconfig,'focusfollow'),1)], 
                 [('游戏窗口移动时同步移动',6),(self.getsimpleswitch(globalconfig,'movefollow'),1)],
                 [('固定窗口尺寸',6),self.getsimpleswitch(globalconfig,'fixedheight'),],
                 [("自动隐藏窗口",6),(self.getsimpleswitch(globalconfig  ,'autodisappear'),1),'',("隐藏延迟(s)",3),(self.getspinbox(1,100,globalconfig  ,'disappear_delay'),2)],
