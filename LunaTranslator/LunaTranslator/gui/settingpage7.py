@@ -58,7 +58,7 @@ def setTab7_lazy(self) :
             savelist[ii+1],savelist[toexchangei+1]=savelist[toexchangei+1],savelist[ii+1] 
         for i,post in enumerate(sortlist): 
             if post=='_11':
-                config=(self.getcolorbutton(globalconfig,'',callback=lambda:selectdebugfile('postprocess/mypost.py',True),icon='fa.gear',constcolor="#FF69B4")) 
+                config=(self.getcolorbutton(globalconfig,'',callback=lambda:selectdebugfile('postprocess/mypost.py' ),icon='fa.gear',constcolor="#FF69B4")) 
             else:
                 if 'args' in postprocessconfig[post]:
                     

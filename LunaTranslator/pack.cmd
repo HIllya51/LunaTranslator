@@ -16,10 +16,5 @@ del C:\tmp\LunaTranslator\LunaTranslator\qt5multimedia.dll
 rmdir /S /Q C:\tmp\LunaTranslator\LunaTranslator\PyQt5\qt-plugins\mediaservice
 rmdir /S /Q C:\tmp\LunaTranslator\LunaTranslator\PyQt5\qt-plugins\printsupport
 
-rmdir /S /Q C:\tmp\LunaTranslator\LunaTranslator\translator\__pycache__
-rmdir /S /Q C:\tmp\LunaTranslator\LunaTranslator\otherocr\__pycache__
-rmdir /S /Q C:\tmp\LunaTranslator\LunaTranslator\postprocess\__pycache__
-rmdir /S /Q C:\tmp\LunaTranslator\LunaTranslator\cishu\__pycache__
-
 xcopy C:\tmp\LunaTranslator\ C:\dataH\LunaTranslator /e /y /I
 pause

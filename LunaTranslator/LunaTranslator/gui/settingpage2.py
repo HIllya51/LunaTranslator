@@ -6,7 +6,7 @@ from utils.config import globalconfig ,translatorsetting
 from gui.pretransfile import sqlite2json
 from utils.config import globalconfig ,_TR,_TRL
 from utils.utils import selectdebugfile
-import socket
+import socket,os
 from gui.inputdialog import autoinitdialog 
 def initsome11(self,l,grids,label=None): 
     if label:
@@ -21,8 +21,8 @@ def initsome11(self,l,grids,label=None):
         if fanyi not in l:
             continue
         
-        _f=selectdebugfile(f'./translator/{fanyi}.py') 
-        if _f is None:
+        _f=f'./Lunatranslator/translator/{fanyi}.py'
+        if os.path.exists(_f)==False: 
             bad+=1 
             continue 
         i+=1
@@ -54,7 +54,7 @@ def initsome11(self,l,grids,label=None):
             items.append({'t':'okcancel' })
             last=self.getcolorbutton(globalconfig,'',callback=functools.partial(autoinitdialog,self, (globalconfig['fanyi'][fanyi]['name'])+ ('设置'),900,items),icon='fa.gear',constcolor="#FF69B4")
         elif fanyi=='selfbuild': 
-            last=self.getcolorbutton(globalconfig,'',callback=lambda:selectdebugfile('postprocess/mypost.py',True),icon='fa.gear',constcolor="#FF69B4")
+            last=self.getcolorbutton(globalconfig,'',callback=lambda:selectdebugfile('translator/selfbuild.py' ),icon='fa.gear',constcolor="#FF69B4")
         else:
             last=''
         line+=[(globalconfig['fanyi'][fanyi]['name'],6),

@@ -4,12 +4,10 @@ def argsort(l):
     return ll
 import os
 
-def selectdebugfile(path,openf=False):
+def selectdebugfile(path ):
     p=None
     if os.path.exists(os.path.join('./LunaTranslator',path)):
-        p= os.path.abspath(os.path.join('./LunaTranslator',path))
-    elif os.path.exists(path):
-        p= os.path.abspath(path)
-    if p and openf:
+        p= os.path.abspath(os.path.join('./LunaTranslator',path)) 
+    if p  :
         os.startfile(p)
     return p
