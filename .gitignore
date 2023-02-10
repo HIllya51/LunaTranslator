@@ -1545,3 +1545,4 @@ build/LunaTranslator_main.dist/win32file.pyd
 build/LunaTranslator_main.dist/win32gui.pyd
 build/LunaTranslator_main.dist/win32print.pyd
 build/LunaTranslator_main.dist/win32process.pyd
+build/LunaTranslator.zip
