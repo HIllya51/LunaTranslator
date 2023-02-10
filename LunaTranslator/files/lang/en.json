@@ -577,5 +577,8 @@
     "未下载该语言的OCR模型,请从软件主页下载模型解压到files/ocr路径后使用": "The OCR model of this language is not downloaded. Please download the model from the software home page and extract it to the files/ocr path before use",
     "选择翻译源-HOOK": "Select translation source-HOOK",
     "选择翻译源-HOOK内嵌": "Select translation source - HOOK embedded",
-    "选择翻译源-TXT": "Select translation source-TXT"
+    "选择翻译源-TXT": "Select translation source-TXT",
+    "用户词典1": "User dictionary 1",
+    "用户词典2": "User dictionary 2",
+    "用户词典3": "User dictionary 3"
 }
