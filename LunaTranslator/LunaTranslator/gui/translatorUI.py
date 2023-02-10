@@ -88,7 +88,7 @@ class QUnFrameWindow(QWidget):
             #self.showline((hira,res),color )
             self.showline(True,[hira,res],color,1)
         elif show==0:
-            pass
+            self.showline(True,None,None,1)
         elif show==2:
             #self.showline((hira,res),color ,type_=2 )
             self.showline(True,[hira,res],color , 2 )
@@ -99,6 +99,8 @@ class QUnFrameWindow(QWidget):
     def showline (self,clear,res,color ,type_=1):   
         if clear:
             self.translate_text.clear_and_setfont()
+        if res is None:
+            return 
         if globalconfig['showatcenter']:
             self.translate_text.setAlignment(Qt.AlignCenter)
         else:

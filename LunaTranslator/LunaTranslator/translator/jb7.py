@@ -30,9 +30,9 @@ class TS(basetrans):
             return False
         if os.path.exists(self.config['args']['路径'])==False:
             return False
-        if   self.config['args']['路径']!=self.path or self.userdict!=(self.config['args']['用户词典1'],self.config['args']['用户词典2'],self.config['args']['用户词典3']):
+        if   self.config['args']['路径']!=self.path or self.userdict!=(self.config['args']['用户词典1(可选)'],self.config['args']['用户词典2(可选)'],self.config['args']['用户词典3(可选)']):
             self.path=self.config['args']['路径']
-            self.userdict=(self.config['args']['用户词典1'],self.config['args']['用户词典2'],self.config['args']['用户词典3'])
+            self.userdict=(self.config['args']['用户词典1(可选)'],self.config['args']['用户词典2(可选)'],self.config['args']['用户词典3(可选)'])
             self.dllpath=os.path.join(self.path,'JBJCT.dll')
             dictpath=''
             for d in self.userdict:

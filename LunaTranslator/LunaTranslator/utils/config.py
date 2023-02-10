@@ -92,7 +92,7 @@ syncconfig(postprocessconfig,defaultpost ,True,3)
 syncconfig(transerrorfixdictconfig,defaulterrorfix)
 
 syncconfig(noundictconfig,defaultnoun)
-syncconfig(translatorsetting,translatordfsetting)
+syncconfig(translatorsetting,translatordfsetting,drop=True,deep=3)
 
 
 syncconfig(ocrsetting,ocrdfsetting,True,3)
