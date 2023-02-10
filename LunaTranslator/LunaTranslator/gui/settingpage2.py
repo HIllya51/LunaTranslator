@@ -46,7 +46,7 @@ def initsome11(self,l,grids,label=None):
                         'dir':fileselect[arg]['dir'],
                         'filter':fileselect[arg]['filter']
                     }) 
-                elif arg=='路径':
+                elif arg=='路径' or arg[:4]=='用户词典':
                     items[-1].update({
                         't':'file',
                         'dir':True 

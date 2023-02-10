@@ -3,22 +3,28 @@ from traceback import print_exc
 import multiprocessing,threading
 from utils.getpidlist import pid_running
 allsubprocess=[] 
-def subproc(cmd,cwd=None,stdin=None,encoding=None, stdout=None,keep=False,run=False): 
+allsubprocess2={}
+def subproc(cmd,keep=False,name=None, cwd=None,stdin=None,  stdout=None, encoding=None,  errors='ignore'): 
     st=subprocess.STARTUPINFO()
     st.dwFlags=subprocess.STARTF_USESHOWWINDOW
     st.wShowWindow=subprocess.SW_HIDE
-    try:
-        if run:
-            xx=subprocess.run
+    try: 
+        if encoding:
+            ss=subprocess.Popen(cmd,cwd=cwd,stdin=stdin, stdout=stdout,  startupinfo=st,encoding=encoding,errors=errors)
         else:
-            xx=subprocess.Popen
-        ss=xx(cmd,cwd=cwd,stdin=stdin, stdout=stdout,  startupinfo=st)
-         
+            ss=subprocess.Popen(cmd,cwd=cwd,stdin=stdin, stdout=stdout,  startupinfo=st )
     except:
         print_exc()
         ss=None
     if keep:
             allsubprocess.append(ss) 
+    if name:
+        if name in allsubprocess2:
+            try:
+                allsubprocess2[name].kill()
+            except:
+                pass
+        allsubprocess2[name]=ss
     return ss
 def __wrap(pid,target,args): 
             threading.Thread(target=target,args=args).start()  
@@ -43,4 +49,8 @@ def endsubprocs():
             sub.kill()
         except:
             pass
-    
+    for _ in allsubprocess2:
+        try:
+            allsubprocess2[_].kill()
+        except:
+            pass

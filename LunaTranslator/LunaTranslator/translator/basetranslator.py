@@ -80,6 +80,8 @@ class basetrans:
         self._cache[langkey][contentsolved] = res
          
         return res
+    def end(self):
+        pass
     def fythread(self):
         while True:  
             t=time.time()
@@ -115,6 +117,6 @@ class basetrans:
             
             if res is not None  and self.queue.empty() and contentraw==self.newline:
                 self.show(contentraw,(self.typename,res,mp),embedcallback) 
-    
+        self.end()
 
             

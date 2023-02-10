@@ -4,7 +4,7 @@ from translator.basetranslator import basetrans
 import ctypes 
 import os 
 import subprocess
-
+from utils.subproc import subproc
 class TS(basetrans): 
     # def inittranslator(self ) : 
         
@@ -17,37 +17,48 @@ class TS(basetrans):
     #     else:
     #         self._x64=True
     #         self.x64('おはおよう')
-    def x64(self,content):  
-            if self.config['args']['路径']=="":
-                return 
-            else:
-                path = self.config['args']['路径'] 
-    
-            self.path=os.path.join(path,'JBJCT.dll')
-            ress=''
-            for line in content.split('\n'):
-                if len(line)==0:
-                    continue
-                if ress!='':
-                    ress+='\n'
-                            
-                 
-                p=subproc(r'./files/x64_x86_dll/jbj7.exe "'+self.path+'" '+self.tgtlang+' "'+line+'"', stdout=subprocess.PIPE )
-                
-                l=p.stdout.readline() 
-                
-                res=str(l,encoding='utf8',errors='ignore').replace('\r','').replace('\n','') 
-                #print(res)
-                x=res.split(' ')
-                
-                #print(x)
-                for _x in x:
-                    if _x=='0':
-                        break
-                    ress+=chr(int(_x))
-                    #print(ress)
-                #print(l)
-            return ress
+    def inittranslator(self ) : 
+        self.path=None
+        self.userdict=None
+    def end(self):
+        try:
+            self.engine.kill()
+        except:
+            pass
+    def checkpath(self):
+        if self.config['args']['路径']=="":
+            return False
+        if os.path.exists(self.config['args']['路径'])==False:
+            return False
+        if   self.config['args']['路径']!=self.path or self.userdict!=(self.config['args']['用户词典1'],self.config['args']['用户词典2'],self.config['args']['用户词典3']):
+            self.path=self.config['args']['路径']
+            self.userdict=(self.config['args']['用户词典1'],self.config['args']['用户词典2'],self.config['args']['用户词典3'])
+            self.dllpath=os.path.join(self.path,'JBJCT.dll')
+            dictpath=''
+            for d in self.userdict:
+                if os.path.exists(d):
+                    d=os.path.join(d,'Jcuser')
+                    dictpath+=f' "{d}" '
+            try:
+                self.engine.kill()
+            except:
+                pass
+            #self.engine=subproc(f'./files/x64_x86_dll/jbj7.exe "{self.dllpath}"'+dictpath,stdin=subprocess.PIPE,name='jbj', stdout=subprocess.PIPE ,encoding='utf-16-le')
+            self.engine=subproc(f'./files/x64_x86_dll/jbj7.exe "{self.dllpath}"'+dictpath,stdin=subprocess.PIPE , stdout=subprocess.PIPE ,encoding='utf-16-le',name='jbj7')
+             
+    def x64(self,content:str):   
+            if self.tgtlang not in ['936','950']:
+                return ''  
+            self.checkpath()
+            content=content.replace('\r','\n')
+            lines=content.split('\n')
+            ress=[]
+            for line in lines:
+                self.engine.stdin.write(self.tgtlang+'\r\n'+line+'\r\n') 
+                self.engine.stdin.flush() 
+                res=self.engine.stdout.readline() 
+                ress.append(res[:-2])  
+            return '\n'.join(ress)
     def x86(self,content):
         CODEPAGE_JA = 932
         CODEPAGE_GB = 936
