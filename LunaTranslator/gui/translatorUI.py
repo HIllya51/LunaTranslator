@@ -103,7 +103,7 @@ class QUnFrameWindow(QWidget):
             self.translate_text.clear_and_setfont()
         self.showline([None,res],color)
     def showline (self,res,color ,type_=1):   
-        print(res)
+         
         t1=time.time()
         if globalconfig['showatcenter']:
             self.translate_text.setAlignment(Qt.AlignCenter)

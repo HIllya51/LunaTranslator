@@ -100,15 +100,18 @@ class Textbrowser( ):
         self.jiaming_y_delta=0
         self.charformat=self.textbrowser.currentCharFormat()
         self.setselectable() 
+        self.needdouble=False
     def setselectable(self):
         self.masklabel.setHidden(globalconfig['selectable'])
         self.toplabel2.setHidden(globalconfig['selectable'] and globalconfig['zitiyangshi']!=3) 
         self.toplabel.setHidden(globalconfig['selectable'] and globalconfig['zitiyangshi']!=3)
     def simplecharformat(self,color):
-        self.textbrowser.setCurrentCharFormat(self.charformat)
-        self.textbrowserback.setCurrentCharFormat(self.charformat)
-        self.textbrowser.setTextColor(QColor(color))
-        self.textbrowserback.setTextColor(QColor(color))
+        if self.needdouble:
+            self.textbrowserback.hide()
+            self.needdouble=False
+
+        self.textbrowser.setCurrentCharFormat(self.charformat) 
+        self.textbrowser.setTextColor(QColor(color)) 
     def setText(self,text):
         self.textbrowser.setText(text)
         self.textbrowserback.setText(text)
@@ -161,7 +164,8 @@ class Textbrowser( ):
         else:
             self.b1=self.textbrowser.document().blockCount()
         self.cleared=False
-        self.textbrowserback.append(x) 
+        if self.needdouble:
+            self.textbrowserback.append(x) 
         self.textbrowser.append(x) 
         self.b2=self.textbrowser.document().blockCount()
         
@@ -175,11 +179,11 @@ class Textbrowser( ):
                 b=self.textbrowser.document().findBlockByNumber(i) 
                 tf=b.blockFormat() 
                 tf.setLineHeight(fh,QTextBlockFormat.FixedHeight) 
-                cursor=self.textbrowserback.textCursor() 
-                cursor.setPosition(b.position()) 
-                cursor.setBlockFormat(tf)
-                
-                self.textbrowserback.setTextCursor(cursor) 
+                if self.needdouble:
+                    cursor=self.textbrowserback.textCursor() 
+                    cursor.setPosition(b.position()) 
+                    cursor.setBlockFormat(tf) 
+                    self.textbrowserback.setTextCursor(cursor) 
                 
                 cursor=self.textbrowser.textCursor()
                 cursor.setPosition(b.position()) 
@@ -409,11 +413,12 @@ class Textbrowser( ):
             tf=b.blockFormat()
             #tf.setLineHeight(fh,QTextBlockFormat.LineDistanceHeight)
             tf.setLineHeight(fhall+fhhalf ,QTextBlockFormat.FixedHeight)
-            cursor=self.textbrowserback.textCursor() 
-            cursor.setPosition(b.position()) 
-            cursor.setBlockFormat(tf)
-            
-            self.textbrowserback.setTextCursor(cursor) 
+            if self.needdouble:
+                cursor=self.textbrowserback.textCursor() 
+                cursor.setPosition(b.position()) 
+                cursor.setBlockFormat(tf)
+
+                self.textbrowserback.setTextCursor(cursor) 
             
             cursor=self.textbrowser.textCursor()
             cursor.setPosition(b.position()) 
@@ -447,9 +452,10 @@ class Textbrowser( ):
              
             cursor.setPosition(pos+l )
             self.textbrowser.setTextCursor(cursor)
-            cursor=self.textbrowserback.textCursor() 
-            cursor.setPosition(pos+l )
-            self.textbrowserback.setTextCursor(cursor)
+            if self.needdouble:
+                cursor=self.textbrowserback.textCursor() 
+                cursor.setPosition(pos+l )
+                self.textbrowserback.setTextCursor(cursor)
             pos+=l 
             
             tl2=self.textbrowser.cursorRect(self.textbrowser.textCursor()).topLeft() 
@@ -505,8 +511,13 @@ class Textbrowser( ):
         format2.setTextOutline(QPen(QColor(colormiao),width, Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin))
     
         self.textbrowser.setCurrentCharFormat(format2)
-        self.textbrowserback.setCurrentCharFormat(format2)
+        if self.needdouble:
+            self.needdouble=False
+            self.textbrowserback.hide()
     def mergeCurrentCharFormat_out(self,colorinner,colormiao,width):
+        if self.needdouble==False:
+            self.textbrowserback.show()
+            self.needdouble=True
         format1 = QTextCharFormat() 
         format1.setForeground(QColor(colorinner))
         format2=QTextCharFormat()
