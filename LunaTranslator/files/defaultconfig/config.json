@@ -189,7 +189,19 @@
             },
             "_C": {
                 "use": false,
-                "name": "选择翻译源-TEXTRACTOR",
+                "name": "选择翻译源-HOOK",
+                "key1": -1,
+                "key2": -1
+            },
+			"_D": {
+                "use": false,
+                "name": "选择翻译源-HOOK内嵌",
+                "key1": -1,
+                "key2": -1
+            },
+			"_E": {
+                "use": false,
+                "name": "选择翻译源-TXT",
                 "key1": -1,
                 "key2": -1
             },

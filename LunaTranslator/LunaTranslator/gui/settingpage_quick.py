@@ -14,6 +14,12 @@ def setTab_quick_direct(self):
     self.usedkey=[] 
         
     self.bindfunctions={ 
+            '_A':lambda :self.object.settin_ui.clicksourcesignal.emit('copy'),
+            '_B':lambda :self.object.settin_ui.clicksourcesignal.emit('ocr'),
+            '_C':lambda :self.object.settin_ui.clicksourcesignal.emit('textractor'),
+            '_D':lambda :self.object.settin_ui.clicksourcesignal.emit('embedded'),
+            '_E':lambda :self.object.settin_ui.clicksourcesignal.emit('txt'),
+
             '_1':self.object.translation_ui.startTranslater,
             '_2':self.object.translation_ui.changeTranslateMode,
             '_3':self.showsignal.emit,

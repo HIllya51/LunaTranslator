@@ -53,10 +53,9 @@ def txtsettings(self):
     grids=[[("TXT读取间隔(s)",6),(self.getspinbox(0,10,globalconfig,'txtreadlineinterval',step=0.1,double=True),3),('',10)],['']]
     return grids
 
-def setTabOne(self) :  
-        self.tabadd_lazy(self.tab_widget, ('文本输入'), lambda :setTabOne_lazy(self)) 
-def setTabOne_lazy(self) : 
-        grids=[
+def setTabOne_direct(self) :  
+        
+        self.tab1grids=[
                 [ ('选择文本输入源',3)],
                 [
                         ('剪贴板',3),(self.getsimpleswitch(globalconfig['sourcestatus'],'copy',name='copy',callback= functools.partial(self.yuitsu_switch,'sourcestatus','sourceswitchs','copy',self.object.starttextsource),pair='sourceswitchs'),1),'',
@@ -75,6 +74,11 @@ def setTabOne_lazy(self) :
                         
                 ]
         ]  
+        self.clicksourcesignal.connect(lambda k: getattr(self,'sourceswitchs')[k].click())
+def setTabOne(self) :  
+        self.tabadd_lazy(self.tab_widget, ('文本输入'), lambda :setTabOne_lazy(self)) 
+def setTabOne_lazy(self) : 
+        
         
         pages=[]
         for  i,ocrgrid in enumerate([ gethookgrid ,getocrgrid ,setTabclip,txtsettings,gethookembedgrid]):
@@ -84,5 +88,5 @@ def setTabOne_lazy(self) :
                 pages.append(gridlayoutwidget)
         tab=self.makesubtab(['HOOK设置','OCR设置','剪贴板设置','TXT设置','内嵌设置'],pages) 
 
-        gridlayoutwidget=self.makegrid(grids )    
+        gridlayoutwidget=self.makegrid(self.tab1grids )    
         return self.makevbox([gridlayoutwidget,tab]) 

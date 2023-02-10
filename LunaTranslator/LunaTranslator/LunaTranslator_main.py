@@ -21,8 +21,7 @@ from utils.wrapper import threader
 from gui.showword import searchwordW
 from gui.rangeselect    import rangeadjust
 
-from utils.getpidlist import pid_running,getarch
-
+from utils.getpidlist import pid_running,getarch,getpidexe 
 
 from textsource.copyboard import copyboard   
 from textsource.textractor import textractor   
@@ -448,14 +447,13 @@ class MAINUI(QObject) :
             try:
                 
                 
-                if   self.textsource is None: 
+                if   self.textsource is None:   
                         hwnd=win32gui.GetForegroundWindow()
                         pid=win32process.GetWindowThreadProcessId(hwnd)[1]
                         name_=getpidexe(pid)
                           
                 
-                        if name_ in savehook_new_list:  
-                            
+                        if name_  in savehook_new_list:   
                             lps=ListProcess()
                             for pid_real,_exe,_ in lps:
                                 if _exe==name_: 

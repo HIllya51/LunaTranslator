@@ -66,8 +66,7 @@ def getwindowhwnd(pid):
         for hwnd in windows_list:
                 try:
                         tid, _pid=win32process.GetWindowThreadProcessId(hwnd) 
-                        if pid==_pid:
-                                title = win32gui.GetWindowText(hwnd)
+                        if pid==_pid: 
                                 if win32gui.IsWindow(hwnd) and win32gui.IsWindowEnabled(hwnd) and win32gui.IsWindowVisible(hwnd):
                                         return hwnd
                 except:

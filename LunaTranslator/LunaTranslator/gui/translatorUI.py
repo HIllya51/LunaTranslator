@@ -50,8 +50,7 @@ class QUnFrameWindow(QWidget):
     refreshtooliconsignal=pyqtSignal()
     hidesignal=pyqtSignal()
     muteprocessignal=pyqtSignal()  
-    showlinesignal=pyqtSignal(list,str,int)
-    clearsignal=pyqtSignal()
+    showlinesignal=pyqtSignal(bool,list,str,int) 
     def hookfollowsignalsolve(self,code,other): 
         if self._move_drag:
             return 
@@ -75,28 +74,26 @@ class QUnFrameWindow(QWidget):
             if globalconfig['showfanyisource']:
                 #print(_type)
                 #self.showline((None,globalconfig['fanyi'][_type]['name']+'  '+res),globalconfig['fanyi'][_type]['color']  )
-                self.showtask.put(([None,globalconfig['fanyi'][_type]['name']+'  '+res],globalconfig['fanyi'][_type]['color']  ))
+                self.showtask.put((False,[None,globalconfig['fanyi'][_type]['name']+'  '+res],globalconfig['fanyi'][_type]['color'] ,1 ))
             else:
                 #self.showline((None,res),globalconfig['fanyi'][_type]['color']  )
-                self.showtask.put(([None,res],globalconfig['fanyi'][_type]['color']  ))
+                self.showtask.put((False,[None,res],globalconfig['fanyi'][_type]['color']  ,1))
             #print(globalconfig['fanyi'][_type]['name']+'  '+res+'\n')
             
             self.object.transhis.getnewtranssignal.emit(globalconfig['fanyi'][_type]['name'],res)
         except:
             print_exc() 
-    def showraw(self,hira,res,color,show ): 
-        #self.translate_text.clear_and_setfont()
-        self.showtask.queue.clear()
-        self.showtask.put(1)
+    def showraw(self,hira,res,color,show ):  
+        self.showtask.queue.clear() 
         self.original=res 
         if show==1: 
             #self.showline((hira,res),color )
-            self.showtask.put(([hira,res],color))
+            self.showtask.put((True,[hira,res],color,1))
         elif show==0:
             pass
         elif show==2:
             #self.showline((hira,res),color ,type_=2 )
-            self.showtask.put(([hira,res],color , 2 ))
+            self.showtask.put((True,[hira,res],color , 2 ))
         self.object.transhis.getnewsentencesignal.emit(res) 
         self.object.edittextui.getnewsentencesignal.emit(res) 
     # def showtaskthreadfun(self):
@@ -106,14 +103,13 @@ class QUnFrameWindow(QWidget):
     # def showline(self,res,color ,type_=1):
     #     self.showtask.put((res,color ,type_))
     def showstatus(self,res,color,clear):
-        if clear:
-            #self.translate_text.clear_and_setfont()
-            self.showtask.queue.clear()
-            self.showtask.put(1)
+        if clear: 
+            self.showtask.queue.clear() 
         #self.showline([None,res],color)
-        self.showtask.put(([None,res],color))
-    def showline (self,res,color ,type_=1):   
-          
+        self.showtask.put((clear,[None,res],color,1))
+    def showline (self,clear,res,color ,type_=1):   
+        if clear:
+            self.translate_text.clear_and_setfont()
         if globalconfig['showatcenter']:
             self.translate_text.setAlignment(Qt.AlignCenter)
         else:
@@ -146,6 +142,7 @@ class QUnFrameWindow(QWidget):
                     self.show_()
             self.lastrefreshtime=time.time()
             self.autohidestart=True 
+        self.showtextlock.release()
     def autohidedelaythread(self):
         while True:
             if globalconfig['autodisappear'] and self.autohidestart:
@@ -285,18 +282,14 @@ class QUnFrameWindow(QWidget):
             self.isfirstshow=False 
         return super().showEvent(a0)
     def realshowthread(self):
+        self.showtextlock=threading.Lock()
+        self.showtextlock.acquire()
         while True:
             task=self.showtask.get()
-            #print(task)
-            if type(task)==int:
-                self.clearsignal.emit()
-                continue
-            if len(task)==3:
-                res,color ,type1=task
-            else:
-                res,color =task
-                type1=1 
-            self.showlinesignal.emit(res,color ,type1)
+             
+            clear,res,color ,type1=task
+            self.showlinesignal.emit(clear,res,color ,type1)
+            self.showtextlock.acquire()
     def __init__(self, object):
         
         super(QUnFrameWindow, self).__init__(
@@ -347,7 +340,7 @@ class QUnFrameWindow(QWidget):
         self.quickrangestatus=False
         self.isontop=True 
         self.initTitleLabel()  # 安放标题栏标签
-          
+        
         self.setMouseTracking(True)  # 设置widget鼠标跟踪
         self.initDrag()  # 设置鼠标跟踪判断默认值
         self.setStyleSheet(''' 
@@ -388,15 +381,13 @@ class QUnFrameWindow(QWidget):
 
         
         self.translate_text =  Textbrowser(self)  
-        
-        self.clearsignal.connect(self.translate_text.clear_and_setfont)
-        self.showtask.put(1)
-        self.showtask.put(([None,_TR('欢迎使用')],''))
+         
+        self.showtask.put((True,[None,_TR('欢迎使用')],'',1))
         self.translate_text.move(0,30*self.rate) 
         # 翻译框根据内容自适应大小
         self.document = self.translate_text.document()
         self.document.contentsChanged.connect(self.textAreaChanged)  
-        self.set_color_transparency()
+        self.set_color_transparency() 
     def set_color_transparency(self ):
         self.translate_text.setStyleSheet("border-width: 0;\
                                            border-style: outset;\

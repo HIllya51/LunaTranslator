@@ -10,7 +10,7 @@ from utils.config import globalconfig ,_TR
 from utils.wavmp3player import wavmp3player
 from utils.config import globalconfig 
 
-from gui.settingpage1 import setTabOne
+from gui.settingpage1 import setTabOne,setTabOne_direct
 from gui.settingpage2 import setTabTwo
 from gui.settingpage_xianshishezhi import setTabThree ,setTabThree_direct
 from gui.settingpage_tts import setTab5 ,setTab5_direct 
@@ -32,7 +32,7 @@ class Settin(closeashidewindow) :
     versiontextsignal=pyqtSignal( str)
     progresssignal=pyqtSignal(str,int) 
     fontbigsmallsignal=pyqtSignal(int)  
-    
+    clicksourcesignal=pyqtSignal(str)
     def resizefunction(self):
          
         for w in self.needfitwidgets:
@@ -142,14 +142,14 @@ class Settin(closeashidewindow) :
         if name:
             setattr(self,name,s)
         return s
-    def __init__(self, object):
-        
+    def __init__(self, object): 
         super(Settin, self).__init__(object.translation_ui,globalconfig,'setting_geo_2') 
         #self.setWindowFlag(Qt.Tool,False)
         #self.setWindowFlags(self.windowFlags()&~Qt.WindowMinimizeButtonHint)
         self.mp3player=wavmp3player() 
         self.localocrstarted=False
         self.mp3playsignal.connect(self.mp3player.mp3playfunction)  
+        
         self.object = object  
         self.needupdate=False
         self.needfitwidgets=[]
@@ -172,8 +172,9 @@ class Settin(closeashidewindow) :
          
         self.usevoice=0
         self.isfirstshow=True
+        setTabOne_direct(self)
         settab7direct(self)
-        setTabThree_direct(self)
+        setTabThree_direct(self) 
         setTab5_direct(self)
         setTab_quick_direct(self)
         setTab_about_dicrect(self)

@@ -1,5 +1,5 @@
 import sys,time
-sys.path.append('./')
+sys.path.append('./LunaTranslator')
 from translator.baiduapi import TS
 class TS1(TS):
             
