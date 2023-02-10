@@ -33,7 +33,7 @@ def setTabcishu_l(self) :
         ]  
 
         line=[]
-        for i,cishu in enumerate(globalconfig['cishu']):
+        for i,cishu in enumerate(globalconfig['cishu']): 
                 if i%3==0:
                         line=[]
                 line+=([
@@ -45,7 +45,7 @@ def setTabcishu_l(self) :
                          
                 ])
                 
-                if i%3==2 or i==len(globalconfig['cishu']) : 
+                if i%3==2 or i==len(globalconfig['cishu']) -1: 
                         grids.append(line)
                 else:
                         line+=['']
