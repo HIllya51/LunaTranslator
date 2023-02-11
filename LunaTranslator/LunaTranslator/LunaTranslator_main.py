@@ -76,6 +76,7 @@ class MAINUI(QObject) :
         self.rpc=self.ga=None
         self.startembedsignal.connect(self.startembed)
         self.last_paste_str=''
+        self.lastshowedstr=''
         self.textsource=None     
     @threader  
     def loadvnrshareddict(self,_=None):
@@ -196,6 +197,7 @@ class MAINUI(QObject) :
             hira=self.hira_.fy(_paste_str)
         except:
             hira=[]
+        self.lastshowedstr=_paste_str
         if globalconfig['isshowhira'] and globalconfig['isshowrawtext']:
               
             self.translation_ui.displayraw1.emit(hira,_paste_str,globalconfig['rawtextcolor'],2)
@@ -215,19 +217,23 @@ class MAINUI(QObject) :
             skip=True  
         if (set(_paste_str) -set('「…」、。？！―'))==set():
             skip=True 
-              
-        try:
-            if skip==False : 
+            
+        
+        if skip==False : 
+            try:
                 _paste_str=_paste_str.replace('"','""')    
                 ret=self.textsource.sqlwrite2.execute(f'SELECT * FROM artificialtrans WHERE source = "{_paste_str}"').fetchone()
                 if ret is  None:                     
                     self.textsource.sqlwrite2.execute(f'INSERT INTO artificialtrans VALUES(NULL,"{_paste_str}","{json.dumps({})}");')
-        except:
-            print_exc()
-         
-        for engine in self.translators:  
+            except:
+                print_exc()
+            
+            for engine in self.translators:  
                 self.translators[engine].gettask((_paste_str,paste_str_solve,skip,embedcallback)) 
+        
+    
          
+        
     @threader
     def startreader(self,use=None,checked=True):
         if checked:
@@ -381,21 +387,22 @@ class MAINUI(QObject) :
                             pass 
                 _=cishuwrapper(aclass)
                 return _
-    def _singletrans(self,needconv,needconvshow,res,cls,):
+    def _singletrans(self,contentraw, needconv,needconvshow,res,cls ):
                 if needconv:
                     res1=zhconv.convert(res,  'zh-tw' )   
                 else:
                     res1=res
                 if needconvshow:
                     res=res1
-                self.translation_ui.displayres.emit(cls,res)
+                if contentraw==self.lastshowedstr:
+                    self.translation_ui.displayres.emit(cls,res)
                 return res1
     def _maybeyrengong(self,classname,contentraw,_,embedcallback):
         
         classname,res,mp=_
         if classname not in globalconfig['fanyi_pre']: 
             res=self.solveaftertrans(res,mp)
-         
+        #print(classname,contentraw,_)
 
         l=globalconfig['normallanguagelist'][globalconfig['tgtlang2']] 
         if (l=='cht' and l not in globalconfig['fanyi'][classname]['lang'])  :
@@ -410,9 +417,9 @@ class MAINUI(QObject) :
         
         if classname=='premt':
             for k in res:
-                self._singletrans(needconv,needconvshow,res[k],'premt-'+k) 
+                self._singletrans(contentraw, needconv,needconvshow,res[k],k ) 
         else:
-            res=self._singletrans(needconv,needconvshow,res,classname)  
+            res=self._singletrans(contentraw, needconv,needconvshow,res,classname)  
             if embedcallback: 
                 if globalconfig['embedded']['as_fast_as_posible'] or classname==list(globalconfig['fanyi'])[globalconfig['embedded']['translator']]:   
                     if needja:  
@@ -426,16 +433,18 @@ class MAINUI(QObject) :
              
             res=res.replace('"','""')   
             contentraw=contentraw.replace('"','""')    
-            try: 
-                    ret=self.textsource.sqlwrite2.execute(f'SELECT machineTrans FROM artificialtrans WHERE source = "{contentraw}"').fetchone() 
-                
-                    ret=json.loads(ret[0]) 
-                    ret[classname]=res
-                    ret=json.dumps(ret).replace('"','""') 
-                    
-                    self.textsource.sqlwrite2.execute(f'UPDATE artificialtrans SET machineTrans = "{ret}" WHERE source = "{contentraw}"')
+            #print(res,contentraw)
+            #print(f'SELECT machineTrans FROM artificialtrans WHERE source = "{contentraw}"')
+            try:
+                ret=self.textsource.sqlwrite2.execute(f'SELECT machineTrans FROM artificialtrans WHERE source = "{contentraw}"').fetchone() 
+        
+                ret=json.loads(ret[0]) 
+                ret[classname]=res
+                ret=json.dumps(ret).replace('"','""') 
+            
+                self.textsource.sqlwrite2.execute(f'UPDATE artificialtrans SET machineTrans = "{ret}" WHERE source = "{contentraw}"')
             except:
-                print_exc() 
+                print_exc()
     
       
 

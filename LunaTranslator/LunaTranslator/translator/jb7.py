@@ -2,8 +2,10 @@
 from utils.subproc import subproc    
 from translator.basetranslator import basetrans 
 import ctypes 
-import os 
-import subprocess
+import os ,time
+import mmap
+import win32pipe, win32file,win32con,win32event,win32security
+import subprocess,select
 from utils.subproc import subproc
 class TS(basetrans): 
     # def inittranslator(self ) : 
@@ -18,6 +20,9 @@ class TS(basetrans):
     #         self._x64=True
     #         self.x64('おはおよう')
     def inittranslator(self ) : 
+                
+        
+        
         self.path=None
         self.userdict=None
     def end(self):
@@ -43,9 +48,21 @@ class TS(basetrans):
                 self.engine.kill()
             except:
                 pass
+            t=time.time()
+            t= str(t) 
             #self.engine=subproc(f'./files/x64_x86_dll/jbj7.exe "{self.dllpath}"'+dictpath,stdin=subprocess.PIPE,name='jbj', stdout=subprocess.PIPE ,encoding='utf-16-le')
-            self.engine=subproc(f'./files/x64_x86_dll/jbj7.exe "{self.dllpath}"'+dictpath,stdin=subprocess.PIPE , stdout=subprocess.PIPE ,encoding='utf-16-le',name='jbj7')
-             
+            self.engine=subproc(f'C:/Users/11737/Documents/GitHub/LunaTranslator/CXXplugins/win32dllforward/Release/jbj7_3.exe C:/dataH/JBeijing7/JBJCT.dll {"jbj7_sentence_"+t} {"jbj7_trans_"+t} {"jbj7_code_"+t} {"jbj7_waitsentence_"+t} {"jbj7_waittrans_"+t} {"jbj7_waitload_"+t}',name='jbj7', stdout=subprocess.PIPE ) 
+            attr=win32security.SECURITY_DESCRIPTOR(win32con.SECURITY_DESCRIPTOR_REVISION)
+            attr.SetSecurityDescriptorDacl(True,None,False) 
+            secu=win32security.SECURITY_ATTRIBUTES() 
+            secu.SECURITY_DESCRIPTOR=attr
+            secu.bInheritHandle=False 
+            win32event.WaitForSingleObject(win32event.CreateEvent(secu,False, False,  "jbj7_waitload_"+t),win32event.INFINITE); 
+            self.waitforjp=win32event.CreateEvent(secu,False, False,  "jbj7_waitsentence_"+t)
+            self.notifyfortranslateover=win32event.CreateEvent(secu,False, False,  "jbj7_waittrans_"+t)   
+            self._fr = mmap.mmap(0, 6000, "jbj7_sentence_"+t,mmap.ACCESS_WRITE)
+            self._to = mmap.mmap(0, 6000, "jbj7_trans_"+t, mmap.ACCESS_WRITE)
+            self._wcode = mmap.mmap(0, 20, "jbj7_code_"+t, mmap.ACCESS_WRITE)
     def x64(self,content:str):   
             if self.tgtlang not in ['936','950']:
                 return ''  
@@ -54,10 +71,16 @@ class TS(basetrans):
             lines=content.split('\n')
             ress=[]
             for line in lines:
-                self.engine.stdin.write(self.tgtlang+'\r\n'+line+'\r\n') 
-                self.engine.stdin.flush() 
-                res=self.engine.stdout.readline() 
-                ress.append(res[:-2])  
+                
+                self._fr.seek(0)
+                self._wcode.seek(0)
+                self._to.seek(0)
+                self._fr.write((line ).encode('utf-16-le'))
+                self._wcode.write((self.tgtlang ).encode('utf-16-le')) 
+                win32event.SetEvent(self.waitforjp)  
+                win32event.WaitForSingleObject(self.notifyfortranslateover,1000);
+                res=(self._to.read().decode('utf-16-le'))  
+                ress.append(res)
             return '\n'.join(ress)
     def x86(self,content):
         CODEPAGE_JA = 932

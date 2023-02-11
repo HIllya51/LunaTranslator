@@ -110,6 +110,11 @@ class basetrans:
                 print_exc()
                 try:
                     self.inittranslator()
+                    if self.typename in globalconfig['fanyi_offline']+globalconfig['fanyi_pre']:
+                        res=self.translate(contentraw)
+                    else:
+                        
+                        res=self.cached_translate(contentsolved)
                 except:
                     print_exc()
                 res=None 

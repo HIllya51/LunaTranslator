@@ -49,7 +49,9 @@ int wmain(int argc, wchar_t* argv[])
         UINT code = _wtoi(wcode);
         std::wcin.getline(fr, 3000);
         JC_Transfer_Unicode(0, CODEPAGE_JA, code, 1, 1, fr, to, a, buf, b);
-        std::wcout << to << std::endl;
+        //std::wcout << to << std::endl;
+        wprintf(L"%s\n", to); 
+        fflush(stdout);
     }
     
 }
