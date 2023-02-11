@@ -34,6 +34,12 @@ class Qlabel_c(QLabel):
         self.setStyleSheet("background-color: rgba(0,0,0,0.01);")
         return super().leaveEvent(a0)
 class Textbrowser( ):  
+    def movep(self):
+        h=globalconfig['buttonsize']*1.5
+        self.atback.setGeometry(0,h*self.parent.rate,9999,9999)
+        self.atback2.setGeometry(0,h*self.parent.rate,9999,9999)
+        self.toplabel2.setGeometry( 0,h*self.parent.rate,9999,9999)
+        self.toplabel.setGeometry( 0,h*self.parent.rate,9999,9999)
     def __init__(self, parent ) :  
         self.parent=parent
         #self.shadowlabel=QLabel(parent)
@@ -41,12 +47,12 @@ class Textbrowser( ):
         self.align=False
         
         self.atback=QLabel(parent)
-        self.atback.setGeometry(0,30*self.parent.rate,9999,9999)
+        
         self.atback.setMouseTracking(True)
 
         
         self.atback2=QLabel(parent)
-        self.atback2.setGeometry(0,30*self.parent.rate,9999,9999)
+        
         self.atback2.setMouseTracking(True)
         self._rawqlabel=QLabel() 
         self.textbrowserback=QTextBrowser(parent)
@@ -54,10 +60,10 @@ class Textbrowser( ):
         self.cleared=False
         self.toplabel2=QLabel(parent)
         self.font=QFont()
-        self.toplabel2.setGeometry( 0,30*self.parent.rate,9999,9999)
+        
         self.toplabel2.setMouseTracking(True)
         self.toplabel=QLabel(parent) 
-        self.toplabel.setGeometry( 0,30*self.parent.rate,9999,9999)
+        
         self.toplabel.setMouseTracking(True)
         self.textbrowser.setStyleSheet("border-width: 0;\
                                            border-style: outset;\
@@ -480,7 +486,7 @@ class Textbrowser( ):
         else:
             x=tl1.x()/2+tl2.x()/2-w/2
             y=tl2.y()-fh   
-        y+=30*self.parent.rate
+        y+=globalconfig['buttonsize']*1.5 *self.parent.rate
         y+=self.jiaming_y_delta
         if effect:
             if 'savelastfontandcolor' not in dir(label) or label.savelastfontandcolor!=(globalconfig['fontsize'],globalconfig['jiamingcolor']):

@@ -114,14 +114,12 @@ def setTabTwo_lazy(self) :
         initsome11(self, lixians ,offlinegrid)   
         initsome11(self, mianfei,onlinegrid, '在线翻译',) 
         initsome11(self, shoufei,onlinegrid,'注册在线翻译') 
-        initsome11(self,mt ,pretransgrid)  
-        pages=[]
-        for  i,ocrgrid in enumerate([ onlinegrid,offlinegrid,pretransgrid]):
-                 
-                gridlayoutwidget=self.makegrid(ocrgrid )  
-                gridlayoutwidget=self.makescroll( gridlayoutwidget  )
-                pages.append(gridlayoutwidget)
-        tab=self.makesubtab(['在线翻译','离线翻译','预翻译'],pages) 
+        initsome11(self,mt ,pretransgrid)   
+        tab=self.makesubtab_lazy(['在线翻译','离线翻译','预翻译'],[
+            lambda:self.makescroll( self.makegrid(onlinegrid )   ),
+            lambda:self.makescroll( self.makegrid(offlinegrid )   ),
+            lambda:self.makescroll( self.makegrid(pretransgrid )   ),
+        ]) 
 
         gridlayoutwidget=self.makegrid(grids )    
         return self.makevbox([gridlayoutwidget,tab])

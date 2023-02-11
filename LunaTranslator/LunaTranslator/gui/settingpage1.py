@@ -79,14 +79,16 @@ def setTabOne(self) :
         self.tabadd_lazy(self.tab_widget, ('文本输入'), lambda :setTabOne_lazy(self)) 
 def setTabOne_lazy(self) : 
         
-        
-        pages=[]
-        for  i,ocrgrid in enumerate([ gethookgrid ,getocrgrid ,setTabclip,txtsettings,gethookembedgrid]):
-                 
-                gridlayoutwidget=self.makegrid(ocrgrid(self))  
-                gridlayoutwidget=self.makescroll( gridlayoutwidget  )
-                pages.append(gridlayoutwidget)
-        tab=self.makesubtab(['HOOK设置','OCR设置','剪贴板设置','TXT设置','内嵌设置'],pages) 
+         
+         
+        tab=self.makesubtab_lazy(['HOOK设置','OCR设置','剪贴板设置','TXT设置','内嵌设置'],
+                                [       
+                                        lambda:self.makescroll(self.makegrid(gethookgrid(self))),
+                                        lambda:self.makescroll(self.makegrid(getocrgrid(self))),
+                                        lambda:self.makescroll(self.makegrid(setTabclip(self))),
+                                        lambda:self.makescroll(self.makegrid(txtsettings(self))),
+                                        lambda:self.makescroll(self.makegrid(gethookembedgrid(self)))
+                                ]) 
 
         gridlayoutwidget=self.makegrid(self.tab1grids )    
         return self.makevbox([gridlayoutwidget,tab]) 

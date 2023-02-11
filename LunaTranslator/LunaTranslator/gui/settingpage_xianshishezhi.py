@@ -98,7 +98,7 @@ def setTabThree_lazy(self) :
                 [('设置界面字体',4),(self.sfont_comboBox,5)],
                [ ('字体大小',4),(self.getspinbox(1,100,globalconfig  ,'settingfontsize',callback=__changefontsize),2)], 
                [ ('不透明度',4),(self.horizontal_slider,8),(self.horizontal_slider_label,2)], 
-               [('翻译窗口背景颜色',4),self.getcolorbutton(globalconfig,'backcolor',callback=lambda: self.ChangeTranslateColor("backcolor", self.back_color_button),name='back_color_button'),'',('工具按钮颜色',4),self.getcolorbutton(globalconfig,'buttoncolor',callback=_settoolbariconcolor ,name='buttoncolorbutton')],
+               [('翻译窗口背景颜色',4),self.getcolorbutton(globalconfig,'backcolor',callback=lambda: self.ChangeTranslateColor("backcolor", self.back_color_button),name='back_color_button'),'',('工具按钮颜色',4),self.getcolorbutton(globalconfig,'buttoncolor',callback=_settoolbariconcolor ,name='buttoncolorbutton'),'',('工具按钮大小',4),(self.getspinbox(5,100,globalconfig  ,'buttonsize',callback=lambda _:self.object.translation_ui.refreshtooliconsignal.emit()),2)],
                [('显示显示原文按钮',4),self.getsimpleswitch(globalconfig['buttonuse'],'showraw' ,callback=lambda _: self.object.translation_ui.showhidetoolbuttons() ),'',('显示复制原文按钮',4),self.getsimpleswitch(globalconfig['buttonuse'],'copy' ,callback=lambda _:self.object.translation_ui.showhidetoolbuttons()),'',('显示朗读按钮',4),self.getsimpleswitch(globalconfig['buttonuse'],'langdu' ,callback=lambda _:self.object.translation_ui.showhidetoolbuttons())],
                 [       ('显示移动按钮',4),self.getsimpleswitch(globalconfig['buttonuse'],'move' ,callback=lambda _:self.object.translation_ui.showhidetoolbuttons() ),'',
                         ('专有名词翻译设置按钮',4),self.getsimpleswitch(globalconfig['buttonuse'],'noundict' ,callback=lambda _:self.object.translation_ui.showhidetoolbuttons() ),'',
@@ -124,12 +124,13 @@ def setTabThree_lazy(self) :
                 [("Magpie路径",4),(self.getcolorbutton(globalconfig,'',callback=lambda x: getsomepath1(self,'Magpie路径',globalconfig,'magpiepath','Magpie路径',isdir=True),icon='fa.gear',constcolor="#FF69B4"),1),'',("Magpie设置",4),(self.getcolorbutton(globalconfig,'',callback=lambda x: autoinitdialog(self,'Magpie设置',500,magpiesettingdialog),icon='fa.gear',constcolor="#FF69B4"),1)],
                 [('Magpie算法',4),(self.getsimplecombobox(magpiemethod,globalconfig,'magpiescalemethod'),6)],
                 [('Magpie捕获模式',4),(self.getsimplecombobox(['Graphics Capture','Desktop Duplication','GDI','DwmSharedSurface'],globalconfig,'magpiecapturemethod'),6)],
-        ]
-        pages=[]
-        for  ocrgrid in [ textgrid, uigrid,fullscreengrid  ]: 
-                gridlayoutwidget=self.makescroll(self.makegrid(ocrgrid )   )
-                pages.append(gridlayoutwidget)
-        tab=self.makesubtab(['文本设置', '界面设置','游戏全屏'],pages) 
+        ] 
+        tab=self.makesubtab_lazy(['文本设置', '界面设置','游戏全屏'],[
+                lambda:self.makescroll(self.makegrid(textgrid )   ),
+                lambda:self.makescroll(self.makegrid(uigrid )   ),
+                lambda:self.makescroll(self.makegrid(fullscreengrid )   )
+
+                ]) 
  
         
         return tab

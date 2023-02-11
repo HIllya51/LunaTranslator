@@ -18,8 +18,7 @@ from gui.settingpage_cishu import setTabcishu
 from gui.settingpage_quick import setTab_quick,setTab_quick_direct
 from gui.setting_lang import setTablang
 from gui.settingpage7 import setTab7 ,settab7direct
-from gui.settingpage_about import setTab_about,setTab_about_dicrect 
-
+from gui.settingpage_about import setTab_about,setTab_about_dicrect  
 from gui.switchbutton import MySwitch 
 from gui.rotatetab import  rotatetab
 from gui.closeashidewindow import closeashidewindow   
@@ -45,7 +44,7 @@ class Settin(closeashidewindow) :
         
         self.resizefunction()
         return super().resizeEvent(a0)
-    def automakegrid(self,grid,lis,save=False,savelist=None ): 
+    def automakegrid(self,grid,lis,save=False,savelist=None,link=False ): 
         maxl=0
     
         for nowr,line in enumerate(lis):
@@ -54,14 +53,24 @@ class Settin(closeashidewindow) :
                     ll=[]
                 for i in line:
                         if type(i)==str:
-                                wid,cols=QLabel(""),1
+                            cols=1
+                            if link:
+                                wid=QLabel((i))
+                                wid.setOpenExternalLinks(True)
+                            else:
+                                wid=QLabel(_TR(i))
                         elif type(i)!=tuple:
                                 wid,cols=i,1
                         elif len(i)==2:
                                 
                                 wid,cols=i
                                 if type(wid)==str  :
-                                    wid=QLabel(_TR(wid))
+                                    
+                                    if link:
+                                        wid=QLabel((wid))
+                                        wid.setOpenExternalLinks(True)
+                                    else:
+                                        wid=QLabel(_TR(wid))
                         grid.addWidget(wid,nowr,nowc,1,cols)
                         if save:
                             ll.append(wid)
@@ -209,7 +218,7 @@ class Settin(closeashidewindow) :
             setTab_quick(self) 
             
             setTablang(self) 
-            setTab_about(self)
+            setTab_about(self) 
             self.isfirstshow=False
     def setstylesheet(self):
         self.setStyleSheet("font: %spt '"%(globalconfig['settingfontsize'])+(globalconfig['settingfonttype']  )+"' ;  " )  
@@ -221,7 +230,7 @@ class Settin(closeashidewindow) :
         for wid in wids:
             v.addWidget(wid)
         return q
-    def makegrid(self,grid,save=False,savelist=None,savelay=None ):
+    def makegrid(self,grid,save=False,savelist=None,savelay=None ,link=False):
         
          
         gridlayoutwidget = gridwidget(  )  
@@ -230,7 +239,7 @@ class Settin(closeashidewindow) :
         gridlayoutwidget.setStyleSheet("gridwidget{background-color:transparent;}") 
         self.needfitwidgets.append(gridlayoutwidget)
         gridlayoutwidget.setFixedHeight(len(grid)*35*self.rate)
-        self.automakegrid(gridlay,grid,save,savelist ) 
+        self.automakegrid(gridlay,grid,save,savelist,link ) 
         if save:
             savelay.append(gridlay)
         return gridlayoutwidget
@@ -256,6 +265,22 @@ class Settin(closeashidewindow) :
         tab=QTabWidget()
         for i,wid in enumerate(widgets): 
             self.tabadd(tab,titles[i], wid )
+        return tab
+     
+    def makesubtab_lazy(self,titles,functions):
+        tab=QTabWidget()
+        def __(t,i):
+            try:
+                w=t.currentWidget()
+                if 'lazyfunction' in dir(w):
+                    w.lazyfunction()
+                    delattr(w,'lazyfunction') 
+                    self.resizefunction()  
+            except: 
+                print_exc()
+        tab.currentChanged.connect(functools.partial(__,tab))
+        for i,func in enumerate(functions): 
+            self.tabadd_lazy(tab,titles[i], func )
         return tab
     def tabadd_lazy(self,tab,title,getrealwidgetfunction):
         q=QWidget()

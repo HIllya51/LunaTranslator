@@ -6,7 +6,30 @@ from PyQt5.QtWidgets import QWidget,QLabel ,QProgressBar,QLineEdit,QPushButton
 import os 
 from utils.config import globalconfig  ,_TR 
 from utils.wrapper import threader
- 
+from version import version
+def resourcegrid( ) :  
+        grid=[
+            [_TR('项目网站'),'<a href="https://github.com/HIllya51/LunaTranslator">https://github.com/HIllya51/LunaTranslator</a>',''],
+            [_TR('使用说明'),'<a href="https://hillya51.github.io/">https://hillya51.github.io/</a>'],
+            [_TR('OCR-简体中文'),'<a href="https://github.com/HIllya51/LunaTranslator/releases/download/v1.34.5/zh.zip">zh.zip</a>'],
+            [_TR('OCR-繁体中文'),'<a href="https://github.com/HIllya51/LunaTranslator/releases/download/v1.34.5/cht.zip">cht.zip</a>'],
+            [_TR('OCR-韩语'),'<a href="https://github.com/HIllya51/LunaTranslator/releases/download/v1.34.5/ko.zip">ko.zip</a>'],
+            [_TR('辞书-MeCab'),'<a href="https://github.com/HIllya51/LunaTranslator/releases/download/v1.0/Mecab.zip">Mecab.zip</a>'],
+            [_TR('辞书-小学馆'),'<a href="https://github.com/HIllya51/LunaTranslator/releases/download/v1.0/xiaoxueguan.db">xiaoxueguan.db</a>'],
+            [_TR('辞书-EDICT'),'<a href="https://github.com/HIllya51/LunaTranslator/releases/download/v1.0/edict.db">edict.db</a>'],
+            [_TR('辞书-EDICT2'),'<a href="https://github.com/HIllya51/LunaTranslator/releases/download/v1.1.2/edict2">edict2</a>'],
+           # [_TR('辞书-JMdict'),'<a href="https://github.com/HIllya51/LunaTranslator/releases/download/v1.1.2/JMdict.xml">JMdict.xml</a>'],
+            [_TR('辞书-灵格斯词典'),'<a href="https://github.com/HIllya51/LunaTranslator/releases/download/v1.0/Lingoes.zip">Lingoes.zip</a>'],
+            [_TR('翻译-J北京7'),'<a href="https://github.com/HIllya51/LunaTranslator/releases/download/v1.0/JBeijing7.zip">JBeijing7.zip</a>'],
+            [_TR('翻译-J北京7-用户词典'),'<a href="https://github.com/HIllya51/LunaTranslator/releases/download/v2.2.0/JBeijing7UserDict.zip">JBeijing7UserDict.zip</a>'],
+            [_TR('翻译-金山快译'),'<a href="https://github.com/HIllya51/LunaTranslator/releases/download/v1.0/FastAIT09_Setup.25269.4101.zip">FastAIT09_Setup.25269.4101.zip</a>'],
+            [_TR('翻译-快译通'),'<a href="https://github.com/HIllya51/LunaTranslator/releases/download/v1.0/DR.eye.zip">DR.eye.zip</a>'],
+            [_TR('转区-Locale-Emulator'),'<a href="https://github.com/xupefei/Locale-Emulator/releases/download/v2.5.0.1/Locale.Emulator.2.5.0.1.zip">Locale.Emulator.2.5.0.1.zip</a>'],
+            [_TR('转区-Locale_Remulator'),'<a href="https://github.com/InWILL/Locale_Remulator/releases/download/v1.5.0/Locale_Remulator.1.5.0.zip">Locale_Remulator.1.5.0.zip</a>'],
+            [_TR('语音-VoiceRoid2'),'<a href="https://github.com/HIllya51/LunaTranslator/releases/download/v1.0/Yukari2.zip">Yukari2.zip</a>'],
+            [_TR('语音-VOICEVOX'),'<a href="https://github.com/VOICEVOX/voicevox/releases/download/0.13.3/voicevox-windows-cpu-0.13.3.zip">voicevox-windows-cpu-0.13.3.zip</a>'],
+        ]
+        return grid
 @threader
 def getversion(self):
     import requests 
@@ -16,8 +39,7 @@ def getversion(self):
     # with open('files/about.txt','r',encoding='utf8') as ff:
     #     about=ff.read()
     # with open('files/version.txt','r',encoding='utf8') as ff:
-    #     version=ff.read() 
-    version="v2.2.6"
+    #     version=ff.read()  
     url='https://github.com/HIllya51/LunaTranslator/releases/'
     self.versiontextsignal.emit(_TR('当前版本')+':'+  version+'  '+_TR("最新版本")+':'+ _TR('获取中'))#,'',url,url)) 
     try:
@@ -114,18 +136,16 @@ def setTab_aboutlazy(self) :
                 #[(self.versionlabel4,10)] 
         ]  
          
-        
-        pages=[]
-        for  ocrgrid in [ grid2,grid1]: 
-                gridlayoutwidget=self.makescroll(self.makegrid(ocrgrid )   )
-                pages.append(gridlayoutwidget)
-        tab=self.makesubtab(['自动更新','代理设置' ],pages) 
+         
+        tab=self.makesubtab_lazy(['自动更新','代理设置','资源下载' ],[
+                lambda: self.makescroll(self.makegrid(grid2 )   ) ,
+                lambda: self.makescroll(self.makegrid(grid1 )   ),
+                lambda:self.makescroll( self.makegrid(resourcegrid(),link=True ) )
+                ]) 
 
         wh=self.rate*360
          
-        shuoming = (QLabel(_TR('项目网站')+':<a href="https://github.com/HIllya51/LunaTranslator">https://github.com/HIllya51/LunaTranslator</a><br>' +
-                    _TR('使用说明')+':<a href="https://hillya51.github.io/">https://hillya51.github.io/</a><br>' +
-                    '如果你感觉该软件对你有帮助，欢迎微信扫码或者前往<a href="https://afdian.net/a/HIllya51">爱发电</a>赞助，谢谢，么么哒~<br>'+f'<img src="./files/zan.jpg" heigth={wh} width={wh}>') )
+        shuoming = (QLabel('如果你感觉该软件对你有帮助，欢迎微信扫码或者前往<a href="https://afdian.net/a/HIllya51">爱发电</a>赞助，谢谢，么么哒~<br>'+f'<img src="./files/zan.jpg" heigth={wh} width={wh}>') )
         shuoming.setOpenExternalLinks(True)
         
         return self.makevbox([tab,shuoming ])

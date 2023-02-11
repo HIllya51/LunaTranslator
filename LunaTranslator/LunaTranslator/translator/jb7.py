@@ -5,7 +5,7 @@ import ctypes
 import os ,time
 import mmap
 import  win32con,win32event,win32security,win32pipe,win32file
-import subprocess 
+import subprocess ,threading
 from utils.subproc import subproc
 class TS(basetrans): 
     # def inittranslator(self ) : 
@@ -54,7 +54,7 @@ class TS(basetrans):
             pipename='\\\\.\\Pipe\\jbj7_'+t
             waitsignal='jbjwaitload_'+t
             #self.engine=subproc(f'./files/x64_x86_dll/jbj7.exe "{self.dllpath}"'+dictpath,stdin=subprocess.PIPE,name='jbj', stdout=subprocess.PIPE ,encoding='utf-16-le')
-            self.engine=subproc(f'./files/x64_x86_dll/jbj7_4.exe "{self.dllpath}" {pipename} {waitsignal} '+dictpath,name='jbj7',  stdout=subprocess.PIPE , stdin=subprocess.PIPE ,encoding='utf-16-le') 
+            self.engine=subproc(f'./files/x64_x86_dll/jbj7_4.exe "{self.dllpath}" {pipename} {waitsignal} '+dictpath,name='jbj7', stdout=subprocess.PIPE ,  stdin=subprocess.PIPE ,encoding='utf-16-le') 
             attr=win32security.SECURITY_DESCRIPTOR(win32con.SECURITY_DESCRIPTOR_REVISION)
             attr.SetSecurityDescriptorDacl(True,None,False) 
             secu=win32security.SECURITY_ATTRIBUTES() 
@@ -64,6 +64,23 @@ class TS(basetrans):
             win32pipe.WaitNamedPipe(pipename,win32con.NMPWAIT_WAIT_FOREVER)
             self.hPipe = win32file.CreateFile( pipename, win32con.GENERIC_READ | win32con.GENERIC_WRITE, 0,
                     None, win32con.OPEN_EXISTING, win32con.FILE_ATTRIBUTE_NORMAL, None);
+            
+            self.istranslating=False
+            self.transtime=0
+            self.timeout=3
+            threading.Thread(target=self._timeout).start()
+    def _timeout(self):
+        #readfile有时候会卡住不动，太难复现了 干脆用笨办法了。
+        while True:
+            time.sleep(1)
+            if self.istranslating:
+                if time.time()-self.transtime>self.timeout: 
+                    try:
+                        self.engine.kill()
+                        print("jbj7卡住了")
+                        break
+                    except:
+                        pass
     def x64(self,content:str):   
             if self.tgtlang not in ['936','950']:
                 return ''  
@@ -74,8 +91,12 @@ class TS(basetrans):
             for line in lines:
                 self.engine.stdin.write(self.tgtlang+'\n'+line+'\n')
                 self.engine.stdin.flush()
+                self.transtime=time.time()-self.timeout 
+                self.istranslating=True 
                 xx=win32file.ReadFile(self.hPipe, 65535, None)[1].decode('utf-16-le',errors='ignore') 
                 ress.append(xx)
+                self.istranslating=False
+
             return '\n'.join(ress)
     def x86(self,content):
         CODEPAGE_JA = 932

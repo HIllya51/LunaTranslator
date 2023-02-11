@@ -89,13 +89,12 @@ def setTab7_lazy(self) :
                 self.getsimpleswitch(globalconfig['gongxiangcishu'],'use',callback = self.object.loadvnrshareddict ),
                 self.getcolorbutton(globalconfig,'',callback=lambda x:  getsomepath1(self,'共享辞书',globalconfig['gongxiangcishu'],'path','共享辞书',self.object.loadvnrshareddict,False,'*.xml') ,icon='fa.gear',constcolor="#FF69B4"),'','','','','',''],
             
-        ]  
-        pages=[
-            self.makescroll(self.makegrid(grids,True,savelist,savelay )  ) ,
-            self.makescroll(self.makegrid(grids2 )  )
-        ]
+        ]   
          
-        tab=self.makesubtab(['文本预处理', '翻译优化'],pages)   
+        tab=self.makesubtab_lazy(['文本预处理', '翻译优化'],[
+            lambda:self.makescroll(self.makegrid(grids,True,savelist,savelay )  ) ,
+            lambda:self.makescroll(self.makegrid(grids2 )  )
+        ])   
         return tab
 @Singleton
 class noundictconfigdialog1(QDialog):

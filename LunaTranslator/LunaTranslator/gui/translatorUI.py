@@ -193,8 +193,18 @@ class QUnFrameWindow(QWidget):
             qtawesome.icon("fa.minus",color=globalconfig['buttoncolor'] ),
             qtawesome.icon("fa.times" ,color=globalconfig['buttoncolor']),
         ]
+        self.translate_text.move(0,globalconfig['buttonsize']*1.5*self.rate) 
+        self._TitleLabel.setFixedHeight(globalconfig['buttonsize']*1.5*self.rate)  
         for i in range(len(self.buttons)):
             self.buttons[i].setIcon(icon[i])
+            self.buttons[i].resize(globalconfig['buttonsize']*2 *self.rate,globalconfig['buttonsize']*1.5*self.rate)
+            if self.buttons[i].adjast:
+                self.buttons[i].adjast()
+            self.buttons[i].setIconSize(QSize(int(globalconfig['buttonsize']*self.rate),
+                                 int(globalconfig['buttonsize']*self.rate)))
+        self.showhidetoolbuttons()
+        self.translate_text.movep()
+        self.textAreaChanged()
     def addbuttons(self):
         self.takusanbuttons("MinMaxButton",None,0,"移动","move")
         self.takusanbuttons("MinMaxButton",self.startTranslater,0,"重新翻译")
@@ -350,7 +360,7 @@ class QUnFrameWindow(QWidget):
         self.buttons=[] 
         self.showbuttons=[] 
         self.addbuttons() 
-        self.refreshtoolicon()
+        
         self.showhidetoolbuttons()
         d=QApplication.desktop()
 
@@ -363,12 +373,12 @@ class QUnFrameWindow(QWidget):
         self.translate_text =  Textbrowser(self)  
          
         
-        self.translate_text.move(0,30*self.rate) 
+        
         # 翻译框根据内容自适应大小
         self.document = self.translate_text.document()
         self.document.contentsChanged.connect(self.textAreaChanged)  
         self.set_color_transparency() 
-         
+        self.refreshtoolicon()
     def set_color_transparency(self ):
         self.translate_text.setStyleSheet("border-width: 0;\
                                            border-style: outset;\
@@ -454,7 +464,7 @@ class QUnFrameWindow(QWidget):
             return
         newHeight = self.document.size().height() 
         width = self.width()
-        self.resize(width, newHeight + 30*self.rate) 
+        self.resize(width, newHeight + globalconfig['buttonsize']*1.5*self.rate) 
       
     def quickrange(self): 
         if self.quickrangestatus:
@@ -500,9 +510,9 @@ class QUnFrameWindow(QWidget):
         self._right_drag = False
         self._left_drag = False
 
-    def initTitleLabel(self): 
+    def initTitleLabel(self):  
         self._TitleLabel = QLabel(self) 
-        self._TitleLabel.setFixedHeight(30*self.rate) 
+        self._TitleLabel.setFixedHeight(globalconfig['buttonsize']*1.5*self.rate) 
         self._TitleLabel.setMouseTracking(True) 
         self._TitleLabel.move(0, 0)  
  
@@ -530,8 +540,8 @@ class QUnFrameWindow(QWidget):
         self._TitleLabel.show()
     def resizeEvent(self, QResizeEvent):
          
-         
-        height = self.height() - 30*self.rate 
+        wh=globalconfig['buttonsize'] *1.5
+        height = self.height() - wh *self.rate 
          
         self.translate_text.resize(self.width(), height * self.rate)
         for button in self.buttons[-2:]:
@@ -540,8 +550,8 @@ class QUnFrameWindow(QWidget):
         self._TitleLabel.setFixedWidth(self.width())  
 
         if self._move_drag ==False: 
-            self._right_rect = [self.width() - self._padding, self.width() + 1 ,30*self.rate, self.height() - self._padding]
-            self._left_rect = [-1, self._padding,30*self.rate, self.height() - self._padding]
+            self._right_rect = [self.width() - self._padding, self.width() + 1 ,wh*self.rate, self.height() - self._padding]
+            self._left_rect = [-1, self._padding,wh*self.rate, self.height() - self._padding]
             self._bottom_rect = [self._padding, self.width() - self._padding,self.height() - self._padding, self.height() + 1]
             self._corner_rect = [self.width() - self._padding, self.width() + 1,self.height() - self._padding, self.height() + 1]
             self._lcorner_rect = [-1, self._padding,self.height() - self._padding, self.height() + 1]
@@ -658,14 +668,13 @@ class QUnFrameWindow(QWidget):
         button=QTitleButton(self) 
         if tips: 
             button.setToolTip(_TR(tips) )
-        button.setIconSize(QSize(int(20*self.rate),
-                                 int(20*self.rate)))
+        
         button.name=save
         button.belong=belong
         button.setObjectName(objectname)
-        button.setFixedWidth(40*self.rate)
+        
         button.setMouseTracking(True)
-        button.setFixedHeight( self._TitleLabel.height() )
+        
         if clickfunc:
             button.clicked.connect(clickfunc) 
         if adjast<0: 

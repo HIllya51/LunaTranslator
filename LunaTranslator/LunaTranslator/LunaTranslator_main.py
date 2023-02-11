@@ -220,15 +220,14 @@ class MAINUI(QObject) :
             skip=True 
             
         
-        if skip==False : 
+        if skip==False :  
             try:
-                _paste_str=_paste_str.replace('"','""')    
-                ret=self.textsource.sqlwrite2.execute(f'SELECT * FROM artificialtrans WHERE source = "{_paste_str}"').fetchone()
+                _paste_str_sql=_paste_str.replace('"','""')    
+                ret=self.textsource.sqlwrite2.execute(f'SELECT * FROM artificialtrans WHERE source = "{_paste_str_sql}"').fetchone()
                 if ret is  None:                     
-                    self.textsource.sqlwrite2.execute(f'INSERT INTO artificialtrans VALUES(NULL,"{_paste_str}","{json.dumps({})}");')
+                    self.textsource.sqlwrite2.execute(f'INSERT INTO artificialtrans VALUES(NULL,"{_paste_str_sql}","{json.dumps({})}");')
             except:
-                print_exc()
-            
+                print_exc() 
             for engine in self.translators:  
                 self.translators[engine].gettask((_paste_str,paste_str_solve,skip,embedcallback)) 
         
@@ -394,7 +393,7 @@ class MAINUI(QObject) :
                 else:
                     res1=res
                 if needconvshow:
-                    res=res1
+                    res=res1 
                 if contentraw==self.lastshowedstr:
                     self.translation_ui.displayres.emit(cls,res)
                 return res1
