@@ -6,7 +6,8 @@ import json
 import Levenshtein
 import sys 
 from traceback import  print_exc  
-
+import mmap
+import  win32event,win32security
 dirname, filename = os.path.split(os.path.abspath(__file__))
 sys.path.append(dirname)   
 from utils.config import globalconfig ,savehook_new_list,savehook_new_data,noundictconfig,transerrorfixdictconfig,setlanguage 
