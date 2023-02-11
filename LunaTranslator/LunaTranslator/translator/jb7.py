@@ -25,6 +25,7 @@ class TS(basetrans):
         
         self.path=None
         self.userdict=None
+        self.checkpath()
     def end(self):
         try:
             self.engine.kill()
@@ -53,7 +54,7 @@ class TS(basetrans):
             pipename='\\\\.\\Pipe\\jbj7_'+t
             waitsignal='jbjwaitload_'+t
             #self.engine=subproc(f'./files/x64_x86_dll/jbj7.exe "{self.dllpath}"'+dictpath,stdin=subprocess.PIPE,name='jbj', stdout=subprocess.PIPE ,encoding='utf-16-le')
-            self.engine=subproc(f'C:/Users/11737/Documents/GitHub/LunaTranslator/CXXplugins/win32dllforward/Release/jbj7_4.exe "{self.dllpath}" {pipename} {waitsignal} '+dictpath,name='jbj7',  stdin=subprocess.PIPE ,encoding='utf-16-le') 
+            self.engine=subproc(f'C:/Users/11737/Documents/GitHub/LunaTranslator/CXXplugins/win32dllforward/Release/jbj7_4.exe "{self.dllpath}" {pipename} {waitsignal} '+dictpath,name='jbj7',  stdout=subprocess.PIPE , stdin=subprocess.PIPE ,encoding='utf-16-le') 
             attr=win32security.SECURITY_DESCRIPTOR(win32con.SECURITY_DESCRIPTOR_REVISION)
             attr.SetSecurityDescriptorDacl(True,None,False) 
             secu=win32security.SECURITY_ATTRIBUTES() 
