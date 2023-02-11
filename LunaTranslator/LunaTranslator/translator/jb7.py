@@ -4,8 +4,8 @@ from translator.basetranslator import basetrans
 import ctypes 
 import os ,time
 import mmap
-import win32pipe, win32file,win32con,win32event,win32security
-import subprocess,select
+import  win32con,win32event,win32security
+import subprocess 
 from utils.subproc import subproc
 class TS(basetrans): 
     # def inittranslator(self ) : 
