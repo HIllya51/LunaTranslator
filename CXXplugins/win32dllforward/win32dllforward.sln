@@ -17,6 +17,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "simpletest", "simpletest\si
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "jbj7_3", "jbj7_3\jbj7_3.vcxproj", "{B412A1A7-10BB-4E7B-B530-741EC22DA20C}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "jbj7_4", "jbj7_4\jbj7_4.vcxproj", "{BE10ADA7-10AC-4BDA-A7C0-F62DE3B458D6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -103,6 +105,16 @@ Global
 		{B412A1A7-10BB-4E7B-B530-741EC22DA20C}.Release|x64.Build.0 = Release|x64
 		{B412A1A7-10BB-4E7B-B530-741EC22DA20C}.Release|x86.ActiveCfg = Release|Win32
 		{B412A1A7-10BB-4E7B-B530-741EC22DA20C}.Release|x86.Build.0 = Release|Win32
+		{BE10ADA7-10AC-4BDA-A7C0-F62DE3B458D6}.Debug|Any CPU.ActiveCfg = Debug|Win32
+		{BE10ADA7-10AC-4BDA-A7C0-F62DE3B458D6}.Debug|x64.ActiveCfg = Debug|x64
+		{BE10ADA7-10AC-4BDA-A7C0-F62DE3B458D6}.Debug|x64.Build.0 = Debug|x64
+		{BE10ADA7-10AC-4BDA-A7C0-F62DE3B458D6}.Debug|x86.ActiveCfg = Debug|Win32
+		{BE10ADA7-10AC-4BDA-A7C0-F62DE3B458D6}.Debug|x86.Build.0 = Debug|Win32
+		{BE10ADA7-10AC-4BDA-A7C0-F62DE3B458D6}.Release|Any CPU.ActiveCfg = Release|Win32
+		{BE10ADA7-10AC-4BDA-A7C0-F62DE3B458D6}.Release|x64.ActiveCfg = Release|x64
+		{BE10ADA7-10AC-4BDA-A7C0-F62DE3B458D6}.Release|x64.Build.0 = Release|x64
+		{BE10ADA7-10AC-4BDA-A7C0-F62DE3B458D6}.Release|x86.ActiveCfg = Release|Win32
+		{BE10ADA7-10AC-4BDA-A7C0-F62DE3B458D6}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

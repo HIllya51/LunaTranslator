@@ -7,7 +7,7 @@ import Levenshtein
 import sys 
 from traceback import  print_exc  
 import mmap
-import  win32event,win32security
+import  win32event,win32con,win32event,win32security,win32pipe,win32file
 dirname, filename = os.path.split(os.path.abspath(__file__))
 sys.path.append(dirname)   
 from utils.config import globalconfig ,savehook_new_list,savehook_new_data,noundictconfig,transerrorfixdictconfig,setlanguage 
