@@ -89,25 +89,25 @@ class textractor(basetext  ):
         #self.autostarttimeout.stop()
     def setdelay(self):
         delay=globalconfig['textthreaddelay']
-        self.u16lesubprocess.writer(f'+{delay} -P{self.pid}\r\n') 
+        self.u16lesubprocess.writer(f'+{delay} -P{self.pid}\n') 
     def setcodepage(self):
         #cp=globalconfig["codepage"]
         
         cpi=globalconfig["codepage_index"]
         cp= globalconfig["codepage_real"][cpi]
-        self.u16lesubprocess.writer(f'={cp} -P{self.pid}\r\n') 
+        self.u16lesubprocess.writer(f'={cp} -P{self.pid}\n') 
     def findhook(self ): 
-        self.u16lesubprocess.writer((f'find -P{self.pid}\r\n')) 
+        self.u16lesubprocess.writer((f'find -P{self.pid}\n')) 
     def inserthook(self,hookcode): 
         print(f'{hookcode} -P{self.pid}')
-        self.u16lesubprocess.writer((f'{hookcode} -P{self.pid}\r\n'))
+        self.u16lesubprocess.writer((f'{hookcode} -P{self.pid}\n'))
         self.textgetmethod("<handling>"+_TR("插入特殊码")+f'{hookcode} -P{self.pid}') 
     def attach(self,pid):  
-        self.u16lesubprocess.writer(f'attach -P{pid}\r\n')
+        self.u16lesubprocess.writer(f'attach -P{pid}\n')
         self.textgetmethod("<handling>"+_TR("HOOK 连接进程")+str(self.pid))
         print(f'attach -P{pid} ')
     def detach(self,pid):
-        self.u16lesubprocess.writer(f'detach -P{pid}\r\n')
+        self.u16lesubprocess.writer(f'detach -P{pid}\n')
         self.textgetmethod("<handling>"+_TR("HOOK 离开进程")+str(self.pid))
         print(f'detach -P{pid} ')
     def strictmatch(self,thread_tp_ctx,thread_tp_ctx2,HookCode,autostarthookcode):
@@ -195,7 +195,7 @@ class textractor(basetext  ):
                                 address=int(address,16) 
                                 print(key)
                                 
-                                self.u16lesubprocess.writer(f'-{address} -P{self.pid}\r\n')
+                                self.u16lesubprocess.writer(f'-{address} -P{self.pid}\n')
          
          
             if key==self.selectinghook:

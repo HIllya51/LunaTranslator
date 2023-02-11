@@ -72,7 +72,7 @@ class TS(basetrans):
             lines=content.split('\n')
             ress=[]
             for line in lines:
-                self.engine.stdin.write(self.tgtlang+'\r\n'+line+'\r\n')
+                self.engine.stdin.write(self.tgtlang+'\n'+line+'\n')
                 self.engine.stdin.flush()
                 xx=win32file.ReadFile(self.hPipe, 65535, None)[1].decode('utf-16-le',errors='ignore') 
                 ress.append(xx)
