@@ -230,8 +230,7 @@ class MAINUI(QObject) :
             try:
                 _paste_str_sql=_paste_str.replace('"','""')    
                 ret=self.textsource.sqlwrite2.execute(f'SELECT * FROM artificialtrans WHERE source = "{_paste_str_sql}"').fetchone()
-                if ret is  None:                     
-                    self.textsource.sqlwrite2.execute(f'INSERT INTO artificialtrans VALUES(NULL,"{_paste_str_sql}","{json.dumps({})}");')
+                self.textsource.sqlwrite2.execute(f'INSERT INTO artificialtrans VALUES(NULL,"{_paste_str_sql}","{json.dumps({})}");')
             except:
                 print_exc() 
             for engine in self.translators:  

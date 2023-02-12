@@ -1,7 +1,7 @@
 
 from re import search
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QApplication,QTextBrowser,QMainWindow,QFontDialog,QAction,QMenu
+from PyQt5.QtWidgets import QApplication,QTextBrowser,QMainWindow,QFontDialog,QAction,QMenu,QFileDialog
 from PyQt5.QtGui import QFont,QTextCursor
 from PyQt5.QtCore import Qt,pyqtSignal 
 import qtawesome
@@ -49,16 +49,24 @@ class transhist(closeashidewindow):
     def showmenu(self,p):  
         menu=QMenu(self ) 
         qingkong=QAction(_TR("清空")) 
+        baocun=QAction(_TR("保存")) 
         hideshowraw=QAction(_TR("显示原文"    if self.hiderawflag else "不显示原文") ) 
         hideshowapi=QAction(_TR("显示api"    if self.hideapiflag else "不显示api") ) 
         ziti=QAction(_TR("字体") ) 
         menu.addAction(qingkong)
+        menu.addAction(baocun)
         menu.addAction(hideshowraw)
         menu.addAction(hideshowapi)
         menu.addAction(ziti)
         action=menu.exec(self.mapToGlobal(p))
         if action==qingkong:
             self.textOutput.clear()
+        elif action==baocun:
+            ff=QFileDialog.getSaveFileName(self,directory='save.txt' )
+            if ff[0]=='' :
+                return
+            with open(ff[0],'w',encoding='utf8') as ff:
+                ff.write(self.textOutput.toPlainText())
         elif action==hideshowraw:
              
             self.hiderawflag=not self.hiderawflag

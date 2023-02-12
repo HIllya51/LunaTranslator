@@ -93,7 +93,8 @@ class TS(basetrans):
                 self.engine.stdin.flush()
                 self.transtime=time.time()-self.timeout 
                 self.istranslating=True 
-                xx=win32file.ReadFile(self.hPipe, 65535, None)[1].decode('utf-16-le',errors='ignore') 
+                xx=win32file.ReadFile(self.hPipe, 65535, None)[1] 
+                xx=xx.decode('utf-16-le',errors='ignore') 
                 ress.append(xx)
                 self.istranslating=False
 

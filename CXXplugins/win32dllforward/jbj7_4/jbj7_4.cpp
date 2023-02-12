@@ -64,7 +64,7 @@ int wmain(int argc, wchar_t* argv[])
         wprintf(L"%s\n", to);
         //fflush(stdout);
         DWORD _;
-        WriteFile(hPipe, to, 2*(wcslen(to)+1), &_, NULL);
+        WriteFile(hPipe, to, 2*(wcslen(to)), &_, NULL);
     }
 
 }
