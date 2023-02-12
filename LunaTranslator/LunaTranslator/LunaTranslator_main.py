@@ -227,12 +227,7 @@ class MAINUI(QObject) :
             
         
         if skip==False :  
-            try:
-                _paste_str_sql=_paste_str.replace('"','""')    
-                ret=self.textsource.sqlwrite2.execute(f'SELECT * FROM artificialtrans WHERE source = "{_paste_str_sql}"').fetchone()
-                self.textsource.sqlwrite2.execute(f'INSERT INTO artificialtrans VALUES(NULL,"{_paste_str_sql}","{json.dumps({})}");')
-            except:
-                print_exc() 
+            self.textsource.put((_paste_str,)) 
             for engine in self.translators:  
                 self.translators[engine].gettask((_paste_str,paste_str_solve,skip,embedcallback)) 
         
@@ -435,22 +430,9 @@ class MAINUI(QObject) :
                     embedcallback('zhs', res) 
             
         if classname not in globalconfig['fanyi_pre']:
-             
-            res=res.replace('"','""')   
-            contentraw=contentraw.replace('"','""')    
-            #print(res,contentraw)
-            #print(f'SELECT machineTrans FROM artificialtrans WHERE source = "{contentraw}"')
-            try:
-                ret=self.textsource.sqlwrite2.execute(f'SELECT machineTrans FROM artificialtrans WHERE source = "{contentraw}"').fetchone() 
-        
-                ret=json.loads(ret[0]) 
-                ret[classname]=res
-                ret=json.dumps(ret).replace('"','""') 
+              
+            self.textsource.put((contentraw,classname,res))
             
-                self.textsource.sqlwrite2.execute(f'UPDATE artificialtrans SET machineTrans = "{ret}" WHERE source = "{contentraw}"')
-            except:
-                print_exc()
-    
       
 
     def onwindowloadautohook(self):

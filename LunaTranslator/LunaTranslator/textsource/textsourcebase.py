@@ -1,5 +1,5 @@
-import threading ,hashlib
-import time,sqlite3,json,os
+import threading ,hashlib,queue
+import time,sqlite3,json,os,codecs
 from traceback import print_exc
 from utils.config import globalconfig
 class basetext:
@@ -7,6 +7,7 @@ class basetext:
         self.textgetmethod=textgetmethod  
         self.ending=False
         self.md5,self.prefix=md5,prefix
+        self.sqlqueue=queue.Queue()
         self.t=threading.Thread(target=self.gettextthread_)
         self.t.setDaemon(True)
         self.t.start()
@@ -27,6 +28,54 @@ class basetext:
                 pass
         except:
             print_exc
+        threading.Thread(target= self.sqlitethread).start()
+    def put(self,xx):
+        try:
+            self.sqlqueue.put(xx)
+        except:
+            pass
+    def quote_identifier(self,s, errors="strict"):
+        encodable = s.encode("utf-8", errors).decode("utf-8")
+
+        nul_index = encodable.find("\x00")
+
+        if nul_index >= 0:
+            error = UnicodeEncodeError("NUL-terminated utf-8", encodable,
+                                    nul_index, nul_index + 1, "NUL not allowed")
+            error_handler = codecs.lookup_error(errors)
+            replacement, _ = error_handler(error)
+            encodable = encodable.replace("\x00", replacement)
+
+        return "\"" + encodable.replace("\"", "\"\"") + "\""
+    def unpack(self,s):
+        s=s[1:-1]
+
+        return s.replace( "\"\"","\"") 
+    def sqlitethread(self):
+        while True:
+            task=self.sqlqueue.get()
+            try:
+                if len(task)==1:
+                    src,=task
+                    src=self.quote_identifier(src )
+                    ret=self.sqlwrite2.execute(f'SELECT * FROM artificialtrans WHERE source = {src}').fetchone()
+                    if ret is None:
+                        null=self.quote_identifier(json.dumps({}))
+                        self.sqlwrite2.execute(f'INSERT INTO artificialtrans VALUES(NULL,{src},{null});')
+                elif len(task)==3:
+                    src,clsname,trans=task 
+                    src=self.quote_identifier(src) 
+                    
+                    ret=self.sqlwrite2.execute(f'SELECT machineTrans FROM artificialtrans WHERE source = {src}').fetchone()  
+                     
+                    ret=json.loads( (ret[0]) )
+                    ret[clsname]=trans
+                    ret=json.dumps(ret)  
+                    ret=self.quote_identifier(ret)
+                    self.sqlwrite2.execute(f'UPDATE artificialtrans SET machineTrans = {ret} WHERE source = {src}')
+            except:
+                print_exc()
+    
     def checkmd5prefix(self,pname):
         with open(pname,'rb') as ff:
             bs=ff.read() 
