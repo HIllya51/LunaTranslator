@@ -27,9 +27,17 @@ class closeashidewindow(QMainWindow):
             self.show()  
         else:
             self.hide()  
-     
+    def resizeEvent(self, a0 ) -> None:
+        if self.dic:
+            if self.isMaximized()==False: 
+                self.dic[self.key]=list(self.geometry().getRect())
+    def moveEvent(self, a0 ) -> None:
+        if self.dic:
+            if self.isMaximized()==False: 
+                self.dic[self.key]=list(self.geometry().getRect())
     def closeEvent(self, event:QCloseEvent) :  
         self.hide() 
         event.ignore() 
         if self.dic:
-            self.dic[self.key]=list(self.geometry().getRect())
+            if self.isMaximized()==False: 
+                self.dic[self.key]=list(self.geometry().getRect())

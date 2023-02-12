@@ -80,7 +80,7 @@ class hookselect(closeashidewindow):
          
         self.save.append(ss ) 
 
-        item = QStandardItem('%s %s:%s' %(ss[-1],ss[-4],ss[-3]) ) 
+        item = QStandardItem('%s(%s) %s:%s' %(ss[-2],ss[-1],ss[-4],ss[-3]) ) 
         rown=self.ttCombomodelmodel.rowCount()
         self.ttCombomodelmodel.setItem(rown, 0, item)
         item = QStandardItem('output' )

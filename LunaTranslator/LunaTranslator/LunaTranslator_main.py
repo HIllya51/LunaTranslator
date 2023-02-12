@@ -32,6 +32,7 @@ from textsource.txt import txt
 import  gui.selecthook    
 from utils.getpidlist import getpidexe,ListProcess,getScreenRate
 
+from utils.getpidlist import getarch
 import gui.translatorUI
 from queue import Queue
 import zhconv,functools
@@ -148,7 +149,7 @@ class MAINUI(QObject) :
         return res
 
     
-    def textgetmethod(self,paste_str,shortlongskip=True,embedcallback=None):
+    def textgetmethod(self,paste_str,shortlongskip=True,embedcallback=None): 
         if type(paste_str)==str:
             if paste_str[:len('<notrans>')]=='<notrans>':
                 self.translation_ui.displayraw1.emit([],paste_str[len('<notrans>'):],globalconfig['rawtextcolor'],1)
@@ -168,6 +169,8 @@ class MAINUI(QObject) :
             _paste_str=paste_str
         
         if _paste_str=='' or len(_paste_str)>100000:
+            if embedcallback:
+                embedcallback('zhs', _paste_str) 
             return 
  
          
@@ -179,16 +182,19 @@ class MAINUI(QObject) :
                 _paste_str=POSTSOLVE(paste_str) 
             
         except:
+            if embedcallback:
+                embedcallback('zhs', _paste_str) 
             return 
         while len(_paste_str) and _paste_str[-1] in '\r\n \t':  #在后处理之后在去除换行，这样换行符可以当作行结束符给后处理用
             _paste_str=_paste_str[:-1]  
 
-        if set(_paste_str)-set('\r\n \t')==set():
-            return 
-         
-        if len(_paste_str)>1000:
+        if set(_paste_str)-set('\r\n \t')==set() or len(_paste_str)>1000:
+            if embedcallback:
+                embedcallback('zhs', _paste_str) 
             return  
         if shortlongskip and _paste_str==self.last_paste_str:
+            if embedcallback:
+                embedcallback('zhs', _paste_str) 
             return 
         self.last_paste_str=_paste_str  
         if globalconfig['outputtopasteboard'] and globalconfig['sourcestatus']['copy']==False:  

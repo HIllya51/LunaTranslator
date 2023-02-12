@@ -65,7 +65,7 @@ class VnrSharedMemory(QObject):
         mv=memoryview(self.memory.data()) 
         mv[16]=ord(v[0])   
     def setDataLanguage(self,i,v):
-        return
+        
         v=v.encode('ascii')
         mv=memoryview(self.memory.data()) 
         for i in range(min(8,len(v))):
