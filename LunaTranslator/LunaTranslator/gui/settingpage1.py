@@ -37,7 +37,10 @@ def gethookembedgrid(self) :
         self.gamefont_comboBox = QFontComboBox( ) 
         def callback(x):
                 globalconfig['embedded'].__setitem__('changefont_font',x)
-                self.object.ga.sendSetting('embeddedFontFamily',globalconfig['embedded']['changefont_font'] if x else '')
+                try:
+                        self.object.ga.sendSetting('embeddedFontFamily',globalconfig['embedded']['changefont_font'] if x else '')
+                except:
+                        pass
         self.gamefont_comboBox.activated[str].connect(callback)   
         self.gamefont_comboBox.setCurrentFont(QFont(globalconfig['embedded']['changefont_font']))  
         grids=[
