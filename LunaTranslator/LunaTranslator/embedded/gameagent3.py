@@ -30,7 +30,10 @@ class GameAgent(QObject):
 
   def isConnected(self): return bool(self.__d.connectedPid)
   def connectedPid(self): return self.__d.connectedPid # -> int not None
-
+  def sendSetting(self,k,v):
+    d = self.__d
+    if d.connectedPid:
+        d.sendSetting(k,v)
   def attachProcess(self, pid): # -> bool
     d = self.__d
     if pid == d.injectedPid:
@@ -97,11 +100,7 @@ class GameAgent(QObject):
       d.gameEncoding = v
       if d.connectedPid:
         d.sendSetting('gameEncoding', v)
-  
-  def settimeout(self, v):
-    d = self.__d
-    if d.connectedPid:
-        d.sendSetting('embeddedTranslationWaitTime', v)
+   
   def scenarioSignature(self): return self.__d.scenarioSignature
 
   def setScenarioSignature(self, v):
@@ -208,7 +207,7 @@ class _GameAgent(object):
     t = self.injectTimer = QTimer(q) 
     t.setSingleShot(False)
     from utils.config import globalconfig
-    t.setInterval(globalconfig['embedded']['timeout_connect']*1000)
+    t.setInterval(int(globalconfig['embedded']['timeout_connect']*1000))
     t.timeout.connect(self._onInjectTimeout)
 
     q.processAttached.connect(self._onAttached)
@@ -300,12 +299,13 @@ class _GameAgent(object):
     # data['embeddedFontWeight'] = ss.embeddedFontWeight() * 100 if ss.isEmbeddedFontWeightEnabled() else 0
     from utils.config import globalconfig
      
-    data={"embeddedScenarioTranscodingEnabled": False, "embeddedFontCharSetEnabled": True, "embeddedTranslationWaitTime":1000* globalconfig['embedded']['timeout_translate'], "embeddedOtherTranscodingEnabled": False, "embeddedSpacePolicyEncoding": "", "windowTranslationEnabled": True, "windowTextVisible": True, "embeddedNameTranscodingEnabled": False, "gameEncoding": "shift-jis", "embeddedOtherTranslationEnabled": False, "embeddedSpaceSmartInserted": False, "embeddedFontCharSet": 128, "embeddedScenarioWidth": 0, "embeddedScenarioTextVisible": False, "windowTranscodingEnabled": False, "nameSignature": 0, "embeddedScenarioTranslationEnabled": True, "embeddedScenarioVisible": True, "embeddedFontScale": 0, "embeddedAllTextsExtracted": False, "embeddedOtherVisible": True, "embeddedFontFamily": "", "embeddedTextEnabled": True, "scenarioSignature": 0, "embeddedOtherTextVisible": False, "embeddedNameTextVisible": False, "embeddedSpaceAlwaysInserted": False, "embeddedNameTranslationEnabled": True, "debug": True, "embeddedNameVisible": True, "embeddedFontWeight": 0}
-    
+    data={"embeddedScenarioTranscodingEnabled": False, "embeddedFontCharSetEnabled": True, "embeddedTranslationWaitTime":int(1000* globalconfig['embedded']['timeout_translate']), "embeddedOtherTranscodingEnabled": False, "embeddedSpacePolicyEncoding": "", "windowTranslationEnabled": True, "windowTextVisible": True, "embeddedNameTranscodingEnabled": False, "gameEncoding": "shift-jis", "embeddedOtherTranslationEnabled": False, "embeddedSpaceSmartInserted": False, "embeddedFontCharSet": 128, "embeddedScenarioWidth": 0, "embeddedScenarioTextVisible": globalconfig['embedded']['keeprawtext'], "windowTranscodingEnabled": False, "nameSignature": 0, "embeddedScenarioTranslationEnabled": True, "embeddedScenarioVisible": True, "embeddedFontScale": 0, "embeddedAllTextsExtracted": False, "embeddedOtherVisible": True, "embeddedFontFamily": "", "embeddedTextEnabled": True, "scenarioSignature": 0, "embeddedOtherTextVisible": False, "embeddedNameTextVisible": False, "embeddedSpaceAlwaysInserted": False, "embeddedNameTranslationEnabled": True, "debug": True, "embeddedNameVisible": True, "embeddedFontWeight": 0}
+    print(data)
     self.rpc.setAgentSettings(data)
 
   def sendSetting(self, k, v):
     data = {k:v}
+    print(data)
     self.rpc.setAgentSettings(data)
 
   def _sendScenarioWidth(self):

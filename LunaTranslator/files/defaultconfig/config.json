@@ -17,7 +17,8 @@
 		"fallbacktonormalhook":true,
 		"timeout_connect":5,
 		"timeout_translate":2,
-		"trans_kanji":true
+		"trans_kanji":true,
+		"keeprawtext":false
 	},
 	"buttonsize":20,
 	"language_setted":false,
