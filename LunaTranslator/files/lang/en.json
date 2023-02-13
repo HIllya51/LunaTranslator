@@ -608,5 +608,19 @@
     "不插入空格": "Do not insert spaces",
     "每个字后插入空格": "Insert space after each word",
     "仅在无法编码的字后插入": "Insert only after words that cannot be encoded",
-    "在重叠显示的字间插入空格": "Insert spaces between overlapping words"
+    "在重叠显示的字间插入空格": "Insert spaces between overlapping words",
+    "修改游戏字体": "Modify game font",
+    "修改字体字符集": "Modify font character set",
+    "自动": "automatic",
+    "系统默认": "System default",
+    "日语": "Japanese",
+    "越南语": "Vietnamese",
+    "泰语": "Thai",
+    "希腊语": "Greek",
+    "阿拉伯语": "Arabic",
+    "希伯来语": "Hebrew",
+    "土耳其语": "Turkish",
+    "中东欧": "Central and Eastern Europe",
+    "北欧": "Northern Europe",
+    "西里尔": "Cyril"
 }

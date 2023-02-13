@@ -608,5 +608,19 @@
     "不插入空格": "Pas d'espace inséré",
     "每个字后插入空格": "Insérer un espace après chaque mot",
     "仅在无法编码的字后插入": "Insérer seulement après un mot qui ne peut pas être codé",
-    "在重叠显示的字间插入空格": "Insérer un espace entre les mots qui se chevauchent affichage"
+    "在重叠显示的字间插入空格": "Insérer un espace entre les mots qui se chevauchent affichage",
+    "修改游戏字体": "Modifier la police du jeu",
+    "修改字体字符集": "Modifier le jeu de caractères de police",
+    "自动": "Automatique",
+    "系统默认": "Système par défaut",
+    "日语": "Japonais",
+    "越南语": "Vietnamien",
+    "泰语": "Thaï",
+    "希腊语": "Grec",
+    "阿拉伯语": "Arabe",
+    "希伯来语": "Hébreu",
+    "土耳其语": "Turc",
+    "中东欧": "Europe centrale et orientale",
+    "北欧": "Europe du Nord",
+    "西里尔": "Cyril"
 }
