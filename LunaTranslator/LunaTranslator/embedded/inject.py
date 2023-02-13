@@ -6,12 +6,12 @@ import os
 from utils.subproc import subproc
 def inject_vnragent(pid): 
   ret = True
-  for dllpath in os.listdir('./files/embedded'):
+  for dllpath in os.listdir('./files/embedded5'):
     if dllpath[-4:]!='.dll':
       continue
-    dllpath='./files/embedded/'+dllpath
+    dllpath='./files/embedded5/'+dllpath
     dllpath = os.path.abspath(dllpath)
     
-    print('.\\files\\embedded\\dllinject32.exe '+str(pid)+' "'+dllpath+'"')
-    subproc('.\\files\\embedded\\dllinject32.exe '+str(pid)+' "'+dllpath+'"')  
+    print('.\\files\\embedded5\\dllinject32.exe '+str(pid)+' "'+dllpath+'"')
+    subproc('.\\files\\embedded5\\dllinject32.exe '+str(pid)+' "'+dllpath+'"')  
   return ret
