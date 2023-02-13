@@ -18,7 +18,8 @@
 		"timeout_connect":5,
 		"timeout_translate":2,
 		"trans_kanji":true,
-		"keeprawtext":false
+		"keeprawtext":false,
+		"insertspace_policy":0
 	},
 	"buttonsize":20,
 	"language_setted":false,

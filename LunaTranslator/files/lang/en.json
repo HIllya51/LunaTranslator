@@ -604,5 +604,9 @@
     "语音-VOICEVOX": "Voice VOICEVOX",
     "翻译-J北京7-用户词典": "Translation-J Beijing 7-User Dictionary",
     "工具按钮大小": "Tool button size",
-    "保留原文": "Keep the original"
+    "保留原文": "Keep the original",
+    "不插入空格": "Do not insert spaces",
+    "每个字后插入空格": "Insert space after each word",
+    "仅在无法编码的字后插入": "Insert only after words that cannot be encoded",
+    "在重叠显示的字间插入空格": "Insert spaces between overlapping words"
 }

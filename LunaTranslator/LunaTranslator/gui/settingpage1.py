@@ -21,7 +21,16 @@ def gethookgrid(self) :
         return grids
 
 def gethookembedgrid(self) :  
-        
+        def __insertspace(i):
+                if i==0:
+                        self.object.ga.sendSetting('embeddedSpaceSmartInserted',False )
+                        self.object.ga.sendSetting('embeddedSpaceAlwaysInserted',False )
+                elif i==1:
+                        self.object.ga.sendSetting('embeddedSpaceSmartInserted',False )
+                        self.object.ga.sendSetting('embeddedSpaceAlwaysInserted',True )
+                elif i==2:
+                        self.object.ga.sendSetting('embeddedSpaceSmartInserted',True )
+                        self.object.ga.sendSetting('embeddedSpaceAlwaysInserted',False )
         grids=[
                  
                 [('仅支持部分游戏',12)],
@@ -33,6 +42,7 @@ def gethookembedgrid(self) :
                 [('使用最快翻译而非指定翻译器',5),(self.getsimpleswitch( globalconfig['embedded'] ,'as_fast_as_posible'),1) ],
                 [('内嵌的翻译器',5),(self.getsimplecombobox([globalconfig['fanyi'][x]['name'] for x in globalconfig['fanyi']],globalconfig['embedded'],'translator'),5) ],
                 [('将汉字转换成繁体/日式汉字',5),(self.getsimpleswitch( globalconfig['embedded'] ,'trans_kanji'),1) ],
+                [('在重叠显示的字间插入空格',5),(self.getsimplecombobox(_TRL(['不插入空格','每个字后插入空格','仅在无法编码的字后插入']),globalconfig['embedded'],'insertspace_policy',callback=__insertspace),5) ],
         ]
         
         return grids
