@@ -663,6 +663,11 @@ class QUnFrameWindow(QWidget):
             #button.show()
             showed+=1
         self.enterEvent(None)
+    def callwrap(self,call,_):
+            try: 
+                call( )
+            except:
+                print_exc()
     def takusanbuttons(self, objectname,clickfunc,adjast=None,tips=None,save=None,belong=None): 
          
         button=QTitleButton(self) 
@@ -676,7 +681,7 @@ class QUnFrameWindow(QWidget):
         button.setMouseTracking(True)
         
         if clickfunc:
-            button.clicked.connect(clickfunc) 
+            button.clicked.connect(functools.partial(self.callwrap,clickfunc)) 
         if adjast<0: 
             button.adjast=lambda  :button.move(self.width() + adjast*button.width() , 0) 
         else:
