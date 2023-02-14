@@ -15,9 +15,7 @@ class TS(basetrans):
         self.path='' 
         self.checkfilechanged(self.config['args']['json文件'] )
     def translate(self,content):  
-        self.checkfilechanged(self.config['args']['json文件'] )
-       
-        js=self.json
+        self.checkfilechanged(self.config['args']['json文件'] ) 
         if globalconfig['premtsimiuse']:
             mindis=9999999
             
@@ -26,17 +24,17 @@ class TS(basetrans):
                 if dis<mindis:
                     mindis=dis
                     if mindis<globalconfig['premtsimi']: 
-                        if self.config[jc]['userTrans'] and self.config[jc]['userTrans']!='':
-                            savet=self.config[jc]['userTrans']
+                        if self.json[jc]['userTrans'] and self.json[jc]['userTrans']!='':
+                            savet=self.json[jc]['userTrans']
                         
-                        elif self.config[jc]['machineTrans'] and self.config[jc]['machineTrans']!='':
-                            savet= self.config[jc]['machineTrans']
+                        elif self.json[jc]['machineTrans'] and self.json[jc]['machineTrans']!='':
+                            savet= self.json[jc]['machineTrans']
             return savet
         else:
         
-            if self.config[content]['userTrans'] and self.config[content]['userTrans']!='':
-                return self.config[content]['userTrans']
+            if self.json[content]['userTrans'] and self.json[content]['userTrans']!='':
+                return self.json[content]['userTrans']
             
-            elif self.config[content]['machineTrans'] and self.config[content]['machineTrans']!='':
-                return self.config[content]['machineTrans']
+            elif self.json[content]['machineTrans'] and self.json[content]['machineTrans']!='':
+                return self.json[content]['machineTrans']
                  

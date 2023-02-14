@@ -312,7 +312,9 @@ class MAINUI(QObject) :
             pass
         self.translation_ui.showhidetoolbuttons()
     def embeddedfailed(self,pid_real,hwnd,name_): 
-        self.textsource= textractor(self.textgetmethod,self.hookselectdialog,pid_real,hwnd,name_ ,autostarthookcode=savehook_new_data[name_]['hook'])
+
+        if pid_running(pid_real):
+            self.textsource= textractor(self.textgetmethod,self.hookselectdialog,pid_real,hwnd,name_ ,autostarthookcode=savehook_new_data[name_]['hook'])
          
     @threader
     def starthira(self,use=None,checked=True): 
