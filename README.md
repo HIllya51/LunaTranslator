@@ -70,6 +70,7 @@
 <tr><td>OCR-简体中文</td><td><a href="https://github.com/HIllya51/LunaTranslator/releases/download/v1.34.5/zh.zip">zh.zip</a></td></tr>
 <tr><td>OCR-繁体中文</td><td><a href="https://github.com/HIllya51/LunaTranslator/releases/download/v1.34.5/cht.zip">cht.zip</a></td></tr>
 <tr><td>OCR-韩语</td><td><a href="https://github.com/HIllya51/LunaTranslator/releases/download/v1.34.5/ko.zip">ko.zip</a></td></tr>
+<tr><td>OCR-俄语</td><td><a href="https://github.com/HIllya51/LunaTranslator/releases/download/v1.1.2/ru.zip">ru.zip</a></td></tr>
 <tr><td>辞书-MeCab</td><td><a href="https://github.com/HIllya51/LunaTranslator/releases/download/v1.0/Mecab.zip">Mecab.zip</a></td></tr>
 <tr><td>辞书-小学馆</td><td><a href="https://github.com/HIllya51/LunaTranslator/releases/download/v1.0/xiaoxueguan.db">xiaoxueguan.db</a></td></tr>
 <tr><td>辞书-EDICT</td><td><a href="https://github.com/HIllya51/LunaTranslator/releases/download/v1.0/edict.db">edict.db</a></td></tr>

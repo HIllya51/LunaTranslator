@@ -14,6 +14,7 @@ def resourcegrid( ) :
             [_TR('OCR-简体中文'),'<a href="https://github.com/HIllya51/LunaTranslator/releases/download/v1.34.5/zh.zip">zh.zip</a>'],
             [_TR('OCR-繁体中文'),'<a href="https://github.com/HIllya51/LunaTranslator/releases/download/v1.34.5/cht.zip">cht.zip</a>'],
             [_TR('OCR-韩语'),'<a href="https://github.com/HIllya51/LunaTranslator/releases/download/v1.34.5/ko.zip">ko.zip</a>'],
+            [_TR('OCR-俄语'),'<a href="https://github.com/HIllya51/LunaTranslator/releases/download/v1.1.2/ru.zip">ru.zip</a>'],
             [_TR('辞书-MeCab'),'<a href="https://github.com/HIllya51/LunaTranslator/releases/download/v1.0/Mecab.zip">Mecab.zip</a>'],
             [_TR('辞书-小学馆'),'<a href="https://github.com/HIllya51/LunaTranslator/releases/download/v1.0/xiaoxueguan.db">xiaoxueguan.db</a>'],
             [_TR('辞书-EDICT'),'<a href="https://github.com/HIllya51/LunaTranslator/releases/download/v1.0/edict.db">edict.db</a>'],

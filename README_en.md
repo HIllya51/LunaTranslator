@@ -70,6 +70,7 @@ Support almost all translation engines you can think of, including:
 <tr><td>OCR-Simplified Chinese</td><td><a href="https://github.com/HIllya51/LunaTranslator/releases/download/v1.34.5/zh.zip">zh.zip</a></td></tr>
 <tr><td>OCR-Traditional Chinese</td><td><a href="https://github.com/HIllya51/LunaTranslator/releases/download/v1.34.5/cht.zip">cht.zip</a></td></tr>
 <tr><td>OCR-Korean</td><td><a href="https://github.com/HIllya51/LunaTranslator/releases/download/v1.34.5/ko.zip">ko.zip</a></td></tr>
+<tr><td>OCR-Russian</td><td><a href="https://github.com/HIllya51/LunaTranslator/releases/download/v1.1.2/ru.zip">ru.zip</a></td></tr>
 <tr><td>Dictionary-MeCab</td><td><a href="https://github.com/HIllya51/LunaTranslator/releases/download/v1.0/Mecab.zip">Mecab.zip</a></td></tr>
 <tr><td>Dictionary-Xiaoxiaoguan</td><td><a href="https://github.com/HIllya51/LunaTranslator/releases/download/v1.0/xiaoxueguan.db">xiaoxueguan.db</a></td></tr>
 <tr><td>Dictionary-EDICT</td><td><a href="https://github.com/HIllya51/LunaTranslator/releases/download/v1.0/edict.db">edict.db</a></td></tr>
