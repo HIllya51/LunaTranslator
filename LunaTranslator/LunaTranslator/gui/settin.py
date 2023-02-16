@@ -44,7 +44,7 @@ class Settin(closeashidewindow) :
         
         self.resizefunction()
         return super().resizeEvent(a0)
-    def automakegrid(self,grid,lis,save=False,savelist=None,link=False ): 
+    def automakegrid(self,grid,lis,save=False,savelist=None  ): 
         maxl=0
     
         for nowr,line in enumerate(lis):
@@ -54,23 +54,19 @@ class Settin(closeashidewindow) :
                 for i in line:
                         if type(i)==str:
                             cols=1
-                            if link:
-                                wid=QLabel((i))
-                                wid.setOpenExternalLinks(True)
-                            else:
-                                wid=QLabel(_TR(i))
+                            wid=QLabel(_TR(i))
                         elif type(i)!=tuple:
                                 wid,cols=i,1
                         elif len(i)==2:
                                 
                                 wid,cols=i
                                 if type(wid)==str  :
-                                    
-                                    if link:
-                                        wid=QLabel((wid))
-                                        wid.setOpenExternalLinks(True)
-                                    else:
-                                        wid=QLabel(_TR(wid))
+                                    wid=QLabel(_TR(wid))
+                        elif len(i)==3:
+                            wid,cols,arg=i
+                            if arg=='link'and  type(wid)==str  :
+                                wid=QLabel((wid))
+                                wid.setOpenExternalLinks(True)
                         grid.addWidget(wid,nowr,nowc,1,cols)
                         if save:
                             ll.append(wid)
@@ -230,7 +226,7 @@ class Settin(closeashidewindow) :
         for wid in wids:
             v.addWidget(wid)
         return q
-    def makegrid(self,grid,save=False,savelist=None,savelay=None ,link=False):
+    def makegrid(self,grid,save=False,savelist=None,savelay=None  ):
         
          
         gridlayoutwidget = gridwidget(  )  
@@ -239,7 +235,7 @@ class Settin(closeashidewindow) :
         gridlayoutwidget.setStyleSheet("gridwidget{background-color:transparent;}") 
         self.needfitwidgets.append(gridlayoutwidget)
         gridlayoutwidget.setFixedHeight(len(grid)*35*self.rate)
-        self.automakegrid(gridlay,grid,save,savelist,link ) 
+        self.automakegrid(gridlay,grid,save,savelist  ) 
         if save:
             savelay.append(gridlay)
         return gridlayoutwidget
