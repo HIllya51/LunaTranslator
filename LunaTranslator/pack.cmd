@@ -12,7 +12,6 @@ del ..\build\LunaTranslator\LunaTranslator\qt5qml.dll
 del ..\build\LunaTranslator\LunaTranslator\qt5qmlmodels.dll
 del ..\build\LunaTranslator\LunaTranslator\qt5quick.dll
 del ..\build\LunaTranslator\LunaTranslator\qt5printsupport.dll
-del ..\build\LunaTranslator\LunaTranslator\qt5network.dll
 del ..\build\LunaTranslator\LunaTranslator\qt5websockets.dll
 del ..\build\LunaTranslator\LunaTranslator\qt5dbus.dll
 del ..\build\LunaTranslator\LunaTranslator\qt5multimedia.dll
