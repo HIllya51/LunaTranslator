@@ -58,15 +58,15 @@ print('loadimports',time.time()-filestart)
  
 class MAINUI(QObject) :
     startembedsignal=pyqtSignal(int,embedded)
-    def startembed(self,pid,engine:embedded): 
-        if self.rpc is None:
+    def startembed(self,pid,engine:embedded):  
+        self.ga.hostengine=engine 
+        self.ga.attachProcess(pid) 
+        self.rpc.clearAgentTranslation()  
+    def startembedservice(self):
             self.rpc=RpcServer()  
             self.ga=GameAgent(self.rpc ) 
             self.rpc.engineTextReceived.connect(self.ga.sendEmbeddedTranslation)
             self.rpc.start() 
-        self.ga.hostengine=engine 
-        self.ga.attachProcess(pid) 
-        self.rpc.clearAgentTranslation()  
     def __init__(self) -> None:
         super().__init__()
         
@@ -439,6 +439,9 @@ class MAINUI(QObject) :
         #print(globalconfig['sourcestatus'])
         if not(globalconfig['autostarthook'] and (globalconfig['sourcestatus']['textractor'] or globalconfig['sourcestatus']['embedded'])):
             return 
+            
+        elif self.AttachProcessDialog.isVisible():
+                return 
         else:
             try:
                 
@@ -524,6 +527,7 @@ class MAINUI(QObject) :
         self.prepare()  
         self.startxiaoxueguan()
         self.starthira()     
+        self.startembedservice()
         print('load',time.time()-filestart) 
         self.settin_ui = Settin(self)  
         print('seting',time.time()-filestart) 
