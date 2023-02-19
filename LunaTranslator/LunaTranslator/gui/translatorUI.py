@@ -205,6 +205,7 @@ class QUnFrameWindow(QWidget):
         self.showhidetoolbuttons()
         self.translate_text.movep()
         self.textAreaChanged()
+        self.setMinimumHeight(globalconfig['buttonsize']*1.5*self.rate)
     def addbuttons(self):
         self.takusanbuttons("MinMaxButton",None,0,"移动","move")
         self.takusanbuttons("MinMaxButton",self.startTranslater,0,"重新翻译")
