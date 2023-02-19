@@ -625,5 +625,7 @@
     "西里尔": "Cyril",
     "OCR-俄语": "OCR-Russian",
     "获取最新内嵌引擎以及申请支持更多游戏": "Get the latest embedded engine and apply to support more games",
-    "https://github.com/HIllya51/TextEmbedder": "https://github.com/HIllya51/TextEmbedder"
+    "https://github.com/HIllya51/TextEmbedder": "https://github.com/HIllya51/TextEmbedder",
+    "内嵌失败": "Embedding failed",
+    "尝试使用普通HOOK": "Try to use ordinary HOOK"
 }

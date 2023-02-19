@@ -37,8 +37,9 @@ class embedded(basetext  ):
             return paste_str
     def embeddedfailed(self,result):
         self.end() 
-        if globalconfig['embedded']['fallbacktonormalhook']: 
-            self.textgetmethod("<msg>"+result+'  '+ _TR("内嵌失败，尝试使用普通HOOK"))    
+        self.textgetmethod("<msg>"+result+'  '+ _TR("内嵌失败"))    
+        if globalconfig['embedded']['fallbacktonormalhook']:  
+            self.textgetmethod("<msg>"+_TR("尝试使用普通HOOK"))  
             self.fallbackfunction()
     def runonce(self): 
         self.textgetmethod(self.agentreceiveddata,False)

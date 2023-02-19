@@ -625,5 +625,7 @@
     "西里尔": "Cyril",
     "OCR-俄语": "OCR - ruso",
     "获取最新内嵌引擎以及申请支持更多游戏": "Obtener el último motor incorporado y solicitar soporte para más juegos",
-    "https://github.com/HIllya51/TextEmbedder": "https://github.com/HIllya51/TextEmbedder"
+    "https://github.com/HIllya51/TextEmbedder": "https://github.com/HIllya51/TextEmbedder",
+    "内嵌失败": "Falló la incrustación",
+    "尝试使用普通HOOK": "Intenta usar Hook ordinario"
 }
