@@ -167,10 +167,7 @@ class Settin(closeashidewindow) :
         self.window_height = int(500*self.rate)
         self.scrollwidth=20*self.rate
         self.savelastrect=None 
-         
-        self.setMinimumHeight(100)
-        self.setMinimumWidth(100)
-          
+           
         
         self.hooks=[] 
 

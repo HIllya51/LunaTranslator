@@ -303,8 +303,7 @@ class QUnFrameWindow(QWidget):
         self.muteprocessignal.connect(self.muteprocessfuntion) 
         self.toolbarhidedelaysignal.connect(self.toolbarhidedelay)
         self._padding = 5*self.rate  # 设置边界宽度为5
-        self.setMinimumWidth(100)
-        self.setMinimumHeight(100)
+         
         self.hideshownotauto=True
         self.displaystatus.connect(self.showstatus)
         self.showhideuisignal.connect(self.showhideui)

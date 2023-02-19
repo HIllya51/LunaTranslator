@@ -51,32 +51,34 @@ from utils.post import POSTSOLVE
 from utils.vnrshareddict import vnrshareddict 
 
 import pyperclip
+from utils.simplekanji import kanjitrans 
+print('loadimports',time.time()-filestart)
 from utils.simplekanji import kanjitrans
 from embedded.rpcman3 import RpcServer
 from embedded.gameagent3 import GameAgent 
+from utils.simplekanji import kanjitrans 
 print('loadimports',time.time()-filestart)
  
 class MAINUI(QObject) :
     startembedsignal=pyqtSignal(int,embedded)
     def startembed(self,pid,engine:embedded):  
         self.ga.hostengine=engine 
-        self.ga.attachProcess(pid) 
-        self.rpc.clearAgentTranslation()  
+        self.ga.attachProcess(pid)  
     def startembedservice(self):
             self.rpc=RpcServer()  
             self.ga=GameAgent(self.rpc ) 
             self.rpc.engineTextReceived.connect(self.ga.sendEmbeddedTranslation)
             self.rpc.start() 
+            self.startembedsignal.connect(self.startembed)
     def __init__(self) -> None:
         super().__init__()
-        
+        self.startembedservice()
         self.translators={}
         self.cishus={}
         self.reader=None
         self.textsource=None
-        self.rect=None
-        self.rpc=self.ga=None
-        self.startembedsignal.connect(self.startembed)
+        self.rect=None  
+        self.rect=None  
         self.last_paste_str=''
         self.lastshowedstr=''
         self.textsource=None     
@@ -153,16 +155,10 @@ class MAINUI(QObject) :
         if type(paste_str)==str:
             if paste_str[:len('<notrans>')]=='<notrans>':
                 self.translation_ui.displayraw1.emit([],paste_str[len('<notrans>'):],globalconfig['rawtextcolor'],1)
-                return  
-            elif paste_str[:len('<error>')]=='<error>': 
-                self.translation_ui.displaystatus.emit(paste_str[len('<error>'):],'red',True)
-                return  
-            elif paste_str[:len('<handling>')]=='<handling>':
-                self.translation_ui.displaystatus.emit(paste_str[len('<handling>'):],'red',False)
-                return  
-            elif paste_str[:len('<handling-1>')]=='<handling-1>':
-                self.translation_ui.displaystatus.emit(paste_str[len('<handling-1>'):],'red',True)
-                return  
+                return   
+            elif paste_str[:len('<msg>')]=='<msg>':
+                self.translation_ui.displaystatus.emit(paste_str[len('<msg>'):],'red',False)
+                return   
         if type(paste_str)==list: 
             _paste_str='\n'.join(paste_str)
         else:
@@ -526,8 +522,7 @@ class MAINUI(QObject) :
         self.loadvnrshareddict()
         self.prepare()  
         self.startxiaoxueguan()
-        self.starthira()     
-        self.startembedservice()
+        self.starthira()      
         print('load',time.time()-filestart) 
         self.settin_ui = Settin(self)  
         print('seting',time.time()-filestart) 

@@ -8,9 +8,7 @@ from utils.config import globalconfig  ,_TR
 from utils.wrapper import threader
 from version import version
 def resourcegrid( ) :  
-        grid=[
-            [('项目网站'),('<a href="https://github.com/HIllya51/LunaTranslator">https://github.com/HIllya51/LunaTranslator</a>',1,'link'),''],
-            [('使用说明'),('<a href="https://hillya51.github.io/">https://hillya51.github.io/</a>',1,'link')],
+        grid=[ 
             [('OCR-简体中文'),('<a href="https://github.com/HIllya51/LunaTranslator/releases/download/v1.34.5/zh.zip">zh.zip</a>',1,'link')],
             [('OCR-繁体中文'),('<a href="https://github.com/HIllya51/LunaTranslator/releases/download/v1.34.5/cht.zip">cht.zip</a>',1,'link')],
             [('OCR-韩语'),('<a href="https://github.com/HIllya51/LunaTranslator/releases/download/v1.34.5/ko.zip">ko.zip</a>',1,'link')],
@@ -144,7 +142,7 @@ def setTab_aboutlazy(self) :
                 lambda:self.makescroll( self.makegrid(resourcegrid() ) )
                 ]) 
 
-        wh=self.rate*360
+        wh=self.rate*300
          
         shuoming = (QLabel(('项目网站')+':<a href="https://github.com/HIllya51/LunaTranslator">https://github.com/HIllya51/LunaTranslator</a><br>' +
                     ('使用说明')+':<a href="https://hillya51.github.io/">https://hillya51.github.io/</a><br>' +

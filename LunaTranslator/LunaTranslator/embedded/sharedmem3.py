@@ -14,8 +14,7 @@ class VnrAgentSharedMemory:
 
   def __init__(self, parent=None):
     d = self.__d = VnrSharedMemory(parent)
-    d.processId = 0 # long
-    d.detach = d.detach_ # detach get renamed because of shiboken bug
+    d.processId = 0 # long 
     d.index = 0 # int  current cell index
 
   def isAttached(self): return bool(self.__d.processId) and self.__d.isAttached()
@@ -56,16 +55,8 @@ class VnrAgentSharedMemory:
   def setAllStatus(self, v):
     d = self.__d
     #if d.isAttached():
-    for i in range(d.cellCount()):
-      d.setDataStatus(i, v)
-
-  def nextIndex(self): # -> int
-    d = self.__d
-    count = d.cellCount()
-    if count:
-      d.index = (d.index + 1) % count
-    return d.index
-
+    d.setDataStatus(0, v)
+ 
   # Write-only
   def setDataStatus(self, i, v): self.__d.setDataStatus(i, v)
   def setDataHash(self, i, v): self.__d.setDataHash(i, v)

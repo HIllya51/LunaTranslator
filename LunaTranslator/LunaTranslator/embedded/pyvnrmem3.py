@@ -16,21 +16,13 @@ class VnrSharedMemory(QObject):
         self.cellCount_=0
         self.cellSize_=0   
         self.memory=QSharedMemory()
-     
-    def key(self):
-        return self.memory.key()
+      
     def setKey(self,v):
         self.memory.setKey(v)
-    def cellCount(self):
-        return self.cellCount_
-    def create(self,size,count,readOnly):
-        self.cellSize_=size
-        self.cellCount_=count
-        ok=self.memory.create(size*count,QSharedMemory.ReadOnly if readOnly else QSharedMemory.ReadWrite)
-        return ok
+     
     def attach(self,readOnly):
         return self.memory.attach(QSharedMemory.ReadOnly if readOnly else QSharedMemory.ReadWrite)
-    def detach_(self):
+    def detach(self):
         return self.memory.detach()
     def isAttached(self):
         return self.memory.isAttached() 

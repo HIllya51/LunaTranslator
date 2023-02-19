@@ -56,7 +56,7 @@ class dialog_savedgame(QDialog):
                                 return
                         savehook_new_list.insert(0,res) 
                         self.newline(0,res)
-                         
+                        self.table.setCurrentIndex(self.model.index(0,0))
                         
         def clicked(self): 
                 try: 

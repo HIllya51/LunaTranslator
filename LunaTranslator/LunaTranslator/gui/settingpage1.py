@@ -48,8 +48,7 @@ def gethookembedgrid(self) :
                 [('获取最新内嵌引擎以及申请支持更多游戏',5),'',('<a href="https://github.com/HIllya51/TextEmbedder">https://github.com/HIllya51/TextEmbedder</a>',8,'link')],
                 [('内嵌失败时自动回到普通HOOK',5),(self.getsimpleswitch( globalconfig['embedded'],'fallbacktonormalhook' ),1) ],
                 [('保留原文',5),(self.getsimpleswitch( globalconfig['embedded'],'keeprawtext',callback=lambda x:self.object.ga.sendSetting('embeddedScenarioTextVisible',x ))  ,1) ],
-                
-                [('内嵌失败等待时间(s)',5),'',(self.getspinbox(1,30,globalconfig['embedded'],'timeout_connect'),3) ],
+                 
                 [('翻译等待时间(s)',5),'',(self.getspinbox(0,30,globalconfig['embedded'],'timeout_translate',double=True,step=0.1,callback=lambda x:self.object.ga.sendSetting('embeddedTranslationWaitTime',int(x*1000))),3) ],
                 [('使用最快翻译而非指定翻译器',5),(self.getsimpleswitch( globalconfig['embedded'] ,'as_fast_as_posible'),1) ],
                 [('内嵌的翻译器',5),'',(self.getsimplecombobox(_TRL([globalconfig['fanyi'][x]['name'] for x in globalconfig['fanyi']]),globalconfig['embedded'],'translator'),5) ],

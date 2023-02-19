@@ -5,13 +5,8 @@
 import os
 from utils.subproc import subproc
 def inject_vnragent(pid): 
-  ret = True
-  for dllpath in os.listdir('./files/embedded5'):
-    if dllpath[-4:]!='.dll':
-      continue
-    dllpath='./files/embedded5/'+dllpath
-    dllpath = os.path.abspath(dllpath)
-    
-    print('.\\files\\embedded5\\dllinject32.exe '+str(pid)+' "'+dllpath+'"')
-    subproc('.\\files\\embedded5\\dllinject32.exe '+str(pid)+' "'+dllpath+'"')  
-  return ret
+   
+  dllpaths=list(map(lambda x:os.path.abspath(os.path.join('./files/embedded5/',x)), ['Qt5Core.dll','Qt5Network.dll','vnragent.dll']))
+  print(f'.\\files\\embedded5\\dllinject32.exe {pid} "{dllpaths[0]}" "{dllpaths[1]}" "{dllpaths[2]}"')
+  subproc(f'.\\files\\embedded5\\dllinject32.exe {pid} "{dllpaths[0]}" "{dllpaths[1]}" "{dllpaths[2]}"')  
+   

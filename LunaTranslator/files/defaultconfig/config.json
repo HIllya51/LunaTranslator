@@ -14,8 +14,7 @@
 	"embedded":{ 
 		"translator":0,
 		"as_fast_as_posible":true,
-		"fallbacktonormalhook":true,
-		"timeout_connect":5,
+		"fallbacktonormalhook":true, 
 		"timeout_translate":2,
 		"trans_kanji":true,
 		"keeprawtext":false,

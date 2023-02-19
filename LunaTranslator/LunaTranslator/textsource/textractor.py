@@ -100,15 +100,12 @@ class textractor(basetext  ):
         self.u16lesubprocess.writer((f'find -P{self.pid}\n')) 
     def inserthook(self,hookcode): 
         print(f'{hookcode} -P{self.pid}')
-        self.u16lesubprocess.writer((f'{hookcode} -P{self.pid}\n'))
-        self.textgetmethod("<handling>"+_TR("插入特殊码")+f'{hookcode} -P{self.pid}') 
+        self.u16lesubprocess.writer((f'{hookcode} -P{self.pid}\n')) 
     def attach(self,pid):  
-        self.u16lesubprocess.writer(f'attach -P{pid}\n')
-        self.textgetmethod("<handling>"+_TR("HOOK 连接进程")+str(self.pid))
+        self.u16lesubprocess.writer(f'attach -P{pid}\n') 
         print(f'attach -P{pid} ')
     def detach(self,pid):
-        self.u16lesubprocess.writer(f'detach -P{pid}\n')
-        self.textgetmethod("<handling>"+_TR("HOOK 离开进程")+str(self.pid))
+        self.u16lesubprocess.writer(f'detach -P{pid}\n') 
         print(f'detach -P{pid} ')
     def strictmatch(self,thread_tp_ctx,thread_tp_ctx2,HookCode,autostarthookcode):
         return (int(thread_tp_ctx,16)&0xffff,thread_tp_ctx2,HookCode)==(int(autostarthookcode[-4],16)&0xffff,autostarthookcode[-3],autostarthookcode[-1])
