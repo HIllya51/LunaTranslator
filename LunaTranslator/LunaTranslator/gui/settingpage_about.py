@@ -61,8 +61,7 @@ def getversion(self):
         _version=("获取失败") 
     self.versiontextsignal.emit((('当前版本')+':'+  version+'  '+("最新版本")+':'+ _version) ) #,'' if version== _version else  newcontent,url,'LunaTranslator.zip'))
     if _version!=("获取失败") and version!=_version:
-        if globalconfig['autoupdate']:
-            self.downloadprogress.show()
+        if globalconfig['autoupdate']: 
             self.progresssignal.emit('……',0)
         
             savep=f'./cache/update/LunaTranslator.zip' 
@@ -87,8 +86,7 @@ def setTab_about_dicrect(self) :
     self.versionlabel.setTextInteractionFlags(Qt.LinksAccessibleByMouse) 
     self.versiontextsignal.connect(lambda x:self.versionlabel.setText(x) )
     self.downloadprogress=QProgressBar()
-        
-    self.downloadprogress.hide()
+         
     self.downloadprogress.setRange(0,10000)
 
     self.downloadprogress.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
