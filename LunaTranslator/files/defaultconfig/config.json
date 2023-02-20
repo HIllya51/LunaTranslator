@@ -480,7 +480,8 @@
         },
         "docsumo": {
             "use": false,
-            "name": "docsumo","lang":{}
+            "name": "docsumo",
+			"lang":{}
         },
         "youdaocr": {
             "use": false,
@@ -496,7 +497,12 @@
             "use": false,
             "name": "sougouocr",
 			"lang":{}
-        }
+        },
+		"volcengine":{
+			"use":false,
+			"name":"火山OCR",
+			"lang":{}
+		}
     }, 
 	"normallanguagelist":["auto","zh", "ja", "en","ru","es","ko","fr","cht"],
 	"fanyi_offline":["jb7","dreye","kingsoft","hanshant","selfbuild"],
