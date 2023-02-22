@@ -13,8 +13,7 @@
 	"disappear_delay":5,
 	"embedded":{ 
 		"translator":0,
-		"as_fast_as_posible":true,
-		"fallbacktonormalhook":true, 
+		"as_fast_as_posible":true, 
 		"timeout_translate":2,
 		"trans_kanji":true,
 		"keeprawtext":false,
@@ -512,12 +511,7 @@
             "use": false,
             "color": "blue",
             "name": "有道" 
-        },
-        "youdao2": {
-            "use": false,
-            "color": "blue",
-            "name": "有道2" 
-        },
+        }, 
         "google2": {
             "use": false,
             "color": "#95a5ff",

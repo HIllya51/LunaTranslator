@@ -267,7 +267,7 @@ class MAINUI(QObject) :
             if globalconfig['sourcestatus']['textractor']:
                 self.textsource=textractor(self.textgetmethod,self.hookselectdialog,pid,hwnd,pexe )  
             elif globalconfig['sourcestatus']['embedded']:
-                self.textsource=embedded(self.textgetmethod,self.hookselectdialog,pid,hwnd,pexe,functools.partial(self.embeddedfailed,pid,hwnd,pexe),self)  
+                self.textsource=embedded(self.textgetmethod,self.hookselectdialog,pid,hwnd,pexe, self)  
             
             if pexe not in savehook_new_list:
                 savehook_new_list.insert(0,pexe)  
@@ -307,11 +307,7 @@ class MAINUI(QObject) :
         except:
             pass
         self.translation_ui.showhidetoolbuttons()
-    def embeddedfailed(self,pid_real,hwnd,name_): 
-
-        if pid_running(pid_real):
-            self.textsource= textractor(self.textgetmethod,self.hookselectdialog,pid_real,hwnd,name_ ,autostarthookcode=savehook_new_data[name_]['hook'])
-         
+     
     @threader
     def starthira(self,use=None,checked=True): 
         if checked:
@@ -383,49 +379,35 @@ class MAINUI(QObject) :
                             pass 
                 _=cishuwrapper(aclass)
                 return _
-    def _singletrans(self,contentraw, needconv,needconvshow,res,cls ):
-                if needconv:
-                    res1=zhconv.convert(res,  'zh-tw' )   
-                else:
-                    res1=res
-                if needconvshow:
-                    res=res1 
+    def _singletrans(self,contentraw, needja ,res,cls ): 
                 if contentraw==self.lastshowedstr:
                     self.translation_ui.displayres.emit(cls,res)
-                return res1
+                if needja:
+                    res=zhconv.convert(res,  'zh-tw' )    
+                    res=kanjitrans(res)
+                return res
     def _maybeyrengong(self,classname,contentraw,_,embedcallback):
         
         classname,res,mp=_
-        if classname not in globalconfig['fanyi_pre']: 
+        if classname not in somedef.fanyi_pre: 
             res=self.solveaftertrans(res,mp)
         #print(classname,contentraw,_)
-
-        l=somedef.language_list_translator_inner[globalconfig['tgtlang2']] 
-        if (l=='cht' and l not in globalconfig['fanyi'][classname]['lang'])  :
-            needconv=needconvshow=True
-        else:
-            needconv=needconvshow=False
-        if  globalconfig['embedded']['trans_kanji']   and embedcallback:
-            needconv=True
+ 
+        if  globalconfig['embedded']['trans_kanji']   and embedcallback: 
             needja=True
         else:
             needja=False
         
         if classname=='premt':
             for k in res:
-                self._singletrans(contentraw, needconv,needconvshow,res[k],k ) 
+                self._singletrans(contentraw, needja ,res[k],k ) 
         else:
-            res=self._singletrans(contentraw, needconv,needconvshow,res,classname)  
+            res=self._singletrans(contentraw, needja ,res,classname)  
             if embedcallback: 
-                if globalconfig['embedded']['as_fast_as_posible'] or classname==list(globalconfig['fanyi'])[globalconfig['embedded']['translator']]:   
-                    if needja:  
-                        res=zhconv.convert(res,  'zh-tw' )   
-                        if needconv==False:
-                            res=kanjitrans(res)
-                        
+                if globalconfig['embedded']['as_fast_as_posible'] or classname==list(globalconfig['fanyi'])[globalconfig['embedded']['translator']]:    
                     embedcallback('zhs', res) 
             
-        if classname not in globalconfig['fanyi_pre']:
+        if classname not in somedef.fanyi_pre:
               
             self.textsource.put((contentraw,classname,res))
             
@@ -460,8 +442,7 @@ class MAINUI(QObject) :
                                         self.textsource=textractor(self.textgetmethod,self.hookselectdialog,pid_real,hwnd,name_ ,autostarthookcode=savehook_new_data[name_]['hook'])
                                     else:  
                                         print("pid",pid_real)
-                                        self.textsource=embedded(self.textgetmethod,self.hookselectdialog,pid_real,hwnd,name_ ,
-                                        functools.partial(self.embeddedfailed,pid_real,hwnd,name_),self)
+                                        self.textsource=embedded(self.textgetmethod,self.hookselectdialog,pid_real,hwnd,name_  ,self)
                                     
                 
                 else: 

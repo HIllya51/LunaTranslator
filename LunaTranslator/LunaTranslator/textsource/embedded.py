@@ -7,9 +7,9 @@ from embedded.rpcman3 import RpcServer
 from embedded.gameagent3 import GameAgent 
 class embedded(basetext  ): 
      
-    def __init__(self,textgetmethod,hookselectdialog,pid,hwnd,pname,fallbackfunction,parent) : 
+    def __init__(self,textgetmethod,hookselectdialog,pid,hwnd,pname,parent) : 
          
-        self.textgetmethod, self.pid,self.hwnd,self.pname,self.fallbackfunction =textgetmethod,pid,hwnd,pname,fallbackfunction 
+        self.textgetmethod, self.pid,self.hwnd,self.pname =textgetmethod,pid,hwnd,pname
         self.parent=parent 
         hookselectdialog.changeprocessclearsignal.emit()
         self.hookselectdialog=hookselectdialog
@@ -35,12 +35,8 @@ class embedded(basetext  ):
     def gettextthread(self ): 
             paste_str=self.newline.get()
             return paste_str
-    def embeddedfailed(self,result):
-        self.end() 
-        self.textgetmethod("<msg>"+result+'  '+ _TR("内嵌失败"))    
-        if globalconfig['embedded']['fallbacktonormalhook']:  
-            self.textgetmethod("<msg>"+_TR("尝试使用普通HOOK"))  
-            self.fallbackfunction()
+    def embeddedfailed(self,result): 
+        self.textgetmethod("<msg>"+result+'  '+ _TR("内嵌失败，请使用普通HOOK"))     
     def runonce(self): 
         self.textgetmethod(self.agentreceiveddata,False)
     def end(self):

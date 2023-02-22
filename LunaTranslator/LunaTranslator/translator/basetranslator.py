@@ -5,7 +5,7 @@ from utils.config import globalconfig,translatorsetting
 from threading import Thread
 import os,time
 from traceback import print_exc
-
+import zhconv
 from utils import somedef
 class basetrans: 
     def langmap(self):
@@ -16,6 +16,10 @@ class basetrans:
         _.update({'cht':'zh'})
         _.update(self.langmap())
         return _
+    @property
+    def needzhconv(self):
+        l=somedef.language_list_translator_inner[globalconfig['tgtlang3']]
+        return l=='cht' and 'cht' not in self.langmap()
     @property
     def srclang(self):
         try:
@@ -114,7 +118,8 @@ class basetrans:
                     print_exc()
                 res=None 
                 
-            
+            if self.needzhconv:
+                res=zhconv.convert(res,  'zh-tw' )  
             if res is not None  and self.queue.empty() and contentraw==self.newline:
                 self.show(contentraw,(self.typename,res,mp),embedcallback) 
         self.end()
