@@ -7,6 +7,14 @@ import os
 from utils.config import globalconfig  ,_TR 
 from utils.wrapper import threader
 from version import version
+def _setproxy(x): 
+            if x:
+                os.environ['https_proxy']=globalconfig['proxy'] 
+                os.environ['http_proxy']=globalconfig['proxy'] 
+            else:
+                os.environ['https_proxy']='' 
+                os.environ['http_proxy']=''
+        #
 def resourcegrid( ) :  
         grid=[ 
             [('OCR-简体中文'),('<a href="https://github.com/HIllya51/LunaTranslator/releases/download/v1.34.5/zh.zip">zh.zip</a>',1,'link')],
@@ -51,7 +59,7 @@ def getversion(self):
             'Upgrade-Insecure-Requests': '1',
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36',
         }
-        res= requests.get('https://api.github.com/repos/HIllya51/LunaTranslator/releases/latest', headers=headers,proxies={'http': None,'https': None} ,verify = False).json() 
+        res= requests.get('https://api.github.com/repos/HIllya51/LunaTranslator/releases/latest', headers=headers ,verify = False).json() 
         #print(res)
         _version=res['tag_name']
        # print(version)
@@ -80,7 +88,7 @@ def updateprogress(self,text,val):
     
 
 def setTab_about_dicrect(self) : 
-    
+    _setproxy(globalconfig['useproxy'])
     self.versionlabel = QLabel()
     self.versionlabel.setOpenExternalLinks(True)
     self.versionlabel.setTextInteractionFlags(Qt.LinksAccessibleByMouse) 
@@ -98,14 +106,7 @@ def setTab_aboutlazy(self) :
         
  
 
-        def _setproxy(x): 
-            if x:
-                os.environ['https_proxy']=globalconfig['proxy'] 
-                os.environ['http_proxy']=globalconfig['proxy'] 
-            else:
-                os.environ['https_proxy']='' 
-                os.environ['http_proxy']=''
-        #_setproxy(globalconfig['useproxy'])
+        
         if globalconfig['useproxy']:
                 os.environ['https_proxy']=globalconfig['proxy'] 
                 os.environ['http_proxy']=globalconfig['proxy'] 
