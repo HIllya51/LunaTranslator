@@ -42,28 +42,10 @@ ocrdfsetting=tryreadconfig2('ocrsetting.json')
 globalconfig=tryreadconfig('config.json')
 postprocessconfig=tryreadconfig('postprocessconfig.json')
 noundictconfig=tryreadconfig('noundictconfig.json')
-transerrorfixdictconfig=tryreadconfig('transerrorfixdictconfig.json')
-savehook_new_0=OrderedDict(tryreadconfig('savehook_new.json') )
-savehook_new_2=tryreadconfig('savehook_new3.json') 
+transerrorfixdictconfig=tryreadconfig('transerrorfixdictconfig.json') 
 _savehook=tryreadconfig('savehook_new_1.39.4.json',default=[[],{}])
 savehook_new_list= _savehook[0]
 savehook_new_data= _savehook[1]
- 
-def sycnsavehook():
-    try: 
-        for _ in savehook_new_0:
-            if _ not in savehook_new_list:
-                savehook_new_list.append(_) 
-                savehook_new_data[_]={
-                    'hook':savehook_new_0[_],
-                    'leuse':savehook_new_2[_]['leuse'],
-                    'title':savehook_new_2[_]['title']
-                } 
-        os.rename('./userconfig/savehook_new.json','./userconfig/savehook_new_backup.json')
-        os.rename('./userconfig/savehook_new3.json','./userconfig/savehook_new3_backup.json')
-    except:
-        pass
-sycnsavehook()
   
 translatorsetting=tryreadconfig('translatorsetting.json') 
 ocrsetting=tryreadconfig('ocrsetting.json') 
@@ -94,21 +76,7 @@ syncconfig(translatorsetting,translatordfsetting,drop=True,deep=3)
 
 
 syncconfig(ocrsetting,ocrdfsetting,True,3)
-
-def synccishu():
-    for k in ['xiaoxueguan','edict','edict2','linggesi']:
-        if k in globalconfig:
-            
-                globalconfig['cishu'][k]['path']=(globalconfig[k]['path'])
-                globalconfig.pop(k)
-synccishu()
-try:
-    if 'mecab' in globalconfig  :
-        globalconfig['hirasetting']['mecab']['path']=globalconfig['mecab']['path']
-        globalconfig['hirasetting']['mecab']['use']=globalconfig['mecab']['use']
-        globalconfig.pop('mecab')
-except:
-    pass 
+ 
 
 def setlanguage():
     global language,languageshow

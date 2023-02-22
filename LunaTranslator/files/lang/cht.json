@@ -630,5 +630,9 @@
     "尝试使用普通HOOK": "嘗試使用普通HOOK",
     "火山OCR": "火山OCR",
     "火山OCR设置": "火山OCR設定",
-    "密钥获取": "金鑰獲取"
+    "密钥获取": "金鑰獲取",
+    "如果你感觉该软件对你有帮助，欢迎微信扫码或者前往<a href=\"https://afdian.net/a/HIllya51\">爱发电</a>赞助，谢谢，么么哒~": "如果你感覺該軟件對你有幫助，歡迎微信掃碼或者前往<a href=“ https://afdian.net/a/HIllya51 “>愛發電</a>贊助，謝謝，麼麼噠~",
+    "<img src=\"./files/zan.jpg\" heigth={wh} width={wh}>": "<img src=“./files/zan.jpg”heigth={wh} width={wh}>",
+    "翻译及OCR语言": "翻譯及OCR語言",
+    "本软件显示语言(重启生效)": "本軟件顯示語言（重啓生效）"
 }
