@@ -2,6 +2,7 @@
 from traceback import print_exc
 
 from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QPixmap,QImage
 from PyQt5.QtWidgets import QWidget,QLabel ,QProgressBar,QLineEdit,QPushButton 
 import os 
 from utils.config import globalconfig  ,_TR 
@@ -148,6 +149,17 @@ def setTab_aboutlazy(self) :
                 lambda: self.makescroll(self.makegrid(grid2 )   ) ,
                 lambda: self.makescroll(self.makegrid(grid1 )   ),
                 lambda:self.makescroll( self.makegrid(resourcegrid() ) ),
-                lambda:self.makevbox( [self.makegrid(shuominggrid),QLabel(f'<img src="./files/zan.jpg" heigth={wh} width={wh}>')])
+                lambda:self.makevbox( [self.makegrid(shuominggrid),imgwidget("./files/zan.jpg")])#QLabel(f'<img src="./files/zan.jpg" heigth={wh} width={wh}>')
                 ]) 
         return tab
+
+class imgwidget(QWidget):
+    def __init__(self,src) -> None:
+         super().__init__()
+         self.lb=QLabel(self)
+         
+         self.img=QPixmap.fromImage(QImage(src)) 
+    def paintEvent(self, a0) -> None:
+         self.lb.resize(self.size())
+         self.lb.setPixmap(self.img.scaled(self.size(),Qt.KeepAspectRatio,Qt.SmoothTransformation))
+         return super().paintEvent(a0)
