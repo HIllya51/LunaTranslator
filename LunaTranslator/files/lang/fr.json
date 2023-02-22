@@ -634,5 +634,6 @@
     "如果你感觉该软件对你有帮助，欢迎微信扫码或者前往<a href=\"https://afdian.net/a/HIllya51\">爱发电</a>赞助，谢谢，么么哒~": "Si vous pensez que le logiciel vous a aidé, Bienvenue sur WeChat ou allez à < a href = \" https://afdian.net/a/HIllya51 \"> Love Power Generation < / a > parrainage, merci, ou cliquez ~",
     "<img src=\"./files/zan.jpg\" heigth={wh} width={wh}>": "< img src = \".. / files / zan.jpg\" heigth = {Wh} width = {Wh} >",
     "翻译及OCR语言": "Traduction et langage ocr",
-    "本软件显示语言(重启生效)": "Langue d'affichage de ce logiciel (redémarrage effectif)"
+    "本软件显示语言(重启生效)": "Langue d'affichage de ce logiciel (redémarrage effectif)",
+    "内嵌失败，请使用普通HOOK": "L'intégration échoue, utilisez un hook normal"
 }
