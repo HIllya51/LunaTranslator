@@ -14,11 +14,11 @@ from utils.config import globalconfig ,savehook_new_list,savehook_new_data,nound
 import threading,win32gui 
 from PyQt5.QtCore import QCoreApplication ,Qt ,QObject,pyqtSignal
 from PyQt5.QtWidgets import  QApplication ,QGraphicsScene,QGraphicsView,QDesktopWidget  
-
+from utils import somedef
 from utils.minmaxmove import minmaxmoveobservefunc
 from utils.simplekanji import kanjitrans
 from utils.wrapper import threader 
-
+from utils import somedef
 from gui.showword import searchwordW
 from gui.rangeselect    import rangeadjust
 
@@ -400,7 +400,7 @@ class MAINUI(QObject) :
             res=self.solveaftertrans(res,mp)
         #print(classname,contentraw,_)
 
-        l=globalconfig['normallanguagelist'][globalconfig['tgtlang2']] 
+        l=somedef.language_list_translator_inner[globalconfig['tgtlang2']] 
         if (l=='cht' and l not in globalconfig['fanyi'][classname]['lang'])  :
             needconv=needconvshow=True
         else:
@@ -549,7 +549,7 @@ if __name__ == "__main__" :
     app.setQuitOnLastWindowClosed(False)
     if  globalconfig['language_setted']==False:
         from gui.languageset import languageset
-        x=languageset(globalconfig['language_list_show'])
+        x=languageset(somedef.language_list_show)
         x.exec()
         globalconfig['language_setted']=True
         globalconfig['languageuse']=x.current

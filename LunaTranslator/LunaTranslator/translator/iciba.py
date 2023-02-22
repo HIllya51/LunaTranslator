@@ -170,6 +170,8 @@ from traceback import print_exc
 
 from translator.basetranslator import basetrans
 class TS(basetrans):
+    def langmap(self):
+        return {"cht":"cht"}
     def inittranslator(self):  
         self.engine=Iciba()
         self.engine._=None

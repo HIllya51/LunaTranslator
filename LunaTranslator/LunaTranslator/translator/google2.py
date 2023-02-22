@@ -9,7 +9,8 @@ from utils.config import globalconfig
 from translator.basetranslator import basetrans
 import time
 class TS(basetrans):
-     
+    def langmap(self):
+        return {"zh":"zh-CN","cht":"zh-TW"}
     def translate(self,content): 
                 
         headers = {

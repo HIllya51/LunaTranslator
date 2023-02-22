@@ -9,6 +9,8 @@ import json
 from translator.basetranslator import basetrans
 import time
 class TS(basetrans): 
+    def langmap(self):
+        return {"zh":"nzh","ja":"nja","en":"nen"} 
     def translate(self,content): 
                 
                 

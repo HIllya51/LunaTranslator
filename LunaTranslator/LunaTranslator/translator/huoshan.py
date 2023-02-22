@@ -4,7 +4,8 @@ import requests
 from utils.config import globalconfig 
 from translator.basetranslator import basetrans 
 class TS(basetrans):
-    
+    def langmap(self):
+        return {"cht":"zh-Hant"}
     def translate(self,content): 
                 
                 

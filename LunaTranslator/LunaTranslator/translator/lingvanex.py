@@ -140,6 +140,8 @@ from traceback import print_exc
 
 from translator.basetranslator import basetrans
 class TS(basetrans):
+    def langmap(self):
+        return {"zh":"zh-Hans_CN","cht":"zh-Hant_TW","en":"en_GB","es":"es_ES","fr":"fr_FR","ko":"ko_KR","ru":"ru_RU","ja":"ja_JP"}
     def inittranslator(self):  
         self.engine=Lingvanex()
         self.engine._=None

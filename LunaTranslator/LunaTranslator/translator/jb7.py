@@ -133,5 +133,5 @@ class TS(basetrans):
          
             return self.x64(content)
         
-        
-          
+    def langmap(self):
+        return {"zh":"936","cht":"950"}

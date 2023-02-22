@@ -6,6 +6,8 @@ import requests
 from translator.basetranslator import basetrans   
 from urllib.parse import quote
 class TS(basetrans):   
+    def langmap(self):
+        return  { "zh":"zh-CN","cht":"zh-TW"} 
     def translate(self,query):  
         if self.config['args']['key']=="":
             return 

@@ -3,12 +3,13 @@ import requests
 from urllib.parse import quote
 import re
 from traceback import print_exc
+from utils import somedef
 class youdao:
     @property
     def srclang(self):
         
         try:
-            l=globalconfig['normallanguagelist'][globalconfig['srclang2']]
+            l=somedef.language_list_translator_inner[globalconfig['srclang3']]
             return l
              
         except:

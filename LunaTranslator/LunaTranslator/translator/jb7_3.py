@@ -112,6 +112,8 @@ class TS(basetrans):
         except:
             pass
         return out.value
+    def langmap(self):
+        return {"zh":"936","cht":"950"}
     def translate(self,content): 
          
             return self.x64(content)

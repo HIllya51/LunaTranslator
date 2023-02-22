@@ -10,7 +10,8 @@ from js2py import EvalJs
 from utils.config import globalconfig
 import time
 class TS(basetrans):
-     
+    def langmap(self):
+        return {"es":"spa","ko":"kor","fr":"fra","ja":"jp","cht":"cht"}
     def inittranslator(self)  :  
         self.headers = {
             'Accept': '*/*',

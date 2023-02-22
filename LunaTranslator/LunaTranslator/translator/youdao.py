@@ -8,6 +8,8 @@ import random
 from utils.config import globalconfig
 import json
 class TS(basetrans): 
+    def langmap(self):
+        return {"zh":"zh-CHS"}
     def youdaoSIGN(self,useragent,e):
         t=hashlib.md5(bytes(useragent,encoding='utf-8')).hexdigest()
         

@@ -344,7 +344,8 @@ def trans(TextList,k_access_key,k_secret_key,src,tgt):
     return '\n'.join( [ _['Translation'] for _ in json.loads(res)['TranslationList'] ])
 
 class TS(basetrans):  
-     
+    def langmap(self):
+        return {"cht":"zh-Hant"}
     def translate(self,query): 
         if self.config['args']['Access Key ID']=="":
             return 

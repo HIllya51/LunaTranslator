@@ -9,12 +9,13 @@ from utils.config import globalconfig
 from translator.basetranslator import basetrans
 import time
 class TS(basetrans):
-    
+    def langmap(self):
+        return { "zh":"zh-CN","cht":"zh-TW"} 
     def inittranslator(self)  :  
         
         self.ss=requests.session()
     
-        html=self.ss.get('https://translate.google.com/',headers = {
+        _=self.ss.get('https://translate.google.com/',headers = {
             'authority': 'translate.google.com',
             'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
             'accept-language': 'zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6',

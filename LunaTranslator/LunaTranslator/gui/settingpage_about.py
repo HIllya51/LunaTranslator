@@ -134,17 +134,19 @@ def setTab_aboutlazy(self) :
         ]  
          
          
-        tab=self.makesubtab_lazy(['自动更新','代理设置','资源下载' ],[
+        
+
+        wh=self.rate*400
+          
+        shuominggrid=[
+            ['项目网站',('<a href="https://github.com/HIllya51/LunaTranslator">https://github.com/HIllya51/LunaTranslator</a>',3,'link')],
+            ['使用说明',('<a href="https://hillya51.github.io/">https://hillya51.github.io/</a>',3,'link')],
+            [('如果你感觉该软件对你有帮助，欢迎微信扫码或者前往<a href="https://afdian.net/a/HIllya51">爱发电</a>赞助，谢谢，么么哒~',4)]
+        ]
+        tab=self.makesubtab_lazy(['自动更新','代理设置','资源下载' ,'支持作者'],[
                 lambda: self.makescroll(self.makegrid(grid2 )   ) ,
                 lambda: self.makescroll(self.makegrid(grid1 )   ),
-                lambda:self.makescroll( self.makegrid(resourcegrid() ) )
+                lambda:self.makescroll( self.makegrid(resourcegrid() ) ),
+                lambda:self.makevbox( [self.makegrid(shuominggrid),QLabel(f'<img src="./files/zan.jpg" heigth={wh} width={wh}>')])
                 ]) 
-
-        wh=self.rate*300
-         
-        shuoming = (QLabel(('项目网站')+':<a href="https://github.com/HIllya51/LunaTranslator">https://github.com/HIllya51/LunaTranslator</a><br>' +
-                    ('使用说明')+':<a href="https://hillya51.github.io/">https://hillya51.github.io/</a><br>' +
-                    '如果你感觉该软件对你有帮助，欢迎微信扫码或者前往<a href="https://afdian.net/a/HIllya51">爱发电</a>赞助，谢谢，么么哒~<br>'+f'<img src="./files/zan.jpg" heigth={wh} width={wh}>') )
-        shuoming.setOpenExternalLinks(True)
-        
-        return self.makevbox([tab,shuoming ])
+        return tab

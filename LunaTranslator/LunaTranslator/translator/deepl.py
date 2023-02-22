@@ -139,6 +139,8 @@ class Deepl(Tse):
 from traceback import print_exc
 
 class TS(basetrans):
+    def langmap(self):
+        return  {"zh":"ZH","ja":"JA","en":"EN","es":"ES","fr":"FR","ru":"RU"}
     def inittranslator(self):  
         self.engine=Deepl()
     def translate(self,content): 

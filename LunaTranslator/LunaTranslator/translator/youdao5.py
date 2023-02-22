@@ -8,6 +8,8 @@ import random
 from utils.config import globalconfig
 import json
 class TS(basetrans): 
+    def langmap(self):
+        return  {"zh":"zh-CHS"}
     def inittranslator(self): 
         self.headers = {
             'authority': 'ai.youdao.com',

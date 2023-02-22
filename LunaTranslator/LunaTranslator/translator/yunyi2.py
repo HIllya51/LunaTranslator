@@ -8,6 +8,8 @@ import json
 from translator.basetranslator import basetrans
 import time
 class TS(basetrans): 
+    def langmap(self):
+        return {"zh":"zh-cn","en":"en-us","cht":"zh-tw"}
     def translate(self,content):  
 
         cookies = {

@@ -7,6 +7,7 @@ from gui.settingpage_ocr import getocrgrid
 from utils.config import globalconfig ,_TR,_TRL  
 from gui.dialog_savedgame import dialog_savedgame 
 from gui.codeacceptdialog import codeacceptdialog  
+from utils import somedef
 def gethookgrid(self) :
  
         grids=[
@@ -14,7 +15,7 @@ def gethookgrid(self) :
                 [('检测到游戏时自动开始',5),(self.getsimpleswitch(globalconfig,'autostarthook'),1),'','','','','','','','',''], 
                 [('已保存游戏',5),(self.getcolorbutton(globalconfig,'',icon='fa.gamepad',constcolor="#FF69B4",callback=lambda:dialog_savedgame(self)),1)],
 
-                [('代码页',5),(self.getsimplecombobox(_TRL(globalconfig['codepage_display']),globalconfig,'codepage_index' ,lambda x: self.object.textsource.setcodepage()),5)],
+                [('代码页',5),(self.getsimplecombobox(_TRL(somedef.codepage_display),globalconfig,'codepage_index' ,lambda x: self.object.textsource.setcodepage()),5)],
                 [('刷新延迟(ms)',5),(self.getspinbox(1,10000,globalconfig,'textthreaddelay',callback=lambda x:self.object.textsource.setdelay()),3)],
                 [('过滤乱码文本',5),(self.getsimpleswitch(globalconfig,'filter_chaos_code'),1),(self.getcolorbutton(globalconfig,'',icon='fa.gear',constcolor="#FF69B4",callback=lambda:codeacceptdialog(self)),1)],
                 [('移除非选定HOOK',5),(self.getsimpleswitch(globalconfig,'remove_useless_hook'),1) ],
@@ -55,7 +56,7 @@ def gethookembedgrid(self) :
                 [('将汉字转换成繁体/日式汉字',5),(self.getsimpleswitch( globalconfig['embedded'] ,'trans_kanji'),1) ],
                 [('在重叠显示的字间插入空格',5),'',(self.getsimplecombobox(_TRL(['不插入空格','每个字后插入空格','仅在无法编码的字后插入']),globalconfig['embedded'],'insertspace_policy',callback=__insertspace),5) ],
                 [('修改游戏字体',5),(self.getsimpleswitch( globalconfig['embedded'] ,'changefont',callback=lambda x:self.object.ga.sendSetting('embeddedFontFamily',globalconfig['embedded']['changefont_font'] if x else '')),1), (self.gamefont_comboBox,5) ],
-                [('修改字体字符集',5),(self.getsimpleswitch( globalconfig['embedded'] ,'changecharset',callback=lambda x:self.object.ga.sendSetting('embeddedFontCharSetEnabled',x)),1) ,(self.getsimplecombobox(_TRL(globalconfig['embedded']['charsetmapshow']),globalconfig['embedded'],'changecharset_charset',callback=lambda x:self.object.ga.sendSetting('embeddedFontCharSet',globalconfig['embedded']['charsetmap'][x])),5)],
+                [('修改字体字符集',5),(self.getsimpleswitch( globalconfig['embedded'] ,'changecharset',callback=lambda x:self.object.ga.sendSetting('embeddedFontCharSetEnabled',x)),1) ,(self.getsimplecombobox(_TRL(somedef.charsetmapshow),globalconfig['embedded'],'changecharset_charset',callback=lambda x:self.object.ga.sendSetting('embeddedFontCharSet',somedef.charsetmap[x])),5)],
 
         ]
         

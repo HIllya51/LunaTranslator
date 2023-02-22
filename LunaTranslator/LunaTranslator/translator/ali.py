@@ -4,8 +4,9 @@ import requests
 
 from utils.config import globalconfig
 from translator.basetranslator import basetrans
-class TS(basetrans):
-     
+class TS(basetrans): 
+    def langmap(self):
+        return { "cht":"zh-tw"}
     def inittranslator(self): 
         self.ss=requests.session()
         
@@ -64,11 +65,10 @@ class TS(basetrans):
             "domain": 'general',
             'query':content,
             "_csrf": self.csrf
-        }
-        
+        } 
         r = self.ss.post('https://translate.alibaba.com/api/translate/text', headers= headers,timeout = globalconfig['translatortimeout'], params =form_data , proxies=  {'http': None,'https': None})
     
-        data = r.json()  
+        data = r.json()   
         return  data['data']['translateText']
          
     def show(self,res):

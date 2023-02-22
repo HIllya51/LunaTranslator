@@ -5,7 +5,8 @@ from urllib import parse
 from utils.config import globalconfig  
 from translator.basetranslator import basetrans   
 class TS(basetrans):  
-     
+    def langmap(self):
+        return  {"zh":"ZH","ja":"JA","en":"EN","es":"ES","fr":"FR","ru":"RU"}
     def translate(self,query):  
         if self.config['args']['DeepL-Auth-Key']=="":
             return 

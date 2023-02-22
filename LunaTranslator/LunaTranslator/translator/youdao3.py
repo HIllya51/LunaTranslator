@@ -10,6 +10,8 @@ from utils.config import globalconfig
 import requests
 import re
 class TS(basetrans): 
+    def langmap(self):
+        return {"zh":"ZH_CN", "ja":"JA", "en":"EN","ko":"KR","es":"SP","ru":"RU"}
     def inittranslator(self): 
         self.ss=requests.session()
         self.ss.get('https://m.youdao.com/translate',headers =  {

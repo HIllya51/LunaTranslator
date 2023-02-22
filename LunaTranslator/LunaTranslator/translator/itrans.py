@@ -126,6 +126,8 @@ from traceback import print_exc
 
 from translator.basetranslator import basetrans
 class TS(basetrans):
+    def langmap(self):
+        return {"en":"en-UK","zh":"zh-CN","es":"es-ES","fr":"fr-FR","cht":"zh-TW"}
     def inittranslator(self):  
         self.engine=Itranslate()
         self.engine._=None

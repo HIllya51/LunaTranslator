@@ -4,7 +4,8 @@ import requests
 from translator.basetranslator import basetrans  
 import uuid  
 class TS(basetrans): 
-     
+    def langmap(self):
+        return {"zh":"zh-CHS"}
     def translate(self, content): 
         if self.config['args']['APP_KEY']=="":
             return 

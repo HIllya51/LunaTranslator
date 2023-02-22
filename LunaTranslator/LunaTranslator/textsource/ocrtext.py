@@ -6,6 +6,7 @@ from utils.ocrdll import ocrwrapper
 from utils.config import globalconfig  
 import importlib  
 from difflib import SequenceMatcher 
+from utils import somedef
 import time  
 from PyQt5.QtWidgets import QApplication 
 from PyQt5.QtGui import QImage,QPixmap
@@ -170,10 +171,11 @@ class ocrtext(basetext):
             print_exc()
             return ''
     def language(self,tp):
-        l=globalconfig['normallanguagelist'][globalconfig['srclang2']]
+        l=somedef.language_list_translator_inner[globalconfig['srclang3']]
         if l=='cht' and l not in globalconfig['fanyi'][self.typename]['lang']:
             l='zh'
         if l in globalconfig['ocr'][tp]['lang']:
             return globalconfig['ocr'][tp]['lang'][l]
         else:
             return l
+            

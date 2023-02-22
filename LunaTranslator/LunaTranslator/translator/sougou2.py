@@ -13,6 +13,8 @@ import functools
 import urllib
  
 class TS(basetrans):  
+    def langmap(self):
+        return {"zh":"zh-CHS"}
     def translate(self,content): 
                         
             headers = {

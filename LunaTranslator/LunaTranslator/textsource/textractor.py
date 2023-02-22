@@ -5,6 +5,7 @@ import time
 from traceback import print_exc
 from collections import OrderedDict
 import os 
+from utils import somedef
 from utils.config import globalconfig ,_TR 
 from utils.u16lesubprocess import u16lesubprocess
 from utils.getpidlist import getarch
@@ -94,7 +95,7 @@ class textractor(basetext  ):
         #cp=globalconfig["codepage"]
         
         cpi=globalconfig["codepage_index"]
-        cp= globalconfig["codepage_real"][cpi]
+        cp= somedef.codepage_real[cpi]
         self.u16lesubprocess.writer(f'={cp} -P{self.pid}\n') 
     def findhook(self ): 
         self.u16lesubprocess.writer((f'find -P{self.pid}\n')) 

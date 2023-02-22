@@ -8,6 +8,8 @@ import json
 from translator.basetranslator import basetrans
 import time
 class TS(basetrans): 
+    def langmap(self):
+        return {"zh":"zh-cn","en":"en-us","cht":"zh-tw"}
     def translate(self,content):  
 
         headers = {
@@ -34,7 +36,4 @@ class TS(basetrans):
 
         response = requests.get('https://sz-nmt-1.cloudtranslation.com/nmt', params=params, headers=headers,timeout=globalconfig['translatortimeout'], proxies=  {'http': None,'https': None}).content.decode('utf8' )
 
-        return response 
-if __name__=='__main__':
-    g=TS()
-    print(g.translate("おはよう\nおはよう"))
+        return response  

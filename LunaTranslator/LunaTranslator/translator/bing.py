@@ -8,7 +8,8 @@ from translator.basetranslator import basetrans
 
 from utils.config import globalconfig
 class TS(basetrans):
-     
+    def langmap(self):
+         return  {"zh":"zh-Hans","cht":"zh-Hant"} 
     def inittranslator(self):  
         self.ss=requests.session()
         headers = { 

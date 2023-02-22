@@ -94,6 +94,8 @@ class TS(basetrans):
     def translate(self,content):  
         ss=self.engine.sogou_api(content,self.srclang,self.tgtlang)   
         return ss
+    def langmap(self):
+        return {"zh":"zh-CHS"}
 if __name__=='__main__':
     a=BINGFY()
     a.gettask('はーい、おやすみなさい')

@@ -6,7 +6,8 @@ import requests
 from translator.basetranslator import basetrans  
 import json
 class TS(basetrans):  
-    
+    def langmap(self):
+        return {"cht":"zh-Hant"}
     def translate(self,query):  
         if self.config['args']['app_id']=="":
             return 

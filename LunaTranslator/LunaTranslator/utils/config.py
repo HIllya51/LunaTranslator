@@ -1,5 +1,6 @@
 import json 
 import os 
+from utils import somedef
 from collections import OrderedDict
 if os.path.exists('./userconfig')==False:
     os.mkdir('./userconfig')
@@ -111,26 +112,14 @@ try:
         globalconfig.pop('mecab')
 except:
     pass
-listlengthsync(globalconfig,defaultglobalconfig,'postprocess_rank') 
-listlengthsync(globalconfig,defaultglobalconfig,'language_list',True) 
-listlengthsync(globalconfig,defaultglobalconfig,'language_list_show',True) 
-listlengthsync(globalconfig,defaultglobalconfig,'language_list_translator',True) 
-listlengthsync(globalconfig,defaultglobalconfig,'normallanguagelist',True) 
-for fanyi in globalconfig['fanyi']:
-    try:
-        listlengthsync(globalconfig['fanyi'][fanyi],defaultglobalconfig['fanyi'][fanyi],'lang',True) 
-    except:
-        pass
-for fanyi in globalconfig['ocr']:
-    try:
-        listlengthsync(globalconfig['ocr'][fanyi],defaultglobalconfig['ocr'][fanyi],'lang',True) 
-    except:
-        pass
+listlengthsync(globalconfig,defaultglobalconfig,'postprocess_rank')  
+ 
+ 
 
 def setlanguage():
     global language,languageshow
     language=globalconfig['languageuse']
-    with open(f'./files/lang/{globalconfig["language_list"][language]}.json','r',encoding='utf8') as ff:
+    with open(f'./files/lang/{somedef.language_list[language]}.json','r',encoding='utf8') as ff:
         languageshow=json.load(ff)
 setlanguage()
 def _TR(k):
@@ -176,5 +165,5 @@ def saveallconfig():
         # with open('./userconfig/savehook_new3.json','w',encoding='utf8') as ff:
         #         ff.write(json.dumps(savehook_new2,ensure_ascii=False,sort_keys=False, indent=4))
 
-        with open(f'./files/lang/{globalconfig["language_list"][language]}.json','w',encoding='utf8') as ff:
+        with open(f'./files/lang/{somedef.language_list[language]}.json','w',encoding='utf8') as ff:
             ff.write( json.dumps(languageshow,ensure_ascii=False,sort_keys=False, indent=4))

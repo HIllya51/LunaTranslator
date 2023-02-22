@@ -6,7 +6,8 @@ import uuid,time
 from utils.config import globalconfig
 from translator.basetranslator import basetrans
 class TS(basetrans):
-     
+    def langmap(self):
+        return {"zh":"zh-CN","cht":"zh-TW"} 
     def inittranslator(self): 
         self.ss=requests.session() 
         self.ss.get('https://papago.naver.com/', 

@@ -12,6 +12,8 @@ from traceback import print_exc
 
 from translator.basetranslator import basetrans
 class TS(basetrans):
+    def langmap(self):
+        return { "cht":"zh_HANT"}
     def inittranslator(self):  
         res=requests.get('https://lingva.ml/',headers=
             {

@@ -120,6 +120,8 @@ from traceback import print_exc
 
 from translator.basetranslator import basetrans
 class TS(basetrans):
+    def langmap(self):
+        return {"cht":"zh-TW"}
     def inittranslator(self):  
         self.engine=TranslateCom()
         self.engine._=None

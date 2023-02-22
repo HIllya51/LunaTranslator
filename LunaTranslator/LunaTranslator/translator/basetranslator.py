@@ -6,33 +6,28 @@ from threading import Thread
 import os,time
 from traceback import print_exc
 
-
-class basetrans:
-     
+from utils import somedef
+class basetrans: 
+    def langmap(self):
+        return {}
+    @property
+    def langmap_(self):
+        _=dict(zip(somedef.language_list_translator_inner,somedef.language_list_translator_inner))
+        _.update({'cht':'zh'})
+        _.update(self.langmap())
+        return _
     @property
     def srclang(self):
         try:
-            l=globalconfig['normallanguagelist'][globalconfig['srclang2']]
-            if l=='cht' and l not in globalconfig['fanyi'][self.typename]['lang']:
-                l='zh'
-            if l in globalconfig['fanyi'][self.typename]['lang']:
-                return globalconfig['fanyi'][self.typename]['lang'][l]
-            else:
-                return l
-             
+            l=somedef.language_list_translator_inner[globalconfig['srclang3']]
+            return self.langmap_[l] 
         except:
             return ''
     @property
     def tgtlang(self):
         try:
-            l=globalconfig['normallanguagelist'][globalconfig['tgtlang2']]
-            if l=='cht' and l not in globalconfig['fanyi'][self.typename]['lang']:
-                l='zh'
-            if l in globalconfig['fanyi'][self.typename]['lang']:
-                return globalconfig['fanyi'][self.typename]['lang'][l]
-            else:
-                return l
-             
+            l=somedef.language_list_translator_inner[globalconfig['tgtlang3']]
+            return self.langmap_[l] 
         except:
             return '' 
     @property

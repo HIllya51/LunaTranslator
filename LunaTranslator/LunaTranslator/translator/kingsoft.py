@@ -47,4 +47,5 @@ class TS(basetrans):
             return ress 
     def translate(self,content): 
         return self.x64(content)
-         
+    def langmap(self):
+        return {"zh":"SChinese","cht":"TChinese","en":"English","ja":"Japanese"}

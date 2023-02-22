@@ -6,7 +6,7 @@ from PyQt5.QtCore import QObject, pyqtSignal, QTimer
 import   embedded.sharedmem3 as sharedmem 
 from utils.config import globalconfig
 from embedded  import inject 
-
+from utils import somedef
 class GameAgent(QObject):
   def __init__(self,rpc ):
     super(GameAgent, self).__init__( )
@@ -134,7 +134,7 @@ class GameAgent(QObject):
   def sendSettings(self): 
     
      
-    data={"embeddedScenarioTranscodingEnabled": False, "embeddedFontCharSetEnabled": globalconfig['embedded']['changecharset'], "embeddedTranslationWaitTime":int(1000* globalconfig['embedded']['timeout_translate']), "embeddedOtherTranscodingEnabled": False, "embeddedSpacePolicyEncoding": "shift-jis", "windowTranslationEnabled": True, "windowTextVisible": True, "embeddedNameTranscodingEnabled": False, "gameEncoding": "shift-jis", "embeddedOtherTranslationEnabled": False, "embeddedSpaceSmartInserted": globalconfig['embedded']['insertspace_policy']==2, "embeddedFontCharSet": globalconfig['embedded']['charsetmap'][globalconfig['embedded']['changecharset_charset']], "embeddedScenarioWidth": 0, "embeddedScenarioTextVisible": globalconfig['embedded']['keeprawtext'], "windowTranscodingEnabled": False, "nameSignature": 0, "embeddedScenarioTranslationEnabled": True, "embeddedScenarioVisible": True, "embeddedFontScale": 0, "embeddedAllTextsExtracted": False, "embeddedOtherVisible": True, "embeddedFontFamily": globalconfig['embedded']['changefont_font'] if globalconfig['embedded']['changefont'] else '', "embeddedTextEnabled": True, "scenarioSignature": 0, "embeddedOtherTextVisible": False, "embeddedNameTextVisible": False, "embeddedSpaceAlwaysInserted": globalconfig['embedded']['insertspace_policy']==1, "embeddedNameTranslationEnabled": True, "debug": True, "embeddedNameVisible": True, "embeddedFontWeight": 0}
+    data={"embeddedScenarioTranscodingEnabled": False, "embeddedFontCharSetEnabled": globalconfig['embedded']['changecharset'], "embeddedTranslationWaitTime":int(1000* globalconfig['embedded']['timeout_translate']), "embeddedOtherTranscodingEnabled": False, "embeddedSpacePolicyEncoding": "shift-jis", "windowTranslationEnabled": True, "windowTextVisible": True, "embeddedNameTranscodingEnabled": False, "gameEncoding": "shift-jis", "embeddedOtherTranslationEnabled": False, "embeddedSpaceSmartInserted": globalconfig['embedded']['insertspace_policy']==2, "embeddedFontCharSet": somedef.charsetmap[globalconfig['embedded']['changecharset_charset']], "embeddedScenarioWidth": 0, "embeddedScenarioTextVisible": globalconfig['embedded']['keeprawtext'], "windowTranscodingEnabled": False, "nameSignature": 0, "embeddedScenarioTranslationEnabled": True, "embeddedScenarioVisible": True, "embeddedFontScale": 0, "embeddedAllTextsExtracted": False, "embeddedOtherVisible": True, "embeddedFontFamily": globalconfig['embedded']['changefont_font'] if globalconfig['embedded']['changefont'] else '', "embeddedTextEnabled": True, "scenarioSignature": 0, "embeddedOtherTextVisible": False, "embeddedNameTextVisible": False, "embeddedSpaceAlwaysInserted": globalconfig['embedded']['insertspace_policy']==1, "embeddedNameTranslationEnabled": True, "debug": True, "embeddedNameVisible": True, "embeddedFontWeight": 0}
     
     self.rpc.setAgentSettings(data)
 

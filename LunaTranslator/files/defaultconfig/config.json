@@ -22,15 +22,10 @@
 		"changefont":false,
 		"changefont_font":"",
 		"changecharset":false,
-		"changecharset_charset":2,
-		"charsetmap":[0,1,128,134,136,129,163,122,161,178,177,162,238,186,204],
-		"charsetmapshow":["自动","系统默认","日语","简体中文","繁体中文","韩语","越南语","泰语","希腊语","阿拉伯语","希伯来语","土耳其语","中东欧","北欧","西里尔"]
+		"changecharset_charset":2
 	},
 	"buttonsize":20,
 	"language_setted":false,
-	"language_list_show":["简体中文","繁體中文","English","Русский язык","Français","Español","한국어"],
-	"language_list":["chs","cht","en","ru","fr","es","ko"],
-	"language_list_translator":["自动检测","简体中文","日文","英文","俄语","西班牙语","韩语","法语","繁体中文"],
 	"postprocess_rank":["_2","_3", "_10","_1",   "_4", "_6", "_91", "_92", "_7", "_7_zhuanyi", "_8","_11","_13","_100"],
 	"hist_split":false,
 	"hist_fontstring":"Arial,12,-1,5,50,0,0,0,0,0,Regular", 
@@ -177,8 +172,6 @@
 		"空白":false
     }, 
 	"codepage_index":0,
-	"codepage_display":["日语(CP932,SHIFT-JIS)","UTF8(CP65001)","简体中文(CP936,GBK)","繁体中文(CP950,BIG5)","韩语(CP949,EUC-KR)","越南语(CP1258)","泰语(CP874)","阿拉伯语(CP1256)","希伯来语(CP1255)","土耳其语(CP1254)","希腊语(CP1253)","北欧(CP1257)","中东欧(CP1250)","西里尔(CP1251)","拉丁(CP1252)"],
-	"codepage_real":[932,65001,936,950,949,1258,874,1256,1255,1254,1253,1257,1250,1251,1252],
     "quick_setting": {
         "use": false,
         "all": {
@@ -459,19 +452,17 @@
         "baiduocr": {
             "use": false,
             "name": "baiduOCR",
-			"lang":{"zh":"CHN_ENG","en":"ENG","auto":"auto_detect","ja":"JAP","en":"ENG","ko":"KOR","fr":"FRE","es":"SPA"}
+			"lang":{"zh":"CHN_ENG","en":"ENG","ja":"JAP","en":"ENG","ko":"KOR","fr":"FRE","es":"SPA"}
 
         },
 		"baiduocr_accurate": {
             "use": false,
             "name": "baiduOCR_高精度",
-			"lang":{"zh":"CHN_ENG","en":"ENG","auto":"auto_detect","ja":"JAP","en":"ENG","ko":"KOR","fr":"FRE","es":"SPA"}
+			"lang":{"zh":"CHN_ENG","en":"ENG","ja":"JAP","en":"ENG","ko":"KOR","fr":"FRE","es":"SPA"}
 
         }, "feishu": {
             "use": false,
-            "name": "飞书",
-			"lang":{}
-
+            "name": "飞书" 
         },
         "ocrspace": {
             "use": false,
@@ -503,228 +494,189 @@
 			"name":"火山OCR",
 			"lang":{}
 		}
-    }, 
-	"normallanguagelist":["auto","zh", "ja", "en","ru","es","ko","fr","cht"],
+    },  
 	"fanyi_offline":["jb7","dreye","kingsoft","hanshant","selfbuild"],
 	"fanyi_pre":["rengong","premt","rengong_vnr","rengong_msk"],
     "fanyi": {
         "baidu": {
             "use": true,
             "color": "#ff65db",
-            "name": "百度",
-			"lang":{"es":"spa","ko":"kor","fr":"fra","ja":"jp","cht":"cht"}
+            "name": "百度"
         },
         "bing": {
             "use": false,
             "color": "#000ff0",
-            "name": "必应",
-			"lang":{"auto":"auto-detect","zh":"zh-Hans","cht":"zh-Hant"} 
+            "name": "必应"
         },
         "google": {
             "use": false,
             "color": "#ff0000",
-            "name": "谷歌",
-			"lang":{ "zh":"zh-CN","cht":"zh-TW"} 
+            "name": "谷歌" 
         },"googleapi": {
             "use": false,
             "color": "#ff0000",
-            "name": "google_api",
-			"lang":{ "zh":"zh-CN","cht":"zh-TW"} 
+            "name": "google_api" 
         },
         "ali": {
             "use": false,
             "color": "#0000ff",
-            "name": "阿里",
-			"lang":{ "cht":"zh-tw"}
+            "name": "阿里" 
         },
         "youdao": {
             "use": false,
             "color": "blue",
-            "name": "有道",
-			"lang":{"zh":"zh-CHS"}
+            "name": "有道" 
         },
         "youdao2": {
             "use": false,
             "color": "blue",
-            "name": "有道2",
-			"lang":{"zh":"zh-cn"}
+            "name": "有道2" 
         },
         "google2": {
             "use": false,
             "color": "#95a5ff",
-            "name": "谷歌2",
-			"lang":{"zh":"zh-CN","cht":"zh-TW"}
+            "name": "谷歌2" 
         },
         "sougou": {
             "use": false,
             "color": "blue",
-            "name": "搜狗",
-			"lang":{"zh":"zh-CHS"}
+            "name": "搜狗" 
         },
         "caiyun": {
             "use": false,
             "color": "blue",
-            "name": "彩云",
-			"lang":{}
+            "name": "彩云" 
         },
         "deepl": {
             "use": false,
             "color": "blue",
-            "name": "deepl",
-			"lang":{"zh":"ZH","ja":"JA","en":"EN","es":"ES","fr":"FR","ru":"RU"}
+            "name": "deepl"
         },
         "jb7": {
             "use": false,
             "color": "#1839f0",
-            "name": "Jbeijing7",
-			"lang":{"zh":"936","cht":"950"}
+            "name": "Jbeijing7" 
         },
         "kingsoft": {
             "use": false,
             "color": "#1839f0",
-            "name": "金山快译",
-			"lang":{"zh":"SChinese","cht":"TChinese","en":"English","ja":"Japanese"}
-			
+            "name": "金山快译" 
         },
         "dreye": {
             "use": false,
             "color": "#1839f0",
-            "name": "快译通",
-			"lang":{}
+            "name": "快译通" 
         },
         "sougou2": {
             "use": false,
             "color": "blue",
-            "name": "搜狗2",
-			"lang":{"zh":"zh-CHS"}
+            "name": "搜狗2" 
         },
         "youdao3": {
             "use": false,
             "color": "blue",
-            "name": "有道3",
-			"lang":{"auto":"AUTO","zh":"ZH_CN", "ja":"JA", "en":"EN","ko":"KR","es":"SP","ru":"RU"}
+            "name": "有道3" 
         },
         "youdao5": {
             "use": false,
             "color": "blue",
-            "name": "有道5",
-			"lang": {"auto":"Auto","zh":"zh-CHS"}
+            "name": "有道5" 
         },
         "tencent": {
             "use": false,
             "color": "blue",
-            "name": "TX",
-			"lang":{}
+            "name": "TX" 
         },
         "iciba": {
             "use": false,
             "color": "blue",
-            "name": "iciba",
-			"lang":{"cht":"cht"}
+            "name": "iciba" 
         },
 		"itrans": {
             "use": false,
             "color": "blue",
-            "name": "itrans",
-			"lang":{"en":"en-UK","zh":"zh-CN","es":"es-ES","fr":"fr-FR","cht":"zh-TW"}
+            "name": "itrans" 
         },"lingva": {
             "use": false,
             "color": "blue",
-            "name": "lingva",
-			"lang":{ "cht":"zh_HANT"}
+            "name": "lingva" 
         },
 		"lingvanex": {
             "use": false,
             "color": "blue",
-            "name": "lingvanex",
-			"lang":{"zh":"zh-Hans_CN","cht":"zh-Hant_TW","en":"en_GB","es":"es_ES","fr":"fr_FR","ko":"ko_KR","ru":"ru_RU","ja":"ja_JP"}
+            "name": "lingvanex" 
         },
 		"reverso": {
             "use": false,
             "color": "blue",
-            "name": "reverso",
-			"lang":{"zh":"chi","en":"eng","es":"spa","fr":"fra","ko":"kor","ru":"rus","ja":"jpn"}
+            "name": "reverso" 
         },"reverso_context": {
             "use": false,
             "color": "blue",
-            "name": "reverso_context",
-			"lang":{"zh":"chi","en":"eng","es":"spa","fr":"fra","ko":"kor","ru":"rus","ja":"jpn"}
+            "name": "reverso_context" 
         },
 		"TranslateCom": {
             "use": false,
             "color": "blue",
-            "name": "TranslateCom",
-			"lang":{"cht":"zh-TW"}
+            "name": "TranslateCom" 
         },
         "baiduapi": {
             "use": false,
             "color": "blue",
-            "name": "百度api",
-			"lang":{"es":"spa","ko":"kor","fr":"fra","ja":"jp","cht":"cht"}
+            "name": "百度api"
         },
         "tencentapi": {
             "use": false,
             "color": "blue",
-            "name": "腾讯api",
-			"lang":{}
+            "name": "腾讯api" 
         },"yandexapi": {
             "use": false,
             "color": "blue",
-            "name": "yandex_api",
-			"lang":{}
+            "name": "yandex_api" 
         },
         "byte": {
             "use": false,
             "color": "blue",
-            "name": "byte",
-			"lang":{"auto":"detect"}
+            "name": "byte" 
         },
         "qqimt": {
             "use": false,
             "color": "blue",
-            "name": "qqimt",
-			"lang":{}
+            "name": "qqimt" 
         },
         "xiaoniu": {
             "use": false,
             "color": "blue",
-            "name": "小牛api",
-			"lang":{"auto":"yue","cht":"cht"}
+            "name": "小牛api" 
         },
         "huoshan": {
             "use": false,
             "color": "blue",
-            "name": "huoshan",
-			"lang":{"auto":"detect","cht":"zh-Hant"}
+            "name": "huoshan" 
         },
         "yeekit": {
             "use": false,
             "color": "blue",
-            "name": "yeekit",
-			"lang":{"zh":"nzh","ja":"nja","en":"nen"} 
+            "name": "yeekit" 
         },
         "caiyunapi": {
             "use": false,
             "color": "blue",
-            "name": "彩云api",
-			"lang":{}
+            "name": "彩云api" 
         },
         "huoshanapi": {
             "use": false,
             "color": "blue",
-            "name": "火山api",
-			"lang":{"auto":"detect","cht":"zh-Hant"}
+            "name": "火山api" 
         },"feishu": {
             "use": false,
             "color": "blue",
-            "name": "飞书",
-			"lang":{"cht":"zh-Hant"}
+            "name": "飞书" 
         },
         "papago": {
             "use": false,
             "color": "blue",
-            "name": "papago",
-			"lang":{"zh":"zh-CN","cht":"zh-TW"} 
+            "name": "papago" 
         },
         "rengong": {
             "use": false,
@@ -750,39 +702,33 @@
         "deeplapi-free": {
             "use": false,
             "color": "blue",
-            "name": "deeplapi-free",
-			"lang":{"zh":"ZH","ja":"JA","en":"EN","es":"ES","fr":"FR","ru":"RU"}
+            "name": "deeplapi-free"
         },
         "deeplapi": {
             "use": false,
             "color": "blue",
-            "name": "deeplapi",
-			"lang":{"zh":"ZH","ja":"JA","en":"EN","es":"ES","fr":"FR","ru":"RU"}
+            "name": "deeplapi" 
         },
         "youdaoapi": {
             "use": false,
             "color": "blue",
-            "name": "有道api",
-			"lang":{"zh":"zh-CHS"}
+            "name": "有道api"  
         },
 		"yunyi": {
             "use": false,
             "color": "blue",
-            "name": "云译", 
-			"lang":{"zh":"zh-cn","en":"en-us","auto":"all","cht":"zh-tw"}
+            "name": "云译" 
         }
 		,
 		"yunyi2": {
             "use": false,
             "color": "blue",
-            "name": "云译2", 
-			"lang":{"zh":"zh-cn","en":"en-us","auto":"all","cht":"zh-tw"}
+            "name": "云译2" 
         } ,
 		"hanshant": {
             "use": false,
             "color": "blue",
-            "name": "繁简转换", 
-			"lang":{}
+            "name": "繁简转换" 
         },
 		"selfbuild": {
             "use": false,
@@ -799,8 +745,8 @@
     "minlength": 0,
     "maxlength": 200, 
     "rotation": 0,
-    "srclang2": 2,
-    "tgtlang2": 1,
+    "srclang3": 2,
+    "tgtlang3": 1,
     "transkiroku": false,
     "transkirokuuse": "baidu",
     "showatcenter": false,

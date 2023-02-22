@@ -1,4 +1,5 @@
 import os 
+from utils import somedef
 from utils.ocrdll import ocrwrapper
 from utils.config import globalconfig,_TR
 _ocr=ocrwrapper()
@@ -9,7 +10,7 @@ def ocr(imgfile,lang,space):
         _ocr.trydestroy() 
         if lang=='auto':
             lang='ja'
-        path=f'./files/ocr/{globalconfig["normallanguagelist"][globalconfig["srclang2"]]}'
+        path=f'./files/ocr/{somedef.language_list_translator_inner[globalconfig["srclang3"]]}'
         if os.path.exists(f'{path}/det.onnx') and os.path.exists(f'{path}/rec.onnx') and os.path.exists(f'{path}/dict.txt') :
             pass
         else:

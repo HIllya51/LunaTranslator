@@ -2,6 +2,8 @@
 import requests  
 from translator.basetranslator import basetrans  
 class TS(basetrans):  
+    def langmap(self):
+        return {"cht":"cht"}
     def translate(self,query): 
         if self.config['args']['apikey']=="":
             return 

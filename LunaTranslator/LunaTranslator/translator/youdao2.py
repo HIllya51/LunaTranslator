@@ -9,6 +9,8 @@ import random
 import json
 import requests
 class TS(basetrans): 
+    def langmap(self):
+        return {"zh":"zh-cn"}
     def inittranslator(self): 
         self.ss=requests.session()
         self.ss.get('https://fanyi.youdao.com',headers = { 
