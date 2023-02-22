@@ -9,7 +9,8 @@ from utils.utils import selectdebugfile
 import socket,os
 from utils import somedef
 from gui.inputdialog import autoinitdialog 
-def initsome11(self,l,grids,label=None): 
+def initsome11(self,l,label=None): 
+    grids=[]
     if label:
         grids.append(
             [(label,8)]
@@ -68,7 +69,7 @@ def initsome11(self,l,grids,label=None):
         else:
             line+=['']
 
-
+    return grids
 def setTabTwo(self) : 
     self.tabadd_lazy(self.tab_widget, ('翻译设置'), lambda :setTabTwo_lazy(self)) 
 def setTabTwo_lazy(self) :
@@ -81,19 +82,13 @@ def setTabTwo_lazy(self) :
 
         grids=[[
                 ("最短翻译字数",8),(self.getspinbox(0,500,globalconfig,'minlength'),3),'',
-                ("最长翻译字数",8),(self.getspinbox(0,500,globalconfig,'maxlength'),3)  ,('',7)]
-        ] 
-
-        onlinegrid=[
-            [
+                ("最长翻译字数",8),(self.getspinbox(0,500,globalconfig,'maxlength'),3)  ,('',7)],
+                [
                 ("在线翻译等待时间(s)",8),(self.getspinbox(1,20,globalconfig,'translatortimeout',step=0.1,double=True,callback=socket.setdefaulttimeout),3),'',
                  ("翻译请求间隔(s)",8),(self.getspinbox(0,10,globalconfig,'transtimeinternal',step=0.1,double=True),3) ,
-            ], 
-        ]
-       
-        offlinegrid=[
-
-        ]
+            ],
+        ] 
+ 
         pretransgrid=[
             [
                 ("预翻译采用模糊匹配",8),(self.getsimpleswitch(globalconfig  ,'premtsimiuse'),1),'',
@@ -112,12 +107,13 @@ def setTabTwo_lazy(self) :
             if _ not in translatorsetting : 
                 mianfei.add(_) 
         shoufei=online-mianfei  
-        initsome11(self, lixians ,offlinegrid)   
-        initsome11(self, mianfei,onlinegrid, '在线翻译',) 
-        initsome11(self, shoufei,onlinegrid,'注册在线翻译') 
-        initsome11(self,mt ,pretransgrid)   
-        tab=self.makesubtab_lazy(['在线翻译','离线翻译','预翻译'],[
+        offlinegrid=initsome11(self, lixians)   
+        onlinegrid=initsome11(self, mianfei ) 
+        online_reg_grid=initsome11(self, shoufei) 
+        pretransgrid+=initsome11(self,mt )   
+        tab=self.makesubtab_lazy(['在线翻译','注册在线翻译','离线翻译','预翻译'],[
             lambda:self.makescroll( self.makegrid(onlinegrid )   ),
+            lambda:self.makescroll( self.makegrid(online_reg_grid )   ),
             lambda:self.makescroll( self.makegrid(offlinegrid )   ),
             lambda:self.makescroll( self.makegrid(pretransgrid )   ),
         ]) 
