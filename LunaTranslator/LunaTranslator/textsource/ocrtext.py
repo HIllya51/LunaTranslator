@@ -156,7 +156,14 @@ class ocrtext(basetext):
         fname=f'./cache/ocr/{self.timestamp}.png'
         img.save(fname)
         try:
-            lang=self.language(use)
+            ocr =importlib.import_module('otherocr.'+use)
+            ocr_f=ocr.ocr
+            try:
+                langmap=ocr.langmap
+            except:
+                langmap={}
+            
+            lang=self.language(use,langmap)
             if globalconfig['ocrmergelines']==False:
                 space='\n'
             elif lang in ['zh','ja']:
@@ -165,17 +172,18 @@ class ocrtext(basetext):
                 space=' '
             
         
-            ocr=importlib.import_module('otherocr.'+use).ocr 
-            return ocr(fname,lang,space)
+            
+            return ocr_f(fname,lang,space)
         except:
             print_exc()
             return ''
-    def language(self,tp):
+    def language(self,tp,langmap):
+        
+
+ 
+        _=dict(zip(somedef.language_list_translator_inner,somedef.language_list_translator_inner))
+        _.update({'cht':'zh'})
+        _.update(langmap) 
+
         l=somedef.language_list_translator_inner[globalconfig['srclang3']]
-        if l=='cht' and l not in globalconfig['fanyi'][self.typename]['lang']:
-            l='zh'
-        if l in globalconfig['ocr'][tp]['lang']:
-            return globalconfig['ocr'][tp]['lang'][l]
-        else:
-            return l
-            
+        return _[l] 

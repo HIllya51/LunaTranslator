@@ -12,7 +12,7 @@ from PyQt5.QtWidgets import  QWidget,QLabel
 import functools
 from PyQt5.QtWidgets import QDialog ,QSpinBox,QVBoxLayout,QLineEdit,QGridLayout
 from PyQt5.QtCore import QSize,Qt
-from utils.config import globalconfig ,_TR,_TRL
+from utils.config import globalconfig ,_TR,_TRL,defaultglobalconfig
 import qtawesome 
  
 from gui.inputdialog import getsomepath1
@@ -31,6 +31,9 @@ def setTab7_lazy(self) :
         grids=[
             [('预处理方法',6),'','',('调整执行顺序',6)]
         ] 
+         
+        if len(defaultglobalconfig['postprocess_rank'])!=len(globalconfig['postprocess_rank']):
+            globalconfig['postprocess_rank']=defaultglobalconfig['postprocess_rank']
         sortlist=globalconfig['postprocess_rank']
         savelist=[]
         savelay=[] 

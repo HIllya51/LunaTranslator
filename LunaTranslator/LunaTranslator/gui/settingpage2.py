@@ -7,6 +7,7 @@ from gui.pretransfile import sqlite2json
 from utils.config import globalconfig ,_TR,_TRL
 from utils.utils import selectdebugfile
 import socket,os
+from utils import somedef
 from gui.inputdialog import autoinitdialog 
 def initsome11(self,l,grids,label=None): 
     if label:
@@ -102,9 +103,9 @@ def setTabTwo_lazy(self) :
             ],['']
         ]
 
-        lixians=set(globalconfig['fanyi_offline'])
+        lixians=set(somedef.fanyi_offline)
         alls=set(globalconfig['fanyi'].keys())
-        mt=set(globalconfig['fanyi_pre'])
+        mt=set(somedef.fanyi_pre)
         online=alls-lixians-mt 
         mianfei=set()
         for _ in online:

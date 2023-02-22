@@ -7,6 +7,8 @@ from utils.config import globalconfig,ocrsetting
  
 cacheapikey=("","")
 cacheaccstoken=""
+
+langmap={"zh":"CHN_ENG","en":"ENG","ja":"JAP","en":"ENG","ko":"KOR","fr":"FRE","es":"SPA"}
 def ocr(imgfile,lang,space):
     global cacheapikey,cacheaccstoken
     js=ocrsetting['baiduocr_accurate']

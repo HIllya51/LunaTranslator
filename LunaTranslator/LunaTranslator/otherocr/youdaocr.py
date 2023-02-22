@@ -3,7 +3,7 @@ import base64
 import os
 import json
 from utils.config import globalconfig
- 
+langmap={"zh":"zh-Hans-CN","cht":"zh-Hant-TW"}
 def ocr(imgfile,_,space):
      
 

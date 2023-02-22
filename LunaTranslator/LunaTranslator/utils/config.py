@@ -84,9 +84,6 @@ def syncconfig(config1,default,drop=False,deep=0):
         for key in list(config1.keys()):
             if key not in default:
                 config1.pop(key) 
-def listlengthsync(d1,d2,key,force=False): 
-    if force or (key not in d1) or  len(d1[key])!=len(d2[key]):
-        d1[key]=d2[key]
 
 syncconfig(globalconfig,defaultglobalconfig) 
 syncconfig(postprocessconfig,defaultpost ,True,3)  
@@ -111,10 +108,7 @@ try:
         globalconfig['hirasetting']['mecab']['use']=globalconfig['mecab']['use']
         globalconfig.pop('mecab')
 except:
-    pass
-listlengthsync(globalconfig,defaultglobalconfig,'postprocess_rank')  
- 
- 
+    pass 
 
 def setlanguage():
     global language,languageshow

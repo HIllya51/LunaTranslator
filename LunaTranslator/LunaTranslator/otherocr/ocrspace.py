@@ -3,6 +3,7 @@ import base64
 import os
 import json
 from utils.config import globalconfig ,ocrsetting
+langmap={"ja":"jpn","zh":"chs","en":"eng","ko":"kor","es":"spa","fr":"fre","ru":"rus","cht":"cht"}
 def ocr(imgfile,lang,_):
     js=ocrsetting['ocrspace']
     if js['args']['apikey']=="":

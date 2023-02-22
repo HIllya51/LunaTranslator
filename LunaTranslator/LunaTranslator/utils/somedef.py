@@ -10,3 +10,7 @@ language_list_translator_inner=["zh", "ja", "en","ru","es","ko","fr","cht"]
 
 charsetmap=[0,1,128,134,136,129,163,122,161,178,177,162,238,186,204]
 charsetmapshow=["自动","系统默认","日语","简体中文","繁体中文","韩语","越南语","泰语","希腊语","阿拉伯语","希伯来语","土耳其语","中东欧","北欧","西里尔"]
+
+
+fanyi_offline=["jb7","dreye","kingsoft","hanshant","selfbuild"]
+fanyi_pre=["rengong","premt","rengong_vnr","rengong_msk"]

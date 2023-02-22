@@ -441,62 +441,48 @@
     "ocr": {
         "local": {
             "use": true,
-            "name": "本地OCR",
-			"lang":{}
+            "name": "本地OCR" 
         },
         "windowsocr": {
             "use": false,
-            "name": "WindowsOCR",
-			"lang":{"zh":"zh-Hans-CN","cht":"zh-Hant-TW"}
+            "name": "WindowsOCR" 
         },
         "baiduocr": {
             "use": false,
-            "name": "baiduOCR",
-			"lang":{"zh":"CHN_ENG","en":"ENG","ja":"JAP","en":"ENG","ko":"KOR","fr":"FRE","es":"SPA"}
-
+            "name": "baiduOCR"  
         },
 		"baiduocr_accurate": {
             "use": false,
-            "name": "baiduOCR_高精度",
-			"lang":{"zh":"CHN_ENG","en":"ENG","ja":"JAP","en":"ENG","ko":"KOR","fr":"FRE","es":"SPA"}
-
+            "name": "baiduOCR_高精度" 
         }, "feishu": {
             "use": false,
             "name": "飞书" 
         },
         "ocrspace": {
             "use": false,
-            "name": "ocrspace",
-			"lang":{"ja":"jpn","zh":"chs","en":"eng","ko":"kor","es":"spa","fr":"fre","ru":"rus","cht":"cht"}
+            "name": "ocrspace" 
         },
         "docsumo": {
             "use": false,
-            "name": "docsumo",
-			"lang":{}
+            "name": "docsumo" 
         },
         "youdaocr": {
             "use": false,
-            "name": "youdaocr",
-			"lang":{}
+            "name": "youdaocr" 
         },
         "youdaocrtrans": {
             "use": false,
-            "name": "youdao图片翻译",
-			"lang":{}
+            "name": "youdao图片翻译" 
         },
 		"sougouocr": {
             "use": false,
-            "name": "sougouocr",
-			"lang":{}
+            "name": "sougouocr" 
         },
 		"volcengine":{
 			"use":false,
-			"name":"火山OCR",
-			"lang":{}
+			"name":"火山OCR" 
 		}
     },  
-	"fanyi_offline":["jb7","dreye","kingsoft","hanshant","selfbuild"],
-	"fanyi_pre":["rengong","premt","rengong_vnr","rengong_msk"],
     "fanyi": {
         "baidu": {
             "use": true,
