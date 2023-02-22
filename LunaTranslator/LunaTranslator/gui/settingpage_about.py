@@ -18,7 +18,7 @@ def _setproxy(x):
         #
 def resourcegrid( ) :  
         grid=[ 
-            [('OCR-简体中文'),('<a href="https://github.com/HIllya51/LunaTranslator/releases/download/v1.34.5/zh.zip">zh.zip</a>',1,'link')],
+            [('OCR-简体中文'),('<a href="https://github.com/HIllya51/LunaTranslator/releases/download/v1.34.5/zh.zip">zh.zip</a>',1,'link'),'',''],
             [('OCR-繁体中文'),('<a href="https://github.com/HIllya51/LunaTranslator/releases/download/v1.34.5/cht.zip">cht.zip</a>',1,'link')],
             [('OCR-韩语'),('<a href="https://github.com/HIllya51/LunaTranslator/releases/download/v1.34.5/ko.zip">ko.zip</a>',1,'link')],
             [('OCR-俄语'),('<a href="https://github.com/HIllya51/LunaTranslator/releases/download/v1.1.2/ru.zip">ru.zip</a>',1,'link')],
@@ -124,32 +124,28 @@ def setTab_aboutlazy(self) :
         
         grid1=[ 
             [
-                ("使用代理",5),(self.getsimpleswitch(globalconfig  ,'useproxy',callback=lambda x: _setproxy(x)),1),''],
+                ("使用代理",5),(self.getsimpleswitch(globalconfig  ,'useproxy',callback=lambda x: _setproxy(x)),1),('',10)],
             [        ("代理设置(ip:port)",5),        (proxy,5),(btn,2),  
             ], 
         ]
         grid2=[                
-                [('自动下载更新(需要连接github)',5),(self.getsimpleswitch(globalconfig ,'autoupdate',callback= lambda x:getversion(self)),1) ],
+                [('自动下载更新(需要连接github)',5),(self.getsimpleswitch(globalconfig ,'autoupdate',callback= lambda x:getversion(self)),1) ,('',10)],
                 [(self.versionlabel,10)], 
                 [(self.downloadprogress,10)],
                 #[(self.versionlabel4,10)] 
         ]  
          
-         
-        
-
-        wh=self.rate*400
           
         shuominggrid=[
             ['项目网站',('<a href="https://github.com/HIllya51/LunaTranslator">https://github.com/HIllya51/LunaTranslator</a>',3,'link')],
             ['使用说明',('<a href="https://hillya51.github.io/">https://hillya51.github.io/</a>',3,'link')],
             [('如果你感觉该软件对你有帮助，欢迎微信扫码或者前往<a href="https://afdian.net/a/HIllya51">爱发电</a>赞助，谢谢，么么哒~',4)]
         ]
-        tab=self.makesubtab_lazy(['自动更新','代理设置','资源下载' ,'支持作者'],[
+        tab=self.makesubtab_lazy(['支持作者','自动更新','代理设置','资源下载' ],[
+                lambda:self.makevbox( [self.makegrid(shuominggrid),imgwidget("./files/zan.jpg")]),
                 lambda: self.makescroll(self.makegrid(grid2 )   ) ,
                 lambda: self.makescroll(self.makegrid(grid1 )   ),
-                lambda:self.makescroll( self.makegrid(resourcegrid() ) ),
-                lambda:self.makevbox( [self.makegrid(shuominggrid),imgwidget("./files/zan.jpg")])#QLabel(f'<img src="./files/zan.jpg" heigth={wh} width={wh}>')
+                lambda:self.makescroll( self.makegrid(resourcegrid() ) ), 
                 ]) 
         return tab
 
