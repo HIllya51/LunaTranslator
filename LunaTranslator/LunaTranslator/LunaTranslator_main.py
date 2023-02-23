@@ -328,11 +328,8 @@ class MAINUI(QObject) :
         else:
             self.hira_=None
     def fanyiinitmethod(self,classname):
-        try:
-            aclass=importlib.import_module('translator.'+classname).TS 
-            _=aclass(classname)  
-        except:
-            return None
+        aclass=importlib.import_module('translator.'+classname).TS 
+        _=aclass(classname)  
         _.show=partial(self._maybeyrengong,classname)
         return _
      
@@ -367,7 +364,7 @@ class MAINUI(QObject) :
                     aclass=getattr(aclass,type_)
                 except:
                     print_exc()
-                    return None
+                    return 
                 class cishuwrapper:
                     def __init__(self,_type) -> None:
                         self._=_type() 
