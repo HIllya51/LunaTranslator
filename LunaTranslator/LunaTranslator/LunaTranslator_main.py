@@ -51,13 +51,10 @@ from utils.post import POSTSOLVE
 from utils.vnrshareddict import vnrshareddict 
 
 import pyperclip
-from utils.simplekanji import kanjitrans 
-print('loadimports',time.time()-filestart)
 from utils.simplekanji import kanjitrans
 from embedded.rpcman3 import RpcServer
 from embedded.gameagent3 import GameAgent 
-from utils.simplekanji import kanjitrans 
-print('loadimports',time.time()-filestart)
+
  
 class MAINUI(QObject) :
     startembedsignal=pyqtSignal(int,embedded)
@@ -328,6 +325,8 @@ class MAINUI(QObject) :
         else:
             self.hira_=None
     def fanyiinitmethod(self,classname):
+        if os.path.exists('./LunaTranslator/translator/'+classname+'.py')==False:
+            return None
         aclass=importlib.import_module('translator.'+classname).TS 
         _=aclass(classname)  
         _.show=partial(self._maybeyrengong,classname)
@@ -479,8 +478,6 @@ class MAINUI(QObject) :
             time.sleep(0.5)#太短了的话，中间存在一瞬间，后台进程比前台窗口内存占用要大。。。
     def aa(self):   
         self.translation_ui =gui.translatorUI.QUnFrameWindow(self)   
-        print('uistart',time.time()-filestart) 
-        print(time.time())
         if globalconfig['rotation']==0:
             self.translation_ui.show() 
         else:
@@ -494,7 +491,7 @@ class MAINUI(QObject) :
             self.view.setStyleSheet('background-color: rgba(255, 255, 255, 0);')
             self.view.setGeometry(QDesktopWidget().screenGeometry())
             self.view.show()        
-        print('uiok',time.time()-filestart)
+            
          
         self.mainuiloadafter()
         threading.Thread(target=self.setontopthread).start() 
@@ -504,9 +501,9 @@ class MAINUI(QObject) :
         self.prepare()  
         self.startxiaoxueguan()
         self.starthira()      
-        print('load',time.time()-filestart) 
+        
         self.settin_ui = Settin(self)  
-        print('seting',time.time()-filestart) 
+        
         self.startreader()  
         self.transhis=gui.transhist.transhist(self.translation_ui)  
         self.edittextui=gui.edittext.edittext(self.translation_ui)  
@@ -522,7 +519,6 @@ class MAINUI(QObject) :
 if __name__ == "__main__" :
     
     
-    print(time.time()-filestart) 
     screen_scale_rate = getScreenRate()  
      
     QCoreApplication.setAttribute(Qt.AA_UseHighDpiPixmaps, True)
@@ -535,10 +531,7 @@ if __name__ == "__main__" :
         globalconfig['language_setted']=True
         globalconfig['languageuse']=x.current
         setlanguage()
-    print('before', time.time()-filestart)
     main = MAINUI() 
-    print('MAINUI', time.time()-filestart)
     main.screen_scale_rate =screen_scale_rate  
     main.aa()
-    print(time.time()-filestart)
     app.exit(app.exec_())

@@ -66,7 +66,7 @@ def getversion(self):
        # print(version)
         url=res['assets'][0]['browser_download_url'] 
     except:
-        print_exc()
+        #print_exc()
         _version=("获取失败") 
     self.versiontextsignal.emit((('当前版本')+':'+  version+'  '+("最新版本")+':'+ _version) ) #,'' if version== _version else  newcontent,url,'LunaTranslator.zip'))
     if _version!=("获取失败") and version!=_version:
