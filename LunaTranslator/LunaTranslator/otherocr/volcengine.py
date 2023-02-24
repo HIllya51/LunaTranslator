@@ -1300,8 +1300,8 @@ def ocr(imgfile,lang,space):
     visual_service = VisualService()
 
     # call below method if you dont set ak and sk in $HOME/.volc/config
-    visual_service.set_ak(js['Access Key ID'])
-    visual_service.set_sk(js['Secret Access Key'])
+    visual_service.set_ak(js['Access Key ID'].strip())
+    visual_service.set_sk(js['Secret Access Key'].strip())
     
     visual_service.set_api_info('MultiLanguageOCR', '2022-08-31')
 

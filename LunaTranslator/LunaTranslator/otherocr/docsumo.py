@@ -7,7 +7,7 @@ def ocr(imgfile,_,space):
     js=ocrsetting['docsumo']
     if js['args']['token']=="":
         return ''
-    token=js['args']['token']
+    token=js['args']['token'].strip()
    
     headers = {
         'authority': 'ocrserver.docsumo.com',

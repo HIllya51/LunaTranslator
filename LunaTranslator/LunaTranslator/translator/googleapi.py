@@ -12,7 +12,7 @@ class TS(basetrans):
         if self.config['args']['key']=="":
             return 
         else:
-            key = self.config['args']['key'] 
+            key = self.config['args']['key'].strip() 
    
         params={'key': key,'source':self.srclang, 'target':self.tgtlang, 'q':  (query)}
         response = requests.get("https://translation.googleapis.com/language/translate/v2/",params=params )

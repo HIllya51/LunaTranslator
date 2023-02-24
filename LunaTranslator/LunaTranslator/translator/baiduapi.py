@@ -15,8 +15,8 @@ class TS(basetrans):
         if self.config['args']['APP ID']=="":
             return 
         else:
-            appid = self.config['args']['APP ID']
-            secretKey = self.config['args']['密钥']
+            appid = self.config['args']['APP ID'].strip()
+            secretKey = self.config['args']['密钥'].strip()
   
         myurl = '/api/trans/vip/translate'
 

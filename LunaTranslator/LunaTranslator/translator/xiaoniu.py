@@ -8,7 +8,7 @@ class TS(basetrans):
         if self.config['args']['apikey']=="":
             return 
         else:
-            apikey = self.config['args']['apikey'] 
+            apikey = self.config['args']['apikey'].strip() 
         headers = { 
             'accept': '*/*',
             'accept-language': 'zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6',

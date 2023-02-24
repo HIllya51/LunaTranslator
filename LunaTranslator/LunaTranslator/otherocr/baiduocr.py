@@ -12,8 +12,8 @@ def ocr(imgfile,lang,space):
     global cacheapikey,cacheaccstoken
     js=ocrsetting['baiduocr']
 
-    appid = js['args']['API Key']
-    secretKey = js['args']['Secret Key']
+    appid = js['args']['API Key'].strip()
+    secretKey = js['args']['Secret Key'].strip()
     if (appid,secretKey)!=cacheapikey:
         try:
             cacheaccstoken=requests.get('https://aip.baidubce.com/oauth/2.0/token?grant_type=client_credentials&client_id='+appid+'&client_secret='+secretKey, proxies=  {'http': None,'https': None}).json()['access_token']

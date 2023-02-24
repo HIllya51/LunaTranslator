@@ -93,9 +93,9 @@ class TS(basetrans):
         if self.config['args']['SecretId']=="":
             return 
         else:
-            appid = self.config['args']['SecretId']
-            secretKey =self.config['args']['SecretKey']
-
+            appid = self.config['args']['SecretId'].strip()
+            secretKey =self.config['args']['SecretKey'].strip()
+        
         self.config['args']['字数统计']=str(int(self.config['args']['字数统计'])+len(query))
         self.config['args']['次数统计']=str(int(self.config['args']['次数统计'])+1)
          

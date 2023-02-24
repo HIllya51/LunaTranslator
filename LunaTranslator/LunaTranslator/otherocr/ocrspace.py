@@ -8,7 +8,7 @@ def ocr(imgfile,lang,_):
     js=ocrsetting['ocrspace']
     if js['args']['apikey']=="":
         return ''
-    apikey=js['args']['apikey']
+    apikey=js['args']['apikey'].strip()
     headers = {
         'authority': 'apipro3.ocr.space',
         'accept': 'application/json, text/javascript, */*; q=0.01',

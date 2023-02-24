@@ -13,7 +13,7 @@ class TS(basetrans):
         if self.config['args']['DeepL-Auth-Key']=="":
             return 
         else:
-            appid = self.config['args']['DeepL-Auth-Key'] 
+            appid = self.config['args']['DeepL-Auth-Key'].strip() 
   
         headers = {
         'Authorization': 'DeepL-Auth-Key '+appid,

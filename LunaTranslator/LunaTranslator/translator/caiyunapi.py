@@ -13,7 +13,7 @@ class TS(basetrans):
         if self.config['args']['Token']=="":
             return 
         else:
-            Token = self.config['args']['Token']  
+            Token = self.config['args']['Token'].strip()  
         def tranlate(source,   Token):
             url = "http://api.interpreter.caiyunai.com/v1/translator"
             # WARNING, this token is a test token for new developers,

@@ -34,15 +34,15 @@ class Settin(closeashidewindow) :
     clicksourcesignal=pyqtSignal(str)
     def resizefunction(self):
          
-        for w in self.needfitwidgets:
+        for w in self.needfitwidgets: 
             w.setFixedWidth(self.size().width()- self.window_width*0.2 -self.scrollwidth)
         for grid,maxl in self.needfitcols:
             for c in range(maxl):
                 grid.setColumnMinimumWidth(c,self.size().width()- self.window_width*0.2-self.scrollwidth//maxl)
-         
+        self.setMinimumSize(100,100)
     def resizeEvent(self, a0: QResizeEvent) -> None: 
         
-        self.resizefunction()
+        self.resizefunction() 
         return super().resizeEvent(a0)
     def automakegrid(self,grid,lis,save=False,savelist=None  ): 
         maxl=0

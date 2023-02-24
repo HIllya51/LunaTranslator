@@ -11,8 +11,8 @@ def ocr(imgfile,lang,space):
     global cacheapikey,cacheaccstoken
     js=ocrsetting['feishu']
 
-    app_id = js['args']['app_id']  
-    app_secret = js['args']['app_secret']  
+    app_id = js['args']['app_id'].strip()  
+    app_secret = js['args']['app_secret'].strip()  
     
             
     res=requests.post('https://open.feishu.cn/open-apis/auth/v3/tenant_access_token/internal',headers={'Content-Type':"application/json; charset=utf-8"}, proxies=  {'http': None,'https': None},json={

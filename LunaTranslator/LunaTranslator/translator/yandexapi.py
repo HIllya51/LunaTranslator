@@ -6,7 +6,7 @@ class TS(basetrans):
         if self.config['args']['key']=="":
             return 
         else:
-            key = self.config['args']['key'] 
+            key = self.config['args']['key'].strip() 
         url = 'https://translate.yandex.net/api/v1.5/tr.json/translate'    
     
         params = {

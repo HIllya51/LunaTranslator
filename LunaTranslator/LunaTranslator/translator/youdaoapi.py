@@ -10,8 +10,8 @@ class TS(basetrans):
         if self.config['args']['APP_KEY']=="":
             return 
         else:
-            APP_KEY = self.config['args']['APP_KEY']
-            APP_SECRET = self.config['args']['APP_SECRET']
+            APP_KEY = self.config['args']['APP_KEY'].strip()
+            APP_SECRET = self.config['args']['APP_SECRET'].strip()
         youdao_url = 'https://openapi.youdao.com/api'    
  
         translate_text = content  
