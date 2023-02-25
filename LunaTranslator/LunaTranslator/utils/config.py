@@ -81,7 +81,7 @@ syncconfig(ocrsetting,ocrdfsetting,True,3)
 def setlanguage():
     global language,languageshow
     language=globalconfig['languageuse']
-    with open(f'./files/lang/{somedef.language_list[language]}.json','r',encoding='utf8') as ff:
+    with open(f'./files/lang/{somedef.language_list_translator_inner[language]}.json','r',encoding='utf8') as ff:
         languageshow=json.load(ff)
 setlanguage()
 def _TR(k):
@@ -127,5 +127,5 @@ def saveallconfig():
         # with open('./userconfig/savehook_new3.json','w',encoding='utf8') as ff:
         #         ff.write(json.dumps(savehook_new2,ensure_ascii=False,sort_keys=False, indent=4))
 
-        with open(f'./files/lang/{somedef.language_list[language]}.json','w',encoding='utf8') as ff:
+        with open(f'./files/lang/{somedef.language_list_translator_inner[language]}.json','w',encoding='utf8') as ff:
             ff.write( json.dumps(languageshow,ensure_ascii=False,sort_keys=False, indent=4))

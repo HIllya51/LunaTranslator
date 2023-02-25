@@ -22,7 +22,7 @@ if __name__=='__main__':
         js=json.loads(js)
     
     xxx={'ru':'ru','en':'en',
-    "es":"spa","ko":"kor","fr":"fra" ,"cht":"cht"}
+    "es":"spa","ko":"kor","fr":"fra" ,"cht":"cht",'ja':'jp'}
 
     for kk in xxx:
         with open(f'./files/lang/{kk}.json','r',encoding='utf8')  as ff:

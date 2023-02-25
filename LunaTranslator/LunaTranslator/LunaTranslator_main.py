@@ -528,12 +528,13 @@ if __name__ == "__main__" :
     QCoreApplication.setAttribute(Qt.AA_UseHighDpiPixmaps, True)
     app = QApplication(sys.argv) 
     app.setQuitOnLastWindowClosed(False)
-    if  globalconfig['language_setted']==False:
+    if  globalconfig['language_setted_2.4.5']==False:
         from gui.languageset import languageset
         x=languageset(somedef.language_list_show)
         x.exec()
-        globalconfig['language_setted']=True
+        globalconfig['language_setted_2.4.5']=True
         globalconfig['languageuse']=x.current
+        globalconfig['tgtlang3']=x.current
         setlanguage()
     main = MAINUI() 
     main.screen_scale_rate =screen_scale_rate  

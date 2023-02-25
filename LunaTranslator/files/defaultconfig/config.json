@@ -24,7 +24,7 @@
 		"changecharset_charset":2
 	},
 	"buttonsize":20,
-	"language_setted":false,
+	"language_setted_2.4.5":false,
 	"postprocess_rank":["_2","_3", "_10","_1",   "_4", "_6", "_91", "_92", "_7", "_7_zhuanyi", "_8","_11","_13","_100"],
 	"hist_split":false,
 	"hist_fontstring":"Arial,12,-1,5,50,0,0,0,0,0,Regular", 
