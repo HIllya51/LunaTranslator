@@ -13,9 +13,9 @@ class TS(basetrans):
                 self.path=p
     def inittranslator(self):
         self.path='' 
-        self.checkfilechanged(self.config['args']['json文件'] )
+        self.checkfilechanged(self.config['json文件'] )
     def translate(self,content):  
-        self.checkfilechanged(self.config['args']['json文件'] ) 
+        self.checkfilechanged(self.config['json文件'] ) 
         if globalconfig['premtsimiuse']:
             mindis=9999999
             

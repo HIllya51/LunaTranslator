@@ -10,10 +10,10 @@ class TS(basetrans):
     def inittranslator(self):
         self.session=requests.session()
     def translate(self,query):  
-        if self.config['args']['DeepL-Auth-Key']=="":
+        if self.config['DeepL-Auth-Key']=="":
             return 
         else:
-            appid = self.config['args']['DeepL-Auth-Key'].strip() 
+            appid = self.config['DeepL-Auth-Key'].strip() 
   
         headers = {
         'Authorization': 'DeepL-Auth-Key '+appid,
@@ -25,8 +25,7 @@ class TS(basetrans):
             response = requests.post('https://api-free.deepl.com/v2/translate', headers=headers, verify=False, data=data ).json()  
         else:
             response = requests.post('https://api-free.deepl.com/v2/translate', headers=headers, verify=False, data=data ,proxies={"https":None,"http":None}).json()  
-        self.config['args']['字数统计']=str(int(self.config['args']['字数统计'])+len(query))
-        self.config['args']['次数统计']=str(int(self.config['args']['次数统计'])+1) 
+        self.countnum(query)
         #print(res['trans_result'][0]['dst'])
         return response['translations'][0]['text']
      

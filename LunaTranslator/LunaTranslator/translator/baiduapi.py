@@ -12,11 +12,11 @@ class TS(basetrans):
     def inittranslator(self):
         self.session=requests.session()
     def translate(self,query):  
-        if self.config['args']['APP ID']=="":
+        if self.config['APP ID'].strip()=="" or self.config['密钥'].strip()=="":
             return 
         else:
-            appid = self.config['args']['APP ID'].strip()
-            secretKey = self.config['args']['密钥'].strip()
+            appid = self.config['APP ID'].strip()
+            secretKey = self.config['密钥'].strip()
   
         myurl = '/api/trans/vip/translate'
 
@@ -30,8 +30,6 @@ class TS(basetrans):
         salt) + '&sign=' + sign
         
         res=self.session.get('https://api.fanyi.baidu.com'+myurl,timeout=globalconfig['translatortimeout'], proxies=  {'http': None,'https': None}).json()  
-        self.config['args']['字数统计']=str(int(self.config['args']['字数统计'])+len(query))
-        self.config['args']['次数统计']=str(int(self.config['args']['次数统计'])+1)
-         
+        self.countnum(query)
         return '\n'.join([_['dst'] for _ in res['trans_result']])  
           

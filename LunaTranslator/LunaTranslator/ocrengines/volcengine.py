@@ -1294,26 +1294,29 @@ class VisualService(Service):
 
     def set_api_info(self, action, version):
         self.api_info[action] = ApiInfo("POST", "/", {"Action": action, "Version": version}, {}, {})
-def ocr(imgfile,lang,space): 
-    js=ocrsetting['volcengine']['args']
  
-    visual_service = VisualService()
+import requests
+import base64  
+from ocrengines.baseocrclass import baseocr 
+class OCR(baseocr):
+      
+    def ocr(self,imgfile):  
+        visual_service = VisualService()
 
-    # call below method if you dont set ak and sk in $HOME/.volc/config
-    visual_service.set_ak(js['Access Key ID'].strip())
-    visual_service.set_sk(js['Secret Access Key'].strip())
-    
-    visual_service.set_api_info('MultiLanguageOCR', '2022-08-31')
+        # call below method if you dont set ak and sk in $HOME/.volc/config
+        visual_service.set_ak(self.config['Access Key ID'].strip())
+        visual_service.set_sk(self.config['Secret Access Key'].strip())
+        
+        visual_service.set_api_info('MultiLanguageOCR', '2022-08-31')
 
-    # below shows the sdk usage for all common apis,
-    # if you cannot find the needed one, please check other example files in the same dir
-    # or contact us for further help
-    form = dict()
-    import base64
-    with open(imgfile,'rb') as ff:
-        f=ff.read()
-    b64=base64.b64encode(f)
-    form["image_base64"] =b64
-    resp = visual_service.ocr_api('MultiLanguageOCR', form)
-    return space.join([box['text'] for box in resp['data']['ocr_infos']])
-  
+        # below shows the sdk usage for all common apis,
+        # if you cannot find the needed one, please check other example files in the same dir
+        # or contact us for further help
+        form = dict()
+        import base64
+        with open(imgfile,'rb') as ff:
+            f=ff.read()
+        b64=base64.b64encode(f)
+        form["image_base64"] =b64
+        resp = visual_service.ocr_api('MultiLanguageOCR', form)
+        return self.space.join([box['text'] for box in resp['data']['ocr_infos']])

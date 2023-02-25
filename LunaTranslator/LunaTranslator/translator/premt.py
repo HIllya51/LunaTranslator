@@ -13,9 +13,9 @@ class TS(basetrans):
                     self.path=p
     def inittranslator(self):
         self.path=''
-        self.checkfilechanged(self.config['args']['sqlite文件'])
+        self.checkfilechanged(self.config['sqlite文件'])
     def translate(self,content): 
-        self.checkfilechanged(self.config['args']['sqlite文件'])
+        self.checkfilechanged(self.config['sqlite文件'])
         if globalconfig['premtsimiuse']:
             mindis=9999999
             savet="{}"
@@ -40,7 +40,4 @@ class TS(basetrans):
             except:
                 ret= ret[0]
         return ret  
-             
-if __name__=='__main__':
-    a=BINGFY()
-    a.gettask('はーい、おやすみなさい')
+     

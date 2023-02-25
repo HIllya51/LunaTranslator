@@ -34,10 +34,17 @@ class basetrans:
             return self.langmap_[l] 
         except:
             return '' 
+    def countnum(self,query):
+        try:
+            self.config['字数统计']=str(int(self.config['字数统计'])+len(query))
+            self.config['次数统计']=str(int(self.config['次数统计'])+1)
+        except:
+            self.config['字数统计']=str( len(query))
+            self.config['次数统计']='1'
     @property
     def config(self):
         try:
-            return translatorsetting[self.typename]
+            return translatorsetting[self.typename]['args']
         except:
             return {}
     def __init__(self,typename ) :  

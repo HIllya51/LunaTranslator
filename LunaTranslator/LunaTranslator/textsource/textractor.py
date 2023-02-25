@@ -12,7 +12,7 @@ from utils.getpidlist import getarch
 from textsource.textsourcebase import basetext 
 from utils.chaos import checkchaos  
 class textractor(basetext  ): 
-    def __init__(self,textgetmethod,hookselectdialog,pid,hwnd,pname  ,autostarthookcode=None) :
+    def __init__(self,textgetmethod,hookselectdialog,pid,hwnd,pname  ,autostarthookcode=None,needinserthookcode=None) :
         if autostarthookcode is None:
             autostarthookcode=[]
         hookselectdialog.changeprocessclearsignal.emit()
@@ -46,6 +46,7 @@ class textractor(basetext  ):
         self.matched_hook_num=0 
         self.autostarthookcode=[tuple(__) for __ in autostarthookcode]
         self.autostarting=len(self.autostarthookcode)>0
+        self.needinserthookcode=needinserthookcode
         self.removedaddress=[] 
         self.HookCode=None 
          
@@ -67,27 +68,12 @@ class textractor(basetext  ):
         if self.autostarting: 
             threading.Thread(target=self.autostartinsert,daemon=True).start() 
      
-    def autostartinsert(self):
-        time.sleep(3)
-        dumpling=[]
-        if self.ending:
-            return 
-        self.lock.acquire() 
-        for _h in self.autostarthookcode:
-            ready=False
-
-            for _hh in self.hookdatacollecter: 
-                if _h[-1]==_hh[-1]:
-                    ready=True 
-                    break
-            if ready==False:
-                    if _h[-1] in dumpling:
-                        continue
-                    else:
-                        dumpling.append(_h[-1]) 
-                    self.inserthook(_h[-1])
-        self.lock.release()
-        #self.autostarttimeout.stop()
+    def autostartinsert(self):   
+        time.sleep(1)
+        for _h in self.needinserthookcode: 
+            if self.ending:break
+            self.inserthook(_h)
+            
     def setdelay(self):
         delay=globalconfig['textthreaddelay']
         self.u16lesubprocess.writer(f'+{delay} -P{self.pid}\n') 

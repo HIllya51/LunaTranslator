@@ -7,11 +7,11 @@ class TS(basetrans):
     def langmap(self):
         return {"zh":"zh-CHS"}
     def translate(self, content): 
-        if self.config['args']['APP_KEY']=="":
+        if self.config['APP_KEY'].strip()=="" or self.config['APP_SECRET'].strip()=="":
             return 
         else:
-            APP_KEY = self.config['args']['APP_KEY'].strip()
-            APP_SECRET = self.config['args']['APP_SECRET'].strip()
+            APP_KEY = self.config['APP_KEY'].strip()
+            APP_SECRET = self.config['APP_SECRET'].strip()
         youdao_url = 'https://openapi.youdao.com/api'    
  
         translate_text = content  
@@ -36,8 +36,7 @@ class TS(basetrans):
         }
 
         r = requests.get(youdao_url, params = data,proxies={"https":None}).json()   # 获取返回的json()内容
-        self.config['args']['字数统计']=str(int(self.config['args']['字数统计'])+len(content))
-        self.config['args']['次数统计']=str(int(self.config['args']['次数统计'])+1)
+        self.countnum(content)
         
         return r["translation"][0]
     

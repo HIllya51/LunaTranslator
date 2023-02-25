@@ -9,10 +9,10 @@ class TS(basetrans):
     def langmap(self):
         return  { "zh":"zh-CN","cht":"zh-TW"} 
     def translate(self,query):  
-        if self.config['args']['key']=="":
+        if self.config['key'].strip()=="":
             return 
         else:
-            key = self.config['args']['key'].strip() 
+            key = self.config['key'].strip() 
    
         params={'key': key,'source':self.srclang, 'target':self.tgtlang, 'q':  (query)}
         response = requests.get("https://translation.googleapis.com/language/translate/v2/",params=params )

@@ -635,5 +635,6 @@
     "<img src=\"./files/zan.jpg\" heigth={wh} width={wh}>": "< img src = \".. / files / zan.jpg\" heigth = {Wh} width = {Wh} >",
     "翻译及OCR语言": "Traduction et langage ocr",
     "本软件显示语言(重启生效)": "Langue d'affichage de ce logiciel (redémarrage effectif)",
-    "内嵌失败，请使用普通HOOK": "L'intégration échoue, utilisez un hook normal"
+    "内嵌失败，请使用普通HOOK": "L'intégration échoue, utilisez un hook normal",
+    "自动插入特殊码": "Insertion automatique de codes spéciaux"
 }

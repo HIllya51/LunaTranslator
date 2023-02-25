@@ -90,14 +90,11 @@ def txfy(secretId,secretKey,content,src,tgt):
      
 class TS(basetrans): 
     def translate(self,query):  
-        if self.config['args']['SecretId']=="":
+        if self.config['SecretId'].strip()=="" or self.config['SecretKey'].strip()=="":
             return 
         else:
-            appid = self.config['args']['SecretId'].strip()
-            secretKey =self.config['args']['SecretKey'].strip()
-        
-        self.config['args']['字数统计']=str(int(self.config['args']['字数统计'])+len(query))
-        self.config['args']['次数统计']=str(int(self.config['args']['次数统计'])+1)
-         
+            appid = self.config['SecretId'].strip()
+            secretKey =self.config['SecretKey'].strip()
+        self.countnum(query)
         ret=txfy(appid,secretKey,query,self.srclang,self.tgtlang)
         return ret  

@@ -635,5 +635,6 @@
     "<img src=\"./files/zan.jpg\" heigth={wh} width={wh}>": "<img src=\"./files/zan.jpg\" heigth={wh} width={wh}>",
     "翻译及OCR语言": "Translation and OCR language",
     "本软件显示语言(重启生效)": "Display language of the software (restart takes effect)",
-    "内嵌失败，请使用普通HOOK": "Failed to embed. Please use normal HOOK"
+    "内嵌失败，请使用普通HOOK": "Failed to embed. Please use normal HOOK",
+    "自动插入特殊码": "Automatically insert special code"
 }

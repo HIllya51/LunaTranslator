@@ -1,4 +1,4 @@
-import functools  
+import functools  ,os
 from utils.config import globalconfig ,ocrsetting,_TRL
  
 from gui.inputdialog import autoinitdialog   
@@ -9,13 +9,16 @@ def getocrgrid(self) :
         grids=[ ] 
         i=0
         lendict=len(list(globalconfig['ocr'].keys()))
-
+        bad=0
         self.ocrswitchs={}
         for name in globalconfig['ocr']:
              
             if i%3==0:
                 line=[]
-            
+            _f=f'./Lunatranslator/ocrengines/{name}.py'
+            if os.path.exists(_f)==False: 
+                bad+=1 
+                continue 
             if name in ocrsetting:
                 items=[] 
                 for arg in ocrsetting[name]['args']: 
@@ -30,7 +33,7 @@ def getocrgrid(self) :
                 _3=''
             
             line+=[((globalconfig['ocr'][name]['name']),6),(self.getsimpleswitch(globalconfig['ocr'][name],'use',name=name,callback=functools.partial(self.yuitsu_switch,'ocr','ocrswitchs',name,None),pair='ocrswitchs'),1),_3,''] 
-            if i%3==2 or i==lendict-1:
+            if i%3==2 or i==lendict--bad-1:
                 grids.append(line) 
             i+=1
 

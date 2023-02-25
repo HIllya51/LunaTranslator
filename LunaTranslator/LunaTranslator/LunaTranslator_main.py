@@ -438,7 +438,11 @@ class MAINUI(QObject) :
 
                                      
                                     if globalconfig['sourcestatus']['textractor']:
-                                        self.textsource=textractor(self.textgetmethod,self.hookselectdialog,pid_real,hwnd,name_ ,autostarthookcode=savehook_new_data[name_]['hook'])
+                                        if 'needinserthookcode' in savehook_new_data[name_] and globalconfig['autoinserthook']:
+                                            needinserthookcode=savehook_new_data[name_]['needinserthookcode']
+                                        else:
+                                            needinserthookcode=[]
+                                        self.textsource=textractor(self.textgetmethod,self.hookselectdialog,pid_real,hwnd,name_ ,autostarthookcode=savehook_new_data[name_]['hook'],needinserthookcode=needinserthookcode)
                                     else:  
                                         print("pid",pid_real)
                                         self.textsource=embedded(self.textgetmethod,self.hookselectdialog,pid_real,hwnd,name_  ,self)

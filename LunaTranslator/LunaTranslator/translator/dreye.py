@@ -7,10 +7,10 @@ import subprocess
 class TS(basetrans): 
      
     def x64(self,content):  
-            if self.config['args']['路径']=="":
+            if self.config['路径']=="":
                 return ''
             else:
-                path = self.config['args']['路径'] 
+                path = self.config['路径'] 
             path=os.path.join(path,'DreyeMT\\SDK\\bin')
              
             path2=os.path.join(path,'TransCOM.dll')

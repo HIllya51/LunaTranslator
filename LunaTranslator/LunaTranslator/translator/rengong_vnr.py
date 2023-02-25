@@ -27,7 +27,7 @@ class TS(basetrans):
     def checkstates(self ):
         self.jsons=[]
         try:
-            self.checkfilechanged(self.config['args']['xml文件'] )
+            self.checkfilechanged(self.config['xml文件'] )
             self.jsons.append(self.json)
         except:
             pass 

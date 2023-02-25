@@ -13,6 +13,7 @@ def gethookgrid(self) :
         grids=[
                 
                 [('检测到游戏时自动开始',5),(self.getsimpleswitch(globalconfig,'autostarthook'),1),'','','','','','','','',''], 
+                [('自动插入特殊码',5),(self.getsimpleswitch(globalconfig,'autoinserthook'),1)], 
                 [('已保存游戏',5),(self.getcolorbutton(globalconfig,'',icon='fa.gamepad',constcolor="#FF69B4",callback=lambda:dialog_savedgame(self)),1)],
 
                 [('代码页',5),(self.getsimplecombobox(_TRL(somedef.codepage_display),globalconfig,'codepage_index' ,lambda x: self.object.textsource.setcodepage()),5)],

@@ -347,14 +347,13 @@ class TS(basetrans):
     def langmap(self):
         return {"cht":"zh-Hant"}
     def translate(self,query): 
-        if self.config['args']['Access Key ID']=="":
+        if self.config['Access Key ID'].strip()=="" or self.config['Secret Access Key'].strip()=="":
             return 
         else:
-            keyid = self.config['args']['Access Key ID'].strip()  
-            acckey = self.config['args']['Secret Access Key'].strip()   
+            keyid = self.config['Access Key ID'].strip()  
+            acckey = self.config['Secret Access Key'].strip()   
         res=trans(query,keyid,acckey,self.srclang,self.tgtlang)
-        self.config['args']['字数统计']=str(int(self.config['args']['字数统计'])+len(query))
-        self.config['args']['次数统计']=str(int(self.config['args']['次数统计'])+1) 
+        self.countnum(query)
         #print(res['trans_result'][0]['dst'])
         return res
          

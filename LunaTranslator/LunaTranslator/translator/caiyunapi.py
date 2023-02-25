@@ -10,10 +10,10 @@ class TS(basetrans):
     def inittranslator(self):
         self.session=requests.session()
     def translate(self,query):  
-        if self.config['args']['Token']=="":
+        if self.config['Token']=="":
             return 
         else:
-            Token = self.config['args']['Token'].strip()  
+            Token = self.config['Token'].strip()  
         def tranlate(source,   Token):
             url = "http://api.interpreter.caiyunai.com/v1/translator"
             # WARNING, this token is a test token for new developers,
@@ -34,9 +34,7 @@ class TS(basetrans):
          
     
         res=tranlate(query,Token)
-        self.config['args']['字数统计']=str(int(self.config['args']['字数统计'])+len(query))
-        self.config['args']['次数统计']=str(int(self.config['args']['次数统计'])+1)
-         
+        self.countnum(query)
         #print(res['trans_result'][0]['dst'])
         return res
          

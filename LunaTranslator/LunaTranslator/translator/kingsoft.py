@@ -6,10 +6,10 @@ import subprocess
 
 class TS(basetrans): 
     def x64(self,content):  
-            if self.config['args']['路径']=="":
+            if self.config['路径']=="":
                 return 
             else:
-                path = self.config['args']['路径'] 
+                path = self.config['路径'] 
             base=os.path.join(path,'GTS/'+self.srclang+self.tgtlang)
             if os.path.exists(base)==False:
                 return 

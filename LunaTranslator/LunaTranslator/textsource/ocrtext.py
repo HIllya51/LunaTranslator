@@ -71,6 +71,7 @@ class ocrtext(basetext):
         self.object=object 
         self.lastocrtime=0
         self.hwnd=None
+        self.nowuseocr=None
         self.timestamp=time.time() 
         super(ocrtext,self ).__init__(textgetmethod,'0','0_ocr') 
     def gettextthread(self ):
@@ -155,35 +156,12 @@ class ocrtext(basetext):
             return ''
         fname=f'./cache/ocr/{self.timestamp}.png'
         img.save(fname)
-        try:
-            ocr =importlib.import_module('otherocr.'+use)
-            ocr_f=ocr.ocr
+        
+        if self.nowuseocr!=use:
             try:
-                langmap=ocr.langmap
+                aclass=importlib.import_module('ocrengines.'+use).OCR 
+                self.ocrengine=aclass(use)   
             except:
-                langmap={}
-            
-            lang=self.language(use,langmap)
-            if globalconfig['ocrmergelines']==False:
-                space='\n'
-            elif lang in ['zh','ja']:
-                space=''
-            else:
-                space=' '
-            
-        
-            
-            return ocr_f(fname,lang,space)
-        except:
-            print_exc()
-            return ''
-    def language(self,tp,langmap):
-        
-
- 
-        _=dict(zip(somedef.language_list_translator_inner,somedef.language_list_translator_inner))
-        _.update({'cht':'zh'})
-        _.update(langmap) 
-
-        l=somedef.language_list_translator_inner[globalconfig['srclang3']]
-        return _[l] 
+                return ''
+        return self.ocrengine.ocr(fname)
+         

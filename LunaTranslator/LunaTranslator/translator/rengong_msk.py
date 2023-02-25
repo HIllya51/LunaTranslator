@@ -36,7 +36,7 @@ class TS(basetrans):
     
     def checkstates(self):
         try:
-            self.checkfilechanged(self.config['args']['txt文件'] ) 
+            self.checkfilechanged(self.config['txt文件'] ) 
         except:
             pass
     def translate(self,content):  
