@@ -1,6 +1,6 @@
 
 from traceback import print_exc 
-import requests
+import requests,re
 
 from utils.config import globalconfig
 from translator.basetranslator import basetrans
@@ -68,12 +68,17 @@ class TS(basetrans):
         } 
         r = self.ss.post('https://translate.alibaba.com/api/translate/text', headers= headers,timeout = globalconfig['translatortimeout'], params =form_data , proxies=  {'http': None,'https': None})
     
-        data = r.json()   
-        return  data['data']['translateText']
+        data = r.json()    
+        trans=data['data']['translateText']
+        xx=re.findall("&#(.*?);",trans)
+        xx=set(xx)
+        for _x in xx:
+            try:
+                trans=trans.replace(f'&#{_x};',chr(int(_x)))
+            except:
+                pass
+        return  trans
          
     def show(self,res):
         print('阿里','\033[0;33;47m',res,'\033[0m',flush=True)
-if __name__=="__main__":
-    #youdaoSIGN("5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36 Edg/105.0.1343.33",'')
-    a=ALI()
-    a.gettask('はーい、おやすみなさい')
+ 
