@@ -1,17 +1,16 @@
 
 import time
-filestart=time.time()   
-import os,threading
-import Levenshtein
-import sys 
+filestart=time.time()    
+
+from utils.somepath import initpath
+initpath()
+
 from utils.utils import debugsaveerr
-if len(sys.argv)==1:
-    debugsaveerr()
-from traceback import  print_exc  
-import mmap
-import  win32event,win32con,win32event,win32security,win32pipe,win32file
-dirname, filename = os.path.split(os.path.abspath(__file__))
-sys.path.append(dirname)   
+debugsaveerr()
+import os,threading,Levenshtein,sys 
+from traceback import  print_exc   
+import  win32event,win32con,win32event,win32security,win32pipe,win32file,mmap 
+ 
 from utils.config import globalconfig ,savehook_new_list,savehook_new_data,noundictconfig,transerrorfixdictconfig,setlanguage 
 import threading,win32gui 
 from PyQt5.QtCore import QCoreApplication ,Qt ,QObject,pyqtSignal

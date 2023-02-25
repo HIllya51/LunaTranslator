@@ -7,8 +7,12 @@ def debugsaveerr():
         while True:
             time.sleep(1)
             sys.stderr.flush()
-    Thread(target=__).start()
-    sys.stderr=open('./cache/errlog.txt','w',encoding='utf8')
+    if len(sys.argv)==1: 
+        try:
+            sys.stderr=open('./cache/errlog.txt','w',encoding='utf8')
+            Thread(target=__).start()
+        except:
+            pass
 def argsort(l):
     ll=list(range(len(l)))
     ll.sort(key= lambda x:l[x])

@@ -54,11 +54,8 @@ def threader(func):
 def timer(func):
     def _wrapper(*args,**kwargs): 
         t=time.time()
-        res=func(*args,**kwargs)
-        #print(func)
-        #print(time.time()-t)
-        return res
-
-        
+        res=func(*args,**kwargs) 
+        print(time.time()-t)
+        return res 
     return _wrapper 
 

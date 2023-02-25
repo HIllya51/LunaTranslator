@@ -40,7 +40,7 @@ class Settin(closeashidewindow) :
         for grid,maxl in self.needfitcols:
             for c in range(maxl):
                 grid.setColumnMinimumWidth(c,self.size().width()- self.window_width*0.2-self.scrollwidth//maxl)
-        self.setMinimumSize(100,100)
+        
     def resizeEvent(self, a0: QResizeEvent) -> None: 
         
         self.resizefunction() 
@@ -160,6 +160,7 @@ class Settin(closeashidewindow) :
         self.needupdate=False
         self.needfitwidgets=[]
         self.needfitcols=[]
+        self.setMinimumSize(100,100)
         # 界面缩放比例
         self.rate = self.object.screen_scale_rate
         # 界面尺寸
