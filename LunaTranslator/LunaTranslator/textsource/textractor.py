@@ -114,6 +114,7 @@ class textractor(basetext  ):
         for ares in reres:
             
             thread_handle,thread_tp_processId, thread_tp_addr, thread_tp_ctx, thread_tp_ctx2, thread_name,HookCode,output =ares
+            output=output[:-1]
             if HookCode=='HB0@0' or thread_handle=='0' or thread_tp_processId=='0'  :
                 continue 
             if globalconfig['filter_chaos_code'] and checkchaos(output): 
