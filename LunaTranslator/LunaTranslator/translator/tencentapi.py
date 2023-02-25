@@ -56,7 +56,7 @@ def txfy(secretId,secretKey,content,src,tgt):
     uriData = "tmt.tencentcloudapi.com" # uri，请参考官网
     signMethod="HmacSHA256" # 加密方法
     requestMethod = "GET" # 请求方法，在签名时会遇到，如果签名时使用的是GET，那么在请求时也请使用GET
-    regionData = "ap-hongkong" # 区域选择
+    regionData = "ap-guangzhou" # 区域选择
     versionData = '2018-03-21' # 版本选择
     
     signDictData = {
