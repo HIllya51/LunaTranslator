@@ -1,5 +1,6 @@
 from utils.config import globalconfig
 import xml.etree.ElementTree as ET  
+import os
 def vnrshareddict(self):
 
         self.vnrshareddict={}
