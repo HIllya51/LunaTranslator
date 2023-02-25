@@ -58,6 +58,7 @@ class hookselect(closeashidewindow):
     def __init__(self,object,p):
         super(hookselect, self).__init__(p)
         self.object=object
+        self._settingui=p
         self.setupUi( )
         
         self.changeprocessclearsignal.connect(self.changeprocessclear)
@@ -132,7 +133,10 @@ class hookselect(closeashidewindow):
         self.userhookfind=QPushButton(_TR("搜索特殊码")) 
         self.userhookfind.clicked.connect(self.findhook)
         self.userhooklayout.addWidget(self.userhookfind)
-
+        
+        self.opensolvetextb=QPushButton(_TR("文本处理")) 
+        self.opensolvetextb.clicked.connect(self.opensolvetext)
+        self.userhooklayout.addWidget(self.opensolvetextb)
 
         #################
         self.searchtextlayout = QHBoxLayout() 
@@ -200,6 +204,8 @@ class hookselect(closeashidewindow):
         self.buttonBox.rejected.connect(self.hide)   
         self.tttable.setItemDelegateForColumn(1,HTMLDelegate(self))
         self.tttable2.setItemDelegateForColumn(1,HTMLDelegate(self))
+    def opensolvetext(self):
+        self._settingui.opensolvetextsig.emit()
     def gethide(self,res,savedumpt ):
         hide=False
         if self.checkfilt_dumplicate.isChecked():

@@ -32,6 +32,7 @@ class Settin(closeashidewindow) :
     progresssignal=pyqtSignal(str,int) 
     fontbigsmallsignal=pyqtSignal(int)  
     clicksourcesignal=pyqtSignal(str)
+    opensolvetextsig=pyqtSignal()
     def resizefunction(self):
          
         for w in self.needfitwidgets: 
@@ -154,7 +155,7 @@ class Settin(closeashidewindow) :
         self.mp3player=wavmp3player() 
         self.localocrstarted=False
         self.mp3playsignal.connect(self.mp3player.mp3playfunction)  
-        
+        self.opensolvetextsig.connect(self.opensolvetextfun)
         self.object = object  
         self.needupdate=False
         self.needfitwidgets=[]
@@ -181,6 +182,9 @@ class Settin(closeashidewindow) :
         setTab_quick_direct(self)
         setTab_about_dicrect(self)
         self.setstylesheet()
+    def opensolvetextfun(self):
+        self.show() 
+        self.tab_widget.setCurrentIndex(3)
     def showEvent(self,e):
         if self.isfirstshow:
             self.setWindowTitle(_TR("设置"))

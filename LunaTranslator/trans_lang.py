@@ -16,7 +16,7 @@ if __name__=='__main__':
     
     import os,json
     
-    f='chs.json'
+    f='zh.json'
     with open('./files/lang/'+f,'r',encoding='utf8')  as ff:
         js=ff.read()
         js=json.loads(js)
