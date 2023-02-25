@@ -1,3 +1,7 @@
+
+from threading import Thread
+import os,time
+from traceback import print_exc
 def argsort(l):
     ll=list(range(len(l)))
     ll.sort(key= lambda x:l[x])
@@ -11,3 +15,20 @@ def selectdebugfile(path ):
     if p  :
         os.startfile(p)
     return p
+class Threadwithresult(Thread):
+    def __init__(self, func,  defalut=None):
+        super(Threadwithresult, self).__init__()
+        self.func = func 
+        self.result=defalut
+    def run(self):
+        try:
+            self.result = self.func( )
+        except:
+            print_exc()
+    def get_result(self,timeout=1):
+        Thread.join(self,timeout)  
+        return self.result
+def timeoutfunction( func, timeout=100,default=None):
+    t=Threadwithresult(func=func,  defalut=default)
+    t.start()
+    return t.get_result(timeout)

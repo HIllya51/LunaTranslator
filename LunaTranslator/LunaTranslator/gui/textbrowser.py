@@ -33,6 +33,13 @@ class Qlabel_c(QLabel):
             self.company.setStyleSheet("background-color: rgba(0,0,0,0.01);")
         self.setStyleSheet("background-color: rgba(0,0,0,0.01);")
         return super().leaveEvent(a0)
+class QGraphicsDropShadowEffect_multi(QGraphicsDropShadowEffect):
+    def setx(self,x):
+        self.x=x 
+    def draw(self, painter ) -> None:
+        for i in range(self.x):
+            super().draw(painter)
+    
 class Textbrowser( ):  
     def movep(self):
         h=globalconfig['buttonsize']*1.5
@@ -231,22 +238,23 @@ class Textbrowser( ):
                 self.textbrowser.setTextCursor(self.textcursor)
                 tl1=self.textbrowser.cursorRect(self.textcursor).topLeft()
                 #print(tl1)
-                if globalconfig['shadowforce']*(lc+linei)>len(self.yinyinglabels):
-                    self.yinyinglabels+=[QLabel(self.toplabel2) for i in range(globalconfig['shadowforce']*(lc+linei)-len(self.yinyinglabels))]
-                for i in range(globalconfig['shadowforce']):
-                    index=globalconfig['shadowforce']*linei+i 
-                    _=self.yinyinglabels[index]
-                    _.move(tl1)
-                    _.setText(block.text()[s:s+l] )
-                    _.setFont(self.textbrowser.font())
-                      
-                    _.setStyleSheet(f"color:{globalconfig['miaobiancolor']}; background-color:rgba(0,0,0,0)")
-                    _.setGraphicsEffect(self.geteffect(globalconfig['fontsize'],color))
-                    _.show()
+                if (lc+linei)>len(self.yinyinglabels):
+                    self.yinyinglabels+=[QLabel(self.toplabel2) for i in range((lc+linei)-len(self.yinyinglabels))]
+                
+                index=linei
+                _=self.yinyinglabels[index]
+                _.move(tl1)
+                _.setText(block.text()[s:s+l] )
+                _.setFont(self.textbrowser.font())
+                    
+                _.setStyleSheet(f"color:{globalconfig['miaobiancolor']}; background-color:rgba(0,0,0,0)")
+                _.setGraphicsEffect(self.geteffect(globalconfig['fontsize'],color,globalconfig['shadowforce']))
+                _.show()
                 linei+=1
         self.yinyingposline=linei
-    def geteffect(self,fontsize,color):
-        shadow2 = QGraphicsDropShadowEffect()
+    def geteffect(self,fontsize,color,x):
+        shadow2 = QGraphicsDropShadowEffect_multi()
+        shadow2.setx(x)
         shadow2.setBlurRadius(fontsize)
         shadow2.setOffset(0) 
         shadow2.setColor(QColor(color))
@@ -396,12 +404,8 @@ class Textbrowser( ):
         import time  
         t=time.time()
 
-        if globalconfig['zitiyangshi'] in [0,1,2]:  
-            if len(self.savetaglabels)<len(x):
-                self.savetaglabels+=[QLabel(self.parent) for i in range(len(x)-len(self.savetaglabels))]
-        elif globalconfig['zitiyangshi'] ==3: 
-            if len(self.savetaglabels)<len(globalconfig['shadowforce']*x):
-                self.savetaglabels+=[QLabel(self.parent) for i in range(len(globalconfig['shadowforce']*x)-len(self.savetaglabels))]
+        if len(self.savetaglabels)<len(x):
+            self.savetaglabels+=[QLabel(self.parent) for i in range(len(x)-len(self.savetaglabels))]
          
         pos=0
         self.addtaged=True
@@ -456,20 +460,17 @@ class Textbrowser( ):
                 continue
             #print(tl1,tl2,word['hira'],self.textbrowser.textCursor().position())
             
-            if globalconfig['zitiyangshi'] in [0,1,2]:  
-                self.solvejiaminglabel(self.savetaglabels[labeli ],word,font,tl1,tl2,fhhalf,False,color=(globalconfig['jiamingcolor']))
-            elif globalconfig['zitiyangshi'] ==3: 
-    
-                for _i  in range(globalconfig['shadowforce']): 
-                        self.solvejiaminglabel(self.savetaglabels[labeli*globalconfig['shadowforce']+_i],word,font,tl1,tl2,fhhalf,True,color=globalconfig['miaobiancolor'])
-                         
-                          
+            self.solvejiaminglabel(self.savetaglabels[labeli],word,font,tl1,tl2,fhhalf)
+            
             labeli+=1 
          
-    def solvejiaminglabel(self,label,word,font,tl1,tl2,fh,effect,color):
-        if effect==False:
-            label.setGraphicsEffect(self._rawqlabel.graphicsEffect() ) 
-            label.savelastfontandcolor=None
+    def solvejiaminglabel(self,label,word,font,tl1,tl2,fh ):
+        if globalconfig['zitiyangshi'] ==3: 
+            label.setGraphicsEffect(self.geteffect(globalconfig['fontsize'],globalconfig['jiamingcolor'],globalconfig['shadowforce']) ) 
+            color=globalconfig['miaobiancolor']
+        elif globalconfig['zitiyangshi'] in [0,1,2]:
+            label.setGraphicsEffect(self._rawqlabel.graphicsEffect() )  
+            color=globalconfig['jiamingcolor']
         label.setText(word['hira'])
         label.setFont(font)
         label.adjustSize()
@@ -488,11 +489,7 @@ class Textbrowser( ):
             y=tl2.y()-fh   
         y+=globalconfig['buttonsize']*1.5 *self.parent.rate
         y+=self.jiaming_y_delta
-        if effect:
-            if 'savelastfontandcolor' not in dir(label) or label.savelastfontandcolor!=(globalconfig['fontsize'],globalconfig['jiamingcolor']):
-                
-                label.setGraphicsEffect(self.geteffect(globalconfig['fontsize'],globalconfig['jiamingcolor']) )
-                label.savelastfontandcolor =(globalconfig['fontsize'],globalconfig['jiamingcolor'])
+        
         label.move(x,y)   
         label.setStyleSheet(f"color:{color}; background-color:(0,0,0,0)")
         

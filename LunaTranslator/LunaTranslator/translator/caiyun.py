@@ -1,11 +1,5 @@
- 
-import re
-from socket import timeout
-import time
-from urllib.parse import quote 
-from translator.basetranslator import basetrans
-import random
-import urllib
+  
+from translator.basetranslator import basetrans 
 
 from utils.config import globalconfig
  

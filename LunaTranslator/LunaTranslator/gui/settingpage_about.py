@@ -9,12 +9,12 @@ from utils.config import globalconfig  ,_TR
 from utils.wrapper import threader
 from version import version
 def _setproxy(x): 
-            if x:
-                os.environ['https_proxy']=globalconfig['proxy'] 
-                os.environ['http_proxy']=globalconfig['proxy'] 
-            else:
-                os.environ['https_proxy']='' 
-                os.environ['http_proxy']=''
+        if x:
+            os.environ['https_proxy']=globalconfig['proxy'] 
+            os.environ['http_proxy']=globalconfig['proxy'] 
+        else:
+            os.environ['https_proxy']='' 
+            os.environ['http_proxy']=''
         #
 def resourcegrid( ) :  
         grid=[ 
@@ -104,20 +104,12 @@ def setTab_about_dicrect(self) :
 def setTab_about(self) : 
     self.tabadd_lazy(self.tab_widget, ('其他设置'), lambda :setTab_aboutlazy(self)) 
 def setTab_aboutlazy(self) : 
-        
- 
-
-        
-        if globalconfig['useproxy']:
-                os.environ['https_proxy']=globalconfig['proxy'] 
-                os.environ['http_proxy']=globalconfig['proxy'] 
+         
         proxy=QLineEdit(globalconfig['proxy'])
         btn=QPushButton(('确定' ))
         def __resetproxy(x):
             globalconfig.__setitem__('proxy',proxy.text())
-            if globalconfig['useproxy']:
-                os.environ['https_proxy']=globalconfig['proxy'] 
-                os.environ['http_proxy']=globalconfig['proxy'] 
+            _setproxy(globalconfig['useproxy'])
         btn.clicked.connect(lambda x: __resetproxy(x))
 
         

@@ -1,6 +1,6 @@
 import subprocess,time
 import threading
-from PyQt5.QtCore import QProcess,QByteArray
+from traceback import print_exc
 
 class u16lesubprocess():
     def __init__(self,command) -> None:
@@ -33,7 +33,10 @@ class u16lesubprocess():
             if l1==l2 and l1:  
                 if self.readyread is None:
                     continue
-                self.readyread(''.join(self.cache)) 
+                try:
+                    self.readyread(''.join(self.cache)) 
+                except:
+                    print_exc()
                     
                 self.cache.clear()
             self.cachelock.release()

@@ -6,10 +6,14 @@ from threading import Thread
 import os,time
 from traceback import print_exc
 import zhconv
+from functools import partial
 from utils import somedef
+from utils.utils import timeoutfunction
+
 class basetrans: 
     def langmap(self):
         return {}
+    
     @property
     def langmap_(self):
         _=dict(zip(somedef.language_list_translator_inner,somedef.language_list_translator_inner))
@@ -42,6 +46,9 @@ class basetrans:
             self.config['字数统计']=str( len(query))
             self.config['次数统计']='1'
     @property
+    def using(self):
+        return globalconfig['fanyi'][self.typename]['use']
+    @property
     def config(self):
         try:
             return translatorsetting[self.typename]['args']
@@ -50,10 +57,8 @@ class basetrans:
     def __init__(self,typename ) :  
         self.typename=typename
         self.queue=Queue() 
-        try: 
-            self.inittranslator() 
-        except:
-            print_exc()
+        timeoutfunction(self.inittranslator,globalconfig['translatortimeout'])
+        
         self.lastrequeststime=0
         self._cache={}
         self._MAXCACHE = 512 
@@ -88,8 +93,15 @@ class basetrans:
         return res
     def end(self):
         pass
+     
+    def maybecachetranslate(self,contentraw,contentsolved):
+        if self.typename in somedef.fanyi_offline+somedef.fanyi_pre:
+            res=self.translate(contentraw)
+        else: 
+            res=self.cached_translate(contentsolved)
+        return res
     def fythread(self):
-        while True:  
+        while self.using:  
             t=time.time()
             if self.typename not in somedef.fanyi_offline+somedef.fanyi_pre and t-self.lastrequeststime <globalconfig['transtimeinternal']:
                 time.sleep(t-self.lastrequeststime)
@@ -99,35 +111,20 @@ class basetrans:
                 self.newline=contentraw
                 if self.queue.empty():
                     break
-            
-            if globalconfig['fanyi'][self.typename]['use']==False: 
-                break
+             
             if skip:
                 continue
             
-            try: 
-                if self.typename in somedef.fanyi_offline+somedef.fanyi_pre:
-                    res=self.translate(contentraw)
-                else:
-                    
-                    res=self.cached_translate(contentsolved)
-                    
-            except:
-                print_exc()
-                try:
-                    self.inittranslator()
-                    if self.typename in somedef.fanyi_offline+somedef.fanyi_pre:
-                        res=self.translate(contentraw)
-                    else:
-                        
-                        res=self.cached_translate(contentsolved)
-                except:
-                    print_exc()
-                res=None 
-                
+            
+            res=timeoutfunction(partial(self.maybecachetranslate,contentraw,contentsolved),globalconfig['translatortimeout']) 
+            if res is None:
+                timeoutfunction(self.inittranslator,globalconfig['translatortimeout'])
+                res=timeoutfunction(partial(self.maybecachetranslate,contentraw,contentsolved),globalconfig['translatortimeout']) 
+            if res is None:
+                continue 
             if self.needzhconv:
                 res=zhconv.convert(res,  'zh-tw' )  
-            if res is not None  and self.queue.empty() and contentraw==self.newline:
+            if self.queue.empty() and contentraw==self.newline and self.using:
                 self.show(contentraw,(self.typename,res,mp),embedcallback) 
         self.end()
 

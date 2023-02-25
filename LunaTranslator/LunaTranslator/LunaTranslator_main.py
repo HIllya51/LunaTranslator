@@ -43,10 +43,7 @@ from functools import partial
 from gui.settin import Settin 
 from gui.attachprocessdialog import AttachProcessDialog
 import win32event,win32con,win32process,win32api 
-import re
-
-import socket
-socket.setdefaulttimeout(globalconfig['translatortimeout'])
+import re 
 from utils.post import POSTSOLVE
 from utils.vnrshareddict import vnrshareddict 
 
