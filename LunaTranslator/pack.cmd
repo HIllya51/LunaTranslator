@@ -2,7 +2,7 @@ rmdir /S /Q ..\build\Lunatranslator
 xcopy ..\build\LunaTranslator_main.dist ..\build\LunaTranslator\LunaTranslator /e /y /I
 xcopy .\files ..\build\LunaTranslator\files /e /y /I
 copy ..\LICENSE ..\build\LunaTranslator\
-xcopy ..\EXE ..\build\LunaTranslator\ /e /y /I
+xcopy ..\CXXplugins\EXE ..\build\LunaTranslator\ /e /y /I
 xcopy .\LunaTranslator\ocrengines ..\build\LunaTranslator\LunaTranslator\ocrengines /e /y /I
 xcopy .\LunaTranslator\postprocess ..\build\LunaTranslator\LunaTranslator\postprocess /e /y /I
 xcopy .\LunaTranslator\translator ..\build\LunaTranslator\LunaTranslator\translator /e /y /I

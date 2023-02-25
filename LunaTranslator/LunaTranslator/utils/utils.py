@@ -1,7 +1,14 @@
 
 from threading import Thread
-import os,time
+import os,time,sys
 from traceback import print_exc
+def debugsaveerr():
+    def __():
+        while True:
+            time.sleep(1)
+            sys.stderr.flush()
+    Thread(target=__).start()
+    sys.stderr=open('./cache/errlog.txt','w',encoding='utf8')
 def argsort(l):
     ll=list(range(len(l)))
     ll.sort(key= lambda x:l[x])

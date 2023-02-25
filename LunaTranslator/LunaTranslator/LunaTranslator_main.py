@@ -1,10 +1,12 @@
 
 import time
 filestart=time.time()   
-import os
-import json
+import os,threading
 import Levenshtein
 import sys 
+from utils.utils import debugsaveerr
+if len(sys.argv)==1:
+    debugsaveerr()
 from traceback import  print_exc  
 import mmap
 import  win32event,win32con,win32event,win32security,win32pipe,win32file
