@@ -6,7 +6,7 @@ import functools
 
 from utils.config import globalconfig ,_TR,_TRL
 import sys
-import time   
+import time   ,os
 from utils.getpidlist import getwindowhwnd,getpidexe,ListProcess,mouseselectwindow,getExeIcon
 import qtawesome
 
@@ -16,7 +16,8 @@ class AttachProcessDialog(closeashidewindow):
         
     iconcache={}
     def selectwindowcallback(self,pid,hwnd,name_): 
-         
+                    if pid==os.getpid():
+                         return
                     self.processEdit.setText(name_)
                     self.processIdEdit.setText(str(pid))
                     self.selectedp=(pid,name_,hwnd) 

@@ -3,7 +3,7 @@ import win32gui,win32process,win32api,win32con ,win32event,win32print
 from traceback import print_exc
 from PyQt5.QtWinExtras  import QtWin
 from PyQt5.QtGui import   QPixmap,QColor ,QIcon
-
+import os
 from utils.utils import argsort
 def pid_running(pid): 
     try:
@@ -111,13 +111,14 @@ def ListProcess():
         ret=[]
         pids=getprocesslist()
         for pid in pids: 
+                    if os.getpid()==pid:
+                           continue
                     try: 
                         name_=getpidexe(pid)
  
                         name=name_.lower()
                         if name[-4:]!='.exe' or ':\\windows\\'  in name   or '\\microsoft\\'  in name or '\\windowsapps\\'  in name:
-                            continue
-                        import os
+                            continue 
                         ret.append([pid,name_ ])
                     except:
                         pass
