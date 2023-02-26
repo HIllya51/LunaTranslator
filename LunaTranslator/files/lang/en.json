@@ -641,5 +641,9 @@
     "网盘": "Network disk",
     "内置Magpie9": "Built-in Magpie9",
     "由于Magpie10接口变化过大，因此不再完全内置": "Because the Magpie10 interface has changed too much, it is no longer completely built-in",
-    "修改DLL以实现点击翻译器不再退出全屏": "Modify the DLL so that clicking the translator will no longer exit the full screen"
+    "修改DLL以实现点击翻译器不再退出全屏": "Modify the DLL so that clicking the translator will no longer exit the full screen",
+    "Magpie10": "Magpie10",
+    "Magpie9设置": "Magpie9 Settings",
+    "由于Magpie10接口变化过大，因此不再完整内置": "Because the Magpie10 interface has changed too much, it is no longer fully built-in",
+    "Magpie10快捷键": "Magpie10 shortcut key"
 }

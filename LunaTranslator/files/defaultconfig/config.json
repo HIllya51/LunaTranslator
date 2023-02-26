@@ -86,7 +86,11 @@
     "ocrrangecolor": "#000000",
     "ocrrangewidth": 2,
     "useproxy": false,
-    "fullscreenmethod": 0,
+    "fullscreenmethod_2": 0,
+	"magpie10quick":{
+		"key1":-1,
+		"key2":-1
+	},
     "ocrautobindwindow": true, 
     "magpieflags": {
 		"MultiMonitorUsage":0,

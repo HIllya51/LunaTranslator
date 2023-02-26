@@ -9,7 +9,7 @@ from gui.inputdialog import multicolorset
 from utils.config import globalconfig ,_TR,_TRL
 
 from gui.inputdialog import autoinitdialog,getsomepath1
- 
+from utils.somedef import key_first,key_first_reg,key_second,key_second_reg
 def __changeuibuttonstate(self,x):  
                 self.object.translation_ui.refreshtoolicon()
                 self.show_hira_switch .setEnabled(x)
@@ -121,15 +121,18 @@ def setTabThree_lazy(self) :
         ]
         x=QPushButton(_TR("修改DLL以实现点击翻译器不再退出全屏"))
         x.clicked.connect(lambda _:os.startfile(os.path.abspath('./files/Magpie_v0.10.0-preview2')))
+         
         fullscreengrid=[
-                [('全屏化方式',4),(self.getsimplecombobox(_TRL(['内置Magpie9','游戏原生全屏', 'SW_SHOWMAXIMIZED']),globalconfig,'fullscreenmethod'),6)],
+                [('全屏化方式',4),(self.getsimplecombobox(_TRL(['内置Magpie9','Magpie10','游戏原生全屏', 'SW_SHOWMAXIMIZED']),globalconfig,'fullscreenmethod_2'),6)],
                 [''],
-                [("Magpie设置",4),(self.getcolorbutton(globalconfig,'',callback=lambda x: autoinitdialog(self,'Magpie设置',500,magpiesettingdialog),icon='fa.gear',constcolor="#FF69B4"),1)],
+                [("Magpie9设置",4),(self.getcolorbutton(globalconfig,'',callback=lambda x: autoinitdialog(self,'Magpie设置',500,magpiesettingdialog),icon='fa.gear',constcolor="#FF69B4"),1)],
                 [('Magpie算法',4),(self.getsimplecombobox(magpiemethod,globalconfig,'magpiescalemethod'),6)],
                 [('Magpie捕获模式',4),(self.getsimplecombobox(['Graphics Capture','Desktop Duplication','GDI','DwmSharedSurface'],globalconfig,'magpiecapturemethod'),6)],
                 [''],
-                [('由于Magpie10接口变化过大，因此不再完全内置',10)],
+                [('由于Magpie10接口变化过大，因此不再完整内置',10)],
                 [(x,10)],
+                [('Magpie10快捷键',4),(self.getsimplecombobox(key_first,globalconfig['magpie10quick'],'key1'),3),(self.getsimplecombobox(key_second,globalconfig['magpie10quick'],'key2')  ,3)]
+
         ] 
         tab=self.makesubtab_lazy(['文本设置', '界面设置','游戏全屏'],[
                 lambda:self.makescroll(self.makegrid(textgrid )   ),

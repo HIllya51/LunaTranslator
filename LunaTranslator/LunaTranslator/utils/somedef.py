@@ -14,3 +14,9 @@ charsetmapshow=["自动","系统默认","日语","简体中文","繁体中文","
 
 fanyi_offline=["jb7","dreye","kingsoft","hanshant","selfbuild"]
 fanyi_pre=["rengong","premt","rengong_vnr","rengong_msk"]
+
+
+key_first=['Ctrl','Shift','Alt','Win' ]+['None']
+key_first_reg=['control','shift','alt','super' ]+['']
+key_second=['F'+chr(ord('1')+i) for i in range(9)]+['F10','F11','F12']+[chr(ord('A')+i) for i in range(26)]+[chr(ord('0')+i) for i in range(10)]#+['']
+key_second_reg=['f'+chr(ord('1')+i) for i in range(9)]+['f10','f11','f12']+[chr(ord('a')+i) for i in range(26)]+[chr(ord('0')+i) for i in range(10)]#+['']
