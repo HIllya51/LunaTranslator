@@ -638,5 +638,8 @@
     "内嵌失败，请使用普通HOOK": "L'intégration échoue, utilisez un hook normal",
     "自动插入特殊码": "Insertion automatique de codes spéciaux",
     "夜间模式": "Mode nuit",
-    "网盘": "Disque réseau"
+    "网盘": "Disque réseau",
+    "内置Magpie9": "Magpie9 intégré",
+    "由于Magpie10接口变化过大，因此不再完全内置": "Parce que l'interface magpie10 change trop, elle n'est plus entièrement intégrée",
+    "修改DLL以实现点击翻译器不再退出全屏": "Modifier la DLL pour que Click Translator ne quitte plus le plein écran"
 }

@@ -87,8 +87,7 @@
     "ocrrangewidth": 2,
     "useproxy": false,
     "fullscreenmethod": 0,
-    "ocrautobindwindow": true,
-    "magpiepath": "./files/Magpie_v0.9.1",
+    "ocrautobindwindow": true, 
     "magpieflags": {
 		"MultiMonitorUsage":0,
 		"DebugSaveEffectSources":false,

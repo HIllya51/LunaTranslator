@@ -2,7 +2,7 @@ import functools
 from PyQt5.QtCore import Qt 
 from PyQt5.QtGui import  QFont
 
-from PyQt5.QtWidgets import  QWidget,QLabel ,QSlider, QFontComboBox  ,QVBoxLayout
+from PyQt5.QtWidgets import  QWidget,QLabel ,QSlider, QFontComboBox  ,QPushButton
 import json,os
  
 from gui.inputdialog import multicolorset
@@ -53,7 +53,7 @@ def setTabThree_lazy(self) :
                 self.object.translation_ui.refreshtooliconsignal.emit()
          
         try:
-                with open(os.path.join(globalconfig['magpiepath'],'ScaleModels.json'),'r') as ff:
+                with open(os.path.join('./files/Magpie_v0.9.1','ScaleModels.json'),'r') as ff:
                         _magpiemethod=json.load(ff)
                         magpiemethod=[_['name'] for _ in _magpiemethod]
 
@@ -119,12 +119,17 @@ def setTabThree_lazy(self) :
                [('强制窗口保持总在最前',6),self.getsimpleswitch(globalconfig,'forcekeepontop'),],
                [("夜间模式",6),(self.getsimpleswitch(globalconfig  ,'darktheme'),1)]
         ]
+        x=QPushButton(_TR("修改DLL以实现点击翻译器不再退出全屏"))
+        x.clicked.connect(lambda _:os.startfile(os.path.abspath('./files/Magpie_v0.10.0-preview2')))
         fullscreengrid=[
-                [('全屏化方式',4),(self.getsimplecombobox(_TRL(['Magpie','游戏原生全屏', 'SW_SHOWMAXIMIZED']),globalconfig,'fullscreenmethod'),6)],
+                [('全屏化方式',4),(self.getsimplecombobox(_TRL(['内置Magpie9','游戏原生全屏', 'SW_SHOWMAXIMIZED']),globalconfig,'fullscreenmethod'),6)],
                 [''],
-                [("Magpie路径",4),(self.getcolorbutton(globalconfig,'',callback=lambda x: getsomepath1(self,'Magpie路径',globalconfig,'magpiepath','Magpie路径',isdir=True),icon='fa.gear',constcolor="#FF69B4"),1),'',("Magpie设置",4),(self.getcolorbutton(globalconfig,'',callback=lambda x: autoinitdialog(self,'Magpie设置',500,magpiesettingdialog),icon='fa.gear',constcolor="#FF69B4"),1)],
+                [("Magpie设置",4),(self.getcolorbutton(globalconfig,'',callback=lambda x: autoinitdialog(self,'Magpie设置',500,magpiesettingdialog),icon='fa.gear',constcolor="#FF69B4"),1)],
                 [('Magpie算法',4),(self.getsimplecombobox(magpiemethod,globalconfig,'magpiescalemethod'),6)],
                 [('Magpie捕获模式',4),(self.getsimplecombobox(['Graphics Capture','Desktop Duplication','GDI','DwmSharedSurface'],globalconfig,'magpiecapturemethod'),6)],
+                [''],
+                [('由于Magpie10接口变化过大，因此不再完全内置',10)],
+                [(x,10)],
         ] 
         tab=self.makesubtab_lazy(['文本设置', '界面设置','游戏全屏'],[
                 lambda:self.makescroll(self.makegrid(textgrid )   ),

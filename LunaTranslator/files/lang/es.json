@@ -638,5 +638,8 @@
     "内嵌失败，请使用普通HOOK": "La incrustación falló, por favor use Hook ordinario",
     "自动插入特殊码": "Insertar automáticamente código especial",
     "夜间模式": "Modo nocturno",
-    "网盘": "Disco de red"
+    "网盘": "Disco de red",
+    "内置Magpie9": "Maggie9 incorporado",
+    "由于Magpie10接口变化过大，因此不再完全内置": "Debido a que la interfaz maggie10 cambia demasiado, ya no está completamente incorporada",
+    "修改DLL以实现点击翻译器不再退出全屏": "Modificar el DLL para que el traductor de clics ya no salga de la pantalla completa"
 }

@@ -11,7 +11,7 @@ class fullscreen():
             if globalconfig['fullscreenmethod']==0:  
                 if full:
                     win32gui.SetForegroundWindow(hwnd )    
-                    self.savemagpie_pid=callmagpie((globalconfig['magpiepath']),hwnd,globalconfig['magpiescalemethod'],globalconfig['magpieflags'],globalconfig['magpiecapturemethod'])
+                    self.savemagpie_pid=callmagpie(('./files/Magpie_v0.9.1'),hwnd,globalconfig['magpiescalemethod'],globalconfig['magpieflags'],globalconfig['magpiecapturemethod'])
                 else:
                     if self.savemagpie_pid is None:
                         return  
