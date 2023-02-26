@@ -131,7 +131,8 @@ def setTab_aboutlazy(self) :
         shuominggrid=[
             ['项目网站',('<a href="https://github.com/HIllya51/LunaTranslator">https://github.com/HIllya51/LunaTranslator</a>',3,'link')],
             ['使用说明',('<a href="https://hillya51.github.io/">https://hillya51.github.io/</a>',3,'link')],
-            [('如果你感觉该软件对你有帮助，欢迎微信扫码或者前往<a href="https://afdian.net/a/HIllya51">爱发电</a>赞助，谢谢，么么哒~',4)]
+            ['网盘',('<a href="https://pan.baidu.com/s/1LPtki3Ex1XGNaDi8nVy1iA?pwd=4p63">https://pan.baidu.com/s/1LPtki3Ex1XGNaDi8nVy1iA?pwd=4p63</a>',3,'link')],
+            [('如果你感觉该软件对你有帮助，欢迎微信扫码或者前往<a href="https://afdian.net/a/HIllya51">爱发电</a>赞助，谢谢，么么哒~',4,'link')]
         ]
         tab=self.makesubtab_lazy(['支持作者','自动更新','代理设置','资源下载' ],[
                 lambda:self.makevbox( [self.makegrid(shuominggrid),imgwidget("./files/zan.jpg")]),
