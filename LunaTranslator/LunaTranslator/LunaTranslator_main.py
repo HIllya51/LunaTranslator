@@ -3,10 +3,7 @@ import time
 filestart=time.time()    
 
 from utils.somepath import initpath
-initpath()
-
-from utils.utils import debugsaveerr
-debugsaveerr()
+initpath() 
 import os,threading,Levenshtein,sys 
 from traceback import  print_exc   
 import  win32event,win32con,win32event,win32security,win32pipe,win32file,mmap 
