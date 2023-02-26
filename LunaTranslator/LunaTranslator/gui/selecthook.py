@@ -379,6 +379,7 @@ class hookselect(closeashidewindow):
 
             self.object.textsource.lock.acquire()
             self.object.textsource.selectedhook=self.object.textsource.batchselectinghook
+            hcs=[_[-1] for _ in self.object.textsource.selectedhook]
             if self.object.textsource.pname not in savehook_new_data:
                 needinserthookcode=[]
             elif 'needinserthookcode' not in savehook_new_data[self.object.textsource.pname]:
@@ -387,11 +388,11 @@ class hookselect(closeashidewindow):
                 _needinserthookcode= savehook_new_data[self.object.textsource.pname]['needinserthookcode']
                 needinserthookcode=[]
                 for _ in _needinserthookcode:
-                    if _ in self.object.textsource.selectedhook:
+                    if _ in hcs:
                         needinserthookcode.append(_)
-            for hc in self.object.textsource.selectedhook:
-                if hc[-1] in self.savemaybeusehookcode and (hc[-1] not in needinserthookcode):
-                    needinserthookcode.append(hc[-1])
+            for hc in hcs:
+                if hc in self.savemaybeusehookcode and (hc not in needinserthookcode):
+                    needinserthookcode.append(hc)
             
             self.object.textsource.autostarthookcode=[]
             self.object.textsource.autostarting=False
