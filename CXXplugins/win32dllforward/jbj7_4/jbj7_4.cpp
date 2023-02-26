@@ -17,8 +17,8 @@ int wmain(int argc, wchar_t* argv[])
     HANDLE hPipe = CreateNamedPipe(argv[2], PIPE_ACCESS_DUPLEX, PIPE_TYPE_MESSAGE | PIPE_READMODE_MESSAGE | PIPE_WAIT
         , PIPE_UNLIMITED_INSTANCES, 0, 0, NMPWAIT_WAIT_FOREVER, 0);
 
-    //_setmode(_fileno(stdout), _O_U16TEXT);
-    //_setmode(_fileno(stdin), _O_U16TEXT);
+    _setmode(_fileno(stdout), _O_U16TEXT);
+    _setmode(_fileno(stdin), _O_U16TEXT);
 
     //system("chcp 932");
     HMODULE module = LoadLibraryW(argv[1]);
@@ -38,8 +38,7 @@ int wmain(int argc, wchar_t* argv[])
     DJC_OpenAllUserDic_Unicode(cache, 0);
     wchar_t fr[3000] = { 0 };
     wchar_t to[3000] = { 0 };
-    wchar_t buf[3000] = { 0 };
-    wchar_t wcode[10] = { 0 };
+    wchar_t buf[3000] = { 0 }; 
     SECURITY_DESCRIPTOR sd = {};
     InitializeSecurityDescriptor(&sd, SECURITY_DESCRIPTOR_REVISION);
     SetSecurityDescriptorDacl(&sd, TRUE, NULL, FALSE);
@@ -49,30 +48,27 @@ int wmain(int argc, wchar_t* argv[])
         DWORD len = 0;
 
     }
-    char codec[4] = { 0 };
+    
     while (true) {
         memset(fr, 0, 3000 * sizeof(wchar_t));
         memset(to, 0, 3000 * sizeof(wchar_t));
-        memset(buf, 0, 3000 * sizeof(wchar_t));
-        memset(wcode, 0, 10 * sizeof(wchar_t));
+        memset(buf, 0, 3000 * sizeof(wchar_t)); 
         int a = 3000;
-        int b = 3000;
-        /*std::wcin.getline(wcode, 10);
-        UINT code = _wtoi(wcode);
-        std::wcin.getline(fr, 3000);*/
-
+        int b = 3000; 
+        char codec[4] = { 0 };
         UINT code; DWORD  _;
         ReadFile(hPipe, &codec, 3, &_, NULL);
         code = atoi(codec);
         ReadFile(hPipe, &fr, 6000, &_, NULL);
-         
-        JC_Transfer_Unicode(0, CODEPAGE_JA, code, 1, 1, fr, to, a, buf, b);
         /*std::wcout << code << std::endl;
         std::wcout << fr << std::endl;*/
-        //wprintf(L"%s\n", to);   
-        //fflush(stdout);
-         
-        WriteFile(hPipe, to, 2 * (wcslen(to)), &_, NULL);
+        JC_Transfer_Unicode(0, CODEPAGE_JA, code, 1, 1, fr, to, a, buf, b);
+        
+        /*std::wcout << to << std::endl;*/
+        if(wcslen(to)==0)
+            WriteFile(hPipe, L"NULL", 2 * (wcslen(L"NULL")), &_, NULL);
+        else
+            WriteFile(hPipe, to, 2 * (wcslen(to)), &_, NULL);
     }
 
 }

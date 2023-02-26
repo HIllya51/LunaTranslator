@@ -40,7 +40,7 @@ class TS(basetrans):
             pipename='\\\\.\\Pipe\\jbj7_'+t
             waitsignal='jbjwaitload_'+t
             #self.engine=subproc(f'./files/x64_x86_dll/jbj7.exe "{self.dllpath}"'+dictpath,stdin=subprocess.PIPE,name='jbj', stdout=subprocess.PIPE ,encoding='utf-16-le')
-            self.engine=subproc(f'./files/x64_x86_dll/jbj7_4.exe "{self.dllpath}" {pipename} {waitsignal} '+dictpath,name='jbj7', stdout=subprocess.PIPE) 
+            self.engine=subproc(f'./files/x64_x86_dll/jbj7_4.exe "{self.dllpath}" {pipename} {waitsignal} '+dictpath,name='jbj7', stdout=subprocess.PIPE )
             attr=win32security.SECURITY_DESCRIPTOR(win32con.SECURITY_DESCRIPTOR_REVISION)
             attr.SetSecurityDescriptorDacl(True,None,False) 
             secu=win32security.SECURITY_ATTRIBUTES() 
@@ -59,10 +59,14 @@ class TS(basetrans):
             lines=content.split('\n')
             ress=[]
             for line in lines: 
-                win32file.WriteFile(self.hPipe,self.tgtlang.encode('ascii')+line.encode('utf-16-le'))
-                xx=win32file.ReadFile(self.hPipe, 65535, None)[1] 
-                xx=xx.decode('utf-16-le',errors='ignore') 
-                ress.append(xx) 
+                if len(line)==0:
+                    ress.append('')
+                else:
+                    win32file.WriteFile(self.hPipe,self.tgtlang.encode('ascii')+line.encode('utf-16-le'))
+
+                    xx=win32file.ReadFile(self.hPipe, 65535, None)[1] 
+                    xx=xx.decode('utf-16-le',errors='ignore') 
+                    ress.append(xx) 
 
             return '\n'.join(ress)
     def x86(self,content):
