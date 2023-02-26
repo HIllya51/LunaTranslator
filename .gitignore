@@ -23,3 +23,5 @@ CXXplugins/exec/.vs/exec/v16/.suo
 build/
 LunaTranslator/testapi.py
 LunaTranslator/files/x64_x86_dll/GPS.txt
+*.db-shm
+*.db-wal

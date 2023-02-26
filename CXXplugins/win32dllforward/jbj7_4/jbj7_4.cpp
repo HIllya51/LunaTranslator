@@ -11,11 +11,48 @@
 
 #define CODEPAGE_BIG5 950
  
+UINT unpackuint32(unsigned char* s) {
+    int i = 0;
+    return ((s[i]) << 24) | ((s[i + 1]) << 16) | ((s[i + 2]) << 8) | (s[i + 3]) ;
+}
+void packuint32(UINT i, unsigned char* b) {
+    b[0] = (i >> 24) & 0xff;
+    b[1] = (i >> 16) & 0xff;
+    b[2] = (i >> 8) & 0xff;
+    b[3] = (i) & 0xff; 
+}
+void readlen(HANDLE hPipe, int l, unsigned char* cache) {
+    DWORD  _; DWORD readen = 0;
+    while (readen < l) {
+        ReadFile(hPipe, cache+readen, l-readen, &_, NULL);
+        readen += _;
+    }
+    
+}
+void writelen(HANDLE hPipe, int l, unsigned char* cache) {
+    DWORD  _; DWORD readen = 0;
+    while (readen < l) {
+        WriteFile(hPipe, cache + readen, l - readen, &_, NULL);
+        readen += _; 
+    }
 
+}
+
+static UINT64 getCurrentMilliSecTimestamp() {
+    FILETIME file_time;
+    GetSystemTimeAsFileTime(&file_time);
+    UINT64 time = ((UINT64)file_time.dwLowDateTime) + ((UINT64)file_time.dwHighDateTime << 32);
+
+    // This magic number is the number of 100 nanosecond intervals since January 1, 1601 (UTC)
+    // until 00:00:00 January 1, 1970
+    static const UINT64 EPOCH = ((UINT64)116444736000000000ULL);
+
+    return (UINT64)((time - EPOCH) / 10000LL);
+}
 int wmain(int argc, wchar_t* argv[])
 {
     HANDLE hPipe = CreateNamedPipe(argv[2], PIPE_ACCESS_DUPLEX, PIPE_TYPE_MESSAGE | PIPE_READMODE_MESSAGE | PIPE_WAIT
-        , PIPE_UNLIMITED_INSTANCES, 0, 0, NMPWAIT_WAIT_FOREVER, 0);
+        , PIPE_UNLIMITED_INSTANCES, 65535, 65535, NMPWAIT_WAIT_FOREVER, 0);
 
     _setmode(_fileno(stdout), _O_U16TEXT);
     _setmode(_fileno(stdin), _O_U16TEXT);
@@ -36,9 +73,9 @@ int wmain(int argc, wchar_t* argv[])
         wcscpy(cache + (i - 4) * USERDIC_PATH_SIZE, argv[i]);
     }
     DJC_OpenAllUserDic_Unicode(cache, 0);
-    wchar_t fr[3000] = { 0 };
-    wchar_t to[3000] = { 0 };
-    wchar_t buf[3000] = { 0 }; 
+    wchar_t *fr = new wchar_t[3000];
+    wchar_t* to= new wchar_t[3000];
+    wchar_t *buf = new wchar_t[3000];
     SECURITY_DESCRIPTOR sd = {};
     InitializeSecurityDescriptor(&sd, SECURITY_DESCRIPTOR_REVISION);
     SetSecurityDescriptorDacl(&sd, TRUE, NULL, FALSE);
@@ -48,7 +85,7 @@ int wmain(int argc, wchar_t* argv[])
         DWORD len = 0;
 
     }
-    
+    unsigned char intcache[4];
     while (true) {
         memset(fr, 0, 3000 * sizeof(wchar_t));
         memset(to, 0, 3000 * sizeof(wchar_t));
@@ -56,16 +93,22 @@ int wmain(int argc, wchar_t* argv[])
         int a = 3000;
         int b = 3000; 
         char codec[4] = { 0 };
-        UINT code; DWORD  _;
-        ReadFile(hPipe, &codec, 3, &_, NULL);
-        code = atoi(codec);
-        ReadFile(hPipe, &fr, 6000, &_, NULL);
-        /*std::wcout << code << std::endl;
-        std::wcout << fr << std::endl;*/
+        UINT code;
+        DWORD _;
+        UINT datalen;
+        readlen(hPipe, 4, intcache); 
+        code = unpackuint32(intcache);
+        readlen(hPipe, 4, intcache);
+        datalen = unpackuint32(intcache);
+        readlen(hPipe, datalen, (unsigned char*)fr);
+        //std::wcout << getCurrentMilliSecTimestamp() << std::endl;
         JC_Transfer_Unicode(0, CODEPAGE_JA, code, 1, 1, fr, to, a, buf, b);
+        //std::wcout << getCurrentMilliSecTimestamp() << std::endl;
+        datalen = 2 * wcslen(to);
+        packuint32(datalen, intcache); 
+        writelen(hPipe, 4, intcache);
+        writelen(hPipe, datalen,(unsigned char*) to);
         
-        /*std::wcout << to << std::endl;*/
-        WriteFile(hPipe, to, 2 * (wcslen(to)), &_, NULL);
     }
 
 }

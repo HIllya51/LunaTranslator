@@ -41,7 +41,7 @@ class TS(basetrans):
             pipename='\\\\.\\Pipe\\jbj7_'+t
             waitsignal='jbjwaitload_'+t
             #self.engine=subproc(f'./files/x64_x86_dll/jbj7.exe "{self.dllpath}"'+dictpath,stdin=subprocess.PIPE,name='jbj', stdout=subprocess.PIPE ,encoding='utf-16-le')
-            self.engine=subproc(f'./files/x64_x86_dll/jbj7_4.exe "{self.dllpath}" {pipename} {waitsignal} '+dictpath,name='jbj7', stdout=subprocess.PIPE )
+            self.engine=subproc(f'./files/x64_x86_dll/jbj7_4.exe "{self.dllpath}" {pipename} {waitsignal} '+dictpath,name='jbj7', stdout=subprocess.PIPE)
             attr=win32security.SECURITY_DESCRIPTOR(win32con.SECURITY_DESCRIPTOR_REVISION)
             attr.SetSecurityDescriptorDacl(True,None,False) 
             secu=win32security.SECURITY_ATTRIBUTES() 
@@ -51,23 +51,28 @@ class TS(basetrans):
             win32pipe.WaitNamedPipe(pipename,win32con.NMPWAIT_WAIT_FOREVER)
             self.hPipe = win32file.CreateFile( pipename, win32con.GENERIC_READ | win32con.GENERIC_WRITE, 0,
                     None, win32con.OPEN_EXISTING, win32con.FILE_ATTRIBUTE_NORMAL, None);
-             
+    def packuint32(self,i): # int -> str 
+        return bytes(chr((i >> 24) & 0xff) + chr((i >> 16) & 0xff) + chr((i >> 8) & 0xff) + chr(i & 0xff),encoding='latin-1')
+    def unpackuint32(self,s ): #
+ 
+        return ( (s[0]) << 24) | ( (s[1]) << 16) | ( (s[2]) << 8) |  (s[3]) 
+      
     def x64(self,content:str):   
             if self.tgtlang not in ['936','950']:
                 return ''  
+            t=time.time()
             self.checkpath()
             content=content.replace('\r','\n')
             lines=content.split('\n')
             ress=[]
             for line in lines: 
                 if len(line)==0:continue
-            
-                win32file.WriteFile(self.hPipe,self.tgtlang.encode('ascii')+line.encode('utf-16-le'))
-
-                xx=timeoutfunction(lambda: win32file.ReadFile(self.hPipe, 65535, None)[1] ,1,b'')
+                code1=line.encode('utf-16-le') 
+                win32file.WriteFile(self.hPipe,self.packuint32(int(self.tgtlang))+self.packuint32(len(code1))+code1) 
+                datalen=self.unpackuint32(win32file.ReadFile(self.hPipe, 4, None)[1])
+                xx=win32file.ReadFile(self.hPipe, datalen, None)[1]
                 xx=xx.decode('utf-16-le',errors='ignore') 
-                ress.append(xx) 
-
+                ress.append(xx)  
             return '\n'.join(ress)
     def x86(self,content):
         CODEPAGE_JA = 932
