@@ -35,18 +35,21 @@ class fullscreen():
         exes=[_[1] for _ in ListProcess()]  
         if os.path.join(globalconfig['magpie10path'],'Magpie.exe').replace('/','\\') not in exes: 
             subproc(os.path.join(globalconfig['magpie10path'],'Magpie.exe'),cwd=globalconfig['magpie10path'] ,keep=True ) 
-            
+     
     def _1(self,hwnd,full):
-        self.runmagpie10() 
+        self.runmagpie10()  
         win32gui.SetForegroundWindow(hwnd )   
-        time.sleep(0.3) 
+        time.sleep(0.1)
         k1=key_map[key_first[globalconfig['magpie10quick']['key1']].upper()]
         k2=key_map[key_second[globalconfig['magpie10quick']['key2']].upper()] 
         win32api.keybd_event(k1,0,0,0)    
         win32api.keybd_event(k2,0,0,0)      
         win32api.keybd_event(k2, 0, win32con.KEYEVENTF_KEYUP, 0)
-        win32api.keybd_event(k1, 0, win32con.KEYEVENTF_KEYUP, 0)
-        win32gui.SetForegroundWindow(hwnd )   
+        win32api.keybd_event(k1, 0, win32con.KEYEVENTF_KEYUP, 0) 
+        
+        
+        
+        
     def _0(self,hwnd,full):
         if full:
             win32gui.SetForegroundWindow(hwnd )    

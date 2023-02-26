@@ -88,8 +88,8 @@
     "useproxy": false,
     "fullscreenmethod_2": 0,
 	"magpie10quick":{
-		"key1":-1,
-		"key2":-1
+		"key1":2,
+		"key2":0
 	},
 	"magpie10path":"",
     "ocrautobindwindow": true, 
