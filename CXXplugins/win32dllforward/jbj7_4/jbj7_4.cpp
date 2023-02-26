@@ -65,10 +65,7 @@ int wmain(int argc, wchar_t* argv[])
         JC_Transfer_Unicode(0, CODEPAGE_JA, code, 1, 1, fr, to, a, buf, b);
         
         /*std::wcout << to << std::endl;*/
-        if(wcslen(to)==0)
-            WriteFile(hPipe, L"NULL", 2 * (wcslen(L"NULL")), &_, NULL);
-        else
-            WriteFile(hPipe, to, 2 * (wcslen(to)), &_, NULL);
+        WriteFile(hPipe, to, 2 * (wcslen(to)), &_, NULL);
     }
 
 }

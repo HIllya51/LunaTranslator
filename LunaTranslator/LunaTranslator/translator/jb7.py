@@ -6,6 +6,7 @@ import mmap
 import  win32con,win32event,win32security,win32pipe,win32file
 import subprocess ,threading
 from utils.subproc import subproc
+from utils.utils import timeoutfunction
 class TS(basetrans):  
     def inittranslator(self ) : 
                  
@@ -59,14 +60,13 @@ class TS(basetrans):
             lines=content.split('\n')
             ress=[]
             for line in lines: 
-                if len(line)==0:
-                    ress.append('')
-                else:
-                    win32file.WriteFile(self.hPipe,self.tgtlang.encode('ascii')+line.encode('utf-16-le'))
+                if len(line)==0:continue
+            
+                win32file.WriteFile(self.hPipe,self.tgtlang.encode('ascii')+line.encode('utf-16-le'))
 
-                    xx=win32file.ReadFile(self.hPipe, 65535, None)[1] 
-                    xx=xx.decode('utf-16-le',errors='ignore') 
-                    ress.append(xx) 
+                xx=timeoutfunction(lambda: win32file.ReadFile(self.hPipe, 65535, None)[1] ,1,b'')
+                xx=xx.decode('utf-16-le',errors='ignore') 
+                ress.append(xx) 
 
             return '\n'.join(ress)
     def x86(self,content):
