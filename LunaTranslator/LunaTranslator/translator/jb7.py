@@ -41,7 +41,8 @@ class TS(basetrans):
             pipename='\\\\.\\Pipe\\jbj7_'+t
             waitsignal='jbjwaitload_'+t
             #self.engine=subproc(f'./files/x64_x86_dll/jbj7.exe "{self.dllpath}"'+dictpath,stdin=subprocess.PIPE,name='jbj', stdout=subprocess.PIPE ,encoding='utf-16-le')
-            self.engine=subproc(f'./files/x64_x86_dll/jbj7_4.exe "{self.dllpath}" {pipename} {waitsignal} '+dictpath,name='jbj7', stdout=subprocess.PIPE)
+            self.engine=subproc(f'./files/x64_x86_dll/jbj7_4.exe "{self.dllpath}" {pipename} {waitsignal} '+dictpath,name='jbj7')
+            #!!!!!!!!!!!!!!stdout=subprocess.PIPE 之后，隔一段时间之后，exe侧writefile就写不进去了！！！！！不知道为什么！！！
             attr=win32security.SECURITY_DESCRIPTOR(win32con.SECURITY_DESCRIPTOR_REVISION)
             attr.SetSecurityDescriptorDacl(True,None,False) 
             secu=win32security.SECURITY_ATTRIBUTES() 
@@ -70,7 +71,7 @@ class TS(basetrans):
                 code1=line.encode('utf-16-le') 
                 win32file.WriteFile(self.hPipe,self.packuint32(int(self.tgtlang))+self.packuint32(len(code1))+code1) 
                 datalen=self.unpackuint32(win32file.ReadFile(self.hPipe, 4, None)[1])
-                xx=win32file.ReadFile(self.hPipe, datalen, None)[1]
+                xx=win32file.ReadFile(self.hPipe, datalen, None)[1] 
                 xx=xx.decode('utf-16-le',errors='ignore') 
                 ress.append(xx)  
             return '\n'.join(ress)

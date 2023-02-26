@@ -54,8 +54,9 @@ int wmain(int argc, wchar_t* argv[])
     HANDLE hPipe = CreateNamedPipe(argv[2], PIPE_ACCESS_DUPLEX, PIPE_TYPE_MESSAGE | PIPE_READMODE_MESSAGE | PIPE_WAIT
         , PIPE_UNLIMITED_INSTANCES, 65535, 65535, NMPWAIT_WAIT_FOREVER, 0);
 
-    _setmode(_fileno(stdout), _O_U16TEXT);
-    _setmode(_fileno(stdin), _O_U16TEXT);
+    /*_setmode(_fileno(stdout), _O_U16TEXT);
+    _setmode(_fileno(stdin), _O_U16TEXT);*/
+    fclose(stdout);
 
     //system("chcp 932");
     HMODULE module = LoadLibraryW(argv[1]);
@@ -105,10 +106,9 @@ int wmain(int argc, wchar_t* argv[])
         JC_Transfer_Unicode(0, CODEPAGE_JA, code, 1, 1, fr, to, a, buf, b);
         //std::wcout << getCurrentMilliSecTimestamp() << std::endl;
         datalen = 2 * wcslen(to);
-        packuint32(datalen, intcache); 
-        writelen(hPipe, 4, intcache);
-        writelen(hPipe, datalen,(unsigned char*) to);
-        
+        packuint32(datalen, intcache);  
+        writelen(hPipe, 4, intcache); 
+        writelen(hPipe, datalen,(unsigned char*) to);  
     }
 
 }
