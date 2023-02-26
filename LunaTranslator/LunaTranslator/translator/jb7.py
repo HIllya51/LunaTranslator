@@ -1,4 +1,3 @@
-
 from utils.subproc import subproc    
 from translator.basetranslator import basetrans 
 import ctypes 
@@ -7,18 +6,7 @@ import mmap
 import  win32con,win32event,win32security,win32pipe,win32file
 import subprocess ,threading
 from utils.subproc import subproc
-class TS(basetrans): 
-    # def inittranslator(self ) : 
-        
-    #     if platform.architecture()[0]=='32bit':
-    #         self._x64=False
-    #         try:
-    #             self.dll=  ctypes.CDLL(self.path)
-    #         except:
-    #             pass
-    #     else:
-    #         self._x64=True
-    #         self.x64('おはおよう')
+class TS(basetrans):  
     def inittranslator(self ) : 
                  
         self.path=None
@@ -52,7 +40,7 @@ class TS(basetrans):
             pipename='\\\\.\\Pipe\\jbj7_'+t
             waitsignal='jbjwaitload_'+t
             #self.engine=subproc(f'./files/x64_x86_dll/jbj7.exe "{self.dllpath}"'+dictpath,stdin=subprocess.PIPE,name='jbj', stdout=subprocess.PIPE ,encoding='utf-16-le')
-            self.engine=subproc(f'./files/x64_x86_dll/jbj7_4.exe "{self.dllpath}" {pipename} {waitsignal} '+dictpath,name='jbj7', stdout=subprocess.PIPE ,  stdin=subprocess.PIPE ,encoding='utf-16-le') 
+            self.engine=subproc(f'./files/x64_x86_dll/jbj7_4.exe "{self.dllpath}" {pipename} {waitsignal} '+dictpath,name='jbj7', stdout=subprocess.PIPE) 
             attr=win32security.SECURITY_DESCRIPTOR(win32con.SECURITY_DESCRIPTOR_REVISION)
             attr.SetSecurityDescriptorDacl(True,None,False) 
             secu=win32security.SECURITY_ATTRIBUTES() 
@@ -62,7 +50,6 @@ class TS(basetrans):
             win32pipe.WaitNamedPipe(pipename,win32con.NMPWAIT_WAIT_FOREVER)
             self.hPipe = win32file.CreateFile( pipename, win32con.GENERIC_READ | win32con.GENERIC_WRITE, 0,
                     None, win32con.OPEN_EXISTING, win32con.FILE_ATTRIBUTE_NORMAL, None);
-            
              
     def x64(self,content:str):   
             if self.tgtlang not in ['936','950']:
@@ -71,9 +58,8 @@ class TS(basetrans):
             content=content.replace('\r','\n')
             lines=content.split('\n')
             ress=[]
-            for line in lines:
-                self.engine.stdin.write(self.tgtlang+'\n'+line+'\n')
-                self.engine.stdin.flush() 
+            for line in lines: 
+                win32file.WriteFile(self.hPipe,self.tgtlang.encode('ascii')+line.encode('utf-16-le'))
                 xx=win32file.ReadFile(self.hPipe, 65535, None)[1] 
                 xx=xx.decode('utf-16-le',errors='ignore') 
                 ress.append(xx) 

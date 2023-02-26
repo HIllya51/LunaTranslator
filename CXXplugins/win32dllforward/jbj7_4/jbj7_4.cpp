@@ -10,15 +10,15 @@
 #define CODEPAGE_GB  936 
 
 #define CODEPAGE_BIG5 950
-
+ 
 
 int wmain(int argc, wchar_t* argv[])
 {
     HANDLE hPipe = CreateNamedPipe(argv[2], PIPE_ACCESS_DUPLEX, PIPE_TYPE_MESSAGE | PIPE_READMODE_MESSAGE | PIPE_WAIT
         , PIPE_UNLIMITED_INSTANCES, 0, 0, NMPWAIT_WAIT_FOREVER, 0);
-    
-    _setmode(_fileno(stdout), _O_U16TEXT);
-    _setmode(_fileno(stdin), _O_U16TEXT);
+
+    //_setmode(_fileno(stdout), _O_U16TEXT);
+    //_setmode(_fileno(stdin), _O_U16TEXT);
 
     //system("chcp 932");
     HMODULE module = LoadLibraryW(argv[1]);
@@ -49,6 +49,7 @@ int wmain(int argc, wchar_t* argv[])
         DWORD len = 0;
 
     }
+    char codec[4] = { 0 };
     while (true) {
         memset(fr, 0, 3000 * sizeof(wchar_t));
         memset(to, 0, 3000 * sizeof(wchar_t));
@@ -56,19 +57,25 @@ int wmain(int argc, wchar_t* argv[])
         memset(wcode, 0, 10 * sizeof(wchar_t));
         int a = 3000;
         int b = 3000;
-        std::wcin.getline(wcode, 10);
+        /*std::wcin.getline(wcode, 10);
         UINT code = _wtoi(wcode);
-        std::wcin.getline(fr, 3000);
+        std::wcin.getline(fr, 3000);*/
+
+        UINT code; DWORD  _;
+        ReadFile(hPipe, &codec, 3, &_, NULL);
+        code = atoi(codec);
+        ReadFile(hPipe, &fr, 6000, &_, NULL);
+         
         JC_Transfer_Unicode(0, CODEPAGE_JA, code, 1, 1, fr, to, a, buf, b);
-        //std::wcout << to << std::endl;
-        wprintf(L"%s\n", to);
+        /*std::wcout << code << std::endl;
+        std::wcout << fr << std::endl;*/
+        //wprintf(L"%s\n", to);   
         //fflush(stdout);
-        DWORD _;
-        WriteFile(hPipe, to, 2*(wcslen(to)), &_, NULL);
+         
+        WriteFile(hPipe, to, 2 * (wcslen(to)), &_, NULL);
     }
 
 }
-
 // 运行程序: Ctrl + F5 或调试 >“开始执行(不调试)”菜单
 // 调试程序: F5 或调试 >“开始调试”菜单
 
