@@ -91,6 +91,7 @@
 		"key1":-1,
 		"key2":-1
 	},
+	"magpie10path":"",
     "ocrautobindwindow": true, 
     "magpieflags": {
 		"MultiMonitorUsage":0,

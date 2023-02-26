@@ -2,9 +2,9 @@ import functools
 from PyQt5.QtCore import Qt 
 from PyQt5.QtGui import  QFont
 
-from PyQt5.QtWidgets import  QWidget,QLabel ,QSlider, QFontComboBox  ,QPushButton
+from PyQt5.QtWidgets import  QWidget,QLabel ,QSlider, QFontComboBox  ,QPushButton,QMessageBox
 import json,os
- 
+from traceback import print_exc
 from gui.inputdialog import multicolorset
 from utils.config import globalconfig ,_TR,_TRL
 
@@ -119,8 +119,27 @@ def setTabThree_lazy(self) :
                [('强制窗口保持总在最前',6),self.getsimpleswitch(globalconfig,'forcekeepontop'),],
                [("夜间模式",6),(self.getsimpleswitch(globalconfig  ,'darktheme'),1)]
         ]
-        x=QPushButton(_TR("修改DLL以实现点击翻译器不再退出全屏"))
-        x.clicked.connect(lambda _:os.startfile(os.path.abspath('./files/Magpie_v0.10.0-preview2')))
+        modifydllbtn=QPushButton(_TR("修改DLL以实现点击翻译器不再退出全屏"))
+        def __modifydll(_):
+                try:
+                        i=0
+                        while os.path.exists(os.path.join(globalconfig['magpie10path'],'Magpie.Core.dll.backup'+('' if i==0 else '.'+str(i)))): 
+                                i+=1
+                        os.rename(os.path.join(globalconfig['magpie10path'],'Magpie.Core.dll'),os.path.join(globalconfig['magpie10path'],'Magpie.Core.dll.backup'+('' if i==0 else '.'+str(i)))) 
+                        with open(os.path.abspath('./files/Magpie_v0.10.0-preview2/Magpie.Core.dll'),'rb') as ff:
+                                b=ff.read() 
+                        with open(os.path.join(globalconfig['magpie10path'],'Magpie.Core.dll'),'wb') as ff:
+                                ff.write(b)
+                        msgBox=QMessageBox(self) 
+                        msgBox.setWindowTitle('')
+                        msgBox.setText(_TR('成功')) 
+                        msgBox.setStandardButtons(QMessageBox.Ok  );
+                        msgBox.setDefaultButton(QMessageBox.Ok);
+                        msgBox.exec()
+                except:
+                        print_exc()
+                        os.startfile(os.path.abspath('./files/Magpie_v0.10.0-preview2'))
+        modifydllbtn.clicked.connect( __modifydll)
          
         fullscreengrid=[
                 [('全屏化方式',4),(self.getsimplecombobox(_TRL(['内置Magpie9','Magpie10','游戏原生全屏', 'SW_SHOWMAXIMIZED']),globalconfig,'fullscreenmethod_2'),6)],
@@ -129,8 +148,8 @@ def setTabThree_lazy(self) :
                 [('Magpie算法',4),(self.getsimplecombobox(magpiemethod,globalconfig,'magpiescalemethod'),6)],
                 [('Magpie捕获模式',4),(self.getsimplecombobox(['Graphics Capture','Desktop Duplication','GDI','DwmSharedSurface'],globalconfig,'magpiecapturemethod'),6)],
                 [''],
-                [('由于Magpie10接口变化过大，因此不再完整内置',10)],
-                [(x,10)],
+                [('由于Magpie10接口变化过大，因此不再完整内置',10)], 
+                [('Magpie10路径',3),(self.getcolorbutton(globalconfig,'',callback=lambda x: getsomepath1(self,'Magpie路径',globalconfig,'magpie10path','Magpie路径',isdir=True),icon='fa.gear',constcolor="#FF69B4"),1),(modifydllbtn,6)],
                 [('Magpie10快捷键',4),(self.getsimplecombobox(key_first,globalconfig['magpie10quick'],'key1'),3),(self.getsimplecombobox(key_second,globalconfig['magpie10quick'],'key2')  ,3)]
 
         ] 
