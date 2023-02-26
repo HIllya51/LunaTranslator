@@ -133,7 +133,10 @@ class Settin(closeashidewindow) :
         b.setIconSize(QSize(int(20*self.rate),
                                  int(20*self.rate)))
         if transparent:
-            b.setStyleSheet("background: transparent;") 
+            b.setStyleSheet('''background-color: rgba(255, 255, 255, 0);
+                color: black;
+                border: 0px;
+                font: 100 10pt;''') 
         b.clicked.connect(  callback)  
         if name:
             setattr(self,name,b)

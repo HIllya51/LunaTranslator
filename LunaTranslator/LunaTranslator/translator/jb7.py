@@ -20,9 +20,7 @@ class TS(basetrans):
     #         self._x64=True
     #         self.x64('おはおよう')
     def inittranslator(self ) : 
-                
-        
-        
+                 
         self.path=None
         self.userdict=None
         self.checkpath()
@@ -65,22 +63,7 @@ class TS(basetrans):
             self.hPipe = win32file.CreateFile( pipename, win32con.GENERIC_READ | win32con.GENERIC_WRITE, 0,
                     None, win32con.OPEN_EXISTING, win32con.FILE_ATTRIBUTE_NORMAL, None);
             
-            self.istranslating=False
-            self.transtime=0
-            self.timeout=3
-            threading.Thread(target=self._timeout).start()
-    def _timeout(self):
-        #readfile有时候会卡住不动，太难复现了 干脆用笨办法了。
-        while True:
-            time.sleep(1)
-            if self.istranslating:
-                if time.time()-self.transtime>self.timeout: 
-                    try:
-                        self.engine.kill()
-                        print("jbj7卡住了")
-                        break
-                    except:
-                        pass
+             
     def x64(self,content:str):   
             if self.tgtlang not in ['936','950']:
                 return ''  
@@ -90,13 +73,10 @@ class TS(basetrans):
             ress=[]
             for line in lines:
                 self.engine.stdin.write(self.tgtlang+'\n'+line+'\n')
-                self.engine.stdin.flush()
-                self.transtime=time.time()-self.timeout 
-                self.istranslating=True 
+                self.engine.stdin.flush() 
                 xx=win32file.ReadFile(self.hPipe, 65535, None)[1] 
                 xx=xx.decode('utf-16-le',errors='ignore') 
-                ress.append(xx)
-                self.istranslating=False
+                ress.append(xx) 
 
             return '\n'.join(ress)
     def x86(self,content):

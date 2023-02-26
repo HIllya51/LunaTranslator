@@ -8,6 +8,7 @@ import os,threading,Levenshtein,sys
 from traceback import  print_exc   
 import  win32event,win32con,win32event,win32security,win32pipe,win32file,mmap 
  
+from PyQt5.QtGui import QPalette,QColor
 from utils.config import globalconfig ,savehook_new_list,savehook_new_data,noundictconfig,transerrorfixdictconfig,setlanguage 
 import threading,win32gui 
 from PyQt5.QtCore import QCoreApplication ,Qt ,QObject,pyqtSignal
@@ -33,6 +34,7 @@ from utils.getpidlist import getpidexe,ListProcess,getScreenRate
 from utils.getpidlist import getarch
 import gui.translatorUI
 from queue import Queue
+from gui.languageset import languageset
 import zhconv,functools
 import gui.transhist 
 import gui.edittext
@@ -62,8 +64,9 @@ class MAINUI(QObject) :
             self.rpc.engineTextReceived.connect(self.ga.sendEmbeddedTranslation)
             self.rpc.start() 
             self.startembedsignal.connect(self.startembed)
-    def __init__(self) -> None:
+    def __init__(self,app) -> None:
         super().__init__()
+        self.app=app  
         self.startembedservice()
         self.translators={}
         self.cishus={}
@@ -161,22 +164,17 @@ class MAINUI(QObject) :
                 embedcallback('zhs', _paste_str) 
             return 
  
-         
-        try:
-            if type(paste_str)==list:
-                paste_str=[POSTSOLVE(_) for _ in paste_str] 
-                _paste_str='\n'.join(paste_str)
-            else:
-                _paste_str=POSTSOLVE(paste_str) 
-            
-        except:
-            if embedcallback:
-                embedcallback('zhs', _paste_str) 
-            return 
+        
+        if type(paste_str)==list:
+            paste_str=[POSTSOLVE(_) for _ in paste_str] 
+            _paste_str='\n'.join(paste_str)
+        else:
+            _paste_str=POSTSOLVE(paste_str) 
+             
         while len(_paste_str) and _paste_str[-1] in '\r\n \t':  #在后处理之后在去除换行，这样换行符可以当作行结束符给后处理用
             _paste_str=_paste_str[:-1]  
 
-        if set(_paste_str)-set('\r\n \t「…」、。？！―')==set() or len(_paste_str)>1000 :
+        if len(_paste_str)>1000 :
             if embedcallback:
                 embedcallback('zhs', _paste_str) 
             return  
@@ -515,23 +513,49 @@ class MAINUI(QObject) :
         threading.Thread(target=minmaxmoveobservefunc,args=(self.translation_ui,)).start()   
         
         self.starttextsource(pop=False)  
+    def checklang(self):
+        if  globalconfig['language_setted_2.4.5']==False:
+            
+            x=languageset(somedef.language_list_show)
+            x.exec()
+            globalconfig['language_setted_2.4.5']=True
+            globalconfig['languageuse']=x.current
+            globalconfig['tgtlang3']=x.current
+            setlanguage()
+    def settheme(self):
+        if globalconfig['darktheme']: 
+            self.app.setStyle("fusion") 
+            palette = QPalette()
+            palette.setColor(QPalette.Window, QColor(53, 53, 53))
+            palette.setColor(QPalette.WindowText, Qt.white)
+            palette.setColor(QPalette.Base, QColor(25, 25, 25))
+            palette.setColor(QPalette.AlternateBase, QColor(53, 53, 53))
+            palette.setColor(QPalette.ToolTipBase, Qt.white)
+            palette.setColor(QPalette.ToolTipText, Qt.white)
+            palette.setColor(QPalette.Text, Qt.white)
+            palette.setColor(QPalette.Button, QColor(53, 53, 53))
+            palette.setColor(QPalette.ButtonText, Qt.white)
+            palette.setColor(QPalette.BrightText, Qt.red)
+            palette.setColor(QPalette.Link, QColor(42, 130, 218))
+            palette.setColor(QPalette.Highlight, QColor(42, 130, 218))
+            palette.setColor(QPalette.HighlightedText, Qt.black)
+            self.app.setPalette(palette) 
+         
 if __name__ == "__main__" :
     
     
-    screen_scale_rate = getScreenRate()  
-     
+    screen_scale_rate = getScreenRate()   
     QCoreApplication.setAttribute(Qt.AA_UseHighDpiPixmaps, True)
     app = QApplication(sys.argv) 
     app.setQuitOnLastWindowClosed(False)
-    if  globalconfig['language_setted_2.4.5']==False:
-        from gui.languageset import languageset
-        x=languageset(somedef.language_list_show)
-        x.exec()
-        globalconfig['language_setted_2.4.5']=True
-        globalconfig['languageuse']=x.current
-        globalconfig['tgtlang3']=x.current
-        setlanguage()
-    main = MAINUI() 
+    
+
+    main = MAINUI(app) 
     main.screen_scale_rate =screen_scale_rate  
+    
+    main.settheme()
+    main.checklang() 
     main.aa()
+
+
     app.exit(app.exec_())

@@ -95,7 +95,7 @@ class basetrans:
         pass
      
     def maybecachetranslate(self,contentraw,contentsolved):
-        if self.typename in somedef.fanyi_offline+somedef.fanyi_pre:
+        if self.typename in somedef.fanyi_pre:
             res=self.translate(contentraw)
         else: 
             res=self.cached_translate(contentsolved)

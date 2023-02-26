@@ -117,6 +117,7 @@ def setTabThree_lazy(self) :
                 [('翻译窗口顺时针旋转(重启生效)',6),(self.getsimplecombobox(['0','90','180','270'],globalconfig,'rotation'),4)],
                 
                [('强制窗口保持总在最前',6),self.getsimpleswitch(globalconfig,'forcekeepontop'),],
+               [("夜间模式",6),(self.getsimpleswitch(globalconfig  ,'darktheme'),1)]
         ]
         fullscreengrid=[
                 [('全屏化方式',4),(self.getsimplecombobox(_TRL(['Magpie','游戏原生全屏', 'SW_SHOWMAXIMIZED']),globalconfig,'fullscreenmethod'),6)],

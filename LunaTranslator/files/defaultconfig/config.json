@@ -32,6 +32,7 @@
 	"edit_fontstring":"Arial,12,-1,5,50,0,0,0,0,0,Regular", 
     "fixedheight": false,
 	"showintab":false,
+	"darktheme":false,
 	"remove_useless_hook":false,
 	"height":200,
 	"postprocessf":"postprocess.mypost",
