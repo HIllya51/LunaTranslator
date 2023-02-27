@@ -22,8 +22,10 @@ def minmaxmoveobservefunc(self):
                         if globalconfig['focusfollow']:
                                 focus=win32gui.GetForegroundWindow()
                                 _focusp=win32process.GetWindowThreadProcessId(focus)[1]
-                                if _focusp in [self.object.textsource.pid,os.getpid()]:
-                                        self.hookfollowsignal.emit(3,(0,0))
+                                if _focusp ==self.object.textsource.pid: 
+                                        self.hookfollowsignal.emit(3,(hwnd,))
+                                elif _focusp ==os.getpid():
+                                        pass
                                 else:
                                         self.hookfollowsignal.emit(4,(0,0)) 
                                 
@@ -32,7 +34,7 @@ def minmaxmoveobservefunc(self):
                                         if tup[1] == win32con.SW_SHOWMINIMIZED:
                                                 self.hookfollowsignal.emit(4,(0,0)) 
                                         elif tup[1] == win32con.SW_SHOWNORMAL:
-                                                self.hookfollowsignal.emit(3,(0,0))
+                                                self.hookfollowsignal.emit(3,(hwnd,))
                                 self.lastminmax=tup[1]
                                 
                         if globalconfig['movefollow']:

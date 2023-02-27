@@ -49,6 +49,10 @@ class QUnFrameWindow(resizableframeless):
         if code==3:
             if self.hideshownotauto:
                 self.show_()
+                try:
+                    win32gui.SetForegroundWindow(other[0])
+                except:
+                    pass
         elif code==4: 
             if self.hideshownotauto:
                 self.hide_()
