@@ -1,15 +1,7 @@
 import requests
 import re
-import urllib
-import random
-import time
-
-from utils.config import globalconfig
-import js2py 
+import urllib 
  
-
-from traceback import print_exc
-
 from translator.basetranslator import basetrans
 class TS(basetrans):
     def langmap(self):

@@ -1,12 +1,9 @@
 from utils.subproc import subproc    
 from translator.basetranslator import basetrans 
 import ctypes 
-import os ,time
-import mmap
-import  win32con,win32event,win32security,win32pipe,win32file
-import subprocess ,threading
-from utils.subproc import subproc
-from utils.utils import timeoutfunction
+import os ,time 
+import  win32con,win32event,win32security,win32pipe,win32file 
+from utils.subproc import subproc 
 class TS(basetrans):  
     def inittranslator(self ) : 
                  
