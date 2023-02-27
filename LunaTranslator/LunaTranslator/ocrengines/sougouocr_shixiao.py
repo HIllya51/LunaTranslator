@@ -9,7 +9,7 @@ class OCR(baseocr):
         }
         
         file = open(imgfile,'rb')
-        files = {'pic': ('pic.jpg', file) }
+        files = {'pic': ('pic.png', file) }
         r = requests.post(url='http://ocr.shouji.sogou.com/v2/ocr/json', files=files, headers=headers)  
         print(r.json())
         return self.space.join([_['content'] for _ in r.json()['result']])

@@ -135,7 +135,7 @@ def setTab_aboutlazy(self) :
             [('如果你感觉该软件对你有帮助，欢迎微信扫码或者前往<a href="https://afdian.net/a/HIllya51">爱发电</a>赞助，谢谢，么么哒~',4,'link')]
         ]
         tab=self.makesubtab_lazy(['支持作者','自动更新','代理设置','资源下载' ],[
-                lambda:self.makevbox( [self.makegrid(shuominggrid),imgwidget("./files/zan.jpg")]),
+                lambda:self.makevbox( [self.makegrid(shuominggrid),imgwidget("./files/zan.png")]),
                 lambda: self.makescroll(self.makegrid(grid2 )   ) ,
                 lambda: self.makescroll(self.makegrid(grid1 )   ),
                 lambda:self.makescroll( self.makegrid(resourcegrid() ) ), 

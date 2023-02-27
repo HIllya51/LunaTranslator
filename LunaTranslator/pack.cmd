@@ -15,8 +15,12 @@ del ..\build\LunaTranslator\LunaTranslator\qt5printsupport.dll
 del ..\build\LunaTranslator\LunaTranslator\qt5websockets.dll
 del ..\build\LunaTranslator\LunaTranslator\qt5dbus.dll
 del ..\build\LunaTranslator\LunaTranslator\qt5multimedia.dll
+del ..\build\LunaTranslator\LunaTranslator\PyQt5\qt-plugins\platforms\qminimal.dll
+del ..\build\LunaTranslator\LunaTranslator\PyQt5\qt-plugins\platforms\qoffscreen.dll
+del ..\build\LunaTranslator\LunaTranslator\PyQt5\qt-plugins\platforms\qwebgl.dll
 rmdir /S /Q ..\build\LunaTranslator\LunaTranslator\PyQt5\qt-plugins\mediaservice
 rmdir /S /Q ..\build\LunaTranslator\LunaTranslator\PyQt5\qt-plugins\printsupport
+rmdir /S /Q ..\build\LunaTranslator\LunaTranslator\PyQt5\qt-plugins\imageformats
 
 xcopy ..\build\LunaTranslator\ C:\dataH\LunaTranslator /e /y /I
 pause

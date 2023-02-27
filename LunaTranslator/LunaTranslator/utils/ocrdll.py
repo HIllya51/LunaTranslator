@@ -37,6 +37,4 @@ class ocrwrapper:
             self._OcrDestroy()
         except:
             pass
-# ocr=ocrwrapper()
-# ocr.init('./files/ocr/ja/det.onnx','./files/ocr/ja/rec.onnx','./files/ocr/ja/dict.txt')
-# print(ocr.ocr('./capture/','1668516425.0008786.jpg').decode('utf8'))
+        
