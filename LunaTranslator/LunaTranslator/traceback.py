@@ -4,10 +4,12 @@ import collections
 import itertools
 import linecache
 import sys
-
+ 
 if len(sys.argv)==1: 
     try:
         sys.stderr=open('./cache/errlog.txt','w',encoding='utf8') 
+        import version
+        sys.stderr.write(version.version+'\n')
     except:
         pass
 

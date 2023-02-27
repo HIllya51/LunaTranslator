@@ -1,30 +1,6 @@
-# coding: utf8
-# socketpack.py
-# jichi 4/28/2014
-# Marshal bytes
-
-if __name__ == '__main__':
-  import sys
-  sys.path.append('..')
-  
-#from PySide.QtCore import QByteArray
-
-# Little endian
-ENDIANNESS = 'little'
-
-INT32_SIZE = 4 # number of bytes of int32
-INT_SIZE = INT32_SIZE
-
-# Bytes
-
-#def signedord(c):
-#  """Return signed char value of the character
-#  @param  c  char
-#  @return  int[-128,127]
-#  """
-#  ret = ord(c)
-#  return ret if ret < 128 else ret - 256
-
+ 
+INT32_SIZE=INT_SIZE = 4 # number of bytes of int32 
+ 
 # http://stackoverflow.com/questions/444591/convert-a-string-of-bytes-into-an-int-python
 def unpackuint(s): #
   """
@@ -63,12 +39,7 @@ def packdata(data):
   #  data = QByteArray(data)
   size = len(data)
   return packuint32(size) + data
-
-# String list
-
-def _unicode(data, encoding): # str|QByteArray, str -> unicode
-  return data.decode(encoding,errors='ignore') 
-import sys
+  
 def packstrlist(l, encoding='utf8'):
   """
   @param  l  [unicode]
@@ -114,7 +85,7 @@ def unpackstrlist(data, encoding='utf8'):
       ret.append('')
     else:
       s = data[offset:offset+size]
-      s = _unicode(s, encoding)
+      s = s.decode(encoding,errors='ignore') 
       ret.append(s)
       offset += size
   return ret
