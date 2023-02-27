@@ -1,5 +1,5 @@
 
-from PyQt5.QtWidgets import  QMainWindow ,QApplication,QPushButton,QTabBar,QStylePainter,QStyleOptionTab,QStyle
+from PyQt5.QtWidgets import QWidget, QMainWindow ,QApplication,QPushButton,QTabBar,QStylePainter,QStyleOptionTab,QStyle
 from PyQt5.QtGui import QFont,QCloseEvent
 from PyQt5.QtCore import Qt,pyqtSignal ,QSize ,QRect ,QPoint 
  
@@ -71,8 +71,111 @@ class MySwitch(QPushButton):
         super().setChecked(a0)
         self.clickfunction(a0)
 
+class resizableframeless(QWidget):
+    def __init__(self, parent , flags ) -> None:
+        super().__init__(parent, flags)
+        self.setMouseTracking(True)  
+        
+        self._padding = 10
+        # 设置鼠标跟踪判断扳机默认值
+        self._move_drag = False
+        self._corner_drag = False
+        self._bottom_drag = False
+        self._lcorner_drag = False
+        self._right_drag = False
+        self._left_drag = False
+        
+    
+    def isinrect(self,pos,rect):
+        x,y=pos.x(),pos.y()
+        x1,x2,y1,y2=rect
+        return x>=x1 and x<=x2 and y<=y2 and y>=y1
+    def resizeEvent(self, e):
+        
+        if self._move_drag ==False: 
+            self._right_rect = [self.width() - self._padding, self.width() + 1 ,0, self.height() - self._padding]
+            self._left_rect = [-1, self._padding,0, self.height() - self._padding]
+            self._bottom_rect = [self._padding, self.width() - self._padding,self.height() - self._padding, self.height() + 1]
+            self._corner_rect = [self.width() - self._padding, self.width() + 1,self.height() - self._padding, self.height() + 1]
+            self._lcorner_rect = [-1, self._padding,self.height() - self._padding, self.height() + 1]
+    
+    def mousePressEvent(self, event):
+        # 重写鼠标点击的事件 
+         
+        if (event.button() == Qt.LeftButton) and (self.isinrect(event.pos(), self._corner_rect)):
+            # 鼠标左键点击右下角边界区域
+            self._corner_drag = True 
+        elif (event.button() == Qt.LeftButton) and (self.isinrect(event.pos(),self._right_rect)):
+            # 鼠标左键点击右侧边界区域
+            self._right_drag = True 
+        elif (event.button() == Qt.LeftButton) and (self.isinrect(event.pos(),self._left_rect)):
+            # 鼠标左键点击右侧边界区域
+            self._left_drag = True 
+            self.startxp=(event.globalPos() - self.pos() ) 
+            self.startx=event.globalPos().x()
+            self.startw=self.width()
+        elif (event.button() == Qt.LeftButton) and (self.isinrect(event.pos(),self._bottom_rect)):
+            # 鼠标左键点击下侧边界区域
+            self._bottom_drag = True 
+        elif (event.button() == Qt.LeftButton) and (self.isinrect(event.pos(),self._lcorner_rect)):
+            # 鼠标左键点击下侧边界区域
+            self._lcorner_drag = True 
+            self.startxp=(event.globalPos() - self.pos() ) 
+            self.startx=event.globalPos().x()
+            self.startw=self.width()
+        # and (event.y() < self._TitleLabel.height()):
+        elif (event.button() == Qt.LeftButton):
+            # 鼠标左键点击标题栏区域
+            self._move_drag = True
+            self.move_DragPosition = event.globalPos() - self.pos() 
 
+    def mouseMoveEvent(self, QMouseEvent):
+        # 判断鼠标位置切换鼠标手势 
+        
+        pos=QMouseEvent.pos()
+         
+        if self._move_drag ==False:
+            if self.isinrect( pos,self._corner_rect):
+                self.setCursor(Qt.SizeFDiagCursor)
+            elif self.isinrect( pos,self._lcorner_rect):
+                self.setCursor(Qt.SizeBDiagCursor)
+            elif self.isinrect(pos ,self._bottom_rect):
+                self.setCursor(Qt.SizeVerCursor)
+            elif self.isinrect(pos ,self._right_rect):
+                self.setCursor(Qt.SizeHorCursor)
+            elif self.isinrect(pos ,self._left_rect):
+                self.setCursor(Qt.SizeHorCursor)
+            else:
+                self.setCursor(Qt.ArrowCursor)
+        if Qt.LeftButton and self._right_drag:
+            
+            # 右侧调整窗口宽度
+            self.resize(pos.x(), self.height())
+        elif Qt.LeftButton and self._left_drag:
+            # 右侧调整窗口宽度  
+            self.setGeometry((QMouseEvent.globalPos() - self.startxp).x(),self.y(),self.startw-(QMouseEvent.globalPos().x() - self.startx),self.height())
+            #self.resize(pos.x(), self.height())
+        elif Qt.LeftButton and self._bottom_drag:
+            # 下侧调整窗口高度
+            self.resize(self.width(), QMouseEvent.pos().y()) 
+        elif Qt.LeftButton and self._lcorner_drag:
+            # 下侧调整窗口高度
+            self.setGeometry((QMouseEvent.globalPos() - self.startxp).x(),self.y(),self.startw-(QMouseEvent.globalPos().x() - self.startx),QMouseEvent.pos().y())
+        elif Qt.LeftButton and self._corner_drag:
+            # 右下角同时调整高度和宽度
+            self.resize(pos.x(),pos.y()) 
+        elif Qt.LeftButton and self._move_drag:
+            # 标题栏拖放窗口位置
+            self.move(QMouseEvent.globalPos() - self.move_DragPosition) 
 
+    def mouseReleaseEvent(self, QMouseEvent):
+        # 鼠标释放后，各扳机复位
+        self._move_drag = False
+        self._corner_drag = False
+        self._bottom_drag = False
+        self._lcorner_drag = False
+        self._right_drag = False
+        self._left_drag = False
 class rotatetab(QTabBar): 
     def tabSizeHint(self, index): 
         s = QTabBar.tabSizeHint(self, index)

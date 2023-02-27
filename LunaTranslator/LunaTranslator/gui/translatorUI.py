@@ -24,15 +24,8 @@ from gui.dialog_savedgame import dialog_savedgame
 from gui.textbrowser import Textbrowser
 from utils.fullscreen import fullscreen
 from gui.rangeselect  import moveresizegame 
-class QTitleButton(QPushButton):
-    def __init__(self, parent):
-        super(QTitleButton, self).__init__(parent)
-        self.setFont(QFont("Webdings"))   
-    def enterEvent(self, a0 ) -> None:
-        return super().enterEvent(a0)
-    def leaveEvent(self, a0 ) -> None:
-        return super().leaveEvent(a0)
-class QUnFrameWindow(QWidget):   
+from gui.usefulwidget import resizableframeless
+class QUnFrameWindow(resizableframeless):   
     displayres =  pyqtSignal(str,str ) 
     displayraw1 =  pyqtSignal(list, str,str,int )  
     displaystatus=pyqtSignal(str,str,bool) 
@@ -208,43 +201,43 @@ class QUnFrameWindow(QWidget):
         self.setMinimumHeight(globalconfig['buttonsize']*1.5*self.rate)
         self.setMinimumWidth(globalconfig['buttonsize']*2*self.rate)
     def addbuttons(self):
-        self.takusanbuttons("MinMaxButton",None,0,"移动","move")
-        self.takusanbuttons("MinMaxButton",self.startTranslater,0,"重新翻译")
-        self.takusanbuttons("MinMaxButton",self.changeTranslateMode,1,"自动翻译",'automodebutton') 
-        self.takusanbuttons("MinMaxButton",lambda:self.object.settin_ui.showsignal.emit(),2,"打开设置")
+        self.takusanbuttons(1,None,0,"移动","move")
+        self.takusanbuttons(1,self.startTranslater,0,"重新翻译")
+        self.takusanbuttons(1,self.changeTranslateMode,1,"自动翻译",'automodebutton') 
+        self.takusanbuttons(1,lambda:self.object.settin_ui.showsignal.emit(),2,"打开设置")
 
 
-        self.takusanbuttons("MinMaxButton",lambda:pyperclip.copy( self.original),6,"复制到剪贴板",'copy') 
-        self.takusanbuttons("MinMaxButton",lambda: self.object.edittextui.showsignal.emit(),6,"编辑",'edit') 
-        self.takusanbuttons("MinMaxButton", self.changeshowhideraw,7,"显示/隐藏原文",'showraw') 
+        self.takusanbuttons(1,lambda:pyperclip.copy( self.original),6,"复制到剪贴板",'copy') 
+        self.takusanbuttons(1,lambda: self.object.edittextui.showsignal.emit(),6,"编辑",'edit') 
+        self.takusanbuttons(1, self.changeshowhideraw,7,"显示/隐藏原文",'showraw') 
         
-        self.takusanbuttons("MinMaxButton",lambda: self.object.transhis.showsignal.emit() ,8,"显示/隐藏历史翻译",'history') 
-        self.takusanbuttons("MinMaxButton",lambda: self.object.settin_ui.button_noundict.click() ,8,"专有名词翻译设置",'noundict') 
-        self.takusanbuttons("MinMaxButton",self.langdu,9,"朗读",'langdu') 
-        self.takusanbuttons("MinMaxButton",self.changemousetransparentstate,10,"鼠标穿透窗口",'mousetransbutton') 
+        self.takusanbuttons(1,lambda: self.object.transhis.showsignal.emit() ,8,"显示/隐藏历史翻译",'history') 
+        self.takusanbuttons(1,lambda: self.object.settin_ui.button_noundict.click() ,8,"专有名词翻译设置",'noundict') 
+        self.takusanbuttons(1,self.langdu,9,"朗读",'langdu') 
+        self.takusanbuttons(1,self.changemousetransparentstate,10,"鼠标穿透窗口",'mousetransbutton') 
          
-        self.takusanbuttons("MinMaxButton",self.changetoolslockstate,11,"锁定工具栏",'locktoolsbutton') 
+        self.takusanbuttons(1,self.changetoolslockstate,11,"锁定工具栏",'locktoolsbutton') 
         
         
-        self.takusanbuttons("MinMaxButton",lambda: dialog_savedgame(self.object.settin_ui),3,"打开保存的游戏",'gamepad') 
+        self.takusanbuttons(1,lambda: dialog_savedgame(self.object.settin_ui),3,"打开保存的游戏",'gamepad') 
 
-        self.takusanbuttons("MinMaxButton",lambda :self.object.AttachProcessDialog.showsignal.emit(),4,"选择游戏",None,["textractor","embedded"] )  
-        self.takusanbuttons("MinMaxButton",lambda:self.object.hookselectdialog.showsignal.emit(),5,"选择文本",None ,["textractor","embedded"]) 
+        self.takusanbuttons(1,lambda :self.object.AttachProcessDialog.showsignal.emit(),4,"选择游戏",None,["textractor","embedded"] )  
+        self.takusanbuttons(1,lambda:self.object.hookselectdialog.showsignal.emit(),5,"选择文本",None ,["textractor","embedded"]) 
          
-        self.takusanbuttons("MinMaxButton",lambda :self.clickRange(False),4,"选取OCR范围",None,[ "ocr"])
-        self.takusanbuttons("MinMaxButton",self.showhide,5,"显示/隐藏范围框",None,["ocr"])
+        self.takusanbuttons(1,lambda :self.clickRange(False),4,"选取OCR范围",None,[ "ocr"])
+        self.takusanbuttons(1,self.showhide,5,"显示/隐藏范围框",None,["ocr"])
          
-        self.takusanbuttons("MinMaxButton",self.bindcropwindow_signal.emit,5,"绑定截图窗口，避免遮挡（部分软件不支持）（点击自己取消）",None,["ocr"])
+        self.takusanbuttons(1,self.bindcropwindow_signal.emit,5,"绑定截图窗口，避免遮挡（部分软件不支持）（点击自己取消）",None,["ocr"])
           
-        self.takusanbuttons("MinMaxButton",lambda :moveresizegame(self,self.object.textsource.hwnd),5,"调整游戏窗口(需要绑定ocr窗口，或选择hook进程)",'resize' ,["textractor","ocr","embedded"]) 
+        self.takusanbuttons(1,lambda :moveresizegame(self,self.object.textsource.hwnd),5,"调整游戏窗口(需要绑定ocr窗口，或选择hook进程)",'resize' ,["textractor","ocr","embedded"]) 
   
-        self.takusanbuttons("MinMaxButton",self._fullsgame,5,"全屏/恢复游戏窗口(需要绑定ocr窗口，或选择hook进程)" ,"fullscreen",["textractor","ocr","embedded"]) 
+        self.takusanbuttons(1,self._fullsgame,5,"全屏/恢复游戏窗口(需要绑定ocr窗口，或选择hook进程)" ,"fullscreen",["textractor","ocr","embedded"]) 
         
-        self.takusanbuttons("MinMaxButton",self.muteprocessfuntion,5,"游戏静音(需要绑定ocr窗口，或选择hook进程)" ,"muteprocess",["textractor","ocr",'embedded']) 
+        self.takusanbuttons(1,self.muteprocessfuntion,5,"游戏静音(需要绑定ocr窗口，或选择hook进程)" ,"muteprocess",["textractor","ocr",'embedded']) 
         
         
-        self.takusanbuttons("MinMaxButton",self.hide_and_disableautohide,-2,"最小化到托盘")
-        self.takusanbuttons("CloseButton",self.close,-1,"退出")
+        self.takusanbuttons(1,self.hide_and_disableautohide,-2,"最小化到托盘")
+        self.takusanbuttons(2,self.close,-1,"退出")
     def hide_(self):  
         if self.showintab: 
             win32gui.ShowWindow(self.winId(),win32con.SW_SHOWMINIMIZED )
@@ -304,7 +297,7 @@ class QUnFrameWindow(QWidget):
         self.rate = self.object.screen_scale_rate  
         self.muteprocessignal.connect(self.muteprocessfuntion) 
         self.toolbarhidedelaysignal.connect(self.toolbarhidedelay)
-        self._padding = 5*self.rate  # 设置边界宽度为5
+        
          
         self.hideshownotauto=True
         self.displaystatus.connect(self.showstatus)
@@ -329,31 +322,9 @@ class QUnFrameWindow(QWidget):
         self.original = ""    
         self._isTracking=False
         self.quickrangestatus=False
-        self.isontop=True 
-        self.initTitleLabel()  # 安放标题栏标签
-        
-        self.setMouseTracking(True)  # 设置widget鼠标跟踪
-        self.initDrag()  # 设置鼠标跟踪判断默认值
-        self.setStyleSheet(''' 
-      QTitleButton{
-          background-color: rgba(255, 255, 255, 0);
-          color: black;
-          border: 0px;
-          font: 100 10pt;
-      }
-      QTitleButton#MinMaxButton:hover{
-          background-color: %s;
-          border: 0px;
-          font: 100 10pt;
-      }
-      QTitleButton#CloseButton:hover{
-          background-color: %s;
-          color: white;
-          border: 0px;
-          font: 100 10pt;
-      }'''%(globalconfig['button_color_normal'],globalconfig['button_color_close']))
-          
-         
+        self.isontop=True  
+        self._TitleLabel = QLabel(self)   
+        self._TitleLabel.move(0, 0)  
         self.showhidestate=False
         self.processismuteed=False
         self.mousetransparent=False
@@ -502,20 +473,7 @@ class QUnFrameWindow(QWidget):
         if self.object.textsource :
             threading.Thread(target=self.object.textsource.runonce).start()
          
-    def initDrag(self):
-        # 设置鼠标跟踪判断扳机默认值
-        self._move_drag = False
-        self._corner_drag = False
-        self._bottom_drag = False
-        self._lcorner_drag = False
-        self._right_drag = False
-        self._left_drag = False
-
-    def initTitleLabel(self):  
-        self._TitleLabel = QLabel(self) 
-        self._TitleLabel.setFixedHeight(globalconfig['buttonsize']*1.5*self.rate) 
-        self._TitleLabel.setMouseTracking(True) 
-        self._TitleLabel.move(0, 0)  
+ 
  
     def toolbarhidedelay(self):
         
@@ -539,8 +497,8 @@ class QUnFrameWindow(QWidget):
         for button in self.buttons[-2:] +self.showbuttons:
             button.show()  
         self._TitleLabel.show()
-    def resizeEvent(self, QResizeEvent):
-         
+    def resizeEvent(self, e):
+        super().resizeEvent(e);
         wh=globalconfig['buttonsize'] *1.5
         height = self.height() - wh *self.rate 
          
@@ -550,96 +508,6 @@ class QUnFrameWindow(QWidget):
         # 自定义窗口调整大小事件
         self._TitleLabel.setFixedWidth(self.width())  
 
-        if self._move_drag ==False: 
-            self._right_rect = [self.width() - self._padding, self.width() + 1 ,wh*self.rate, self.height() - self._padding]
-            self._left_rect = [-1, self._padding,wh*self.rate, self.height() - self._padding]
-            self._bottom_rect = [self._padding, self.width() - self._padding,self.height() - self._padding, self.height() + 1]
-            self._corner_rect = [self.width() - self._padding, self.width() + 1,self.height() - self._padding, self.height() + 1]
-            self._lcorner_rect = [-1, self._padding,self.height() - self._padding, self.height() + 1]
-    def isinrect(self,pos,rect):
-        x,y=pos.x(),pos.y()
-        x1,x2,y1,y2=rect
-        if x>=x1 and x<=x2 and y<=y2 and y>=y1:
-            return True
-        else:
-            return False
-    def mousePressEvent(self, event):
-        # 重写鼠标点击的事件 
-         
-        if (event.button() == Qt.LeftButton) and (self.isinrect(event.pos(), self._corner_rect)):
-            # 鼠标左键点击右下角边界区域
-            self._corner_drag = True 
-        elif (event.button() == Qt.LeftButton) and (self.isinrect(event.pos(),self._right_rect)):
-            # 鼠标左键点击右侧边界区域
-            self._right_drag = True 
-        elif (event.button() == Qt.LeftButton) and (self.isinrect(event.pos(),self._left_rect)):
-            # 鼠标左键点击右侧边界区域
-            self._left_drag = True 
-            self.startxp=(event.globalPos() - self.pos() ) 
-            self.startx=event.globalPos().x()
-            self.startw=self.width()
-        elif (event.button() == Qt.LeftButton) and (self.isinrect(event.pos(),self._bottom_rect)):
-            # 鼠标左键点击下侧边界区域
-            self._bottom_drag = True 
-        elif (event.button() == Qt.LeftButton) and (self.isinrect(event.pos(),self._lcorner_rect)):
-            # 鼠标左键点击下侧边界区域
-            self._lcorner_drag = True 
-            self.startxp=(event.globalPos() - self.pos() ) 
-            self.startx=event.globalPos().x()
-            self.startw=self.width()
-        # and (event.y() < self._TitleLabel.height()):
-        elif (event.button() == Qt.LeftButton):
-            # 鼠标左键点击标题栏区域
-            self._move_drag = True
-            self.move_DragPosition = event.globalPos() - self.pos() 
-
-    def mouseMoveEvent(self, QMouseEvent):
-        # 判断鼠标位置切换鼠标手势 
-        
-        pos=QMouseEvent.pos()
-         
-        if self._move_drag ==False:
-            if self.isinrect( pos,self._corner_rect):
-                self.setCursor(Qt.SizeFDiagCursor)
-            elif self.isinrect( pos,self._lcorner_rect):
-                self.setCursor(Qt.SizeBDiagCursor)
-            elif self.isinrect(pos ,self._bottom_rect):
-                self.setCursor(Qt.SizeVerCursor)
-            elif self.isinrect(pos ,self._right_rect):
-                self.setCursor(Qt.SizeHorCursor)
-            elif self.isinrect(pos ,self._left_rect):
-                self.setCursor(Qt.SizeHorCursor)
-            else:
-                self.setCursor(Qt.ArrowCursor)
-        if Qt.LeftButton and self._right_drag:
-            
-            # 右侧调整窗口宽度
-            self.resize(pos.x(), self.height())
-        elif Qt.LeftButton and self._left_drag:
-            # 右侧调整窗口宽度  
-            self.setGeometry((QMouseEvent.globalPos() - self.startxp).x(),self.y(),self.startw-(QMouseEvent.globalPos().x() - self.startx),self.height())
-            #self.resize(pos.x(), self.height())
-        elif Qt.LeftButton and self._bottom_drag:
-            # 下侧调整窗口高度
-            self.resize(self.width(), QMouseEvent.pos().y()) 
-        elif Qt.LeftButton and self._lcorner_drag:
-            # 下侧调整窗口高度
-            self.setGeometry((QMouseEvent.globalPos() - self.startxp).x(),self.y(),self.startw-(QMouseEvent.globalPos().x() - self.startx),QMouseEvent.pos().y())
-        elif Qt.LeftButton and self._corner_drag:
-            # 右下角同时调整高度和宽度
-            self.resize(pos.x(),pos.y()) 
-        elif Qt.LeftButton and self._move_drag:
-            # 标题栏拖放窗口位置
-            self.move(QMouseEvent.globalPos() - self.move_DragPosition) 
-
-    def mouseReleaseEvent(self, QMouseEvent):
-        # 鼠标释放后，各扳机复位
-        self._move_drag = False
-        self._corner_drag = False
-        self._bottom_drag = False
-        self._lcorner_drag = False
-        self._right_drag = False
-        self._left_drag = False
     def showhidetoolbuttons(self):
         showed=0
         self.showbuttons=[]
@@ -669,20 +537,49 @@ class QUnFrameWindow(QWidget):
                 call( )
             except:
                 print_exc()
-    def takusanbuttons(self, objectname,clickfunc,adjast=None,tips=None,save=None,belong=None): 
+    def takusanbuttons(self, _type,clickfunc,adjast=None,tips=None,save=None,belong=None): 
          
-        button=QTitleButton(self) 
+        button=QPushButton(self) 
         if tips: 
             button.setToolTip(_TR(tips) )
+         
+
+        style='''
+        QPushButton{
+          background-color: rgba(255, 255, 255, 0);
+          color: black;
+          border: 0px;
+          font: 100 10pt;
+      }
+       
+        '''
+        if _type==1:
+            style+='''
+            QPushButton:hover{
+           background-color: %s;
+           border: 0px;
+           font: 100 10pt;
+            }'''%globalconfig['button_color_normal']
+        elif _type==2:
+            style+='''
+             QPushButton:hover{
+           background-color: %s;
+           color: white;
+           border: 0px;
+           font: 100 10pt;
+       }'''%(globalconfig['button_color_close'])
         
-        button.name=save
-        button.belong=belong
-        button.setObjectName(objectname)
-        
-        button.setMouseTracking(True)
+
+
+        button.setStyleSheet(style)
+ 
         
         if clickfunc:
             button.clicked.connect(functools.partial(self.callwrap,clickfunc)) 
+        
+        
+        button.name=save
+        button.belong=belong
         if adjast<0: 
             button.adjast=lambda  :button.move(self.width() + adjast*button.width() , 0) 
         else:
@@ -691,7 +588,7 @@ class QUnFrameWindow(QWidget):
         
         if save=='move':
             button.lower() 
-     
+
     def closeEvent(self, a0 ) -> None: 
         self.tray.hide()
         self.tray = None  
