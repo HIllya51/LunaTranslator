@@ -7,7 +7,7 @@ import qtawesome
 import json,threading 
 
 from utils.config import globalconfig ,_TR,_TRL
-from gui.closeashidewindow import closeashidewindow
+from gui.usefulwidget import closeashidewindow
 from utils.config import globalconfig
 class edittext(closeashidewindow): 
     getnewsentencesignal=pyqtSignal(str)   

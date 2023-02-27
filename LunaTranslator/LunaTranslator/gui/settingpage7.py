@@ -1,26 +1,14 @@
   
-import functools 
-from PyQt5.QtWidgets import   QWidget, QTableView,  QLabel, QVBoxLayout,QHBoxLayout,QHeaderView
+import functools  
 
-from PyQt5.QtWidgets import  QWidget,QLabel ,QLineEdit,QSpinBox,QPushButton,QTextEdit
-
-from PyQt5.QtGui import QStandardItem, QStandardItemModel
-import qtawesome 
-from traceback import print_exc
-from utils.config import globalconfig ,postprocessconfig,noundictconfig,transerrorfixdictconfig
-from PyQt5.QtWidgets import  QWidget,QLabel  
-import functools
-from PyQt5.QtWidgets import QDialog ,QSpinBox,QVBoxLayout,QLineEdit,QGridLayout
+from PyQt5.QtWidgets import  QDialog,QLabel ,QLineEdit,QSpinBox,QPushButton ,QTableView,   QVBoxLayout,QHBoxLayout,QHeaderView 
 from PyQt5.QtCore import QSize,Qt
-from utils.config import globalconfig ,_TR,_TRL,defaultglobalconfig
-import qtawesome 
+from PyQt5.QtGui import QStandardItem, QStandardItemModel 
+from traceback import print_exc
+from utils.config import globalconfig ,postprocessconfig,noundictconfig,transerrorfixdictconfig,_TR,_TRL,defaultglobalconfig 
+import functools 
  
-from gui.inputdialog import getsomepath1
-import gui.switchbutton
-import gui.attachprocessdialog  
-import gui.selecthook  
-import os
-
+from gui.inputdialog import getsomepath1   
 from utils.utils import selectdebugfile
 from utils.wrapper import Singleton
 def settab7direct(self):

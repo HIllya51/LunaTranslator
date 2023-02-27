@@ -19,9 +19,9 @@ from gui.settingpage_quick import setTab_quick,setTab_quick_direct
 from gui.setting_lang import setTablang
 from gui.settingpage7 import setTab7 ,settab7direct
 from gui.settingpage_about import setTab_about,setTab_about_dicrect  
-from gui.switchbutton import MySwitch 
-from gui.rotatetab import  rotatetab
-from gui.closeashidewindow import closeashidewindow   
+from gui.usefulwidget import MySwitch 
+from gui.usefulwidget import  rotatetab
+from gui.usefulwidget import closeashidewindow   
 class gridwidget(QWidget):
     pass
 class Settin(closeashidewindow) : 

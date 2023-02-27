@@ -11,7 +11,7 @@ from utils.config import globalconfig
 from traceback import print_exc
 from utils.config import globalconfig ,_TR,_TRL
 
-from gui.closeashidewindow import closeashidewindow
+from gui.usefulwidget import closeashidewindow
 class searchwordW(closeashidewindow): 
     getnewsentencesignal=pyqtSignal(str) 
     searchthreadsignal=pyqtSignal(str,dict,str)

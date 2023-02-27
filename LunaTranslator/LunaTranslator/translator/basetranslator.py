@@ -3,8 +3,7 @@ from queue import Queue
 
 from utils.config import globalconfig,translatorsetting
 from threading import Thread
-import os,time
-from traceback import print_exc
+import os,time 
 import zhconv
 from functools import partial
 from utils import somedef
@@ -13,31 +12,33 @@ from utils.utils import timeoutfunction
 class basetrans: 
     def langmap(self):
         return {}
+    def end(self):
+        pass
+    def inittranslator(self):
+        pass
+    def translate(self,content):
+        return ''
     
-    @property
-    def langmap_(self):
-        _=dict(zip(somedef.language_list_translator_inner,somedef.language_list_translator_inner))
-        _.update({'cht':'zh'})
-        _.update(self.langmap())
-        return _
-    @property
-    def needzhconv(self):
-        l=somedef.language_list_translator_inner[globalconfig['tgtlang3']]
-        return l=='cht' and 'cht' not in self.langmap()
     @property
     def srclang(self):
         try:
             l=somedef.language_list_translator_inner[globalconfig['srclang3']]
-            return self.langmap_[l] 
+            return self.langmap_x[l] 
         except:
             return ''
     @property
     def tgtlang(self):
         try:
             l=somedef.language_list_translator_inner[globalconfig['tgtlang3']]
-            return self.langmap_[l] 
+            return self.langmap_x[l] 
         except:
             return '' 
+    @property
+    def config(self):
+        try:
+            return translatorsetting[self.typename]['args']
+        except:
+            return {}
     def countnum(self,query):
         try:
             self.config['字数统计']=str(int(self.config['字数统计'])+len(query))
@@ -45,31 +46,37 @@ class basetrans:
         except:
             self.config['字数统计']=str( len(query))
             self.config['次数统计']='1'
-    @property
-    def using(self):
-        return globalconfig['fanyi'][self.typename]['use']
-    @property
-    def config(self):
-        try:
-            return translatorsetting[self.typename]['args']
-        except:
-            return {}
-    def __init__(self,typename ) :  
+
+ 
+    
+    def __init__(self,typename ,callback) :  
         self.typename=typename
         self.queue=Queue() 
+        self.callback=callback
         timeoutfunction(self.inittranslator,globalconfig['translatortimeout'])
+        
+        _=dict(zip(somedef.language_list_translator_inner,somedef.language_list_translator_inner))
+        _.update({'cht':'zh'})
+        _.update(self.langmap())
+        self.langmap_x=_
+
         
         self.lastrequeststime=0
         self._cache={}
         self._MAXCACHE = 512 
         self.newline=None
         Thread(target=self.fythread).start() 
+    
+    @property
+    def needzhconv(self):
+        l=somedef.language_list_translator_inner[globalconfig['tgtlang3']]
+        return l=='cht' and 'cht' not in self.langmap()
+    
+    @property
+    def using(self):
+        return globalconfig['fanyi'][self.typename]['use']
     def gettask(self,content):
         self.queue.put((content)) 
-    def inittranslator(self):
-        pass
-    def translate(self,content):
-        pass
     
     def cached_translate(self,contentsolved):
         langkey=(self.srclang,self.tgtlang)
@@ -91,9 +98,7 @@ class basetrans:
         self._cache[langkey][contentsolved] = res
          
         return res
-    def end(self):
-        pass
-     
+    
     def maybecachetranslate(self,contentraw,contentsolved):
         if self.typename in somedef.fanyi_pre:
             res=self.translate(contentraw)
@@ -107,11 +112,10 @@ class basetrans:
                 time.sleep(t-self.lastrequeststime)
             self.lastrequeststime=t
             while True:
-                contentraw,(contentsolved,mp),skip,embedcallback=self.queue.get()
-                self.newline=contentraw
+                contentraw,(contentsolved,mp),skip,embedcallback=self.queue.get() 
                 if self.queue.empty():
                     break
-             
+            self.newline=contentraw
             if skip:
                 continue
             
@@ -125,7 +129,7 @@ class basetrans:
             if self.needzhconv:
                 res=zhconv.convert(res,  'zh-tw' )  
             if self.queue.empty() and contentraw==self.newline and self.using:
-                self.show(contentraw,(self.typename,res,mp),embedcallback) 
+                self.callback(contentraw,(self.typename,res,mp),embedcallback) 
         self.end()
 
             

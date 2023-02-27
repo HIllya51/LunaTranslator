@@ -320,10 +320,8 @@ class MAINUI(QObject) :
     def fanyiinitmethod(self,classname):
         if os.path.exists('./LunaTranslator/translator/'+classname+'.py')==False:
             return None
-        aclass=importlib.import_module('translator.'+classname).TS 
-        _=aclass(classname)  
-        _.show=partial(self._maybeyrengong,classname)
-        return _
+        aclass=importlib.import_module('translator.'+classname).TS  
+        return aclass(classname,partial(self._maybeyrengong,classname))   
      
     def prepare(self,now=None,_=None):    
         self.commonloader('fanyi',self.translators,self.fanyiinitmethod,now)
@@ -337,9 +335,8 @@ class MAINUI(QObject) :
     @threader
     def commonloader_warp(self,fanyiorcishu,dictobject,initmethod,_type):
         try:
-            if _type in dictobject:
-                _=dictobject.pop(_type)
-                del _
+            if _type in dictobject: 
+                del dictobject[_type]
             if globalconfig[fanyiorcishu][_type]['use']==False:
                 return
             item=initmethod(_type)

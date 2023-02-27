@@ -11,7 +11,7 @@ from utils.getpidlist import getwindowhwnd,getpidexe,ListProcess,mouseselectwind
 import qtawesome
 
 from textsource.textractor import textractor
-from gui.closeashidewindow import closeashidewindow
+from gui.usefulwidget import closeashidewindow
 class AttachProcessDialog(closeashidewindow): 
         
     iconcache={}

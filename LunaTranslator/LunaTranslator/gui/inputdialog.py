@@ -4,7 +4,7 @@ from PyQt5.QtCore import Qt,QSize
 from PyQt5.QtGui import QColor 
 import qtawesome
 from utils.config import globalconfig ,_TR,_TRL
-from gui.switchbutton import MySwitch 
+from gui.usefulwidget import MySwitch 
 
 from utils.wrapper import Singleton
 @Singleton

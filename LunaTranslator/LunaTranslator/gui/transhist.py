@@ -1,17 +1,11 @@
-
-from re import search
+ 
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QApplication,QTextBrowser,QMainWindow,QFontDialog,QAction,QMenu,QFileDialog
 from PyQt5.QtGui import QFont,QTextCursor
 from PyQt5.QtCore import Qt,pyqtSignal 
-import qtawesome
-import subprocess
-import json
-import os
-import re
-import sys
+import qtawesome 
 
-from gui.closeashidewindow import closeashidewindow
+from gui.usefulwidget import closeashidewindow
 from utils.config import globalconfig ,_TR,_TRL
 import win32gui
 from utils.config import globalconfig
