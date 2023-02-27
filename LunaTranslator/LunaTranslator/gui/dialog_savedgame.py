@@ -1,13 +1,12 @@
   
 import functools,win32api 
-from PyQt5.QtWidgets import  QPushButton,QDialog,QVBoxLayout ,QHeaderView,QFileDialog ,QGridLayout
+from PyQt5.QtWidgets import  QPushButton,QDialog,QVBoxLayout ,QHeaderView,QFileDialog ,QLineEdit
 import functools 
 from traceback import print_exc 
 from PyQt5.QtWidgets import    QHBoxLayout, QTableView, QAbstractItemView, QLabel, QVBoxLayout
 import qtawesome 
 
-from PyQt5.QtGui import QStandardItem, QStandardItemModel  
-from PyQt5.QtGui import QColor,QFont,QPixmap,QIcon 
+from PyQt5.QtGui import QStandardItem, QStandardItemModel   
 from PyQt5.QtCore import Qt,QSize  
 from utils.config import   savehook_new_list,savehook_new_data
 from utils.getpidlist import getExeIcon 
@@ -15,7 +14,81 @@ from utils.le3264 import le3264run
 from utils.config import _TR,_TRL
 import os
 import win32con,win32api  
-from utils.wrapper import Singleton_close
+from utils.wrapper import Singleton_close,Singleton
+
+def opendir( k):
+                try:
+                        os.startfile(os.path.dirname(k))
+                except:
+                        pass
+@Singleton
+class dialog_setting_game(QDialog):
+        def selectexe(self,item:QStandardItem ):
+                f=QFileDialog.getOpenFileName(directory=item.savetext )
+                res=f[0]
+                if res!='':
+                        res=res.replace('/','\\')
+                        savehook_new_list[savehook_new_list.index(item.savetext)]=res 
+                        savehook_new_data[res]=savehook_new_data[item.savetext] 
+                        item.savetext=res   
+                        self.table.setIndexWidget(self.model.index(self.model.indexFromItem(item).row(), 1),self.object.getcolorbutton('','',functools.partial( opendir,res),qicon=getExeIcon(res) ))
+                        self.setWindowIcon(getExeIcon(item.savetext))
+                        self.lujing.setText(res)
+        def __init__(self, parent,item,title ) -> None:
+                super().__init__(parent, Qt.WindowCloseButtonHint )
+                formLayout = QVBoxLayout(self)  # 配置layout
+                self.object=parent.object
+                self.table=parent.table
+                self.model=parent.model
+                self.item=item
+                lujing=QHBoxLayout()
+                editpath=QLineEdit(item.savetext)
+                editpath.setReadOnly(True)
+                editpath.textEdited.connect(lambda _:item.__setitem__('savetext',_))
+                selectexe=self.object.getcolorbutton('','',functools.partial(self.selectexe,item),icon='fa.gear',constcolor="#FF69B4")
+                lujing.addWidget(QLabel(_TR("路径")))
+                lujing.addWidget(editpath)
+                lujing.addWidget(selectexe)
+                self.lujing=editpath
+                self.setWindowTitle(title)
+                self.resize(QSize(800,200))
+                self.setWindowIcon(getExeIcon(item.savetext))
+                formLayout.addLayout(lujing)
+
+                model=QStandardItemModel(   )
+                model.setHorizontalHeaderLabels(_TRL(['删除','特殊码',]))#,'HOOK'])
+         
+                self.hcmodel=model
+                
+                table = QTableView( )
+                table.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
+                table.horizontalHeader().setStretchLastSection(True)
+                #table.setEditTriggers(QAbstractItemView.NoEditTriggers);
+                table.setSelectionBehavior(QAbstractItemView.SelectRows)
+                table.setSelectionMode( (QAbstractItemView.SingleSelection)      )
+                table.setWordWrap(False) 
+                table.setModel(model) 
+                self.hctable=table
+
+                if 'needinserthookcode' not in savehook_new_data[self.item.savetext]:
+                        savehook_new_data[self.item.savetext]['needinserthookcode']=[]
+                for row,k in enumerate(savehook_new_data[self.item.savetext]['needinserthookcode']):                                   # 2
+                        self.newline(row,k)  
+                 
+                formLayout.addWidget(self.hctable) 
+                self.show()
+        def clicked2(self):
+                try: 
+                        savehook_new_data[self.item.savetext]['needinserthookcode'].pop(self.hctable.currentIndex().row()) 
+                        self.hcmodel.removeRow(self.hctable.currentIndex().row())
+                except:
+                        pass
+        
+        def newline(self,row,k):  
+                 
+                self.hcmodel.insertRow(row,[QStandardItem( ),QStandardItem(k)])  
+                    
+                self.hctable.setIndexWidget(self.hcmodel.index(row, 0),self.object.getcolorbutton('','',self.clicked2,icon='fa.times',constcolor="#FF69B4")) 
 @Singleton_close
 class dialog_savedgame(QDialog):
         #_sigleton=False
@@ -29,16 +102,9 @@ class dialog_savedgame(QDialog):
                # dialog_savedgame._sigleton=False
                 return QDialog().closeEvent(a0)
                 
-        def selectexe(self,item:QStandardItem ):
-                f=QFileDialog.getOpenFileName(directory=item.savetext )
-                res=f[0]
-                if res!='':
-                        res=res.replace('/','\\')
-                        savehook_new_list[savehook_new_list.index(item.savetext)]=res 
-                        savehook_new_data[res]=savehook_new_data[item.savetext] 
-                        item.savetext=res   
-                        self.table.setIndexWidget(self.model.index(self.model.indexFromItem(item).row(), 1),self.object.getcolorbutton('','',functools.partial(self._opendir,res),qicon=getExeIcon(res) ))
-                
+        
+        def showsettingdialog(self,item:QStandardItem,title):
+                dialog_setting_game(self,item,title) 
         def clicked2(self): 
                 try: 
                         savehook_new_list.pop(self.table.currentIndex().row())
@@ -71,11 +137,7 @@ class dialog_savedgame(QDialog):
                         self.close() 
                 except:
                         print_exc()
-        def _opendir(self,k):
-                try:
-                        os.startfile(os.path.dirname(k))
-                except:
-                        pass
+        
         def newline(self,row,k): 
                 keyitem=QStandardItem()
                 keyitem.savetext=k
@@ -86,9 +148,10 @@ class dialog_savedgame(QDialog):
                         print(k,savehook_new_data[k])
                 self.model.insertRow(row,[QStandardItem( ),QStandardItem( ),keyitem,QStandardItem( (savehook_new_data[k]['title'] ) )])  
                 self.table.setIndexWidget(self.model.index(row, 0),self.object.getsimpleswitch(savehook_new_data[k],'leuse'))
-                self.table.setIndexWidget(self.model.index(row, 1),self.object.getcolorbutton('','',functools.partial(self._opendir,k),qicon=getExeIcon(k) ))
+                self.table.setIndexWidget(self.model.index(row, 1),self.object.getcolorbutton('','',functools.partial( opendir,k),qicon=getExeIcon(k) ))
                 
-                self.table.setIndexWidget(self.model.index(row, 2),self.object.getcolorbutton('','',functools.partial(self.selectexe,keyitem),icon='fa.gear',constcolor="#FF69B4")) 
+                # self.table.setIndexWidget(self.model.index(row, 2),self.object.getcolorbutton('','',functools.partial(self.selectexe,keyitem),icon='fa.gear',constcolor="#FF69B4")) 
+                self.table.setIndexWidget(self.model.index(row, 2),self.object.getcolorbutton('','',functools.partial(self.showsettingdialog,keyitem,savehook_new_data[k]['title'] ),icon='fa.gear',constcolor="#FF69B4")) 
         def __init__(self, object ) -> None:
                 # if dialog_savedgame._sigleton :
                 #         return
@@ -98,7 +161,7 @@ class dialog_savedgame(QDialog):
                 self.object=object
                 formLayout = QVBoxLayout(self)  # 
                 model=QStandardItemModel(   )
-                model.setHorizontalHeaderLabels(_TRL(['转区','','路径', '游戏']))#,'HOOK'])
+                model.setHorizontalHeaderLabels(_TRL(['转区','','设置', '游戏']))#,'HOOK'])
          
                 self.model=model
                 

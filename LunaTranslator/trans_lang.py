@@ -22,14 +22,14 @@ if __name__=='__main__':
         js=json.loads(js)
     
     xxx={'ru':'ru','en':'en',
-    "es":"spa","ko":"kor","fr":"fra" ,"cht":"cht",'ja':'jp'}
+    "es":"spa","ko":"kor","fr":"fra" ,"cht":"cht",'ja':'jp',"vi":"vie"}
 
     for kk in xxx:
         with open(f'./files/lang/{kk}.json','r',encoding='utf8')  as ff:
             
             jsen=json.loads(ff.read())
          
-        a=TS1('baiduapi')
+        a=TS1('baiduapi',None)
         a.tgtlang=xxx[kk] 
         for k in js:
             

@@ -647,5 +647,8 @@
     "由于Magpie10接口变化过大，因此不再完整内置": "Parce que l'interface magpie10 est trop variée, elle n'est plus entièrement intégrée",
     "Magpie10快捷键": "Magpie10 raccourcis",
     "Magpie10路径": "Le chemin magpie10",
-    "成功": "Succès"
+    "成功": "Succès",
+    "特殊码": "Code spécial",
+    "删除特殊码": "Supprimer le code spécial",
+    "删除": "Supprimer"
 }

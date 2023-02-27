@@ -8,7 +8,7 @@ import urllib
 import random 
 class TS(basetrans):  
     def langmap(self):
-        return  {"es":"spa","ko":"kor","fr":"fra","ja":"jp","cht":"cht"}
+        return  {"es":"spa","ko":"kor","fr":"fra","ja":"jp","cht":"cht","vi":"vie"}
     def inittranslator(self):
         self.session=requests.session()
     def translate(self,query):  

@@ -97,9 +97,7 @@ class TS(basetrans):
         else:
             appid = self.config['SecretId'].strip()
             secretKey =self.config['SecretKey'].strip()
-        try:    
-            ret=txfy(appid,secretKey,query,self.srclang,self.tgtlang)
-        except:
-            return "error"
+        ret=txfy(appid,secretKey,query,self.srclang,self.tgtlang)
+        
         self.countnum(query)
         return ret  
