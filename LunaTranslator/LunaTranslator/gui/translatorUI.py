@@ -156,8 +156,7 @@ class QUnFrameWindow(resizableframeless):
         self.hideshownotauto=False
         self.hide_()
     def show_and_enableautohide(self): 
-        self.hideshownotauto=True
-        win32gui.SetForegroundWindow(self.winId() )   
+        self.hideshownotauto=True 
         self.show_()
      
     def refreshtoolicon(self):

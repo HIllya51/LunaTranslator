@@ -460,8 +460,12 @@ class MAINUI(QObject) :
             try:  
                
                 if globalconfig['forcekeepontop']:
-                    if win32process.GetWindowThreadProcessId(win32gui.GetForegroundWindow())[1] !=os.getpid():
-                        win32gui.SetWindowPos(int(self.translation_ui.winId()), win32con.HWND_TOPMOST, 0, 0, 0, 0,win32con. SWP_NOACTIVATE |win32con. SWP_NOSIZE | win32con.SWP_NOMOVE)  
+                    hwnd=win32gui.GetForegroundWindow()
+                    pid=win32process.GetWindowThreadProcessId(hwnd)[1] 
+                    if pid ==os.getpid():
+                        continue
+                     
+                    win32gui.SetWindowPos(int(self.translation_ui.winId()), win32con.HWND_TOPMOST, 0, 0, 0, 0,win32con. SWP_NOACTIVATE |win32con. SWP_NOSIZE | win32con.SWP_NOMOVE)  
                 #win32gui.BringWindowToTop(int(self.translation_ui.winId())) 
             except:
                 print_exc() 
