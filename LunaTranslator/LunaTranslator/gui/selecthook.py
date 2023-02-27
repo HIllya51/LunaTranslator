@@ -385,11 +385,7 @@ class hookselect(closeashidewindow):
             elif 'needinserthookcode' not in savehook_new_data[self.object.textsource.pname]:
                 needinserthookcode=[]
             else:
-                _needinserthookcode= savehook_new_data[self.object.textsource.pname]['needinserthookcode']
-                needinserthookcode=[]
-                for _ in _needinserthookcode:
-                    if _ in hcs:
-                        needinserthookcode.append(_)
+                needinserthookcode= savehook_new_data[self.object.textsource.pname]['needinserthookcode'] 
             for hc in hcs:
                 if hc in self.savemaybeusehookcode and (hc not in needinserthookcode):
                     needinserthookcode.append(hc)
