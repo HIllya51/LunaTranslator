@@ -15,3 +15,7 @@ six==1.16.0
 system_hotkey==1.0.3
 tzlocal==3.0
 websockets==10.4
+
+Js2Py==0.74
+requests==2.25.1
+zhconv==1.4.3
