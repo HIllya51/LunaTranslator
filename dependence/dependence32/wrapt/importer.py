@@ -10,16 +10,17 @@ PY2 = sys.version_info[0] == 2
 
 if PY2:
     string_types = basestring,
+    find_spec = None
 else:
-    import importlib
     string_types = str,
+    from importlib.util import find_spec
 
 from .decorators import synchronized
 
 # The dictionary registering any post import hooks to be triggered once
 # the target module has been imported. Once a module has been imported
 # and the hooks fired, the list of hooks recorded against the target
-# module will be truncacted but the list left in the dictionary. This
+# module will be truncated but the list left in the dictionary. This
 # acts as a flag to indicate that the module had already been imported.
 
 _post_import_hooks = {}
@@ -152,11 +153,28 @@ class _ImportHookChainedLoader:
     def __init__(self, loader):
         self.loader = loader
 
-    def load_module(self, fullname):
+        if hasattr(loader, "load_module"):
+          self.load_module = self._load_module
+        if hasattr(loader, "create_module"):
+          self.create_module = self._create_module
+        if hasattr(loader, "exec_module"):
+          self.exec_module = self._exec_module
+
+    def _load_module(self, fullname):
         module = self.loader.load_module(fullname)
         notify_module_loaded(module)
 
         return module
+
+    # Python 3.4 introduced create_module() and exec_module() instead of
+    # load_module() alone. Splitting the two steps.
+
+    def _create_module(self, spec):
+        return self.loader.create_module(spec)
+
+    def _exec_module(self, module):
+        self.loader.exec_module(module)
+        notify_module_loaded(module)
 
 class ImportHookFinder:
 
@@ -187,7 +205,7 @@ class ImportHookFinder:
         # Now call back into the import system again.
 
         try:
-            if PY2:
+            if not find_spec:
                 # For Python 2 we don't have much choice but to
                 # call back in to __import__(). This will
                 # actually cause the module to be imported. If no
@@ -208,14 +226,52 @@ class ImportHookFinder:
                 # our own loader which will then in turn call the
                 # real loader to import the module and invoke the
                 # post import hooks.
-                try:
-                    import importlib.util
-                    loader = importlib.util.find_spec(fullname).loader
-                except (ImportError, AttributeError):
-                    loader = importlib.find_loader(fullname, path)
-                if loader:
+
+                loader = getattr(find_spec(fullname), "loader", None)
+
+                if loader and not isinstance(loader, _ImportHookChainedLoader):
                     return _ImportHookChainedLoader(loader)
 
+        finally:
+            del self.in_progress[fullname]
+
+    def find_spec(self, fullname, path=None, target=None):
+        # Since Python 3.4, you are meant to implement find_spec() method
+        # instead of find_module() and since Python 3.10 you get deprecation
+        # warnings if you don't define find_spec().
+
+        # If the module being imported is not one we have registered
+        # post import hooks for, we can return immediately. We will
+        # take no further part in the importing of this module.
+
+        if not fullname in _post_import_hooks:
+            return None
+
+        # When we are interested in a specific module, we will call back
+        # into the import system a second time to defer to the import
+        # finder that is supposed to handle the importing of the module.
+        # We set an in progress flag for the target module so that on
+        # the second time through we don't trigger another call back
+        # into the import system and cause a infinite loop.
+
+        if fullname in self.in_progress:
+            return None
+
+        self.in_progress[fullname] = True
+
+        # Now call back into the import system again.
+
+        try:
+            # This should only be Python 3 so find_spec() should always
+            # exist so don't need to check.
+
+            spec = find_spec(fullname)
+            loader = getattr(spec, "loader", None)
+
+            if loader and not isinstance(loader, _ImportHookChainedLoader):
+                spec.loader = _ImportHookChainedLoader(loader)
+
+            return spec
 
         finally:
             del self.in_progress[fullname]

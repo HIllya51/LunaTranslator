@@ -31,9 +31,10 @@ else:
     del builtins
 
 from functools import partial
-from inspect import ismethod, isclass, formatargspec
-from collections import namedtuple
+from inspect import isclass
 from threading import Lock, RLock
+
+from .arguments import formatargspec
 
 try:
     from inspect import signature
@@ -173,7 +174,7 @@ adapter_factory = DelegatedAdapterFactory
 # function so the wrapper is effectively indistinguishable from the
 # original wrapped function.
 
-def decorator(wrapper=None, enabled=None, adapter=None):
+def decorator(wrapper=None, enabled=None, adapter=None, proxy=FunctionWrapper):
     # The decorator should be supplied with a single positional argument
     # which is the wrapper function to be used to implement the
     # decorator. This may be preceded by a step whereby the keyword
@@ -183,7 +184,7 @@ def decorator(wrapper=None, enabled=None, adapter=None):
     # decorator. In that case parts of the function '__code__' and
     # '__defaults__' attributes are used from the adapter function
     # rather than those of the wrapped function. This allows for the
-    # argument specification from inspect.getargspec() and similar
+    # argument specification from inspect.getfullargspec() and similar
     # functions to be overridden with a prototype for a different
     # function than what was wrapped. The 'enabled' argument provides a
     # way to enable/disable the use of the decorator. If the type of
@@ -194,6 +195,8 @@ def decorator(wrapper=None, enabled=None, adapter=None):
     # if 'enabled' is callable it will be called to obtain the value to
     # be checked. If False, the wrapper will not be called and instead
     # the original wrapped function will be called directly instead.
+    # The 'proxy' argument provides a way of passing a custom version of
+    # the FunctionWrapper class used in decorating the function.
 
     if wrapper is not None:
         # Helper function for creating wrapper of the appropriate
@@ -206,16 +209,37 @@ def decorator(wrapper=None, enabled=None, adapter=None):
 
                 if not callable(adapter):
                     ns = {}
+
+                    # Check if the signature argument specification has
+                    # annotations. If it does then we need to remember
+                    # it but also drop it when attempting to manufacture
+                    # a standin adapter function. This is necessary else
+                    # it will try and look up any types referenced in
+                    # the annotations in the empty namespace we use,
+                    # which will fail.
+
+                    annotations = {}
+
                     if not isinstance(adapter, string_types):
+                        if len(adapter) == 7:
+                            annotations = adapter[-1]
+                            adapter = adapter[:-1]
                         adapter = formatargspec(*adapter)
+
                     exec_('def adapter{}: pass'.format(adapter), ns, ns)
                     adapter = ns['adapter']
+
+                    # Override the annotations for the manufactured
+                    # adapter function so they match the original
+                    # adapter signature argument specification.
+
+                    if annotations:
+                        adapter.__annotations__ = annotations
 
                 return AdapterWrapper(wrapped=wrapped, wrapper=wrapper,
                         enabled=enabled, adapter=adapter)
 
-            return FunctionWrapper(wrapped=wrapped, wrapper=wrapper,
-                    enabled=enabled)
+            return proxy(wrapped=wrapped, wrapper=wrapper, enabled=enabled)
 
         # The wrapper has been provided so return the final decorator.
         # The decorator is itself one of our function wrappers so we
@@ -360,7 +384,7 @@ def decorator(wrapper=None, enabled=None, adapter=None):
                     # This one is a bit strange because binding was actually
                     # performed on the wrapper created by our decorator
                     # factory. We need to apply that binding to the decorator
-                    # wrapper function which which the decorator factory
+                    # wrapper function that the decorator factory
                     # was applied to.
 
                     target_wrapper = wrapper.__get__(None, instance)
@@ -384,7 +408,7 @@ def decorator(wrapper=None, enabled=None, adapter=None):
                     # This one is a bit strange because binding was actually
                     # performed on the wrapper created by our decorator
                     # factory. We need to apply that binding to the decorator
-                    # wrapper function which which the decorator factory
+                    # wrapper function that the decorator factory
                     # was applied to.
 
                     target_wrapper = wrapper.__get__(instance, type(instance))
@@ -408,7 +432,8 @@ def decorator(wrapper=None, enabled=None, adapter=None):
         # decorator again wrapped in a partial using the collected
         # arguments.
 
-        return partial(decorator, enabled=enabled, adapter=adapter)
+        return partial(decorator, enabled=enabled, adapter=adapter,
+                proxy=proxy)
 
 # Decorator for implementing thread synchronization. It can be used as a
 # decorator, in which case the synchronization context is determined by

@@ -68,9 +68,9 @@ def getversion(self):
        # print(version)
         #url=res['assets'][0]['browser_download_url'] 
         
-        if platform.architecture()==('64bit','WindowsPE'): 
+        if platform.architecture()[0]=='64bit': 
             bit=''
-        elif platform.architecture()==('32bit','WindowsPE'):
+        elif platform.architecture()[0]=='32bit':
             bit='_x86'
         else:
             raise Exception

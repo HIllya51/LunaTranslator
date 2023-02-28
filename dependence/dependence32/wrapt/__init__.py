@@ -1,4 +1,4 @@
-__version_info__ = ('1', '12', '1')
+__version_info__ = ('1', '14', '1')
 __version__ = '.'.join(__version_info__)
 
 from .wrappers import (ObjectProxy, CallableObjectProxy, FunctionWrapper,
@@ -13,4 +13,15 @@ from .decorators import (adapter_factory, AdapterFactory, decorator,
 from .importer import (register_post_import_hook, when_imported,
         notify_module_loaded, discover_post_import_hooks)
 
+# Import of inspect.getcallargs() included for backward compatibility. An
+# implementation of this was previously bundled and made available here for
+# Python <2.7. Avoid using this in future.
+
 from inspect import getcallargs
+
+# Variant of inspect.formatargspec() included here for forward compatibility.
+# This is being done because Python 3.11 dropped inspect.formatargspec() but
+# code for handling signature changing decorators relied on it. Exposing the
+# bundled implementation here in case any user of wrapt was also needing it.
+
+from .arguments import formatargspec
