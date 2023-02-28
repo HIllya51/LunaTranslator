@@ -19,3 +19,5 @@ websockets==10.4
 Js2Py==0.74
 requests==2.25.1
 zhconv==1.4.3
+
+wrapt==1.12.1
