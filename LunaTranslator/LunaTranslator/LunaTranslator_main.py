@@ -337,7 +337,11 @@ class MAINUI(QObject) :
     def commonloader_warp(self,fanyiorcishu,dictobject,initmethod,_type):
         try:
             if _type in dictobject: 
-                del dictobject[_type]
+                try:
+                    dictobject[_type].end()
+                    del dictobject[_type]
+                except:
+                    pass
             if globalconfig[fanyiorcishu][_type]['use']==False:
                 return
             item=initmethod(_type)

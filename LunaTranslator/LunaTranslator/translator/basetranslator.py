@@ -130,6 +130,6 @@ class basetrans:
                 res=zhconv.convert(res,  'zh-tw' )  
             if self.queue.empty() and contentraw==self.newline and self.using:
                 self.callback(contentraw,(self.typename,res,mp),embedcallback) 
-        self.end()
+         
 
             
