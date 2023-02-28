@@ -20,3 +20,4 @@ requests==2.25.1
 zhconv==1.4.3
 
 wrapt==1.12.1
+cryptography==38.0.1

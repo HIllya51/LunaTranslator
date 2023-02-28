@@ -6,6 +6,7 @@ xcopy .\LunaTranslator\ocrengines ..\build\LunaTranslator\LunaTranslator\ocrengi
 xcopy .\LunaTranslator\postprocess ..\build\LunaTranslator\LunaTranslator\postprocess /e /y /I
 xcopy .\LunaTranslator\translator ..\build\LunaTranslator\LunaTranslator\translator /e /y /I
 xcopy .\LunaTranslator\cishu ..\build\LunaTranslator\LunaTranslator\cishu /e /y /I
+xcopy ..\dependence\dependence_common ..\build\LunaTranslator\LunaTranslator /e /y /I 
 xcopy ..\dependence\dependence64 ..\build\LunaTranslator\LunaTranslator /e /y /I 
 xcopy ..\dependence\api-ms-win_64 ..\build\LunaTranslator\LunaTranslator /e /y /I
 xcopy ..\dependence\exe64 ..\build\LunaTranslator\ /e /y /I
