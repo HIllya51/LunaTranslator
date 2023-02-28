@@ -8,6 +8,7 @@ import os
 from utils.config import globalconfig  ,_TR 
 from utils.wrapper import threader
 from version import version
+
 def _setproxy(x): 
         if x:
             os.environ['https_proxy']=globalconfig['proxy'] 
@@ -40,6 +41,7 @@ def resourcegrid( ) :
         return grid
 @threader
 def getversion(self):
+    import platform
     import requests 
     import shutil
     import zipfile
@@ -64,9 +66,17 @@ def getversion(self):
         #print(res)
         _version=res['tag_name']
        # print(version)
-        url=res['assets'][0]['browser_download_url'] 
+        #url=res['assets'][0]['browser_download_url'] 
+        
+        if platform.architecture()==('64bit','WindowsPE'): 
+            bit=''
+        elif platform.architecture()==('32bit','WindowsPE'):
+            bit='_x86'
+        else:
+            raise Exception
+        url=f"https://github.com/HIllya51/LunaTranslator/releases/download/{_version}/LunaTranslator{bit}.zip"
     except:
-        #print_exc()
+        print_exc()
         _version=("获取失败") 
     self.versiontextsignal.emit((('当前版本')+':'+  version+'  '+("最新版本")+':'+ _version) ) #,'' if version== _version else  newcontent,url,'LunaTranslator.zip'))
     if _version!=("获取失败") and version!=_version:

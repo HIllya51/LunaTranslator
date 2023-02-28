@@ -9,6 +9,8 @@ class hira:
         mecabpath=hirasettingbase['mecab']['path']
         if os.path.exists(mecabpath):
             import fugashi 
+            #import MeCab
+            #self.kks=MeCab.Tagger('-r nul -d "{}" -Owakati'.format(mecabpath))
             self.kks= fugashi.Tagger('-r nul -d "{}" -Owakati'.format(mecabpath))
              
             keys='ァアィイゥウェエォオカガキギクグケゲコゴサザシジスズセゼソゾタダチヂッツヅテデトドナニヌネノハバパヒビピフブプヘベペホボポマミムメモャヤュユョヨラリルレロヮワヰヱヲンヴヵヶヽヾ'
@@ -21,6 +23,7 @@ class hira:
             start=0
             result=[] 
             for node in self.kks.parseToNodeList(text): 
+                #print(node,node.feature)
                 l=0
                 if text[start]=='\n':
                     start+=1

@@ -314,7 +314,7 @@ class MAINUI(QObject) :
             try:
                 self.hira_=hira()  
             except:
-                pass
+                print_exc()
         else:
             self.hira_=None
     def fanyiinitmethod(self,classname):
