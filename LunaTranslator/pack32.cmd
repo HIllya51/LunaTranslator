@@ -1,4 +1,4 @@
-rmdir /S /Q ..\build\Lunatranslator_86
+rmdir /S /Q ..\build\Lunatranslator_x86
 xcopy ..\build\x86\LunaTranslator_main.dist ..\build\LunaTranslator_x86\LunaTranslator /e /y /I
 xcopy .\files ..\build\LunaTranslator_x86\files /e /y /I
 copy ..\LICENSE ..\build\LunaTranslator_x86\
