@@ -305,16 +305,17 @@ class MAINUI(QObject) :
             if hirasettingbase['local']['use']:
                 from hiraparse.localhira import hira 
             elif hirasettingbase['mecab']['use']:
-                from hiraparse.mecab import hira 
+                try:
+                    from hiraparse.mecab import hira 
+                except:
+                    pass
             elif hirasettingbase['mojinlt']['use']:
                 from hiraparse.mojinlt import hira 
-            else:
-                self.hira_=None
-                return 
+             
             try:
                 self.hira_=hira()  
             except:
-                print_exc()
+                self.hira_
         else:
             self.hira_=None
     def fanyiinitmethod(self,classname):
