@@ -1,0 +1,2 @@
+from .fugashi import *
+

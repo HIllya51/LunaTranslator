@@ -305,10 +305,8 @@ class MAINUI(QObject) :
             if hirasettingbase['local']['use']:
                 from hiraparse.localhira import hira 
             elif hirasettingbase['mecab']['use']:
-                try:
-                    from hiraparse.mecab import hira 
-                except:
-                    pass
+                from hiraparse.mecab import hira 
+                
             elif hirasettingbase['mojinlt']['use']:
                 from hiraparse.mojinlt import hira 
              
