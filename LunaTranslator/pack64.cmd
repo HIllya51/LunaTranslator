@@ -8,7 +8,7 @@ xcopy .\LunaTranslator\translator ..\build\x64\LunaTranslator\LunaTranslator\tra
 xcopy .\LunaTranslator\cishu ..\build\x64\LunaTranslator\LunaTranslator\cishu /e /y /I
 xcopy ..\dependence\dependence64 ..\build\x64\LunaTranslator\LunaTranslator /e /y /I 
 xcopy ..\dependence\api-ms-win_64 ..\build\x64\LunaTranslator\LunaTranslator /e /y /I
-xcopy ..\dependence\exe64 ..\build\x86\LunaTranslator\ /e /y /I
+xcopy ..\dependence\exe64 ..\build\x64\LunaTranslator\ /e /y /I
 del ..\build\x64\LunaTranslator\LunaTranslator\qt5qml.dll
 del ..\build\x64\LunaTranslator\LunaTranslator\qt5qmlmodels.dll
 del ..\build\x64\LunaTranslator\LunaTranslator\qt5quick.dll
