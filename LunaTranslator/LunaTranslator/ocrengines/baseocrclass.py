@@ -5,13 +5,13 @@ from utils import somedef
 class baseocr: 
     def langmap(self):
         return {}
-    @property
-    def langmap_(self):
-        _=dict(zip(somedef.language_list_translator_inner,somedef.language_list_translator_inner))
-        _.update({'cht':'zh'})
-        _.update(self.langmap())
-        return _
-     
+    def initocr(self):
+        pass
+    def ocr(self,imgpath):
+        raise Exception 
+    def end(self):
+        pass
+    ############################################################
     @property
     def srclang(self):
         try:
@@ -27,26 +27,31 @@ class baseocr:
             space=''
         else:
             space=' '
-        return space
-    def countnum(self):
-        try: 
-            self.config['次数统计']=str(int(self.config['次数统计'])+1)
-        except: 
-            self.config['次数统计']='1'
+        return space 
     @property
     def config(self):
         try:
             return ocrsetting[self.typename]['args']
         except:
             return {}
+    def countnum(self):
+        try: 
+            self.config['次数统计']=str(int(self.config['次数统计'])+1)
+        except: 
+            self.config['次数统计']='1'
+
+    ############################################################
     def __init__(self,typename ) :  
         self.typename=typename 
         try: 
             self.initocr() 
         except:
             print_exc()
-         
-    def initocr(self):
-        pass
-    def ocr(self,imgpath):
-        raise Exception
+    @property
+    def langmap_(self):
+        _=dict(zip(somedef.language_list_translator_inner,somedef.language_list_translator_inner))
+        _.update({'cht':'zh'})
+        _.update(self.langmap())
+        return _
+     
+    

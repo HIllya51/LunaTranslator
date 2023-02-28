@@ -7,24 +7,27 @@ import requests
 import base64  
 from ocrengines.baseocrclass import baseocr 
 class OCR(baseocr):
+    def end(self): 
+        self._ocr.trydestroy()
     def initocr(self):
         self._ocr=ocrwrapper()
         self._savelang=None
         self.checkchange()
     def checkchange(self):
-        if self._savelang!=self.srclang: 
-            self._ocr.trydestroy() 
+        if self._savelang==self.srclang: 
+            return None
+        self._ocr.trydestroy() 
          
         path=f'./files/ocr/{somedef.language_list_translator_inner[globalconfig["srclang3"]]}'
         if os.path.exists(f'{path}/det.onnx') and os.path.exists(f'{path}/rec.onnx') and os.path.exists(f'{path}/dict.txt') :
             pass
         else:
-            return '<error>'+_TR('未下载该语言的OCR模型,请从软件主页下载模型解压到files/ocr路径后使用')
-        
+            return '<msg>'+_TR('未下载该语言的OCR模型,请从软件主页下载模型解压到files/ocr路径后使用') 
         self._ocr.init(f'{path}/det.onnx',f'{path}/rec.onnx',f'{path}/dict.txt')
         self._savelang=self.srclang
     def ocr(self,imgfile):  
-        self.checkchange()
+        err=self.checkchange()
+        if err :return err
          
         s=self._ocr.ocr(os.path.dirname(imgfile)+'/',os.path.basename(imgfile),globalconfig['verticalocr'])
         

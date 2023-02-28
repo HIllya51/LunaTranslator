@@ -20,7 +20,7 @@ class OCR(baseocr):
         # print("X",x)
         # print("Y",y)
         if len(y):
-            return '<error>'+_TR('系统未安装该语言的OCR模型')
+            return '<msg>'+_TR('系统未安装该语言的OCR模型')
         xx=''
         ress={}
         ress2=[]

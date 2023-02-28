@@ -18,7 +18,7 @@ class basetrans:
         pass
     def translate(self,content):
         return ''
-    
+    ############################################################
     @property
     def srclang(self):
         try:
@@ -48,7 +48,7 @@ class basetrans:
             self.config['次数统计']='1'
 
  
-    
+    ############################################################
     def __init__(self,typename ,callback) :  
         self.typename=typename
         self.queue=Queue() 
