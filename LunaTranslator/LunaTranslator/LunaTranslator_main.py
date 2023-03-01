@@ -174,7 +174,7 @@ class MAINUI(QObject) :
         while len(_paste_str) and _paste_str[-1] in '\r\n \t':  #在后处理之后在去除换行，这样换行符可以当作行结束符给后处理用
             _paste_str=_paste_str[:-1]  
 
-        if len(_paste_str)>1000 :
+        if _paste_str=='' or len(_paste_str)>1000 :
             if embedcallback:
                 embedcallback('zhs', _paste_str) 
             return  
@@ -316,7 +316,7 @@ class MAINUI(QObject) :
             try:
                 self.hira_=hira()  
             except:
-                self.hira_
+                self.hira_=None
         else:
             self.hira_=None
     def fanyiinitmethod(self,classname):
