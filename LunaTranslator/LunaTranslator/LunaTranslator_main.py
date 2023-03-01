@@ -21,7 +21,7 @@ from utils import somedef
 from gui.showword import searchwordW
 from gui.rangeselect    import rangeadjust
 
-from utils.getpidlist import pid_running,getarch,getpidexe 
+from utils.getpidlist import pid_running,getarch,getpidexe ,getpidhwnds
 
 from textsource.copyboard import copyboard   
 from textsource.textractor import textractor   
@@ -446,13 +446,21 @@ class MAINUI(QObject) :
                 else: 
                     pid=self.textsource.pid
                     hwnd=self.textsource.hwnd
-                    needend=False
+                    needend=False 
                     if pid_running(pid)==False :
                         needend=True
                     elif win32process.GetWindowThreadProcessId( hwnd )[0]==0: 
                             time.sleep(0.5)
                             if self.textsource.pid==pid and   pid_running(pid)==False:
                                 needend=True
+                            else: 
+                                fhwnd=win32gui.GetForegroundWindow()
+                                if win32process.GetWindowThreadProcessId( fhwnd )[0]==pid:
+                                    self.textsource.hwnd=fhwnd
+                                else:
+                                    pidhwnd=getpidhwnds(pid)
+                                    if len(pidhwnd)==1:
+                                        self.textsource.hwnd=pidhwnd[0]
                     if needend:
                         self.textsource.end( )  
                         self.textsource=None  
