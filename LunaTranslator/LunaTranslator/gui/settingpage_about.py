@@ -78,16 +78,16 @@ def getversion(self):
     except:
         print_exc()
         _version=("获取失败") 
-    self.versiontextsignal.emit((('当前版本')+':'+  version+'  '+("最新版本")+':'+ _version) ) #,'' if version== _version else  newcontent,url,'LunaTranslator.zip'))
+    self.versiontextsignal.emit((f'当前版本:{version}  {platform.architecture()[0]}  最新版本:{ _version}') ) #,'' if version== _version else  newcontent,url,'LunaTranslator.zip'))
     if _version!=("获取失败") and version!=_version:
         if globalconfig['autoupdate']: 
             self.progresssignal.emit('……',0)
         
-            savep=f'./cache/update/LunaTranslator.zip' 
+            savep=f'./cache/update/LunaTranslator{bit}.zip' 
             def endcallback():
-                if os.path.exists('./cache/update/LunaTranslator'):
-                    shutil.rmtree('./cache/update/LunaTranslator')
-                zipf=(zipfile.ZipFile('./cache/update/LunaTranslator.zip'))
+                if os.path.exists(f'./cache/update/LunaTranslator{bit}'):
+                    shutil.rmtree(f'./cache/update/LunaTranslator{bit}')
+                zipf=(zipfile.ZipFile(f'./cache/update/LunaTranslator{bit}.zip'))
                 zipf.extractall('./cache/update')
                 self.needupdate=True
                 self.updatefile=savep
@@ -140,12 +140,15 @@ def setTab_aboutlazy(self) :
           
         shuominggrid=[
             ['项目网站',('<a href="https://github.com/HIllya51/LunaTranslator">https://github.com/HIllya51/LunaTranslator</a>',3,'link')],
-            ['使用说明',('<a href="https://hillya51.github.io/">https://hillya51.github.io/</a>',3,'link')],
-            ['网盘',('<a href="https://pan.baidu.com/s/1LPtki3Ex1XGNaDi8nVy1iA?pwd=4p63">https://pan.baidu.com/s/1LPtki3Ex1XGNaDi8nVy1iA?pwd=4p63</a>',3,'link')],
-            [('如果你感觉该软件对你有帮助，欢迎微信扫码或者前往<a href="https://afdian.net/a/HIllya51">爱发电</a>赞助，谢谢，么么哒~',4,'link')]
+            ['使用说明',('<a href="https://hillya51.github.io/">https://hillya51.github.io/</a>',3,'link')], 
+            ['网盘',('<a href="https://pan.baidu.com/s/1LPtki3Ex1XGNaDi8nVy1iA?pwd=4p63">https://pan.baidu.com/s/1LPtki3Ex1XGNaDi8nVy1iA?pwd=4p63</a>',3,'link')],]
+        support=[
+            [('如果你感觉该软件对你有帮助，欢迎微信扫码或者前往<a href="https://afdian.net/a/HIllya51">爱发电</a>赞助，谢谢，么么哒~',4,'link')],
+            []
         ]
-        tab=self.makesubtab_lazy(['支持作者','自动更新','代理设置','资源下载' ],[
-                lambda:self.makevbox( [self.makegrid(shuominggrid),imgwidget("./files/zan.png")]),
+        tab=self.makesubtab_lazy(['项目网站','支持作者','自动更新','代理设置','资源下载' ],[
+                lambda:self.makescroll(self.makegrid(shuominggrid)),
+                lambda:self.makevbox( [self.makegrid(support),imgwidget("./files/zan.png")]),
                 lambda: self.makescroll(self.makegrid(grid2 )   ) ,
                 lambda: self.makescroll(self.makegrid(grid1 )   ),
                 lambda:self.makescroll( self.makegrid(resourcegrid() ) ), 
