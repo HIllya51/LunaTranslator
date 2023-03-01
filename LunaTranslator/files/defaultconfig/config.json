@@ -87,10 +87,6 @@
     "ocrrangewidth": 2,
     "useproxy": false,
     "fullscreenmethod_2": 0,
-	"magpie10quick":{
-		"key1":2,
-		"key2":0
-	},
 	"magpie10path":"",
     "ocrautobindwindow": true, 
     "magpieflags": {

@@ -1,4 +1,4 @@
-import os,win32gui,win32api,win32con,win32process
+import os,win32gui,win32api,win32con,json,math
 from utils.config import globalconfig 
 from utils.magpie import callmagpie
 from utils.getpidlist import  letfullscreen,recoverwindow 
@@ -40,16 +40,24 @@ class fullscreen():
         self.runmagpie10()  
         win32gui.SetForegroundWindow(hwnd )   
         time.sleep(0.1)
-        k1=key_map[key_first[globalconfig['magpie10quick']['key1']].upper()]
-        k2=key_map[key_second[globalconfig['magpie10quick']['key2']].upper()] 
+        configpath=os.path.join(globalconfig['magpie10path'],'config/config.json')
+        if os.path.exists(configpath)==False:
+            configpath=os.path.join(os.environ['LOCALAPPDATA'],'Magpie/config/config.json')
+        if os.path.exists(configpath)==False:
+            return 
+        with open(configpath,'r',encoding='utf8') as ff:
+            config=json.load(ff)
+        shortcuts=config['shortcuts']['scale']
+        code=shortcuts&0xff 
+        control=key_map[['WIN','CTRL','ALT','SHIFT'][ int(math.log2((shortcuts-code)//0x100))]] 
+        k1=control
+        k2=code 
         win32api.keybd_event(k1,0,0,0)    
         win32api.keybd_event(k2,0,0,0)      
         win32api.keybd_event(k2, 0, win32con.KEYEVENTF_KEYUP, 0)
         win32api.keybd_event(k1, 0, win32con.KEYEVENTF_KEYUP, 0) 
         
-        
-        
-        
+         
     def _0(self,hwnd,full):
         if full:
             win32gui.SetForegroundWindow(hwnd )    

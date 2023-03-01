@@ -149,8 +149,7 @@ def setTabThree_lazy(self) :
                 [('Magpie捕获模式',4),(self.getsimplecombobox(['Graphics Capture','Desktop Duplication','GDI','DwmSharedSurface'],globalconfig,'magpiecapturemethod'),6)],
                 [''],
                 [('由于Magpie10接口变化过大，因此不再完整内置',10)], 
-                [('Magpie10路径',3),(self.getcolorbutton(globalconfig,'',callback=lambda x: getsomepath1(self,'Magpie路径',globalconfig,'magpie10path','Magpie路径',isdir=True),icon='fa.gear',constcolor="#FF69B4"),1),(modifydllbtn,6)],
-                [('Magpie10快捷键',4),(self.getsimplecombobox(key_first,globalconfig['magpie10quick'],'key1'),3),(self.getsimplecombobox(key_second,globalconfig['magpie10quick'],'key2')  ,3)]
+                [('Magpie10路径',3),(self.getcolorbutton(globalconfig,'',callback=lambda x: getsomepath1(self,'Magpie路径',globalconfig,'magpie10path','Magpie路径',isdir=True),icon='fa.gear',constcolor="#FF69B4"),1),(modifydllbtn,6)]
 
         ] 
         tab=self.makesubtab_lazy(['文本设置', '界面设置','游戏全屏'],[
