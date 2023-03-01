@@ -169,4 +169,9 @@ class ocrtext(basetext):
                 return ''
         
         return self.ocrengine.ocr(fname)
-         
+    def end(self):
+        super().end()
+        try:
+            self.ocrengine.end()
+        except:
+            print_exc()

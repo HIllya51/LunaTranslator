@@ -12,7 +12,8 @@ class edict():
                 self.sql=sqlite3.connect( path,check_same_thread=False)
         except:
             pass
-    
+    def end(self):
+         self.sql.close()
     def search(self,word):
           
                 x=self.sql.execute(f"select text, entry_id from surface where  text like '%{word}%'")

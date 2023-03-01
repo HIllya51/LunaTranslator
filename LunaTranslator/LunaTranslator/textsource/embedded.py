@@ -39,7 +39,6 @@ class embedded(basetext  ):
         self.textgetmethod("<msg>"+result+'  '+ _TR("内嵌失败，请使用普通HOOK"))     
     def runonce(self): 
         self.textgetmethod(self.agentreceiveddata,False)
-    def end(self):
-        self.ending=True
-
+    def end(self): 
         self.parent.ga.quit()
+        super().end()

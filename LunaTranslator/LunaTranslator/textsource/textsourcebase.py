@@ -111,4 +111,7 @@ class basetext:
         pass
     def end(self):
         self.ending=True
- 
+        try:
+            self.sqlwrite2.close()
+        except:
+            print_exc()

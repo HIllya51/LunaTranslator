@@ -252,7 +252,10 @@ class MAINUI(QObject) :
             if arch is None:
                 return
             if self.textsource:
-                self.textsource.end()  
+                try:
+                    self.textsource.end()  
+                except:
+                    print_exc()
             #   
             if globalconfig['sourcestatus']['textractor']:
                 self.textsource=textractor(self.textgetmethod,self.hookselectdialog,pid,hwnd,pexe )  
@@ -335,11 +338,10 @@ class MAINUI(QObject) :
     def commonloader_warp(self,fanyiorcishu,dictobject,initmethod,_type):
         try:
             if _type in dictobject: 
-                try:
-                    dictobject[_type].end()
-                    del dictobject[_type]
-                except:
-                    pass
+                try: dictobject[_type].end() 
+                except:print_exc()
+                try:  del dictobject[_type]
+                except:print_exc()
             if globalconfig[fanyiorcishu][_type]['use']==False:
                 return
             item=initmethod(_type)

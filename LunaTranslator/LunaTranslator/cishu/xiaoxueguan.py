@@ -11,6 +11,8 @@ class xiaoxueguan():
                 self.sql=sqlite3.connect( path,check_same_thread=False) 
         except:
             pass
+    def end(self):
+        self.sql.close()
     def search(self,word): 
             
                 x=self.sql.execute(f"select word,explanation from xiaoxueguanrizhong where word like '%{word}%'")

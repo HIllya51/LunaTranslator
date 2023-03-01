@@ -11,6 +11,8 @@ class TS(basetrans):
             if os.path.exists(p):
                     self.sql=sqlite3.connect(p,check_same_thread=False)
                     self.path=p
+    def end(self):
+        self.sql.close()
     def inittranslator(self):
         self.path=''
         self.checkfilechanged(self.config['sqlite文件'])

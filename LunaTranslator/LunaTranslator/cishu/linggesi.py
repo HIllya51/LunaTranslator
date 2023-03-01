@@ -14,6 +14,9 @@ class linggesi():
             self.sql2=sqlite3.connect(os.path.join(globalconfig['cishu']['linggesi']['path'] ,'ja-zh-gbk.db'),check_same_thread=False)
         except:
             pass
+    def end(self):
+        self.sql.close()
+        self.sql2.close()
     def search(self,word):
          
                 mp={}

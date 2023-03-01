@@ -221,5 +221,5 @@ class textractor(basetext  ):
             print_exc()  
          
          
-        self.ending=True
+        super().end()
      
