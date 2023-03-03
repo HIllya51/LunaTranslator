@@ -421,7 +421,6 @@
     "usesearchword": false,
     "LocaleEmulator": "./files/Locale.Emulator.2.5.0.1",
     "Locale_Remulator": "./files/Locale_Remulator.1.4.6",
-    "verticalocr": false,
     "outputtopasteboard": false,
     "ttscommon": {
         "rate": 1.0,
@@ -429,11 +428,11 @@
     },
 	"allowmulti":true,
     "sourcestatus": {
-        "copy": false,
-        "ocr": true,
-        "textractor": false,
-		"txt":false,
-		"embedded":false
+        "copy": {"use":false},
+        "ocr":  {"use":true},
+        "textractor":  {"use":false}, 
+		"txt": {"use":false},
+		"embedded": {"use":false}
     },
 	"txtreadlineinterval":5,
 	"verticalocr":false,
