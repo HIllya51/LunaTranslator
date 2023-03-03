@@ -87,7 +87,7 @@
       "args": {
         "注册网址": "https://platform.openai.com/account/api-keys",
         "SECRET_KEY": "",
-        "temperature(可选0~1,如果你不了解含义就不要修改它)": "0.3"
+        "temperature": "默认为0.3,可选0~1,如果你不了解含义就不要修改它"
       }
     },
     "jb7": {
