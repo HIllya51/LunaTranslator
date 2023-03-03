@@ -30,20 +30,22 @@
             "次数统计": "0"
         }
     },
- "deeplapi": {
+    "deeplapi": {
         "args": {
             "注册网址": "https://www.deepl.com/translator",
             "DeepL-Auth-Key": "",
             "字数统计": "0",
             "次数统计": "0"
         }
-    }, "yandexapi": {
+    },
+    "yandexapi": {
         "args": {
             "key": ""
         }
-    },"googleapi": {
-        "args": { 
-            "key": "" 
+    },
+    "googleapi": {
+        "args": {
+            "key": ""
         }
     },
     "huoshanapi": {
@@ -81,6 +83,13 @@
             "次数统计": "0"
         }
     },
+    "openai": {
+      "args": {
+        "注册网址": "https://platform.openai.com/account/api-keys",
+        "SECRET_KEY": "",
+        "temperature": "默认为0.3,可选0~1,如果你不了解含义就不要修改它"
+      }
+    },
     "jb7": {
         "args": {
             "路径": "",
@@ -106,11 +115,11 @@
         }
     },"rengong_vnr": {
         "args": {
-            "xml文件": "" 
+            "xml文件": ""
         }
     },"rengong_msk": {
         "args": {
-            "txt文件": "" 
+            "txt文件": ""
         }
     },
     "premt": {
