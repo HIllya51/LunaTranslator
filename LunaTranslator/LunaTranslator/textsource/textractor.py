@@ -143,7 +143,7 @@ class textractor(basetext  ):
             
             #print(key,self.selectedhook,output)
             self.hookdatacollecter[key].append(output) 
-            if key in self.namehook:
+            if list(key) in self.namehook:
                 self.currentname=output
             
             if (key in self.selectedhook): 

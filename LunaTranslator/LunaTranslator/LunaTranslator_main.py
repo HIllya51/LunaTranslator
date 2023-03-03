@@ -201,7 +201,7 @@ class MAINUI(QObject) :
             if globalconfig['autoread']:
                 needread=True
                 if globalconfig['sourcestatus']['textractor']['use']:
-                    if 'ttsonname' in  savehook_new_data[self.textsource.pname] and  savehook_new_data[self.textsource.pname]['ttsonname']:
+                    if ('ttsonname' in  savehook_new_data[self.textsource.pname]) and  savehook_new_data[self.textsource.pname]['ttsonname']:
                         if 'ttsusename' in savehook_new_data[self.textsource.pname]:
                             ttsusename=savehook_new_data[self.textsource.pname]['ttsusename']
                             if not((self.textsource.currentname is None and 'None'  in ttsusename)  or (self.textsource.currentname  in ttsusename)):
