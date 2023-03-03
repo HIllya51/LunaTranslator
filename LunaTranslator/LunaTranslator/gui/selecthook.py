@@ -293,7 +293,7 @@ class hookselect(closeashidewindow):
         self.checkfilt_notshiftjis.setHidden(hide)  
         self.checkfilt_dumplicate.setHidden(hide) 
     def findhook(self): 
-        if globalconfig['sourcestatus']['textractor']==False:
+        if globalconfig['sourcestatus']['textractor']['use']==False:
             return 
         msgBox=QMessageBox(self)
         msgBox.setWindowTitle('警告！')

@@ -429,11 +429,11 @@
     },
 	"allowmulti":true,
     "sourcestatus": {
-        "copy": false,
-        "ocr": true,
-        "textractor": false, 
-		"txt":false,
-		"embedded":false
+        "copy": {"use":false},
+        "ocr":  {"use":true},
+        "textractor":  {"use":false}, 
+		"txt": {"use":false},
+		"embedded": {"use":false}
     },
 	"txtreadlineinterval":5,
 	"verticalocr":false,

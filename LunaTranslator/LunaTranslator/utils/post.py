@@ -162,7 +162,7 @@ def POSTSOLVE(line):
     }
     for postitem in globalconfig['postprocess_rank']:
         if postprocessconfig[postitem]['use']:
-                if postitem=='_100' and globalconfig['sourcestatus']['ocr']==False:
+                if postitem=='_100' and globalconfig['sourcestatus']['ocr']['use']==False:
                         continue
                 try:
                          

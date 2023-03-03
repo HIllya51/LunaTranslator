@@ -71,8 +71,7 @@ class MAINUI(QObject) :
         self.translators={}
         self.cishus={}
         self.reader=None
-        self.textsource=None
-        self.rect=None  
+        self.textsource=None 
         self.rect=None  
         self.last_paste_str=''
         self.lastshowedstr=''
@@ -183,7 +182,7 @@ class MAINUI(QObject) :
                 embedcallback('zhs', _paste_str) 
             return 
         self.last_paste_str=_paste_str  
-        if globalconfig['outputtopasteboard'] and globalconfig['sourcestatus']['copy']==False:  
+        if globalconfig['outputtopasteboard'] and globalconfig['sourcestatus']['copy']['use']==False:  
             pyperclip.copy(_paste_str)
         self.translation_ui.original=_paste_str 
         try:
@@ -257,49 +256,44 @@ class MAINUI(QObject) :
                 except:
                     print_exc()
             #   
-            if globalconfig['sourcestatus']['textractor']:
+            if globalconfig['sourcestatus']['textractor']['use']:
                 self.textsource=textractor(self.textgetmethod,self.hookselectdialog,pid,hwnd,pexe )  
-            elif globalconfig['sourcestatus']['embedded']:
+            elif globalconfig['sourcestatus']['embedded']['use']:
                 self.textsource=embedded(self.textgetmethod,self.hookselectdialog,pid,hwnd,pexe, self)  
             
             if pexe not in savehook_new_list:
                 savehook_new_list.insert(0,pexe)  
             if pexe not in savehook_new_data:
                 savehook_new_data[pexe]={'leuse':True,'title':os.path.basename(os.path.dirname(pexe))+'/'+ os.path.basename(pexe),'hook':[] }  
-             
      
     #@threader
-    def starttextsource(self,use=None,checked=True,pop=True):   
-        if checked:
+    def starttextsource(self,use=None,checked=True,waitforautoinit=False):   
+        self.rect=None 
+        self.translation_ui.showhidestate=False 
+        self.translation_ui.refreshtooliconsignal.emit()
+        self.range_ui.hide() 
+        self.settin_ui.selectbutton.setEnabled(globalconfig['sourcestatus']['textractor']['use'] or globalconfig['sourcestatus']['embedded']['use']) 
+        self.settin_ui.selecthookbutton.setEnabled(globalconfig['sourcestatus']['textractor']['use'] or globalconfig['sourcestatus']['embedded']['use']) 
+         
+        if  self.textsource: 
+            if self.textsource.ending==False :
+                self.textsource.end()  
+            self.textsource=None
+        if checked: 
             classes={'ocr':ocrtext,'copy':copyboard,'textractor':None,'embedded':None,'txt':txt} 
             if use is None:
-                use=list(filter(lambda _ :globalconfig['sourcestatus'][_],classes.keys()) )
+                use=list(filter(lambda _ :globalconfig['sourcestatus'][_]['use'],classes.keys()) )
                 use=None if len(use)==0 else use[0]
             if use is None:
-                self.textsource=None
+                return
             elif use=='textractor' or use=='embedded':
-                if pop:     
+                if waitforautoinit==False:     
                     self.AttachProcessDialog.showNormal() 
             elif use=='ocr':
                 self.textsource=classes[use](self.textgetmethod,self)   
             else:
                 self.textsource=classes[use](self.textgetmethod)
-        else: 
-            if  self.textsource: 
-                if self.textsource.ending==False :
-                    self.textsource.end()  
-                self.textsource=None
-         
-        self.rect=None
-        self.translation_ui.showhidestate=False 
-        self.translation_ui.refreshtooliconsignal.emit()
-        self.range_ui.hide()
-        try:
-            self.settin_ui.selectbutton.setEnabled(globalconfig['sourcestatus']['textractor'] or globalconfig['sourcestatus']['embedded']) 
-            self.settin_ui.selecthookbutton.setEnabled(globalconfig['sourcestatus']['textractor'] or globalconfig['sourcestatus']['embedded']) 
-        except:
-            pass
-        self.translation_ui.showhidetoolbuttons()
+        
      
     @threader
     def starthira(self,use=None,checked=True): 
@@ -407,9 +401,8 @@ class MAINUI(QObject) :
             
       
 
-    def onwindowloadautohook(self):
-        #print(globalconfig['sourcestatus'])
-        if not(globalconfig['autostarthook'] and (globalconfig['sourcestatus']['textractor'] or globalconfig['sourcestatus']['embedded'])):
+    def onwindowloadautohook(self): 
+        if not(globalconfig['autostarthook'] and (globalconfig['sourcestatus']['textractor']['use'] or globalconfig['sourcestatus']['embedded']['use'])):
             return 
             
         elif self.AttachProcessDialog.isVisible():
@@ -429,19 +422,15 @@ class MAINUI(QObject) :
                             for pid_real,_exe,_ in lps:
                                 if _exe==name_: 
                                     
-                                    self.hookselectdialog.changeprocessclearsignal.emit() 
-
-                                     
-                                    if globalconfig['sourcestatus']['textractor']:
+                                    if globalconfig['sourcestatus']['textractor']['use']:
                                         if 'needinserthookcode' in savehook_new_data[name_] and globalconfig['autoinserthook']:
                                             needinserthookcode=savehook_new_data[name_]['needinserthookcode']
                                         else:
                                             needinserthookcode=[]
                                         self.textsource=textractor(self.textgetmethod,self.hookselectdialog,pid_real,hwnd,name_ ,autostarthookcode=savehook_new_data[name_]['hook'],needinserthookcode=needinserthookcode)
-                                    else:  
-                                        print("pid",pid_real)
+                                    elif globalconfig['sourcestatus']['embedded']['use']:
                                         self.textsource=embedded(self.textgetmethod,self.hookselectdialog,pid_real,hwnd,name_  ,self)
-                                    
+                                    break
                 
                 else: 
                     pid=self.textsource.pid
@@ -465,7 +454,8 @@ class MAINUI(QObject) :
                         self.textsource.end( )  
                         self.textsource=None  
             except:
-                        print_exc()
+                        pass
+                        #print_exc()
     def setontopthread(self):
         while True:
             #self.translation_ui.keeptopsignal.emit() 
@@ -526,7 +516,7 @@ class MAINUI(QObject) :
         threading.Thread(target=self.autohookmonitorthread).start()    
         threading.Thread(target=minmaxmoveobservefunc,args=(self.translation_ui,)).start()   
         
-        self.starttextsource(pop=False)  
+        self.starttextsource(waitforautoinit=True)  
     def checklang(self):
         if  globalconfig['language_setted_2.4.5']==False:
             

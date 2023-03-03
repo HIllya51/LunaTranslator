@@ -111,17 +111,11 @@ class Settin(closeashidewindow) :
         return b
     def yuitsu_switch(self,configdictkey,dictobjectn,key,callback,checked):  
         dictobject=getattr(self,dictobjectn)  
-        if checked :  
-            for k in dictobject:
-                if k==key:
-                    continue
-                if  ( configdictkey=='sourcestatus' and globalconfig[configdictkey][k]==True) or (configdictkey!='sourcestatus' and globalconfig[configdictkey][k]['use']==True  ): 
-                     
-                    dictobject[k].setChecked(False)    
-        if configdictkey=='sourcestatus':
-            globalconfig[configdictkey][key] =checked
-        else:
-            globalconfig[configdictkey][key]['use']=checked
+        if checked :   
+            for k in dictobject: 
+                globalconfig[configdictkey][k]['use']=k==key
+                dictobject[k].setChecked(k==key)     
+        
         if callback : 
             callback(key,checked)
     def getcolorbutton(self,d,key,callback,name=None,icon="fa.paint-brush",constcolor=None,enable=True,transparent=True,qicon=None):
@@ -144,8 +138,7 @@ class Settin(closeashidewindow) :
     def getsimplecombobox(self,lst,d,k,callback=None,name=None):
         s=QComboBox( )  
         s.addItems(lst)
-        if d[k]>=len(lst):
-            d[k]=0
+        if (k not in d) or (d[k]>=len(lst)):d[k]=0
         s.setCurrentIndex(d[k])
         s.currentIndexChanged.connect(functools.partial(self.callbackwrap,d,k,callback) )
         if name:

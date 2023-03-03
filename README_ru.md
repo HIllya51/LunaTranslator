@@ -90,7 +90,3 @@
 
 * [@KirpichKrasniy](https://github.com/KirpichKrasniy) (Также можете зайти в русскоязычные сообщества программы: [VK](https://vk.com/lunatranslator) и [Telegram](https://t.me/LunaTranslator))
 
-
-##  Поддержать автора 
- 
-Если вы считаете, что программное обеспечение помогает Вам, Вы можете проспонсировать меня на [afdian](https://afdian.net/a/HIllya51). Спасибо за поддержку!

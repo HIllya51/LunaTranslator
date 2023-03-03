@@ -335,8 +335,7 @@ class QUnFrameWindow(resizableframeless):
         self.buttons=[] 
         self.showbuttons=[] 
         self.addbuttons() 
-        
-        self.showhidetoolbuttons()
+         
         d=QApplication.desktop()
 
         globalconfig['position'][0]=min(max(globalconfig['position'][0],0),d.width()-globalconfig['width'])
@@ -450,7 +449,7 @@ class QUnFrameWindow(resizableframeless):
             self.clickRange(True)
         
     def clickRange(self,auto): 
-        if globalconfig['sourcestatus']['ocr']==False:
+        if globalconfig['sourcestatus']['ocr']['use']==False:
                 return 
         self.showhidestate=False
         
@@ -513,14 +512,13 @@ class QUnFrameWindow(resizableframeless):
 
     def showhidetoolbuttons(self):
         showed=0
-        self.showbuttons=[]
-        
+        self.showbuttons=[] 
         
         for i,button in enumerate(self.buttons[:-2]):
             if button.belong:
                 hide=True
                 for k in button.belong:
-                    if globalconfig['sourcestatus'][k]:
+                    if globalconfig['sourcestatus'][k]['use']:
                         hide=False
                         break
                 if hide:
