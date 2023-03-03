@@ -591,5 +591,8 @@
     "删除": "Xoá",
     "自动切换到模式": "Tự động chuyển sang chế độ",
     "不切换": "Không chuyển đổi",
-    "如果你感觉该软件对你有帮助，欢迎微信扫码赞助，谢谢，么么哒~": "Nếu như ngươi cảm giác cái này phần mềm đối với ngươi có trợ giúp, hoan nghênh wechat quét mã tài trợ, cám ơn, moah~"
+    "如果你感觉该软件对你有帮助，欢迎微信扫码赞助，谢谢，么么哒~": "Nếu như ngươi cảm giác cái này phần mềm đối với ngươi có trợ giúp, hoan nghênh wechat quét mã tài trợ, cám ơn, moah~",
+    "SECRET_KEY": "SECRET_ KEY",
+    "temperature": "temperature",
+    "OpenAI-ChatGPT": "OpenAI-ChatGPT"
 }

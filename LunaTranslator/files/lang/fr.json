@@ -591,5 +591,8 @@
     "删除": "Supprimer",
     "自动切换到模式": "Basculement automatique en mode",
     "不切换": "Pas de commutation",
-    "如果你感觉该软件对你有帮助，欢迎微信扫码赞助，谢谢，么么哒~": "Si vous sentez que le logiciel vous aide, bienvenue Wechat scan code sponsoring, merci, ou cliquez ~"
+    "如果你感觉该软件对你有帮助，欢迎微信扫码赞助，谢谢，么么哒~": "Si vous sentez que le logiciel vous aide, bienvenue Wechat scan code sponsoring, merci, ou cliquez ~",
+    "SECRET_KEY": "Secret Le key",
+    "temperature": "Temperature",
+    "OpenAI-ChatGPT": "Openai - chatgpt"
 }

@@ -703,7 +703,7 @@
         "openai": {
           "use": false,
           "color": "blue",
-          "name": "OpenAIapi"
+          "name": "OpenAI-ChatGPT"
         },
 		"hanshant": {
             "use": false,

@@ -591,5 +591,8 @@
     "删除": "Sil",
     "自动切换到模式": "Otomatik moda değiştir",
     "不切换": "Değiştirme",
-    "如果你感觉该软件对你有帮助，欢迎微信扫码赞助，谢谢，么么哒~": "Eğer yazılım sana yardımcı olduğunu hissediyorsanız, WeChat tarama kodu sponsorluğuna hoş geldiniz, teşekkürler Momoda~"
+    "如果你感觉该软件对你有帮助，欢迎微信扫码赞助，谢谢，么么哒~": "Eğer yazılım sana yardımcı olduğunu hissediyorsanız, WeChat tarama kodu sponsorluğuna hoş geldiniz, teşekkürler Momoda~",
+    "SECRET_KEY": "SECRET KEY",
+    "temperature": "sıcaklığı",
+    "OpenAI-ChatGPT": "OpenAI-ChatGPT"
 }
