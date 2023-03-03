@@ -115,7 +115,7 @@ Support almost all translation engines you can think of, including:
  
 ## Support author
  
-If you feel that the software is helpful to you, you are welcome to scan WeChat code or go to [afdian](https://afdian.net/a/HIllya51) to sponsor. Thank you ~
+If you feel that the software is helpful to you, you are welcome to scan WeChat code to sponsor. Thank you ~
 
 
 <img src='.\\LunaTranslator\\files\\zan.png' height=500 width=500>

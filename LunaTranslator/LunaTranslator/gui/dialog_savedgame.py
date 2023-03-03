@@ -11,7 +11,7 @@ from PyQt5.QtCore import Qt,QSize
 from utils.config import   savehook_new_list,savehook_new_data
 from utils.getpidlist import getExeIcon 
 from utils.le3264 import le3264run  
-from utils.config import _TR,_TRL
+from utils.config import _TR,_TRL,globalconfig
 import os
 import win32con,win32api  
 from utils.wrapper import Singleton_close,Singleton
@@ -44,16 +44,20 @@ class dialog_setting_game(QDialog):
                 lujing=QHBoxLayout()
                 editpath=QLineEdit(item.savetext)
                 editpath.setReadOnly(True)
-                editpath.textEdited.connect(lambda _:item.__setitem__('savetext',_))
-                selectexe=self.object.getcolorbutton('','',functools.partial(self.selectexe,item),icon='fa.gear',constcolor="#FF69B4")
-                lujing.addWidget(QLabel(_TR("路径")))
+                editpath.textEdited.connect(lambda _:item.__setitem__('savetext',_)) 
+                lujing.addWidget(QLabel(_TR("修改路径")))
                 lujing.addWidget(editpath)
-                lujing.addWidget(selectexe)
+                lujing.addWidget(self.object.getcolorbutton('','',functools.partial(self.selectexe,item),icon='fa.gear',constcolor="#FF69B4"))
                 self.lujing=editpath
                 self.setWindowTitle(title)
                 self.resize(QSize(800,200))
                 self.setWindowIcon(getExeIcon(item.savetext))
                 formLayout.addLayout(lujing)
+
+                autochangestatus=QHBoxLayout()
+                autochangestatus.addWidget(QLabel(_TR("自动切换到模式"))) 
+                autochangestatus.addWidget(self.object.getsimplecombobox(_TRL(['不切换','HOOK','HOOK_内嵌','剪贴板','OCR']),savehook_new_data[self.item.savetext],'onloadautochangemode'))
+                formLayout.addLayout(autochangestatus)
 
                 model=QStandardItemModel(   )
                 model.setHorizontalHeaderLabels(_TRL(['删除','特殊码',]))#,'HOOK'])
@@ -126,8 +130,29 @@ class dialog_savedgame(QDialog):
                         
         def clicked(self): 
                 try: 
+                    
                     game=self.model.item(self.table.currentIndex().row(),2).savetext 
+
+                
+
                     if os.path.exists(game):
+
+                        if 'onloadautochangemode' in savehook_new_data[game]:
+                                mode=savehook_new_data[game]['onloadautochangemode']
+                                if mode==0:
+                                        pass
+                                else:
+                                        _={
+                                        1:'textractor',
+                                        2:'embedded',
+                                        3:'copy',
+                                        4:'ocr'
+                                        } 
+                                        if globalconfig['sourcestatus'][_[mode]]['use']==False:
+                                                globalconfig['sourcestatus'][_[mode]]['use']=True
+                                                
+                                                self.object.yuitsu_switch('sourcestatus','sourceswitchs',_[mode],None ,True) 
+                                                self.object.object.starttextsource(use=_[mode],checked=True,waitforautoinit=True)
                         #subprocess.Popen(model.item(table.currentIndex().row(),1).text())  
                         if savehook_new_data[game]['leuse'] :
                                 le3264run(game)
@@ -144,8 +169,7 @@ class dialog_savedgame(QDialog):
                 k=k.replace('/','\\')
                  
                 if k not in savehook_new_data:
-                        savehook_new_data[k]={'leuse':True,'title':os.path.basename(os.path.dirname(k))+'/'+ os.path.basename(k),'hook':[] } 
-                        print(k,savehook_new_data[k])
+                        savehook_new_data[k]={'leuse':True,'title':os.path.basename(os.path.dirname(k))+'/'+ os.path.basename(k),'hook':[] }  
                 self.model.insertRow(row,[QStandardItem( ),QStandardItem( ),keyitem,QStandardItem( (savehook_new_data[k]['title'] ) )])  
                 self.table.setIndexWidget(self.model.index(row, 0),self.object.getsimpleswitch(savehook_new_data[k],'leuse'))
                 self.table.setIndexWidget(self.model.index(row, 1),self.object.getcolorbutton('','',functools.partial( opendir,k),qicon=getExeIcon(k) ))

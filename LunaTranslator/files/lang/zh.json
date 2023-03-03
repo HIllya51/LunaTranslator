@@ -654,5 +654,7 @@
     "OpenAIapi": "",
     "OpenAIapi设置": "",
     "SECRET_KEY": "",
-    "temperature": ""
+    "temperature": "",
+    "自动切换到模式": "",
+    "不切换": ""
 }

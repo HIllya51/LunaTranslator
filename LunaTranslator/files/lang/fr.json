@@ -650,5 +650,7 @@
     "成功": "Succès",
     "特殊码": "Code spécial",
     "删除特殊码": "Supprimer le code spécial",
-    "删除": "Supprimer"
+    "删除": "Supprimer",
+    "自动切换到模式": "Basculement automatique en mode",
+    "不切换": "Pas de commutation"
 }

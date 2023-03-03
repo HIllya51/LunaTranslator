@@ -650,5 +650,7 @@
     "成功": "success",
     "特殊码": "specific code",
     "删除特殊码": "Delete special code",
-    "删除": "delete"
+    "删除": "delete",
+    "自动切换到模式": "Automatically switch to mode",
+    "不切换": "Do not switch"
 }

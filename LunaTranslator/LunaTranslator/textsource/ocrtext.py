@@ -158,9 +158,9 @@ class ocrtext(basetext):
         img.save(fname)
         
         if self.nowuseocr!=use:
-            try:
-                self.ocrengine.end()
+            try: self.ocrengine.end()
             except:pass
+            
             try:
                 aclass=importlib.import_module('ocrengines.'+use).OCR 
                 self.ocrengine=aclass(use)   
@@ -171,7 +171,5 @@ class ocrtext(basetext):
         return self.ocrengine.ocr(fname)
     def end(self):
         super().end()
-        try:
-            self.ocrengine.end()
-        except:
-            print_exc()
+        try: self.ocrengine.end()
+        except:pass
