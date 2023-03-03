@@ -31,6 +31,15 @@ if __name__=='__main__':
          
         a=TS1('baiduapi',None)
         a.tgtlang=xxx[kk] 
+        needpop=[]
+        for k in jsen:
+             if k not in js:
+                 needpop.append(k)
+        print(kk,needpop)
+        for k in needpop:
+             jsen.pop(k) 
+        with open(f'./files/lang/{kk}.json','w',encoding='utf8')  as ff:
+            ff.write( json.dumps(jsen,ensure_ascii=False,sort_keys=False, indent=4))
         for k in js:
             
             if k not in jsen or  jsen[k]=='':

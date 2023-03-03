@@ -143,7 +143,7 @@ def setTab_aboutlazy(self) :
             ['使用说明',('<a href="https://hillya51.github.io/">https://hillya51.github.io/</a>',3,'link')], 
             ['网盘',('<a href="https://pan.baidu.com/s/1LPtki3Ex1XGNaDi8nVy1iA?pwd=4p63">https://pan.baidu.com/s/1LPtki3Ex1XGNaDi8nVy1iA?pwd=4p63</a>',3,'link')],]
         support=[
-            [('如果你感觉该软件对你有帮助，欢迎微信扫码赞助，谢谢，么么哒~',4,'link')],
+            [('如果你感觉该软件对你有帮助，欢迎微信扫码赞助，谢谢，么么哒~')],
             []
         ]
         tab=self.makesubtab_lazy(['项目网站','支持作者','自动更新','代理设置','资源下载' ],[

@@ -54,7 +54,7 @@ def initsome11(self,l,label=None):
                         'dir':True 
                     }) 
             items.append({'t':'okcancel' })
-            last=self.getcolorbutton(globalconfig,'',callback=functools.partial(autoinitdialog,self, (globalconfig['fanyi'][fanyi]['name'])+ ('设置'),900,items),icon='fa.gear',constcolor="#FF69B4")
+            last=self.getcolorbutton(globalconfig,'',callback=functools.partial(autoinitdialog,self, (globalconfig['fanyi'][fanyi]['name']),900,items),icon='fa.gear',constcolor="#FF69B4")
         elif fanyi=='selfbuild': 
             last=self.getcolorbutton(globalconfig,'',callback=lambda:selectdebugfile('translator/selfbuild.py' ),icon='fa.gear',constcolor="#FF69B4")
         else:

@@ -72,8 +72,7 @@ def _TR(k):
     if k=='':
         return ''
     if k not in languageshow or languageshow[k]=='':
-        languageshow[k]='' 
-        
+        languageshow[k]=''
         return k
     else:
         return languageshow[k]
