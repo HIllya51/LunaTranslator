@@ -11,9 +11,9 @@
 	"ocrmagpiekeep":false,
 	"autodisappear":false,
 	"disappear_delay":5,
-	"embedded":{ 
+	"embedded":{
 		"translator":0,
-		"as_fast_as_posible":true, 
+		"as_fast_as_posible":true,
 		"timeout_translate":2,
 		"trans_kanji":true,
 		"keeprawtext":false,
@@ -27,16 +27,16 @@
 	"language_setted_2.4.5":false,
 	"postprocess_rank":["_2","_3", "_10","_1",   "_4", "_6", "_91", "_92", "_7", "_7_zhuanyi", "_8","_11","_13","_100"],
 	"hist_split":false,
-	"hist_fontstring":"Arial,12,-1,5,50,0,0,0,0,0,Regular", 
-	"sw_fontstring":"Arial,12,-1,5,50,0,0,0,0,0,Regular", 
-	"edit_fontstring":"Arial,12,-1,5,50,0,0,0,0,0,Regular", 
+	"hist_fontstring":"Arial,12,-1,5,50,0,0,0,0,0,Regular",
+	"sw_fontstring":"Arial,12,-1,5,50,0,0,0,0,0,Regular",
+	"edit_fontstring":"Arial,12,-1,5,50,0,0,0,0,0,Regular",
     "fixedheight": false,
 	"showintab":false,
 	"darktheme":false,
 	"remove_useless_hook":false,
 	"height":200,
 	"postprocessf":"postprocess.mypost",
-    "width": 1200, 
+    "width": 1200,
 	"button_color_close":"#D32424",
 	"button_color_normal":"#FFFFFF",
 	"textthreaddelay":50,
@@ -59,7 +59,7 @@
     "zitiyangshi": 2,
     "iskongxin": true,
     "isshowrawtext": true,
-    "kanarate": 0.5,  
+    "kanarate": 0.5,
     "rawtextcolor": "#000000",
     "backcolor": "#3f3f3f",
     "isshowhira": false,
@@ -72,7 +72,7 @@
     "settingfonttype": "Arial",
 	"setting_geo_2":[0,0,1200,600],
 	"settingfontsize":12,
-	"filter_chaos_code":false, 
+	"filter_chaos_code":false,
 	"accept_encoding":["shift-jis"],
 	"accept_character":"♪",
 	"accept_use_unicode":false,
@@ -88,7 +88,7 @@
     "useproxy": false,
     "fullscreenmethod_2": 0,
 	"magpie10path":"",
-    "ocrautobindwindow": true, 
+    "ocrautobindwindow": true,
     "magpieflags": {
 		"MultiMonitorUsage":0,
 		"DebugSaveEffectSources":false,
@@ -149,7 +149,7 @@
         "補助記号": "chocolate",
         "記号": "coral",
 		"空白":"white"
-		
+
     },
 	"cixingcolorshow": {
         "形容詞": true,
@@ -170,7 +170,7 @@
         "補助記号": false,
         "記号": false,
 		"空白":false
-    }, 
+    },
 	"codepage_index":0,
     "quick_setting": {
         "use": false,
@@ -342,7 +342,7 @@
 				"name":"选取OCR范围——立即",
 				"key1":-1,
 				"key2":-1
-			} 
+			}
         }
     },
     "reader": {
@@ -379,25 +379,25 @@
 		},
 		"mojinlt":{
 			"use":false,
-			"token":"" 
+			"token":""
 		}
-	}, 
+	},
 	"cishu":{
 		"xiaoxueguan": {
 			"use": true,
 			"path": "",
 			"name":"小学馆",
 			"filter":"*.db",
-			"isdir":false 
+			"isdir":false
 		},
-		
+
 		"edict": {
 			"use": true,
 			"path": "",
-			"name":"EDICT","filter":"*.db","isdir":false 
+			"name":"EDICT","filter":"*.db","isdir":false
 		},"edict2": {
 			"use": true,
-			"path": "","name":"EDICT2","filter":"","isdir":false 
+			"path": "","name":"EDICT2","filter":"","isdir":false
 		},
 		"linggesi": {
 			"use": true,
@@ -431,7 +431,7 @@
     "sourcestatus": {
         "copy": false,
         "ocr": true,
-        "textractor": false, 
+        "textractor": false,
 		"txt":false,
 		"embedded":false
     },
@@ -441,44 +441,44 @@
     "ocr": {
         "local": {
             "use": true,
-            "name": "本地OCR" 
+            "name": "本地OCR"
         },
         "windowsocr": {
             "use": false,
-            "name": "WindowsOCR" 
+            "name": "WindowsOCR"
         },
         "baiduocr": {
             "use": false,
-            "name": "baiduOCR"  
+            "name": "baiduOCR"
         },
 		"baiduocr_accurate": {
             "use": false,
-            "name": "baiduOCR_高精度" 
+            "name": "baiduOCR_高精度"
         }, "feishu": {
             "use": false,
-            "name": "飞书" 
+            "name": "飞书"
         },
         "ocrspace": {
             "use": false,
-            "name": "ocrspace" 
+            "name": "ocrspace"
         },
         "docsumo": {
             "use": false,
-            "name": "docsumo" 
+            "name": "docsumo"
         },
         "youdaocr": {
             "use": false,
-            "name": "youdaocr" 
+            "name": "youdaocr"
         },
         "youdaocrtrans": {
             "use": false,
-            "name": "youdao图片翻译" 
-        }, 
+            "name": "youdao图片翻译"
+        },
 		"volcengine":{
 			"use":false,
-			"name":"火山OCR" 
+			"name":"火山OCR"
 		}
-    },  
+    },
     "fanyi": {
         "baidu": {
             "use": true,
@@ -493,36 +493,36 @@
         "google": {
             "use": false,
             "color": "#ff0000",
-            "name": "谷歌" 
+            "name": "谷歌"
         },"googleapi": {
             "use": false,
             "color": "#ff0000",
-            "name": "google_api" 
+            "name": "google_api"
         },
         "ali": {
             "use": true,
             "color": "#0000ff",
-            "name": "阿里" 
+            "name": "阿里"
         },
         "youdao": {
             "use": true,
             "color": "blue",
-            "name": "有道" 
-        }, 
+            "name": "有道"
+        },
         "google2": {
             "use": false,
             "color": "#95a5ff",
-            "name": "谷歌2" 
+            "name": "谷歌2"
         },
         "sougou": {
             "use": false,
             "color": "blue",
-            "name": "搜狗" 
+            "name": "搜狗"
         },
         "caiyun": {
             "use": true,
             "color": "blue",
-            "name": "彩云" 
+            "name": "彩云"
         },
         "deepl": {
             "use": false,
@@ -532,70 +532,70 @@
         "jb7": {
             "use": false,
             "color": "#1839f0",
-            "name": "Jbeijing7" 
+            "name": "Jbeijing7"
         },
         "kingsoft": {
             "use": false,
             "color": "#1839f0",
-            "name": "金山快译" 
+            "name": "金山快译"
         },
         "dreye": {
             "use": false,
             "color": "#1839f0",
-            "name": "快译通" 
+            "name": "快译通"
         },
         "sougou2": {
             "use": false,
             "color": "blue",
-            "name": "搜狗2" 
+            "name": "搜狗2"
         },
         "youdao3": {
             "use": false,
             "color": "blue",
-            "name": "有道3" 
+            "name": "有道3"
         },
         "youdao5": {
             "use": false,
             "color": "blue",
-            "name": "有道5" 
+            "name": "有道5"
         },
         "tencent": {
             "use": false,
             "color": "blue",
-            "name": "TX" 
+            "name": "TX"
         },
         "iciba": {
             "use": false,
             "color": "blue",
-            "name": "iciba" 
+            "name": "iciba"
         },
 		"itrans": {
             "use": false,
             "color": "blue",
-            "name": "itrans" 
+            "name": "itrans"
         },"lingva": {
             "use": false,
             "color": "blue",
-            "name": "lingva" 
+            "name": "lingva"
         },
 		"lingvanex": {
             "use": false,
             "color": "blue",
-            "name": "lingvanex" 
+            "name": "lingvanex"
         },
 		"reverso": {
             "use": false,
             "color": "blue",
-            "name": "reverso" 
+            "name": "reverso"
         },"reverso_context": {
             "use": false,
             "color": "blue",
-            "name": "reverso_context" 
+            "name": "reverso_context"
         },
 		"TranslateCom": {
             "use": false,
             "color": "blue",
-            "name": "TranslateCom" 
+            "name": "TranslateCom"
         },
         "baiduapi": {
             "use": false,
@@ -605,71 +605,71 @@
         "tencentapi": {
             "use": false,
             "color": "blue",
-            "name": "腾讯api" 
+            "name": "腾讯api"
         },"yandexapi": {
             "use": false,
             "color": "blue",
-            "name": "yandex_api" 
+            "name": "yandex_api"
         },
         "byte": {
             "use": true,
             "color": "blue",
-            "name": "byte" 
+            "name": "byte"
         },
         "qqimt": {
             "use": true,
             "color": "blue",
-            "name": "qqimt" 
+            "name": "qqimt"
         },
         "xiaoniu": {
             "use": false,
             "color": "blue",
-            "name": "小牛api" 
+            "name": "小牛api"
         },
         "huoshan": {
             "use": true,
             "color": "blue",
-            "name": "huoshan" 
+            "name": "huoshan"
         },
         "yeekit": {
             "use": false,
             "color": "blue",
-            "name": "yeekit" 
+            "name": "yeekit"
         },
         "caiyunapi": {
             "use": false,
             "color": "blue",
-            "name": "彩云api" 
+            "name": "彩云api"
         },
         "huoshanapi": {
             "use": false,
             "color": "blue",
-            "name": "火山api" 
+            "name": "火山api"
         },"feishu": {
             "use": false,
             "color": "blue",
-            "name": "飞书" 
+            "name": "飞书"
         },
         "papago": {
             "use": true,
             "color": "blue",
-            "name": "papago" 
+            "name": "papago"
         },
         "rengong": {
             "use": false,
             "color": "blue",
-            "name": "人工翻译" 
-			 
+            "name": "人工翻译"
+
         },"rengong_vnr": {
             "use": false,
             "color": "blue",
-            "name": "人工翻译_VNR" 
-			 
+            "name": "人工翻译_VNR"
+
         },"rengong_msk": {
             "use": false,
             "color": "blue",
-            "name": "人工翻译_Misaka" 
-			 
+            "name": "人工翻译_Misaka"
+
         },
         "premt": {
             "use": false,
@@ -684,33 +684,37 @@
         "deeplapi": {
             "use": false,
             "color": "blue",
-            "name": "deeplapi" 
+            "name": "deeplapi"
         },
         "youdaoapi": {
             "use": false,
             "color": "blue",
-            "name": "有道api"  
+            "name": "有道api"
         },
 		"yunyi": {
             "use": false,
             "color": "blue",
-            "name": "云译" 
-        }
-		,
+            "name": "云译"
+        },
 		"yunyi2": {
             "use": false,
             "color": "blue",
-            "name": "云译2" 
-        } ,
+            "name": "云译2"
+        },
+        "openai": {
+          "use": false,
+          "color": "blue",
+          "name": "OpenAIapi"
+        },
 		"hanshant": {
             "use": false,
             "color": "blue",
-            "name": "繁简转换" 
+            "name": "繁简转换"
         },
 		"selfbuild": {
             "use": false,
             "color": "blue",
-            "name": "自定义翻译", 
+            "name": "自定义翻译",
 			"lang":{}
         }
     },
@@ -721,7 +725,7 @@
     "autoinserthook": true,
     "translatortimeout": 5,
     "minlength": 0,
-    "maxlength": 200, 
+    "maxlength": 200,
     "rotation": 0,
     "srclang3": 1,
     "tgtlang3": 0,
