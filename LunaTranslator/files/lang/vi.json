@@ -594,5 +594,11 @@
     "如果你感觉该软件对你有帮助，欢迎微信扫码赞助，谢谢，么么哒~": "Nếu như ngươi cảm giác cái này phần mềm đối với ngươi có trợ giúp, hoan nghênh wechat quét mã tài trợ, cám ơn, moah~",
     "SECRET_KEY": "SECRET_ KEY",
     "temperature": "temperature",
-    "OpenAI-ChatGPT": "OpenAI-ChatGPT"
+    "OpenAI-ChatGPT": "OpenAI-ChatGPT",
+    "修改路径": "Sửa đổi đường dẫn",
+    "类型": "Loại",
+    "人名": "Tên người",
+    "显示": "Hiển thị",
+    "自动朗读仅当名字为指定名字时才执行": "Tự động đọc to chỉ được thực hiện khi tên được chỉ định",
+    "指定朗读的名字(以|分隔多个,以\"None\"表示没有名字)": "Chỉ định tên để đọc (để phân tách nhiều, để \"None\" có nghĩa là không có tên)"
 }

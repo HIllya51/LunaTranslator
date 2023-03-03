@@ -199,7 +199,15 @@ class MAINUI(QObject) :
             self.translation_ui.displayraw1.emit(hira,_paste_str,globalconfig['rawtextcolor'],0)
         try:
             if globalconfig['autoread']:
-                self.reader.read(_paste_str)
+                needread=True
+                if globalconfig['sourcestatus']['textractor']['use']:
+                    if 'ttsonname' in  savehook_new_data[self.textsource.pname] and  savehook_new_data[self.textsource.pname]['ttsonname']:
+                        if 'ttsusename' in savehook_new_data[self.textsource.pname]:
+                            ttsusename=savehook_new_data[self.textsource.pname]['ttsusename']
+                            if not((self.textsource.currentname is None and 'None'  in ttsusename)  or (self.textsource.currentname  in ttsusename)):
+                                needread=False
+                if needread:
+                    self.reader.read(_paste_str)
         except:
             pass
             

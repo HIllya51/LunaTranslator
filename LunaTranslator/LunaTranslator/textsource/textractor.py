@@ -6,7 +6,7 @@ from traceback import print_exc
 from collections import OrderedDict
 import os 
 from utils import somedef
-from utils.config import globalconfig ,_TR 
+from utils.config import globalconfig ,_TR ,savehook_new_data
 from utils.u16lesubprocess import u16lesubprocess
 from utils.getpidlist import getarch
 from textsource.textsourcebase import basetext 
@@ -28,28 +28,24 @@ class textractor(basetext  ):
         self.selectinghook=None
         self.selectedhook=[]
         self.selectedhookidx=[]
-        self.batchselectinghook=None
-        self.strictmatchedhook=[]
-        self.strictmatchidx=[] 
-        self.is_strict_matched_hook=False 
+         
         self.hookselectdialog=hookselectdialog
         
         self.pid=pid
         self.pname=pname
         self.hwnd=hwnd
-        self.userinserthookcode=[]
         self.runonce_line=''
         self.re=re.compile('\[([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):(.*):(.*@.*)\] ([\\s\\S]*)')
          
-        #
-        self.textfilter=''
-        self.matched_hook_num=0 
+         
         self.autostarthookcode=[tuple(__) for __ in autostarthookcode]
         self.autostarting=len(self.autostarthookcode)>0
         self.needinserthookcode=needinserthookcode
         self.removedaddress=[] 
         self.HookCode=None 
-         
+        
+        self.namehook=[]
+        self.currentname=None
         #self.re=re.compile('\[([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):(.*):(.*@.*)\] (.*)\n')
         
         #embedtranslater(self.pid,self.textgetmethod,self.append ) 
@@ -111,6 +107,7 @@ class textractor(basetext  ):
         newline={} 
         
         self.lock.acquire() 
+        self.currentname=None
         for ares in reres:
             
             thread_handle,thread_tp_processId, thread_tp_addr, thread_tp_ctx, thread_tp_ctx2, thread_name,HookCode,output =ares
@@ -126,42 +123,28 @@ class textractor(basetext  ):
                 
             if key not in self.hookdatacollecter:
                 #print(self.autostarthookcode,HookCode)
-                 
-                if self.autostarting  : 
-                    
-                    for _i,autostarthookcode in enumerate(self.autostarthookcode):  
-                        if _i in self.strictmatchidx:
-                            continue
+                select=False
+                if self.autostarting  :
+                    for _i,autostarthookcode in enumerate(self.autostarthookcode): 
                         if self.strictmatch(thread_tp_ctx,thread_tp_ctx2,HookCode,autostarthookcode ): 
                             self.selectedhook+=[key]
-                            self.strictmatchedhook+=[key]
-                            self.strictmatchidx.append(_i)
                             self.selectedhookidx.append(_i)
-                            self.selectinghook=key
-                            self.matched_hook_num+=1 
-                            __=self.strictmatchedhook.copy()
-                            self.strictmatchedhook.sort(key=lambda x:self.strictmatchidx[__.index(x)])
-                            self.strictmatchidx.sort()
                             __=self.selectedhook.copy()
                             self.selectedhook.sort(key=lambda x:self.selectedhookidx[__.index(x)])
                             self.selectedhookidx.sort()
-                        elif HookCode==autostarthookcode[-1] and len(self.selectedhook)!=len(self.autostarthookcode): 
-                            
-                            self.selectedhook+=[key]
-                            self.selectedhookidx.append(_i)
-                            self.selectinghook=key   
-                            __=self.selectedhook.copy()
-                            self.selectedhook.sort(key=lambda x:self.selectedhookidx[__.index(x)])
-                            self.selectedhookidx.sort()
-                    if len(self.autostarthookcode)==self.matched_hook_num:
+                            select=True
+                            break
+                    if len(self.autostarthookcode)==len(self.selectedhook):
                         self.autostarting=False
-                        self.selectedhook=self.strictmatchedhook 
                 self.hookdatacollecter[key]=[] 
-                self.hookselectdialog.addnewhooksignal.emit(key  ) 
+                isname='namehook' in savehook_new_data[self.pname] and list(key[-4:]) in savehook_new_data[self.pname]['namehook']
+                self.hookselectdialog.addnewhooksignal.emit(key  ,select,isname) 
+                if isname:self.namehook.append(key)
             
             #print(key,self.selectedhook,output)
             self.hookdatacollecter[key].append(output) 
-
+            if key in self.namehook:
+                self.currentname=output
             
             if (key in self.selectedhook): 
                 #刷新速度太快的时候，一个thread会同时出好几个文本
@@ -177,9 +160,7 @@ class textractor(basetext  ):
                         if key[-1] not in hookcodes:
                             if address not in self.removedaddress: 
                                 self.removedaddress.append(address)
-                                address=int(address,16) 
-                                print(key)
-                                
+                                address=int(address,16)
                                 self.u16lesubprocess.writer(f'-{address} -P{self.pid}\n')
          
          
@@ -204,7 +185,7 @@ class textractor(basetext  ):
         self.lock.release()  
     def ignoretext(self):
         while self.newline.empty()==False:
-            paste_str=self.newline.get()  
+            self.newline.get()  
     def gettextthread(self ):
             #print(333333)
             paste_str=self.newline.get()

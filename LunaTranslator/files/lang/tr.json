@@ -594,5 +594,11 @@
     "如果你感觉该软件对你有帮助，欢迎微信扫码赞助，谢谢，么么哒~": "Eğer yazılım sana yardımcı olduğunu hissediyorsanız, WeChat tarama kodu sponsorluğuna hoş geldiniz, teşekkürler Momoda~",
     "SECRET_KEY": "SECRET KEY",
     "temperature": "sıcaklığı",
-    "OpenAI-ChatGPT": "OpenAI-ChatGPT"
+    "OpenAI-ChatGPT": "OpenAI-ChatGPT",
+    "修改路径": "Yolu değiştir",
+    "类型": "tür",
+    "人名": "isim",
+    "显示": "Ekran",
+    "自动朗读仅当名字为指定名字时才执行": "Adı belirtilen isim olduğunda otomatik okuma gerçekleştiriler",
+    "指定朗读的名字(以|分隔多个,以\"None\"表示没有名字)": "Sesli okunacak isimleri belirtin (birçok isimle ayrı edin ve isim olmadığını belirtmek için \"Hiçbiri\" kullanın)"
 }

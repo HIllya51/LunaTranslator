@@ -1,11 +1,11 @@
-import threading 
+import threading ,functools
 from traceback import print_exc
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QWidget,QHBoxLayout,QStyledItemDelegate,QFrame,QVBoxLayout,QMessageBox,QPlainTextEdit,QDialogButtonBox,QLineEdit,QPushButton,QTableView,QAbstractItemView,QApplication,QHeaderView,QCheckBox,QStyleOptionViewItem,QStyle ,QLabel
 from utils.config import savehook_new_list,savehook_new_data
 from PyQt5.QtGui import QStandardItem, QStandardItemModel,QTextDocument,QAbstractTextDocumentLayout,QPalette 
 from PyQt5.QtGui import QFont,QTextCursor
-from PyQt5.QtCore import Qt,pyqtSignal,QSize
+from PyQt5.QtCore import Qt,pyqtSignal,QSize,QModelIndex
 import qtawesome
 import subprocess
 import re
@@ -50,7 +50,7 @@ class HTMLDelegate(QStyledItemDelegate):
     def sizeHint(self, option, index):
         return QSize(self.doc.idealWidth(), self.doc.size().height())
 class hookselect(closeashidewindow):
-    addnewhooksignal=pyqtSignal(tuple)
+    addnewhooksignal=pyqtSignal(tuple,bool,bool)
     getnewsentencesignal=pyqtSignal(str)
     changeprocessclearsignal=pyqtSignal()
     okoksignal=pyqtSignal() 
@@ -66,31 +66,52 @@ class hookselect(closeashidewindow):
         self.getnewsentencesignal.connect(self.getnewsentence)
         self.update_item_new_line.connect(self.update_item_new_line_function) 
         self.okoksignal.connect(self.okok)  
-        self.setWindowTitle(_TR('选择文本，支持按住ctrl进行多项选择（一般选择一条即可）'))
+        self.setWindowTitle(_TR('选择文本'))
         self.savemaybeusehookcode=[]
     def update_item_new_line_function(self,hook,output): 
         if hook in self.save:
             row=self.save.index(hook)
-            self.ttCombomodelmodel.item(row,1).setText(output) 
+            self.ttCombomodelmodel.item(row,3).setText(output) 
     def changeprocessclear(self):
         #self.ttCombo.clear() 
         self.ttCombomodelmodel.clear()
-        self.ttCombomodelmodel.setHorizontalHeaderLabels(_TRL([ 'HOOK','文本']))
+        self.ttCombomodelmodel.setHorizontalHeaderLabels(_TRL(['显示','类型', 'HOOK','文本']))
         self.save=[]
         self.savemaybeusehookcode=[]
-    def addnewhook(self,ss ):
+        self.selectionbutton=[]
+    def addnewhook(self,ss ,select,isname):
          
         self.save.append(ss ) 
-
-        item = QStandardItem('%s(%s) %s:%s' %(ss[-2],ss[-1],ss[-4],ss[-3]) ) 
+ 
         rown=self.ttCombomodelmodel.rowCount()
-        self.ttCombomodelmodel.setItem(rown, 0, item)
-        item = QStandardItem('output' )
-        self.ttCombomodelmodel.setItem(rown, 1, item)
+        selectionitem=QStandardItem()
+        typeitem=QStandardItem()
+        self.ttCombomodelmodel.insertRow(rown,[selectionitem,typeitem,QStandardItem('%s %s %s:%s' %(ss[-1],ss[-2],ss[-3],ss[-4])),QStandardItem()])  
+                    
+                #self.hctable.setIndexWidget(self.hcmodel.index(row, 0),self.object.getcolorbutton('','',self.clicked2,icon='fa.times',constcolor="#FF69B4")) 
+        
+        self.selectionbutton.append(self._settingui.getsimpleswitch({1:select},1,callback=functools.partial(self.accept,ss)))  #accept里自动把游戏添加到记录里了
+        self.tttable.setIndexWidget(self.ttCombomodelmodel.index(rown,0),self.selectionbutton[-1])
+ 
+        self.tttable.setIndexWidget(self.ttCombomodelmodel.index(rown,1),self._settingui.getsimplecombobox(_TRL(["文本","人名"]),{1:isname},1,callback=functools.partial(self.selecttextypecallback,ss)))
+    def selecttextypecallback(self,key,idx):
+        key=list(key)
+        if idx==1:
+            if 'namehook' in savehook_new_data[self.object.textsource.pname]:
+                savehook_new_data[self.object.textsource.pname]['namehook']+=[key[-4:]]
+            else:
+                savehook_new_data[self.object.textsource.pname]['namehook']=[key[-4:]]
+            self.object.textsource.namehook.append(key)
+        else:
+            if 'namehook' in savehook_new_data[self.object.textsource.pname] and key[-4:] in savehook_new_data[self.object.textsource.pname]['namehook']:
+                savehook_new_data[self.object.textsource.pname]['namehook'].remove(key[-4:])
+            if key in self.object.textsource.namehook:
+                self.object.textsource.namehook.remove(key)
     def setupUi(self  ):
         
         self.resize(1000, 600) 
         self.save=[]
+        self.selectionbutton=[] 
         self.centralWidget = QWidget(self) 
         self.setWindowIcon(qtawesome.icon("fa.gear" ))
         self.hboxlayout = QHBoxLayout(self.centralWidget)  
@@ -100,18 +121,19 @@ class hookselect(closeashidewindow):
         self.vboxlayout = QVBoxLayout()    
         self.ttCombomodelmodel=QStandardItemModel(self) 
         #self.ttCombomodelmodel.setColumnCount(2)
-        self.ttCombomodelmodel.setHorizontalHeaderLabels(_TRL([ 'HOOK','文本']))
+        self.ttCombomodelmodel.setHorizontalHeaderLabels(_TRL(['显示','类型', 'HOOK','文本']))
         
         self.at1=1
         self.tttable = QTableView(self)
         self.tttable .setModel(self.ttCombomodelmodel)
         #self.tttable .horizontalHeader().setSectionResizeMode(QHeaderView.Stretch) 
         self.tttable .horizontalHeader().setStretchLastSection(True) 
-        
+        self.tttable.horizontalHeader().setSectionResizeMode(QHeaderView.Interactive)
         self.tttable.setSelectionBehavior(QAbstractItemView.SelectRows)
-        self.tttable.setSelectionMode(QAbstractItemView.ExtendedSelection)
+        self.tttable.setSelectionMode(QAbstractItemView.SingleSelection)
         self.tttable.setEditTriggers(QAbstractItemView.NoEditTriggers)
- 
+
+        self.tttable.doubleClicked.connect(self.table1doubleclicked)
         self.tttable.clicked.connect(self.ViewThread)
         #self.tttable.setFont(font)
         self.vboxlayout.addWidget(self.tttable)
@@ -196,12 +218,7 @@ class hookselect(closeashidewindow):
   
         self.hidesearchhookbuttons()
         
-
-        self.buttonBox=QDialogButtonBox()
-        self.buttonBox.setStandardButtons(QDialogButtonBox.Ok|QDialogButtonBox.Cancel)
-        self.vboxlayout.addWidget(self.buttonBox)
-        self.buttonBox.accepted.connect(self.accept)
-        self.buttonBox.rejected.connect(self.hide)   
+ 
         self.tttable.setItemDelegateForColumn(1,HTMLDelegate(self))
         self.tttable2.setItemDelegateForColumn(1,HTMLDelegate(self))
     def opensolvetext(self):
@@ -371,21 +388,24 @@ class hookselect(closeashidewindow):
             else:
                 pass
             time.sleep(1)  
-    def accept(self): 
-        self.hide()
+    def accept(self,key,select):
         try: 
-            if  self.object.textsource.batchselectinghook is None:
-                return
 
             self.object.textsource.lock.acquire()
-            self.object.textsource.selectedhook=self.object.textsource.batchselectinghook
-            hcs=[_[-1] for _ in self.object.textsource.selectedhook]
+            
+            if key in self.object.textsource.selectedhook:
+                self.object.textsource.selectedhook.remove(key)
+            if select :
+                self.object.textsource.selectedhook.append(key)
+            else:
+                pass
+            
             try:
                 needinserthookcode= savehook_new_data[self.object.textsource.pname]['needinserthookcode'] 
             except:
                 needinserthookcode=[]
              
-            needinserthookcode=list(set(needinserthookcode+hcs))
+            needinserthookcode=list(set(needinserthookcode+self.savemaybeusehookcode))
             self.object.textsource.autostarthookcode=[]
             self.object.textsource.autostarting=False
             
@@ -418,25 +438,19 @@ class hookselect(closeashidewindow):
         cursor.insertText(sentence+'\n')
         if (atBottom):
             scrollbar.setValue(scrollbar.maximum())
-    def ViewThread2(self, index):   
+    def ViewThread2(self, index:QModelIndex):   
         self.at1=2
-        self.userhook.setText(self.allres_k[self.tttable2.currentIndex().row()])
-        self.textOutput. setPlainText('\n'.join(self.allres[self.allres_k[self.tttable2.currentIndex().row()]] )) 
-    def ViewThread(self, index):    
-        self.at1=1
+        self.userhook.setText(self.allres_k[index.row()])
+        self.textOutput. setPlainText('\n'.join(self.allres[self.allres_k[index.row()]] )) 
+    def ViewThread(self, index:QModelIndex):    
+        self.at1=1 
         try:
-            self.object.textsource.selectinghook=self.save[self.tttable.currentIndex().row()]
+            self.object.textsource.selectinghook=self.save[index.row()]
             
-            self.textOutput. setPlainText('\n'.join(self.object.textsource.hookdatacollecter[self.save[self.tttable.currentIndex().row()]]))
+            self.textOutput. setPlainText('\n'.join(self.object.textsource.hookdatacollecter[self.save[index.row()]]))
             self.textOutput. moveCursor(QTextCursor.End)
-            self.object.textsource.batchselectinghook=[]
-
-            dedup=[] 
-            for m in (self.tttable.selectionModel().selectedIndexes()):
-                row=m.row() 
-                if row in dedup:
-                    continue
-                self.object.textsource.batchselectinghook+=[self.save[row]]
-                dedup.append(row)
+            
         except:
             print_exc()
+    def table1doubleclicked(self,index:QModelIndex): 
+            self.selectionbutton[index.row()].click()

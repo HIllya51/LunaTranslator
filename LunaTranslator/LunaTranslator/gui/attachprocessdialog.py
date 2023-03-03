@@ -10,7 +10,6 @@ import time   ,os
 from utils.getpidlist import getwindowhwnd,getpidexe,ListProcess,mouseselectwindow,getExeIcon
 import qtawesome
 
-from textsource.textractor import textractor
 from gui.usefulwidget import closeashidewindow
 class AttachProcessDialog(closeashidewindow): 
         
