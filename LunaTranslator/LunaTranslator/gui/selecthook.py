@@ -95,7 +95,6 @@ class hookselect(closeashidewindow):
  
         self.tttable.setIndexWidget(self.ttCombomodelmodel.index(rown,1),self._settingui.getsimplecombobox(_TRL(["文本","人名"]),{1:isname},1,callback=functools.partial(self.selecttextypecallback,ss)))
     def selecttextypecallback(self,key,idx):
-        key=list(key)
         if idx==1:
             if 'namehook' in savehook_new_data[self.object.textsource.pname]:
                 savehook_new_data[self.object.textsource.pname]['namehook']+=[key[-4:]]
@@ -103,7 +102,7 @@ class hookselect(closeashidewindow):
                 savehook_new_data[self.object.textsource.pname]['namehook']=[key[-4:]]
             self.object.textsource.namehook.append(key)
         else:
-            if 'namehook' in savehook_new_data[self.object.textsource.pname] and key[-4:] in savehook_new_data[self.object.textsource.pname]['namehook']:
+            if 'namehook' in savehook_new_data[self.object.textsource.pname] and list(key[-4:]) in savehook_new_data[self.object.textsource.pname]['namehook']:
                 savehook_new_data[self.object.textsource.pname]['namehook'].remove(key[-4:])
             if key in self.object.textsource.namehook:
                 self.object.textsource.namehook.remove(key)

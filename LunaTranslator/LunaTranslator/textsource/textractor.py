@@ -143,9 +143,9 @@ class textractor(basetext  ):
             
             #print(key,self.selectedhook,output)
             self.hookdatacollecter[key].append(output) 
-            if list(key) in self.namehook:
+            if (key) in self.namehook:
                 self.currentname=output
-            
+                
             if (key in self.selectedhook): 
                 #刷新速度太快的时候，一个thread会同时出好几个文本
                 if key not in newline:
