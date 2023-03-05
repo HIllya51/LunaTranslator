@@ -1,6 +1,5 @@
 Deprecated==1.2.13
 fugashi==1.2.1
-lxml==4.6.2
 PyHook3==1.6.1
 PyQt5==5.15.7
 PyQt5-Qt5==5.15.2
