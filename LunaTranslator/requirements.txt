@@ -19,7 +19,7 @@ wrapt==1.12.1
 
 certifi==2022.12.7
 charset-normalizer==2.0.9
-cryptography==38.0.1
+cryptography==39.0.1
 idna==2.10
 pyOpenSSL==22.0.0
 pytz==2021.3
