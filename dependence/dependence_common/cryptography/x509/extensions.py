@@ -23,22 +23,22 @@ from cryptography.x509.certificate_transparency import (
     SignedCertificateTimestamp,
 )
 from cryptography.x509.general_name import (
-    DNSName,
+    _IPADDRESS_TYPES,
     DirectoryName,
+    DNSName,
     GeneralName,
     IPAddress,
     OtherName,
-    RFC822Name,
     RegisteredID,
+    RFC822Name,
     UniformResourceIdentifier,
-    _IPADDRESS_TYPES,
 )
 from cryptography.x509.name import Name, RelativeDistinguishedName
 from cryptography.x509.oid import (
     CRLEntryExtensionOID,
     ExtensionOID,
-    OCSPExtensionOID,
     ObjectIdentifier,
+    OCSPExtensionOID,
 )
 
 ExtensionTypeVar = typing.TypeVar(
@@ -589,6 +589,11 @@ class DistributionPoint:
                 "You cannot provide both full_name and relative_name, at "
                 "least one must be None."
             )
+        if not full_name and not relative_name and not crl_issuer:
+            raise ValueError(
+                "Either full_name, relative_name or crl_issuer must be "
+                "provided."
+            )
 
         if full_name is not None:
             full_name = list(full_name)
@@ -623,12 +628,6 @@ class DistributionPoint:
             raise ValueError(
                 "unspecified and remove_from_crl are not valid reasons in a "
                 "DistributionPoint"
-            )
-
-        if reasons and not crl_issuer and not (full_name or relative_name):
-            raise ValueError(
-                "You must supply crl_issuer, full_name, or relative_name when "
-                "reasons is not None"
             )
 
         self._full_name = full_name

@@ -9,7 +9,7 @@ __all__ = [
     "__copyright__",
 ]
 
-__version__ = "38.0.1"
+__version__ = "39.0.1"
 
 __author__ = "The Python Cryptographic Authority and individual contributors"
 __copyright__ = "Copyright 2013-2022 {}".format(__author__)

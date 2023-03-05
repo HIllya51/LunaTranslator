@@ -7,9 +7,7 @@ import abc
 import typing
 
 from cryptography.hazmat.primitives import _serialization, hashes
-from cryptography.hazmat.primitives.asymmetric import (
-    utils as asym_utils,
-)
+from cryptography.hazmat.primitives.asymmetric import utils as asym_utils
 
 
 class DSAParameters(metaclass=abc.ABCMeta):
@@ -30,7 +28,8 @@ DSAParametersWithNumbers = DSAParameters
 
 
 class DSAPrivateKey(metaclass=abc.ABCMeta):
-    @abc.abstractproperty
+    @property
+    @abc.abstractmethod
     def key_size(self) -> int:
         """
         The bit length of the prime modulus.
@@ -80,7 +79,8 @@ DSAPrivateKeyWithSerialization = DSAPrivateKey
 
 
 class DSAPublicKey(metaclass=abc.ABCMeta):
-    @abc.abstractproperty
+    @property
+    @abc.abstractmethod
     def key_size(self) -> int:
         """
         The bit length of the prime modulus.

@@ -14,11 +14,11 @@ from cryptography.hazmat.primitives import hashes, serialization
 from cryptography.hazmat.primitives.asymmetric import (
     dsa,
     ec,
-    ed25519,
     ed448,
+    ed25519,
     rsa,
-    x25519,
     x448,
+    x25519,
 )
 from cryptography.hazmat.primitives.asymmetric.types import (
     CERTIFICATE_ISSUER_PUBLIC_KEY_TYPES,
@@ -27,13 +27,12 @@ from cryptography.hazmat.primitives.asymmetric.types import (
 )
 from cryptography.x509.extensions import (
     Extension,
-    ExtensionType,
     Extensions,
+    ExtensionType,
     _make_sequence_methods,
 )
 from cryptography.x509.name import Name, _ASN1Type
 from cryptography.x509.oid import ObjectIdentifier
-
 
 _EARLIEST_UTC_TIME = datetime.datetime(1950, 1, 1)
 
@@ -154,13 +153,15 @@ class Certificate(metaclass=abc.ABCMeta):
         Returns bytes using digest passed.
         """
 
-    @abc.abstractproperty
+    @property
+    @abc.abstractmethod
     def serial_number(self) -> int:
         """
         Returns certificate serial number
         """
 
-    @abc.abstractproperty
+    @property
+    @abc.abstractmethod
     def version(self) -> Version:
         """
         Returns the certificate version
@@ -172,31 +173,36 @@ class Certificate(metaclass=abc.ABCMeta):
         Returns the public key
         """
 
-    @abc.abstractproperty
+    @property
+    @abc.abstractmethod
     def not_valid_before(self) -> datetime.datetime:
         """
         Not before time (represented as UTC datetime)
         """
 
-    @abc.abstractproperty
+    @property
+    @abc.abstractmethod
     def not_valid_after(self) -> datetime.datetime:
         """
         Not after time (represented as UTC datetime)
         """
 
-    @abc.abstractproperty
+    @property
+    @abc.abstractmethod
     def issuer(self) -> Name:
         """
         Returns the issuer name object.
         """
 
-    @abc.abstractproperty
+    @property
+    @abc.abstractmethod
     def subject(self) -> Name:
         """
         Returns the subject name object.
         """
 
-    @abc.abstractproperty
+    @property
+    @abc.abstractmethod
     def signature_hash_algorithm(
         self,
     ) -> typing.Optional[hashes.HashAlgorithm]:
@@ -205,31 +211,36 @@ class Certificate(metaclass=abc.ABCMeta):
         in the certificate.
         """
 
-    @abc.abstractproperty
+    @property
+    @abc.abstractmethod
     def signature_algorithm_oid(self) -> ObjectIdentifier:
         """
         Returns the ObjectIdentifier of the signature algorithm.
         """
 
-    @abc.abstractproperty
+    @property
+    @abc.abstractmethod
     def extensions(self) -> Extensions:
         """
         Returns an Extensions object.
         """
 
-    @abc.abstractproperty
+    @property
+    @abc.abstractmethod
     def signature(self) -> bytes:
         """
         Returns the signature bytes.
         """
 
-    @abc.abstractproperty
+    @property
+    @abc.abstractmethod
     def tbs_certificate_bytes(self) -> bytes:
         """
         Returns the tbsCertificate payload bytes as defined in RFC 5280.
         """
 
-    @abc.abstractproperty
+    @property
+    @abc.abstractmethod
     def tbs_precertificate_bytes(self) -> bytes:
         """
         Returns the tbsCertificate payload bytes with the SCT list extension
@@ -260,19 +271,22 @@ Certificate.register(rust_x509.Certificate)
 
 
 class RevokedCertificate(metaclass=abc.ABCMeta):
-    @abc.abstractproperty
+    @property
+    @abc.abstractmethod
     def serial_number(self) -> int:
         """
         Returns the serial number of the revoked certificate.
         """
 
-    @abc.abstractproperty
+    @property
+    @abc.abstractmethod
     def revocation_date(self) -> datetime.datetime:
         """
         Returns the date of when this certificate was revoked.
         """
 
-    @abc.abstractproperty
+    @property
+    @abc.abstractmethod
     def extensions(self) -> Extensions:
         """
         Returns an Extensions object containing a list of Revoked extensions.
@@ -329,7 +343,8 @@ class CertificateRevocationList(metaclass=abc.ABCMeta):
         is not in the CRL.
         """
 
-    @abc.abstractproperty
+    @property
+    @abc.abstractmethod
     def signature_hash_algorithm(
         self,
     ) -> typing.Optional[hashes.HashAlgorithm]:
@@ -338,43 +353,50 @@ class CertificateRevocationList(metaclass=abc.ABCMeta):
         in the certificate.
         """
 
-    @abc.abstractproperty
+    @property
+    @abc.abstractmethod
     def signature_algorithm_oid(self) -> ObjectIdentifier:
         """
         Returns the ObjectIdentifier of the signature algorithm.
         """
 
-    @abc.abstractproperty
+    @property
+    @abc.abstractmethod
     def issuer(self) -> Name:
         """
         Returns the X509Name with the issuer of this CRL.
         """
 
-    @abc.abstractproperty
+    @property
+    @abc.abstractmethod
     def next_update(self) -> typing.Optional[datetime.datetime]:
         """
         Returns the date of next update for this CRL.
         """
 
-    @abc.abstractproperty
+    @property
+    @abc.abstractmethod
     def last_update(self) -> datetime.datetime:
         """
         Returns the date of last update for this CRL.
         """
 
-    @abc.abstractproperty
+    @property
+    @abc.abstractmethod
     def extensions(self) -> Extensions:
         """
         Returns an Extensions object containing a list of CRL extensions.
         """
 
-    @abc.abstractproperty
+    @property
+    @abc.abstractmethod
     def signature(self) -> bytes:
         """
         Returns the signature bytes.
         """
 
-    @abc.abstractproperty
+    @property
+    @abc.abstractmethod
     def tbs_certlist_bytes(self) -> bytes:
         """
         Returns the tbsCertList payload bytes as defined in RFC 5280.
@@ -445,13 +467,15 @@ class CertificateSigningRequest(metaclass=abc.ABCMeta):
         Returns the public key
         """
 
-    @abc.abstractproperty
+    @property
+    @abc.abstractmethod
     def subject(self) -> Name:
         """
         Returns the subject name object.
         """
 
-    @abc.abstractproperty
+    @property
+    @abc.abstractmethod
     def signature_hash_algorithm(
         self,
     ) -> typing.Optional[hashes.HashAlgorithm]:
@@ -460,19 +484,22 @@ class CertificateSigningRequest(metaclass=abc.ABCMeta):
         in the certificate.
         """
 
-    @abc.abstractproperty
+    @property
+    @abc.abstractmethod
     def signature_algorithm_oid(self) -> ObjectIdentifier:
         """
         Returns the ObjectIdentifier of the signature algorithm.
         """
 
-    @abc.abstractproperty
+    @property
+    @abc.abstractmethod
     def extensions(self) -> Extensions:
         """
         Returns the extensions in the signing request.
         """
 
-    @abc.abstractproperty
+    @property
+    @abc.abstractmethod
     def attributes(self) -> Attributes:
         """
         Returns an Attributes object.
@@ -484,20 +511,23 @@ class CertificateSigningRequest(metaclass=abc.ABCMeta):
         Encodes the request to PEM or DER format.
         """
 
-    @abc.abstractproperty
+    @property
+    @abc.abstractmethod
     def signature(self) -> bytes:
         """
         Returns the signature bytes.
         """
 
-    @abc.abstractproperty
+    @property
+    @abc.abstractmethod
     def tbs_certrequest_bytes(self) -> bytes:
         """
         Returns the PKCS#10 CertificationRequestInfo bytes as defined in RFC
         2986.
         """
 
-    @abc.abstractproperty
+    @property
+    @abc.abstractmethod
     def is_signature_valid(self) -> bool:
         """
         Verifies signature of signing request.
@@ -519,6 +549,10 @@ def load_pem_x509_certificate(
     data: bytes, backend: typing.Any = None
 ) -> Certificate:
     return rust_x509.load_pem_x509_certificate(data)
+
+
+def load_pem_x509_certificates(data: bytes) -> typing.List[Certificate]:
+    return rust_x509.load_pem_x509_certificates(data)
 
 
 # Backend argument preserved for API compatibility, but ignored.

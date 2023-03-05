@@ -125,7 +125,7 @@ class _Ed448PrivateKey(Ed448PrivateKey):
     ) -> bytes:
         if (
             encoding is serialization.Encoding.Raw
-            or format is serialization.PublicFormat.Raw
+            or format is serialization.PrivateFormat.Raw
         ):
             if (
                 format is not serialization.PrivateFormat.Raw

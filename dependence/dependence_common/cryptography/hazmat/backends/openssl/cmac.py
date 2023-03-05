@@ -13,8 +13,8 @@ from cryptography.hazmat.primitives import constant_time
 from cryptography.hazmat.primitives.ciphers.modes import CBC
 
 if typing.TYPE_CHECKING:
-    from cryptography.hazmat.primitives import ciphers
     from cryptography.hazmat.backends.openssl.backend import Backend
+    from cryptography.hazmat.primitives import ciphers
 
 
 class _CMACContext:

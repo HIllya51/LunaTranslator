@@ -19,10 +19,6 @@ def cryptography_has_ssl3_method() -> typing.List[str]:
     ]
 
 
-def cryptography_has_110_verification_params() -> typing.List[str]:
-    return ["X509_CHECK_FLAG_NEVER_CHECK_SUBJECT"]
-
-
 def cryptography_has_set_cert_cb() -> typing.List[str]:
     return [
         "SSL_CTX_set_cert_cb",
@@ -46,6 +42,12 @@ def cryptography_has_tls_st() -> typing.List[str]:
     ]
 
 
+def cryptography_has_evp_pkey_set_alias_type() -> typing.List[str]:
+    return [
+        "EVP_PKEY_set_alias_type",
+    ]
+
+
 def cryptography_has_scrypt() -> typing.List[str]:
     return [
         "EVP_PBE_scrypt",
@@ -55,6 +57,8 @@ def cryptography_has_scrypt() -> typing.List[str]:
 def cryptography_has_evp_pkey_dhx() -> typing.List[str]:
     return [
         "EVP_PKEY_DHX",
+        "d2i_DHxparams_bio",
+        "i2d_DHxparams_bio",
     ]
 
 
@@ -66,7 +70,6 @@ def cryptography_has_mem_functions() -> typing.List[str]:
 
 def cryptography_has_x509_store_ctx_get_issuer() -> typing.List[str]:
     return [
-        "X509_STORE_get_get_issuer",
         "X509_STORE_set_get_issuer",
     ]
 
@@ -89,13 +92,6 @@ def cryptography_has_poly1305() -> typing.List[str]:
     return [
         "NID_poly1305",
         "EVP_PKEY_POLY1305",
-    ]
-
-
-def cryptography_has_oneshot_evp_digest_sign_verify() -> typing.List[str]:
-    return [
-        "EVP_DigestSign",
-        "EVP_DigestVerify",
     ]
 
 
@@ -159,13 +155,6 @@ def cryptography_has_openssl_cleanup() -> typing.List[str]:
     ]
 
 
-def cryptography_has_tlsv13() -> typing.List[str]:
-    return [
-        "TLS1_3_VERSION",
-        "SSL_OP_NO_TLSv1_3",
-    ]
-
-
 def cryptography_has_tlsv13_functions() -> typing.List[str]:
     return [
         "SSL_VERIFY_POST_HANDSHAKE",
@@ -177,13 +166,6 @@ def cryptography_has_tlsv13_functions() -> typing.List[str]:
         "SSL_write_early_data",
         "SSL_read_early_data",
         "SSL_CTX_set_max_early_data",
-    ]
-
-
-def cryptography_has_keylog() -> typing.List[str]:
-    return [
-        "SSL_CTX_set_keylog_callback",
-        "SSL_CTX_get_keylog_callback",
     ]
 
 
@@ -227,15 +209,6 @@ def cryptography_has_srtp() -> typing.List[str]:
         "SSL_CTX_set_tlsext_use_srtp",
         "SSL_set_tlsext_use_srtp",
         "SSL_get_selected_srtp_profile",
-    ]
-
-
-def cryptography_has_get_proto_version() -> typing.List[str]:
-    return [
-        "SSL_CTX_get_min_proto_version",
-        "SSL_CTX_get_max_proto_version",
-        "SSL_get_min_proto_version",
-        "SSL_get_max_proto_version",
     ]
 
 
@@ -321,6 +294,10 @@ def cryptography_has_ssl_op_ignore_unexpected_eof() -> typing.List[str]:
     ]
 
 
+def cryptography_has_get_extms_support() -> typing.List[str]:
+    return ["SSL_get_extms_support"]
+
+
 # This is a mapping of
 # {condition: function-returning-names-dependent-on-that-condition} so we can
 # loop over them and delete unsupported names at runtime. It will be removed
@@ -329,12 +306,12 @@ def cryptography_has_ssl_op_ignore_unexpected_eof() -> typing.List[str]:
 CONDITIONAL_NAMES = {
     "Cryptography_HAS_EC2M": cryptography_has_ec2m,
     "Cryptography_HAS_SSL3_METHOD": cryptography_has_ssl3_method,
-    "Cryptography_HAS_110_VERIFICATION_PARAMS": (
-        cryptography_has_110_verification_params
-    ),
     "Cryptography_HAS_SET_CERT_CB": cryptography_has_set_cert_cb,
     "Cryptography_HAS_SSL_ST": cryptography_has_ssl_st,
     "Cryptography_HAS_TLS_ST": cryptography_has_tls_st,
+    "Cryptography_HAS_EVP_PKEY_set_alias_type": (
+        cryptography_has_evp_pkey_set_alias_type
+    ),
     "Cryptography_HAS_SCRYPT": cryptography_has_scrypt,
     "Cryptography_HAS_EVP_PKEY_DHX": cryptography_has_evp_pkey_dhx,
     "Cryptography_HAS_MEM_FUNCTIONS": cryptography_has_mem_functions,
@@ -344,9 +321,6 @@ CONDITIONAL_NAMES = {
     "Cryptography_HAS_ED448": cryptography_has_ed448,
     "Cryptography_HAS_ED25519": cryptography_has_ed25519,
     "Cryptography_HAS_POLY1305": cryptography_has_poly1305,
-    "Cryptography_HAS_ONESHOT_EVP_DIGEST_SIGN_VERIFY": (
-        cryptography_has_oneshot_evp_digest_sign_verify
-    ),
     "Cryptography_HAS_EVP_PKEY_get_set_tls_encodedpoint": (
         cryptography_has_evp_pkey_get_set_tls_encodedpoint
     ),
@@ -356,9 +330,7 @@ CONDITIONAL_NAMES = {
     "Cryptography_HAS_PSK_TLSv1_3": cryptography_has_psk_tlsv13,
     "Cryptography_HAS_CUSTOM_EXT": cryptography_has_custom_ext,
     "Cryptography_HAS_OPENSSL_CLEANUP": cryptography_has_openssl_cleanup,
-    "Cryptography_HAS_TLSv1_3": cryptography_has_tlsv13,
     "Cryptography_HAS_TLSv1_3_FUNCTIONS": cryptography_has_tlsv13_functions,
-    "Cryptography_HAS_KEYLOG": cryptography_has_keylog,
     "Cryptography_HAS_RAW_KEY": cryptography_has_raw_key,
     "Cryptography_HAS_EVP_DIGESTFINAL_XOF": (
         cryptography_has_evp_digestfinal_xof
@@ -366,7 +338,6 @@ CONDITIONAL_NAMES = {
     "Cryptography_HAS_ENGINE": cryptography_has_engine,
     "Cryptography_HAS_VERIFIED_CHAIN": cryptography_has_verified_chain,
     "Cryptography_HAS_SRTP": cryptography_has_srtp,
-    "Cryptography_HAS_GET_PROTO_VERSION": cryptography_has_get_proto_version,
     "Cryptography_HAS_PROVIDERS": cryptography_has_providers,
     "Cryptography_HAS_OP_NO_RENEGOTIATION": (
         cryptography_has_op_no_renegotiation
@@ -385,4 +356,5 @@ CONDITIONAL_NAMES = {
     "Cryptography_HAS_SSL_OP_IGNORE_UNEXPECTED_EOF": (
         cryptography_has_ssl_op_ignore_unexpected_eof
     ),
+    "Cryptography_HAS_GET_EXTMS_SUPPORT": cryptography_has_get_extms_support,
 }

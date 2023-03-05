@@ -2,7 +2,6 @@
 # 2.0, and the BSD License. See the LICENSE file in the root of this repository
 # for complete details.
 
-import datetime
 import typing
 
 from cryptography import x509
@@ -10,6 +9,9 @@ from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.asymmetric.types import PRIVATE_KEY_TYPES
 
 def load_pem_x509_certificate(data: bytes) -> x509.Certificate: ...
+def load_pem_x509_certificates(
+    data: bytes,
+) -> typing.List[x509.Certificate]: ...
 def load_der_x509_certificate(data: bytes) -> x509.Certificate: ...
 def load_pem_x509_crl(data: bytes) -> x509.CertificateRevocationList: ...
 def load_der_x509_crl(data: bytes) -> x509.CertificateRevocationList: ...

@@ -10,13 +10,11 @@ from cryptography.hazmat.primitives._serialization import PBES as PBES
 from cryptography.hazmat.primitives.asymmetric import (
     dsa,
     ec,
-    ed25519,
     ed448,
+    ed25519,
     rsa,
 )
-from cryptography.hazmat.primitives.asymmetric.types import (
-    PRIVATE_KEY_TYPES,
-)
+from cryptography.hazmat.primitives.asymmetric.types import PRIVATE_KEY_TYPES
 
 __all__ = [
     "PBES",

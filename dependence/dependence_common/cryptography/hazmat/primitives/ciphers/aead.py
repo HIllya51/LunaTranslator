@@ -9,6 +9,7 @@ import typing
 from cryptography import exceptions, utils
 from cryptography.hazmat.backends.openssl import aead
 from cryptography.hazmat.backends.openssl.backend import backend
+from cryptography.hazmat.bindings._rust import FixedPool
 
 
 class ChaCha20Poly1305:
@@ -26,10 +27,14 @@ class ChaCha20Poly1305:
             raise ValueError("ChaCha20Poly1305 key must be 32 bytes.")
 
         self._key = key
+        self._pool = FixedPool(self._create_fn)
 
     @classmethod
     def generate_key(cls) -> bytes:
         return os.urandom(32)
+
+    def _create_fn(self):
+        return aead._aead_create_ctx(backend, self, self._key)
 
     def encrypt(
         self,
@@ -47,7 +52,10 @@ class ChaCha20Poly1305:
             )
 
         self._check_params(nonce, data, associated_data)
-        return aead._encrypt(backend, self, nonce, data, [associated_data], 16)
+        with self._pool.acquire() as ctx:
+            return aead._encrypt(
+                backend, self, nonce, data, [associated_data], 16, ctx
+            )
 
     def decrypt(
         self,
@@ -59,7 +67,10 @@ class ChaCha20Poly1305:
             associated_data = b""
 
         self._check_params(nonce, data, associated_data)
-        return aead._decrypt(backend, self, nonce, data, [associated_data], 16)
+        with self._pool.acquire() as ctx:
+            return aead._decrypt(
+                backend, self, nonce, data, [associated_data], 16, ctx
+            )
 
     def _check_params(
         self,
@@ -352,9 +363,11 @@ class AESSIV(object):
     def _check_params(
         self,
         data: bytes,
-        associated_data: typing.List,
+        associated_data: typing.List[bytes],
     ) -> None:
         utils._check_bytes("data", data)
+        if len(data) == 0:
+            raise ValueError("data must not be zero length")
         if not isinstance(associated_data, list) or not all(
             isinstance(x, bytes) for x in associated_data
         ):

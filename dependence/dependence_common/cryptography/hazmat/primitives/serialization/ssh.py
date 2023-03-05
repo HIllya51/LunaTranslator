@@ -174,7 +174,9 @@ class _FragList:
 
     flist: typing.List[bytes]
 
-    def __init__(self, init: typing.List[bytes] = None) -> None:
+    def __init__(
+        self, init: typing.Optional[typing.List[bytes]] = None
+    ) -> None:
         self.flist = []
         if init:
             self.flist.extend(init)

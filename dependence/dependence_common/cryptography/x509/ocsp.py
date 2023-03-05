@@ -7,8 +7,7 @@ import abc
 import datetime
 import typing
 
-from cryptography import utils
-from cryptography import x509
+from cryptography import utils, x509
 from cryptography.hazmat.bindings._rust import ocsp
 from cryptography.hazmat.primitives import hashes, serialization
 from cryptography.hazmat.primitives.asymmetric.types import (
@@ -128,25 +127,29 @@ class _SingleResponse:
 
 
 class OCSPRequest(metaclass=abc.ABCMeta):
-    @abc.abstractproperty
+    @property
+    @abc.abstractmethod
     def issuer_key_hash(self) -> bytes:
         """
         The hash of the issuer public key
         """
 
-    @abc.abstractproperty
+    @property
+    @abc.abstractmethod
     def issuer_name_hash(self) -> bytes:
         """
         The hash of the issuer name
         """
 
-    @abc.abstractproperty
+    @property
+    @abc.abstractmethod
     def hash_algorithm(self) -> hashes.HashAlgorithm:
         """
         The hash algorithm used in the issuer name and key hashes
         """
 
-    @abc.abstractproperty
+    @property
+    @abc.abstractmethod
     def serial_number(self) -> int:
         """
         The serial number of the cert whose status is being checked
@@ -158,7 +161,8 @@ class OCSPRequest(metaclass=abc.ABCMeta):
         Serializes the request to DER
         """
 
-    @abc.abstractproperty
+    @property
+    @abc.abstractmethod
     def extensions(self) -> x509.Extensions:
         """
         The list of request extensions. Not single request extensions.
@@ -166,58 +170,67 @@ class OCSPRequest(metaclass=abc.ABCMeta):
 
 
 class OCSPSingleResponse(metaclass=abc.ABCMeta):
-    @abc.abstractproperty
+    @property
+    @abc.abstractmethod
     def certificate_status(self) -> OCSPCertStatus:
         """
         The status of the certificate (an element from the OCSPCertStatus enum)
         """
 
-    @abc.abstractproperty
+    @property
+    @abc.abstractmethod
     def revocation_time(self) -> typing.Optional[datetime.datetime]:
         """
         The date of when the certificate was revoked or None if not
         revoked.
         """
 
-    @abc.abstractproperty
+    @property
+    @abc.abstractmethod
     def revocation_reason(self) -> typing.Optional[x509.ReasonFlags]:
         """
         The reason the certificate was revoked or None if not specified or
         not revoked.
         """
 
-    @abc.abstractproperty
+    @property
+    @abc.abstractmethod
     def this_update(self) -> datetime.datetime:
         """
         The most recent time at which the status being indicated is known by
         the responder to have been correct
         """
 
-    @abc.abstractproperty
+    @property
+    @abc.abstractmethod
     def next_update(self) -> typing.Optional[datetime.datetime]:
         """
         The time when newer information will be available
         """
 
-    @abc.abstractproperty
+    @property
+    @abc.abstractmethod
     def issuer_key_hash(self) -> bytes:
         """
         The hash of the issuer public key
         """
 
-    @abc.abstractproperty
+    @property
+    @abc.abstractmethod
     def issuer_name_hash(self) -> bytes:
         """
         The hash of the issuer name
         """
 
-    @abc.abstractproperty
+    @property
+    @abc.abstractmethod
     def hash_algorithm(self) -> hashes.HashAlgorithm:
         """
         The hash algorithm used in the issuer name and key hashes
         """
 
-    @abc.abstractproperty
+    @property
+    @abc.abstractmethod
     def serial_number(self) -> int:
         """
         The serial number of the cert whose status is being checked
@@ -225,27 +238,31 @@ class OCSPSingleResponse(metaclass=abc.ABCMeta):
 
 
 class OCSPResponse(metaclass=abc.ABCMeta):
-    @abc.abstractproperty
+    @property
+    @abc.abstractmethod
     def responses(self) -> typing.Iterator[OCSPSingleResponse]:
         """
         An iterator over the individual SINGLERESP structures in the
         response
         """
 
-    @abc.abstractproperty
+    @property
+    @abc.abstractmethod
     def response_status(self) -> OCSPResponseStatus:
         """
         The status of the response. This is a value from the OCSPResponseStatus
         enumeration
         """
 
-    @abc.abstractproperty
+    @property
+    @abc.abstractmethod
     def signature_algorithm_oid(self) -> x509.ObjectIdentifier:
         """
         The ObjectIdentifier of the signature algorithm
         """
 
-    @abc.abstractproperty
+    @property
+    @abc.abstractmethod
     def signature_hash_algorithm(
         self,
     ) -> typing.Optional[hashes.HashAlgorithm]:
@@ -253,19 +270,22 @@ class OCSPResponse(metaclass=abc.ABCMeta):
         Returns a HashAlgorithm corresponding to the type of the digest signed
         """
 
-    @abc.abstractproperty
+    @property
+    @abc.abstractmethod
     def signature(self) -> bytes:
         """
         The signature bytes
         """
 
-    @abc.abstractproperty
+    @property
+    @abc.abstractmethod
     def tbs_response_bytes(self) -> bytes:
         """
         The tbsResponseData bytes
         """
 
-    @abc.abstractproperty
+    @property
+    @abc.abstractmethod
     def certificates(self) -> typing.List[x509.Certificate]:
         """
         A list of certificates used to help build a chain to verify the OCSP
@@ -273,88 +293,102 @@ class OCSPResponse(metaclass=abc.ABCMeta):
         certificate.
         """
 
-    @abc.abstractproperty
+    @property
+    @abc.abstractmethod
     def responder_key_hash(self) -> typing.Optional[bytes]:
         """
         The responder's key hash or None
         """
 
-    @abc.abstractproperty
+    @property
+    @abc.abstractmethod
     def responder_name(self) -> typing.Optional[x509.Name]:
         """
         The responder's Name or None
         """
 
-    @abc.abstractproperty
+    @property
+    @abc.abstractmethod
     def produced_at(self) -> datetime.datetime:
         """
         The time the response was produced
         """
 
-    @abc.abstractproperty
+    @property
+    @abc.abstractmethod
     def certificate_status(self) -> OCSPCertStatus:
         """
         The status of the certificate (an element from the OCSPCertStatus enum)
         """
 
-    @abc.abstractproperty
+    @property
+    @abc.abstractmethod
     def revocation_time(self) -> typing.Optional[datetime.datetime]:
         """
         The date of when the certificate was revoked or None if not
         revoked.
         """
 
-    @abc.abstractproperty
+    @property
+    @abc.abstractmethod
     def revocation_reason(self) -> typing.Optional[x509.ReasonFlags]:
         """
         The reason the certificate was revoked or None if not specified or
         not revoked.
         """
 
-    @abc.abstractproperty
+    @property
+    @abc.abstractmethod
     def this_update(self) -> datetime.datetime:
         """
         The most recent time at which the status being indicated is known by
         the responder to have been correct
         """
 
-    @abc.abstractproperty
+    @property
+    @abc.abstractmethod
     def next_update(self) -> typing.Optional[datetime.datetime]:
         """
         The time when newer information will be available
         """
 
-    @abc.abstractproperty
+    @property
+    @abc.abstractmethod
     def issuer_key_hash(self) -> bytes:
         """
         The hash of the issuer public key
         """
 
-    @abc.abstractproperty
+    @property
+    @abc.abstractmethod
     def issuer_name_hash(self) -> bytes:
         """
         The hash of the issuer name
         """
 
-    @abc.abstractproperty
+    @property
+    @abc.abstractmethod
     def hash_algorithm(self) -> hashes.HashAlgorithm:
         """
         The hash algorithm used in the issuer name and key hashes
         """
 
-    @abc.abstractproperty
+    @property
+    @abc.abstractmethod
     def serial_number(self) -> int:
         """
         The serial number of the cert whose status is being checked
         """
 
-    @abc.abstractproperty
+    @property
+    @abc.abstractmethod
     def extensions(self) -> x509.Extensions:
         """
         The list of response extensions. Not single response extensions.
         """
 
-    @abc.abstractproperty
+    @property
+    @abc.abstractmethod
     def single_extensions(self) -> x509.Extensions:
         """
         The list of single response extensions. Not response extensions.
@@ -375,9 +409,13 @@ class OCSPRequestBuilder:
                 x509.Certificate, x509.Certificate, hashes.HashAlgorithm
             ]
         ] = None,
+        request_hash: typing.Optional[
+            typing.Tuple[bytes, bytes, int, hashes.HashAlgorithm]
+        ] = None,
         extensions: typing.List[x509.Extension[x509.ExtensionType]] = [],
     ) -> None:
         self._request = request
+        self._request_hash = request_hash
         self._extensions = extensions
 
     def add_certificate(
@@ -386,7 +424,7 @@ class OCSPRequestBuilder:
         issuer: x509.Certificate,
         algorithm: hashes.HashAlgorithm,
     ) -> "OCSPRequestBuilder":
-        if self._request is not None:
+        if self._request is not None or self._request_hash is not None:
             raise ValueError("Only one certificate can be added to a request")
 
         _verify_algorithm(algorithm)
@@ -395,7 +433,39 @@ class OCSPRequestBuilder:
         ):
             raise TypeError("cert and issuer must be a Certificate")
 
-        return OCSPRequestBuilder((cert, issuer, algorithm), self._extensions)
+        return OCSPRequestBuilder(
+            (cert, issuer, algorithm), self._request_hash, self._extensions
+        )
+
+    def add_certificate_by_hash(
+        self,
+        issuer_name_hash: bytes,
+        issuer_key_hash: bytes,
+        serial_number: int,
+        algorithm: hashes.HashAlgorithm,
+    ) -> "OCSPRequestBuilder":
+        if self._request is not None or self._request_hash is not None:
+            raise ValueError("Only one certificate can be added to a request")
+
+        if not isinstance(serial_number, int):
+            raise TypeError("serial_number must be an integer")
+
+        _verify_algorithm(algorithm)
+        utils._check_bytes("issuer_name_hash", issuer_name_hash)
+        utils._check_bytes("issuer_key_hash", issuer_key_hash)
+        if algorithm.digest_size != len(
+            issuer_name_hash
+        ) or algorithm.digest_size != len(issuer_key_hash):
+            raise ValueError(
+                "issuer_name_hash and issuer_key_hash must be the same length "
+                "as the digest size of the algorithm"
+            )
+
+        return OCSPRequestBuilder(
+            self._request,
+            (issuer_name_hash, issuer_key_hash, serial_number, algorithm),
+            self._extensions,
+        )
 
     def add_extension(
         self, extval: x509.ExtensionType, critical: bool
@@ -407,11 +477,11 @@ class OCSPRequestBuilder:
         _reject_duplicate_extension(extension, self._extensions)
 
         return OCSPRequestBuilder(
-            self._request, self._extensions + [extension]
+            self._request, self._request_hash, self._extensions + [extension]
         )
 
     def build(self) -> OCSPRequest:
-        if self._request is None:
+        if self._request is None and self._request_hash is None:
             raise ValueError("You must add a certificate before building")
 
         return ocsp.create_ocsp_request(self)

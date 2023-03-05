@@ -2,14 +2,14 @@
 # 2.0, and the BSD License. See the LICENSE file in the root of this repository
 # for complete details.
 
-
+import os
+import sys
 import threading
 import types
 import typing
 import warnings
 
 import cryptography
-from cryptography import utils
 from cryptography.exceptions import InternalError
 from cryptography.hazmat.bindings._openssl import ffi, lib
 from cryptography.hazmat.bindings.openssl._conditional import CONDITIONAL_NAMES
@@ -99,7 +99,21 @@ def _openssl_assert(
         )
 
 
-def build_conditional_library(lib, conditional_names):
+def _legacy_provider_error(loaded: bool) -> None:
+    if not loaded:
+        raise RuntimeError(
+            "OpenSSL 3.0's legacy provider failed to load. This is a fatal "
+            "error by default, but cryptography supports running without "
+            "legacy algorithms by setting the environment variable "
+            "CRYPTOGRAPHY_OPENSSL_NO_LEGACY. If you did not expect this error,"
+            " you have likely made a mistake with your OpenSSL configuration."
+        )
+
+
+def build_conditional_library(
+    lib: typing.Any,
+    conditional_names: typing.Dict[str, typing.Callable[[], typing.List[str]]],
+) -> typing.Any:
     conditional_lib = types.ModuleType("lib")
     conditional_lib._original_lib = lib  # type: ignore[attr-defined]
     excluded_names = set()
@@ -123,10 +137,11 @@ class Binding:
     ffi = ffi
     _lib_loaded = False
     _init_lock = threading.Lock()
-    _legacy_provider: typing.Any = None
-    _default_provider: typing.Any = None
+    _legacy_provider: typing.Any = ffi.NULL
+    _legacy_provider_loaded = False
+    _default_provider: typing.Any = ffi.NULL
 
-    def __init__(self):
+    def __init__(self) -> None:
         self._ensure_ffi_initialized()
 
     def _enable_fips(self) -> None:
@@ -146,7 +161,7 @@ class Binding:
         _openssl_assert(self.lib, res == 1)
 
     @classmethod
-    def _register_osrandom_engine(cls):
+    def _register_osrandom_engine(cls) -> None:
         # Clear any errors extant in the queue before we start. In many
         # scenarios other things may be interacting with OpenSSL in the same
         # process space and it has proven untenable to assume that they will
@@ -158,7 +173,7 @@ class Binding:
             _openssl_assert(cls.lib, result in (1, 2))
 
     @classmethod
-    def _ensure_ffi_initialized(cls):
+    def _ensure_ffi_initialized(cls) -> None:
         with cls._init_lock:
             if not cls._lib_loaded:
                 cls.lib = build_conditional_library(lib, CONDITIONAL_NAMES)
@@ -170,12 +185,15 @@ class Binding:
                 # are ugly legacy, but we aren't going to get rid of them
                 # any time soon.
                 if cls.lib.CRYPTOGRAPHY_OPENSSL_300_OR_GREATER:
-                    cls._legacy_provider = cls.lib.OSSL_PROVIDER_load(
-                        cls.ffi.NULL, b"legacy"
-                    )
-                    _openssl_assert(
-                        cls.lib, cls._legacy_provider != cls.ffi.NULL
-                    )
+                    if not os.environ.get("CRYPTOGRAPHY_OPENSSL_NO_LEGACY"):
+                        cls._legacy_provider = cls.lib.OSSL_PROVIDER_load(
+                            cls.ffi.NULL, b"legacy"
+                        )
+                        cls._legacy_provider_loaded = (
+                            cls._legacy_provider != cls.ffi.NULL
+                        )
+                        _legacy_provider_error(cls._legacy_provider_loaded)
+
                     cls._default_provider = cls.lib.OSSL_PROVIDER_load(
                         cls.ffi.NULL, b"default"
                     )
@@ -184,25 +202,11 @@ class Binding:
                     )
 
     @classmethod
-    def init_static_locks(cls):
+    def init_static_locks(cls) -> None:
         cls._ensure_ffi_initialized()
 
 
-def _verify_openssl_version(lib):
-    if (
-        lib.CRYPTOGRAPHY_OPENSSL_LESS_THAN_111
-        and not lib.CRYPTOGRAPHY_IS_LIBRESSL
-        and not lib.CRYPTOGRAPHY_IS_BORINGSSL
-    ):
-        warnings.warn(
-            "OpenSSL version 1.1.0 is no longer supported by the OpenSSL "
-            "project, please upgrade. The next release of cryptography will "
-            "drop support for OpenSSL 1.1.0.",
-            utils.DeprecatedIn37,
-        )
-
-
-def _verify_package_version(version):
+def _verify_package_version(version: str) -> None:
     # Occasionally we run into situations where the version of the Python
     # package does not match the version of the shared object that is loaded.
     # This may occur in environments where multiple versions of cryptography
@@ -227,4 +231,14 @@ _verify_package_version(cryptography.__version__)
 
 Binding.init_static_locks()
 
-_verify_openssl_version(Binding.lib)
+if (
+    sys.platform == "win32"
+    and os.environ.get("PROCESSOR_ARCHITEW6432") is not None
+):
+    warnings.warn(
+        "You are using cryptography on a 32-bit Python on a 64-bit Windows "
+        "Operating System. Cryptography will be significantly faster if you "
+        "switch to using a 64-bit Python.",
+        UserWarning,
+        stacklevel=2,
+    )

@@ -7,7 +7,6 @@ import typing
 from cryptography.exceptions import InvalidSignature
 from cryptography.hazmat.primitives import constant_time
 
-
 _POLY1305_TAG_SIZE = 16
 _POLY1305_KEY_SIZE = 32
 

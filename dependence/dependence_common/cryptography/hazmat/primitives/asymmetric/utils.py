@@ -6,7 +6,6 @@
 from cryptography.hazmat.bindings._rust import asn1
 from cryptography.hazmat.primitives import hashes
 
-
 decode_dss_signature = asn1.decode_dss_signature
 encode_dss_signature = asn1.encode_dss_signature
 

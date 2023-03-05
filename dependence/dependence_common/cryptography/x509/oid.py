@@ -5,17 +5,16 @@
 from cryptography.hazmat._oid import (
     AttributeOID,
     AuthorityInformationAccessOID,
-    CRLEntryExtensionOID,
     CertificatePoliciesOID,
+    CRLEntryExtensionOID,
     ExtendedKeyUsageOID,
     ExtensionOID,
     NameOID,
-    OCSPExtensionOID,
     ObjectIdentifier,
+    OCSPExtensionOID,
     SignatureAlgorithmOID,
     SubjectInformationAccessOID,
 )
-
 
 __all__ = [
     "AttributeOID",

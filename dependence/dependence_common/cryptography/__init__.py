@@ -5,13 +5,8 @@
 import sys
 import warnings
 
-from cryptography.__about__ import (
-    __author__,
-    __copyright__,
-    __version__,
-)
+from cryptography.__about__ import __author__, __copyright__, __version__
 from cryptography.utils import CryptographyDeprecationWarning
-
 
 __all__ = [
     "__version__",
@@ -22,8 +17,9 @@ __all__ = [
 if sys.version_info[:2] == (3, 6):
     warnings.warn(
         "Python 3.6 is no longer supported by the Python core team. "
-        "Therefore, support for it is deprecated in cryptography and will be"
-        " removed in a future release.",
+        "Therefore, support for it is deprecated in cryptography. The next "
+        "release of cryptography (40.0) will be the last to support Python "
+        "3.6.",
         CryptographyDeprecationWarning,
         stacklevel=2,
     )

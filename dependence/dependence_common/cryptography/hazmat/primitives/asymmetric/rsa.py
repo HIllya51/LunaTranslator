@@ -9,9 +9,7 @@ from math import gcd
 
 from cryptography.hazmat.primitives import _serialization, hashes
 from cryptography.hazmat.primitives._asymmetric import AsymmetricPadding
-from cryptography.hazmat.primitives.asymmetric import (
-    utils as asym_utils,
-)
+from cryptography.hazmat.primitives.asymmetric import utils as asym_utils
 
 
 class RSAPrivateKey(metaclass=abc.ABCMeta):
@@ -21,7 +19,8 @@ class RSAPrivateKey(metaclass=abc.ABCMeta):
         Decrypts the provided ciphertext.
         """
 
-    @abc.abstractproperty
+    @property
+    @abc.abstractmethod
     def key_size(self) -> int:
         """
         The bit length of the public modulus.
@@ -72,7 +71,8 @@ class RSAPublicKey(metaclass=abc.ABCMeta):
         Encrypts the given plaintext.
         """
 
-    @abc.abstractproperty
+    @property
+    @abc.abstractmethod
     def key_size(self) -> int:
         """
         The bit length of the public modulus.
@@ -354,12 +354,19 @@ class RSAPrivateNumbers:
     def public_numbers(self) -> "RSAPublicNumbers":
         return self._public_numbers
 
-    def private_key(self, backend: typing.Any = None) -> RSAPrivateKey:
+    def private_key(
+        self,
+        backend: typing.Any = None,
+        *,
+        unsafe_skip_rsa_key_validation: bool = False,
+    ) -> RSAPrivateKey:
         from cryptography.hazmat.backends.openssl.backend import (
             backend as ossl,
         )
 
-        return ossl.load_rsa_private_numbers(self)
+        return ossl.load_rsa_private_numbers(
+            self, unsafe_skip_rsa_key_validation
+        )
 
     def __eq__(self, other: object) -> bool:
         if not isinstance(other, RSAPrivateNumbers):

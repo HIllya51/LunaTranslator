@@ -11,7 +11,6 @@ from cryptography.exceptions import (
 )
 from cryptography.hazmat.primitives import constant_time, hashes
 
-
 if typing.TYPE_CHECKING:
     from cryptography.hazmat.backends.openssl.backend import Backend
 

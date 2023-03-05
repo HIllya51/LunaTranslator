@@ -7,8 +7,8 @@ import typing
 from cryptography.hazmat.primitives import constant_time
 from cryptography.hazmat.primitives.twofactor import InvalidToken
 from cryptography.hazmat.primitives.twofactor.hotp import (
-    HOTP,
     _ALLOWED_HASH_TYPES,
+    HOTP,
     _generate_uri,
 )
 

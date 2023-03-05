@@ -14,7 +14,6 @@ from cryptography.exceptions import (
 from cryptography.hazmat.primitives._cipheralgorithm import CipherAlgorithm
 from cryptography.hazmat.primitives.ciphers import modes
 
-
 if typing.TYPE_CHECKING:
     from cryptography.hazmat.backends.openssl.ciphers import (
         _CipherContext as _BackendCipherContext,
@@ -61,7 +60,8 @@ class AEADDecryptionContext(AEADCipherContext, metaclass=abc.ABCMeta):
 
 
 class AEADEncryptionContext(AEADCipherContext, metaclass=abc.ABCMeta):
-    @abc.abstractproperty
+    @property
+    @abc.abstractmethod
     def tag(self) -> bytes:
         """
         Returns tag bytes. This is only available after encryption is
@@ -80,7 +80,7 @@ class Cipher(typing.Generic[Mode]):
         algorithm: CipherAlgorithm,
         mode: Mode,
         backend: typing.Any = None,
-    ):
+    ) -> None:
 
         if not isinstance(algorithm, CipherAlgorithm):
             raise TypeError("Expected interface of CipherAlgorithm.")

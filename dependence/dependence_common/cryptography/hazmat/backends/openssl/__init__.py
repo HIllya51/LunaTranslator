@@ -5,5 +5,4 @@
 
 from cryptography.hazmat.backends.openssl.backend import backend
 
-
 __all__ = ["backend"]

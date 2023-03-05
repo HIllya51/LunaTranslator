@@ -5,7 +5,6 @@
 
 import abc
 import enum
-import inspect
 import sys
 import types
 import typing
@@ -21,11 +20,9 @@ class CryptographyDeprecationWarning(UserWarning):
 # Several APIs were deprecated with no specific end-of-life date because of the
 # ubiquity of their use. They should not be removed until we agree on when that
 # cycle ends.
-PersistentlyDeprecated2019 = CryptographyDeprecationWarning
-DeprecatedIn35 = CryptographyDeprecationWarning
 DeprecatedIn36 = CryptographyDeprecationWarning
 DeprecatedIn37 = CryptographyDeprecationWarning
-DeprecatedIn38 = CryptographyDeprecationWarning
+DeprecatedIn39 = CryptographyDeprecationWarning
 
 
 def _check_bytes(name: str, value: bytes) -> None:
@@ -50,37 +47,14 @@ class InterfaceNotImplemented(Exception):
     pass
 
 
-def strip_annotation(signature: inspect.Signature) -> inspect.Signature:
-    return inspect.Signature(
-        [
-            param.replace(annotation=inspect.Parameter.empty)
-            for param in signature.parameters.values()
-        ]
-    )
-
-
+# DeprecatedIn39 -- Our only known consumer is aws-encryption-sdk, but we've
+# made this a no-op to avoid breaking old versions.
 def verify_interface(
     iface: abc.ABCMeta, klass: object, *, check_annotations: bool = False
 ):
-    for method in iface.__abstractmethods__:
-        if not hasattr(klass, method):
-            raise InterfaceNotImplemented(
-                "{} is missing a {!r} method".format(klass, method)
-            )
-        if isinstance(getattr(iface, method), abc.abstractproperty):
-            # Can't properly verify these yet.
-            continue
-        sig = inspect.signature(getattr(iface, method))
-        actual = inspect.signature(getattr(klass, method))
-        if check_annotations:
-            ok = sig == actual
-        else:
-            ok = strip_annotation(sig) == strip_annotation(actual)
-        if not ok:
-            raise InterfaceNotImplemented(
-                "{}.{}'s signature differs from the expected. Expected: "
-                "{!r}. Received: {!r}".format(klass, method, sig, actual)
-            )
+    # Exists exclusively for `aws-encryption-sdk` which relies on it existing,
+    # even though it was never a public API.
+    pass
 
 
 class _DeprecatedValue:

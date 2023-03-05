@@ -10,11 +10,8 @@ from cryptography.hazmat.backends.openssl.utils import (
     _calculate_digest_and_algorithm,
 )
 from cryptography.hazmat.primitives import hashes, serialization
-from cryptography.hazmat.primitives.asymmetric import (
-    dsa,
-    utils as asym_utils,
-)
-
+from cryptography.hazmat.primitives.asymmetric import dsa
+from cryptography.hazmat.primitives.asymmetric import utils as asym_utils
 
 if typing.TYPE_CHECKING:
     from cryptography.hazmat.backends.openssl.backend import Backend

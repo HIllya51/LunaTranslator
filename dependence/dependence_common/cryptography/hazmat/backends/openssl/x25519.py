@@ -91,7 +91,7 @@ class _X25519PrivateKey(X25519PrivateKey):
     ) -> bytes:
         if (
             encoding is serialization.Encoding.Raw
-            or format is serialization.PublicFormat.Raw
+            or format is serialization.PrivateFormat.Raw
         ):
             if (
                 format is not serialization.PrivateFormat.Raw
@@ -112,8 +112,8 @@ class _X25519PrivateKey(X25519PrivateKey):
         )
 
     def _raw_private_bytes(self) -> bytes:
-        # When we drop support for CRYPTOGRAPHY_OPENSSL_LESS_THAN_111 we can
-        # switch this to EVP_PKEY_new_raw_private_key
+        # If/when LibreSSL adds support for EVP_PKEY_get_raw_private_key we
+        # can switch to it (Cryptography_HAS_RAW_KEY)
         # The trick we use here is serializing to a PKCS8 key and just
         # using the last 32 bytes, which is the key itself.
         bio = self._backend._create_mem_bio_gc()

@@ -8,7 +8,6 @@ from cryptography.exceptions import UnsupportedAlgorithm, _Reasons
 from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric import dh
 
-
 if typing.TYPE_CHECKING:
     from cryptography.hazmat.backends.openssl.backend import Backend
 
@@ -93,7 +92,7 @@ class _DHParameters(dh.DHParameters):
                 write_bio = self._backend._lib.PEM_write_bio_DHparams
         elif encoding is serialization.Encoding.DER:
             if q[0] != self._backend._ffi.NULL:
-                write_bio = self._backend._lib.Cryptography_i2d_DHxparams_bio
+                write_bio = self._backend._lib.i2d_DHxparams_bio
             else:
                 write_bio = self._backend._lib.i2d_DHparams_bio
         else:

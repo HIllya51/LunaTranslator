@@ -15,7 +15,6 @@ from cryptography.exceptions import (
 from cryptography.hazmat.primitives import constant_time
 from cryptography.hazmat.primitives.kdf import KeyDerivationFunction
 
-
 # This is used by the scrypt tests to skip tests that require more memory
 # than the MEM_LIMIT
 _MEM_LIMIT = sys.maxsize // 2

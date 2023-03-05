@@ -15,7 +15,6 @@ from cryptography.hazmat.primitives.ciphers.base import (
     CipherContext,
 )
 
-
 __all__ = [
     "Cipher",
     "CipherAlgorithm",

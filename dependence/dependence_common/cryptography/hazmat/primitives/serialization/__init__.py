@@ -26,7 +26,6 @@ from cryptography.hazmat.primitives.serialization.ssh import (
     load_ssh_public_key,
 )
 
-
 __all__ = [
     "load_der_parameters",
     "load_der_private_key",

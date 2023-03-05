@@ -11,7 +11,6 @@ from email.utils import parseaddr
 from cryptography.x509.name import Name
 from cryptography.x509.oid import ObjectIdentifier
 
-
 _IPADDRESS_TYPES = typing.Union[
     ipaddress.IPv4Address,
     ipaddress.IPv6Address,
@@ -25,7 +24,8 @@ class UnsupportedGeneralNameType(Exception):
 
 
 class GeneralName(metaclass=abc.ABCMeta):
-    @abc.abstractproperty
+    @property
+    @abc.abstractmethod
     def value(self) -> typing.Any:
         """
         Return the value of the object

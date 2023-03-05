@@ -6,9 +6,7 @@
 import typing
 
 from cryptography import utils
-from cryptography.exceptions import (
-    AlreadyFinalized,
-)
+from cryptography.exceptions import AlreadyFinalized
 from cryptography.hazmat.backends.openssl.hmac import _HMACContext
 from cryptography.hazmat.primitives import hashes
 
