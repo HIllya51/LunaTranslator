@@ -4,7 +4,7 @@
   
 from embedded.pyvnrmem3 import VnrSharedMemory
  
-
+import win32utils
 class VnrAgentSharedMemory:
   # Must be consistent with vnragent
   STATUS_EMPTY = 0
@@ -46,9 +46,8 @@ class VnrAgentSharedMemory:
       # must be consistent with vnragent's config.h
       eventName = "vnragent.shmem.%s.%s.%s" % (pid, role, hash)
       eventName = eventName.replace('-', '_') # get rid of minus sign 
-      import win32event
-      ev = win32event.CreateEvent(None, False, False, eventName) # initial state = False. True does NOT work 
-      win32event.SetEvent(ev)
+      ev = win32utils.CreateEvent(None, False, False, eventName) # initial state = False. True does NOT work 
+      win32utils.SetEvent(ev)
       ev.close()
 
   # Set without checking if attached

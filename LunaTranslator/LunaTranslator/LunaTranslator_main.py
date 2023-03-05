@@ -6,11 +6,10 @@ from utils.somepath import initpath
 initpath() 
 import os,threading,Levenshtein,sys 
 from traceback import  print_exc   
-import  win32event,win32con,win32event,win32security,win32pipe,win32file,mmap 
- 
+import win32utils
 from PyQt5.QtGui import QPalette,QColor
 from utils.config import globalconfig ,savehook_new_list,savehook_new_data,noundictconfig,transerrorfixdictconfig,setlanguage 
-import threading,win32gui 
+import threading 
 from PyQt5.QtCore import QCoreApplication ,Qt ,QObject,pyqtSignal
 from PyQt5.QtWidgets import  QApplication ,QGraphicsScene,QGraphicsView,QDesktopWidget  
 from utils import somedef
@@ -21,17 +20,15 @@ from utils import somedef
 from gui.showword import searchwordW
 from gui.rangeselect    import rangeadjust
 
-from utils.getpidlist import pid_running,getarch,getpidexe ,getpidhwnds
+from utils.getpidlist import pid_running,getarch,getpidexe ,getpidhwnds,ListProcess,getScreenRate
 
 from textsource.copyboard import copyboard   
 from textsource.textractor import textractor   
 from textsource.embedded import embedded
 from textsource.ocrtext import ocrtext
 from textsource.txt import txt 
-import  gui.selecthook    
-from utils.getpidlist import getpidexe,ListProcess,getScreenRate
+import  gui.selecthook     
 
-from utils.getpidlist import getarch
 import gui.translatorUI
 from queue import Queue
 from gui.languageset import languageset
@@ -42,7 +39,7 @@ import importlib
 from functools import partial  
 from gui.settin import Settin 
 from gui.attachprocessdialog import AttachProcessDialog
-import win32event,win32con,win32process,win32api 
+import win32con 
 import re 
 from utils.post import POSTSOLVE
 from utils.vnrshareddict import vnrshareddict 
@@ -420,8 +417,8 @@ class MAINUI(QObject) :
                 
                 
                 if   self.textsource is None:   
-                        hwnd=win32gui.GetForegroundWindow()
-                        pid=win32process.GetWindowThreadProcessId(hwnd)[1]
+                        hwnd=win32utils.GetForegroundWindow()
+                        pid=win32utils.GetWindowThreadProcessId(hwnd)[1]
                         name_=getpidexe(pid)
                           
                 
@@ -446,13 +443,13 @@ class MAINUI(QObject) :
                     needend=False 
                     if pid_running(pid)==False :
                         needend=True
-                    elif win32process.GetWindowThreadProcessId( hwnd )[0]==0: 
+                    elif win32utils.GetWindowThreadProcessId( hwnd )[0]==0: 
                             time.sleep(0.5)
                             if self.textsource.pid==pid and   pid_running(pid)==False:
                                 needend=True
                             else: 
-                                fhwnd=win32gui.GetForegroundWindow()
-                                if win32process.GetWindowThreadProcessId( fhwnd )[0]==pid:
+                                fhwnd=win32utils.GetForegroundWindow()
+                                if win32utils.GetWindowThreadProcessId( fhwnd )[0]==pid:
                                     self.textsource.hwnd=fhwnd
                                 else:
                                     pidhwnd=getpidhwnds(pid)
@@ -471,13 +468,12 @@ class MAINUI(QObject) :
             try:  
                
                 if globalconfig['forcekeepontop']:
-                    hwnd=win32gui.GetForegroundWindow()
-                    pid=win32process.GetWindowThreadProcessId(hwnd)[1] 
+                    hwnd=win32utils.GetForegroundWindow()
+                    pid=win32utils.GetWindowThreadProcessId(hwnd)[1] 
                     if pid ==os.getpid():
                         continue
                      
-                    win32gui.SetWindowPos(int(self.translation_ui.winId()), win32con.HWND_TOPMOST, 0, 0, 0, 0,win32con. SWP_NOACTIVATE |win32con. SWP_NOSIZE | win32con.SWP_NOMOVE)  
-                #win32gui.BringWindowToTop(int(self.translation_ui.winId())) 
+                    win32utils.SetWindowPos(int(self.translation_ui.winId()), win32con.HWND_TOPMOST, 0, 0, 0, 0,win32con. SWP_NOACTIVATE |win32con. SWP_NOSIZE | win32con.SWP_NOMOVE) 
             except:
                 print_exc() 
             time.sleep(0.5)            
@@ -501,7 +497,7 @@ class MAINUI(QObject) :
             self.view.setGeometry(QDesktopWidget().screenGeometry())
             self.view.show()        
             
-         
+        
         self.mainuiloadafter()
         threading.Thread(target=self.setontopthread).start() 
     def mainuiloadafter(self):    
@@ -523,7 +519,7 @@ class MAINUI(QObject) :
           
         threading.Thread(target=self.autohookmonitorthread).start()    
         threading.Thread(target=minmaxmoveobservefunc,args=(self.translation_ui,)).start()   
-        
+        print(time.time()-filestart)
         self.starttextsource(waitforautoinit=True)  
     def checklang(self):
         if  globalconfig['language_setted_2.4.5']==False:

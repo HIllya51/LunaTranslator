@@ -30,20 +30,20 @@ def getEqualRate(  str1, str2):
         score = score 
 
         return score
-import win32gui ,math,win32process
+import math,win32utils
 class ocrtext(basetext):
     
     def imageCut(self,x1,y1,x2,y2):
      
         if self.hwnd:
             try:  
-                hwnd=win32gui.FindWindow('Window_Magpie_967EB565-6F73-4E94-AE53-00CC42592A22',None) 
+                hwnd=win32utils.FindWindow('Window_Magpie_967EB565-6F73-4E94-AE53-00CC42592A22',None) 
                 if hwnd and globalconfig['ocrmagpiekeep']==False:  
                     hwnduse=QApplication.desktop().winId()
                 else:
                     hwnduse=self.hwnd
-                rect=win32gui.GetWindowRect(hwnduse)  
-                rect2=win32gui.GetClientRect(hwnduse)
+                rect=win32utils.GetWindowRect(hwnduse)  
+                rect2=win32utils.GetClientRect(hwnduse)
                 windowOffset = math.floor(((rect[2]-rect[0])-rect2[2])/2)
                 h= ((rect[3]-rect[1])-rect2[3]) - windowOffset
                 # print(h)

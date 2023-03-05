@@ -1,15 +1,9 @@
 
-from re import search
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QWidget,QTextBrowser,QMainWindow,QFrame,QVBoxLayout,QComboBox,QPlainTextEdit,QDialogButtonBox,QLineEdit,QPushButton,QDialog,QAction,QMenu
-from PyQt5.QtGui import QFont,QTextCursor
+from PyQt5.QtWidgets import QVBoxLayout,QComboBox,QPushButton,QDialog
+from PyQt5.QtGui import QFont
 from PyQt5.QtCore import Qt,pyqtSignal
 import qtawesome
-import subprocess
-import json
-import os
-import re
-import sys 
 class languageset(QDialog): 
     getnewsentencesignal=pyqtSignal(str) 
     getnewtranssignal=pyqtSignal(str,str) 

@@ -6,8 +6,7 @@ from PyQt5.QtCore import Qt,pyqtSignal
 import qtawesome 
 
 from gui.usefulwidget import closeashidewindow
-from utils.config import globalconfig ,_TR,_TRL
-import win32gui
+from utils.config import globalconfig ,_TR
 from utils.config import globalconfig
 class transhist(closeashidewindow): 
     getnewsentencesignal=pyqtSignal(str) 

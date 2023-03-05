@@ -1,12 +1,10 @@
-import os,win32gui,win32api,win32con,json,math
+import os,win32con,json,math
+import win32utils
 from utils.config import globalconfig 
 from utils.magpie import callmagpie
-from utils.getpidlist import  letfullscreen,recoverwindow 
-from utils.somedef import key_first ,key_second 
+from utils.getpidlist import  letfullscreen,recoverwindow,ListProcess
 from traceback import print_exc
 from utils.subproc import subproc
-from utils.wrapper import threader
-from utils.getpidlist import ListProcess
 import time
 key_map = {
     "0": 49, "1": 50, "2": 51, "3": 52, "4": 53, "5": 54, "6": 55, "7": 56, "8": 57, "9": 58,
@@ -38,7 +36,7 @@ class fullscreen():
      
     def _1(self,hwnd,full):
         self.runmagpie10()  
-        win32gui.SetForegroundWindow(hwnd )   
+        win32utils.SetForegroundWindow(hwnd )   
         time.sleep(0.1)
         configpath=os.path.join(globalconfig['magpie10path'],'config/config.json')
         if os.path.exists(configpath)==False:
@@ -52,32 +50,32 @@ class fullscreen():
         control=key_map[['WIN','CTRL','ALT','SHIFT'][ int(math.log2((shortcuts-code)//0x100))]] 
         k1=control
         k2=code 
-        win32api.keybd_event(k1,0,0,0)    
-        win32api.keybd_event(k2,0,0,0)      
-        win32api.keybd_event(k2, 0, win32con.KEYEVENTF_KEYUP, 0)
-        win32api.keybd_event(k1, 0, win32con.KEYEVENTF_KEYUP, 0) 
+        win32utils.keybd_event(k1,0,0,0)    
+        win32utils.keybd_event(k2,0,0,0)      
+        win32utils.keybd_event(k2, 0, win32con.KEYEVENTF_KEYUP, 0)
+        win32utils.keybd_event(k1, 0, win32con.KEYEVENTF_KEYUP, 0) 
         
          
     def _0(self,hwnd,full):
         if full:
-            win32gui.SetForegroundWindow(hwnd )    
+            win32utils.SetForegroundWindow(hwnd )    
             self.savemagpie_pid=callmagpie(('./files/Magpie_v0.9.1'),hwnd,globalconfig['magpiescalemethod'],globalconfig['magpieflags'],globalconfig['magpiecapturemethod'])
         else:
             if self.savemagpie_pid is None:
                 return  
                 
-            hwnd=win32gui.FindWindow('Window_Magpie_967EB565-6F73-4E94-AE53-00CC42592A22',None) 
+            hwnd=win32utils.FindWindow('Window_Magpie_967EB565-6F73-4E94-AE53-00CC42592A22',None) 
             if hwnd==0:
                 return
-            WM_DESTORYHOST=win32api.RegisterWindowMessage( "MAGPIE_WM_DESTORYHOST") 
-            win32api.SendMessage(hwnd, WM_DESTORYHOST)
+            WM_DESTORYHOST=win32utils.RegisterWindowMessage( "MAGPIE_WM_DESTORYHOST") 
+            win32utils.SendMessage(hwnd, WM_DESTORYHOST)
     def _2(self,hwnd,full):
-        win32gui.SetForegroundWindow(hwnd )   
-        win32api.keybd_event(18,0,0,0)     # alt
-        win32api.keybd_event(13,0,0,0)     # enter
+        win32utils.SetForegroundWindow(hwnd )   
+        win32utils.keybd_event(18,0,0,0)     # alt
+        win32utils.keybd_event(13,0,0,0)     # enter
                             
-        win32api.keybd_event(13, 0, win32con.KEYEVENTF_KEYUP, 0)
-        win32api.keybd_event(18, 0, win32con.KEYEVENTF_KEYUP, 0)
+        win32utils.keybd_event(13, 0, win32con.KEYEVENTF_KEYUP, 0)
+        win32utils.keybd_event(18, 0, win32con.KEYEVENTF_KEYUP, 0)
     def _3(self,hwnd,full):
         if full: 
             self.savewindowstatus=letfullscreen(hwnd)

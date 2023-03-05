@@ -2,8 +2,6 @@
 from utils.config import globalconfig   
 import time
 import os 
-from traceback import print_exc
-import subprocess
 import requests,json,threading
 voicevoxprocess=None
 from utils.subproc import subproc

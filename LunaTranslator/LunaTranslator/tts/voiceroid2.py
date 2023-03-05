@@ -1,7 +1,7 @@
     
 from utils.config import globalconfig   
 import time
-import os ,threading
+import os ,threading,win32utils,win32con
 from traceback import print_exc
 class tts():
     
@@ -48,12 +48,11 @@ class tts():
             dllpath=os.path.join(os.getcwd(),'files/voiceroid2/aitalked.dll')
             exepath=os.path.join(os.getcwd(),'files/voiceroid2/voice2.exe')
              
-            import win32process,win32event,win32api,win32con
              
-            info=win32process.STARTUPINFO() 
+            info=win32utils.STARTUPINFOW() 
             info.wShowWindow=win32con.SW_HIDE
-            handle=win32process.CreateProcess(exepath, f'"{exepath}" "{globalconfig["reader"]["voiceroid2"]["path"]}" "{dllpath}" {globalconfig["reader"]["voiceroid2"]["voice"]} 1 {(globalconfig["ttscommon"]["rate"]+10.0)/(20.0)*1+0.5} "{savepath}" {shift}',None , None , 0 ,win32process.CREATE_NO_WINDOW , None , None ,info)
-            win32event.WaitForSingleObject(win32api.OpenProcess(win32con.SYNCHRONIZE,0, handle[2]),win32event.INFINITE) 
+            handle=win32utils.CreateProcess(exepath, f'"{exepath}" "{globalconfig["reader"]["voiceroid2"]["path"]}" "{dllpath}" {globalconfig["reader"]["voiceroid2"]["voice"]} 1 {(globalconfig["ttscommon"]["rate"]+10.0)/(20.0)*1+0.5} "{savepath}" {shift}',None , None , 0 ,win32utils.CREATE_NO_WINDOW , None , None ,info)
+            win32utils.WaitForSingleObject(handle.hProcess,win32utils.INFINITE) 
         
             if os.path.exists(savepath):
                 self.mp3playsignal.emit(savepath,globalconfig["ttscommon"]["volume"])

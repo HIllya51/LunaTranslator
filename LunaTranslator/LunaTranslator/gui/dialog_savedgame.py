@@ -1,5 +1,5 @@
   
-import functools,win32api 
+import functools 
 from PyQt5.QtWidgets import  QPushButton,QDialog,QVBoxLayout ,QHeaderView,QFileDialog ,QLineEdit
 import functools 
 from traceback import print_exc 
@@ -13,7 +13,7 @@ from utils.getpidlist import getExeIcon
 from utils.le3264 import le3264run  
 from utils.config import _TR,_TRL,globalconfig
 import os
-import win32con,win32api  
+import win32con,win32utils
 from utils.wrapper import Singleton_close,Singleton
 
 def opendir( k):
@@ -168,11 +168,10 @@ class dialog_savedgame(QDialog):
                                                 
                                                 self.object.yuitsu_switch('sourcestatus','sourceswitchs',_[mode],None ,True) 
                                                 self.object.object.starttextsource(use=_[mode],checked=True,waitforautoinit=True)
-                        #subprocess.Popen(model.item(table.currentIndex().row(),1).text())  
                         if savehook_new_data[game]['leuse'] :
                                 le3264run(game)
                         else:
-                                win32api.ShellExecute(None, "open", game, "", os.path.dirname(game), win32con.SW_SHOW) 
+                                win32utils.ShellExecute(None, "open", game, "", os.path.dirname(game), win32con.SW_SHOW) 
                         savehook_new_list.insert(0,savehook_new_list.pop(self.table.currentIndex().row())) 
                         self.close() 
                 except:

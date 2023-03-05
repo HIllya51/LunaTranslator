@@ -1,5 +1,5 @@
 
-import win32api,os,win32con
+import win32utils,os,win32con
 def update():
     with open('./cache/update/update.bat','w',encoding='utf8') as ff:
                 
@@ -14,5 +14,4 @@ xcopy .\cache\update\LunaTranslator\ .\ /s /e /c /y /h /r
 exit
                 
                 ''') 
-            #subprocess.Popen('cache\\update\\update.bat' ,shell=True)
-    win32api.ShellExecute(None, "open", 'cache\\update\\update.bat', "", os.path.dirname('.'), win32con.SW_HIDE)
+    win32utils.ShellExecute(None, "open", 'cache\\update\\update.bat', "", os.path.dirname('.'), win32con.SW_HIDE)

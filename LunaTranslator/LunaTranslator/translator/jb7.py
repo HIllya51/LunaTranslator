@@ -2,7 +2,7 @@ from utils.subproc import subproc
 from translator.basetranslator import basetrans 
 import ctypes 
 import os ,time 
-import  win32con,win32event,win32security,win32pipe,win32file 
+import  win32con ,win32utils
 from utils.subproc import subproc 
 class TS(basetrans):  
     def inittranslator(self ) : 
@@ -40,14 +40,11 @@ class TS(basetrans):
             #self.engine=subproc(f'./files/x64_x86_dll/jbj7.exe "{self.dllpath}"'+dictpath,stdin=subprocess.PIPE,name='jbj', stdout=subprocess.PIPE ,encoding='utf-16-le')
             self.engine=subproc(f'./files/x64_x86_dll/jbj7_4.exe "{self.dllpath}" {pipename} {waitsignal} '+dictpath,name='jbj7')
             #!!!!!!!!!!!!!!stdout=subprocess.PIPE 之后，隔一段时间之后，exe侧writefile就写不进去了！！！！！不知道为什么！！！
-            attr=win32security.SECURITY_DESCRIPTOR(win32con.SECURITY_DESCRIPTOR_REVISION)
-            attr.SetSecurityDescriptorDacl(True,None,False) 
-            secu=win32security.SECURITY_ATTRIBUTES() 
-            secu.SECURITY_DESCRIPTOR=attr
-            secu.bInheritHandle=False 
-            win32event.WaitForSingleObject(win32event.CreateEvent(secu,False, False, waitsignal),win32event.INFINITE); 
-            win32pipe.WaitNamedPipe(pipename,win32con.NMPWAIT_WAIT_FOREVER)
-            self.hPipe = win32file.CreateFile( pipename, win32con.GENERIC_READ | win32con.GENERIC_WRITE, 0,
+           
+            secu=win32utils.get_SECURITY_ATTRIBUTES()
+            win32utils.WaitForSingleObject(win32utils.CreateEvent(secu,False, False, waitsignal),win32utils.INFINITE); 
+            win32utils.WaitNamedPipe(pipename,win32con.NMPWAIT_WAIT_FOREVER)
+            self.hPipe = win32utils.CreateFile( pipename, win32con.GENERIC_READ | win32con.GENERIC_WRITE, 0,
                     None, win32con.OPEN_EXISTING, win32con.FILE_ATTRIBUTE_NORMAL, None);
     def packuint32(self,i): # int -> str 
         return bytes(chr((i >> 24) & 0xff) + chr((i >> 16) & 0xff) + chr((i >> 8) & 0xff) + chr(i & 0xff),encoding='latin-1')
@@ -66,9 +63,9 @@ class TS(basetrans):
             for line in lines: 
                 if len(line)==0:continue
                 code1=line.encode('utf-16-le') 
-                win32file.WriteFile(self.hPipe,self.packuint32(int(self.tgtlang))+self.packuint32(len(code1))+code1) 
-                datalen=self.unpackuint32(win32file.ReadFile(self.hPipe, 4, None)[1])
-                xx=win32file.ReadFile(self.hPipe, datalen, None)[1] 
+                win32utils.WriteFile(self.hPipe,self.packuint32(int(self.tgtlang))+self.packuint32(len(code1))+code1) 
+                datalen=self.unpackuint32(win32utils.ReadFile(self.hPipe, 4, None)[1])
+                xx=win32utils.ReadFile(self.hPipe, datalen, None)[1] 
                 xx=xx.decode('utf-16-le',errors='ignore') 
                 ress.append(xx)  
             return '\n'.join(ress)

@@ -1,6 +1,4 @@
 import json
-  
-import win32process,win32con
 import os 
 from utils.subproc import subproc
 class Dict2Obj(dict):
@@ -60,8 +58,3 @@ def callmagpie( cwd,hwnd,ScaleMode,flags,captureMode):# 0x2000|\0x2|\0x200):
         ff.write(f"{cwd}\n{hwnd}\n{json.dumps(effectsJson[ScaleMode]['effects'])}\n{flags},{captureMode},{settings.CursorZoomFactor},{settings.CursorInterpolationMode},{settings.AdapterIdx},{settings.MultiMonitorUsage}")
     s=subproc('./files/magpiecmdrunner.exe  ./cache/magpieparam.txt')
     return s.pid
-    # info=win32process.STARTUPINFO()
-    # info.wShowWindow=win32con.SW_HIDE
-    # handle=win32process.CreateProcess('./files/magpiecmdrunner.exe', './files/magpiecmdrunner.exe  ./cache/magpieparam.txt', None , None , 0 ,False , None , None ,info)
-     
-    # return handle[2]

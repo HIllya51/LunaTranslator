@@ -1,6 +1,7 @@
-import os,win32gui,subprocess,win32con,time ,win32process,win32api
+import os,win32con,time 
 from traceback import print_exc
 from utils.config import globalconfig 
+import win32utils
 def minmaxmoveobservefunc(self): 
         
         self.lasthwnd=None
@@ -15,13 +16,12 @@ def minmaxmoveobservefunc(self):
                                 self.lastminmax=None
                                 self.lastpos=None
                         self.lasthwnd=hwnd
-                        #print( win32process.GetWindowThreadProcessId(hwnd))
-                        tup = win32gui.GetWindowPlacement(hwnd)
+                        tup = win32utils.GetWindowPlacement(hwnd,True)
                         #print(tup)
-                        rect=win32gui.GetWindowRect( hwnd) 
+                        rect=win32utils.GetWindowRect( hwnd) 
                         if globalconfig['focusfollow']:
-                                focus=win32gui.GetForegroundWindow()
-                                _focusp=win32process.GetWindowThreadProcessId(focus)[1]
+                                focus=win32utils.GetForegroundWindow()
+                                _focusp=win32utils.GetWindowThreadProcessId(focus)[1]
                                 if _focusp ==self.object.textsource.pid: 
                                         self.hookfollowsignal.emit(3,(hwnd,))
                                 elif _focusp ==os.getpid():

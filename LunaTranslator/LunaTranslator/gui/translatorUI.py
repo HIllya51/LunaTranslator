@@ -11,11 +11,11 @@ import qtawesome
 from PyQt5.QtCore import pyqtSignal,Qt,QRect,QSize  
 from PyQt5.QtGui import  QFont  ,QIcon,QPixmap  ,QMouseEvent
 from PyQt5.QtWidgets import  QLabel ,QPushButton ,QSystemTrayIcon ,QAction,QMenu 
-
+import win32utils
 import pyperclip,queue
 from utils.config import globalconfig,saveallconfig,_TR
-from utils.subproc import endsubprocs,mutiproc
-import  win32gui,win32api,win32process,win32con,multiprocessing
+from utils.subproc import endsubprocs
+import  win32con
 import gui.rangeselect
 from utils.update import update
 from utils.subproc import subproc
@@ -50,7 +50,7 @@ class QUnFrameWindow(resizableframeless):
             if self.hideshownotauto:
                 self.show_()
                 try:
-                    win32gui.SetForegroundWindow(other[0])
+                    win32utils.SetForegroundWindow(other[0])
                 except:
                     pass
         elif code==4: 
@@ -243,12 +243,12 @@ class QUnFrameWindow(resizableframeless):
         self.takusanbuttons(2,self.close,-1,"退出")
     def hide_(self):  
         if self.showintab: 
-            win32gui.ShowWindow(self.winId(),win32con.SW_SHOWMINIMIZED )
+            win32utils.ShowWindow(self.winId(),win32con.SW_SHOWMINIMIZED )
         else:
             self.hide()
     def show_(self):   
         if self.showintab:
-            win32gui.ShowWindow(self.winId(),win32con.SW_SHOWNORMAL )
+            win32utils.ShowWindow(self.winId(),win32con.SW_SHOWNORMAL )
         else:
             self.show()
     def showEvent(self, a0 ) -> None: 
@@ -371,7 +371,7 @@ class QUnFrameWindow(resizableframeless):
     def grabwindow(self): 
         
         try:
-            hwnd=win32gui.FindWindow('Window_Magpie_967EB565-6F73-4E94-AE53-00CC42592A22',None) 
+            hwnd=win32utils.FindWindow('Window_Magpie_967EB565-6F73-4E94-AE53-00CC42592A22',None) 
             tm=time.localtime()
             if hwnd:
                 hwnd=QApplication.desktop().winId() 
@@ -380,7 +380,7 @@ class QUnFrameWindow(resizableframeless):
                 self.show() 
                 
             else:
-                hwnd=win32gui.GetForegroundWindow()   
+                hwnd=win32utils.GetForegroundWindow()   
                 if hwnd==int(self.winId()):
                     hwnd=self.object.textsource.hwnd 
                 QApplication.primaryScreen().grabWindow(hwnd).save(f'./cache/screenshot/{tm.tm_year}-{tm.tm_mon}-{tm.tm_mday}-{tm.tm_hour}-{tm.tm_min}-{tm.tm_sec}.png')
@@ -458,7 +458,7 @@ class QUnFrameWindow(resizableframeless):
         self.object.screen_shot_ui =gui.rangeselect.rangeselct(self.object)
         self.object.screen_shot_ui.show()
         self.object.screen_shot_ui.callback=self.afterrange
-        win32gui.SetFocus(self.object.screen_shot_ui.winId() )   
+        win32utils.SetFocus(self.object.screen_shot_ui.winId() )   
          
         self.object.screen_shot_ui.startauto=auto
         self.object.screen_shot_ui.clickrelease=auto

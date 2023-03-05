@@ -1,9 +1,9 @@
  
-from PyQt5.QtWidgets import QWidget,QVBoxLayout
 import functools
 from utils.config import globalconfig   
 from traceback import print_exc 
 from system_hotkey import SystemHotkey 
+import pyperclip
 from utils.somedef import key_first,key_first_reg,key_second,key_second_reg
 def setTab_quick_direct(self):
     self.hotkeys={}
@@ -20,7 +20,7 @@ def setTab_quick_direct(self):
             '_1':self.object.translation_ui.startTranslater,
             '_2':self.object.translation_ui.changeTranslateMode,
             '_3':self.showsignal.emit,
-            '_4':lambda:self.object.setclipboardsignal.emit( self.object.translation_ui.original) ,
+            '_4':lambda:pyperclip.copy( self.object.translation_ui.original) ,
             '_5':self.object.translation_ui.changeshowhideraw,
             '_6':lambda: self.object.transhis.showsignal.emit(),
             '_7':self.object.translation_ui.langdu,

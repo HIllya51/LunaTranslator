@@ -2,7 +2,7 @@
 import time  
 from textsource.textsourcebase import basetext
 from utils.config import globalconfig
-import pyperclip,ctypes,win32process,os
+import pyperclip,ctypes,win32utils,os
 class copyboard(basetext):
     def __init__(self,textgetmethod) -> None:
         self.last_paste_str = '' 
@@ -16,7 +16,7 @@ class copyboard(basetext):
             
             if self.last_paste_str != paste_str:
                 self.last_paste_str =paste_str 
-                if globalconfig['excule_from_self']   and win32process.GetWindowThreadProcessId(ctypes.windll.user32.GetClipboardOwner())[1]==os.getpid():
+                if globalconfig['excule_from_self']   and win32utils.GetWindowThreadProcessId(win32utils.GetClipboardOwner())[1]==os.getpid():
                     return  
                 return (paste_str)
     def runonce(self): 

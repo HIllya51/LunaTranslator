@@ -1,11 +1,11 @@
 from PyQt5.QtWidgets import QWidget,QDesktopWidget,QMainWindow,QLabel,QPushButton,QStatusBar,QDialog,QSizeGrip
 from PyQt5.QtGui import  QBitmap,QPainter,QPen,QBrush,QFont,QMouseEvent
 from PyQt5.QtCore import Qt,QPoint,QRect,QEvent,pyqtSignal
-import re,threading,time
+
  
 from utils.config import globalconfig
 from gui.resizeablemainwindow import Mainw
-
+import win32utils,win32con
 class rangeadjust(Mainw) :
  
     def __init__(self, object):
@@ -127,7 +127,7 @@ class rangeselct(QMainWindow) :
             self.close() 
             self.object.translation_ui.quickrangestatus=not self.object.translation_ui.quickrangestatus
             self.callback() 
-import win32gui,win32con,win32api
+
 
 from utils.wrapper import Singleton_close
 @Singleton_close
@@ -137,7 +137,7 @@ class moveresizegame(QDialog) :
         super().__init__(object)
         self.setWindowFlags(Qt.Dialog|Qt.WindowMaximizeButtonHint|Qt.WindowCloseButtonHint)
         self.object = object  
-        self.setWindowTitle("调整窗口  "+ win32gui.GetWindowText(hwnd))
+        self.setWindowTitle("调整窗口  "+ win32utils.GetWindowText(hwnd))
         # self.setWindowFlags(Qt.WindowStaysOnTopHint | Qt.FramelessWindowHint  )
         # self.setAttribute(Qt.WA_TranslucentBackground) 
         self.setWindowOpacity(0.5)
@@ -152,19 +152,16 @@ class moveresizegame(QDialog) :
         if self.hwnd==0:
             self.close()
         try:
-            rect=win32gui.GetWindowRect(self.hwnd)  
+            rect=win32utils.GetWindowRect(self.hwnd)  
             self.setGeometry(rect[0],rect[1],rect[2]-rect[0],rect[3]-rect[1])
             self.show()
         except:
             self.close()
-        #win32gui.SetWindowPos(self.winId(),win32con.HWND_TOPMOST,rect[0],rect[1],1000,1000,  win32con.SWP_NOACTIVATE)
-        
     def moveEvent(self, a0 ) -> None:
         rect = self.geometry() 
         if self.isMaximized()==False:
-            #win32gui.ShowWindow(self.hwnd,win32con.SW_SHOW)
             try:
-                win32gui.MoveWindow(self.hwnd,  rect.left(),rect.top(),rect.right()-rect.left(), rect.bottom()-rect.top(),  False)
+                win32utils.MoveWindow(self.hwnd,  rect.left(),rect.top(),rect.right()-rect.left(), rect.bottom()-rect.top(),  False)
             except:
                 pass
         return super().moveEvent(a0)
@@ -178,9 +175,8 @@ class moveresizegame(QDialog) :
             self.move(self.pos() + self._endPos) 
             rect = self.geometry() 
             if self.isMaximized()==False:
-                #win32gui.ShowWindow(self.hwnd,win32con.SW_SHOW)
                 try:
-                    win32gui.MoveWindow(self.hwnd,  rect.left(),rect.top(),rect.right()-rect.left(), rect.bottom()-rect.top(),  False)
+                    win32utils.MoveWindow(self.hwnd,  rect.left(),rect.top(),rect.right()-rect.left(), rect.bottom()-rect.top(),  False)
                 except:
                     pass
     def mousePressEvent(self, e ) : 
@@ -196,20 +192,16 @@ class moveresizegame(QDialog) :
         if a0.type() == QEvent.WindowStateChange:
             try:
                 if self.isMaximized():
-                    win32gui.ShowWindow(self.hwnd,win32con.SW_MAXIMIZE) 
-                #win32gui.MoveWindow(self.hwnd,  0, 0, win32api.GetSystemMetrics(0), win32api.GetSystemMetrics(1),  False)
+                    win32utils.ShowWindow(self.hwnd,win32con.SW_MAXIMIZE) 
                 else:  
-                    win32gui.ShowWindow(self.hwnd,win32con.SW_SHOWNORMAL)
+                    win32utils.ShowWindow(self.hwnd,win32con.SW_SHOWNORMAL)
             except:
                 pass
-    #def moveEvent(self, a0):
-    #     self.resizeEvent(a0)
     def resizeEvent(self, a0 ) :
         if self.isMaximized()==False: 
             rect = self.geometry()
-            #win32gui.ShowWindow(self.hwnd,win32con.SW_SHOW)
             try:
-                win32gui.MoveWindow(self.hwnd,  rect.left(),rect.top(),rect.right()-rect.left(), rect.bottom()-rect.top(),  False)
+                win32utils.MoveWindow(self.hwnd,  rect.left(),rect.top(),rect.right()-rect.left(), rect.bottom()-rect.top(),  False)
             except:
                 pass
             
