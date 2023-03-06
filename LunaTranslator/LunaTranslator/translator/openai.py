@@ -44,9 +44,9 @@ class TS(basetrans):
                 # 对api_key频繁赋值会消耗性能
                 openai.api_key = client.api_key
 
-        if self.config['temperature'].strip() != "":
+        if self.config['Temperature'].strip() != "":
             try:
-                temperature = float(self.config['temperature'].strip())
+                temperature = float(self.config['Temperature'].strip())
                 if temperature != client.temperature:
                     client.temperature = temperature
             except:

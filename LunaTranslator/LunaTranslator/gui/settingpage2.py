@@ -30,29 +30,19 @@ def initsome11(self,l,label=None):
         i+=1
         
         if fanyi in translatorsetting :
-            fileselect={
-                'json文件':{'dir':False,'filter':'*.json'},
-                'sqlite文件':{'dir':False,'filter':'*.sqlite'},
-                'xml文件':{'dir':False,'filter':'*.xml'},
-                'txt文件':{'dir':False,'filter':'*.txt'},
-                'xml目录':{'dir':True,'filter':''},
-            }
+            
             items=[] 
             for arg in translatorsetting[fanyi]['args']: 
                 items.append({
-                        't':'lineedit','l':arg,'d':translatorsetting[fanyi]['args'],'k':arg
+                        'l':arg,'d':translatorsetting[fanyi]['args'],'k':arg
                     })
-                if arg in fileselect:
-                    items[-1].update({
-                        't':'file',
-                        'dir':fileselect[arg]['dir'],
-                        'filter':fileselect[arg]['filter']
-                    }) 
-                elif arg=='路径' or arg[:4]=='用户词典':
-                    items[-1].update({
-                        't':'file',
-                        'dir':True 
-                    }) 
+                if 'argstype' in translatorsetting[fanyi] and arg in translatorsetting[fanyi]['argstype']:
+                   
+                    items[-1].update(translatorsetting[fanyi]['argstype'][arg]) 
+                else:
+                    items[-1].update(
+                        {'t':'lineedit'}
+                    )
             items.append({'t':'okcancel' })
             last=self.getcolorbutton(globalconfig,'',callback=functools.partial(autoinitdialog,self, (globalconfig['fanyi'][fanyi]['name']),900,items),icon='fa.gear',constcolor="#FF69B4")
         elif fanyi=='selfbuild': 

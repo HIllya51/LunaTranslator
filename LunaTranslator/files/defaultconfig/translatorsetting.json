@@ -6,13 +6,26 @@
             "密钥": "",
             "字数统计": "0",
             "次数统计": "0"
-        }
+        },
+		"argstype":{
+			"注册网址":{
+				"type":"label",
+				"islink":true
+			}
+		}
     },"feishu": {
         "args": {
             "注册网址": "https://open.feishu.cn/document/ukTMukTMukTM/ukDNz4SO0MjL5QzM/auth-v3/auth/tenant_access_token_internal",
             "app_id": "",
             "app_secret": ""
         }
+		,
+		"argstype":{
+			"注册网址":{
+				"type":"label",
+				"islink":true
+			}
+		}
     },
     "caiyunapi": {
         "args": {
@@ -21,6 +34,13 @@
             "字数统计": "0",
             "次数统计": "0"
         }
+		,
+		"argstype":{
+			"注册网址":{
+				"type":"label",
+				"islink":true
+			}
+		}
     },
     "deeplapi-free": {
         "args": {
@@ -29,6 +49,13 @@
             "字数统计": "0",
             "次数统计": "0"
         }
+		,
+		"argstype":{
+			"注册网址":{
+				"type":"label",
+				"islink":true
+			}
+		}
     },
     "deeplapi": {
         "args": {
@@ -37,6 +64,13 @@
             "字数统计": "0",
             "次数统计": "0"
         }
+		,
+		"argstype":{
+			"注册网址":{
+				"type":"label",
+				"islink":true
+			}
+		}
     },
     "yandexapi": {
         "args": {
@@ -56,6 +90,13 @@
             "字数统计": "0",
             "次数统计": "0"
         }
+		,
+		"argstype":{
+			"注册网址":{
+				"type":"label",
+				"islink":true
+			}
+		}
     },
     "tencentapi": {
         "args": {
@@ -65,6 +106,13 @@
             "字数统计": "0",
             "次数统计": "0"
         }
+		,
+		"argstype":{
+			"注册网址":{
+				"type":"label",
+				"islink":true
+			}
+		}
     },
     "xiaoniu": {
         "args": {
@@ -73,6 +121,13 @@
             "字数统计": "0",
             "次数统计": "0"
         }
+		,
+		"argstype":{
+			"注册网址":{
+				"type":"label",
+				"islink":true
+			}
+		}
     },
     "youdaoapi": {
         "args": {
@@ -82,13 +137,33 @@
             "字数统计": "0",
             "次数统计": "0"
         }
+		,
+		"argstype":{
+			"注册网址":{
+				"type":"label",
+				"islink":true
+			}
+		}
     },
     "openai": {
       "args": {
         "注册网址": "https://platform.openai.com/account/api-keys",
         "SECRET_KEY": "",
-        "temperature": "默认为0.3,可选0~1,如果你不了解含义就不要修改它"
+        "Temperature": 0.3
       }
+	  ,
+		"argstype":{
+			"注册网址":{
+				"type":"label",
+				"islink":true
+			},
+			"Temperature":{
+				"type":"spin",
+				"min":0,
+				"max":1,
+				"step":0.1
+			}
+		}
     },
     "jb7": {
         "args": {
@@ -98,33 +173,97 @@
 			"用户词典3(可选)":"",
 			"备注":"用户词典选择JcUserdic文件夹"
         }
+		,
+		"argstype":{
+			"备注":{
+				"type":"label"
+			},
+			"路径":{
+				"type":"file",
+				"dir":true
+			},
+			"用户词典1(可选)":{
+				"type":"file",
+				"dir":true
+			},
+			"用户词典2(可选)":{
+				"type":"file",
+				"dir":true
+			},
+			"用户词典3(可选)":{
+				"type":"file",
+				"dir":true
+			}
+			
+		}
     },
     "kingsoft": {
         "args": {
             "路径": ""
-        }
+        },
+		"argstype":{
+			"路径":{
+				"type":"file",
+				"dir":true
+			}
+		}
     },
     "dreye": {
         "args": {
             "路径": ""
-        }
+        },
+		"argstype":{
+			"路径":{
+				"type":"file",
+				"dir":true
+			}
+		}
     },
     "rengong": {
         "args": {
             "json文件": ""
         }
+		,
+		"argstype":{
+			"json文件":{
+				"type":"file",
+				"dir":false,
+				"filter":"*.json"
+			}
+		}
     },"rengong_vnr": {
         "args": {
             "xml文件": ""
-        }
+        },
+		"argstype":{
+			"xml文件":{
+				"type":"file",
+				"dir":false,
+				"filter":"*.xml"
+			}
+		}
     },"rengong_msk": {
         "args": {
             "txt文件": ""
-        }
+        },
+		"argstype":{
+			"txt文件":{
+				"type":"file",
+				"dir":false,
+				"filter":"*.txt"
+			}
+		}
     },
     "premt": {
         "args": {
             "sqlite文件": ""
-        }
+        },
+		"argstype":{
+			"sqlite文件":{
+				"type":"file",
+				"dir":false,
+				"filter":"*.sqlite"
+			}
+		}
     }
 }

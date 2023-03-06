@@ -8,6 +8,7 @@ from utils.config import globalconfig ,_TR,_TRL
 from gui.dialog_savedgame import dialog_savedgame 
 from gui.codeacceptdialog import codeacceptdialog  
 from utils import somedef
+from utils.utils import makehtml
 def gethookgrid(self) :
  
         grids=[
@@ -47,7 +48,7 @@ def gethookembedgrid(self) :
         self.gamefont_comboBox.setCurrentFont(QFont(globalconfig['embedded']['changefont_font']))  
         grids=[
                  
-                [('获取最新内嵌引擎以及申请支持更多游戏',5),'',('<a href="https://github.com/HIllya51/TextEmbedder">https://github.com/HIllya51/TextEmbedder</a>',8,'link')], 
+                [('获取最新内嵌引擎以及申请支持更多游戏',5),'',(makehtml('https://github.com/HIllya51/TextEmbedder'),8,'link')], 
                 [('保留原文',5),(self.getsimpleswitch( globalconfig['embedded'],'keeprawtext',callback=lambda x:self.object.ga.sendSetting('embeddedScenarioTextVisible',x ))  ,1) ],
                  
                 [('翻译等待时间(s)',5),'',(self.getspinbox(0,30,globalconfig['embedded'],'timeout_translate',double=True,step=0.1,callback=lambda x:self.object.ga.sendSetting('embeddedTranslationWaitTime',int(x*1000))),3) ],

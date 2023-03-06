@@ -1,11 +1,11 @@
 import functools
-from PyQt5.QtWidgets import QDialogButtonBox,QDialog,QComboBox,QFormLayout,QSpinBox,QHBoxLayout,QLineEdit,QFileDialog,QPushButton,QLabel,QColorDialog
+from PyQt5.QtWidgets import QDialogButtonBox,QDialog,QComboBox,QFormLayout,QDoubleSpinBox,QSpinBox,QHBoxLayout,QLineEdit,QFileDialog,QPushButton,QLabel,QColorDialog
 from PyQt5.QtCore import Qt,QSize
 from PyQt5.QtGui import QColor 
 import qtawesome
 from utils.config import globalconfig ,_TR,_TRL
 from gui.usefulwidget import MySwitch 
-
+from utils.utils import makehtml
 from utils.wrapper import Singleton
 @Singleton
 class autoinitdialog(QDialog):
@@ -33,7 +33,20 @@ class autoinitdialog(QDialog):
             if res!='':
                 edit.setText(res)
         for line in lines:
-            if line['t']=='okcancel':
+            if 'type' in line:
+                line['t']=line['type']
+            if line['t']=='label':
+                dd=line['d']
+                key=line['k'] 
+                
+                if 'islink' in line and line['islink']:
+                    e=QLabel(makehtml(dd[key]))
+                    e.setOpenExternalLinks(True)
+                else:
+                    e=QLabel(_TR(dd[key]))
+                formLayout.addRow((_TR(line['l'])),e)
+            
+            elif line['t']=='okcancel':
                 button = QDialogButtonBox(QDialogButtonBox.Ok|QDialogButtonBox.Cancel) 
                 formLayout.addRow(button)
                 button.rejected.connect(dialog.close)
@@ -78,7 +91,17 @@ class autoinitdialog(QDialog):
                         line['d'].__setitem__(line['k'] ,line['map'][x])
                     combo.currentIndexChanged.connect(functools.partial(__,line))
                 formLayout.addRow(_TR(line['l']),combo) 
-            #  
+            elif line['t']=='spin':
+                dd=line['d']
+                key=line['k'] 
+                spin=QDoubleSpinBox()
+                spin.setMinimum(0 if 'min' not in line else line['min'])
+                spin.setMaximum(100 if 'max' not in line else line['max'])
+                spin.setSingleStep(0.1 if 'step' not in line  else line['step'])
+                spin.setValue(dd[key])
+                spin.valueChanged.connect(functools.partial(dd.__setitem__,key))
+                
+                formLayout.addRow(_TR(line['l']),spin)  
         dialog.show()
  
 def getsomepath1(object,title,d,k,label,callback=None,isdir=False,filter1="*.db"):

@@ -519,5 +519,6 @@
     "人名": "Nom de la personne",
     "显示": "Afficher",
     "自动朗读仅当名字为指定名字时才执行": "La Lecture automatique à haute voix n'est effectuée que si le nom est le nom spécifié",
-    "指定朗读的名字(以|分隔多个,以\"None\"表示没有名字)": "Spécifiez les noms lus à haute voix (Séparez - en plusieurs par |, par \"none\" pour indiquer qu'il n'y a pas de nom)"
+    "指定朗读的名字(以|分隔多个,以\"None\"表示没有名字)": "Spécifiez les noms lus à haute voix (Séparez - en plusieurs par |, par \"none\" pour indiquer qu'il n'y a pas de nom)",
+    "用户词典选择JcUserdic文件夹": "Dictionnaire utilisateur sélectionner le dossier jcuserdic"
 }
