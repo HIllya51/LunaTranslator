@@ -352,10 +352,9 @@ def GetBinaryType(filename):
 _ReadFile=_kernel32.ReadFile
 _ReadFile.argtypes=c_void_p,c_char_p,c_uint,c_void_p,c_void_p
 def ReadFile(handle,nNumberOfBytesToRead,lpOverlapped):
-    nread= min(65535,nNumberOfBytesToRead)
-    buf=create_string_buffer( nread)
+    buf=create_string_buffer( nNumberOfBytesToRead)
     dwread=c_int()
-    _ReadFile(c_void_p(int(handle)),buf,nread,pointer(dwread),lpOverlapped)
+    _ReadFile(c_void_p(int(handle)),buf,nNumberOfBytesToRead,pointer(dwread),lpOverlapped)
     return 0,buf.raw
 
 _WriteFile=_kernel32.WriteFile
