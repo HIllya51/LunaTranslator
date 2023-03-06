@@ -44,13 +44,13 @@ class TS(basetrans):
                 # 对api_key频繁赋值会消耗性能
                 openai.api_key = client.api_key
 
-        if self.config['Temperature'].strip() != "":
-            try:
-                temperature = float(self.config['Temperature'].strip())
-                if temperature != client.temperature:
-                    client.temperature = temperature
-            except:
-                client.temperature = 0.3
+        
+        try:
+            temperature = float(self.config['Temperature'])
+            if temperature != client.temperature:
+                client.temperature = temperature
+        except:
+            client.temperature = 0.3
 
         content = "translate {fr} to {to}: ".format(fr=self.srclang, to=self.tgtlang) + query
 
