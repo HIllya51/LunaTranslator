@@ -4,7 +4,7 @@ from PyQt5.QtWidgets import  QPushButton,QDialog,QVBoxLayout ,QHeaderView,QFileD
 import functools 
 from traceback import print_exc 
 from PyQt5.QtWidgets import    QHBoxLayout, QTableView, QAbstractItemView, QLabel, QVBoxLayout
-import qtawesome 
+import win32utils 
 
 from PyQt5.QtGui import QStandardItem, QStandardItemModel   
 from PyQt5.QtCore import Qt,QSize  
@@ -53,7 +53,18 @@ class dialog_setting_game(QDialog):
                 self.resize(QSize(800,200))
                 self.setWindowIcon(getExeIcon(item.savetext))
                 formLayout.addLayout(lujing)
-
+                if 'alwaysuselr' not in savehook_new_data[self.item.savetext]:
+                        savehook_new_data[self.item.savetext]['alwaysuselr']=False
+                try:
+                        b=win32utils.GetBinaryType(self.item.savetext)
+                        if b==0: 
+                                lrelay=QHBoxLayout()
+                                lrelay.addWidget(QLabel(_TR("使用Locale_Remulator转区")))
+                                
+                                lrelay.addWidget(self.object.getsimpleswitch(savehook_new_data[self.item.savetext],'alwaysuselr'))
+                                formLayout.addLayout(lrelay)
+                except:
+                        pass
                 autochangestatus=QHBoxLayout()
                 autochangestatus.addWidget(QLabel(_TR("自动切换到模式"))) 
                 autochangestatus.addWidget(self.object.getsimplecombobox(_TRL(['不切换','HOOK','HOOK_内嵌','剪贴板','OCR']),savehook_new_data[self.item.savetext],'onloadautochangemode'))
@@ -169,7 +180,9 @@ class dialog_savedgame(QDialog):
                                                 self.object.yuitsu_switch('sourcestatus','sourceswitchs',_[mode],None ,True) 
                                                 self.object.object.starttextsource(use=_[mode],checked=True,waitforautoinit=True)
                         if savehook_new_data[game]['leuse'] :
-                                le3264run(game)
+                                if 'alwaysuselr' not in savehook_new_data[game]:
+                                        savehook_new_data[game]=False
+                                le3264run(game,savehook_new_data['alwaysuselr'])
                         else:
                                 win32utils.ShellExecute(None, "open", game, "", os.path.dirname(game), win32con.SW_SHOW) 
                         savehook_new_list.insert(0,savehook_new_list.pop(self.table.currentIndex().row())) 

@@ -1,8 +1,8 @@
 import os,win32utils,win32con,uuid
-def le3264run(game): 
+def le3264run(game,alwaysuselr): 
     try:
         b=win32utils.GetBinaryType(game)
-        if b==0: 
+        if b==0 and alwaysuselr==False: 
             #le=os.path.join(os.path.abspath(globalconfig['LocaleEmulator']),'LEProc.exe')
             le=os.path.join(os.path.abspath('./files/Locale.Emulator.2.5.0.1'),'LEProc.exe')
             if os.path.exists(le): 

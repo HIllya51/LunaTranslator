@@ -522,5 +522,6 @@
     "指定朗读的名字(以|分隔多个,以\"None\"表示没有名字)": "Spécifiez les noms lus à haute voix (Séparez - en plusieurs par |, par \"none\" pour indiquer qu'il n'y a pas de nom)",
     "用户词典选择JcUserdic文件夹": "Dictionnaire utilisateur sélectionner le dossier jcuserdic",
     "当前MD5": "Le MD5 actuel",
-    "修改": "Modifier"
+    "修改": "Modifier",
+    "使用Locale_Remulator转区": "Utilisation de locale Remulator à zone"
 }

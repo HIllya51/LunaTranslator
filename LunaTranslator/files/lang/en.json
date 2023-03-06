@@ -522,5 +522,6 @@
     "指定朗读的名字(以|分隔多个,以\"None\"表示没有名字)": "Specify the names to read aloud (separate multiple names with |, and use \"None\" to indicate that there is no name)",
     "用户词典选择JcUserdic文件夹": "User dictionary selection JcUserdic folder",
     "当前MD5": "Current MD5",
-    "修改": "modify"
+    "修改": "modify",
+    "使用Locale_Remulator转区": "Use Locale_ Calculator transfer"
 }

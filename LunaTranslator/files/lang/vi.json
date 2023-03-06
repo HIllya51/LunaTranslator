@@ -522,5 +522,6 @@
     "指定朗读的名字(以|分隔多个,以\"None\"表示没有名字)": "Chỉ định tên để đọc (để phân tách nhiều, để \"None\" có nghĩa là không có tên)",
     "用户词典选择JcUserdic文件夹": "Từ điển người dùng Chọn thư mục JcUserdic",
     "当前MD5": "MD5 hiện tại",
-    "修改": "Sửa đổi"
+    "修改": "Sửa đổi",
+    "使用Locale_Remulator转区": "Sử dụng locale_ Remulator Chuyển vùng"
 }
