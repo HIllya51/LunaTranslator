@@ -181,8 +181,8 @@ class dialog_savedgame(QDialog):
                                                 self.object.object.starttextsource(use=_[mode],checked=True,waitforautoinit=True)
                         if savehook_new_data[game]['leuse'] :
                                 if 'alwaysuselr' not in savehook_new_data[game]:
-                                        savehook_new_data[game]=False
-                                le3264run(game,savehook_new_data['alwaysuselr'])
+                                        savehook_new_data[game]['alwaysuselr']=False
+                                le3264run(game,savehook_new_data[game]['alwaysuselr'])
                         else:
                                 win32utils.ShellExecute(None, "open", game, "", os.path.dirname(game), win32con.SW_SHOW) 
                         savehook_new_list.insert(0,savehook_new_list.pop(self.table.currentIndex().row())) 

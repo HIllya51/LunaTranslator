@@ -12,7 +12,7 @@ def le3264run(game,alwaysuselr):
                     win32utils.ShellExecute(None, "open", le, f'-run "{game}"', os.path.dirname(game), win32con.SW_SHOW)
         elif b==6: 
                 #le=os.path.join(os.path.abspath(globalconfig['Locale_Remulator']),'LRProc.exe')
-                le=os.path.join(os.path.abspath('./files/Locale_Remulator.1.5.0'),'LRProc.exe')
+                le=os.path.join(os.path.abspath('./files/Locale_Remulator.1.5.1'),'LRProc.exe')
                 if os.path.exists(le): 
                         
                       win32utils.ShellExecute(None, "open", le, f'5f4c9504-8e76-46e3-921b-684d7826db71 "{ (game)}"', os.path.dirname(game), win32con.SW_HIDE)
