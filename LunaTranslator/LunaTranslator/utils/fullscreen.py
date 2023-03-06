@@ -2,7 +2,7 @@ import os,win32con,json,math
 import win32utils
 from utils.config import globalconfig 
 from utils.magpie import callmagpie
-from utils.getpidlist import  letfullscreen,recoverwindow,ListProcess
+from utils.hwnd import  letfullscreen,recoverwindow,ListProcess
 from traceback import print_exc
 from utils.subproc import subproc
 import time

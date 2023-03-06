@@ -7,7 +7,7 @@ import functools
 from utils.config import globalconfig ,_TR,_TRL
 import sys
 import time   ,os
-from utils.getpidlist import getwindowhwnd,getpidexe,ListProcess,mouseselectwindow,getExeIcon
+from utils.hwnd import getwindowhwnd,getpidexe,ListProcess,mouseselectwindow,getExeIcon
 import qtawesome
 
 from gui.usefulwidget import closeashidewindow

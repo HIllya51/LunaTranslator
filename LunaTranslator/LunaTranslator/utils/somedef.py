@@ -1,3 +1,30 @@
+import os
+
+def initpath():
+    dirname, filename = os.path.split(os.path.abspath(__file__))
+    dirname=os.path.dirname(os.path.dirname(dirname))
+    os.chdir(dirname) 
+
+    if os.path.exists('./userconfig')==False:
+        os.mkdir('./userconfig')
+    if os.path.exists('./transkiroku'):
+        os.rename('transkiroku','translation_record')
+    if os.path.exists('./translation_record')==False:
+        os.mkdir('./translation_record') 
+    if os.path.exists('./cache')==False:
+        os.mkdir('./cache')
+    if os.path.exists('./cache/ocr')==False:
+        os.mkdir('./cache/ocr')
+    if os.path.exists('./cache/update')==False:
+        os.mkdir('./cache/update')
+    if os.path.exists('./cache/screenshot')==False:
+        os.mkdir('./cache/screenshot')
+    if os.path.exists('./cache/tts')==False:
+        os.mkdir('./cache/tts')
+
+
+
+
 language_list_show=["简体中文","日本語","English","Русский язык","Español","한국어","Français","繁體中文","Tiếng Việt","Türkçe"] 
 language_list_translator=["简体中文","日文","英文","俄语","西班牙语","韩语","法语","繁体中文","越南语","土耳其语"]
 language_list_translator_inner=["zh", "ja", "en","ru","es","ko","fr","cht","vi","tr"]

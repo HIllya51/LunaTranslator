@@ -8,9 +8,9 @@ import os
 from utils import somedef
 from utils.config import globalconfig ,_TR ,savehook_new_data
 from utils.u16lesubprocess import u16lesubprocess
-from utils.getpidlist import getarch
+from utils.hwnd import getarch
 from textsource.textsourcebase import basetext 
-from utils.chaos import checkchaos  
+from utils.utils import checkchaos  
 class textractor(basetext  ): 
     def __init__(self,textgetmethod,hookselectdialog,pid,hwnd,pname  ,autostarthookcode=None,needinserthookcode=None) :
         if autostarthookcode is None:

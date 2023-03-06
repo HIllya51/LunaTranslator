@@ -5,7 +5,7 @@ from PyQt5.QtWidgets import    QHBoxLayout, QTableView
 from PyQt5.QtGui import QStandardItem, QStandardItemModel 
 from PyQt5.QtWidgets import   QComboBox    
 from PyQt5.QtCore import Qt,QSize  
-from utils.chaos import checkencoding
+from utils.utils import checkencoding
 from utils.config import globalconfig ,_TR,_TRL
 
 from utils.wrapper import Singleton

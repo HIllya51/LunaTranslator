@@ -2,7 +2,7 @@
 import time
 filestart=time.time()    
 
-from utils.somepath import initpath
+from utils.somedef import initpath
 initpath() 
 import os,threading,Levenshtein,sys 
 from traceback import  print_exc   
@@ -13,14 +13,14 @@ import threading
 from PyQt5.QtCore import QCoreApplication ,Qt ,QObject,pyqtSignal
 from PyQt5.QtWidgets import  QApplication ,QGraphicsScene,QGraphicsView,QDesktopWidget  
 from utils import somedef
-from utils.minmaxmove import minmaxmoveobservefunc
+from utils.utils import minmaxmoveobservefunc
 from utils.simplekanji import kanjitrans
 from utils.wrapper import threader 
 from utils import somedef
 from gui.showword import searchwordW
 from gui.rangeselect    import rangeadjust
 
-from utils.getpidlist import pid_running,getarch,getpidexe ,getpidhwnds,ListProcess,getScreenRate
+from utils.hwnd import pid_running,getarch,getpidexe ,getpidhwnds,ListProcess,getScreenRate
 
 from textsource.copyboard import copyboard   
 from textsource.textractor import textractor   

@@ -13,7 +13,7 @@ import os,time
 from utils.config import globalconfig ,_TR,_TRL
 from collections import OrderedDict
 from gui.usefulwidget import closeashidewindow
-from utils.chaos import checkchaos
+from utils.utils import checkchaos
 from utils.subproc import subproc
 class HTMLDelegate(QStyledItemDelegate):
     def __init__(self, parent=None):

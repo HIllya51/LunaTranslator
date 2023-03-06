@@ -16,9 +16,9 @@ from utils.config import globalconfig,saveallconfig,_TR
 from utils.subproc import endsubprocs
 import  win32con
 import gui.rangeselect
-from utils.update import update
+from utils.utils import update
 from utils.subproc import subproc
-from utils.getpidlist import mouseselectwindow 
+from utils.hwnd import mouseselectwindow 
 from gui.dialog_savedgame import dialog_savedgame
 from gui.textbrowser import Textbrowser
 from utils.fullscreen import fullscreen
