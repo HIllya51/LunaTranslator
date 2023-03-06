@@ -257,7 +257,7 @@ class postconfigdialog(QDialog):
         lb.setText(_TR(key) )
         formLayout.addWidget(lb) 
         if type(configdict[key])==type(1): 
-            spin=QDO(dialog)
+            spin=QDoubleSpinBox(dialog)
             spin.setMinimum(1)
             spin.setMaximum(100)
             spin.setValue(configdict[key])
