@@ -17,7 +17,7 @@ from utils.subproc import endsubprocs
 import  win32con
 import gui.rangeselect
 from utils.update import update
-from utils.subproc import subproc2
+from utils.subproc import subproc
 from utils.getpidlist import mouseselectwindow 
 from gui.dialog_savedgame import dialog_savedgame
 from gui.textbrowser import Textbrowser
@@ -394,7 +394,7 @@ class QUnFrameWindow(resizableframeless):
             
             self.refreshtoolicon()
             
-            subproc2(f'./files/muteprocess.exe {pid}  {int(self.processismuteed)}')
+            subproc(f'./files/muteprocess.exe {pid}  {int(self.processismuteed)}')
         except:
             print_exc()
     
