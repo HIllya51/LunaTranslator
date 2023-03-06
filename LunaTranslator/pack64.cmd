@@ -20,9 +20,11 @@ del ..\build\LunaTranslator\LunaTranslator\qt5multimedia.dll
 del ..\build\LunaTranslator\LunaTranslator\PyQt5\qt-plugins\platforms\qminimal.dll
 del ..\build\LunaTranslator\LunaTranslator\PyQt5\qt-plugins\platforms\qoffscreen.dll
 del ..\build\LunaTranslator\LunaTranslator\PyQt5\qt-plugins\platforms\qwebgl.dll
-rmdir /S /Q ..\build\LunaTranslator\LunaTranslator\PyQt5\qt-plugins\mediaservice
-rmdir /S /Q ..\build\LunaTranslator\LunaTranslator\PyQt5\qt-plugins\printsupport
-rmdir /S /Q ..\build\LunaTranslator\LunaTranslator\PyQt5\qt-plugins\imageformats 
+rmdir /S /Q ..\build\LunaTranslator_x86\LunaTranslator\PyQt5\qt-plugins\mediaservice
+rmdir /S /Q ..\build\LunaTranslator_x86\LunaTranslator\PyQt5\qt-plugins\printsupport
+rmdir /S /Q ..\build\LunaTranslator_x86\LunaTranslator\PyQt5\qt-plugins\platformthemes
+rmdir /S /Q ..\build\LunaTranslator_x86\LunaTranslator\PyQt5\qt-plugins\iconengines
+rmdir /S /Q ..\build\LunaTranslator_x86\LunaTranslator\PyQt5\qt-plugins\imageformats 
 del ..\build\LunaTranslator\LunaTranslator\libssl-1_1-x64.dll
 del ..\build\LunaTranslator\LunaTranslator\libcrypto-1_1-x64.dll
 xcopy ..\build\LunaTranslator\ C:\dataH\LunaTranslator /e /y /I
