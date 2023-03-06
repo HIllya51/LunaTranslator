@@ -2,7 +2,7 @@
 import functools
 from utils.config import globalconfig   
 from traceback import print_exc 
-from system_hotkey import SystemHotkey 
+from utils.winsyshotkey import SystemHotkey 
 import pyperclip
 from utils.somedef import key_first,key_first_reg,key_second,key_second_reg
 def setTab_quick_direct(self):

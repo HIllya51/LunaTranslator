@@ -66,16 +66,20 @@ def setlanguage():
     with open(f'./files/lang/{somedef.language_list_translator_inner[language]}.json','r',encoding='utf8') as ff:
         languageshow=json.load(ff)
 setlanguage()
+
 def _TR(k):
     global language,languageshow
-     
     if k=='':
         return ''
-    if k not in languageshow or languageshow[k]=='':
-        languageshow[k]=''
+    try:
+        k.encode('ascii')
         return k
-    else:
-        return languageshow[k]
+    except:
+        if k not in languageshow or languageshow[k]=='':
+            languageshow[k]=''
+            return k
+        else:
+            return languageshow[k]
 def _TRL(kk):
     x=[]
     for k in kk:

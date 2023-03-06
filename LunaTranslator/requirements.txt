@@ -9,7 +9,6 @@ regex==2021.11.10
 requests==2.25.1
 setuptools==56.0.0
 six==1.16.0
-system_hotkey==1.0.3
 tzlocal==3.0
 websockets==10.4
 

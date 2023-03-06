@@ -24,6 +24,21 @@ if __name__=='__main__':
     xxx={'ru':'ru','en':'en',
     "es":"spa","ko":"kor","fr":"fra" ,"cht":"cht",'ja':'jp',"vi":"vie","tr":"tr"}
 
+    needpop=[]
+    for k in js:
+            kk=False
+            try:
+                k.encode('ascii')
+                print(k)
+                kk=True
+            except:
+                pass
+            if k not in js or kk:
+                needpop.append(k)
+    for k in needpop:
+             js.pop(k) 
+    with open(f'./files/lang/'+f,'w',encoding='utf8')  as ff:
+                    ff.write( json.dumps(js,ensure_ascii=False,sort_keys=False, indent=4))
     for kk in xxx:
         with open(f'./files/lang/{kk}.json','r',encoding='utf8')  as ff:
             
@@ -31,9 +46,10 @@ if __name__=='__main__':
          
         a=TS1('baiduapi',None)
         a.tgtlang=xxx[kk] 
+        
         needpop=[]
-        for k in jsen:
-             if k not in js:
+        for k in jsen: 
+             if k not in js :
                  needpop.append(k)
         print(kk,needpop)
         for k in needpop:
