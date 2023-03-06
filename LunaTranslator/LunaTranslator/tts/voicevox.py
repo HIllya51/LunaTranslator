@@ -94,6 +94,4 @@ class tts():
             with open('./cache/tts/'+fname+'.wav','wb') as ff:
                 ff.write(response.content)
             self.mp3playsignal.emit('./cache/tts/'+fname+'.wav',globalconfig["ttscommon"]["volume"])
-            #subprocess.Popen('tmp\\voiceroid2.bat' ,shell=True,startupinfo=st )
-        #threading.Thread(target=_).start()
-         
+          

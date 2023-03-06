@@ -3,7 +3,6 @@ import time
 import functools   
 import threading 
 import os
-import subprocess
 from traceback import print_exc
 from PyQt5.QtWidgets import QWidget, QLabel, QPushButton, QVBoxLayout,QApplication
 from PyQt5.QtCore import Qt, pyqtSignal  ,QThread
@@ -18,7 +17,7 @@ from utils.subproc import endsubprocs
 import  win32con
 import gui.rangeselect
 from utils.update import update
-from utils.subproc import subproc
+from utils.subproc import subproc2
 from utils.getpidlist import mouseselectwindow 
 from gui.dialog_savedgame import dialog_savedgame
 from gui.textbrowser import Textbrowser
@@ -395,7 +394,7 @@ class QUnFrameWindow(resizableframeless):
             
             self.refreshtoolicon()
             
-            subproc(f'./files/muteprocess.exe {pid}  {int(self.processismuteed)}')
+            subproc2(f'./files/muteprocess.exe {pid}  {int(self.processismuteed)}')
         except:
             print_exc()
     

@@ -323,7 +323,7 @@ class SECURITY_ATTRIBUTESStruct(Structure):
 _CreateEventW=_kernel32.CreateEventW
 _CreateEventW.argtypes=POINTER(SECURITY_ATTRIBUTESStruct),c_bool,c_bool,c_wchar_p
 def CreateEvent(secu,bManualReset,bInitialState,lpName):
-    return _CreateEventW(pointer(secu),bManualReset,bInitialState,lpName)
+    return _CreateEventW((secu),bManualReset,bInitialState,lpName)
 
 _InitializeSecurityDescriptor = _Advapi32.InitializeSecurityDescriptor
 _InitializeSecurityDescriptor.argtypes = [ctypes.c_void_p, DWORD]
@@ -374,3 +374,17 @@ _WaitNamedPipeW=_kernel32.WaitNamedPipeW
 _WaitNamedPipeW.argtypes=c_wchar_p,c_uint
 def WaitNamedPipe(pipename,timeout):
     return _WaitNamedPipeW(pipename,timeout)
+
+_CreatePipe=_kernel32.CreatePipe
+_CreatePipe.argtypes=POINTER(c_void_p),POINTER(c_void_p),POINTER(SECURITY_ATTRIBUTESStruct),c_uint
+def CreatePipe(secu,sz):
+    hread=c_void_p()
+    hwrite=c_void_p()
+    _CreatePipe(pointer(hread),pointer(hwrite),pointer(secu),sz)
+    return hread.value,hwrite.value
+
+
+_TerminateProcess=_kernel32.TerminateProcess
+_TerminateProcess.argtypes=c_void_p,c_uint
+def TerminateProcess(hprocess,exitcode):
+    return _TerminateProcess(hprocess,exitcode)

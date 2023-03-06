@@ -48,7 +48,7 @@ class VnrAgentSharedMemory:
       eventName = eventName.replace('-', '_') # get rid of minus sign 
       ev = win32utils.CreateEvent(None, False, False, eventName) # initial state = False. True does NOT work 
       win32utils.SetEvent(ev)
-      ev.close()
+      win32utils.CloseHandle(ev)
 
   # Set without checking if attached
   def setAllStatus(self, v):
