@@ -68,11 +68,25 @@ class MAINUI(QObject) :
         self.translators={}
         self.cishus={}
         self.reader=None
-        self.textsource=None 
+        self.textsource_p=None 
         self.rect=None  
         self.last_paste_str=''
+        self.currentmd5='0'
         self.lastshowedstr=''
-        self.textsource=None     
+    @property
+    def textsource(self):return self.textsource_p
+    @textsource.setter
+    def textsource(self,_):
+
+        if self.textsource_p:
+            try:
+                self.textsource_p.end()  
+            except:
+                print_exc()
+        self.textsource_p=_
+        
+        self.currentmd5='0' if _ is None else _.md5
+
     @threader  
     def loadvnrshareddict(self,_=None):
         vnrshareddict(self)  
@@ -92,7 +106,7 @@ class MAINUI(QObject) :
                     if noundictconfig['dict'][key][0]=='0' :
                         usedict=True
                 
-                    if noundictconfig['dict'][key][0]==self.textsource.md5:
+                    if noundictconfig['dict'][key][0]==self.currentmd5:  #self.textsource.md5:
                         usedict=True
                      
                 if usedict and  key in content:
@@ -224,6 +238,11 @@ class MAINUI(QObject) :
         
     @threader
     def startreader(self,use=None,checked=True):
+        try:
+            self.reader.end()
+        except:
+            pass
+        self.reader=None
         if checked:
             from tts.windowstts import tts  as windowstts
             from tts.huoshantts import tts as huoshantts
@@ -244,10 +263,8 @@ class MAINUI(QObject) :
             if use:
                 self.reader_usevoice=use
                 self.reader=ttss[use]( self.settin_ui.voicelistsignal,self.settin_ui.mp3playsignal) 
-            else:
-                self.reader=None
-        else:
-            self.reader=None
+           
+        
     def selectprocess(self,selectedp): 
             #self.object.textsource=None
             pid,pexe,hwnd=(  selectedp)   
@@ -255,11 +272,7 @@ class MAINUI(QObject) :
             arch=getarch(pid)
             if arch is None:
                 return
-            if self.textsource:
-                try:
-                    self.textsource.end()  
-                except:
-                    print_exc()
+            
             #   
             if globalconfig['sourcestatus']['textractor']['use']:
                 self.textsource=textractor(self.textgetmethod,self.hookselectdialog,pid,hwnd,pexe )  
@@ -270,7 +283,7 @@ class MAINUI(QObject) :
                 savehook_new_list.insert(0,pexe)  
             if pexe not in savehook_new_data:
                 savehook_new_data[pexe]={'leuse':True,'title':os.path.basename(os.path.dirname(pexe))+'/'+ os.path.basename(pexe),'hook':[] }  
-     
+
     #@threader
     def starttextsource(self,use=None,checked=True,waitforautoinit=False):   
         self.rect=None 
@@ -279,11 +292,7 @@ class MAINUI(QObject) :
         self.range_ui.hide() 
         self.settin_ui.selectbutton.setEnabled(globalconfig['sourcestatus']['textractor']['use'] or globalconfig['sourcestatus']['embedded']['use']) 
         self.settin_ui.selecthookbutton.setEnabled(globalconfig['sourcestatus']['textractor']['use'] or globalconfig['sourcestatus']['embedded']['use']) 
-         
-        if  self.textsource: 
-            if self.textsource.ending==False :
-                self.textsource.end()  
-            self.textsource=None
+        self.textsource=None
         if checked: 
             classes={'ocr':ocrtext,'copy':copyboard,'textractor':None,'embedded':None,'txt':txt} 
             if use is None:

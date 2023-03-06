@@ -230,7 +230,16 @@ class noundictconfigdialog(QDialog):
         formLayout.addWidget(button)
         formLayout.addWidget(button2)
         formLayout.addWidget(button5) 
+        setmd5layout=QHBoxLayout()
+        setmd5layout.addWidget(QLabel(_TR("当前MD5")))
+        md5content=QLineEdit( object.object.currentmd5)
+        setmd5layout.addWidget(md5content)
+        button5=QPushButton()
+        button5.clicked.connect(lambda x:object.object.__setitem__('currentmd5',md5content.text()))
+        button5.setText(_TR('修改'))
+        setmd5layout.addWidget(button5)
         
+        formLayout.addLayout(setmd5layout)
         dialog.resize(QSize(600,400))
         dialog.show()
 @Singleton

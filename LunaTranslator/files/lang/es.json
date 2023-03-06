@@ -520,5 +520,7 @@
     "显示": "Mostrar",
     "自动朗读仅当名字为指定名字时才执行": "La lectura automática solo se realiza cuando el nombre es el nombre especificado",
     "指定朗读的名字(以|分隔多个,以\"None\"表示没有名字)": "Especifica el nombre de la lectura en voz alta (se separan varios por | Y \"ninguno\" significa que no hay nombre)",
-    "用户词典选择JcUserdic文件夹": "El diccionario del usuario selecciona la carpeta jcuuserdic"
+    "用户词典选择JcUserdic文件夹": "El diccionario del usuario selecciona la carpeta jcuuserdic",
+    "当前MD5": "MD5 actual",
+    "修改": "Modificación"
 }
