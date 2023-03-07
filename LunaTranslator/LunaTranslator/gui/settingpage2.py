@@ -24,7 +24,7 @@ def initsome11(self,l,label=None):
             continue
         
         _f=f'./Lunatranslator/translator/{fanyi}.py'
-        if os.path.exists(_f)==False: 
+        if fanyi!='selfbuild' and os.path.exists(_f)==False : 
             bad+=1 
             continue 
         i+=1

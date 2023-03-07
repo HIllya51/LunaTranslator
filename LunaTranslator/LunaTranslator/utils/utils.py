@@ -14,11 +14,25 @@ def argsort(l):
 
 
 def selectdebugfile(path ):
-    p=None
-    if os.path.exists(os.path.join('./LunaTranslator',path)):
-        p= os.path.abspath(os.path.join('./LunaTranslator',path)) 
-    if p  :
-        os.startfile(p)
+ 
+    p= os.path.abspath(os.path.join('./LunaTranslator',path)) 
+    
+    if os.path.exists(p)==False:
+          with open(p,'w',encoding='utf8') as ff:
+                if path=='translator/selfbuild.py':
+                      ff.write('''
+import requests
+from translator.basetranslator import basetrans 
+class TS(basetrans): 
+    def translate(self,content):  
+        #在这里编写
+        return content''')
+                elif path=='postprocess/mypost.py':
+                      ff.write('''
+def POSTSOLVE(line): 
+    #请在这里编写自定义处理
+    return line''')
+    os.startfile(p)
     return p
 class Threadwithresult(Thread):
     def __init__(self, func,  defalut=None):
