@@ -3,7 +3,7 @@ from utils.config import globalconfig
 import time
 import os ,threading,win32utils,win32con
 from traceback import print_exc
-from utils.subproc import subproc
+from utils.subproc import subproc_w
 class tts():
     def end(self):
         try:
@@ -43,18 +43,14 @@ class tts():
             exepath=os.path.join(os.getcwd(),'files/voiceroid2/voice2.exe')
             self.savepath=savepath
 
-            try:
-                self.engine.kill()
-            except:
-                pass
+
             t=time.time()
             t= str(t) 
             pipename='\\\\.\\Pipe\\voiceroid2_'+t
             waitsignal='voiceroid2waitload_'+t
-            #self.engine=subproc(f'./files/x64_x86_dll/jbj7.exe "{self.dllpath}"'+dictpath,stdin=subprocess.PIPE,name='jbj', stdout=subprocess.PIPE ,encoding='utf-16-le')
-            self.engine=subproc(f'"{exepath}" "{globalconfig["reader"]["voiceroid2"]["path"]}" "{dllpath}" {globalconfig["reader"]["voiceroid2"]["voice"]} 1 {(globalconfig["ttscommon"]["rate"]+10.0)/(20.0)*1+0.5} "{savepath}"  {pipename} {waitsignal}',name='voicevoid2')
-            #!!!!!!!!!!!!!!stdout=subprocess.PIPE 之后，隔一段时间之后，exe侧writefile就写不进去了！！！！！不知道为什么！！！
-           
+
+            self.engine=subproc_w(f'"{exepath}" "{globalconfig["reader"]["voiceroid2"]["path"]}" "{dllpath}" {globalconfig["reader"]["voiceroid2"]["voice"]} 1 {(globalconfig["ttscommon"]["rate"]+10.0)/(20.0)*1+0.5} "{savepath}"  {pipename} {waitsignal}',name='voicevoid2')
+            
             secu=win32utils.get_SECURITY_ATTRIBUTES()
             win32utils.WaitForSingleObject(win32utils.CreateEvent(win32utils.pointer(secu),False, False, waitsignal),win32utils.INFINITE); 
             win32utils.WaitNamedPipe(pipename,win32con.NMPWAIT_WAIT_FOREVER)

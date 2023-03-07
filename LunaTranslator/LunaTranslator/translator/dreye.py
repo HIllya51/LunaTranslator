@@ -1,8 +1,7 @@
 
-from utils.subproc import subproc       
+from utils.subproc import subproc_w       
 from translator.basetranslator import basetrans 
-import os 
-import subprocess
+import os  
 
 class TS(basetrans): 
      
@@ -31,12 +30,12 @@ class TS(basetrans):
                 if ress!='':
                     ress+='\n'  
 
-                exec=r'./files/x64_x86_dll/dreyec.exe "'+path+'"  "'+path2+'" '+str(mp[pairs])+' '#+apiinit+' '+apitrans+' '
+                exec1=r'./files/x64_x86_dll/dreyec.exe "'+path+'"  "'+path2+'" '+str(mp[pairs])+' '#+apiinit+' '+apitrans+' '
                  
                 linebyte=bytes(line,encoding=codes[self.srclang])
                 for b in linebyte:
-                    exec+=str(b)+' '
-                p=subproc(exec,stdin=subprocess.PIPE,  stdout=subprocess.PIPE ,cwd=path)
+                    exec1+=str(b)+' '
+                p=subproc_w(exec1,needstdio=True ,cwd=path)
                 
 
                 l=p.stdout.readline()   

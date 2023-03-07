@@ -53,7 +53,7 @@ class basetrans:
         self.typename=typename
         self.queue=Queue() 
         self.callback=callback
-        timeoutfunction(self.inittranslator,globalconfig['translatortimeout'])
+        timeoutfunction(self.inittranslator,max(globalconfig['translatortimeout'],5))
         
         _=dict(zip(somedef.language_list_translator_inner,somedef.language_list_translator_inner))
         _.update({'cht':'zh'})
@@ -122,7 +122,7 @@ class basetrans:
             
             res=timeoutfunction(partial(self.maybecachetranslate,contentraw,contentsolved),globalconfig['translatortimeout']) 
             if res is None:
-                timeoutfunction(self.inittranslator,globalconfig['translatortimeout'])
+                timeoutfunction(self.inittranslator,max(globalconfig['translatortimeout'],5))
                 res=timeoutfunction(partial(self.maybecachetranslate,contentraw,contentsolved),globalconfig['translatortimeout']) 
             if res is None:
                 continue 

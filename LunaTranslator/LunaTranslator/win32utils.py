@@ -46,7 +46,7 @@ class WINDOWPLACEMENT(Structure):
         
         
     ]
-class STARTUPINFOW(Structure):
+class STARTUPINFO(Structure):
     _fields_ = [
             ("cb",               c_uint),
             ("lpReserved",       c_wchar_p),
@@ -160,7 +160,7 @@ _GetModuleFileNameExW.argtypes=c_void_p,c_void_p,c_wchar_p,c_uint
 
 _IsWow64Process=_kernel32.IsWow64Process
 _CreateProcessW=_kernel32.CreateProcessW
-_CreateProcessW.argtypes=c_wchar_p,c_wchar_p,c_void_p,c_void_p,c_bool,c_uint,c_void_p,c_wchar_p,POINTER(STARTUPINFOW),POINTER(PROCESS_INFORMATION)
+_CreateProcessW.argtypes=c_wchar_p,c_wchar_p,c_void_p,c_void_p,c_bool,c_uint,c_void_p,c_wchar_p,POINTER(STARTUPINFO),POINTER(PROCESS_INFORMATION)
 
 CREATE_NO_WINDOW=0x08000000
 def CreateProcess(appName: str, commandLine: str, processAttributes, threadAttributes,  bInheritHandles, dwCreationFlags, newEnvironment, currentDirectory, startupinfo):
@@ -355,7 +355,7 @@ def ReadFile(handle,nNumberOfBytesToRead,lpOverlapped):
     buf=create_string_buffer( nNumberOfBytesToRead)
     dwread=c_int()
     _ReadFile(c_void_p(int(handle)),buf,nNumberOfBytesToRead,pointer(dwread),lpOverlapped)
-    return 0,buf.raw[:dwread.value]
+    return buf.raw[:dwread.value]
 
 _WriteFile=_kernel32.WriteFile
 _WriteFile.argtypes=c_void_p,c_char_p,c_uint,c_void_p,c_void_p
@@ -373,3 +373,25 @@ _WaitNamedPipeW=_kernel32.WaitNamedPipeW
 _WaitNamedPipeW.argtypes=c_wchar_p,c_uint
 def WaitNamedPipe(pipename,timeout):
     return _WaitNamedPipeW(pipename,timeout)
+
+_TerminateProcess=_kernel32.TerminateProcess 
+_TerminateProcess.argtypes=c_void_p,c_uint
+def TerminateProcess(phandle,code):
+    return _TerminateProcess(phandle,code)
+ 
+_CreatePipe=_kernel32.CreatePipe 
+_CreatePipe.argtypes=c_void_p,c_void_p,c_void_p,c_uint
+def CreatePipe(lpsecu,sz):
+    hread=c_void_p()
+    hwrite=c_void_p()
+    _CreatePipe(pointer(hread),pointer(hwrite),lpsecu,sz)
+    return hread.value,hwrite.value
+
+_GetCurrentProcess=_kernel32.GetCurrentProcess
+_DuplicateHandle=_kernel32.DuplicateHandle
+_DuplicateHandle.argtypes=c_void_p,c_void_p,c_void_p,c_void_p,c_uint,c_bool,c_uint
+DUPLICATE_SAME_ACCESS=2
+def DuplicateHandle(handle):
+    TargetHandle=c_void_p()
+    _DuplicateHandle(_GetCurrentProcess(),handle,_GetCurrentProcess(),pointer(TargetHandle),0,1,DUPLICATE_SAME_ACCESS)
+    return TargetHandle.value

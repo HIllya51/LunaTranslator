@@ -1,15 +1,12 @@
-import subprocess,time
+import time
 import threading
 from traceback import print_exc
-
+from utils.subproc import subproc_w
 class u16lesubprocess():
     def __init__(self,command) -> None:
         self.cache=[]
-        self.cachelock=threading.Lock()
-        st=subprocess.STARTUPINFO()
-        st.dwFlags=subprocess.STARTF_USESHOWWINDOW
-        st.wShowWindow=subprocess.SW_HIDE
-        self.process=subprocess.Popen(command,stdin=subprocess.PIPE,stdout=subprocess.PIPE, startupinfo=st,encoding='utf-16-le',errors='ignore')
+        self.cachelock=threading.Lock() 
+        self.process=subproc_w(command,needstdio=True,encoding='utf-16-le')
         
         self.isstart=True
         self.readyread=None
@@ -17,7 +14,7 @@ class u16lesubprocess():
         threading.Thread(target=self.readokmonitor).start()
     def cacheread(self):
         while self.process:
-            _=self.process.stdout.readline() 
+            _=self.process.stdout.readline()
             self.cachelock.acquire()
             self.cache.append(_)
             self.cachelock.release()

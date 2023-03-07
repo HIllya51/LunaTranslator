@@ -4,7 +4,7 @@ from utils.config import globalconfig
 from utils.magpie import callmagpie
 from utils.hwnd import  letfullscreen,recoverwindow,ListProcess
 from traceback import print_exc
-from utils.subproc import subproc
+from utils.subproc import subproc_w
 import time
 key_map = {
     "0": 49, "1": 50, "2": 51, "3": 52, "4": 53, "5": 54, "6": 55, "7": 56, "8": 57, "9": 58,
@@ -25,14 +25,13 @@ key_map = {
 class fullscreen():
     def __init__(self) -> None:
         self.savewindowstatus=None 
-        self.savemagpie_pid=None
         if self.fsmethod==1:self.runmagpie10() 
     @property
     def fsmethod(self):return globalconfig['fullscreenmethod_2']
     def runmagpie10(self):
         exes=[_[1] for _ in ListProcess()]  
         if os.path.join(globalconfig['magpie10path'],'Magpie.exe').replace('/','\\') not in exes: 
-            subproc(os.path.join(globalconfig['magpie10path'],'Magpie.exe'),cwd=globalconfig['magpie10path'] ,keep=True ) 
+            subproc_w(os.path.join(globalconfig['magpie10path'],'Magpie.exe'),cwd=globalconfig['magpie10path'] ,name='magpie10' ) 
      
     def _1(self,hwnd,full):
         self.runmagpie10()  
@@ -59,11 +58,8 @@ class fullscreen():
     def _0(self,hwnd,full):
         if full:
             win32utils.SetForegroundWindow(hwnd )    
-            self.savemagpie_pid=callmagpie(('./files/Magpie_v0.9.1'),hwnd,globalconfig['magpiescalemethod'],globalconfig['magpieflags'],globalconfig['magpiecapturemethod'])
+            callmagpie(('./files/Magpie_v0.9.1'),hwnd,globalconfig['magpiescalemethod'],globalconfig['magpieflags'],globalconfig['magpiecapturemethod'])
         else:
-            if self.savemagpie_pid is None:
-                return  
-                
             hwnd=win32utils.FindWindow('Window_Magpie_967EB565-6F73-4E94-AE53-00CC42592A22',None) 
             if hwnd==0:
                 return

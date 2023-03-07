@@ -523,5 +523,8 @@
     "用户词典选择JcUserdic文件夹": "User dictionary selection JcUserdic folder",
     "当前MD5": "Current MD5",
     "修改": "modify",
-    "使用Locale_Remulator转区": "Use Locale_ Calculator transfer"
+    "使用Locale_Remulator转区": "Use Locale_ Calculator transfer",
+    "翻译结果修正": "Correction of translation results",
+    "翻译结果修正按钮": "Translation result correction button",
+    "翻译结果替换设置": "Translation Result Replacement Settings"
 }

@@ -1,9 +1,8 @@
-from utils.subproc import subproc    
 from translator.basetranslator import basetrans 
 import ctypes 
 import os ,time 
 import  win32con ,win32utils
-from utils.subproc import subproc 
+from utils.subproc import subproc_w
 class TS(basetrans):  
     def inittranslator(self ) : 
                  
@@ -29,16 +28,13 @@ class TS(basetrans):
                 if os.path.exists(d):
                     d=os.path.join(d,'Jcuser')
                     dictpath+=f' "{d}" '
-            try:
-                self.engine.kill()
-            except:
-                pass
+            
             t=time.time()
             t= str(t) 
             pipename='\\\\.\\Pipe\\jbj7_'+t
             waitsignal='jbjwaitload_'+t
-            #self.engine=subproc(f'./files/x64_x86_dll/jbj7.exe "{self.dllpath}"'+dictpath,stdin=subprocess.PIPE,name='jbj', stdout=subprocess.PIPE ,encoding='utf-16-le')
-            self.engine=subproc(f'./files/x64_x86_dll/jbj7_4.exe "{self.dllpath}" {pipename} {waitsignal} '+dictpath,name='jbj7')
+
+            self.engine=subproc_w(f'./files/x64_x86_dll/jbj7_4.exe "{self.dllpath}" {pipename} {waitsignal} '+dictpath,name='jbj7')
             #!!!!!!!!!!!!!!stdout=subprocess.PIPE 之后，隔一段时间之后，exe侧writefile就写不进去了！！！！！不知道为什么！！！
            
             secu=win32utils.get_SECURITY_ATTRIBUTES()
@@ -64,8 +60,8 @@ class TS(basetrans):
                 if len(line)==0:continue
                 code1=line.encode('utf-16-le') 
                 win32utils.WriteFile(self.hPipe,self.packuint32(int(self.tgtlang))+self.packuint32(len(code1))+code1) 
-                datalen=self.unpackuint32(win32utils.ReadFile(self.hPipe, 4, None)[1])
-                xx=win32utils.ReadFile(self.hPipe, datalen, None)[1] 
+                datalen=self.unpackuint32(win32utils.ReadFile(self.hPipe, 4, None))
+                xx=win32utils.ReadFile(self.hPipe, datalen, None)
                 xx=xx.decode('utf-16-le',errors='ignore') 
                 ress.append(xx)  
             return '\n'.join(ress)

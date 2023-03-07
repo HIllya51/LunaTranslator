@@ -3,22 +3,22 @@ from utils.config import globalconfig
 import time
 import os 
 import requests,json,threading
-voicevoxprocess=None
-from utils.subproc import subproc
+
+from utils.subproc import subproc_w
 class tts():
-     
+    def end(self):
+        try:
+            self.engine.kill()
+        except:
+            pass
     def __init__(self,showlist ,mp3playsignal): 
-        global voicevoxprocess
-        if voicevoxprocess:
-            voicevoxprocess.kill()
-            voicevoxprocess=None
-          
+        
         self.voicelist=[]
         showlist.emit(self.voicelist)
         if os.path.exists(globalconfig['reader']['voicevox']['path'])==False or \
             os.path.exists(os.path.join(globalconfig['reader']['voicevox']['path'],'run.exe'))==False   :
             return
-        voicevoxprocess=subproc(os.path.join(globalconfig['reader']['voicevox']['path'],'run.exe'),cwd=globalconfig['reader']['voicevox']['path'] ,keep=True)
+        self.engine=subproc_w(os.path.join(globalconfig['reader']['voicevox']['path'],'run.exe'),cwd=globalconfig['reader']['voicevox']['path'] ,name='voicevox')
         
         while True:
             try:
@@ -53,7 +53,7 @@ class tts():
             globalconfig['reader']['voicevox']['voice']=self.voicelist[0]
         if  len(self.voicelist)>0 and globalconfig['reader']['voicevox']['voice'] not in self.voicelist:
             globalconfig['reader']['voicevox']['voice']=self.voicelist[0]
-        self.speaking=None
+        
         self.mp3playsignal=mp3playsignal
     def read(self,content):
         threading.Thread(target=self.read_t,args=(content,)).start()

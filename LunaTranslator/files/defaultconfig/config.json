@@ -110,6 +110,7 @@
 		"AdapterIdx":-1
     },
     "buttonuse": {
+		"fix":false,
 		"noundict":false,
 		"move":false,
         "fullscreen": true,

@@ -7,14 +7,13 @@ from PyQt5.QtGui import QStandardItem, QStandardItemModel,QTextDocument,QAbstrac
 from PyQt5.QtGui import QFont,QTextCursor
 from PyQt5.QtCore import Qt,pyqtSignal,QSize,QModelIndex
 import qtawesome
-import subprocess
 import re
 import os,time 
 from utils.config import globalconfig ,_TR,_TRL
 from collections import OrderedDict
 from gui.usefulwidget import closeashidewindow
 from utils.utils import checkchaos
-from utils.subproc import subproc
+from utils.subproc import subproc_w
 class HTMLDelegate(QStyledItemDelegate):
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -286,7 +285,7 @@ class hookselect(closeashidewindow):
         hookcode=self.userhook.text()
         if len(hookcode)==0:
             return 
-        x=subproc(f'./files/hookcodecheck.exe {hookcode}',stdout=subprocess.PIPE)
+        x=subproc_w(f'./files/hookcodecheck.exe {hookcode}',needstdio=True)
         #print(hookcode,x.stdout[0])
         if(x.stdout.read()[0]==ord('0')):
             self.getnewsentence(_TR('！特殊码格式错误！'))

@@ -17,7 +17,7 @@ from utils.subproc import endsubprocs
 import  win32con
 import gui.rangeselect
 from utils.utils import update
-from utils.subproc import subproc
+from utils.subproc import subproc_w
 from utils.hwnd import mouseselectwindow 
 from gui.dialog_savedgame import dialog_savedgame
 from gui.textbrowser import Textbrowser
@@ -173,6 +173,7 @@ class QUnFrameWindow(resizableframeless):
             qtawesome.icon("fa.eye"   if globalconfig['isshowrawtext'] else "fa.eye-slash" ,color="#FF69B4" if globalconfig['isshowrawtext'] else globalconfig['buttoncolor']),
             qtawesome.icon("fa.rotate-left" ,color=globalconfig['buttoncolor']),
             qtawesome.icon("fa.book" ,color=globalconfig['buttoncolor']),
+            qtawesome.icon("fa.won" ,color=globalconfig['buttoncolor']),
             qtawesome.icon("fa.music" ,color=globalconfig['buttoncolor']),
             qtawesome.icon("fa.mouse-pointer" ,color="#FF69B4" if self.mousetransparent else globalconfig['buttoncolor']),
             qtawesome.icon("fa.lock" if globalconfig['locktools'] else 'fa.unlock',color="#FF69B4" if globalconfig['locktools'] else globalconfig['buttoncolor']),
@@ -215,6 +216,7 @@ class QUnFrameWindow(resizableframeless):
         
         self.takusanbuttons(1,lambda: self.object.transhis.showsignal.emit() ,8,"显示/隐藏历史翻译",'history') 
         self.takusanbuttons(1,lambda: self.object.settin_ui.button_noundict.click() ,8,"专有名词翻译设置",'noundict') 
+        self.takusanbuttons(1,lambda: self.object.settin_ui.button_fix.click() ,8,"翻译结果修正",'fix') 
         self.takusanbuttons(1,self.langdu,9,"朗读",'langdu') 
         self.takusanbuttons(1,self.changemousetransparentstate,10,"鼠标穿透窗口",'mousetransbutton') 
          
@@ -394,7 +396,7 @@ class QUnFrameWindow(resizableframeless):
             
             self.refreshtoolicon()
             
-            subproc(f'./files/muteprocess.exe {pid}  {int(self.processismuteed)}')
+            subproc_w(f'./files/muteprocess.exe {pid}  {int(self.processismuteed)}',wait=True)
         except:
             print_exc()
     

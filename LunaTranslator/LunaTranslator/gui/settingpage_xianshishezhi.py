@@ -102,6 +102,7 @@ def setTabThree_lazy(self) :
                [('显示显示原文按钮',4),self.getsimpleswitch(globalconfig['buttonuse'],'showraw' ,callback=lambda _: self.object.translation_ui.showhidetoolbuttons() ),'',('显示复制原文按钮',4),self.getsimpleswitch(globalconfig['buttonuse'],'copy' ,callback=lambda _:self.object.translation_ui.showhidetoolbuttons()),'',('显示朗读按钮',4),self.getsimpleswitch(globalconfig['buttonuse'],'langdu' ,callback=lambda _:self.object.translation_ui.showhidetoolbuttons())],
                 [       ('显示移动按钮',4),self.getsimpleswitch(globalconfig['buttonuse'],'move' ,callback=lambda _:self.object.translation_ui.showhidetoolbuttons() ),'',
                         ('专有名词翻译设置按钮',4),self.getsimpleswitch(globalconfig['buttonuse'],'noundict' ,callback=lambda _:self.object.translation_ui.showhidetoolbuttons() ),'',
+                        ('翻译结果修正按钮',4),self.getsimpleswitch(globalconfig['buttonuse'],'fix' ,callback=lambda _:self.object.translation_ui.showhidetoolbuttons() )
                 ],
                 [('显示翻译历史按钮',4),self.getsimpleswitch(globalconfig['buttonuse'],'history' ,callback=lambda _:self.object.translation_ui.showhidetoolbuttons() ),'' ,
                 ('显示编辑按钮',4),self.getsimpleswitch(globalconfig['buttonuse'],'edit' ,callback=lambda _:self.object.translation_ui.showhidetoolbuttons() ),'' ,

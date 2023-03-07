@@ -523,5 +523,8 @@
     "用户词典选择JcUserdic文件夹": "ユーザー辞書JcUserdicフォルダの選択",
     "当前MD5": "現在のMD 5",
     "修改": "変更",
-    "使用Locale_Remulator转区": "Locale _Remulatorターンゾーン"
+    "使用Locale_Remulator转区": "Locale _Remulatorターンゾーン",
+    "翻译结果修正": "翻訳結果の修正",
+    "翻译结果修正按钮": "翻訳結果修正ボタン",
+    "翻译结果替换设置": "翻訳結果置換設定"
 }

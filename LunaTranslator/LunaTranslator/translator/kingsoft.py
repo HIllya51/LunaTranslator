@@ -1,8 +1,7 @@
 
-from utils.subproc import subproc  
+from utils.subproc import subproc_w  
 from translator.basetranslator import basetrans 
-import os 
-import subprocess
+import os  
 
 class TS(basetrans): 
     def x64(self,content):  
@@ -29,7 +28,7 @@ class TS(basetrans):
                 if ress!='':
                     ress+='\n'
                              
-                p=subproc(r'./files/x64_x86_dll/ks.exe "'+self.path+'"  "'+self.path2+'"  "'+line+'"', stdout=subprocess.PIPE )
+                p=subproc_w(r'./files/x64_x86_dll/ks.exe "'+self.path+'"  "'+self.path2+'"  "'+line+'"',needstdio=True)
                 l=p.stdout.readline()  
                  
                 res=str(l,encoding='utf8',errors='ignore')

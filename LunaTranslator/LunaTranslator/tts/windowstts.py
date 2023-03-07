@@ -1,12 +1,12 @@
 
-from utils.subproc import subproc
+from utils.subproc import subproc_w
 from utils.config import globalconfig  
-import subprocess,threading
+import threading
 class tts():
     
     def __init__(self,showlist ,_): 
                  
-        p=subproc('./files/tts/tts_l.exe',stdout=subprocess.PIPE )
+        p=subproc_w('./files/tts/tts_l.exe',needstdio=True)
         
         count=str(p.stdout.readline(),encoding='utf8')
         count=count.replace('\r','').replace('\n','')
@@ -20,7 +20,7 @@ class tts():
         showlist.emit(self.voicelist)
         if  len(self.voicelist)>0 and globalconfig['reader']['windowstts']['voice'] not in self.voicelist:  
             globalconfig['reader']['windowstts']['voice']=self.voicelist[0]
-        self.speaking=None
+            
     def read(self,content):
         threading.Thread(target=self.read_t,args=(content,)).start()
     def read_t(self,content): 
@@ -31,11 +31,8 @@ class tts():
         if globalconfig['reader']['windowstts']['voice'] not in self.voicelist:
             return
         i=self.voicelist.index(globalconfig['reader']['windowstts']['voice'])
-         
-        if self.speaking:
-            self.speaking.kill()
-                 
+          
 
-        self.speaking=subproc(f'./files/tts/tts_s.exe {i} {globalconfig["ttscommon"]["rate"]} {globalconfig["ttscommon"]["volume"]} "{content}"',stdout=subprocess.PIPE  )
+        subproc_w(f'./files/tts/tts_s.exe {i} {globalconfig["ttscommon"]["rate"]} {globalconfig["ttscommon"]["volume"]} "{content}"',name="windowstts" )
         
       

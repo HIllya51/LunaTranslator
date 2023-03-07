@@ -1,20 +1,12 @@
  
-from utils.config import _TR
-import subprocess
- 
-import requests
-import base64  
+from utils.config import _TR 
 from ocrengines.baseocrclass import baseocr 
+from utils.subproc import subproc_w
 class OCR(baseocr):
       
     def ocr(self,imgfile):  
-         
-        st=subprocess.STARTUPINFO()
-        st.dwFlags=subprocess.STARTF_USESHOWWINDOW
-        st.wShowWindow=subprocess.SW_HIDE
-
-        p=subprocess.Popen('./files/WinOCR.exe '+self.srclang +' '+imgfile,stdout=subprocess.PIPE,stderr=subprocess.PIPE,startupinfo=st)
-       # print('./files/WinOCR.exe '+self.srclang +' '+imgfile)
+          
+        p=subproc_w('./files/WinOCR.exe '+self.srclang +' '+imgfile,needstdio=True)
         x=p.stdout.readlines()
         y=p.stderr.readlines()
         # print("X",x)

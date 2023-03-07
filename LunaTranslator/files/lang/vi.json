@@ -523,5 +523,8 @@
     "用户词典选择JcUserdic文件夹": "Từ điển người dùng Chọn thư mục JcUserdic",
     "当前MD5": "MD5 hiện tại",
     "修改": "Sửa đổi",
-    "使用Locale_Remulator转区": "Sử dụng locale_ Remulator Chuyển vùng"
+    "使用Locale_Remulator转区": "Sử dụng locale_ Remulator Chuyển vùng",
+    "翻译结果修正": "Sửa kết quả dịch",
+    "翻译结果修正按钮": "Kết quả dịch Nút sửa chữa",
+    "翻译结果替换设置": "Thiết lập thay thế kết quả dịch"
 }

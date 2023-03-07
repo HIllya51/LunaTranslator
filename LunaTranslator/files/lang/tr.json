@@ -523,5 +523,8 @@
     "用户词典选择JcUserdic文件夹": "Kullanıcı sözlük seçimi JcUserdic folder",
     "当前MD5": "Ağımdaki MD5",
     "修改": "değiştir",
-    "使用Locale_Remulator转区": "Yerel _Kullan Hesaplayıcı aktarımı"
+    "使用Locale_Remulator转区": "Yerel _Kullan Hesaplayıcı aktarımı",
+    "翻译结果修正": "Tercüme sonuçlarının düzeltmesi",
+    "翻译结果修正按钮": "Çeviri sonuçları düzeltme düğmesi",
+    "翻译结果替换设置": "Çeviri Sonuçları Değiştirme Ayarları"
 }
