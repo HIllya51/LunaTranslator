@@ -131,6 +131,7 @@ class ocrtext(basetext):
             return (text)
             
     def runonce(self): 
+        print("?")
         if self.object.rect is None:
             return
         if self.object.rect[0][0]>self.object.rect[1][0] or self.object.rect[0][1]>self.object.rect[1][1]:

@@ -1,4 +1,4 @@
-
+from traceback import print_exc
 from queue import Queue  
 
 from utils.config import globalconfig,translatorsetting
@@ -53,14 +53,14 @@ class basetrans:
         self.typename=typename
         self.queue=Queue() 
         self.callback=callback
-        timeoutfunction(self.inittranslator,max(globalconfig['translatortimeout'],5))
+        
         
         _=dict(zip(somedef.language_list_translator_inner,somedef.language_list_translator_inner))
         _.update({'cht':'zh'})
         _.update(self.langmap())
         self.langmap_x=_
 
-        
+        timeoutfunction(self.inittranslator,max(globalconfig['translatortimeout'],5))
         self.lastrequeststime=0
         self._cache={}
         self._MAXCACHE = 512 

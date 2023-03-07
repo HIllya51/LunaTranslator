@@ -42,6 +42,7 @@ class TS(basetrans):
             win32utils.WaitNamedPipe(pipename,win32con.NMPWAIT_WAIT_FOREVER)
             self.hPipe = win32utils.CreateFile( pipename, win32con.GENERIC_READ | win32con.GENERIC_WRITE, 0,
                     None, win32con.OPEN_EXISTING, win32con.FILE_ATTRIBUTE_NORMAL, None);
+        return True
     def packuint32(self,i): # int -> str 
         return bytes(chr((i >> 24) & 0xff) + chr((i >> 16) & 0xff) + chr((i >> 8) & 0xff) + chr(i & 0xff),encoding='latin-1')
     def unpackuint32(self,s ): #
@@ -52,7 +53,7 @@ class TS(basetrans):
             if self.tgtlang not in ['936','950']:
                 return ''  
             t=time.time()
-            self.checkpath()
+            if self.checkpath()==False:return 'error'
             content=content.replace('\r','\n')
             lines=content.split('\n')
             ress=[]

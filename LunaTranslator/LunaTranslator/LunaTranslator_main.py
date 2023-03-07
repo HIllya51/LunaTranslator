@@ -156,7 +156,7 @@ class MAINUI(QObject) :
         return res
 
     
-    def textgetmethod(self,paste_str,shortlongskip=True,embedcallback=None): 
+    def textgetmethod(self,paste_str,shortlongskip=True,embedcallback=None):
         if type(paste_str)==str:
             if paste_str[:len('<notrans>')]=='<notrans>':
                 self.translation_ui.displayraw1.emit([],paste_str[len('<notrans>'):],globalconfig['rawtextcolor'],1)
@@ -526,10 +526,11 @@ class MAINUI(QObject) :
         self.hookselectdialog=gui.selecthook.hookselect(self ,self.settin_ui) 
         self.AttachProcessDialog=AttachProcessDialog(self.settin_ui,self.selectprocess,self.hookselectdialog)
           
-        threading.Thread(target=self.autohookmonitorthread).start()    
-        threading.Thread(target=minmaxmoveobservefunc,args=(self.translation_ui,)).start()   
+        
         print(time.time()-filestart)
         self.starttextsource(waitforautoinit=True)  
+        threading.Thread(target=self.autohookmonitorthread).start()    
+        threading.Thread(target=minmaxmoveobservefunc,args=(self.translation_ui,)).start()   
     def checklang(self):
         if  globalconfig['language_setted_2.4.5']==False:
             

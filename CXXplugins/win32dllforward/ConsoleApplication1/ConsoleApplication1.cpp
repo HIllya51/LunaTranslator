@@ -30,22 +30,28 @@ int wmain(int argc, wchar_t* argv[])
 
         enum { bufferSize = key };
         char buffer[bufferSize];
-
         int ret = startSession(path, buffer, buffer + bufferSize, L"DCT");
 
         ret = openEngine(key);
         ret = setBasicDictPathW(key, path);
 
-        wchar_t *fr= argv[3];
-        wchar_t to[0x400] = {};
-        ret = simpleTransSentM(key, fr, to, 0x28, 0x4);
-
-       // wprintf(L"%s\n", to);
-        for (int i = 0; i < 500; i += 1) {
-            printf("%d ", (wchar_t)to[i]);
-        }
-        printf("\n");
-        fflush(stdout);
+        HANDLE hPipe = CreateNamedPipe(argv[3], PIPE_ACCESS_DUPLEX, PIPE_TYPE_MESSAGE | PIPE_READMODE_MESSAGE | PIPE_WAIT
+            , PIPE_UNLIMITED_INSTANCES, 65535, 65535, NMPWAIT_WAIT_FOREVER, 0);
+        SECURITY_DESCRIPTOR sd = {};
+        InitializeSecurityDescriptor(&sd, SECURITY_DESCRIPTOR_REVISION);
+        SetSecurityDescriptorDacl(&sd, TRUE, NULL, FALSE);
+        SECURITY_ATTRIBUTES allAccess = SECURITY_ATTRIBUTES{ sizeof(SECURITY_ATTRIBUTES), &sd, FALSE };
+        SetEvent(CreateEvent(&allAccess, FALSE, FALSE, argv[4]));
+        ConnectNamedPipe(hPipe, NULL);
+        while (true) {
+            wchar_t fr[1024] = { 0 };
+            DWORD _;
+            ReadFile(hPipe, fr, 1024, &_, NULL);
+            wchar_t to[0x400] = {};
+            ret = simpleTransSentM(key, fr, to, 0x28, 0x4);
+            WriteFile(hPipe, to, wcslen(to)*2, &_, NULL);
+        } 
+        
     }
     return 0;
 }
