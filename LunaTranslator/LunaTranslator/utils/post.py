@@ -157,9 +157,16 @@ def POSTSOLVE(line):
         '_8':_8_f,
         '_13':_13_f,
         '_100':_100_f,
-        '_7_zhuanyi':_7_zhuanyi_f,
-        '_11':importlib.import_module(globalconfig['postprocessf']).POSTSOLVE
+        '_7_zhuanyi':_7_zhuanyi_f
+       
     }
+    try:
+           functions.update({
+                   '_11':importlib.import_module(globalconfig['postprocessf']).POSTSOLVE
+                  } )
+    except:
+           pass
+
     for postitem in globalconfig['postprocess_rank']:
         if postprocessconfig[postitem]['use']:
                 if postitem=='_100' and globalconfig['sourcestatus']['ocr']['use']==False:
