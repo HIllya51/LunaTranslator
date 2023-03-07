@@ -78,11 +78,8 @@ class tts():
             code1=content.encode('shift-jis') 
             #print(code1)
             win32utils.WriteFile(self.hPipe,code1)
-            _=win32utils.ReadFile(self.hPipe,1024,None)
-            #print(_)
-            fname=_[1].decode('utf8')
-            print('++++',fname,'+++++')
-            print(os.path.exists(fname))
+            
+            fname=win32utils.ReadFile(self.hPipe,1024,None).decode('utf8')
             if os.path.exists(fname):
                 self.mp3playsignal.emit(fname,globalconfig["ttscommon"]["volume"])
              
