@@ -7,7 +7,8 @@
 #include <io.h>
 #include <fcntl.h>
  
- 
+
+#pragma comment( linker, "/subsystem:windows /entry:wmainCRTStartup" )
 extern "C" {
     typedef DWORD(__stdcall* StartSession)(wchar_t* path, void* bufferStart, void* bufferStop, const wchar_t* app);
     typedef DWORD(__stdcall* OpenEngine)(int key);

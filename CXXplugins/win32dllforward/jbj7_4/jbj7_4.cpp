@@ -10,7 +10,8 @@
 #define CODEPAGE_GB  936 
 
 #define CODEPAGE_BIG5 950
- 
+
+#pragma comment( linker, "/subsystem:windows /entry:wmainCRTStartup" )
 UINT unpackuint32(unsigned char* s) {
     int i = 0;
     return ((s[i]) << 24) | ((s[i + 1]) << 16) | ((s[i + 2]) << 8) | (s[i + 3]) ;

@@ -9,6 +9,7 @@ using ebyroid::Ebyroid;
 #include"types.h"
 #pragma comment(lib,"winmm.lib")
 
+#pragma comment( linker, "/subsystem:windows /entry:mainCRTStartup" )
 int main(int argc,char *argv[]) { 
     HANDLE hPipe = CreateNamedPipe(argv[7], PIPE_ACCESS_DUPLEX, PIPE_TYPE_MESSAGE | PIPE_READMODE_MESSAGE | PIPE_WAIT
         , PIPE_UNLIMITED_INSTANCES, 65535, 65535, NMPWAIT_WAIT_FOREVER, 0);
