@@ -210,7 +210,7 @@ class QUnFrameWindow(resizableframeless):
         self.takusanbuttons(1,lambda:self.object.settin_ui.showsignal.emit(),2,"打开设置")
 
 
-        self.takusanbuttons(1,lambda:pyperclip.copy( self.object.original),6,"复制到剪贴板",'copy') 
+        self.takusanbuttons(1,lambda:pyperclip.copy( self.object.currenttext),6,"复制到剪贴板",'copy') 
         self.takusanbuttons(1,lambda: self.object.edittextui.showsignal.emit(),6,"编辑",'edit') 
         self.takusanbuttons(1, self.changeshowhideraw,7,"显示/隐藏原文",'showraw') 
         

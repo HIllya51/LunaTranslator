@@ -265,7 +265,6 @@
     "拉丁(CP1252)": "Latin (CP1252)",
     "代码页": "code page",
     "刷新延迟(ms)": "Refresh Delay (ms)",
-    "过滤乱码文本": "Filter garbled text",
     "移除非选定HOOK": "Remove non selected HOOK",
     "baiduOCR_高精度": "baiduOCR_ high-precision",
     "百度OCR使用竖排OCR": "Baidu OCR uses vertical OCR",
@@ -527,5 +526,10 @@
     "翻译结果修正": "Correction of translation results",
     "翻译结果修正按钮": "Translation result correction button",
     "翻译结果替换设置": "Translation Result Replacement Settings",
-    "收到翻译结果时才刷新": "Refresh only when translation results are received"
+    "收到翻译结果时才刷新": "Refresh only when translation results are received",
+    "过滤包含乱码的文本行": "Filter text lines containing garbled code",
+    "过滤文本中的非日语字符集字符": "Filter non-Japanese character set characters in text",
+    "过滤ASCII字符集": "Filter ASCII character set",
+    "过滤latin-1字符集": "Filter the latin-1 character set",
+    "过滤其他乱码": "Filter other garbled codes"
 }

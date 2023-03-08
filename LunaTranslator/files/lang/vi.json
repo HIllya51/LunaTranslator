@@ -103,7 +103,6 @@
     "已保存游戏": "Trò chơi đã lưu",
     "代码页": "Trang mã",
     "刷新延迟(ms)": "Độ trễ làm mới (ms)",
-    "过滤乱码文本": "Lọc văn bản lộn xộn",
     "移除非选定HOOK": "Xóa hook không chọn",
     "OCR设置": "Thiết lập OCR",
     "本地OCR": "OCR địa phương",
@@ -527,5 +526,10 @@
     "翻译结果修正": "Sửa kết quả dịch",
     "翻译结果修正按钮": "Kết quả dịch Nút sửa chữa",
     "翻译结果替换设置": "Thiết lập thay thế kết quả dịch",
-    "收到翻译结果时才刷新": "Làm mới khi nhận được kết quả dịch"
+    "收到翻译结果时才刷新": "Làm mới khi nhận được kết quả dịch",
+    "过滤包含乱码的文本行": "Lọc các dòng văn bản có chứa mã lộn xộn",
+    "过滤文本中的非日语字符集字符": "Bộ lọc ký tự bộ ký tự không phải tiếng Nhật trong văn bản",
+    "过滤ASCII字符集": "Lọc bộ ký tự ASCII",
+    "过滤latin-1字符集": "Lọc bộ ký tự latin-1",
+    "过滤其他乱码": "Lọc mã lộn xộn khác"
 }

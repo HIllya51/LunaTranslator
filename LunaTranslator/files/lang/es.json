@@ -103,7 +103,6 @@
     "已保存游戏": "Juego guardado",
     "代码页": "Página de código",
     "刷新延迟(ms)": "Retraso de actualización (ms)",
-    "过滤乱码文本": "Filtrar texto desordenado",
     "移除非选定HOOK": "Eliminar Hook no seleccionado",
     "OCR设置": "Configuración OCR",
     "本地OCR": "OCR local",
@@ -527,5 +526,10 @@
     "翻译结果修正": "Corrección de los resultados de la traducción",
     "翻译结果修正按钮": "Botón de corrección de resultados de traducción",
     "翻译结果替换设置": "Configuración de sustitución de resultados de traducción",
-    "收到翻译结果时才刷新": "Actualizar cuando se reciben los resultados de la traducción"
+    "收到翻译结果时才刷新": "Actualizar cuando se reciben los resultados de la traducción",
+    "过滤包含乱码的文本行": "Filtrar líneas de texto que contienen códigos desordenados",
+    "过滤文本中的非日语字符集字符": "Filtrar los caracteres del conjunto de caracteres no japoneses en el texto",
+    "过滤ASCII字符集": "Filtrar el conjunto de caracteres ASCII",
+    "过滤latin-1字符集": "Filtrar el juego de caracteres Latin - 1",
+    "过滤其他乱码": "Filtrar otros códigos desordenados"
 }

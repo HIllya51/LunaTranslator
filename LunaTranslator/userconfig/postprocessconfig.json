@@ -26,11 +26,11 @@
         "name": "过滤换行符"
     },
     "_91": {
-        "use": false,
+        "use": true,
         "name": "过滤数字"
     },
     "_92": {
-        "use": false,
+        "use": true,
         "name": "过滤英文字母"
     },
     "_7": {
@@ -2594,5 +2594,25 @@
         "args": {
             "替换内容": {}
         }
+    },
+    "_remove_non_shiftjis_char": {
+        "use": true,
+        "name": "过滤文本中的非日语字符集字符"
+    },
+    "_remove_latin": {
+        "use": false,
+        "name": "过滤latin-1字符集"
+    },
+    "_remove_control": {
+        "use": false,
+        "name": "过滤控制字符"
+    },
+    "_remove_chaos": {
+        "use": false,
+        "name": "过滤其他乱码"
+    },
+    "_remove_ascii": {
+        "use": true,
+        "name": "过滤ASCII字符集"
     }
 }

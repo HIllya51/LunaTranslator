@@ -7,7 +7,8 @@ from PyQt5.QtGui import QStandardItem, QStandardItemModel
 from traceback import print_exc
 from utils.config import globalconfig ,postprocessconfig,noundictconfig,transerrorfixdictconfig,_TR,_TRL,defaultglobalconfig 
 import functools 
- 
+
+from gui.codeacceptdialog import codeacceptdialog  
 from gui.inputdialog import getsomepath1   
 from utils.utils import selectdebugfile
 from utils.wrapper import Singleton
@@ -21,8 +22,8 @@ def setTab7_lazy(self) :
             [('预处理方法',6),'','',('调整执行顺序',6)]
         ] 
          
-        if len(defaultglobalconfig['postprocess_rank'])!=len(globalconfig['postprocess_rank']):
-            globalconfig['postprocess_rank']=defaultglobalconfig['postprocess_rank']
+        if set(postprocessconfig.keys())!=set(globalconfig['postprocess_rank']):
+            globalconfig['postprocess_rank']=list(postprocessconfig.keys())
         sortlist=globalconfig['postprocess_rank']
         savelist=[]
         savelay=[] 
@@ -52,7 +53,11 @@ def setTab7_lazy(self) :
             if post=='_11':
                 config=(self.getcolorbutton(globalconfig,'',callback=lambda:selectdebugfile('postprocess/mypost.py' ),icon='fa.gear',constcolor="#FF69B4")) 
             else:
-                if 'args' in postprocessconfig[post]:
+                if post not in postprocessconfig:
+                    continue
+                if post=='_remove_chaos':
+                    config=(self.getcolorbutton(globalconfig,'',icon='fa.gear',constcolor="#FF69B4",callback=lambda:codeacceptdialog(self))) 
+                elif 'args' in postprocessconfig[post]:
                     
                     config=(self.getcolorbutton(globalconfig,'',callback= functools.partial( postconfigdialog,self,postprocessconfig[post]['args'],postprocessconfig[post]['name']),icon='fa.gear',constcolor="#FF69B4")) 
                 else:

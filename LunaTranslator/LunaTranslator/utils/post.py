@@ -106,6 +106,7 @@ def _91_f(line):
 def _92_f(line):
         line=re.sub('([a-zA-Z]+)','',line)
         return line
+
 def _7_zhuanyi_f(line): 
         filters=postprocessconfig['_7_zhuanyi']['args']['替换内容']
         for fil in filters: 
@@ -141,6 +142,48 @@ def _100_f(line):
                 else:
                         line=line.replace(fil,filters[fil])
         return line
+
+def _remove_non_shiftjis_char(line):
+        newline=''
+        for char in line:
+                try:
+                      char.encode('shiftjis')
+                      newline+=char
+                except:
+                      pass
+        return newline
+def _remove_latin(line):
+        newline=''
+        for char in line:
+                try:
+                      char.encode('latin-1')
+                except:
+                      newline+=char
+        return newline
+def _remove_ascii(line):
+        newline=''
+        for char in line:
+                try:
+                      char.encode('ascii') 
+                except:
+                      newline+=char
+        return newline
+def _remove_control(line):
+        newline=''
+        for r in line:
+                _ord=ord(r)
+                if _ord<0x20 or (_ord>0x80 and _ord<0xa0):
+                    continue
+                newline+=r
+        return newline
+from utils.utils import checkchaos
+def _remove_chaos(line):
+       newline=''
+       for c in line:
+              if checkchaos(c):
+                     continue
+              newline+=c
+       return newline 
 def POSTSOLVE(line): 
     if line=="":
         return ""
@@ -157,8 +200,12 @@ def POSTSOLVE(line):
         '_8':_8_f,
         '_13':_13_f,
         '_100':_100_f,
-        '_7_zhuanyi':_7_zhuanyi_f
-       
+        '_7_zhuanyi':_7_zhuanyi_f,
+        '_remove_non_shiftjis_char':_remove_non_shiftjis_char,
+        "_remove_latin":_remove_latin,
+        "_remove_ascii":_remove_ascii,
+        "_remove_control":_remove_control,
+        "_remove_chaos":_remove_chaos
     }
     try:
            functions.update({

@@ -103,7 +103,6 @@
     "已保存游戏": "Kaydedilmiş oyun",
     "代码页": "kod sayfası",
     "刷新延迟(ms)": "Yeniden geçirme (ms)",
-    "过滤乱码文本": "Süzgülenmiş metin",
     "移除非选定HOOK": "Seçilmemiş HOOK'u sil",
     "OCR设置": "OCR ayarları",
     "本地OCR": "Yerel OCR",
@@ -527,5 +526,10 @@
     "翻译结果修正": "Tercüme sonuçlarının düzeltmesi",
     "翻译结果修正按钮": "Çeviri sonuçları düzeltme düğmesi",
     "翻译结果替换设置": "Çeviri Sonuçları Değiştirme Ayarları",
-    "收到翻译结果时才刷新": "Sadece çevirim sonuçları alındığında yenileme"
+    "收到翻译结果时才刷新": "Sadece çevirim sonuçları alındığında yenileme",
+    "过滤包含乱码的文本行": "Çöplü kodu içeren metin hatlarını sil",
+    "过滤文本中的非日语字符集字符": "Japon olmayan karakter seti karakterleri metinde sil",
+    "过滤ASCII字符集": "ASCII karakter seti sil",
+    "过滤latin-1字符集": "Latin- 1 karakter setini sil",
+    "过滤其他乱码": "Diğer çöplü kodları sil"
 }
