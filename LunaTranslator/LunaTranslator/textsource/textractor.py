@@ -167,7 +167,7 @@ class textractor(basetext  ):
             
             if key==self.selectinghook:
                 self.hookselectdialog.getnewsentencesignal.emit(output)
-            if (globalconfig['remove_useless_hook'] and key in self.selectedhook) or globalconfig['remove_useless_hook']==False:
+            if (globalconfig['remove_useless_hook'] and key in (self.selectedhook+self.namehook)) or globalconfig['remove_useless_hook']==False:
 
                 self.hookdatacollecter[key].append(output) 
                 self.hookselectdialog.update_item_new_line.emit(key,output)
