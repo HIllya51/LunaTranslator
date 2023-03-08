@@ -44,7 +44,7 @@ if __name__=='__main__':
             
             jsen=json.loads(ff.read())
          
-        a=TS1('baiduapi',None)
+        a=TS1('baiduapi')
         a.tgtlang=xxx[kk] 
         
         needpop=[]

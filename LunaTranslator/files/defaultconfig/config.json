@@ -123,6 +123,7 @@
         "gamepad": true,
         "edit": true
     },
+	"refresh_on_get_trans":false,
     "languageuse": 0,
     "proxy": "",
     "showbold": false,

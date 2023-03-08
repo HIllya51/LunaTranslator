@@ -25,8 +25,8 @@ from utils.fullscreen import fullscreen
 from gui.rangeselect  import moveresizegame 
 from gui.usefulwidget import resizableframeless
 class QUnFrameWindow(resizableframeless):   
-    displayres =  pyqtSignal(str,str ) 
-    displayraw1 =  pyqtSignal(list, str,str,int )  
+    displayres =  pyqtSignal(str,str,str ) 
+    displayraw1 =  pyqtSignal(list, str,str )  
     displaystatus=pyqtSignal(str,str,bool) 
     showhideuisignal=pyqtSignal()
     hookfollowsignal=pyqtSignal(int,tuple)
@@ -64,8 +64,10 @@ class QUnFrameWindow(resizableframeless):
             #print(self.pos())
             #self.move(self.pos() + self._endPos)
             self.move(self.pos().x()+ other[0],self.pos().y()+ other[1])
-    def showres(self,_type,res):  
+    def showres(self,_type,contentraw,res):  
         try:
+            if contentraw!=self.object.currenttext:
+                return 
             if globalconfig['showfanyisource']:
                 #print(_type)
                 #self.showline((None,globalconfig['fanyi'][_type]['name']+'  '+res),globalconfig['fanyi'][_type]['color']  )
@@ -78,16 +80,14 @@ class QUnFrameWindow(resizableframeless):
             self.object.transhis.getnewtranssignal.emit(globalconfig['fanyi'][_type]['name'],res)
         except:
             print_exc() 
-    def showraw(self,hira,res,color,show ):   
-        self.original=res 
-        if show==1: 
-            #self.showline((hira,res),color )
-            self.showline(True,[hira,res],color,1)
-        elif show==0:
-            self.showline(True,None,None,1)
-        elif show==2:
-            #self.showline((hira,res),color ,type_=2 )
+    def showraw(self,hira,res,color ): 
+        if globalconfig['isshowhira'] and globalconfig['isshowrawtext']:
             self.showline(True,[hira,res],color , 2 )
+        elif globalconfig['isshowrawtext']:
+            self.showline(True,[hira,res],color,1)
+        else:
+            self.showline(True,None,None,1)
+       
         self.object.transhis.getnewsentencesignal.emit(res) 
         self.object.edittextui.getnewsentencesignal.emit(res)  
     def showstatus(self,res,color,clear): 
@@ -210,7 +210,7 @@ class QUnFrameWindow(resizableframeless):
         self.takusanbuttons(1,lambda:self.object.settin_ui.showsignal.emit(),2,"打开设置")
 
 
-        self.takusanbuttons(1,lambda:pyperclip.copy( self.original),6,"复制到剪贴板",'copy') 
+        self.takusanbuttons(1,lambda:pyperclip.copy( self.object.original),6,"复制到剪贴板",'copy') 
         self.takusanbuttons(1,lambda: self.object.edittextui.showsignal.emit(),6,"编辑",'edit') 
         self.takusanbuttons(1, self.changeshowhideraw,7,"显示/隐藏原文",'showraw') 
         
@@ -323,7 +323,6 @@ class QUnFrameWindow(resizableframeless):
         
         self.isletgamefullscreened=False
         self.fullscreenmanager=fullscreen()
-        self.original = ""    
         self._isTracking=False
         self.quickrangestatus=False
         self.isontop=True  
@@ -351,6 +350,7 @@ class QUnFrameWindow(resizableframeless):
         
         # 翻译框根据内容自适应大小
         self.document = self.translate_text.document()
+        
         self.document.contentsChanged.connect(self.textAreaChanged)  
         self.set_color_transparency() 
         self.refreshtoolicon()
@@ -470,14 +470,11 @@ class QUnFrameWindow(resizableframeless):
         if globalconfig['ocrafterrangeselect']:
             self.startTranslater()
     def langdu(self): 
-        if self.object.reader:
-            self.object.reader.read(self.original )  
+        self.object.readcurrent(force=True)
     def startTranslater(self) :
         if self.object.textsource :
             threading.Thread(target=self.object.textsource.runonce).start()
          
- 
- 
     def toolbarhidedelay(self):
         
         for button in self.buttons:

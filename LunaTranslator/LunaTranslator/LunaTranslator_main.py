@@ -69,10 +69,10 @@ class MAINUI(QObject) :
         self.cishus={}
         self.reader=None
         self.textsource_p=None 
-        self.rect=None  
-        self.last_paste_str=''
+        self.rect=None 
         self.currentmd5='0'
-        self.lastshowedstr=''
+        self.currenttext=''
+        self.refresh_on_get_trans_signature=0
     @property
     def textsource(self):return self.textsource_p
     @textsource.setter
@@ -159,7 +159,8 @@ class MAINUI(QObject) :
     def textgetmethod(self,paste_str,shortlongskip=True,embedcallback=None):
         if type(paste_str)==str:
             if paste_str[:len('<notrans>')]=='<notrans>':
-                self.translation_ui.displayraw1.emit([],paste_str[len('<notrans>'):],globalconfig['rawtextcolor'],1)
+                self.translation_ui.displayraw1.emit([],paste_str[len('<notrans>'):],globalconfig['rawtextcolor'])
+                self.currenttext=_paste_str
                 return   
             elif paste_str[:len('<msg>')]=='<msg>':
                 self.translation_ui.displaystatus.emit(paste_str[len('<msg>'):],'red',False)
@@ -184,32 +185,75 @@ class MAINUI(QObject) :
         while len(_paste_str) and _paste_str[-1] in '\r\n \t':  #在后处理之后在去除换行，这样换行符可以当作行结束符给后处理用
             _paste_str=_paste_str[:-1]  
 
-        if _paste_str=='' or len(_paste_str)>1000 :
-            if embedcallback:
-                embedcallback('zhs', _paste_str) 
-            return  
-        if shortlongskip and _paste_str==self.last_paste_str:
+        if _paste_str=='' or len(_paste_str)>1000  or (shortlongskip and _paste_str==self.currenttext):
             if embedcallback:
                 embedcallback('zhs', _paste_str) 
             return 
-        self.last_paste_str=_paste_str  
+        
+        self.currenttext=_paste_str
+        self.textsource.sqlqueueput((_paste_str,)) 
+
         if globalconfig['outputtopasteboard'] and globalconfig['sourcestatus']['copy']['use']==False:  
             pyperclip.copy(_paste_str)
-        self.translation_ui.original=_paste_str 
+        
         try:
             hira=self.hira_.fy(_paste_str)
         except:
             hira=[]
-        self.lastshowedstr=_paste_str
-        if globalconfig['isshowhira'] and globalconfig['isshowrawtext']:
-              
-            self.translation_ui.displayraw1.emit(hira,_paste_str,globalconfig['rawtextcolor'],2)
-        elif globalconfig['isshowrawtext']:
-            self.translation_ui.displayraw1.emit(hira,_paste_str,globalconfig['rawtextcolor'],1)
+            
+        if globalconfig['refresh_on_get_trans']==False:
+            self.translation_ui.displayraw1.emit(hira,_paste_str,globalconfig['rawtextcolor'] )
+            _showrawfunction=None
+            _showrawfunction_sig=0
         else:
-            self.translation_ui.displayraw1.emit(hira,_paste_str,globalconfig['rawtextcolor'],0)
+            _showrawfunction=functools.partial(self.translation_ui.displayraw1.emit,hira,_paste_str,globalconfig['rawtextcolor'] )
+            _showrawfunction_sig=time.time()
+
+        self.readcurrent()
+            
+            
+        paste_str_solved,optimization_params= self.solvebeforetrans(_paste_str) 
+        
+        skip=shortlongskip and  (len(paste_str_solved)<globalconfig['minlength'] or len(paste_str_solved)>globalconfig['maxlength'] )
+
+        
+        for engine in self.translators:  
+            self.translators[engine].gettask((partial(self.GetTranslationCallback,engine,optimization_params,_showrawfunction,_showrawfunction_sig),_paste_str,paste_str_solved,skip,embedcallback)) 
+    
+        
+    def GetTranslationCallback(self,classname,optimization_params,_showrawfunction,_showrawfunction_sig,contentraw,res,embedcallback):
+        
+        if classname not in somedef.fanyi_pre: 
+            res=self.solveaftertrans(res,optimization_params)
+        #print(classname,contentraw,_)
+        needshowraw=_showrawfunction and self.refresh_on_get_trans_signature!=_showrawfunction_sig
+        if needshowraw:
+            self.refresh_on_get_trans_signature=_showrawfunction_sig
+            _showrawfunction()
+        if classname=='premt':
+            for k in res:
+                self.translation_ui.displayres.emit(k,contentraw,res[k])
+                
+        else:
+            self.translation_ui.displayres.emit(classname,contentraw,res)
+            
+            if embedcallback: 
+
+                if globalconfig['embedded']['as_fast_as_posible'] or classname==list(globalconfig['fanyi'])[globalconfig['embedded']['translator']]:    
+                    
+                    embedcallback('zhs', kanjitrans(zhconv.convert(res,'zh-tw')) if globalconfig['embedded']['trans_kanji'] else res) 
+        
+        
+        if classname not in somedef.fanyi_pre:
+              
+            self.textsource.sqlqueueput((contentraw,classname,res))
+            
+    def readcurrent(self,force=False):
         try:
-            if globalconfig['autoread']:
+            _paste_str=self.currenttext
+            if force:
+                self.reader.read(_paste_str)
+            elif globalconfig['autoread']:
                 needread=True
                 if globalconfig['sourcestatus']['textractor']['use']:
                     if ('ttsonname' in  savehook_new_data[self.textsource.pname]) and  savehook_new_data[self.textsource.pname]['ttsonname']:
@@ -221,21 +265,6 @@ class MAINUI(QObject) :
                     self.reader.read(_paste_str)
         except:
             pass
-            
-        skip=False 
-        paste_str_solve= self.solvebeforetrans(_paste_str) 
-        if shortlongskip and  (len(paste_str_solve[0])<globalconfig['minlength'] or len(paste_str_solve[0])>globalconfig['maxlength'] ):
-            skip=True  
-         
-        
-        if skip==False :  
-            self.textsource.put((_paste_str,)) 
-            for engine in self.translators:  
-                self.translators[engine].gettask((_paste_str,paste_str_solve,skip,embedcallback)) 
-        
-    
-         
-        
     @threader
     def startreader(self,use=None,checked=True):
         try:
@@ -331,7 +360,7 @@ class MAINUI(QObject) :
         if os.path.exists('./LunaTranslator/translator/'+classname+'.py')==False:
             return None
         aclass=importlib.import_module('translator.'+classname).TS  
-        return aclass(classname,partial(self._maybeyrengong,classname))   
+        return aclass(classname)   
      
     def prepare(self,now=None,_=None):    
         self.commonloader('fanyi',self.translators,self.fanyiinitmethod,now)
@@ -381,38 +410,7 @@ class MAINUI(QObject) :
                             pass 
                 _=cishuwrapper(aclass)
                 return _
-    def _singletrans(self,contentraw, needja ,res,cls ): 
-                if contentraw==self.lastshowedstr:
-                    self.translation_ui.displayres.emit(cls,res)
-                if needja:
-                    res=zhconv.convert(res,  'zh-tw' )    
-                    res=kanjitrans(res)
-                return res
-    def _maybeyrengong(self,classname,contentraw,_,embedcallback):
-        
-        classname,res,mp=_
-        if classname not in somedef.fanyi_pre: 
-            res=self.solveaftertrans(res,mp)
-        #print(classname,contentraw,_)
- 
-        if  globalconfig['embedded']['trans_kanji']   and embedcallback: 
-            needja=True
-        else:
-            needja=False
-        
-        if classname=='premt':
-            for k in res:
-                self._singletrans(contentraw, needja ,res[k],k ) 
-        else:
-            res=self._singletrans(contentraw, needja ,res,classname)  
-            if embedcallback: 
-                if globalconfig['embedded']['as_fast_as_posible'] or classname==list(globalconfig['fanyi'])[globalconfig['embedded']['translator']]:    
-                    embedcallback('zhs', res) 
-            
-        if classname not in somedef.fanyi_pre:
-              
-            self.textsource.put((contentraw,classname,res))
-            
+    
       
 
     def onwindowloadautohook(self): 

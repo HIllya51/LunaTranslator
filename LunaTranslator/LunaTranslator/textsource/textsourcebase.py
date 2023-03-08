@@ -29,7 +29,7 @@ class basetext:
         except:
             print_exc
         threading.Thread(target= self.sqlitethread).start()
-    def put(self,xx):
+    def sqlqueueput(self,xx):
         try:
             self.sqlqueue.put(xx)
         except:

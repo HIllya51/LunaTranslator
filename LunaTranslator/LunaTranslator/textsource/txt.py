@@ -7,7 +7,6 @@ import  threading
 from textsource.textsourcebase import basetext
 class txt(basetext):
     def __init__(self,textgetmethod) -> None:
-        self.last_paste_str = '' 
         f=QFileDialog.getOpenFileName(  )
         res=f[0]
         if res!='':

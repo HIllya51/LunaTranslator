@@ -526,5 +526,6 @@
     "使用Locale_Remulator转区": "Usar local Zona de transferencia del repelator",
     "翻译结果修正": "Corrección de los resultados de la traducción",
     "翻译结果修正按钮": "Botón de corrección de resultados de traducción",
-    "翻译结果替换设置": "Configuración de sustitución de resultados de traducción"
+    "翻译结果替换设置": "Configuración de sustitución de resultados de traducción",
+    "收到翻译结果时才刷新": "Actualizar cuando se reciben los resultados de la traducción"
 }

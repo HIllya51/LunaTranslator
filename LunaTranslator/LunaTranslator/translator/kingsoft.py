@@ -17,19 +17,19 @@ class TS(basetrans):
         
         pairs=(self.srclang,self.tgtlang) 
         if   self.config['路径']!=self.path11 or pairs!=self.pair:
-            self.path11=self.config['路径']
-            self.pair=pairs
-            base=os.path.join(self.path11,'GTS/'+self.srclang+self.tgtlang)
+            
+            base=os.path.join(self.config['路径'],'GTS/'+self.srclang+self.tgtlang)
             if os.path.exists(base)==False:
                 return False
             dll=None
-            print(base)
             for f in os.listdir(base):
                 if f.split('.')[-1]=='dll':
                     dll=f
                     break
             if dll is None:
                 return False
+            self.path11=self.config['路径']
+            self.pair=pairs
             self.path=os.path.join(base,dll)
             self.path2=os.path.join(base,'DCT')
 

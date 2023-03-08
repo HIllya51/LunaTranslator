@@ -526,5 +526,6 @@
     "使用Locale_Remulator转区": "Yerel _Kullan Hesaplayıcı aktarımı",
     "翻译结果修正": "Tercüme sonuçlarının düzeltmesi",
     "翻译结果修正按钮": "Çeviri sonuçları düzeltme düğmesi",
-    "翻译结果替换设置": "Çeviri Sonuçları Değiştirme Ayarları"
+    "翻译结果替换设置": "Çeviri Sonuçları Değiştirme Ayarları",
+    "收到翻译结果时才刷新": "Sadece çevirim sonuçları alındığında yenileme"
 }

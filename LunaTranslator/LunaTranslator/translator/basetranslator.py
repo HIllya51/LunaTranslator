@@ -49,10 +49,9 @@ class basetrans:
 
  
     ############################################################
-    def __init__(self,typename ,callback) :  
+    def __init__(self,typename ) :  
         self.typename=typename
         self.queue=Queue() 
-        self.callback=callback
         
         
         _=dict(zip(somedef.language_list_translator_inner,somedef.language_list_translator_inner))
@@ -112,10 +111,10 @@ class basetrans:
                 time.sleep(t-self.lastrequeststime)
             self.lastrequeststime=t
             while True:
-                contentraw,(contentsolved,mp),skip,embedcallback=self.queue.get() 
+                callback,contentraw,contentsolved,skip,embedcallback=self.queue.get() 
                 if self.queue.empty():
                     break
-            self.newline=contentraw
+            
             if skip:
                 continue
             
@@ -128,8 +127,8 @@ class basetrans:
                 continue 
             if self.needzhconv:
                 res=zhconv.convert(res,  'zh-tw' )  
-            if self.queue.empty() and contentraw==self.newline and self.using:
-                self.callback(contentraw,(self.typename,res,mp),embedcallback) 
+            if self.queue.empty() and self.using:
+                callback(contentraw,res,embedcallback) 
          
 
             
