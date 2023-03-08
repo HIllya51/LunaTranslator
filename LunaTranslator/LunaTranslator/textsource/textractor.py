@@ -142,10 +142,11 @@ class textractor(basetext  ):
                 if isname:self.namehook.append(key)
             
             #print(key,self.selectedhook,output)
-            self.hookdatacollecter[key].append(output) 
+            
             if (key) in self.namehook:
                 self.currentname=output
-                
+            
+            
             if (key in self.selectedhook): 
                 #刷新速度太快的时候，一个thread会同时出好几个文本
                 if key not in newline:
@@ -163,10 +164,13 @@ class textractor(basetext  ):
                                 address=int(address,16)
                                 self.u16lesubprocess.writer(f'-{address} -P{self.pid}\n')
          
-         
+            
             if key==self.selectinghook:
                 self.hookselectdialog.getnewsentencesignal.emit(output)
-            self.hookselectdialog.update_item_new_line.emit(key,output)
+            if (globalconfig['remove_useless_hook'] and key in self.selectedhook) or globalconfig['remove_useless_hook']==False:
+
+                self.hookdatacollecter[key].append(output) 
+                self.hookselectdialog.update_item_new_line.emit(key,output)
          
         if len(newline):  
         
