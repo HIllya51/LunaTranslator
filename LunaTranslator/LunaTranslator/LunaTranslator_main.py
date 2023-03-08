@@ -477,10 +477,8 @@ class MAINUI(QObject) :
                 if globalconfig['forcekeepontop']:
                     hwnd=win32utils.GetForegroundWindow()
                     pid=win32utils.GetWindowThreadProcessId(hwnd)[1] 
-                    if pid ==os.getpid():
-                        continue
-                     
-                    win32utils.SetWindowPos(int(self.translation_ui.winId()), win32con.HWND_TOPMOST, 0, 0, 0, 0,win32con. SWP_NOACTIVATE |win32con. SWP_NOSIZE | win32con.SWP_NOMOVE) 
+                    if pid !=os.getpid():
+                        win32utils.SetWindowPos(int(self.translation_ui.winId()), win32con.HWND_TOPMOST, 0, 0, 0, 0,win32con. SWP_NOACTIVATE |win32con. SWP_NOSIZE | win32con.SWP_NOMOVE) 
             except:
                 print_exc() 
             time.sleep(0.5)            
@@ -506,7 +504,7 @@ class MAINUI(QObject) :
             
         
         self.mainuiloadafter()
-        threading.Thread(target=self.setontopthread).start() 
+        
     def mainuiloadafter(self):    
         self.localocrstarted=False 
         self.loadvnrshareddict()
@@ -529,6 +527,7 @@ class MAINUI(QObject) :
         self.starttextsource(waitforautoinit=True)  
         threading.Thread(target=self.autohookmonitorthread).start()    
         threading.Thread(target=minmaxmoveobservefunc,args=(self.translation_ui,)).start()   
+        threading.Thread(target=self.setontopthread).start() 
     def checklang(self):
         if  globalconfig['language_setted_2.4.5']==False:
             
