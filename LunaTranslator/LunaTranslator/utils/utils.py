@@ -7,6 +7,23 @@ import os,win32con,time
 from traceback import print_exc
 from utils.config import globalconfig 
 import win32utils
+def getsysproxy():
+    hkey=win32utils.RegOpenKeyEx(win32utils.HKEY_CURRENT_USER,'Software\Microsoft\Windows\CurrentVersion\Internet Settings',0,win32utils.KEY_ALL_ACCESS)
+
+    count,MaxValueNameLen,MaxValueLen=(win32utils.RegQueryInfoKey(hkey))
+    ProxyEnable=False
+    ProxyServer=None
+    for i in range(count):
+        k,v=(win32utils.RegEnumValue(hkey,i,MaxValueNameLen,MaxValueLen))
+        if k=='ProxyEnable':
+            ProxyEnable=ord(v[0])==1
+        elif  k=='ProxyServer':
+            ProxyServer=v
+    if ProxyEnable:
+         return ProxyServer
+    else:
+         return None
+
 def argsort(l):
     ll=list(range(len(l)))
     ll.sort(key= lambda x:l[x])

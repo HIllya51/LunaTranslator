@@ -77,7 +77,6 @@
     "TXT读取间隔(s)": "TXT okuma aralığı (s)",
     "预翻译采用模糊匹配": "Önceki çeviri, çöplü eşleştirmeyi kabul ediyor",
     "模糊匹配相似度限制": "Uçak eşleşme sınırı",
-    "使用代理(ip:port)": "Proksi kullan (ip: port)",
     "录制翻译文件": "Çeviri dosyasını kaydedin",
     "导出的第一翻译源": "İlk çevirim kaynağı dışarı aktarıldı",
     "离线翻译": "Devre dışı çeviri",
@@ -295,7 +294,6 @@
     "汉语翻译结果繁简转换": "Basitleştirilmiş Çin çeviri sonuçlarının dönüşü",
     "其他设置": "Diğer ayarlar",
     "使用代理": "Proksi kullan",
-    "代理设置(ip:port)": "Proksi ayarları (ip: port)",
     "转区": "Transfer bölgesi",
     "添加游戏": "Oyunu ekle",
     "重复次数(若为1则自动分析去重)": "Tekrarlama zamanları (1 ise, otomatik analiz edilecek ve kopyalanacak)",
@@ -531,5 +529,11 @@
     "过滤文本中的非日语字符集字符": "Japon olmayan karakter seti karakterleri metinde sil",
     "过滤ASCII字符集": "ASCII karakter seti sil",
     "过滤latin-1字符集": "Latin- 1 karakter setini sil",
-    "过滤其他乱码": "Diğer çöplü kodları sil"
+    "过滤其他乱码": "Diğer çöplü kodları sil",
+    "过滤乱码文本": "Süzgülenmiş metin",
+    "选择": "seçim",
+    "使用持久化翻译缓存": "Sürekli çevirim kapısını kullan",
+    "暂不支持64程序": "64 programı geçici olarak desteklenmiyor",
+    "手动设置代理(ip:port)": "Proksi el olarak ayarlayın (ip: port)",
+    "自动获取系统代理": "Sistem ajanı otomatik olarak tutun"
 }

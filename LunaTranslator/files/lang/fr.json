@@ -77,7 +77,6 @@
     "TXT读取间隔(s)": "Intervalle de lecture txt",
     "预翻译采用模糊匹配": "Correspondance floue utilisée dans la pré - traduction",
     "模糊匹配相似度限制": "Limite de similarité floue",
-    "使用代理(ip:port)": "Utiliser un agent (IP: port)",
     "录制翻译文件": "Enregistrer le fichier de traduction",
     "导出的第一翻译源": "Première source de traduction exportée",
     "离线翻译": "Traduction hors ligne",
@@ -295,7 +294,6 @@
     "汉语翻译结果繁简转换": "Transformation des résultats de la traduction chinoise",
     "其他设置": "Autres paramètres",
     "使用代理": "Utiliser un mandataire",
-    "代理设置(ip:port)": "Paramètres de l'agent (IP: port)",
     "转区": "Zone de transfert",
     "添加游戏": "Ajouter un jeu",
     "重复次数(若为1则自动分析去重)": "Nombre de répétitions (si 1, analyse automatique de l'élimination du poids)",
@@ -531,5 +529,11 @@
     "过滤文本中的非日语字符集字符": "Filtrer les caractères du jeu de caractères non japonais dans le texte",
     "过滤ASCII字符集": "Filtrer le jeu de caractères ASCII",
     "过滤latin-1字符集": "Filtrer le jeu de caractères Latin - 1",
-    "过滤其他乱码": "Filtrer les autres codes brouillés"
+    "过滤其他乱码": "Filtrer les autres codes brouillés",
+    "过滤乱码文本": "Filtrer le texte brouillé",
+    "选择": "Sélection",
+    "使用持久化翻译缓存": "Utiliser le cache de traduction persistant",
+    "暂不支持64程序": "Programme 64 non pris en charge",
+    "手动设置代理(ip:port)": "Configuration manuelle de l'agent (IP: port)",
+    "自动获取系统代理": "Obtenir automatiquement un agent système"
 }

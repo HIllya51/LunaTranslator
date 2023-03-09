@@ -77,7 +77,6 @@
     "TXT读取间隔(s)": "Khoảng thời gian đọc TXT (s)",
     "预翻译采用模糊匹配": "Sử dụng Blur Match",
     "模糊匹配相似度限制": "Giới hạn độ tương đồng phù hợp mờ",
-    "使用代理(ip:port)": "Sử dụng proxy (ip:port)",
     "录制翻译文件": "Ghi lại tập tin dịch",
     "导出的第一翻译源": "Nguồn dịch đầu tiên xuất khẩu",
     "离线翻译": "Dịch ngoại tuyến",
@@ -295,7 +294,6 @@
     "汉语翻译结果繁简转换": "Kết quả phiên dịch tiếng Trung đơn giản",
     "其他设置": "Cài đặt khác",
     "使用代理": "Sử dụng proxy",
-    "代理设置(ip:port)": "Thiết lập proxy (ip:port)",
     "转区": "Chuyển vùng",
     "添加游戏": "Thêm trò chơi",
     "重复次数(若为1则自动分析去重)": "Số lần lặp lại (nếu là 1 thì tự động phân tích giảm cân)",
@@ -531,5 +529,11 @@
     "过滤文本中的非日语字符集字符": "Bộ lọc ký tự bộ ký tự không phải tiếng Nhật trong văn bản",
     "过滤ASCII字符集": "Lọc bộ ký tự ASCII",
     "过滤latin-1字符集": "Lọc bộ ký tự latin-1",
-    "过滤其他乱码": "Lọc mã lộn xộn khác"
+    "过滤其他乱码": "Lọc mã lộn xộn khác",
+    "过滤乱码文本": "Lọc văn bản lộn xộn",
+    "选择": "Chọn",
+    "使用持久化翻译缓存": "Sử dụng Persistent Translation Cache",
+    "暂不支持64程序": "Không hỗ trợ 64 chương trình",
+    "手动设置代理(ip:port)": "Thiết lập proxy theo cách thủ công (ip:port)",
+    "自动获取系统代理": "Tự động nhận proxy hệ thống"
 }

@@ -4,7 +4,7 @@ from PyQt5.QtWidgets import  QColorDialog,QSpinBox,QDoubleSpinBox,QPushButton,QC
 from PyQt5.QtGui import QColor  ,QResizeEvent 
 from PyQt5.QtWidgets import  QTabWidget 
 import qtawesome  
-import functools
+import functools,time
 from traceback import print_exc 
 from utils.config import globalconfig ,_TR
 from utils.utils import wavmp3player
@@ -145,6 +145,7 @@ class Settin(closeashidewindow) :
         if name:
             setattr(self,name,s)
         return s
+    
     def __init__(self, object): 
         super(Settin, self).__init__(object.translation_ui,globalconfig,'setting_geo_2') 
         #self.setWindowFlag(Qt.Tool,False)

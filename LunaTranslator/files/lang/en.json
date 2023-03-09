@@ -130,7 +130,6 @@
     "原文颜色": "Original color",
     "显示朗读按钮": "Show Speak Button",
     "接続詞": "Follow the appropriate word",
-    "使用代理(ip:port)": "Use proxy (ip: port)",
     "小学馆": "Primary school hall",
     "缩放时调整光标速度": "Adjust cursor speed when zooming",
     "取消": "cancel",
@@ -295,7 +294,6 @@
     "汉语翻译结果繁简转换": "Conversion of Traditional and Simplified Chinese Translation Results",
     "其他设置": "Other settings",
     "使用代理": "Use Proxy",
-    "代理设置(ip:port)": "Proxy Settings (ip: port)",
     "转区": "Transregional",
     "添加游戏": "Add Game",
     "重复次数(若为1则自动分析去重)": "Repetition times (if it is 1, it will automatically analyze and remove duplicates)",
@@ -531,5 +529,11 @@
     "过滤文本中的非日语字符集字符": "Filter non-Japanese character set characters in text",
     "过滤ASCII字符集": "Filter ASCII character set",
     "过滤latin-1字符集": "Filter the latin-1 character set",
-    "过滤其他乱码": "Filter other garbled codes"
+    "过滤其他乱码": "Filter other garbled codes",
+    "过滤乱码文本": "Filter garbled text",
+    "选择": "choice",
+    "使用持久化翻译缓存": "Use persistent translation cache",
+    "暂不支持64程序": "64 programs are not supported temporarily",
+    "手动设置代理(ip:port)": "Set proxy manually (ip: port)",
+    "自动获取系统代理": "Obtain system agent automatically"
 }

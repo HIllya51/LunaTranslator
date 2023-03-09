@@ -398,3 +398,39 @@ def mciSendString(s):
     _mciSendStringW=_winmm.mciSendStringW
     _mciSendStringW.argtypes=c_wchar_p,c_wchar_p,c_uint,c_void_p
     return _mciSendStringW(s,None,0,None)
+
+
+
+_RegOpenKeyExW=_Advapi32.RegOpenKeyExW
+_RegOpenKeyExW.argtypes=c_void_p,c_wchar_p,c_uint,c_uint,c_void_p
+ERROR_SUCCESS=0
+def RegOpenKeyEx(hKey,lpSubkey,ulOptions,samDesired):
+    key=c_void_p()
+    if _RegOpenKeyExW(hKey,lpSubkey,ulOptions,samDesired,pointer(key))!=ERROR_SUCCESS:
+        raise Exception("RegOpenKeyEx failed")
+    return key.value
+
+HKEY_CURRENT_USER=0x80000001
+KEY_ALL_ACCESS=0xf003f
+
+_RegQueryInfoKeyW=_Advapi32.RegQueryInfoKeyW
+_RegQueryInfoKeyW.argtypes=c_void_p,c_wchar_p,c_void_p,c_void_p,c_void_p,c_void_p,c_void_p,c_void_p,c_void_p,c_void_p,c_void_p,c_void_p
+def RegQueryInfoKey(hkey):
+    ValueCount=c_uint()
+    MaxValueNameLen=c_uint()
+    MaxValueLen=c_uint()
+    if _RegQueryInfoKeyW(hkey,None,None,None,None,None,None,pointer(ValueCount),pointer(MaxValueNameLen),pointer(MaxValueLen),None,None)!=ERROR_SUCCESS:
+        raise Exception("RegQueryInfoKey failed")
+    return ValueCount.value,MaxValueNameLen.value,MaxValueLen.value
+
+_RegEnumValueW=_Advapi32.RegEnumValueW
+_RegEnumValueW.argtypes=c_void_p,c_uint,c_wchar_p,c_void_p,c_void_p,c_void_p,c_void_p,c_void_p
+
+def RegEnumValue(hkey,dwIndex,MaxValueNameLen,MaxValueLen):
+    key=create_unicode_buffer(MaxValueNameLen+1)
+    value=create_unicode_buffer(MaxValueLen+1)
+    vType=c_uint()
+    _RegEnumValueW(hkey,dwIndex,key,pointer(c_uint(MaxValueNameLen)),None,pointer(vType),value,pointer(c_uint(MaxValueLen)))
+    return key.value,value.value
+hkey=RegOpenKeyEx(HKEY_CURRENT_USER,'Software\Microsoft\Windows\CurrentVersion\Internet Settings',0,KEY_ALL_ACCESS)
+

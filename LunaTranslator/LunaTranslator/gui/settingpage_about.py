@@ -4,19 +4,13 @@ from traceback import print_exc
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QPixmap,QImage
 from PyQt5.QtWidgets import QWidget,QLabel ,QProgressBar,QLineEdit,QPushButton 
-import os 
+import os,threading
 from utils.config import globalconfig  ,_TR 
 from utils.wrapper import threader
 from version import version
-from utils.utils import makehtml
-def _setproxy(x): 
-        if x:
-            os.environ['https_proxy']=globalconfig['proxy'] 
-            os.environ['http_proxy']=globalconfig['proxy'] 
-        else:
-            os.environ['https_proxy']='' 
-            os.environ['http_proxy']=''
-        #
+import time
+from utils.utils import makehtml,getsysproxy
+
 def resourcegrid( ) :  
         grid=[ 
             [('OCR-简体中文'),(makehtml('https://github.com/HIllya51/LunaTranslator/releases/download/v1.34.5/zh.zip',True),1,'link'),'',''],
@@ -95,10 +89,37 @@ def getversion(self):
 def updateprogress(self,text,val):
     self.downloadprogress.setValue(val)
     self.downloadprogress.setFormat(text)
-    
 
+def _setproxy(proxy):  
+            print("set proxy",proxy)
+            os.environ['https_proxy']=proxy
+            os.environ['http_proxy']=proxy
+
+def refreshsysproxy():
+        lastsysproxy=None
+        try:
+            savecurrentproxy=os.environ['https_proxy']
+        except:
+             savecurrentproxy=''
+        while globalconfig['usesysproxy'] and globalconfig['useproxy']:
+            
+            proxy=getsysproxy()
+            if proxy:
+                 if lastsysproxy!=proxy:
+                      lastsysproxy=proxy
+                      _setproxy(proxy)  
+            time.sleep(5)
+        _setproxy(savecurrentproxy)  
+def checkproxy():
+     if globalconfig['useproxy']:
+            if globalconfig['usesysproxy']:
+                 threading.Thread(target=refreshsysproxy).start()
+            else:
+                 _setproxy(globalconfig['proxy'])
+     else:
+        _setproxy('')
 def setTab_about_dicrect(self) : 
-    _setproxy(globalconfig['useproxy'])
+    checkproxy()
     self.versionlabel = QLabel()
     self.versionlabel.setOpenExternalLinks(True)
     self.versionlabel.setTextInteractionFlags(Qt.LinksAccessibleByMouse) 
@@ -118,15 +139,22 @@ def setTab_aboutlazy(self) :
         btn=QPushButton(('确定' ))
         def __resetproxy(x):
             globalconfig.__setitem__('proxy',proxy.text())
-            _setproxy(globalconfig['useproxy'])
+            _setproxy(globalconfig['proxy'] if globalconfig['useproxy'] else '')
         btn.clicked.connect(lambda x: __resetproxy(x))
 
         
-        
+        def _ifusesysproxy(x):
+             proxy.setEnabled(not x)
+             btn.setEnabled(not x)
+             checkproxy()
+        _ifusesysproxy(globalconfig['useproxy'])
         grid1=[ 
+            
+            [    ("使用代理",5),(self.getsimpleswitch(globalconfig  ,'useproxy',callback=lambda x:checkproxy()),1),('',10)],
             [
-                ("使用代理",5),(self.getsimpleswitch(globalconfig  ,'useproxy',callback=lambda x: _setproxy(x)),1),('',10)],
-            [        ("代理设置(ip:port)",5),        (proxy,5),(btn,2),  
+                ("自动获取系统代理",5),(self.getsimpleswitch(globalconfig  ,'usesysproxy',callback=lambda x:_ifusesysproxy(x)))
+            ],
+            [        ("手动设置代理(ip:port)",5),        (proxy,5),(btn,2),  
             ], 
         ]
         grid2=[                
