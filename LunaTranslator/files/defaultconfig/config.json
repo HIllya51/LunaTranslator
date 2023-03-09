@@ -87,7 +87,7 @@
     "ocrrangecolor": "#000000",
     "ocrrangewidth": 2,
     "useproxy": false,
-	"usesysproxy":true,
+	"usesysproxy":false,
     "fullscreenmethod_2": 0,
 	"magpie10path":"",
     "ocrautobindwindow": true,
