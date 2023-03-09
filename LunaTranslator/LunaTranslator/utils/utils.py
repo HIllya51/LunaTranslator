@@ -12,7 +12,7 @@ def getsysproxy():
 
     count,MaxValueNameLen,MaxValueLen=(win32utils.RegQueryInfoKey(hkey))
     ProxyEnable=False
-    ProxyServer=None
+    ProxyServer=''
     for i in range(count):
         k,v=(win32utils.RegEnumValue(hkey,i,MaxValueNameLen,MaxValueLen))
         if k=='ProxyEnable':
