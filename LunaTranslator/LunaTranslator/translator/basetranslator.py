@@ -127,21 +127,21 @@ class basetrans:
             self._cache[langkey]={}
         self._cache[langkey][src] = tgt
     def cached_translate(self,contentsolved):
+
         if globalconfig['uselongtermcache']:
-            res=self.longtermcacheget(contentsolved)
-            if res:
-                return res
-        
-        res=self.shorttermcacheget(contentsolved)
+            _get=self.longtermcacheget
+            _set=self.longtermcacheset
+        else:
+            _get=self.shorttermcacheget
+            _set=self.shorttermcacheset
+            
+        res=_get(contentsolved)
         if res:
             return res
-    
+         
         res=self.translate(contentsolved)
         
-        self.shorttermcacheset(contentsolved,res)
-        if globalconfig['uselongtermcache']:
-            self.longtermcacheset(contentsolved,res)
-
+        _set(contentsolved,res)
         return res
     
     def maybecachetranslate(self,contentraw,contentsolved):
