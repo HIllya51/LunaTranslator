@@ -147,7 +147,7 @@ def setTab_aboutlazy(self) :
              proxy.setEnabled(not x)
              btn.setEnabled(not x)
              checkproxy()
-        _ifusesysproxy(globalconfig['useproxy'])
+        _ifusesysproxy(globalconfig['usesysproxy'])
         grid1=[ 
             
             [    ("使用代理",5),(self.getsimpleswitch(globalconfig  ,'useproxy',callback=lambda x:checkproxy()),1),('',10)],
