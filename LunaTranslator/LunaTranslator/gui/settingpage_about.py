@@ -104,10 +104,9 @@ def refreshsysproxy():
         while globalconfig['usesysproxy'] and globalconfig['useproxy']:
             
             proxy=getsysproxy()
-            if proxy:
-                 if lastsysproxy!=proxy:
-                      lastsysproxy=proxy
-                      _setproxy(proxy)  
+            if lastsysproxy!=proxy:
+                lastsysproxy=proxy
+                _setproxy(proxy)  
             time.sleep(5)
         _setproxy(savecurrentproxy)  
 def checkproxy():

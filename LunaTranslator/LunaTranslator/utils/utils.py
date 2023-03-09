@@ -16,13 +16,13 @@ def getsysproxy():
     for i in range(count):
         k,v=(win32utils.RegEnumValue(hkey,i,MaxValueNameLen,MaxValueLen))
         if k=='ProxyEnable':
-            ProxyEnable=ord(v[0])==1
+            ProxyEnable=(v=='\x01')
         elif  k=='ProxyServer':
             ProxyServer=v
     if ProxyEnable:
          return ProxyServer
     else:
-         return None
+         return ''
 
 def argsort(l):
     ll=list(range(len(l)))
