@@ -108,7 +108,8 @@ def refreshsysproxy():
                 lastsysproxy=proxy
                 _setproxy(proxy)  
             time.sleep(5)
-        _setproxy(savecurrentproxy)  
+        if globalconfig['useproxy']==False:
+            _setproxy(savecurrentproxy)  
 def checkproxy():
      if globalconfig['useproxy']:
             if globalconfig['usesysproxy']:
