@@ -226,7 +226,7 @@ class QUnFrameWindow(resizableframeless):
         self.takusanbuttons(1,lambda: dialog_savedgame(self.object.settin_ui),3,"打开保存的游戏",'gamepad') 
 
         self.takusanbuttons(1,lambda :self.object.AttachProcessDialog.showsignal.emit(),4,"选择游戏",None,["textractor","embedded"] )  
-        self.takusanbuttons(1,lambda:self.object.hookselectdialog.showsignal.emit(),5,"选择文本",None ,["textractor","embedded"]) 
+        self.takusanbuttons(1,lambda:self.object.hookselectdialog.showsignal.emit(),5,"选择文本",None ,["textractor"]) 
          
         self.takusanbuttons(1,lambda :self.clickRange(False),4,"选取OCR范围",None,[ "ocr"])
         self.takusanbuttons(1,self.showhide,5,"显示/隐藏范围框",None,["ocr"])

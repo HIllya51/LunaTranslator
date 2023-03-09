@@ -74,7 +74,7 @@ class hookselect(closeashidewindow):
     def changeprocessclear(self):
         #self.ttCombo.clear() 
         self.ttCombomodelmodel.clear()
-        self.ttCombomodelmodel.setHorizontalHeaderLabels(_TRL(['显示','类型', 'HOOK','文本']))
+        self.ttCombomodelmodel.setHorizontalHeaderLabels(_TRL(['选择','类型', 'HOOK','文本']))
         self.save=[]
         self.savemaybeusehookcode=[]
         self.selectionbutton=[]
@@ -89,7 +89,8 @@ class hookselect(closeashidewindow):
                     
                 #self.hctable.setIndexWidget(self.hcmodel.index(row, 0),self.object.getcolorbutton('','',self.clicked2,icon='fa.times',constcolor="#FF69B4")) 
         
-        self.selectionbutton.append(self._settingui.getsimpleswitch({1:select},1,callback=functools.partial(self.accept,ss)))  #accept里自动把游戏添加到记录里了
+        self.selectionbutton.append(self._settingui.getsimpleswitch({1:False},1,callback=functools.partial(self.accept,ss))) 
+        if select:self.selectionbutton[-1].click()
         self.tttable.setIndexWidget(self.ttCombomodelmodel.index(rown,0),self.selectionbutton[-1])
  
         self.tttable.setIndexWidget(self.ttCombomodelmodel.index(rown,1),self._settingui.getsimplecombobox(_TRL(["文本","人名"]),{1:isname},1,callback=functools.partial(self.selecttextypecallback,ss)))

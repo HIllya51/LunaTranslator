@@ -4,6 +4,7 @@ from utils.config import globalconfig
 import os
 import json
 import sqlite3
+from utils.utils import quote_identifier
 import Levenshtein
 class TS(basetrans):  
     def checkfilechanged(self,p):
@@ -36,7 +37,7 @@ class TS(basetrans):
 
         else:
 
-            ret=self.sql.execute(f'SELECT machineTrans FROM artificialtrans WHERE source = "{content}"').fetchone()
+            ret=self.sql.execute(f'SELECT machineTrans FROM artificialtrans WHERE source = {quote_identifier(content)}').fetchone()
             try:
                 ret=json.loads(ret[0]) 
             except:

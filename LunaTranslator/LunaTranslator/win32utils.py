@@ -268,15 +268,12 @@ try:
     _EnumProcesses=_kernel32.EnumProcesses
 except:
     _EnumProcesses=_psapi.EnumProcesses
-class numprcessesbuf(Structure):
-    _fields_=[
-        ("buf",c_uint*1024)
-    ]
+
 def EnumProcesses():
-    buf=numprcessesbuf()
+    buf=(c_uint*1024)()
     dwneed=c_uint()
     _EnumProcesses(pointer(buf),sizeof(buf),pointer(dwneed))
-    return (list(buf.buf )[:dwneed.value//sizeof(c_uint)])
+    return (list(buf  )[:dwneed.value//sizeof(c_uint)])
 
 _WaitForSingleObject=_kernel32.WaitForSingleObject
 _WaitForSingleObject.argtypes=c_void_p,c_uint
@@ -395,3 +392,9 @@ def DuplicateHandle(handle):
     TargetHandle=c_void_p()
     _DuplicateHandle(_GetCurrentProcess(),handle,_GetCurrentProcess(),pointer(TargetHandle),0,1,DUPLICATE_SAME_ACCESS)
     return TargetHandle.value
+
+def mciSendString(s):
+    _winmm=windll.winmm
+    _mciSendStringW=_winmm.mciSendStringW
+    _mciSendStringW.argtypes=c_wchar_p,c_wchar_p,c_uint,c_void_p
+    return _mciSendStringW(s,None,0,None)

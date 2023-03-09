@@ -26,6 +26,7 @@
 	"buttonsize":20,
 	"language_setted_2.4.5":false,
 	"postprocess_rank":[],
+	"uselongtermcache":false,
 	"hist_split":false,
 	"hist_fontstring":"Arial,12,-1,5,50,0,0,0,0,0,Regular",
 	"sw_fontstring":"Arial,12,-1,5,50,0,0,0,0,0,Regular",

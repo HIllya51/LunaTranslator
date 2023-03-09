@@ -77,6 +77,10 @@ def setTabTwo_lazy(self) :
                 ("在线翻译等待时间(s)",8),(self.getspinbox(1,20,globalconfig,'translatortimeout',step=0.1,double=True ),3),'',
                  ("翻译请求间隔(s)",8),(self.getspinbox(0,10,globalconfig,'transtimeinternal',step=0.1,double=True),3) ,
             ],
+            [
+                ("使用持久化翻译缓存",8),(self.getsimpleswitch(globalconfig,'uselongtermcache')),'',
+            ]
+
         ] 
  
         pretransgrid=[

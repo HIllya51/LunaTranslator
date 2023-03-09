@@ -2,13 +2,13 @@ from traceback import print_exc
 from queue import Queue  
 
 from utils.config import globalconfig,translatorsetting
-from threading import Thread
-import os,time 
+from threading import Thread,Lock
+import os,time ,codecs
 import zhconv
 from functools import partial
 from utils import somedef
-from utils.utils import timeoutfunction
-
+from utils.utils import timeoutfunction,quote_identifier
+import sqlite3
 class basetrans: 
     def langmap(self):
         return {}
@@ -62,10 +62,34 @@ class basetrans:
         timeoutfunction(self.inittranslator,max(globalconfig['translatortimeout'],5))
         self.lastrequeststime=0
         self._cache={}
-        self._MAXCACHE = 512 
+        
         self.newline=None
+
+        if self.typename not in somedef.fanyi_pre:
+            try:
+                self.sqlwrite2=sqlite3.connect(f'./translation_record/cache/{typename}.sqlite',check_same_thread = False, isolation_level=None)
+                try:
+                    self.sqlwrite2.execute('CREATE TABLE cache(srclang,tgtlang,source,trans);')
+                except:
+                    pass
+            except:
+                print_exc
+            self.sqlqueue=Queue()
+            Thread(target= self.sqlitethread).start()
         Thread(target=self.fythread).start() 
     
+    def sqlitethread(self):
+        while True:
+            task=self.sqlqueue.get()
+            try:
+                
+                src,trans=task 
+                src=quote_identifier(src)  
+                trans=quote_identifier(trans)
+                self.sqlwrite2.execute(f'INSERT into cache VALUES({quote_identifier(self.srclang)},{quote_identifier(self.tgtlang)},{src},{trans})')
+                
+            except:
+                print_exc()
     @property
     def needzhconv(self):
         l=somedef.language_list_translator_inner[globalconfig['tgtlang3']]
@@ -77,32 +101,54 @@ class basetrans:
     def gettask(self,content):
         self.queue.put((content)) 
     
-    def cached_translate(self,contentsolved):
+    
+    def longtermcacheget(self,src):
+        src=quote_identifier(src)
+        ret=self.sqlwrite2.execute(f'SELECT * FROM cache WHERE source = {src}').fetchall()
+        for srclang,tgtlang,source,trans in ret:
+            if (srclang,tgtlang)==(self.srclang,self.tgtlang):
+                return trans
+    
+    def longtermcacheset(self,src,tgt):
+        self.sqlqueue.put((src,tgt))
+    def shorttermcacheget(self,src):
         langkey=(self.srclang,self.tgtlang)
         if langkey not in self._cache:
             self._cache[langkey]={}
         try:
-            return self._cache[langkey][contentsolved]
+            return self._cache[langkey][src]
         except KeyError:
-            pass
+            return None
         
-        if len(self._cache[langkey]) >= self._MAXCACHE:
-            # Drop the oldest item
-            try:
-                del self._cache[langkey][next(iter(self._cache))]
-            except  :
-                pass
+    def shorttermcacheset(self,src,tgt):
+        langkey=(self.srclang,self.tgtlang)
+        
+        if langkey not in self._cache:
+            self._cache[langkey]={}
+        self._cache[langkey][src] = tgt
+    def cached_translate(self,contentsolved):
+        if globalconfig['uselongtermcache']:
+            res=self.longtermcacheget(contentsolved)
+            if res:
+                return res
+        
+        res=self.shorttermcacheget(contentsolved)
+        if res:
+            return res
     
         res=self.translate(contentsolved)
-        self._cache[langkey][contentsolved] = res
-         
+        
+        self.shorttermcacheset(contentsolved,res)
+        if globalconfig['uselongtermcache']:
+            self.longtermcacheset(contentsolved,res)
+
         return res
     
     def maybecachetranslate(self,contentraw,contentsolved):
-        if self.typename in somedef.fanyi_pre:
-            res=self.translate(contentraw)
-        else: 
+        if self.typename not in somedef.fanyi_pre:
             res=self.cached_translate(contentsolved)
+        else: 
+            res=self.translate(contentraw)
         return res
     def fythread(self):
         while self.using:  

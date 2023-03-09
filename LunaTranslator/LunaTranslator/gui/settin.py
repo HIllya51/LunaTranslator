@@ -7,7 +7,7 @@ import qtawesome
 import functools
 from traceback import print_exc 
 from utils.config import globalconfig ,_TR
-from utils.wavmp3player import wavmp3player
+from utils.utils import wavmp3player
 from utils.config import globalconfig 
 
 from gui.settingpage1 import setTabOne,setTabOne_direct
@@ -75,7 +75,8 @@ class Settin(closeashidewindow) :
                 maxl=max(maxl,nowc)
                 if save:
                     savelist.append(ll)
- 
+
+                grid.setRowMinimumHeight(nowr,35*self.rate)
         self.needfitcols.append([grid,maxl])
     def callbackwrap(self,d,k,call,_):
         d[k]=_ 

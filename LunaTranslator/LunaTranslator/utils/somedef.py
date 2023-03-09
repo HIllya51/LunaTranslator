@@ -11,6 +11,8 @@ def initpath():
         os.rename('transkiroku','translation_record')
     if os.path.exists('./translation_record')==False:
         os.mkdir('./translation_record') 
+    if os.path.exists('./translation_record/cache')==False:
+        os.mkdir('./translation_record/cache') 
     if os.path.exists('./cache')==False:
         os.mkdir('./cache')
     if os.path.exists('./cache/ocr')==False:

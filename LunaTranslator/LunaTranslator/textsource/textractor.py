@@ -7,7 +7,7 @@ from collections import OrderedDict
 import os 
 from utils import somedef
 from utils.config import globalconfig ,_TR ,savehook_new_data
-from utils.u16lesubprocess import u16lesubprocess
+from utils.subproc import u16lesubprocess
 from utils.hwnd import getarch
 from textsource.textsourcebase import basetext 
 from utils.utils import checkchaos  
@@ -120,7 +120,7 @@ class textractor(basetext  ):
             
             key =(thread_handle,thread_tp_processId, thread_tp_addr, thread_tp_ctx, thread_tp_ctx2, thread_name,HookCode)
  
-                
+            hasnewhook=False
             if key not in self.hookdatacollecter:
                 #print(self.autostarthookcode,HookCode)
                 select=False
@@ -138,7 +138,8 @@ class textractor(basetext  ):
                         self.autostarting=False
                 self.hookdatacollecter[key]=[] 
                 isname='namehook' in savehook_new_data[self.pname] and list(key[-4:]) in savehook_new_data[self.pname]['namehook']
-                self.hookselectdialog.addnewhooksignal.emit(key  ,select,isname) 
+                
+                hasnewhook=True
                 if isname:self.namehook.append(key)
             
             #print(key,self.selectedhook,output)
@@ -171,7 +172,13 @@ class textractor(basetext  ):
 
                 self.hookdatacollecter[key].append(output) 
                 self.hookselectdialog.update_item_new_line.emit(key,output)
-         
+            
+            if hasnewhook :
+                if globalconfig['remove_useless_hook'] and select:
+                    self.hookselectdialog.addnewhooksignal.emit(key  ,select,isname) 
+                elif globalconfig['remove_useless_hook']==False:
+                    self.hookselectdialog.addnewhooksignal.emit(key  ,select,isname) 
+            
         if len(newline):  
         
             newline_copy=['\n'.join(newline[k])  for k in newline]   

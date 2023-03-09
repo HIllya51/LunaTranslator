@@ -74,7 +74,7 @@ def setTab7_lazy(self) :
             ]
             grids.append(l)
          
-  
+    
         grids2=[ 
             [(('使用专有名词翻译' ),6),
                 self.getsimpleswitch(noundictconfig,'use'),

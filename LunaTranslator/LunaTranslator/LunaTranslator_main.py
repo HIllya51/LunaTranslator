@@ -20,7 +20,7 @@ from utils import somedef
 from gui.showword import searchwordW
 from gui.rangeselect    import rangeadjust
 
-from utils.hwnd import pid_running,getarch,getpidexe ,getpidhwnds,ListProcess,getScreenRate
+from utils.hwnd import pid_running,getpidexe ,getpidhwnds,ListProcess,getScreenRate
 
 from textsource.copyboard import copyboard   
 from textsource.textractor import textractor   
@@ -181,10 +181,12 @@ class MAINUI(QObject) :
             _paste_str='\n'.join(paste_str)
         else:
             _paste_str=POSTSOLVE(paste_str) 
-            
+        
+        
+        
         while len(_paste_str) and _paste_str[-1] in '\r\n \t':  #在后处理之后在去除换行，这样换行符可以当作行结束符给后处理用
             _paste_str=_paste_str[:-1]  
-
+            
         if _paste_str=='' or len(_paste_str)>1000  or (shortlongskip and _paste_str==self.currenttext):
             if embedcallback:
                 embedcallback('zhs', _paste_str) 
@@ -192,7 +194,7 @@ class MAINUI(QObject) :
         
         self.currenttext=_paste_str
         self.textsource.sqlqueueput((_paste_str,)) 
-
+        
         if globalconfig['outputtopasteboard'] and globalconfig['sourcestatus']['copy']['use']==False:  
             pyperclip.copy(_paste_str)
         
@@ -216,8 +218,12 @@ class MAINUI(QObject) :
         
         skip=shortlongskip and  (len(paste_str_solved)<globalconfig['minlength'] or len(paste_str_solved)>globalconfig['maxlength'] )
 
-        
+        self.premtalready=['premt']
+        if 'premt' in self.translators:
+            ret=self.translators['premt'].translate(paste_str_solved)
+            self.GetTranslationCallback('premt',optimization_params,_showrawfunction,_showrawfunction_sig,_paste_str,ret,embedcallback)
         for engine in self.translators:  
+            if engine in self.premtalready:continue
             self.translators[engine].gettask((partial(self.GetTranslationCallback,engine,optimization_params,_showrawfunction,_showrawfunction_sig),_paste_str,paste_str_solved,skip,embedcallback)) 
     
         
@@ -232,8 +238,12 @@ class MAINUI(QObject) :
             _showrawfunction()
         if classname=='premt':
             for k in res:
-                self.translation_ui.displayres.emit(k,contentraw,res[k])
-                
+                if k in globalconfig['fanyi']:
+                    _colork=k
+                else:
+                    _colork='premt'
+                self.translation_ui.displayres.emit(_colork,contentraw,res[k])
+                self.premtalready.append(k)
         else:
             self.translation_ui.displayres.emit(classname,contentraw,res)
             
@@ -297,11 +307,7 @@ class MAINUI(QObject) :
     def selectprocess(self,selectedp): 
             #self.object.textsource=None
             pid,pexe,hwnd=(  selectedp)   
-        
-            arch=getarch(pid)
-            if arch is None:
-                return
-            
+         
             #   
             if globalconfig['sourcestatus']['textractor']['use']:
                 self.textsource=textractor(self.textgetmethod,self.hookselectdialog,pid,hwnd,pexe )  
@@ -320,7 +326,7 @@ class MAINUI(QObject) :
         self.translation_ui.refreshtooliconsignal.emit()
         self.range_ui.hide() 
         self.settin_ui.selectbutton.setEnabled(globalconfig['sourcestatus']['textractor']['use'] or globalconfig['sourcestatus']['embedded']['use']) 
-        self.settin_ui.selecthookbutton.setEnabled(globalconfig['sourcestatus']['textractor']['use'] or globalconfig['sourcestatus']['embedded']['use']) 
+        self.settin_ui.selecthookbutton.setEnabled(globalconfig['sourcestatus']['textractor']['use'] )
         self.textsource=None
         if checked: 
             classes={'ocr':ocrtext,'copy':copyboard,'textractor':None,'embedded':None,'txt':txt} 

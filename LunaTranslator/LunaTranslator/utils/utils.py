@@ -11,7 +11,38 @@ def argsort(l):
     ll=list(range(len(l)))
     ll.sort(key= lambda x:l[x])
     return ll
+def quote_identifier(s, errors="strict"):
+        encodable = s.encode("utf-8", errors).decode("utf-8")
 
+        nul_index = encodable.find("\x00")
+
+        if nul_index >= 0:
+            error = UnicodeEncodeError("NUL-terminated utf-8", encodable,
+                                    nul_index, nul_index + 1, "NUL not allowed")
+            error_handler = codecs.lookup_error(errors)
+            replacement, _ = error_handler(error)
+            encodable = encodable.replace("\x00", replacement)
+
+        return "\"" + encodable.replace("\"", "\"\"") + "\""
+class wavmp3player( ):
+    def __init__(self):
+        self.i=0
+    def mp3playfunction(self,path,volume):
+        if os.path.exists(path)==False:
+            return 
+        self._playsoundWin(path,volume)
+    def _playsoundWin(self,sound,volume ):  
+        try:
+            win32utils.mciSendString((f"stop lunatranslator_mci_{self.i}") );
+            win32utils.mciSendString((f"close lunatranslator_mci_{self.i}") );
+            self.i+=1 
+
+            win32utils.mciSendString(f'open "{sound}" alias lunatranslator_mci_{self.i}');  
+            win32utils.mciSendString(f'setaudio lunatranslator_mci_{self.i} volume to {volume*10}'); 
+            win32utils.mciSendString((f'play lunatranslator_mci_{self.i}'))
+        except:
+            pass
+        
 
 def selectdebugfile(path ):
  
