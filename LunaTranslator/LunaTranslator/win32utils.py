@@ -432,5 +432,4 @@ def RegEnumValue(hkey,dwIndex,MaxValueNameLen,MaxValueLen):
     vType=c_uint()
     _RegEnumValueW(hkey,dwIndex,key,pointer(c_uint(MaxValueNameLen)),None,pointer(vType),value,pointer(c_uint(MaxValueLen)))
     return key.value,value.value
-hkey=RegOpenKeyEx(HKEY_CURRENT_USER,'Software\Microsoft\Windows\CurrentVersion\Internet Settings',0,KEY_ALL_ACCESS)
 
