@@ -9,7 +9,7 @@ from utils.config import globalconfig  ,_TR
 from utils.wrapper import threader
 from version import version
 import time
-from utils.utils import makehtml,getsysproxy
+from utils.utils import makehtml
 
 def resourcegrid( ) :  
         grid=[ 
@@ -90,36 +90,8 @@ def updateprogress(self,text,val):
     self.downloadprogress.setValue(val)
     self.downloadprogress.setFormat(text)
 
-def _setproxy(proxy):  
-            print("set proxy",proxy)
-            os.environ['https_proxy']=proxy
-            os.environ['http_proxy']=proxy
-
-def refreshsysproxy():
-        lastsysproxy=None
-        try:
-            savecurrentproxy=os.environ['https_proxy']
-        except:
-             savecurrentproxy=''
-        while globalconfig['usesysproxy'] and globalconfig['useproxy']:
-            
-            proxy=getsysproxy()
-            if lastsysproxy!=proxy:
-                lastsysproxy=proxy
-                _setproxy(proxy)  
-            time.sleep(5)
-        if globalconfig['useproxy']==False:
-            _setproxy(savecurrentproxy)  
-def checkproxy():
-     if globalconfig['useproxy']:
-            if globalconfig['usesysproxy']:
-                 threading.Thread(target=refreshsysproxy).start()
-            else:
-                 _setproxy(globalconfig['proxy'])
-     else:
-        _setproxy('')
 def setTab_about_dicrect(self) : 
-    checkproxy()
+    
     self.versionlabel = QLabel()
     self.versionlabel.setOpenExternalLinks(True)
     self.versionlabel.setTextInteractionFlags(Qt.LinksAccessibleByMouse) 
@@ -135,28 +107,6 @@ def setTab_about(self) :
     self.tabadd_lazy(self.tab_widget, ('其他设置'), lambda :setTab_aboutlazy(self)) 
 def setTab_aboutlazy(self) : 
          
-        proxy=QLineEdit(globalconfig['proxy'])
-        btn=QPushButton(('确定' ))
-        def __resetproxy(x):
-            globalconfig.__setitem__('proxy',proxy.text())
-            _setproxy(globalconfig['proxy'] if globalconfig['useproxy'] else '')
-        btn.clicked.connect(lambda x: __resetproxy(x))
-
-        
-        def _ifusesysproxy(x):
-             proxy.setEnabled(not x)
-             btn.setEnabled(not x)
-             checkproxy()
-        _ifusesysproxy(globalconfig['usesysproxy'])
-        grid1=[ 
-            
-            [    ("使用代理",5),(self.getsimpleswitch(globalconfig  ,'useproxy',callback=lambda x:checkproxy()),1),('',10)],
-            [
-                ("自动获取系统代理",5),(self.getsimpleswitch(globalconfig  ,'usesysproxy',callback=lambda x:_ifusesysproxy(x)))
-            ],
-            [        ("手动设置代理(ip:port)",5),        (proxy,5),(btn,2),  
-            ], 
-        ]
         grid2=[                
                 [('自动下载更新(需要连接github)',5),(self.getsimpleswitch(globalconfig ,'autoupdate',callback= lambda x:getversion(self)),1) ,('',10)],
                 [(self.versionlabel,10)], 
@@ -173,11 +123,11 @@ def setTab_aboutlazy(self) :
             [('如果你感觉该软件对你有帮助，欢迎微信扫码赞助，谢谢，么么哒~')],
             []
         ]
-        tab=self.makesubtab_lazy(['项目网站','支持作者','自动更新','代理设置','资源下载' ],[
+        tab=self.makesubtab_lazy(['项目网站','支持作者','自动更新','资源下载' ],[
                 lambda:self.makescroll(self.makegrid(shuominggrid)),
                 lambda:self.makevbox( [self.makegrid(support),imgwidget("./files/zan.png")]),
                 lambda: self.makescroll(self.makegrid(grid2 )   ) ,
-                lambda: self.makescroll(self.makegrid(grid1 )   ),
+                
                 lambda:self.makescroll( self.makegrid(resourcegrid() ) ), 
                 ]) 
         return tab

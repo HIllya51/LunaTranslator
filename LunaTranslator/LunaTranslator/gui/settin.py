@@ -17,6 +17,7 @@ from gui.settingpage_tts import setTab5 ,setTab5_direct
 from gui.settingpage_cishu import setTabcishu
 from gui.settingpage_quick import setTab_quick,setTab_quick_direct
 from gui.setting_lang import setTablang
+from gui.setting_proxy import setTab_proxy_dicrect,setTab_proxy
 from gui.settingpage7 import setTab7 ,settab7direct
 from gui.settingpage_about import setTab_about,setTab_about_dicrect  
 from gui.usefulwidget import MySwitch 
@@ -174,12 +175,17 @@ class Settin(closeashidewindow) :
          
         self.usevoice=0
         self.isfirstshow=True
+
+        setTab_proxy_dicrect(self)
+
         setTabOne_direct(self)
         settab7direct(self)
         setTabThree_direct(self) 
         setTab5_direct(self)
         setTab_quick_direct(self)
+
         setTab_about_dicrect(self)
+
         self.setstylesheet()
     def opensolvetextfun(self):
         self.show() 
@@ -214,6 +220,7 @@ class Settin(closeashidewindow) :
             setTab_quick(self) 
             
             setTablang(self) 
+            setTab_proxy(self)
             setTab_about(self) 
             self.isfirstshow=False
     def setstylesheet(self):
