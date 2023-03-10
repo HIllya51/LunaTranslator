@@ -74,7 +74,7 @@ def setTabTwo_lazy(self) :
                 ("最短翻译字数",8),(self.getspinbox(0,500,globalconfig,'minlength'),3),'',
                 ("最长翻译字数",8),(self.getspinbox(0,500,globalconfig,'maxlength'),3)  ,('',7)],
                 [
-                ("在线翻译等待时间(s)",8),(self.getspinbox(1,20,globalconfig,'translatortimeout',step=0.1,double=True ),3),'',
+                ("在线翻译超时时间(s)",8),(self.getspinbox(1,20,globalconfig,'translatortimeout',step=0.1,double=True ),3),'',
                  ("翻译请求间隔(s)",8),(self.getspinbox(0,10,globalconfig,'transtimeinternal',step=0.1,double=True),3) ,
             ],
             [

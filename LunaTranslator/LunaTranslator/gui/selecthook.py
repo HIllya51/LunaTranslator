@@ -7,9 +7,11 @@ from PyQt5.QtGui import QStandardItem, QStandardItemModel,QTextDocument,QAbstrac
 from PyQt5.QtGui import QFont,QTextCursor
 from PyQt5.QtCore import Qt,pyqtSignal,QSize,QModelIndex
 import qtawesome
+from gui.dialog_savedgame import dialog_setting_game
+
 import re
 import os,time 
-from utils.config import globalconfig ,_TR,_TRL
+from utils.config import globalconfig ,_TR,_TRL,checkifnewgame
 from collections import OrderedDict
 from gui.usefulwidget import closeashidewindow
 from utils.utils import checkchaos
@@ -159,6 +161,11 @@ class hookselect(closeashidewindow):
         self.opensolvetextb.clicked.connect(self.opensolvetext)
         self.userhooklayout.addWidget(self.opensolvetextb)
 
+        
+        self.settingbtn=QPushButton(_TR("游戏设置")) 
+        self.settingbtn.clicked.connect(self.opengamesetting)
+        self.userhooklayout.addWidget(self.settingbtn)
+
         #################
         self.searchtextlayout = QHBoxLayout() 
         self.vboxlayout.addLayout(self.searchtextlayout)
@@ -222,6 +229,11 @@ class hookselect(closeashidewindow):
         self.tttable2.setItemDelegateForColumn(1,HTMLDelegate(self))
     def opensolvetext(self):
         self._settingui.opensolvetextsig.emit()
+    def opengamesetting(self):
+        try:
+            dialog_setting_game(self,self.object.textsource.pname, settingui=self._settingui) 
+        except:
+            print_exc()
     def gethide(self,res,savedumpt ):
         hide=False
         if self.checkfilt_dumplicate.isChecked():
@@ -399,21 +411,15 @@ class hookselect(closeashidewindow):
             else:
                 pass
             
-            try:
-                needinserthookcode= savehook_new_data[self.object.textsource.pname]['needinserthookcode'] 
-            except:
-                needinserthookcode=[]
-             
+            
+            needinserthookcode= savehook_new_data[self.object.textsource.pname]['needinserthookcode'] 
+           
             needinserthookcode=list(set(needinserthookcode+self.savemaybeusehookcode))
             self.object.textsource.autostarthookcode=[]
             self.object.textsource.autostarting=False
-            
-            if self.object.textsource.pname not in savehook_new_list:
-                savehook_new_list.insert(0,self.object.textsource.pname)  
-            if self.object.textsource.pname not in savehook_new_data:
-                savehook_new_data[self.object.textsource.pname]={'leuse':True,'title':os.path.basename(os.path.dirname(self.object.textsource.pname))+'/'+ os.path.basename(self.object.textsource.pname) ,'hook':self.object.textsource.selectedhook,'needinserthookcode':needinserthookcode }  
-            else:
-                savehook_new_data[self.object.textsource.pname].update({ 'hook':self.object.textsource.selectedhook,'needinserthookcode':needinserthookcode } )
+            checkifnewgame(self.object.textsource.pname)
+             
+            savehook_new_data[self.object.textsource.pname].update({ 'hook':self.object.textsource.selectedhook,'needinserthookcode':needinserthookcode } )
             self.object.textsource.lock.release()
         except:
             print_exc()

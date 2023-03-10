@@ -418,7 +418,6 @@
     "文本处理": "Xử lý văn bản",
     "预处理方法": "Phương pháp tiền xử lý",
     "游戏全屏": "Game toàn màn hình",
-    "在线翻译等待时间(s)": "Thời gian chờ dịch trực tuyến (s)",
     "系统未安装该语言的OCR模型": "Hệ thống không cài đặt mô hình OCR cho ngôn ngữ này",
     "连接进程": "Quá trình kết nối",
     "设置代码页": "Thiết lập trang mã",
@@ -535,5 +534,7 @@
     "使用持久化翻译缓存": "Sử dụng Persistent Translation Cache",
     "暂不支持64程序": "Không hỗ trợ 64 chương trình",
     "手动设置代理(ip:port)": "Thiết lập proxy theo cách thủ công (ip:port)",
-    "自动获取系统代理": "Tự động nhận proxy hệ thống"
+    "自动获取系统代理": "Tự động nhận proxy hệ thống",
+    "在线翻译超时时间(s)": "Thời gian chờ dịch trực tuyến (s)",
+    "游戏设置": "Cài đặt trò chơi"
 }

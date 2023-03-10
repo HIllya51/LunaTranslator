@@ -6,7 +6,7 @@ from traceback import print_exc
 from collections import OrderedDict
 import os 
 from utils import somedef
-from utils.config import globalconfig ,_TR ,savehook_new_data
+from utils.config import globalconfig ,savehook_new_data 
 from utils.subproc import u16lesubprocess
 from utils.hwnd import getarch
 from textsource.textsourcebase import basetext 
@@ -74,9 +74,8 @@ class textractor(basetext  ):
         delay=globalconfig['textthreaddelay']
         self.u16lesubprocess.writer(f'+{delay} -P{self.pid}\n') 
     def setcodepage(self):
-        #cp=globalconfig["codepage"]
         
-        cpi=globalconfig["codepage_index"]
+        cpi=savehook_new_data[self.pname]["codepage_index"]
         cp= somedef.codepage_real[cpi]
         self.u16lesubprocess.writer(f'={cp} -P{self.pid}\n') 
     def findhook(self ): 
@@ -155,7 +154,7 @@ class textractor(basetext  ):
                 else:
                     newline[key].append(output) 
             else:
-                if globalconfig['remove_useless_hook']:
+                if savehook_new_data[self.pname]['remove_useless_hook']:
                     hookcodes=[_[-1] for _ in self.selectedhook]+[_[-1] for _ in self.autostarthookcode]
                     if len(hookcodes)>0:
                         address=key[2]
@@ -166,18 +165,20 @@ class textractor(basetext  ):
                                 self.u16lesubprocess.writer(f'-{address} -P{self.pid}\n')
          
             
+            if hasnewhook :
+                if savehook_new_data[self.pname]['remove_useless_hook'] and select:
+                    self.hookselectdialog.addnewhooksignal.emit(key  ,select,isname) 
+                elif savehook_new_data[self.pname]['remove_useless_hook']==False:
+                    self.hookselectdialog.addnewhooksignal.emit(key  ,select,isname) 
+
+                    
             if key==self.selectinghook:
                 self.hookselectdialog.getnewsentencesignal.emit(output)
-            if (globalconfig['remove_useless_hook'] and key in (self.selectedhook+self.namehook)) or globalconfig['remove_useless_hook']==False:
+            if (savehook_new_data[self.pname]['remove_useless_hook'] and key in (self.selectedhook+self.namehook)) or savehook_new_data[self.pname]['remove_useless_hook']==False:
 
                 self.hookdatacollecter[key].append(output) 
                 self.hookselectdialog.update_item_new_line.emit(key,output)
             
-            if hasnewhook :
-                if globalconfig['remove_useless_hook'] and select:
-                    self.hookselectdialog.addnewhooksignal.emit(key  ,select,isname) 
-                elif globalconfig['remove_useless_hook']==False:
-                    self.hookselectdialog.addnewhooksignal.emit(key  ,select,isname) 
             
         if len(newline):  
         

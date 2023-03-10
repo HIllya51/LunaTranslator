@@ -418,7 +418,6 @@
     "文本处理": "text processing ",
     "预处理方法": "Pretreatment method",
     "游戏全屏": "Full screen game",
-    "在线翻译等待时间(s)": "Online translation waiting time (s)",
     "系统未安装该语言的OCR模型": "The OCR model of this language is not installed in the system",
     "连接进程": "Connection process",
     "设置代码页": "Set Code Page",
@@ -535,5 +534,7 @@
     "使用持久化翻译缓存": "Use persistent translation cache",
     "暂不支持64程序": "64 programs are not supported temporarily",
     "手动设置代理(ip:port)": "Set proxy manually (ip: port)",
-    "自动获取系统代理": "Obtain system agent automatically"
+    "自动获取系统代理": "Obtain system agent automatically",
+    "在线翻译超时时间(s)": "Online translation timeout (s)",
+    "游戏设置": "Game settings"
 }

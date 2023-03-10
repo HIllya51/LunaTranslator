@@ -418,7 +418,6 @@
     "文本处理": "Procesamiento de textos",
     "预处理方法": "Método de preprocesamiento",
     "游戏全屏": "Pantalla completa del juego",
-    "在线翻译等待时间(s)": "Tiempo de espera de traducción en línea (s)",
     "系统未安装该语言的OCR模型": "El sistema no instala el modelo OCR de este idioma",
     "连接进程": "Proceso de conexión",
     "设置代码页": "Establecer página de código",
@@ -535,5 +534,7 @@
     "使用持久化翻译缓存": "Usar caché de traducción persistente",
     "暂不支持64程序": "No se admiten 64 procedimientos por el momento",
     "手动设置代理(ip:port)": "Configurar manualmente el agente (ip: puerto)",
-    "自动获取系统代理": "Agente del sistema de adquisición automática"
+    "自动获取系统代理": "Agente del sistema de adquisición automática",
+    "在线翻译超时时间(s)": "Tiempo de espera de traducción en línea (s)",
+    "游戏设置": "Configuración del juego"
 }

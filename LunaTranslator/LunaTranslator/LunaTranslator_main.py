@@ -8,7 +8,7 @@ import os,threading,Levenshtein,sys
 from traceback import  print_exc   
 import win32utils
 from PyQt5.QtGui import QPalette,QColor
-from utils.config import globalconfig ,savehook_new_list,savehook_new_data,noundictconfig,transerrorfixdictconfig,setlanguage 
+from utils.config import globalconfig ,savehook_new_list,savehook_new_data,noundictconfig,transerrorfixdictconfig,setlanguage ,checkifnewgame
 import threading 
 from PyQt5.QtCore import QCoreApplication ,Qt ,QObject,pyqtSignal
 from PyQt5.QtWidgets import  QApplication ,QGraphicsScene,QGraphicsView,QDesktopWidget  
@@ -314,10 +314,7 @@ class MAINUI(QObject) :
             elif globalconfig['sourcestatus']['embedded']['use']:
                 self.textsource=embedded(self.textgetmethod,self.hookselectdialog,pid,hwnd,pexe, self)  
             
-            if pexe not in savehook_new_list:
-                savehook_new_list.insert(0,pexe)  
-            if pexe not in savehook_new_data:
-                savehook_new_data[pexe]={'leuse':True,'title':os.path.basename(os.path.dirname(pexe))+'/'+ os.path.basename(pexe),'hook':[] }  
+            checkifnewgame(pexe) 
 
     #@threader
     def starttextsource(self,use=None,checked=True,waitforautoinit=False):   
@@ -441,10 +438,7 @@ class MAINUI(QObject) :
                                 if _exe==name_: 
                                     
                                     if globalconfig['sourcestatus']['textractor']['use']:
-                                        if 'needinserthookcode' in savehook_new_data[name_] and globalconfig['autoinserthook']:
-                                            needinserthookcode=savehook_new_data[name_]['needinserthookcode']
-                                        else:
-                                            needinserthookcode=[]
+                                        needinserthookcode=savehook_new_data[name_]['needinserthookcode']
                                         self.textsource=textractor(self.textgetmethod,self.hookselectdialog,pid_real,hwnd,name_ ,autostarthookcode=savehook_new_data[name_]['hook'],needinserthookcode=needinserthookcode)
                                     elif globalconfig['sourcestatus']['embedded']['use']:
                                         self.textsource=embedded(self.textgetmethod,self.hookselectdialog,pid_real,hwnd,name_  ,self)

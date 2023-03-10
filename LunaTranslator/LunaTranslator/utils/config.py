@@ -32,6 +32,31 @@ savehook_new_data= _savehook[1]
 translatorsetting=tryreadconfig('translatorsetting.json') 
 ocrsetting=tryreadconfig('ocrsetting.json') 
 
+def getdefaultsavehook(gamepath):
+    default={
+        'alwaysuselr':False,
+        'needinserthookcode':[],
+        'ttsonname':False,
+        'ttsusename':[],
+        'leuse':True,
+        'hook':[],
+        'needinserthookcode':[],
+        'remove_useless_hook':False,
+        'title':os.path.basename(os.path.dirname(gamepath))+'/'+ os.path.basename(gamepath),
+        "codepage_index":globalconfig['codepage_index']
+    }
+    return default
+def checkifnewgame(gamepath):
+    if gamepath not in savehook_new_list:
+            savehook_new_list.insert(0,gamepath) 
+    if gamepath not in savehook_new_data:
+            savehook_new_data[gamepath]=getdefaultsavehook(gamepath)
+_dfsavehook=getdefaultsavehook('')
+for game in savehook_new_data:
+    for k in _dfsavehook:
+        if k not in savehook_new_data[game]:
+            savehook_new_data[game][k]=_dfsavehook[k]
+
 def syncconfig(config1,default,drop=False,deep=0): 
     for key in default: 
         if key not in config1: 

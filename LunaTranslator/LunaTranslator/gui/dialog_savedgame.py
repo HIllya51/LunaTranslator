@@ -14,8 +14,9 @@ from utils.le3264 import le3264run
 from utils.config import _TR,_TRL,globalconfig
 import os
 import win32con,win32utils
+from utils import somedef
 from utils.wrapper import Singleton_close,Singleton
-
+from utils.config import checkifnewgame
 def opendir( k):
                 try:
                         os.startfile(os.path.dirname(k))
@@ -24,51 +25,72 @@ def opendir( k):
 @Singleton
 class dialog_setting_game(QDialog):
         def selectexe(self,item:QStandardItem ):
-                f=QFileDialog.getOpenFileName(directory=item.savetext )
+                f=QFileDialog.getOpenFileName(directory=self.exepath )
                 res=f[0]
                 if res!='':
+                        
                         res=res.replace('/','\\')
-                        savehook_new_list[savehook_new_list.index(item.savetext)]=res 
-                        savehook_new_data[res]=savehook_new_data[item.savetext] 
-                        item.savetext=res   
-                        self.table.setIndexWidget(self.model.index(self.model.indexFromItem(item).row(), 1),self.object.getcolorbutton('','',functools.partial( opendir,res),qicon=getExeIcon(res) ))
-                        self.setWindowIcon(getExeIcon(item.savetext))
+                        savehook_new_list[savehook_new_list.index(self.exepath)]=res 
+                        savehook_new_data[res]=savehook_new_data[self.exepath] 
+                        _icon=getExeIcon(res)
+                        if item:
+                                item.savetext=res   
+                                self.table.setIndexWidget(self.model.index(self.model.indexFromItem(item).row(), 1),self.object.getcolorbutton('','',functools.partial( opendir,res),qicon=_icon ))
+                        self.setWindowIcon(_icon)
                         self.lujing.setText(res)
-        def __init__(self, parent,item,title ) -> None:
+                        self.exepath=res
+        def __init__(self, parent,exepath, item=None,settingui=None) -> None:
                 super().__init__(parent, Qt.WindowCloseButtonHint )
                 formLayout = QVBoxLayout(self)  # 配置layout
-                self.object=parent.object
-                self.table=parent.table
-                self.model=parent.model
+                if settingui:
+                        self.object=settingui
+                else:
+                        self.object=parent.object
+                
                 self.item=item
+                self.exepath=exepath
                 lujing=QHBoxLayout()
-                editpath=QLineEdit(item.savetext)
+                editpath=QLineEdit(exepath)
                 editpath.setReadOnly(True)
-                editpath.textEdited.connect(lambda _:item.__setitem__('savetext',_)) 
+                if item:
+                        self.table=parent.table
+                        self.model=parent.model
+                        editpath.textEdited.connect(lambda _:item.__setitem__('savetext',_)) 
                 lujing.addWidget(QLabel(_TR("修改路径")))
                 lujing.addWidget(editpath)
                 lujing.addWidget(self.object.getcolorbutton('','',functools.partial(self.selectexe,item),icon='fa.gear',constcolor="#FF69B4"))
                 self.lujing=editpath
-                self.setWindowTitle(title)
+                self.setWindowTitle(savehook_new_data[exepath]['title'])
                 self.resize(QSize(800,200))
-                self.setWindowIcon(getExeIcon(item.savetext))
+                self.setWindowIcon(getExeIcon(exepath))
                 formLayout.addLayout(lujing)
-                if 'alwaysuselr' not in savehook_new_data[self.item.savetext]:
-                        savehook_new_data[self.item.savetext]['alwaysuselr']=False
+                
                 try:
-                        b=win32utils.GetBinaryType(self.item.savetext)
+                        b=win32utils.GetBinaryType(exepath)
                         if b==0: 
                                 lrelay=QHBoxLayout()
                                 lrelay.addWidget(QLabel(_TR("使用Locale_Remulator转区")))
                                 
-                                lrelay.addWidget(self.object.getsimpleswitch(savehook_new_data[self.item.savetext],'alwaysuselr'))
+                                lrelay.addWidget(self.object.getsimpleswitch(savehook_new_data[exepath],'alwaysuselr'))
                                 formLayout.addLayout(lrelay)
                 except:
                         pass
                 autochangestatus=QHBoxLayout()
                 autochangestatus.addWidget(QLabel(_TR("自动切换到模式"))) 
-                autochangestatus.addWidget(self.object.getsimplecombobox(_TRL(['不切换','HOOK','HOOK_内嵌','剪贴板','OCR']),savehook_new_data[self.item.savetext],'onloadautochangemode'))
+                autochangestatus.addWidget(self.object.getsimplecombobox(_TRL(['不切换','HOOK','HOOK_内嵌','剪贴板','OCR']),savehook_new_data[exepath],'onloadautochangemode'))
                 formLayout.addLayout(autochangestatus)
+                
+                remove_useless_hook_layout=QHBoxLayout()
+                remove_useless_hook_layout.addWidget(QLabel(_TR('移除非选定HOOK')))
+                remove_useless_hook_layout.addWidget(self.object.getsimpleswitch(savehook_new_data[exepath],'remove_useless_hook'))
+                formLayout.addLayout(remove_useless_hook_layout)
+
+
+                cp_layout=QHBoxLayout()
+                cp_layout.addWidget(QLabel(_TR('代码页')))
+                cp_layout.addWidget(self.object.getsimplecombobox(_TRL(somedef.codepage_display),savehook_new_data[exepath],'codepage_index' ,lambda x: self.object.object.textsource.setcodepage()))
+                formLayout.addLayout(cp_layout)
+                
 
                 model=QStandardItemModel(   )
                 model.setHorizontalHeaderLabels(_TRL(['删除','特殊码',]))#,'HOOK'])
@@ -85,31 +107,26 @@ class dialog_setting_game(QDialog):
                 table.setModel(model) 
                 self.hctable=table
 
-                if 'needinserthookcode' not in savehook_new_data[self.item.savetext]:
-                        savehook_new_data[self.item.savetext]['needinserthookcode']=[]
-                for row,k in enumerate(savehook_new_data[self.item.savetext]['needinserthookcode']):                                   # 2
+                for row,k in enumerate(savehook_new_data[exepath]['needinserthookcode']):                                   # 2
                         self.newline(row,k)  
                  
                 formLayout.addWidget(self.hctable) 
 
                 ttsonname=QHBoxLayout()
                 ttsonname.addWidget(QLabel(_TR("自动朗读仅当名字为指定名字时才执行"))) 
-                if 'ttsonname' not in savehook_new_data[self.item.savetext]:
-                        savehook_new_data[self.item.savetext]['ttsonname']=False
-                if 'ttsusename' not in savehook_new_data[self.item.savetext]:
-                        savehook_new_data[self.item.savetext]['ttsusename']=[]
-                ttsonname.addWidget(self.object.getsimpleswitch(savehook_new_data[self.item.savetext],'ttsonname')) 
+                
+                ttsonname.addWidget(self.object.getsimpleswitch(savehook_new_data[exepath],'ttsonname')) 
                 formLayout.addLayout(ttsonname)
                 ttsname=QHBoxLayout()
-                editname=QLineEdit('|'.join(savehook_new_data[self.item.savetext]['ttsusename']))
-                editname.textEdited.connect(lambda t:savehook_new_data[self.item.savetext].__setitem__('ttsusename',t.split('|')))
+                editname=QLineEdit('|'.join(savehook_new_data[exepath]['ttsusename']))
+                editname.textEdited.connect(lambda t:savehook_new_data[exepath].__setitem__('ttsusename',t.split('|')))
                 ttsname.addWidget(QLabel(_TR('指定朗读的名字(以|分隔多个,以"None"表示没有名字)'))) 
                 ttsname.addWidget(editname)
                 formLayout.addLayout(ttsname)
                 self.show()
         def clicked2(self):
                 try: 
-                        savehook_new_data[self.item.savetext]['needinserthookcode'].pop(self.hctable.currentIndex().row()) 
+                        savehook_new_data[self.exepath]['needinserthookcode'].pop(self.hctable.currentIndex().row()) 
                         self.hcmodel.removeRow(self.hctable.currentIndex().row())
                 except:
                         pass
@@ -133,8 +150,8 @@ class dialog_savedgame(QDialog):
                 return QDialog().closeEvent(a0)
                 
         
-        def showsettingdialog(self,item:QStandardItem,title):
-                dialog_setting_game(self,item,title) 
+        def showsettingdialog(self,k,item):
+                dialog_setting_game(self,k,item) 
         def clicked2(self): 
                 try: 
                         savehook_new_list.pop(self.table.currentIndex().row())
@@ -150,7 +167,7 @@ class dialog_savedgame(QDialog):
                         res=res.replace('/','\\')
                         if res in savehook_new_list: 
                                 return
-                        savehook_new_list.insert(0,res) 
+                        
                         self.newline(0,res)
                         self.table.setCurrentIndex(self.model.index(0,0))
                         
@@ -180,8 +197,6 @@ class dialog_savedgame(QDialog):
                                                 self.object.yuitsu_switch('sourcestatus','sourceswitchs',_[mode],None ,True) 
                                                 self.object.object.starttextsource(use=_[mode],checked=True,waitforautoinit=True)
                         if savehook_new_data[game]['leuse'] :
-                                if 'alwaysuselr' not in savehook_new_data[game]:
-                                        savehook_new_data[game]['alwaysuselr']=False
                                 le3264run(game,savehook_new_data[game]['alwaysuselr'])
                         else:
                                 win32utils.ShellExecute(None, "open", game, "", os.path.dirname(game), win32con.SW_SHOW) 
@@ -194,15 +209,13 @@ class dialog_savedgame(QDialog):
                 keyitem=QStandardItem()
                 keyitem.savetext=k
                 k=k.replace('/','\\')
-                 
-                if k not in savehook_new_data:
-                        savehook_new_data[k]={'leuse':True,'title':os.path.basename(os.path.dirname(k))+'/'+ os.path.basename(k),'hook':[] }  
+                checkifnewgame(k)
                 self.model.insertRow(row,[QStandardItem( ),QStandardItem( ),keyitem,QStandardItem( (savehook_new_data[k]['title'] ) )])  
                 self.table.setIndexWidget(self.model.index(row, 0),self.object.getsimpleswitch(savehook_new_data[k],'leuse'))
                 self.table.setIndexWidget(self.model.index(row, 1),self.object.getcolorbutton('','',functools.partial( opendir,k),qicon=getExeIcon(k) ))
                 
                 # self.table.setIndexWidget(self.model.index(row, 2),self.object.getcolorbutton('','',functools.partial(self.selectexe,keyitem),icon='fa.gear',constcolor="#FF69B4")) 
-                self.table.setIndexWidget(self.model.index(row, 2),self.object.getcolorbutton('','',functools.partial(self.showsettingdialog,keyitem,savehook_new_data[k]['title'] ),icon='fa.gear',constcolor="#FF69B4")) 
+                self.table.setIndexWidget(self.model.index(row, 2),self.object.getcolorbutton('','',functools.partial(self.showsettingdialog,k,keyitem ),icon='fa.gear',constcolor="#FF69B4")) 
         def __init__(self, object ) -> None:
                 # if dialog_savedgame._sigleton :
                 #         return
