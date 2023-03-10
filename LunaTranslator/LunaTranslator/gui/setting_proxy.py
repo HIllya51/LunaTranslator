@@ -11,10 +11,7 @@ def _setproxy(proxy):
 
 def refreshsysproxy():
         lastsysproxy=None
-        try:
-            savecurrentproxy=os.environ['https_proxy']
-        except:
-             savecurrentproxy=''
+        
         while globalconfig['usesysproxy'] and globalconfig['useproxy']:
             
             proxy=getsysproxy()
@@ -22,8 +19,7 @@ def refreshsysproxy():
                 lastsysproxy=proxy
                 _setproxy(proxy)  
             time.sleep(5)
-        if globalconfig['useproxy']==False:
-            _setproxy(savecurrentproxy)  
+            
 def checkproxy():
      if globalconfig['useproxy']:
             if globalconfig['usesysproxy']:
