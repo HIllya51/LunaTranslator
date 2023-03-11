@@ -43,7 +43,7 @@ def getdefaultsavehook(gamepath):
         'needinserthookcode':[],
         'remove_useless_hook':False,
         'title':os.path.basename(os.path.dirname(gamepath))+'/'+ os.path.basename(gamepath),
-        "codepage_index":globalconfig['codepage_index']
+        "codepage_index":0
     }
     return default
 def checkifnewgame(gamepath):
