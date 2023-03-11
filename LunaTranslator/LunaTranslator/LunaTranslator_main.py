@@ -307,14 +307,14 @@ class MAINUI(QObject) :
     def selectprocess(self,selectedp): 
             #self.object.textsource=None
             pid,pexe,hwnd=(  selectedp)   
-         
+            checkifnewgame(pexe) 
             #   
             if globalconfig['sourcestatus']['textractor']['use']:
                 self.textsource=textractor(self.textgetmethod,self.hookselectdialog,pid,hwnd,pexe )  
             elif globalconfig['sourcestatus']['embedded']['use']:
                 self.textsource=embedded(self.textgetmethod,self.hookselectdialog,pid,hwnd,pexe, self)  
             
-            checkifnewgame(pexe) 
+            
 
     #@threader
     def starttextsource(self,use=None,checked=True,waitforautoinit=False):   
