@@ -175,11 +175,10 @@ class basetrans:
                 if self.queue.empty()==False:
                     break
                 timeout,res=timeoutfunction(partial(self.maybecachetranslate,contentraw,contentsolved),globalconfig['translatortimeout']) 
-                if timeout or (res is None):
-                    timeoutfunction(self.inittranslator,max(globalconfig['translatortimeout'],5))
-                     
+                if timeout or (res is None): 
                     _m=message[int(timeout==False)]
                     callback(contentraw,_m,embedcallback) 
+                    timeoutfunction(self.inittranslator,max(globalconfig['translatortimeout'],5))
  
                 
             if res is None:
