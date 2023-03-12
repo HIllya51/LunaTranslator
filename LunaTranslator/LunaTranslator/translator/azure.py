@@ -41,5 +41,5 @@ class TS(basetrans):
         try:
             return response[0]['translations'][0]['text']
         except:
-            return response.text
+            raise Exception(request.text)
           

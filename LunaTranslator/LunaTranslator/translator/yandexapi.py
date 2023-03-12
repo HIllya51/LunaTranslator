@@ -14,7 +14,11 @@ class TS(basetrans):
             'lang': f'{self.srclang}-{self.tgtlang}' ,
             'text': content,
         }
-        response = requests.get(url, params=params).json() 
-        print(response)
-        return response['text'][0]
+
+        response = requests.get(url, params=params)
+        
+        try:
+            return response.json() ['text'][0]
+        except:
+            raise Exception( response.text)
     

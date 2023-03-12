@@ -35,8 +35,11 @@ class TS(basetrans):
             'curtime':time_curtime,   # 秒级时间戳
         }
 
-        r = requests.get(youdao_url, params = data,proxies={"https":None}).json()   # 获取返回的json()内容
-        self.countnum(content)
+        try:
+            r = requests.get(youdao_url, params = data,proxies={"https":None})   # 获取返回的json()内容
+            self.countnum(content)
         
-        return r["translation"][0]
+            return r.json()["translation"][0]
+        except:
+            raise Exception(r.text)
     

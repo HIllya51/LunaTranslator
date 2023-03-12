@@ -4,64 +4,49 @@ import openai,json
 
 from translator.basetranslator import basetrans
 
+ 
 
-class OpenAIClient:
-    def __init__(self, api_key, temperature):
-        self.api_key = api_key
-        self.temperature = temperature
+class TS(basetrans):
+    def langmap(self):
+        return {"zh": "zh-CN", "cht": "zh-TW"}
+    def inittranslator(self):
+        self.api_key=None
+    def translate(self, query):
+        if self.config['SECRET_KEY'].strip() == "":
+            return
+        else:
+            secret_key = self.config['SECRET_KEY'].strip()
+            if secret_key != self.api_key:
+                self.api_key = secret_key
+                # 对api_key频繁赋值会消耗性能
+                openai.api_key = secret_key
 
-    def ChatCompletion(self, content):
+        
+        try:
+            temperature = float(self.config['Temperature'])
+        except:
+            temperature = 0.3
+
         response = openai.ChatCompletion.create(
             model="gpt-3.5-turbo",
             messages=[
-                {"role": "user", "content": content}
+                {"role": "system", "content": "You are a translator"},
+                {"role": "user", "content": f"translate from {self.srclang} to {self.tgtlang}"},
+                {"role": "user", "content": query}
             ],
             # optional
             max_tokens=2048,
             n=1,
             stop=None,
             top_p=1,
-            temperature=self.temperature,
+            temperature=temperature,
             stream=False
         )
-        return response
-
-
-client = OpenAIClient("", 0.3)
-
-
-class TS(basetrans):
-    def langmap(self):
-        return {"zh": "zh-CN", "cht": "zh-TW"}
-
-    def translate(self, query):
-        if self.config['SECRET_KEY'].strip() == "":
-            return
-        else:
-            secret_key = self.config['SECRET_KEY'].strip()
-            if secret_key != client.api_key:
-                client.api_key = secret_key
-                # 对api_key频繁赋值会消耗性能
-                openai.api_key = client.api_key
-
-        
-        try:
-            temperature = float(self.config['Temperature'])
-            if temperature != client.temperature:
-                client.temperature = temperature
-        except:
-            client.temperature = 0.3
-
-        content = "translate {fr} to {to}: ".format(fr=self.srclang, to=self.tgtlang) + query
-
-        try:
-            response = client.ChatCompletion(content)
-        except Exception as e:
-            return str(e)
+           
 
         try:
             message = response['choices'][0]['message']['content'].replace('\n\n', '\n').strip()
 
             return message
         except:
-            return json.dumps(message)
+            raise Exception(json.dumps(response))

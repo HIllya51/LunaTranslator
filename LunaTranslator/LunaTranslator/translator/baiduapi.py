@@ -29,7 +29,11 @@ class TS(basetrans):
         myurl = myurl + '?appid=' + appid + '&q=' + urllib.parse.quote(q) + '&from=' + fromLang + '&to=' + toLang + '&salt=' + str(
         salt) + '&sign=' + sign
         
-        res=self.session.get('https://api.fanyi.baidu.com'+myurl,timeout=globalconfig['translatortimeout'], proxies=  {'http': None,'https': None}).json()  
-        self.countnum(query)
-        return '\n'.join([_['dst'] for _ in res['trans_result']])  
-          
+        res=self.session.get('https://api.fanyi.baidu.com'+myurl,timeout=globalconfig['translatortimeout'], proxies=  {'http': None,'https': None})
+        try:
+            _='\n'.join([_['dst'] for _ in res.json()['trans_result']])  
+            
+            self.countnum(query)
+            return _
+        except:
+            raise Exception(res.text)

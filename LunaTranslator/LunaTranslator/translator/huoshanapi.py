@@ -341,7 +341,7 @@ def trans(TextList,k_access_key,k_secret_key,src,tgt):
         'TextList': [ TextList],
     }
     res = service.json('translate', {}, json.dumps(body) )
-    return '\n'.join( [ _['Translation'] for _ in json.loads(res)['TranslationList'] ])
+    return res
 
 class TS(basetrans):  
     def langmap(self):
@@ -352,8 +352,12 @@ class TS(basetrans):
         else:
             keyid = self.config['Access Key ID'].strip()  
             acckey = self.config['Secret Access Key'].strip()   
-        res=trans(query,keyid,acckey,self.srclang,self.tgtlang)
-        self.countnum(query)
+        try:
+            res=trans(query,keyid,acckey,self.srclang,self.tgtlang)
+            res='\n'.join( [ _['Translation'] for _ in json.loads(res)['TranslationList'] ])
+            self.countnum(query)
         #print(res['trans_result'][0]['dst'])
-        return res
+            return res
+        except:
+            raise Exception(res)
          

@@ -20,10 +20,15 @@ class TS(basetrans):
 
         data = 'text='+parse.quote(query)+'&target_lang='+self.tgtlang+'&source_lang='+self.srclang
         if globalconfig['useproxy']:
-            response = requests.post('https://api.deepl.com/v2/translate', headers=headers, verify=False, data=data ).json()  
+            response = requests.post('https://api.deepl.com/v2/translate', headers=headers, verify=False, data=data )
         else:
-            response = requests.post('https://api.deepl.com/v2/translate', headers=headers, verify=False, data=data ,proxies={"https":None,"http":None}).json()   
-        self.countnum(query)
-        #print(res['trans_result'][0]['dst'])
-        return response['translations'][0]['text']
+            response = requests.post('https://api.deepl.com/v2/translate', headers=headers, verify=False, data=data ,proxies={"https":None,"http":None}) 
+        
+        try:
+            _= response.json()  ['translations'][0]['text']
+        
+            self.countnum(query)
+            return _
+        except:
+            raise Exception(response.text)
      

@@ -86,7 +86,7 @@ def txfy(secretId,secretKey,content,src,tgt):
     responseData = requests.get(requestUrlWithArgs,timeout=globalconfig['translatortimeout'], proxies=  {'http': None,'https': None}).text
 
     #print(responseData) 
-    return (json.loads(responseData)["Response"]["TargetText"])
+    return responseData 
      
 class TS(basetrans): 
     def langmap(self):
@@ -97,7 +97,10 @@ class TS(basetrans):
         else:
             appid = self.config['SecretId'].strip()
             secretKey =self.config['SecretKey'].strip()
-        ret=txfy(appid,secretKey,query,self.srclang,self.tgtlang)
-        
-        self.countnum(query)
-        return ret  
+        try:
+            ret=txfy(appid,secretKey,query,self.srclang,self.tgtlang)
+            ret=(json.loads(ret)["Response"]["TargetText"])
+            self.countnum(query)
+            return ret  
+        except:
+            raise Exception(ret)

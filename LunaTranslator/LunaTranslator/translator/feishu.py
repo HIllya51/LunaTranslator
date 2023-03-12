@@ -27,5 +27,8 @@ class TS(basetrans):
             "target_language": self.tgtlang,
             "glossary": [  ]
             })
-        return res.json()['data']['text']
+        try:
+            return res.json()['data']['text']
+        except:
+            raise Exception(res.text)
          

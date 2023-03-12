@@ -128,20 +128,24 @@ class basetrans:
         self._cache[langkey][src] = tgt
     def cached_translate(self,contentsolved):
 
-        if globalconfig['uselongtermcache']:
-            _get=self.longtermcacheget
-            _set=self.longtermcacheset
-        else:
-            _get=self.shorttermcacheget
-            _set=self.shorttermcacheset
-            
-        res=_get(contentsolved)
+        res=self.shorttermcacheget(contentsolved)
         if res:
             return res
-         
-        res=self.translate(contentsolved)
+        if globalconfig['uselongtermcache']:
+            res=self.longtermcacheget(contentsolved)
+            if res:
+                return res
         
-        _set(contentsolved,res)
+        try:
+            res=self.translate(contentsolved)
+        except Exception as e:
+            return str(e).replace('\n','').replace('\r','')
+        
+         
+        if globalconfig['uselongtermcache']:
+            self.longtermcacheset(contentsolved,res)
+        self.shorttermcacheset(contentsolved,res)
+        
         return res
     
     def maybecachetranslate(self,contentraw,contentsolved):
@@ -171,6 +175,7 @@ class basetrans:
                 res=timeoutfunction(partial(self.maybecachetranslate,contentraw,contentsolved),globalconfig['translatortimeout']) 
             if res is None:
                 continue 
+            
             if self.needzhconv:
                 res=zhconv.convert(res,  'zh-tw' )  
             if self.queue.empty() and self.using:

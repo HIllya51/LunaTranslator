@@ -16,6 +16,9 @@ class TS(basetrans):
    
         params={'key': key,'source':self.srclang, 'target':self.tgtlang, 'q':  (query)}
         response = requests.get("https://translation.googleapis.com/language/translate/v2/",params=params )
-         
-        return response.json()['data']['translations'][0]['translatedText']
+        
+        try:
+            return response.json()['data']['translations'][0]['translatedText']
+        except:
+            raise Exception(response.text)
      

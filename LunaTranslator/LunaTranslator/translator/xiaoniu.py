@@ -28,8 +28,11 @@ class TS(basetrans):
             'apikey':apikey
         }
         
-        response = requests.post('https://api.niutrans.com/NiuTransServer/translation',  headers=headers, params=params ,proxies=  {'http': None,'https': None})
+        try:
+            response = requests.post('https://api.niutrans.com/NiuTransServer/translation',  headers=headers, params=params ,proxies=  {'http': None,'https': None})
         # print(response.json())
-        self.countnum(query)
+            self.countnum(query)
         #print(res['trans_result'][0]['dst'])
-        return response.json()['tgt_text'] 
+            return response.json()['tgt_text'] 
+        except:
+            raise Exception(response.text)
