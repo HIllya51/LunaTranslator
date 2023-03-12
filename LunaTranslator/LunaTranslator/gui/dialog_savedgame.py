@@ -33,9 +33,11 @@ class dialog_setting_game(QDialog):
                         savehook_new_list[savehook_new_list.index(self.exepath)]=res 
                         savehook_new_data[res]=savehook_new_data[self.exepath] 
                         _icon=getExeIcon(res)
-                        if item:
+                        try:
                                 item.savetext=res   
                                 self.table.setIndexWidget(self.model.index(self.model.indexFromItem(item).row(), 1),self.object.getcolorbutton('','',functools.partial( opendir,res),qicon=_icon ))
+                        except:
+                                pass
                         self.setWindowIcon(_icon)
                         self.lujing.setText(res)
                         self.exepath=res
