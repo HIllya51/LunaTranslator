@@ -482,6 +482,11 @@
 		}
     },
     "fanyi": {
+		"azure":{
+			"use":false,
+			"color":"pink",
+			"name":"Azure"
+		},
         "baidu": {
             "use": true,
             "color": "#ff65db",

@@ -61,7 +61,7 @@ class dialog_setting_game(QDialog):
                 lujing.addWidget(self.object.getcolorbutton('','',functools.partial(self.selectexe,item),icon='fa.gear',constcolor="#FF69B4"))
                 self.lujing=editpath
                 self.setWindowTitle(savehook_new_data[exepath]['title'])
-                self.resize(QSize(800,200))
+                self.resize(QSize(600,200))
                 self.setWindowIcon(getExeIcon(exepath))
                 formLayout.addLayout(lujing)
                 

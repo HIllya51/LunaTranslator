@@ -266,4 +266,18 @@
 			}
 		}
     }
+	,
+	"azure":{
+		"args":{
+			"key1":"",
+			"Location":"",
+			 "注册网址": "https://learn.microsoft.com/zh-cn/azure/cognitive-services/Translator/quickstart-translator?tabs=python"
+		}, 
+		"argstype":{
+			"注册网址":{
+				"type":"label",
+				"islink":true
+			}
+		}
+	}
 }

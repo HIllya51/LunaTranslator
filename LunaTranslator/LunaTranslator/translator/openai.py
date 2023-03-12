@@ -1,6 +1,6 @@
 from traceback import print_exc
 
-import openai
+import openai,json
 
 from translator.basetranslator import basetrans
 
@@ -54,8 +54,14 @@ class TS(basetrans):
 
         content = "translate {fr} to {to}: ".format(fr=self.srclang, to=self.tgtlang) + query
 
-        response = client.ChatCompletion(content)
+        try:
+            response = client.ChatCompletion(content)
+        except Exception as e:
+            return str(e)
 
-        message = response['choices'][0]['message']['content'].replace('\n\n', '\n').strip()
+        try:
+            message = response['choices'][0]['message']['content'].replace('\n\n', '\n').strip()
 
-        return message
+            return message
+        except:
+            return json.dumps(message)

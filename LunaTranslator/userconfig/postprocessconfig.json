@@ -2596,11 +2596,11 @@
         }
     },
     "_remove_non_shiftjis_char": {
-        "use": true,
+        "use": false,
         "name": "过滤文本中的非日语字符集字符"
     },
     "_remove_latin": {
-        "use": true,
+        "use": false,
         "name": "过滤latin-1字符集"
     },
     "_remove_control": {
