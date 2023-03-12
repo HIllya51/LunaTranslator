@@ -6,8 +6,8 @@ from ocrengines.baseocrclass import baseocr
 class OCR(baseocr):
       
     def ocr(self,imgfile): 
-        if self.config['token'].strip()=='':
-            return ''
+        self.checkempty(['token'])
+        
           
         headers = {
             'authority': 'ocrserver.docsumo.com',
@@ -25,7 +25,7 @@ class OCR(baseocr):
             'sec-fetch-dest': 'empty',
             'sec-fetch-mode': 'cors',
             'sec-fetch-site': 'cross-site',
-            'token': self.config['token'].strip(),
+            'token': self.config['token'],
             'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36',
         }
 

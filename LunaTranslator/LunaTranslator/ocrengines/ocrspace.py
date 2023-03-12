@@ -6,9 +6,8 @@ class OCR(baseocr):
     def langmap(self):
         return {"ja":"jpn","zh":"chs","en":"eng","ko":"kor","es":"spa","fr":"fre","ru":"rus","cht":"cht"}
     def ocr(self,imgfile):  
-        if self.config['apikey'].strip()=="":
-            return ''
-        apikey=self.config['apikey'].strip()
+        self.checkempty(['apikey'])
+        apikey=self.config['apikey']
         headers = {
             'authority': 'apipro3.ocr.space',
             'accept': 'application/json, text/javascript, */*; q=0.01',

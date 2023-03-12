@@ -2,6 +2,13 @@
 from utils.config import globalconfig,ocrsetting
 from traceback import print_exc
 from utils import somedef
+class stripwrapper(dict):
+        def __getitem__(self,item):
+            t=super().__getitem__(item)
+            if type(t)==str:
+                return t.strip()
+            else:
+                return t
 class baseocr: 
     def langmap(self):
         return {}
@@ -31,7 +38,7 @@ class baseocr:
     @property
     def config(self):
         try:
-            return ocrsetting[self.typename]['args']
+            return stripwrapper(ocrsetting[self.typename]['args'])
         except:
             return {}
     def countnum(self):
@@ -39,7 +46,10 @@ class baseocr:
             self.config['次数统计']=str(int(self.config['次数统计'])+1)
         except: 
             self.config['次数统计']='1'
-
+    def checkempty(self,items):
+        for item in items:
+            if (self.config[item])=='':
+                raise Exception(item+' is empty')
     ############################################################
     def __init__(self,typename ) :  
         self.typename=typename 

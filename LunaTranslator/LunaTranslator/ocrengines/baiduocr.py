@@ -12,8 +12,9 @@ class OCR(baseocr):
         self.appid,self.secretKey,self.accstoken=None,None,None
         self.checkchange()
     def checkchange(self): 
-        if (self.config['API Key'].strip(),self.config['Secret Key'].strip() )!=(self.appid,self.secretKey)  :
-            self.appid,self.secretKey=self.config['API Key'].strip(),self.config['Secret Key'].strip()
+        self.checkempty(['API Key','Secret Key'])
+        if (self.config['API Key'],self.config['Secret Key'] )!=(self.appid,self.secretKey)  :
+            self.appid,self.secretKey=self.config['API Key'],self.config['Secret Key']
             self.accstoken=requests.get('https://aip.baidubce.com/oauth/2.0/token?grant_type=client_credentials&client_id='+self.appid+'&client_secret='+self.secretKey, proxies=  {'http': None,'https': None}).json()['access_token']
     def ocr(self,imgfile):
         self.checkchange()

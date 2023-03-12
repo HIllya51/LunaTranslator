@@ -9,11 +9,10 @@ class TS(basetrans):
     def langmap(self):
         return {"cht":"zh-Hant"}
     def translate(self,query):  
-        if self.config['app_id'].strip()=="" or self.config['app_secret'].strip()=="":
-            return 
-        else:
-            app_id = self.config['app_id'].strip()  
-            app_secret = self.config['app_secret'].strip()  
+        self.checkempty(['app_id','app_secret'])
+         
+        app_id = self.config['app_id']
+        app_secret = self.config['app_secret']
         
                 
         res=requests.post('https://open.feishu.cn/open-apis/auth/v3/tenant_access_token/internal',headers={'Content-Type':"application/json; charset=utf-8"}, proxies=  {'http': None,'https': None},json={

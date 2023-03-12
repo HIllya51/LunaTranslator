@@ -131,7 +131,7 @@ class ocrtext(basetext):
             return (text)
             
     def runonce(self): 
-        print("?")
+        
         if self.object.rect is None:
             return
         if self.object.rect[0][0]>self.object.rect[1][0] or self.object.rect[0][1]>self.object.rect[1][1]:
@@ -166,10 +166,13 @@ class ocrtext(basetext):
                 aclass=importlib.import_module('ocrengines.'+use).OCR 
                 self.ocrengine=aclass(use)   
                 self.nowuseocr=use
-            except:
-                return ''
-        
-        return self.ocrengine.ocr(fname)
+            except Exception as e:
+                return '<msg>'+str(e)
+        try:
+            return self.ocrengine.ocr(fname)
+        except Exception as e:
+            return '<msg>'+str(e)
+
     def end(self):
         super().end()
         try: self.ocrengine.end()

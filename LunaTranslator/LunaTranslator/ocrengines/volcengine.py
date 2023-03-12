@@ -1302,10 +1302,10 @@ class OCR(baseocr):
       
     def ocr(self,imgfile):  
         visual_service = VisualService()
-
+        self.checkempty(['Access Key ID','Secret Access Key'])
         # call below method if you dont set ak and sk in $HOME/.volc/config
-        visual_service.set_ak(self.config['Access Key ID'].strip())
-        visual_service.set_sk(self.config['Secret Access Key'].strip())
+        visual_service.set_ak(self.config['Access Key ID'])
+        visual_service.set_sk(self.config['Secret Access Key'])
         
         visual_service.set_api_info('MultiLanguageOCR', '2022-08-31')
 
