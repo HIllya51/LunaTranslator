@@ -87,14 +87,16 @@ class Threadwithresult(Thread):
         super(Threadwithresult, self).__init__()
         self.func = func 
         self.result=defalut
+        self.istimeout=True
     def run(self):
         try:
             self.result = self.func( )
+            self.istimeout=False
         except:
             print_exc()
     def get_result(self,timeout=1):
         Thread.join(self,timeout)  
-        return self.result
+        return self.istimeout,self.result
 def timeoutfunction( func, timeout=100,default=None):
     t=Threadwithresult(func=func,  defalut=default)
     t.start()

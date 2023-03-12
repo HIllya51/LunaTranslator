@@ -169,13 +169,16 @@ class basetrans:
                 continue
             
             
-            res=timeoutfunction(partial(self.maybecachetranslate,contentraw,contentsolved),globalconfig['translatortimeout']) 
-            if res is None:
+            timeout,res=timeoutfunction(partial(self.maybecachetranslate,contentraw,contentsolved),globalconfig['translatortimeout']) 
+            if timeout or (res is None):
                 timeoutfunction(self.inittranslator,max(globalconfig['translatortimeout'],5))
-                res=timeoutfunction(partial(self.maybecachetranslate,contentraw,contentsolved),globalconfig['translatortimeout']) 
+                if self.queue.empty():
+                    timeout,res=timeoutfunction(partial(self.maybecachetranslate,contentraw,contentsolved),globalconfig['translatortimeout']) 
+            if timeout :
+                callback(contentraw,'timeout',embedcallback) 
+                continue
             if res is None:
-                continue 
-            
+                continue
             if self.needzhconv:
                 res=zhconv.convert(res,  'zh-tw' )  
             if self.queue.empty() and self.using:
