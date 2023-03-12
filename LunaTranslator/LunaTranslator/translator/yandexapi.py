@@ -3,10 +3,11 @@ from translator.basetranslator import basetrans
 class TS(basetrans): 
      
     def translate(self, content): 
-        if self.config['key'].strip()=="":
-            return 
-        else:
-            key = self.config['key'].strip() 
+        self.checkempty(['key'])
+        
+        key = self.config['key']
+        
+        
         url = 'https://translate.yandex.net/api/v1.5/tr.json/translate'    
     
         params = {

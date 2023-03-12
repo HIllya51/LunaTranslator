@@ -7,11 +7,10 @@ class TS(basetrans):
     def langmap(self):
         return {"zh":"zh-CHS"}
     def translate(self, content): 
-        if self.config['APP_KEY'].strip()=="" or self.config['APP_SECRET'].strip()=="":
-            return 
-        else:
-            APP_KEY = self.config['APP_KEY'].strip()
-            APP_SECRET = self.config['APP_SECRET'].strip()
+        self.checkempty(['APP_KEY','APP_SECRET'])
+ 
+        APP_KEY = self.config['APP_KEY']
+        APP_SECRET = self.config['APP_SECRET']
         youdao_url = 'https://openapi.youdao.com/api'    
  
         translate_text = content  

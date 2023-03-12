@@ -5,10 +5,9 @@ class TS(basetrans):
     def langmap(self):
         return {"cht":"cht"}
     def translate(self,query): 
-        if self.config['apikey'].strip()=="":
-            return 
-        else:
-            apikey = self.config['apikey'].strip() 
+        self.checkempty(['apikey'])
+        
+        apikey = self.config['apikey']
         headers = { 
             'accept': '*/*',
             'accept-language': 'zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6',

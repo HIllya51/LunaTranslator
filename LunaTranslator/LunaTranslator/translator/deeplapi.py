@@ -8,10 +8,9 @@ class TS(basetrans):
     def langmap(self):
         return  {"zh":"ZH","ja":"JA","en":"EN","es":"ES","fr":"FR","ru":"RU"}
     def translate(self,query):  
-        if self.config['DeepL-Auth-Key']=="":
-            return 
-        else:
-            appid = self.config['DeepL-Auth-Key'].strip() 
+        self.checkempty(['DeepL-Auth-Key'])
+
+        appid = self.config['DeepL-Auth-Key']
   
         headers = {
         'Authorization': 'DeepL-Auth-Key '+appid,

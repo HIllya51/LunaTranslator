@@ -12,14 +12,13 @@ class TS(basetrans):
     def inittranslator(self):
         self.api_key=None
     def translate(self, query):
-        if self.config['SECRET_KEY'].strip() == "":
-            return
-        else:
-            secret_key = self.config['SECRET_KEY'].strip()
-            if secret_key != self.api_key:
-                self.api_key = secret_key
-                # 对api_key频繁赋值会消耗性能
-                openai.api_key = secret_key
+        self.checkempty(['SECRET_KEY'])
+        
+        secret_key = self.config['SECRET_KEY'] 
+        if secret_key != self.api_key:
+            self.api_key = secret_key
+            # 对api_key频繁赋值会消耗性能
+            openai.api_key = secret_key
 
         
         try:

@@ -10,10 +10,9 @@ class TS(basetrans):
     def inittranslator(self):
         self.session=requests.session()
     def translate(self,query):  
-        if self.config['DeepL-Auth-Key']=="":
-            return 
-        else:
-            appid = self.config['DeepL-Auth-Key'].strip() 
+        self.checkempty(['DeepL-Auth-Key'])
+
+        appid = self.config['DeepL-Auth-Key']
   
         headers = {
         'Authorization': 'DeepL-Auth-Key '+appid,

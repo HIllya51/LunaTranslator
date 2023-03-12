@@ -9,6 +9,13 @@ from functools import partial
 from utils import somedef
 from utils.utils import timeoutfunction,quote_identifier
 import sqlite3
+class stripwrapper(dict):
+        def __getitem__(self,item):
+            t=super().__getitem__(item)
+            if type(t)==str:
+                return t.strip()
+            else:
+                return t
 class basetrans: 
     def langmap(self):
         return {}
@@ -36,7 +43,7 @@ class basetrans:
     @property
     def config(self):
         try:
-            return translatorsetting[self.typename]['args']
+            return stripwrapper(translatorsetting[self.typename]['args'])
         except:
             return {}
     def countnum(self,query):
@@ -47,7 +54,12 @@ class basetrans:
             self.config['字数统计']=str( len(query))
             self.config['次数统计']='1'
 
- 
+    def checkempty(self,items):
+        for item in items:
+            if (self.config[item])=='':
+                raise Exception(item+' is empty')
+            
+    
     ############################################################
     def __init__(self,typename ) :  
         self.typename=typename
@@ -175,19 +187,19 @@ class basetrans:
                 if self.queue.empty()==False:
                     break
                 timeout,res=timeoutfunction(partial(self.maybecachetranslate,contentraw,contentsolved),globalconfig['translatortimeout']) 
+                
                 if timeout or (res is None): 
+
                     _m=message[int(timeout==False)]
                     callback(contentraw,_m,embedcallback) 
                     timeoutfunction(self.inittranslator,max(globalconfig['translatortimeout'],5))
- 
-                
-            if res is None:
-                continue
+                else:
+                    if self.needzhconv:
+                        res=zhconv.convert(res,  'zh-tw' )  
+                    if self.queue.empty() and self.using:
+                        callback(contentraw,res,embedcallback) 
+                    break
+                 
             
-            if self.needzhconv:
-                res=zhconv.convert(res,  'zh-tw' )  
-            if self.queue.empty() and self.using:
-                callback(contentraw,res,embedcallback) 
-         
 
             

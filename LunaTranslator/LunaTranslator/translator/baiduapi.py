@@ -12,11 +12,11 @@ class TS(basetrans):
     def inittranslator(self):
         self.session=requests.session()
     def translate(self,query):  
-        if self.config['APP ID'].strip()=="" or self.config['密钥'].strip()=="":
-            return 
-        else:
-            appid = self.config['APP ID'].strip()
-            secretKey = self.config['密钥'].strip()
+        
+        self.checkempty(['APP ID','密钥'])
+
+        appid = self.config['APP ID']
+        secretKey = self.config['密钥']
   
         myurl = '/api/trans/vip/translate'
 

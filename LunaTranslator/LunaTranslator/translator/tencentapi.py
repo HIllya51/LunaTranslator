@@ -92,11 +92,10 @@ class TS(basetrans):
     def langmap(self):
         return {'cht':'zh-TW'}
     def translate(self,query):  
-        if self.config['SecretId'].strip()=="" or self.config['SecretKey'].strip()=="":
-            return 
-        else:
-            appid = self.config['SecretId'].strip()
-            secretKey =self.config['SecretKey'].strip()
+        self.checkempty(['SecretId','SecretKey'])
+        
+        appid = self.config['SecretId']
+        secretKey =self.config['SecretKey']
         try:
             ret=txfy(appid,secretKey,query,self.srclang,self.tgtlang)
             ret=(json.loads(ret)["Response"]["TargetText"])

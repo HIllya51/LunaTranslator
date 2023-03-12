@@ -5,6 +5,7 @@ from translator.basetranslator import basetrans
 import uuid ,json
 class TS(basetrans):
     def translate(self,query):   
+        self.checkempty(['key1'])
 
         # Add your key and endpoint
         key = self.config['key1']

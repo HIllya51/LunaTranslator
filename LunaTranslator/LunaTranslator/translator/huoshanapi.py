@@ -347,11 +347,10 @@ class TS(basetrans):
     def langmap(self):
         return {"cht":"zh-Hant"}
     def translate(self,query): 
-        if self.config['Access Key ID'].strip()=="" or self.config['Secret Access Key'].strip()=="":
-            return 
-        else:
-            keyid = self.config['Access Key ID'].strip()  
-            acckey = self.config['Secret Access Key'].strip()   
+        self.checkempty(['Access Key ID','Secret Access Key'])
+  
+        keyid = self.config['Access Key ID']
+        acckey = self.config['Secret Access Key']
         try:
             res=trans(query,keyid,acckey,self.srclang,self.tgtlang)
             res='\n'.join( [ _['Translation'] for _ in json.loads(res)['TranslationList'] ])
