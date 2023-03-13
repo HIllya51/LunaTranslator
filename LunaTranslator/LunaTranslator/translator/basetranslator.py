@@ -183,7 +183,7 @@ class basetrans:
             
             
             
-            for message in [('timeout','error'),('retry_timeout','retry_erro')]:
+            for message in [('timeout','error'),('retry_timeout','retry_error')]:
                 if self.queue.empty()==False:
                     break
                 timeout,res=timeoutfunction(partial(self.maybecachetranslate,contentraw,contentsolved),globalconfig['translatortimeout']) 

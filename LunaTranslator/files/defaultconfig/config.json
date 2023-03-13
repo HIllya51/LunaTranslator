@@ -599,6 +599,11 @@
             "color": "blue",
             "name": "reverso_context"
         },
+		"nicetranslator":{
+			"name":"nicetranslator",
+			"use":false,
+			"color":"pink"
+		},
 		"TranslateCom": {
             "use": false,
             "color": "blue",

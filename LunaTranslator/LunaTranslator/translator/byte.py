@@ -40,6 +40,3 @@ class TS(basetrans):
 
         return(response.json()['results'][0]['translate'][0]) 
    
-if __name__=='__main__':
-    g=GOO()
-    print(g.gettask('あずきさんからアサリのスパゲティの作り方を学んだりもした。'))
