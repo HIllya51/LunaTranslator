@@ -191,8 +191,11 @@ class basetrans:
                 if timeout or (res is None): 
 
                     _m=message[int(timeout==False)]
-                    callback(contentraw,_m,embedcallback) 
-                    timeoutfunction(self.inittranslator,max(globalconfig['translatortimeout'],5))
+                    if self.queue.empty() and self.using:
+                        callback(contentraw,_m,embedcallback) 
+                        timeoutfunction(self.inittranslator,max(globalconfig['translatortimeout'],5))
+                    else:
+                        break
                 else:
                     if self.needzhconv:
                         res=zhconv.convert(res,  'zh-tw' )  
