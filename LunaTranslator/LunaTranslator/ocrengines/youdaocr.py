@@ -1,6 +1,4 @@
 
-from utils.exceptions import ApiExc 
- 
 import requests
 import base64  
 from ocrengines.baseocrclass import baseocr 
@@ -38,4 +36,4 @@ class OCR(baseocr):
         try:
             return self.space.join([l['words'] for l in response.json()['lines']])
         except:
-            raise ApiExc(response.text)
+            raise Exception(response.text)

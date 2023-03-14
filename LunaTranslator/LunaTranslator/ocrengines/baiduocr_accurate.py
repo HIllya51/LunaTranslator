@@ -1,7 +1,6 @@
 import requests
 import base64  
 
-from utils.exceptions import ApiExc
 from ocrengines.baseocrclass import baseocr 
 class OCR(baseocr):
     def langmap(self):
@@ -55,4 +54,4 @@ class OCR(baseocr):
             self.countnum()
             return res
         except:
-            raise ApiExc(response.text)
+            raise Exception(response.text)

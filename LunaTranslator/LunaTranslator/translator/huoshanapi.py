@@ -2,7 +2,6 @@
 import json
 from collections import OrderedDict
 import  requests
-from utils.exceptions import ApiExc
 from traceback import print_exc 
  
 import requests  
@@ -358,5 +357,5 @@ class TS(basetrans):
         #print(res['trans_result'][0]['dst'])
             return res
         except:
-            raise ApiExc(res)
+            raise Exception(res)
          

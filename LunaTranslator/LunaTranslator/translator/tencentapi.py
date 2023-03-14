@@ -1,6 +1,5 @@
  
 from traceback import print_exc 
-from utils.exceptions import ApiExc
 import requests  
 from utils.config import globalconfig  
 from translator.basetranslator import basetrans  
@@ -102,4 +101,4 @@ class TS(basetrans):
             self.countnum(query)
             return ret  
         except:
-            raise ApiExc(ret)
+            raise Exception(ret)

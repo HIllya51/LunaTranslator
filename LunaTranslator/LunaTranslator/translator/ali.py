@@ -1,7 +1,6 @@
 
 from traceback import print_exc 
 import requests,re
-from utils.exceptions import ApiExc
 from utils.config import globalconfig
 from translator.basetranslator import basetrans
 class TS(basetrans): 
@@ -72,7 +71,7 @@ class TS(basetrans):
         try:
             trans=data['data']['translateText']
         except:
-            raise ApiExc(r.text)
+            raise Exception(r.text)
         xx=re.findall("&#(.*?);",trans)
         xx=set(xx)
         for _x in xx:

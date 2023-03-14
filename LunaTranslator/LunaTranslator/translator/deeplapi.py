@@ -4,7 +4,6 @@ from urllib import parse
 from traceback import print_exc
 from utils.config import globalconfig  
 from translator.basetranslator import basetrans   
-from utils.exceptions import ApiExc
 class TS(basetrans):  
     def langmap(self):
         return  {"zh":"ZH","ja":"JA","en":"EN","es":"ES","fr":"FR","ru":"RU"}
@@ -30,5 +29,5 @@ class TS(basetrans):
             self.countnum(query)
             return _
         except:
-            raise ApiExc(response.text)
+            raise Exception(response.text)
      

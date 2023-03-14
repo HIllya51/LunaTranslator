@@ -2,7 +2,7 @@
 import requests
 import base64  
 from ocrengines.baseocrclass import baseocr 
-from utils.exceptions import ApiExc
+
 class OCR(baseocr):
       
     def ocr(self,imgfile):  
@@ -24,4 +24,4 @@ class OCR(baseocr):
         try:
             return self.space.join(res.json()['data']['text_list'])
         except:
-            raise ApiExc(res.text)
+            raise Exception(res.text)

@@ -3,7 +3,6 @@ import requests
  
 from translator.basetranslator import basetrans    
 import uuid ,json
-from utils.exceptions import ApiExc
 class TS(basetrans):
     def translate(self,query):   
         self.checkempty(['key1'])
@@ -43,5 +42,5 @@ class TS(basetrans):
         try:
             return response[0]['translations'][0]['text']
         except:
-            raise ApiExc(request.text)
+            raise Exception(request.text)
           

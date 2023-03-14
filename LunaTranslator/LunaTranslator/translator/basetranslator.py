@@ -9,7 +9,7 @@ from functools import partial
 from utils import somedef
 from utils.utils import timeoutfunction,quote_identifier
 import sqlite3
-from utils.exceptions import ArgsEmptyExc,ApiExc,TimeOut
+from utils.exceptions import ArgsEmptyExc,TimeOut
 from utils.wrapper import stripwrapper
 class basetrans: 
     def langmap(self):
@@ -200,8 +200,6 @@ class basetrans:
                         retry=False
                     elif isinstance(e,TimeOut):
                         msg='timeout'
-                    elif isinstance(e,ApiExc):
-                        msg=str(e)
                     else:
                         print_exc()
                         msg=str(type(e))[8:-2]+' '+str(e).replace('\n','').replace('\r','')

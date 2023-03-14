@@ -1,7 +1,6 @@
 import requests
 import base64
 
-from utils.exceptions import ApiExc
 from utils.config import globalconfig 
 from ocrengines.baseocrclass import baseocr 
 class OCR(baseocr):
@@ -64,4 +63,4 @@ class OCR(baseocr):
             self.countnum()
             return res
         except:
-            raise ApiExc(response.text)
+            raise Exception(response.text)

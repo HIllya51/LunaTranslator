@@ -5,7 +5,7 @@ from utils.ocrdll import ocrwrapper
 from utils.config import globalconfig,_TR
 import importlib  
 from difflib import SequenceMatcher 
-from utils.exceptions import ArgsEmptyExc,ApiExc
+from utils.exceptions import ArgsEmptyExc
 
 import time  
 from PyQt5.QtWidgets import QApplication 
@@ -168,8 +168,6 @@ class ocrtext(basetext):
             return self.ocrengine.ocr(fname)
         except Exception as e:
             if isinstance(e,ArgsEmptyExc):
-                msg=str(e)
-            elif isinstance(e,ApiExc):
                 msg=str(e)
             else:
                 print_exc()

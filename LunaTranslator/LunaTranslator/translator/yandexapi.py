@@ -1,4 +1,4 @@
-from utils.exceptions import ApiExc
+
 import requests
 from translator.basetranslator import basetrans   
 class TS(basetrans): 
@@ -22,5 +22,5 @@ class TS(basetrans):
         try:
             return response.json() ['text'][0]
         except:
-            raise ApiExc( response.text)
+            raise Exception( response.text)
     

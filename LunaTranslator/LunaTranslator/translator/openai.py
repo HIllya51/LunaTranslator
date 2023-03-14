@@ -3,7 +3,6 @@ from traceback import print_exc
 import openai,json
 
 from translator.basetranslator import basetrans
-from utils.exceptions import ApiExc
  
 
 class TS(basetrans):
@@ -48,4 +47,4 @@ class TS(basetrans):
 
             return message
         except:
-            raise ApiExc(json.dumps(response))
+            raise Exception(json.dumps(response))

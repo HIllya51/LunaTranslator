@@ -71,8 +71,7 @@ def selectdebugfile(path ):
                 if path=='translator/selfbuild.py':
                       ff.write('''
 import requests
-from translator.basetranslator import basetrans 
-from utils.exceptions import ApiExc
+from translator.basetranslator import basetrans
 class TS(basetrans): 
     def translate(self,content):  
         #在这里编写

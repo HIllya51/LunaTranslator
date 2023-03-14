@@ -1,7 +1,6 @@
  
 import requests
 from urllib import parse  
-from utils.exceptions import ApiExc
 from utils.config import globalconfig  
 from translator.basetranslator import basetrans   
 class TS(basetrans):  
@@ -32,5 +31,5 @@ class TS(basetrans):
             self.countnum(query)
             return _
         except:
-            raise ApiExc(response.text)
+            raise Exception(response.text)
      

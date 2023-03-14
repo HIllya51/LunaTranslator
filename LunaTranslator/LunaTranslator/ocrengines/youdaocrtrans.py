@@ -1,6 +1,4 @@
 
-from utils.exceptions import ApiExc 
- 
 import requests
 import base64  
 from ocrengines.baseocrclass import baseocr 
@@ -37,4 +35,4 @@ class OCR(baseocr):
         try:
             return '<notrans>'+self.space.join([l['tranContent'] for l in response.json()['lines']])
         except:
-            raise ApiExc(response.text)
+            raise Exception(response.text)

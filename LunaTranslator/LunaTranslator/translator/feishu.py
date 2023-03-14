@@ -2,7 +2,6 @@
 from traceback import print_exc 
  
 import requests  
-from utils.exceptions import ApiExc
 from translator.basetranslator import basetrans  
 import json
 class TS(basetrans):  
@@ -29,5 +28,5 @@ class TS(basetrans):
         try:
             return res.json()['data']['text']
         except:
-            raise ApiExc(res.text)
+            raise Exception(res.text)
          
