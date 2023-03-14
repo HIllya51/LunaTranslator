@@ -536,5 +536,6 @@
     "手动设置代理(ip:port)": "Thiết lập proxy theo cách thủ công (ip:port)",
     "自动获取系统代理": "Tự động nhận proxy hệ thống",
     "在线翻译超时时间(s)": "Thời gian chờ dịch trực tuyến (s)",
-    "游戏设置": "Cài đặt trò chơi"
+    "游戏设置": "Cài đặt trò chơi",
+    "显示错误信息": "Hiện thông tin lỗi"
 }

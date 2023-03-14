@@ -536,5 +536,6 @@
     "手动设置代理(ip:port)": "Proksi el olarak ayarlayın (ip: port)",
     "自动获取系统代理": "Sistem ajanı otomatik olarak tutun",
     "在线翻译超时时间(s)": "Çevrimindeki çeviri zaman aşımı (s)",
-    "游戏设置": "Oyun ayarları"
+    "游戏设置": "Oyun ayarları",
+    "显示错误信息": "Hata mesajını göster"
 }

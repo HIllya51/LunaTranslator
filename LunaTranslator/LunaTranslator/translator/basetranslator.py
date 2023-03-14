@@ -203,13 +203,16 @@ class basetrans:
                     else:
                         print_exc()
                         msg=str(type(e))[8:-2]+' '+str(e).replace('\n','').replace('\r','')
+                    
                     msg='<msg>'+msg
                     if retry==False:
-                        callback(msg,embedcallback) 
+                        if globalconfig['showtranexception']:
+                            callback(msg,embedcallback) 
                         break
                     else:
                         if i>0:
-                            callback(msg,embedcallback) 
+                            if globalconfig['showtranexception']:
+                                callback(msg,embedcallback) 
             
 
             

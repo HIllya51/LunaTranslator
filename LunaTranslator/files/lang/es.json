@@ -536,5 +536,6 @@
     "手动设置代理(ip:port)": "Configurar manualmente el agente (ip: puerto)",
     "自动获取系统代理": "Agente del sistema de adquisición automática",
     "在线翻译超时时间(s)": "Tiempo de espera de traducción en línea (s)",
-    "游戏设置": "Configuración del juego"
+    "游戏设置": "Configuración del juego",
+    "显示错误信息": "Mostrar mensaje de error"
 }

@@ -536,5 +536,6 @@
     "手动设置代理(ip:port)": "Set proxy manually (ip: port)",
     "自动获取系统代理": "Obtain system agent automatically",
     "在线翻译超时时间(s)": "Online translation timeout (s)",
-    "游戏设置": "Game settings"
+    "游戏设置": "Game settings",
+    "显示错误信息": "Display error message"
 }

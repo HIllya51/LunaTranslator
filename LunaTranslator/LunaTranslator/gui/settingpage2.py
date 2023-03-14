@@ -79,6 +79,9 @@ def setTabTwo_lazy(self) :
             ],
             [
                 ("使用持久化翻译缓存",8),(self.getsimpleswitch(globalconfig,'uselongtermcache')),'',
+            ],
+            [
+                ('显示错误信息',8),(self.getsimpleswitch(globalconfig  ,'showtranexception'),1),
             ]
 
         ] 
