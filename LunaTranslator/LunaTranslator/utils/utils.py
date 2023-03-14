@@ -7,6 +7,7 @@ import os,win32con,time
 from traceback import print_exc
 from utils.config import globalconfig 
 import win32utils
+from utils.exceptions import TimeOut
 def getsysproxy():
     hkey=win32utils.RegOpenKeyEx(win32utils.HKEY_CURRENT_USER,'Software\Microsoft\Windows\CurrentVersion\Internet Settings',0,win32utils.KEY_ALL_ACCESS)
 
@@ -71,6 +72,7 @@ def selectdebugfile(path ):
                       ff.write('''
 import requests
 from translator.basetranslator import basetrans 
+from utils.exceptions import ApiExc
 class TS(basetrans): 
     def translate(self,content):  
         #在这里编写
@@ -83,22 +85,32 @@ def POSTSOLVE(line):
     os.startfile(p)
     return p
 class Threadwithresult(Thread):
-    def __init__(self, func,  defalut=None):
+    def __init__(self, func,  defalut,ignoreexceptions):
         super(Threadwithresult, self).__init__()
         self.func = func 
         self.result=defalut
         self.istimeout=True
+        self.ignoreexceptions=ignoreexceptions
+        self.exception=None
     def run(self):
         try:
             self.result = self.func( )
-            self.istimeout=False
-        except:
-            print_exc()
+        except Exception as e:
+            self.exception=e
+        self.istimeout=False
     def get_result(self,timeout=1):
         Thread.join(self,timeout)  
-        return self.istimeout,self.result
-def timeoutfunction( func, timeout=100,default=None):
-    t=Threadwithresult(func=func,  defalut=default)
+        if self.ignoreexceptions:
+            return self.result
+        else:
+            if self.istimeout:
+                 raise TimeOut()
+            elif self.exception:
+                 raise self.exception
+            else:
+                 return self.result
+def timeoutfunction( func, timeout=100,default=None,ignoreexceptions=True):
+    t=Threadwithresult(func,  default,ignoreexceptions)
     t.start()
     return t.get_result(timeout)
 
@@ -209,3 +221,4 @@ def makehtml(text,base=False):
     else:
           show=text
     return f'<a href="{text}">{show}</a>'
+

@@ -3,6 +3,7 @@ from utils import somedef
 from utils.ocrdll import ocrwrapper
 from utils.config import globalconfig,_TR
  
+from utils.exceptions import ApiExc
 import requests
 import base64  
 from ocrengines.baseocrclass import baseocr 
@@ -15,19 +16,17 @@ class OCR(baseocr):
         self.checkchange()
     def checkchange(self):
         if self._savelang==self.srclang: 
-            return None
+            return 
         self._ocr.trydestroy() 
          
         path=f'./files/ocr/{somedef.language_list_translator_inner[globalconfig["srclang3"]]}'
-        if os.path.exists(f'{path}/det.onnx') and os.path.exists(f'{path}/rec.onnx') and os.path.exists(f'{path}/dict.txt') :
-            pass
-        else:
-            return '<msg>'+_TR('未下载该语言的OCR模型,请从软件主页下载模型解压到files/ocr路径后使用') 
+        if not(os.path.exists(f'{path}/det.onnx') and os.path.exists(f'{path}/rec.onnx') and os.path.exists(f'{path}/dict.txt') ):
+            raise ApiExc(_TR('未下载该语言的OCR模型,请从软件主页下载模型解压到files/ocr路径后使用') )
         self._ocr.init(f'{path}/det.onnx',f'{path}/rec.onnx',f'{path}/dict.txt')
         self._savelang=self.srclang
     def ocr(self,imgfile):  
-        err=self.checkchange()
-        if err :return err
+        self.checkchange()
+        
          
         s=self._ocr.ocr(os.path.dirname(imgfile)+'/',os.path.basename(imgfile),globalconfig['verticalocr'])
         

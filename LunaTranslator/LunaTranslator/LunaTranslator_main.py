@@ -73,6 +73,7 @@ class MAINUI(QObject) :
         self.currentmd5='0'
         self.currenttext=''
         self.refresh_on_get_trans_signature=0
+        self.currentsignature=None
     @property
     def textsource(self):return self.textsource_p
     @textsource.setter
@@ -157,6 +158,7 @@ class MAINUI(QObject) :
 
     
     def textgetmethod(self,paste_str,shortlongskip=True,embedcallback=None):
+        self.currentsignature=time.time()
         if type(paste_str)==str:
             if paste_str[:len('<notrans>')]=='<notrans>':
                 self.translation_ui.displayraw1.emit([],paste_str[len('<notrans>'):],globalconfig['rawtextcolor'])
@@ -211,6 +213,7 @@ class MAINUI(QObject) :
             _showrawfunction=functools.partial(self.translation_ui.displayraw1.emit,hira,_paste_str,globalconfig['rawtextcolor'] )
             _showrawfunction_sig=time.time()
 
+        
         self.readcurrent()
             
             
@@ -224,14 +227,21 @@ class MAINUI(QObject) :
             self.GetTranslationCallback('premt',optimization_params,_showrawfunction,_showrawfunction_sig,_paste_str,ret,embedcallback)
         for engine in self.translators:  
             if engine in self.premtalready:continue
-            self.translators[engine].gettask((partial(self.GetTranslationCallback,engine,optimization_params,_showrawfunction,_showrawfunction_sig),_paste_str,paste_str_solved,skip,embedcallback)) 
+            self.translators[engine].gettask((partial(self.GetTranslationCallback,engine,self.currentsignature, optimization_params,_showrawfunction,_showrawfunction_sig,_paste_str),_paste_str,paste_str_solved,skip,embedcallback)) 
     
         
-    def GetTranslationCallback(self,classname,optimization_params,_showrawfunction,_showrawfunction_sig,contentraw,res,embedcallback):
+    def GetTranslationCallback(self,classname,currentsignature,optimization_params,_showrawfunction,_showrawfunction_sig,contentraw,res,embedcallback):
+        if currentsignature!=self.currentsignature:
+            return 
         
+        
+        if type(res)==str:
+            if res[:len('<msg>')]=='<msg>':
+                self.translation_ui.displayres.emit(globalconfig['fanyi'][classname]['name'],'red',res[len('<msg>'):])
+                return   
         if classname not in somedef.fanyi_pre: 
             res=self.solveaftertrans(res,optimization_params)
-        #print(classname,contentraw,_)
+            
         needshowraw=_showrawfunction and self.refresh_on_get_trans_signature!=_showrawfunction_sig
         if needshowraw:
             self.refresh_on_get_trans_signature=_showrawfunction_sig
@@ -242,10 +252,10 @@ class MAINUI(QObject) :
                     _colork=k
                 else:
                     _colork='premt'
-                self.translation_ui.displayres.emit(_colork,contentraw,res[k])
+                self.translation_ui.displayres.emit(globalconfig['fanyi'][_colork]['name'],globalconfig['fanyi'][_colork]['color'],res[k])
                 self.premtalready.append(k)
         else:
-            self.translation_ui.displayres.emit(classname,contentraw,res)
+            self.translation_ui.displayres.emit(globalconfig['fanyi'][classname]['name'],globalconfig['fanyi'][classname]['color'],res)
             
             if embedcallback: 
 

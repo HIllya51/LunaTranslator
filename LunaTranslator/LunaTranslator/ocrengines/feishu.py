@@ -2,6 +2,7 @@
 import requests
 import base64  
 from ocrengines.baseocrclass import baseocr 
+from utils.exceptions import ApiExc
 class OCR(baseocr):
       
     def ocr(self,imgfile):  
@@ -20,4 +21,7 @@ class OCR(baseocr):
         res=requests.post('https://open.feishu.cn/open-apis/optical_char_recognition/v1/image/basic_recognize', proxies=  {'http': None,'https': None},headers={'Content-Type':"application/json; charset=utf-8",'Authorization':'Bearer '+token},json={
         "image": str(b64,encoding='utf8'),
         })
-        return self.space.join(res.json()['data']['text_list'])
+        try:
+            return self.space.join(res.json()['data']['text_list'])
+        except:
+            raise ApiExc(res.text)

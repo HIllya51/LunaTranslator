@@ -64,20 +64,19 @@ class QUnFrameWindow(resizableframeless):
             #print(self.pos())
             #self.move(self.pos() + self._endPos)
             self.move(self.pos().x()+ other[0],self.pos().y()+ other[1])
-    def showres(self,_type,contentraw,res):  
+    def showres(self,name,color,res):  
         try:
-            if contentraw!=self.object.currenttext:
-                return 
+            
             if globalconfig['showfanyisource']:
                 #print(_type)
                 #self.showline((None,globalconfig['fanyi'][_type]['name']+'  '+res),globalconfig['fanyi'][_type]['color']  )
-                self.showline(False,[None,globalconfig['fanyi'][_type]['name']+'  '+res],globalconfig['fanyi'][_type]['color'] ,1 )
+                self.showline(False,[None,name+'  '+res],color ,1 )
             else:
                 #self.showline((None,res),globalconfig['fanyi'][_type]['color']  )
-                self.showline(False,[None,res],globalconfig['fanyi'][_type]['color']  ,1)
+                self.showline(False,[None,res],color  ,1)
             #print(globalconfig['fanyi'][_type]['name']+'  '+res+'\n')
             
-            self.object.transhis.getnewtranssignal.emit(globalconfig['fanyi'][_type]['name'],res)
+            self.object.transhis.getnewtranssignal.emit(name,res)
         except:
             print_exc() 
     def showraw(self,hira,res,color ): 

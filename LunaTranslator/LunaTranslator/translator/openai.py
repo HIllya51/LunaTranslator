@@ -3,7 +3,7 @@ from traceback import print_exc
 import openai,json
 
 from translator.basetranslator import basetrans
-
+from utils.exceptions import ApiExc
  
 
 class TS(basetrans):
@@ -12,7 +12,7 @@ class TS(basetrans):
     def inittranslator(self):
         self.api_key=None
     def translate(self, query):
-        self.checkempty(['SECRET_KEY'])
+        self.checkempty(['SECRET_KEY','model'])
         
         secret_key = self.config['SECRET_KEY'] 
         if secret_key != self.api_key:
@@ -27,7 +27,7 @@ class TS(basetrans):
             temperature = 0.3
 
         response = openai.ChatCompletion.create(
-            model="gpt-3.5-turbo",
+            model=self.config['model'],
             messages=[
                 {"role": "system", "content": "You are a translator"},
                 {"role": "user", "content": f"translate from {self.srclang} to {self.tgtlang}"},
@@ -48,4 +48,4 @@ class TS(basetrans):
 
             return message
         except:
-            raise Exception(json.dumps(response))
+            raise ApiExc(json.dumps(response))

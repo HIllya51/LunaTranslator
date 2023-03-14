@@ -1,8 +1,7 @@
 import requests
 import base64
-import os
-import json
-import time
+
+from utils.exceptions import ApiExc
 from utils.config import globalconfig 
 from ocrengines.baseocrclass import baseocr 
 class OCR(baseocr):
@@ -65,9 +64,4 @@ class OCR(baseocr):
             self.countnum()
             return res
         except:
-            print(response.text)
-            if 'error_msg' in response.json():
-                return response.json()['error_msg']
-            
-            return ''
- 
+            raise ApiExc(response.text)

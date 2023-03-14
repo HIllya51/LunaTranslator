@@ -3,6 +3,13 @@ import time
 import random
 from threading import Thread
 import time
+class stripwrapper(dict):
+        def __getitem__(self,item):
+            t=super().__getitem__(item)
+            if type(t)==str:
+                return t.strip()
+            else:
+                return t
 def Singleton(cls,**kw):
         _instance={}
         def _singleton(*args,**kwagrs):

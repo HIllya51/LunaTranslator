@@ -9,13 +9,8 @@ from functools import partial
 from utils import somedef
 from utils.utils import timeoutfunction,quote_identifier
 import sqlite3
-class stripwrapper(dict):
-        def __getitem__(self,item):
-            t=super().__getitem__(item)
-            if type(t)==str:
-                return t.strip()
-            else:
-                return t
+from utils.exceptions import ArgsEmptyExc,ApiExc,TimeOut
+from utils.wrapper import stripwrapper
 class basetrans: 
     def langmap(self):
         return {}
@@ -55,9 +50,12 @@ class basetrans:
             self.config['次数统计']='1'
 
     def checkempty(self,items):
+        emptys=[]
         for item in items:
             if (self.config[item])=='':
-                raise Exception(item+' is empty')
+                emptys.append(item)
+        if len(emptys):
+            raise ArgsEmptyExc(emptys)
             
     
     ############################################################
@@ -148,10 +146,7 @@ class basetrans:
             if res:
                 return res
         
-        try:
-            res=self.translate(contentsolved)
-        except Exception as e:
-            return str(e).replace('\n','').replace('\r','')
+        res=self.translate(contentsolved)
         
          
         if globalconfig['uselongtermcache']:
@@ -166,6 +161,8 @@ class basetrans:
         else: 
             res=self.translate(contentraw)
         return res
+    
+    
     def fythread(self):
         while self.using:  
             t=time.time()
@@ -179,30 +176,42 @@ class basetrans:
             
             if skip:
                 continue
-            
-            
-            
-            
-            for message in [('timeout','error'),('retry_timeout','retry_error')]:
-                if self.queue.empty()==False:
-                    break
-                timeout,res=timeoutfunction(partial(self.maybecachetranslate,contentraw,contentsolved),globalconfig['translatortimeout']) 
-                
-                if timeout or (res is None): 
 
-                    _m=message[int(timeout==False)]
+            for i in range(2):
+                
+                    
+                    
+                try:
                     if self.queue.empty() and self.using:
-                        callback(contentraw,_m,embedcallback) 
-                        timeoutfunction(self.inittranslator,max(globalconfig['translatortimeout'],5))
-                    else:
-                        break
-                else:
-                    if self.needzhconv:
-                        res=zhconv.convert(res,  'zh-tw' )  
-                    if self.queue.empty() and self.using:
-                        callback(contentraw,res,embedcallback) 
+                        if i!=0:
+                            timeoutfunction(self.inittranslator,max(globalconfig['translatortimeout'],5),ignoreexceptions=False)
+
+                        res=timeoutfunction(partial(self.maybecachetranslate,contentraw,contentsolved),globalconfig['translatortimeout'],default='',ignoreexceptions=False) 
+                        if self.needzhconv:
+                            res=zhconv.convert(res,  'zh-tw' )  
+                        
+                        callback(res,embedcallback) 
                     break
-                 
+                except Exception as e:
+                    retry=True
+                    
+                    if isinstance(e,ArgsEmptyExc):
+                        msg=str(e)
+                        retry=False
+                    elif isinstance(e,TimeOut):
+                        msg='timeout'
+                    elif isinstance(e,ApiExc):
+                        msg=str(e)
+                    else:
+                        print_exc()
+                        msg=str(type(e))[8:-2]+' '+str(e).replace('\n','').replace('\r','')
+                    msg='<msg>'+msg
+                    if retry==False:
+                        callback(msg,embedcallback) 
+                        break
+                    else:
+                        if i>0:
+                            callback(msg,embedcallback) 
             
 
             

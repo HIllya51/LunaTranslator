@@ -1,7 +1,7 @@
 
 from traceback import print_exc 
 import requests,re
-
+from utils.exceptions import ApiExc
 from utils.config import globalconfig
 from translator.basetranslator import basetrans
 class TS(basetrans): 
@@ -69,7 +69,10 @@ class TS(basetrans):
         r = self.ss.post('https://translate.alibaba.com/api/translate/text', headers= headers,timeout = globalconfig['translatortimeout'], params =form_data , proxies=  {'http': None,'https': None})
     
         data = r.json()    
-        trans=data['data']['translateText']
+        try:
+            trans=data['data']['translateText']
+        except:
+            raise ApiExc(r.text)
         xx=re.findall("&#(.*?);",trans)
         xx=set(xx)
         for _x in xx:
@@ -79,6 +82,3 @@ class TS(basetrans):
                 pass
         return  trans
          
-    def show(self,res):
-        print('阿里','\033[0;33;47m',res,'\033[0m',flush=True)
- 

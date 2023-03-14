@@ -1,4 +1,5 @@
- 
+
+from utils.exceptions import ApiExc 
  
 import requests
 import base64  
@@ -34,4 +35,7 @@ class OCR(baseocr):
 
         response = requests.post('https://aidemo.youdao.com/ocrapi1', headers=headers, data=data, proxies=  {'http': None,'https': None})
          
-        return self.space.join([l['words'] for l in response.json()['lines']])
+        try:
+            return self.space.join([l['words'] for l in response.json()['lines']])
+        except:
+            raise ApiExc(response.text)

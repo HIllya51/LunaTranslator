@@ -1,5 +1,7 @@
 import requests
 import base64  
+
+from utils.exceptions import ApiExc
 from ocrengines.baseocrclass import baseocr 
 class OCR(baseocr):
     def langmap(self):
@@ -48,12 +50,9 @@ class OCR(baseocr):
          
         response = requests.post('https://aip.baidubce.com/rest/2.0/ocr/v1/accurate_basic', params=params, headers=headers, data=data, proxies=  {'http': None,'https': None})
         try:
-            self.countnum()
-            return self.space.join([x['words']  for x in response.json()['words_result']])
-        except:
-            print(response.text)
-            if 'error_msg' in response.json():
-                return response.json()['error_msg']
             
-            return ''
-  
+            res=self.space.join([x['words']  for x in response.json()['words_result']])
+            self.countnum()
+            return res
+        except:
+            raise ApiExc(response.text)

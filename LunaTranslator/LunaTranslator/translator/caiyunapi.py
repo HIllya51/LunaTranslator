@@ -6,6 +6,8 @@ import requests
 from utils.config import globalconfig  
 from translator.basetranslator import basetrans  
 import json
+from utils.exceptions import ApiExc
+
 class TS(basetrans):  
     def inittranslator(self):
         self.session=requests.session()
@@ -36,4 +38,4 @@ class TS(basetrans):
         #print(res['trans_result'][0]['dst'])
             return res
         except:
-            raise Exception(response.text)
+            raise ApiExc(response.text)

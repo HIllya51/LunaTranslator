@@ -2,7 +2,7 @@
 from traceback import print_exc 
  
 import requests  
-  
+from utils.exceptions import ApiExc
 from translator.basetranslator import basetrans   
 from urllib.parse import quote
 class TS(basetrans):   
@@ -20,5 +20,5 @@ class TS(basetrans):
         try:
             return response.json()['data']['translations'][0]['translatedText']
         except:
-            raise Exception(response.text)
+            raise ApiExc(response.text)
      

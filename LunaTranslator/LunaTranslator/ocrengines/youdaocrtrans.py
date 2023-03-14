@@ -1,4 +1,5 @@
- 
+
+from utils.exceptions import ApiExc 
  
 import requests
 import base64  
@@ -32,5 +33,8 @@ class OCR(baseocr):
         }
 
         response = requests.post('https://aidemo.youdao.com/ocrtransapi1', headers=headers, data=data, proxies=  {'http': None,'https': None})
-         
-        return '<notrans>'+self.space.join([l['tranContent'] for l in response.json()['lines']])
+        
+        try:
+            return '<notrans>'+self.space.join([l['tranContent'] for l in response.json()['lines']])
+        except:
+            raise ApiExc(response.text)

@@ -1,3 +1,4 @@
+from utils.exceptions import ApiExc
 import time
 import hashlib 
 import requests
@@ -40,5 +41,5 @@ class TS(basetrans):
         
             return r.json()["translation"][0]
         except:
-            raise Exception(r.text)
+            raise ApiExc(r.text)
     

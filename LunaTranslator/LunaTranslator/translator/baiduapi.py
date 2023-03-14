@@ -6,6 +6,7 @@ from translator.basetranslator import basetrans
 import hashlib
 import urllib
 import random 
+from utils.exceptions import ApiExc
 class TS(basetrans):  
     def langmap(self):
         return  {"es":"spa","ko":"kor","fr":"fra","ja":"jp","cht":"cht","vi":"vie"}
@@ -36,4 +37,4 @@ class TS(basetrans):
             self.countnum(query)
             return _
         except:
-            raise Exception(res.text)
+            raise ApiExc(res.text)

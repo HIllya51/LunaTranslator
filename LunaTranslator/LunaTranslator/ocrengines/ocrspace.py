@@ -1,5 +1,7 @@
  
 import requests
+
+from utils.exceptions import ApiExc
 import base64  
 from ocrengines.baseocrclass import baseocr 
 class OCR(baseocr):
@@ -33,6 +35,10 @@ class OCR(baseocr):
         
         response = requests.post('https://apipro3.ocr.space/parse/image', headers=headers, data=data, proxies=  {'http': None,'https': None})
         #print(response.text)
-        self.countnum()
-        return response.json()['ParsedResults'][0]['ParsedText']
-    
+        try:
+            
+            _= response.json()['ParsedResults'][0]['ParsedText']
+            self.countnum()
+            return _
+        except:
+            raise ApiExc(response.text)

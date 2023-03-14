@@ -1,7 +1,7 @@
  
 import requests
-import base64 
-from utils.config import globalconfig 
+from utils.exceptions import ApiExc
+
 from ocrengines.baseocrclass import baseocr 
 class OCR(baseocr):
       
@@ -34,6 +34,11 @@ class OCR(baseocr):
 
         response = requests.post('https://ocrserver.docsumo.com/api/v1/ocr/extract/',headers=headers,  data=data, proxies=  {'http': None,'https': None})
         #print(response.json())
-        self.countnum()
-        return response.json()['data']
+        try:
+            
+            _= response.json()['data']
+            self.countnum()
+            return _
+        except:
+            raise ApiExc(response.text)
          

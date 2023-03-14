@@ -2,14 +2,14 @@
 import time
 from traceback import print_exc 
 
-from utils.ocrdll import ocrwrapper
-from utils.config import globalconfig  
+from utils.config import globalconfig,_TR
 import importlib  
 from difflib import SequenceMatcher 
-from utils import somedef
+from utils.exceptions import ArgsEmptyExc,ApiExc
+
 import time  
 from PyQt5.QtWidgets import QApplication 
-from PyQt5.QtGui import QImage,QPixmap
+from PyQt5.QtGui import QImage
 from textsource.textsourcebase import basetext  
 def qimge2np(img:QImage):
     #img=img.convertToFormat(QImage.Format_Grayscale8)
@@ -158,20 +158,24 @@ class ocrtext(basetext):
         fname=f'./cache/ocr/{self.timestamp}.png'
         img.save(fname)
         
-        if self.nowuseocr!=use:
-            try: self.ocrengine.end()
-            except:pass
-            
-            try:
-                aclass=importlib.import_module('ocrengines.'+use).OCR 
-                self.ocrengine=aclass(use)   
-                self.nowuseocr=use
-            except Exception as e:
-                return '<msg>'+str(e)
         try:
+            if self.nowuseocr!=use:
+                try: self.ocrengine.end()
+                except:pass
+            aclass=importlib.import_module('ocrengines.'+use).OCR 
+            self.ocrengine=aclass(use)   
+            self.nowuseocr=use
             return self.ocrengine.ocr(fname)
         except Exception as e:
-            return '<msg>'+str(e)
+            if isinstance(e,ArgsEmptyExc):
+                msg=str(e)
+            elif isinstance(e,ApiExc):
+                msg=str(e)
+            else:
+                print_exc()
+                msg=str(type(e))[8:-2]+' '+str(e).replace('\n','').replace('\r','')
+            msg='<msg>'+_TR(globalconfig['ocr'][use]['name'])+' '+msg
+            return msg
 
     def end(self):
         super().end()
