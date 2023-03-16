@@ -72,16 +72,14 @@ def setTabTwo_lazy(self) :
 
         grids=[[
                 ("最短翻译字数",8),(self.getspinbox(0,500,globalconfig,'minlength'),3),'',
-                ("最长翻译字数",8),(self.getspinbox(0,500,globalconfig,'maxlength'),3)  ,('',7)],
+                ("最长翻译字数",8),(self.getspinbox(0,500,globalconfig,'maxlength'),3)   ],
                 [
                 ("在线翻译超时时间(s)",8),(self.getspinbox(1,20,globalconfig,'translatortimeout',step=0.1,double=True ),3),'',
                  ("翻译请求间隔(s)",8),(self.getspinbox(0,10,globalconfig,'transtimeinternal',step=0.1,double=True),3) ,
             ],
             [
-                ("使用持久化翻译缓存",8),(self.getsimpleswitch(globalconfig,'uselongtermcache')),'',
-            ],
-            [
-                ('显示错误信息',8),(self.getsimpleswitch(globalconfig  ,'showtranexception'),1),'',('错误重试',8),(self.getsimpleswitch(globalconfig  ,'errorretry'),1),
+                ("使用持久化翻译缓存",6),(self.getsimpleswitch(globalconfig,'uselongtermcache')),'','','',
+                ('显示错误信息',6),(self.getsimpleswitch(globalconfig  ,'showtranexception'),1),'','','',('错误重试',6),(self.getsimpleswitch(globalconfig  ,'errorretry'),1),'','',
             ]
 
         ] 
