@@ -1,14 +1,9 @@
- 
- 
-from traceback import print_exc
-import requests
-from urllib import parse 
-import os
-import re 
-from translator.basetranslator import basetrans 
-from js2py import EvalJs  
+
+from traceback import print_exc 
+import requests,re
 from utils.config import globalconfig
-import time,urllib
+from translator.basetranslator import basetrans
+import time,functools,sys,urllib
 class Tse:
     def __init__(self):
         self.author = 'Ulion.Tse'
@@ -55,30 +50,29 @@ class Tse:
         return host_headers if not if_api else api_headers
  
 
-
-class BaiduV1(Tse):
+class QQFanyi(Tse):
     def __init__(self):
         super().__init__()
-        self.host_url = 'https://fanyi.baidu.com'
-        self.api_url = 'https://fanyi.baidu.com/transapi'
-        self.get_lang_url = None
-        self.get_lang_url_pattern = 'https://fanyi-cdn.cdn.bcebos.com/webStatic/translation/js/index.(.*?).js'
+        self.host_url = 'https://fanyi.qq.com'
+        self.api_url = 'https://fanyi.qq.com/api/translate'
+        self.get_language_url = 'https://fanyi.qq.com/js/index.js'
+        self.get_qt_url = 'https://fanyi.qq.com/api/reauth12f'
         self.host_headers = self.get_headers(self.host_url, if_api=False)
         self.api_headers = self.get_headers(self.host_url, if_api=True)
+        self.qt_headers = self.get_headers(self.host_url, if_api=True, if_json_for_api=True)
         self.language_map = None
         self.session = None
+        self.qtv_qtk = None
         self.query_count = 0
         self.output_zh = 'zh'
-        self.input_limit = int(5e3)
-
-    # @Tse.debug_language_map
-    # def get_language_map(self, host_html, **kwargs):
-    #     lang_str = re.compile('langMap: {(.*?)}').search(host_html.replace('\n', '').replace('  ', '')).group()[8:]
-    #     return execjs.eval(lang_str)
+        self.input_limit = int(2e3)
  
-    def baidu_api(self, query_text: str, from_language: str = 'auto', to_language: str = 'en', **kwargs)  :
+    def get_qt(self, ss, timeout, proxies):
+        return ss.post(self.get_qt_url, headers=self.qt_headers, json=self.qtv_qtk, timeout=timeout, proxies=proxies).json()
+ 
+    def qqFanyi_api(self, query_text: str, from_language: str = 'auto', to_language: str = 'en', **kwargs)  :
         """
-        https://fanyi.baidu.com
+        https://fanyi.qq.com
         :param query_text: str, must.
         :param from_language: str, default 'auto'.
         :param to_language: str, default 'en'.
@@ -108,33 +102,34 @@ class BaiduV1(Tse):
 
         not_update_cond_freq = 1 if self.query_count < update_session_after_freq else 0
         not_update_cond_time = 1 if time.time() - self.begin_time < update_session_after_seconds else 0
-        if not (self.session and self.language_map and not_update_cond_freq and not_update_cond_time):
+        if not (self.session and self.language_map and not_update_cond_freq and not_update_cond_time and self.qtv_qtk):
             self.session = requests.Session()
-            _ = self.session.get(self.host_url, headers=self.host_headers, timeout=timeout, proxies=proxies)  # must twice, send cookies.
-            host_html = self.session.get(self.host_url, headers=self.host_headers, timeout=timeout, proxies=proxies).text
-            # self.language_map = self.get_language_map(host_html, from_language=from_language, to_language=to_language)
-
-            if not self.get_lang_url:
-                self.get_lang_url = re.compile(self.get_lang_url_pattern).search(host_html).group()
+            _ = self.session.get(self.host_url, headers=self.host_headers, timeout=timeout, proxies=proxies).text
+            self.qtv_qtk = self.get_qt(self.session, timeout, proxies)
              
         form_data = {
-            'from': from_language,
-            'to': to_language,
-            'query': query_text,
-            'source': 'txt',
+            'source': from_language,
+            'target': to_language,
+            'sourceText': query_text,
+            'qtv': self.qtv_qtk.get('qtv', ''),
+            'qtk': self.qtv_qtk.get('qtk', ''),
+            'ticket': '',
+            'randstr': '',
+            'sessionUuid': 'translate_uuid' + str(int(time.time() * 1e3)),
         }
-        r = self.session.post(self.api_url, data=form_data, headers=self.api_headers, timeout=timeout, proxies=proxies)
+        r = self.session.post(self.api_url, headers=self.api_headers, data=form_data, timeout=timeout, proxies=proxies)
         r.raise_for_status()
         data = r.json()
         time.sleep(sleep_seconds)
         self.query_count += 1
-        return data if is_detail_result else '\n'.join([item['dst'] for item in data['data']])
+        return data if is_detail_result else ''.join(item['targetText'] for item in data['translate']['records'])  # auto whitespace
 
-class TS(basetrans):
+class TS(basetrans): 
     def langmap(self):
-        return {"es":"spa","ko":"kor","fr":"fra","ja":"jp","cht":"cht","vi":"vie"}
-    def inittranslator(self)  :  
+        return { "cht":"zh-tw"}
+    def inittranslator(self): 
+        self.engine=QQFanyi()
+    def translate(self, content):
         
-        self.engine=BaiduV1()
-    def translate(self,query):  
-        return self.engine.baidu_api(query,self.srclang,self.tgtlang)
+        return  self.engine.qqFanyi_api(content,self.srclang,self.tgtlang)
+         

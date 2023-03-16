@@ -1,14 +1,9 @@
- 
- 
-from traceback import print_exc
-import requests
-from urllib import parse 
-import os
-import re 
-from translator.basetranslator import basetrans 
-from js2py import EvalJs  
+
+from traceback import print_exc 
+import requests,re
 from utils.config import globalconfig
-import time,urllib
+from translator.basetranslator import basetrans
+import time,functools,sys,urllib
 class Tse:
     def __init__(self):
         self.author = 'Ulion.Tse'
@@ -55,49 +50,43 @@ class Tse:
         return host_headers if not if_api else api_headers
  
 
-
-class BaiduV1(Tse):
+class AlibabaV1(Tse):
     def __init__(self):
         super().__init__()
-        self.host_url = 'https://fanyi.baidu.com'
-        self.api_url = 'https://fanyi.baidu.com/transapi'
-        self.get_lang_url = None
-        self.get_lang_url_pattern = 'https://fanyi-cdn.cdn.bcebos.com/webStatic/translation/js/index.(.*?).js'
+        self.host_url = 'https://translate.alibaba.com'
+        self.api_url = 'https://translate.alibaba.com/translationopenseviceapp/trans/TranslateTextAddAlignment.do'
+        self.get_language_url = 'https://translate.alibaba.com/translationopenseviceapp/trans/acquire_supportLanguage.do'
         self.host_headers = self.get_headers(self.host_url, if_api=False)
         self.api_headers = self.get_headers(self.host_url, if_api=True)
         self.language_map = None
+        self.professional_field = ("general", "message", "offer")
+        self.dmtrack_pageid = None
         self.session = None
         self.query_count = 0
         self.output_zh = 'zh'
         self.input_limit = int(5e3)
 
-    # @Tse.debug_language_map
-    # def get_language_map(self, host_html, **kwargs):
-    #     lang_str = re.compile('langMap: {(.*?)}').search(host_html.replace('\n', '').replace('  ', '')).group()[8:]
-    #     return execjs.eval(lang_str)
- 
-    def baidu_api(self, query_text: str, from_language: str = 'auto', to_language: str = 'en', **kwargs)  :
-        """
-        https://fanyi.baidu.com
-        :param query_text: str, must.
-        :param from_language: str, default 'auto'.
-        :param to_language: str, default 'en'.
-        :param **kwargs:
-                :param timeout: float, default None.
-                :param proxies: dict, default None.
-                :param sleep_seconds: float, default 0.
-                :param is_detail_result: boolean, default False.
-                :param if_ignore_limit_of_length: boolean, default False.
-                :param limit_of_length: int, default 5000.
-                :param if_ignore_empty_query: boolean, default False.
-                :param update_session_after_freq: int, default 1000.
-                :param update_session_after_seconds: float, default 1500.
-                :param if_show_time_stat: boolean, default False.
-                :param show_time_stat_precision: int, default 4.
-                :param if_print_warning: bool, default True.
-        :return: str or dict
-        """
+    def get_dmtrack_pageid(self, host_response):
+        try:
+            e = re.compile("dmtrack_pageid='(\w+)';").findall(host_response.text)[0]
+        except:
+            e = ''
+        if not e:
+            e = host_response.cookies.get_dict().get("cna", "001")
+            e = re.compile(pattern='[^a-z\d]').sub(repl='', string=e.lower())[:16]
+        else:
+            n, r = e[0:16], e[16:26]
+            i = hex(int(r, 10))[2:] if re.compile('^[\-+]?[0-9]+$').match(r) else r
+            e = n + i
 
+        s = int(time.time() * 1000)
+        o = ''.join([e, hex(s)[2:]])
+        for _ in range(1, 10):
+            a = hex(int(0 * 1e10))[2:]  # int->str: 16, '0x'
+            o += a
+        return o[:42] 
+    def alibaba_api(self, query_text: str, from_language: str = 'auto', to_language: str = 'en', **kwargs)  :
+        
         timeout = kwargs.get('timeout', None)
         proxies = kwargs.get('proxies', None)
         sleep_seconds = kwargs.get('sleep_seconds', 0)
@@ -108,33 +97,33 @@ class BaiduV1(Tse):
 
         not_update_cond_freq = 1 if self.query_count < update_session_after_freq else 0
         not_update_cond_time = 1 if time.time() - self.begin_time < update_session_after_seconds else 0
-        if not (self.session and self.language_map and not_update_cond_freq and not_update_cond_time):
+        if not (self.session and self.language_map and not_update_cond_freq and not_update_cond_time and self.dmtrack_pageid):
             self.session = requests.Session()
-            _ = self.session.get(self.host_url, headers=self.host_headers, timeout=timeout, proxies=proxies)  # must twice, send cookies.
-            host_html = self.session.get(self.host_url, headers=self.host_headers, timeout=timeout, proxies=proxies).text
-            # self.language_map = self.get_language_map(host_html, from_language=from_language, to_language=to_language)
-
-            if not self.get_lang_url:
-                self.get_lang_url = re.compile(self.get_lang_url_pattern).search(host_html).group()
-             
-        form_data = {
-            'from': from_language,
-            'to': to_language,
-            'query': query_text,
-            'source': 'txt',
-        }
-        r = self.session.post(self.api_url, data=form_data, headers=self.api_headers, timeout=timeout, proxies=proxies)
-        r.raise_for_status()
-        data = r.json()
-        time.sleep(sleep_seconds)
-        self.query_count += 1
-        return data if is_detail_result else '\n'.join([item['dst'] for item in data['data']])
-
-class TS(basetrans):
-    def langmap(self):
-        return {"es":"spa","ko":"kor","fr":"fra","ja":"jp","cht":"cht","vi":"vie"}
-    def inittranslator(self)  :  
+            host_response = self.session.get(self.host_url, headers=self.host_headers, timeout=timeout, proxies=proxies)
+            self.dmtrack_pageid = self.get_dmtrack_pageid(host_response)
         
-        self.engine=BaiduV1()
-    def translate(self,query):  
-        return self.engine.baidu_api(query,self.srclang,self.tgtlang)
+        use_domain = kwargs.get('professional_field', 'message')
+        form_data = {
+            "srcLanguage": from_language,
+            "tgtLanguage": to_language,
+            "srcText": query_text,
+            "bizType": use_domain,
+            "viewType": "",
+            "source": "",
+        }
+        params = {"dmtrack_pageid": self.dmtrack_pageid}
+        r = self.session.post(self.api_url, headers=self.api_headers, params=params, data=form_data, timeout=timeout, proxies=proxies)
+        r.raise_for_status()
+        data = r.json() 
+        self.query_count += 1
+        return data if is_detail_result else data['listTargetText'][0]
+
+class TS(basetrans): 
+    def langmap(self):
+        return { "cht":"zh-tw"}
+    def inittranslator(self): 
+        self.engine=AlibabaV1()
+    def translate(self, content):
+        
+        return  self.engine.alibaba_api(content,self.srclang,self.tgtlang)
+         

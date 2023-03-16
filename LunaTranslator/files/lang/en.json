@@ -537,5 +537,7 @@
     "自动获取系统代理": "Obtain system agent automatically",
     "在线翻译超时时间(s)": "Online translation timeout (s)",
     "游戏设置": "Game settings",
-    "显示错误信息": "Display error message"
+    "显示错误信息": "Display error message",
+    "阿里2": "Ali 2",
+    "错误重试": "Error Retry"
 }

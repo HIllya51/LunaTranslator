@@ -177,7 +177,8 @@ class basetrans:
             if skip:
                 continue
 
-            for i in range(2):
+            runtime=2 if globalconfig['errorretry'] else 1
+            for i in range(runtime):
                 
                     
                     
@@ -210,7 +211,7 @@ class basetrans:
                             callback(msg,embedcallback) 
                         break
                     else:
-                        if i>0:
+                        if i==runtime-1:
                             if globalconfig['showtranexception']:
                                 callback(msg,embedcallback) 
             

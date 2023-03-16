@@ -1,14 +1,9 @@
- 
- 
-from traceback import print_exc
-import requests
-from urllib import parse 
-import os
-import re 
-from translator.basetranslator import basetrans 
-from js2py import EvalJs  
+
+from traceback import print_exc 
+import requests,re,uuid
 from utils.config import globalconfig
-import time,urllib
+from translator.basetranslator import basetrans
+import time,functools,sys,urllib
 class Tse:
     def __init__(self):
         self.author = 'Ulion.Tse'
@@ -55,30 +50,33 @@ class Tse:
         return host_headers if not if_api else api_headers
  
 
-
-class BaiduV1(Tse):
+class QQTranSmart(Tse):
     def __init__(self):
         super().__init__()
-        self.host_url = 'https://fanyi.baidu.com'
-        self.api_url = 'https://fanyi.baidu.com/transapi'
+        self.host_url = 'https://transmart.qq.com'
+        self.api_url = 'https://transmart.qq.com/api/imt'
         self.get_lang_url = None
-        self.get_lang_url_pattern = 'https://fanyi-cdn.cdn.bcebos.com/webStatic/translation/js/index.(.*?).js'
+        self.get_lang_url_pattern = '/assets/vendor.(.*?).js'  # e4c6831c
         self.host_headers = self.get_headers(self.host_url, if_api=False)
-        self.api_headers = self.get_headers(self.host_url, if_api=True)
+        self.api_headers = self.get_headers(self.host_url, if_api=True, if_json_for_api=True)
         self.language_map = None
         self.session = None
+        self.uuid = str(uuid.uuid4())
         self.query_count = 0
         self.output_zh = 'zh'
         self.input_limit = int(5e3)
-
-    # @Tse.debug_language_map
-    # def get_language_map(self, host_html, **kwargs):
-    #     lang_str = re.compile('langMap: {(.*?)}').search(host_html.replace('\n', '').replace('  ', '')).group()[8:]
-    #     return execjs.eval(lang_str)
  
-    def baidu_api(self, query_text: str, from_language: str = 'auto', to_language: str = 'en', **kwargs)  :
+    def get_clientKey(self):
+        return f'browser-firefox-110.0.0-Windows 10-{self.uuid}-{int(time.time() * 1e3)}'
+
+    def split_sentence(self, data):
+        index_pair_list = [[item['start'], item['start'] + item['len']] for item in data['sentence_list']]
+        index_list = [i for ii in index_pair_list for i in ii]
+        return [data['text'][index_list[i]: index_list[i+1]] for i in range(len(index_list) - 1)]
+ 
+    def qqTranSmart_api(self, query_text: str, from_language: str = 'auto', to_language: str = 'en', **kwargs)  :
         """
-        https://fanyi.baidu.com
+        https://transmart.qq.com
         :param query_text: str, must.
         :param from_language: str, default 'auto'.
         :param to_language: str, default 'en'.
@@ -110,31 +108,52 @@ class BaiduV1(Tse):
         not_update_cond_time = 1 if time.time() - self.begin_time < update_session_after_seconds else 0
         if not (self.session and self.language_map and not_update_cond_freq and not_update_cond_time):
             self.session = requests.Session()
-            _ = self.session.get(self.host_url, headers=self.host_headers, timeout=timeout, proxies=proxies)  # must twice, send cookies.
             host_html = self.session.get(self.host_url, headers=self.host_headers, timeout=timeout, proxies=proxies).text
-            # self.language_map = self.get_language_map(host_html, from_language=from_language, to_language=to_language)
 
             if not self.get_lang_url:
-                self.get_lang_url = re.compile(self.get_lang_url_pattern).search(host_html).group()
-             
-        form_data = {
-            'from': from_language,
-            'to': to_language,
-            'query': query_text,
-            'source': 'txt',
+                self.get_lang_url = self.host_url + re.compile(self.get_lang_url_pattern).search(host_html).group()
+              
+        client_key = self.get_clientKey()
+        self.api_headers.update({'Cookie': f'client_key={client_key}'})
+
+        split_form_data = {
+            'header': {
+                'fn': 'text_analysis',
+                'client_key': client_key,
+            },
+            'type': 'plain',
+            'text': query_text,
+            'normalize': {'merge_broken_line': 'false'}
         }
-        r = self.session.post(self.api_url, data=form_data, headers=self.api_headers, timeout=timeout, proxies=proxies)
+        split_data = self.session.post(self.api_url, json=split_form_data, headers=self.api_headers, timeout=timeout, proxies=proxies).json()
+        text_list = self.split_sentence(split_data)
+
+        api_form_data = {
+            'header': {
+                'fn': 'auto_translation',
+                'client_key': client_key,
+            },
+            'type': 'plain',
+            'model_category': 'normal',
+            'source': {
+                'lang': from_language,
+                'text_list': [''] + text_list + [''],
+            },
+            'target': {'lang': to_language}
+        }
+        r = self.session.post(self.api_url, json=api_form_data, headers=self.api_headers, timeout=timeout, proxies=proxies)
         r.raise_for_status()
         data = r.json()
         time.sleep(sleep_seconds)
         self.query_count += 1
-        return data if is_detail_result else '\n'.join([item['dst'] for item in data['data']])
+        return data if is_detail_result else ''.join(data['auto_translation'])
 
-class TS(basetrans):
+class TS(basetrans): 
     def langmap(self):
-        return {"es":"spa","ko":"kor","fr":"fra","ja":"jp","cht":"cht","vi":"vie"}
-    def inittranslator(self)  :  
+        return { "cht":"zh-tw"}
+    def inittranslator(self): 
+        self.engine=QQTranSmart()
+    def translate(self, content):
         
-        self.engine=BaiduV1()
-    def translate(self,query):  
-        return self.engine.baidu_api(query,self.srclang,self.tgtlang)
+        return  self.engine.qqTranSmart_api(content,self.srclang,self.tgtlang)
+         

@@ -483,6 +483,11 @@
 		}
     },
     "fanyi": {
+		"ali2":{
+			"use":false,
+			"name":"阿里2",
+			"color":"pink"
+		},
 		"azure":{
 			"use":false,
 			"color":"pink",
@@ -502,6 +507,18 @@
             "use": false,
             "color": "#ff0000",
             "name": "谷歌"
+        },"ModernMt": {
+            "use": false,
+            "color": "#ff0000",
+            "name": "ModernMt"
+        },"qqTranSmart": {
+            "use": false,
+            "color": "#ff0000",
+            "name": "qqTranSmart"
+        },"qqFanyi": {
+            "use": false,
+            "color": "#ff0000",
+            "name": "qqFanyi"
         },"googleapi": {
             "use": false,
             "color": "#ff0000",
@@ -729,8 +746,13 @@
             "color": "blue",
             "name": "自定义翻译",
 			"lang":{}
-        }
+        },"argos":{
+			"use":false,
+			"name":"argos",
+			"color":"pink"
+		}
     },
+	"errorretry":true,
     "minifollow": false,
     "movefollow": false,
     "focusfollow": false,

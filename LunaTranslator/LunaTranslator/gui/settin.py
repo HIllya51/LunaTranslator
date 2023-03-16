@@ -163,7 +163,7 @@ class Settin(closeashidewindow) :
         # 界面缩放比例
         self.rate = self.object.screen_scale_rate
         # 界面尺寸
-        self.window_width = int((900 if globalconfig['languageuse'] in [0,1] else 1200)*self.rate)
+        self.window_width = int((900 if globalconfig['languageuse']==0 else 1200)*self.rate)
          
         self.window_height = int(500*self.rate)
         self.scrollwidth=20*self.rate
@@ -206,7 +206,7 @@ class Settin(closeashidewindow) :
                     width: %spx;
                     height: %spx;
                     font:%spt  ;  }
-                '''%(50*self.rate,self.window_width*0.2,18 if globalconfig['languageuse'] in [0,1] else 10  )
+                '''%(50*self.rate,self.window_width*0.2,18 if globalconfig['languageuse']==0 else 10  )
             )
             self.tab_widget.setTabPosition(QTabWidget.West)
             setTabOne(self)   

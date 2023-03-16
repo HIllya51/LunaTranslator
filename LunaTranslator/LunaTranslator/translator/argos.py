@@ -1,14 +1,9 @@
- 
- 
-from traceback import print_exc
-import requests
-from urllib import parse 
-import os
-import re 
-from translator.basetranslator import basetrans 
-from js2py import EvalJs  
+
+from traceback import print_exc 
+import requests,re
 from utils.config import globalconfig
-import time,urllib
+from translator.basetranslator import basetrans
+import time,functools,sys,urllib
 class Tse:
     def __init__(self):
         self.author = 'Ulion.Tse'
@@ -56,29 +51,27 @@ class Tse:
  
 
 
-class BaiduV1(Tse):
+class Argos(Tse):
     def __init__(self):
         super().__init__()
-        self.host_url = 'https://fanyi.baidu.com'
-        self.api_url = 'https://fanyi.baidu.com/transapi'
-        self.get_lang_url = None
-        self.get_lang_url_pattern = 'https://fanyi-cdn.cdn.bcebos.com/webStatic/translation/js/index.(.*?).js'
-        self.host_headers = self.get_headers(self.host_url, if_api=False)
-        self.api_headers = self.get_headers(self.host_url, if_api=True)
+        self.host_url = 'https://translate.argosopentech.com'
+        self.api_url = f'{self.host_url}/translate'
+        self.language_url = f'{self.host_url}/languages'
+        self.host_headers = self.get_headers(self.host_url, if_api=False, if_ajax_for_api=False)
+        self.api_headers = self.get_headers(self.host_url, if_api=True, if_ajax_for_api=False, if_json_for_api=True)
+        self.language_headers = self.get_headers(self.host_url, if_api=False, if_json_for_api=True)
+        self.host_pool = ['https://translate.argosopentech.com', 'https://libretranslate.de',
+                          'https://translate.astian.org', 'https://translate.mentality.rip',
+                          'https://translate.api.skitzen.com', 'https://trans.zillyhuhn.com']
         self.language_map = None
         self.session = None
         self.query_count = 0
         self.output_zh = 'zh'
-        self.input_limit = int(5e3)
-
-    # @Tse.debug_language_map
-    # def get_language_map(self, host_html, **kwargs):
-    #     lang_str = re.compile('langMap: {(.*?)}').search(host_html.replace('\n', '').replace('  ', '')).group()[8:]
-    #     return execjs.eval(lang_str)
- 
-    def baidu_api(self, query_text: str, from_language: str = 'auto', to_language: str = 'en', **kwargs)  :
+        self.input_limit = int(5e3)  # unknown
+  
+    def argos_api(self, query_text: str, from_language: str = 'auto', to_language: str = 'en', **kwargs) :
         """
-        https://fanyi.baidu.com
+        https://translate.argosopentech.com
         :param query_text: str, must.
         :param from_language: str, default 'auto'.
         :param to_language: str, default 'en'.
@@ -95,8 +88,17 @@ class BaiduV1(Tse):
                 :param if_show_time_stat: boolean, default False.
                 :param show_time_stat_precision: int, default 4.
                 :param if_print_warning: bool, default True.
+                :param reset_host_url: str, default None.
         :return: str or dict
         """
+
+        reset_host_url = kwargs.get('reset_host_url', None)
+        if reset_host_url and reset_host_url != self.host_url:
+            if reset_host_url not in self.host_pool:
+                raise TranslatorError
+            self.host_url = reset_host_url
+            self.api_url = f'{self.host_url}/translate'
+            self.language_url = f'{self.host_url}/languages'
 
         timeout = kwargs.get('timeout', None)
         proxies = kwargs.get('proxies', None)
@@ -108,33 +110,22 @@ class BaiduV1(Tse):
 
         not_update_cond_freq = 1 if self.query_count < update_session_after_freq else 0
         not_update_cond_time = 1 if time.time() - self.begin_time < update_session_after_seconds else 0
-        if not (self.session and self.language_map and not_update_cond_freq and not_update_cond_time):
-            self.session = requests.Session()
-            _ = self.session.get(self.host_url, headers=self.host_headers, timeout=timeout, proxies=proxies)  # must twice, send cookies.
-            host_html = self.session.get(self.host_url, headers=self.host_headers, timeout=timeout, proxies=proxies).text
-            # self.language_map = self.get_language_map(host_html, from_language=from_language, to_language=to_language)
-
-            if not self.get_lang_url:
-                self.get_lang_url = re.compile(self.get_lang_url_pattern).search(host_html).group()
-             
-        form_data = {
-            'from': from_language,
-            'to': to_language,
-            'query': query_text,
-            'source': 'txt',
-        }
-        r = self.session.post(self.api_url, data=form_data, headers=self.api_headers, timeout=timeout, proxies=proxies)
+        self.session = requests.Session()
+        _ = self.session.get(self.host_url, headers=self.host_headers, timeout=timeout, proxies=proxies).text
+         
+        form_data = {'q': query_text, 'source': from_language, 'target': to_language, 'format': 'text'}
+        r = self.session.post(self.api_url, headers=self.api_headers, json=form_data, timeout=timeout, proxies=proxies)
         r.raise_for_status()
         data = r.json()
-        time.sleep(sleep_seconds)
         self.query_count += 1
-        return data if is_detail_result else '\n'.join([item['dst'] for item in data['data']])
+        return data if is_detail_result else data['translatedText']
 
-class TS(basetrans):
+class TS(basetrans): 
     def langmap(self):
-        return {"es":"spa","ko":"kor","fr":"fra","ja":"jp","cht":"cht","vi":"vie"}
-    def inittranslator(self)  :  
+        return { "cht":"zh-tw"}
+    def inittranslator(self): 
+        self.engine=Argos()
+    def translate(self, content):
         
-        self.engine=BaiduV1()
-    def translate(self,query):  
-        return self.engine.baidu_api(query,self.srclang,self.tgtlang)
+        return  self.engine.argos_api(content,self.srclang,self.tgtlang)
+         

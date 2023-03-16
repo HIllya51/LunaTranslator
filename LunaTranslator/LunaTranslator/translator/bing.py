@@ -1,16 +1,14 @@
 
 from traceback import print_exc 
-import re
-import time
-import requests
+import re 
+import requests 
 from urllib.parse import quote 
 from translator.basetranslator import basetrans
-
-from utils.config import globalconfig
+ 
 class TS(basetrans):
     def langmap(self):
          return  {"zh":"zh-Hans","cht":"zh-Hant"} 
-    def inittranslator(self):  
+    def inittranslator(self):   
         self.ss=requests.session()
         headers = { 
                 'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
@@ -35,32 +33,26 @@ class TS(basetrans):
                 'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36 Edg/105.0.1343.53',
             }
          
-        response = self.ss.get('https://cn.bing.com/translator/' ,headers=headers, timeout = globalconfig['translatortimeout'], proxies=  {'http': None,'https': None})
+        response = self.ss.get('https://cn.bing.com/translator/' ,headers=headers)
         text=response.text
         
-        res=re.search('var params_RichTranslateHelper = \[([0-9]+),"(([0-9a-zA-Z]|-|_)+)"',text).group()
+        res=re.compile('var params_AbusePreventionHelper = (.*?);').findall(text)[0]
          
-        self.key=res.split(',')[0].split('[')[1]
-        self.token=res.split(',')[1][1:-1] 
+        self.key=str(eval(res)[0])
+        self.token=str(eval(res)[1])
 
-        res=re.search('IG:"(([0-9a-zA-Z]|-|_)+)"',text).group()
-        self.IG=res[4:-1]
+        iid = 'translator.5028'
+        ig = re.compile('IG:"(.*?)"').findall(text)[0]
+          
+        self.IG=ig
  
 
-        self.iid=re.findall('<div id="rich_tta" data-iid="(.*)"\)">',text)[0] 
-        #print( self.IG)
-        self.iid_i=1
-  
-    def show(self,res):
-        print('必应','\033[0;31;47m',res,'\033[0m',flush=True)
+        self.iid=iid 
+   
     def translate(self,content): 
-         
-            data = '&fromLang='+self.srclang +'&text='+quote(content)+'&to='+self.tgtlang+'&token='+self.token+'&key='+self.key
-            self.iid_i+=1
+            print(content) 
                     
-            headers = {
-                'path':'/ttranslatev3?isVertical=1&&IG='+self.IG+'&IID='+self.iid+'.'+str(self.iid_i),
-
+            headers = { 
                 'authority': 'cn.bing.com',
                 'accept': '*/*',
                 'accept-language': 'zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6',
@@ -84,12 +76,11 @@ class TS(basetrans):
                 'x-edge-shopping-flag': '1',
             }
         
-            response = self.ss.post('https://cn.bing.com/ttranslatev3?isVertical=1&&IG='+self.IG+'&IID='+self.iid+'.'+str(self.iid_i) ,headers=headers, data=data, proxies=  {'http': None,'https': None},timeout = globalconfig['translatortimeout'])
+            response = self.ss.post('https://cn.bing.com/ttranslatev3?isVertical=1&&IG='+self.IG+'&IID='+self.iid,headers=headers, data={
+                 'fromLang':self.srclang,'text':content,'to':self.tgtlang,'token':self.token,'key':self.key
+            })#data=data )
             js=response.json() 
             ch=js[0]['translations'][0]['text']
             
             return ch
          
-if __name__=='__main__':
-    a=BINGFY()
-    a.gettask('はーい、おやすみなさい')
