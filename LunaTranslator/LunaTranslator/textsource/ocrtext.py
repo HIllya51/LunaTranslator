@@ -162,9 +162,9 @@ class ocrtext(basetext):
             if self.nowuseocr!=use:
                 try: self.ocrengine.end()
                 except:pass
-            aclass=importlib.import_module('ocrengines.'+use).OCR 
-            self.ocrengine=aclass(use)   
-            self.nowuseocr=use
+                aclass=importlib.import_module('ocrengines.'+use).OCR 
+                self.ocrengine=aclass(use)   
+                self.nowuseocr=use
             return self.ocrengine.ocr(fname)
         except Exception as e:
             if isinstance(e,ArgsEmptyExc):
