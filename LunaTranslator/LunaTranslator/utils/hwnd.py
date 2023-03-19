@@ -151,9 +151,9 @@ def getScreenRate() :
     hDC = win32utils.GetDC(0) 
     screen_scale_rate = round(win32utils.GetDeviceCaps(hDC, win32con.DESKTOPHORZRES) /  win32utils.GetSystemMetrics(0), 2) 
     return screen_scale_rate
-def mouseselectwindow(callback):
-        import PyHook3
-        hm = PyHook3.HookManager()
+import pyWinhook
+def mouseselectwindow(callback): 
+        hm = pyWinhook.HookManager()
         def OnMouseEvent(event):  
             hwnd=win32utils.WindowFromPoint(win32utils.GetCursorPos())
             hm.UnhookMouse()    

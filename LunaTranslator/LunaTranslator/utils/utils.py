@@ -8,22 +8,28 @@ from traceback import print_exc
 from utils.config import globalconfig 
 import win32utils
 from utils.exceptions import TimeOut
+from urllib.request import getproxies_registry
 def getsysproxy():
-    hkey=win32utils.RegOpenKeyEx(win32utils.HKEY_CURRENT_USER,'Software\Microsoft\Windows\CurrentVersion\Internet Settings',0,win32utils.KEY_ALL_ACCESS)
-
-    count,MaxValueNameLen,MaxValueLen=(win32utils.RegQueryInfoKey(hkey))
-    ProxyEnable=False
-    ProxyServer=''
-    for i in range(count):
-        k,v=(win32utils.RegEnumValue(hkey,i,MaxValueNameLen,MaxValueLen))
-        if k=='ProxyEnable':
-            ProxyEnable=(v=='\x01')
-        elif  k=='ProxyServer':
-            ProxyServer=v
-    if ProxyEnable:
-         return ProxyServer
-    else:
+    proxies=getproxies_registry()
+    try:
+         return proxies[list(proxies.keys())[0]].split('//')[1]
+    except:
          return ''
+    # hkey=win32utils.RegOpenKeyEx(win32utils.HKEY_CURRENT_USER,'Software\Microsoft\Windows\CurrentVersion\Internet Settings',0,win32utils.KEY_ALL_ACCESS)
+
+    # count,MaxValueNameLen,MaxValueLen=(win32utils.RegQueryInfoKey(hkey))
+    # ProxyEnable=False
+    # ProxyServer=''
+    # for i in range(count):
+    #     k,v=(win32utils.RegEnumValue(hkey,i,MaxValueNameLen,MaxValueLen))
+    #     if k=='ProxyEnable':
+    #         ProxyEnable=(v=='\x01')
+    #     elif  k=='ProxyServer':
+    #         ProxyServer=v
+    # if ProxyEnable:
+    #      return ProxyServer
+    # else:
+    #      return ''
 
 def argsort(l):
     ll=list(range(len(l)))

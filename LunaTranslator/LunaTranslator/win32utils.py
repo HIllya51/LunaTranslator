@@ -371,27 +371,27 @@ _WaitNamedPipeW.argtypes=c_wchar_p,c_uint
 def WaitNamedPipe(pipename,timeout):
     return _WaitNamedPipeW(pipename,timeout)
 
-_TerminateProcess=_kernel32.TerminateProcess 
-_TerminateProcess.argtypes=c_void_p,c_uint
-def TerminateProcess(phandle,code):
-    return _TerminateProcess(phandle,code)
+# _TerminateProcess=_kernel32.TerminateProcess 
+# _TerminateProcess.argtypes=c_void_p,c_uint
+# def TerminateProcess(phandle,code):
+#     return _TerminateProcess(phandle,code)
  
-_CreatePipe=_kernel32.CreatePipe 
-_CreatePipe.argtypes=c_void_p,c_void_p,c_void_p,c_uint
-def CreatePipe(lpsecu,sz):
-    hread=c_void_p()
-    hwrite=c_void_p()
-    _CreatePipe(pointer(hread),pointer(hwrite),lpsecu,sz)
-    return hread.value,hwrite.value
+# _CreatePipe=_kernel32.CreatePipe 
+# _CreatePipe.argtypes=c_void_p,c_void_p,c_void_p,c_uint
+# def CreatePipe(lpsecu,sz):
+#     hread=c_void_p()
+#     hwrite=c_void_p()
+#     _CreatePipe(pointer(hread),pointer(hwrite),lpsecu,sz)
+#     return hread.value,hwrite.value
 
-_GetCurrentProcess=_kernel32.GetCurrentProcess
-_DuplicateHandle=_kernel32.DuplicateHandle
-_DuplicateHandle.argtypes=c_void_p,c_void_p,c_void_p,c_void_p,c_uint,c_bool,c_uint
-DUPLICATE_SAME_ACCESS=2
-def DuplicateHandle(handle):
-    TargetHandle=c_void_p()
-    _DuplicateHandle(_GetCurrentProcess(),handle,_GetCurrentProcess(),pointer(TargetHandle),0,1,DUPLICATE_SAME_ACCESS)
-    return TargetHandle.value
+# _GetCurrentProcess=_kernel32.GetCurrentProcess
+# _DuplicateHandle=_kernel32.DuplicateHandle
+# _DuplicateHandle.argtypes=c_void_p,c_void_p,c_void_p,c_void_p,c_uint,c_bool,c_uint
+# DUPLICATE_SAME_ACCESS=2
+# def DuplicateHandle(handle):
+#     TargetHandle=c_void_p()
+#     _DuplicateHandle(_GetCurrentProcess(),handle,_GetCurrentProcess(),pointer(TargetHandle),0,1,DUPLICATE_SAME_ACCESS)
+#     return TargetHandle.value
 
 def mciSendString(s):
     _winmm=windll.winmm
@@ -401,35 +401,35 @@ def mciSendString(s):
 
 
 
-_RegOpenKeyExW=_Advapi32.RegOpenKeyExW
-_RegOpenKeyExW.argtypes=c_void_p,c_wchar_p,c_uint,c_uint,c_void_p
-ERROR_SUCCESS=0
-def RegOpenKeyEx(hKey,lpSubkey,ulOptions,samDesired):
-    key=c_void_p()
-    if _RegOpenKeyExW(hKey,lpSubkey,ulOptions,samDesired,pointer(key))!=ERROR_SUCCESS:
-        raise Exception("RegOpenKeyEx failed")
-    return key.value
+# _RegOpenKeyExW=_Advapi32.RegOpenKeyExW
+# _RegOpenKeyExW.argtypes=c_void_p,c_wchar_p,c_uint,c_uint,c_void_p
+# ERROR_SUCCESS=0
+# def RegOpenKeyEx(hKey,lpSubkey,ulOptions,samDesired):
+#     key=c_void_p()
+#     if _RegOpenKeyExW(hKey,lpSubkey,ulOptions,samDesired,pointer(key))!=ERROR_SUCCESS:
+#         raise Exception("RegOpenKeyEx failed")
+#     return key.value
 
-HKEY_CURRENT_USER=0x80000001
-KEY_ALL_ACCESS=0xf003f
+# HKEY_CURRENT_USER=0x80000001
+# KEY_ALL_ACCESS=0xf003f
 
-_RegQueryInfoKeyW=_Advapi32.RegQueryInfoKeyW
-_RegQueryInfoKeyW.argtypes=c_void_p,c_wchar_p,c_void_p,c_void_p,c_void_p,c_void_p,c_void_p,c_void_p,c_void_p,c_void_p,c_void_p,c_void_p
-def RegQueryInfoKey(hkey):
-    ValueCount=c_uint()
-    MaxValueNameLen=c_uint()
-    MaxValueLen=c_uint()
-    if _RegQueryInfoKeyW(hkey,None,None,None,None,None,None,pointer(ValueCount),pointer(MaxValueNameLen),pointer(MaxValueLen),None,None)!=ERROR_SUCCESS:
-        raise Exception("RegQueryInfoKey failed")
-    return ValueCount.value,MaxValueNameLen.value,MaxValueLen.value
+# _RegQueryInfoKeyW=_Advapi32.RegQueryInfoKeyW
+# _RegQueryInfoKeyW.argtypes=c_void_p,c_wchar_p,c_void_p,c_void_p,c_void_p,c_void_p,c_void_p,c_void_p,c_void_p,c_void_p,c_void_p,c_void_p
+# def RegQueryInfoKey(hkey):
+#     ValueCount=c_uint()
+#     MaxValueNameLen=c_uint()
+#     MaxValueLen=c_uint()
+#     if _RegQueryInfoKeyW(hkey,None,None,None,None,None,None,pointer(ValueCount),pointer(MaxValueNameLen),pointer(MaxValueLen),None,None)!=ERROR_SUCCESS:
+#         raise Exception("RegQueryInfoKey failed")
+#     return ValueCount.value,MaxValueNameLen.value,MaxValueLen.value
 
-_RegEnumValueW=_Advapi32.RegEnumValueW
-_RegEnumValueW.argtypes=c_void_p,c_uint,c_wchar_p,c_void_p,c_void_p,c_void_p,c_void_p,c_void_p
+# _RegEnumValueW=_Advapi32.RegEnumValueW
+# _RegEnumValueW.argtypes=c_void_p,c_uint,c_wchar_p,c_void_p,c_void_p,c_void_p,c_void_p,c_void_p
 
-def RegEnumValue(hkey,dwIndex,MaxValueNameLen,MaxValueLen):
-    key=create_unicode_buffer(MaxValueNameLen+1)
-    value=create_unicode_buffer(MaxValueLen+1)
-    vType=c_uint()
-    _RegEnumValueW(hkey,dwIndex,key,pointer(c_uint(MaxValueNameLen)),None,pointer(vType),value,pointer(c_uint(MaxValueLen)))
-    return key.value,value.value
+# def RegEnumValue(hkey,dwIndex,MaxValueNameLen,MaxValueLen):
+#     key=create_unicode_buffer(MaxValueNameLen+1)
+#     value=create_unicode_buffer(MaxValueLen+1)
+#     vType=c_uint()
+#     _RegEnumValueW(hkey,dwIndex,key,pointer(c_uint(MaxValueNameLen)),None,pointer(vType),value,pointer(c_uint(MaxValueLen)))
+#     return key.value,value.value
 

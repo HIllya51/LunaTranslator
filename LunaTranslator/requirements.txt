@@ -1,6 +1,6 @@
 Deprecated==1.2.13
 fugashi==1.2.1
-PyHook3==1.6.1
+pywinhook==1.6.2
 PyQt5==5.15.7
 PyQt5-Qt5==5.15.2
 Levenshtein==0.12.0
