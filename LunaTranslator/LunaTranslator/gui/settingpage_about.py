@@ -26,10 +26,9 @@ def resourcegrid( ) :
             [('翻译-J北京7-用户词典'),(makehtml("https://github.com/HIllya51/LunaTranslator/releases/download/v2.2.0/JBeijing7UserDict.zip",True),1,'link')],
             [('翻译-金山快译'),(makehtml("https://github.com/HIllya51/LunaTranslator/releases/download/v1.0/FastAIT09_Setup.25269.4101.zip",True),1,'link')],
             [('翻译-快译通'),(makehtml("https://github.com/HIllya51/LunaTranslator/releases/download/v1.0/DR.eye.zip",True),1,'link')],
-            [('转区-Locale-Emulator'),(makehtml("https://github.com/xupefei/Locale-Emulator/releases/download/v2.5.0.1/Locale.Emulator.2.5.0.1.zip",True),1,'link')],
-            [('转区-Locale_Remulator'),(makehtml("https://github.com/InWILL/Locale_Remulator/releases/download/v1.5.1/Locale_Remulator.1.5.1.zip",True),1,'link')],
+            
             [('语音-VoiceRoid2'),(makehtml("https://github.com/HIllya51/LunaTranslator/releases/download/v1.0/Yukari2.zip",True),1,'link')],
-            [('语音-VOICEVOX'),(makehtml("https://github.com/VOICEVOX/voicevox/releases/download/0.13.3/voicevox-windows-cpu-0.13.3.zip",True),1,'link')],
+            [('语音-VOICEVOX'),(makehtml("https://github.com/VOICEVOX/voicevox/releases"),1,'link')],
         ]
         return grid
 @threader
