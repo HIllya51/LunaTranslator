@@ -515,10 +515,6 @@
             "use": false,
             "color": "#ff0000",
             "name": "qqTranSmart"
-        },"qqFanyi": {
-            "use": false,
-            "color": "#ff0000",
-            "name": "qqFanyi"
         },"googleapi": {
             "use": false,
             "color": "#ff0000",

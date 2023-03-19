@@ -13,7 +13,7 @@ from utils.utils import makehtml
 
 def resourcegrid( ) :  
         grid=[ 
-            [('OCR-简体中文'),(makehtml('https://github.com/HIllya51/LunaTranslator/releases/download/v1.34.5/zh.zip',True),1,'link'),'',''],
+            [('OCR-简体中文'),(makehtml('https://github.com/HIllya51/LunaTranslator/releases/download/v1.34.5/zh.zip',True),1,'link'),''],
             [('OCR-繁体中文'),(makehtml("https://github.com/HIllya51/LunaTranslator/releases/download/v1.34.5/cht.zip",True),1,'link')],
             [('OCR-韩语'),(makehtml("https://github.com/HIllya51/LunaTranslator/releases/download/v1.34.5/cht.zip",True),1,'link')],
             [('OCR-俄语'),(makehtml("https://github.com/HIllya51/LunaTranslator/releases/download/v1.1.2/ru.zip",True),1,'link')],
@@ -117,11 +117,11 @@ def setTab_aboutlazy(self) :
           
         shuominggrid=[
             ['项目网站',(makehtml("https://github.com/HIllya51/LunaTranslator"),3,'link')],
+            ['问题反馈',(makehtml("https://github.com/HIllya51/LunaTranslator/issues"),3,'link')],
             ['使用说明',(makehtml("https://hillya51.github.io/"),3,'link')], 
             ['网盘',(makehtml("https://pan.baidu.com/s/1LPtki3Ex1XGNaDi8nVy1iA?pwd=4p63"),3,'link')],]
         support=[
-            [('如果你感觉该软件对你有帮助，欢迎微信扫码赞助，谢谢')],
-            []
+            [('如果你感觉该软件对你有帮助，欢迎微信扫码赞助，谢谢')], 
         ]
         tab=self.makesubtab_lazy(['项目网站','支持作者','自动更新','资源下载' ],[
                 lambda:self.makescroll(self.makegrid(shuominggrid)),

@@ -15,18 +15,16 @@ def initsome11(self,l,label=None):
         grids.append(
             [(label,8)]
         )
-    i=0
-    bad=0
+    i=0 
+    line=[]
     for fanyi in globalconfig['fanyi']:
-        if i%3==0:
-            line=[]
+        
         if fanyi not in l:
             continue
-        
+ 
         _f=f'./Lunatranslator/translator/{fanyi}.py'
-        if fanyi!='selfbuild' and os.path.exists(_f)==False : 
-            bad+=1 
-            continue 
+        if fanyi!='selfbuild' and os.path.exists(_f)==False :  
+            continue  
         i+=1
         
         if fanyi in translatorsetting :
@@ -52,13 +50,14 @@ def initsome11(self,l,label=None):
         line+=[(globalconfig['fanyi'][fanyi]['name'],6),
         self.getsimpleswitch(globalconfig['fanyi'][fanyi],'use',callback=functools.partial( self.object.prepare ,fanyi)),
         self.getcolorbutton(globalconfig['fanyi'][fanyi],'color',name="fanyicolor_"+fanyi,callback=functools.partial(self.ChangeTranslateColor,fanyi,None,self,"fanyicolor_"+fanyi)),last ] 
-
-
-        if i%3==0 or i==len(l)-bad:
+ 
+        if i%3==0  :
             grids.append(line)
+            line=[]
         else:
             line+=['']
-
+    if len(line) :
+        grids.append(line)
     return grids
 def setTabTwo(self) : 
     self.tabadd_lazy(self.tab_widget, ('翻译设置'), lambda :setTabTwo_lazy(self)) 
@@ -102,7 +101,7 @@ def setTabTwo_lazy(self) :
             if _ not in translatorsetting : 
                 mianfei.add(_) 
         shoufei=online-mianfei  
-        offlinegrid=initsome11(self, lixians)   
+        offlinegrid=initsome11(self, lixians) 
         onlinegrid=initsome11(self, mianfei ) 
         online_reg_grid=initsome11(self, shoufei) 
         pretransgrid+=initsome11(self,mt )   

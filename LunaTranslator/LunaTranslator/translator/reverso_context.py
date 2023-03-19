@@ -2,10 +2,7 @@ import requests
 import re
 import urllib
 import random
-import time
-
-from utils.config import globalconfig
-import js2py 
+import time 
 class Tse:
     def __init__(self):
         self.author = 'Ulion.Tse'

@@ -5,8 +5,7 @@ import requests
 from urllib import parse 
 import os
 import re 
-from translator.basetranslator import basetrans 
-from js2py import EvalJs  
+from translator.basetranslator import basetrans  
 from utils.config import globalconfig
 import time,urllib
 class Tse:
