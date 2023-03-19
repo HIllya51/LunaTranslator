@@ -13,6 +13,10 @@ def subproc_w(cmd,cwd=None,wait=False,needstdio=False,encoding=None ,name=None):
         _pipe=subprocess.PIPE
     else:
         _pipe=None
+    if encoding:
+        errors='ignore'
+    else:
+        errors=None
     startupinfo = subprocess.STARTUPINFO()
     startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
     creationflags=subprocess.SW_HIDE
@@ -22,7 +26,8 @@ def subproc_w(cmd,cwd=None,wait=False,needstdio=False,encoding=None ,name=None):
             allsubprocess2[name].kill()
         except:
             print_exc()
-    ss=f(cmd,cwd=cwd,stdin=_pipe,stdout=_pipe,stderr=_pipe,encoding=encoding,creationflags=creationflags,startupinfo=startupinfo,errors='ignore')
+    
+    ss=f(cmd,cwd=cwd,stdin=_pipe,stdout=_pipe,stderr=_pipe,encoding=encoding,creationflags=creationflags,startupinfo=startupinfo,errors=errors)
      
     if name:
         allsubprocess2[name]=ss
