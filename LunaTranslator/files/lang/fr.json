@@ -509,7 +509,6 @@
     "删除": "Supprimer",
     "自动切换到模式": "Basculement automatique en mode",
     "不切换": "Pas de commutation",
-    "如果你感觉该软件对你有帮助，欢迎微信扫码赞助，谢谢，么么哒~": "Si vous sentez que le logiciel vous aide, bienvenue Wechat scan code sponsoring, merci, ou cliquez ~",
     "修改路径": "Modifier le chemin",
     "类型": "Type",
     "人名": "Nom de la personne",
@@ -539,5 +538,6 @@
     "游戏设置": "Paramètres du jeu",
     "显示错误信息": "Afficher les informations d'erreur",
     "阿里2": "Ali 2",
-    "错误重试": "Erreur réessayer"
+    "错误重试": "Erreur réessayer",
+    "如果你感觉该软件对你有帮助，欢迎微信扫码赞助，谢谢": "Si vous sentez que le logiciel vous aide, bienvenue Wechat scan code sponsoring, merci"
 }

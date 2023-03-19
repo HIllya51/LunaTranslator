@@ -584,11 +584,6 @@
             "color": "blue",
             "name": "有道5"
         },
-        "tencent": {
-            "use": false,
-            "color": "blue",
-            "name": "TX"
-        },
         "iciba": {
             "use": false,
             "color": "blue",

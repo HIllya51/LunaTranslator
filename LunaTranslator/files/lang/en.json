@@ -509,7 +509,6 @@
     "删除": "delete",
     "自动切换到模式": "Automatically switch to mode",
     "不切换": "Do not switch",
-    "如果你感觉该软件对你有帮助，欢迎微信扫码赞助，谢谢，么么哒~": "If you feel that the software is helpful to you, welcome WeChat scanning code sponsorship, thank you, Momoda~",
     "修改路径": "Modify path",
     "类型": "type",
     "人名": "name",
@@ -539,5 +538,6 @@
     "游戏设置": "Game settings",
     "显示错误信息": "Display error message",
     "阿里2": "Ali 2",
-    "错误重试": "Error Retry"
+    "错误重试": "Error Retry",
+    "如果你感觉该软件对你有帮助，欢迎微信扫码赞助，谢谢": "If you feel that this software is helpful to you, WeChat scanning code sponsorship is welcome. Thank you"
 }

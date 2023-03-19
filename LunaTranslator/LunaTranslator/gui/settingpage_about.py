@@ -70,9 +70,9 @@ def getversion(self):
         url=f"https://github.com/HIllya51/LunaTranslator/releases/download/{_version}/LunaTranslator{bit}.zip"
     except:
         print_exc()
-        _version=("获取失败") 
-    self.versiontextsignal.emit((f'当前版本:{version}  {platform.architecture()[0]}  最新版本:{ _version}') ) #,'' if version== _version else  newcontent,url,'LunaTranslator.zip'))
-    if _version!=("获取失败") and version!=_version:
+        _version=_TR("获取失败") 
+    self.versiontextsignal.emit((f'{_TR("当前版本")}:{version}  {platform.architecture()[0]}  {_TR("最新版本")}:{ _version}') ) #,'' if version== _version else  newcontent,url,'LunaTranslator.zip'))
+    if _version!=_TR("获取失败") and version!=_version:
         if globalconfig['autoupdate']: 
             self.progresssignal.emit('……',0)
         
@@ -120,7 +120,7 @@ def setTab_aboutlazy(self) :
             ['使用说明',(makehtml("https://hillya51.github.io/"),3,'link')], 
             ['网盘',(makehtml("https://pan.baidu.com/s/1LPtki3Ex1XGNaDi8nVy1iA?pwd=4p63"),3,'link')],]
         support=[
-            [('如果你感觉该软件对你有帮助，欢迎微信扫码赞助，谢谢，么么哒~')],
+            [('如果你感觉该软件对你有帮助，欢迎微信扫码赞助，谢谢')],
             []
         ]
         tab=self.makesubtab_lazy(['项目网站','支持作者','自动更新','资源下载' ],[
