@@ -36,7 +36,7 @@ def setTab_proxy_dicrect(self) :
 def setTab_proxy_lazy(self):
      
         proxy=QLineEdit(globalconfig['proxy'])
-        btn=QPushButton(('确定' ))
+        btn=QPushButton(_TR('确定' ))
         def __resetproxy(x):
             globalconfig.__setitem__('proxy',proxy.text())
             _setproxy(globalconfig['proxy'] if globalconfig['useproxy'] else '')
