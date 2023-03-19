@@ -8,9 +8,11 @@ from translator.basetranslator import basetrans
 class TS(basetrans):
     def langmap(self):
         return {"zh": "zh-CN", "cht": "zh-TW"}
-    def inittranslator(self):
-        self.api_key=None
+    def __init__(self,typename ) :  
         self.context=[]
+        super( ).__init__(typename) 
+    def inittranslator(self):
+        self.api_key=None 
     def translate(self, query):
         self.checkempty(['SECRET_KEY','model'])
         self.contextnum=int(self.config['附带上下文个数'])
