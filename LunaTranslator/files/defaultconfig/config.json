@@ -752,7 +752,6 @@
     "movefollow": false,
     "focusfollow": false,
     "autostarthook": true,
-    "autoinserthook": true,
     "translatortimeout": 5,
     "minlength": 0,
     "maxlength": 200,
