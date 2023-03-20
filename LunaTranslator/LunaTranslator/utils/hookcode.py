@@ -115,8 +115,8 @@ def ParseHcode(hcode):
             hcode=hcode[len(match[0])+1:]
      
     match=re.search("^([0-9a-fA-F]+)\\+",hcode)
-    if match:
-        hp.address=int(match[0],16)
+    if match: 
+        hp.address=int(match[0][:-1],16)
         hcode=hcode[len(match[0])+1:]
     
     def ConsumeHexInt(hcode):
@@ -165,14 +165,17 @@ def ParseHcode(hcode):
             hp.split-=4
     return hp
 def Parsecode(hookcode):
-    if hookcode[0] == '/':
-        hookcode = hookcode[1:]
-    if hookcode[0] == 'R':
-        return ParseRcode(hookcode[1:])
-    elif hookcode[0] == 'H':
-        return ParseHcode(hookcode[1:])
-    else:
-        return None
+    try:
+        if hookcode[0] == '/':
+            hookcode = hookcode[1:]
+        if hookcode[0] == 'R':
+            return ParseRcode(hookcode[1:])
+        elif hookcode[0] == 'H':
+            return ParseHcode(hookcode[1:])
+        else:
+            return None
+    except:
+         return None
 
 
 # print(Parsecode('/HS-4@53C60:MemoryBlue.exe'))
@@ -187,3 +190,6 @@ def Parsecode(hookcode):
 # print(Parsecode("/RW@44")),
 # print(Parsecode("/HWG@33"))
 #print(Parsecode('/HWN-20@11BB42:如月真綾の誘惑.exe'))
+#print(Parsecode('/HQ14+-1C:8C@2287F0:GameAssembly.dll'))
+ 
+#print(Parsecode('/HQX-8@A3A0C0:nw.dll'))
