@@ -16,6 +16,7 @@ del ..\build\LunaTranslator\LunaTranslator\qt5quick.dll
 del ..\build\LunaTranslator\LunaTranslator\qt5printsupport.dll
 del ..\build\LunaTranslator\LunaTranslator\qt5websockets.dll
 del ..\build\LunaTranslator\LunaTranslator\qt5dbus.dll
+del ..\build\LunaTranslator\LunaTranslator\qt5svg.dll
 del ..\build\LunaTranslator\LunaTranslator\qt5multimedia.dll
 del ..\build\LunaTranslator\LunaTranslator\PyQt5\qt-plugins\platforms\qminimal.dll
 del ..\build\LunaTranslator\LunaTranslator\PyQt5\qt-plugins\platforms\qoffscreen.dll
