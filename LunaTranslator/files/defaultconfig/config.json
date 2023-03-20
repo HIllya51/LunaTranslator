@@ -36,7 +36,6 @@
 	"darktheme":false,
 	"remove_useless_hook":false,
 	"height":200,
-	"postprocessf":"postprocess.mypost",
     "width": 1200,
 	"button_color_close":"#D32424",
 	"button_color_normal":"#FFFFFF",

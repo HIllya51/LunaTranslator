@@ -70,11 +70,11 @@ class wavmp3player( ):
 
 def selectdebugfile(path ):
  
-    p= os.path.abspath(os.path.join('./LunaTranslator',path)) 
+    p= os.path.abspath((path)) 
     
     if os.path.exists(p)==False:
           with open(p,'w',encoding='utf8') as ff:
-                if path=='translator/selfbuild.py':
+                if path=='./userconfig/selfbuild.py':
                       ff.write('''
 import requests
 from translator.basetranslator import basetrans
@@ -82,7 +82,7 @@ class TS(basetrans):
     def translate(self,content):  
         #在这里编写
         return content''')
-                elif path=='postprocess/mypost.py':
+                elif path=='./userconfig/mypost.py':
                       ff.write('''
 def POSTSOLVE(line): 
     #请在这里编写自定义处理

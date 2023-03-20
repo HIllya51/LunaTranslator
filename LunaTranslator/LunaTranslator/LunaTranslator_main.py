@@ -370,9 +370,14 @@ class MAINUI(QObject) :
         else:
             self.hira_=None
     def fanyiinitmethod(self,classname):
-        if os.path.exists('./LunaTranslator/translator/'+classname+'.py')==False:
-            return None
-        aclass=importlib.import_module('translator.'+classname).TS  
+        if classname=='selfbuild':
+            if os.path.exists('./userconfig/selfbuild.py')==False:
+                return None
+            aclass=importlib.import_module('selfbuild').TS  
+        else:
+            if os.path.exists('./LunaTranslator/translator/'+classname+'.py')==False:
+                return None
+            aclass=importlib.import_module('translator.'+classname).TS  
         return aclass(classname)   
      
     def prepare(self,now=None,_=None):    

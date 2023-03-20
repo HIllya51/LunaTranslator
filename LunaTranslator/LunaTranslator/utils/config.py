@@ -14,6 +14,17 @@ def tryreadconfig2(path):
     with open(path,'r',encoding='utf-8') as ff:
         x=json.load(ff) 
     return x 
+
+def simplemove(src,dst):
+    try:
+        if os.path.exists(src) and os.path.exists(dst)==False:
+            with open(src,'rb') as ff:b=ff.read()
+            with open(dst,'wb') as ff:ff.write(b)
+            os.remove(src)
+    except:
+        pass
+simplemove('./LunaTranslator/postprocess/mypost.py','./userconfig/mypost.py')
+simplemove('./LunaTranslator/translator/selfbuild.py','./userconfig/selfbuild.py')
 defaultpost=tryreadconfig2('postprocessconfig.json')
 defaultglobalconfig=tryreadconfig2('config.json')
 defaulterrorfix=tryreadconfig2('transerrorfixdictconfig.json')

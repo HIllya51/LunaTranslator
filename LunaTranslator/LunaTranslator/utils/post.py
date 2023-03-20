@@ -184,6 +184,7 @@ def _remove_chaos(line):
                      continue
               newline+=c
        return newline 
+
 def POSTSOLVE(line): 
     if line=="":
         return ""
@@ -208,10 +209,12 @@ def POSTSOLVE(line):
         "_remove_chaos":_remove_chaos
     }
     try:
+           
            functions.update({
-                   '_11':importlib.import_module(globalconfig['postprocessf']).POSTSOLVE
+                   '_11':importlib.import_module('mypost').POSTSOLVE
                   } )
     except:
+           print_exc()
            pass
 
     for postitem in globalconfig['postprocess_rank']:

@@ -1,4 +1,4 @@
-import os
+import os,sys
 
 def initpath():
     dirname, filename = os.path.split(os.path.abspath(__file__))
@@ -24,7 +24,7 @@ def initpath():
     if os.path.exists('./cache/tts')==False:
         os.mkdir('./cache/tts')
 
-
+    sys.path.append('./userconfig')
 
 
 language_list_show=["简体中文","日本語","English","Русский язык","Español","한국어","Français","繁體中文","Tiếng Việt","Türkçe"] 
