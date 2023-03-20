@@ -12,5 +12,5 @@ def inject_vnragent(pid):
       dllpaths=[os.path.abspath("./LunaTranslator/qt5core.dll"),os.path.abspath("./LunaTranslator/qt5network.dll"), os.path.abspath('./files/embedded5/vnragent.dll')] 
   
   print(f'.\\files\\embedded5\\dllinject32.exe {pid} "{dllpaths[0]}" "{dllpaths[1]}" "{dllpaths[2]}"')
-  subproc_w(f'.\\files\\embedded5\\dllinject32.exe {pid} "{dllpaths[0]}" "{dllpaths[1]}" "{dllpaths[2]}"',wait=True)  
+  subproc_w(f'.\\files\\embedded5\\dllinject32.exe {pid} "{dllpaths[0]}" "{dllpaths[1]}" "{dllpaths[2]}"')  
    

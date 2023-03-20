@@ -58,8 +58,8 @@ def ParseRcode(rcode):
     if len(match)>0:
         hp.codepage=int(match[0])
         rcode=rcode[len(match[0])+1:]
-    import regex
-    match=regex.match("@([[:xdigit:]]+)",rcode)
+    
+    match=re.match("@([0-9a-fA-F]+)",rcode)
     if match is None:
         return None
     hp.address=int(rcode[1:],16)
@@ -95,6 +95,7 @@ def ParseHcode(hcode):
         return None
     
     hcode=hcode[1:]
+    
     if hp.type & USING_STRING:
         if hcode[0]=='F':
                 hp.type|=FULL_STRING
@@ -103,34 +104,37 @@ def ParseHcode(hcode):
         if len(match)>0 :
                 hp.null_length=int(match[0])
                 hcode=hcode[len(match[0])+1:]
-                
+    
     if hcode[0]=='N':
             hp.type|=NO_CONTEXT
             hcode=hcode[1:]
+    
     match=re.findall("^([0-9]+)#",hcode)
     if len(match):
             hp.codepage=int(match[0])
             hcode=hcode[len(match[0])+1:]
-    import regex
-    match=regex.search("^([[:xdigit:]]+)\\+",hcode)
+     
+    match=re.search("^([0-9a-fA-F]+)\\+",hcode)
     if match:
         hp.address=int(match[0],16)
         hcode=hcode[len(match[0])+1:]
-
+    
     def ConsumeHexInt(hcode):
             size=0
             value=0
-            length=1
+            length=0
+            if hcode[0]=='-':hcode=hcode[1:]
             while True:
+                    
                     try:
-                        value=int(hcode[:length])
-                    except ValueError:
-                        length-=1 
+                        value=int(hcode[:length+1],16)
+                    except ValueError: 
                         break
                     length+=1
              
             return hcode[length:],value
     hcode,hp.offset=ConsumeHexInt(hcode)
+    
     if hcode[0]=='*':
             hp.type|=DATA_INDIRECT
             hcode=hcode[1:]
@@ -143,13 +147,15 @@ def ParseHcode(hcode):
                     hp.type|=SPLIT_INDIRECT
                     hcode=hcode[1:]
                     hcode,hp.split_index=ConsumeHexInt(hcode)
-    match=regex.match("^@([[:xdigit:]]+)(:.+?)?(:.+)?",hcode)
+    
+    match=re.match("^@([0-9a-fA-F]+)(:.+?)?(:.+)?",hcode)
+     
     if match is None:
             return None
+    
     hp.address=int(match.groups()[0],16)
     if match.groups()[1]:
-            hp.type|=MODULE_OFFSET
-            hp.module=match.groups[2][1:]
+            hp.type|=MODULE_OFFSET 
     if match.groups()[2]:
             hp.type|=FUNCTION_OFFSET
             hp.function=match.group[3][1:]
@@ -158,7 +164,7 @@ def ParseHcode(hcode):
     if hp.split<0:
             hp.split-=4
     return hp
-def solvehookcode(hookcode):
+def Parsecode(hookcode):
     if hookcode[0] == '/':
         hookcode = hookcode[1:]
     if hookcode[0] == 'R':
@@ -167,3 +173,17 @@ def solvehookcode(hookcode):
         return ParseHcode(hookcode[1:])
     else:
         return None
+
+
+# print(Parsecode('/HS-4@53C60:MemoryBlue.exe'))
+# print(Parsecode('HB4@0'))
+# print(Parsecode('/RS65001#@44'))
+# print(Parsecode('/HQN936#-c*C:C*1C@4AA:gdi.dll:GetTextOutA'))
+  
+# print(Parsecode("/HQN936#-c*C:C*1C@4AA:gdi.dll:GetTextOutA"))
+# print(Parsecode("HB4@0")),
+# print(Parsecode("/RS65001#@44")),
+# print(Parsecode("HQ@4"))
+# print(Parsecode("/RW@44")),
+# print(Parsecode("/HWG@33"))
+#print(Parsecode('/HWN-20@11BB42:如月真綾の誘惑.exe'))

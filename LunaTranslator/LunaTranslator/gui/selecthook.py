@@ -8,7 +8,7 @@ from PyQt5.QtGui import QFont,QTextCursor
 from PyQt5.QtCore import Qt,pyqtSignal,QSize,QModelIndex
 import qtawesome
 from gui.dialog_savedgame import dialog_setting_game
-
+from utils.hookcode import Parsecode
 import re
 import os,time 
 from utils.config import globalconfig ,_TR,_TRL,checkifnewgame
@@ -298,9 +298,9 @@ class hookselect(closeashidewindow):
         hookcode=self.userhook.text()
         if len(hookcode)==0:
             return 
-        x=subproc_w(f'./files/hookcodecheck.exe {hookcode}',needstdio=True)
+        x=Parsecode(hookcode)
         #print(hookcode,x.stdout[0])
-        if(x.stdout.read()[0]==ord('0')):
+        if(x is None):
             self.getnewsentence(_TR('！特殊码格式错误！'))
             return
         
