@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-
-<Strings>
-  <RunDefault>Uygulama Profili İle Çalıştır</RunDefault>
-  <Submenu>Locale Emulator</Submenu>
-  <ManageApp>Uygulama Profilini Değiştir</ManageApp>
-  <ManageAll>Global Profil Listesini Düzenle</ManageAll>
-</Strings>

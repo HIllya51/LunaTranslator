@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <LRConfig>
   <Profiles Type="exe">
-    <Profile Name="Run in Japanese" Guid="e59b9e76-d15c-4555-a167-9f1c81e72aff">
+    <Profile Name="Run in Japanese" Guid="689bbacb-14d6-4659-ac3d-eafa42148892">
       <Location>ja-JP</Location>
       <CodePage>932</CodePage>
       <LCID>1041</LCID>
@@ -11,7 +11,7 @@
       <HookIME>false</HookIME>
       <HookLCID>true</HookLCID>
     </Profile>
-    <Profile Name="Run in Japanese (Admin)" Guid="66fbded5-6a8f-4f11-9b0f-263e2f77cc3c">
+    <Profile Name="Run in Japanese (Admin)" Guid="4cda22c2-bd0d-44bd-9d16-b26c7146479a">
       <Location>ja-JP</Location>
       <CodePage>932</CodePage>
       <LCID>1041</LCID>
@@ -21,7 +21,7 @@
       <HookIME>true</HookIME>
       <HookLCID>true</HookLCID>
     </Profile>
-    <Profile Name="Run in Taiwan (Admin)" Guid="5dc51435-3ff8-4cc7-bf9b-059a3aeebaa5">
+    <Profile Name="Run in Taiwan (Admin)" Guid="c47cba89-69bc-4628-8899-83154b04b659">
       <Location>zh-TW</Location>
       <CodePage>950</CodePage>
       <LCID>1028</LCID>
@@ -31,7 +31,7 @@
       <HookIME>true</HookIME>
       <HookLCID>true</HookLCID>
     </Profile>
-    <Profile Name="Run in Korean (Admin)" Guid="1a34a2b6-97de-4f02-8796-b68d32e96a88">
+    <Profile Name="Run in Korean (Admin)" Guid="75d82939-c179-46f7-a9a5-17ac125873e0">
       <Location>ko-KR</Location>
       <CodePage>949</CodePage>
       <LCID>1042</LCID>

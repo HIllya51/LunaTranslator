@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-
-<Strings>
-  <RunDefault>Uruchom z Profilem Aplikacji</RunDefault>
-  <Submenu>Locale Emulator</Submenu>
-  <ManageApp>Zmodyfikuj Profil Aplikacji</ManageApp>
-  <ManageAll>Edytuj Ogólną Listę Profili</ManageAll>
-</Strings>
