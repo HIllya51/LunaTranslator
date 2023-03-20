@@ -33,6 +33,7 @@ del ..\build\LunaTranslator_x86\files\x86\Qt5Network.dll
 del ..\build\LunaTranslator_x86\files\x86\Qt5Core.dll
 copy ..\dependence\ocr32 ..\build\LunaTranslator_x86\files\plugins
 
+copy ..\dependence\libmecab.dll ..\build\LunaTranslator_x86\LunaTranslator\
 
 xcopy ..\dependence\api-ms-win_32 ..\build\LunaTranslator_x86\LunaTranslator /e /y /I
 

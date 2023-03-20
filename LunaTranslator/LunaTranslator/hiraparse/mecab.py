@@ -9,6 +9,7 @@ class hira:
         mecabpath=hirasettingbase['mecab']['path']
         if os.path.exists(mecabpath):
             import fugashi 
+            print("??")
             #import MeCab
             #self.kks=MeCab.Tagger('-r nul -d "{}" -Owakati'.format(mecabpath))
             self.kks= fugashi.Tagger('-r nul -d "{}" -Owakati'.format(mecabpath))
