@@ -1,7 +1,7 @@
   
 import functools 
 from PyQt5.QtWidgets import  QPushButton,QDialog,QVBoxLayout ,QHeaderView,QFileDialog ,QLineEdit
-import functools 
+import functools,threading
 from traceback import print_exc 
 from PyQt5.QtWidgets import    QHBoxLayout, QTableView, QAbstractItemView, QLabel, QVBoxLayout
 import win32utils 
@@ -198,12 +198,13 @@ class dialog_savedgame(QDialog):
                                                 
                                                 self.object.yuitsu_switch('sourcestatus','sourceswitchs',_[mode],None ,True) 
                                                 self.object.object.starttextsource(use=_[mode],checked=True,waitforautoinit=True)
+                        
+                        savehook_new_list.insert(0,savehook_new_list.pop(self.table.currentIndex().row())) 
+                        self.close() 
                         if savehook_new_data[game]['leuse'] :
                                 le3264run(game,savehook_new_data[game]['alwaysuselr'])
                         else:
                                 win32utils.ShellExecute(None, "open", game, "", os.path.dirname(game), win32con.SW_SHOW) 
-                        savehook_new_list.insert(0,savehook_new_list.pop(self.table.currentIndex().row())) 
-                        self.close() 
                 except:
                         print_exc()
         

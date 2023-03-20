@@ -163,7 +163,7 @@ _CreateProcessW=_kernel32.CreateProcessW
 _CreateProcessW.argtypes=c_wchar_p,c_wchar_p,c_void_p,c_void_p,c_bool,c_uint,c_void_p,c_wchar_p,POINTER(STARTUPINFO),POINTER(PROCESS_INFORMATION)
 
 CREATE_NO_WINDOW=0x08000000
-def CreateProcess(appName: str, commandLine: str, processAttributes, threadAttributes,  bInheritHandles, dwCreationFlags, newEnvironment, currentDirectory, startupinfo):
+def CreateProcess(appName, commandLine, processAttributes, threadAttributes,  bInheritHandles, dwCreationFlags, newEnvironment, currentDirectory, startupinfo):
     _pinfo=PROCESS_INFORMATION()
     startupinfo.cb = sizeof(startupinfo)
     _CreateProcessW(appName,commandLine,processAttributes,threadAttributes,bInheritHandles,dwCreationFlags,newEnvironment,currentDirectory,byref(startupinfo),byref(_pinfo))
