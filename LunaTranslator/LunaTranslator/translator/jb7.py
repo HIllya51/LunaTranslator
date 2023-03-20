@@ -34,7 +34,7 @@ class TS(basetrans):
             pipename='\\\\.\\Pipe\\jbj7_'+t
             waitsignal='jbjwaitload_'+t
 
-            self.engine=subproc_w(f'./files/x64_x86_dll/jbj7_4.exe "{self.dllpath}" {pipename} {waitsignal} '+dictpath,name='jbj7')
+            self.engine=subproc_w(f'./files/plugins/offlinetranslator/Lunatranslator_jbj7_4.exe "{self.dllpath}" {pipename} {waitsignal} '+dictpath,name='jbj7')
             #!!!!!!!!!!!!!!stdout=subprocess.PIPE 之后，隔一段时间之后，exe侧writefile就写不进去了！！！！！不知道为什么！！！
            
             secu=win32utils.get_SECURITY_ATTRIBUTES()

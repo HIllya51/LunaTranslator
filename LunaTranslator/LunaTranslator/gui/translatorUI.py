@@ -395,7 +395,7 @@ class QUnFrameWindow(resizableframeless):
             
             self.refreshtoolicon()
             
-            subproc_w(f'./files/muteprocess.exe {pid}  {int(self.processismuteed)}')
+            subproc_w(f'./files/plugins/muteprocess.exe {pid}  {int(self.processismuteed)}')
         except:
             print_exc()
     

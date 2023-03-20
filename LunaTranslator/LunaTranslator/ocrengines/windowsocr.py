@@ -7,7 +7,7 @@ class OCR(baseocr):
       
     def ocr(self,imgfile):  
           
-        p=subproc_w('./files/WinOCR.exe '+self.srclang +' '+imgfile,needstdio=True)
+        p=subproc_w('./files/plugins/WinOCR.exe '+self.srclang +' '+imgfile,needstdio=True)
         x=p.stdout.readlines()
         y=p.stderr.readlines()
         # print("X",x)

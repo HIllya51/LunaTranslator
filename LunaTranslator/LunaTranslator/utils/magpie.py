@@ -56,5 +56,5 @@ def callmagpie( cwd,hwnd,ScaleMode,flags,captureMode):# 0x2000|\0x2|\0x200):
 
     with open("./cache/magpieparam.txt",'w',encoding='utf8') as ff:
         ff.write(f"{cwd}\n{hwnd}\n{json.dumps(effectsJson[ScaleMode]['effects'])}\n{flags},{captureMode},{settings.CursorZoomFactor},{settings.CursorInterpolationMode},{settings.AdapterIdx},{settings.MultiMonitorUsage}")
-    subproc_w('./files/magpiecmdrunner.exe  ./cache/magpieparam.txt')
+    subproc_w('./files/plugins/magpiecmdrunner.exe  ./cache/magpieparam.txt')
     

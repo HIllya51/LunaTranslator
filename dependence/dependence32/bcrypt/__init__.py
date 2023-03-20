@@ -16,10 +16,13 @@
 from __future__ import absolute_import
 from __future__ import division
 
-import hmac
 import os
+import re
 import warnings
 
+import six
+
+from . import _bcrypt  # type: ignore
 from .__about__ import (
     __author__,
     __copyright__,
@@ -30,7 +33,6 @@ from .__about__ import (
     __uri__,
     __version__,
 )
-from . import _bcrypt  # noqa: I100
 
 
 __all__ = [
@@ -49,6 +51,9 @@ __all__ = [
 ]
 
 
+_normalize_re = re.compile(br"^\$2y\$")
+
+
 def gensalt(rounds: int = 12, prefix: bytes = b"2b") -> bytes:
     if prefix not in (b"2a", b"2b"):
         raise ValueError("Supported prefixes are b'2a' or b'2b'")
@@ -57,7 +62,8 @@ def gensalt(rounds: int = 12, prefix: bytes = b"2b") -> bytes:
         raise ValueError("Invalid rounds")
 
     salt = os.urandom(16)
-    output = _bcrypt.encode_base64(salt)
+    output = _bcrypt.ffi.new("char[]", 30)
+    _bcrypt.lib.encode_base64(output, salt, len(salt))
 
     return (
         b"$"
@@ -65,13 +71,16 @@ def gensalt(rounds: int = 12, prefix: bytes = b"2b") -> bytes:
         + b"$"
         + ("%2.2u" % rounds).encode("ascii")
         + b"$"
-        + output
+        + _bcrypt.ffi.string(output)
     )
 
 
 def hashpw(password: bytes, salt: bytes) -> bytes:
-    if isinstance(password, str) or isinstance(salt, str):
-        raise TypeError("Strings must be encoded before hashing")
+    if isinstance(password, six.text_type) or isinstance(salt, six.text_type):
+        raise TypeError("Unicode-objects must be encoded before hashing")
+
+    if b"\x00" in password:
+        raise ValueError("password may not contain NUL bytes")
 
     # bcrypt originally suffered from a wraparound bug:
     # http://www.openwall.com/lists/oss-security/2012/01/02/4
@@ -81,15 +90,46 @@ def hashpw(password: bytes, salt: bytes) -> bytes:
     # on $2a$, so we do it here to preserve compatibility with 2.0.0
     password = password[:72]
 
-    return _bcrypt.hashpass(password, salt)
+    # When the original 8bit bug was found the original library we supported
+    # added a new prefix, $2y$, that fixes it. This prefix is exactly the same
+    # as the $2b$ prefix added by OpenBSD other than the name. Since the
+    # OpenBSD library does not support the $2y$ prefix, if the salt given to us
+    # is for the $2y$ prefix, we'll just mugne it so that it's a $2b$ prior to
+    # passing it into the C library.
+    original_salt, salt = salt, _normalize_re.sub(b"$2b$", salt)
+
+    hashed = _bcrypt.ffi.new("char[]", 128)
+    retval = _bcrypt.lib.bcrypt_hashpass(password, salt, hashed, len(hashed))
+
+    if retval != 0:
+        raise ValueError("Invalid salt")
+
+    # Now that we've gotten our hashed password, we want to ensure that the
+    # prefix we return is the one that was passed in, so we'll use the prefix
+    # from the original salt and concatenate that with the return value (minus
+    # the return value's prefix). This will ensure that if someone passed in a
+    # salt with a $2y$ prefix, that they get back a hash with a $2y$ prefix
+    # even though we munged it to $2b$.
+    return original_salt[:4] + _bcrypt.ffi.string(hashed)[4:]
 
 
 def checkpw(password: bytes, hashed_password: bytes) -> bool:
-    if isinstance(password, str) or isinstance(hashed_password, str):
-        raise TypeError("Strings must be encoded before checking")
+    if isinstance(password, six.text_type) or isinstance(
+        hashed_password, six.text_type
+    ):
+        raise TypeError("Unicode-objects must be encoded before checking")
+
+    if b"\x00" in password or b"\x00" in hashed_password:
+        raise ValueError(
+            "password and hashed_password may not contain NUL bytes"
+        )
 
     ret = hashpw(password, hashed_password)
-    return hmac.compare_digest(ret, hashed_password)
+
+    if len(ret) != len(hashed_password):
+        return False
+
+    return _bcrypt.lib.timingsafe_bcmp(ret, hashed_password, len(ret)) == 0
 
 
 def kdf(
@@ -99,8 +139,8 @@ def kdf(
     rounds: int,
     ignore_few_rounds: bool = False,
 ) -> bytes:
-    if isinstance(password, str) or isinstance(salt, str):
-        raise TypeError("Strings must be encoded before hashing")
+    if isinstance(password, six.text_type) or isinstance(salt, six.text_type):
+        raise TypeError("Unicode-objects must be encoded before hashing")
 
     if len(password) == 0 or len(salt) == 0:
         raise ValueError("password and salt must not be empty")
@@ -124,4 +164,15 @@ def kdf(
             stacklevel=2,
         )
 
-    return _bcrypt.pbkdf(password, salt, rounds, desired_key_bytes)
+    key = _bcrypt.ffi.new("uint8_t[]", desired_key_bytes)
+    res = _bcrypt.lib.bcrypt_pbkdf(
+        password, len(password), salt, len(salt), key, len(key), rounds
+    )
+    _bcrypt_assert(res == 0)
+
+    return _bcrypt.ffi.buffer(key, desired_key_bytes)[:]
+
+
+def _bcrypt_assert(ok: bool) -> None:
+    if not ok:
+        raise SystemError("bcrypt assertion failed")

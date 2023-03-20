@@ -53,7 +53,7 @@ def setTabThree_lazy(self) :
                 self.object.translation_ui.refreshtooliconsignal.emit()
          
         try:
-                with open(os.path.join('./files/Magpie_v0.9.1','ScaleModels.json'),'r') as ff:
+                with open(os.path.join('./files/plugins/Magpie_v0.9.1','ScaleModels.json'),'r') as ff:
                         _magpiemethod=json.load(ff)
                         magpiemethod=[_['name'] for _ in _magpiemethod]
 
@@ -132,7 +132,7 @@ def setTabThree_lazy(self) :
                         while os.path.exists(os.path.join(globalconfig['magpie10path'],'Magpie.Core.dll.backup'+('' if i==0 else '.'+str(i)))): 
                                 i+=1
                         os.rename(os.path.join(globalconfig['magpie10path'],'Magpie.Core.dll'),os.path.join(globalconfig['magpie10path'],'Magpie.Core.dll.backup'+('' if i==0 else '.'+str(i)))) 
-                        with open(os.path.abspath('./files/Magpie_v0.10.0-preview2/Magpie.Core.dll'),'rb') as ff:
+                        with open(os.path.abspath('./files/plugins/Magpie_v0.10.0-preview2/Magpie.Core.dll'),'rb') as ff:
                                 b=ff.read() 
                         with open(os.path.join(globalconfig['magpie10path'],'Magpie.Core.dll'),'wb') as ff:
                                 ff.write(b)
@@ -144,7 +144,7 @@ def setTabThree_lazy(self) :
                         msgBox.exec()
                 except:
                         print_exc()
-                        os.startfile(os.path.abspath('./files/Magpie_v0.10.0-preview2'))
+                        os.startfile(os.path.abspath('./files/plugins/Magpie_v0.10.0-preview2'))
         modifydllbtn.clicked.connect( __modifydll)
          
         fullscreengrid=[

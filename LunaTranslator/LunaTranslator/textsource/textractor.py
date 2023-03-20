@@ -54,7 +54,7 @@ class textractor(basetext  ):
     def textractor_init(self):  
         if self.arch is None:
             return 
-        self.u16lesubprocess=u16lesubprocess(f"./files/Textractor/x{self.arch}/TextractorCLI.exe")
+        self.u16lesubprocess=u16lesubprocess(f"./files/plugins/Textractor/x{self.arch}/TextractorCLI.exe")
         self.u16lesubprocess.readyread=self.handle_stdout
         self.attach(self.pid)
         

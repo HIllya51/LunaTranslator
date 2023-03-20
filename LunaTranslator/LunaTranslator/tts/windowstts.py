@@ -6,7 +6,7 @@ class tts():
     
     def __init__(self,showlist ,_): 
                  
-        p=subproc_w('./files/tts/tts_l.exe',needstdio=True)
+        p=subproc_w('./files/plugins/WindowsTTS/tts_l.exe',needstdio=True)
         
         count=str(p.stdout.readline(),encoding='utf8')
         count=count.replace('\r','').replace('\n','')
@@ -33,6 +33,6 @@ class tts():
         i=self.voicelist.index(globalconfig['reader']['windowstts']['voice'])
           
 
-        subproc_w(f'./files/tts/tts_s.exe {i} {globalconfig["ttscommon"]["rate"]} {globalconfig["ttscommon"]["volume"]} "{content}"',name="windowstts" )
+        subproc_w(f'./files/plugins/WindowsTTS/tts_s.exe {i} {globalconfig["ttscommon"]["rate"]} {globalconfig["ttscommon"]["volume"]} "{content}"',name="windowstts" )
         
       

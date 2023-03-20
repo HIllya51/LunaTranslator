@@ -1,0 +1,17 @@
+cff-version: 1.2.0
+preferred-citation:
+  type: article
+  message: "If you use fugashi in research, it would be appreciated if you site this paper."
+  authors:
+  - family-names: "McCann"
+    given-names: "Paul"
+    orcid: "https://orcid.org/0000-0003-3376-8772"
+  title: "fugashi, a Tool for Tokenizing Japanese in Python"
+  doi: "10.18653/v1/2020.nlposs-1.7"
+  journal: "Proceedings of Second Workshop for NLP Open Source Software (NLP-OSS)"
+  year: 2020
+  month: 11
+  start: 44
+  end: 51
+
+  

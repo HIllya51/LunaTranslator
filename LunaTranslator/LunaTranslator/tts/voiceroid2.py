@@ -39,8 +39,8 @@ class tts():
             self.voice=globalconfig["reader"]["voiceroid2"]["voice"]
             fname=str(time.time()) 
             savepath=os.path.join(os.getcwd(),'cache/tts',fname+'.wav')
-            dllpath=os.path.join(os.getcwd(),'files/voiceroid2/aitalked.dll')
-            exepath=os.path.join(os.getcwd(),'files/voiceroid2/voice2.exe')
+            dllpath=os.path.join(os.getcwd(),'files/plugins/voicevoid2/aitalked.dll')
+            exepath=os.path.join(os.getcwd(),'files/plugins/voicevoid2/Lunatranslator_voicevoid2.exe')
             self.savepath=savepath
 
 

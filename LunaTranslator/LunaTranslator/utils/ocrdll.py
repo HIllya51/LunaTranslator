@@ -1,8 +1,8 @@
 from ctypes import CDLL,c_char_p ,create_string_buffer,c_uint32,POINTER,c_int32
-
+import os
 class ocrwrapper:
     def __init__(self) -> None:
-        self.dll= CDLL('./files/ocr.dll')
+        self.dll= CDLL(os.path.abspath('./files/plugins/ocr.dll'))
     def _OcrInit(self,szDetModel, szRecModel, szKeyPath,szClsModel='', nThreads=4):
         
         _OcrInit=self.dll.OcrInit

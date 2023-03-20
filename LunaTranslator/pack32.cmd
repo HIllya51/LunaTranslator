@@ -8,7 +8,6 @@ xcopy .\LunaTranslator\translator ..\build\LunaTranslator_x86\LunaTranslator\tra
 xcopy .\LunaTranslator\cishu ..\build\LunaTranslator_x86\LunaTranslator\cishu /e /y /I
 xcopy ..\dependence\dependence_common ..\build\LunaTranslator_x86\LunaTranslator /e /y /I 
 xcopy ..\dependence\dependence32 ..\build\LunaTranslator_x86\LunaTranslator /e /y /I 
-xcopy ..\dependence\api-ms-win_32 ..\build\LunaTranslator_x86\LunaTranslator /e /y /I
 xcopy ..\dependence\exe32 ..\build\LunaTranslator_x86\ /e /y /I
 del ..\build\LunaTranslator_x86\LunaTranslator\qt5qml.dll
 del ..\build\LunaTranslator_x86\LunaTranslator\qt5qmlmodels.dll
@@ -29,10 +28,13 @@ rmdir /S /Q ..\build\LunaTranslator_x86\LunaTranslator\PyQt5\qt-plugins\imagefor
 del ..\build\LunaTranslator_x86\LunaTranslator\libssl-1_1-x64.dll
 del ..\build\LunaTranslator_x86\LunaTranslator\libcrypto-1_1-x64.dll
 
-del ..\build\LunaTranslator_x86\files\ocr.dll
-del ..\build\LunaTranslator_x86\files\embedded5\Qt5Network.dll
-del ..\build\LunaTranslator_x86\files\embedded5\Qt5Core.dll
-copy ..\dependence\ocr32 ..\build\LunaTranslator_x86\files
+del ..\build\LunaTranslator_x86\files\plugins\ocr.dll
+del ..\build\LunaTranslator_x86\files\x86\Qt5Network.dll
+del ..\build\LunaTranslator_x86\files\x86\Qt5Core.dll
+copy ..\dependence\ocr32 ..\build\LunaTranslator_x86\files\plugins
 
-xcopy ..\build\LunaTranslator_x86\ C:\dataH\LunaTranslator /e /y /I
+
+xcopy ..\dependence\api-ms-win_32 ..\build\LunaTranslator_x86\LunaTranslator /e /y /I
+
+xcopy ..\build\LunaTranslator_x86\ C:\dataH\LunaTranslator_x86 /e /y /I
 pause

@@ -30,3 +30,10 @@ zhconv==1.4.3
 pykakasi==2.2.1
 
 QtAwesome==1.1.1
+
+nuitka==1.4.8
+imageio
+
+cffi==1.14.5
+brotli==1.0.9
+bcrypt==3.2.0

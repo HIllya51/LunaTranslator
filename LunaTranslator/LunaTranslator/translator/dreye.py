@@ -34,7 +34,7 @@ class TS(basetrans):
             else:
                 path2=os.path.join(path,'TransCOMEC.dll')
             
-            self.engine=subproc_w(f'./files/x64_x86_dll/dreyec.exe "{path}"  "{path2}" {str(mp[pairs])} {pipename} {waitsignal} ',name='dreye')
+            self.engine=subproc_w(f'./files/plugins/offlinetranslator/Lunatranslator_dreyec.exe "{path}"  "{path2}" {str(mp[pairs])} {pipename} {waitsignal} ',name='dreye')
             secu=win32utils.get_SECURITY_ATTRIBUTES()
             win32utils.WaitForSingleObject(win32utils.CreateEvent(win32utils.pointer(secu),False, False, waitsignal),win32utils.INFINITE); 
             win32utils.WaitNamedPipe(pipename,win32con.NMPWAIT_WAIT_FOREVER)
