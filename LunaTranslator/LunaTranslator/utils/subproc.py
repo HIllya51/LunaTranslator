@@ -107,7 +107,7 @@ class u16lesubprocess():
             threading.Thread(target=self.cacheread,args=(i,)).start()
         threading.Thread(target=self.readokmonitor).start()
     def cacheread(self,i):
-        while self.processes[i]:
+        while self.isstart:
             _=self.processes[i].stdout.readline()
             self.cachelock.acquire()
             self.cache.append(_)
@@ -137,6 +137,7 @@ class u16lesubprocess():
             self.processes[i].stdin.write(xx )
             self.processes[i].stdin.flush()
     def kill(self):
+        self.isstart=False 
         for p in self.processes:
             p.kill()
-        self.isstart=False 
+        
