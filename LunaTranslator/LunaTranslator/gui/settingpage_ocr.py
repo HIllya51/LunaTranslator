@@ -21,9 +21,15 @@ def getocrgrid(self) :
                 items=[] 
                 for arg in ocrsetting[name]['args']: 
                     items.append({
-                            't':'lineedit','l':arg,'d':ocrsetting[name]['args'],'k':arg
-                        })
+                        'l':arg,'d':ocrsetting[name]['args'],'k':arg
+                    })
+                    if 'argstype' in ocrsetting[name] and arg in ocrsetting[name]['argstype']:
                     
+                        items[-1].update(ocrsetting[name]['argstype'][arg]) 
+                    else:
+                        items[-1].update(
+                            {'t':'lineedit'}
+                        )
                 items.append({'t':'okcancel' })
                 _3=self.getcolorbutton(globalconfig,'',callback=functools.partial(autoinitdialog,self,globalconfig['ocr'][name]['name'],900,items),icon='fa.gear',constcolor="#FF69B4")
                 
