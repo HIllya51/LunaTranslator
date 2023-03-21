@@ -598,7 +598,7 @@ class QUnFrameWindow(resizableframeless):
         saveallconfig() 
          
         if self.object.textsource:
-            self.object.textsource.end()
+            self.object.textsource=None
            
         if self.object.settin_ui.needupdate and globalconfig['autoupdate']: 
             update()

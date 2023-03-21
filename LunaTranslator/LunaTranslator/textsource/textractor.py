@@ -54,7 +54,11 @@ class textractor(basetext  ):
     def textractor_init(self):  
         if self.arch is None:
             return 
-        self.u16lesubprocess=u16lesubprocess(f"./files/plugins/Textractor/x{self.arch}/TextractorCLI.exe")
+        TextractorCLI=[f"./files/plugins/Textractor/x{self.arch}/TextractorCLI.exe"]
+        extra=f"./files/plugins/Textractor/x{self.arch}/TextractorCLI_extra.exe"
+        if os.path.exists(extra):
+            TextractorCLI.append(extra)
+        self.u16lesubprocess=u16lesubprocess(TextractorCLI)
         self.u16lesubprocess.readyread=self.handle_stdout
         self.attach(self.pid)
         
@@ -79,10 +83,10 @@ class textractor(basetext  ):
         cp= somedef.codepage_real[cpi]
         self.u16lesubprocess.writer(f'={cp} -P{self.pid}\n') 
     def findhook(self ): 
-        self.u16lesubprocess.writer((f'find -P{self.pid}\n')) 
+        self.u16lesubprocess.writer((f'find -P{self.pid}\n'),0) 
     def inserthook(self,hookcode): 
         print(f'{hookcode} -P{self.pid}')
-        self.u16lesubprocess.writer((f'{hookcode} -P{self.pid}\n')) 
+        self.u16lesubprocess.writer((f'{hookcode} -P{self.pid}\n'),0) 
     def attach(self,pid):  
         self.u16lesubprocess.writer(f'attach -P{pid}\n') 
         print(f'attach -P{pid} ')

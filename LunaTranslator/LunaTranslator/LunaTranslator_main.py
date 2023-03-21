@@ -478,7 +478,6 @@ class MAINUI(QObject) :
                                     if len(pidhwnd)==1:
                                         self.textsource.hwnd=pidhwnd[0]
                     if needend:
-                        self.textsource.end( )  
                         self.textsource=None  
             except:
                         pass

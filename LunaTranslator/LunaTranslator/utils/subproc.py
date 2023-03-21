@@ -94,23 +94,26 @@ def endsubprocs():
 
 
 class u16lesubprocess():
-    def __init__(self,command) -> None:
+    def __init__(self,commands) -> None:
         self.cache=[]
         self.cachelock=threading.Lock() 
-        self.process=subproc_w(command,needstdio=True,encoding='utf-16-le')
+        self.processes=[]
         
         self.isstart=True
         self.readyread=None
-        threading.Thread(target=self.cacheread).start()
+        for i in range(len(commands)):
+            self.processes.append(subproc_w(commands[i],needstdio=True,encoding='utf-16-le'))
+        
+            threading.Thread(target=self.cacheread,args=(i,)).start()
         threading.Thread(target=self.readokmonitor).start()
-    def cacheread(self):
-        while self.process:
-            _=self.process.stdout.readline()
+    def cacheread(self,i):
+        while self.processes[i]:
+            _=self.processes[i].stdout.readline()
             self.cachelock.acquire()
             self.cache.append(_)
             self.cachelock.release()
     def readokmonitor(self):
-        while self.process:
+        while self.isstart:
             self.cachelock.acquire()
             l1=len(self.cache) 
             self.cachelock.release()
@@ -128,10 +131,12 @@ class u16lesubprocess():
                     
                 self.cache.clear()
             self.cachelock.release()
-    def writer(self,xx):
-        self.process.stdin.write(xx )
-        self.process.stdin.flush()
+    def writer(self,xx,idx=None):
+        for i in range(len(self.processes)):
+            if idx and idx!=i:continue
+            self.processes[i].stdin.write(xx )
+            self.processes[i].stdin.flush()
     def kill(self):
-        if self.process:
-            self.process.kill() 
-        self.process=None 
+        for p in self.processes:
+            p.kill()
+        self.isstart=False 
