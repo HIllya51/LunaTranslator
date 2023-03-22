@@ -37,9 +37,8 @@ class hira:
                 except:
                     hira=''
                 if hira=='*':
-                    hira==''
-                #print(node.feature)
+                    hira=''
+                #print(node.feature) 
                 result.append({'orig':orig,"hira":hira,"cixing":node.feature.pos1}) 
-         
             return result
      
