@@ -156,7 +156,9 @@ class dialog_savedgame(QDialog):
                 dialog_setting_game(self,k,item) 
         def clicked2(self): 
                 try: 
-                        savehook_new_list.pop(self.table.currentIndex().row())
+                        key=savehook_new_list.pop(self.table.currentIndex().row())
+                        if key in savehook_new_data:
+                                savehook_new_data.pop(key)
                         self.model.removeRow(self.table.currentIndex().row())
                 except:
                         pass

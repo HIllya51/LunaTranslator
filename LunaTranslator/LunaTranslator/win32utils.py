@@ -158,6 +158,57 @@ except:
     _GetModuleFileNameExW=_kernel32.GetModuleFileNameExW
 _GetModuleFileNameExW.argtypes=c_void_p,c_void_p,c_wchar_p,c_uint
 
+_GetLogicalDrives=_kernel32.GetLogicalDrives
+_QueryDosDeviceW=_kernel32.QueryDosDeviceW
+_QueryDosDeviceW.argtypes=c_wchar_p,c_wchar_p,c_uint
+
+def GetModuleFileNameEx(hHandle,hmodule):
+    w=create_unicode_buffer(65535)
+    _GetModuleFileNameExW(hHandle,hmodule,w,65535)
+    
+    v=w.value
+    if v[0]=='\\':
+        device=v.split('\\')
+        device=f'\\{device[1]}\\{device[2]}'
+        lg=_GetLogicalDrives()
+        start=ord('A')
+        save=[]
+        while lg!=0:
+            if lg%2==1:
+                save.append(start)
+            lg=lg//2
+            start+=1
+        mp={}
+        buf=create_unicode_buffer(65535)
+        for A in save:
+            if _QueryDosDeviceW(chr(A)+':',buf,65535)!=0:
+                mp[buf.value]=chr(A)+':'
+        
+        try:
+            v=v.replace(device,mp[device])
+            return v
+        except:
+            return None
+    else:
+        return v
+    
+
+            
+
+
+
+
+# try:
+#     _GetProcessImageFileNameW=_psapi.GetProcessImageFileNameW
+# except:
+#     _GetProcessImageFileNameW=_kernel32.GetProcessImageFileNameW
+# _GetProcessImageFileNameW.argtypes=c_void_p,c_wchar_p,c_uint
+# def GetProcessImageFileName(hHandle):
+#     w=create_unicode_buffer(65535)
+#     _GetProcessImageFileNameW(hHandle,w,65535)
+#     return w.value
+
+
 _IsWow64Process=_kernel32.IsWow64Process
 _CreateProcessW=_kernel32.CreateProcessW
 _CreateProcessW.argtypes=c_wchar_p,c_wchar_p,c_void_p,c_void_p,c_bool,c_uint,c_void_p,c_wchar_p,POINTER(STARTUPINFO),POINTER(PROCESS_INFORMATION)
@@ -172,10 +223,7 @@ def IsWow64Process(phandle):
     b=c_bool()
     _IsWow64Process(phandle,byref(b))
     return b.value
-def GetModuleFileNameEx(hHandle,hmodule):
-    w=create_unicode_buffer(65535)
-    _GetModuleFileNameExW(hHandle,hmodule,w,65535)
-    return w.value
+
 def GetProcessMemoryInfo(processhandle):
     c=PROCESS_MEMORY_COUNTERS_EX()
     _GetProcessMemoryInfo(processhandle,byref(c),sizeof(c))

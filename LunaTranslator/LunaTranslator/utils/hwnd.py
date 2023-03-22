@@ -52,8 +52,7 @@ def getarch(pid):
 def getpidexe(pid):
         try:
                 hwnd1=win32utils.OpenProcess(win32con.PROCESS_ALL_ACCESS,False, (pid))
-                name_ = win32utils.GetModuleFileNameEx(
-                            hwnd1, None)
+                name_ = win32utils.GetModuleFileNameEx( hwnd1,None )
         except:
                 name_=''
         return name_

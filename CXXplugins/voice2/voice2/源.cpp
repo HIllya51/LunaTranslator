@@ -51,7 +51,7 @@ int main(int argc,char *argv[]) {
 
         unsigned char input_j[4096] = { 0 };
         DWORD _;
-        ReadFile(hPipe, input_j,4096, &_, NULL);
+        if(!ReadFile(hPipe, input_j,4096, &_, NULL))break;
          
         printf("%s\n", input_j);
         //int result = ebyroid->Hiragana((const unsigned char*)UnicodeToShift_jis(input), &out, &output_size);

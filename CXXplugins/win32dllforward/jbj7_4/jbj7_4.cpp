@@ -22,22 +22,7 @@ void packuint32(UINT i, unsigned char* b) {
     b[2] = (i >> 8) & 0xff;
     b[3] = (i) & 0xff; 
 }
-void readlen(HANDLE hPipe, int l, unsigned char* cache) {
-    DWORD  _; DWORD readen = 0;
-    while (readen < l) {
-        ReadFile(hPipe, cache+readen, l-readen, &_, NULL);
-        readen += _;
-    }
-    
-}
-void writelen(HANDLE hPipe, int l, unsigned char* cache) {
-    DWORD  _; DWORD readen = 0;
-    while (readen < l) {
-        WriteFile(hPipe, cache + readen, l - readen, &_, NULL);
-        readen += _; 
-    }
-
-}
+ 
 
 static UINT64 getCurrentMilliSecTimestamp() {
     FILETIME file_time;
@@ -98,18 +83,19 @@ int wmain(int argc, wchar_t* argv[])
         UINT code;
         DWORD _;
         UINT datalen;
-        readlen(hPipe, 4, intcache); 
+        if(!ReadFile(hPipe, intcache, 4, &_, NULL))break;
         code = unpackuint32(intcache);
-        readlen(hPipe, 4, intcache);
+        if(!ReadFile(hPipe, intcache, 4, &_, NULL))break; 
         datalen = unpackuint32(intcache);
-        readlen(hPipe, datalen, (unsigned char*)fr);
+        datalen = min(datalen, 6000);
+        if(!ReadFile(hPipe, (unsigned char*)fr, datalen, &_, NULL))break; 
         //std::wcout << getCurrentMilliSecTimestamp() << std::endl;
         JC_Transfer_Unicode(0, CODEPAGE_JA, code, 1, 1, fr, to, a, buf, b);
         //std::wcout << getCurrentMilliSecTimestamp() << std::endl;
         datalen = 2 * wcslen(to);
         packuint32(datalen, intcache);  
-        writelen(hPipe, 4, intcache); 
-        writelen(hPipe, datalen,(unsigned char*) to);  
+        WriteFile(hPipe, intcache, 4, &_, NULL); 
+        WriteFile(hPipe, (unsigned char*)to, datalen, &_, NULL); 
     }
 
 }
