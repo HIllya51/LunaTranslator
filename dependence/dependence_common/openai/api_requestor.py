@@ -19,11 +19,7 @@ from typing import (
 from urllib.parse import urlencode, urlsplit, urlunsplit
  
 import requests
-
-if sys.version_info >= (3, 8):
-    from typing import Literal
-else:
-    from typing_extensions import Literal
+ 
 
 import openai
 from openai import error, util, version
@@ -134,7 +130,7 @@ class APIRequestor:
         params,
         headers,
         files,
-        stream: Literal[True],
+        stream ,
         request_id: Optional[str] = ...,
         request_timeout: Optional[Union[float, Tuple[float, float]]] = ...,
     ) -> Tuple[Iterator[OpenAIResponse], bool, str]:
@@ -149,7 +145,7 @@ class APIRequestor:
         headers=...,
         files=...,
         *,
-        stream: Literal[True],
+        stream ,
         request_id: Optional[str] = ...,
         request_timeout: Optional[Union[float, Tuple[float, float]]] = ...,
     ) -> Tuple[Iterator[OpenAIResponse], bool, str]:
@@ -163,7 +159,7 @@ class APIRequestor:
         params=...,
         headers=...,
         files=...,
-        stream: Literal[False] = ...,
+        stream  = ...,
         request_id: Optional[str] = ...,
         request_timeout: Optional[Union[float, Tuple[float, float]]] = ...,
     ) -> Tuple[OpenAIResponse, bool, str]:
@@ -215,7 +211,7 @@ class APIRequestor:
         params,
         headers,
         files,
-        stream: Literal[True],
+        stream ,
         request_id: Optional[str] = ...,
         request_timeout: Optional[Union[float, Tuple[float, float]]] = ...,
     ) -> Tuple[AsyncGenerator[OpenAIResponse, None], bool, str]:
@@ -230,7 +226,7 @@ class APIRequestor:
         headers=...,
         files=...,
         *,
-        stream: Literal[True],
+        stream,
         request_id: Optional[str] = ...,
         request_timeout: Optional[Union[float, Tuple[float, float]]] = ...,
     ) -> Tuple[AsyncGenerator[OpenAIResponse, None], bool, str]:
@@ -244,7 +240,7 @@ class APIRequestor:
         params=...,
         headers=...,
         files=...,
-        stream: Literal[False] = ...,
+        stream = ...,
         request_id: Optional[str] = ...,
         request_timeout: Optional[Union[float, Tuple[float, float]]] = ...,
     ) -> Tuple[OpenAIResponse, bool, str]:

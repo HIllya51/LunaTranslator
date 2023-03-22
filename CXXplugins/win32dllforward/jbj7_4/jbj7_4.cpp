@@ -82,20 +82,16 @@ int wmain(int argc, wchar_t* argv[])
         char codec[4] = { 0 };
         UINT code;
         DWORD _;
-        UINT datalen;
-        if(!ReadFile(hPipe, intcache, 4, &_, NULL))break;
-        code = unpackuint32(intcache);
-        if(!ReadFile(hPipe, intcache, 4, &_, NULL))break; 
-        datalen = unpackuint32(intcache);
-        datalen = min(datalen, 6000);
-        if(!ReadFile(hPipe, (unsigned char*)fr, datalen, &_, NULL))break; 
-        //std::wcout << getCurrentMilliSecTimestamp() << std::endl;
-        JC_Transfer_Unicode(0, CODEPAGE_JA, code, 1, 1, fr, to, a, buf, b);
-        //std::wcout << getCurrentMilliSecTimestamp() << std::endl;
-        datalen = 2 * wcslen(to);
-        packuint32(datalen, intcache);  
-        WriteFile(hPipe, intcache, 4, &_, NULL); 
-        WriteFile(hPipe, (unsigned char*)to, datalen, &_, NULL); 
+         
+        ReadFile(hPipe, intcache, 4, &_, NULL);
+
+        code =  unpackuint32(intcache);
+
+        ReadFile(hPipe, (unsigned char*)fr, 6000, &_, NULL);
+          
+        JC_Transfer_Unicode(0, CODEPAGE_JA, code, 1, 1, fr, to, a, buf, b); 
+         
+        WriteFile(hPipe, (unsigned char*)to, 2 * wcslen(to)+2, &_, NULL);
     }
 
 }

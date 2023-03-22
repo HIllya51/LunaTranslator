@@ -132,7 +132,7 @@ int wmain(int argc, wchar_t* argv[])
             char src[4096] = { 0 };
             char buffer[3000] = { 0 };
             DWORD _;
-            if(!ReadFile(hPipe, src, 4096, &_, NULL))break;
+            ReadFile(hPipe, src, 4096, &_, NULL);
             _TranTextFlowCJ(src, buffer, 3000, _wtoi(argv[3]));
             WriteFile(hPipe, buffer, strlen(buffer), &_, NULL);
         }

@@ -46,7 +46,7 @@ class TS(basetrans):
     def packuint32(self,i): # int -> str 
         return bytes(chr((i >> 24) & 0xff) + chr((i >> 16) & 0xff) + chr((i >> 8) & 0xff) + chr(i & 0xff),encoding='latin-1')
     def unpackuint32(self,s ): #
- 
+        print(s)
         return ( (s[0]) << 24) | ( (s[1]) << 16) | ( (s[2]) << 8) |  (s[3]) 
       
     def x64(self,content:str):   
@@ -60,9 +60,8 @@ class TS(basetrans):
             for line in lines: 
                 if len(line)==0:continue
                 code1=line.encode('utf-16-le') 
-                win32utils.WriteFile(self.hPipe,self.packuint32(int(self.tgtlang))+self.packuint32(len(code1))+code1) 
-                datalen=self.unpackuint32(win32utils.ReadFile(self.hPipe, 4, None))
-                xx=win32utils.ReadFile(self.hPipe, datalen, None)
+                win32utils.WriteFile(self.hPipe,self.packuint32(int(self.tgtlang))+code1) 
+                xx=win32utils.ReadFile(self.hPipe, 65535, None)
                 xx=xx.decode('utf-16-le',errors='ignore') 
                 ress.append(xx)  
             return '\n'.join(ress)
