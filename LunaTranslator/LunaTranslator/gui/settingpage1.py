@@ -12,8 +12,8 @@ from utils.utils import makehtml
 def gethookgrid(self) :
  
         grids=[
-                
-                [('检测到游戏时自动开始',5),(self.getsimpleswitch(globalconfig,'autostarthook'),1),'','','','','','','','',''],
+                [('获取最新引擎以及申请支持更多游戏',5),(makehtml('https://github.com/HIllya51/Textractor_Extra'),5,'link')], 
+                [('检测到游戏时自动开始',5),(self.getsimpleswitch(globalconfig,'autostarthook'),1)],
                 [('已保存游戏',5),(self.getcolorbutton(globalconfig,'',icon='fa.gamepad',constcolor="#FF69B4",callback=lambda:dialog_savedgame(self)),1)],
 
 
@@ -46,7 +46,7 @@ def gethookembedgrid(self) :
         self.gamefont_comboBox.setCurrentFont(QFont(globalconfig['embedded']['changefont_font']))  
         grids=[
                  
-                [('获取最新内嵌引擎以及申请支持更多游戏',5),'',(makehtml('https://github.com/HIllya51/TextEmbedder'),8,'link')], 
+                [('获取最新引擎以及申请支持更多游戏',5),'',(makehtml('https://github.com/HIllya51/TextEmbedder'),8,'link')], 
                 [('保留原文',5),(self.getsimpleswitch( globalconfig['embedded'],'keeprawtext',callback=lambda x:self.object.ga.sendSetting('embeddedScenarioTextVisible',x ))  ,1) ],
                  
                 [('翻译等待时间(s)',5),'',(self.getspinbox(0,30,globalconfig['embedded'],'timeout_translate',double=True,step=0.1,callback=lambda x:self.object.ga.sendSetting('embeddedTranslationWaitTime',int(x*1000))),3) ],

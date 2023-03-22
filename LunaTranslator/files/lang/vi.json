@@ -486,7 +486,6 @@
     "北欧": "Bắc Âu",
     "西里尔": "CyrillName",
     "OCR-俄语": "OCR - Tiếng Nga",
-    "获取最新内嵌引擎以及申请支持更多游戏": "Nhận công cụ nhúng mới nhất và yêu cầu hỗ trợ nhiều trò chơi hơn",
     "内嵌失败": "Lỗi nhúng",
     "尝试使用普通HOOK": "Sử dụng hook thông thường",
     "火山OCR": "Núi lửa OCR",
@@ -540,5 +539,6 @@
     "问题反馈": "Phản hồi câu hỏi",
     "附带上下文个数": "Số context",
     "转区-Locale-Emulator": "Chuyển vùng - Locale - Emulator",
-    "转区-Locale_Remulator": "Chuyển vùng - Locale_ Remulator"
+    "转区-Locale_Remulator": "Chuyển vùng - Locale_ Remulator",
+    "获取最新引擎以及申请支持更多游戏": "Nhận động cơ mới nhất và yêu cầu hỗ trợ nhiều trò chơi hơn"
 }

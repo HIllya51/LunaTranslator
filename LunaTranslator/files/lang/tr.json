@@ -486,7 +486,6 @@
     "北欧": "Kuzey Avrupa",
     "西里尔": "Kiril",
     "OCR-俄语": "OCR- Rusça",
-    "获取最新内嵌引擎以及申请支持更多游戏": "Son yatırılmış motoru alın ve daha fazla oyunları desteklemek için uygulayın",
     "内嵌失败": "İçeri girmek başarısız oldu",
     "尝试使用普通HOOK": "Normal HOOK kullanmaya çalışın",
     "火山OCR": "Volkan OCR",
@@ -540,5 +539,6 @@
     "问题反馈": "Problem geri verisi",
     "附带上下文个数": "Yapılan anlaşmalar sayısı",
     "转区-Locale-Emulator": "Transfer Area - Yerel Emülatör",
-    "转区-Locale_Remulator": "Transfer alanı - Yerli_ Hatırlatıcı"
+    "转区-Locale_Remulator": "Transfer alanı - Yerli_ Hatırlatıcı",
+    "获取最新引擎以及申请支持更多游戏": "Son motoru alın ve daha fazla oyunlar için destek isteyin"
 }

@@ -134,10 +134,16 @@ class u16lesubprocess():
     def writer(self,xx,idx=None):
         for i in range(len(self.processes)):
             if idx and idx!=i:continue
-            self.processes[i].stdin.write(xx )
-            self.processes[i].stdin.flush()
+            try:
+                self.processes[i].stdin.write(xx )
+                self.processes[i].stdin.flush()
+            except:
+                pass
     def kill(self):
         self.isstart=False 
         for p in self.processes:
-            p.kill()
+            try:
+                p.kill()
+            except:
+                pass
         

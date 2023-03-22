@@ -46,8 +46,6 @@ class textractor(basetext  ):
         
         self.namehook=[]
         self.currentname=None
-        #self.re=re.compile('\[([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):(.*):(.*@.*)\] (.*)\n')
-        
         #embedtranslater(self.pid,self.textgetmethod,self.append ) 
         super(textractor,self).__init__(textgetmethod,*self.checkmd5prefix(pname))
         self.textractor_init()
@@ -60,7 +58,7 @@ class textractor(basetext  ):
             TextractorCLI.append(extra)
         self.u16lesubprocess=u16lesubprocess(TextractorCLI)
         self.u16lesubprocess.readyread=self.handle_stdout
-        self.attach(self.pid)
+        self.attach()
         
         self.setcodepage()
          
@@ -82,17 +80,17 @@ class textractor(basetext  ):
         cpi=savehook_new_data[self.pname]["codepage_index"]
         cp= somedef.codepage_real[cpi]
         self.u16lesubprocess.writer(f'={cp} -P{self.pid}\n') 
-    def findhook(self ): 
-        self.u16lesubprocess.writer((f'find -P{self.pid}\n'),0) 
+    def findhook(self ):
+        self.u16lesubprocess.writer(f'find -P{self.pid}\n',0) 
     def inserthook(self,hookcode): 
         print(f'{hookcode} -P{self.pid}')
-        self.u16lesubprocess.writer((f'{hookcode} -P{self.pid}\n'),0) 
-    def attach(self,pid):  
-        self.u16lesubprocess.writer(f'attach -P{pid}\n') 
-        print(f'attach -P{pid} ')
-    def detach(self,pid):
-        self.u16lesubprocess.writer(f'detach -P{pid}\n') 
-        print(f'detach -P{pid} ')
+        self.u16lesubprocess.writer(f'{hookcode} -P{self.pid}\n',0) 
+    def attach(self):  
+        self.u16lesubprocess.writer(f'attach -P{self.pid}\n') 
+        print(f'attach -P{self.pid} ')
+    def detach(self):
+        self.u16lesubprocess.writer(f'detach -P{self.pid}\n') 
+        print(f'detach -P{self.pid} ')
     def strictmatch(self,thread_tp_ctx,thread_tp_ctx2,HookCode,autostarthookcode):
         return (int(thread_tp_ctx,16)&0xffff,thread_tp_ctx2,HookCode)==(int(autostarthookcode[-4],16)&0xffff,autostarthookcode[-3],autostarthookcode[-1])
 
@@ -212,7 +210,7 @@ class textractor(basetext  ):
     def end(self):
 
         try:
-            self.detach(self.pid)
+            self.detach()
             self.u16lesubprocess.kill()
         except:
             print_exc()  

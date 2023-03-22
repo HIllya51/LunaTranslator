@@ -486,7 +486,6 @@
     "北欧": "Norte de Europa",
     "西里尔": "Cyril",
     "OCR-俄语": "OCR - ruso",
-    "获取最新内嵌引擎以及申请支持更多游戏": "Obtener el último motor incorporado y solicitar soporte para más juegos",
     "内嵌失败": "Falló la incrustación",
     "尝试使用普通HOOK": "Intenta usar Hook ordinario",
     "火山OCR": "Volcán OCR",
@@ -540,5 +539,6 @@
     "问题反馈": "Retroalimentación del problema",
     "附带上下文个数": "Número de contextos adjuntos",
     "转区-Locale-Emulator": "Zona de transferencia - local - simulador",
-    "转区-Locale_Remulator": "Zona de transferencia - local Repelator"
+    "转区-Locale_Remulator": "Zona de transferencia - local Repelator",
+    "获取最新引擎以及申请支持更多游戏": "Obtener el último motor y solicitar soporte para más juegos"
 }

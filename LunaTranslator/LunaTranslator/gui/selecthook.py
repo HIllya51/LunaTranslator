@@ -68,7 +68,6 @@ class hookselect(closeashidewindow):
         self.update_item_new_line.connect(self.update_item_new_line_function) 
         self.okoksignal.connect(self.okok)  
         self.setWindowTitle(_TR('选择文本'))
-        self.savemaybeusehookcode=[]
     def update_item_new_line_function(self,hook,output): 
         if hook in self.save:
             row=self.save.index(hook)
@@ -78,7 +77,6 @@ class hookselect(closeashidewindow):
         self.ttCombomodelmodel.clear()
         self.ttCombomodelmodel.setHorizontalHeaderLabels(_TRL(['选择','类型', 'HOOK','文本']))
         self.save=[]
-        self.savemaybeusehookcode=[]
         self.selectionbutton=[]
     def addnewhook(self,ss ,select,isname):
          
@@ -307,7 +305,10 @@ class hookselect(closeashidewindow):
         if  self.object.textsource:
 
             self.object.textsource.inserthook(hookcode)
-            self.savemaybeusehookcode.append(hookcode)
+            needinserthookcode= savehook_new_data[self.object.textsource.pname]['needinserthookcode']  
+            needinserthookcode=list(set(needinserthookcode+[hookcode]))
+            checkifnewgame(self.object.textsource.pname)
+            savehook_new_data[self.object.textsource.pname].update({  'needinserthookcode':needinserthookcode } )
         else:
             self.getnewsentence(_TR('！未选定进程！'))
     def hidesearchhookbuttons(self,hide=True):
@@ -410,16 +411,12 @@ class hookselect(closeashidewindow):
                 self.object.textsource.selectedhook.append(key)
             else:
                 pass
-            
-            
-            needinserthookcode= savehook_new_data[self.object.textsource.pname]['needinserthookcode'] 
-           
-            needinserthookcode=list(set(needinserthookcode+self.savemaybeusehookcode))
+             
             self.object.textsource.autostarthookcode=[]
             self.object.textsource.autostarting=False
             checkifnewgame(self.object.textsource.pname)
              
-            savehook_new_data[self.object.textsource.pname].update({ 'hook':self.object.textsource.selectedhook,'needinserthookcode':needinserthookcode } )
+            savehook_new_data[self.object.textsource.pname].update({ 'hook':self.object.textsource.selectedhook } )
             self.object.textsource.lock.release()
         except:
             print_exc()

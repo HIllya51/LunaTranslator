@@ -36,6 +36,8 @@ class hira:
                     hira=node.feature.kana.translate(self.h2k)
                 except:
                     hira=''
+                if hira=='*':
+                    hira==''
                 #print(node.feature)
                 result.append({'orig':orig,"hira":hira,"cixing":node.feature.pos1}) 
          
