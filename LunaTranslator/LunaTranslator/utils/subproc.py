@@ -109,6 +109,7 @@ class u16lesubprocess():
     def cacheread(self,i):
         while self.isstart:
             _=self.processes[i].stdout.readline()
+            if(len(_)==0):break
             self.cachelock.acquire()
             self.cache.append(_)
             self.cachelock.release()

@@ -51,6 +51,7 @@ def getdefaultsavehook(gamepath):
         'ttsusename':[],
         'leuse':True,
         'hook':[],
+        'namehook':[],
         'needinserthookcode':[],
         'remove_useless_hook':False,
         'title':os.path.basename(os.path.dirname(gamepath))+'/'+ os.path.basename(gamepath),

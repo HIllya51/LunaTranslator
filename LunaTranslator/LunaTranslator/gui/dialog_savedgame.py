@@ -43,6 +43,7 @@ class dialog_setting_game(QDialog):
                         self.exepath=res
         def __init__(self, parent,exepath, item=None,settingui=None) -> None:
                 super().__init__(parent, Qt.WindowCloseButtonHint )
+                checkifnewgame(exepath)
                 formLayout = QVBoxLayout(self)  # 配置layout
                 if settingui:
                         self.object=settingui

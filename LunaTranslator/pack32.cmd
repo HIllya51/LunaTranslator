@@ -29,8 +29,8 @@ del ..\build\LunaTranslator_x86\LunaTranslator\libssl-1_1-x64.dll
 del ..\build\LunaTranslator_x86\LunaTranslator\libcrypto-1_1-x64.dll
 
 del ..\build\LunaTranslator_x86\files\plugins\ocr.dll
-del ..\build\LunaTranslator_x86\files\x86\Qt5Network.dll
-del ..\build\LunaTranslator_x86\files\x86\Qt5Core.dll
+del ..\build\LunaTranslator_x86\files\plugins\EmbededEngine\Qt5Network.dll
+del ..\build\LunaTranslator_x86\files\plugins\EmbededEngine\Qt5Core.dll
 copy ..\dependence\ocr32 ..\build\LunaTranslator_x86\files\plugins
 
 copy ..\dependence\libmecab.dll ..\build\LunaTranslator_x86\LunaTranslator\

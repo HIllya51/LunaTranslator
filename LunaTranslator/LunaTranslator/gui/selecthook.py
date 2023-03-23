@@ -293,7 +293,7 @@ class hookselect(closeashidewindow):
             #self.ttCombo.setItemData(index,'',Qt.UserRole-(1 if ishide else 0))
             #self.ttCombo.setRowHidden(index,ishide)
     def inserthook(self): 
-        hookcode=self.userhook.text()
+        hookcode=self.userhook.text().replace('\r','').replace('\n','').replace('\t','')
         if len(hookcode)==0:
             return 
         x=Parsecode(hookcode)

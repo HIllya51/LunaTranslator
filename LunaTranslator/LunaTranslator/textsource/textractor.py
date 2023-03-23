@@ -39,7 +39,8 @@ class textractor(basetext  ):
          
          
         self.autostarthookcode=[tuple(__) for __ in autostarthookcode]
-        self.autostarting=len(self.autostarthookcode)>0
+        self.autostarting=(len(self.autostarthookcode)>0) or (len(needinserthookcode)>0)
+        
         self.needinserthookcode=needinserthookcode
         self.removedaddress=[] 
         self.HookCode=None 
@@ -76,14 +77,17 @@ class textractor(basetext  ):
         delay=globalconfig['textthreaddelay']
         self.u16lesubprocess.writer(f'+{delay} -P{self.pid}\n') 
     def setcodepage(self):
-        
-        cpi=savehook_new_data[self.pname]["codepage_index"]
-        cp= somedef.codepage_real[cpi]
+        try:
+            cpi=savehook_new_data[self.pname]["codepage_index"]
+            cp= somedef.codepage_real[cpi]
+        except:
+            cp=932
         self.u16lesubprocess.writer(f'={cp} -P{self.pid}\n') 
     def findhook(self ):
         self.u16lesubprocess.writer(f'find -P{self.pid}\n',0) 
     def inserthook(self,hookcode): 
         print(f'{hookcode} -P{self.pid}')
+        hookcode=hookcode.replace('\r','').replace('\n','').replace('\t','')
         self.u16lesubprocess.writer(f'{hookcode} -P{self.pid}\n',0) 
     def attach(self):  
         self.u16lesubprocess.writer(f'attach -P{self.pid}\n') 
@@ -109,6 +113,12 @@ class textractor(basetext  ):
         
         self.lock.acquire() 
         self.currentname=None
+        try:
+            remove_useless_hook=savehook_new_data[self.pname]['remove_useless_hook']
+            namehook=savehook_new_data[self.pname]['namehook']
+        except:
+            namehook=[]
+            remove_useless_hook=False
         for ares in reres:
             
             thread_handle,thread_tp_processId, thread_tp_addr, thread_tp_ctx, thread_tp_ctx2, thread_name,HookCode,output =ares
@@ -138,7 +148,7 @@ class textractor(basetext  ):
                     if len(self.autostarthookcode)==len(self.selectedhook):
                         self.autostarting=False
                 self.hookdatacollecter[key]=[] 
-                isname='namehook' in savehook_new_data[self.pname] and list(key[-4:]) in savehook_new_data[self.pname]['namehook']
+                isname= list(key[-4:]) in namehook
                 
                 hasnewhook=True
                 if isname:self.namehook.append(key)
@@ -156,7 +166,7 @@ class textractor(basetext  ):
                 else:
                     newline[key].append(output) 
             else:
-                if savehook_new_data[self.pname]['remove_useless_hook']:
+                if remove_useless_hook:
                     hookcodes=[_[-1] for _ in self.selectedhook]+[_[-1] for _ in self.autostarthookcode]
                     if len(hookcodes)>0:
                         address=key[2]
@@ -168,15 +178,15 @@ class textractor(basetext  ):
          
             
             if hasnewhook :
-                if savehook_new_data[self.pname]['remove_useless_hook'] and select:
+                if remove_useless_hook and select:
                     self.hookselectdialog.addnewhooksignal.emit(key  ,select,isname) 
-                elif savehook_new_data[self.pname]['remove_useless_hook']==False:
+                elif remove_useless_hook==False:
                     self.hookselectdialog.addnewhooksignal.emit(key  ,select,isname) 
 
                     
             if key==self.selectinghook:
                 self.hookselectdialog.getnewsentencesignal.emit(output)
-            if (savehook_new_data[self.pname]['remove_useless_hook'] and key in (self.selectedhook+self.namehook)) or savehook_new_data[self.pname]['remove_useless_hook']==False:
+            if (remove_useless_hook and key in (self.selectedhook+self.namehook)) or remove_useless_hook==False:
 
                 self.hookdatacollecter[key].append(output) 
                 self.hookselectdialog.update_item_new_line.emit(key,output)
