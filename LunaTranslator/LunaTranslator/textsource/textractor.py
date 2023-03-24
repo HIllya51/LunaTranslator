@@ -55,10 +55,11 @@ class textractor(basetext  ):
     def textractor_init(self):  
         if self.arch is None:
             return 
-        TextractorCLI=[f"./files/plugins/Textractor/x{self.arch}/TextractorCLI.exe"]
+        TextractorCLI=[]
+        base=f"./files/plugins/Textractor/x{self.arch}/TextractorCLI.exe"
         extra=f"./files/plugins/Textractor/x{self.arch}/TextractorCLI_extra.exe"
-        if os.path.exists(extra):
-            TextractorCLI.append(extra)
+        if globalconfig['textractor_engine_base_use']:TextractorCLI.append(base)
+        if globalconfig['textractor_engine_extra_use']:TextractorCLI.append(extra)
         self.u16lesubprocess=u16lesubprocess(TextractorCLI)
         self.u16lesubprocess.readyread=self.handle_stdout
         self.attach()
