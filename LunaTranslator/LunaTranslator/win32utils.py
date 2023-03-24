@@ -5,7 +5,7 @@ import ctypes
 BOOL=c_int
 WORD=c_ushort
 DWORD=c_uint
-WNDENUMPROC =WINFUNCTYPE(c_bool,POINTER(c_int),POINTER(c_int))
+WNDENUMPROC =WINFUNCTYPE(c_bool,c_void_p,c_void_p)
 class PROCESS_MEMORY_COUNTERS_EX(Structure):
     _fields_=[
         ('cb', c_uint),
