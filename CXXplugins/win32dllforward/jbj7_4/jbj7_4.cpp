@@ -87,7 +87,7 @@ int wmain(int argc, wchar_t* argv[])
 
         code =  unpackuint32(intcache);
 
-        ReadFile(hPipe, (unsigned char*)fr, 6000, &_, NULL);
+        if(!ReadFile(hPipe, (unsigned char*)fr, 6000, &_, NULL))break;
           
         JC_Transfer_Unicode(0, CODEPAGE_JA, code, 1, 1, fr, to, a, buf, b); 
          

@@ -15,6 +15,8 @@ class textractor(basetext  ):
     def __init__(self,textgetmethod,hookselectdialog,pid,hwnd,pname  ,autostarthookcode=None,needinserthookcode=None) :
         if autostarthookcode is None:
             autostarthookcode=[]
+        if needinserthookcode is None:
+            needinserthookcode=[]
         hookselectdialog.changeprocessclearsignal.emit()
         if len(autostarthookcode)==0:
             hookselectdialog.realshowhide.emit(True)

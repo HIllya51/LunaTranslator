@@ -47,7 +47,7 @@ int wmain(int argc, wchar_t* argv[])
         while (true) {
             wchar_t fr[1024] = { 0 };
             DWORD _;
-            ReadFile(hPipe, fr, 1024, &_, NULL);
+            if(!ReadFile(hPipe, fr, 1024, &_, NULL))break;
             wchar_t to[0x400] = {};
             ret = simpleTransSentM(key, fr, to, 0x28, 0x4);
             WriteFile(hPipe, to, wcslen(to)*2, &_, NULL);

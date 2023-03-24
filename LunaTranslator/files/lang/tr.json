@@ -273,7 +273,6 @@
     "助動詞": "Yardımcı söz",
     "使用LE": "LE kullan",
     "选择文件夹": "Dizini Seç",
-    "保存并关闭": "Kaydet ve Kapat",
     "垂直同步": "Dikey eşzamanlama",
     "简体中文": "Basitleştirilmiş Çince",
     "原文内容": "Orijinal içerik",
@@ -540,5 +539,8 @@
     "附带上下文个数": "Yapılan anlaşmalar sayısı",
     "转区-Locale-Emulator": "Transfer Area - Yerel Emülatör",
     "转区-Locale_Remulator": "Transfer alanı - Yerli_ Hatırlatıcı",
-    "获取最新引擎以及申请支持更多游戏": "Son motoru alın ve daha fazla oyunlar için destek isteyin"
+    "获取最新引擎以及申请支持更多游戏": "Son motoru alın ve daha fazla oyunlar için destek isteyin",
+    "备忘录": "memorandum",
+    "备忘录按钮": "Memo düğmesi",
+    "插入图片": "Resim Gir"
 }

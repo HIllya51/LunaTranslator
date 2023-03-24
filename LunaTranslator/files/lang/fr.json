@@ -273,7 +273,6 @@
     "助動詞": "Verbe auxiliaire",
     "使用LE": "Utiliser le",
     "选择文件夹": "Sélectionner un dossier",
-    "保存并关闭": "Enregistrer et fermer",
     "垂直同步": "Synchronisation verticale",
     "简体中文": "Chinois simplifié",
     "原文内容": "Contenu du texte original",
@@ -540,5 +539,8 @@
     "附带上下文个数": "Nombre de contextes attachés",
     "转区-Locale-Emulator": "Zone de transfert - locale - Emulator",
     "转区-Locale_Remulator": "Zone de transfert - locale Remulator",
-    "获取最新引擎以及申请支持更多游戏": "Obtenez les derniers moteurs et demandez de l'aide pour plus de jeux"
+    "获取最新引擎以及申请支持更多游戏": "Obtenez les derniers moteurs et demandez de l'aide pour plus de jeux",
+    "备忘录": "Memorandum",
+    "备忘录按钮": "Bouton memo",
+    "插入图片": "Insérer une image"
 }

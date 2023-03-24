@@ -122,7 +122,8 @@
         "copy": true,
         "history": true,
         "gamepad": true,
-        "edit": true
+        "edit": true,
+		"memory":false
     },
 	"showtranexception":true,
 	"refresh_on_get_trans":false,

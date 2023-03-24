@@ -7,6 +7,8 @@ def initpath():
 
     if os.path.exists('./userconfig')==False:
         os.mkdir('./userconfig')
+    if os.path.exists('./userconfig/memory')==False:
+        os.mkdir('./userconfig/memory')
     if os.path.exists('./transkiroku'):
         os.rename('transkiroku','translation_record')
     if os.path.exists('./translation_record')==False:

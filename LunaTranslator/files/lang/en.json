@@ -195,7 +195,6 @@
     "选择文本输入源": "Select Text Input Source",
     "人工翻译": "human translation",
     "选择文件夹": "Select Folder",
-    "保存并关闭": "Save and Close",
     "显示分词结果": "Display word segmentation results",
     "复制到剪贴板": "copy to clipboard",
     "火山api": "Volcano api",
@@ -540,5 +539,8 @@
     "附带上下文个数": "Number of attached contexts",
     "转区-Locale-Emulator": "Transfer Area - Locale Emulator",
     "转区-Locale_Remulator": "Transfer Area - Locale_ Remulator",
-    "获取最新引擎以及申请支持更多游戏": "Get the latest engine and apply for support for more games"
+    "获取最新引擎以及申请支持更多游戏": "Get the latest engine and apply for support for more games",
+    "备忘录": "memorandum",
+    "备忘录按钮": "Memo button",
+    "插入图片": "Insert Picture"
 }

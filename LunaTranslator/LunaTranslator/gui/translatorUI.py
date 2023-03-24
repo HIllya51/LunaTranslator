@@ -20,6 +20,7 @@ from utils.utils import update
 from utils.subproc import subproc_w
 from utils.hwnd import mouseselectwindow 
 from gui.dialog_savedgame import dialog_savedgame
+from gui.dialog_memory import dialog_memory
 from gui.textbrowser import Textbrowser
 from utils.fullscreen import fullscreen
 from gui.rangeselect  import moveresizegame 
@@ -185,6 +186,7 @@ class QUnFrameWindow(resizableframeless):
             qtawesome.icon("fa.arrows" ,color= globalconfig['buttoncolor']),
             qtawesome.icon("fa.compress"  if self.isletgamefullscreened else 'fa.expand',color=    globalconfig['buttoncolor']),
             qtawesome.icon("fa.volume-off"  if self.processismuteed else "fa.volume-up" ,color= globalconfig['buttoncolor']),
+            qtawesome.icon("fa.list-ul"  ,color= globalconfig['buttoncolor']),
             qtawesome.icon("fa.minus",color=globalconfig['buttoncolor'] ),
             qtawesome.icon("fa.times" ,color=globalconfig['buttoncolor']),
         ]
@@ -237,6 +239,8 @@ class QUnFrameWindow(resizableframeless):
         self.takusanbuttons(1,self._fullsgame,5,"全屏/恢复游戏窗口(需要绑定ocr窗口，或选择hook进程)" ,"fullscreen",["textractor","ocr","embedded"]) 
         
         self.takusanbuttons(1,self.muteprocessfuntion,5,"游戏静音(需要绑定ocr窗口，或选择hook进程)" ,"muteprocess",["textractor","ocr",'embedded']) 
+        
+        self.takusanbuttons(1,lambda: dialog_memory(self.object.settin_ui,self.object.textsource.md5),5,"备忘录" ,"memory") 
         
         
         self.takusanbuttons(1,self.hide_and_disableautohide,-2,"最小化到托盘")

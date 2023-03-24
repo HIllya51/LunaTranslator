@@ -273,7 +273,6 @@
     "助動詞": "Trợ động từ",
     "使用LE": "Sử dụng Le",
     "选择文件夹": "Chọn thư mục",
-    "保存并关闭": "Lưu và đóng",
     "垂直同步": "Đồng bộ dọc",
     "简体中文": "Trung Quốc giản thể",
     "原文内容": "Nội dung gốc",
@@ -540,5 +539,8 @@
     "附带上下文个数": "Số context",
     "转区-Locale-Emulator": "Chuyển vùng - Locale - Emulator",
     "转区-Locale_Remulator": "Chuyển vùng - Locale_ Remulator",
-    "获取最新引擎以及申请支持更多游戏": "Nhận động cơ mới nhất và yêu cầu hỗ trợ nhiều trò chơi hơn"
+    "获取最新引擎以及申请支持更多游戏": "Nhận động cơ mới nhất và yêu cầu hỗ trợ nhiều trò chơi hơn",
+    "备忘录": "Bản ghi nhớ",
+    "备忘录按钮": "Nút ghi nhớ",
+    "插入图片": "Chèn ảnh"
 }
