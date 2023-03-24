@@ -24,7 +24,6 @@ rmdir /S /Q ..\build\LunaTranslator\LunaTranslator\PyQt5\qt-plugins\mediaservice
 rmdir /S /Q ..\build\LunaTranslator\LunaTranslator\PyQt5\qt-plugins\printsupport
 rmdir /S /Q ..\build\LunaTranslator\LunaTranslator\PyQt5\qt-plugins\platformthemes
 rmdir /S /Q ..\build\LunaTranslator\LunaTranslator\PyQt5\qt-plugins\iconengines
-rmdir /S /Q ..\build\LunaTranslator\LunaTranslator\PyQt5\qt-plugins\imageformats 
 del ..\build\LunaTranslator\LunaTranslator\libssl-1_1-x64.dll
 del ..\build\LunaTranslator\LunaTranslator\libcrypto-1_1-x64.dll
 
