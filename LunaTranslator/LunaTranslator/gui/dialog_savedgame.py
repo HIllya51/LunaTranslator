@@ -10,7 +10,7 @@ from PyQt5.QtGui import QStandardItem, QStandardItemModel
 from PyQt5.QtCore import Qt,QSize  
 from utils.config import   savehook_new_list,savehook_new_data
 from utils.hwnd import getExeIcon 
-from utils.le3264 import le3264run  
+from utils.utils import le3264run  
 from utils.config import _TR,_TRL,globalconfig
 import os
 import win32con,win32utils

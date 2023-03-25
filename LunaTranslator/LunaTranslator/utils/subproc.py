@@ -95,43 +95,43 @@ def endsubprocs():
 
 class u16lesubprocess():
     def __init__(self,commands) -> None:
-        self.cache=[]
-        self.cachelock=threading.Lock() 
+        self.caches=[]
+        self.cachelocks=[]
         self.processes=[]
         
         self.isstart=True
         self.readyread=None
         for i in range(len(commands)):
             self.processes.append(subproc_w(commands[i],needstdio=True,encoding='utf-16-le'))
-        
+            self.caches.append([])
+            self.cachelocks.append(threading.Lock() )
             threading.Thread(target=self.cacheread,args=(i,)).start()
-        threading.Thread(target=self.readokmonitor).start()
+            threading.Thread(target=self.readokmonitor,args=(i,)).start()
     def cacheread(self,i):
         while self.isstart:
             _=self.processes[i].stdout.readline()
             if(len(_)==0):break
-            self.cachelock.acquire()
-            self.cache.append(_)
-            self.cachelock.release()
-    def readokmonitor(self):
+            self.cachelocks[i].acquire()
+            self.caches[i].append(_)
+            self.cachelocks[i].release()
+    def readokmonitor(self,i):
         while self.isstart:
-            self.cachelock.acquire()
-            l1=len(self.cache) 
-            self.cachelock.release()
+            self.cachelocks[i].acquire()
+            l1=len(self.caches[i]) 
+            self.cachelocks[i].release()
             time.sleep(0.001)
-            self.cachelock.acquire()
-            l2=len(self.cache)
+            self.cachelocks[i].acquire()
+            l2=len(self.caches[i])
             
-            if l1==l2 and l1:  
-                if self.readyread is None:
-                    continue
+            if l1==l2 and l1 and self.readyread:
                 try:
-                    self.readyread(''.join(self.cache)) 
+                    #self.readyread(''.join(self.caches[i])) 
+                    self.readyread( (self.caches[i])) 
                 except:
                     print_exc()
                     
-                self.cache.clear()
-            self.cachelock.release()
+                self.caches[i].clear()
+            self.cachelocks[i].release()
     def writer(self,xx,idx=None):
         for i in range(len(self.processes)):
             if idx and idx!=i:continue

@@ -37,7 +37,7 @@ class textractor(basetext  ):
         self.pname=pname
         self.hwnd=hwnd
         self.runonce_line=''
-        self.re=re.compile('\[([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):(.*):(.*@.*)\] ([\\s\\S]*)')
+        self.re=re.compile('\[([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):(.*?):(.*?)\]')
          
          
         self.autostarthookcode=[tuple(__) for __ in autostarthookcode]
@@ -101,17 +101,16 @@ class textractor(basetext  ):
     def strictmatch(self,thread_tp_ctx,thread_tp_ctx2,HookCode,autostarthookcode):
         return (int(thread_tp_ctx,16)&0xffff,thread_tp_ctx2,HookCode)==(int(autostarthookcode[-4],16)&0xffff,autostarthookcode[-3],autostarthookcode[-1])
 
-    def handle_stdout(self,stdout):#p): 
-        reres=[] 
-        while True:
-            ss=self.re.search(stdout)
-            if ss is None:
-                break
-            if len(reres)>0:
-                reres[-1][-1]=reres[-1][-1][:ss.start()]
-            ares=ss.groups()
-            reres.append(list(ares))
-            stdout=ares[-1]
+    def handle_stdout(self,lines): 
+        allres=[]
+        
+        for line in lines:
+            match=self.re.match(line)
+            if match: 
+                allres.append([match.groups(),[line[match.span()[1]+1:]]])
+            elif len(allres): 
+                allres[-1][1].append(line)
+         
         newline={} 
         
         self.lock.acquire() 
@@ -122,10 +121,11 @@ class textractor(basetext  ):
         except:
             namehook=[]
             remove_useless_hook=False
-        for ares in reres:
+        for ares in allres:
             
-            thread_handle,thread_tp_processId, thread_tp_addr, thread_tp_ctx, thread_tp_ctx2, thread_name,HookCode,output =ares
-            output=output[:-1]
+            (thread_handle,thread_tp_processId, thread_tp_addr, thread_tp_ctx, thread_tp_ctx2, thread_name,HookCode),output =ares
+            output='\n'.join(output)
+            
             if HookCode=='HB0@0' or thread_handle=='0' or thread_tp_processId=='0'  :
                 continue 
             if globalconfig['filter_chaos_code'] and checkchaos(output): 

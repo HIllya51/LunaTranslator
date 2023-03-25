@@ -1,22 +1,12 @@
-  
-import functools 
-from PyQt5.QtWidgets import  QPushButton,QDialog,QVBoxLayout ,QHeaderView,QFileDialog ,QLineEdit
-import functools,threading
-from traceback import print_exc 
-from PyQt5.QtWidgets import    QHBoxLayout, QTableView, QAbstractItemView, QLabel, QVBoxLayout,QTextEdit
-import win32utils 
+   
+from PyQt5.QtWidgets import  QPushButton,QDialog,QVBoxLayout ,QHeaderView,QFileDialog  
+from PyQt5.QtWidgets import    QHBoxLayout,  QVBoxLayout,QTextEdit 
 
-from PyQt5.QtGui import QTextCursor, QStandardItemModel   
-from PyQt5.QtCore import Qt,QSize  
-from utils.config import   savehook_new_list,savehook_new_data
-from utils.hwnd import getExeIcon 
-from utils.le3264 import le3264run  
-from utils.config import _TR,_TRL,globalconfig
-import os
-import win32con,win32utils
-from utils import somedef
-from utils.wrapper import Singleton_close,Singleton
-from utils.config import checkifnewgame
+from PyQt5.QtGui import QTextCursor 
+from PyQt5.QtCore import Qt,QSize   
+from utils.config import _TR 
+import win32con,win32utils 
+from utils.wrapper import Singleton_close 
 
 @Singleton_close
 class dialog_memory(QDialog):
