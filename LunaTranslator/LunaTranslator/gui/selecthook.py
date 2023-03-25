@@ -78,6 +78,7 @@ class hookselect(closeashidewindow):
         self.ttCombomodelmodel.setHorizontalHeaderLabels(_TRL(['选择','类型', 'HOOK','文本']))
         self.save=[]
         self.selectionbutton=[]
+        self.saveinserthook=[]
     def addnewhook(self,ss ,select,isname):
          
         self.save.append(ss ) 
@@ -305,10 +306,8 @@ class hookselect(closeashidewindow):
         if  self.object.textsource:
 
             self.object.textsource.inserthook(hookcode)
-            needinserthookcode= savehook_new_data[self.object.textsource.pname]['needinserthookcode']  
-            needinserthookcode=list(set(needinserthookcode+[hookcode]))
-            checkifnewgame(self.object.textsource.pname)
-            savehook_new_data[self.object.textsource.pname].update({  'needinserthookcode':needinserthookcode } )
+            self.saveinserthook.append(hookcode)
+            
         else:
             self.getnewsentence(_TR('！未选定进程！'))
     def hidesearchhookbuttons(self,hide=True):
@@ -416,6 +415,11 @@ class hookselect(closeashidewindow):
             self.object.textsource.autostarting=False
             checkifnewgame(self.object.textsource.pname)
              
+            needinserthookcode= savehook_new_data[self.object.textsource.pname]['needinserthookcode']  
+            needinserthookcode=list(set(needinserthookcode+self.saveinserthook))
+            
+            savehook_new_data[self.object.textsource.pname].update({  'needinserthookcode':needinserthookcode } )
+
             savehook_new_data[self.object.textsource.pname].update({ 'hook':self.object.textsource.selectedhook } )
             self.object.textsource.lock.release()
         except:
@@ -437,7 +441,7 @@ class hookselect(closeashidewindow):
         atBottom = scrollbar.value() + 3 > scrollbar.maximum() or scrollbar.value() / scrollbar.maximum() > 0.975 
         cursor=QTextCursor (self.textOutput.document())
         cursor.movePosition(QTextCursor.End)
-        cursor.insertText(sentence+'\n')
+        cursor.insertText('\n'+sentence)
         if (atBottom):
             scrollbar.setValue(scrollbar.maximum())
     def ViewThread2(self, index:QModelIndex):   

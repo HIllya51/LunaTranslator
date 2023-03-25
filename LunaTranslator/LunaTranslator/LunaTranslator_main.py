@@ -78,8 +78,7 @@ class MAINUI(QObject) :
     def textsource(self):return self.textsource_p
     @textsource.setter
     def textsource(self,_):
-
-        if self.textsource_p:
+        if _ is None and self.textsource_p:
             try:
                 self.textsource_p.end()  
             except:
@@ -315,7 +314,7 @@ class MAINUI(QObject) :
            
         
     def selectprocess(self,selectedp): 
-            #self.object.textsource=None
+            self.textsource=None
             pid,pexe,hwnd=(  selectedp)   
             checkifnewgame(pexe) 
             #   
@@ -323,7 +322,6 @@ class MAINUI(QObject) :
                 self.textsource=textractor(self.textgetmethod,self.hookselectdialog,pid,hwnd,pexe )  
             elif globalconfig['sourcestatus']['embedded']['use']:
                 self.textsource=embedded(self.textgetmethod,self.hookselectdialog,pid,hwnd,pexe, self)  
-            
             
 
     #@threader
@@ -451,7 +449,7 @@ class MAINUI(QObject) :
                             lps=ListProcess()
                             for pid_real,_exe,_ in lps:
                                 if _exe==name_: 
-                                    
+                                    self.textsource=None
                                     if globalconfig['sourcestatus']['textractor']['use']:
                                         needinserthookcode=savehook_new_data[name_]['needinserthookcode']
                                         self.textsource=textractor(self.textgetmethod,self.hookselectdialog,pid_real,hwnd,name_ ,autostarthookcode=savehook_new_data[name_]['hook'],needinserthookcode=needinserthookcode)
