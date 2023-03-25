@@ -44,6 +44,35 @@ def _3_f(line):
                         guesstimes-=1
         line=line[:len(line)//guesstimes] 
         return line
+def _3_2(line):
+        cache=''
+        
+        
+
+        while len(line):
+                last=None
+                dumplength=len(line)//2
+                while dumplength>1:
+                        bad=False
+                        for i in range(dumplength):
+                              _i=i+dumplength
+                              if(line[i]!=line[_i]):
+                                bad=True
+                                break
+                        if bad:
+                          dumplength-=1
+                        else:
+                            current=line[:dumplength]
+                            if last and last!=current:
+                                cache+= current
+                            last=current  
+                            line=line[dumplength:]
+                            break
+                if last is None:
+                       cache+=line[0]
+                       line=line[1:]
+ 
+        return cache
 def _10_f(line):
         cnt=Counter(line)
         saveline=[]
@@ -191,6 +220,7 @@ def POSTSOLVE(line):
     functions={
         '_2':_2_f,
         '_3':_3_f,
+        '_3_2':_3_2,
         '_10':_10_f,
         '_1':_1_f,
         '_4':_4_f,

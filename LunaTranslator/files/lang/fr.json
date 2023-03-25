@@ -170,7 +170,6 @@
     "调整执行顺序": "Ajuster la séquence d'exécution",
     "去除重复字符(AAAABBBBCCCC->ABC)": "Supprimer les caractères dupliqués (aaaabbbbbccc - > ABC)",
     "去除重复行(ABCDABCDABCD->ABCD)": "Supprimer les lignes dupliquées (abcdabcdabcd - > ABCD)",
-    "递减式重复行(ABCDBCDCDD->ABCD)": "Lignes de répétition décroissantes (abcdbcdcdd - > ABCD)",
     "去除花括号{}": "Supprimer les accolades bouclées {}",
     "过滤HTML标签": "Filtrer les étiquettes HTML",
     "过滤换行符": "Filtrer les sauts de ligne",
@@ -178,7 +177,6 @@
     "简单替换内容(若替换为空则直接过滤)": "Remplacement simple du contenu (filtre Direct si le remplacement est vide)",
     "使用正则表达式替换": "Remplacer par une expression régulière",
     "自定义python处理": "Personnalisation du traitement Python",
-    "递增式重复行(AABABCABCD->ABCD)": "Ligne de répétition incrémentale (aababcabcd - > ABCD)",
     "使用专有名词翻译": "Traduction avec des noms propres",
     "使用翻译结果修正": "Utiliser les résultats de la traduction pour corriger",
     "使用VNR共享辞书": "Partager un dictionnaire avec VNR",
@@ -544,5 +542,6 @@
     "备忘录按钮": "Bouton memo",
     "插入图片": "Insérer une image",
     "启用Textractor_Base": "Activer textractor Base",
-    "启用Textractor_Extra": "Activer textractor Extra"
+    "启用Textractor_Extra": "Activer textractor Extra",
+    "去除重复行(S1S1S1S2S2S2->S1S2)": "Supprimer les lignes répétitives (s1s1s1s2s2s2 - > s1s2)"
 }

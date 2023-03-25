@@ -170,7 +170,6 @@
     "调整执行顺序": "調整執行順序",
     "去除重复字符(AAAABBBBCCCC->ABC)": "去除重複字元（AAAABBBBCCCC->ABC）",
     "去除重复行(ABCDABCDABCD->ABCD)": "去除重複行（ABCDABCDABCD->ABCD）",
-    "递减式重复行(ABCDBCDCDD->ABCD)": "遞減式重複行（ABCDBCDCDD->ABCD）",
     "去除花括号{}": "去除花括弧{}",
     "过滤HTML标签": "過濾HTML標籤",
     "过滤换行符": "過濾分行符號",
@@ -178,7 +177,6 @@
     "简单替换内容(若替换为空则直接过滤)": "簡單替換內容（若替換為空則直接過濾）",
     "使用正则表达式替换": "使用規則運算式替換",
     "自定义python处理": "自定義python處理",
-    "递增式重复行(AABABCABCD->ABCD)": "遞增式重複行（AABABCABCD->ABCD）",
     "使用专有名词翻译": "使用專有名詞翻譯",
     "使用翻译结果修正": "使用翻譯結果修正",
     "使用VNR共享辞书": "使用VNR共亯辭書",
@@ -544,5 +542,6 @@
     "备忘录按钮": "備忘錄按鈕",
     "插入图片": "插入圖片",
     "启用Textractor_Base": "啟用Textractor_ Base",
-    "启用Textractor_Extra": "啟用Textractor_ Extra"
+    "启用Textractor_Extra": "啟用Textractor_ Extra",
+    "去除重复行(S1S1S1S2S2S2->S1S2)": "去除重複行（S1S1S1S2S2S2->S1S2）"
 }

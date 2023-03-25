@@ -170,7 +170,6 @@
     "调整执行顺序": "実行順序の調整",
     "去除重复字符(AAAABBBBCCCC->ABC)": "繰り返し文字を除去する（AAAABBBCCC->ABC）",
     "去除重复行(ABCDABCDABCD->ABCD)": "重複行の削除（ABCDABCDABCD->ABCD）",
-    "递减式重复行(ABCDBCDCDD->ABCD)": "逓減反復行（ABCDBCDCDD->ABCD）",
     "去除花括号{}": "中括弧を除去{}",
     "过滤HTML标签": "HTMLラベルのフィルタ",
     "过滤换行符": "改行のフィルタ",
@@ -178,7 +177,6 @@
     "简单替换内容(若替换为空则直接过滤)": "単純置換（空に置換する場合は直接フィルタ）",
     "使用正则表达式替换": "正規表現で置換",
     "自定义python处理": "カスタムpython処理",
-    "递增式重复行(AABABCABCD->ABCD)": "増分繰り返し行（AABABCABCD->ABCD）",
     "使用专有名词翻译": "固有名詞翻訳の使用",
     "使用翻译结果修正": "翻訳結果修正の使用",
     "使用VNR共享辞书": "VNRを使用した辞書の共有",
@@ -544,5 +542,6 @@
     "备忘录按钮": "メモボタン",
     "插入图片": "画像を挿入",
     "启用Textractor_Base": "Textractor _Base",
-    "启用Textractor_Extra": "Textractor _Extra"
+    "启用Textractor_Extra": "Textractor _Extra",
+    "去除重复行(S1S1S1S2S2S2->S1S2)": "重複行を削除する（S 1 S 1 S 1 S 2 S 2 S 2->S 1 S 2）"
 }

@@ -276,8 +276,6 @@
     "调整执行顺序": "Adjust execution order",
     "去除重复字符(AAAABBBBCCCC->ABC)": "Remove duplicate characters (AAAABBBBCCCC ->ABC)",
     "去除重复行(ABCDABCDABCD->ABCD)": "Remove duplicate lines (ABCDABCDABCD ->ABCD)",
-    "递减式重复行(ABCDBCDCDD->ABCD)": "Declining repeating rows (ABCDBCDCDD ->ABCD)",
-    "递增式重复行(AABABCABCD->ABCD)": "Incremental repeating row (AABABCABCD ->ABCD)",
     "搜索特殊码": "Search for special codes",
     "过滤控制字符": "Filter control characters",
     "过滤路径": "Filter Path",
@@ -544,5 +542,6 @@
     "备忘录按钮": "Memo button",
     "插入图片": "Insert Picture",
     "启用Textractor_Base": "Enable Texttracker_ Base",
-    "启用Textractor_Extra": "Enable Texttracker_ Extra"
+    "启用Textractor_Extra": "Enable Texttracker_ Extra",
+    "去除重复行(S1S1S1S2S2S2->S1S2)": "Remove duplicate rows (S1S1S1S2S2S2 ->S1S2)"
 }

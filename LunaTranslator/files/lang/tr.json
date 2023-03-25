@@ -170,7 +170,6 @@
     "调整执行顺序": "İşletim emrini ayarla",
     "去除重复字符(AAAABBBBCCCC->ABC)": "Çift karakterleri sil (AAABBBCCCC ->ABC)",
     "去除重复行(ABCDABCDABCD->ABCD)": "Çiftli çizgileri sil (ABCD ABCD ->ABCD)",
-    "递减式重复行(ABCDBCDCDD->ABCD)": "Tekrarlanan çizgileri reddediyor (ABCD BCDCDD ->ABCD)",
     "去除花括号{}": "Kıpırdam bileklerini sil {}",
     "过滤HTML标签": "HTML etiketleri sil",
     "过滤换行符": "Süzgüç çizgi kırılması",
@@ -178,7 +177,6 @@
     "简单替换内容(若替换为空则直接过滤)": "Basit değiştirme içeriği (değiştirme boş ise direkt filtrelecek)",
     "使用正则表达式替换": "Düzenli ifade ile değiştir",
     "自定义python处理": "Özel Python işleme",
-    "递增式重复行(AABABCABCD->ABCD)": "Artımlı tekrarlanan satır (AABABCD ->ABCD)",
     "使用专有名词翻译": "Doğru isim çevirimi kullan",
     "使用翻译结果修正": "Tercüme sonuçlarını düzeltmek için kullan",
     "使用VNR共享辞书": "Sözlükleri paylaşmak için VNR kullanın",
@@ -544,5 +542,6 @@
     "备忘录按钮": "Memo düğmesi",
     "插入图片": "Resim Gir",
     "启用Textractor_Base": "Metin izleyici etkinleştir Temel",
-    "启用Textractor_Extra": "Metin izleyici etkinleştir Ekstra"
+    "启用Textractor_Extra": "Metin izleyici etkinleştir Ekstra",
+    "去除重复行(S1S1S1S2S2S2->S1S2)": "Çiftli satırları sil (S1S1S1S2S2S2 ->S1S2)"
 }

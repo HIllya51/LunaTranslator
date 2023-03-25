@@ -170,7 +170,6 @@
     "调整执行顺序": "실행 순서 조정",
     "去除重复字符(AAAABBBBCCCC->ABC)": "반복 문자 제거(AAAABBBCCCC->ABC)",
     "去除重复行(ABCDABCDABCD->ABCD)": "반복 행 제거(ABCDABCDABCD->ABCD)",
-    "递减式重复行(ABCDBCDCDD->ABCD)": "줄임식 반복 행(ABCDBCDCDD->ABCD)",
     "去除花括号{}": "중괄호 제거 {}",
     "过滤HTML标签": "HTML 태그 필터링",
     "过滤换行符": "줄 바꿈 필터링",
@@ -178,7 +177,6 @@
     "简单替换内容(若替换为空则直接过滤)": "단순 바꿀 내용 (비어 있으면 직접 필터링)",
     "使用正则表达式替换": "정규 표현식으로 바꾸기",
     "自定义python处理": "사용자 정의 python 처리",
-    "递增式重复行(AABABCABCD->ABCD)": "반복 행 증가(AABABCABCCD->ABCD)",
     "使用专有名词翻译": "고유 명사를 사용하여 번역하다.",
     "使用翻译结果修正": "번역 결과를 사용하여 수정",
     "使用VNR共享辞书": "VNR을 사용하여 사서 공유",
@@ -544,5 +542,6 @@
     "备忘录按钮": "메모 단추",
     "插入图片": "그림 삽입",
     "启用Textractor_Base": "Textractor_ 사용Base",
-    "启用Textractor_Extra": "Textractor_ 사용Extra"
+    "启用Textractor_Extra": "Textractor_ 사용Extra",
+    "去除重复行(S1S1S1S2S2S2->S1S2)": "반복 행 제거(S1S1S2S222->S1S2)"
 }
