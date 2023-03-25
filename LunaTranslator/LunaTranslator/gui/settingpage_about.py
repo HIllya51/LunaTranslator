@@ -78,8 +78,8 @@ def getversion(self):
         
             savep=f'./cache/update/LunaTranslator{bit}.zip' 
             def endcallback():
-                if os.path.exists(f'./cache/update/LunaTranslator{bit}'):
-                    shutil.rmtree(f'./cache/update/LunaTranslator{bit}')
+                if os.path.exists(f'./cache/update/LunaTranslator'):
+                    shutil.rmtree(f'./cache/update/LunaTranslator')
                 zipf=(zipfile.ZipFile(f'./cache/update/LunaTranslator{bit}.zip'))
                 zipf.extractall('./cache/update')
                 self.needupdate=True
