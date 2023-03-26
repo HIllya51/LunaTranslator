@@ -91,7 +91,7 @@ int wmain(int argc, wchar_t* argv[])
           
         JC_Transfer_Unicode(0, CODEPAGE_JA, code, 1, 1, fr, to, a, buf, b); 
          
-        WriteFile(hPipe, (unsigned char*)to, 2 * wcslen(to)+2, &_, NULL);
+        WriteFile(hPipe, (unsigned char*)to, 2 * wcslen(to) , &_, NULL);
     }
 
 }
