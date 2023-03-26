@@ -224,6 +224,7 @@ class textractor(basetext  ):
 
         try:
             self.detach()
+            time.sleep(0.1)
             self.u16lesubprocess.kill()
         except:
             print_exc()  

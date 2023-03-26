@@ -592,6 +592,7 @@ class QUnFrameWindow(resizableframeless):
             button.lower() 
 
     def closeEvent(self, a0 ) -> None: 
+        self.object.isrunning=False
         self.tray.hide()
         self.tray = None  
         self.hide()
@@ -603,7 +604,6 @@ class QUnFrameWindow(resizableframeless):
          
         if self.object.textsource:
             self.object.textsource=None
-           
         if self.object.settin_ui.needupdate and globalconfig['autoupdate']: 
             update()
         endsubprocs()

@@ -74,6 +74,7 @@ class MAINUI(QObject) :
         self.currenttext=''
         self.refresh_on_get_trans_signature=0
         self.currentsignature=None
+        self.isrunning=True
     @property
     def textsource(self):return self.textsource_p
     @textsource.setter
@@ -480,7 +481,7 @@ class MAINUI(QObject) :
                         pass
                         #print_exc()
     def setontopthread(self):
-        while True:
+        while self.isrunning:
             #self.translation_ui.keeptopsignal.emit() 
             
             try:  
@@ -494,7 +495,7 @@ class MAINUI(QObject) :
                 print_exc() 
             time.sleep(0.5)            
     def autohookmonitorthread(self):
-        while True:
+        while self.isrunning:
             self.onwindowloadautohook()
             time.sleep(0.5)#太短了的话，中间存在一瞬间，后台进程比前台窗口内存占用要大。。。
     def aa(self):   
