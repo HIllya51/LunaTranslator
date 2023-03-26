@@ -12,7 +12,7 @@ from utils.hwnd import getarch
 from textsource.textsourcebase import basetext 
 from utils.utils import checkchaos  
 class textractor(basetext  ): 
-    def __init__(self,textgetmethod,hookselectdialog,pid,hwnd,pname  ,autostarthookcode=None,needinserthookcode=None) :
+    def __init__(self,textgetmethod,hookselectdialog,pid,hwnd,pname  ,autostarthookcode=None,needinserthookcode=None,dontremove=False) :
         if autostarthookcode is None:
             autostarthookcode=[]
         if needinserthookcode is None:
@@ -23,7 +23,7 @@ class textractor(basetext  ):
         self.newline=Queue()  
         self.arch=getarch(pid) 
         self.lock=threading.Lock()
-         
+        self.dontremove=dontremove
         self.hookdatacollecter=OrderedDict() 
         self.reverse={}
         self.forward=[]
@@ -116,7 +116,7 @@ class textractor(basetext  ):
         self.lock.acquire() 
         self.currentname=None
         try:
-            remove_useless_hook=savehook_new_data[self.pname]['remove_useless_hook']
+            remove_useless_hook=(not self.dontremove) and savehook_new_data[self.pname]['remove_useless_hook']
             namehook=savehook_new_data[self.pname]['namehook']
         except:
             namehook=[]

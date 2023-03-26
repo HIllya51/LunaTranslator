@@ -13,7 +13,7 @@ import re
 import os,time 
 from utils.config import globalconfig ,_TR,_TRL,checkifnewgame
 from collections import OrderedDict
-from gui.usefulwidget import closeashidewindow
+from gui.usefulwidget import closeashidewindow,getQMessageBox
 from utils.utils import checkchaos
 from utils.subproc import subproc_w
 class HTMLDelegate(QStyledItemDelegate):
@@ -323,14 +323,8 @@ class hookselect(closeashidewindow):
     def findhook(self): 
         if globalconfig['sourcestatus']['textractor']['use']==False:
             return 
-        msgBox=QMessageBox(self)
-        msgBox.setWindowTitle('警告！')
-        msgBox.setText(_TR('该功能可能会导致游戏崩溃！')) 
-        msgBox.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel);
-        msgBox.setDefaultButton(QMessageBox.Ok);
-        ret=msgBox.exec()
-        if ret==QMessageBox.Ok: 
-
+        getQMessageBox(self,"警告","该功能可能会导致游戏崩溃！",True,True,self.findhookchecked)
+    def findhookchecked(self): 
             if os.path.exists('hook.txt'):
                 try:
                     os.remove('hook.txt')

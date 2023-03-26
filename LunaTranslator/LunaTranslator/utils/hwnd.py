@@ -1,9 +1,10 @@
 
-import win32con ,win32utils
+import win32con ,win32utils,threading
 from traceback import print_exc
 from PyQt5.QtWinExtras  import QtWin
 from PyQt5.QtGui import   QPixmap,QColor ,QIcon
 import os
+import time
 from utils.utils import argsort
 def pid_running(pid): 
     try:
@@ -14,7 +15,7 @@ def pid_running(pid):
 
     except:
         return False
-def getpidhwnds(pid):
+def getpidhwndfirst(pid):
         try:
                 hwnds=list()
                 def get_all_hwnd(hwnd,_): 
@@ -22,9 +23,9 @@ def getpidhwnds(pid):
                                 if  win32utils.GetWindowThreadProcessId(hwnd)[1]==pid:
                                         hwnds.append( (hwnd) )
                 win32utils.EnumWindows(get_all_hwnd, 0)  
-                return hwnds
+                return hwnds[0]
         except:
-                return []
+                return 0
 def getwindowlist():
         windows_list=[]
         pidlist=[]
@@ -49,49 +50,24 @@ def getarch(pid):
         except:
                 arch=None
         return arch
-def getpidexe(pid):
-        try:
-                hwnd1=win32utils.OpenProcess(win32con.PROCESS_ALL_ACCESS,False, (pid))
-                name_ = win32utils.GetModuleFileNameEx( hwnd1,None )
-        except:
-                name_=''
-        return name_
-def getwindowhwnd(pid):
-        windows_list=[]
-        pidlist=[]
-        win32utils.EnumWindows(lambda hWnd, param: windows_list.append(hWnd), 0) 
-        for hwnd in windows_list:
+def getpidexe(pid,force=False):
+        privi=win32con.PROCESS_QUERY_LIMITED_INFORMATION if force else win32con.PROCESS_ALL_ACCESS
+        hwnd1=win32utils.OpenProcess(privi,False, (pid))
+        if(hwnd1==0):
+                name_=None
+        else:
                 try:
-                        tid, _pid=win32utils.GetWindowThreadProcessId(hwnd) 
-                        if pid==_pid: 
-                                if win32utils.IsWindow(hwnd) and win32utils.IsWindowEnabled(hwnd) and win32utils.IsWindowVisible(hwnd):
-                                        return hwnd
+                        name_ = win32utils.GetModuleFileNameEx( hwnd1,None )
                 except:
-                        pass
-        return 0
-def ListProcess_old(): 
-        windows_list = []
-        ret=[]
-        win32utils.EnumWindows(lambda hWnd, param: windows_list.append(hWnd), 0)
-        for hwnd in windows_list:
-            if win32utils.IsWindow(hwnd) and win32utils.IsWindowEnabled(hwnd) and win32utils.IsWindowVisible(hwnd):
-                
-                  
-                    try:
-                        pid=win32utils.GetWindowThreadProcessId(hwnd)[1]
-                        name_=getpidexe(pid)
- 
-                        name=name_.lower()
-                        if name[-4:]!='.exe' or ':\\windows\\'  in name   or '\\microsoft\\'  in name or '\\windowsapps\\'  in name:
-                            continue
-                        import os
-                        ret.append([pid,name_,hwnd])
-                    except:
-                        pass
-        #print(windows_list)
-        #print(ret)
-        return ret
-  
+                        name_=None
+        win32utils.CloseHandle(hwnd1)
+        return name_
+def testprivilege(pid):
+       hwnd1=win32utils.OpenProcess(win32con.PROCESS_ALL_ACCESS,False, (pid))
+       win32utils.CloseHandle(hwnd1)
+       return hwnd1!=0
+
+
 def getprocessmem(pid):
         try:
                 process=win32utils.OpenProcess(win32con.PROCESS_ALL_ACCESS,False, pid)
@@ -99,9 +75,7 @@ def getprocessmem(pid):
                 return memory_info.WorkingSetSize
         except:
                 return 0
-def ListProcess(): 
-        pid_exe_hwnd= ListProcess_old()
-
+def ListProcess():  
         ret=[]
         pids=getprocesslist()
         for pid in pids: 
@@ -109,34 +83,27 @@ def ListProcess():
                            continue
                     try: 
                         name_=getpidexe(pid)
- 
+                        if name_ is None:continue
                         name=name_.lower()
                         if name[-4:]!='.exe' or ':\\windows\\'  in name   or '\\microsoft\\'  in name or '\\windowsapps\\'  in name:
                             continue 
                         ret.append([pid,name_ ])
                     except:
-                        pass
-        #print(windows_list)
-        #print(ret)
-        
+                        pass 
         kv={}
         for pid,exe in ret:
                 if exe in kv:
                         kv[exe]['pid'].append(pid)
                 else:
-                        kv[exe]={'pid':[pid],'hwnd':0}
+                        kv[exe]={'pid':[pid]}
         for exe in kv:
                 if len(kv[exe]['pid'])>1:
                         mems=[getprocessmem(_) for _ in kv[exe]['pid']]
                         _i=argsort(mems)
                         kv[exe]['pid']=[kv[exe]['pid'][_i[-1]]]
-        for pid,exe,hwnd in pid_exe_hwnd:
-                if exe in kv:
-                        kv[exe]['hwnd']=hwnd
-
         xxx=[]
         for exe in kv:
-                xxx.append([kv[exe]['pid'][0],exe,kv[exe]['hwnd']])
+                xxx.append([kv[exe]['pid'][0],exe])
         return xxx
 def getExeIcon( name ): 
             large = win32utils.ExtractIconEx(name)
@@ -150,27 +117,25 @@ def getScreenRate() :
     hDC = win32utils.GetDC(0) 
     screen_scale_rate = round(win32utils.GetDeviceCaps(hDC, win32con.DESKTOPHORZRES) /  win32utils.GetSystemMetrics(0), 2) 
     return screen_scale_rate
-import pyWinhook
+
+
 def mouseselectwindow(callback): 
-        hm = pyWinhook.HookManager()
-        def OnMouseEvent(event):  
-            hwnd=win32utils.WindowFromPoint(win32utils.GetCursorPos())
-            hm.UnhookMouse()    
-            #for pid in pids:
-            if True:
+        
+        def _loop():
+                while True:
+                        keystate=win32utils.GetKeyState(win32con.VK_LBUTTON ) #必须使用GetKeyState, GetAsyncKeyState或SetWindowHookEx都无法检测到高权限应用上的点击事件。
+                        if(keystate<0):
+                                break
+                        time.sleep(0.01)
                 try:
-                    tid, pid=win32utils.GetWindowThreadProcessId(hwnd)
-                     
-                    name_=getpidexe(pid)
-                    #print(name_) 
-                    print(pid,hwnd,name_)
-                    callback(pid,hwnd,name_) 
-                except: 
-                    print_exc()
-            
-            return True
-        hm.MouseAllButtonsDown = OnMouseEvent
-        hm.HookMouse()
+                        pos=win32utils.GetCursorPos()
+                        hwnd=win32utils.GetAncestor(win32utils.WindowFromPoint(pos))
+                        pid=win32utils.GetWindowThreadProcessId(hwnd)[1]
+                        callback(pid,hwnd)
+                except:
+                        pass
+        threading.Thread(target=_loop).start()
+        
 
 def letfullscreen(hwnd):
         wpc=win32utils. GetWindowPlacement( hwnd,False )

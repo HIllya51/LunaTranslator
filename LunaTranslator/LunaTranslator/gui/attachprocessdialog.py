@@ -1,56 +1,68 @@
  
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt,pyqtSignal
 from PyQt5.QtWidgets import QWidget,QVBoxLayout,QHBoxLayout,QLabel,QLineEdit,QListView,QDialogButtonBox ,QApplication,QPushButton,QMainWindow
 from PyQt5.QtGui import  QStandardItemModel,QPixmap,QColor,QIcon,QStandardItem ,QFont 
 import functools
-
+from traceback import print_exc
 from utils.config import globalconfig ,_TR,_TRL
-import sys
+import sys,win32utils
 import time   ,os
-from utils.hwnd import getwindowhwnd,getpidexe,ListProcess,mouseselectwindow,getExeIcon
+from utils.hwnd import getpidexe,ListProcess,mouseselectwindow,getExeIcon,testprivilege,getpidhwndfirst
 import qtawesome
 
-from gui.usefulwidget import closeashidewindow
+from gui.usefulwidget import closeashidewindow,getQMessageBox
 class AttachProcessDialog(closeashidewindow): 
         
-    iconcache={}
-    def selectwindowcallback(self,pid,hwnd,name_): 
+    
+    setcurrentpidpnamesignal=pyqtSignal(int,int)
+    def selectwindowcallback(self,pid,hwnd):
                     if pid==os.getpid():
                          return
-                    self.processEdit.setText(name_)
+                    name=getpidexe(pid,True)
+                    
+                    self.processEdit.setText(name)
                     self.processIdEdit.setText(str(pid))
-                    self.selectedp=(pid,name_,hwnd) 
+                    [_.show() for _ in self.windowtextlayoutwidgets]
+                    self.windowtext.setText(win32utils.GetWindowText(hwnd))
+                    self.selectedp=(pid,name,hwnd)
     def __init__(self ,p,callback,hookselectdialog):
         super(AttachProcessDialog, self).__init__( p ) 
+        self.setcurrentpidpnamesignal.connect(self.selectwindowcallback)
         self.setWindowFlags(self.windowFlags()&~Qt.WindowMinimizeButtonHint)
         self.resize(800,400)
-        # d=QApplication.desktop()
-        # self.move ((d.width()-self.width())/2,((d.height()-self.height())/2))
+        self.iconcache={}
+        
         self.callback=callback
         self.hookselectdialog=hookselectdialog
-        self.selectedp=(0,'',0)
-        self.setWindowTitle(_TR('选择进程'))
+        self.selectedp=None
+        self.setWindowTitle(_TR('选择进程')+" "+_TR("当前权限")+" "+_TR("管理员" if win32utils.IsUserAnAdmin() else "非管理员"))
         self.setWindowIcon(qtawesome.icon("fa.gear" )) 
         w=QWidget()
         self.layout1=QVBoxLayout()
         self.label=QLabel(_TR('如果没看见想要附加的进程，可以尝试点击下方按钮后点击游戏窗口,或者尝试使用管理员权限运行本软件') )
         self.button=QPushButton(_TR('点击此按钮后点击游戏窗口'))
-        self.button.clicked.connect(functools.partial(mouseselectwindow,self.selectwindowcallback))
+        self.button.clicked.connect(functools.partial(mouseselectwindow,self.setcurrentpidpnamesignal.emit))
         self.layout1.addWidget(self.label)
         self.layout1.addWidget(self.button)
         self.layout2=QHBoxLayout()
         self.processIdEdit=QLineEdit()
-        self.layout2.addWidget(QLabel(_TR('进程号，找不到的情况下可以手动输入')))
+        self.layout2.addWidget(QLabel(_TR('进程号')))
         self.layout2.addWidget(self.processIdEdit)
         self.processEdit=QLineEdit()
         self.layout3=QHBoxLayout()
         self.layout3.addWidget(QLabel(_TR('程序名')))
         self.layout3.addWidget(self.processEdit)
+        
+        self.windowtext=QLineEdit() 
+        self.windowtextlayoutwidgets=[QLabel(_TR('窗口名')),self.windowtext]  
+        [_.hide() for _ in self.windowtextlayoutwidgets]
+        self.layout2.addWidget(self.windowtextlayoutwidgets[0])
+        self.layout2.addWidget(self.windowtextlayoutwidgets[1])
         self.processList=QListView()
         self.buttonBox=QDialogButtonBox()
         self.buttonBox.setStandardButtons(QDialogButtonBox.Ok|QDialogButtonBox.Cancel)
         self.layout1.addLayout(self.layout2)
-        self.layout1.addLayout(self.layout3)
+        self.layout1.addLayout(self.layout3) 
         self.layout1.addWidget(self.processList)
         self.layout1.addWidget(self.buttonBox)
         w.setLayout(self.layout1)
@@ -62,10 +74,16 @@ class AttachProcessDialog(closeashidewindow):
         self.buttonBox.rejected.connect(self.close)  
         self.processList.clicked.connect(self.selectedfunc)  
         self.processIdEdit.textEdited.connect(self.editpid)  
-        self.processEdit.textEdited.connect(self.editexe)
-         
+        
+        self.processEdit.setReadOnly(True)
+        self.windowtext.setReadOnly(True)
     def showEvent(self,e):
-
+        
+        self.windowtext.clear()
+        self.processEdit.clear()
+        self.processIdEdit.clear()
+        [_.hide() for _ in self.windowtextlayoutwidgets]
+        self.selectedp=None
         self.hookselectdialog.realshowhide.emit(False)  
         ########################### 
         self.model=QStandardItemModel(self.processList)  
@@ -73,7 +91,7 @@ class AttachProcessDialog(closeashidewindow):
         self.processlist= ListProcess()
         #print(time.time()-t1)
         self.processList.setModel(self.model)
-        for pid,pexe,hwnd  in self.processlist: 
+        for pid,pexe  in self.processlist: 
             if pexe in self.iconcache:
                 icon=self.iconcache[pexe]
             else:
@@ -84,22 +102,25 @@ class AttachProcessDialog(closeashidewindow):
             self.model.appendRow(item)
         
         #print(time.time()-t1) 
-    def editpid(self,process):
-            try:
-                self.selectedp=(int(process),getpidexe(int(process)),getwindowhwnd(int(process)))
-                self.processEdit.setText(self.selectedp[1])
-            except:
-                pass
-    def editexe(self,process):
-            for i in range(self.model.rowCount()):
-                self.processList.setRowHidden(i,not (process.lower() in self.model.item(i).text().lower()))
+    def editpid(self,process): 
+        self.selectedp=(int(process),getpidexe(int(process),force=True),getpidhwndfirst(int(process)) )
+        self.processEdit.setText(self.selectedp[1])
+        [_.hide() for _ in self.windowtextlayoutwidgets]
     def selectedfunc(self,index): 
-        self.processEdit.setText(self.processlist[index.row()][1] )
-        self.processIdEdit.setText(str(self.processlist[index.row()][0]  ))
-        self.selectedp=self.processlist[index.row()] 
+        pid,pexe=self.processlist[index.row()]
+        self.processEdit.setText(pexe )
+        self.processIdEdit.setText(str(pid))
+        [_.hide() for _ in self.windowtextlayoutwidgets]
+        self.selectedp=pid,pexe,getpidhwndfirst(int(pid)) 
     def accept(self):
-        self.callback(self.selectedp)
-        self.close() 
+        if self.selectedp is None:
+             self.close() 
+        else:
+            if(not testprivilege(self.selectedp[0])): 
+                getQMessageBox(self,"错误","权限不足，请使用管理员权限运行本程序！")
+            else:
+                self.callback(self.selectedp)
+                self.close() 
 if __name__=='__main__':
     app = QApplication(sys.argv) 
     a=AttachProcessDialog()

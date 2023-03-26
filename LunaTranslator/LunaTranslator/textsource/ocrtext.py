@@ -43,20 +43,15 @@ class ocrtext(basetext):
                 else:
                     hwnduse=self.hwnd
                 rect=win32utils.GetWindowRect(hwnduse)  
+                if rect==(0,0,0,0):
+                    raise Exception
                 rect2=win32utils.GetClientRect(hwnduse)
                 windowOffset = math.floor(((rect[2]-rect[0])-rect2[2])/2)
                 h= ((rect[3]-rect[1])-rect2[3]) - windowOffset
-                # print(h)
-                # print(rect)
-                # print(rect2)
-                # print(x1-rect[0], y1-rect[1]-h, x2-x1, y2-y1)
- 
                  
                 pix = self.screen.grabWindow(hwnduse, x1-rect[0], y1-rect[1]-h, x2-x1, y2-y1) 
-                
             except:
                 self.hwnd=None
-                print_exc()
                 self.object.translation_ui.isbindedwindow=False
                 self.object.translation_ui.refreshtooliconsignal.emit()
                 pix = self.screen.grabWindow(QApplication.desktop().winId(), x1, y1, x2-x1, y2-y1) 

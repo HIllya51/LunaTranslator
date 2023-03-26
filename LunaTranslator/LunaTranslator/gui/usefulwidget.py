@@ -1,9 +1,24 @@
 
-from PyQt5.QtWidgets import QWidget, QMainWindow ,QApplication,QPushButton,QTabBar,QStylePainter,QStyleOptionTab,QStyle
+from PyQt5.QtWidgets import QWidget, QMainWindow ,QApplication,QPushButton,QTabBar,QStylePainter,QStyleOptionTab,QStyle,QMessageBox
 from PyQt5.QtGui import QFont,QCloseEvent
 from PyQt5.QtCore import Qt,pyqtSignal ,QSize ,QRect ,QPoint 
- 
+from utils.config import _TR
+
 import qtawesome 
+def getQMessageBox(parent=None,title="",text="",useok=True,usecancel=False,okcallback=None):
+    msgBox=QMessageBox(parent)
+    msgBox.setWindowTitle(_TR(title))
+    msgBox.setText(_TR(text)) 
+    btn=0
+    if useok:btn|=QMessageBox.Ok
+    if usecancel:btn|=QMessageBox.Cancel
+
+    msgBox.setStandardButtons(btn)
+    msgBox.setDefaultButton(QMessageBox.Ok)
+    ret=msgBox.exec()
+    if useok and okcallback:
+        if ret==QMessageBox.Ok:
+            okcallback()
 class closeashidewindow(QMainWindow): 
     showsignal=pyqtSignal() 
     realshowhide=pyqtSignal(bool)

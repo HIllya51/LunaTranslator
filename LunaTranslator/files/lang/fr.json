@@ -199,7 +199,6 @@
     "获取中": "Acquisition en cours",
     "如果没看见想要附加的进程，可以尝试点击下方按钮后点击游戏窗口,或者尝试使用管理员权限运行本软件": "Si vous ne voyez pas le processus que vous voulez ajouter, vous pouvez essayer de cliquer sur le bouton ci - dessous et de cliquer sur la fenêtre de jeu, ou essayer d'exécuter le logiciel avec les privilèges d'administrateur",
     "点击此按钮后点击游戏窗口": "Cliquez sur ce bouton et cliquez sur la fenêtre de jeu",
-    "进程号，找不到的情况下可以手动输入": "Numéro de processus, peut être entré manuellement s'il n'est pas trouvé",
     "程序名": "Nom du programme",
     "文本": "Texte",
     "插入特殊码": "Insérer un code spécial",
@@ -362,7 +361,6 @@
     "导出翻译记录为json文件": "Exporter les enregistrements de traduction en tant que fichiers json",
     "选择路径": "Choisir un chemin",
     "保存路径": "Sauvegarder le chemin",
-    "格式错误！": "Erreur de format!",
     "首选翻译": "Traduction préférée",
     "转移字符串替换": "Remplacement de chaîne de transfert",
     "转义字符串替换": "Remplacement de chaîne d'échappement",
@@ -543,5 +541,14 @@
     "插入图片": "Insérer une image",
     "启用Textractor_Base": "Activer textractor Base",
     "启用Textractor_Extra": "Activer textractor Extra",
-    "去除重复行(S1S1S1S2S2S2->S1S2)": "Supprimer les lignes répétitives (s1s1s1s2s2s2 - > s1s2)"
+    "去除重复行(S1S1S1S2S2S2->S1S2)": "Supprimer les lignes répétitives (s1s1s1s2s2s2 - > s1s2)",
+    "当前权限": "Autorisations actuelles",
+    "非管理员": "Non - Administrateur",
+    "管理员": "Administrateur",
+    "错误": "Erreur",
+    "权限不足，请使用管理员权限运行本程序！": "Autorisations insuffisantes, exécutez ce programme avec les droits d'administrateur!",
+    "所选文件格式错误！": "Mauvais format de fichier sélectionné!",
+    "修改成功！": "Modification réussie!",
+    "进程号": "Numéro de processus",
+    "窗口名": "Nom de la fenêtre"
 }

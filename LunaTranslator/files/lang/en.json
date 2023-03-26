@@ -224,7 +224,6 @@
     "选择进程": "Select Process",
     "如果没看见想要附加的进程，可以尝试点击下方按钮后点击游戏窗口,或者尝试使用管理员权限运行本软件": "If you do not see the process you want to attach, you can try to click the button below and then click the game window, or try to run the software with administrator privileges",
     "点击此按钮后点击游戏窗口": "Click this button and then click the game window",
-    "进程号，找不到的情况下可以手动输入": "The process number can be entered manually if it cannot be found",
     "程序名": "Program name",
     "替换内容": "replace content",
     "重复次数": "Repetitions",
@@ -362,7 +361,6 @@
     "导出翻译记录为json文件": "Export translation records as json files",
     "选择路径": "Select path",
     "保存路径": "Save Path",
-    "格式错误！": "Format error!",
     "首选翻译": "Preferred translation",
     "转移字符串替换": "Transfer string replacement",
     "转义字符串替换": "Escape string replacement",
@@ -543,5 +541,14 @@
     "插入图片": "Insert Picture",
     "启用Textractor_Base": "Enable Texttracker_ Base",
     "启用Textractor_Extra": "Enable Texttracker_ Extra",
-    "去除重复行(S1S1S1S2S2S2->S1S2)": "Remove duplicate rows (S1S1S1S2S2S2 ->S1S2)"
+    "去除重复行(S1S1S1S2S2S2->S1S2)": "Remove duplicate rows (S1S1S1S2S2S2 ->S1S2)",
+    "当前权限": "Current permissions",
+    "非管理员": "Non Administrator",
+    "管理员": "administrators",
+    "错误": "error",
+    "权限不足，请使用管理员权限运行本程序！": "Insufficient permissions, please use administrator permissions to run this program!",
+    "所选文件格式错误！": "The selected file format is incorrect!",
+    "修改成功！": "Modified successfully!",
+    "进程号": "Process number",
+    "窗口名": "Window Name"
 }

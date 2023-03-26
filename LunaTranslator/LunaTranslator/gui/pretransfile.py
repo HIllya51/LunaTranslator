@@ -7,7 +7,7 @@ from traceback import print_exc
 import os
 from utils.config import globalconfig,_TR
 
-
+from gui.usefulwidget import getQMessageBox
 def sqlite2json(self):
     f=QFileDialog.getOpenFileName(directory='./translation_record', filter="*.sqlite")
     if f[0]=='' :
@@ -38,12 +38,7 @@ def sqlite2json(self):
         
     except:
         print_exc()
-        msgBox=QMessageBox(self)
-        msgBox.setWindowTitle('error')
-        msgBox.setText(_TR('格式错误！')) 
-        msgBox.setStandardButtons(QMessageBox.Ok  );
-        msgBox.setDefaultButton(QMessageBox.Ok);
-        msgBox.exec()
+        getQMessageBox(self,"错误","所选文件格式错误！")
         return 
 
     dialog = QDialog(self,Qt.WindowCloseButtonHint)  # 自定义一个dialog

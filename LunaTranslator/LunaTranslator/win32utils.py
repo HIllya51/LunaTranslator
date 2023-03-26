@@ -1,5 +1,5 @@
 
-from ctypes import  c_int,POINTER,pointer,c_uint,windll,c_char_p,create_unicode_buffer,c_wchar_p,c_void_p,c_byte,c_size_t,c_bool,c_ushort,create_string_buffer
+from ctypes import  c_int,POINTER,pointer,c_uint,windll,c_char_p,create_unicode_buffer,c_wchar_p,c_void_p,c_byte,c_size_t,c_bool,c_ushort,create_string_buffer,c_short
 from ctypes import Structure,c_int,POINTER,c_uint,WINFUNCTYPE,c_void_p,sizeof,byref
 import ctypes
 BOOL=c_int
@@ -188,6 +188,7 @@ def GetModuleFileNameEx(hHandle,hmodule):
             v=v.replace(device,mp[device])
             return v
         except:
+            print(v)
             return None
     else:
         return v
@@ -242,8 +243,10 @@ def GetForegroundWindow():
     return _GetForegroundWindow()
 def GetWindowRect(hwnd):
     _rect=RECT()
-    _GetWindowRect(hwnd,pointer(_rect))
-    return (_rect.left,_rect.top,_rect.right,_rect.botton)
+    if (_GetWindowRect(hwnd,pointer(_rect))):
+        return (_rect.left,_rect.top,_rect.right,_rect.botton)
+    else:
+        return (0,0,0,0)
 def GetClientRect(hwnd): 
     _rect=RECT()
     _GetClientRect(hwnd,pointer(_rect))
@@ -481,3 +484,20 @@ def mciSendString(s):
 #     _RegEnumValueW(hkey,dwIndex,key,pointer(c_uint(MaxValueNameLen)),None,pointer(vType),value,pointer(c_uint(MaxValueLen)))
 #     return key.value,value.value
 
+_IsUserAnAdmin=_shell32.IsUserAnAdmin
+
+def IsUserAnAdmin():
+    try:
+        return bool(_IsUserAnAdmin())
+    except:
+        return False
+
+_GetKeyState=_user32.GetKeyState
+_GetKeyState.restype=c_short
+def GetKeyState(key):
+    return _GetKeyState(key)
+
+GA_ROOT=2
+_GetAncestor=_user32.GetAncestor
+def GetAncestor(hwnd):
+    return _GetAncestor(hwnd,GA_ROOT)

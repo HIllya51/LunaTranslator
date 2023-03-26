@@ -199,7 +199,6 @@
     "获取中": "En adquisición",
     "如果没看见想要附加的进程，可以尝试点击下方按钮后点击游戏窗口,或者尝试使用管理员权限运行本软件": "Si no ve el proceso que desea agregar, puede intentar hacer clic en la ventana del juego después de hacer clic en el botón de abajo, o intentar ejecutar este software con los permisos del Administrador.",
     "点击此按钮后点击游戏窗口": "Haga clic en este botón y haga clic en la ventana del juego.",
-    "进程号，找不到的情况下可以手动输入": "Número de proceso, se puede introducir manualmente si no se puede encontrar",
     "程序名": "Cheng xuming",
     "文本": "Texto",
     "插入特殊码": "Insertar código especial",
@@ -362,7 +361,6 @@
     "导出翻译记录为json文件": "Exportar el registro de traducción como archivo json",
     "选择路径": "Elegir el camino",
     "保存路径": "Guardar ruta",
-    "格式错误！": "¡Error de formato!",
     "首选翻译": "Traducción preferida",
     "转移字符串替换": "Reemplazar cadena de transferencia",
     "转义字符串替换": "Reemplazo de cadena de escape",
@@ -543,5 +541,14 @@
     "插入图片": "Insertar imagen",
     "启用Textractor_Base": "Activar textrator Base",
     "启用Textractor_Extra": "Activar textrator Extra",
-    "去除重复行(S1S1S1S2S2S2->S1S2)": "Eliminar filas duplicadas (s1s1s1s2s2 - > s1s2)"
+    "去除重复行(S1S1S1S2S2S2->S1S2)": "Eliminar filas duplicadas (s1s1s1s2s2 - > s1s2)",
+    "当前权限": "Permisos actuales",
+    "非管理员": "No Administrador",
+    "管理员": "Administrador",
+    "错误": "Error",
+    "权限不足，请使用管理员权限运行本程序！": "¡Permisos insuficientes, ¡ use los permisos de Administrador para ejecutar este programa!",
+    "所选文件格式错误！": "¡¡ el archivo seleccionado tiene un formato incorrecto!",
+    "修改成功！": "¡Modificación exitosa!",
+    "进程号": "Número de proceso",
+    "窗口名": "Nombre de la ventana"
 }

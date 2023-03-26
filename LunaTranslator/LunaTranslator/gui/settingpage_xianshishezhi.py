@@ -9,7 +9,7 @@ from gui.inputdialog import multicolorset
 from utils.config import globalconfig ,_TR,_TRL
 
 from gui.inputdialog import autoinitdialog,getsomepath1
-from utils.somedef import key_first,key_first_reg,key_second,key_second_reg
+from gui.usefulwidget import getQMessageBox
 def __changeuibuttonstate(self,x):  
                 self.object.translation_ui.refreshtoolicon()
                 self.show_hira_switch .setEnabled(x)
@@ -138,12 +138,7 @@ def setTabThree_lazy(self) :
                                 b=ff.read() 
                         with open(os.path.join(globalconfig['magpie10path'],'Magpie.Core.dll'),'wb') as ff:
                                 ff.write(b)
-                        msgBox=QMessageBox(self) 
-                        msgBox.setWindowTitle('')
-                        msgBox.setText(_TR('成功')) 
-                        msgBox.setStandardButtons(QMessageBox.Ok  );
-                        msgBox.setDefaultButton(QMessageBox.Ok);
-                        msgBox.exec()
+                        getQMessageBox(self,"成功","修改成功！") 
                 except:
                         print_exc()
                         os.startfile(os.path.abspath('./files/plugins/Magpie_v0.10.0-preview2'))

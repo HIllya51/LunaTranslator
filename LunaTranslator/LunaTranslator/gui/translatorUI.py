@@ -420,7 +420,7 @@ class QUnFrameWindow(resizableframeless):
             self.showhidestate=not self.showhidestate 
             self.refreshtoolicon()
             self.object.range_ui.setVisible(self.showhidestate) 
-    def bindcropwindowcallback(self,pid,hwnd,name_): 
+    def bindcropwindowcallback(self,pid,hwnd): 
             _pid=os.getpid()
             self.object.textsource.hwnd= hwnd if pid!=_pid else None
             self.object.textsource.pid= pid if pid!=_pid else None

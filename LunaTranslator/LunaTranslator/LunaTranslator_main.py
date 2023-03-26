@@ -20,7 +20,7 @@ from utils import somedef
 from gui.showword import searchwordW
 from gui.rangeselect    import rangeadjust
 
-from utils.hwnd import pid_running,getpidexe ,getpidhwnds,ListProcess,getScreenRate
+from utils.hwnd import pid_running,getpidexe ,getpidhwndfirst,ListProcess,getScreenRate
 
 from textsource.copyboard import copyboard   
 from textsource.textractor import textractor   
@@ -319,7 +319,7 @@ class MAINUI(QObject) :
             checkifnewgame(pexe) 
             #   
             if globalconfig['sourcestatus']['textractor']['use']:
-                self.textsource=textractor(self.textgetmethod,self.hookselectdialog,pid,hwnd,pexe )  
+                self.textsource=textractor(self.textgetmethod,self.hookselectdialog,pid,hwnd,pexe ,dontremove=True)  
             elif globalconfig['sourcestatus']['embedded']['use']:
                 self.textsource=embedded(self.textgetmethod,self.hookselectdialog,pid,hwnd,pexe, self)  
             
@@ -410,7 +410,6 @@ class MAINUI(QObject) :
                     aclass=importlib.import_module('cishu.'+type_)
                     aclass=getattr(aclass,type_)
                 except:
-                    print_exc()
                     return 
                 class cishuwrapper:
                     def __init__(self,_type) -> None:
@@ -445,9 +444,9 @@ class MAINUI(QObject) :
                         name_=getpidexe(pid)
                           
                 
-                        if name_  in savehook_new_list:   
+                        if name_  and name_ in savehook_new_list:   
                             lps=ListProcess()
-                            for pid_real,_exe,_ in lps:
+                            for pid_real,_exe  in lps:
                                 if _exe==name_: 
                                     self.textsource=None
                                     if globalconfig['sourcestatus']['textractor']['use']:
@@ -472,9 +471,9 @@ class MAINUI(QObject) :
                                 if win32utils.GetWindowThreadProcessId( fhwnd )[0]==pid:
                                     self.textsource.hwnd=fhwnd
                                 else:
-                                    pidhwnd=getpidhwnds(pid)
-                                    if len(pidhwnd)==1:
-                                        self.textsource.hwnd=pidhwnd[0]
+                                    pidhwnd=getpidhwndfirst(pid)
+                                    if pidhwnd:
+                                        self.textsource.hwnd=pidhwnd
                     if needend:
                         self.textsource=None  
             except:

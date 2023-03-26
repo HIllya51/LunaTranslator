@@ -199,7 +199,6 @@
     "获取中": "Alıyorum",
     "如果没看见想要附加的进程，可以尝试点击下方按钮后点击游戏窗口,或者尝试使用管理员权限运行本软件": "Eğer bağlamak istediğiniz süreci görmezseniz, aşağıdaki düğmeye t ıklamayı deneyebilirsiniz ve oyun penceresine tıklamayı deneyebilirsiniz, ya da yönetici hakları ile yazılımı çalışmayı deneyebilirsiniz.",
     "点击此按钮后点击游戏窗口": "Bu düğmeye tıklayıp oyun penceresine tıklayın",
-    "进程号，找不到的情况下可以手动输入": "Eğer bulunamazsa süreç numarası el olarak girebilir",
     "程序名": "Program ın adı",
     "文本": "metin",
     "插入特殊码": "Özel kodu ekle",
@@ -362,7 +361,6 @@
     "导出翻译记录为json文件": "Çeviri kayıtları json dosyaları olarak dışarı aktar",
     "选择路径": "Yolu seç",
     "保存路径": "Yolu Kaydet",
-    "格式错误！": "Format hatası!",
     "首选翻译": "Tercih edilen çeviri",
     "转移字符串替换": "Kelime değiştirmesi",
     "转义字符串替换": "Escape string yerine",
@@ -543,5 +541,14 @@
     "插入图片": "Resim Gir",
     "启用Textractor_Base": "Metin izleyici etkinleştir Temel",
     "启用Textractor_Extra": "Metin izleyici etkinleştir Ekstra",
-    "去除重复行(S1S1S1S2S2S2->S1S2)": "Çiftli satırları sil (S1S1S1S2S2S2 ->S1S2)"
+    "去除重复行(S1S1S1S2S2S2->S1S2)": "Çiftli satırları sil (S1S1S1S2S2S2 ->S1S2)",
+    "当前权限": "Güncel izinler",
+    "非管理员": "Yönetici olmayan",
+    "管理员": "yöneticiler",
+    "错误": "hata",
+    "权限不足，请使用管理员权限运行本程序！": "Yeterince izin yok, lütfen bu program ı çalıştırmak için yönetici izini kullanın!",
+    "所选文件格式错误！": "Seçili dosya format ı yanlış!",
+    "修改成功！": "Başarılı değiştirildi!",
+    "进程号": "İşlem numarası",
+    "窗口名": "Pencere İsmi"
 }
