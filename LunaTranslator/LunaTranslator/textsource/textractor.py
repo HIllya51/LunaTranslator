@@ -12,7 +12,7 @@ from utils.hwnd import getarch
 from textsource.textsourcebase import basetext 
 from utils.utils import checkchaos  
 class textractor(basetext  ): 
-    def __init__(self,textgetmethod,hookselectdialog,pid,hwnd,pname  ,autostarthookcode=None,needinserthookcode=None,dontremove=False) :
+    def __init__(self,textgetmethod,hookselectdialog,pids,hwnd,pname  ,autostarthookcode=None,needinserthookcode=None,dontremove=False) :
         if autostarthookcode is None:
             autostarthookcode=[]
         if needinserthookcode is None:
@@ -21,7 +21,7 @@ class textractor(basetext  ):
         if len(autostarthookcode)==0:
             hookselectdialog.realshowhide.emit(True)
         self.newline=Queue()  
-        self.arch=getarch(pid) 
+        self.arch=getarch(pids[0]) 
         self.lock=threading.Lock()
         self.dontremove=dontremove
         self.hookdatacollecter=OrderedDict() 
@@ -33,7 +33,7 @@ class textractor(basetext  ):
          
         self.hookselectdialog=hookselectdialog
         
-        self.pid=pid
+        self.pids=pids
         self.pname=pname
         self.hwnd=hwnd
         self.runonce_line=''
@@ -78,26 +78,27 @@ class textractor(basetext  ):
             
     def setdelay(self):
         delay=globalconfig['textthreaddelay']
-        self.u16lesubprocess.writer(f'+{delay} -P{self.pid}\n') 
+        self.pidswrite(f'+{delay}')
+    def pidswrite(self,prefix,idx=None):
+        print(prefix,self.pids,idx)
+        for pid in self.pids:
+            self.u16lesubprocess.writer(f'{prefix} -P{pid}\n',idx) 
     def setcodepage(self):
         try:
             cpi=savehook_new_data[self.pname]["codepage_index"]
             cp= somedef.codepage_real[cpi]
         except:
             cp=932
-        self.u16lesubprocess.writer(f'={cp} -P{self.pid}\n') 
+        self.pidswrite(f'={cp}')
     def findhook(self ):
-        self.u16lesubprocess.writer(f'find -P{self.pid}\n',0) 
-    def inserthook(self,hookcode): 
-        print(f'{hookcode} -P{self.pid}')
+        self.pidswrite(f'find',0)
+    def inserthook(self,hookcode):
         hookcode=hookcode.replace('\r','').replace('\n','').replace('\t','')
-        self.u16lesubprocess.writer(f'{hookcode} -P{self.pid}\n',0) 
+        self.pidswrite(hookcode,0)
     def attach(self):  
-        self.u16lesubprocess.writer(f'attach -P{self.pid}\n') 
-        print(f'attach -P{self.pid} ')
+        self.pidswrite('attach')
     def detach(self):
-        self.u16lesubprocess.writer(f'detach -P{self.pid}\n') 
-        print(f'detach -P{self.pid} ')
+        self.pidswrite('detach')
     def strictmatch(self,thread_tp_ctx,thread_tp_ctx2,HookCode,autostarthookcode):
         return (int(thread_tp_ctx,16)&0xffff,thread_tp_ctx2,HookCode)==(int(autostarthookcode[-4],16)&0xffff,autostarthookcode[-3],autostarthookcode[-1])
 
@@ -177,7 +178,7 @@ class textractor(basetext  ):
                             if address not in self.removedaddress: 
                                 self.removedaddress.append(address)
                                 address=int(address,16)
-                                self.u16lesubprocess.writer(f'-{address} -P{self.pid}\n')
+                                self.pidswrite(f'-{address}')
          
             
             if hasnewhook :

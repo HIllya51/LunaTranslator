@@ -9,6 +9,7 @@ from utils.utils import argsort
 def pid_running(pid): 
     try:
         process =win32utils.OpenProcess(win32con.SYNCHRONIZE, False, pid);
+        if(process==0):return False
         ret =win32utils.WaitForSingleObject(process, 0);
         win32utils.CloseHandle(process);
         return (ret == win32con.WAIT_TIMEOUT);
@@ -56,10 +57,7 @@ def getpidexe(pid,force=False):
         if(hwnd1==0):
                 name_=None
         else:
-                try:
-                        name_ = win32utils.GetModuleFileNameEx( hwnd1,None )
-                except:
-                        name_=None
+                name_ = win32utils.GetModuleFileNameEx( hwnd1,None )
         win32utils.CloseHandle(hwnd1)
         return name_
 def testprivilege(pid):
@@ -96,15 +94,20 @@ def ListProcess():
                         kv[exe]['pid'].append(pid)
                 else:
                         kv[exe]={'pid':[pid]}
-        for exe in kv:
-                if len(kv[exe]['pid'])>1:
-                        mems=[getprocessmem(_) for _ in kv[exe]['pid']]
-                        _i=argsort(mems)
-                        kv[exe]['pid']=[kv[exe]['pid'][_i[-1]]]
+        # for exe in kv:
+        #         if len(kv[exe]['pid'])>1:
+        #                 mems=[getprocessmem(_) for _ in kv[exe]['pid']]
+        #                 _i=argsort(mems)
+        #                 kv[exe]['pid']=[kv[exe]['pid'][_i[-1]]]
         xxx=[]
         for exe in kv:
-                xxx.append([kv[exe]['pid'][0],exe])
+                xxx.append([kv[exe]['pid'],exe])
         return xxx
+def getbigestmempid(pids):
+         
+                        mems=[getprocessmem(_) for _ in pids]
+                        _i=argsort(mems)
+                        return  _i[-1] 
 def getExeIcon( name ): 
             large = win32utils.ExtractIconEx(name)
             if large:

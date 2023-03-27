@@ -8,19 +8,19 @@ from embedded.rpcman3 import RpcServer
 from embedded.gameagent3 import GameAgent 
 class embedded(basetext  ): 
      
-    def __init__(self,textgetmethod,hookselectdialog,pid,hwnd,pname,parent) : 
+    def __init__(self,textgetmethod,hookselectdialog,pids,hwnd,pname,parent) : 
          
-        self.textgetmethod, self.pid,self.hwnd,self.pname =textgetmethod,pid,hwnd,pname
+        self.textgetmethod, self.pids,self.hwnd,self.pname =textgetmethod,pids,hwnd,pname
         self.parent=parent 
         
         hookselectdialog.changeprocessclearsignal.emit()
         self.hookselectdialog=hookselectdialog
         self.newline=queue.Queue()
         self.agentreceiveddata='' 
-        if getarch(pid)!='86':
+        if getarch(pids[0])!='86':
             self.embeddedfailed(_TR("暂不支持64程序"))
         else:
-            self.parent.startembedsignal.emit(pid,self) 
+            self.parent.startembedsignal.emit(pids[0],self) 
         
         super(embedded,self).__init__(textgetmethod,*self.checkmd5prefix(pname))
     def timeout(self): 

@@ -164,7 +164,7 @@ def minmaxmoveobservefunc(self):
                  
                 
                 try:
-                    if self.object.textsource.pid: 
+                    if self.object.textsource.hwnd: 
                         hwnd=self.object.textsource.hwnd
                         if hwnd!=self.lasthwnd:
                                 self.lastminmax=None

@@ -7,7 +7,7 @@ from traceback import print_exc
 from utils.config import globalconfig ,_TR,_TRL
 import sys,win32utils
 import time   ,os
-from utils.hwnd import getpidexe,ListProcess,mouseselectwindow,getExeIcon,testprivilege,getpidhwndfirst
+from utils.hwnd import getpidexe,ListProcess,mouseselectwindow,getExeIcon,testprivilege,getpidhwndfirst,getbigestmempid
 import qtawesome
 
 from gui.usefulwidget import closeashidewindow,getQMessageBox
@@ -24,7 +24,7 @@ class AttachProcessDialog(closeashidewindow):
                     self.processIdEdit.setText(str(pid))
                     [_.show() for _ in self.windowtextlayoutwidgets]
                     self.windowtext.setText(win32utils.GetWindowText(hwnd))
-                    self.selectedp=(pid,name,hwnd)
+                    self.selectedp=([pid],name,hwnd)
     def __init__(self ,p,callback,hookselectdialog):
         super(AttachProcessDialog, self).__init__( p ) 
         self.setcurrentpidpnamesignal.connect(self.selectwindowcallback)
@@ -102,25 +102,43 @@ class AttachProcessDialog(closeashidewindow):
             self.model.appendRow(item)
         
         #print(time.time()-t1) 
+    def safesplit(self,process):
+        try:
+             return [int(_) for _ in  process.split(',')]
+        except:
+             return []
     def editpid(self,process): 
-        self.selectedp=(int(process),getpidexe(int(process),force=True),getpidhwndfirst(int(process)) )
+        pids=self.safesplit(process)
+        self.selectedp=(pids,getpidexe(pids[0],force=True),self.guesshwnd(pids))
         self.processEdit.setText(self.selectedp[1])
         [_.hide() for _ in self.windowtextlayoutwidgets]
-    def selectedfunc(self,index): 
-        pid,pexe=self.processlist[index.row()]
+    def selectedfunc(self,index):
+        pids,pexe=self.processlist[index.row()]
         self.processEdit.setText(pexe )
-        self.processIdEdit.setText(str(pid))
+        self.processIdEdit.setText(','.join([str(pid) for pid in pids]))
         [_.hide() for _ in self.windowtextlayoutwidgets]
-        self.selectedp=pid,pexe,getpidhwndfirst(int(pid)) 
+        self.selectedp=pids,pexe,self.guesshwnd(pids)
+    def guesshwnd(self,pids):
+         for pid in pids:
+              hwnd=getpidhwndfirst(pid)
+              if(hwnd)!=0:
+                   return hwnd
+         return 0
     def accept(self):
         if self.selectedp is None:
              self.close() 
         else:
-            if(not testprivilege(self.selectedp[0])): 
-                getQMessageBox(self,"错误","权限不足，请使用管理员权限运行本程序！")
-            else:
-                self.callback(self.selectedp)
-                self.close() 
+            if self.selectedp[1] is None:
+                getQMessageBox(self,"错误","无法识别的路径！")
+                return
+            for pid in self.selectedp[0]:
+                 
+                if(not testprivilege(pid)): 
+                    getQMessageBox(self,"错误","权限不足，请使用管理员权限运行本程序！")
+                    return
+        
+            self.callback(self.selectedp)
+            self.close() 
 if __name__=='__main__':
     app = QApplication(sys.argv) 
     a=AttachProcessDialog()

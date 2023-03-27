@@ -20,7 +20,7 @@ from utils import somedef
 from gui.showword import searchwordW
 from gui.rangeselect    import rangeadjust
 
-from utils.hwnd import pid_running,getpidexe ,getpidhwndfirst,ListProcess,getScreenRate
+from utils.hwnd import pid_running,getpidexe ,getpidhwndfirst,ListProcess,getScreenRate,getbigestmempid
 
 from textsource.copyboard import copyboard   
 from textsource.textractor import textractor   
@@ -316,13 +316,13 @@ class MAINUI(QObject) :
         
     def selectprocess(self,selectedp): 
             self.textsource=None
-            pid,pexe,hwnd=(  selectedp)   
+            pids,pexe,hwnd=(  selectedp)   
             checkifnewgame(pexe) 
             #   
             if globalconfig['sourcestatus']['textractor']['use']:
-                self.textsource=textractor(self.textgetmethod,self.hookselectdialog,pid,hwnd,pexe ,dontremove=True)  
+                self.textsource=textractor(self.textgetmethod,self.hookselectdialog,pids,hwnd,pexe ,dontremove=True)  
             elif globalconfig['sourcestatus']['embedded']['use']:
-                self.textsource=embedded(self.textgetmethod,self.hookselectdialog,pid,hwnd,pexe, self)  
+                self.textsource=embedded(self.textgetmethod,self.hookselectdialog,pids,hwnd,pexe, self)  
             
 
     #@threader
@@ -447,39 +447,36 @@ class MAINUI(QObject) :
                 
                         if name_  and name_ in savehook_new_list:   
                             lps=ListProcess()
-                            for pid_real,_exe  in lps:
+                            for pids,_exe  in lps:
                                 if _exe==name_: 
                                     self.textsource=None
                                     if globalconfig['sourcestatus']['textractor']['use']:
                                         needinserthookcode=savehook_new_data[name_]['needinserthookcode']
-                                        self.textsource=textractor(self.textgetmethod,self.hookselectdialog,pid_real,hwnd,name_ ,autostarthookcode=savehook_new_data[name_]['hook'],needinserthookcode=needinserthookcode)
+                                        self.textsource=textractor(self.textgetmethod,self.hookselectdialog,pids,hwnd,name_ ,autostarthookcode=savehook_new_data[name_]['hook'],needinserthookcode=needinserthookcode)
                                     elif globalconfig['sourcestatus']['embedded']['use']:
-                                        self.textsource=embedded(self.textgetmethod,self.hookselectdialog,pid_real,hwnd,name_  ,self)
+                                        self.textsource=embedded(self.textgetmethod,self.hookselectdialog,pids,hwnd,name_  ,self)
                                     break
                 
                 else: 
-                    pid=self.textsource.pid
+                    pids=self.textsource.pids
                     hwnd=self.textsource.hwnd
                     needend=False 
-                    if pid_running(pid)==False :
+                    if sum([int(pid_running(pid)) for pid in pids])==0:
                         needend=True
-                    elif win32utils.GetWindowThreadProcessId( hwnd )[0]==0: 
+                    elif hwnd==0 or win32utils.GetWindowThreadProcessId( hwnd )[0]==0: 
                             time.sleep(0.5)
-                            if self.textsource.pid==pid and   pid_running(pid)==False:
+                            if sum([int(pid_running(pid)) for pid in pids])==0:
                                 needend=True
                             else: 
                                 fhwnd=win32utils.GetForegroundWindow()
-                                if win32utils.GetWindowThreadProcessId( fhwnd )[0]==pid:
+                                if hwnd==0 and win32utils.GetWindowThreadProcessId( fhwnd )[1] in pids:
                                     self.textsource.hwnd=fhwnd
-                                else:
-                                    pidhwnd=getpidhwndfirst(pid)
-                                    if pidhwnd:
-                                        self.textsource.hwnd=pidhwnd
+                                    
                     if needend:
                         self.textsource=None  
             except:
-                        pass
-                        #print_exc()
+                       
+                       print_exc()
     def setontopthread(self):
         while self.isrunning:
             #self.translation_ui.keeptopsignal.emit() 
