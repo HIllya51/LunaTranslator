@@ -2,6 +2,7 @@
 from ctypes import  c_int,POINTER,pointer,c_uint,windll,c_char_p,create_unicode_buffer,c_wchar_p,c_void_p,c_byte,c_size_t,c_bool,c_ushort,create_string_buffer,c_short
 from ctypes import Structure,c_int,POINTER,c_uint,WINFUNCTYPE,c_void_p,sizeof,byref
 import ctypes
+from traceback import print_exc
 BOOL=c_int
 WORD=c_ushort
 DWORD=c_uint
@@ -162,12 +163,36 @@ _GetLogicalDrives=_kernel32.GetLogicalDrives
 _QueryDosDeviceW=_kernel32.QueryDosDeviceW
 _QueryDosDeviceW.argtypes=c_wchar_p,c_wchar_p,c_uint
 
-def GetModuleFileNameEx(hHandle,hmodule):
+try:
+    _GetProcessImageFileNameW=_psapi.GetProcessImageFileNameW
+except:
+    _GetProcessImageFileNameW=_kernel32.GetProcessImageFileNameW
+_GetProcessImageFileNameW.argtypes=c_void_p,c_wchar_p,c_uint
+
+_Mpr=windll.Mpr
+_WNetGetConnectionW=_Mpr.WNetGetConnectionW
+_WNetGetConnectionW.argtypes=c_wchar_p,c_wchar_p,c_void_p
+
+_GetLogicalDriveStringsW=_kernel32.GetLogicalDriveStringsW
+_GetLogicalDriveStringsW.argtypes=c_uint,c_wchar_p
+
+_GetCurrentDirectoryW=_kernel32.GetCurrentDirectoryW
+_GetCurrentDirectoryW.argtypes=c_uint,c_wchar_p
+def GetProcessFileName(hHandle):
+    import os
+    
     w=create_unicode_buffer(65535)
-    _GetModuleFileNameExW(hHandle,hmodule,w,65535)
+    if(
+        _GetModuleFileNameExW(hHandle,None,w,65535)==0 
+        and 
+        _GetProcessImageFileNameW(hHandle,w,65535)==0
+        ):
+        return 
+       
     
     v=w.value
     if v[0]=='\\':
+        print(v)
         device=v.split('\\')
         device=f'\\{device[1]}\\{device[2]}'
         lg=_GetLogicalDrives()
@@ -183,13 +208,14 @@ def GetModuleFileNameEx(hHandle,hmodule):
         for A in save:
             if _QueryDosDeviceW(chr(A)+':',buf,65535)!=0:
                 mp[buf.value]=chr(A)+':'
+                #print(buf.value,chr(A)+':')
         
         try:
             v=v.replace(device,mp[device])
             return v
-        except:
-            print(v)
-            return None
+        except: 
+                print_exc()
+                return None
     else:
         return v
     

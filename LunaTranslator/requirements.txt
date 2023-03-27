@@ -28,7 +28,7 @@ pykakasi==2.2.1
 
 QtAwesome==1.1.1
 
-nuitka==1.4.8
+nuitka==1.5.3
 imageio
 
 cffi==1.14.5

@@ -51,14 +51,19 @@ def getarch(pid):
         except:
                 arch=None
         return arch
-def getpidexe(pid,force=False):
+def getpidexe_x(pid,force=False):
         privi=win32con.PROCESS_QUERY_LIMITED_INFORMATION if force else win32con.PROCESS_ALL_ACCESS
         hwnd1=win32utils.OpenProcess(privi,False, (pid))
         if(hwnd1==0):
                 name_=None
         else:
-                name_ = win32utils.GetModuleFileNameEx( hwnd1,None )
+                name_ = win32utils.GetProcessFileName( hwnd1)
         win32utils.CloseHandle(hwnd1)
+        return name_
+def getpidexe(pid,force=False):
+        name_=getpidexe_x(pid,force)
+        if force and  name_ is None:
+                name_=getpidexe_x(pid,False)
         return name_
 def testprivilege(pid):
        hwnd1=win32utils.OpenProcess(win32con.PROCESS_ALL_ACCESS,False, (pid))
