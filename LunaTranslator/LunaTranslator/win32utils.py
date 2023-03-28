@@ -76,6 +76,10 @@ class PROCESS_INFORMATION(Structure):
                ("dwProcessId",      c_uint),
                ("dwThreadId",       c_uint),
               ]
+    
+class UNIVERSAL_NAME_INFO(Structure):
+    _fields_ = [("lpUniversalName", c_wchar_p)]
+
 _user32=windll.User32
 _gdi32=windll.Gdi32
 _shell32=windll.Shell32
@@ -173,6 +177,9 @@ _Mpr=windll.Mpr
 _WNetGetConnectionW=_Mpr.WNetGetConnectionW
 _WNetGetConnectionW.argtypes=c_wchar_p,c_wchar_p,c_void_p
 
+_WNetGetUniversalNameW=_Mpr.WNetGetUniversalNameW
+_WNetGetUniversalNameW.argtypes=c_wchar_p,c_uint,c_wchar_p,POINTER(c_uint)
+
 _GetLogicalDriveStringsW=_kernel32.GetLogicalDriveStringsW
 _GetLogicalDriveStringsW.argtypes=c_uint,c_wchar_p
 
@@ -192,7 +199,6 @@ def GetProcessFileName(hHandle):
     
     v=w.value
     if v[0]=='\\':
-        print(v)
         device=v.split('\\')
         device=f'\\{device[1]}\\{device[2]}'
         lg=_GetLogicalDrives()
@@ -204,16 +210,27 @@ def GetProcessFileName(hHandle):
             lg=lg//2
             start+=1
         mp={}
+        network_drive_map = {}
         buf=create_unicode_buffer(65535)
         for A in save:
             if _QueryDosDeviceW(chr(A)+':',buf,65535)!=0:
                 mp[buf.value]=chr(A)+':'
                 #print(buf.value,chr(A)+':')
-        
+
+            # Get network drive 
+            if _WNetGetUniversalNameW(chr(A)+':', 1, buf, byref(c_uint(65535)))==0:
+                network_drive_map[ctypes.cast(buf,POINTER(UNIVERSAL_NAME_INFO)).contents.lpUniversalName]=chr(A)+':'
+
+
         try:
             v=v.replace(device,mp[device])
             return v
         except: 
+                # Try network drive
+                for network_path, drive_letter in network_drive_map.items():
+                    if v.startswith(network_path):
+                        v = v.replace(network_path, drive_letter)
+                        return v
                 print_exc()
                 return None
     else:
