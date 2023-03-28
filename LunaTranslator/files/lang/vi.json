@@ -550,5 +550,8 @@
     "所选文件格式错误！": "Lỗi định dạng tập tin đã chọn!",
     "修改成功！": "Sửa đổi thành công!",
     "进程号": "Số tiến trình",
-    "窗口名": "Tên cửa sổ"
+    "窗口名": "Tên cửa sổ",
+    "去除重复行(ABCDBCDCDD->ABCD)": "Loại bỏ các dòng trùng lặp (ABCDBCDCDD ->ABCD)",
+    "去除重复行(AABABCABCD->ABCD)": "Loại bỏ hàng trùng lặp (AABABCABCD ->ABCD)",
+    "无法识别的路径！": "Đường không nhận ra!"
 }

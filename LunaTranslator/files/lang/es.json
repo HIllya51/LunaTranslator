@@ -550,5 +550,8 @@
     "所选文件格式错误！": "¡¡ el archivo seleccionado tiene un formato incorrecto!",
     "修改成功！": "¡Modificación exitosa!",
     "进程号": "Número de proceso",
-    "窗口名": "Nombre de la ventana"
+    "窗口名": "Nombre de la ventana",
+    "去除重复行(ABCDBCDCDD->ABCD)": "Eliminar filas duplicadas (abcdbcdcdd - > abcd)",
+    "去除重复行(AABABCABCD->ABCD)": "Eliminar filas duplicadas (aababcbabcd - > abcd)",
+    "无法识别的路径！": "¡Caminos no reconocibles!"
 }

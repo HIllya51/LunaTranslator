@@ -550,5 +550,8 @@
     "所选文件格式错误！": "Seçili dosya format ı yanlış!",
     "修改成功！": "Başarılı değiştirildi!",
     "进程号": "İşlem numarası",
-    "窗口名": "Pencere İsmi"
+    "窗口名": "Pencere İsmi",
+    "去除重复行(ABCDBCDCDD->ABCD)": "Çiftli hatları sil (ABCDCDCDDD ->ABCD)",
+    "去除重复行(AABABCABCD->ABCD)": "Çift hatları sil (AABABCABCD ->ABCD)",
+    "无法识别的路径！": "Bilinmeyen yol!"
 }

@@ -550,5 +550,8 @@
     "所选文件格式错误！": "The selected file format is incorrect!",
     "修改成功！": "Modified successfully!",
     "进程号": "Process number",
-    "窗口名": "Window Name"
+    "窗口名": "Window Name",
+    "去除重复行(ABCDBCDCDD->ABCD)": "Remove duplicate lines (ABCDCDCDCDDD ->ABCD)",
+    "去除重复行(AABABCABCD->ABCD)": "Remove duplicate lines (AABABCABCD ->ABCD)",
+    "无法识别的路径！": "Unrecognized path!"
 }

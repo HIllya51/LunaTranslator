@@ -22,7 +22,7 @@
 
 &emsp;&emsp;**剪贴板** 支持从剪贴板中获取文本进行翻译
 
-&emsp;&emsp;**OCR** 除内置OCR引擎外，还支持WindowsOCR、百度OCR、有道OCR、ocrspace、docsumo、飞书OCR，支持绑定截图窗口，避免窗口重叠。
+&emsp;&emsp;**OCR** 除内置OCR引擎外，还支持WindowsOCR、百度OCR、有道OCR、ocrspace、docsumo、飞书OCR等。
 
 &emsp;&emsp;**HOOK** 支持使用HOOK方式获取文本，支持使用特殊码，支持自动保存游戏及HOOK、自动加载HOOK等。对于部分引擎，还支持内嵌翻译。
 
