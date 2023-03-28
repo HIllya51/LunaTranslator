@@ -32,7 +32,7 @@ del ..\build\LunaTranslator_x86\files\plugins\EmbededEngine\Qt5Network.dll
 del ..\build\LunaTranslator_x86\files\plugins\EmbededEngine\Qt5Core.dll
 copy ..\dependence\ocr32 ..\build\LunaTranslator_x86\files\plugins
 
-copy ..\dependence\libmecab.dll ..\build\LunaTranslator_x86\LunaTranslator\
+copy ..\CXXplugins\fugashi32-py37\fugashi-1.2.1\libmecab.dll ..\build\LunaTranslator_x86\LunaTranslator\
 
 xcopy ..\dependence\api-ms-win_32 ..\build\LunaTranslator_x86\LunaTranslator /e /y /I
 

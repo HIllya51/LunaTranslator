@@ -1,6 +1,0 @@
- 
-
-paddle2onnx --model_dir ./  --model_filename inference.pdmodel --params_filename inference.pdiparams --save_file 1.onnx --opset_version 11 --enable_onnx_checker True
-
-
-paddle2onnx                        1.0.5
