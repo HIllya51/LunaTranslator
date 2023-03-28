@@ -555,5 +555,6 @@
     "去除重复行(AABABCABCD->ABCD)": "Eliminar filas duplicadas (aababcbabcd - > abcd)",
     "无法识别的路径！": "¡Caminos no reconocibles!",
     "进程": "Proceso",
-    "到进程": "Al proceso"
+    "到进程": "Al proceso",
+    "系统": "Sistema"
 }

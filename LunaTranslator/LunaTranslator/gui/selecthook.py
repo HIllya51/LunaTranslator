@@ -1,7 +1,7 @@
 import threading ,functools
 from traceback import print_exc
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QWidget,QHBoxLayout,QStyledItemDelegate,QFrame,QVBoxLayout,QComboBox,QPlainTextEdit,QDialogButtonBox,QLineEdit,QPushButton,QTableView,QAbstractItemView,QApplication,QHeaderView,QCheckBox,QStyleOptionViewItem,QStyle ,QLabel
+from PyQt5.QtWidgets import QWidget,QHBoxLayout,QStyledItemDelegate,QFrame,QVBoxLayout,QComboBox,QPlainTextEdit,QTabWidget,QLineEdit,QPushButton,QTableView,QAbstractItemView,QApplication,QHeaderView,QCheckBox,QStyleOptionViewItem,QStyle ,QLabel
 from utils.config import savehook_new_list,savehook_new_data
 from PyQt5.QtGui import QStandardItem, QStandardItemModel,QTextDocument,QAbstractTextDocumentLayout,QPalette 
 from PyQt5.QtGui import QFont,QTextCursor
@@ -53,6 +53,7 @@ class HTMLDelegate(QStyledItemDelegate):
 class hookselect(closeashidewindow):
     addnewhooksignal=pyqtSignal(tuple,bool,bool)
     getnewsentencesignal=pyqtSignal(str)
+    sysmessagesignal=pyqtSignal(str)
     changeprocessclearsignal=pyqtSignal()
     okoksignal=pyqtSignal() 
     update_item_new_line=pyqtSignal(tuple,str)  
@@ -65,6 +66,7 @@ class hookselect(closeashidewindow):
         self.changeprocessclearsignal.connect(self.changeprocessclear)
         self.addnewhooksignal.connect(self.addnewhook)
         self.getnewsentencesignal.connect(self.getnewsentence)
+        self.sysmessagesignal.connect(self.sysmessage)
         self.update_item_new_line.connect(self.update_item_new_line_function) 
         self.okoksignal.connect(self.okok)  
         self.setWindowTitle(_TR('选择文本'))
@@ -80,6 +82,7 @@ class hookselect(closeashidewindow):
         self.ttCombomodelmodel.clear()
         [_.hide() for _ in self.multipidswidgets]
         self.save=[]
+        self.at1=1
         self.selectionbutton=[]
         self.saveinserthook=[]
     def addnewhook(self,ss ,select,isname):
@@ -88,8 +91,20 @@ class hookselect(closeashidewindow):
                 self.selectpid.addItems([str(_) for _ in self.object.textsource.pids])
                 [_.show() for _ in self.multipidswidgets]
                 self.ttCombomodelmodel.setHorizontalHeaderLabels(_TRL(['选择','类型','进程', 'HOOK','文本']))
+                
+                self.tttable.horizontalHeader().setSectionResizeMode(2,QHeaderView.ResizeToContents)
+                self.tttable.horizontalHeader().setSectionResizeMode(3,QHeaderView.Interactive)
+                self.tttable.horizontalHeader().setSectionResizeMode(4,QHeaderView.Interactive)
             else:
                 self.ttCombomodelmodel.setHorizontalHeaderLabels(_TRL(['选择','类型','HOOK','文本']))
+                
+                self.tttable.horizontalHeader().setSectionResizeMode(2,QHeaderView.Interactive)
+                self.tttable.horizontalHeader().setSectionResizeMode(3,QHeaderView.Interactive)
+            
+            self.tttable.horizontalHeader().setSectionResizeMode(0,QHeaderView.ResizeToContents)
+            self.tttable.horizontalHeader().setSectionResizeMode(1,QHeaderView.ResizeToContents)
+        
+        
         self.save.append(ss ) 
  
         rown=self.ttCombomodelmodel.rowCount()
@@ -124,23 +139,18 @@ class hookselect(closeashidewindow):
         self.resize(1200, 600) 
         self.save=[]
         self.selectionbutton=[] 
-        self.centralWidget = QWidget(self) 
+        self.widget = QWidget() 
         self.setWindowIcon(qtawesome.icon("fa.gear" ))
-        self.hboxlayout = QHBoxLayout(self.centralWidget)  
-        self.processFrame = QFrame(self.centralWidget)
-        self.processFrame.setEnabled(True)  
-        self.hboxlayout.addWidget(self.processFrame)
+        self.hboxlayout = QHBoxLayout()  
+        self.widget.setLayout(self.hboxlayout)
         self.vboxlayout = QVBoxLayout()    
-        self.ttCombomodelmodel=QStandardItemModel(self) 
-        #self.ttCombomodelmodel.setColumnCount(2)
-        self.ttCombomodelmodel.setHorizontalHeaderLabels(_TRL(['显示','类型','进程', 'HOOK','文本']))
+        self.ttCombomodelmodel=QStandardItemModel()  
         
-        self.at1=1
-        self.tttable = QTableView(self)
+        
+        self.tttable = QTableView()
         self.tttable .setModel(self.ttCombomodelmodel)
         #self.tttable .horizontalHeader().setSectionResizeMode(QHeaderView.Stretch) 
         self.tttable .horizontalHeader().setStretchLastSection(True) 
-        self.tttable.horizontalHeader().setSectionResizeMode(QHeaderView.Interactive)
         self.tttable.setSelectionBehavior(QAbstractItemView.SelectRows)
         self.tttable.setSelectionMode(QAbstractItemView.SingleSelection)
         self.tttable.setEditTriggers(QAbstractItemView.NoEditTriggers)
@@ -229,14 +239,26 @@ class hookselect(closeashidewindow):
         self.searchtextlayout2.addWidget(self.checkfilt_notshiftjis)   
         self.searchtextbutton2.clicked.connect(self.searchtextfunc2)
         self.searchtextlayout2.addWidget(self.searchtextbutton2) 
-        self.textOutput = QPlainTextEdit(self.centralWidget)
-         
-        self.textOutput.setContextMenuPolicy(Qt.CustomContextMenu)
+
+
+        
+        self.textOutput = QPlainTextEdit()
         self.textOutput.setUndoRedoEnabled(False)
         self.textOutput.setReadOnly(True) 
-        self.vboxlayout.addWidget(self.textOutput)
+
+
+        self.sysOutput = QPlainTextEdit()
+        self.sysOutput.setUndoRedoEnabled(False)
+        self.sysOutput.setReadOnly(True) 
+
+
+        self.tabwidget=QTabWidget()
+        self.tabwidget.setTabPosition(QTabWidget.East)
+        self.tabwidget.addTab(self.textOutput,_TR("文本"))
+        self.tabwidget.addTab(self.sysOutput,_TR("系统"))
+        self.vboxlayout.addWidget(self.tabwidget)
         self.hboxlayout.addLayout(self.vboxlayout)
-        self.setCentralWidget(self.centralWidget)
+        self.setCentralWidget(self.widget)
   
         self.hidesearchhookbuttons()
         
@@ -453,7 +475,24 @@ class hookselect(closeashidewindow):
                     self.tttable.setCurrentIndex(self.ttCombomodelmodel.index(i,0)) 
                     break
         except:
-            print_exc()
+            print_exc() 
+    def get_time_stamp(self):
+        ct = time.time()
+        local_time = time.localtime(ct)
+        data_head = time.strftime("%Y-%m-%d %H:%M:%S", local_time)
+        data_secs = (ct - int(ct)) * 1000
+        time_stamp = "%s.%03d" % (data_head, data_secs)
+        return (time_stamp)
+         
+    def sysmessage(self,sentence):
+        scrollbar = self.sysOutput.verticalScrollBar()
+        atBottom = scrollbar.value() + 3 > scrollbar.maximum() or scrollbar.value() / scrollbar.maximum() > 0.975 
+        cursor=QTextCursor (self.sysOutput.document())
+        cursor.movePosition(QTextCursor.End)
+        cursor.insertText('\n'+self.get_time_stamp()+" "+sentence)
+        if (atBottom):
+            scrollbar.setValue(scrollbar.maximum())
+
     def getnewsentence(self,sentence):
         if self.at1==2:
             return 

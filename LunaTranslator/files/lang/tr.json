@@ -555,5 +555,6 @@
     "去除重复行(AABABCABCD->ABCD)": "Çift hatları sil (AABABCABCD ->ABCD)",
     "无法识别的路径！": "Bilinmeyen yol!",
     "进程": "işlem",
-    "到进程": "İşleme"
+    "到进程": "İşleme",
+    "系统": "sistem"
 }

@@ -555,5 +555,6 @@
     "去除重复行(AABABCABCD->ABCD)": "Supprimer les lignes répétitives (aababcabcd - > ABCD)",
     "无法识别的路径！": "Un chemin méconnaissable!",
     "进程": "Processus",
-    "到进程": "Au processus"
+    "到进程": "Au processus",
+    "系统": "Système"
 }

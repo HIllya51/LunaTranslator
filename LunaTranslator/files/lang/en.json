@@ -555,5 +555,6 @@
     "去除重复行(AABABCABCD->ABCD)": "Remove duplicate lines (AABABCABCD ->ABCD)",
     "无法识别的路径！": "Unrecognized path!",
     "进程": "process",
-    "到进程": "To process"
+    "到进程": "To process",
+    "系统": "system"
 }

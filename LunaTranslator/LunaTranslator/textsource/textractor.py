@@ -63,6 +63,7 @@ class textractor(basetext  ):
         if globalconfig['textractor_engine_extra_use']:TextractorCLI.append(extra)
         self.u16lesubprocess=u16lesubprocess(TextractorCLI)
         self.u16lesubprocess.readyread=self.handle_stdout
+        self.u16lesubprocess.writelog=self.hookselectdialog.sysmessagesignal.emit
         self.attach()
         
         self.setcodepage()
@@ -83,7 +84,7 @@ class textractor(basetext  ):
         self.pidswrite(f'+{delay}')
     def pidswrite(self,prefix,idx=None):
         for pid in self.pids:
-            self.u16lesubprocess.writer(f'{prefix} -P{pid}\n',idx) 
+            self.u16lesubprocess.writer(f'{prefix} -P{pid}',idx) 
     def setcodepage(self):
         try:
             cpi=savehook_new_data[self.pname]["codepage_index"]
@@ -92,10 +93,10 @@ class textractor(basetext  ):
             cp=932
         self.pidswrite(f'={cp}')
     def findhook(self,pid):
-        self.u16lesubprocess.writer(f'find -P{pid}\n',0) 
+        self.u16lesubprocess.writer(f'find -P{pid}',0) 
     def inserthook(self,hookcode,pid): 
         hookcode=hookcode.replace('\r','').replace('\n','').replace('\t','')
-        self.u16lesubprocess.writer(f'{hookcode} -P{pid}\n',0) 
+        self.u16lesubprocess.writer(f'{hookcode} -P{pid}',0) 
     def attach(self):  
         self.pidswrite('attach')
     def detach(self):
@@ -129,6 +130,9 @@ class textractor(basetext  ):
             output='\n'.join(output)
             
             if HookCode=='HB0@0' or thread_handle=='0' or thread_tp_processId=='0'  :
+                if thread_name=='Console':
+                    #print((thread_handle,thread_tp_processId, thread_tp_addr, thread_tp_ctx, thread_tp_ctx2, thread_name,HookCode),output)
+                    self.hookselectdialog.sysmessagesignal.emit(output)
                 continue 
             if globalconfig['filter_chaos_code'] and checkchaos(output): 
                 continue
@@ -144,6 +148,7 @@ class textractor(basetext  ):
                     for _i,autostarthookcode in enumerate(self.autostarthookcode): 
                         if self.strictmatch(thread_tp_ctx,thread_tp_ctx2,HookCode,autostarthookcode ): 
                             self.selectedhook+=[key]
+                            self.selectinghook=key
                             self.selectedhookidx.append(_i)
                             __=self.selectedhook.copy()
                             self.selectedhook.sort(key=lambda x:self.selectedhookidx[__.index(x)])

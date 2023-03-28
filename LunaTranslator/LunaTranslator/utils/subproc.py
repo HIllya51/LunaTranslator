@@ -98,7 +98,7 @@ class u16lesubprocess():
         self.caches=[]
         self.cachelocks=[]
         self.processes=[]
-        
+        self.writelog=None
         self.isstart=True
         self.readyread=None
         for i in range(len(commands)):
@@ -112,7 +112,7 @@ class u16lesubprocess():
             _=self.processes[i].stdout.readline()
             if(len(_)==0):break
             self.cachelocks[i].acquire()
-            self.caches[i].append(_)
+            self.caches[i].append(_[:-1])
             self.cachelocks[i].release()
     def readokmonitor(self,i):
         while self.isstart:
@@ -136,7 +136,9 @@ class u16lesubprocess():
         for i in range(len(self.processes)):
             if idx and idx!=i:continue
             try:
-                self.processes[i].stdin.write(xx )
+                if self.writelog:
+                    self.writelog("Operation: "+xx)
+                self.processes[i].stdin.write(xx +'\n')
                 self.processes[i].stdin.flush()
             except:
                 pass
