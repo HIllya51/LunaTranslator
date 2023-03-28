@@ -201,18 +201,19 @@ def GetProcessFileName(hHandle):
     if v[0]=='\\':
         device=v.split('\\')
         device=f'\\{device[1]}\\{device[2]}'
-        lg=_GetLogicalDrives()
-        start=ord('A')
-        save=[]
-        while lg!=0:
-            if lg%2==1:
-                save.append(start)
-            lg=lg//2
-            start+=1
+        # lg=_GetLogicalDrives()
+        # start=ord('A')
+        # save=[]
+        # while lg!=0:
+        #     if lg%2==1:
+        #         save.append(start)
+        #     lg=lg//2
+        #     start+=1
         mp={}
         network_drive_map = {}
         buf=create_unicode_buffer(65535)
-        for A in save:
+        for i in range(26):
+            A=ord('A')+i
             if _QueryDosDeviceW(chr(A)+':',buf,65535)!=0:
                 mp[buf.value]=chr(A)+':'
                 #print(buf.value,chr(A)+':')
