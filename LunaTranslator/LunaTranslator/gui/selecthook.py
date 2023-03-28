@@ -1,7 +1,7 @@
 import threading ,functools
 from traceback import print_exc
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QWidget,QHBoxLayout,QStyledItemDelegate,QFrame,QVBoxLayout,QMessageBox,QPlainTextEdit,QDialogButtonBox,QLineEdit,QPushButton,QTableView,QAbstractItemView,QApplication,QHeaderView,QCheckBox,QStyleOptionViewItem,QStyle ,QLabel
+from PyQt5.QtWidgets import QWidget,QHBoxLayout,QStyledItemDelegate,QFrame,QVBoxLayout,QComboBox,QPlainTextEdit,QDialogButtonBox,QLineEdit,QPushButton,QTableView,QAbstractItemView,QApplication,QHeaderView,QCheckBox,QStyleOptionViewItem,QStyle ,QLabel
 from utils.config import savehook_new_list,savehook_new_data
 from PyQt5.QtGui import QStandardItem, QStandardItemModel,QTextDocument,QAbstractTextDocumentLayout,QPalette 
 from PyQt5.QtGui import QFont,QTextCursor
@@ -71,22 +71,34 @@ class hookselect(closeashidewindow):
     def update_item_new_line_function(self,hook,output): 
         if hook in self.save:
             row=self.save.index(hook)
-            self.ttCombomodelmodel.item(row,3).setText(output) 
+            if  len(self.object.textsource.pids)>1:
+                self.ttCombomodelmodel.item(row,4).setText(output) 
+            else:
+                self.ttCombomodelmodel.item(row,3).setText(output) 
     def changeprocessclear(self):
         #self.ttCombo.clear() 
         self.ttCombomodelmodel.clear()
-        self.ttCombomodelmodel.setHorizontalHeaderLabels(_TRL(['选择','类型', 'HOOK','文本']))
+        [_.hide() for _ in self.multipidswidgets]
         self.save=[]
         self.selectionbutton=[]
         self.saveinserthook=[]
     def addnewhook(self,ss ,select,isname):
-         
+        if len(self.save)==0:
+            if  len(self.object.textsource.pids)>1: 
+                self.selectpid.addItems([str(_) for _ in self.object.textsource.pids])
+                [_.show() for _ in self.multipidswidgets]
+                self.ttCombomodelmodel.setHorizontalHeaderLabels(_TRL(['选择','类型','进程', 'HOOK','文本']))
+            else:
+                self.ttCombomodelmodel.setHorizontalHeaderLabels(_TRL(['选择','类型','HOOK','文本']))
         self.save.append(ss ) 
  
         rown=self.ttCombomodelmodel.rowCount()
         selectionitem=QStandardItem()
         typeitem=QStandardItem()
-        self.ttCombomodelmodel.insertRow(rown,[selectionitem,typeitem,QStandardItem('%s %s %s:%s' %(ss[-1],ss[-2],ss[-3],ss[-4])),QStandardItem()])  
+        if  len(self.object.textsource.pids)>1:
+            self.ttCombomodelmodel.insertRow(rown,[selectionitem,typeitem,QStandardItem('%s' %(int(ss[1],16))),QStandardItem('%s %s %s:%s' %(ss[-1],ss[-2],ss[-3],ss[-4])),QStandardItem()])  
+        else:
+            self.ttCombomodelmodel.insertRow(rown,[selectionitem,typeitem,QStandardItem('%s %s %s:%s' %(ss[-1],ss[-2],ss[-3],ss[-4])),QStandardItem()])  
                     
                 #self.hctable.setIndexWidget(self.hcmodel.index(row, 0),self.object.getcolorbutton('','',self.clicked2,icon='fa.times',constcolor="#FF69B4")) 
         
@@ -109,7 +121,7 @@ class hookselect(closeashidewindow):
                 self.object.textsource.namehook.remove(key)
     def setupUi(self  ):
         
-        self.resize(1000, 600) 
+        self.resize(1200, 600) 
         self.save=[]
         self.selectionbutton=[] 
         self.centralWidget = QWidget(self) 
@@ -121,7 +133,7 @@ class hookselect(closeashidewindow):
         self.vboxlayout = QVBoxLayout()    
         self.ttCombomodelmodel=QStandardItemModel(self) 
         #self.ttCombomodelmodel.setColumnCount(2)
-        self.ttCombomodelmodel.setHorizontalHeaderLabels(_TRL(['显示','类型', 'HOOK','文本']))
+        self.ttCombomodelmodel.setHorizontalHeaderLabels(_TRL(['显示','类型','进程', 'HOOK','文本']))
         
         self.at1=1
         self.tttable = QTableView(self)
@@ -155,9 +167,14 @@ class hookselect(closeashidewindow):
         self.userhookfind=QPushButton(_TR("搜索特殊码")) 
         self.userhookfind.clicked.connect(self.findhook)
         self.userhooklayout.addWidget(self.userhookfind)
-        
+        self.multipidswidgets=[QLabel(_TR("到进程"))]
+        self.selectpid=QComboBox()
+        self.multipidswidgets.append(self.selectpid)
+        [_.hide() for _ in self.multipidswidgets]
+        [self.userhooklayout.addWidget(_) for _ in self.multipidswidgets]
         self.opensolvetextb=QPushButton(_TR("文本处理")) 
         self.opensolvetextb.clicked.connect(self.opensolvetext)
+        self.userhooklayout.addWidget(QLabel("      "))
         self.userhooklayout.addWidget(self.opensolvetextb)
 
         
@@ -304,8 +321,12 @@ class hookselect(closeashidewindow):
             return
         
         if  self.object.textsource:
-
-            self.object.textsource.inserthook(hookcode)
+            
+            if len(self.object.textsource.pids)==1:
+                pid=self.object.textsource.pids[0]
+            else:
+                pid=int(self.selectpid.currentText())
+            self.object.textsource.inserthook(hookcode,pid)
             self.saveinserthook.append(hookcode)
             
         else:
@@ -325,13 +346,18 @@ class hookselect(closeashidewindow):
             return 
         getQMessageBox(self,"警告","该功能可能会导致游戏崩溃！",True,True,self.findhookchecked)
     def findhookchecked(self): 
+            
             if os.path.exists('hook.txt'):
                 try:
                     os.remove('hook.txt')
                 except:
                     pass
             if  self.object.textsource: 
-                self.object.textsource.findhook( )
+                if len(self.object.textsource.pids)==1:
+                    pid=self.object.textsource.pids[0]
+                else:
+                    pid=int(self.selectpid.currentText())
+                self.object.textsource.findhook(pid)
                 self.userhookfind.setEnabled(False)
                 self.userhookfind.setText(_TR("正在搜索特殊码，请让游戏显示更多文本"))
                 

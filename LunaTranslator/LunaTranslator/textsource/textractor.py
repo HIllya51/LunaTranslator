@@ -13,6 +13,7 @@ from textsource.textsourcebase import basetext
 from utils.utils import checkchaos  
 class textractor(basetext  ): 
     def __init__(self,textgetmethod,hookselectdialog,pids,hwnd,pname  ,autostarthookcode=None,needinserthookcode=None,dontremove=False) :
+        print(pids,hwnd,pname  ,autostarthookcode,needinserthookcode,dontremove)
         if autostarthookcode is None:
             autostarthookcode=[]
         if needinserthookcode is None:
@@ -72,15 +73,15 @@ class textractor(basetext  ):
      
     def autostartinsert(self):   
         time.sleep(1)
+        if len(self.pids)>1:return
         for _h in self.needinserthookcode: 
             if self.ending:break
-            self.inserthook(_h)
+            self.inserthook(_h,self.pids[0])
             
     def setdelay(self):
         delay=globalconfig['textthreaddelay']
         self.pidswrite(f'+{delay}')
     def pidswrite(self,prefix,idx=None):
-        print(prefix,self.pids,idx)
         for pid in self.pids:
             self.u16lesubprocess.writer(f'{prefix} -P{pid}\n',idx) 
     def setcodepage(self):
@@ -90,11 +91,11 @@ class textractor(basetext  ):
         except:
             cp=932
         self.pidswrite(f'={cp}')
-    def findhook(self ):
-        self.pidswrite(f'find',0)
-    def inserthook(self,hookcode):
+    def findhook(self,pid):
+        self.u16lesubprocess.writer(f'find -P{pid}\n',0) 
+    def inserthook(self,hookcode,pid): 
         hookcode=hookcode.replace('\r','').replace('\n','').replace('\t','')
-        self.pidswrite(hookcode,0)
+        self.u16lesubprocess.writer(f'{hookcode} -P{pid}\n',0) 
     def attach(self):  
         self.pidswrite('attach')
     def detach(self):

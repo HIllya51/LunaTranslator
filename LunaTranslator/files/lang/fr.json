@@ -553,5 +553,7 @@
     "窗口名": "Nom de la fenêtre",
     "去除重复行(ABCDBCDCDD->ABCD)": "Supprimer les lignes répétitives (abcdbcdcdd - > ABCD)",
     "去除重复行(AABABCABCD->ABCD)": "Supprimer les lignes répétitives (aababcabcd - > ABCD)",
-    "无法识别的路径！": "Un chemin méconnaissable!"
+    "无法识别的路径！": "Un chemin méconnaissable!",
+    "进程": "Processus",
+    "到进程": "Au processus"
 }

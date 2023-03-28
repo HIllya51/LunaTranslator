@@ -553,5 +553,7 @@
     "窗口名": "Tên cửa sổ",
     "去除重复行(ABCDBCDCDD->ABCD)": "Loại bỏ các dòng trùng lặp (ABCDBCDCDD ->ABCD)",
     "去除重复行(AABABCABCD->ABCD)": "Loại bỏ hàng trùng lặp (AABABCABCD ->ABCD)",
-    "无法识别的路径！": "Đường không nhận ra!"
+    "无法识别的路径！": "Đường không nhận ra!",
+    "进程": "Quy trình",
+    "到进程": "Tiến trình"
 }
