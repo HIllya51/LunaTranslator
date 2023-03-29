@@ -8,7 +8,6 @@ from PyQt5.QtGui import QFont,QTextCursor
 from PyQt5.QtCore import Qt,pyqtSignal,QSize,QModelIndex
 import qtawesome
 from gui.dialog_savedgame import dialog_setting_game
-from utils.hookcode import Parsecode
 import re
 import os,time 
 from utils.config import globalconfig ,_TR,_TRL,checkifnewgame
@@ -333,14 +332,9 @@ class hookselect(closeashidewindow):
             #self.ttCombo.setItemData(index,'',Qt.UserRole-(1 if ishide else 0))
             #self.ttCombo.setRowHidden(index,ishide)
     def inserthook(self): 
-        hookcode=self.userhook.text().replace('\r','').replace('\n','').replace('\t','')
+        hookcode=self.userhook.text()
         if len(hookcode)==0:
             return 
-        x=Parsecode(hookcode)
-        #print(hookcode,x.stdout[0])
-        if(x is None):
-            self.getnewsentence(_TR('！特殊码格式错误！'))
-            return
         
         if  self.object.textsource:
             
@@ -348,8 +342,8 @@ class hookselect(closeashidewindow):
                 pid=self.object.textsource.pids[0]
             else:
                 pid=int(self.selectpid.currentText())
-            self.object.textsource.inserthook(hookcode,pid)
-            self.saveinserthook.append(hookcode)
+            if self.object.textsource.inserthook(hookcode,pid):
+                self.saveinserthook.append(hookcode)
             
         else:
             self.getnewsentence(_TR('！未选定进程！'))

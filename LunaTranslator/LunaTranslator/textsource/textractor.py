@@ -4,9 +4,9 @@ import re
 import time
 from traceback import print_exc
 from collections import OrderedDict
-import os 
+from utils.hookcode import Parsecode
 from utils import somedef
-from utils.config import globalconfig ,savehook_new_data 
+from utils.config import globalconfig ,savehook_new_data ,_TR
 from utils.subproc import u16lesubprocess
 from utils.hwnd import getarch
 from textsource.textsourcebase import basetext 
@@ -96,7 +96,14 @@ class textractor(basetext  ):
         self.u16lesubprocess.writer(f'find -P{pid}',0) 
     def inserthook(self,hookcode,pid): 
         hookcode=hookcode.replace('\r','').replace('\n','').replace('\t','')
+        x=Parsecode(hookcode)
+        #print(hookcode,x.stdout[0])
+        if(x is None):
+            self.hookselectdialog.getnewsentencesignal.emit(_TR('！特殊码格式错误！'))
+            return False
+        
         self.u16lesubprocess.writer(f'{hookcode} -P{pid}',0) 
+        return True
     def attach(self):  
         self.pidswrite('attach')
     def detach(self):
