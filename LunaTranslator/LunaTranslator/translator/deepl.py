@@ -147,10 +147,13 @@ class Deepl(Tse):
         return data if is_detail_result else '\n'.join(item['beams'][0]['sentences'][0]["text"] for item in data['result']['translations'])
 
 from traceback import print_exc
+from utils import somedef
 
 class TS(basetrans):
     def langmap(self):
-        return  {"zh":"ZH","ja":"JA","en":"EN","es":"ES","fr":"FR","ru":"RU"}
+        x={_:_.upper() for _ in somedef.language_list_translator_inner}
+        x.pop('cht')
+        return  x# {"zh":"ZH","ja":"JA","en":"EN","es":"ES","fr":"FR","ru":"RU"}
     def inittranslator(self):  
         self.engine=Deepl()
     def translate(self,content): 

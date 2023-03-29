@@ -3,9 +3,13 @@ import requests
 from urllib import parse  
 from utils.config import globalconfig  
 from translator.basetranslator import basetrans   
-class TS(basetrans):  
+from utils import somedef
+
+class TS(basetrans):
     def langmap(self):
-        return  {"zh":"ZH","ja":"JA","en":"EN","es":"ES","fr":"FR","ru":"RU"}
+        x={_:_.upper() for _ in somedef.language_list_translator_inner}
+        x.pop('cht')
+        return  x
     def inittranslator(self):
         self.session=requests.session()
     def translate(self,query):  

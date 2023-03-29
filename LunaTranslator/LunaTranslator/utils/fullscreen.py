@@ -30,14 +30,25 @@ class fullscreen():
         with open(configpath,'r',encoding='utf8') as ff:
             config=json.load(ff)
         shortcuts=config['shortcuts']['scale']
-        code=shortcuts&0xff 
-        control={'SHIFT': 16, 'WIN': 91,'CTRL': 17,'ALT': 18}[['WIN','CTRL','ALT','SHIFT'][ int(math.log2((shortcuts-code)//0x100))]] 
-        k1=control
-        k2=code 
-        win32utils.keybd_event(k1,0,0,0)    
+        mp1={'SHIFT': 16, 'WIN': 91,'CTRL': 17,'ALT': 18}
+        mp={
+            0x100:'WIN',
+            0x200:'CTRL',
+            0x400:'ALT',
+            0x800:'SHIFT'
+        }
+        
+        
+        for k in mp:
+            if shortcuts&k !=0:
+                win32utils.keybd_event(mp1[mp[k]],0,0,0)
+        
+        k2=shortcuts &0xff
         win32utils.keybd_event(k2,0,0,0)      
         win32utils.keybd_event(k2, 0, win32con.KEYEVENTF_KEYUP, 0)
-        win32utils.keybd_event(k1, 0, win32con.KEYEVENTF_KEYUP, 0) 
+        for k in mp:
+            if shortcuts&k !=0:
+                win32utils.keybd_event(mp1[mp[k]],0,win32con.KEYEVENTF_KEYUP,0)
         
          
     def _0(self,hwnd,full):
