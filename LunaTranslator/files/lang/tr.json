@@ -556,5 +556,7 @@
     "无法识别的路径！": "Bilinmeyen yol!",
     "进程": "işlem",
     "到进程": "İşleme",
-    "系统": "sistem"
+    "系统": "sistem",
+    "修改失败！": "Değişiklik başarısız oldu!",
+    "Magpie版本错误或已被修改，请下载Magpie_v0.10.0": "Magpie versiyonu yanlış ya da değiştirildi. Lütfen Magpie'yi indirin. v0. 10. 0"
 }

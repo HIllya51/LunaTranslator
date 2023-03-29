@@ -3,7 +3,7 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtGui import  QFont
 
 from PyQt5.QtWidgets import  QWidget,QLabel ,QSlider, QFontComboBox  ,QPushButton,QMessageBox
-import json,os
+import json,os,hashlib
 from traceback import print_exc
 from gui.inputdialog import multicolorset
 from utils.config import globalconfig ,_TR,_TRL
@@ -128,20 +128,64 @@ def setTabThree_lazy(self) :
                 [('备忘录按钮',4),self.getsimpleswitch(globalconfig['buttonuse'],'memory' ,callback=lambda _:self.object.translation_ui.showhidetoolbuttons() ) ],
         ]
         modifydllbtn=QPushButton(_TR("修改DLL以实现点击翻译器不再退出全屏"))
+         
         def __modifydll(_):
-                try:
+                 
+                        magcorepath=os.path.join(globalconfig['magpie10path'],'Magpie.Core.dll')
+                        if os.path.exists(magcorepath)==False:
+                                getQMessageBox(self,"error",'找不到"Magpie.Core.dll"！')
+                                return
+
+                        
+                        with open(os.path.join(globalconfig['magpie10path'],'Magpie.Core.dll'),'rb') as ff:
+                                bs=ff.read()
+                        md5=hashlib.md5(bs).hexdigest()
+                        if(md5!='5fa3a5dac1227eb66260b36446d1f8a2'):
+                                getQMessageBox(self,"error",'Magpie版本错误或已被修改，请下载Magpie_v0.10.0')
+                        else:
+                                try:
+                                        _determinate()
+                                        getQMessageBox(self,"成功","修改成功！") 
+                                except:
+                                        getQMessageBox(self,"error","修改失败！") 
+        def _determinate():
                         i=0
                         while os.path.exists(os.path.join(globalconfig['magpie10path'],'Magpie.Core.dll.backup'+('' if i==0 else '.'+str(i)))): 
                                 i+=1
                         os.rename(os.path.join(globalconfig['magpie10path'],'Magpie.Core.dll'),os.path.join(globalconfig['magpie10path'],'Magpie.Core.dll.backup'+('' if i==0 else '.'+str(i)))) 
-                        with open(os.path.abspath('./files/plugins/Magpie_v0.10.0-preview2/Magpie.Core.dll'),'rb') as ff:
-                                b=ff.read() 
+                        with open(os.path.join(globalconfig['magpie10path'],'Magpie.Core.dll.backup'+('' if i==0 else '.'+str(i))),'rb') as ff:
+                                bs=ff.read() 
                         with open(os.path.join(globalconfig['magpie10path'],'Magpie.Core.dll'),'wb') as ff:
-                                ff.write(b)
-                        getQMessageBox(self,"成功","修改成功！") 
-                except:
-                        print_exc()
-                        os.startfile(os.path.abspath('./files/plugins/Magpie_v0.10.0-preview2'))
+                                ff.write(bs)
+                
+                                                        
+                        with open(os.path.join(globalconfig['magpie10path'],'Magpie.Core.dll'),'r+b') as ff:
+                                def replacebytes(b1,b2):
+                                        ff.seek(bs.index(b1))
+                                        ff.write(b2)
+
+                                #修改字符串
+                                ff.seek(bs.index('Windows.UI.Core.CoreWindow'.encode('utf-16-le')))
+                                ff.write('lunatranslator_main.exe'.encode('utf-16-le')+b'\x00\x00')
+                                
+                                ff.seek(bs.index('shellexperiencehost.exe'.encode('utf-16-le')))
+                                ff.write('Qt5152QWindowIcon'.encode('utf-16-le')+b'\x00\x00')
+
+                                ff.seek(bs.index('startmenuexperiencehost.exe'.encode('utf-16-le')))
+                                ff.write('Qt5152QWindowToolSaveBits'.encode('utf-16-le')+b'\x00\x00')
+                                
+                                #修改寄存器
+                                replacebytes(b'\x48\x8D\x0D\xDD\xCB\x0F\x00',b'\x48\x8D\x05\xDD\xCB\x0F\x00')
+                                replacebytes(b'\x48\x8D\x05\x14\xF0\x0F\x00',b'\x48\x8D\x0D\x94\xF0\x0F\x00')
+                                replacebytes(b'\x48\x8D\x05\x49\xF0\x0F\x00',b'\x48\x8D\x0D\x21\xF1\x0F\x00')
+
+                                #修改字符串长度
+                                replacebytes(b'\x48\xC7\x85\x98\x00\x00\x00\x0D',b'\x48\xC7\x85\x98\x00\x00\x00\x17')
+                                replacebytes(b'\x48\xC7\x85\xA8\x00\x00\x00\x1A',b'\x48\xC7\x85\xA8\x00\x00\x00\x19')
+                                replacebytes(b'\x48\xC7\x85\xB8\x00\x00\x00\x0E',b'\x48\xC7\x85\xB8\x00\x00\x00\x17')
+                                replacebytes(b'\x48\xC7\x85\xC8\x00\x00\x00\x1A',b'\x48\xC7\x85\xC8\x00\x00\x00\x11')
+                        
+                 
         modifydllbtn.clicked.connect( __modifydll)
          
         fullscreengrid=[

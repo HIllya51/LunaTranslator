@@ -556,5 +556,7 @@
     "无法识别的路径！": "Unrecognized path!",
     "进程": "process",
     "到进程": "To process",
-    "系统": "system"
+    "系统": "system",
+    "修改失败！": "Modification failed!",
+    "Magpie版本错误或已被修改，请下载Magpie_v0.10.0": "The Magpie version is incorrect or has been modified. Please download Magpie_ v0.10.0"
 }

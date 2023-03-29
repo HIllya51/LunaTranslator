@@ -556,5 +556,7 @@
     "无法识别的路径！": "Đường không nhận ra!",
     "进程": "Quy trình",
     "到进程": "Tiến trình",
-    "系统": "Hệ thống"
+    "系统": "Hệ thống",
+    "修改失败！": "Sửa đổi thất bại!",
+    "Magpie版本错误或已被修改，请下载Magpie_v0.10.0": "Phiên bản Magpie bị lỗi hoặc đã được sửa đổi, vui lòng tải xuống Magpie_ v0.10.0"
 }

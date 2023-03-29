@@ -556,5 +556,7 @@
     "无法识别的路径！": "Un chemin méconnaissable!",
     "进程": "Processus",
     "到进程": "Au processus",
-    "系统": "Système"
+    "系统": "Système",
+    "修改失败！": "La modification a échoué!",
+    "Magpie版本错误或已被修改，请下载Magpie_v0.10.0": "Magpie version incorrecte ou modifiée, télécharger Magpie V0.10.0"
 }
