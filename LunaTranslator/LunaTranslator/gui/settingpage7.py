@@ -1,7 +1,7 @@
   
 import functools  
 
-from PyQt5.QtWidgets import  QDialog,QLabel ,QLineEdit,QDoubleSpinBox,QPushButton ,QTableView,   QVBoxLayout,QHBoxLayout,QHeaderView 
+from PyQt5.QtWidgets import  QDialog,QLabel ,QLineEdit,QSpinBox,QPushButton ,QTableView,   QVBoxLayout,QHBoxLayout,QHeaderView 
 from PyQt5.QtCore import QSize,Qt
 from PyQt5.QtGui import QStandardItem, QStandardItemModel 
 from traceback import print_exc
@@ -262,8 +262,8 @@ class postconfigdialog(QDialog):
         lb=QLabel(dialog)
         lb.setText(_TR(key) )
         formLayout.addWidget(lb) 
-        if type(configdict[key])==type(1): 
-            spin=QDoubleSpinBox(dialog)
+        if type(configdict[key]) in (float,int): 
+            spin=QSpinBox(dialog)
             spin.setMinimum(1)
             spin.setMaximum(100)
             spin.setValue(configdict[key])
