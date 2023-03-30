@@ -558,5 +558,15 @@
     "到进程": "İşleme",
     "系统": "sistem",
     "修改失败！": "Değişiklik başarısız oldu!",
-    "Magpie版本错误或已被修改，请下载Magpie_v0.10.0": "Magpie versiyonu yanlış ya da değiştirildi. Lütfen Magpie'yi indirin. v0. 10. 0"
+    "Magpie版本错误或已被修改，请下载Magpie_v0.10.0": "Magpie versiyonu yanlış ya da değiştirildi. Lütfen Magpie'yi indirin. v0. 10. 0",
+    "发现": "Bul",
+    "请先关闭Magpie！": "Lütfen önce Magpie'yi kapat!",
+    "失败": "başarısız",
+    "不支持的脚本版本！": "Desteklenmeyen skript versiyonu!",
+    "处理完毕，请重启游戏以加载脚本，并使用剪贴板模式！": "İşlenme tamamlandı, lütfen skripti yüklemek için oyunu yeniden başlatın ve clipboard modunu kullanın!",
+    "检测到为Tyrano引擎，是否进行切换到剪贴板模式？": "Tyrano motoru keşfetildi. Pano moduna değiştirmek ister misiniz?",
+    "不是tynaro引擎，执行原始流程！": "Tynaro motoru değil, orijinal süreci çalıştırın!",
+    "可能为tyrano引擎，是否解压处理？": "Tirano motoru olabilir.",
+    "正在解压，请稍候！": "Komprimer ediliyor, lütfen bekle!",
+    "检测到为Tyrano引擎，但处理失败。若已处理过请切换至剪贴板模式，否则可能是不支持的tyrano脚本版本！": "\"Tyrano motoru keşfedildi ama işleme başarısız oldu.\" Eğer zaten işletildiyse, lütfen clipboard moduna değiştirin. Yoksa o tirano skriptinin desteklenmeyen bir versiyonu olabilir."
 }

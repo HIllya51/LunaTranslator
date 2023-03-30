@@ -7,7 +7,9 @@ import json,os,hashlib
 from traceback import print_exc
 from gui.inputdialog import multicolorset
 from utils.config import globalconfig ,_TR,_TRL
-
+from utils.utils import getfilemd5,copybackup
+import time,signal
+from utils.hwnd import ListProcess
 from gui.inputdialog import autoinitdialog,getsomepath1
 from gui.usefulwidget import getQMessageBox
 def __changeuibuttonstate(self,x):  
@@ -136,44 +138,45 @@ def setTabThree_lazy(self) :
                                 getQMessageBox(self,"error",'找不到"Magpie.Core.dll"！')
                                 return
 
+                        md5=getfilemd5(os.path.join(globalconfig['magpie10path'],'Magpie.Core.dll'))
                         
-                        with open(os.path.join(globalconfig['magpie10path'],'Magpie.Core.dll'),'rb') as ff:
-                                bs=ff.read()
-                        md5=hashlib.md5(bs).hexdigest()
                         if(md5!='5fa3a5dac1227eb66260b36446d1f8a2'):
                                 getQMessageBox(self,"error",'Magpie版本错误或已被修改，请下载Magpie_v0.10.0')
                         else:
                                 try:
                                         _determinate()
                                         getQMessageBox(self,"成功","修改成功！") 
+                                except PermissionError:
+                                        getQMessageBox(self,"error","请先关闭Magpie！") 
                                 except:
+                                        print_exc()
                                         getQMessageBox(self,"error","修改失败！") 
         def _determinate():
-                        i=0
-                        while os.path.exists(os.path.join(globalconfig['magpie10path'],'Magpie.Core.dll.backup'+('' if i==0 else '.'+str(i)))): 
-                                i+=1
-                        os.rename(os.path.join(globalconfig['magpie10path'],'Magpie.Core.dll'),os.path.join(globalconfig['magpie10path'],'Magpie.Core.dll.backup'+('' if i==0 else '.'+str(i)))) 
-                        with open(os.path.join(globalconfig['magpie10path'],'Magpie.Core.dll.backup'+('' if i==0 else '.'+str(i))),'rb') as ff:
-                                bs=ff.read() 
-                        with open(os.path.join(globalconfig['magpie10path'],'Magpie.Core.dll'),'wb') as ff:
-                                ff.write(bs)
-                
-                                                        
+                        copybackup(os.path.join(globalconfig['magpie10path'],'Magpie.Core.dll'))
+                        ps=ListProcess()
+                        exes=[_[1] for _ in ps]  
+                        magexe=os.path.join(globalconfig['magpie10path'],'Magpie.exe').replace('/','\\')
+                        if magexe in exes:                                 
+                                for pid in ps[exes.index(magexe)][0]:
+                                        
+                                        os.kill(pid,signal.SIGINT)
+                                        time.sleep(1)
                         with open(os.path.join(globalconfig['magpie10path'],'Magpie.Core.dll'),'r+b') as ff:
+                                bs=ff.read()
+                                regists={}
                                 def replacebytes(b1,b2):
-                                        ff.seek(bs.index(b1))
-                                        ff.write(b2)
-
+                                        print(b1,b2)
+                                        bs.index(b1)
+                                        regists[b1]=b2
+                                def doall():
+                                        for b1 in regists:
+                                                ff.seek(bs.index(b1))
+                                                ff.write(regists[b1])
                                 #修改字符串
-                                ff.seek(bs.index('Windows.UI.Core.CoreWindow'.encode('utf-16-le')))
-                                ff.write('lunatranslator_main.exe'.encode('utf-16-le')+b'\x00\x00')
                                 
-                                ff.seek(bs.index('shellexperiencehost.exe'.encode('utf-16-le')))
-                                ff.write('Qt5152QWindowIcon'.encode('utf-16-le')+b'\x00\x00')
-
-                                ff.seek(bs.index('startmenuexperiencehost.exe'.encode('utf-16-le')))
-                                ff.write('Qt5152QWindowToolSaveBits'.encode('utf-16-le')+b'\x00\x00')
-                                
+                                replacebytes('Windows.UI.Core.CoreWindow'.encode('utf-16-le'),'lunatranslator_main.exe'.encode('utf-16-le')+b'\x00\x00')
+                                replacebytes('shellexperiencehost.exe'.encode('utf-16-le'),'Qt5152QWindowIcon'.encode('utf-16-le')+b'\x00\x00')
+                                replacebytes('startmenuexperiencehost.exe'.encode('utf-16-le'),'Qt5152QWindowToolSaveBits'.encode('utf-16-le')+b'\x00\x00')
                                 #修改寄存器
                                 replacebytes(b'\x48\x8D\x0D\xDD\xCB\x0F\x00',b'\x48\x8D\x05\xDD\xCB\x0F\x00')
                                 replacebytes(b'\x48\x8D\x05\x14\xF0\x0F\x00',b'\x48\x8D\x0D\x94\xF0\x0F\x00')
@@ -185,7 +188,7 @@ def setTabThree_lazy(self) :
                                 replacebytes(b'\x48\xC7\x85\xB8\x00\x00\x00\x0E',b'\x48\xC7\x85\xB8\x00\x00\x00\x17')
                                 replacebytes(b'\x48\xC7\x85\xC8\x00\x00\x00\x1A',b'\x48\xC7\x85\xC8\x00\x00\x00\x11')
                         
-                 
+                                doall()
         modifydllbtn.clicked.connect( __modifydll)
          
         fullscreengrid=[

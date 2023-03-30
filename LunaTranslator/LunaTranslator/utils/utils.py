@@ -2,7 +2,7 @@
 from threading import Thread
 import os,time,sys
 from traceback import print_exc
-import codecs
+import codecs,hashlib
 import os,win32con,time 
 from traceback import print_exc
 from utils.config import globalconfig 
@@ -154,8 +154,26 @@ def checkencoding(code):
         return True
     except LookupError:
         return False
-    
 
+def copybackup(file):
+    i=0
+    while True:
+        target=file+('.backup' if i==0 else '.backup.'+str(i))
+        if os.path.exists(target)==False: 
+            break
+        i+=1
+    with open(file,'rb') as ff:
+            bs=ff.read()
+    with open(target,'wb') as ff:
+            ff.write(bs)
+def getfilemd5(file,default='0'):
+    try:
+        with open(file,'rb') as ff:
+            bs=ff.read()
+        md5=hashlib.md5(bs).hexdigest()
+        return md5
+    except:
+        return default
 def minmaxmoveobservefunc(self): 
         
         self.lasthwnd=None

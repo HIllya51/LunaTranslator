@@ -184,24 +184,22 @@ class dialog_savedgame(QDialog):
                 
 
                     if os.path.exists(game):
-
-                        if 'onloadautochangemode' in savehook_new_data[game]:
-                                mode=savehook_new_data[game]['onloadautochangemode']
-                                if mode==0:
-                                        pass
-                                else:
-                                        _={
-                                        1:'textractor',
-                                        2:'embedded',
-                                        3:'copy',
-                                        4:'ocr'
-                                        } 
-                                        if globalconfig['sourcestatus'][_[mode]]['use']==False:
-                                                globalconfig['sourcestatus'][_[mode]]['use']=True
-                                                
-                                                self.object.yuitsu_switch('sourcestatus','sourceswitchs',_[mode],None ,True) 
-                                                self.object.object.starttextsource(use=_[mode],checked=True,waitforautoinit=True)
-                        
+                        mode=savehook_new_data[game]['onloadautochangemode']
+                        if mode==0:
+                                pass
+                        else:
+                                _={
+                                1:'textractor',
+                                2:'embedded',
+                                3:'copy',
+                                4:'ocr'
+                                } 
+                                if globalconfig['sourcestatus'][_[mode]]['use']==False:
+                                        globalconfig['sourcestatus'][_[mode]]['use']=True
+                                        
+                                        self.object.yuitsu_switch('sourcestatus','sourceswitchs',_[mode],None ,True) 
+                                        self.object.object.starttextsource(use=_[mode],checked=True,waitforautoinit=True)
+                
                         savehook_new_list.insert(0,savehook_new_list.pop(self.table.currentIndex().row())) 
                         self.close() 
                         if savehook_new_data[game]['leuse'] :

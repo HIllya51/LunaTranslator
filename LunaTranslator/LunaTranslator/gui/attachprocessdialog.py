@@ -136,9 +136,9 @@ class AttachProcessDialog(closeashidewindow):
                 if(not testprivilege(pid)): 
                     getQMessageBox(self,"错误","权限不足，请使用管理员权限运行本程序！")
                     return
-        
-            self.callback(self.selectedp)
             self.close() 
+            self.callback(self.selectedp)
+            
 if __name__=='__main__':
     app = QApplication(sys.argv) 
     a=AttachProcessDialog()

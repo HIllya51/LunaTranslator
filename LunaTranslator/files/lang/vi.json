@@ -558,5 +558,15 @@
     "到进程": "Tiến trình",
     "系统": "Hệ thống",
     "修改失败！": "Sửa đổi thất bại!",
-    "Magpie版本错误或已被修改，请下载Magpie_v0.10.0": "Phiên bản Magpie bị lỗi hoặc đã được sửa đổi, vui lòng tải xuống Magpie_ v0.10.0"
+    "Magpie版本错误或已被修改，请下载Magpie_v0.10.0": "Phiên bản Magpie bị lỗi hoặc đã được sửa đổi, vui lòng tải xuống Magpie_ v0.10.0",
+    "发现": "Khám phá",
+    "请先关闭Magpie！": "Vui lòng tắt Magpie trước!",
+    "失败": "Thất bại",
+    "不支持的脚本版本！": "Phiên bản kịch bản không được hỗ trợ!",
+    "处理完毕，请重启游戏以加载脚本，并使用剪贴板模式！": "Xử lý xong, vui lòng khởi động lại trò chơi để tải kịch bản và sử dụng chế độ clipboard!",
+    "检测到为Tyrano引擎，是否进行切换到剪贴板模式？": "Được phát hiện là động cơ Tyrano, bạn có chuyển sang chế độ bảng tạm không?",
+    "不是tynaro引擎，执行原始流程！": "Không phải động cơ tynaro, thực hiện quy trình ban đầu!",
+    "可能为tyrano引擎，是否解压处理？": "Có thể là động cơ tyrano, có giải nén không?",
+    "正在解压，请稍候！": "Đang giải nén, xin chờ!",
+    "检测到为Tyrano引擎，但处理失败。若已处理过请切换至剪贴板模式，否则可能是不支持的tyrano脚本版本！": "Phát hiện động cơ Tyrano, nhưng xử lý không thành công. Nếu nó đã được xử lý, hãy chuyển sang chế độ bảng tạm, nếu không nó có thể là phiên bản tyrano script không được hỗ trợ!"
 }

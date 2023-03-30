@@ -1,25 +1,24 @@
 
 import time
 filestart=time.time()    
-
+import re
 from utils.somedef import initpath
 initpath() 
 import os,threading,Levenshtein,sys 
 from traceback import  print_exc   
 import win32utils
 from PyQt5.QtGui import QPalette,QColor
-from utils.config import globalconfig ,savehook_new_list,savehook_new_data,noundictconfig,transerrorfixdictconfig,setlanguage ,checkifnewgame
+from utils.config import globalconfig ,savehook_new_list,savehook_new_data,noundictconfig,transerrorfixdictconfig,setlanguage ,checkifnewgame,_TR
 import threading 
 from PyQt5.QtCore import QCoreApplication ,Qt ,QObject,pyqtSignal
 from PyQt5.QtWidgets import  QApplication ,QGraphicsScene,QGraphicsView,QDesktopWidget  
 from utils import somedef
-from utils.utils import minmaxmoveobservefunc
+from utils.utils import minmaxmoveobservefunc,copybackup
 from utils.simplekanji import kanjitrans
 from utils.wrapper import threader 
-from utils import somedef
 from gui.showword import searchwordW
 from gui.rangeselect    import rangeadjust
-
+from utils.asarunpack import extract_asar
 from utils.hwnd import pid_running,getpidexe ,getpidhwndfirst,ListProcess,getScreenRate,getbigestmempid
 
 from textsource.copyboard import copyboard   
@@ -28,7 +27,7 @@ from textsource.embedded import embedded
 from textsource.ocrtext import ocrtext
 from textsource.txt import txt 
 import  gui.selecthook     
-
+from gui.usefulwidget import getQMessageBox
 import gui.translatorUI
 from queue import Queue
 from gui.languageset import languageset
@@ -313,18 +312,67 @@ class MAINUI(QObject) :
                 self.reader_usevoice=use
                 self.reader=ttss[use]( self.settin_ui.voicelistsignal,self.settin_ui.mp3playsignal) 
            
+    def solvetyranosengine(self,pexe,normalselectprocess):
+        dirname=os.path.dirname(pexe)
         
+        originjs=os.path.join(dirname,'resources/app/tyrano/plugins/kag/kag.tag.js')
+        
+    
+        tyranofeature=[f'this.checkCw({_})&&this.kag.layer.layer_event.show()' for _ in ['t','tag']]
+        _exchange='this.checkCw(tag)&&(this.kag.layer.layer_event.show(),tag.name=="text"?((this.tmpstr==undefined)?(this.tmpstr=tag.val):(this.tmpstr+=tag.val)):(tag.name=="p"?((navigator.clipboard==undefined)?(require("electron").writeText(this.tmpstr,"text")):(navigator.clipboard.writeText(this.tmpstr)),this.tmpstr=""):1))'
+        exchange=[_exchange.replace('tag',_) for _ in ['t','tag']]
+        
+        def solvetyrano():
+            if os.path.exists(originjs)==False:
+                self.textgetmethod('<msg>'+_TR('不是tynaro引擎，执行原始流程！'))
+                normalselectprocess()
+            else:
+                with open(originjs,'r',encoding='utf8') as ff:originfile=ff.read()
+                if exchange[0] in originfile or exchange[1] in originfile:
+                    getQMessageBox(self.settin_ui,"发现","检测到为Tyrano引擎，是否进行切换到剪贴板模式？",True,True,lambda :self.settin_ui.clicksourcesignal.emit('copy'),normalselectprocess)
+                else:
+                    copybackup(originjs)
+                    with open(originjs,'r',encoding='utf8') as ff:originfile=ff.read()
+                    if tyranofeature[0] in originfile:idx=0
+                    elif tyranofeature[1] in originfile:idx=1
+                    else:idx=-1
+                    if idx>=0:
+                        originfile=originfile.replace(tyranofeature[idx],exchange[idx])
+                        with open(originjs,'w',encoding='utf8') as ff:ff.write(originfile)
+                        savehook_new_data[pexe]['onloadautochangemode']=3
+                        self.settin_ui.clicksourcesignal.emit('copy')
+                        getQMessageBox(self.settin_ui,"成功","处理完毕，请重启游戏以加载脚本，并使用剪贴板模式！")
+                    else:
+                        getQMessageBox(self.settin_ui,"失败","检测到为Tyrano引擎，但处理失败。若已处理过请切换至剪贴板模式，否则可能是不支持的tyrano脚本版本！")
+                        normalselectprocess()
+        if os.path.exists(originjs)==False:
+            def unpack():
+                self.textgetmethod('<msg>'+_TR('正在解压，请稍候！'))
+                QApplication.processEvents()
+                extract_asar(os.path.join(dirname,'resources/app.asar'),os.path.join(dirname,'resources/app'))
+                solvetyrano()
+            getQMessageBox(self.settin_ui,"发现","可能为tyrano引擎，是否解压处理？",True,True,unpack,normalselectprocess)
+        else:
+            solvetyrano()
+         
+            
     def selectprocess(self,selectedp): 
-            self.textsource=None
-            pids,pexe,hwnd=(  selectedp)   
-            checkifnewgame(pexe) 
-            #   
+        self.textsource=None
+        pids,pexe,hwnd=(  selectedp)   
+        checkifnewgame(pexe) 
+        
+        
+        def normalselectprocess():
             if globalconfig['sourcestatus']['textractor']['use']:
                 self.textsource=textractor(self.textgetmethod,self.hookselectdialog,pids,hwnd,pexe ,dontremove=True)  
             elif globalconfig['sourcestatus']['embedded']['use']:
                 self.textsource=embedded(self.textgetmethod,self.hookselectdialog,pids,hwnd,pexe, self)  
+        
+        if os.path.exists(os.path.join(os.path.dirname(pexe),'resources/app.asar')):
+            self.solvetyranosengine(pexe,normalselectprocess)
+        else:
+            normalselectprocess()
             
-
     #@threader
     def starttextsource(self,use=None,checked=True,waitforautoinit=False):   
         self.rect=None 

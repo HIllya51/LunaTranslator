@@ -2,7 +2,7 @@ import threading ,hashlib,queue
 import time,sqlite3,json,os,codecs
 from traceback import print_exc
 from utils.config import globalconfig
-from utils.utils import quote_identifier
+from utils.utils import quote_identifier,getfilemd5
 class basetext:
     def __init__(self,textgetmethod,md5,prefix)  :  
         self.textgetmethod=textgetmethod  
@@ -63,13 +63,7 @@ class basetext:
                 print_exc()
     
     def checkmd5prefix(self,pname):
-        try:
-            with open(pname,'rb') as ff:
-                bs=ff.read() 
-        
-            md5=hashlib.md5(bs).hexdigest()
-        except:
-            md5='0'
+        md5=getfilemd5(pname)
         prefix= md5+'_'+os.path.basename(pname).replace('.'+os.path.basename(pname).split('.')[-1],'') 
         return md5,prefix
     def gettextthread_(self):
