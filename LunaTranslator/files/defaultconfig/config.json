@@ -125,8 +125,6 @@
         "edit": true,
 		"memory":false
     },
-	"textractor_engine_base_use":true,
-	"textractor_engine_extra_use":true,
 	"showtranexception":true,
 	"refresh_on_get_trans":false,
     "languageuse": 0,

@@ -20,9 +20,7 @@ def gethookgrid(self) :
 
                 [('刷新延迟(ms)',5),(self.getspinbox(1,10000,globalconfig,'textthreaddelay',callback=lambda x:self.object.textsource.setdelay()),3)],
                 [('过滤包含乱码的文本行',5),(self.getsimpleswitch(globalconfig,'filter_chaos_code'),1),(self.getcolorbutton(globalconfig,'',icon='fa.gear',constcolor="#FF69B4",callback=lambda:codeacceptdialog(self)),1)],
-                [''],
-                [('启用Textractor_Base',5),(self.getsimpleswitch(globalconfig,'textractor_engine_base_use'))],
-                [('启用Textractor_Extra',5),(self.getsimpleswitch(globalconfig,'textractor_engine_extra_use'))],
+                
         ]
          
         return grids
