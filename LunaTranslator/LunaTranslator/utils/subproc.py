@@ -10,15 +10,14 @@ def subproc_w(cmd,cwd=None ,needstdio=False,encoding=None ,name=None):
     errors='ignore' if encoding else None
     startupinfo = subprocess.STARTUPINFO()
     startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
-    creationflags=subprocess.SW_HIDE
-    
+    startupinfo.wShowWindow=subprocess.SW_HIDE
     if name and  name in allsubprocess2:
         try:
             allsubprocess2[name].kill()
         except:
             print_exc()
     
-    ss=subprocess.Popen(cmd,cwd=cwd,stdin=_pipe,stdout=_pipe,stderr=_pipe,encoding=encoding,creationflags=creationflags,startupinfo=startupinfo,errors=errors)
+    ss=subprocess.Popen(cmd,cwd=cwd,stdin=_pipe,stdout=_pipe,stderr=_pipe,encoding=encoding,startupinfo=startupinfo,errors=errors)
      
     if name:
         allsubprocess2[name]=ss
