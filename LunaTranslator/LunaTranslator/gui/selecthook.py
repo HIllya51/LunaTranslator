@@ -14,7 +14,6 @@ from utils.config import globalconfig ,_TR,_TRL,checkifnewgame
 from collections import OrderedDict
 from gui.usefulwidget import closeashidewindow,getQMessageBox
 from utils.utils import checkchaos
-from utils.subproc import subproc_w
 class HTMLDelegate(QStyledItemDelegate):
     def __init__(self, parent=None):
         super().__init__(parent)

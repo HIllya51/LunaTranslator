@@ -16,12 +16,15 @@ def subproc_w(cmd,cwd=None ,needstdio=False,encoding=None ,name=None):
             allsubprocess2[name].kill()
         except:
             print_exc()
+    try:
+        ss=subprocess.Popen(cmd,cwd=cwd,stdin=_pipe,stdout=_pipe,stderr=_pipe,encoding=encoding,startupinfo=startupinfo,errors=errors)
     
-    ss=subprocess.Popen(cmd,cwd=cwd,stdin=_pipe,stdout=_pipe,stderr=_pipe,encoding=encoding,startupinfo=startupinfo,errors=errors)
-     
-    if name:
-        allsubprocess2[name]=ss
-    return ss
+        if name:
+            allsubprocess2[name]=ss
+    
+        return ss
+    except:
+        return None
 
 # import win32utils,win32con,msvcrt,io
 # def subproc_w(cmd,cwd=None,wait=False,needstdio=False,encoding=None ,name=None):
