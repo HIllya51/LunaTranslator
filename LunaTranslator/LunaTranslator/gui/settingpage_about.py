@@ -118,8 +118,7 @@ def setTab_aboutlazy(self) :
         shuominggrid=[
             ['项目网站',(makehtml("https://github.com/HIllya51/LunaTranslator"),3,'link')],
             ['问题反馈',(makehtml("https://github.com/HIllya51/LunaTranslator/issues"),3,'link')],
-            ['使用说明',(makehtml("https://hillya51.github.io/"),3,'link')], 
-            ['网盘',(makehtml("https://pan.baidu.com/s/1LPtki3Ex1XGNaDi8nVy1iA?pwd=4p63"),3,'link')],]
+            ['使用说明',(makehtml("https://hillya51.github.io/"),3,'link')], ]
         support=[
             [('如果你感觉该软件对你有帮助，欢迎微信扫码赞助，谢谢')], 
         ]

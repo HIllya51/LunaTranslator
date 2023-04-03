@@ -11,8 +11,6 @@
 
 > **一款galgame翻译器**
 
-度娘盘  https://pan.baidu.com/s/1LPtki3Ex1XGNaDi8nVy1iA?pwd=4p63 
-
 ## <a href="http://hillya51.github.io/" target="_blank">使用说明</a> 
  
 
