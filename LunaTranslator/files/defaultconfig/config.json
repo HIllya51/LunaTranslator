@@ -459,10 +459,6 @@
             "use": false,
             "name": "飞书"
         },
-		"manabu":{
-			"use":false,
-			"name":"manabu"
-		},
         "ocrspace": {
             "use": false,
             "name": "ocrspace"
