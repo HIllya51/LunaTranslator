@@ -81,6 +81,7 @@ class hookselect(closeashidewindow):
         [_.hide() for _ in self.multipidswidgets]
         self.save=[]
         self.at1=1
+        self.textOutput.clear()
         self.selectionbutton=[]
         self.saveinserthook=[]
     def addnewhook(self,ss ,select,isname):
@@ -482,7 +483,7 @@ class hookselect(closeashidewindow):
         atBottom = scrollbar.value() + 3 > scrollbar.maximum() or scrollbar.value() / scrollbar.maximum() > 0.975 
         cursor=QTextCursor (self.sysOutput.document())
         cursor.movePosition(QTextCursor.End)
-        cursor.insertText('\n'+self.get_time_stamp()+" "+sentence)
+        cursor.insertText(('' if self.sysOutput.document().isEmpty() else '\n')+self.get_time_stamp()+" "+sentence)
         if (atBottom):
             scrollbar.setValue(scrollbar.maximum())
 
@@ -493,7 +494,7 @@ class hookselect(closeashidewindow):
         atBottom = scrollbar.value() + 3 > scrollbar.maximum() or scrollbar.value() / scrollbar.maximum() > 0.975 
         cursor=QTextCursor (self.textOutput.document())
         cursor.movePosition(QTextCursor.End)
-        cursor.insertText('\n'+sentence)
+        cursor.insertText(('' if self.textOutput.document().isEmpty() else '\n')+sentence)
         if (atBottom):
             scrollbar.setValue(scrollbar.maximum())
     def ViewThread2(self, index:QModelIndex):   

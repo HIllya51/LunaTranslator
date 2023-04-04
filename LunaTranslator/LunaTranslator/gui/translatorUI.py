@@ -58,13 +58,12 @@ class QUnFrameWindow(resizableframeless):
                 self.hide_()
         elif code==5:
             #print(self.pos())
-            #self.move(self.pos() + self._endPos)
+            #self.move(self.pos() + self._endPos)z
+            _r=self.object.range_ui
+            _r.move(_r.pos().x()+ other[0],_r.pos().y()+ other[1])
             self.move(self.pos().x()+ other[0],self.pos().y()+ other[1])
             #self.move(self.pos().x()+self.rate *other[0],self.pos().y()+self.rate *other[1])
-        elif code==6:
-            #print(self.pos())
-            #self.move(self.pos() + self._endPos)
-            self.move(self.pos().x()+ other[0],self.pos().y()+ other[1])
+        
     def showres(self,name,color,res):  
         try:
             
@@ -393,20 +392,17 @@ class QUnFrameWindow(resizableframeless):
         except:
             pass
     def muteprocessfuntion(self): 
-        try:
-            pid= self.object.textsource.pid 
+        if self.object.textsource and self.object.textsource.pids :
             self.processismuteed=not self.processismuteed
-            
             self.refreshtoolicon()
-            
-            subproc_w(f'./files/plugins/muteprocess.exe {pid}  {int(self.processismuteed)}')
-        except:
-            print_exc()
+            for pid in self.object.textsource.pids:
+                subproc_w(f'./files/plugins/muteprocess.exe {pid}  {int(self.processismuteed)}')
+        
     
     def _fullsgame(self): 
-        self.isletgamefullscreened=not self.isletgamefullscreened
-        self.refreshtoolicon()
-        if self.object.textsource:
+        if self.object.textsource and  self.object.textsource.hwnd:
+            self.isletgamefullscreened=not self.isletgamefullscreened
+            self.refreshtoolicon()
             self.fullscreenmanager(self.object.textsource.hwnd,self.isletgamefullscreened) 
      
     def changemousetransparentstate(self): 
@@ -423,7 +419,7 @@ class QUnFrameWindow(resizableframeless):
     def bindcropwindowcallback(self,pid,hwnd): 
             _pid=os.getpid()
             self.object.textsource.hwnd= hwnd if pid!=_pid else None
-            self.object.textsource.pid= pid if pid!=_pid else None
+            self.object.textsource.pids= [pid] if pid!=_pid else None
             self.isbindedwindow=(pid!=_pid)
             self.refreshtoolicon()  
     def changeshowhideraw(self):
