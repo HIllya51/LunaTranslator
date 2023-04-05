@@ -735,11 +735,7 @@
             "color": "blue",
             "name": "自定义翻译",
 			"lang":{}
-        },"argos":{
-			"use":false,
-			"name":"argos",
-			"color":"pink"
-		}
+        }
     },
 	"errorretry":true,
     "minifollow": false,
