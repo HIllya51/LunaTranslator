@@ -17,7 +17,10 @@ class baseocr:
     ############################################################
     @property
     def proxy(self):
-        return getproxy()
+        if 'useproxy' in  globalconfig['ocr'][self.typename] and globalconfig['ocr'][self.typename]['useproxy']:
+            return getproxy()
+        else:
+            return {'https':None,'http':None}
     @property
     def srclang(self):
         try:

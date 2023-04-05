@@ -100,7 +100,11 @@ class Settin(closeashidewindow) :
         if name:
             setattr(self,name,s)
         return s
-    def getsimpleswitch(self,d,key,enable=True,callback=None,name=None,pair=None):
+    def getsimpleswitch(self,d,key,enable=True,callback=None,name=None,pair=None,default=None):
+        if default:
+            if key not in d:
+                d[key]=default
+
         b=MySwitch(self.rate,sign=d[key],enable=enable)
         b.clicked.connect(functools.partial(self.callbackwrap,d,key,callback) )
         

@@ -25,7 +25,10 @@ class basetrans:
     ############################################################
     @property
     def proxy(self):
-        return getproxy()
+        if 'useproxy' in  globalconfig['fanyi'][self.typename] and globalconfig['fanyi'][self.typename]['useproxy']:
+            return getproxy()
+        else:
+            return {'https':None,'http':None}
     @property
     def srclang(self):
         try:
