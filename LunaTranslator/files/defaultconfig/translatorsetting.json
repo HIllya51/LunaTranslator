@@ -264,13 +264,17 @@
     },
     "premt": {
         "args": {
-            "sqlite文件": ""
+            "sqlite文件": "",
+			"仅使用激活的翻译":false
         },
 		"argstype":{
 			"sqlite文件":{
 				"type":"file",
 				"dir":false,
 				"filter":"*.sqlite"
+			},
+			"仅使用激活的翻译":{
+				"type":"switch"
 			}
 		}
     }

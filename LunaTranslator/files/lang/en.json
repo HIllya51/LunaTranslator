@@ -565,5 +565,6 @@
     "不是tynaro引擎，执行原始流程！": "Not the tynaro engine, execute the original process!",
     "可能为tyrano引擎，是否解压处理？": "It may be a tyrano engine. Do you want to decompress it?",
     "正在解压，请稍候！": "Decompressing, please wait!",
-    "检测到为Tyrano引擎，但处理失败。若已处理过请切换至剪贴板模式，否则可能是不支持的tyrano脚本版本！": "\"The Tyrano engine was detected, but processing failed.\". If it has already been processed, please switch to clipboard mode, otherwise it may be an unsupported version of the tyrano script!"
+    "检测到为Tyrano引擎，但处理失败。若已处理过请切换至剪贴板模式，否则可能是不支持的tyrano脚本版本！": "\"The Tyrano engine was detected, but processing failed.\". If it has already been processed, please switch to clipboard mode, otherwise it may be an unsupported version of the tyrano script!",
+    "仅使用激活的翻译": "Use only active translations"
 }

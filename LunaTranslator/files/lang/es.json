@@ -565,5 +565,6 @@
     "不是tynaro引擎，执行原始流程！": "¡No es el motor tynaro, ¡ realiza el proceso original!",
     "可能为tyrano引擎，是否解压处理？": "¿Puede ser el motor tyrano, ¿ se descomprime el procesamiento?",
     "正在解压，请稍候！": "¡Se está descomprimiendo, ¡ por favor espere!",
-    "检测到为Tyrano引擎，但处理失败。若已处理过请切换至剪贴板模式，否则可能是不支持的tyrano脚本版本！": "Se detectó como motor tyrano, pero el procesamiento falló. ¡¡ si se ha procesado, cambie al modo portapapeles, de lo contrario puede ser una versión de guión tyrano no soportada!"
+    "检测到为Tyrano引擎，但处理失败。若已处理过请切换至剪贴板模式，否则可能是不支持的tyrano脚本版本！": "Se detectó como motor tyrano, pero el procesamiento falló. ¡¡ si se ha procesado, cambie al modo portapapeles, de lo contrario puede ser una versión de guión tyrano no soportada!",
+    "仅使用激活的翻译": "Solo se utilizan traducciones activadas"
 }

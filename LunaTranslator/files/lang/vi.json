@@ -565,5 +565,6 @@
     "不是tynaro引擎，执行原始流程！": "Không phải động cơ tynaro, thực hiện quy trình ban đầu!",
     "可能为tyrano引擎，是否解压处理？": "Có thể là động cơ tyrano, có giải nén không?",
     "正在解压，请稍候！": "Đang giải nén, xin chờ!",
-    "检测到为Tyrano引擎，但处理失败。若已处理过请切换至剪贴板模式，否则可能是不支持的tyrano脚本版本！": "Phát hiện động cơ Tyrano, nhưng xử lý không thành công. Nếu nó đã được xử lý, hãy chuyển sang chế độ bảng tạm, nếu không nó có thể là phiên bản tyrano script không được hỗ trợ!"
+    "检测到为Tyrano引擎，但处理失败。若已处理过请切换至剪贴板模式，否则可能是不支持的tyrano脚本版本！": "Phát hiện động cơ Tyrano, nhưng xử lý không thành công. Nếu nó đã được xử lý, hãy chuyển sang chế độ bảng tạm, nếu không nó có thể là phiên bản tyrano script không được hỗ trợ!",
+    "仅使用激活的翻译": "Chỉ sử dụng bản dịch kích hoạt"
 }

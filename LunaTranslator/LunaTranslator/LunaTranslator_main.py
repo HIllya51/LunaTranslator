@@ -222,8 +222,11 @@ class MAINUI(QObject) :
 
         self.premtalready=['premt']
         if 'premt' in self.translators:
-            ret=self.translators['premt'].translate(paste_str_solved)
-            self.GetTranslationCallback('premt',optimization_params,_showrawfunction,_showrawfunction_sig,_paste_str,ret,embedcallback)
+            try:
+                ret=self.translators['premt'].translate(paste_str_solved)
+                self.GetTranslationCallback('premt',self.currentsignature,optimization_params,_showrawfunction,_showrawfunction_sig,_paste_str,ret,embedcallback)
+            except:
+                pass
         for engine in self.translators:  
             if engine in self.premtalready:continue
             self.translators[engine].gettask((partial(self.GetTranslationCallback,engine,self.currentsignature, optimization_params,_showrawfunction,_showrawfunction_sig,_paste_str),_paste_str,paste_str_solved,skip,embedcallback)) 

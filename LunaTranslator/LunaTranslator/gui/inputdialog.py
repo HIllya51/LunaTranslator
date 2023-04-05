@@ -71,7 +71,12 @@ class autoinitdialog(QDialog):
                 hori.addWidget(e)
                 hori.addWidget(bu)
                 formLayout.addRow((_TR(line['l'])),hori)
-             
+            elif line['t']=='switch':
+                dd=line['d']
+                key=line['k'] 
+                switch=MySwitch(object.rate,sign=dd[key])
+                regist.append([dd,key,switch.isChecked])  
+                formLayout.addRow((_TR(line['l'])),switch)
             elif line['t']=='spin':
                 dd=line['d']
                 key=line['k'] 

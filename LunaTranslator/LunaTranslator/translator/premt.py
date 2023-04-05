@@ -42,5 +42,11 @@ class TS(basetrans):
                 ret=json.loads(ret[0]) 
             except:
                 ret= ret[0]
+        if self.config['仅使用激活的翻译']:
+            realret={}
+            for key in ret:
+                if key in globalconfig['fanyi'] and globalconfig['fanyi'][key]['use']:
+                    realret[key]=ret[key]
+            ret=realret
         return ret  
      
