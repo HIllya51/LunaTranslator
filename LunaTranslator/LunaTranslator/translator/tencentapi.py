@@ -46,7 +46,7 @@ def dictToStr(dictData):
     return "&".join(tempList)
 
  
-def txfy(secretId,secretKey,content,src,tgt):
+def txfy(secretId,secretKey,content,src,tgt,proxy):
          
     
     timeData = str(int(time.time())) # 时间戳
@@ -82,7 +82,7 @@ def txfy(secretId,secretKey,content,src,tgt):
     requestUrl = "https://%s/?"%(uriData) 
     requestUrlWithArgs = requestUrl + dictToStr(actionArgs)
     
-    responseData = requests.get(requestUrlWithArgs,timeout=globalconfig['translatortimeout'], proxies=  {'http': None,'https': None}).text
+    responseData = requests.get(requestUrlWithArgs,timeout=globalconfig['translatortimeout'], proxies=  proxy).text
 
     #print(responseData) 
     return responseData 
@@ -96,7 +96,7 @@ class TS(basetrans):
         appid = self.config['SecretId']
         secretKey =self.config['SecretKey']
         try:
-            ret=txfy(appid,secretKey,query,self.srclang,self.tgtlang)
+            ret=txfy(appid,secretKey,query,self.srclang,self.tgtlang,self.proxy)
             ret=(json.loads(ret)["Response"]["TargetText"])
             self.countnum(query)
             return ret  

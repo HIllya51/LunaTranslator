@@ -131,5 +131,5 @@ class TS(basetrans):
         self.engine=ModernMt()
     def translate(self, content):
         
-        return  self.engine.modernMt_api(content,self.srclang,self.tgtlang)
+        return  self.engine.modernMt_api(content,self.srclang,self.tgtlang,proxies=self.proxy)
          

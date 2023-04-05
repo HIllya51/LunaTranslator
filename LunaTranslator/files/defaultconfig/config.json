@@ -85,8 +85,8 @@
     "magpiecapturemethod": 0,
     "ocrrangecolor": "#000000",
     "ocrrangewidth": 2,
-    "useproxy": false,
-	"usesysproxy":false,
+    "useproxy": true,
+	"usesysproxy":true,
     "fullscreenmethod_2": 0,
 	"magpie10path":"",
     "ocrautobindwindow": true,
@@ -709,11 +709,6 @@
             "use": false,
             "color": "blue",
             "name": "有道api"
-        },
-		"yunyi": {
-            "use": false,
-            "color": "blue",
-            "name": "云译"
         },
 		"yunyi2": {
             "use": false,

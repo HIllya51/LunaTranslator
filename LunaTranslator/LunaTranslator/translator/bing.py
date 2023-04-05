@@ -154,7 +154,10 @@ class TS(basetrans):
         self.engine=Bing()
    
     def translate(self,content): 
-        return self.engine.bing_api(content,self.srclang,self.tgtlang)
+        try:
+            return self.engine.bing_api(content,self.srclang,self.tgtlang,proxies=self.proxy,if_use_cn_host=True)
+        except:
+            return self.engine.bing_api(content,self.srclang,self.tgtlang,proxies=self.proxy)
          
 # class TS(basetrans):
 #     def langmap(self):

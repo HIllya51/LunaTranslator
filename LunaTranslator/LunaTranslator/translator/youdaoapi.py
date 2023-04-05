@@ -36,7 +36,7 @@ class TS(basetrans):
         }
 
         try:
-            r = requests.get(youdao_url, params = data,proxies={"https":None})   # 获取返回的json()内容
+            r = requests.get(youdao_url, params = data,proxies=self.proxy)   # 获取返回的json()内容
             self.countnum(content)
         
             return r.json()["translation"][0]

@@ -1,13 +1,15 @@
 from utils.config import globalconfig
 import requests
 from urllib.parse import quote
+
+from utils.utils import getproxy
 import re,time
 from traceback import print_exc
 class weblio:
      
     def search(self,word):
         url='https://www.weblio.jp/content/'+ quote(word)
-        x=(requests.get(url).text)
+        x=(requests.get(url,proxies=getproxy()).text)
         x=re.sub('<img(.*?)>','',x)
         _all=[]
         _xx=re.findall('<div class=kijiWrp>([\\s\\S]*?)<br class=clr>',x)

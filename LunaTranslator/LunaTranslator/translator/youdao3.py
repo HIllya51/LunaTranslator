@@ -30,7 +30,7 @@ class TS(basetrans):
             'sec-ch-ua': '"Microsoft Edge";v="105", "Not)A;Brand";v="8", "Chromium";v="105"',
             'sec-ch-ua-mobile': '?0',
             'sec-ch-ua-platform': '"Windows"',
-        }, proxies=  {'http': None,'https': None},timeout = globalconfig['translatortimeout']).text
+        }, proxies=  self.proxy).text
     def translate(self, content):
         data = {
             'inputtext': content,
@@ -59,6 +59,6 @@ class TS(basetrans):
         self.ss.cookies.update({ '_yd_btn_fanyi_29': 'true',
     '_yd_newbanner_day': '29',})
     
-        response = self.ss.post('https://m.youdao.com/translate',   data=data,headers=headers,timeout = globalconfig['translatortimeout'], proxies=  {'http': None,'https': None}).text
+        response = self.ss.post('https://m.youdao.com/translate',   data=data,headers=headers , proxies=self.proxy).text
         
         return re.search('<ul id="translateResult">([\\s\\S]*?)<li>([\\s\\S]*?)</li>([\\s\\S]*?)<\/ul>',response).groups()[1]  

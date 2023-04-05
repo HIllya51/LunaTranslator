@@ -5,10 +5,12 @@ import threading
 import time,os
 import threading
 from threading import Lock 
+
+from utils.utils import getproxy
 from utils.config import globalconfig  
 def mutithreaddownload(savep,url,progresscallback,internalsignal,endcallback):
         try:
-            r2 = requests.get(url,stream=True,verify = False) 
+            r2 = requests.get(url,stream=True,verify = False,proxies=getproxy()) 
             size = int(r2.headers['Content-Length'])
             if os.path.exists(savep):
                 stats = os.stat(savep) 
@@ -30,7 +32,7 @@ def mutithreaddownload(savep,url,progresscallback,internalsignal,endcallback):
                     headers = {
                         'Range': f'bytes={start}-{end}',
                     }
-                    r = requests.get(url,stream=True,headers=headers,verify = False) 
+                    r = requests.get(url,stream=True,headers=headers,verify = False,proxies=getproxy()) 
                     pos = start
                     for i in r.iter_content(chunk_size=1024): 
                         if internalsignal()==False: 

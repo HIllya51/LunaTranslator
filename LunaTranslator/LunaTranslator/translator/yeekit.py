@@ -38,7 +38,7 @@ class TS(basetrans):
             'targetLang':self.tgtlang ,
         }
 
-        response = requests.post('https://www.yeekit.com/site/dotranslate',   headers=headers, data=data,timeout=globalconfig['translatortimeout'], proxies=  {'http': None,'https': None})
+        response = requests.post('https://www.yeekit.com/site/dotranslate',   headers=headers, data=data,  proxies= self.proxy)
         res=''
         #print(response.json())
         for _ in response.json():

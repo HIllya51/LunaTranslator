@@ -136,4 +136,4 @@ class TS(basetrans):
         
         self.engine=BaiduV1()
     def translate(self,query):  
-        return self.engine.baidu_api(query,self.srclang,self.tgtlang)
+        return self.engine.baidu_api(query,self.srclang,self.tgtlang,proxies=self.proxy)

@@ -3,7 +3,7 @@ from traceback import print_exc
 import openai,json
 
 from translator.basetranslator import basetrans
- 
+import os
 
 class TS(basetrans):
     def langmap(self):
@@ -14,6 +14,8 @@ class TS(basetrans):
     def inittranslator(self):
         self.api_key=None 
     def translate(self, query):
+        os.environ['https_proxy']=self.proxy
+        os.environ['http_proxy']=self.proxy
         self.checkempty(['SECRET_KEY','model'])
         self.contextnum=int(self.config['附带上下文个数'])
         secret_key = self.config['SECRET_KEY'] 

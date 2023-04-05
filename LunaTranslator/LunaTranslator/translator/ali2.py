@@ -125,5 +125,5 @@ class TS(basetrans):
         self.engine=AlibabaV1()
     def translate(self, content):
         
-        return  self.engine.alibaba_api(content,self.srclang,self.tgtlang)
+        return  self.engine.alibaba_api(content,self.srclang,self.tgtlang,proxies=self.proxy)
          

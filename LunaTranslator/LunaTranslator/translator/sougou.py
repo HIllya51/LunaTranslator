@@ -76,13 +76,13 @@ class Sogou(Tse):
         return form
 
     # @Tse.time_stat
-    def sogou_api(self, query_text ,src,tgt) :
+    def sogou_api(self, query_text ,src,tgt,proxy) :
          
         with requests.Session() as ss:
-            _ = ss.get(self.host_url, headers=self.host_headers, timeout=globalconfig['translatortimeout'], proxies={'http': None,'https': None}).text 
+            _ = ss.get(self.host_url, headers=self.host_headers,proxies=proxy).text 
             from_language,to_language=src,tgt
             self.form_data = self.get_form(query_text, from_language, to_language)
-            r = ss.post(self.api_url, headers=self.api_headers, data=self.form_data, timeout=globalconfig['translatortimeout'], proxies={'http': None,'https': None})
+            r = ss.post(self.api_url, headers=self.api_headers, data=self.form_data,proxies=proxy)
           
             data = r.json()  
         return   data['data']['translate']['dit']
@@ -92,10 +92,8 @@ class TS(basetrans):
     def inittranslator(self): 
         self.engine=Sogou() 
     def translate(self,content):  
-        ss=self.engine.sogou_api(content,self.srclang,self.tgtlang)   
+        ss=self.engine.sogou_api(content,self.srclang,self.tgtlang,self.proxy)   
         return ss
     def langmap(self):
         return {"zh":"zh-CHS"}
-if __name__=='__main__':
-    a=BINGFY()
-    a.gettask('はーい、おやすみなさい')
+ 

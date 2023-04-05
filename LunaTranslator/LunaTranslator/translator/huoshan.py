@@ -26,7 +26,7 @@ class TS(basetrans):
                 'target' : self.tgtlang
             } 
         
-        response = requests.post('https://www.volcengine.com/api/exp/2/model-ii',   headers=headers, json=json_data,timeout=globalconfig['translatortimeout'], proxies=  {'http': None,'https': None})
+        response = requests.post('https://www.volcengine.com/api/exp/2/model-ii',   headers=headers, json=json_data,timeout=globalconfig['translatortimeout'], proxies= self.proxy)
             
         return '\n'.join([_['Translation'] for _ in response.json()['Result']['TranslationList'] ])
         

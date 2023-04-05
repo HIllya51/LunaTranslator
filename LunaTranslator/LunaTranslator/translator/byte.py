@@ -36,7 +36,7 @@ class TS(basetrans):
             'browser': 0,
         }
         
-        response = requests.post('https://translate-crx.bytedance.com/e1/flask/translation',   headers=headers, json=json_data,timeout=globalconfig['translatortimeout'], proxies=  {'http': None,'https': None})
+        response = requests.post('https://translate-crx.bytedance.com/e1/flask/translation',   headers=headers, json=json_data,timeout=globalconfig['translatortimeout'], proxies= self.proxy)
 
         return(response.json()['results'][0]['translate'][0]) 
    

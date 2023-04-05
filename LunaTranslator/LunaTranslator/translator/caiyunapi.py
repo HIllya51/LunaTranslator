@@ -29,7 +29,7 @@ class TS(basetrans):
             "content-type": "application/json",
             "x-authorization": "token " + token,
         }
-        response = requests.request("POST", url, data=json.dumps(payload), headers=headers,timeout=globalconfig['translatortimeout'], proxies=  {'http': None,'https': None})
+        response = requests.request("POST", url, data=json.dumps(payload), headers=headers,timeout=globalconfig['translatortimeout'], proxies= self.proxy)
         try:
             res=json.loads(response.text)["target"]
            

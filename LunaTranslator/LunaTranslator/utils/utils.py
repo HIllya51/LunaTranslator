@@ -9,6 +9,7 @@ from utils.config import globalconfig
 import win32utils
 from utils.exceptions import TimeOut
 from urllib.request import getproxies_registry
+
 def getsysproxy():
     proxies=getproxies_registry()
     try:
@@ -30,7 +31,15 @@ def getsysproxy():
     #      return ProxyServer
     # else:
     #      return ''
-
+def getproxy():
+    if globalconfig['useproxy']:
+            if globalconfig['usesysproxy']:
+                p=getsysproxy()
+            else:
+                p=(globalconfig['proxy'])
+    else:
+        p=None
+    return {'https':p,'http':p}
 def argsort(l):
     ll=list(range(len(l)))
     ll.sort(key= lambda x:l[x])

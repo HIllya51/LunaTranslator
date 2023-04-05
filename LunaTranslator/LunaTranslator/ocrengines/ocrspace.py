@@ -32,7 +32,7 @@ class OCR(baseocr):
         b64=base64.b64encode(f)
         data={'language':self.srclang,'base64Image':'data:image/jpeg;base64,'+str(b64,encoding='utf8'),'isOverlayRequired':'true','OCREngine':1,'apikey':apikey}
         
-        response = requests.post('https://apipro3.ocr.space/parse/image', headers=headers, data=data, proxies=  {'http': None,'https': None})
+        response = requests.post('https://apipro3.ocr.space/parse/image', headers=headers, data=data, proxies=self.proxy)
         #print(response.text)
         try:
             

@@ -123,7 +123,7 @@ class Iciba(Tse):
         return {}.fromkeys(lang_list, lang_list)
 
     # @Tse.time_stat
-    def iciba_api(self, query_text: str, from_language: str = 'ja', to_language: str = 'zh-CN', **kwargs)  :
+    def iciba_api(self, proxy,query_text: str, from_language: str = 'ja', to_language: str = 'zh-CN', **kwargs)  :
          
         """
         https://www.iciba.com/fy
@@ -140,7 +140,7 @@ class Iciba(Tse):
         """
         is_detail_result = kwargs.get('is_detail_result', False)
         timeout= globalconfig['translatortimeout'] 
-        proxies={'http': None,'https': None}
+        proxies=proxy
         sleep_seconds = kwargs.get('sleep_seconds', random.random())
         if_ignore_limit_of_length = kwargs.get('if_ignore_limit_of_length', False)
         query_text = self.check_query_text(query_text, if_ignore_limit_of_length, limit_of_length=self.input_limit)
@@ -176,5 +176,5 @@ class TS(basetrans):
         self.engine=Iciba()
         self.engine._=None
     def translate(self,content):  
-            return self.engine.iciba_api(content,self.srclang,self.tgtlang)
+            return self.engine.iciba_api(self.proxy, content,self.srclang,self.tgtlang)
          

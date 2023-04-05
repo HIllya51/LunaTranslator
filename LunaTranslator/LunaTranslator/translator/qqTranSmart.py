@@ -155,5 +155,5 @@ class TS(basetrans):
         self.engine=QQTranSmart()
     def translate(self, content):
         
-        return  self.engine.qqTranSmart_api(content,self.srclang,self.tgtlang)
+        return  self.engine.qqTranSmart_api(content,self.srclang,self.tgtlang,proxies=self.proxy)
          

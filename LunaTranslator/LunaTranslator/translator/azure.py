@@ -37,7 +37,7 @@ class TS(basetrans):
             'text': query
         }]
 
-        request = requests.post(constructed_url, params=params, headers=headers, json=body)
+        request = requests.post(constructed_url, params=params, headers=headers, json=body,proxies=self.proxy)
         response = request.json()
         try:
             return response[0]['translations'][0]['text']

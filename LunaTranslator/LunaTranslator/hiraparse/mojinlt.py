@@ -1,5 +1,6 @@
 from utils.config import globalconfig
 
+from utils.utils import getproxy
 import os,requests
 from traceback import print_exc
 class hira:
@@ -24,7 +25,7 @@ class hira:
                     headers={
                         "content-type": "text/plain",
                         "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36",
-                    },
+                    },proxies=getproxy()
                 )
 
                 return [

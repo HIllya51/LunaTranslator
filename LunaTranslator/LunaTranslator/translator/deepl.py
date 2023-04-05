@@ -158,7 +158,7 @@ class TS(basetrans):
         self.engine=Deepl()
     def translate(self,content): 
          
-            return self.engine.deepl_api(content,self.srclang,self.tgtlang)
+            return self.engine.deepl_api(content,self.srclang,self.tgtlang,proxies=self.proxy)
          
 if __name__=='__main__':
     a=BINGFY()

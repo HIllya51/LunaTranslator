@@ -144,5 +144,5 @@ class TS(basetrans):
         self.engine=Lingvanex()
         self.engine._=None
     def translate(self,content):  
-            return self.engine.lingvanex_api(content,self.srclang,self.tgtlang)
+            return self.engine.lingvanex_api(content,self.srclang,self.tgtlang,proxies=self.proxy)
         

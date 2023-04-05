@@ -63,8 +63,8 @@ class TS(basetrans):
             json_data = {
                 'browser_id': self.bid,
             }
-            self.ss.options('https://api.interpreter.caiyunai.com/v1/user/jwt/generate', headers=headers, json=json_data,timeout=globalconfig['translatortimeout'],proxies={'http': None,'https': None})
-            self.jwt=self.ss.post('https://api.interpreter.caiyunai.com/v1/user/jwt/generate', headers=headers, json=json_data,timeout=globalconfig['translatortimeout'],proxies={'http': None,'https': None}).json()['jwt']
+            self.ss.options('https://api.interpreter.caiyunai.com/v1/user/jwt/generate', headers=headers, json=json_data,timeout=globalconfig['translatortimeout'],proxies=self.proxy)
+            self.jwt=self.ss.post('https://api.interpreter.caiyunai.com/v1/user/jwt/generate', headers=headers, json=json_data,timeout=globalconfig['translatortimeout'],proxies=self.proxy).json()['jwt']
 
             headers = {
                 'authority': 'api.interpreter.caiyunai.com',
@@ -102,11 +102,8 @@ class TS(basetrans):
                 'detect': True,
                 'browser_id': self.bid,
             }
-            self.ss.options('https://api.interpreter.caiyunai.com/v1/translator', headers=headers, json=json_data,timeout=globalconfig['translatortimeout'],proxies={'http': None,'https': None})
-            response = self.ss.post('https://api.interpreter.caiyunai.com/v1/translator', headers=headers, json=json_data,timeout=globalconfig['translatortimeout'],proxies={'http': None,'https': None})
+            self.ss.options('https://api.interpreter.caiyunai.com/v1/translator', headers=headers, json=json_data,timeout=globalconfig['translatortimeout'],proxies=self.proxy)
+            response = self.ss.post('https://api.interpreter.caiyunai.com/v1/translator', headers=headers, json=json_data,timeout=globalconfig['translatortimeout'],proxies=self.proxy)
              
             return  decrypt(response.json()['target'])
          
-if __name__=='__main__':
-    a=BINGFY()
-    a.gettask('はーい、おやすみなさい')

@@ -4,7 +4,7 @@ from traceback import print_exc
 from utils import somedef
 from utils.wrapper import stripwrapper
 from utils.exceptions import ArgsEmptyExc
-
+from utils.utils import getproxy
 class baseocr: 
     def langmap(self):
         return {}
@@ -15,6 +15,9 @@ class baseocr:
     def end(self):
         pass
     ############################################################
+    @property
+    def proxy(self):
+        return getproxy()
     @property
     def srclang(self):
         try:

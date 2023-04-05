@@ -30,9 +30,9 @@ class TS(basetrans):
                 'sec-fetch-user': '?1',
                 'upgrade-insecure-requests': '1',
                 'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36 Edg/105.0.1343.53',
-            }, proxies=  {'http': None,'https': None}).text
+            }, proxies= self.proxy).text
         
-        self.csrf=self.ss.get('https://translate.alibaba.com/api/translate/csrftoken',timeout = globalconfig['translatortimeout'], proxies=  {'http': None,'https': None}).json()['token']
+        self.csrf=self.ss.get('https://translate.alibaba.com/api/translate/csrftoken',timeout = globalconfig['translatortimeout'], proxies= self.proxy).json()['token']
         
     def translate(self, content):
         headers = { 
@@ -65,7 +65,7 @@ class TS(basetrans):
             'query':content,
             "_csrf": self.csrf
         } 
-        r = self.ss.post('https://translate.alibaba.com/api/translate/text', headers= headers,timeout = globalconfig['translatortimeout'], params =form_data , proxies=  {'http': None,'https': None})
+        r = self.ss.post('https://translate.alibaba.com/api/translate/text', headers= headers,timeout = globalconfig['translatortimeout'], params =form_data , proxies= self.proxy)
     
         data = r.json()    
         try:

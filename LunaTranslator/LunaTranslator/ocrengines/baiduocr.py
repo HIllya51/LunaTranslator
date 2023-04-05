@@ -13,7 +13,7 @@ class OCR(baseocr):
         self.checkempty(['API Key','Secret Key'])
         if (self.config['API Key'],self.config['Secret Key'] )!=(self.appid,self.secretKey)  :
             self.appid,self.secretKey=self.config['API Key'],self.config['Secret Key']
-            self.accstoken=requests.get('https://aip.baidubce.com/oauth/2.0/token?grant_type=client_credentials&client_id='+self.appid+'&client_secret='+self.secretKey, proxies=  {'http': None,'https': None}).json()['access_token']
+            self.accstoken=requests.get('https://aip.baidubce.com/oauth/2.0/token?grant_type=client_credentials&client_id='+self.appid+'&client_secret='+self.secretKey, proxies=self.proxy).json()['access_token']
     def ocr(self,imgfile):
         self.checkchange()
         if self.accstoken=="":
@@ -56,7 +56,7 @@ class OCR(baseocr):
                 'detect_direction':'true',
                 }
         
-        response = requests.post('https://aip.baidubce.com/rest/2.0/ocr/v1/general_basic', params=params, headers=headers, data=data, proxies=  {'http': None,'https': None})
+        response = requests.post('https://aip.baidubce.com/rest/2.0/ocr/v1/general_basic', params=params, headers=headers, data=data, proxies=self.proxy)
         try:
             
             res=self.space.join([x['words']  for x in response.json()['words_result']])

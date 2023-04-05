@@ -23,7 +23,7 @@ class TS(basetrans):
 
         data = 'text='+parse.quote(query)+'&target_lang='+self.tgtlang+'&source_lang='+self.srclang
         
-        response = requests.post('https://api.deepl.com/v2/translate', headers=headers, verify=False, data=data )
+        response = requests.post('https://api.deepl.com/v2/translate', headers=headers, verify=False, data=data,proxies=self.proxy )
         
         
         

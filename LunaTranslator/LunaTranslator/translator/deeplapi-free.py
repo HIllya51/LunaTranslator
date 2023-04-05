@@ -23,10 +23,8 @@ class TS(basetrans):
                 }
 
         data = 'text='+parse.quote(query)+'&target_lang='+self.tgtlang+'&source_lang='+self.srclang
-        if globalconfig['useproxy']:
-            response = requests.post('https://api-free.deepl.com/v2/translate', headers=headers, verify=False, data=data )
-        else:
-            response = requests.post('https://api-free.deepl.com/v2/translate', headers=headers, verify=False, data=data ,proxies={"https":None,"http":None}) 
+        
+        response = requests.post('https://api-free.deepl.com/v2/translate', headers=headers, verify=False, data=data ,proxies=self.proxy) 
         
         try:
             #print(res['trans_result'][0]['dst'])

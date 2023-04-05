@@ -39,7 +39,7 @@ class TS(basetrans):
         self.session=requests.session( )
         self.session.trust_env=False
         self.session.headers.update(self.headers) 
-        self.session.get('https://fanyi.youdao.com',timeout = globalconfig['translatortimeout'], proxies=  {'http': None,'https': None})
+        self.session.get('https://fanyi.youdao.com' , proxies=self.proxy)
     def translate(self, content):
          
         params = {
@@ -82,7 +82,7 @@ class TS(basetrans):
             'sec-ch-ua-mobile': '?0',
             'sec-ch-ua-platform': '"Windows"',
         }
-        response =self.session.post('https://fanyi.youdao.com/translate_o', params=params ,headers=headers, data=data, proxies=  {'http': None,'https': None},timeout = globalconfig['translatortimeout'])
+        response =self.session.post('https://fanyi.youdao.com/translate_o', params=params ,headers=headers, data=data, proxies=  self.proxy)
     
         res='' 
         for js in response.json()['translateResult']:

@@ -28,7 +28,7 @@ class TS(basetrans):
         }
         
         try:
-            response = requests.post('https://api.niutrans.com/NiuTransServer/translation',  headers=headers, params=params ,proxies=  {'http': None,'https': None})
+            response = requests.post('https://api.niutrans.com/NiuTransServer/translation',  headers=headers, params=params ,proxies=self.proxy)
         # print(response.json())
             self.countnum(query)
         #print(res['trans_result'][0]['dst'])

@@ -25,7 +25,7 @@ class TS(basetrans):
             'upgrade-insecure-requests': '1',
             'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36',
         
-        },timeout = globalconfig['translatortimeout'], proxies=  {'http': None,'https': None}).text
+        },timeout = globalconfig['translatortimeout'], proxies= self.proxy).text
         
         self.uuid=uuid.uuid4().__str__()
     def get_auth(self, url, auth_key, device_id, time_stamp): 
@@ -67,13 +67,8 @@ class TS(basetrans):
             'text': content,
         }
 
-        r = self.ss.post('https://papago.naver.com/apis/n2mt/translate', headers= headers,timeout = globalconfig['translatortimeout'], data =data , proxies=  {'http': None,'https': None})
+        r = self.ss.post('https://papago.naver.com/apis/n2mt/translate', headers= headers,timeout = globalconfig['translatortimeout'], data =data , proxies= self.proxy)
     
         data = r.json()    
         return  data['translatedText'] 
-    def show(self,res):
-        print('阿里','\033[0;33;47m',res,'\033[0m',flush=True)
-if __name__=="__main__":
-    #youdaoSIGN("5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36 Edg/105.0.1343.33",'')
-    a=ALI()
-    a.gettask('はーい、おやすみなさい')
+ 

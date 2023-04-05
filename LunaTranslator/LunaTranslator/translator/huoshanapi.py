@@ -255,7 +255,7 @@ class Service(object):
         self.api_info = api_info
         self.session = requests.session()
       
-    def json(self, api, params, body):
+    def json(self, api, params, body,proxy):
         if not (api in self.api_info):
             raise Exception("no such api")
         api_info = self.api_info[api]
@@ -267,7 +267,7 @@ class Service(object):
 
         url = r.build() 
         resp = self.session.post(url, headers=r.headers, data=r.body.encode('utf8').decode("latin1"),
-                                 timeout=(self.service_info.connection_timeout, self.service_info.socket_timeout), proxies=  {'http': None,'https': None})
+                                 timeout=(self.service_info.connection_timeout, self.service_info.socket_timeout), proxies=  proxy)
         if resp.status_code == 200:
             return json.dumps(resp.json())
         else:
@@ -316,7 +316,7 @@ class Service(object):
 
         return od
 
-def trans(TextList,k_access_key,k_secret_key,src,tgt):
+def trans(TextList,k_access_key,k_secret_key,src,tgt,proxy):
     # k_access_key = 'AKLTY2IzNTM1YzQzNDQ1NDFkMzk0MTRjNTE2YmEzNTgzNWY' # https://console.volcengine.com/iam/keymanage/
     # k_secret_key = 'TVRRMk1qaGxOMk14Tmpoa05EQXhZbUUwT1RFeU1qYzVPVEptTXpRMU9HRQ=='
   
@@ -339,7 +339,7 @@ def trans(TextList,k_access_key,k_secret_key,src,tgt):
         'SourceLanguage':src,
         'TextList': [ TextList],
     }
-    res = service.json('translate', {}, json.dumps(body) )
+    res = service.json('translate', {}, json.dumps(body) ,proxy)
     return res
 
 class TS(basetrans):  
@@ -351,7 +351,7 @@ class TS(basetrans):
         keyid = self.config['Access Key ID']
         acckey = self.config['Secret Access Key']
         try:
-            res=trans(query,keyid,acckey,self.srclang,self.tgtlang)
+            res=trans(query,keyid,acckey,self.srclang,self.tgtlang,self.proxy)
             res='\n'.join( [ _['Translation'] for _ in json.loads(res)['TranslationList'] ])
             self.countnum(query)
         #print(res['trans_result'][0]['dst'])

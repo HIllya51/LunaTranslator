@@ -9,6 +9,8 @@ from functools import partial
 from utils import somedef
 from utils.utils import timeoutfunction,quote_identifier
 import sqlite3
+
+from utils.utils import getproxy
 from utils.exceptions import ArgsEmptyExc,TimeOut
 from utils.wrapper import stripwrapper
 class basetrans: 
@@ -21,6 +23,9 @@ class basetrans:
     def translate(self,content):
         return ''
     ############################################################
+    @property
+    def proxy(self):
+        return getproxy()
     @property
     def srclang(self):
         try:

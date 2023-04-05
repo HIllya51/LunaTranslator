@@ -31,7 +31,7 @@ class OCR(baseocr):
             'company': '',
         }
 
-        response = requests.post('https://aidemo.youdao.com/ocrapi1', headers=headers, data=data, proxies=  {'http': None,'https': None})
+        response = requests.post('https://aidemo.youdao.com/ocrapi1', headers=headers, data=data, proxies=self.proxy)
          
         try:
             return self.space.join([l['words'] for l in response.json()['lines']])

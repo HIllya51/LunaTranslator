@@ -30,7 +30,7 @@ class OCR(baseocr):
             'company': '',
         }
 
-        response = requests.post('https://aidemo.youdao.com/ocrtransapi1', headers=headers, data=data, proxies=  {'http': None,'https': None})
+        response = requests.post('https://aidemo.youdao.com/ocrtransapi1', headers=headers, data=data, proxies= self.proxy)
         
         try:
             return '<notrans>'+self.space.join([l['tranContent'] for l in response.json()['lines']])

@@ -2,6 +2,7 @@ from utils.config import globalconfig
 import requests
 from urllib.parse import quote
 import re
+from utils.utils import getproxy
 from traceback import print_exc
 from utils import somedef
 class youdao:
@@ -15,7 +16,7 @@ class youdao:
         except:
             return ''
     def search(self,word):
-        text=requests.get(f'https://dict.youdao.com/result?word={quote(word)}&lang={self.srclang}', proxies=  {'http': None,'https': None}).text
+        text=requests.get(f'https://dict.youdao.com/result?word={quote(word)}&lang={self.srclang}', proxies= getproxy()).text
         
         fnd=re.findall('<div class="head-content"(.*?)>([\\s\\S]*?)</span>(.*?)</div>',text)
         save=[] 

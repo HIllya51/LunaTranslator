@@ -30,7 +30,7 @@ class TS(basetrans):
         self.session=requests.session( )
         self.session.trust_env=False
         self.session.headers.update(self.headers) 
-        self.session.get('https://ai.youdao.com/product-fanyi-text.s', timeout = globalconfig['translatortimeout'], proxies=  {'http': None,'https': None})
+        self.session.get('https://ai.youdao.com/product-fanyi-text.s' , proxies=self.proxy)
     def translate(self, content):
                 
         headers = {
@@ -55,7 +55,7 @@ class TS(basetrans):
             'to': self.tgtlang,
         }
  
-        response =self.session.post('https://aidemo.youdao.com/trans', data=data,headers=headers,   proxies=  {'http': None,'https': None},timeout = globalconfig['translatortimeout'])
+        response =self.session.post('https://aidemo.youdao.com/trans', data=data,headers=headers,   proxies= self.proxy)
         js=response.json()['translation'][0]
         
         return js 

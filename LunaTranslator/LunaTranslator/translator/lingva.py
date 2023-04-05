@@ -14,7 +14,7 @@ class TS(basetrans):
             'sec-ch-ua-mobile': '?0',
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36 Edg/108.0.1462.46',
             'sec-ch-ua-platform': '"Windows"',
-        }).text
+        },proxies=self.proxy).text
         _id=re.findall('buildId":"(.*?)"',res)[0]
         self.url=f'https://lingva.ml/_next/data/{_id}/%s/%s/%s.json'
     def translate(self,content):  
@@ -33,5 +33,5 @@ class TS(basetrans):
             'sec-fetch-mode': 'cors',
             'sec-fetch-site': 'same-origin',
             'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36 Edg/108.0.1462.46',
-        }).json() 
+        },proxies=self.proxy).json() 
         return x['pageProps']['translation']

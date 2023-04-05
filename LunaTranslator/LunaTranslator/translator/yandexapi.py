@@ -17,7 +17,7 @@ class TS(basetrans):
             'text': content,
         }
 
-        response = requests.get(url, params=params)
+        response = requests.get(url, params=params,proxies=self.proxy)
         
         try:
             return response.json() ['text'][0]

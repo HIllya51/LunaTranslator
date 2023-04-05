@@ -130,5 +130,5 @@ class TS(basetrans):
         self.engine=Itranslate()
         self.engine._=None
     def translate(self,content):  
-            return self.engine.itranslate_api(content,self.srclang,self.tgtlang)
+            return self.engine.itranslate_api(content,self.srclang,self.tgtlang,proxies=self.proxy)
         

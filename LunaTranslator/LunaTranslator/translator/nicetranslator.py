@@ -30,7 +30,7 @@ class TS(basetrans):
             f'https://api.microsofttranslator.com/V2/Ajax.svc/Translate?appId=DB50E2E9FBE2E92B103E696DCF4E3E512A8826FB&oncomplete=?&from={self.srclang}&to={self.tgtlang}',params={
             'text':content
             },
-            headers=headers,
+            headers=headers,proxies=self.proxy
         )
 
         return response.content.decode('utf_8_sig')

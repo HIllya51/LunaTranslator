@@ -33,12 +33,10 @@ class TS(basetrans):
                 'sec-ch-ua-mobile': '?0',
                 'sec-ch-ua-platform': '"Windows"',
             } 
-            res=requests.get('https://fanyi.sogou.com/text?keyword='+quote(content) +'&transfrom='+self.srclang+'&transto'+self.tgtlang+'&model=general',headers=headers, proxies=  {'http': None,'https': None} ,timeout=globalconfig['translatortimeout'])
+            res=requests.get('https://fanyi.sogou.com/text?keyword='+quote(content) +'&transfrom='+self.srclang+'&transto'+self.tgtlang+'&model=general',headers=headers, proxies= self.proxy)
             res=re.search('<p id="trans-result" class="output-val" style="white-space: pre-line">([\\s\\S]*?)</p>', res.text)
             
             res=res.groups()[0]
             
             return res
-if __name__=='__main__':
-    a=BINGFY()
-    a.gettask('はーい、おやすみなさい')
+ 
