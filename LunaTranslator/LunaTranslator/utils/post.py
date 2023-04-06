@@ -4,6 +4,7 @@ from traceback import print_exc
 from typing import Counter
 from collections import Counter
 import importlib
+from utils.utils import getfilemd5
 from utils.config import postprocessconfig,globalconfig 
 def _2_f(line):
         times=postprocessconfig['_2']['args']['重复次数(若为1则自动分析去重)']
@@ -214,7 +215,11 @@ def _remove_chaos(line):
               newline+=c
        return newline 
 
+
+_selfdefpost=None
+_selfdefpostmd5=None
 def POSTSOLVE(line): 
+    global _selfdefpostmd5,_selfdefpost
     if line=="":
         return ""
     functions={
@@ -239,9 +244,16 @@ def POSTSOLVE(line):
         "_remove_chaos":_remove_chaos
     }
     try:
-           
+           md5=getfilemd5('./userconfig/mypost.py')
+           if md5!=_selfdefpostmd5:
+                   _=importlib.import_module('mypost')
+                   _=importlib.reload(_)
+                   _selfdefpostmd5=md5
+                   _selfdefpost=_
+           else:
+                  _=_selfdefpost
            functions.update({
-                   '_11':importlib.import_module('mypost').POSTSOLVE
+                   '_11':_.POSTSOLVE
                   } )
     except:
            print_exc()
@@ -252,9 +264,17 @@ def POSTSOLVE(line):
                 if postitem=='_100' and globalconfig['sourcestatus']['ocr']['use']==False:
                         continue
                 try:
-                         
-                        line=functions[postitem](line) 
+                        if postitem=='_11':
+                                _f=functions[postitem]
+                                if _f.__code__.co_argcount==1:
+                                      line=functions[postitem](line)
+                                else:
+                                      raise Exception("unsupported parameters num")
+                        else:
+                               line=functions[postitem](line) 
                         
-                except:
+                except Exception  as e:
                         print_exc()  
+                        if postitem=='_11':
+                               raise e
     return line
