@@ -25,7 +25,7 @@ class basetrans:
     ############################################################
     @property
     def proxy(self):
-        if 'useproxy' in  globalconfig['fanyi'][self.typename] and globalconfig['fanyi'][self.typename]['useproxy']:
+        if ('useproxy' not in  globalconfig['fanyi'][self.typename]) or globalconfig['fanyi'][self.typename]['useproxy']:
             return getproxy()
         else:
             return {'https':None,'http':None}

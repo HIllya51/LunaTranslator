@@ -1,7 +1,7 @@
 
 from PyQt5.QtWidgets import QWidget,QLabel ,QProgressBar,QLineEdit,QPushButton 
 from utils.config import globalconfig  ,_TR 
-import os,functools
+from utils.config import globalconfig ,translatorsetting 
 from utils import somedef
 def getall(self,l,item='fanyi'):
     grids=[] 
@@ -9,7 +9,7 @@ def getall(self,l,item='fanyi'):
     line=[]
     for fanyi in globalconfig[item]:
         
-        if fanyi in l:
+        if fanyi not in l:
             continue
  
         i+=1
@@ -47,13 +47,22 @@ def setTab_proxy_lazy(self):
             [''],
             [('使用代理的项目',5)]
         ]
-        lixians=set(somedef.fanyi_offline) 
+        lixians=set(somedef.fanyi_offline)
+        alls=set(globalconfig['fanyi'].keys())
         mt=set(somedef.fanyi_pre)
+        online=alls-lixians-mt 
+        mianfei=set()
+        for _ in online:
+            if _ not in translatorsetting : 
+                mianfei.add(_) 
+        shoufei=online-mianfei  
          
-        allonlinetrans=getall(self,l=list(lixians)+list(mt),item='fanyi')
-        ocrs=getall(self,l=['local','windowsocr'],item='ocr')
-        tab=self.makesubtab_lazy(['在线翻译','在线OCR'],[ 
-            lambda:self.makescroll( self.makegrid(allonlinetrans )   ),
+        mianfei=getall(self,l=mianfei,item='fanyi')
+        shoufei=getall(self,l=shoufei,item='fanyi')
+        ocrs=getall(self,l=set(globalconfig['ocr'].keys())-set(['local','windowsocr']),item='ocr')
+        tab=self.makesubtab_lazy(['在线翻译','注册在线翻译','在线OCR'],[ 
+            lambda:self.makescroll( self.makegrid(mianfei )   ),
+            lambda:self.makescroll( self.makegrid(shoufei )   ),
             lambda:self.makescroll( self.makegrid(ocrs )   ), 
         ]) 
 

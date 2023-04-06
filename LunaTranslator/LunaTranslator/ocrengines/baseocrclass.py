@@ -17,7 +17,7 @@ class baseocr:
     ############################################################
     @property
     def proxy(self):
-        if 'useproxy' in  globalconfig['ocr'][self.typename] and globalconfig['ocr'][self.typename]['useproxy']:
+        if ('useproxy' not in  globalconfig['ocr'][self.typename]) or globalconfig['ocr'][self.typename]['useproxy']:
             return getproxy()
         else:
             return {'https':None,'http':None}
