@@ -44,7 +44,7 @@ charsetmapshow=["自动","系统默认","日语","简体中文","繁体中文","
 
 
 fanyi_offline=["jb7","dreye","kingsoft","hanshant","selfbuild"]
-fanyi_pre=["rengong","premt","rengong_vnr","rengong_msk"]
+fanyi_pre=["rengong","premt","rengong_vnr"]
 
 
 key_first=['Ctrl','Shift','Alt','Win' ]+['None']

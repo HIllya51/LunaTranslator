@@ -684,11 +684,6 @@
             "color": "blue",
             "name": "人工翻译_VNR"
 
-        },"rengong_msk": {
-            "use": false,
-            "color": "blue",
-            "name": "人工翻译_Misaka"
-
         },
         "premt": {
             "use": false,

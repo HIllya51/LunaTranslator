@@ -250,17 +250,6 @@
 				"filter":"*.xml"
 			}
 		}
-    },"rengong_msk": {
-        "args": {
-            "txt文件": ""
-        },
-		"argstype":{
-			"txt文件":{
-				"type":"file",
-				"dir":false,
-				"filter":"*.txt"
-			}
-		}
     },
     "premt": {
         "args": {
