@@ -1,40 +1,83 @@
-rmdir /S /Q ..\build\Lunatranslator_x86
-xcopy ..\build\x86\LunaTranslator_main.dist ..\build\LunaTranslator_x86\LunaTranslator /e /y /I
-xcopy .\files ..\build\LunaTranslator_x86\files /e /y /I
-copy ..\LICENSE ..\build\LunaTranslator_x86\
-xcopy .\LunaTranslator\ocrengines ..\build\LunaTranslator_x86\LunaTranslator\ocrengines /e /y /I
-xcopy .\LunaTranslator\postprocess ..\build\LunaTranslator_x86\LunaTranslator\postprocess /e /y /I
-xcopy .\LunaTranslator\translator ..\build\LunaTranslator_x86\LunaTranslator\translator /e /y /I
-xcopy .\LunaTranslator\cishu ..\build\LunaTranslator_x86\LunaTranslator\cishu /e /y /I
-xcopy ..\dependence\dependence_common ..\build\LunaTranslator_x86\LunaTranslator /e /y /I 
-xcopy ..\dependence\dependence32 ..\build\LunaTranslator_x86\LunaTranslator /e /y /I 
-xcopy ..\dependence\exe32 ..\build\LunaTranslator_x86\ /e /y /I
-del ..\build\LunaTranslator_x86\LunaTranslator\qt5qml.dll
-del ..\build\LunaTranslator_x86\LunaTranslator\qt5qmlmodels.dll
-del ..\build\LunaTranslator_x86\LunaTranslator\qt5quick.dll
-del ..\build\LunaTranslator_x86\LunaTranslator\qt5printsupport.dll
-del ..\build\LunaTranslator_x86\LunaTranslator\qt5websockets.dll
-del ..\build\LunaTranslator_x86\LunaTranslator\qt5dbus.dll
-del ..\build\LunaTranslator_x86\LunaTranslator\qt5multimedia.dll
-del ..\build\LunaTranslator_x86\LunaTranslator\qt5svg.dll
-del ..\build\LunaTranslator_x86\LunaTranslator\PyQt5\qt-plugins\platforms\qminimal.dll
-del ..\build\LunaTranslator_x86\LunaTranslator\PyQt5\qt-plugins\platforms\qoffscreen.dll
-del ..\build\LunaTranslator_x86\LunaTranslator\PyQt5\qt-plugins\platforms\qwebgl.dll
-rmdir /S /Q ..\build\LunaTranslator_x86\LunaTranslator\PyQt5\qt-plugins\mediaservice
-rmdir /S /Q ..\build\LunaTranslator_x86\LunaTranslator\PyQt5\qt-plugins\printsupport
-rmdir /S /Q ..\build\LunaTranslator_x86\LunaTranslator\PyQt5\qt-plugins\platformthemes
-rmdir /S /Q ..\build\LunaTranslator_x86\LunaTranslator\PyQt5\qt-plugins\iconengines
-del ..\build\LunaTranslator_x86\LunaTranslator\libssl-1_1-x64.dll
-del ..\build\LunaTranslator_x86\LunaTranslator\libcrypto-1_1-x64.dll
+set targetdir=..\build\Lunatranslator_x86
+set targetdir_in=..\build\Lunatranslator_x86\LunaTranslator
+set pythonlib=%LOCALAPPDATA%\Programs\Python\Python37-32\Lib
+set pythonpackage=%pythonlib%\site-packages
 
-del ..\build\LunaTranslator_x86\files\plugins\ocr.dll
-del ..\build\LunaTranslator_x86\files\plugins\EmbededEngine\Qt5Network.dll
-del ..\build\LunaTranslator_x86\files\plugins\EmbededEngine\Qt5Core.dll
-copy ..\dependence\ocr32 ..\build\LunaTranslator_x86\files\plugins
+rmdir /S /Q %targetdir%
+xcopy ..\build\x86\LunaTranslator_main.dist %targetdir_in% /e /y /I
+xcopy .\files %targetdir%\files /e /y /I
+copy ..\LICENSE %targetdir%\
+xcopy .\LunaTranslator\ocrengines %targetdir_in%\ocrengines /e /y /I
+xcopy .\LunaTranslator\postprocess %targetdir_in%\postprocess /e /y /I
+xcopy .\LunaTranslator\translator %targetdir_in%\translator /e /y /I
+xcopy .\LunaTranslator\cishu %targetdir_in%\cishu /e /y /I
 
-copy ..\CXXplugins\fugashi32-py37\fugashi-1.2.1\libmecab.dll ..\build\LunaTranslator_x86\LunaTranslator\
+xcopy /E /I %pythonpackage%\bcrypt %targetdir_in%\bcrypt
+xcopy /E /I %pythonpackage%\certifi %targetdir_in%\certifi
+xcopy /E /I %pythonpackage%\charset_normalizer %targetdir_in%\charset_normalizer
+xcopy /E /I %pythonpackage%\cryptography %targetdir_in%\cryptography
+xcopy /E /I %pythonlib%\http %targetdir_in%\http
+xcopy /E /I %pythonpackage%\idna %targetdir_in%\idna
+xcopy /E /I ..\dependence\dependence_common\openai %targetdir_in%\openai
 
-xcopy ..\dependence\api-ms-win_32 ..\build\LunaTranslator_x86\LunaTranslator /e /y /I
+xcopy /E /I %pythonpackage%\OpenSSL %targetdir_in%\OpenSSL
+xcopy /E /I %pythonpackage%\pykakasi %targetdir_in%\pykakasi
+xcopy /I %pythonpackage%\pytz %targetdir_in%\pytz
+del %targetdir_in%\pytz\zoneinfo
+mkdir %targetdir_in%\pytz\zoneinfo
+copy /Y %pythonpackage%\pytz\zoneinfo\UTC %targetdir_in%\pytz\zoneinfo
+xcopy /E /I %pythonpackage%\requests %targetdir_in%\requests
+xcopy /E /I %pythonpackage%\urllib3 %targetdir_in%\urllib3
+xcopy /E /I %pythonpackage%\websockets %targetdir_in%\websockets
+xcopy  %pythonpackage%\six.py %targetdir_in%
+xcopy  %pythonpackage%\_brotli.cp37-win32.pyd %targetdir_in%
+xcopy  %pythonpackage%\_cffi_backend.cp37-win32.pyd %targetdir_in%
 
-xcopy ..\build\LunaTranslator_x86\ C:\dataH\LunaTranslator_x86 /e /y /I
+xcopy ..\dependence\exe32 %targetdir%\ /e /y /I
+del %targetdir_in%\qt5qml.dll
+del %targetdir_in%\qt5qmlmodels.dll
+del %targetdir_in%\qt5quick.dll
+del %targetdir_in%\qt5printsupport.dll
+del %targetdir_in%\qt5websockets.dll
+del %targetdir_in%\qt5dbus.dll
+del %targetdir_in%\qt5multimedia.dll
+del %targetdir_in%\qt5svg.dll
+del %targetdir_in%\PyQt5\qt-plugins\platforms\qminimal.dll
+del %targetdir_in%\PyQt5\qt-plugins\platforms\qoffscreen.dll
+del %targetdir_in%\PyQt5\qt-plugins\platforms\qwebgl.dll
+rmdir /S /Q %targetdir_in%\PyQt5\qt-plugins\mediaservice
+rmdir /S /Q %targetdir_in%\PyQt5\qt-plugins\printsupport
+rmdir /S /Q %targetdir_in%\PyQt5\qt-plugins\platformthemes
+rmdir /S /Q %targetdir_in%\PyQt5\qt-plugins\iconengines
+del %targetdir_in%\libssl-1_1-x64.dll
+del %targetdir_in%\libcrypto-1_1-x64.dll
+
+del %targetdir%\files\plugins\ocr.dll
+del %targetdir%\files\plugins\EmbededEngine\Qt5Network.dll
+del %targetdir%\files\plugins\EmbededEngine\Qt5Core.dll
+copy ..\dependence\ocr32 %targetdir%\files\plugins
+
+copy ..\CXXplugins\fugashi32-py37\fugashi-1.2.1\libmecab.dll %targetdir_in%\
+
+xcopy ..\dependence\api-ms-win_32 %targetdir_in% /e /y /I
+
+@echo off
+setlocal enabledelayedexpansion
+
+set "directory=%targetdir%"
+
+if "%directory%" == "" (
+    set /p directory="Enter directory path: "
+)
+
+for /f "delims=" %%i in ('dir /b /s "%directory%\*.pyc"') do (
+    del "%%i"
+)
+
+for /f "delims=" %%d in ('dir /s /b /a:d "%directory%" ^| sort /r') do (
+    rd "%%d" 2>nul
+)
+
+
+xcopy %targetdir%\ C:\dataH\LunaTranslator_x86 /e /y /I
 pause
