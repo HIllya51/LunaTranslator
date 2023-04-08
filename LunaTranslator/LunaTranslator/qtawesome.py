@@ -1,3 +1,5 @@
+ 
+from PyQt5 import QtCore, QtWidgets 
 r"""
 
 Iconic Font
@@ -13,8 +15,7 @@ methods returning instances of ``QIcon``.
 
 """
 
-# Standard library imports
-from __future__ import print_function
+# Standard library imports 
 import hashlib
 import json
 import os
@@ -25,25 +26,7 @@ from  PyQt5.QtCore import QByteArray, QObject, QPoint, QRect, Qt
 from  PyQt5.QtGui import (QColor, QFont, QFontDatabase, QIcon, QIconEngine,
                         QPainter, QPixmap, QTransform, QPalette)
 from  PyQt5.QtWidgets import QApplication
-
-# Linux packagers, please set this to True if you want to make qtawesome
-# use system fonts
-SYSTEM_FONTS = False
-
-# MD5 Hashes for font files bundled with qtawesome:
-MD5_HASHES = {
-    'fontawesome4.7-webfont.ttf': 'b06871f281fee6b241d60582ae9369b9',
-    'fontawesome5-regular-webfont.ttf': '808833867034fb67a4a86dd2155e195d',
-    'fontawesome5-solid-webfont.ttf': '139654bb0acaba6b00ae30d5faf3d02f',
-    'fontawesome5-brands-webfont.ttf': '085b1dd8427dbeff10bd55410915a3f6',
-    'elusiveicons-webfont.ttf': '207966b04c032d5b873fd595a211582e',
-    'materialdesignicons5-webfont.ttf': 'b7d40e7ef80c1d4af6d94902af66e524',
-    'materialdesignicons6-webfont.ttf': '9a2f455e7cbce011368aee95d292613b',
-    'phosphor.ttf': '5b8dc57388b2d86243566b996cc3a789',
-    'remixicon.ttf': '888e61f04316f10bddfff7bee10c6dd0',
-    'codicon.ttf': 'ca2f9e22cee3a59156b3eded74d87784',
-}
-
+  
 
 def text_color():
     try:
@@ -302,20 +285,7 @@ class IconicFont(QObject):
 
             with open(os.path.join(directory, charmap_filename), 'r') as codes:
                 self.charmap[prefix] = json.load(codes, object_hook=hook)
-
-            # Verify that vendorized fonts are not corrupt
-            if not SYSTEM_FONTS:
-                ttf_hash = MD5_HASHES.get(ttf_filename, None)
-                if ttf_hash is not None:
-                    hasher = hashlib.md5()
-                    with open(os.path.join(directory, ttf_filename),
-                              'rb') as f:
-                        content = f.read()
-                        hasher.update(content)
-                    ttf_calculated_hash_code = hasher.hexdigest()
-                    if ttf_calculated_hash_code != ttf_hash:
-                        raise FontError(u"Font is corrupt at: '{0}'".format(
-                                        os.path.join(directory, ttf_filename)))
+ 
 
     def icon(self, *names, **kwargs):
         """Return a QIcon object corresponding to the provided icon name."""
@@ -441,33 +411,26 @@ class IconicFont(QObject):
         if prefix[-1] == 's':  # solid style
             font.setStyleName('Solid')
         return font
-
-    def set_custom_icon(self, name, painter):
-        """Associate a user-provided CharIconPainter to an icon name.
-
-        The custom icon can later be addressed by calling
-        icon('custom.NAME') where NAME is the provided name for that icon.
-
-        Parameters
-        ----------
-        name: str
-            name of the custom icon
-        painter: CharIconPainter
-            The icon painter, implementing
-            ``paint(self, iconic, painter, rect, mode, state, options)``
-        """
-        self.painters[name] = painter
-
-    def _custom_icon(self, name, **kwargs):
-        """Return the custom icon corresponding to the given name."""
-        options = dict(_default_options, **kwargs)
-        if name in self.painters:
-            painter = self.painters[name]
-            return self._icon_by_painter(painter, options)
-        else:
-            return QIcon()
-
+  
     def _icon_by_painter(self, painter, options):
         """Return the icon corresponding to the given painter."""
         engine = CharIconEngine(self, painter, options)
         return QIcon(engine)
+
+
+# Constants
+_resource = { 'iconic': None }
+  
+def _instance(): 
+     
+    if _resource['iconic'] is None:
+        _resource['iconic'] = IconicFont(
+            ('fa',
+             'fontawesome4.7-webfont.ttf',
+             'fontawesome4.7-webfont-charmap.json'),
+        )
+    return _resource['iconic']
+ 
+def icon(*names, **kwargs):
+    return _instance().icon(*names, **kwargs)
+ 
