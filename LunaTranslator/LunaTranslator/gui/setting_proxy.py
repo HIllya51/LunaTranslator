@@ -3,7 +3,8 @@ from PyQt5.QtWidgets import QWidget,QLabel ,QProgressBar,QLineEdit,QPushButton
 from utils.config import globalconfig  ,_TR 
 from utils.config import globalconfig ,translatorsetting 
 from utils import somedef
-def getall(self,l,item='fanyi'):
+import os
+def getall(self,l,item='fanyi',name=""):
     grids=[] 
     i=0 
     line=[]
@@ -11,7 +12,9 @@ def getall(self,l,item='fanyi'):
         
         if fanyi not in l:
             continue
- 
+        _f=name%fanyi
+        if fanyi!='selfbuild' and os.path.exists(_f)==False :  
+            continue  
         i+=1
          
         line+=[(globalconfig[item][fanyi]['name'],6),
@@ -57,9 +60,9 @@ def setTab_proxy_lazy(self):
                 mianfei.add(_) 
         shoufei=online-mianfei  
          
-        mianfei=getall(self,l=mianfei,item='fanyi')
-        shoufei=getall(self,l=shoufei,item='fanyi')
-        ocrs=getall(self,l=set(globalconfig['ocr'].keys())-set(['local','windowsocr']),item='ocr')
+        mianfei=getall(self,l=mianfei,item='fanyi',name='./Lunatranslator/translator/%s.py')
+        shoufei=getall(self,l=shoufei,item='fanyi',name='./Lunatranslator/translator/%s.py')
+        ocrs=getall(self,l=set(globalconfig['ocr'].keys())-set(['local','windowsocr']),item='ocr',name='./Lunatranslator/ocrengines/%s.py')
         tab=self.makesubtab_lazy(['在线翻译','注册在线翻译','在线OCR'],[ 
             lambda:self.makescroll( self.makegrid(mianfei )   ),
             lambda:self.makescroll( self.makegrid(shoufei )   ),
