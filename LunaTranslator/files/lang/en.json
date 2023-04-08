@@ -310,8 +310,6 @@
     "当前版本": "current version",
     "最新版本": "Latest version",
     "项目网站": "Project website",
-    "使用说明": "instructions",
-    "支持作者": "Support authors",
     "过滤数字": "Filter numbers",
     "过滤英文字母": "Filter English letters",
     "分词器": "Tokenizer ",
@@ -570,5 +568,7 @@
     "使用代理的项目": "Projects using proxies",
     "Magpie版本错误或已被修改！": "Magpie version error or has been modified!",
     "Magpie10下载": "Magpie10 Download",
-    "Magpie9_win7适配版": "Magpie9_ Win7 adaptation version"
+    "Magpie9_win7适配版": "Magpie9_ Win7 adaptation version",
+    "问题反馈_QQ": "Problem feedback_ QQ",
+    "相关说明": "Related instructions"
 }

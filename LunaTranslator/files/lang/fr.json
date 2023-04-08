@@ -310,8 +310,6 @@
     "当前版本": "Version actuelle",
     "最新版本": "Dernière version",
     "项目网站": "Site Web du projet",
-    "使用说明": "Mode d'emploi",
-    "支持作者": "Soutien aux auteurs",
     "过滤数字": "Filtrer les chiffres",
     "过滤英文字母": "Filtrer les lettres anglaises",
     "分词器": "Diviseur de mots",
@@ -570,5 +568,7 @@
     "使用代理的项目": "Projets utilisant des agents",
     "Magpie版本错误或已被修改！": "Magpie version incorrecte ou modifiée!",
     "Magpie10下载": "Magpie10 télécharger gratuitement",
-    "Magpie9_win7适配版": "Magpie9 Version adaptée win7"
+    "Magpie9_win7适配版": "Magpie9 Version adaptée win7",
+    "问题反馈_QQ": "Questions feedback QQ",
+    "相关说明": "Instructions connexes"
 }

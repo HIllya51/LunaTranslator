@@ -310,8 +310,6 @@
     "当前版本": "şu anki sürüm",
     "最新版本": "Son sürüm",
     "项目网站": "Proje web sitesi",
-    "使用说明": "talimatlar",
-    "支持作者": "Yazarı destekle",
     "过滤数字": "Süzgüç numaraları",
     "过滤英文字母": "İngilizce harfleri sil",
     "分词器": "Tokenizer",
@@ -570,5 +568,7 @@
     "使用代理的项目": "Proksiler kullanarak projeler",
     "Magpie版本错误或已被修改！": "Magpie versiyonu hatası ya da değiştirildi!",
     "Magpie10下载": "Magpie10 İndirme",
-    "Magpie9_win7适配版": "Magpie9 Win7 uygulama versiyonu"
+    "Magpie9_win7适配版": "Magpie9 Win7 uygulama versiyonu",
+    "问题反馈_QQ": "Sorun geri verisi QQ",
+    "相关说明": "İlişkili talimatlar"
 }

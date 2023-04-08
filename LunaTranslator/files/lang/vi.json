@@ -310,8 +310,6 @@
     "当前版本": "Phiên bản hiện tại",
     "最新版本": "Phiên bản mới nhất",
     "项目网站": "Website dự án",
-    "使用说明": "Hướng dẫn sử dụng",
-    "支持作者": "Hỗ trợ tác giả",
     "过滤数字": "Lọc số",
     "过滤英文字母": "Lọc thư tiếng Anh",
     "分词器": "Bộ tách từ",
@@ -570,5 +568,7 @@
     "使用代理的项目": "Các dự án sử dụng proxy",
     "Magpie版本错误或已被修改！": "Phiên bản Magpie là sai hoặc đã được sửa đổi!",
     "Magpie10下载": "Magpie10 Tải xuống",
-    "Magpie9_win7适配版": "Magpie9_ Win7 phiên bản phù hợp"
+    "Magpie9_win7适配版": "Magpie9_ Win7 phiên bản phù hợp",
+    "问题反馈_QQ": "Câu hỏi phản hồi QQ",
+    "相关说明": "Hướng dẫn liên quan"
 }

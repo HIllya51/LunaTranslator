@@ -57,7 +57,7 @@ class textractor(basetext  ):
         if self.arch is None:
             return 
         
-        extra=f"./files/plugins/Textractor/x{self.arch}/TextractorCLI_extra.exe"
+        extra=f"./files/plugins/Textractor/x{self.arch}/ex_TextractorCLI.exe"
         self.u16lesubprocess=u16lesubprocess([extra])
         self.u16lesubprocess.readyread=self.handle_stdout
         self.u16lesubprocess.writelog=self.hookselectdialog.sysmessagesignal.emit
