@@ -554,7 +554,6 @@
     "到进程": "Au processus",
     "系统": "Système",
     "修改失败！": "La modification a échoué!",
-    "Magpie版本错误或已被修改，请下载Magpie_v0.10.0": "Magpie version incorrecte ou modifiée, télécharger Magpie V0.10.0",
     "发现": "Découvrir",
     "请先关闭Magpie！": "Fermez Magpie en premier!",
     "失败": "L'échec",
@@ -568,5 +567,8 @@
     "仅使用激活的翻译": "Utiliser uniquement les traductions activées",
     "云译": "Traduction Cloud",
     "在线OCR": "OCR en ligne",
-    "使用代理的项目": "Projets utilisant des agents"
+    "使用代理的项目": "Projets utilisant des agents",
+    "Magpie版本错误或已被修改！": "Magpie version incorrecte ou modifiée!",
+    "Magpie10下载": "Magpie10 télécharger gratuitement",
+    "Magpie9_win7适配版": "Magpie9 Version adaptée win7"
 }

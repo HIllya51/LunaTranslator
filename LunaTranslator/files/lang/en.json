@@ -554,7 +554,6 @@
     "到进程": "To process",
     "系统": "system",
     "修改失败！": "Modification failed!",
-    "Magpie版本错误或已被修改，请下载Magpie_v0.10.0": "The Magpie version is incorrect or has been modified. Please download Magpie_ v0.10.0",
     "发现": "find",
     "请先关闭Magpie！": "Please close Magpie first!",
     "失败": "fail",
@@ -568,5 +567,8 @@
     "仅使用激活的翻译": "Use only active translations",
     "云译": "Cloud translation",
     "在线OCR": "Online OCR",
-    "使用代理的项目": "Projects using proxies"
+    "使用代理的项目": "Projects using proxies",
+    "Magpie版本错误或已被修改！": "Magpie version error or has been modified!",
+    "Magpie10下载": "Magpie10 Download",
+    "Magpie9_win7适配版": "Magpie9_ Win7 adaptation version"
 }

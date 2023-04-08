@@ -9,6 +9,8 @@ from gui.inputdialog import multicolorset
 from utils.config import globalconfig ,_TR,_TRL
 from utils.utils import getfilemd5,copybackup
 import time,signal
+from utils.utils import makehtml
+
 from utils.hwnd import ListProcess
 from gui.inputdialog import autoinitdialog,getsomepath1
 from gui.usefulwidget import getQMessageBox
@@ -139,19 +141,19 @@ def setTabThree_lazy(self) :
                                 return
 
                         md5=getfilemd5(os.path.join(globalconfig['magpie10path'],'Magpie.Core.dll'))
-                        
-                        if(md5!='5fa3a5dac1227eb66260b36446d1f8a2'):
-                                getQMessageBox(self,"error",'Magpie版本错误或已被修改，请下载Magpie_v0.10.0')
+                        print(md5)
+                        if(md5 not in ('5fa3a5dac1227eb66260b36446d1f8a2','72c55fc14873bfaafdee7544c3f67aa8')):
+                                getQMessageBox(self,"error",'Magpie版本错误或已被修改！')
                         else:
                                 try:
-                                        _determinate()
+                                        _determinate(md5)
                                         getQMessageBox(self,"成功","修改成功！") 
                                 except PermissionError:
                                         getQMessageBox(self,"error","请先关闭Magpie！") 
                                 except:
                                         print_exc()
                                         getQMessageBox(self,"error","修改失败！") 
-        def _determinate():
+        def _determinate(md5):
                         copybackup(os.path.join(globalconfig['magpie10path'],'Magpie.Core.dll'))
                         ps=ListProcess()
                         exes=[_[1] for _ in ps]  
@@ -177,17 +179,22 @@ def setTabThree_lazy(self) :
                                 replacebytes('Windows.UI.Core.CoreWindow'.encode('utf-16-le'),'lunatranslator_main.exe'.encode('utf-16-le')+b'\x00\x00')
                                 replacebytes('shellexperiencehost.exe'.encode('utf-16-le'),'Qt5152QWindowIcon'.encode('utf-16-le')+b'\x00\x00')
                                 replacebytes('startmenuexperiencehost.exe'.encode('utf-16-le'),'Qt5152QWindowToolSaveBits'.encode('utf-16-le')+b'\x00\x00')
-                                #修改寄存器
-                                replacebytes(b'\x48\x8D\x0D\xDD\xCB\x0F\x00',b'\x48\x8D\x05\xDD\xCB\x0F\x00')
-                                replacebytes(b'\x48\x8D\x05\x14\xF0\x0F\x00',b'\x48\x8D\x0D\x94\xF0\x0F\x00')
-                                replacebytes(b'\x48\x8D\x05\x49\xF0\x0F\x00',b'\x48\x8D\x0D\x21\xF1\x0F\x00')
+                                if md5=='5fa3a5dac1227eb66260b36446d1f8a2':
+                                        #修改寄存器
+                                        replacebytes(b'\x48\x8D\x0D\xDD\xCB\x0F\x00',b'\x48\x8D\x05\xDD\xCB\x0F\x00')
+                                        replacebytes(b'\x48\x8D\x05\x14\xF0\x0F\x00',b'\x48\x8D\x0D\x94\xF0\x0F\x00')
+                                        replacebytes(b'\x48\x8D\x05\x49\xF0\x0F\x00',b'\x48\x8D\x0D\x21\xF1\x0F\x00')
+                                elif md5=='72c55fc14873bfaafdee7544c3f67aa8':
+                                        #修改寄存器
+                                        replacebytes(b'\x48\x8D\x0D\xF5\xCA\x0F\x00',b'\x48\x8D\x05\xF5\xCA\x0F\x00')
+                                        replacebytes(b'\x48\x8D\x05\x24\xEF\x0F\x00',b'\x48\x8D\x0D\xBC\xEF\x0F\x00')
+                                        replacebytes(b'\x48\x8D\x05\x19\xEF\x0F\x00',b'\x48\x8D\x0D\xA1\xF0\x0F\x00')
 
                                 #修改字符串长度
                                 replacebytes(b'\x48\xC7\x85\x98\x00\x00\x00\x0D',b'\x48\xC7\x85\x98\x00\x00\x00\x17')
                                 replacebytes(b'\x48\xC7\x85\xA8\x00\x00\x00\x1A',b'\x48\xC7\x85\xA8\x00\x00\x00\x19')
                                 replacebytes(b'\x48\xC7\x85\xB8\x00\x00\x00\x0E',b'\x48\xC7\x85\xB8\x00\x00\x00\x17')
                                 replacebytes(b'\x48\xC7\x85\xC8\x00\x00\x00\x1A',b'\x48\xC7\x85\xC8\x00\x00\x00\x11')
-                        
                                 doall()
         modifydllbtn.clicked.connect( __modifydll)
          
@@ -198,7 +205,10 @@ def setTabThree_lazy(self) :
                 [('Magpie算法',4),(self.getsimplecombobox(magpiemethod,globalconfig,'magpiescalemethod'),6)],
                 [('Magpie捕获模式',4),(self.getsimplecombobox(['Graphics Capture','Desktop Duplication','GDI','DwmSharedSurface'],globalconfig,'magpiecapturemethod'),6)],
                 [''],
-                [('Magpie10路径',3),(self.getcolorbutton(globalconfig,'',callback=lambda x: getsomepath1(self,'Magpie路径',globalconfig,'magpie10path','Magpie路径',isdir=True),icon='fa.gear',constcolor="#FF69B4"),1),(modifydllbtn,6)]
+                [('Magpie10路径',3),(self.getcolorbutton(globalconfig,'',callback=lambda x: getsomepath1(self,'Magpie路径',globalconfig,'magpie10path','Magpie路径',isdir=True),icon='fa.gear',constcolor="#FF69B4"),1),(modifydllbtn,6)],
+                [('Magpie10下载',4),(makehtml('https://github.com/Blinue/Magpie/releases'),8,'link')],
+                [''],
+                [('Magpie9_win7适配版',4),(makehtml('https://github.com/HIllya51/Magpie9_win7/releases'),8,'link')]
 
         ] 
         tab=self.makesubtab_lazy(['文本设置', '界面设置','游戏全屏'],[

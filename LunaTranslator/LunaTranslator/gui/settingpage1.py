@@ -12,7 +12,7 @@ from utils.utils import makehtml
 def gethookgrid(self) :
  
         grids=[
-                [('获取最新引擎以及申请支持更多游戏',5),(makehtml('https://github.com/HIllya51/Textractor_Extra'),5,'link')], 
+                [('获取最新引擎以及申请支持更多游戏',5),(makehtml('https://github.com/HIllya51/texthook'),5,'link')], 
                 [('检测到游戏时自动开始',5),(self.getsimpleswitch(globalconfig,'autostarthook'),1)],
                 
                 [('已保存游戏',5),(self.getcolorbutton(globalconfig,'',icon='fa.gamepad',constcolor="#FF69B4",callback=lambda:dialog_savedgame(self)),1)],

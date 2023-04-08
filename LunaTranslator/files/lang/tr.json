@@ -554,7 +554,6 @@
     "到进程": "İşleme",
     "系统": "sistem",
     "修改失败！": "Değişiklik başarısız oldu!",
-    "Magpie版本错误或已被修改，请下载Magpie_v0.10.0": "Magpie versiyonu yanlış ya da değiştirildi. Lütfen Magpie'yi indirin. v0. 10. 0",
     "发现": "Bul",
     "请先关闭Magpie！": "Lütfen önce Magpie'yi kapat!",
     "失败": "başarısız",
@@ -568,5 +567,8 @@
     "仅使用激活的翻译": "Sadece aktif çevirimleri kullan",
     "云译": "Bulud çevirimi",
     "在线OCR": "Online OCR",
-    "使用代理的项目": "Proksiler kullanarak projeler"
+    "使用代理的项目": "Proksiler kullanarak projeler",
+    "Magpie版本错误或已被修改！": "Magpie versiyonu hatası ya da değiştirildi!",
+    "Magpie10下载": "Magpie10 İndirme",
+    "Magpie9_win7适配版": "Magpie9 Win7 uygulama versiyonu"
 }

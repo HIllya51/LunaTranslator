@@ -554,7 +554,6 @@
     "到进程": "Tiến trình",
     "系统": "Hệ thống",
     "修改失败！": "Sửa đổi thất bại!",
-    "Magpie版本错误或已被修改，请下载Magpie_v0.10.0": "Phiên bản Magpie bị lỗi hoặc đã được sửa đổi, vui lòng tải xuống Magpie_ v0.10.0",
     "发现": "Khám phá",
     "请先关闭Magpie！": "Vui lòng tắt Magpie trước!",
     "失败": "Thất bại",
@@ -568,5 +567,8 @@
     "仅使用激活的翻译": "Chỉ sử dụng bản dịch kích hoạt",
     "云译": "Dịch Mây",
     "在线OCR": "Trực tuyến OCR",
-    "使用代理的项目": "Các dự án sử dụng proxy"
+    "使用代理的项目": "Các dự án sử dụng proxy",
+    "Magpie版本错误或已被修改！": "Phiên bản Magpie là sai hoặc đã được sửa đổi!",
+    "Magpie10下载": "Magpie10 Tải xuống",
+    "Magpie9_win7适配版": "Magpie9_ Win7 phiên bản phù hợp"
 }
