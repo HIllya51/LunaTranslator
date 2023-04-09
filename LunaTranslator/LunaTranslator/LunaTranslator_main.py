@@ -67,26 +67,20 @@ class MAINUI(QObject) :
         self.translators={}
         self.cishus={}
         self.reader=None
-        self.textsource_p=None 
+        self.textsource=None 
         self.rect=None 
-        self.currentmd5='0'
+        
         self.currenttext=''
         self.refresh_on_get_trans_signature=0
         self.currentsignature=None
         self.isrunning=True
-    @property
-    def textsource(self):return self.textsource_p
-    @textsource.setter
-    def textsource(self,_):
-        if _ is None and self.textsource_p:
-            try:
-                self.textsource_p.end()  
-            except:
-                print_exc()
-        self.textsource_p=_
-        
-        self.currentmd5='0' if _ is None else _.md5
-
+    def textsourcetryend(self):
+        try:
+            if self.textsource:
+                self.textsource.end()
+        except:
+            print_exc()
+        self.textsource=None
     @threader  
     def loadvnrshareddict(self,_=None):
         vnrshareddict(self)  
@@ -105,10 +99,11 @@ class MAINUI(QObject) :
 
                     if noundictconfig['dict'][key][0]=='0' :
                         usedict=True
-                
-                    if noundictconfig['dict'][key][0]==self.currentmd5:  #self.textsource.md5:
-                        usedict=True
-                     
+                    try:
+                        if noundictconfig['dict'][key][0]==self.textsource.md5:
+                            usedict=True
+                    except:
+                        pass
                 if usedict and  key in content:
                     xx=f'ZX{chr(ord("B")+zhanweifu)}Z'
                     content=content.replace(key,xx)
@@ -364,7 +359,8 @@ class MAINUI(QObject) :
          
             
     def selectprocess(self,selectedp): 
-        self.textsource=None
+        
+        self.textsourcetryend()
         pids,pexe,hwnd=(  selectedp)   
         checkifnewgame(pexe) 
         
@@ -388,7 +384,8 @@ class MAINUI(QObject) :
         self.range_ui.hide() 
         self.settin_ui.selectbutton.setEnabled(globalconfig['sourcestatus']['textractor']['use'] or globalconfig['sourcestatus']['embedded']['use']) 
         self.settin_ui.selecthookbutton.setEnabled(globalconfig['sourcestatus']['textractor']['use'] )
-        self.textsource=None
+        
+        self.textsourcetryend()
         if checked: 
             classes={'ocr':ocrtext,'copy':copyboard,'textractor':None,'embedded':None,'txt':txt} 
             if use is None:
@@ -504,7 +501,7 @@ class MAINUI(QObject) :
                             lps=ListProcess()
                             for pids,_exe  in lps:
                                 if _exe==name_: 
-                                    self.textsource=None
+                                    self.textsourcetryend()
                                     if globalconfig['sourcestatus']['textractor']['use']:
                                         needinserthookcode=savehook_new_data[name_]['needinserthookcode']
                                         self.textsource=textractor(self.textgetmethod,self.hookselectdialog,pids,hwnd,name_ ,autostarthookcode=savehook_new_data[name_]['hook'],needinserthookcode=needinserthookcode)
@@ -528,7 +525,7 @@ class MAINUI(QObject) :
                                     self.textsource.hwnd=fhwnd
                                     
                     if needend:
-                        self.textsource=None  
+                        self.textsourcetryend()
             except:
                        
                        print_exc()
