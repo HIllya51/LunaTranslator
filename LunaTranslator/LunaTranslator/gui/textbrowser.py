@@ -441,18 +441,17 @@ class Textbrowser( ):
                 self.atback2.move(0,self.savey+fhhalf-tl1 ) 
                 self.textbrowserback.move(0,self.savey+fhhalf-tl1 )  
                 self.jiaming_y_delta=fhhalf-tl1
-         
+        
+        x=self.nearmerge(x,pos)
+        self.settextposcursor(pos)
         for word in x:
             if word['orig']=='\n':
                 continue
             l=len(word['orig'])
+
             tl1=self.textbrowser.cursorRect(self.textcursor).topLeft()  
              
-            self.textcursor.setPosition(pos+l )
-            self.textbrowser.setTextCursor(self.textcursor)
-            if self.needdouble: 
-                self.textcursorback.setPosition(pos+l )
-                self.textbrowserback.setTextCursor(self.textcursorback)
+            self.settextposcursor(pos+l)
             pos+=l 
             
             tl2=self.textbrowser.cursorRect(self.textcursor).topLeft() 
@@ -460,11 +459,60 @@ class Textbrowser( ):
                 continue
             #print(tl1,tl2,word['hira'],self.textbrowser.textCursor().position())
             
-            self.solvejiaminglabel(self.savetaglabels[labeli],word,font,tl1,tl2,fhhalf)
+            self.solvejiaminglabel(self.savetaglabels,labeli,word,font,tl1,tl2,fhhalf)
             
             labeli+=1 
-         
-    def solvejiaminglabel(self,label,word,font,tl1,tl2,fh ):
+    def settextposcursor(self,pos):
+        self.textcursor.setPosition(pos )
+        self.textbrowser.setTextCursor(self.textcursor)
+        if self.needdouble: 
+            self.textcursorback.setPosition(pos)
+            self.textbrowserback.setTextCursor(self.textcursorback)
+    def nearmerge(self,x,startpos):
+        pos=startpos
+        
+        linex=[]
+        newline=[]
+        self.settextposcursor(pos)
+        for i,word in enumerate(x):
+            newline.append(word)
+            if word['orig']=='\n':
+                continue
+            l=len(word['orig'])
+            tl1=self.textbrowser.cursorRect(self.textcursor).topLeft()  
+            self.settextposcursor(pos+l)
+            pos+=l 
+            
+            tl2=self.textbrowser.cursorRect(self.textcursor).topLeft() 
+            
+            #print(tl1,tl2,word['hira'],self.textbrowser.textCursor().position())
+                
+            if tl1.y()!=tl2.y() or i==len(x)-1: 
+                linex.append(newline)
+                newline=[]
+        res=[]
+        for line in linex:
+            newline=[]
+            canmerge=False
+            for word in line:
+                if word['hira']==word['orig'] or word['hira']=="" or word['orig']=="":
+                    newline.append(word.copy())
+                    canmerge=False
+                else:
+                    if len(newline)>0 and  canmerge:
+                        newline[-1]['hira']+=word['hira']
+                        newline[-1]['orig']+=word['orig']
+                    else:
+                        newline.append(word.copy())
+                    canmerge=True
+            res+=newline
+            newline=[]
+        
+        self.settextposcursor(startpos)
+        return   res       
+    def solvejiaminglabel(self,labels,labeli,word,font,tl1,tl2,fh ):
+        label=labels[labeli]
+
         if globalconfig['zitiyangshi'] ==3: 
             label.setGraphicsEffect(self.geteffect(globalconfig['fontsize'],globalconfig['jiamingcolor'],globalconfig['shadowforce']) ) 
             color=globalconfig['miaobiancolor']
@@ -477,7 +525,7 @@ class Textbrowser( ):
         w=label.width()
         
         if tl1.y()!=tl2.y():
-            print(label,word)
+            #print(label,word)
             x=tl1.x() 
             if x+w/2<self.textbrowser.width():
                 x=tl1.x() 
