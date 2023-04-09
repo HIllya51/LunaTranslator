@@ -477,8 +477,9 @@ class Textbrowser( ):
         w=label.width()
         
         if tl1.y()!=tl2.y():
+            print(label,word)
             x=tl1.x() 
-            if x+w<self.textbrowser.width():
+            if x+w/2<self.textbrowser.width():
                 x=tl1.x() 
                 y=tl1.y()-fh 
             else:
