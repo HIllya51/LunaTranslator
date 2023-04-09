@@ -264,9 +264,11 @@ exit
     win32utils.ShellExecute(None, "open", 'cache\\update\\update.bat', "", os.path.dirname('.'), win32con.SW_HIDE)
 
 
-def makehtml(text,base=False):
+def makehtml(text,base=False,show=None):
     if base:
         show=text.split('/')[-1]
+    elif show:
+        pass
     else:
           show=text
     return f'<a href="{text}">{show}</a>'

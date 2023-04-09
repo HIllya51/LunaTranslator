@@ -73,4 +73,3 @@ for /f "delims=" %%d in ('dir /s /b /a:d "%directory%" ^| sort /r') do (
 
 
 xcopy %targetdir%\ C:\dataH\LunaTranslator /e /y /I
-pause

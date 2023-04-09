@@ -28,3 +28,11 @@ LunaTranslator/files/x64_x86_dll/GPS.txt
 LunaTranslator/files/plugins/offlinetranslator/GPS.txt
 
 LunaTranslator/files/plugins/Magpie_v0.9.1/cache
+*.vsidx
+*.lock
+*.db
+*.opendb
+*.suo
+*.ipch
+CXXplugins/exec/x64/Release
+CXXplugins/exec/Release

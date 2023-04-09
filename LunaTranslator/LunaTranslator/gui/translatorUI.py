@@ -258,7 +258,7 @@ class QUnFrameWindow(resizableframeless):
         if self.isfirstshow:
             self.showline(True,[None,_TR('欢迎使用')],'',1)
             icon = QIcon()
-            icon.addPixmap(QPixmap('./files/luna.png'), QIcon.Normal, QIcon.On)
+            icon.addPixmap(QPixmap('./files/luna.jpg'), QIcon.Normal, QIcon.On)
             self.setWindowIcon(icon)
             self.tray = QSystemTrayIcon()  
             self.tray.setIcon(icon) 
