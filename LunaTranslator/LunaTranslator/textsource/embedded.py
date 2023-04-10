@@ -1,11 +1,8 @@
   
 from utils.config import globalconfig ,_TR   
 from textsource.textsourcebase import basetext   
-import functools,queue,time
-
-from utils.hwnd import getarch
-from embedded.rpcman3 import RpcServer
-from embedded.gameagent3 import GameAgent 
+import functools,queue,time,win32utils
+ 
 class embedded(basetext  ): 
      
     def __init__(self,textgetmethod,hookselectdialog,pids,hwnd,pname,parent) : 
@@ -17,7 +14,8 @@ class embedded(basetext  ):
         self.hookselectdialog=hookselectdialog
         self.newline=queue.Queue()
         self.agentreceiveddata='' 
-        if getarch(pids[0])!='86':
+        b=win32utils.GetBinaryType(pname)
+        if b!=0:
             self.embeddedfailed(_TR("暂不支持64程序"))
         else:
             self.parent.startembedsignal.emit(pids[0],self) 

@@ -43,14 +43,14 @@ def getprocesslist():
         pids= win32utils.EnumProcesses()
         return pids
  
-def getarch(pid):
-        try: 
-                 process=win32utils.OpenProcess(win32con.PROCESS_ALL_ACCESS,False, (pid))
+# def getarch(pid):
+#         try: 
+#                  process=win32utils.OpenProcess(win32con.PROCESS_ALL_ACCESS,False, (pid))
                   
-                 arch='86' if win32utils.IsWow64Process( process)  else '64' 
-        except:
-                arch=None
-        return arch
+#                  arch='86' if win32utils.IsWow64Process( process)  else '64' 
+#         except:
+#                 arch=None
+#         return arch
 def getpidexe_x(pid,force=False):
         privi=win32con.PROCESS_QUERY_LIMITED_INFORMATION if force else win32con.PROCESS_ALL_ACCESS
         hwnd1=win32utils.OpenProcess(privi,False, (pid))

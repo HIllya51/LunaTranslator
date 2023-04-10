@@ -1,14 +1,13 @@
 import threading
 from queue import Queue  
 import re  
-import time
+import time,win32utils
 from traceback import print_exc
 from collections import OrderedDict
 from utils.hookcode import Parsecode
 from utils import somedef
 from utils.config import globalconfig ,savehook_new_data ,_TR
 from utils.subproc import u16lesubprocess
-from utils.hwnd import getarch
 from textsource.textsourcebase import basetext 
 from utils.utils import checkchaos  
 class textractor(basetext  ): 
@@ -22,7 +21,7 @@ class textractor(basetext  ):
         if len(autostarthookcode)==0:
             hookselectdialog.realshowhide.emit(True)
         self.newline=Queue()  
-        self.arch=getarch(pids[0]) 
+        self.arch=win32utils.GetBinaryType(pname)
         self.lock=threading.Lock()
         self.dontremove=dontremove
         self.hookdatacollecter=OrderedDict() 
@@ -56,8 +55,8 @@ class textractor(basetext  ):
     def textractor_init(self):  
         if self.arch is None:
             return 
-        
-        extra=f"./files/plugins/Textractor/x{self.arch}/ex_TextractorCLI.exe"
+        arch={0:'86',6:'64'}[self.arch]
+        extra=f"./files/plugins/Textractor/x{arch}/ex_TextractorCLI.exe"
         self.u16lesubprocess=u16lesubprocess([extra])
         self.u16lesubprocess.readyread=self.handle_stdout
         self.u16lesubprocess.writelog=self.hookselectdialog.sysmessagesignal.emit
