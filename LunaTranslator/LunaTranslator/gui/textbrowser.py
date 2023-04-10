@@ -3,7 +3,7 @@ from PyQt5.QtCore import Qt ,pyqtSignal,QObject
 from PyQt5.QtGui import QPen,QColor ,QTextCharFormat ,QTextBlockFormat,QTextCursor,QFont,QColor,QFontMetricsF,QPalette,QTextFormat
 from PyQt5.QtWidgets import  QTextBrowser ,QLabel,QPushButton,QGraphicsDropShadowEffect
 import random
-import functools 
+import functools ,time
 from utils.config import globalconfig
 from utils.wrapper import timer
 from traceback import print_exc
@@ -187,7 +187,7 @@ class Textbrowser( ):
             
             self.addtaged=False
               
-            fh=self.getfh(False)
+            fh,_=self.getfh(False)
               
             for i in range(self.blockcount, self.textbrowser.document().blockCount()):
                 b=self.textbrowser.document().findBlockByNumber(i) 
@@ -395,15 +395,10 @@ class Textbrowser( ):
           
         fhall=fm.height()  
         
-        if half:
-            return fhall,font
-        else:
-            return fhall
+        return fhall,font
+        
      
-    def addtag(self,x): 
-        import time  
-        t=time.time()
-
+    def addtag(self,x):  
         if len(self.savetaglabels)<len(x):
             self.savetaglabels+=[QLabel(self.parent) for i in range(len(x)-len(self.savetaglabels))]
          
@@ -411,9 +406,9 @@ class Textbrowser( ):
         self.addtaged=True
         labeli=0 
          
-        fhall=self.getfh(False)
+        fhall,fontorig=self.getfh(False)
         
-        fhhalf,font=self.getfh(True)  
+        fhhalf,fonthira=self.getfh(True)  
         self.blockcount=self.textbrowser.document().blockCount() 
         for i in range(0,self.blockcount):
             b=self.textbrowser.document().findBlockByNumber(i)
@@ -441,8 +436,7 @@ class Textbrowser( ):
                 self.atback2.move(0,self.savey+fhhalf-tl1 ) 
                 self.textbrowserback.move(0,self.savey+fhhalf-tl1 )  
                 self.jiaming_y_delta=fhhalf-tl1
-        
-        x=self.nearmerge(x,pos)
+        x=self.nearmerge(x,pos,fonthira,fontorig) 
         self.settextposcursor(pos)
         for word in x:
             if word['orig']=='\n':
@@ -459,7 +453,7 @@ class Textbrowser( ):
                 continue
             #print(tl1,tl2,word['hira'],self.textbrowser.textCursor().position())
             
-            self.solvejiaminglabel(self.savetaglabels,labeli,word,font,tl1,tl2,fhhalf)
+            self.solvejiaminglabel(self.savetaglabels,labeli,word,fonthira,tl1,tl2,fhhalf)
             
             labeli+=1 
     def settextposcursor(self,pos):
@@ -468,13 +462,17 @@ class Textbrowser( ):
         if self.needdouble: 
             self.textcursorback.setPosition(pos)
             self.textbrowserback.setTextCursor(self.textcursorback)
-    def nearmerge(self,x,startpos):
-        pos=startpos
-        
+    def nearmerge(self,x,startpos,fonthira,fontorig):
+        pos=startpos 
         linex=[]
         newline=[]
         self.settextposcursor(pos)
+        _metrichira=QFontMetricsF(fonthira) 
+        _metricorig=QFontMetricsF(fontorig) 
         for i,word in enumerate(x):
+            word['orig_w']=_metricorig.width(word['orig'])
+            word['hira_w']=_metrichira.width(word['hira'])
+            #print(word['hira'],word['hira_w'])
             newline.append(word)
             if word['orig']=='\n':
                 continue
@@ -490,24 +488,32 @@ class Textbrowser( ):
             if tl1.y()!=tl2.y() or i==len(x)-1: 
                 linex.append(newline)
                 newline=[]
-        res=[]
+        res=[] 
         for line in linex:
-            newline=[]
-            canmerge=False
-            for word in line:
-                if word['hira']==word['orig'] or word['hira']=="" or word['orig']=="":
-                    newline.append(word.copy())
-                    canmerge=False
-                else:
-                    if len(newline)>0 and  canmerge:
-                        newline[-1]['hira']+=word['hira']
-                        newline[-1]['orig']+=word['orig']
-                    else:
+
+            while True:
+                allnotbig=True
+                newline=[]
+                canmerge=False
+                for word in line:
+                    if word['hira']==word['orig'] or word['hira']=="" or word['orig']=="":
                         newline.append(word.copy())
-                    canmerge=True
+                        canmerge=False
+                    else:
+                        if len(newline)>0 and  canmerge and  (word['hira_w']+newline[-1]['hira_w'] >word['orig_w']+newline[-1]['orig_w']) :
+                                #print(word['hira'],word['hira_w'],newline[-1]['hira_w'],word['orig_w'],newline[-1]['orig_w'])
+                                newline[-1]['hira']+=word['hira']
+                                newline[-1]['orig']+=word['orig']
+                                newline[-1]['hira_w']+=word['hira_w']
+                                newline[-1]['orig_w']+=word['orig_w']
+                                allnotbig=False
+                        else:
+                            newline.append(word.copy())
+                        canmerge=True
+                line=newline
+                if allnotbig:break
             res+=newline
-            newline=[]
-        
+            newline=[] 
         self.settextposcursor(startpos)
         return   res       
     def solvejiaminglabel(self,labels,labeli,word,font,tl1,tl2,fh ):

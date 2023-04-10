@@ -24,6 +24,7 @@ def subproc_w(cmd,cwd=None ,needstdio=False,encoding=None ,name=None):
     
         return ss
     except:
+        print_exc()
         return None
 
 # import win32utils,win32con,msvcrt,io
@@ -143,7 +144,7 @@ class u16lesubprocess():
                 self.processes[i].stdin.write(xx +'\n')
                 self.processes[i].stdin.flush()
             except:
-                pass
+                print_exc()
     def kill(self):
         self.isstart=False 
         for p in self.processes:

@@ -598,8 +598,7 @@ class QUnFrameWindow(resizableframeless):
         globalconfig['height']=self.height() 
         saveallconfig() 
          
-        if self.object.textsource:
-            self.object.textsource=None
+        self.object.textsourcetryend()
         if self.object.settin_ui.needupdate and globalconfig['autoupdate']: 
             update()
         endsubprocs()
