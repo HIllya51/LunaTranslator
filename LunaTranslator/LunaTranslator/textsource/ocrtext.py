@@ -51,9 +51,6 @@ class ocrtext(basetext):
                  
                 pix = self.screen.grabWindow(hwnduse, x1-rect[0], y1-rect[1]-h, x2-x1, y2-y1) 
             except:
-                self.hwnd=None
-                self.object.translation_ui.isbindedwindow=False
-                self.object.translation_ui.refreshtooliconsignal.emit()
                 pix = self.screen.grabWindow(QApplication.desktop().winId(), x1, y1, x2-x1, y2-y1) 
         else:
             pix = self.screen.grabWindow(QApplication.desktop().winId(), x1, y1, x2-x1, y2-y1) 
@@ -65,7 +62,6 @@ class ocrtext(basetext):
         self.savelasttext=None  
         self.object=object 
         self.lastocrtime=0
-        self.hwnd=None
         self.nowuseocr=None
         self.timestamp=time.time() 
         super(ocrtext,self ).__init__(textgetmethod,'0','0_ocr') 

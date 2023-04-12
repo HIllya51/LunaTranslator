@@ -10,6 +10,7 @@ from utils.config import globalconfig ,savehook_new_data ,_TR
 from utils.subproc import u16lesubprocess
 from textsource.textsourcebase import basetext 
 from utils.utils import checkchaos  
+from utils.hwnd import pid_running
 class textractor(basetext  ): 
     def __init__(self,textgetmethod,hookselectdialog,pids,hwnd,pname  ,autostarthookcode=None,needinserthookcode=None,dontremove=False) :
         print(pids,hwnd,pname  ,autostarthookcode,needinserthookcode,dontremove)
@@ -80,7 +81,8 @@ class textractor(basetext  ):
         self.pidswrite(f'+{delay}')
     def pidswrite(self,prefix,idx=None):
         for pid in self.pids:
-            self.u16lesubprocess.writer(f'{prefix} -P{pid}',idx) 
+            if pid_running(pid):
+                self.u16lesubprocess.writer(f'{prefix} -P{pid}',idx) 
     def setcodepage(self):
         try:
             cpi=savehook_new_data[self.pname]["codepage_index"]

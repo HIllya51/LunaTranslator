@@ -227,10 +227,6 @@
     "程序名": "Program name",
     "替换内容": "replace content",
     "重复次数": "Repetitions",
-    "绑定截图窗口，避免遮挡（部分软件不支持）（点击自己取消）": "Bind the screenshot window to avoid occlusion (not supported by some software) (click to cancel)",
-    "调整游戏窗口(需要绑定ocr窗口，或选择hook进程)": "Adjust the game window (you need to bind the ocr window or select the hook process)",
-    "全屏/恢复游戏窗口(需要绑定ocr窗口，或选择hook进程)": "Full screen/restore game window (you need to bind ocr window or select hook process)",
-    "游戏静音(需要绑定ocr窗口，或选择hook进程)": "Game mute (you need to bind ocr window or select hook process)",
     "最小化到托盘": "Minimize to tray",
     "&显示": "&Show",
     "&设置": "&Settings",
@@ -568,6 +564,8 @@
     "Magpie10下载": "Magpie10 Download",
     "Magpie9_win7适配版": "Magpie9_ Win7 adaptation version",
     "相关说明": "Related instructions",
-    "问题反馈_QQ群": "Problem feedback_ QQ group",
-    "如果你感觉该软件对你有帮助，欢迎微信扫码赞助，谢谢~": "If you feel that this software is helpful to you, you are welcome to scan WeChat for sponsorship. Thank you~"
+    "如果你感觉该软件对你有帮助，欢迎微信扫码赞助，谢谢~": "If you feel that this software is helpful to you, you are welcome to scan WeChat for sponsorship. Thank you~",
+    "绑定窗口（部分软件不支持）（点击自己取消）": "Binding window (not supported by some software) (click to cancel yourself)",
+    "调整游戏窗口": "Adjusting the game window",
+    "绑定窗口按钮": "Bind Window Button"
 }

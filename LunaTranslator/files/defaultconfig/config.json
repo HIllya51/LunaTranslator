@@ -123,7 +123,8 @@
         "history": true,
         "gamepad": true,
         "edit": true,
-		"memory":false
+		"memory":false,
+        "bindwindow":true
     },
 	"showtranexception":true,
 	"refresh_on_get_trans":false,

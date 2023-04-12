@@ -231,15 +231,15 @@ class QUnFrameWindow(resizableframeless):
         self.takusanbuttons(1,lambda :self.clickRange(False),4,"选取OCR范围",None,[ "ocr"])
         self.takusanbuttons(1,self.showhide,5,"显示/隐藏范围框",None,["ocr"])
          
-        self.takusanbuttons(1,self.bindcropwindow_signal.emit,5,"绑定截图窗口，避免遮挡（部分软件不支持）（点击自己取消）",None,["ocr"])
+        self.takusanbuttons(1,self.bindcropwindow_signal.emit,5,"绑定窗口（部分软件不支持）（点击自己取消）","bindwindow")
           
-        self.takusanbuttons(1,lambda :moveresizegame(self,self.object.textsource.hwnd),5,"调整游戏窗口(需要绑定ocr窗口，或选择hook进程)",'resize' ,["textractor","ocr","embedded"]) 
+        self.takusanbuttons(1,lambda :moveresizegame(self,self.object.textsource.hwnd) if self.object.textsource.hwnd else 0,5,"调整游戏窗口",'resize') 
   
-        self.takusanbuttons(1,self._fullsgame,5,"全屏/恢复游戏窗口(需要绑定ocr窗口，或选择hook进程)" ,"fullscreen",["textractor","ocr","embedded"]) 
+        self.takusanbuttons(1,self._fullsgame,5,"全屏/恢复游戏窗口" ,"fullscreen") 
         
-        self.takusanbuttons(1,self.muteprocessfuntion,5,"游戏静音(需要绑定ocr窗口，或选择hook进程)" ,"muteprocess",["textractor","ocr",'embedded']) 
+        self.takusanbuttons(1,self.muteprocessfuntion,5,"游戏静音" ,"muteprocess") 
         
-        self.takusanbuttons(1,lambda: dialog_memory(self.object.settin_ui,self.object.textsource.md5),5,"备忘录" ,"memory") 
+        self.takusanbuttons(1,lambda: dialog_memory(self.object.settin_ui,self.object.currentmd5),5,"备忘录" ,"memory") 
         
         
         self.takusanbuttons(1,self.hide_and_disableautohide,-2,"最小化到托盘")
@@ -419,7 +419,8 @@ class QUnFrameWindow(resizableframeless):
     def bindcropwindowcallback(self,pid,hwnd): 
             _pid=os.getpid()
             self.object.textsource.hwnd= hwnd if pid!=_pid else None
-            self.object.textsource.pids= [pid] if pid!=_pid else None
+            if not(globalconfig['sourcestatus']['textractor']['use'] or globalconfig['sourcestatus']['embedded']['use']):
+                self.object.textsource.pids= [pid] if pid!=_pid else None
             self.isbindedwindow=(pid!=_pid)
             self.refreshtoolicon()  
     def changeshowhideraw(self):

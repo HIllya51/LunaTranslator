@@ -514,20 +514,7 @@ class MAINUI(QObject) :
                 
                 else: 
                     pids=self.textsource.pids
-                    hwnd=self.textsource.hwnd
-                    needend=False 
                     if sum([int(pid_running(pid)) for pid in pids])==0:
-                        needend=True
-                    elif hwnd==0 or win32utils.GetWindowThreadProcessId( hwnd )[0]==0: 
-                            time.sleep(0.5)
-                            if sum([int(pid_running(pid)) for pid in pids])==0:
-                                needend=True
-                            else: 
-                                fhwnd=win32utils.GetForegroundWindow()
-                                if hwnd==0 and win32utils.GetWindowThreadProcessId( fhwnd )[1] in pids:
-                                    self.textsource.hwnd=fhwnd
-                                    
-                    if needend:
                         self.textsource=None  
             except:
                        
@@ -550,6 +537,36 @@ class MAINUI(QObject) :
         while self.isrunning:
             self.onwindowloadautohook()
             time.sleep(0.5)#太短了的话，中间存在一瞬间，后台进程比前台窗口内存占用要大。。。
+    def autocheckhwndexists(self):
+        def setandrefresh(bool):
+            if self.translation_ui.isbindedwindow!=bool:
+                self.translation_ui.isbindedwindow=bool
+                self.translation_ui.refreshtooliconsignal.emit()
+        while self.isrunning:
+            if self.textsource:
+                hwnd=self.textsource.hwnd
+                
+                if hwnd==0:
+                    if globalconfig['sourcestatus']['textractor']['use'] or globalconfig['sourcestatus']['embedded']['use']:
+                        fhwnd=win32utils.GetForegroundWindow() 
+                        pids=self.textsource.pids
+                        if hwnd==0 and win32utils.GetWindowThreadProcessId( fhwnd )[1] in pids:
+                            if 'once' not in dir(self.textsource):
+                                self.textsource.once=True
+                                self.textsource.hwnd=fhwnd 
+                                setandrefresh(True)
+                    else:
+                        setandrefresh(False)
+                else:
+                    if win32utils.GetWindowThreadProcessId( hwnd )[0]==0:
+                        self.textsource.hwnd=0
+                        setandrefresh(False)
+                    elif 'once' not in dir(self.textsource):
+                        self.textsource.once=True
+                        setandrefresh(True)
+            else: 
+                setandrefresh(False)
+            time.sleep(0.5) 
     def aa(self):   
         self.translation_ui =gui.translatorUI.QUnFrameWindow(self)   
         if globalconfig['rotation']==0:
@@ -589,6 +606,7 @@ class MAINUI(QObject) :
         
         print(time.time()-filestart)
         self.starttextsource(waitforautoinit=True)  
+        threading.Thread(target=self.autocheckhwndexists).start()   
         threading.Thread(target=self.autohookmonitorthread).start()    
         threading.Thread(target=minmaxmoveobservefunc,args=(self.translation_ui,)).start()   
         threading.Thread(target=self.setontopthread).start() 

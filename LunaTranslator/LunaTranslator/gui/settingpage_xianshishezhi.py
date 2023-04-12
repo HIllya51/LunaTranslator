@@ -129,7 +129,7 @@ def setTabThree_lazy(self) :
                 ('显示编辑按钮',4),self.getsimpleswitch(globalconfig['buttonuse'],'edit' ,callback=lambda _:self.object.translation_ui.showhidetoolbuttons() ),'' ,
                 ('显示保存的游戏按钮',4),self.getsimpleswitch(globalconfig['buttonuse'],'gamepad' ,callback=lambda _:self.object.translation_ui.showhidetoolbuttons() )],
                 [('调整游戏窗口按钮',4),self.getsimpleswitch(globalconfig['buttonuse'],'resize' ,callback=lambda _:self.object.translation_ui.showhidetoolbuttons() ),'',('游戏窗口全屏按钮',4),self.getsimpleswitch(globalconfig['buttonuse'],'fullscreen' ,callback=lambda _:self.object.translation_ui.showhidetoolbuttons()),'',('显示游戏静音按钮',4),self.getsimpleswitch(globalconfig['buttonuse'],'muteprocess' ,callback=lambda _:self.object.translation_ui.showhidetoolbuttons())],
-                [('备忘录按钮',4),self.getsimpleswitch(globalconfig['buttonuse'],'memory' ,callback=lambda _:self.object.translation_ui.showhidetoolbuttons() ) ],
+                [('备忘录按钮',4),self.getsimpleswitch(globalconfig['buttonuse'],'memory' ,callback=lambda _:self.object.translation_ui.showhidetoolbuttons() ) ,'',('绑定窗口按钮',4),self.getsimpleswitch(globalconfig['buttonuse'],'bindwindow' ,callback=lambda _:self.object.translation_ui.showhidetoolbuttons())],
         ]
         modifydllbtn=QPushButton(_TR("修改DLL以实现点击翻译器不再退出全屏"))
          
