@@ -170,7 +170,11 @@ class basetrans:
             res=self.translate(contentraw)
         return res
     
-    
+    @property
+    def onlymanual(self):
+        if 'manual' not in globalconfig['fanyi'][self.typename] :
+            return False
+        return globalconfig['fanyi'][self.typename]['manual']
     def fythread(self):
         while self.using:  
             t=time.time()
@@ -178,13 +182,14 @@ class basetrans:
                 time.sleep(t-self.lastrequeststime)
             self.lastrequeststime=t
             while True:
-                callback,contentraw,contentsolved,skip,embedcallback=self.queue.get() 
+                callback,contentraw,contentsolved,skip,embedcallback,shortlongskip=self.queue.get() 
                 if self.queue.empty():
                     break
             
             if skip:
                 continue
-
+            if shortlongskip and self.onlymanual:
+                continue
             runtime=2 if globalconfig['errorretry'] else 1
             for i in range(runtime):
                 
