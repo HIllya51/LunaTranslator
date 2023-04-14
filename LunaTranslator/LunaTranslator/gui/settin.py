@@ -34,6 +34,7 @@ class Settin(closeashidewindow) :
     fontbigsmallsignal=pyqtSignal(int)  
     clicksourcesignal=pyqtSignal(str)
     opensolvetextsig=pyqtSignal()
+    showandsolvesig=pyqtSignal(str)
     def resizefunction(self):
          
         for w in self.needfitwidgets: 

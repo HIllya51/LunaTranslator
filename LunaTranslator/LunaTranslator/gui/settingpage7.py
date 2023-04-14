@@ -1,7 +1,7 @@
   
 import functools  
 
-from PyQt5.QtWidgets import  QDialog,QLabel ,QLineEdit,QSpinBox,QPushButton ,QTableView,   QVBoxLayout,QHBoxLayout,QHeaderView 
+from PyQt5.QtWidgets import  QDialog,QLabel ,QLineEdit,QSpinBox,QPushButton ,QTableView,   QVBoxLayout,QHBoxLayout,QHeaderView ,QTextEdit,QHBoxLayout,QWidget
 from PyQt5.QtCore import QSize,Qt
 from PyQt5.QtGui import QStandardItem, QStandardItemModel 
 from traceback import print_exc
@@ -12,11 +12,30 @@ from gui.codeacceptdialog import codeacceptdialog
 from gui.inputdialog import getsomepath1   
 from utils.utils import selectdebugfile
 from utils.wrapper import Singleton
+from utils.post import POSTSOLVE
 def settab7direct(self):
+    self.comparelayout=getcomparelayout(self)
     self.button_noundict=self.getcolorbutton(globalconfig,'' ,callback=lambda x:  noundictconfigdialog(self,noundictconfig,'专有名词翻译设置(游戏ID 0表示全局)'),icon='fa.gear',constcolor="#FF69B4")
     self.button_fix=self.getcolorbutton(globalconfig,'',callback=lambda x:  noundictconfigdialog1(self,transerrorfixdictconfig,'翻译结果替换设置',['翻译','替换'],'./userconfig/transerrorfixdictconfig.json'),icon='fa.gear',constcolor="#FF69B4")
 def setTab7(self) :  
         self.tabadd_lazy(self.tab_widget, ('文本处理'), lambda :setTab7_lazy(self)) 
+def getcomparelayout(self):
+    
+    layout=QHBoxLayout()
+    fromtext=QTextEdit()
+    layout.addWidget(fromtext)
+    solvebutton=QPushButton("=>")
+    layout.addWidget(solvebutton)
+    totext=QTextEdit()
+    layout.addWidget(totext)
+    w=QWidget()
+    w.setLayout(layout)
+    solvebutton.clicked.connect(lambda :totext.setPlainText(POSTSOLVE(fromtext.toPlainText())))
+    def _(s):
+        fromtext.setPlainText(s)
+        totext.setPlainText(POSTSOLVE(fromtext.toPlainText()))
+    self.showandsolvesig.connect(_)
+    return w
 def setTab7_lazy(self) :   
         grids=[
             [('预处理方法',6),'','',('调整执行顺序',6)]
@@ -92,7 +111,9 @@ def setTab7_lazy(self) :
             lambda:self.makescroll(self.makegrid(grids,True,savelist,savelay )  ) ,
             lambda:self.makescroll(self.makegrid(grids2 )  )
         ])   
-        return tab
+  
+        return self.makevbox([tab,self.comparelayout ]) 
+
 @Singleton
 class noundictconfigdialog1(QDialog):
     def __init__(dialog,object,configdict,title,label=[  '日文','翻译'] ,_=None) -> None:

@@ -155,7 +155,10 @@ class MAINUI(QObject) :
                 res=res.replace(key,transerrorfixdictconfig['dict'][key])
         return res
 
-    
+    def _POSTSOLVE(self,s):
+        ss=POSTSOLVE(s)
+        self.settin_ui.showandsolvesig.emit(s)
+        return ss
     def textgetmethod(self,paste_str,shortlongskip=True,embedcallback=None):
         self.currentsignature=time.time()
         if type(paste_str)==str:
@@ -178,10 +181,10 @@ class MAINUI(QObject) :
  
         try:
             if type(paste_str)==list:
-                paste_str=[POSTSOLVE(_) for _ in paste_str] 
+                paste_str=[self._POSTSOLVE(_) for _ in paste_str] 
                 _paste_str='\n'.join(paste_str)
             else:
-                _paste_str=POSTSOLVE(paste_str) 
+                _paste_str=self._POSTSOLVE(paste_str) 
         except Exception as e:
             msg=str(type(e))[8:-2]+' '+str(e).replace('\n','').replace('\r','')
             self.translation_ui.displaystatus.emit(msg,'red',False)

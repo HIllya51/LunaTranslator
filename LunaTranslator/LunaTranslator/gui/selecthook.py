@@ -14,7 +14,6 @@ from utils.config import globalconfig ,_TR,_TRL,checkifnewgame
 from collections import OrderedDict
 from gui.usefulwidget import closeashidewindow,getQMessageBox
 from utils.utils import checkchaos
-from utils.post import POSTSOLVE
 class HTMLDelegate(QStyledItemDelegate):
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -251,16 +250,10 @@ class hookselect(closeashidewindow):
         self.sysOutput.setUndoRedoEnabled(False)
         self.sysOutput.setReadOnly(True) 
 
-        self.soloveOutput = QPlainTextEdit()
-        self.soloveOutput.setUndoRedoEnabled(False)
-        self.soloveOutput.setReadOnly(True) 
-
-
         self.tabwidget=QTabWidget()
         self.tabwidget.setTabPosition(QTabWidget.East)
         self.tabwidget.addTab(self.textOutput,_TR("文本"))
         self.tabwidget.addTab(self.sysOutput,_TR("系统"))
-        self.tabwidget.addTab(self.soloveOutput,_TR("处理"))
 
         self.vboxlayout.addWidget(self.tabwidget)
         self.hboxlayout.addLayout(self.vboxlayout)
@@ -493,9 +486,7 @@ class hookselect(closeashidewindow):
         cursor.insertText(('' if self.sysOutput.document().isEmpty() else '\n')+self.get_time_stamp()+" "+sentence)
         if (atBottom):
             scrollbar.setValue(scrollbar.maximum())
-    def showsolvedtext(self,sentence):
-        ssentence=POSTSOLVE(sentence)
-        self.soloveOutput.setPlainText(sentence+"\n⬇\n"+ssentence)
+    
     def getnewsentence(self,sentence):
         if self.at1==2:
             return 
@@ -507,7 +498,6 @@ class hookselect(closeashidewindow):
         if (atBottom):
             scrollbar.setValue(scrollbar.maximum())
  
-        self.showsolvedtext(sentence)
     def ViewThread2(self, index:QModelIndex):   
         self.at1=2
         self.userhook.setText(self.allres_k[index.row()])
@@ -520,9 +510,6 @@ class hookselect(closeashidewindow):
             self.textOutput. setPlainText('\n'.join(self.object.textsource.hookdatacollecter[self.save[index.row()]]))
             self.textOutput. moveCursor(QTextCursor.End)
 
-            if len(self.object.textsource.hookdatacollecter[self.save[index.row()]]):
-                sentence=self.object.textsource.hookdatacollecter[self.save[index.row()]][-1] 
-                self.showsolvedtext(sentence)
         except:
             print_exc()
     def table1doubleclicked(self,index:QModelIndex): 
