@@ -11,7 +11,7 @@ class Demo(QWidget):
         self.resize(500, 500)  
         qg=QGridLayout()
         self.setLayout(qg)
-        with open(r'C:/Users/11737/Documents/GitHub/LunaTranslator/LunaTranslator/LunaTranslator/qtawesome/fonts/fontawesome4.7-webfont-charmap.json','r')as ff:
+        with open(r'./files/fonts/fontawesome4.7-webfont-charmap.json','r')as ff:
             js=json.load(ff)
         i=0
         for k in js:

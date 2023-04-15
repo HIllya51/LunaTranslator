@@ -23,14 +23,15 @@ def getcomparelayout(self):
     
     layout=QHBoxLayout()
     fromtext=QTextEdit()
-    layout.addWidget(fromtext)
-    solvebutton=QPushButton("=>")
-    layout.addWidget(solvebutton)
     totext=QTextEdit()
+    solvebutton=self.getcolorbutton(globalconfig,'',callback=lambda :totext.setPlainText(POSTSOLVE(fromtext.toPlainText())),icon='fa.chevron-right',constcolor="#FF69B4")
+    
+    layout.addWidget(fromtext)
+    layout.addWidget(solvebutton) 
     layout.addWidget(totext)
     w=QWidget()
     w.setLayout(layout)
-    solvebutton.clicked.connect(lambda :totext.setPlainText(POSTSOLVE(fromtext.toPlainText())))
+    
     def _(s):
         fromtext.setPlainText(s)
         totext.setPlainText(POSTSOLVE(fromtext.toPlainText()))
