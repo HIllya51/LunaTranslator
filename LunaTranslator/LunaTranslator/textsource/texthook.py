@@ -11,7 +11,7 @@ from utils.subproc import u16lesubprocess
 from textsource.textsourcebase import basetext 
 from utils.utils import checkchaos  
 from utils.hwnd import pid_running
-class textractor(basetext  ): 
+class texthook(basetext  ): 
     def __init__(self,textgetmethod,hookselectdialog,pids,hwnd,pname  ,autostarthookcode=None,needinserthookcode=None,dontremove=False) :
         print(pids,hwnd,pname  ,autostarthookcode,needinserthookcode,dontremove)
         if autostarthookcode is None:
@@ -51,13 +51,13 @@ class textractor(basetext  ):
         self.namehook=[]
         self.currentname=None
         #embedtranslater(self.pid,self.textgetmethod,self.append ) 
-        super(textractor,self).__init__(textgetmethod,*self.checkmd5prefix(pname))
-        self.textractor_init()
-    def textractor_init(self):  
+        super(texthook,self).__init__(textgetmethod,*self.checkmd5prefix(pname))
+        self.texthook_init()
+    def texthook_init(self):  
         if self.arch is None:
             return 
         arch={0:'86',6:'64'}[self.arch]
-        extra=f"./files/plugins/Textractor/x{arch}/ExCLI.exe"
+        extra=f"./files/plugins/TextHookEngine/x{arch}/ExCLI.exe"
         self.u16lesubprocess=u16lesubprocess([extra])
         self.u16lesubprocess.readyread=self.handle_stdout
         self.u16lesubprocess.writelog=self.hookselectdialog.sysmessagesignal.emit

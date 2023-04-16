@@ -26,7 +26,6 @@ from gui.usefulwidget import closeashidewindow
 class gridwidget(QWidget):
     pass
 class Settin(closeashidewindow) : 
-    loadtextractorfalse=pyqtSignal( ) 
     voicelistsignal=pyqtSignal(list)
     mp3playsignal=pyqtSignal(str,int) 
     versiontextsignal=pyqtSignal( str)

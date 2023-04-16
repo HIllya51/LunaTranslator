@@ -22,7 +22,7 @@ from utils.asarunpack import extract_asar
 from utils.hwnd import pid_running,getpidexe ,getpidhwndfirst,ListProcess,getScreenRate,getbigestmempid
 
 from textsource.copyboard import copyboard   
-from textsource.textractor import textractor   
+from textsource.texthook import texthook   
 from textsource.embedded import embedded
 from textsource.ocrtext import ocrtext
 from textsource.txt import txt 
@@ -284,7 +284,7 @@ class MAINUI(QObject) :
                 self.reader.read(_paste_str)
             elif globalconfig['autoread']:
                 needread=True
-                if globalconfig['sourcestatus']['textractor']['use']:
+                if globalconfig['sourcestatus']['texthook']['use']:
                     if ('ttsonname' in  savehook_new_data[self.textsource.pname]) and  savehook_new_data[self.textsource.pname]['ttsonname']:
                         if 'ttsusename' in savehook_new_data[self.textsource.pname]:
                             ttsusename=savehook_new_data[self.textsource.pname]['ttsusename']
@@ -373,8 +373,8 @@ class MAINUI(QObject) :
         
         
         def normalselectprocess():
-            if globalconfig['sourcestatus']['textractor']['use']:
-                self.textsource=textractor(self.textgetmethod,self.hookselectdialog,pids,hwnd,pexe ,dontremove=True)  
+            if globalconfig['sourcestatus']['texthook']['use']:
+                self.textsource=texthook(self.textgetmethod,self.hookselectdialog,pids,hwnd,pexe ,dontremove=True)  
             elif globalconfig['sourcestatus']['embedded']['use']:
                 self.textsource=embedded(self.textgetmethod,self.hookselectdialog,pids,hwnd,pexe, self)  
         
@@ -389,17 +389,17 @@ class MAINUI(QObject) :
         self.translation_ui.showhidestate=False 
         self.translation_ui.refreshtooliconsignal.emit()
         self.range_ui.hide() 
-        self.settin_ui.selectbutton.setEnabled(globalconfig['sourcestatus']['textractor']['use'] or globalconfig['sourcestatus']['embedded']['use']) 
-        self.settin_ui.selecthookbutton.setEnabled(globalconfig['sourcestatus']['textractor']['use'] )
+        self.settin_ui.selectbutton.setEnabled(globalconfig['sourcestatus']['texthook']['use'] or globalconfig['sourcestatus']['embedded']['use']) 
+        self.settin_ui.selecthookbutton.setEnabled(globalconfig['sourcestatus']['texthook']['use'] )
         self.textsource=None
         if checked: 
-            classes={'ocr':ocrtext,'copy':copyboard,'textractor':None,'embedded':None,'txt':txt} 
+            classes={'ocr':ocrtext,'copy':copyboard,'texthook':None,'embedded':None,'txt':txt} 
             if use is None:
                 use=list(filter(lambda _ :globalconfig['sourcestatus'][_]['use'],classes.keys()) )
                 use=None if len(use)==0 else use[0]
             if use is None:
                 return
-            elif use=='textractor' or use=='embedded':
+            elif use=='texthook' or use=='embedded':
                 if waitforautoinit==False:     
                     self.AttachProcessDialog.showNormal() 
             elif use=='ocr':
@@ -488,7 +488,7 @@ class MAINUI(QObject) :
       
 
     def onwindowloadautohook(self): 
-        if not(globalconfig['autostarthook'] and (globalconfig['sourcestatus']['textractor']['use'] or globalconfig['sourcestatus']['embedded']['use'])):
+        if not(globalconfig['autostarthook'] and (globalconfig['sourcestatus']['texthook']['use'] or globalconfig['sourcestatus']['embedded']['use'])):
             return 
             
         elif self.AttachProcessDialog.isVisible():
@@ -508,9 +508,9 @@ class MAINUI(QObject) :
                             for pids,_exe  in lps:
                                 if _exe==name_: 
                                     self.textsource=None
-                                    if globalconfig['sourcestatus']['textractor']['use']:
+                                    if globalconfig['sourcestatus']['texthook']['use']:
                                         needinserthookcode=savehook_new_data[name_]['needinserthookcode']
-                                        self.textsource=textractor(self.textgetmethod,self.hookselectdialog,pids,hwnd,name_ ,autostarthookcode=savehook_new_data[name_]['hook'],needinserthookcode=needinserthookcode)
+                                        self.textsource=texthook(self.textgetmethod,self.hookselectdialog,pids,hwnd,name_ ,autostarthookcode=savehook_new_data[name_]['hook'],needinserthookcode=needinserthookcode)
                                     elif globalconfig['sourcestatus']['embedded']['use']:
                                         self.textsource=embedded(self.textgetmethod,self.hookselectdialog,pids,hwnd,name_  ,self)
                                     break
@@ -524,13 +524,14 @@ class MAINUI(QObject) :
                        print_exc()
     def setontopthread(self):
         while self.isrunning:
-            #self.translation_ui.keeptopsignal.emit() 
-            
             try:  
-                hwnd=win32utils.GetForegroundWindow()
-                pid=win32utils.GetWindowThreadProcessId(hwnd)[1] 
-                if pid !=os.getpid():
-                    win32utils.SetWindowPos(int(self.translation_ui.winId()), win32con.HWND_TOPMOST, 0, 0, 0, 0,win32con. SWP_NOACTIVATE |win32con. SWP_NOSIZE | win32con.SWP_NOMOVE) 
+                if globalconfig['keepontop']:
+                    hwnd=win32utils.GetForegroundWindow()
+                    pid=win32utils.GetWindowThreadProcessId(hwnd)[1] 
+                    if pid !=os.getpid(): 
+                        win32utils.SetWindowPos(int(self.translation_ui.winId()), win32con.HWND_TOPMOST, 0, 0, 0, 0,win32con. SWP_NOACTIVATE |win32con. SWP_NOSIZE | win32con.SWP_NOMOVE) 
+                else:
+                    win32utils.SetWindowPos(int(self.translation_ui.winId()), win32con.HWND_NOTOPMOST, 0, 0, 0, 0,win32con. SWP_NOACTIVATE |win32con. SWP_NOSIZE | win32con.SWP_NOMOVE) 
             except:
                 print_exc() 
             time.sleep(0.5)            
@@ -548,7 +549,7 @@ class MAINUI(QObject) :
                 hwnd=self.textsource.hwnd
                 
                 if hwnd==0:
-                    if globalconfig['sourcestatus']['textractor']['use'] or globalconfig['sourcestatus']['embedded']['use']:
+                    if globalconfig['sourcestatus']['texthook']['use'] or globalconfig['sourcestatus']['embedded']['use']:
                         fhwnd=win32utils.GetForegroundWindow() 
                         pids=self.textsource.pids
                         if hwnd==0 and win32utils.GetWindowThreadProcessId( fhwnd )[1] in pids:

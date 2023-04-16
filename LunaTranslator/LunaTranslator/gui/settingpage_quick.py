@@ -13,7 +13,7 @@ def setTab_quick_direct(self):
     self.bindfunctions={ 
             '_A':lambda :self.object.settin_ui.clicksourcesignal.emit('copy'),
             '_B':lambda :self.object.settin_ui.clicksourcesignal.emit('ocr'),
-            '_C':lambda :self.object.settin_ui.clicksourcesignal.emit('textractor'),
+            '_C':lambda :self.object.settin_ui.clicksourcesignal.emit('texthook'),
             '_D':lambda :self.object.settin_ui.clicksourcesignal.emit('embedded'),
             '_E':lambda :self.object.settin_ui.clicksourcesignal.emit('txt'),
 

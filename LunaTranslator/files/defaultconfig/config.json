@@ -22,6 +22,7 @@
 		"changecharset":false,
 		"changecharset_charset":2
 	},
+    "keepontop":true,
 	"buttonsize":30,
 	"language_setted_2.4.5":false,
 	"postprocess_rank":[],
@@ -63,7 +64,6 @@
     "locktools": true,
     "showfanyisource": false,
     "autoread": false,
-    "extractalltext": false,
     "show_fenci": false,
     "jiamingcolor": "black",
     "settingfonttype": "Arial",
@@ -121,7 +121,8 @@
         "gamepad": true,
         "edit": true,
 		"memory":false,
-        "bindwindow":true
+        "bindwindow":true,
+        "keepontop":false
     },
 	"showtranexception":true,
 	"refresh_on_get_trans":false,
@@ -430,7 +431,7 @@
     "sourcestatus": {
         "copy": {"use":false},
         "ocr":  {"use":true},
-        "textractor":  {"use":false}, 
+        "texthook":  {"use":false}, 
 		"txt": {"use":false},
 		"embedded": {"use":false}
     },

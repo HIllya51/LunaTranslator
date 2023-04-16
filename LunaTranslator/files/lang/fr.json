@@ -180,7 +180,6 @@
     "显示/隐藏翻译窗口": "Afficher / masquer la fenêtre de traduction",
     "选择翻译源-剪贴板": "Sélectionner la source de traduction - presse - papiers",
     "选择翻译源-OCR": "Sélectionner la source de traduction - ocr",
-    "选择翻译源-TEXTRACTOR": "Sélectionner la source de traduction - texttractor",
     "字体增大（可长按）": "Police agrandie (peut être pressée longtemps)",
     "字体缩小（可长按）": "Taille de la police (peut être pressée longtemps)",
     "全屏/恢复游戏窗口": "Fenêtre de jeu plein écran / récupération",
@@ -564,5 +563,6 @@
     "调整游戏窗口": "Ajuster la fenêtre de jeu",
     "绑定窗口按钮": "Bouton BIND window",
     "处理": "Traitement",
-    "波兰语": "Polonais"
+    "波兰语": "Polonais",
+    "窗口置顶": "Haut de la fenêtre"
 }

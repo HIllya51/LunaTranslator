@@ -119,7 +119,6 @@
     "游戏窗口移动时同步移动": "Move synchronously when the game window moves",
     "语音设置": "Voice Settings",
     "音量:(0~100)": "Volume: (0~100)",
-    "选择翻译源-TEXTRACTOR": "Select Translation Source - TEXTOR",
     "光标缩放系数": "Cursor zoom factor",
     "前景窗口截屏": "Screenshot of foreground window",
     "使用竖排OCR(效果不佳)": "Use vertical OCR (poor effect)",
@@ -564,5 +563,6 @@
     "调整游戏窗口": "Adjusting the game window",
     "绑定窗口按钮": "Bind Window Button",
     "处理": "handle",
-    "波兰语": "Polish"
+    "波兰语": "Polish",
+    "窗口置顶": "Window Top"
 }

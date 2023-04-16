@@ -189,7 +189,7 @@ class dialog_savedgame(QDialog):
                                 pass
                         else:
                                 _={
-                                1:'textractor',
+                                1:'texthook',
                                 2:'embedded',
                                 3:'copy',
                                 4:'ocr'

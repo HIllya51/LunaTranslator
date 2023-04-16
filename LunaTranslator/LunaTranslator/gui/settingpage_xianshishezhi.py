@@ -115,7 +115,6 @@ def setTabThree_lazy(self) :
                 [("自动隐藏窗口",6),(self.getsimpleswitch(globalconfig  ,'autodisappear'),1),'',("隐藏延迟(s)",3),(self.getspinbox(1,100,globalconfig  ,'disappear_delay'),2)],
                 
                 [('任务栏中显示(重启生效)',6),self.getsimpleswitch(globalconfig,'showintab' ),],
-                
                
                [''],
                [('显示显示原文按钮',4),self.getsimpleswitch(globalconfig['buttonuse'],'showraw' ,callback=lambda _: self.object.translation_ui.showhidetoolbuttons() ),'',('显示复制原文按钮',4),self.getsimpleswitch(globalconfig['buttonuse'],'copy' ,callback=lambda _:self.object.translation_ui.showhidetoolbuttons()),'',('显示朗读按钮',4),self.getsimpleswitch(globalconfig['buttonuse'],'langdu' ,callback=lambda _:self.object.translation_ui.showhidetoolbuttons())],
@@ -127,7 +126,7 @@ def setTabThree_lazy(self) :
                 ('显示编辑按钮',4),self.getsimpleswitch(globalconfig['buttonuse'],'edit' ,callback=lambda _:self.object.translation_ui.showhidetoolbuttons() ),'' ,
                 ('显示保存的游戏按钮',4),self.getsimpleswitch(globalconfig['buttonuse'],'gamepad' ,callback=lambda _:self.object.translation_ui.showhidetoolbuttons() )],
                 [('调整游戏窗口按钮',4),self.getsimpleswitch(globalconfig['buttonuse'],'resize' ,callback=lambda _:self.object.translation_ui.showhidetoolbuttons() ),'',('游戏窗口全屏按钮',4),self.getsimpleswitch(globalconfig['buttonuse'],'fullscreen' ,callback=lambda _:self.object.translation_ui.showhidetoolbuttons()),'',('显示游戏静音按钮',4),self.getsimpleswitch(globalconfig['buttonuse'],'muteprocess' ,callback=lambda _:self.object.translation_ui.showhidetoolbuttons())],
-                [('备忘录按钮',4),self.getsimpleswitch(globalconfig['buttonuse'],'memory' ,callback=lambda _:self.object.translation_ui.showhidetoolbuttons() ) ,'',('绑定窗口按钮',4),self.getsimpleswitch(globalconfig['buttonuse'],'bindwindow' ,callback=lambda _:self.object.translation_ui.showhidetoolbuttons())],
+                [('备忘录按钮',4),self.getsimpleswitch(globalconfig['buttonuse'],'memory' ,callback=lambda _:self.object.translation_ui.showhidetoolbuttons() ) ,'',('绑定窗口按钮',4),self.getsimpleswitch(globalconfig['buttonuse'],'bindwindow' ,callback=lambda _:self.object.translation_ui.showhidetoolbuttons()),'',('窗口置顶',4),self.getsimpleswitch(globalconfig['buttonuse'],'keepontop' ,callback=lambda _:self.object.translation_ui.showhidetoolbuttons())],
         ]
         modifydllbtn=QPushButton(_TR("修改DLL以实现点击翻译器不再退出全屏"))
          

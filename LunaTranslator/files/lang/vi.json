@@ -180,7 +180,6 @@
     "显示/隐藏翻译窗口": "Hiện/ẩn cửa sổ dịch",
     "选择翻译源-剪贴板": "Chọn nguồn dịch - Clipboard",
     "选择翻译源-OCR": "Chọn nguồn dịch - OCR",
-    "选择翻译源-TEXTRACTOR": "Chọn nguồn dịch - Textractor",
     "字体增大（可长按）": "Tăng phông chữ (có thể nhấn dài)",
     "字体缩小（可长按）": "Thu nhỏ phông chữ (có thể nhấn dài)",
     "全屏/恢复游戏窗口": "Toàn màn hình/Khôi phục cửa sổ trò chơi",
@@ -564,5 +563,6 @@
     "调整游戏窗口": "Điều chỉnh cửa sổ trò chơi",
     "绑定窗口按钮": "Nút cửa sổ liên kết",
     "处理": "Xử lý",
-    "波兰语": "Ba Lan"
+    "波兰语": "Ba Lan",
+    "窗口置顶": "Cửa sổ trên cùng"
 }

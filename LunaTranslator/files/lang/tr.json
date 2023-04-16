@@ -180,7 +180,6 @@
     "显示/隐藏翻译窗口": "Çeviri penceresini göster/gizle",
     "选择翻译源-剪贴板": "Çeviri Kaynağını Seç - Pano",
     "选择翻译源-OCR": "Çeviri kaynak-OCR seçin",
-    "选择翻译源-TEXTRACTOR": "Çeviri kaynak-TEXTRACTOR seçin",
     "字体增大（可长按）": "Yazıtipi artması (uzun basın)",
     "字体缩小（可长按）": "Yazıtipi düşürmesi (uzun basın)",
     "全屏/恢复游戏窗口": "Tam ekran/oyun penceresini geri yükselt",
@@ -564,5 +563,6 @@
     "调整游戏窗口": "Oyun penceresini ayarlama",
     "绑定窗口按钮": "Bağlam Pencere Düğmesi",
     "处理": "Döndür",
-    "波兰语": "Polonyca@ item Spelling dictionary"
+    "波兰语": "Polonyca@ item Spelling dictionary",
+    "窗口置顶": "Pencere Üst"
 }

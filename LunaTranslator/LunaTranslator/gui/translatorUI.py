@@ -185,6 +185,7 @@ class QUnFrameWindow(resizableframeless):
             qtawesome.icon("fa.compress"  if self.isletgamefullscreened else 'fa.expand',color=    globalconfig['buttoncolor']),
             qtawesome.icon("fa.volume-off"  if self.processismuteed else "fa.volume-up" ,color= globalconfig['buttoncolor']),
             qtawesome.icon("fa.list-ul"  ,color= globalconfig['buttoncolor']),
+            qtawesome.icon("fa.neuter"  ,color= "#FF69B4" if globalconfig['keepontop'] else globalconfig['buttoncolor']),
             qtawesome.icon("fa.minus",color=globalconfig['buttoncolor'] ),
             qtawesome.icon("fa.times" ,color=globalconfig['buttoncolor']),
         ]
@@ -224,8 +225,8 @@ class QUnFrameWindow(resizableframeless):
         
         self.takusanbuttons(1,lambda: dialog_savedgame(self.object.settin_ui),3,"打开保存的游戏",'gamepad') 
 
-        self.takusanbuttons(1,lambda :self.object.AttachProcessDialog.showsignal.emit(),4,"选择游戏",None,["textractor","embedded"] )  
-        self.takusanbuttons(1,lambda:self.object.hookselectdialog.showsignal.emit(),5,"选择文本",None ,["textractor"]) 
+        self.takusanbuttons(1,lambda :self.object.AttachProcessDialog.showsignal.emit(),4,"选择游戏",None,["texthook","embedded"] )  
+        self.takusanbuttons(1,lambda:self.object.hookselectdialog.showsignal.emit(),5,"选择文本",None ,["texthook"]) 
          
         self.takusanbuttons(1,lambda :self.clickRange(False),4,"选取OCR范围",None,[ "ocr"])
         self.takusanbuttons(1,self.showhide,5,"显示/隐藏范围框",None,["ocr"])
@@ -239,6 +240,9 @@ class QUnFrameWindow(resizableframeless):
         self.takusanbuttons(1,self.muteprocessfuntion,5,"游戏静音" ,"muteprocess") 
         
         self.takusanbuttons(1,lambda: dialog_memory(self.object.settin_ui,self.object.currentmd5),5,"备忘录" ,"memory") 
+        
+        
+        self.takusanbuttons(1,lambda:globalconfig.__setitem__("keepontop",not globalconfig['keepontop']) is None and self.refreshtoolicon(),5,"窗口置顶" ,"keepontop") 
         
         
         self.takusanbuttons(1,self.hide_and_disableautohide,-2,"最小化到托盘")
@@ -256,11 +260,7 @@ class QUnFrameWindow(resizableframeless):
     def showEvent(self, a0 ) -> None: 
         if self.isfirstshow:
             self.showline(True,[None,_TR('欢迎使用')],'',1)
-            icon = QIcon()
-            icon.addPixmap(QPixmap('./files/luna.jpg'), QIcon.Normal, QIcon.On)
-            self.setWindowIcon(icon)
-            self.tray = QSystemTrayIcon()  
-            self.tray.setIcon(icon) 
+            
             
             showAction = QAction(_TR("&显示"), self, triggered = self.show_and_enableautohide)
             settingAction = QAction(_TR("&设置"), self, triggered = lambda: self.object.settin_ui.showsignal.emit())
@@ -280,14 +280,19 @@ class QUnFrameWindow(resizableframeless):
             # 将菜单栏加入到右键按钮中
             self.tray.setContextMenu(self.trayMenu) 
             self.tray.show()
+            win32utils.SetForegroundWindow(self.winId())
             self.isfirstshow=False 
         return super().showEvent(a0)
     
     def __init__(self, object):
         
         super(QUnFrameWindow, self).__init__(
-            None, Qt.FramelessWindowHint|Qt.WindowStaysOnTopHint|Qt.WindowSystemMenuHint|Qt.WindowMinimizeButtonHint)  # 设置为顶级窗口，无边框
-        #self.setFocusPolicy(Qt.StrongFocus)
+            None, Qt.FramelessWindowHint|Qt.WindowMinimizeButtonHint)  # 设置为顶级窗口，无边框
+        icon = QIcon()
+        icon.addPixmap(QPixmap('./files/luna.jpg'), QIcon.Normal, QIcon.On)
+        self.setWindowIcon(icon)
+        self.tray = QSystemTrayIcon()  
+        self.tray.setIcon(icon) 
         self.setWindowFlag(Qt.Tool,not globalconfig['showintab'])
         self.isfirstshow=True
         self.setAttribute(Qt.WA_TranslucentBackground) 
@@ -418,7 +423,7 @@ class QUnFrameWindow(resizableframeless):
     def bindcropwindowcallback(self,pid,hwnd): 
             _pid=os.getpid()
             self.object.textsource.hwnd= hwnd if pid!=_pid else None
-            if not(globalconfig['sourcestatus']['textractor']['use'] or globalconfig['sourcestatus']['embedded']['use']):
+            if not(globalconfig['sourcestatus']['texthook']['use'] or globalconfig['sourcestatus']['embedded']['use']):
                 self.object.textsource.pids= [pid] if pid!=_pid else None
             self.isbindedwindow=(pid!=_pid)
             self.refreshtoolicon()  

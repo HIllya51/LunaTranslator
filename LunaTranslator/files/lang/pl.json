@@ -180,7 +180,6 @@
     "显示/隐藏翻译窗口": "Pokaż/ukryj okno tłumaczenia",
     "选择翻译源-剪贴板": "Wybierz schowek źródła tłumaczenia",
     "选择翻译源-OCR": "Wybierz źródło tłumaczenia",
-    "选择翻译源-TEXTRACTOR": "Wybierz źródło tłumaczenia",
     "字体增大（可长按）": "Zwiększenie czcionki (może być długo naciśnięte)",
     "字体缩小（可长按）": "Redukcja czcionki (może być długo naciśnięta)",
     "全屏/恢复游戏窗口": "Pełny ekran/przywróć okno gry",
@@ -564,5 +563,6 @@
     "调整游戏窗口": "Dostosowanie okna gry",
     "绑定窗口按钮": "Przycisk Wiąż okno",
     "处理": "uchwyt",
-    "波兰语": "Polski"
+    "波兰语": "Polski",
+    "窗口置顶": "Góra okna"
 }
