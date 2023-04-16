@@ -161,38 +161,26 @@ class QUnFrameWindow(resizableframeless):
         self.show_()
      
     def refreshtoolicon(self):
-        icon=[
-            qtawesome.icon("fa.hand-paper-o" ,color=globalconfig['buttoncolor']),
-            qtawesome.icon("fa.rotate-right" ,color=globalconfig['buttoncolor']),
-            qtawesome.icon("fa.forward" if globalconfig['autorun'] else 'fa.play' ,color="#FF69B4" if globalconfig['autorun'] else globalconfig['buttoncolor']),
-            qtawesome.icon("fa.gear",color=globalconfig['buttoncolor'] ),
-            qtawesome.icon("fa.copy" ,color=globalconfig['buttoncolor']),
-            qtawesome.icon("fa.edit" ,color=globalconfig['buttoncolor']),
-            qtawesome.icon("fa.eye"   if globalconfig['isshowrawtext'] else "fa.eye-slash" ,color="#FF69B4" if globalconfig['isshowrawtext'] else globalconfig['buttoncolor']),
-            qtawesome.icon("fa.rotate-left" ,color=globalconfig['buttoncolor']),
-            qtawesome.icon("fa.book" ,color=globalconfig['buttoncolor']),
-            qtawesome.icon("fa.won" ,color=globalconfig['buttoncolor']),
-            qtawesome.icon("fa.music" ,color=globalconfig['buttoncolor']),
-            qtawesome.icon("fa.mouse-pointer" ,color="#FF69B4" if self.mousetransparent else globalconfig['buttoncolor']),
-            qtawesome.icon("fa.lock" if globalconfig['locktools'] else 'fa.unlock',color="#FF69B4" if globalconfig['locktools'] else globalconfig['buttoncolor']),
-            qtawesome.icon("fa.gamepad" ,color= globalconfig['buttoncolor']),
-            qtawesome.icon("fa.link" ,color=globalconfig['buttoncolor']),
-            qtawesome.icon("fa.tasks" ,color= globalconfig['buttoncolor']),
-            qtawesome.icon("fa.crop" ,color=globalconfig['buttoncolor']),
-            qtawesome.icon("fa.square" ,color=  "#FF69B4" if self.showhidestate else globalconfig['buttoncolor']),
-            qtawesome.icon("fa.windows" ,color= "#FF69B4"  if self.isbindedwindow else globalconfig['buttoncolor']),
-            qtawesome.icon("fa.arrows" ,color= globalconfig['buttoncolor']),
-            qtawesome.icon("fa.compress"  if self.isletgamefullscreened else 'fa.expand',color=    globalconfig['buttoncolor']),
-            qtawesome.icon("fa.volume-off"  if self.processismuteed else "fa.volume-up" ,color= globalconfig['buttoncolor']),
-            qtawesome.icon("fa.list-ul"  ,color= globalconfig['buttoncolor']),
-            qtawesome.icon("fa.neuter"  ,color= "#FF69B4" if globalconfig['keepontop'] else globalconfig['buttoncolor']),
-            qtawesome.icon("fa.minus",color=globalconfig['buttoncolor'] ),
-            qtawesome.icon("fa.times" ,color=globalconfig['buttoncolor']),
-        ]
+
+        iconstate = {'fullscreen': self.isletgamefullscreened, "muteprocess": self.processismuteed, "locktoolsbutton":
+                     globalconfig['locktools'], "showraw": globalconfig['isshowrawtext'], "automodebutton": globalconfig['autorun']}
+        colorstate = {"automodebutton": globalconfig['autorun'], "showraw": globalconfig['isshowrawtext'], "mousetransbutton": self.mousetransparent,
+                      "locktoolsbutton": globalconfig['locktools'], "hideocrrange": self.showhidestate, "bindwindow": self.isbindedwindow, "keepontop": globalconfig['keepontop']}
+        onstatecolor="#FF69B4"
+        
         self.translate_text.move(0,globalconfig['buttonsize']*1.5) 
         self._TitleLabel.setFixedHeight(globalconfig['buttonsize']*1.5)  
         for i in range(len(self.buttons)):
-            self.buttons[i].setIcon(icon[i])
+            name=self.buttons[i].name
+            if name in colorstate:
+                color=onstatecolor if colorstate[name] else globalconfig['buttoncolor']
+            else:
+                color=globalconfig['buttoncolor']
+            if name in iconstate:
+                icon=globalconfig['toolbutton']['buttons'][name]['icon'] if iconstate[name] else globalconfig['toolbutton']['buttons'][name]['icon2']
+            else:
+                icon=globalconfig['toolbutton']['buttons'][name]['icon']
+            self.buttons[i].setIcon(qtawesome.icon(icon,color=color))#(icon[i])
             self.buttons[i].resize(globalconfig['buttonsize']*2 ,globalconfig['buttonsize']*1.5)
             if self.buttons[i].adjast:
                 self.buttons[i].adjast()
@@ -204,49 +192,40 @@ class QUnFrameWindow(resizableframeless):
         self.setMinimumHeight(globalconfig['buttonsize']*1.5)
         self.setMinimumWidth(globalconfig['buttonsize']*2)
     def addbuttons(self):
-        self.takusanbuttons(1,None,0,"移动","move")
-        self.takusanbuttons(1,self.startTranslater,0,"重新翻译")
-        self.takusanbuttons(1,self.changeTranslateMode,1,"自动翻译",'automodebutton') 
-        self.takusanbuttons(1,lambda:self.object.settin_ui.showsignal.emit(),2,"打开设置")
-
-
-        self.takusanbuttons(1,lambda:pyperclip.copy( self.object.currenttext),6,"复制到剪贴板",'copy') 
-        self.takusanbuttons(1,lambda: self.object.edittextui.showsignal.emit(),6,"编辑",'edit') 
-        self.takusanbuttons(1, self.changeshowhideraw,7,"显示/隐藏原文",'showraw') 
-        
-        self.takusanbuttons(1,lambda: self.object.transhis.showsignal.emit() ,8,"显示/隐藏历史翻译",'history') 
-        self.takusanbuttons(1,lambda: self.object.settin_ui.button_noundict.click() ,8,"专有名词翻译设置",'noundict') 
-        self.takusanbuttons(1,lambda: self.object.settin_ui.button_fix.click() ,8,"翻译结果修正",'fix') 
-        self.takusanbuttons(1,self.langdu,9,"朗读",'langdu') 
-        self.takusanbuttons(1,self.changemousetransparentstate,10,"鼠标穿透窗口",'mousetransbutton') 
-         
-        self.takusanbuttons(1,self.changetoolslockstate,11,"锁定工具栏",'locktoolsbutton') 
-        
-        
-        self.takusanbuttons(1,lambda: dialog_savedgame(self.object.settin_ui),3,"打开保存的游戏",'gamepad') 
-
-        self.takusanbuttons(1,lambda :self.object.AttachProcessDialog.showsignal.emit(),4,"选择游戏",None,["texthook","embedded"] )  
-        self.takusanbuttons(1,lambda:self.object.hookselectdialog.showsignal.emit(),5,"选择文本",None ,["texthook"]) 
-         
-        self.takusanbuttons(1,lambda :self.clickRange(False),4,"选取OCR范围",None,[ "ocr"])
-        self.takusanbuttons(1,self.showhide,5,"显示/隐藏范围框",None,["ocr"])
-         
-        self.takusanbuttons(1,self.bindcropwindow_signal.emit,5,"绑定窗口（部分软件不支持）（点击自己取消）","bindwindow")
-          
-        self.takusanbuttons(1,lambda :moveresizegame(self,self.object.textsource.hwnd) if self.object.textsource.hwnd else 0,5,"调整游戏窗口",'resize') 
-  
-        self.takusanbuttons(1,self._fullsgame,5,"全屏/恢复游戏窗口" ,"fullscreen") 
-        
-        self.takusanbuttons(1,self.muteprocessfuntion,5,"游戏静音" ,"muteprocess") 
-        
-        self.takusanbuttons(1,lambda: dialog_memory(self.object.settin_ui,self.object.currentmd5),5,"备忘录" ,"memory") 
-        
-        
-        self.takusanbuttons(1,lambda:globalconfig.__setitem__("keepontop",not globalconfig['keepontop']) is None and self.refreshtoolicon(),5,"窗口置顶" ,"keepontop") 
-        
-        
-        self.takusanbuttons(1,self.hide_and_disableautohide,-2,"最小化到托盘")
-        self.takusanbuttons(2,self.close,-1,"退出")
+        functions={
+            "move":None,
+            "retrans":self.startTranslater,
+            "automodebutton":self.changeTranslateMode,
+            "setting":lambda:self.object.settin_ui.showsignal.emit(),
+            "copy":lambda:pyperclip.copy( self.object.currenttext),
+            "edit":lambda: self.object.edittextui.showsignal.emit(),
+            "showraw":self.changeshowhideraw,
+            "history":lambda: self.object.transhis.showsignal.emit() ,
+            "noundict":lambda: self.object.settin_ui.button_noundict.click(),
+            "fix":lambda: self.object.settin_ui.button_fix.click(),
+            "langdu":self.langdu,
+            "mousetransbutton":self.changemousetransparentstate,
+            "locktoolsbutton":self.changetoolslockstate,
+            "gamepad":lambda: dialog_savedgame(self.object.settin_ui),
+            "selectgame":lambda :self.object.AttachProcessDialog.showsignal.emit(),
+            "selecttext":lambda:self.object.hookselectdialog.showsignal.emit(),
+            "selectocrrange":lambda :self.clickRange(False),
+            "hideocrrange":self.showhide,
+            "bindwindow":self.bindcropwindow_signal.emit,
+            "resize":lambda :moveresizegame(self,self.object.textsource.hwnd) if self.object.textsource.hwnd else 0,
+            "fullscreen":self._fullsgame,
+            "muteprocess":self.muteprocessfuntion,
+            "memory":lambda: dialog_memory(self.object.settin_ui,self.object.currentmd5),
+            "keepontop":lambda:globalconfig.__setitem__("keepontop",not globalconfig['keepontop']) is None and self.refreshtoolicon(),
+            "minmize":self.hide_and_disableautohide,
+            "quit":self.close
+        }
+        adjast={"minmize":-2,"quit":-1}
+        for btn in functions:
+            belong=globalconfig['toolbutton']['buttons'][btn]['belong'] if 'belong' in globalconfig['toolbutton']['buttons'][btn] else None
+            _adjast=adjast[btn] if btn in adjast else 0
+            self.takusanbuttons(1,functions[btn],_adjast,globalconfig['toolbutton']['buttons'][btn]['tip'],btn,belong)
+               
     def hide_(self):  
         if self.showintab: 
             win32utils.ShowWindow(self.winId(),win32con.SW_SHOWMINIMIZED )
@@ -526,7 +505,7 @@ class QUnFrameWindow(resizableframeless):
                 if hide:
                     button.hide()
                     continue 
-            if  button.name in globalconfig['buttonuse'] and globalconfig['buttonuse'][button.name]==False: 
+            if  button.name in globalconfig['toolbutton']['buttons'] and globalconfig['toolbutton']['buttons'][button.name]['use']==False: 
                 button.hide()
                 continue 
 

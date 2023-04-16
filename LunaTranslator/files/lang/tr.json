@@ -136,8 +136,6 @@
     "显示朗读按钮": "Okuma düğmesini göster",
     "显示翻译历史按钮": "Tercime Tarihi düğmesini göster",
     "显示保存的游戏按钮": "Kaydedilen oyun düğmelerini göster",
-    "显示调整游戏窗口按钮": "Oyun penceresi düğmesini göster",
-    "显示全屏游戏窗口按钮": "Tam ekran oyunu pencere düğmesini göster",
     "显示游戏静音按钮": "Oyun sessiz düğmesini göster",
     "全屏化方式": "Tam ekran modu",
     "Magpie路径": "Magpie Yolu",
@@ -322,7 +320,6 @@
     "显示移动按钮": "Taşıma Düğmesini Göster",
     "编辑专有名词": "Doğru isimleri düzenle",
     "专有名词翻译设置": "Özel isim çeviri ayarları",
-    "显示专有名词翻译设置按钮": "Doğru isim tercüme ayarları düğmesini göster",
     "使用Moji在线文本分析": "Moji online metin analizi kullan",
     "设置Token": "Token ayarlayın",
     "内嵌分词器": "İçeri yatırılmış kelime kırıcısı",
@@ -564,5 +561,6 @@
     "绑定窗口按钮": "Bağlam Pencere Düğmesi",
     "处理": "Döndür",
     "波兰语": "Polonyca@ item Spelling dictionary",
-    "窗口置顶": "Pencere Üst"
+    "窗口置顶": "Pencere Üst",
+    "窗口按钮设置": "Pencere düğme ayarları"
 }

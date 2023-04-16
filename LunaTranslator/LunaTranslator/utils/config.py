@@ -87,7 +87,9 @@ syncconfig(translatorsetting,translatordfsetting,drop=True,deep=3)
 
 
 syncconfig(ocrsetting,ocrdfsetting,True,3)
- 
+
+if len(globalconfig['toolbutton']['rank'])!=len(globalconfig['toolbutton']['buttons'].keys()):
+    globalconfig['toolbutton']['rank']+=list(set(globalconfig['toolbutton']['buttons'].keys())-set(globalconfig['toolbutton']['rank']))
 
 def setlanguage():
     global language,languageshow

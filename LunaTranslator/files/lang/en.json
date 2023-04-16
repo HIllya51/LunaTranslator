@@ -18,7 +18,6 @@
     "显示原文": "Show original text",
     "去除重复字符(若为1则自动分析去重)": "Remove duplicate characters (if it is 1, it will automatically analyze and remove duplicates)",
     "居中显示": "Center Display",
-    "显示全屏游戏窗口按钮": "Show full screen game window button",
     "语速:(-10~10)": "Speech speed: (- 10~10)",
     "百度api": "Baidu api",
     "预翻译": "Pre translation",
@@ -156,7 +155,6 @@
     "开始游戏": "Start the game",
     "翻译结果繁简体显示": "Display of translation results in simplified and complex form",
     "显示设置": "Display Settings",
-    "显示调整游戏窗口按钮": "Show adjust game window button",
     "显示/隐藏原文": "Show/hide original text",
     "使用Magpie全屏": "Use Magpie full screen",
     "空心字体": "White Font",
@@ -322,7 +320,6 @@
     "显示移动按钮": "Show Move Button",
     "编辑专有名词": "Edit proper nouns",
     "专有名词翻译设置": "Proper noun translation settings",
-    "显示专有名词翻译设置按钮": "Display proper noun translation settings button",
     "使用Moji在线文本分析": "Use Moji online text analysis",
     "设置Token": "Set Token",
     "内嵌分词器": "Embedded word breaker",
@@ -564,5 +561,6 @@
     "绑定窗口按钮": "Bind Window Button",
     "处理": "handle",
     "波兰语": "Polish",
-    "窗口置顶": "Window Top"
+    "窗口置顶": "Window Top",
+    "窗口按钮设置": "Window button settings"
 }

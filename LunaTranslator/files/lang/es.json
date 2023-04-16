@@ -136,8 +136,6 @@
     "显示朗读按钮": "Muestra el botón de lectura en voz alta",
     "显示翻译历史按钮": "Mostrar el botón de historia de la traducción",
     "显示保存的游戏按钮": "Muestra el botón de juego guardado",
-    "显示调整游戏窗口按钮": "Muestra el botón ajustar la ventana del juego",
-    "显示全屏游戏窗口按钮": "Muestra el botón de la ventana de juego de pantalla completa",
     "显示游戏静音按钮": "Muestra el botón de silencio del juego",
     "全屏化方式": "Método de pantalla completa",
     "Magpie路径": "Ruta magpie",
@@ -322,7 +320,6 @@
     "显示移动按钮": "Muestra el botón mover",
     "编辑专有名词": "Editar términos propios",
     "专有名词翻译设置": "Configuración de traducción de términos propios",
-    "显示专有名词翻译设置按钮": "Muestra el botón de configuración de traducción de términos propios",
     "使用Moji在线文本分析": "Análisis de texto en línea con moji",
     "设置Token": "Establecer Token",
     "内嵌分词器": "Participador incorporado",
@@ -564,5 +561,6 @@
     "绑定窗口按钮": "Botón de ventana vinculada",
     "处理": "Tratamiento",
     "波兰语": "Polaco",
-    "窗口置顶": "La ventana está en la parte superior"
+    "窗口置顶": "La ventana está en la parte superior",
+    "窗口按钮设置": "Configuración del botón de la ventana"
 }

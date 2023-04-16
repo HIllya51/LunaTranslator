@@ -136,8 +136,6 @@
     "显示朗读按钮": "Pokaż przycisk Mów",
     "显示翻译历史按钮": "Pokaż przycisk Historia tłumaczeń",
     "显示保存的游戏按钮": "Pokaż zapisane przyciski gry",
-    "显示调整游戏窗口按钮": "Pokaż przycisk Dostosuj okno gry",
-    "显示全屏游戏窗口按钮": "Pokaż przyciski okna gry na pełnym ekranie",
     "显示游戏静音按钮": "Pokaż przycisk wyciszenia gry",
     "全屏化方式": "Tryb pełnego ekranu",
     "Magpie路径": "Ścieżka dla Sraków",
@@ -322,7 +320,6 @@
     "显示移动按钮": "Pokaż przycisk ruchu",
     "编辑专有名词": "Edytuj rzeczownik właściwy",
     "专有名词翻译设置": "Ustawienia tłumaczenia właściwego rzeczownika",
-    "显示专有名词翻译设置按钮": "Wyświetl przycisk ustawień tłumaczenia rzeczownika",
     "使用Moji在线文本分析": "Korzystanie z Moji do analizy tekstu online",
     "设置Token": "Ustaw token",
     "内嵌分词器": "Wbudowany łamacz słów",
@@ -564,5 +561,6 @@
     "绑定窗口按钮": "Przycisk Wiąż okno",
     "处理": "uchwyt",
     "波兰语": "Polski",
-    "窗口置顶": "Góra okna"
+    "窗口置顶": "Góra okna",
+    "窗口按钮设置": "Ustawienia przycisku okna"
 }

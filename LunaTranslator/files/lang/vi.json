@@ -136,8 +136,6 @@
     "显示朗读按钮": "Hiện nút đọc to",
     "显示翻译历史按钮": "Hiện nút lịch sử dịch",
     "显示保存的游戏按钮": "Hiển thị nút trò chơi đã lưu",
-    "显示调整游戏窗口按钮": "Hiển thị nút điều chỉnh cửa sổ trò chơi",
-    "显示全屏游戏窗口按钮": "Hiện nút cửa sổ trò chơi toàn màn hình",
     "显示游戏静音按钮": "Hiện nút tắt tiếng trò chơi",
     "全屏化方式": "Chế độ toàn màn hình",
     "Magpie路径": "Đường Magpie",
@@ -322,7 +320,6 @@
     "显示移动按钮": "Hiện nút di chuyển",
     "编辑专有名词": "Danh từ độc quyền biên tập",
     "专有名词翻译设置": "Thiết lập dịch danh từ độc quyền",
-    "显示专有名词翻译设置按钮": "Hiện nút cài đặt dịch danh từ độc quyền",
     "使用Moji在线文本分析": "Phân tích văn bản trực tuyến với Moji",
     "设置Token": "Thiết lập Token",
     "内嵌分词器": "Bộ tách từ nội tuyến",
@@ -564,5 +561,6 @@
     "绑定窗口按钮": "Nút cửa sổ liên kết",
     "处理": "Xử lý",
     "波兰语": "Ba Lan",
-    "窗口置顶": "Cửa sổ trên cùng"
+    "窗口置顶": "Cửa sổ trên cùng",
+    "窗口按钮设置": "Cài đặt nút cửa sổ"
 }
