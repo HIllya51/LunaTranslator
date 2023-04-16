@@ -78,7 +78,7 @@ class Settin(closeashidewindow) :
                 if save:
                     savelist.append(ll)
 
-                grid.setRowMinimumHeight(nowr,35*self.rate)
+                grid.setRowMinimumHeight(nowr,35)
         self.needfitcols.append([grid,maxl])
     def callbackwrap(self,d,k,call,_):
         d[k]=_ 
@@ -106,7 +106,7 @@ class Settin(closeashidewindow) :
             if key not in d:
                 d[key]=default
 
-        b=MySwitch(self.rate,sign=d[key],enable=enable)
+        b=MySwitch(sign=d[key],enable=enable)
         b.clicked.connect(functools.partial(self.callbackwrap,d,key,callback) )
         
         if pair:
@@ -131,13 +131,9 @@ class Settin(closeashidewindow) :
         b=QPushButton(qicon, ""  )
         b.setEnabled(enable)
          
-        b.setIconSize(QSize(int(20*self.rate),
-                                 int(20*self.rate)))
+        b.setIconSize(QSize(int(25),int(25)))
         if transparent:
-            b.setStyleSheet('''background-color: rgba(255, 255, 255, 0);
-                color: black;
-                border: 0px;
-                font: 100 10pt;''') 
+            b.setStyleSheet('''background-color: rgba(255, 255, 255, 0);''') 
         b.clicked.connect(  callback)  
         if name:
             setattr(self,name,b)
@@ -166,12 +162,11 @@ class Settin(closeashidewindow) :
         self.needfitcols=[]
         self.setMinimumSize(100,100)
         # 界面缩放比例
-        self.rate = self.object.screen_scale_rate
-        # 界面尺寸
-        self.window_width = int((900 if globalconfig['languageuse']==0 else 1200)*self.rate)
+        
+        self.window_width = int((900 if globalconfig['languageuse']==0 else 1200))
          
-        self.window_height = int(500*self.rate)
-        self.scrollwidth=20*self.rate
+        self.window_height = int(500)
+        self.scrollwidth=20
         self.savelastrect=None 
            
         
@@ -209,7 +204,7 @@ class Settin(closeashidewindow) :
                     width: %spx;
                     height: %spx;
                     font:%spt  ;  }
-                '''%(50*self.rate,self.window_width*0.2,18 if globalconfig['languageuse']==0 else 10  )
+                '''%(50,self.window_width*0.2,15 if globalconfig['languageuse']==0 else 10  )
             )
             self.tab_widget.setTabPosition(QTabWidget.West)
             setTabOne(self)   
@@ -244,7 +239,7 @@ class Settin(closeashidewindow) :
         gridlayoutwidget.setLayout(gridlay)   
         gridlayoutwidget.setStyleSheet("gridwidget{background-color:transparent;}") 
         self.needfitwidgets.append(gridlayoutwidget)
-        gridlayoutwidget.setFixedHeight(len(grid)*35*self.rate)
+        gridlayoutwidget.setFixedHeight(len(grid)*35)
         self.automakegrid(gridlay,grid,save,savelist  ) 
         if save:
             savelay.append(gridlay)
