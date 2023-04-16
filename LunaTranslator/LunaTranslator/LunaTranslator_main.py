@@ -527,12 +527,10 @@ class MAINUI(QObject) :
             #self.translation_ui.keeptopsignal.emit() 
             
             try:  
-               
-                if globalconfig['forcekeepontop']:
-                    hwnd=win32utils.GetForegroundWindow()
-                    pid=win32utils.GetWindowThreadProcessId(hwnd)[1] 
-                    if pid !=os.getpid():
-                        win32utils.SetWindowPos(int(self.translation_ui.winId()), win32con.HWND_TOPMOST, 0, 0, 0, 0,win32con. SWP_NOACTIVATE |win32con. SWP_NOSIZE | win32con.SWP_NOMOVE) 
+                hwnd=win32utils.GetForegroundWindow()
+                pid=win32utils.GetWindowThreadProcessId(hwnd)[1] 
+                if pid !=os.getpid():
+                    win32utils.SetWindowPos(int(self.translation_ui.winId()), win32con.HWND_TOPMOST, 0, 0, 0, 0,win32con. SWP_NOACTIVATE |win32con. SWP_NOSIZE | win32con.SWP_NOMOVE) 
             except:
                 print_exc() 
             time.sleep(0.5)            
@@ -572,21 +570,8 @@ class MAINUI(QObject) :
             time.sleep(0.5) 
     def aa(self):   
         self.translation_ui =gui.translatorUI.QUnFrameWindow(self)   
-        if globalconfig['rotation']==0:
-            self.translation_ui.show() 
-        else:
-            self.scene = QGraphicsScene()
-            
-            self.oneTestWidget = self.scene.addWidget(self.translation_ui) 
-            self.oneTestWidget.setRotation(globalconfig['rotation']*90)
-            self.view = QGraphicsView(self.scene)
-            self.view.setWindowFlags(Qt.FramelessWindowHint|Qt.WindowStaysOnTopHint|Qt.Tool)
-            self.view.setAttribute(Qt.WA_TranslucentBackground) 
-            self.view.setStyleSheet('background-color: rgba(255, 255, 255, 0);')
-            self.view.setGeometry(QDesktopWidget().screenGeometry())
-            self.view.show()        
-            
         
+        self.translation_ui.show()
         self.mainuiloadafter()
         
     def mainuiloadafter(self):    
@@ -622,24 +607,7 @@ class MAINUI(QObject) :
             globalconfig['languageuse']=x.current
             globalconfig['tgtlang3']=x.current
             setlanguage()
-    def settheme(self):
-        if globalconfig['darktheme']: 
-            self.app.setStyle("fusion") 
-            palette = QPalette()
-            palette.setColor(QPalette.Window, QColor(53, 53, 53))
-            palette.setColor(QPalette.WindowText, Qt.white)
-            palette.setColor(QPalette.Base, QColor(25, 25, 25))
-            palette.setColor(QPalette.AlternateBase, QColor(53, 53, 53))
-            palette.setColor(QPalette.ToolTipBase, Qt.white)
-            palette.setColor(QPalette.ToolTipText, Qt.white)
-            palette.setColor(QPalette.Text, Qt.white)
-            palette.setColor(QPalette.Button, QColor(53, 53, 53))
-            palette.setColor(QPalette.ButtonText, Qt.white)
-            palette.setColor(QPalette.BrightText, Qt.red)
-            palette.setColor(QPalette.Link, QColor(42, 130, 218))
-            palette.setColor(QPalette.Highlight, QColor(42, 130, 218))
-            palette.setColor(QPalette.HighlightedText, Qt.black)
-            self.app.setPalette(palette) 
+     
          
 if __name__ == "__main__" :
     
@@ -652,8 +620,7 @@ if __name__ == "__main__" :
 
     main = MAINUI(app) 
     main.screen_scale_rate =screen_scale_rate  
-    
-    main.settheme()
+     
     main.checklang() 
     main.aa()
 

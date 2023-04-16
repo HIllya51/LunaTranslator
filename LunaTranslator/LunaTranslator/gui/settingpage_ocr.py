@@ -51,7 +51,6 @@ def getocrgrid(self) :
             
             [(("竖向OCR识别"),12),self.getsimpleswitch(globalconfig ,'verticalocr')],
             [(("合并多行识别结果"),12),self.getsimpleswitch(globalconfig ,'ocrmergelines')],
-            [(("Magpie全屏时仍截取原窗口"),12),self.getsimpleswitch(globalconfig ,'ocrmagpiekeep')],
             [''],
             
             [('OCR自动化方法',8),'',(self.getsimplecombobox(_TRL(['分析图像更新','周期执行','分析图像更新+周期执行']),globalconfig,'ocr_auto_method'),12)], 

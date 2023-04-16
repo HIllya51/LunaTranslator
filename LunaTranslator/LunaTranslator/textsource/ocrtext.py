@@ -37,11 +37,7 @@ class ocrtext(basetext):
      
         if self.hwnd:
             try:  
-                hwnd=win32utils.FindWindow('Window_Magpie_967EB565-6F73-4E94-AE53-00CC42592A22',None) 
-                if hwnd and globalconfig['ocrmagpiekeep']==False:  
-                    hwnduse=QApplication.desktop().winId()
-                else:
-                    hwnduse=self.hwnd
+                hwnduse=self.hwnd
                 rect=win32utils.GetWindowRect(hwnduse)  
                 if rect==(0,0,0,0):
                     raise Exception
