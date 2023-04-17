@@ -43,10 +43,10 @@ class QGraphicsDropShadowEffect_multi(QGraphicsDropShadowEffect):
 class Textbrowser( ):  
     def movep(self):
         h=globalconfig['buttonsize']*1.5
-        self.atback.setGeometry(0,h,9999,9999)
-        self.atback2.setGeometry(0,h,9999,9999)
-        self.toplabel2.setGeometry( 0,h,9999,9999)
-        self.toplabel.setGeometry( 0,h,9999,9999)
+        self.atback.setGeometry(0,h*self.parent.rate,9999,9999)
+        self.atback2.setGeometry(0,h*self.parent.rate,9999,9999)
+        self.toplabel2.setGeometry( 0,h*self.parent.rate,9999,9999)
+        self.toplabel.setGeometry( 0,h*self.parent.rate,9999,9999)
     def __init__(self, parent ) :  
         self.parent=parent
         #self.shadowlabel=QLabel(parent)
@@ -542,7 +542,7 @@ class Textbrowser( ):
         else:
             x=tl1.x()/2+tl2.x()/2-w/2
             y=tl2.y()-fh   
-        y+=globalconfig['buttonsize']*1.5 
+        y+=globalconfig['buttonsize']*1.5 *self.parent.rate
         y+=self.jiaming_y_delta
         
         label.move(x,y)   

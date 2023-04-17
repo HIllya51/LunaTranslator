@@ -74,7 +74,7 @@ class autoinitdialog(QDialog):
             elif line['t']=='switch':
                 dd=line['d']
                 key=line['k'] 
-                switch=MySwitch(sign=dd[key])
+                switch=MySwitch(object.rate,sign=dd[key])
                 regist.append([dd,key,switch.isChecked])  
                 formLayout.addRow((_TR(line['l'])),switch)
             elif line['t']=='spin':
@@ -142,13 +142,15 @@ class multicolorset(QDialog):
             
             hori.addWidget(l)
             
-            b=MySwitch(sign=globalconfig['cixingcolorshow'][k] ) 
+            b=MySwitch(parent.rate,sign=globalconfig['cixingcolorshow'][k] ) 
             b.clicked.connect(functools.partial(globalconfig['cixingcolorshow'].__setitem__,k))
             
         
 
             p=QPushButton(qtawesome.icon("fa.paint-brush", color=globalconfig['cixingcolor'][k]), "" )
-                        
+            
+            p.setIconSize(QSize(20*parent.rate,20*parent.rate))
+            
             p.setStyleSheet("background: transparent;")
             p.clicked.connect(functools.partial(ChangeTranslateColor,self,p,k))
             hori.addWidget(b)

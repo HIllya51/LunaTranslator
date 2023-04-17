@@ -62,6 +62,7 @@ class QUnFrameWindow(resizableframeless):
             _r=self.object.range_ui
             _r.move(_r.pos().x()+ other[0],_r.pos().y()+ other[1])
             self.move(self.pos().x()+ other[0],self.pos().y()+ other[1])
+            #self.move(self.pos().x()+self.rate *other[0],self.pos().y()+self.rate *other[1])
         
     def showres(self,name,color,res):  
         try:
@@ -168,8 +169,8 @@ class QUnFrameWindow(resizableframeless):
                       "locktoolsbutton": globalconfig['locktools'], "hideocrrange": self.showhidestate, "bindwindow": self.isbindedwindow, "keepontop": globalconfig['keepontop']}
         onstatecolor="#FF69B4"
         
-        self.translate_text.move(0,globalconfig['buttonsize']*1.5) 
-        self._TitleLabel.setFixedHeight(globalconfig['buttonsize']*1.5)  
+        self.translate_text.move(0,globalconfig['buttonsize']*1.5*self.rate) 
+        self._TitleLabel.setFixedHeight(globalconfig['buttonsize']*1.5*self.rate)  
         for i in range(len(self.buttons)):
             name=self.buttons[i].name
             if name in colorstate:
@@ -181,16 +182,17 @@ class QUnFrameWindow(resizableframeless):
             else:
                 icon=globalconfig['toolbutton']['buttons'][name]['icon']
             self.buttons[i].setIcon(qtawesome.icon(icon,color=color))#(icon[i])
-            self.buttons[i].resize(globalconfig['buttonsize']*2 ,globalconfig['buttonsize']*1.5)
+            self.buttons[i].resize(globalconfig['buttonsize']*2 *self.rate,globalconfig['buttonsize']*1.5*self.rate)
+        
             if self.buttons[i].adjast:
                 self.buttons[i].adjast()
-            self.buttons[i].setIconSize(QSize(int(globalconfig['buttonsize']),
-                                 int(globalconfig['buttonsize'])))
+            self.buttons[i].setIconSize(QSize(int(globalconfig['buttonsize']*self.rate),
+                                 int(globalconfig['buttonsize']*self.rate)))
         self.showhidetoolbuttons()
         self.translate_text.movep()
         self.textAreaChanged()
-        self.setMinimumHeight(globalconfig['buttonsize']*1.5)
-        self.setMinimumWidth(globalconfig['buttonsize']*2)
+        self.setMinimumHeight(globalconfig['buttonsize']*1.5*self.rate)
+        self.setMinimumWidth(globalconfig['buttonsize']*2*self.rate)
     def addbuttons(self):
         functions={
             "move":None,
@@ -283,7 +285,7 @@ class QUnFrameWindow(resizableframeless):
         self.lastrefreshtime=time.time()
         self.autohidestart=False
         threading.Thread(target=self.autohidedelaythread).start()
-    
+        self.rate = self.object.screen_scale_rate  
         self.muteprocessignal.connect(self.muteprocessfuntion) 
         self.toolbarhidedelaysignal.connect(self.toolbarhidedelay)
         
@@ -422,7 +424,7 @@ class QUnFrameWindow(resizableframeless):
             return
         newHeight = self.document.size().height() 
         width = self.width()
-        self.resize(width, newHeight + globalconfig['buttonsize']*1.5) 
+        self.resize(width, newHeight + globalconfig['buttonsize']*1.5*self.rate) 
       
     def quickrange(self): 
         if self.quickrangestatus:
@@ -483,9 +485,9 @@ class QUnFrameWindow(resizableframeless):
     def resizeEvent(self, e):
         super().resizeEvent(e);
         wh=globalconfig['buttonsize'] *1.5
-        height = self.height() - wh  
+        height = self.height() - wh *self.rate 
          
-        self.translate_text.resize(self.width(), height)
+        self.translate_text.resize(self.width(), height * self.rate)
         for button in self.buttons[-2:]:
               button.adjast( ) 
         # 自定义窗口调整大小事件

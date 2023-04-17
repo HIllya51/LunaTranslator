@@ -23,7 +23,7 @@
 		"changecharset_charset":2
 	},
     "keepontop":true,
-	"buttonsize":30,
+	"buttonsize":20,
 	"language_setted_2.4.5":false,
 	"postprocess_rank":[],
 	"uselongtermcache":false,

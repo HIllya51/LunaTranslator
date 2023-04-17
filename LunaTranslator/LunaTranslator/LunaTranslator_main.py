@@ -561,14 +561,16 @@ class MAINUI(QObject) :
          
 if __name__ == "__main__" :
     
-    QCoreApplication.setAttribute(Qt.AA_EnableHighDpiScaling, True)
+    
+    screen_scale_rate = getScreenRate()   
     QCoreApplication.setAttribute(Qt.AA_UseHighDpiPixmaps, True)
-
     app = QApplication(sys.argv) 
     app.setQuitOnLastWindowClosed(False)
+    
 
     main = MAINUI(app) 
-    
+    main.screen_scale_rate =screen_scale_rate  
+     
     main.checklang() 
     main.aa()
 
