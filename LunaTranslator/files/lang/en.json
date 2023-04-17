@@ -540,13 +540,6 @@
     "发现": "find",
     "请先关闭Magpie！": "Please close Magpie first!",
     "失败": "fail",
-    "不支持的脚本版本！": "Unsupported script version!",
-    "处理完毕，请重启游戏以加载脚本，并使用剪贴板模式！": "Processing completed, please restart the game to load the script and use clipboard mode!",
-    "检测到为Tyrano引擎，是否进行切换到剪贴板模式？": "The Tyrano engine has been detected. Do you want to switch to clipboard mode?",
-    "不是tynaro引擎，执行原始流程！": "Not the tynaro engine, execute the original process!",
-    "可能为tyrano引擎，是否解压处理？": "It may be a tyrano engine. Do you want to decompress it?",
-    "正在解压，请稍候！": "Decompressing, please wait!",
-    "检测到为Tyrano引擎，但处理失败。若已处理过请切换至剪贴板模式，否则可能是不支持的tyrano脚本版本！": "\"The Tyrano engine was detected, but processing failed.\". If it has already been processed, please switch to clipboard mode, otherwise it may be an unsupported version of the tyrano script!",
     "仅使用激活的翻译": "Use only active translations",
     "云译": "Cloud translation",
     "在线OCR": "Online OCR",
@@ -562,5 +555,6 @@
     "处理": "handle",
     "波兰语": "Polish",
     "窗口置顶": "Window Top",
-    "窗口按钮设置": "Window button settings"
+    "窗口按钮设置": "Window button settings",
+    "仅": "only"
 }
