@@ -19,12 +19,19 @@ class AttachProcessDialog(closeashidewindow):
                     if pid==os.getpid():
                          return
                     name=getpidexe(pid,True)
-                    
+                    lps=ListProcess(False)
+                    _pids=None
+                    for pids,_exe  in lps:
+                        if _exe==name: 
+                            _pids=pids
+                            break
+                    if _pids is None:
+                         _pids=[pid]
                     self.processEdit.setText(name)
-                    self.processIdEdit.setText(str(pid))
+                    self.processIdEdit.setText(','.join([str(pid) for pid in _pids]))
                     [_.show() for _ in self.windowtextlayoutwidgets]
                     self.windowtext.setText(win32utils.GetWindowText(hwnd))
-                    self.selectedp=([pid],name,hwnd)
+                    self.selectedp=(_pids,name,hwnd)
     def __init__(self ,p,callback,hookselectdialog):
         super(AttachProcessDialog, self).__init__( p ) 
         self.setcurrentpidpnamesignal.connect(self.selectwindowcallback)

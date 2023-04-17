@@ -78,7 +78,7 @@ def getprocessmem(pid):
                 return memory_info.WorkingSetSize
         except:
                 return 0
-def ListProcess():  
+def ListProcess(filt=True):  
         ret=[]
         pids=getprocesslist()
         for pid in pids: 
@@ -88,8 +88,9 @@ def ListProcess():
                         name_=getpidexe(pid)
                         if name_ is None:continue
                         name=name_.lower()
-                        if name[-4:]!='.exe' or ':\\windows\\'  in name   or '\\microsoft\\'  in name or '\\windowsapps\\'  in name:
-                            continue 
+                        if filt:
+                                if name[-4:]!='.exe' or ':\\windows\\'  in name   or '\\microsoft\\'  in name or '\\windowsapps\\'  in name:
+                                        continue 
                         ret.append([pid,name_ ])
                     except:
                         pass 

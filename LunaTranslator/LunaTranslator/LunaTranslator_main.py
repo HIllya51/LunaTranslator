@@ -453,7 +453,7 @@ class MAINUI(QObject) :
                           
                 
                         if name_  and name_ in savehook_new_list:   
-                            lps=ListProcess()
+                            lps=ListProcess(False)
                             for pids,_exe  in lps:
                                 if _exe==name_: 
                                     self.textsource=None
