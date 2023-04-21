@@ -4,7 +4,7 @@ import requests
 from utils.config import globalconfig  
 from translator.basetranslator import basetrans  
 import time
- 
+import base64
 import hashlib
 import urllib
 import random
@@ -20,73 +20,40 @@ import time
 import random
 import requests
 import os
- 
-def sign(secretKey, signStr, signMethod): 
-    if sys.version_info[0] > 2:
-        signStr = signStr.encode("utf-8")
-        secretKey = secretKey.encode("utf-8")
- 
-    if signMethod == 'HmacSHA256':
-        digestmod = hashlib.sha256
-    elif signMethod == 'HmacSHA1':
-        digestmod = hashlib.sha1
- 
-    hashed = hmac.new(secretKey, signStr, digestmod)
-    base64 = binascii.b2a_base64(hashed.digest())[:-1]
+def get_string_to_sign(method, endpoint, params):
+    s = method + endpoint + "/?"
+    query_str = "&".join("%s=%s" % (k, params[k]) for k in sorted(params))
+    return s + query_str
 
-    if sys.version_info[0] > 2:
-        base64 = base64.decode()
 
-    return base64
+def sign_str(key, s, method):
+    hmac_str = hmac.new(key.encode("utf8"), s.encode("utf8"), method).digest()
+    return base64.b64encode(hmac_str)
 
-def dictToStr(dictData): 
-    tempList = []
-    for eveKey, eveValue in dictData.items():
-        tempList.append(str(eveKey) + "=" + str(eveValue))
-    return "&".join(tempList)
 
- 
-def txfy(secretId,secretKey,content,src,tgt,proxy):
-         
+def trans_tencent(q ,secret_id,secret_key,proxy, fromLang='auto', toLang='en'):
     
-    timeData = str(int(time.time())) # 时间戳
-    nonceData = int(random.random()*10000) # Nonce，官网给的信息：随机正整数，与 Timestamp 联合起来， 用于防止重放攻击
-    actionData = "TextTranslate" # Action一般是操作名称
-    uriData = "tmt.tencentcloudapi.com" # uri，请参考官网
-    signMethod="HmacSHA256" # 加密方法
-    requestMethod = "GET" # 请求方法，在签名时会遇到，如果签名时使用的是GET，那么在请求时也请使用GET
-    regionData = "ap-guangzhou" # 区域选择
-    versionData = '2018-03-21' # 版本选择
-    
-    signDictData = {
-        'Action' : actionData,
-        'Nonce' : nonceData,
-        'ProjectId':0,
-        'Region' : regionData,
-        'SecretId' : secretId,
-        'SignatureMethod':signMethod,
-        'Source':src,
-        'SourceText':content,
-        'Target': tgt,
-        'Timestamp' : int(timeData),
-        'Version':versionData ,
+    endpoint = "tmt.tencentcloudapi.com"
+    data = {
+        'SourceText': q,
+        'Source': fromLang,
+        'Target': toLang,
+        'Action': "TextTranslate",
+        'Nonce': random.randint(32768, 65536),
+        'ProjectId': 0,
+        'Region': 'ap-hongkong',
+        'SecretId': secret_id,
+        'SignatureMethod': 'HmacSHA1',
+        'Timestamp': int(time.time()),
+        'Version': '2018-03-21',
     }
-    
-    requestStr = "%s%s%s%s%s"%(requestMethod,uriData,"/","?",dictToStr(signDictData))
-    
-    signData = urllib.parse.quote(sign(secretKey,requestStr,signMethod))
-    
-    actionArgs = signDictData
-    actionArgs["Signature"] = signData
-    
-    requestUrl = "https://%s/?"%(uriData) 
-    requestUrlWithArgs = requestUrl + dictToStr(actionArgs)
-    
-    responseData = requests.get(requestUrlWithArgs,timeout=globalconfig['translatortimeout'], proxies=  proxy).text
+    s = get_string_to_sign("GET", endpoint, data)
+    data["Signature"] = sign_str(secret_key, s, hashlib.sha1)
 
-    #print(responseData) 
-    return responseData 
-     
+    # 此处会实际调用，成功后可能产生计费
+    r = requests.get("https://" + endpoint, params=data, timeout=3,proxies=proxy)
+    # print(r.json())
+    return r.json()['Response']['TargetText']
 class TS(basetrans): 
     def langmap(self):
         return {'cht':'zh-TW'}
@@ -96,8 +63,7 @@ class TS(basetrans):
         appid = self.config['SecretId']
         secretKey =self.config['SecretKey']
         try:
-            ret=txfy(appid,secretKey,query,self.srclang,self.tgtlang,self.proxy)
-            ret=(json.loads(ret)["Response"]["TargetText"])
+            ret=trans_tencent(query,appid,secretKey,self.proxy,self.srclang,self.tgtlang) 
             self.countnum(query)
             return ret  
         except:
