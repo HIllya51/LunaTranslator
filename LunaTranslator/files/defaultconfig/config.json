@@ -837,10 +837,10 @@
             "color": "blue",
             "name": "云译2"
         },
-        "openai": {
+        "chatgpt": {
           "use": false,
           "color": "blue",
-          "name": "OpenAI-ChatGPT"
+          "name": "ChatGPT"
         },
 		"hanshant": {
             "use": false,

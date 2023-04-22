@@ -540,13 +540,6 @@
     "发现": "znaleźć",
     "请先关闭Magpie！": "Proszę najpierw zamknąć Magpie!",
     "失败": "niepowodzenie",
-    "不支持的脚本版本！": "Nieobsługiwana wersja skryptu!",
-    "处理完毕，请重启游戏以加载脚本，并使用剪贴板模式！": "Przetwarzanie zakończone, proszę ponownie uruchomić grę, aby załadować skrypt i użyć trybu schowka!",
-    "检测到为Tyrano引擎，是否进行切换到剪贴板模式？": "Wykryty jako silnik Tyrano, chcesz przełączyć się do trybu schowka?",
-    "不是tynaro引擎，执行原始流程！": "Nie silnik tynaro, wykonaj oryginalny proces!",
-    "可能为tyrano引擎，是否解压处理？": "To może być silnik tyrano, chcesz go zdekompresować?",
-    "正在解压，请稍候！": "Dekompresowanie, proszę poczekać!",
-    "检测到为Tyrano引擎，但处理失败。若已处理过请切换至剪贴板模式，否则可能是不支持的tyrano脚本版本！": "Wykryto jako silnik Tyrano, ale przetwarzanie nie powiodło się. Jeśli został już przetworzony, przełącz do trybu schowka, w przeciwnym razie może to być nieobsługiwana wersja skryptu tyrano!",
     "仅使用激活的翻译": "Używaj tylko aktywnych tłumaczeń",
     "云译": "Tłumaczenie chmury",
     "在线OCR": "OCR online",
@@ -562,5 +555,7 @@
     "处理": "uchwyt",
     "波兰语": "Polski",
     "窗口置顶": "Góra okna",
-    "窗口按钮设置": "Ustawienia przycisku okna"
+    "窗口按钮设置": "Ustawienia przycisku okna",
+    "仅": "Tylko",
+    "注册网址2": "Strona internetowa rejestracyjna 2"
 }

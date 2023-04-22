@@ -24,6 +24,7 @@ class TS(basetrans):
             # 对api_key频繁赋值会消耗性能
             openai.api_key = secret_key
 
+        openai.OPENAI_API_BASE=self.config['OPENAI_API_BASE']
         
         try:
             temperature = float(self.config['Temperature'])
