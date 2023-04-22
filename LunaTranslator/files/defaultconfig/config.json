@@ -163,12 +163,12 @@
                 "icon":"fa.square"
             },
             "fix": {
-                "use": true,
+                "use": false,
                 "tip": "翻译结果修正",
                 "icon":"fa.won"
             },
             "noundict": {
-                "use": true,
+                "use": false,
                 "tip": "专有名词翻译设置",
                 "icon":"fa.book"
             },
@@ -194,12 +194,12 @@
                 "icon2":"fa.expand"
             },
             "resize": {
-                "use": true,
+                "use": false,
                 "tip": "调整游戏窗口",
                 "icon":"fa.arrows"
             },
             "muteprocess": {
-                "use": true,
+                "use": false,
                 "tip": "游戏静音",
                 "icon":"fa.volume-off",
                 "icon2":"fa.volume-up"
@@ -231,12 +231,12 @@
                 "icon":"fa.gamepad"
             },
             "edit": {
-                "use": true,
+                "use": false,
                 "tip": "编辑",
                 "icon":"fa.edit"
             },
             "memory": {
-                "use": true,
+                "use": false,
                 "tip": "备忘录",
                 "icon":"fa.list-ul"
             },
