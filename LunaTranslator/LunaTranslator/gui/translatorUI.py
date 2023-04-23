@@ -218,7 +218,7 @@ class QUnFrameWindow(resizableframeless):
             "fullscreen":self._fullsgame,
             "muteprocess":self.muteprocessfuntion,
             "memory":lambda: dialog_memory(self.object.settin_ui,self.object.currentmd5),
-            "keepontop":lambda:globalconfig.__setitem__("keepontop",not globalconfig['keepontop']) is None and self.refreshtoolicon(),
+            "keepontop":lambda:globalconfig.__setitem__("keepontop",not globalconfig['keepontop']) is None and self.refreshtoolicon() is None and self.setontopthread(),
             "minmize":self.hide_and_disableautohide,
             "quit":self.close
         }
@@ -238,6 +238,7 @@ class QUnFrameWindow(resizableframeless):
             win32utils.ShowWindow(self.winId(),win32con.SW_SHOWNORMAL )
         else:
             self.show()
+        win32utils.SetForegroundWindow(self.winId())
     def showEvent(self, a0 ) -> None: 
         if self.isfirstshow:
             self.showline(True,[None,_TR('欢迎使用')],'',1)
@@ -263,8 +264,23 @@ class QUnFrameWindow(resizableframeless):
             self.tray.show()
             win32utils.SetForegroundWindow(self.winId())
             self.isfirstshow=False 
+            self.setontopthread()
         return super().showEvent(a0)
-    
+    def setontopthread(self):
+        def _():
+            win32utils.SetWindowPos(int(self.winId()), win32con.HWND_TOPMOST, 0, 0, 0, 0,win32con. SWP_NOACTIVATE |win32con. SWP_NOSIZE | win32con.SWP_NOMOVE) 
+            while globalconfig['keepontop']:
+                try:   
+                    hwnd=win32utils.GetForegroundWindow()
+                    pid=win32utils.GetWindowThreadProcessId(hwnd)[1] 
+                    if pid !=os.getpid(): 
+                        win32utils.SetWindowPos(int(self.winId()), win32con.HWND_TOPMOST, 0, 0, 0, 0,win32con. SWP_NOACTIVATE |win32con. SWP_NOSIZE | win32con.SWP_NOMOVE)  
+                except:
+                    print_exc() 
+                time.sleep(0.5)            
+            win32utils.SetWindowPos(int(self.winId()), win32con.HWND_NOTOPMOST, 0, 0, 0, 0,win32con. SWP_NOACTIVATE |win32con. SWP_NOSIZE | win32con.SWP_NOMOVE) 
+        
+        threading.Thread(target=_).start()
     def __init__(self, object):
         
         super(QUnFrameWindow, self).__init__(
