@@ -167,3 +167,12 @@ def recoverwindow(hwnd,status):
         win32utils.SetWindowLong( hwnd, win32con.GWL_EXSTYLE,  HWNDStyleEx );
         win32utils.ShowWindow( hwnd, win32con.SW_SHOWNORMAL );
         win32utils.SetWindowPlacement( hwnd, wpc );
+def showintab(hwnd,show):
+        style_ex=win32utils.GetWindowLong( hwnd, win32con.GWL_EXSTYLE )
+        if(show):
+                style_ex|=win32con.WS_EX_APPWINDOW
+                style_ex &= ~win32con.WS_EX_TOOLWINDOW
+        else: 
+                style_ex &=~win32con.WS_EX_APPWINDOW
+                style_ex |= win32con.WS_EX_TOOLWINDOW
+        win32utils.SetWindowLong(hwnd,win32con.GWL_EXSTYLE,style_ex)

@@ -294,7 +294,6 @@
     "隐藏延迟(s)": "Độ trễ ẩn (s)",
     "选取OCR范围——立即": "Chọn phạm vi OCR - Ngay lập tức",
     "未查到": "Không tìm thấy",
-    "任务栏中显示(重启生效)": "Hiển thị trong thanh tác vụ (hiệu lực khởi động lại)",
     "OCR识别易错内容修正": "OCR xác định lỗi nội dung sửa chữa",
     "保存": "Lưu",
     "当前版本": "Phiên bản hiện tại",
@@ -557,5 +556,6 @@
     "窗口置顶": "Cửa sổ trên cùng",
     "窗口按钮设置": "Cài đặt nút cửa sổ",
     "仅": "Chỉ",
-    "注册网址2": "Đăng ký địa chỉ web 2"
+    "注册网址2": "Đăng ký địa chỉ web 2",
+    "任务栏中显示": "Hiển thị trong Taskbar"
 }

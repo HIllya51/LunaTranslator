@@ -294,7 +294,6 @@
     "隐藏延迟(s)": "Ukryj opóźnienie (s)",
     "选取OCR范围——立即": "Wybierz zakres OCR. Natychmiastowy",
     "未查到": "Nie znaleziono",
-    "任务栏中显示(重启生效)": "Wyświetlane na pasku zadań (skuteczne po ponownym uruchomieniu)",
     "OCR识别易错内容修正": "Korekta treści podatna na błędy rozpoznawania OCR",
     "保存": "konserwacja",
     "当前版本": "bieżąca wersja",
@@ -557,5 +556,6 @@
     "窗口置顶": "Góra okna",
     "窗口按钮设置": "Ustawienia przycisku okna",
     "仅": "Tylko",
-    "注册网址2": "Strona internetowa rejestracyjna 2"
+    "注册网址2": "Strona internetowa rejestracyjna 2",
+    "任务栏中显示": "Pokaż na pasku zadań"
 }

@@ -295,7 +295,6 @@
     "自动隐藏窗口": "Auto hide window",
     "隐藏延迟(s)": "Hide Delay (s)",
     "选取OCR范围——立即": "Select OCR Range - Immediately",
-    "任务栏中显示(重启生效)": "Displayed in the taskbar (effective after restart)",
     "OCR识别易错内容修正": "Correction of error prone content identified by OCR",
     "当前版本": "current version",
     "最新版本": "Latest version",
@@ -557,5 +556,6 @@
     "窗口置顶": "Window Top",
     "窗口按钮设置": "Window button settings",
     "仅": "only",
-    "注册网址2": "Registration website 2"
+    "注册网址2": "Registration website 2",
+    "任务栏中显示": "Show in taskbar"
 }

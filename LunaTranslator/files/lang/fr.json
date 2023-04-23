@@ -294,7 +294,6 @@
     "隐藏延迟(s)": "Masquer le délai",
     "选取OCR范围——立即": "Sélectionnez la plage OCR - maintenant",
     "未查到": "Non trouvé",
-    "任务栏中显示(重启生效)": "Afficher dans la barre des tâches (redémarrer en vigueur)",
     "OCR识别易错内容修正": "Correction des erreurs de reconnaissance ocr",
     "保存": "Enregistrer",
     "当前版本": "Version actuelle",
@@ -557,5 +556,6 @@
     "窗口置顶": "Haut de la fenêtre",
     "窗口按钮设置": "Paramètres du bouton fenêtre",
     "仅": "Uniquement",
-    "注册网址2": "Adresse Web d'inscription 2"
+    "注册网址2": "Adresse Web d'inscription 2",
+    "任务栏中显示": "Affichage dans la barre des tâches"
 }

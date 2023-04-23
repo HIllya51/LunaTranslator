@@ -294,7 +294,6 @@
     "隐藏延迟(s)": "Retraso oculto (s)",
     "选取OCR范围——立即": "Selección del rango OCR - inmediatamente",
     "未查到": "No se ha detectado",
-    "任务栏中显示(重启生效)": "Se muestra en la barra de tareas (el reinicio entra en vigor)",
     "OCR识别易错内容修正": "OCR identifica correcciones de contenido propensas a errores",
     "保存": "Guardar",
     "当前版本": "Versión actual",
@@ -557,5 +556,6 @@
     "窗口置顶": "La ventana está en la parte superior",
     "窗口按钮设置": "Configuración del botón de la ventana",
     "仅": "Solo",
-    "注册网址2": "Sitio web de registro 2"
+    "注册网址2": "Sitio web de registro 2",
+    "任务栏中显示": "Se muestra en la barra de tareas"
 }

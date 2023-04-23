@@ -294,7 +294,6 @@
     "隐藏延迟(s)": "Gizli gecikme (s)",
     "选取OCR范围——立即": "OCR menzilini seç - hemen",
     "未查到": "Bulmadı",
-    "任务栏中显示(重启生效)": "Görev çubuğunda göster (yeniden başlatma etkisi alır)",
     "OCR识别易错内容修正": "OCR kimliğin hatası içerik düzeltmesini yakın düzeltme",
     "保存": "koruması",
     "当前版本": "şu anki sürüm",
@@ -557,5 +556,6 @@
     "窗口置顶": "Pencere Üst",
     "窗口按钮设置": "Pencere düğme ayarları",
     "仅": "Sadece",
-    "注册网址2": "Kayıt sitesi 2"
+    "注册网址2": "Kayıt sitesi 2",
+    "任务栏中显示": "Görev çubuğunda göster"
 }

@@ -18,7 +18,7 @@ import time,signal
 from utils.utils import makehtml
 from utils.wrapper import Singleton
 import qtawesome
-from utils.hwnd import ListProcess
+from utils.hwnd import ListProcess,showintab
 from gui.inputdialog import autoinitdialog,getsomepath1
 from gui.usefulwidget import getQMessageBox
 def __changeuibuttonstate(self,x):  
@@ -147,6 +147,9 @@ def setTabThree_lazy(self) :
     def __changefontsize(x):
         self.setstylesheet()
         self.resizefunction()
+    def __changeshowintab(x):
+        self.object.translation_ui.showintab=x
+        showintab(self.object.translation_ui.winId(),x)
     uigrid=[
         [('设置界面字体',4),(self.sfont_comboBox,5)],
            [ ('字体大小',4),(self.getspinbox(1,100,globalconfig  ,'settingfontsize',callback=__changefontsize),2)], 
@@ -161,7 +164,7 @@ def setTabThree_lazy(self) :
         [('固定窗口尺寸',6),self.getsimpleswitch(globalconfig,'fixedheight'),],
         [("自动隐藏窗口",6),(self.getsimpleswitch(globalconfig  ,'autodisappear'),1),'',("隐藏延迟(s)",3),(self.getspinbox(1,100,globalconfig  ,'disappear_delay'),2)],
         
-        [('任务栏中显示(重启生效)',6),self.getsimpleswitch(globalconfig,'showintab' ),],
+        [('任务栏中显示',6),self.getsimpleswitch(globalconfig,'showintab' ,callback=__changeshowintab),],
            
     ]
     modifydllbtn=QPushButton(_TR("修改DLL以实现点击翻译器不再退出全屏"))
