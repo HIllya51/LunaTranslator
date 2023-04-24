@@ -7,17 +7,10 @@ from collections import OrderedDict
 from utils.hookcode import Parsecode
 from utils import somedef
 from utils.config import globalconfig ,savehook_new_data ,_TR
-from utils.subproc import subproc_w
+from utils.subproc import u16lesubprocess
 from textsource.textsourcebase import basetext 
 from utils.utils import checkchaos  
 from utils.hwnd import pid_running
-import ctypes,win32con
-class rpcstruc(ctypes.Structure):
-    _fields_=[
-        ('cmd',ctypes.c_wchar*1000),
-        ('param1',ctypes.c_wchar*1000),
-        ('param2',ctypes.c_wchar*1000)
-    ]
 class texthook(basetext  ): 
     def __init__(self,textgetmethod,hookselectdialog,pids,hwnd,pname  ,autostarthookcode=None,needinserthookcode=None,dontremove=False) :
         print(pids,hwnd,pname  ,autostarthookcode,needinserthookcode,dontremove)
@@ -45,7 +38,9 @@ class texthook(basetext  ):
         self.pname=pname
         self.hwnd=hwnd
         self.runonce_line=''
-        self.rpccalllock=threading.Lock()
+        self.re=re.compile('\[([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):(.*?):(.*?)\]')
+         
+         
         self.autostarthookcode=[tuple(__) for __ in autostarthookcode]
         self.autostarting=(len(self.autostarthookcode)>0) or (len(needinserthookcode)>0)
         
@@ -62,21 +57,10 @@ class texthook(basetext  ):
         if self.arch is None:
             return 
         arch={0:'86',6:'64'}[self.arch]
-        self.process=subproc_w(f"./files/plugins/TextHookEngine/x{arch}/LunaHost.exe",name='host')
-
-        rpcoutputPipe="\\\\.\\pipe\\LUNA_RPC_OUTPUT"
-        rpccallPipe="\\\\.\\pipe\\LUNA_RPC_CALL"
-        waitsignal="LUNA_RPC_PIPE_AVAILABLE"
-        
-        secu=win32utils.get_SECURITY_ATTRIBUTES()
-        win32utils.WaitForSingleObject(win32utils.CreateEvent(win32utils.pointer(secu),False, False, waitsignal),win32utils.INFINITE); 
-        self.rpcoutputPipe = win32utils.CreateFile( rpcoutputPipe, win32con.GENERIC_READ | win32con.GENERIC_WRITE, 0,
-                None, win32con.OPEN_EXISTING, win32con.FILE_ATTRIBUTE_NORMAL, None);
-        self.rpccallPipe = win32utils.CreateFile( rpccallPipe, win32con.GENERIC_READ | win32con.GENERIC_WRITE, 0,
-                None, win32con.OPEN_EXISTING, win32con.FILE_ATTRIBUTE_NORMAL, None);
-
-        
-        self.readthread()
+        extra=f"./files/plugins/TextHookEngine/x{arch}/ExCLI.exe"
+        self.u16lesubprocess=u16lesubprocess([extra])
+        self.u16lesubprocess.readyread=self.handle_stdout
+        self.u16lesubprocess.writelog=self.hookselectdialog.sysmessagesignal.emit
         self.attach()
         
         self.setcodepage()
@@ -84,34 +68,7 @@ class texthook(basetext  ):
         self.setdelay()
         if self.autostarting: 
             threading.Thread(target=self.autostartinsert,daemon=True).start() 
-    def readthread(self):
-        def _():
-            while True:
-                xx=win32utils.ReadFile(self.rpcoutputPipe, 4, None) 
-                if(xx==b''):break
-                slen=ctypes.c_int.from_buffer_copy(xx).value 
-                xx=win32utils.ReadFile(self.rpcoutputPipe, slen, None)
-                 
-                if(xx==b''):break 
-                xx=xx.decode('utf-16-le',errors='ignore') 
-                self.handle_output(xx)
-        threading.Thread(target=_).start()
-    def rpccall(self,cmd,param1=None,param2=None):
-        
-        _=[cmd]
-        if param1: _+=[str(param1)]
-        if param2: _+=[str(param2)]  
-        self.hookselectdialog.sysmessagesignal.emit(("Operation: "+' '.join(_)))
-
-        param1=str(param1)
-        param2=str(param2)
-        rpcparam=rpcstruc()
-        rpcparam.cmd=cmd
-        rpcparam.param1=param1
-        rpcparam.param2=param2
-        self.rpccalllock.acquire()
-        win32utils.WriteFile(self.rpccallPipe,bytes(rpcparam))
-        self.rpccalllock.release()
+     
     def autostartinsert(self):   
         time.sleep(1)
         if len(self.pids)>1:return
@@ -121,17 +78,20 @@ class texthook(basetext  ):
             
     def setdelay(self):
         delay=globalconfig['textthreaddelay']
-        self.rpccall("delay",delay)
-    
+        self.pidswrite(f'+{delay}')
+    def pidswrite(self,prefix,idx=None):
+        for pid in self.pids:
+            if pid_running(pid):
+                self.u16lesubprocess.writer(f'{prefix} -P{pid}',idx) 
     def setcodepage(self):
         try:
             cpi=savehook_new_data[self.pname]["codepage_index"]
             cp= somedef.codepage_real[cpi]
         except:
             cp=932
-        self.rpccall("codepage",cp)
+        self.pidswrite(f'={cp}')
     def findhook(self,pid):
-        self.rpccall("find",pid)
+        self.u16lesubprocess.writer(f'find -P{pid}',0) 
     def inserthook(self,hookcode,pid): 
         hookcode=hookcode.replace('\r','').replace('\n','').replace('\t','')
         x=Parsecode(hookcode)
@@ -139,24 +99,26 @@ class texthook(basetext  ):
         if(x is None):
             self.hookselectdialog.getnewsentencesignal.emit(_TR('！特殊码格式错误！'))
             return False
-        self.rpccall("inserthook",pid,hookcode)
+        
+        self.u16lesubprocess.writer(f'{hookcode} -P{pid}',0) 
         return True
     def attach(self):  
-        for pid in self.pids:
-            if pid_running(pid):
-                self.rpccall('attach',pid)
+        self.pidswrite('attach')
     def detach(self):
-        for pid in self.pids:
-            if pid_running(pid):
-                self.rpccall('detach',pid)
+        self.pidswrite('detach')
     def strictmatch(self,thread_tp_ctx,thread_tp_ctx2,HookCode,autostarthookcode):
         return (int(thread_tp_ctx,16)&0xffff,thread_tp_ctx2,HookCode)==(int(autostarthookcode[-4],16)&0xffff,autostarthookcode[-3],autostarthookcode[-1])
 
-    def handle_output(self,line): 
+    def handle_stdout(self,lines): 
+        allres=[]
         
-        self.re=re.compile('\[([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):(.*?):(.*?)\] ([\\s\\S]*)')
-        allres=self.re.findall(line)
-        
+        for line in lines:
+            match=self.re.match(line)
+            if match: 
+                allres.append([match.groups(),[line[match.span()[1]+1:]]])
+            elif len(allres): 
+                allres[-1][1].append(line)
+         
         newline={} 
         
         self.lock.acquire() 
@@ -169,8 +131,9 @@ class texthook(basetext  ):
             remove_useless_hook=False
         for ares in allres:
             
-            thread_handle,thread_tp_processId, thread_tp_addr, thread_tp_ctx, thread_tp_ctx2, thread_name,HookCode,output =ares
-                        
+            (thread_handle,thread_tp_processId, thread_tp_addr, thread_tp_ctx, thread_tp_ctx2, thread_name,HookCode),output =ares
+            output='\n'.join(output)
+            
             if HookCode=='HB0@0' or thread_handle=='0' or thread_tp_processId=='0'  :
                 if thread_name=='Console':
                     #print((thread_handle,thread_tp_processId, thread_tp_addr, thread_tp_ctx, thread_tp_ctx2, thread_name,HookCode),output)
@@ -226,9 +189,7 @@ class texthook(basetext  ):
                             if address not in self.removedaddress: 
                                 self.removedaddress.append(address)
                                 address=int(address,16)
-                                for pid in self.pids:
-                                    if pid_running(pid):
-                                        self.rpccall('removehook',pid,address)
+                                self.pidswrite(f'-{address}')
          
             
             if hasnewhook :
@@ -276,7 +237,7 @@ class texthook(basetext  ):
         try:
             self.detach()
             time.sleep(0.1)
-            self.process.kill()
+            self.u16lesubprocess.kill()
         except:
             print_exc()  
          
