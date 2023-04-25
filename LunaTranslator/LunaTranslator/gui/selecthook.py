@@ -36,6 +36,7 @@ class hookselect(closeashidewindow):
         self.okoksignal.connect(self.okok)  
         self.setWindowTitle(_TR('选择文本'))
     def update_item_new_line_function(self,hook,output): 
+        output=output[:200]
         if hook in self.save:
             row=self.save.index(hook)
             if  len(self.object.textsource.pids)>1:
@@ -364,7 +365,7 @@ class hookselect(closeashidewindow):
             try:  
                         item = QStandardItem(hc ) 
                         self.ttCombomodelmodel2.setItem(i, 0, item)
-                        item = QStandardItem(self.allres[hc][0] )
+                        item = QStandardItem(self.allres[hc][0][:200] )
                         self.ttCombomodelmodel2.setItem(i, 1, item) 
             except:
                 print_exc() 
