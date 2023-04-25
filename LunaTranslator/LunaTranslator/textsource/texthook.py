@@ -136,7 +136,6 @@ class texthook(basetext  ):
         #print(hookcode,x.stdout[0])
         if(x is None):
             self.hookselectdialog.getnewsentencesignal.emit(_TR('！特殊码格式错误！'))
-            return False
         self.rpccall("inserthook",pid,hookcode)
         return True
     def attach(self):  

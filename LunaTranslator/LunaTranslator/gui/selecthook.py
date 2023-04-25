@@ -387,24 +387,25 @@ class hookselect(closeashidewindow):
             time.sleep(1)  
     def accept(self,key,select):
         try: 
-
-            self.object.textsource.lock.acquire()
             
+            self.object.textsource.lock.acquire()
+
+
+            checkifnewgame(self.object.textsource.pname)
             if key in self.object.textsource.selectedhook:
                 self.object.textsource.selectedhook.remove(key)
             if select :
                 self.object.textsource.selectedhook.append(key)
+
+                needinserthookcode= savehook_new_data[self.object.textsource.pname]['needinserthookcode']  
+                needinserthookcode=list(set(needinserthookcode+list(set(self.saveinserthook).intersection([key[-1]]))))
+                
+                savehook_new_data[self.object.textsource.pname].update({  'needinserthookcode':needinserthookcode } )
             else:
                 pass
              
             self.object.textsource.autostarthookcode=[]
-            self.object.textsource.autostarting=False
-            checkifnewgame(self.object.textsource.pname)
-             
-            needinserthookcode= savehook_new_data[self.object.textsource.pname]['needinserthookcode']  
-            needinserthookcode=list(set(needinserthookcode+self.saveinserthook))
-            
-            savehook_new_data[self.object.textsource.pname].update({  'needinserthookcode':needinserthookcode } )
+            self.object.textsource.autostarting=False 
 
             savehook_new_data[self.object.textsource.pname].update({ 'hook':self.object.textsource.selectedhook } )
             self.object.textsource.lock.release()
