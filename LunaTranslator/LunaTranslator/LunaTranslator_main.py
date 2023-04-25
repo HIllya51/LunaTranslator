@@ -158,20 +158,16 @@ class MAINUI(QObject) :
         ss=POSTSOLVE(s)
         self.settin_ui.showandsolvesig.emit(s)
         return ss
-    def textgetmethod(self,paste_str,shortlongskip=True,embedcallback=None):
+    def textgetmethod(self,_paste_str,shortlongskip=True,embedcallback=None):
         self.currentsignature=time.time()
-        if type(paste_str)==str:
-            if paste_str[:len('<notrans>')]=='<notrans>':
-                self.translation_ui.displayraw1.emit([],paste_str[len('<notrans>'):],globalconfig['rawtextcolor'])
+        if type(_paste_str)==str:
+            if _paste_str[:len('<notrans>')]=='<notrans>':
+                self.translation_ui.displayraw1.emit([],_paste_str[len('<notrans>'):],globalconfig['rawtextcolor'])
                 self.currenttext=_paste_str
                 return   
-            elif paste_str[:len('<msg>')]=='<msg>':
-                self.translation_ui.displaystatus.emit(paste_str[len('<msg>'):],'red',False)
+            elif _paste_str[:len('<msg>')]=='<msg>':
+                self.translation_ui.displaystatus.emit(_paste_str[len('<msg>'):],'red',False)
                 return   
-        if type(paste_str)==list: 
-            _paste_str='\n'.join(paste_str)
-        else:
-            _paste_str=paste_str
         
         if _paste_str=='' or len(_paste_str)>100000:
             if embedcallback:
@@ -179,11 +175,7 @@ class MAINUI(QObject) :
             return 
  
         try:
-            if type(paste_str)==list:
-                paste_str=[self._POSTSOLVE(_) for _ in paste_str] 
-                _paste_str='\n'.join(paste_str)
-            else:
-                _paste_str=self._POSTSOLVE(paste_str) 
+            _paste_str=self._POSTSOLVE(_paste_str) 
         except Exception as e:
             msg=str(type(e))[8:-2]+' '+str(e).replace('\n','').replace('\r','')
             self.translation_ui.displaystatus.emit(msg,'red',False)
@@ -218,9 +210,7 @@ class MAINUI(QObject) :
             _showrawfunction=functools.partial(self.translation_ui.displayraw1.emit,hira,_paste_str,globalconfig['rawtextcolor'] )
             _showrawfunction_sig=time.time()
 
-        
         self.readcurrent()
-            
             
         paste_str_solved,optimization_params= self.solvebeforetrans(_paste_str) 
         
@@ -275,22 +265,11 @@ class MAINUI(QObject) :
         if classname not in somedef.fanyi_pre:
               
             self.textsource.sqlqueueput((contentraw,classname,res))
-            
+
     def readcurrent(self,force=False):
-        try:
-            _paste_str=self.currenttext
-            if force:
-                self.reader.read(_paste_str)
-            elif globalconfig['autoread']:
-                needread=True
-                if globalconfig['sourcestatus']['texthook']['use']:
-                    if ('ttsonname' in  savehook_new_data[self.textsource.pname]) and  savehook_new_data[self.textsource.pname]['ttsonname']:
-                        if 'ttsusename' in savehook_new_data[self.textsource.pname]:
-                            ttsusename=savehook_new_data[self.textsource.pname]['ttsusename']
-                            if not((self.textsource.currentname is None and 'None'  in ttsusename)  or (self.textsource.currentname  in ttsusename)):
-                                needread=False
-                if needread:
-                    self.reader.read(_paste_str)
+        try: 
+            if force or globalconfig['autoread']:
+                self.reader.read(self.currenttext) 
         except:
             pass
     @threader

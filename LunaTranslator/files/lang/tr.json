@@ -486,8 +486,6 @@
     "类型": "tür",
     "人名": "isim",
     "显示": "Ekran",
-    "自动朗读仅当名字为指定名字时才执行": "Adı belirtilen isim olduğunda otomatik okuma gerçekleştiriler",
-    "指定朗读的名字(以|分隔多个,以\"None\"表示没有名字)": "Sesli okunacak isimleri belirtin (birçok isimle ayrı edin ve isim olmadığını belirtmek için \"Hiçbiri\" kullanın)",
     "用户词典选择JcUserdic文件夹": "Kullanıcı sözlük seçimi JcUserdic folder",
     "当前MD5": "Ağımdaki MD5",
     "修改": "değiştir",

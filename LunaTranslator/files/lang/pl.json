@@ -485,8 +485,6 @@
     "修改路径": "Zmień ścieżkę",
     "类型": "typ",
     "人名": "nazwa",
-    "自动朗读仅当名字为指定名字时才执行": "Automatyczna recytacja jest wykonywana tylko wtedy, gdy nazwa jest określoną nazwą",
-    "指定朗读的名字(以|分隔多个,以\"None\"表示没有名字)": "Określ nazwy, które mają być czytane na głos (oddzielone przez |z \"Brak\" wskazującym brak nazwy)",
     "用户词典选择JcUserdic文件夹": "Wybór słownika użytkownika JcUserdic folder",
     "当前MD5": "Aktualny MD5",
     "修改": "modyfikuj",

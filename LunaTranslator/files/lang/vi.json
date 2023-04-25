@@ -486,8 +486,6 @@
     "类型": "Loại",
     "人名": "Tên người",
     "显示": "Hiển thị",
-    "自动朗读仅当名字为指定名字时才执行": "Tự động đọc to chỉ được thực hiện khi tên được chỉ định",
-    "指定朗读的名字(以|分隔多个,以\"None\"表示没有名字)": "Chỉ định tên để đọc (để phân tách nhiều, để \"None\" có nghĩa là không có tên)",
     "用户词典选择JcUserdic文件夹": "Từ điển người dùng Chọn thư mục JcUserdic",
     "当前MD5": "MD5 hiện tại",
     "修改": "Sửa đổi",

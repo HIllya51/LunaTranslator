@@ -53,8 +53,6 @@ class texthook(basetext  ):
         self.removedaddress=[] 
         self.HookCode=None 
         
-        self.namehook=[]
-        self.currentname=None
         #embedtranslater(self.pid,self.textgetmethod,self.append ) 
         super(texthook,self).__init__(textgetmethod,*self.checkmd5prefix(pname))
         self.texthook_init()
@@ -74,7 +72,7 @@ class texthook(basetext  ):
                 None, win32con.OPEN_EXISTING, win32con.FILE_ATTRIBUTE_NORMAL, None);
         self.rpccallPipe = win32utils.CreateFile( rpccallPipe, win32con.GENERIC_READ | win32con.GENERIC_WRITE, 0,
                 None, win32con.OPEN_EXISTING, win32con.FILE_ATTRIBUTE_NORMAL, None);
-
+        self.re=re.compile('\[([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):(.*?):(.*?)\] ([\\s\\S]*)')
         
         self.readthread()
         self.attach()
@@ -153,113 +151,74 @@ class texthook(basetext  ):
         return (int(thread_tp_ctx,16)&0xffff,thread_tp_ctx2,HookCode)==(int(autostarthookcode[-4],16)&0xffff,autostarthookcode[-3],autostarthookcode[-1])
 
     def handle_output(self,line): 
-        
-        self.re=re.compile('\[([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):(.*?):(.*?)\] ([\\s\\S]*)')
-        allres=self.re.findall(line)
-        
-        newline={} 
-        
-        self.lock.acquire() 
-        self.currentname=None
+        thread_handle,thread_tp_processId, thread_tp_addr, thread_tp_ctx, thread_tp_ctx2, thread_name,HookCode,output =self.re.match(line).groups() 
         try:
             remove_useless_hook=(not self.dontremove) and savehook_new_data[self.pname]['remove_useless_hook']
-            namehook=savehook_new_data[self.pname]['namehook']
         except:
-            namehook=[]
             remove_useless_hook=False
-        for ares in allres:
-            
-            thread_handle,thread_tp_processId, thread_tp_addr, thread_tp_ctx, thread_tp_ctx2, thread_name,HookCode,output =ares
-                        
-            if HookCode=='HB0@0' or thread_handle=='0' or thread_tp_processId=='0'  :
-                if thread_name=='Console':
-                    #print((thread_handle,thread_tp_processId, thread_tp_addr, thread_tp_ctx, thread_tp_ctx2, thread_name,HookCode),output)
-                    self.hookselectdialog.sysmessagesignal.emit(output)
-                continue 
-            if globalconfig['filter_chaos_code'] and checkchaos(output): 
-                continue
-             
-            
-            key =(thread_handle,thread_tp_processId, thread_tp_addr, thread_tp_ctx, thread_tp_ctx2, thread_name,HookCode)
- 
-            hasnewhook=False
-            if key not in self.hookdatacollecter:
-                #print(self.autostarthookcode,HookCode)
-                select=False
-                if self.autostarting  :
-                    for _i,autostarthookcode in enumerate(self.autostarthookcode): 
-                        if self.strictmatch(thread_tp_ctx,thread_tp_ctx2,HookCode,autostarthookcode ): 
-                            self.selectedhook+=[key]
-                            self.selectinghook=key
-                            self.selectedhookidx.append(_i)
-                            __=self.selectedhook.copy()
-                            self.selectedhook.sort(key=lambda x:self.selectedhookidx[__.index(x)])
-                            self.selectedhookidx.sort()
-                            select=True
-                            break
-                    if len(self.autostarthookcode)==len(self.selectedhook):
-                        self.autostarting=False
-                self.hookdatacollecter[key]=[] 
-                isname= list(key[-4:]) in namehook
-                
-                hasnewhook=True
-                if isname:self.namehook.append(key)
-            
-            #print(key,self.selectedhook,output)
-            
-            if (key) in self.namehook:
-                self.currentname=output
-            
-            
-            if (key in self.selectedhook): 
-                #刷新速度太快的时候，一个thread会同时出好几个文本
-                if key not in newline:
-                    newline[key]=[output]
-                else:
-                    newline[key].append(output) 
-            else:
-                if remove_useless_hook:
-                    hookcodes=[_[-1] for _ in self.selectedhook]+[_[-1] for _ in self.autostarthookcode]
-                    if len(hookcodes)>0:
-                        address=key[2]
-                        if key[-1] not in hookcodes:
-                            if address not in self.removedaddress: 
-                                self.removedaddress.append(address)
-                                address=int(address,16)
-                                for pid in self.pids:
-                                    if pid_running(pid):
-                                        self.rpccall('removehook',pid,address)
-         
-            
-            if hasnewhook :
-                if remove_useless_hook and select:
-                    self.hookselectdialog.addnewhooksignal.emit(key  ,select,isname) 
-                elif remove_useless_hook==False:
-                    self.hookselectdialog.addnewhooksignal.emit(key  ,select,isname) 
-
-                    
-            if key==self.selectinghook:
-                self.hookselectdialog.getnewsentencesignal.emit(output)
-            if (remove_useless_hook and key in (self.selectedhook+self.namehook)) or remove_useless_hook==False:
-
-                self.hookdatacollecter[key].append(output) 
-                self.hookselectdialog.update_item_new_line.emit(key,output)
-            
-            
-        if len(newline):  
         
-            newline_copy=['\n'.join(newline[k])  for k in newline]   
-            linekey=list(newline.keys())
-            newline=newline_copy.copy()
-            try:
-                newline.sort(key=lambda x: self.selectedhook.index(linekey[newline_copy.index(x)])  )
-            except:
-                pass
-            #real='\n'.join(newline)
-            #self.newline.put(real) 
-            #self.runonce_line=real
-            self.newline.put(newline)
-            self.runonce_line=newline
+        if HookCode=='HB0@0':
+            if thread_name=='Console':
+                self.hookselectdialog.sysmessagesignal.emit(output)
+            return  
+        if globalconfig['filter_chaos_code'] and checkchaos(output): 
+            return
+        self.lock.acquire()
+        key =(thread_handle,thread_tp_processId, thread_tp_addr, thread_tp_ctx, thread_tp_ctx2, thread_name,HookCode)
+
+        hasnewhook=False
+        if key not in self.hookdatacollecter:
+            #print(self.autostarthookcode,HookCode)
+            select=False
+            if self.autostarting  :
+                for _i,autostarthookcode in enumerate(self.autostarthookcode): 
+                    if self.strictmatch(thread_tp_ctx,thread_tp_ctx2,HookCode,autostarthookcode ): 
+                        self.selectedhook+=[key]
+                        self.selectinghook=key
+                        self.selectedhookidx.append(_i)
+                        __=self.selectedhook.copy()
+                        self.selectedhook.sort(key=lambda x:self.selectedhookidx[__.index(x)])
+                        self.selectedhookidx.sort()
+                        select=True
+                        break
+                if len(self.autostarthookcode)==len(self.selectedhook):
+                    self.autostarting=False
+            self.hookdatacollecter[key]=[] 
+        
+            hasnewhook=True
+        #print(key,self.selectedhook,output)
+        
+        if (key in self.selectedhook): 
+            self.newline.put(output)
+            self.runonce_line=output
+        else:
+            if remove_useless_hook:
+                hookcodes=[_[-1] for _ in self.selectedhook]+[_[-1] for _ in self.autostarthookcode]
+                if len(hookcodes)>0:
+                    address=key[2]
+                    if key[-1] not in hookcodes:
+                        if address not in self.removedaddress: 
+                            self.removedaddress.append(address)
+                            address=int(address,16)
+                            for pid in self.pids:
+                                if pid_running(pid):
+                                    self.rpccall('removehook',pid,address)
+        
+        
+        if hasnewhook :
+            if remove_useless_hook and select:
+                self.hookselectdialog.addnewhooksignal.emit(key  ,select) 
+            elif remove_useless_hook==False:
+                self.hookselectdialog.addnewhooksignal.emit(key  ,select) 
+
+                
+        if key==self.selectinghook:
+            self.hookselectdialog.getnewsentencesignal.emit(output)
+        if (remove_useless_hook and key in (self.selectedhook)) or remove_useless_hook==False:
+
+            self.hookdatacollecter[key].append(output) 
+            self.hookselectdialog.update_item_new_line.emit(key,output)
+        
         self.lock.release()  
     def ignoretext(self):
         while self.newline.empty()==False:

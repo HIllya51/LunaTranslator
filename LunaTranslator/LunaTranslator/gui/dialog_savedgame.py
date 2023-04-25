@@ -115,17 +115,6 @@ class dialog_setting_game(QDialog):
                  
                 formLayout.addWidget(self.hctable) 
 
-                ttsonname=QHBoxLayout()
-                ttsonname.addWidget(QLabel(_TR("自动朗读仅当名字为指定名字时才执行"))) 
-                
-                ttsonname.addWidget(self.object.getsimpleswitch(savehook_new_data[exepath],'ttsonname')) 
-                formLayout.addLayout(ttsonname)
-                ttsname=QHBoxLayout()
-                editname=QLineEdit('|'.join(savehook_new_data[exepath]['ttsusename']))
-                editname.textEdited.connect(lambda t:savehook_new_data[exepath].__setitem__('ttsusename',t.split('|')))
-                ttsname.addWidget(QLabel(_TR('指定朗读的名字(以|分隔多个,以"None"表示没有名字)'))) 
-                ttsname.addWidget(editname)
-                formLayout.addLayout(ttsname)
                 self.show()
         def clicked2(self):
                 try: 

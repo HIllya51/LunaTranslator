@@ -14,42 +14,9 @@ from utils.config import globalconfig ,_TR,_TRL,checkifnewgame
 from collections import OrderedDict
 from gui.usefulwidget import closeashidewindow,getQMessageBox
 from utils.utils import checkchaos
-class HTMLDelegate(QStyledItemDelegate):
-    def __init__(self, parent=None):
-        super().__init__(parent)
-        self.doc = QTextDocument(self)
-        f=QFont()
-        f.setFamily(globalconfig['settingfonttype'])
-        f.setPointSizeF(11) 
-        self.doc.setDefaultFont(f) 
-    def paint(self, painter, option, index):
-        painter.save()
 
-        options = QStyleOptionViewItem(option)
-        self.initStyleOption(options, index) 
-        self.doc.setHtml(options.text)
-        options.text = ""
-
-        style = QApplication.style() if options.widget is None \
-            else options.widget.style()
-        style.drawControl(QStyle.CE_ItemViewItem, options, painter)
-
-        ctx = QAbstractTextDocumentLayout.PaintContext()
-
-        if option.state & QStyle.State_Selected:
-            ctx.palette.setColor(QPalette.Text, option.palette.color(
-                                QPalette.Active, QPalette.HighlightedText))
-
-        textRect = style.subElementRect(QStyle.SE_ItemViewItemText, options)
-        #textRect.adjust(0, 0, 0, 0)
-        painter.translate(textRect.topLeft())
-        self.doc.documentLayout().draw(painter, ctx) 
-        painter.restore()
-
-    def sizeHint(self, option, index):
-        return QSize(self.doc.idealWidth(), self.doc.size().height())
 class hookselect(closeashidewindow):
-    addnewhooksignal=pyqtSignal(tuple,bool,bool)
+    addnewhooksignal=pyqtSignal(tuple,bool)
     getnewsentencesignal=pyqtSignal(str)
     sysmessagesignal=pyqtSignal(str)
     changeprocessclearsignal=pyqtSignal()
@@ -72,9 +39,9 @@ class hookselect(closeashidewindow):
         if hook in self.save:
             row=self.save.index(hook)
             if  len(self.object.textsource.pids)>1:
-                self.ttCombomodelmodel.item(row,4).setText(output) 
-            else:
                 self.ttCombomodelmodel.item(row,3).setText(output) 
+            else:
+                self.ttCombomodelmodel.item(row,2).setText(output) 
     def changeprocessclear(self):
         #self.ttCombo.clear() 
         self.ttCombomodelmodel.clear()
@@ -84,35 +51,33 @@ class hookselect(closeashidewindow):
         self.textOutput.clear()
         self.selectionbutton=[]
         self.saveinserthook=[]
-    def addnewhook(self,ss ,select,isname):
+    def addnewhook(self,ss ,select):
         if len(self.save)==0:
             if  len(self.object.textsource.pids)>1: 
                 self.selectpid.addItems([str(_) for _ in self.object.textsource.pids])
                 [_.show() for _ in self.multipidswidgets]
-                self.ttCombomodelmodel.setHorizontalHeaderLabels(_TRL(['选择','类型','进程', 'HOOK','文本']))
+                self.ttCombomodelmodel.setHorizontalHeaderLabels(_TRL(['选择','进程', 'HOOK','文本']))
                 
-                self.tttable.horizontalHeader().setSectionResizeMode(2,QHeaderView.ResizeToContents)
-                self.tttable.horizontalHeader().setSectionResizeMode(3,QHeaderView.Interactive)
-                self.tttable.horizontalHeader().setSectionResizeMode(4,QHeaderView.Interactive)
-            else:
-                self.ttCombomodelmodel.setHorizontalHeaderLabels(_TRL(['选择','类型','HOOK','文本']))
-                
+                self.tttable.horizontalHeader().setSectionResizeMode(1,QHeaderView.ResizeToContents)
                 self.tttable.horizontalHeader().setSectionResizeMode(2,QHeaderView.Interactive)
                 self.tttable.horizontalHeader().setSectionResizeMode(3,QHeaderView.Interactive)
+            else:
+                self.ttCombomodelmodel.setHorizontalHeaderLabels(_TRL(['选择','HOOK','文本']))
+                
+                self.tttable.horizontalHeader().setSectionResizeMode(1,QHeaderView.Interactive)
+                self.tttable.horizontalHeader().setSectionResizeMode(2,QHeaderView.Interactive)
             
             self.tttable.horizontalHeader().setSectionResizeMode(0,QHeaderView.ResizeToContents)
-            self.tttable.horizontalHeader().setSectionResizeMode(1,QHeaderView.ResizeToContents)
         
         
         self.save.append(ss ) 
  
         rown=self.ttCombomodelmodel.rowCount()
         selectionitem=QStandardItem()
-        typeitem=QStandardItem()
         if  len(self.object.textsource.pids)>1:
-            self.ttCombomodelmodel.insertRow(rown,[selectionitem,typeitem,QStandardItem('%s' %(int(ss[1],16))),QStandardItem('%s %s %s:%s' %(ss[-1],ss[-2],ss[-3],ss[-4])),QStandardItem()])  
+            self.ttCombomodelmodel.insertRow(rown,[selectionitem,QStandardItem('%s' %(int(ss[1],16))),QStandardItem('%s %s %s:%s' %(ss[-1],ss[-2],ss[-3],ss[-4])),QStandardItem()])  
         else:
-            self.ttCombomodelmodel.insertRow(rown,[selectionitem,typeitem,QStandardItem('%s %s %s:%s' %(ss[-1],ss[-2],ss[-3],ss[-4])),QStandardItem()])  
+            self.ttCombomodelmodel.insertRow(rown,[selectionitem,QStandardItem('%s %s %s:%s' %(ss[-1],ss[-2],ss[-3],ss[-4])),QStandardItem()])  
                     
                 #self.hctable.setIndexWidget(self.hcmodel.index(row, 0),self.object.getcolorbutton('','',self.clicked2,icon='fa.times',constcolor="#FF69B4")) 
         
@@ -120,19 +85,6 @@ class hookselect(closeashidewindow):
         if select:self.selectionbutton[-1].click()
         self.tttable.setIndexWidget(self.ttCombomodelmodel.index(rown,0),self.selectionbutton[-1])
  
-        self.tttable.setIndexWidget(self.ttCombomodelmodel.index(rown,1),self._settingui.getsimplecombobox(_TRL(["文本","人名"]),{1:isname},1,callback=functools.partial(self.selecttextypecallback,ss)))
-    def selecttextypecallback(self,key,idx):
-        if idx==1:
-            if 'namehook' in savehook_new_data[self.object.textsource.pname]:
-                savehook_new_data[self.object.textsource.pname]['namehook']+=[key[-4:]]
-            else:
-                savehook_new_data[self.object.textsource.pname]['namehook']=[key[-4:]]
-            self.object.textsource.namehook.append(key)
-        else:
-            if 'namehook' in savehook_new_data[self.object.textsource.pname] and list(key[-4:]) in savehook_new_data[self.object.textsource.pname]['namehook']:
-                savehook_new_data[self.object.textsource.pname]['namehook'].remove(key[-4:])
-            if key in self.object.textsource.namehook:
-                self.object.textsource.namehook.remove(key)
     def setupUi(self  ):
         
         self.resize(1200, 600) 
@@ -261,9 +213,7 @@ class hookselect(closeashidewindow):
   
         self.hidesearchhookbuttons()
         
- 
-        self.tttable.setItemDelegateForColumn(1,HTMLDelegate(self))
-        self.tttable2.setItemDelegateForColumn(1,HTMLDelegate(self))
+  
     def opensolvetext(self):
         self._settingui.opensolvetextsig.emit()
     def opengamesetting(self):
@@ -363,9 +313,9 @@ class hookselect(closeashidewindow):
         getQMessageBox(self,"警告","该功能可能会导致游戏崩溃！",True,True,self.findhookchecked)
     def findhookchecked(self): 
             
-            if os.path.exists('hook.txt'):
+            if os.path.exists('./cache/hook.txt'):
                 try:
-                    os.remove('hook.txt')
+                    os.remove('./cache/hook.txt')
                 except:
                     pass
             if  self.object.textsource: 
@@ -393,7 +343,7 @@ class hookselect(closeashidewindow):
         self.userhookfind.setText(_TR("搜索特殊码"))
         #self.findhookoksignal.emit()
         self.userhookfind.setEnabled(True)
-        with open('hook.txt','r',encoding='utf8') as ff:
+        with open('./cache/hook.txt','r',encoding='utf8') as ff:
             allres=ff.read()#.split('\n')
         
         self.allres=OrderedDict()  
@@ -425,8 +375,8 @@ class hookselect(closeashidewindow):
     def timewaitthread(self):
  
         while True:
-            if os.path.exists('hook.txt'):
-                big=os.path.getsize('hook.txt')
+            if os.path.exists('./cache/hook.txt'):
+                big=os.path.getsize('./cache/hook.txt')
                 if big<10:
                     pass
                 else:

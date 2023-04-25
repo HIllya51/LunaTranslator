@@ -41,12 +41,18 @@ class QGraphicsDropShadowEffect_multi(QGraphicsDropShadowEffect):
             super().draw(painter)
     
 class Textbrowser( ):  
-    def movep(self):
-        h=globalconfig['buttonsize']*1.5
-        self.atback.setGeometry(0,h*self.parent.rate,9999,9999)
-        self.atback2.setGeometry(0,h*self.parent.rate,9999,9999)
-        self.toplabel2.setGeometry( 0,h*self.parent.rate,9999,9999)
-        self.toplabel.setGeometry( 0,h*self.parent.rate,9999,9999)
+    def movep(self,x,y):
+        self.savey=y
+        self.atback.setGeometry(0,y,9999,9999)
+        if globalconfig['isshowhira'] and globalconfig['isshowrawtext']:
+            if self.jiaming_y_delta>0:
+                y=y+self.jiaming_y_delta
+        self.textbrowser.move(x,y)
+        self.textbrowserback.move(x,y)
+        
+        self.atback2.setGeometry(0,y,9999,9999)
+        self.toplabel2.setGeometry( 0,y,9999,9999)
+        self.toplabel.setGeometry( 0,y,9999,9999)
     def __init__(self, parent ) :  
         self.parent=parent
         #self.shadowlabel=QLabel(parent)
@@ -138,11 +144,7 @@ class Textbrowser( ):
         #self.textbrowser.setStyleSheet(x) 
         #self.textbrowserback.setStyleSheet(x)
         self.atback.setStyleSheet(x)
-    def move(self,x,y):
-        self.textbrowser.move(x,y)
-        self.textbrowserback.move(x,y)
-        #self.shadowlabel.move(x,y)
-        self.savey=y
+     
     def document(self): 
         return self.textbrowser.document()
     def resize(self,_1,_2):
@@ -205,14 +207,7 @@ class Textbrowser( ):
         if len(tag)>0:
             self.addtag(tag)
 
-        if globalconfig['isshowhira']==False or globalconfig['isshowrawtext']==False: 
-            if self.jiaming_y_delta>0:
-                self.textbrowser.move(0,self.savey)
-                self.toplabel.move(0,self.savey )
-                self.toplabel2.move(0,self.savey ) 
-                self.atback2.move(0,self.savey ) 
-                self.textbrowserback.move(0,self.savey)  
-                self.jiaming_y_delta=0
+        self.movep(0,self.savey)
     def showyinyingtext(self,color ):   
          
         linei=self.yinyingposline
@@ -428,14 +423,8 @@ class Textbrowser( ):
         tl1=self.textbrowser.cursorRect(self.textcursor).topLeft().y() 
          
         if self.jiaming_y_delta+tl1-fhhalf!=0: 
-            if tl1-fhhalf<0:  
-                self.textbrowser.move(0,self.savey+fhhalf-tl1 )
-                self.toplabel.move(0,self.savey+fhhalf-tl1 )
-                self.toplabel2.move(0,self.savey+fhhalf-tl1 ) 
-                
-                self.atback2.move(0,self.savey+fhhalf-tl1 ) 
-                self.textbrowserback.move(0,self.savey+fhhalf-tl1 )  
-                self.jiaming_y_delta=fhhalf-tl1
+            self.jiaming_y_delta=fhhalf-tl1
+            self.movep(0,self.savey)
         x=self.nearmerge(x,pos,fonthira,fontorig) 
         self.settextposcursor(pos)
         for word in x:

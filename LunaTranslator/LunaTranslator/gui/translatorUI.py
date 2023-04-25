@@ -168,8 +168,7 @@ class QUnFrameWindow(resizableframeless):
         colorstate = {"automodebutton": globalconfig['autorun'], "showraw": globalconfig['isshowrawtext'], "mousetransbutton": self.mousetransparent,
                       "locktoolsbutton": globalconfig['locktools'], "hideocrrange": self.showhidestate, "bindwindow": self.isbindedwindow, "keepontop": globalconfig['keepontop']}
         onstatecolor="#FF69B4"
-        
-        self.translate_text.move(0,globalconfig['buttonsize']*1.5*self.rate) 
+         
         self._TitleLabel.setFixedHeight(globalconfig['buttonsize']*1.5*self.rate)  
         for i in range(len(self.buttons)):
             name=self.buttons[i].name
@@ -189,7 +188,7 @@ class QUnFrameWindow(resizableframeless):
             self.buttons[i].setIconSize(QSize(int(globalconfig['buttonsize']*self.rate),
                                  int(globalconfig['buttonsize']*self.rate)))
         self.showhidetoolbuttons()
-        self.translate_text.movep()
+        self.translate_text.movep(0,globalconfig['buttonsize']*1.5*self.rate)
         self.textAreaChanged()
         self.setMinimumHeight(globalconfig['buttonsize']*1.5*self.rate)
         self.setMinimumWidth(globalconfig['buttonsize']*2*self.rate)
