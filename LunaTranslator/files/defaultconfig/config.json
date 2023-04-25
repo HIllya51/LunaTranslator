@@ -613,6 +613,11 @@
 			"name":"阿里2",
 			"color":"pink"
 		},
+        "microsoft":{
+            "use":true,
+            "color":"gray",
+            "name":"microsoft"
+        },
 		"azure":{
 			"use":false,
 			"color":"pink",
