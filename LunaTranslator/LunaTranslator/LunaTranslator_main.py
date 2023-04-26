@@ -43,26 +43,13 @@ from utils.post import POSTSOLVE
 from utils.vnrshareddict import vnrshareddict 
 
 import pyperclip
-from utils.simplekanji import kanjitrans
-from embedded.rpcman3 import RpcServer
-from embedded.gameagent3 import GameAgent 
+from utils.simplekanji import kanjitrans 
 
  
-class MAINUI(QObject) :
-    startembedsignal=pyqtSignal(int,embedded)
-    def startembed(self,pid,engine:embedded):  
-        self.ga.hostengine=engine 
-        self.ga.attachProcess(pid)  
-    def startembedservice(self):
-            self.rpc=RpcServer()  
-            self.ga=GameAgent(self.rpc ) 
-            self.rpc.engineTextReceived.connect(self.ga.sendEmbeddedTranslation)
-            self.rpc.start() 
-            self.startembedsignal.connect(self.startembed)
+class MAINUI(QObject) : 
     def __init__(self,app) -> None:
         super().__init__()
-        self.app=app  
-        self.startembedservice()
+        self.app=app   
         self.translators={}
         self.cishus={}
         self.reader=None

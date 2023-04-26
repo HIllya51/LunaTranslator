@@ -545,3 +545,21 @@ GA_ROOT=2
 _GetAncestor=_user32.GetAncestor
 def GetAncestor(hwnd):
     return _GetAncestor(hwnd,GA_ROOT)
+
+_CreateNamedPipe =_kernel32.CreateNamedPipeW
+_CreateNamedPipe.argtypes=c_wchar_p,c_uint,c_uint,c_uint,c_uint,c_uint,c_uint,c_void_p
+def CreateNamedPipe(pipeName,openMode,pipeMode,nMaxInstances,nOutBufferSize,nInBufferSize,nDefaultTimeOut,sa):
+    return _CreateNamedPipe(pipeName,openMode,pipeMode,nMaxInstances,nOutBufferSize,nInBufferSize,nDefaultTimeOut,sa)
+ 
+PIPE_ACCESS_DUPLEX=3
+PIPE_TYPE_BYTE=0
+PIPE_READMODE_BYTE=0
+PIPE_UNLIMITED_INSTANCES=255
+_DisconnectNamedPipe=_kernel32.DisconnectNamedPipe
+def DisconnectNamedPipe(pipe):
+    return _DisconnectNamedPipe(pipe)
+
+_ConnectNamedPipe=_kernel32.ConnectNamedPipe
+
+def ConnectNamedPipe(pipe,lpoverlap):
+    return _ConnectNamedPipe(pipe,lpoverlap)

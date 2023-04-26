@@ -42,6 +42,8 @@ del %targetdir_in%\qt5websockets.dll
 del %targetdir_in%\qt5dbus.dll
 del %targetdir_in%\qt5multimedia.dll
 del %targetdir_in%\qt5svg.dll
+del %targetdir_in%\qt5network.dll
+
 del %targetdir_in%\PyQt5\qt-plugins\platforms\qminimal.dll
 del %targetdir_in%\PyQt5\qt-plugins\platforms\qoffscreen.dll
 del %targetdir_in%\PyQt5\qt-plugins\platforms\qwebgl.dll
@@ -49,12 +51,11 @@ rmdir /S /Q %targetdir_in%\PyQt5\qt-plugins\mediaservice
 rmdir /S /Q %targetdir_in%\PyQt5\qt-plugins\printsupport
 rmdir /S /Q %targetdir_in%\PyQt5\qt-plugins\platformthemes
 rmdir /S /Q %targetdir_in%\PyQt5\qt-plugins\iconengines
+
 del %targetdir_in%\libssl-1_1-x64.dll
 del %targetdir_in%\libcrypto-1_1-x64.dll
 
 del %targetdir%\files\plugins\ocr.dll
-del %targetdir%\files\plugins\EmbededEngine\Qt5Network.dll
-del %targetdir%\files\plugins\EmbededEngine\Qt5Core.dll
 copy ..\dependence\ocr32 %targetdir%\files\plugins
 
 copy ..\CXXplugins\fugashi32-py37\fugashi-1.2.1\libmecab.dll %targetdir_in%\

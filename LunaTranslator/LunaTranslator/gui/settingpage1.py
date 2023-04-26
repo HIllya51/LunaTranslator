@@ -27,33 +27,33 @@ def gethookgrid(self) :
 def gethookembedgrid(self) :  
         def __insertspace(i):
                 if i==0:
-                        self.object.ga.sendSetting('embeddedSpaceSmartInserted',False )
-                        self.object.ga.sendSetting('embeddedSpaceAlwaysInserted',False )
+                        self.object.textsource.sendSetting('embeddedSpaceSmartInserted',False )
+                        self.object.textsource.sendSetting('embeddedSpaceAlwaysInserted',False )
                 elif i==1:
-                        self.object.ga.sendSetting('embeddedSpaceSmartInserted',False )
-                        self.object.ga.sendSetting('embeddedSpaceAlwaysInserted',True )
+                        self.object.textsource.sendSetting('embeddedSpaceSmartInserted',False )
+                        self.object.textsource.sendSetting('embeddedSpaceAlwaysInserted',True )
                 elif i==2:
-                        self.object.ga.sendSetting('embeddedSpaceSmartInserted',True )
-                        self.object.ga.sendSetting('embeddedSpaceAlwaysInserted',False )
+                        self.object.textsource.sendSetting('embeddedSpaceSmartInserted',True )
+                        self.object.textsource.sendSetting('embeddedSpaceAlwaysInserted',False )
         self.gamefont_comboBox = QFontComboBox( ) 
         def callback(x):
                 globalconfig['embedded'].__setitem__('changefont_font',x)
                 try:
-                        self.object.ga.sendSetting('embeddedFontFamily',globalconfig['embedded']['changefont_font'] if x else '')
+                        self.object.textsource.sendSetting('embeddedFontFamily',globalconfig['embedded']['changefont_font'] if x else '')
                 except:
                         pass
         self.gamefont_comboBox.activated[str].connect(callback)   
         self.gamefont_comboBox.setCurrentFont(QFont(globalconfig['embedded']['changefont_font']))  
         grids=[
-                [('保留原文',5),(self.getsimpleswitch( globalconfig['embedded'],'keeprawtext',callback=lambda x:self.object.ga.sendSetting('embeddedScenarioTextVisible',x ))  ,1) ],
+                [('保留原文',5),(self.getsimpleswitch( globalconfig['embedded'],'keeprawtext',callback=lambda x:self.object.textsource.sendSetting('embeddedScenarioTextVisible',x ))  ,1) ],
                  
-                [('翻译等待时间(s)',5),'',(self.getspinbox(0,30,globalconfig['embedded'],'timeout_translate',double=True,step=0.1,callback=lambda x:self.object.ga.sendSetting('embeddedTranslationWaitTime',int(x*1000))),3) ],
+                [('翻译等待时间(s)',5),'',(self.getspinbox(0,30,globalconfig['embedded'],'timeout_translate',double=True,step=0.1,callback=lambda x:self.object.textsource.sendSetting('embeddedTranslationWaitTime',int(x*1000))),3) ],
                 [('使用最快翻译而非指定翻译器',5),(self.getsimpleswitch( globalconfig['embedded'] ,'as_fast_as_posible'),1) ],
                 [('内嵌的翻译器',5),'',(self.getsimplecombobox(_TRL([globalconfig['fanyi'][x]['name'] for x in globalconfig['fanyi']]),globalconfig['embedded'],'translator'),5) ],
                 [('将汉字转换成繁体/日式汉字',5),(self.getsimpleswitch( globalconfig['embedded'] ,'trans_kanji'),1) ],
                 [('在重叠显示的字间插入空格',5),'',(self.getsimplecombobox(_TRL(['不插入空格','每个字后插入空格','仅在无法编码的字后插入']),globalconfig['embedded'],'insertspace_policy',callback=__insertspace),5) ],
-                [('修改游戏字体',5),(self.getsimpleswitch( globalconfig['embedded'] ,'changefont',callback=lambda x:self.object.ga.sendSetting('embeddedFontFamily',globalconfig['embedded']['changefont_font'] if x else '')),1), (self.gamefont_comboBox,5) ],
-                [('修改字体字符集',5),(self.getsimpleswitch( globalconfig['embedded'] ,'changecharset',callback=lambda x:self.object.ga.sendSetting('embeddedFontCharSetEnabled',x)),1) ,(self.getsimplecombobox(_TRL(somedef.charsetmapshow),globalconfig['embedded'],'changecharset_charset',callback=lambda x:self.object.ga.sendSetting('embeddedFontCharSet',somedef.charsetmap[x])),5)],
+                [('修改游戏字体',5),(self.getsimpleswitch( globalconfig['embedded'] ,'changefont',callback=lambda x:self.object.textsource.sendSetting('embeddedFontFamily',globalconfig['embedded']['changefont_font'] if x else '')),1), (self.gamefont_comboBox,5) ],
+                [('修改字体字符集',5),(self.getsimpleswitch( globalconfig['embedded'] ,'changecharset',callback=lambda x:self.object.textsource.sendSetting('embeddedFontCharSetEnabled',x)),1) ,(self.getsimplecombobox(_TRL(somedef.charsetmapshow),globalconfig['embedded'],'changecharset_charset',callback=lambda x:self.object.textsource.sendSetting('embeddedFontCharSet',somedef.charsetmap[x])),5)],
 
         ]
         

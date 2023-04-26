@@ -41,6 +41,8 @@ del %targetdir_in%\qt5websockets.dll
 del %targetdir_in%\qt5dbus.dll
 del %targetdir_in%\qt5multimedia.dll
 del %targetdir_in%\qt5svg.dll
+del %targetdir_in%\qt5network.dll
+
 del %targetdir_in%\PyQt5\qt-plugins\platforms\qminimal.dll
 del %targetdir_in%\PyQt5\qt-plugins\platforms\qoffscreen.dll
 del %targetdir_in%\PyQt5\qt-plugins\platforms\qwebgl.dll

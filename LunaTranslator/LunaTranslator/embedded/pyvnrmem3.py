@@ -1,15 +1,6 @@
 
-from  PyQt5.QtCore import QSharedMemory,QObject 
-LanguageCapacity=4  
-        # _fields_=[
-        #     ('status',c_int8),  #8
-        #     ('hash',c_int64),   #8
-        #     ('role',c_int8),    #1
-        #     ('language',c_char*LanguageCapacity), #8
-        #     ('textSize',c_int32),#4
-        #     ('text',c_wchar_p) 
-        # ]
-class VnrSharedMemory(QObject):
+from  PyQt5.QtCore import QSharedMemory  
+class VnrSharedMemory():
      
     def __init__(self,p=None ) :
         super(VnrSharedMemory,self).__init__() 
