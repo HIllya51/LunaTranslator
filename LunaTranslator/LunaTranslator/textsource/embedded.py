@@ -4,16 +4,19 @@ from textsource.textsourcebase import basetext
 import functools,queue,time,win32utils
 import threading,json
 from utils import somedef
-
+import platform
 import os
 from utils.subproc import subproc_w
 import     embedded.sharedmem3 as sharedmem  
 import embedded.socketpack3 as socketpack 
 class embedded(basetext  ):  
     def inject_vnragent(self,pid):  
-        dllpaths=list(map(lambda x:os.path.abspath(os.path.join('./files/plugins/EmbededEngine/',x)), ['Qt5Core.dll','vnragent.dll']))
-         
-        subproc_w(f'.\\files\\plugins\\EmbededEngine\\dllinject32.exe {pid} "{dllpaths[0]}" "{dllpaths[1]}"')  
+        if platform.architecture()[0]=='64bit': 
+            dllpaths=list(map(lambda x:os.path.abspath(os.path.join('./files/plugins/EmbededEngine/',x)), ['Qt5Core.dll','vnragent.dll']))
+        elif platform.architecture()[0]=='32bit':
+            dllpaths=[os.path.abspath("./LunaTranslator/qt5core.dll"),os.path.abspath('./files/plugins/EmbededEngine/vnragent.dll')] 
+        
+        subproc_w(f'.\\files\\plugins\\EmbededEngine\\dllinject32.exe {pid} "{dllpaths[0]}" "{dllpaths[1]}"') 
         
     def start(self):
         def _():  
@@ -37,6 +40,8 @@ class embedded(basetext  ):
                 print('Waiting for client connection...')
                 self.hostpipe=hostpipe
                 self.hookpipe=hookpipe
+                event=win32utils.CreateEvent(None,False, False, "LUNA_EMBEDDED_WAIT")
+                win32utils.SetEvent(event); 
                 win32utils.ConnectNamedPipe(hostpipe, None) 
                 win32utils.ConnectNamedPipe(hookpipe, None) 
                 print('Client connected.') 
@@ -134,6 +139,8 @@ class embedded(basetext  ):
         @param    role    int
         @param    trans    bool     need translation
         """
+        if self.mem.isAttached()==False:
+            self.mem.attachProcess(self.injectedPid)
         try: 
             role = int(role)
             sig = int(sig) 
@@ -186,8 +193,8 @@ class embedded(basetext  ):
         if b!=0:
             self.embeddedfailed(_TR("暂不支持64程序"))
         else:
+            self.attachProcess(pids[0])    
             self.start()
-            self.attachProcess(pids[0])   
         super(embedded,self).__init__(textgetmethod,*self.checkmd5prefix(pname))
     def timeout(self): 
         self.embeddedfailed(_TR("连接超时"))

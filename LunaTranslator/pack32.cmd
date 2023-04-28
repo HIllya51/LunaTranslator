@@ -56,6 +56,7 @@ del %targetdir_in%\libssl-1_1-x64.dll
 del %targetdir_in%\libcrypto-1_1-x64.dll
 
 del %targetdir%\files\plugins\ocr.dll
+del %targetdir%\files\plugins\EmbededEngine\Qt5Core.dll
 copy ..\dependence\ocr32 %targetdir%\files\plugins
 
 copy ..\CXXplugins\fugashi32-py37\fugashi-1.2.1\libmecab.dll %targetdir_in%\
