@@ -21,6 +21,7 @@ class hookselect(closeashidewindow):
     sysmessagesignal=pyqtSignal(str)
     changeprocessclearsignal=pyqtSignal()
     okoksignal=pyqtSignal() 
+    removehooksignal=pyqtSignal(tuple)
     update_item_new_line=pyqtSignal(tuple,str)  
     def __init__(self,object,p):
         super(hookselect, self).__init__(p)
@@ -29,6 +30,7 @@ class hookselect(closeashidewindow):
         self.setupUi( )
         
         self.changeprocessclearsignal.connect(self.changeprocessclear)
+        self.removehooksignal.connect(self.removehook)
         self.addnewhooksignal.connect(self.addnewhook)
         self.getnewsentencesignal.connect(self.getnewsentence)
         self.sysmessagesignal.connect(self.sysmessage)
@@ -43,6 +45,11 @@ class hookselect(closeashidewindow):
                 self.ttCombomodelmodel.item(row,3).setText(output) 
             else:
                 self.ttCombomodelmodel.item(row,2).setText(output) 
+    def removehook(self,key):
+        self.ttCombomodelmodel.removeRow(self.save.index(key))
+        self.selectionbutton.pop(self.save.index(key))
+        self.save.remove(key)
+
     def changeprocessclear(self):
         #self.ttCombo.clear() 
         self.ttCombomodelmodel.clear()
@@ -51,7 +58,6 @@ class hookselect(closeashidewindow):
         self.at1=1
         self.textOutput.clear()
         self.selectionbutton=[]
-        self.saveinserthook=[]
     def addnewhook(self,ss ,select):
         if len(self.save)==0:
             if  len(self.object.textsource.pids)>1: 
@@ -293,8 +299,7 @@ class hookselect(closeashidewindow):
                 pid=self.object.textsource.pids[0]
             else:
                 pid=int(self.selectpid.currentText())
-            if self.object.textsource.inserthook(hookcode,pid):
-                self.saveinserthook.append(hookcode)
+            self.object.textsource.inserthook(hookcode,pid)
             
         else:
             self.getnewsentence(_TR('！未选定进程！'))
@@ -395,13 +400,16 @@ class hookselect(closeashidewindow):
             checkifnewgame(self.object.textsource.pname)
             if key in self.object.textsource.selectedhook:
                 self.object.textsource.selectedhook.remove(key)
+
             if select :
                 self.object.textsource.selectedhook.append(key)
 
-                needinserthookcode= savehook_new_data[self.object.textsource.pname]['needinserthookcode']  
-                needinserthookcode=list(set(needinserthookcode+list(set(self.saveinserthook).intersection([key[-1]]))))
-                
-                savehook_new_data[self.object.textsource.pname].update({  'needinserthookcode':needinserthookcode } )
+                print(key)
+                if(key[-2][:8]=='UserHook'): 
+                    needinserthookcode= savehook_new_data[self.object.textsource.pname]['needinserthookcode']  
+                    needinserthookcode=list(set(needinserthookcode+[key[-1]]))
+                    
+                    savehook_new_data[self.object.textsource.pname].update({  'needinserthookcode':needinserthookcode } )
             else:
                 pass
              

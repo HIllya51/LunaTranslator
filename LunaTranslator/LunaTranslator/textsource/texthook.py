@@ -52,7 +52,8 @@ class texthook(basetext  ):
         self.needinserthookcode=needinserthookcode
         self.removedaddress=[] 
         self.HookCode=None 
-        
+        self.textre=re.compile('\[([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):(.*?):(.*?)\]([\\s\\S]*)')
+        self.removehookre=re.compile('remove \[([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):(.*?):(.*?)\]')
         #embedtranslater(self.pid,self.textgetmethod,self.append ) 
         super(texthook,self).__init__(textgetmethod,*self.checkmd5prefix(pname))
         self.texthook_init()
@@ -72,8 +73,7 @@ class texthook(basetext  ):
                 None, win32con.OPEN_EXISTING, win32con.FILE_ATTRIBUTE_NORMAL, None);
         self.rpccallPipe = win32utils.CreateFile( rpccallPipe, win32con.GENERIC_READ | win32con.GENERIC_WRITE, 0,
                 None, win32con.OPEN_EXISTING, win32con.FILE_ATTRIBUTE_NORMAL, None);
-        self.re=re.compile('\[([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):(.*?):(.*?)\] ([\\s\\S]*)')
-        
+         
         self.readthread()
         self.attach()
         
@@ -136,6 +136,8 @@ class texthook(basetext  ):
         #print(hookcode,x.stdout[0])
         if(x is None):
             self.hookselectdialog.getnewsentencesignal.emit(_TR('！特殊码格式错误！'))
+        else:
+            self.hookselectdialog.getnewsentencesignal.emit(_TR('插入特殊码')+hookcode+_TR('成功'))
         self.rpccall("inserthook",pid,hookcode)
         return True
     def attach(self):  
@@ -150,7 +152,7 @@ class texthook(basetext  ):
         return (int(thread_tp_ctx,16)&0xffff,thread_tp_ctx2,HookCode)==(int(autostarthookcode[-4],16)&0xffff,autostarthookcode[-3],autostarthookcode[-1])
 
     def handle_output(self,line): 
-        thread_handle,thread_tp_processId, thread_tp_addr, thread_tp_ctx, thread_tp_ctx2, thread_name,HookCode,output =self.re.match(line).groups() 
+        thread_handle,thread_tp_processId, thread_tp_addr, thread_tp_ctx, thread_tp_ctx2, thread_name,HookCode,output =self.textre.match(line).groups() 
         try:
             remove_useless_hook=(not self.dontremove) and savehook_new_data[self.pname]['remove_useless_hook']
         except:
@@ -158,7 +160,16 @@ class texthook(basetext  ):
         
         if HookCode=='HB0@0':
             if thread_name=='Console':
-                self.hookselectdialog.sysmessagesignal.emit(output)
+                
+                removehookre=self.removehookre.match(output)
+                if removehookre:
+                    key=removehookre.groups()
+                    #print(key) 
+                    if key in self.hookdatacollecter:
+                        self.hookselectdialog.removehooksignal.emit(key)
+                        self.hookdatacollecter.pop(key)
+                else:
+                    self.hookselectdialog.sysmessagesignal.emit(output)
             return  
         if globalconfig['filter_chaos_code'] and checkchaos(output): 
             return
