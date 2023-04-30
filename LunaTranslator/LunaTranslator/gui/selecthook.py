@@ -20,8 +20,8 @@ class hookselect(closeashidewindow):
     getnewsentencesignal=pyqtSignal(str)
     sysmessagesignal=pyqtSignal(str)
     changeprocessclearsignal=pyqtSignal()
-    okoksignal=pyqtSignal() 
     removehooksignal=pyqtSignal(tuple)
+    getfoundhooksignal=pyqtSignal(dict)
     update_item_new_line=pyqtSignal(tuple,str)  
     def __init__(self,object,p):
         super(hookselect, self).__init__(p)
@@ -34,17 +34,14 @@ class hookselect(closeashidewindow):
         self.addnewhooksignal.connect(self.addnewhook)
         self.getnewsentencesignal.connect(self.getnewsentence)
         self.sysmessagesignal.connect(self.sysmessage)
-        self.update_item_new_line.connect(self.update_item_new_line_function) 
-        self.okoksignal.connect(self.okok)  
+        self.update_item_new_line.connect(self.update_item_new_line_function)
+        self.getfoundhooksignal.connect(self.getfoundhook)
         self.setWindowTitle(_TR('选择文本'))
     def update_item_new_line_function(self,hook,output): 
         output=output[:200]
         if hook in self.save:
             row=self.save.index(hook)
-            if  len(self.object.textsource.pids)>1:
-                self.ttCombomodelmodel.item(row,3).setText(output) 
-            else:
-                self.ttCombomodelmodel.item(row,2).setText(output) 
+            self.ttCombomodelmodel.item(row,2).setText(output) 
     def removehook(self,key):
         self.ttCombomodelmodel.removeRow(self.save.index(key))
         self.selectionbutton.pop(self.save.index(key))
@@ -53,26 +50,19 @@ class hookselect(closeashidewindow):
     def changeprocessclear(self):
         #self.ttCombo.clear() 
         self.ttCombomodelmodel.clear()
-        [_.hide() for _ in self.multipidswidgets]
         self.save=[]
         self.at1=1
         self.textOutput.clear()
-        self.selectionbutton=[]
+        self.selectionbutton=[] 
+        self.allres=OrderedDict() 
+        self.hidesearchhookbuttons()
     def addnewhook(self,ss ,select):
         if len(self.save)==0:
-            if  len(self.object.textsource.pids)>1: 
-                self.selectpid.addItems([str(_) for _ in self.object.textsource.pids])
-                [_.show() for _ in self.multipidswidgets]
-                self.ttCombomodelmodel.setHorizontalHeaderLabels(_TRL(['选择','进程', 'HOOK','文本']))
-                
-                self.tttable.horizontalHeader().setSectionResizeMode(1,QHeaderView.ResizeToContents)
-                self.tttable.horizontalHeader().setSectionResizeMode(2,QHeaderView.Interactive)
-                self.tttable.horizontalHeader().setSectionResizeMode(3,QHeaderView.Interactive)
-            else:
-                self.ttCombomodelmodel.setHorizontalHeaderLabels(_TRL(['选择','HOOK','文本']))
-                
-                self.tttable.horizontalHeader().setSectionResizeMode(1,QHeaderView.Interactive)
-                self.tttable.horizontalHeader().setSectionResizeMode(2,QHeaderView.Interactive)
+            
+            self.ttCombomodelmodel.setHorizontalHeaderLabels(_TRL(['选择','HOOK','文本']))
+            
+            self.tttable.horizontalHeader().setSectionResizeMode(1,QHeaderView.Interactive)
+            self.tttable.horizontalHeader().setSectionResizeMode(2,QHeaderView.Interactive)
             
             self.tttable.horizontalHeader().setSectionResizeMode(0,QHeaderView.ResizeToContents)
         
@@ -81,10 +71,7 @@ class hookselect(closeashidewindow):
  
         rown=self.ttCombomodelmodel.rowCount()
         selectionitem=QStandardItem()
-        if  len(self.object.textsource.pids)>1:
-            self.ttCombomodelmodel.insertRow(rown,[selectionitem,QStandardItem('%s' %(int(ss[1],16))),QStandardItem('%s %s %s:%s' %(ss[-1],ss[-2],ss[-3],ss[-4])),QStandardItem()])  
-        else:
-            self.ttCombomodelmodel.insertRow(rown,[selectionitem,QStandardItem('%s %s %s:%s' %(ss[-1],ss[-2],ss[-3],ss[-4])),QStandardItem()])  
+        self.ttCombomodelmodel.insertRow(rown,[selectionitem,QStandardItem('%s %s %s:%s' %(ss[-1],ss[-2],ss[-3],ss[-4])),QStandardItem()])  
                     
                 #self.hctable.setIndexWidget(self.hcmodel.index(row, 0),self.object.getcolorbutton('','',self.clicked2,icon='fa.times',constcolor="#FF69B4")) 
         
@@ -94,9 +81,7 @@ class hookselect(closeashidewindow):
  
     def setupUi(self  ):
         
-        self.resize(1200, 600) 
-        self.save=[]
-        self.selectionbutton=[] 
+        self.resize(1200, 600)  
         self.widget = QWidget() 
         self.setWindowIcon(qtawesome.icon("fa.gear" ))
         self.hboxlayout = QHBoxLayout()  
@@ -135,11 +120,7 @@ class hookselect(closeashidewindow):
         self.userhookfind=QPushButton(_TR("搜索特殊码")) 
         self.userhookfind.clicked.connect(self.findhook)
         self.userhooklayout.addWidget(self.userhookfind)
-        self.multipidswidgets=[QLabel(_TR("到进程"))]
-        self.selectpid=QComboBox()
-        self.multipidswidgets.append(self.selectpid)
-        [_.hide() for _ in self.multipidswidgets]
-        [self.userhooklayout.addWidget(_) for _ in self.multipidswidgets]
+         
         self.opensolvetextb=QPushButton(_TR("文本处理")) 
         self.opensolvetextb.clicked.connect(self.opensolvetext)
         self.userhooklayout.addWidget(QLabel("      "))
@@ -181,18 +162,12 @@ class hookselect(closeashidewindow):
         self.searchtextlayout2.addWidget(self.searchtext2)
         self.searchtextbutton2=QPushButton(_TR("搜索包含文本的条目"))
         self.checkfilt_notcontrol=QCheckBox(_TR("过滤控制字符"))
-        self.checkfilt_notpath=QCheckBox(_TR("过滤路径"))
-        self.checkfilt_dumplicate=QCheckBox(_TR("过滤重复")) 
         self.checkfilt_notascii=QCheckBox(_TR("过滤纯英文")) 
         self.checkfilt_notshiftjis=QCheckBox(_TR("过滤乱码文本"))  
-        self.checkfilt_dumplicate.setChecked(True) 
         self.checkfilt_notcontrol.setChecked(True)
-        self.checkfilt_notpath.setChecked(True)
         self.checkfilt_notascii.setChecked(True) 
         self.checkfilt_notshiftjis.setChecked(True)  
         self.searchtextlayout2.addWidget(self.checkfilt_notcontrol)
-        self.searchtextlayout2.addWidget(self.checkfilt_notpath)
-        self.searchtextlayout2.addWidget(self.checkfilt_dumplicate)
         self.searchtextlayout2.addWidget(self.checkfilt_notascii)  
         self.searchtextlayout2.addWidget(self.checkfilt_notshiftjis)   
         self.searchtextbutton2.clicked.connect(self.searchtextfunc2)
@@ -217,10 +192,9 @@ class hookselect(closeashidewindow):
         self.vboxlayout.addWidget(self.tabwidget)
         self.hboxlayout.addLayout(self.vboxlayout)
         self.setCentralWidget(self.widget)
-  
-        self.hidesearchhookbuttons()
+         
         
-  
+        self.changeprocessclear()
     def opensolvetext(self):
         self._settingui.opensolvetextsig.emit()
     def opengamesetting(self):
@@ -228,13 +202,9 @@ class hookselect(closeashidewindow):
             dialog_setting_game(self,self.object.textsource.pname, settingui=self._settingui) 
         except:
             print_exc()
-    def gethide(self,res,savedumpt ):
+    def gethide(self,res ):
         hide=False
-        if self.checkfilt_dumplicate.isChecked():
-            if res in savedumpt:
-                hide=True
-            else:
-                savedumpt.add(res)
+        
         if self.checkfilt_notascii.isChecked():
             try:
                 res.encode('ascii')
@@ -254,20 +224,17 @@ class hookselect(closeashidewindow):
 
                     hide=True
                     break
-        if self.checkfilt_notpath.isChecked():
-            if os.path.isdir(res) or os.path.isfile(res): 
-                hide=True 
-         
+        
         return hide
     def searchtextfunc2(self):
         searchtext=self.searchtext2.text() 
-        savedumpt=set()
+        
         for index in range(len(self.allres)):   
             _index=len(self.allres)-1-index
             
-            resbatch=self.allres[self.allres_k[_index]] 
+            resbatch=self.allres[list(self.allres.keys())[_index]] 
              
-            hide=all([ (searchtext not in res) or self.gethide(res ,savedumpt) for res in resbatch]) 
+            hide=all([ (searchtext not in res) or self.gethide(res ) for res in resbatch]) 
             self.tttable2.setRowHidden(_index,hide)  
             
     def searchtextfunc(self):
@@ -295,11 +262,7 @@ class hookselect(closeashidewindow):
         
         if  self.object.textsource:
             
-            if len(self.object.textsource.pids)==1:
-                pid=self.object.textsource.pids[0]
-            else:
-                pid=int(self.selectpid.currentText())
-            self.object.textsource.inserthook(hookcode,pid)
+            self.object.textsource.inserthook(hookcode)
             
         else:
             self.getnewsentence(_TR('！未选定进程！'))
@@ -309,88 +272,47 @@ class hookselect(closeashidewindow):
         self.searchtextbutton2.setHidden(hide)
         self.searchtext2.setHidden(hide)
         self.checkfilt_notcontrol.setHidden(hide)
-        self.checkfilt_notpath.setHidden(hide)
         self.checkfilt_notascii.setHidden(hide)
-        self.checkfilt_notshiftjis.setHidden(hide)  
-        self.checkfilt_dumplicate.setHidden(hide) 
+        self.checkfilt_notshiftjis.setHidden(hide) 
     def findhook(self): 
         if globalconfig['sourcestatus']['texthook']['use']==False:
             return 
         getQMessageBox(self,"警告","该功能可能会导致游戏崩溃！",True,True,self.findhookchecked)
-    def findhookchecked(self): 
-            
-            if os.path.exists('./cache/hook.txt'):
-                try:
-                    os.remove('./cache/hook.txt')
-                except:
-                    pass
+    def findhookchecked(self):  
             if  self.object.textsource: 
-                if len(self.object.textsource.pids)==1:
-                    pid=self.object.textsource.pids[0]
-                else:
-                    pid=int(self.selectpid.currentText())
-                self.object.textsource.findhook(pid)
+                
+                
                 self.userhookfind.setEnabled(False)
                 self.userhookfind.setText(_TR("正在搜索特殊码，请让游戏显示更多文本"))
-                
-                self.hidesearchhookbuttons()
+                self.allres.clear()
                 self.ttCombomodelmodel2.clear()
                 self.ttCombomodelmodel2.setHorizontalHeaderLabels(_TRL([ 'HOOK','文本']))
-                threading.Thread(target=self.timewaitthread).start()
+                self.hidesearchhookbuttons()
                 
+                self.object.textsource.findhook()
+                 
             else:
                 self.getnewsentence(_TR('！未选定进程！'))
-    def okok(self):
-        if self.isMaximized()==False:
-            self.showNormal()
-            if self.height()<600+300:
-                
-                self.resize(self.width(),900)
-        self.userhookfind.setText(_TR("搜索特殊码"))
-        #self.findhookoksignal.emit()
-        self.userhookfind.setEnabled(True)
-        with open('./cache/hook.txt','r',encoding='utf8') as ff:
-            allres=ff.read()#.split('\n')
-        
-        self.allres=OrderedDict()  
-        for hc,text in re.findall("(.*)=>(.*)",allres): 
-            try: 
-                        if text.strip()=='':
-                            continue  
-                        if hc not in self.allres:
-                            self.allres[hc]=[text]
-                        else:
-                            self.allres[hc].append(text)
-            except:
-                print_exc() 
-         
-        self.allres_k=list(self.allres.keys())
-         
-        for i,hc in enumerate( self.allres):
-            try:  
-                        item = QStandardItem(hc ) 
-                        self.ttCombomodelmodel2.setItem(i, 0, item)
-                        item = QStandardItem(self.allres[hc][0][:200] )
-                        self.ttCombomodelmodel2.setItem(i, 1, item) 
-            except:
-                print_exc() 
-        self.searchtextfunc2()
-        
-        self.hidesearchhookbuttons(False)
-        
-    def timewaitthread(self):
- 
-        while True:
-            if os.path.exists('./cache/hook.txt'):
-                big=os.path.getsize('./cache/hook.txt')
-                if big<10:
-                    pass
-                else:
-                    self.okoksignal.emit()
-                    break
+    def getfoundhook(self,hooks):
+               
+
+        searchtext=self.searchtext2.text() 
+          
+        for hookcode in hooks:
+            string=hooks[hookcode][-1]
+            if hookcode not in self.allres:
+                self.allres[hookcode]=hooks[hookcode].copy()
+                self.ttCombomodelmodel2.insertRow(self.ttCombomodelmodel2.rowCount(),[QStandardItem(hookcode),QStandardItem(string[:100])])  
             else:
-                pass
-            time.sleep(1)  
+                self.allres[hookcode]+=hooks[hookcode].copy() 
+                self.ttCombomodelmodel2.setItem(list(self.allres.keys()).index(hookcode),1,QStandardItem(string[:100]))  
+              
+            resbatch=self.allres[hookcode] 
+            hide=all([ (searchtext not in res) or self.gethide(res ) for res in resbatch])
+            self.tttable2.setRowHidden(list(self.allres.keys()).index(hookcode),hide)  
+        self.userhookfind.setText(_TR("搜索特殊码"))
+        self.userhookfind.setEnabled(True)
+        self.hidesearchhookbuttons(False) 
     def accept(self,key,select):
         try: 
             
@@ -459,10 +381,13 @@ class hookselect(closeashidewindow):
             scrollbar.setValue(scrollbar.maximum())
  
     def ViewThread2(self, index:QModelIndex):   
+        self.tabwidget.setCurrentIndex(0)  
         self.at1=2
-        self.userhook.setText(self.allres_k[index.row()])
-        self.textOutput. setPlainText('\n'.join(self.allres[self.allres_k[index.row()]] )) 
-    def ViewThread(self, index:QModelIndex):    
+        key=list(self.allres.keys())[index.row()]
+        self.userhook.setText(key)
+        self.textOutput. setPlainText('\n'.join(self.allres[key] )) 
+    def ViewThread(self, index:QModelIndex): 
+        self.tabwidget.setCurrentIndex(0)   
         self.at1=1 
         try:
             self.object.textsource.selectinghook=self.save[index.row()]
