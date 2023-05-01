@@ -96,7 +96,6 @@
     "已保存游戏": "Trò chơi đã lưu",
     "代码页": "Trang mã",
     "刷新延迟(ms)": "Độ trễ làm mới (ms)",
-    "移除非选定HOOK": "Xóa hook không chọn",
     "OCR设置": "Thiết lập OCR",
     "本地OCR": "OCR địa phương",
     "youdao图片翻译": "Bản dịch của youdao",
@@ -555,5 +554,7 @@
     "窗口按钮设置": "Cài đặt nút cửa sổ",
     "仅": "Chỉ",
     "注册网址2": "Đăng ký địa chỉ web 2",
-    "任务栏中显示": "Hiển thị trong Taskbar"
+    "任务栏中显示": "Hiển thị trong Taskbar",
+    "移除": "Xóa",
+    "复制特殊码": "Sao chép mã đặc biệt"
 }

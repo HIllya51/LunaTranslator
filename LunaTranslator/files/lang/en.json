@@ -252,7 +252,6 @@
     "拉丁(CP1252)": "Latin (CP1252)",
     "代码页": "code page",
     "刷新延迟(ms)": "Refresh Delay (ms)",
-    "移除非选定HOOK": "Remove non selected HOOK",
     "baiduOCR_高精度": "baiduOCR_ high-precision",
     "百度OCR使用竖排OCR": "Baidu OCR uses vertical OCR",
     "OCR范围框颜色": "OCR Range Box Color",
@@ -555,5 +554,7 @@
     "窗口按钮设置": "Window button settings",
     "仅": "only",
     "注册网址2": "Registration website 2",
-    "任务栏中显示": "Show in taskbar"
+    "任务栏中显示": "Show in taskbar",
+    "移除": "remove",
+    "复制特殊码": "Copy Special Code"
 }

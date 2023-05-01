@@ -82,11 +82,7 @@ class dialog_setting_game(QDialog):
                 autochangestatus.addWidget(QLabel(_TR("自动切换到模式"))) 
                 autochangestatus.addWidget(self.object.getsimplecombobox(_TRL(['不切换','HOOK','HOOK_内嵌','剪贴板','OCR']),savehook_new_data[exepath],'onloadautochangemode'))
                 formLayout.addLayout(autochangestatus)
-                
-                remove_useless_hook_layout=QHBoxLayout()
-                remove_useless_hook_layout.addWidget(QLabel(_TR('移除非选定HOOK')))
-                remove_useless_hook_layout.addWidget(self.object.getsimpleswitch(savehook_new_data[exepath],'remove_useless_hook'))
-                formLayout.addLayout(remove_useless_hook_layout)
+                 
 
 
                 cp_layout=QHBoxLayout()

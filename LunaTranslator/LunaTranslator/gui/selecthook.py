@@ -1,11 +1,11 @@
-import threading ,functools
+import pyperclip ,functools
 from traceback import print_exc
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QWidget,QHBoxLayout,QStyledItemDelegate,QFrame,QVBoxLayout,QComboBox,QPlainTextEdit,QTabWidget,QLineEdit,QPushButton,QTableView,QAbstractItemView,QApplication,QHeaderView,QCheckBox,QStyleOptionViewItem,QStyle ,QLabel
+from PyQt5.QtWidgets import QWidget,QHBoxLayout,QStyledItemDelegate,QAction,QVBoxLayout,QMenu,QPlainTextEdit,QTabWidget,QLineEdit,QPushButton,QTableView,QAbstractItemView,QApplication,QHeaderView,QCheckBox,QStyleOptionViewItem,QStyle ,QLabel
 from utils.config import savehook_new_list,savehook_new_data
-from PyQt5.QtGui import QStandardItem, QStandardItemModel,QTextDocument,QAbstractTextDocumentLayout,QPalette 
+from PyQt5.QtGui import QStandardItem, QStandardItemModel,QTextDocument,QAbstractTextDocumentLayout,QPalette  
 from PyQt5.QtGui import QFont,QTextCursor
-from PyQt5.QtCore import Qt,pyqtSignal,QSize,QModelIndex
+from PyQt5.QtCore import Qt,pyqtSignal,QSize,QModelIndex,QPoint
 import qtawesome
 from gui.dialog_savedgame import dialog_setting_game
 import re
@@ -43,6 +43,7 @@ class hookselect(closeashidewindow):
             row=self.save.index(hook)
             self.ttCombomodelmodel.item(row,2).setText(output) 
     def removehook(self,key):
+        if key not in self.save:return
         self.ttCombomodelmodel.removeRow(self.save.index(key))
         self.selectionbutton.pop(self.save.index(key))
         self.save.remove(key)
@@ -105,7 +106,8 @@ class hookselect(closeashidewindow):
         #table.setEditTriggers(QAbstractItemView.NoEditTriggers)
         #table.clicked.connect(self.show_info)
         
-
+        self.tttable.setContextMenuPolicy(Qt.CustomContextMenu)
+        self.tttable.customContextMenuRequested.connect(self.showmenu  )
         
         #self.ttCombo.setMaxVisibleItems(50) 
         
@@ -195,6 +197,26 @@ class hookselect(closeashidewindow):
          
         
         self.changeprocessclear()
+    def showmenu(self,p:QPoint):  
+        menu=QMenu(self.tttable ) 
+        remove=QAction(_TR("移除"))  
+        copy=QAction(_TR("复制特殊码") ) 
+        menu.addAction(remove)  
+        menu.addAction(copy)
+        action=menu.exec(self.tttable.cursor().pos())
+        
+        r=self.tttable.currentIndex().row() 
+        if r<0:return 
+        hook=self.save[r] 
+        if action==remove:
+            pid=int(hook[1],16)
+            addr=int(hook[2],16)
+            self.object.textsource.removehook(pid,addr)
+         
+        elif action==copy :
+            
+            pyperclip.copy(hook[-1])
+             
     def opensolvetext(self):
         self._settingui.opensolvetextsig.emit()
     def opengamesetting(self):

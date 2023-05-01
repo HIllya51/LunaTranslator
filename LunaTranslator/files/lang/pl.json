@@ -96,7 +96,6 @@
     "已保存游戏": "Gra zapisana",
     "代码页": "strona kodowa",
     "刷新延迟(ms)": "Opóźnienie odświeżania (ms)",
-    "移除非选定HOOK": "Usuń niezaznaczone HOOK",
     "OCR设置": "Ustawienia OCR",
     "本地OCR": "Lokalne OCR",
     "youdao图片翻译": "Tłumaczenie obrazów Youdao",
@@ -555,5 +554,7 @@
     "窗口按钮设置": "Ustawienia przycisku okna",
     "仅": "Tylko",
     "注册网址2": "Strona internetowa rejestracyjna 2",
-    "任务栏中显示": "Pokaż na pasku zadań"
+    "任务栏中显示": "Pokaż na pasku zadań",
+    "移除": "usuń",
+    "复制特殊码": "Kopiuj kod specjalny"
 }

@@ -96,7 +96,6 @@
     "已保存游戏": "Kaydedilmiş oyun",
     "代码页": "kod sayfası",
     "刷新延迟(ms)": "Yeniden geçirme (ms)",
-    "移除非选定HOOK": "Seçilmemiş HOOK'u sil",
     "OCR设置": "OCR ayarları",
     "本地OCR": "Yerel OCR",
     "youdao图片翻译": "Youdao resim çevirimi",
@@ -555,5 +554,7 @@
     "窗口按钮设置": "Pencere düğme ayarları",
     "仅": "Sadece",
     "注册网址2": "Kayıt sitesi 2",
-    "任务栏中显示": "Görev çubuğunda göster"
+    "任务栏中显示": "Görev çubuğunda göster",
+    "移除": "Çıkar",
+    "复制特殊码": "Özel Kodu Kopiyala"
 }

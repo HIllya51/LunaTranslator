@@ -19,8 +19,8 @@ class rpcstruc(ctypes.Structure):
         ('param2',ctypes.c_wchar*1000)
     ]
 class texthook(basetext  ): 
-    def __init__(self,textgetmethod,hookselectdialog,pids,hwnd,pname  ,autostarthookcode=None,needinserthookcode=None,dontremove=False) :
-        print(pids,hwnd,pname  ,autostarthookcode,needinserthookcode,dontremove)
+    def __init__(self,textgetmethod,hookselectdialog,pids,hwnd,pname  ,autostarthookcode=None,needinserthookcode=None) :
+        print(pids,hwnd,pname  ,autostarthookcode,needinserthookcode)
         if autostarthookcode is None:
             autostarthookcode=[]
         if needinserthookcode is None:
@@ -31,7 +31,6 @@ class texthook(basetext  ):
         self.newline=Queue()  
         self.arch=win32utils.GetBinaryType(pname)
         self.lock=threading.Lock()
-        self.dontremove=dontremove
         self.hookdatacollecter=OrderedDict() 
         self.reverse={}
         self.forward=[]
@@ -184,14 +183,12 @@ class texthook(basetext  ):
         if key in self.hookdatacollecter:
             self.hookselectdialog.removehooksignal.emit(key)
             self.hookdatacollecter.pop(key) 
-                    
+    def removehook(self,pid,address):
+        self.rpccall('removehook',pid,address)
     def handle_output(self,line): 
         self.textre=re.compile('\[([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):(.*?):(.*?)\]([\\s\\S]*)')
         thread_handle,thread_tp_processId, thread_tp_addr, thread_tp_ctx, thread_tp_ctx2, thread_name,HookCode,output =self.textre.match(line).groups() 
-        try:
-            remove_useless_hook=(not self.dontremove) and savehook_new_data[self.pname]['remove_useless_hook']
-        except:
-            remove_useless_hook=False
+        
         
         if HookCode=='HB0@0':
             if thread_name=='Console':
@@ -202,7 +199,7 @@ class texthook(basetext  ):
         self.lock.acquire()
         key =(thread_handle,thread_tp_processId, thread_tp_addr, thread_tp_ctx, thread_tp_ctx2, thread_name,HookCode)
 
-        hasnewhook=False
+
         if key not in self.hookdatacollecter:
             #print(self.autostarthookcode,HookCode)
             select=False
@@ -221,38 +218,20 @@ class texthook(basetext  ):
                     self.autostarting=False
             self.hookdatacollecter[key]=[] 
         
-            hasnewhook=True
+            self.hookselectdialog.addnewhooksignal.emit(key  ,select) 
         #print(key,self.selectedhook,output)
         
         if (key in self.selectedhook): 
             self.newline.put(output)
             self.runonce_line=output
-        else:
-            if remove_useless_hook:
-                hookcodes=[_[-1] for _ in self.selectedhook]+[_[-1] for _ in self.autostarthookcode]
-                if len(hookcodes)>0:
-                    address=key[2]
-                    if key[-1] not in hookcodes:
-                        if address not in self.removedaddress: 
-                            self.removedaddress.append(address)
-                            address=int(address,16)
-                            for pid in self.pids: 
-                                self.rpccall('removehook',pid,address)
-        
-        
-        if hasnewhook :
-            if remove_useless_hook and select:
-                self.hookselectdialog.addnewhooksignal.emit(key  ,select) 
-            elif remove_useless_hook==False:
-                self.hookselectdialog.addnewhooksignal.emit(key  ,select) 
-
-                
+         
+            
         if key==self.selectinghook:
             self.hookselectdialog.getnewsentencesignal.emit(output)
-        if (remove_useless_hook and key in (self.selectedhook)) or remove_useless_hook==False:
-
-            self.hookdatacollecter[key].append(output) 
-            self.hookselectdialog.update_item_new_line.emit(key,output)
+        
+    
+        self.hookdatacollecter[key].append(output) 
+        self.hookselectdialog.update_item_new_line.emit(key,output)
         
         self.lock.release()  
     def ignoretext(self):

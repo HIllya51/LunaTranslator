@@ -96,7 +96,6 @@
     "已保存游戏": "Jeux enregistrés",
     "代码页": "Page de code",
     "刷新延迟(ms)": "Délai de rafraîchissement (MS)",
-    "移除非选定HOOK": "Supprimer le hook non sélectionné",
     "OCR设置": "Paramètres ocr",
     "本地OCR": "OCR local",
     "youdao图片翻译": "Traduction d'images YouDao",
@@ -555,5 +554,7 @@
     "窗口按钮设置": "Paramètres du bouton fenêtre",
     "仅": "Uniquement",
     "注册网址2": "Adresse Web d'inscription 2",
-    "任务栏中显示": "Affichage dans la barre des tâches"
+    "任务栏中显示": "Affichage dans la barre des tâches",
+    "移除": "Supprimer",
+    "复制特殊码": "Copier le code spécial"
 }

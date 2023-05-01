@@ -294,7 +294,7 @@ class MAINUI(QObject) :
         checkifnewgame(pexe) 
         
         if globalconfig['sourcestatus']['texthook']['use']:
-            self.textsource=texthook(self.textgetmethod,self.hookselectdialog,pids,hwnd,pexe ,dontremove=True)  
+            self.textsource=texthook(self.textgetmethod,self.hookselectdialog,pids,hwnd,pexe)  
         elif globalconfig['sourcestatus']['embedded']['use']:
             self.textsource=embedded(self.textgetmethod,self.hookselectdialog,pids,hwnd,pexe, self)  
          
