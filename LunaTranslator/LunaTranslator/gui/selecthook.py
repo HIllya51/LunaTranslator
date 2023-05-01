@@ -1,7 +1,7 @@
 import pyperclip ,functools
 from traceback import print_exc
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QWidget,QHBoxLayout,QStyledItemDelegate,QAction,QVBoxLayout,QMenu,QPlainTextEdit,QTabWidget,QLineEdit,QPushButton,QTableView,QAbstractItemView,QApplication,QHeaderView,QCheckBox,QStyleOptionViewItem,QStyle ,QLabel
+from PyQt5.QtWidgets import QWidget,QHBoxLayout,QDialog,QAction,QVBoxLayout,QMenu,QPlainTextEdit,QTabWidget,QLineEdit,QPushButton,QTableView,QAbstractItemView,QRadioButton,QButtonGroup,QHeaderView,QCheckBox,QSpinBox,QFormLayout ,QLabel
 from utils.config import savehook_new_list,savehook_new_data
 from PyQt5.QtGui import QStandardItem, QStandardItemModel,QTextDocument,QAbstractTextDocumentLayout,QPalette  
 from PyQt5.QtGui import QFont,QTextCursor
@@ -13,8 +13,140 @@ import os,time
 from utils.config import globalconfig ,_TR,_TRL,checkifnewgame
 from collections import OrderedDict
 from gui.usefulwidget import closeashidewindow,getQMessageBox
-from utils.utils import checkchaos
+from utils.utils import checkchaos 
 
+class searchhookparam(QDialog):
+    def safehex(self,string,default):
+        try:
+            return int(string.replace(" ", "").replace("0x", ""),16)
+        except:
+            return default
+    def searchstart(self):
+        idx=(self.selectmodel.checkedId())
+        usestruct=self.parent().object.textsource.defaultsp()
+        if idx==1:  #0默认
+            usestruct.codepage=self.codepage.value()
+            usestruct.text=self.searchtext.text()
+            if len(usestruct.text)<4:
+                getQMessageBox(self,"警告","搜索文本过短！",True)
+                return
+        elif idx==2:
+            dumpvalues=[]
+            for widget in self.regists:
+                if type(widget)==QLineEdit:
+                    dumpvalues.append(widget.text())
+                if type(widget)==QSpinBox:
+                    dumpvalues.append(widget.value())
+            pattern=dumpvalues[0]
+            if('.' in pattern):
+                usestruct.length=1
+                usestruct.exportModule=pattern[:120]
+            else:
+                try:  
+                    bs=bytes.fromhex(pattern.replace(" ", "").replace("0x", "").replace('??','11'))
+                    usestruct.pattern=bs[:30]
+                    usestruct.length=len(bs)
+                except:pass 
+            usestruct.boundaryModule=dumpvalues[1][:120]
+            usestruct.minAddress=self.safehex(dumpvalues[2], usestruct.minAddress)
+            usestruct.maxAddress=self.safehex(dumpvalues[3], usestruct.maxAddress)
+            usestruct.padding=self.safehex(dumpvalues[4], usestruct.padding)
+            usestruct.offset=dumpvalues[5]
+            usestruct.codepage=dumpvalues[6]
+            usestruct.searchTime=dumpvalues[7]
+            usestruct.maxRecords=dumpvalues[8]
+        self.parent().object.textsource.findhook(usestruct)
+        if idx!=1:
+            self.parent().findhookchecked()
+        self.close()
+    def selectmodelf(self,idx):
+        idx=(self.selectmodel.checkedId())
+        self.wlist[(idx+1)%3].hide()
+        self.wlist[(idx+2)%3].hide()
+        self.resize(self.width(),1)
+        self.wlist[idx].show()
+        self.resize(self.width(),1)
+    def __init__(self, parent ) -> None:
+        super().__init__(parent, Qt.WindowCloseButtonHint )
+        self.setWindowTitle(_TR("搜索设置"))
+        mainlayout=QVBoxLayout()
+        
+        self.setLayout(mainlayout)
+         
+        layout=QHBoxLayout()
+        selectmodel=QButtonGroup()
+        btn1=QRadioButton(_TR("默认搜索"))
+        btn2=QRadioButton(_TR("文本搜索"))
+        btn3=QRadioButton(_TR("自定义搜索"))
+        btn1.setChecked(True)
+        selectmodel.addButton(btn1,0)
+        selectmodel.addButton(btn2,1)
+        selectmodel.addButton(btn3,2) 
+         
+        selectmodel.buttonClicked.connect(self.selectmodelf)
+        self.selectmodel=selectmodel
+        layout.addWidget(btn1)
+        layout.addWidget(btn2)
+        layout.addWidget(btn3)
+ 
+        mainlayout.addLayout(layout)
+
+        usestruct=parent.object.textsource.defaultsp()
+        w1=QWidget() 
+        self.layoutseatchtext=QFormLayout()
+        w1.setLayout(self.layoutseatchtext)
+        w1.hide()
+        self.searchtext=QLineEdit()
+        self.codepage=QSpinBox()
+        self.codepage.setMaximum(100000)
+        self.codepage.setValue(usestruct.codepage)
+        self.layoutseatchtext.addRow(_TR("文本"), self.searchtext)
+        self.layoutseatchtext.addRow(_TR("代码页"), self.codepage)
+        
+
+        w2=QWidget()
+        self.layoutsettings=QFormLayout()
+        w2.setLayout(self.layoutsettings)
+        w2.hide()
+        _=QWidget()
+        self.wlist=[_,w1,w2]
+    
+        
+        import binascii 
+        byte_data = usestruct.pattern
+        hex_str = binascii.hexlify(byte_data).decode() 
+        space_hex_str = ' '.join([hex_str[i:i+2] for i in range(0, len(hex_str), 2)])
+        self.regists=[]
+        for edits in [
+                ('搜索匹配的特征(hex)',space_hex_str),
+                ('搜索指定模块',usestruct.boundaryModule),
+                ('起始地址(hex)',hex(usestruct.minAddress)[2:]),
+                ('结束地址(hex)',hex(usestruct.maxAddress)[2:]),
+                ('字符串偏移量(hex)',hex(usestruct.padding)[2:]),
+            ]:
+            line=QLineEdit(edits[1]) 
+            self.layoutsettings.addRow(_TR(edits[0]),line) 
+            self.regists.append(line)
+        
+        for spins in [
+                ('相对特征地址的偏移',usestruct.offset),
+                ('代码页',usestruct.codepage),
+                ('搜索持续时间(ms)',usestruct.searchTime),
+                ('搜索结果数上限',usestruct.maxRecords),
+            ]:
+            sp=QSpinBox()
+            sp.setMaximum(10000000)
+            sp.setValue(spins[1]) 
+            self.layoutsettings.addRow(_TR(spins[0]),sp)
+            self.regists.append(sp)
+        mainlayout.addWidget(_)
+        mainlayout.addWidget(w1)
+        mainlayout.addWidget(w2)
+
+        btn=QPushButton(_TR("开始搜索"))
+        btn.clicked.connect(self.searchstart)
+        mainlayout.addWidget(btn)
+        self.show()
 class hookselect(closeashidewindow):
     addnewhooksignal=pyqtSignal(tuple,bool)
     getnewsentencesignal=pyqtSignal(str)
@@ -297,22 +429,18 @@ class hookselect(closeashidewindow):
         self.checkfilt_notascii.setHidden(hide)
         self.checkfilt_notshiftjis.setHidden(hide) 
     def findhook(self): 
+        if self.object.textsource is None:return 
         if globalconfig['sourcestatus']['texthook']['use']==False:
             return 
-        getQMessageBox(self,"警告","该功能可能会导致游戏崩溃！",True,True,self.findhookchecked)
+        getQMessageBox(self,"警告","该功能可能会导致游戏崩溃！",True,True,lambda:searchhookparam(self))
     def findhookchecked(self):  
-            if  self.object.textsource: 
-                
-                
+            if  self.object.textsource:  
                 self.userhookfind.setEnabled(False)
                 self.userhookfind.setText(_TR("正在搜索特殊码，请让游戏显示更多文本"))
                 self.allres.clear()
                 self.ttCombomodelmodel2.clear()
                 self.ttCombomodelmodel2.setHorizontalHeaderLabels(_TRL([ 'HOOK','文本']))
-                self.hidesearchhookbuttons()
-                
-                self.object.textsource.findhook()
-                 
+                self.hidesearchhookbuttons() 
             else:
                 self.getnewsentence(_TR('！未选定进程！'))
     def getfoundhook(self,hooks):

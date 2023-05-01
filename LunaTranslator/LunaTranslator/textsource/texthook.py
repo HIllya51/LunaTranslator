@@ -1,6 +1,6 @@
 import threading
 from queue import Queue  
-import re  
+import re ,os
 import time,win32utils
 from traceback import print_exc
 from collections import OrderedDict
@@ -18,6 +18,44 @@ class rpcstruc(ctypes.Structure):
         ('param1',ctypes.c_wchar*1000),
         ('param2',ctypes.c_wchar*1000)
     ]
+class __(ctypes.Structure):
+    _fields_=[('p2',ctypes.c_wchar*1000)]
+class rpcstruc_x(ctypes.Structure):
+    _fields_=[
+        ('cmd',ctypes.c_wchar*1000),
+        ('param1',ctypes.c_wchar*1000),
+        ('param2',__)
+    ]
+class SearchParam32(ctypes.Structure):
+    _fields_=[
+        ('pattern',ctypes.c_char*30),
+        ('length',ctypes.c_int),
+        ('offset',ctypes.c_int),
+        ('searchTime',ctypes.c_int),
+        ('maxRecords',ctypes.c_int),
+        ('codepage',ctypes.c_int), 
+        ('padding',ctypes.c_uint), 
+        ('minAddress',ctypes.c_uint), 
+        ('maxAddress',ctypes.c_uint),
+        ('boundaryModule',ctypes.c_wchar*120),
+        ('exportModule',ctypes.c_wchar*120),
+        ('text',ctypes.c_wchar*30)
+    ] 
+class SearchParam64(ctypes.Structure):
+    _fields_=[
+        ('pattern',ctypes.c_char*30),
+        ('length',ctypes.c_int),
+        ('offset',ctypes.c_int),
+        ('searchTime',ctypes.c_int),
+        ('maxRecords',ctypes.c_int),
+        ('codepage',ctypes.c_int), 
+        ('padding',ctypes.c_uint64), 
+        ('minAddress',ctypes.c_uint64), 
+        ('maxAddress',ctypes.c_uint64),
+        ('boundaryModule',ctypes.c_wchar*120),
+        ('exportModule',ctypes.c_wchar*120),
+        ('text',ctypes.c_wchar*30)
+    ] 
 class texthook(basetext  ): 
     def __init__(self,textgetmethod,hookselectdialog,pids,hwnd,pname  ,autostarthookcode=None,needinserthookcode=None) :
         print(pids,hwnd,pname  ,autostarthookcode,needinserthookcode)
@@ -113,18 +151,57 @@ class texthook(basetext  ):
     def setdelay(self):
         delay=globalconfig['textthreaddelay']
         self.rpccall("delay",delay)
-    
-    def setcodepage(self):
+    def codepage(self):
         try:
             cpi=savehook_new_data[self.pname]["codepage_index"]
             cp= somedef.codepage_real[cpi]
         except:
             cp=932
-        self.rpccall("codepage",cp)
-    def findhook(self):
-        for pid in self.pids: 
-            self.rpccall("find",pid)
+        return cp
+    
+    def setcodepage(self):
         
+        self.rpccall("codepage",self.codepage())
+    def defaultsp(self):
+        if self.arch==0:
+            usestruct=SearchParam32()
+            usestruct.pattern=bytes([0x55,0x8b,0xec])
+            usestruct.length=3
+            usestruct.offset=0
+            usestruct.searchTime=30000
+            usestruct.maxRecords=100000
+            usestruct.codepage=self.codepage()
+            usestruct.padding=0
+            usestruct.minAddress=0
+            usestruct.maxAddress=0xFFFFFFFF
+            usestruct.boundaryModule=os.path.basename(self.pname)
+        else:
+            usestruct=SearchParam64()
+            usestruct.pattern=bytes([0xCC,0xCC,0x48,0x89])
+            usestruct.length=4
+            usestruct.offset=2
+            usestruct.searchTime=30000
+            usestruct.maxRecords=100000
+            usestruct.codepage=self.codepage()
+            usestruct.padding=0
+            usestruct.minAddress=0
+            usestruct.maxAddress=0xFFFFFFFFFFFFFFFF
+            usestruct.boundaryModule=os.path.basename(self.pname)
+
+        with open('2.txt','wb') as ff:
+            ff.write(bytes(usestruct))
+        return usestruct
+    def findhook(self,usestruct):
+         
+        for pid in self.pids:  
+            rpcparam=rpcstruc_x()
+            rpcparam.cmd='find'
+            rpcparam.param1=str(pid) 
+            ctypes.memmove(ctypes.pointer(rpcparam.param2),ctypes.pointer(usestruct),ctypes.sizeof(usestruct))
+            
+            self.rpccalllock.acquire()
+            win32utils.WriteFile(self.rpccallPipe,bytes(rpcparam))
+            self.rpccalllock.release()
     def inserthook(self,hookcode): 
         hookcode=hookcode.replace('\r','').replace('\n','').replace('\t','')
         x=Parsecode(hookcode)
