@@ -12,11 +12,11 @@ import embedded.socketpack3 as socketpack
 class embedded(basetext  ):  
     def inject_vnragent(self,pid):  
         if platform.architecture()[0]=='64bit': 
-            dllpaths=list(map(lambda x:os.path.abspath(os.path.join('./files/plugins/EmbededEngine/',x)), ['Qt5Core.dll','vnragent.dll']))
+            dllpaths=list(map(lambda x:os.path.abspath(os.path.join('./files/plugins/LunaEmbedder/',x)), ['Qt5Core.dll','vnragent.dll']))
         elif platform.architecture()[0]=='32bit':
-            dllpaths=[os.path.abspath("./LunaTranslator/qt5core.dll"),os.path.abspath('./files/plugins/EmbededEngine/vnragent.dll')] 
+            dllpaths=[os.path.abspath("./LunaTranslator/qt5core.dll"),os.path.abspath('./files/plugins/LunaEmbedder/vnragent.dll')] 
         
-        subproc_w(f'.\\files\\plugins\\EmbededEngine\\dllinject32.exe {pid} "{dllpaths[0]}" "{dllpaths[1]}"') 
+        subproc_w(f'.\\files\\plugins\\LunaInjector\\dllinject32.exe {pid} "{dllpaths[0]}" "{dllpaths[1]}"') 
         
     def start(self):
         def _():  

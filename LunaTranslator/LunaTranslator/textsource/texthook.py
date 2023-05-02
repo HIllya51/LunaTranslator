@@ -4,61 +4,20 @@ import re ,os
 import time,win32utils
 from traceback import print_exc
 from collections import OrderedDict
-from utils.hookcode import Parsecode
+from textsource.hook.hookcode import Parse
 from utils import somedef
+import textsource.hook.define as define
 from utils.config import globalconfig ,savehook_new_data ,_TR
 from utils.subproc import subproc_w
 from textsource.textsourcebase import basetext 
 from utils.utils import checkchaos  
 import ctypes
 import ctypes,win32con
-class rpcstruc(ctypes.Structure):
-    _fields_=[
-        ('cmd',ctypes.c_wchar*1000),
-        ('param1',ctypes.c_wchar*1000),
-        ('param2',ctypes.c_wchar*1000)
-    ]
-class __(ctypes.Structure):
-    _fields_=[('p2',ctypes.c_wchar*1000)]
-class rpcstruc_x(ctypes.Structure):
-    _fields_=[
-        ('cmd',ctypes.c_wchar*1000),
-        ('param1',ctypes.c_wchar*1000),
-        ('param2',__)
-    ]
-class SearchParam32(ctypes.Structure):
-    _fields_=[
-        ('pattern',ctypes.c_char*30),
-        ('length',ctypes.c_int),
-        ('offset',ctypes.c_int),
-        ('searchTime',ctypes.c_int),
-        ('maxRecords',ctypes.c_int),
-        ('codepage',ctypes.c_int), 
-        ('padding',ctypes.c_uint), 
-        ('minAddress',ctypes.c_uint), 
-        ('maxAddress',ctypes.c_uint),
-        ('boundaryModule',ctypes.c_wchar*120),
-        ('exportModule',ctypes.c_wchar*120),
-        ('text',ctypes.c_wchar*30)
-    ] 
-class SearchParam64(ctypes.Structure):
-    _fields_=[
-        ('pattern',ctypes.c_char*30),
-        ('length',ctypes.c_int),
-        ('offset',ctypes.c_int),
-        ('searchTime',ctypes.c_int),
-        ('maxRecords',ctypes.c_int),
-        ('codepage',ctypes.c_int), 
-        ('padding',ctypes.c_uint64), 
-        ('minAddress',ctypes.c_uint64), 
-        ('maxAddress',ctypes.c_uint64),
-        ('boundaryModule',ctypes.c_wchar*120),
-        ('exportModule',ctypes.c_wchar*120),
-        ('text',ctypes.c_wchar*30)
-    ] 
+from textsource.hook.host import RPC
 class texthook(basetext  ): 
-    def __init__(self,textgetmethod,hookselectdialog,pids,hwnd,pname  ,autostarthookcode=None,needinserthookcode=None) :
+    def __init__(self,RPC,textgetmethod,hookselectdialog,pids,hwnd,pname  ,autostarthookcode=None,needinserthookcode=None) :
         print(pids,hwnd,pname  ,autostarthookcode,needinserthookcode)
+        self.RPC=RPC
         if autostarthookcode is None:
             autostarthookcode=[]
         if needinserthookcode is None:
@@ -82,75 +41,60 @@ class texthook(basetext  ):
         self.pname=pname
         self.hwnd=hwnd
         self.runonce_line=''
-        self.rpccalllock=threading.Lock()
         self.autostarthookcode=[tuple(__) for __ in autostarthookcode]
-        self.autostarting=(len(self.autostarthookcode)>0) or (len(needinserthookcode)>0)
         
         self.needinserthookcode=needinserthookcode
         self.removedaddress=[] 
         self.HookCode=None 
         
-        #embedtranslater(self.pid,self.textgetmethod,self.append ) 
-        super(texthook,self).__init__(textgetmethod,*self.checkmd5prefix(pname))
-        self.texthook_init()
-    def texthook_init(self):  
-        if self.arch is None:
-            return 
-        arch={0:'86',6:'64'}[self.arch]
-        self.process=subproc_w(f"./files/plugins/TextHookEngine/x{arch}/LunaHost.exe",name='host')
-
-        rpcoutputPipe="\\\\.\\pipe\\LUNA_RPC_OUTPUT"
-        rpccallPipe="\\\\.\\pipe\\LUNA_RPC_CALL"
-        waitsignal="LUNA_RPC_PIPE_AVAILABLE"
-        
-        secu=win32utils.get_SECURITY_ATTRIBUTES()
-        win32utils.WaitForSingleObject(win32utils.CreateEvent(win32utils.pointer(secu),False, False, waitsignal),win32utils.INFINITE); 
-        self.rpcoutputPipe = win32utils.CreateFile( rpcoutputPipe, win32con.GENERIC_READ | win32con.GENERIC_WRITE, 0,
-                None, win32con.OPEN_EXISTING, win32con.FILE_ATTRIBUTE_NORMAL, None);
-        self.rpccallPipe = win32utils.CreateFile( rpccallPipe, win32con.GENERIC_READ | win32con.GENERIC_WRITE, 0,
-                None, win32con.OPEN_EXISTING, win32con.FILE_ATTRIBUTE_NORMAL, None);
-         
-        self.readthread()
-        self.attach()
-        
+        self.RPC.callbacks(
+            lambda pid:[self.RPC.InsertHookCode(pid,hookcode) for hookcode in needinserthookcode],
+            lambda pid: print(pid,"disconenct"),
+            self.onnewhook,
+            self.onremovehook,
+            self.handle_output,
+            self.hookselectdialog.sysmessagesignal.emit
+        ) 
         self.setcodepage()
-         
         self.setdelay()
         
-        for _h in self.needinserthookcode:  
-            self.inserthook(_h )
-    def readthread(self):
-        def _():
-            while True:
-                xx=win32utils.ReadFile(self.rpcoutputPipe, 4, None) 
-                if(xx==b''):break
-                slen=ctypes.c_int.from_buffer_copy(xx).value 
-                xx=win32utils.ReadFile(self.rpcoutputPipe, slen, None)
-                 
-                if(xx==b''):break 
-                xx=xx.decode('utf-16-le',errors='ignore') 
-                self.rpccalldispatch(xx)
-        threading.Thread(target=_).start()
-    def rpccall(self,cmd,param1=None,param2=None):
-        
-        _=[cmd]
-        if param1: _+=[str(param1)]
-        if param2: _+=[str(param2)]  
-        self.hookselectdialog.sysmessagesignal.emit(("Operation: "+' '.join(_)))
-
-        param1=str(param1)
-        param2=str(param2)
-        rpcparam=rpcstruc()
-        rpcparam.cmd=cmd
-        rpcparam.param1=param1
-        rpcparam.param2=param2
-        self.rpccalllock.acquire()
-        win32utils.WriteFile(self.rpccallPipe,bytes(rpcparam))
-        self.rpccalllock.release()
+        for pid in self.pids:
+            self.RPC.Attach(pid,{0:'32',6:'64'}[self.arch])
+        super(texthook,self).__init__(textgetmethod,*self.checkmd5prefix(pname))
      
+    def onremovehook(self,tp): 
+        toremove=[]
+        for key in self.hookdatacollecter:
+            if key[1]==tp.addr: 
+                toremove.append(key)
+        for key in toremove:
+                self.hookselectdialog.removehooksignal.emit(key)
+                self.hookdatacollecter.pop(key) 
+    def parsetextthread(self,textthread):
+        key=(
+            textthread.tp.processId,
+            textthread.tp.addr,
+            textthread.tp.ctx,
+            textthread.tp.ctx2,
+            textthread.hp.name.decode('ascii'),
+            textthread.hpcode
+            )
+        return key
+    def onnewhook(self,textthread):
+        key=self.parsetextthread(textthread)
+
+        select=False
+        for _i,autostarthookcode in enumerate(self.autostarthookcode): 
+            if (key[2]&0xffff,key[3],key[5])==(autostarthookcode[-4]&0xffff,autostarthookcode[-3],autostarthookcode[-1]): 
+                self.selectedhook+=[key]
+                self.selectinghook=key
+                select=True
+                break
+        self.hookselectdialog.addnewhooksignal.emit(key  ,select) 
+        self.hookdatacollecter[key]=[] 
+       
     def setdelay(self):
-        delay=globalconfig['textthreaddelay']
-        self.rpccall("delay",delay)
+        self.RPC.setting.timeout=globalconfig['textthreaddelay']
     def codepage(self):
         try:
             cpi=savehook_new_data[self.pname]["codepage_index"]
@@ -160,11 +104,10 @@ class texthook(basetext  ):
         return cp
     
     def setcodepage(self):
-        
-        self.rpccall("codepage",self.codepage())
+        self.RPC.setting.defaultcodepag=self.codepage() 
     def defaultsp(self):
         if self.arch==0:
-            usestruct=SearchParam32()
+            usestruct=define.SearchParam32()
             usestruct.pattern=bytes([0x55,0x8b,0xec])
             usestruct.length=3
             usestruct.offset=0
@@ -176,7 +119,7 @@ class texthook(basetext  ):
             usestruct.maxAddress=0xFFFFFFFF
             usestruct.boundaryModule=os.path.basename(self.pname)
         else:
-            usestruct=SearchParam64()
+            usestruct=define.SearchParam64()
             usestruct.pattern=bytes([0xCC,0xCC,0x48,0x89])
             usestruct.length=4
             usestruct.offset=2
@@ -191,65 +134,40 @@ class texthook(basetext  ):
         with open('2.txt','wb') as ff:
             ff.write(bytes(usestruct))
         return usestruct
+
     def findhook(self,usestruct):
-         
+        self.savefound={}
+        self.foundnum=0
+        def _(hc,text):
+            if hc not in self.savefound:
+                self.savefound[hc]=[]
+            self.savefound[hc].append(text)
+            self.foundnum+=1
+            #print(self.foundnum)
         for pid in self.pids:  
-            rpcparam=rpcstruc_x()
-            rpcparam.cmd='find'
-            rpcparam.param1=str(pid) 
-            ctypes.memmove(ctypes.pointer(rpcparam.param2),ctypes.pointer(usestruct),ctypes.sizeof(usestruct))
-            
-            self.rpccalllock.acquire()
-            win32utils.WriteFile(self.rpccallPipe,bytes(rpcparam))
-            self.rpccalllock.release()
-    def inserthook(self,hookcode): 
-        hookcode=hookcode.replace('\r','').replace('\n','').replace('\t','')
-        x=Parsecode(hookcode)
+            self.RPC.FindHooks(pid,usestruct,_)
+        def __waitforok():
+            time.sleep(usestruct.searchTime/1000)
+            _last=0
+            for i in range(10):
+                if _last!=self.foundnum or _last==0:
+                    _last=self.foundnum
+                    time.sleep(1)
+                else:
+                    break
+            print('??',_last,self.foundnum)
+            self.hookselectdialog.getfoundhooksignal.emit(self.savefound)
+        threading.Thread(target=__waitforok).start()
+    def inserthook(self,hookcode):  
+        for pid in self.pids:
+            print(hookcode)
+            ret=self.RPC.InsertHookCode(pid,hookcode)
         #print(hookcode,x.stdout[0])
-        if(x is None):
-            self.hookselectdialog.getnewsentencesignal.emit(_TR('！特殊码格式错误！'))
-        else:
-            self.hookselectdialog.getnewsentencesignal.emit(_TR('插入特殊码')+hookcode+_TR('成功'))
-        for pid in self.pids:
-            self.rpccall("inserthook",pid,hookcode)
-        return True
-    def attach(self):  
-        for pid in self.pids:
-            self.rpccall('attach',pid)
-    def detach(self):
-        for pid in self.pids:
-            self.rpccall('detach',pid)
-    def strictmatch(self,thread_tp_ctx,thread_tp_ctx2,HookCode,autostarthookcode):
-        return (int(thread_tp_ctx,16)&0xffff,thread_tp_ctx2,HookCode)==(int(autostarthookcode[-4],16)&0xffff,autostarthookcode[-3],autostarthookcode[-1])
-    def rpccalldispatch(self,line):
-        #print(line)
-        cmd=line[0]
-        data=line[1:]
-         
-        {
-            'T':self.handle_output,
-            'R':self.removehookcall,
-            'F':self.hookfound
-        }[cmd](data)
-    def hookfound(self,line):
-        fname=line
-        hooks={}
-        with open(fname,'rb') as ff:
-            while True:
-                b=ff.read(4)
-                if(len(b))<4:break
-                length=ctypes.c_int.from_buffer_copy(b).value
-                b=ff.read(length)
-                if(len(b))<length:break
-                line=b.decode('utf-16-le',errors='ignore')
-                _=line.split('=>')
-                hookcode=_[0]
-                res='=>'.join(_[1:])
-                
-                if hookcode not in hooks:
-                    hooks[hookcode]=[]
-                hooks[hookcode].append(res)
-        self.hookselectdialog.getfoundhooksignal.emit(hooks)
+            if not ret:
+                self.hookselectdialog.getnewsentencesignal.emit(_TR('！特殊码格式错误！'))
+            else:
+                self.hookselectdialog.getnewsentencesignal.emit(_TR('插入特殊码')+hookcode+_TR('成功'))
+          
     def removehookcall(self,line): 
         
         self.removehookre=re.compile('\[([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):(.*?):(.*?)\]')
@@ -261,56 +179,29 @@ class texthook(basetext  ):
             self.hookselectdialog.removehooksignal.emit(key)
             self.hookdatacollecter.pop(key) 
     def removehook(self,pid,address):
-        self.rpccall('removehook',pid,address)
-    def handle_output(self,line): 
-        self.textre=re.compile('\[([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):(.*?):(.*?)\]([\\s\\S]*)')
-        thread_handle,thread_tp_processId, thread_tp_addr, thread_tp_ctx, thread_tp_ctx2, thread_name,HookCode,output =self.textre.match(line).groups() 
-        
-        
-        if HookCode=='HB0@0':
-            if thread_name=='Console':
-                self.hookselectdialog.sysmessagesignal.emit(output)
-            return  
-        if globalconfig['filter_chaos_code'] and checkchaos(output): 
-            return
-        self.lock.acquire()
-        key =(thread_handle,thread_tp_processId, thread_tp_addr, thread_tp_ctx, thread_tp_ctx2, thread_name,HookCode)
-
-
-        if key not in self.hookdatacollecter:
-            #print(self.autostarthookcode,HookCode)
-            select=False
-            if self.autostarting  :
-                for _i,autostarthookcode in enumerate(self.autostarthookcode): 
-                    if self.strictmatch(thread_tp_ctx,thread_tp_ctx2,HookCode,autostarthookcode ): 
-                        self.selectedhook+=[key]
-                        self.selectinghook=key
-                        self.selectedhookidx.append(_i)
-                        __=self.selectedhook.copy()
-                        self.selectedhook.sort(key=lambda x:self.selectedhookidx[__.index(x)])
-                        self.selectedhookidx.sort()
-                        select=True
-                        break
-                if len(self.autostarthookcode)==len(self.selectedhook):
-                    self.autostarting=False
-            self.hookdatacollecter[key]=[] 
-        
-            self.hookselectdialog.addnewhooksignal.emit(key  ,select) 
-        #print(key,self.selectedhook,output)
-        
-        if (key in self.selectedhook): 
-            self.newline.put(output)
-            self.runonce_line=output
-         
+        for pid in self.pids:
+            self.RPC.RemoveHook(pid,address)
+    def handle_output(self,batch): 
+        for textthread,output in batch:
+            key=self.parsetextthread(textthread)
             
-        if key==self.selectinghook:
-            self.hookselectdialog.getnewsentencesignal.emit(output)
-        
-    
-        self.hookdatacollecter[key].append(output) 
-        self.hookselectdialog.update_item_new_line.emit(key,output)
-        
-        self.lock.release()  
+            if globalconfig['filter_chaos_code'] and checkchaos(output): 
+                return
+            self.lock.acquire()
+             
+            if (key in self.selectedhook): 
+                self.newline.put(output)
+                self.runonce_line=output 
+                
+            if key==self.selectinghook:
+                self.hookselectdialog.getnewsentencesignal.emit(output)
+            
+            if key not in self.hookdatacollecter:
+                self.onnewhook(textthread)
+            self.hookdatacollecter[key].append(output) 
+            self.hookselectdialog.update_item_new_line.emit(key,output)
+            
+            self.lock.release()  
     def ignoretext(self):
         while self.newline.empty()==False:
             self.newline.get()  
@@ -321,15 +212,10 @@ class texthook(basetext  ):
     def runonce(self):
          
         self.textgetmethod(self.runonce_line,False)
-    def end(self):
-
-        try:
-            self.detach()
-            time.sleep(0.1)
-            self.process.kill()
-        except:
-            print_exc()  
-         
-         
+    def end(self):    
+        for pid in self.pids:
+            self.RPC.Detach(pid)
+        self.RPC.clear()
+        time.sleep(0.1)
         super().end()
      

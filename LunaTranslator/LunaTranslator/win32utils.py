@@ -162,7 +162,10 @@ try:
 except:
     _GetModuleFileNameExW=_kernel32.GetModuleFileNameExW
 _GetModuleFileNameExW.argtypes=c_void_p,c_void_p,c_wchar_p,c_uint
-
+def GetModuleFileNameEx(handle,module=None):
+    buff=create_unicode_buffer(260)
+    _GetModuleFileNameExW(handle,module,buff,260)
+    return buff.value
 _GetLogicalDrives=_kernel32.GetLogicalDrives
 _QueryDosDeviceW=_kernel32.QueryDosDeviceW
 _QueryDosDeviceW.argtypes=c_wchar_p,c_wchar_p,c_uint
@@ -563,3 +566,64 @@ _ConnectNamedPipe=_kernel32.ConnectNamedPipe
 
 def ConnectNamedPipe(pipe,lpoverlap):
     return _ConnectNamedPipe(pipe,lpoverlap)
+
+
+_OpenFileMappingW=_kernel32.OpenFileMappingW
+_OpenFileMappingW.argtypes=c_uint,c_bool,c_wchar_p
+def OpenFileMapping(access,inherit,name):
+    # Open the named file mapping object
+    map_handle = _OpenFileMappingW(
+        access,
+        inherit,
+        name
+    )
+    return map_handle
+
+_MapViewOfFile=_kernel32.MapViewOfFile
+_MapViewOfFile.argtypes=c_void_p,c_uint,c_uint,c_uint,c_uint
+def MapViewOfFile(fhandel,access,size):
+    return _MapViewOfFile(fhandel,access,0,0,size)
+
+
+_MultiByteToWideChar=_kernel32.MultiByteToWideChar
+_MultiByteToWideChar.argtypes=c_uint,c_uint,c_void_p,c_int,c_wchar_p,c_int
+def MultiByteToWideChar(buff,length,codepage):
+    _w=create_unicode_buffer(length)
+    l=_MultiByteToWideChar(codepage,0,buff,length,_w,length)
+    if(l==0):return None
+    return _w.value
+
+
+
+class MEMORY_BASIC_INFORMATION32(Structure):
+    _fields_=[
+        ('BaseAddress',c_void_p),
+        ('AllocationBase',c_void_p),
+        ('AllocationProtect',c_uint),
+        ('RegionSize',c_void_p),
+        ('State',c_uint),
+        ('Protect',c_uint),
+        ('Type',c_uint),
+    ]
+class MEMORY_BASIC_INFORMATION64(Structure):
+    _fields_=[
+        ('BaseAddress',c_void_p),
+        ('AllocationBase',c_void_p),
+        ('AllocationProtect',c_uint),
+        ('PartitionId',c_short),
+        ('RegionSize',c_void_p),
+        ('State',c_uint),
+        ('Protect',c_uint),
+        ('Type',c_uint),
+    ]
+    
+_VirtualQueryEx=_kernel32.VirtualQueryEx
+_VirtualQueryEx.argtypes=c_void_p,c_void_p,c_void_p,c_int
+def VirtualQueryEx(hprocess,address):
+    if sizeof(c_void_p)==4:
+        MEMORY_BASIC_INFORMATION=MEMORY_BASIC_INFORMATION32
+    else:
+        MEMORY_BASIC_INFORMATION=MEMORY_BASIC_INFORMATION64
+    info=MEMORY_BASIC_INFORMATION()
+    _VirtualQueryEx(hprocess,address,pointer(info),sizeof(info))
+    return info

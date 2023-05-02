@@ -341,8 +341,8 @@ class hookselect(closeashidewindow):
         if r<0:return 
         hook=self.save[r] 
         if action==remove:
-            pid=int(hook[1],16)
-            addr=int(hook[2],16)
+            pid=hook[0]
+            addr=hook[1]
             self.object.textsource.removehook(pid,addr)
          
         elif action==copy :
@@ -415,7 +415,7 @@ class hookselect(closeashidewindow):
             return 
         
         if  self.object.textsource:
-            
+            print(hookcode)
             self.object.textsource.inserthook(hookcode)
             
         else:
@@ -540,6 +540,7 @@ class hookselect(closeashidewindow):
         self.tabwidget.setCurrentIndex(0)   
         self.at1=1 
         try:
+            print(self.object.textsource)
             self.object.textsource.selectinghook=self.save[index.row()]
             
             self.textOutput. setPlainText('\n'.join(self.object.textsource.hookdatacollecter[self.save[index.row()]]))

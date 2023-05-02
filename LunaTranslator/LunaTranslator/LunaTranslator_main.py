@@ -44,7 +44,7 @@ from utils.vnrshareddict import vnrshareddict
 
 import pyperclip
 from utils.simplekanji import kanjitrans 
-
+from textsource.hook.host import RPC
  
 class MAINUI(QObject) : 
     def __init__(self,app) -> None:
@@ -60,6 +60,8 @@ class MAINUI(QObject) :
         self.refresh_on_get_trans_signature=0
         self.currentsignature=None
         self.isrunning=True
+        self.RPC=RPC()
+        self.RPC.start()
     @property
     def textsource(self):return self.textsource_p
     @textsource.setter
@@ -294,7 +296,7 @@ class MAINUI(QObject) :
         checkifnewgame(pexe) 
         
         if globalconfig['sourcestatus']['texthook']['use']:
-            self.textsource=texthook(self.textgetmethod,self.hookselectdialog,pids,hwnd,pexe)  
+            self.textsource=texthook(self.RPC,self.textgetmethod,self.hookselectdialog,pids,hwnd,pexe)  
         elif globalconfig['sourcestatus']['embedded']['use']:
             self.textsource=embedded(self.textgetmethod,self.hookselectdialog,pids,hwnd,pexe, self)  
          
@@ -425,7 +427,7 @@ class MAINUI(QObject) :
                                     self.textsource=None
                                     if globalconfig['sourcestatus']['texthook']['use']:
                                         needinserthookcode=savehook_new_data[name_]['needinserthookcode']
-                                        self.textsource=texthook(self.textgetmethod,self.hookselectdialog,pids,hwnd,name_ ,autostarthookcode=savehook_new_data[name_]['hook'],needinserthookcode=needinserthookcode)
+                                        self.textsource=texthook(self.RPC,self.textgetmethod,self.hookselectdialog,pids,hwnd,name_ ,autostarthookcode=savehook_new_data[name_]['hook'],needinserthookcode=needinserthookcode)
                                     elif globalconfig['sourcestatus']['embedded']['use']:
                                         self.textsource=embedded(self.textgetmethod,self.hookselectdialog,pids,hwnd,name_  ,self)
                                     break
