@@ -80,12 +80,18 @@ class texthook(basetext  ):
             textthread.hpcode
             )
         return key
+    def match_compatibility(self,key,autostarthookcode):
+         
+        if len(autostarthookcode)==6:
+            return (key[2]&0xffff,key[3],key[5])==(autostarthookcode[2]&0xffff,autostarthookcode[3],autostarthookcode[5])
+        else: 
+            return (key[2]&0xffff,key[3],key[5])==(int(autostarthookcode[-4],16)&0xffff,autostarthookcode[-3],autostarthookcode[-1])
     def onnewhook(self,textthread):
         key=self.parsetextthread(textthread)
 
         select=False
         for _i,autostarthookcode in enumerate(self.autostarthookcode): 
-            if (key[2]&0xffff,key[3],key[5])==(autostarthookcode[-4]&0xffff,autostarthookcode[-3],autostarthookcode[-1]): 
+            if self.match_compatibility(key,autostarthookcode): 
                 self.selectedhook+=[key]
                 self.selectinghook=key
                 select=True
@@ -192,7 +198,7 @@ class texthook(basetext  ):
             if (key in self.selectedhook): 
                 self.newline.put(output)
                 self.runonce_line=output 
-                
+             
             if key==self.selectinghook:
                 self.hookselectdialog.getnewsentencesignal.emit(output)
             
