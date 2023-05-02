@@ -187,8 +187,7 @@ class texthook(basetext  ):
     def removehook(self,pid,address):
         for pid in self.pids:
             self.RPC.RemoveHook(pid,address)
-    def handle_output(self,batch): 
-        for textthread,output in batch:
+    def handle_output(self,textthread,output):          
             key=self.parsetextthread(textthread)
             
             if globalconfig['filter_chaos_code'] and checkchaos(output): 

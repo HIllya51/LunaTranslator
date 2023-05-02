@@ -68,8 +68,23 @@ class TextThread():
         self.hpcode=hookcode.Generate(hp,tp.processId)
         self.host=host
         self.buffer=''
+        self.lasttime=0
         self.lock=threading.Lock()
+        self.running=True
+        threading.Thread(target=self.flush).start()
+    def stop(self):
+        self.running=False
+    def flush(self):
+        while self.running:
+            time.sleep(0.001)
+            timenow=time.time() 
+            if len(self.buffer)>0 and (timenow-self.lasttime>self.host.setting.timeout/1000 or len(self.buffer)>3000):
+                buff=self.Pop()
+                self.host.Output(self,buff)
+                self.lasttime=timenow
+            
     def Push(self,buff):
+        self.lasttime=time.time()
         self.lock.acquire()
         self.buffer+=self.parsebuff(buff)
         self.lock.release()
@@ -92,9 +107,7 @@ class TextThread():
                 cp=hp.codepage
             _ret=win32utils.MultiByteToWideChar(buff,len(buff),cp)
             if _ret is None:
-                _ret=''
-
-	
+                _ret=''	
         if hp.type&hookcode.FULL_STRING:
             _ret+='\n'
         return _ret
@@ -127,29 +140,9 @@ class RPC():
 
         self.textthreadslock=threading.Lock()
         self.textthreads={}
-        self.lasttime=0
         self.setting=RPCSettings()
        
-    def output(self):
-        def _():
-            while True: 
-                time.sleep(0.0001)
-                timenow=time.time() 
-                if timenow-self.lasttime>self.setting.timeout/1000:
-                    outputs=[]
-                    self.textthreadslock.acquire()
-                    for _ThreadParam in self.textthreads:
-                        _TextThread=self.textthreads[_ThreadParam]
-                        buff=_TextThread.Pop()
-                        if len(buff)==0:continue 
-                        outputs.append([_TextThread,buff])
-                    self.textthreadslock.release() 
-                    if len(outputs):
-                        self.Output(outputs)
-                        self.lasttime=timenow
-        threading.Thread(target=_).start()
     def start(self):
-        self.output()
         def _():
             hookPipe = win32utils.CreateNamedPipe(define.HOOK_PIPE_NAME,
                                                 win32con.PIPE_ACCESS_INBOUND,
@@ -216,7 +209,8 @@ class RPC():
                 if textthread.processId==processId and  textthread.addr==define.HookRemovedNotif.from_buffer_copy(data).address:
                     toremove.append(textthread)
             for _ in toremove:
-                self.textthreads.pop(_)
+                t=self.textthreads.pop(_)
+                t.stop()
                 self.OnDestroy(_)
             self.textthreadslock.release()
             #todo
