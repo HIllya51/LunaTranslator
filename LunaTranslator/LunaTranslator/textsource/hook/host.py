@@ -144,6 +144,7 @@ class RPC():
        
     def start(self):
         def _():
+            
             hookPipe = win32utils.CreateNamedPipe(define.HOOK_PIPE_NAME,
                                                 win32con.PIPE_ACCESS_INBOUND,
                                                 win32con.PIPE_TYPE_MESSAGE | win32con.PIPE_READMODE_MESSAGE | win32con.PIPE_WAIT,
@@ -151,7 +152,7 @@ class RPC():
                                                 0,
                                                 0,
                                                 0,
-                                                None)
+                                                win32utils.pointer(win32utils.get_SECURITY_ATTRIBUTES()))
             hostPipe = win32utils.CreateNamedPipe(define.HOST_PIPE_NAME,
                                                     win32con.PIPE_ACCESS_OUTBOUND,
                                                     win32con.PIPE_TYPE_MESSAGE | win32con.PIPE_READMODE_MESSAGE | win32con.PIPE_WAIT,
@@ -159,8 +160,9 @@ class RPC():
                                                     0,
                                                     0,
                                                     0,
-                                                    None)
-            pipeAvailableEvent = win32utils.CreateEvent(None, False, False, define.PIPE_AVAILABLE_EVENT)
+                                                    win32utils.pointer(win32utils.get_SECURITY_ATTRIBUTES()))
+            
+            pipeAvailableEvent = win32utils.CreateEvent(win32utils.pointer(win32utils.get_SECURITY_ATTRIBUTES()), False, False, define.PIPE_AVAILABLE_EVENT)
             win32utils.SetEvent(pipeAvailableEvent)
             win32utils.ConnectNamedPipe(hookPipe, None)
             processId = self.toint(win32utils.ReadFile(hookPipe, 4,None) )
