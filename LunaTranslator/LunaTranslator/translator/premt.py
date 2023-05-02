@@ -33,7 +33,7 @@ class TS(basetrans):
                 ret=json.loads(savet) 
             except:
                 #旧版兼容
-                ret= savet
+                ret= {'premt':ret[0]}
 
         else:
 
@@ -41,7 +41,7 @@ class TS(basetrans):
             try:
                 ret=json.loads(ret[0]) 
             except:
-                ret= ret[0]
+                ret= {'premt':ret[0]}
         if self.config['仅使用激活的翻译']:
             realret={}
             for key in ret:
