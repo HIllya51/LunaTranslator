@@ -627,3 +627,10 @@ def VirtualQueryEx(hprocess,address):
     info=MEMORY_BASIC_INFORMATION()
     _VirtualQueryEx(hprocess,address,pointer(info),sizeof(info))
     return info
+
+
+_IsDBCSLeadByteEx=_kernel32.IsDBCSLeadByteEx
+_IsDBCSLeadByteEx.argtypes=c_uint,c_byte
+def IsDBCSLeadByteEx(codepage,char):
+    return _IsDBCSLeadByteEx(codepage,char)
+ 

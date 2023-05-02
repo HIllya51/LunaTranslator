@@ -71,6 +71,7 @@ class TextThread():
         self.lasttime=0
         self.lock=threading.Lock()
         self.running=True
+        self.leadbyte=0
         threading.Thread(target=self.flush).start()
     def stop(self):
         self.running=False
@@ -96,6 +97,20 @@ class TextThread():
         return _
     def parsebuff(self,buff):
         hp=self.hp
+        if hp.codepage==0:
+            cp=self.host.setting.defaultcodepag
+        else:
+            cp=hp.codepage
+        if len(buff)==1:
+            if self.leadbyte:
+                buff=self.leadbyte+buff
+                self.leadbyte=0
+            else:
+                if(win32utils.IsDBCSLeadByteEx(cp,buff[0])):
+                    self.leadbyte=buff
+                    return ''
+        
+        
         if (hp.type &hookcode.HEX_DUMP) :
             _ret=buff.hex()
         elif hp.type& hookcode.USING_UNICODE:
