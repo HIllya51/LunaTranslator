@@ -81,11 +81,10 @@ class texthook(basetext  ):
             )
         return key
     def match_compatibility(self,key,autostarthookcode):
-         
         if len(autostarthookcode)==6:
-            return (key[2]&0xffff,key[3],key[5])==(autostarthookcode[2]&0xffff,autostarthookcode[3],autostarthookcode[5])
+            return (key[2]&0xffff,key[3]&0xffff,key[5])==(autostarthookcode[2]&0xffff,autostarthookcode[3]&0xffff,autostarthookcode[5])
         else: 
-            return (key[2]&0xffff,key[3],key[5])==(int(autostarthookcode[-4],16)&0xffff,autostarthookcode[-3],autostarthookcode[-1])
+            return (key[2]&0xffff,key[3]&0xffff,key[5])==(int(autostarthookcode[-4],16)&0xffff,int(autostarthookcode[-3],16)&0xffff,autostarthookcode[-1])
     def onnewhook(self,textthread):
         key=self.parsetextthread(textthread)
 
