@@ -574,5 +574,7 @@
     "起始地址(hex)": "Başlangıç adresi (hex)",
     "结束地址(hex)": "Sonu Adresi (hex)",
     "字符串偏移量(hex)": "String offset (hex)",
-    "搜索持续时间(ms)": "Arama uzunluğu (ms)"
+    "搜索持续时间(ms)": "Arama uzunluğu (ms)",
+    "搜索文本过短！": "Arama mesajı çok kısa!",
+    "移除非选定hook": "Seçilmemiş halkaları kaldır"
 }

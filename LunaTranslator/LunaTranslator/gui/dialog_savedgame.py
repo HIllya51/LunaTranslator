@@ -89,6 +89,11 @@ class dialog_setting_game(QDialog):
                 cp_layout.addWidget(QLabel(_TR('代码页')))
                 cp_layout.addWidget(self.object.getsimplecombobox(_TRL(somedef.codepage_display),savehook_new_data[exepath],'codepage_index' ,lambda x: self.object.object.textsource.setcodepage()))
                 formLayout.addLayout(cp_layout)
+
+                cp_layout=QHBoxLayout()
+                cp_layout.addWidget(QLabel(_TR('移除非选定hook')))
+                cp_layout.addWidget(self.object.getsimpleswitch(savehook_new_data[exepath],'removeuseless'))
+                formLayout.addLayout(cp_layout)
                 
 
                 model=QStandardItemModel(   )

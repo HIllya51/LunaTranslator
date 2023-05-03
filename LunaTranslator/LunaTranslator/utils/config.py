@@ -42,6 +42,7 @@ def getdefaultsavehook(gamepath):
         'leuse':True,
         'hook':[],
         'needinserthookcode':[],
+        "removeuseless":False,
         'title':os.path.basename(os.path.dirname(gamepath))+'/'+ os.path.basename(gamepath),
         "codepage_index":0
     }

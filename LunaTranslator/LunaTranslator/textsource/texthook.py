@@ -43,7 +43,7 @@ class texthook(basetext  ):
         self.hwnd=hwnd
         self.runonce_line=''
         self.autostarthookcode=[tuple(__) for __ in autostarthookcode]
-        
+        self.isremoveuseless=savehook_new_data[self.pname]["removeuseless"] and len(self.autostarthookcode)
         self.needinserthookcode=needinserthookcode
         self.removedaddress=[] 
         self.HookCode=None 
@@ -88,10 +88,14 @@ class texthook(basetext  ):
             return (key[2]&0xffff,key[3]&0xffff,key[5])==(autostarthookcode[2]&0xffff,autostarthookcode[3]&0xffff,autostarthookcode[5])
         else: 
             return (key[2]&0xffff,key[3]&0xffff,key[5])==(int(autostarthookcode[-4],16)&0xffff,int(autostarthookcode[-3],16)&0xffff,autostarthookcode[-1])
-    def onnewhook(self,textthread,needlock=True):
+    def onnewhook(self,textthread):
         key=self.parsetextthread(textthread)
-        if needlock:
-            self.lock.acquire()
+        if self.isremoveuseless:
+            if key[1] not in [_[1] for _ in self.autostarthookcode]:
+                self.RPC.RemoveHook(key[0],key[1])
+                return False
+        
+        self.lock.acquire()
         select=False
         for _i,autostarthookcode in enumerate(self.autostarthookcode): 
             if self.match_compatibility(key,autostarthookcode): 
@@ -101,8 +105,9 @@ class texthook(basetext  ):
                 break
         self.hookselectdialog.addnewhooksignal.emit(key  ,select) 
         self.hookdatacollecter[key]=[] 
-        if needlock:
-            self.lock.release()
+        
+        self.lock.release()
+        return True
     def setdelay(self):
         self.RPC.setting.timeout=globalconfig['textthreaddelay']
     def codepage(self):
@@ -185,11 +190,12 @@ class texthook(basetext  ):
             
             if globalconfig['filter_chaos_code'] and checkchaos(output): 
                 return
-            self.lock.acquire()
+            
             
             if key not in self.hookdatacollecter:
-                self.onnewhook(textthread,False)
-
+                if self.onnewhook(textthread)==False:
+                    return
+            self.lock.acquire()
             if (key in self.selectedhook): 
                 self.newline.put(output)
                 self.runonce_line=output 

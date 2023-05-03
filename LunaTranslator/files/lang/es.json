@@ -574,5 +574,7 @@
     "起始地址(hex)": "Dirección inicial (hex)",
     "结束地址(hex)": "Dirección final (hex)",
     "字符串偏移量(hex)": "Desplazamiento de cadena (hex)",
-    "搜索持续时间(ms)": "Duración de la búsqueda (ms)"
+    "搜索持续时间(ms)": "Duración de la búsqueda (ms)",
+    "搜索文本过短！": "¡El texto de búsqueda es demasiado corto!",
+    "移除非选定hook": "Eliminar gancho no seleccionado"
 }
