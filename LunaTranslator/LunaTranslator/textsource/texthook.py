@@ -64,12 +64,14 @@ class texthook(basetext  ):
      
     def onremovehook(self,tp): 
         toremove=[]
+        self.lock.acquire()
         for key in self.hookdatacollecter:
             if key[1]==tp.addr: 
                 toremove.append(key)
         for key in toremove:
                 self.hookselectdialog.removehooksignal.emit(key)
                 self.hookdatacollecter.pop(key) 
+        self.lock.release()
     def parsetextthread(self,textthread):
         key=(
             textthread.tp.processId,
@@ -85,9 +87,10 @@ class texthook(basetext  ):
             return (key[2]&0xffff,key[3]&0xffff,key[5])==(autostarthookcode[2]&0xffff,autostarthookcode[3]&0xffff,autostarthookcode[5])
         else: 
             return (key[2]&0xffff,key[3]&0xffff,key[5])==(int(autostarthookcode[-4],16)&0xffff,int(autostarthookcode[-3],16)&0xffff,autostarthookcode[-1])
-    def onnewhook(self,textthread):
+    def onnewhook(self,textthread,needlock=True):
         key=self.parsetextthread(textthread)
-
+        if needlock:
+            self.lock.acquire()
         select=False
         for _i,autostarthookcode in enumerate(self.autostarthookcode): 
             if self.match_compatibility(key,autostarthookcode): 
@@ -97,7 +100,8 @@ class texthook(basetext  ):
                 break
         self.hookselectdialog.addnewhooksignal.emit(key  ,select) 
         self.hookdatacollecter[key]=[] 
-       
+        if needlock:
+            self.lock.release()
     def setdelay(self):
         self.RPC.setting.timeout=globalconfig['textthreaddelay']
     def codepage(self):
@@ -136,8 +140,6 @@ class texthook(basetext  ):
             usestruct.maxAddress=0xFFFFFFFFFFFFFFFF
             usestruct.boundaryModule=os.path.basename(self.pname)
 
-        with open('2.txt','wb') as ff:
-            ff.write(bytes(usestruct))
         return usestruct
 
     def findhook(self,usestruct):
@@ -173,26 +175,20 @@ class texthook(basetext  ):
             else:
                 self.hookselectdialog.getnewsentencesignal.emit(_TR('插入特殊码')+hookcode+_TR('成功'))
           
-    def removehookcall(self,line): 
-        
-        self.removehookre=re.compile('\[([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):([0-9a-fA-F]*):(.*?):(.*?)\]')
-        removehookre=self.removehookre.match(line)
-        
-        key=removehookre.groups()
-        #print(key) 
-        if key in self.hookdatacollecter:
-            self.hookselectdialog.removehooksignal.emit(key)
-            self.hookdatacollecter.pop(key) 
     def removehook(self,pid,address):
         for pid in self.pids:
             self.RPC.RemoveHook(pid,address)
-    def handle_output(self,textthread,output):          
+    def handle_output(self,textthread,output):   
+            #print(output)       
             key=self.parsetextthread(textthread)
             
             if globalconfig['filter_chaos_code'] and checkchaos(output): 
                 return
             self.lock.acquire()
-             
+            
+            if key not in self.hookdatacollecter:
+                self.onnewhook(textthread,False)
+
             if (key in self.selectedhook): 
                 self.newline.put(output)
                 self.runonce_line=output 
@@ -200,8 +196,6 @@ class texthook(basetext  ):
             if key==self.selectinghook:
                 self.hookselectdialog.getnewsentencesignal.emit(output)
             
-            if key not in self.hookdatacollecter:
-                self.onnewhook(textthread)
             self.hookdatacollecter[key].append(output) 
             self.hookselectdialog.update_item_new_line.emit(key,output)
             

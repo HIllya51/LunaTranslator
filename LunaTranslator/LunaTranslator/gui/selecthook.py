@@ -444,8 +444,7 @@ class hookselect(closeashidewindow):
             else:
                 self.getnewsentence(_TR('！未选定进程！'))
     def getfoundhook(self,hooks):
-               
-
+       
         searchtext=self.searchtext2.text() 
           
         for hookcode in hooks:
@@ -462,6 +461,7 @@ class hookselect(closeashidewindow):
             self.tttable2.setRowHidden(list(self.allres.keys()).index(hookcode),hide)  
         self.userhookfind.setText(_TR("搜索特殊码"))
         self.userhookfind.setEnabled(True)
+        if len(hooks)==0:return 
         self.hidesearchhookbuttons(False) 
     def accept(self,key,select):
         try: 
@@ -485,9 +485,6 @@ class hookselect(closeashidewindow):
             else:
                 pass
              
-            self.object.textsource.autostarthookcode=[]
-            self.object.textsource.autostarting=False 
-
             savehook_new_data[self.object.textsource.pname].update({ 'hook':self.object.textsource.selectedhook } )
             self.object.textsource.lock.release()
         except:

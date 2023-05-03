@@ -3,7 +3,7 @@ import textsource.hook.define as define
   
 import ctypes,time
 from ctypes import Structure,c_int,c_char,sizeof,cast,POINTER
-
+from utils.wrapper import threader
 import sys
 import os  
 sys.path.append(r'C:\Users\wcy\Documents\GitHub\LunaTranslator\LunaTranslator\LunaTranslator')
@@ -70,20 +70,7 @@ class TextThread():
         self.buffer=''
         self.lasttime=0
         self.lock=threading.Lock()
-        self.running=True
-        self.leadbyte=0
-        threading.Thread(target=self.flush).start()
-    def stop(self):
-        self.running=False
-    def flush(self):
-        while self.running:
-            time.sleep(0.001)
-            timenow=time.time() 
-            if len(self.buffer)>0 and (timenow-self.lasttime>self.host.setting.timeout/1000 or len(self.buffer)>3000):
-                buff=self.Pop()
-                self.host.Output(self,buff)
-                self.lasttime=timenow
-            
+        self.leadbyte=0 
     def Push(self,buff):
         self.lasttime=time.time()
         self.lock.acquire()
@@ -130,14 +117,14 @@ class RPCSettings:
     def __init__(self) -> None:
         self.timeout=100
         self.defaultcodepag=932
-class RPC():
+class RPC(): 
     def callbacks(self,OnConnect,OnDisconnect,OnCreate,OnDestroy,Output,Console):
-        self.OnDisconnect=OnDisconnect
-        self.OnConnect=OnConnect
-        self.OnCreate=OnCreate
-        self.OnDestroy=OnDestroy
-        self.Output=Output
-        self.Console=Console
+        self.OnDisconnect=threader(OnDisconnect)
+        self.OnConnect=threader(OnConnect)
+        self.OnCreate=threader(OnCreate)
+        self.OnDestroy=threader(OnDestroy)
+        self.Output=threader(Output)
+        self.Console=threader(Console)
     def passf(self,*parm):
         pass
     def clear(self):
@@ -156,7 +143,18 @@ class RPC():
         self.textthreadslock=threading.Lock()
         self.textthreads={}
         self.setting=RPCSettings()
-       
+        threading.Thread(target=self.outputthread).start()
+    def outputthread(self):
+        while True:
+            time.sleep(0.001)
+            timenow=time.time() 
+            self.textthreadslock.acquire()
+            for _,textthread in self.textthreads.items():
+                if len(textthread.buffer)>0 and (timenow-textthread.lasttime>self.setting.timeout/1000 or len(textthread.buffer)>3000):
+                    buff=textthread.Pop()
+                    self.Output(textthread,buff)
+                    textthread.lasttime=timenow
+            self.textthreadslock.release()
     def start(self):
         def _():
             
@@ -180,19 +178,38 @@ class RPC():
             pipeAvailableEvent = win32utils.CreateEvent(win32utils.pointer(win32utils.get_SECURITY_ATTRIBUTES()), False, False, define.PIPE_AVAILABLE_EVENT)
             win32utils.SetEvent(pipeAvailableEvent)
             win32utils.ConnectNamedPipe(hookPipe, None)
+            win32utils.CloseHandle(pipeAvailableEvent)
+            self.start() 
             processId = self.toint(win32utils.ReadFile(hookPipe, 4,None) )
-            self.OnConnect(processId) 
+            
             bit=win32utils.GetBinaryType(getpidexe(processId))
             self.ProcessRecord[processId]=ProcessRecord(hostPipe,processId,bit)
-            self.start() 
+            self.OnConnect(processId) 
+            
             while True:  
                 data=win32utils.ReadFile(hookPipe,50000,None) 
                 if len(data)==0 :break
                 self.OnMessage(data,processId,bit)
             self.ProcessRecord.pop(processId)
+            win32utils.CloseHandle(hookPipe)
+            win32utils.CloseHandle(hostPipe)
+            self.removethreads(processId)
             self.OnDisconnect((processId))
         threading.Thread(target=_,daemon=True).start()
-    
+    def removethreads(self,pid,addr=None):
+        self.textthreadslock.acquire()
+        toremove=[]
+        for textthread in self.textthreads:
+            if textthread.processId==pid:
+                if addr:
+                    if textthread.addr==addr:
+                        toremove.append(textthread)
+                else:
+                    toremove.append(textthread)
+        for _ in toremove:
+            t=self.textthreads.pop(_)
+            self.OnDestroy(_)
+        self.textthreadslock.release()
     def OnMessage(self,data,processId,bit):
         cmd=self.toint(data[:4]) 
         if(cmd==define. HOST_NOTIFICATION_TEXT):
@@ -220,17 +237,7 @@ class RPC():
                     self.ProcessRecord[processId].OnHookFound(hookcode.Generate(_HookFoundNotif.hp,processId),text)
             except:pass
         elif(cmd==define.HOST_NOTIFICATION_RMVHOOK):
-            self.textthreadslock.acquire()
-            toremove=[]
-            for textthread in self.textthreads:
-                if textthread.processId==processId and  textthread.addr==define.HookRemovedNotif.from_buffer_copy(data).address:
-                    toremove.append(textthread)
-            for _ in toremove:
-                t=self.textthreads.pop(_)
-                t.stop()
-                self.OnDestroy(_)
-            self.textthreadslock.release()
-            #todo
+            self.removethreads(processId,define.HookRemovedNotif.from_buffer_copy(data).address)
         else:
             tp=define.ThreadParam.from_buffer_copy(data)
             

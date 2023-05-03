@@ -1,5 +1,5 @@
-set targetdir=..\build\Lunatranslator_x86
-set targetdir_in=..\build\Lunatranslator_x86\LunaTranslator
+set targetdir=..\build\LunaTranslator_x86
+set targetdir_in=..\build\LunaTranslator_x86\LunaTranslator
 set pythonlib=%LOCALAPPDATA%\Programs\Python\Python37-32\Lib
 set pythonpackage=%pythonlib%\site-packages
 
