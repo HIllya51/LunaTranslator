@@ -44,7 +44,7 @@
 
 &emsp;&emsp;**Offline TTS** Поддерживает windowsTTS, VoiceRoid2 и VOICEVOX.
 
-&emsp;&emsp;**Online TTS** Поддерживает AzureTTS и Volcano TTS.
+&emsp;&emsp;**Online TTS** Поддерживает Volcano TTS.
 
 #### Обработка текста/Оптимизация перевода
 

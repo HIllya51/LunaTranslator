@@ -28,7 +28,6 @@ mkdir %targetdir_in%\pytz\zoneinfo
 copy /Y %pythonpackage%\pytz\zoneinfo\UTC %targetdir_in%\pytz\zoneinfo
 xcopy /E /I %pythonpackage%\requests %targetdir_in%\requests
 xcopy /E /I %pythonpackage%\urllib3 %targetdir_in%\urllib3
-xcopy /E /I %pythonpackage%\websockets %targetdir_in%\websockets
 xcopy  %pythonpackage%\six.py %targetdir_in%
 xcopy  %pythonpackage%\_brotli.cp37-win32.pyd %targetdir_in%
 xcopy  %pythonpackage%\_cffi_backend.cp37-win32.pyd %targetdir_in%

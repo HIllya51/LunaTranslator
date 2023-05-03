@@ -477,10 +477,6 @@
         }
     },
     "reader": {
-        "azuretts": {
-            "use": false,
-            "voice": ""
-        },
         "huoshantts": {
             "use": false,
             "voice": ""

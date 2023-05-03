@@ -46,7 +46,7 @@
 
 &emsp;&emsp;**离线TTS** 支持windowsTTS，支持VoiceRoid2，支持VOICEVOX
 
-&emsp;&emsp;**在线TTS** 支持AzureTTS，支持火山TTS
+&emsp;&emsp;**在线TTS** 支持火山TTS
 
 #### 翻译优化
 

@@ -271,12 +271,10 @@ class MAINUI(QObject) :
         if checked:
             from tts.windowstts import tts  as windowstts
             from tts.huoshantts import tts as huoshantts
-            from tts.azuretts import tts as azuretts
             from tts.voiceroid2 import tts as voiceroid2
             from tts.voicevox import tts as voicevox
             ttss={'windowstts':windowstts,
                     'huoshantts':huoshantts,
-                    'azuretts':azuretts,
                     'voiceroid2':voiceroid2,
                     'voicevox':voicevox}
             if use is None:

@@ -47,7 +47,7 @@ Support almost all translation engines you can think of, including:
 
 &emsp;&emsp;**Offline TTS** Support windowsTTS, VoiceRoid2, VOICEVOX
 
-&emsp;&emsp;**Online TTS** Support AzureTTS, huoshanTTS
+&emsp;&emsp;**Online TTS** Support huoshanTTS
 
 #### Translation optimization
 

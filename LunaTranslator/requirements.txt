@@ -9,7 +9,6 @@ requests==2.27.1
 setuptools==56.0.0
 six==1.16.0
 tzlocal==3.0
-websockets==10.4
 wrapt==1.12.1
 
 certifi==2022.12.7
