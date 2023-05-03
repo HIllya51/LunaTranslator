@@ -29,6 +29,7 @@ class texthook(basetext  ):
         self.arch=win32utils.GetBinaryType(pname)
         self.lock=threading.Lock()
         self.hookdatacollecter=OrderedDict() 
+        self.numcharactorcounter={}
         self.reverse={}
         self.forward=[]
         self.selectinghook=None
@@ -196,7 +197,13 @@ class texthook(basetext  ):
             if key==self.selectinghook:
                 self.hookselectdialog.getnewsentencesignal.emit(output)
             
+            if key not in self.numcharactorcounter:
+                self.numcharactorcounter[key]=0
+            while self.numcharactorcounter[key]>1000000:
+                _=self.hookdatacollecter[key].pop(0)
+                self.numcharactorcounter[key]-=len(_)
             self.hookdatacollecter[key].append(output) 
+            self.numcharactorcounter[key]+=len(output)
             self.hookselectdialog.update_item_new_line.emit(key,output)
             
             self.lock.release()  

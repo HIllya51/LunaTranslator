@@ -189,6 +189,7 @@ class RPC():
             while True:  
                 data=win32utils.ReadFile(hookPipe,50000,None) 
                 if len(data)==0 :break
+                if len(data)==50000:continue
                 self.OnMessage(data,processId,bit)
             self.ProcessRecord.pop(processId)
             win32utils.CloseHandle(hookPipe)
