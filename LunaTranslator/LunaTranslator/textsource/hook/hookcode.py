@@ -227,11 +227,12 @@ def GenerateHCode(hp,processId):
             process =win32utils.OpenProcess(win32con.PROCESS_VM_READ | win32con.PROCESS_QUERY_INFORMATION, False, processId)
             if process:
                 info=win32utils.VirtualQueryEx(process,hp.address) 
-                module_name =win32utils.GetModuleFileNameEx(process, info.AllocationBase)
-                if module_name:
-                    hp.type |= MODULE_OFFSET
-                    hp.address -= info.AllocationBase
-                    hp.module = module_name[module_name.rfind('\\')+1:][:120]
+                if info.AllocationBase:
+                    module_name =win32utils.GetModuleFileNameEx(process, info.AllocationBase)
+                    if module_name:
+                        hp.address -= info.AllocationBase
+                        hp.type |= MODULE_OFFSET
+                        hp.module = module_name[module_name.rfind('\\')+1:][:120]
                 win32utils.CloseHandle(process)
     except:
         print_exc()
