@@ -63,7 +63,7 @@ def ParseRCode(RCode,hp) :
     return hp
 
 def ParseHCode(HCode,hp):
-    print(HCode)
+    #print(HCode)
     if HCode[0] == 'A':
         hp.type |= BIG_ENDIAN
         hp.length_offset = 1
@@ -235,7 +235,8 @@ def GenerateHCode(hp,processId):
                         hp.module = module_name[module_name.rfind('\\')+1:][:120]
                 win32utils.CloseHandle(process)
     except:
-        print_exc()
+        pass
+        #print_exc()
     HCode += "@" + Hex(hp.address)
 
     if hp.type & MODULE_OFFSET:

@@ -10,6 +10,7 @@ sys.path.append(r'C:\Users\wcy\Documents\GitHub\LunaTranslator\LunaTranslator\Lu
 import win32utils
 import mmap
 import subprocess 
+import ctypes
 import textsource.hook.hookcode as hookcode
 from utils.hwnd import getpidexe
 import win32con
@@ -26,11 +27,13 @@ class ProcessRecord():
         self.buff=buff 
         self.OnHookFound=0
         self.mmap=mmap.mmap(0,HOOK_SECTION_SIZE,define.SHAREDMEMDPREFIX+str(processId),mmap.ACCESS_READ) 
+        self.mmaphcode=mmap.mmap(0,sizeof(define.MAX_HOOK*define.Hookcodeshared),define.HOOKCODEGET+str(processId),mmap.ACCESS_READ) 
     def GetHook(self,addr):  
-        for _hook in self.buff.from_buffer_copy(self.mmap): 
+        for i,_hook in enumerate(self.buff.from_buffer_copy(self.mmap)): 
             if(_hook.address==addr):
-                return _hook
-        return None
+                code=(define.MAX_HOOK*define.Hookcodeshared).from_buffer_copy(self.mmaphcode)[i].code
+                return _hook,code
+        return None,None
     def Send(self,struct):
         win32utils.WriteFile(self.pipe,bytes(struct))
     #calls
@@ -62,10 +65,12 @@ class ProcessRecord():
     def RemoveHook(self,addr):
         self.Send(define.RemoveHookCmd(addr));
 class TextThread():
-    def __init__(self,tp,hp,host) -> None:
+    def __init__(self,tp,_,host) -> None:
+        (texthook,hcode)=_
+        hp=texthook.hp
         self.tp=tp
         self.hp=hp
-        self.hpcode=hookcode.Generate(hp,tp.processId)
+        self.hpcode=hcode#hookcode.Generate(hp,tp.processId)
         self.host=host
         self.buffer=''
         self.lasttime=0
@@ -237,6 +242,29 @@ class RPC():
                 if text is not None and len(text)>12:
                     self.ProcessRecord[processId].OnHookFound(hookcode.Generate(_HookFoundNotif.hp,processId),text)
             except:pass
+        elif(cmd==define.HOST_NOTIFICATION_FOUND_HOOK_2):
+            if bit==0:
+                _HookFoundNotif=define.HookFoundNotif_2_32
+            else:
+                _HookFoundNotif=define.HookFoundNotif_2_64
+            _HookFoundNotif=_HookFoundNotif.from_buffer_copy(data)
+            text=_HookFoundNotif.text.text
+            #print(_HookFoundNotif.hcode,hookcode.Generate(_HookFoundNotif.hp,processId))
+            hp=hookcode.Parse(_HookFoundNotif.hcode,_HookFoundNotif.hp)
+            if len(text)>12:
+                self.ProcessRecord[processId].OnHookFound(hookcode.Generate(hp,processId),text)
+            hp.type&=~hookcode.USING_UNICODE
+            try:
+                text=win32utils.MultiByteToWideChar(_HookFoundNotif.text.text,sizeof(define.hookfoundtext),hp.codepage)
+                if text is not None and len(text)>12:
+                    self.ProcessRecord[processId].OnHookFound(hookcode.Generate(hp,processId),text)
+            except:pass
+            try:
+                hp.codepage=65001
+                text=win32utils.MultiByteToWideChar(_HookFoundNotif.text.text,sizeof(define.hookfoundtext),hp.codepage)
+                if text is not None and len(text)>12:
+                    self.ProcessRecord[processId].OnHookFound(hookcode.Generate(hp,processId),text)
+            except:pass
         elif(cmd==define.HOST_NOTIFICATION_RMVHOOK):
             self.removethreads(processId,define.HookRemovedNotif.from_buffer_copy(data).address)
         else:
@@ -244,7 +272,7 @@ class RPC():
             
             if tp not in self.textthreads:
                 self.textthreadslock.acquire()
-                self.textthreads[tp]=TextThread(tp,self.ProcessRecord[tp.processId].GetHook(tp.addr).hp,self)
+                self.textthreads[tp]=TextThread(tp,self.ProcessRecord[tp.processId].GetHook(tp.addr),self)
                 self.textthreadslock.release()
                 self.OnCreate(self.textthreads[tp])
             self.textthreads[tp].Push(data[sizeof(tp):])

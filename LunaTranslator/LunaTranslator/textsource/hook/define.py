@@ -17,6 +17,7 @@ HOST_NOTIFICATION_TEXT=0
 HOST_NOTIFICATION_NEWHOOK=1
 HOST_NOTIFICATION_FOUND_HOOK=2
 HOST_NOTIFICATION_RMVHOOK=3
+HOST_NOTIFICATION_FOUND_HOOK_2=4
 class HostCommandType(c_uint):
     pass
 HOST_COMMAND_NEW_HOOK=0
@@ -206,6 +207,21 @@ class HookFoundNotif64(Structure):
         ('hp',HookParam64),
         ('text',hookfoundtext)
     ] 
+class HookFoundNotif_2_32(Structure):
+	_fields_=[
+        ('command',HostNotificationType),
+        ('hp',HookParam32),
+        ('hcode',c_wchar*500),
+        ('text',hookfoundtext)
+    ] 
+
+class HookFoundNotif_2_64(Structure):
+	_fields_=[
+        ('command',HostNotificationType),
+        ('hp',HookParam64),
+        ('hcode',c_wchar*500),
+        ('text',hookfoundtext)
+    ] 
 class ConsoleOutputNotif(Structure):
 	_fields_=[
         ('command',HostNotificationType),
@@ -217,7 +233,12 @@ class HookRemovedNotif(Structure):
         ('address',c_uint64)
     ]  
 SHAREDMEMDPREFIX='LUNA_VNR_SECTION_'
+HOOKCODEGET='LUNA_HOOKCODE_'
 
 HOOK_PIPE_NAME="\\\\.\\pipe\\LUNA_HOOK"
 HOST_PIPE_NAME="\\\\.\\pipe\\LUNA_HOST"
 PIPE_AVAILABLE_EVENT = "LUNA_PIPE_AVAILABLE"
+
+
+class Hookcodeshared(Structure):
+    _fields_=[('code',c_wchar*500)]
