@@ -287,4 +287,18 @@
 			}
 		}
 	}
+	,
+	"ibm": {
+        "args": {
+            "apiurl": "",
+            "apikey": "",
+            "注册网址": "https://cloud.ibm.com/apidocs/language-translator"
+        },
+        "argstype": {
+            "注册网址": {
+                "type": "label",
+                "islink": true
+            }
+        }
+    }
 }
