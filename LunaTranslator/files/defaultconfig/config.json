@@ -853,6 +853,12 @@
             "color": "blue",
             "name": "自定义翻译",
 			"lang":{}
+        },
+        "ibm": {
+            "use": true,
+            "color": "blue",
+            "name": "ibm api",
+            "useproxy": true
         }
     },
 	"errorretry":true,
