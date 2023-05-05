@@ -567,7 +567,7 @@ _ConnectNamedPipe=_kernel32.ConnectNamedPipe
 def ConnectNamedPipe(pipe,lpoverlap):
     return _ConnectNamedPipe(pipe,lpoverlap)
 
-
+FILE_MAP_READ=0x4
 _OpenFileMappingW=_kernel32.OpenFileMappingW
 _OpenFileMappingW.argtypes=c_uint,c_bool,c_wchar_p
 def OpenFileMapping(access,inherit,name):
@@ -581,6 +581,7 @@ def OpenFileMapping(access,inherit,name):
 
 _MapViewOfFile=_kernel32.MapViewOfFile
 _MapViewOfFile.argtypes=c_void_p,c_uint,c_uint,c_uint,c_uint
+_MapViewOfFile.restype=c_void_p
 def MapViewOfFile(fhandel,access,size):
     return _MapViewOfFile(fhandel,access,0,0,size)
 

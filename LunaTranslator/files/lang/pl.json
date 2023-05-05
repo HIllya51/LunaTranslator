@@ -576,5 +576,6 @@
     "字符串偏移量(hex)": "Przesunięcie ciągu (hex)",
     "搜索持续时间(ms)": "Czas wyszukiwania (ms)",
     "搜索文本过短！": "Tekst wyszukiwania jest zbyt krótki!",
-    "移除非选定hook": "Usuń niezaznaczone haki"
+    "移除非选定hook": "Usuń niezaznaczone haki",
+    "ChatGPT(第三方接口)": "ChatGPT (interfejs stron trzecich)"
 }

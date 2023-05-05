@@ -222,10 +222,13 @@ class QUnFrameWindow(resizableframeless):
             "quit":self.close
         }
         adjast={"minmize":-2,"quit":-1}
+        _type={"quit":2}
+
         for btn in functions:
             belong=globalconfig['toolbutton']['buttons'][btn]['belong'] if 'belong' in globalconfig['toolbutton']['buttons'][btn] else None
             _adjast=adjast[btn] if btn in adjast else 0
-            self.takusanbuttons(1,functions[btn],_adjast,globalconfig['toolbutton']['buttons'][btn]['tip'],btn,belong)
+            tp=_type[btn] if btn in _type else 1
+            self.takusanbuttons(tp,functions[btn],_adjast,globalconfig['toolbutton']['buttons'][btn]['tip'],btn,belong)
                
     def hide_(self):  
         if self.showintab: 
@@ -575,7 +578,8 @@ class QUnFrameWindow(resizableframeless):
         
         if clickfunc:
             button.clicked.connect(functools.partial(self.callwrap,clickfunc)) 
-        
+        else:
+            button.lower()
         
         button.name=save
         button.belong=belong
@@ -584,9 +588,7 @@ class QUnFrameWindow(resizableframeless):
         else:
             button.adjast=None
         self.buttons.append(button) 
-        
-        if save=='move':
-            button.lower() 
+         
 
     def closeEvent(self, a0 ) -> None: 
         self.object.isrunning=False

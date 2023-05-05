@@ -576,5 +576,6 @@
     "字符串偏移量(hex)": "String offset (hex)",
     "搜索持续时间(ms)": "Arama uzunluğu (ms)",
     "搜索文本过短！": "Arama mesajı çok kısa!",
-    "移除非选定hook": "Seçilmemiş halkaları kaldır"
+    "移除非选定hook": "Seçilmemiş halkaları kaldır",
+    "ChatGPT(第三方接口)": "ChatGPT (Üçüncü Parti Arayüzü)"
 }

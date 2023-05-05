@@ -576,5 +576,6 @@
     "字符串偏移量(hex)": "Độ lệch chuỗi (hex)",
     "搜索持续时间(ms)": "Thời gian tìm kiếm (ms)",
     "搜索文本过短！": "Tìm kiếm văn bản quá ngắn!",
-    "移除非选定hook": "Xóa hook không chọn"
+    "移除非选定hook": "Xóa hook không chọn",
+    "ChatGPT(第三方接口)": "ChatGPT (giao diện bên thứ ba)"
 }

@@ -6,7 +6,6 @@ from ctypes import Structure,c_int,c_char,sizeof,cast,POINTER
 from utils.wrapper import threader
 import sys
 import os  
-sys.path.append(r'C:\Users\wcy\Documents\GitHub\LunaTranslator\LunaTranslator\LunaTranslator')
 import win32utils
 import mmap
 import subprocess 
@@ -26,12 +25,19 @@ class ProcessRecord():
         HOOK_SECTION_SIZE=sizeof(buff)
         self.buff=buff 
         self.OnHookFound=0
-        self.mmap=mmap.mmap(0,HOOK_SECTION_SIZE,define.SHAREDMEMDPREFIX+str(processId),mmap.ACCESS_READ) 
-        self.mmaphcode=mmap.mmap(0,sizeof(define.MAX_HOOK*define.Hookcodeshared),define.HOOKCODEGET+str(processId),mmap.ACCESS_READ) 
+        fmap1=win32utils.OpenFileMapping(win32utils.FILE_MAP_READ,False,define.SHAREDMEMDPREFIX+str(processId))
+        address1=win32utils.MapViewOfFile(fmap1, win32utils.FILE_MAP_READ,   HOOK_SECTION_SIZE)
+        
+        fmap2=win32utils.OpenFileMapping(win32utils.FILE_MAP_READ,False,define.HOOKCODEGET+str(processId))
+        address2=win32utils.MapViewOfFile(fmap2, win32utils.FILE_MAP_READ,   sizeof(define.MAX_HOOK*define.Hookcodeshared))
+
+        self.sharedtexthook=cast(address1,POINTER(buff)) 
+        self.sharedhookcode=cast(address2,POINTER(define.MAX_HOOK*define.Hookcodeshared)) 
+ 
     def GetHook(self,addr):  
-        for i,_hook in enumerate(self.buff.from_buffer_copy(self.mmap)): 
+        for i,_hook in enumerate(self.sharedtexthook.contents): 
             if(_hook.address==addr):
-                code=(define.MAX_HOOK*define.Hookcodeshared).from_buffer_copy(self.mmaphcode)[i].code
+                code=self.sharedhookcode.contents[i].code
                 return _hook,code
         return None,None
     def Send(self,struct):

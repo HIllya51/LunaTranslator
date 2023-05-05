@@ -576,5 +576,6 @@
     "字符串偏移量(hex)": "Desplazamiento de cadena (hex)",
     "搜索持续时间(ms)": "Duración de la búsqueda (ms)",
     "搜索文本过短！": "¡El texto de búsqueda es demasiado corto!",
-    "移除非选定hook": "Eliminar gancho no seleccionado"
+    "移除非选定hook": "Eliminar gancho no seleccionado",
+    "ChatGPT(第三方接口)": "Chatgpt (interfaz de terceros)"
 }

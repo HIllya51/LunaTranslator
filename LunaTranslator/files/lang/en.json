@@ -576,5 +576,6 @@
     "字符串偏移量(hex)": "String offset (hex)",
     "搜索持续时间(ms)": "Search duration (ms)",
     "搜索文本过短！": "Search text is too short!",
-    "移除非选定hook": "Remove non selected hooks"
+    "移除非选定hook": "Remove non selected hooks",
+    "ChatGPT(第三方接口)": "ChatGPT (Third Party Interface)"
 }
