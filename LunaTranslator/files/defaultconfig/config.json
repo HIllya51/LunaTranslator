@@ -843,6 +843,11 @@
           "color": "blue",
           "name": "ChatGPT"
         },
+		"chatgpt-3rd-party": {
+          "use": false,
+          "color": "blue",
+          "name": "ChatGPT(第三方接口)"
+        },
 		"hanshant": {
             "use": false,
             "color": "blue",
