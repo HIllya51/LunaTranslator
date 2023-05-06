@@ -860,7 +860,7 @@
 			"lang":{}
         },
         "ibm": {
-            "use": true,
+            "use": false,
             "color": "blue",
             "name": "ibm api",
             "useproxy": true
