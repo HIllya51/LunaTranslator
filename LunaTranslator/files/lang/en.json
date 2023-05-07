@@ -577,5 +577,7 @@
     "搜索持续时间(ms)": "Search duration (ms)",
     "搜索文本过短！": "Search text is too short!",
     "移除非选定hook": "Remove non selected hooks",
-    "ChatGPT(第三方接口)": "ChatGPT (Third Party Interface)"
+    "ChatGPT(第三方接口)": "ChatGPT (Third Party Interface)",
+    "不能为空": "Cannot be empty",
+    "请求超时": "request timeout"
 }

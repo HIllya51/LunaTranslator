@@ -55,8 +55,8 @@ def getocrgrid(self) :
             
             [('OCR自动化方法',8),'',(self.getsimplecombobox(_TRL(['分析图像更新','周期执行','分析图像更新+周期执行']),globalconfig,'ocr_auto_method'),12)], 
             [(("执行周期(s)"),12),(self.getspinbox(0.1,100,globalconfig,'ocr_interval',double=True,step=0.1  ),4)],  
-            [(("图像稳定性阈值"),12),(self.getspinbox(0.8,1,globalconfig,'ocr_stable_sim'  ,double=True,step=0.01 ,dec=3),4),], 
-            [(("图像一致性阈值"),12),(self.getspinbox(0.8,1,globalconfig,'ocr_diff_sim'  ,double=True,step=0.01 ,dec=3),4),], 
+            [(("图像稳定性阈值"),12),(self.getspinbox(0,1,globalconfig,'ocr_stable_sim'  ,double=True,step=0.01 ,dec=3),4),], 
+            [(("图像一致性阈值"),12),(self.getspinbox(0,1,globalconfig,'ocr_diff_sim'  ,double=True,step=0.01 ,dec=3),4),], 
 
             [''],
             [(("OCR范围框颜色"),12),(self.getcolorbutton(globalconfig,'ocrrangecolor',callback=lambda  : changeocrcolorcallback(self),name='ocrrangecolor_button'),1)],

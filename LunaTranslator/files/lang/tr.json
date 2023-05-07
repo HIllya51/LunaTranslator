@@ -577,5 +577,7 @@
     "搜索持续时间(ms)": "Arama uzunluğu (ms)",
     "搜索文本过短！": "Arama mesajı çok kısa!",
     "移除非选定hook": "Seçilmemiş halkaları kaldır",
-    "ChatGPT(第三方接口)": "ChatGPT (Üçüncü Parti Arayüzü)"
+    "ChatGPT(第三方接口)": "ChatGPT (Üçüncü Parti Arayüzü)",
+    "不能为空": "Boş olamaz",
+    "请求超时": "isteme zamanı aşımı"
 }

@@ -299,13 +299,14 @@ class MAINUI(QObject) :
             self.textsource=embedded(self.textgetmethod,self.hookselectdialog,pids,hwnd,pexe, self)  
          
     #@threader
-    def starttextsource(self,use=None,checked=True,waitforautoinit=False):   
+    def starttextsource(self,use=None,checked=True):   
         self.rect=None 
         self.translation_ui.showhidestate=False 
         self.translation_ui.refreshtooliconsignal.emit()
         self.range_ui.hide() 
-        self.settin_ui.selectbutton.setEnabled(globalconfig['sourcestatus']['texthook']['use'] or globalconfig['sourcestatus']['embedded']['use']) 
+        self.settin_ui.selectbutton.setEnabled(globalconfig['sourcestatus']['texthook']['use']) 
         self.settin_ui.selecthookbutton.setEnabled(globalconfig['sourcestatus']['texthook']['use'] )
+        self.settin_ui.selectbuttonembed.setEnabled(globalconfig['sourcestatus']['embedded']['use']) 
         self.textsource=None
         if checked: 
             classes={'ocr':ocrtext,'copy':copyboard,'texthook':None,'embedded':None,'txt':txt} 
@@ -315,8 +316,7 @@ class MAINUI(QObject) :
             if use is None:
                 return
             elif use=='texthook' or use=='embedded':
-                if waitforautoinit==False:     
-                    self.AttachProcessDialog.showNormal() 
+                pass
             elif use=='ocr':
                 self.textsource=classes[use](self.textgetmethod,self)   
             else:
@@ -497,7 +497,7 @@ class MAINUI(QObject) :
           
         
         print(time.time()-filestart)
-        self.starttextsource(waitforautoinit=True)  
+        self.starttextsource()  
         threading.Thread(target=self.autocheckhwndexists).start()   
         threading.Thread(target=self.autohookmonitorthread).start()    
         threading.Thread(target=minmaxmoveobservefunc,args=(self.translation_ui,)).start()

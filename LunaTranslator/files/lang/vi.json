@@ -577,5 +577,7 @@
     "搜索持续时间(ms)": "Thời gian tìm kiếm (ms)",
     "搜索文本过短！": "Tìm kiếm văn bản quá ngắn!",
     "移除非选定hook": "Xóa hook không chọn",
-    "ChatGPT(第三方接口)": "ChatGPT (giao diện bên thứ ba)"
+    "ChatGPT(第三方接口)": "ChatGPT (giao diện bên thứ ba)",
+    "不能为空": "Không thể để trống",
+    "请求超时": "Thời gian chờ yêu cầu"
 }

@@ -213,7 +213,7 @@ class basetrans:
                         msg=str(e)
                         retry=False
                     elif isinstance(e,TimeOut):
-                        msg='timeout'
+                        msg=str(e)
                     else:
                         print_exc()
                         msg=str(type(e))[8:-2]+' '+str(e).replace('\n','').replace('\r','')

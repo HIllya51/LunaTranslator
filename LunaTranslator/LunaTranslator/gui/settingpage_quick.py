@@ -3,6 +3,7 @@ import functools
 from utils.config import globalconfig   
 from traceback import print_exc 
 from utils.winsyshotkey import SystemHotkey 
+from PyQt5.QtWidgets import QComboBox
 import pyperclip
 from utils.somedef import key_first,key_first_reg,key_second,key_second_reg
 def setTab_quick_direct(self):
@@ -52,6 +53,23 @@ def setTab_quick(self):
     
  
     self.tabadd_lazy(self.tab_widget, ('快捷按键'), lambda :setTab_quick_lazy(self))   
+
+class onpopuploadcombobox(QComboBox): 
+    def __init__(self, idx,lst,parent = None):
+        super(onpopuploadcombobox,self).__init__(parent)
+        self.idx=idx
+        if idx>=0:
+            self.addItem(lst[idx])
+        self.lst=lst 
+        self.hasshown=False 
+    def showPopup(self):  
+        if self.hasshown==False:
+            self.hasshown=True
+            self.clear()
+            self.addItems(self.lst)
+            self.setCurrentIndex(self.idx)
+            self.currentIndexChanged.connect(self.callback)
+        super().showPopup() 
 def setTab_quick_lazy(self) :
   
         
@@ -63,10 +81,14 @@ def setTab_quick_lazy(self) :
         for name in globalconfig['quick_setting']['all']: 
                 if name not in self.bindfunctions:
                     continue
-                key1=self.getsimplecombobox(key_first,globalconfig['quick_setting']['all'][name],'key1')
-                key2=self.getsimplecombobox(key_second,globalconfig['quick_setting']['all'][name],'key2') 
-                key1.currentIndexChanged.connect(functools.partial(__changekey,self,name,'key1',key1,key2))
-                key2.currentIndexChanged.connect(functools.partial(__changekey,self,name,'key2',key1,key2))
+                key1=onpopuploadcombobox(globalconfig['quick_setting']['all'][name]['key1'],key_first)
+                #key1=self.getsimplecombobox(key_first,globalconfig['quick_setting']['all'][name],'key1')
+                key2=onpopuploadcombobox(globalconfig['quick_setting']['all'][name]['key2'],key_second)
+                #key2=self.getsimplecombobox(key_second,globalconfig['quick_setting']['all'][name],'key2') 
+                #key1.currentIndexChanged.connect(functools.partial(__changekey,self,name,'key1',key1,key2))
+                #key2.currentIndexChanged.connect(functools.partial(__changekey,self,name,'key2',key1,key2))
+                key1.callback=(functools.partial(__changekey,self,name,'key1',key1,key2))
+                key2.callback=(functools.partial(__changekey,self,name,'key2',key1,key2))
                 
                 grids.append(
                     [((globalconfig['quick_setting']['all'][name]['name']),4),

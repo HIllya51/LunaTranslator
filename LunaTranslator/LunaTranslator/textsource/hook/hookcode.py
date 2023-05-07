@@ -22,7 +22,7 @@ HOOK_ENGINE = 0x8000
 HOOK_ADDITIONAL = 0x10000
 KNOWN_UNSTABLE = 0x20000
 def ConsumeHexInt(HCode):
-    match = re.match(r'^(-?[0-9a-fA-F]+)', HCode)
+    match = re.match(r'^([+-]?[0-9a-fA-F]+)', HCode)
     if match:
         value = int(match.group(1), 16)
         HCode = HCode[match.end():]

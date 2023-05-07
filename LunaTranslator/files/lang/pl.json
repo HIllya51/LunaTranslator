@@ -577,5 +577,7 @@
     "搜索持续时间(ms)": "Czas wyszukiwania (ms)",
     "搜索文本过短！": "Tekst wyszukiwania jest zbyt krótki!",
     "移除非选定hook": "Usuń niezaznaczone haki",
-    "ChatGPT(第三方接口)": "ChatGPT (interfejs stron trzecich)"
+    "ChatGPT(第三方接口)": "ChatGPT (interfejs stron trzecich)",
+    "不能为空": "Nie może być pusty",
+    "请求超时": "limit czasu żądania"
 }
