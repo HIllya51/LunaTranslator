@@ -60,6 +60,13 @@ def getpidexe_x(pid,force=False):
                 name_ = win32utils.GetProcessFileName( hwnd1)
         win32utils.CloseHandle(hwnd1)
         return name_
+def is64bit(pid):
+        hprocess=win32utils.OpenProcess(win32con.PROCESS_QUERY_INFORMATION,False,pid)
+        if hprocess==0:return False
+        res=win32utils.Is64bit(hprocess)
+        win32utils.CloseHandle(hprocess)
+        return res
+
 def getpidexe(pid,force=False):
         name_=getpidexe_x(pid,force)
         if force and  name_ is None:

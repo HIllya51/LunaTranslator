@@ -6,6 +6,7 @@ import threading,json
 from utils import somedef
 import platform
 import os
+from utils.hwnd import is64bit
 from utils.subproc import subproc_w
 import     embedded.sharedmem3 as sharedmem  
 import embedded.socketpack3 as socketpack 
@@ -189,8 +190,9 @@ class embedded(basetext  ):
         self.newline=queue.Queue()
         self.agentreceiveddata='' 
         self.mem = sharedmem.VnrAgentSharedMemory( )
-        b=win32utils.GetBinaryType(pname)
-        if b!=0:
+        #b=win32utils.GetBinaryType(pname)
+        b=is64bit(pids[0])
+        if b:
             self.embeddedfailed(_TR("暂不支持64程序"))
         else:
             self.attachProcess(pids[0])    

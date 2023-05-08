@@ -199,7 +199,10 @@ def GetProcessFileName(hHandle):
         ):
         return 
        
-    
+    #_GetModuleFileNameExW 
+    #   PROCESS_ALL_ACUESS  可以直接获取正确文件名，但是当目标权限不足时会失败 
+    #   PROCESS_QUERY_LIMITED_INFORMATION   有时也会失败，成功时对于正常磁盘文件返回正确文件名，对于内存映射磁盘/网络存储返回内核文件名
+    #_GetProcessImageFileNameW和QueryFullProcessImageName获取的都是内核文件名，且PROCESS_QUERY_LIMITED_INFORMATION和PROCESS_ALL_ACUESS一样，都不会失败
     v=w.value
     if v[0]=='\\':
         device=v.split('\\')
@@ -226,16 +229,16 @@ def GetProcessFileName(hHandle):
                 network_drive_map[ctypes.cast(buf,POINTER(UNIVERSAL_NAME_INFO)).contents.lpUniversalName]=chr(A)+':'
 
 
-        try:
-            v=v.replace(device,mp[device])
+        
+        if v.startswith(device):
+            v=mp[device]+v[len(device):]
             return v
-        except: 
+        else: 
                 # Try network drive
                 for network_path, drive_letter in network_drive_map.items():
                     if v.startswith(network_path):
-                        v = v.replace(network_path, drive_letter)
+                        v=drive_letter+v[len(network_path):]
                         return v
-                print_exc()
                 return None
     else:
         return v
@@ -634,4 +637,32 @@ _IsDBCSLeadByteEx=_kernel32.IsDBCSLeadByteEx
 _IsDBCSLeadByteEx.argtypes=c_uint,c_byte
 def IsDBCSLeadByteEx(codepage,char):
     return _IsDBCSLeadByteEx(codepage,char)
- 
+
+_GetNativeSystemInfo=_kernel32.GetNativeSystemInfo
+_GetNativeSystemInfo.argtypes=c_void_p,
+
+class SYSTEM_INFO(Structure):
+    _fields_=[
+        ('wProcessorArchitecture',c_ushort),
+        ('wReserved',c_ushort),
+        ('dwPageSize',c_uint),
+        ('lpMinimumApplicationAddress',c_void_p),
+        ('lpMaximumApplicationAddress',c_void_p),
+        ('dwActiveProcessorMask',c_void_p),
+        ('dwNumberOfProcessors',c_uint),
+        ('dwProcessorType',c_uint),
+        ('dwAllocationGranularity',c_uint),
+        ('wProcessorLevel',c_ushort),
+        ('wProcessorRevision',c_ushort),
+    ]
+def GetNativeSystemInfo():
+    _SYSTEM_INFO=SYSTEM_INFO()
+    _GetNativeSystemInfo(pointer(_SYSTEM_INFO))
+    return _SYSTEM_INFO
+
+def Is64bit(hprocess):
+    sysinfo=GetNativeSystemInfo()
+    if(sysinfo.wProcessorArchitecture==9 or sysinfo.wProcessorArchitecture==6):
+        return not IsWow64Process(hprocess)
+    else:
+        return False

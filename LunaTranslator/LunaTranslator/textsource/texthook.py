@@ -4,6 +4,8 @@ import re ,os
 import time,win32utils
 from traceback import print_exc
 from collections import OrderedDict
+
+from utils.hwnd import is64bit
 from textsource.hook.hookcode import Parse
 from utils import somedef
 import textsource.hook.define as define
@@ -26,7 +28,7 @@ class texthook(basetext  ):
         if len(autostarthookcode)==0:
             hookselectdialog.realshowhide.emit(True)
         self.newline=Queue()  
-        self.arch=win32utils.GetBinaryType(pname)
+        self.is64bit=is64bit(pids[0])
         self.lock=threading.Lock()
         self.hookdatacollecter=OrderedDict() 
         self.numcharactorcounter={}
@@ -60,7 +62,7 @@ class texthook(basetext  ):
         self.setdelay()
         
         for pid in self.pids:
-            self.RPC.Attach(pid,{0:'32',6:'64'}[self.arch])
+            self.RPC.Attach(pid,'64' if self.is64bit else '32')
         super(texthook,self).__init__(textgetmethod,*self.checkmd5prefix(pname))
      
     def onremovehook(self,tp): 
@@ -121,7 +123,7 @@ class texthook(basetext  ):
     def setcodepage(self):
         self.RPC.setting.defaultcodepag=self.codepage() 
     def defaultsp(self):
-        if self.arch==0:
+        if not self.is64bit:
             usestruct=define.SearchParam32()
             usestruct.pattern=bytes([0x55,0x8b,0xec])
             usestruct.length=3

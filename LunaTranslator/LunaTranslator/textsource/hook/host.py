@@ -9,19 +9,20 @@ import os
 import win32utils
 import mmap
 import subprocess 
+from utils.hwnd import is64bit
 import ctypes
 import textsource.hook.hookcode as hookcode
 from utils.hwnd import getpidexe
 import win32con
 class ProcessRecord():
-    def __init__(self,pipe,processId,bit) -> None:
+    def __init__(self,pipe,processId,_is64bit) -> None:
         self.pipe=pipe
         self.processId=processId
-        self.bit=bit
-        if self.bit==0:
-            buff=define.MAX_HOOK*define.TextHook32
-        else:
+        self._is64bit=_is64bit
+        if _is64bit:
             buff=define.MAX_HOOK*define.TextHook64
+        else:
+            buff=define.MAX_HOOK*define.TextHook32
         HOOK_SECTION_SIZE=sizeof(buff)
         self.buff=buff 
         self.OnHookFound=0
@@ -48,12 +49,12 @@ class ProcessRecord():
     def RemoveHook(self,address): 
         self.Send((define.RemoveHookCmd(address)))
     def InsertHookCode(self,string):
-        if self.bit==0:
-            hp_t=define.HookParam32
-            cmd_t=define.InsertHookCmd32
-        else:
+        if self._is64bit:
             hp_t=define.HookParam64
             cmd_t=define.InsertHookCmd64
+        else:
+            hp_t=define.HookParam32
+            cmd_t=define.InsertHookCmd32
         hp=hookcode.Parse(string,hp_t())
         print(hp)
         if hp:
@@ -63,10 +64,10 @@ class ProcessRecord():
             return False
     def FindHooks(self,sp,OnHookFound):
         self.OnHookFound=OnHookFound
-        if self.bit==0:
-            self.Send(define.FindHookCmd32(sp))
-        else:
+        if self._is64bit:
             self.Send(define.FindHookCmd64(sp))
+        else:
+            self.Send(define.FindHookCmd32(sp))
         self.OnHookFound=OnHookFound
     def RemoveHook(self,addr):
         self.Send(define.RemoveHookCmd(addr));
@@ -193,15 +194,15 @@ class RPC():
             self.start() 
             processId = self.toint(win32utils.ReadFile(hookPipe, 4,None) )
             
-            bit=win32utils.GetBinaryType(getpidexe(processId))
-            self.ProcessRecord[processId]=ProcessRecord(hostPipe,processId,bit)
+            _is64bit=is64bit(processId)
+            self.ProcessRecord[processId]=ProcessRecord(hostPipe,processId,_is64bit)
             self.OnConnect(processId) 
             
             while True:  
                 data=win32utils.ReadFile(hookPipe,50000,None) 
                 if len(data)==0 :break
                 if len(data)==50000:continue
-                self.OnMessage(data,processId,bit)
+                self.OnMessage(data,processId,_is64bit)
             self.ProcessRecord.pop(processId)
             win32utils.CloseHandle(hookPipe)
             win32utils.CloseHandle(hostPipe)
@@ -222,16 +223,16 @@ class RPC():
             t=self.textthreads.pop(_)
             self.OnDestroy(_)
         self.textthreadslock.release()
-    def OnMessage(self,data,processId,bit):
+    def OnMessage(self,data,processId,_is64bit):
         cmd=self.toint(data[:4]) 
         if(cmd==define. HOST_NOTIFICATION_TEXT):
             self.Console(define.ConsoleOutputNotif.from_buffer_copy(data).message.decode('ascii'))
         elif(cmd==define.HOST_NOTIFICATION_FOUND_HOOK):
             #print("HOST_NOTIFICATION_FOUND_HOOK")
-            if bit==0:
-                _HookFoundNotif=define.HookFoundNotif32
-            else:
+            if _is64bit:
                 _HookFoundNotif=define.HookFoundNotif64
+            else:
+                _HookFoundNotif=define.HookFoundNotif32
             _HookFoundNotif=_HookFoundNotif.from_buffer_copy(data)
             text=_HookFoundNotif.text.text
             if len(text)>12:
@@ -249,10 +250,10 @@ class RPC():
                     self.ProcessRecord[processId].OnHookFound(hookcode.Generate(_HookFoundNotif.hp,processId),text)
             except:pass
         elif(cmd==define.HOST_NOTIFICATION_FOUND_HOOK_2):
-            if bit==0:
-                _HookFoundNotif=define.HookFoundNotif_2_32
-            else:
+            if _is64bit:
                 _HookFoundNotif=define.HookFoundNotif_2_64
+            else:
+                _HookFoundNotif=define.HookFoundNotif_2_32
             _HookFoundNotif=_HookFoundNotif.from_buffer_copy(data)
             text=_HookFoundNotif.text.text
             #print(_HookFoundNotif.hcode,hookcode.Generate(_HookFoundNotif.hp,processId))
