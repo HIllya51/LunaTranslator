@@ -11,6 +11,7 @@ xcopy .\LunaTranslator\ocrengines %targetdir_in%\ocrengines /e /y /I
 xcopy .\LunaTranslator\postprocess %targetdir_in%\postprocess /e /y /I
 xcopy .\LunaTranslator\translator %targetdir_in%\translator /e /y /I
 xcopy .\LunaTranslator\cishu %targetdir_in%\cishu /e /y /I
+xcopy .\LunaTranslator\tts %targetdir_in%\tts /e /y /I
 
 xcopy /E /I %pythonpackage%\bcrypt %targetdir_in%\bcrypt
 xcopy /E /I %pythonpackage%\certifi %targetdir_in%\certifi
@@ -51,6 +52,10 @@ rmdir /S /Q %targetdir_in%\PyQt5\qt-plugins\platformthemes
 rmdir /S /Q %targetdir_in%\PyQt5\qt-plugins\iconengines
 del %targetdir_in%\libssl-1_1-x64.dll
 del %targetdir_in%\libcrypto-1_1-x64.dll
+
+
+del %targetdir%\files\plugins\ocr32.dll
+del %targetdir%\files\plugins\winsharedutils32.dll
 
 xcopy ..\dependence\api-ms-win_64 %targetdir_in% /e /y /I
  

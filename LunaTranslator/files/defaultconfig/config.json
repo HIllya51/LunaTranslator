@@ -479,21 +479,25 @@
     "reader": {
         "huoshantts": {
             "use": false,
-            "voice": ""
+            "voice": "",
+            "name":"火山TTS"
         },
         "windowstts": {
             "use": false,
-            "voice": ""
+            "voice": "",
+            "name":"WindowsTTS"
         },
         "voiceroid2": {
             "use": false,
             "voice": "",
-            "path": ""
+            "path": "",
+            "name":"VoiceRoid2"
         },
         "voicevox": {
             "use": false,
             "voice": "",
-            "path": ""
+            "path": "",
+            "name":"VOICEVOX"
         }
     },
 	"hirasetting":{

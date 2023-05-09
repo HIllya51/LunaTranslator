@@ -39,6 +39,7 @@ from gui.settin import Settin
 from gui.attachprocessdialog import AttachProcessDialog
 import win32con 
 import re 
+import winsharedutils
 from utils.post import POSTSOLVE
 from utils.vnrshareddict import vnrshareddict 
 
@@ -268,31 +269,26 @@ class MAINUI(QObject) :
         except:
             pass
         self.reader=None
-        if checked:
-            from tts.windowstts import tts  as windowstts
-            from tts.huoshantts import tts as huoshantts
-            from tts.voiceroid2 import tts as voiceroid2
-            from tts.voicevox import tts as voicevox
-            ttss={'windowstts':windowstts,
-                    'huoshantts':huoshantts,
-                    'voiceroid2':voiceroid2,
-                    'voicevox':voicevox}
+        self.settin_ui.voicelistsignal.emit([],-1)
+        if checked:  
             if use is None:
                 
-                for key in ttss:
-                    if globalconfig['reader'][key]['use']:
+                for key in globalconfig['reader']:
+                    if globalconfig['reader'][key]['use'] and os.path.exists(('./LunaTranslator/tts/'+key+'.py')):
                         use=key  
                         break
             if use:
+                aclass=importlib.import_module('tts.'+use).TTS  
+                
+                
                 self.reader_usevoice=use
-                self.reader=ttss[use]( self.settin_ui.voicelistsignal,self.settin_ui.mp3playsignal) 
+                self.reader=aclass( use,self.settin_ui.voicelistsignal,self.settin_ui.mp3playsignal) 
             
             
     def selectprocess(self,selectedp): 
         self.textsource=None
         pids,pexe,hwnd=(  selectedp)   
         checkifnewgame(pexe) 
-        
         if globalconfig['sourcestatus']['texthook']['use']:
             self.textsource=texthook(self.RPC,self.textgetmethod,self.hookselectdialog,pids,hwnd,pexe)  
         elif globalconfig['sourcestatus']['embedded']['use']:
@@ -449,6 +445,7 @@ class MAINUI(QObject) :
                 self.translation_ui.refreshtooliconsignal.emit()
         while self.isrunning:
             if self.textsource:
+                
                 hwnd=self.textsource.hwnd
                 
                 if hwnd==0:
@@ -469,8 +466,14 @@ class MAINUI(QObject) :
                     elif 'once' not in dir(self.textsource):
                         self.textsource.once=True
                         setandrefresh(True)
+                if len(self.textsource.pids):
+                    _mute=winsharedutils.GetProcessMute(self.textsource.pids[0])  
+                    if self.translation_ui.processismuteed!=_mute:
+                        self.translation_ui.processismuteed=_mute
+                        self.translation_ui.refreshtooliconsignal.emit()
             else: 
                 setandrefresh(False)
+            
             time.sleep(0.5) 
     def aa(self):   
         self.translation_ui =gui.translatorUI.QUnFrameWindow(self)   

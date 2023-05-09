@@ -1,5 +1,5 @@
  
-import time
+import time,os
 from traceback import print_exc 
 from utils.ocrdll import ocrwrapper
 from utils.config import globalconfig,_TR
@@ -137,7 +137,7 @@ class ocrtext(basetext):
     def ocrtest(self,img):
         use=None
         for k in globalconfig['ocr']:
-            if globalconfig['ocr'][k]['use']==True:
+            if globalconfig['ocr'][k]['use']==True and os.path.exists(('./LunaTranslator/ocrengines/'+k+'.py')):
                 use=k
                 break
         if use is None:

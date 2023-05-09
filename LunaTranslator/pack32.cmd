@@ -11,6 +11,7 @@ xcopy .\LunaTranslator\ocrengines %targetdir_in%\ocrengines /e /y /I
 xcopy .\LunaTranslator\postprocess %targetdir_in%\postprocess /e /y /I
 xcopy .\LunaTranslator\translator %targetdir_in%\translator /e /y /I
 xcopy .\LunaTranslator\cishu %targetdir_in%\cishu /e /y /I
+xcopy .\LunaTranslator\tts %targetdir_in%\tts /e /y /I
 
 xcopy /E /I %pythonpackage%\bcrypt %targetdir_in%\bcrypt
 xcopy /E /I %pythonpackage%\certifi %targetdir_in%\certifi
@@ -56,7 +57,10 @@ del %targetdir_in%\libcrypto-1_1-x64.dll
 
 del %targetdir%\files\plugins\ocr.dll
 del %targetdir%\files\plugins\LunaEmbedder\Qt5Core.dll
-copy ..\dependence\ocr32 %targetdir%\files\plugins
+
+
+del %targetdir%\files\plugins\ocr64.dll
+del %targetdir%\files\plugins\winsharedutils64.dll
 
 copy ..\CXXplugins\fugashi32-py37\fugashi-1.2.1\libmecab.dll %targetdir_in%\
 

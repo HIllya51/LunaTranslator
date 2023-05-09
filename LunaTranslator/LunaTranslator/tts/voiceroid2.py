@@ -3,40 +3,39 @@ from utils.config import globalconfig
 import time
 import os ,threading,win32utils,win32con
 from traceback import print_exc
+from tts.basettsclass import TTSbase 
+
 from utils.subproc import subproc_w
-class tts():
+class TTS(TTSbase):
     def end(self):
         try:
             self.engine.kill()
         except:
             pass
-    def __init__(self,showlist ,mp3playsignal ): 
-         
-        self.voicelist=[]
-        if os.path.exists(globalconfig['reader']['voiceroid2']['path'])==False:
-            showlist.emit(self.voicelist)
-            return
-        l=os.listdir(os.path.join(globalconfig['reader']['voiceroid2']['path'],'Voice'))
+    def init(self): 
+        self.path=''
+        self.voice=''
+        self.rate=''
+        self.checkpath()
+    def getvoicelist(self):
+        voicelist=[]
+        if os.path.exists(self.config['path'])==False:
+            return []
+        l=os.listdir(os.path.join(self.config['path'],'Voice'))
         for _ in l:
             if _!='index.dat':
-                self.voicelist.append(_)
-         
-        showlist.emit(self.voicelist)
-        if  len(self.voicelist)>0 and globalconfig['reader']['voiceroid2']['voice'] not in self.voicelist:
-            globalconfig['reader']['voiceroid2']['voice']=self.voicelist[0]
-        self.speaking=None
-        self.mp3playsignal=mp3playsignal
-        self.path=None
-        self.checkpath()
+                voicelist.append(_)
+        return voicelist
+          
     def checkpath(self):
-        if globalconfig["reader"]["voiceroid2"]["path"]=="":
+        if self.config["path"]=="":
             return False
-        if os.path.exists(globalconfig["reader"]["voiceroid2"]["path"])==False:
+        if os.path.exists(self.config["path"])==False:
             return False
-        if   globalconfig["reader"]["voiceroid2"]["path"]!=self.path or globalconfig["reader"]["voiceroid2"]["voice"]!=self.voice or globalconfig["ttscommon"]["rate"]!=self.rate:
-            self.path=globalconfig["reader"]["voiceroid2"]["path"]
+        if   self.config["path"]!=self.path or self.config["voice"]!=self.voice or globalconfig["ttscommon"]["rate"]!=self.rate:
+            self.path=self.config["path"]
             self.rate=globalconfig["ttscommon"]["rate"]
-            self.voice=globalconfig["reader"]["voiceroid2"]["voice"]
+            self.voice=self.config["voice"]
             fname=str(time.time()) 
             savepath=os.path.join(os.getcwd(),'cache/tts',fname+'.wav')
             dllpath=os.path.join(os.getcwd(),'files/plugins/voicevoid2/aitalked.dll')
@@ -49,24 +48,14 @@ class tts():
             pipename='\\\\.\\Pipe\\voiceroid2_'+t
             waitsignal='voiceroid2waitload_'+t
 
-            self.engine=subproc_w(f'"{exepath}" "{globalconfig["reader"]["voiceroid2"]["path"]}" "{dllpath}" {globalconfig["reader"]["voiceroid2"]["voice"]} 1 {(globalconfig["ttscommon"]["rate"]+10.0)/(20.0)*1+0.5} "{savepath}"  {pipename} {waitsignal}',name='voicevoid2')
+            self.engine=subproc_w(f'"{exepath}" "{self.config["path"]}" "{dllpath}" {self.config["voice"]} 1 {(globalconfig["ttscommon"]["rate"]+10.0)/(20.0)*1+0.5} "{savepath}"  {pipename} {waitsignal}',name='voicevoid2')
             
             secu=win32utils.get_SECURITY_ATTRIBUTES()
             win32utils.WaitForSingleObject(win32utils.CreateEvent(win32utils.pointer(secu),False, False, waitsignal),win32utils.INFINITE); 
             win32utils.WaitNamedPipe(pipename,win32con.NMPWAIT_WAIT_FOREVER)
             self.hPipe = win32utils.CreateFile( pipename, win32con.GENERIC_READ | win32con.GENERIC_WRITE, 0,
                     None, win32con.OPEN_EXISTING, win32con.FILE_ATTRIBUTE_NORMAL, None);
-    def read(self,content):
-        threading.Thread(target=self.read_t,args=(content,)).start()
-    def read_t(self,content):  
-        if len(content)==0:
-            return
-        if len(self.voicelist)==0:
-            return 
-        if globalconfig['reader']['voiceroid2']['voice'] not in self.voicelist:
-            return
-        i=self.voicelist.index(globalconfig['reader']['voiceroid2']['voice'])
-         
+    def speak(self,content,rate,voice,voice_idx):  
         self.checkpath()
         #def _():
         if True:     
@@ -81,5 +70,6 @@ class tts():
             
             fname=win32utils.ReadFile(self.hPipe,1024,None).decode('utf8')
             if os.path.exists(fname):
-                self.mp3playsignal.emit(fname,globalconfig["ttscommon"]["volume"])
+                return(fname)
+        
              

@@ -11,7 +11,8 @@ class basetext:
         self.sqlqueue=queue.Queue()
         if 'hwnd' not in dir(self):
             self.hwnd=0
-        
+        if 'pids' not in dir(self):
+            self.pids=[]
         #self.sqlfname='./transkiroku/'+self.prefix+'.sqlite'
         self.sqlfname_all='./translation_record/'+self.prefix+'.pretrans_common.sqlite'
         

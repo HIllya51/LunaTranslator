@@ -4,22 +4,22 @@ import time
 import os 
 import requests,json,threading
 
+from tts.basettsclass import TTSbase 
+
 from utils.subproc import subproc_w
-class tts():
+class TTS(TTSbase):
     def end(self):
         try:
             self.engine.kill()
         except:
             pass
-    def __init__(self,showlist ,mp3playsignal): 
-        
-        self.voicelist=[]
-        showlist.emit(self.voicelist)
-        if os.path.exists(globalconfig['reader']['voicevox']['path'])==False or \
-            os.path.exists(os.path.join(globalconfig['reader']['voicevox']['path'],'run.exe'))==False   :
+    def init(self): 
+         
+        if os.path.exists(self.config['path'])==False or \
+            os.path.exists(os.path.join(self.config['path'],'run.exe'))==False   :
             return
-        self.engine=subproc_w(os.path.join(globalconfig['reader']['voicevox']['path'],'run.exe'),cwd=globalconfig['reader']['voicevox']['path'] ,name='voicevox')
-        
+        self.engine=subproc_w(os.path.join(self.config['path'],'run.exe'),cwd=self.config['path'] ,name='voicevox')
+    def getvoicelist(self):
         while True:
             try:
                   
@@ -42,31 +42,13 @@ class tts():
                 }
 
                 response = requests.get('http://127.0.0.1:50021/speakers',  headers=headers,proxies={'http':None,'https':None}).json()
-                
+                self.voicelist=[_['name'] for _ in response]
             except:
 
                 time.sleep(1)
             break
-        self.voicelist=[_['name'] for _ in response]
-        showlist.emit(self.voicelist)
-        if  len(self.voicelist)>0 and globalconfig['reader']['voicevox']['voice'] not in self.voicelist:
-            globalconfig['reader']['voicevox']['voice']=self.voicelist[0]
-        if  len(self.voicelist)>0 and globalconfig['reader']['voicevox']['voice'] not in self.voicelist:
-            globalconfig['reader']['voicevox']['voice']=self.voicelist[0]
         
-        self.mp3playsignal=mp3playsignal
-    def read(self,content):
-        threading.Thread(target=self.read_t,args=(content,)).start()
-         
-    def read_t(self,content):
-        if len(content)==0:
-            return
-        if len(self.voicelist)==0:
-            return 
-        if globalconfig['reader']['voicevox']['voice'] not in self.voicelist:
-            return
-        i=self.voicelist.index(globalconfig['reader']['voicevox']['voice'])
-         
+    def speak(self,content,rate,voice,voiceidx):
         
         #def _():
         if True:     
@@ -77,7 +59,7 @@ class tts():
             }
 
             params = {
-                'speaker': i,
+                'speaker':voiceidx,
                 'text':content
             }
  
@@ -88,10 +70,10 @@ class tts():
                 'Content-Type': 'application/json',
             } 
             params = {
-                'speaker': i,
+                'speaker': voiceidx,
             }  
             response = requests.post('http://localhost:50021/synthesis', params=params, headers=headers, data=json.dumps(response.json()) )
             with open('./cache/tts/'+fname+'.wav','wb') as ff:
                 ff.write(response.content)
-            self.mp3playsignal.emit('./cache/tts/'+fname+'.wav',globalconfig["ttscommon"]["volume"])
+            return ('./cache/tts/'+fname+'.wav')
           

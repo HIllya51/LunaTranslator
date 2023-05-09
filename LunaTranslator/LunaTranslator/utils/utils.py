@@ -60,16 +60,20 @@ def quote_identifier(s, errors="strict"):
 class wavmp3player( ):
     def __init__(self):
         self.i=0
+        self.lastfile=None
     def mp3playfunction(self,path,volume):
         if os.path.exists(path)==False:
             return 
         self._playsoundWin(path,volume)
     def _playsoundWin(self,sound,volume ):  
         try:
+            
             win32utils.mciSendString((f"stop lunatranslator_mci_{self.i}") );
             win32utils.mciSendString((f"close lunatranslator_mci_{self.i}") );
             self.i+=1 
-
+            if self.lastfile:
+                os.remove(self.lastfile)
+            self.lastfile=sound
             win32utils.mciSendString(f'open "{sound}" alias lunatranslator_mci_{self.i}');  
             win32utils.mciSendString(f'setaudio lunatranslator_mci_{self.i} volume to {volume*10}'); 
             win32utils.mciSendString((f'play lunatranslator_mci_{self.i}'))

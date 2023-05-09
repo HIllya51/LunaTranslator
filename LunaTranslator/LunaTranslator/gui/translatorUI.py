@@ -3,6 +3,7 @@ import time
 import functools   
 import threading 
 import os
+import winsharedutils
 from traceback import print_exc
 from PyQt5.QtWidgets import QWidget, QLabel, QPushButton, QVBoxLayout,QApplication
 from PyQt5.QtCore import Qt, pyqtSignal  ,QThread
@@ -399,7 +400,7 @@ class QUnFrameWindow(resizableframeless):
             self.processismuteed=not self.processismuteed
             self.refreshtoolicon()
             for pid in self.object.textsource.pids:
-                subproc_w(f'./files/plugins/muteprocess.exe {pid}  {int(self.processismuteed)}')
+                winsharedutils.SetProcessMute(pid,self.processismuteed)
         
     
     def _fullsgame(self): 
