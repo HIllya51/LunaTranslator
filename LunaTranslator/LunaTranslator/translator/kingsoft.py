@@ -37,7 +37,7 @@ class TS(basetrans):
             t= str(t) 
             pipename='\\\\.\\Pipe\\ks_'+t
             waitsignal='kswaitload_'+t 
-            self.engine=subproc_w(f'./files/plugins/offlinetranslator/Lunatranslator_ks.exe "{self.path}"  "{self.path2}"   {pipename} {waitsignal} ',name='ks')
+            self.engine=subproc_w(f'./files/plugins/shareddllproxy32.exe kingsoft "{self.path}"  "{self.path2}"   {pipename} {waitsignal} ',name='ks')
             secu=win32utils.get_SECURITY_ATTRIBUTES()
             win32utils.WaitForSingleObject(win32utils.CreateEvent(win32utils.pointer(secu),False, False, waitsignal),win32utils.INFINITE); 
             win32utils.WaitNamedPipe(pipename,win32con.NMPWAIT_WAIT_FOREVER)

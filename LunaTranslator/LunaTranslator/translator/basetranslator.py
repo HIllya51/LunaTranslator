@@ -178,8 +178,8 @@ class basetrans:
     def fythread(self):
         while self.using:  
             t=time.time()
-            if self.typename not in somedef.fanyi_offline+somedef.fanyi_pre and t-self.lastrequeststime <globalconfig['transtimeinternal']:
-                time.sleep(t-self.lastrequeststime)
+            if self.typename not in somedef.fanyi_offline+somedef.fanyi_pre and ((t-self.lastrequeststime) <globalconfig['transtimeinternal']):
+                time.sleep(globalconfig['transtimeinternal']-(t-self.lastrequeststime))
             self.lastrequeststime=t
             while True:
                 callback,contentraw,contentsolved,skip,embedcallback,shortlongskip=self.queue.get() 

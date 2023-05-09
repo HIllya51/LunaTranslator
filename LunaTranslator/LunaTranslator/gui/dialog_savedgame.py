@@ -188,7 +188,7 @@ class dialog_savedgame(QDialog):
                                         globalconfig['sourcestatus'][_[mode]]['use']=True
                                         
                                         self.object.yuitsu_switch('sourcestatus','sourceswitchs',_[mode],None ,True) 
-                                        self.object.object.starttextsource(use=_[mode],checked=True,waitforautoinit=True)
+                                        self.object.object.starttextsource(use=_[mode],checked=True)
                 
                         savehook_new_list.insert(0,savehook_new_list.pop(self.table.currentIndex().row())) 
                         self.close() 

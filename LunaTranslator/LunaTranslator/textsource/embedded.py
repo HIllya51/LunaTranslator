@@ -17,7 +17,7 @@ class embedded(basetext  ):
         elif platform.architecture()[0]=='32bit':
             dllpaths=[os.path.abspath("./LunaTranslator/qt5core.dll"),os.path.abspath('./files/plugins/LunaEmbedder/vnragent.dll')] 
         
-        subproc_w(f'.\\files\\plugins\\LunaInjector\\dllinject32.exe {pid} "{dllpaths[0]}" "{dllpaths[1]}"') 
+        subproc_w(f'.\\files\\plugins\\shareddllproxy32.exe dllinject {pid} "{dllpaths[0]}" "{dllpaths[1]}"') 
         
     def start(self):
         def _():  

@@ -27,6 +27,7 @@ LunaTranslator/files/x64_x86_dll/GPS.txt
 *.db-wal
 LunaTranslator/files/plugins/offlinetranslator/GPS.txt
 CXXplugins/winsharedutils/Release
+CXXplugins/shared32dllproxy/Release
 CXXplugins/winsharedutils/x64
 LunaTranslator/files/plugins/Magpie_v0.9.1/cache
 *.vsidx
@@ -37,3 +38,7 @@ LunaTranslator/files/plugins/Magpie_v0.9.1/cache
 *.ipch
 CXXplugins/exec/x64/Release
 CXXplugins/exec/Release
+
+CXXplugins/shareddllproxy/out
+CXXplugins/shareddllproxy/builds
+CXXplugins/shareddllproxy/.vs

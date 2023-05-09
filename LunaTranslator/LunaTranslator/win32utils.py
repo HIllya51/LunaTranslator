@@ -592,7 +592,7 @@ def MapViewOfFile(fhandel,access,size):
 _MultiByteToWideChar=_kernel32.MultiByteToWideChar
 _MultiByteToWideChar.argtypes=c_uint,c_uint,c_void_p,c_int,c_wchar_p,c_int
 def MultiByteToWideChar(buff,length,codepage):
-    _w=create_unicode_buffer(length)
+    _w=create_unicode_buffer(length+1)
     l=_MultiByteToWideChar(codepage,0,buff,length,_w,length)
     if(l==0):return None
     return _w.value

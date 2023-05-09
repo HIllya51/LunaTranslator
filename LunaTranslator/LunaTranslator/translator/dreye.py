@@ -34,7 +34,7 @@ class TS(basetrans):
             else:
                 path2=os.path.join(path,'TransCOMEC.dll')
             
-            self.engine=subproc_w(f'./files/plugins/offlinetranslator/Lunatranslator_dreyec.exe "{path}"  "{path2}" {str(mp[pairs])} {pipename} {waitsignal} ',name='dreye')
+            self.engine=subproc_w(f'./files/plugins/shareddllproxy32.exe dreye "{path}"  "{path2}" {str(mp[pairs])} {pipename} {waitsignal} ',name='dreye')
             secu=win32utils.get_SECURITY_ATTRIBUTES()
             win32utils.WaitForSingleObject(win32utils.CreateEvent(win32utils.pointer(secu),False, False, waitsignal),win32utils.INFINITE); 
             win32utils.WaitNamedPipe(pipename,win32con.NMPWAIT_WAIT_FOREVER)
@@ -49,8 +49,7 @@ class TS(basetrans):
             for line in content.split('\n'):
                 if len(line)==0:
                     continue
-                win32utils.WriteFile(self.hPipe,line.encode(codes[self.srclang]))
-                
+                win32utils.WriteFile(self.hPipe,line.encode(codes[self.srclang])) 
                 ress.append(win32utils.ReadFile(self.hPipe,4096,None).decode(codes[self.tgtlang]))
             return '\n'.join(ress)
               

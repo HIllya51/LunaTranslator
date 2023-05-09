@@ -286,11 +286,11 @@ class RPC():
     #
     def Attach(self,pid,arch):
          
-        injecter=os.path.abspath(f'./files/plugins/LunaInjector/dllinject{arch}.exe')
+        injecter=os.path.abspath(f'./files/plugins/shareddllproxy{arch}.exe')
         dll=os.path.abspath(f'./files/plugins/LunaHook/LunaHook{arch}.dll')
         print(injecter,os.path.exists(injecter))
         print(dll,os.path.exists(dll))
-        subprocess.Popen(f'"{injecter}" {pid} "{dll}"')
+        subprocess.Popen(f'"{injecter}" dllinject {pid} "{dll}"')
 
     def InsertHookCode(self,pid,hookcode):
         if pid in self.ProcessRecord:

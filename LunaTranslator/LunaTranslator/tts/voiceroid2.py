@@ -39,7 +39,7 @@ class TTS(TTSbase):
             fname=str(time.time()) 
             savepath=os.path.join(os.getcwd(),'cache/tts',fname+'.wav')
             dllpath=os.path.join(os.getcwd(),'files/plugins/voicevoid2/aitalked.dll')
-            exepath=os.path.join(os.getcwd(),'files/plugins/voicevoid2/Lunatranslator_voicevoid2.exe')
+            exepath=os.path.join(os.getcwd(),'files/plugins/shareddllproxy32.exe')
             self.savepath=savepath
 
 
@@ -48,7 +48,7 @@ class TTS(TTSbase):
             pipename='\\\\.\\Pipe\\voiceroid2_'+t
             waitsignal='voiceroid2waitload_'+t
 
-            self.engine=subproc_w(f'"{exepath}" "{self.config["path"]}" "{dllpath}" {self.config["voice"]} 1 {(globalconfig["ttscommon"]["rate"]+10.0)/(20.0)*1+0.5} "{savepath}"  {pipename} {waitsignal}',name='voicevoid2')
+            self.engine=subproc_w(f'"{exepath}" voiceroid2 "{self.config["path"]}" "{dllpath}" {self.config["voice"]} 1 {(globalconfig["ttscommon"]["rate"]+10.0)/(20.0)*1+0.5} "{savepath}"  {pipename} {waitsignal}',name='voicevoid2')
             
             secu=win32utils.get_SECURITY_ATTRIBUTES()
             win32utils.WaitForSingleObject(win32utils.CreateEvent(win32utils.pointer(secu),False, False, waitsignal),win32utils.INFINITE); 
