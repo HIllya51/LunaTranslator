@@ -339,5 +339,18 @@
                 "islink": true
             }
         }
+    },
+         "aliyunapi": {
+        "args": {
+            "Access_Key": "",
+            "SECRET_KEY": "",
+            "注册网址": "https://cn.aliyun.com/product/ai/alimt"
+        },
+        "argstype": {
+            "注册网址": {
+                "type": "label",
+                "islink": true
+            }
+        }
     }
 }
