@@ -188,76 +188,45 @@ _GetLogicalDriveStringsW.argtypes=c_uint,c_wchar_p
 
 _GetCurrentDirectoryW=_kernel32.GetCurrentDirectoryW
 _GetCurrentDirectoryW.argtypes=c_uint,c_wchar_p
+_QueryFullProcessImageNameW=_kernel32.QueryFullProcessImageNameW
+_QueryFullProcessImageNameW.argtypes=c_void_p,c_uint,c_wchar_p,c_void_p
 def GetProcessFileName(hHandle):
-    import os
-    
     w=create_unicode_buffer(65535)
+    #我佛了，太混乱了，不同权限获取的东西完全不一样
     if(
         _GetModuleFileNameExW(hHandle,None,w,65535)==0 
         and 
+        _QueryFullProcessImageNameW(hHandle,0,w,pointer(c_uint()))==0
+        and
         _GetProcessImageFileNameW(hHandle,w,65535)==0
         ):
         return 
-       
-    #_GetModuleFileNameExW 
-    #   PROCESS_ALL_ACUESS  可以直接获取正确文件名，但是当目标权限不足时会失败 
-    #   PROCESS_QUERY_LIMITED_INFORMATION   有时也会失败，成功时对于正常磁盘文件返回正确文件名，对于内存映射磁盘/网络存储返回内核文件名
-    #_GetProcessImageFileNameW和QueryFullProcessImageName获取的都是内核文件名，且PROCESS_QUERY_LIMITED_INFORMATION和PROCESS_ALL_ACUESS一样，都不会失败
+    
     v=w.value
     if v[0]=='\\':
-        device=v.split('\\')
-        device=f'\\{device[1]}\\{device[2]}'
-        # lg=_GetLogicalDrives()
-        # start=ord('A')
-        # save=[]
-        # while lg!=0:
-        #     if lg%2==1:
-        #         save.append(start)
-        #     lg=lg//2
-        #     start+=1
-        mp={}
-        network_drive_map = {}
+        
         buf=create_unicode_buffer(65535)
         for i in range(26):
             A=ord('A')+i
             if _QueryDosDeviceW(chr(A)+':',buf,65535)!=0:
-                mp[buf.value]=chr(A)+':'
-                #print(buf.value,chr(A)+':')
+                prefixdos=buf.value
+                if v.startswith(prefixdos):
+                    v=chr(A)+':'+v[len(prefixdos):]
+                    break
 
             # Get network drive 
+
+            #我操了，使用管理员权限时，这个玩意会失败
             if _WNetGetUniversalNameW(chr(A)+':', 1, buf, byref(c_uint(65535)))==0:
-                network_drive_map[ctypes.cast(buf,POINTER(UNIVERSAL_NAME_INFO)).contents.lpUniversalName]=chr(A)+':'
-
-
-        
-        if v.startswith(device):
-            v=mp[device]+v[len(device):]
-            return v
-        else: 
-                # Try network drive
-                for network_path, drive_letter in network_drive_map.items():
-                    if v.startswith(network_path):
-                        v=drive_letter+v[len(network_path):]
-                        return v
-                return None
+                prefixnetwork=ctypes.cast(buf,POINTER(UNIVERSAL_NAME_INFO)).contents.lpUniversalName
+                if v.startswith(prefixnetwork):
+                    v=chr(A)+':'+v[len(prefixnetwork):]
+                    break
+        return v
     else:
         return v
     
-
-            
-
-
-
-
-# try:
-#     _GetProcessImageFileNameW=_psapi.GetProcessImageFileNameW
-# except:
-#     _GetProcessImageFileNameW=_kernel32.GetProcessImageFileNameW
-# _GetProcessImageFileNameW.argtypes=c_void_p,c_wchar_p,c_uint
-# def GetProcessImageFileName(hHandle):
-#     w=create_unicode_buffer(65535)
-#     _GetProcessImageFileNameW(hHandle,w,65535)
-#     return w.value
+ 
 
 
 _IsWow64Process=_kernel32.IsWow64Process
@@ -671,3 +640,4 @@ _MessageBoxW =_user32.MessageBoxW
 _MessageBoxW.argtypes=c_void_p,c_wchar_p,c_wchar_p,c_uint
 def MessageBox(hwnd,text,title,_type):
     return _MessageBoxW(hwnd,text,title,_type)
+

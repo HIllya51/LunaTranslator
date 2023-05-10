@@ -18,7 +18,7 @@ class AttachProcessDialog(closeashidewindow):
     def selectwindowcallback(self,pid,hwnd):
                     if pid==os.getpid():
                          return
-                    name=getpidexe(pid,True)
+                    name=getpidexe(pid)
                     lps=ListProcess(False)
                     _pids=None
                     for pids,_exe  in lps:
@@ -116,7 +116,7 @@ class AttachProcessDialog(closeashidewindow):
              return []
     def editpid(self,process): 
         pids=self.safesplit(process)
-        self.selectedp=(pids,getpidexe(pids[0],force=True),self.guesshwnd(pids))
+        self.selectedp=(pids,getpidexe(pids[0]),self.guesshwnd(pids))
         self.processEdit.setText(self.selectedp[1])
         [_.hide() for _ in self.windowtextlayoutwidgets]
     def selectedfunc(self,index):

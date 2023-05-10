@@ -14,7 +14,7 @@ from utils.simplekanji import kanjitrans
 from utils.wrapper import threader 
 from gui.showword import searchwordW
 from gui.rangeselect    import rangeadjust
-from utils.hwnd import pid_running,getpidexe ,getpidhwndfirst,ListProcess,getScreenRate,getbigestmempid
+from utils.hwnd import pid_running,getpidexe ,testprivilege,ListProcess,getScreenRate,getbigestmempid
 
 from textsource.copyboard import copyboard   
 from textsource.texthook import texthook   
@@ -414,13 +414,15 @@ class MAINUI(QObject) :
                             lps=ListProcess(False)
                             for pids,_exe  in lps:
                                 if _exe==name_: 
-                                    self.textsource=None
-                                    if globalconfig['sourcestatus']['texthook']['use']:
-                                        needinserthookcode=savehook_new_data[name_]['needinserthookcode']
-                                        self.textsource=texthook(self.RPC,self.textgetmethod,self.hookselectdialog,pids,hwnd,name_ ,autostarthookcode=savehook_new_data[name_]['hook'],needinserthookcode=needinserthookcode)
-                                    elif globalconfig['sourcestatus']['embedded']['use']:
-                                        self.textsource=embedded(self.textgetmethod,self.hookselectdialog,pids,hwnd,name_  ,self)
-                                    break
+                                    
+                                    if any(map(testprivilege,pids)):
+                                        self.textsource=None
+                                        if globalconfig['sourcestatus']['texthook']['use']:
+                                            needinserthookcode=savehook_new_data[name_]['needinserthookcode']
+                                            self.textsource=texthook(self.RPC,self.textgetmethod,self.hookselectdialog,pids,hwnd,name_ ,autostarthookcode=savehook_new_data[name_]['hook'],needinserthookcode=needinserthookcode)
+                                        elif globalconfig['sourcestatus']['embedded']['use']:
+                                            self.textsource=embedded(self.textgetmethod,self.hookselectdialog,pids,hwnd,name_  ,self)
+                                        break
                 
                 else: 
                     pids=self.textsource.pids
