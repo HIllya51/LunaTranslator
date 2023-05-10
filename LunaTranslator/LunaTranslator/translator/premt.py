@@ -5,7 +5,7 @@ import os
 import json
 import sqlite3
 from utils.utils import quote_identifier
-import Levenshtein
+import winsharedutils
 class TS(basetrans):  
     def checkfilechanged(self,p):
         if self.path!=p:
@@ -24,7 +24,7 @@ class TS(basetrans):
             savet="{}"
             ret=self.sql.execute(f'SELECT source,machineTrans FROM artificialtrans  ').fetchall()
             for jc,mt in ret:
-                dis=Levenshtein.distance(content,jc)  
+                dis=winsharedutils.distance(content,jc)  
                 if dis<mindis:
                     mindis=dis
                     if mindis<globalconfig['premtsimi']:

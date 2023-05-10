@@ -7,8 +7,7 @@ def checkintegrity():
          './files/plugins/shareddllproxy64.exe',
          './files/plugins/LunaHook/LunaHook32.dll',
          './files/plugins/LunaHook/LunaHook64.dll',
-         './files/plugins/LunaEmbedder/vnragent.dll',
-         './files/plugins/WinOCR.exe',
+         './files/plugins/LunaEmbedder/vnragent.dll', 
          './files/plugins/LoaderDll.dll',
          './files/plugins/LocaleEmulator.dll',
     ]
@@ -17,11 +16,13 @@ def checkintegrity():
         flist+=[ 
             './files/plugins/winsharedutils64.dll',
             './files/plugins/ocr64.dll', 
+            './files/plugins/libmecab64.dll', 
         ]
     else:
         flist+=[ 
             './files/plugins/winsharedutils32.dll',
             './files/plugins/ocr32.dll', 
+            './files/plugins/libmecab32.dll', 
         ]
     collect=[]
     print(flist)

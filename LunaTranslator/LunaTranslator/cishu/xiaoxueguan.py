@@ -1,6 +1,6 @@
 from utils.config import globalconfig
 import sqlite3,os
-import Levenshtein
+import winsharedutils
 from utils.utils import argsort
 class xiaoxueguan():
     def __init__(self):
@@ -22,7 +22,7 @@ class xiaoxueguan():
                 dis=[]
                 for w,xx in exp:
                 
-                    d=Levenshtein.distance(w,word)
+                    d=winsharedutils.distance(w,word)
                     dis.append(d)
                      
                 srt=argsort(dis)[:10]

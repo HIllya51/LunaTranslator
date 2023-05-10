@@ -1,6 +1,8 @@
 from traceback import print_exc
-
-import openai,json
+import zipimport
+import os
+openai=zipimport.zipimporter(os.path.join(os.path.dirname(__file__), 'openai.zip') ).load_module('openai')
+import  json
 
 from translator.basetranslator import basetrans
 import os

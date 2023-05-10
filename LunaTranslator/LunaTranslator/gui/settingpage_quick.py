@@ -4,7 +4,7 @@ from utils.config import globalconfig
 from traceback import print_exc 
 from utils.winsyshotkey import SystemHotkey 
 from PyQt5.QtWidgets import QComboBox
-import pyperclip
+import winsharedutils
 from utils.somedef import key_first,key_first_reg,key_second,key_second_reg
 def setTab_quick_direct(self):
     self.hotkeys={}
@@ -21,7 +21,7 @@ def setTab_quick_direct(self):
             '_1':self.object.translation_ui.startTranslater,
             '_2':self.object.translation_ui.changeTranslateMode,
             '_3':self.showsignal.emit,
-            '_4':lambda:pyperclip.copy( self.object.currenttext) ,
+            '_4':lambda:winsharedutils.clipboard_set( self.object.currenttext) ,
             '_5':self.object.translation_ui.changeshowhideraw,
             '_6':lambda: self.object.transhis.showsignal.emit(),
             '_7':self.object.translation_ui.langdu,

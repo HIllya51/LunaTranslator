@@ -1,4 +1,4 @@
-import pyperclip ,functools
+import functools
 from traceback import print_exc
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QWidget,QHBoxLayout,QDialog,QAction,QVBoxLayout,QMenu,QPlainTextEdit,QTabWidget,QLineEdit,QPushButton,QTableView,QAbstractItemView,QRadioButton,QButtonGroup,QHeaderView,QCheckBox,QSpinBox,QFormLayout ,QLabel
@@ -8,7 +8,7 @@ from PyQt5.QtGui import QFont,QTextCursor
 from PyQt5.QtCore import Qt,pyqtSignal,QSize,QModelIndex,QPoint
 import qtawesome
 from gui.dialog_savedgame import dialog_setting_game
-import re
+import winsharedutils
 import os,time 
 from utils.config import globalconfig ,_TR,_TRL,checkifnewgame
 from collections import OrderedDict
@@ -346,8 +346,7 @@ class hookselect(closeashidewindow):
             self.object.textsource.removehook(pid,addr)
          
         elif action==copy :
-            
-            pyperclip.copy(hook[-1])
+            winsharedutils.clipboard_set(hook[-1])
              
     def opensolvetext(self):
         self._settingui.opensolvetextsig.emit()

@@ -3,7 +3,7 @@ from translator.basetranslator import basetrans
 from utils.config import  globalconfig
 import os 
 import xml.etree.ElementTree as ET  
-import Levenshtein
+import winsharedutils
 class TS(basetrans): 
     def checkfilechanged(self,p):
         if self.path!=p:
@@ -40,7 +40,7 @@ class TS(basetrans):
             
             for js in self.jsons:
                 for jc in self.json:
-                    dis=Levenshtein.distance(content,jc) 
+                    dis=winsharedutils.distance(content,jc) 
                     if dis<mindis:
                         mindis=dis
                         if mindis<globalconfig['premtsimi']: 

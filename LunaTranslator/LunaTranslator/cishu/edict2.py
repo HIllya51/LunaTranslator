@@ -1,6 +1,6 @@
 from utils.config import globalconfig
-import sqlite3,os
-import Levenshtein,re
+import winsharedutils,os
+import re
 from utils.utils import argsort
 from traceback import print_exc
 class edict2():
@@ -29,7 +29,7 @@ class edict2():
                 savew=[]
                 for w in self.save: 
                     if word in w or w in word:
-                        d=Levenshtein.distance(w,word)
+                        d=winsharedutils.distance(w,word)
                         dis.append(d)
                         savew.append(w)
                 saveres=[]

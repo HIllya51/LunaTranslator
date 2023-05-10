@@ -31,6 +31,8 @@ def resourcegrid( ) :
             [('转区-Locale_Remulator'),(makehtml("https://github.com/InWILL/Locale_Remulator/releases"),1,'link')],
             [('语音-VoiceRoid2'),(makehtml("https://github.com/HIllya51/LunaTranslator/releases/download/v1.0/Yukari2.zip",True),1,'link')],
             [('语音-VOICEVOX'),(makehtml("https://github.com/VOICEVOX/voicevox/releases"),1,'link')],
+            [('超分-Magpie'),(makehtml("https://github.com/Blinue/Magpie/releases"),1,'link')],
+            [('超分-Magpie9_win7适配版'),(makehtml("https://github.com/HIllya51/Magpie9_win7/releases"),1,'link')],
         ]
         return grid
 @threader
@@ -39,7 +41,6 @@ def getversion(self):
     import requests 
     import shutil
     import zipfile
-    from utils.downloader import mutithreaddownload
     # with open('files/about.txt','r',encoding='utf8') as ff:
     #     about=ff.read()
     # with open('files/version.txt','r',encoding='utf8') as ff:
@@ -85,7 +86,37 @@ def getversion(self):
                 zipf.extractall('./cache/update')
                 self.needupdate=True
                 self.updatefile=savep
-            mutithreaddownload(savep,url,self.progresssignal.emit,lambda: globalconfig.__getitem__('autoupdate'),endcallback) 
+            def checkalready(size):
+                if os.path.exists(savep):
+                    stats = os.stat(savep)
+                    if stats.st_size==size:
+                        self.progresssignal.emit(f'总大小{int(1000*(int(size/1024)/1024))/1000} MB 进度 {int(10000*(size/size))/100:.2f}% ',10000)
+                        endcallback()
+                        return True
+                return False
+            try:
+                r2 = requests.get(url,stream=True,verify = False,proxies=getproxy()) 
+                size = int(r2.headers['Content-Length'])
+                if checkalready(size):return
+                with open(savep, "wb") as file: 
+                        r = requests.get(url,stream=True, verify = False,proxies=getproxy()) 
+                        file_size=0
+                        for i in r.iter_content(chunk_size=1024): 
+                            if globalconfig['autoupdate']==False: 
+                                return
+                            if i:  
+                                file.write(i) 
+                                thislen=len(i)
+                                file_size+=thislen 
+                                
+                                self.progresssignal.emit(f'总大小{int(1000*(int(size/1024)/1024))/1000} MB 进度 {int(10000*(file_size/size))/100:.2f}%',int(10000*file_size/size))
+                                
+                if globalconfig['autoupdate']==False: 
+                    return
+                if checkalready(size):return
+            except:
+                print_exc()
+                self.progresssignal.emit('自动更新失败，请手动更新',0)
  
 def updateprogress(self,text,val):
     self.downloadprogress.setValue(val)

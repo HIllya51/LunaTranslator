@@ -12,6 +12,7 @@ xcopy .\LunaTranslator\postprocess %targetdir_in%\postprocess /e /y /I
 xcopy .\LunaTranslator\translator %targetdir_in%\translator /e /y /I
 xcopy .\LunaTranslator\cishu %targetdir_in%\cishu /e /y /I
 xcopy .\LunaTranslator\tts %targetdir_in%\tts /e /y /I
+xcopy .\LunaTranslator\hiraparse %targetdir_in%\hiraparse /e /y /I
 
 xcopy /E /I %pythonpackage%\bcrypt %targetdir_in%\bcrypt
 xcopy /E /I %pythonpackage%\certifi %targetdir_in%\certifi
@@ -19,10 +20,8 @@ xcopy /E /I %pythonpackage%\charset_normalizer %targetdir_in%\charset_normalizer
 xcopy /E /I %pythonpackage%\cryptography %targetdir_in%\cryptography
 xcopy /E /I %pythonlib%\http %targetdir_in%\http
 xcopy /E /I %pythonpackage%\idna %targetdir_in%\idna
-xcopy /E /I ..\dependence\dependence_common\openai %targetdir_in%\openai
 
 xcopy /E /I %pythonpackage%\OpenSSL %targetdir_in%\OpenSSL
-xcopy /E /I %pythonpackage%\pykakasi %targetdir_in%\pykakasi
 xcopy /I %pythonpackage%\pytz %targetdir_in%\pytz
 del %targetdir_in%\pytz\zoneinfo
 mkdir %targetdir_in%\pytz\zoneinfo
@@ -32,7 +31,7 @@ xcopy /E /I %pythonpackage%\urllib3 %targetdir_in%\urllib3
 xcopy  %pythonpackage%\six.py %targetdir_in%
 xcopy  %pythonpackage%\_brotli.cp37-win_amd64.pyd %targetdir_in%
 xcopy  %pythonpackage%\_cffi_backend.cp37-win_amd64.pyd %targetdir_in%
-xcopy ..\dependence\exe64 ..\build\LunaTranslator\ /e /y /I
+xcopy ..\binary\exe64 ..\build\LunaTranslator\ /e /y /I
 del %targetdir_in%\qt5qml.dll
 del %targetdir_in%\qt5qmlmodels.dll
 del %targetdir_in%\qt5quick.dll
@@ -56,8 +55,9 @@ del %targetdir_in%\libcrypto-1_1-x64.dll
 
 del %targetdir%\files\plugins\ocr32.dll
 del %targetdir%\files\plugins\winsharedutils32.dll
+del %targetdir%\files\plugins\libmecab32.dll
 
-xcopy ..\dependence\api-ms-win_64 %targetdir_in% /e /y /I
+xcopy ..\binary\api-ms-win_64 %targetdir_in% /e /y /I
  
 
 @echo off

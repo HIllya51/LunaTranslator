@@ -17,9 +17,7 @@ def getttsgrid(self) :
         
           
         grids=[ ] 
-        i=0
-        lendict=len(list(globalconfig['reader'].keys()))
-         
+        i=0 
         self.ocrswitchs={}
         line=[]
         for name in globalconfig['reader']:
@@ -28,7 +26,15 @@ def getttsgrid(self) :
             if os.path.exists(_f)==False:  
                 continue 
             
-            line+=[((globalconfig['reader'][name]['name']),6),(self.getsimpleswitch(globalconfig['reader'][name],'use',name=name,callback=functools.partial(self.yuitsu_switch,'reader','readerswitchs',name,self.object.startreader),pair='readerswitchs'),1), ] 
+            line+=[
+                 ((globalconfig['reader'][name]['name']),6),
+                 self.getsimpleswitch(globalconfig['reader'][name],'use',name=name,callback=functools.partial(self.yuitsu_switch,'reader','readerswitchs',name,self.object.startreader),pair='readerswitchs'), 
+                 
+                 ] 
+            if 'path' in globalconfig['reader'][name]:
+                 line+=[self.getcolorbutton(globalconfig,'',callback=functools.partial(getsomepath1,self,name,globalconfig['reader'][name],'path',name,self.object.startreader,True),icon='fa.gear',constcolor="#FF69B4")]
+            else:
+                 line+=['']
             if i%3==2  :
                 grids.append(line) 
                 line=[]

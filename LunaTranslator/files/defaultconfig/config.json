@@ -502,15 +502,19 @@
     },
 	"hirasetting":{
 		"local":{
-			"use":true
+			"use":true,
+            "name":"内置"
 		},
 		"mecab":{
 				"use":false,
-				"path": ""
+				"path": "",
+                "name":"MeCab"
 		},
 		"mojinlt":{
 			"use":false,
-			"token":""
+			"token":"",
+            "token_name":"Moji NLT Token",
+            "name":"mojinlt"
 		}
 	},
 	"cishu":{

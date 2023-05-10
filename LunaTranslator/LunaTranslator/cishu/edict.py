@@ -1,6 +1,6 @@
 from utils.config import globalconfig
 import sqlite3,os
-import Levenshtein,re
+import winsharedutils,re
 from utils.utils import argsort
 from traceback import print_exc
 class edict():
@@ -21,7 +21,7 @@ class edict():
                 dis=9999
                 dis=[]
                 for w,xx in exp: 
-                    d=Levenshtein.distance(w,word)
+                    d=winsharedutils.distance(w,word)
                     dis.append(d)
                 save=[]
                 srt=argsort(dis)

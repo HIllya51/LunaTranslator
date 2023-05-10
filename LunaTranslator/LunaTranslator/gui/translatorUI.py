@@ -12,7 +12,7 @@ from PyQt5.QtCore import pyqtSignal,Qt,QRect,QSize
 from PyQt5.QtGui import  QFont  ,QIcon,QPixmap  ,QMouseEvent
 from PyQt5.QtWidgets import  QLabel ,QPushButton ,QSystemTrayIcon ,QAction,QMenu 
 import win32utils
-import pyperclip,queue
+import winsharedutils,queue
 from utils.config import globalconfig,saveallconfig,_TR
 from utils.subproc import endsubprocs
 import  win32con
@@ -199,7 +199,7 @@ class QUnFrameWindow(resizableframeless):
             "retrans":self.startTranslater,
             "automodebutton":self.changeTranslateMode,
             "setting":lambda:self.object.settin_ui.showsignal.emit(),
-            "copy":lambda:pyperclip.copy( self.object.currenttext),
+            "copy":lambda:winsharedutils.clipboard_set( self.object.currenttext),
             "edit":lambda: self.object.edittextui.showsignal.emit(),
             "showraw":self.changeshowhideraw,
             "history":lambda: self.object.transhis.showsignal.emit() ,

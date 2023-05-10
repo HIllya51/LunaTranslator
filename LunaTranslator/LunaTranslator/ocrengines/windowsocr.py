@@ -1,34 +1,46 @@
- 
+import os
+from ctypes import  c_uint,pointer 
+import winsharedutils
 from utils.config import _TR 
 
-from ocrengines.baseocrclass import baseocr 
-from utils.subproc import subproc_w
+from utils import somedef
+from ocrengines.baseocrclass import baseocr  
 class OCR(baseocr):
-      
+    def initocr(self):    
+        _allsupport=winsharedutils.getlanguagelist()
+        self.supportmap={}
+        for lang in somedef.language_list_translator_inner+['zh-Hans','zh-Hant']:
+            if lang=='zh' or lang=='cht':continue
+            for s in _allsupport:
+                if s.startswith(lang) or lang.startswith(s):
+                    self.supportmap[lang]=s
+                    break
+        if 'zh-Hans' in self.supportmap:
+            v=self.supportmap.pop('zh-Hans')
+            self.supportmap['zh']=v
+        if 'zh-Hant' in self.supportmap:
+            v=self.supportmap.pop('zh-Hant')
+            self.supportmap['cht']=v
     def ocr(self,imgfile):  
-        print('./files/plugins/WinOCR.exe '+self.srclang +' '+imgfile)
-        p=subproc_w('./files/plugins/WinOCR.exe '+self.srclang +' '+imgfile,needstdio=True,encoding='utf8')
-        x=p.stdout.readlines()
-        y=p.stderr.readlines()
-        print("X",x)
-        print("Y",y)
+        if self.srclang not in self.supportmap: 
+            idx=somedef.language_list_translator_inner.index(self.srclang)
+            raise Exception(_TR('系统未安装')+_TR(somedef.language_list_translator[idx])+_TR('的OCR模型'))
         
-        if len(y):
-            raise Exception(_TR('系统未安装该语言的OCR模型'))
-         
+        if self.srclang in ['zh','ja','cht']:
+            space=''
+        else:
+            space=' '
+        
         ress={}
-        ress2=[]
+        ress2=[]  
+        ret=winsharedutils.OCR_f(os.path.abspath(imgfile),self.supportmap[self.srclang],space)
+        for i in range(len(ret)): 
         
-    
-        for _ in x:
-            line=_.replace('\r','').replace('\n','')
-            
-            ress[ (line[len(line.split(' ')[0]):])]=int(line.split(' ')[0])
-            ress2.append( (line[len(line.split(' ')[0]):]))
+            ress2.append( ret[i][0])
+            ress[ress2[-1]]=ret[i][1]
         ress2.sort(key= lambda x:ress[x])
 
             
-        xx=self.space.join(ress2)
-        print(xx)
+        xx=self.space.join(ress2) 
         return xx
         

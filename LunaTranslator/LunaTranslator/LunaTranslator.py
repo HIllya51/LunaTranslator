@@ -1,7 +1,7 @@
 
 import time
 import re
-import os,threading,Levenshtein,sys 
+import os,threading 
 from traceback import  print_exc   
 import win32utils
 from utils.config import globalconfig ,savehook_new_list,savehook_new_data,noundictconfig,transerrorfixdictconfig,setlanguage ,checkifnewgame,_TR
@@ -39,7 +39,6 @@ import winsharedutils
 from utils.post import POSTSOLVE
 from utils.vnrshareddict import vnrshareddict 
 
-import pyperclip
 from utils.simplekanji import kanjitrans 
 from textsource.hook.host import RPC
  
@@ -181,7 +180,7 @@ class MAINUI(QObject) :
         self.textsource.sqlqueueput((_paste_str,)) 
         
         if globalconfig['outputtopasteboard'] and globalconfig['sourcestatus']['copy']['use']==False:  
-            pyperclip.copy(_paste_str)
+            winsharedutils.clipboard_set(_paste_str)
         
         try:
             hira=self.hira_.fy(_paste_str)
@@ -319,17 +318,17 @@ class MAINUI(QObject) :
     def starthira(self,use=None,checked=True): 
         if checked:
             hirasettingbase=globalconfig['hirasetting']
-            if hirasettingbase['local']['use']:
-                from hiraparse.localhira import hira 
-            elif hirasettingbase['mecab']['use']:
-                from hiraparse.mecab import hira 
-                
-            elif hirasettingbase['mojinlt']['use']:
-                from hiraparse.mojinlt import hira 
+            for name in hirasettingbase:
+                if hirasettingbase[name]['use']:
+                    if os.path.exists('./LunaTranslator/hiraparse/'+name+'.py')==False:
+                        continue
+                    _hira=importlib.import_module('hiraparse.'+name).hira
+                    break
              
             try:
-                self.hira_=hira()  
+                self.hira_=_hira()  
             except:
+                print_exc()
                 self.hira_=None
         else:
             self.hira_=None

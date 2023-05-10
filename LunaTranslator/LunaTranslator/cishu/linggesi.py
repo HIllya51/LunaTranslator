@@ -1,6 +1,6 @@
 from utils.config import globalconfig
 import sqlite3
-import Levenshtein 
+import winsharedutils 
 import os
 from traceback import print_exc
 class linggesi():
@@ -27,7 +27,7 @@ class linggesi():
                     
                     for w,xx in exp:
                         
-                        d=Levenshtein.distance(w,word) 
+                        d=winsharedutils.distance(w,word) 
                         mp[w]=[xx,d]
                          
 

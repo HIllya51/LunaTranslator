@@ -1,30 +1,54 @@
-import functools 
+import functools ,os
 from utils.config import globalconfig   
 from gui.inputdialog import getsomepath1,autoinitdialog 
 
 def setTabcishu(self) : 
     self.tabadd_lazy(self.tab_widget, ('辞书设置'), lambda :setTabcishu_l(self)) 
-def setTabcishu_l(self) :
+
+
+def gethiragrid(self) :
         
-        mojiconfigitems=[{
-                        't':'lineedit','l':'Moji NLT Token','d':globalconfig['hirasetting']['mojinlt'],'k':'token'
+          
+        grids=[ ] 
+        i=0 
+        self.ocrswitchs={}
+        line=[]
+        for name in globalconfig['hirasetting']:
+              
+            _f=f'./LunaTranslator/hiraparse/{name}.py'
+            if os.path.exists(_f)==False:  
+                continue 
+            
+            line+=[
+                 ((globalconfig['hirasetting'][name]['name']),5),
+                 self.getsimpleswitch(globalconfig['hirasetting'][name],'use',name=name,callback=functools.partial(self.yuitsu_switch,'hirasetting','hiraswitchs',name,self.object.starthira),pair='hiraswitchs'), 
+                 
+                 ] 
+            if 'path' in globalconfig['hirasetting'][name]:
+                 line+=[self.getcolorbutton(globalconfig,'',callback=functools.partial(getsomepath1,self,name,globalconfig['hirasetting'][name],'path',name,self.object.starthira,True),icon='fa.gear',constcolor="#FF69B4")]
+            elif 'token' in globalconfig['hirasetting'][name] and 'token_name' in globalconfig['hirasetting'][name]:
+                items=[{
+                        't':'lineedit','l': globalconfig['hirasetting'][name]['token_name'],'d':globalconfig['hirasetting'][name],'k':'token'
                     },
                     {'t':'okcancel' }]
+                line+=[self.getcolorbutton(globalconfig,'',callback= functools.partial(autoinitdialog,self,  globalconfig['hirasetting'][name]['name'],900,items) ,icon='fa.gear',constcolor="#FF69B4")]
+            else:
+                  line+=['']
+            if i%3==2  :
+                grids.append(line) 
+                line=[]
+            else:
+                line+=['']
+            i+=1
+        if len(line):
+             grids.append(line) 
+        return grids
+def setTabcishu_l(self) :
+        
         grids=[ 
                 [('分词&假名分析器',10)],
-                [       
-                        ('内置',5),(self.getsimpleswitch(globalconfig['hirasetting']['local'],'use',name='local',callback= functools.partial(self.yuitsu_switch,'hirasetting','hiraswitchs','local',self.object.starthira),pair='hiraswitchs'),1),'','',
-
-                        ('MeCab',5),
-                        (self.getsimpleswitch(globalconfig['hirasetting']['mecab'],'use',name='mecab',callback= functools.partial(self.yuitsu_switch,'hirasetting','hiraswitchs','mecab',self.object.starthira),pair='hiraswitchs'),1),
-                        self.getcolorbutton(globalconfig,'',callback=lambda  :getsomepath1(self,'mecab',globalconfig['hirasetting']['mecab'],'path' ,'mecab',lambda  :self.object.starthira(),True) ,icon='fa.gear',constcolor="#FF69B4"),'',
-
-                        ('mojinlt',5),
-                        (self.getsimpleswitch(globalconfig['hirasetting']['mojinlt'],'use',name='mojinlt',callback= functools.partial(self.yuitsu_switch,'hirasetting','hiraswitchs','mojinlt',self.object.starthira),pair='hiraswitchs'),1),
-                        self.getcolorbutton(globalconfig,'',callback= functools.partial(autoinitdialog,self,  ('token设置'),900,mojiconfigitems) ,icon='fa.gear',constcolor="#FF69B4")
-                ],
+        ]+gethiragrid(self)+ [
                 [''],
-                
                 [''],
                 [('开启点击原文查词',5),(self.getsimpleswitch(globalconfig,'usesearchword'),1),self.getcolorbutton(globalconfig,'',callback=lambda: self.object.searchwordW.showsignal.emit(),icon='fa.search',constcolor="#FF69B4")],
 
