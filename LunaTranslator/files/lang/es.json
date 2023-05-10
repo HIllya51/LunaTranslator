@@ -579,5 +579,8 @@
     "移除非选定hook": "Eliminar gancho no seleccionado",
     "ChatGPT(第三方接口)": "Chatgpt (interfaz de terceros)",
     "不能为空": "No puede estar vacío",
-    "请求超时": "Tiempo de espera de la solicitud"
+    "请求超时": "Tiempo de espera de la solicitud",
+    "阿里api": "Ali API",
+    "找不到重要组件：": "No se pueden encontrar componentes importantes:",
+    "请重新下载并关闭杀毒软件后重试": "Por favor, vuelva a descargar y cierre el software antivirus y vuelva a intentarlo."
 }

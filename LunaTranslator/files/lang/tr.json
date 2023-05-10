@@ -579,5 +579,8 @@
     "移除非选定hook": "Seçilmemiş halkaları kaldır",
     "ChatGPT(第三方接口)": "ChatGPT (Üçüncü Parti Arayüzü)",
     "不能为空": "Boş olamaz",
-    "请求超时": "isteme zamanı aşımı"
+    "请求超时": "isteme zamanı aşımı",
+    "阿里api": "Alibaba API",
+    "找不到重要组件：": "Önemli komponent bulunamadı:",
+    "请重新下载并关闭杀毒软件后重试": "Lütfen antivirüs yazılımını tekrar indirin ve tekrar deneyin"
 }

@@ -754,7 +754,7 @@
             "name": "百度api"
         },
 	"aliyunapi": {
-            "use": true,
+            "use": false,
             "color": "blue",
             "name": "阿里api"
         },

@@ -579,5 +579,8 @@
     "移除非选定hook": "Remove non selected hooks",
     "ChatGPT(第三方接口)": "ChatGPT (Third Party Interface)",
     "不能为空": "Cannot be empty",
-    "请求超时": "request timeout"
+    "请求超时": "request timeout",
+    "阿里api": "Alibaba API",
+    "找不到重要组件：": "Important component not found:",
+    "请重新下载并关闭杀毒软件后重试": "Please download and close the antivirus software again and try again"
 }

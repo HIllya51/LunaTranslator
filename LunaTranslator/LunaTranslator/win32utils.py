@@ -666,3 +666,8 @@ def Is64bit(hprocess):
         return not IsWow64Process(hprocess)
     else:
         return False
+
+_MessageBoxW =_user32.MessageBoxW 
+_MessageBoxW.argtypes=c_void_p,c_wchar_p,c_wchar_p,c_uint
+def MessageBox(hwnd,text,title,_type):
+    return _MessageBoxW(hwnd,text,title,_type)

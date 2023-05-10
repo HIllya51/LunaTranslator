@@ -579,5 +579,8 @@
     "移除非选定hook": "Xóa hook không chọn",
     "ChatGPT(第三方接口)": "ChatGPT (giao diện bên thứ ba)",
     "不能为空": "Không thể để trống",
-    "请求超时": "Thời gian chờ yêu cầu"
+    "请求超时": "Thời gian chờ yêu cầu",
+    "阿里api": "bởi aliapi",
+    "找不到重要组件：": "Không tìm thấy thành phần quan trọng:",
+    "请重新下载并关闭杀毒软件后重试": "Vui lòng tải xuống và thử lại sau khi tắt phần mềm diệt virus"
 }

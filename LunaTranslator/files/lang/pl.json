@@ -579,5 +579,8 @@
     "移除非选定hook": "Usuń niezaznaczone haki",
     "ChatGPT(第三方接口)": "ChatGPT (interfejs stron trzecich)",
     "不能为空": "Nie może być pusty",
-    "请求超时": "limit czasu żądania"
+    "请求超时": "limit czasu żądania",
+    "阿里api": "API Alibaba",
+    "找不到重要组件：": "Nie znaleziono ważnego komponentu:",
+    "请重新下载并关闭杀毒软件后重试": "Pobierz i zamknij oprogramowanie antywirusowe ponownie i spróbuj ponownie"
 }
