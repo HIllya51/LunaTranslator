@@ -8,6 +8,12 @@ class TS(basetrans):
         self.checkempty(['apikey'])
         
         apikey = self.config['apikey']
+        if '|' in apikey:
+            apikeys=apikey.split('|')
+            self.multiapikeycurrentidx=self.multiapikeycurrentidx%len(apikeys)
+            apikey=apikeys[self.multiapikeycurrentidx]
+            self.multiapikeycurrentidx+=1
+            
         headers = { 
             'accept': '*/*',
             'accept-language': 'zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6',

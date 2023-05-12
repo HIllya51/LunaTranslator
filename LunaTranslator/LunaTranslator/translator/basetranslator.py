@@ -69,6 +69,7 @@ class basetrans:
     ############################################################
     def __init__(self,typename ) :  
         self.typename=typename
+        self.multiapikeycurrentidx=0
         self.queue=Queue() 
         
         
