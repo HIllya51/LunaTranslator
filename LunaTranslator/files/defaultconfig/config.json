@@ -3,6 +3,8 @@
         500,
         500
     ],
+    "loadbalance":false,
+    "loadbalance_oncenum":1,
 	"ocrafterrangeselect":true,
 	"excule_from_self":true,
 	"excule_from_exe":[],

@@ -45,6 +45,7 @@ from textsource.hook.host import RPC
 class MAINUI(QObject) : 
     def __init__(self,app) -> None:
         super().__init__()
+        self.lasttranslatorindex=0
         self.app=app   
         self.translators={}
         self.cishus={}
@@ -208,9 +209,24 @@ class MAINUI(QObject) :
                 self.GetTranslationCallback('premt',self.currentsignature,optimization_params,_showrawfunction,_showrawfunction_sig,_paste_str,ret,embedcallback)
             except:
                 pass
-        for engine in self.translators:  
-            if engine in self.premtalready:continue
-            self.translators[engine].gettask((partial(self.GetTranslationCallback,engine,self.currentsignature, optimization_params,_showrawfunction,_showrawfunction_sig,_paste_str),_paste_str,paste_str_solved,skip,embedcallback,shortlongskip)) 
+        if globalconfig['loadbalance']:
+            usenum=min(globalconfig['loadbalance_oncenum'],len(self.translators))
+        else:
+            usenum= len(self.translators)
+        thistimeusednum=0
+        self.lasttranslatorindex=self.lasttranslatorindex %len(self.translators)
+        _len=len(self.translators)
+        keys=list(self.translators.keys())+list(self.translators.keys())
+        keys=keys[self.lasttranslatorindex:self.lasttranslatorindex+_len]
+        #print(keys,usenum,self.lasttranslatorindex)
+        for engine in keys:  
+            if engine not in self.premtalready:
+                self.translators[engine].gettask((partial(self.GetTranslationCallback,engine,self.currentsignature, optimization_params,_showrawfunction,_showrawfunction_sig,_paste_str),_paste_str,paste_str_solved,skip,embedcallback,shortlongskip)) 
+            thistimeusednum+=1
+            self.lasttranslatorindex+=1
+            if(thistimeusednum>=usenum):
+                break
+                
     
         
     def GetTranslationCallback(self,classname,currentsignature,optimization_params,_showrawfunction,_showrawfunction_sig,contentraw,res,embedcallback):

@@ -578,5 +578,7 @@
     "系统未安装": "Le système n'est pas installé",
     "的OCR模型": "Le modèle ocr",
     "超分-Magpie": "Le super - score - Magpie",
-    "超分-Magpie9_win7适配版": "Super Score - magpie9 Version adaptée win7"
+    "超分-Magpie9_win7适配版": "Super Score - magpie9 Version adaptée win7",
+    "均衡负载": "Équilibrer la charge",
+    "单次负载个数": "Nombre de charges uniques"
 }

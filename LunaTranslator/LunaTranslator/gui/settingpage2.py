@@ -68,17 +68,24 @@ def setTabTwo_lazy(self) :
         bt.clicked.connect(lambda x:sqlite2json(self)) 
     
 
-
+         
+        _fuzainum=self.getspinbox(1,99999,globalconfig,'loadbalance_oncenum',step=1)
+        _fuzainum.setEnabled(globalconfig['loadbalance'])
         grids=[[
-                ("最短翻译字数",8),(self.getspinbox(0,500,globalconfig,'minlength'),3),'',
-                ("最长翻译字数",8),(self.getspinbox(0,500,globalconfig,'maxlength'),3)   ],
+                ("最短翻译字数",8),(self.getspinbox(0,500,globalconfig,'minlength'),2),'',
+                ("最长翻译字数",8),(self.getspinbox(0,500,globalconfig,'maxlength'),2)   ],
                 [
-                ("在线翻译超时时间(s)",8),(self.getspinbox(1,20,globalconfig,'translatortimeout',step=0.1,double=True ),3),'',
-                 ("翻译请求间隔(s)",8),(self.getspinbox(0,10,globalconfig,'transtimeinternal',step=0.1,double=True),3) ,
+                ("在线翻译超时时间(s)",8),(self.getspinbox(1,20,globalconfig,'translatortimeout',step=0.1,double=True ),2),'',
+                 ("翻译请求间隔(s)",8),(self.getspinbox(0,10,globalconfig,'transtimeinternal',step=0.1,double=True),2) ,
             ],
             [
-                ("使用持久化翻译缓存",6),(self.getsimpleswitch(globalconfig,'uselongtermcache')),'','','',
-                ('显示错误信息',6),(self.getsimpleswitch(globalconfig  ,'showtranexception'),1),'','','',('错误重试',6),(self.getsimpleswitch(globalconfig  ,'errorretry'),1),'','',
+                ("使用持久化翻译缓存",8),(self.getsimpleswitch(globalconfig,'uselongtermcache')),'','',
+                ('显示错误信息',8),(self.getsimpleswitch(globalconfig  ,'showtranexception'),1),'','',
+                ('错误重试',8),(self.getsimpleswitch(globalconfig  ,'errorretry'),1),
+            ],
+            [
+                ("均衡负载",8),(self.getsimpleswitch(globalconfig,'loadbalance',callback=lambda x:_fuzainum.setEnabled(x))),'','',
+                ("单次负载个数",8),(_fuzainum,2) ,
             ]
 
         ] 

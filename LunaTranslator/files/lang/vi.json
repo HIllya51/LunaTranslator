@@ -578,5 +578,7 @@
     "系统未安装": "Hệ thống không được cài đặt",
     "的OCR模型": "Mô hình OCR",
     "超分-Magpie": "Siêu phân - Magpie",
-    "超分-Magpie9_win7适配版": "Siêu điểm - Magpie9_ Win7 phiên bản phù hợp"
+    "超分-Magpie9_win7适配版": "Siêu điểm - Magpie9_ Win7 phiên bản phù hợp",
+    "均衡负载": "Cân bằng tải",
+    "单次负载个数": "Số lượng tải đơn"
 }
