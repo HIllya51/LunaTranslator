@@ -44,7 +44,7 @@
 
 #### 语音合成
 
-&emsp;&emsp;**离线TTS** 支持windowsTTS，支持VoiceRoid2，支持VOICEVOX
+&emsp;&emsp;**离线TTS** 支持windowsTTS，支持VoiceRoid2，支持VoiceRoid+，支持NeoSpeech，支持VOICEVOX
 
 &emsp;&emsp;**在线TTS** 支持火山TTS
 
