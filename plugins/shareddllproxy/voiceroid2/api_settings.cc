@@ -52,7 +52,13 @@ Settings SettingsBuilder::Build() {
     string language_dir = base_dir_ + kWinDelimit + "Lang" + kWinDelimit + "standard";
     std::strcpy(settings.voice_dir, voice_dir.c_str());
     std::strcpy(settings.language_dir, language_dir.c_str());
-    settings.seed = EBY_SEED_A;
+    if (voice_name_ == "yukari_emo_44") {
+        settings.seed = "PROJECT-VOICeVIO-SFE";//
+    }
+    else {
+        settings.seed =  EBY_SEED_A;
+    }
+        
   }
 
   Dprintf("SettingBuilder\nfrequency=%d\nlanguage_dir=%s\nvoice_dir=%s",

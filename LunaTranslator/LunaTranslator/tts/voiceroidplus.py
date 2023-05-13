@@ -1,5 +1,5 @@
     
-from utils.config import globalconfig   
+from utils.config import globalconfig   ,_TR
 import time
 import os ,threading,win32utils,win32con
 from traceback import print_exc
@@ -21,7 +21,7 @@ class TTS(TTSbase):
         if  globalconfig['reader'][self.typename]['voice'] not in self.voicelist:  
             globalconfig['reader'][self.typename]['voice']=self.voicelist[0]
         
-        self.checkpath()
+        #self.checkpath()
     def getvoicelist(self):
         voicelist=[]
         if os.path.exists(self.config['path'])==False:
@@ -30,6 +30,9 @@ class TTS(TTSbase):
         for _ in l:
             if _!='index.dat':
                 voicelist.append(_)
+                
+        if voicelist[0] not in ['kiritan_22','zunko_22','akane_22','aoi_22']:           
+            voicelist=[_TR("错误")+" "+_TR("不支持的版本")] 
         return voicelist
           
     def checkpath(self):
@@ -43,8 +46,8 @@ class TTS(TTSbase):
             self.voice=self.config["voice"]
             fname=str(time.time()) 
             savepath=os.path.join(os.getcwd(),'cache/tts',fname+'.wav')
-            dllpath=os.path.join(self.path,'aitalked.dll')
-            ##dllpath=r'C:\Users\wcy\Downloads\zunko\aitalked.dll'
+            dllpath=os.path.join(self.path,'aitalked.dll') 
+            
             exepath=os.path.join(os.getcwd(),'files/plugins/shareddllproxy32.exe')
             self.savepath=savepath
 
@@ -53,13 +56,8 @@ class TTS(TTSbase):
             t= str(t) 
             pipename='\\\\.\\Pipe\\voiceroid2_'+t
             waitsignal='voiceroid2waitload_'+t
-            def linear_map(x): 
-                if x >= 0 :
-                    x= 0.3 * x + 1
-                else:
-                    x= (x+10)/20 + 0.5
-                return x
-            self.engine=subproc_w(f'"{exepath}" voiceroid2 "{self.config["path"]}" "{dllpath}" {self.config["voice"]} 44100 {linear_map(globalconfig["ttscommon"]["rate"])} "{savepath}"  {pipename} {waitsignal}',name='voicevoid2')
+            #速率不可调
+            self.engine=subproc_w(f'"{exepath}" voiceroid2 "{self.config["path"]}" "{dllpath}" {self.config["voice"]} 22050 0 "{savepath}"  {pipename} {waitsignal}',name='voicevoid2') 
             
             secu=win32utils.get_SECURITY_ATTRIBUTES()
             win32utils.WaitForSingleObject(win32utils.CreateEvent(win32utils.pointer(secu),False, False, waitsignal),win32utils.INFINITE); 
@@ -83,4 +81,3 @@ class TTS(TTSbase):
             if os.path.exists(fname):
                 return(fname)
         
-             

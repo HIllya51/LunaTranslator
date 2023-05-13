@@ -25,21 +25,14 @@ int voiceroid2wmain(int argc,wchar_t *wargv[]) {
 
 	Ebyroid* ebyroid;
 
-    printf("argc %d \n", argc);
-    printf("argv %s \n", argv[0]);
-    printf("argv %s \n", argv[1]);
-    printf("argv %s \n", argv[2]);
-    printf("argv %s \n", argv[3]);
-    printf("argv %s \n", argv[4]);
-    printf("argv %s \n", argv[5]);
-    printf("argv %s \n", argv[6]);
-    printf("argv %s \n", argv[7]);
-    printf("argv %s \n", argv[8]);
+    printf("argc %d \n", argc); 
+    for (int i = 0; i < argc; i++) {
+        printf("%d %s\n", i, argv[i]);
+    }
     ebyroid = Ebyroid::Create((const char*)argv[1],//"C:\\dataH\\Yukari2",
-        (const char*)argv[2],
-        //"C:\\Users\\11737\\Documents\\GitHub\\LunaTranslator\\LunaTranslator\\files\\voiceroid2\\aitalked.dll", 
+        (const char*)argv[2], 
         (const char*)argv[3],//"yukari_emo_44",
-        2,//atof((const char*)argv[4]),// 2, 
+        2, //固定最大音量
         atof((const char*)argv[5]));//1); //0.1-2,0.5-4
     SECURITY_DESCRIPTOR sd = {};
     InitializeSecurityDescriptor(&sd, SECURITY_DESCRIPTOR_REVISION);
@@ -50,6 +43,7 @@ int voiceroid2wmain(int argc,wchar_t *wargv[]) {
         DWORD len = 0;
 
     }
+    int freq1 = atoi(argv[4]);
     printf("pipe connected");
     int II = 0;
     while (true) {
@@ -70,8 +64,7 @@ int voiceroid2wmain(int argc,wchar_t *wargv[]) {
         result = ebyroid->Speech(out, &out2, &output_size);
         char newname[1024] = { 0 };
         sprintf(newname, "%s%d.wav", argv[6], II);
-        FILE* F = fopen(newname//"C:\\Users\\11737\\source\\repos\\voice2\\Release\\1.wav"
-            , "wb");
+        FILE* F = fopen(newname , "wb");
 
 
         int fsize = output_size + 44;
@@ -80,7 +73,7 @@ int voiceroid2wmain(int argc,wchar_t *wargv[]) {
         fwrite(&fsize, 4, 1, F);
         fwrite("WAVEfmt ", 1, 8, F);
         fwrite("\x10\x00\x00\x00\x01\x00\x01\x00", 1, 8, F);
-        int freq = 44100;
+        int freq = freq1;
         fwrite(&freq, 4, 1, F);
         freq = freq * 2;
         fwrite(&freq, 4, 1, F);

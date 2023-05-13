@@ -94,6 +94,52 @@ typedef int(__stdcall* ProcEventTTS)(EventReasonCode reason_code,
                                      IntPtr user_data);
 
 #pragma pack(push, 1)
+struct AITalk_TTtsParam
+{
+    // C#: public const int MAX_VOICENAME_ = 80;
+    enum { MAX_VOICENAME_ = 80 }; // 80 is used in AITalkMarshal.cs
+
+    struct TJeitaParam
+    {
+        char femaleName[MAX_VOICENAME_];    // default: ""
+        char maleName[MAX_VOICENAME_];      // default ""
+        int pauseMiddle;    // default 0
+        int pauseLong;      // default 0
+        int pauseSentence;  // default 0
+        char control[12];   // default ""  the length is used in AITalkMarshal.cs
+    };
+
+    struct TSpeakerParam
+    {
+        char voiceName[MAX_VOICENAME_];
+        float volume;
+        float speed;
+        float pitch;
+        float range;
+        int pauseMiddle;
+        int pauseLong;
+        int pauseSentence;
+    }; 
+    unsigned int size;                // default 308
+    ProcTextBuf proc_text_buf;
+    ProcRawBuf proc_raw_buf;
+    ProcEventTTS proc_event_tts;
+    unsigned int lenTextBufBytes;     // default 16384
+    unsigned int lenRawBufBytes;      // default 176400
+    float volume;                     // default 1
+    int pauseBegin;                   // default -1
+    int pauseTerm;                    // default -1
+    char voiceName[MAX_VOICENAME_];   // default empty
+    TJeitaParam Jeita;
+    unsigned int numSpeakers;         // default 0
+    int __reserved__;
+    TSpeakerParam Speaker[1]; // TSpeakerParam[] Speaker;
+
+    size_t TotalSize() const
+    {
+        return sizeof(*this) + numSpeakers * sizeof(TSpeakerParam);
+    }
+};
 struct TTtsParam {
   uint32_t size;
   ProcTextBuf proc_text_buf;

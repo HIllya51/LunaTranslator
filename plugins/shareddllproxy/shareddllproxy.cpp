@@ -5,6 +5,7 @@
 #include"define.h"
 #include<string>
 #pragma comment( linker, "/subsystem:windows /entry:wmainCRTStartup" )
+ 
 int wmain(int argc, wchar_t* argv[])
 {
     auto argv0 = std::wstring(argv[1]);
@@ -21,6 +22,8 @@ int wmain(int argc, wchar_t* argv[])
         return kingsoftwmain(argc - 1, argv + 1);
     else if (argv0 == L"voiceroid2")
         return voiceroid2wmain(argc - 1, argv + 1);
+    else if (argv0 == L"neospeech")
+        return neospeech(argc - 1, argv + 1);
 #else
     else if (argv0 == L"magpie")
         return magpiewmain(argc - 1, argv + 1);

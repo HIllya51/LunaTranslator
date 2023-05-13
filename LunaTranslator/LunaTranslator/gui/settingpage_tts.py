@@ -32,7 +32,7 @@ def getttsgrid(self) :
                  
                  ] 
             if 'path' in globalconfig['reader'][name]:
-                 line+=[self.getcolorbutton(globalconfig,'',callback=functools.partial(getsomepath1,self,name,globalconfig['reader'][name],'path',name,self.object.startreader,True),icon='fa.gear',constcolor="#FF69B4")]
+                 line+=[self.getcolorbutton(globalconfig,'',callback=functools.partial(getsomepath1,self,globalconfig['reader'][name]['name'],globalconfig['reader'][name] ,'path',globalconfig['reader'][name]['name'],self.object.startreader,True),icon='fa.gear',constcolor="#FF69B4")]
             else:
                  line+=['']
             if i%3==2  :
@@ -51,10 +51,10 @@ def setTab5lz(self) :
         grids=getttsgrid(self)
         grids+=[ 
                 [''],
-                [("选择声音",3),(self.voicecombo,12)],
-                [('语速:(-10~10)',3),(self.getspinbox(-10,10,globalconfig['ttscommon'],'rate'  ),2)],
-                [('音量:(0~100)',3),(self.getspinbox(0,100,globalconfig['ttscommon'],'volume' ),2)],
-                [ ('自动朗读',3),(self.getsimpleswitch(globalconfig,'autoread' ),1)],
+                [("选择声音",5),(self.voicecombo,12)],
+                [('语速:(-10~10)',5),(self.getspinbox(-10,10,globalconfig['ttscommon'],'rate'  ),2)],
+                [('音量:(0~100)',5),(self.getspinbox(0,100,globalconfig['ttscommon'],'volume' ),2)],
+                [ ('自动朗读',5),(self.getsimpleswitch(globalconfig,'autoread' ),1)],
                 
         ]  
         gridlayoutwidget=self.makegrid(grids )  

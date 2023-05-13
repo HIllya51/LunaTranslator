@@ -215,44 +215,88 @@ ApiAdapter* NewAdapter(const string& base_dir, const string& dllpath, const stri
       throw std::runtime_error(message);
   }
 
-  char* param_buffer = new char[param_size];
-  TTtsParam* param = (TTtsParam*) param_buffer;
-  param->size = param_size;
-  result = adapter->GetParam(param, &param_size);
-  if ( result != ERR_SUCCESS) {
-    delete[] param_buffer;
-    delete adapter;
-    string message = "API Get Param failed with code ";
-    message += std::to_string(result);
-    throw std::runtime_error(message);
-  }
-  param->extend_format = BOTH;
-  param->proc_text_buf = HiraganaCallback;
-  param->proc_raw_buf = SpeechCallback;
-  param->proc_event_tts = nullptr;
-  param->len_raw_buf_bytes = kConfigRawbufSize;
   
-  /*param->volume = 1.123;
-  param->speaker[0].volume = 1.23; */
-  param->volume = volume;
-  param->speaker[0].volume =volume;
-  param->speaker[0].pitch = 1.111;
-  param->speaker[0].pause_middle = 80;
-  param->speaker[0].pause_sentence = 200;
-  param->speaker[0].pause_long = 100;
-  param->speaker[0].range = 0.893;
-  param->speaker[0].speed = speed;
-  result = adapter->SetParam(param);
-  if ( result != ERR_SUCCESS) {
-    delete[] param_buffer;
-    delete adapter;
-    string message = "API Set Param failed with code ";
-    message += std::to_string(result);
-    throw std::runtime_error(message);
+  
+  printf("param->size %d\n", param_size);
+  if (param_size == 500) {//voiceroid2
+      char* param_buffer = new char[param_size];
+      TTtsParam* param = (TTtsParam*)param_buffer;
+      //TTtsParam* param = (TTtsParam*) param_buffer;
+      param->size = param_size;
+      result = adapter->GetParam(param, &param_size);
+      printf("%s %d\n", "GetParam", result);
+      if (result != ERR_SUCCESS) {
+          delete[] param_buffer;
+          delete adapter;
+          string message = "API Get Param failed with code ";
+          message += std::to_string(result);
+          throw std::runtime_error(message);
+      }
+      param->extend_format = BOTH;
+      param->proc_text_buf = HiraganaCallback;
+      param->proc_raw_buf = SpeechCallback;
+      param->proc_event_tts = nullptr;
+      param->len_raw_buf_bytes = kConfigRawbufSize;
+       
+      param->volume = volume;
+      printf("1\n");
+      param->speaker[0].volume = volume;
+      /*param->speaker[0].pitch = 1.111;
+      param->speaker[0].pause_middle = 80;
+      param->speaker[0].pause_sentence = 200;
+      param->speaker[0].pause_long = 100;
+      param->speaker[0].range = 0.893;*/
+      param->speaker[0].speed = speed;
+      printf("2 %d %d\n",volume,speed);
+      result = adapter->SetParam(param);
+      printf("3 %d\n", result);
+      if (result != ERR_SUCCESS) {
+          delete[] param_buffer;
+          delete adapter;
+          string message = "API Set Param failed with code ";
+          message += std::to_string(result);
+          throw std::runtime_error(message);
+      } 
+      printf("3\n");
+      delete[] param_buffer;
   }
+  else if (param_size == 416) {//voiceroid+
+      char* param_buffer = new char[param_size];
+      AITalk_TTtsParam* param = (AITalk_TTtsParam*)param_buffer;
+      //TTtsParam* param = (TTtsParam*) param_buffer;
+      param->size = param_size;
+      result = adapter->GetParam(param, &param_size);
+      if (result != ERR_SUCCESS) {
+          delete[] param_buffer;
+          delete adapter;
+          string message = "API Get Param failed with code ";
+          message += std::to_string(result);
+          throw std::runtime_error(message);
+      } 
+      printf("numSpeakers %d\n", param->numSpeakers);
+      param->proc_text_buf = HiraganaCallback;
+      param->proc_raw_buf = SpeechCallback;
+      param->proc_event_tts = nullptr;
+      param->lenRawBufBytes = kConfigRawbufSize;
 
-  delete[] param_buffer;
-
+      param->volume = volume;
+      auto f = fopen(R"(C:\Users\wcy\source\repos\ConsoleApplication1\Release\2.txt)", "wb");
+      fwrite(param, 1, param_size, f);
+      fclose(f);
+      result = adapter->SetParam(param);
+      printf("SetParam ok %d\n" , result);
+      if (result != ERR_SUCCESS) {
+          delete[] param_buffer;
+          delete adapter;
+          string message = "API Set Param failed with code ";
+          message += std::to_string(result);
+          printf("%s\n", message.c_str());
+          throw std::runtime_error(message);
+      }
+      delete[] param_buffer;
+  }
+  
+  printf("%s  \n", "setparam all ok");
   return adapter;
 }
 

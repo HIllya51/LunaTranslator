@@ -20,12 +20,12 @@ _GetProcessMute=utilsdll.GetProcessMute
 _GetProcessMute.restype=c_bool
 
 _SAPI_List=utilsdll.SAPI_List
-_SAPI_List.argtypes=POINTER(c_uint64),
+_SAPI_List.argtypes=c_uint,POINTER(c_uint64),
 _SAPI_List.restype=POINTER(c_wchar_p)
 
 
 _SAPI_Speak=utilsdll.SAPI_Speak
-_SAPI_Speak.argtypes=c_wchar_p,c_uint,c_uint,c_uint,c_wchar_p
+_SAPI_Speak.argtypes=c_wchar_p,c_uint,c_uint,c_uint,c_uint,c_wchar_p
 _SAPI_Speak.restype=c_bool
 
 
@@ -71,18 +71,18 @@ def SetProcessMute(pid,mute):
 def GetProcessMute(pid):
     return _GetProcessMute(pid)
 
-def SAPI_List(): 
+def SAPI_List(v): 
     num=c_uint64()
-    _list=_SAPI_List(pointer(num))
+    _list=_SAPI_List(v,pointer(num))
     ret=[]
     for i in range(num.value):
         ret.append(_list[i])
     _freewstringlist(_list,num.value)
     return ret 
 
-def SAPI_Speak(content,voiceid,  rate,  volume,  Filename):
+def SAPI_Speak(content,v,voiceid,  rate,  volume,  Filename):
      
-    return _SAPI_Speak(content,voiceid,  int(rate),  int(volume),  Filename)
+    return _SAPI_Speak(content,v,voiceid,  int(rate),  int(volume),  Filename)
 
 
 def getlanguagelist():

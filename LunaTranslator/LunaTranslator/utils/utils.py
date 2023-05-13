@@ -74,7 +74,7 @@ class wavmp3player( ):
             if self.lastfile:
                 os.remove(self.lastfile)
             self.lastfile=sound
-            win32utils.mciSendString(f'open "{sound}" alias lunatranslator_mci_{self.i}');  
+            win32utils.mciSendString(f'open "{sound}" type mpegvideo  alias lunatranslator_mci_{self.i}');  
             win32utils.mciSendString(f'setaudio lunatranslator_mci_{self.i} volume to {volume*10}'); 
             win32utils.mciSendString((f'play lunatranslator_mci_{self.i}'))
         except:

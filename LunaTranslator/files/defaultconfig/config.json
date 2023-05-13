@@ -489,11 +489,22 @@
             "voice": "",
             "name":"WindowsTTS"
         },
+        "NeoSpeech": {
+            "use": false,
+            "voice": "",
+            "name":"NeoSpeech"
+        },
         "voiceroid2": {
             "use": false,
             "voice": "",
             "path": "",
             "name":"VoiceRoid2"
+        },
+        "voiceroidplus": {
+            "use": false,
+            "voice": "",
+            "path": "",
+            "name":"VoiceRoid+"
         },
         "voicevox": {
             "use": false,

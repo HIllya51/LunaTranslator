@@ -14,6 +14,7 @@ int dreyewmain(int argc, wchar_t* argv[]);
 int kingsoftwmain(int argc, wchar_t* argv[]);
 int voiceroid2wmain(int argc, wchar_t* argv[]);
 int lewmain(int argc, wchar_t* argv[]);
+int neospeech(int argc, wchar_t* argv[]);
 #else
 int magpiewmain(int argc, wchar_t* wargv[]);
 

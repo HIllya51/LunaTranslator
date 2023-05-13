@@ -25,7 +25,7 @@ def gethiragrid(self) :
                  
                  ] 
             if 'path' in globalconfig['hirasetting'][name]:
-                 line+=[self.getcolorbutton(globalconfig,'',callback=functools.partial(getsomepath1,self,name,globalconfig['hirasetting'][name],'path',name,self.object.starthira,True),icon='fa.gear',constcolor="#FF69B4")]
+                 line+=[self.getcolorbutton(globalconfig,'',callback=functools.partial(getsomepath1,self,globalconfig['hirasetting'][name]['name'],globalconfig['hirasetting'][name], 'path',globalconfig['hirasetting'][name]['name'],self.object.starthira,True),icon='fa.gear',constcolor="#FF69B4")]
             elif 'token' in globalconfig['hirasetting'][name] and 'token_name' in globalconfig['hirasetting'][name]:
                 items=[{
                         't':'lineedit','l': globalconfig['hirasetting'][name]['token_name'],'d':globalconfig['hirasetting'][name],'k':'token'

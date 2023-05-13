@@ -1,14 +1,14 @@
 #include"pch.h"
 #include"define.h"
 #include<iostream>
-bool SAPI_Speak(const wchar_t* Content, int voiceid, int rate, int volume, const wchar_t* Filename) {
+bool SAPI_Speak(const wchar_t* Content, int version, int voiceid, int rate, int volume, const wchar_t* Filename) {
 	auto _c = std::wstring(Content);
 	auto _f = std::wstring(Filename);
-	return SAPI::Speak(_c, voiceid,  rate, volume,_f );
+	return SAPI::Speak(_c,version, voiceid,  rate, volume,_f );
 
 }
-wchar_t** SAPI_List(size_t* num) {
-    auto _list = SAPI::List(); 
+wchar_t** SAPI_List(int version,size_t* num) {
+    auto _list = SAPI::List(version); 
     *num = _list.size();
     return vecwstr2c(_list);
 }
