@@ -19,6 +19,7 @@ def resourcegrid( ) :
             [('OCR-韩语'),(makehtml("https://github.com/HIllya51/LunaTranslator/releases/download/v1.34.5/cht.zip",True),1,'link')],
             [('OCR-俄语'),(makehtml("https://github.com/HIllya51/LunaTranslator/releases/download/v1.1.2/ru.zip",True),1,'link')],
             [('辞书-MeCab'),(makehtml("https://github.com/HIllya51/LunaTranslator/releases/download/v1.0/Mecab.zip",True),1,'link')],
+            [('辞书-Unidic'),(makehtml("https://github.com/HIllya51/LunaTranslator/releases/download/v1.0/unidic-cwj-202302.zip",True),1,'link')],
             [('辞书-小学馆'),(makehtml("https://github.com/HIllya51/LunaTranslator/releases/download/v1.0/xiaoxueguan.db",True),1,'link')],
             [('辞书-EDICT'),(makehtml("https://github.com/HIllya51/LunaTranslator/releases/download/v1.0/edict.db",True),1,'link')],
             [('辞书-EDICT2'),(makehtml("https://github.com/HIllya51/LunaTranslator/releases/download/v1.1.2/edict2",True),1,'link')],

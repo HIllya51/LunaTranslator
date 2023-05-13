@@ -125,16 +125,7 @@ def mecab_parse(trigger,string):
     _freestringlist(feature,num.value)
     _freestringlist(surface,num.value)
     return res
-
-def mecab_getkanaindex(trigger):
-    fields = mecab_parse(trigger,"日本")[0][1]
-    if len(fields)==26:
-        return 17
-    elif len(fields)==29:
-        return 20
-    else:
-        return -1
-        
+ 
 
 def clipboard_set(text):
     return _clipboard_set(text)
