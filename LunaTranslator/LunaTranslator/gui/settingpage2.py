@@ -4,10 +4,9 @@ import functools
 from utils.config import globalconfig ,translatorsetting 
  
 from gui.pretransfile import sqlite2json
-from utils.config import globalconfig ,_TR,_TRL
+from utils.config import globalconfig ,_TR,_TRL,static_data
 from utils.utils import selectdebugfile
-import os
-from utils import somedef
+import os 
 from gui.inputdialog import autoinitdialog 
 def initsome11(self,l,label=None): 
     grids=[]
@@ -99,9 +98,9 @@ def setTabTwo_lazy(self) :
             ],['']
         ]
 
-        lixians=set(somedef.fanyi_offline)
+        lixians=set(static_data["fanyi_offline"])
         alls=set(globalconfig['fanyi'].keys())
-        mt=set(somedef.fanyi_pre)
+        mt=set(static_data["fanyi_pre"])
         online=alls-lixians-mt 
         mianfei=set()
         for _ in online:

@@ -5,39 +5,25 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QPixmap,QImage
 from PyQt5.QtWidgets import QWidget,QLabel ,QProgressBar,QLineEdit,QPushButton 
 import os,threading
-from utils.config import globalconfig  ,_TR 
+from utils.config import globalconfig  ,_TR ,static_data
 from utils.wrapper import threader
 from version import version
-import time
+import time,json
 from utils.utils import makehtml
 
 from utils.utils import getproxy
 def resourcegrid( ) :  
-        grid=[ 
-            [('OCR-简体中文'),(makehtml('https://github.com/HIllya51/LunaTranslator/releases/download/v1.34.5/zh.zip',True),1,'link'),''],
-            [('OCR-繁体中文'),(makehtml("https://github.com/HIllya51/LunaTranslator/releases/download/v1.34.5/cht.zip",True),1,'link')],
-            [('OCR-韩语'),(makehtml("https://github.com/HIllya51/LunaTranslator/releases/download/v1.34.5/cht.zip",True),1,'link')],
-            [('OCR-俄语'),(makehtml("https://github.com/HIllya51/LunaTranslator/releases/download/v1.1.2/ru.zip",True),1,'link')],
-            [('辞书-MeCab'),(makehtml("https://github.com/HIllya51/LunaTranslator/releases/download/v1.0/Mecab.zip",True),1,'link')],
-            [('辞书-Unidic'),(makehtml("https://github.com/HIllya51/LunaTranslator/releases/download/v1.0/unidic-cwj-202302.zip",True),1,'link')],
-            [('辞书-小学馆'),(makehtml("https://github.com/HIllya51/LunaTranslator/releases/download/v1.0/xiaoxueguan.db",True),1,'link')],
-            [('辞书-EDICT'),(makehtml("https://github.com/HIllya51/LunaTranslator/releases/download/v1.0/edict.db",True),1,'link')],
-            [('辞书-EDICT2'),(makehtml("https://github.com/HIllya51/LunaTranslator/releases/download/v1.1.2/edict2",True),1,'link')],
-            [('辞书-灵格斯词典'),(makehtml("https://github.com/HIllya51/LunaTranslator/releases/download/v1.0/Lingoes.zip",True),1,'link')],
-            [('翻译-J北京7'),(makehtml("https://github.com/HIllya51/LunaTranslator/releases/download/v1.0/JBeijing7.zip",True),1,'link')],
-            [('翻译-J北京7-用户词典'),(makehtml("https://github.com/HIllya51/LunaTranslator/releases/download/v2.2.0/JBeijing7UserDict.zip",True),1,'link')],
-            [('翻译-金山快译'),(makehtml("https://github.com/HIllya51/LunaTranslator/releases/download/v1.0/FastAIT09_Setup.25269.4101.zip",True),1,'link')],
-            [('翻译-快译通'),(makehtml("https://github.com/HIllya51/LunaTranslator/releases/download/v1.0/DR.eye.zip",True),1,'link')],
-            [('转区-Locale-Emulator'),(makehtml("https://github.com/xupefei/Locale-Emulator/releases/download/v2.5.0.1/Locale.Emulator.2.5.0.1.zip",True),1,'link')],
-            [('转区-Locale_Remulator'),(makehtml("https://github.com/InWILL/Locale_Remulator/releases"),1,'link')],
-            [('语音-VoiceRoid2_結月ゆかり'),(makehtml("https://github.com/HIllya51/LunaTranslator/releases/download/v1.0/Yukari2.zip",True),1,'link')],
-            [('语音-VoiceRoid+_东北ずん子'),(makehtml("https://github.com/HIllya51/LunaTranslator/releases/download/v1.1.2/VOICEROID+zunko.7z",True),1,'link')],
-            [('语音-VoiceRoid+_結月ゆかり'),(makehtml("https://github.com/HIllya51/LunaTranslator/releases/download/v1.1.2/VOICEROID+yukari.7z",True),1,'link')],
-            [('语音-NeoSpeech'),(makehtml("https://github.com/HIllya51/LunaTranslator/releases/download/v1.0/NeoSpeech.Japanese.Misaki.zip",True),1,'link')],
-            [('语音-VOICEVOX'),(makehtml("https://github.com/VOICEVOX/voicevox/releases"),1,'link')],
-            [('超分-Magpie'),(makehtml("https://github.com/Blinue/Magpie/releases"),1,'link')],
-            [('超分-Magpie9_win7适配版'),(makehtml("https://github.com/HIllya51/Magpie9_win7/releases"),1,'link')],
-        ]
+         
+        grid=[]
+        for _ in static_data['aboutsource']:
+            if _['link'][-8:]=='releases':
+                __=False
+            else:
+                __=True 
+            grid.append(
+                  
+                  [(_['name']),(makehtml(_['link'],__),1,'link')]
+             ) 
         return grid
 @threader
 def getversion(self):

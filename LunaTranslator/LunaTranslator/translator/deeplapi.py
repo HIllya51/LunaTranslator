@@ -2,13 +2,13 @@
 import requests
 from urllib import parse  
 from traceback import print_exc
-from utils.config import globalconfig  
+from utils.config import globalconfig  ,static_data
 from translator.basetranslator import basetrans   
-from utils import somedef
+ 
 
 class TS(basetrans):
     def langmap(self):
-        x={_:_.upper() for _ in somedef.language_list_translator_inner}
+        x={_:_.upper() for _ in static_data["language_list_translator_inner"]}
         x.pop('cht')
         return  x
     def translate(self,query):  

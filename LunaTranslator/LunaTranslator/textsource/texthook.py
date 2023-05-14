@@ -1,25 +1,19 @@
 import threading
 from queue import Queue  
 import re ,os
-import time,win32utils
-from traceback import print_exc
+import time 
 from collections import OrderedDict
 
-from utils.hwnd import is64bit
-from textsource.hook.hookcode import Parse
-from utils import somedef
+from utils.hwnd import is64bit 
 import textsource.hook.define as define
-from utils.config import globalconfig ,savehook_new_data ,_TR
-from utils.subproc import subproc_w
+from utils.config import globalconfig ,savehook_new_data ,_TR,static_data 
 from textsource.textsourcebase import basetext 
-from utils.utils import checkchaos  
-import ctypes
-import ctypes,win32con
-from textsource.hook.host import RPC
+from utils.utils import checkchaos    
 class texthook(basetext  ): 
     def __init__(self,RPC,textgetmethod,hookselectdialog,pids,hwnd,pname  ,autostarthookcode=None,needinserthookcode=None) :
         print(pids,hwnd,pname  ,autostarthookcode,needinserthookcode)
         self.RPC=RPC
+        RPC.start()
         if autostarthookcode is None:
             autostarthookcode=[]
         if needinserthookcode is None:
@@ -115,7 +109,7 @@ class texthook(basetext  ):
     def codepage(self):
         try:
             cpi=savehook_new_data[self.pname]["codepage_index"]
-            cp= somedef.codepage_real[cpi]
+            cp= static_data["codepage_real"][cpi]
         except:
             cp=932
         return cp

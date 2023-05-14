@@ -2,7 +2,7 @@
 # sharedmem.py
 # 5/8/2014 jichi
   
-from embedded.pyvnrmem3 import VnrSharedMemory
+from textsource.embed.pyvnrmem3 import VnrSharedMemory
  
 import win32utils
 class VnrAgentSharedMemory:

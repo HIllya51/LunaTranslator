@@ -1,15 +1,14 @@
   
-from utils.config import globalconfig ,_TR   
+from utils.config import globalconfig ,_TR   ,static_data
 from textsource.textsourcebase import basetext   
 import functools,queue,time,win32utils
-import threading,json
-from utils import somedef
+import threading,json 
 import platform
 import os
 from utils.hwnd import is64bit
 from utils.subproc import subproc_w
-import     embedded.sharedmem3 as sharedmem  
-import embedded.socketpack3 as socketpack 
+from textsource.embed.sharedmem3 import VnrAgentSharedMemory
+from textsource.embed.socketpack3 import packstrlist,packdata,unpackuint32,unpackstrlist
 class embedded(basetext  ):  
     def inject_vnragent(self,pid):  
         if platform.architecture()[0]=='64bit': 
@@ -51,7 +50,7 @@ class embedded(basetext  ):
                     headSize = 4 
                     data = win32utils.ReadFile(hostpipe, headSize,None) 
                     if data==b'':break
-                    size = socketpack.unpackuint32(data)
+                    size = unpackuint32(data)
                     data = win32utils.ReadFile(hostpipe, size,None) 
                     if data==b'':break
                     print(data) 
@@ -77,7 +76,7 @@ class embedded(basetext  ):
                 self.injectedPid=0
     def _onDataReceived(self, data, socket):
         print("dataReceived",data)
-        args = socketpack.unpackstrlist(data) 
+        args = unpackstrlist(data) 
         if not args:
             print("unpack data failed")
             return
@@ -110,13 +109,13 @@ class embedded(basetext  ):
             print_exc() 
     
     def callAgent(self, *args): 
-            data = socketpack.packstrlist(args)
+            data = packstrlist(args)
             #print("senddata",bytes(data))
                     
             if isinstance(data, str):
                 data = data.encode('utf8', errors='ignore')
             
-            data = socketpack.packdata(data) 
+            data = packdata(data) 
             
             print("before",data)
             
@@ -125,7 +124,7 @@ class embedded(basetext  ):
     def sendSettings(self): 
         
         
-        data={"embeddedScenarioTranscodingEnabled": False, "embeddedFontCharSetEnabled": globalconfig['embedded']['changecharset'], "embeddedTranslationWaitTime":int(1000* globalconfig['embedded']['timeout_translate']), "embeddedOtherTranscodingEnabled": False, "embeddedSpacePolicyEncoding": "shift-jis", "windowTranslationEnabled": True, "windowTextVisible": True, "embeddedNameTranscodingEnabled": False, "gameEncoding": "shift-jis", "embeddedOtherTranslationEnabled": False, "embeddedSpaceSmartInserted": globalconfig['embedded']['insertspace_policy']==2, "embeddedFontCharSet": somedef.charsetmap[globalconfig['embedded']['changecharset_charset']], "embeddedScenarioWidth": 0, "embeddedScenarioTextVisible": globalconfig['embedded']['keeprawtext'], "windowTranscodingEnabled": False, "nameSignature": 0, "embeddedScenarioTranslationEnabled": True, "embeddedScenarioVisible": True, "embeddedFontScale": 0, "embeddedAllTextsExtracted": False, "embeddedOtherVisible": True, "embeddedFontFamily": globalconfig['embedded']['changefont_font'] if globalconfig['embedded']['changefont'] else '', "embeddedTextEnabled": True, "scenarioSignature": 0, "embeddedOtherTextVisible": False, "embeddedNameTextVisible": False, "embeddedSpaceAlwaysInserted": globalconfig['embedded']['insertspace_policy']==1, "embeddedNameTranslationEnabled": True, "debug": True, "embeddedNameVisible": True, "embeddedFontWeight": 0}
+        data={"embeddedScenarioTranscodingEnabled": False, "embeddedFontCharSetEnabled": globalconfig['embedded']['changecharset'], "embeddedTranslationWaitTime":int(1000* globalconfig['embedded']['timeout_translate']), "embeddedOtherTranscodingEnabled": False, "embeddedSpacePolicyEncoding": "shift-jis", "windowTranslationEnabled": True, "windowTextVisible": True, "embeddedNameTranscodingEnabled": False, "gameEncoding": "shift-jis", "embeddedOtherTranslationEnabled": False, "embeddedSpaceSmartInserted": globalconfig['embedded']['insertspace_policy']==2, "embeddedFontCharSet": static_data["charsetmap"][globalconfig['embedded']['changecharset_charset']], "embeddedScenarioWidth": 0, "embeddedScenarioTextVisible": globalconfig['embedded']['keeprawtext'], "windowTranscodingEnabled": False, "nameSignature": 0, "embeddedScenarioTranslationEnabled": True, "embeddedScenarioVisible": True, "embeddedFontScale": 0, "embeddedAllTextsExtracted": False, "embeddedOtherVisible": True, "embeddedFontFamily": globalconfig['embedded']['changefont_font'] if globalconfig['embedded']['changefont'] else '', "embeddedTextEnabled": True, "scenarioSignature": 0, "embeddedOtherTextVisible": False, "embeddedNameTextVisible": False, "embeddedSpaceAlwaysInserted": globalconfig['embedded']['insertspace_policy']==1, "embeddedNameTranslationEnabled": True, "debug": True, "embeddedNameVisible": True, "embeddedFontWeight": 0}
         
         self.setAgentSettings(data)
     
@@ -189,7 +188,7 @@ class embedded(basetext  ):
         self.hookselectdialog=hookselectdialog
         self.newline=queue.Queue()
         self.agentreceiveddata='' 
-        self.mem = sharedmem.VnrAgentSharedMemory( )
+        self.mem = VnrAgentSharedMemory( )
         #b=win32utils.GetBinaryType(pname)
         b=is64bit(pids[0])
         if b:

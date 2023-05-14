@@ -18,7 +18,7 @@ struct Settings {
   char base_dir[kMaxPathSize];
   char dll_path[kMaxPathSize];
   char voice_dir[kMaxPathSize];
-  char voice_name[16];
+  char voice_name[256];
   char language_dir[kMaxPathSize];
   char license_path[kMaxPathSize];
   const char* seed;

@@ -1,16 +1,16 @@
  
 import functools
-from utils.config import globalconfig   
+from utils.config import globalconfig   ,static_data,_TR
 from traceback import print_exc 
-from utils.winsyshotkey import SystemHotkey 
-from PyQt5.QtWidgets import QComboBox
-import winsharedutils
-from utils.somedef import key_first,key_first_reg,key_second,key_second_reg
+from utils.winsyshotkey import SystemHotkey ,registerException
+from PyQt5.QtGui import QKeySequence
+from PyQt5.QtCore import pyqtSignal
+from PyQt5.QtWidgets import QComboBox,QKeySequenceEdit,QLabel
+import winsharedutils 
 def setTab_quick_direct(self):
-    self.hotkeys={}
-    self.hotkeys_savelast={}
-    self.usedkey=[] 
-        
+    self.hotkeymanager=SystemHotkey()
+    self.referlabels={}
+    self.registok={}
     self.bindfunctions={ 
             '_A':lambda :self.object.settin_ui.clicksourcesignal.emit('copy'),
             '_B':lambda :self.object.settin_ui.clicksourcesignal.emit('ocr'),
@@ -45,35 +45,30 @@ def setTab_quick_direct(self):
         }
     for name in globalconfig['quick_setting']['all']: 
         if name not in self.bindfunctions:
-                    continue
-        self.hotkeys[name]=None
-        regist_or_not_key(self,name,self.bindfunctions[name])
+                    continue 
+        referlabel=QLabel()
+        self.referlabels[name]=referlabel
+        regist_or_not_key(self,name )
 
 def setTab_quick(self):
     
  
     self.tabadd_lazy(self.tab_widget, ('快捷按键'), lambda :setTab_quick_lazy(self))   
 
-class onpopuploadcombobox(QComboBox): 
-    def __init__(self, idx,lst,parent = None):
-        super(onpopuploadcombobox,self).__init__(parent)
-        self.idx=idx
-        if idx>=0:
-            self.addItem(lst[idx])
-        self.lst=lst 
-        self.hasshown=False 
-    def showPopup(self):  
-        if self.hasshown==False:
-            self.hasshown=True
-            self.clear()
-            self.addItems(self.lst)
-            self.setCurrentIndex(self.idx)
-            self.currentIndexChanged.connect(self.callback)
-        super().showPopup() 
-def setTab_quick_lazy(self) :
-  
+
+class CustomKeySequenceEdit(QKeySequenceEdit):
+    changeedvent=pyqtSignal(str)
+    def __init__(self, parent=None):
+        super(CustomKeySequenceEdit, self).__init__(parent)
         
-        
+    def keyPressEvent(self, QKeyEvent):
+        super(CustomKeySequenceEdit, self).keyPressEvent(QKeyEvent)
+        value = self.keySequence() 
+        if len(value.toString()):
+            self.clearFocus()
+        self.changeedvent.emit(value.toString())
+        self.setKeySequence(QKeySequence(value)) 
+def setTab_quick_lazy(self) : 
          
         grids=[
             [(("是否使用快捷键"),4),self.getsimpleswitch(globalconfig['quick_setting']  ,'use',callback=functools.partial(__enable,self )  ),((''),8)]
@@ -81,20 +76,14 @@ def setTab_quick_lazy(self) :
         for name in globalconfig['quick_setting']['all']: 
                 if name not in self.bindfunctions:
                     continue
-                key1=onpopuploadcombobox(globalconfig['quick_setting']['all'][name]['key1'],key_first)
-                #key1=self.getsimplecombobox(key_first,globalconfig['quick_setting']['all'][name],'key1')
-                key2=onpopuploadcombobox(globalconfig['quick_setting']['all'][name]['key2'],key_second)
-                #key2=self.getsimplecombobox(key_second,globalconfig['quick_setting']['all'][name],'key2') 
-                #key1.currentIndexChanged.connect(functools.partial(__changekey,self,name,'key1',key1,key2))
-                #key2.currentIndexChanged.connect(functools.partial(__changekey,self,name,'key2',key1,key2))
-                key1.callback=(functools.partial(__changekey,self,name,'key1',key1,key2))
-                key2.callback=(functools.partial(__changekey,self,name,'key2',key1,key2))
-                
+                key1=CustomKeySequenceEdit(QKeySequence(globalconfig['quick_setting']['all'][name]['keystring'])) 
+                key1.changeedvent.connect(functools.partial(__changekeynew,self,name))  
+                 
                 grids.append(
                     [((globalconfig['quick_setting']['all'][name]['name']),4),
                     self.getsimpleswitch(globalconfig['quick_setting']['all'][name] ,'use',callback=functools.partial(fanyiselect,self,name)),
                     (key1,2),
-                    (key2,2)
+                    (self.referlabels[name],4)
                     ]
                 )
         gridlayoutwidget=self.makegrid(grids )  
@@ -105,50 +94,54 @@ def __enable(self,x ):
             for quick in globalconfig['quick_setting']['all']:
                 if quick not in self.bindfunctions:
                     continue
-                regist_or_not_key(self,quick,self.bindfunctions[quick])
+                regist_or_not_key(self,quick )
 def fanyiselect( self,who,checked):  
-            regist_or_not_key(self,who,self.bindfunctions[who])
-def __changekey(self,who,keyn, key1,key2,x):
-    back=globalconfig['quick_setting']['all'][who][keyn]
-    globalconfig['quick_setting']['all'][who][keyn]=x
-    if (key_first_reg[globalconfig['quick_setting']['all'][who]['key1']],key_second_reg[globalconfig['quick_setting']['all'][who]['key2']]) in self.usedkey:
-        globalconfig['quick_setting']['all'][who][keyn]=back
-        {'key1':key1,'key2':key2}[keyn].setCurrentIndex(back)
+            regist_or_not_key(self,who )
+class unsupportkey(Exception):
+     pass
+def parsekeystringtomodvkcode(keystring):
+    keys=[]
+    mode=0
+    if keystring[-1]=='+':
+        keys+=['+']
+        keystring=keystring[:-2]
+    ksl=keystring.split('+')
+    ksl=ksl+keys
+    unsupports=[] 
+    if ksl[-1].upper() in static_data['vkcode_map']: 
+        vkcode=static_data['vkcode_map'][ksl[-1].upper()]
+    else:
+        unsupports.append(ksl[-1])
+     
+    for k in ksl[:-1]: 
+        if k.upper() in static_data['mod_map']:
+            mode=mode| static_data['mod_map'][k.upper()]
+        else:
+            unsupports.append(k)
+    if len(unsupports):
+          raise unsupportkey(unsupports)
+    return mode,vkcode
+def __changekeynew(self,name,keystring):
+    globalconfig['quick_setting']['all'][name]['keystring']=keystring
+     
+    regist_or_not_key(self,name)  
+def regist_or_not_key(self,name):
+    self.referlabels[name].setText('')
+    keystring=globalconfig['quick_setting']['all'][name]['keystring']
+    if keystring=='' or (not (globalconfig['quick_setting']['all'][name]['use'] and globalconfig['quick_setting']['use'])) :
+        if name in self.registok:
+            self.hotkeymanager.unregister(self.registok[name]) 
         return
-    regist_or_not_key(self,who,self.bindfunctions[who])
-def regist_or_not_key(self,name,callback):
     
-    if self.hotkeys[name] :
-        try:
-            k1,k2=self.hotkeys_savelast[name]
-            if k1=="":
-                self.hotkeys[name].unregister((k2,))
-            else:
-                self.hotkeys[name].unregister((k1,k2))
-            self.usedkey.remove(self.hotkeys_savelast[name])
-        except:
-            pass
-    self.hotkeys[name]=None
-    if globalconfig['quick_setting']['all'][name]['use'] and globalconfig['quick_setting']['use'] : 
-        
-        k1index=globalconfig['quick_setting']['all'][name]['key1']
-        k2index=globalconfig['quick_setting']['all'][name]['key2']
-        if k1index==-1 or k2index==-1:
-            return
-        k1=key_first_reg[k1index]
-        k2=key_second_reg[k2index]
-        if (k1,k2) in self.usedkey:
-            return
-        hk=SystemHotkey()
-        try:
-            if k1=="":
-
-                hk.register((k2,),callback=lambda x: callback()) 
-            else:
-                hk.register((k1,k2),callback=lambda x: callback()) 
-            self.hotkeys_savelast[name]=(k1,k2)
-            self.hotkeys[name]=hk
-            self.usedkey.append((k1,k2))
-        except:
-            print_exc()
- 
+    try:
+        mode,vkcode=parsekeystringtomodvkcode(keystring)
+    except unsupportkey as e: 
+        self.referlabels[name].setText(_TR("不支持的键位")+','.join(e.args[0]))
+        return
+    
+    try:
+        self.hotkeymanager.register((mode,vkcode),callback=self.bindfunctions[name]) 
+        self.registok[name]=(mode,vkcode)
+    except registerException:
+        self.referlabels[name].setText(_TR("快捷键冲突") )
+    

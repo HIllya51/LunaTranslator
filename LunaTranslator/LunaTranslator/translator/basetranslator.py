@@ -1,12 +1,11 @@
 from traceback import print_exc
 from queue import Queue  
 
-from utils.config import globalconfig,translatorsetting
+from utils.config import globalconfig,translatorsetting,static_data
 from threading import Thread,Lock
 import os,time ,codecs
 import zhconv
-from functools import partial
-from utils import somedef
+from functools import partial 
 from utils.utils import timeoutfunction,quote_identifier
 import sqlite3
 
@@ -32,14 +31,14 @@ class basetrans:
     @property
     def srclang(self):
         try:
-            l=somedef.language_list_translator_inner[globalconfig['srclang3']]
+            l=static_data["language_list_translator_inner"][globalconfig['srclang3']]
             return self.langmap_x[l] 
         except:
             return ''
     @property
     def tgtlang(self):
         try:
-            l=somedef.language_list_translator_inner[globalconfig['tgtlang3']]
+            l=static_data["language_list_translator_inner"][globalconfig['tgtlang3']]
             return self.langmap_x[l] 
         except:
             return '' 
@@ -73,7 +72,7 @@ class basetrans:
         self.queue=Queue() 
         
         
-        _=dict(zip(somedef.language_list_translator_inner,somedef.language_list_translator_inner))
+        _=dict(zip(static_data["language_list_translator_inner"],static_data["language_list_translator_inner"]))
         _.update({'cht':'zh'})
         _.update(self.langmap())
         self.langmap_x=_
@@ -84,7 +83,7 @@ class basetrans:
         
         self.newline=None
 
-        if self.typename not in somedef.fanyi_pre:
+        if self.typename not in static_data["fanyi_pre"]:
             try:
                 self.sqlwrite2=sqlite3.connect(f'./translation_record/cache/{typename}.sqlite',check_same_thread = False, isolation_level=None)
                 try:
@@ -111,7 +110,7 @@ class basetrans:
                 print_exc()
     @property
     def needzhconv(self):
-        l=somedef.language_list_translator_inner[globalconfig['tgtlang3']]
+        l=static_data["language_list_translator_inner"][globalconfig['tgtlang3']]
         return l=='cht' and 'cht' not in self.langmap()
     
     @property
@@ -165,7 +164,7 @@ class basetrans:
         return res
     
     def maybecachetranslate(self,contentraw,contentsolved):
-        if self.typename not in somedef.fanyi_pre:
+        if self.typename not in static_data["fanyi_pre"]:
             res=self.cached_translate(contentsolved)
         else: 
             res=self.translate(contentraw)
@@ -179,7 +178,7 @@ class basetrans:
     def fythread(self):
         while self.using:  
             t=time.time()
-            if self.typename not in somedef.fanyi_offline+somedef.fanyi_pre and ((t-self.lastrequeststime) <globalconfig['transtimeinternal']):
+            if self.typename not in static_data["fanyi_offline"]+static_data["fanyi_pre"] and ((t-self.lastrequeststime) <globalconfig['transtimeinternal']):
                 time.sleep(globalconfig['transtimeinternal']-(t-self.lastrequeststime))
             self.lastrequeststime=t
             while True:

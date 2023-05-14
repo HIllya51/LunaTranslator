@@ -171,6 +171,10 @@ ApiAdapter* NewAdapter(const string& base_dir, const string& dllpath, const stri
   config.code_auth_seed = settings.seed;
   config.len_auth_seed = kLenSeedValue; 
   ResultCode result = adapter->Init(&config);
+  if (result != ERR_SUCCESS) {
+      config.code_auth_seed = "PROJECT-VOICeVIO-SFE";
+      result = adapter->Init(&config);
+  }
   printf("init %d\n", result);
   if ( result != ERR_SUCCESS) {
     delete adapter;
@@ -199,7 +203,7 @@ ApiAdapter* NewAdapter(const string& base_dir, const string& dllpath, const stri
   printf("%s %s \n", settings. base_dir, settings.language_dir);
   printf("loadvoice %d\n", result);
   result = adapter->VoiceLoad(settings.voice_name); 
-  printf("loadvoice %d\n", result);
+  printf("loadvoice %s %d\n", settings.voice_name, result);
   if (result != ERR_SUCCESS) {
       delete adapter;
       string message = "API Load Voice failed (Could not load voice data) with code ";

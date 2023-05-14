@@ -151,7 +151,7 @@ class RPC():
     def __init__(self) -> None:
         self.ProcessRecord={}
         self.clear()
-
+        self.started=False
         self.textthreadslock=threading.Lock()
         self.textthreads={}
         self.setting=RPCSettings()
@@ -168,6 +168,11 @@ class RPC():
                     textthread.lasttime=timenow
             self.textthreadslock.release()
     def start(self):
+        if self.started:
+            return
+        self.started=True
+        self._start()
+    def _start(self):
         def _():
             
             hookPipe = win32utils.CreateNamedPipe(define.HOOK_PIPE_NAME,
@@ -191,7 +196,7 @@ class RPC():
             win32utils.SetEvent(pipeAvailableEvent)
             win32utils.ConnectNamedPipe(hookPipe, None)
             win32utils.CloseHandle(pipeAvailableEvent)
-            self.start() 
+            self._start() 
             processId = self.toint(win32utils.ReadFile(hookPipe, 4,None) )
             
             _is64bit=is64bit(processId)

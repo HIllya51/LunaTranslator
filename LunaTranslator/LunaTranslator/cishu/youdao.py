@@ -1,16 +1,15 @@
-from utils.config import globalconfig
+from utils.config import globalconfig,static_data
 import requests
 from urllib.parse import quote
 import re
 from utils.utils import getproxy
 from traceback import print_exc
-from utils import somedef
 class youdao:
     @property
     def srclang(self):
         
         try:
-            l=somedef.language_list_translator_inner[globalconfig['srclang3']]
+            l=static_data["language_list_translator_inner"][globalconfig['srclang3']]
             return l
              
         except:

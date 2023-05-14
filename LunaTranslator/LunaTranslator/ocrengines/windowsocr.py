@@ -1,15 +1,12 @@
 import os
-from ctypes import  c_uint,pointer 
 import winsharedutils
-from utils.config import _TR 
-
-from utils import somedef
+from utils.config import _TR ,static_data 
 from ocrengines.baseocrclass import baseocr  
 class OCR(baseocr):
     def initocr(self):    
         _allsupport=winsharedutils.getlanguagelist()
         self.supportmap={}
-        for lang in somedef.language_list_translator_inner+['zh-Hans','zh-Hant']:
+        for lang in static_data["language_list_translator_inner"]+['zh-Hans','zh-Hant']:
             if lang=='zh' or lang=='cht':continue
             for s in _allsupport:
                 if s.startswith(lang) or lang.startswith(s):
@@ -23,8 +20,8 @@ class OCR(baseocr):
             self.supportmap['cht']=v
     def ocr(self,imgfile):  
         if self.srclang not in self.supportmap: 
-            idx=somedef.language_list_translator_inner.index(self.srclang)
-            raise Exception(_TR('系统未安装')+_TR(somedef.language_list_translator[idx])+_TR('的OCR模型'))
+            idx=static_data["language_list_translator_inner"].index(self.srclang)
+            raise Exception(_TR('系统未安装')+_TR(static_data["language_list_translator"][idx])+_TR('的OCR模型'))
         
         if self.srclang in ['zh','ja','cht']:
             space=''

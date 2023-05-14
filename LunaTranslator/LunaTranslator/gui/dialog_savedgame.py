@@ -11,10 +11,9 @@ from PyQt5.QtCore import Qt,QSize
 from utils.config import   savehook_new_list,savehook_new_data
 from utils.hwnd import getExeIcon 
 from utils.utils import le3264run  
-from utils.config import _TR,_TRL,globalconfig
+from utils.config import _TR,_TRL,globalconfig,static_data
 import os
-import win32con,win32utils
-from utils import somedef
+import win32con,win32utils 
 from utils.wrapper import Singleton_close,Singleton
 from utils.config import checkifnewgame
 def opendir( k):
@@ -87,7 +86,7 @@ class dialog_setting_game(QDialog):
 
                 cp_layout=QHBoxLayout()
                 cp_layout.addWidget(QLabel(_TR('代码页')))
-                cp_layout.addWidget(self.object.getsimplecombobox(_TRL(somedef.codepage_display),savehook_new_data[exepath],'codepage_index' ,lambda x: self.object.object.textsource.setcodepage()))
+                cp_layout.addWidget(self.object.getsimplecombobox(_TRL(static_data['codepage_display']),savehook_new_data[exepath],'codepage_index' ,lambda x: self.object.object.textsource.setcodepage()))
                 formLayout.addLayout(cp_layout)
 
                 cp_layout=QHBoxLayout()

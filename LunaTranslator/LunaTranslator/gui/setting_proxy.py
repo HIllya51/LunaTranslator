@@ -1,8 +1,7 @@
 
 from PyQt5.QtWidgets import QWidget,QLabel ,QProgressBar,QLineEdit,QPushButton 
-from utils.config import globalconfig  ,_TR 
-from utils.config import globalconfig ,translatorsetting 
-from utils import somedef
+from utils.config import _TR ,static_data
+from utils.config import globalconfig ,translatorsetting ,static_data
 import os
 def getall(self,l,item='fanyi',name=""):
     grids=[] 
@@ -50,9 +49,9 @@ def setTab_proxy_lazy(self):
             [''],
             [('使用代理的项目',5)]
         ]
-        lixians=set(somedef.fanyi_offline)
+        lixians=set(static_data["fanyi_offline"])
         alls=set(globalconfig['fanyi'].keys())
-        mt=set(somedef.fanyi_pre)
+        mt=set(static_data["fanyi_pre"])
         online=alls-lixians-mt 
         mianfei=set()
         for _ in online:

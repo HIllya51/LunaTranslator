@@ -1,7 +1,6 @@
 
-from utils.config import globalconfig,ocrsetting
-from traceback import print_exc
-from utils import somedef
+from utils.config import globalconfig,ocrsetting,static_data
+from traceback import print_exc 
 from utils.wrapper import stripwrapper
 from utils.exceptions import ArgsEmptyExc
 from utils.utils import getproxy
@@ -24,7 +23,7 @@ class baseocr:
     @property
     def srclang(self):
         try:
-            l=somedef.language_list_translator_inner[globalconfig['srclang3']]
+            l=static_data["language_list_translator_inner"][globalconfig['srclang3']]
             return self.langmap_[l] 
         except:
             return ''
@@ -65,7 +64,7 @@ class baseocr:
             raise e
     @property
     def langmap_(self):
-        _=dict(zip(somedef.language_list_translator_inner,somedef.language_list_translator_inner))
+        _=dict(zip(static_data["language_list_translator_inner"],static_data["language_list_translator_inner"]))
         _.update({'cht':'zh'})
         _.update(self.langmap())
         return _

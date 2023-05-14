@@ -1,0 +1,302 @@
+{
+    "language_list_show":["简体中文","日本語","English","Русский язык","Español","한국어","Français","繁體中文","Tiếng Việt","Türkçe","Polski"] ,
+    "language_list_translator":["简体中文","日文","英文","俄语","西班牙语","韩语","法语","繁体中文","越南语","土耳其语","波兰语"],
+    "language_list_translator_inner":["zh", "ja", "en","ru","es","ko","fr","cht","vi","tr","pl"],
+    "codepage_display":["日语(CP932,SHIFT-JIS)","UTF8(CP65001)","简体中文(CP936,GBK)","繁体中文(CP950,BIG5)","韩语(CP949,EUC-KR)","越南语(CP1258)","泰语(CP874)","阿拉伯语(CP1256)","希伯来语(CP1255)","土耳其语(CP1254)","希腊语(CP1253)","北欧(CP1257)","中东欧(CP1250)","西里尔(CP1251)","拉丁(CP1252)"],
+    "codepage_real":[932,65001,936,950,949,1258,874,1256,1255,1254,1253,1257,1250,1251,1252],
+    
+    "charsetmap":[0,1,128,134,136,129,163,122,161,178,177,162,238,186,204],
+    "charsetmapshow":["自动","系统默认","日语","简体中文","繁体中文","韩语","越南语","泰语","希腊语","阿拉伯语","希伯来语","土耳其语","中东欧","北欧","西里尔"],
+    "fanyi_offline":["jb7","dreye","kingsoft","hanshant","selfbuild"],
+    "fanyi_pre":["rengong","premt","rengong_vnr"],
+    "aboutsource": [
+        {
+            "name": "OCR-简体中文",
+            "link": "https://github.com/HIllya51/LunaTranslator/releases/download/v1.34.5/zh.zip"
+        },
+        {
+            "name": "OCR-繁体中文",
+            "link": "https://github.com/HIllya51/LunaTranslator/releases/download/v1.34.5/cht.zip"
+        },
+        {
+            "name": "OCR-韩语",
+            "link": "https://github.com/HIllya51/LunaTranslator/releases/download/v1.34.5/cht.zip"
+        },
+        {
+            "name": "OCR-俄语",
+            "link": "https://github.com/HIllya51/LunaTranslator/releases/download/v1.1.2/ru.zip"
+        },
+        {
+            "name": "辞书-MeCab",
+            "link": "https://github.com/HIllya51/LunaTranslator/releases/download/v1.0/Mecab.zip"
+        },
+        {
+            "name": "辞书-Unidic",
+            "link": "https://github.com/HIllya51/LunaTranslator/releases/download/v1.0/unidic-cwj-202302.zip"
+        },
+        {
+            "name": "辞书-小学馆",
+            "link": "https://github.com/HIllya51/LunaTranslator/releases/download/v1.0/xiaoxueguan.db"
+        },
+        {
+            "name": "辞书-EDICT",
+            "link": "https://github.com/HIllya51/LunaTranslator/releases/download/v1.0/edict.db"
+        },
+        {
+            "name": "辞书-EDICT2",
+            "link": "https://github.com/HIllya51/LunaTranslator/releases/download/v1.1.2/edict2"
+        },
+        {
+            "name": "辞书-灵格斯词典",
+            "link": "https://github.com/HIllya51/LunaTranslator/releases/download/v1.0/Lingoes.zip"
+        },
+        {
+            "name": "翻译-J北京7",
+            "link": "https://github.com/HIllya51/LunaTranslator/releases/download/v1.0/JBeijing7.zip"
+        },
+        {
+            "name": "翻译-J北京7-用户词典",
+            "link": "https://github.com/HIllya51/LunaTranslator/releases/download/v2.2.0/JBeijing7UserDict.zip"
+        },
+        {
+            "name": "翻译-金山快译",
+            "link": "https://github.com/HIllya51/LunaTranslator/releases/download/v1.0/FastAIT09_Setup.25269.4101.zip"
+        },
+        {
+            "name": "翻译-快译通",
+            "link": "https://github.com/HIllya51/LunaTranslator/releases/download/v1.0/DR.eye.zip"
+        },
+        {
+            "name": "转区-Locale-Emulator",
+            "link": "https://github.com/xupefei/Locale-Emulator/releases/download/v2.5.0.1/Locale.Emulator.2.5.0.1.zip"
+        },
+        {
+            "name": "转区-Locale_Remulator",
+            "link": "https://github.com/InWILL/Locale_Remulator/releases"
+        },
+        {
+            "name": "语音-NeoSpeech",
+            "link": "https://github.com/HIllya51/LunaTranslator/releases/download/v1.0/NeoSpeech.Japanese.Misaki.zip"
+        },
+        {
+            "name": "语音-VOICEVOX",
+            "link": "https://github.com/VOICEVOX/voicevox/releases"
+        },
+        {
+            "name": "超分-Magpie",
+            "link": "https://github.com/Blinue/Magpie/releases"
+        },
+        {
+            "name": "超分-Magpie9_win7适配版",
+            "link": "https://github.com/HIllya51/Magpie9_win7/releases"
+        },
+        {
+            "name": "语音-VoiceRoid+_東北ずん子/东北俊子",
+            "link": "https://github.com/HIllya51/LunaTranslator/releases/download/v1.1.2/VOICEROID+zunko.7z"
+        },
+        {
+            "name": "语音-VoiceRoid2_SFE_結月ゆかり/结月缘",
+            "link": "https://github.com/HIllya51/LunaTranslator/releases/download/v1.0/Yukari2.zip"
+        },
+        {
+            "name": "语音-VoiceRoid2_結月ゆかり/结月缘",
+            "link": "https://github.com/HIllya51/LunaTranslator/releases/download/v1.0/VOICEROID2_Yuzuki_Yukari.zip"
+        },
+        {
+            "name": "语音-VoiceRoid2_紲星あかり/绁星灯",
+            "link": "https://github.com/HIllya51/LunaTranslator/releases/download/v1.0/VOICEROID2_Kizuna_Akari.zip"
+        },
+        {
+            "name": "语音-VoiceRoid2_琴葉 茜・葵",
+            "link": "https://github.com/HIllya51/LunaTranslator/releases/download/v1.0/VOICEROID2_Kotonoha_Akane_Aoi.zip"
+        },
+        {
+            "name": "语音-VoiceRoid2_伊織弓鶴",
+            "link": "https://github.com/HIllya51/LunaTranslator/releases/download/v1.0/VOICEROID2_Iori_Yuzuru.zip"
+        },
+        {
+            "name": "语音-VoiceRoid2_ついなちゃん",
+            "link": "https://github.com/HIllya51/LunaTranslator/releases/download/v1.1.2/VOICEROID2_tsuina-chan_dl_e.zip"
+        },
+        {
+            "name": "语音-VoiceRoid2_東北イタコ/东北伊达子",
+            "link": "https://github.com/HIllya51/LunaTranslator/releases/download/v1.0/VOICEROID2_Tohoku_Itako.zip"
+        },
+        {
+            "name": "语音-VoiceRoid2_附加音源_結月ゆかり",
+            "link": "https://github.com/HIllya51/LunaTranslator/releases/download/v1.1.2/yukari_emo_44.zip"
+        },
+        {
+            "name": "语音-VoiceRoid2_附加音源_紲星あかり",
+            "link": "https://github.com/HIllya51/LunaTranslator/releases/download/v1.1.2/akari_44.zip"
+        },
+        {
+            "name": "语音-VoiceRoid2_附加音源_東北きりたん",
+            "link": "https://github.com/HIllya51/LunaTranslator/releases/download/v1.1.2/kiritan_44.zip"
+        },
+        {
+            "name": "语音-VoiceRoid2_附加音源_東北イタコ",
+            "link": "https://github.com/HIllya51/LunaTranslator/releases/download/v1.1.2/itako_emo_44.zip"
+        },
+        {
+            "name": "语音-VoiceRoid2_附加音源_東北ずん子",
+            "link": "https://github.com/HIllya51/LunaTranslator/releases/download/v1.1.2/zunko_44.zip"
+        },
+        {
+            "name": "语音-VoiceRoid2_附加音源_伊織弓鶴",
+            "link": "https://github.com/HIllya51/LunaTranslator/releases/download/v1.1.2/yuzuru_emo_44.zip"
+        },
+        {
+            "name": "语音-VoiceRoid2_附加音源_ついなちゃん",
+            "link": "https://github.com/HIllya51/LunaTranslator/releases/download/v1.1.2/tsuina_44.zip"
+        },
+        {
+            "name": "语音-VoiceRoid2_附加音源_ついなちゃん（関西弁）",
+            "link": "https://github.com/HIllya51/LunaTranslator/releases/download/v1.1.2/tsuina_west_44.zip"
+        },
+        {
+            "name": "语音-VoiceRoid2_附加音源_琴葉茜",
+            "link": "https://github.com/HIllya51/LunaTranslator/releases/download/v1.1.2/akane_west_emo_44.zip"
+        },
+        {
+            "name": "语音-VoiceRoid2_附加音源_琴葉葵",
+            "link": "https://github.com/HIllya51/LunaTranslator/releases/download/v1.1.2/aoi_emo_44.zip"
+        },
+        {
+            "name": "语音-VoiceRoid2_附加音源_水奈瀬コウ",
+            "link": "https://github.com/HIllya51/LunaTranslator/releases/download/v1.1.2/kou_44.zip"
+        },
+        {
+            "name": "语音-VoiceRoid2_附加音源_桜乃そら",
+            "link": "https://github.com/HIllya51/LunaTranslator/releases/download/v1.1.2/sora_44.zip"
+        },
+        {
+            "name": "语音-VoiceRoid2_附加音源_民安ともえ",
+            "link": "https://github.com/HIllya51/LunaTranslator/releases/download/v1.1.2/tamiyasu_44.zip"
+        },
+        {
+            "name": "语音-VoiceRoid2_附加音源_月読アイ",
+            "link": "https://github.com/HIllya51/LunaTranslator/releases/download/v1.1.2/ai_44.zip"
+        },
+        {
+            "name": "语音-VoiceRoid2_附加音源_月読ショウタ",
+            "link": "https://github.com/HIllya51/LunaTranslator/releases/download/v1.1.2/shouta_44.zip"
+        },
+        {
+            "name": "语音-VoiceRoid2_附加音源_京町セイカ",
+            "link": "https://github.com/HIllya51/LunaTranslator/releases/download/v1.1.2/seika_44.zip"
+        },
+        {
+            "name": "语音-VoiceRoid2_附加音源_音街ウナ",
+            "link": "https://github.com/HIllya51/LunaTranslator/releases/download/v1.1.2/una_44.zip"
+        },
+        {
+            "name": "语音-VoiceRoid2_附加音源_鷹の爪吉田",
+            "link": "https://github.com/HIllya51/LunaTranslator/releases/download/v1.1.2/yoshidakun_44.zip"
+        },
+        {
+            "name": "语音-VoiceRoid2_附加音源_ギャラ子",
+            "link": "https://github.com/HIllya51/LunaTranslator/releases/download/v1.1.2/galaco_44.zip"
+        }
+    ],
+    "mod_map": {
+        "CTRL": 2,
+        "SHIFT": 4,
+        "WIN": 8,
+        "ALT": 1
+    },
+    "vkcode_map": {
+        "F1": 112,
+        "F2": 113,
+        "F3": 114,
+        "F4": 115,
+        "F5": 116,
+        "F6": 117,
+        "F7": 118,
+        "F8": 119,
+        "F9": 120,
+        "F10": 121,
+        "F11": 122,
+        "F12": 123,
+        "A": 65,
+        "B": 66,
+        "C": 67,
+        "D": 68,
+        "E": 69,
+        "F": 70,
+        "G": 71,
+        "H": 72,
+        "I": 73,
+        "J": 74,
+        "K": 75,
+        "L": 76,
+        "M": 77,
+        "N": 78,
+        "O": 95,
+        "P": 80,
+        "Q": 81,
+        "R": 82,
+        "S": 83,
+        "T": 84,
+        "U": 85,
+        "V": 86,
+        "W": 87,
+        "X": 88,
+        "Y": 89,
+        "Z": 90,
+        "0": 48,
+        "1": 49,
+        "2": 50,
+        "3": 51,
+        "4": 52,
+        "5": 53,
+        "6": 54,
+        "7": 55,
+        "8": 56,
+        "9": 57,
+        "UP": 38,
+        "DOWN": 40,
+        "LEFT": 37,
+        "RIGHT": 39,
+        "PRIOR": 33,
+        "NEXT": 34,
+        "HOME": 36,
+        "END": 35,
+        "INSERT": 45,
+        "RETURN": 13,
+        "TAB": 9,
+        "SPACE": 32,
+        "BACKSPACE": 8,
+        "DELETE": 46,
+        "ESCAPE": 27,
+        "PAUSE": 19,
+        "MULTIPLY": 106,
+        "ADD": 107,
+        "SEPARATOR": 108,
+        "SUBTRACT": 109,
+        "DECIMAL": 110,
+        "DIVIDE": 111,
+        "NUMPAD0": 96,
+        "NUMPAD1": 97,
+        "NUMPAD2": 98,
+        "NUMPAD3": 99,
+        "NUMPAD4": 100,
+        "NUMPAD5": 101,
+        "NUMPAD6": 102,
+        "NUMPAD7": 103,
+        "NUMPAD8": 104,
+        "NUMPAD9": 105,
+        "F13": 124,
+        "F14": 125,
+        "F15": 126,
+        "F16": 127,
+        "F17": 128,
+        "F18": 129,
+        "F19": 130,
+        "F20": 131,
+        "F21": 132,
+        "F22": 133,
+        "F23": 134,
+        "F24": 135
+    }
+}

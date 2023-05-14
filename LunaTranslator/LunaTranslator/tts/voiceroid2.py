@@ -27,11 +27,40 @@ class TTS(TTSbase):
         if os.path.exists(self.config['path'])==False:
             return []
         l=os.listdir(os.path.join(self.config['path'],'Voice'))
+         
         for _ in l:
-            if _!='index.dat':
-                voicelist.append(_)
+            if '_' in _ :
+                _l=_.split('_') 
+                if len(_l)>=2:
+                    if _l[-1]=='44':
+                        voicelist.append(_)
         return voicelist
-          
+    def voiceshowmap(self,voice):
+        name=voice.split('_')[0]
+        jpname={
+            'yukari':'結月ゆかり',
+            'akari':'紲星あかり',
+            'kiritan':'東北きりたん',
+            'itako':'東北イタコ',
+            'zunko':'東北ずん子',
+            'yuzuru':'伊織弓鶴',
+            'tsuina':'ついなちゃん',
+            'akane':'琴葉茜',
+            'aoi':'琴葉葵',
+            'kou':'水奈瀬コウ',
+            'sora':'桜乃そら',
+            'tamiyasu':'民安ともえ',
+            'ai':'月読アイ',
+            'shouta':'月読ショウタ',
+            'seika':'京町セイカ',
+            'una':'音街ウナ',
+            'yoshidakun':'鷹の爪吉田',
+            'galaco':'ギャラ子'
+        }
+        vv=jpname[name]
+        if 'west' in voice:
+            vv+='（関西弁）'
+        return vv
     def checkpath(self):
         if self.config["path"]=="":
             return False
@@ -55,9 +84,9 @@ class TTS(TTSbase):
             waitsignal='voiceroid2waitload_'+t
             def linear_map(x): 
                 if x >= 0 :
-                    x= 0.3 * x + 1
+                    x= 0.1 * x + 1.0
                 else:
-                    x= (x+10)/20 + 0.5
+                    x= 0.05 * x+ 1.0
                 return x
             self.engine=subproc_w(f'"{exepath}" voiceroid2 "{self.config["path"]}" "{dllpath}" {self.config["voice"]} 44100 {linear_map(globalconfig["ttscommon"]["rate"])} "{savepath}"  {pipename} {waitsignal}',name='voicevoid2')
             

@@ -7,6 +7,8 @@ class TTSbase():
         pass    #仅部分需要额外加载exe需要
     def getvoicelist(self):
         return []
+    def voiceshowmap(self,voice):
+        return voice
     def speak(self,content,rate,volume,voice,voiceindex):
         return None #fname ,若为None则是不需要文件直接朗读
     ####################
@@ -21,14 +23,20 @@ class TTSbase():
         self.showlistsignal=showlistsignal 
         self.mp3playsignal=mp3playsignal
         self.loadok=False
-        
         def _():
             self.init()
             self.voicelist=self.getvoicelist()
+            self.voiceshowlist=[] 
+            for k in self.voicelist:
+                try:
+                    _v=self.voiceshowmap(k)
+                except:
+                    _v=k
+                self.voiceshowlist.append(_v)
             if  globalconfig['reader'][self.typename]['voice'] not in self.voicelist:  
                 globalconfig['reader'][self.typename]['voice']=self.voicelist[0]
-            
-            showlistsignal.emit(self.voicelist,self.voicelist.index(globalconfig['reader'][self.typename]['voice']))
+               
+            showlistsignal.emit(self.voiceshowlist,self.voicelist.index(globalconfig['reader'][self.typename]['voice']))
             self.loadok=True
         threading.Thread(target=_).start()
     def read(self,content):

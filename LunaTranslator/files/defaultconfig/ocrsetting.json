@@ -52,12 +52,16 @@
         "args": {
             "注册网址": "https://ocr.space/",
             "apikey": "",
-            "次数统计": "0"
+            "次数统计": "0",
+            "free":false
         },"argstype":{
 			"注册网址":{
 				"type":"label",
 				"islink":true
-			}
+			},
+            "free":{
+                "type":"switch"
+            }
 		}
     },
 	"volcengine": {

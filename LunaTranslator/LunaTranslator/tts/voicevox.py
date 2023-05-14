@@ -3,7 +3,7 @@ from utils.config import globalconfig
 import time
 import os 
 import requests,json,threading
-
+from traceback import print_exc
 from tts.basettsclass import TTSbase 
 
 from utils.subproc import subproc_w
@@ -42,9 +42,11 @@ class TTS(TTSbase):
                 }
 
                 response = requests.get('http://127.0.0.1:50021/speakers',  headers=headers,proxies={'http':None,'https':None}).json()
+                print(response)
                 self.voicelist=[_['name'] for _ in response]
+                return self.voicelist
             except:
-
+                print_exc()
                 time.sleep(1)
             break
         

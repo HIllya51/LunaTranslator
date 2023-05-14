@@ -20,21 +20,45 @@ class TTS(TTSbase):
         self.voicelist=self.getvoicelist()
         if  globalconfig['reader'][self.typename]['voice'] not in self.voicelist:  
             globalconfig['reader'][self.typename]['voice']=self.voicelist[0]
-        
-        #self.checkpath()
+    def voiceshowmap(self,voice):
+        name=voice.split('_')[0]
+        jpname={
+            'yukari':'結月ゆかり',
+            'akari':'紲星あかり',
+            'kiritan':'東北きりたん',
+            'itako':'東北イタコ',
+            'zunko':'東北ずん子',
+            'yuzuru':'伊織弓鶴',
+            'tsuina':'ついなちゃん',
+            'akane':'琴葉茜',
+            'aoi':'琴葉葵',
+            'kou':'水奈瀬コウ',
+            'sora':'桜乃そら',
+            'tamiyasu':'民安ともえ',
+            'ai':'月読アイ',
+            'shouta':'月読ショウタ',
+            'seika':'京町セイカ',
+            'una':'音街ウナ',
+            'yoshidakun':'鷹の爪吉田',
+            'galaco':'ギャラ子'
+        }
+        vv=jpname[name]
+        if 'west' in voice:
+            vv+='（関西弁）'
+        return vv
     def getvoicelist(self):
         voicelist=[]
         if os.path.exists(self.config['path'])==False:
             return []
         l=os.listdir(os.path.join(self.config['path'],'Voice'))
+         
         for _ in l:
-            if _!='index.dat':
-                voicelist.append(_)
-                
-        if voicelist[0] not in ['kiritan_22','zunko_22','akane_22','aoi_22']:           
-            voicelist=[_TR("错误")+" "+_TR("不支持的版本")] 
+            if '_' in _ :
+                _l=_.split('_') 
+                if len(_l)>=2:
+                    if _l[-1]=='22':
+                        voicelist.append(_)
         return voicelist
-          
     def checkpath(self):
         if self.config["path"]=="":
             return False

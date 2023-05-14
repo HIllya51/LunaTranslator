@@ -9,8 +9,12 @@ class OCR(baseocr):
     def ocr(self,imgfile):  
         self.checkempty(['apikey'])
         apikey=self.config['apikey']
+        if self.config['free']:
+            base='api.ocr.space'
+        else:
+            base='apipro3.ocr.space'
         headers = {
-            'authority': 'apipro3.ocr.space',
+            'authority': base,
             'accept': 'application/json, text/javascript, */*; q=0.01',
             'accept-language': 'zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6',
             'cache-control': 'no-cache',
@@ -32,7 +36,7 @@ class OCR(baseocr):
         b64=base64.b64encode(f)
         data={'language':self.srclang,'base64Image':'data:image/jpeg;base64,'+str(b64,encoding='utf8'),'isOverlayRequired':'true','OCREngine':1,'apikey':apikey}
         
-        response = requests.post('https://apipro3.ocr.space/parse/image', headers=headers, data=data, proxies=self.proxy)
+        response = requests.post('https://'+base+'/parse/image', headers=headers, data=data, proxies=self.proxy)
         #print(response.text)
         try:
             

@@ -8,7 +8,7 @@ def setTab5_direct(self) :
     self.voicecombo=QComboBox( ) 
     self.voicelistsignal.connect(functools.partial(showvoicelist,self ))
     self.voicecombo.currentTextChanged.connect(lambda x: changevoice(self,x))
-
+    
 def setTab5(self) : 
     self.tabadd_lazy(self.tab_widget, ('语音合成'), lambda :setTab5lz(self)) 
 
@@ -51,7 +51,7 @@ def setTab5lz(self) :
         grids=getttsgrid(self)
         grids+=[ 
                 [''],
-                [("选择声音",5),(self.voicecombo,12)],
+                [("选择声音",5),(self.voicecombo,15)],
                 [('语速:(-10~10)',5),(self.getspinbox(-10,10,globalconfig['ttscommon'],'rate'  ),2)],
                 [('音量:(0~100)',5),(self.getspinbox(0,100,globalconfig['ttscommon'],'volume' ),2)],
                 [ ('自动朗读',5),(self.getsimpleswitch(globalconfig,'autoread' ),1)],
@@ -62,7 +62,8 @@ def setTab5lz(self) :
         return gridlayoutwidget 
  
 def changevoice(self,text):
-    globalconfig['reader'][self.object.reader_usevoice]['voice']=text
+
+    globalconfig['reader'][self.object.reader_usevoice]['voice']=self.object.reader.voicelist[self.voicecombo.currentIndex()]
 def showvoicelist(self,vl,idx):
     self.voicecombo.blockSignals(True)
     self.voicecombo.clear()

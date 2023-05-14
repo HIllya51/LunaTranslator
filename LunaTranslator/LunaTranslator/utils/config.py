@@ -1,6 +1,5 @@
 import json 
 import os 
-from utils import somedef 
 def tryreadconfig(path,default=None):
     if os.path.exists(os.path.join('./userconfig/',path)):
         path=os.path.join('./userconfig/',path)
@@ -15,7 +14,7 @@ def tryreadconfig2(path):
         x=json.load(ff) 
     return x 
 
-
+static_data=tryreadconfig2('static_data.json')
 defaultpost=tryreadconfig2('postprocessconfig.json')
 defaultglobalconfig=tryreadconfig2('config.json')
 defaulterrorfix=tryreadconfig2('transerrorfixdictconfig.json')
@@ -91,7 +90,7 @@ if len(globalconfig['toolbutton']['rank'])!=len(globalconfig['toolbutton']['butt
 def setlanguage():
     global language,languageshow
     language=globalconfig['languageuse']
-    with open(f'./files/lang/{somedef.language_list_translator_inner[language]}.json','r',encoding='utf8') as ff:
+    with open(f'./files/lang/{static_data["language_list_translator_inner"][language]}.json','r',encoding='utf8') as ff:
         languageshow=json.load(ff)
 setlanguage()
 
@@ -140,5 +139,5 @@ def saveallconfig():
         # with open('./userconfig/savehook_new3.json','w',encoding='utf8') as ff:
         #         ff.write(json.dumps(savehook_new2,ensure_ascii=False,sort_keys=False, indent=4))
 
-        with open(f'./files/lang/{somedef.language_list_translator_inner[language]}.json','w',encoding='utf8') as ff:
+        with open(f'./files/lang/{static_data["language_list_translator_inner"][language]}.json','w',encoding='utf8') as ff:
             ff.write( json.dumps(languageshow,ensure_ascii=False,sort_keys=False, indent=4))

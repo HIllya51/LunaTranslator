@@ -4,11 +4,9 @@ import re
 import os,threading 
 from traceback import  print_exc   
 import win32utils
-from utils.config import globalconfig ,savehook_new_list,savehook_new_data,noundictconfig,transerrorfixdictconfig,setlanguage ,checkifnewgame,_TR
+from utils.config import globalconfig ,savehook_new_list,savehook_new_data,noundictconfig,transerrorfixdictconfig,setlanguage ,checkifnewgame,_TR,static_data
 import threading 
-from PyQt5.QtCore import QCoreApplication ,Qt ,QObject,pyqtSignal
-from PyQt5.QtWidgets import  QApplication ,QGraphicsScene,QGraphicsView,QDesktopWidget  
-from utils import somedef
+from PyQt5.QtCore import QCoreApplication ,Qt ,QObject,pyqtSignal 
 from utils.utils import minmaxmoveobservefunc,copybackup
 from utils.simplekanji import kanjitrans
 from utils.wrapper import threader 
@@ -57,8 +55,7 @@ class MAINUI(QObject) :
         self.refresh_on_get_trans_signature=0
         self.currentsignature=None
         self.isrunning=True
-        self.RPC=RPC()
-        self.RPC.start()
+        self.RPC=RPC() 
     @property
     def textsource(self):return self.textsource_p
     @textsource.setter
@@ -238,7 +235,7 @@ class MAINUI(QObject) :
             if res[:len('<msg>')]=='<msg>':
                 self.translation_ui.displayres.emit(globalconfig['fanyi'][classname]['name'],'red',res[len('<msg>'):])
                 return   
-        if classname not in somedef.fanyi_pre: 
+        if classname not in static_data["fanyi_pre"]: 
             res=self.solveaftertrans(res,optimization_params)
             
         needshowraw=_showrawfunction and self.refresh_on_get_trans_signature!=_showrawfunction_sig
@@ -263,7 +260,7 @@ class MAINUI(QObject) :
                     embedcallback('zhs', kanjitrans(zhconv.convert(res,'zh-tw')) if globalconfig['embedded']['trans_kanji'] else res) 
         
         
-        if classname not in somedef.fanyi_pre:
+        if classname not in static_data["fanyi_pre"]:
               
             self.textsource.sqlqueueput((contentraw,classname,res))
 
@@ -518,7 +515,7 @@ class MAINUI(QObject) :
     def checklang(self):
         if  globalconfig['language_setted_2.4.5']==False:
             
-            x=languageset(somedef.language_list_show)
+            x=languageset(static_data['language_list_show'])
             x.exec()
             globalconfig['language_setted_2.4.5']=True
             globalconfig['languageuse']=x.current

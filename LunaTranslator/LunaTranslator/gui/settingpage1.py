@@ -4,11 +4,9 @@ from PyQt5.QtGui import  QFont
 
 from PyQt5.QtWidgets import  QFontComboBox  
 from gui.settingpage_ocr import getocrgrid  
-from utils.config import globalconfig ,_TR,_TRL  
+from utils.config import globalconfig ,_TR,_TRL  ,static_data
 from gui.dialog_savedgame import dialog_savedgame 
-from gui.codeacceptdialog import codeacceptdialog  
-from utils import somedef
-from utils.utils import makehtml
+from gui.codeacceptdialog import codeacceptdialog   
 def gethookgrid(self) :
  
         grids=[
@@ -58,7 +56,7 @@ def gethookembedgrid(self) :
                 [('将汉字转换成繁体/日式汉字',5),(self.getsimpleswitch( globalconfig['embedded'] ,'trans_kanji'),1) ],
                 [('在重叠显示的字间插入空格',5),'',(self.getsimplecombobox(_TRL(['不插入空格','每个字后插入空格','仅在无法编码的字后插入']),globalconfig['embedded'],'insertspace_policy',callback=__insertspace),5) ],
                 [('修改游戏字体',5),(self.getsimpleswitch( globalconfig['embedded'] ,'changefont',callback=lambda x:self.object.textsource.sendSetting('embeddedFontFamily',globalconfig['embedded']['changefont_font'] if x else '')),1), (self.gamefont_comboBox,5) ],
-                [('修改字体字符集',5),(self.getsimpleswitch( globalconfig['embedded'] ,'changecharset',callback=lambda x:self.object.textsource.sendSetting('embeddedFontCharSetEnabled',x)),1) ,(self.getsimplecombobox(_TRL(somedef.charsetmapshow),globalconfig['embedded'],'changecharset_charset',callback=lambda x:self.object.textsource.sendSetting('embeddedFontCharSet',somedef.charsetmap[x])),5)],
+                [('修改字体字符集',5),(self.getsimpleswitch( globalconfig['embedded'] ,'changecharset',callback=lambda x:self.object.textsource.sendSetting('embeddedFontCharSetEnabled',x)),1) ,(self.getsimplecombobox(_TRL(static_data["charsetmapshow"]),globalconfig['embedded'],'changecharset_charset',callback=lambda x:self.object.textsource.sendSetting('embeddedFontCharSet',static_data["charsetmap"][x])),5)],
 
         ]
         
