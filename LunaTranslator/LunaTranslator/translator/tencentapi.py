@@ -61,7 +61,20 @@ class TS(basetrans):
         self.checkempty(['SecretId','SecretKey'])
         
         appid = self.config['SecretId']
-        secretKey =self.config['SecretKey']
+        secretKey = self.config['SecretKey']
+        if '|' in appid:
+            SecretIds = self.config['SecretId'].split('|')
+            SecretKeys = self.config['SecretKey'].split('|')
+            id_length = len(SecretIds)
+            if id_length != len(SecretKeys):
+                appid = SecretIds[0]
+                secretKey = SecretKeys[0]
+            else:
+                self.multiapikeycurrentidx = self.multiapikeycurrentidx % id_length
+                appid = SecretIds[self.multiapikeycurrentidx]
+                secretKey = SecretKeys[self.multiapikeycurrentidx]
+                self.multiapikeycurrentidx += 1
+                
         try:
             ret=trans_tencent(query,appid,secretKey,self.proxy,self.srclang,self.tgtlang) 
             self.countnum(query)

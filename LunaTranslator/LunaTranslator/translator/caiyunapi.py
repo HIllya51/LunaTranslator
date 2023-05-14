@@ -13,12 +13,17 @@ class TS(basetrans):
     def translate(self,query):  
         self.checkempty(['Token'])
         
-        Token = self.config['Token']
+        token = self.config['Token']
+        if '|' in token:
+            apikeys = token.split('|')
+            self.multiapikeycurrentidx = self.multiapikeycurrentidx % len(apikeys)
+            token = apikeys[self.multiapikeycurrentidx]
+            self.multiapikeycurrentidx += 1
         
         url = "http://api.interpreter.caiyunai.com/v1/translator"
         # WARNING, this token is a test token for new developers,
         # and it should be replaced by your token
-        token = Token
+
         payload = {
             "source": query,
             "trans_type":  self.srclang+'2'+self.tgtlang,
