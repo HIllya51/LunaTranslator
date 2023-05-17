@@ -6,23 +6,18 @@ from traceback import  print_exc
 import win32utils
 from utils.config import globalconfig ,savehook_new_list,savehook_new_data,noundictconfig,transerrorfixdictconfig,setlanguage ,checkifnewgame,_TR,static_data
 import threading 
-from PyQt5.QtCore import QCoreApplication ,Qt ,QObject,pyqtSignal 
-from utils.utils import minmaxmoveobservefunc,copybackup
-from utils.simplekanji import kanjitrans
+from utils.utils import minmaxmoveobservefunc ,kanjitrans
 from utils.wrapper import threader 
 from gui.showword import searchwordW
 from gui.rangeselect    import rangeadjust
-from utils.hwnd import pid_running,getpidexe ,testprivilege,ListProcess,getScreenRate,getbigestmempid
-
+from utils.hwnd import pid_running,getpidexe ,testprivilege,ListProcess
 from textsource.copyboard import copyboard   
 from textsource.texthook import texthook   
 from textsource.embedded import embedded
 from textsource.ocrtext import ocrtext
 from textsource.txt import txt 
 import  gui.selecthook     
-from gui.usefulwidget import getQMessageBox
 import gui.translatorUI
-from queue import Queue
 from gui.languageset import languageset
 import zhconv,functools
 import gui.transhist 
@@ -37,10 +32,9 @@ import winsharedutils
 from utils.post import POSTSOLVE
 from utils.vnrshareddict import vnrshareddict 
 
-from utils.simplekanji import kanjitrans 
 from textsource.hook.host import RPC
  
-class MAINUI(QObject) : 
+class MAINUI() : 
     def __init__(self,app) -> None:
         super().__init__()
         self.lasttranslatorindex=0

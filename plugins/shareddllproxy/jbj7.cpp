@@ -4,8 +4,14 @@
 #include <iostream>
 #include<Windows.h>
 #include <io.h>
-#include <fcntl.h>
-#include"define.h"
+#include <fcntl.h> 
+
+
+#define CODEPAGE_JA  932
+#define CODEPAGE_GB  936 
+
+#define CODEPAGE_BIG5 950
+
 UINT unpackuint32(unsigned char* s) {
     int i = 0;
     return ((s[i]) << 24) | ((s[i + 1]) << 16) | ((s[i + 2]) << 8) | (s[i + 3]);

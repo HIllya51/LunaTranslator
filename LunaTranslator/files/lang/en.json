@@ -486,7 +486,6 @@
     "用户词典选择JcUserdic文件夹": "User dictionary selection JcUserdic folder",
     "当前MD5": "Current MD5",
     "修改": "modify",
-    "使用Locale_Remulator转区": "Use Locale_ Calculator transfer",
     "翻译结果修正": "Correction of translation results",
     "翻译结果修正按钮": "Translation result correction button",
     "翻译结果替换设置": "Translation Result Replacement Settings",
@@ -615,5 +614,7 @@
     "语音-VoiceRoid2_SFE_結月ゆかり/结月缘": "Voice VoiceRoad2_ SFE_ Jieyue Yuan/Jieyue Yuan",
     "有道TTS": "Youdao TTS",
     "不支持的键位": "Unsupported key position",
-    "快捷键冲突": "Shortcut key conflict"
+    "快捷键冲突": "Shortcut key conflict",
+    "转区-Ntleas": "Transfer Zone - Ntleas",
+    "转区方法": "Transfer method"
 }

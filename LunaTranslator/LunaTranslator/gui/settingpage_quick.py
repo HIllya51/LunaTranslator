@@ -127,10 +127,12 @@ def __changekeynew(self,name,keystring):
     regist_or_not_key(self,name)  
 def regist_or_not_key(self,name):
     self.referlabels[name].setText('')
+    
+    if name in self.registok:
+        self.hotkeymanager.unregister(self.registok[name]) 
+
     keystring=globalconfig['quick_setting']['all'][name]['keystring']
     if keystring=='' or (not (globalconfig['quick_setting']['all'][name]['use'] and globalconfig['quick_setting']['use'])) :
-        if name in self.registok:
-            self.hotkeymanager.unregister(self.registok[name]) 
         return
     
     try:

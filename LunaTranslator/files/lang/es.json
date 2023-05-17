@@ -486,7 +486,6 @@
     "用户词典选择JcUserdic文件夹": "El diccionario del usuario selecciona la carpeta jcuuserdic",
     "当前MD5": "MD5 actual",
     "修改": "Modificación",
-    "使用Locale_Remulator转区": "Usar local Zona de transferencia del repelator",
     "翻译结果修正": "Corrección de los resultados de la traducción",
     "翻译结果修正按钮": "Botón de corrección de resultados de traducción",
     "翻译结果替换设置": "Configuración de sustitución de resultados de traducción",
@@ -615,5 +614,7 @@
     "语音-VoiceRoid2_SFE_結月ゆかり/结月缘": "Voz - voiseroid2 SFE Cierre de la luna / cierre de la luna",
     "有道TTS": "Youdao TTS",
     "不支持的键位": "Teclas no soportadas",
-    "快捷键冲突": "Conflicto de teclas de acceso rápido"
+    "快捷键冲突": "Conflicto de teclas de acceso rápido",
+    "转区-Ntleas": "Zona de tránsito - ntlaas",
+    "转区方法": "Método de transferencia"
 }

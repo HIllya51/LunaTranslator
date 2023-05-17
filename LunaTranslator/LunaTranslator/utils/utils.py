@@ -5,11 +5,14 @@ from traceback import print_exc
 import codecs,hashlib
 import os,win32con,time 
 from traceback import print_exc
-from utils.config import globalconfig 
+from utils.config import globalconfig,static_data
 import win32utils
 from utils.exceptions import TimeOut
 from urllib.request import getproxies_registry
-
+kanjichs2ja=str.maketrans(static_data['kanjichs2ja'])
+def kanjitrans(k): 
+    return k.translate(kanjichs2ja) 
+ 
 def getsysproxy():
     proxies=getproxies_registry()
     try:
@@ -168,17 +171,6 @@ def checkencoding(code):
     except LookupError:
         return False
 
-def copybackup(file):
-    i=0
-    while True:
-        target=file+('.backup' if i==0 else '.backup.'+str(i))
-        if os.path.exists(target)==False: 
-            break
-        i+=1
-    with open(file,'rb') as ff:
-            bs=ff.read()
-    with open(target,'wb') as ff:
-            ff.write(bs)
 def getfilemd5(file,default='0'):
     try:
         with open(file,'rb') as ff:
@@ -232,25 +224,6 @@ def minmaxmoveobservefunc(self):
                         pass
                   
                 time.sleep(0.1)
-def le3264run(game,alwaysuselr): 
-    try:
-        b=win32utils.GetBinaryType(game)
-        if b==0 and alwaysuselr==False: 
-            #le=os.path.join(os.path.abspath(globalconfig['LocaleEmulator']),'LEProc.exe')
-            le=(os.path.abspath('./files/plugins/shareddllproxy32.exe'))
-            if os.path.exists(le): 
-                    win32utils.CreateProcess(None,f'"{le}" le "{(game)}"', None,None,False,0,None, os.path.dirname(game), win32utils.STARTUPINFO()  ) 
-        elif b==6 or alwaysuselr==True: 
-                #le=os.path.join(os.path.abspath(globalconfig['Locale_Remulator']),'LRProc.exe')
-                le=os.path.join(os.path.abspath('./files/plugins/Locale_Remulator'),'LRProc.exe')
-                if os.path.exists(le):
-                      win32utils.CreateProcess(None,f'"{le}" 5f4c9504-8e76-46e3-921b-684d7826db71 "{(game)}"', None,None,False,0,None, os.path.dirname(game), win32utils.STARTUPINFO()  ) 
-
-    except:
-        win32utils.CreateProcess(game,None, None,None,False,0,None, os.path.dirname(game), win32utils.STARTUPINFO()  ) 
-    
-
-
 
 def update():
     with open('./cache/update/update.bat','w',encoding='utf8') as ff:

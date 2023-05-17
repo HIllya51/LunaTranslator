@@ -485,7 +485,6 @@
     "用户词典选择JcUserdic文件夹": "Wybór słownika użytkownika JcUserdic folder",
     "当前MD5": "Aktualny MD5",
     "修改": "modyfikuj",
-    "使用Locale_Remulator转区": "Używanie lokalnego_ Obszar transferu transformatora",
     "翻译结果修正": "Korekta wyników tłumaczenia",
     "翻译结果修正按钮": "Przycisk korekcji wyników tłumaczenia",
     "翻译结果替换设置": "Ustawienia wymiany wyników tłumaczenia",
@@ -615,5 +614,7 @@
     "语音-VoiceRoid2_SFE_結月ゆかり/结月缘": "Głos głosowy2_ SFE_ Jieyue Yuan/Jieyue Yuan",
     "有道TTS": "Youdao TTS",
     "不支持的键位": "Nieobsługiwana pozycja klucza",
-    "快捷键冲突": "Konflikt kluczy skrótów"
+    "快捷键冲突": "Konflikt kluczy skrótów",
+    "转区-Ntleas": "Strefa transferu: Ntleas",
+    "转区方法": "Metoda transferu"
 }

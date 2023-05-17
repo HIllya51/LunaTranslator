@@ -3,8 +3,7 @@
 #include <iostream>
 #include<Windows.h>
 #include <io.h>
-#include <fcntl.h>
-#include"define.h"
+#include <fcntl.h> 
 #include<vector>
 #include<sapi.h>
 #include<stdio.h>

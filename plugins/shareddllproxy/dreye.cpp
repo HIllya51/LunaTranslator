@@ -1,7 +1,6 @@
 #include<Windows.h>  
 #include <iostream>
-#include<string> 
-#include"define.h"
+#include<string>  
 extern "C" {
     typedef int(__stdcall* MTInitCJ)(int);
     typedef int(__stdcall* TranTextFlowCJ)(char* src, char* dest, int, int);

@@ -12,10 +12,7 @@ from PyQt5.QtWidgets import  QWidget,QLabel ,QSlider, QFontComboBox  ,QPushButto
 import json,os,hashlib
 from traceback import print_exc
 from gui.inputdialog import multicolorset
-from utils.config import globalconfig ,_TR,_TRL
-from utils.utils import getfilemd5,copybackup
-import time,signal
-from utils.utils import makehtml
+from utils.config import globalconfig ,_TR,_TRL  
 from utils.wrapper import Singleton
 import qtawesome
 from utils.hwnd import ListProcess,showintab

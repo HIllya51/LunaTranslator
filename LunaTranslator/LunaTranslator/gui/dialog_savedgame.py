@@ -9,11 +9,10 @@ import win32utils
 from PyQt5.QtGui import QStandardItem, QStandardItemModel   
 from PyQt5.QtCore import Qt,QSize  
 from utils.config import   savehook_new_list,savehook_new_data
-from utils.hwnd import getExeIcon 
-from utils.utils import le3264run  
+from utils.hwnd import getExeIcon  
 from utils.config import _TR,_TRL,globalconfig,static_data
 import os
-import win32con,win32utils 
+import win32con  
 from utils.wrapper import Singleton_close,Singleton
 from utils.config import checkifnewgame
 def opendir( k):
@@ -67,16 +66,22 @@ class dialog_setting_game(QDialog):
                 self.setWindowIcon(getExeIcon(exepath))
                 formLayout.addLayout(lujing)
                 
-                try:
-                        b=win32utils.GetBinaryType(exepath)
-                        if b==0: 
-                                lrelay=QHBoxLayout()
-                                lrelay.addWidget(QLabel(_TR("使用Locale_Remulator转区")))
-                                
-                                lrelay.addWidget(self.object.getsimpleswitch(savehook_new_data[exepath],'alwaysuselr'))
-                                formLayout.addLayout(lrelay)
-                except:
-                        pass
+                
+                b=win32utils.GetBinaryType(exepath)
+                
+                lrelay=QHBoxLayout()
+                lrelay.addWidget(QLabel(_TR("转区方法")))
+                if b==6: 
+                        _methods=['','Locale_Remulator','Ntleas' ]
+                else:
+                        _methods=['Locale-Emulator','Locale_Remulator','Ntleas' ]
+                if b==6 and savehook_new_data[exepath]['localeswitcher']==0:
+                        savehook_new_data[exepath]['localeswitcher']=1
+                
+                lrelay.addWidget(self.object.getsimplecombobox(_TRL(_methods),savehook_new_data[exepath],'localeswitcher'))
+                formLayout.addLayout(lrelay) 
+
+
                 autochangestatus=QHBoxLayout()
                 autochangestatus.addWidget(QLabel(_TR("自动切换到模式"))) 
                 autochangestatus.addWidget(self.object.getsimplecombobox(_TRL(['不切换','HOOK','HOOK_内嵌','剪贴板','OCR']),savehook_new_data[exepath],'onloadautochangemode'))
@@ -192,7 +197,22 @@ class dialog_savedgame(QDialog):
                         savehook_new_list.insert(0,savehook_new_list.pop(self.table.currentIndex().row())) 
                         self.close() 
                         if savehook_new_data[game]['leuse'] :
-                                le3264run(game,savehook_new_data[game]['alwaysuselr'])
+                                localeswitcher=savehook_new_data[game]['localeswitcher'] 
+                                b=win32utils.GetBinaryType(game) 
+                                if b==6 and localeswitcher==0:
+                                        localeswitcher=1
+                                if localeswitcher==0 or localeswitcher==1:
+                                        exe=(os.path.abspath('./files/plugins/shareddllproxy32.exe')) 
+                                        _cmd={0:'le',1:"LR"}[localeswitcher] 
+                                        win32utils.CreateProcess(None,f'"{exe}" {_cmd} "{(game)}"', None,None,False,0,None, os.path.dirname(game), win32utils.STARTUPINFO()  ) 
+                                elif localeswitcher==2:
+                                        
+                                        x86={0:'86',6:'64'}[b]
+                                        ntleas=(os.path.abspath(f'./files/plugins/ntleas/x{x86}/ntleas.exe'))
+                                        win32utils.CreateProcess(None,f'"{ntleas}" "{(game)}" "C932" "L1041" "FMS PGothic" "P4" ', None,None,False,0,None, os.path.dirname(game), win32utils.STARTUPINFO()  ) 
+                                 
+                                                
+                                
                         else:
                                 win32utils.ShellExecute(None, "open", game, "", os.path.dirname(game), win32con.SW_SHOW) 
                 except:

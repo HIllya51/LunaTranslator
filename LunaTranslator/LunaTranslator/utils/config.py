@@ -35,7 +35,7 @@ ocrsetting=tryreadconfig('ocrsetting.json')
 
 def getdefaultsavehook(gamepath):
     default={
-        'alwaysuselr':False,
+        'localeswitcher':0,
         'onloadautochangemode':0,
         'needinserthookcode':[],
         'leuse':True,

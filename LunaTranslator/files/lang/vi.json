@@ -486,7 +486,6 @@
     "用户词典选择JcUserdic文件夹": "Từ điển người dùng Chọn thư mục JcUserdic",
     "当前MD5": "MD5 hiện tại",
     "修改": "Sửa đổi",
-    "使用Locale_Remulator转区": "Sử dụng locale_ Remulator Chuyển vùng",
     "翻译结果修正": "Sửa kết quả dịch",
     "翻译结果修正按钮": "Kết quả dịch Nút sửa chữa",
     "翻译结果替换设置": "Thiết lập thay thế kết quả dịch",
@@ -615,5 +614,7 @@
     "语音-VoiceRoid2_SFE_結月ゆかり/结月缘": "Giọng nói - VoiceRoid2_ SFE_ 其月/Kết Nguyệt Duyên",
     "有道TTS": "Có TTS",
     "不支持的键位": "Các phím không được hỗ trợ",
-    "快捷键冲突": "Xung đột phím tắt"
+    "快捷键冲突": "Xung đột phím tắt",
+    "转区-Ntleas": "Chuyển vùng - Ntleas",
+    "转区方法": "Phương pháp chuyển vùng"
 }

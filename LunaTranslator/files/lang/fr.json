@@ -486,7 +486,6 @@
     "用户词典选择JcUserdic文件夹": "Dictionnaire utilisateur sélectionner le dossier jcuserdic",
     "当前MD5": "Le MD5 actuel",
     "修改": "Modifier",
-    "使用Locale_Remulator转区": "Utilisation de locale Remulator à zone",
     "翻译结果修正": "Correction des résultats de traduction",
     "翻译结果修正按钮": "Bouton de correction des résultats de traduction",
     "翻译结果替换设置": "Paramètres de remplacement des résultats de traduction",
@@ -615,5 +614,7 @@
     "语音-VoiceRoid2_SFE_結月ゆかり/结月缘": "Voix - voiceroid2 SFE Fin du mois ゆかり / bord du mois",
     "有道TTS": "Avec tts",
     "不支持的键位": "Clés non supportées",
-    "快捷键冲突": "Conflit de touches de raccourci"
+    "快捷键冲突": "Conflit de touches de raccourci",
+    "转区-Ntleas": "Zone de transfert - ntleas",
+    "转区方法": "Méthode de transfert de zone"
 }
