@@ -131,7 +131,7 @@ class BaiduV1(Tse):
 
 class TS(basetrans):
     def langmap(self):
-        return {"es":"spa","ko":"kor","fr":"fra","ja":"jp","cht":"cht","vi":"vie"}
+        return {"es":"spa","ko":"kor","fr":"fra","ja":"jp","cht":"cht","vi":"vie","uk":"ukr"}
     def inittranslator(self)  :  
         
         self.engine=BaiduV1()
