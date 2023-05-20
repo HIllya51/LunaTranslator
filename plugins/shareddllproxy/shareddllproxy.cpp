@@ -6,6 +6,7 @@
 #pragma comment( linker, "/subsystem:windows /entry:wmainCRTStartup" )
 
 int dllinjectwmain(int argc, wchar_t* argv[]);
+int ntleaswmain(int argc, wchar_t* wargv[]);
 
 #ifndef _WIN64
 int LRwmain(int argc, wchar_t* argv[]);  
@@ -24,6 +25,8 @@ int wmain(int argc, wchar_t* argv[])
     auto argv0 = std::wstring(argv[1]);
     if (argv0 == L"dllinject")
         return dllinjectwmain(argc - 1, argv + 1);
+    if (argv0 == L"ntleas")
+        return ntleaswmain(argc - 1, argv + 1);
     
 #ifndef _WIN64
     else if (argv0 == L"LR")

@@ -51,7 +51,11 @@ class QUnFrameWindow(resizableframeless):
             if self.hideshownotauto:
                 self.show_()
                 try:
-                    win32utils.SetForegroundWindow(other[0])
+                    _h=win32utils.GetForegroundWindow()
+                    _fpid=win32utils.GetWindowThreadProcessId(_h)
+                    _hpid=win32utils.GetWindowThreadProcessId(other[0])
+                    if _fpid!=_hpid:
+                        win32utils.SetForegroundWindow(other[0])
                 except:
                     pass
         elif code==4: 

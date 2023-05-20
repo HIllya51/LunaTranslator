@@ -40,7 +40,7 @@ class embedded(basetext  ):
                 print('Waiting for client connection...')
                 self.hostpipe=hostpipe
                 self.hookpipe=hookpipe
-                event=win32utils.CreateEvent(None,False, False, "LUNA_EMBEDDED_WAIT")
+                event=win32utils.CreateEvent(False, False, "LUNA_EMBEDDED_WAIT")
                 win32utils.SetEvent(event); 
                 win32utils.ConnectNamedPipe(hostpipe, None) 
                 win32utils.ConnectNamedPipe(hookpipe, None) 

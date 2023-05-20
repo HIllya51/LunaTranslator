@@ -192,7 +192,7 @@ class RPC():
                                                     0,
                                                     win32utils.pointer(win32utils.get_SECURITY_ATTRIBUTES()))
             
-            pipeAvailableEvent = win32utils.CreateEvent(win32utils.pointer(win32utils.get_SECURITY_ATTRIBUTES()), False, False, define.PIPE_AVAILABLE_EVENT)
+            pipeAvailableEvent = win32utils.CreateEvent(False, False, define.PIPE_AVAILABLE_EVENT)
             win32utils.SetEvent(pipeAvailableEvent)
             win32utils.ConnectNamedPipe(hookPipe, None)
             win32utils.CloseHandle(pipeAvailableEvent)

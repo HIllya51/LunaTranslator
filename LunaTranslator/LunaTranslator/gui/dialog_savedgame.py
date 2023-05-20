@@ -201,18 +201,14 @@ class dialog_savedgame(QDialog):
                                 b=win32utils.GetBinaryType(game) 
                                 if b==6 and localeswitcher==0:
                                         localeswitcher=1
-                                if localeswitcher==0 or localeswitcher==1:
-                                        exe=(os.path.abspath('./files/plugins/shareddllproxy32.exe')) 
-                                        _cmd={0:'le',1:"LR"}[localeswitcher] 
-                                        win32utils.CreateProcess(None,f'"{exe}" {_cmd} "{(game)}"', None,None,False,0,None, os.path.dirname(game), win32utils.STARTUPINFO()  ) 
-                                elif localeswitcher==2:
-                                        
-                                        x86={0:'86',6:'64'}[b]
-                                        ntleas=(os.path.abspath(f'./files/plugins/ntleas/x{x86}/ntleas.exe'))
-                                        win32utils.CreateProcess(None,f'"{ntleas}" "{(game)}" "C932" "L1041" "FMS PGothic" "P4" ', None,None,False,0,None, os.path.dirname(game), win32utils.STARTUPINFO()  ) 
-                                 
-                                                
-                                
+                                if (localeswitcher==2 and b==6):
+                                        _exe='shareddllproxy64'
+                                else:
+                                        _exe='shareddllproxy32'
+                                exe=(os.path.abspath('./files/plugins/'+_exe)) 
+                                _cmd={0:'le',1:"LR",2:"ntleas"}[localeswitcher] 
+                                win32utils.CreateProcess(None,f'"{exe}" {_cmd} "{(game)}"', None,None,False,0,None, os.path.dirname(game), win32utils.STARTUPINFO()  ) 
+                                              
                         else:
                                 win32utils.ShellExecute(None, "open", game, "", os.path.dirname(game), win32con.SW_SHOW) 
                 except:

@@ -387,10 +387,6 @@ class SECURITY_ATTRIBUTESStruct(Structure):
                 ("lpSecurityDescriptor", ctypes.POINTER(SECURITY_DESCRIPTORStruct)), 
                 ("bInheritHandle", BOOL)]
  
-_CreateEventW=_kernel32.CreateEventW
-_CreateEventW.argtypes=POINTER(SECURITY_ATTRIBUTESStruct),c_bool,c_bool,c_wchar_p
-def CreateEvent(secu,bManualReset,bInitialState,lpName):
-    return _CreateEventW((secu),bManualReset,bInitialState,lpName)
 
 _InitializeSecurityDescriptor = _Advapi32.InitializeSecurityDescriptor
 _InitializeSecurityDescriptor.argtypes = [ctypes.c_void_p, DWORD]
@@ -409,6 +405,10 @@ def get_SECURITY_ATTRIBUTES():
     allacc.lpSecurityDescriptor=pointer(sd)
     return allacc
 
+_CreateEventW=_kernel32.CreateEventW
+_CreateEventW.argtypes=POINTER(SECURITY_ATTRIBUTESStruct),c_bool,c_bool,c_wchar_p
+def CreateEvent(bManualReset,bInitialState,lpName,secu=get_SECURITY_ATTRIBUTES()):
+    return _CreateEventW(pointer(secu),bManualReset,bInitialState,lpName)
 _GetBinaryTypeW=_kernel32.GetBinaryTypeW
 def GetBinaryType(filename):
     res=c_uint()

@@ -90,8 +90,7 @@ class TTS(TTSbase):
                 return x
             self.engine=subproc_w(f'"{exepath}" voiceroid2 "{self.config["path"]}" "{dllpath}" {self.config["voice"]} 44100 {linear_map(globalconfig["ttscommon"]["rate"])} "{savepath}"  {pipename} {waitsignal}',name='voicevoid2')
             
-            secu=win32utils.get_SECURITY_ATTRIBUTES()
-            win32utils.WaitForSingleObject(win32utils.CreateEvent(win32utils.pointer(secu),False, False, waitsignal),win32utils.INFINITE); 
+            win32utils.WaitForSingleObject(win32utils.CreateEvent(False, False, waitsignal),win32utils.INFINITE); 
             win32utils.WaitNamedPipe(pipename,win32con.NMPWAIT_WAIT_FOREVER)
             self.hPipe = win32utils.CreateFile( pipename, win32con.GENERIC_READ | win32con.GENERIC_WRITE, 0,
                     None, win32con.OPEN_EXISTING, win32con.FILE_ATTRIBUTE_NORMAL, None);

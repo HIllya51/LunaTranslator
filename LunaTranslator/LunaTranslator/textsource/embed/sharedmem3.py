@@ -46,7 +46,7 @@ class VnrAgentSharedMemory:
       # must be consistent with vnragent's config.h
       eventName = "vnragent.shmem.%s.%s.%s" % (pid, role, hash)
       eventName = eventName.replace('-', '_') # get rid of minus sign 
-      ev = win32utils.CreateEvent(None, False, False, eventName) # initial state = False. True does NOT work 
+      ev = win32utils.CreateEvent( False, False, eventName) # initial state = False. True does NOT work 
       win32utils.SetEvent(ev)
       win32utils.CloseHandle(ev)
 
