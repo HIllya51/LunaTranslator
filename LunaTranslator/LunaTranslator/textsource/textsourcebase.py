@@ -1,7 +1,7 @@
 import threading ,hashlib,queue
-import time,sqlite3,json,os,codecs
+import time,sqlite3,json,os,codecs,win32utils
 from traceback import print_exc
-from utils.config import globalconfig
+from utils.config import globalconfig,savehook_new_data
 from utils.utils import quote_identifier,getfilemd5
 class basetext:
     def __init__(self,textgetmethod,md5,prefix)  :  
@@ -32,6 +32,16 @@ class basetext:
             print_exc
         threading.Thread(target= self.sqlitethread).start()
         threading.Thread(target=self.gettextthread_).start()
+        threading.Thread(target=self.checkgameplayingthread).start()
+    def checkgameplayingthread(self):
+        while self.ending==False:
+            statistictime=time.time()
+            time.sleep(1)
+            _hwnd=win32utils.GetForegroundWindow()
+            _pid=win32utils.GetWindowThreadProcessId(_hwnd)
+            if _pid in self.pids:
+                savehook_new_data[self.pname]['statistic_playtime']+=(time.time()-statistictime)
+ 
     def sqlqueueput(self,xx):
         try:
             self.sqlqueue.put(xx)
@@ -43,13 +53,23 @@ class basetext:
         while True:
             task=self.sqlqueue.get()
             try:
-                if len(task)==1:
+                if len(task)==1: 
                     src,=task
+                    lensrc=len(src)
                     src= quote_identifier(src )
                     ret=self.sqlwrite2.execute(f'SELECT * FROM artificialtrans WHERE source = {src}').fetchone()
+                    try: 
+                        savehook_new_data[self.pname]['statistic_wordcount']+=lensrc
+                    except:
+                        print_exc()
                     if ret is None:
                         null= quote_identifier(json.dumps({}))
                         self.sqlwrite2.execute(f'INSERT INTO artificialtrans VALUES(NULL,{src},{null});')
+
+                        try: 
+                            savehook_new_data[self.pname]['statistic_wordcount_nodump']+=lensrc
+                        except:
+                            print_exc()
                 elif len(task)==3:
                     src,clsname,trans=task 
                     src= quote_identifier(src) 

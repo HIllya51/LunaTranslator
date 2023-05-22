@@ -4,9 +4,9 @@ import re
 import os,threading 
 from traceback import  print_exc   
 import win32utils
-from utils.config import globalconfig ,savehook_new_list,savehook_new_data,noundictconfig,transerrorfixdictconfig,setlanguage ,checkifnewgame,_TR,static_data
+from utils.config import globalconfig ,savehook_new_list,savehook_new_data,noundictconfig,transerrorfixdictconfig,setlanguage ,_TR,static_data
 import threading 
-from utils.utils import minmaxmoveobservefunc ,kanjitrans
+from utils.utils import minmaxmoveobservefunc ,kanjitrans,checkifnewgame
 from utils.wrapper import threader 
 from gui.showword import searchwordW
 from gui.rangeselect    import rangeadjust
@@ -412,7 +412,7 @@ class MAINUI() :
                 
                 if   self.textsource is None:   
                         hwnd=win32utils.GetForegroundWindow()
-                        pid=win32utils.GetWindowThreadProcessId(hwnd)[1]
+                        pid=win32utils.GetWindowThreadProcessId(hwnd)
                         name_=getpidexe(pid)
                           
                 
@@ -439,6 +439,8 @@ class MAINUI() :
                        print_exc()
     
     def autohookmonitorthread(self):
+        for game in savehook_new_data:
+            checkifnewgame(game)
         while self.isrunning:
             self.onwindowloadautohook()
             time.sleep(0.5)#太短了的话，中间存在一瞬间，后台进程比前台窗口内存占用要大。。。
@@ -456,7 +458,7 @@ class MAINUI() :
                     if globalconfig['sourcestatus']['texthook']['use'] or globalconfig['sourcestatus']['embedded']['use']:
                         fhwnd=win32utils.GetForegroundWindow() 
                         pids=self.textsource.pids
-                        if hwnd==0 and win32utils.GetWindowThreadProcessId( fhwnd )[1] in pids:
+                        if hwnd==0 and win32utils.GetWindowThreadProcessId( fhwnd ) in pids:
                             if 'once' not in dir(self.textsource):
                                 self.textsource.once=True
                                 self.textsource.hwnd=fhwnd 
@@ -464,7 +466,7 @@ class MAINUI() :
                     else:
                         setandrefresh(False)
                 else:
-                    if win32utils.GetWindowThreadProcessId( hwnd )[0]==0:
+                    if win32utils.GetWindowThreadProcessId( hwnd )==0:
                         self.textsource.hwnd=0
                         setandrefresh(False)
                     elif 'once' not in dir(self.textsource):

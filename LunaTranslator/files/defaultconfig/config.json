@@ -88,6 +88,17 @@
 	"usesysproxy":true,
     "fullscreenmethod_2": 0,
 	"magpie10path":"",
+    "getvesionmethod":"githubrelease",
+    "updatemethod":"githubrelease",
+    "dialog_savegame_layout":{
+        "itemw":250,
+        "itemh":350,
+        "imgw":240,
+        "imgh":300,
+        "margin":5,
+        "onselectcolor":"rgba(0,100,200, 0.3)",
+        "onfilenoexistscolor":"rgba(25,25,25, 0.3)"
+    },
     "ocrautobindwindow": true,
     "magpieflags": {
 		"MultiMonitorUsage":0,
@@ -230,6 +241,11 @@
             "gamepad": {
                 "use": true,
                 "tip": "打开保存的游戏",
+                "icon":"fa.gamepad"
+            },
+            "gamepad_new": {
+                "use": true,
+                "tip": "打开保存的游戏_新",
                 "icon":"fa.gamepad"
             },
             "edit": {

@@ -21,7 +21,7 @@ def getpidhwndfirst(pid):
                 hwnds=list()
                 def get_all_hwnd(hwnd,_): 
                         if win32utils.IsWindow(hwnd) and win32utils.IsWindowEnabled(hwnd) and win32utils.IsWindowVisible(hwnd): 
-                                if  win32utils.GetWindowThreadProcessId(hwnd)[1]==pid:
+                                if  win32utils.GetWindowThreadProcessId(hwnd)==pid:
                                         hwnds.append( (hwnd) )
                 win32utils.EnumWindows(get_all_hwnd, 0)  
                 return hwnds[0]
@@ -33,7 +33,7 @@ def getwindowlist():
         win32utils.EnumWindows(lambda hWnd, param: windows_list.append(hWnd), 0) 
         for hwnd in windows_list:
                 try:
-                        tid, pid=win32utils.GetWindowThreadProcessId(hwnd) 
+                        pid=win32utils.GetWindowThreadProcessId(hwnd) 
                         pidlist.append(pid)
                 except:
                         pass
@@ -111,14 +111,17 @@ def getbigestmempid(pids):
                         mems=[getprocessmem(_) for _ in pids]
                         _i=argsort(mems)
                         return  _i[-1] 
-def getExeIcon( name ): 
+def getExeIcon( name,icon=True ): 
             large = win32utils.ExtractIconEx(name)
             if large:
                     pixmap =QtWin.fromHICON(large)
             else:
                    pixmap=QPixmap(100,100)
                    pixmap.fill(QColor.fromRgba(0))
-            return QIcon(pixmap)
+            if icon:
+                    return QIcon(pixmap)
+            else:
+                    return pixmap
 def getScreenRate() :
     hDC = win32utils.GetDC(0) 
     screen_scale_rate = round(win32utils.GetDeviceCaps(hDC, win32con.DESKTOPHORZRES) /  win32utils.GetSystemMetrics(0), 2) 
@@ -136,7 +139,7 @@ def mouseselectwindow(callback):
                 try:
                         pos=win32utils.GetCursorPos()
                         hwnd=win32utils.GetAncestor(win32utils.WindowFromPoint(pos))
-                        pid=win32utils.GetWindowThreadProcessId(hwnd)[1]
+                        pid=win32utils.GetWindowThreadProcessId(hwnd)
                         callback(pid,hwnd)
                 except:
                         pass

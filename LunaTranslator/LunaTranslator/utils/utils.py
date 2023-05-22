@@ -5,14 +5,120 @@ from traceback import print_exc
 import codecs,hashlib
 import os,win32con,time 
 from traceback import print_exc
-from utils.config import globalconfig,static_data
-import win32utils
+from utils.config import globalconfig,static_data,savehook_new_list,savehook_new_data,getdefaultsavehook
+import win32utils,threading,queue
 from utils.exceptions import TimeOut
 from urllib.request import getproxies_registry
+import importlib,re
+from PyQt5.QtGui import QPixmap
+ 
+def checkneed(gamepath):
+    return ((gamepath in savehook_new_data) and ((savehook_new_data[gamepath]['imagepath'] is None) or (os.path.exists(savehook_new_data[gamepath]['imagepath'])==False))) 
+methodsqueues=[]
+
+def dispatchnext(gamepath,args,idx):
+     if idx+1<len(methodsqueues):
+            methodsqueues[idx+1].put((gamepath,args))
+def dispatachtask(gamepath): 
+    if checkneed(gamepath)==False:
+        return
+    title=savehook_new_data[gamepath]['title']
+    p=gamepath.split('\\')  
+    __t=[]
+    for _ in [title,p[-2],p[-1][:-4]]:
+        _=_.replace('(同人ゲーム)','').replace('(18禁ゲーム)','')
+        _=re.sub('\[RJ(.*?)\]','',_)
+        _=re.sub('\[\d{4}-?\d{2}\-?\d{2}\]','',_)
+        __t.append(_)
+        _=re.sub('\[(.*?)\]','',_)
+        if _ !=__t[-1]:
+            __t.append(_) 
+        _=re.sub('\((.*?)\)','',_)
+        if _ !=__t[-1]:
+            __t.append(_) 
+    lst=[] 
+    for i,t in enumerate(__t): 
+        t=t.strip()
+        if t in lst :continue
+        if i>0  and (len(t)<10) and (all(ord(c) < 128 for c in t)):
+            continue
+        lst.append(t)
+    dispatchnext(gamepath,lst,-1) 
+          
+def everymethodsthread(methodsidx):
+    methods=static_data['searchimgmethods']
+    searchimgmethod=importlib.import_module('unstablemethod.'+methods[methodsidx]).searchimgmethod   
+    while True:
+        gamepath,searchargs=methodsqueues[methodsidx].get()
+        
+        if checkneed(gamepath)==False:
+            continue
+        failed=True
+        for searcharg in searchargs:
+            try:
+                savepath= searchimgmethod(searcharg)  
+            except:
+                savepath=None
+            if savepath: 
+                pix=QPixmap(savepath) 
+                if pix.isNull()==False: 
+                    print(methods[methodsidx])
+                    print( gamepath)
+                    print(searcharg,  savepath)
+                    if checkneed(gamepath) : 
+                        savehook_new_data[gamepath]['imagepath']=savepath
+                    failed=False
+                    break  
+        if failed:
+            dispatchnext(gamepath,searchargs,methodsidx)
+for i in range(len(static_data['searchimgmethods'])):
+    methodsqueues.append(queue.Queue())
+    threading.Thread(target=everymethodsthread,args=(i,)).start()
+def checkifnewgame(gamepath):
+    if gamepath not in savehook_new_list:
+            savehook_new_list.insert(0,gamepath) 
+    if gamepath not in savehook_new_data:
+            savehook_new_data[gamepath]=getdefaultsavehook(gamepath)
+    dispatachtask(gamepath)
 kanjichs2ja=str.maketrans(static_data['kanjichs2ja'])
 def kanjitrans(k): 
     return k.translate(kanjichs2ja) 
- 
+def startgame(game,settingui):
+    try:         
+        if os.path.exists(game):
+            mode=savehook_new_data[game]['onloadautochangemode']
+            if mode==0:
+                    pass
+            else:
+                    _={
+                    1:'texthook',
+                    2:'embedded',
+                    3:'copy',
+                    4:'ocr'
+                    } 
+                    if globalconfig['sourcestatus'][_[mode]]['use']==False:
+                            globalconfig['sourcestatus'][_[mode]]['use']=True
+                            
+                            settingui.yuitsu_switch('sourcestatus','sourceswitchs',_[mode],None ,True) 
+                            settingui.object.starttextsource(use=_[mode],checked=True)
+     
+            if savehook_new_data[game]['leuse'] :
+                    localeswitcher=savehook_new_data[game]['localeswitcher'] 
+                    b=win32utils.GetBinaryType(game) 
+                    if b==6 and localeswitcher==0:
+                            localeswitcher=1
+                    if (localeswitcher==2 and b==6):
+                            _exe='shareddllproxy64'
+                    else:
+                            _exe='shareddllproxy32'
+                    exe=(os.path.abspath('./files/plugins/'+_exe)) 
+                    _cmd={0:'le',1:"LR",2:"ntleas"}[localeswitcher] 
+                    win32utils.CreateProcess(None,f'"{exe}" {_cmd} "{(game)}"', None,None,False,0,None, os.path.dirname(game), win32utils.STARTUPINFO()  ) 
+                                    
+            else:
+                    win32utils.ShellExecute(None, "open", game, "", os.path.dirname(game), win32con.SW_SHOW) 
+    except:
+            print_exc()
 def getsysproxy():
     proxies=getproxies_registry()
     try:
@@ -198,7 +304,7 @@ def minmaxmoveobservefunc(self):
                         rect=win32utils.GetWindowRect( hwnd) 
                         if globalconfig['focusfollow']:
                                 focus=win32utils.GetForegroundWindow()
-                                _focusp=win32utils.GetWindowThreadProcessId(focus)[1]
+                                _focusp=win32utils.GetWindowThreadProcessId(focus)
                                 if _focusp in self.object.textsource.pids: 
                                         self.hookfollowsignal.emit(3,(hwnd,))
                                 elif _focusp ==os.getpid():
@@ -224,18 +330,7 @@ def minmaxmoveobservefunc(self):
                         pass
                   
                 time.sleep(0.1)
-
-def update():
-    with open('./cache/update/update.bat','w',encoding='utf8') as ff:
-                
-                ff.write(r''' 
-timeout 1
-xcopy .\cache\update\LunaTranslator .\ /s /e /c /y /h /r 
-exit
-                
-                ''') 
-    win32utils.ShellExecute(None, "open", 'cache\\update\\update.bat', "", os.path.dirname('.'), win32con.SW_HIDE)
-
+ 
 
 def makehtml(text,base=False,show=None):
     if base:

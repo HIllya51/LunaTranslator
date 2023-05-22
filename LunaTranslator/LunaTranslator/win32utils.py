@@ -253,7 +253,7 @@ def GetClipboardOwner():
 def GetWindowThreadProcessId(hwnd):
     pid=c_uint()
     handle=_GetWindowThreadProcessId(hwnd,pointer(pid))
-    return handle,pid.value
+    return pid.value
 def RegisterWindowMessage(lpString):
     return _RegisterWindowMessage(c_wchar_p(lpString))
 def SetFocus(hwnd):
@@ -640,4 +640,3 @@ _MessageBoxW =_user32.MessageBoxW
 _MessageBoxW.argtypes=c_void_p,c_wchar_p,c_wchar_p,c_uint
 def MessageBox(hwnd,text,title,_type):
     return _MessageBoxW(hwnd,text,title,_type)
-

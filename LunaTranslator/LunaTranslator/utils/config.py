@@ -38,6 +38,10 @@ def getdefaultsavehook(gamepath):
         'localeswitcher':0,
         'onloadautochangemode':0,
         'needinserthookcode':[],
+        'imagepath':None,
+        'statistic_playtime':0,
+        'statistic_wordcount':0,
+        'statistic_wordcount_nodump':0,
         'leuse':True,
         'hook':[],
         'needinserthookcode':[],
@@ -46,11 +50,7 @@ def getdefaultsavehook(gamepath):
         "codepage_index":0
     }
     return default
-def checkifnewgame(gamepath):
-    if gamepath not in savehook_new_list:
-            savehook_new_list.insert(0,gamepath) 
-    if gamepath not in savehook_new_data:
-            savehook_new_data[gamepath]=getdefaultsavehook(gamepath)
+
 _dfsavehook=getdefaultsavehook('')
 for game in savehook_new_data:
     for k in _dfsavehook:

@@ -7,14 +7,13 @@ from PyQt5.QtGui import QStandardItem, QStandardItemModel,QTextDocument,QAbstrac
 from PyQt5.QtGui import QFont,QTextCursor
 from PyQt5.QtCore import Qt,pyqtSignal,QSize,QModelIndex,QPoint
 import qtawesome
-from gui.dialog_savedgame import dialog_setting_game
 import winsharedutils
 import os,time 
-from utils.config import globalconfig ,_TR,_TRL,checkifnewgame
+from utils.config import globalconfig ,_TR,_TRL
 from collections import OrderedDict
 from gui.usefulwidget import closeashidewindow,getQMessageBox
-from utils.utils import checkchaos 
-
+from utils.utils import checkchaos ,checkifnewgame
+from gui.dialog_savedgame import dialog_setting_game
 class searchhookparam(QDialog):
     def safehex(self,string,default):
         try:

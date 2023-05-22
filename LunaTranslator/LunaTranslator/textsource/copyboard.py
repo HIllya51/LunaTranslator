@@ -16,7 +16,7 @@ class copyboard(basetext):
             
             if self.last_paste_str != paste_str:
                 self.last_paste_str =paste_str 
-                if globalconfig['excule_from_self']   and win32utils.GetWindowThreadProcessId(win32utils.GetClipboardOwner())[1]==os.getpid():
+                if globalconfig['excule_from_self']   and win32utils.GetWindowThreadProcessId(win32utils.GetClipboardOwner())==os.getpid():
                     return  
                 return (paste_str)
     def runonce(self): 

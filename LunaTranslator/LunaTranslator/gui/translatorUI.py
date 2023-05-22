@@ -16,11 +16,9 @@ import winsharedutils,queue
 from utils.config import globalconfig,saveallconfig,_TR
 from utils.subproc import endsubprocs
 import  win32con
-import gui.rangeselect
-from utils.utils import update
-from utils.subproc import subproc_w
+import gui.rangeselect  
 from utils.hwnd import mouseselectwindow 
-from gui.dialog_savedgame import dialog_savedgame
+from gui.dialog_savedgame import dialog_savedgame,dialog_savedgame_new
 from gui.dialog_memory import dialog_memory
 from gui.textbrowser import Textbrowser
 from utils.fullscreen import fullscreen
@@ -33,7 +31,7 @@ class QUnFrameWindow(resizableframeless):
     showhideuisignal=pyqtSignal()
     hookfollowsignal=pyqtSignal(int,tuple)
     toolbarhidedelaysignal=pyqtSignal() 
-    showsavegame_signal=pyqtSignal() 
+    showsavegame_signal=pyqtSignal(int) 
     clickRange_signal=pyqtSignal(bool)
     rangequick=pyqtSignal()
     showhide_signal=pyqtSignal()
@@ -213,6 +211,7 @@ class QUnFrameWindow(resizableframeless):
             "mousetransbutton":self.changemousetransparentstate,
             "locktoolsbutton":self.changetoolslockstate,
             "gamepad":lambda: dialog_savedgame(self.object.settin_ui),
+            "gamepad_new":lambda: dialog_savedgame_new(self.object.settin_ui),
             "selectgame":lambda :self.object.AttachProcessDialog.showsignal.emit(),
             "selecttext":lambda:self.object.hookselectdialog.showsignal.emit(),
             "selectocrrange":lambda :self.clickRange(False),
@@ -279,7 +278,7 @@ class QUnFrameWindow(resizableframeless):
             while globalconfig['keepontop']:
                 try:   
                     hwnd=win32utils.GetForegroundWindow()
-                    pid=win32utils.GetWindowThreadProcessId(hwnd)[1] 
+                    pid=win32utils.GetWindowThreadProcessId(hwnd)
                     if pid !=os.getpid(): 
                         win32utils.SetWindowPos(int(self.winId()), win32con.HWND_TOPMOST, 0, 0, 0, 0,win32con. SWP_NOACTIVATE |win32con. SWP_NOSIZE | win32con.SWP_NOMOVE)  
                 except:
@@ -320,7 +319,7 @@ class QUnFrameWindow(resizableframeless):
         self.displayres.connect(self.showres)
         self.displayraw1.connect(self.showraw)   
         self.refreshtooliconsignal.connect(self.refreshtoolicon)
-        self.showsavegame_signal.connect(lambda:dialog_savedgame(self.object.settin_ui))  
+        self.showsavegame_signal.connect(self.showsavegame_f)  
         self.clickRange_signal.connect(self.clickRange )
         self.rangequick.connect(self.quickrange)
         self.showhide_signal.connect(self.showhide )
@@ -364,6 +363,12 @@ class QUnFrameWindow(resizableframeless):
         self.document.contentsChanged.connect(self.textAreaChanged)  
         self.set_color_transparency() 
         self.refreshtoolicon()
+    def showsavegame_f(self,i):
+        if i==0:
+            dialog_savedgame(self.object.settin_ui)
+        else:
+            dialog_savedgame_new(self.object.settin_ui)
+        
     def set_color_transparency(self ):
         self.translate_text.setStyleSheet("border-width: 0;\
                                            border-style: outset;\
@@ -608,7 +613,6 @@ class QUnFrameWindow(resizableframeless):
          
         if self.object.textsource:
             self.object.textsource=None
-        if self.object.settin_ui.needupdate and globalconfig['autoupdate']: 
-            update()
+          
         endsubprocs()
         os._exit(0) 

@@ -66,9 +66,10 @@ class Settin(closeashidewindow) :
                                     wid=QLabel(_TR(wid))
                         elif len(i)==3:
                             wid,cols,arg=i
-                            if arg=='link'and  type(wid)==str  :
+                            if type(wid)==str  :
                                 wid=QLabel((wid))
-                                wid.setOpenExternalLinks(True)
+                                if arg=='link':
+                                    wid.setOpenExternalLinks(True)
                         grid.addWidget(wid,nowr,nowc,1,cols)
                         if save:
                             ll.append(wid)
@@ -159,8 +160,7 @@ class Settin(closeashidewindow) :
         self.localocrstarted=False
         self.mp3playsignal.connect(self.mp3player.mp3playfunction)  
         self.opensolvetextsig.connect(self.opensolvetextfun)
-        self.object = object  
-        self.needupdate=False
+        self.object = object   
         self.needfitwidgets=[]
         self.needfitcols=[]
         self.setMinimumSize(100,100)

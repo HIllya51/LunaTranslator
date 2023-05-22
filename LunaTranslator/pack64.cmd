@@ -8,6 +8,7 @@ xcopy ..\build\x64\LunaTranslator_main.dist %targetdir_in% /e /y /I
 xcopy .\files %targetdir%\files /e /y /I
 copy ..\LICENSE %targetdir%\
 xcopy .\LunaTranslator\ocrengines %targetdir_in%\ocrengines /e /y /I
+xcopy .\LunaTranslator\unstablemethod %targetdir_in%\unstablemethod /e /y /I
 xcopy .\LunaTranslator\postprocess %targetdir_in%\postprocess /e /y /I
 xcopy .\LunaTranslator\translator %targetdir_in%\translator /e /y /I
 xcopy .\LunaTranslator\cishu %targetdir_in%\cishu /e /y /I

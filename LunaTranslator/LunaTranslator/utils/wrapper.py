@@ -1,7 +1,6 @@
 import traceback
 import time
-import random
-from threading import Thread
+import random,threading 
 import time
 class stripwrapper(dict):
         def __getitem__(self,item):
@@ -12,29 +11,40 @@ class stripwrapper(dict):
                 return t
 def Singleton(cls,**kw):
         _instance={}
-        def _singleton(*args,**kwagrs):
-                if cls not in  _instance: 
+        def _singleton(*args,**kwagrs): 
+                try:
+                    if _instance[cls] .isHidden():
+                        _instance[cls].deleteLater() 
+                        _instance[cls]=cls(*args,**kwagrs)
+                    else: 
+                        _instance[cls].activateWindow() 
+                        _instance[cls].show() 
+                except:
                         _instance[cls]=cls(*args,**kwagrs) 
-                else: 
-                        if _instance[cls] .isHidden():
-                            _instance[cls].destroy() 
-                            _instance[cls]=cls(*args,**kwagrs)
-                        else: 
-                            _instance[cls].activateWindow() 
-                            _instance[cls].show() 
                 return _instance[cls]
         return _singleton
 def Singleton_close(cls,**kw):
         _instance={}
+        _lock=threading.Lock()
+        _status={}
         def _singleton(*args,**kwagrs):
-                if cls not in  _instance: 
-                        _instance[cls]=cls(*args,**kwagrs) 
-                else: 
-                        if _instance[cls].isHidden():
-                            _instance[cls].destroy() 
-                            _instance[cls]=cls(*args,**kwagrs)
-                        else: 
-                            _instance[cls].close()
+                _lock.acquire()
+                if len(_status):    #qapp.processevent会导致卡在#1处，从而多次点击鼠标都会弹出
+                    _lock.release()
+                    return None
+                _status[0]=0
+                _lock.release()
+                try: 
+                    if _instance[cls].isHidden():
+                        _instance[cls].deleteLater() 
+                        _instance[cls]=cls(*args,**kwagrs) #1
+                    else: 
+                        _instance[cls].close()
+                except:
+                    _instance[cls]=cls(*args,**kwagrs) 
+                _lock.acquire()
+                _status.pop(0)
+                _lock.release()
                 return _instance[cls]
         return _singleton
 def retryer(**kw):
@@ -53,7 +63,7 @@ def retryer(**kw):
     return wrapper
 def threader(func):
     def _wrapper(*args,**kwargs): 
-        t=Thread(target=func,args=args,kwargs=kwargs) 
+        t=threading.Thread(target=func,args=args,kwargs=kwargs) 
         t.start() 
         
     return _wrapper 
