@@ -301,6 +301,8 @@
 		"空白":"white"
 
     },
+    "chromepath":"",
+    "debugport":9222,
 	"cixingcolorshow": {
         "形容詞": true,
         "形状詞": true,
@@ -717,6 +719,28 @@
             "color": "blue",
             "name": "deepl"
         },
+        "deepl_dev": {
+            "use": false,
+            "color": "blue",
+            "free":true,
+            "name": "deepl_dev"
+        },"bing_dev": {
+            "use": false,
+            "color": "blue",
+            "free":true,
+            "name": "bing_dev"
+        },"tx_dev": {
+            "use": false,
+            "color": "blue",
+            "free":true,
+            "name": "tx_dev"
+        } ,
+        "baidu_dev": {
+            "use": false,
+            "color": "blue",
+            "free":true,
+            "name": "baidu_dev"
+        }, 
         "jb7": {
             "use": false,
             "color": "#1839f0",

@@ -2,7 +2,7 @@ PyQt5==5.15.7
 PyQt5-Qt5==5.15.2
 
 requests==2.31.0
-
+websockets==10.4
 setuptools==56.0.0
 six==1.16.0
 tzlocal==3.0

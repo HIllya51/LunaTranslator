@@ -104,8 +104,12 @@ def setTabTwo_lazy(self) :
         online=alls-lixians-mt 
         mianfei=set()
         for _ in online:
-            if _ not in translatorsetting : 
-                mianfei.add(_) 
+            if 'free' in globalconfig['fanyi'][_]:
+                if globalconfig['fanyi'][_]['free']:
+                    mianfei.add(_)
+            else:
+                if _ not in translatorsetting : 
+                    mianfei.add(_) 
         shoufei=online-mianfei  
         offlinegrid=initsome11(self, lixians) 
         onlinegrid=initsome11(self, mianfei ) 
