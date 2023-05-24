@@ -13,7 +13,9 @@ import importlib,re
 from PyQt5.QtGui import QPixmap
  
 def checkneed(gamepath):
-    return ((gamepath in savehook_new_data) and ((savehook_new_data[gamepath]['imagepath'] is None) or (os.path.exists(savehook_new_data[gamepath]['imagepath'])==False))) 
+    return (gamepath in savehook_new_data) and \
+            ((savehook_new_data[gamepath]['imagepath'] is None) or (os.path.exists(savehook_new_data[gamepath]['imagepath'])==False) or 
+             (savehook_new_data[gamepath]['infopath'] is None) or ((savehook_new_data[gamepath]['infopath'][:4].lower()!='http') and os.path.exists(savehook_new_data[gamepath]['infopath'])==False))
 methodsqueues=[]
 
 def dispatchnext(gamepath,args,idx):
@@ -56,19 +58,27 @@ def everymethodsthread(methodsidx):
         failed=True
         for searcharg in searchargs:
             try:
-                savepath= searchimgmethod(searcharg)  
+                saveimg= searchimgmethod(searcharg)  
             except:
-                savepath=None
-            if savepath: 
-                pix=QPixmap(savepath) 
-                if pix.isNull()==False: 
-                    print(methods[methodsidx])
-                    print( gamepath)
-                    print(searcharg,  savepath)
+                saveimg=None
+
+            if saveimg: 
+                pix=QPixmap(saveimg) 
+                if pix.isNull()==False:  
                     if checkneed(gamepath) : 
-                        savehook_new_data[gamepath]['imagepath']=savepath
-                    failed=False
-                    break  
+                        savehook_new_data[gamepath]['imagepath']=saveimg
+            try:
+                searchinfomethod=importlib.import_module('unstablemethod.'+methods[methodsidx]).searchinfomethod   
+                saveinfo= searchinfomethod(searcharg)  
+            except:
+                saveinfo=None
+            if saveinfo:
+                if checkneed(gamepath) : 
+                    savehook_new_data[gamepath]['infopath']=saveinfo
+                    savehook_new_data[gamepath]['infomethod']=methods[methodsidx]
+            if saveinfo is not None and saveimg is not None:
+                failed=False
+                break  
         if failed:
             dispatchnext(gamepath,searchargs,methodsidx)
 for i in range(len(static_data['searchimgmethods'])):

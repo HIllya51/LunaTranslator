@@ -3,30 +3,23 @@ import functools ,time
 from PyQt5.QtWidgets import  QPushButton,QDialog,QVBoxLayout ,QHeaderView,QFileDialog ,QLineEdit,QFormLayout
 import functools,threading
 from traceback import print_exc 
-from PyQt5.QtWidgets import    QHBoxLayout, QTableView, QAbstractItemView, QLabel, QVBoxLayout
-import win32utils  
+from PyQt5.QtWidgets import    QHBoxLayout, QTableView, QAbstractItemView, QLabel, QVBoxLayout,QSpacerItem
+import win32utils  ,importlib
 from PyQt5.QtCore import QPoint, QRect, QSize, Qt,pyqtSignal,QCoreApplication
 import os
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtWidgets import (QScrollArea,QLayoutItem,
-  QApplication, QLayout, QLabel, QSizePolicy, QWidget, QGridLayout,QHBoxLayout,QVBoxLayout)
+from PyQt5.QtWidgets import   QApplication, QLayout, QLabel, QSizePolicy, QWidget, QGridLayout,QHBoxLayout,QVBoxLayout 
 from PyQt5.QtGui import QPalette, QColor,QResizeEvent,QIcon,QPixmap
-from PyQt5.QtCore import Qt
-from PyQt5 import QtWidgets, QtGui
+from PyQt5.QtCore import Qt 
 
 from PyQt5.QtCore import QPoint, QRect, QSize, Qt,pyqtSignal
-import os
-from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtWidgets import (
-  QApplication, QLayout, QPushButton, QSizePolicy, QWidget, QSpacerItem)
-import sys
+import os   
 from PyQt5.QtGui import QStandardItem, QStandardItemModel   
 from PyQt5.QtCore import Qt,QSize  
 from utils.config import   savehook_new_list,savehook_new_data
 from utils.hwnd import getExeIcon  
-from utils.config import _TR,_TRL,globalconfig,static_data
-import os
-import win32con  
+from utils.config import _TR,_TRL,globalconfig,static_data 
+import winsharedutils
 from utils.wrapper import Singleton_close,Singleton,threader
 from utils.utils import checkifnewgame,startgame
 
@@ -243,6 +236,29 @@ def opendir( k):
                         os.startfile(os.path.dirname(k))
                 except:
                         pass
+class browserdialog(QDialog):
+        def resizeEvent(self, a0: QResizeEvent) -> None:
+                try:
+                        self.browser.resize(0,0,a0.size().width(),a0.size().height())
+                except:
+                      pass
+        def parsehtml(self,exepath):
+                try:
+                        parsehtmlmethod=importlib.import_module('unstablemethod.'+savehook_new_data[exepath]['infomethod']).parsehtmlmethod
+                        newpath=parsehtmlmethod(savehook_new_data[exepath]['infopath'])   
+                except:
+                        newpath=savehook_new_data[exepath]['infopath']
+                if newpath[:4].lower()!='http':
+                      newpath=os.path.abspath(newpath)
+                return newpath
+        def __init__(self, parent,exepath ) -> None:
+                super().__init__(parent, Qt.WindowMinMaxButtonsHint|Qt.WindowCloseButtonHint)
+                self.browser=winsharedutils.HTMLBrowser(int(self.winId())) 
+                self.setWindowTitle(savehook_new_data[exepath]['title'])
+                self.browser.navigate((self.parsehtml( exepath)))
+                
+                self.resize(1300,800)
+                self.show()
 @Singleton
 class dialog_setting_game(QDialog):
         def selectexe(self ):
@@ -267,7 +283,8 @@ class dialog_setting_game(QDialog):
                          
                         self.setWindowIcon(_icon)
                         self.lujing.setText(res)
-                        self.exepath=res
+                        self.exepath=res 
+                
         def __init__(self, parent,exepath, item=None,settingui=None,type=1,gametitleitme=None) -> None:
                 super().__init__(parent, Qt.WindowCloseButtonHint )
                 checkifnewgame(exepath)
@@ -318,6 +335,12 @@ class dialog_setting_game(QDialog):
                         statislayout.addWidget(QLabel(_TR("统计信息")))
                         statislayout.addWidget(self.object.getcolorbutton('','',lambda:dialog_statistic(self,exepath),icon='fa.bar-chart',constcolor="#FF69B4"))
                         formLayout.addLayout(statislayout)
+                        
+                        if savehook_new_data[exepath]['infopath']:
+                                statislayout=QHBoxLayout() 
+                                statislayout.addWidget(QLabel(_TR("游戏信息")))
+                                statislayout.addWidget(self.object.getcolorbutton('','',lambda:browserdialog(self,exepath),icon='fa.book',constcolor="#FF69B4"))
+                                formLayout.addLayout(statislayout)
                 lujing=QHBoxLayout()
                 editpath=QLineEdit(exepath)
                 editpath.setReadOnly(True)
@@ -409,7 +432,6 @@ class dialog_setting_game(QDialog):
                 self.hcmodel.insertRow(row,[QStandardItem( ),QStandardItem(k)])  
                     
                 self.hctable.setIndexWidget(self.hcmodel.index(row, 0),self.object.getcolorbutton('','',self.clicked2,icon='fa.times',constcolor="#FF69B4")) 
-@Singleton
 class dialog_statistic(QDialog):
         def formattime(self,t):
                 t=int(t)

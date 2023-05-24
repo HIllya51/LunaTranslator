@@ -82,7 +82,7 @@ class TS(basetrans):
                 if  _path!=self.path :
                     self.path=_path 
                     
-                    call="%s --proxy-server=direct:// --disable-extensions --disable-gpu --no-first-run  --remote-debugging-port=%d  --user-data-dir=\"%s\"" %( self.path ,port,os.path.abspath('./chrome_cache/bing_'+b64string(_path))) 
+                    call="\"%s\" --proxy-server=direct:// --disable-extensions --disable-gpu --no-first-run  --remote-debugging-port=%d  --user-data-dir=\"%s\"" %( self.path ,port,os.path.abspath('./chrome_cache/bing_'+b64string(_path))) 
                     print(call)
                     self.engine=subproc_w(call) 
                     info=requests.get(f'http://127.0.0.1:{port}/json/list').json()

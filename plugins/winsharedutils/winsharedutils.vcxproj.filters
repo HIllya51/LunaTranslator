@@ -53,5 +53,8 @@
     <ClCompile Include="clipboard.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="WebBrowser.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

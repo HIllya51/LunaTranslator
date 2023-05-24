@@ -39,6 +39,8 @@ def getdefaultsavehook(gamepath):
         'onloadautochangemode':0,
         'needinserthookcode':[],
         'imagepath':None,
+        'infopath':None,
+        'infomethod':None,
         'statistic_playtime':0,
         'statistic_wordcount':0,
         'statistic_wordcount_nodump':0,

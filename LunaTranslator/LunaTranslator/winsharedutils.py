@@ -138,3 +138,25 @@ def clipboard_get():
         return v
     else:
         return ''
+    
+
+
+html_new=utilsdll.html_new
+html_new.argtypes=c_void_p,
+html_new.restype=c_void_p
+html_navigate=utilsdll.html_navigate
+html_navigate.argtypes=c_void_p,c_wchar_p
+html_resize=utilsdll.html_resize
+html_resize.argtypes=c_void_p,c_uint,c_uint,c_uint,c_uint
+html_release=utilsdll.html_release
+html_release.argtypes=c_void_p,
+
+class HTMLBrowser():
+    def __init__(self,parent) -> None:
+        self.html=html_new(parent)
+    def resize(self,x,y,w,h,):
+        html_resize(self.html,x,y,w,h)
+    def navigate(self,url):
+        html_navigate(self.html,url)
+    def __del__(self):
+        html_release(self.html)

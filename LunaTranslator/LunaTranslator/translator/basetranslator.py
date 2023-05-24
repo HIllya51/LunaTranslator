@@ -50,11 +50,11 @@ class basetrans:
             return {}
     def countnum(self,query):
         try:
-            self.config['字数统计']=str(int(self.config['字数统计'])+len(query))
-            self.config['次数统计']=str(int(self.config['次数统计'])+1)
+            translatorsetting[self.typename]['args']['字数统计']=str(int(self.config['字数统计'])+len(query))
+            translatorsetting[self.typename]['args']['次数统计']=str(int(self.config['次数统计'])+1)
         except:
-            self.config['字数统计']=str( len(query))
-            self.config['次数统计']='1'
+            translatorsetting[self.typename]['args']['字数统计']=str( len(query))
+            translatorsetting[self.typename]['args']['次数统计']='1'
 
     def checkempty(self,items):
         emptys=[]

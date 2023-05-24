@@ -91,7 +91,7 @@ def vndbsearch(title):
          with open(savepath,'r',encoding='utf8') as ff:
             text=ff.read()
     try: 
-        imgurl=(re.search('<img src="(.*?)" width="(.*)" class="cover"',text).groups()[0])
+        imgurl=(re.search('<img src="(.*?)" width="(.*?)" class="cover"',text).groups()[0])
         return 'https:'+imgurl
     except:
         pass
@@ -104,3 +104,64 @@ def searchimgmethod(title):
     #print(imgurl)
     savepath= vndbdownloadimg(imgurl)
     return savepath
+def vndbsearchinfo(title): 
+     
+    headers = {
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
+        'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6',
+        'Cache-Control': 'max-age=0', 
+        'Proxy-Connection': 'keep-alive',
+        'Referer': 'http://bangumi.tv/subject_search/amatutumi?cat=all',
+        'Upgrade-Insecure-Requests': '1',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36 Edg/113.0.1774.42',
+    }
+
+    params = {
+        'cat': '4',
+    }
+    url='http://bangumi.tv/subject_search/'+(title)
+    
+    savepath='./cache/bangumi/'+b64string(url)+'.html'
+    #print(url,savepath)
+    if not os.path.exists(savepath): 
+        try: 
+            time.sleep(1)
+            response = requests.get(
+                url,
+                params=params, 
+                headers=headers,proxies=getproxy(),
+                verify=False,
+            )  
+            with open(savepath,'w',encoding='utf8') as ff:
+                 ff.write(response.text)
+            text=response.text
+        except:
+            return None
+    else:
+         with open(savepath,'r',encoding='utf8') as ff:
+            text=ff.read()
+     
+    try:
+        found=re.findall('<a href="(.*?)" class="subjectCover cover ll">',text)
+    except:
+        #print("??")
+        return None 
+    #print(found)
+    if len(found)==0:
+         return None
+    if found[0]=='/':
+        return None
+    url='http://bangumi.tv'+found[0]
+    return url
+
+
+def searchinfomethod(title):
+
+    if os.path.exists('./cache/bangumi')==False:
+        os.mkdir('./cache/bangumi')
+    infosavepath=vndbsearchinfo(title)   
+    return infosavepath
+import re
+def parsehtmlmethod(infopath):
+     
+    return infopath

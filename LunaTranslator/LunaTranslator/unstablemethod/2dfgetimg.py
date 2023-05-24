@@ -70,7 +70,7 @@ def vndbsearch(title):
             text=ff.read()
      
     try:
-        found=re.findall('<img class="media-object subject-package"(.*)data-normal="(.*)">',text)
+        found=re.findall('<img class="media-object subject-package"(.*?)data-normal="(.*?)">',text)
     except:
         #print("??")
         return None 
@@ -92,3 +92,82 @@ def searchimgmethod(title):
     #print(imgurl)
     savepath= vndbdownloadimg(imgurl)
     return savepath
+
+
+def vndbsearchinfo(title): 
+     
+    headers = {
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
+        'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6',
+        'Cache-Control': 'max-age=0', 
+        'Proxy-Connection': 'keep-alive',
+        'Referer': 'http://bangumi.tv/subject_search/amatutumi?cat=all',
+        'Upgrade-Insecure-Requests': '1',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36 Edg/113.0.1774.42',
+    } 
+    url='https://2dfan.org/subjects/search?keyword='+(title)
+    
+    savepath='./cache/2df/'+b64string(url)+'.html'
+    #print(url,savepath)
+    if not os.path.exists(savepath): 
+        try: 
+            time.sleep(1)
+            response = requests.get(
+                url, 
+                headers=headers,proxies=getproxy(),
+                verify=False,
+            )  
+            with open(savepath,'w',encoding='utf8') as ff:
+                 ff.write(response.text)
+            text=response.text
+        except:
+            return None
+    else:
+         with open(savepath,'r',encoding='utf8') as ff:
+            text=ff.read()
+     
+    try:
+        found=re.findall('<h4 class="media-heading">(.*?)</h4>',text)
+    except:
+        #print("??")
+        return None 
+    #print(found)
+    if len(found)==0:
+         return None
+    
+    found=found[0]
+    found=re.findall('href="(.*?)"',found)[0]
+    
+    url='https://2dfan.org'+found
+    return url
+    savepath='./cache/2df/'+b64string(url)+'.html'
+    #print(url,savepath)
+    if not os.path.exists(savepath): 
+        try: 
+            time.sleep(1)
+            response = requests.get(
+                url, 
+                headers=headers,proxies=getproxy(),
+                verify=False,
+            )  
+            with open(savepath,'w',encoding='utf8') as ff:
+                 ff.write(response.text)
+            text=response.text
+        except:
+            return None
+    else:
+         with open(savepath,'r',encoding='utf8') as ff:
+            text=ff.read()
+    return savepath
+
+
+
+def searchinfomethod(title):
+
+    if os.path.exists('./cache/2df')==False:
+        os.mkdir('./cache/2df')
+    infosavepath=vndbsearchinfo(title)   
+    return infosavepath
+import re
+def parsehtmlmethod(infopath): 
+    return infopath

@@ -208,7 +208,7 @@ class Settin(closeashidewindow) :
                     width: %spx;
                     height: %spx;
                     font:%spt  ;  }
-                '''%(50*self.rate,self.window_width*0.2,18 if globalconfig['languageuse']==0 else 10  )
+                '''%(50*self.rate,self.window_width*0.2,globalconfig['tabfont_chs'] if globalconfig['languageuse']==0 else globalconfig['tabfont_otherlang']  )
             )
             self.tab_widget.setTabPosition(QTabWidget.West)
             setTabOne(self)   

@@ -82,6 +82,8 @@
     "premtsimi": 5,
     "magpiescalemethod": 0,
     "magpiecapturemethod": 0,
+    "tabfont_chs":18,
+    "tabfont_otherlang":10,
     "ocrrangecolor": "#000000",
     "ocrrangewidth": 2,
     "useproxy": true,
