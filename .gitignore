@@ -40,3 +40,4 @@ plugins/shareddllproxy/builds
 plugins/shareddllproxy/.vs
 
 LunaTranslator/files/plugins/GPS.txt
+LunaTranslator/chrome_cache

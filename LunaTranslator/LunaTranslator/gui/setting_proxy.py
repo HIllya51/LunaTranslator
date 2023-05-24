@@ -54,10 +54,15 @@ def setTab_proxy_lazy(self):
         mt=set(static_data["fanyi_pre"])
         online=alls-lixians-mt 
         mianfei=set()
+        develop=set()
         for _ in online:
+            if 'dev' in globalconfig['fanyi'][_]:
+                if globalconfig['fanyi'][_]['dev']:
+                    develop.add(_)
+                    continue
             if _ not in translatorsetting : 
                 mianfei.add(_) 
-        shoufei=online-mianfei  
+        shoufei=online-mianfei-develop
          
         mianfei=getall(self,l=mianfei,item='fanyi',name='./Lunatranslator/translator/%s.py')
         shoufei=getall(self,l=shoufei,item='fanyi',name='./Lunatranslator/translator/%s.py')
