@@ -7,16 +7,13 @@ import platform
 import os
 from utils.hwnd import is64bit
 from utils.subproc import subproc_w
-from textsource.embed.sharedmem3 import VnrAgentSharedMemory
+from textsource.embed.sharedmemwin import winsharedmem
 from textsource.embed.socketpack3 import packstrlist,packdata,unpackuint32,unpackstrlist
 class embedded(basetext  ):  
-    def inject_vnragent(self,pid):  
-        if platform.architecture()[0]=='64bit': 
-            dllpaths=list(map(lambda x:os.path.abspath(os.path.join('./files/plugins/LunaEmbedder/',x)), ['Qt5Core.dll','vnragent.dll']))
-        elif platform.architecture()[0]=='32bit':
-            dllpaths=[os.path.abspath("./LunaTranslator/qt5core.dll"),os.path.abspath('./files/plugins/LunaEmbedder/vnragent.dll')] 
+    def inject_vnragent(self,pid): 
+        dllpath=os.path.abspath('./files/plugins/LunaEmbedEngine32.dll')
         
-        subproc_w(f'.\\files\\plugins\\shareddllproxy32.exe dllinject {pid} "{dllpaths[0]}" "{dllpaths[1]}"') 
+        subproc_w(f'.\\files\\plugins\\shareddllproxy32.exe dllinject {pid} "{dllpath}" ') 
         
     def start(self):
         def _():  
@@ -60,19 +57,19 @@ class embedded(basetext  ):
                 win32utils.CloseHandle(hostpipe) 
                 self._onDisconnected()
         threading.Thread(target=_).start()
-    def _onDisconnected(self): 
-        self.mem.detachProcess(self.injectedPid) 
+    def _onDisconnected(self):  
+        self.winmem.detachProcess(self.injectedPid) 
     def _onEngineReceived(self, name): # str
         self.engineName = name 
 
-        if name :
-            self.mem.attachProcess(self.injectedPid)
+        if name : 
+            self.winmem.attachProcess(self.injectedPid)
             self.getenginename(name)
             #print("%s: %s" % ( ("Detect game engine"), name))
         else: 
             self.unrecognizedengine()
-            if self.injectedPid :
-                self.mem.detachProcess(self.injectedPid)
+            if self.injectedPid : 
+                self.winmem.detachProcess(self.injectedPid)
                 self.injectedPid=0
     def _onDataReceived(self, data, socket):
         print("dataReceived",data)
@@ -138,9 +135,9 @@ class embedded(basetext  ):
         @param    hash    qint64
         @param    role    int
         @param    trans    bool     need translation
-        """
-        if self.mem.isAttached()==False:
-            self.mem.attachProcess(self.injectedPid)
+        """ 
+        if self.winmem.isAttached()==False:
+            self.winmem.attachProcess(self.injectedPid)
         try: 
             role = int(role)
             sig = int(sig) 
@@ -155,7 +152,8 @@ class embedded(basetext  ):
         self.translate(text,functools.partial(self.sendEmbeddedTranslation_,hash,role))
     def sendEmbeddedTranslation_(self,    hash, role, language,trans):
         hash = int(hash)
-        m = self.mem
+         
+        m = self.winmem
          
         if m.isAttached(): # and m.lock(): 
             # Due to the logic, locking is not needed
@@ -188,7 +186,7 @@ class embedded(basetext  ):
         self.hookselectdialog=hookselectdialog
         self.newline=queue.Queue()
         self.agentreceiveddata='' 
-        self.mem = VnrAgentSharedMemory( )
+        self.winmem = winsharedmem( )
         #b=win32utils.GetBinaryType(pname)
         b=is64bit(pids[0])
         if b:
@@ -218,7 +216,7 @@ class embedded(basetext  ):
         self.textgetmethod("<msg>"+result+'  '+ _TR("内嵌失败，请使用普通HOOK"))     
     def runonce(self): 
         self.textgetmethod(self.agentreceiveddata,False)
-    def end(self): 
-        self.mem.quit() 
+    def end(self):  
+        self.winmem.quit() 
         self.disableAgent()
         super().end()
