@@ -7,11 +7,9 @@ from PyQt5.QtWidgets import QWidget,QLabel ,QProgressBar,QLineEdit,QPushButton
 import os,threading
 from utils.config import globalconfig  ,_TR ,static_data
 from utils.wrapper import threader
-from version import version
 import time,json,platform,zipfile
 from utils.utils import makehtml
-import importlib
-from utils.utils import getproxy
+import importlib 
 def resourcegrid( ) :  
          
         grid=[]
@@ -31,7 +29,7 @@ def resourcegrid( ) :
         return grid
 @threader
 def getversion(self):
-    self.versiontextsignal.emit(('当前版本')+':'+  version+'  '+("最新版本")+':'+ ('获取中'))#,'',url,url)) 
+    self.versiontextsignal.emit(('当前版本')+':'+  static_data["version"]+'  '+("最新版本")+':'+ ('获取中'))#,'',url,url)) 
     methods=globalconfig['getvesionmethod']
     getvesionmethod=importlib.import_module('unstablemethod.'+methods).getvesionmethod  
     _version=getvesionmethod()
@@ -42,9 +40,9 @@ def getversion(self):
         sversion=_TR("获取失败")
     else:
         sversion=_version
-    self.versiontextsignal.emit((f'{_TR("当前版本")}:{version}  {platform.architecture()[0]}  {_TR("最新版本")}:{ sversion}') ) #,'' if version== _version else  newcontent,url,'LunaTranslator.zip'))
+    self.versiontextsignal.emit((f'{_TR("当前版本")}:{static_data["version"]}  {platform.architecture()[0]}  {_TR("最新版本")}:{ sversion}') ) #,'' if static_data["version"]== _version else  newcontent,url,'LunaTranslator.zip'))
 
-    if _version is not None and version<_version:
+    if _version is not None and static_data["version"]<_version:
         if globalconfig['autoupdate']: 
             updatemethod(_version,self.progresssignal.emit)
              

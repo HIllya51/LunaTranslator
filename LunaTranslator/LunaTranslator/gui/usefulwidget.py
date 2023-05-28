@@ -1,11 +1,22 @@
 
-from PyQt5.QtWidgets import QWidget, QMainWindow ,QApplication,QPushButton,QTabBar,QStylePainter,QStyleOptionTab,QStyle,QMessageBox
+from PyQt5.QtWidgets import QWidget, QMainWindow ,QApplication,QPushButton,QTabBar,QStylePainter,QStyleOptionTab,QStyle,QMessageBox,QDialog,QLabel,QHBoxLayout
 from PyQt5.QtGui import QFont,QCloseEvent
 from PyQt5.QtCore import Qt,pyqtSignal ,QSize ,QRect ,QPoint 
 from utils.config import _TR
 
 import qtawesome 
-
+from utils.wrapper import  Singleton 
+@Singleton
+class dialog_showinfo(QDialog):
+        
+        def __init__(self, parent,title,info ) -> None:
+                super().__init__(parent, Qt.WindowCloseButtonHint ) 
+                self.setWindowTitle(title)
+                l=QLabel(info)
+                layout=QHBoxLayout()
+                layout.addWidget(l)
+                self.setLayout(layout) 
+                self.show()
 def getQMessageBox(parent=None,title="",text="",useok=True,usecancel=False,okcallback=None,cancelcallback=None):
     msgBox=QMessageBox(parent)
     msgBox.setWindowTitle(_TR(title))

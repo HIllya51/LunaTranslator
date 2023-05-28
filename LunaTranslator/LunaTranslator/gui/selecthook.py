@@ -2,7 +2,7 @@ import functools
 from traceback import print_exc
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QWidget,QHBoxLayout,QDialog,QAction,QVBoxLayout,QMenu,QPlainTextEdit,QTabWidget,QLineEdit,QPushButton,QTableView,QAbstractItemView,QRadioButton,QButtonGroup,QHeaderView,QCheckBox,QSpinBox,QFormLayout ,QLabel
-from utils.config import savehook_new_list,savehook_new_data
+from utils.config import savehook_new_list,savehook_new_data,static_data
 from PyQt5.QtGui import QStandardItem, QStandardItemModel,QTextDocument,QAbstractTextDocumentLayout,QPalette  
 from PyQt5.QtGui import QFont,QTextCursor
 from PyQt5.QtCore import Qt,pyqtSignal,QSize,QModelIndex,QPoint
@@ -11,7 +11,7 @@ import winsharedutils
 import os,time 
 from utils.config import globalconfig ,_TR,_TRL
 from collections import OrderedDict
-from gui.usefulwidget import closeashidewindow,getQMessageBox
+from gui.usefulwidget import closeashidewindow,getQMessageBox,dialog_showinfo
 from utils.utils import checkchaos ,checkifnewgame
 from gui.dialog_savedgame import dialog_setting_game
 class searchhookparam(QDialog):
@@ -24,7 +24,8 @@ class searchhookparam(QDialog):
         idx=(self.selectmodel.checkedId())
         usestruct=self.parent().object.textsource.defaultsp()
         if idx==1:  #0默认
-            usestruct.codepage=self.codepage.value()
+            #usestruct.codepage=self.codepage.value()
+            usestruct.codepage=static_data["codepage_real"][self.codepagesave['type2use']]
             usestruct.text=self.searchtext.text()
             if len(usestruct.text)<4:
                 getQMessageBox(self,"警告","搜索文本过短！",True)
@@ -51,9 +52,9 @@ class searchhookparam(QDialog):
             usestruct.maxAddress=self.safehex(dumpvalues[3], usestruct.maxAddress)
             usestruct.padding=self.safehex(dumpvalues[4], usestruct.padding)
             usestruct.offset=dumpvalues[5]
-            usestruct.codepage=dumpvalues[6]
-            usestruct.searchTime=dumpvalues[7]
-            usestruct.maxRecords=dumpvalues[8]
+            usestruct.codepage=static_data["codepage_real"][self.codepagesave['type3use']]#dumpvalues[6]
+            usestruct.searchTime=dumpvalues[6]#dumpvalues[7]
+            usestruct.maxRecords=dumpvalues[7]#dumpvalues[8]
         self.parent().object.textsource.findhook(usestruct)
         if idx!=1:
             self.parent().findhookchecked()
@@ -96,11 +97,15 @@ class searchhookparam(QDialog):
         w1.setLayout(self.layoutseatchtext)
         w1.hide()
         self.searchtext=QLineEdit()
-        self.codepage=QSpinBox()
-        self.codepage.setMaximum(100000)
-        self.codepage.setValue(usestruct.codepage)
+        # self.codepage=QSpinBox()
+        # self.codepage.setMaximum(100000)
+        # self.codepage.setValue(usestruct.codepage)
         self.layoutseatchtext.addRow(_TR("文本"), self.searchtext)
-        self.layoutseatchtext.addRow(_TR("代码页"), self.codepage)
+
+        self.codepagesave={'type2use':savehook_new_data[parent.object.textsource.pname]['codepage_index'],
+                            'type3use':savehook_new_data[parent.object.textsource.pname]['codepage_index']}
+        
+        self.layoutseatchtext.addRow(_TR("代码页"), parent.object.settin_ui.getsimplecombobox(_TRL(static_data['codepage_display']),self.codepagesave,'type2use' ))
         
 
         w2=QWidget()
@@ -115,6 +120,8 @@ class searchhookparam(QDialog):
         byte_data = usestruct.pattern
         hex_str = binascii.hexlify(byte_data).decode() 
         space_hex_str = ' '.join([hex_str[i:i+2] for i in range(0, len(hex_str), 2)])
+ 
+        self.layoutsettings.addRow(_TR("代码页"), parent.object.settin_ui.getsimplecombobox(_TRL(static_data['codepage_display']),self.codepagesave,'type3use' ))
         self.regists=[]
         for edits in [
                 ('搜索匹配的特征(hex)',space_hex_str),
@@ -129,7 +136,7 @@ class searchhookparam(QDialog):
         
         for spins in [
                 ('相对特征地址的偏移',usestruct.offset),
-                ('代码页',usestruct.codepage),
+                
                 ('搜索持续时间(ms)',usestruct.searchTime),
                 ('搜索结果数上限',usestruct.maxRecords),
             ]:
@@ -248,6 +255,10 @@ class hookselect(closeashidewindow):
         self.userhooklayout.addWidget(self.userhook)
         self.userhookinsert=QPushButton(_TR("插入特殊码")) 
         self.userhookinsert.clicked.connect(self.inserthook)
+        self.userhooklayout.addWidget(self.userhookinsert)
+
+        self.userhookinsert=QPushButton(icon=qtawesome.icon('fa.question')) 
+        self.userhookinsert.clicked.connect(lambda:dialog_showinfo(self,'CODE',static_data['hcodeintroduction']))
         self.userhooklayout.addWidget(self.userhookinsert)
 
         self.userhookfind=QPushButton(_TR("搜索特殊码")) 

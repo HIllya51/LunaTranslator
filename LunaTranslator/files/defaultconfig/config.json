@@ -655,9 +655,13 @@
 			"color":"pink"
 		},
         "microsoft":{
-            "use":true,
+            "use":false,
             "color":"gray",
             "name":"microsoft"
+        },"microsoft2":{
+            "use":false,
+            "color":"gray",
+            "name":"microsoft2"
         },
 		"azure":{
 			"use":false,
