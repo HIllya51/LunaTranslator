@@ -43,7 +43,14 @@ class TTS(TTSbase):
 
                 response = requests.get('http://127.0.0.1:50021/speakers',  headers=headers,proxies={'http':None,'https':None}).json()
                 print(response)
-                self.voicelist=[_['name'] for _ in response]
+                #self.voicelist=[_['name'] for _ in response]
+                #return self.voicelist 
+                voicedict={}
+                for speaker in response:
+                    styles = speaker['styles']
+                    for style in styles:
+                        voicedict[style['id']] = "%s(%s)" % (speaker['name'],style['name'])  
+                self.voicelist=["%02d %s" % (i,voicedict[i]) for i in range(len(voicedict))]
                 return self.voicelist
             except:
                 print_exc()
