@@ -35,6 +35,8 @@
 
 &emsp;&emsp;**注册在线翻译** 支持使用用户注册的百度、腾讯、有道、小牛、彩云、火山、deepl、yandex、google、飞书、ChatGPT、Azure翻译
 
+&emsp;&emsp;**Chrome调试翻译** 支持deepl、yandex、有道、百度、腾讯、必应、彩云、小牛、阿里、谷歌
+
 &emsp;&emsp;**预翻译** 支持读取人工翻译和聚合机器预翻译文件，支持翻译缓存
 
 &emsp;&emsp;**支持自定义翻译扩展** 支持使用python语言扩展其他我不知道的翻译接口

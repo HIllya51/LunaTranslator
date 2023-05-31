@@ -9,7 +9,7 @@ from PyQt5.QtWidgets import QWidget, QLabel, QPushButton, QVBoxLayout,QApplicati
 from PyQt5.QtCore import Qt, pyqtSignal  ,QThread
 import qtawesome 
 from PyQt5.QtCore import pyqtSignal,Qt,QRect,QSize  
-from PyQt5.QtGui import  QFont  ,QIcon,QPixmap  ,QMouseEvent
+from PyQt5.QtGui import  QFont  ,QIcon,QPixmap  ,QMouseEvent,QCursor
 from PyQt5.QtWidgets import  QLabel ,QPushButton ,QSystemTrayIcon ,QAction,QMenu 
 import win32utils
 import winsharedutils,queue
@@ -493,23 +493,28 @@ class QUnFrameWindow(resizableframeless):
         for button in self.buttons:
             button.hide()    
         self._TitleLabel.hide()
-    def leaveEvent(self, QEvent) : 
-        if globalconfig['locktools']:
-            return 
-        self.ison=False
-        def __(s):
-            time.sleep(0.5)
-            if self.ison==False:
-                s.toolbarhidedelaysignal.emit()
-        threading.Thread(target=lambda:__(self) ).start()
+     
         
     def enterEvent(self, QEvent) : 
-        
-        self.ison=True
+         
  
         for button in self.buttons[-2:] +self.showbuttons:
             button.show()  
         self._TitleLabel.show()
+
+        if globalconfig['locktools']:
+            return 
+        def makerect(_):
+            x,y,w,h=_
+            return [x,x+w,y,y+h]
+        def __(s):
+            c=QCursor()  
+            while (self.isinrect(c.pos(),makerect(self.geometry().getRect()))):
+                time.sleep(0.1)
+            time.sleep(0.5)
+            if (globalconfig['locktools']==False) and (self.isinrect(c.pos(),makerect(self.geometry().getRect()))==False):
+                s.toolbarhidedelaysignal.emit()
+        threading.Thread(target=lambda:__(self) ).start()
     def resizeEvent(self, e):
         super().resizeEvent(e);
         wh=globalconfig['buttonsize'] *1.5

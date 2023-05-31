@@ -611,5 +611,9 @@
     "英语(CP437)": "Inglés (cp437)",
     "chrome路径": "Ruta Chrome",
     "游戏信息": "Información del juego",
-    "意大利语": "Italiano"
+    "意大利语": "Italiano",
+    "端口号": "Número de Puerto",
+    "连接失败": "Conexión fallida",
+    "连接成功": "Conexión exitosa",
+    "端口冲突": "Conflicto de Puertos"
 }

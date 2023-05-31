@@ -12,8 +12,6 @@ from utils.config import globalconfig
 import json  
 from translator.basetranslator import basetrans
 import time,hashlib
-def b64string(a): 
-    return hashlib.md5(a.encode('utf8')).digest().hex()
 
 _id=1
 async def SendRequest(websocket,method,params):
@@ -46,45 +44,26 @@ async def tranlate(websocketurl,content,src,tgt ):
         res=await waittransok(websocket)
         return (res)
          
-class TS(basetrans):
-    # def end(self):
-    #     try:
-    #         self.engine.kill() 
-    #     except:
-    #         pass 
-    def inittranslator(self ) : 
-                 
-        self.path=None 
-        self.websocketurl=None
-        self.checkpath()
+ 
+async def createtarget(port  ): 
+    url='https://fanyi.baidu.com'
+    infos=requests.get(f'http://127.0.0.1:{port}/json/list').json() 
+    use=None
+    for info in infos:
+         if info['url'][:len(url)]==url:
+              use=info['webSocketDebuggerUrl']
+              break
+    if use is None:
+        
+        async with websockets.connect(infos[0]['webSocketDebuggerUrl']) as websocket: 
+            a=await SendRequest(websocket,'Target.createTarget',{'url':url})  
+            use= 'ws://127.0.0.1:81/devtools/page/'+a['targetId']
+    return use
+class TS(basetrans): 
     def langmap(self):
         return {"es":"spa","ko":"kor","fr":"fra","ja":"jp","cht":"cht","vi":"vie","uk":"ukr"}
-    def checkpath(self):
-        if self.websocketurl is None:
-            port =self.config['port']
-            try:
-                info=requests.get(f'http://127.0.0.1:{port}/json/list').json()
-                websocketurl=info[0]['webSocketDebuggerUrl']
-                self.websocketurl=websocketurl
-            except:
-                print_exc()
-                _path=self.config['chrome路径']
-                if _path=="":
-                    return False
-                if os.path.exists(_path)==False:
-                    return False
-                if  _path!=self.path :
-                    self.path=_path 
-                    
-                    call="\"%s\" --proxy-server=direct:// --disable-extensions --disable-gpu --no-first-run --remote-debugging-port=%d --user-data-dir=\"%s\"" %( self.path ,port,os.path.abspath('./chrome_cache/baidu_'+b64string(_path))) 
-                    print(call)
-                    self.engine=subproc_w(call) 
-                    info=requests.get(f'http://127.0.0.1:{port}/json/list').json()
-                    websocketurl=info[0]['webSocketDebuggerUrl']
-                    print(websocketurl)
-                    self.websocketurl=websocketurl
-            return(asyncio.run(tranlate(self.websocketurl,'init','','')))
-    def translate(self,content): 
-        self.checkpath()  
+    def inittranslator(self ) :  
+            self.websocketurl=asyncio.run(createtarget(globalconfig['debugport'] )) 
+    def translate(self,content):  
         return(asyncio.run(tranlate(self.websocketurl,content,self.srclang,self.tgtlang)))
         

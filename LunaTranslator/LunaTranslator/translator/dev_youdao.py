@@ -11,7 +11,7 @@ from utils.subproc import subproc_w
 from utils.config import globalconfig
 import json  
 from translator.basetranslator import basetrans
-import time
+import time,hashlib
 
 _id=1
 async def SendRequest(websocket,method,params):
@@ -31,21 +31,21 @@ async def waitload( websocket):
 
 async def waittransok( websocket):  
         for i in range(10000):
-            state =(await SendRequest(websocket,'Runtime.evaluate',{"expression":"document.querySelector('.lmt__side_container--target [data-testid=translator-target-input]').textContent","returnByValue":True})) 
+            state =(await SendRequest(websocket,'Runtime.evaluate',{"expression":'(o=document.querySelector("#js_fanyi_output_resultOutput"))?o.textContent:""',"returnByValue":True}))  
             if state['result']['value']!='':
                 return state['result']['value']
             time.sleep(0.1)
         return ''
 async def tranlate(websocketurl,content,src,tgt ): 
     async with websockets.connect(websocketurl) as websocket: 
-        await SendRequest(websocket,'Page.navigate',{'url':f'https://www.deepl.com/en/translator#{src}/{tgt}/{quote(content)}'})
-        await waitload(websocket)
+        await SendRequest(websocket,'Runtime.evaluate',{"expression":f'(a=document.querySelector("#TextTranslate > div.source > a"))?a.click():"";i=document.querySelector("#js_fanyi_input");i.innerText=`{content}`;event = new Event("input", {{bubbles: true, cancelable: true }});i.dispatchEvent(event);'}) 
+        
         res=await waittransok(websocket)
         return (res)
-         
+
 
 async def createtarget(port  ): 
-    url='https://www.deepl.com/en/translator'
+    url='https://fanyi.youdao.com/'
     infos=requests.get(f'http://127.0.0.1:{port}/json/list').json() 
     use=None
     for info in infos:

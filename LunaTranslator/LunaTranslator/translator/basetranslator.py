@@ -196,10 +196,7 @@ class basetrans:
                     
                     
                 try:
-                    if self.queue.empty() and self.using:
-                        if i!=0:
-                            timeoutfunction(self.inittranslator,max(globalconfig['translatortimeout'],5),ignoreexceptions=False)
-
+                    if self.queue.empty() and self.using: 
                         res=timeoutfunction(partial(self.maybecachetranslate,contentraw,contentsolved),globalconfig['translatortimeout'],default='',ignoreexceptions=False) 
                         if self.needzhconv:
                             res=zhconv.convert(res,  'zh-tw' )  
@@ -207,26 +204,20 @@ class basetrans:
                         callback(res,embedcallback) 
                     break
                 except Exception as e:
-                    retry=True
-                    
-                    if isinstance(e,ArgsEmptyExc):
-                        msg=str(e)
-                        retry=False
-                    elif isinstance(e,TimeOut):
-                        msg=str(e)
-                    else:
-                        print_exc()
-                        msg=str(type(e))[8:-2]+' '+str(e).replace('\n','').replace('\r','')
-                    
-                    msg='<msg>'+msg
-                    if retry==False:
-                        if globalconfig['showtranexception']:
-                            callback(msg,embedcallback) 
-                        break
-                    else:
-                        if i==runtime-1:
-                            if globalconfig['showtranexception']:
+                    if self.using:
+                        needretry=False
+                        if (i==runtime-1) and globalconfig['showtranexception']:
+                                if isinstance(e,ArgsEmptyExc):
+                                    msg=str(e)
+                                elif isinstance(e,TimeOut):
+                                    msg=str(e)
+                                else:
+                                    print_exc()
+                                    msg=str(type(e))[8:-2]+' '+str(e).replace('\n','').replace('\r','')
+                                    needretry=True
+                                msg='<msg>'+msg
+                        
                                 callback(msg,embedcallback) 
-            
-
+                        if needretry:
+                            timeoutfunction(self.inittranslator,max(globalconfig['translatortimeout'],5),ignoreexceptions=False)
             

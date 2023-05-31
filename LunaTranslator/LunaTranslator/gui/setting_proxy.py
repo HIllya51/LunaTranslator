@@ -2,6 +2,7 @@
 from PyQt5.QtWidgets import QWidget,QLabel ,QProgressBar,QLineEdit,QPushButton 
 from utils.config import _TR ,static_data
 from utils.config import globalconfig ,translatorsetting ,static_data
+from utils.utils import splittranslatortypes 
 import os
 def getall(self,l,item='fanyi',name=""):
     grids=[] 
@@ -49,20 +50,7 @@ def setTab_proxy_lazy(self):
             [''],
             [('使用代理的项目',5)]
         ]
-        lixians=set(static_data["fanyi_offline"])
-        alls=set(globalconfig['fanyi'].keys())
-        mt=set(static_data["fanyi_pre"])
-        online=alls-lixians-mt 
-        mianfei=set()
-        develop=set()
-        for _ in online:
-            if 'dev' in globalconfig['fanyi'][_]:
-                if globalconfig['fanyi'][_]['dev']:
-                    develop.add(_)
-                    continue
-            if _ not in translatorsetting : 
-                mianfei.add(_) 
-        shoufei=online-mianfei-develop
+        lixians,pre,mianfei,develop,shoufei=splittranslatortypes()
          
         mianfei=getall(self,l=mianfei,item='fanyi',name='./Lunatranslator/translator/%s.py')
         shoufei=getall(self,l=shoufei,item='fanyi',name='./Lunatranslator/translator/%s.py')

@@ -728,24 +728,55 @@
         "deepl_dev": {
             "use": false,
             "color": "blue",
-            "free":true,
-            "name": "deepl_dev"
+            "type":"dev",
+            "name": "deepl"
         },"bing_dev": {
             "use": false,
             "color": "blue",
-            "free":true,
-            "name": "bing_dev"
+            "type":"dev",
+            "name": "必应"
         },"tx_dev": {
             "use": false,
             "color": "blue",
-            "free":true,
-            "name": "tx_dev"
+            "type":"dev",
+            "name": "tx"
         } ,
         "baidu_dev": {
             "use": false,
             "color": "blue",
-            "free":true,
-            "name": "baidu_dev"
+            "type":"dev",
+            "name": "百度"
+        }, 
+        "google_dev": {
+            "use": false,
+            "color": "blue",
+            "type":"dev",
+            "name": "谷歌"
+        }, "dev_youdao": {
+            "use": false,
+            "color": "blue",
+            "type":"dev",
+            "name": "有道"
+        },"dev_ali": {
+            "use": false,
+            "color": "blue",
+            "type":"dev",
+            "name": "阿里"
+        },"dev_yandex": {
+            "use": false,
+            "color": "blue",
+            "type":"dev",
+            "name": "yandex"
+        }, "dev_niutrans": {
+            "use": false,
+            "color": "blue",
+            "type":"dev",
+            "name": "niutrans"
+        }, "dev_caiyun": {
+            "use": false,
+            "color": "blue",
+            "type":"dev",
+            "name": "彩云"
         }, 
         "jb7": {
             "use": false,

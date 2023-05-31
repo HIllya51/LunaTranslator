@@ -611,5 +611,9 @@
     "英语(CP437)": "Tiếng Anh (CP437)",
     "chrome路径": "Đường dẫn Chrome",
     "游戏信息": "Thông tin trò chơi",
-    "意大利语": "Tiếng Ý"
+    "意大利语": "Tiếng Ý",
+    "端口号": "Số cổng",
+    "连接失败": "Lỗi kết nối",
+    "连接成功": "Kết nối thành công",
+    "端口冲突": "Xung đột cổng"
 }

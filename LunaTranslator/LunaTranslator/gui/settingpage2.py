@@ -1,13 +1,18 @@
  
-from PyQt5.QtWidgets import QPushButton  ,QWidget,QVBoxLayout
+from PyQt5.QtWidgets import QPushButton  ,QWidget,QVBoxLayout,QLabel
 import functools 
 from utils.config import globalconfig ,translatorsetting 
  
+from utils.subproc import subproc_w
 from gui.pretransfile import sqlite2json
 from utils.config import globalconfig ,_TR,_TRL,static_data
-from utils.utils import selectdebugfile
-import os 
+from utils.utils import selectdebugfile,splittranslatortypes,checkportavailable
+import os ,time,requests,threading
 from gui.inputdialog import autoinitdialog 
+
+import time,hashlib
+def hashtext(a): 
+    return hashlib.md5(a.encode('utf8')).digest().hex()
 def initsome11(self,l,label=None): 
     grids=[]
     if label:
@@ -60,6 +65,29 @@ def initsome11(self,l,label=None):
     return grids
 def setTabTwo(self) : 
     self.tabadd_lazy(self.tab_widget, ('翻译设置'), lambda :setTabTwo_lazy(self)) 
+def settab2d(self):
+    self.statuslabel=QLabel()
+    def checkconnected(): 
+        lixians,pre,mianfei,develop,shoufei=splittranslatortypes()
+        while True:
+            port=globalconfig['debugport']
+            try:
+                requests.get(f'http://127.0.0.1:{port}/json/list').json()
+                self.statuslabel.setText(_TR("连接成功"))
+            except:
+                if (checkportavailable(port)):
+                    self.statuslabel.setText(_TR("连接失败"))
+                    needstart=any([globalconfig['fanyi'][dev]['use'] for dev in develop])
+                    if needstart:
+                        _path=globalconfig['chromepath']
+                    
+                        call="\"%s\" --disable-extensions --disable-gpu --no-first-run --remote-debugging-port=%d --user-data-dir=\"%s\"" %(_path ,port,os.path.abspath('./chrome_cache/'+hashtext(_path))) 
+                        print(call)
+                        self.engine=subproc_w(call) 
+                else:
+                    self.statuslabel.setText(_TR("端口冲突"))
+            time.sleep(1)
+    threading.Thread(target=checkconnected).start()
 def setTabTwo_lazy(self) :
          
          
@@ -96,27 +124,28 @@ def setTabTwo_lazy(self) :
             ],[ 
                  (bt,12) ,
             ],['']
+        ] 
+        _items=[
+            {'t':'file','dir':False,'filter':'*.exe','l':'chrome路径','d':globalconfig,'k':'chromepath'},
+            {'t':'okcancel' },
         ]
 
-        lixians=set(static_data["fanyi_offline"])
-        alls=set(globalconfig['fanyi'].keys())
-        mt=set(static_data["fanyi_pre"])
-        online=alls-lixians-mt 
-        mianfei=set()
-        for _ in online:
-            if 'free' in globalconfig['fanyi'][_]:
-                if globalconfig['fanyi'][_]['free']:
-                    mianfei.add(_)
-            else:
-                if _ not in translatorsetting : 
-                    mianfei.add(_) 
-        shoufei=online-mianfei  
+        developgrid=[
+            [('chrome路径',8),(self.getcolorbutton(globalconfig,'',callback=functools.partial(autoinitdialog,self, 'chrome路径',900,_items),icon='fa.gear',constcolor="#FF69B4"))],
+            [("端口号",8),(self.getspinbox(0,65535,globalconfig,'debugport'),3) ,],
+            [(self.statuslabel,16)],
+            ['']
+        ]
+        lixians,pre,mianfei,develop,shoufei=splittranslatortypes()
+        
         offlinegrid=initsome11(self, lixians) 
         onlinegrid=initsome11(self, mianfei ) 
+        developgrid+=initsome11(self, develop ) 
         online_reg_grid=initsome11(self, shoufei) 
-        pretransgrid+=initsome11(self,mt )   
-        tab=self.makesubtab_lazy(['在线翻译','注册在线翻译','离线翻译','预翻译'],[
+        pretransgrid+=initsome11(self,pre )   
+        tab=self.makesubtab_lazy(['在线翻译','develop','注册在线翻译','离线翻译','预翻译'],[
             lambda:self.makescroll( self.makegrid(onlinegrid )   ),
+            lambda:self.makescroll( self.makegrid(developgrid )   ),
             lambda:self.makescroll( self.makegrid(online_reg_grid )   ),
             lambda:self.makescroll( self.makegrid(offlinegrid )   ),
             lambda:self.makescroll( self.makegrid(pretransgrid )   ),

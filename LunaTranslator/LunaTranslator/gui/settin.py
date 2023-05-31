@@ -11,7 +11,7 @@ from utils.utils import wavmp3player
 from utils.config import globalconfig 
 
 from gui.settingpage1 import setTabOne,setTabOne_direct
-from gui.settingpage2 import setTabTwo
+from gui.settingpage2 import setTabTwo,settab2d
 from gui.settingpage_xianshishezhi import setTabThree ,setTabThree_direct
 from gui.settingpage_tts import setTab5 ,setTab5_direct 
 from gui.settingpage_cishu import setTabcishu
@@ -181,6 +181,7 @@ class Settin(closeashidewindow) :
         self.isfirstshow=True
 
         setTabOne_direct(self)
+        settab2d(self)
         settab7direct(self)
         setTabThree_direct(self) 
         setTab5_direct(self)

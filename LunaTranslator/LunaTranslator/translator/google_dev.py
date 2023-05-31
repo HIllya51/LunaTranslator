@@ -11,7 +11,7 @@ from utils.subproc import subproc_w
 from utils.config import globalconfig
 import json  
 from translator.basetranslator import basetrans
-import time
+import time,hashlib
 
 _id=1
 async def SendRequest(websocket,method,params):
@@ -31,21 +31,25 @@ async def waitload( websocket):
 
 async def waittransok( websocket):  
         for i in range(10000):
-            state =(await SendRequest(websocket,'Runtime.evaluate',{"expression":"document.querySelector('.lmt__side_container--target [data-testid=translator-target-input]').textContent","returnByValue":True})) 
+            state =(await SendRequest(websocket,'Runtime.evaluate',{"expression":'(a=document.querySelector("#yDmH0d > c-wiz > div > div.WFnNle > c-wiz > div.OlSOob > c-wiz > div.ccvoYb.EjH7wc > div.AxqVh > div.OPPzxe > c-wiz.sciAJc > div > div.usGWQd > div > div.lRu31 > span.HwtZe"))?a.innerText:""',"returnByValue":True}))  
             if state['result']['value']!='':
                 return state['result']['value']
             time.sleep(0.1)
         return ''
 async def tranlate(websocketurl,content,src,tgt ): 
     async with websockets.connect(websocketurl) as websocket: 
-        await SendRequest(websocket,'Page.navigate',{'url':f'https://www.deepl.com/en/translator#{src}/{tgt}/{quote(content)}'})
+        await SendRequest(websocket,'Runtime.evaluate',{"expression":f'textarea=document.querySelector("textarea");textarea.value="";event = new Event("input", {{bubbles: true, cancelable: true }});textarea.dispatchEvent(event);textarea=document.querySelector("textarea");textarea.value=`{content}`;event = new Event("input", {{bubbles: true, cancelable: true }});textarea.dispatchEvent(event);'}) 
+        print(f'(a=document.querySelector("#ow73 > div > span > button > div.VfPpkd-Bz112c-RLmnJb"))?a.click():"";textarea=document.querySelector("textarea");textarea.value=`{content}`;event = new Event("input", {{bubbles: true, cancelable: true }});textarea.dispatchEvent(event);')
         await waitload(websocket)
         res=await waittransok(websocket)
         return (res)
-         
-
+async def navilang(websocketurl,src,tgt ): 
+    async with websockets.connect(websocketurl) as websocket: 
+        await SendRequest(websocket,'Page.navigate',{'url':f'https://translate.google.com/?sl={src}&tl={tgt}'})
+        await waitload(websocket) 
+ 
 async def createtarget(port  ): 
-    url='https://www.deepl.com/en/translator'
+    url='https://translate.google.com/'
     infos=requests.get(f'http://127.0.0.1:{port}/json/list').json() 
     use=None
     for info in infos:
@@ -59,8 +63,13 @@ async def createtarget(port  ):
             use= 'ws://127.0.0.1:81/devtools/page/'+a['targetId']
     return use
 class TS(basetrans): 
+    def langmap(self):
+        return { "zh":"zh-CN","cht":"zh-TW"} 
     def inittranslator(self ) :  
             self.websocketurl=asyncio.run(createtarget(globalconfig['debugport'] )) 
     def translate(self,content):  
+        if 'lastlang' not in dir(self) or self.lastlang!=(self.srclang,self.tgtlang):
+            asyncio.run(navilang(self.websocketurl,self.srclang,self.tgtlang))
+            self.lastlang=(self.srclang,self.tgtlang)
         return(asyncio.run(tranlate(self.websocketurl,content,self.srclang,self.tgtlang)))
         

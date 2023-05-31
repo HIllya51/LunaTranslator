@@ -4,8 +4,10 @@ import os,time,sys
 from traceback import print_exc
 import codecs,hashlib
 import os,win32con,time 
+import socket
+
 from traceback import print_exc
-from utils.config import globalconfig,static_data,savehook_new_list,savehook_new_data,getdefaultsavehook
+from utils.config import globalconfig,static_data,savehook_new_list,savehook_new_data,getdefaultsavehook,translatorsetting
 import win32utils,threading,queue
 from utils.exceptions import TimeOut
 from urllib.request import getproxies_registry
@@ -159,6 +161,31 @@ def getproxy():
     else:
         p=None
     return {'https':p,'http':p}
+def checkportavailable(port):
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    try:
+        sock.bind(('localhost', port))
+        return True
+    except OSError:
+        return False
+    finally:
+        sock.close()
+def splittranslatortypes():
+    lixians=set(static_data["fanyi_offline"])
+    alls=set(globalconfig['fanyi'].keys())
+    pre=set(static_data["fanyi_pre"])
+    online=alls-lixians-pre 
+    mianfei=set()
+    develop=set()
+    for _ in online:
+        if 'type' in globalconfig['fanyi'][_]:
+            if globalconfig['fanyi'][_]['type']=='dev':
+                develop.add(_)
+        else:
+            if _ not in translatorsetting : 
+                mianfei.add(_) 
+    shoufei=online-mianfei-develop
+    return lixians,pre,mianfei,develop,shoufei
 def argsort(l):
     ll=list(range(len(l)))
     ll.sort(key= lambda x:l[x])
