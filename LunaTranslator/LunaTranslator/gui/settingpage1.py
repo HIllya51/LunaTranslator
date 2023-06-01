@@ -74,34 +74,16 @@ def setTabclip(self) :
         ]
         return grids
 
-def txtsettings(self):
-    grids=[[("TXT读取间隔(s)",6),(self.getspinbox(0,10,globalconfig,'txtreadlineinterval',step=0.1,double=True),3),('',10)],['']]
-    return grids
 
 def setTabOne_direct(self) :  
         
         self.tab1grids=[
                 [ ('选择文本输入源',3)],
-                # [
-                #         ('剪贴板',3),(self.getsimpleswitch(globalconfig['sourcestatus']['copy'],'use',name='copy',callback= functools.partial(self.yuitsu_switch,'sourcestatus','sourceswitchs','copy',self.object.starttextsource),pair='sourceswitchs'),1),'',
-                #         ('HOOK',3),(self.getsimpleswitch(globalconfig['sourcestatus']['texthook'],'use',name='texthook',callback= functools.partial(self.yuitsu_switch,'sourcestatus','sourceswitchs','texthook',self.object.starttextsource),pair='sourceswitchs'),1),'',
-                #     ('选择游戏',3),(self.getcolorbutton(globalconfig ,'',enable=globalconfig['sourcestatus']['texthook']['use'],name='selectbutton',icon='fa.gear',constcolor="#FF69B4",callback=lambda :self.object.AttachProcessDialog.showsignal.emit()),1)
-                # ],
-                # [   
-                #     ('OCR',3),(self.getsimpleswitch(globalconfig['sourcestatus']['ocr'],'use',name='ocr',callback= functools.partial(self.yuitsu_switch,'sourcestatus','sourceswitchs','ocr',self.object.starttextsource),pair='sourceswitchs'),1),'',
-                #     ('HOOK_内嵌',3),(self.getsimpleswitch(globalconfig['sourcestatus']['embedded'],'use',name='embedded',callback= functools.partial(self.yuitsu_switch,'sourcestatus','sourceswitchs','embedded',self.object.starttextsource),pair='sourceswitchs'),1),'',
-                #         ('选择文本',3),(self.getcolorbutton(globalconfig ,'',enable=globalconfig['sourcestatus']['texthook']['use'],name='selecthookbutton',icon='fa.gear',constcolor="#FF69B4",callback=lambda  : self.object.hookselectdialog.showsignal.emit() ),1)
-                # ],
                 
-                # [
-                #         ('TXT文件',3),(self.getsimpleswitch(globalconfig['sourcestatus']['txt'],'use',name='txt',callback= functools.partial(self.yuitsu_switch,'sourcestatus','sourceswitchs','txt',self.object.starttextsource),pair='sourceswitchs'),1) 
-                        
-                        
-                # ]
                 [
                         ('剪贴板',3),(self.getsimpleswitch(globalconfig['sourcestatus']['copy'],'use',name='copy',callback= functools.partial(self.yuitsu_switch,'sourcestatus','sourceswitchs','copy',self.object.starttextsource),pair='sourceswitchs'),1),'',
                         ('OCR',3),(self.getsimpleswitch(globalconfig['sourcestatus']['ocr'],'use',name='ocr',callback= functools.partial(self.yuitsu_switch,'sourcestatus','sourceswitchs','ocr',self.object.starttextsource),pair='sourceswitchs'),1),'',
-                        ('TXT文件',3),(self.getsimpleswitch(globalconfig['sourcestatus']['txt'],'use',name='txt',callback= functools.partial(self.yuitsu_switch,'sourcestatus','sourceswitchs','txt',self.object.starttextsource),pair='sourceswitchs'),1) 
+                        ('',4) 
                        
                 #     ('选择游戏',3),(self.getcolorbutton(globalconfig ,'',enable=globalconfig['sourcestatus']['texthook']['use'],name='selectbutton',icon='fa.gear',constcolor="#FF69B4",callback=lambda :self.object.AttachProcessDialog.showsignal.emit()),1)
                 ],
@@ -122,12 +104,11 @@ def setTabOne_lazy(self) :
         
          
          
-        tab=self.makesubtab_lazy(['HOOK设置','OCR设置','剪贴板设置','TXT设置','内嵌设置'],
+        tab=self.makesubtab_lazy(['HOOK设置','OCR设置','剪贴板设置','内嵌设置'],
                                 [       
                                         lambda:self.makescroll(self.makegrid(gethookgrid(self))),
                                         lambda:self.makescroll(self.makegrid(getocrgrid(self))),
                                         lambda:self.makescroll(self.makegrid(setTabclip(self))),
-                                        lambda:self.makescroll(self.makegrid(txtsettings(self))),
                                         lambda:self.makescroll(self.makegrid(gethookembedgrid(self) ))
                                 ]) 
 

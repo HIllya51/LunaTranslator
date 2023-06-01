@@ -16,7 +16,6 @@ def setTab_quick_direct(self):
             '_B':lambda :self.object.settin_ui.clicksourcesignal.emit('ocr'),
             '_C':lambda :self.object.settin_ui.clicksourcesignal.emit('texthook'),
             '_D':lambda :self.object.settin_ui.clicksourcesignal.emit('embedded'),
-            '_E':lambda :self.object.settin_ui.clicksourcesignal.emit('txt'),
 
             '_1':self.object.translation_ui.startTranslater,
             '_2':self.object.translation_ui.changeTranslateMode,
