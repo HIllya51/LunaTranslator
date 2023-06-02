@@ -557,6 +557,11 @@ _MapViewOfFile.restype=c_void_p
 def MapViewOfFile(fhandel,access,size):
     return _MapViewOfFile(fhandel,access,0,0,size)
 
+_CreateFileMappingW=_kernel32.CreateFileMappingW
+_CreateFileMappingW.argtypes=c_void_p,c_void_p,c_uint,c_uint,c_uint,c_wchar_p
+_CreateFileMappingW.restype=c_void_p
+def CreateFileMapping(name,acc,size):
+    return _CreateFileMappingW(-1,pointer(get_SECURITY_ATTRIBUTES()),acc,0,size,name);
 
 _MultiByteToWideChar=_kernel32.MultiByteToWideChar
 _MultiByteToWideChar.argtypes=c_uint,c_uint,c_void_p,c_int,c_wchar_p,c_int

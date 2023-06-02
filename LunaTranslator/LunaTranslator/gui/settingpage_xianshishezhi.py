@@ -12,7 +12,7 @@ from PyQt5.QtWidgets import  QWidget,QLabel ,QSlider, QFontComboBox  ,QPushButto
 import json,os,hashlib
 from traceback import print_exc
 from gui.inputdialog import multicolorset
-from utils.config import globalconfig ,_TR,_TRL  
+from utils.config import globalconfig ,_TR,_TRL  ,magpie10_config
 from utils.wrapper import Singleton
 import qtawesome
 from utils.hwnd import ListProcess,showintab
@@ -98,29 +98,7 @@ def setTabThree_lazy(self) :
     def _settoolbariconcolor( ):
         self.ChangeTranslateColor("buttoncolor", self.buttoncolorbutton)
         self.object.translation_ui.refreshtooliconsignal.emit()
-     
-    try:
-        with open(os.path.join('./files/plugins/Magpie_v0.9.1','ScaleModels.json'),'r') as ff:
-            _magpiemethod=json.load(ff)
-            magpiemethod=[_['name'] for _ in _magpiemethod]
-
-    except:
-        magpiemethod=[]#['Lanczos','FSR','FSRCNNX','ACNet','Anime4K','CRT-Geom','Integer Scale 2x','Integer Scale 3x']
-     
-    magpiesettingdialog=[
-        {'t':'switch','d':globalconfig['magpieflags'],'k':'Is3DMode','l':'3D游戏模式'},
-        {'t':'switch','d':globalconfig['magpieflags'],'k':'DisableWindowResizing','l':'缩放时禁用窗口大小调整'},
-        {'t':'switch','d':globalconfig['magpieflags'],'k':'CropTitleBarOfUWP','l':'剪裁UWP窗口的标题栏'},
-        {'t':'switch','d':globalconfig['magpieflags'],'k':'VSync','l':'垂直同步'},
-        {'t':'switch','d':globalconfig['magpieflags'],'k':'DisableLowLatency','l':'允许额外的延迟以提高性能'},
-        {'t':'switch','d':globalconfig['magpieflags'],'k':'ShowFPS','l':'显示帧率'},
-        {'t':'switch','d':globalconfig['magpieflags'],'k':'NoCursor','l':'不绘制光标'},
-        {'t':'switch','d':globalconfig['magpieflags'],'k':'AdjustCursorSpeed','l':'缩放时调整光标速度'},
-        {'t':'combo','d':globalconfig['magpieflags'],'k':'CursorZoomFactor','l':'光标缩放系数','list':['0.5x','0.75x','1x','1.25x','1.5x','2x','2.5x','3x','和源窗口相同'],'map':[0.5,0.75,1,1.25,1.5,2,2.5,3,0]},
-        {'t':'combo','d':globalconfig['magpieflags'],'k':'CursorInterpolationMode','l':'插值算法','list':['最邻近','双线性']},
-    ]
- 
-    
+      
     
     textgrid=[
         [('文本字体',3),(self.font_comboBox,5)],
@@ -164,15 +142,34 @@ def setTabThree_lazy(self) :
         [('任务栏中显示',6),self.getsimpleswitch(globalconfig,'showintab' ,callback=__changeshowintab),],
            
     ]  
-     
     fullscreengrid=[
-        [('全屏化方式',4),(self.getsimplecombobox(_TRL(['内置Magpie9','Magpie10','游戏原生全屏', 'SW_SHOWMAXIMIZED']),globalconfig,'fullscreenmethod_2'),6)],
+        [('全屏化方式',4),(self.getsimplecombobox(_TRL(['内置Magpie10','自行下载的Magpie10','游戏原生全屏', 'SW_SHOWMAXIMIZED']),globalconfig,'fullscreenmethod_2'),6)],
         [''],
-        [("Magpie9设置",4),(self.getcolorbutton(globalconfig,'',callback=lambda x: autoinitdialog(self,'Magpie设置',500,magpiesettingdialog),icon='fa.gear',constcolor="#FF69B4"),1)],
-        [('Magpie算法',4),(self.getsimplecombobox(magpiemethod,globalconfig,'magpiescalemethod'),6)],
-        [('Magpie捕获模式',4),(self.getsimplecombobox(['Graphics Capture','Desktop Duplication','GDI','DwmSharedSurface'],globalconfig,'magpiecapturemethod'),6)],
+        [('自行下载的Magpie10路径',4),(self.getcolorbutton(globalconfig,'',callback=lambda x: getsomepath1(self,'Magpie路径',globalconfig,'magpie10path','Magpie路径',isdir=True),icon='fa.gear',constcolor="#FF69B4"),1)],
         [''],
-        [('Magpie10路径',4),(self.getcolorbutton(globalconfig,'',callback=lambda x: getsomepath1(self,'Magpie路径',globalconfig,'magpie10path','Magpie路径',isdir=True),icon='fa.gear',constcolor="#FF69B4"),1)],
+ 
+        [("内置Magpie10设置",4) ],
+        [("常规",4)],
+        [('',1),('缩放模式',4),(self.getsimplecombobox([_['name'] for _ in magpie10_config['scalingModes'] ],magpie10_config['profiles'][globalconfig['profiles_index']],'scalingMode'),6)],
+        [('',1),('捕获模式',4),(self.getsimplecombobox(['Graphics Capture','Desktop Duplication','GDI','DwmSharedSurface'],magpie10_config['profiles'][globalconfig['profiles_index']],'captureMethod'),6)],
+        [('',1),('3D游戏模式',4),(self.getsimpleswitch(magpie10_config['profiles'][globalconfig['profiles_index']],'3DGameMode'))],
+        [("性能",4)],
+        [('',1),('显示帧率',4),(self.getsimpleswitch(magpie10_config['profiles'][globalconfig['profiles_index']],'showFPS'))],
+        [('',1),('垂直同步',4),(self.getsimpleswitch(magpie10_config['profiles'][globalconfig['profiles_index']],'VSync'))],
+        [('',1),('垂直同步_允许额外的延迟以提高性能',4),(self.getsimpleswitch(magpie10_config['profiles'][globalconfig['profiles_index']],'tripleBuffering'))],
+        [("源窗口",4)],
+        [('',1),('缩放时禁用窗口大小调整',4),(self.getsimpleswitch(magpie10_config['profiles'][globalconfig['profiles_index']],'disableWindowResizing'))],
+        [('',1),('捕获标题栏',4),(self.getsimpleswitch(magpie10_config['profiles'][globalconfig['profiles_index']],'captureTitleBar'))],
+        [('',1),('自定义剪裁',4),(self.getsimpleswitch(magpie10_config['profiles'][globalconfig['profiles_index']],'croppingEnabled'))],
+        [("光标",4)],
+        [('',1),('绘制光标',4),(self.getsimpleswitch(magpie10_config['profiles'][globalconfig['profiles_index']],'drawCursor'))],
+        [('',1),('绘制光标_缩放系数',4),(self.getsimplecombobox(['0.5x','0.75x','无缩放','1.25x','1.5x','2x','和源窗口相同'],magpie10_config['profiles'][globalconfig['profiles_index']],'cursorScaling'),6)],
+        [('',1),('绘制光标_插值算法',4),(self.getsimplecombobox(['最邻近','双线性'],magpie10_config['profiles'][globalconfig['profiles_index']],'cursorInterpolationMode'),6)],
+        [('',1),('缩放时调整光标速度',4),(self.getsimpleswitch(magpie10_config['profiles'][globalconfig['profiles_index']],'adjustCursorSpeed'))],
+        [("高级",4)],
+        [('',1),('禁用DirectFlip',4),(self.getsimpleswitch(magpie10_config['profiles'][globalconfig['profiles_index']],'disableDirectFlip'))],
+        [''],
+        
           
 
     ] 

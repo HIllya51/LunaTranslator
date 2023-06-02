@@ -26,6 +26,8 @@ LunaTranslator/testapi.py
 plugins/winsharedutils/Release
 plugins/winsharedutils/x64
 plugins/winsharedutils/.vs
+plugins/winsharedutils/builds
+plugins/winsharedutils/build
 
 LunaTranslator/files/plugins/Magpie_v0.9.1/cache
 

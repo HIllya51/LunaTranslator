@@ -80,8 +80,6 @@
     "premtsimiuse": false,
     "buttoncolor": "#001f9f",
     "premtsimi": 5,
-    "magpiescalemethod": 0,
-    "magpiecapturemethod": 0,
     "tabfont_chs":18,
     "tabfont_otherlang":10,
     "ocrrangecolor": "#000000",
@@ -101,27 +99,8 @@
         "onselectcolor":"rgba(0,100,200, 0.3)",
         "onfilenoexistscolor":"rgba(25,25,25, 0.3)"
     },
+    "profiles_index":0,
     "ocrautobindwindow": true,
-    "magpieflags": {
-		"MultiMonitorUsage":0,
-		"DebugSaveEffectSources":false,
-		"DebugBreakpointMode":false,
-		"DebugDisableEffectCache":false,
-		"DebugWarningsAreErrors":false,
-        "NoCursor": false,
-        "AdjustCursorSpeed": true,
-        "DisableLowLatency": false,
-        "DisableWindowResizing": false,
-        "DisableDirectFlip": false,
-        "Is3DMode": false,
-        "CropTitleBarOfUWP": true,
-        "SimulateExclusiveFullscreen": false,
-        "VSync": true,
-        "ShowFPS": false,
-        "CursorZoomFactor": 1,
-        "CursorInterpolationMode": 0,
-		"AdapterIdx":-1
-    },
     "toolbutton":{
         "rank":["move","retrans","setting","automodebutton"],
         "buttons":{

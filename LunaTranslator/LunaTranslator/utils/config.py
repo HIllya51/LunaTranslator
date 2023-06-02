@@ -18,11 +18,13 @@ static_data=tryreadconfig2('static_data.json')
 defaultpost=tryreadconfig2('postprocessconfig.json')
 defaultglobalconfig=tryreadconfig2('config.json')
 defaulterrorfix=tryreadconfig2('transerrorfixdictconfig.json')
+dfmagpie10_config=tryreadconfig2('magpie10_config.json')
 defaultnoun=tryreadconfig2('noundictconfig.json')
 translatordfsetting=tryreadconfig2('translatorsetting.json')
 ocrdfsetting=tryreadconfig2('ocrsetting.json')
 
 globalconfig=tryreadconfig('config.json')
+magpie10_config=tryreadconfig('magpie10_config.json',dfmagpie10_config)
 postprocessconfig=tryreadconfig('postprocessconfig.json')
 noundictconfig=tryreadconfig('noundictconfig.json')
 transerrorfixdictconfig=tryreadconfig('transerrorfixdictconfig.json') 
@@ -121,6 +123,9 @@ def saveallconfig():
         
         with open('./userconfig/config.json','w',encoding='utf-8') as ff:
             ff.write(json.dumps(globalconfig,ensure_ascii=False,sort_keys=False, indent=4))
+
+        with open('./userconfig/magpie10_config.json','w',encoding='utf-8') as ff:
+            ff.write(json.dumps(magpie10_config,ensure_ascii=False,sort_keys=False, indent=4))
          
         with open('./userconfig/postprocessconfig.json','w',encoding='utf-8') as ff:
             ff.write(json.dumps(postprocessconfig,ensure_ascii=False,sort_keys=False, indent=4))

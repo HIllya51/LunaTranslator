@@ -617,7 +617,12 @@ class QUnFrameWindow(resizableframeless):
         saveallconfig() 
          
         if self.object.textsource:
+            try:
+                self.fullscreenmanager(self.object.textsource.hwnd,False)
+            except:
+                print_exc()
             self.object.textsource=None
-          
+        
+        
         endsubprocs()
         os._exit(0) 

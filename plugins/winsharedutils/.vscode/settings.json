@@ -1,0 +1,4 @@
+{
+    "cmake.buildDirectory": 
+      "${workspaceFolder}/build/${buildKitTargetOs}-${buildKitVendor}-${buildKitTargetArch}-${buildType}"
+}

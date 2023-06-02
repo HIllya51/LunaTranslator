@@ -1,7 +1,7 @@
 import os,win32con,json,math
 import win32utils
 from utils.config import globalconfig 
-from utils.magpie import callmagpie
+from utils.magpie10 import callmagpie10,endmagpie10
 from utils.hwnd import  letfullscreen,recoverwindow,ListProcess
 from traceback import print_exc
 from utils.subproc import subproc_w
@@ -50,17 +50,22 @@ class fullscreen():
             if shortcuts&k !=0:
                 win32utils.keybd_event(mp1[mp[k]],0,win32con.KEYEVENTF_KEYUP,0)
         
-         
     def _0(self,hwnd,full):
-        if full:
-            win32utils.SetForegroundWindow(hwnd )    
-            callmagpie(('./files/plugins/Magpie_v0.9.1'),hwnd,globalconfig['magpiescalemethod'],globalconfig['magpieflags'],globalconfig['magpiecapturemethod'])
+        if full: 
+            callmagpie10(hwnd)
         else:
-            hwnd=win32utils.FindWindow('Window_Magpie_967EB565-6F73-4E94-AE53-00CC42592A22',None) 
-            if hwnd==0:
-                return
-            WM_DESTORYHOST=win32utils.RegisterWindowMessage( "MAGPIE_WM_DESTORYHOST") 
-            win32utils.SendMessage(hwnd, WM_DESTORYHOST)
+            endmagpie10()
+    # magpie9
+    # def _0(self,hwnd,full):
+    #     if full:
+    #         win32utils.SetForegroundWindow(hwnd )    
+    #         callmagpie(('./files/plugins/Magpie_v0.9.1'),hwnd,globalconfig['magpiescalemethod'],globalconfig['magpieflags'],globalconfig['magpiecapturemethod'])
+    #     else:
+    #         hwnd=win32utils.FindWindow('Window_Magpie_967EB565-6F73-4E94-AE53-00CC42592A22',None) 
+    #         if hwnd==0:
+    #             return
+    #         WM_DESTORYHOST=win32utils.RegisterWindowMessage( "MAGPIE_WM_DESTORYHOST") 
+    #         win32utils.SendMessage(hwnd, WM_DESTORYHOST)
     def _2(self,hwnd,full):
         win32utils.SetForegroundWindow(hwnd )   
         win32utils.keybd_event(18,0,0,0)     # alt
