@@ -769,6 +769,11 @@
             "color": "blue",
             "type":"dev",
             "name": "彩云"
+        }, "poe_dev": {
+            "use": false,
+            "color": "blue",
+            "type":"dev",
+            "name": "poe.com"
         }, 
         "jb7": {
             "use": false,
