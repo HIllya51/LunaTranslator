@@ -116,10 +116,9 @@ def callmagpie10( hwnd):
     downscalingEffect=magpie10_config.get('downscalingEffect',{"name":"","parameters":{}})
     MagOptions.contents.downscalingEffect.name=downscalingEffect['name']
 
-    parameters=downscalingEffect['parameters']
+    parameters=downscalingEffect.get('parameters',{})
     paramnum=len(parameters)
 
-    MagOptions.contents.downscalingEffect.name=magpie10_config['downscalingEffect']['name']
     MagOptions.contents.downscalingEffect.paramnum=paramnum
     for i in range(paramnum):
         key=list(parameters.keys())[i]
@@ -147,7 +146,7 @@ def callmagpie10( hwnd):
             MagOptions.contents.effects[i].parameters[i].paramname=key
             MagOptions.contents.effects[i].parameters[i].param=parameters[key]
             
-    subproc_w(f'./files/plugins/Magpie10/Magpie.Core.exe {filemappingname} {hwnd}',name='magpie10',cwd='./files/plugins/Magpie10/')
+    return subproc_w(f'./files/plugins/Magpie10/Magpie.Core.exe {filemappingname} {hwnd}',name='magpie10',cwd='./files/plugins/Magpie10/')
 
 def endmagpie10():
     endevent = win32utils.CreateEvent(False, False,'MAGPIE_WAITFOR_STOP_SIGNAL')

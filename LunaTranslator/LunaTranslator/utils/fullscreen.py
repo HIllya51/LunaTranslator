@@ -9,6 +9,7 @@ import time
 
 class fullscreen():
     def __init__(self) -> None:
+        self.needreset=False
         self.savewindowstatus=None 
         if self.fsmethod==1:self.runmagpie10() 
     @property
@@ -52,9 +53,15 @@ class fullscreen():
         
     def _0(self,hwnd,full):
         if full: 
-            callmagpie10(hwnd)
+            self.needreset=True
+            self.engine=callmagpie10(hwnd)
         else:
             endmagpie10()
+            try:
+                self.engine.wait()
+            except:
+                pass
+            self.needreset=False
     # magpie9
     # def _0(self,hwnd,full):
     #     if full:
@@ -78,7 +85,7 @@ class fullscreen():
             self.savewindowstatus=letfullscreen(hwnd)
         else:
             recoverwindow(hwnd,self.savewindowstatus)
-    def __call__(self, hwnd,full):  
+    def __call__(self, hwnd=0,full=False):  
         try: 
             [
                 self._0,

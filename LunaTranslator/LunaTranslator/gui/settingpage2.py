@@ -99,8 +99,8 @@ def setTabTwo_lazy(self) :
         _fuzainum=self.getspinbox(1,99999,globalconfig,'loadbalance_oncenum',step=1)
         _fuzainum.setEnabled(globalconfig['loadbalance'])
         grids=[[
-                ("最短翻译字数",8),(self.getspinbox(0,500,globalconfig,'minlength'),2),'',
-                ("最长翻译字数",8),(self.getspinbox(0,500,globalconfig,'maxlength'),2)   ],
+                ("最短翻译字数",8),(self.getspinbox(0,9999,globalconfig,'minlength'),2),'',
+                ("最长翻译字数",8),(self.getspinbox(0,9999,globalconfig,'maxlength'),2)   ],
                 [
                 ("在线翻译超时时间(s)",8),(self.getspinbox(1,20,globalconfig,'translatortimeout',step=0.1,double=True ),2),'',
                  ("翻译请求间隔(s)",8),(self.getspinbox(0,10,globalconfig,'transtimeinternal',step=0.1,double=True),2) ,

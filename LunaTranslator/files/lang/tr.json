@@ -624,5 +624,7 @@
     "垂直同步_允许额外的延迟以提高性能": "Dikey eşitleme Görüntülerini geliştirmek için fazla latenci izin verin",
     "源窗口": "Kaynak Penceresi",
     "光标": "kursor",
-    "高级": "Yüksek"
+    "高级": "Yüksek",
+    "通用": "para",
+    "默认降采样效果": "Öntanımlı İndirme Etkisi"
 }

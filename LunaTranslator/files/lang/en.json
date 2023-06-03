@@ -624,5 +624,7 @@
     "垂直同步_允许额外的延迟以提高性能": "Vertical synchronization_ Allow additional latency to improve performance",
     "源窗口": "Source Window",
     "光标": "cursor",
-    "高级": "senior"
+    "高级": "senior",
+    "通用": "currency",
+    "默认降采样效果": "Default Downsampling effect"
 }

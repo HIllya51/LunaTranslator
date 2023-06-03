@@ -485,7 +485,24 @@ class MAINUI() :
         
         self.translation_ui.show()
         self.mainuiloadafter()
-        
+    def checkgameplayingthread(self):
+        while True:
+            statistictime=time.time()
+            time.sleep(1)
+            
+            try:
+                _hwnd=win32utils.GetForegroundWindow()
+                _pid=win32utils.GetWindowThreadProcessId(_hwnd)
+                if self.textsource and 'pids' in dir(self.textsource) and len(self.textsource.pids):
+
+                    if _pid in self.textsource.pids:
+                        savehook_new_data[self.textsource.pname]['statistic_playtime']+=(time.time()-statistictime)
+                else:
+                    name_=getpidexe(_pid)
+                    if name_  and name_ in savehook_new_list: 
+                        savehook_new_data[name_]['statistic_playtime']+=(time.time()-statistictime)
+            except:
+                print_exc()
     def mainuiloadafter(self):    
         self.localocrstarted=False 
         self.loadvnrshareddict()
@@ -507,6 +524,7 @@ class MAINUI() :
         threading.Thread(target=self.autocheckhwndexists).start()   
         threading.Thread(target=self.autohookmonitorthread).start()    
         threading.Thread(target=minmaxmoveobservefunc,args=(self.translation_ui,)).start()
+        threading.Thread(target=self.checkgameplayingthread ).start()
     def checklang(self):
         if  globalconfig['language_setted_2.4.5']==False:
             

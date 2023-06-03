@@ -17,6 +17,7 @@ lunatranslator/cache
 *.obj
 *.res
 *.pdb
+Thumbs.db
 *.recipe
 *.wav 
 build/

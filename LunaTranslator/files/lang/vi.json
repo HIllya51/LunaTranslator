@@ -624,5 +624,7 @@
     "垂直同步_允许额外的延迟以提高性能": "Đồng bộ dọc Cho phép thêm độ trễ để cải thiện hiệu suất",
     "源窗口": "Cửa sổ nguồn",
     "光标": "Con chạy",
-    "高级": "Cao cấp"
+    "高级": "Cao cấp",
+    "通用": "phổ quát",
+    "默认降采样效果": "Hiệu ứng lấy mẫu mặc định"
 }

@@ -31,17 +31,7 @@ class basetext:
         except:
             print_exc
         threading.Thread(target= self.sqlitethread).start()
-        threading.Thread(target=self.gettextthread_).start()
-        threading.Thread(target=self.checkgameplayingthread).start()
-    def checkgameplayingthread(self):
-        while self.ending==False:
-            statistictime=time.time()
-            time.sleep(1)
-            _hwnd=win32utils.GetForegroundWindow()
-            _pid=win32utils.GetWindowThreadProcessId(_hwnd)
-            if _pid in self.pids:
-                savehook_new_data[self.pname]['statistic_playtime']+=(time.time()-statistictime)
- 
+        threading.Thread(target=self.gettextthread_).start() 
     def sqlqueueput(self,xx):
         try:
             self.sqlqueue.put(xx)

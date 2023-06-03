@@ -142,6 +142,18 @@ def setTabThree_lazy(self) :
         [('任务栏中显示',6),self.getsimpleswitch(globalconfig,'showintab' ,callback=__changeshowintab),],
            
     ]  
+    alleffect=['无','Bicubic','Bilinear','Jinc','Lanczos','Nearest','SSimDownscaler']
+    downsname=magpie10_config.get('downscalingEffect',{'name':'无'}).get('name')
+    if downsname not in alleffect:
+        alleffect.append(downsname)
+    idx=alleffect.index(downsname)
+    downscalecombo=self.getsimplecombobox(alleffect,{1:idx},1)
+    def _downschange(idx):
+        if idx==0:
+            magpie10_config.pop('downscalingEffect')
+        else:
+            magpie10_config['downscalingEffect']={'name':alleffect[idx]}
+    downscalecombo.currentIndexChanged.connect(_downschange)
     fullscreengrid=[
         [('全屏化方式',4),(self.getsimplecombobox(_TRL(['内置Magpie10','自行下载的Magpie10','游戏原生全屏', 'SW_SHOWMAXIMIZED']),globalconfig,'fullscreenmethod_2'),6)],
         [''],
@@ -149,6 +161,8 @@ def setTabThree_lazy(self) :
         [''],
  
         [("内置Magpie10设置",4) ],
+        [("通用",4)],
+        [('',1),('默认降采样效果',4),(downscalecombo,6)],
         [("常规",4)],
         [('',1),('缩放模式',4),(self.getsimplecombobox([_['name'] for _ in magpie10_config['scalingModes'] ],magpie10_config['profiles'][globalconfig['profiles_index']],'scalingMode'),6)],
         [('',1),('捕获模式',4),(self.getsimplecombobox(['Graphics Capture','Desktop Duplication','GDI','DwmSharedSurface'],magpie10_config['profiles'][globalconfig['profiles_index']],'captureMethod'),6)],

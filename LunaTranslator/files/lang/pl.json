@@ -624,5 +624,7 @@
     "垂直同步_允许额外的延迟以提高性能": "Synchronizacja pionowa_ Pozwól na dodatkowe opóźnienia w celu poprawy wydajności",
     "源窗口": "Okno źródłowe",
     "光标": "kursor",
-    "高级": "starszy"
+    "高级": "starszy",
+    "通用": "waluta",
+    "默认降采样效果": "Domyślny efekt redukcji próbkowania"
 }
