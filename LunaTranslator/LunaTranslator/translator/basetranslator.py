@@ -112,8 +112,10 @@ class basetrans:
         _.update({'cht':'zh'})
         _.update(self.langmap())
         self.langmap_x=_
-
-        self.inittranslator()
+        try:
+            self.inittranslator()
+        except:
+            print_exc()
         
         self.lastrequeststime=0
         self._cache={}

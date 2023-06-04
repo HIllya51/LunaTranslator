@@ -81,7 +81,7 @@ def settab2d(self):
                     if needstart:
                         _path=globalconfig['chromepath']
                     
-                        call="\"%s\" --disable-extensions --disable-gpu --no-first-run --remote-debugging-port=%d --user-data-dir=\"%s\"" %(_path ,port,os.path.abspath('./chrome_cache/'+hashtext(_path))) 
+                        call="\"%s\" --disable-extensions --remote-allow-origins=* --disable-gpu --no-first-run --remote-debugging-port=%d --user-data-dir=\"%s\"" %(_path ,port,os.path.abspath('./chrome_cache/'+hashtext(_path))) 
                         print(call)
                         self.engine=subproc_w(call) 
                 else:

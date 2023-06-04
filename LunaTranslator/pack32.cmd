@@ -22,9 +22,7 @@ xcopy /E /I %pythonpackage%\charset_normalizer %targetdir_in%\charset_normalizer
 xcopy /E /I %pythonpackage%\cryptography %targetdir_in%\cryptography
 xcopy /E /I %pythonlib%\http %targetdir_in%\http
 xcopy /E /I %pythonpackage%\idna %targetdir_in%\idna
-xcopy /E /I %pythonpackage%\websockets %targetdir_in%\websockets
-xcopy /E /I %pythonlib%\asyncio %targetdir_in%\asyncio
-xcopy /E /I %pythonlib%\concurrent %targetdir_in%\concurrent
+xcopy /E /I %pythonpackage%\websocket %targetdir_in%\websocket
 xcopy /E /I %pythondll%\_overlapped.pyd %targetdir_in%
 
 xcopy /E /I %pythonpackage%\OpenSSL %targetdir_in%\OpenSSL
