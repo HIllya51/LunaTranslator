@@ -24,7 +24,7 @@ class TS(basetrans):
         data = '{"header":{"fn":"auto_translation_block","client_key":"ddsdasdsadasuMzYg"},"source":{"lang":"'+self.srclang +'","text_block":"'+query.replace('\n',' ').replace('\r',' ')+'","orig_text_block":"","orig_url":"https://www.baidu.com/"},"target":{"lang":"'+self.tgtlang+'"}}'
         data=data.encode("utf-8").decode("latin1")
     
-        response = requests.post('https://transmart.qq.com/api/imt',  headers=headers, data=data,timeout=globalconfig['translatortimeout'],proxies= self.proxy)
+        response = requests.post('https://transmart.qq.com/api/imt',  headers=headers, data=data,proxies= self.proxy)
         return response.json()['auto_translation'] 
     def show(self,res):
         print('百度','\033[0;32;47m',res,'\033[0m',flush=True)

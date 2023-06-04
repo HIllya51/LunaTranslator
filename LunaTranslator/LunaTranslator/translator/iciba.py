@@ -139,7 +139,6 @@ class Iciba(Tse):
         :return: str or dict
         """
         is_detail_result = kwargs.get('is_detail_result', False)
-        timeout= globalconfig['translatortimeout'] 
         proxies=proxy
         sleep_seconds = kwargs.get('sleep_seconds', random.random())
         if_ignore_limit_of_length = kwargs.get('if_ignore_limit_of_length', False)
@@ -149,7 +148,7 @@ class Iciba(Tse):
             return ''
 
         with requests.Session() as ss:
-            _ = ss.get(self.host_url, headers=self.host_headers, timeout=timeout, proxies=proxies)
+            _ = ss.get(self.host_url, headers=self.host_headers,proxies=proxies)
              
 
             sign = hashlib.md5(f"6key_web_fanyi{self.s_y2}{query_text}".encode()).hexdigest()[:16]  # strip()

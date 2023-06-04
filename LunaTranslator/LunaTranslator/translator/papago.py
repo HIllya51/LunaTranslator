@@ -1,7 +1,7 @@
 
 from traceback import print_exc 
 import requests
-import hmac,base64
+import hmac,base64,re
 import uuid,time
 from utils.config import globalconfig
 from translator.basetranslator import basetrans
@@ -10,7 +10,6 @@ class TS(basetrans):
         return {"zh":"zh-CN","cht":"zh-TW"} 
     def inittranslator(self): 
         self.ss=requests.session() 
-        self.ss.get('https://papago.naver.com/', 
         headers = {
             'authority': 'papago.naver.com',
             'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
@@ -25,9 +24,16 @@ class TS(basetrans):
             'upgrade-insecure-requests': '1',
             'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36',
         
-        },timeout = globalconfig['translatortimeout'], proxies= self.proxy).text
-        
+        }
+        host_html=self.ss.get('https://papago.naver.com/', headers=headers
+        ,proxies= self.proxy).text
+        url_path = re.compile('/home.(.*?).chunk.js').search(host_html).group()
+        self.language_url = ''.join(['https://papago.naver.com', url_path])
+        lang_html = self.ss.get(self.language_url, headers=headers,   proxies=self.proxy).text
+        self.auth_key = self.get_auth_key(lang_html)
         self.uuid=uuid.uuid4().__str__()
+    def get_auth_key(self, lang_html: str) -> str:
+        return re.compile('AUTH_KEY:"(.*?)"').findall(lang_html)[0]
     def get_auth(self, url, auth_key, device_id, time_stamp): 
         auth = hmac.new(key=auth_key.encode(), msg=f'{device_id}\n{url}\n{time_stamp}'.encode(), digestmod='md5').digest()
         return f'PPG {device_id}:{base64.b64encode(auth).decode()}'
@@ -38,7 +44,7 @@ class TS(basetrans):
             'authority': 'papago.naver.com',
             'accept': 'application/json',
             'accept-language': 'zh-CN',
-            'authorization':  self.get_auth('https://papago.naver.com/apis/n2mt/translate','v1.7.1_12f919c9b5',self.uuid,tm),
+            'authorization':  self.get_auth('https://papago.naver.com/apis/n2mt/translate',self.auth_key,self.uuid,tm),
             'content-type': 'application/x-www-form-urlencoded; charset=UTF-8', 
             'device-type': 'pc',
             'origin': 'https://papago.naver.com',
@@ -67,8 +73,9 @@ class TS(basetrans):
             'text': content,
         }
 
-        r = self.ss.post('https://papago.naver.com/apis/n2mt/translate', headers= headers,timeout = globalconfig['translatortimeout'], data =data , proxies= self.proxy)
+        r = self.ss.post('https://papago.naver.com/apis/n2mt/translate', headers= headers, data =data , proxies= self.proxy)
     
         data = r.json()    
+        
         return  data['translatedText'] 
  

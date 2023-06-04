@@ -37,7 +37,7 @@ class TS(basetrans):
             'sec-fetch-user': '?1',
             'upgrade-insecure-requests': '1',
             'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36 Edg/105.0.1343.53',
-        }, verify=False, timeout = globalconfig['translatortimeout'],proxies=self.proxy).text 
+        }, verify=False,proxies=self.proxy).text 
         #print(html)
         # self.bl=re.search('"cfb2h":"(.*?)"',html).groups()[0]
         # self.fsid=re.search('"FdrFJe":"(.*?)"',html).groups()[0]
@@ -64,7 +64,7 @@ class TS(basetrans):
          
         headers = {'Origin': 'https://translate.google.com', 'Referer': 'https://translate.google.com', 'X-Requested-With': 'XMLHttpRequest', 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8', 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36'}
     
-        response = self.ss.post('https://translate.google.com/_/TranslateWebserverUi/data/batchexecute',verify=False, headers=headers,timeout = globalconfig['translatortimeout'],  data=freq,proxies=self.proxy )
+        response = self.ss.post('https://translate.google.com/_/TranslateWebserverUi/data/batchexecute',verify=False, headers=headers,  data=freq,proxies=self.proxy )
         #good=response.text.split('\n')[3]
         #print(response.text)
         json_data = json.loads(response.text[6:])

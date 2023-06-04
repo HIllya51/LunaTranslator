@@ -44,7 +44,7 @@ class TS(basetrans):
             'q': content,
         }
         
-        response = requests.get('https://translate.google.com/m', params=params,verify=False, headers=headers,timeout = globalconfig['translatortimeout']  ,proxies=self.proxy)
+        response = requests.get('https://translate.google.com/m', params=params,verify=False, headers=headers,proxies=self.proxy)
         
         res=re.search('<div class="result-container">([\\s\\S]*?)</div>',response.text).groups() 
         return res[0]
