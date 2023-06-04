@@ -12,12 +12,13 @@ import win32utils,threading,queue
 from utils.exceptions import TimeOut
 from urllib.request import getproxies_registry
 import importlib,re
-from PyQt5.QtGui import QPixmap
- 
+def checkimage(gamepath):
+    return (savehook_new_data[gamepath]['imagepath'] is None) or (os.path.exists(savehook_new_data[gamepath]['imagepath'])==False)
+def checkinfo(gamepath):
+    (savehook_new_data[gamepath]['infopath'] is None) or ((savehook_new_data[gamepath]['infopath'][:4].lower()!='http') and os.path.exists(savehook_new_data[gamepath]['infopath'])==False)
 def checkneed(gamepath):
     return (gamepath in savehook_new_data) and \
-            ((savehook_new_data[gamepath]['imagepath'] is None) or (os.path.exists(savehook_new_data[gamepath]['imagepath'])==False) or 
-             (savehook_new_data[gamepath]['infopath'] is None) or ((savehook_new_data[gamepath]['infopath'][:4].lower()!='http') and os.path.exists(savehook_new_data[gamepath]['infopath'])==False))
+            (checkimage(gamepath) or checkinfo(gamepath) )
 methodsqueues=[]
 
 def dispatchnext(gamepath,args,idx):
@@ -51,7 +52,7 @@ def dispatachtask(gamepath):
           
 def everymethodsthread(methodsidx):
     methods=static_data['searchimgmethods']
-    searchimgmethod=importlib.import_module('unstablemethod.'+methods[methodsidx]).searchimgmethod   
+    searchdatamethod=importlib.import_module('unstablemethod.'+methods[methodsidx]).searchdatamethod   
     while True:
         gamepath,searchargs=methodsqueues[methodsidx].get()
         
@@ -60,22 +61,17 @@ def everymethodsthread(methodsidx):
         failed=True
         for searcharg in searchargs:
             try:
-                saveimg= searchimgmethod(searcharg)  
+                data= searchdatamethod(searcharg)  
             except:
-                saveimg=None
-
+                data={}
+            saveimg=data.get('imagepath',None)
+            saveinfo=data.get('infopath',None)
             if saveimg: 
-                pix=QPixmap(saveimg) 
-                if pix.isNull()==False:  
-                    if checkneed(gamepath) : 
-                        savehook_new_data[gamepath]['imagepath']=saveimg
-            try:
-                searchinfomethod=importlib.import_module('unstablemethod.'+methods[methodsidx]).searchinfomethod   
-                saveinfo= searchinfomethod(searcharg)  
-            except:
-                saveinfo=None
+                if checkimage(gamepath) : 
+                    savehook_new_data[gamepath]['imagepath']=saveimg
+            
             if saveinfo:
-                if checkneed(gamepath) : 
+                if checkinfo(gamepath) : 
                     savehook_new_data[gamepath]['infopath']=saveinfo
                     savehook_new_data[gamepath]['infomethod']=methods[methodsidx]
             if saveinfo is not None and saveimg is not None:
@@ -262,8 +258,12 @@ class Threadwithresult(Thread):
         except Exception as e:
             self.exception=e
         self.istimeout=False
-    def get_result(self,timeout=1):
+    def get_result(self,timeout=1,checktutukufunction=None):
         Thread.join(self,timeout)  
+
+        while checktutukufunction and checktutukufunction() and self.istimeout:
+            Thread.join(self,1) 
+
         if self.ignoreexceptions:
             return self.result
         else:
@@ -273,10 +273,10 @@ class Threadwithresult(Thread):
                  raise self.exception
             else:
                  return self.result
-def timeoutfunction( func, timeout=100,default=None,ignoreexceptions=True):
+def timeoutfunction( func, timeout=100,default=None,ignoreexceptions=True,checktutukufunction=None):
     t=Threadwithresult(func,  default,ignoreexceptions)
     t.start()
-    return t.get_result(timeout)
+    return t.get_result(timeout,checktutukufunction)
 
 
  

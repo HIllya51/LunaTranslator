@@ -84,16 +84,6 @@ def vndbsearch(title):
     else:
         return None 
 
-def searchimgmethod(title):
-
-    if os.path.exists('./cache/2df')==False:
-        os.mkdir('./cache/2df')
-    imgurl=vndbsearch(title) 
-    #print(imgurl)
-    savepath= vndbdownloadimg(imgurl)
-    return savepath
-
-
 def vndbsearchinfo(title): 
      
     headers = {
@@ -161,13 +151,15 @@ def vndbsearchinfo(title):
     return savepath
 
 
-
-def searchinfomethod(title):
+def searchdatamethod(title):
 
     if os.path.exists('./cache/2df')==False:
         os.mkdir('./cache/2df')
+    imgurl=vndbsearch(title) 
+    #print(imgurl)
+    savepath= vndbdownloadimg(imgurl)
     infosavepath=vndbsearchinfo(title)   
-    return infosavepath
+    return {'imagepath':savepath,'infopath':infosavepath}
 import re
 def parsehtmlmethod(infopath): 
     return infopath

@@ -95,15 +95,6 @@ def vndbsearch(title):
         return 'https:'+imgurl
     except:
         pass
-
-def searchimgmethod(title):
-
-    if os.path.exists('./cache/bangumi')==False:
-        os.mkdir('./cache/bangumi')
-    imgurl=vndbsearch(title) 
-    #print(imgurl)
-    savepath= vndbdownloadimg(imgurl)
-    return savepath
 def vndbsearchinfo(title): 
      
     headers = {
@@ -155,12 +146,15 @@ def vndbsearchinfo(title):
     return url
 
 
-def searchinfomethod(title):
+def searchdatamethod(title):
 
     if os.path.exists('./cache/bangumi')==False:
         os.mkdir('./cache/bangumi')
+    imgurl=vndbsearch(title) 
+    #print(imgurl)
+    savepath= vndbdownloadimg(imgurl)
     infosavepath=vndbsearchinfo(title)   
-    return infosavepath
+    return {'imagepath':savepath,'infopath':infosavepath}
 import re
 def parsehtmlmethod(infopath):
      

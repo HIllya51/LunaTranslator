@@ -197,7 +197,7 @@ class basetrans:
                     
                 try:
                     if self.queue.empty() and self.using: 
-                        res=timeoutfunction(partial(self.maybecachetranslate,contentraw,contentsolved),globalconfig['translatortimeout'],default='',ignoreexceptions=False) 
+                        res=timeoutfunction(partial(self.maybecachetranslate,contentraw,contentsolved),globalconfig['translatortimeout'],default='',ignoreexceptions=False,checktutukufunction=lambda: self.queue.empty() and self.using and i==runtime-1 ) 
                         if self.needzhconv:
                             res=zhconv.convert(res,  'zh-tw' )  
                         

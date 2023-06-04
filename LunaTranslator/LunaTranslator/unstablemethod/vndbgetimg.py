@@ -174,21 +174,16 @@ def vndbsearchinfo(title):#301直接跳转到目标
     except:
         pass
 
-def searchimgmethod(title):
+def searchdatamethod(title):
 
     if os.path.exists('./cache/vndb')==False:
         os.mkdir('./cache/vndb')
     imgurl=vndbsearch(title) 
     #print(imgurl)
     savepath= vndbdownloadimg(imgurl)
-    return savepath
-
-def searchinfomethod(title):
-
-    if os.path.exists('./cache/vndb')==False:
-        os.mkdir('./cache/vndb')
     infosavepath=vndbsearchinfo(title)   
-    return infosavepath
+    return {'imagepath':savepath,'infopath':infosavepath}
+
 import re
 def parsehtmlmethod(infopath):
     with open(infopath,'r',encoding='utf8') as ff:

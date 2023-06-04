@@ -334,13 +334,12 @@ class dialog_setting_game(QDialog):
                         statislayout=QHBoxLayout() 
                         statislayout.addWidget(QLabel(_TR("统计信息")))
                         statislayout.addWidget(self.object.getcolorbutton('','',lambda:dialog_statistic(self,exepath),icon='fa.bar-chart',constcolor="#FF69B4"))
-                        formLayout.addLayout(statislayout)
                         
-                        if savehook_new_data[exepath]['infopath']:
-                                statislayout=QHBoxLayout() 
+                        if savehook_new_data[exepath]['infopath']: 
                                 statislayout.addWidget(QLabel(_TR("游戏信息")))
                                 statislayout.addWidget(self.object.getcolorbutton('','',lambda:browserdialog(self,exepath),icon='fa.book',constcolor="#FF69B4"))
-                                formLayout.addLayout(statislayout)
+                        
+                        formLayout.addLayout(statislayout)
                 lujing=QHBoxLayout()
                 editpath=QLineEdit(exepath)
                 editpath.setReadOnly(True)
