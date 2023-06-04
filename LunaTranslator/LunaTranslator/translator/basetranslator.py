@@ -6,12 +6,48 @@ from threading import Thread,Lock
 import os,time ,codecs
 import zhconv
 from functools import partial 
-from utils.utils import timeoutfunction,quote_identifier
+from utils.utils import quote_identifier
 import sqlite3
 
 from utils.utils import getproxy
-from utils.exceptions import ArgsEmptyExc,TimeOut
+from utils.exceptions import ArgsEmptyExc
 from utils.wrapper import stripwrapper
+class TimeOut(Exception):
+    pass
+class Threadwithresult(Thread):
+    def __init__(self, func,  defalut,ignoreexceptions):
+        super(Threadwithresult, self).__init__()
+        self.func = func 
+        self.result=defalut
+        self.istimeout=True
+        self.ignoreexceptions=ignoreexceptions
+        self.exception=None
+    def run(self):
+        try:
+            self.result = self.func( )
+        except Exception as e:
+            self.exception=e
+        self.istimeout=False
+    def get_result(self,timeout=1,checktutukufunction=None):
+        #Thread.join(self,timeout)  
+        #不再超时等待，只检查是否是最后一个请求，若是则无限等待，否则立即放弃。
+        while checktutukufunction and checktutukufunction() and self.istimeout:
+            Thread.join(self,0.1) 
+            
+        if self.ignoreexceptions:
+            return self.result
+        else:
+            if self.istimeout:
+                 raise TimeOut()
+            elif self.exception:
+                 raise self.exception
+            else:
+                 return self.result
+def timeoutfunction( func, timeout=100,default=None,ignoreexceptions=False,checktutukufunction=None):
+    t=Threadwithresult(func,  default,ignoreexceptions)
+    t.start()
+    return t.get_result(timeout,checktutukufunction)
+
 class basetrans: 
     def langmap(self):
         return {}
@@ -77,7 +113,8 @@ class basetrans:
         _.update(self.langmap())
         self.langmap_x=_
 
-        timeoutfunction(self.inittranslator,max(globalconfig['translatortimeout'],5))
+        self.inittranslator()
+        
         self.lastrequeststime=0
         self._cache={}
         
@@ -176,11 +213,13 @@ class basetrans:
             return False
         return globalconfig['fanyi'][self.typename]['manual']
     def fythread(self):
+        self.needreinit=False
         while self.using:  
             t=time.time()
             if self.typename not in static_data["fanyi_offline"]+static_data["fanyi_pre"] and ((t-self.lastrequeststime) <globalconfig['transtimeinternal']):
                 time.sleep(globalconfig['transtimeinternal']-(t-self.lastrequeststime))
             self.lastrequeststime=t
+            
             while True:
                 callback,contentraw,contentsolved,skip,embedcallback,shortlongskip=self.queue.get() 
                 if self.queue.empty():
@@ -191,33 +230,34 @@ class basetrans:
             if shortlongskip and self.onlymanual:
                 continue
             runtime=2 if globalconfig['errorretry'] else 1
-            for i in range(runtime):
-                
-                    
+            for i in range(runtime): 
                     
                 try:
                     if self.queue.empty() and self.using: 
-                        res=timeoutfunction(partial(self.maybecachetranslate,contentraw,contentsolved),globalconfig['translatortimeout'],default='',ignoreexceptions=False,checktutukufunction=lambda: self.queue.empty() and self.using and i==runtime-1 ) 
+                        def reinitandtrans():
+                            if self.needreinit:
+                                self.needreinit=False
+                                self.inittranslator()
+                            return self.maybecachetranslate(contentraw,contentsolved)
+                        res=timeoutfunction(reinitandtrans,checktutukufunction=lambda: self.queue.empty() and self.using and i==runtime-1 ) 
                         if self.needzhconv:
                             res=zhconv.convert(res,  'zh-tw' )  
                         
                         callback(res,embedcallback) 
                     break
                 except Exception as e:
-                    if self.using:
-                        needretry=False
-                        if (i==runtime-1) and globalconfig['showtranexception']:
-                                if isinstance(e,ArgsEmptyExc):
-                                    msg=str(e)
-                                elif isinstance(e,TimeOut):
-                                    msg=str(e)
-                                else:
-                                    print_exc()
-                                    msg=str(type(e))[8:-2]+' '+str(e).replace('\n','').replace('\r','')
-                                    needretry=True
-                                msg='<msg>'+msg
-                        
-                                callback(msg,embedcallback) 
-                        if needretry:
-                            timeoutfunction(self.inittranslator,max(globalconfig['translatortimeout'],5),ignoreexceptions=False)
+                    if self.using and (i==runtime-1) and globalconfig['showtranexception']:
+                        if isinstance(e,ArgsEmptyExc):
+                            msg=str(e)
+                        elif isinstance(e,TimeOut):
+                            #更改了timeout机制。timeout只会发生在队列非空时，故直接放弃
+                            continue
+                        else:
+                            print_exc()
+                            msg=str(type(e))[8:-2]+' '+str(e).replace('\n','').replace('\r','')
+                            self.needreinit=True
+                        msg='<msg>'+msg
+                
+                        callback(msg,embedcallback) 
+                       
             

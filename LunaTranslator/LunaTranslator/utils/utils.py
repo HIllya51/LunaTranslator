@@ -9,7 +9,6 @@ import socket
 from traceback import print_exc
 from utils.config import globalconfig,static_data,savehook_new_list,savehook_new_data,getdefaultsavehook,translatorsetting
 import win32utils,threading,queue
-from utils.exceptions import TimeOut
 from urllib.request import getproxies_registry
 import importlib,re
 def checkimage(gamepath):
@@ -244,39 +243,6 @@ def POSTSOLVE(line):
     return line''')
     os.startfile(p)
     return p
-class Threadwithresult(Thread):
-    def __init__(self, func,  defalut,ignoreexceptions):
-        super(Threadwithresult, self).__init__()
-        self.func = func 
-        self.result=defalut
-        self.istimeout=True
-        self.ignoreexceptions=ignoreexceptions
-        self.exception=None
-    def run(self):
-        try:
-            self.result = self.func( )
-        except Exception as e:
-            self.exception=e
-        self.istimeout=False
-    def get_result(self,timeout=1,checktutukufunction=None):
-        Thread.join(self,timeout)  
-
-        while checktutukufunction and checktutukufunction() and self.istimeout:
-            Thread.join(self,1) 
-
-        if self.ignoreexceptions:
-            return self.result
-        else:
-            if self.istimeout:
-                 raise TimeOut()
-            elif self.exception:
-                 raise self.exception
-            else:
-                 return self.result
-def timeoutfunction( func, timeout=100,default=None,ignoreexceptions=True,checktutukufunction=None):
-    t=Threadwithresult(func,  default,ignoreexceptions)
-    t.start()
-    return t.get_result(timeout,checktutukufunction)
 
 
  
