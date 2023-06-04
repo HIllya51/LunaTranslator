@@ -621,5 +621,6 @@
     "光标": "Cursor",
     "高级": "Senior",
     "通用": "Universal",
-    "默认降采样效果": "Efecto de reducción de muestreo predeterminado"
+    "默认降采样效果": "Efecto de reducción de muestreo predeterminado",
+    "游戏失去焦点时取消置顶": "Cancelar la cima cuando el juego pierde el foco"
 }

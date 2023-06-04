@@ -4,8 +4,11 @@ import os,time,sys
 from traceback import print_exc
 import codecs,hashlib
 import os,win32con,time 
-import socket
-
+import socket,functools
+import ctypes
+import time
+import ctypes.wintypes
+import win32con
 from traceback import print_exc
 from utils.config import globalconfig,static_data,savehook_new_list,savehook_new_data,getdefaultsavehook,translatorsetting
 import win32utils,threading,queue
@@ -288,52 +291,89 @@ def getfilemd5(file,default='0'):
         return md5
     except:
         return default
+ 
 def minmaxmoveobservefunc(self): 
         
-        self.lasthwnd=None
-        self.lastfocus=None
-        while(True):
-                 
+        user32 = ctypes.windll.user32
+
+        WinEventProcType = ctypes.CFUNCTYPE(
+            None,
+            ctypes.wintypes.HANDLE,
+            ctypes.wintypes.DWORD,
+            ctypes.wintypes.HWND,
+            ctypes.wintypes.LONG,
+            ctypes.wintypes.LONG,
+            ctypes.wintypes.DWORD,
+            ctypes.wintypes.DWORD,
+        )
+        def win_event_callback(hWinEventHook, event, hwnd, idObject, idChild, dwEventThread, dwmsEventTime):
+            try:
+                if self.object.textsource is None:
+                    return 
+                if self.object.textsource.hwnd==0: 
+                    return
                 
-                try:
-                    if self.object.textsource.hwnd: 
-                        hwnd=self.object.textsource.hwnd
-                        if hwnd!=self.lasthwnd:
-                                self.lastminmax=None
-                                self.lastpos=None
-                        self.lasthwnd=hwnd
-                        tup = win32utils.GetWindowPlacement(hwnd,True)
-                        #print(tup)
-                        rect=win32utils.GetWindowRect( hwnd) 
-                        if globalconfig['focusfollow']:
-                                focus=win32utils.GetForegroundWindow()
-                                _focusp=win32utils.GetWindowThreadProcessId(focus)
-                                if _focusp in self.object.textsource.pids: 
-                                        self.hookfollowsignal.emit(3,(hwnd,))
-                                elif _focusp ==os.getpid():
-                                        pass
-                                else:
-                                        self.hookfollowsignal.emit(4,(0,0)) 
-                                
-                        if globalconfig['minifollow']:
-                                if self.lastminmax and  tup[1]!=self.lastminmax:
-                                        if tup[1] == win32con.SW_SHOWMINIMIZED:
-                                                self.hookfollowsignal.emit(4,(0,0)) 
-                                        elif tup[1] == win32con.SW_SHOWNORMAL:
-                                                self.hookfollowsignal.emit(3,(hwnd,))
-                                self.lastminmax=tup[1]
-                                
-                        if globalconfig['movefollow']:
-                                if tup[1] == win32con.SW_SHOWNORMAL:
-                                        if self.lastpos and rect!=self.lastpos:  
-                                                self.hookfollowsignal.emit(5,(rect[0]-self.lastpos[0],rect[1]-self.lastpos[1]))
-                                        self.lastpos=rect 
-                except:
-                        #print_exc()
-                        pass
-                  
-                time.sleep(0.1)
- 
+                _focusp=win32utils.GetWindowThreadProcessId(hwnd)
+                if event ==win32con.EVENT_SYSTEM_FOREGROUND:  
+                    if globalconfig['focusfollow']: 
+                        if _focusp ==os.getpid():
+                            pass 
+                        elif _focusp in self.object.textsource.pids: 
+                            self.hookfollowsignal.emit(3,(hwnd,))
+                        else:
+                            self.hookfollowsignal.emit(4,(0,0)) 
+                    if globalconfig['keepontop'] and globalconfig['focusnotop']:  
+                        if _focusp ==os.getpid():
+                            pass
+                        elif _focusp in self.object.textsource.pids: 
+                            self.object.translation_ui.settop()
+                        else:
+                            self.object.translation_ui.canceltop()
+                if _focusp!= win32utils.GetWindowThreadProcessId(self.object.textsource.hwnd ) :
+                    return
+                 
+                rect=win32utils.GetWindowRect( hwnd) 
+                if event == win32con.EVENT_SYSTEM_MINIMIZEEND: 
+                    if globalconfig['minifollow']:
+                        self.hookfollowsignal.emit(3,(hwnd,))
+                elif event == win32con.EVENT_SYSTEM_MINIMIZESTART: 
+                    if globalconfig['minifollow']:
+                        self.hookfollowsignal.emit(4,(0,0)) 
+                elif event == win32con.EVENT_SYSTEM_MOVESIZESTART: # 
+                    self.lastpos=rect
+                elif event == win32con.EVENT_SYSTEM_MOVESIZEEND: # 
+                    if globalconfig['movefollow']:
+                        self.hookfollowsignal.emit(5,(rect[0]-self.lastpos[0],rect[1]-self.lastpos[1]))
+                    
+            except:
+                print_exc()
+        win_event_callback_cfunc = WinEventProcType(win_event_callback)
+
+        eventpairs=(
+            (win32con.EVENT_SYSTEM_MOVESIZESTART,win32con.EVENT_SYSTEM_MOVESIZEEND),
+            (win32con.EVENT_SYSTEM_MINIMIZESTART,win32con.EVENT_SYSTEM_MINIMIZEEND),
+            (win32con.EVENT_SYSTEM_FOREGROUND,win32con.EVENT_SYSTEM_FOREGROUND),
+        )
+
+        def _():
+            for pair in eventpairs: 
+                hook_id = user32.SetWinEventHook(
+                    pair[0],
+                    pair[1],
+                    0,
+                    win_event_callback_cfunc,
+                    0,
+                    0,
+                    0
+                )
+
+            msg = ctypes.wintypes.MSG()
+            while ctypes.windll.user32.GetMessageW(ctypes.byref(msg), None, 0, 0) != 0:
+                ctypes.windll.user32.TranslateMessage(ctypes.byref(msg))
+                ctypes.windll.user32.DispatchMessageW(ctypes.byref(msg))
+
+            ctypes.windll.user32.UnhookWindowsHookEx(hook_id)
+        _() 
 
 def makehtml(text,base=False,show=None):
     if base:

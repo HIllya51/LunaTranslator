@@ -135,6 +135,7 @@ def setTabThree_lazy(self) :
            [''],
         [('游戏最小化时窗口隐藏',6),(self.getsimpleswitch(globalconfig,'minifollow'),1)], 
         [('游戏失去焦点时窗口隐藏',6),(self.getsimpleswitch(globalconfig,'focusfollow'),1)], 
+        [('游戏失去焦点时取消置顶',6),(self.getsimpleswitch(globalconfig,'focusnotop'),1)], 
         [('游戏窗口移动时同步移动',6),(self.getsimpleswitch(globalconfig,'movefollow'),1)],
         [('固定窗口尺寸',6),self.getsimpleswitch(globalconfig,'fixedheight'),],
         [("自动隐藏窗口",6),(self.getsimpleswitch(globalconfig  ,'autodisappear'),1),'',("隐藏延迟(s)",3),(self.getspinbox(1,100,globalconfig  ,'disappear_delay'),2)],

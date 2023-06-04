@@ -621,5 +621,6 @@
     "光标": "kursor",
     "高级": "starszy",
     "通用": "waluta",
-    "默认降采样效果": "Domyślny efekt redukcji próbkowania"
+    "默认降采样效果": "Domyślny efekt redukcji próbkowania",
+    "游戏失去焦点时取消置顶": "Anuluj dopełnienie, gdy gra traci skupienie"
 }

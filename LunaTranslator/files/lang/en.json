@@ -621,5 +621,6 @@
     "光标": "cursor",
     "高级": "senior",
     "通用": "currency",
-    "默认降采样效果": "Default Downsampling effect"
+    "默认降采样效果": "Default Downsampling effect",
+    "游戏失去焦点时取消置顶": "Cancel topping when the game loses focus"
 }

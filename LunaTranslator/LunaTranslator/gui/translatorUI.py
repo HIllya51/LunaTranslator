@@ -193,7 +193,7 @@ class QUnFrameWindow(resizableframeless):
         self.showhidetoolbuttons()
         self.translate_text.movep(0,globalconfig['buttonsize']*1.5*self.rate)
         self.textAreaChanged()
-        self.setMinimumHeight(globalconfig['buttonsize']*1.5*self.rate)
+        self.setMinimumHeight(globalconfig['buttonsize']*1.5*self.rate+10)
         self.setMinimumWidth(globalconfig['buttonsize']*2*self.rate)
     def addbuttons(self):
         functions={
@@ -241,7 +241,7 @@ class QUnFrameWindow(resizableframeless):
             self.hide()
     def show_(self):   
         if self.showintab:
-            win32utils.ShowWindow(self.winId(),win32con.SW_SHOWNORMAL )
+            win32utils.ShowWindow(self.winId(),win32con.SW_SHOWNOACTIVATE )
         else:
             self.show()
         win32utils.SetForegroundWindow(self.winId())
@@ -272,19 +272,32 @@ class QUnFrameWindow(resizableframeless):
             self.isfirstshow=False 
             self.setontopthread()
         return super().showEvent(a0)
+    def canceltop(self,hwnd=win32con.HWND_NOTOPMOST):
+        win32utils.SetWindowPos(int(self.winId()), hwnd, 0, 0, 0, 0,win32con. SWP_NOACTIVATE |win32con. SWP_NOSIZE | win32con.SWP_NOMOVE) 
+    def settop(self):
+        win32utils.SetWindowPos(int(self.winId()), win32con.HWND_TOPMOST, 0, 0, 0, 0,win32con. SWP_NOACTIVATE |win32con. SWP_NOSIZE | win32con.SWP_NOMOVE)  
     def setontopthread(self):
         def _():
-            win32utils.SetWindowPos(int(self.winId()), win32con.HWND_TOPMOST, 0, 0, 0, 0,win32con. SWP_NOACTIVATE |win32con. SWP_NOSIZE | win32con.SWP_NOMOVE) 
+            self.settop()
             while globalconfig['keepontop']:
+                
                 try:   
                     hwnd=win32utils.GetForegroundWindow()
                     pid=win32utils.GetWindowThreadProcessId(hwnd)
-                    if pid !=os.getpid(): 
-                        win32utils.SetWindowPos(int(self.winId()), win32con.HWND_TOPMOST, 0, 0, 0, 0,win32con. SWP_NOACTIVATE |win32con. SWP_NOSIZE | win32con.SWP_NOMOVE)  
+                    if pid ==os.getpid():
+                        pass
+                    elif (globalconfig['focusnotop']):
+                        try:
+                            if (hwnd)==self.object.textsource.hwnd:
+                                self.settop()
+                        except:
+                            pass
+                    else:
+                        self.settop() 
                 except:
                     print_exc() 
                 time.sleep(0.5)            
-            win32utils.SetWindowPos(int(self.winId()), win32con.HWND_NOTOPMOST, 0, 0, 0, 0,win32con. SWP_NOACTIVATE |win32con. SWP_NOSIZE | win32con.SWP_NOMOVE) 
+            self.canceltop()
         
         threading.Thread(target=_).start()
     def __init__(self, object):
