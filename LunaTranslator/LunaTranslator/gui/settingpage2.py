@@ -101,12 +101,12 @@ def setTabTwo_lazy(self) :
         grids=[[
                 ("最短翻译字数",8),(self.getspinbox(0,9999,globalconfig,'minlength'),2),'',
                 ("最长翻译字数",8),(self.getspinbox(0,9999,globalconfig,'maxlength'),2) ,'',
-                  ("翻译请求间隔(s)",8),(self.getspinbox(0,10,globalconfig,'transtimeinternal',step=0.1,double=True),2) ,  ],
+        ],
                 
             [
                 ("使用持久化翻译缓存",8),(self.getsimpleswitch(globalconfig,'uselongtermcache')),'','',
                 ('显示错误信息',8),(self.getsimpleswitch(globalconfig  ,'showtranexception'),1),'','',
-                ('错误重试',8),(self.getsimpleswitch(globalconfig  ,'errorretry'),1),
+                ('',8),
             ],
             [
                 ("均衡负载",8),(self.getsimpleswitch(globalconfig,'loadbalance',callback=lambda x:_fuzainum.setEnabled(x))),'','',

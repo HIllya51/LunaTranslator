@@ -45,7 +45,6 @@
 	"edit_geo":[0,0,1000,300],
 	"sw_geo":[0,0,500,500],
 	"setting_geo":[0,0],
-	"transtimeinternal":0.1,
 	"ocr_stable_sim":0,
 	"ocr_diff_sim":0.95,
     "autorun": true,
@@ -949,7 +948,6 @@
             "useproxy": true
         }
     },
-	"errorretry":true,
     "minifollow": false,
     "movefollow": false,
     "focusfollow": false,

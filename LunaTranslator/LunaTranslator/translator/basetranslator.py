@@ -215,10 +215,7 @@ class basetrans:
     def fythread(self):
         self.needreinit=False
         while self.using:  
-            t=time.time()
-            if self.typename not in static_data["fanyi_offline"]+static_data["fanyi_pre"] and ((t-self.lastrequeststime) <globalconfig['transtimeinternal']):
-                time.sleep(globalconfig['transtimeinternal']-(t-self.lastrequeststime))
-            self.lastrequeststime=t
+            
             
             while True:
                 callback,contentraw,contentsolved,skip,embedcallback,shortlongskip=self.queue.get() 
@@ -229,35 +226,34 @@ class basetrans:
                 continue
             if shortlongskip and self.onlymanual:
                 continue
-            runtime=2 if globalconfig['errorretry'] else 1
-            for i in range(runtime): 
-                    
-                try:
-                    if self.queue.empty() and self.using: 
-                        def reinitandtrans():
-                            if self.needreinit:
-                                self.needreinit=False
-                                self.inittranslator()
-                            return self.maybecachetranslate(contentraw,contentsolved)
-                        res=timeoutfunction(reinitandtrans,checktutukufunction=lambda: self.queue.empty() and self.using and i==runtime-1 ) 
-                        if self.needzhconv:
-                            res=zhconv.convert(res,  'zh-tw' )  
-                        
-                        callback(res,embedcallback) 
-                    break
-                except Exception as e:
-                    if self.using and (i==runtime-1) and globalconfig['showtranexception']:
-                        if isinstance(e,ArgsEmptyExc):
-                            msg=str(e)
-                        elif isinstance(e,TimeOut):
-                            #更改了timeout机制。timeout只会发生在队列非空时，故直接放弃
-                            continue
-                        else:
-                            print_exc()
-                            msg=str(type(e))[8:-2]+' '+str(e).replace('\n','').replace('\r','')
-                            self.needreinit=True
-                        msg='<msg>'+msg
-                
-                        callback(msg,embedcallback) 
-                       
             
+                
+            try:
+                if self.queue.empty() and self.using: 
+                    def reinitandtrans():
+                        if self.needreinit:
+                            self.needreinit=False
+                            self.inittranslator()
+                        return self.maybecachetranslate(contentraw,contentsolved)
+                    res=timeoutfunction(reinitandtrans,checktutukufunction=lambda: self.queue.empty() and self.using ) 
+                    if self.needzhconv:
+                        res=zhconv.convert(res,  'zh-tw' )  
+                    
+                    callback(res,embedcallback) 
+                
+            except Exception as e:
+                if self.using and globalconfig['showtranexception']:
+                    if isinstance(e,ArgsEmptyExc):
+                        msg=str(e)
+                    elif isinstance(e,TimeOut):
+                        #更改了timeout机制。timeout只会发生在队列非空时，故直接放弃
+                        continue
+                    else:
+                        print_exc()
+                        msg=str(type(e))[8:-2]+' '+str(e).replace('\n','').replace('\r','')
+                        self.needreinit=True
+                    msg='<msg>'+msg
+            
+                    callback(msg,embedcallback) 
+                    
+        
