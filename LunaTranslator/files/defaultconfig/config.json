@@ -475,6 +475,11 @@
             "use": false,
             "voice": "",
             "name":"火山TTS"
+        },
+        "edgetts": {
+            "use": false,
+            "voice": "",
+            "name":"edgeTTS"
         },"youdaotts": {
             "use": false,
             "voice": "",
