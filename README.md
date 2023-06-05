@@ -35,20 +35,18 @@
 
 &emsp;&emsp;**注册在线翻译** 支持使用用户注册的百度、腾讯、有道、小牛、彩云、火山、deepl、yandex、google、飞书、ChatGPT、Azure翻译
 
-&emsp;&emsp;**Chrome调试翻译** 支持deepl、yandex、有道、百度、腾讯、必应、彩云、小牛、阿里、谷歌
+&emsp;&emsp;**Chrome调试翻译** 支持deepl、yandex、有道、百度、腾讯、必应、彩云、小牛、阿里、谷歌、Poe.com
 
 &emsp;&emsp;**预翻译** 支持读取人工翻译和聚合机器预翻译文件，支持翻译缓存
 
 &emsp;&emsp;**支持自定义翻译扩展** 支持使用python语言扩展其他我不知道的翻译接口
-
  
-
 
 #### 语音合成
 
 &emsp;&emsp;**离线TTS** 支持windowsTTS，支持VoiceRoid2，支持VoiceRoid+，支持NeoSpeech，支持VOICEVOX
 
-&emsp;&emsp;**在线TTS** 支持火山TTS，有道TTS
+&emsp;&emsp;**在线TTS** 支持火山TTS，有道TTS，EdgeTTS
 
 #### 翻译优化
 

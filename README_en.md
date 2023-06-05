@@ -19,9 +19,9 @@
 
 &emsp;&emsp;**Clipboard** Support to get text from the clipboard for translation
 
-&emsp;&emsp;**OCR** Support offline OCR (deployed), WindowsOCR, Baidu OCR, Youdao OCR, ocrspace, docsumo, and support binding screenshot windows to avoid window overlap.
+&emsp;&emsp;**OCR** In addition to the built-in OCR engine, it also supports Windows OCR, Baidu OCR, Youdao OCR, ocrspace, docsumo, Feishu OCR, and more.
 
-&emsp;&emsp;**HOOK** Support the use of HOOK to obtain text, support the use of special codes, support the automatic saving of games and HOOK, and automatic loading of HOOK
+&emsp;&emsp;**HOOK** Support the use of HOOK to obtain text, support the use of special codes, support automatic saving of games and HOOK, automatic loading of HOOK, etc. For some engines, embedded translation is also supported.
 
 #### Translators
 
@@ -31,23 +31,20 @@ Support almost all translation engines you can think of, including:
 
 &emsp;&emsp;**Free online translation** Support the use of Baidu, Bing, Google, Alibaba, Youdao, Caiyun, Sogou, DeepL, Jinshan, iFLYTEK, Tencent, Byte, Volcano, Papago, and peekit for translation
 
-&emsp;&emsp;**Registed online translation** Support the translation of Baidu, Tencent, Youdao, Maverick, Caiyun, Volcano and deep translation keys registered by users
+&emsp;&emsp;**Chrome debugging translation** Supports deep, Yandex, Youdao, Baidu, Tencent, Bing, Caiyun, Xiaoniu, Alibaba, Google, Poe.com
+
+&emsp;&emsp;**Registed online translation** Support the use of user registered Baidu, Tencent, Youdao, Xiaoniu, Caiyun, Volcano, Deep, Yandex, Google, Feishu, ChatGPT, Azure Translations
 
 &emsp;&emsp;**Pre-translation** Support reading manual translation and aggregating machine pre-translation files
 
 &emsp;&emsp;**Custom translation extension** Support the use of python language to extend other translation interfaces I don't know
 
 
- 
+#### Speech Synthesis 
 
+&emsp;&emsp;**Offline TTS** Supports Windows TTS, VoiceRoad2, VoiceRoad+, NeoSpeech, and VOICEVOX
 
-#### Speech Synthesis
-
-
-
-&emsp;&emsp;**Offline TTS** Support windowsTTS, VoiceRoid2, VOICEVOX
-
-&emsp;&emsp;**Online TTS** Support huoshanTTS
+&emsp;&emsp;**Online TTS** Support huoshanTTS, youdaoTTS, EdgeTTS
 
 #### Translation optimization
 
@@ -60,34 +57,7 @@ Support almost all translation engines you can think of, including:
 &emsp;&emsp;**Japanese word segmentation and kana display** Support the use of built-in download-free word segmentation and kana display tools, and support the use of Mecab to optimize word segmentation and kana display
 
 &emsp;&emsp;**Word search** Support the use of primary school library, Lingers dictionary and EDICT (Japanese English) dictionary for word query
-
-## Resource download
-
-<details>
-<summary>Click to view</summary>
-
-<table>
-<tr><td>OCR-Simplified Chinese</td><td><a href="https://github.com/HIllya51/LunaTranslator/releases/download/v1.34.5/zh.zip">zh.zip</a></td></tr>
-<tr><td>OCR-Traditional Chinese</td><td><a href="https://github.com/HIllya51/LunaTranslator/releases/download/v1.34.5/cht.zip">cht.zip</a></td></tr>
-<tr><td>OCR-Korean</td><td><a href="https://github.com/HIllya51/LunaTranslator/releases/download/v1.34.5/ko.zip">ko.zip</a></td></tr>
-<tr><td>OCR-Russian</td><td><a href="https://github.com/HIllya51/LunaTranslator/releases/download/v1.1.2/ru.zip">ru.zip</a></td></tr>
-<tr><td>Dictionary-MeCab</td><td><a href="https://github.com/HIllya51/LunaTranslator/releases/download/v1.0/Mecab.zip">Mecab.zip</a></td></tr>
-<tr><td>Dictionary-Xiaoxiaoguan</td><td><a href="https://github.com/HIllya51/LunaTranslator/releases/download/v1.0/xiaoxueguan.db">xiaoxueguan.db</a></td></tr>
-<tr><td>Dictionary-EDICT</td><td><a href="https://github.com/HIllya51/LunaTranslator/releases/download/v1.0/edict.db">edict.db</a></td></tr>
-<tr><td>Dictionary-EDICT2</td><td><a href="https://github.com/HIllya51/LunaTranslator/releases/download/v1.1.2/edict2">edict2</a></td></tr>
-<tr><td>Dictionary-JMdict</td><td><a href="https://github.com/HIllya51/LunaTranslator/releases/download/v1.1.2/JMdict.xml">JMdict.xml</a></td></tr>
-<tr><td>Dictionary-Lingoes</td><td><a href="https://github.com/HIllya51/LunaTranslator/releases/download/v1.0/Lingoes.zip">Lingoes.zip</a></td></tr>
-<tr><td>Translator-JBeijing7</td><td><a href="https://github.com/HIllya51/LunaTranslator/releases/download/v1.0/JBeijing7.zip">JBeijing7.zip</a></td></tr>
-<tr><td>Translator-FastAIT</td><td><a href="https://github.com/HIllya51/LunaTranslator/releases/download/v1.0/FastAIT09_Setup.25269.4101.zip">FastAIT09_Setup.25269.4101.zip</a></td></tr>
-<tr><td>Translator-DR.eye</td><td><a href="https://github.com/HIllya51/LunaTranslator/releases/download/v1.0/DR.eye.zip">DR.eye.zip</a></td></tr>
-<tr><td>Locale-Locale-Emulator</td><td><a href="https://github.com/xupefei/Locale-Emulator/releases/download/v2.5.0.1/Locale.Emulator.2.5.0.1.zip">Locale.Emulator.2.5.0.1.zip</a></td></tr>
-<tr><td>Locale-Locale_Remulator</td><td><a href="https://github.com/InWILL/Locale_Remulator/releases/download/v1.5.0/Locale_Remulator.1.5.0.zip">Locale_Remulator.1.5.0.zip</a></td></tr>
-<tr><td>TTS-VoiceRoid2</td><td><a href="https://github.com/HIllya51/LunaTranslator/releases/download/v1.0/Yukari2.zip">Yukari2.zip</a></td></tr>
-<tr><td>TTS-VOICEVOX</td><td><a href="https://github.com/VOICEVOX/voicevox/releases/download/0.13.3/voicevox-windows-cpu-0.13.3.zip">voicevox-windows-cpu-0.13.3.zip</a></td></tr>
-</table>  
-
-</details>
-
+ 
 
 
 ## References
@@ -106,6 +76,12 @@ Support almost all translation engines you can think of, including:
 * [Blinue/Magpie](https://github.com/Blinue/Magpie)
 
 * [nanokina/ebyroid](https://github.com/nanokina/ebyroid)
+
+* [xupefei/Locale-Emulator](https://github.com/xupefei/Locale-Emulator)
+
+* [InWILL/Locale_Remulator](https://github.com/InWILL/Locale_Remulator)
+
+* [zxyacb/ntlea](https://github.com/zxyacb/ntlea)
 
 * [@KirpichKrasniy](https://github.com/KirpichKrasniy)
 

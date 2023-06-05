@@ -42,9 +42,9 @@
 
 #### Синтез речи/Озвучка текста
 
-&emsp;&emsp;**Offline TTS** Поддерживает windowsTTS, VoiceRoid2 и VOICEVOX.
+&emsp;&emsp;**Offline TTS** Поддерживает windowsTTS, VoiceRoid+, NeoSpeech, VoiceRoid2 и VOICEVOX.
 
-&emsp;&emsp;**Online TTS** Поддерживает Volcano TTS.
+&emsp;&emsp;**Online TTS** Поддерживает Volcano TTS, youdaoTTS, EdgeTTS
 
 #### Обработка текста/Оптимизация перевода
 
@@ -90,3 +90,38 @@
 
 * [@KirpichKrasniy](https://github.com/KirpichKrasniy) (Также можете зайти в русскоязычные сообщества программы: [VK](https://vk.com/lunatranslator) и [Telegram](https://t.me/LunaTranslator))
 
+
+## References
+
+<details>
+<summary>Click to view</summary>
+
+* [Artikash/Textractor](https://github.com/Artikash/Textractor)
+
+* [RapidAI/RapidOcrOnnx](https://github.com/RapidAI/RapidOcrOnnx)
+
+* [PaddlePaddle/PaddleOCR](https://github.com/PaddlePaddle/PaddleOCR)
+
+* [UlionTse/translators](https://github.com/UlionTse/translators)
+
+* [Blinue/Magpie](https://github.com/Blinue/Magpie)
+
+* [nanokina/ebyroid](https://github.com/nanokina/ebyroid)
+
+* [xupefei/Locale-Emulator](https://github.com/xupefei/Locale-Emulator)
+
+* [InWILL/Locale_Remulator](https://github.com/InWILL/Locale_Remulator)
+
+* [zxyacb/ntlea](https://github.com/zxyacb/ntlea)
+
+* [@KirpichKrasniy](https://github.com/KirpichKrasniy)
+
+</details>
+
+
+## Support author
+ 
+If you feel that the software is helpful to you, you are welcome to scan WeChat code to sponsor. Thank you ~
+
+
+<img src='.\\LunaTranslator\\files\\zan.jpg' height=500 width=500>
