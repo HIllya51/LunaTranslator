@@ -622,5 +622,6 @@
     "高级": "Avancé",
     "通用": "Universel",
     "默认降采样效果": "Effet de Downsampling par défaut",
-    "游戏失去焦点时取消置顶": "Annuler top lorsque le jeu perd le focus"
+    "游戏失去焦点时取消置顶": "Annuler top lorsque le jeu perd le focus",
+    "描边字体_reverse": "Police de contour Reverse"
 }

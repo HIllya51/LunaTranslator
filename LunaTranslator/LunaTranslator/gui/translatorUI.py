@@ -107,6 +107,8 @@ class QUnFrameWindow(resizableframeless):
         
         if globalconfig['zitiyangshi'] ==2: 
             self.translate_text.mergeCurrentCharFormat_out(globalconfig['miaobiancolor'],color, globalconfig['miaobianwidth2']) 
+        elif globalconfig['zitiyangshi'] ==4: 
+            self.translate_text.mergeCurrentCharFormat_out(color,globalconfig['miaobiancolor'], globalconfig['miaobianwidth2']) 
         elif globalconfig['zitiyangshi'] ==1:  
             self.translate_text.mergeCurrentCharFormat( color, globalconfig['miaobianwidth']) 
         elif globalconfig['zitiyangshi'] ==0: 

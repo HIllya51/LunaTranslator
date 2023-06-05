@@ -511,7 +511,7 @@ class Textbrowser( ):
         if globalconfig['zitiyangshi'] ==3: 
             label.setGraphicsEffect(self.geteffect(globalconfig['fontsize'],globalconfig['jiamingcolor'],globalconfig['shadowforce']) ) 
             color=globalconfig['miaobiancolor']
-        elif globalconfig['zitiyangshi'] in [0,1,2]:
+        elif globalconfig['zitiyangshi'] in [0,1,2,4]:
             label.setGraphicsEffect(self._rawqlabel.graphicsEffect() )  
             color=globalconfig['jiamingcolor']
         label.setText(word['hira'])
