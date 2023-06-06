@@ -31,7 +31,7 @@ Support almost all translation engines you can think of, including:
 
 &emsp;&emsp;**Free online translation** Support the use of Baidu, Bing, Google, Alibaba, Youdao, Caiyun, Sogou, DeepL, Jinshan, iFLYTEK, Tencent, Byte, Volcano, Papago, and peekit for translation
 
-&emsp;&emsp;**Chrome debugging translation** Supports deep, Yandex, Youdao, Baidu, Tencent, Bing, Caiyun, Xiaoniu, Alibaba, Google, Poe.com
+&emsp;&emsp;**Chrome debugging translation** Supports deep, Yandex, Youdao, Baidu, Tencent, Bing, Caiyun, Xiaoniu, Alibaba, Google, Poe.com, OpenAI
 
 &emsp;&emsp;**Registed online translation** Support the use of user registered Baidu, Tencent, Youdao, Xiaoniu, Caiyun, Volcano, Deep, Yandex, Google, Feishu, ChatGPT, Azure Translations
 
