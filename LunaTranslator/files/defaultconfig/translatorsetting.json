@@ -4,6 +4,11 @@
             "promt": "帮我把接下来的输入都翻译成中文。你只需告诉我翻译结果，除此之外不要回答任何其他内容。"
         } 
     },
+	"dev_openai": {
+        "args": {
+            "promt": "帮我把接下来的输入都翻译成中文。你只需告诉我翻译结果，除此之外不要回答任何其他内容。"
+        } 
+    },
     "baiduapi": {
         "args": {
             "注册网址": "https://fanyi-api.baidu.com/api/trans/product/desktop",

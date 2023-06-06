@@ -757,6 +757,11 @@
             "color": "blue",
             "type":"dev",
             "name": "poe.com"
+        }, "dev_openai": {
+            "use": false,
+            "color": "blue",
+            "type":"dev",
+            "name": "openai"
         }, 
         "jb7": {
             "use": false,
