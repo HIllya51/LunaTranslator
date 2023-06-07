@@ -15,6 +15,7 @@ from textsource.copyboard import copyboard
 from textsource.texthook import texthook   
 from textsource.embedded import embedded
 from textsource.ocrtext import ocrtext
+from textsource.texthook_tcp import texthook_tcp
 import  gui.selecthook     
 import gui.translatorUI
 from gui.languageset import languageset
@@ -306,7 +307,7 @@ class MAINUI() :
         self.settin_ui.selectbuttonembed.setEnabled(globalconfig['sourcestatus']['embedded']['use']) 
         self.textsource=None
         if checked: 
-            classes={'ocr':ocrtext,'copy':copyboard,'texthook':None,'embedded':None} 
+            classes={'ocr':ocrtext,'copy':copyboard,'texthook':None,'embedded':None,"texthook_tcp":texthook_tcp} 
             if use is None:
                 use=list(filter(lambda _ :globalconfig['sourcestatus'][_]['use'],classes.keys()) )
                 use=None if len(use)==0 else use[0]

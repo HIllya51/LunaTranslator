@@ -42,5 +42,9 @@ plugins/shareddllproxy/out
 plugins/shareddllproxy/builds
 plugins/shareddllproxy/.vs
 
+
+plugins/winxp_proxy_host/build
+plugins/winxp_proxy_host/builds
+
 LunaTranslator/files/plugins/GPS.txt
 LunaTranslator/chrome_cache

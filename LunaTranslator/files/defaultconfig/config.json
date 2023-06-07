@@ -578,8 +578,10 @@
         "copy": {"use":false},
         "ocr":  {"use":false},
         "texthook":  {"use":true}, 
-		"embedded": {"use":false}
+		"embedded": {"use":false},
+        "texthook_tcp":{"use":false}
     },
+    "tcp_port":12345,
 	"verticalocr":false,
 	"ocrmergelines":true,
     "ocr": {
