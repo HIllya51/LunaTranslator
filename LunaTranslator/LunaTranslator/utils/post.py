@@ -206,6 +206,13 @@ def _remove_control(line):
                     continue
                 newline+=r
         return newline
+def _remove_not_in_ja_bracket(line): 
+        if '「' in line and '」' in line: 
+                _1=line.index('「')
+                _2=line.rindex('」')
+                if _1<_2:
+                       return line[_1:_2+1]
+        return  line
 from utils.utils import checkchaos
 def _remove_chaos(line):
        newline=''
@@ -241,7 +248,8 @@ def POSTSOLVE(line):
         "_remove_latin":_remove_latin,
         "_remove_ascii":_remove_ascii,
         "_remove_control":_remove_control,
-        "_remove_chaos":_remove_chaos
+        "_remove_chaos":_remove_chaos,
+        "_remove_not_in_ja_bracket":_remove_not_in_ja_bracket
     }
     try:
            md5=getfilemd5('./userconfig/mypost.py')

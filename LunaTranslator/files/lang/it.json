@@ -623,5 +623,8 @@
     "通用": "valuta",
     "默认降采样效果": "Effetto Downsampling predefinito",
     "游戏失去焦点时取消置顶": "Annulla il topping quando il gioco perde la concentrazione",
-    "描边字体_reverse": "Carattere tratto Inverso"
+    "描边字体_reverse": "Carattere tratto Inverso",
+    "允许缩放最大化或全屏的窗口": "Consenti lo zoom per massimizzare o le finestre a schermo intero",
+    "缩放时模拟独占全屏": "Simula esclusivo schermo intero durante lo zoom",
+    "过滤「」以外的字符": "Filtra caratteri al di fuori di ''"
 }

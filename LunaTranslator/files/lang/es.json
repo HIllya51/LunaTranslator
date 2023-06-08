@@ -623,5 +623,8 @@
     "通用": "Universal",
     "默认降采样效果": "Efecto de reducción de muestreo predeterminado",
     "游戏失去焦点时取消置顶": "Cancelar la cima cuando el juego pierde el foco",
-    "描边字体_reverse": "Fuente de dibujo Reverse"
+    "描边字体_reverse": "Fuente de dibujo Reverse",
+    "允许缩放最大化或全屏的窗口": "Permite ampliar la ventana maximizada o completa",
+    "缩放时模拟独占全屏": "La simulación monopoliza la pantalla completa al ampliar",
+    "过滤「」以外的字符": "Filtrar caracteres distintos de \"\"."
 }

@@ -623,5 +623,8 @@
     "通用": "para",
     "默认降采样效果": "Öntanımlı İndirme Etkisi",
     "游戏失去焦点时取消置顶": "Oyun fokus kaybettiğinde yukarı çıkarmayı iptal et",
-    "描边字体_reverse": "Üç yazıtipi Döndür"
+    "描边字体_reverse": "Üç yazıtipi Döndür",
+    "允许缩放最大化或全屏的窗口": "Büyütmeye veya tam ekran pencerelerini büyütmeye izin verin",
+    "缩放时模拟独占全屏": "Zorlaştırdığında özellikle dolu ekran simüle edin",
+    "过滤「」以外的字符": "'' dışında karakterleri sil"
 }

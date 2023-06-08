@@ -3,29 +3,31 @@
     "language": "",
     "theme": 2,
     "windowPos": {
-        "x": 128,
-        "y": 128,
+        "x": 164,
+        "y": 227,
         "width": 1440,
-        "height": 747,
-        "maximized": false
+        "height": 674,
+        "maximized": true
     },
     "shortcuts": {
-        "scale": 2369,
+        "scale": 2129,
         "overlay": 2372
     },
     "autoRestore": false,
     "countdownSeconds": 3,
     "debugMode": false,
     "disableEffectCache": false,
+    "disableFontCache": false,
     "saveEffectSources": false,
     "warningsAreErrors": false,
+    "allowScalingMaximized": true,
     "simulateExclusiveFullscreen": false,
     "alwaysRunAsAdmin": false,
     "showTrayIcon": true,
     "inlineParams": false,
     "autoCheckForUpdates": true,
     "checkForPreviewUpdates": false,
-    "updateCheckDate": 16857077593584826,
+    "updateCheckDate": 16862256434287909,
     "downscalingEffect": {
         "name": "Bicubic",
         "parameters": {

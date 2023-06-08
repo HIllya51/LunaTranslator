@@ -43,8 +43,10 @@ class MagOptions_t(Structure):
         ('IsDisableWindowResizing',c_bool),
         ('IsDebugMode',c_bool),
         ('IsDisableEffectCache',c_bool),
+        ('IsDisableFontCache',c_bool),
         ('IsSaveEffectSources',c_bool),
         ('IsWarningsAreErrors',c_bool),
+        ('IsAllowScalingMaximized',c_bool),
         ('IsSimulateExclusiveFullscreen',c_bool),
         ('Is3DGameMode',c_bool),
         ('IsShowFPS',c_bool),
@@ -98,7 +100,8 @@ def callmagpie10( hwnd):
     MagOptions.contents.multiMonitorUsage= magpie10_config['profiles'][profiles_index]['multiMonitorUsage']
     MagOptions.contents.cursorInterpolationMode= magpie10_config['profiles'][profiles_index]['cursorInterpolationMode']
 
-
+    MagOptions.contents.IsAllowScalingMaximized=magpie10_config['allowScalingMaximized']
+    MagOptions.contents.IsDisableFontCache=magpie10_config['disableFontCache']
     MagOptions.contents.IsDisableWindowResizing= magpie10_config['profiles'][profiles_index]['disableWindowResizing']
     MagOptions.contents.IsDebugMode= magpie10_config['debugMode']
     MagOptions.contents.IsDisableEffectCache= magpie10_config['disableEffectCache']

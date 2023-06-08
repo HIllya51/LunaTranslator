@@ -24,7 +24,7 @@ translatordfsetting=tryreadconfig2('translatorsetting.json')
 ocrdfsetting=tryreadconfig2('ocrsetting.json')
 
 globalconfig=tryreadconfig('config.json')
-magpie10_config=tryreadconfig('magpie10_config.json',dfmagpie10_config)
+magpie10_config=tryreadconfig('magpie10_config.json')
 postprocessconfig=tryreadconfig('postprocessconfig.json')
 noundictconfig=tryreadconfig('noundictconfig.json')
 transerrorfixdictconfig=tryreadconfig('transerrorfixdictconfig.json') 
@@ -61,7 +61,8 @@ for game in savehook_new_data:
         if k not in savehook_new_data[game]:
             savehook_new_data[game][k]=_dfsavehook[k]
 
-def syncconfig(config1,default,drop=False,deep=0): 
+def syncconfig(config1,default,drop=False,deep=0,skipdict=False): 
+    
     for key in default: 
         if key not in config1: 
             config1[key]=default[key] 
@@ -71,7 +72,8 @@ def syncconfig(config1,default,drop=False,deep=0):
         if type(default[key])!=type(config1[key]) and (type(default[key])==dict or type(default[key])==list): 
             config1[key]=default[key] 
         elif type(default[key])==dict:  
-            syncconfig(config1[key],default[key],drop,deep-1)
+            if skipdict==False:
+                syncconfig(config1[key],default[key],drop,deep-1)
              
     if drop and deep>0:
         for key in list(config1.keys()):
@@ -83,6 +85,7 @@ syncconfig(postprocessconfig,defaultpost ,True,3)
 syncconfig(transerrorfixdictconfig,defaulterrorfix)
 
 syncconfig(noundictconfig,defaultnoun)
+syncconfig(magpie10_config,dfmagpie10_config,skipdict=True)
 syncconfig(translatorsetting,translatordfsetting,drop=True,deep=3)
 
 

@@ -623,5 +623,8 @@
     "通用": "phổ quát",
     "默认降采样效果": "Hiệu ứng lấy mẫu mặc định",
     "游戏失去焦点时取消置顶": "Hủy cài đặt khi game mất focus",
-    "描边字体_reverse": "Phông viền reverse"
+    "描边字体_reverse": "Phông viền reverse",
+    "允许缩放最大化或全屏的窗口": "Cho phép phóng to cửa sổ hoặc toàn màn hình",
+    "缩放时模拟独占全屏": "Mô phỏng độc quyền toàn màn hình khi phóng to",
+    "过滤「」以外的字符": "Lọc các ký tự khác ngoài \"\""
 }

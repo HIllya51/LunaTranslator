@@ -623,5 +623,8 @@
     "通用": "currency",
     "默认降采样效果": "Default Downsampling effect",
     "游戏失去焦点时取消置顶": "Cancel topping when the game loses focus",
-    "描边字体_reverse": "Stroke font_ Reverse"
+    "描边字体_reverse": "Stroke font_ Reverse",
+    "允许缩放最大化或全屏的窗口": "Allow zooming to maximize or full screen windows",
+    "缩放时模拟独占全屏": "Simulate exclusive full screen when zooming",
+    "过滤「」以外的字符": "Filter characters outside of ''"
 }
