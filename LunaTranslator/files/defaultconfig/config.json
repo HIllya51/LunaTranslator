@@ -24,6 +24,7 @@
 		"changecharset":false,
 		"changecharset_charset":2
 	},
+    "requestinterval":1,
     "keepontop":true,
 	"buttonsize":20,
 	"language_setted_2.4.5":false,

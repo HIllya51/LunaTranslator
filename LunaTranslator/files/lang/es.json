@@ -626,5 +626,7 @@
     "描边字体_reverse": "Fuente de dibujo Reverse",
     "允许缩放最大化或全屏的窗口": "Permite ampliar la ventana maximizada o completa",
     "缩放时模拟独占全屏": "La simulación monopoliza la pantalla completa al ampliar",
-    "过滤「」以外的字符": "Filtrar caracteres distintos de \"\"."
+    "过滤「」以外的字符": "Filtrar caracteres distintos de \"\".",
+    "翻译请求间隔(s)": "Intervalo de solicitud de traducción (s)",
+    "若有多个api key，用|将每个key连接后填入，即可轮流使用": "Si hay varias claves api, se puede usar por turnos después de conectar cada clave con | Y rellenarla."
 }

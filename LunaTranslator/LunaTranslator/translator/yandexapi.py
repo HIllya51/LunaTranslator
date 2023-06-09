@@ -6,7 +6,7 @@ class TS(basetrans):
     def translate(self, content): 
         self.checkempty(['key'])
         
-        key = self.config['key']
+        key = self.multiapikeycurrent['key']
         
         
         url = 'https://translate.yandex.net/api/v1.5/tr.json/translate'    

@@ -7,12 +7,8 @@ class TS(basetrans):
     def translate(self,query): 
         self.checkempty(['apikey'])
         
-        apikey = self.config['apikey']
-        if '|' in apikey:
-            apikeys=apikey.split('|')
-            self.multiapikeycurrentidx=self.multiapikeycurrentidx%len(apikeys)
-            apikey=apikeys[self.multiapikeycurrentidx]
-            self.multiapikeycurrentidx+=1
+        apikey = self.multiapikeycurrent['apikey']
+         
             
         headers = { 
             'accept': '*/*',

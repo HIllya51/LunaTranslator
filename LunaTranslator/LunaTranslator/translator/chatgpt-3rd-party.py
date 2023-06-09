@@ -41,7 +41,7 @@ class TS(basetrans):
         message.append({"role": "user", "content": query})
 
         headers = {
-            'Authorization': 'Bearer ' + self.config['SECRET_KEY'],
+            'Authorization': 'Bearer ' + self.multiapikeycurrent['SECRET_KEY'],
             'Content-Type': 'application/json',
         }
 

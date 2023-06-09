@@ -10,8 +10,8 @@ class TS(basetrans):
     def translate(self,query):  
         self.checkempty(['app_id','app_secret'])
          
-        app_id = self.config['app_id']
-        app_secret = self.config['app_secret']
+        app_id = self.multiapikeycurrent['app_id']
+        app_secret = self.multiapikeycurrent['app_secret']
         
                 
         res=requests.post('https://open.feishu.cn/open-apis/auth/v3/tenant_access_token/internal',headers={'Content-Type':"application/json; charset=utf-8"}, proxies= self.proxy,json={

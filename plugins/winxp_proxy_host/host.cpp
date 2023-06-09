@@ -159,8 +159,7 @@ namespace Host
 
 		textThreadsByParams->try_emplace(console, console, HookParam{}, CONSOLE);
 		OnCreate(GetThread(console));
-		textThreadsByParams->try_emplace(clipboard, clipboard, HookParam{}, CLIPBOARD);
-		OnCreate(GetThread(clipboard));
+		 
 
 		CreatePipe();
 
@@ -170,23 +169,7 @@ namespace Host
 			if (statusCode == HC_ACTION && wParam == PM_REMOVE && ((MSG*)lParam)->message == WM_CLIPBOARDUPDATE) SetEvent(clipboardUpdate);
 			return CallNextHookEx(NULL, statusCode, wParam, lParam);
 		}, NULL, GetCurrentThreadId());
-		std::thread([]
-		{
-			while (WaitForSingleObject(clipboardUpdate, INFINITE) == WAIT_OBJECT_0)
-			{
-				std::optional<std::wstring> clipboardText;
-				for (int retry = 0; !clipboardText && retry < 3; ++retry) // retry loop in case something else is using the clipboard
-				{
-					Sleep(10);
-					if (!IsClipboardFormatAvailable(CF_UNICODETEXT)) continue;
-					if (!OpenClipboard(NULL)) continue;
-					if (AutoHandle<Functor<GlobalUnlock>> clipboard = GetClipboardData(CF_UNICODETEXT)) clipboardText = (wchar_t*)GlobalLock(clipboard);
-					CloseClipboard();
-				}
-				if (clipboardText) GetThread(clipboard).AddSentence(std::move(clipboardText.value()));
-			}
-			throw;
-		}).detach();
+		 
 	}
 
 	void InjectProcess(DWORD processId)

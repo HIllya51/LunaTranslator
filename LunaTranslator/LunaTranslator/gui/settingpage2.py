@@ -106,7 +106,7 @@ def setTabTwo_lazy(self) :
             [
                 ("使用持久化翻译缓存",8),(self.getsimpleswitch(globalconfig,'uselongtermcache')),'','',
                 ('显示错误信息',8),(self.getsimpleswitch(globalconfig  ,'showtranexception'),1),'','',
-                ('',8),
+                ('翻译请求间隔(s)',8),(self.getspinbox(0,9999,globalconfig,'requestinterval',step=0.1,double=True),2)
             ],
             [
                 ("均衡负载",8),(self.getsimpleswitch(globalconfig,'loadbalance',callback=lambda x:_fuzainum.setEnabled(x))),'','',
@@ -114,7 +114,9 @@ def setTabTwo_lazy(self) :
             ]
 
         ] 
- 
+        online_reg_grid=[
+            [("若有多个api key，用|将每个key连接后填入，即可轮流使用",24)]
+        ]
         pretransgrid=[
             [
                 ("预翻译采用模糊匹配",8),(self.getsimpleswitch(globalconfig  ,'premtsimiuse'),1),'',
@@ -139,7 +141,7 @@ def setTabTwo_lazy(self) :
         offlinegrid=initsome11(self, lixians) 
         onlinegrid=initsome11(self, mianfei ) 
         developgrid+=initsome11(self, develop ) 
-        online_reg_grid=initsome11(self, shoufei) 
+        online_reg_grid+=initsome11(self, shoufei) 
         pretransgrid+=initsome11(self,pre )   
         tab=self.makesubtab_lazy(['在线翻译','develop','注册在线翻译','离线翻译','预翻译'],[
             lambda:self.makescroll( self.makegrid(onlinegrid )   ),

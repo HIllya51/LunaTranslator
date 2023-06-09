@@ -346,7 +346,7 @@ class QUnFrameWindow(resizableframeless):
         self.object = object  
         
         self.isletgamefullscreened=False
-        self.fullscreenmanager=fullscreen()
+        self.fullscreenmanager=fullscreen(self._externalfsend)
         self._isTracking=False
         self.quickrangestatus=False
         self.isontop=True  
@@ -426,7 +426,9 @@ class QUnFrameWindow(resizableframeless):
             for pid in self.object.textsource.pids:
                 winsharedutils.SetProcessMute(pid,self.processismuteed)
         
-    
+    def _externalfsend(self):
+        self.isletgamefullscreened=False
+        self.refreshtooliconsignal.emit()
     def _fullsgame(self): 
         if self.object.textsource and  self.object.textsource.hwnd:
             _hwnd=self.object.textsource.hwnd
@@ -635,11 +637,7 @@ class QUnFrameWindow(resizableframeless):
         globalconfig['width']=self.width() 
         globalconfig['height']=self.height() 
         saveallconfig() 
-        try:
-            if self.fullscreenmanager.needreset:
-                self.fullscreenmanager( )
-        except:
-            print_exc()
+         
         if self.object.textsource:
             
             self.object.textsource=None

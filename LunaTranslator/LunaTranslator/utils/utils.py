@@ -17,7 +17,7 @@ import importlib,re
 def checkimage(gamepath):
     return (savehook_new_data[gamepath]['imagepath'] is None) or (os.path.exists(savehook_new_data[gamepath]['imagepath'])==False)
 def checkinfo(gamepath):
-    (savehook_new_data[gamepath]['infopath'] is None) or ((savehook_new_data[gamepath]['infopath'][:4].lower()!='http') and os.path.exists(savehook_new_data[gamepath]['infopath'])==False)
+    return (savehook_new_data[gamepath]['infopath'] is None) or ((savehook_new_data[gamepath]['infopath'][:4].lower()!='http') and os.path.exists(savehook_new_data[gamepath]['infopath'])==False)
 def checkneed(gamepath):
     return (gamepath in savehook_new_data) and \
             (checkimage(gamepath) or checkinfo(gamepath) )

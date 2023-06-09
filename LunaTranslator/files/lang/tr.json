@@ -626,5 +626,7 @@
     "描边字体_reverse": "Üç yazıtipi Döndür",
     "允许缩放最大化或全屏的窗口": "Büyütmeye veya tam ekran pencerelerini büyütmeye izin verin",
     "缩放时模拟独占全屏": "Zorlaştırdığında özellikle dolu ekran simüle edin",
-    "过滤「」以外的字符": "'' dışında karakterleri sil"
+    "过滤「」以外的字符": "'' dışında karakterleri sil",
+    "翻译请求间隔(s)": "Çeviri İstem Aralığı",
+    "若有多个api key，用|将每个key连接后填入，即可轮流使用": "Eğer çoklu API anahtarları varsa, her anahtarı bağlamak için kullanın."
 }

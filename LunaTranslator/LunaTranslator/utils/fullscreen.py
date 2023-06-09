@@ -1,16 +1,15 @@
 import os,win32con,json,math
 import win32utils
-from utils.config import globalconfig 
-from utils.magpie10 import callmagpie10,endmagpie10
+from utils.config import globalconfig ,magpie10_config
 from utils.hwnd import  letfullscreen,recoverwindow,ListProcess
 from traceback import print_exc
 from utils.subproc import subproc_w
-import time
+import time,threading
 
 class fullscreen():
-    def __init__(self) -> None:
-        self.needreset=False
+    def __init__(self,_externalfsend) -> None: 
         self.savewindowstatus=None 
+        self._externalfsend=_externalfsend
         if self.fsmethod==1:self.runmagpie10() 
     @property
     def fsmethod(self):return globalconfig['fullscreenmethod_2']
@@ -52,16 +51,24 @@ class fullscreen():
                 win32utils.keybd_event(mp1[mp[k]],0,win32con.KEYEVENTF_KEYUP,0)
         
     def _0(self,hwnd,full):
-        if full: 
-            self.needreset=True
-            self.engine=callmagpie10(hwnd)
-        else:
-            endmagpie10()
-            try:
+        if full:  
+            profiles_index=globalconfig['profiles_index']
+            if profiles_index>len(magpie10_config['profiles']):
+                profiles_index=0
+                
+            jspath=os.path.abspath('./userconfig/magpie10_config.json')
+            with open(jspath,'w',encoding='utf-8') as ff:
+                    ff.write(json.dumps(magpie10_config,ensure_ascii=False,sort_keys=False, indent=4))
+            self.engine= subproc_w(f'./files/plugins/Magpie10/Magpie.Core.exe {profiles_index} {hwnd} "{jspath}"',cwd='./files/plugins/Magpie10/')
+            def _waitexternalend():
                 self.engine.wait()
-            except:
-                pass
-            self.needreset=False
+                self._externalfsend()
+            threading.Thread(target=_waitexternalend ).start()
+        else:
+            endevent = win32utils.CreateEvent(False, False,'MAGPIE_WAITFOR_STOP_SIGNAL')
+            win32utils.SetEvent(endevent)
+            win32utils.CloseHandle(endevent)
+             
     # magpie9
     # def _0(self,hwnd,full):
     #     if full:

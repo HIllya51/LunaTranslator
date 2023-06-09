@@ -13,12 +13,8 @@ class TS(basetrans):
     def translate(self,query):  
         self.checkempty(['Token'])
         
-        token = self.config['Token']
-        if '|' in token:
-            apikeys = token.split('|')
-            self.multiapikeycurrentidx = self.multiapikeycurrentidx % len(apikeys)
-            token = apikeys[self.multiapikeycurrentidx]
-            self.multiapikeycurrentidx += 1
+        token = self.multiapikeycurrent['Token']
+         
         
         url = "http://api.interpreter.caiyunai.com/v1/translator"
         # WARNING, this token is a test token for new developers,

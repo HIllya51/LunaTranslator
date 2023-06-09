@@ -20,7 +20,7 @@ class TS(basetrans):
         os.environ['http_proxy']=self.proxy['http'] if self.proxy['http'] else ''
         self.checkempty(['SECRET_KEY','model'])
         self.contextnum=int(self.config['附带上下文个数'])
-        secret_key = self.config['SECRET_KEY'] 
+        secret_key = self.multiapikeycurrent['SECRET_KEY'] 
         if secret_key != self.api_key:
             self.api_key = secret_key
             # 对api_key频繁赋值会消耗性能

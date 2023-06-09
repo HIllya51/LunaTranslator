@@ -15,9 +15,8 @@ class TS(basetrans):
         
         self.checkempty(['APP ID','密钥'])
 
-        appid = self.config['APP ID']
-        secretKey = self.config['密钥']
-  
+        appid = self.multiapikeycurrent['APP ID']
+        secretKey = self.multiapikeycurrent['密钥']
         myurl = '/api/trans/vip/translate'
 
         fromLang = self.srclang   #原文语种

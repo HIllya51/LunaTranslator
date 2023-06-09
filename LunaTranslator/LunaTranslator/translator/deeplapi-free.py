@@ -14,7 +14,7 @@ class TS(basetrans):
     def translate(self,query):  
         self.checkempty(['DeepL-Auth-Key'])
 
-        appid = self.config['DeepL-Auth-Key']
+        appid = self.multiapikeycurrent['DeepL-Auth-Key']
   
         headers = {
         'Authorization': 'DeepL-Auth-Key '+appid,

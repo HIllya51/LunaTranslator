@@ -99,12 +99,24 @@ class basetrans:
                 emptys.append(item)
         if len(emptys):
             raise ArgsEmptyExc(emptys)
-            
-    
+     
+    @property
+    def multiapikeycurrent(self):
+        
+        class alternatedict(dict): 
+            def __getitem__(self2, __key) :
+                t=super().__getitem__(__key)
+                if type(t)!=str:
+                    raise Exception("Incorrect use of multiapikeycurrent")
+                if '|' in t:
+                    ts=t.split('|') 
+                    t=ts[self.multiapikeycurrentidx% len(ts)]
+                return t.strip()
+        return alternatedict(translatorsetting[self.typename]['args'])
     ############################################################
     def __init__(self,typename ) :  
         self.typename=typename
-        self.multiapikeycurrentidx=0
+        self.multiapikeycurrentidx=-1
         self.queue=Queue() 
         
         
@@ -117,7 +129,7 @@ class basetrans:
         except:
             print_exc()
         
-        self.lastrequeststime=0
+        self.lastrequesttime=0
         self._cache={}
         
         self.newline=None
@@ -193,8 +205,10 @@ class basetrans:
             if res:
                 return res
         
-        res=self.translate(contentsolved)
-        
+        if self.typename in static_data['fanyi_offline']:
+            res=self.translate(contentsolved)
+        else:
+            res=self.intervaledtranslate(contentsolved)
          
         if globalconfig['uselongtermcache']:
             self.longtermcacheset(contentsolved,res)
@@ -203,12 +217,27 @@ class basetrans:
         return res
     
     def maybecachetranslate(self,contentraw,contentsolved):
-        if self.typename not in static_data["fanyi_pre"]:
-            res=self.cached_translate(contentsolved)
+        if self.typename in static_data["fanyi_pre"]:
+            res=self.translate(contentsolved)
         else: 
-            res=self.translate(contentraw)
+            res=self.cached_translate(contentraw)
         return res
-    
+    def intervaledtranslate(self,content):
+        interval=globalconfig['requestinterval']
+        current=time.time() 
+        self.current=current 
+        sleeptime=interval-(current-self.lastrequesttime)
+         
+        if sleeptime>0:
+            time.sleep(sleeptime) 
+        self.lastrequesttime=time.time() 
+        if (current!=self.current) or (self.using==False):
+            raise Exception
+
+        self.multiapikeycurrentidx+=1
+        res=self.translate(content)
+        
+        return res
     @property
     def onlymanual(self):
         if 'manual' not in globalconfig['fanyi'][self.typename] :

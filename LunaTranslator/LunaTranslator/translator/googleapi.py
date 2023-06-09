@@ -10,7 +10,7 @@ class TS(basetrans):
     def translate(self,query):  
         self.checkempty(['key'])
 
-        key = self.config['key']
+        key = self.multiapikeycurrent['key']
         
    
         params={'key': key,'source':self.srclang, 'target':self.tgtlang, 'q':  (query)}

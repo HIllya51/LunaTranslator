@@ -7,7 +7,7 @@ class TS(basetrans):
     def translate(self, query):
         self.checkempty(['apikey'])
         self.checkempty(['apiurl'])
-        apikey = self.config['apikey']
+        apikey = self.multiapikeycurrent['apikey']
         url = self.config['apiurl'] + '/v3/translate?version=2018-05-01'
         headers = {
             'Content-Type': 'application/json'

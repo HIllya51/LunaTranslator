@@ -348,8 +348,8 @@ class TS(basetrans):
     def translate(self,query): 
         self.checkempty(['Access Key ID','Secret Access Key'])
   
-        keyid = self.config['Access Key ID']
-        acckey = self.config['Secret Access Key']
+        keyid = self.multiapikeycurrent['Access Key ID']
+        acckey = self.multiapikeycurrent['Secret Access Key']
         try:
             res=trans(query,keyid,acckey,self.srclang,self.tgtlang,self.proxy)
             res='\n'.join( [ _['Translation'] for _ in json.loads(res)['TranslationList'] ])

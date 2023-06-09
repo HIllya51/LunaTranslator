@@ -11,8 +11,8 @@ class TS(basetrans):
     def translate(self, query):
         self.checkempty(['Access_Key'])
         self.checkempty(['SECRET_KEY'])
-        access_key_id = self.config['Access_Key']
-        access_key_secret = self.config['SECRET_KEY']
+        access_key_id = self.multiapikeycurrent['Access_Key']
+        access_key_secret = self.multiapikeycurrent['SECRET_KEY']
         url = 'http://mt.cn-hangzhou.aliyuncs.com/api/translate/web/ecommerce'
         req_body = {
             "Action": "Translate",

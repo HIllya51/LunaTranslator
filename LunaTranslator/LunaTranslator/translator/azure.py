@@ -8,7 +8,7 @@ class TS(basetrans):
         self.checkempty(['key1'])
 
         # Add your key and endpoint
-        key = self.config['key1']
+        key = self.multiapikeycurrent['key1']
         endpoint = "https://api.cognitive.microsofttranslator.com"
 
         # location, also known as region.

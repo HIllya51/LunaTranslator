@@ -10,8 +10,8 @@ class TS(basetrans):
     def translate(self, content): 
         self.checkempty(['APP_KEY','APP_SECRET'])
  
-        APP_KEY = self.config['APP_KEY']
-        APP_SECRET = self.config['APP_SECRET']
+        APP_KEY = self.multiapikeycurrent['APP_KEY']
+        APP_SECRET = self.multiapikeycurrent['APP_SECRET']
         youdao_url = 'https://openapi.youdao.com/api'    
  
         translate_text = content  
