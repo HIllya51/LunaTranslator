@@ -1,10 +1,10 @@
 # LunaTranslator 
   
 <p align="left">
-    <a href="./LICENSE"><img src="https://img.shields.io/badge/license-GPL%203.0-dfd.svg"></a>
+    <a href="./LICENSE"><img src="https://img.shields.io/github/license/HIllya51/LunaTranslator"></a>
     <a href="https://github.com/HIllya51/LunaTranslator/releases"><img src="https://img.shields.io/github/v/release/HIllya51/LunaTranslator?color=ffa"></a>
     <a href="https://github.com/HIllya51/LunaTranslator/stargazers"><img src="https://img.shields.io/github/stars/HIllya51/LunaTranslator?color=ccf"></a>
-     
+     <a href="https://github.com/HIllya51/LunaTranslator/releases"><img src="https://img.shields.io/github/downloads/HIllya51/LunaTranslator/total.svg?logo=github"></a>
 </p>
  
 ## 简体中文 | [Русский язык](README_ru.md) | [English](README_en.md) 
@@ -83,6 +83,8 @@
 
 * [zxyacb/ntlea](https://github.com/zxyacb/ntlea)
 
+* [Chuyu-Team/YY-Thunks](https://github.com/Chuyu-Team/YY-Thunks)
+
 * [@KirpichKrasniy](https://github.com/KirpichKrasniy)
 
 </details>
@@ -93,5 +95,5 @@
 
 如果你感觉该软件对你有帮助，欢迎微信扫码赞助，谢谢，么么哒~
 
-<img src='.\\LunaTranslator\\files\\zan.jpg' height=500 width=500>
+<img src='.\\LunaTranslator\\files\\zan.jpg' style="height: 400px !important;">
 

@@ -631,12 +631,13 @@
     "若有多个api key，用|将每个key连接后填入，即可轮流使用": "Nếu có nhiều API key, bạn có thể sử dụng thay phiên nhau.",
     "服务端IP": "IP phía máy chủ",
     "作为客户端时": "Khi là khách hàng",
-    "监听的端口号": "Số cổng để nghe",
     "人工翻译_Misaka": "Bản dịch của manual_ Misaka",
     "TCP设置": "Thiết lập TCP",
     "端口可用": "Cổng có sẵn",
-    "提取的文本自动输出到TCP": "Văn bản được trích xuất tự động xuất ra TCP",
     "服务端端口": "Cổng dịch vụ",
     "作为服务端时": "Khi kết thúc dịch vụ",
-    "插入特殊码延迟(ms)": "Chèn độ trễ mã đặc biệt (ms)"
+    "插入特殊码延迟(ms)": "Chèn độ trễ mã đặc biệt (ms)",
+    "朗读原文": "Đọc nguyên văn",
+    "朗读翻译": "Đọc bản dịch",
+    "朗读的翻译": "Bản dịch của read to"
 }

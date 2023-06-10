@@ -631,12 +631,13 @@
     "若有多个api key，用|将每个key连接后填入，即可轮流使用": "If there are multiple API keys, use | to connect each key and fill it in to take turns using it",
     "服务端IP": "Server IP",
     "作为客户端时": "As a client",
-    "监听的端口号": "Listening port number",
     "人工翻译_Misaka": "Manual translation_ Misaka",
     "TCP设置": "TCP settings",
     "端口可用": "Port available",
-    "提取的文本自动输出到TCP": "Automatically output extracted text to TCP",
     "服务端端口": "Server Port",
     "作为服务端时": "As a server",
-    "插入特殊码延迟(ms)": "Insert special code delay (ms)"
+    "插入特殊码延迟(ms)": "Insert special code delay (ms)",
+    "朗读原文": "Reading the original text aloud",
+    "朗读翻译": "Reading and Translation",
+    "朗读的翻译": "Translation of reading aloud"
 }

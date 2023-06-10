@@ -58,7 +58,7 @@ class SystemHotkey( ):
         if hotkey in self.keybinds:
             del self.keybinds[hotkey]
         self.changedlock.release()
-    def __init__(self , check_queue_interval=0.0001):
+    def __init__(self , check_queue_interval=0.001):
         self.waitforregist.acquire()
         self.check_queue_interval = check_queue_interval  
         self.hk_action_queue = queue.Queue()   

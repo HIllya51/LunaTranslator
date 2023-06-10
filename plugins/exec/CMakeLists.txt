@@ -21,10 +21,6 @@ endif()
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY $<1:${CMAKE_FINAL_OUTPUT_DIRECTORY}>)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY $<1:${CMAKE_FINAL_OUTPUT_DIRECTORY}>)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY $<1:${CMAKE_FINAL_OUTPUT_DIRECTORY}>)
-
-
-add_executable(LunaTranslator_xp lunaxp.cpp luna.rc) 
-
    
 add_executable(LunaTranslator luna.cpp luna.rc) 
 #target_link_options(LunaTranslator PRIVATE /MANIFESTUAC:level="asInvoker")

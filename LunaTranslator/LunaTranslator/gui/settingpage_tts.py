@@ -2,7 +2,7 @@ import functools
 
 from PyQt5.QtWidgets import   QComboBox 
 from gui.inputdialog import getsomepath1
-from myutils.config import globalconfig    
+from myutils.config import globalconfig ,_TRL
 import os,functools
 def setTab5_direct(self) :  
     self.voicecombo=QComboBox( ) 
@@ -55,7 +55,8 @@ def setTab5lz(self) :
                 [('语速:(-10~10)',5),(self.getspinbox(-10,10,globalconfig['ttscommon'],'rate'  ),2)],
                 [('音量:(0~100)',5),(self.getspinbox(0,100,globalconfig['ttscommon'],'volume' ),2)],
                 [ ('自动朗读',5),(self.getsimpleswitch(globalconfig,'autoread' ),1)],
-                
+                [ ('朗读原文',5),(self.getsimpleswitch(globalconfig,'read_raw' ),1),'',('朗读翻译',5),(self.getsimpleswitch(globalconfig,'read_trans' ),1)],
+                [('朗读的翻译',5),(self.getsimplecombobox(_TRL([globalconfig['fanyi'][x]['name'] for x in globalconfig['fanyi']]),globalconfig,'read_translator'),15) ],
         ]  
         gridlayoutwidget=self.makegrid(grids )  
         gridlayoutwidget=self.makescroll( gridlayoutwidget  )

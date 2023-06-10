@@ -15,7 +15,6 @@ from textsource.copyboard import copyboard
 from textsource.texthook import texthook   
 from textsource.embedded import embedded
 from textsource.ocrtext import ocrtext
-from textsource.tcpio import tcpio
 import  gui.selecthook     
 import gui.translatorUI
 from gui.languageset import languageset
@@ -46,6 +45,7 @@ class MAINUI() :
         self.rect=None 
         self.currentmd5='0'
         self.currenttext=''
+        self.currentread=''
         self.refresh_on_get_trans_signature=0
         self.currentsignature=None
         self.isrunning=True
@@ -108,22 +108,7 @@ class MAINUI() :
                     zhanweifu+=1
         
         return content,(mp1,mp2,mp3)
-    @threader
-    def starttcpservice(self,_=0):
-        start=globalconfig['outputtotcp'] and globalconfig['sourcestatus']['tcpio']['use']==False
-        if start:
-            try:
-                
-                self._sock=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-                self._sock.bind(('',globalconfig['tcp_port_listen']))
-                self._sock.listen(100)
-                while globalconfig['outputtotcp'] and globalconfig['sourcestatus']['tcpio']['use']==False:
-                    self.outputtcpsocket, addr =self._sock.accept()
-            except:
-                print_exc() 
-        else:
-                self._sock.close()
-                self.outputtcpsocket.close()
+     
         
     def solveaftertrans(self,res,mp): 
         mp1,mp2,mp3=mp
@@ -158,6 +143,7 @@ class MAINUI() :
             if _paste_str[:len('<notrans>')]=='<notrans>':
                 self.translation_ui.displayraw1.emit([],_paste_str[len('<notrans>'):],globalconfig['rawtextcolor'])
                 self.currenttext=_paste_str
+                self.currentread=_paste_str
                 return   
             elif _paste_str[:len('<msg>')]=='<msg>':
                 self.translation_ui.displaystatus.emit(_paste_str[len('<msg>'):],'red',False)
@@ -192,15 +178,7 @@ class MAINUI() :
         
         if globalconfig['outputtopasteboard'] and globalconfig['sourcestatus']['copy']['use']==False:  
             winsharedutils.clipboard_set(_paste_str)
-        if globalconfig['outputtotcp'] and globalconfig['sourcestatus']['tcpio']['use']==False:  
-            _b=_paste_str.encode('utf8')
-            _l=len(_b)
-            _i=ctypes.c_uint(_l)
-            try:
-                self.outputtcpsocket.send(bytes(_i)+_b)
-            except:
-                pass
-            
+        
 
         try:
             hira=self.hira_.fy(_paste_str)
@@ -215,7 +193,9 @@ class MAINUI() :
             _showrawfunction=functools.partial(self.translation_ui.displayraw1.emit,hira,_paste_str,globalconfig['rawtextcolor'] )
             _showrawfunction_sig=time.time()
 
-        self.readcurrent()
+        if globalconfig['read_raw']:
+            self.currentread=_paste_str
+            self.readcurrent()
             
         paste_str_solved,optimization_params= self.solvebeforetrans(_paste_str) 
         
@@ -259,7 +239,11 @@ class MAINUI() :
                 return   
         if classname not in static_data["fanyi_pre"]: 
             res=self.solveaftertrans(res,optimization_params)
-            
+        
+        if globalconfig['read_trans']  and (list(globalconfig['fanyi'].keys())[globalconfig['read_translator']]==classname):
+            self.currentread=res
+            self.readcurrent()
+
         needshowraw=_showrawfunction and self.refresh_on_get_trans_signature!=_showrawfunction_sig
         if needshowraw:
             self.refresh_on_get_trans_signature=_showrawfunction_sig
@@ -289,7 +273,7 @@ class MAINUI() :
     def readcurrent(self,force=False):
         try: 
             if force or globalconfig['autoread']:
-                self.reader.read(self.currenttext) 
+                self.reader.read(self.currentread) 
         except:
             pass
     @threader
@@ -335,7 +319,7 @@ class MAINUI() :
         self.settin_ui.selectbuttonembed.setEnabled(globalconfig['sourcestatus']['embedded']['use']) 
         self.textsource=None
         if checked: 
-            classes={'ocr':ocrtext,'copy':copyboard,'texthook':None,'embedded':None,"tcpio":tcpio} 
+            classes={'ocr':ocrtext,'copy':copyboard,'texthook':None,'embedded':None} 
             if use is None:
                 use=list(filter(lambda _ :globalconfig['sourcestatus'][_]['use'],classes.keys()) )
                 use=None if len(use)==0 else use[0]
@@ -348,7 +332,6 @@ class MAINUI() :
             else:
                 self.textsource=classes[use](self.textgetmethod)
         
-        self.starttcpservice()
     @threader
     def starthira(self,use=None,checked=True): 
         if checked:

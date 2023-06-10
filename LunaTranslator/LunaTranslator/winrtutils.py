@@ -5,7 +5,10 @@ if platform.architecture()[0]=='64bit':
     pythonbit='64' 
 else:
     pythonbit='32' 
-try:
+try: 
+    if platform.system() != "Windows" or int(platform.version().split('.')[0])<6:
+        raise Exception()
+         
     winrtutilsdll=CDLL(os.path.abspath('./files/plugins/winrtutils{}.dll'.format(pythonbit)) )
 except:
     winrtutilsdll=0
@@ -49,3 +52,7 @@ if winrtutilsdll:
             
         _freeocrres(ret,num.value)
         return res
+    
+        
+    _winrt_capture_window=winrtutilsdll.winrt_capture_window
+    _winrt_capture_window.argtypes=c_wchar_p,c_void_p

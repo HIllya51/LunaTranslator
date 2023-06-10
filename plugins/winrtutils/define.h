@@ -1,12 +1,14 @@
 #pragma once
 #include<string>
 #include<vector>
+#include<windows.h>
 struct ocrres {
     wchar_t** lines;
     int* ys;
 
 };
 extern "C" {
+    __declspec(dllexport) void winrt_capture_window(wchar_t* savepath, HWND hwnd) ;
 
     __declspec(dllexport) bool check_language_valid(wchar_t*);
     __declspec(dllexport) wchar_t** getlanguagelist(int*);

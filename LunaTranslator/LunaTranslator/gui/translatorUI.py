@@ -4,6 +4,8 @@ import functools
 import threading 
 import os
 import winsharedutils
+from PyQt5.QtCore import QT_VERSION_STR
+
 from traceback import print_exc
 from PyQt5.QtWidgets import QWidget, QLabel, QPushButton, QVBoxLayout,QApplication
 from PyQt5.QtCore import Qt, pyqtSignal  ,QThread
@@ -23,6 +25,7 @@ from gui.dialog_memory import dialog_memory
 from gui.textbrowser import Textbrowser
 from myutils.fullscreen import fullscreen
 from gui.rangeselect  import moveresizegame 
+import winrtutils
 from gui.usefulwidget import resizableframeless
 class QUnFrameWindow(resizableframeless):   
     displayres =  pyqtSignal(str,str,str ) 
@@ -290,10 +293,10 @@ class QUnFrameWindow(resizableframeless):
                         pass
                     elif (globalconfig['focusnotop']):
                         try:
-                            if (hwnd)==self.object.textsource.hwnd:
+                            if self.object.textsource.hwnd in [0,hwnd] :
                                 self.settop()
                         except:
-                            pass
+                            self.settop()
                     else:
                         self.settop() 
                 except:
@@ -313,7 +316,8 @@ class QUnFrameWindow(resizableframeless):
         self.tray.setIcon(icon) 
         showintab(self.winId(),globalconfig['showintab']) 
         self.isfirstshow=True
-        self.setAttribute(Qt.WA_TranslucentBackground) 
+        if QT_VERSION_STR!='5.5.1':
+            self.setAttribute(Qt.WA_TranslucentBackground) 
         self.setAttribute(Qt.WA_ShowWithoutActivating,True)
         self.showintab=  globalconfig['showintab'] 
         self.setWindowTitle('LunaTranslator')
@@ -401,25 +405,31 @@ class QUnFrameWindow(resizableframeless):
                                            %(int(globalconfig['backcolor'][1:3],16),int(globalconfig['backcolor'][3:5],16),int(globalconfig['backcolor'][5:7],16),globalconfig['transparent']/200))
     def grabwindow(self): 
         
-        try:
             hwnd=win32utils.FindWindow('Window_Magpie_967EB565-6F73-4E94-AE53-00CC42592A22',None) 
             tm=time.localtime()
             fname='./cache/screenshot/{}-{}-{}-{}-{}-{}.png'.format(tm.tm_year,tm.tm_mon,tm.tm_mday,tm.tm_hour,tm.tm_min,tm.tm_sec)
-            if hwnd:
-                hwnd=QApplication.desktop().winId() 
-                self.hide()
-                QApplication.primaryScreen().grabWindow(hwnd).save(fname)
-                self.show() 
+             
+            if hwnd: 
+                try:
+                    winrtutils._winrt_capture_window(fname,hwnd)
+                except:
+                    print_exc()
+                    hwnd=QApplication.desktop().winId() 
+                    self.hide()
+                    QApplication.primaryScreen().grabWindow(hwnd).save(fname)
+                    self.show() 
                 
             else:
-                hwnd=win32utils.GetForegroundWindow()   
-                if hwnd==int(self.winId()):
-                    hwnd=self.object.textsource.hwnd 
-                QApplication.primaryScreen().grabWindow(hwnd).save(fname)
+                hwnd= win32utils.GetForegroundWindow()  
+                p=QApplication.primaryScreen().grabWindow(hwnd)
+                if(not p.toImage().allGray()):
+                    p.save(fname)
+                else:
+                    try:
+                        winrtutils._winrt_capture_window(fname,hwnd)
+                    except: 
+                        p.save(fname)
                 
-                
-        except:
-            pass
     def muteprocessfuntion(self): 
         if self.object.textsource and self.object.textsource.pids :
             self.processismuteed=not self.processismuteed

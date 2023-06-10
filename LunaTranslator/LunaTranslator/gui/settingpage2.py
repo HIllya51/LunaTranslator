@@ -12,7 +12,7 @@ from gui.inputdialog import autoinitdialog
 
 import time,hashlib
 def hashtext(a): 
-    return hashlib.md5(a.encode('utf8')).digest().hex()
+    return hashlib.md5(a.encode('utf8')).hexdigest()
 def initsome11(self,l,label=None): 
     grids=[]
     if label:

@@ -92,8 +92,7 @@ def setTabOne_direct(self) :
                 [   
                      ('HOOK',3),(self.getsimpleswitch(globalconfig['sourcestatus']['texthook'],'use',name='texthook',callback= functools.partial(self.yuitsu_switch,'sourcestatus','sourceswitchs','texthook',self.object.starttextsource),pair='sourceswitchs'),1),'',
                     ('HOOK_内嵌',3),(self.getsimpleswitch(globalconfig['sourcestatus']['embedded'],'use',name='embedded',callback= functools.partial(self.yuitsu_switch,'sourcestatus','sourceswitchs','embedded',self.object.starttextsource),pair='sourceswitchs'),1),'',
-                    ('TCP',3),(self.getsimpleswitch(globalconfig['sourcestatus']['tcpio'],'use',name='tcpio',callback= functools.partial(self.yuitsu_switch,'sourcestatus','sourceswitchs','tcpio',self.object.starttextsource),pair='sourceswitchs'),1),'',
-                        # ('选择文本',3),(self.getcolorbutton(globalconfig ,'',enable=globalconfig['sourcestatus']['texthook']['use'],name='selecthookbutton',icon='fa.gear',constcolor="#FF69B4",callback=lambda  : self.object.hookselectdialog.showsignal.emit() ),1)
+                      
                 ], 
         ]  
 
@@ -104,43 +103,17 @@ def setTabOne_direct(self) :
 def setTabOne(self) :  
         self.tabadd_lazy(self.tab_widget, ('文本输入'), lambda :setTabOne_lazy(self)) 
 
-
-
-def getTCPwidget(self):
-        self.statuslabel2=QLabel()
-        self.tcpipedit=QLineEdit(globalconfig['tcp_ip_as_client'])
-        self.tcpipedit.textEdited.connect(lambda x:globalconfig.__setitem__('tcp_ip_as_client',x))
-        def changeportcallback(port): 
-                if (checkportavailable(port)):
-                    self.statuslabel2.setText(_TR("端口可用"))
-                    
-                else:
-                    self.statuslabel2.setText(_TR("端口冲突"))
-        changeportcallback(globalconfig['tcp_port_listen']) 
-        grid=[
-                [('作为客户端时',10)],
-                [('服务端IP',5),(self.tcpipedit,5)],
-                [('服务端端口',5),(self.getspinbox(0,65535,globalconfig,'tcp_port_as_client'),3) ],
-                [''],
-                [('作为服务端时',10)],
-                [('提取的文本自动输出到TCP',5),(self.getsimpleswitch(globalconfig ,'outputtotcp' ,callback=self.object.starttcpservice),1)],
-                [('监听的端口号',5),(self.getspinbox(0,65535,globalconfig,'tcp_port_listen',callback=changeportcallback),3)],
-                [(self.statuslabel2,5)]
-                
-        ]
-
-        return grid
+ 
 def setTabOne_lazy(self) : 
         
          
          
-        tab=self.makesubtab_lazy(['HOOK设置','OCR设置','剪贴板设置','内嵌设置','TCP设置'],
+        tab=self.makesubtab_lazy(['HOOK设置','OCR设置','剪贴板设置','内嵌设置'],
                                 [       
                                         lambda:self.makescroll(self.makegrid(gethookgrid(self))),
                                         lambda:self.makescroll(self.makegrid(getocrgrid(self))),
                                         lambda:self.makescroll(self.makegrid(setTabclip(self))),
                                         lambda:self.makescroll(self.makegrid(gethookembedgrid(self) )),
-                                        lambda:self.makescroll(self.makegrid(getTCPwidget(self) )),
                                 ]) 
 
         gridlayoutwidget=self.makegrid(self.tab1grids )    

@@ -5,7 +5,7 @@ import queue,time,requests,re,os
 
 from myutils.utils import getproxy
 def b64string(a): 
-    return hashlib.md5(a.encode('utf8')).digest().hex()
+    return hashlib.md5(a.encode('utf8')).hexdigest()
 
 
 def vndbdownloadimg(url):

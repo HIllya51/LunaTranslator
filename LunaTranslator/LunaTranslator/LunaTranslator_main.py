@@ -4,8 +4,8 @@ from PyQt5.QtWidgets import  QApplication
 import os
 import platform,os
 def initpath(): 
-    dirname=os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    os.chdir(dirname) 
+    # dirname=os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    # os.chdir(dirname) 
 
     if os.path.exists('./userconfig')==False:
         os.mkdir('./userconfig')

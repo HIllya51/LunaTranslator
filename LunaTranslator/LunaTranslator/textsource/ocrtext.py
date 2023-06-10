@@ -45,6 +45,8 @@ class ocrtext(basetext):
                 h= ((rect[3]-rect[1])-rect2[3]) - windowOffset
                  
                 pix = self.screen.grabWindow(hwnduse, x1-rect[0], y1-rect[1]-h, x2-x1, y2-y1) 
+                if pix.toImage().allGray():
+                    raise Exception()
             except:
                 pix = self.screen.grabWindow(QApplication.desktop().winId(), x1, y1, x2-x1, y2-y1) 
         else:

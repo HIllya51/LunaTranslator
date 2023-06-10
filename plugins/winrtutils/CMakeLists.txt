@@ -22,7 +22,7 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY $<1:${CMAKE_FINAL_OUTPUT_DIRECTORY}>)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY $<1:${CMAKE_FINAL_OUTPUT_DIRECTORY}>)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY $<1:${CMAKE_FINAL_OUTPUT_DIRECTORY}>)
 
-add_library(winrtutils MODULE cinterface.cpp dllmain.cpp pch.cpp winrtocr.cpp)
+add_library(winrtutils MODULE winrtsnapshot.cpp cinterface.cpp dllmain.cpp pch.cpp winrtocr.cpp )
 
 if(${CMAKE_SIZEOF_VOID_P} EQUAL 8)
 	set_target_properties(winrtutils PROPERTIES OUTPUT_NAME "winrtutils64")

@@ -48,7 +48,6 @@ del %targetdir_in%\qt5svg.dll
 del %targetdir_in%\qt5network.dll
 
 del %targetdir_in%\PyQt5\qt-plugins\platforms\qminimal.dll
-del %targetdir_in%\PyQt5\qt-plugins\platforms\qoffscreen.dll
 del %targetdir_in%\PyQt5\qt-plugins\platforms\qwebgl.dll
 rmdir /S /Q %targetdir_in%\PyQt5\qt-plugins\mediaservice
 rmdir /S /Q %targetdir_in%\PyQt5\qt-plugins\printsupport
@@ -62,6 +61,7 @@ del %targetdir_in%\libcrypto-1_1-x64.dll
 
 del %targetdir%\files\plugins\ocr64.dll
 del %targetdir%\files\plugins\winsharedutils64.dll
+del %targetdir%\files\plugins\winrtutils64.dll
 del %targetdir%\files\plugins\libmecab64.dll
 
 

@@ -7,7 +7,7 @@ import hashlib
 from myutils.utils import getproxy
 from myutils.config import globalconfig
 def b64string(a): 
-    return hashlib.md5(a.encode('utf8')).digest().hex()
+    return hashlib.md5(a.encode('utf8')).hexdigest()
 
 
 def vndbdownloadimg(url):

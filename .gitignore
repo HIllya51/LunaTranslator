@@ -50,3 +50,7 @@ plugins/winxp_proxy_host/builds
 
 LunaTranslator/files/plugins/GPS.txt
 LunaTranslator/chrome_cache
+
+plugins/winrtsnapshot/Release
+plugins/winrtsnapshot/x64
+plugins/winrtsnapshot/.vs
