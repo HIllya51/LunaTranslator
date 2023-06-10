@@ -35,7 +35,7 @@ class TS(basetrans):
         
         message=[
             {"role": "system", "content": "You are a translator"},
-                {"role": "user", "content": f"translate from {self.srclang} to {self.tgtlang}"},
+                {"role": "user", "content": "translate from {} to {}".format(self.srclang,self.tgtlang)},
         ]
         
         for _i in range(min(len(self.context)//2 ,self.contextnum)):

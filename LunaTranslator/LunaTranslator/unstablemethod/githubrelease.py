@@ -1,10 +1,10 @@
 import platform
 import requests 
 import shutil
-from utils.utils import getproxy
+from myutils.utils import getproxy
 from traceback import print_exc
 import zipfile,os
-from utils.config import globalconfig  ,_TR ,static_data
+from myutils.config import globalconfig  ,_TR ,static_data
 import win32utils,win32con
 def getvesionmethod():
     url='https://github.com/HIllya51/LunaTranslator/releases/'
@@ -55,22 +55,22 @@ def updatemethod(_version,progresscallback):
         bit='_x86'
     else:
         raise Exception
-    url=f"https://github.com/HIllya51/LunaTranslator/releases/download/{_version}/LunaTranslator{bit}.zip"
+    url="https://github.com/HIllya51/LunaTranslator/releases/download/{}/LunaTranslator{}.zip".format(_version,bit)
 
     progresscallback('……',0)
 
-    savep=f'./cache/update/LunaTranslator{bit}.zip' 
+    savep='./cache/update/LunaTranslator{}.zip'.format(bit)
     def endcallback():
-        if os.path.exists(f'./cache/update/LunaTranslator'):
-            shutil.rmtree(f'./cache/update/LunaTranslator')
-        zipf=(zipfile.ZipFile(f'./cache/update/LunaTranslator{bit}.zip'))
+        if os.path.exists('./cache/update/LunaTranslator'):
+            shutil.rmtree('./cache/update/LunaTranslator')
+        zipf=(zipfile.ZipFile('./cache/update/LunaTranslator{}.zip'.format(bit)))
         zipf.extractall('./cache/update')
         update()
     def checkalready(size):
         if os.path.exists(savep):
             stats = os.stat(savep)
             if stats.st_size==size:
-                progresscallback(f'总大小{int(1000*(int(size/1024)/1024))/1000} MB 进度 {int(10000*(size/size))/100:.2f}% ',10000)
+                progresscallback('总大小{} MB 进度 {}% '.format(int(1000*(int(size/1024)/1024))/1000,int(10000*(size/size))/100),10000)
                 endcallback()
                 return True
         return False
@@ -89,7 +89,7 @@ def updatemethod(_version,progresscallback):
                         thislen=len(i)
                         file_size+=thislen 
                         
-                        progresscallback(f'总大小{int(1000*(int(size/1024)/1024))/1000} MB 进度 {int(10000*(file_size/size))/100:.2f}%',int(10000*file_size/size))
+                        progresscallback('总大小{} MB 进度 {}% '.format(int(1000*(int(size/1024)/1024))/1000,int(10000*(file_size/size))/100),int(10000*file_size/size))
                         
         if globalconfig['autoupdate']==False: 
             return

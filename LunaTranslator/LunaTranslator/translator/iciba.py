@@ -6,7 +6,7 @@ import time
 import hashlib
 import functools
 
-from utils.config import globalconfig 
+from myutils.config import globalconfig 
 class TranslatorError(Exception):
     pass
 class Tse:
@@ -62,7 +62,7 @@ class Tse:
            
             raise TranslatorError('Unsupported translation: from [{0}] to [{1}]!'.format(from_language, to_language))
         elif from_language == to_language:
-            raise TranslatorError(f'from_language[{from_language}] and to_language[{to_language}] should not be same.')
+            raise TranslatorError('from_language[{}] and to_language[{}] should not be same.'.format(from_language,to_language))
         return from_language, to_language
 
     @staticmethod
@@ -74,8 +74,7 @@ class Tse:
         to_lang = default_lang if to_lang == 'en' else to_lang
         from_lang = default_lang.replace('-', '_') if default_translator == 'Lingvanex' and '-' in from_lang else from_lang
         to_lang = default_lang.replace('-', '_') if default_translator == 'Lingvanex' and '-' in to_lang else to_lang
-        warnings.warn(f'Unsupported [language=en] with [{default_translator}]! Please specify it.')
-        warnings.warn(f'default languages: [{from_lang}, {to_lang}]')
+        
         return from_lang, to_lang
 
     @staticmethod
@@ -96,8 +95,7 @@ class Tse:
             raise TranslatorError('The length of the text to be translated exceeds the limit.')
         else:
             if length >= limit_of_length:
-                warnings.warn(f'The translation ignored the excess[above {limit_of_length}]. Length of `query_text` is {length}.')
-                warnings.warn('The translation result will be incomplete.')
+                 
                 return query_text[:limit_of_length - 1]
         return query_text
 
@@ -151,10 +149,10 @@ class Iciba(Tse):
             _ = ss.get(self.host_url, headers=self.host_headers,proxies=proxies)
              
 
-            sign = hashlib.md5(f"6key_web_fanyi{self.s_y2}{query_text}".encode()).hexdigest()[:16]  # strip()
+            sign = hashlib.md5("6key_web_fanyi{}{}".format(self.s_y2,query_text).encode()).hexdigest()[:16]  # strip()
             params = {'c': 'trans', 'm': 'fy', 'client': 6, 'auth_user': 'key_web_fanyi', 'sign': sign}
             form_data = {'from': from_language, 'to': to_language, 'q': query_text}
-            r = ss.post(self.api_url, headers=self.api_headers, params=params, data=form_data, timeout=timeout, proxies=proxies)
+            r = ss.post(self.api_url, headers=self.api_headers, params=params, data=form_data, proxies=proxies)
             
             data = r.json()
 

@@ -1,11 +1,11 @@
     
-from utils.config import globalconfig   
+from myutils.config import globalconfig   
 import time
 import os ,threading,win32utils,win32con
 from traceback import print_exc
 from tts.basettsclass import TTSbase 
 
-from utils.subproc import subproc_w
+from myutils.subproc import subproc_w
 class TTS(TTSbase):
     def end(self):
         try:
@@ -88,7 +88,7 @@ class TTS(TTSbase):
                 else:
                     x= 0.05 * x+ 1.0
                 return x
-            self.engine=subproc_w(f'"{exepath}" voiceroid2 "{self.config["path"]}" "{dllpath}" {self.config["voice"]} 44100 {linear_map(globalconfig["ttscommon"]["rate"])} "{savepath}"  {pipename} {waitsignal}',name='voicevoid2')
+            self.engine=subproc_w('"{}" voiceroid2 "{}" "{}" {} 44100 {} "{}"  {} {}'.format(exepath,self.config["path"],dllpath,self.config["voice"],linear_map(globalconfig["ttscommon"]["rate"]),savepath,pipename,waitsignal),name='voicevoid2')
             
             win32utils.WaitForSingleObject(win32utils.CreateEvent(False, False, waitsignal),win32utils.INFINITE); 
             win32utils.WaitNamedPipe(pipename,win32con.NMPWAIT_WAIT_FOREVER)

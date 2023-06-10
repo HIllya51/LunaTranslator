@@ -1,8 +1,8 @@
-from utils.config import globalconfig
+from myutils.config import globalconfig
 import requests
 from urllib.parse import quote
 
-from utils.utils import getproxy
+from myutils.utils import getproxy
 import re,time
 from traceback import print_exc
 class weblio:

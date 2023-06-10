@@ -2,17 +2,17 @@ import functools
 from traceback import print_exc
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QWidget,QHBoxLayout,QDialog,QAction,QVBoxLayout,QMenu,QPlainTextEdit,QTabWidget,QLineEdit,QPushButton,QTableView,QAbstractItemView,QRadioButton,QButtonGroup,QHeaderView,QCheckBox,QSpinBox,QFormLayout ,QLabel
-from utils.config import savehook_new_list,savehook_new_data,static_data
+from myutils.config import savehook_new_list,savehook_new_data,static_data
 from PyQt5.QtGui import QStandardItem, QStandardItemModel,QTextDocument,QAbstractTextDocumentLayout,QPalette  
 from PyQt5.QtGui import QFont,QTextCursor
 from PyQt5.QtCore import Qt,pyqtSignal,QSize,QModelIndex,QPoint
 import qtawesome
 import winsharedutils
 import os,time 
-from utils.config import globalconfig ,_TR,_TRL
+from myutils.config import globalconfig ,_TR,_TRL
 from collections import OrderedDict
 from gui.usefulwidget import closeashidewindow,getQMessageBox,dialog_showinfo
-from utils.utils import checkchaos ,checkifnewgame
+from myutils.utils import checkchaos ,checkifnewgame
 from gui.dialog_savedgame import dialog_setting_game
 class searchhookparam(QDialog):
     def safehex(self,string,default):

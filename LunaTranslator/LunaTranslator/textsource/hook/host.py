@@ -3,16 +3,16 @@ import textsource.hook.define as define
   
 import ctypes,time
 from ctypes import Structure,c_int,c_char,sizeof,cast,POINTER
-from utils.wrapper import threader
+from myutils.wrapper import threader
 import sys
 import os  
 import win32utils
 import mmap
 import subprocess 
-from utils.hwnd import is64bit
+from myutils.hwnd import is64bit
 import ctypes
 import textsource.hook.hookcode as hookcode
-from utils.hwnd import getpidexe
+from myutils.hwnd import getpidexe
 import win32con
 class ProcessRecord():
     def __init__(self,pipe,processId,_is64bit) -> None:
@@ -291,11 +291,11 @@ class RPC():
     #
     def Attach(self,pid,arch):
          
-        injecter=os.path.abspath(f'./files/plugins/shareddllproxy{arch}.exe')
-        dll=os.path.abspath(f'./files/plugins/LunaHook/LunaHook{arch}.dll')
+        injecter=os.path.abspath('./files/plugins/shareddllproxy{}.exe'.format(arch))
+        dll=os.path.abspath('./files/plugins/LunaHook/LunaHook{}.dll'.format(arch))
         print(injecter,os.path.exists(injecter))
         print(dll,os.path.exists(dll))
-        subprocess.Popen(f'"{injecter}" dllinject {pid} "{dll}"')
+        subprocess.Popen('"{}" dllinject {} "{}"'.format(injecter,pid,dll))
 
     def InsertHookCode(self,pid,hookcode):
         if pid in self.ProcessRecord:

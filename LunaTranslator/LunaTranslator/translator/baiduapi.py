@@ -1,7 +1,7 @@
  
 import requests 
 
-from utils.config import globalconfig  
+from myutils.config import globalconfig  
 from translator.basetranslator import basetrans   
 import hashlib
 import urllib

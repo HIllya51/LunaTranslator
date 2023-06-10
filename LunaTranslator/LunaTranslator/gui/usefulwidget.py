@@ -2,10 +2,10 @@
 from PyQt5.QtWidgets import QWidget, QMainWindow ,QApplication,QPushButton,QTabBar,QStylePainter,QStyleOptionTab,QStyle,QMessageBox,QDialog,QLabel,QHBoxLayout
 from PyQt5.QtGui import QFont,QCloseEvent
 from PyQt5.QtCore import Qt,pyqtSignal ,QSize ,QRect ,QPoint 
-from utils.config import _TR
+from myutils.config import _TR
 
 import qtawesome 
-from utils.wrapper import  Singleton 
+from myutils.wrapper import  Singleton 
 @Singleton
 class dialog_showinfo(QDialog):
         

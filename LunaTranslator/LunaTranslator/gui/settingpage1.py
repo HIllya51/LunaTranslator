@@ -2,10 +2,12 @@
 import functools    
 from PyQt5.QtGui import  QFont
 
-from PyQt5.QtWidgets import  QFontComboBox  ,QLabel
+from PyQt5.QtWidgets import  QFontComboBox  ,QLabel,QLineEdit
 from gui.settingpage_ocr import getocrgrid  
-from utils.config import globalconfig ,_TR,_TRL  ,static_data
+from myutils.config import globalconfig ,_TR,_TRL  ,static_data
 from gui.dialog_savedgame import dialog_savedgame 
+import threading
+from myutils.utils import selectdebugfile,splittranslatortypes,checkportavailable
 from gui.codeacceptdialog import codeacceptdialog   
 def gethookgrid(self) :
  
@@ -90,7 +92,7 @@ def setTabOne_direct(self) :
                 [   
                      ('HOOK',3),(self.getsimpleswitch(globalconfig['sourcestatus']['texthook'],'use',name='texthook',callback= functools.partial(self.yuitsu_switch,'sourcestatus','sourceswitchs','texthook',self.object.starttextsource),pair='sourceswitchs'),1),'',
                     ('HOOK_内嵌',3),(self.getsimpleswitch(globalconfig['sourcestatus']['embedded'],'use',name='embedded',callback= functools.partial(self.yuitsu_switch,'sourcestatus','sourceswitchs','embedded',self.object.starttextsource),pair='sourceswitchs'),1),'',
-                    ('HOOK_TCP',3),(self.getsimpleswitch(globalconfig['sourcestatus']['texthook_tcp'],'use',name='texthook_tcp',callback= functools.partial(self.yuitsu_switch,'sourcestatus','sourceswitchs','texthook_tcp',self.object.starttextsource),pair='sourceswitchs'),1),'',
+                    ('TCP',3),(self.getsimpleswitch(globalconfig['sourcestatus']['tcpio'],'use',name='tcpio',callback= functools.partial(self.yuitsu_switch,'sourcestatus','sourceswitchs','tcpio',self.object.starttextsource),pair='sourceswitchs'),1),'',
                         # ('选择文本',3),(self.getcolorbutton(globalconfig ,'',enable=globalconfig['sourcestatus']['texthook']['use'],name='selecthookbutton',icon='fa.gear',constcolor="#FF69B4",callback=lambda  : self.object.hookselectdialog.showsignal.emit() ),1)
                 ], 
         ]  
@@ -101,19 +103,44 @@ def setTabOne_direct(self) :
         self.clicksourcesignal.connect(lambda k: getattr(self,'sourceswitchs')[k].click())
 def setTabOne(self) :  
         self.tabadd_lazy(self.tab_widget, ('文本输入'), lambda :setTabOne_lazy(self)) 
-def getHOOK_TCPwidget(self):
-        return QLabel("用于支持windows xp虚拟机，也能当成普通HOOK来使用\n用法：\n将files/winxp_proxy_host.exe复制到虚拟机中。\n输入本机的IP地址后点击connect连接到翻译器\n若连接失败则是输入了错误的IP地址。\n连接成功后选择目标进程，然后点击Attach后显示提取到的文本\n然后选择需要的文本。")
+
+
+
+def getTCPwidget(self):
+        self.statuslabel2=QLabel()
+        self.tcpipedit=QLineEdit(globalconfig['tcp_ip_as_client'])
+        self.tcpipedit.textEdited.connect(lambda x:globalconfig.__setitem__('tcp_ip_as_client',x))
+        def changeportcallback(port): 
+                if (checkportavailable(port)):
+                    self.statuslabel2.setText(_TR("端口可用"))
+                    
+                else:
+                    self.statuslabel2.setText(_TR("端口冲突"))
+        changeportcallback(globalconfig['tcp_port_listen']) 
+        grid=[
+                [('作为客户端时',10)],
+                [('服务端IP',5),(self.tcpipedit,5)],
+                [('服务端端口',5),(self.getspinbox(0,65535,globalconfig,'tcp_port_as_client'),3) ],
+                [''],
+                [('作为服务端时',10)],
+                [('提取的文本自动输出到TCP',5),(self.getsimpleswitch(globalconfig ,'outputtotcp' ,callback=self.object.starttcpservice),1)],
+                [('监听的端口号',5),(self.getspinbox(0,65535,globalconfig,'tcp_port_listen',callback=changeportcallback),3)],
+                [(self.statuslabel2,5)]
+                
+        ]
+
+        return grid
 def setTabOne_lazy(self) : 
         
          
          
-        tab=self.makesubtab_lazy(['HOOK设置','OCR设置','剪贴板设置','内嵌设置','HOOK_TCP'],
+        tab=self.makesubtab_lazy(['HOOK设置','OCR设置','剪贴板设置','内嵌设置','TCP设置'],
                                 [       
                                         lambda:self.makescroll(self.makegrid(gethookgrid(self))),
                                         lambda:self.makescroll(self.makegrid(getocrgrid(self))),
                                         lambda:self.makescroll(self.makegrid(setTabclip(self))),
                                         lambda:self.makescroll(self.makegrid(gethookembedgrid(self) )),
-                                        lambda:getHOOK_TCPwidget(self)
+                                        lambda:self.makescroll(self.makegrid(getTCPwidget(self) )),
                                 ]) 
 
         gridlayoutwidget=self.makegrid(self.tab1grids )    

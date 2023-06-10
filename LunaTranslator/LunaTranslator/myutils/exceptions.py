@@ -1,4 +1,4 @@
-from utils.config import _TR
+from myutils.config import _TR
 
 class ArgsEmptyExc(Exception):
     def __init__(self,valuelist) -> None:

@@ -4,10 +4,10 @@ from PyQt5.QtWidgets import QWidget,QVBoxLayout,QHBoxLayout,QLabel,QLineEdit,QLi
 from PyQt5.QtGui import  QStandardItemModel,QPixmap,QColor,QIcon,QStandardItem ,QFont 
 import functools
 from traceback import print_exc
-from utils.config import globalconfig ,_TR,_TRL
+from myutils.config import globalconfig ,_TR,_TRL
 import sys,win32utils
 import time   ,os
-from utils.hwnd import getpidexe,ListProcess,mouseselectwindow,getExeIcon,testprivilege,getpidhwndfirst,getbigestmempid
+from myutils.hwnd import getpidexe,ListProcess,mouseselectwindow,getExeIcon,testprivilege,getpidhwndfirst,getbigestmempid
 import qtawesome
 
 from gui.usefulwidget import closeashidewindow,getQMessageBox

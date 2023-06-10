@@ -1,4 +1,4 @@
-from utils.config import globalconfig
+from myutils.config import globalconfig
 import sqlite3
 import winsharedutils 
 import os
@@ -21,7 +21,7 @@ class linggesi():
          
                 mp={}
                 for sql in [self.sql,self.sql2]:
-                    x=sql.execute(f"select word,content from entry where word like '%{word}%'")
+                    x=sql.execute("select word,content from entry where word like '%{}%'".format(word))
                     exp=x.fetchall()
                      
                     

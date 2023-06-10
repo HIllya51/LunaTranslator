@@ -2,7 +2,7 @@ from translator.basetranslator import basetrans
 import ctypes 
 import os ,time 
 import  win32con ,win32utils
-from utils.subproc import subproc_w
+from myutils.subproc import subproc_w
 class TS(basetrans):  
     def inittranslator(self ) : 
                  
@@ -27,14 +27,14 @@ class TS(basetrans):
             for d in self.userdict:
                 if os.path.exists(d):
                     d=os.path.join(d,'Jcuser')
-                    dictpath+=f' "{d}" '
+                    dictpath+=' "{}" '.format(d)
             
             t=time.time()
             t= str(t) 
             pipename='\\\\.\\Pipe\\jbj7_'+t
             waitsignal='jbjwaitload_'+t
 
-            self.engine=subproc_w(f'./files/plugins/shareddllproxy32.exe jbj7 "{self.dllpath}" {pipename} {waitsignal} '+dictpath,name='jbj7')
+            self.engine=subproc_w('./files/plugins/shareddllproxy32.exe jbj7 "{}" {} {} '.format(self.dllpath,pipename,waitsignal)+dictpath,name='jbj7')
             #!!!!!!!!!!!!!!stdout=subprocess.PIPE 之后，隔一段时间之后，exe侧writefile就写不进去了！！！！！不知道为什么！！！
            
             win32utils.WaitForSingleObject(win32utils.CreateEvent(False, False, waitsignal),win32utils.INFINITE); 

@@ -1,7 +1,7 @@
 import requests
 import base64
 
-from utils.config import globalconfig 
+from myutils.config import globalconfig 
 from ocrengines.baseocrclass import baseocr 
 class OCR(baseocr):
     def langmap(self):

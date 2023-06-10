@@ -22,11 +22,6 @@ private:
     HRESULT                 m_hRes;
     IAudioSessionManager2* m_lpAudioSessionMgr;
 };
-struct ocrres {
-    wchar_t** lines;
-    int* ys;
-
-};
 extern "C" {
 
     __declspec(dllexport) bool SAPI_Speak(const wchar_t* Content, int version, int voiceid, int rate, int volume, const wchar_t* Filename);
@@ -34,9 +29,6 @@ extern "C" {
     __declspec(dllexport) BOOL SetProcessMute(DWORD Pid, bool mute);
     __declspec(dllexport) bool GetProcessMute(DWORD Pid);
     
-    __declspec(dllexport) ocrres OCR(wchar_t* fname, wchar_t* lang, wchar_t*, int*);
-    __declspec(dllexport) bool check_language_valid(wchar_t*);
-    __declspec(dllexport) wchar_t** getlanguagelist(int*);
 
     __declspec(dllexport) size_t levenshtein_distance(size_t len1, const wchar_t* string1,
         size_t len2, const wchar_t* string2);
@@ -46,7 +38,6 @@ extern "C" {
     __declspec(dllexport) void freewstringlist(wchar_t**, int);
     __declspec(dllexport) void free_all(void* str);
     __declspec(dllexport) void freestringlist(char**, int);
-    __declspec(dllexport) void freeocrres(ocrres, int);
 
 
     __declspec(dllexport) void* mecab_init(char* utf8path, wchar_t*);

@@ -2,7 +2,7 @@ import functools
 
 from PyQt5.QtWidgets import   QComboBox 
 from gui.inputdialog import getsomepath1
-from utils.config import globalconfig    
+from myutils.config import globalconfig    
 import os,functools
 def setTab5_direct(self) :  
     self.voicecombo=QComboBox( ) 
@@ -22,7 +22,7 @@ def getttsgrid(self) :
         line=[]
         for name in globalconfig['reader']:
               
-            _f=f'./LunaTranslator/tts/{name}.py'
+            _f='./LunaTranslator/tts/{}.py'.format(name)
             if os.path.exists(_f)==False:  
                 continue 
             

@@ -188,15 +188,20 @@ _GetLogicalDriveStringsW.argtypes=c_uint,c_wchar_p
 
 _GetCurrentDirectoryW=_kernel32.GetCurrentDirectoryW
 _GetCurrentDirectoryW.argtypes=c_uint,c_wchar_p
-_QueryFullProcessImageNameW=_kernel32.QueryFullProcessImageNameW
-_QueryFullProcessImageNameW.argtypes=c_void_p,c_uint,c_wchar_p,c_void_p
+
+try:
+    _QueryFullProcessImageNameW=_kernel32.QueryFullProcessImageNameW
+    _QueryFullProcessImageNameW.argtypes=c_void_p,c_uint,c_wchar_p,c_void_p
+except:
+    #windows xp unsupport
+    _QueryFullProcessImageNameW=0
 def GetProcessFileName(hHandle):
     w=create_unicode_buffer(65535)
     #我佛了，太混乱了，不同权限获取的东西完全不一样
     if(
         _GetModuleFileNameExW(hHandle,None,w,65535)==0 
         and 
-        _QueryFullProcessImageNameW(hHandle,0,w,pointer(c_uint()))==0
+        (_QueryFullProcessImageNameW!=0 and _QueryFullProcessImageNameW(hHandle,0,w,pointer(c_uint()))==0)
         and
         _GetProcessImageFileNameW(hHandle,w,65535)==0
         ):

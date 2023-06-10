@@ -6,7 +6,7 @@ from translator.basetranslator import basetrans
 import random 
 import json
 
-from utils.config import globalconfig
+from myutils.config import globalconfig
 import requests
 import re
 class TS(basetrans): 

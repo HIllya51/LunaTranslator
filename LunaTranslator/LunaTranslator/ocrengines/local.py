@@ -1,6 +1,6 @@
 import os  
  
-from utils.config import globalconfig,_TR,static_data
+from myutils.config import globalconfig,_TR,static_data
  
 import requests
 import base64  
@@ -15,7 +15,7 @@ class ocrwrapper:
             bit='64' 
         else:
             bit='32' 
-        self.dll=CDLL(os.path.abspath(f'./files/plugins/ocr{bit}.dll') )
+        self.dll=CDLL(os.path.abspath('./files/plugins/ocr{}.dll'.format(bit)) )
     def _OcrInit(self,szDetModel, szRecModel, szKeyPath,szClsModel='', nThreads=4):
         
         _OcrInit=self.dll.OcrInit
@@ -63,10 +63,10 @@ class OCR(baseocr):
             return 
         self._ocr.trydestroy() 
          
-        path=f'./files/ocr/{static_data["language_list_translator_inner"][globalconfig["srclang3"]]}'
-        if not(os.path.exists(f'{path}/det.onnx') and os.path.exists(f'{path}/rec.onnx') and os.path.exists(f'{path}/dict.txt') ):
+        path='./files/ocr/{}'.format(static_data["language_list_translator_inner"][globalconfig["srclang3"]])
+        if not(os.path.exists(path+'/det.onnx') and os.path.exists(path+'/rec.onnx') and os.path.exists(path+'/dict.txt') ):
             raise Exception(_TR('未下载该语言的OCR模型,请从软件主页下载模型解压到files/ocr路径后使用') )
-        self._ocr.init(f'{path}/det.onnx',f'{path}/rec.onnx',f'{path}/dict.txt')
+        self._ocr.init(path+'/det.onnx',path+'/rec.onnx',path+'/dict.txt')
         self._savelang=self.srclang
     def ocr(self,imgfile):  
         self.checkchange()

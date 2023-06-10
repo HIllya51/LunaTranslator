@@ -10,7 +10,7 @@ import time
 import ctypes.wintypes
 import win32con
 from traceback import print_exc
-from utils.config import globalconfig,static_data,savehook_new_list,savehook_new_data,getdefaultsavehook,translatorsetting
+from myutils.config import globalconfig,static_data,savehook_new_list,savehook_new_data,getdefaultsavehook,translatorsetting
 import win32utils,threading,queue
 from urllib.request import getproxies_registry
 import importlib,re
@@ -123,7 +123,7 @@ def startgame(game,settingui):
                             _exe='shareddllproxy32'
                     exe=(os.path.abspath('./files/plugins/'+_exe)) 
                     _cmd={0:'le',1:"LR",2:"ntleas"}[localeswitcher] 
-                    win32utils.CreateProcess(None,f'"{exe}" {_cmd} "{(game)}"', None,None,False,0,None, os.path.dirname(game), win32utils.STARTUPINFO()  ) 
+                    win32utils.CreateProcess(None,'"{}" {} "{}"'.format(exe,_cmd,game), None,None,False,0,None, os.path.dirname(game), win32utils.STARTUPINFO()  ) 
                                     
             else:
                     win32utils.ShellExecute(None, "open", game, "", os.path.dirname(game), win32con.SW_SHOW) 
@@ -212,15 +212,15 @@ class wavmp3player( ):
     def _playsoundWin(self,sound,volume ):  
         try:
             
-            win32utils.mciSendString((f"stop lunatranslator_mci_{self.i}") );
-            win32utils.mciSendString((f"close lunatranslator_mci_{self.i}") );
+            win32utils.mciSendString(("stop lunatranslator_mci_{}".format(self.i)) );
+            win32utils.mciSendString(("close lunatranslator_mci_{}".format(self.i)) );
             self.i+=1 
             if self.lastfile:
                 os.remove(self.lastfile)
             self.lastfile=sound
-            win32utils.mciSendString(f'open "{sound}" type mpegvideo  alias lunatranslator_mci_{self.i}');  
-            win32utils.mciSendString(f'setaudio lunatranslator_mci_{self.i} volume to {volume*10}'); 
-            win32utils.mciSendString((f'play lunatranslator_mci_{self.i}'))
+            win32utils.mciSendString('open "{}" type mpegvideo  alias lunatranslator_mci_{}'.format(sound,self.i));  
+            win32utils.mciSendString('setaudio lunatranslator_mci_{} volume to {}'.format(self.i,volume*10)); 
+            win32utils.mciSendString(('play lunatranslator_mci_{}'.format(self.i)))
         except:
             pass
         
@@ -382,5 +382,5 @@ def makehtml(text,base=False,show=None):
         pass
     else:
           show=text
-    return f'<a href="{text}">{show}</a>'
+    return '<a href="{}">{}</a>'.format(text,show)
 

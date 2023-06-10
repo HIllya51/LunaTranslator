@@ -5,7 +5,7 @@ from urllib.parse import quote
 import re
 import json  
 
-from utils.config import globalconfig
+from myutils.config import globalconfig
 from translator.basetranslator import basetrans
 import time
 class TS(basetrans):

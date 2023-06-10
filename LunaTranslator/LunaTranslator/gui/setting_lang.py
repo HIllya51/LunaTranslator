@@ -1,6 +1,6 @@
   
 import os 
-from utils.config import globalconfig ,_TR,_TRL ,static_data 
+from myutils.config import globalconfig ,_TR,_TRL ,static_data 
 
 def setTablang(self) : 
     self.tabadd_lazy(self.tab_widget, ('语言设置'), lambda :setTablanglz(self)) 
@@ -13,7 +13,7 @@ def setTablanglz(self) :
                 ("目标语言",5),(self.getsimplecombobox(_TRL(static_data['language_list_translator']  ),globalconfig,'tgtlang3'),5) ,
             ],
             [''],
-            [('本软件显示语言(重启生效)',5),(self.getsimplecombobox((static_data['language_list_show']),globalconfig,'languageuse'),5),(self.getcolorbutton(globalconfig,'',callback=lambda :os.startfile(os.path.abspath(f'./files/lang/{static_data["language_list_translator_inner"][globalconfig["languageuse"]]}.json')),icon='fa.gear',constcolor="#FF69B4"),1)], 
+            [('本软件显示语言(重启生效)',5),(self.getsimplecombobox((static_data['language_list_show']),globalconfig,'languageuse'),5),(self.getcolorbutton(globalconfig,'',callback=lambda :os.startfile(os.path.abspath('./files/lang/{}.json'.format(static_data["language_list_translator_inner"][globalconfig["languageuse"]]))),icon='fa.gear',constcolor="#FF69B4"),1)], 
            
             [''],
         ]

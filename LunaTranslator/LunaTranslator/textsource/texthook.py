@@ -4,11 +4,11 @@ import re ,os
 import time 
 from collections import OrderedDict
 
-from utils.hwnd import is64bit 
+from myutils.hwnd import is64bit 
 import textsource.hook.define as define
-from utils.config import globalconfig ,savehook_new_data ,_TR,static_data 
+from myutils.config import globalconfig ,savehook_new_data ,_TR,static_data 
 from textsource.textsourcebase import basetext 
-from utils.utils import checkchaos    
+from myutils.utils import checkchaos    
 class texthook(basetext  ): 
     def __init__(self,RPC,textgetmethod,hookselectdialog,pids,hwnd,pname  ,autostarthookcode=None,needinserthookcode=None) :
         print(pids,hwnd,pname  ,autostarthookcode,needinserthookcode)
@@ -45,7 +45,7 @@ class texthook(basetext  ):
         self.HookCode=None 
         
         self.RPC.callbacks(
-            lambda pid:[self.RPC.InsertHookCode(pid,hookcode) for hookcode in needinserthookcode],
+            lambda pid:time.sleep(savehook_new_data[self.pname]['inserthooktimeout']/1000) or [self.RPC.InsertHookCode(pid,hookcode) for hookcode in needinserthookcode],
             lambda pid: print(pid,"disconenct"),
             self.onnewhook,
             self.onremovehook,
@@ -80,10 +80,9 @@ class texthook(basetext  ):
             )
         return key
     def match_compatibility(self,key,autostarthookcode):
-        if len(autostarthookcode)==6:
-            return (key[2]&0xffff,key[3]&0xffff,key[5])==(autostarthookcode[2]&0xffff,autostarthookcode[3]&0xffff,autostarthookcode[5])
-        else: 
-            return (key[2]&0xffff,key[3]&0xffff,key[5])==(int(autostarthookcode[-4],16)&0xffff,int(autostarthookcode[-3],16)&0xffff,autostarthookcode[-1])
+        base= (key[2]&0xffff,key[3]&0xffff,key[5])==(autostarthookcode[2]&0xffff,autostarthookcode[3]&0xffff,autostarthookcode[5])
+        name=((key[-1][:8]=='UserHook' and autostarthookcode[-1][:8]=='UserHook' )or(key[-1]==autostarthookcode[-1]))
+        return base and name
     def onnewhook(self,textthread):
         key=self.parsetextthread(textthread)
         if self.isremoveuseless:

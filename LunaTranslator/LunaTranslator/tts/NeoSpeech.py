@@ -1,11 +1,11 @@
     
-from utils.config import globalconfig   
+from myutils.config import globalconfig   
 import time
 import os ,threading,win32utils,win32con
 from traceback import print_exc
 from tts.basettsclass import TTSbase 
 import ctypes
-from utils.subproc import subproc_w
+from myutils.subproc import subproc_w
 class TTS(TTSbase):
     def end(self):
         try:
@@ -27,7 +27,7 @@ class TTS(TTSbase):
         pipename='\\\\.\\Pipe\\voiceroid2_'+t
         waitsignal='voiceroid2waitload_'+t
             
-        self.engine=subproc_w(f'"{exepath}" neospeech  {pipename} {waitsignal}  "{savepath}"',name='neospeech')
+        self.engine=subproc_w('"{}" neospeech  {} {}  "{}"'.format(exepath,pipename,waitsignal,savepath),name='neospeech')
         
         win32utils.WaitForSingleObject(win32utils.CreateEvent(False, False, waitsignal),win32utils.INFINITE); 
         win32utils.WaitNamedPipe(pipename,win32con.NMPWAIT_WAIT_FOREVER)

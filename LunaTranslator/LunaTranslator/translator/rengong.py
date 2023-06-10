@@ -1,6 +1,6 @@
   
 from translator.basetranslator import basetrans
-from utils.config import globalconfig
+from myutils.config import globalconfig
 import os
 import json 
 import winsharedutils

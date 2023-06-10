@@ -5,10 +5,10 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QPixmap,QImage
 from PyQt5.QtWidgets import QWidget,QLabel ,QProgressBar,QLineEdit,QPushButton 
 import os,threading
-from utils.config import globalconfig  ,_TR ,static_data
-from utils.wrapper import threader
+from myutils.config import globalconfig  ,_TR ,static_data
+from myutils.wrapper import threader
 import time,json,platform,zipfile
-from utils.utils import makehtml
+from myutils.utils import makehtml
 import importlib 
 def resourcegrid( ) :  
          
@@ -40,7 +40,7 @@ def getversion(self):
         sversion=_TR("获取失败")
     else:
         sversion=_version
-    self.versiontextsignal.emit((f'{_TR("当前版本")}:{static_data["version"]}  {platform.architecture()[0]}  {_TR("最新版本")}:{ sversion}') ) #,'' if static_data["version"]== _version else  newcontent,url,'LunaTranslator.zip'))
+    self.versiontextsignal.emit(('{}:{}  {}  {}:{}'.format(_TR("当前版本"),static_data["version"],platform.architecture()[0],_TR("最新版本"), sversion)) ) #,'' if static_data["version"]== _version else  newcontent,url,'LunaTranslator.zip'))
 
     if _version is not None and static_data["version"]<_version:
         if globalconfig['autoupdate']: 

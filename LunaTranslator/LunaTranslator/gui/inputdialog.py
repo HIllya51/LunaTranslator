@@ -3,10 +3,10 @@ from PyQt5.QtWidgets import QDialogButtonBox,QDialog,QComboBox,QFormLayout,QDoub
 from PyQt5.QtCore import Qt,QSize
 from PyQt5.QtGui import QColor 
 import qtawesome
-from utils.config import globalconfig ,_TR,_TRL
+from myutils.config import globalconfig ,_TR,_TRL
 from gui.usefulwidget import MySwitch 
-from utils.utils import makehtml
-from utils.wrapper import Singleton
+from myutils.utils import makehtml
+from myutils.wrapper import Singleton
 @Singleton
 class autoinitdialog(QDialog):
     def __init__(dialog, object,title,width,lines,_=None  ) -> None:

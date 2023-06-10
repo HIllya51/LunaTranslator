@@ -1,7 +1,7 @@
 
 from traceback import print_exc 
 import requests,re,uuid
-from utils.config import globalconfig
+from myutils.config import globalconfig
 from translator.basetranslator import basetrans
 import time,functools,sys,urllib
 class Tse:
@@ -67,7 +67,7 @@ class QQTranSmart(Tse):
         self.input_limit = int(5e3)
  
     def get_clientKey(self):
-        return f'browser-firefox-110.0.0-Windows 10-{self.uuid}-{int(time.time() * 1e3)}'
+        return 'browser-firefox-110.0.0-Windows 10-{}-{}'.format(self.uuid,int(time.time() * 1e3))
 
     def split_sentence(self, data):
         index_pair_list = [[item['start'], item['start'] + item['len']] for item in data['sentence_list']]
@@ -114,7 +114,7 @@ class QQTranSmart(Tse):
                 self.get_lang_url = self.host_url + re.compile(self.get_lang_url_pattern).search(host_html).group()
               
         client_key = self.get_clientKey()
-        self.api_headers.update({'Cookie': f'client_key={client_key}'})
+        self.api_headers.update({'Cookie': 'client_key={}'.format(client_key)})
 
         split_form_data = {
             'header': {

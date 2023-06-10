@@ -5,7 +5,7 @@ import sqlite3
 import json
 from traceback import print_exc
 import os
-from utils.config import globalconfig,_TR
+from myutils.config import globalconfig,_TR
 
 from gui.usefulwidget import getQMessageBox
 def sqlite2json(self):
@@ -15,7 +15,7 @@ def sqlite2json(self):
     
     try:
         sql=sqlite3.connect(f[0],check_same_thread=False)
-        ret=sql.execute(f'SELECT * FROM artificialtrans  ').fetchall()
+        ret=sql.execute('SELECT * FROM artificialtrans  ').fetchall()
         js={}
         collect={} 
         for _aret  in ret:

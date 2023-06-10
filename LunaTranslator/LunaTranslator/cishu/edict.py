@@ -1,7 +1,7 @@
-from utils.config import globalconfig
+from myutils.config import globalconfig
 import sqlite3,os
 import winsharedutils,re
-from utils.utils import argsort
+from myutils.utils import argsort
 from traceback import print_exc
 class edict():
     def __init__(self):
@@ -16,7 +16,7 @@ class edict():
          self.sql.close()
     def search(self,word):
           
-                x=self.sql.execute(f"select text, entry_id from surface where  text like '%{word}%'")
+                x=self.sql.execute("select text, entry_id from surface where  text like '%{}%'".format(word))
                 exp=x.fetchall()
                 dis=9999
                 dis=[]
@@ -32,7 +32,7 @@ class edict():
                         break
                 saveres=[]
                 for _id in save:
-                    x=self.sql.execute(f"select word, content from entry where  id ={_id}").fetchone()
+                    x=self.sql.execute("select word, content from entry where  id ={}".format(_id)).fetchone()
                     saveres.append(x[0]+'<br>'+re.sub('/EntL.*/','', x[1][1:]))
                 
                 return '<hr>'.join(saveres)

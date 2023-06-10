@@ -3,7 +3,7 @@ from urllib.parse import quote
 import hashlib
 import queue,time,requests,re,os
 
-from utils.utils import getproxy
+from myutils.utils import getproxy
 def b64string(a): 
     return hashlib.md5(a.encode('utf8')).digest().hex()
 

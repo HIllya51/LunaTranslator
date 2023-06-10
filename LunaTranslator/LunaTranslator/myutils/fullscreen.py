@@ -1,9 +1,9 @@
 import os,win32con,json,math
 import win32utils
-from utils.config import globalconfig ,magpie10_config
-from utils.hwnd import  letfullscreen,recoverwindow,ListProcess
+from myutils.config import globalconfig ,magpie10_config
+from myutils.hwnd import  letfullscreen,recoverwindow,ListProcess
 from traceback import print_exc
-from utils.subproc import subproc_w
+from myutils.subproc import subproc_w
 import time,threading
 
 class fullscreen():
@@ -59,7 +59,7 @@ class fullscreen():
             jspath=os.path.abspath('./userconfig/magpie10_config.json')
             with open(jspath,'w',encoding='utf-8') as ff:
                     ff.write(json.dumps(magpie10_config,ensure_ascii=False,sort_keys=False, indent=4))
-            self.engine= subproc_w(f'./files/plugins/Magpie10/Magpie.Core.exe {profiles_index} {hwnd} "{jspath}"',cwd='./files/plugins/Magpie10/')
+            self.engine= subproc_w('./files/plugins/Magpie10/Magpie.Core.exe {} {} "{}"'.format(profiles_index,hwnd,jspath),cwd='./files/plugins/Magpie10/')
             def _waitexternalend():
                 self.engine.wait()
                 self._externalfsend()

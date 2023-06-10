@@ -1,5 +1,5 @@
 import requests
-from utils.utils import getproxy
+from myutils.utils import getproxy
 
 class mojidict:
     def search(self, word):
@@ -33,7 +33,7 @@ class mojidict:
             for i in response.json()["result"]["results"]["search-all"]["result"][
                 "word"
             ]["searchResult"]:
-                result += f'{i["title"]}<br>{i["excerpt"]}<br><br>'
+                result += '{}<br>{}<br><br>'.format(i["title"],i["excerpt"])
 
             return result
 

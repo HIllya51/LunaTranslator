@@ -5,7 +5,7 @@ from urllib.parse import quote
 import re
 import json  
 
-from utils.config import globalconfig
+from myutils.config import globalconfig
 from translator.basetranslator import basetrans
 import time
 
@@ -24,9 +24,9 @@ import requests
 def translate_async(text, to_language, from_language=None,proxy=None): 
     _apiEndpoint = "api.cognitive.microsofttranslator.com";
     _apiVersion = "3.0";
-    url = f'{_apiEndpoint}/translate?api-version={_apiVersion}&to={to_language}'
+    url = '{}/translate?api-version={}&to={}'.format(_apiEndpoint,_apiVersion,to_language)
     if from_language is not None:
-        url += f'&from={ from_language }'
+        url += '&from={}'.format(from_language)
     _privateKey =[
         0xa2, 0x29, 0x3a, 0x3d, 0xd0, 0xdd, 0x32, 0x73,
         0x97, 0x7a, 0x64, 0xdb, 0xc2, 0xf3, 0x27, 0xf5,
@@ -42,7 +42,7 @@ def translate_async(text, to_language, from_language=None,proxy=None):
         'Content-Type': 'application/json'
     }
     json_data = [{"Text": text}]
-    response = requests.post(f'https://{url}', headers=headers, data=json.dumps(json_data).encode('utf-8'),proxies=proxy)
+    response = requests.post('https://{}'.format(url), headers=headers, data=json.dumps(json_data).encode('utf-8'),proxies=proxy)
 
     response.raise_for_status()
 
@@ -56,11 +56,11 @@ def get_signature(url, private_key):
 
     dateTime = datetime.utcnow().strftime('%a, %d %b %Y %H:%M:%S GMT')
 
-    bytes_str = f'MSTranslatorAndroidApp{escaped_url}{dateTime}{guid}'.lower().encode('utf-8')
+    bytes_str = 'MSTranslatorAndroidApp{}{}{}'.format(escaped_url,dateTime,guid).lower().encode('utf-8')
      
     hash_ = hmac.new(bytes(private_key), bytes_str, hashlib.sha256).digest()
 
-    signature = f'MSTranslatorAndroidApp::{base64.b64encode(hash_).decode()}::{dateTime}::{guid}'
+    signature = 'MSTranslatorAndroidApp::{}::{}::{}'.format(base64.b64encode(hash_).decode(),dateTime,guid)
     return signature
 
 def try_get_expiration_date(element, expiration_date):

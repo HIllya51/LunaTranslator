@@ -3,7 +3,7 @@ from PyQt5.QtGui import  QBitmap,QPainter,QPen,QBrush,QFont,QMouseEvent
 from PyQt5.QtCore import Qt,QPoint,QRect,QEvent,pyqtSignal
 
  
-from utils.config import globalconfig
+from myutils.config import globalconfig
 from gui.resizeablemainwindow import Mainw
 import win32utils,win32con
 class rangeadjust(Mainw) :
@@ -129,7 +129,7 @@ class rangeselct(QMainWindow) :
             self.callback() 
 
 
-from utils.wrapper import Singleton_close
+from myutils.wrapper import Singleton_close
 @Singleton_close
 class moveresizegame(QDialog) :
 

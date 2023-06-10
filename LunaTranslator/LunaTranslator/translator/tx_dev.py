@@ -7,7 +7,7 @@ import winsharedutils
 from urllib.parse import quote
 import websocket as websockets
 import json
-from utils.config import globalconfig
+from myutils.config import globalconfig
 import json  
 from translator.basetranslator import basetrans
 import time
@@ -46,12 +46,12 @@ def tranlate(websocketurl,content,src,tgt ):
             tgtidx=1
         
         SendRequest(websocket,'Runtime.evaluate',{"expression":
-            f'''document.querySelector('div.textpanel-tool.tool-close').click();
+            '''document.querySelector('div.textpanel-tool.tool-close').click();
             document.querySelector("#language-button-group-source > div.language-button-dropdown.language-source > ul > li:nth-child(1) > span").click();
             document.querySelector("#language-button-group-target > div.language-button-dropdown.language-target > ul > li:nth-child({tgtidx}) > span");
             document.getElementsByClassName('textinput')[0].value=`{content}`;
             document.getElementsByClassName('language-translate-button')[0].click();
-            '''})  
+            '''.format(tgtidx,content)})  
         res=waittransok(websocket)
 
         #document.getElementById('tta_input_ta')
@@ -60,7 +60,7 @@ def tranlate(websocketurl,content,src,tgt ):
 
 def createtarget(port  ): 
     url='https://fanyi.qq.com/'
-    infos=requests.get(f'http://127.0.0.1:{port}/json/list').json() 
+    infos=requests.get('http://127.0.0.1:{}/json/list'.format(port)).json() 
     use=None
     for info in infos:
          if info['url'][:len(url)]==url:

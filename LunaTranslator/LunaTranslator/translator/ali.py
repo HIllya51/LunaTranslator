@@ -1,7 +1,7 @@
 
 from traceback import print_exc 
 import requests,re
-from utils.config import globalconfig
+from myutils.config import globalconfig
 from translator.basetranslator import basetrans
 class TS(basetrans): 
     def langmap(self):
@@ -76,7 +76,7 @@ class TS(basetrans):
         xx=set(xx)
         for _x in xx:
             try:
-                trans=trans.replace(f'&#{_x};',chr(int(_x)))
+                trans=trans.replace('&#{};'.format(_x),chr(int(_x)))
             except:
                 pass
         return  trans

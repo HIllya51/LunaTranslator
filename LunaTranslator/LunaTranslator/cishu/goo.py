@@ -1,13 +1,13 @@
-from utils.config import globalconfig
+from myutils.config import globalconfig
 import requests
 from urllib.parse import quote
 import re
-from utils.utils import getproxy
+from myutils.utils import getproxy
 from traceback import print_exc
 class goo:
      
     def search(self,word):
-        url=f'https://dictionary.goo.ne.jp/srch/all/{quote(word)}/m1u/'
+        url='https://dictionary.goo.ne.jp/srch/all/{}/m1u/'.format(quote(word))
         x=(requests.get(url,proxies=getproxy()).text)
         xx=re.findall('<section>([\\s\\S]*?)</section>',x) 
          

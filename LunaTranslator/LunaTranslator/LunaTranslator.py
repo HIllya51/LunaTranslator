@@ -1,21 +1,21 @@
 
 import time
 import re
-import os,threading 
+import os,threading ,ctypes
 from traceback import  print_exc   
-import win32utils
-from utils.config import globalconfig ,savehook_new_list,savehook_new_data,noundictconfig,transerrorfixdictconfig,setlanguage ,_TR,static_data
+import win32utils,socket
+from myutils.config import globalconfig ,savehook_new_list,savehook_new_data,noundictconfig,transerrorfixdictconfig,setlanguage ,_TR,static_data
 import threading 
-from utils.utils import minmaxmoveobservefunc ,kanjitrans,checkifnewgame
-from utils.wrapper import threader 
+from myutils.utils import minmaxmoveobservefunc ,kanjitrans,checkifnewgame
+from myutils.wrapper import threader 
 from gui.showword import searchwordW
 from gui.rangeselect    import rangeadjust
-from utils.hwnd import pid_running,getpidexe ,testprivilege,ListProcess
+from myutils.hwnd import pid_running,getpidexe ,testprivilege,ListProcess
 from textsource.copyboard import copyboard   
 from textsource.texthook import texthook   
 from textsource.embedded import embedded
 from textsource.ocrtext import ocrtext
-from textsource.texthook_tcp import texthook_tcp
+from textsource.tcpio import tcpio
 import  gui.selecthook     
 import gui.translatorUI
 from gui.languageset import languageset
@@ -29,8 +29,8 @@ from gui.attachprocessdialog import AttachProcessDialog
 import win32con 
 import re 
 import winsharedutils
-from utils.post import POSTSOLVE
-from utils.vnrshareddict import vnrshareddict 
+from myutils.post import POSTSOLVE
+from myutils.vnrshareddict import vnrshareddict 
 
 from textsource.hook.host import RPC
  
@@ -86,7 +86,7 @@ class MAINUI() :
                         usedict=True
                      
                 if usedict and  key in content:
-                    xx=f'ZX{chr(ord("B")+zhanweifu)}Z'
+                    xx='ZX{}Z'.format(chr(ord("B")+zhanweifu))
                     content=content.replace(key,xx)
                     mp1[xx]=key
                     zhanweifu+=1
@@ -102,12 +102,29 @@ class MAINUI() :
                     # if self.vnrshareddict[key]['src']==self.vnrshareddict[key]['tgt']:
                     #     content=content.replace(key,self.vnrshareddict[key]['text'])
                     # else:
-                    xx=f'ZX{chr(ord("B")+zhanweifu)}Z'
+                    xx='ZX{}Z'.format(chr(ord("B")+zhanweifu))
                     content=content.replace(key,xx)
                     mp2[xx]=key
                     zhanweifu+=1
         
         return content,(mp1,mp2,mp3)
+    @threader
+    def starttcpservice(self,_=0):
+        start=globalconfig['outputtotcp'] and globalconfig['sourcestatus']['tcpio']['use']==False
+        if start:
+            try:
+                
+                self._sock=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                self._sock.bind(('',globalconfig['tcp_port_listen']))
+                self._sock.listen(100)
+                while globalconfig['outputtotcp'] and globalconfig['sourcestatus']['tcpio']['use']==False:
+                    self.outputtcpsocket, addr =self._sock.accept()
+            except:
+                print_exc() 
+        else:
+                self._sock.close()
+                self.outputtcpsocket.close()
+        
     def solveaftertrans(self,res,mp): 
         mp1,mp2,mp3=mp
         #print(res,mp)#hello
@@ -145,7 +162,9 @@ class MAINUI() :
             elif _paste_str[:len('<msg>')]=='<msg>':
                 self.translation_ui.displaystatus.emit(_paste_str[len('<msg>'):],'red',False)
                 return   
-        
+            elif _paste_str[:len('<msg_1>')]=='<msg_1>':
+                self.translation_ui.displaystatus.emit(_paste_str[len('<msg_1>'):],'red',True)
+                return 
         if _paste_str=='' or len(_paste_str)>100000:
             if embedcallback:
                 embedcallback('zhs', _paste_str) 
@@ -173,7 +192,16 @@ class MAINUI() :
         
         if globalconfig['outputtopasteboard'] and globalconfig['sourcestatus']['copy']['use']==False:  
             winsharedutils.clipboard_set(_paste_str)
-        
+        if globalconfig['outputtotcp'] and globalconfig['sourcestatus']['tcpio']['use']==False:  
+            _b=_paste_str.encode('utf8')
+            _l=len(_b)
+            _i=ctypes.c_uint(_l)
+            try:
+                self.outputtcpsocket.send(bytes(_i)+_b)
+            except:
+                pass
+            
+
         try:
             hira=self.hira_.fy(_paste_str)
         except:
@@ -307,7 +335,7 @@ class MAINUI() :
         self.settin_ui.selectbuttonembed.setEnabled(globalconfig['sourcestatus']['embedded']['use']) 
         self.textsource=None
         if checked: 
-            classes={'ocr':ocrtext,'copy':copyboard,'texthook':None,'embedded':None,"texthook_tcp":texthook_tcp} 
+            classes={'ocr':ocrtext,'copy':copyboard,'texthook':None,'embedded':None,"tcpio":tcpio} 
             if use is None:
                 use=list(filter(lambda _ :globalconfig['sourcestatus'][_]['use'],classes.keys()) )
                 use=None if len(use)==0 else use[0]
@@ -320,11 +348,12 @@ class MAINUI() :
             else:
                 self.textsource=classes[use](self.textgetmethod)
         
-     
+        self.starttcpservice()
     @threader
     def starthira(self,use=None,checked=True): 
         if checked:
             hirasettingbase=globalconfig['hirasetting']
+            _hira=None
             for name in hirasettingbase:
                 if hirasettingbase[name]['use']:
                     if os.path.exists('./LunaTranslator/hiraparse/'+name+'.py')==False:
@@ -333,7 +362,10 @@ class MAINUI() :
                     break
              
             try:
-                self.hira_=_hira()  
+                if _hira:
+                    self.hira_=_hira()  
+                else:
+                    self.hira_=None
             except:
                 print_exc()
                 self.hira_=None
@@ -520,7 +552,6 @@ class MAINUI() :
         self.range_ui = rangeadjust(self)   
         self.hookselectdialog=gui.selecthook.hookselect(self ,self.settin_ui) 
         self.AttachProcessDialog=AttachProcessDialog(self.settin_ui,self.selectprocess,self.hookselectdialog)
-           
         self.starttextsource()  
         threading.Thread(target=self.autocheckhwndexists).start()   
         threading.Thread(target=self.autohookmonitorthread).start()    

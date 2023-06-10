@@ -1,6 +1,6 @@
-from utils.config import globalconfig
+from myutils.config import globalconfig
 
-from utils.utils import getproxy
+from myutils.utils import getproxy
 import os,requests
 from traceback import print_exc
 class hira:

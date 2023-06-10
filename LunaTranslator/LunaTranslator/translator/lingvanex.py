@@ -108,11 +108,11 @@ class Lingvanex(Tse):
 
             if mode != self.mode:
                 self.mode = mode
-                self.api_url = ''.join([self.auth_info[f'{mode}_BASE_URL'], self.auth_info['TRANSLATE_URL']])
-                self.language_url = ''.join([self.auth_info[f'{mode}_BASE_URL'], self.auth_info['GET_LANGUAGES_URL']])
-                self.host_headers.update({'authorization': self.auth_info[f'{mode}_AUTH_TOKEN']})
-                self.api_headers.update({'authorization': self.auth_info[f'{mode}_AUTH_TOKEN']})
-                self.api_headers.update({'referer': urllib.parse.urlparse(self.auth_info[f'{mode}_BASE_URL']).netloc})
+                self.api_url = ''.join([self.auth_info['{}_BASE_URL'.format(mode)], self.auth_info['TRANSLATE_URL']])
+                self.language_url = ''.join([self.auth_info['{}_BASE_URL'.format(mode)], self.auth_info['GET_LANGUAGES_URL']])
+                self.host_headers.update({'authorization': self.auth_info['{}_AUTH_TOKEN'.format(mode)]})
+                self.api_headers.update({'authorization': self.auth_info['{}_AUTH_TOKEN'.format(mode)]})
+                self.api_headers.update({'referer': urllib.parse.urlparse(self.auth_info['{}_BASE_URL'.format(mode)]).netloc})
  
             self.detail_language_map = self.get_d_lang_map(self.language_url, self.session, self.host_headers, timeout, proxies)
   

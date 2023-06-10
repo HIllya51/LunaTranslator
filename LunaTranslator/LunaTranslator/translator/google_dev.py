@@ -7,8 +7,8 @@ import re
 from urllib.parse import quote
 import websocket  as websockets
 import json
-from utils.subproc import subproc_w
-from utils.config import globalconfig
+from myutils.subproc import subproc_w
+from myutils.config import globalconfig
 import json  
 from translator.basetranslator import basetrans
 import time,hashlib
@@ -39,20 +39,20 @@ def waittransok( websocket):
 def tranlate(websocketurl,content,src,tgt ): 
     if 1:
         websocket=websockets.create_connection(websocketurl)   
-        SendRequest(websocket,'Runtime.evaluate',{"expression":f'textarea=document.querySelector("textarea");textarea.value="";event = new Event("input", {{bubbles: true, cancelable: true }});textarea.dispatchEvent(event);textarea=document.querySelector("textarea");textarea.value=`{content}`;event = new Event("input", {{bubbles: true, cancelable: true }});textarea.dispatchEvent(event);'}) 
-        print(f'(a=document.querySelector("#ow73 > div > span > button > div.VfPpkd-Bz112c-RLmnJb"))?a.click():"";textarea=document.querySelector("textarea");textarea.value=`{content}`;event = new Event("input", {{bubbles: true, cancelable: true }});textarea.dispatchEvent(event);')
+        SendRequest(websocket,'Runtime.evaluate',{"expression":'textarea=document.querySelector("textarea");textarea.value="";event = new Event("input", {{bubbles: true, cancelable: true }});textarea.dispatchEvent(event);textarea=document.querySelector("textarea");textarea.value=`{}`;event = new Event("input", {{bubbles: true, cancelable: true }});textarea.dispatchEvent(event);'.format(content)}) 
+        
         waitload(websocket)
         res=waittransok(websocket)
         return (res)
 def navilang(websocketurl,src,tgt ): 
     if 1:
         websocket=websockets.create_connection(websocketurl)   
-        SendRequest(websocket,'Page.navigate',{'url':f'https://translate.google.com/?sl={src}&tl={tgt}'})
+        SendRequest(websocket,'Page.navigate',{'url':'https://translate.google.com/?sl={}&tl={}'.format(src,tgt)})
         waitload(websocket) 
  
 def createtarget(port  ): 
     url='https://translate.google.com/'
-    infos=requests.get(f'http://127.0.0.1:{port}/json/list').json() 
+    infos=requests.get('http://127.0.0.1:{}/json/list'.format(port)).json() 
     use=None
     for info in infos:
          if info['url'][:len(url)]==url:

@@ -31,10 +31,10 @@ def initpath():
 
 if __name__ == "__main__" :
     initpath()
-    from utils.config import _TR,static_data
+    from myutils.config import _TR,static_data
     from gui.usefulwidget import getQMessageBox
     from LunaTranslator import MAINUI
-    from utils.hwnd import  getScreenRate  
+    from myutils.hwnd import  getScreenRate  
 
     screenrate=getScreenRate()   
     QCoreApplication.setAttribute(Qt.AA_UseHighDpiPixmaps, True)

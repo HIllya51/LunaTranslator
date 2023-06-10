@@ -1,8 +1,8 @@
  
 import functools
-from utils.config import globalconfig   ,static_data,_TR
+from myutils.config import globalconfig   ,static_data,_TR
 from traceback import print_exc 
-from utils.winsyshotkey import SystemHotkey ,registerException
+from myutils.winsyshotkey import SystemHotkey ,registerException
 from PyQt5.QtGui import QKeySequence
 from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtWidgets import QComboBox,QKeySequenceEdit,QLabel

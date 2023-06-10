@@ -4,8 +4,8 @@ import base64
 import queue,time,requests,re,os
 from traceback import print_exc
 import hashlib
-from utils.utils import getproxy
-from utils.config import globalconfig
+from myutils.utils import getproxy
+from myutils.config import globalconfig
 def b64string(a): 
     return hashlib.md5(a.encode('utf8')).digest().hex()
 

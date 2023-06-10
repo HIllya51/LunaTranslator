@@ -1,5 +1,5 @@
 
-from utils.subproc import subproc_w       
+from myutils.subproc import subproc_w       
 from translator.basetranslator import basetrans 
 import os  ,time,win32utils,win32con
 
@@ -34,7 +34,7 @@ class TS(basetrans):
             else:
                 path2=os.path.join(path,'TransCOMEC.dll')
             
-            self.engine=subproc_w(f'./files/plugins/shareddllproxy32.exe dreye "{path}"  "{path2}" {str(mp[pairs])} {pipename} {waitsignal} ',name='dreye')
+            self.engine=subproc_w('./files/plugins/shareddllproxy32.exe dreye "{}"  "{}" {} {} {} '.format(path,path2,str(mp[pairs]),pipename,waitsignal),name='dreye')
             
             win32utils.WaitForSingleObject(win32utils.CreateEvent(False, False, waitsignal),win32utils.INFINITE); 
             win32utils.WaitNamedPipe(pipename,win32con.NMPWAIT_WAIT_FOREVER)

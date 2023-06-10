@@ -7,8 +7,8 @@ import re
 from urllib.parse import quote
 import websocket  as websockets
 import json
-from utils.subproc import subproc_w
-from utils.config import globalconfig
+from myutils.subproc import subproc_w
+from myutils.config import globalconfig
 import json  
 from translator.basetranslator import basetrans
 import time,hashlib
@@ -40,7 +40,7 @@ def tranlate(websocketurl,content,src,tgt ):
     if 1:
         websocket=websockets.create_connection(websocketurl)   
         SendRequest(websocket,'Runtime.evaluate',{"expression":'document.querySelector("#pre").innerText=""'})
-        SendRequest(websocket,'Runtime.evaluate',{"expression":f'i=document.querySelector("#source");i.value=``;event = new Event("input", {{bubbles: true, cancelable: true }});i.dispatchEvent(event);i.value=`{content}`;event = new Event("input", {{bubbles: true, cancelable: true }});i.dispatchEvent(event);'}) 
+        SendRequest(websocket,'Runtime.evaluate',{"expression":'i=document.querySelector("#source");i.value=``;event = new Event("input", {{bubbles: true, cancelable: true }});i.dispatchEvent(event);i.value=`{}`;event = new Event("input", {{bubbles: true, cancelable: true }});i.dispatchEvent(event);'.format(content)}) 
        
         waitload(websocket)
         res=waittransok(websocket)
@@ -50,7 +50,7 @@ def tranlate(websocketurl,content,src,tgt ):
 
 def createtarget(port  ): 
     url='https://translate.alibaba.com/'
-    infos=requests.get(f'http://127.0.0.1:{port}/json/list').json() 
+    infos=requests.get('http://127.0.0.1:{}/json/list'.format(port)).json() 
     use=None
     for info in infos:
          if info['url'][:len(url)]==url:

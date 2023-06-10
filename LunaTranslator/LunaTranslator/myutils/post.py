@@ -1,11 +1,10 @@
  
 import re,codecs
 from traceback import print_exc
-from typing import Counter
 from collections import Counter
 import importlib
-from utils.utils import getfilemd5
-from utils.config import postprocessconfig,globalconfig 
+from myutils.utils import getfilemd5
+from myutils.config import postprocessconfig,globalconfig 
 def _2_f(line):
         times=postprocessconfig['_2']['args']['重复次数(若为1则自动分析去重)']
          
@@ -213,7 +212,7 @@ def _remove_not_in_ja_bracket(line):
                 if _1<_2:
                        return line[_1:_2+1]
         return  line
-from utils.utils import checkchaos
+from myutils.utils import checkchaos
 def _remove_chaos(line):
        newline=''
        for c in line:

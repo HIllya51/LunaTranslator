@@ -1,19 +1,19 @@
   
-from utils.config import globalconfig ,_TR   ,static_data
+from myutils.config import globalconfig ,_TR   ,static_data
 from textsource.textsourcebase import basetext   
 import functools,queue,time,win32utils
 import threading,json 
 import platform
 import os
-from utils.hwnd import is64bit
-from utils.subproc import subproc_w
+from myutils.hwnd import is64bit
+from myutils.subproc import subproc_w
 from textsource.embed.sharedmemwin import winsharedmem
 from textsource.embed.socketpack3 import packstrlist,packdata,unpackuint32,unpackstrlist
 class embedded(basetext  ):  
     def inject_vnragent(self,pid): 
         dllpath=os.path.abspath('./files/plugins/LunaEmbedEngine32.dll')
         
-        subproc_w(f'.\\files\\plugins\\shareddllproxy32.exe dllinject {pid} "{dllpath}" ') 
+        subproc_w('.\\files\\plugins\\shareddllproxy32.exe dllinject {} "{}"'.format(pid,dllpath)) 
         
     def start(self):
         def _():  

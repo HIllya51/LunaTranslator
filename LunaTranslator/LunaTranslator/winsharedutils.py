@@ -5,7 +5,8 @@ if platform.architecture()[0]=='64bit':
     pythonbit='64' 
 else:
     pythonbit='32' 
-utilsdll=CDLL(os.path.abspath(f'./files/plugins/winsharedutils{pythonbit}.dll') )
+utilsdll=CDLL(os.path.abspath('./files/plugins/winsharedutils{}.dll'.format(pythonbit)) )
+
 _freewstringlist=utilsdll.freewstringlist
 _freewstringlist.argtypes=POINTER(c_wchar_p),c_uint
 _free_all=utilsdll.free_all
@@ -29,24 +30,6 @@ _SAPI_Speak.argtypes=c_wchar_p,c_uint,c_uint,c_uint,c_uint,c_wchar_p
 _SAPI_Speak.restype=c_bool
 
 
-_check_language_valid=utilsdll.check_language_valid
-_check_language_valid.argtypes=c_wchar_p,
-_check_language_valid.restype=c_bool
-
-_getlanguagelist=utilsdll.getlanguagelist
-_getlanguagelist.argtypes=POINTER(c_uint),
-_getlanguagelist.restype=POINTER(c_wchar_p)
-
-class ocrres(Structure):
-    _fields_=[
-        ('lines',POINTER(c_wchar_p)),
-        ('ys',POINTER(c_uint))
-    ]
-_OCR_f=utilsdll.OCR
-_OCR_f.argtypes=c_wchar_p,c_wchar_p,c_wchar_p, POINTER(c_uint)
-_OCR_f.restype=ocrres
-_freeocrres=utilsdll.freeocrres
-_freeocrres.argtypes=ocrres,c_uint
 
 _levenshtein_distance=utilsdll.levenshtein_distance
 _levenshtein_distance.argtypes=c_uint,c_wchar_p,c_uint,c_wchar_p
@@ -85,24 +68,6 @@ def SAPI_Speak(content,v,voiceid,  rate,  volume,  Filename):
     return _SAPI_Speak(content,v,voiceid,  int(rate),  int(volume),  Filename)
 
 
-def getlanguagelist():
-    num=c_uint()
-    ret=_getlanguagelist(pointer(num))
-    _allsupport=[]
-    for i in range(num.value):
-        _allsupport.append(ret[i])
-    _freewstringlist(ret,num.value)
-    return _allsupport
-
-def OCR_f(imgpath,lang,space):
-    num=c_uint()
-    ret=_OCR_f(imgpath,lang,space,pointer(num))
-    res=[]
-    for i in range(num.value):  
-        res.append((ret.lines[i], ret.ys[i]))
-         
-    _freeocrres(ret,num.value)
-    return res
 
 
 def distance(s1,s2):
@@ -110,7 +75,7 @@ def distance(s1,s2):
 
 
 def mecab_init(path):
-    return _mecab_init(path.encode('utf8'),os.path.abspath(f'./files/plugins/libmecab{pythonbit}.dll') )
+    return _mecab_init(path.encode('utf8'),os.path.abspath('./files/plugins/libmecab{}.dll'.format(pythonbit)) )
 
 def mecab_parse(trigger,string):
     surface=POINTER(c_char_p)()

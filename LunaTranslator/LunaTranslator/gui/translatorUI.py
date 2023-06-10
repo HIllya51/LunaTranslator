@@ -13,15 +13,15 @@ from PyQt5.QtGui import  QFont  ,QIcon,QPixmap  ,QMouseEvent,QCursor
 from PyQt5.QtWidgets import  QLabel ,QPushButton ,QSystemTrayIcon ,QAction,QMenu 
 import win32utils
 import winsharedutils,queue
-from utils.config import globalconfig,saveallconfig,_TR
-from utils.subproc import endsubprocs
+from myutils.config import globalconfig,saveallconfig,_TR
+from myutils.subproc import endsubprocs
 import  win32con
 import gui.rangeselect  
-from utils.hwnd import mouseselectwindow 
+from myutils.hwnd import mouseselectwindow ,showintab
 from gui.dialog_savedgame import dialog_savedgame,dialog_savedgame_new
 from gui.dialog_memory import dialog_memory
 from gui.textbrowser import Textbrowser
-from utils.fullscreen import fullscreen
+from myutils.fullscreen import fullscreen
 from gui.rangeselect  import moveresizegame 
 from gui.usefulwidget import resizableframeless
 class QUnFrameWindow(resizableframeless):   
@@ -198,43 +198,43 @@ class QUnFrameWindow(resizableframeless):
         self.setMinimumHeight(globalconfig['buttonsize']*1.5*self.rate+10)
         self.setMinimumWidth(globalconfig['buttonsize']*2*self.rate)
     def addbuttons(self):
-        functions={
-            "move":None,
-            "retrans":self.startTranslater,
-            "automodebutton":self.changeTranslateMode,
-            "setting":lambda:self.object.settin_ui.showsignal.emit(),
-            "copy":lambda:winsharedutils.clipboard_set( self.object.currenttext),
-            "edit":lambda: self.object.edittextui.showsignal.emit(),
-            "showraw":self.changeshowhideraw,
-            "history":lambda: self.object.transhis.showsignal.emit() ,
-            "noundict":lambda: self.object.settin_ui.button_noundict.click(),
-            "fix":lambda: self.object.settin_ui.button_fix.click(),
-            "langdu":self.langdu,
-            "mousetransbutton":self.changemousetransparentstate,
-            "locktoolsbutton":self.changetoolslockstate,
-            "gamepad":lambda: dialog_savedgame(self.object.settin_ui),
-            "gamepad_new":lambda: dialog_savedgame_new(self.object.settin_ui),
-            "selectgame":lambda :self.object.AttachProcessDialog.showsignal.emit(),
-            "selecttext":lambda:self.object.hookselectdialog.showsignal.emit(),
-            "selectocrrange":lambda :self.clickRange(False),
-            "hideocrrange":self.showhide,
-            "bindwindow":self.bindcropwindow_signal.emit,
-            "resize":lambda :moveresizegame(self,self.object.textsource.hwnd) if self.object.textsource.hwnd else 0,
-            "fullscreen":self._fullsgame,
-            "muteprocess":self.muteprocessfuntion,
-            "memory":lambda: dialog_memory(self.object.settin_ui,self.object.currentmd5),
-            "keepontop":lambda:globalconfig.__setitem__("keepontop",not globalconfig['keepontop']) is None and self.refreshtoolicon() is None and self.setontopthread(),
-            "minmize":self.hide_and_disableautohide,
-            "quit":self.close
-        }
+        functions=(
+            ("move",None),
+            ("retrans",self.startTranslater),
+            ("automodebutton",self.changeTranslateMode),
+            ("setting",lambda:self.object.settin_ui.showsignal.emit()),
+            ("copy",lambda:winsharedutils.clipboard_set( self.object.currenttext)),
+            ("edit",lambda: self.object.edittextui.showsignal.emit()),
+            ("showraw",self.changeshowhideraw),
+            ("history",lambda: self.object.transhis.showsignal.emit() ),
+            ("noundict",lambda: self.object.settin_ui.button_noundict.click()),
+            ("fix",lambda: self.object.settin_ui.button_fix.click()),
+            ("langdu",self.langdu),
+            ("mousetransbutton",self.changemousetransparentstate),
+            ("locktoolsbutton",self.changetoolslockstate),
+            ("gamepad",lambda: dialog_savedgame(self.object.settin_ui)),
+            ("gamepad_new",lambda: dialog_savedgame_new(self.object.settin_ui)),
+            ("selectgame",lambda :self.object.AttachProcessDialog.showsignal.emit()),
+            ("selecttext",lambda:self.object.hookselectdialog.showsignal.emit()),
+            ("selectocrrange",lambda :self.clickRange(False)),
+            ("hideocrrange",self.showhide),
+            ("bindwindow",self.bindcropwindow_signal.emit),
+            ("resize",lambda :moveresizegame(self,self.object.textsource.hwnd) if self.object.textsource.hwnd else 0),
+            ("fullscreen",self._fullsgame),
+            ("muteprocess",self.muteprocessfuntion),
+            ("memory",lambda: dialog_memory(self.object.settin_ui,self.object.currentmd5)),
+            ("keepontop",lambda:globalconfig.__setitem__("keepontop",not globalconfig['keepontop']) is None and self.refreshtoolicon() is None and self.setontopthread()),
+            ("minmize",self.hide_and_disableautohide),
+            ("quit",self.close)
+        )
         adjast={"minmize":-2,"quit":-1}
         _type={"quit":2}
 
-        for btn in functions:
+        for btn,func in functions:
             belong=globalconfig['toolbutton']['buttons'][btn]['belong'] if 'belong' in globalconfig['toolbutton']['buttons'][btn] else None
             _adjast=adjast[btn] if btn in adjast else 0
             tp=_type[btn] if btn in _type else 1
-            self.takusanbuttons(tp,functions[btn],_adjast,globalconfig['toolbutton']['buttons'][btn]['tip'],btn,belong)
+            self.takusanbuttons(tp,func,_adjast,globalconfig['toolbutton']['buttons'][btn]['tip'],btn,belong)
                
     def hide_(self):  
         if self.showintab: 
@@ -311,7 +311,7 @@ class QUnFrameWindow(resizableframeless):
         self.setWindowIcon(icon)
         self.tray = QSystemTrayIcon()  
         self.tray.setIcon(icon) 
-        self.setWindowFlag(Qt.Tool,not globalconfig['showintab'])
+        showintab(self.winId(),globalconfig['showintab']) 
         self.isfirstshow=True
         self.setAttribute(Qt.WA_TranslucentBackground) 
         self.setAttribute(Qt.WA_ShowWithoutActivating,True)
@@ -404,17 +404,18 @@ class QUnFrameWindow(resizableframeless):
         try:
             hwnd=win32utils.FindWindow('Window_Magpie_967EB565-6F73-4E94-AE53-00CC42592A22',None) 
             tm=time.localtime()
+            fname='./cache/screenshot/{}-{}-{}-{}-{}-{}.png'.format(tm.tm_year,tm.tm_mon,tm.tm_mday,tm.tm_hour,tm.tm_min,tm.tm_sec)
             if hwnd:
                 hwnd=QApplication.desktop().winId() 
                 self.hide()
-                QApplication.primaryScreen().grabWindow(hwnd).save(f'./cache/screenshot/{tm.tm_year}-{tm.tm_mon}-{tm.tm_mday}-{tm.tm_hour}-{tm.tm_min}-{tm.tm_sec}.png')
+                QApplication.primaryScreen().grabWindow(hwnd).save(fname)
                 self.show() 
                 
             else:
                 hwnd=win32utils.GetForegroundWindow()   
                 if hwnd==int(self.winId()):
                     hwnd=self.object.textsource.hwnd 
-                QApplication.primaryScreen().grabWindow(hwnd).save(f'./cache/screenshot/{tm.tm_year}-{tm.tm_mon}-{tm.tm_mday}-{tm.tm_hour}-{tm.tm_min}-{tm.tm_sec}.png')
+                QApplication.primaryScreen().grabWindow(hwnd).save(fname)
                 
                 
         except:

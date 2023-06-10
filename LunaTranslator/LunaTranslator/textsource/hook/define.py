@@ -9,7 +9,6 @@ HOOK_NAME_SIZE = 60
 FIXED_SPLIT_VALUE = 0x10001
 import ctypes
 from ctypes import Structure,c_int,c_char,c_uint64,c_uint,sizeof,c_wchar,c_short,c_uint32,c_bool,c_ubyte
-from typing import Any
 class HostNotificationType(c_int):
     pass
 

@@ -3,7 +3,7 @@ from traceback import print_exc
 import requests
 import hmac,base64,re
 import uuid,time
-from utils.config import globalconfig
+from myutils.config import globalconfig
 from translator.basetranslator import basetrans
 class TS(basetrans):
     def langmap(self):
@@ -35,8 +35,8 @@ class TS(basetrans):
     def get_auth_key(self, lang_html: str) -> str:
         return re.compile('AUTH_KEY:"(.*?)"').findall(lang_html)[0]
     def get_auth(self, url, auth_key, device_id, time_stamp): 
-        auth = hmac.new(key=auth_key.encode(), msg=f'{device_id}\n{url}\n{time_stamp}'.encode(), digestmod='md5').digest()
-        return f'PPG {device_id}:{base64.b64encode(auth).decode()}'
+        auth = hmac.new(key=auth_key.encode(), msg='{}\n{}\n{}'.format(device_id,url,time_stamp).encode(), digestmod='md5').digest()
+        return 'PPG {}:{}'.format(device_id,base64.b64encode(auth).decode())
 
     def translate(self, content):
         tm=str(int(time.time()*1000))

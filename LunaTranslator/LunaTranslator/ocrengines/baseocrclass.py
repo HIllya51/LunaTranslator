@@ -1,9 +1,9 @@
 
-from utils.config import globalconfig,ocrsetting,static_data
+from myutils.config import globalconfig,ocrsetting,static_data
 from traceback import print_exc 
-from utils.wrapper import stripwrapper
-from utils.exceptions import ArgsEmptyExc
-from utils.utils import getproxy
+from myutils.wrapper import stripwrapper
+from myutils.exceptions import ArgsEmptyExc
+from myutils.utils import getproxy
 class baseocr: 
     def langmap(self):
         return {}

@@ -4,8 +4,8 @@ from PyQt5.QtGui import QPen,QColor ,QTextCharFormat ,QTextBlockFormat,QTextCurs
 from PyQt5.QtWidgets import  QTextBrowser ,QLabel,QPushButton,QGraphicsDropShadowEffect
 import random
 import functools ,time
-from utils.config import globalconfig
-from utils.wrapper import timer
+from myutils.config import globalconfig
+from myutils.wrapper import timer
 from traceback import print_exc
 class Qlabel_c(QLabel):
     
@@ -242,7 +242,7 @@ class Textbrowser( ):
                 _.setText(block.text()[s:s+l] )
                 _.setFont(self.textbrowser.font())
                     
-                _.setStyleSheet(f"color:{globalconfig['miaobiancolor']}; background-color:rgba(0,0,0,0)")
+                _.setStyleSheet("color:{}; background-color:rgba(0,0,0,0)".format(globalconfig['miaobiancolor']))
                 _.setGraphicsEffect(self.geteffect(globalconfig['fontsize'],color,globalconfig['shadowforce']))
                 _.show()
                 linei+=1
@@ -332,11 +332,11 @@ class Textbrowser( ):
 
                             if globalconfig['show_fenci']  :
                                 self.searchmasklabels[labeli].setGeometry(*pos1) 
-                                self.searchmasklabels[labeli].setStyleSheet(f"background-color: rgba{color};"  )
+                                self.searchmasklabels[labeli].setStyleSheet("background-color: rgba{};".format(color)  )
                                 self.searchmasklabels[labeli].show()
 
                                 self.searchmasklabels[labeli+1].setGeometry(*pos2) 
-                                self.searchmasklabels[labeli+1].setStyleSheet(f"background-color: rgba{color};"  )
+                                self.searchmasklabels[labeli+1].setStyleSheet("background-color: rgba{};".format(color)  )
                                 self.searchmasklabels[labeli+1].show()
                             labeli+=2
                         else: 
@@ -351,7 +351,7 @@ class Textbrowser( ):
                                     self.searchmasklabels_clicked[labeli].callback=functools.partial(callback,(word['orig'])) 
                             if globalconfig['show_fenci']  :
                                 self.searchmasklabels[labeli].setGeometry(*pos1)
-                                self.searchmasklabels[labeli].setStyleSheet(f"background-color: rgba{color};"  )
+                                self.searchmasklabels[labeli].setStyleSheet("background-color: rgba{};".format(color)  )
                                 self.searchmasklabels[labeli].show()
                             labeli+=1
                         
@@ -535,7 +535,7 @@ class Textbrowser( ):
         y+=self.jiaming_y_delta
         
         label.move(x,y)   
-        label.setStyleSheet(f"color:{color}; background-color:(0,0,0,0)")
+        label.setStyleSheet("color:{}; background-color:(0,0,0,0)".format(color))
         
         label.show()  
     def mergeCurrentCharFormat(self,colormiao,width):

@@ -3,7 +3,7 @@ from traceback import print_exc
 import requests
 from urllib.parse import quote
 import re 
-from utils.config import globalconfig
+from myutils.config import globalconfig
 import json  
 from translator.basetranslator import basetrans
 import time

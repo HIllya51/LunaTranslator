@@ -37,7 +37,7 @@ ocrsetting=tryreadconfig('ocrsetting.json')
 
 def getdefaultsavehook(gamepath):
     default={
-        'localeswitcher':0,
+        'localeswitcher':2,
         'onloadautochangemode':0,
         'needinserthookcode':[],
         'imagepath':None,
@@ -48,6 +48,7 @@ def getdefaultsavehook(gamepath):
         'statistic_wordcount_nodump':0,
         'leuse':True,
         'hook':[],
+        'inserthooktimeout':0,
         'needinserthookcode':[],
         "removeuseless":False,
         'title':os.path.basename(os.path.dirname(gamepath))+'/'+ os.path.basename(gamepath),
@@ -97,7 +98,7 @@ if len(globalconfig['toolbutton']['rank'])!=len(globalconfig['toolbutton']['butt
 def setlanguage():
     global language,languageshow
     language=globalconfig['languageuse']
-    with open(f'./files/lang/{static_data["language_list_translator_inner"][language]}.json','r',encoding='utf8') as ff:
+    with open('./files/lang/{}.json'.format(static_data["language_list_translator_inner"][language]),'r',encoding='utf8') as ff:
         languageshow=json.load(ff)
 setlanguage()
 
@@ -149,5 +150,5 @@ def saveallconfig():
         # with open('./userconfig/savehook_new3.json','w',encoding='utf8') as ff:
         #         ff.write(json.dumps(savehook_new2,ensure_ascii=False,sort_keys=False, indent=4))
 
-        with open(f'./files/lang/{static_data["language_list_translator_inner"][language]}.json','w',encoding='utf8') as ff:
+        with open('./files/lang/{}.json'.format(static_data["language_list_translator_inner"][language]),'w',encoding='utf8') as ff:
             ff.write( json.dumps(languageshow,ensure_ascii=False,sort_keys=False, indent=4))

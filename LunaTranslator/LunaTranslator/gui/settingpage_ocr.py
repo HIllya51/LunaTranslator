@@ -1,5 +1,5 @@
 import functools  ,os
-from utils.config import globalconfig ,ocrsetting,_TRL
+from myutils.config import globalconfig ,ocrsetting,_TRL
  
 from gui.inputdialog import autoinitdialog   
  
@@ -14,7 +14,7 @@ def getocrgrid(self) :
         line=[]
         for name in globalconfig['ocr']:
               
-            _f=f'./Lunatranslator/ocrengines/{name}.py'
+            _f='./Lunatranslator/ocrengines/{}.py'.format(name)
             if os.path.exists(_f)==False:  
                 continue 
             if name in ocrsetting:

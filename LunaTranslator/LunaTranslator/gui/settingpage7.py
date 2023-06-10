@@ -5,14 +5,14 @@ from PyQt5.QtWidgets import  QDialog,QLabel ,QLineEdit,QSpinBox,QPushButton ,QTa
 from PyQt5.QtCore import QSize,Qt
 from PyQt5.QtGui import QStandardItem, QStandardItemModel 
 from traceback import print_exc
-from utils.config import globalconfig ,postprocessconfig,noundictconfig,transerrorfixdictconfig,_TR,_TRL,defaultglobalconfig 
+from myutils.config import globalconfig ,postprocessconfig,noundictconfig,transerrorfixdictconfig,_TR,_TRL,defaultglobalconfig 
 import functools 
 
 from gui.codeacceptdialog import codeacceptdialog  
 from gui.inputdialog import getsomepath1   
-from utils.utils import selectdebugfile
-from utils.wrapper import Singleton
-from utils.post import POSTSOLVE
+from myutils.utils import selectdebugfile
+from myutils.wrapper import Singleton
+from myutils.post import POSTSOLVE
 def settab7direct(self):
     self.comparelayout=getcomparelayout(self)
     self.button_noundict=self.getcolorbutton(globalconfig,'' ,callback=lambda x:  noundictconfigdialog(self,noundictconfig,'专有名词翻译设置(游戏ID 0表示全局)'),icon='fa.gear',constcolor="#FF69B4")

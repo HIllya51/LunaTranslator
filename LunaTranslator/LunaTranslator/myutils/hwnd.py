@@ -5,7 +5,7 @@ from PyQt5.QtWinExtras  import QtWin
 from PyQt5.QtGui import   QPixmap,QColor ,QIcon
 import os
 import time
-from utils.utils import argsort
+from myutils.utils import argsort
 def pid_running(pid): 
     try:
         process =win32utils.OpenProcess(win32con.SYNCHRONIZE, False, pid);

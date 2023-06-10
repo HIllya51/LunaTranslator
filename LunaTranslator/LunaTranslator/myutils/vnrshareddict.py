@@ -1,4 +1,4 @@
-from utils.config import globalconfig
+from myutils.config import globalconfig
 import xml.etree.ElementTree as ET  
 import os
 def vnrshareddict(self):

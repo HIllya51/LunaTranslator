@@ -1,4 +1,4 @@
-from utils.config import globalconfig  
+from myutils.config import globalconfig  
 import threading
 class TTSbase():
     def init(self):

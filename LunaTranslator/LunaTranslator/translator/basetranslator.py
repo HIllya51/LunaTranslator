@@ -1,17 +1,17 @@
 from traceback import print_exc
 from queue import Queue  
 
-from utils.config import globalconfig,translatorsetting,static_data
+from myutils.config import globalconfig,translatorsetting,static_data
 from threading import Thread,Lock
 import os,time ,codecs
 import zhconv
 from functools import partial 
-from utils.utils import quote_identifier
+from myutils.utils import quote_identifier
 import sqlite3
 
-from utils.utils import getproxy
-from utils.exceptions import ArgsEmptyExc
-from utils.wrapper import stripwrapper
+from myutils.utils import getproxy
+from myutils.exceptions import ArgsEmptyExc
+from myutils.wrapper import stripwrapper
 class TimeOut(Exception):
     pass
 class Threadwithresult(Thread):
@@ -136,7 +136,7 @@ class basetrans:
 
         if self.typename not in static_data["fanyi_pre"]:
             try:
-                self.sqlwrite2=sqlite3.connect(f'./translation_record/cache/{typename}.sqlite',check_same_thread = False, isolation_level=None)
+                self.sqlwrite2=sqlite3.connect('./translation_record/cache/{}.sqlite'.format(typename),check_same_thread = False, isolation_level=None)
                 try:
                     self.sqlwrite2.execute('CREATE TABLE cache(srclang,tgtlang,source,trans);')
                 except:
@@ -155,7 +155,7 @@ class basetrans:
                 src,trans=task 
                 src=quote_identifier(src)  
                 trans=quote_identifier(trans)
-                self.sqlwrite2.execute(f'INSERT into cache VALUES({quote_identifier(self.srclang)},{quote_identifier(self.tgtlang)},{src},{trans})')
+                self.sqlwrite2.execute('INSERT into cache VALUES({},{},{},{})'.format(quote_identifier(self.srclang),quote_identifier(self.tgtlang),src,trans))
                 
             except:
                 print_exc()
@@ -173,7 +173,7 @@ class basetrans:
     
     def longtermcacheget(self,src):
         src=quote_identifier(src)
-        ret=self.sqlwrite2.execute(f'SELECT * FROM cache WHERE source = {src}').fetchall()
+        ret=self.sqlwrite2.execute('SELECT * FROM cache WHERE source = {}'.format(src)).fetchall()
         for srclang,tgtlang,source,trans in ret:
             if (srclang,tgtlang)==(self.srclang,self.tgtlang):
                 return trans
@@ -218,9 +218,9 @@ class basetrans:
     
     def maybecachetranslate(self,contentraw,contentsolved):
         if self.typename in static_data["fanyi_pre"]:
-            res=self.translate(contentsolved)
+            res=self.translate(contentraw)
         else: 
-            res=self.cached_translate(contentraw)
+            res=self.cached_translate(contentsolved)
         return res
     def intervaledtranslate(self,content):
         interval=globalconfig['requestinterval']

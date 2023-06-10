@@ -6,7 +6,7 @@ from urllib import parse
 import os
 import re 
 from translator.basetranslator import basetrans  
-from utils.config import globalconfig
+from myutils.config import globalconfig
 import time,urllib
 class Tse:
     def __init__(self):

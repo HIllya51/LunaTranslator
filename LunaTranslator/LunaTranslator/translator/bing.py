@@ -135,7 +135,7 @@ class Bing(Tse):
             'tryFetchingGenderDebiasedTranslations': 'true'
         }
         form_data = {**form_data, **self.tk}
-        api_url_param = f'?isVertical=1&&IG={self.ig_iid["ig"]}&IID={self.ig_iid["iid"]}'
+        api_url_param = '?isVertical=1&&IG={}&IID={}'.format(self.ig_iid["ig"],self.ig_iid["iid"])
         api_url = ''.join([self.api_url, api_url_param])
  
         r = self.session.post(api_url, headers=self.host_headers, data=form_data, timeout=timeout, proxies=proxies)

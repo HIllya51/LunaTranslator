@@ -2,8 +2,8 @@ from cmath import sin
 import threading
 from traceback import print_exc
 import requests
-from utils.config import globalconfig    
-from utils.utils import getproxy
+from myutils.config import globalconfig    
+from myutils.utils import getproxy
 
 import websocket
 from datetime import datetime
@@ -15,7 +15,7 @@ import time
 import threading
 from traceback import print_exc
 import requests
-from utils.config import globalconfig    
+from myutils.config import globalconfig    
 import base64
 import os
 import time
@@ -73,11 +73,11 @@ def ssml_headers_plus_data(request_id: str, timestamp: str, ssml: str) -> str:
     """
 
     return (
-        f"X-RequestId:{request_id}\r\n"
+        "X-RequestId:{}\r\n".format(request_id)+
         "Content-Type:application/ssml+xml\r\n"
-        f"X-Timestamp:{timestamp}Z\r\n"  # This is not a mistake, Microsoft Edge bug.
+        "X-Timestamp:{}Z\r\n".format(timestamp)+  # This is not a mistake, Microsoft Edge bug.
         "Path:ssml\r\n\r\n"
-        f"{ssml}"
+        "{}".format(ssml)
     )
 
 def mkssml(text , voice: str, rate: str) -> str:
@@ -92,8 +92,8 @@ def mkssml(text , voice: str, rate: str) -> str:
 
     ssml = (
         "<speak version='1.0' xmlns='http://www.w3.org/2001/10/synthesis' xml:lang='en-US'>"
-        f"<voice name='{voice}'><prosody pitch='+0Hz' rate='{rate}'>"
-        f"{text}</prosody></voice></speak>"
+        "<voice name='{}'><prosody pitch='+0Hz' rate='{}'>".format(voice,rate)+
+        "{}</prosody></voice></speak>".format(text)
     )
     return ssml
 def connect_id() -> str:
@@ -108,7 +108,7 @@ def connect_id() -> str:
 def transferMsTTSData(rate,content, voice):
      
      
-    endpoint2 = f"wss://speech.platform.bing.com/consumer/speech/synthesize/readaloud/edge/v1?TrustedClientToken=6A5AA1D4EAFF4E9FB37E23D68491D6F4"
+    endpoint2 = "wss://speech.platform.bing.com/consumer/speech/synthesize/readaloud/edge/v1?TrustedClientToken=6A5AA1D4EAFF4E9FB37E23D68491D6F4"
     headers={
         "Pragma": "no-cache",
                     "Cache-Control": "no-cache",
@@ -138,7 +138,7 @@ def transferMsTTSData(rate,content, voice):
     
     date = date_to_string()
         
-    ws.send( f"X-Timestamp:{date}\r\n"
+    ws.send( "X-Timestamp:{}\r\n".format(date)+
                 "Content-Type:application/json; charset=utf-8\r\n"
                 "Path:speech.config\r\n\r\n"
                 '{"context":{"synthesis":{"audio":{"metadataoptions":{'
@@ -149,7 +149,7 @@ def transferMsTTSData(rate,content, voice):
                 ssml_headers_plus_data(
                     connect_id(),
                     date,
-                    mkssml(content, voice, f'{int((rate)/20*100)}%'  ),
+                    mkssml(content, voice, str(int((rate)/20*100))+'%'  ),
                 )
             )
         

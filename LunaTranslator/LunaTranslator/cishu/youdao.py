@@ -1,8 +1,8 @@
-from utils.config import globalconfig,static_data
+from myutils.config import globalconfig,static_data
 import requests
 from urllib.parse import quote
 import re
-from utils.utils import getproxy
+from myutils.utils import getproxy
 from traceback import print_exc
 class youdao:
     @property
@@ -15,7 +15,7 @@ class youdao:
         except:
             return ''
     def search(self,word):
-        text=requests.get(f'https://dict.youdao.com/result?word={quote(word)}&lang={self.srclang}', proxies= getproxy()).text
+        text=requests.get('https://dict.youdao.com/result?word={}&lang={}'.format(quote(word),self.srclang), proxies= getproxy()).text
         
         fnd=re.findall('<div class="head-content"(.*?)>([\\s\\S]*?)</span>(.*?)</div>',text)
         save=[] 

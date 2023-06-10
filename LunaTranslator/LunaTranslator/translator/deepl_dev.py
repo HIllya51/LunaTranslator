@@ -7,8 +7,8 @@ import re
 from urllib.parse import quote
 import websocket as websockets2
 import json
-from utils.subproc import subproc_w
-from utils.config import globalconfig
+from myutils.subproc import subproc_w
+from myutils.config import globalconfig
 import json  
 from translator.basetranslator import basetrans
 import time
@@ -39,7 +39,7 @@ def waittransok( websocket):
 def tranlate(websocketurl,content,src,tgt ): 
     if 1:
         websocket=websockets2.create_connection(websocketurl)   
-        SendRequest(websocket,'Page.navigate',{'url':f'https://www.deepl.com/en/translator#{src}/{tgt}/{quote(content)}'})
+        SendRequest(websocket,'Page.navigate',{'url':'https://www.deepl.com/en/translator#{}/{}/{}'.format(src,tgt,quote(content))})
         waitload(websocket)
         res=waittransok(websocket)
         return (res)
@@ -47,7 +47,7 @@ def tranlate(websocketurl,content,src,tgt ):
 
 def createtarget(port  ): 
     url='https://www.deepl.com/en/translator'
-    infos=requests.get(f'http://127.0.0.1:{port}/json/list').json() 
+    infos=requests.get('http://127.0.0.1:{}/json/list'.format(port)).json() 
     use=None
     for info in infos:
          if info['url'][:len(url)]==url:

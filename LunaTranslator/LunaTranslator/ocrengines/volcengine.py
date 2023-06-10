@@ -6,7 +6,7 @@ import  requests
 from traceback import print_exc 
  
 import requests  
-from utils.config import ocrsetting 
+from myutils.config import ocrsetting 
 from urllib.parse import urlencode 
 from functools import reduce
 import hmac ,base64

@@ -1,8 +1,8 @@
 
 from PyQt5.QtWidgets import QWidget,QLabel ,QProgressBar,QLineEdit,QPushButton 
-from utils.config import _TR ,static_data
-from utils.config import globalconfig ,translatorsetting ,static_data
-from utils.utils import splittranslatortypes 
+from myutils.config import _TR ,static_data
+from myutils.config import globalconfig ,translatorsetting ,static_data
+from myutils.utils import splittranslatortypes 
 import os
 def getall(self,l,item='fanyi',name=""):
     grids=[] 

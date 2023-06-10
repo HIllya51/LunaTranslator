@@ -1,12 +1,12 @@
  
 from PyQt5.QtWidgets import QPushButton  ,QWidget,QVBoxLayout,QLabel
 import functools 
-from utils.config import globalconfig ,translatorsetting 
+from myutils.config import globalconfig ,translatorsetting 
  
-from utils.subproc import subproc_w
+from myutils.subproc import subproc_w
 from gui.pretransfile import sqlite2json
-from utils.config import globalconfig ,_TR,_TRL,static_data
-from utils.utils import selectdebugfile,splittranslatortypes,checkportavailable
+from myutils.config import globalconfig ,_TR,_TRL,static_data
+from myutils.utils import selectdebugfile,splittranslatortypes,checkportavailable
 import os ,time,requests,threading
 from gui.inputdialog import autoinitdialog 
 
@@ -26,7 +26,7 @@ def initsome11(self,l,label=None):
         if fanyi not in l:
             continue
  
-        _f=f'./Lunatranslator/translator/{fanyi}.py'
+        _f='./Lunatranslator/translator/{}.py'.format(fanyi)
         if fanyi!='selfbuild' and os.path.exists(_f)==False :  
             continue  
         i+=1
@@ -72,7 +72,7 @@ def settab2d(self):
         while True:
             port=globalconfig['debugport']
             try:
-                requests.get(f'http://127.0.0.1:{port}/json/list').json()
+                requests.get('http://127.0.0.1:{}/json/list'.format(port)).json()
                 self.statuslabel.setText(_TR("连接成功"))
             except:
                 if (checkportavailable(port)):

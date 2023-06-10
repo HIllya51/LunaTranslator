@@ -1,5 +1,5 @@
 import functools ,os
-from utils.config import globalconfig   
+from myutils.config import globalconfig   
 from gui.inputdialog import getsomepath1,autoinitdialog 
 
 def setTabcishu(self) : 
@@ -15,7 +15,7 @@ def gethiragrid(self) :
         line=[]
         for name in globalconfig['hirasetting']:
               
-            _f=f'./LunaTranslator/hiraparse/{name}.py'
+            _f='./LunaTranslator/hiraparse/{}.py'.format(name)
             if os.path.exists(_f)==False:  
                 continue 
             

@@ -7,7 +7,7 @@ import requests
 from urllib import request
 from urllib.parse import quote 
 from translator.basetranslator import basetrans
-from utils.config import globalconfig
+from myutils.config import globalconfig
 import random
 import functools
 import urllib 

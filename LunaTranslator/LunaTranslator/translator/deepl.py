@@ -1,5 +1,5 @@
  
-from utils.config import globalconfig,static_data
+from myutils.config import globalconfig,static_data
 import time
 from urllib.parse import quote 
 from translator.basetranslator import basetrans

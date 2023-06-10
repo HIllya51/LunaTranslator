@@ -2,7 +2,7 @@
 import requests
 from urllib import parse  
 from traceback import print_exc
-from utils.config import globalconfig  ,static_data
+from myutils.config import globalconfig  ,static_data
 from translator.basetranslator import basetrans   
  
 

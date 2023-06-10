@@ -1,10 +1,10 @@
 import os
-import winsharedutils
-from utils.config import _TR ,static_data 
+import winrtutils
+from myutils.config import _TR ,static_data 
 from ocrengines.baseocrclass import baseocr  
 class OCR(baseocr):
     def initocr(self):    
-        _allsupport=winsharedutils.getlanguagelist()
+        _allsupport=winrtutils.getlanguagelist()
         self.supportmap={}
         for lang in static_data["language_list_translator_inner"]+['zh-Hans','zh-Hant']:
             if lang=='zh' or lang=='cht':continue
@@ -30,7 +30,7 @@ class OCR(baseocr):
         
         ress={}
         ress2=[]  
-        ret=winsharedutils.OCR_f(os.path.abspath(imgfile),self.supportmap[self.srclang],space)
+        ret=winrtutils.OCR_f(os.path.abspath(imgfile),self.supportmap[self.srclang],space)
         for i in range(len(ret)): 
         
             ress2.append( ret[i][0])

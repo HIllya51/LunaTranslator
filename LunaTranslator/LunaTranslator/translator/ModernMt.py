@@ -1,7 +1,7 @@
 
 from traceback import print_exc 
 import requests,re,hashlib
-from utils.config import globalconfig
+from myutils.config import globalconfig
 from translator.basetranslator import basetrans
 import time,functools,sys,urllib
 class Tse:
@@ -113,7 +113,7 @@ class ModernMt(Tse):
             'source': '' if from_language == 'auto' else from_language,
             'target': to_language,
             'ts': time_stamp,
-            'verify': hashlib.md5(f'webkey_E3sTuMjpP8Jez49GcYpDVH7r#{time_stamp}#{query_text}'.encode()).hexdigest(),
+            'verify': hashlib.md5('webkey_E3sTuMjpP8Jez49GcYpDVH7r#{}#{}'.format(time_stamp,query_text).encode()).hexdigest(),
             'hints': '',
             'multiline': 'true',
         }

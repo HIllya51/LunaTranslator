@@ -38,10 +38,6 @@ void freestringlist(char** strlist, int num) {
     }
     delete strlist;
 }
-void freeocrres(ocrres res, int num) {
-    freewstringlist(res.lines,num);
-    delete res.ys;
-}
  
 int* vecint2c(std::vector<int>& vs) {
     int* argv = new int [vs.size() + 1];

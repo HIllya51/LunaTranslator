@@ -6,9 +6,9 @@ from PyQt5.QtCore import Qt,pyqtSignal ,QSize,QPoint
 import qtawesome 
 import json,threading 
 
-from utils.config import globalconfig ,_TR,_TRL
+from myutils.config import globalconfig ,_TR,_TRL
 from gui.usefulwidget import closeashidewindow
-from utils.config import globalconfig
+from myutils.config import globalconfig
 class edittext(closeashidewindow): 
     getnewsentencesignal=pyqtSignal(str)   
     def __init__(self,p):

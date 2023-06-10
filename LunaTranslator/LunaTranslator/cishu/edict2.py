@@ -1,7 +1,7 @@
-from utils.config import globalconfig
+from myutils.config import globalconfig
 import winsharedutils,os
 import re
-from utils.utils import argsort
+from myutils.utils import argsort
 from traceback import print_exc
 class edict2():
     def __init__(self):

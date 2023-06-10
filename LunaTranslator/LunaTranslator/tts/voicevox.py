@@ -1,12 +1,12 @@
     
-from utils.config import globalconfig   
+from myutils.config import globalconfig   
 import time
 import os 
 import requests,json,threading
 from traceback import print_exc
 from tts.basettsclass import TTSbase 
 
-from utils.subproc import subproc_w
+from myutils.subproc import subproc_w
 class TTS(TTSbase):
     def end(self):
         try:

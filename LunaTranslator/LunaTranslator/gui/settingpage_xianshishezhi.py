@@ -12,10 +12,10 @@ from PyQt5.QtWidgets import  QWidget,QLabel ,QSlider, QFontComboBox  ,QPushButto
 import json,os,hashlib
 from traceback import print_exc
 from gui.inputdialog import multicolorset
-from utils.config import globalconfig ,_TR,_TRL  ,magpie10_config
-from utils.wrapper import Singleton
+from myutils.config import globalconfig ,_TR,_TRL  ,magpie10_config
+from myutils.wrapper import Singleton
 import qtawesome
-from utils.hwnd import ListProcess,showintab
+from myutils.hwnd import ListProcess,showintab
 from gui.inputdialog import autoinitdialog,getsomepath1
 from gui.usefulwidget import getQMessageBox
 def __changeuibuttonstate(self,x):  

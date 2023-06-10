@@ -16,7 +16,7 @@ class TS(basetrans):
             'sec-ch-ua-platform': '"Windows"',
         },proxies=self.proxy).text
         _id=re.findall('buildId":"(.*?)"',res)[0]
-        self.url=f'https://lingva.ml/_next/data/{_id}/%s/%s/%s.json'
+        self.url='https://lingva.ml/_next/data/{}/%s/%s/%s.json'.format(_id)
     def translate(self,content):  
         print(self.url%(self.srclang,self.tgtlang,urllib.parse.quote(content)))
         x=requests.get(self.url%(self.srclang,self.tgtlang,urllib.parse.quote(content)),headers = {

@@ -13,7 +13,7 @@ class TS(basetrans):
     
         params = {
             'key': key,
-            'lang': f'{self.srclang}-{self.tgtlang}' ,
+            'lang': '{}-{}'.format(self.srclang,self.tgtlang) ,
             'text': content,
         }
 

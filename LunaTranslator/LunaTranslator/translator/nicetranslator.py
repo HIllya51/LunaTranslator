@@ -27,7 +27,7 @@ class TS(basetrans):
         } 
          
         response = requests.get(
-            f'https://api.microsofttranslator.com/V2/Ajax.svc/Translate?appId=DB50E2E9FBE2E92B103E696DCF4E3E512A8826FB&oncomplete=?&from={self.srclang}&to={self.tgtlang}',params={
+            'https://api.microsofttranslator.com/V2/Ajax.svc/Translate?appId=DB50E2E9FBE2E92B103E696DCF4E3E512A8826FB&oncomplete=?&from={}&to={}'.format(self.srclang,self.tgtlang),params={
             'text':content
             },
             headers=headers,proxies=self.proxy

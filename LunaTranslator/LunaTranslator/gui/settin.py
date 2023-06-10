@@ -6,9 +6,9 @@ from PyQt5.QtWidgets import  QTabWidget
 import qtawesome  
 import functools,time
 from traceback import print_exc 
-from utils.config import globalconfig ,_TR
-from utils.utils import wavmp3player
-from utils.config import globalconfig 
+from myutils.config import globalconfig ,_TR
+from myutils.utils import wavmp3player
+from myutils.config import globalconfig 
 
 from gui.settingpage1 import setTabOne,setTabOne_direct
 from gui.settingpage2 import setTabTwo,settab2d

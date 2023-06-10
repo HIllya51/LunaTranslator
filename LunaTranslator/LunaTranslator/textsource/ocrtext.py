@@ -1,10 +1,10 @@
  
 import time,os
 from traceback import print_exc 
-from utils.config import globalconfig,_TR
+from myutils.config import globalconfig,_TR
 import importlib  
 from difflib import SequenceMatcher 
-from utils.exceptions import ArgsEmptyExc
+from myutils.exceptions import ArgsEmptyExc
 
 import time  
 from PyQt5.QtWidgets import QApplication 
@@ -141,7 +141,7 @@ class ocrtext(basetext):
                 break
         if use is None:
             return ''
-        fname=f'./cache/ocr/{self.timestamp}.png'
+        fname='./cache/ocr/{}.png'.format(self.timestamp)
         img.save(fname)
         
         try:

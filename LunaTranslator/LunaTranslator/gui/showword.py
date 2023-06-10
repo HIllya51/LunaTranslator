@@ -7,9 +7,9 @@ from PyQt5.QtCore import Qt,pyqtSignal,QSize
 import qtawesome,functools,json
 import threading 
 from queue import Queue
-from utils.config import globalconfig
+from myutils.config import globalconfig
 from traceback import print_exc
-from utils.config import globalconfig ,_TR,_TRL
+from myutils.config import globalconfig ,_TR,_TRL
 
 from gui.usefulwidget import closeashidewindow
 class searchwordW(closeashidewindow): 

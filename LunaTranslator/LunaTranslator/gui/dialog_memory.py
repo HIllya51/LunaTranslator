@@ -4,9 +4,9 @@ from PyQt5.QtWidgets import    QHBoxLayout,  QVBoxLayout,QTextEdit
 
 from PyQt5.QtGui import QTextCursor 
 from PyQt5.QtCore import Qt,QSize   
-from utils.config import _TR 
+from myutils.config import _TR 
 import win32con,win32utils 
-from utils.wrapper import Singleton_close 
+from myutils.wrapper import Singleton_close 
 
 @Singleton_close
 class dialog_memory(QDialog):
@@ -18,7 +18,7 @@ class dialog_memory(QDialog):
                 f=QFileDialog.getOpenFileName()
                 res=f[0]
                 if res!='':
-                        self.showtext.insertHtml(f'<img src="{res}">')
+                        self.showtext.insertHtml('<img src="{}">'.format(res))
         def __init__(self, object,gamemd5='0' ) -> None:
                 
                 super().__init__(object, Qt.WindowCloseButtonHint|Qt.WindowMinMaxButtonsHint)
@@ -27,7 +27,7 @@ class dialog_memory(QDialog):
                 self.gamemd5=gamemd5
                 formLayout = QVBoxLayout(self)  # 
                 self.showtext=QTextEdit()
-                self.rwpath=f'./userconfig/memory/{gamemd5}.html'
+                self.rwpath='./userconfig/memory/{}.html'.format(gamemd5)
                 try:
                         with open(self.rwpath,'r',encoding='utf8') as ff:
                                 text=(ff.read())

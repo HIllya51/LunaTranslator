@@ -1,4 +1,4 @@
-from utils.config import globalconfig
+from myutils.config import globalconfig
 import winsharedutils
 import os
 from traceback import print_exc

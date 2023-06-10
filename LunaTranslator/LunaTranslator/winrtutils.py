@@ -1,0 +1,51 @@
+from ctypes import c_uint,c_bool,POINTER,c_char_p,c_uint64,c_wchar_p,pointer,CDLL,Structure,c_void_p,cast
+import platform,os
+
+if platform.architecture()[0]=='64bit':
+    pythonbit='64' 
+else:
+    pythonbit='32' 
+try:
+    winrtutilsdll=CDLL(os.path.abspath('./files/plugins/winrtutils{}.dll'.format(pythonbit)) )
+except:
+    winrtutilsdll=0
+    
+if winrtutilsdll:
+    class ocrres(Structure):
+        _fields_=[
+            ('lines',POINTER(c_wchar_p)),
+            ('ys',POINTER(c_uint))
+        ]
+    _OCR_f=winrtutilsdll.OCR
+    _OCR_f.argtypes=c_wchar_p,c_wchar_p,c_wchar_p, POINTER(c_uint)
+    _OCR_f.restype=ocrres
+    _freeocrres=winrtutilsdll.freeocrres
+    _freeocrres.argtypes=ocrres,c_uint
+        
+    _freewstringlist=winrtutilsdll.freewstringlist
+    _freewstringlist.argtypes=POINTER(c_wchar_p),c_uint
+    _check_language_valid=winrtutilsdll.check_language_valid
+    _check_language_valid.argtypes=c_wchar_p,
+    _check_language_valid.restype=c_bool
+
+    _getlanguagelist=winrtutilsdll.getlanguagelist
+    _getlanguagelist.argtypes=POINTER(c_uint),
+    _getlanguagelist.restype=POINTER(c_wchar_p)
+    def getlanguagelist():
+        num=c_uint()
+        ret=_getlanguagelist(pointer(num))
+        _allsupport=[]
+        for i in range(num.value):
+            _allsupport.append(ret[i])
+        _freewstringlist(ret,num.value)
+        return _allsupport
+
+    def OCR_f(imgpath,lang,space):
+        num=c_uint()
+        ret=_OCR_f(imgpath,lang,space,pointer(num))
+        res=[]
+        for i in range(num.value):  
+            res.append((ret.lines[i], ret.ys[i]))
+            
+        _freeocrres(ret,num.value)
+        return res

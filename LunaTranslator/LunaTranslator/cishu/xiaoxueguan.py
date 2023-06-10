@@ -1,7 +1,7 @@
-from utils.config import globalconfig
+from myutils.config import globalconfig
 import sqlite3,os
 import winsharedutils
-from utils.utils import argsort
+from myutils.utils import argsort
 class xiaoxueguan():
     def __init__(self):
         self.sql=None
@@ -15,7 +15,7 @@ class xiaoxueguan():
         self.sql.close()
     def search(self,word): 
             
-                x=self.sql.execute(f"select word,explanation from xiaoxueguanrizhong where word like '%{word}%'")
+                x=self.sql.execute("select word,explanation from xiaoxueguanrizhong where word like '%{}%'".format(word))
                 exp=x.fetchall()
                 dis=9999
                 save=[]

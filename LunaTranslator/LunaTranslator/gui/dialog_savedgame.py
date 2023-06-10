@@ -16,12 +16,12 @@ from PyQt5.QtCore import QPoint, QRect, QSize, Qt,pyqtSignal
 import os   
 from PyQt5.QtGui import QStandardItem, QStandardItemModel   
 from PyQt5.QtCore import Qt,QSize  
-from utils.config import   savehook_new_list,savehook_new_data
-from utils.hwnd import getExeIcon  
-from utils.config import _TR,_TRL,globalconfig,static_data 
+from myutils.config import   savehook_new_list,savehook_new_data
+from myutils.hwnd import getExeIcon  
+from myutils.config import _TR,_TRL,globalconfig,static_data 
 import winsharedutils
-from utils.wrapper import Singleton_close,Singleton,threader
-from utils.utils import checkifnewgame,startgame
+from myutils.wrapper import Singleton_close,Singleton,threader
+from myutils.utils import checkifnewgame,startgame
 
 class ItemWidget(QWidget):
   focuschanged=pyqtSignal(bool,str)
@@ -374,7 +374,7 @@ class dialog_setting_game(QDialog):
                 else:
                         _methods=['Locale-Emulator','Locale_Remulator','Ntleas' ]
                 if b==6 and savehook_new_data[exepath]['localeswitcher']==0:
-                        savehook_new_data[exepath]['localeswitcher']=1
+                        savehook_new_data[exepath]['localeswitcher']=2
                 
                 lrelay.addWidget(self.object.getsimplecombobox(_TRL(_methods),savehook_new_data[exepath],'localeswitcher'))
                 formLayout.addLayout(lrelay) 
@@ -417,6 +417,11 @@ class dialog_setting_game(QDialog):
                         self.newline(row,k)  
                  
                 formLayout.addWidget(self.hctable) 
+                
+                cp_layout=QHBoxLayout()
+                cp_layout.addWidget(QLabel(_TR('插入特殊码延迟(ms)')))
+                cp_layout.addWidget(self.object.getspinbox(0,1000000,savehook_new_data[exepath],'inserthooktimeout' ))
+                formLayout.addLayout(cp_layout)
 
                 self.show()
         def clicked2(self):

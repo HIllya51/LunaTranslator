@@ -5,10 +5,10 @@ from PyQt5.QtWidgets import    QHBoxLayout, QTableView
 from PyQt5.QtGui import QStandardItem, QStandardItemModel 
 from PyQt5.QtWidgets import   QComboBox    
 from PyQt5.QtCore import Qt,QSize  
-from utils.utils import checkencoding
-from utils.config import globalconfig ,_TR,_TRL
+from myutils.utils import checkencoding
+from myutils.config import globalconfig ,_TR,_TRL
 
-from utils.wrapper import Singleton
+from myutils.wrapper import Singleton
 
 nowsuppertcodes=_TRL(['日语(SHIFT-JIS)','简体中文(GBK)','繁体中文(BIG5)','韩语(EUC-KR)','英语(ASCII)' ,'其他'])
 nowsuppertcodespy=['SHIFT-JIS','GBK','BIG5','EUC-KR','ASCII' ]

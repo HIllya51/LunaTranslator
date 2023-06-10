@@ -1,7 +1,7 @@
  
 import requests
 from urllib import parse  
-from utils.config import globalconfig  ,static_data
+from myutils.config import globalconfig  ,static_data
 from translator.basetranslator import basetrans   
 
 class TS(basetrans):

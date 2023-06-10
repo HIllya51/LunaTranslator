@@ -1,7 +1,7 @@
  
 import time  
 from textsource.textsourcebase import basetext
-from utils.config import globalconfig
+from myutils.config import globalconfig
 import winsharedutils,ctypes,win32utils,os
 class copyboard(basetext):
     def __init__(self,textgetmethod) -> None:

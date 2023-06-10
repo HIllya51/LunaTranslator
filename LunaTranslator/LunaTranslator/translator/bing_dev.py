@@ -7,8 +7,8 @@ import winsharedutils
 from urllib.parse import quote
 import websocket as websockets2
 import json
-from utils.subproc import subproc_w
-from utils.config import globalconfig
+from myutils.subproc import subproc_w
+from myutils.config import globalconfig
 import json  
 from translator.basetranslator import basetrans
 import time
@@ -41,9 +41,9 @@ def tranlate(websocketurl,content,src,tgt ):
     if 1:
         websocket=websockets2.create_connection(websocketurl)   
         SendRequest(websocket,'Runtime.evaluate',{"expression":
-            f'''document.getElementById('tta_clear').click();document.getElementById('tta_input_ta').value=`{content}`;
+            '''document.getElementById('tta_clear').click();document.getElementById('tta_input_ta').value=`{}`;
             document.getElementById('tta_input_ta').click();
-            '''})  
+            '''.format(content)})  
         res=waittransok(websocket)
 
         #document.getElementById('tta_input_ta')
@@ -51,7 +51,7 @@ def tranlate(websocketurl,content,src,tgt ):
  
 def createtarget(port  ): 
     url='https://www.bing.com/translator/'
-    infos=requests.get(f'http://127.0.0.1:{port}/json/list').json() 
+    infos=requests.get('http://127.0.0.1:{}/json/list'.format(port)).json() 
     use=None
     for info in infos:
          if '.bing.com/translator/' in info['url']:

@@ -5,7 +5,7 @@ import requests
 from translator.basetranslator import basetrans  
 import random 
 
-from utils.config import globalconfig
+from myutils.config import globalconfig
 import json
 class TS(basetrans): 
     def langmap(self):

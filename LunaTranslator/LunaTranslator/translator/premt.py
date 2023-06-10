@@ -1,10 +1,10 @@
 from traceback import print_exc
 from translator.basetranslator import basetrans
-from utils.config import globalconfig
+from myutils.config import globalconfig
 import os
 import json
 import sqlite3
-from utils.utils import quote_identifier
+from myutils.utils import quote_identifier
 import winsharedutils
 class TS(basetrans):  
     def checkfilechanged(self,p):
@@ -22,7 +22,7 @@ class TS(basetrans):
         if globalconfig['premtsimiuse']:
             mindis=9999999
             savet="{}"
-            ret=self.sql.execute(f'SELECT source,machineTrans FROM artificialtrans  ').fetchall()
+            ret=self.sql.execute('SELECT source,machineTrans FROM artificialtrans  ').fetchall()
             for jc,mt in ret:
                 dis=winsharedutils.distance(content,jc)  
                 if dis<mindis:
@@ -37,7 +37,7 @@ class TS(basetrans):
 
         else:
 
-            ret=self.sql.execute(f'SELECT machineTrans FROM artificialtrans WHERE source = {quote_identifier(content)}').fetchone()
+            ret=self.sql.execute('SELECT machineTrans FROM artificialtrans WHERE source = {}'.format(quote_identifier(content))).fetchone()
             try:
                 ret=json.loads(ret[0]) 
             except:
