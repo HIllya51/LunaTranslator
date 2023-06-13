@@ -63,18 +63,11 @@ def getpidexe(pid):
         win32utils.CloseHandle(hwnd1)
         return name_
 def testprivilege(pid):
-       hwnd1=win32utils.OpenProcess(win32con.PROCESS_ALL_ACCESS,False, (pid))
+       hwnd1=win32utils.OpenProcess(win32con.PROCESS_INJECT_ACCESS,False, (pid))
        win32utils.CloseHandle(hwnd1)
        return hwnd1!=0
 
 
-def getprocessmem(pid):
-        try:
-                process=win32utils.OpenProcess(win32con.PROCESS_ALL_ACCESS,False, pid)
-                memory_info = win32utils.GetProcessMemoryInfo( process )
-                return memory_info.WorkingSetSize
-        except:
-                return 0
 def ListProcess(filt=True):  
         ret=[]
         pids=getprocesslist()
@@ -106,11 +99,7 @@ def ListProcess(filt=True):
         for exe in kv:
                 xxx.append([kv[exe]['pid'],exe])
         return xxx
-def getbigestmempid(pids):
-         
-                        mems=[getprocessmem(_) for _ in pids]
-                        _i=argsort(mems)
-                        return  _i[-1] 
+
 def getExeIcon( name,icon=True ): 
             large = win32utils.ExtractIconEx(name)
             if large:

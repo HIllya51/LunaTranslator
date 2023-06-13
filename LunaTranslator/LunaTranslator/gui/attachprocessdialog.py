@@ -7,7 +7,7 @@ from traceback import print_exc
 from myutils.config import globalconfig ,_TR,_TRL
 import sys,win32utils
 import time   ,os
-from myutils.hwnd import getpidexe,ListProcess,mouseselectwindow,getExeIcon,testprivilege,getpidhwndfirst,getbigestmempid
+from myutils.hwnd import getpidexe,ListProcess,mouseselectwindow,getExeIcon,testprivilege,getpidhwndfirst
 import qtawesome
 
 from gui.usefulwidget import closeashidewindow,getQMessageBox

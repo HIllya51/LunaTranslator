@@ -151,11 +151,6 @@ _RegisterWindowMessage=_user32.RegisterWindowMessageW
 
 _GetWindowThreadProcessId=_user32.GetWindowThreadProcessId
 _GetClipboardOwner=_user32.GetClipboardOwner
-try:
-    _GetProcessMemoryInfo=_psapi.GetProcessMemoryInfo
-except:
-    _GetProcessMemoryInfo=_kernel32.GetProcessMemoryInfo
-_GetProcessMemoryInfo.argtypes=c_void_p,POINTER(PROCESS_MEMORY_COUNTERS_EX),c_uint
 
 try:
     _GetModuleFileNameExW=_psapi.GetModuleFileNameExW

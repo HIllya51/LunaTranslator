@@ -140,6 +140,30 @@ class noundictconfigdialog1(QDialog):
         table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch) 
         #table.setEditTriggers(QAbstractItemView.NoEditTriggers)
         #table.clicked.connect(self.show_info)
+
+        search=QHBoxLayout()
+        searchcontent=QLineEdit()
+        search.addWidget(searchcontent)
+        button4=QPushButton()
+        button4.setText(_TR('搜索'))
+        def clicked4():
+            text=searchcontent.text()
+            
+            rows=model.rowCount() 
+            cols=model.columnCount()
+            for row in range(rows):
+                ishide=True
+                for c in range(cols):
+                    if text in model.item(row,c).text(): 
+                        ishide=False
+                        break 
+                table.setRowHidden(row,ishide)
+
+                
+        button4.clicked.connect(clicked4)
+        search.addWidget(button4)
+         
+
         button=QPushButton(dialog)
         button.setText(_TR('添加行'))
         def clicked1(): 
@@ -164,6 +188,7 @@ class noundictconfigdialog1(QDialog):
             
         dialog.closeEvent=clicked3
         formLayout.addWidget(table)
+        formLayout.addLayout(search)
         formLayout.addWidget(button)
         formLayout.addWidget(button2) 
         dialog.resize(QSize(600,400))
