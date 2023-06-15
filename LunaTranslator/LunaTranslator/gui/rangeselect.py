@@ -1,5 +1,5 @@
 from PyQt5.QtWidgets import QWidget,QDesktopWidget,QMainWindow,QLabel,QPushButton,QStatusBar,QDialog,QSizeGrip
-from PyQt5.QtGui import  QBitmap,QPainter,QPen,QBrush,QFont,QMouseEvent
+from PyQt5.QtGui import  QBitmap,QPainter,QPen,QBrush,QFont,QMouseEvent,QCursor
 from PyQt5.QtCore import Qt,QPoint,QRect,QEvent,pyqtSignal
 
  
@@ -61,8 +61,15 @@ class rangeselct(QMainWindow) :
         self.setWindowFlags(Qt.FramelessWindowHint | Qt.Tool)#|Qt.WindowStaysOnTopHint  )
         self.setStyleSheet('''background-color:black; ''')
         self.setWindowOpacity(0.6)
-        desktop_rect = QDesktopWidget().screenGeometry()
-        self.setGeometry(desktop_rect)
+        num_screens = QDesktopWidget().screenCount()
+        x,y,x2,y2=9999,9999,0,0
+        for i in range(num_screens):
+            _rect=QDesktopWidget().screenGeometry(i)
+            x=min(x,_rect.x())
+            y=min(y,_rect.y())
+            x2=max(x2,_rect.x()+_rect.width())
+            y2=max(y2,_rect.y()+_rect.height()) 
+        self.setGeometry(x,y,x2-x,y2-y)
         self.setCursor(Qt.CrossCursor)
          
         self.is_drawing = False
@@ -113,7 +120,9 @@ class rangeselct(QMainWindow) :
                 self.end_point = event.pos()
                 self.update() 
     def getRange(self) :
-        x1,y1,x2,y2=(self.start_point.x(),self.start_point.y() ,self.end_point.x(),self.end_point.y())
+        start_point=self.mapToGlobal(self.start_point)
+        end_point=self.mapToGlobal(self.end_point)
+        x1,y1,x2,y2=(start_point.x(),start_point.y() ,end_point.x(),end_point.y()) 
         
         x1,x2=min(x1,x2),max(x1,x2)
         y1,y2=min(y1,y2),max(y1,y2)
