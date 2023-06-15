@@ -9,7 +9,7 @@ import os
 import win32utils
 import mmap
 import subprocess 
-from myutils.hwnd import is64bit
+import win32utils
 import ctypes
 import textsource.hook.hookcode as hookcode
 from myutils.hwnd import getpidexe
@@ -137,23 +137,17 @@ class RPC():
         self.OnDestroy=threader(OnDestroy)
         self.Output=threader(Output)
         self.Console=threader(Console)
-    def passf(self,*parm):
-        pass
-    def clear(self):
-        self.OnDisconnect=self.passf
-        self.OnConnect=self.passf
-        self.OnCreate=self.passf
-        self.OnDestroy=self.passf
-        self.Output=self.passf
-        self.Console=self.passf
+    
     def toint(self,byte4):
         return c_int.from_buffer_copy(byte4).value
+    def end(self):
+        for _ in self.hookPipes:
+            win32utils.CancelIo(_)
     def __init__(self) -> None:
         self.ProcessRecord={}
-        self.clear()
-        self.started=False
         self.textthreadslock=threading.Lock()
         self.textthreads={}
+        self.hookPipes=[]
         self.setting=RPCSettings()
         threading.Thread(target=self.outputthread).start()
     def outputthread(self):
@@ -167,39 +161,34 @@ class RPC():
                     self.Output(textthread,buff)
                     textthread.lasttime=timenow
             self.textthreadslock.release()
-    def start(self):
-        if self.started:
-            return
-        self.started=True
-        self._start()
-    def _start(self):
-        def _():
-            
-            hookPipe = win32utils.CreateNamedPipe(define.HOOK_PIPE_NAME,
-                                                win32con.PIPE_ACCESS_INBOUND,
+    def start(self,pid):
+    
+        hookPipe = win32utils.CreateNamedPipe(define.HOOK_PIPE_NAME+str(pid),
+                                            win32con.PIPE_ACCESS_INBOUND,
+                                            win32con.PIPE_TYPE_MESSAGE | win32con.PIPE_READMODE_MESSAGE | win32con.PIPE_WAIT,
+                                            win32con.PIPE_UNLIMITED_INSTANCES,
+                                            0,
+                                            0,
+                                            0,
+                                            win32utils.pointer(win32utils.get_SECURITY_ATTRIBUTES()))
+        hostPipe = win32utils.CreateNamedPipe(define.HOST_PIPE_NAME+str(pid),
+                                                win32con.PIPE_ACCESS_OUTBOUND,
                                                 win32con.PIPE_TYPE_MESSAGE | win32con.PIPE_READMODE_MESSAGE | win32con.PIPE_WAIT,
                                                 win32con.PIPE_UNLIMITED_INSTANCES,
                                                 0,
                                                 0,
                                                 0,
                                                 win32utils.pointer(win32utils.get_SECURITY_ATTRIBUTES()))
-            hostPipe = win32utils.CreateNamedPipe(define.HOST_PIPE_NAME,
-                                                    win32con.PIPE_ACCESS_OUTBOUND,
-                                                    win32con.PIPE_TYPE_MESSAGE | win32con.PIPE_READMODE_MESSAGE | win32con.PIPE_WAIT,
-                                                    win32con.PIPE_UNLIMITED_INSTANCES,
-                                                    0,
-                                                    0,
-                                                    0,
-                                                    win32utils.pointer(win32utils.get_SECURITY_ATTRIBUTES()))
-            
-            pipeAvailableEvent = win32utils.CreateEvent(False, False, define.PIPE_AVAILABLE_EVENT)
-            win32utils.SetEvent(pipeAvailableEvent)
+        
+        pipeAvailableEvent = win32utils.CreateEvent(False, False, define.PIPE_AVAILABLE_EVENT)
+        win32utils.SetEvent(pipeAvailableEvent)
+        self.hookPipes.append(hookPipe)
+        def _():
             win32utils.ConnectNamedPipe(hookPipe, None)
             win32utils.CloseHandle(pipeAvailableEvent)
-            self._start() 
             processId = self.toint(win32utils.ReadFile(hookPipe, 4,None) )
             
-            _is64bit=is64bit(processId)
+            _is64bit=win32utils.Is64bit(processId)
             self.ProcessRecord[processId]=ProcessRecord(hostPipe,processId,_is64bit)
             self.OnConnect(processId) 
             
@@ -225,35 +214,14 @@ class RPC():
                 else:
                     toremove.append(textthread)
         for _ in toremove:
-            t=self.textthreads.pop(_)
+            self.textthreads.pop(_)
             self.OnDestroy(_)
         self.textthreadslock.release()
     def OnMessage(self,data,processId,_is64bit):
         cmd=self.toint(data[:4]) 
         if(cmd==define. HOST_NOTIFICATION_TEXT):
             self.Console(define.ConsoleOutputNotif.from_buffer_copy(data).message.decode('ascii'))
-        elif(cmd==define.HOST_NOTIFICATION_FOUND_HOOK):
-            #print("HOST_NOTIFICATION_FOUND_HOOK")
-            if _is64bit:
-                _HookFoundNotif=define.HookFoundNotif64
-            else:
-                _HookFoundNotif=define.HookFoundNotif32
-            _HookFoundNotif=_HookFoundNotif.from_buffer_copy(data)
-            text=_HookFoundNotif.text.text
-            if len(text)>12:
-                self.ProcessRecord[processId].OnHookFound(hookcode.Generate(_HookFoundNotif.hp,processId),text)
-            _HookFoundNotif.hp.type&=~hookcode.USING_UNICODE
-            try:
-                text=win32utils.MultiByteToWideChar(_HookFoundNotif.text.text,sizeof(define.hookfoundtext),_HookFoundNotif.hp.codepage)
-                if text is not None and len(text)>12:
-                    self.ProcessRecord[processId].OnHookFound(hookcode.Generate(_HookFoundNotif.hp,processId),text)
-            except:pass
-            try:
-                _HookFoundNotif.hp.codepage=65001
-                text=win32utils.MultiByteToWideChar(_HookFoundNotif.text.text,sizeof(define.hookfoundtext),_HookFoundNotif.hp.codepage)
-                if text is not None and len(text)>12:
-                    self.ProcessRecord[processId].OnHookFound(hookcode.Generate(_HookFoundNotif.hp,processId),text)
-            except:pass
+        
         elif(cmd==define.HOST_NOTIFICATION_FOUND_HOOK_2):
             if _is64bit:
                 _HookFoundNotif=define.HookFoundNotif_2_64
@@ -310,14 +278,3 @@ class RPC():
         if pid in self.ProcessRecord:
             self.ProcessRecord[pid].RemoveHook(addr)
     
-if __name__=='__main__':
-    rpc=RPC(print,print,print,print,print)
-    rpc.start()
-    while True:
-            x=input()
-            if(x=='detach'): 
-                rpc.Call('Detach',int(input()))
-            elif x=='attach':
-                rpc.Call('Attach',int(input()))
-            elif x=='insert':
-                rpc.Call("InsertHookCode",int(input()),input())

@@ -7,40 +7,43 @@ from PyQt5.QtGui import QKeySequence
 from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtWidgets import QComboBox,QKeySequenceEdit,QLabel
 import winsharedutils 
+import gobject
+from gui.usefulwidget import getsimpleswitch
+from myutils.hwnd import grabwindow
 def setTab_quick_direct(self):
     self.hotkeymanager=SystemHotkey()
     self.referlabels={}
     self.registok={}
     self.bindfunctions={ 
-            '_A':lambda :self.object.settin_ui.clicksourcesignal.emit('copy'),
-            '_B':lambda :self.object.settin_ui.clicksourcesignal.emit('ocr'),
-            '_C':lambda :self.object.settin_ui.clicksourcesignal.emit('texthook'),
-            '_D':lambda :self.object.settin_ui.clicksourcesignal.emit('embedded'),
+            '_A':lambda :gobject.baseobject.settin_ui.clicksourcesignal.emit('copy'),
+            '_B':lambda :gobject.baseobject.settin_ui.clicksourcesignal.emit('ocr'),
+            '_C':lambda :gobject.baseobject.settin_ui.clicksourcesignal.emit('texthook'),
+            '_D':lambda :gobject.baseobject.settin_ui.clicksourcesignal.emit('embedded'),
 
-            '_1':self.object.translation_ui.startTranslater,
-            '_2':self.object.translation_ui.changeTranslateMode,
+            '_1':gobject.baseobject.translation_ui.startTranslater,
+            '_2':gobject.baseobject.translation_ui.changeTranslateMode,
             '_3':self.showsignal.emit,
-            '_4':lambda:winsharedutils.clipboard_set( self.object.currenttext) ,
-            '_5':self.object.translation_ui.changeshowhideraw,
-            '_6':lambda: self.object.transhis.showsignal.emit(),
-            '_7':self.object.translation_ui.langdu,
-            '_8':self.object.translation_ui.changemousetransparentstate,
-            '_9':self.object.translation_ui.changetoolslockstate,
-            '_10':lambda : self.object.translation_ui.showsavegame_signal.emit(0),
-            '_10_2':lambda : self.object.translation_ui.showsavegame_signal.emit(1),
-            '_11':lambda :self.object.AttachProcessDialog.showsignal.emit(),
-            '_12':lambda:self.object.hookselectdialog.showsignal.emit(),
-            '_13':lambda: self.object.translation_ui.clickRange_signal.emit(False),
-            '_14':self.object.translation_ui.showhide_signal.emit,
-            '_15':self.object.translation_ui.bindcropwindow_signal.emit,
-            '_16':self.object.translation_ui.showhideuisignal.emit,
-            '_17':self.object.translation_ui.quitf_signal.emit,
-            '_18':lambda:self.object.settin_ui.fontbigsmallsignal.emit(1),
-            '_19':lambda:self.object.settin_ui.fontbigsmallsignal.emit(-1),
-            '_20':self.object.translation_ui.fullsgame_signal.emit,
-            '_21':self.object.translation_ui.grabwindowsignal.emit,
-            '_22':self.object.translation_ui.muteprocessignal.emit,
-            "_23":  self.object.translation_ui.rangequick.emit ,
+            '_4':lambda:winsharedutils.clipboard_set( gobject.baseobject.currenttext) ,
+            '_5':gobject.baseobject.translation_ui.changeshowhideraw,
+            '_6':lambda: gobject.baseobject.transhis.showsignal.emit(),
+            '_7':gobject.baseobject.translation_ui.langdu,
+            '_8':gobject.baseobject.translation_ui.changemousetransparentstate,
+            '_9':gobject.baseobject.translation_ui.changetoolslockstate,
+            '_10':lambda : gobject.baseobject.translation_ui.showsavegame_signal.emit(0),
+            '_10_2':lambda : gobject.baseobject.translation_ui.showsavegame_signal.emit(1),
+            '_11':lambda :gobject.baseobject.AttachProcessDialog.showsignal.emit(),
+            '_12':lambda:gobject.baseobject.hookselectdialog.showsignal.emit(),
+            '_13':lambda: gobject.baseobject.translation_ui.clickRange_signal.emit(False),
+            '_14':gobject.baseobject.translation_ui.showhide_signal.emit,
+            '_15':gobject.baseobject.translation_ui.bindcropwindow_signal.emit,
+            '_16':gobject.baseobject.translation_ui.showhideuisignal.emit,
+            '_17':gobject.baseobject.translation_ui.quitf_signal.emit,
+            '_18':lambda:gobject.baseobject.settin_ui.fontbigsmallsignal.emit(1),
+            '_19':lambda:gobject.baseobject.settin_ui.fontbigsmallsignal.emit(-1),
+            '_20':gobject.baseobject.translation_ui.fullsgame_signal.emit,
+            '_21':lambda:grabwindow(),
+            '_22':gobject.baseobject.translation_ui.muteprocessignal.emit,
+            "_23":  gobject.baseobject.translation_ui.rangequick.emit ,
             
         }
     for name in globalconfig['quick_setting']['all']: 
@@ -71,7 +74,7 @@ class CustomKeySequenceEdit(QKeySequenceEdit):
 def setTab_quick_lazy(self) : 
          
         grids=[
-            [(("是否使用快捷键"),4),self.getsimpleswitch(globalconfig['quick_setting']  ,'use',callback=functools.partial(__enable,self )  ),((''),8)]
+            [(("是否使用快捷键"),4),getsimpleswitch(globalconfig['quick_setting']  ,'use',callback=functools.partial(__enable,self )  ),((''),8)]
         ]
         for name in globalconfig['quick_setting']['all']: 
                 if name not in self.bindfunctions:
@@ -81,7 +84,7 @@ def setTab_quick_lazy(self) :
                  
                 grids.append(
                     [((globalconfig['quick_setting']['all'][name]['name']),4),
-                    self.getsimpleswitch(globalconfig['quick_setting']['all'][name] ,'use',callback=functools.partial(fanyiselect,self,name)),
+                    getsimpleswitch(globalconfig['quick_setting']['all'][name] ,'use',callback=functools.partial(fanyiselect,self,name)),
                     (key1,2),
                     (self.referlabels[name],4)
                     ]

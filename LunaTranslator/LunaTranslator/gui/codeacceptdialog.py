@@ -5,6 +5,7 @@ from PyQt5.QtWidgets import    QHBoxLayout, QTableView
 from PyQt5.QtGui import QStandardItem, QStandardItemModel 
 from PyQt5.QtWidgets import   QComboBox    
 from PyQt5.QtCore import Qt,QSize  
+from gui.usefulwidget import getspinbox
 from myutils.utils import checkencoding
 from myutils.config import globalconfig ,_TR,_TRL
 
@@ -27,8 +28,8 @@ class codeacceptdialog(QDialog):
     def _setcode_c(self,combox:QComboBox, itemsaver_,code='' ):  
                 if combox.currentIndex()==len(nowsuppertcodespy):
                         itemsaver_.setText(code)
-    def __init__(self, object ) -> None:
-        super().__init__(object,Qt.WindowCloseButtonHint) 
+    def __init__(self, parent ) -> None:
+        super().__init__(parent,Qt.WindowCloseButtonHint) 
         title=  '接受的编码' 
         self.setWindowTitle(_TR(title))
         #self.setWindowModality(Qt.ApplicationModal)
@@ -86,8 +87,8 @@ class codeacceptdialog(QDialog):
         liwai.textChanged.connect(lambda x: globalconfig.__setitem__('accept_character',x))
         _hb=QHBoxLayout()
         _hb.addWidget(QLabel(_TR("Unicode范围"))) 
-        _hb.addWidget(object.getspinbox(0,65535,globalconfig,'accept_use_unicode_start' ))
-        _hb.addWidget(object.getspinbox(0,65535,globalconfig,'accept_use_unicode_end' )) 
+        _hb.addWidget(getspinbox(0,65535,globalconfig,'accept_use_unicode_start' ))
+        _hb.addWidget(getspinbox(0,65535,globalconfig,'accept_use_unicode_end' )) 
         formLayout.addLayout(_hb)
 
         formLayout.addWidget(QLabel()) 

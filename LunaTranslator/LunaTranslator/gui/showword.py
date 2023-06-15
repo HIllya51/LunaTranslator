@@ -5,7 +5,7 @@ from PyQt5.QtWidgets import QWidget,QHBoxLayout,QMainWindow,QApplication,QVBoxLa
 from PyQt5.QtGui import QFont,QTextCursor,QFontMetrics
 from PyQt5.QtCore import Qt,pyqtSignal,QSize
 import qtawesome,functools,json
-import threading 
+import threading ,gobject
 from queue import Queue
 from myutils.config import globalconfig
 from traceback import print_exc
@@ -16,13 +16,12 @@ class searchwordW(closeashidewindow):
     getnewsentencesignal=pyqtSignal(str) 
     searchthreadsignal=pyqtSignal(str,dict,str)
     showtabsignal=pyqtSignal(str,str)
-    def __init__(self,p):
-        super(searchwordW, self).__init__(p,globalconfig,'sw_geo')
+    def __init__(self,parent):
+        super(searchwordW, self).__init__(parent,globalconfig,'sw_geo')
         self.setupUi() 
         #self.setWindowFlags(self.windowFlags()&~Qt.WindowMinimizeButtonHint)
         self.getnewsentencesignal.connect(self.getnewsentence) 
         self.setWindowTitle(_TR('查词'))
-        self.p=p
      
     def showresfun(self,k,res):
             first=res.split('<hr>')[0]
@@ -114,46 +113,14 @@ class searchwordW(closeashidewindow):
         for _ in self.textbs:
             self.textbs[_].setFont(font)
     def langdu(self): 
-        if self.p.object.reader:
-            self.p.object.reader.read(self.searchtext.text() )  
+        if gobject.baseobject.reader:
+            gobject.baseobject.reader.read(self.searchtext.text() )  
     def showmenu(self,ii,to:QTextBrowser,p):  
         menu=QMenu(self ) 
-        save=QAction(_TR("保存"))  
         ziti=QAction(_TR("字体") ) 
-        menu.addAction(save) 
         menu.addAction(ziti)
         action=menu.exec( to.mapToGlobal(p))
-        if action==save: 
-            try:
-                try:
-                    with open('dict_result.json','r',encoding='utf8') as ff:
-                        js=json.loads(ff.read())
-                except:
-                    js={"note":[]}
-                
-                word=self.searchtext.text()
-                gana=self.textbs[0].toPlainText().split('\n')[0][len(word)+1:]
-                meaning=''
-
-                for i in range(1,len(self.textbs)):
-                    if i!=ii:
-                        continue
-                    if self.textbs[i].firsttext!='':
-                        meaning= self.textbs[i].firsttext 
-                item={ 
-                    "fields": {
-                        "Expression": word,
-                        "Meaning": meaning,
-                        "Furigana": gana,
-                        "Sentence": self.p.original,
-                    }
-                }
-                js['note'].append(item)
-                with open('dict_result.json','w',encoding='utf8') as ff:
-                    ff.write(json.dumps(js,ensure_ascii=False,sort_keys=False, indent=4))
-            except:
-                print_exc()
-        elif action==ziti :
+        if action==ziti :
             
             font, ok = QFontDialog.getFont(self.font(), parent=self)
             
@@ -179,7 +146,7 @@ class searchwordW(closeashidewindow):
             return
          
         _mp={ }
-        _mp.update(self.p.object.cishus)
+        _mp.update(gobject.baseobject.cishus)
          
         for k in self._k : 
             self.tab.setTabVisible(self._k.index(k),False)

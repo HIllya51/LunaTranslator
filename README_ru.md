@@ -4,10 +4,9 @@
     <a href="./LICENSE"><img src="https://img.shields.io/github/license/HIllya51/LunaTranslator"></a>
     <a href="https://github.com/HIllya51/LunaTranslator/releases"><img src="https://img.shields.io/github/v/release/HIllya51/LunaTranslator?color=ffa"></a>
     <a href="https://github.com/HIllya51/LunaTranslator/stargazers"><img src="https://img.shields.io/github/stars/HIllya51/LunaTranslator?color=ccf"></a>
-     <a href="https://github.com/HIllya51/LunaTranslator/releases"><img src="https://img.shields.io/github/downloads/HIllya51/LunaTranslator/total.svg?logo=github"></a>
 </p>
 
-## [简体中文](README.md)  |  Русский язык | [English](README_en.md) 
+## [简体中文](README.md)  |  Русский язык | [English](README_en.md) | [Other Language Support](otherlang.md) 
 
 > **Переводчик текста с экрана для игр и не только!**
 

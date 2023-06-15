@@ -13,13 +13,13 @@ import qtawesome
 from PyQt5.QtCore import pyqtSignal,Qt,QRect,QSize  
 from PyQt5.QtGui import  QFont  ,QIcon,QPixmap  ,QMouseEvent,QCursor
 from PyQt5.QtWidgets import  QLabel ,QPushButton ,QSystemTrayIcon ,QAction,QMenu 
-import win32utils
+import win32utils,gobject
 import winsharedutils,queue
 from myutils.config import globalconfig,saveallconfig,_TR
 from myutils.subproc import endsubprocs
 import  win32con
 import gui.rangeselect  
-from myutils.hwnd import mouseselectwindow ,showintab
+from myutils.hwnd import mouseselectwindow ,showintab,getScreenRate,grabwindow
 from gui.dialog_savedgame import dialog_savedgame,dialog_savedgame_new
 from gui.dialog_memory import dialog_memory
 from gui.textbrowser import Textbrowser
@@ -38,7 +38,6 @@ class QUnFrameWindow(resizableframeless):
     clickRange_signal=pyqtSignal(bool)
     rangequick=pyqtSignal()
     showhide_signal=pyqtSignal()
-    grabwindowsignal=pyqtSignal()
     bindcropwindow_signal=pyqtSignal()
     fullsgame_signal=pyqtSignal()
     quitf_signal=pyqtSignal() 
@@ -65,7 +64,7 @@ class QUnFrameWindow(resizableframeless):
         elif code==5:
             #print(self.pos())
             #self.move(self.pos() + self._endPos)z
-            _r=self.object.range_ui
+            _r=gobject.baseobject.range_ui
             _r.move(_r.pos().x()+ other[0],_r.pos().y()+ other[1])
             self.move(self.pos().x()+ other[0],self.pos().y()+ other[1])
             #self.move(self.pos().x()+self.rate *other[0],self.pos().y()+self.rate *other[1])
@@ -82,7 +81,7 @@ class QUnFrameWindow(resizableframeless):
                 self.showline(False,[None,res],color  ,1)
             #print(globalconfig['fanyi'][_type]['name']+'  '+res+'\n')
             
-            self.object.transhis.getnewtranssignal.emit(name,res)
+            gobject.baseobject.transhis.getnewtranssignal.emit(name,res)
         except:
             print_exc() 
     def showraw(self,hira,res,color ): 
@@ -93,8 +92,8 @@ class QUnFrameWindow(resizableframeless):
         else:
             self.showline(True,None,None,1)
        
-        self.object.transhis.getnewsentencesignal.emit(res) 
-        self.object.edittextui.getnewsentencesignal.emit(res)  
+        gobject.baseobject.transhis.getnewsentencesignal.emit(res) 
+        gobject.baseobject.edittextui.getnewsentencesignal.emit(res)  
     def showstatus(self,res,color,clear): 
         self.showline(clear,[None,res],color,1)
     def showline (self,clear,res,color ,type_=1):   
@@ -125,7 +124,7 @@ class QUnFrameWindow(resizableframeless):
         if globalconfig['zitiyangshi'] ==3:
             self.translate_text.showyinyingtext(color  ) 
         if (globalconfig['usesearchword'] or globalconfig['show_fenci']  ) and res[0]:
-            self.translate_text.addsearchwordmask(res[0],res[1],self.object.searchwordW.getnewsentencesignal.emit   ) 
+            self.translate_text.addsearchwordmask(res[0],res[1],gobject.baseobject.searchwordW.getnewsentencesignal.emit   ) 
         
         
         if globalconfig['autodisappear']:
@@ -205,27 +204,28 @@ class QUnFrameWindow(resizableframeless):
             ("move",None),
             ("retrans",self.startTranslater),
             ("automodebutton",self.changeTranslateMode),
-            ("setting",lambda:self.object.settin_ui.showsignal.emit()),
-            ("copy",lambda:winsharedutils.clipboard_set( self.object.currenttext)),
-            ("edit",lambda: self.object.edittextui.showsignal.emit()),
+            ("setting",lambda:gobject.baseobject.settin_ui.showsignal.emit()),
+            ("copy",lambda:winsharedutils.clipboard_set( gobject.baseobject.currenttext)),
+            ("edit",lambda: gobject.baseobject.edittextui.showsignal.emit()),
             ("showraw",self.changeshowhideraw),
-            ("history",lambda: self.object.transhis.showsignal.emit() ),
-            ("noundict",lambda: self.object.settin_ui.button_noundict.click()),
-            ("fix",lambda: self.object.settin_ui.button_fix.click()),
+            ("history",lambda: gobject.baseobject.transhis.showsignal.emit() ),
+            ("noundict",lambda: gobject.baseobject.settin_ui.button_noundict.click()),
+            ("fix",lambda: gobject.baseobject.settin_ui.button_fix.click()),
             ("langdu",self.langdu),
             ("mousetransbutton",self.changemousetransparentstate),
             ("locktoolsbutton",self.changetoolslockstate),
-            ("gamepad",lambda: dialog_savedgame(self.object.settin_ui)),
-            ("gamepad_new",lambda: dialog_savedgame_new(self.object.settin_ui)),
-            ("selectgame",lambda :self.object.AttachProcessDialog.showsignal.emit()),
-            ("selecttext",lambda:self.object.hookselectdialog.showsignal.emit()),
+            ("gamepad",lambda: dialog_savedgame(gobject.baseobject.settin_ui)),
+            ("gamepad_new",lambda: dialog_savedgame_new(gobject.baseobject.settin_ui)),
+            ("selectgame",lambda :gobject.baseobject.AttachProcessDialog.showsignal.emit()),
+            ("selecttext",lambda:gobject.baseobject.hookselectdialog.showsignal.emit()),
             ("selectocrrange",lambda :self.clickRange(False)),
             ("hideocrrange",self.showhide),
             ("bindwindow",self.bindcropwindow_signal.emit),
-            ("resize",lambda :moveresizegame(self,self.object.textsource.hwnd) if self.object.textsource.hwnd else 0),
+            ("resize",lambda :moveresizegame(self,gobject.baseobject.textsource.hwnd) if gobject.baseobject.textsource.hwnd else 0),
             ("fullscreen",self._fullsgame),
+            ("grabwindow",lambda:grabwindow()),
             ("muteprocess",self.muteprocessfuntion),
-            ("memory",lambda: dialog_memory(self.object.settin_ui,self.object.currentmd5)),
+            ("memory",lambda: dialog_memory(gobject.baseobject.settin_ui,gobject.baseobject.currentmd5)),
             ("keepontop",lambda:globalconfig.__setitem__("keepontop",not globalconfig['keepontop']) is None and self.refreshtoolicon() is None and self.setontopthread()),
             ("minmize",self.hide_and_disableautohide),
             ("quit",self.close)
@@ -256,7 +256,7 @@ class QUnFrameWindow(resizableframeless):
             
             
             showAction = QAction(_TR("&显示"), self, triggered = self.show_and_enableautohide)
-            settingAction = QAction(_TR("&设置"), self, triggered = lambda: self.object.settin_ui.showsignal.emit())
+            settingAction = QAction(_TR("&设置"), self, triggered = lambda: gobject.baseobject.settin_ui.showsignal.emit())
             quitAction = QAction(_TR("&退出"), self, triggered = self.close)
                     
             
@@ -293,7 +293,7 @@ class QUnFrameWindow(resizableframeless):
                         pass
                     elif (globalconfig['focusnotop']):
                         try:
-                            if self.object.textsource.hwnd in [0,hwnd] :
+                            if gobject.baseobject.textsource.hwnd in [0,hwnd] :
                                 self.settop()
                         except:
                             self.settop()
@@ -305,7 +305,7 @@ class QUnFrameWindow(resizableframeless):
             self.canceltop()
         
         threading.Thread(target=_).start()
-    def __init__(self, object):
+    def __init__(self, parent):
         
         super(QUnFrameWindow, self).__init__(
             None, Qt.FramelessWindowHint|Qt.WindowMinimizeButtonHint)  # 设置为顶级窗口，无边框
@@ -322,11 +322,10 @@ class QUnFrameWindow(resizableframeless):
         self.showintab=  globalconfig['showintab'] 
         self.setWindowTitle('LunaTranslator')
         self.hidesignal.connect(self.hide_)
-        self.object = object
         self.lastrefreshtime=time.time()
         self.autohidestart=False
         threading.Thread(target=self.autohidedelaythread).start()
-        self.rate = self.object.screen_scale_rate  
+        self.rate = getScreenRate()
         self.muteprocessignal.connect(self.muteprocessfuntion) 
         self.toolbarhidedelaysignal.connect(self.toolbarhidedelay)
         
@@ -343,11 +342,8 @@ class QUnFrameWindow(resizableframeless):
         self.rangequick.connect(self.quickrange)
         self.showhide_signal.connect(self.showhide )
         self.bindcropwindow_signal.connect(functools.partial(mouseselectwindow, self.bindcropwindowcallback))
-        self.grabwindowsignal.connect(self.grabwindow)
         self.quitf_signal.connect(self.close)
         self.fullsgame_signal.connect(self._fullsgame) 
-
-        self.object = object  
         
         self.isletgamefullscreened=False
         self.fullscreenmanager=fullscreen(self._externalfsend)
@@ -384,9 +380,9 @@ class QUnFrameWindow(resizableframeless):
         self.refreshtoolicon()
     def showsavegame_f(self,i):
         if i==0:
-            dialog_savedgame(self.object.settin_ui)
+            dialog_savedgame(gobject.baseobject.settin_ui)
         else:
-            dialog_savedgame_new(self.object.settin_ui)
+            dialog_savedgame_new(gobject.baseobject.settin_ui)
         
     def set_color_transparency(self ):
         self.translate_text.setStyleSheet("border-width: 0;\
@@ -403,46 +399,20 @@ class QUnFrameWindow(resizableframeless):
                                            font-weight: bold;\
                                            background-color: rgba(%s, %s, %s, %s)"
                                            %(int(globalconfig['backcolor'][1:3],16),int(globalconfig['backcolor'][3:5],16),int(globalconfig['backcolor'][5:7],16),globalconfig['transparent']/200))
-    def grabwindow(self): 
-        
-            hwnd=win32utils.FindWindow('Window_Magpie_967EB565-6F73-4E94-AE53-00CC42592A22',None) 
-            tm=time.localtime()
-            fname='./cache/screenshot/{}-{}-{}-{}-{}-{}.png'.format(tm.tm_year,tm.tm_mon,tm.tm_mday,tm.tm_hour,tm.tm_min,tm.tm_sec)
-             
-            if hwnd: 
-                try:
-                    winrtutils._winrt_capture_window(fname,hwnd)
-                except:
-                    print_exc()
-                    hwnd=QApplication.desktop().winId() 
-                    self.hide()
-                    QApplication.primaryScreen().grabWindow(hwnd).save(fname)
-                    self.show() 
-                
-            else:
-                hwnd= win32utils.GetForegroundWindow()  
-                p=QApplication.primaryScreen().grabWindow(hwnd)
-                if(not p.toImage().allGray()):
-                    p.save(fname)
-                else:
-                    try:
-                        winrtutils._winrt_capture_window(fname,hwnd)
-                    except: 
-                        p.save(fname)
-                
+    
     def muteprocessfuntion(self): 
-        if self.object.textsource and self.object.textsource.pids :
+        if gobject.baseobject.textsource and gobject.baseobject.textsource.pids :
             self.processismuteed=not self.processismuteed
             self.refreshtoolicon()
-            for pid in self.object.textsource.pids:
+            for pid in gobject.baseobject.textsource.pids:
                 winsharedutils.SetProcessMute(pid,self.processismuteed)
         
     def _externalfsend(self):
         self.isletgamefullscreened=False
         self.refreshtooliconsignal.emit()
     def _fullsgame(self): 
-        if self.object.textsource and  self.object.textsource.hwnd:
-            _hwnd=self.object.textsource.hwnd
+        if gobject.baseobject.textsource and  gobject.baseobject.textsource.hwnd:
+            _hwnd=gobject.baseobject.textsource.hwnd
         else:
             _hwnd=win32utils.GetForegroundWindow()
             _pid=win32utils.GetWindowThreadProcessId(_hwnd) 
@@ -458,19 +428,19 @@ class QUnFrameWindow(resizableframeless):
         self.refreshtoolicon()
      
     def showhide(self): 
-        if self.object.rect:
+        if gobject.baseobject.rect:
             self.showhidestate=not self.showhidestate 
             self.refreshtoolicon()
-            self.object.range_ui.setVisible(self.showhidestate) 
+            gobject.baseobject.range_ui.setVisible(self.showhidestate) 
     def bindcropwindowcallback(self,pid,hwnd): 
             _pid=os.getpid()
-            self.object.textsource.hwnd= hwnd if pid!=_pid else None
+            gobject.baseobject.textsource.hwnd= hwnd if pid!=_pid else None
             if not(globalconfig['sourcestatus']['texthook']['use'] or globalconfig['sourcestatus']['embedded']['use']):
-                self.object.textsource.pids= [pid] if pid!=_pid else None
+                gobject.baseobject.textsource.pids= [pid] if pid!=_pid else None
             self.isbindedwindow=(pid!=_pid)
             self.refreshtoolicon()  
     def changeshowhideraw(self):
-        self.object.settin_ui.show_original_switch.click()
+        gobject.baseobject.settin_ui.show_original_switch.click()
         
     def changeTranslateMode(self) : 
         globalconfig['autorun']=not globalconfig['autorun'] 
@@ -489,7 +459,7 @@ class QUnFrameWindow(resizableframeless):
       
     def quickrange(self): 
         if self.quickrangestatus:
-            self.object.screen_shot_ui.immediateendsignal.emit()
+            gobject.baseobject.screen_shot_ui.immediateendsignal.emit()
             # if globalconfig['autorun']==False:
             #     self.startTranslater()
         else:
@@ -501,14 +471,14 @@ class QUnFrameWindow(resizableframeless):
         self.showhidestate=False
         
         self.quickrangestatus=not self.quickrangestatus
-        self.object.range_ui.hide()
-        self.object.screen_shot_ui =gui.rangeselect.rangeselct(self.object)
-        self.object.screen_shot_ui.show()
-        self.object.screen_shot_ui.callback=self.afterrange
-        win32utils.SetFocus(self.object.screen_shot_ui.winId() )   
+        gobject.baseobject.range_ui.hide()
+        gobject.baseobject.screen_shot_ui =gui.rangeselect.rangeselct(self)
+        gobject.baseobject.screen_shot_ui.show()
+        gobject.baseobject.screen_shot_ui.callback=self.afterrange
+        win32utils.SetFocus(gobject.baseobject.screen_shot_ui.winId() )   
          
-        self.object.screen_shot_ui.startauto=auto
-        self.object.screen_shot_ui.clickrelease=auto
+        gobject.baseobject.screen_shot_ui.startauto=auto
+        gobject.baseobject.screen_shot_ui.clickrelease=auto
     def afterrange(self): 
         self.showhide()
         if globalconfig['showrangeafterrangeselect']==False:
@@ -516,10 +486,10 @@ class QUnFrameWindow(resizableframeless):
         if globalconfig['ocrafterrangeselect']:
             self.startTranslater()
     def langdu(self): 
-        self.object.readcurrent(force=True)
+        gobject.baseobject.readcurrent(force=True)
     def startTranslater(self) :
-        if self.object.textsource :
-            threading.Thread(target=self.object.textsource.runonce).start()
+        if gobject.baseobject.textsource :
+            threading.Thread(target=gobject.baseobject.textsource.runonce).start()
          
     def toolbarhidedelay(self):
         
@@ -639,7 +609,7 @@ class QUnFrameWindow(resizableframeless):
          
 
     def closeEvent(self, a0 ) -> None: 
-        self.object.isrunning=False
+        gobject.baseobject.isrunning=False
         self.tray.hide()
         self.tray = None  
         self.hide()
@@ -649,9 +619,9 @@ class QUnFrameWindow(resizableframeless):
         globalconfig['height']=self.height() 
         saveallconfig() 
          
-        if self.object.textsource:
+        if gobject.baseobject.textsource:
             
-            self.object.textsource=None
+            gobject.baseobject.textsource=None
         
         
         endsubprocs()

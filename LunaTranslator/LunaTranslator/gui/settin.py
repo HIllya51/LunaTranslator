@@ -9,7 +9,7 @@ from traceback import print_exc
 from myutils.config import globalconfig ,_TR
 from myutils.utils import wavmp3player
 from myutils.config import globalconfig 
-
+from myutils.hwnd import getScreenRate
 from gui.settingpage1 import setTabOne,setTabOne_direct
 from gui.settingpage2 import setTabTwo,settab2d
 from gui.settingpage_xianshishezhi import setTabThree ,setTabThree_direct
@@ -80,92 +80,20 @@ class Settin(closeashidewindow) :
 
                 grid.setRowMinimumHeight(nowr,35*self.rate)
         self.needfitcols.append([grid,maxl])
-    def callbackwrap(self,d,k,call,_):
-        d[k]=_ 
-        if call:
-            try: 
-                call(_)
-            except:
-                print_exc()
-    def getspinbox(self,mini,maxi,d,key,double=False, step=1,callback=None,name=None,dec=1 ):
-        if double:
-            s=QDoubleSpinBox()
-            s.setDecimals(dec)
-        else:
-            s=QSpinBox() 
-        s.setMinimum(mini)
-        s.setMaximum(maxi)
-        s.setSingleStep(step)
-        s.setValue(d[key])
-        s.valueChanged.connect(functools.partial(self.callbackwrap,d,key,callback)) 
-        if name:
-            setattr(self,name,s)
-        return s
-    def getsimpleswitch(self,d,key,enable=True,callback=None,name=None,pair=None,default=None):
-        if default:
-            if key not in d:
-                d[key]=default
-
-        b=MySwitch(self.rate,sign=d[key],enable=enable)
-        b.clicked.connect(functools.partial(self.callbackwrap,d,key,callback) )
-        
-        if pair:
-            if pair not in dir(self):
-                setattr(self,pair,{})
-            getattr(self,pair)[name]=b 
-        elif name:
-            setattr(self,name,b)
-        return b
-    def yuitsu_switch(self,configdictkey,dictobjectn,key,callback,checked):  
-        dictobject=getattr(self,dictobjectn)  
-        if checked :   
-            for k in dictobject: 
-                globalconfig[configdictkey][k]['use']=k==key
-                dictobject[k].setChecked(k==key)     
-        
-        if callback : 
-            callback(key,checked)
-    def getcolorbutton(self,d,key,callback,name=None,icon="fa.paint-brush",constcolor=None,enable=True,transparent=True,qicon=None):
-        if qicon is None:
-            qicon=qtawesome.icon(icon, color=constcolor if constcolor else d[key])
-        b=QPushButton(qicon, ""  )
-        b.setEnabled(enable)
-         
-        b.setIconSize(QSize(int(20*self.rate),
-                                 int(20*self.rate)))
-        if transparent:
-            b.setStyleSheet('''background-color: rgba(255, 255, 255, 0);
-                color: black;
-                border: 0px;
-                font: 100 10pt;''') 
-        b.clicked.connect(  callback)  
-        if name:
-            setattr(self,name,b)
-        return b
-    def getsimplecombobox(self,lst,d,k,callback=None,name=None):
-        s=QComboBox( )  
-        s.addItems(lst)
-        if (k not in d) or (d[k]>=len(lst)):d[k]=0
-        s.setCurrentIndex(d[k])
-        s.currentIndexChanged.connect(functools.partial(self.callbackwrap,d,k,callback) )
-        if name:
-            setattr(self,name,s)
-        return s
     
-    def __init__(self, object): 
-        super(Settin, self).__init__(object.translation_ui,globalconfig,'setting_geo_2') 
+    def __init__(self, parent): 
+        super(Settin, self).__init__(parent,globalconfig,'setting_geo_2') 
         #self.setWindowFlag(Qt.Tool,False)
         #self.setWindowFlags(self.windowFlags()&~Qt.WindowMinimizeButtonHint)
         self.mp3player=wavmp3player() 
         self.localocrstarted=False
         self.mp3playsignal.connect(self.mp3player.mp3playfunction)  
         self.opensolvetextsig.connect(self.opensolvetextfun)
-        self.object = object   
         self.needfitwidgets=[]
         self.needfitcols=[]
         self.setMinimumSize(100,100)
         # 界面缩放比例
-        self.rate = self.object.screen_scale_rate
+        self.rate = getScreenRate()
         # 界面尺寸
         self.window_width = int((900 if globalconfig['languageuse']==0 else 1200)*self.rate)
          
@@ -298,22 +226,3 @@ class Settin(closeashidewindow) :
     def tabadd(self,tab,title,widgets):  
             tab.addTab(widgets,_TR(title)) 
      
-    def ChangeTranslateColor(self, translate_type,button,item=None,name=None) :
-            nottransbutton=globalconfig['fanyi'].keys()
-            if translate_type not in nottransbutton:
-                color = QColorDialog.getColor(QColor(globalconfig[translate_type]), self )  
-            else:
-                color = QColorDialog.getColor(QColor(globalconfig['fanyi'][translate_type]['color']), self )
-            if not color.isValid() :
-                return
-            if button is None:
-                button=getattr(item,name)
-            button.setIcon(qtawesome.icon("fa.paint-brush", color=color.name()))
-             
-            if translate_type not in nottransbutton: 
-                globalconfig[translate_type]=color.name()  
-            else:
-                globalconfig['fanyi'][translate_type]['color']=color.name() 
-            if translate_type=='backcolor': 
-                self.object.translation_ui.set_color_transparency()
-             

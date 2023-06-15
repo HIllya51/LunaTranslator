@@ -4,10 +4,9 @@
     <a href="./LICENSE"><img src="https://img.shields.io/github/license/HIllya51/LunaTranslator"></a>
     <a href="https://github.com/HIllya51/LunaTranslator/releases"><img src="https://img.shields.io/github/v/release/HIllya51/LunaTranslator?color=ffa"></a>
     <a href="https://github.com/HIllya51/LunaTranslator/stargazers"><img src="https://img.shields.io/github/stars/HIllya51/LunaTranslator?color=ccf"></a>
-     <a href="https://github.com/HIllya51/LunaTranslator/releases"><img src="https://img.shields.io/github/downloads/HIllya51/LunaTranslator/total.svg?logo=github"></a>
 </p>
  
-## [简体中文](README.md) | [Русский язык](README_ru.md) |  English 
+## [简体中文](README.md) | [Русский язык](README_ru.md) |  English | [Other Language Support](otherlang.md) 
 
 > **A galgame translator**
 

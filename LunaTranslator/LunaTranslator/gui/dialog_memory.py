@@ -19,11 +19,10 @@ class dialog_memory(QDialog):
                 res=f[0]
                 if res!='':
                         self.showtext.insertHtml('<img src="{}">'.format(res))
-        def __init__(self, object,gamemd5='0' ) -> None:
+        def __init__(self, parent,gamemd5='0' ) -> None:
                 
-                super().__init__(object, Qt.WindowCloseButtonHint|Qt.WindowMinMaxButtonsHint)
+                super().__init__(parent, Qt.WindowCloseButtonHint|Qt.WindowMinMaxButtonsHint)
                 self.setWindowTitle(_TR('备忘录'))
-                self.object=object
                 self.gamemd5=gamemd5
                 formLayout = QVBoxLayout(self)  # 
                 self.showtext=QTextEdit()

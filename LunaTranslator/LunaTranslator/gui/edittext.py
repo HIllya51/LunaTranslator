@@ -5,15 +5,14 @@ from PyQt5.QtGui import QFont,QFontMetrics
 from PyQt5.QtCore import Qt,pyqtSignal ,QSize,QPoint
 import qtawesome 
 import json,threading 
-
+import gobject
 from myutils.config import globalconfig ,_TR,_TRL
 from gui.usefulwidget import closeashidewindow
 from myutils.config import globalconfig
 class edittext(closeashidewindow): 
     getnewsentencesignal=pyqtSignal(str)   
-    def __init__(self,p):
-        super(edittext, self).__init__(p,globalconfig,'edit_geo')
-        self.p=p
+    def __init__(self,parent):
+        super(edittext, self).__init__(parent,globalconfig,'edit_geo') 
         self.sync=True
         self.setupUi() 
         
@@ -70,17 +69,17 @@ class edittext(closeashidewindow):
         self.bt2.setIconSize(QSize(fm.height(),fm.height() ))
         self.textOutput.setFont(font) 
     def run(self):
-        threading.Thread(target=self.p.object.textgetmethod,args=(self.textOutput.toPlainText(),False)).start()
+        threading.Thread(target=gobject.baseobject.textgetmethod,args=(self.textOutput.toPlainText(),False)).start()
     def changestate(self):
         self.sync=not self.sync 
         self.bt2.setIcon(qtawesome.icon("fa.forward" if self.sync else 'fa.play' ,color="#FF69B4" if self.sync else globalconfig['buttoncolor']))
-    def showmenu(self,p:QPoint):  
+    def showmenu(self,point:QPoint):  
         menu=QMenu(self.textOutput ) 
         qingkong=QAction(_TR("清空"))  
         ziti=QAction(_TR("字体") ) 
         menu.addAction(qingkong)  
         menu.addAction(ziti)
-        action=menu.exec(self.mapToGlobal(self.textOutput.pos())+p)
+        action=menu.exec(self.mapToGlobal(self.textOutput.pos())+point)
         if action==qingkong:
             self.textOutput.clear()
          

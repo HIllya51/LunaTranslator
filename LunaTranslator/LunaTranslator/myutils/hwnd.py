@@ -3,8 +3,11 @@ import win32con ,win32utils,threading
 from traceback import print_exc
 from PyQt5.QtWinExtras  import QtWin
 from PyQt5.QtGui import   QPixmap,QColor ,QIcon
+from PyQt5.QtWidgets import QWidget, QLabel, QPushButton, QVBoxLayout,QApplication
+import gobject
 import os
-import time
+import time,winrtutils
+from myutils.wrapper import threader
 from myutils.utils import argsort
 def pid_running(pid): 
     try:
@@ -16,6 +19,44 @@ def pid_running(pid):
 
     except:
         return False
+@threader
+def grabwindow(): 
+
+        
+        tm=time.localtime()
+        
+        fnamebase='./cache/screenshot/{}'.format(0)
+        try:
+                if gobject.baseobject.textsource.md5!='0':
+                        fnamebase='./cache/screenshot/{}'.format(gobject.baseobject.textsource.prefix)
+        except:
+                pass
+        if os.path.exists(fnamebase)==False:
+                os.mkdir(fnamebase)
+        fname='{}/{}-{}-{}-{}-{}-{}'.format(fnamebase,tm.tm_year,tm.tm_mon,tm.tm_mday,tm.tm_hour,tm.tm_min,tm.tm_sec)
+        
+        hwnd=win32utils.FindWindow('Window_Magpie_967EB565-6F73-4E94-AE53-00CC42592A22',None) 
+        if hwnd: 
+                @threader
+                def _():
+                        winrtutils._winrt_capture_window(fname+'_winrt_magpie.png',hwnd)
+                _()
+        hwnd= win32utils.GetForegroundWindow()  
+        try:
+                if hwnd==int(gobject.baseobject.translation_ui.winId()):
+                        hwnd=gobject.baseobject.textsource.hwnd
+        except:
+                pass
+        @threader
+        def _():
+                winrtutils._winrt_capture_window(fname+'_winrt.png',hwnd)
+        _()
+        p=QApplication.primaryScreen().grabWindow(hwnd)
+        
+        if(not p.toImage().allGray()):
+                p.save(fname+'_gdi.png')
+                 
+        gobject.baseobject.translation_ui.displaystatus.emit("saved to "+fname,'red',True)
 def getpidhwndfirst(pid):
         try:
                 hwnds=list()
@@ -44,12 +85,6 @@ def getprocesslist():
         return pids
  
 
-def is64bit(pid):
-        hprocess=win32utils.OpenProcess(win32con.PROCESS_QUERY_INFORMATION,False,pid)
-        if hprocess==0:return False
-        res=win32utils.Is64bit(hprocess)
-        win32utils.CloseHandle(hprocess)
-        return res
 
 def getpidexe(pid):
         hwnd1=win32utils.OpenProcess(win32con.PROCESS_ALL_ACCESS,False, (pid))
@@ -111,10 +146,15 @@ def getExeIcon( name,icon=True ):
                     return QIcon(pixmap)
             else:
                     return pixmap
+__rate=0
 def getScreenRate() :
-    hDC = win32utils.GetDC(0) 
-    screen_scale_rate = round(win32utils.GetDeviceCaps(hDC, win32con.DESKTOPHORZRES) /  win32utils.GetSystemMetrics(0), 2) 
-    return screen_scale_rate
+    global __rate
+    if __rate==0:
+        hDC = win32utils.GetDC(0) 
+        dpiX = win32utils.GetDeviceCaps(hDC, win32con.LOGPIXELSX) /96.0;
+        win32utils._ReleaseDC(None, hDC); 
+        __rate = round(dpiX, 2)  
+    return __rate
 
 
 def mouseselectwindow(callback): 

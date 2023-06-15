@@ -5,6 +5,7 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QPixmap,QImage
 from PyQt5.QtWidgets import QWidget,QLabel ,QProgressBar,QLineEdit,QPushButton 
 import os,threading
+from gui.usefulwidget import getsimpleswitch
 from myutils.config import globalconfig  ,_TR ,static_data
 from myutils.wrapper import threader
 import time,json,platform,zipfile
@@ -68,7 +69,7 @@ def setTab_about(self) :
 def setTab_aboutlazy(self) : 
          
         grid2=[                
-                [('自动下载更新(需要连接github)',5),(self.getsimpleswitch(globalconfig ,'autoupdate',callback= lambda x:getversion(self)),1) ,('',10)],
+                [('自动下载更新(需要连接github)',5),(getsimpleswitch(globalconfig ,'autoupdate',callback= lambda x:getversion(self)),1) ,('',10)],
                 [(self.versionlabel,10)], 
                 [(self.downloadprogress,10)],
                 #[(self.versionlabel4,10)] 

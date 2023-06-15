@@ -2,16 +2,15 @@ from PyQt5.QtWidgets import QWidget,QDesktopWidget,QMainWindow,QLabel,QPushButto
 from PyQt5.QtGui import  QBitmap,QPainter,QPen,QBrush,QFont,QMouseEvent,QCursor
 from PyQt5.QtCore import Qt,QPoint,QRect,QEvent,pyqtSignal
 
- 
+import gobject
 from myutils.config import globalconfig
 from gui.resizeablemainwindow import Mainw
 import win32utils,win32con
 class rangeadjust(Mainw) :
  
-    def __init__(self, object):
+    def __init__(self,parent):
 
-        super(rangeadjust, self).__init__(object.translation_ui) 
-        self.object = object   
+        super(rangeadjust, self).__init__(parent) 
         self.label = QLabel(self) 
         self.setstyle()
         self.drag_label = QLabel(self)
@@ -40,8 +39,8 @@ class rangeadjust(Mainw) :
                 self._endPos = None  
     def moveEvent(self,e):
                 rect = self.geometry() 
-                if self.object.rect:    
-                    self.object.rect=[(rect.left()+globalconfig['ocrrangewidth'],rect.top()+globalconfig['ocrrangewidth']),(rect.right()-2*globalconfig['ocrrangewidth'],rect.bottom()-2*globalconfig['ocrrangewidth'])]  
+                if gobject.baseobject.rect:    
+                    gobject.baseobject.rect=[(rect.left()+globalconfig['ocrrangewidth'],rect.top()+globalconfig['ocrrangewidth']),(rect.right()-2*globalconfig['ocrrangewidth'],rect.bottom()-2*globalconfig['ocrrangewidth'])]  
     def enterEvent(self, QEvent) :  
         self.drag_label.setStyleSheet("background-color:rgba(0,0,0, 0.1)") 
     def leaveEvent(self, QEvent): 
@@ -50,14 +49,14 @@ class rangeadjust(Mainw) :
           
          self.label.setGeometry(0, 0, self.width(), self.height())  
          rect = self.geometry() 
-         if self.object.rect:    
-             self.object.rect=[(rect.left()+globalconfig['ocrrangewidth'],rect.top()+globalconfig['ocrrangewidth']),(rect.right()-2*globalconfig['ocrrangewidth'],rect.bottom()-2*globalconfig['ocrrangewidth'])]  
+         if gobject.baseobject.rect:    
+             gobject.baseobject.rect=[(rect.left()+globalconfig['ocrrangewidth'],rect.top()+globalconfig['ocrrangewidth']),(rect.right()-2*globalconfig['ocrrangewidth'],rect.bottom()-2*globalconfig['ocrrangewidth'])]  
          super(rangeadjust, self).resizeEvent(a0)  
 class rangeselct(QMainWindow) :
     immediateendsignal=pyqtSignal()
-    def __init__(self, object ) :
+    def __init__(self, parent ) :
 
-        super(rangeselct, self).__init__(object.translation_ui)
+        super(rangeselct, self).__init__(parent)
         self.setWindowFlags(Qt.FramelessWindowHint | Qt.Tool)#|Qt.WindowStaysOnTopHint  )
         self.setStyleSheet('''background-color:black; ''')
         self.setWindowOpacity(0.6)
@@ -76,16 +75,15 @@ class rangeselct(QMainWindow) :
         self.setMouseTracking(True)
         self.start_point = QPoint()
         self.end_point = QPoint()
-        self.object = object 
         self.startauto=False
         self.clickrelease=False
-        self.object.rect=None
+        gobject.baseobject.rect=None
         self.immediateendsignal.connect(self.immediateend)
     def immediateend(self):
         try:
             self.getRange() 
             self.close() 
-            self.object.translation_ui.quickrangestatus=not self.object.translation_ui.quickrangestatus
+            gobject.baseobject.translation_ui.quickrangestatus=not gobject.baseobject.translation_ui.quickrangestatus
             self.callback() 
         except:
             pass
@@ -126,15 +124,15 @@ class rangeselct(QMainWindow) :
         
         x1,x2=min(x1,x2),max(x1,x2)
         y1,y2=min(y1,y2),max(y1,y2)
-        self.object.rect=[(x1,y1),(x2,y2)]
-        self.object.range_ui.setGeometry(x1-globalconfig['ocrrangewidth'],y1-globalconfig['ocrrangewidth'],x2-x1+2*globalconfig['ocrrangewidth'],y2-y1+2*globalconfig['ocrrangewidth']) 
-        self.object.range_ui.show() 
+        gobject.baseobject.rect=[(x1,y1),(x2,y2)]
+        gobject.baseobject.range_ui.setGeometry(x1-globalconfig['ocrrangewidth'],y1-globalconfig['ocrrangewidth'],x2-x1+2*globalconfig['ocrrangewidth'],y2-y1+2*globalconfig['ocrrangewidth']) 
+        gobject.baseobject.range_ui.show() 
     def mouseReleaseEvent(self, event): 
         if event.button() == Qt.LeftButton:
             self.end_point = event.pos()
             self.getRange() 
             self.close() 
-            self.object.translation_ui.quickrangestatus=not self.object.translation_ui.quickrangestatus
+            gobject.baseobject.translation_ui.quickrangestatus=not gobject.baseobject.translation_ui.quickrangestatus
             self.callback() 
 
 
@@ -142,10 +140,9 @@ from myutils.wrapper import Singleton_close
 @Singleton_close
 class moveresizegame(QDialog) :
 
-    def __init__(self, object,hwnd ): 
-        super().__init__(object)
+    def __init__(self, parent,hwnd ): 
+        super().__init__(parent)
         self.setWindowFlags(Qt.Dialog|Qt.WindowMaximizeButtonHint|Qt.WindowCloseButtonHint)
-        self.object = object  
         self.setWindowTitle("调整窗口  "+ win32utils.GetWindowText(hwnd))
         # self.setWindowFlags(Qt.WindowStaysOnTopHint | Qt.FramelessWindowHint  )
         # self.setAttribute(Qt.WA_TranslucentBackground) 
@@ -176,7 +173,7 @@ class moveresizegame(QDialog) :
         return super().moveEvent(a0)
      
     def closeEvent(self, a0 ) -> None:
-        self.object.moveresizegame=None
+        gobject.baseobject.moveresizegame=None
         return super().closeEvent(a0)
     def mouseMoveEvent(self, e ) :  
         if self._isTracking: 

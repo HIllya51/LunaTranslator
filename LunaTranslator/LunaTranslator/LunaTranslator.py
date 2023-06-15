@@ -31,7 +31,6 @@ import winsharedutils
 from myutils.post import POSTSOLVE
 from myutils.vnrshareddict import vnrshareddict 
 
-from textsource.hook.host import RPC
  
 class MAINUI() : 
     def __init__(self,app) -> None:
@@ -49,7 +48,6 @@ class MAINUI() :
         self.refresh_on_get_trans_signature=0
         self.currentsignature=None
         self.isrunning=True
-        self.RPC=RPC() 
     @property
     def textsource(self):return self.textsource_p
     @textsource.setter
@@ -275,7 +273,7 @@ class MAINUI() :
             if force or globalconfig['autoread']:
                 self.reader.read(self.currentread) 
         except:
-            pass
+            print_exc()
     @threader
     def startreader(self,use=None,checked=True):
         try:
@@ -304,9 +302,9 @@ class MAINUI() :
         pids,pexe,hwnd=(  selectedp)   
         checkifnewgame(pexe) 
         if globalconfig['sourcestatus']['texthook']['use']:
-            self.textsource=texthook(self.RPC,self.textgetmethod,self.hookselectdialog,pids,hwnd,pexe)  
+            self.textsource=texthook(self.textgetmethod,pids,hwnd,pexe)  
         elif globalconfig['sourcestatus']['embedded']['use']:
-            self.textsource=embedded(self.textgetmethod,self.hookselectdialog,pids,hwnd,pexe, self)  
+            self.textsource=embedded(self.textgetmethod,pids,hwnd,pexe)  
          
     #@threader
     def starttextsource(self,use=None,checked=True):   
@@ -327,8 +325,6 @@ class MAINUI() :
                 return
             elif use=='texthook' or use=='embedded':
                 pass
-            elif use=='ocr':
-                self.textsource=classes[use](self.textgetmethod,self)   
             else:
                 self.textsource=classes[use](self.textgetmethod)
         
@@ -440,9 +436,9 @@ class MAINUI() :
                                         self.textsource=None
                                         if globalconfig['sourcestatus']['texthook']['use']:
                                             needinserthookcode=savehook_new_data[name_]['needinserthookcode']
-                                            self.textsource=texthook(self.RPC,self.textgetmethod,self.hookselectdialog,pids,hwnd,name_ ,autostarthookcode=savehook_new_data[name_]['hook'],needinserthookcode=needinserthookcode)
+                                            self.textsource=texthook(self.textgetmethod,pids,hwnd,name_ ,autostarthookcode=savehook_new_data[name_]['hook'],needinserthookcode=needinserthookcode)
                                         elif globalconfig['sourcestatus']['embedded']['use']:
-                                            self.textsource=embedded(self.textgetmethod,self.hookselectdialog,pids,hwnd,name_  ,self)
+                                            self.textsource=embedded(self.textgetmethod,pids,hwnd,name_ )
                                         break
                 
                 else: 
@@ -526,14 +522,14 @@ class MAINUI() :
         self.startxiaoxueguan()
         self.starthira()      
         
-        self.settin_ui = Settin(self)  
+        self.settin_ui = Settin(self.translation_ui)  
         
         self.startreader()  
         self.transhis=gui.transhist.transhist(self.translation_ui)  
         self.edittextui=gui.edittext.edittext(self.translation_ui)  
         self.searchwordW=searchwordW(self.translation_ui)
-        self.range_ui = rangeadjust(self)   
-        self.hookselectdialog=gui.selecthook.hookselect(self ,self.settin_ui) 
+        self.range_ui = rangeadjust(self.translation_ui)   
+        self.hookselectdialog=gui.selecthook.hookselect(self.settin_ui) 
         self.AttachProcessDialog=AttachProcessDialog(self.settin_ui,self.selectprocess,self.hookselectdialog)
         self.starttextsource()  
         threading.Thread(target=self.autocheckhwndexists).start()   

@@ -1,8 +1,9 @@
 
-from PyQt5.QtWidgets import QWidget,QLabel ,QProgressBar,QLineEdit,QPushButton 
-from myutils.config import _TR ,static_data
-from myutils.config import globalconfig ,translatorsetting ,static_data
+from PyQt5.QtWidgets import QLineEdit,QPushButton 
+from myutils.config import _TR  
+from myutils.config import globalconfig  
 from myutils.utils import splittranslatortypes 
+from gui.usefulwidget import getsimpleswitch
 import os
 def getall(self,l,item='fanyi',name=""):
     grids=[] 
@@ -18,7 +19,7 @@ def getall(self,l,item='fanyi',name=""):
         i+=1
          
         line+=[(globalconfig[item][fanyi]['name'],6),
-        self.getsimpleswitch(globalconfig[item][fanyi],'useproxy',default=True) ] 
+        getsimpleswitch(globalconfig[item][fanyi],'useproxy',default=True) ] 
         if i%3==0  :
             grids.append(line)
             line=[]
@@ -41,9 +42,9 @@ def setTab_proxy_lazy(self):
         _ifusesysproxy(globalconfig['usesysproxy'])
         grid1=[ 
             
-            [    ("使用代理",5),(self.getsimpleswitch(globalconfig  ,'useproxy'),1),('',10)],
+            [    ("使用代理",5),(getsimpleswitch(globalconfig  ,'useproxy'),1),('',10)],
             [
-                ("自动获取系统代理",5),(self.getsimpleswitch(globalconfig  ,'usesysproxy',callback=lambda x:_ifusesysproxy(x)))
+                ("自动获取系统代理",5),(getsimpleswitch(globalconfig  ,'usesysproxy',callback=lambda x:_ifusesysproxy(x)))
             ],
             [        ("手动设置代理(ip:port)",5),        (proxy,5),(btn,2),  
             ], 

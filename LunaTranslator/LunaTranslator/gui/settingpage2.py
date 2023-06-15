@@ -1,6 +1,6 @@
  
 from PyQt5.QtWidgets import QPushButton  ,QWidget,QVBoxLayout,QLabel
-import functools 
+import functools ,gobject
 from myutils.config import globalconfig ,translatorsetting 
  
 from myutils.subproc import subproc_w
@@ -9,7 +9,7 @@ from myutils.config import globalconfig ,_TR,_TRL,static_data
 from myutils.utils import selectdebugfile,splittranslatortypes,checkportavailable
 import os ,time,requests,threading
 from gui.inputdialog import autoinitdialog 
-
+from gui.usefulwidget import getspinbox,getcolorbutton,getsimpleswitch,selectcolor
 import time,hashlib
 def hashtext(a): 
     return hashlib.md5(a.encode('utf8')).hexdigest()
@@ -46,14 +46,14 @@ def initsome11(self,l,label=None):
                         {'t':'lineedit'}
                     )
             items.append({'t':'okcancel' })
-            last=self.getcolorbutton(globalconfig,'',callback=functools.partial(autoinitdialog,self, (globalconfig['fanyi'][fanyi]['name']),900,items),icon='fa.gear',constcolor="#FF69B4")
+            last=getcolorbutton(globalconfig,'',callback=functools.partial(autoinitdialog,self, (globalconfig['fanyi'][fanyi]['name']),900,items),icon='fa.gear',constcolor="#FF69B4")
         elif fanyi=='selfbuild': 
-            last=self.getcolorbutton(globalconfig,'',callback=lambda:selectdebugfile('./userconfig/selfbuild.py' ),icon='fa.gear',constcolor="#FF69B4")
+            last=getcolorbutton(globalconfig,'',callback=lambda:selectdebugfile('./userconfig/selfbuild.py' ),icon='fa.gear',constcolor="#FF69B4")
         else:
             last=''
         line+=[(globalconfig['fanyi'][fanyi]['name'],6),
-        self.getsimpleswitch(globalconfig['fanyi'][fanyi],'use',callback=functools.partial( self.object.prepare ,fanyi)),
-        self.getcolorbutton(globalconfig['fanyi'][fanyi],'color',name="fanyicolor_"+fanyi,callback=functools.partial(self.ChangeTranslateColor,fanyi,None,self,"fanyicolor_"+fanyi)),last ] 
+        getsimpleswitch(globalconfig['fanyi'][fanyi],'use',callback=functools.partial( gobject.baseobject.prepare ,fanyi)),
+        getcolorbutton(globalconfig['fanyi'][fanyi],'color',parent=self,name="fanyicolor_"+fanyi,callback=functools.partial(selectcolor,self,globalconfig['fanyi'][fanyi],'color',None,self,"fanyicolor_"+fanyi)),last ] 
  
         if i%3==0  :
             grids.append(line)
@@ -96,20 +96,20 @@ def setTabTwo_lazy(self) :
     
 
          
-        _fuzainum=self.getspinbox(1,99999,globalconfig,'loadbalance_oncenum',step=1)
+        _fuzainum=getspinbox(1,99999,globalconfig,'loadbalance_oncenum',step=1)
         _fuzainum.setEnabled(globalconfig['loadbalance'])
         grids=[[
-                ("最短翻译字数",8),(self.getspinbox(0,9999,globalconfig,'minlength'),2),'',
-                ("最长翻译字数",8),(self.getspinbox(0,9999,globalconfig,'maxlength'),2) ,'',
+                ("最短翻译字数",8),(getspinbox(0,9999,globalconfig,'minlength'),2),'',
+                ("最长翻译字数",8),(getspinbox(0,9999,globalconfig,'maxlength'),2) ,'',
         ],
                 
             [
-                ("使用持久化翻译缓存",8),(self.getsimpleswitch(globalconfig,'uselongtermcache')),'','',
-                ('显示错误信息',8),(self.getsimpleswitch(globalconfig  ,'showtranexception'),1),'','',
-                ('翻译请求间隔(s)',8),(self.getspinbox(0,9999,globalconfig,'requestinterval',step=0.1,double=True),2)
+                ("使用持久化翻译缓存",8),(getsimpleswitch(globalconfig,'uselongtermcache')),'','',
+                ('显示错误信息',8),(getsimpleswitch(globalconfig  ,'showtranexception'),1),'','',
+                ('翻译请求间隔(s)',8),(getspinbox(0,9999,globalconfig,'requestinterval',step=0.1,double=True),2)
             ],
             [
-                ("均衡负载",8),(self.getsimpleswitch(globalconfig,'loadbalance',callback=lambda x:_fuzainum.setEnabled(x))),'','',
+                ("均衡负载",8),(getsimpleswitch(globalconfig,'loadbalance',callback=lambda x:_fuzainum.setEnabled(x))),'','',
                 ("单次负载个数",8),(_fuzainum,2) ,
             ]
 
@@ -119,8 +119,8 @@ def setTabTwo_lazy(self) :
         ]
         pretransgrid=[
             [
-                ("预翻译采用模糊匹配",8),(self.getsimpleswitch(globalconfig  ,'premtsimiuse'),1),'',
-                ("模糊匹配相似度",8),(self.getspinbox(0,500,globalconfig,'premtsimi'),3) , 
+                ("预翻译采用模糊匹配",8),(getsimpleswitch(globalconfig  ,'premtsimiuse'),1),'',
+                ("模糊匹配相似度",8),(getspinbox(0,500,globalconfig,'premtsimi'),3) , 
             ],[ 
                  (bt,12) ,
             ],['']
@@ -131,8 +131,8 @@ def setTabTwo_lazy(self) :
         ]
 
         developgrid=[
-            [('chrome路径',8),(self.getcolorbutton(globalconfig,'',callback=functools.partial(autoinitdialog,self, 'chrome路径',900,_items),icon='fa.gear',constcolor="#FF69B4"))],
-            [("端口号",8),(self.getspinbox(0,65535,globalconfig,'debugport'),3) ,],
+            [('chrome路径',8),(getcolorbutton(globalconfig,'',callback=functools.partial(autoinitdialog,self, 'chrome路径',900,_items),icon='fa.gear',constcolor="#FF69B4"))],
+            [("端口号",8),(getspinbox(0,65535,globalconfig,'debugport'),3) ,],
             [(self.statuslabel,16)],
             ['']
         ]

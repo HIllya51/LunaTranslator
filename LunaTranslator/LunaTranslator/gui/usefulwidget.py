@@ -1,11 +1,13 @@
 
 from PyQt5.QtWidgets import QWidget, QMainWindow ,QApplication,QPushButton,QTabBar,QStylePainter,QStyleOptionTab,QStyle,QMessageBox,QDialog,QLabel,QHBoxLayout
-from PyQt5.QtGui import QFont,QCloseEvent
+from PyQt5.QtGui import QFont,QCloseEvent,QColor
 from PyQt5.QtCore import Qt,pyqtSignal ,QSize ,QRect ,QPoint 
 from myutils.config import _TR
-
-import qtawesome 
+from PyQt5.QtWidgets import  QColorDialog,QSpinBox,QDoubleSpinBox,QPushButton,QComboBox,QLabel,QScrollArea,QWidget,QGridLayout,QApplication,QTabBar,QVBoxLayout
+from traceback import print_exc
+import qtawesome ,functools
 from myutils.wrapper import  Singleton 
+from myutils.hwnd import getScreenRate
 @Singleton
 class dialog_showinfo(QDialog):
         
@@ -220,4 +222,87 @@ class rotatetab(QTabBar):
             painter.translate(-c)
             painter.drawControl(QStyle.CE_TabBarTabLabel, opt)
             painter.restore()  
-         
+
+def callbackwrap(d,k,call,_):
+    d[k]=_ 
+    if call:
+        try: 
+            call(_)
+        except:
+            print_exc()
+def getsimplecombobox(lst,d,k,callback=None):
+    s=QComboBox( )  
+    s.addItems(lst)
+    if (k not in d) or (d[k]>=len(lst)):d[k]=0
+    s.setCurrentIndex(d[k])
+    s.currentIndexChanged.connect(functools.partial(callbackwrap,d,k,callback) )
+    return s
+
+def getspinbox(mini,maxi,d,key,double=False, step=1,callback=None,dec=1 ):
+    if double:
+        s=QDoubleSpinBox()
+        s.setDecimals(dec)
+    else:
+        s=QSpinBox() 
+    s.setMinimum(mini)
+    s.setMaximum(maxi)
+    s.setSingleStep(step)
+    s.setValue(d[key])
+    s.valueChanged.connect(functools.partial(callbackwrap,d,key,callback)) 
+    return s
+ 
+def getcolorbutton(d,key,callback,name=None,parent=None,icon="fa.paint-brush",constcolor=None,enable=True,transparent=True,qicon=None):
+    if qicon is None:
+        qicon=qtawesome.icon(icon, color=constcolor if constcolor else d[key])
+    b=QPushButton(qicon, ""  )
+    b.setEnabled(enable) 
+    b.setIconSize(QSize(int(20*getScreenRate()),
+                                int(20*getScreenRate())))
+    if transparent:
+        b.setStyleSheet('''background-color: rgba(255, 255, 255, 0);
+            color: black;
+            border: 0px;
+            font: 100 10pt;''') 
+    b.clicked.connect(  callback)  
+    if name:
+        setattr(parent,name,b)
+    return b
+
+def yuitsu_switch(parent,configdict,dictobjectn,key,callback,checked):  
+    dictobject=getattr(parent,dictobjectn)  
+    if checked :   
+        for k in dictobject: 
+            configdict[k]['use']=k==key
+            dictobject[k].setChecked(k==key)     
+    
+    if callback : 
+        callback(key,checked)
+
+def getsimpleswitch(d,key,enable=True,callback=None,name=None,pair=None,parent=None,default=None):
+    if default:
+        if key not in d:
+            d[key]=default
+
+    b=MySwitch(getScreenRate(),sign=d[key],enable=enable)
+    b.clicked.connect(functools.partial(callbackwrap,d,key,callback) )
+    
+    if pair:
+        if pair not in dir(parent):
+            setattr(parent,pair,{})
+        getattr(parent,pair)[name]=b 
+    elif name:
+        setattr(parent,name,b)
+    return b
+     
+def selectcolor(parent,configdict,configkey,button,item=None,name=None,callback=None) :
+        
+    color = QColorDialog.getColor(QColor(configdict[configkey]), parent )   
+    if not color.isValid() :
+        return
+    if button is None:
+        button=getattr(item,name)
+    button.setIcon(qtawesome.icon("fa.paint-brush", color=color.name()))
+    configdict[configkey]=color.name() 
+        
+    if callback:
+        callback()

@@ -65,7 +65,7 @@ class fullscreen():
                 self._externalfsend()
             threading.Thread(target=_waitexternalend ).start()
         else:
-            endevent = win32utils.CreateEvent(False, False,'MAGPIE_WAITFOR_STOP_SIGNAL')
+            endevent = win32utils.CreateEvent(False, False,'MAGPIE_WAITFOR_STOP_SIGNAL'+str(self.engine.pid))
             win32utils.SetEvent(endevent)
             win32utils.CloseHandle(endevent)
              

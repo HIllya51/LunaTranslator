@@ -3,9 +3,8 @@ from myutils.config import globalconfig ,_TR   ,static_data
 from textsource.textsourcebase import basetext   
 import functools,queue,time,win32utils
 import threading,json 
-import platform
-import os
-from myutils.hwnd import is64bit
+import win32utils
+import os,gobject
 from myutils.subproc import subproc_w
 from textsource.embed.sharedmemwin import winsharedmem
 from textsource.embed.socketpack3 import packstrlist,packdata,unpackuint32,unpackstrlist
@@ -177,18 +176,16 @@ class embedded(basetext  ):
         if self.injectTimer : 
             self.timeout()
       threading.Thread(target=_).start() 
-    def __init__(self,textgetmethod,hookselectdialog,pids,hwnd,pname,parent) : 
+    def __init__(self,textgetmethod,pids,hwnd,pname) : 
          
         self.textgetmethod, self.pids,self.hwnd,self.pname =textgetmethod,pids,hwnd,pname
-        self.parent=parent 
         
-        hookselectdialog.changeprocessclearsignal.emit()
-        self.hookselectdialog=hookselectdialog
+        gobject.baseobject.hookselectdialog.changeprocessclearsignal.emit()
         self.newline=queue.Queue()
         self.agentreceiveddata='' 
         self.winmem = winsharedmem( )
         #b=win32utils.GetBinaryType(pname)
-        b=is64bit(pids[0])
+        b=win32utils.Is64bit(pids[0])
         if b:
             self.embeddedfailed(_TR("暂不支持64程序"))
         else:
@@ -204,7 +201,7 @@ class embedded(basetext  ):
         self.textgetmethod("<msg>"+_TR("识别到引擎")+name) 
     def translate(self,text ,embedcallback):
         self.agentreceiveddata=text
-        self.hookselectdialog.getnewsentencesignal.emit(text)
+        gobject.baseobject.hookselectdialog.getnewsentencesignal.emit(text)
         if globalconfig['autorun']:
             self.newline.put((self.agentreceiveddata,False, embedcallback))
         else:

@@ -106,11 +106,13 @@ _SetWindowLongW=_user32.SetWindowLongW
 _SetWindowLongW.argtypes=c_int,c_int,c_int
 
 _GetDC=_user32.GetDC
+_GetDC.restype=c_void_p
+_ReleaseDC=_user32.ReleaseDC
+_ReleaseDC.argtypes=c_void_p,c_void_p
 
 _GetCursorPos=_user32.GetCursorPos
 _GetCursorPos.argtypes=POINTER(POINT),
 
-_GetSystemMetrics=_user32.GetSystemMetrics
 
 _GetDeviceCaps=_gdi32.GetDeviceCaps
 _GetDeviceCaps.argtypes=c_int,c_int
@@ -287,8 +289,6 @@ def SetWindowLong(hwnd,nIndex,value):
     return _SetWindowLongW(hwnd,nIndex,value)
 def GetDC(hwnd):
     return _GetDC(hwnd)
-def GetSystemMetrics(nIndex):
-    return _GetSystemMetrics(nIndex)
 def GetCursorPos():
     _p=POINT()
     _GetCursorPos(pointer(_p))
@@ -543,7 +543,6 @@ FILE_MAP_READ=0x4
 _OpenFileMappingW=_kernel32.OpenFileMappingW
 _OpenFileMappingW.argtypes=c_uint,c_bool,c_wchar_p
 def OpenFileMapping(access,inherit,name):
-    # Open the named file mapping object
     map_handle = _OpenFileMappingW(
         access,
         inherit,
@@ -634,10 +633,15 @@ def GetNativeSystemInfo():
     _GetNativeSystemInfo(pointer(_SYSTEM_INFO))
     return _SYSTEM_INFO
 
-def Is64bit(hprocess):
+def Is64bit(pid):
     sysinfo=GetNativeSystemInfo()
     if(sysinfo.wProcessorArchitecture==9 or sysinfo.wProcessorArchitecture==6):
-        return not IsWow64Process(hprocess)
+        import win32con
+        hprocess=OpenProcess(win32con.PROCESS_QUERY_INFORMATION,False,pid)
+        if hprocess==0:return False
+        res=not IsWow64Process(hprocess)
+        CloseHandle(hprocess)
+        return res
     else:
         return False
 
@@ -645,3 +649,8 @@ _MessageBoxW =_user32.MessageBoxW
 _MessageBoxW.argtypes=c_void_p,c_wchar_p,c_wchar_p,c_uint
 def MessageBox(hwnd,text,title,_type):
     return _MessageBoxW(hwnd,text,title,_type)
+
+_CancelIo=_kernel32.CancelIo
+_CancelIo.argtypes=c_void_p,
+def CancelIo(hfile):
+    return _CancelIo(hfile)

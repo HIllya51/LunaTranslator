@@ -4,13 +4,13 @@ from PyQt5.QtCore import Qt,QSize
 from PyQt5.QtGui import QColor 
 import qtawesome
 from myutils.config import globalconfig ,_TR,_TRL
-from gui.usefulwidget import MySwitch 
+from gui.usefulwidget import MySwitch ,selectcolor
 from myutils.utils import makehtml
 from myutils.wrapper import Singleton
 @Singleton
 class autoinitdialog(QDialog):
-    def __init__(dialog, object,title,width,lines,_=None  ) -> None:
-        super().__init__(object,  Qt.WindowCloseButtonHint)
+    def __init__(dialog, parent,title,width,lines,_=None  ) -> None:
+        super().__init__(parent,  Qt.WindowCloseButtonHint)
     
         dialog.setWindowTitle(_TR(title))
         dialog.resize(QSize(width,10))
@@ -74,7 +74,7 @@ class autoinitdialog(QDialog):
             elif line['t']=='switch':
                 dd=line['d']
                 key=line['k'] 
-                switch=MySwitch(object.rate,sign=dd[key])
+                switch=MySwitch(parent.rate,sign=dd[key])
                 regist.append([dd,key,switch.isChecked])  
                 formLayout.addRow((_TR(line['l'])),switch)
             elif line['t']=='spin':
@@ -101,18 +101,12 @@ class autoinitdialog(QDialog):
                 formLayout.addRow(_TR(line['l']),spin)  
         dialog.show()
  
-def getsomepath1(object,title,d,k,label,callback=None,isdir=False,filter1="*.db"):
-    autoinitdialog(object,title,900,[ 
+def getsomepath1(parent,title,d,k,label,callback=None,isdir=False,filter1="*.db"):
+    autoinitdialog(parent,title,900,[ 
                                 {'t':'file','l':label,'d':d,'k':k,'dir':isdir,'filter':filter1}, 
                                 {'t':'okcancel','callback':callback},
                                 ])
 
-def ChangeTranslateColor(self,button,item) :
-        color = QColorDialog.getColor(QColor(globalconfig['cixingcolor'][item]), self, item)
-        
-    
-        button.setIcon(qtawesome.icon("fa.paint-brush", color=color.name()))
-        globalconfig['cixingcolor'][item]=color.name() 
 
 @Singleton
 class multicolorset(QDialog):
@@ -152,7 +146,7 @@ class multicolorset(QDialog):
             p.setIconSize(QSize(20*parent.rate,20*parent.rate))
             
             p.setStyleSheet("background: transparent;")
-            p.clicked.connect(functools.partial(ChangeTranslateColor,self,p,k))
+            p.clicked.connect(functools.partial(selectcolor,self,globalconfig['cixingcolor'],k,p))
             hori.addWidget(b)
             hori.addWidget(p)
             

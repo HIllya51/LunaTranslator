@@ -1,28 +1,28 @@
 import threading
 from queue import Queue  
 import re ,os
-import time 
+import time ,gobject
 from collections import OrderedDict
-
-from myutils.hwnd import is64bit 
+import win32utils
 import textsource.hook.define as define
 from myutils.config import globalconfig ,savehook_new_data ,_TR,static_data 
 from textsource.textsourcebase import basetext 
-from myutils.utils import checkchaos    
+from myutils.utils import checkchaos   
+from textsource.hook.host import RPC
+
 class texthook(basetext  ): 
-    def __init__(self,RPC,textgetmethod,hookselectdialog,pids,hwnd,pname  ,autostarthookcode=None,needinserthookcode=None) :
+    def __init__(self,textgetmethod,pids,hwnd,pname  ,autostarthookcode=None,needinserthookcode=None) :
         print(pids,hwnd,pname  ,autostarthookcode,needinserthookcode)
-        self.RPC=RPC
-        RPC.start()
+        self.RPC=RPC()
         if autostarthookcode is None:
             autostarthookcode=[]
         if needinserthookcode is None:
             needinserthookcode=[]
-        hookselectdialog.changeprocessclearsignal.emit()
+        gobject.baseobject.hookselectdialog.changeprocessclearsignal.emit()
         if len(autostarthookcode)==0:
-            hookselectdialog.realshowhide.emit(True)
+            gobject.baseobject.hookselectdialog.realshowhide.emit(True)
         self.newline=Queue()  
-        self.is64bit=is64bit(pids[0])
+        self.is64bit=win32utils.Is64bit(pids[0])
         self.lock=threading.Lock()
         self.hookdatacollecter=OrderedDict() 
         self.numcharactorcounter={}
@@ -32,7 +32,6 @@ class texthook(basetext  ):
         self.selectedhook=[]
         self.selectedhookidx=[]
          
-        self.hookselectdialog=hookselectdialog
         
         self.pids=pids
         self.pname=pname
@@ -50,12 +49,13 @@ class texthook(basetext  ):
             self.onnewhook,
             self.onremovehook,
             self.handle_output,
-            self.hookselectdialog.sysmessagesignal.emit
+            gobject.baseobject.hookselectdialog.sysmessagesignal.emit
         ) 
         self.setcodepage()
         self.setdelay()
         
         for pid in self.pids:
+            self.RPC.start(pid)
             self.RPC.Attach(pid,'64' if self.is64bit else '32')
         super(texthook,self).__init__(textgetmethod,*self.checkmd5prefix(pname))
      
@@ -66,7 +66,7 @@ class texthook(basetext  ):
             if key[1]==tp.addr: 
                 toremove.append(key)
         for key in toremove:
-                self.hookselectdialog.removehooksignal.emit(key)
+                gobject.baseobject.hookselectdialog.removehooksignal.emit(key)
                 self.hookdatacollecter.pop(key) 
         self.lock.release()
     def parsetextthread(self,textthread):
@@ -98,7 +98,7 @@ class texthook(basetext  ):
                 self.selectinghook=key
                 select=True
                 break
-        self.hookselectdialog.addnewhooksignal.emit(key  ,select) 
+        gobject.baseobject.hookselectdialog.addnewhooksignal.emit(key  ,select) 
         self.hookdatacollecter[key]=[] 
         
         self.lock.release()
@@ -164,7 +164,7 @@ class texthook(basetext  ):
                 else:
                     break
             print('??',_last,self.foundnum)
-            self.hookselectdialog.getfoundhooksignal.emit(self.savefound)
+            gobject.baseobject.hookselectdialog.getfoundhooksignal.emit(self.savefound)
         threading.Thread(target=__waitforok).start()
     def inserthook(self,hookcode):  
         for pid in self.pids:
@@ -172,9 +172,9 @@ class texthook(basetext  ):
             ret=self.RPC.InsertHookCode(pid,hookcode)
         #print(hookcode,x.stdout[0])
             if not ret:
-                self.hookselectdialog.getnewsentencesignal.emit(_TR('！特殊码格式错误！'))
+                gobject.baseobject.hookselectdialog.getnewsentencesignal.emit(_TR('！特殊码格式错误！'))
             else:
-                self.hookselectdialog.getnewsentencesignal.emit(_TR('插入特殊码')+hookcode+_TR('成功'))
+                gobject.baseobject.hookselectdialog.getnewsentencesignal.emit(_TR('插入特殊码')+hookcode+_TR('成功'))
           
     def removehook(self,pid,address):
         for pid in self.pids:
@@ -196,7 +196,7 @@ class texthook(basetext  ):
                 self.runonce_line=output 
              
             if key==self.selectinghook:
-                self.hookselectdialog.getnewsentencesignal.emit(output)
+                gobject.baseobject.hookselectdialog.getnewsentencesignal.emit(output)
             
             if key not in self.numcharactorcounter:
                 self.numcharactorcounter[key]=0
@@ -205,7 +205,7 @@ class texthook(basetext  ):
                 self.numcharactorcounter[key]-=len(_)
             self.hookdatacollecter[key].append(output) 
             self.numcharactorcounter[key]+=len(output)
-            self.hookselectdialog.update_item_new_line.emit(key,output)
+            gobject.baseobject.hookselectdialog.update_item_new_line.emit(key,output)
             
             self.lock.release()  
     def ignoretext(self):
@@ -221,7 +221,7 @@ class texthook(basetext  ):
     def end(self):    
         for pid in self.pids:
             self.RPC.Detach(pid)
-        self.RPC.clear()
+        self.RPC.end()
         time.sleep(0.1)
         super().end()
      

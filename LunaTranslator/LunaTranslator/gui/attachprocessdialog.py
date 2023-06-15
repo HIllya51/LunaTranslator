@@ -32,8 +32,8 @@ class AttachProcessDialog(closeashidewindow):
                     [_.show() for _ in self.windowtextlayoutwidgets]
                     self.windowtext.setText(win32utils.GetWindowText(hwnd))
                     self.selectedp=(_pids,name,hwnd)
-    def __init__(self ,p,callback,hookselectdialog):
-        super(AttachProcessDialog, self).__init__( p ) 
+    def __init__(self ,parent,callback,hookselectdialog):
+        super(AttachProcessDialog, self).__init__( parent ) 
         self.setcurrentpidpnamesignal.connect(self.selectwindowcallback)
         self.setWindowFlags(self.windowFlags()&~Qt.WindowMinimizeButtonHint)
         self.resize(800,400)

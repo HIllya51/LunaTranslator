@@ -6,7 +6,7 @@ import importlib
 from difflib import SequenceMatcher 
 from myutils.exceptions import ArgsEmptyExc
 
-import time  
+import time  ,gobject
 from PyQt5.QtWidgets import QApplication 
 from PyQt5.QtGui import QImage
 from textsource.textsourcebase import basetext  
@@ -52,28 +52,27 @@ class ocrtext(basetext):
         else:
             pix = self.screen.grabWindow(QApplication.desktop().winId(), x1, y1, x2-x1, y2-y1) 
         return pix.toImage()
-    def __init__(self,textgetmethod,object)  :
+    def __init__(self,textgetmethod)  :
         self.screen = QApplication.primaryScreen() 
         self.savelastimg=None
         self.savelastrecimg=None
-        self.savelasttext=None  
-        self.object=object 
+        self.savelasttext=None 
         self.lastocrtime=0
         self.nowuseocr=None
         self.timestamp=time.time() 
         super(ocrtext,self ).__init__(textgetmethod,'0','0_ocr') 
     def gettextthread(self ):
                  
-            if self.object.rect is None:
+            if gobject.baseobject.rect is None:
                 time.sleep(1)
                 return None
             
             time.sleep(0.1)
-            #img=ImageGrab.grab((self.object.rect[0][0],self.object.rect[0][1],self.object.rect[1][0],self.object.rect[1][1]))
+            #img=ImageGrab.grab((gobject.baseobject.rect[0][0],gobject.baseobject.rect[0][1],gobject.baseobject.rect[1][0],gobject.baseobject.rect[1][1]))
             #imgr = cv2.cvtColor(np.asarray(img), cv2.COLOR_RGB2BGR)
-            if self.object.rect is None:
+            if gobject.baseobject.rect is None:
                 return None
-            imgr=self.imageCut(self.object.rect[0][0],self.object.rect[0][1],self.object.rect[1][0],self.object.rect[1][1])
+            imgr=self.imageCut(gobject.baseobject.rect[0][0],gobject.baseobject.rect[0][1],gobject.baseobject.rect[1][0],gobject.baseobject.rect[1][1])
             
             ok=True
             
@@ -120,11 +119,11 @@ class ocrtext(basetext):
             
     def runonce(self): 
         
-        if self.object.rect is None:
+        if gobject.baseobject.rect is None:
             return
-        if self.object.rect[0][0]>self.object.rect[1][0] or self.object.rect[0][1]>self.object.rect[1][1]:
+        if gobject.baseobject.rect[0][0]>gobject.baseobject.rect[1][0] or gobject.baseobject.rect[0][1]>gobject.baseobject.rect[1][1]:
             return  
-        img=self.imageCut(self.object.rect[0][0],self.object.rect[0][1],self.object.rect[1][0],self.object.rect[1][1])
+        img=self.imageCut(gobject.baseobject.rect[0][0],gobject.baseobject.rect[0][1],gobject.baseobject.rect[1][0],gobject.baseobject.rect[1][1])
         
         
 
