@@ -59,8 +59,8 @@ def getocrgrid(self) :
             [(("图像一致性阈值"),12),(getspinbox(0,1,globalconfig,'ocr_diff_sim'  ,double=True,step=0.01 ,dec=3),4),], 
 
             [''],
-            [(("OCR范围框颜色"),12),(getcolorbutton(globalconfig,'ocrrangecolor',callback=lambda  : selectcolor(self,globalconfig,'ocrrangecolor',self.ocrrangecolor_button,callback=lambda :gobject.baseobject.range_ui.label.setStyleSheet(" border:%spx solid %s; background-color: rgba(0,0,0, 0.01)"   %(globalconfig['ocrrangewidth'],globalconfig['ocrrangecolor'] ))),name='ocrrangecolor_button',parent=self),1)],
-            [(("OCR范围框宽度"),12),(getspinbox(1,100,globalconfig,'ocrrangewidth'  ,callback=lambda x: gobject.baseobject.range_ui.setstyle()  ),4)],
+            [(("OCR范围框颜色"),12),(getcolorbutton(globalconfig,'ocrrangecolor',callback=lambda  : selectcolor(self,globalconfig,'ocrrangecolor',self.ocrrangecolor_button,callback=lambda :gobject.baseobject.textsource.setstyle()),name='ocrrangecolor_button',parent=self),1)],
+            [(("OCR范围框宽度"),12),(getspinbox(1,100,globalconfig,'ocrrangewidth'  ,callback=lambda x: gobject.baseobject.textsource.setstyle()  ),4)],
             [(("选取OCR范围后立即进行一次识别"),12),getsimpleswitch(globalconfig ,'ocrafterrangeselect')],
             [(("选取OCR范围后主动显示范围框"),12),getsimpleswitch(globalconfig ,'showrangeafterrangeselect')],
         ] 

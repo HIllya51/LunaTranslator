@@ -83,7 +83,6 @@ class basetext:
             if self.ending: 
                 break 
             if globalconfig['autorun']==False  :
-                self.ignoretext()
                 time.sleep(0.1)
                 continue
 
@@ -98,9 +97,6 @@ class basetext:
             except: 
                 print_exc() 
             
-            
-    def ignoretext(self):
-        pass
     def gettextthread(self):
         pass
     def runonce(self):

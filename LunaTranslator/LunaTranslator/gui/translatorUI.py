@@ -64,8 +64,10 @@ class QUnFrameWindow(resizableframeless):
         elif code==5:
             #print(self.pos())
             #self.move(self.pos() + self._endPos)z
-            _r=gobject.baseobject.range_ui
-            _r.move(_r.pos().x()+ other[0],_r.pos().y()+ other[1])
+            try:
+                gobject.baseobject.textsource.moveui(other[0],other[1])
+            except:
+                pass
             self.move(self.pos().x()+ other[0],self.pos().y()+ other[1])
             #self.move(self.pos().x()+self.rate *other[0],self.pos().y()+self.rate *other[1])
         
@@ -428,10 +430,10 @@ class QUnFrameWindow(resizableframeless):
         self.refreshtoolicon()
      
     def showhide(self): 
-        if gobject.baseobject.rect:
+        if gobject.baseobject.textsource.rect:
             self.showhidestate=not self.showhidestate 
             self.refreshtoolicon()
-            gobject.baseobject.range_ui.setVisible(self.showhidestate) 
+            gobject.baseobject.textsource.showhiderangeui(self.showhidestate) 
     def bindcropwindowcallback(self,pid,hwnd): 
             _pid=os.getpid()
             gobject.baseobject.textsource.hwnd= hwnd if pid!=_pid else None
@@ -471,8 +473,10 @@ class QUnFrameWindow(resizableframeless):
         self.showhidestate=False
         
         self.quickrangestatus=not self.quickrangestatus
-        gobject.baseobject.range_ui.hide()
-        gobject.baseobject.screen_shot_ui =gui.rangeselect.rangeselct(self)
+        gobject.baseobject.textsource.resetrect()
+        if 'screen_shot_ui' not in dir(gobject.baseobject):
+            gobject.baseobject.screen_shot_ui =gui.rangeselect.rangeselct(self)
+        gobject.baseobject.screen_shot_ui.reset()
         gobject.baseobject.screen_shot_ui.show()
         gobject.baseobject.screen_shot_ui.callback=self.afterrange
         win32utils.SetFocus(gobject.baseobject.screen_shot_ui.winId() )   

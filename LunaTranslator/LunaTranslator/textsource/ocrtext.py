@@ -5,6 +5,7 @@ from myutils.config import globalconfig,_TR
 import importlib  
 from difflib import SequenceMatcher 
 from myutils.exceptions import ArgsEmptyExc
+from gui.rangeselect    import rangeadjust
 
 import time  ,gobject
 from PyQt5.QtWidgets import QApplication 
@@ -59,20 +60,37 @@ class ocrtext(basetext):
         self.savelasttext=None 
         self.lastocrtime=0
         self.nowuseocr=None
+        self.rect=None
+        self.range_ui = rangeadjust(gobject.baseobject.translation_ui)   
         self.timestamp=time.time() 
         super(ocrtext,self ).__init__(textgetmethod,'0','0_ocr') 
+    def resetrect(self):
+        self.rect=None
+        self.range_ui.hide()
+    def moveui(self,x,y):
+        _r=self.range_ui
+        _r.move(_r.pos().x()+ x,_r.pos().y()+ y)
+    def setrect(self,rect):
+        (x1,y1),(x2,y2)=rect
+        self.rect=[(x1,y1),(x2,y2)]
+        self.range_ui.setGeometry(x1-globalconfig['ocrrangewidth'],y1-globalconfig['ocrrangewidth'],x2-x1+2*globalconfig['ocrrangewidth'],y2-y1+2*globalconfig['ocrrangewidth']) 
+        self.range_ui.show() 
+    def setstyle(self):
+        self.range_ui.setstyle()
+    def showhiderangeui(self,b):
+        self.range_ui.setVisible(b)
     def gettextthread(self ):
                  
-            if gobject.baseobject.rect is None:
+            if self.rect is None:
                 time.sleep(1)
                 return None
             
             time.sleep(0.1)
-            #img=ImageGrab.grab((gobject.baseobject.rect[0][0],gobject.baseobject.rect[0][1],gobject.baseobject.rect[1][0],gobject.baseobject.rect[1][1]))
+            #img=ImageGrab.grab((self.rect[0][0],self.rect[0][1],self.rect[1][0],self.rect[1][1]))
             #imgr = cv2.cvtColor(np.asarray(img), cv2.COLOR_RGB2BGR)
-            if gobject.baseobject.rect is None:
+            if self.rect is None:
                 return None
-            imgr=self.imageCut(gobject.baseobject.rect[0][0],gobject.baseobject.rect[0][1],gobject.baseobject.rect[1][0],gobject.baseobject.rect[1][1])
+            imgr=self.imageCut(self.rect[0][0],self.rect[0][1],self.rect[1][0],self.rect[1][1])
             
             ok=True
             
@@ -119,11 +137,11 @@ class ocrtext(basetext):
             
     def runonce(self): 
         
-        if gobject.baseobject.rect is None:
+        if self.rect is None:
             return
-        if gobject.baseobject.rect[0][0]>gobject.baseobject.rect[1][0] or gobject.baseobject.rect[0][1]>gobject.baseobject.rect[1][1]:
+        if self.rect[0][0]>self.rect[1][0] or self.rect[0][1]>self.rect[1][1]:
             return  
-        img=self.imageCut(gobject.baseobject.rect[0][0],gobject.baseobject.rect[0][1],gobject.baseobject.rect[1][0],gobject.baseobject.rect[1][1])
+        img=self.imageCut(self.rect[0][0],self.rect[0][1],self.rect[1][0],self.rect[1][1])
         
         
 
@@ -166,3 +184,5 @@ class ocrtext(basetext):
         super().end()
         try: self.ocrengine.end()
         except:pass
+
+        self.range_ui.close()
