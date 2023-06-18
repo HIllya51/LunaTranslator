@@ -45,7 +45,7 @@ def tranlate(websocketurl,content,src,tgt ):
         return (res)
          
 
-def createtarget(port  ): 
+def createtarget(port):
     url='https://www.deepl.com/en/translator'
     infos=requests.get('http://127.0.0.1:{}/json/list'.format(port)).json() 
     use=None
@@ -57,7 +57,7 @@ def createtarget(port  ):
         if 1:
             websocket=websockets2.create_connection(infos[0]['webSocketDebuggerUrl'])  
             a=SendRequest(websocket,'Target.createTarget',{'url':url})  
-            use= 'ws://127.0.0.1:81/devtools/page/'+a['targetId']
+            use= 'ws://127.0.0.1:{}/devtools/page/'.format(port)+a['targetId']
     return use
 class TS(basetrans): 
     def inittranslator(self ) :  
