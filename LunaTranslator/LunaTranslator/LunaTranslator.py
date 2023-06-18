@@ -41,7 +41,6 @@ class MAINUI() :
         self.cishus={}
         self.reader=None
         self.textsource_p=None 
-        self.rect=None 
         self.currentmd5='0'
         self.currenttext=''
         self.currentread=''
@@ -155,7 +154,10 @@ class MAINUI() :
             return 
  
         try:
-            _paste_str=self._POSTSOLVE(_paste_str) 
+            if type(_paste_str)==list:
+                _paste_str='\n'.join([self._POSTSOLVE(_) for _ in _paste_str ])
+            else:
+                _paste_str=self._POSTSOLVE(_paste_str) 
         except Exception as e:
             msg=str(type(e))[8:-2]+' '+str(e).replace('\n','').replace('\r','')
             self.translation_ui.displaystatus.emit(msg,'red',False)
@@ -308,10 +310,8 @@ class MAINUI() :
          
     #@threader
     def starttextsource(self,use=None,checked=True):   
-        self.rect=None 
         self.translation_ui.showhidestate=False 
         self.translation_ui.refreshtooliconsignal.emit()
-        self.range_ui.hide() 
         self.settin_ui.selectbutton.setEnabled(globalconfig['sourcestatus']['texthook']['use']) 
         self.settin_ui.selecthookbutton.setEnabled(globalconfig['sourcestatus']['texthook']['use'] )
         self.settin_ui.selectbuttonembed.setEnabled(globalconfig['sourcestatus']['embedded']['use']) 
@@ -528,7 +528,6 @@ class MAINUI() :
         self.transhis=gui.transhist.transhist(self.translation_ui)  
         self.edittextui=gui.edittext.edittext(self.translation_ui)  
         self.searchwordW=searchwordW(self.translation_ui)
-        self.range_ui = rangeadjust(self.translation_ui)   
         self.hookselectdialog=gui.selecthook.hookselect(self.settin_ui) 
         self.AttachProcessDialog=AttachProcessDialog(self.settin_ui,self.selectprocess,self.hookselectdialog)
         self.starttextsource()  

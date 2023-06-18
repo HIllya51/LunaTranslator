@@ -39,8 +39,8 @@ class rangeadjust(Mainw) :
                 self._endPos = None  
     def moveEvent(self,e):
                 rect = self.geometry() 
-                if gobject.baseobject.rect:    
-                    gobject.baseobject.rect=[(rect.left()+globalconfig['ocrrangewidth'],rect.top()+globalconfig['ocrrangewidth']),(rect.right()-2*globalconfig['ocrrangewidth'],rect.bottom()-2*globalconfig['ocrrangewidth'])]  
+                if gobject.baseobject.textsource.rect:    
+                    gobject.baseobject.textsource.rect=[(rect.left()+globalconfig['ocrrangewidth'],rect.top()+globalconfig['ocrrangewidth']),(rect.right()-2*globalconfig['ocrrangewidth'],rect.bottom()-2*globalconfig['ocrrangewidth'])]  
     def enterEvent(self, QEvent) :  
         self.drag_label.setStyleSheet("background-color:rgba(0,0,0, 0.1)") 
     def leaveEvent(self, QEvent): 
@@ -49,8 +49,8 @@ class rangeadjust(Mainw) :
           
          self.label.setGeometry(0, 0, self.width(), self.height())  
          rect = self.geometry() 
-         if gobject.baseobject.rect:    
-             gobject.baseobject.rect=[(rect.left()+globalconfig['ocrrangewidth'],rect.top()+globalconfig['ocrrangewidth']),(rect.right()-2*globalconfig['ocrrangewidth'],rect.bottom()-2*globalconfig['ocrrangewidth'])]  
+         if gobject.baseobject.textsource.rect:    
+             gobject.baseobject.textsource.rect=[(rect.left()+globalconfig['ocrrangewidth'],rect.top()+globalconfig['ocrrangewidth']),(rect.right()-2*globalconfig['ocrrangewidth'],rect.bottom()-2*globalconfig['ocrrangewidth'])]  
          super(rangeadjust, self).resizeEvent(a0)  
 class rangeselct(QMainWindow) :
     immediateendsignal=pyqtSignal()
@@ -58,6 +58,8 @@ class rangeselct(QMainWindow) :
 
         super(rangeselct, self).__init__(parent)
         self.setWindowFlags(Qt.FramelessWindowHint | Qt.Tool)#|Qt.WindowStaysOnTopHint  )
+        
+    def reset(self):
         self.setStyleSheet('''background-color:black; ''')
         self.setWindowOpacity(0.6)
         num_screens = QDesktopWidget().screenCount()
@@ -77,7 +79,6 @@ class rangeselct(QMainWindow) :
         self.end_point = QPoint()
         self.startauto=False
         self.clickrelease=False
-        gobject.baseobject.rect=None
         self.immediateendsignal.connect(self.immediateend)
     def immediateend(self):
         try:
@@ -124,9 +125,8 @@ class rangeselct(QMainWindow) :
         
         x1,x2=min(x1,x2),max(x1,x2)
         y1,y2=min(y1,y2),max(y1,y2)
-        gobject.baseobject.rect=[(x1,y1),(x2,y2)]
-        gobject.baseobject.range_ui.setGeometry(x1-globalconfig['ocrrangewidth'],y1-globalconfig['ocrrangewidth'],x2-x1+2*globalconfig['ocrrangewidth'],y2-y1+2*globalconfig['ocrrangewidth']) 
-        gobject.baseobject.range_ui.show() 
+
+        gobject.baseobject.textsource.setrect(((x1,y1),(x2,y2)))
     def mouseReleaseEvent(self, event): 
         if event.button() == Qt.LeftButton:
             self.end_point = event.pos()

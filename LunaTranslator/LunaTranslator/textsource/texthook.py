@@ -22,6 +22,7 @@ class texthook(basetext  ):
         if len(autostarthookcode)==0:
             gobject.baseobject.hookselectdialog.realshowhide.emit(True)
         self.newline=Queue()  
+        self.newline_delaywait=Queue()
         self.is64bit=win32utils.Is64bit(pids[0])
         self.lock=threading.Lock()
         self.hookdatacollecter=OrderedDict() 
@@ -53,7 +54,7 @@ class texthook(basetext  ):
         ) 
         self.setcodepage()
         self.setdelay()
-        
+        threading.Thread(target=self.delaycollectallselectedoutput).start()
         for pid in self.pids:
             self.RPC.start(pid)
             self.RPC.Attach(pid,'64' if self.is64bit else '32')
@@ -179,6 +180,17 @@ class texthook(basetext  ):
     def removehook(self,pid,address):
         for pid in self.pids:
             self.RPC.RemoveHook(pid,address)
+    def delaycollectallselectedoutput(self):
+        collector=[]
+        while True:
+            _=self.newline_delaywait.get()
+            collector.append(_)
+            time.sleep(globalconfig['textthreaddelay']/1000)
+            while self.newline_delaywait.empty()==False:
+                collector.append(self.newline_delaywait.get())
+            self.newline.put(collector)
+            self.runonce_line=collector 
+            collector=[]
     def handle_output(self,textthread,output):   
             #print(output)       
             key=self.parsetextthread(textthread)
@@ -191,10 +203,14 @@ class texthook(basetext  ):
                 if self.onnewhook(textthread)==False:
                     return
             self.lock.acquire()
-            if (key in self.selectedhook): 
-                self.newline.put(output)
-                self.runonce_line=output 
-             
+
+            if len(self.selectedhook)==1:
+                if (key in self.selectedhook): 
+                    self.newline.put(output)
+                    self.runonce_line=output 
+            else:
+                if (key in self.selectedhook): 
+                    self.newline_delaywait.put(output)
             if key==self.selectinghook:
                 gobject.baseobject.hookselectdialog.getnewsentencesignal.emit(output)
             
@@ -208,12 +224,11 @@ class texthook(basetext  ):
             gobject.baseobject.hookselectdialog.update_item_new_line.emit(key,output)
             
             self.lock.release()  
-    def ignoretext(self):
-        while self.newline.empty()==False:
-            self.newline.get()  
+    
     def gettextthread(self ):
-            #print(333333)
             paste_str=self.newline.get()
+            while self.newline.empty()==False:
+                paste_str=self.newline.get()  
             return paste_str
     def runonce(self):
          
