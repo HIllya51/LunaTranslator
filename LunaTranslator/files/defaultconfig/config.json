@@ -966,6 +966,11 @@
             "color": "blue",
             "name": "ibm api",
             "useproxy": true
+        },
+        "oneringtranslator": {
+            "use": false,
+            "color": "blue",
+            "name": "OneRingTranslator"
         }
     },
     "minifollow": false,
