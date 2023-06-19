@@ -203,6 +203,10 @@
         {
             "name": "语音_VoiceRoid2_附加音源_ギャラ子",
             "link": "https://github.com/HIllya51/LunaTranslator/releases/download/v1.1.2/galaco_44.zip"
+        },
+        {
+            "name": "OneRingTranslator_local_REST_service",
+            "link": "https://github.com/janvarev/OneRingTranslator"
         }
     ],
     "mod_map": {

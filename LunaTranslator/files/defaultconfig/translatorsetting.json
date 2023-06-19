@@ -362,5 +362,17 @@
                 "islink": true
             }
         }
+    },
+	"oneringtranslator": {
+        "args": {
+            "注册网址": "https://github.com/janvarev/OneRingTranslator"
+        }
+		,
+		"argstype":{
+			"注册网址":{
+				"type":"label",
+				"islink":true
+			}
+		}
     }
 }
