@@ -180,7 +180,7 @@ class RPC():
                                                 0,
                                                 win32utils.pointer(win32utils.get_SECURITY_ATTRIBUTES()))
         
-        pipeAvailableEvent = win32utils.CreateEvent(False, False, define.PIPE_AVAILABLE_EVENT)
+        pipeAvailableEvent = win32utils.CreateEvent(False, False, define.PIPE_AVAILABLE_EVENT+str(pid))
         win32utils.SetEvent(pipeAvailableEvent)
         self.hookPipes.append(hookPipe)
         def _():

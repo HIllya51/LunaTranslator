@@ -75,7 +75,7 @@ def createtarget(port  ):
         if 1:
             websocket=websockets.create_connection(infos[0]['webSocketDebuggerUrl'])  
             a=SendRequest(websocket,'Target.createTarget',{'url':url})  
-            use= 'ws://127.0.0.1:81/devtools/page/'+a['targetId']
+            use= 'ws://127.0.0.1:{}/devtools/page/'.format(port)+a['targetId']
     return use
 class TS(basetrans): 
     def inittranslator(self ) :  
