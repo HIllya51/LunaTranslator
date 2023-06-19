@@ -242,6 +242,16 @@
                 "tip": "编辑",
                 "icon":"fa.edit"
             },
+            "simulate_key_ctrl":{
+                "use": false,
+                "tip": "模拟按键Ctrl",
+                "icon":"fa.download"
+            },
+            "simulate_key_enter":{
+                "use": false,
+                "tip": "模拟按键Enter",
+                "icon":"fa.download"
+            },
             "memory": {
                 "use": false,
                 "tip": "备忘录",

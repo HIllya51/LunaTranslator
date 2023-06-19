@@ -202,6 +202,20 @@ class QUnFrameWindow(resizableframeless):
         self.setMinimumHeight(globalconfig['buttonsize']*1.5*self.rate+10)
         self.setMinimumWidth(globalconfig['buttonsize']*2*self.rate)
     def addbuttons(self):
+        def simulate_key_enter():
+            win32utils.SetForegroundWindow(gobject.baseobject.textsource.hwnd)
+            time.sleep(0.1)
+            while win32utils.GetForegroundWindow()==gobject.baseobject.textsource.hwnd:
+                time.sleep(0.001)
+                win32utils.keybd_event(13,0,0,0)
+            win32utils.keybd_event(13,0,win32con.KEYEVENTF_KEYUP,0)
+        def simulate_key_ctrl():
+            win32utils.SetForegroundWindow(gobject.baseobject.textsource.hwnd)
+            win32utils.keybd_event(17,0,0,0) 
+            time.sleep(0.1)
+            while win32utils.GetForegroundWindow()==gobject.baseobject.textsource.hwnd:
+                time.sleep(0.001)
+            win32utils.keybd_event(17,0,win32con.KEYEVENTF_KEYUP,0)
         functions=(
             ("move",None),
             ("retrans",self.startTranslater),
@@ -229,6 +243,8 @@ class QUnFrameWindow(resizableframeless):
             ("muteprocess",self.muteprocessfuntion),
             ("memory",lambda: dialog_memory(gobject.baseobject.settin_ui,gobject.baseobject.currentmd5)),
             ("keepontop",lambda:globalconfig.__setitem__("keepontop",not globalconfig['keepontop']) is None and self.refreshtoolicon() is None and self.setontopthread()),
+            ("simulate_key_ctrl",lambda:threading.Thread(target=simulate_key_ctrl).start()),
+            ("simulate_key_enter",lambda:threading.Thread(target=simulate_key_enter).start() ),
             ("minmize",self.hide_and_disableautohide),
             ("quit",self.close)
         )

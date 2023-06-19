@@ -633,5 +633,7 @@
     "插入特殊码延迟(ms)": "Inserire ritardo speciale del codice (ms)",
     "朗读原文": "Lettura ad alta voce del testo originale",
     "朗读翻译": "Lettura e traduzione",
-    "朗读的翻译": "Traduzione di lettura ad alta voce"
+    "朗读的翻译": "Traduzione di lettura ad alta voce",
+    "模拟按键Ctrl": "Simula tasto Ctrl",
+    "模拟按键Enter": "Simula Premere Invio"
 }

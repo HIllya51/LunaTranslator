@@ -633,5 +633,7 @@
     "插入特殊码延迟(ms)": "Wprowadzić specjalny kod opóźnienia (ms)",
     "朗读原文": "Czytanie oryginalnego tekstu na głos",
     "朗读翻译": "Czytanie i tłumaczenie",
-    "朗读的翻译": "Tłumaczenie czytania na głos"
+    "朗读的翻译": "Tłumaczenie czytania na głos",
+    "模拟按键Ctrl": "Symuluj klawisz Ctrl",
+    "模拟按键Enter": "Symulować naciśnij Enter"
 }

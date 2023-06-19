@@ -633,5 +633,7 @@
     "插入特殊码延迟(ms)": "Chèn độ trễ mã đặc biệt (ms)",
     "朗读原文": "Đọc nguyên văn",
     "朗读翻译": "Đọc bản dịch",
-    "朗读的翻译": "Bản dịch của read to"
+    "朗读的翻译": "Bản dịch của read to",
+    "模拟按键Ctrl": "Mô phỏng phím Ctrl",
+    "模拟按键Enter": "Mô phỏng phím Enter"
 }

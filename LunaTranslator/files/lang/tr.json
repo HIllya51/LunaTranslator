@@ -633,5 +633,7 @@
     "插入特殊码延迟(ms)": "Özel kod gecikmesini (ms) ekle",
     "朗读原文": "Orijinal metin yüksek sesle okuyor",
     "朗读翻译": "Okuma ve Çeviri",
-    "朗读的翻译": "Okumanın çevirimi yüksek olarak"
+    "朗读的翻译": "Okumanın çevirimi yüksek olarak",
+    "模拟按键Ctrl": "Anahtarı Ctrl'u simüle edin",
+    "模拟按键Enter": "Basın Enter'i Simüle Et"
 }

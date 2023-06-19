@@ -633,5 +633,7 @@
     "插入特殊码延迟(ms)": "Insert special code delay (ms)",
     "朗读原文": "Reading the original text aloud",
     "朗读翻译": "Reading and Translation",
-    "朗读的翻译": "Translation of reading aloud"
+    "朗读的翻译": "Translation of reading aloud",
+    "模拟按键Ctrl": "Simulate key Ctrl",
+    "模拟按键Enter": "Simulate Press Enter"
 }
