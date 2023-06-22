@@ -635,5 +635,12 @@
     "朗读翻译": "Lire la traduction à haute voix",
     "朗读的翻译": "Traduction lue à haute voix",
     "模拟按键Ctrl": "Simulation de la touche Ctrl",
-    "模拟按键Enter": "Touche analogique entrée"
+    "模拟按键Enter": "Touche analogique entrée",
+    "自定义promt": "Promt personnalisé",
+    "使用自定义promt": "Utiliser un promt personnalisé",
+    "项目地址": "Adresse du projet",
+    "直接调用chat/completions接口而不使用openaiSDK。\n可以使用官方的Key也可以使用one-api对多个ChatGPT账户进行聚合请求，避免出现限流。\n也兼容大多数第三方接口，接口地址请填写到/v1即可。": "Appelez directement l'interface chat / completions sans utiliser openaisdk.\nIl est possible d'utiliser la clé officielle ou d'utiliser l'API one pour agréger des requêtes sur plusieurs comptes chatgpt, évitant ainsi les restrictions de flux.\nÉgalement compatible avec la plupart des interfaces tierces, l'adresse de l'interface doit être remplie dans / v1.",
+    "使用说明": "Instructions d'utilisation",
+    "注册地址": "Adresse enregistrée",
+    "API接口地址": "Adresse de l'interface API"
 }

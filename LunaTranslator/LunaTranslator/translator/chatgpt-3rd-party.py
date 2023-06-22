@@ -29,10 +29,15 @@ class TS(basetrans):
         except:
             temperature = 0.3
 
-        message = [
-            {"role": "system", "content": "You are a translator"},
-            {"role": "user", "content": "translate from {} to {}".format(self.srclang,self.tgtlang)},
-        ]
+        if self.config['使用自定义promt']:
+            message=[
+                {'role':'user','content':self.config['自定义promt']}
+            ]
+        else:
+            message=[
+                {"role": "system", "content": "You are a translator"},
+                    {"role": "user", "content": "translate from {} to {}".format(self.srclang,self.tgtlang)},
+            ]
 
         for _i in range(min(len(self.context) // 2, self.contextnum)):
             i = len(self.context) // 2 - min(len(self.context) // 2, self.contextnum) + _i

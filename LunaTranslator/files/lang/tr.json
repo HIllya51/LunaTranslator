@@ -635,5 +635,12 @@
     "朗读翻译": "Okuma ve Çeviri",
     "朗读的翻译": "Okumanın çevirimi yüksek olarak",
     "模拟按键Ctrl": "Anahtarı Ctrl'u simüle edin",
-    "模拟按键Enter": "Basın Enter'i Simüle Et"
+    "模拟按键Enter": "Basın Enter'i Simüle Et",
+    "自定义promt": "Özel promt",
+    "使用自定义promt": "Özel promt kullan",
+    "项目地址": "Proje adresi",
+    "直接调用chat/completions接口而不使用openaiSDK。\n可以使用官方的Key也可以使用one-api对多个ChatGPT账户进行聚合请求，避免出现限流。\n也兼容大多数第三方接口，接口地址请填写到/v1即可。": "openaiSDK kullanmadan sohbet/tamamlama arayüzünü doğrudan arayın.\nTrafik sınırlarını önlemek için çoklu ChatGPT hesaplarını toplamak için resmi anahtarı ya da bir API kullanabilirsiniz.\nBu da üçüncü taraflı arayüzlerle uyumlu. Lütfen arayüz adresini/v1'e doldurun.",
+    "使用说明": "Kullanılacak talimatlar",
+    "注册地址": "Şirket Kayıtlı Adresi",
+    "API接口地址": "API arayüz adresi"
 }

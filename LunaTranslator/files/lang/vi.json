@@ -635,5 +635,12 @@
     "朗读翻译": "Đọc bản dịch",
     "朗读的翻译": "Bản dịch của read to",
     "模拟按键Ctrl": "Mô phỏng phím Ctrl",
-    "模拟按键Enter": "Mô phỏng phím Enter"
+    "模拟按键Enter": "Mô phỏng phím Enter",
+    "自定义promt": "Tùy chỉnh Promt",
+    "使用自定义promt": "Sử dụng Custom Promt",
+    "项目地址": "Địa chỉ dự án",
+    "直接调用chat/completions接口而不使用openaiSDK。\n可以使用官方的Key也可以使用one-api对多个ChatGPT账户进行聚合请求，避免出现限流。\n也兼容大多数第三方接口，接口地址请填写到/v1即可。": "Gọi giao diện chat/completions trực tiếp mà không cần sử dụng openaiSDK.\nBạn có thể sử dụng Key chính thức hoặc bạn có thể sử dụng one-api để tổng hợp các yêu cầu cho nhiều tài khoản ChatGPT, tránh các luồng hạn chế.\nTương thích với hầu hết các giao diện của bên thứ ba, vui lòng điền địa chỉ giao diện vào/v1.",
+    "使用说明": "Hướng dẫn sử dụng",
+    "注册地址": "Địa chỉ đăng ký",
+    "API接口地址": "Địa chỉ giao diện API"
 }

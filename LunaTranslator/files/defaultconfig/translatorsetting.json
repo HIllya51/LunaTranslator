@@ -163,10 +163,15 @@
         "Temperature": 0.3,
 		"model":"gpt-3.5-turbo",
 		"附带上下文个数":0,
-		"OPENAI_API_BASE":"https://api.openai.com/v1"
+		"OPENAI_API_BASE":"https://api.openai.com/v1",
+		"使用自定义promt":false,
+		"自定义promt":""
       }
 	  ,
 		"argstype":{
+			"使用自定义promt":{
+				"type":"switch"
+			},
 			"附带上下文个数":{
 				"type":"intspin",
 				"min":0,
@@ -198,10 +203,15 @@
         "Temperature": 0.3,
 		"model":"gpt-3.5-turbo",
 		"附带上下文个数":0,
-		"API接口地址":"https://api.openai.com/v1"
+		"API接口地址":"https://api.openai.com/v1",
+		"使用自定义promt":false,
+		"自定义promt":""
       }
 	  ,
 		"argstype":{
+			"使用自定义promt":{
+				"type":"switch"
+			},
 			"附带上下文个数":{
 				"type":"intspin",
 				"min":0,
