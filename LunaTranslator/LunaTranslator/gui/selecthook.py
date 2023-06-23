@@ -163,7 +163,7 @@ class hookselect(closeashidewindow):
     getfoundhooksignal=pyqtSignal(dict)
     update_item_new_line=pyqtSignal(tuple,str)  
     def __init__(self,parent):
-        super(hookselect, self).__init__(parent)  
+        super(hookselect, self).__init__(parent,globalconfig,'selecthookgeo')  
         self.setupUi( )
         
         self.changeprocessclearsignal.connect(self.changeprocessclear)
@@ -217,7 +217,6 @@ class hookselect(closeashidewindow):
  
     def setupUi(self  ):
         
-        self.resize(1200, 600)  
         self.widget = QWidget() 
         self.setWindowIcon(qtawesome.icon("fa.gear" ))
         self.hboxlayout = QHBoxLayout()  

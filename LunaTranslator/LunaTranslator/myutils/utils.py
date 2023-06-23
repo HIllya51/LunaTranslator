@@ -134,21 +134,16 @@ def checkportavailable(port):
     finally:
         sock.close()
 def splittranslatortypes():
-    lixians=set(static_data["fanyi_offline"])
-    alls=set(globalconfig['fanyi'].keys())
-    pre=set(static_data["fanyi_pre"])
-    online=alls-lixians-pre 
-    mianfei=set()
-    develop=set()
-    for _ in online:
-        if 'type' in globalconfig['fanyi'][_]:
-            if globalconfig['fanyi'][_]['type']=='dev':
-                develop.add(_)
-        else:
-            if _ not in translatorsetting : 
-                mianfei.add(_) 
-    shoufei=online-mianfei-develop
-    return lixians,pre,mianfei,develop,shoufei
+    pre,offline,free,dev,api=set(),set(),set(),set(),set()
+    for k in globalconfig['fanyi']:
+        try:
+            {
+                'pre':pre,'offline':offline,'free':free,'dev':dev,'api':api
+            }[globalconfig['fanyi'][k].get('type','free')].add(k)
+        except:
+            pass
+     
+    return offline,pre,free,dev,api
 def argsort(l):
     ll=list(range(len(l)))
     ll.sort(key= lambda x:l[x])

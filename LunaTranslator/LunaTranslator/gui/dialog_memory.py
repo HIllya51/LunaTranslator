@@ -1,15 +1,15 @@
    
 from PyQt5.QtWidgets import  QPushButton,QDialog,QVBoxLayout ,QHeaderView,QFileDialog  
-from PyQt5.QtWidgets import    QHBoxLayout,  QVBoxLayout,QTextEdit 
+from PyQt5.QtWidgets import    QHBoxLayout,  QVBoxLayout,QTextEdit ,QWidget
 
 from PyQt5.QtGui import QTextCursor 
 from PyQt5.QtCore import Qt,QSize   
-from myutils.config import _TR 
-import win32con,win32utils 
+from myutils.config import _TR ,globalconfig
+from gui.usefulwidget import saveposwindow
 from myutils.wrapper import Singleton_close 
 
 @Singleton_close
-class dialog_memory(QDialog):
+class dialog_memory(saveposwindow):
         #_sigleton=False
         def save( self   ) -> None:
                 with open(self.rwpath,'w',encoding='utf8') as ff:
@@ -21,10 +21,10 @@ class dialog_memory(QDialog):
                         self.showtext.insertHtml('<img src="{}">'.format(res))
         def __init__(self, parent,gamemd5='0' ) -> None:
                 
-                super().__init__(parent, Qt.WindowCloseButtonHint|Qt.WindowMinMaxButtonsHint)
+                super().__init__(parent, flags=Qt.WindowCloseButtonHint|Qt.WindowMinMaxButtonsHint,dic=globalconfig,key='memorydialoggeo')
                 self.setWindowTitle(_TR('备忘录'))
                 self.gamemd5=gamemd5
-                formLayout = QVBoxLayout(self)  # 
+                formLayout = QVBoxLayout()  # 
                 self.showtext=QTextEdit()
                 self.rwpath='./userconfig/memory/{}.html'.format(gamemd5)
                 try:
@@ -44,6 +44,8 @@ class dialog_memory(QDialog):
                 x.addWidget(insertpicbtn)
                 x.addWidget(savebtn)
                 formLayout.addLayout(x)
-                self.resize(QSize(800,400))
+                _w=QWidget()
+                _w.setLayout(formLayout)
+                self.setCentralWidget(_w)
                 self.show() 
 

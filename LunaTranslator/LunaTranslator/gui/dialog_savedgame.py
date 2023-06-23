@@ -23,7 +23,7 @@ from myutils.config import _TR,_TRL,globalconfig,static_data
 import winsharedutils,win32con
 from myutils.wrapper import Singleton_close,Singleton,threader
 from myutils.utils import checkifnewgame 
-from gui.usefulwidget import yuitsu_switch
+from gui.usefulwidget import yuitsu_switch,saveposwindow
 class ItemWidget(QWidget):
   focuschanged=pyqtSignal(bool,str)
   doubleclicked=pyqtSignal(str)
@@ -512,7 +512,7 @@ def startgame(game):
             print_exc()
 
 @Singleton_close
-class dialog_savedgame_new(QDialog):  
+class dialog_savedgame_new(saveposwindow):  
         def startgame(self,game): 
                 if os.path.exists(game):
                         idx =savehook_new_list.index(game)
@@ -550,10 +550,10 @@ class dialog_savedgame_new(QDialog):
                 if len(savehook_new_list): 
                       self.flow.l._item_list[0].widget().setFocus()
         def __init__(self, parent ) -> None:
-                super().__init__(parent , Qt.WindowMinMaxButtonsHint|Qt.WindowCloseButtonHint)
+                super().__init__(parent ,flags= Qt.WindowMinMaxButtonsHint|Qt.WindowCloseButtonHint,dic=globalconfig,key='savegamedialoggeo')
                 self.setWindowTitle(_TR('已保存游戏'))
                 
-                formLayout = QVBoxLayout(self)  # 
+                formLayout = QVBoxLayout()  # 
                 self.flow=ScrollFlow()
                 
                 formLayout.addWidget(self.flow)
@@ -569,9 +569,9 @@ class dialog_savedgame_new(QDialog):
                 self.simplebutton("添加游戏",False,self.clicked3,1)
                 
                 formLayout.addLayout(buttonlayout)
-                
-                self.setLayout(formLayout)
-                self.resize(QSize(1200,600))
+                _W=QWidget()
+                _W.setLayout(formLayout)
+                self.setCentralWidget(_W)
                 self.activategamenum=1
                 self.itemfocuschanged(False,None)
                 self.show()  

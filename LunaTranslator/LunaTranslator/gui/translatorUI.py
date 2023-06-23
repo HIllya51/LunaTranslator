@@ -211,8 +211,8 @@ class QUnFrameWindow(resizableframeless):
             win32utils.keybd_event(13,0,win32con.KEYEVENTF_KEYUP,0)
         def simulate_key_ctrl():
             win32utils.SetForegroundWindow(gobject.baseobject.textsource.hwnd)
-            win32utils.keybd_event(17,0,0,0) 
             time.sleep(0.1)
+            win32utils.keybd_event(17,0,0,0) 
             while win32utils.GetForegroundWindow()==gobject.baseobject.textsource.hwnd:
                 time.sleep(0.001)
             win32utils.keybd_event(17,0,win32con.KEYEVENTF_KEYUP,0)

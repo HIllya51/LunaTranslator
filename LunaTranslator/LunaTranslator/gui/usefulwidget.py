@@ -35,19 +35,38 @@ def getQMessageBox(parent=None,title="",text="",useok=True,usecancel=False,okcal
         okcallback()
     elif ret==QMessageBox.Cancel and cancelcallback:
         cancelcallback()
-class closeashidewindow(QMainWindow): 
-    showsignal=pyqtSignal() 
-    realshowhide=pyqtSignal(bool)
-    def __init__(self, args,dic=None,key=None) -> None:
-        super().__init__(args )
-        self.showsignal.connect(self.showfunction)  
-        self.realshowhide.connect(self.realshowhidefunction)
+class saveposwindow(QMainWindow):
+    def __init__(self, parent,dic=None,key=None,flags=None) -> None:
+        if flags:
+            super().__init__(parent ,flags=flags)
+        else:
+            super().__init__(parent )
         d=QApplication.desktop()
         self.dic,self.key=dic,key
         if self.dic:
             dic[key][0]=min(max(dic[key][0],0),d.width()-dic[key][2])
             dic[key][1]=min(max(dic[key][1],0),d.height()-dic[key][3])
             self.setGeometry(*dic[key])
+    def resizeEvent(self, a0 ) -> None:
+        if self.dic:
+            if self.isMaximized()==False: 
+                self.dic[self.key]=list(self.geometry().getRect())
+    def moveEvent(self, a0 ) -> None:
+        if self.dic:
+            if self.isMaximized()==False: 
+                self.dic[self.key]=list(self.geometry().getRect())
+    def closeEvent(self, event:QCloseEvent) :  
+        if self.dic:
+            if self.isMaximized()==False: 
+                self.dic[self.key]=list(self.geometry().getRect())
+class closeashidewindow(saveposwindow): 
+    showsignal=pyqtSignal() 
+    realshowhide=pyqtSignal(bool)
+    def __init__(self, parent,dic=None,key=None) -> None:
+        super().__init__(parent,dic,key )
+        self.showsignal.connect(self.showfunction)  
+        self.realshowhide.connect(self.realshowhidefunction)
+         
     def realshowhidefunction(self,show):
         if show:
             self.showNormal()
@@ -60,21 +79,11 @@ class closeashidewindow(QMainWindow):
             self.show()  
         else:
             self.hide()  
-    def resizeEvent(self, a0 ) -> None:
-        if self.dic:
-            if self.isMaximized()==False: 
-                self.dic[self.key]=list(self.geometry().getRect())
-    def moveEvent(self, a0 ) -> None:
-        if self.dic:
-            if self.isMaximized()==False: 
-                self.dic[self.key]=list(self.geometry().getRect())
+     
     def closeEvent(self, event:QCloseEvent) :  
         self.hide() 
         event.ignore() 
-        if self.dic:
-            if self.isMaximized()==False: 
-                self.dic[self.key]=list(self.geometry().getRect())
-
+        super().closeEvent(event)
 class MySwitch(QPushButton): 
     def __init__(self,rate, parent = None,sign=True ,enable=True):
         super().__init__(parent) 
@@ -92,7 +101,7 @@ class MySwitch(QPushButton):
         self.setChecked(sign)  
     def setChecked(self,  a0)  :
         super().setChecked(a0) 
-        self.setIcon(qtawesome.icon("fa.check" ,color="#FF69B4") if a0 else qtawesome.icon("fa.times" ,color='#dadbdc'))
+        self.setIcon(qtawesome.icon("fa.check" ,color="#FF69B4") if a0 else qtawesome.icon("fa.times" ,color='#afafaf'))
 
 class resizableframeless(QWidget):
     def __init__(self, parent , flags ) -> None:

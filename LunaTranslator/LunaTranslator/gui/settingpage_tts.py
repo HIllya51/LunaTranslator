@@ -53,12 +53,12 @@ def setTab5lz(self) :
         grids=getttsgrid(self)
         grids+=[ 
                 [''],
-                [("选择声音",5),(self.voicecombo,15)],
-                [('语速:(-10~10)',5),(getspinbox(-10,10,globalconfig['ttscommon'],'rate'  ),2)],
-                [('音量:(0~100)',5),(getspinbox(0,100,globalconfig['ttscommon'],'volume' ),2)],
-                [ ('自动朗读',5),(getsimpleswitch(globalconfig,'autoread' ),1)],
-                [ ('朗读原文',5),(getsimpleswitch(globalconfig,'read_raw' ),1),'',('朗读翻译',5),(getsimpleswitch(globalconfig,'read_trans' ),1)],
-                [('朗读的翻译',5),(getsimplecombobox(_TRL([globalconfig['fanyi'][x]['name'] for x in globalconfig['fanyi']]),globalconfig,'read_translator'),15) ],
+                [("选择声音",6),(self.voicecombo,15)],
+                [('语速:(-10~10)',6),(getspinbox(-10,10,globalconfig['ttscommon'],'rate'  ),3)],
+                [('音量:(0~100)',6),(getspinbox(0,100,globalconfig['ttscommon'],'volume' ),3)],
+                [ ('自动朗读',6),(getsimpleswitch(globalconfig,'autoread' ),1)],
+                [ ('朗读原文',6),(getsimpleswitch(globalconfig,'read_raw' ),1),'','',('朗读翻译',6),(getsimpleswitch(globalconfig,'read_trans' ),1)],
+                [('朗读的翻译',6),(getsimplecombobox(_TRL([globalconfig['fanyi'][x]['name'] for x in globalconfig['fanyi']]),globalconfig,'read_translator'),15) ],
         ]  
         gridlayoutwidget=self.makegrid(grids )  
         gridlayoutwidget=self.makescroll( gridlayoutwidget  )

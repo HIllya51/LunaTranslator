@@ -237,8 +237,8 @@ class MAINUI() :
             if res[:len('<msg>')]=='<msg>':
                 self.translation_ui.displayres.emit(globalconfig['fanyi'][classname]['name'],'red',res[len('<msg>'):])
                 return   
-        if classname not in static_data["fanyi_pre"]: 
-            res=self.solveaftertrans(res,optimization_params)
+        
+        res=self.solveaftertrans(res,optimization_params)
         
         if globalconfig['read_trans']  and (list(globalconfig['fanyi'].keys())[globalconfig['read_translator']]==classname):
             self.currentread=res
@@ -266,9 +266,7 @@ class MAINUI() :
                     embedcallback('zhs', kanjitrans(zhconv.convert(res,'zh-tw')) if globalconfig['embedded']['trans_kanji'] else res) 
         
         
-        if classname not in static_data["fanyi_pre"]:
-              
-            self.textsource.sqlqueueput((contentraw,classname,res))
+        self.textsource.sqlqueueput((contentraw,classname,res))
 
     def readcurrent(self,force=False):
         try: 

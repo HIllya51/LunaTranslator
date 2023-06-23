@@ -134,7 +134,7 @@ class basetrans:
         
         self.newline=None
 
-        if self.typename not in static_data["fanyi_pre"]:
+        if self.transtype!='pre':
             try:
                 self.sqlwrite2=sqlite3.connect('./translation_record/cache/{}.sqlite'.format(typename),check_same_thread = False, isolation_level=None)
                 try:
@@ -167,6 +167,10 @@ class basetrans:
     @property
     def using(self):
         return globalconfig['fanyi'][self.typename]['use']
+    
+    @property
+    def transtype(self):
+        return globalconfig['fanyi'][self.typename].get('type','free')
     def gettask(self,content):
         self.queue.put((content)) 
     
@@ -205,7 +209,7 @@ class basetrans:
             if res:
                 return res
         
-        if self.typename in static_data['fanyi_offline']:
+        if self.transtype=='offline':
             res=self.translate(contentsolved)
         else:
             res=self.intervaledtranslate(contentsolved)
@@ -217,7 +221,7 @@ class basetrans:
         return res
     
     def maybecachetranslate(self,contentraw,contentsolved):
-        if self.typename in static_data["fanyi_pre"]:
+        if self.transtype=='pre':
             res=self.translate(contentraw)
         else: 
             res=self.cached_translate(contentsolved)
