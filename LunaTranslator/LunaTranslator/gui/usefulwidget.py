@@ -19,10 +19,12 @@ class dialog_showinfo(QDialog):
                 layout.addWidget(l)
                 self.setLayout(layout) 
                 self.show()
-def getQMessageBox(parent=None,title="",text="",useok=True,usecancel=False,okcallback=None,cancelcallback=None):
+def getQMessageBox(parent=None,title="",text="",useok=True,usecancel=False,okcallback=None,cancelcallback=None,tr=True):
     msgBox=QMessageBox(parent)
-    msgBox.setWindowTitle(_TR(title))
-    msgBox.setText(_TR(text)) 
+    if tr:
+        title,text=_TR(title),_TR(text)
+    msgBox.setWindowTitle((title))
+    msgBox.setText((text)) 
     btn=0
     if useok:btn|=QMessageBox.Ok
     if usecancel:btn|=QMessageBox.Cancel

@@ -642,5 +642,6 @@
     "直接调用chat/completions接口而不使用openaiSDK。\n可以使用官方的Key也可以使用one-api对多个ChatGPT账户进行聚合请求，避免出现限流。\n也兼容大多数第三方接口，接口地址请填写到/v1即可。": "Llame directamente a la interfaz chat / Completions sin usar openai sdk.\nSe puede utilizar la clave oficial o la API one para agregar solicitudes a varias cuentas chatgpt para evitar restricciones de flujo.\nTambién es compatible con la mayoría de las interfaces de terceros, por favor complete la dirección de la interfaz en / v1.",
     "使用说明": "Instrucciones de uso",
     "注册地址": "Dirección registrada",
-    "API接口地址": "Dirección de la interfaz API"
+    "API接口地址": "Dirección de la interfaz API",
+    "当前路径读写权限不足，请使用管理员权限运行！": "¡Los permisos de lectura y escritura de la ruta actual son insuficientes, ¡ por favor, use los permisos de Administrador para ejecutar!"
 }

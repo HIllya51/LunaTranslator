@@ -31,7 +31,7 @@ def initpath():
 
 if __name__ == "__main__" :
     initpath()
-    from myutils.config import _TR,static_data
+    from myutils.config import _TR,static_data,saveallconfig
     from gui.usefulwidget import getQMessageBox
     from LunaTranslator import MAINUI
     import gobject 
@@ -51,9 +51,14 @@ if __name__ == "__main__" :
         if os.path.exists(f)==False:
             collect.append(f)
     if len(collect):
-        getQMessageBox(None,_TR("错误"),_TR("找不到重要组件：")+"\n"+"\n".join(collect)+"\n"+_TR("请重新下载并关闭杀毒软件后重试"))
+        getQMessageBox(None,_TR("错误"),_TR("找不到重要组件：")+"\n"+"\n".join(collect)+"\n"+_TR("请重新下载并关闭杀毒软件后重试"),tr=False)
         os._exit(0) 
     
+    try:
+        saveallconfig()
+    except:
+        getQMessageBox(None,"错误","当前路径读写权限不足，请使用管理员权限运行！")
+        os._exit(0) 
     
     gobject.baseobject=MAINUI(app) 
     gobject.baseobject.checklang() 
