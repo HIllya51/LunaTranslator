@@ -631,6 +631,10 @@
             "token": "",
             "token_name": "Moji NLT Token",
             "name": "mojinlt"
+        },
+        "latin": {
+            "use": false,
+            "name": "latin"
         }
     },
     "cishu": {
