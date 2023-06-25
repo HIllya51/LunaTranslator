@@ -87,10 +87,9 @@ syncconfig(transerrorfixdictconfig,defaulterrorfix)
 
 syncconfig(noundictconfig,defaultnoun)
 syncconfig(magpie10_config,dfmagpie10_config,skipdict=True)
-syncconfig(translatorsetting,translatordfsetting,drop=True,deep=3)
+syncconfig(translatorsetting,translatordfsetting)
 
-
-syncconfig(ocrsetting,ocrdfsetting,True,3)
+syncconfig(ocrsetting,ocrdfsetting)
 
 if len(globalconfig['toolbutton']['rank'])!=len(globalconfig['toolbutton']['buttons'].keys()):
     globalconfig['toolbutton']['rank']+=list(set(globalconfig['toolbutton']['buttons'].keys())-set(globalconfig['toolbutton']['rank']))

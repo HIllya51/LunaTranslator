@@ -44,9 +44,10 @@ class baseocr:
             return {}
     def countnum(self):
         try: 
-            self.config['次数统计']=str(int(self.config['次数统计'])+1)
+            ocrsetting[self.typename]['args']['次数统计']=str(int(self.config['次数统计'])+1)
         except: 
-            self.config['次数统计']='1'
+            ocrsetting[self.typename]['args']['次数统计']='1'
+        
     def checkempty(self,items):
         emptys=[]
         for item in items:

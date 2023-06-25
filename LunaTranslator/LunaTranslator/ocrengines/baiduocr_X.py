@@ -41,26 +41,29 @@ class OCR(baseocr):
             f=ff.read()
         b64=base64.b64encode(f)
 
-        if globalconfig['verticalocr']:
+        data = {
+            'image': b64 , 
+            'detect_direction':globalconfig['verticalocr'],
+            'language_type':self.srclang 
+        } 
+        interfacetype=self.config['接口']
+         
+        url=[
+            'https://aip.baidubce.com/rest/2.0/ocr/v1/general_basic',
+            'https://aip.baidubce.com/rest/2.0/ocr/v1/general',
+            'https://aip.baidubce.com/rest/2.0/ocr/v1/accurate_basic',
+            'https://aip.baidubce.com/rest/2.0/ocr/v1/accurate'
+        ][interfacetype]
+        response = requests.post(url, params=params, headers=headers, data=data, proxies=self.proxy)
+        try: 
             
-            data = {
-                'image': b64 ,
-                'detect_language': 'true' if self.srclang =="auto_detect" else 'false',
-                'detect_direction':'true',
-                'language_type':self.srclang 
-                }
-        else:
-            data = {
-                'image': b64 ,
-                'detect_language': 'true',
-                'detect_direction':'true',
-                }
-        
-        response = requests.post('https://aip.baidubce.com/rest/2.0/ocr/v1/general_basic', params=params, headers=headers, data=data, proxies=self.proxy)
-        try:
-            
-            res=self.space.join([x['words']  for x in response.json()['words_result']])
             self.countnum()
-            return res
+             
+            if globalconfig['verticalocr'] and (interfacetype in [1,3]):
+                _collect=[(x['words'],x['location']['left'])  for x in response.json()['words_result']] 
+                _collect.sort(key=lambda x:-x[1])
+                return  self.space.join([_[0]  for _ in _collect])
+            else:
+                return  self.space.join([x['words']  for x in response.json()['words_result']])
         except:
             raise Exception(response.text)

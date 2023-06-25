@@ -35,70 +35,62 @@ class autoinitdialog(QDialog):
         for line in lines:
             if 'type' in line:
                 line['t']=line['type']
-            if line['t']=='label':
+            if 'd' in line:
                 dd=line['d']
+            if 'k' in line:
                 key=line['k'] 
+            if line['t']=='label':
                 
                 if 'islink' in line and line['islink']:
-                    e=QLabel(makehtml(dd[key]))
-                    e.setOpenExternalLinks(True)
+                    lineW=QLabel(makehtml(dd[key]))
+                    lineW.setOpenExternalLinks(True)
                 else:
-                    e=QLabel(_TR(dd[key]))
-                formLayout.addRow((_TR(line['l'])),e)
-            
+                    lineW=QLabel(_TR(dd[key])) 
+            elif line['t']=='combo':
+                lineW=QComboBox()
+                lineW.addItems(_TRL(line['list']))
+                lineW.setCurrentIndex(dd[key])
+                lineW.currentIndexChanged.connect(functools.partial(dd.__setitem__,key)) 
             elif line['t']=='okcancel':
-                button = QDialogButtonBox(QDialogButtonBox.Ok|QDialogButtonBox.Cancel) 
-                formLayout.addRow(button)
-                button.rejected.connect(dialog.close)
-                button.accepted.connect(functools.partial(save,None if 'callback' not in line else line['callback']))
+                lineW = QDialogButtonBox(QDialogButtonBox.Ok|QDialogButtonBox.Cancel)  
+                lineW.rejected.connect(dialog.close)
+                lineW.accepted.connect(functools.partial(save,None if 'callback' not in line else line['callback']))
 
-                button.button(QDialogButtonBox.Ok).setText(_TR('确定'))
-                button.button(QDialogButtonBox.Cancel).setText(_TR('取消'))
-            elif line['t']=='lineedit':   
-                dd=line['d']
-                key=line['k'] 
-                e=QLineEdit(dd[key])
-                regist.append([dd,key,e.text])  
-                formLayout.addRow((_TR(line['l'])),e)
+                lineW.button(QDialogButtonBox.Ok).setText(_TR('确定'))
+                lineW.button(QDialogButtonBox.Cancel).setText(_TR('取消'))
+            elif line['t']=='lineedit':  
+                lineW=QLineEdit(dd[key])
+                regist.append([dd,key,lineW.text])   
             elif line['t']=='file': 
-                dd=line['d']
-                key=line['k'] 
                 e=QLineEdit(dd[key])
                 regist.append([dd,key,e.text])  
                 bu=QPushButton(_TR('选择'+('文件夹' if line['dir'] else '文件')  ))
                 bu.clicked.connect(functools.partial(openfiledirectory,e,line['dir'],'' if line['dir'] else line['filter']  ))
-                hori=QHBoxLayout()
-                hori.addWidget(e)
-                hori.addWidget(bu)
-                formLayout.addRow((_TR(line['l'])),hori)
+                lineW=QHBoxLayout()
+                lineW.addWidget(e)
+                lineW.addWidget(bu) 
             elif line['t']=='switch':
-                dd=line['d']
-                key=line['k'] 
-                switch=MySwitch(parent.rate,sign=dd[key])
-                regist.append([dd,key,switch.isChecked])  
-                formLayout.addRow((_TR(line['l'])),switch)
+                lineW=MySwitch(parent.rate,sign=dd[key])
+                regist.append([dd,key,lineW.isChecked])   
             elif line['t']=='spin':
-                dd=line['d']
-                key=line['k'] 
-                spin=QDoubleSpinBox()
-                spin.setMinimum(0 if 'min' not in line else line['min'])
-                spin.setMaximum(100 if 'max' not in line else line['max'])
-                spin.setSingleStep(0.1 if 'step' not in line  else line['step'])
-                spin.setValue(dd[key])
-                spin.valueChanged.connect(functools.partial(dd.__setitem__,key))
+                lineW=QDoubleSpinBox()
+                lineW.setMinimum(0 if 'min' not in line else line['min'])
+                lineW.setMaximum(100 if 'max' not in line else line['max'])
+                lineW.setSingleStep(0.1 if 'step' not in line  else line['step'])
+                lineW.setValue(dd[key])
+                lineW.valueChanged.connect(functools.partial(dd.__setitem__,key))
                 
-                formLayout.addRow(_TR(line['l']),spin)  
             elif line['t']=='intspin':
-                dd=line['d']
-                key=line['k'] 
-                spin=QSpinBox()
-                spin.setMinimum(0 if 'min' not in line else line['min'])
-                spin.setMaximum(100 if 'max' not in line else line['max'])
-                spin.setSingleStep(1 if 'step' not in line  else line['step'])
-                spin.setValue(dd[key])
-                spin.valueChanged.connect(functools.partial(dd.__setitem__,key))
-                
-                formLayout.addRow(_TR(line['l']),spin)  
+                lineW=QSpinBox()
+                lineW.setMinimum(0 if 'min' not in line else line['min'])
+                lineW.setMaximum(100 if 'max' not in line else line['max'])
+                lineW.setSingleStep(1 if 'step' not in line  else line['step'])
+                lineW.setValue(dd[key])
+                lineW.valueChanged.connect(functools.partial(dd.__setitem__,key))
+            if 'l' in line:
+                formLayout.addRow(_TR(line['l']),lineW)  
+            else:
+                formLayout.addRow( lineW)  
         dialog.show()
  
 def getsomepath1(parent,title,d,k,label,callback=None,isdir=False,filter1="*.db"):

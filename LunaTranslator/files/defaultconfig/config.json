@@ -718,13 +718,9 @@
             "use": false,
             "name": "WindowsOCR"
         },
-        "baiduocr": {
+        "baiduocr_X": {
             "use": false,
-            "name": "baiduOCR"
-        },
-        "baiduocr_accurate": {
-            "use": false,
-            "name": "baiduOCR_高精度"
+            "name": "baiduOCR_X"
         },
         "feishu": {
             "use": false,

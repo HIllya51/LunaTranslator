@@ -1,34 +1,26 @@
 {
-    "baiduocr": {
+    "baiduocr_X": {
         "args": {
             "注册网址": "https://console.bce.baidu.com/ai/?fromai=1#/ai/ocr/app/list",
             "API Key": "",
             "Secret Key": "", 
+            "接口":0,
             "次数统计": "0"
         },"argstype":{
 			"注册网址":{
 				"type":"label",
 				"islink":true
-			}
+			},
+            "接口":{
+                "type":"combo",
+				"list":["通用文字识别（标准版）","通用文字识别（标准含位置版）","通用文字识别（高精度版）","通用文字识别（高精度含位置版）"]
+            }
 		}
     },"feishu": {
         "args": {
             "注册网址": "https://open.feishu.cn/document/ukTMukTMukTM/ukDNz4SO0MjL5QzM/auth-v3/auth/tenant_access_token_internal",
             "app_id": "",
             "app_secret": ""
-        },"argstype":{
-			"注册网址":{
-				"type":"label",
-				"islink":true
-			}
-		}
-    },
-	"baiduocr_accurate": {
-        "args": {
-            "注册网址": "https://console.bce.baidu.com/ai/?fromai=1#/ai/ocr/app/list",
-            "API Key": "",
-            "Secret Key": "", 
-            "次数统计": "0"
         },"argstype":{
 			"注册网址":{
 				"type":"label",
