@@ -205,6 +205,17 @@ def parsehtmlmethod(infopath):
 
     if globalconfig['languageuse']==0:
         text=re.sub('<a href="(.*?)" lang="ja-Latn" title="(.*?)">(.*?)</a>','<a href="\\1" lang="ja-Latn" title="\\3">\\2</a>',text)
+
+    try: 
+        imgurl=(re.search('<div class="imghover--visible"><img src="(.*?)"',text).groups()[0])
+        savepath='./cache/vndb/'+b64string(imgurl)+'.jpg'
+        if os.path.exists(savepath):
+            text=re.sub('<div class="imghover--visible"><img src="(.*?)"','<div class="imghover--visible"><img src="file://'+os.path.abspath(savepath).replace('\\','/')+'"',text)
+    except:
+        print_exc()
+    
     with open(resavepath,'w',encoding='utf8') as ff:
         ff.write(text)
+
+     
     return resavepath

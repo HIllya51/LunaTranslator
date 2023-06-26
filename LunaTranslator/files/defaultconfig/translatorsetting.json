@@ -295,13 +295,13 @@
     "rengong": {
         "args": {
             "json文件": ""
-        }
-		,
+        },
 		"argstype":{
 			"json文件":{
 				"type":"file",
 				"dir":false,
-				"filter":"*.json"
+				"filter":"*.json",
+				"multi":true
 			}
 		}
     },"rengong_vnr": {

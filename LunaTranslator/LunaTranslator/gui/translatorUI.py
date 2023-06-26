@@ -323,10 +323,10 @@ class QUnFrameWindow(resizableframeless):
             self.canceltop()
         
         threading.Thread(target=_).start()
-    def __init__(self, parent):
+    def __init__(self):
         
         super(QUnFrameWindow, self).__init__(
-            None, Qt.FramelessWindowHint|Qt.WindowMinimizeButtonHint)  # 设置为顶级窗口，无边框
+            None,flags= Qt.FramelessWindowHint|Qt.WindowMinimizeButtonHint,dic=globalconfig,key='transuigeo')  # 设置为顶级窗口，无边框
         icon = QIcon()
         icon.addPixmap(QPixmap('./files/luna.jpg'), QIcon.Normal, QIcon.On)
         self.setWindowIcon(icon)
@@ -378,13 +378,6 @@ class QUnFrameWindow(resizableframeless):
         self.showbuttons=[] 
         self.addbuttons() 
          
-        d=QApplication.desktop()
-
-        globalconfig['position'][0]=min(max(globalconfig['position'][0],0),d.width()-globalconfig['width'])
-        globalconfig['position'][1]=min(max(globalconfig['position'][1],0),d.height()-globalconfig['height'])
-        
-        self.setGeometry( globalconfig['position'][0],globalconfig['position'][1],int(globalconfig['width'] ), int(globalconfig['height'])) 
-
         
         self.translate_text =  Textbrowser(self)  
          
@@ -633,10 +626,6 @@ class QUnFrameWindow(resizableframeless):
         self.tray.hide()
         self.tray = None  
         self.hide()
-        globalconfig['position']=[self.pos().x(),self.pos().y()]
-        
-        globalconfig['width']=self.width() 
-        globalconfig['height']=self.height() 
         saveallconfig() 
          
         if gobject.baseobject.textsource:

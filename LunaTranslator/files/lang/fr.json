@@ -50,11 +50,8 @@
     "小牛api": "API Maverick",
     "彩云api": "API Cloud",
     "火山api": "API volcanique",
-    "人工翻译": "Traduction manuelle",
-    "机器预翻译": "Pré - traduction automatique",
     "有道api": "API Channel",
     "云译2": "Traduction en nuage 2",
-    "人工翻译_VNR": "Traduction manuelle VNR",
     "导出sqlite文件为json文件": "Exporter le fichier SQLite en tant que fichier json",
     "中文": "En chinois",
     "日文": "Japonais",
@@ -648,5 +645,8 @@
     "通用文字识别（标准含位置版）": "Reconnaissance de texte universelle (version standard avec emplacement)",
     "通用文字识别（高精度版）": "Reconnaissance de texte universelle (version haute précision)",
     "通用文字识别（高精度含位置版）": "Reconnaissance de texte universelle (version haute précision avec emplacement)",
-    "接口": "Interface"
+    "接口": "Interface",
+    "sqlite翻译记录": "Sqlite enregistrement de traduction",
+    "json翻译文件": "Json traduire le fichier",
+    "VNR人工翻译文件": "VNR traduction humaine de documents"
 }

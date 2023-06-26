@@ -23,13 +23,18 @@ class autoinitdialog(QDialog):
             dialog.close()
             if callback:
                 callback()
-        def openfiledirectory(edit,isdir,filter1='*.*'):
+        def openfiledirectory(multi,edit,isdir,filter1='*.*'):
             if isdir:
                 f=QFileDialog.getExistingDirectory(directory= edit.text())
                 res=f
             else:
-                f=QFileDialog.getOpenFileName(directory= edit.text(),filter=filter1)
-                res=f[0]
+                if multi:
+                    f=QFileDialog.getOpenFileNames(directory= edit.text(),filter=filter1)
+                    res='|'.join(f[0])
+                else:
+                    f=QFileDialog.getOpenFileName(directory= edit.text(),filter=filter1)
+                    res=f[0]
+                
             if res!='':
                 edit.setText(res)
         for line in lines:
@@ -65,7 +70,7 @@ class autoinitdialog(QDialog):
                 e=QLineEdit(dd[key])
                 regist.append([dd,key,e.text])  
                 bu=QPushButton(_TR('选择'+('文件夹' if line['dir'] else '文件')  ))
-                bu.clicked.connect(functools.partial(openfiledirectory,e,line['dir'],'' if line['dir'] else line['filter']  ))
+                bu.clicked.connect(functools.partial(openfiledirectory,line.get('multi',False), e,line['dir'],'' if line['dir'] else line['filter']  ))
                 lineW=QHBoxLayout()
                 lineW.addWidget(e)
                 lineW.addWidget(bu) 

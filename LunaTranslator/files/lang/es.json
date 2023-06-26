@@ -50,11 +50,8 @@
     "小牛api": "Ternera API",
     "彩云api": "Caiyun API",
     "火山api": "Apis volcánicas",
-    "人工翻译": "Traducción manual",
-    "机器预翻译": "Traducción automática previa",
     "有道api": "Hay una API",
     "云译2": "Traducción en la nube 2",
-    "人工翻译_VNR": "Traducción manual Vnr",
     "导出sqlite文件为json文件": "Exportar el archivo qlite como archivo json",
     "中文": "Chino",
     "日文": "Japonés",
@@ -648,5 +645,8 @@
     "通用文字识别（标准含位置版）": "Reconocimiento de texto universal (estándar con versión de ubicación)",
     "通用文字识别（高精度版）": "Reconocimiento de texto universal (versión de alta precisión)",
     "通用文字识别（高精度含位置版）": "Reconocimiento de texto universal (versión de alta precisión con ubicación)",
-    "接口": "Interfaz"
+    "接口": "Interfaz",
+    "sqlite翻译记录": "Registro de traducción de squlite",
+    "json翻译文件": "Documento de traducción json",
+    "VNR人工翻译文件": "Documentos traducidos manualmente por vnr"
 }

@@ -10,15 +10,17 @@ rename %targetdir%\LunaTranslator_main LunaTranslator
 xcopy .\files %targetdir%\files /e /y /I
 copy ..\LICENSE %targetdir%\
 xcopy .\LunaTranslator\ocrengines %targetdir_in%\ocrengines /e /y /I
-xcopy .\LunaTranslator\unstablemethod %targetdir_in%\unstablemethod /e /y /I
+xcopy .\LunaTranslator\webresource %targetdir_in%\webresource /e /y /I
 xcopy .\LunaTranslator\postprocess %targetdir_in%\postprocess /e /y /I
 xcopy .\LunaTranslator\translator %targetdir_in%\translator /e /y /I
 xcopy .\LunaTranslator\cishu %targetdir_in%\cishu /e /y /I
 xcopy .\LunaTranslator\tts %targetdir_in%\tts /e /y /I
 xcopy .\LunaTranslator\hiraparse %targetdir_in%\hiraparse /e /y /I
 
+xcopy C:\Python34\Lib\site-packages\websocket %targetdir_in%\websocket /e /y /I
 
-xcopy ..\binary\exe32 %targetdir%\ /e /y /I
+
+xcopy ..\plugins\exec\builds\_x86 %targetdir%\ /e /y /I
 del %targetdir_in%\Qt5PrintSupport.dll
 del %targetdir_in%\Qt5Svg.dll
 del %targetdir_in%\PyQt5.QtPrintSupport.pyd

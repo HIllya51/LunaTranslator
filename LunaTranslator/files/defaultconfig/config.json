@@ -1,8 +1,4 @@
 {
-    "position": [
-        500,
-        500
-    ],
     "loadbalance": false,
     "loadbalance_oncenum": 1,
     "ocrafterrangeselect": true,
@@ -40,11 +36,12 @@
     "fixedheight": false,
     "showintab": false,
     "remove_useless_hook": false,
-    "height": 200,
-    "width": 1200,
     "button_color_close": "#D32424",
     "button_color_normal": "#FFFFFF",
     "textthreaddelay": 50,
+    "transuigeo":[
+        500,500,1200,200
+    ],
     "hist_geo": [
         100,
         100,
@@ -56,6 +53,12 @@
         100,
         1000,
         300
+    ],
+    "attachprocessgeo": [
+        100,
+        100,
+        800,
+        400
     ],
     "selecthookgeo": [
         100,
@@ -1052,19 +1055,19 @@
             "type": "pre",
             "use": false,
             "color": "blue",
-            "name": "人工翻译"
+            "name": "json翻译文件"
         },
         "rengong_vnr": {
             "type": "pre",
             "use": false,
             "color": "blue",
-            "name": "人工翻译_VNR"
+            "name": "VNR人工翻译文件"
         },
         "premt": {
             "type": "pre",
             "use": false,
             "color": "blue",
-            "name": "机器预翻译"
+            "name": "sqlite翻译记录"
         },
         "deeplapi-free": {
             "type": "api",

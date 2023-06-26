@@ -143,7 +143,6 @@
     "使用专有名词翻译": "Translate with proper nouns",
     "灵格斯": "Lingoes",
     "备注": "remarks",
-    "机器预翻译": "Machine pre translation",
     "路径": "route",
     "双线性": "Bilinear",
     "重新翻译": "Retranslation",
@@ -184,7 +183,6 @@
     "日文": "Japanese",
     "提取的文本自动复制到剪贴板": "The extracted text is automatically copied to the clipboard",
     "选择文本输入源": "Select Text Input Source",
-    "人工翻译": "human translation",
     "选择文件夹": "Select Folder",
     "显示分词结果": "Display word segmentation results",
     "复制到剪贴板": "copy to clipboard",
@@ -226,7 +224,6 @@
     "显示/隐藏历史翻译": "Show/hide historical translations",
     "有道api": "Youdao API",
     "云译2": "Cloud Translation 2",
-    "人工翻译_VNR": "Human translation_ VNR",
     "导出的第一翻译源": "First translation source exported",
     "日语(CP932,SHIFT-JIS)": "Japanese (CP932, SHIFT-JIS)",
     "简体中文(CP936,GBK)": "Simplified Chinese (CP936, GBK)",
@@ -648,5 +645,8 @@
     "通用文字识别（标准含位置版）": "Universal text recognition (standard with positional version)",
     "通用文字识别（高精度版）": "Universal Text Recognition (High Precision Edition)",
     "通用文字识别（高精度含位置版）": "Universal text recognition (high-precision with positional version)",
-    "接口": "interface"
+    "接口": "interface",
+    "sqlite翻译记录": "Sqlite translation records",
+    "json翻译文件": "JSON translation file",
+    "VNR人工翻译文件": "VNR manual translation files"
 }

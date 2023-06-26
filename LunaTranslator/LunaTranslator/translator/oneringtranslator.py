@@ -20,7 +20,7 @@ class TS(basetrans):
             res = "Please, setup custom_url for OneRingTranslator (usually http://127.0.0.1:4990/)"
         else:
             import requests
-            response_orig = requests.get(f"{custom_url}translate",
+            response_orig = requests.get(custom_url+"translate",
                                          params={"text": content, "from_lang": self.srclang, "to_lang": self.tgtlang})
             if response_orig.status_code == 200:
                 response = response_orig.json()
@@ -39,6 +39,6 @@ class TS(basetrans):
             elif response_orig.status_code == 500:
                 res = "500 error: OneRingTranslator server error"
             else:
-                res = f"{response_orig.status_code} error"
+                res = "{} error".format(response_orig.status_code)
 
         return res

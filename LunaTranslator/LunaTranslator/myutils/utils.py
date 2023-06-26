@@ -54,7 +54,7 @@ def dispatachtask(gamepath):
           
 def everymethodsthread(methodsidx):
     methods=static_data['searchimgmethods']
-    searchdatamethod=importlib.import_module('unstablemethod.'+methods[methodsidx]).searchdatamethod   
+    searchdatamethod=importlib.import_module('webresource.'+methods[methodsidx]).searchdatamethod   
     while True:
         gamepath,searchargs=methodsqueues[methodsidx].get()
         

@@ -50,11 +50,8 @@
     "小牛api": "Calf api",
     "彩云api": "Renk bulutu api",
     "火山api": "Volcano api",
-    "人工翻译": "İnsan çevirimi",
-    "机器预翻译": "Makine öncesi çevirim",
     "有道api": "Youdao api",
     "云译2": "Bulud çevirimi 2",
-    "人工翻译_VNR": "Elle çevirim. VNR",
     "导出sqlite文件为json文件": "Sqlite dosyasını json dosyasına aktar",
     "中文": "Çince",
     "日文": "Japonca",
@@ -648,5 +645,8 @@
     "通用文字识别（标准含位置版）": "Evrensel metin tanımlaması (pozisyonel versiyonla standart)",
     "通用文字识别（高精度版）": "Universal Text Recognition (High Precision Edition)",
     "通用文字识别（高精度含位置版）": "Evrensel metin tanımlaması (pozisyonal versiyonla yüksek precizit)",
-    "接口": "arayüz"
+    "接口": "arayüz",
+    "sqlite翻译记录": "Sqlite çevirim kayıtları",
+    "json翻译文件": "JSON çevirim dosyası",
+    "VNR人工翻译文件": "VNR el çeviri dosyaları"
 }

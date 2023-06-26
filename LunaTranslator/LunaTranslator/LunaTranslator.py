@@ -491,7 +491,7 @@ class MAINUI() :
             
             time.sleep(0.5) 
     def aa(self):   
-        self.translation_ui =gui.translatorUI.QUnFrameWindow(self)   
+        self.translation_ui =gui.translatorUI.QUnFrameWindow()   
         
         self.translation_ui.show()
         self.mainuiloadafter()

@@ -3,7 +3,7 @@ from myutils.config import globalconfig ,_TR   ,static_data
 from textsource.textsourcebase import basetext   
 import functools,queue,time,win32utils
 import threading,json 
-import win32utils
+import win32utils,win32con
 import os,gobject
 from myutils.subproc import subproc_w
 from textsource.embed.sharedmemwin import winsharedmem
@@ -19,17 +19,17 @@ class embedded(basetext  ):
             try:
                 hostpipe = win32utils.CreateNamedPipe(
                     "\\\\.\\pipe\\LUNA_EMBEDDED_HOST",
-                    win32utils.PIPE_ACCESS_DUPLEX,
+                    win32con.PIPE_ACCESS_DUPLEX,
                     win32utils.PIPE_TYPE_BYTE | win32utils.PIPE_READMODE_BYTE,
-                    win32utils.PIPE_UNLIMITED_INSTANCES, 65536, 65536,
+                    win32con.PIPE_UNLIMITED_INSTANCES, 65536, 65536,
                     0,
                     None
                 )
                 hookpipe = win32utils.CreateNamedPipe(
                     "\\\\.\\pipe\\LUNA_EMBEDDED_HOOK",
-                    win32utils.PIPE_ACCESS_DUPLEX,
+                    win32con.PIPE_ACCESS_DUPLEX,
                     win32utils.PIPE_TYPE_BYTE | win32utils.PIPE_READMODE_BYTE,
-                    win32utils.PIPE_UNLIMITED_INSTANCES, 65536, 65536,
+                    win32con.PIPE_UNLIMITED_INSTANCES, 65536, 65536,
                     0,
                     None
                 ) 

@@ -209,7 +209,7 @@ class hookselect(closeashidewindow):
  
         rown=self.ttCombomodelmodel.rowCount()
         selectionitem=QStandardItem()
-        self.ttCombomodelmodel.insertRow(rown,[selectionitem,QStandardItem('%s %s %s:%s' %(ss[-1],ss[-2],ss[-3],ss[-4])),QStandardItem()])  
+        self.ttCombomodelmodel.insertRow(rown,[selectionitem,QStandardItem('%s %s %x:%x' %(ss[-2],ss[-1],ss[-3],ss[-4])),QStandardItem()])  
                     
         self.selectionbutton.append(getsimpleswitch({1:False},1,callback=functools.partial(self.accept,ss))) 
         if select:self.selectionbutton[-1].click()

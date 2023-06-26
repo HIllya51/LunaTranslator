@@ -245,7 +245,7 @@ class browserdialog(QDialog):
                       pass
         def parsehtml(self,exepath):
                 try:
-                        parsehtmlmethod=importlib.import_module('unstablemethod.'+savehook_new_data[exepath]['infomethod']).parsehtmlmethod
+                        parsehtmlmethod=importlib.import_module('webresource.'+savehook_new_data[exepath]['infomethod']).parsehtmlmethod
                         newpath=parsehtmlmethod(savehook_new_data[exepath]['infopath'])   
                 except:
                         newpath=savehook_new_data[exepath]['infopath']

@@ -50,11 +50,8 @@
     "小牛api": "Tiểu Ngưu API",
     "彩云api": "Đám mây API",
     "火山api": "núi lửa api",
-    "人工翻译": "Bản dịch con người",
-    "机器预翻译": "Máy dịch trước",
     "有道api": "Có API",
     "云译2": "Dịch Mây 2",
-    "人工翻译_VNR": "Bản dịch của manual_ VNR",
     "导出sqlite文件为json文件": "Xuất file sqlite thành file json",
     "中文": "Trung Quốc",
     "日文": "Nhật Bản",
@@ -648,5 +645,8 @@
     "通用文字识别（标准含位置版）": "Nhận dạng văn bản chung (phiên bản tiêu chuẩn bao gồm vị trí)",
     "通用文字识别（高精度版）": "Nhận dạng văn bản chung (phiên bản chính xác cao)",
     "通用文字识别（高精度含位置版）": "Thông báo cập nhật phần mềm QLTN Hồ sơ ((((",
-    "接口": "Giao diện"
+    "接口": "Giao diện",
+    "sqlite翻译记录": "Bản dịch sqlite",
+    "json翻译文件": "JSON dịch tài liệu",
+    "VNR人工翻译文件": "VNR dịch tài liệu con người"
 }

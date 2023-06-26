@@ -7,20 +7,7 @@ BOOL=c_int
 WORD=c_ushort
 DWORD=c_uint
 WNDENUMPROC =WINFUNCTYPE(c_bool,c_void_p,c_void_p)
-class PROCESS_MEMORY_COUNTERS_EX(Structure):
-    _fields_=[
-        ('cb', c_uint),
-        ('PageFaultCount', c_uint),
-        ('PeakWorkingSetSize', c_size_t),
-        ('WorkingSetSize', c_size_t),
-        ('QuotaPeakPagedPoolUsage', c_size_t),
-        ('QuotaPagedPoolUsage', c_size_t),
-        ('QuotaPeakNonPagedPoolUsage', c_size_t),
-        ('QuotaNonPagedPoolUsage', c_size_t),
-        ('PagefileUsage', c_size_t),
-        ('PeakPagefileUsage', c_size_t),
-        ('PrivateUsage', c_size_t),
-    ]
+
  
 class RECT(Structure):
     _fields_ = [
@@ -246,10 +233,6 @@ def IsWow64Process(phandle):
     _IsWow64Process(phandle,byref(b))
     return b.value
 
-def GetProcessMemoryInfo(processhandle):
-    c=PROCESS_MEMORY_COUNTERS_EX()
-    _GetProcessMemoryInfo(processhandle,byref(c),sizeof(c))
-    return c
 def GetClipboardOwner():
     return _GetClipboardOwner()
 def GetWindowThreadProcessId(hwnd):
@@ -526,10 +509,8 @@ _CreateNamedPipe.argtypes=c_wchar_p,c_uint,c_uint,c_uint,c_uint,c_uint,c_uint,c_
 def CreateNamedPipe(pipeName,openMode,pipeMode,nMaxInstances,nOutBufferSize,nInBufferSize,nDefaultTimeOut,sa):
     return _CreateNamedPipe(pipeName,openMode,pipeMode,nMaxInstances,nOutBufferSize,nInBufferSize,nDefaultTimeOut,sa)
  
-PIPE_ACCESS_DUPLEX=3
 PIPE_TYPE_BYTE=0
 PIPE_READMODE_BYTE=0
-PIPE_UNLIMITED_INSTANCES=255
 _DisconnectNamedPipe=_kernel32.DisconnectNamedPipe
 def DisconnectNamedPipe(pipe):
     return _DisconnectNamedPipe(pipe)

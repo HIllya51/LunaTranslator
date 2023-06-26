@@ -7,10 +7,12 @@ import winsharedutils
 class TS(basetrans): 
     def checkfilechanged(self,p):
         if self.path!=p:
-            if os.path.exists(p):
-                with open(p,'r',encoding='utf8') as f:
-                    self.json=json.load(f)
-                self.path=p
+            self.json={}
+            for pp in p.split('|'):
+                if os.path.exists(pp):
+                    with open(pp,'r',encoding='utf8') as f:
+                        self.json.update(json.load(f))
+            self.path=p
     def inittranslator(self):
         self.path='' 
         self.checkfilechanged(self.config['json文件'] )
@@ -24,15 +26,18 @@ class TS(basetrans):
                 if dis<mindis:
                     mindis=dis
                     if mindis<globalconfig['premtsimi']: 
-                        if self.json[jc]['userTrans'] and self.json[jc]['userTrans']!='':
+                        if type(self.json[jc])==str:
+                            savet=self.json[jc]
+                        elif self.json[jc]['userTrans'] and self.json[jc]['userTrans']!='':
                             savet=self.json[jc]['userTrans']
                         
                         elif self.json[jc]['machineTrans'] and self.json[jc]['machineTrans']!='':
                             savet= self.json[jc]['machineTrans']
             return savet
         else:
-        
-            if self.json[content]['userTrans'] and self.json[content]['userTrans']!='':
+            if type(self.json[content])==str:
+                return self.json[content]
+            elif self.json[content]['userTrans'] and self.json[content]['userTrans']!='':
                 return self.json[content]['userTrans']
             
             elif self.json[content]['machineTrans'] and self.json[content]['machineTrans']!='':

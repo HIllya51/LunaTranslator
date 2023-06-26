@@ -9,7 +9,7 @@ xcopy ..\build\x64\LunaTranslator_main.dist %targetdir_in% /e /y /I
 xcopy .\files %targetdir%\files /e /y /I
 copy ..\LICENSE %targetdir%\
 xcopy .\LunaTranslator\ocrengines %targetdir_in%\ocrengines /e /y /I
-xcopy .\LunaTranslator\unstablemethod %targetdir_in%\unstablemethod /e /y /I
+xcopy .\LunaTranslator\webresource %targetdir_in%\webresource /e /y /I
 xcopy .\LunaTranslator\postprocess %targetdir_in%\postprocess /e /y /I
 xcopy .\LunaTranslator\translator %targetdir_in%\translator /e /y /I
 xcopy .\LunaTranslator\cishu %targetdir_in%\cishu /e /y /I
@@ -35,7 +35,7 @@ xcopy /E /I %pythonpackage%\urllib3 %targetdir_in%\urllib3
 xcopy  %pythonpackage%\six.py %targetdir_in%
 xcopy  %pythonpackage%\_brotli.cp37-win_amd64.pyd %targetdir_in%
 xcopy  %pythonpackage%\_cffi_backend.cp37-win_amd64.pyd %targetdir_in%
-xcopy ..\binary\exe64 ..\build\LunaTranslator\ /e /y /I
+xcopy ..\plugins\exec\builds\_x64 ..\build\LunaTranslator\ /e /y /I
 del %targetdir_in%\qt5qml.dll
 del %targetdir_in%\qt5qmlmodels.dll
 del %targetdir_in%\qt5quick.dll

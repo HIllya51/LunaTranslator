@@ -33,7 +33,7 @@ class AttachProcessDialog(closeashidewindow):
                     self.windowtext.setText(win32utils.GetWindowText(hwnd))
                     self.selectedp=(_pids,name,hwnd)
     def __init__(self ,parent,callback,hookselectdialog):
-        super(AttachProcessDialog, self).__init__( parent ) 
+        super(AttachProcessDialog, self).__init__( parent ,globalconfig,'attachprocessgeo') 
         self.setcurrentpidpnamesignal.connect(self.selectwindowcallback)
         self.setWindowFlags(self.windowFlags()&~Qt.WindowMinimizeButtonHint)
         self.resize(800,400)

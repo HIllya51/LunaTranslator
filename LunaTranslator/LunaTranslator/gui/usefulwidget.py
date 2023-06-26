@@ -43,11 +43,11 @@ class saveposwindow(QMainWindow):
             super().__init__(parent ,flags=flags)
         else:
             super().__init__(parent )
-        d=QApplication.desktop()
+        d=QApplication.primaryScreen()
         self.dic,self.key=dic,key
         if self.dic:
-            dic[key][0]=min(max(dic[key][0],0),d.width()-dic[key][2])
-            dic[key][1]=min(max(dic[key][1],0),d.height()-dic[key][3])
+            dic[key][0]=min(max(dic[key][0],0),d.size().width()-dic[key][2])
+            dic[key][1]=min(max(dic[key][1],0),d.size().height()-dic[key][3])
             self.setGeometry(*dic[key])
     def resizeEvent(self, a0 ) -> None:
         if self.dic:
@@ -105,9 +105,9 @@ class MySwitch(QPushButton):
         super().setChecked(a0) 
         self.setIcon(qtawesome.icon("fa.check" ,color="#FF69B4") if a0 else qtawesome.icon("fa.times" ,color='#afafaf'))
 
-class resizableframeless(QWidget):
-    def __init__(self, parent , flags ) -> None:
-        super().__init__(parent, flags)
+class resizableframeless(saveposwindow):
+    def __init__(self, parent , flags,dic,key ) -> None:
+        super().__init__(parent, dic,key,flags)
         self.setMouseTracking(True)  
         
         self._padding = 10
