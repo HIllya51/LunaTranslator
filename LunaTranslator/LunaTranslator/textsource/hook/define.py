@@ -14,9 +14,8 @@ class HostNotificationType(c_int):
 
 HOST_NOTIFICATION_TEXT=0
 HOST_NOTIFICATION_NEWHOOK=1
-HOST_NOTIFICATION_FOUND_HOOK=2 #depracated
+HOST_NOTIFICATION_FOUND_HOOK=2 
 HOST_NOTIFICATION_RMVHOOK=3
-HOST_NOTIFICATION_FOUND_HOOK_2=4
 class HostCommandType(c_uint):
     pass
 HOST_COMMAND_NEW_HOOK=0
@@ -90,7 +89,8 @@ class TextHook64(Structure):
         ('readerThread',c_uint64), #HANLDE ->void*
         ('readerEvent',c_uint64),
         ('err',c_bool),
-        ('trampoline',c_ubyte*140)
+        ('trampoline',c_ubyte*140),
+        ('local_buffer',c_uint64)
     ]
 class TextHook32(Structure):
     _fields_=[
@@ -100,7 +100,8 @@ class TextHook32(Structure):
         ('readerThread',c_uint32), #HANLDE ->void*
         ('readerEvent',c_uint32),
         ('err',c_bool),
-        ('trampoline',c_ubyte*40)
+        ('trampoline',c_ubyte*40),
+        ('local_buffer',c_uint32)
     ] 
 MAX_HOOK=2500   
 
@@ -193,20 +194,9 @@ class RemoveHookCmd(Structure):
         self.address=address  
 class hookfoundtext(Structure):
     _fields_=[('text',c_wchar*MESSAGE_SIZE)]
-class HookFoundNotif32(Structure):
-	_fields_=[
-        ('command',HostNotificationType),
-        ('hp',HookParam32),
-        ('text',hookfoundtext)
-    ] 
 
-class HookFoundNotif64(Structure):
-	_fields_=[
-        ('command',HostNotificationType),
-        ('hp',HookParam64),
-        ('text',hookfoundtext)
-    ] 
-class HookFoundNotif_2_32(Structure):
+
+class HookFoundNotif32(Structure):
 	_fields_=[
         ('command',HostNotificationType),
         ('hp',HookParam32),
@@ -214,7 +204,7 @@ class HookFoundNotif_2_32(Structure):
         ('text',hookfoundtext)
     ] 
 
-class HookFoundNotif_2_64(Structure):
+class HookFoundNotif64(Structure):
 	_fields_=[
         ('command',HostNotificationType),
         ('hp',HookParam64),

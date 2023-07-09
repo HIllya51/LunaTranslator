@@ -222,11 +222,11 @@ class RPC():
         if(cmd==define. HOST_NOTIFICATION_TEXT):
             self.Console(define.ConsoleOutputNotif.from_buffer_copy(data).message.decode('ascii'))
         
-        elif(cmd==define.HOST_NOTIFICATION_FOUND_HOOK_2):
+        elif(cmd==define.HOST_NOTIFICATION_FOUND_HOOK):
             if _is64bit:
-                _HookFoundNotif=define.HookFoundNotif_2_64
+                _HookFoundNotif=define.HookFoundNotif64
             else:
-                _HookFoundNotif=define.HookFoundNotif_2_32
+                _HookFoundNotif=define.HookFoundNotif32
             _HookFoundNotif=_HookFoundNotif.from_buffer_copy(data)
             text=_HookFoundNotif.text.text
             #print(_HookFoundNotif.hcode,hookcode.Generate(_HookFoundNotif.hp,processId))
@@ -234,17 +234,18 @@ class RPC():
             if len(text)>12:
                 self.ProcessRecord[processId].OnHookFound(hookcode.Generate(hp,processId),text)
             hp.type&=~hookcode.USING_UNICODE
-            try:
-                text=win32utils.MultiByteToWideChar(_HookFoundNotif.text.text,sizeof(define.hookfoundtext),hp.codepage)
-                if text is not None and len(text)>12:
-                    self.ProcessRecord[processId].OnHookFound(hookcode.Generate(hp,processId),text)
-            except:pass
-            try:
-                hp.codepage=65001
-                text=win32utils.MultiByteToWideChar(_HookFoundNotif.text.text,sizeof(define.hookfoundtext),hp.codepage)
-                if text is not None and len(text)>12:
-                    self.ProcessRecord[processId].OnHookFound(hookcode.Generate(hp,processId),text)
-            except:pass
+            codepages=[hp.codepage] 
+            if hp.codepage!=65001:
+                codepages+=[65001] 
+                
+            for codepage in codepages:
+                try:
+                    hp.codepage=codepage
+                    text=win32utils.MultiByteToWideChar(_HookFoundNotif.text.text,sizeof(define.hookfoundtext),hp.codepage)
+                    if text is not None and len(text)>12:
+                        self.ProcessRecord[processId].OnHookFound(hookcode.Generate(hp,processId),text)
+                except:pass
+            
         elif(cmd==define.HOST_NOTIFICATION_RMVHOOK):
             self.removethreads(processId,define.HookRemovedNotif.from_buffer_copy(data).address)
         else:
@@ -264,16 +265,19 @@ class RPC():
         print(injecter,os.path.exists(injecter))
         print(dll,os.path.exists(dll))
         subprocess.Popen('"{}" dllinject {} "{}"'.format(injecter,pid,dll))
-
+    @threader
     def InsertHookCode(self,pid,hookcode):
         if pid in self.ProcessRecord:
-            return self.ProcessRecord[pid].InsertHookCode(hookcode)
+            self.ProcessRecord[pid].InsertHookCode(hookcode)
+    @threader
     def FindHooks(self,pid,sp,onfound):
         if pid in self.ProcessRecord:
             self.ProcessRecord[pid].FindHooks(sp,onfound)
+    @threader
     def Detach(self,pid):
         if pid in self.ProcessRecord:
             self.ProcessRecord[pid].Detach()
+    @threader
     def RemoveHook(self,pid,addr):
         if pid in self.ProcessRecord:
             self.ProcessRecord[pid].RemoveHook(addr)

@@ -170,13 +170,8 @@ class texthook(basetext  ):
     def inserthook(self,hookcode):  
         for pid in self.pids:
             print(hookcode)
-            ret=self.RPC.InsertHookCode(pid,hookcode)
-        #print(hookcode,x.stdout[0])
-            if not ret:
-                gobject.baseobject.hookselectdialog.getnewsentencesignal.emit(_TR('！特殊码格式错误！'))
-            else:
-                gobject.baseobject.hookselectdialog.getnewsentencesignal.emit(_TR('插入特殊码')+hookcode+_TR('成功'))
-          
+            self.RPC.InsertHookCode(pid,hookcode)
+        
     def removehook(self,pid,address):
         for pid in self.pids:
             self.RPC.RemoveHook(pid,address)

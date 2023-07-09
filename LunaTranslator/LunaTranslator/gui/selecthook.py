@@ -422,7 +422,7 @@ class hookselect(closeashidewindow):
         if  gobject.baseobject.textsource:
             print(hookcode)
             gobject.baseobject.textsource.inserthook(hookcode)
-            
+            self.tabwidget.setCurrentIndex(1)
         else:
             self.getnewsentence(_TR('！未选定进程！'))
     def hidesearchhookbuttons(self,hide=True):
