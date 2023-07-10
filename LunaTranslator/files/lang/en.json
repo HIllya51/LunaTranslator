@@ -647,5 +647,11 @@
     "接口": "interface",
     "sqlite翻译记录": "Sqlite translation records",
     "json翻译文件": "JSON translation file",
-    "VNR人工翻译文件": "VNR manual translation files"
+    "VNR人工翻译文件": "VNR manual translation files",
+    "过滤反复刷新的句子": "Filter repeatedly refreshed sentences",
+    "增强鼠标穿透效果": "Enhance mouse penetration effect",
+    "选择图标": "Select icon",
+    "图标2": "Icon 2",
+    "子窗口任务栏中显示": "Display in the sub window Taskbar",
+    "刷新": "Refresh"
 }

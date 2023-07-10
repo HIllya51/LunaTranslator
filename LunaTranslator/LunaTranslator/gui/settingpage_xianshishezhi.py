@@ -7,11 +7,11 @@ from PyQt5.QtWidgets import  QDialog,QVBoxLayout ,QHeaderView
 from PyQt5.QtCore import Qt,QSize  
 
 from PyQt5.QtGui import QStandardItem, QStandardItemModel   
-from PyQt5.QtWidgets import  QLabel ,QSlider, QFontComboBox  ,QDialog
+from PyQt5.QtWidgets import  QLabel ,QSlider, QFontComboBox  ,QDialog,QGridLayout
 from gui.inputdialog import multicolorset
 from myutils.config import globalconfig ,_TR,_TRL  ,magpie10_config
 from myutils.wrapper import Singleton
-import qtawesome,gobject
+import qtawesome,gobject,json
 from myutils.hwnd import showintab
 from gui.inputdialog import getsomepath1
 from gui.usefulwidget import getsimplecombobox,getspinbox,getcolorbutton,getsimpleswitch,selectcolor
@@ -36,7 +36,7 @@ class dialog_toolbutton(QDialog):
         super().__init__(parent, Qt.WindowCloseButtonHint)
         self.setWindowTitle(_TR('窗口按钮设置'))
         model=QStandardItemModel(   )
-        model.setHorizontalHeaderLabels(_TRL(['显示','图标', '说明']))
+        model.setHorizontalHeaderLabels(_TRL(['显示','图标','图标2', '说明']))
 
         layout = QVBoxLayout(self)  # 
         self.model=model
@@ -64,9 +64,34 @@ class dialog_toolbutton(QDialog):
         if 'belong' in globalconfig['toolbutton']['buttons'][k]:
             belong="("+_TR("仅")+' '.join(globalconfig['toolbutton']['buttons'][k]['belong'])+")"
         else:belong=""
-        self.model.insertRow(row,[QStandardItem( ),QStandardItem(),QStandardItem( _TR(globalconfig['toolbutton']['buttons'][k]['tip'])+" "+belong ) ])  
+        self.model.insertRow(row,[QStandardItem( ),QStandardItem(),QStandardItem(),QStandardItem( _TR(globalconfig['toolbutton']['buttons'][k]['tip'])+" "+belong ) ])  
         self.table.setIndexWidget(self.model.index(row, 0),getsimpleswitch(globalconfig['toolbutton']['buttons'][k],'use',callback=lambda _:gobject.baseobject.translation_ui.showhidetoolbuttons()))
-        self.table.setIndexWidget(self.model.index(row, 1),getcolorbutton('','',lambda:1,qicon=qtawesome.icon(globalconfig['toolbutton']['buttons'][k]['icon'] ,color=globalconfig['buttoncolor'] ) ))
+
+
+        self.table.setIndexWidget(self.model.index(row, 1),getcolorbutton('','',lambda:dialog_selecticon(self,globalconfig['toolbutton']['buttons'][k],'icon'),qicon=qtawesome.icon(globalconfig['toolbutton']['buttons'][k]['icon'] ,color=globalconfig['buttoncolor'] )  ))
+        if 'icon2' in globalconfig['toolbutton']['buttons'][k]:
+            self.table.setIndexWidget(self.model.index(row,2),getcolorbutton('','',lambda:dialog_selecticon(self,globalconfig['toolbutton']['buttons'][k],'icon2'),qicon=qtawesome.icon(globalconfig['toolbutton']['buttons'][k]['icon2'] ,color=globalconfig['buttoncolor'] )  ))
+
+@Singleton
+class dialog_selecticon(QDialog): 
+    def __init__(self, parent ,dict,key) -> None:
+    
+        super().__init__(parent, Qt.WindowCloseButtonHint)
+        self.dict=dict
+        self.key=key
+        self.setWindowTitle(_TR('选择图标')) 
+        with open('./files/fonts/fontawesome4.7-webfont-charmap.json','r',encoding='utf8') as ff:
+            js=json.load(ff)
+        
+
+        layout=QGridLayout()
+        self.setLayout(layout)
+        for i,name in enumerate(js):
+            layout.addWidget(getcolorbutton('','',functools.partial(self.selectcallback,'fa.'+name),qicon=qtawesome.icon('fa.'+name,color=globalconfig['buttoncolor'] )  ),i//30,i%30)
+        self.show()
+    def selectcallback(self,_):
+        self.dict[self.key]=_
+        self.close()
 def setTabThree_lazy(self) :
       
 
@@ -123,6 +148,8 @@ def setTabThree_lazy(self) :
            [ ('不透明度',4),(self.horizontal_slider,8),(self.horizontal_slider_label,2)], 
            [('翻译窗口背景颜色',4),getcolorbutton(globalconfig,'backcolor',callback=lambda: selectcolor(self,globalconfig, "backcolor", self.back_color_button),name='back_color_button',parent=self),'',('工具按钮颜色',4),getcolorbutton(globalconfig,'buttoncolor',callback=lambda:selectcolor(self,globalconfig,'buttoncolor',self.buttoncolorbutton,callback=lambda:gobject.baseobject.translation_ui.refreshtooliconsignal.emit()) ,name='buttoncolorbutton',parent=self),'',('工具按钮大小',4),(getspinbox(5,100,globalconfig  ,'buttonsize',callback=lambda _:gobject.baseobject.translation_ui.refreshtooliconsignal.emit()),2)],
            [''],
+           [('增强鼠标穿透效果',6),getsimpleswitch(globalconfig,'strongmousetransparent')],
+           [''],
            [('窗口按钮设置',6),getcolorbutton(globalconfig,'',callback=lambda x: dialog_toolbutton(self),icon='fa.gear',constcolor="#FF69B4")],
            [''],
         [('游戏最小化时窗口隐藏',6),(getsimpleswitch(globalconfig,'minifollow'),1)], 
@@ -132,7 +159,8 @@ def setTabThree_lazy(self) :
         [('固定窗口尺寸',6),getsimpleswitch(globalconfig,'fixedheight'),],
         [("自动隐藏窗口",6),(getsimpleswitch(globalconfig  ,'autodisappear'),1),'',("隐藏延迟(s)",3),(getspinbox(1,100,globalconfig  ,'disappear_delay'),2)],
         
-        [('任务栏中显示',6),getsimpleswitch(globalconfig,'showintab' ,callback=__changeshowintab),],
+        [('任务栏中显示',6),getsimpleswitch(globalconfig,'showintab' ,callback=__changeshowintab)],
+        [('子窗口任务栏中显示',6),getsimpleswitch(globalconfig,'showintab_sub')],
            
     ]  
     alleffect=['无','Bicubic','Bilinear','Jinc','Lanczos','Nearest','SSimDownscaler']

@@ -7,12 +7,12 @@ from myutils.wrapper import threader
 import sys
 import os  
 import win32utils
+from myutils.config import globalconfig
 import mmap
 import subprocess 
 import win32utils
 import ctypes
 import textsource.hook.hookcode as hookcode
-from myutils.hwnd import getpidexe
 import win32con
 class ProcessRecord():
     def __init__(self,pipe,processId,_is64bit) -> None:
@@ -83,10 +83,16 @@ class TextThread():
         self.lasttime=0
         self.lock=threading.Lock()
         self.leadbyte=0 
+        self.saverepeat=''
     def Push(self,buff):
-        self.lasttime=time.time()
+        
         self.lock.acquire()
-        self.buffer+=self.parsebuff(buff)
+        buffer=self.parsebuff(buff)
+        if not( globalconfig['direct_filterrepeat']and (len(buffer)>=3) and (buffer in self.saverepeat)):
+            self.lasttime=time.time()
+            self.buffer+=buffer
+        if len(self.buffer):
+            self.saverepeat=self.buffer
         self.lock.release()
     def Pop(self):
         self.lock.acquire()

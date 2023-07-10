@@ -11,6 +11,7 @@
     "read_trans": false,
     "read_translator": 0,
     "disappear_delay": 5,
+    "direct_filterrepeat":false,
     "embedded": {
         "translator": 0,
         "as_fast_as_posible": true,
@@ -111,6 +112,8 @@
     "show_fenci": false,
     "jiamingcolor": "black",
     "settingfonttype": "Arial",
+    "strongmousetransparent":false,
+    "showintab_sub":false,
     "setting_geo_2": [
         100,
         100,

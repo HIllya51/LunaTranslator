@@ -647,5 +647,11 @@
     "接口": "Interface",
     "sqlite翻译记录": "Sqlite enregistrement de traduction",
     "json翻译文件": "Json traduire le fichier",
-    "VNR人工翻译文件": "VNR traduction humaine de documents"
+    "VNR人工翻译文件": "VNR traduction humaine de documents",
+    "过滤反复刷新的句子": "Filtrer phrases rafraîchies à plusieurs reprises",
+    "增强鼠标穿透效果": "Améliore l'effet de pénétration de la souris",
+    "选择图标": "Sélectionner une icône",
+    "图标2": "Icône 2",
+    "子窗口任务栏中显示": "Affichage dans la barre des tâches de la Sous - fenêtre",
+    "刷新": "Rafraîchir"
 }

@@ -2,12 +2,12 @@
 from PyQt5.QtWidgets import QWidget, QMainWindow ,QApplication,QPushButton,QTabBar,QStylePainter,QStyleOptionTab,QStyle,QMessageBox,QDialog,QLabel,QHBoxLayout
 from PyQt5.QtGui import QFont,QCloseEvent,QColor
 from PyQt5.QtCore import Qt,pyqtSignal ,QSize ,QRect ,QPoint 
-from myutils.config import _TR
+from myutils.config import _TR,globalconfig
 from PyQt5.QtWidgets import  QColorDialog,QSpinBox,QDoubleSpinBox,QPushButton,QComboBox,QLabel,QScrollArea,QWidget,QGridLayout,QApplication,QTabBar,QVBoxLayout
 from traceback import print_exc
 import qtawesome ,functools
 from myutils.wrapper import  Singleton 
-from myutils.hwnd import getScreenRate
+from myutils.hwnd import getScreenRate,showintab
 @Singleton
 class dialog_showinfo(QDialog):
         
@@ -68,7 +68,8 @@ class closeashidewindow(saveposwindow):
         super().__init__(parent,dic,key )
         self.showsignal.connect(self.showfunction)  
         self.realshowhide.connect(self.realshowhidefunction)
-         
+        if globalconfig['showintab_sub']:
+            showintab(self.winId(),True)
     def realshowhidefunction(self,show):
         if show:
             self.showNormal()

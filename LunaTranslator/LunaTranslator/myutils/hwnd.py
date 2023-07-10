@@ -114,7 +114,7 @@ def ListProcess(filt=True):
                         if name_ is None:continue
                         name=name_.lower()
                         if filt:
-                                if name[-4:]!='.exe' or ':\\windows\\'  in name   or '\\microsoft\\'  in name or '\\windowsapps\\'  in name:
+                                if ':\\windows\\'  in name   or '\\microsoft\\'  in name or '\\windowsapps\\'  in name:
                                         continue 
                         ret.append([pid,name_ ])
                     except:

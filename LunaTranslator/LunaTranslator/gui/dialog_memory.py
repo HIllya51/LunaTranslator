@@ -7,7 +7,7 @@ from PyQt5.QtCore import Qt,QSize
 from myutils.config import _TR ,globalconfig
 from gui.usefulwidget import saveposwindow
 from myutils.wrapper import Singleton_close 
-
+from myutils.hwnd import showintab
 @Singleton_close
 class dialog_memory(saveposwindow):
         #_sigleton=False
@@ -23,6 +23,8 @@ class dialog_memory(saveposwindow):
                 
                 super().__init__(parent, flags=Qt.WindowCloseButtonHint|Qt.WindowMinMaxButtonsHint,dic=globalconfig,key='memorydialoggeo')
                 self.setWindowTitle(_TR('备忘录'))
+                if globalconfig['showintab_sub']:
+                        showintab(self.winId(),True)
                 self.gamemd5=gamemd5
                 formLayout = QVBoxLayout()  # 
                 self.showtext=QTextEdit()

@@ -14,6 +14,7 @@ from PyQt5.QtCore import Qt
 from gui.usefulwidget import getsimplecombobox,getspinbox,getcolorbutton,getsimpleswitch
 from PyQt5.QtCore import QPoint, QRect, QSize, Qt,pyqtSignal
 import os   
+from myutils.hwnd import showintab
 from PyQt5.QtGui import QStandardItem, QStandardItemModel   
 from PyQt5.QtCore import Qt,QSize  
 from myutils.config import   savehook_new_list,savehook_new_data
@@ -237,6 +238,7 @@ def opendir( k):
                         os.startfile(os.path.dirname(k))
                 except:
                         pass
+@Singleton
 class browserdialog(QDialog):
         def resizeEvent(self, a0: QResizeEvent) -> None:
                 try:
@@ -434,6 +436,8 @@ class dialog_setting_game(QDialog):
                 self.hcmodel.insertRow(row,[QStandardItem( ),QStandardItem(k)])  
                     
                 self.hctable.setIndexWidget(self.hcmodel.index(row, 0),getcolorbutton('','',self.clicked2,icon='fa.times',constcolor="#FF69B4")) 
+
+@Singleton
 class dialog_statistic(QDialog):
         def formattime(self,t):
                 t=int(t)
@@ -552,7 +556,8 @@ class dialog_savedgame_new(saveposwindow):
         def __init__(self, parent ) -> None:
                 super().__init__(parent ,flags= Qt.WindowMinMaxButtonsHint|Qt.WindowCloseButtonHint,dic=globalconfig,key='savegamedialoggeo')
                 self.setWindowTitle(_TR('已保存游戏'))
-                
+                if globalconfig['showintab_sub']:
+                        showintab(self.winId(),True)
                 formLayout = QVBoxLayout()  # 
                 self.flow=ScrollFlow()
                 

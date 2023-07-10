@@ -1,7 +1,10 @@
+1、pip version
+pip==19.1.1
+2、requirements
 requests==2.18.0
 certifi==2019.6.16
 websocket-client==0.44.0
 https://jaist.dl.sourceforge.net/project/pyqt/PyQt5/PyQt-5.5.1/PyQt5-5.5.1-gpl-Py3.4-Qt5.5.1-x32.exe
+3、pyinstaller version
 PyInstaller==3.0
 pefile==2016.3.28
-pip==19.1.1

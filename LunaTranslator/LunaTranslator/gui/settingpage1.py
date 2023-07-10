@@ -18,8 +18,8 @@ def gethookgrid(self) :
                 [('检测到游戏时自动开始',5),(getsimpleswitch(globalconfig,'autostarthook'),1)],
                 
                 [('已保存游戏',5),(getcolorbutton(globalconfig,'',icon='fa.gamepad',constcolor="#FF69B4",callback=lambda:dialog_savedgame(self)),1)],
-
-
+                [''],
+                [('过滤反复刷新的句子',5),(getsimpleswitch(globalconfig,'direct_filterrepeat'),1)],
                 [('刷新延迟(ms)',5),(getspinbox(1,10000,globalconfig,'textthreaddelay',callback=lambda x:gobject.baseobject.textsource.setdelay()),3)],
                 [('过滤包含乱码的文本行',5),(getsimpleswitch(globalconfig,'filter_chaos_code'),1),(getcolorbutton(globalconfig,'',icon='fa.gear',constcolor="#FF69B4",callback=lambda:codeacceptdialog(self)),1)],
                 

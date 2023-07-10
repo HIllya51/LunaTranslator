@@ -35,8 +35,7 @@ class AttachProcessDialog(closeashidewindow):
     def __init__(self ,parent,callback,hookselectdialog):
         super(AttachProcessDialog, self).__init__( parent ,globalconfig,'attachprocessgeo') 
         self.setcurrentpidpnamesignal.connect(self.selectwindowcallback)
-        self.setWindowFlags(self.windowFlags()&~Qt.WindowMinimizeButtonHint)
-        self.resize(800,400)
+        
         self.iconcache={}
         
         self.callback=callback
@@ -71,7 +70,13 @@ class AttachProcessDialog(closeashidewindow):
         self.layout1.addLayout(self.layout2)
         self.layout1.addLayout(self.layout3) 
         self.layout1.addWidget(self.processList)
-        self.layout1.addWidget(self.buttonBox)
+        bottomlayout=QHBoxLayout()
+        refreshbutton=QPushButton(_TR("刷新"))
+        refreshbutton.clicked.connect(self.refreshfunction)
+        bottomlayout.addWidget(refreshbutton)
+        bottomlayout.addWidget(self.buttonBox)
+        
+        self.layout1.addLayout(bottomlayout)
         w.setLayout(self.layout1)
         #self.setLayout(self.layout1) 
         self.setCentralWidget(w)
@@ -84,14 +89,15 @@ class AttachProcessDialog(closeashidewindow):
         
         self.processEdit.setReadOnly(True)
         self.windowtext.setReadOnly(True)
-    def showEvent(self,e):
+    def refreshfunction(self):
+    
         
         self.windowtext.clear()
         self.processEdit.clear()
         self.processIdEdit.clear()
         [_.hide() for _ in self.windowtextlayoutwidgets]
         self.selectedp=None
-        self.hookselectdialog.realshowhide.emit(False)  
+        
         ########################### 
         self.model=QStandardItemModel(self.processList)  
         #print(time.time()-t1)
@@ -107,7 +113,9 @@ class AttachProcessDialog(closeashidewindow):
             item=QStandardItem(icon , pexe)
             item.setEditable(False)
             self.model.appendRow(item)
-        
+    def showEvent(self,e):
+        self.hookselectdialog.realshowhide.emit(False)  
+        self.refreshfunction()
         #print(time.time()-t1) 
     def safesplit(self,process):
         try:

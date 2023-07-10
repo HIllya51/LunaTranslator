@@ -647,5 +647,11 @@
     "接口": "Interfaz",
     "sqlite翻译记录": "Registro de traducción de squlite",
     "json翻译文件": "Documento de traducción json",
-    "VNR人工翻译文件": "Documentos traducidos manualmente por vnr"
+    "VNR人工翻译文件": "Documentos traducidos manualmente por vnr",
+    "过滤反复刷新的句子": "Filtrar oraciones actualizadas repetidamente",
+    "增强鼠标穿透效果": "Mejorar el efecto de penetración del ratón",
+    "选择图标": "Seleccionar icono",
+    "图标2": "Icono 2",
+    "子窗口任务栏中显示": "Se muestra en la barra de tareas de la ventana hijo",
+    "刷新": "Refrescar"
 }

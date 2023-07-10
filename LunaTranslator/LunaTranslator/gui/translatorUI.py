@@ -434,10 +434,30 @@ class QUnFrameWindow(resizableframeless):
      
     def changemousetransparentstate(self): 
         self.mousetransparent= not self.mousetransparent
-        self.set_color_transparency()
         
+        
+        
+        def _checkplace():
+            hwnd =int(self.winId())
+            while self.mousetransparent: 
+                cursor_pos = self.mapFromGlobal(QCursor.pos()) 
+                 
+                if self.isinrect(cursor_pos,[self._TitleLabel.x(),self._TitleLabel.x()+self._TitleLabel.width(),self._TitleLabel.y(),self._TitleLabel.y()+self._TitleLabel.height()]): 
+                    
+                    win32utils.SetWindowLong(self.winId(), win32con.GWL_EXSTYLE, win32utils.GetWindowLong(hwnd, win32con.GWL_EXSTYLE) &~ win32con.WS_EX_TRANSPARENT)
+                else:  
+                    win32utils.SetWindowLong(self.winId(), win32con.GWL_EXSTYLE, win32utils.GetWindowLong(hwnd, win32con.GWL_EXSTYLE) | win32con.WS_EX_TRANSPARENT)
+
+                time.sleep(0.1) 
+            #结束时取消穿透(可能以快捷键终止)
+            win32utils.SetWindowLong(self.winId(), win32con.GWL_EXSTYLE, win32utils.GetWindowLong(hwnd, win32con.GWL_EXSTYLE) &~ win32con.WS_EX_TRANSPARENT)
+        if globalconfig['strongmousetransparent']:
+            if self.mousetransparent:
+                globalconfig['locktools']=True #锁定，否则无法恢复。
+                threading.Thread(target=_checkplace).start()
+        else:
+            self.set_color_transparency()
         self.refreshtoolicon()
-     
     def showhide(self): 
         if gobject.baseobject.textsource.rect:
             self.showhidestate=not self.showhidestate 
