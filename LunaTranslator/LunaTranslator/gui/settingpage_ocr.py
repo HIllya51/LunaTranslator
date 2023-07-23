@@ -53,10 +53,10 @@ def getocrgrid(self) :
             [(("合并多行识别结果"),12),getsimpleswitch(globalconfig ,'ocrmergelines')],
             [''],
             
-            [('OCR自动化方法',8),'',(getsimplecombobox(_TRL(['分析图像更新','周期执行','分析图像更新+周期执行']),globalconfig,'ocr_auto_method'),12)], 
-            [(("执行周期(s)"),12),(getspinbox(0.1,100,globalconfig,'ocr_interval',double=True,step=0.1  ),4)],  
-            [(("图像稳定性阈值"),12),(getspinbox(0,1,globalconfig,'ocr_stable_sim'  ,double=True,step=0.01 ,dec=3),4),], 
-            [(("图像一致性阈值"),12),(getspinbox(0,1,globalconfig,'ocr_diff_sim'  ,double=True,step=0.01 ,dec=3),4),], 
+            [('OCR自动化方法',8), (getsimplecombobox(_TRL(['分析图像更新','周期执行','分析图像更新+周期执行']),globalconfig,'ocr_auto_method'),12)], 
+            [(("执行周期(s)"),8),(getspinbox(0.1,100,globalconfig,'ocr_interval',double=True,step=0.1  ),4)],  
+            [(("图像稳定性阈值"),8),(getspinbox(0,1,globalconfig,'ocr_stable_sim'  ,double=True,step=0.01 ,dec=3),4),(self.threshold1label,4)], 
+            [(("图像一致性阈值"),8),(getspinbox(0,1,globalconfig,'ocr_diff_sim'  ,double=True,step=0.01 ,dec=3),4),(self.threshold2label,4)], 
 
             [''],
             [(("OCR范围框颜色"),12),(getcolorbutton(globalconfig,'ocrrangecolor',callback=lambda  : selectcolor(self,globalconfig,'ocrrangecolor',self.ocrrangecolor_button,callback=lambda :gobject.baseobject.textsource.setstyle()),name='ocrrangecolor_button',parent=self),1)],

@@ -43,7 +43,7 @@ def setTab_quick_direct(self):
             '_20':gobject.baseobject.translation_ui.fullsgame_signal.emit,
             '_21':lambda:grabwindow(),
             '_22':gobject.baseobject.translation_ui.muteprocessignal.emit,
-            "_23":  gobject.baseobject.translation_ui.rangequick.emit ,
+            "_23":lambda: gobject.baseobject.translation_ui.clickRange_signal.emit(True),
             
         }
     for name in globalconfig['quick_setting']['all']: 

@@ -174,8 +174,9 @@ class MAINUI() :
             return 
         
         self.currenttext=_paste_str
-        self.textsource.sqlqueueput((_paste_str,)) 
-        
+        try:
+            self.textsource.sqlqueueput((_paste_str,)) 
+        except:pass
         if globalconfig['outputtopasteboard'] and globalconfig['sourcestatus']['copy']['use']==False:  
             winsharedutils.clipboard_set(_paste_str)
         
@@ -265,9 +266,9 @@ class MAINUI() :
                     
                     embedcallback('zhs', kanjitrans(zhconv.convert(res,'zh-tw')) if globalconfig['embedded']['trans_kanji'] else res) 
         
-        
-        self.textsource.sqlqueueput((contentraw,classname,res))
-
+        try:
+            self.textsource.sqlqueueput((contentraw,classname,res))
+        except:pass
     def readcurrent(self,force=False):
         try: 
             if force or globalconfig['autoread']:

@@ -653,5 +653,7 @@
     "选择图标": "Sélectionner une icône",
     "图标2": "Icône 2",
     "子窗口任务栏中显示": "Affichage dans la barre des tâches de la Sous - fenêtre",
-    "刷新": "Rafraîchir"
+    "刷新": "Rafraîchir",
+    "读取剪贴板": "Lire le presse - papiers",
+    "进行一次OCR": "Faites une ocr"
 }

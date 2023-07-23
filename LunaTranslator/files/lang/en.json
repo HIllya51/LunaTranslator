@@ -653,5 +653,7 @@
     "选择图标": "Select icon",
     "图标2": "Icon 2",
     "子窗口任务栏中显示": "Display in the sub window Taskbar",
-    "刷新": "Refresh"
+    "刷新": "Refresh",
+    "读取剪贴板": "Read clipboard",
+    "进行一次OCR": "Conduct an OCR"
 }

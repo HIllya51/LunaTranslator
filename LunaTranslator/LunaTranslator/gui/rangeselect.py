@@ -52,8 +52,9 @@ class rangeadjust(Mainw) :
          if gobject.baseobject.textsource.rect:    
              gobject.baseobject.textsource.rect=[(rect.left()+globalconfig['ocrrangewidth'],rect.top()+globalconfig['ocrrangewidth']),(rect.right()-2*globalconfig['ocrrangewidth'],rect.bottom()-2*globalconfig['ocrrangewidth'])]  
          super(rangeadjust, self).resizeEvent(a0)  
+
+
 class rangeselct(QMainWindow) :
-    immediateendsignal=pyqtSignal()
     def __init__(self, parent ) :
 
         super(rangeselct, self).__init__(parent)
@@ -79,13 +80,12 @@ class rangeselct(QMainWindow) :
         self.end_point = QPoint()
         self.startauto=False
         self.clickrelease=False
-        self.immediateendsignal.connect(self.immediateend)
     def immediateend(self):
         try:
-            self.getRange() 
+            
             self.close() 
-            gobject.baseobject.translation_ui.quickrangestatus=not gobject.baseobject.translation_ui.quickrangestatus
-            self.callback() 
+            
+            self.callback(self.getRange() )  
         except:
             pass
     def paintEvent(self, event):  
@@ -126,16 +126,26 @@ class rangeselct(QMainWindow) :
         x1,x2=min(x1,x2),max(x1,x2)
         y1,y2=min(y1,y2),max(y1,y2)
 
-        gobject.baseobject.textsource.setrect(((x1,y1),(x2,y2)))
+        return (((x1,y1),(x2,y2)))
     def mouseReleaseEvent(self, event): 
         if event.button() == Qt.LeftButton:
             self.end_point = event.pos()
-            self.getRange() 
+            
             self.close() 
-            gobject.baseobject.translation_ui.quickrangestatus=not gobject.baseobject.translation_ui.quickrangestatus
-            self.callback() 
+            self.callback(self.getRange() )  
 
-
+screen_shot_ui=None
+def rangeselct_function(parent,callback,clickrelease,startauto):
+        global screen_shot_ui
+        if screen_shot_ui is None:
+            screen_shot_ui =rangeselct(parent)
+        screen_shot_ui.reset()
+        screen_shot_ui.show()
+        screen_shot_ui.callback=callback
+        win32utils.SetFocus(screen_shot_ui.winId() )   
+         
+        screen_shot_ui.startauto=startauto
+        screen_shot_ui.clickrelease=clickrelease
 from myutils.wrapper import Singleton_close
 @Singleton_close
 class moveresizegame(QDialog) :

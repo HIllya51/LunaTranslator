@@ -2,7 +2,7 @@
 import functools    
 from PyQt5.QtGui import  QFont
 
-from PyQt5.QtWidgets import  QFontComboBox  ,QLabel,QLineEdit
+from PyQt5.QtWidgets import  QFontComboBox  ,QLabel
 from gui.settingpage_ocr import getocrgrid  
 from myutils.config import globalconfig ,_TR,_TRL  ,static_data
 from gui.dialog_savedgame import dialog_savedgame 
@@ -99,6 +99,11 @@ def setTabOne_direct(self) :
         (getcolorbutton(globalconfig ,'',name='selectbuttonembed',parent=self,icon='fa.gear',constcolor="#FF69B4",callback=lambda :gobject.baseobject.AttachProcessDialog.showsignal.emit()),1)
         (getcolorbutton(globalconfig ,'',name='selecthookbutton',parent=self,icon='fa.gear',constcolor="#FF69B4",callback=lambda  : gobject.baseobject.hookselectdialog.showsignal.emit() ),1)
         self.clicksourcesignal.connect(lambda k: getattr(self,'sourceswitchs')[k].click())
+
+
+        self.threshold1label=QLabel()
+        self.threshold2label=QLabel()
+
 def setTabOne(self) :  
         self.tabadd_lazy(self.tab_widget, ('文本输入'), lambda :setTabOne_lazy(self)) 
 

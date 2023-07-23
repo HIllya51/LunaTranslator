@@ -17,15 +17,14 @@ import win32utils,gobject
 import winsharedutils,queue
 from myutils.config import globalconfig,saveallconfig,_TR
 from myutils.subproc import endsubprocs
+from myutils.ocrutil import ocr_run,imageCut
 import  win32con
-import gui.rangeselect  
 from myutils.hwnd import mouseselectwindow ,showintab,getScreenRate,grabwindow
 from gui.dialog_savedgame import dialog_savedgame,dialog_savedgame_new
 from gui.dialog_memory import dialog_memory
 from gui.textbrowser import Textbrowser
 from myutils.fullscreen import fullscreen
-from gui.rangeselect  import moveresizegame 
-import winrtutils
+from gui.rangeselect  import moveresizegame ,rangeselct_function
 from gui.usefulwidget import resizableframeless
 class QUnFrameWindow(resizableframeless):   
     displayres =  pyqtSignal(str,str,str ) 
@@ -36,7 +35,6 @@ class QUnFrameWindow(resizableframeless):
     toolbarhidedelaysignal=pyqtSignal() 
     showsavegame_signal=pyqtSignal(int) 
     clickRange_signal=pyqtSignal(bool)
-    rangequick=pyqtSignal()
     showhide_signal=pyqtSignal()
     bindcropwindow_signal=pyqtSignal()
     fullsgame_signal=pyqtSignal()
@@ -216,6 +214,12 @@ class QUnFrameWindow(resizableframeless):
             while win32utils.GetForegroundWindow()==gobject.baseobject.textsource.hwnd:
                 time.sleep(0.001)
             win32utils.keybd_event(17,0,win32con.KEYEVENTF_KEYUP,0)
+        def ocroncefunction(rect):
+            img=imageCut(0,rect[0][0],rect[0][1],rect[1][0],rect[1][1]) 
+            fname='./cache/ocr/once.png' 
+            img.save(fname)
+            text=ocr_run(fname)
+            gobject.baseobject.textgetmethod(text,False)
         functions=(
             ("move",None),
             ("retrans",self.startTranslater),
@@ -245,6 +249,9 @@ class QUnFrameWindow(resizableframeless):
             ("keepontop",lambda:globalconfig.__setitem__("keepontop",not globalconfig['keepontop']) is None and self.refreshtoolicon() is None and self.setontopthread()),
             ("simulate_key_ctrl",lambda:threading.Thread(target=simulate_key_ctrl).start()),
             ("simulate_key_enter",lambda:threading.Thread(target=simulate_key_enter).start() ),
+            ("copy_once",lambda:gobject.baseobject.textgetmethod(winsharedutils.clipboard_get(),False) ),
+            
+            ("ocr_once",lambda:rangeselct_function(self,ocroncefunction,False,False) ),
             ("minmize",self.hide_and_disableautohide),
             ("quit",self.close)
         )
@@ -357,7 +364,6 @@ class QUnFrameWindow(resizableframeless):
         self.refreshtooliconsignal.connect(self.refreshtoolicon)
         self.showsavegame_signal.connect(self.showsavegame_f)  
         self.clickRange_signal.connect(self.clickRange )
-        self.rangequick.connect(self.quickrange)
         self.showhide_signal.connect(self.showhide )
         self.bindcropwindow_signal.connect(functools.partial(mouseselectwindow, self.bindcropwindowcallback))
         self.quitf_signal.connect(self.close)
@@ -366,7 +372,6 @@ class QUnFrameWindow(resizableframeless):
         self.isletgamefullscreened=False
         self.fullscreenmanager=fullscreen(self._externalfsend)
         self._isTracking=False
-        self.quickrangestatus=False
         self.isontop=True  
         self._TitleLabel = QLabel(self)   
         self._TitleLabel.move(0, 0)  
@@ -487,33 +492,18 @@ class QUnFrameWindow(resizableframeless):
         newHeight = self.document.size().height() 
         width = self.width()
         self.resize(width, newHeight + globalconfig['buttonsize']*1.5*self.rate) 
-      
-    def quickrange(self): 
-        if self.quickrangestatus:
-            gobject.baseobject.screen_shot_ui.immediateendsignal.emit()
-            # if globalconfig['autorun']==False:
-            #     self.startTranslater()
-        else:
-            self.clickRange(True)
+       
         
     def clickRange(self,auto): 
         if globalconfig['sourcestatus']['ocr']['use']==False:
-                return 
+            return 
         self.showhidestate=False
         
-        self.quickrangestatus=not self.quickrangestatus
-        gobject.baseobject.textsource.resetrect()
-        if 'screen_shot_ui' not in dir(gobject.baseobject):
-            gobject.baseobject.screen_shot_ui =gui.rangeselect.rangeselct(self)
-        gobject.baseobject.screen_shot_ui.reset()
-        gobject.baseobject.screen_shot_ui.show()
-        gobject.baseobject.screen_shot_ui.callback=self.afterrange
-        win32utils.SetFocus(gobject.baseobject.screen_shot_ui.winId() )   
+        rangeselct_function(self,self.afterrange,auto,auto)
          
-        gobject.baseobject.screen_shot_ui.startauto=auto
-        gobject.baseobject.screen_shot_ui.clickrelease=auto
-    def afterrange(self): 
+    def afterrange(self,rect): 
         self.showhide()
+        gobject.baseobject.textsource.setrect(rect)
         if globalconfig['showrangeafterrangeselect']==False:
             self.showhide()
         if globalconfig['ocrafterrangeselect']:

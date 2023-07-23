@@ -6,7 +6,7 @@ import importlib
 from difflib import SequenceMatcher 
 from myutils.exceptions import ArgsEmptyExc
 from gui.rangeselect    import rangeadjust
-
+from myutils.ocrutil import imageCut,ocr_run,ocr_end
 import time  ,gobject
 from PyQt5.QtWidgets import QApplication 
 from PyQt5.QtGui import QImage
@@ -30,36 +30,14 @@ def getEqualRate(  str1, str2):
         score = score 
 
         return score
-import math,win32utils
 class ocrtext(basetext):
-    
-    def imageCut(self,x1,y1,x2,y2):
      
-        if self.hwnd:
-            try:  
-                hwnduse=self.hwnd
-                rect=win32utils.GetWindowRect(hwnduse)  
-                if rect==(0,0,0,0):
-                    raise Exception
-                rect2=win32utils.GetClientRect(hwnduse)
-                windowOffset = math.floor(((rect[2]-rect[0])-rect2[2])/2)
-                h= ((rect[3]-rect[1])-rect2[3]) - windowOffset
-                 
-                pix = self.screen.grabWindow(hwnduse, x1-rect[0], y1-rect[1]-h, x2-x1, y2-y1) 
-                if pix.toImage().allGray():
-                    raise Exception()
-            except:
-                pix = self.screen.grabWindow(QApplication.desktop().winId(), x1, y1, x2-x1, y2-y1) 
-        else:
-            pix = self.screen.grabWindow(QApplication.desktop().winId(), x1, y1, x2-x1, y2-y1) 
-        return pix.toImage()
     def __init__(self,textgetmethod)  :
         self.screen = QApplication.primaryScreen() 
         self.savelastimg=None
         self.savelastrecimg=None
         self.savelasttext=None 
         self.lastocrtime=0
-        self.nowuseocr=None
         self.rect=None
         self.range_ui = rangeadjust(gobject.baseobject.translation_ui)   
         self.timestamp=time.time() 
@@ -89,9 +67,8 @@ class ocrtext(basetext):
             #img=ImageGrab.grab((self.rect[0][0],self.rect[0][1],self.rect[1][0],self.rect[1][1]))
             #imgr = cv2.cvtColor(np.asarray(img), cv2.COLOR_RGB2BGR)
             if self.rect is None:
-                return None
-            imgr=self.imageCut(self.rect[0][0],self.rect[0][1],self.rect[1][0],self.rect[1][1])
-            
+                return None 
+            imgr=imageCut(self.hwnd,self.rect[0][0],self.rect[0][1],self.rect[1][0],self.rect[1][1])
             ok=True
             
             if globalconfig['ocr_auto_method'] in [0,2]: 
@@ -103,6 +80,7 @@ class ocrtext(basetext):
                     
                 else:
                     image_score=0 
+                gobject.baseobject.settin_ui.threshold1label.setText(str(image_score))
                 self.savelastimg=imgr1
                 
                 if image_score>globalconfig['ocr_stable_sim'] : 
@@ -110,6 +88,7 @@ class ocrtext(basetext):
                         image_score2=compareImage(imgr1 ,self.savelastrecimg ) 
                     else:
                         image_score2=0 
+                    gobject.baseobject.settin_ui.threshold2label.setText(str(image_score2))
                     if image_score2>globalconfig['ocr_diff_sim']:
                         ok=False
                     else: 
@@ -141,8 +120,7 @@ class ocrtext(basetext):
             return
         if self.rect[0][0]>self.rect[1][0] or self.rect[0][1]>self.rect[1][1]:
             return  
-        img=self.imageCut(self.rect[0][0],self.rect[0][1],self.rect[1][0],self.rect[1][1])
-        
+        img=imageCut(self.hwnd,self.rect[0][0],self.rect[0][1],self.rect[1][0],self.rect[1][1])
         
 
         text=self.ocrtest(img)
@@ -153,36 +131,18 @@ class ocrtext(basetext):
         self.savelasttext=text
         self.textgetmethod(text,False)
     def ocrtest(self,img):
-        use=None
-        for k in globalconfig['ocr']:
-            if globalconfig['ocr'][k]['use']==True and os.path.exists(('./LunaTranslator/ocrengines/'+k+'.py')):
-                use=k
-                break
-        if use is None:
-            return ''
+         
         fname='./cache/ocr/{}.png'.format(self.timestamp)
         img.save(fname)
+        print(fname)
+        text=ocr_run(fname)
+        print(text)
+        return text
         
-        try:
-            if self.nowuseocr!=use:
-                try: self.ocrengine.end()
-                except:pass
-                aclass=importlib.import_module('ocrengines.'+use).OCR 
-                self.ocrengine=aclass(use)   
-                self.nowuseocr=use
-            return self.ocrengine.ocr(fname)
-        except Exception as e:
-            if isinstance(e,ArgsEmptyExc):
-                msg=str(e)
-            else:
-                print_exc()
-                msg=str(type(e))[8:-2]+' '+str(e).replace('\n','').replace('\r','')
-            msg='<msg>'+_TR(globalconfig['ocr'][use]['name'])+' '+msg
-            return msg
 
     def end(self):
         super().end()
-        try: self.ocrengine.end()
+        try: ocr_end()
         except:pass
 
         self.range_ui.close()

@@ -177,6 +177,11 @@
                 "tip": "打开设置",
                 "icon": "fa.gear"
             },
+            "copy_once": {
+                "use": false,
+                "tip": "读取剪贴板",
+                "icon": "fa.file-o"
+            },
             "mousetransbutton": {
                 "use": true,
                 "tip": "鼠标穿透窗口",
@@ -211,6 +216,11 @@
                 "belong": [
                     "ocr"
                 ],
+                "icon": "fa.crop"
+            },
+            "ocr_once": {
+                "use": false,
+                "tip": "进行一次OCR",
                 "icon": "fa.crop"
             },
             "hideocrrange": {
