@@ -40,6 +40,19 @@
 			}
 		}
     },
+    "youdaocrapi": {
+        "args": {
+            "注册网址": "https://ai.youdao.com/DOCSIRMA/html/ocr/api/tyocr/index.html",
+            "APP_KEY": "",
+            "APP_SECRET":"",
+            "次数统计": "0"
+        },"argstype":{
+			"注册网址":{
+				"type":"label",
+				"islink":true
+			}
+		}
+    },
     "ocrspace": {
         "args": {
             "注册网址": "https://ocr.space/",

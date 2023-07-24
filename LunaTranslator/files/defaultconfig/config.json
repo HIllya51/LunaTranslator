@@ -754,6 +754,10 @@
             "use": false,
             "name": "youdaocr"
         },
+        "youdaocrapi": {
+            "use": false,
+            "name": "youdaocrapi"
+        },
         "youdaocrtrans": {
             "use": false,
             "name": "youdao图片翻译"
