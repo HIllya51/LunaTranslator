@@ -655,5 +655,10 @@
     "子窗口任务栏中显示": "Alt pencere Görev Çubuğunda Gösterin",
     "刷新": "Tazele",
     "读取剪贴板": "Pano Oku",
-    "进行一次OCR": "OCR yap"
+    "进行一次OCR": "OCR yap",
+    "有道OCR": "Youdao OCR",
+    "免费试用": "Özgür dava",
+    "通用文字识别 API": "Universal Text Recognition API",
+    "有道图片翻译": "Youdao Resimlerinin çevirimi",
+    "图片翻译 API": "Resim Çeviri API"
 }

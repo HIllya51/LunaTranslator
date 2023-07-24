@@ -752,15 +752,11 @@
         },
         "youdaocr": {
             "use": false,
-            "name": "youdaocr"
-        },
-        "youdaocrapi": {
-            "use": false,
-            "name": "youdaocrapi"
+            "name": "有道OCR"
         },
         "youdaocrtrans": {
             "use": false,
-            "name": "youdao图片翻译"
+            "name": "有道图片翻译"
         },
         "volcengine": {
             "use": false,

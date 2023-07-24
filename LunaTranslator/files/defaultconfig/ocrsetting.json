@@ -40,9 +40,10 @@
 			}
 		}
     },
-    "youdaocrapi": {
+    "youdaocr": {
         "args": {
-            "注册网址": "https://ai.youdao.com/DOCSIRMA/html/ocr/api/tyocr/index.html",
+            "注册网址": "https://ai.youdao.com/product-ocr-print.s",
+            "接口":0,
             "APP_KEY": "",
             "APP_SECRET":"",
             "次数统计": "0"
@@ -50,7 +51,31 @@
 			"注册网址":{
 				"type":"label",
 				"islink":true
-			}
+			},
+            "接口":{
+                "type":"combo",
+				"list":["免费试用","通用文字识别 API"]
+            }
+
+		}
+    },
+    "youdaocrtrans": {
+        "args": {
+            "注册网址": "https://ai.youdao.com/product-fanyi-picture.s",
+            "接口":0,
+            "APP_KEY": "",
+            "APP_SECRET":"",
+            "次数统计": "0"
+        },"argstype":{
+			"注册网址":{
+				"type":"label",
+				"islink":true
+			},
+            "接口":{
+                "type":"combo",
+				"list":["免费试用","图片翻译 API"]
+            }
+
 		}
     },
     "ocrspace": {

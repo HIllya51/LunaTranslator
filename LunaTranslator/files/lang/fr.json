@@ -655,5 +655,10 @@
     "子窗口任务栏中显示": "Affichage dans la barre des tâches de la Sous - fenêtre",
     "刷新": "Rafraîchir",
     "读取剪贴板": "Lire le presse - papiers",
-    "进行一次OCR": "Faites une ocr"
+    "进行一次OCR": "Faites une ocr",
+    "有道OCR": "OCR avec piste",
+    "免费试用": "Essai gratuit",
+    "通用文字识别 API": "API de reconnaissance de texte universelle",
+    "有道图片翻译": "Traduction d'images",
+    "图片翻译 API": "API de traduction d'images"
 }

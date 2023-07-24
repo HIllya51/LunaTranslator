@@ -28,6 +28,13 @@ class baseocr:
         except:
             return ''
     @property
+    def tgtlang(self):
+        try:
+            l=static_data["language_list_translator_inner"][globalconfig['tgtlang3']]
+            return self.langmap_[l] 
+        except:
+            return ''
+    @property
     def space(self):
         if globalconfig['ocrmergelines']==False:
             space='\n'

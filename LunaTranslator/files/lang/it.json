@@ -655,5 +655,10 @@
     "子窗口任务栏中显示": "Mostra nella barra delle applicazioni della sottofinestra",
     "刷新": "Aggiorna",
     "读取剪贴板": "Leggi gli appunti",
-    "进行一次OCR": "Condurre un OCR"
+    "进行一次OCR": "Condurre un OCR",
+    "有道OCR": "OCR Youdao",
+    "免费试用": "Prova gratuita",
+    "通用文字识别 API": "API universale per il riconoscimento del testo",
+    "有道图片翻译": "Traduzione di Youdao Pictures",
+    "图片翻译 API": "API di traduzione immagine"
 }

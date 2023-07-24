@@ -655,5 +655,10 @@
     "子窗口任务栏中显示": "Display in the sub window Taskbar",
     "刷新": "Refresh",
     "读取剪贴板": "Read clipboard",
-    "进行一次OCR": "Conduct an OCR"
+    "进行一次OCR": "Conduct an OCR",
+    "有道OCR": "Youdao OCR",
+    "免费试用": "Free trial",
+    "通用文字识别 API": "Universal Text Recognition API",
+    "有道图片翻译": "Translation of Youdao Pictures",
+    "图片翻译 API": "Image Translation API"
 }
