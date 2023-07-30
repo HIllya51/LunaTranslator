@@ -14,6 +14,7 @@ from PyQt5.QtCore import pyqtSignal,Qt,QRect,QSize
 from PyQt5.QtGui import  QFont  ,QIcon,QPixmap  ,QMouseEvent,QCursor
 from PyQt5.QtWidgets import  QLabel ,QPushButton ,QSystemTrayIcon ,QAction,QMenu 
 import win32utils,gobject
+from myutils.wrapper import threader
 import winsharedutils,queue
 from myutils.config import globalconfig,saveallconfig,_TR
 from myutils.subproc import endsubprocs
@@ -214,6 +215,7 @@ class QUnFrameWindow(resizableframeless):
             while win32utils.GetForegroundWindow()==gobject.baseobject.textsource.hwnd:
                 time.sleep(0.001)
             win32utils.keybd_event(17,0,win32con.KEYEVENTF_KEYUP,0)
+        @threader
         def ocroncefunction(rect):
             img=imageCut(0,rect[0][0],rect[0][1],rect[1][0],rect[1][1]) 
             fname='./cache/ocr/once.png' 

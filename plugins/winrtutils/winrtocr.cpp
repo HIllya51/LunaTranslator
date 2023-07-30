@@ -83,7 +83,7 @@ ocrres OCR(wchar_t* fname, wchar_t* lang, wchar_t* space, int* num)
     // 输出识别结果
     auto res = ocrResult.Lines(); 
     std::vector<std::wstring>rets;
-    std::vector< int>ys; 
+    std::vector< int>xs,ys,hs; 
     int i = 0;
     std::wstring sspace = space;//默认即使日文也有空格
     for (auto line : res)
@@ -91,17 +91,21 @@ ocrres OCR(wchar_t* fname, wchar_t* lang, wchar_t* space, int* num)
 
         std::wstring xx = L"";
         bool start = true;
-        float y = 0;
+        float y = 0,x=0,h=0;
         for (auto word : line.Words()) {
             if (!start)xx += sspace;
             start = false;
             xx += word.Text();
             y = word.BoundingRect().Y;
+            x=word.BoundingRect().X;
+            h=max(word.BoundingRect().Height,h);
         }
         ys.push_back(y);
+        xs.push_back(x);
+        hs.push_back(h);
         rets.emplace_back(xx); 
         i += 1;
     }
     *num = res.Size();
-    return ocrres{ vecwstr2c(rets),vecint2c(ys)};
+    return ocrres{ vecwstr2c(rets),vecint2c(xs),vecint2c(ys),vecint2c(hs)};
 }

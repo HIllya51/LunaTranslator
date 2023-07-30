@@ -17,7 +17,9 @@ if winrtutilsdll:
     class ocrres(Structure):
         _fields_=[
             ('lines',POINTER(c_wchar_p)),
-            ('ys',POINTER(c_uint))
+            ('xs',POINTER(c_uint)),
+            ('ys',POINTER(c_uint)),
+            ('hs',POINTER(c_uint))
         ]
     _OCR_f=winrtutilsdll.OCR
     _OCR_f.argtypes=c_wchar_p,c_wchar_p,c_wchar_p, POINTER(c_uint)
@@ -48,7 +50,7 @@ if winrtutilsdll:
         ret=_OCR_f(imgpath,lang,space,pointer(num))
         res=[]
         for i in range(num.value):  
-            res.append((ret.lines[i], ret.ys[i]))
+            res.append((ret.lines[i], ret.xs[i], ret.ys[i], ret.hs[i]))
             
         _freeocrres(ret,num.value)
         return res

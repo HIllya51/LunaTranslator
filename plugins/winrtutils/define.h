@@ -4,8 +4,9 @@
 #include<windows.h>
 struct ocrres {
     wchar_t** lines;
+    int* xs;
     int* ys;
-
+    int* hs;
 };
 extern "C" {
     __declspec(dllexport) void winrt_capture_window(wchar_t* savepath, HWND hwnd) ;

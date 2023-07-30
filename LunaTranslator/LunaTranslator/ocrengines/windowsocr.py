@@ -27,17 +27,39 @@ class OCR(baseocr):
             space=''
         else:
             space=' '
-        
-        ress={}
-        ress2=[]  
+         
         ret=winrtutils.OCR_f(os.path.abspath(imgfile),self.supportmap[self.srclang],space)
-        for i in range(len(ret)): 
+         
+        juhe=[] 
+        mids=[]
+        ranges=[] 
+        for i in range(len(ret)):
+            mid=ret[i][2]+ret[i][3]//2 
+            mids.append(mid)
+            range_=(ret[i][2],ret[i][2]+ret[i][3])
+            ranges.append(range_) 
+        passed=[] 
         
-            ress2.append( ret[i][0])
-            ress[ress2[-1]]=ret[i][1]
-        ress2.sort(key= lambda x:ress[x])
-
+        for i in range(len(ret)):
+            ls=[i]
+            if i in passed:
+                continue
+            for j in range(i+1,len(ret)):
+                if j in passed:
+                    continue 
+                if mids[i]>ranges[j][0] and mids[i]<ranges[j][1] \
+                    and mids[j]>ranges[i][0] and mids[j]<ranges[i][1]:
+                        
+                    passed.append(j)
+                    ls.append(j)
+            juhe.append(ls)
+        for i in range(len(juhe)):
+            juhe[i].sort(key=lambda x:ret[x][1])
+        juhe.sort(key=lambda x:ret[x[0]][2])
+        lines=[]
+        
+        for _j in juhe:
             
-        xx=self.space.join(ress2) 
-        return xx
-        
+
+            lines.append(' '.join([ret[_][0] for _ in _j])) 
+        return self.space.join(lines)

@@ -19,7 +19,9 @@ void freestringlist(char** strlist, int num) {
 }
 void freeocrres(ocrres res, int num) {
     freewstringlist(res.lines,num);
+    delete res.xs;
     delete res.ys;
+    delete res.hs;
 }
  
 int* vecint2c(std::vector<int>& vs) {
