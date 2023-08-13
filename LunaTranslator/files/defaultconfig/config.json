@@ -39,7 +39,7 @@
     "remove_useless_hook": false,
     "button_color_close": "#D32424",
     "button_color_normal": "#FFFFFF",
-    "textthreaddelay": 50,
+    "textthreaddelay": 500,
     "transuigeo":[
         500,500,1200,200
     ],
@@ -84,10 +84,6 @@
         100,
         500,
         500
-    ],
-    "setting_geo": [
-        100,
-        100
     ],
     "ocr_stable_sim": 0,
     "ocr_diff_sim": 0.95,

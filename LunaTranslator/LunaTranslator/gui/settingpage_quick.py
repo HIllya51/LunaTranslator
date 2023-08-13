@@ -69,7 +69,7 @@ class CustomKeySequenceEdit(QKeySequenceEdit):
         value = self.keySequence() 
         if len(value.toString()):
             self.clearFocus()
-        self.changeedvent.emit(value.toString())
+        self.changeedvent.emit(value.toString().replace('Meta','Win'))
         self.setKeySequence(QKeySequence(value)) 
 def setTab_quick_lazy(self) : 
          

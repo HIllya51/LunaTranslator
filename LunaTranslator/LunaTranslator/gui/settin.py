@@ -82,6 +82,8 @@ class Settin(closeashidewindow) :
         self.needfitcols.append([grid,maxl])
     
     def __init__(self, parent): 
+        self.needfitwidgets=[]
+        self.needfitcols=[]
         super(Settin, self).__init__(parent,globalconfig,'setting_geo_2') 
         #self.setWindowFlag(Qt.Tool,False)
         #self.setWindowFlags(self.windowFlags()&~Qt.WindowMinimizeButtonHint)
@@ -89,8 +91,8 @@ class Settin(closeashidewindow) :
         self.localocrstarted=False
         self.mp3playsignal.connect(self.mp3player.mp3playfunction)  
         self.opensolvetextsig.connect(self.opensolvetextfun)
-        self.needfitwidgets=[]
-        self.needfitcols=[]
+        
+        
         self.setMinimumSize(100,100)
         # 界面缩放比例
         self.rate = getScreenRate()

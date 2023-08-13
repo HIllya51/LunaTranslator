@@ -66,4 +66,4 @@ class TS(basetrans):
             })
             return message
         except:
-            raise Exception(json.dumps(response))
+            raise Exception(json.dumps(response,ensure_ascii=False))

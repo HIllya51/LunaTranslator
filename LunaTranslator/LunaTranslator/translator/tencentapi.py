@@ -53,7 +53,7 @@ def trans_tencent(q ,secret_id,secret_key,proxy, fromLang='auto', toLang='en'):
     # 此处会实际调用，成功后可能产生计费
     r = requests.get("https://" + endpoint, params=data, timeout=3,proxies=proxy)
     # print(r.json())
-    return r.json()['Response']['TargetText']
+    return r
 class TS(basetrans): 
     def langmap(self):
         return {'cht':'zh-TW'}
@@ -64,9 +64,9 @@ class TS(basetrans):
         secretKey = self.multiapikeycurrent['SecretKey']
          
                 
+        ret=trans_tencent(query,appid,secretKey,self.proxy,self.srclang,self.tgtlang) 
         try:
-            ret=trans_tencent(query,appid,secretKey,self.proxy,self.srclang,self.tgtlang) 
             self.countnum(query)
-            return ret  
+            return ret.json()['Response']['TargetText']
         except:
-            raise Exception(ret)
+            raise Exception(ret.text)

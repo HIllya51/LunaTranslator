@@ -221,7 +221,7 @@ class MAINUI() :
         #print(keys,usenum,self.lasttranslatorindex)
         for engine in keys:  
             if engine not in self.premtalready:
-                self.translators[engine].gettask((partial(self.GetTranslationCallback,engine,self.currentsignature, optimization_params,_showrawfunction,_showrawfunction_sig,_paste_str),_paste_str,paste_str_solved,skip,embedcallback,shortlongskip)) 
+                self.translators[engine].gettask((partial(self.GetTranslationCallback,engine,self.currentsignature, optimization_params,_showrawfunction,_showrawfunction_sig,_paste_str),_paste_str,paste_str_solved,skip,embedcallback,shortlongskip,hira)) 
             thistimeusednum+=1
             self.lasttranslatorindex+=1
             if(thistimeusednum>=usenum):

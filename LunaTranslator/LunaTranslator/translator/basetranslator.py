@@ -199,7 +199,7 @@ class basetrans:
         if langkey not in self._cache:
             self._cache[langkey]={}
         self._cache[langkey][src] = tgt
-    def cached_translate(self,contentsolved):
+    def cached_translate(self,contentsolved,hira):
 
         res=self.shorttermcacheget(contentsolved)
         if res:
@@ -210,9 +210,9 @@ class basetrans:
                 return res
         
         if self.transtype=='offline':
-            res=self.translate(contentsolved)
+            res=self.dispatch_translate(contentsolved,hira)
         else:
-            res=self.intervaledtranslate(contentsolved)
+            res=self.intervaledtranslate(contentsolved,hira)
          
         if globalconfig['uselongtermcache']:
             self.longtermcacheset(contentsolved,res)
@@ -220,13 +220,13 @@ class basetrans:
         
         return res
     
-    def maybecachetranslate(self,contentraw,contentsolved):
+    def maybecachetranslate(self,contentraw,contentsolved,hira):
         if self.transtype=='pre':
             res=self.translate(contentraw)
         else: 
-            res=self.cached_translate(contentsolved)
+            res=self.cached_translate(contentsolved,hira)
         return res
-    def intervaledtranslate(self,content):
+    def intervaledtranslate(self,content,hira):
         interval=globalconfig['requestinterval']
         current=time.time() 
         self.current=current 
@@ -239,8 +239,15 @@ class basetrans:
             raise Exception
 
         self.multiapikeycurrentidx+=1
-        res=self.translate(content)
+         
+        res=self.dispatch_translate(content,hira)
         
+        return res
+    def dispatch_translate(self,content,hira):
+        if 'translate_with_extra' in dir(self):
+            res=self.translate_with_extra(content,{'hira':hira})
+        else:
+            res=self.translate(content)
         return res
     @property
     def onlymanual(self):
@@ -253,7 +260,7 @@ class basetrans:
             
             
             while True:
-                callback,contentraw,contentsolved,skip,embedcallback,shortlongskip=self.queue.get() 
+                callback,contentraw,contentsolved,skip,embedcallback,shortlongskip,hira=self.queue.get() 
                 if self.queue.empty():
                     break
             
@@ -269,7 +276,7 @@ class basetrans:
                         if self.needreinit:
                             self.needreinit=False
                             self.inittranslator()
-                        return self.maybecachetranslate(contentraw,contentsolved)
+                        return self.maybecachetranslate(contentraw,contentsolved,hira)
                     res=timeoutfunction(reinitandtrans,checktutukufunction=lambda: self.queue.empty() and self.using ) 
                     if self.needzhconv:
                         res=zhconv.convert(res,  'zh-tw' )  
