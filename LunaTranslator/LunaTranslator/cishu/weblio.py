@@ -12,7 +12,7 @@ class weblio:
         x=(requests.get(url,proxies=getproxy()).text)
         x=re.sub('<img(.*?)>','',x)
         _all=[]
-        _xx=re.findall('<div class=kijiWrp>([\\s\\S]*?)<br class=clr>',x)
+        _xx=re.findall('<div class="kijiWrp">([\\s\\S]*?)<br class=clr>',x)
         
         for xx in _xx:
             
