@@ -481,10 +481,10 @@ class dialog_statistic(QDialog):
 def startgame(game):
     try:         
         if os.path.exists(game):
-            mode=savehook_new_data[game]['onloadautochangemode']
-            if mode==0:
-                    pass
-            else:
+                mode=savehook_new_data[game]['onloadautochangemode']
+                if mode==0:
+                        pass
+                else:
                     _={
                     1:'texthook',
                     2:'embedded',
@@ -496,22 +496,40 @@ def startgame(game):
                             
                             yuitsu_switch(gobject.baseobject.settin_ui,globalconfig['sourcestatus'],'sourceswitchs',_[mode],None ,True) 
                             gobject.baseobject.starttextsource(use=_[mode],checked=True)
-     
-            if savehook_new_data[game]['leuse'] :
-                    localeswitcher=savehook_new_data[game]['localeswitcher'] 
-                    b=win32utils.GetBinaryType(game) 
-                    if b==6 and localeswitcher==0:
-                            localeswitcher=1
-                    if (localeswitcher==2 and b==6):
-                            _exe='shareddllproxy64'
-                    else:
-                            _exe='shareddllproxy32'
-                    exe=(os.path.abspath('./files/plugins/'+_exe)) 
-                    _cmd={0:'le',1:"LR",2:"ntleas"}[localeswitcher] 
-                    win32utils.CreateProcess(None,'"{}" {} "{}"'.format(exe,_cmd,game), None,None,False,0,None, os.path.dirname(game), win32utils.STARTUPINFO()  ) 
-                                    
-            else:
-                    win32utils.ShellExecute(None, "open", game, "", os.path.dirname(game), win32con.SW_SHOW) 
+                if savehook_new_data[game]['leuse']==False or (game.lower()[-4:] not in ['.lnk','.exe']):
+                        
+                        #对于其他文件，需要AssocQueryStringW获取命令行才能正确le，太麻烦，放弃。
+                        win32utils.ShellExecute(None, "open", game, "", os.path.dirname(game), win32con.SW_SHOW) 
+                        return 
+                
+                execheck3264=game
+                usearg='"{}"'.format(game)
+                dirpath=os.path.dirname(game)
+                if game.lower()[-4:]=='.lnk':
+                  exepath,args,iconpath,dirp=(winsharedutils.GetLnkTargetPath(game))
+                  
+                  if args!='':
+                        usearg='"{}" {}'.format(exepath,args) 
+                  elif exepath!='':
+                        usearg='"{}"'.format(exepath)
+                        
+                  if exepath!='':
+                        execheck3264=exepath
+                   
+                  if dirp!='':
+                        dirpath=dirp
+                
+                localeswitcher=savehook_new_data[game]['localeswitcher'] 
+                b=win32utils.GetBinaryType(execheck3264) 
+                if b==6 and localeswitcher==0:
+                        localeswitcher=1
+                if (localeswitcher==2 and b==6):
+                        _shareddllproxy='shareddllproxy64'
+                else:
+                        _shareddllproxy='shareddllproxy32'
+                shareddllproxy=os.path.abspath('./files/plugins/'+_shareddllproxy)
+                _cmd={0:'le',1:"LR",2:"ntleas"}[localeswitcher] 
+                win32utils.CreateProcess(None,'"{}" {} {}'.format(shareddllproxy,_cmd,usearg), None,None,False,0,None, dirpath, win32utils.STARTUPINFO()  )  
     except:
             print_exc()
 
@@ -539,7 +557,8 @@ class dialog_savedgame_new(saveposwindow):
               opendir(self.currentfocuspath )
         def clicked3(self): 
                 
-                f=QFileDialog.getOpenFileName(directory='' )
+                f=QFileDialog.getOpenFileName(directory='',options=QFileDialog.DontResolveSymlinks )
+                
                 res=f[0]
                 if res!='': 
                         res=res.replace('/','\\')

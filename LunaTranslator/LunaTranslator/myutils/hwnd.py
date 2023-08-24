@@ -6,7 +6,7 @@ from PyQt5.QtGui import   QPixmap,QColor ,QIcon
 from PyQt5.QtWidgets import QWidget, QLabel, QPushButton, QVBoxLayout,QApplication
 import gobject
 import os
-import time,winrtutils
+import time,winrtutils,winsharedutils
 from myutils.wrapper import threader
 from myutils.utils import argsort
 def pid_running(pid): 
@@ -136,6 +136,12 @@ def ListProcess(filt=True):
         return xxx
 
 def getExeIcon( name,icon=True ): 
+            if name.lower()[-4:]=='.lnk':
+                  exepath,args,iconpath,dirp=(winsharedutils.GetLnkTargetPath(name))
+                  if os.path.exists(iconpath):
+                          name=iconpath
+                  elif os.path.exists(exepath):
+                          name=exepath
             large = win32utils.ExtractIconEx(name)
             if large:
                     pixmap =QtWin.fromHICON(large)

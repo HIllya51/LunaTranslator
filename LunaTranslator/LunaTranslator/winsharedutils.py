@@ -1,4 +1,4 @@
-from ctypes import c_uint,c_bool,POINTER,c_char_p,c_uint64,c_wchar_p,pointer,CDLL,Structure,c_void_p,cast
+from ctypes import c_uint,c_bool,POINTER,c_char_p,c_uint64,c_wchar_p,pointer,CDLL,Structure,c_void_p,cast,create_unicode_buffer
 import platform,os
 
 if platform.architecture()[0]=='64bit':
@@ -125,3 +125,15 @@ class HTMLBrowser():
         html_navigate(self.html,url)
     def __del__(self):
         html_release(self.html)
+
+
+_GetLnkTargetPath=utilsdll.GetLnkTargetPath
+_GetLnkTargetPath.argtypes=c_wchar_p,c_wchar_p,c_wchar_p,c_wchar_p
+def GetLnkTargetPath(lnk):
+    MAX_PATH=260
+    exe=create_unicode_buffer(MAX_PATH)
+    arg=create_unicode_buffer(MAX_PATH)
+    icon=create_unicode_buffer(MAX_PATH)
+    dirp=create_unicode_buffer(MAX_PATH)
+    _GetLnkTargetPath(lnk,exe,arg,icon,dirp)
+    return exe.value,arg.value,icon.value,dirp.value
