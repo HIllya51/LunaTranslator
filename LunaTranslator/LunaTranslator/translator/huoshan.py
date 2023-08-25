@@ -9,26 +9,33 @@ class TS(basetrans):
     def translate(self,content): 
                 
                 
-        headers = { 
+                
+        headers = {
+            'authority': 'translate.volcengine.com',
             'accept': 'application/json, text/plain, */*',
-            'accept-language': 'zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6', 
-            'cache-control': 'no-cache', 
-            'pragma': 'no-cache',
+            'accept-language': 'zh-CN,zh;q=0.9,ar;q=0.8,sq;q=0.7',
+            'content-type': 'application/json',
+            'origin': 'chrome-extension://klgfhbiooeogdfodpopgppeadghjjemk',
             'sec-fetch-dest': 'empty',
             'sec-fetch-mode': 'cors',
             'sec-fetch-site': 'none',
-            'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36 Edg/105.0.1343.53',
+            'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36',
         }
 
         json_data = {
-                'text' : content,
-                'source': self.srclang ,
-                'target' : self.tgtlang
-            } 
+            'text': content,
+            'source_language': self.srclang,
+            'target_language': self.tgtlang,
+            'enable_user_glossary': False,
+            'glossary_list': [],
+            'category': '',
+        }
+        response = requests.post('https://translate.volcengine.com/crx/translate/v1/',   headers=headers, json=json_data, proxies= self.proxy)
         
-        response = requests.post('https://www.volcengine.com/api/exp/2/model-ii',   headers=headers, json=json_data, proxies= self.proxy)
-            
-        return '\n'.join([_['Translation'] for _ in response.json()['Result']['TranslationList'] ])
+        try:
+            return response.json()['translation']
+        except:
+            raise Exception(response.text)
         
    
 if __name__=='__main__':
