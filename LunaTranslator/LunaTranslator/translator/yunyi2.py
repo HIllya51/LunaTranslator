@@ -35,5 +35,7 @@ class TS(basetrans):
         } 
 
         response = requests.post('https://online.cloudtranslation.com/api/v1.0/request_translate/try_translate', data={"type":"text","text":content,"src_lang":self.srclang,"tgt_lang":self.tgtlang,"domain":"general"}, headers=headers,proxies=self.proxy ) 
-         
-        return json.loads(response.json()['data']['data'])['translation']
+        try:
+            return json.loads(response.json()['data']['data'])['translation']
+        except:
+            raise Exception(json.dumps(response.json(),ensure_ascii=False))

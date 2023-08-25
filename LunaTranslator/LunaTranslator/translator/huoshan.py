@@ -1,5 +1,5 @@
   
-import requests  
+import requests  ,json
 
 from myutils.config import globalconfig 
 from translator.basetranslator import basetrans 
@@ -35,7 +35,7 @@ class TS(basetrans):
         try:
             return response.json()['translation']
         except:
-            raise Exception(response.text)
+            raise Exception(json.dumps(response.json(),ensure_ascii=False))
         
    
 if __name__=='__main__':
