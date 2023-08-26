@@ -208,13 +208,15 @@ class noundictconfigdialog(QDialog):
         for key in  (configdict['dict']):                                   # 2
                 if type(configdict['dict'][key])==str:
                     configdict['dict'][key]=["0",configdict['dict'][key]]
-                item = QStandardItem( configdict['dict'][key][0] )
-                model.setItem(row, 0, item)
-                item = QStandardItem(key  )
-                model.setItem(row, 1, item)
-                item = QStandardItem( configdict['dict'][key][1] )
-                model.setItem(row, 2, item)
-                row+=1
+                 
+                for i in range(len( configdict['dict'][key])//2):
+                    item = QStandardItem( configdict['dict'][key][i*2] )
+                    model.setItem(row, 0, item)
+                    item = QStandardItem(key  )
+                    model.setItem(row, 1, item)
+                    item = QStandardItem( configdict['dict'][key][1+i*2] )
+                    model.setItem(row, 2, item)
+                    row+=1
         model.setHorizontalHeaderLabels(_TRL(label))
         table = QTableView(dialog)
         table.setModel(model)
@@ -225,7 +227,7 @@ class noundictconfigdialog(QDialog):
         button.setText(_TR('添加行'))
         def clicked1(): 
             try:
-                md5=gobject.baseobject.textsource.md5
+                md5=gobject.baseobject.currentmd5
                 model.insertRow(0,[QStandardItem(md5),QStandardItem(''),QStandardItem('')]) 
             except:
                 print_exc()
@@ -252,7 +254,10 @@ class noundictconfigdialog(QDialog):
             for row in range(rows):
                 if model.item(row,1).text()=="":
                     continue
-                newdict[model.item(row,1).text()]=[model.item(row,0).text(),model.item(row,2).text()]
+                if model.item(row,1).text() not in newdict:
+                    newdict[model.item(row,1).text()]=[model.item(row,0).text(),model.item(row,2).text()]
+                else:
+                    newdict[model.item(row,1).text()]+=[model.item(row,0).text(),model.item(row,2).text()]
             configdict['dict']=newdict  
 
         dialog.closeEvent=clicked3 
@@ -288,7 +293,7 @@ class noundictconfigdialog(QDialog):
         md5content=QLineEdit( gobject.baseobject.currentmd5)
         setmd5layout.addWidget(md5content)
         button5=QPushButton()
-        button5.clicked.connect(lambda x:gobject.baseobject.__setitem__('currentmd5',md5content.text()))
+        button5.clicked.connect(lambda x:gobject.baseobject.__setattr__('currentmd5',md5content.text()))
         button5.setText(_TR('修改'))
         setmd5layout.addWidget(button5)
         

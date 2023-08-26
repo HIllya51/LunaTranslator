@@ -75,12 +75,10 @@ class MAINUI() :
                 if type(noundictconfig['dict'][key])==str:
                     usedict=True
                 else:
-
-                    if noundictconfig['dict'][key][0]=='0' :
-                        usedict=True
-                
-                    if noundictconfig['dict'][key][0]==self.currentmd5:  #self.textsource.md5:
-                        usedict=True
+                    for i in range(len(noundictconfig['dict'][key])//2):
+                        if noundictconfig['dict'][key][i*2]  in ['0',self.currentmd5] :
+                            usedict=True
+                            break
                      
                 if usedict and  key in content:
                     xx='ZX{}Z'.format(chr(ord("B")+zhanweifu))
@@ -116,7 +114,11 @@ class MAINUI() :
                 if type(noundictconfig['dict'][mp1[key]])==str:
                     v=noundictconfig['dict'][mp1[key]]
                 elif type(noundictconfig['dict'][mp1[key]])==list:
-                    v=noundictconfig['dict'][mp1[key]][1]
+                    v=""
+                    for i in range(len(noundictconfig['dict'][mp1[key]])//2):
+                        if noundictconfig['dict'][mp1[key]][i*2]  in ['0',self.currentmd5] :
+                            v=noundictconfig['dict'][mp1[key]][i*2+1]
+                            break
                 res=reg.sub(v,res)
         if globalconfig['gongxiangcishu']['use']:
             for key in mp2: 
