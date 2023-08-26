@@ -1,5 +1,5 @@
 {
-    "version":"v2.26.3",
+    "version":"v2.28.0",
     "language_list_show":["简体中文","日本語","English","Русский язык","Español","한국어","Français","繁體中文","Tiếng Việt","Türkçe","Polski","Українська Мова","Italiano","اللغة العربية"] ,
     "language_list_translator":["简体中文","日文","英文","俄语","西班牙语","韩语","法语","繁体中文","越南语","土耳其语","波兰语","乌克兰语","意大利语","阿拉伯语"],
     "language_list_translator_inner":["zh", "ja", "en","ru","es","ko","fr","cht","vi","tr","pl","uk","it","ar"],
@@ -61,6 +61,10 @@
         {
             "name": "翻译_J北京7",
             "link": "https://github.com/HIllya51/LunaTranslator/releases/download/v1.0/JBeijing7.zip"
+        },
+        {
+            "name": "翻译_YakuYaku",
+            "link": "https://github.com/HIllya51/LunaTranslator/releases/download/v1.34.5/YakuYaku.zip"
         },
         {
             "name": "翻译_J北京7-用户词典",
@@ -234,7 +238,6 @@
          "./files/plugins/shareddllproxy64.exe",
          "./files/plugins/LunaHook/LunaHook32.dll",
          "./files/plugins/LunaHook/LunaHook64.dll",
-         "./files/plugins/LunaEmbedEngine32.dll", 
          "./files/plugins/LoaderDll.dll",
          "./files/plugins/LocaleEmulator.dll"
         ],

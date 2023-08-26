@@ -146,11 +146,11 @@ class AttachProcessDialog(closeashidewindow):
             if self.selectedp[1] is None:
                 getQMessageBox(self,"错误","无法识别的路径！")
                 return
-            for pid in self.selectedp[0]:
+            # for pid in self.selectedp[0]:
                  
-                if(not testprivilege(pid)): 
-                    getQMessageBox(self,"错误","权限不足，请使用管理员权限运行本程序！")
-                    return
+            #     if(not testprivilege(pid)): 
+            #         getQMessageBox(self,"错误","权限不足，请使用管理员权限运行本程序！")
+            #         return
             self.close() 
             self.callback(self.selectedp)
             

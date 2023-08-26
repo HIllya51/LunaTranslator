@@ -193,8 +193,7 @@
                 "use": true,
                 "tip": "选择游戏",
                 "belong": [
-                    "texthook",
-                    "embedded"
+                    "texthook"
                 ],
                 "icon": "fa.link"
             },
@@ -409,13 +408,6 @@
             "_C": {
                 "use": false,
                 "name": "选择翻译源-HOOK",
-                "key1": -1,
-                "key2": -1,
-                "keystring": ""
-            },
-            "_D": {
-                "use": false,
-                "name": "选择翻译源-HOOK内嵌",
                 "key1": -1,
                 "key2": -1,
                 "keystring": ""
@@ -702,7 +694,7 @@
         "volume": 100.0
     },
     "allowmulti": true,
-    "sourcestatus": {
+    "sourcestatus2": {
         "copy": {
             "use": false
         },
@@ -711,12 +703,6 @@
         },
         "texthook": {
             "use": true
-        },
-        "embedded": {
-            "use": false
-        },
-        "tcpio": {
-            "use": false
         }
     },
     "verticalocr": false,
@@ -919,6 +905,12 @@
             "use": false,
             "color": "#1839f0",
             "name": "Jbeijing7"
+        },
+        "yakuyaku": {
+            "type": "offline",
+            "use": false,
+            "color": "#1839f0",
+            "name": "YakuYaku"
         },
         "kingsoft": {
             "type": "offline",

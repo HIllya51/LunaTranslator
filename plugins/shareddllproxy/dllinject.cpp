@@ -1,4 +1,4 @@
-// dllinject32.cpp : ´ËÎÄ¼þ°üº¬ "main" º¯Êý¡£³ÌÐòÖ´ÐÐ½«ÔÚ´Ë´¦¿ªÊ¼²¢½áÊø¡£
+// dllinject32.cpp : ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½ï¿½ "main" ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö´ï¿½Ð½ï¿½ï¿½Ú´Ë´ï¿½ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 // 
 #include <iostream>
 #include<Windows.h>
@@ -6,41 +6,43 @@ int dllinjectwmain(int argc, wchar_t* argv[])
 {
 
 
-    auto PROCESS_INJECT_ACCESS = (
-        PROCESS_CREATE_THREAD |
-        PROCESS_QUERY_INFORMATION |
-        PROCESS_VM_OPERATION |
-        PROCESS_VM_WRITE |
-        PROCESS_VM_READ);
-    auto pid = _wtoi(argv[1]);
-    auto hProcess = OpenProcess(PROCESS_INJECT_ACCESS, 0, pid);
-    if (hProcess == 0)return 1;
-    for (int i = 2; i < argc; i += 1) {
-        auto size = (wcslen(argv[i]) + 1) * sizeof(wchar_t);
+    
+    for (int i = 1; i < argc-1; i += 1) {
+        auto PROCESS_INJECT_ACCESS = (
+            PROCESS_CREATE_THREAD |
+            PROCESS_QUERY_INFORMATION |
+            PROCESS_VM_OPERATION |
+            PROCESS_VM_WRITE |
+            PROCESS_VM_READ);
+        auto pid = _wtoi(argv[i]);
+        auto hProcess = OpenProcess(PROCESS_INJECT_ACCESS, 0, pid);
+        if (hProcess == 0)return 0;
+        auto size = (wcslen(argv[argc-1]) + 1) * sizeof(wchar_t);
         auto remoteData = VirtualAllocEx(hProcess,
             nullptr,
             size,
             MEM_RESERVE | MEM_COMMIT,
             PAGE_READWRITE
         );
-        if (remoteData == 0)break;
-        WriteProcessMemory(hProcess, remoteData, argv[i], size, 0);
+        if (remoteData == 0)return 0;
+        WriteProcessMemory(hProcess, remoteData, argv[argc-1], size, 0);
         auto hThread = CreateRemoteThread(hProcess, 0, 0, (LPTHREAD_START_ROUTINE)LoadLibraryW, remoteData, 0, 0);
-        if (hThread == 0) break;
+        if (hThread == 0) return 0;
         WaitForSingleObject(hThread, 10000);
         CloseHandle(hThread);
         VirtualFreeEx(hProcess, remoteData, size, MEM_RELEASE);
-    }
-    CloseHandle(hProcess);
+        CloseHandle(hProcess);
+    } 
+    return 1;
 }
 
-// ÔËÐÐ³ÌÐò: Ctrl + F5 »òµ÷ÊÔ >¡°¿ªÊ¼Ö´ÐÐ(²»µ÷ÊÔ)¡±²Ëµ¥
-// µ÷ÊÔ³ÌÐò: F5 »òµ÷ÊÔ >¡°¿ªÊ¼µ÷ÊÔ¡±²Ëµ¥
+// ï¿½ï¿½ï¿½Ð³ï¿½ï¿½ï¿½: Ctrl + F5 ï¿½ï¿½ï¿½ï¿½ï¿½ >ï¿½ï¿½ï¿½ï¿½Ê¼Ö´ï¿½ï¿½(ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½)ï¿½ï¿½ï¿½Ëµï¿½
+// ï¿½ï¿½ï¿½Ô³ï¿½ï¿½ï¿½: F5 ï¿½ï¿½ï¿½ï¿½ï¿½ >ï¿½ï¿½ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½Ô¡ï¿½ï¿½Ëµï¿½
 
-// ÈëÃÅÊ¹ÓÃ¼¼ÇÉ: 
-//   1. Ê¹ÓÃ½â¾ö·½°¸×ÊÔ´¹ÜÀíÆ÷´°¿ÚÌí¼Ó/¹ÜÀíÎÄ¼þ
-//   2. Ê¹ÓÃÍÅ¶Ó×ÊÔ´¹ÜÀíÆ÷´°¿ÚÁ¬½Óµ½Ô´´úÂë¹ÜÀí
-//   3. Ê¹ÓÃÊä³ö´°¿Ú²é¿´Éú³ÉÊä³öºÍÆäËûÏûÏ¢
-//   4. Ê¹ÓÃ´íÎóÁÐ±í´°¿Ú²é¿´´íÎó
-//   5. ×ªµ½¡°ÏîÄ¿¡±>¡°Ìí¼ÓÐÂÏî¡±ÒÔ´´½¨ÐÂµÄ´úÂëÎÄ¼þ£¬»ò×ªµ½¡°ÏîÄ¿¡±>¡°Ìí¼ÓÏÖÓÐÏî¡±ÒÔ½«ÏÖÓÐ´úÂëÎÄ¼þÌí¼Óµ½ÏîÄ¿
-//   6. ½«À´£¬ÈôÒªÔÙ´Î´ò¿ª´ËÏîÄ¿£¬Çë×ªµ½¡°ÎÄ¼þ¡±>¡°´ò¿ª¡±>¡°ÏîÄ¿¡±²¢Ñ¡Ôñ .sln ÎÄ¼þ
+// ï¿½ï¿½ï¿½ï¿½Ê¹ï¿½Ã¼ï¿½ï¿½ï¿½: 
+//   1. Ê¹ï¿½Ã½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½/ï¿½ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½
+//   2. Ê¹ï¿½ï¿½ï¿½Å¶ï¿½ï¿½ï¿½Ô´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Óµï¿½Ô´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+//   3. Ê¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ú²é¿´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢
+//   4. Ê¹ï¿½Ã´ï¿½ï¿½ï¿½ï¿½Ð±ï¿½ï¿½ï¿½ï¿½Ú²é¿´ï¿½ï¿½ï¿½ï¿½
+//   5. ×ªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¿ï¿½ï¿½>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½î¡±ï¿½Ô´ï¿½ï¿½ï¿½ï¿½ÂµÄ´ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½ï¿½×ªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¿ï¿½ï¿½>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½î¡±ï¿½Ô½ï¿½ï¿½ï¿½ï¿½Ð´ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½Óµï¿½ï¿½ï¿½Ä¿
+//   6. ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Òªï¿½Ù´Î´ò¿ª´ï¿½ï¿½ï¿½Ä¿ï¿½ï¿½ï¿½ï¿½×ªï¿½ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½>ï¿½ï¿½ï¿½ò¿ª¡ï¿½>ï¿½ï¿½ï¿½ï¿½Ä¿ï¿½ï¿½ï¿½ï¿½Ñ¡ï¿½ï¿½ .sln ï¿½Ä¼ï¿½

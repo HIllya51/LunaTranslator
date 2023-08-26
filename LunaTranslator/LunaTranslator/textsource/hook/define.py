@@ -16,6 +16,7 @@ HOST_NOTIFICATION_TEXT=0
 HOST_NOTIFICATION_NEWHOOK=1
 HOST_NOTIFICATION_FOUND_HOOK=2 
 HOST_NOTIFICATION_RMVHOOK=3
+HOST_NOTIFICATION_INSERTHOOK=4
 class HostCommandType(c_uint):
     pass
 HOST_COMMAND_NEW_HOOK=0
@@ -24,7 +25,7 @@ HOST_COMMAND_FIND_HOOK=2
 HOST_COMMAND_MODIFY_HOOK=3
 HOST_COMMAND_HIJACK_PROCESS=4
 HOST_COMMAND_DETACH=5
-
+HOST_COMMAND_NEW_HOOK_NAIVE=6
 
 class ThreadParam(Structure):
     _fields_=[
@@ -57,6 +58,10 @@ class HookParam64(Structure):
         ('filter_fun',c_uint64),
         ('hook_fun',c_uint64),
         ('length_fun',c_uint64),  #函数指针
+        ('_1',c_uint64),
+        ('_2',c_uint64),  
+        ('_3',c_uint64),  
+        ('_4',c_uint64),  
         ('name',c_char*HOOK_NAME_SIZE)
     ]
 class HookParam32(Structure):
@@ -78,8 +83,11 @@ class HookParam32(Structure):
         ('filter_fun',c_uint32),
         ('hook_fun',c_uint32),
         ('length_fun',c_uint32),  #函数指针
-        ('name',c_char*HOOK_NAME_SIZE)
-         
+        ('_1',c_uint32),
+        ('_2',c_uint32),  
+        ('_3',c_uint32),  
+        ('_4',c_uint32),  
+        ('name',c_char*HOOK_NAME_SIZE) 
     ]
 class TextHook64(Structure):
     _fields_=[
@@ -168,6 +176,14 @@ class InsertHookCmd64(Structure):
     def __init__(self, hp) -> None:
         self.command=HOST_COMMAND_NEW_HOOK
         self.hp=hp
+class InsertHookCodeNaive(Structure):
+    _fields_=[
+        ('command',HostCommandType),
+        ('hcode',c_wchar*500)
+    ]
+    def __init__(self, hp) -> None:
+        self.command=HOST_COMMAND_NEW_HOOK_NAIVE
+        self.hcode=hp
 class FindHookCmd32(Structure):
     _fields_=[
         ('command',HostCommandType),
@@ -221,6 +237,11 @@ class HookRemovedNotif(Structure):
         ('command',HostNotificationType),
         ('address',c_uint64)
     ]  
+class HookInsertingNotif(Structure):
+    _fields_=[
+         ('command',HostNotificationType),
+        ('addr',c_uint64), 
+    ]  
 SHAREDMEMDPREFIX='LUNA_VNR_SECTION_'
 HOOKCODEGET='LUNA_HOOKCODE_'
 
@@ -231,3 +252,23 @@ PIPE_AVAILABLE_EVENT = "LUNA_PIPE_AVAILABLE"
 
 class Hookcodeshared(Structure):
     _fields_=[('code',c_wchar*500)]
+
+class EmbedSharedMem(ctypes.Structure):
+	_fields_=[
+		('using',ctypes.c_uint64*10),
+		('addr',ctypes.c_uint64*10),
+		('ctx1',ctypes.c_uint64*10),
+		('ctx2',ctypes.c_uint64*10),
+		('waittime',ctypes.c_uint32),
+		('spaceadjustpolicy',ctypes.c_uint32),
+        ('keeprawtext',ctypes.c_uint32),
+		('hash',ctypes.c_uint64),
+		('text',ctypes.c_wchar*1000),
+          ('fontCharSetEnabled',ctypes.c_bool),
+          ('fontCharSet',ctypes.c_uint8), 
+          ('fontFamily',ctypes.c_wchar*100), 
+    ]
+        
+EMBED_SHARED_MEM="EMBED_SHARED_MEM"
+
+LUNA_NOTIFY="LUNA_NOTIFY.%s.%s"

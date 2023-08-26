@@ -177,7 +177,11 @@ class basetrans:
     
     def longtermcacheget(self,src):
         src=quote_identifier(src)
-        ret=self.sqlwrite2.execute('SELECT * FROM cache WHERE source = {}'.format(src)).fetchall()
+        try:
+            ret=self.sqlwrite2.execute('SELECT * FROM cache WHERE source = {}'.format(src)).fetchall()
+            #有的时候，莫名其妙的卡住，不停的查询失败时的那个句子。。。
+        except:
+            return None
         for srclang,tgtlang,source,trans in ret:
             if (srclang,tgtlang)==(self.srclang,self.tgtlang):
                 return trans
@@ -258,26 +262,28 @@ class basetrans:
         self.needreinit=False
         while self.using:  
             
-            
+             
             while True:
-                callback,contentraw,contentsolved,skip,embedcallback,shortlongskip,hira=self.queue.get() 
-                if self.queue.empty():
+                _=self.queue.get() 
+                callback,contentraw,contentsolved,skip,embedcallback,shortlongskip,hira=_
+                if (embedcallback is not None) or   self.queue.empty():
                     break
-            
-            if skip:
-                continue
-            if shortlongskip and self.onlymanual:
-                continue
+            if embedcallback is None:
+                if skip:
+                    continue
+                if shortlongskip and self.onlymanual:
+                    continue
             
                 
             try:
-                if self.queue.empty() and self.using: 
+                checktutukufunction=lambda:( (embedcallback is not None) or   self.queue.empty()) and self.using
+                if checktutukufunction(): 
                     def reinitandtrans():
                         if self.needreinit:
                             self.needreinit=False
                             self.inittranslator()
                         return self.maybecachetranslate(contentraw,contentsolved,hira)
-                    res=timeoutfunction(reinitandtrans,checktutukufunction=lambda: self.queue.empty() and self.using ) 
+                    res=timeoutfunction(reinitandtrans,checktutukufunction=checktutukufunction ) 
                     if self.needzhconv:
                         res=zhconv.convert(res,  'zh-tw' )  
                     

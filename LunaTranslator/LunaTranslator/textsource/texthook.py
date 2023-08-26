@@ -3,7 +3,7 @@ from queue import Queue
 import re ,os
 import time ,gobject
 from collections import OrderedDict
-import win32utils
+import win32utils,ctypes,functools
 import textsource.hook.define as define
 from myutils.config import globalconfig ,savehook_new_data ,_TR,static_data 
 from textsource.textsourcebase import basetext 
@@ -18,9 +18,7 @@ class texthook(basetext  ):
             autostarthookcode=[]
         if needinserthookcode is None:
             needinserthookcode=[]
-        gobject.baseobject.hookselectdialog.changeprocessclearsignal.emit()
-        if len(autostarthookcode)==0:
-            gobject.baseobject.hookselectdialog.realshowhide.emit(True)
+        
         self.newline=Queue()  
         self.newline_delaywait=Queue()
         self.is64bit=win32utils.Is64bit(pids[0])
@@ -45,21 +43,75 @@ class texthook(basetext  ):
         self.HookCode=None 
         
         self.RPC.callbacks(
-            lambda pid:time.sleep(savehook_new_data[self.pname]['inserthooktimeout']/1000) or [self.RPC.InsertHookCode(pid,hookcode) for hookcode in needinserthookcode],
+            lambda pid:time.sleep(savehook_new_data[self.pname]['inserthooktimeout']/1000) or [self.RPC.InsertHookCode(pid,hookcode) for hookcode in needinserthookcode]+[self.createembedsharedmem(pid),self.showgamename()],
             lambda pid: print(pid,"disconenct"),
             self.onnewhook,
             self.onremovehook,
             self.handle_output,
-            gobject.baseobject.hookselectdialog.sysmessagesignal.emit
+            gobject.baseobject.hookselectdialog.sysmessagesignal.emit,
+            self.getembedtext,
+            self.newhookinsert
         ) 
         self.setcodepage()
         self.setdelay()
+
+        gobject.baseobject.hookselectdialog.changeprocessclearsignal.emit()
+        if len(autostarthookcode)==0 and len(savehook_new_data[self.pname]['embedablehook'])==0:
+            gobject.baseobject.hookselectdialog.realshowhide.emit(True)
+        
+          
         threading.Thread(target=self.delaycollectallselectedoutput).start()
         for pid in self.pids:
             self.RPC.start(pid)
-            self.RPC.Attach(pid,'64' if self.is64bit else '32')
+        self.RPC.Attach(self.pids,'64' if self.is64bit else '32')
         super(texthook,self).__init__(textgetmethod,*self.checkmd5prefix(pname))
-     
+    def showgamename(self):
+        if 'showonce' not in dir(self):
+            gobject.baseobject.translation_ui.displayraw1.emit([],savehook_new_data[self.pname]['title'],globalconfig['rawtextcolor'],False)
+            self.showonce=1
+    def newhookinsert(self,addr,hcode):
+        for _hc,_addr,_ctx1,_ctx2 in savehook_new_data[self.pname]['embedablehook']:
+            if hcode==_hc:
+                self.useembed(addr,_ctx1,_ctx2,True) 
+    def getembedtext(self,text,tt):  
+        if globalconfig['autorun']==False:
+            self.notify(self.EMBEDPID,text)
+            return 
+        if self.checkisusingembed(tt.tp.addr,tt.tp.ctx,tt.tp.ctx2):
+            self.newline.put((text,False, functools.partial(self.embedcallback,text),True))
+        
+    def embedcallback(self,text,_unused,trans): 
+        self.sharedcell.contents.text=trans 
+        
+        self.notify(self.EMBEDPID,text)
+    def createembedsharedmem(self,pid):
+         
+        self.EMBEDPID=pid
+        fmap1=win32utils.OpenFileMapping(win32utils.FILE_MAP_READ|0x2,False,'EMBED_SHARED_MEM'+str(pid))
+        address1=win32utils.MapViewOfFile(fmap1, win32utils.FILE_MAP_READ|0x2,  4096)
+         
+        self.sharedcell=ctypes.cast(address1,ctypes.POINTER(define.EmbedSharedMem)) 
+        self.flashembedsettings()
+    def flashembedsettings(self):
+        self.sharedcell.contents.waittime=int(1000* globalconfig['embedded']['timeout_translate'])
+        self.sharedcell.contents.fontCharSet=static_data["charsetmap"][globalconfig['embedded']['changecharset_charset']]
+        self.sharedcell.contents.fontCharSetEnabled=globalconfig['embedded']['changecharset']
+        self.sharedcell.contents.fontFamily=globalconfig['embedded']['changefont_font'] if globalconfig['embedded']['changefont'] else ''
+        self.sharedcell.contents.spaceadjustpolicy=globalconfig['embedded']['insertspace_policy']
+        self.sharedcell.contents.keeprawtext=globalconfig['embedded']['keeprawtext']
+    def notify(self,pid,text):
+        _b=text.encode('utf-16-le')
+        def hs(text):
+            _b=text.encode('utf-16-le')
+            u64=ctypes.c_uint64(5381)
+            for i in range(len(_b)): 
+                u64=ctypes.c_uint64((u64.value<<5)+u64.value+_b[i])
+            return (u64.value)
+        hash_=hs(text)
+        eventName = define.LUNA_NOTIFY % (pid, hash_) 
+        ev = win32utils.CreateEvent( False, False, eventName)  
+        win32utils.SetEvent(ev)
+        win32utils.CloseHandle(ev)
     def onremovehook(self,tp): 
         toremove=[]
         self.lock.acquire()
@@ -85,6 +137,7 @@ class texthook(basetext  ):
         name=((key[-1][:8]=='UserHook' and autostarthookcode[-1][:8]=='UserHook' )or(key[-1]==autostarthookcode[-1]))
         return base and name
     def onnewhook(self,textthread):
+        
         key=self.parsetextthread(textthread)
         if self.isremoveuseless:
             if key[1] not in [_[1] for _ in self.autostarthookcode]:
@@ -99,7 +152,7 @@ class texthook(basetext  ):
                 self.selectinghook=key
                 select=True
                 break
-        gobject.baseobject.hookselectdialog.addnewhooksignal.emit(key  ,select) 
+        gobject.baseobject.hookselectdialog.addnewhooksignal.emit(key  ,select,[textthread]) 
         self.hookdatacollecter[key]=[] 
         
         self.lock.release()
@@ -219,7 +272,31 @@ class texthook(basetext  ):
             gobject.baseobject.hookselectdialog.update_item_new_line.emit(key,output)
             
             self.lock.release()  
-    
+    def checkisusingembed(self,address,ctx1,ctx2):
+        for i in range(10):
+            if(self.sharedcell.contents.using[i]):
+                if (self.sharedcell.contents.addr[i],self.sharedcell.contents.ctx1[i],self.sharedcell.contents.ctx2[i])==(address,ctx1,ctx2):
+                    return True
+        
+        return False
+    def useembed(self,address,ctx1,ctx2,use):
+        for i in range(10):
+            if(self.sharedcell.contents.using[i]):
+                if (self.sharedcell.contents.addr[i],self.sharedcell.contents.ctx1[i],self.sharedcell.contents.ctx2[i])==(address,ctx1,ctx2):
+                    if use==False:
+                        self.sharedcell.contents.addr[i]=0
+                        self.sharedcell.contents.ctx1[i]=0
+                        self.sharedcell.contents.ctx2[i]=0
+                        self.sharedcell.contents.using[i]=0
+        if use:
+            for i in range(10):
+                if(self.sharedcell.contents.using[i]==0): 
+                        self.sharedcell.contents.using[i]=1
+                        self.sharedcell.contents.addr[i]=address
+                        self.sharedcell.contents.ctx1[i]=ctx1
+                        self.sharedcell.contents.ctx2[i]=ctx2
+                        break
+        
     def gettextthread(self ):
             paste_str=self.newline.get()
             while self.newline.empty()==False:

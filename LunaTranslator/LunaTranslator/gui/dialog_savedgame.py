@@ -382,7 +382,7 @@ class dialog_setting_game(QDialog):
 
                 autochangestatus=QHBoxLayout()
                 autochangestatus.addWidget(QLabel(_TR("自动切换到模式"))) 
-                autochangestatus.addWidget(getsimplecombobox(_TRL(['不切换','HOOK','HOOK_内嵌','剪贴板','OCR']),savehook_new_data[exepath],'onloadautochangemode'))
+                autochangestatus.addWidget(getsimplecombobox(_TRL(['不切换','HOOK','剪贴板','OCR']),savehook_new_data[exepath],'onloadautochangemode2'))
                 formLayout.addLayout(autochangestatus)
                  
 
@@ -481,20 +481,19 @@ class dialog_statistic(QDialog):
 def startgame(game):
     try:         
         if os.path.exists(game):
-                mode=savehook_new_data[game]['onloadautochangemode']
+                mode=savehook_new_data[game]['onloadautochangemode2']
                 if mode==0:
                         pass
                 else:
                     _={
-                    1:'texthook',
-                    2:'embedded',
-                    3:'copy',
-                    4:'ocr'
+                    1:'texthook', 
+                    2:'copy',
+                    3:'ocr'
                     } 
-                    if globalconfig['sourcestatus'][_[mode]]['use']==False:
-                            globalconfig['sourcestatus'][_[mode]]['use']=True
+                    if globalconfig['sourcestatus2'][_[mode]]['use']==False:
+                            globalconfig['sourcestatus2'][_[mode]]['use']=True
                             
-                            yuitsu_switch(gobject.baseobject.settin_ui,globalconfig['sourcestatus'],'sourceswitchs',_[mode],None ,True) 
+                            yuitsu_switch(gobject.baseobject.settin_ui,globalconfig['sourcestatus2'],'sourceswitchs',_[mode],None ,True) 
                             gobject.baseobject.starttextsource(use=_[mode],checked=True)
                 if savehook_new_data[game]['leuse']==False or (game.lower()[-4:] not in ['.lnk','.exe']):
                         
@@ -549,7 +548,8 @@ class dialog_savedgame_new(saveposwindow):
                         savehook_new_list.pop(idx)
                         if game in savehook_new_data:
                                 savehook_new_data.pop(game) 
-                        self.flow.removeidx(idx)
+                        self.flow.removeidx(self.idxsave.index(game))
+                        self.idxsave.pop(self.idxsave.index(game))
                         self.keepocus(idx)
                 except:
                         pass
@@ -564,6 +564,7 @@ class dialog_savedgame_new(saveposwindow):
                         res=res.replace('/','\\')
                         if res not in savehook_new_list:  
                                 self.newline(res)  
+                                self.idxsave.insert(0,res)
                                 self.flow.totop(len(savehook_new_list)-1)
         def keepocus(self,idx):
                 idx=min(len(savehook_new_list)-1,idx) 
@@ -599,9 +600,10 @@ class dialog_savedgame_new(saveposwindow):
                 self.activategamenum=1
                 self.itemfocuschanged(False,None)
                 self.show()  
-
+                self.idxsave=[]
                 for  i,k in  enumerate(savehook_new_list):   
                      self.newline(k)
+                     self.idxsave.append(k)
                      if i==0:
                            self.top1focus() 
                      
@@ -648,7 +650,7 @@ class dialog_savedgame_new(saveposwindow):
                 gameitem.doubleclicked.connect(self.startgame)
                 gameitem.focuschanged.connect(self.itemfocuschanged) 
                 self.flow.addwidget(gameitem)
-                 
+                
 @Singleton_close
 class dialog_savedgame(QDialog):
         #_sigleton=False

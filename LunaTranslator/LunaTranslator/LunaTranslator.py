@@ -13,7 +13,6 @@ from gui.rangeselect    import rangeadjust
 from myutils.hwnd import pid_running,getpidexe ,testprivilege,ListProcess
 from textsource.copyboard import copyboard   
 from textsource.texthook import texthook   
-from textsource.embedded import embedded
 from textsource.ocrtext import ocrtext
 import  gui.selecthook     
 import gui.translatorUI
@@ -31,7 +30,12 @@ import winsharedutils
 from myutils.post import POSTSOLVE
 from myutils.vnrshareddict import vnrshareddict 
 
- 
+class _autolock:
+        def __init__(self,lock) -> None:
+                self.lock=lock
+                lock.acquire()
+        def __del__(self):
+            self.lock.release()
 class MAINUI() : 
     def __init__(self,app) -> None:
         super().__init__()
@@ -47,6 +51,7 @@ class MAINUI() :
         self.refresh_on_get_trans_signature=0
         self.currentsignature=None
         self.isrunning=True
+        self.solvegottextlock=threading.Lock()
     @property
     def textsource(self):return self.textsource_p
     @textsource.setter
@@ -136,11 +141,13 @@ class MAINUI() :
         ss=POSTSOLVE(s)
         self.settin_ui.showandsolvesig.emit(s)
         return ss
-    def textgetmethod(self,_paste_str,shortlongskip=True,embedcallback=None):
-        self.currentsignature=time.time()
+    def textgetmethod(self,_paste_str,shortlongskip=True,embedcallback=None,onlytrans=False):
+        _autolock(self.solvegottextlock)
+        if onlytrans==False:
+            self.currentsignature=time.time()
         if type(_paste_str)==str:
             if _paste_str[:len('<notrans>')]=='<notrans>':
-                self.translation_ui.displayraw1.emit([],_paste_str[len('<notrans>'):],globalconfig['rawtextcolor'])
+                self.translation_ui.displayraw1.emit([],_paste_str[len('<notrans>'):],globalconfig['rawtextcolor'],onlytrans)
                 self.currenttext=_paste_str
                 self.currentread=_paste_str
                 return   
@@ -175,31 +182,31 @@ class MAINUI() :
                 embedcallback('zhs', _paste_str) 
             return 
         
-        self.currenttext=_paste_str
+        
         try:
             self.textsource.sqlqueueput((_paste_str,)) 
         except:pass
-        if globalconfig['outputtopasteboard'] and globalconfig['sourcestatus']['copy']['use']==False:  
-            winsharedutils.clipboard_set(_paste_str)
-        
+        if onlytrans==False:
+            self.currenttext=_paste_str
+            if globalconfig['outputtopasteboard'] and globalconfig['sourcestatus2']['copy']['use']==False:  
+                winsharedutils.clipboard_set(_paste_str) 
+
+            if globalconfig['read_raw']:
+                self.currentread=_paste_str
+                self.readcurrent()
 
         try:
             hira=self.hira_.fy(_paste_str)
         except:
             hira=[]
-            
         if globalconfig['refresh_on_get_trans']==False:
-            self.translation_ui.displayraw1.emit(hira,_paste_str,globalconfig['rawtextcolor'] )
+            self.translation_ui.displayraw1.emit(hira,_paste_str,globalconfig['rawtextcolor'] ,onlytrans)
             _showrawfunction=None
             _showrawfunction_sig=0
         else:
-            _showrawfunction=functools.partial(self.translation_ui.displayraw1.emit,hira,_paste_str,globalconfig['rawtextcolor'] )
+            _showrawfunction=functools.partial(self.translation_ui.displayraw1.emit,hira,_paste_str,globalconfig['rawtextcolor'],onlytrans )
             _showrawfunction_sig=time.time()
-
-        if globalconfig['read_raw']:
-            self.currentread=_paste_str
-            self.readcurrent()
-            
+         
         paste_str_solved,optimization_params= self.solvebeforetrans(_paste_str) 
         
         skip=shortlongskip and  (len(paste_str_solved)<globalconfig['minlength'] or len(paste_str_solved)>globalconfig['maxlength'] )
@@ -208,7 +215,7 @@ class MAINUI() :
         if 'premt' in self.translators:
             try:
                 ret=self.translators['premt'].translate(paste_str_solved)
-                self.GetTranslationCallback('premt',self.currentsignature,optimization_params,_showrawfunction,_showrawfunction_sig,_paste_str,ret,embedcallback)
+                self.GetTranslationCallback(onlytrans,'premt',self.currentsignature,optimization_params,_showrawfunction,_showrawfunction_sig,_paste_str,ret,embedcallback)
             except:
                 pass
         if globalconfig['loadbalance']:
@@ -223,7 +230,7 @@ class MAINUI() :
         #print(keys,usenum,self.lasttranslatorindex)
         for engine in keys:  
             if engine not in self.premtalready:
-                self.translators[engine].gettask((partial(self.GetTranslationCallback,engine,self.currentsignature, optimization_params,_showrawfunction,_showrawfunction_sig,_paste_str),_paste_str,paste_str_solved,skip,embedcallback,shortlongskip,hira)) 
+                self.translators[engine].gettask((partial(self.GetTranslationCallback,onlytrans,engine,self.currentsignature, optimization_params,_showrawfunction,_showrawfunction_sig,_paste_str),_paste_str,paste_str_solved,skip,embedcallback,shortlongskip,hira)) 
             thistimeusednum+=1
             self.lasttranslatorindex+=1
             if(thistimeusednum>=usenum):
@@ -231,21 +238,22 @@ class MAINUI() :
                 
     
         
-    def GetTranslationCallback(self,classname,currentsignature,optimization_params,_showrawfunction,_showrawfunction_sig,contentraw,res,embedcallback):
-        if currentsignature!=self.currentsignature:
+    def GetTranslationCallback(self,onlytrans,classname,currentsignature,optimization_params,_showrawfunction,_showrawfunction_sig,contentraw,res,embedcallback):
+        if embedcallback is None and currentsignature!=self.currentsignature:
             return 
         
-        
-        if type(res)==str:
-            if res[:len('<msg>')]=='<msg>':
-                self.translation_ui.displayres.emit(globalconfig['fanyi'][classname]['name'],'red',res[len('<msg>'):])
-                return   
+        if currentsignature==self.currentsignature:
+            if type(res)==str:
+                if res[:len('<msg>')]=='<msg>':
+                    self.translation_ui.displayres.emit(globalconfig['fanyi'][classname]['name'],'red',res[len('<msg>'):],onlytrans)
+                    return   
         
         res=self.solveaftertrans(res,optimization_params)
         
-        if globalconfig['read_trans']  and (list(globalconfig['fanyi'].keys())[globalconfig['read_translator']]==classname):
-            self.currentread=res
-            self.readcurrent()
+        if onlytrans==False:
+            if globalconfig['read_trans']  and (list(globalconfig['fanyi'].keys())[globalconfig['read_translator']]==classname):
+                self.currentread=res
+                self.readcurrent()
 
         needshowraw=_showrawfunction and self.refresh_on_get_trans_signature!=_showrawfunction_sig
         if needshowraw:
@@ -253,14 +261,17 @@ class MAINUI() :
             _showrawfunction()
         if classname=='premt':
             for k in res:
+                self.premtalready.append(k)
                 if k in globalconfig['fanyi']:
                     _colork=k
                 else:
                     _colork='premt'
-                self.translation_ui.displayres.emit(globalconfig['fanyi'][_colork]['name'],globalconfig['fanyi'][_colork]['color'],res[k])
-                self.premtalready.append(k)
+                if currentsignature==self.currentsignature:
+                    self.translation_ui.displayres.emit(globalconfig['fanyi'][_colork]['name'],globalconfig['fanyi'][_colork]['color'],res[k],onlytrans)
+                
         else:
-            self.translation_ui.displayres.emit(globalconfig['fanyi'][classname]['name'],globalconfig['fanyi'][classname]['color'],res)
+            if currentsignature==self.currentsignature:
+                self.translation_ui.displayres.emit(globalconfig['fanyi'][classname]['name'],globalconfig['fanyi'][classname]['color'],res,onlytrans)
             
             if embedcallback: 
 
@@ -304,27 +315,24 @@ class MAINUI() :
         self.textsource=None
         pids,pexe,hwnd=(  selectedp)   
         checkifnewgame(pexe) 
-        if globalconfig['sourcestatus']['texthook']['use']:
+        if globalconfig['sourcestatus2']['texthook']['use']:
             self.textsource=texthook(self.textgetmethod,pids,hwnd,pexe)  
-        elif globalconfig['sourcestatus']['embedded']['use']:
-            self.textsource=embedded(self.textgetmethod,pids,hwnd,pexe)  
          
     #@threader
     def starttextsource(self,use=None,checked=True):   
         self.translation_ui.showhidestate=False 
         self.translation_ui.refreshtooliconsignal.emit()
-        self.settin_ui.selectbutton.setEnabled(globalconfig['sourcestatus']['texthook']['use']) 
-        self.settin_ui.selecthookbutton.setEnabled(globalconfig['sourcestatus']['texthook']['use'] )
-        self.settin_ui.selectbuttonembed.setEnabled(globalconfig['sourcestatus']['embedded']['use']) 
+        self.settin_ui.selectbutton.setEnabled(globalconfig['sourcestatus2']['texthook']['use']) 
+        self.settin_ui.selecthookbutton.setEnabled(globalconfig['sourcestatus2']['texthook']['use'] )
         self.textsource=None
         if checked: 
-            classes={'ocr':ocrtext,'copy':copyboard,'texthook':None,'embedded':None} 
+            classes={'ocr':ocrtext,'copy':copyboard,'texthook':None} 
             if use is None:
-                use=list(filter(lambda _ :globalconfig['sourcestatus'][_]['use'],classes.keys()) )
+                use=list(filter(lambda _ :globalconfig['sourcestatus2'][_]['use'],classes.keys()) )
                 use=None if len(use)==0 else use[0]
             if use is None:
                 return
-            elif use=='texthook' or use=='embedded':
+            elif use=='texthook'  :
                 pass
             else:
                 self.textsource=classes[use](self.textgetmethod)
@@ -413,7 +421,7 @@ class MAINUI() :
       
 
     def onwindowloadautohook(self): 
-        if not(globalconfig['autostarthook'] and (globalconfig['sourcestatus']['texthook']['use'] or globalconfig['sourcestatus']['embedded']['use'])):
+        if not(globalconfig['autostarthook'] and (globalconfig['sourcestatus2']['texthook']['use'] )):
             return 
             
         elif self.AttachProcessDialog.isVisible():
@@ -433,13 +441,15 @@ class MAINUI() :
                             for pids,_exe  in lps:
                                 if _exe==name_: 
                                     
-                                    if any(map(testprivilege,pids)):
+                                    #if any(map(testprivilege,pids)):
                                         self.textsource=None
-                                        if globalconfig['sourcestatus']['texthook']['use']:
+                                        if globalconfig['sourcestatus2']['texthook']['use']:
+                                                                
+                                            idx =savehook_new_list.index(name_)
+                                            savehook_new_list.insert(0,savehook_new_list.pop(idx)) 
                                             needinserthookcode=savehook_new_data[name_]['needinserthookcode']
                                             self.textsource=texthook(self.textgetmethod,pids,hwnd,name_ ,autostarthookcode=savehook_new_data[name_]['hook'],needinserthookcode=needinserthookcode)
-                                        elif globalconfig['sourcestatus']['embedded']['use']:
-                                            self.textsource=embedded(self.textgetmethod,pids,hwnd,name_ )
+                                         
                                         break
                 
                 else: 
@@ -467,7 +477,7 @@ class MAINUI() :
                 hwnd=self.textsource.hwnd
                 
                 if hwnd==0:
-                    if globalconfig['sourcestatus']['texthook']['use'] or globalconfig['sourcestatus']['embedded']['use']:
+                    if globalconfig['sourcestatus2']['texthook']['use']  :
                         fhwnd=win32utils.GetForegroundWindow() 
                         pids=self.textsource.pids
                         if hwnd==0 and win32utils.GetWindowThreadProcessId( fhwnd ) in pids:

@@ -28,8 +28,8 @@ from myutils.fullscreen import fullscreen
 from gui.rangeselect  import moveresizegame ,rangeselct_function
 from gui.usefulwidget import resizableframeless
 class QUnFrameWindow(resizableframeless):   
-    displayres =  pyqtSignal(str,str,str ) 
-    displayraw1 =  pyqtSignal(list, str,str )  
+    displayres =  pyqtSignal(str,str,str ,bool) 
+    displayraw1 =  pyqtSignal(list, str,str,bool )  
     displaystatus=pyqtSignal(str,str,bool) 
     showhideuisignal=pyqtSignal()
     hookfollowsignal=pyqtSignal(int,tuple)
@@ -70,9 +70,11 @@ class QUnFrameWindow(resizableframeless):
             self.move(self.pos().x()+ other[0],self.pos().y()+ other[1])
             #self.move(self.pos().x()+self.rate *other[0],self.pos().y()+self.rate *other[1])
         
-    def showres(self,name,color,res):  
+    def showres(self,name,color,res,onlyshowhist):  
         try:
-            
+            gobject.baseobject.transhis.getnewtranssignal.emit(name,res)
+            if onlyshowhist:
+                return 
             if globalconfig['showfanyisource']:
                 #print(_type)
                 #self.showline((None,globalconfig['fanyi'][_type]['name']+'  '+res),globalconfig['fanyi'][_type]['color']  )
@@ -82,18 +84,21 @@ class QUnFrameWindow(resizableframeless):
                 self.showline(False,[None,res],color  ,1)
             #print(globalconfig['fanyi'][_type]['name']+'  '+res+'\n')
             
-            gobject.baseobject.transhis.getnewtranssignal.emit(name,res)
+            
         except:
             print_exc() 
-    def showraw(self,hira,res,color ): 
+    def showraw(self,hira,res,color ,onlyshowhist): 
+        #print(res,onlyshowhist)
+        gobject.baseobject.transhis.getnewsentencesignal.emit(res) 
+        if onlyshowhist:
+            return 
         if globalconfig['isshowhira'] and globalconfig['isshowrawtext']:
             self.showline(True,[hira,res],color , 2 )
         elif globalconfig['isshowrawtext']:
             self.showline(True,[hira,res],color,1)
         else:
-            self.showline(True,None,None,1)
-       
-        gobject.baseobject.transhis.getnewsentencesignal.emit(res) 
+            self.showline(True,None,None,1) 
+        
         gobject.baseobject.edittextui.getnewsentencesignal.emit(res)  
     def showstatus(self,res,color,clear): 
         self.showline(clear,[None,res],color,1)
@@ -473,7 +478,7 @@ class QUnFrameWindow(resizableframeless):
     def bindcropwindowcallback(self,pid,hwnd): 
             _pid=os.getpid()
             gobject.baseobject.textsource.hwnd= hwnd if pid!=_pid else None
-            if not(globalconfig['sourcestatus']['texthook']['use'] or globalconfig['sourcestatus']['embedded']['use']):
+            if not globalconfig['sourcestatus2']['texthook']['use'] :
                 gobject.baseobject.textsource.pids= [pid] if pid!=_pid else None
             self.isbindedwindow=(pid!=_pid)
             self.refreshtoolicon()  
@@ -497,15 +502,15 @@ class QUnFrameWindow(resizableframeless):
        
         
     def clickRange(self,auto): 
-        if globalconfig['sourcestatus']['ocr']['use']==False:
+        if globalconfig['sourcestatus2']['ocr']['use']==False:
             return 
         self.showhidestate=False
         
         rangeselct_function(self,self.afterrange,auto,auto)
          
     def afterrange(self,rect): 
-        self.showhide()
         gobject.baseobject.textsource.setrect(rect)
+        self.showhide()
         if globalconfig['showrangeafterrangeselect']==False:
             self.showhide()
         if globalconfig['ocrafterrangeselect']:
@@ -562,7 +567,7 @@ class QUnFrameWindow(resizableframeless):
             if button.belong:
                 hide=True
                 for k in button.belong:
-                    if globalconfig['sourcestatus'][k]['use']:
+                    if globalconfig['sourcestatus2'][k]['use']:
                         hide=False
                         break
                 if hide:

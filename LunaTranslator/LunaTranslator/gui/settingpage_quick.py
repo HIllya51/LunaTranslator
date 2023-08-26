@@ -18,7 +18,6 @@ def setTab_quick_direct(self):
             '_A':lambda :gobject.baseobject.settin_ui.clicksourcesignal.emit('copy'),
             '_B':lambda :gobject.baseobject.settin_ui.clicksourcesignal.emit('ocr'),
             '_C':lambda :gobject.baseobject.settin_ui.clicksourcesignal.emit('texthook'),
-            '_D':lambda :gobject.baseobject.settin_ui.clicksourcesignal.emit('embedded'),
 
             '_1':gobject.baseobject.translation_ui.startTranslater,
             '_2':gobject.baseobject.translation_ui.changeTranslateMode,
