@@ -888,18 +888,6 @@
             "type": "dev",
             "name": "彩云"
         },
-        "poe_dev": {
-            "use": false,
-            "color": "blue",
-            "type": "dev",
-            "name": "poe.com"
-        },
-        "dev_openai": {
-            "use": false,
-            "color": "blue",
-            "type": "dev",
-            "name": "openai"
-        },
         "jb7": {
             "type": "offline",
             "use": false,

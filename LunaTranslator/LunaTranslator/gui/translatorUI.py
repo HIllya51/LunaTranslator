@@ -342,7 +342,7 @@ class QUnFrameWindow(resizableframeless):
         super(QUnFrameWindow, self).__init__(
             None,flags= Qt.FramelessWindowHint|Qt.WindowMinimizeButtonHint,dic=globalconfig,key='transuigeo')  # 设置为顶级窗口，无边框
         icon = QIcon()
-        icon.addPixmap(QPixmap('./files/luna.jpg'), QIcon.Normal, QIcon.On)
+        icon.addPixmap(QPixmap('./files/luna.png'), QIcon.Normal, QIcon.On)
         self.setWindowIcon(icon)
         self.tray = QSystemTrayIcon()  
         self.tray.setIcon(icon) 
@@ -567,7 +567,7 @@ class QUnFrameWindow(resizableframeless):
             if button.belong:
                 hide=True
                 for k in button.belong:
-                    if globalconfig['sourcestatus2'][k]['use']:
+                    if k in globalconfig['sourcestatus2'] and globalconfig['sourcestatus2'][k]['use']:
                         hide=False
                         break
                 if hide:
