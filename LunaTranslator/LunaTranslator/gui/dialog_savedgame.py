@@ -591,8 +591,8 @@ class dialog_savedgame_new(saveposwindow):
                 self.simplebutton("删除游戏",True,self.clicked2,False)
                 self.simplebutton("打开目录",True,self.clicked4,True)
  
-                self.simplebutton("添加游戏",False,self.clicked3,1)
-                
+                insertbtn=self.simplebutton("添加游戏",False,self.clicked3,1)
+                insertbtn.setEnabled(False)
                 formLayout.addLayout(buttonlayout)
                 _W=QWidget()
                 _W.setLayout(formLayout)
@@ -608,7 +608,7 @@ class dialog_savedgame_new(saveposwindow):
                            self.top1focus() 
                      
                      QApplication.processEvents()
-                
+                insertbtn.setEnabled(True)
  
         def showsettingdialog(self ):
                 idx =savehook_new_list.index(self.currentfocuspath)
@@ -622,6 +622,7 @@ class dialog_savedgame_new(saveposwindow):
                 button5.clicked.connect(callback)
                 button5.setFocusPolicy(Qt.NoFocus)   
                 self.buttonlayout.addWidget(button5)
+                return button5
         def itemfocuschanged(self,b,k):
                 
                 if b:
