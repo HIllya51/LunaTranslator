@@ -1,4 +1,9 @@
 {
+	"lingva":{
+		"args": {
+            "host": "translate.plausibility.cloud"
+        }
+	},
     "baiduapi": {
         "args": {
             "注册网址": "https://fanyi-api.baidu.com/api/trans/product/desktop",
