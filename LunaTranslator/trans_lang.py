@@ -22,7 +22,7 @@ if __name__=='__main__':
         js=json.loads(js)
     
     xxx={'ru':'ru','en':'en',
-    "es":"spa","ko":"kor","fr":"fra" ,"cht":"cht",'ja':'jp',"vi":"vie","tr":"tr","pl":"pl","uk":"ukr","it":"it","ar":"ara"}
+    "es":"spa","ko":"kor","fr":"fra" ,"cht":"cht",'ja':'jp',"vi":"vie","tr":"tr","pl":"pl","uk":"ukr","it":"it","ar":"ara","th":"th"}
 
     needpop=[]
     for k in js:
