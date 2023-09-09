@@ -2,7 +2,7 @@ import textsource.hook.define as define
 import win32utils,win32con
 from traceback import print_exc
 #import define
-import re
+import re,copy
 USING_STRING = 0x1  # type(data) is char * or wchar_t * and has length
 USING_UNICODE = 0x2  # type(data) is wchar_t or wchar_t*
 BIG_ENDIAN = 0x4  # type(data) is char
@@ -245,7 +245,8 @@ def GenerateHCode(hp,processId):
     if hp.type & FUNCTION_OFFSET:
         HCode += ":" + hp.function.decode('ascii')
     return HCode
-def Generate(hp,process_id):
+def Generate(_hp,process_id):
+    hp=copy.copy(_hp)
     if hp.type&DIRECT_READ :
         code=GenerateRCode(hp) 
     else:

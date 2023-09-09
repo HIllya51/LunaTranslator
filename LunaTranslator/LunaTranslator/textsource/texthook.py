@@ -200,26 +200,32 @@ class texthook(basetext  ):
     def findhook(self,usestruct):
         self.savefound={}
         self.foundnum=0
-        def _(hc,text):
-            if hc not in self.savefound:
-                self.savefound[hc]=[]
-            self.savefound[hc].append(text)
-            self.foundnum+=1
-            #print(self.foundnum)
-        for pid in self.pids:  
-            self.RPC.FindHooks(pid,usestruct,_)
         def __waitforok():
-            time.sleep(usestruct.searchTime/1000)
+            #time.sleep(usestruct.searchTime/1000)
             _last=0
-            for i in range(10):
+            for i in range(100):
+                #print(self.foundnum)
                 if _last!=self.foundnum or _last==0:
                     _last=self.foundnum
                     time.sleep(1)
                 else:
                     break
             print('??',_last,self.foundnum)
-            gobject.baseobject.hookselectdialog.getfoundhooksignal.emit(self.savefound)
-        threading.Thread(target=__waitforok).start()
+            gobject.baseobject.hookselectdialog.getfoundhooksignal.emit(self.savefound.copy())
+        def _(hc,text):
+            # try:print(hc,text)
+            # except:print(hc)
+            if hc not in self.savefound:
+                self.savefound[hc]=[]
+            self.savefound[hc].append(text)
+            if self.foundnum==0:
+                threading.Thread(target=__waitforok).start()
+            self.foundnum+=1
+            #print(self.foundnum)
+        for pid in self.pids:  
+            self.RPC.FindHooks(pid,usestruct,_)
+        
+        
     def inserthook(self,hookcode):  
         for pid in self.pids:
             print(hookcode)

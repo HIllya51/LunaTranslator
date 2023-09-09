@@ -118,27 +118,36 @@ class Textbrowser( ):
         self.yinyingposline=0
         self.lastcolor=None
         self.jiaming_y_delta=0
-        self.charformat=self.textbrowser.currentCharFormat()
         self.setselectable() 
+        self.blockcount=0
         self.needdouble=False
     def setselectable(self):
         self.masklabel.setHidden(globalconfig['selectable'])
         self.toplabel2.setHidden(globalconfig['selectable'] and globalconfig['zitiyangshi']!=3) 
         self.toplabel.setHidden(globalconfig['selectable'] and globalconfig['zitiyangshi']!=3)
     def simplecharformat(self,color):
+        
         if self.needdouble:
             self.textbrowserback.hide()
             self.needdouble=False
 
-        self.textbrowser.setCurrentCharFormat(self.charformat) 
         self.textbrowser.setTextColor(QColor(color)) 
     def setText(self,text):
         self.textbrowser.setText(text)
         self.textbrowserback.setText(text)
          
     def setFont(self,x): 
-        self.textbrowser.setFont(x)
-        self.textbrowserback.setFont(x)
+        f=QTextCharFormat()
+        f.setFont(x)
+        c=self.textbrowser.textCursor()
+        c.setCharFormat(f)
+        self.textbrowser.setTextCursor(c)
+
+        f=QTextCharFormat()
+        f.setFont(x)
+        c=self.textbrowserback.textCursor()
+        c.setCharFormat(f)
+        self.textbrowserback.setTextCursor(c)
         #self.shadowlabel.setFont(x) 
     def setStyleSheet(self,x): 
         #self.textbrowser.setStyleSheet(x) 
@@ -150,10 +159,14 @@ class Textbrowser( ):
     def resize(self,_1,_2):
         self.textbrowser.resize(_1,_2)
         self.textbrowserback.resize(_1,_2)
-    def clear_and_setfont(self):
+    def clear(self):
         self.clear()
- 
-        self.font.setFamily(globalconfig['fonttype'])
+        self.blockcount=0
+    def setnextfont(self,origin): 
+        if origin:
+            self.font.setFamily(globalconfig['fonttype'])
+        else:
+            self.font.setFamily(globalconfig['fonttype2'])
         self.font.setPointSizeF(globalconfig['fontsize']) 
         self.font.setBold(globalconfig['showbold'])
         self.setFont(self.font) 
@@ -173,7 +186,7 @@ class Textbrowser( ):
             self.align=False
         #self.shadowlabel.setAlignment(Qt.AlignTop )
      
-    def append(self,x ,tag ): 
+    def append(self,x ,tag,origin ): 
         
         if self.cleared:
             self.b1=0
@@ -185,12 +198,15 @@ class Textbrowser( ):
         self.textbrowser.append(x) 
         self.b2=self.textbrowser.document().blockCount()
         
-        if   self.addtaged:
+        if  True:# self.addtaged:
+            if self.addtaged:
+                self.addtaged=False
+              
+                fh,_=self.getfh(False,origin)
+            else:
+                fh,_=self.getfh(False,origin)
+                fh+=globalconfig['extra_space']
             
-            self.addtaged=False
-              
-            fh,_=self.getfh(False)
-              
             for i in range(self.blockcount, self.textbrowser.document().blockCount()):
                 b=self.textbrowser.document().findBlockByNumber(i) 
                 tf=b.blockFormat() 
@@ -203,7 +219,7 @@ class Textbrowser( ):
                 self.textcursor.setPosition(b.position()) 
                 self.textcursor.setBlockFormat(tf)
                 self.textbrowser.setTextCursor(self.textcursor) 
-        
+            self.blockcount=self.textbrowser.document().blockCount()
         if len(tag)>0:
             self.addtag(tag)
 
@@ -240,7 +256,7 @@ class Textbrowser( ):
                 _=self.yinyinglabels[index]
                 _.move(tl1)
                 _.setText(block.text()[s:s+l] )
-                _.setFont(self.textbrowser.font())
+                _.setFont(self.textbrowser.currentCharFormat().font())
                     
                 _.setStyleSheet("color:{}; background-color:rgba(0,0,0,0)".format(globalconfig['miaobiancolor']))
                 _.setGraphicsEffect(self.geteffect(globalconfig['fontsize'],color,globalconfig['shadowforce']))
@@ -376,10 +392,13 @@ class Textbrowser( ):
                 pass
         return (c.red(),c.green(),c.blue(), globalconfig['showcixing_touming']/100)
          
-    def getfh(self,half    ):
+    def getfh(self,half ,origin=True   ):
         
         font=QFont()
-        font.setFamily(globalconfig['fonttype']) 
+        if origin:
+            font.setFamily(globalconfig['fonttype']) 
+        else:
+            font.setFamily(globalconfig['fonttype2']) 
         
         #font.setPixelSize(int(globalconfig['fontsize'])  )
         if half:
@@ -540,7 +559,7 @@ class Textbrowser( ):
         
         label.show()  
     def mergeCurrentCharFormat(self,colormiao,width):
-        format2=QTextCharFormat()
+        format2=self.textbrowser.currentCharFormat()
         format2.setTextOutline(QPen(QColor(colormiao),width, Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin))
     
         self.textbrowser.setCurrentCharFormat(format2)
@@ -551,9 +570,9 @@ class Textbrowser( ):
         if self.needdouble==False:
             self.textbrowserback.show()
             self.needdouble=True
-        format1 = QTextCharFormat() 
+        format1 =self.textbrowser.currentCharFormat()
         format1.setForeground(QColor(colorinner))
-        format2=QTextCharFormat()
+        format2= self.textbrowser.currentCharFormat()
         format2.setTextOutline(QPen(QColor(colormiao),width, Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin))
         
         self.textbrowser.setCurrentCharFormat(format1)

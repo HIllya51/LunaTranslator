@@ -375,7 +375,6 @@
     "界面设置": "Arayüz ayarları",
     "文本设置": "Metin Ayarları",
     "全屏化设置": "Tam ekran ayarları",
-    "文本字体": "Metin yazıtipi",
     "语法加亮": "Grammar ışıklandırma",
     "语音合成": "konuşma sintezi",
     "文本处理": "metin işleme",
@@ -654,5 +653,16 @@
     "点击原文查词": "Sözleri aramak için orijinal metin üzerine tıklayın",
     "取消内嵌翻译": "Yapılan çeviri iptal et",
     "使用内嵌翻译": "İçeri çeviri kullanılıyor",
-    "内嵌翻译": "İçeri yatırılmış çeviri"
+    "内嵌翻译": "İçeri yatırılmış çeviri",
+    "隐藏不存在的游戏": "Olmadığı oyunları gizleyin",
+    "宽度": "genişlik",
+    "高度": "yükseklik",
+    "图片宽度": "resim genişliği",
+    "图片高度": "Görüntü yüksekliği",
+    "选中时颜色": "Seçildiğinde renk",
+    "游戏不存在时颜色": "Oyun yok olduğunda renk",
+    "原文": "orijinal metin",
+    "原文字体": "Orijinal yazıtipi",
+    "译文字体": "Çeviri yazıtipi",
+    "额外的行间距": "Ekstra çizgi boşluğu"
 }

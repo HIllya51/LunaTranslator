@@ -24,7 +24,10 @@ class searchhookparam(QDialog):
     def searchstart(self):
         idx=(self.selectmodel.checkedId())
         usestruct=gobject.baseobject.textsource.defaultsp()
-        if idx==1:  #0默认
+        if idx==0:
+            usestruct.length=0
+            #sp = spUser.length == 0 ? spDefault : spUser;
+        elif idx==1:  #0默认
             #usestruct.codepage=self.codepage.value()
             usestruct.codepage=static_data["codepage_real"][self.codepagesave['type2use']]
             usestruct.text=self.searchtext.text()

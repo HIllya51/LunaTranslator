@@ -106,20 +106,23 @@ def setTabThree_lazy(self) :
     self.horizontal_slider_label.setText("{}%".format(globalconfig['transparent'])) 
     self.font_comboBox = QFontComboBox( ) 
     self.font_comboBox.activated[str].connect(lambda x:globalconfig.__setitem__('fonttype',x))  
-    self.comboBox_font = QFont(globalconfig['fonttype'])
-    self.font_comboBox.setCurrentFont(self.comboBox_font)  
+    self.font_comboBox.setCurrentFont(QFont(globalconfig['fonttype']))  
+    self.font_comboBox2 = QFontComboBox( ) 
+    self.font_comboBox2.activated[str].connect(lambda x:globalconfig.__setitem__('fonttype2',x))  
+    self.font_comboBox2.setCurrentFont(QFont(globalconfig['fonttype2']))  
+
     self.sfont_comboBox = QFontComboBox( ) 
     def callback(x):
         globalconfig.__setitem__('settingfonttype',x)
         self.setstylesheet()
     self.sfont_comboBox.activated[str].connect(callback)  
-    self.scomboBox_font = QFont(globalconfig['settingfonttype'])
-    self.sfont_comboBox.setCurrentFont(self.scomboBox_font) 
+    self.sfont_comboBox.setCurrentFont(QFont(globalconfig['settingfonttype'])) 
       
     
     textgrid=[
-        [('文本字体',3),(self.font_comboBox,5)],
-        [('字体大小',3),(self.fontSize_spinBox,2),'',('居中显示',4),getsimpleswitch(globalconfig,'showatcenter'),'',('加粗字体',4),getsimpleswitch(globalconfig,'showbold' )],
+        [('原文字体',3),(self.font_comboBox,5),'',('译文字体',3),(self.font_comboBox2,5)],
+        [('字体大小',3),(self.fontSize_spinBox,2),'',('额外的行间距',3),(getspinbox(0,100,globalconfig,'extra_space'),2)],
+        [('居中显示',4),getsimpleswitch(globalconfig,'showatcenter'),'',('加粗字体',4),getsimpleswitch(globalconfig,'showbold' )],
          [ '',],
          [('字体样式',3),(getsimplecombobox(_TRL(['普通字体','空心字体','描边字体','阴影字体','描边字体_reverse']),globalconfig,'zitiyangshi'),5)],
         [('特殊字体样式填充颜色',4),getcolorbutton(globalconfig,'miaobiancolor',transparent=False,callback=lambda: selectcolor(self,globalconfig, "miaobiancolor", self.miaobian_color_button), name='miaobian_color_button',parent=self)],

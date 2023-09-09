@@ -117,7 +117,7 @@ def setTab7_lazy(self) :
 
 @Singleton
 class noundictconfigdialog1(QDialog):
-    def __init__(dialog,parent,configdict,title,label=[  '日文','翻译'] ,_=None) -> None:
+    def __init__(dialog,parent,configdict,title,label=[  '原文','翻译'] ,_=None) -> None:
         super().__init__(parent,Qt.WindowCloseButtonHint)
             
         dialog.setWindowTitle(_TR(title))
@@ -195,7 +195,7 @@ class noundictconfigdialog1(QDialog):
         dialog.show()
 @Singleton
 class noundictconfigdialog(QDialog):
-    def __init__(dialog,parent,configdict,title,label=['游戏ID MD5' ,'日文','翻译'] ,_=None) -> None:
+    def __init__(dialog,parent,configdict,title,label=['游戏ID MD5' ,'原文','翻译'] ,_=None) -> None:
         super().__init__(parent,Qt.WindowCloseButtonHint)
         
         dialog.setWindowTitle(_TR(title))

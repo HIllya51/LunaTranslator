@@ -6,12 +6,12 @@ from traceback import print_exc
 from PyQt5.QtWidgets import    QHBoxLayout, QTableView, QAbstractItemView, QLabel, QVBoxLayout,QSpacerItem
 import win32utils  ,importlib
 from PyQt5.QtCore import QPoint, QRect, QSize, Qt,pyqtSignal,QCoreApplication
-import os
+import os,subprocess
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import   QApplication, QLayout, QLabel, QSizePolicy, QWidget, QGridLayout,QHBoxLayout,QVBoxLayout 
 from PyQt5.QtGui import QPalette, QColor,QResizeEvent,QIcon,QPixmap
 from PyQt5.QtCore import Qt 
-from gui.usefulwidget import getsimplecombobox,getspinbox,getcolorbutton,getsimpleswitch
+from gui.usefulwidget import getsimplecombobox,getspinbox,getcolorbutton,getsimpleswitch,getspinbox,selectcolor
 from PyQt5.QtCore import QPoint, QRect, QSize, Qt,pyqtSignal
 import os   
 from myutils.hwnd import showintab
@@ -58,13 +58,13 @@ class ItemWidget(QWidget):
     self.itemh=globalconfig['dialog_savegame_layout']['itemh'] 
     self.imgw=globalconfig['dialog_savegame_layout']['imgw']
     self.imgh=globalconfig['dialog_savegame_layout']['imgh']
-    margin=globalconfig['dialog_savegame_layout']['margin']
+    margin=(self.itemw-self.imgw)/2#globalconfig['dialog_savegame_layout']['margin']
     self.setFixedSize(QSize(self.itemw,self.itemh)) 
     self.setFocusPolicy(Qt.StrongFocus)   
     self.maskshowfileexists=QLabel(self)  
     self.bottommask=QLabel(self)  
     layout=QVBoxLayout()
-    layout.setContentsMargins(margin,margin,margin,margin)
+    layout.setContentsMargins(margin,0,margin,0)
     self._img=IMGWidget(self.imgw,self.imgh,pixmap)
     layout.addWidget(self._img)
 
@@ -128,9 +128,6 @@ class ScrollFlow(QWidget):
     self.qscrollarea.setWidget(self.listWidget) 
   def addwidget(self,wid):
     self.l.addWidget(wid) 
-  def totop(self,index):
-    _=self.l.takeAt(index)
-    self.l._item_list.insert(0,_)
   def removeidx(self,index):
     _=self.l.takeAt(index)
     _.widget().hide()
@@ -436,7 +433,22 @@ class dialog_setting_game(QDialog):
                 self.hcmodel.insertRow(row,[QStandardItem( ),QStandardItem(k)])  
                     
                 self.hctable.setIndexWidget(self.hcmodel.index(row, 0),getcolorbutton('','',self.clicked2,icon='fa.times',constcolor="#FF69B4")) 
-
+@Singleton
+class dialog_syssetting(QDialog):
+         
+                
+        def __init__(self, parent) -> None:
+                super().__init__(parent, Qt.WindowCloseButtonHint )
+                self.setWindowTitle(_TR("其他设置"))
+                formLayout = QFormLayout(self) 
+                formLayout.addRow(QLabel(_TR('隐藏不存在的游戏')),getsimpleswitch(globalconfig,'hide_not_exists')) 
+                for key,name in [('itemw','宽度'),('itemh','高度'),('imgw','图片宽度'),('imgh','图片高度')]:
+                        formLayout.addRow(QLabel(_TR(name)),getspinbox(0,1000,globalconfig['dialog_savegame_layout'],key)) 
+                for key,name in [('onselectcolor','选中时颜色'),('onfilenoexistscolor','游戏不存在时颜色')]:
+                        formLayout.addRow(QLabel(_TR(name)),getcolorbutton(globalconfig['dialog_savegame_layout'],key,callback= functools.partial(selectcolor,self,globalconfig['dialog_savegame_layout'],key,None,self,key),name=key,parent=self)) 
+                          
+                        
+                self.show()
 @Singleton
 class dialog_statistic(QDialog):
         def formattime(self,t):
@@ -564,8 +576,7 @@ class dialog_savedgame_new(saveposwindow):
                         res=res.replace('/','\\')
                         if res not in savehook_new_list:  
                                 self.newline(res)  
-                                self.idxsave.insert(0,res)
-                                self.flow.totop(len(savehook_new_list)-1)
+                                self.idxsave.append(res)
         def keepocus(self,idx):
                 idx=min(len(savehook_new_list)-1,idx) 
                 if len(savehook_new_list): 
@@ -591,8 +602,8 @@ class dialog_savedgame_new(saveposwindow):
                 self.simplebutton("删除游戏",True,self.clicked2,False)
                 self.simplebutton("打开目录",True,self.clicked4,True)
  
-                insertbtn=self.simplebutton("添加游戏",False,self.clicked3,1)
-                insertbtn.setEnabled(False)
+                self.simplebutton("添加游戏",False,self.clicked3,1)
+                self.simplebutton("其他设置",False,lambda:dialog_syssetting(self) ,False)
                 formLayout.addLayout(buttonlayout)
                 _W=QWidget()
                 _W.setLayout(formLayout)
@@ -602,16 +613,16 @@ class dialog_savedgame_new(saveposwindow):
                 self.show()  
                 self.idxsave=[]
                 for  i,k in  enumerate(savehook_new_list):   
+                     if globalconfig['hide_not_exists'] and os.path.exists(k)==False:continue
                      self.newline(k)
                      self.idxsave.append(k)
                      if i==0:
                            self.top1focus() 
                      
                      QApplication.processEvents()
-                insertbtn.setEnabled(True)
  
         def showsettingdialog(self ):
-                idx =savehook_new_list.index(self.currentfocuspath)
+                idx =self.idxsave.index(self.currentfocuspath)
                 
                 dialog_setting_game(self,self.currentfocuspath,None,type=2,gametitleitme=self.flow.l._item_list[idx].widget()) 
         def simplebutton(self,text,save,callback,exists):

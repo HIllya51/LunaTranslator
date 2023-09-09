@@ -375,7 +375,6 @@
     "界面设置": "Paramètres de l'interface",
     "文本设置": "Paramètres de texte",
     "全屏化设置": "Paramètres plein écran",
-    "文本字体": "Polices de texte",
     "语法加亮": "Grammaire éclaircie",
     "语音合成": "Synthèse vocale",
     "文本处理": "Traitement de texte",
@@ -654,5 +653,16 @@
     "点击原文查词": "Cliquez sur le mot original",
     "取消内嵌翻译": "Annuler la traduction intégrée",
     "使用内嵌翻译": "Utiliser la traduction intégrée",
-    "内嵌翻译": "Traduction intégrée"
+    "内嵌翻译": "Traduction intégrée",
+    "隐藏不存在的游戏": "Cacher les jeux qui n'existent pas",
+    "宽度": "Largeur",
+    "高度": "Hauteur",
+    "图片宽度": "Largeur de l'image",
+    "图片高度": "Hauteur de l'image",
+    "选中时颜色": "Couleur quand sélectionnée",
+    "游戏不存在时颜色": "Couleur quand le jeu n'existe pas",
+    "原文": "Le texte original",
+    "原文字体": "Police originale",
+    "译文字体": "Police de traduction",
+    "额外的行间距": "Espacement des lignes supplémentaire"
 }

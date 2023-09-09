@@ -1,5 +1,3 @@
-// dllinject32.cpp : ���ļ����� "main" ����������ִ�н��ڴ˴���ʼ��������
-// 
 #include <iostream>
 #include<Windows.h>
 int dllinjectwmain(int argc, wchar_t* argv[])
@@ -27,7 +25,7 @@ int dllinjectwmain(int argc, wchar_t* argv[])
         if (remoteData == 0)return 0;
         WriteProcessMemory(hProcess, remoteData, argv[argc-1], size, 0);
         auto hThread = CreateRemoteThread(hProcess, 0, 0, (LPTHREAD_START_ROUTINE)LoadLibraryW, remoteData, 0, 0);
-        if (hThread == 0) return 0;
+        //if (hThread == 0) return 0;很奇怪，为0但是成功
         WaitForSingleObject(hThread, 10000);
         CloseHandle(hThread);
         VirtualFreeEx(hProcess, remoteData, size, MEM_RELEASE);
@@ -35,14 +33,4 @@ int dllinjectwmain(int argc, wchar_t* argv[])
     } 
     return 1;
 }
-
-// ���г���: Ctrl + F5 ����� >����ʼִ��(������)���˵�
-// ���Գ���: F5 ����� >����ʼ���ԡ��˵�
-
-// ����ʹ�ü���: 
-//   1. ʹ�ý��������Դ��������������/�����ļ�
-//   2. ʹ���Ŷ���Դ�������������ӵ�Դ�������
-//   3. ʹ��������ڲ鿴���������������Ϣ
-//   4. ʹ�ô����б����ڲ鿴����
-//   5. ת������Ŀ��>����������Դ����µĴ����ļ�����ת������Ŀ��>������������Խ����д����ļ����ӵ���Ŀ
-//   6. ��������Ҫ�ٴδ򿪴���Ŀ����ת�����ļ���>���򿪡�>����Ŀ����ѡ�� .sln �ļ�
+ 

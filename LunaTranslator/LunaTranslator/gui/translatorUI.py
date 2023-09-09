@@ -2,7 +2,7 @@
 import time 
 import functools   
 import threading 
-import os
+import os,sys
 import winsharedutils
 from PyQt5.QtCore import QT_VERSION_STR
 
@@ -20,7 +20,7 @@ from myutils.config import globalconfig,saveallconfig,_TR
 from myutils.subproc import endsubprocs
 from myutils.ocrutil import ocr_run,imageCut
 import  win32con
-from myutils.hwnd import mouseselectwindow ,showintab,getScreenRate,grabwindow
+from myutils.hwnd import mouseselectwindow ,showintab,getScreenRate,grabwindow,getExeIcon
 from gui.dialog_savedgame import dialog_savedgame,dialog_savedgame_new
 from gui.dialog_memory import dialog_memory
 from gui.textbrowser import Textbrowser
@@ -78,10 +78,10 @@ class QUnFrameWindow(resizableframeless):
             if globalconfig['showfanyisource']:
                 #print(_type)
                 #self.showline((None,globalconfig['fanyi'][_type]['name']+'  '+res),globalconfig['fanyi'][_type]['color']  )
-                self.showline(False,[None,name+'  '+res],color ,1 )
+                self.showline(False,[None,name+'  '+res],color ,1,False )
             else:
                 #self.showline((None,res),globalconfig['fanyi'][_type]['color']  )
-                self.showline(False,[None,res],color  ,1)
+                self.showline(False,[None,res],color  ,1,False)
             #print(globalconfig['fanyi'][_type]['name']+'  '+res+'\n')
             
             
@@ -102,9 +102,10 @@ class QUnFrameWindow(resizableframeless):
         gobject.baseobject.edittextui.getnewsentencesignal.emit(res)  
     def showstatus(self,res,color,clear): 
         self.showline(clear,[None,res],color,1)
-    def showline (self,clear,res,color ,type_=1):   
+    def showline (self,clear,res,color ,type_=1,origin=True):   
         if clear:
-            self.translate_text.clear_and_setfont()
+            self.translate_text.clear()
+        self.translate_text.setnextfont(origin)
         if res is None:
             return 
         if globalconfig['showatcenter']:
@@ -124,9 +125,9 @@ class QUnFrameWindow(resizableframeless):
         elif globalconfig['zitiyangshi'] ==3: 
             self.translate_text.simplecharformat(color)  
         if type_==1: 
-            self.translate_text.append (res[1],[]) 
+            self.translate_text.append (res[1],[],origin) 
         else:   
-            self.translate_text.append (res[1],res[0])    
+            self.translate_text.append (res[1],res[0],origin)    
         if globalconfig['zitiyangshi'] ==3:
             self.translate_text.showyinyingtext(color  ) 
         if (globalconfig['usesearchword'] or globalconfig['show_fenci']  ) and res[0]:
@@ -341,8 +342,8 @@ class QUnFrameWindow(resizableframeless):
         
         super(QUnFrameWindow, self).__init__(
             None,flags= Qt.FramelessWindowHint|Qt.WindowMinimizeButtonHint,dic=globalconfig,key='transuigeo')  # 设置为顶级窗口，无边框
-        icon = QIcon()
-        icon.addPixmap(QPixmap('./files/luna.png'), QIcon.Normal, QIcon.On)
+        icon =getExeIcon(sys.argv[0])#'./LunaTranslator.exe')# QIcon()
+        #icon.addPixmap(QPixmap('./files/luna.png'), QIcon.Normal, QIcon.On)
         self.setWindowIcon(icon)
         self.tray = QSystemTrayIcon()  
         self.tray.setIcon(icon) 
