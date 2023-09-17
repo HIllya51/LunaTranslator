@@ -2,7 +2,7 @@ import threading ,hashlib,queue
 import time,sqlite3,json,os,codecs,win32utils
 from traceback import print_exc
 from myutils.config import globalconfig,savehook_new_data
-from myutils.utils import quote_identifier,getfilemd5
+from myutils.utils import getfilemd5
 class basetext:
     def __init__(self,textgetmethod,md5,prefix)  :  
         self.textgetmethod=textgetmethod  
@@ -46,31 +46,26 @@ class basetext:
                 if len(task)==1: 
                     src,=task
                     lensrc=len(src)
-                    src= quote_identifier(src )
-                    ret=self.sqlwrite2.execute('SELECT * FROM artificialtrans WHERE source = {}'.format(src)).fetchone()
+                    ret=self.sqlwrite2.execute('SELECT * FROM artificialtrans WHERE source = ?',(src,)).fetchone()
                     try: 
                         savehook_new_data[self.pname]['statistic_wordcount']+=lensrc
                     except:
                         pass
                     if ret is None:
-                        null= quote_identifier(json.dumps({}))
-                        self.sqlwrite2.execute('INSERT INTO artificialtrans VALUES(NULL,{},{});'.format(src,null))
+                        self.sqlwrite2.execute('INSERT INTO artificialtrans VALUES(NULL,?,?);',(src,json.dumps({})))
 
                         try: 
                             savehook_new_data[self.pname]['statistic_wordcount_nodump']+=lensrc
                         except:
                             pass
                 elif len(task)==3:
-                    src,clsname,trans=task 
-                    src= quote_identifier(src) 
-                    
-                    ret=self.sqlwrite2.execute('SELECT machineTrans FROM artificialtrans WHERE source = {}'.format(src)).fetchone()  
+                    src,clsname,trans=task  
+                    ret=self.sqlwrite2.execute('SELECT machineTrans FROM artificialtrans WHERE source = ?',(src,)).fetchone()  
                      
                     ret=json.loads( (ret[0]) )
                     ret[clsname]=trans
                     ret=json.dumps(ret)  
-                    ret= quote_identifier(ret)
-                    self.sqlwrite2.execute('UPDATE artificialtrans SET machineTrans = {} WHERE source = {}'.format(ret,src))
+                    self.sqlwrite2.execute('UPDATE artificialtrans SET machineTrans = ? WHERE source = ?',(ret,src))
             except:
                 print_exc()
     

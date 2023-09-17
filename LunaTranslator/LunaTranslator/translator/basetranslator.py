@@ -5,8 +5,6 @@ from myutils.config import globalconfig,translatorsetting,static_data
 from threading import Thread,Lock
 import os,time ,codecs
 import zhconv
-from functools import partial 
-from myutils.utils import quote_identifier
 import sqlite3
 
 from myutils.utils import getproxy
@@ -153,9 +151,7 @@ class basetrans:
             try:
                 
                 src,trans=task 
-                src=quote_identifier(src)  
-                trans=quote_identifier(trans)
-                self.sqlwrite2.execute('INSERT into cache VALUES({},{},{},{})'.format(quote_identifier(self.srclang),quote_identifier(self.tgtlang),src,trans))
+                self.sqlwrite2.execute('INSERT into cache VALUES(?,?,?,?)',(self.srclang,self.tgtlang,src,trans))
                 
             except:
                 print_exc()
@@ -176,9 +172,8 @@ class basetrans:
     
     
     def longtermcacheget(self,src):
-        src=quote_identifier(src)
         try:
-            ret=self.sqlwrite2.execute('SELECT * FROM cache WHERE source = {}'.format(src)).fetchall()
+            ret=self.sqlwrite2.execute('SELECT * FROM cache WHERE source = ?',(src,)).fetchall()
             #有的时候，莫名其妙的卡住，不停的查询失败时的那个句子。。。
         except:
             return None

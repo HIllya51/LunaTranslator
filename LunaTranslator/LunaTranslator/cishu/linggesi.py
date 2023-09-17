@@ -21,7 +21,7 @@ class linggesi():
          
                 mp={}
                 for sql in [self.sql,self.sql2]:
-                    x=sql.execute("select word,content from entry where word like '%{}%'".format(word))
+                    x=sql.execute("select word,content from entry where word like ?",('%{}%'.format(word),))
                     exp=x.fetchall()
                      
                     

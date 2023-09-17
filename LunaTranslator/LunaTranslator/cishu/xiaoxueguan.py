@@ -15,7 +15,7 @@ class xiaoxueguan():
         self.sql.close()
     def search(self,word): 
             
-                x=self.sql.execute("select word,explanation from xiaoxueguanrizhong where word like '%{}%'".format(word))
+                x=self.sql.execute("select word,explanation from xiaoxueguanrizhong where word like ?",('%{}%'.format(word),))
                 exp=x.fetchall()
                 dis=9999
                 save=[]

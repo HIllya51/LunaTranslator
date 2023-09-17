@@ -4,7 +4,6 @@ from myutils.config import globalconfig
 import os
 import json
 import sqlite3
-from myutils.utils import quote_identifier
 import winsharedutils
 class TS(basetrans):  
     def checkfilechanged(self,p):
@@ -37,7 +36,7 @@ class TS(basetrans):
 
         else:
 
-            ret=self.sql.execute('SELECT machineTrans FROM artificialtrans WHERE source = {}'.format(quote_identifier(content))).fetchone()
+            ret=self.sql.execute('SELECT machineTrans FROM artificialtrans WHERE source = ?',(content,)).fetchone()
             try:
                 ret=json.loads(ret[0]) 
             except:
