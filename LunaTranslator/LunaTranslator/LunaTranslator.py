@@ -147,7 +147,7 @@ class MAINUI() :
             self.currentsignature=time.time()
         if type(_paste_str)==str:
             if _paste_str[:len('<notrans>')]=='<notrans>':
-                self.translation_ui.displayraw1.emit([],_paste_str[len('<notrans>'):],globalconfig['rawtextcolor'],onlytrans)
+                self.translation_ui.displayres.emit('',globalconfig['rawtextcolor'],_paste_str[len('<notrans>'):],onlytrans)
                 self.currenttext=_paste_str
                 self.currentread=_paste_str
                 return   

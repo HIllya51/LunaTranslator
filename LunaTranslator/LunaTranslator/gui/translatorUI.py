@@ -75,13 +75,14 @@ class QUnFrameWindow(resizableframeless):
             gobject.baseobject.transhis.getnewtranssignal.emit(name,res)
             if onlyshowhist:
                 return 
+            clear=name==''
             if globalconfig['showfanyisource']:
                 #print(_type)
                 #self.showline((None,globalconfig['fanyi'][_type]['name']+'  '+res),globalconfig['fanyi'][_type]['color']  )
-                self.showline(False,[None,name+'  '+res],color ,1,False )
+                self.showline(clear,[None,name+'  '+res],color ,1,False )
             else:
                 #self.showline((None,res),globalconfig['fanyi'][_type]['color']  )
-                self.showline(False,[None,res],color  ,1,False)
+                self.showline(clear,[None,res],color  ,1,False)
             #print(globalconfig['fanyi'][_type]['name']+'  '+res+'\n')
             
             
@@ -285,7 +286,7 @@ class QUnFrameWindow(resizableframeless):
         win32utils.SetForegroundWindow(self.winId())
     def showEvent(self, a0 ) -> None: 
         if self.isfirstshow:
-            self.showline(True,[None,_TR('欢迎使用')],'',1)
+            self.showline(True,[None,_TR('欢迎使用')],'',1,False)
             
             
             showAction = QAction(_TR("&显示"), self, triggered = self.show_and_enableautohide)
@@ -499,7 +500,7 @@ class QUnFrameWindow(resizableframeless):
             return
         newHeight = self.document.size().height() 
         width = self.width()
-        self.resize(width, newHeight + globalconfig['buttonsize']*1.5*self.rate) 
+        self.resize(width, 5+newHeight + globalconfig['buttonsize']*1.5*self.rate) 
        
         
     def clickRange(self,auto): 
@@ -554,7 +555,7 @@ class QUnFrameWindow(resizableframeless):
         wh=globalconfig['buttonsize'] *1.5
         height = self.height() - wh *self.rate 
          
-        self.translate_text.resize(self.width(), height * self.rate)
+        self.translate_text.resize(self.width()-5, height * self.rate)
         for button in self.buttons[-2:]:
               button.adjast( ) 
         # 自定义窗口调整大小事件

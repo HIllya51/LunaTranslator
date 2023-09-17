@@ -111,7 +111,7 @@ class resizableframeless(saveposwindow):
         super().__init__(parent, dic,key,flags)
         self.setMouseTracking(True)  
         
-        self._padding = 10
+        self._padding = 5
         # 设置鼠标跟踪判断扳机默认值
         self._move_drag = False
         self._corner_drag = False

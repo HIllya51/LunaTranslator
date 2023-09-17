@@ -202,10 +202,10 @@ class Textbrowser( ):
             if self.addtaged:
                 self.addtaged=False
               
-                fh,_=self.getfh(False,origin)
-            else:
-                fh,_=self.getfh(False,origin)
-                fh+=globalconfig['extra_space']
+            #     fh,_=self.getfh(False,origin)
+            # else:
+            fh,_=self.getfh(False,origin)
+            fh+=globalconfig['extra_space']
             
             for i in range(self.blockcount, self.textbrowser.document().blockCount()):
                 b=self.textbrowser.document().findBlockByNumber(i) 
@@ -423,13 +423,15 @@ class Textbrowser( ):
         fhall,fontorig=self.getfh(False)
         
         fhhalf,fonthira=self.getfh(True)  
+        fh,_=self.getfh(False,True)
+        fh+=globalconfig['extra_space']
         self.blockcount=self.textbrowser.document().blockCount() 
         for i in range(0,self.blockcount):
             b=self.textbrowser.document().findBlockByNumber(i)
                  
             tf=b.blockFormat()
             #tf.setLineHeight(fh,QTextBlockFormat.LineDistanceHeight)
-            tf.setLineHeight(fhall+fhhalf ,QTextBlockFormat.FixedHeight)
+            tf.setLineHeight(max(fh,fhall+fhhalf) ,QTextBlockFormat.FixedHeight)
             
             self.textcursor.setPosition(b.position()) 
             self.textcursor.setBlockFormat(tf)

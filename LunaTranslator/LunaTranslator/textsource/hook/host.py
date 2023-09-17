@@ -123,7 +123,10 @@ class TextThread():
         if (hp.type &hookcode.HEX_DUMP) :
             _ret=buff.hex()
         elif hp.type& hookcode.USING_UNICODE:
-            _ret=buff.decode('utf-16',errors='ignore')
+            try:
+                _ret=buff.decode('utf-16',errors='ignore')
+            except:
+                return ''
         else:
             if hp.codepage==0:
                 cp=self.host.setting.defaultcodepag
@@ -231,7 +234,11 @@ class RPC():
     def OnMessage(self,data,processId,_is64bit):
         cmd=self.toint(data[:4]) 
         if(cmd==define. HOST_NOTIFICATION_TEXT):
-            self.Console(define.ConsoleOutputNotif.from_buffer_copy(data).message.decode('utf8'))
+            try:
+                message=define.ConsoleOutputNotif.from_buffer_copy(data).message.decode('utf8')
+            except:
+                message="ErrorDecodeMessage"
+            self.Console(message)
         
         elif(cmd==define.HOST_NOTIFICATION_FOUND_HOOK):
             if _is64bit:
