@@ -31,7 +31,7 @@ def waitload( websocket):
 
 def waittransok( websocket):  
         for i in range(10000):
-            state =(SendRequest(websocket,'Runtime.evaluate',{"expression":"document.querySelector('.lmt__side_container--target [data-testid=translator-target-input]').textContent","returnByValue":True})) 
+            state =(SendRequest(websocket,'Runtime.evaluate',{"expression":r'''document.evaluate('//*[@id="headlessui-tabs-panel-7"]/div/div[1]/section/div/div[2]/div[3]/section/div[1]/d-textarea/div',document).iterateNext().textContent''',"returnByValue":True})) 
             if state['result']['value']!='':
                 return state['result']['value']
             time.sleep(0.1)

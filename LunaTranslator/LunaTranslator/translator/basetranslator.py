@@ -257,12 +257,20 @@ class basetrans:
         self.needreinit=False
         while self.using:  
             
-             
+            savelast=[]
             while True:
                 _=self.queue.get() 
                 callback,contentraw,contentsolved,skip,embedcallback,shortlongskip,hira=_
-                if (embedcallback is not None) or   self.queue.empty():
+                if embedcallback is not None:
+                    savelast.clear()
+                
+                savelast.append(_)
+                if self.queue.empty():
                     break
+            if savelast[0][4] is not None:
+                callback,contentraw,contentsolved,skip,embedcallback,shortlongskip,hira=savelast.pop(0)
+                for _ in savelast:
+                    self.gettask(_)
             if embedcallback is None:
                 if skip:
                     continue
