@@ -43,6 +43,7 @@ class QUnFrameWindow(resizableframeless):
     refreshtooliconsignal=pyqtSignal()
     hidesignal=pyqtSignal()
     muteprocessignal=pyqtSignal()   
+    entersignal=pyqtSignal()
     def hookfollowsignalsolve(self,code,other): 
         if self._move_drag:
             return 
@@ -365,6 +366,7 @@ class QUnFrameWindow(resizableframeless):
         
          
         self.hideshownotauto=True
+        self.entersignal.connect(self.enterfunction)
         self.displaystatus.connect(self.showstatus)
         self.showhideuisignal.connect(self.showhideui)
         self.hookfollowsignal.connect(self.hookfollowsignalsolve) 
@@ -461,13 +463,14 @@ class QUnFrameWindow(resizableframeless):
                     win32utils.SetWindowLong(self.winId(), win32con.GWL_EXSTYLE, win32utils.GetWindowLong(hwnd, win32con.GWL_EXSTYLE) &~ win32con.WS_EX_TRANSPARENT)
                 else:  
                     win32utils.SetWindowLong(self.winId(), win32con.GWL_EXSTYLE, win32utils.GetWindowLong(hwnd, win32con.GWL_EXSTYLE) | win32con.WS_EX_TRANSPARENT)
-
+                if self.isinrect(cursor_pos,[self._TitleLabel.x(),self._TitleLabel.x()+self._TitleLabel.width(),self._TitleLabel.y(),self._TitleLabel.y()+self._TitleLabel.height()+self._padding]): 
+                    self.entersignal.emit()
                 time.sleep(0.1) 
             #结束时取消穿透(可能以快捷键终止)
             win32utils.SetWindowLong(self.winId(), win32con.GWL_EXSTYLE, win32utils.GetWindowLong(hwnd, win32con.GWL_EXSTYLE) &~ win32con.WS_EX_TRANSPARENT)
         if globalconfig['strongmousetransparent']:
             if self.mousetransparent:
-                globalconfig['locktools']=True #锁定，否则无法恢复。
+                #globalconfig['locktools']=True #锁定，否则无法恢复。
                 threading.Thread(target=_checkplace).start()
         else:
             self.set_color_transparency()
@@ -531,6 +534,8 @@ class QUnFrameWindow(resizableframeless):
      
         
     def enterEvent(self, QEvent) : 
+        self.enterfunction()
+    def enterfunction(self) : 
          
  
         for button in self.buttons[-2:] +self.showbuttons:
