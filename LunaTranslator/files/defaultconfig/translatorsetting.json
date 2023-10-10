@@ -390,5 +390,11 @@
 				"islink":true
 			}
 		}
+    },
+        "transformers_neural": {
+        "args": {
+            "模型路径": "D:\\mt5-translation-ja_zh",
+            "推理设备": "cuda"
+        }
     }
 }
