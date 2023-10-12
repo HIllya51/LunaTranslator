@@ -7,7 +7,7 @@ class TS(basetrans):
         return {"zh": "zh-CN", "cht": "zh-TW"}
 
     def translate_sentence(self, sentence):
-        return self.pipeline(f'<-ja2zh-> {sentence}')[0]['translation_text']
+        return self.pipeline(f'<-ja2zh-> {sentence}', repetition_penalty=1.3)[0]['translation_text']
 
     def inittranslator(self):
         assert not self.checkempty(['模型路径','推理设备'])
