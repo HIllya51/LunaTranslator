@@ -1,4 +1,4 @@
-import functools
+import functools,json
 from traceback import print_exc
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QSizePolicy,QWidget,QHBoxLayout,QDialog,QAction,QVBoxLayout,QMenu,QPlainTextEdit,QTabWidget,QLineEdit,QPushButton,QTableView,QAbstractItemView,QRadioButton,QButtonGroup,QHeaderView,QCheckBox,QSpinBox,QFormLayout ,QLabel
@@ -183,7 +183,8 @@ class hookselect(closeashidewindow):
         if hook not in self.save:return
         row=self.save.index(hook)
         output=output[:200]  
-        self.ttCombomodelmodel.item(row,2).setText(output) 
+        colidx=2+(gobject.baseobject.textsource.allow_set_text_name)
+        self.ttCombomodelmodel.item(row,colidx).setText(output) 
     def removehook(self,key):
         if key not in self.save:return
         self.ttCombomodelmodel.removeRow(self.save.index(key))
@@ -197,17 +198,26 @@ class hookselect(closeashidewindow):
         self.at1=1
         self.textOutput.clear()
         self.selectionbutton=[] 
+        self.typecombo=[] 
         self.allres=OrderedDict() 
         self.hidesearchhookbuttons()
     def addnewhook(self,ss ,select,textthread):
         if len(self.save)==0:
+            if gobject.baseobject.textsource.allow_set_text_name:
+                self.ttCombomodelmodel.setHorizontalHeaderLabels(_TRL(['显示','类型','HOOK','文本']))
             
-            self.ttCombomodelmodel.setHorizontalHeaderLabels(_TRL(['选择','HOOK','文本']))
+                self.tttable.horizontalHeader().setSectionResizeMode(2,QHeaderView.Interactive)
+                self.tttable.horizontalHeader().setSectionResizeMode(3,QHeaderView.Interactive)
             
-            self.tttable.horizontalHeader().setSectionResizeMode(1,QHeaderView.Interactive)
-            self.tttable.horizontalHeader().setSectionResizeMode(2,QHeaderView.Interactive)
+                self.tttable.horizontalHeader().setSectionResizeMode(0,QHeaderView.ResizeToContents)
+                self.tttable.horizontalHeader().setSectionResizeMode(1,QHeaderView.ResizeToContents)
+            else:
+                self.ttCombomodelmodel.setHorizontalHeaderLabels(_TRL(['选则','HOOK','文本']))
             
-            self.tttable.horizontalHeader().setSectionResizeMode(0,QHeaderView.ResizeToContents)
+                self.tttable.horizontalHeader().setSectionResizeMode(1,QHeaderView.Interactive)
+                self.tttable.horizontalHeader().setSectionResizeMode(2,QHeaderView.Interactive)
+            
+                self.tttable.horizontalHeader().setSectionResizeMode(0,QHeaderView.ResizeToContents)
         
         
         
@@ -216,19 +226,25 @@ class hookselect(closeashidewindow):
         if(ss[-1][0]=='E'):
             self.selectionbutton.insert(0,getsimpleswitch({1:False},1,callback=functools.partial(self.accept,ss))) 
             self.save.insert(0,ss)
-            rown=0
-            btnidx=0
-        else:
-            btnidx=-1
+            rown=0 
+        else: 
             self.save.append(ss ) 
             rown=self.ttCombomodelmodel.rowCount()
             self.selectionbutton.append(getsimpleswitch({1:False},1,callback=functools.partial(self.accept,ss))) 
-        selectionitem=QStandardItem()
-        self.ttCombomodelmodel.insertRow(rown,[selectionitem,QStandardItem('%s %s %x:%x' %(ss[-2],ss[-1],ss[-3],ss[-4])),QStandardItem()])  
+        if gobject.baseobject.textsource.allow_set_text_name:
+            for jskey in savehook_new_data[gobject.baseobject.textsource.pname]['hooktypeasname']:
+                if savehook_new_data[gobject.baseobject.textsource.pname]['hooktypeasname'][jskey]==0:continue
+                if gobject.baseobject.textsource.match_compatibility(json.loads(jskey),ss):
+                    gobject.baseobject.textsource.hooktypecollecter[ss]=1
+            self.typecombo.insert(rown,getsimplecombobox(_TRL(['文本','人名']),gobject.baseobject.textsource.hooktypecollecter,ss,callback=functools.partial(savehook_new_data[gobject.baseobject.textsource.pname]['hooktypeasname'].__setitem__,json.dumps(ss))))
+            self.ttCombomodelmodel.insertRow(rown,[QStandardItem(),QStandardItem(),QStandardItem('%s %s %x:%x' %(ss[-2],ss[-1],ss[-3],ss[-4])),QStandardItem()])  
+            self.tttable.setIndexWidget(self.ttCombomodelmodel.index(rown,1),self.typecombo[rown])
+        else:
+            self.ttCombomodelmodel.insertRow(rown,[QStandardItem(),QStandardItem('%s %s %x:%x' %(ss[-2],ss[-1],ss[-3],ss[-4])),QStandardItem()])  
                     
         
-        if select:self.selectionbutton[btnidx].click()
-        self.tttable.setIndexWidget(self.ttCombomodelmodel.index(rown,0),self.selectionbutton[btnidx])
+        if select:self.selectionbutton[rown].click()
+        self.tttable.setIndexWidget(self.ttCombomodelmodel.index(rown,0),self.selectionbutton[rown])
         if(ss[-1][0]=='E'):
             embedw=QWidget()
             hlay=QHBoxLayout()
@@ -272,7 +288,8 @@ class hookselect(closeashidewindow):
                         savehook_new_data[gobject.baseobject.textsource.pname]['embedablehook'].remove(_)
             checkbtn.clicked.connect(_c)
             hlay.addWidget(checkbtn)
-            self.tttable.setIndexWidget(self.ttCombomodelmodel.index(rown,2),embedw)
+            colidx=2+(gobject.baseobject.textsource.allow_set_text_name)
+            self.tttable.setIndexWidget(self.ttCombomodelmodel.index(rown,colidx),embedw)
         
 
     def setupUi(self  ):

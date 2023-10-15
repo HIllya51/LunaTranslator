@@ -25,7 +25,7 @@ from functools import partial
 from gui.settin import Settin 
 from gui.attachprocessdialog import AttachProcessDialog
 import win32con 
-import re 
+import re ,gobject
 import winsharedutils
 from myutils.post import POSTSOLVE
 from myutils.vnrshareddict import vnrshareddict 
@@ -193,7 +193,7 @@ class MAINUI() :
 
             if globalconfig['read_raw']:
                 self.currentread=_paste_str
-                self.readcurrent()
+                self.autoreadcheckname()
 
         try:
             hira=self.hira_.fy(_paste_str)
@@ -282,6 +282,18 @@ class MAINUI() :
         try:
             self.textsource.sqlqueueput((contentraw,classname,res))
         except:pass
+    @threader
+    def autoreadcheckname(self):
+        try:
+            time.sleep(globalconfig['textthreaddelay']/1000)
+            name=(self.textsource.currentname)
+            names=savehook_new_data[self.textsource.pname]['allow_tts_auto_names'].split('|')
+            if name not in names: 
+                self.readcurrent()
+            gobject.baseobject.textsource.currentname=None
+        except:
+            print_exc()
+            self.readcurrent()
     def readcurrent(self,force=False):
         try: 
             if force or globalconfig['autoread']:

@@ -420,6 +420,13 @@ class dialog_setting_game(QDialog):
                 cp_layout.addWidget(getspinbox(0,1000000,savehook_new_data[exepath],'inserthooktimeout' ))
                 formLayout.addLayout(cp_layout)
 
+                if globalconfig['allow_set_text_name']:
+                        cp_layout=QHBoxLayout()
+                        cp_layout.addWidget(QLabel(_TR('禁止自动朗读的人名(以|分隔多个)')))
+                        edit=QLineEdit(savehook_new_data[exepath]['allow_tts_auto_names'])
+                        edit.textChanged.connect(lambda x:savehook_new_data[exepath].__setitem__('allow_tts_auto_names',x))
+                        cp_layout.addWidget(edit)
+                        formLayout.addLayout(cp_layout)
                 self.show()
         def clicked2(self):
                 try: 

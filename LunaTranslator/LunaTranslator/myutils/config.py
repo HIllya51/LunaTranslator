@@ -53,7 +53,9 @@ def getdefaultsavehook(gamepath):
         'needinserthookcode':[],
         "removeuseless":False,
         'title':os.path.basename(os.path.dirname(gamepath))+'/'+ os.path.basename(gamepath),
-        "codepage_index":0
+        "codepage_index":0,
+        "allow_tts_auto_names":'',
+        "hooktypeasname":{}
     }
     return default
 

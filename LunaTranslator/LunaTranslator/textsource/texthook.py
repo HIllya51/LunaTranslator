@@ -24,13 +24,15 @@ class texthook(basetext  ):
         self.is64bit=win32utils.Is64bit(pids[0])
         self.lock=threading.Lock()
         self.hookdatacollecter=OrderedDict() 
+        self.hooktypecollecter=OrderedDict() 
+        self.currentname=None
         self.numcharactorcounter={}
         self.reverse={}
         self.forward=[]
         self.selectinghook=None
         self.selectedhook=[]
         self.selectedhookidx=[]
-         
+        self.allow_set_text_name=globalconfig['allow_set_text_name']
         
         self.pids=pids
         self.pname=pname
@@ -153,9 +155,10 @@ class texthook(basetext  ):
                 self.selectinghook=key
                 select=True
                 break
-        gobject.baseobject.hookselectdialog.addnewhooksignal.emit(key  ,select,[textthread]) 
-        self.hookdatacollecter[key]=[] 
         
+        self.hookdatacollecter[key]=[] 
+        self.hooktypecollecter[key]=0
+        gobject.baseobject.hookselectdialog.addnewhooksignal.emit(key  ,select,[textthread]) 
         self.lock.release()
         return True
     def setdelay(self):
@@ -258,7 +261,8 @@ class texthook(basetext  ):
                 if self.onnewhook(textthread)==False:
                     return
             self.lock.acquire()
-
+            if self.hooktypecollecter[key]==1:
+                self.currentname=output
             if len(self.selectedhook)==1:
                 if (key in self.selectedhook): 
                     self.newline.put(output)
