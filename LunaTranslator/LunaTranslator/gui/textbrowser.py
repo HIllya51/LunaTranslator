@@ -189,6 +189,7 @@ class Textbrowser( ):
     def append(self,x ,tag,origin ): 
         
         if self.cleared:
+            self.blockcount=0
             self.b1=0
         else:
             self.b1=self.textbrowser.document().blockCount()
@@ -201,16 +202,12 @@ class Textbrowser( ):
         if  True:# self.addtaged:
             if self.addtaged:
                 self.addtaged=False
-              
-            #     fh,_=self.getfh(False,origin)
-            # else:
-            fh,_=self.getfh(False,origin)
-            fh+=globalconfig['extra_space']
-            
-            for i in range(self.blockcount, self.textbrowser.document().blockCount()):
+               
+            fh=globalconfig['extra_space'] 
+            for i in range(self.blockcount, self.textbrowser.document().blockCount()): 
                 b=self.textbrowser.document().findBlockByNumber(i) 
                 tf=b.blockFormat() 
-                tf.setLineHeight(fh,QTextBlockFormat.FixedHeight) 
+                tf.setLineHeight(fh,QTextBlockFormat.LineDistanceHeight) 
                 if self.needdouble: 
                     self.textcursorback.setPosition(b.position()) 
                     self.textcursorback.setBlockFormat(tf) 
@@ -425,8 +422,7 @@ class Textbrowser( ):
         fhhalf,fonthira=self.getfh(True)  
         fh,_=self.getfh(False,True)
         fh+=globalconfig['extra_space']
-        self.blockcount=self.textbrowser.document().blockCount() 
-        for i in range(0,self.blockcount):
+        for i in range(0,self.textbrowser.document().blockCount() ):
             b=self.textbrowser.document().findBlockByNumber(i)
                  
             tf=b.blockFormat()
