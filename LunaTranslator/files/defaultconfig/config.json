@@ -56,6 +56,12 @@
         1000,
         300
     ],
+    "showocrgeo": [
+        100,
+        100,
+        1000,
+        300
+    ],
     "attachprocessgeo": [
         100,
         100,
@@ -112,7 +118,6 @@
     "show_fenci": false,
     "jiamingcolor": "black",
     "settingfonttype": "Arial",
-    "strongmousetransparent":false,
     "showintab_sub":false,
     "setting_geo_2": [
         100,
@@ -185,6 +190,10 @@
                 "use": true,
                 "tip": "鼠标穿透窗口",
                 "icon": "fa.mouse-pointer"
+            },"backtransbutton": {
+                "use": true,
+                "tip": "背景窗口透明",
+                "icon": "fa.lightbulb-o"
             },
             "locktoolsbutton": {
                 "use": true,
@@ -691,6 +700,7 @@
         }
     },
     "usesearchword": false,
+    "usecopyword":false,
     "outputtopasteboard": false,
     "ttscommon": {
         "rate": 1.0,
@@ -718,6 +728,10 @@
         "windowsocr": {
             "use": false,
             "name": "WindowsOCR"
+        },
+        "tesseract5": {
+            "use": false,
+            "name": "Tesseract5"
         },
         "baiduocr_X": {
             "use": false,
@@ -1138,6 +1152,8 @@
     "image_analyse": true,
     "time_period": false,
     "ocr_auto_method": 0,
+    "ocr_presolve_method":0,
+    "binary_thresh":128,
     "ocr_interval": 5,
     "mustocr_interval": 5,
     "ocrmininterval": 1,

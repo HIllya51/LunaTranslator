@@ -76,10 +76,11 @@ class ProcessRecord():
     def RemoveHook(self,addr):
         self.Send(define.RemoveHookCmd(addr));
 class TextThread():
-    def __init__(self,tp,_,host) -> None:
+    def __init__(self,rpc,tp,_,host) -> None:
         (texthook,hcode)=_
         hp=texthook.hp
         self.tp=tp
+        self.rpc=rpc
         self.hp=hp
         self.hpcode=hcode#hookcode.Generate(hp,tp.processId)
         self.host=host
@@ -92,9 +93,11 @@ class TextThread():
         
         self.lock.acquire()
         buffer=self.parsebuff(buff)
-        if not( globalconfig['direct_filterrepeat']and (len(buffer)>=3) and (buffer in self.saverepeat)):
-            self.lasttime=time.time()
+        if self.rpc.setting.timeout==0 and self.hp.type&hookcode.FULL_STRING:
+            self.rpc.Output(self,buffer)
+        elif not( globalconfig['direct_filterrepeat']and (len(buffer)>=3) and (buffer in self.saverepeat)):
             self.buffer+=buffer
+        self.lasttime=time.time()
         if len(self.buffer):
             self.saverepeat=self.buffer
         self.lock.release()
@@ -276,7 +279,7 @@ class RPC():
             
             if tp not in self.textthreads:
                 self.textthreadslock.acquire()
-                self.textthreads[tp]=TextThread(tp,self.ProcessRecord[tp.processId].GetHook(tp.addr),self)
+                self.textthreads[tp]=TextThread(self,tp,self.ProcessRecord[tp.processId].GetHook(tp.addr),self)
                 self.OnCreate(self.textthreads[tp])
                 self.textthreadslock.release()
             if self.textthreads[tp].hpcode[0]=='E':

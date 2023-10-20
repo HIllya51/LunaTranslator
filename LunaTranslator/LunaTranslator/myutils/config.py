@@ -1,13 +1,16 @@
 import json 
 import os 
 def tryreadconfig(path,default=None):
-    if os.path.exists(os.path.join('./userconfig/',path)):
-        path=os.path.join('./userconfig/',path)
-        with open(path,'r',encoding='utf-8') as ff:
-            x=json.load(ff) 
-    else:
-        x=default if default else {}
-    return x 
+    try:
+        if os.path.exists(os.path.join('./userconfig/',path)):
+            path=os.path.join('./userconfig/',path)
+            with open(path,'r',encoding='utf-8') as ff:
+                x=json.load(ff) 
+        else:
+            x=default if default else {}
+        return x 
+    except:
+        return {}
 def tryreadconfig2(path): 
     path=os.path.join('./files/defaultconfig/',path)
     with open(path,'r',encoding='utf-8') as ff:
@@ -22,7 +25,9 @@ dfmagpie10_config=tryreadconfig2('magpie10_config.json')
 defaultnoun=tryreadconfig2('noundictconfig.json')
 translatordfsetting=tryreadconfig2('translatorsetting.json')
 ocrdfsetting=tryreadconfig2('ocrsetting.json')
+ocrerrorfixdefault=tryreadconfig2('ocrerrorfix.json')
 
+ocrerrorfix=tryreadconfig('ocrerrorfix.json')
 globalconfig=tryreadconfig('config.json')
 magpie10_config=tryreadconfig('magpie10_config.json')
 postprocessconfig=tryreadconfig('postprocessconfig.json')
@@ -83,9 +88,9 @@ def syncconfig(config1,default,drop=False,deep=0,skipdict=False):
         for key in list(config1.keys()):
             if key not in default:
                 config1.pop(key) 
+ 
 
 syncconfig(globalconfig,defaultglobalconfig) 
-syncconfig(postprocessconfig,defaultpost ,True,3)  
 syncconfig(transerrorfixdictconfig,defaulterrorfix)
 
 syncconfig(noundictconfig,defaultnoun)
@@ -93,6 +98,13 @@ syncconfig(magpie10_config,dfmagpie10_config,skipdict=True)
 syncconfig(translatorsetting,translatordfsetting)
 
 syncconfig(ocrsetting,ocrdfsetting)
+
+if ocrerrorfix=={}:
+    if '_100' in postprocessconfig:
+        ocrerrorfix=postprocessconfig['_100']
+    else:
+        ocrerrorfix=ocrerrorfixdefault
+syncconfig(postprocessconfig,defaultpost ,True,3)  
 
 if len(globalconfig['toolbutton']['rank'])!=len(globalconfig['toolbutton']['buttons'].keys()):
     globalconfig['toolbutton']['rank']+=list(set(globalconfig['toolbutton']['buttons'].keys())-set(globalconfig['toolbutton']['rank']))
@@ -141,6 +153,8 @@ def saveallconfig():
             ff.write(json.dumps(noundictconfig,ensure_ascii=False,sort_keys=False, indent=4))
         with open('./userconfig/translatorsetting.json','w',encoding='utf-8') as ff:
             ff.write(json.dumps(translatorsetting,ensure_ascii=False,sort_keys=False, indent=4))
+        with open('./userconfig/ocrerrorfix.json','w',encoding='utf-8') as ff:
+            ff.write(json.dumps(ocrerrorfix,ensure_ascii=False,sort_keys=False, indent=4))
         with open('./userconfig/ocrsetting.json','w',encoding='utf-8') as ff:
             ff.write(json.dumps(ocrsetting,ensure_ascii=False,sort_keys=False, indent=4))
 

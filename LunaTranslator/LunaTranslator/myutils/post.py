@@ -163,14 +163,6 @@ def _8_f(line):
                         except:
                                 print_exc()
         return line
-def _100_f(line):
-        filters=postprocessconfig['_100']['args']['替换内容']
-        for fil in filters: 
-                if fil=="":
-                        continue
-                else:
-                        line=line.replace(fil,filters[fil])
-        return line
 
 def _remove_non_shiftjis_char(line):
         newline=''
@@ -241,7 +233,6 @@ def POSTSOLVE(line):
         '_7':_7_f,
         '_8':_8_f,
         '_13':_13_f,
-        '_100':_100_f,
         '_7_zhuanyi':_7_zhuanyi_f,
         '_remove_non_shiftjis_char':_remove_non_shiftjis_char,
         "_remove_latin":_remove_latin,
@@ -267,9 +258,8 @@ def POSTSOLVE(line):
            pass
 
     for postitem in globalconfig['postprocess_rank']:
+        if postitem not in postprocessconfig:continue
         if postprocessconfig[postitem]['use']:
-                if postitem=='_100' and globalconfig['sourcestatus2']['ocr']['use']==False:
-                        continue
                 try:
                         if postitem=='_11':
                                 _f=functions[postitem]

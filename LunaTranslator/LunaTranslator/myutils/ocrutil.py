@@ -1,10 +1,40 @@
 
-import win32utils
+import win32utils,time
 import math,os,importlib
-from myutils.config import globalconfig,_TR
+from myutils.config import globalconfig,_TR,ocrerrorfix
 from PyQt5.QtWidgets import QApplication
+from PyQt5.QtGui import QImage
+from PyQt5.QtCore import QByteArray,QBuffer
 from myutils.exceptions import ArgsEmptyExc
 from traceback import print_exc
+import gobject,winsharedutils
+def togray(image):
+    gray_image=image.convertToFormat(QImage.Format_Grayscale8)
+    return gray_image
+ 
+def otsu_threshold_fast(image:QImage,thresh):   
+    
+    byte_array = QByteArray()
+    buffer = QBuffer(byte_array)
+    buffer.open(QBuffer.WriteOnly)
+    image.save(buffer, "BMP") 
+    buffer.close()
+    image_data = byte_array.data()
+
+    solved=winsharedutils.otsu_binary(image_data,thresh)
+    image=QImage()
+    image.loadFromData(solved)
+    return image
+def imagesolve(image):
+    if globalconfig['ocr_presolve_method']==0:
+        image2=image
+    elif globalconfig['ocr_presolve_method']==1:
+        image2=togray(image)
+    elif globalconfig['ocr_presolve_method']==2:
+        image2=otsu_threshold_fast(image,globalconfig['binary_thresh'])
+    elif globalconfig['ocr_presolve_method']==3:
+        image2=otsu_threshold_fast(image,-1)
+    return image2
 def imageCut(hwnd,x1,y1,x2,y2):
     screen = QApplication.primaryScreen() 
     if hwnd:
@@ -23,7 +53,10 @@ def imageCut(hwnd,x1,y1,x2,y2):
             pix = screen.grabWindow(QApplication.desktop().winId(), x1, y1, x2-x1, y2-y1) 
     else:
         pix = screen.grabWindow(QApplication.desktop().winId(), x1, y1, x2-x1, y2-y1) 
-    return pix.toImage()
+    image= pix.toImage()
+    image2=imagesolve(image)
+    gobject.baseobject.showocrimage.setimage.emit([image,image2])
+    return image2
 
 _nowuseocr=None
 _ocrengine=None
@@ -36,6 +69,16 @@ def ocr_end():
         pass
     _nowuseocr=None
     _ocrengine=None
+
+def _100_f(line):
+        filters=ocrerrorfix['args']['替换内容']
+        for fil in filters: 
+                if fil=="":
+                        continue
+                else:
+                        line=line.replace(fil,filters[fil])
+        return line
+
 def ocr_run(img):
     global _nowuseocr,_ocrengine
      
@@ -55,6 +98,7 @@ def ocr_run(img):
             _ocrengine=aclass(use)   
             _nowuseocr=use
         text= _ocrengine.ocr(img)
+        text=_100_f(text)
     except Exception as e:
         if isinstance(e,ArgsEmptyExc):
             msg=str(e)

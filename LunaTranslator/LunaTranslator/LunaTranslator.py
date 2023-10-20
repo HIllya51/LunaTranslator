@@ -23,6 +23,7 @@ import gui.edittext
 import importlib
 from functools import partial  
 from gui.settin import Settin 
+from gui.showocrimage import showocrimage
 from gui.attachprocessdialog import AttachProcessDialog
 import win32con 
 import re ,gobject
@@ -552,6 +553,7 @@ class MAINUI() :
         self.edittextui=gui.edittext.edittext(self.translation_ui)  
         self.searchwordW=searchwordW(self.translation_ui)
         self.hookselectdialog=gui.selecthook.hookselect(self.settin_ui) 
+        self.showocrimage=showocrimage(self.settin_ui)
         self.AttachProcessDialog=AttachProcessDialog(self.settin_ui,self.selectprocess,self.hookselectdialog)
         self.starttextsource()  
         threading.Thread(target=self.autocheckhwndexists).start()   

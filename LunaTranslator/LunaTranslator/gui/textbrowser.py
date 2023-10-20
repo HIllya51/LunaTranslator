@@ -330,7 +330,7 @@ class Textbrowser( ):
                             xx=guesswidth1 -(tailx- tl1.x())  
                             guesslinehead=None
                             pos2=tl3.x()-xx+2,tl3.y() ,xx-4,tl4.y()-tl1.y()    
-                            if globalconfig['usesearchword']:
+                            if globalconfig['usesearchword'] or globalconfig['usecopyword']:
                                 self.searchmasklabels_clicked[labeli].setGeometry(*pos1) 
                                 self.searchmasklabels_clicked[labeli].show()
                                 self.searchmasklabels_clicked[labeli].company=self.searchmasklabels_clicked[labeli+1]
@@ -356,7 +356,7 @@ class Textbrowser( ):
                              
                             guesswidth+=[(tl2.x()-tl1.x())/len(word['orig'])]*(len(word['orig']))
                             pos1=tl1.x()+2,tl1.y() ,tl2.x()-tl1.x()-4,tl2.y()-tl1.y() 
-                            if globalconfig['usesearchword']:
+                            if globalconfig['usesearchword'] or globalconfig['usecopyword']:
                                 self.searchmasklabels_clicked[labeli].setGeometry(*pos1)
                                 self.searchmasklabels_clicked[labeli].company=None
                                 self.searchmasklabels_clicked[labeli].show()

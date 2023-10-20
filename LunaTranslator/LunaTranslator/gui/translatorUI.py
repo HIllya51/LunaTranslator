@@ -132,8 +132,13 @@ class QUnFrameWindow(resizableframeless):
             self.translate_text.append (res[1],res[0],origin)    
         if globalconfig['zitiyangshi'] ==3:
             self.translate_text.showyinyingtext(color  ) 
-        if (globalconfig['usesearchword'] or globalconfig['show_fenci']  ) and res[0]:
-            self.translate_text.addsearchwordmask(res[0],res[1],gobject.baseobject.searchwordW.getnewsentencesignal.emit   ) 
+        if (globalconfig['usesearchword'] or globalconfig['usecopyword'] or globalconfig['show_fenci']  ) and res[0]:
+            def callback(word):
+                if globalconfig['usecopyword'] :
+                    winsharedutils.clipboard_set(word)
+                if globalconfig['usesearchword']:
+                    gobject.baseobject.searchwordW.getnewsentencesignal.emit(word)
+            self.translate_text.addsearchwordmask(res[0],res[1],callback   ) 
         
         
         if globalconfig['autodisappear']:
@@ -181,7 +186,7 @@ class QUnFrameWindow(resizableframeless):
 
         iconstate = {'fullscreen': self.isletgamefullscreened, "muteprocess": self.processismuteed, "locktoolsbutton":
                      globalconfig['locktools'], "showraw": globalconfig['isshowrawtext'], "automodebutton": globalconfig['autorun']}
-        colorstate = {"automodebutton": globalconfig['autorun'], "showraw": globalconfig['isshowrawtext'], "mousetransbutton": self.mousetransparent,
+        colorstate = {"automodebutton": globalconfig['autorun'], "showraw": globalconfig['isshowrawtext'], "mousetransbutton": self.mousetransparent, "backtransbutton": self.backtransparent,
                       "locktoolsbutton": globalconfig['locktools'], "hideocrrange": self.showhidestate, "bindwindow": self.isbindedwindow, "keepontop": globalconfig['keepontop']}
         onstatecolor="#FF69B4"
          
@@ -242,7 +247,8 @@ class QUnFrameWindow(resizableframeless):
             ("noundict",lambda: gobject.baseobject.settin_ui.button_noundict.click()),
             ("fix",lambda: gobject.baseobject.settin_ui.button_fix.click()),
             ("langdu",self.langdu),
-            ("mousetransbutton",self.changemousetransparentstate),
+            ("mousetransbutton",lambda: self.changemousetransparentstate(0)),
+            ("backtransbutton",lambda:self.changemousetransparentstate(1)),
             ("locktoolsbutton",self.changetoolslockstate),
             ("gamepad",lambda: dialog_savedgame(gobject.baseobject.settin_ui)),
             ("gamepad_new",lambda: dialog_savedgame_new(gobject.baseobject.settin_ui)),
@@ -389,6 +395,7 @@ class QUnFrameWindow(resizableframeless):
         self.showhidestate=False
         self.processismuteed=False
         self.mousetransparent=False
+        self.backtransparent=False
         self.isbindedwindow=False
         self.buttons=[] 
         self.showbuttons=[] 
@@ -418,7 +425,7 @@ class QUnFrameWindow(resizableframeless):
                                            color: white;\
                                             \
                                            background-color: rgba(%s, %s, %s, %s)"
-                                           %(int(globalconfig['backcolor'][1:3],16),int(globalconfig['backcolor'][3:5],16),int(globalconfig['backcolor'][5:7],16),globalconfig['transparent']*(not self.mousetransparent)/100))
+                                           %(int(globalconfig['backcolor'][1:3],16),int(globalconfig['backcolor'][3:5],16),int(globalconfig['backcolor'][5:7],16),globalconfig['transparent']*(not self.backtransparent)/100))
         self._TitleLabel.setStyleSheet("border-width: 0;\
                                            border-style: outset;\
                                            border-top: 0px solid #e8f3f9;\
@@ -448,8 +455,11 @@ class QUnFrameWindow(resizableframeless):
         self.refreshtoolicon()
         self.fullscreenmanager(_hwnd,self.isletgamefullscreened) 
      
-    def changemousetransparentstate(self): 
-        self.mousetransparent= not self.mousetransparent
+    def changemousetransparentstate(self,idx): 
+        if idx==0:  
+            self.mousetransparent= not self.mousetransparent
+        elif idx==1:
+            self.backtransparent=not self.backtransparent
         
         
         
@@ -468,12 +478,10 @@ class QUnFrameWindow(resizableframeless):
                 time.sleep(0.1) 
             #结束时取消穿透(可能以快捷键终止)
             win32utils.SetWindowLong(self.winId(), win32con.GWL_EXSTYLE, win32utils.GetWindowLong(hwnd, win32con.GWL_EXSTYLE) &~ win32con.WS_EX_TRANSPARENT)
-        if globalconfig['strongmousetransparent']:
-            if self.mousetransparent:
+        if self.mousetransparent:
                 #globalconfig['locktools']=True #锁定，否则无法恢复。
                 threading.Thread(target=_checkplace).start()
-        else:
-            self.set_color_transparency()
+        self.set_color_transparency()
         self.refreshtoolicon()
     def showhide(self): 
         if gobject.baseobject.textsource.rect:

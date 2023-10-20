@@ -51,7 +51,8 @@ def setTabcishu_l(self) :
         ]+gethiragrid(self)+ [
                 [''],
                 [''],
-                [('点击原文查词',5),(getsimpleswitch(globalconfig,'usesearchword'),1),getcolorbutton(globalconfig,'',callback=lambda: gobject.baseobject.searchwordW.showsignal.emit(),icon='fa.search',constcolor="#FF69B4")],
+                [('点击单词查词',5),(getsimpleswitch(globalconfig,'usesearchword'),1),getcolorbutton(globalconfig,'',callback=lambda: gobject.baseobject.searchwordW.showsignal.emit(),icon='fa.search',constcolor="#FF69B4"),'',
+                 ('点击单词复制',5),(getsimpleswitch(globalconfig,'usecopyword'),1),],
 
                 [''],
                 [('辞书',10)],

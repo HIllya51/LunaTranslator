@@ -26,7 +26,7 @@ def setTab_quick_direct(self):
             '_5':gobject.baseobject.translation_ui.changeshowhideraw,
             '_6':lambda: gobject.baseobject.transhis.showsignal.emit(),
             '_7':gobject.baseobject.translation_ui.langdu,
-            '_8':gobject.baseobject.translation_ui.changemousetransparentstate,
+            '_8':lambda: gobject.baseobject.translation_ui.changemousetransparentstate(0),
             '_9':gobject.baseobject.translation_ui.changetoolslockstate,
             '_10':lambda : gobject.baseobject.translation_ui.showsavegame_signal.emit(0),
             '_10_2':lambda : gobject.baseobject.translation_ui.showsavegame_signal.emit(1),

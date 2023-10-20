@@ -109,5 +109,27 @@
 				"islink":true
 			}
 		}
+    },
+	"tesseract5": {
+        "args": {
+            "下载": "https://github.com/UB-Mannheim/tesseract/wiki",
+            "路径": "",
+            "语言":0,
+            "附加参数":"--psm 6"
+        },"argstype":{
+			"下载":{
+				"type":"label",
+				"islink":true
+			},"路径":{
+				"type":"file",
+				"dir":false,
+				"filter":"tesseract.exe",
+				"multi":false
+			},
+            "语言":{
+                "type":"combo",
+                "list_function":["ocrengines.tesseract5","list_langs"]
+            }
+		}
     }
 }

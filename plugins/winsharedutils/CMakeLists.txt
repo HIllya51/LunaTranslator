@@ -22,7 +22,7 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY $<1:${CMAKE_FINAL_OUTPUT_DIRECTORY}>)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY $<1:${CMAKE_FINAL_OUTPUT_DIRECTORY}>)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY $<1:${CMAKE_FINAL_OUTPUT_DIRECTORY}>)
 
-add_library(winsharedutils MODULE cinterface.cpp clipboard.cpp lnk.cpp dllmain.cpp levenshtein.cpp muteprocess.cpp pch.cpp sapi_dll.cpp simplemecab.cpp WebBrowser.cpp )
+add_library(winsharedutils MODULE otsu.cpp cinterface.cpp clipboard.cpp lnk.cpp dllmain.cpp levenshtein.cpp muteprocess.cpp pch.cpp sapi_dll.cpp simplemecab.cpp WebBrowser.cpp )
 
 if(${CMAKE_SIZEOF_VOID_P} EQUAL 8)
 	set_target_properties(winsharedutils PROPERTIES OUTPUT_NAME "winsharedutils64")

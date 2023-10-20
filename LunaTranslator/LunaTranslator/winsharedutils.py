@@ -1,4 +1,4 @@
-from ctypes import c_uint,c_bool,POINTER,c_char_p,c_uint64,c_wchar_p,pointer,CDLL,Structure,c_void_p,cast,create_unicode_buffer
+from ctypes import c_uint,c_bool,POINTER,c_char_p,c_uint64,c_wchar_p,pointer,CDLL,c_int,Structure,c_void_p,cast,memmove,create_unicode_buffer,create_string_buffer
 import platform,os
 
 if platform.architecture()[0]=='64bit':
@@ -137,3 +137,12 @@ def GetLnkTargetPath(lnk):
     dirp=create_unicode_buffer(MAX_PATH)
     _GetLnkTargetPath(lnk,exe,arg,icon,dirp)
     return exe.value,arg.value,icon.value,dirp.value
+
+
+_otsu_binary=utilsdll.otsu_binary
+_otsu_binary.argtypes=c_void_p,c_int
+def otsu_binary(image,thresh):
+    buf=create_string_buffer(len(image))
+    memmove(buf,image,len(image))
+    _otsu_binary(buf,thresh)
+    return buf

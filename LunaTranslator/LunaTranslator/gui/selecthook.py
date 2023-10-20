@@ -212,7 +212,7 @@ class hookselect(closeashidewindow):
                 self.tttable.horizontalHeader().setSectionResizeMode(0,QHeaderView.ResizeToContents)
                 self.tttable.horizontalHeader().setSectionResizeMode(1,QHeaderView.ResizeToContents)
             else:
-                self.ttCombomodelmodel.setHorizontalHeaderLabels(_TRL(['选则','HOOK','文本']))
+                self.ttCombomodelmodel.setHorizontalHeaderLabels(_TRL(['选择','HOOK','文本']))
             
                 self.tttable.horizontalHeader().setSectionResizeMode(1,QHeaderView.Interactive)
                 self.tttable.horizontalHeader().setSectionResizeMode(2,QHeaderView.Interactive)

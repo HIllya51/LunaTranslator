@@ -17,13 +17,18 @@ def qimge2np(img:QImage):
     img=img.scaled(128,8*3) 
     img.shape=shape
     return img
-def compareImage(img1:QImage,img2):
+def sample_compare(img1,img2,h=24,w=128):
     cnt=0
-    for i in range(128):
-        for j in range(24):
+    for i in range(w):
+        for j in range(h):
             cnt+=(img1.pixel(i,j)==img2.pixel(i,j)) 
-    return cnt/(128*24)
+    return cnt/(w*h)
      
+def compareImage(img1:QImage,img2): 
+    if globalconfig['ocr_presolve_method'] in [2,3]:
+        return sample_compare(img1,img2,img1.height(),img1.width())
+    else:
+        return sample_compare(img1,img2)
 def getEqualRate(  str1, str2):
     
         score = SequenceMatcher(None, str1, str2).quick_ratio()

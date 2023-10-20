@@ -1,5 +1,5 @@
 {
-    "version":"v2.28.3",
+    "version":"v2.29.1",
     "language_list_show":["简体中文","日本語","English","Русский язык","Español","한국어","Français","繁體中文","Tiếng Việt","Türkçe","Polski","Українська Мова","Italiano","اللغة العربية","ภาษาไทย"] ,
     "language_list_translator":["简体中文","日文","英文","俄语","西班牙语","韩语","法语","繁体中文","越南语","土耳其语","波兰语","乌克兰语","意大利语","阿拉伯语","泰语"],
     "language_list_translator_inner":["zh", "ja", "en","ru","es","ko","fr","cht","vi","tr","pl","uk","it","ar","th"],
