@@ -1135,6 +1135,12 @@
             "type": "offline",
             "color": "blue",
             "name": "OneRingTranslator"
+        },
+        "transformers_neural": {
+            "use": true,
+            "type": "offline",
+            "color": "blue",
+            "name": "transformers offline neural translator"
         }
     },
     "minifollow": false,
