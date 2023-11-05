@@ -390,5 +390,11 @@
 				"islink":true
 			}
 		}
+    },
+    "transformers_neural": {
+        "args": {
+            "模型路径": "D:\\models\\mt5-translation-ja_zh-onnx\\mt5-ja_zh_beam_search.onnx",
+            "Tokenizer路径": "D:\\models\\mt5-translation-ja_zh\\tokenizer.json"
+        }
     }
 }
