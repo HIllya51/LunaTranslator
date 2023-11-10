@@ -142,7 +142,7 @@ class MAINUI() :
         ss=POSTSOLVE(s)
         self.settin_ui.showandsolvesig.emit(s)
         return ss
-    def textgetmethod(self,_paste_str,shortlongskip=True,embedcallback=None,onlytrans=False):
+    def textgetmethod(self,_paste_str,shortlongskip=True,embedcallback=None,onlytrans=False,forcetrans=False):
         _autolock(self.solvegottextlock)
         if onlytrans==False:
             self.currentsignature=time.time()
@@ -178,15 +178,15 @@ class MAINUI() :
         while len(_paste_str) and _paste_str[-1] in '\r\n \t':  #在后处理之后在去除换行，这样换行符可以当作行结束符给后处理用
             _paste_str=_paste_str[:-1]  
             
-        if _paste_str=='' or (shortlongskip and (_paste_str==self.currenttext or len(_paste_str)>1000)):
+        if _paste_str=='' or (shortlongskip and (_paste_str==self.currenttext and not forcetrans or len(_paste_str)>1000)):
             if embedcallback:
                 embedcallback('zhs', _paste_str) 
             return 
         
-        
-        try:
-            self.textsource.sqlqueueput((_paste_str,)) 
-        except:pass
+        if _paste_str != self.currenttext:
+            try:
+                self.textsource.sqlqueueput((_paste_str,)) 
+            except:pass
         if onlytrans==False:
             self.currenttext=_paste_str
             if globalconfig['outputtopasteboard'] and globalconfig['sourcestatus2']['copy']['use']==False:  
@@ -211,7 +211,6 @@ class MAINUI() :
         paste_str_solved,optimization_params= self.solvebeforetrans(_paste_str) 
         
         skip=shortlongskip and  (len(paste_str_solved)<globalconfig['minlength'] or len(paste_str_solved)>globalconfig['maxlength'] )
-
         self.premtalready=['premt']
         if 'premt' in self.translators:
             try:
@@ -228,10 +227,10 @@ class MAINUI() :
         _len=len(self.translators)
         keys=list(self.translators.keys())+list(self.translators.keys())
         keys=keys[self.lasttranslatorindex:self.lasttranslatorindex+_len]
-        #print(keys,usenum,self.lasttranslatorindex)
+        # print(keys,usenum,self.lasttranslatorindex)
         for engine in keys:  
             if engine not in self.premtalready:
-                self.translators[engine].gettask((partial(self.GetTranslationCallback,onlytrans,engine,self.currentsignature, optimization_params,_showrawfunction,_showrawfunction_sig,_paste_str),_paste_str,paste_str_solved,skip,embedcallback,shortlongskip,hira)) 
+                self.translators[engine].gettask((partial(self.GetTranslationCallback,onlytrans,engine,self.currentsignature, optimization_params,_showrawfunction,_showrawfunction_sig,_paste_str),_paste_str,paste_str_solved,skip,embedcallback,shortlongskip,hira,forcetrans)) 
             thistimeusednum+=1
             self.lasttranslatorindex+=1
             if(thistimeusednum>=usenum):
@@ -289,19 +288,7 @@ class MAINUI() :
             time.sleep(globalconfig['textthreaddelay']/1000)
             name=(self.textsource.currentname)
             names=savehook_new_data[self.textsource.pname]['allow_tts_auto_names'].split('|')
-            needpass=False
-            if name in names:
-                needpass=True
-            
-            #name文本是类似“美香「おはよう」”的形式
-            text=name
-            for _name in names:
-                if text.startswith(_name) or text.endswith(_name):
-                    if len(text)>=len(_name)+3:    #2个引号+至少1个文本内容。
-                        needpass=True
-                        break
-             
-            if needpass==False:# name not in names: 
+            if name not in names: 
                 self.readcurrent()
             gobject.baseobject.textsource.currentname=None
         except:

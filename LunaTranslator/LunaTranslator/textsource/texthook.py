@@ -313,9 +313,9 @@ class texthook(basetext  ):
             while self.newline.empty()==False:
                 paste_str=self.newline.get()  
             return paste_str
-    def runonce(self):
+    def runonce(self, forcetrans=False):
          
-        self.textgetmethod(self.runonce_line,False)
+        self.textgetmethod(self.runonce_line,False, forcetrans=forcetrans)
     def end(self):    
         for pid in self.pids:
             self.RPC.Detach(pid)

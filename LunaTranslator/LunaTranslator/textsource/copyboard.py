@@ -19,5 +19,5 @@ class copyboard(basetext):
                 if globalconfig['excule_from_self']   and win32utils.GetWindowThreadProcessId(win32utils.GetClipboardOwner())==os.getpid():
                     return  
                 return (paste_str)
-    def runonce(self): 
-        self.textgetmethod(winsharedutils.clipboard_get(),False)
+    def runonce(self, forcetrans=False): 
+        self.textgetmethod(winsharedutils.clipboard_get(),False, forcetrans=forcetrans)
