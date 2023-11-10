@@ -289,7 +289,19 @@ class MAINUI() :
             time.sleep(globalconfig['textthreaddelay']/1000)
             name=(self.textsource.currentname)
             names=savehook_new_data[self.textsource.pname]['allow_tts_auto_names'].split('|')
-            if name not in names: 
+            needpass=False
+            if name in names:
+                needpass=True
+            
+            #name文本是类似“美香「おはよう」”的形式
+            text=name
+            for _name in names:
+                if text.startswith(_name) or text.endswith(_name):
+                    if len(text)>=len(_name)+3:    #2个引号+至少1个文本内容。
+                        needpass=True
+                        break
+             
+            if needpass==False:# name not in names: 
                 self.readcurrent()
             gobject.baseobject.textsource.currentname=None
         except:
