@@ -119,7 +119,7 @@ class ocrtext(basetext):
             
             return (text)
             
-    def runonce(self): 
+    def runonce(self, forcetrans=False): 
         
         if self.rect is None:
             return
@@ -134,7 +134,7 @@ class ocrtext(basetext):
         self.savelastrecimg=imgr1
         self.lastocrtime=time.time()
         self.savelasttext=text
-        self.textgetmethod(text,False)
+        self.textgetmethod(text,False, forcetrans=forcetrans)
     def ocrtest(self,img):
          
         fname='./cache/ocr/{}.png'.format(self.timestamp)

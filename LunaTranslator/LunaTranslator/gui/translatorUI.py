@@ -237,7 +237,7 @@ class QUnFrameWindow(resizableframeless):
             gobject.baseobject.textgetmethod(text,False)
         functions=(
             ("move",None),
-            ("retrans",self.startTranslater),
+            ("retrans",self.reTranslater),
             ("automodebutton",self.changeTranslateMode),
             ("setting",lambda:gobject.baseobject.settin_ui.showsignal.emit()),
             ("copy",lambda:winsharedutils.clipboard_set( gobject.baseobject.currenttext)),
@@ -533,7 +533,11 @@ class QUnFrameWindow(resizableframeless):
     def startTranslater(self) :
         if gobject.baseobject.textsource :
             threading.Thread(target=gobject.baseobject.textsource.runonce).start()
-         
+
+    def reTranslater(self):
+        if gobject.baseobject.textsource :
+            threading.Thread(target=gobject.baseobject.textsource.runonce, args=('True',)).start()
+
     def toolbarhidedelay(self):
         
         for button in self.buttons:
