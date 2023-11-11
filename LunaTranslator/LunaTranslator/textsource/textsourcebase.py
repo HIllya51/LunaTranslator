@@ -94,7 +94,7 @@ class basetext:
             
     def gettextthread(self):
         pass
-    def runonce(self, forcetrans=False):
+    def runonce(self):
         pass
     def end(self):
         self.ending=True
