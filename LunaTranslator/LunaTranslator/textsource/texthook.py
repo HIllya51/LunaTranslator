@@ -78,7 +78,7 @@ class texthook(basetext  ):
                 self.useembed(addr,_ctx1,_ctx2,True) 
     def getembedtext(self,text,tt):  
         if globalconfig['autorun']==False:
-            self.notify(self.EMBEDPID,text)
+            self.embedcallback(text,0,text)
             return 
         if self.checkisusingembed(tt.tp.addr,tt.tp.ctx,tt.tp.ctx2):
             self.newline.put((text,False, functools.partial(self.embedcallback,text),True))
@@ -97,8 +97,8 @@ class texthook(basetext  ):
         self.flashembedsettings()
     def flashembedsettings(self):
         self.sharedcell.contents.waittime=int(1000* globalconfig['embedded']['timeout_translate'])
-        self.sharedcell.contents.fontCharSet=static_data["charsetmap"][globalconfig['embedded']['changecharset_charset']]
-        self.sharedcell.contents.fontCharSetEnabled=globalconfig['embedded']['changecharset']
+        self.sharedcell.contents.fontCharSet=2#static_data["charsetmap"][globalconfig['embedded']['changecharset_charset']]
+        self.sharedcell.contents.fontCharSetEnabled=False#globalconfig['embedded']['changecharset']
         self.sharedcell.contents.fontFamily=globalconfig['embedded']['changefont_font'] if globalconfig['embedded']['changefont'] else ''
         self.sharedcell.contents.spaceadjustpolicy=globalconfig['embedded']['insertspace_policy']
         self.sharedcell.contents.keeprawtext=globalconfig['embedded']['keeprawtext']
