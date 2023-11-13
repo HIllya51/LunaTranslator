@@ -79,7 +79,7 @@ def listprocessm():
     if len(_list)==0:return []
 
     ret=[]
-    hasprogram='c:\\program Files' in _list[0].lower() 
+    hasprogram='c:\\program files' in _list[0].lower() 
     for name_ in _list:
         name=name_.lower()
         if ':\\windows\\'  in name   or '\\microsoft\\'  in name or '\\windowsapps\\'  in name:
