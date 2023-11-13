@@ -117,6 +117,8 @@ MAX_HOOK=2500
 class SearchParam32(Structure):
     _fields_=[
         ('pattern',c_char*30),
+        ('address_method',c_int),
+        ('search_method',c_int),
         ('length',c_int),
         ('offset',c_int),
         ('searchTime',c_int),
@@ -132,6 +134,8 @@ class SearchParam32(Structure):
 class SearchParam64(Structure):
     _fields_=[
         ('pattern',c_char*30),
+        ('address_method',c_int),
+        ('search_method',c_int),
         ('length',c_int),
         ('offset',c_int),
         ('searchTime',c_int),

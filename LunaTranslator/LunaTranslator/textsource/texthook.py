@@ -179,26 +179,21 @@ class texthook(basetext  ):
             usestruct.pattern=bytes([0x55,0x8b,0xec])
             usestruct.length=3
             usestruct.offset=0
-            usestruct.searchTime=30000
-            usestruct.maxRecords=100000
-            usestruct.codepage=self.codepage()
-            usestruct.padding=0
-            usestruct.minAddress=0
             usestruct.maxAddress=0xFFFFFFFF
-            usestruct.boundaryModule=os.path.basename(self.pname)
         else:
             usestruct=define.SearchParam64()
             usestruct.pattern=bytes([0xCC,0xCC,0x48,0x89])
             usestruct.length=4
             usestruct.offset=2
-            usestruct.searchTime=30000
-            usestruct.maxRecords=100000
-            usestruct.codepage=self.codepage()
-            usestruct.padding=0
-            usestruct.minAddress=0
             usestruct.maxAddress=0xFFFFFFFFFFFFFFFF
-            usestruct.boundaryModule=os.path.basename(self.pname)
-
+        usestruct.address_method=0
+        usestruct.padding=0
+        usestruct.minAddress=0
+        usestruct.search_method=0
+        usestruct.searchTime=30000
+        usestruct.maxRecords=100000
+        usestruct.codepage=self.codepage()
+        usestruct.boundaryModule=os.path.basename(self.pname)
         return usestruct
 
     def findhook(self,usestruct):
