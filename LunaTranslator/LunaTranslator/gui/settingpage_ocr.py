@@ -31,7 +31,7 @@ def getocrgrid(self) :
                             {'t':'lineedit'}
                         )
                 items.append({'t':'okcancel' })
-                _3=getcolorbutton(globalconfig,'',callback=functools.partial(autoinitdialog,self,globalconfig['ocr'][name]['name'],900,items),icon='fa.gear',constcolor="#FF69B4")
+                _3=getcolorbutton(globalconfig,'',callback=functools.partial(autoinitdialog,self,globalconfig['ocr'][name]['name'],800,items),icon='fa.gear',constcolor="#FF69B4")
                 
             else:
                 _3=''

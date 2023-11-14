@@ -40,7 +40,7 @@ class rangeadjust(Mainw) :
     def moveEvent(self,e):
                 rect = self.geometry() 
                 if gobject.baseobject.textsource.rect:    
-                    gobject.baseobject.textsource.rect=[(rect.left()+globalconfig['ocrrangewidth'],rect.top()+globalconfig['ocrrangewidth']),(rect.right()-2*globalconfig['ocrrangewidth'],rect.bottom()-2*globalconfig['ocrrangewidth'])]  
+                    gobject.baseobject.textsource.rect=[(rect.left(),rect.top()),(rect.right(),rect.bottom())]  
     def enterEvent(self, QEvent) :  
         self.drag_label.setStyleSheet("background-color:rgba(0,0,0, 0.1)") 
     def leaveEvent(self, QEvent): 
@@ -50,7 +50,7 @@ class rangeadjust(Mainw) :
          self.label.setGeometry(0, 0, self.width(), self.height())  
          rect = self.geometry() 
          if gobject.baseobject.textsource.rect:    
-             gobject.baseobject.textsource.rect=[(rect.left()+globalconfig['ocrrangewidth'],rect.top()+globalconfig['ocrrangewidth']),(rect.right()-2*globalconfig['ocrrangewidth'],rect.bottom()-2*globalconfig['ocrrangewidth'])]  
+             gobject.baseobject.textsource.rect=[(rect.left(),rect.top()),(rect.right(),rect.bottom())]  
          super(rangeadjust, self).resizeEvent(a0)  
 
 

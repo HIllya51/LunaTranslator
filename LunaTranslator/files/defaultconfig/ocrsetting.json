@@ -16,6 +16,22 @@
 				"list":["通用文字识别（标准版）","通用文字识别（标准含位置版）","通用文字识别（高精度版）","通用文字识别（高精度含位置版）"]
             }
 		}
+    },"txocr": {
+        "args": {
+            "注册网址": "https://cloud.tencent.com/document/product/866/33526",
+            "SecretId": "",
+            "SecretKey": "", 
+            "Region":0
+        },"argstype":{
+			"注册网址":{
+				"type":"label",
+				"islink":true
+			},
+            "Region":{
+                "type":"combo",
+				"list":["ap-beijing","ap-guangzhou","ap-hongkong","ap-seoul","ap-shanghai","ap-singapore","na-toronto"]
+            }
+		}
     },"feishu": {
         "args": {
             "注册网址": "https://open.feishu.cn/document/ukTMukTMukTM/ukDNz4SO0MjL5QzM/auth-v3/auth/tenant_access_token_internal",

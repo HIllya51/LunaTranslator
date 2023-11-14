@@ -19,13 +19,10 @@ def resourcegrid( ) :
                 __=False
             else:
                 __=True 
-            spname=_['name'].split('_')
-            newl=[]
-            for _n in spname:
-                newl.append(_TR(_n))
+             
             grid.append(
                 
-                  [('_'.join(newl),1,''),(makehtml(_['link'],__),1,'link')]
+                  [(_TR(_['name']),1,''),(makehtml(_['link'],__),1,'link')]
              ) 
         return grid
 @threader

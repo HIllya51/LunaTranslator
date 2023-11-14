@@ -126,9 +126,9 @@ class OCR(baseocr):
 
         def doCall(url, header, params, method):
             if 'get' == method:
-                return requests.get(url, params)
+                return requests.get(url, params, proxies= self.proxy)
             elif 'post' == method:
-                return requests.post(url, params, header)
+                return requests.post(url, params, header, proxies= self.proxy)
 
 
         def readFileAsBase64(path):

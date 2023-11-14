@@ -124,6 +124,10 @@ def _TR(k):
         k.encode('ascii')
         return k
     except:
+        if '_' in k:
+            splits=k.split('_')
+            return '_'.join([_TR(_) for _ in splits]) 
+
         if k not in languageshow or languageshow[k]=='':
             languageshow[k]=''
             return k

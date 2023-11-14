@@ -736,6 +736,9 @@
         "baiduocr_X": {
             "use": false,
             "name": "baiduOCR_X"
+        },"txocr": {
+            "use": false,
+            "name": "tencent.ocr"
         },
         "feishu": {
             "use": false,
@@ -765,7 +768,7 @@
     "fanyi": {
         "ali2": {
             "use": false,
-            "name": "阿里2",
+            "name": "阿里_v2",
             "color": "pink"
         },
         "microsoft": {
@@ -788,9 +791,13 @@
             "use": true,
             "color": "#ff65db",
             "name": "百度"
+        },"baiduv2": {
+            "use": false,
+            "color": "#ff65db",
+            "name": "百度_v2"
         },
         "bing": {
-            "use": true,
+            "use": false,
             "color": "#000ff0",
             "name": "必应"
         },
@@ -816,19 +823,24 @@
             "name": "google_api"
         },
         "ali": {
-            "use": true,
+            "use": false,
             "color": "#0000ff",
             "name": "阿里"
         },
         "youdao": {
-            "use": true,
+            "use": false,
             "color": "blue",
             "name": "有道"
+        },
+        "youdaodict": {
+            "use": false,
+            "color": "#95a5ff",
+            "name": "YoudaoDict"
         },
         "google2": {
             "use": false,
             "color": "#95a5ff",
-            "name": "谷歌2"
+            "name": "谷歌_v2"
         },
         "sougou": {
             "use": false,
@@ -836,7 +848,7 @@
             "name": "搜狗"
         },
         "caiyun": {
-            "use": true,
+            "use": false,
             "color": "blue",
             "name": "彩云"
         },
@@ -932,17 +944,17 @@
         "sougou2": {
             "use": false,
             "color": "blue",
-            "name": "搜狗2"
+            "name": "搜狗_v2"
         },
         "youdao3": {
             "use": false,
             "color": "blue",
-            "name": "有道3"
+            "name": "有道_v3"
         },
         "youdao5": {
             "use": false,
             "color": "blue",
-            "name": "有道5"
+            "name": "有道_v5"
         },
         "iciba": {
             "use": false,
@@ -1096,7 +1108,7 @@
         "yunyi2": {
             "use": false,
             "color": "blue",
-            "name": "云译2"
+            "name": "云译_v2"
         },
         "chatgpt": {
             "type": "api",

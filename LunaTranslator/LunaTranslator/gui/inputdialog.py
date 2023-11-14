@@ -109,7 +109,7 @@ class autoinitdialog(QDialog):
         dialog.show()
  
 def getsomepath1(parent,title,d,k,label,callback=None,isdir=False,filter1="*.db"):
-    autoinitdialog(parent,title,900,[ 
+    autoinitdialog(parent,title,800,[ 
                                 {'t':'file','l':label,'d':d,'k':k,'dir':isdir,'filter':filter1}, 
                                 {'t':'okcancel','callback':callback},
                                 ])

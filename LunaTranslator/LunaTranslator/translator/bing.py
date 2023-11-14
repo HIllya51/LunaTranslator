@@ -73,7 +73,8 @@ class Bing(Tse):
     def get_ig_iid(self, host_html):
         
         # iid = et.xpath('//*[@id="tta_outGDCont"]/@data-iid')[0]  # browser page is different between request page.
-        iid = 'translator.5028'
+        #iid = 'translator.5028'
+        iid=re.search('<div[ ]+id="tta_outGDCont"[ ]+data-iid="(.*)">',host_html).groups()[0]
         ig = re.compile('IG:"(.*?)"').findall(host_html)[0]
         return {'iid': iid, 'ig': ig}
 

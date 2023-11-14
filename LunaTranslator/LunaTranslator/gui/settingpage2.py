@@ -46,7 +46,7 @@ def initsome11(self,l,label=None):
                         {'t':'lineedit'}
                     )
             items.append({'t':'okcancel' })
-            last=getcolorbutton(globalconfig,'',callback=functools.partial(autoinitdialog,self, (globalconfig['fanyi'][fanyi]['name']),900,items),icon='fa.gear',constcolor="#FF69B4")
+            last=getcolorbutton(globalconfig,'',callback=functools.partial(autoinitdialog,self, (globalconfig['fanyi'][fanyi]['name']),800,items),icon='fa.gear',constcolor="#FF69B4")
         elif fanyi=='selfbuild': 
             last=getcolorbutton(globalconfig,'',callback=lambda:selectdebugfile('./userconfig/selfbuild.py' ),icon='fa.gear',constcolor="#FF69B4")
         else:
@@ -104,7 +104,7 @@ def setTabTwo_lazy(self) :
         ],
                 
             [
-                ("使用持久化翻译缓存",8),(getsimpleswitch(globalconfig,'uselongtermcache')),'','',
+                ("使用翻译缓存",8),(getsimpleswitch(globalconfig,'uselongtermcache')),'','',
                 ('显示错误信息',8),(getsimpleswitch(globalconfig  ,'showtranexception'),1),'','',
                 ('翻译请求间隔(s)',8),(getspinbox(0,9999,globalconfig,'requestinterval',step=0.1,double=True),2)
             ],
@@ -131,7 +131,7 @@ def setTabTwo_lazy(self) :
         ]
 
         developgrid=[
-            [('chrome路径',8),(getcolorbutton(globalconfig,'',callback=functools.partial(autoinitdialog,self, 'chrome路径',900,_items),icon='fa.gear',constcolor="#FF69B4"))],
+            [('chrome路径',8),(getcolorbutton(globalconfig,'',callback=functools.partial(autoinitdialog,self, 'chrome路径',800,_items),icon='fa.gear',constcolor="#FF69B4"))],
             [("端口号",8),(getspinbox(0,65535,globalconfig,'debugport'),3) ,],
             [(self.statuslabel,16)],
             ['']

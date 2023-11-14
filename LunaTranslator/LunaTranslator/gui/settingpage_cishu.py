@@ -32,7 +32,7 @@ def gethiragrid(self) :
                         't':'lineedit','l': globalconfig['hirasetting'][name]['token_name'],'d':globalconfig['hirasetting'][name],'k':'token'
                     },
                     {'t':'okcancel' }]
-                line+=[getcolorbutton(globalconfig,'',callback= functools.partial(autoinitdialog,self,  globalconfig['hirasetting'][name]['name'],900,items) ,icon='fa.gear',constcolor="#FF69B4")]
+                line+=[getcolorbutton(globalconfig,'',callback= functools.partial(autoinitdialog,self,  globalconfig['hirasetting'][name]['name'],800,items) ,icon='fa.gear',constcolor="#FF69B4")]
             else:
                   line+=['']
             if i%3==2  :

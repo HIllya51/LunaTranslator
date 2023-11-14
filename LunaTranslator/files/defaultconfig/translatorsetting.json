@@ -118,7 +118,7 @@
         "args": {
             "注册网址": "https://console.cloud.tencent.com/cam/capi",
             "SecretId": "",
-            "SecretKey": "",
+            "SecretKey": "", "Region":0,
             "字数统计": "0",
             "次数统计": "0"
         }
@@ -127,7 +127,11 @@
 			"注册网址":{
 				"type":"label",
 				"islink":true
-			}
+			},
+			"Region":{
+                "type":"combo",
+				"list":["ap-beijing","ap-shanghai","ap-chengdu","ap-chongqing","ap-guangzhou","ap-hongkong","ap-mumbai","ap-seoul","ap-shanghai-fsi","ap-shenzhen-fsi","ap-singapore","ap-tokyo","ap-bangkok","eu-frankfurt","na-ashburn","na-siliconvalley","na-toronto"]
+            }
 		}
     },
     "xiaoniu": {
