@@ -21,7 +21,8 @@ void freeocrres(ocrres res, int num) {
     freewstringlist(res.lines,num);
     delete res.xs;
     delete res.ys;
-    delete res.hs;
+    delete res.xs2;
+    delete res.ys2;
 }
  
 int* vecint2c(std::vector<int>& vs) {

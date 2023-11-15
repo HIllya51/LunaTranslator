@@ -6,7 +6,8 @@ struct ocrres {
     wchar_t** lines;
     int* xs;
     int* ys;
-    int* hs;
+    int* xs2;
+    int* ys2;
 };
 extern "C" {
     __declspec(dllexport) void winrt_capture_window(wchar_t* savepath, HWND hwnd) ;

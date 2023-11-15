@@ -204,8 +204,8 @@ class basetrans:
         if langkey not in self._cache:
             self._cache[langkey]={}
         self._cache[langkey][src] = tgt
-    def cached_translate(self,contentsolved,hira,shortlongskip):
-        is_using_gpt_and_retrans= shortlongskip==False and self.is_gpt_like
+    def cached_translate(self,contentsolved,hira,is_auto_run):
+        is_using_gpt_and_retrans= is_auto_run==False and self.is_gpt_like
         if is_using_gpt_and_retrans==False:
             res=self.shorttermcacheget(contentsolved)
             if res:
@@ -226,11 +226,11 @@ class basetrans:
         
         return res
     
-    def maybecachetranslate(self,contentraw,contentsolved,hira,shortlongskip):
+    def maybecachetranslate(self,contentraw,contentsolved,hira,is_auto_run):
         if self.transtype=='pre':
             res=self.translate(contentraw)
         else: 
-            res=self.cached_translate(contentsolved,hira,shortlongskip)
+            res=self.cached_translate(contentsolved,hira,is_auto_run)
         return res
     def intervaledtranslate(self,content,hira):
         interval=globalconfig['requestinterval']
@@ -267,7 +267,7 @@ class basetrans:
             savelast=[]
             while True:
                 _=self.queue.get() 
-                callback,contentraw,contentsolved,skip,embedcallback,shortlongskip,hira=_
+                callback,contentraw,contentsolved,skip,embedcallback,is_auto_run,hira=_
                 if embedcallback is not None:
                     savelast.clear()
                 
@@ -275,13 +275,13 @@ class basetrans:
                 if self.queue.empty():
                     break
             if savelast[0][4] is not None:
-                callback,contentraw,contentsolved,skip,embedcallback,shortlongskip,hira=savelast.pop(0)
+                callback,contentraw,contentsolved,skip,embedcallback,is_auto_run,hira=savelast.pop(0)
                 for _ in savelast:
                     self.gettask(_)
             if embedcallback is None:
                 if skip:
                     continue
-                if shortlongskip and self.onlymanual:
+                if is_auto_run and self.onlymanual:
                     continue
             
                 
@@ -292,7 +292,7 @@ class basetrans:
                         if self.needreinit:
                             self.needreinit=False
                             self.inittranslator()
-                        return self.maybecachetranslate(contentraw,contentsolved,hira,shortlongskip)
+                        return self.maybecachetranslate(contentraw,contentsolved,hira,is_auto_run)
                     res=timeoutfunction(reinitandtrans,checktutukufunction=checktutukufunction ) 
                     if self.needzhconv:
                         res=zhconv.convert(res,  'zh-tw' )  
@@ -310,7 +310,7 @@ class basetrans:
                         print_exc()
                         msg=str(type(e))[8:-2]+' '+str(e).replace('\n','').replace('\r','')
                         self.needreinit=True
-                    msg='<msg>'+msg
+                    msg='<msg_1>'+msg
             
                     callback(msg,embedcallback) 
                     

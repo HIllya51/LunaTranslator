@@ -39,7 +39,10 @@ class OCR(baseocr):
         response = requests.post('https://aidemo.youdao.com/ocrapi1', headers=headers, data=data, proxies=self.proxy)
             
         try:
-            return self.space.join([l['words'] for l in response.json()['lines']])
+            return self.common_solve_text_orientation(
+                [[int(_)  for _ in l['boundingBox'].split(',')] for l in response.json()['lines']],
+                [l['words'] for l in response.json()['lines']]
+            ) 
         except:
             raise Exception(response.text)
     def ocrapi(self,imgfile):   
@@ -81,7 +84,13 @@ class OCR(baseocr):
         response =requests.post(YOUDAO_URL, data=data, headers=headers, proxies=self.proxy)
         self.countnum()
         try:
-            return '\n'.join([self.space.join([ _['text'] for _ in _l['lines']]) for _l in response.json()['Result']['regions']]) 
+            _=[]
+            for l in response.json()['Result']['regions']:
+                _+=l['lines'] 
+            return self.common_solve_text_orientation(
+                [[int(_)  for _ in l['boundingBox'].split(',')] for l in _],
+                [l['text'] for l in _]
+            )  
         except:
             raise Exception(response.text)
 

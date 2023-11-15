@@ -28,7 +28,7 @@ def grabwindow():
         fnamebase='./cache/screenshot/{}'.format(0)
         try:
                 if gobject.baseobject.textsource.md5!='0':
-                        fnamebase='./cache/screenshot/{}'.format(gobject.baseobject.textsource.prefix)
+                        fnamebase='./cache/screenshot/{}'.format(gobject.baseobject.textsource.basename)
         except:
                 pass
         if os.path.exists(fnamebase)==False:

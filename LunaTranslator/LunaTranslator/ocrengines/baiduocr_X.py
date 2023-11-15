@@ -58,12 +58,11 @@ class OCR(baseocr):
         try: 
             
             self.countnum()
-             
-            if globalconfig['verticalocr'] and (interfacetype in [1,3]):
-                _collect=[(x['words'],x['location']['left'])  for x in response.json()['words_result']] 
-                _collect.sort(key=lambda x:-x[1])
-                return  self.space.join([_[0]  for _ in _collect])
-            else:
+            if interfacetype in [0,2]:
                 return  self.space.join([x['words']  for x in response.json()['words_result']])
+            else:
+                texts=[x['words']  for x in response.json()['words_result']]
+                boxs=[(x['location']['left'],x['location']['top'],x['location']['left']+x['location']['width'],x['location']['top']+x['location']['height'])  for x in response.json()['words_result']]
+                return self.common_solve_text_orientation(boxs,texts)
         except:
             raise Exception(response.text)

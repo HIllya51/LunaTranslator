@@ -140,7 +140,10 @@ class OCR(baseocr):
 
         response=createRequest()
         try:
-            return '\n'.join([_['tranContent'] for _ in response.json()['resRegions']])
+                        
+            text=[_['tranContent'] for _ in  response.json()['resRegions']]
+            box=[[int(_)  for _ in l['boundingBox'].split(',')] for l in  response.json()['resRegions']] 
+            return '<notrans>'+self.common_solve_text_orientation(box,text)
         except:
             raise Exception(response.text)
 

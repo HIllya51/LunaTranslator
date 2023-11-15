@@ -83,7 +83,7 @@ ocrres OCR(wchar_t* fname, wchar_t* lang, wchar_t* space, int* num)
     // 输出识别结果
     auto res = ocrResult.Lines(); 
     std::vector<std::wstring>rets;
-    std::vector< int>xs,ys,hs; 
+    std::vector< int>xs,ys,xs2,ys2; 
     int i = 0;
     std::wstring sspace = space;//默认即使日文也有空格
     for (auto line : res)
@@ -91,21 +91,25 @@ ocrres OCR(wchar_t* fname, wchar_t* lang, wchar_t* space, int* num)
 
         std::wstring xx = L"";
         bool start = true;
-        float y = 0,x=0,h=0;
+        unsigned int x1=-1,x2=0,y1=-1,y2=0;
+        
         for (auto word : line.Words()) {
             if (!start)xx += sspace;
             start = false;
             xx += word.Text();
-            y = word.BoundingRect().Y;
-            x=word.BoundingRect().X;
-            h=max(word.BoundingRect().Height,h);
+            auto &rect=word.BoundingRect();
+            x1=min(rect.X,x1);
+            x2=max(x2,rect.X+rect.Width);
+            y1=min(rect.Y,y1);
+            y2=max(y2,rect.Y+rect.Height);
         }
-        ys.push_back(y);
-        xs.push_back(x);
-        hs.push_back(h);
+        ys.push_back(y1);
+        xs.push_back(x1);
+        xs2.push_back(x2);
+        ys2.push_back(y2);
         rets.emplace_back(xx); 
         i += 1;
     }
     *num = res.Size();
-    return ocrres{ vecwstr2c(rets),vecint2c(xs),vecint2c(ys),vecint2c(hs)};
+    return ocrres{ vecwstr2c(rets),vecint2c(xs),vecint2c(ys),vecint2c(xs2),vecint2c(ys2)};
 }

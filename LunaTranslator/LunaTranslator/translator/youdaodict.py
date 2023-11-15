@@ -9,7 +9,7 @@ class TS(basetrans):
             key='cybibtzhdwayqjmrncst'
             client='deskdict'
             product='deskdict'
-            string=f'client={client}&mysticTime={tm}&product={product}&key={key}'
+            string='client={}&mysticTime={}&product={}&key={}'.format(client,tm,product,key)
             return tm,hashlib.md5(bytes(string,encoding='utf-8')).hexdigest()
     def translate10_9_8(self, content,v=10):
         if v==10:

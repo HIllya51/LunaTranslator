@@ -74,57 +74,11 @@ class OCR(baseocr):
          
         s=self._ocr.ocr(os.path.dirname(imgfile)+'/',os.path.basename(imgfile),globalconfig['verticalocr'])
         
-        ls=s.split('\n') 
-        juhe=[]
-        box=[]
-        mids=[]
-        ranges=[]
-        text=[]
-        reverse={}
+        ls=s.split('\n')  
+        box=[] 
+        text=[] 
         for i in range(len(ls)//2):
             box.append([int(_)  for _ in ls[i*2].split(',')])
-            text.append(ls[i*2+1]) 
-        for i in range(len(box)):
-            if globalconfig['verticalocr']:
-                mid=box[i][0]+box[i][2]+box[i][4]+box[i][6]
-            else:
-                mid=box[i][1]+box[i][3]+box[i][5]+box[i][7]
-            mid/=4
-            mids.append(mid)
-            if globalconfig['verticalocr']:
-                range_=((box[i][0]+box[i][6])/2,(box[i][2]+box[i][4])/2)
-            else:
-                range_=((box[i][1]+box[i][3])/2,(box[i][7]+box[i][5])/2)
-            ranges.append(range_) 
-        passed=[] 
-        for i in range(len(box)):
-            ls=[i]
-            if i in passed:
-                continue
-            for j in range(i+1,len(box)):
-                if j in passed:
-                    continue 
-                if mids[i]>ranges[j][0] and mids[i]<ranges[j][1] \
-                    and mids[j]>ranges[i][0] and mids[j]<ranges[i][1]:
-                        
-                    passed.append(j)
-                    ls.append(j)
-            juhe.append(ls)
+            text.append(ls[i*2+1])   
         
-        for i in range(len(juhe)):
-            if globalconfig['verticalocr']:
-                juhe[i].sort(key=lambda x:box[x][1])
-            else:
-                juhe[i].sort(key=lambda x:box[x][0])
-        if globalconfig['verticalocr']:
-            juhe.sort(key=lambda x:-box[x[0]][0])
-        else:
-            juhe.sort(key=lambda x:box[x[0]][1])
-        lines=[]
-        
-        for _j in juhe:
-            
-
-            lines.append(' '.join([text[_] for _ in _j])) 
-        
-        return self.space.join(lines)
+        return self.common_solve_text_orientation(box,text)

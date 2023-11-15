@@ -105,7 +105,7 @@ def ocr_run(img):
         else:
             print_exc()
             msg=str(type(e))[8:-2]+' '+str(e).replace('\n','').replace('\r','')
-        msg='<msg>'+_TR(globalconfig['ocr'][use]['name'])+' '+msg
+        msg='<msg_1>'+_TR(globalconfig['ocr'][use]['name'])+' '+msg
         text= msg
     return text
     

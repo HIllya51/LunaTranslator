@@ -1,25 +1,28 @@
-import threading ,hashlib,queue
+import threading ,gobject,queue
 import time,sqlite3,json,os,codecs,win32utils
 from traceback import print_exc
 from myutils.config import globalconfig,savehook_new_data
 from myutils.utils import getfilemd5
 class basetext:
-    def __init__(self,textgetmethod,md5,prefix)  :  
-        self.textgetmethod=textgetmethod  
+    def __init__(self,md5,basename)  :  
+        self.textgetmethod=gobject.baseobject.textgetmethod  
         self.ending=False
-        self.md5,self.prefix=md5,prefix
         self.sqlqueue=queue.Queue()
         if 'hwnd' not in dir(self):
             self.hwnd=0
         if 'pids' not in dir(self):
             self.pids=[]
-        #self.sqlfname='./transkiroku/'+self.prefix+'.sqlite'
-        self.sqlfname_all='./translation_record/'+self.prefix+'.pretrans_common.sqlite'
-        
+        self.md5=md5
+        self.basename=basename
+ 
+        sqlfname_all_old='./translation_record/'+md5+'_'+basename+'.pretrans_common.sqlite'
+        sqlfname_all='./translation_record/'+basename+'_'+md5+'.sqlite'
+        if os.path.exists(sqlfname_all_old):
+            sqlfname_all=sqlfname_all_old
         try:
             
             # self.sqlwrite=sqlite3.connect(self.sqlfname,check_same_thread = False, isolation_level=None)
-            self.sqlwrite2=sqlite3.connect(self.sqlfname_all,check_same_thread = False, isolation_level=None)
+            self.sqlwrite2=sqlite3.connect(sqlfname_all,check_same_thread = False, isolation_level=None)
             # try:
             #     self.sqlwrite.execute('CREATE TABLE artificialtrans(id INTEGER PRIMARY KEY AUTOINCREMENT,source TEXT,machineTrans TEXT,userTrans TEXT);')
             # except:
@@ -32,6 +35,17 @@ class basetext:
             print_exc
         threading.Thread(target= self.sqlitethread).start()
         threading.Thread(target=self.gettextthread_).start() 
+    def gettextthread(self):
+        return None
+    def gettextonce(self):
+        return None
+    def end(self):
+        self.ending=True
+        try:
+            self.sqlwrite2.close()
+        except:
+            print_exc()
+    ##################
     def sqlqueueput(self,xx):
         try:
             self.sqlqueue.put(xx)
@@ -64,15 +78,15 @@ class basetext:
                      
                     ret=json.loads( (ret[0]) )
                     ret[clsname]=trans
-                    ret=json.dumps(ret)  
+                    ret=json.dumps(ret,ensure_ascii=False)  
                     self.sqlwrite2.execute('UPDATE artificialtrans SET machineTrans = ? WHERE source = ?',(ret,src))
             except:
                 print_exc()
     
     def checkmd5prefix(self,pname):
         md5=getfilemd5(pname)
-        prefix= md5+'_'+os.path.basename(pname).replace('.'+os.path.basename(pname).split('.')[-1],'') 
-        return md5,prefix
+        name= os.path.basename(pname).replace('.'+os.path.basename(pname).split('.')[-1],'') 
+        return md5,name
     def gettextthread_(self):
         while True:
             if self.ending: 
@@ -92,13 +106,9 @@ class basetext:
             except: 
                 print_exc() 
             
-    def gettextthread(self):
-        pass
+    
     def runonce(self):
-        pass
-    def end(self):
-        self.ending=True
-        try:
-            self.sqlwrite2.close()
-        except:
-            print_exc()
+        t=self.gettextonce()
+        if t:
+            self.textgetmethod(self.gettextonce(),False)
+    

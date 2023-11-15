@@ -9,7 +9,7 @@ class OCR(baseocr):
     def ocr(self,imgfile):  
         self.checkempty(['apikey'])
         apikey=self.config['apikey']
-        if self.config['free']:
+        if self.config['interface']==1:
             base='api.ocr.space'
         else:
             base='apipro3.ocr.space'
@@ -38,10 +38,21 @@ class OCR(baseocr):
         
         response = requests.post('https://'+base+'/parse/image', headers=headers, data=data, proxies=self.proxy)
         #print(response.text)
-        try:
-            
+        try: 
             _= response.json()['ParsedResults'][0]['ParsedText']
+            boxs=[]
+            for _ in response.json()['ParsedResults'][0]['TextOverlay']['Lines']:
+                words=_['Words']
+                x1,y1,x2,y2=99999,99999,0,0
+                for word in words:
+                    x1=min(x1,word['Left'])
+                    y1=min(y1,word['Top'])
+                    x2=max(x2,word['Left']+word['Width'])
+                    y2=max(y2,word['Top']+word['Height'])
+                boxs.append([x1,y1,x2,y2])
+            
+            texts=[_['LineText'] for _ in response.json()['ParsedResults'][0]['TextOverlay']['Lines']]
             self.countnum()
-            return _
+            return self.common_solve_text_orientation(boxs,texts)
         except:
             raise Exception(response.text)

@@ -37,7 +37,7 @@ def getEqualRate(  str1, str2):
         return score
 class ocrtext(basetext):
      
-    def __init__(self,textgetmethod)  :
+    def __init__(self)  :
         self.screen = QApplication.primaryScreen() 
         self.savelastimg=None
         self.savelastrecimg=None
@@ -46,7 +46,7 @@ class ocrtext(basetext):
         self.rect=None
         self.range_ui = rangeadjust(gobject.baseobject.translation_ui)   
         self.timestamp=time.time() 
-        super(ocrtext,self ).__init__(textgetmethod,'0','0_ocr') 
+        super(ocrtext,self ).__init__('0','ocr') 
     def resetrect(self):
         self.rect=None
         self.range_ui.hide()
@@ -119,7 +119,7 @@ class ocrtext(basetext):
             
             return (text)
             
-    def runonce(self): 
+    def gettextonce(self): 
         
         if self.rect is None:
             return
@@ -134,14 +134,14 @@ class ocrtext(basetext):
         self.savelastrecimg=imgr1
         self.lastocrtime=time.time()
         self.savelasttext=text
-        self.textgetmethod(text,False)
+        return text
     def ocrtest(self,img):
          
         fname='./cache/ocr/{}.png'.format(self.timestamp)
         img.save(fname)
-        print(fname)
+        #print(fname)
         text=ocr_run(fname)
-        print(text)
+        #print(text)
         return text
         
 

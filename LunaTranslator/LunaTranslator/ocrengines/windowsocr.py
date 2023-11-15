@@ -29,37 +29,7 @@ class OCR(baseocr):
             space=' '
          
         ret=winrtutils.OCR_f(os.path.abspath(imgfile),self.supportmap[self.srclang],space)
+        boxs=[_[1:] for _ in ret]
+        texts=[_[0] for _ in ret]
          
-        juhe=[] 
-        mids=[]
-        ranges=[] 
-        for i in range(len(ret)):
-            mid=ret[i][2]+ret[i][3]//2 
-            mids.append(mid)
-            range_=(ret[i][2],ret[i][2]+ret[i][3])
-            ranges.append(range_) 
-        passed=[] 
-        
-        for i in range(len(ret)):
-            ls=[i]
-            if i in passed:
-                continue
-            for j in range(i+1,len(ret)):
-                if j in passed:
-                    continue 
-                if mids[i]>ranges[j][0] and mids[i]<ranges[j][1] \
-                    and mids[j]>ranges[i][0] and mids[j]<ranges[i][1]:
-                        
-                    passed.append(j)
-                    ls.append(j)
-            juhe.append(ls)
-        for i in range(len(juhe)):
-            juhe[i].sort(key=lambda x:ret[x][1])
-        juhe.sort(key=lambda x:ret[x[0]][2])
-        lines=[]
-        
-        for _j in juhe:
-            
-
-            lines.append(' '.join([ret[_][0] for _ in _j])) 
-        return self.space.join(lines)
+        return self.common_solve_text_orientation(boxs,texts)

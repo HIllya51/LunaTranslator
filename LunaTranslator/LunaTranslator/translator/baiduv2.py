@@ -156,7 +156,7 @@ class TS(basetrans):
             'sec-fetch-dest': 'empty',
             'referer': 'https://fanyi.baidu.com/translate?aldtype=16047&query=&keyfrom=baidu&smartresult=dict&lang=auto2zh',
             'accept-language': 'zh-CN,zh;q=0.9',
-            'cookie': f'BIDUPSID={self.BAIDUID}; BAIDUID={self.BAIDUID}:FG=1;'
+            'cookie': 'BIDUPSID={}; BAIDUID={}:FG=1;'.format(self.BAIDUID,self.BAIDUID)
         }
 
         try:

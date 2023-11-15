@@ -11,7 +11,7 @@ from myutils.utils import checkchaos
 from textsource.hook.host import RPC
 
 class texthook(basetext  ): 
-    def __init__(self,textgetmethod,pids,hwnd,pname  ,autostarthookcode=None,needinserthookcode=None) :
+    def __init__(self,pids,hwnd,pname  ,autostarthookcode=None,needinserthookcode=None) :
         print(pids,hwnd,pname  ,autostarthookcode,needinserthookcode)
         self.RPC=RPC()
         if autostarthookcode is None:
@@ -66,7 +66,7 @@ class texthook(basetext  ):
         for pid in self.pids:
             self.RPC.start(pid)
         self.RPC.Attach(self.pids,'64' if self.is64bit else '32')
-        super(texthook,self).__init__(textgetmethod,*self.checkmd5prefix(pname))
+        super(texthook,self).__init__(*self.checkmd5prefix(pname))
     def showgamename(self):
         if 'showonce' not in dir(self):
             #gobject.baseobject.translation_ui.displayraw1.emit([],savehook_new_data[self.pname]['title'],globalconfig['rawtextcolor'],False)
@@ -304,13 +304,13 @@ class texthook(basetext  ):
                         break
         
     def gettextthread(self ):
-            paste_str=self.newline.get()
+            text=self.newline.get()
             while self.newline.empty()==False:
-                paste_str=self.newline.get()  
-            return paste_str
-    def runonce(self):
+                text=self.newline.get()  
+            return text
+    def gettextonce(self):
          
-        self.textgetmethod(self.runonce_line,False)
+        return self.runonce_line
     def end(self):    
         for pid in self.pids:
             self.RPC.Detach(pid)

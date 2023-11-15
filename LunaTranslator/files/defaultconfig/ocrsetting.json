@@ -99,14 +99,15 @@
             "注册网址": "https://ocr.space/",
             "apikey": "",
             "次数统计": "0",
-            "free":false
+            "interface":0
         },"argstype":{
 			"注册网址":{
 				"type":"label",
 				"islink":true
 			},
-            "free":{
-                "type":"switch"
+            "interface":{
+                "type":"combo",
+				"list":["pro","free"]
             }
 		}
     },

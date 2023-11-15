@@ -46,8 +46,10 @@ class OCR(baseocr):
         #print(r.text)
         if r.status_code == 200:
             try:
-                return self.space.join([_['DetectedText'] for _ in r.json()['Response']['TextDetections']])
+                boxs=[[_['Polygon'][0]['X'],_['Polygon'][0]['Y'],_['Polygon'][1]['X'],_['Polygon'][1]['Y'],_['Polygon'][2]['X'],_['Polygon'][2]['Y'],_['Polygon'][3]['X'],_['Polygon'][3]['Y']] for _ in r.json()['Response']['TextDetections']]
+                texts=[_['DetectedText'] for _ in r.json()['Response']['TextDetections']]
+                return self.common_solve_text_orientation(boxs,texts)
             except:
-                raise(r.json())
+                raise Exception(r.json())
         return r.text
          
