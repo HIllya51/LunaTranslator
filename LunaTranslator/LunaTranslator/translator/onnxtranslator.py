@@ -11,7 +11,7 @@ class TS(basetrans):
         input_ids = input_enc.ids
         int_seq = [len(input_ids)] + input_ids + ['\n']
         pipe_in = " ".join([str(i) for i in int_seq])
-        self.proc.stdin.write()
+        self.proc.stdin.write(pipe_in)
         pipe_out = self.proc.stdout.readline()
         output_ids = [int(i) for i in pipe_out.split()]
         return self.tokenizer.decode(output_ids)
