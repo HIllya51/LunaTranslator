@@ -2,11 +2,11 @@
 import re,codecs
 from traceback import print_exc
 from collections import Counter
-import importlib
+import importlib,gobject
 from myutils.utils import getfilemd5
-from myutils.config import postprocessconfig,globalconfig 
-def _2_f(line):
-        times=postprocessconfig['_2']['args']['重复次数(若为1则自动分析去重)']
+from myutils.config import postprocessconfig,globalconfig ,savehook_new_data
+def _2_f(line,args):
+        times=args['重复次数(若为1则自动分析去重)']
          
         if times>=2:
                 guesstimes=times
@@ -31,8 +31,8 @@ def _2_f(line):
         newline=[line[i*guesstimes] for i in range(len(line)//guesstimes)]
         line=''.join(newline)
         return line
-def _3_f(line):
-        times=postprocessconfig['_3']['args']['重复次数(若为1则自动分析去重)']
+def _3_f(line,args):
+        times=['重复次数(若为1则自动分析去重)']
          
         if times>=2:
                 guesstimes=times
@@ -44,12 +44,12 @@ def _3_f(line):
                         guesstimes-=1
         line=line[:len(line)//guesstimes] 
         return line
-def _3_2(line):
+def _3_2(line,args):
         cache=''
         
         
 
-        while len(line):
+        while len(line,args):
                 last=None
                 dumplength=len(line)//2
                 while dumplength>1:
@@ -73,7 +73,7 @@ def _3_2(line):
                        line=line[1:]
  
         return cache
-def _10_f(line):
+def _10_f(line,args):
         cnt=Counter(line)
         saveline=[]
         for k in sorted(cnt.keys(),key= lambda x :-cnt[x]) :
@@ -102,12 +102,12 @@ def _13_f(line:str): #递增式
                 first=line.find(k)
                 length=1
                 while True:
-                        if first+length>=len(line):
+                        if first+length>=len(line,args):
                           break
                         
                         if line[first]==line[first+length]:
                             first+=length
-                        if first+length<len(line):
+                        if first+length<len(line,args):
                                
                                 length+=1
                         else:
@@ -116,44 +116,44 @@ def _13_f(line:str): #递增式
          
         line=sorted(saveline, key=len, reverse=True)[0]
         return line
-def _1_f(line):
+def _1_f(line,args):
         r=re.compile('\{(.*?)/.*?\}')
         line=r.sub(lambda x:x.groups()[0],line)
         r=re.compile('\{(.*?):.*?\}')
         line=r.sub(lambda x:x.groups()[0],line)
         return line
-def _4_f(line):
+def _4_f(line,args):
         line =re.sub('<(.*?)>','',line) 
         line=re.sub('</(.*?)>',"*",line)
         return line
-def _6_f(line):
+def _6_f(line,args):
         line=line.replace('\r','').replace('\n','')
         return line
-def _91_f(line):
+def _91_f(line,args):
         line=re.sub('([0-9]+)','',line)
         return line
-def _92_f(line):
+def _92_f(line,args):
         line=re.sub('([a-zA-Z]+)','',line)
         return line
 
-def _7_zhuanyi_f(line): 
-        filters=postprocessconfig['_7_zhuanyi']['args']['替换内容']
+def _7_zhuanyi_f(line,args): 
+        filters=args['替换内容']
         for fil in filters: 
                 if fil=="":
                         continue
                 else:   
                         line=line.replace(codecs.escape_decode(bytes(fil, "utf-8"))[0].decode("utf-8"),codecs.escape_decode(bytes(filters[fil], "utf-8"))[0].decode("utf-8"))
         return line
-def _7_f(line): 
-        filters=postprocessconfig['_7']['args']['替换内容']
+def _7_f(line,args): 
+        filters=args['替换内容']
         for fil in filters: 
                 if fil=="":
                         continue
                 else:  
                         line=line.replace( fil ,filters[fil])
         return line
-def _8_f(line):
-        filters=postprocessconfig['_8']['args']['替换内容'] 
+def _8_f(line,args):
+        filters=args['替换内容'] 
         for fil in filters: 
                 if fil=="":
                         continue
@@ -164,7 +164,7 @@ def _8_f(line):
                                 print_exc()
         return line
 
-def _remove_non_shiftjis_char(line):
+def _remove_non_shiftjis_char(line,args):
         newline=''
         for char in line:
                 try:
@@ -173,7 +173,7 @@ def _remove_non_shiftjis_char(line):
                 except:
                       pass
         return newline
-def _remove_latin(line):
+def _remove_latin(line,args):
         newline=''
         for char in line:
                 try:
@@ -181,7 +181,7 @@ def _remove_latin(line):
                 except:
                       newline+=char
         return newline
-def _remove_ascii(line):
+def _remove_ascii(line,args):
         newline=''
         for char in line:
                 try:
@@ -189,7 +189,7 @@ def _remove_ascii(line):
                 except:
                       newline+=char
         return newline
-def _remove_control(line):
+def _remove_control(line,args):
         newline=''
         for r in line:
                 _ord=ord(r)
@@ -197,7 +197,7 @@ def _remove_control(line):
                     continue
                 newline+=r
         return newline
-def _remove_not_in_ja_bracket(line): 
+def _remove_not_in_ja_bracket(line,args): 
         if '「' in line and '」' in line: 
                 _1=line.index('「')
                 _2=line.rindex('」')
@@ -205,7 +205,7 @@ def _remove_not_in_ja_bracket(line):
                        return line[_1:_2+1]
         return  line
 from myutils.utils import checkchaos
-def _remove_chaos(line):
+def _remove_chaos(line,args):
        newline=''
        for c in line:
               if checkchaos(c):
@@ -241,10 +241,24 @@ def POSTSOLVE(line):
         "_remove_chaos":_remove_chaos,
         "_remove_not_in_ja_bracket":_remove_not_in_ja_bracket
     }
+    useranklist=globalconfig['postprocess_rank']
+    usedpostprocessconfig=postprocessconfig
+    usemypostpath='./userconfig/mypost.py'
+    usemodule='mypost'
     try:
-           md5=getfilemd5('./userconfig/mypost.py')
+     exepath=gobject.baseobject.textsource.pname
+     if savehook_new_data[exepath]['use_saved_text_process']:
+            useranklist=savehook_new_data[exepath]['save_text_process_info']['rank']
+            usedpostprocessconfig=savehook_new_data[exepath]['save_text_process_info']['postprocessconfig']
+            if savehook_new_data[exepath]['save_text_process_info']['mypost']:
+                usemodule='posts.'+savehook_new_data[exepath]['save_text_process_info']['mypost']
+                usemypostpath='./userconfig/posts/{}.py'.format(savehook_new_data[exepath]['save_text_process_info']['mypost']) 
+    except:
+       print_exc()     
+    try:
+           md5=getfilemd5(usemypostpath)
            if md5!=_selfdefpostmd5:
-                   _=importlib.import_module('mypost')
+                   _=importlib.import_module(usemodule)
                    _=importlib.reload(_)
                    _selfdefpostmd5=md5
                    _selfdefpost=_
@@ -257,9 +271,10 @@ def POSTSOLVE(line):
            print_exc()
            pass
 
-    for postitem in globalconfig['postprocess_rank']:
-        if postitem not in postprocessconfig:continue
-        if postprocessconfig[postitem]['use']:
+    for postitem in useranklist:
+        if postitem not in functions:continue
+        if postitem not in usedpostprocessconfig:continue
+        if usedpostprocessconfig[postitem]['use']:
                 try:
                         if postitem=='_11':
                                 _f=functions[postitem]
@@ -268,7 +283,7 @@ def POSTSOLVE(line):
                                 else:
                                       raise Exception("unsupported parameters num")
                         else:
-                               line=functions[postitem](line) 
+                               line=functions[postitem](line,usedpostprocessconfig[postitem]['args']) 
                         
                 except Exception  as e:
                         print_exc()  

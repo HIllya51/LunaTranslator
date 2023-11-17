@@ -110,6 +110,8 @@ class QUnFrameWindow(resizableframeless):
         self.translate_text.setnextfont(origin)
         if res is None:
             return 
+        if len(res[1])>globalconfig['maxoriginlength']:
+            return
         if globalconfig['showatcenter']:
             self.translate_text.setAlignment(Qt.AlignCenter)
         else:

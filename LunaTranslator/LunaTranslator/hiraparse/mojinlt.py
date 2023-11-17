@@ -8,10 +8,7 @@ class hira:
         pass 
      
     def fy(self,text): 
-        x = "ァアィイゥウェエォオカガキギクグケゲコゴサザシジスズセゼソゾタダチヂッツヅテデトドナニヌネノハバパヒビピフブプヘベペホボポマミムメモャヤュユョヨラリルレロヮワヰヱヲンヴヵヶヽヾ"
-        y = "ぁあぃいぅうぇえぉおかがきぎくぐけげこごさざしじすずせぜそぞただちぢっつづてでとどなにぬねのはばぱひびぴふぶぷへべぺほぼぽまみむめもゃやゅゆょよらりるれろゎわゐゑをんゔゕゖゝゞ"
-        trans = str.maketrans(x, y)
-
+        
 
         def nlt(text, token):
             try:
@@ -31,7 +28,7 @@ class hira:
                 return [
                     {
                         "orig": result["surface_form"],
-                        "hira": result["reading"].translate(trans),
+                        "hira": result["reading"],
                         "cixing": result["pos"],
                     }
                     for result in response.json()["result"]["result"]

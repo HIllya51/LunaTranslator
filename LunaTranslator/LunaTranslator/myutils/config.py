@@ -60,7 +60,8 @@ def getdefaultsavehook(gamepath):
         'title':os.path.basename(os.path.dirname(gamepath))+'/'+ os.path.basename(gamepath),
         "codepage_index":0,
         "allow_tts_auto_names":'',
-        "hooktypeasname":{}
+        "hooktypeasname":{},
+        "use_saved_text_process":False
     }
     return default
 

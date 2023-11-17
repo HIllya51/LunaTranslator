@@ -1,8 +1,8 @@
   
 import functools  
 
-from PyQt5.QtWidgets import  QDialog,QLabel ,QLineEdit,QSpinBox,QPushButton ,QTableView,   QVBoxLayout,QHBoxLayout,QHeaderView ,QTextEdit,QHBoxLayout,QWidget
-from PyQt5.QtCore import QSize,Qt
+from PyQt5.QtWidgets import  QDialog,QLabel ,QLineEdit,QSpinBox,QPushButton ,QTableView,   QVBoxLayout,QHBoxLayout,QHeaderView ,QTextEdit,QHBoxLayout,QWidget,QMenu,QAction
+from PyQt5.QtCore import QSize,Qt,pyqtSignal,QPoint
 from PyQt5.QtGui import QStandardItem, QStandardItemModel 
 from traceback import print_exc
 from myutils.config import globalconfig ,postprocessconfig,noundictconfig,transerrorfixdictconfig,_TR,_TRL,defaultglobalconfig 
@@ -12,7 +12,35 @@ from gui.codeacceptdialog import codeacceptdialog
 from gui.inputdialog import getsomepath1  ,postconfigdialog 
 from myutils.utils import selectdebugfile
 from myutils.wrapper import Singleton
+from myutils.config import   savehook_new_list,savehook_new_data
+import copy
 from myutils.post import POSTSOLVE
+def savegameprocesstext():
+    try:
+        try:
+            with open('./userconfig/mypost.py','r',encoding='utf8') as ff:
+                _mypost=ff.read()
+            with open('./userconfig/posts/{}.py'.format(gobject.baseobject.textsource.uuname),'w',encoding='utf8') as ff:
+                ff.write(_mypost)
+        except:
+            _mypost=None
+        ranklist=[]
+        postargs={}
+        for postitem in globalconfig['postprocess_rank']:
+            if postitem not in postprocessconfig:continue
+            if postprocessconfig[postitem]['use']:
+                ranklist.append(postitem)
+                postargs[postitem]=copy.deepcopy(postprocessconfig[postitem])
+        exepath=gobject.baseobject.textsource.pname
+        savehook_new_data[exepath]['save_text_process_info']={
+            'postprocessconfig':postargs,
+            'rank':ranklist,
+            'mypost':gobject.baseobject.textsource.uuname
+        }
+        if savehook_new_data[exepath]['use_saved_text_process']==False:
+            savehook_new_data[exepath]['use_saved_text_process']=True
+    except:
+        print_exc()
 def settab7direct(self):
     self.comparelayout=getcomparelayout(self)
     self.button_noundict=getcolorbutton(globalconfig,'' ,callback=lambda x:  noundictconfigdialog(self,noundictconfig,'专有名词翻译设置(游戏ID 0表示全局)'),icon='fa.gear',constcolor="#FF69B4")
@@ -41,7 +69,6 @@ def setTab7_lazy(self) :
         grids=[
             [('预处理方法',6),'','',('调整执行顺序',6)]
         ] 
-         
         if set(postprocessconfig.keys())!=set(globalconfig['postprocess_rank']):
             globalconfig['postprocess_rank']=list(postprocessconfig.keys())
         sortlist=globalconfig['postprocess_rank']
@@ -54,21 +81,21 @@ def setTab7_lazy(self) :
                 return
             if up==False and ii==len(sortlist)-1:
                 return
-           
+            headoffset=1
             toexchangei=ii+(-1 if up else 1)
             sortlist[ii],sortlist[toexchangei]=sortlist[toexchangei],sortlist[ii] 
-            for i,ww in enumerate(savelist[ii+1]):
+            for i,ww in enumerate(savelist[ii+headoffset]):
 
                 w1=(savelay[0].indexOf(ww))
-                w2=savelay[0].indexOf(savelist[toexchangei+1][i])
+                w2=savelay[0].indexOf(savelist[toexchangei+headoffset][i])
                 p1=savelay[0].getItemPosition(w1)
                 p2=savelay[0].getItemPosition(w2) 
                 savelay[0].removeWidget(ww)
-                savelay[0].removeWidget(savelist[toexchangei+1][i])
+                savelay[0].removeWidget(savelist[toexchangei+headoffset][i])
                  
-                savelay[0].addWidget(savelist[toexchangei+1][i],*p1)
+                savelay[0].addWidget(savelist[toexchangei+headoffset][i],*p1)
                 savelay[0].addWidget(ww,*p2)
-            savelist[ii+1],savelist[toexchangei+1]=savelist[toexchangei+1],savelist[ii+1] 
+            savelist[ii+headoffset],savelist[toexchangei+headoffset]=savelist[toexchangei+headoffset],savelist[ii+headoffset] 
         for i,post in enumerate(sortlist): 
             if post=='_11':
                 config=(getcolorbutton(globalconfig,'',callback=lambda:selectdebugfile('./userconfig/mypost.py' ),icon='fa.gear',constcolor="#FF69B4")) 
@@ -107,9 +134,27 @@ def setTab7_lazy(self) :
                 getcolorbutton(globalconfig,'',callback=lambda x:  getsomepath1(self,'共享辞书',globalconfig['gongxiangcishu'],'path','共享辞书',gobject.baseobject.loadvnrshareddict,False,'*.xml') ,icon='fa.gear',constcolor="#FF69B4"),'','','','','',''],
             
         ]   
-         
+        def __():
+            _w=self.makescroll(self.makegrid(grids,True,savelist,savelay )  ) 
+            _w.setContextMenuPolicy(Qt.CustomContextMenu)
+            def showmenu(p:QPoint):  
+                        
+                try:  
+                    gobject.baseobject.textsource.pname  #检查是否为texthook
+                        
+                    menu=QMenu(_w)  
+                    save=QAction(_TR("保存当前游戏的文本处理流程")) 
+                    menu.addAction(save)
+                    action=menu.exec(_w.cursor().pos())
+                    if action==save:
+                        savegameprocesstext()
+                except:
+                    pass
+        
+            _w.customContextMenuRequested.connect(showmenu  )
+            return _w
         tab=self.makesubtab_lazy(['文本预处理', '翻译优化'],[
-            lambda:self.makescroll(self.makegrid(grids,True,savelist,savelay )  ) ,
+            lambda:__(),
             lambda:self.makescroll(self.makegrid(grids2 )  )
         ])   
   

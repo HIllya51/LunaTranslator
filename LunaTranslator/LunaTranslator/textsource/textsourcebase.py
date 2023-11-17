@@ -19,6 +19,7 @@ class basetext:
         sqlfname_all='./translation_record/'+basename+'_'+md5+'.sqlite'
         if os.path.exists(sqlfname_all_old):
             sqlfname_all=sqlfname_all_old
+        self.uuname=basename+'_'+md5
         try:
             
             # self.sqlwrite=sqlite3.connect(self.sqlfname,check_same_thread = False, isolation_level=None)

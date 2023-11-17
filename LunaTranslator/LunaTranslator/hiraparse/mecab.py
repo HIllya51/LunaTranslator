@@ -15,9 +15,7 @@ class hira:
                     self.kks=_cache[mecabpath]
             else:
                 _cache[mecabpath]=self.kks
-            keys='ァアィイゥウェエォオカガキギクグケゲコゴサザシジスズセゼソゾタダチヂッツヅテデトドナニヌネノハバパヒビピフブプヘベペホボポマミムメモャヤュユョヨラリルレロヮワヰヱヲンヴヵヶヽヾ'
-            vs='ぁあぃいぅうぇえぉおかがきぎくぐけげこごさざしじすずせぜそぞただちぢっつづてでとどなにぬねのはばぱひびぴふぶぷへべぺほぼぽまみむめもゃやゅゆょよらりるれろゎわゐゑをんゔゕゖゝゞ'
-            self.h2k=str.maketrans( keys,vs)
+            
          
  
     def fy(self,text): 
@@ -46,7 +44,7 @@ class hira:
                     l+=1
                 orig=text[start:start+l]
                 start+=l
-                hira=kana.translate(self.h2k)
+                hira=kana#.translate(self.h2k)
                 
                 if hira=='*':
                     hira=''

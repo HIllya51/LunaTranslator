@@ -11,6 +11,8 @@ def initpath():
         os.mkdir('./userconfig')
     if os.path.exists('./userconfig/memory')==False:
         os.mkdir('./userconfig/memory')
+    if os.path.exists('./userconfig/posts')==False:
+        os.mkdir('./userconfig/posts')
     if os.path.exists('./translation_record')==False:
         os.mkdir('./translation_record') 
     if os.path.exists('./translation_record/cache')==False:

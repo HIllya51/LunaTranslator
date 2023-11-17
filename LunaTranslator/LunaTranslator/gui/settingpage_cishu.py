@@ -1,7 +1,7 @@
 import functools ,os
-from myutils.config import globalconfig   
+from myutils.config import globalconfig   ,_TRL
 from gui.inputdialog import getsomepath1,autoinitdialog 
-from gui.usefulwidget import getcolorbutton,yuitsu_switch,getsimpleswitch
+from gui.usefulwidget import getcolorbutton,yuitsu_switch,getsimpleswitch,getsimplecombobox
 import gobject
 def setTabcishu(self) : 
     self.tabadd_lazy(self.tab_widget, ('辞书设置'), lambda :setTabcishu_l(self)) 
@@ -48,6 +48,7 @@ def setTabcishu_l(self) :
         
         grids=[ 
                 [('分词&假名分析器',10)],
+                [('日语注音方案',5),(getsimplecombobox(_TRL(['平假名','片假名','罗马音']),globalconfig,'hira_vis_type'),5)],
         ]+gethiragrid(self)+ [
                 [''],
                 [''],

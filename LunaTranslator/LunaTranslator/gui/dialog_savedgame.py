@@ -419,7 +419,11 @@ class dialog_setting_game(QDialog):
                 cp_layout.addWidget(QLabel(_TR('插入特殊码延迟(ms)')))
                 cp_layout.addWidget(getspinbox(0,1000000,savehook_new_data[exepath],'inserthooktimeout' ))
                 formLayout.addLayout(cp_layout)
-
+                if savehook_new_data[exepath]['use_saved_text_process'] or 'save_text_process_info' in savehook_new_data[exepath]: 
+                        zhuanqulayout=QHBoxLayout() 
+                        zhuanqulayout.addWidget(QLabel(_TR("使用保存的文本处理流程")))
+                        zhuanqulayout.addWidget(getsimpleswitch(savehook_new_data[exepath],'use_saved_text_process'))
+                        formLayout.addLayout(zhuanqulayout)
                 if globalconfig['allow_set_text_name']:
                         cp_layout=QHBoxLayout()
                         cp_layout.addWidget(QLabel(_TR('禁止自动朗读的人名(以|分隔多个)')))
