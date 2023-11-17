@@ -81,5 +81,7 @@ for /f "delims=" %%d in ('dir /s /b /a:d "%directory%" ^| sort /r') do (
     rd "%%d" 2>nul
 )
 
+del %targetdir%\..\LunaTranslator.zip
+"C:\Program Files\7-Zip\7z.exe" a -m0=LZMA -mx9 %targetdir%\..\LunaTranslator.zip %targetdir%
 
 xcopy %targetdir%\ C:\dataH\LunaTranslator /e /y /I

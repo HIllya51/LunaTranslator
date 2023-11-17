@@ -32,6 +32,23 @@
 				"list":["ap-beijing","ap-guangzhou","ap-hongkong","ap-seoul","ap-shanghai","ap-singapore","na-toronto"]
             }
 		}
+    },"txocrtrans": {
+        "args": {
+            "注册网址": "https://cloud.tencent.com/document/product/551/17232",
+            "SecretId": "",
+            "SecretKey": "", 
+            "ProjectId":"0",
+            "Region":0
+        },"argstype":{
+			"注册网址":{
+				"type":"label",
+				"islink":true
+			},
+            "Region":{
+                "type":"combo",
+				"list":["ap-beijing","ap-guangzhou","ap-hongkong","ap-seoul","ap-shanghai","ap-singapore","na-toronto"]
+            }
+		}
     },"feishu": {
         "args": {
             "注册网址": "https://open.feishu.cn/document/ukTMukTMukTM/ukDNz4SO0MjL5QzM/auth-v3/auth/tenant_access_token_internal",

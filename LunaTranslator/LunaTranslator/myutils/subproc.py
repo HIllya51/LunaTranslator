@@ -23,7 +23,7 @@ def subproc_w(cmd,cwd=None ,needstdio=False ,name=None,encoding='utf8',run=False
             _f=subprocess.Popen
 
         if needstdio:
-            ss=_f(cmd,cwd=cwd,stdin=_pipe,stdout=_pipe,stderr=_pipe,startupinfo=startupinfo,encoding=encoding)
+            ss=_f(cmd,cwd=cwd,stdin=_pipe,stdout=_pipe,startupinfo=startupinfo,encoding=encoding)
         else:
             ss=_f(cmd,cwd=cwd,stdin=_pipe,stdout=_pipe,stderr=_pipe,startupinfo=startupinfo)
         

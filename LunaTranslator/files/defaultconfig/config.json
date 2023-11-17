@@ -405,21 +405,21 @@
         "all": {
             "_A": {
                 "use": false,
-                "name": "选择翻译源-剪贴板",
+                "name": "选择翻译源_剪贴板",
                 "key1": -1,
                 "key2": -1,
                 "keystring": ""
             },
             "_B": {
                 "use": false,
-                "name": "选择翻译源-OCR",
+                "name": "选择翻译源_OCR",
                 "key1": -1,
                 "key2": -1,
                 "keystring": ""
             },
             "_C": {
                 "use": false,
-                "name": "选择翻译源-HOOK",
+                "name": "选择翻译源_HOOK",
                 "key1": -1,
                 "key2": -1,
                 "keystring": ""
@@ -739,6 +739,9 @@
         },"txocr": {
             "use": false,
             "name": "tencent.ocr"
+        },"txocrtrans": {
+            "use": false,
+            "name": "tencent.ImageTranslate"
         },
         "feishu": {
             "use": false,
@@ -856,6 +859,10 @@
             "use": false,
             "color": "blue",
             "name": "deepl"
+        },"deepl2": {
+            "use": false,
+            "color": "blue",
+            "name": "deepl_v2"
         },
         "deepl_dev": {
             "use": false,
@@ -1148,11 +1155,11 @@
             "color": "blue",
             "name": "OneRingTranslator"
         },
-        "onnxtranslator": {
+        "MT5": {
             "use": false,
             "type": "offline",
             "color": "blue",
-            "name": "OnnxTranslator"
+            "name": "MT5"
         }
     },
     "minifollow": false,

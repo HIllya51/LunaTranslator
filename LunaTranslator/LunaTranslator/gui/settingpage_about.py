@@ -11,20 +11,8 @@ from myutils.wrapper import threader
 import time,json,platform,zipfile
 from myutils.utils import makehtml
 import importlib 
-def resourcegrid( ) :  
-         
-        grid=[]
-        for _ in static_data['aboutsource']:
-            if _['link'][-8:]=='releases':
-                __=False
-            else:
-                __=True 
-             
-            grid.append(
-                
-                  [(_TR(_['name']),1,''),(makehtml(_['link'],__),1,'link')]
-             ) 
-        return grid
+from functools import partial  
+
 @threader
 def getversion(self):
     self.versiontextsignal.emit(('当前版本')+':'+  static_data["version"]+'  '+("最新版本")+':'+ ('获取中'))#,'',url,url)) 
@@ -63,6 +51,38 @@ def setTab_about_dicrect(self) :
     getversion(self)
 def setTab_about(self) : 
     self.tabadd_lazy(self.tab_widget, ('其他设置'), lambda :setTab_aboutlazy(self)) 
+def double_(self,grid):
+    return self.makescroll( self.makegrid(grid ) )
+def resourcegrid(self) :  
+    titles=[]
+    makewidgetsfunctions=[]
+    for sourcetype in static_data['aboutsource']:
+        titles.append(sourcetype['name'])
+        sources=sourcetype['sources']
+        grid=[]
+        for source in sources:
+            name=source['name']
+            link=source['link']
+            if type(link)==list:
+                for i,_link in enumerate( link):
+                    grid.append(
+                    
+                    [(_TR(name) if i==0 else '',1,''),(makehtml(_link,True),2,'link')]
+                ) 
+            else:
+                if link[-8:]=='releases':
+                    __=False
+                else:
+                    __=True 
+                grid.append(
+                    
+                    [(_TR(name),1,''),(makehtml(link,__),2,'link')]
+                ) 
+        makewidgetsfunctions.append(
+            partial(double_,self,grid)
+        )
+    return self.makesubtab_lazy(titles,makewidgetsfunctions)
+     
 def setTab_aboutlazy(self) : 
          
         grid2=[                
@@ -80,11 +100,12 @@ def setTab_aboutlazy(self) :
             [('如果你感觉该软件对你有帮助，欢迎微信扫码赞助，谢谢~',4)], 
             
         ] 
+        
         tab=self.makesubtab_lazy(['相关说明', '自动更新','资源下载' ],[
                 lambda:self.makevbox([self.makegrid(shuominggrid),imgwidget("./files/zan.jpg")]), 
                 lambda: self.makescroll(self.makegrid(grid2 )   ) ,
                 
-                lambda:self.makescroll( self.makegrid(resourcegrid() ) ), 
+                lambda:resourcegrid(self), 
                 ]) 
         return tab
 
