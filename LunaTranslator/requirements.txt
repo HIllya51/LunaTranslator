@@ -26,3 +26,5 @@ imageio
 cffi==1.14.5
 brotli==1.0.9
 bcrypt==3.2.0
+
+tokenizers

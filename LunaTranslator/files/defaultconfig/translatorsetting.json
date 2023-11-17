@@ -396,5 +396,18 @@
 				"islink":true
 			}
 		}
+    },
+    "onnxtranslator": {
+        "args": {
+            "模型路径": "D:\\models\\mt5-translation-ja_zh-onnx\\mt5-ja_zh_beam_search.onnx",
+            "Tokenizer路径": "D:\\models\\mt5-translation-ja_zh\\tokenizer.json",
+            "翻译器路径": "ortmt5.exe",
+            "最大生成长度": "128",
+            "最小生成长度": "1",
+            "柱搜索数": "8",
+            "序列数": "1",
+            "过长惩罚": "1.1",
+            "重复惩罚": "1.1"
+        }
     }
 }

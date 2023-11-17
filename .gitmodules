@@ -1,0 +1,3 @@
+[submodule "LunaTranslator/LunaTranslator/translator/OrtMT5"]
+	path = LunaTranslator/LunaTranslator/translator/OrtMT5
+	url = https://github.com/chaihahaha/OrtMT5.git
