@@ -1,5 +1,6 @@
 from translator.basetranslator import basetrans
 import sys
+import os
 import subprocess,os,platform
 
 class TS(basetrans):  
@@ -20,7 +21,11 @@ class TS(basetrans):
         path=self.config['路径']
         if os.path.exists(path)==False:
             return False
-        model_path               = os.path.join(path,'model/mt5-ja_zh_beam_search.onnx')# str(self.config['模型路径'])
+        model_path_candidates = [i for i in os.listdir(os.path.join(path,'model')) if i.endswith(".onnx")]
+        if len(model_path_candidates) > 0:
+            model_path = os.path.join(path, 'model', model_path_candidates[0])
+        else:
+            return "mT5 onnx file not found!"
         tok_path                 = os.path.join(path,'model/tokenizer.json')#str(self.config['Tokenizer路径'])
         if platform.architecture()[0]=="64bit":
             ort_mt5_path             = os.path.join(path,'bin/x64/ortmt5.exe')
