@@ -22,7 +22,11 @@ class TS(basetrans):
             return False
         model_path               = os.path.join(path,'model/mt5-ja_zh_beam_search.onnx')# str(self.config['模型路径'])
         tok_path                 = os.path.join(path,'model/tokenizer.json')#str(self.config['Tokenizer路径'])
-        ort_mt5_path             = os.path.join(path,'ortmt5.exe')#str(self.config['翻译器路径'])
+        if platform.architecture()[0]=="64bit":
+            ort_mt5_path             = os.path.join(path,'bin/x64/ortmt5.exe')
+        else:
+            ort_mt5_path             = os.path.join(path,'bin/x32/ortmt5.exe')
+        
         max_length_int           = int(self.config['最大生成长度'])
         min_length_int           = int(self.config['最小生成长度'])
         num_beams_int            = int(self.config['柱搜索数'])
