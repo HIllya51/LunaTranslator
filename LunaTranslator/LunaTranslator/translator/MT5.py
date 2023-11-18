@@ -6,7 +6,7 @@ import subprocess,os,platform
 class TS(basetrans):  
 
     def translate_sentence(self, sentence):
-        input_enc = self.tokenizer.encode('<-ja2zh-> ' + sentence)
+        input_enc = self.tokenizer.encode(f'<-{self.srclang}2{self.tgtlang}-> ' + sentence)
         input_ids = input_enc.ids
         int_seq = [len(input_ids)] + input_ids + ['\n']
         pipe_in = " ".join([str(i) for i in int_seq])
