@@ -25,7 +25,7 @@ class TS(basetrans):
         if platform.architecture()[0]=="64bit":
             ort_mt5_path             = os.path.join(path,'bin/x64/ortmt5.exe')
         else:
-            ort_mt5_path             = os.path.join(path,'bin/x32/ortmt5.exe')
+            ort_mt5_path             = os.path.join(path,'bin/x86/ortmt5.exe')
         
         max_length_int           = int(self.config['最大生成长度'])
         min_length_int           = int(self.config['最小生成长度'])
