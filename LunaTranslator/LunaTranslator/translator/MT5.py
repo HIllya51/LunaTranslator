@@ -12,7 +12,10 @@ class TS(basetrans):
         pipe_in = " ".join([str(i) for i in int_seq])
         self.proc.stdin.write(pipe_in)
         pipe_out = self.proc.stdout.readline()
-        output_ids = [int(i) for i in pipe_out.split()]
+        try:
+            output_ids = [int(i) for i in pipe_out.split()]
+        except ValueError:
+            return pipe_out
         return self.tokenizer.decode(output_ids)
     def end(self):
         self.proc.kill()
