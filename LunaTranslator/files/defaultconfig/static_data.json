@@ -39,11 +39,7 @@
                 },
                 {
                     "name": "MT5",
-                    "link": [
-                        "https://github.com/HIllya51/LunaTranslator/releases/download/v2.5.4/MT5.zip.001",
-                        "https://github.com/HIllya51/LunaTranslator/releases/download/v2.5.4/MT5.zip.002",
-                        "https://github.com/HIllya51/LunaTranslator/releases/download/v2.5.4/MT5.zip.003"
-                    ]
+                    "link": "https://github.com/chaihahaha/OrtMT5/releases/tag/v0.0.3"
                 },
                 {
                     "name": "OneRingTranslator_local_REST_service",

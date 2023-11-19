@@ -5,13 +5,16 @@ import subprocess,os,platform
 class TS(basetrans):  
 
     def translate_sentence(self, sentence):
-        input_enc = self.tokenizer.encode('<-ja2zh-> ' + sentence)
+        input_enc = self.tokenizer.encode(f'<-{self.srclang}2{self.tgtlang}-> ' + sentence)
         input_ids = input_enc.ids
         int_seq = [len(input_ids)] + input_ids + ['\n']
         pipe_in = " ".join([str(i) for i in int_seq])
         self.proc.stdin.write(pipe_in)
         pipe_out = self.proc.stdout.readline()
-        output_ids = [int(i) for i in pipe_out.split()]
+        try:
+            output_ids = [int(i) for i in pipe_out.split()]
+        except ValueError:
+            return pipe_out
         return self.tokenizer.decode(output_ids)
     def end(self):
         self.proc.kill()
@@ -20,9 +23,17 @@ class TS(basetrans):
         path=self.config['路径']
         if os.path.exists(path)==False:
             return False
-        model_path               = os.path.join(path,'model/mt5-ja_zh_beam_search.onnx')# str(self.config['模型路径'])
+        model_path_candidates = [i for i in os.listdir(os.path.join(path,'model')) if i.endswith(".onnx")]
+        if len(model_path_candidates) > 0:
+            model_path = os.path.join(path, 'model', model_path_candidates[0])
+        else:
+            return "mT5 onnx file not found!"
         tok_path                 = os.path.join(path,'model/tokenizer.json')#str(self.config['Tokenizer路径'])
-        ort_mt5_path             = os.path.join(path,'ortmt5.exe')#str(self.config['翻译器路径'])
+        if platform.architecture()[0]=="64bit":
+            ort_mt5_path             = os.path.join(path,'bin/x64/ortmt5.exe')
+        else:
+            ort_mt5_path             = os.path.join(path,'bin/x86/ortmt5.exe')
+        
         max_length_int           = int(self.config['最大生成长度'])
         min_length_int           = int(self.config['最小生成长度'])
         num_beams_int            = int(self.config['柱搜索数'])
