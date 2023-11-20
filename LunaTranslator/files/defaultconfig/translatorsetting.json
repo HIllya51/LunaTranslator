@@ -453,6 +453,7 @@
 			"Sakura部署教程": "https://sakura.srpr.moe",
 			"Github仓库": "https://github.com/SakuraLLM/Sakura-13B-Galgame",
             "API接口地址": "",
+            "利用上文信息翻译（通常会有一定的效果提升，但会导致变慢）": false,
             "temperature": 0.1,
 			"top_p": 0.3,
 			"num_beams": 1,
@@ -470,6 +471,9 @@
 			"Github仓库":{
 				"type":"label",
 				"islink": true
+			},
+			"利用上文信息翻译（通常会有一定的效果提升，但会导致变慢）": {
+				"type": "switch"
 			},
 			"temperature":{
 				"type":"spin",
