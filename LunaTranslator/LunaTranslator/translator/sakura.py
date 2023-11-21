@@ -29,13 +29,19 @@ class TS(basetrans):
         else:
             return output_list[-1]
     def do_post(self, endpoint, request):
-        response = self.session.post(endpoint, json=request).json()
-        output = response['results'][0]['text']
-        new_token = response['results'][0]['new_token']
+        try:
+            response = self.session.post(endpoint, json=request).json()
+            output = response['results'][0]['text']
+            new_token = response['results'][0]['new_token']
+        except:
+            raise Exception("与API接口通信失败，请检查设置的API服务器监听地址是否正确，或检查API服务器是否正常开启。")
         return output, new_token
     def translate(self, query):
         self.checkempty(['API接口地址'])
         endpoint = self.config['API接口地址']
+        if endpoint[-1] != "/":
+            endpoint += "/"
+        endpoint += "api/v1/generate"
         prompt = f"<reserved_106>将下面的日文文本翻译成中文：{query}<reserved_107>"
         request = {
             "prompt": prompt,
