@@ -1,6 +1,6 @@
 from translator.basetranslator import basetrans
 import sys
-import subprocess,os,platform
+import subprocess,os,platform,glob
 
 class TS(basetrans):  
 
