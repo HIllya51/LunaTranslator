@@ -1161,6 +1161,12 @@
             "type": "offline",
             "color": "blue",
             "name": "MT5"
+        },
+        "sakura": {
+            "use": false,
+            "type": "offline",
+            "color": "blue",
+            "name": "Sakura大模型"
         }
     },
     "minifollow": false,

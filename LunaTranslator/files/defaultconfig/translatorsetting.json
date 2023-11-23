@@ -447,5 +447,81 @@
 				"step":0.1
 			}
 		}
+    },
+	"sakura": {
+        "args": {
+			"Sakura部署教程": "https://sakura.srpr.moe",
+			"Github仓库": "https://github.com/SakuraLLM/Sakura-13B-Galgame",
+			"使用说明": "API接口格式如下，可根据自己的设置进行修改IP和端口。",
+            "API接口地址": "http://127.0.0.1:5000/",
+            "利用上文信息翻译（通常会有一定的效果提升，但会导致变慢）": false,
+            "temperature": 0.1,
+			"top_p": 0.3,
+			"num_beams": 1,
+			"do_sample": true,
+            "max_new_token": 128,
+            "repetition_penalty": 1,
+            "frequency_penalty": 0,
+			"fix_degeneration": true
+        },
+		"argstype":{
+			"Sakura部署教程":{
+				"type":"label",
+				"islink": true
+			},
+			"Github仓库":{
+				"type":"label",
+				"islink": true
+			},
+			"使用说明":{
+				"type":"label",
+				"islink":false
+			},
+			"利用上文信息翻译（通常会有一定的效果提升，但会导致变慢）": {
+				"type": "switch"
+			},
+			"temperature":{
+				"type":"spin",
+				"min":0,
+				"max":2,
+				"step":0.1
+			},
+			"top_p":{
+				"type":"spin",
+				"min":0,
+				"max":1,
+				"step":0.01
+			},
+			"num_beams":{
+				"type":"intspin",
+				"min":1,
+				"max":16,
+				"step":1
+			},
+			"do_sample":{
+				"type": "switch"
+			},
+			"fix_degeneration":{
+				"type": "switch"
+			},
+			"max_new_token":{
+				"type":"intspin",
+				"min":1,
+				"max":4096,
+				"step":1
+			},
+			"repetition_penalty":{
+				"type":"spin",
+				"min":0,
+				"max":2,
+				"step":0.1
+			},
+			"frequency_penalty":{
+				"type":"spin",
+				"min":0,
+				"max":2,
+				"step":0.05
+			}
+		}
     }
 }
