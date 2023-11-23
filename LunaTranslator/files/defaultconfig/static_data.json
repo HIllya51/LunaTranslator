@@ -39,7 +39,10 @@
                 },
                 {
                     "name": "MT5",
-                    "link": "https://github.com/chaihahaha/OrtMT5/releases/tag/v0.0.3"
+                    "link": [
+                        "https://github.com/chaihahaha/OrtMT5/releases/download/0.0.4/mt5-translator.part1.rar",
+                        "https://github.com/chaihahaha/OrtMT5/releases/download/0.0.4/mt5-translator.part2.rar"
+                    ]
                 },
                 {
                     "name": "OneRingTranslator_local_REST_service",
