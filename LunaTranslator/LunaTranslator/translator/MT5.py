@@ -24,9 +24,9 @@ class TS(basetrans):
         if os.path.exists(path)==False:
             raise Exception("OrtMT5 translator path incorrect")
         mf = os.path.join(path,'model')
-        model_path_candidates = [i for i in os.listdir(mf) if i.endswith(".onnx") and os.path.isfile(os.path.join(mf,i))]
+        model_path_candidates = glob.glob(os.path.join(mf, "**", "*.onnx"), recursive=True)
         if len(model_path_candidates) > 0:
-            model_path = os.path.join(mf, model_path_candidates[0])
+            model_path = model_path_candidates[0]
         else:
             raise Exception("mT5 onnx file not found!")
         tok_path                 = os.path.join(path,'model/tokenizer.json')#str(self.config['Tokenizer路径'])
