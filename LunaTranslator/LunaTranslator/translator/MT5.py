@@ -1,6 +1,6 @@
 from translator.basetranslator import basetrans
 import sys
-import subprocess,os,platform
+import subprocess,os,platform,glob
 
 class TS(basetrans):  
 
@@ -14,7 +14,7 @@ class TS(basetrans):
         try:
             output_ids = [int(i) for i in pipe_out.split()]
         except ValueError:
-            return pipe_out
+            raise Exception(pipe_out)
         return self.tokenizer.decode(output_ids)
     def end(self):
         self.proc.kill()
@@ -22,17 +22,24 @@ class TS(basetrans):
         self.checkempty(['路径'])
         path=self.config['路径']
         if os.path.exists(path)==False:
-            return False
-        model_path_candidates = [i for i in os.listdir(os.path.join(path,'model')) if i.endswith(".onnx")]
+            raise Exception("OrtMT5 translator path incorrect")
+        mf = os.path.join(path,'model')
+        model_path_candidates = glob.glob(os.path.join(mf, "**", "*.onnx"), recursive=True)
         if len(model_path_candidates) > 0:
-            model_path = os.path.join(path, 'model', model_path_candidates[0])
+            model_path = model_path_candidates[0]
         else:
-            return "mT5 onnx file not found!"
+            raise Exception("mT5 onnx file not found!")
         tok_path                 = os.path.join(path,'model/tokenizer.json')#str(self.config['Tokenizer路径'])
         if platform.architecture()[0]=="64bit":
             ort_mt5_path             = os.path.join(path,'bin/x64/ortmt5.exe')
         else:
             ort_mt5_path             = os.path.join(path,'bin/x86/ortmt5.exe')
+        if not os.path.isfile(ort_mt5_path):
+            ort_mt5_path_candidates = glob.glob(os.path.join(path, "**", "ortmt5.exe"), recursive=True)
+            if len(ort_mt5_path_candidates) > 0:
+                ort_mt5_path = ort_mt5_path_candidates[0]
+            else:
+                raise Exception("ortmt5.exe not found!")
         
         max_length_int           = int(self.config['最大生成长度'])
         min_length_int           = int(self.config['最小生成长度'])
