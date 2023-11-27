@@ -678,5 +678,10 @@
     "罗马音": "Romanik sesi",
     "日语注音方案": "Japon fonetik taslağı",
     "保存当前游戏的文本处理流程": "Mektup işleme sürecini şu oyun için kaydet",
-    "使用保存的文本处理流程": "Kaydedilen metin işleme sürecini kullanılıyor"
+    "使用保存的文本处理流程": "Kaydedilen metin işleme sürecini kullanılıyor",
+    "Sakura大模型": "Sakura Büyük Modeli",
+    "Magpie路径": "Magpie Yolu",
+    "Sakura部署教程": "Sakura Deployment Tutorial",
+    "Github仓库": "Github deposu",
+    "利用上文信息翻译（通常会有一定的效果提升，但会导致变慢）": "Önceki metinde verilen bilgileri kullanarak çevirin (genelde etkinliğinde bazı gelişmelerle, fakat daha yavaş çeviriye yol açabilir)"
 }

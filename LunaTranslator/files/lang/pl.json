@@ -678,5 +678,10 @@
     "罗马音": "Dźwięk romański",
     "日语注音方案": "Japoński schemat fonetyczny",
     "保存当前游戏的文本处理流程": "Zapisz proces przetwarzania tekstu dla bieżącej gry",
-    "使用保存的文本处理流程": "Korzystanie z zapisanego procesu przetwarzania tekstu"
+    "使用保存的文本处理流程": "Korzystanie z zapisanego procesu przetwarzania tekstu",
+    "Sakura大模型": "Duży model Sakura",
+    "Magpie路径": "Ścieżka dla Sraków",
+    "Sakura部署教程": "Samouczek wdrażania Sakury",
+    "Github仓库": "Magazyn Github",
+    "利用上文信息翻译（通常会有一定的效果提升，但会导致变慢）": "Przetłumacz za pomocą informacji podanych w poprzednim tekście (zwykle z pewną poprawą skuteczności, ale może to prowadzić do wolniejszego tłumaczenia)"
 }

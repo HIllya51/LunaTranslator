@@ -678,5 +678,10 @@
     "罗马音": "Tiếng La Mã",
     "日语注音方案": "Chương trình chú thích tiếng Nhật",
     "保存当前游戏的文本处理流程": "Lưu luồng xử lý văn bản của trò chơi hiện tại",
-    "使用保存的文本处理流程": "Sử dụng quy trình xử lý văn bản đã lưu"
+    "使用保存的文本处理流程": "Sử dụng quy trình xử lý văn bản đã lưu",
+    "Sakura大模型": "Sakura Lớn Mô hình",
+    "Magpie路径": "Đường Magpie",
+    "Sakura部署教程": "Hướng dẫn triển khai Sakura",
+    "Github仓库": "Kho Github",
+    "利用上文信息翻译（通常会有一定的效果提升，但会导致变慢）": "Sử dụng thông tin trên để dịch (thường có một số hiệu ứng tăng lên, nhưng có thể dẫn đến chậm hơn)"
 }

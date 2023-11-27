@@ -678,5 +678,10 @@
     "罗马音": "Acento Romano",
     "日语注音方案": "Programa de fonética japonesa",
     "保存当前游戏的文本处理流程": "Guardar el proceso de procesamiento de texto del juego actual",
-    "使用保存的文本处理流程": "Usar el proceso de procesamiento de texto guardado"
+    "使用保存的文本处理流程": "Usar el proceso de procesamiento de texto guardado",
+    "Sakura大模型": "Gran modelo Sakura",
+    "Magpie路径": "Ruta magpie",
+    "Sakura部署教程": "Guía de despliegue Sakura",
+    "Github仓库": "Almacén github",
+    "利用上文信息翻译（通常会有一定的效果提升，但会导致变慢）": "Traducción utilizando la información anterior (generalmente tiene un cierto efecto de mejora, pero puede causar lentitud)"
 }

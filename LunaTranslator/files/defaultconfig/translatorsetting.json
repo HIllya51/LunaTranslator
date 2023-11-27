@@ -452,7 +452,6 @@
         "args": {
 			"Sakura部署教程": "https://sakura.srpr.moe",
 			"Github仓库": "https://github.com/SakuraLLM/Sakura-13B-Galgame",
-			"使用说明": "API接口格式如下，可根据自己的设置进行修改IP和端口。",
             "API接口地址": "http://127.0.0.1:5000/",
             "利用上文信息翻译（通常会有一定的效果提升，但会导致变慢）": false,
             "temperature": 0.1,
