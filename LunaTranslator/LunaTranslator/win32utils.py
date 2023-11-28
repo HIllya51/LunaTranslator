@@ -635,3 +635,23 @@ _CancelIo=_kernel32.CancelIo
 _CancelIo.argtypes=c_void_p,
 def CancelIo(hfile):
     return _CancelIo(hfile)
+
+
+
+
+def GetDpiForWindow(hwnd):
+    try:    
+        _GetDpiForWindow=_user32.GetDpiForWindow
+    except:
+        return 96
+    
+    return _GetDpiForWindow(hwnd)
+
+_ScreenToClient=_user32.ScreenToClient
+_ScreenToClient.argtypes=c_void_p,POINTER(POINT)
+def ScreenToClient(hwnd,x,y):
+    P=POINT()
+    P.x=x
+    P.y=y
+    _ScreenToClient(hwnd,pointer(P))
+    return (P.x,P.y)

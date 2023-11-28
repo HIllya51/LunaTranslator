@@ -6,6 +6,7 @@ from PyQt5.QtWidgets import QApplication
 from PyQt5.QtGui import QImage
 from PyQt5.QtCore import QByteArray,QBuffer
 from myutils.exceptions import ArgsEmptyExc
+from myutils.hwnd import dynamic_rate
 from traceback import print_exc
 import gobject,winsharedutils
 def togray(image):
@@ -37,21 +38,23 @@ def imagesolve(image):
     return image2
 def imageCut(hwnd,x1,y1,x2,y2):
     screen = QApplication.primaryScreen() 
-    if hwnd:
-        try:   
+    
+    try:   
+        if hwnd:
             rect=win32utils.GetWindowRect(hwnd)  
             if rect==(0,0,0,0):
                 raise Exception
-            rect2=win32utils.GetClientRect(hwnd)
-            windowOffset = math.floor(((rect[2]-rect[0])-rect2[2])/2)
-            h= ((rect[3]-rect[1])-rect2[3]) - windowOffset
-                
-            pix = screen.grabWindow(hwnd, x1-rect[0], y1-rect[1]-h, x2-x1, y2-y1) 
+            
+            x1,y1=win32utils.ScreenToClient(hwnd,x1,y1)
+            x2,y2=win32utils.ScreenToClient(hwnd,x2,y2)
+            rate=dynamic_rate(hwnd,rect)
+            pix = screen.grabWindow(hwnd, (x1)/rate, (y1)/rate, (x2-x1)/rate, (y2-y1)/rate) 
             if pix.toImage().allGray():
                 raise Exception()
-        except:
-            pix = screen.grabWindow(QApplication.desktop().winId(), x1, y1, x2-x1, y2-y1) 
-    else:
+        else:
+            raise Exception()
+    except:
+        print_exc()
         pix = screen.grabWindow(QApplication.desktop().winId(), x1, y1, x2-x1, y2-y1) 
     image= pix.toImage()
     image2=imagesolve(image)

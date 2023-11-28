@@ -51,12 +51,31 @@ def grabwindow():
         def _():
                 winrtutils._winrt_capture_window(fname+'_winrt.png',hwnd)
         _()
-        p=QApplication.primaryScreen().grabWindow(hwnd)
-        
+        _=win32utils.GetClientRect(hwnd)
+        rate=dynamic_rate(hwnd,_)
+        h,w= _[2]/rate,_[3]/rate
+        p=QApplication.primaryScreen().grabWindow(hwnd,0,0,h,w)
         if(not p.toImage().allGray()):
                 p.save(fname+'_gdi.png')
                  
         gobject.baseobject.translation_ui.displaystatus.emit("saved to "+fname,'red',True)
+def dynamic_rate(hwnd,rect):
+        if(getscreenp()==(rect[2],rect[3])):
+                rate=1
+        else:
+                rate=hwndscalerate(hwnd)
+        return rate
+def getscreenp():       #一些游戏全屏时会修改分辨率，但不会修改系统gdi
+        hDC = win32utils.GetDC(0) 
+        h = win32utils.GetDeviceCaps(hDC, 8)
+        w = win32utils.GetDeviceCaps(hDC, 10)
+        win32utils._ReleaseDC(None, hDC); 
+        return h,w
+def hwndscalerate(hwnd):
+        dpi=(win32utils.GetDpiForWindow(hwnd))
+        rate=getScreenRate()*96/dpi
+        return rate
+
 def getpidhwndfirst(pid):
         try:
                 hwnds=list()
