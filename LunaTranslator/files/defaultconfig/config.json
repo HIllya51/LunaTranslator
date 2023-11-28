@@ -795,10 +795,6 @@
             "use": true,
             "color": "#ff65db",
             "name": "百度"
-        },"baiduv2": {
-            "use": false,
-            "color": "#ff65db",
-            "name": "百度_v2"
         },
         "bing": {
             "use": false,

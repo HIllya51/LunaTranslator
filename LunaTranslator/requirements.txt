@@ -3,26 +3,12 @@ PyQt5-Qt5==5.15.2
 
 requests==2.31.0
 websocket-client==1.5.1
-setuptools==56.0.0
-six==1.16.0
-tzlocal==3.0
-wrapt==1.12.1
-
 certifi==2022.12.7
 charset-normalizer==2.0.9
-cryptography==41.0.0
 idna==2.10
-pyOpenSSL==22.0.0
 pytz==2021.3
 
 urllib3==1.26.6
 
-zhconv==1.4.3
-
-
 nuitka==1.5.3
 imageio
-
-cffi==1.14.5
-brotli==1.0.9
-bcrypt==3.2.0
