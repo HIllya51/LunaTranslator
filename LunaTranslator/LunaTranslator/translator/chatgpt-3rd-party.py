@@ -54,7 +54,7 @@ class TS(basetrans):
             self.config['model']) + ', "stream": false, "temperature": ' + json.dumps(temperature) + ', "messages": ' + json.dumps(
             message) + ' }'
 
-        response = requests.post(self.config['API接口地址'] + '/chat/completions', headers=headers, data=data)
+        response = self.session.post(self.config['API接口地址'] + '/chat/completions', headers=headers, data=data)
         response = response.json()
 
         try:

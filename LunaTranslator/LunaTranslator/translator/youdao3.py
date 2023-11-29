@@ -12,9 +12,8 @@ import re
 class TS(basetrans): 
     def langmap(self):
         return {"zh":"ZH_CN", "ja":"JA", "en":"EN","ko":"KR","es":"SP","ru":"RU"}
-    def inittranslator(self): 
-        self.ss=requests.session()
-        self.ss.get('https://m.youdao.com/translate',headers =  {
+    def inittranslator(self):  
+        self.session.get('https://m.youdao.com/translate',headers =  {
             'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
             'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6',
             'Cache-Control': 'no-cache',
@@ -30,7 +29,7 @@ class TS(basetrans):
             'sec-ch-ua': '"Microsoft Edge";v="105", "Not)A;Brand";v="8", "Chromium";v="105"',
             'sec-ch-ua-mobile': '?0',
             'sec-ch-ua-platform': '"Windows"',
-        }, proxies=  self.proxy).text
+        } ).text
     def translate(self, content):
         data = {
             'inputtext': content,
@@ -56,9 +55,9 @@ class TS(basetrans):
             'sec-ch-ua-mobile': '?0',
             'sec-ch-ua-platform': '"Windows"',
         }
-        self.ss.cookies.update({ '_yd_btn_fanyi_29': 'true',
+        self.session.cookies.update({ '_yd_btn_fanyi_29': 'true',
     '_yd_newbanner_day': '29',})
     
-        response = self.ss.post('https://m.youdao.com/translate',   data=data,headers=headers , proxies=self.proxy).text
+        response = self.session.post('https://m.youdao.com/translate',   data=data,headers=headers  ).text
         
         return re.search('<ul id="translateResult">([\\s\\S]*?)<li>([\\s\\S]*?)</li>([\\s\\S]*?)<\/ul>',response).groups()[1]  

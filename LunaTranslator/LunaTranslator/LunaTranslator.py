@@ -243,19 +243,20 @@ class MAINUI() :
             usenum=min(globalconfig['loadbalance_oncenum'],len(self.translators))
         else:
             usenum= len(self.translators)
-        thistimeusednum=0
-        self.lasttranslatorindex=self.lasttranslatorindex %len(self.translators)
-        _len=len(self.translators)
-        keys=list(self.translators.keys())+list(self.translators.keys())
-        keys=keys[self.lasttranslatorindex:self.lasttranslatorindex+_len]
-        #print(keys,usenum,self.lasttranslatorindex)
-        for engine in keys:  
-            if engine not in self.premtalready:
-                self.translators[engine].gettask((partial(self.GetTranslationCallback,onlytrans,engine,self.currentsignature, optimization_params,_showrawfunction,_showrawfunction_sig,text),text,text_solved,skip,embedcallback,is_auto_run,hira)) 
-            thistimeusednum+=1
-            self.lasttranslatorindex+=1
-            if(thistimeusednum>=usenum):
-                break
+        if usenum:
+            thistimeusednum=0
+            self.lasttranslatorindex=self.lasttranslatorindex %len(self.translators)
+            _len=len(self.translators)
+            keys=list(self.translators.keys())+list(self.translators.keys())
+            keys=keys[self.lasttranslatorindex:self.lasttranslatorindex+_len]
+            #print(keys,usenum,self.lasttranslatorindex)
+            for engine in keys:  
+                if engine not in self.premtalready:
+                    self.translators[engine].gettask((partial(self.GetTranslationCallback,onlytrans,engine,self.currentsignature, optimization_params,_showrawfunction,_showrawfunction_sig,text),text,text_solved,skip,embedcallback,is_auto_run,hira)) 
+                thistimeusednum+=1
+                self.lasttranslatorindex+=1
+                if(thistimeusednum>=usenum):
+                    break
                 
     
         

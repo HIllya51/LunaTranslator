@@ -37,10 +37,10 @@ class Settin(closeashidewindow) :
     def resizefunction(self):
          
         for w in self.needfitwidgets: 
-            w.setFixedWidth(self.size().width()- self.window_width*0.2 -self.scrollwidth)
+            w.setFixedWidth(int(self.size().width()- self.window_width*0.2 -self.scrollwidth))
         for grid,maxl in self.needfitcols:
             for c in range(maxl):
-                grid.setColumnMinimumWidth(c,self.size().width()- self.window_width*0.2-self.scrollwidth//maxl)
+                grid.setColumnMinimumWidth(c,int(self.size().width()- self.window_width*0.2-self.scrollwidth//maxl))
         
     def resizeEvent(self, a0: QResizeEvent) -> None: 
         
@@ -78,7 +78,7 @@ class Settin(closeashidewindow) :
                 if save:
                     savelist.append(ll)
 
-                grid.setRowMinimumHeight(nowr,35*self.rate)
+                grid.setRowMinimumHeight(nowr,int(35*self.rate))
         self.needfitcols.append([grid,maxl])
     
     def __init__(self, parent): 
@@ -174,7 +174,7 @@ class Settin(closeashidewindow) :
         gridlayoutwidget.setLayout(gridlay)   
         gridlayoutwidget.setStyleSheet("gridwidget{background-color:transparent;}") 
         self.needfitwidgets.append(gridlayoutwidget)
-        gridlayoutwidget.setFixedHeight(len(grid)*35*self.rate)
+        gridlayoutwidget.setFixedHeight(int(len(grid)*35*self.rate))
         self.automakegrid(gridlay,grid,save,savelist  ) 
         if save:
             savelay.append(gridlay)

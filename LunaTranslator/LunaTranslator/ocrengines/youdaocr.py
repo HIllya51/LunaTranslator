@@ -36,7 +36,7 @@ class OCR(baseocr):
             'company': '',
         }
 
-        response = requests.post('https://aidemo.youdao.com/ocrapi1', headers=headers, data=data, proxies=self.proxy)
+        response = self.session.post('https://aidemo.youdao.com/ocrapi1', headers=headers, data=data)
             
         try:
             return self.common_solve_text_orientation(
@@ -81,7 +81,7 @@ class OCR(baseocr):
         data['sign'] = sign
 
         headers = {'Content-Type': 'application/x-www-form-urlencoded'} 
-        response =requests.post(YOUDAO_URL, data=data, headers=headers, proxies=self.proxy)
+        response =self.session.post(YOUDAO_URL, data=data, headers=headers)
         self.countnum()
         try:
             _=[]

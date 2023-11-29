@@ -126,12 +126,12 @@ def setTabTwo_lazy(self) :
             ],['']
         ] 
         _items=[
-            {'t':'file','dir':False,'filter':'*.exe','l':'chrome路径','d':globalconfig,'k':'chromepath'},
+            {'t':'file','dir':False,'filter':'*.exe','l':'Chromium路径','d':globalconfig,'k':'chromepath'},
             {'t':'okcancel' },
         ]
 
         developgrid=[
-            [('chrome路径',8),(getcolorbutton(globalconfig,'',callback=functools.partial(autoinitdialog,self, 'chrome路径',800,_items),icon='fa.gear',constcolor="#FF69B4"))],
+            [('Chromium路径',8),(getcolorbutton(globalconfig,'',callback=functools.partial(autoinitdialog,self, 'Chromium路径',800,_items),icon='fa.gear',constcolor="#FF69B4"))],
             [("端口号",8),(getspinbox(0,65535,globalconfig,'debugport'),3) ,],
             [(self.statuslabel,16)],
             ['']

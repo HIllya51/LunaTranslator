@@ -3,25 +3,9 @@ from ctypes import  c_int,POINTER,pointer,c_uint,windll,c_char_p,create_unicode_
 from ctypes import Structure,c_int,POINTER,c_uint,WINFUNCTYPE,c_void_p,sizeof,byref
 import ctypes
 from traceback import print_exc
-BOOL=c_int
-WORD=c_ushort
-DWORD=c_uint
+from ctypes.wintypes import RECT,POINT,HWND,BOOL,WORD,DWORD,BYTE 
 WNDENUMPROC =WINFUNCTYPE(c_bool,c_void_p,c_void_p)
-
  
-class RECT(Structure):
-    _fields_ = [
-        ('left', c_int),
-        ('top', c_int),
-        ('right', c_int),
-        ('botton', c_int)
-    ]
-
-class POINT(Structure):
-    _fields_=[
-            ('x',c_int),
-            ('y',c_int),
-        ]
 class WINDOWPLACEMENT(Structure):
     _fields_ = [
         ('length', c_uint),
@@ -248,13 +232,13 @@ def GetForegroundWindow():
 def GetWindowRect(hwnd):
     _rect=RECT()
     if (_GetWindowRect(hwnd,pointer(_rect))):
-        return (_rect.left,_rect.top,_rect.right,_rect.botton)
+        return (_rect.left,_rect.top,_rect.right,_rect.bottom)
     else:
-        return (0,0,0,0)
+        return None
 def GetClientRect(hwnd): 
     _rect=RECT()
     _GetClientRect(hwnd,pointer(_rect))
-    return (_rect.left,_rect.top,_rect.right,_rect.botton)
+    return (_rect.left,_rect.top,_rect.right,_rect.bottom)
 def GetWindowPlacement(hwnd,_simple):
     _place=WINDOWPLACEMENT()
     _GetWindowPlacement(hwnd,pointer(_place))

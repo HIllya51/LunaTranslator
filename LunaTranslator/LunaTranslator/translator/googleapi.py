@@ -14,7 +14,7 @@ class TS(basetrans):
         
    
         params={'key': key,'source':self.srclang, 'target':self.tgtlang, 'q':  (query)}
-        response = requests.get("https://translation.googleapis.com/language/translate/v2/",params=params ,proxies=self.proxy)
+        response = self.session.get("https://translation.googleapis.com/language/translate/v2/",params=params )
         
         try:
             return response.json()['data']['translations'][0]['translatedText']

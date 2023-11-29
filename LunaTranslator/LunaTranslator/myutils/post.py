@@ -246,13 +246,14 @@ def POSTSOLVE(line):
     usemypostpath='./userconfig/mypost.py'
     usemodule='mypost'
     try:
-     exepath=gobject.baseobject.textsource.pname
-     if savehook_new_data[exepath]['use_saved_text_process']:
-            useranklist=savehook_new_data[exepath]['save_text_process_info']['rank']
-            usedpostprocessconfig=savehook_new_data[exepath]['save_text_process_info']['postprocessconfig']
-            if savehook_new_data[exepath]['save_text_process_info']['mypost']:
-                usemodule='posts.'+savehook_new_data[exepath]['save_text_process_info']['mypost']
-                usemypostpath='./userconfig/posts/{}.py'.format(savehook_new_data[exepath]['save_text_process_info']['mypost']) 
+     if 'pname' in dir(gobject.baseobject.textsource):
+        exepath=gobject.baseobject.textsource.pname
+        if savehook_new_data[exepath]['use_saved_text_process']:
+                useranklist=savehook_new_data[exepath]['save_text_process_info']['rank']
+                usedpostprocessconfig=savehook_new_data[exepath]['save_text_process_info']['postprocessconfig']
+                if savehook_new_data[exepath]['save_text_process_info']['mypost']:
+                        usemodule='posts.'+savehook_new_data[exepath]['save_text_process_info']['mypost']
+                        usemypostpath='./userconfig/posts/{}.py'.format(savehook_new_data[exepath]['save_text_process_info']['mypost']) 
     except:
        print_exc()     
     try:

@@ -44,11 +44,8 @@ class TS(basetrans):
             'q': content,
         }
         
-        response = requests.get('https://translate.google.com/m', params=params,verify=False, headers=headers,proxies=self.proxy)
+        response = self.session.get('https://translate.google.com/m', params=params,verify=False, headers=headers )
         
         res=re.search('<div class="result-container">([\\s\\S]*?)</div>',response.text).groups() 
         return res[0]
-   
-if __name__=='__main__':
-    g=GOO()
-    print(g.gettask('あずきさんからアサリのスパゲティの作り方を学んだりもした。'))
+    

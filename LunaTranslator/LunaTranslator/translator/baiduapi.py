@@ -9,8 +9,6 @@ import random
 class TS(basetrans):  
     def langmap(self):
         return  {"es":"spa","ko":"kor","fr":"fra","ja":"jp","cht":"cht","vi":"vie","uk":"ukr","ar":"ara"}
-    def inittranslator(self):
-        self.session=requests.session()
     def translate(self,query):  
         
         self.checkempty(['APP ID','密钥'])
@@ -28,7 +26,7 @@ class TS(basetrans):
         myurl = myurl + '?appid=' + appid + '&q=' + urllib.parse.quote(q) + '&from=' + fromLang + '&to=' + toLang + '&salt=' + str(
         salt) + '&sign=' + sign
         
-        res=self.session.get('https://api.fanyi.baidu.com'+myurl, proxies=  self.proxy)
+        res=self.session.get('https://api.fanyi.baidu.com'+myurl)
         try:
             _='\n'.join([_['dst'] for _ in res.json()['trans_result']])  
             

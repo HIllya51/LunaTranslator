@@ -4,7 +4,6 @@ from traceback import print_exc
 from myutils.config import globalconfig,_TR
 import importlib  
 from difflib import SequenceMatcher 
-from myutils.exceptions import ArgsEmptyExc
 from gui.rangeselect    import rangeadjust
 from myutils.ocrutil import imageCut,ocr_run,ocr_end
 import time  ,gobject

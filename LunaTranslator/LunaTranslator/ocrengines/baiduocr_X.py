@@ -13,7 +13,7 @@ class OCR(baseocr):
         self.checkempty(['API Key','Secret Key'])
         if (self.config['API Key'],self.config['Secret Key'] )!=(self.appid,self.secretKey)  :
             self.appid,self.secretKey=self.config['API Key'],self.config['Secret Key']
-            self.accstoken=requests.get('https://aip.baidubce.com/oauth/2.0/token?grant_type=client_credentials&client_id='+self.appid+'&client_secret='+self.secretKey, proxies=self.proxy).json()['access_token']
+            self.accstoken=self.session.get('https://aip.baidubce.com/oauth/2.0/token?grant_type=client_credentials&client_id='+self.appid+'&client_secret='+self.secretKey).json()['access_token']
     def ocr(self,imgfile):
         self.checkchange()
         if self.accstoken=="":
@@ -54,7 +54,7 @@ class OCR(baseocr):
             'https://aip.baidubce.com/rest/2.0/ocr/v1/accurate_basic',
             'https://aip.baidubce.com/rest/2.0/ocr/v1/accurate'
         ][interfacetype]
-        response = requests.post(url, params=params, headers=headers, data=data, proxies=self.proxy)
+        response = self.session.post(url, params=params, headers=headers, data=data)
         try: 
             
             self.countnum()

@@ -26,11 +26,10 @@ class TS(basetrans):
             'upgrade-insecure-requests': '1',
             'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36',
         }
- 
-        self.session=requests.session( )
+  
         self.session.trust_env=False
         self.session.headers.update(self.headers) 
-        self.session.get('https://ai.youdao.com/product-fanyi-text.s' , proxies=self.proxy)
+        self.session.get('https://ai.youdao.com/product-fanyi-text.s'  )
     def translate(self, content):
                 
         headers = {
@@ -55,7 +54,7 @@ class TS(basetrans):
             'to': self.tgtlang,
         }
  
-        response =self.session.post('https://aidemo.youdao.com/trans', data=data,headers=headers,   proxies= self.proxy)
+        response =self.session.post('https://aidemo.youdao.com/trans', data=data,headers=headers)
         js=response.json()['translation'][0]
         
         return js 

@@ -35,7 +35,7 @@ class TS(basetrans):
     def langmap(self):
         return {'cht':'zh-TW'}
         
-    def trans_tencent(self,q ,secret_id,secret_key,proxy, fromLang='auto', toLang='en'):
+    def trans_tencent(self,q ,secret_id,secret_key, fromLang='auto', toLang='en'):
         
         endpoint = "tmt.tencentcloudapi.com"
         data = {
@@ -55,7 +55,7 @@ class TS(basetrans):
         data["Signature"] = sign_str(secret_key, s, hashlib.sha1)
 
         # 此处会实际调用，成功后可能产生计费
-        r = requests.get("https://" + endpoint, params=data, timeout=3,proxies=proxy)
+        r = self.session.get("https://" + endpoint, params=data, timeout=3 )
         # print(r.json())
         return r
     def translate(self,query):  
@@ -65,7 +65,7 @@ class TS(basetrans):
         secretKey = self.multiapikeycurrent['SecretKey']
          
                 
-        ret=self.trans_tencent(query,appid,secretKey,self.proxy,self.srclang,self.tgtlang) 
+        ret=self.trans_tencent(query,appid,secretKey,self.srclang,self.tgtlang) 
         try:
             self.countnum(query)
             return ret.json()['Response']['TargetText']

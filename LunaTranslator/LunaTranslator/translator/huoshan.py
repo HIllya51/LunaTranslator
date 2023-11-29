@@ -30,14 +30,10 @@ class TS(basetrans):
             'glossary_list': [],
             'category': '',
         }
-        response = requests.post('https://translate.volcengine.com/crx/translate/v1/',   headers=headers, json=json_data, proxies= self.proxy)
+        response = self.session.post('https://translate.volcengine.com/crx/translate/v1/',   headers=headers, json=json_data)
         
         try:
             return response.json()['translation']
         except:
             raise Exception(json.dumps(response.json(),ensure_ascii=False))
-        
-   
-if __name__=='__main__':
-    g=GOO()
-    print(g.gettask('あずきさんからアサリのスパゲティの作り方を学んだりもした。'))
+         

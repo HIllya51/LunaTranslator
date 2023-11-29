@@ -44,7 +44,7 @@ class TS(basetrans):
             'x-acs-signature-method': 'HMAC-SHA1',
             'x-acs-version': '2019-01-02'
         }
-        request = requests.post(url, headers=headers, data=req_body)
+        request = self.session.post(url, headers=headers, data=req_body)
         try:
             response = request.json()
             return response['Data']['Translated']

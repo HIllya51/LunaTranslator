@@ -20,7 +20,7 @@ class TS(basetrans):
     def translate(self,content):  
         #print(self.url%(self.srclang,self.tgtlang,urllib.parse.quote(content)))
         print('https://'+self.config['host']+'/api/v1/%s/%s/%s'%(self.srclang,self.tgtlang,quote_plus(content)))
-        x=requests.get('https://'+self.config['host']+'/api/v1/%s/%s/%s'%(self.srclang,self.tgtlang,quote_plus(content)),headers = {
+        x=self.session.get('https://'+self.config['host']+'/api/v1/%s/%s/%s'%(self.srclang,self.tgtlang,quote_plus(content)),headers = {
             # 'authority': self.config['host'],
             # 'accept': '*/*',
             # 'accept-language': 'zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6',
@@ -34,7 +34,7 @@ class TS(basetrans):
             # 'sec-fetch-mode': 'cors',
             # 'sec-fetch-site': 'same-origin',
             # 'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36 Edg/108.0.1462.46',
-        },proxies=self.proxy).json() 
+        }).json() 
         return x['translation']
         x=requests.get(self.url%(self.srclang,self.tgtlang,urllib.parse.quote(content)),headers = {
             'accept': '*/*',

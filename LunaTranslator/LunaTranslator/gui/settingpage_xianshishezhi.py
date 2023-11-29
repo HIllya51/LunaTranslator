@@ -146,7 +146,7 @@ def setTabThree_lazy(self) :
         self.resizefunction()
     def __changeshowintab(x):
         gobject.baseobject.translation_ui.showintab=x
-        showintab(gobject.baseobject.translation_ui.winId(),x)
+        showintab(int(gobject.baseobject.translation_ui.winId()),x)
     uigrid=[
         [('设置界面字体',4),(self.sfont_comboBox,5)],
            [ ('字体大小',4),(getspinbox(1,100,globalconfig  ,'settingfontsize',callback=__changefontsize),2)], 

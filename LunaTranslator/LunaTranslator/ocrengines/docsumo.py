@@ -30,7 +30,7 @@ class OCR(baseocr):
         
         data = '------WebKitFormBoundaryUjYOv45hug6CFh3t\r\nContent-Disposition: form-data; name="file"; filename="screenshot.png"\r\nContent-Type: application/octet-stream\r\n\r\n'.encode('latin-1')+open(imgfile, "rb").read()+'\r\n------WebKitFormBoundaryUjYOv45hug6CFh3t--\r\n'.encode('latin-1')
 
-        response = requests.post('https://ocrserver.docsumo.com/api/v1/ocr/extract/',headers=headers,  data=data, proxies= self.proxy)
+        response = self.session.post('https://ocrserver.docsumo.com/api/v1/ocr/extract/',headers=headers,  data=data)
         #print(response.json())
         try:
             

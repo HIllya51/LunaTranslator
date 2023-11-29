@@ -34,7 +34,7 @@ class TS(basetrans):
             'sec-ch-ua-platform': '"Windows"',
         } 
 
-        response = requests.post('https://online.cloudtranslation.com/api/v1.0/request_translate/try_translate', data={"type":"text","text":content,"src_lang":self.srclang,"tgt_lang":self.tgtlang,"domain":"general"}, headers=headers,proxies=self.proxy ) 
+        response = self.session.post('https://online.cloudtranslation.com/api/v1.0/request_translate/try_translate', data={"type":"text","text":content,"src_lang":self.srclang,"tgt_lang":self.tgtlang,"domain":"general"}, headers=headers, ) 
         try:
             return json.loads(response.json()['data']['data'])['translation']
         except:

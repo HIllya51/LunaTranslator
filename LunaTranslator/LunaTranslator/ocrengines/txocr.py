@@ -42,7 +42,7 @@ class OCR(baseocr):
         req_para.update({
             "Signature":b64output
         })
-        r = requests.get(url="https://ocr.tencentcloudapi.com/",params=req_para,timeout=10)
+        r = self.session.get(url="https://ocr.tencentcloudapi.com/",params=req_para,timeout=10)
         #print(r.text)
         if r.status_code == 200:
             try:

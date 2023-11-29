@@ -558,7 +558,6 @@
     "ギャラ子": "Gâララギャラ",
     "用户词典": "Kullanıcı Sözlük",
     "英语(CP437)": "İngilizce (CP437)",
-    "chrome路径": "Chrome Yolu",
     "游戏信息": "Oyun Bilgisi",
     "意大利语": "İtalyanca",
     "端口号": "Port numarası",
@@ -683,5 +682,6 @@
     "Magpie路径": "Magpie Yolu",
     "Sakura部署教程": "Sakura Deployment Tutorial",
     "Github仓库": "Github deposu",
-    "利用上文信息翻译（通常会有一定的效果提升，但会导致变慢）": "Önceki metinde verilen bilgileri kullanarak çevirin (genelde etkinliğinde bazı gelişmelerle, fakat daha yavaş çeviriye yol açabilir)"
+    "利用上文信息翻译（通常会有一定的效果提升，但会导致变慢）": "Önceki metinde verilen bilgileri kullanarak çevirin (genelde etkinliğinde bazı gelişmelerle, fakat daha yavaş çeviriye yol açabilir)",
+    "Chromium路径": "Chromium Yolu"
 }

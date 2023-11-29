@@ -33,7 +33,7 @@ class TS(basetrans):
                 'sec-ch-ua-mobile': '?0',
                 'sec-ch-ua-platform': '"Windows"',
             } 
-            res=requests.get('https://fanyi.sogou.com/text?keyword='+quote(content) +'&transfrom='+self.srclang+'&transto'+self.tgtlang+'&model=general',headers=headers, proxies= self.proxy)
+            res=self.session.get('https://fanyi.sogou.com/text?keyword='+quote(content) +'&transfrom='+self.srclang+'&transto'+self.tgtlang+'&model=general',headers=headers)
             res=re.search('<p id="trans-result" class="output-val" style="white-space: pre-line">([\\s\\S]*?)</p>', res.text)
             
             res=res.groups()[0]

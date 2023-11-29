@@ -7,9 +7,7 @@ from myutils.config import globalconfig
 from translator.basetranslator import basetrans  
 import json
 
-class TS(basetrans):  
-    def inittranslator(self):
-        self.session=requests.session()
+class TS(basetrans):   
     def translate(self,query):  
         self.checkempty(['Token'])
         
@@ -30,7 +28,7 @@ class TS(basetrans):
             "content-type": "application/json",
             "x-authorization": "token " + token,
         }
-        response = requests.request("POST", url, data=json.dumps(payload), headers=headers, proxies= self.proxy)
+        response = self.session.request("POST", url, data=json.dumps(payload), headers=headers)
         try:
             res=json.loads(response.text)["target"]
            

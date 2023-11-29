@@ -19,7 +19,7 @@ class TS(basetrans):
         }
         
         try:
-            response = requests.post(url, auth=('apikey', apikey), headers=headers, data=json.dumps(data))
+            response = self.session.post(url, auth=('apikey', apikey), headers=headers, data=json.dumps(data))
             result = response.json()
             translation = result['translations'][0]['translation']
             return translation  

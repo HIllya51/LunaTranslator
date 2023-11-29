@@ -37,7 +37,7 @@ class OCR(baseocr):
             'company': '',
         }
 
-        response = requests.post('https://aidemo.youdao.com/ocrtransapi1', headers=headers, data=data, proxies= self.proxy)
+        response =  self.session.post('https://aidemo.youdao.com/ocrtransapi1', headers=headers, data=data)
         
         try:
             return '<notrans>'+self.space.join([l['tranContent'] for l in response.json()['lines']])
@@ -126,9 +126,9 @@ class OCR(baseocr):
 
         def doCall(url, header, params, method):
             if 'get' == method:
-                return requests.get(url, params, proxies= self.proxy)
+                return self.session.get(url, params)
             elif 'post' == method:
-                return requests.post(url, params, header, proxies= self.proxy)
+                return  self.session.post(url, params, header)
 
 
         def readFileAsBase64(path):

@@ -1,11 +1,11 @@
 
 import win32utils,time
 import math,os,importlib
-from myutils.config import globalconfig,_TR,ocrerrorfix
+from myutils.config import globalconfig,_TR
 from PyQt5.QtWidgets import QApplication
 from PyQt5.QtGui import QImage
 from PyQt5.QtCore import QByteArray,QBuffer
-from myutils.exceptions import ArgsEmptyExc
+from myutils.commonbase import ArgsEmptyExc
 from myutils.hwnd import dynamic_rate
 from traceback import print_exc
 import gobject,winsharedutils
@@ -39,23 +39,27 @@ def imagesolve(image):
 def imageCut(hwnd,x1,y1,x2,y2):
     screen = QApplication.primaryScreen() 
     
-    try:   
-        if hwnd:
-            rect=win32utils.GetWindowRect(hwnd)  
-            if rect==(0,0,0,0):
-                raise Exception
-            
-            x1,y1=win32utils.ScreenToClient(hwnd,x1,y1)
-            x2,y2=win32utils.ScreenToClient(hwnd,x2,y2)
-            rate=dynamic_rate(hwnd,rect)
-            pix = screen.grabWindow(hwnd, (x1)/rate, (y1)/rate, (x2-x1)/rate, (y2-y1)/rate) 
-            if pix.toImage().allGray():
-                raise Exception()
+    for _ in range(2):
+        
+        if _%2==0:
+            try:
+                if hwnd==0:continue
+                rect=win32utils.GetWindowRect(hwnd)  
+                if rect is None:
+                    continue
+                
+                x1,y1=win32utils.ScreenToClient(hwnd,x1,y1)
+                x2,y2=win32utils.ScreenToClient(hwnd,x2,y2)
+                rate=dynamic_rate(hwnd,rect)
+                pix = screen.grabWindow(hwnd, (x1)/rate, (y1)/rate, (x2-x1)/rate, (y2-y1)/rate) 
+                if pix.toImage().allGray():
+                    continue
+                break
+            except:
+                print_exc()
         else:
-            raise Exception()
-    except:
-        print_exc()
-        pix = screen.grabWindow(QApplication.desktop().winId(), x1, y1, x2-x1, y2-y1) 
+            pix = screen.grabWindow(QApplication.desktop().winId(), x1, y1, x2-x1, y2-y1) 
+          
     image= pix.toImage()
     image2=imagesolve(image)
     gobject.baseobject.showocrimage.setimage.emit([image,image2])
@@ -73,14 +77,7 @@ def ocr_end():
     _nowuseocr=None
     _ocrengine=None
 
-def _100_f(line):
-        filters=ocrerrorfix['args']['替换内容']
-        for fil in filters: 
-                if fil=="":
-                        continue
-                else:
-                        line=line.replace(fil,filters[fil])
-        return line
+
 
 def ocr_run(img):
     global _nowuseocr,_ocrengine
@@ -100,8 +97,7 @@ def ocr_run(img):
             aclass=importlib.import_module('ocrengines.'+use).OCR 
             _ocrengine=aclass(use)   
             _nowuseocr=use
-        text= _ocrengine.ocr(img)
-        text=_100_f(text)
+        text= _ocrengine._private_ocr(img) 
     except Exception as e:
         if isinstance(e,ArgsEmptyExc):
             msg=str(e)

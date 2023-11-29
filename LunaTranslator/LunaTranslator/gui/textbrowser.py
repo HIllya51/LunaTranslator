@@ -43,16 +43,16 @@ class QGraphicsDropShadowEffect_multi(QGraphicsDropShadowEffect):
 class Textbrowser( ):  
     def movep(self,x,y):
         self.savey=y
-        self.atback.setGeometry(0,y,9999,9999)
+        self.atback.setGeometry(0,int(y),9999,9999)
         if globalconfig['isshowhira'] and globalconfig['isshowrawtext']:
             if self.jiaming_y_delta>0:
                 y=y+self.jiaming_y_delta
-        self.textbrowser.move(x,y)
-        self.textbrowserback.move(x,y)
+        self.textbrowser.move(int(x),int(y))
+        self.textbrowserback.move(int(x),int(y))
         
-        self.atback2.setGeometry(0,y,9999,9999)
-        self.toplabel2.setGeometry( 0,y,9999,9999)
-        self.toplabel.setGeometry( 0,y,9999,9999)
+        self.atback2.setGeometry(0,int(y),9999,9999)
+        self.toplabel2.setGeometry(0,int(y),9999,9999)
+        self.toplabel.setGeometry(0,int(y),9999,9999)
     def __init__(self, parent ) :  
         self.parent=parent
         #self.shadowlabel=QLabel(parent)
@@ -157,12 +157,14 @@ class Textbrowser( ):
     def document(self): 
         return self.textbrowser.document()
     def resize(self,_1,_2):
-        self.textbrowser.resize(_1,_2)
-        self.textbrowserback.resize(_1,_2)
+        self.textbrowser.resize(int(_1),int(_2))
+        self.textbrowserback.resize(int(_1),int(_2))
     def clear(self):
         self.clear()
         self.blockcount=0
     def setnextfont(self,origin): 
+        self.textbrowser.moveCursor(QTextCursor.End)
+        self.textbrowserback.moveCursor(QTextCursor.End)
         if origin:
             self.font.setFamily(globalconfig['fonttype'])
         else:
@@ -184,19 +186,21 @@ class Textbrowser( ):
             self.align=True
         else:
             self.align=False
-        #self.shadowlabel.setAlignment(Qt.AlignTop )
      
     def append(self,x ,tag,origin ): 
         
         if self.cleared:
+            _space=''
             self.blockcount=0
             self.b1=0
         else:
+            _space='\n'
             self.b1=self.textbrowser.document().blockCount()
         self.cleared=False
         if self.needdouble:
-            self.textbrowserback.append(x) 
-        self.textbrowser.append(x) 
+            self.textbrowserback.insertPlainText(_space+x) 
+        self.textbrowser.insertPlainText(_space+x) 
+        
         self.b2=self.textbrowser.document().blockCount()
         
         if  True:# self.addtaged:
@@ -247,7 +251,10 @@ class Textbrowser( ):
                 tl1=self.textbrowser.cursorRect(self.textcursor).topLeft()
                 #print(tl1)
                 if (lc+linei)>len(self.yinyinglabels):
-                    self.yinyinglabels+=[QLabel(self.toplabel2) for i in range((lc+linei)-len(self.yinyinglabels))]
+                    _newlabels=[QLabel(self.toplabel2) for i in range((lc+linei)-len(self.yinyinglabels))]
+                    self.yinyinglabels+=_newlabels
+                    for lb in _newlabels:
+                        lb.setTextFormat(Qt.PlainText)
                 
                 index=linei
                 _=self.yinyinglabels[index]
@@ -436,8 +443,8 @@ class Textbrowser( ):
                 self.textcursorback.setPosition(b.position()) 
                 self.textcursorback.setBlockFormat(tf) 
                 self.textbrowserback.setTextCursor(self.textcursorback) 
-         
-        tl1=self.textbrowser.cursorRect(self.textcursor).topLeft().y() 
+            if i==0:
+                tl1=self.textbrowser.cursorRect(self.textcursor).topLeft().y() 
          
         if self.jiaming_y_delta+tl1-fhhalf!=0: 
             self.jiaming_y_delta=fhhalf-tl1
@@ -552,7 +559,7 @@ class Textbrowser( ):
         y+=globalconfig['buttonsize']*1.5 *self.parent.rate
         y+=self.jiaming_y_delta
         
-        label.move(x,y)   
+        label.move(int(x),int(y))   
         label.setStyleSheet("color:{}; background-color:(0,0,0,0)".format(color))
         
         label.show()  

@@ -8,9 +8,7 @@ class TS(basetrans):
     def langmap(self):
         x={_:_.upper() for _ in static_data["language_list_translator_inner"]}
         x.pop('cht')
-        return  x
-    def inittranslator(self):
-        self.session=requests.session()
+        return  x 
     def translate(self,query):  
         self.checkempty(['DeepL-Auth-Key'])
 
@@ -23,7 +21,7 @@ class TS(basetrans):
 
         data = 'text='+parse.quote(query)+'&target_lang='+self.tgtlang+'&source_lang='+self.srclang
         
-        response = requests.post('https://api-free.deepl.com/v2/translate', headers=headers, verify=False, data=data ,proxies=self.proxy) 
+        response = self.session.post('https://api-free.deepl.com/v2/translate', headers=headers, verify=False, data=data ) 
         
         try:
             #print(res['trans_result'][0]['dst'])

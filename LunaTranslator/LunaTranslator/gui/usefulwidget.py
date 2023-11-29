@@ -69,7 +69,7 @@ class closeashidewindow(saveposwindow):
         self.showsignal.connect(self.showfunction)  
         self.realshowhide.connect(self.realshowhidefunction)
         if globalconfig['showintab_sub']:
-            showintab(self.winId(),True)
+            showintab(int(self.winId()),True)
     def realshowhidefunction(self,show):
         if show:
             self.showNormal()
@@ -256,6 +256,7 @@ def getspinbox(mini,maxi,d,key,double=False, step=1,callback=None,dec=1 ):
         s.setDecimals(dec)
     else:
         s=QSpinBox() 
+        d[key]=int(d[key])
     s.setMinimum(mini)
     s.setMaximum(maxi)
     s.setSingleStep(step)

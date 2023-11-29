@@ -36,7 +36,7 @@ class TS(basetrans):
             'browser': 0,
         }
         
-        response = requests.post('https://translate-crx.bytedance.com/e1/flask/translation',   headers=headers, json=json_data,proxies= self.proxy)
+        response = self.session.post('https://translate-crx.bytedance.com/e1/flask/translation',   headers=headers, json=json_data)
 
         return(response.json()['results'][0]['translate'][0]) 
    

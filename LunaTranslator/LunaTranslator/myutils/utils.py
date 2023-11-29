@@ -234,7 +234,7 @@ def checkencoding(code):
 def getfilemd5(file,default='0'):
     try:
         with open(file,'rb') as ff:
-            bs=ff.read()
+            bs=ff.read(1024*1024*32)    #32mb，有些游戏会把几个G打包成单文件
         md5=hashlib.md5(bs).hexdigest()
         return md5
     except:
@@ -254,6 +254,7 @@ def minmaxmoveobservefunc(self):
             ctypes.wintypes.DWORD,
             ctypes.wintypes.DWORD,
         )
+        self.lastpos=None
         def win_event_callback(hWinEventHook, event, hwnd, idObject, idChild, dwEventThread, dwmsEventTime):
             try:
                 if gobject.baseobject.textsource is None:
@@ -291,7 +292,8 @@ def minmaxmoveobservefunc(self):
                     self.lastpos=rect
                 elif event == win32con.EVENT_SYSTEM_MOVESIZEEND: # 
                     if globalconfig['movefollow']:
-                        self.hookfollowsignal.emit(5,(rect[0]-self.lastpos[0],rect[1]-self.lastpos[1]))
+                        if self.lastpos:
+                            self.hookfollowsignal.emit(5,(rect[0]-self.lastpos[0],rect[1]-self.lastpos[1]))
                     
             except:
                 print_exc()

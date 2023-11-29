@@ -192,7 +192,7 @@ class QUnFrameWindow(resizableframeless):
                       "locktoolsbutton": globalconfig['locktools'], "hideocrrange": self.showhidestate, "bindwindow": self.isbindedwindow, "keepontop": globalconfig['keepontop']}
         onstatecolor="#FF69B4"
          
-        self._TitleLabel.setFixedHeight(globalconfig['buttonsize']*1.5*self.rate)  
+        self._TitleLabel.setFixedHeight(int(globalconfig['buttonsize']*1.5*self.rate)  )
         for i in range(len(self.buttons)):
             name=self.buttons[i].name
             if name in colorstate:
@@ -204,7 +204,7 @@ class QUnFrameWindow(resizableframeless):
             else:
                 icon=globalconfig['toolbutton']['buttons'][name]['icon']
             self.buttons[i].setIcon(qtawesome.icon(icon,color=color))#(icon[i])
-            self.buttons[i].resize(globalconfig['buttonsize']*2 *self.rate,globalconfig['buttonsize']*1.5*self.rate)
+            self.buttons[i].resize(int(globalconfig['buttonsize']*2 *self.rate),int(globalconfig['buttonsize']*1.5*self.rate))
         
             if self.buttons[i].adjast:
                 self.buttons[i].adjast()
@@ -213,8 +213,8 @@ class QUnFrameWindow(resizableframeless):
         self.showhidetoolbuttons()
         self.translate_text.movep(0,globalconfig['buttonsize']*1.5*self.rate)
         self.textAreaChanged()
-        self.setMinimumHeight(globalconfig['buttonsize']*1.5*self.rate+10)
-        self.setMinimumWidth(globalconfig['buttonsize']*2*self.rate)
+        self.setMinimumHeight(int(globalconfig['buttonsize']*1.5*self.rate+10))
+        self.setMinimumWidth(int(globalconfig['buttonsize']*2*self.rate))
     def addbuttons(self):
         def simulate_key_enter():
             win32utils.SetForegroundWindow(gobject.baseobject.textsource.hwnd)
@@ -284,15 +284,15 @@ class QUnFrameWindow(resizableframeless):
                
     def hide_(self):  
         if self.showintab: 
-            win32utils.ShowWindow(self.winId(),win32con.SW_SHOWMINIMIZED )
+            win32utils.ShowWindow(int(self.winId()),win32con.SW_SHOWMINIMIZED )
         else:
             self.hide()
     def show_(self):   
         if self.showintab:
-            win32utils.ShowWindow(self.winId(),win32con.SW_SHOWNOACTIVATE )
+            win32utils.ShowWindow(int(self.winId()),win32con.SW_SHOWNOACTIVATE )
         else:
             self.show()
-        win32utils.SetForegroundWindow(self.winId())
+        win32utils.SetForegroundWindow(int(self.winId()))
     def showEvent(self, a0 ) -> None: 
         if self.isfirstshow:
             self.showline(True,[None,_TR('欢迎使用')],'',1,False)
@@ -316,14 +316,14 @@ class QUnFrameWindow(resizableframeless):
             # 将菜单栏加入到右键按钮中
             self.tray.setContextMenu(self.trayMenu) 
             self.tray.show()
-            win32utils.SetForegroundWindow(self.winId())
+            win32utils.SetForegroundWindow(int(self.winId()))
             self.isfirstshow=False 
             self.setontopthread()
         return super().showEvent(a0)
     def canceltop(self,hwnd=win32con.HWND_NOTOPMOST):
-        win32utils.SetWindowPos(int(self.winId()), hwnd, 0, 0, 0, 0,win32con. SWP_NOACTIVATE |win32con. SWP_NOSIZE | win32con.SWP_NOMOVE) 
+        win32utils.SetWindowPos(int(int(self.winId())), hwnd, 0, 0, 0, 0,win32con. SWP_NOACTIVATE |win32con. SWP_NOSIZE | win32con.SWP_NOMOVE) 
     def settop(self):
-        win32utils.SetWindowPos(int(self.winId()), win32con.HWND_TOPMOST, 0, 0, 0, 0,win32con. SWP_NOACTIVATE |win32con. SWP_NOSIZE | win32con.SWP_NOMOVE)  
+        win32utils.SetWindowPos(int(int(self.winId())), win32con.HWND_TOPMOST, 0, 0, 0, 0,win32con. SWP_NOACTIVATE |win32con. SWP_NOSIZE | win32con.SWP_NOMOVE)  
     def setontopthread(self):
         def _():
             self.settop()
@@ -357,7 +357,7 @@ class QUnFrameWindow(resizableframeless):
         self.setWindowIcon(icon)
         self.tray = QSystemTrayIcon()  
         self.tray.setIcon(icon) 
-        showintab(self.winId(),globalconfig['showintab']) 
+        showintab(int(self.winId()),globalconfig['showintab']) 
         self.isfirstshow=True
         if QT_VERSION_STR!='5.5.1':
             self.setAttribute(Qt.WA_TranslucentBackground) 
@@ -466,20 +466,20 @@ class QUnFrameWindow(resizableframeless):
         
         
         def _checkplace():
-            hwnd =int(self.winId())
+            hwnd =int(int(self.winId()))
             while self.mousetransparent: 
                 cursor_pos = self.mapFromGlobal(QCursor.pos()) 
                  
                 if self.isinrect(cursor_pos,[self._TitleLabel.x(),self._TitleLabel.x()+self._TitleLabel.width(),self._TitleLabel.y(),self._TitleLabel.y()+self._TitleLabel.height()]): 
                     
-                    win32utils.SetWindowLong(self.winId(), win32con.GWL_EXSTYLE, win32utils.GetWindowLong(hwnd, win32con.GWL_EXSTYLE) &~ win32con.WS_EX_TRANSPARENT)
+                    win32utils.SetWindowLong(int(self.winId()), win32con.GWL_EXSTYLE, win32utils.GetWindowLong(hwnd, win32con.GWL_EXSTYLE) &~ win32con.WS_EX_TRANSPARENT)
                 else:  
-                    win32utils.SetWindowLong(self.winId(), win32con.GWL_EXSTYLE, win32utils.GetWindowLong(hwnd, win32con.GWL_EXSTYLE) | win32con.WS_EX_TRANSPARENT)
+                    win32utils.SetWindowLong(int(self.winId()), win32con.GWL_EXSTYLE, win32utils.GetWindowLong(hwnd, win32con.GWL_EXSTYLE) | win32con.WS_EX_TRANSPARENT)
                 if self.isinrect(cursor_pos,[self._TitleLabel.x(),self._TitleLabel.x()+self._TitleLabel.width(),self._TitleLabel.y(),self._TitleLabel.y()+self._TitleLabel.height()+self._padding]): 
                     self.entersignal.emit()
                 time.sleep(0.1) 
             #结束时取消穿透(可能以快捷键终止)
-            win32utils.SetWindowLong(self.winId(), win32con.GWL_EXSTYLE, win32utils.GetWindowLong(hwnd, win32con.GWL_EXSTYLE) &~ win32con.WS_EX_TRANSPARENT)
+            win32utils.SetWindowLong(int(self.winId()), win32con.GWL_EXSTYLE, win32utils.GetWindowLong(hwnd, win32con.GWL_EXSTYLE) &~ win32con.WS_EX_TRANSPARENT)
         if self.mousetransparent:
                 #globalconfig['locktools']=True #锁定，否则无法恢复。
                 threading.Thread(target=_checkplace).start()
@@ -513,7 +513,7 @@ class QUnFrameWindow(resizableframeless):
             return
         newHeight = self.document.size().height() 
         width = self.width()
-        self.resize(width, 5+newHeight + globalconfig['buttonsize']*1.5*self.rate) 
+        self.resize(width,int( 5+newHeight + globalconfig['buttonsize']*1.5*self.rate) )
        
         
     def clickRange(self,auto): 

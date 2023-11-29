@@ -4,11 +4,12 @@ from queue import Queue
 from myutils.config import globalconfig,translatorsetting,static_data
 from threading import Thread,Lock
 import os,time ,codecs
-import zhconv
+import zhconv,requests
 import sqlite3
+from myutils.commonbase import commonbase
 
 from myutils.utils import getproxy
-from myutils.exceptions import ArgsEmptyExc
+from myutils.commonbase import ArgsEmptyExc
 from myutils.wrapper import stripwrapper
 class TimeOut(Exception):
     pass
@@ -46,7 +47,7 @@ def timeoutfunction( func, timeout=100,default=None,ignoreexceptions=False,check
     t.start()
     return t.get_result(timeout,checktutukufunction)
 
-class basetrans: 
+class basetrans(commonbase): 
     def langmap(self):
         return {}
     def end(self):
@@ -54,55 +55,8 @@ class basetrans:
     def inittranslator(self):
         pass
     def translate(self,content):
-        return ''
-    ############################################################
-    @property
-    def proxy(self):
-        if ('useproxy' not in  globalconfig['fanyi'][self.typename]) or globalconfig['fanyi'][self.typename]['useproxy']:
-            return getproxy()
-        else:
-            return {'https':None,'http':None}
-    @property
-    def srclang(self):
-        try:
-            l=static_data["language_list_translator_inner"][globalconfig['srclang3']]
-            return self.langmap_x[l] 
-        except:
-            return ''
-    @property
-    def tgtlang(self):
-        try:
-            l=static_data["language_list_translator_inner"][globalconfig['tgtlang3']]
-            return self.langmap_x[l] 
-        except:
-            return '' 
-    @property
-    def config(self):
-        try:
-            return stripwrapper(translatorsetting[self.typename]['args'])
-        except:
-            return {}
-    @property
-    def is_gpt_like(self):
-        try:
-            return translatorsetting[self.typename]['is_gpt_like']
-        except:
-            return False
-    def countnum(self,query):
-        try:
-            translatorsetting[self.typename]['args']['字数统计']=str(int(self.config['字数统计'])+len(query))
-            translatorsetting[self.typename]['args']['次数统计']=str(int(self.config['次数统计'])+1)
-        except:
-            translatorsetting[self.typename]['args']['字数统计']=str( len(query))
-            translatorsetting[self.typename]['args']['次数统计']='1'
-
-    def checkempty(self,items):
-        emptys=[]
-        for item in items:
-            if (self.config[item])=='':
-                emptys.append(item)
-        if len(emptys):
-            raise ArgsEmptyExc(emptys)
+        return '' 
+    
      
     @property
     def multiapikeycurrent(self):
@@ -118,21 +72,16 @@ class basetrans:
                 return t.strip()
         return alternatedict(translatorsetting[self.typename]['args'])
     ############################################################
-    def __init__(self,typename ) :  
-        self.typename=typename
+    _globalconfig_key='fanyi'
+    _setting_dict=translatorsetting 
+    def level2init(self ) :  
         self.multiapikeycurrentidx=-1
-        self.queue=Queue() 
-        
-        
-        _=dict(zip(static_data["language_list_translator_inner"],static_data["language_list_translator_inner"]))
-        _.update({'cht':'zh'})
-        _.update(self.langmap())
-        self.langmap_x=_
+        self.queue=Queue()  
         try:
-            self.inittranslator()
+            self._private_init()
         except:
             print_exc()
-        
+         
         self.lastrequesttime=0
         self._cache={}
         
@@ -140,7 +89,7 @@ class basetrans:
 
         if self.transtype!='pre':
             try:
-                self.sqlwrite2=sqlite3.connect('./translation_record/cache/{}.sqlite'.format(typename),check_same_thread = False, isolation_level=None)
+                self.sqlwrite2=sqlite3.connect('./translation_record/cache/{}.sqlite'.format(self.typename),check_same_thread = False, isolation_level=None)
                 try:
                     self.sqlwrite2.execute('CREATE TABLE cache(srclang,tgtlang,source,trans);')
                 except:
@@ -148,10 +97,11 @@ class basetrans:
             except:
                 print_exc
             self.sqlqueue=Queue()
-            Thread(target= self.sqlitethread).start()
-        Thread(target=self.fythread).start() 
-    
-    def sqlitethread(self):
+            Thread(target= self._sqlitethread).start()
+        Thread(target=self._fythread).start() 
+    def _private_init(self):
+        self.inittranslator()
+    def _sqlitethread(self):
         while True:
             task=self.sqlqueue.get()
             try:
@@ -161,6 +111,13 @@ class basetrans:
                 
             except:
                 print_exc()
+    
+    @property
+    def is_gpt_like(self):
+        try:
+            return translatorsetting[self.typename]['is_gpt_like']
+        except:
+            return False
     @property
     def needzhconv(self):
         l=static_data["language_list_translator_inner"][globalconfig['tgtlang3']]
@@ -260,7 +217,7 @@ class basetrans:
         if 'manual' not in globalconfig['fanyi'][self.typename] :
             return False
         return globalconfig['fanyi'][self.typename]['manual']
-    def fythread(self):
+    def _fythread(self):
         self.needreinit=False
         while self.using:  
             
@@ -291,7 +248,7 @@ class basetrans:
                     def reinitandtrans():
                         if self.needreinit:
                             self.needreinit=False
-                            self.inittranslator()
+                            self._private_init()
                         return self.maybecachetranslate(contentraw,contentsolved,hira,is_auto_run)
                     res=timeoutfunction(reinitandtrans,checktutukufunction=checktutukufunction ) 
                     if self.needzhconv:

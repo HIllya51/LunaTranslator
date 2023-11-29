@@ -24,7 +24,7 @@ class dialog_memory(saveposwindow):
                 super().__init__(parent, flags=Qt.WindowCloseButtonHint|Qt.WindowMinMaxButtonsHint,dic=globalconfig,key='memorydialoggeo')
                 self.setWindowTitle(_TR('备忘录'))
                 if globalconfig['showintab_sub']:
-                        showintab(self.winId(),True)
+                        showintab(int(self.winId()),True)
                 self.gamemd5=gamemd5
                 formLayout = QVBoxLayout()  # 
                 self.showtext=QTextEdit()

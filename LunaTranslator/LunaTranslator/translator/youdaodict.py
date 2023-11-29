@@ -113,13 +113,12 @@ class TS(basetrans):
                 "appVersion": "8.10.8.0",
                 "product": "deskdict"
             } 
-        response = requests.post(
+        response = self.session.post(
             'https://dict.youdao.com/dicttranslate',
             params=param,
             cookies=cookies,
             headers=headers,
-            data=data,
-            proxies=self.proxy
+            data=data, 
         )
         try:
             return ''.join([''.join([__['tgt']for __ in _]) for _ in response.json()['translateResult']])

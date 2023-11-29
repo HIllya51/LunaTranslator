@@ -558,7 +558,6 @@
     "ギャラ子": "ギャララギャララ",
     "用户词典": "Dizionario utente",
     "英语(CP437)": "Inglese (CP437)",
-    "chrome路径": "Percorso Chrome",
     "游戏信息": "Informazioni sul gioco",
     "意大利语": "Italiano",
     "端口号": "Numero porta",
@@ -683,5 +682,6 @@
     "Magpie路径": "Percorso magpie",
     "Sakura部署教程": "Tutorial sull'implementazione di Sakura",
     "Github仓库": "Magazzino Github",
-    "利用上文信息翻译（通常会有一定的效果提升，但会导致变慢）": "Tradurre utilizzando le informazioni fornite nel testo precedente (di solito con qualche miglioramento in efficacia, ma può portare a una traduzione più lenta)"
+    "利用上文信息翻译（通常会有一定的效果提升，但会导致变慢）": "Tradurre utilizzando le informazioni fornite nel testo precedente (di solito con qualche miglioramento in efficacia, ma può portare a una traduzione più lenta)",
+    "Chromium路径": "Percorso del cromo"
 }

@@ -58,7 +58,7 @@ class ItemWidget(QWidget):
     self.itemh=globalconfig['dialog_savegame_layout']['itemh'] 
     self.imgw=globalconfig['dialog_savegame_layout']['imgw']
     self.imgh=globalconfig['dialog_savegame_layout']['imgh']
-    margin=(self.itemw-self.imgw)/2#globalconfig['dialog_savegame_layout']['margin']
+    margin=(self.itemw-self.imgw)//2#globalconfig['dialog_savegame_layout']['margin']
     self.setFixedSize(QSize(self.itemw,self.itemh)) 
     self.setFocusPolicy(Qt.StrongFocus)   
     self.maskshowfileexists=QLabel(self)  
@@ -599,7 +599,7 @@ class dialog_savedgame_new(saveposwindow):
                 super().__init__(parent ,flags= Qt.WindowMinMaxButtonsHint|Qt.WindowCloseButtonHint,dic=globalconfig,key='savegamedialoggeo')
                 self.setWindowTitle(_TR('已保存游戏'))
                 if globalconfig['showintab_sub']:
-                        showintab(self.winId(),True)
+                        showintab(int(self.winId()),True)
                 formLayout = QVBoxLayout()  # 
                 self.flow=ScrollFlow()
                 

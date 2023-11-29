@@ -21,7 +21,7 @@ from urllib.parse import quote
 import json
 import requests
 
-def translate_async(text, to_language, from_language=None,proxy=None): 
+def translate_async(text, to_language, from_language=None,self=None): 
     _apiEndpoint = "api.cognitive.microsofttranslator.com";
     _apiVersion = "3.0";
     url = '{}/translate?api-version={}&to={}'.format(_apiEndpoint,_apiVersion,to_language)
@@ -42,7 +42,7 @@ def translate_async(text, to_language, from_language=None,proxy=None):
         'Content-Type': 'application/json'
     }
     json_data = [{"Text": text}]
-    response = requests.post('https://{}'.format(url), headers=headers, data=json.dumps(json_data).encode('utf-8'),proxies=proxy)
+    response = self.session.post('https://{}'.format(url), headers=headers, data=json.dumps(json_data).encode('utf-8'))
 
     response.raise_for_status()
 
@@ -93,5 +93,5 @@ class TS(basetrans):
         return {"zh":"zh-CN","cht":"zh-TW"}
     def translate(self,content): 
             
-        return translate_async(content,self.tgtlang,self.srclang,self.proxy)
+        return translate_async(content,self.tgtlang,self.srclang,self)
     

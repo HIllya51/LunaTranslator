@@ -11,11 +11,9 @@ import time
 class TS(basetrans):
     def langmap(self):
         return { "zh":"zh-CN","cht":"zh-TW"} 
-    def inittranslator(self)  :  
-        
-        self.ss=requests.session()
+    def inittranslator(self)  :   
     
-        _=self.ss.get('https://translate.google.com/',headers = {
+        _=self.session.get('https://translate.google.com/',headers = {
             'authority': 'translate.google.com',
             'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
             'accept-language': 'zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6',
@@ -37,7 +35,7 @@ class TS(basetrans):
             'sec-fetch-user': '?1',
             'upgrade-insecure-requests': '1',
             'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36 Edg/105.0.1343.53',
-        }, verify=False,proxies=self.proxy).text 
+        }, verify=False ).text 
         #print(html)
         # self.bl=re.search('"cfb2h":"(.*?)"',html).groups()[0]
         # self.fsid=re.search('"FdrFJe":"(.*?)"',html).groups()[0]
@@ -64,7 +62,7 @@ class TS(basetrans):
          
         headers = {'Origin': 'https://translate.google.com', 'Referer': 'https://translate.google.com', 'X-Requested-With': 'XMLHttpRequest', 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8', 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36'}
     
-        response = self.ss.post('https://translate.google.com/_/TranslateWebserverUi/data/batchexecute',verify=False, headers=headers,  data=freq,proxies=self.proxy )
+        response = self.session.post('https://translate.google.com/_/TranslateWebserverUi/data/batchexecute',verify=False, headers=headers,  data=freq  )
         #good=response.text.split('\n')[3]
         #print(response.text)
         json_data = json.loads(response.text[6:])

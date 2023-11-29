@@ -8,8 +8,7 @@ from translator.basetranslator import basetrans
 class TS(basetrans):
     def langmap(self):
         return {"zh":"zh-CN","cht":"zh-TW"} 
-    def inittranslator(self): 
-        self.ss=requests.session() 
+    def inittranslator(self):  
         headers = {
             'authority': 'papago.naver.com',
             'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
@@ -25,11 +24,11 @@ class TS(basetrans):
             'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36',
         
         }
-        host_html=self.ss.get('https://papago.naver.com/', headers=headers
-        ,proxies= self.proxy).text
+        host_html=self.session.get('https://papago.naver.com/', headers=headers
+        ).text
         url_path = re.compile('/home.(.*?).chunk.js').search(host_html).group()
         self.language_url = ''.join(['https://papago.naver.com', url_path])
-        lang_html = self.ss.get(self.language_url, headers=headers,   proxies=self.proxy).text
+        lang_html = self.session.get(self.language_url, headers=headers).text
         self.auth_key = self.get_auth_key(lang_html)
         self.uuid=uuid.uuid4().__str__()
     def get_auth_key(self, lang_html: str) -> str:
@@ -73,7 +72,7 @@ class TS(basetrans):
             'text': content,
         }
 
-        r = self.ss.post('https://papago.naver.com/apis/n2mt/translate', headers= headers, data =data , proxies= self.proxy)
+        r = self.session.post('https://papago.naver.com/apis/n2mt/translate', headers= headers, data =data)
     
         data = r.json()    
         

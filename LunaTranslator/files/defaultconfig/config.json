@@ -896,6 +896,11 @@
             "color": "blue",
             "type": "dev",
             "name": "有道"
+        },"dev_sogou": {
+            "use": false,
+            "color": "blue",
+            "type": "dev",
+            "name": "搜狗"
         },
         "dev_ali": {
             "use": false,
@@ -989,11 +994,6 @@
             "use": false,
             "color": "blue",
             "name": "reverso_context"
-        },
-        "nicetranslator": {
-            "name": "nicetranslator",
-            "use": false,
-            "color": "pink"
         },
         "TranslateCom": {
             "use": false,

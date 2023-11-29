@@ -1,10 +1,8 @@
 
-from myutils.config import globalconfig,ocrsetting,static_data
+from myutils.config import globalconfig,ocrsetting,ocrerrorfix
 from traceback import print_exc 
-from myutils.wrapper import stripwrapper
-from myutils.exceptions import ArgsEmptyExc
-from myutils.utils import getproxy
-class baseocr: 
+from myutils.commonbase import commonbase
+class baseocr(commonbase): 
     def langmap(self):
         return {}
     def initocr(self):
@@ -14,26 +12,7 @@ class baseocr:
     def end(self):
         pass
     ############################################################
-    @property
-    def proxy(self):
-        if ('useproxy' not in  globalconfig['ocr'][self.typename]) or globalconfig['ocr'][self.typename]['useproxy']:
-            return getproxy()
-        else:
-            return {'https':None,'http':None}
-    @property
-    def srclang(self):
-        try:
-            l=static_data["language_list_translator_inner"][globalconfig['srclang3']]
-            return self.langmap_[l] 
-        except:
-            return ''
-    @property
-    def tgtlang(self):
-        try:
-            l=static_data["language_list_translator_inner"][globalconfig['tgtlang3']]
-            return self.langmap_[l] 
-        except:
-            return ''
+      
     @property
     def space(self):
         if globalconfig['ocrmergelines']==False:
@@ -43,27 +22,11 @@ class baseocr:
         else:
             space=' '
         return space 
-    @property
-    def config(self):
-        try:
-            return stripwrapper(ocrsetting[self.typename]['args'])
-        except:
-            return {}
-    def countnum(self):
-        try: 
-            ocrsetting[self.typename]['args']['次数统计']=str(int(self.config['次数统计'])+1)
-        except: 
-            ocrsetting[self.typename]['args']['次数统计']='1'
+    
         
-    def checkempty(self,items):
-        emptys=[]
-        for item in items:
-            if (self.config[item])=='':
-                emptys.append(item)
-        if len(emptys):
-            raise ArgsEmptyExc(emptys)
-            
     ############################################################
+    _globalconfig_key='ocr'
+    _setting_dict=ocrsetting
     def flatten4point(self,boxs): 
         return [[box[0][0],box[0][1],box[1][0],box[1][1],box[2][0],box[2][1],box[3][0],box[3][1]] for box in boxs]
 
@@ -103,17 +66,19 @@ class baseocr:
         return self.space.join(lines)
 
     ########################################################
-    def __init__(self,typename ) :  
-        self.typename=typename 
+    def level2init(self) :   
         try: 
             self.initocr() 
         except Exception as e:
             raise e
-    @property
-    def langmap_(self):
-        _=dict(zip(static_data["language_list_translator_inner"],static_data["language_list_translator_inner"]))
-        _.update({'cht':'zh'})
-        _.update(self.langmap())
-        return _
-     
-    
+    def _private_ocr(self,imgpath):
+        text= self.ocr(imgpath)
+        return self._100_f(text)
+    def _100_f(self,line):
+        filters=ocrerrorfix['args']['替换内容']
+        for fil in filters: 
+                if fil=="":
+                        continue
+                else:
+                        line=line.replace(fil,filters[fil])
+        return line

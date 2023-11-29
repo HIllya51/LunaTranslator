@@ -142,7 +142,7 @@ def rangeselct_function(parent,callback,clickrelease,startauto):
         screen_shot_ui.reset()
         screen_shot_ui.show()
         screen_shot_ui.callback=callback
-        win32utils.SetFocus(screen_shot_ui.winId() )   
+        win32utils.SetFocus(int(screen_shot_ui.winId() )   )
          
         screen_shot_ui.startauto=startauto
         screen_shot_ui.clickrelease=clickrelease
@@ -169,7 +169,8 @@ class moveresizegame(QDialog) :
             self.close()
         try:
             rect=win32utils.GetWindowRect(self.hwnd)  
-            self.setGeometry(rect[0],rect[1],rect[2]-rect[0],rect[3]-rect[1])
+            if rect:
+                self.setGeometry(rect[0],rect[1],rect[2]-rect[0],rect[3]-rect[1])
             self.show()
         except:
             self.close()

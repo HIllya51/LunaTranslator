@@ -29,8 +29,7 @@ class TS(basetrans):
     def inittranslator(self):  
         # self.engine=Caiyun()
         # self.engine._=None
-          
-        self.ss=requests.session()
+           
         self.token='token:qgemv4jr1y38jyq6vhvi'
         self.bid='beba19f9d7f10c74c98334c9e8afcd34'
         
@@ -63,8 +62,8 @@ class TS(basetrans):
             json_data = {
                 'browser_id': self.bid,
             }
-            self.ss.options('https://api.interpreter.caiyunai.com/v1/user/jwt/generate', headers=headers, json=json_data,proxies=self.proxy)
-            self.jwt=self.ss.post('https://api.interpreter.caiyunai.com/v1/user/jwt/generate', headers=headers, json=json_data,proxies=self.proxy).json()['jwt']
+            self.session.options('https://api.interpreter.caiyunai.com/v1/user/jwt/generate', headers=headers, json=json_data)
+            self.jwt=self.session.post('https://api.interpreter.caiyunai.com/v1/user/jwt/generate', headers=headers, json=json_data).json()['jwt']
 
             headers = {
                 'authority': 'api.interpreter.caiyunai.com',
@@ -102,8 +101,8 @@ class TS(basetrans):
                 'detect': True,
                 'browser_id': self.bid,
             }
-            self.ss.options('https://api.interpreter.caiyunai.com/v1/translator', headers=headers, json=json_data,proxies=self.proxy)
-            response = self.ss.post('https://api.interpreter.caiyunai.com/v1/translator', headers=headers, json=json_data,proxies=self.proxy)
+            self.session.options('https://api.interpreter.caiyunai.com/v1/translator', headers=headers, json=json_data)
+            response = self.session.post('https://api.interpreter.caiyunai.com/v1/translator', headers=headers, json=json_data)
              
             return  decrypt(response.json()['target'])
          

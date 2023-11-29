@@ -53,7 +53,7 @@ class OCR(baseocr):
         signature = sha256(stringToSign.encode(), kSigning).hex()
         authorization = algorithm + ' ' +  'Credential=' +  self.config['SecretId'] +  '/' + credentialScope +   ', ' +   'SignedHeaders=' + signedHeaders +   ', ' +  'Signature=' +    signature;
  
-        r = requests.post(url="https://tmt.tencentcloudapi.com",
+        r = self.session.post(url="https://tmt.tencentcloudapi.com",
                           headers={
                               'Authorization':authorization,
                               'content-type': 'application/json',
