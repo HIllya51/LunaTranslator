@@ -7,18 +7,25 @@ import json
 class TS(basetrans):  
     def langmap(self):
         return {"cht":"zh-Hant"}
-    def translate(self,query):  
-        self.checkempty(['app_id','app_secret'])
+    def inittranslator(self):
          
+        self.tokens={}
+        self.check()
+    def check(self):
+        self.checkempty(['app_id','app_secret'])
         app_id = self.multiapikeycurrent['app_id']
-        app_secret = self.multiapikeycurrent['app_secret']
-        
-                
-        res=requests.post('https://open.feishu.cn/open-apis/auth/v3/tenant_access_token/internal',headers={'Content-Type':"application/json; charset=utf-8"}, proxies= self.proxy,json={
-            "app_id": app_id,
-            "app_secret": app_secret
-        })
-        token=res.json()['tenant_access_token']
+        app_secret = self.multiapikeycurrent['app_secret'] 
+        if (app_id,app_secret) not in self.tokens:
+            res=requests.post('https://open.feishu.cn/open-apis/auth/v3/tenant_access_token/internal',headers={'Content-Type':"application/json; charset=utf-8"}, proxies= self.proxy,json={
+                "app_id": app_id,
+                "app_secret": app_secret
+            })
+            token=res.json()['tenant_access_token']
+            self.tokens[(app_id,app_secret)]=token
+        return self.tokens[(app_id,app_secret)]
+    def translate(self,query):   
+         
+        token=self.check()
         res=requests.post('https://open.feishu.cn/open-apis/translation/v1/text/translate', proxies=  self.proxy,headers={'Content-Type':"application/json; charset=utf-8",'Authorization':'Bearer '+token},json={
             "source_language": self.srclang,
             "text": query,
