@@ -55,7 +55,10 @@ class TS(basetrans):
             message) + ' }'
 
         response = self.session.post(self.config['API接口地址'] + '/chat/completions', headers=headers, data=data)
-        response = response.json()
+        try:
+            response = response.json()
+        except:
+            raise Exception(response.text)
 
         try:
             message = response['choices'][0]['message']['content'].replace('\n\n', '\n').strip()
