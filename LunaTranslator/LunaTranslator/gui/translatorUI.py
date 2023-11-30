@@ -30,7 +30,7 @@ from gui.usefulwidget import resizableframeless
 class QUnFrameWindow(resizableframeless):   
     displayres =  pyqtSignal(str,str,str ,bool) 
     displayraw1 =  pyqtSignal(list, str,str,bool )  
-    displaystatus=pyqtSignal(str,str,bool) 
+    displaystatus=pyqtSignal(str,str,bool,bool) 
     showhideuisignal=pyqtSignal()
     hookfollowsignal=pyqtSignal(int,tuple)
     toolbarhidedelaysignal=pyqtSignal() 
@@ -77,13 +77,17 @@ class QUnFrameWindow(resizableframeless):
             if onlyshowhist:
                 return 
             clear=name==''
+            if len(res)>globalconfig['maxoriginlength']:
+                _res=res[:globalconfig['maxoriginlength']]+'……'
+            else:
+                _res=res
             if globalconfig['showfanyisource']:
                 #print(_type)
                 #self.showline((None,globalconfig['fanyi'][_type]['name']+'  '+res),globalconfig['fanyi'][_type]['color']  )
-                self.showline(clear,[None,name+'  '+res],color ,1,False )
+                self.showline(clear,[None,name+'  '+_res],color ,1,False )
             else:
                 #self.showline((None,res),globalconfig['fanyi'][_type]['color']  )
-                self.showline(clear,[None,res],color  ,1,False)
+                self.showline(clear,[None,_res],color  ,1,False)
             #print(globalconfig['fanyi'][_type]['name']+'  '+res+'\n')
             
             
@@ -94,24 +98,27 @@ class QUnFrameWindow(resizableframeless):
         gobject.baseobject.transhis.getnewsentencesignal.emit(res) 
         if onlyshowhist:
             return 
+        if len(res)>globalconfig['maxoriginlength']:
+            _res=res[:globalconfig['maxoriginlength']]+'……'
+        else:
+            _res=res
         if globalconfig['isshowhira'] and globalconfig['isshowrawtext']:
-            self.showline(True,[hira,res],color , 2 )
+            self.showline(True,[hira,_res],color , 2 )
         elif globalconfig['isshowrawtext']:
-            self.showline(True,[hira,res],color,1)
+            self.showline(True,[hira,_res],color,1)
         else:
             self.showline(True,None,None,1) 
         
         gobject.baseobject.edittextui.getnewsentencesignal.emit(res)  
-    def showstatus(self,res,color,clear): 
-        self.showline(clear,[None,res],color,1)
+    def showstatus(self,res,color,clear,origin): 
+        self.showline(clear,[None,res],color,1,origin)
     def showline (self,clear,res,color ,type_=1,origin=True):   
         if clear:
             self.translate_text.clear()
         self.translate_text.setnextfont(origin)
         if res is None:
             return 
-        if len(res[1])>globalconfig['maxoriginlength']:
-            return
+        
         if globalconfig['showatcenter']:
             self.translate_text.setAlignment(Qt.AlignCenter)
         else:

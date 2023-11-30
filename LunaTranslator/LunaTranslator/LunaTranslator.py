@@ -155,7 +155,7 @@ class MAINUI() :
                 self.currentread=text
                 return   
             elif text[:len('<msg_1>')]=='<msg_1>':
-                self.translation_ui.displaystatus.emit(text[len('<msg_1>'):],'red',True)
+                self.translation_ui.displaystatus.emit(text[len('<msg_1>'):],'red',True,True)
                 return 
             
             if text=='' or len(text)>100000:
@@ -170,7 +170,7 @@ class MAINUI() :
                 text=self._POSTSOLVE(text) 
         except Exception as e:
             msg=str(type(e))[8:-2]+' '+str(e).replace('\n','').replace('\r','')
-            self.translation_ui.displaystatus.emit(msg,'red',False)
+            self.translation_ui.displaystatus.emit(msg,'red',False,True)
             return 
         
         while len(text) and text[-1] in '\r\n \t':  #在后处理之后在去除换行，这样换行符可以当作行结束符给后处理用
@@ -267,7 +267,7 @@ class MAINUI() :
         if currentsignature==self.currentsignature:
             if type(res)==str:
                 if res[:len('<msg_1>')]=='<msg_1>':
-                    self.translation_ui.displayres.emit(globalconfig['fanyi'][classname]['name'],'red',res[len('<msg_1>'):],onlytrans)
+                    self.translation_ui.displaystatus.emit(globalconfig['fanyi'][classname]['name']+' '+res[len('<msg_1>'):],'red',onlytrans,False)
                     return   
         
         res=self.solveaftertrans(res,optimization_params)

@@ -33,7 +33,7 @@ def initpath():
 
 if __name__ == "__main__" :
     initpath()
-    from myutils.config import _TR,static_data,saveallconfig
+    from myutils.config import _TR,static_data,testpriv
     from gui.usefulwidget import getQMessageBox
     from LunaTranslator import MAINUI
     import gobject 
@@ -57,7 +57,7 @@ if __name__ == "__main__" :
         os._exit(0) 
     
     try:
-        saveallconfig()
+        testpriv()
     except:
         getQMessageBox(None,"错误","当前路径读写权限不足，请使用管理员权限运行！")
         os._exit(0) 

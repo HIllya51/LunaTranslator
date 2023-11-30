@@ -2,8 +2,10 @@ import json
 import os 
 def tryreadconfig(path,default=None):
     try:
-        if os.path.exists(os.path.join('./userconfig/',path)):
-            path=os.path.join('./userconfig/',path)
+        path=os.path.join('./userconfig/',path)
+        if os.path.exists(path)==False:
+            path+='.tmp'
+        if os.path.exists(path):
             with open(path,'r',encoding='utf-8') as ff:
                 x=json.load(ff) 
         else:
@@ -34,8 +36,12 @@ postprocessconfig=tryreadconfig('postprocessconfig.json')
 noundictconfig=tryreadconfig('noundictconfig.json')
 transerrorfixdictconfig=tryreadconfig('transerrorfixdictconfig.json') 
 _savehook=tryreadconfig('savehook_new_1.39.4.json',default=[[],{}])
-savehook_new_list= _savehook[0]
-savehook_new_data= _savehook[1]
+try:
+    savehook_new_list= _savehook[0]
+    savehook_new_data= _savehook[1]
+except:
+    savehook_new_list=[]
+    savehook_new_data={}
   
 translatorsetting=tryreadconfig('translatorsetting.json') 
 ocrsetting=tryreadconfig('ocrsetting.json') 
@@ -142,34 +148,26 @@ def _TRL(kk):
 
 
 
+def testpriv():
+    fname=f'./userconfig/{os.getpid()}'
+    with open(fname,'w') as ff:
+        ff.write('')
+    os.remove(fname)
 def saveallconfig():
-        
-        with open('./userconfig/config.json','w',encoding='utf-8') as ff:
-            ff.write(json.dumps(globalconfig,ensure_ascii=False,sort_keys=False, indent=4))
-
-        with open('./userconfig/magpie10_config.json','w',encoding='utf-8') as ff:
-            ff.write(json.dumps(magpie10_config,ensure_ascii=False,sort_keys=False, indent=4))
-         
-        with open('./userconfig/postprocessconfig.json','w',encoding='utf-8') as ff:
-            ff.write(json.dumps(postprocessconfig,ensure_ascii=False,sort_keys=False, indent=4))
-        with open('./userconfig/transerrorfixdictconfig.json','w',encoding='utf-8') as ff:
-            ff.write(json.dumps(transerrorfixdictconfig,ensure_ascii=False,sort_keys=False, indent=4))
-        with open('./userconfig/noundictconfig.json','w',encoding='utf-8') as ff:
-            ff.write(json.dumps(noundictconfig,ensure_ascii=False,sort_keys=False, indent=4))
-        with open('./userconfig/translatorsetting.json','w',encoding='utf-8') as ff:
-            ff.write(json.dumps(translatorsetting,ensure_ascii=False,sort_keys=False, indent=4))
-        with open('./userconfig/ocrerrorfix.json','w',encoding='utf-8') as ff:
-            ff.write(json.dumps(ocrerrorfix,ensure_ascii=False,sort_keys=False, indent=4))
-        with open('./userconfig/ocrsetting.json','w',encoding='utf-8') as ff:
-            ff.write(json.dumps(ocrsetting,ensure_ascii=False,sort_keys=False, indent=4))
-
-        
-        with open('./userconfig/savehook_new_1.39.4.json','w',encoding='utf-8') as ff:
-            ff.write(json.dumps([savehook_new_list,savehook_new_data],ensure_ascii=False,sort_keys=False, indent=4))
-        # with open('./userconfig/savehook_new.json','w',encoding='utf8') as ff:
-        #         ff.write(json.dumps(savehook_new,ensure_ascii=False,sort_keys=False, indent=4))
-        # with open('./userconfig/savehook_new3.json','w',encoding='utf8') as ff:
-        #         ff.write(json.dumps(savehook_new2,ensure_ascii=False,sort_keys=False, indent=4))
-
-        with open('./files/lang/{}.json'.format(static_data["language_list_translator_inner"][language]),'w',encoding='utf8') as ff:
-            ff.write( json.dumps(languageshow,ensure_ascii=False,sort_keys=False, indent=4))
+        def safesave(fname,js):
+            #有时保存时意外退出，会导致config文件被清空
+            with open(fname+'.tmp','w',encoding='utf-8') as ff:
+                ff.write(json.dumps(js,ensure_ascii=False,sort_keys=False,indent=4))
+            if os.path.exists(fname):
+                os.remove(fname)
+            os.rename(fname+'.tmp',fname)
+        safesave('./userconfig/config.json',globalconfig)
+        safesave('./userconfig/magpie10_config.json',magpie10_config)
+        safesave('./userconfig/postprocessconfig.json',postprocessconfig)
+        safesave('./userconfig/transerrorfixdictconfig.json',transerrorfixdictconfig)
+        safesave('./userconfig/noundictconfig.json',noundictconfig)
+        safesave('./userconfig/translatorsetting.json',translatorsetting)
+        safesave('./userconfig/ocrerrorfix.json',ocrerrorfix)
+        safesave('./userconfig/ocrsetting.json',ocrsetting)
+        safesave('./userconfig/savehook_new_1.39.4.json',[savehook_new_list,savehook_new_data])
+        safesave('./files/lang/{}.json'.format(static_data["language_list_translator_inner"][language]),languageshow) 
