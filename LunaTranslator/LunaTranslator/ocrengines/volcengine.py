@@ -1319,6 +1319,9 @@ class OCR(baseocr):
         b64=base64.b64encode(f)
         form["image_base64"] =b64
         resp = visual_service.ocr_api('MultiLanguageOCR', form,self.proxy)
-        texts=[box['text'] for box in resp['data']['ocr_infos']]
-        boxs=self.flatten4point([box['rect'] for box in resp['data']['ocr_infos']]) 
-        return self.common_solve_text_orientation(boxs,texts)
+        try:
+            texts=[box['text'] for box in resp['data']['ocr_infos']]
+            boxs=self.flatten4point([box['rect'] for box in resp['data']['ocr_infos']]) 
+            return self.common_solve_text_orientation(boxs,texts)
+        except:
+            raise Exception(resp)
