@@ -96,8 +96,8 @@ class TS(basetrans):
             endpoint += "/"
         api_url = endpoint + "api/v1/generate"
         test_json = {
-            "prompt": "<reserved_106>将下面的日文文本翻译成中文：これはただのテストで、ギャルゲーの通訳ではありません。<reserved_107>",
-            "max_new_tokens": int(self.config['max_new_token']),
+            "prompt": "将下面的日文文本翻译成中文：これはただのテストで、ギャルゲーの通訳ではありません。",
+            "max_new_tokens": 4,
             "do_sample": bool(self.config['do_sample']),
             "temperature": float(self.config['temperature']),
             "top_p": float(self.config['top_p']),
@@ -142,7 +142,7 @@ class TS(basetrans):
                         break
         else:
             query_list = self.sliding_window(query)
-            request['prompt'] = f"<reserved_106>将下面的日文文本翻译成中文：{self.list_to_prompt(query_list)}<reserved_107>"
+            request['prompt'] = self.make_prompt(query)
             output, new_token = self.do_post(request)
             
             if bool(self.config['fix_degeneration']):
@@ -158,6 +158,6 @@ class TS(basetrans):
                     
             output = self.parse_output(output, len(query_list))
             if not output:
-                request['prompt'] = f"<reserved_106>将下面的日文文本翻译成中文：{query}<reserved_107>"
+                request['prompt'] = self.make_prompt(query)
                 output, new_token = self.do_post(request)
         return output
