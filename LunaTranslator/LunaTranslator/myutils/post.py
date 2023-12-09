@@ -284,7 +284,7 @@ def POSTSOLVE(line):
                                 else:
                                       raise Exception("unsupported parameters num")
                         else:
-                               line=functions[postitem](line,usedpostprocessconfig[postitem]['args']) 
+                               line=functions[postitem](line,usedpostprocessconfig[postitem].get('args',{})) 
                         
                 except Exception  as e:
                         print_exc()  
