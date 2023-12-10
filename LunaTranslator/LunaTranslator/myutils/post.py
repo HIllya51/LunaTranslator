@@ -32,7 +32,7 @@ def _2_f(line,args):
         line=''.join(newline)
         return line
 def _3_f(line,args):
-        times=['重复次数(若为1则自动分析去重)']
+        times=args['重复次数(若为1则自动分析去重)']
          
         if times>=2:
                 guesstimes=times
@@ -73,7 +73,7 @@ def _3_2(line,args):
                        line=line[1:]
  
         return cache
-def _10_f(line,args):
+def _10_f(line):
         cnt=Counter(line)
         saveline=[]
         for k in sorted(cnt.keys(),key= lambda x :-cnt[x]) :
@@ -94,7 +94,7 @@ def _10_f(line,args):
          
         line=sorted(saveline, key=len, reverse=True)[0]
         return line
-def _13_f(line:str): #递增式
+def _13_f(line,args): #递增式
         cnt=Counter(line)
         saveline=[]
         for k in sorted(cnt.keys(),key= lambda x :-cnt[x]) :
@@ -116,23 +116,23 @@ def _13_f(line:str): #递增式
          
         line=sorted(saveline, key=len, reverse=True)[0]
         return line
-def _1_f(line,args):
+def _1_f(line):
         r=re.compile('\{(.*?)/.*?\}')
         line=r.sub(lambda x:x.groups()[0],line)
         r=re.compile('\{(.*?):.*?\}')
         line=r.sub(lambda x:x.groups()[0],line)
         return line
-def _4_f(line,args):
+def _4_f(line):
         line =re.sub('<(.*?)>','',line) 
         line=re.sub('</(.*?)>',"*",line)
         return line
-def _6_f(line,args):
+def _6_f(line):
         line=line.replace('\r','').replace('\n','')
         return line
-def _91_f(line,args):
+def _91_f(line):
         line=re.sub('([0-9]+)','',line)
         return line
-def _92_f(line,args):
+def _92_f(line):
         line=re.sub('([a-zA-Z]+)','',line)
         return line
 
@@ -164,7 +164,7 @@ def _8_f(line,args):
                                 print_exc()
         return line
 
-def _remove_non_shiftjis_char(line,args):
+def _remove_non_shiftjis_char(line):
         newline=''
         for char in line:
                 try:
@@ -173,7 +173,7 @@ def _remove_non_shiftjis_char(line,args):
                 except:
                       pass
         return newline
-def _remove_latin(line,args):
+def _remove_latin(line):
         newline=''
         for char in line:
                 try:
@@ -181,7 +181,7 @@ def _remove_latin(line,args):
                 except:
                       newline+=char
         return newline
-def _remove_ascii(line,args):
+def _remove_ascii(line):
         newline=''
         for char in line:
                 try:
@@ -189,7 +189,7 @@ def _remove_ascii(line,args):
                 except:
                       newline+=char
         return newline
-def _remove_control(line,args):
+def _remove_control(line):
         newline=''
         for r in line:
                 _ord=ord(r)
@@ -197,7 +197,7 @@ def _remove_control(line,args):
                     continue
                 newline+=r
         return newline
-def _remove_not_in_ja_bracket(line,args): 
+def _remove_not_in_ja_bracket(line): 
         if '「' in line and '」' in line: 
                 _1=line.index('「')
                 _2=line.rindex('」')
@@ -205,7 +205,7 @@ def _remove_not_in_ja_bracket(line,args):
                        return line[_1:_2+1]
         return  line
 from myutils.utils import checkchaos
-def _remove_chaos(line,args):
+def _remove_chaos(line):
        newline=''
        for c in line:
               if checkchaos(c):
@@ -276,15 +276,14 @@ def POSTSOLVE(line):
         if postitem not in functions:continue
         if postitem not in usedpostprocessconfig:continue
         if usedpostprocessconfig[postitem]['use']:
-                try:
-                        if postitem=='_11':
-                                _f=functions[postitem]
-                                if _f.__code__.co_argcount==1:
-                                      line=functions[postitem](line)
-                                else:
-                                      raise Exception("unsupported parameters num")
+                try: 
+                        _f=functions[postitem]
+                        if _f.__code__.co_argcount==1:
+                                line=functions[postitem](line)
+                        elif _f.__code__.co_argcount==2:
+                                line=functions[postitem](line,usedpostprocessconfig[postitem].get('args',{}))
                         else:
-                               line=functions[postitem](line,usedpostprocessconfig[postitem].get('args',{})) 
+                                raise Exception("unsupported parameters num") 
                         
                 except Exception  as e:
                         print_exc()  
