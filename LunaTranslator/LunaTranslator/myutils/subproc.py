@@ -4,10 +4,9 @@ from traceback import print_exc
 import subprocess
 allsubprocess2={}
  
-def subproc_w(cmd,cwd=None ,needstdio=False ,name=None,encoding='utf8',run=False):
+def subproc_w(cmd,cwd=None ,needstdio=False ,name=None,encoding=None,run=False):
      
     _pipe=subprocess.PIPE if needstdio else None
-    
     startupinfo = subprocess.STARTUPINFO()
     startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
     startupinfo.wShowWindow=subprocess.SW_HIDE
@@ -22,10 +21,8 @@ def subproc_w(cmd,cwd=None ,needstdio=False ,name=None,encoding='utf8',run=False
         else:
             _f=subprocess.Popen
 
-        if needstdio:
-            ss=_f(cmd,cwd=cwd,stdin=_pipe,stdout=_pipe,startupinfo=startupinfo,encoding=encoding)
-        else:
-            ss=_f(cmd,cwd=cwd,stdin=_pipe,stdout=_pipe,stderr=_pipe,startupinfo=startupinfo)
+        
+        ss=_f(cmd,cwd=cwd,stdin=_pipe,stdout=_pipe,stderr=_pipe,startupinfo=startupinfo,encoding=encoding)
         
         if name:
             allsubprocess2[name]=ss
