@@ -683,5 +683,6 @@
     "Sakura部署教程": "Samouczek wdrażania Sakury",
     "Github仓库": "Magazyn Github",
     "利用上文信息翻译（通常会有一定的效果提升，但会导致变慢）": "Przetłumacz za pomocą informacji podanych w poprzednim tekście (zwykle z pewną poprawą skuteczności, ale może to prowadzić do wolniejszego tłumaczenia)",
-    "Chromium路径": "Ścieżka chromu"
+    "Chromium路径": "Ścieżka chromu",
+    "范围选取遮罩透明度": "Przejrzystość maski wyboru zakresu"
 }

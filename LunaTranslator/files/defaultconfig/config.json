@@ -92,6 +92,7 @@
         500,
         500
     ],
+    "OCR_mask_Opacity":0.5,
     "ocr_stable_sim": 0,
     "ocr_diff_sim": 0.95,
     "autorun": true,

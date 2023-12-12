@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QWidget,QDesktopWidget,QMainWindow,QLabel,QPushButton,QStatusBar,QDialog,QSizeGrip
+from PyQt5.QtWidgets import QWidget,QDesktopWidget,QMainWindow,QLabel,QPushButton,QStatusBar,QDialog,QApplication
 from PyQt5.QtGui import  QBitmap,QPainter,QPen,QBrush,QFont,QMouseEvent,QCursor
 from PyQt5.QtCore import Qt,QPoint,QRect,QEvent,pyqtSignal
 
@@ -62,7 +62,7 @@ class rangeselct(QMainWindow) :
         
     def reset(self):
         self.setStyleSheet('''background-color:black; ''')
-        self.setWindowOpacity(0.6)
+        self.setWindowOpacity(globalconfig['OCR_mask_Opacity'])
         num_screens = QDesktopWidget().screenCount()
         x,y,x2,y2=9999,9999,0,0
         for i in range(num_screens):
@@ -73,7 +73,7 @@ class rangeselct(QMainWindow) :
             y2=max(y2,_rect.y()+_rect.height()) 
         self.setGeometry(x,y,x2-x,y2-y)
         self.setCursor(Qt.CrossCursor)
-         
+        self.image=QApplication.primaryScreen().grabWindow(0,x,y,x2-x,y2-y)
         self.is_drawing = False
         self.setMouseTracking(True)
         self.start_point = QPoint()
@@ -98,8 +98,15 @@ class rangeselct(QMainWindow) :
                 pp.setPen(pen)
                 brush = QBrush(Qt.white)
                 pp.setBrush(brush)
-                pp.drawRect(QRect(self.start_point, self.end_point))
-                 
+                #print(QRect(self.start_point, self.end_point),self.image.size())
+                #pp.drawRect(QRect(self.start_point, self.end_point))
+                _x1=self.start_point.x()
+                _y1=self.start_point.y()
+                _x2=self.end_point.x()
+                _y2=self.end_point.y()
+                _sp=QPoint(min(_x1,_x2),min(_y1,_y2))
+                _ep=QPoint(max(_x1,_x2),max(_y1,_y2))
+                pp.drawPixmap(QRect(_sp,_ep),self.image.copy(QRect(_sp,_ep)))
     def mousePressEvent(self, event) : 
             if event.button() == Qt.LeftButton:
                 if self.clickrelease:
