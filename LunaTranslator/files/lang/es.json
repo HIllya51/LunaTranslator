@@ -684,5 +684,6 @@
     "Github仓库": "Almacén github",
     "利用上文信息翻译（通常会有一定的效果提升，但会导致变慢）": "Traducción utilizando la información anterior (generalmente tiene un cierto efecto de mejora, pero puede causar lentitud)",
     "Chromium路径": "Ruta CHROMIUM",
-    "范围选取遮罩透明度": "Transparencia de la máscara de selección de alcance"
+    "范围选取遮罩透明度": "Transparencia de la máscara de selección de alcance",
+    "文本缓冲区长度": "Longitud del colchón de texto"
 }

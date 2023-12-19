@@ -41,6 +41,7 @@
     "button_color_close": "#D32424",
     "button_color_normal": "#FFFFFF",
     "textthreaddelay": 500,
+    "flushbuffersize":3000,
     "transuigeo":[
         500,500,1200,200
     ],

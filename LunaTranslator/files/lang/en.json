@@ -684,5 +684,6 @@
     "Github仓库": "Github warehouse",
     "利用上文信息翻译（通常会有一定的效果提升，但会导致变慢）": "Translate using the information provided in the previous text (usually with some improvement in effectiveness, but it can lead to slower translation)",
     "Chromium路径": "Chromium Path",
-    "范围选取遮罩透明度": "Range selection mask transparency"
+    "范围选取遮罩透明度": "Range selection mask transparency",
+    "文本缓冲区长度": "Text buffer length"
 }

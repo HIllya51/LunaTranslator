@@ -386,7 +386,7 @@ class dialog_setting_game(QDialog):
 
                 cp_layout=QHBoxLayout()
                 cp_layout.addWidget(QLabel(_TR('代码页')))
-                cp_layout.addWidget(getsimplecombobox(_TRL(static_data['codepage_display']),savehook_new_data[exepath],'codepage_index' ,lambda x: gobject.baseobject.textsource.setcodepage()))
+                cp_layout.addWidget(getsimplecombobox(_TRL(static_data['codepage_display']),savehook_new_data[exepath],'codepage_index' ,lambda x: gobject.baseobject.textsource.setsettings()))
                 formLayout.addLayout(cp_layout)
 
                 cp_layout=QHBoxLayout()

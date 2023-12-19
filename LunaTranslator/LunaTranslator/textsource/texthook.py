@@ -53,9 +53,8 @@ class texthook(basetext  ):
             gobject.baseobject.hookselectdialog.sysmessagesignal.emit,
             self.getembedtext,
             self.newhookinsert
-        ) 
-        self.setcodepage()
-        self.setdelay()
+        )  
+        self.setsettings()
 
         gobject.baseobject.hookselectdialog.changeprocessclearsignal.emit()
         if len(autostarthookcode)==0 and len(savehook_new_data[self.pname]['embedablehook'])==0:
@@ -161,8 +160,10 @@ class texthook(basetext  ):
         gobject.baseobject.hookselectdialog.addnewhooksignal.emit(key  ,select,[textthread]) 
         self.lock.release()
         return True
-    def setdelay(self):
+    def setsettings(self):
         self.RPC.setting.timeout=globalconfig['textthreaddelay']
+        self.RPC.setting.flushbuffersize=globalconfig['flushbuffersize']
+        self.RPC.setting.defaultcodepag=self.codepage() 
     def codepage(self):
         try:
             cpi=savehook_new_data[self.pname]["codepage_index"]
@@ -170,9 +171,7 @@ class texthook(basetext  ):
         except:
             cp=932
         return cp
-    
-    def setcodepage(self):
-        self.RPC.setting.defaultcodepag=self.codepage() 
+     
     def defaultsp(self):
         if not self.is64bit:
             usestruct=define.SearchParam32()

@@ -100,13 +100,14 @@ class TextThread():
         self.lasttime=time.time()
         if len(self.buffer):
             self.saverepeat=self.buffer
+        
+        if len(self.buffer)>=self.host.setting.flushbuffersize:
+            _=self.buffer
+            self.buffer=''
+            self.rpc.Output(self,_)
+
         self.lock.release()
-    def Pop(self):
-        self.lock.acquire()
-        _=self.buffer
-        self.buffer=''
-        self.lock.release()
-        return _
+ 
     def parsebuff(self,buff):
         hp=self.hp
         if hp.codepage==0:
@@ -145,6 +146,7 @@ class RPCSettings:
     def __init__(self) -> None:
         self.timeout=100
         self.defaultcodepag=932
+        self.flushbuffersize=3000
 class RPC(): 
     def callbacks(self,OnConnect,OnDisconnect,OnCreate,OnDestroy,Output,Console,EmbedCall,HookInsert):
         self.OnDisconnect=threader(OnDisconnect)
@@ -173,10 +175,13 @@ class RPC():
             timenow=time.time() 
             self.textthreadslock.acquire()
             for _,textthread in self.textthreads.items():
-                if len(textthread.buffer)>0 and (timenow-textthread.lasttime>self.setting.timeout/1000 or len(textthread.buffer)>3000):
-                    buff=textthread.Pop()
+                textthread.lock.acquire()
+                if len(textthread.buffer)>0 and (timenow-textthread.lasttime>self.setting.timeout/1000):
+                    buff=textthread.buffer
+                    textthread.buffer=''
                     self.Output(textthread,buff)
                     textthread.lasttime=timenow
+                textthread.lock.release()
             self.textthreadslock.release()
     def start(self,pid):
     
