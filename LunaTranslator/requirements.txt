@@ -8,7 +8,7 @@ charset-normalizer==2.0.9
 idna==2.10
 pytz==2021.3
 
-urllib3==1.26.6
+urllib3==2.0.7
 
 nuitka==1.5.3
 imageio
