@@ -43,7 +43,7 @@ class texthook(basetext  ):
         self.needinserthookcode=needinserthookcode
         self.removedaddress=[] 
         self.HookCode=None 
-        
+        self.sharedcell=None
         self.RPC.callbacks(
             lambda pid:time.sleep(savehook_new_data[self.pname]['inserthooktimeout']/1000) or [self.RPC.InsertHookCode(pid,hookcode) for hookcode in needinserthookcode]+[self.createembedsharedmem(pid),self.showgamename()],
             lambda pid: print(pid,"disconenct"),
@@ -62,10 +62,22 @@ class texthook(basetext  ):
         
           
         threading.Thread(target=self.delaycollectallselectedoutput).start()
+        _pids=[]
         for pid in self.pids:
-            self.RPC.start(pid)
-        self.RPC.Attach(self.pids,'64' if self.is64bit else '32')
+            if self.testalready(pid)==False:
+                self.RPC.start(pid)
+                _pids.append(pid)
+         
+        if len(_pids):
+            self.RPC.Attach(_pids,'64' if self.is64bit else '32')
         super(texthook,self).__init__(*self.checkmd5prefix(pname))
+    def testalready(self,pid):
+        _mutext=win32utils.CreateMutex(False,define.ITH_HOOKMAN_MUTEX_+str(pid))
+        err=win32utils.GetLastError()
+        exists= err==win32utils.ERROR_ALREADY_EXISTS
+        win32utils.CloseHandle(_mutext)
+        return exists
+
     def showgamename(self):
         if 'showonce' not in dir(self):
             #gobject.baseobject.translation_ui.displayraw1.emit([],savehook_new_data[self.pname]['title'],globalconfig['rawtextcolor'],False)
@@ -95,6 +107,7 @@ class texthook(basetext  ):
         self.sharedcell=ctypes.cast(address1,ctypes.POINTER(define.EmbedSharedMem)) 
         self.flashembedsettings()
     def flashembedsettings(self):
+        if self.sharedcell is None:return
         self.sharedcell.contents.waittime=int(1000* globalconfig['embedded']['timeout_translate'])
         self.sharedcell.contents.fontCharSet=2#static_data["charsetmap"][globalconfig['embedded']['changecharset_charset']]
         self.sharedcell.contents.fontCharSetEnabled=False#globalconfig['embedded']['changecharset']
@@ -278,6 +291,7 @@ class texthook(basetext  ):
             
             self.lock.release()  
     def checkisusingembed(self,address,ctx1,ctx2):
+        if self.sharedcell is None:return
         for i in range(10):
             if(self.sharedcell.contents.using[i]):
                 if (self.sharedcell.contents.addr[i],self.sharedcell.contents.ctx1[i],self.sharedcell.contents.ctx2[i])==(address,ctx1,ctx2):
@@ -285,6 +299,7 @@ class texthook(basetext  ):
         
         return False
     def useembed(self,address,ctx1,ctx2,use):
+        if self.sharedcell is None:return
         for i in range(10):
             if(self.sharedcell.contents.using[i]):
                 if (self.sharedcell.contents.addr[i],self.sharedcell.contents.ctx1[i],self.sharedcell.contents.ctx2[i])==(address,ctx1,ctx2):

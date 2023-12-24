@@ -3,7 +3,7 @@ from ctypes import  c_int,POINTER,pointer,c_uint,windll,c_char_p,create_unicode_
 from ctypes import Structure,c_int,POINTER,c_uint,WINFUNCTYPE,c_void_p,sizeof,byref
 import ctypes
 from traceback import print_exc
-from ctypes.wintypes import RECT,POINT,HWND,BOOL,WORD,DWORD,BYTE 
+from ctypes.wintypes import RECT,POINT,HWND,BOOL,WORD,DWORD,BYTE ,LPCWSTR,HANDLE
 WNDENUMPROC =WINFUNCTYPE(c_bool,c_void_p,c_void_p)
  
 class WINDOWPLACEMENT(Structure):
@@ -376,6 +376,15 @@ _CreateEventW=_kernel32.CreateEventW
 _CreateEventW.argtypes=POINTER(SECURITY_ATTRIBUTESStruct),c_bool,c_bool,c_wchar_p
 def CreateEvent(bManualReset,bInitialState,lpName,secu=get_SECURITY_ATTRIBUTES()):
     return _CreateEventW(pointer(secu),bManualReset,bInitialState,lpName)
+_CreateMutexW=_kernel32.CreateMutexW
+_CreateMutexW.argtypes=POINTER(SECURITY_ATTRIBUTESStruct),BOOL,LPCWSTR
+def CreateMutex(bInitialOwner,lpName,secu=get_SECURITY_ATTRIBUTES()):
+    return _CreateMutexW(pointer(secu),bInitialOwner,lpName)
+_GetLastError=_kernel32.GetLastError
+def GetLastError():
+    return _GetLastError()
+ERROR_ALREADY_EXISTS=183
+
 _GetBinaryTypeW=_kernel32.GetBinaryTypeW
 def GetBinaryType(filename):
     res=c_uint()
