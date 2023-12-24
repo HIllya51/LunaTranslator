@@ -334,7 +334,7 @@ class Textbrowser( ):
                             guesswidth1=gw*len(word['orig'])
                             tailx=wwww-guesslinehead
                             pos1=tl1.x()+2 ,tl1.y() ,tailx-tl1.x()-4,tl4.y()-tl1.y()   
-                            xx=guesswidth1 -(tailx- tl1.x())  
+                            xx=int(guesswidth1 -(tailx- tl1.x())  )
                             guesslinehead=None
                             pos2=tl3.x()-xx+2,tl3.y() ,xx-4,tl4.y()-tl1.y()    
                             if globalconfig['usesearchword'] or globalconfig['usecopyword']:
