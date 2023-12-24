@@ -1026,11 +1026,6 @@
             "color": "blue",
             "name": "yandex_api"
         },
-        "byte": {
-            "use": true,
-            "color": "blue",
-            "name": "byte"
-        },
         "qqimt": {
             "use": true,
             "color": "blue",
