@@ -127,7 +127,7 @@ def setTabThree_lazy(self) :
          [('字体样式',3),(getsimplecombobox(_TRL(['普通字体','空心字体','描边字体','阴影字体','描边字体_reverse']),globalconfig,'zitiyangshi'),5)],
         [('特殊字体样式填充颜色',4),getcolorbutton(globalconfig,'miaobiancolor',transparent=False,callback=lambda: selectcolor(self,globalconfig, "miaobiancolor", self.miaobian_color_button), name='miaobian_color_button',parent=self)],
         [('空心线宽',3),(getspinbox(0.1,100,globalconfig,'miaobianwidth',double=True,step=0.1),2),'',('描边宽度',3 ),(getspinbox(0.1,100,globalconfig,'miaobianwidth2',double=True,step=0.1),2),'',('阴影强度',3),(getspinbox(1,20,globalconfig,'shadowforce'),2)],
-        [''],
+        [],
         
         [('显示原文',4),self.show_original_switch,'',('原文颜色',4), getcolorbutton(globalconfig,'rawtextcolor',callback=lambda: selectcolor(self,globalconfig, "rawtextcolor", self.original_color_button),name='original_color_button',parent=self)],
         [('显示日语注音',4),self.show_hira_switch,'',('注音颜色',4),getcolorbutton(globalconfig,'jiamingcolor',callback=lambda: selectcolor(self,globalconfig, "jiamingcolor", self.jiamingcolor_b),name='jiamingcolor_b',parent=self),'',('注音字体缩放',3),(getspinbox(0.05,1,globalconfig,'kanarate',double=True,step=0.05,dec=2),2)],  
@@ -136,9 +136,9 @@ def setTabThree_lazy(self) :
         [("显示翻译器名称",4),(getsimpleswitch(globalconfig  ,'showfanyisource'),1)],
        [('最长显示字数',4),(getspinbox(0,1000000,globalconfig,'maxoriginlength'),2)],
          
-        [''],
+        [],
         [('收到翻译结果时才刷新',4),getsimpleswitch(globalconfig,'refresh_on_get_trans')],
-        [''],
+        [],
         [('可选取模式(阴影字体下无效)',6),getsimpleswitch(globalconfig,'selectable',callback=lambda x:gobject.baseobject.translation_ui.translate_text.setselectable() )],
     ]
     def __changefontsize(x):
@@ -152,9 +152,9 @@ def setTabThree_lazy(self) :
            [ ('字体大小',4),(getspinbox(1,100,globalconfig  ,'settingfontsize',callback=__changefontsize),2)], 
            [ ('不透明度',4),(self.horizontal_slider,8),(self.horizontal_slider_label,2)], 
            [('翻译窗口背景颜色',4),getcolorbutton(globalconfig,'backcolor',callback=lambda: selectcolor(self,globalconfig, "backcolor", self.back_color_button,callback=gobject.baseobject.translation_ui.set_color_transparency),name='back_color_button',parent=self),'',('工具按钮颜色',4),getcolorbutton(globalconfig,'buttoncolor',callback=lambda:selectcolor(self,globalconfig,'buttoncolor',self.buttoncolorbutton,callback=lambda:gobject.baseobject.translation_ui.refreshtooliconsignal.emit()) ,name='buttoncolorbutton',parent=self),'',('工具按钮大小',4),(getspinbox(5,100,globalconfig  ,'buttonsize',callback=lambda _:gobject.baseobject.translation_ui.refreshtooliconsignal.emit()),2)],
-           [''],
+           [],
            [('窗口按钮设置',6),getcolorbutton(globalconfig,'',callback=lambda x: dialog_toolbutton(self),icon='fa.gear',constcolor="#FF69B4")],
-           [''],
+           [],
         [('游戏最小化时窗口隐藏',6),(getsimpleswitch(globalconfig,'minifollow'),1)], 
         [('游戏失去焦点时窗口隐藏',6),(getsimpleswitch(globalconfig,'focusfollow'),1)], 
         [('游戏失去焦点时取消置顶',6),(getsimpleswitch(globalconfig,'focusnotop'),1)], 
@@ -180,9 +180,9 @@ def setTabThree_lazy(self) :
     downscalecombo.currentIndexChanged.connect(_downschange)
     fullscreengrid=[
         [('全屏化方式',4),(getsimplecombobox(_TRL(['内置Magpie10','自行下载的Magpie10','游戏原生全屏', 'SW_SHOWMAXIMIZED']),globalconfig,'fullscreenmethod_2'),6)],
-        [''],
+        [],
         [('自行下载的Magpie10路径',4),(getcolorbutton(globalconfig,'',callback=lambda x: getsomepath1(self,'Magpie路径',globalconfig,'magpie10path','Magpie路径',isdir=True),icon='fa.gear',constcolor="#FF69B4"),1)],
-        [''],
+        [],
  
         [("内置Magpie10设置",4) ],
         [("通用",4)],
@@ -208,7 +208,7 @@ def setTabThree_lazy(self) :
         [('',1),('禁用DirectFlip',4),(getsimpleswitch(magpie10_config['profiles'][globalconfig['profiles_index']],'disableDirectFlip'))],
         [('',1),('允许缩放最大化或全屏的窗口',4),(getsimpleswitch(magpie10_config,'allowScalingMaximized'))],
         [('',1),('缩放时模拟独占全屏',4),(getsimpleswitch(magpie10_config,'simulateExclusiveFullscreen'))],
-        [''],
+        [],
         
           
 

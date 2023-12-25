@@ -34,12 +34,12 @@ def gethiragrid(self) :
                     {'t':'okcancel' }]
                 line+=[getcolorbutton(globalconfig,'',callback= functools.partial(autoinitdialog,self,  globalconfig['hirasetting'][name]['name'],800,items) ,icon='fa.gear',constcolor="#FF69B4")]
             else:
-                  line+=['']
+                  line+=[]
             if i%3==2  :
                 grids.append(line) 
                 line=[]
             else:
-                line+=['']
+                line+=[]
             i+=1
         if len(line):
              grids.append(line) 
@@ -50,12 +50,12 @@ def setTabcishu_l(self) :
                 [('分词&假名分析器',10)],
                 [('日语注音方案',5),(getsimplecombobox(_TRL(['平假名','片假名','罗马音']),globalconfig,'hira_vis_type'),5)],
         ]+gethiragrid(self)+ [
-                [''],
-                [''],
+                [],
+                [],
                 [('点击单词查词',5),(getsimpleswitch(globalconfig,'usesearchword'),1),getcolorbutton(globalconfig,'',callback=lambda: gobject.baseobject.searchwordW.showsignal.emit(),icon='fa.search',constcolor="#FF69B4"),'',
                  ('点击单词复制',5),(getsimpleswitch(globalconfig,'usecopyword'),1),],
 
-                [''],
+                [],
                 [('辞书',10)],
         ]  
 
@@ -75,7 +75,7 @@ def setTabcishu_l(self) :
                 if i%3==2 or i==len(globalconfig['cishu']) -1: 
                         grids.append(line)
                 else:
-                        line+=['']
+                        line+=[]
         
         gridlayoutwidget=self.makegrid(grids )  
         gridlayoutwidget=self.makescroll( gridlayoutwidget  )

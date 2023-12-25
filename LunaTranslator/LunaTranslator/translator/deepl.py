@@ -56,7 +56,6 @@ class Deepl(Tse):
         self.output_zh = 'zh'
         self.input_limit = int(5e3)
         self.session = requests.Session()
-        host_html = self.session.get(self.host_url, headers=self.host_headers ).text
     
     def split_sentences_param(self, query_text, from_language):
         data = {

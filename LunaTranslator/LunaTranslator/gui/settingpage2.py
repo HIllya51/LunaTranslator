@@ -59,7 +59,7 @@ def initsome11(self,l,label=None):
             grids.append(line)
             line=[]
         else:
-            line+=['']
+            line+=[]
     if len(line) :
         grids.append(line)
     return grids
@@ -123,18 +123,18 @@ def setTabTwo_lazy(self) :
                 ("模糊匹配相似度",8),(getspinbox(0,500,globalconfig,'premtsimi'),3) , 
             ],[ 
                  (bt,12) ,
-            ],['']
+            ],[]
         ] 
         _items=[
-            {'t':'file','dir':False,'filter':'*.exe','l':'Chromium路径','d':globalconfig,'k':'chromepath'},
+            {'t':'file','dir':False,'filter':'*.exe','l':'Chromium_路径','d':globalconfig,'k':'chromepath'},
             {'t':'okcancel' },
         ]
 
         developgrid=[
-            [('Chromium路径',8),(getcolorbutton(globalconfig,'',callback=functools.partial(autoinitdialog,self, 'Chromium路径',800,_items),icon='fa.gear',constcolor="#FF69B4"))],
+            [('Chromium_路径',8),(getcolorbutton(globalconfig,'',callback=functools.partial(autoinitdialog,self, 'Chromium_路径',800,_items),icon='fa.gear',constcolor="#FF69B4"))],
             [("端口号",8),(getspinbox(0,65535,globalconfig,'debugport'),3) ,],
             [(self.statuslabel,16)],
-            ['']
+            []
         ]
         lixians,pre,mianfei,develop,shoufei=splittranslatortypes()
         

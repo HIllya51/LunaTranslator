@@ -7,6 +7,7 @@ from PyQt5.QtGui import QImage
 from PyQt5.QtCore import QByteArray,QBuffer
 from myutils.commonbase import ArgsEmptyExc
 from myutils.hwnd import dynamic_rate
+from myutils.utils import stringfyerror
 from traceback import print_exc
 import gobject,winsharedutils
 def togray(image):
@@ -103,8 +104,8 @@ def ocr_run(img):
             msg=str(e)
         else:
             print_exc()
-            msg=str(type(e))[8:-2]+' '+str(e).replace('\n','').replace('\r','')
-        msg='<msg_1>'+_TR(globalconfig['ocr'][use]['name'])+' '+msg
+            msg=stringfyerror(e)
+        msg='<msg_error_refresh>'+_TR(globalconfig['ocr'][use]['name'])+' '+msg
         text= msg
     return text
     

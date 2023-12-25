@@ -67,7 +67,8 @@ def getdefaultsavehook(gamepath):
         "codepage_index":0,
         "allow_tts_auto_names":'',
         "hooktypeasname":{},
-        "use_saved_text_process":False
+        "use_saved_text_process":False,
+        "fridahook":{}
     }
     return default
 

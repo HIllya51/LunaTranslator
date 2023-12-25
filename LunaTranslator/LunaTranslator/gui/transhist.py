@@ -1,65 +1,73 @@
  
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QApplication,QTextBrowser,QMainWindow,QFontDialog,QAction,QMenu,QFileDialog
+from PyQt5.QtWidgets import QTabWidget,QTextBrowser,QMainWindow,QFontDialog,QAction,QMenu,QFileDialog
 from PyQt5.QtGui import QFont,QTextCursor
 from PyQt5.QtCore import Qt,pyqtSignal 
-import qtawesome 
+import qtawesome,functools
 
-from gui.usefulwidget import closeashidewindow
+from gui.usefulwidget import closeashidewindow,textbrowsetmovetoendmaybe,textbrowsetappend
 from myutils.config import globalconfig ,_TR
 from myutils.config import globalconfig
 class transhist(closeashidewindow): 
+    
     getnewsentencesignal=pyqtSignal(str) 
     getnewtranssignal=pyqtSignal(str,str)  
+    getdebuginfosignal=pyqtSignal(str)
     def __init__(self,parent):
         super(transhist, self).__init__(parent,globalconfig,'hist_geo')
         self.setupUi() 
         #self.setWindowFlags(self.windowFlags()&~Qt.WindowMinimizeButtonHint)
         self.getnewsentencesignal.connect(self.getnewsentence) 
         self.getnewtranssignal.connect(self.getnewtrans)  
+        self.getdebuginfosignal.connect(self.debugprint)
         self.hiderawflag=False
         self.hideapiflag=False
-        self.setWindowTitle(_TR('历史翻译'))
-     
+        
+        self.setWindowTitle(_TR('历史翻译和调试输出'))
     def setupUi(self):
         self.setWindowIcon(qtawesome.icon("fa.rotate-left"  ))
         font = QFont() 
         font.fromString(globalconfig['hist_fontstring'])
- 
-        self.textOutput = QTextBrowser(self)
-        self.textOutput.setFont(font)
-        self.textOutput.setContextMenuPolicy(Qt.CustomContextMenu)
-        
-        
-        self.textOutput.customContextMenuRequested.connect(self.showmenu  )
-        self.setCentralWidget(self.textOutput) 
-        
-        self.textOutput.setUndoRedoEnabled(False)
-        self.textOutput.setReadOnly(True)
-        self.textOutput.setObjectName("textOutput") 
-   
+        self.setFont(font)
+        self.tabwidget=QTabWidget()
+        self.tabwidget.setTabPosition(QTabWidget.East)
+        self.setCentralWidget(self.tabwidget) 
+        def gettb(_type):
+            textOutput = QTextBrowser()
+            textOutput.setContextMenuPolicy(Qt.CustomContextMenu) 
+            textOutput.customContextMenuRequested.connect(functools.partial(self.showmenu ,textOutput,_type) ) 
+            textOutput.setUndoRedoEnabled(False)
+            textOutput.setReadOnly(True)
+            textOutput.setObjectName("textOutput") 
+            return textOutput
+        self.textOutput=gettb(1)
+        self.sysOutput=gettb(0)
+        self.tabwidget.addTab(self.textOutput,_TR("历史翻译"))
+        self.tabwidget.addTab(self.sysOutput,_TR("调试输出"))
         self.hiding=True
-    def showmenu(self,p):  
+    def showmenu(self,tb,flag, p):  
         menu=QMenu(self ) 
         qingkong=QAction(_TR("清空")) 
-        baocun=QAction(_TR("保存")) 
+        baocun=QAction(_TR("保存"))  
+        ziti=QAction(_TR("字体") ) 
         hideshowraw=QAction(_TR("显示原文"    if self.hiderawflag else "不显示原文") ) 
         hideshowapi=QAction(_TR("显示api"    if self.hideapiflag else "不显示api") ) 
-        ziti=QAction(_TR("字体") ) 
         menu.addAction(qingkong)
         menu.addAction(baocun)
-        menu.addAction(hideshowraw)
-        menu.addAction(hideshowapi)
+        if flag==1:
+            menu.addAction(hideshowraw)
+            menu.addAction(hideshowapi)
         menu.addAction(ziti)
+        
         action=menu.exec(self.mapToGlobal(p))
         if action==qingkong:
-            self.textOutput.clear()
+            tb.clear()
         elif action==baocun:
             ff=QFileDialog.getSaveFileName(self,directory='save.txt' )
             if ff[0]=='' :
                 return
             with open(ff[0],'w',encoding='utf8') as ff:
-                ff.write(self.textOutput.toPlainText())
+                ff.write(tb.toPlainText())
         elif action==hideshowraw:
              
             self.hiderawflag=not self.hiderawflag
@@ -68,12 +76,14 @@ class transhist(closeashidewindow):
             self.hideapiflag=not self.hideapiflag
         elif action==ziti :
             
-            font, ok = QFontDialog.getFont(self.textOutput.font(), parent=self)
-            
+            font, ok = QFontDialog.getFont(self.font(), parent=self) 
              
             if ok : 
-                globalconfig['hist_fontstring']=font.toString()
-                self.textOutput.setFont(font)
+                globalconfig['hist_fontstring']=font.toString() 
+                self.setFont(font)
+    def debugprint(self,sentence):
+        textbrowsetappend(self.sysOutput,sentence,False)
+        textbrowsetmovetoendmaybe(self.sysOutput) 
     def getnewsentence(self,sentence):
         
         sentence= '<hr>' if globalconfig['hist_split'] else '\n'+sentence

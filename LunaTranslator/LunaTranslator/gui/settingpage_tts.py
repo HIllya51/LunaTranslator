@@ -36,12 +36,12 @@ def getttsgrid(self) :
             if 'path' in globalconfig['reader'][name]:
                  line+=[getcolorbutton(globalconfig,'',callback=functools.partial(getsomepath1,self,globalconfig['reader'][name]['name'],globalconfig['reader'][name] ,'path',globalconfig['reader'][name]['name'],gobject.baseobject.startreader,True),icon='fa.gear',constcolor="#FF69B4")]
             else:
-                 line+=['']
+                 line+=[]
             if i%3==2  :
                 grids.append(line) 
                 line=[]
             else:
-                line+=['']
+                line+=[]
             i+=1
         if len(line):
              grids.append(line) 
@@ -52,7 +52,7 @@ def setTab5lz(self) :
          
         grids=getttsgrid(self)
         grids+=[ 
-                [''],
+                [],
                 [("选择声音",6),(self.voicecombo,15)],
                 [('语速:(-10~10)',6),(getspinbox(-10,10,globalconfig['ttscommon'],'rate'  ),3)],
                 [('音量:(0~100)',6),(getspinbox(0,100,globalconfig['ttscommon'],'volume' ),3)],

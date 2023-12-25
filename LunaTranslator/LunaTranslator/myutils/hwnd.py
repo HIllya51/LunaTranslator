@@ -58,7 +58,7 @@ def grabwindow():
         if(not p.toImage().allGray()):
                 p.save(fname+'_gdi.png')
                  
-        gobject.baseobject.translation_ui.displaystatus.emit("saved to "+fname,'red',True)
+        gobject.baseobject.translation_ui.displaystatus.emit("saved to "+fname,'red',True,True)
 def dynamic_rate(hwnd,rect):
         if(getscreenp()==(rect[2],rect[3])):
                 rate=1

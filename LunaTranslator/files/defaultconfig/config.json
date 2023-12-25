@@ -208,7 +208,7 @@
                 "use": true,
                 "tip": "选择游戏",
                 "belong": [
-                    "texthook"
+                    "texthook","fridahook"
                 ],
                 "icon": "fa.link"
             },
@@ -306,7 +306,7 @@
             },
             "history": {
                 "use": true,
-                "tip": "显示/隐藏历史翻译",
+                "tip": "显示/隐藏历史翻译和调试输出",
                 "icon": "fa.rotate-left"
             },
             "gamepad": {
@@ -719,10 +719,18 @@
         },
         "texthook": {
             "use": true
+        },
+        "fridahook":{
+            "use": false
         }
     },
     "verticalocr": false,
     "ocrmergelines": true,
+    "fridahook":{
+        "path":"",
+        "showinfo":true,
+        "showerror":true
+    },
     "ocr": {
         "local": {
             "use": true,

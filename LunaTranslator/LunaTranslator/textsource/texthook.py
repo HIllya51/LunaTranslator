@@ -78,11 +78,6 @@ class texthook(basetext  ):
         win32utils.CloseHandle(_mutext)
         return exists
 
-    def showgamename(self):
-        if 'showonce' not in dir(self):
-            #gobject.baseobject.translation_ui.displayraw1.emit([],savehook_new_data[self.pname]['title'],globalconfig['rawtextcolor'],False)
-            gobject.baseobject.translation_ui.displayres.emit('',globalconfig['rawtextcolor'],savehook_new_data[self.pname]['title'],False)
-            self.showonce=1
     def newhookinsert(self,addr,hcode):
         for _hc,_addr,_ctx1,_ctx2 in savehook_new_data[self.pname]['embedablehook']:
             if hcode==_hc:

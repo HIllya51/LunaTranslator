@@ -9,7 +9,6 @@
     "打开设置": "Apri impostazioni",
     "复制到剪贴板": "copia negli appunti",
     "显示/隐藏原文": "Mostra/Nascondi testo originale",
-    "显示/隐藏历史翻译": "Mostra/nasconde traduzioni storiche",
     "朗读": "Lettura ad alta voce",
     "鼠标穿透窗口": "Finestra di penetrazione del mouse",
     "锁定工具栏": "Blocca barre degli strumenti",
@@ -179,7 +178,6 @@
     "专有名词翻译设置(游戏ID 0表示全局)": "Impostazioni di traduzione del sostantivo appropriato (ID gioco 0 significa globale)",
     "密钥": "chiave segreta",
     "优化横向OCR漏字": "Ottimizza l'omissione OCR orizzontale",
-    "显示历史翻译": "Mostra traduzione storica",
     "記号": "Simbolo",
     "选择文件": "Seleziona file",
     "缩放时禁用窗口大小调整": "Disabilita il ridimensionamento delle finestre durante lo zoom",
@@ -683,7 +681,9 @@
     "Sakura部署教程": "Tutorial sull'implementazione di Sakura",
     "Github仓库": "Magazzino Github",
     "利用上文信息翻译（通常会有一定的效果提升，但会导致变慢）": "Tradurre utilizzando le informazioni fornite nel testo precedente (di solito con qualche miglioramento in efficacia, ma può portare a una traduzione più lenta)",
-    "Chromium路径": "Percorso del cromo",
     "范围选取遮罩透明度": "Trasparenza maschera di selezione intervallo",
-    "文本缓冲区长度": "Lunghezza buffer di testo"
+    "文本缓冲区长度": "Lunghezza buffer di testo",
+    "显示/隐藏历史翻译和调试输出": "Mostra/nasconde l'output storico di traduzione e debug",
+    "历史翻译和调试输出": "Risultato storico di traduzione e debug",
+    "调试输出": "Debug output"
 }

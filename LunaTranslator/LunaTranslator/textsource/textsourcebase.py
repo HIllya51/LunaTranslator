@@ -90,6 +90,11 @@ class basetext:
         md5=getfilemd5(pname)
         name= os.path.basename(pname).replace('.'+os.path.basename(pname).split('.')[-1],'') 
         return md5,name
+    
+    def showgamename(self):
+        if 'showonce' not in dir(self): 
+            gobject.baseobject.textgetmethod('<msg_info_refresh>'+savehook_new_data[self.pname]['title'])
+            self.showonce=1
     def gettextthread_(self):
         while True:
             if self.ending: 

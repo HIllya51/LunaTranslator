@@ -264,7 +264,7 @@ class QUnFrameWindow(resizableframeless):
             ("selectgame",lambda :gobject.baseobject.AttachProcessDialog.showsignal.emit()),
             ("selecttext",lambda:gobject.baseobject.hookselectdialog.showsignal.emit()),
             ("selectocrrange",lambda :self.clickRange(False)),
-            ("hideocrrange",self.showhide),
+            ("hideocrrange",self.showhideocrrange),
             ("bindwindow",self.bindcropwindow_signal.emit),
             ("resize",lambda :moveresizegame(self,gobject.baseobject.textsource.hwnd) if gobject.baseobject.textsource.hwnd else 0),
             ("fullscreen",self._fullsgame),
@@ -390,7 +390,7 @@ class QUnFrameWindow(resizableframeless):
         self.refreshtooliconsignal.connect(self.refreshtoolicon)
         self.showsavegame_signal.connect(self.showsavegame_f)  
         self.clickRange_signal.connect(self.clickRange )
-        self.showhide_signal.connect(self.showhide )
+        self.showhide_signal.connect(self.showhideocrrange )
         self.bindcropwindow_signal.connect(functools.partial(mouseselectwindow, self.bindcropwindowcallback))
         self.quitf_signal.connect(self.close)
         self.fullsgame_signal.connect(self._fullsgame) 
@@ -492,11 +492,13 @@ class QUnFrameWindow(resizableframeless):
                 threading.Thread(target=_checkplace).start()
         self.set_color_transparency()
         self.refreshtoolicon()
-    def showhide(self): 
-        if gobject.baseobject.textsource.rect:
+    def showhideocrrange(self): 
+        try:
             self.showhidestate=not self.showhidestate 
             self.refreshtoolicon()
             gobject.baseobject.textsource.showhiderangeui(self.showhidestate) 
+        except:
+            pass
     def bindcropwindowcallback(self,pid,hwnd): 
             _pid=os.getpid()
             gobject.baseobject.textsource.hwnd= hwnd if pid!=_pid else None
@@ -532,9 +534,9 @@ class QUnFrameWindow(resizableframeless):
          
     def afterrange(self,rect): 
         gobject.baseobject.textsource.setrect(rect)
-        self.showhide()
+        self.showhideocrrange()
         if globalconfig['showrangeafterrangeselect']==False:
-            self.showhide()
+            self.showhideocrrange()
         if globalconfig['ocrafterrangeselect']:
             self.startTranslater()
     def langdu(self): 

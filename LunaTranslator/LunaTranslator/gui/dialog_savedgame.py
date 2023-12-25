@@ -3,17 +3,18 @@ import functools ,time
 from PyQt5.QtWidgets import  QPushButton,QDialog,QVBoxLayout ,QHeaderView,QFileDialog ,QLineEdit,QFormLayout
 import functools,threading
 from traceback import print_exc 
-from PyQt5.QtWidgets import    QHBoxLayout, QTableView, QAbstractItemView, QLabel, QVBoxLayout,QSpacerItem
+from PyQt5.QtWidgets import    QHBoxLayout, QTableView, QAbstractItemView, QLabel, QVBoxLayout,QSpacerItem,QTabWidget,QComboBox
 import win32utils  ,importlib
 from PyQt5.QtCore import QPoint, QRect, QSize, Qt,pyqtSignal,QCoreApplication
 import os,subprocess
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtWidgets import   QApplication, QLayout, QLabel, QSizePolicy, QWidget, QGridLayout,QHBoxLayout,QVBoxLayout 
+from PyQt5.QtWidgets import   QApplication, QLayout, QSizePolicy, QWidget, QGridLayout 
 from PyQt5.QtGui import QPalette, QColor,QResizeEvent,QIcon,QPixmap
 from PyQt5.QtCore import Qt 
 from gui.usefulwidget import getsimplecombobox,getspinbox,getcolorbutton,getsimpleswitch,getspinbox,selectcolor
 from PyQt5.QtCore import QPoint, QRect, QSize, Qt,pyqtSignal
 import os   
+from textsource.fridahook import fridahook
 from myutils.hwnd import showintab
 from PyQt5.QtGui import QStandardItem, QStandardItemModel   
 from PyQt5.QtCore import Qt,QSize  
@@ -23,8 +24,8 @@ import gobject
 from myutils.config import _TR,_TRL,globalconfig,static_data 
 import winsharedutils,win32con
 from myutils.wrapper import Singleton_close,Singleton,threader
-from myutils.utils import checkifnewgame 
-from gui.usefulwidget import yuitsu_switch,saveposwindow
+from myutils.utils import checkifnewgame ,loadfridascriptslist
+from gui.usefulwidget import yuitsu_switch,saveposwindow,getboxlayout
 class ItemWidget(QWidget):
   focuschanged=pyqtSignal(bool,str)
   doubleclicked=pyqtSignal(str)
@@ -282,7 +283,7 @@ class dialog_setting_game(QDialog):
                               self.gametitleitme.connectexepath(res) 
                          
                         self.setWindowIcon(_icon)
-                        self.lujing.setText(res)
+                        self.editpath.setText(res)
                         self.exepath=res 
                 
         def __init__(self, parent,exepath, item=None,type=1,gametitleitme=None) -> None:
@@ -294,25 +295,17 @@ class dialog_setting_game(QDialog):
                 self.exepath=exepath 
                 self.gametitleitme=gametitleitme
                 if type==2:
-                        titlelayout=QHBoxLayout()
                         titleedit=QLineEdit(savehook_new_data[exepath]['title'])
                         def _titlechange(x):
                                 savehook_new_data[exepath]['title']=x
                                 self.setWindowTitle(x)
                                 gametitleitme.settitle(x)
                         titleedit.textChanged.connect(_titlechange)
-                        titlelayout.addWidget(QLabel(_TR("标题")))
-                        titlelayout.addWidget(titleedit)
-                        formLayout.addLayout(titlelayout)
+                        formLayout.addLayout(getboxlayout([QLabel(_TR("标题")),titleedit]))
 
-                      
-                        lujingimg=QHBoxLayout()
+                       
                         imgpath=QLineEdit(savehook_new_data[exepath]['imagepath'])
-                        imgpath.setReadOnly(True)
-                         
-                        lujingimg.addWidget(QLabel(_TR("封面")))
-                        lujingimg.addWidget(imgpath)
-
+                        imgpath.setReadOnly(True) 
                         def selectimg(  ):
                                 f=QFileDialog.getOpenFileName(directory=savehook_new_data[exepath]['imagepath'])
                                 res=f[0]
@@ -323,76 +316,102 @@ class dialog_setting_game(QDialog):
                                                 savehook_new_data[exepath]['imagepath']=res
                                                 imgpath.setText(res)
                                                 gametitleitme.setimg(_pixmap)
-                                        
-                        lujingimg.addWidget(getcolorbutton('','',selectimg,icon='fa.gear',constcolor="#FF69B4"))
+                                       
+                        formLayout.addLayout(getboxlayout([
+                              QLabel(_TR("封面")),imgpath,
+                              getcolorbutton('','',selectimg,icon='fa.gear',constcolor="#FF69B4")
+                        ]))
 
-                        formLayout.addLayout(lujingimg)
-
-                        statislayout=QHBoxLayout() 
-                        statislayout.addWidget(QLabel(_TR("统计信息")))
-                        statislayout.addWidget(getcolorbutton('','',lambda:dialog_statistic(self,exepath),icon='fa.bar-chart',constcolor="#FF69B4"))
-                        
+                        statiswids=[QLabel(_TR("统计信息")),getcolorbutton('','',lambda:dialog_statistic(self,exepath),icon='fa.bar-chart',constcolor="#FF69B4")]
                         if savehook_new_data[exepath]['infopath']: 
-                                statislayout.addWidget(QLabel(_TR("游戏信息")))
-                                statislayout.addWidget(getcolorbutton('','',lambda:browserdialog(self,exepath),icon='fa.book',constcolor="#FF69B4"))
-                        
-                        formLayout.addLayout(statislayout)
-                lujing=QHBoxLayout()
+                                statiswids+=[QLabel(_TR("游戏信息")),getcolorbutton('','',lambda:browserdialog(self,exepath),icon='fa.book',constcolor="#FF69B4")]
+                        formLayout.addLayout(getboxlayout(statiswids))
                 editpath=QLineEdit(exepath)
                 editpath.setReadOnly(True)
                 if item:
                         self.table=parent.table
                         self.model=parent.model
                         editpath.textEdited.connect(lambda _:item.__setitem__('savetext',_)) 
-                
-                lujing.addWidget(QLabel(_TR("修改路径")))
-                lujing.addWidget(editpath)
-                lujing.addWidget(getcolorbutton('','',functools.partial(self.selectexe),icon='fa.gear',constcolor="#FF69B4"))
-                self.lujing=editpath
+                self.editpath=editpath
                 self.setWindowTitle(savehook_new_data[exepath]['title'])
                 self.resize(QSize(600,200))
                 self.setWindowIcon(getExeIcon(exepath))
-                formLayout.addLayout(lujing)
+                formLayout.addLayout(getboxlayout([
+                      QLabel(_TR("修改路径")),editpath,
+                      getcolorbutton('','',functools.partial(self.selectexe),icon='fa.gear',constcolor="#FF69B4")
+                ]))
                 
                 
                 b=win32utils.GetBinaryType(exepath)
                 
-                if type==2:
-                        zhuanqulayout=QHBoxLayout() 
-                        zhuanqulayout.addWidget(QLabel(_TR("转区启动")))
-                        zhuanqulayout.addWidget(getsimpleswitch(savehook_new_data[exepath],'leuse'))
-                        formLayout.addLayout(zhuanqulayout)
+                if type==2: 
+                        formLayout.addLayout(getboxlayout([
+                              QLabel(_TR("转区启动")),
+                              getsimpleswitch(savehook_new_data[exepath],'leuse')
+                        ]))
 
 
-                lrelay=QHBoxLayout()
-                lrelay.addWidget(QLabel(_TR("转区方法")))
                 if b==6: 
                         _methods=['','Locale_Remulator','Ntleas' ]
                 else:
                         _methods=['Locale-Emulator','Locale_Remulator','Ntleas' ]
                 if b==6 and savehook_new_data[exepath]['localeswitcher']==0:
-                        savehook_new_data[exepath]['localeswitcher']=2
-                
-                lrelay.addWidget(getsimplecombobox(_TRL(_methods),savehook_new_data[exepath],'localeswitcher'))
-                formLayout.addLayout(lrelay) 
+                        savehook_new_data[exepath]['localeswitcher']=2 
+                formLayout.addLayout(getboxlayout([
+                      QLabel(_TR("转区方法")),getsimplecombobox(_TRL(_methods),savehook_new_data[exepath],'localeswitcher')
+                ])) 
 
-
-                autochangestatus=QHBoxLayout()
-                autochangestatus.addWidget(QLabel(_TR("自动切换到模式"))) 
-                autochangestatus.addWidget(getsimplecombobox(_TRL(['不切换','HOOK','剪贴板','OCR']),savehook_new_data[exepath],'onloadautochangemode2'))
-                formLayout.addLayout(autochangestatus)
+ 
+                formLayout.addLayout(getboxlayout([
+                      QLabel(_TR("自动切换到模式")),
+                      getsimplecombobox(_TRL(['不切换','HOOK','剪贴板','OCR','FridaHook']),savehook_new_data[exepath],'onloadautochangemode2')
+                ]))
                  
 
+                methodtab=QTabWidget()
+                methodtab.addTab(self.gethooktab(exepath),"HOOK")
+                methodtab.addTab(self.getfridatab(exepath),"FridaHook")
+                formLayout.addWidget(methodtab)
+                
+                self.show()
+        def getfridatab(self,exepath):
+                _w=QWidget()
+                formLayout = QVBoxLayout()
+                formLayout.setAlignment(Qt.AlignTop)
+                _w.setLayout(formLayout)
+                Scriptscombo=QComboBox() 
+                Scriptscombo.setSizeAdjustPolicy(QComboBox.AdjustToMinimumContentsLength)
+                fridascripts=loadfridascriptslist(globalconfig['fridahook']['path'],Scriptscombo)
+                fridahook=savehook_new_data[exepath]['fridahook']
+                try:
+                      Scriptscombo.setCurrentIndex(fridascripts.index(fridahook['js']))
+                except:
+                      Scriptscombo.setCurrentIndex(0)
+                Scriptscombo.currentTextChanged.connect(lambda text:fridahook.__setitem__('js',text))
+                wids=[QLabel('Scripts'),Scriptscombo]
+                wids[0].setFixedWidth(100)
+                formLayout.addLayout(getboxlayout(wids))
 
-                cp_layout=QHBoxLayout()
-                cp_layout.addWidget(QLabel(_TR('代码页')))
-                cp_layout.addWidget(getsimplecombobox(_TRL(static_data['codepage_display']),savehook_new_data[exepath],'codepage_index' ,lambda x: gobject.baseobject.textsource.setsettings()))
-                formLayout.addLayout(cp_layout)
+                formLayout.addLayout(getboxlayout([
+                      QLabel('Load Method'),
+                      getsimplecombobox(['Attach','Spawn'],fridahook,'loadmethod')
+                ]))
 
-                cp_layout=QHBoxLayout()
-                cp_layout.addWidget(QLabel(_TR('移除非选定hook')))
-                cp_layout.addWidget(getsimpleswitch(savehook_new_data[exepath],'removeuseless'))
-                formLayout.addLayout(cp_layout)
+
+                return _w
+        def gethooktab(self,exepath):
+                _w=QWidget()
+                formLayout = QVBoxLayout()
+                _w.setLayout(formLayout) 
+                formLayout.addLayout(getboxlayout([
+                      QLabel(_TR('代码页')),
+                      getsimplecombobox(_TRL(static_data['codepage_display']),savehook_new_data[exepath],'codepage_index' ,lambda x: gobject.baseobject.textsource.setsettings())
+                ]))
+ 
+                formLayout.addLayout(getboxlayout([
+                      QLabel(_TR('移除非选定hook')),
+                      getsimpleswitch(savehook_new_data[exepath],'removeuseless')
+                ]))
                 
 
                 model=QStandardItemModel(   )
@@ -414,24 +433,21 @@ class dialog_setting_game(QDialog):
                         self.newline(row,k)  
                  
                 formLayout.addWidget(self.hctable) 
-                
-                cp_layout=QHBoxLayout()
-                cp_layout.addWidget(QLabel(_TR('插入特殊码延迟(ms)')))
-                cp_layout.addWidget(getspinbox(0,1000000,savehook_new_data[exepath],'inserthooktimeout' ))
-                formLayout.addLayout(cp_layout)
-                if savehook_new_data[exepath]['use_saved_text_process'] or 'save_text_process_info' in savehook_new_data[exepath]: 
-                        zhuanqulayout=QHBoxLayout() 
-                        zhuanqulayout.addWidget(QLabel(_TR("使用保存的文本处理流程")))
-                        zhuanqulayout.addWidget(getsimpleswitch(savehook_new_data[exepath],'use_saved_text_process'))
-                        formLayout.addLayout(zhuanqulayout)
+                 
+                formLayout.addLayout(getboxlayout([
+                      QLabel(_TR('插入特殊码延迟(ms)')),
+                      getspinbox(0,1000000,savehook_new_data[exepath],'inserthooktimeout' )
+                ]))
+                if savehook_new_data[exepath]['use_saved_text_process'] or 'save_text_process_info' in savehook_new_data[exepath]:  
+                        formLayout.addLayout(getboxlayout([
+                              QLabel(_TR("使用保存的文本处理流程")),
+                              getsimpleswitch(savehook_new_data[exepath],'use_saved_text_process')
+                        ]))
                 if globalconfig['allow_set_text_name']:
-                        cp_layout=QHBoxLayout()
-                        cp_layout.addWidget(QLabel(_TR('禁止自动朗读的人名(以|分隔多个)')))
                         edit=QLineEdit(savehook_new_data[exepath]['allow_tts_auto_names'])
                         edit.textChanged.connect(lambda x:savehook_new_data[exepath].__setitem__('allow_tts_auto_names',x))
-                        cp_layout.addWidget(edit)
-                        formLayout.addLayout(cp_layout)
-                self.show()
+                        formLayout.addLayout(getboxlayout([QLabel(_TR('禁止自动朗读的人名(以|分隔多个)')),edit]))
+                return _w
         def clicked2(self):
                 try: 
                         savehook_new_data[self.exepath]['needinserthookcode'].pop(self.hctable.currentIndex().row()) 
@@ -511,15 +527,18 @@ def startgame(game):
                     _={
                     1:'texthook', 
                     2:'copy',
-                    3:'ocr'
+                    3:'ocr',
+                    4:'fridahook'
                     } 
                     if globalconfig['sourcestatus2'][_[mode]]['use']==False:
                             globalconfig['sourcestatus2'][_[mode]]['use']=True
                             
                             yuitsu_switch(gobject.baseobject.settin_ui,globalconfig['sourcestatus2'],'sourceswitchs',_[mode],None ,True) 
                             gobject.baseobject.starttextsource(use=_[mode],checked=True)
+                if savehook_new_data[game]['fridahook'].get('loadmethod')==1:
+                        gobject.baseobject.textsource=fridahook(1,savehook_new_data[game]['fridahook'].get('js'),game)
+                        return
                 if savehook_new_data[game]['leuse']==False or (game.lower()[-4:] not in ['.lnk','.exe']):
-                        
                         #对于其他文件，需要AssocQueryStringW获取命令行才能正确le，太麻烦，放弃。
                         win32utils.ShellExecute(None, "open", game, "", os.path.dirname(game), win32con.SW_SHOW) 
                         return 

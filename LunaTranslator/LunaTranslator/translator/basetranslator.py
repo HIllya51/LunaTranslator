@@ -8,7 +8,7 @@ import zhconv,requests
 import sqlite3
 from myutils.commonbase import commonbase
 
-from myutils.utils import getproxy
+from myutils.utils import stringfyerror
 from myutils.commonbase import ArgsEmptyExc
 from myutils.wrapper import stripwrapper
 class TimeOut(Exception):
@@ -265,9 +265,9 @@ class basetrans(commonbase):
                         continue
                     else:
                         print_exc()
-                        msg=str(type(e))[8:-2]+' '+str(e).replace('\n','').replace('\r','')
+                        msg=stringfyerror(e)
                         self.needreinit=True
-                    msg='<msg_1>'+msg
+                    msg='<msg_translator>'+msg
             
                     callback(msg,embedcallback) 
                     

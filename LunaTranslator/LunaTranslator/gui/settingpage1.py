@@ -1,31 +1,77 @@
  
-import functools    
+import functools,os,subprocess
 from PyQt5.QtGui import  QFont
 
-from PyQt5.QtWidgets import  QFontComboBox  ,QLabel
+from PyQt5.QtWidgets import  QFontComboBox  ,QLabel,QComboBox,QPushButton,QFileDialog
 from gui.settingpage_ocr import getocrgrid  
-from myutils.config import globalconfig ,_TR,_TRL  ,static_data
+from myutils.config import globalconfig ,_TR,_TRL  ,savehook_new_data
+from myutils.hwnd import getpidexe
 from gui.dialog_savedgame import dialog_savedgame 
 import threading,gobject
-from gui.usefulwidget import getsimplecombobox,getspinbox,getcolorbutton,yuitsu_switch,getsimpleswitch
+from gui.inputdialog import autoinitdialog 
+from gui.usefulwidget import getsimplecombobox,getspinbox,getcolorbutton,yuitsu_switch,getsimpleswitch,getQMessageBox
 from gui.codeacceptdialog import codeacceptdialog   
+from textsource.fridahook import fridahook
+from myutils.utils import loadfridascriptslist,checkifnewgame,makehtml
 def gethookgrid(self) :
  
         grids=[
                 [('选择游戏',5),self.selectbutton,('',5)],
                 [('选择文本',5),self.selecthookbutton],
-                [''],
+                [],
                 [('检测到游戏时自动开始',5),(getsimpleswitch(globalconfig,'autostarthook'),1)],
                 
                 [('已保存游戏',5),(getcolorbutton(globalconfig,'',icon='fa.gamepad',constcolor="#FF69B4",callback=lambda:dialog_savedgame(self)),1)],
-                [''],
+                [],
                 [('过滤反复刷新的句子',5),(getsimpleswitch(globalconfig,'direct_filterrepeat'),1)],
                 [('刷新延迟(ms)',5),(getspinbox(0,10000,globalconfig,'textthreaddelay',callback=lambda x:gobject.baseobject.textsource.setsettings()),3)],
                 [('文本缓冲区长度',5),(getspinbox(0,10000,globalconfig,'flushbuffersize',callback=lambda x:gobject.baseobject.textsource.setsettings()),3)],
                 [('过滤包含乱码的文本行',5),(getsimpleswitch(globalconfig,'filter_chaos_code'),1),(getcolorbutton(globalconfig,'',icon='fa.gear',constcolor="#FF69B4",callback=lambda:codeacceptdialog(self)),1)],
-                [''],
+                [],
                 [('区分人名和文本',5),getsimpleswitch(globalconfig,'allow_set_text_name')]
                 
+        ]
+         
+        return grids
+def flashcombo(self):
+        self.fridascripts=loadfridascriptslist(globalconfig['fridahook']['path'],self.Scriptscombo)
+def getfridahookgrid(self) :
+        
+        
+        _items=[
+            {'t':'file','dir':True, 'l':'FridaHook_路径','d':globalconfig['fridahook'],'k':'path'},
+            {'t':'okcancel','callback':functools.partial(flashcombo,self)},
+        ]
+        attachbutton=QPushButton('Attach')
+        execbutton=QPushButton('Spawn')
+        def execclicked():
+                
+                f=QFileDialog.getOpenFileName(filter='*.exe')
+                pname=f[0]
+                if pname!='':
+                        pname=pname.replace('/','\\')
+                        checkifnewgame(pname) 
+                        yuitsu_switch(gobject.baseobject.settin_ui,globalconfig['sourcestatus2'],'sourceswitchs','fridahook',None ,True) 
+                        gobject.baseobject.starttextsource(use='fridahook',checked=True)
+                        gobject.baseobject.textsource=fridahook(1,self.fridascripts[self.Scriptscombo.currentIndex()],pname)
+        
+        execbutton.clicked.connect(execclicked)
+        attachbutton.clicked.connect(gobject.baseobject.AttachProcessDialog.showsignal.emit)
+        grids=[
+                
+                [('FridaHook_路径',3),(getcolorbutton(globalconfig,'',callback=functools.partial(autoinitdialog,self, 'FridaHook_路径',800,_items),icon='fa.gear',constcolor="#FF69B4"))],
+
+                [('Scripts',3),(self.Scriptscombo,10)],
+                [],
+                [(attachbutton,3),(execbutton,3)] ,
+                [],
+                [('show info',3),getsimpleswitch( globalconfig['fridahook'],'showinfo' ),],
+                [('show error',3),getsimpleswitch( globalconfig['fridahook'],'showerror' )],
+                [],
+                [('资源下载',3),(makehtml("https://github.com/HIllya51/LunaTranslator/releases/download/v1.34.5/FridaHook.zip",True),3,'link')],
+                
+                [('latest scripts',3),(makehtml("https://github.com/0xDC00/scripts"),6,'link')],
+                [('capable emulator',3),(makehtml("https://github.com/koukdw/emulators/releases"),6,"link")]
         ]
          
         return grids
@@ -76,12 +122,15 @@ def setTabOne_direct(self) :
                 
                 [
                         ('剪贴板',3),(getsimpleswitch(globalconfig['sourcestatus2']['copy'],'use',name='copy',parent=self,callback= functools.partial(yuitsu_switch,self, globalconfig['sourcestatus2'],'sourceswitchs','copy',gobject.baseobject.starttextsource),pair='sourceswitchs'),1),'',
-                        ('OCR',3),(getsimpleswitch(globalconfig['sourcestatus2']['ocr'],'use',name='ocr',parent=self,callback= functools.partial(yuitsu_switch,self,globalconfig['sourcestatus2'],'sourceswitchs','ocr',gobject.baseobject.starttextsource),pair='sourceswitchs'),1),'',
-                        
-                     ('HOOK',3),(getsimpleswitch(globalconfig['sourcestatus2']['texthook'],'use',name='texthook',parent=self,callback= functools.partial(yuitsu_switch,self,globalconfig['sourcestatus2'],'sourceswitchs','texthook',gobject.baseobject.starttextsource),pair='sourceswitchs'),1), 
-                     
-                      
+                        ('OCR',3),(getsimpleswitch(globalconfig['sourcestatus2']['ocr'],'use',name='ocr',parent=self,callback= functools.partial(yuitsu_switch,self,globalconfig['sourcestatus2'],'sourceswitchs','ocr',gobject.baseobject.starttextsource),pair='sourceswitchs'),1),'', 
+                       
                 ], 
+                [
+                         ('HOOK',3),(getsimpleswitch(globalconfig['sourcestatus2']['texthook'],'use',name='texthook',parent=self,callback= functools.partial(yuitsu_switch,self,globalconfig['sourcestatus2'],'sourceswitchs','texthook',gobject.baseobject.starttextsource),pair='sourceswitchs'),1), '',
+                         ('Experimental',3),(getsimpleswitch(globalconfig['sourcestatus2']['fridahook'],'use',name='fridahook',parent=self,callback= functools.partial(yuitsu_switch,self,globalconfig['sourcestatus2'],'sourceswitchs','fridahook',gobject.baseobject.starttextsource),pair='sourceswitchs'),1),
+
+                     
+                ] ,
         ]  
 
         getcolorbutton(globalconfig ,'',name='selectbutton',parent=self,icon='fa.gear',constcolor="#FF69B4",callback=lambda :gobject.baseobject.AttachProcessDialog.showsignal.emit())
@@ -93,6 +142,10 @@ def setTabOne_direct(self) :
         self.threshold1label=QLabel()
         self.threshold2label=QLabel()
 
+        self.Scriptscombo=QComboBox() 
+        self.fridascripts=loadfridascriptslist(globalconfig['fridahook']['path'],self.Scriptscombo)
+        
+        flashcombo(self)
 def setTabOne(self) :  
         self.tabadd_lazy(self.tab_widget, ('文本输入'), lambda :setTabOne_lazy(self)) 
 
@@ -101,12 +154,13 @@ def setTabOne_lazy(self) :
         
          
          
-        tab=self.makesubtab_lazy(['HOOK设置','OCR设置','剪贴板','内嵌翻译'],
+        tab=self.makesubtab_lazy(['HOOK设置','OCR设置','剪贴板','内嵌翻译','Experimental'],
                                 [       
                                         lambda:self.makescroll(self.makegrid(gethookgrid(self))),
                                         lambda:self.makescroll(self.makegrid(getocrgrid(self))),
                                         lambda:self.makescroll(self.makegrid(setTabclip(self))),
                                         lambda:self.makescroll(self.makegrid(gethookembedgrid(self) )),
+                                        lambda:self.makescroll(self.makegrid(getfridahookgrid(self) )),
                                 ]) 
 
         gridlayoutwidget=self.makegrid(self.tab1grids )    

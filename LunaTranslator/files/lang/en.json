@@ -25,7 +25,6 @@
     "专有名词翻译设置(游戏ID 0表示全局)": "Proper noun translation settings (game ID 0 indicates global)",
     "密钥": "secret key",
     "优化横向OCR漏字": "Optimize horizontal OCR leakage",
-    "显示历史翻译": "Show historical translations",
     "使用VNR共享辞书": "Use VNR to share dictionaries",
     "显示复制原文按钮": "Show Copy Original Button",
     "快捷键设置": "Shortcut key settings",
@@ -215,7 +214,6 @@
     "&设置": "&Settings",
     "&退出": "&Exit",
     "欢迎使用": "Welcome",
-    "显示/隐藏历史翻译": "Show/hide historical translations",
     "有道api": "Youdao API",
     "导出的第一翻译源": "First translation source exported",
     "日语(CP932,SHIFT-JIS)": "Japanese (CP932, SHIFT-JIS)",
@@ -683,7 +681,9 @@
     "Sakura部署教程": "Sakura Deployment Tutorial",
     "Github仓库": "Github warehouse",
     "利用上文信息翻译（通常会有一定的效果提升，但会导致变慢）": "Translate using the information provided in the previous text (usually with some improvement in effectiveness, but it can lead to slower translation)",
-    "Chromium路径": "Chromium Path",
     "范围选取遮罩透明度": "Range selection mask transparency",
-    "文本缓冲区长度": "Text buffer length"
+    "文本缓冲区长度": "Text buffer length",
+    "显示/隐藏历史翻译和调试输出": "Show/hide historical translation and debugging output",
+    "历史翻译和调试输出": "Historical translation and debugging output",
+    "调试输出": "Debugging output"
 }

@@ -9,10 +9,10 @@ import threading
 from myutils.utils import minmaxmoveobservefunc ,kanjitrans,checkifnewgame
 from myutils.wrapper import threader 
 from gui.showword import searchwordW
-from gui.rangeselect    import rangeadjust
 from myutils.hwnd import pid_running,getpidexe ,testprivilege,ListProcess
 from textsource.copyboard import copyboard   
 from textsource.texthook import texthook   
+from textsource.fridahook import fridahook
 from textsource.ocrtext import ocrtext
 import  gui.selecthook     
 import gui.translatorUI
@@ -30,7 +30,7 @@ import re ,gobject
 import winsharedutils
 from myutils.post import POSTSOLVE
 from myutils.vnrshareddict import vnrshareddict 
-
+from gui.usefulwidget import Prompt,getQMessageBox
 class _autolock:
         def __init__(self,lock) -> None:
                 self.lock=lock
@@ -154,10 +154,17 @@ class MAINUI() :
                 self.currenttext=text
                 self.currentread=text
                 return   
-            elif text[:len('<msg_1>')]=='<msg_1>':
-                self.translation_ui.displaystatus.emit(text[len('<msg_1>'):],'red',True,True)
-                return 
-            
+            else:
+                msgs=[
+                    ('<msg_info_not_refresh>',globalconfig['rawtextcolor'],False),
+                    ('<msg_info_refresh>',globalconfig['rawtextcolor'],True),
+                    ('<msg_error_not_refresh>','red',False),
+                    ('<msg_error_refresh>','red',True),
+                ]
+                for msg,color,refresh in msgs:
+                    if text.startswith(msg):
+                        self.translation_ui.displaystatus.emit(text[len(msg):],color,refresh,False)
+                        return 
             if text=='' or len(text)>100000:
                 if embedcallback:
                     embedcallback('zhs', text) 
@@ -172,7 +179,7 @@ class MAINUI() :
                 text=self._POSTSOLVE(text) 
         except Exception as e:
             msg=str(type(e))[8:-2]+' '+str(e).replace('\n','').replace('\r','')
-            self.translation_ui.displaystatus.emit(msg,'red',False,True)
+            self.translation_ui.displaystatus.emit(msg,'red',True,True)
             return 
         
         while len(text) and text[-1] in '\r\n \t':  #在后处理之后在去除换行，这样换行符可以当作行结束符给后处理用
@@ -268,8 +275,8 @@ class MAINUI() :
         
         if currentsignature==self.currentsignature:
             if type(res)==str:
-                if res[:len('<msg_1>')]=='<msg_1>':
-                    self.translation_ui.displaystatus.emit(globalconfig['fanyi'][classname]['name']+' '+res[len('<msg_1>'):],'red',onlytrans,False)
+                if res.startswith('<msg_translator>'):
+                    self.translation_ui.displaystatus.emit(globalconfig['fanyi'][classname]['name']+' '+res[len('<msg_translator>'):],'red',onlytrans,False)
                     return   
         
         res=self.solveaftertrans(res,optimization_params)
@@ -355,22 +362,28 @@ class MAINUI() :
         checkifnewgame(pexe) 
         if globalconfig['sourcestatus2']['texthook']['use']:
             self.textsource=texthook(pids,hwnd,pexe)  
+        elif globalconfig['sourcestatus2']['fridahook']['use']:
+            if len(pids)!=1:
+                getQMessageBox(self.settin_ui,"错误","Only support pid num of 1")
+                return  
+            self.textsource=fridahook(0,self.settin_ui.fridascripts[self.settin_ui.Scriptscombo.currentIndex()],pexe,pids[0])
+        
          
     #@threader
     def starttextsource(self,use=None,checked=True):   
         self.translation_ui.showhidestate=False 
         self.translation_ui.refreshtooliconsignal.emit()
-        self.settin_ui.selectbutton.setEnabled(globalconfig['sourcestatus2']['texthook']['use']) 
+        self.settin_ui.selectbutton.setEnabled(globalconfig['sourcestatus2']['texthook']['use'] or globalconfig['sourcestatus2']['fridahook']['use']) 
         self.settin_ui.selecthookbutton.setEnabled(globalconfig['sourcestatus2']['texthook']['use'] )
         self.textsource=None
         if checked: 
-            classes={'ocr':ocrtext,'copy':copyboard,'texthook':None} 
+            classes={'ocr':ocrtext,'copy':copyboard,'texthook':None,'fridahook':None} 
             if use is None:
                 use=list(filter(lambda _ :globalconfig['sourcestatus2'][_]['use'],classes.keys()) )
                 use=None if len(use)==0 else use[0]
             if use is None:
                 return
-            elif use=='texthook'  :
+            elif classes[use] is None :
                 pass
             else:
                 self.textsource=classes[use]()
@@ -459,21 +472,17 @@ class MAINUI() :
       
 
     def onwindowloadautohook(self): 
-        if not(globalconfig['autostarthook'] and (globalconfig['sourcestatus2']['texthook']['use'] )):
-            return 
-            
+        textsourceusing=globalconfig['sourcestatus2']['texthook']['use'] or globalconfig['sourcestatus2']['fridahook']['use']
+        if not(globalconfig['autostarthook'] and textsourceusing):
+            return  
         elif self.AttachProcessDialog.isVisible():
-                return 
+            return 
         else:
-            try:
-                
-                
-                if   self.textsource is None:   
+            try:  
+                if self.textsource is None:   
                         hwnd=win32utils.GetForegroundWindow()
                         pid=win32utils.GetWindowThreadProcessId(hwnd)
-                        name_=getpidexe(pid)
-                          
-                
+                        name_=getpidexe(pid) 
                         if name_  and name_ in savehook_new_list:   
                             lps=ListProcess(False)
                             for pids,_exe  in lps:
@@ -487,7 +496,8 @@ class MAINUI() :
                                             savehook_new_list.insert(0,savehook_new_list.pop(idx)) 
                                             needinserthookcode=savehook_new_data[name_]['needinserthookcode']
                                             self.textsource=texthook(pids,hwnd,name_ ,autostarthookcode=savehook_new_data[name_]['hook'],needinserthookcode=needinserthookcode)
-                                         
+                                        elif len(pids)==1 and globalconfig['sourcestatus2']['fridahook']['use'] and savehook_new_data[name_]['fridahook']['loadmethod']==0:
+                                            self.textsource=fridahook(0,savehook_new_data[name_]['fridahook']['js'],name_,pids[0],hwnd)
                                         break
                 
                 else: 
@@ -574,7 +584,7 @@ class MAINUI() :
         self.starthira()      
         
         self.settin_ui = Settin(self.translation_ui)  
-        
+        gobject.baseobject.Prompt=Prompt()
         self.startreader()  
         self.transhis=gui.transhist.transhist(self.translation_ui)  
         self.edittextui=gui.edittext.edittext(self.translation_ui)  

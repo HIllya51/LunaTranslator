@@ -32,7 +32,7 @@ class AttachProcessDialog(closeashidewindow):
                     [_.show() for _ in self.windowtextlayoutwidgets]
                     self.windowtext.setText(win32utils.GetWindowText(hwnd))
                     self.selectedp=(_pids,name,hwnd)
-    def __init__(self ,parent,callback,hookselectdialog):
+    def __init__(self ,parent,callback,hookselectdialog=None):
         super(AttachProcessDialog, self).__init__( parent ,globalconfig,'attachprocessgeo') 
         self.setcurrentpidpnamesignal.connect(self.selectwindowcallback)
         
@@ -114,7 +114,8 @@ class AttachProcessDialog(closeashidewindow):
             item.setEditable(False)
             self.model.appendRow(item)
     def showEvent(self,e):
-        self.hookselectdialog.realshowhide.emit(False)  
+        if self.hookselectdialog:
+            self.hookselectdialog.realshowhide.emit(False)  
         self.refreshfunction()
         #print(time.time()-t1) 
     def safesplit(self,process):

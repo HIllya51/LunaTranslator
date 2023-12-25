@@ -24,7 +24,7 @@ def getall(self,l,item='fanyi',name=""):
             grids.append(line)
             line=[]
         else:
-            line+=['']
+            line+=[]
     if len(line) :
         grids.append(line)
     return grids
@@ -48,7 +48,7 @@ def setTab_proxy_lazy(self):
             ],
             [        ("手动设置代理(ip:port)",5),        (proxy,5),(btn,2),  
             ], 
-            [''],
+            [],
             [('使用代理的项目',5)]
         ]
         lixians,pre,mianfei,develop,shoufei=splittranslatortypes()

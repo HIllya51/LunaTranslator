@@ -12,10 +12,10 @@ def setTablanglz(self) :
             [
                 ("目标语言",5),(getsimplecombobox(_TRL(static_data['language_list_translator']  ),globalconfig,'tgtlang3'),5) ,
             ],
-            [''],
+            [],
             [('本软件显示语言(重启生效)',5),(getsimplecombobox((static_data['language_list_show']),globalconfig,'languageuse'),5),(getcolorbutton(globalconfig,'',callback=lambda :os.startfile(os.path.abspath('./files/lang/{}.json'.format(static_data["language_list_translator_inner"][globalconfig["languageuse"]]))),icon='fa.gear',constcolor="#FF69B4"),1)], 
            
-            [''],
+            [],
         ]
          
         gridlayoutwidget=self.makegrid(grids )  

@@ -127,7 +127,10 @@ class BaiduV1(Tse):
         data = r.json()
         time.sleep(sleep_seconds)
         self.query_count += 1
-        return data if is_detail_result else '\n'.join([item['dst'] for item in data['data']])
+        try:
+            return data if is_detail_result else '\n'.join([item['dst'] for item in data['data']])
+        except:
+            raise Exception(data)
 
 class TS(basetrans):
     def langmap(self):

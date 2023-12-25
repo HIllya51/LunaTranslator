@@ -20,7 +20,6 @@ from gui.setting_lang import setTablang
 from gui.setting_proxy import setTab_proxy
 from gui.settingpage7 import setTab7 ,settab7direct
 from gui.settingpage_about import setTab_about,setTab_about_dicrect  
-from gui.usefulwidget import MySwitch 
 from gui.usefulwidget import  rotatetab
 from gui.usefulwidget import closeashidewindow   
 class gridwidget(QWidget):
@@ -128,12 +127,11 @@ class Settin(closeashidewindow) :
             self.setWindowTitle(_TR("设置"))
             self.setWindowIcon(qtawesome.icon("fa.gear" )) 
             
-            self.tab_widget = QTabWidget(self)
+            self.tab_widget = self.makesubtab_lazy() 
             self.setCentralWidget(self.tab_widget)
             self.tabbar=rotatetab(self.tab_widget)
             self.tab_widget.setTabBar(self.tabbar) 
             self.tab_widget.tabBar().setObjectName("basetabbar")
-            self.tab_widget.currentChanged.connect(self.basetabchanged)
             self.tab_widget.setStyleSheet(
                 '''QTabBar#basetabbar:tab { 
                     width: %spx;
@@ -188,22 +186,14 @@ class Settin(closeashidewindow) :
         self.needfitwidgets.append(widget)
         scroll.setWidget(widget) 
         return scroll 
-    def basetabchanged(self,i):
-        try:
-            w=self.tab_widget.currentWidget()
-            if 'lazyfunction' in dir(w):
-                w.lazyfunction()
-                delattr(w,'lazyfunction') 
-                self.resizefunction()  
-        except: 
-            print_exc()
+     
     def makesubtab(self,titles,widgets):
         tab=QTabWidget()
         for i,wid in enumerate(widgets): 
             self.tabadd(tab,titles[i], wid )
         return tab
      
-    def makesubtab_lazy(self,titles,functions):
+    def makesubtab_lazy(self,titles=None,functions=None):
         tab=QTabWidget()
         def __(t,i):
             try:
@@ -215,8 +205,9 @@ class Settin(closeashidewindow) :
             except: 
                 print_exc()
         tab.currentChanged.connect(functools.partial(__,tab))
-        for i,func in enumerate(functions): 
-            self.tabadd_lazy(tab,titles[i], func )
+        if titles and functions:
+            for i,func in enumerate(functions): 
+                self.tabadd_lazy(tab,titles[i], func ) 
         return tab
     def tabadd_lazy(self,tab,title,getrealwidgetfunction):
         q=QWidget()

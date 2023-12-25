@@ -15,7 +15,7 @@ import binascii
 from myutils.subproc import subproc_w
 from myutils.config import globalconfig ,_TR,_TRL
 from collections import OrderedDict
-from gui.usefulwidget import closeashidewindow,getQMessageBox,dialog_showinfo,getsimplecombobox,getsimpleswitch,getcolorbutton
+from gui.usefulwidget import closeashidewindow,getQMessageBox,dialog_showinfo,getsimplecombobox,getsimpleswitch,getcolorbutton,textbrowsetmovetoendmaybe,textbrowsetappend
 from myutils.utils import checkchaos ,checkifnewgame
 from gui.dialog_savedgame import dialog_setting_game
 def getformlayoutw(w=None,cls=QFormLayout,hide=False):
@@ -687,24 +687,16 @@ class hookselect(closeashidewindow):
         return (time_stamp)
          
     def sysmessage(self,sentence):
-        scrollbar = self.sysOutput.verticalScrollBar()
-        atBottom = scrollbar.value() + 3 > scrollbar.maximum() or scrollbar.value() / scrollbar.maximum() > 0.975 
-        cursor=QTextCursor (self.sysOutput.document())
-        cursor.movePosition(QTextCursor.End)
-        cursor.insertText(('' if self.sysOutput.document().isEmpty() else '\n')+self.get_time_stamp()+" "+sentence)
-        if (atBottom):
-            scrollbar.setValue(scrollbar.maximum())
+          
+        textbrowsetappend(self.sysOutput,self.get_time_stamp()+" "+sentence)
+        textbrowsetmovetoendmaybe(self.sysOutput)
     
     def getnewsentence(self,sentence):
         if self.at1==2:
             return 
-        scrollbar = self.textOutput.verticalScrollBar()
-        atBottom = scrollbar.value() + 3 > scrollbar.maximum() or scrollbar.value() / scrollbar.maximum() > 0.975 
-        cursor=QTextCursor (self.textOutput.document())
-        cursor.movePosition(QTextCursor.End)
-        cursor.insertText(('' if self.textOutput.document().isEmpty() else '\n')+sentence)
-        if (atBottom):
-            scrollbar.setValue(scrollbar.maximum())
+          
+        textbrowsetappend(self.textOutput,sentence)
+        textbrowsetmovetoendmaybe(self.textOutput)
  
     def ViewThread2(self, index:QModelIndex):   
         self.tabwidget.setCurrentIndex(0)  

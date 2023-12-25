@@ -93,7 +93,8 @@ def checkifnewgame(gamepath):
 kanjichs2ja=str.maketrans(static_data['kanjichs2ja'])
 def kanjitrans(k): 
     return k.translate(kanjichs2ja) 
-
+def stringfyerror(e):
+    return str(type(e))[8:-2]+' '+str(e).replace('\n','').replace('\r','')
 def getsysproxy():
     proxies=getproxies_registry()
     try:
@@ -334,3 +335,24 @@ def makehtml(text,base=False,show=None):
           show=text
     return '<a href="{}">{}</a>'.format(text,show)
 
+def loadfridascriptslist(path,Scriptscombo):
+    Scriptscombo.clear()
+    try:
+            def check(f):
+                if f.endswith('.js')==False:return False
+                if f.startswith('lib'):return False
+                return True
+            fridascripts =[]
+            for f in os.listdir(os.path.join(path,'scripts')):
+                    
+                    if os.path.isdir(os.path.join(path,'scripts',f)):
+                        for ff in os.listdir(os.path.join(path,'scripts',f)):
+                            if check(ff):
+                                fridascripts.append(f+'/'+ff[:-3])
+                    else:
+                        if check(f):
+                            fridascripts.append(f[:-3])
+    except:
+            fridascripts=[]
+    Scriptscombo.addItems(fridascripts)
+    return fridascripts

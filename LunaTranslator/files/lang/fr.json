@@ -9,7 +9,6 @@
     "打开设置": "Ouvrir les paramètres",
     "复制到剪贴板": "Copier dans le presse - papiers",
     "显示/隐藏原文": "Afficher / masquer le texte original",
-    "显示/隐藏历史翻译": "Afficher / masquer les traductions historiques",
     "朗读": "Lire à haute voix",
     "鼠标穿透窗口": "Fenêtre de pénétration de la souris",
     "锁定工具栏": "Verrouiller la barre d'outils",
@@ -185,7 +184,6 @@
     "专有名词翻译设置(游戏ID 0表示全局)": "Paramètres de traduction de noms propres (id de jeu 0 pour global)",
     "密钥": "Clé secrète",
     "优化横向OCR漏字": "Optimisation des fuites transversales de roc",
-    "显示历史翻译": "Afficher la traduction historique",
     "記号": "Marque",
     "选择文件": "Sélectionner un fichier",
     "缩放时禁用窗口大小调整": "Désactiver le redimensionnement de la fenêtre lors du zoom",
@@ -683,7 +681,9 @@
     "Sakura部署教程": "Tutoriel de déploiement Sakura",
     "Github仓库": "Entrepôt github",
     "利用上文信息翻译（通常会有一定的效果提升，但会导致变慢）": "Utilisez les informations ci - dessus pour traduire (il y a généralement une certaine augmentation de l'effet, mais cela entraîne un ralentissement)",
-    "Chromium路径": "Le chemin Chromium",
     "范围选取遮罩透明度": "Gamme sélectionner masque transparence",
-    "文本缓冲区长度": "Longueur du tampon de texte"
+    "文本缓冲区长度": "Longueur du tampon de texte",
+    "显示/隐藏历史翻译和调试输出": "Afficher / masquer la traduction historique et la sortie de débogage",
+    "历史翻译和调试输出": "Traduction historique et sortie de débogage",
+    "调试输出": "Sortie de débogage"
 }

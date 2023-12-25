@@ -1,11 +1,11 @@
 
-from PyQt5.QtWidgets import QWidget, QMainWindow ,QApplication,QPushButton,QTabBar,QStylePainter,QStyleOptionTab,QStyle,QMessageBox,QDialog,QLabel,QHBoxLayout
-from PyQt5.QtGui import QFont,QCloseEvent,QColor
-from PyQt5.QtCore import Qt,pyqtSignal ,QSize ,QRect ,QPoint 
+from PyQt5.QtWidgets import QDesktopWidget, QMainWindow ,QApplication,QPushButton,QTabBar,QStylePainter,QStyleOptionTab,QStyle,QMessageBox,QDialog,QLabel,QHBoxLayout,QInputDialog
+from PyQt5.QtGui import QCursor,QCloseEvent,QColor,QTextCursor
+from PyQt5.QtCore import Qt,pyqtSignal ,QSize ,QRect ,QPoint ,QObject
 from myutils.config import _TR,globalconfig
-from PyQt5.QtWidgets import  QColorDialog,QSpinBox,QDoubleSpinBox,QPushButton,QComboBox,QLabel,QScrollArea,QWidget,QGridLayout,QApplication,QTabBar,QVBoxLayout
+from PyQt5.QtWidgets import  QColorDialog,QSpinBox,QDoubleSpinBox,QPushButton,QComboBox,QLabel,QDialogButtonBox,QLineEdit,QGridLayout,QApplication,QTabBar,QVBoxLayout
 from traceback import print_exc
-import qtawesome ,functools
+import qtawesome ,functools,gobject,win32utils,threading
 from myutils.wrapper import  Singleton 
 from myutils.hwnd import getScreenRate,showintab
 @Singleton
@@ -37,6 +37,10 @@ def getQMessageBox(parent=None,title="",text="",useok=True,usecancel=False,okcal
         okcallback()
     elif ret==QMessageBox.Cancel and cancelcallback:
         cancelcallback()
+def isinrect(pos,rect):
+        x,y=pos.x(),pos.y()
+        x1,x2,y1,y2=rect
+        return x>=x1 and x<=x2 and y<=y2 and y>=y1
 class saveposwindow(QMainWindow):
     def __init__(self, parent,dic=None,key=None,flags=None) -> None:
         if flags:
@@ -121,10 +125,8 @@ class resizableframeless(saveposwindow):
         self._left_drag = False
         
     
-    def isinrect(self,pos,rect):
-        x,y=pos.x(),pos.y()
-        x1,x2,y1,y2=rect
-        return x>=x1 and x<=x2 and y<=y2 and y>=y1
+    def isinrect(self,pos,rect): 
+        return isinrect(pos,rect)
     def resizeEvent(self, e):
         
         if self._move_drag ==False: 
@@ -234,7 +236,43 @@ class rotatetab(QTabBar):
             painter.translate(-c)
             painter.drawControl(QStyle.CE_TabBarTabLabel, opt)
             painter.restore()  
-
+class Prompt_dialog(QDialog):
+    def __init__(self, parent,title,info,default='' ) -> None:
+        super().__init__(parent)
+        self.setWindowFlags(self.windowFlags() & ~Qt.WindowContextHelpButtonHint&~Qt.WindowCloseButtonHint |Qt.WindowStaysOnTopHint)
+        self.setWindowTitle(title)
+        self.setWindowIcon(qtawesome.icon('fa-question'))
+        
+        _layout=QVBoxLayout()
+        
+        _layout.addWidget(QLabel(info))
+        self.text=QLineEdit(default)
+        _layout.addWidget(self.text)
+        button = QDialogButtonBox(QDialogButtonBox.Ok) 
+        button.accepted.connect(self.accept)
+        _layout.addWidget(button)
+        self.setLayout(_layout)
+        self.resize(400,1)
+        cursor = QCursor()
+        pos = cursor.pos()
+        num_screens = QDesktopWidget().screenCount() 
+        for i in range(num_screens):
+            _rect=QDesktopWidget().screenGeometry(i)
+            if isinrect(pos, [_rect.getRect()[_] for _ in [0,2,1,3]]):  
+                self.move(_rect.width()//2 - self.width() // 2, _rect.height()//3)
+                break
+class Prompt(QObject):
+    call=pyqtSignal(str,str,str,list)
+    def __init__(self ) -> None:
+        super().__init__( )
+        self.call.connect(self.getinputfunc)
+    def getinputfunc(self,title,info,default,callback):
+         
+        _dia=Prompt_dialog(gobject.baseobject.settin_ui, title, info,default)
+        
+        _dia.exec()
+        text=_dia.text.text()
+        callback[0](text)
 def callbackwrap(d,k,call,_):
     d[k]=_ 
     if call:
@@ -319,3 +357,18 @@ def selectcolor(parent,configdict,configkey,button,item=None,name=None,callback=
         
     if callback:
         callback()
+
+def getboxlayout(widgets,lc=QHBoxLayout):
+    cp_layout=lc()
+    for w in widgets:
+        cp_layout.addWidget(w)
+    return cp_layout
+def textbrowsetmovetoendmaybe(tb):
+    scrollbar = tb.verticalScrollBar()
+    atBottom = scrollbar.value() + 3 > scrollbar.maximum() or scrollbar.value() / scrollbar.maximum() > 0.975  
+    if (atBottom):
+        scrollbar.setValue(scrollbar.maximum())
+def textbrowsetappend(textOutput,sentence,addspace=True):
+    cursor=QTextCursor (textOutput.document())
+    cursor.movePosition(QTextCursor.End)
+    cursor.insertText(('' if textOutput.document().isEmpty() else '\n') if addspace else ''+sentence)
