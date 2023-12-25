@@ -29,7 +29,7 @@ class basetext:
             # except:
             #     pass
             try:
-                self.sqlwrite2.execute('CREATE TABLE artificialtrans(id INTEGER PRIMARY KEY AUTOINCREMENT,source TEXT,machineTrans TEXT);')
+                self.sqlwrite2.execute('CREATE TABLE artificialtrans(id INTEGER PRIMARY KEY AUTOINCREMENT,source TEXT,machineTrans TEXT,origin TEXT);')
             except:
                 pass
         except:
@@ -58,8 +58,8 @@ class basetext:
         while True:
             task=self.sqlqueue.get()
             try:
-                if len(task)==1: 
-                    src,=task
+                if len(task)==2: 
+                    src,origin=task
                     lensrc=len(src)
                     ret=self.sqlwrite2.execute('SELECT * FROM artificialtrans WHERE source = ?',(src,)).fetchone()
                     try: 
@@ -67,8 +67,10 @@ class basetext:
                     except:
                         pass
                     if ret is None:
-                        self.sqlwrite2.execute('INSERT INTO artificialtrans VALUES(NULL,?,?);',(src,json.dumps({})))
-
+                        try:
+                            self.sqlwrite2.execute('INSERT INTO artificialtrans VALUES(NULL,?,?,?);',(src,json.dumps({}),origin))
+                        except:
+                            self.sqlwrite2.execute('INSERT INTO artificialtrans VALUES(NULL,?,?);',(src,json.dumps({})))
                         try: 
                             savehook_new_data[self.pname]['statistic_wordcount_nodump']+=lensrc
                         except:

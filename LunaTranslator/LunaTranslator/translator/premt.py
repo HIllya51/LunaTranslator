@@ -21,13 +21,16 @@ class TS(basetrans):
         if globalconfig['premtsimiuse']:
             mindis=9999999
             savet="{}"
-            ret=self.sql.execute('SELECT source,machineTrans FROM artificialtrans  ').fetchall()
-            for jc,mt in ret:
-                dis=winsharedutils.distance(content,jc)  
+            ret=self.sql.execute('SELECT * FROM artificialtrans  ').fetchall()
+            
+            for line in ret:
+                text=line[1]
+                trans=line[2]
+                dis=winsharedutils.distance(content,text)  
                 if dis<mindis:
                     mindis=dis
                     if mindis<globalconfig['premtsimi']:
-                        savet=mt
+                        savet=trans
             try:
                 ret=json.loads(savet) 
             except:

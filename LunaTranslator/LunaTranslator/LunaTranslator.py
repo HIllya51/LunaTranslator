@@ -165,8 +165,10 @@ class MAINUI() :
  
         try:
             if type(text)==list:
+                origin='\n'.join(text)
                 text='\n'.join([self._POSTSOLVE(_) for _ in text ])
             else:
+                origin=text
                 text=self._POSTSOLVE(text) 
         except Exception as e:
             msg=str(type(e))[8:-2]+' '+str(e).replace('\n','').replace('\r','')
@@ -183,7 +185,7 @@ class MAINUI() :
         
         
         try:
-            self.textsource.sqlqueueput((text,)) 
+            self.textsource.sqlqueueput((text,origin,)) 
         except:pass
         if onlytrans==False:
             self.currenttext=text
