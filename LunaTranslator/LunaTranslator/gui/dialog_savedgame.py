@@ -535,7 +535,7 @@ def startgame(game):
                             
                             yuitsu_switch(gobject.baseobject.settin_ui,globalconfig['sourcestatus2'],'sourceswitchs',_[mode],None ,True) 
                             gobject.baseobject.starttextsource(use=_[mode],checked=True)
-                if savehook_new_data[game]['fridahook'].get('loadmethod')==1:
+                if globalconfig['sourcestatus2']['fridahook']['use'] and savehook_new_data[game]['fridahook'].get('loadmethod')==1:
                         gobject.baseobject.textsource=fridahook(1,savehook_new_data[game]['fridahook'].get('js'),game)
                         return
                 if savehook_new_data[game]['leuse']==False or (game.lower()[-4:] not in ['.lnk','.exe']):
