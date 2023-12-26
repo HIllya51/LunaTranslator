@@ -371,4 +371,4 @@ def textbrowsetmovetoendmaybe(tb):
 def textbrowsetappend(textOutput,sentence,addspace=True):
     cursor=QTextCursor (textOutput.document())
     cursor.movePosition(QTextCursor.End)
-    cursor.insertText(('' if textOutput.document().isEmpty() else '\n') if addspace else ''+sentence)
+    cursor.insertText((('' if textOutput.document().isEmpty() else '\n') if addspace else '')+sentence)
