@@ -5,7 +5,7 @@ from PyQt5.QtGui import QFont,QTextCursor
 from PyQt5.QtCore import Qt,pyqtSignal 
 import qtawesome,functools
 
-from gui.usefulwidget import closeashidewindow,textbrowsetmovetoendmaybe,textbrowsetappend
+from gui.usefulwidget import closeashidewindow,textbrowappendandmovetoend
 from myutils.config import globalconfig ,_TR
 from myutils.config import globalconfig
 class transhist(closeashidewindow): 
@@ -82,8 +82,7 @@ class transhist(closeashidewindow):
                 globalconfig['hist_fontstring']=font.toString() 
                 self.setFont(font)
     def debugprint(self,sentence):
-        textbrowsetappend(self.sysOutput,sentence,False)
-        textbrowsetmovetoendmaybe(self.sysOutput) 
+        textbrowappendandmovetoend(self.sysOutput,sentence,False) 
     def getnewsentence(self,sentence):
         
         sentence= '<hr>' if globalconfig['hist_split'] else '\n'+sentence

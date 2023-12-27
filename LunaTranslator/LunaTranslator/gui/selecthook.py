@@ -15,7 +15,7 @@ import binascii
 from myutils.subproc import subproc_w
 from myutils.config import globalconfig ,_TR,_TRL
 from collections import OrderedDict
-from gui.usefulwidget import closeashidewindow,getQMessageBox,dialog_showinfo,getsimplecombobox,getsimpleswitch,getcolorbutton,textbrowsetmovetoendmaybe,textbrowsetappend
+from gui.usefulwidget import closeashidewindow,getQMessageBox,dialog_showinfo,getsimplecombobox,getsimpleswitch,getcolorbutton,textbrowappendandmovetoend
 from myutils.utils import checkchaos ,checkifnewgame
 from gui.dialog_savedgame import dialog_setting_game
 def getformlayoutw(w=None,cls=QFormLayout,hide=False):
@@ -688,15 +688,13 @@ class hookselect(closeashidewindow):
          
     def sysmessage(self,sentence):
           
-        textbrowsetappend(self.sysOutput,self.get_time_stamp()+" "+sentence)
-        textbrowsetmovetoendmaybe(self.sysOutput)
+        textbrowappendandmovetoend(self.sysOutput,self.get_time_stamp()+" "+sentence) 
     
     def getnewsentence(self,sentence):
         if self.at1==2:
             return 
           
-        textbrowsetappend(self.textOutput,sentence)
-        textbrowsetmovetoendmaybe(self.textOutput)
+        textbrowappendandmovetoend(self.textOutput,sentence) 
  
     def ViewThread2(self, index:QModelIndex):   
         self.tabwidget.setCurrentIndex(0)  

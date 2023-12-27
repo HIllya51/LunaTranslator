@@ -1,7 +1,7 @@
  
 import functools,os,subprocess
 from PyQt5.QtGui import  QFont
-
+from traceback import print_exc
 from PyQt5.QtWidgets import  QFontComboBox  ,QLabel,QComboBox,QPushButton,QFileDialog
 from gui.settingpage_ocr import getocrgrid  
 from myutils.config import globalconfig ,_TR,_TRL  ,savehook_new_data
@@ -53,7 +53,10 @@ def getfridahookgrid(self) :
                         checkifnewgame(pname) 
                         yuitsu_switch(gobject.baseobject.settin_ui,globalconfig['sourcestatus2'],'sourceswitchs','fridahook',None ,True) 
                         gobject.baseobject.starttextsource(use='fridahook',checked=True)
-                        gobject.baseobject.textsource=fridahook(1,self.fridascripts[self.Scriptscombo.currentIndex()],pname)
+                        try:
+                                gobject.baseobject.textsource=fridahook(1,self.fridascripts[self.Scriptscombo.currentIndex()],pname)
+                        except:
+                                print_exc()
         
         execbutton.clicked.connect(execclicked)
         attachbutton.clicked.connect(gobject.baseobject.AttachProcessDialog.showsignal.emit)
@@ -143,8 +146,6 @@ def setTabOne_direct(self) :
         self.threshold2label=QLabel()
 
         self.Scriptscombo=QComboBox() 
-        self.fridascripts=loadfridascriptslist(globalconfig['fridahook']['path'],self.Scriptscombo)
-        
         flashcombo(self)
 def setTabOne(self) :  
         self.tabadd_lazy(self.tab_widget, ('文本输入'), lambda :setTabOne_lazy(self)) 

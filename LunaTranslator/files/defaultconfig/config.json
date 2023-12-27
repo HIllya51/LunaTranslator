@@ -208,7 +208,7 @@
                 "use": true,
                 "tip": "选择游戏",
                 "belong": [
-                    "texthook","fridahook"
+                    "texthook"
                 ],
                 "icon": "fa.link"
             },

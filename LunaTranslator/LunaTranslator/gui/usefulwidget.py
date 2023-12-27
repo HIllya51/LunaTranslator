@@ -363,12 +363,11 @@ def getboxlayout(widgets,lc=QHBoxLayout):
     for w in widgets:
         cp_layout.addWidget(w)
     return cp_layout
-def textbrowsetmovetoendmaybe(tb):
-    scrollbar = tb.verticalScrollBar()
+def textbrowappendandmovetoend(textOutput,sentence,addspace=True):
+    scrollbar = textOutput.verticalScrollBar() 
     atBottom = scrollbar.value() + 3 > scrollbar.maximum() or scrollbar.value() / scrollbar.maximum() > 0.975  
-    if (atBottom):
-        scrollbar.setValue(scrollbar.maximum())
-def textbrowsetappend(textOutput,sentence,addspace=True):
     cursor=QTextCursor (textOutput.document())
     cursor.movePosition(QTextCursor.End)
     cursor.insertText((('' if textOutput.document().isEmpty() else '\n') if addspace else '')+sentence)
+    if (atBottom):
+        scrollbar.setValue(scrollbar.maximum()) 

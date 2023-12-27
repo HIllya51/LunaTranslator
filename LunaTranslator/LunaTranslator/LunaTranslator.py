@@ -366,7 +366,10 @@ class MAINUI() :
             if len(pids)!=1:
                 getQMessageBox(self.settin_ui,"错误","Only support pid num of 1")
                 return  
-            self.textsource=fridahook(0,self.settin_ui.fridascripts[self.settin_ui.Scriptscombo.currentIndex()],pexe,pids[0])
+            try:
+                self.textsource=fridahook(0,self.settin_ui.fridascripts[self.settin_ui.Scriptscombo.currentIndex()],pexe,pids[0])
+            except:
+                print_exc()
         
          
     #@threader
