@@ -1,4 +1,3 @@
-#include"pch.h"
 #include"define.h"
 #include<iostream>
  
@@ -13,17 +12,14 @@ typedef struct
     BYTE r;
 }RGB; 
 
-// 计算 Otsu 阈值
 int calculateOtsuThreshold(const std::vector<uint8_t>& grayscaleImage) {
     int histogram[256] = { 0 };
     int totalPixels = grayscaleImage.size();
 
-    // 计算灰度直方图
     for (int i = 0; i < totalPixels; ++i) {
         histogram[grayscaleImage[i]]++;
     }
 
-    // 计算类间方差
     float maxVariance = 0.0f;
     int threshold = 0;
 

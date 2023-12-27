@@ -1,11 +1,11 @@
-﻿#include"pch.h"
+﻿
 #include<sapi.h>
 #include<stdio.h>
 #include<iostream>
 #include<string>
 #include<sphelper.h>
 #include"define.h"
-
+#include"cinterface.h"
 bool _Speak(std::wstring& Content, const wchar_t* token, int voiceid, int rate, int volume, std::wstring& FileName) {
     ISpVoice* pVoice = NULL;
     if (FAILED(::CoInitialize(NULL)))
@@ -95,6 +95,12 @@ std::vector<std::wstring>_List(const wchar_t* token) {
     ::CoUninitialize();
     return ret;
 }
+namespace SAPI {
+    bool Speak(std::wstring& Content, int version,int voiceid, int rate, int volume, std::wstring& FileName);
+    std::vector<std::wstring>List(int version);
+    constexpr wchar_t SPCAT_VOICES_7[] = L"HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Speech\\Voices";
+    constexpr wchar_t SPCAT_VOICES_10[] = L"HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Speech_OneCore\\Voices";
+}; 
 
 
 bool SAPI::Speak(std::wstring& Content, int version, int voiceid, int rate, int volume, std::wstring& FileName) {
@@ -118,4 +124,17 @@ std::vector<std::wstring>SAPI::List(int version) {
     else {
         return {};
     }
+}
+
+bool SAPI_Speak(const wchar_t* Content, int version, int voiceid, int rate, int volume, const wchar_t* Filename) {
+	auto _c = std::wstring(Content);
+	auto _f = std::wstring(Filename);
+	return SAPI::Speak(_c,version, voiceid,  rate, volume,_f );
+
+}
+
+wchar_t** SAPI_List(int version,size_t* num) {
+    auto _list = SAPI::List(version); 
+    *num = _list.size();
+    return vecwstr2c(_list);
 }

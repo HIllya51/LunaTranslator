@@ -1,4 +1,4 @@
-#include"pch.h"
+
 #include"define.h"
 #include<windows.h> 
 #include <iostream>

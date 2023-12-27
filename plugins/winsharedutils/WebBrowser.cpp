@@ -1,4 +1,4 @@
-﻿#include"pch.h"
+﻿
 #include <comdef.h>
 #include <Exdisp.h>
 #include <string>

@@ -1,10 +1,10 @@
-#include"pch.h"
+
 #include"define.h"
 #include<windows.h> 
-bool tryopenclipboard() {
+bool tryopenclipboard(HWND hwnd=0) {
     bool success = false;
     for (int i = 0; i < 50; i++) { 
-        if (OpenClipboard(NULL)) {
+        if (OpenClipboard(hwnd)) {
             success = true;
             break;
         }
@@ -33,7 +33,8 @@ wchar_t* clipboard_get() {
 }
 bool clipboard_set(wchar_t* text) {
     bool success = false;
-    if (tryopenclipboard() == false)return false;
+    static HWND hwnd=CreateWindowExA(0,"STATIC",0,0,0,0,0,0,0,0,0,0);
+    if (tryopenclipboard(hwnd) == false)return false;
     EmptyClipboard();
     do {
         HGLOBAL hClipboardData;

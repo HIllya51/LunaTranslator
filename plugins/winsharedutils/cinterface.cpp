@@ -1,27 +1,7 @@
-#include"pch.h"
+
 #include"define.h"
 #include<iostream>
-bool SAPI_Speak(const wchar_t* Content, int version, int voiceid, int rate, int volume, const wchar_t* Filename) {
-	auto _c = std::wstring(Content);
-	auto _f = std::wstring(Filename);
-	return SAPI::Speak(_c,version, voiceid,  rate, volume,_f );
-
-}
-wchar_t** SAPI_List(int version,size_t* num) {
-    auto _list = SAPI::List(version); 
-    *num = _list.size();
-    return vecwstr2c(_list);
-}
-
-BOOL SetProcessMute(DWORD Pid, bool mute) {
-	CAudioMgr AudioMgr;
-	return AudioMgr.SetProcessMute(Pid, mute);
-}
-
-bool GetProcessMute(DWORD Pid) {
-	CAudioMgr AudioMgr;
-	return AudioMgr.GetProcessMute(Pid);
-}
+#include"cinterface.h"
 
 void free_all(void* str) {
     delete str;

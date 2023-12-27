@@ -1,5 +1,5 @@
 
-#include"pch.h"
+
 #include <Audiopolicy.h>
 #include <iostream>
 #include<string> 
@@ -9,7 +9,20 @@
 #include <atlbase.h>
 #include"define.h"
 #pragma comment(lib, "Psapi.lib")
- 
+class CAudioMgr
+{
+public:
+    CAudioMgr();
+    ~CAudioMgr(); 
+public:
+    BOOL    SetProcessMute(DWORD Pid, bool mute);
+    bool    GetProcessMute(DWORD Pid);
+private:
+    BOOL    __GetAudioSessionMgr2();
+private:
+    HRESULT                 m_hRes;
+    IAudioSessionManager2* m_lpAudioSessionMgr;
+};
 CAudioMgr::CAudioMgr()
     : m_hRes(ERROR_SUCCESS)
     , m_lpAudioSessionMgr(NULL)
@@ -158,3 +171,14 @@ BOOL CAudioMgr::__GetAudioSessionMgr2()
 
     return TRUE;
 } 
+
+
+BOOL SetProcessMute(DWORD Pid, bool mute) {
+	CAudioMgr AudioMgr;
+	return AudioMgr.SetProcessMute(Pid, mute);
+}
+
+bool GetProcessMute(DWORD Pid) {
+	CAudioMgr AudioMgr;
+	return AudioMgr.GetProcessMute(Pid);
+}
