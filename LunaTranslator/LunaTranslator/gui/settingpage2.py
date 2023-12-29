@@ -72,8 +72,10 @@ def settab2d(self):
         while True:
             port=globalconfig['debugport']
             try:
-                requests.get('http://127.0.0.1:{}/json/list'.format(port)).json()
-                self.statuslabel.setText(_TR("连接成功"))
+                needstart=any([globalconfig['fanyi'][dev]['use'] for dev in develop])
+                if needstart:
+                    requests.get('http://127.0.0.1:{}/json/list'.format(port)).json()
+                    self.statuslabel.setText(_TR("连接成功"))
             except:
                 if (checkportavailable(port)):
                     self.statuslabel.setText(_TR("连接失败"))

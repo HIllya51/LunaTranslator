@@ -16,7 +16,6 @@ import hmac,uuid
 from datetime import datetime
 from urllib.parse import quote
 import json
-from http.client import HTTPConnection
 from urllib.parse import quote
 import json
 import requests

@@ -55,7 +55,10 @@ class TS(basetrans):
         }
  
         response =self.session.post('https://aidemo.youdao.com/trans', data=data,headers=headers)
-        js=response.json()['translation'][0]
+        try:
+            js=response.json()['translation'][0]
         
-        return js 
+            return js 
+        except:
+            raise Exception(response.text)
     

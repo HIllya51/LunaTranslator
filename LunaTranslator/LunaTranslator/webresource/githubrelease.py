@@ -10,7 +10,6 @@ def getvesionmethod():
     url='https://github.com/HIllya51/LunaTranslator/releases/'
     
     try:
-        requests.packages.urllib3.disable_warnings()
         headers = {
             'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
             'Accept-Language': 'zh-CN,zh;q=0.9',
@@ -79,7 +78,8 @@ def updatemethod(_version,progresscallback):
         size = int(r2.headers['Content-Length'])
         if checkalready(size):return
         with open(savep, "wb") as file: 
-                r = requests.get(url,stream=True, verify = False,proxies=getproxy()) 
+                sess=requests.session()
+                r = sess.get(url,stream=True, verify = False,proxies=getproxy()) 
                 file_size=0
                 for i in r.iter_content(chunk_size=1024): 
                     if globalconfig['autoupdate']==False: 

@@ -40,7 +40,8 @@ class rangeadjust(Mainw) :
     def moveEvent(self,e):
                 rect = self.geometry() 
                 try:    
-                    gobject.baseobject.textsource.rect=[(rect.left(),rect.top()),(rect.right(),rect.bottom())]  
+                    if self.isVisible():
+                        gobject.baseobject.textsource.rect=[(rect.left(),rect.top()),(rect.right(),rect.bottom())]  
                 except:
                     pass
     def enterEvent(self, QEvent) :  
@@ -52,7 +53,8 @@ class rangeadjust(Mainw) :
          self.label.setGeometry(0, 0, self.width(), self.height())  
          rect = self.geometry() 
          try:    
-             gobject.baseobject.textsource.rect=[(rect.left(),rect.top()),(rect.right(),rect.bottom())]  
+             if self.isVisible():
+                 gobject.baseobject.textsource.rect=[(rect.left(),rect.top()),(rect.right(),rect.bottom())]  
          except:pass
          super(rangeadjust, self).resizeEvent(a0)  
 

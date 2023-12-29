@@ -4,7 +4,7 @@ from queue import Queue
 from myutils.config import globalconfig,translatorsetting,static_data
 from threading import Thread,Lock
 import os,time ,codecs
-import zhconv,requests
+import zhconv,gobject
 import sqlite3
 from myutils.commonbase import commonbase
 
@@ -77,10 +77,7 @@ class basetrans(commonbase):
     def level2init(self ) :  
         self.multiapikeycurrentidx=-1
         self.queue=Queue()  
-        try:
-            self._private_init()
-        except:
-            print_exc()
+        self._safe_private_init()
          
         self.lastrequesttime=0
         self._cache={}
@@ -99,6 +96,12 @@ class basetrans(commonbase):
             self.sqlqueue=Queue()
             Thread(target= self._sqlitethread).start()
         Thread(target=self._fythread).start() 
+    def _safe_private_init(self):
+        try:
+            self._private_init()
+        except Exception as e:
+            gobject.baseobject.textgetmethod('<msg_error_not_refresh>'+globalconfig['fanyi'][self.typename]['name']+' inittranslator failed : '+str(stringfyerror(e)))
+            print_exc()
     def _private_init(self):
         self.inittranslator()
     def _sqlitethread(self):

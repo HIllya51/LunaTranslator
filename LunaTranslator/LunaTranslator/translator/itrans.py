@@ -90,34 +90,24 @@ class Itranslate(Tse):
                 :param show_time_stat_precision: int, default 4.
         :return: str or dict
         """
-
-        timeout = kwargs.get('timeout', None)
-        proxies = kwargs.get('proxies', None)
-        is_detail_result = kwargs.get('is_detail_result', False)
-        sleep_seconds = kwargs.get('sleep_seconds', random.random())
-        update_session_after_seconds = kwargs.get('update_session_after_seconds', self.default_session_seconds)
-
-        not_update_cond_time = 1 if time.time() - self.begin_time < update_session_after_seconds else 0
-        if not (self.session and not_update_cond_time and self.language_map and self.language_description):
+         
+        if not (self.session ):
             self.session = requests.Session()
-            _ = self.session.get(self.host_url, headers=self.host_headers, timeout=timeout, proxies=proxies).text
-            lang_html = self.session.get(self.language_url, headers=self.host_headers, timeout=timeout, proxies=proxies).text
-
-            self.language_description = self.get_d_lang_map(lang_html)
-             
-            self.api_key = self.get_apikey(lang_html)
+            mainjsurl=self.session.get('https://itranslate-webapp-production.web.app/manifest.json',  proxies=kwargs['proxies']).json()['main.js']
+            mainjs=self.session.get(mainjsurl,  proxies=kwargs['proxies']).text
+            self.api_key= re.compile('"API-KEY":"(.*?)"').findall(mainjs)[0]
             self.api_headers.update({'API-KEY': self.api_key})
- 
         form_data = {
             'source': {'dialect': from_language, 'text': query_text, 'with': ['synonyms']},
             'target': {'dialect': to_language},
         }
-        r = self.session.post(self.api_url, headers=self.api_headers, json=form_data, timeout=timeout, proxies=proxies)
-        r.raise_for_status()
-        data = r.json()
-        time.sleep(sleep_seconds)
+        r = self.session.post(self.api_url, headers=self.api_headers, json=form_data,  proxies=kwargs['proxies'])
+        r.raise_for_status() 
         self.query_count += 1
-        return data if is_detail_result else data['target']['text']
+        try:
+            return  r.json()['target']['text']
+        except:
+            raise Exception(r.text)
 
 
 from traceback import print_exc

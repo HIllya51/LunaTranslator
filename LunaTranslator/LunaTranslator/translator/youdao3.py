@@ -55,9 +55,9 @@ class TS(basetrans):
             'sec-ch-ua-mobile': '?0',
             'sec-ch-ua-platform': '"Windows"',
         }
-        self.session.cookies.update({ '_yd_btn_fanyi_29': 'true',
-    '_yd_newbanner_day': '29',})
+       
     
-        response = self.session.post('https://m.youdao.com/translate',   data=data,headers=headers  ).text
+        response = self.session.post('https://m.youdao.com/translate',   data=data,headers=headers ,cookies={ '_yd_btn_fanyi_29': 'true',
+    '_yd_newbanner_day': '29',} ).text
         
         return re.search('<ul id="translateResult">([\\s\\S]*?)<li>([\\s\\S]*?)</li>([\\s\\S]*?)<\/ul>',response).groups()[1]  

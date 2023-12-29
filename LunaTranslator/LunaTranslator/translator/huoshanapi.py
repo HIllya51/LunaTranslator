@@ -271,7 +271,7 @@ class Service(object):
         if resp.status_code == 200:
             return json.dumps(resp.json())
         else:
-            raise Exception(resp.text.encode("utf-8"))
+            raise Exception(resp.text )
 
     def prepare_request(self, api_info, params, doseq=0):
         for key in params:
@@ -350,8 +350,9 @@ class TS(basetrans):
   
         keyid = self.multiapikeycurrent['Access Key ID']
         acckey = self.multiapikeycurrent['Secret Access Key']
+        res=trans(query,keyid,acckey,self.srclang,self.tgtlang,self.proxy)
         try:
-            res=trans(query,keyid,acckey,self.srclang,self.tgtlang,self.proxy)
+            
             res='\n'.join( [ _['Translation'] for _ in json.loads(res)['TranslationList'] ])
             self.countnum(query)
         #print(res['trans_result'][0]['dst'])

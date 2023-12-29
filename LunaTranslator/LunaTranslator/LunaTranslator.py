@@ -6,7 +6,7 @@ from traceback import  print_exc
 import win32utils,socket
 from myutils.config import globalconfig ,savehook_new_list,savehook_new_data,noundictconfig,transerrorfixdictconfig,setlanguage ,_TR,static_data
 import threading 
-from myutils.utils import minmaxmoveobservefunc ,kanjitrans,checkifnewgame
+from myutils.utils import minmaxmoveobservefunc ,kanjitrans,checkifnewgame,stringfyerror
 from myutils.wrapper import threader 
 from gui.showword import searchwordW
 from myutils.hwnd import pid_running,getpidexe ,testprivilege,ListProcess
@@ -25,7 +25,7 @@ from functools import partial
 from gui.settin import Settin 
 from gui.showocrimage import showocrimage
 from gui.attachprocessdialog import AttachProcessDialog
-import win32con 
+import win32con ,websocket,pytz
 import re ,gobject
 import winsharedutils
 from myutils.post import POSTSOLVE
@@ -414,14 +414,18 @@ class MAINUI() :
         else:
             self.hira_=None
     def fanyiinitmethod(self,classname):
-        if classname=='selfbuild':
-            if os.path.exists('./userconfig/selfbuild.py')==False:
-                return None
-            aclass=importlib.import_module('selfbuild').TS  
-        else:
-            if os.path.exists('./LunaTranslator/translator/'+classname+'.py')==False:
-                return None
-            aclass=importlib.import_module('translator.'+classname).TS  
+        try:
+            if classname=='selfbuild':
+                if os.path.exists('./userconfig/selfbuild.py')==False:
+                    return None
+                aclass=importlib.import_module('selfbuild').TS  
+            else:
+                if os.path.exists('./LunaTranslator/translator/'+classname+'.py')==False:
+                    return None
+                aclass=importlib.import_module('translator.'+classname).TS  
+        except Exception as e:
+            self.textgetmethod('<msg_error_not_refresh>'+globalconfig['fanyi'][classname]['name']+' import failed : '+str(stringfyerror(e)))
+            return None
         return aclass(classname)   
      
     def prepare(self,now=None,_=None):    

@@ -1,9 +1,6 @@
-from traceback import print_exc
-import zipimport
+from traceback import print_exc 
 import os
-openai=zipimport.zipimporter(os.path.join(os.path.dirname(__file__), 'openai.zip') ).load_module('openai')
-import  json
-
+import  json 
 from translator.basetranslator import basetrans
 import os
 
@@ -20,14 +17,7 @@ class TS(basetrans):
         os.environ['http_proxy']=self.proxy['http'] if self.proxy['http'] else ''
         self.checkempty(['SECRET_KEY','model'])
         self.contextnum=int(self.config['附带上下文个数'])
-        secret_key = self.multiapikeycurrent['SECRET_KEY'] 
-        if secret_key != self.api_key:
-            self.api_key = secret_key
-            # 对api_key频繁赋值会消耗性能
-            openai.api_key = secret_key
-
-        openai.OPENAI_API_BASE=self.config['OPENAI_API_BASE']
-        
+          
         try:
             temperature = float(self.config['Temperature'])
         except:
@@ -47,8 +37,11 @@ class TS(basetrans):
             message.append(self.context[i*2])
             message.append(self.context[i*2+1])
         message.append({"role": "user", "content": query}) 
-
-        response = openai.ChatCompletion.create(
+        headers = {
+            'Authorization': 'Bearer ' + self.multiapikeycurrent['SECRET_KEY'],
+            'Content-Type': 'application/json',
+        }
+        data=dict(
             model=self.config['model'],
             messages=message,
             # optional
@@ -58,9 +51,11 @@ class TS(basetrans):
             top_p=1,
             temperature=temperature,
             stream=False
-        )
-        
-
+        ) 
+        response=self.session.post(
+            self.config['OPENAI_API_BASE'] + '/chat/completions',
+            headers=headers, data=data
+        ).json()
         try:
             message = response['choices'][0]['message']['content'].replace('\n\n', '\n').strip()
             self.context.append( {"role": "user", "content": query})

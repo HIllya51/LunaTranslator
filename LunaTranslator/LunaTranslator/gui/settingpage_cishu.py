@@ -34,12 +34,12 @@ def gethiragrid(self) :
                     {'t':'okcancel' }]
                 line+=[getcolorbutton(globalconfig,'',callback= functools.partial(autoinitdialog,self,  globalconfig['hirasetting'][name]['name'],800,items) ,icon='fa.gear',constcolor="#FF69B4")]
             else:
-                  line+=[]
+                  line+=['']
             if i%3==2  :
                 grids.append(line) 
                 line=[]
             else:
-                line+=[]
+                line+=['']
             i+=1
         if len(line):
              grids.append(line) 
@@ -60,9 +60,11 @@ def setTabcishu_l(self) :
         ]  
 
         line=[]
-        for i,cishu in enumerate(globalconfig['cishu']): 
-                if i%3==0:
-                        line=[]
+        i=0 
+        for cishu in (globalconfig['cishu']): 
+                _f='./LunaTranslator/cishu/{}.py'.format(cishu)
+                if os.path.exists(_f)==False: 
+                        continue 
                 line+=([
                         (globalconfig['cishu'][cishu]['name'],5),
                         getsimpleswitch(globalconfig['cishu'][cishu],'use',callback=functools.partial( gobject.baseobject.startxiaoxueguan,cishu)),
@@ -72,10 +74,14 @@ def setTabcishu_l(self) :
                          
                 ])
                 
-                if i%3==2 or i==len(globalconfig['cishu']) -1: 
-                        grids.append(line)
+                if i%3==2  :
+                        grids.append(line) 
+                        line=[]
                 else:
-                        line+=[]
+                        line+=['']
+                i+=1
+        if len(line):
+                grids.append(line) 
         
         gridlayoutwidget=self.makegrid(grids )  
         gridlayoutwidget=self.makescroll( gridlayoutwidget  )

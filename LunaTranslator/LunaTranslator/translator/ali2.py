@@ -72,7 +72,7 @@ class AlibabaV1(Tse):
         except:
             e = ''
         if not e:
-            e = host_response.cookies.get_dict().get("cna", "001")
+            e = host_response.cookies.get("cna", "001")
             e = re.compile(pattern='[^a-z\d]').sub(repl='', string=e.lower())[:16]
         else:
             n, r = e[0:16], e[16:26]
@@ -113,10 +113,12 @@ class AlibabaV1(Tse):
         }
         params = {"dmtrack_pageid": self.dmtrack_pageid}
         r = self.session.post(self.api_url, headers=self.api_headers, params=params, data=form_data, timeout=timeout, proxies=proxies)
-        r.raise_for_status()
-        data = r.json() 
+        r.raise_for_status() 
         self.query_count += 1
-        return data if is_detail_result else data['listTargetText'][0]
+        try:
+            return '\n'.join(r.json()['listTargetText'])
+        except:
+            raise Exception(r.text)
 
 class TS(basetrans): 
     def langmap(self):

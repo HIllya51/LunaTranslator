@@ -36,12 +36,12 @@ def getttsgrid(self) :
             if 'path' in globalconfig['reader'][name]:
                  line+=[getcolorbutton(globalconfig,'',callback=functools.partial(getsomepath1,self,globalconfig['reader'][name]['name'],globalconfig['reader'][name] ,'path',globalconfig['reader'][name]['name'],gobject.baseobject.startreader,True),icon='fa.gear',constcolor="#FF69B4")]
             else:
-                 line+=[]
+                 line+=['']
             if i%3==2  :
                 grids.append(line) 
                 line=[]
             else:
-                line+=[]
+                line+=['']
             i+=1
         if len(line):
              grids.append(line) 

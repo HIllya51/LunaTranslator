@@ -133,8 +133,10 @@ class Deepl(Tse):
         r_s = self.session.post(self.api_url, params=self.params['split'], json=ssp_data, headers=self.api_headers, timeout=timeout, proxies=proxies)
         r_s.raise_for_status()
         s_data = r_s.json()
-
-        s_sentences = [it['sentences'][0]['text'] for item in s_data['result']['texts'] for it in item['chunks']]
+        try:
+            s_sentences = [it['sentences'][0]['text'] for item in s_data['result']['texts'] for it in item['chunks']]
+        except:
+            raise Exception(s_data)
         h_data = self.context_sentences_param(s_sentences, from_language, to_language)
 
         r_cs = self.session.post(self.api_url, params=self.params['handle'], json=h_data, headers=self.api_headers, timeout=timeout, proxies=proxies)
@@ -143,7 +145,10 @@ class Deepl(Tse):
         time.sleep(sleep_seconds)
         self.request_id += 3
         self.query_count += 1
-        return data if is_detail_result else '\n'.join(item['beams'][0]['sentences'][0]["text"] for item in data['result']['translations'])
+        try:
+            return data if is_detail_result else '\n'.join(item['beams'][0]['sentences'][0]["text"] for item in data['result']['translations'])
+        except:
+            raise Exception(data)
  
 
 class TS(basetrans):

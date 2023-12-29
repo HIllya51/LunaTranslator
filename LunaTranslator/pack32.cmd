@@ -16,18 +16,6 @@ xcopy .\LunaTranslator\cishu %targetdir_in%\cishu /e /y /I
 xcopy .\LunaTranslator\tts %targetdir_in%\tts /e /y /I
 xcopy .\LunaTranslator\hiraparse %targetdir_in%\hiraparse /e /y /I
 
-xcopy /E /I %pythonpackage%\certifi %targetdir_in%\certifi
-xcopy /E /I %pythonpackage%\charset_normalizer %targetdir_in%\charset_normalizer
-xcopy /E /I %pythonlib%\http %targetdir_in%\http
-xcopy /E /I %pythonpackage%\idna %targetdir_in%\idna
-xcopy /E /I %pythonpackage%\websocket %targetdir_in%\websocket
-xcopy /I %pythonpackage%\pytz %targetdir_in%\pytz
-del %targetdir_in%\pytz\zoneinfo
-mkdir %targetdir_in%\pytz\zoneinfo
-copy /Y %pythonpackage%\pytz\zoneinfo\UTC %targetdir_in%\pytz\zoneinfo
-xcopy /E /I %pythonpackage%\requests %targetdir_in%\requests
-xcopy /E /I %pythonpackage%\urllib3 %targetdir_in%\urllib3
-
 xcopy ..\plugins\exec\builds\_x86 %targetdir%\ /e /y /I
 del %targetdir_in%\qt5qml.dll
 del %targetdir_in%\qt5qmlmodels.dll
@@ -46,8 +34,12 @@ rmdir /S /Q %targetdir_in%\PyQt5\qt-plugins\printsupport
 rmdir /S /Q %targetdir_in%\PyQt5\qt-plugins\platformthemes
 rmdir /S /Q %targetdir_in%\PyQt5\qt-plugins\iconengines
 
-del %targetdir_in%\libssl-1_1-x64.dll
-del %targetdir_in%\libcrypto-1_1-x64.dll
+del %targetdir_in%\concrt140.dll
+del %targetdir_in%\libssl-1_1.dll
+del %targetdir_in%\libcrypto-1_1.dll
+del %targetdir_in%\libeay32.dll
+del %targetdir_in%\ssleay32.dll
+del %targetdir_in%\_ssl.pyd
  
 
 

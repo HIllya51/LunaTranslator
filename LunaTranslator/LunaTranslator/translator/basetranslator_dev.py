@@ -2,7 +2,7 @@
 from translator.basetranslator import basetrans
 import json,requests
 from myutils.config import globalconfig
-import websocket,time
+import websocket,time,winhttp
 class basetransdev(basetrans): 
     target_url=None
     def check_url_is_translator_url(self,url):
@@ -32,16 +32,28 @@ class basetransdev(basetrans):
         try:
             ws.send(json.dumps({'id':self._id,'method':method,'params':params}))
             res=ws.recv()
-        except ConnectionAbortedError as e:
+        except winhttp.WinhttpException as e:
             self._createtarget()
-            raise e
-        return json.loads(res)['result']
+            return self._SendRequest(self.ws,method,params)
+        res=json.loads(res)
+        try:    
+            return res['result']
+        except:
+            print(res)
+            if res['method']=='Inspector.detached' and res['params']['reason']=='target_closed':
+                self._createtarget()
+                return self._SendRequest(self.ws,method,params)
      
 
     def _createtarget(self  ): 
         port=globalconfig['debugport']
         url=self.target_url
-        infos=requests.get('http://127.0.0.1:{}/json/list'.format(port)).json() 
+        try:
+            infos=requests.get('http://127.0.0.1:{}/json/list'.format(port)).json() 
+        except winhttp.WinhttpException as e:
+            if e.errorcode==winhttp.WinhttpException.ERROR_WINHTTP_CANNOT_CONNECT:
+                self._createtarget()
+                return
         use=None
         for info in infos: 
             if self.check_url_is_translator_url(info['url']):
@@ -64,4 +76,5 @@ class basetransdev(basetrans):
             except:
                 pass
             time.sleep(0.1)
-    
+    def end(self):
+        self.ws.close()

@@ -5,10 +5,10 @@ from myutils.config import globalconfig,savehook_new_data
 from gobject import gprint
 import gobject
 import os,sys,platform
-from myutils.utils import stringfyerror
-from dotmap import DotMap 
+from myutils.utils import stringfyerror 
 from traceback import print_exc
-
+from myutils.dotmap import DotMap
+ 
 def buildfridaclass(copycallback,pexe):
     try:
         import frida

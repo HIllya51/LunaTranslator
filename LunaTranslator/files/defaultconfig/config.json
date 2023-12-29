@@ -637,7 +637,7 @@
     },
     "hirasetting": {
         "local": {
-            "use": true,
+            "use": false,
             "name": "内置"
         },
         "mecab": {
@@ -728,8 +728,8 @@
     "ocrmergelines": true,
     "fridahook":{
         "path":"",
-        "showinfo":true,
-        "showerror":true
+        "showinfo":false,
+        "showerror":false
     },
     "ocr": {
         "local": {
@@ -789,11 +789,6 @@
             "use": false,
             "color": "gray",
             "name": "microsoft"
-        },
-        "microsoft2": {
-            "use": false,
-            "color": "gray",
-            "name": "microsoft2"
         },
         "azure": {
             "type": "api",
@@ -975,11 +970,6 @@
             "color": "blue",
             "name": "有道_v5"
         },
-        "iciba": {
-            "use": false,
-            "color": "blue",
-            "name": "iciba"
-        },
         "itrans": {
             "use": false,
             "color": "blue",
@@ -989,11 +979,6 @@
             "use": false,
             "color": "blue",
             "name": "lingva"
-        },
-        "lingvanex": {
-            "use": false,
-            "color": "blue",
-            "name": "lingvanex"
         },
         "reverso": {
             "use": false,
@@ -1049,11 +1034,6 @@
             "use": true,
             "color": "blue",
             "name": "huoshan"
-        },
-        "yeekit": {
-            "use": false,
-            "color": "blue",
-            "name": "yeekit"
         },
         "caiyunapi": {
             "type": "api",
