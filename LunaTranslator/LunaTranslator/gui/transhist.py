@@ -12,7 +12,7 @@ class transhist(closeashidewindow):
     
     getnewsentencesignal=pyqtSignal(str) 
     getnewtranssignal=pyqtSignal(str,str)  
-    getdebuginfosignal=pyqtSignal(str)
+    getdebuginfosignal=pyqtSignal(str,str)
     def __init__(self,parent):
         super(transhist, self).__init__(parent,globalconfig,'hist_geo')
         self.setupUi() 
@@ -41,9 +41,12 @@ class transhist(closeashidewindow):
             textOutput.setObjectName("textOutput") 
             return textOutput
         self.textOutput=gettb(1)
-        self.sysOutput=gettb(0)
         self.tabwidget.addTab(self.textOutput,_TR("历史翻译"))
-        self.tabwidget.addTab(self.sysOutput,_TR("调试输出"))
+        self.debugoutputs={}
+        for _text in ['stderr','stdout','jsconsole']:
+            _x=gettb(0) 
+            self.tabwidget.addTab(_x,_TR(_text))
+            self.debugoutputs[_text]=(_x)
         self.hiding=True
     def showmenu(self,tb,flag, p):  
         menu=QMenu(self ) 
@@ -81,8 +84,8 @@ class transhist(closeashidewindow):
             if ok : 
                 globalconfig['hist_fontstring']=font.toString() 
                 self.setFont(font)
-    def debugprint(self,sentence):
-        textbrowappendandmovetoend(self.sysOutput,sentence,False) 
+    def debugprint(self,idx,sentence):
+        textbrowappendandmovetoend(self.debugoutputs[idx],sentence,False) 
     def getnewsentence(self,sentence):
         
         sentence= '<hr>' if globalconfig['hist_split'] else '\n'+sentence

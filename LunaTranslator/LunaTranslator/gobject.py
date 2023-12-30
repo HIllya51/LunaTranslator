@@ -1,11 +1,25 @@
 baseobject=None
 from traceback import print_exc
-import re
- 
-def gprint(*args, sep=' ', end='\n'):
-    try:
-        output = sep.join(str(arg) for arg in args)+end  
-        baseobject.transhis.getdebuginfosignal.emit(output)
-    except:
-        print(args, sep=' ', end='\n')
-        print_exc()
+import io,sys
+
+class debugoutput(io.IOBase):
+    def __init__(self,idx,file=sys.stdout) -> None:
+        super().__init__()
+        self.idx=idx
+        self.originfile=file
+    def write(self,data):
+        if self.originfile:
+            self.originfile.write(data)
+        baseobject.transhis.getdebuginfosignal.emit(self.idx,str(data))
+    def flush(self):
+        if self.originfile:
+            self.originfile.flush()
+
+
+_jsconsole=debugoutput('jsconsole',sys.stdout)
+def overridestdio():
+    sys.stderr=debugoutput('stderr',sys.stderr)
+    sys.stdout=debugoutput('stdout',sys.stdout)
+def gprint(*args,**kwargs):  
+    print(args,kwargs,file=_jsconsole)
+
