@@ -24,4 +24,4 @@ class TS(basetrans):
             translation = result['translations'][0]['translation']
             return translation  
         except Exception as e:
-            raise Exception("Translation failed. Error: {}".format(str(e)))
+            raise Exception(result)

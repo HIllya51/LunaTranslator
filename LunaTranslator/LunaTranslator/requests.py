@@ -225,8 +225,7 @@ class Session:
         succ=WinHttpSetOption(hsess, WINHTTP_OPTION_PROXY, pointer(proxyInfo), sizeof(proxyInfo));
         if succ==0:
             raise WinhttpException('invalid proxy: {}'.format(proxy))
-    def _setauth(self,hreq,auth):
-        raise Exception('auth is unimplemented')
+    
     def request(self,
         method, url, params=None, data=None, headers=None,proxies=None, json=None,cookies=None,  files=None,
         auth=None, timeout=None, allow_redirects=True,  hooks=None,   stream=None, verify=None, cert=None, ):
@@ -234,7 +233,11 @@ class Session:
             headers=self.dfheaders
         else:
             headers=CaseInsensitiveDict(headers)
-        
+        if auth and isinstance(auth,tuple) and len(auth)==2:
+            import base64
+            headers['Authorization']="Basic " +   (
+            base64.b64encode(b":".join((auth[0].encode("latin1"), auth[1].encode("latin1")))).strip()
+            ).decode()
         UA=headers.get('User-Agent',self.UA)
         
         scheme,ishttps,server,port,param=self._parseurl(url,params) 
@@ -255,8 +258,7 @@ class Session:
             self.target=server
         
         with saferequest(WinHttpOpenRequest(self.hConnect,method,param,None,WINHTTP_NO_REFERER,WINHTTP_DEFAULT_ACCEPT_TYPES,flag),stream==True) as hRequest:
-            if auth:
-                self._setauth(hRequest,auth)
+            
             if hRequest==0:
                 raise WinhttpException(GetLastError())
             succ=WinHttpSendRequest(hRequest,headers,-1,dataptr,datalen,datalen,None)
