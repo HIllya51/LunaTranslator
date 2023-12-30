@@ -87,7 +87,6 @@ class Settin(closeashidewindow) :
         #self.setWindowFlag(Qt.Tool,False)
         #self.setWindowFlags(self.windowFlags()&~Qt.WindowMinimizeButtonHint)
         self.mp3player=wavmp3player() 
-        self.localocrstarted=False
         self.mp3playsignal.connect(self.mp3player.mp3playfunction)  
         self.opensolvetextsig.connect(self.opensolvetextfun)
         

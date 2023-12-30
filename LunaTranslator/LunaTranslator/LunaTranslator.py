@@ -584,7 +584,9 @@ class MAINUI() :
             except:
                 print_exc()
     def mainuiloadafter(self):    
-        self.localocrstarted=False 
+        self.transhis=gui.transhist.transhist(self.translation_ui)  
+        gobject.overridestdio()
+        
         self.loadvnrshareddict()
         self.prepare()  
         self.startxiaoxueguan()
@@ -593,8 +595,7 @@ class MAINUI() :
         self.settin_ui = Settin(self.translation_ui)  
         gobject.baseobject.Prompt=Prompt()
         self.startreader()  
-        self.transhis=gui.transhist.transhist(self.translation_ui)  
-        gobject.overridestdio()
+        
         self.edittextui=gui.edittext.edittext(self.translation_ui)  
         self.searchwordW=searchwordW(self.translation_ui)
         self.hookselectdialog=gui.selecthook.hookselect(self.settin_ui) 

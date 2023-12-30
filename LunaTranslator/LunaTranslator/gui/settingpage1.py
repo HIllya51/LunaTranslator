@@ -1,5 +1,5 @@
  
-import functools,os,subprocess
+import functools,os,shutil
 from PyQt5.QtGui import  QFont
 from traceback import print_exc
 from PyQt5.QtWidgets import  QFontComboBox  ,QLabel,QComboBox,QPushButton,QFileDialog
@@ -7,12 +7,12 @@ from gui.settingpage_ocr import getocrgrid
 from myutils.config import globalconfig ,_TR,_TRL  ,savehook_new_data
 from myutils.hwnd import getpidexe
 from gui.dialog_savedgame import dialog_savedgame 
-import threading,gobject
+import threading,gobject,requests,datetime,zipfile
 from gui.inputdialog import autoinitdialog 
 from gui.usefulwidget import getsimplecombobox,getspinbox,getcolorbutton,yuitsu_switch,getsimpleswitch,getQMessageBox
 from gui.codeacceptdialog import codeacceptdialog   
 from textsource.fridahook import fridahook
-from myutils.utils import loadfridascriptslist,checkifnewgame,makehtml
+from myutils.utils import loadfridascriptslist,checkifnewgame,makehtml,getproxy
 def gethookgrid(self) :
  
         grids=[
@@ -33,14 +33,61 @@ def gethookgrid(self) :
         ]
          
         return grids
-def flashcombo(self):
+updatelock=threading.Lock()
+def updatescripts( self):
+        if globalconfig['fridahook']['autoupdate']==False:return
+        if updatelock.locked():return
+        updatelock.acquire()
+        if (os.path.exists(os.path.join(globalconfig['fridahook']['path'],'runtime/x86/frida')) or os.path.exists(os.path.join(globalconfig['fridahook']['path'],'runtime/x64/frida')))==False:return
+        info_url='https://api.github.com/repos/0xDC00/scripts'
+        scripts_url = f'https://api.github.com/repos/0xDC00/scripts/zipball'
+        updated_at = requests.get(info_url ,proxies=getproxy()).json()['updated_at']
+        updatetimef=os.path.join(globalconfig['fridahook']['path'],'updatetime.txt')
+        savezip=os.path.join(globalconfig['fridahook']['path'],'latest.zip')
+        scriptspath=os.path.join(globalconfig['fridahook']['path'],'scripts')
+        timefmt=lambda s:datetime.datetime.strptime(s, "%Y-%m-%dT%H:%M:%SZ").timestamp()
+        dt = timefmt(updated_at ) 
+        #print(updated_at,dt)
+        try:
+            with open(updatetimef,'r') as ff:
+                time=ff.read()
+            if timefmt(time)<dt:
+                need=True
+            else:
+                need=False
+        except:
+            need=True
+            print_exc()
+        #print(need)
+        try:
+            if need:
+                response = requests.get(scripts_url ,proxies=getproxy()).content
+                with open(savezip,'wb') as ff:
+                    ff.write(response)
+                zipf=(zipfile.ZipFile(savezip))
+                zipf.extractall(globalconfig['fridahook']['path'])
+                try:    
+                        shutil.rmtree(scriptspath)
+                except:
+                       pass
+                os.rename(os.path.join( globalconfig['fridahook']['path'],zipf.namelist()[0]),scriptspath)
+               
+                with open(updatetimef,'w') as ff:
+                    ff.write(updated_at)
+                flashcombo(self,0)
+        except:
+            print_exc()
+        updatelock.release()
+def flashcombo(self,update=1):
         self.fridascripts=loadfridascriptslist(globalconfig['fridahook']['path'],self.Scriptscombo)
+        if update:
+                threading.Thread(target=updatescripts,args=(self,)).start()
 def getfridahookgrid(self) :
         
         
         _items=[
             {'t':'file','dir':True, 'l':'FridaHook_路径','d':globalconfig['fridahook'],'k':'path'},
-            {'t':'okcancel','callback':functools.partial(flashcombo,self)},
+            {'t':'okcancel','callback':functools.partial(flashcombo,self,1)},
         ]
         attachbutton=QPushButton('Attach')
         execbutton=QPushButton('Spawn')
@@ -70,6 +117,7 @@ def getfridahookgrid(self) :
                 [],
                 [('show info',3),getsimpleswitch( globalconfig['fridahook'],'showinfo' ),],
                 [('show error',3),getsimpleswitch( globalconfig['fridahook'],'showerror' )],
+                [('autoupdate',3),getsimpleswitch( globalconfig['fridahook'],'autoupdate' )],
                 [],
                 [('资源下载',3),(makehtml("https://github.com/HIllya51/LunaTranslator/releases/download/v1.34.5/FridaHook.zip",True),3,'link')],
                 
@@ -146,7 +194,7 @@ def setTabOne_direct(self) :
         self.threshold2label=QLabel()
 
         self.Scriptscombo=QComboBox() 
-        flashcombo(self)
+        flashcombo(self,1)
 def setTabOne(self) :  
         self.tabadd_lazy(self.tab_widget, ('文本输入'), lambda :setTabOne_lazy(self)) 
 

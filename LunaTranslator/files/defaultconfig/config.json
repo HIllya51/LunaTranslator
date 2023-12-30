@@ -729,7 +729,8 @@
     "fridahook":{
         "path":"",
         "showinfo":false,
-        "showerror":false
+        "showerror":false,
+        "autoupdate":true
     },
     "ocr": {
         "local": {
