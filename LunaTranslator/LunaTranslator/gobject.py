@@ -21,5 +21,6 @@ def overridestdio():
     sys.stderr=debugoutput('stderr',sys.stderr)
     sys.stdout=debugoutput('stdout',sys.stdout)
 def gprint(*args,**kwargs):  
-    print(*args,**kwargs,file=_jsconsole)
+    kwargs['file']=_jsconsole
+    print(*args,**kwargs)
 
