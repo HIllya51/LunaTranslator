@@ -228,10 +228,10 @@ class Session:
             raise WinhttpException(GetLastError())  
         hRequest=AutoWinHttpHandle(WinHttpOpenRequest( hConnect ,method,param,None,WINHTTP_NO_REFERER,WINHTTP_DEFAULT_ACCEPT_TYPES,flag) )
     
-        self._setproxy(hRequest,proxies,scheme) 
-        
         if hRequest==0:
             raise WinhttpException(GetLastError())
+        self._setproxy(hRequest,proxies,scheme) 
+        
         succ=WinHttpSendRequest(hRequest,headers,-1,dataptr,datalen,datalen,None)
         if succ==0:
             raise WinhttpException(GetLastError())
