@@ -1,4 +1,5 @@
 from myutils.config import globalconfig
+from myutils.utils import autosql
 import sqlite3
 import winsharedutils 
 import os
@@ -10,13 +11,10 @@ class linggesi():
             if os.path.exists(os.path.join(globalconfig['cishu']['linggesi']['path'] ,'ja-zh.db'))==False or \
                 os.path.exists(os.path.join(globalconfig['cishu']['linggesi']['path'] ,'ja-zh-gbk.db'))==False:
                 return 
-            self.sql=sqlite3.connect(os.path.join(globalconfig['cishu']['linggesi']['path'] ,'ja-zh.db'),check_same_thread=False)
-            self.sql2=sqlite3.connect(os.path.join(globalconfig['cishu']['linggesi']['path'] ,'ja-zh-gbk.db'),check_same_thread=False)
+            self.sql=autosql(sqlite3.connect(os.path.join(globalconfig['cishu']['linggesi']['path'] ,'ja-zh.db'),check_same_thread=False))
+            self.sql2=(sqlite3.connect(os.path.join(globalconfig['cishu']['linggesi']['path'] ,'ja-zh-gbk.db'),check_same_thread=False))
         except:
-            pass
-    def end(self):
-        self.sql.close()
-        self.sql2.close()
+            pass 
     def search(self,word):
          
                 mp={}

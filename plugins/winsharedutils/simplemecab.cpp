@@ -34,7 +34,7 @@ struct mecab_node_t {
 typedef struct mecab_t                 mecab_t;
 typedef mecab_t* (*mecab_new)(int argc, char** argv);
 typedef mecab_node_t* (*mecab_sparse_tonode)(mecab_t* mecab, const char*); 
-
+typedef void (*mecab_destroy)(mecab_t* mecab);
 HMODULE mecablib;
 void* mecab_init(char* utf8path,wchar_t*mepath) { 
     mecablib = LoadLibraryW(mepath);
@@ -47,6 +47,13 @@ void* mecab_init(char* utf8path,wchar_t*mepath) {
     auto trigger = _mecab_new(vargv.size(), argv);
     freestringlist(argv, vargv.size());
     return trigger;
+}
+void mecab_end(void*trigger){
+    if (trigger == 0)return  ;
+    if (mecablib == 0)return  ;
+    auto _mecab_destroy = (mecab_destroy)GetProcAddress(mecablib, "mecab_destroy");
+    if (_mecab_destroy == 0)return  ;
+    mecab_destroy((mecab_t*)trigger);
 }
 bool mecab_parse(void* trigger,char*utf8string, char*** surface, char*** features,int*num) {
     if (trigger == 0)return false;

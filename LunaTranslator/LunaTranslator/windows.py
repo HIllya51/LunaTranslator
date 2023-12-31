@@ -4,6 +4,101 @@ from ctypes import Structure,c_int,POINTER,c_uint,WINFUNCTYPE,c_void_p,sizeof,by
 import ctypes
 from traceback import print_exc
 from ctypes.wintypes import RECT,POINT,HWND,BOOL,WORD,DWORD,BYTE ,LPCWSTR,HANDLE
+
+WAIT_TIMEOUT                        = 258 
+SW_HIDE = 0
+SW_SHOWNORMAL = 1
+SW_SHOWNOACTIVATE = 4
+
+SW_NORMAL = 1
+STARTF_USESTDHANDLES = 256
+STARTF_USESHOWWINDOW = 1
+SW_SHOWMINIMIZED = 2
+SW_SHOWMAXIMIZED = 3
+SW_MAXIMIZE = 3
+SW_SHOWNOACTIVATE = 4
+
+EVENT_SYSTEM_MINIMIZESTART = 22
+EVENT_SYSTEM_MINIMIZEEND = 23
+EVENT_SYSTEM_MOVESIZESTART = 10
+EVENT_SYSTEM_MOVESIZEEND = 11
+EVENT_SYSTEM_FOREGROUND = 3
+
+
+PIPE_ACCESS_INBOUND=0x00000001
+PIPE_ACCESS_OUTBOUND=0x00000002
+SW_SHOW = 5
+SW_MINIMIZE = 6
+PROCESS_QUERY_INFORMATION = (1024)
+PROCESS_QUERY_LIMITED_INFORMATION=0x1000
+PROCESS_VM_READ = (16)
+NMPWAIT_WAIT_FOREVER = -1
+SECURITY_DESCRIPTOR_REVISION = (1)
+PIPE_UNLIMITED_INSTANCES = 255
+PIPE_WAIT = 0
+GENERIC_READ = (-2147483648)
+GENERIC_WRITE = (1073741824)
+PIPE_READMODE_MESSAGE = 2
+PIPE_TYPE_MESSAGE = 4
+OPEN_EXISTING = 3
+PIPE_ACCESS_DUPLEX = 3
+FILE_ATTRIBUTE_NORMAL = 128
+SW_SHOWMINNOACTIVE = 7
+SW_SHOWNA = 8
+SW_RESTORE = 9
+SW_SHOWDEFAULT = 10
+SW_FORCEMINIMIZE = 11
+SW_MAX = 11
+WS_MINIMIZE = 536870912
+HWND_TOPMOST = -1
+HWND_NOTOPMOST = -2
+SW_HIDE = 0
+SWP_NOACTIVATE = 16
+SWP_NOMOVE = 2
+SW_MAXIMIZE = 3
+SW_SHOWNORMAL = 1
+WS_EX_TOOLWINDOW = 128
+SWP_NOSIZE = 1
+SW_SHOW = 5
+WS_MAXIMIZE = 16777216
+NMPWAIT_WAIT_FOREVER = -1
+GENERIC_READ = (-2147483648)
+GENERIC_WRITE = (1073741824)
+OPEN_EXISTING = 3
+FILE_ATTRIBUTE_NORMAL = 128
+STANDARD_RIGHTS_REQUIRED = (983040)
+SYNCHRONIZE = (1048576)
+PROCESS_ALL_ACCESS = (STANDARD_RIGHTS_REQUIRED | SYNCHRONIZE | 4095)
+PROCESS_CREATE_THREAD=(0x0002)  
+PROCESS_VM_OPERATION=(0x0008)  
+PROCESS_VM_WRITE=(0x0020)  
+PROCESS_INJECT_ACCESS = (
+        PROCESS_CREATE_THREAD |
+        PROCESS_QUERY_INFORMATION |
+        PROCESS_VM_OPERATION |
+        PROCESS_VM_WRITE |
+        PROCESS_VM_READ)
+KEYEVENTF_KEYUP = 2
+GWL_STYLE = (-16)
+GWL_EXSTYLE = (-20)
+WS_BORDER = 8388608
+WS_DLGFRAME = 4194304
+WS_THICKFRAME = 262144
+WS_EX_TRANSPARENT = 32
+WS_EX_WINDOWEDGE = 256
+WS_POPUP = -2147483648
+WS_EX_TOPMOST = 8
+SW_SHOWMAXIMIZED = 3
+WS_EX_APPWINDOW = 262144
+DESKTOPHORZRES = 118
+LOGPIXELSX=88
+WM_HOTKEY = 786
+
+VK_LBUTTON = 1
+VK_RBUTTON = 2
+
+
+
 WNDENUMPROC =WINFUNCTYPE(c_bool,c_void_p,c_void_p)
  
 class WINDOWPLACEMENT(Structure):
@@ -80,7 +175,8 @@ _GetDC=_user32.GetDC
 _GetDC.restype=c_void_p
 _ReleaseDC=_user32.ReleaseDC
 _ReleaseDC.argtypes=c_void_p,c_void_p
-
+def ReleaseDC(_,hdc):
+    return _ReleaseDC(_,hdc)
 _GetCursorPos=_user32.GetCursorPos
 _GetCursorPos.argtypes=POINTER(POINT),
 
@@ -103,8 +199,7 @@ _SetForegroundWindow=_user32.SetForegroundWindow
 _SetForegroundWindow.argtypes=c_int,
 _GetClientRect=_user32.GetClientRect
 _GetClientRect.argtypes=c_int,POINTER(RECT)
-_ExtractIconEx=_shell32.ExtractIconExW
-_ExtractIconEx.argtypes=c_wchar_p,c_int,c_void_p,c_void_p,c_uint
+ 
 _FindWindow=_user32.FindWindowW
 _FindWindow.argtypes=c_wchar_p,c_wchar_p
 _SetFocus=_user32.SetFocus
@@ -160,8 +255,7 @@ _GetCurrentDirectoryW.argtypes=c_uint,c_wchar_p
 try:
     _QueryFullProcessImageNameW=_kernel32.QueryFullProcessImageNameW
     _QueryFullProcessImageNameW.argtypes=c_void_p,c_uint,c_wchar_p,c_void_p
-except:
-    #windows xp unsupport
+except: 
     _QueryFullProcessImageNameW=0
 def GetProcessFileName(hHandle):
     w=create_unicode_buffer(65535)
@@ -281,11 +375,7 @@ def IsWindowVisible(hwnd):
     return _IsWindowVisible(hwnd)
 def SetForegroundWindow(hwnd):
     return _SetForegroundWindow(hwnd)
-def ExtractIconEx(lpszFile): 
-    icon1=c_void_p()
-    icon2=c_void_p()
-    _ExtractIconEx(c_wchar_p(lpszFile),0,pointer(icon1),pointer(icon2),1)
-    return icon1.value
+ 
 def FindWindow(classname,windowname):
     return _FindWindow(c_wchar_p(classname),c_wchar_p(windowname))
 def EnumWindows(lpEnumFunc,lParam):
@@ -393,22 +483,23 @@ def GetBinaryType(filename):
 
 
 _ReadFile=_kernel32.ReadFile
-_ReadFile.argtypes=c_void_p,c_char_p,c_uint,c_void_p,c_void_p
+_ReadFile.argtypes=HANDLE,c_char_p,c_uint,c_void_p,c_void_p
 def ReadFile(handle,nNumberOfBytesToRead,lpOverlapped):
     buf=create_string_buffer( nNumberOfBytesToRead)
     dwread=c_int()
-    _ReadFile(c_void_p(int(handle)),buf,nNumberOfBytesToRead,pointer(dwread),lpOverlapped)
+    _ReadFile(handle,buf,nNumberOfBytesToRead,pointer(dwread),lpOverlapped)
     return buf.raw[:dwread.value]
 
 _WriteFile=_kernel32.WriteFile
-_WriteFile.argtypes=c_void_p,c_char_p,c_uint,c_void_p,c_void_p
+_WriteFile.argtypes=HANDLE,c_char_p,c_uint,c_void_p,c_void_p
 def WriteFile(handle,_bytes):
     dwread=c_int()
-    return _WriteFile(c_void_p(int(handle)),c_char_p(_bytes),len(_bytes),pointer(dwread),None)
+    return _WriteFile(handle,c_char_p(_bytes),len(_bytes),pointer(dwread),None)
 
 
 _CreateFileW=_kernel32.CreateFileW
 _CreateFileW.argtypes=c_wchar_p,c_uint,c_uint,POINTER(SECURITY_ATTRIBUTESStruct),c_uint,c_uint,c_void_p
+_CreateFileW.restype=HANDLE
 def CreateFile(fileName,desiredAccess, shareMode,attributes ,CreationDisposition,flagsAndAttributes,hTemplateFile):
     return _CreateFileW(fileName,desiredAccess,shareMode,attributes,CreationDisposition,flagsAndAttributes,hTemplateFile)
 
@@ -499,7 +590,7 @@ def GetAncestor(hwnd):
 
 _CreateNamedPipe =_kernel32.CreateNamedPipeW
 _CreateNamedPipe.argtypes=c_wchar_p,c_uint,c_uint,c_uint,c_uint,c_uint,c_uint,c_void_p
-def CreateNamedPipe(pipeName,openMode,pipeMode,nMaxInstances,nOutBufferSize,nInBufferSize,nDefaultTimeOut,sa):
+def CreateNamedPipe(pipeName,openMode,pipeMode,nMaxInstances,nOutBufferSize,nInBufferSize,nDefaultTimeOut,sa=pointer(get_SECURITY_ATTRIBUTES())):
     return _CreateNamedPipe(pipeName,openMode,pipeMode,nMaxInstances,nOutBufferSize,nInBufferSize,nDefaultTimeOut,sa)
  
 PIPE_TYPE_BYTE=0
@@ -610,11 +701,9 @@ def GetNativeSystemInfo():
 def Is64bit(pid):
     sysinfo=GetNativeSystemInfo()
     if(sysinfo.wProcessorArchitecture==9 or sysinfo.wProcessorArchitecture==6):
-        import win32con
-        hprocess=OpenProcess(win32con.PROCESS_QUERY_INFORMATION,False,pid)
+        hprocess=AutoHandle(OpenProcess(PROCESS_QUERY_INFORMATION,False,pid))
         if hprocess==0:return False
-        res=not IsWow64Process(hprocess)
-        CloseHandle(hprocess)
+        res=not IsWow64Process(hprocess) 
         return res
     else:
         return False
@@ -648,3 +737,15 @@ def ScreenToClient(hwnd,x,y):
     P.y=y
     _ScreenToClient(hwnd,pointer(P))
     return (P.x,P.y)
+
+
+class AutoHandle(HANDLE): 
+    def __new__(cls,value) -> None: 
+        instance = super().__new__(cls,value)
+        return instance
+    def __del__(self):
+        if self:
+            CloseHandle(self)
+ 
+
+ 

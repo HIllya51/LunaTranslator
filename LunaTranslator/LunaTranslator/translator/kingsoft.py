@@ -1,18 +1,13 @@
 
-from myutils.subproc import subproc_w  
+from myutils.subproc import subproc_w  ,autoproc
 from translator.basetranslator import basetrans 
-import os  ,time,win32utils,win32con
-
+import os  ,time
+import windows
 class TS(basetrans): 
     def inittranslator(self ) : 
         self.path11=None
         self.pair=None
-        self.checkpath()
-    def end(self):
-        try:
-            self.engine.kill()
-        except:
-            pass
+        self.checkpath() 
     def checkpath(self):
         
         pairs=(self.srclang,self.tgtlang) 
@@ -37,12 +32,12 @@ class TS(basetrans):
             t= str(t) 
             pipename='\\\\.\\Pipe\\ks_'+t
             waitsignal='kswaitload_'+t 
-            self.engine=subproc_w('./files/plugins/shareddllproxy32.exe kingsoft "{}"  "{}"   {} {} '.format(self.path,self.path2,pipename,waitsignal),name='ks')
+            self.engine=autoproc(subproc_w('./files/plugins/shareddllproxy32.exe kingsoft "{}"  "{}"   {} {} '.format(self.path,self.path2,pipename,waitsignal),name='ks'))
             
-            win32utils.WaitForSingleObject(win32utils.CreateEvent(False, False, waitsignal),win32utils.INFINITE); 
-            win32utils.WaitNamedPipe(pipename,win32con.NMPWAIT_WAIT_FOREVER)
-            self.hPipe = win32utils.CreateFile( pipename, win32con.GENERIC_READ | win32con.GENERIC_WRITE, 0,
-                    None, win32con.OPEN_EXISTING, win32con.FILE_ATTRIBUTE_NORMAL, None);
+            windows.WaitForSingleObject(windows.AutoHandle(windows.CreateEvent(False, False, waitsignal)),windows.INFINITE); 
+            windows.WaitNamedPipe(pipename,windows.NMPWAIT_WAIT_FOREVER)
+            self.hPipe =windows.AutoHandle(windows.CreateFile( pipename, windows.GENERIC_READ | windows.GENERIC_WRITE, 0,
+                    None, windows.OPEN_EXISTING, windows.FILE_ATTRIBUTE_NORMAL, None))
         return True
     def x64(self,content):  
             if self.checkpath()==False:return 'error'
@@ -50,8 +45,8 @@ class TS(basetrans):
             for line in content.split('\n'):
                 if len(line)==0:
                     continue
-                win32utils.WriteFile(self.hPipe,line.encode('utf-16-le'))
-                x=win32utils.ReadFile(self.hPipe,4096,None)
+                windows.WriteFile(self.hPipe,line.encode('utf-16-le'))
+                x=windows.ReadFile(self.hPipe,4096,None)
                 ress.append(x.decode('utf-16-le'))
                  
             return '\n'.join(ress )

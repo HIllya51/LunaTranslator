@@ -2,26 +2,21 @@ from myutils.config import globalconfig
 import winsharedutils
 import os
 from traceback import print_exc
-_cache={}
-class hira:
+
+class hira: 
     def __init__(self) -> None: 
         hirasettingbase=globalconfig['hirasetting']
     
         mecabpath=hirasettingbase['mecab']['path']
         if os.path.exists(mecabpath):
-            self.kks=winsharedutils.mecab_init(mecabpath)#  fugashi.Tagger('-r nul -d "{}" -Owakati'.format(mecabpath))
-            if self.kks is None:    #32位下重新init会失败，不明白为什么。
-                if mecabpath in _cache: 
-                    self.kks=_cache[mecabpath]
-            else:
-                _cache[mecabpath]=self.kks
+            self.kks=winsharedutils.mecabwrap(mecabpath)#  fugashi.Tagger('-r nul -d "{}" -Owakati'.format(mecabpath))
             
          
  
     def fy(self,text): 
             start=0
             result=[] 
-            for node,fields in winsharedutils.mecab_parse(self.kks,text):# self.kks.parseToNodeList(text): 
+            for node,fields in self.kks.parse( text):# self.kks.parseToNodeList(text): 
                 if len(fields):
                     pos1=fields[0] 
                     if len(fields)>29:

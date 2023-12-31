@@ -1,5 +1,4 @@
-
-import win32utils,time
+import windows
 import math,os,importlib
 from myutils.config import globalconfig,_TR
 from PyQt5.QtWidgets import QApplication
@@ -45,12 +44,12 @@ def imageCut(hwnd,x1,y1,x2,y2):
         if _%2==0:
             try:
                 if hwnd==0:continue
-                rect=win32utils.GetWindowRect(hwnd)  
+                rect=windows.GetWindowRect(hwnd)  
                 if rect is None:
                     continue
                 
-                x1,y1=win32utils.ScreenToClient(hwnd,x1,y1)
-                x2,y2=win32utils.ScreenToClient(hwnd,x2,y2)
+                x1,y1=windows.ScreenToClient(hwnd,x1,y1)
+                x2,y2=windows.ScreenToClient(hwnd,x2,y2)
                 rate=dynamic_rate(hwnd,rect)
                 pix = screen.grabWindow(hwnd, (x1)/rate, (y1)/rate, (x2-x1)/rate, (y2-y1)/rate) 
                 if pix.toImage().allGray():

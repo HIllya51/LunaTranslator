@@ -3,7 +3,8 @@ from queue import Queue
 import re ,os
 import time ,gobject
 from collections import OrderedDict
-import win32utils,ctypes,functools
+import ctypes,functools
+import windows
 import textsource.hook.define as define
 from myutils.config import globalconfig ,savehook_new_data ,_TR,static_data 
 from textsource.textsourcebase import basetext 
@@ -21,7 +22,7 @@ class texthook(basetext  ):
         
         self.newline=Queue()  
         self.newline_delaywait=Queue()
-        self.is64bit=win32utils.Is64bit(pids[0])
+        self.is64bit=windows.Is64bit(pids[0])
         self.lock=threading.Lock()
         self.hookdatacollecter=OrderedDict() 
         self.hooktypecollecter=OrderedDict() 
@@ -72,10 +73,9 @@ class texthook(basetext  ):
             self.RPC.Attach(_pids,'64' if self.is64bit else '32')
         super(texthook,self).__init__(*self.checkmd5prefix(pname))
     def testalready(self,pid):
-        _mutext=win32utils.CreateMutex(False,define.ITH_HOOKMAN_MUTEX_+str(pid))
-        err=win32utils.GetLastError()
-        exists= err==win32utils.ERROR_ALREADY_EXISTS
-        win32utils.CloseHandle(_mutext)
+        _mutext=windows.AutoHandle(windows.CreateMutex(False,define.ITH_HOOKMAN_MUTEX_+str(pid)))
+        err=windows.GetLastError()
+        exists= err==windows.ERROR_ALREADY_EXISTS
         return exists
 
     def newhookinsert(self,addr,hcode):
@@ -96,8 +96,8 @@ class texthook(basetext  ):
     def createembedsharedmem(self,pid):
          
         self.EMBEDPID=pid
-        fmap1=win32utils.OpenFileMapping(win32utils.FILE_MAP_READ|0x2,False,'EMBED_SHARED_MEM'+str(pid))
-        address1=win32utils.MapViewOfFile(fmap1, win32utils.FILE_MAP_READ|0x2,  4096)
+        fmap1=windows.OpenFileMapping(windows.FILE_MAP_READ|0x2,False,'EMBED_SHARED_MEM'+str(pid))
+        address1=windows.MapViewOfFile(fmap1, windows.FILE_MAP_READ|0x2,  4096)
          
         self.sharedcell=ctypes.cast(address1,ctypes.POINTER(define.EmbedSharedMem)) 
         self.flashembedsettings()
@@ -119,9 +119,8 @@ class texthook(basetext  ):
             return (u64.value)
         hash_=hs(text)
         eventName = define.LUNA_NOTIFY % (pid, hash_) 
-        ev = win32utils.CreateEvent( False, False, eventName)  
-        win32utils.SetEvent(ev)
-        win32utils.CloseHandle(ev)
+        ev = windows.AutoHandle(windows.CreateEvent( False, False, eventName)  )
+        windows.SetEvent(ev) 
     def onremovehook(self,tp): 
         toremove=[]
         self.lock.acquire()

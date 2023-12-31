@@ -6,7 +6,7 @@ import json
 from traceback import print_exc
 import os
 from myutils.config import globalconfig,_TR
-
+from myutils.utils import autosql
 from gui.usefulwidget import getQMessageBox
 def sqlite2json(self):
     f=QFileDialog.getOpenFileName(directory='./translation_record', filter="*.sqlite")
@@ -14,7 +14,7 @@ def sqlite2json(self):
         return
     
     try:
-        sql=sqlite3.connect(f[0],check_same_thread=False)
+        sql=autosql(sqlite3.connect(f[0],check_same_thread=False))
         ret=sql.execute('SELECT * FROM artificialtrans  ').fetchall()
         js={}
         js_format2={}

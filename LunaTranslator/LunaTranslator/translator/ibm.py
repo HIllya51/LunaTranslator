@@ -18,10 +18,10 @@ class TS(basetrans):
             'target': self.tgtlang
         }
         
+        response = self.session.post(url, auth=('apikey', apikey), headers=headers, data=json.dumps(data))
         try:
-            response = self.session.post(url, auth=('apikey', apikey), headers=headers, data=json.dumps(data))
             result = response.json()
             translation = result['translations'][0]['translation']
             return translation  
         except Exception as e:
-            raise Exception(result)
+            raise Exception(response.text)

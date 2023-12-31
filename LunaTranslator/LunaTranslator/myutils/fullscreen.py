@@ -1,5 +1,5 @@
-import os,win32con,json,math
-import win32utils
+import os,json,math
+import windows
 from myutils.config import globalconfig ,magpie10_config
 from myutils.hwnd import  letfullscreen,recoverwindow,ListProcess
 from traceback import print_exc
@@ -20,7 +20,7 @@ class fullscreen():
      
     def _1(self,hwnd,full):
         self.runmagpie10()  
-        win32utils.SetForegroundWindow(hwnd )   
+        windows.SetForegroundWindow(hwnd )   
         time.sleep(0.1)
         configpath=os.path.join(globalconfig['magpie10path'],'config/config.json')
         if os.path.exists(configpath)==False:
@@ -41,14 +41,14 @@ class fullscreen():
         
         for k in mp:
             if shortcuts&k !=0:
-                win32utils.keybd_event(mp1[mp[k]],0,0,0)
+                windows.keybd_event(mp1[mp[k]],0,0,0)
         
         k2=shortcuts &0xff
-        win32utils.keybd_event(k2,0,0,0)      
-        win32utils.keybd_event(k2, 0, win32con.KEYEVENTF_KEYUP, 0)
+        windows.keybd_event(k2,0,0,0)      
+        windows.keybd_event(k2, 0, windows.KEYEVENTF_KEYUP, 0)
         for k in mp:
             if shortcuts&k !=0:
-                win32utils.keybd_event(mp1[mp[k]],0,win32con.KEYEVENTF_KEYUP,0)
+                windows.keybd_event(mp1[mp[k]],0,windows.KEYEVENTF_KEYUP,0)
         
     def _0(self,hwnd,full):
         if full:  
@@ -65,28 +65,27 @@ class fullscreen():
                 self._externalfsend()
             threading.Thread(target=_waitexternalend ).start()
         else:
-            endevent = win32utils.CreateEvent(False, False,'MAGPIE_WAITFOR_STOP_SIGNAL'+str(self.engine.pid))
-            win32utils.SetEvent(endevent)
-            win32utils.CloseHandle(endevent)
+            endevent =windows.AutoHandle(windows.CreateEvent(False, False,'MAGPIE_WAITFOR_STOP_SIGNAL'+str(self.engine.pid)))
+            windows.SetEvent(endevent)
              
     # magpie9
     # def _0(self,hwnd,full):
     #     if full:
-    #         win32utils.SetForegroundWindow(hwnd )    
+    #         SetForegroundWindow(hwnd )    
     #         callmagpie(('./files/plugins/Magpie_v0.9.1'),hwnd,globalconfig['magpiescalemethod'],globalconfig['magpieflags'],globalconfig['magpiecapturemethod'])
     #     else:
-    #         hwnd=win32utils.FindWindow('Window_Magpie_967EB565-6F73-4E94-AE53-00CC42592A22',None) 
+    #         hwnd=FindWindow('Window_Magpie_967EB565-6F73-4E94-AE53-00CC42592A22',None) 
     #         if hwnd==0:
     #             return
-    #         WM_DESTORYHOST=win32utils.RegisterWindowMessage( "MAGPIE_WM_DESTORYHOST") 
-    #         win32utils.SendMessage(hwnd, WM_DESTORYHOST)
+    #         WM_DESTORYHOST=RegisterWindowMessage( "MAGPIE_WM_DESTORYHOST") 
+    #         SendMessage(hwnd, WM_DESTORYHOST)
     def _2(self,hwnd,full):
-        win32utils.SetForegroundWindow(hwnd )   
-        win32utils.keybd_event(18,0,0,0)     # alt
-        win32utils.keybd_event(13,0,0,0)     # enter
+        windows.SetForegroundWindow(hwnd )   
+        windows.keybd_event(18,0,0,0)     # alt
+        windows.keybd_event(13,0,0,0)     # enter
                             
-        win32utils.keybd_event(13, 0, win32con.KEYEVENTF_KEYUP, 0)
-        win32utils.keybd_event(18, 0, win32con.KEYEVENTF_KEYUP, 0)
+        windows.keybd_event(13, 0, windows.KEYEVENTF_KEYUP, 0)
+        windows.keybd_event(18, 0, windows.KEYEVENTF_KEYUP, 0)
     def _3(self,hwnd,full):
         if full: 
             self.savewindowstatus=letfullscreen(hwnd)

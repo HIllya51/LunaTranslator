@@ -145,3 +145,19 @@ class WINHTTP_PROXY_INFO(Structure):
         ('lpszProxy',LPWSTR),
         ('lpszProxyBypass',LPWSTR)
     ]
+
+def winhttpsetproxy(hreq,proxy):
+    proxyInfo=WINHTTP_PROXY_INFO()
+    proxyInfo.dwAccessType = WINHTTP_ACCESS_TYPE_NAMED_PROXY;
+    proxyInfo.lpszProxy = proxy
+    proxyInfo.lpszProxyBypass =None
+    succ=WinHttpSetOption(hreq, WINHTTP_OPTION_PROXY, pointer(proxyInfo), sizeof(proxyInfo));
+    if succ==0:
+        raise WinhttpException(GetLastError())
+        #raise WinhttpException('invalid proxy: {}'.format(proxy))
+
+class AutoWinHttpHandle(HINTERNET):  
+    def __del__(self):
+        if self:
+            WinHttpCloseHandle(self)
+ 

@@ -3,7 +3,6 @@ import time
 import re
 import os,threading ,ctypes
 from traceback import  print_exc   
-import win32utils,socket
 from myutils.config import globalconfig ,savehook_new_list,savehook_new_data,noundictconfig,transerrorfixdictconfig,setlanguage ,_TR,static_data
 import threading 
 from myutils.utils import minmaxmoveobservefunc ,kanjitrans,checkifnewgame,stringfyerror
@@ -25,7 +24,8 @@ from functools import partial
 from gui.settin import Settin 
 from gui.showocrimage import showocrimage
 from gui.attachprocessdialog import AttachProcessDialog
-import win32con ,websocket,pytz
+import websocket,pytz
+import windows
 import re ,gobject
 import winsharedutils
 from myutils.post import POSTSOLVE
@@ -204,21 +204,23 @@ class MAINUI() :
                 self.autoreadcheckname()
 
         try:
-            hira=self.hira_.fy(text)
-            for _1 in range(len(hira)):
-                _=len(hira)-1-_1
-                if globalconfig['hira_vis_type']==0:
-                    hira[_]['hira']=hira[_]['hira'].translate(self.castkata2hira)
-                elif globalconfig['hira_vis_type']==1:
-                    hira[_]['hira']=hira[_]['hira'].translate(self.casthira2kata)
-                elif globalconfig['hira_vis_type']==2:
-                    __kanas=[static_data['hira']+['っ'],static_data['kata']+['ッ']]
-                    target=static_data['roma']+['-']
-                    for _ka in __kanas:
-                        for __idx in  range(len(_ka)):
-                            _reverse_idx=len(_ka)-1-__idx
-                            hira[_]['hira']=hira[_]['hira'].replace(_ka[_reverse_idx],target[_reverse_idx]) 
-                     
+            if self.hira_:
+                hira=self.hira_.fy(text)
+                for _1 in range(len(hira)):
+                    _=len(hira)-1-_1
+                    if globalconfig['hira_vis_type']==0:
+                        hira[_]['hira']=hira[_]['hira'].translate(self.castkata2hira)
+                    elif globalconfig['hira_vis_type']==1:
+                        hira[_]['hira']=hira[_]['hira'].translate(self.casthira2kata)
+                    elif globalconfig['hira_vis_type']==2:
+                        __kanas=[static_data['hira']+['っ'],static_data['kata']+['ッ']]
+                        target=static_data['roma']+['-']
+                        for _ka in __kanas:
+                            for __idx in  range(len(_ka)):
+                                _reverse_idx=len(_ka)-1-__idx
+                                hira[_]['hira']=hira[_]['hira'].replace(_ka[_reverse_idx],target[_reverse_idx]) 
+            else:
+                hira=[]           
         except:
             print_exc()
             hira=[]
@@ -440,11 +442,12 @@ class MAINUI() :
     @threader
     def commonloader_warp(self,fanyiorcishu,dictobject,initmethod,_type):
         try:
-            if _type in dictobject: 
-                try: dictobject[_type].end() 
-                except:print_exc()
-                try:  del dictobject[_type]
-                except:print_exc()
+            if _type in dictobject:  
+                try:
+                    dictobject[_type].notifyqueuforend()
+                except:
+                    pass
+                dictobject.pop(_type)
             if globalconfig[fanyiorcishu][_type]['use']==False:
                 return
             item=initmethod(_type)
@@ -487,8 +490,8 @@ class MAINUI() :
         else:
             try:  
                 if self.textsource is None:   
-                        hwnd=win32utils.GetForegroundWindow()
-                        pid=win32utils.GetWindowThreadProcessId(hwnd)
+                        hwnd=windows.GetForegroundWindow()
+                        pid=windows.GetWindowThreadProcessId(hwnd)
                         name_=getpidexe(pid) 
                         if name_  and name_ in savehook_new_list:   
                             lps=ListProcess(False)
@@ -533,9 +536,9 @@ class MAINUI() :
                 
                 if hwnd==0:
                     if globalconfig['sourcestatus2']['texthook']['use']  :
-                        fhwnd=win32utils.GetForegroundWindow() 
+                        fhwnd=windows.GetForegroundWindow() 
                         pids=self.textsource.pids
-                        if hwnd==0 and win32utils.GetWindowThreadProcessId( fhwnd ) in pids:
+                        if hwnd==0 and windows.GetWindowThreadProcessId( fhwnd ) in pids:
                             if 'once' not in dir(self.textsource):
                                 self.textsource.once=True
                                 self.textsource.hwnd=fhwnd 
@@ -543,7 +546,7 @@ class MAINUI() :
                     else:
                         setandrefresh(False)
                 else:
-                    if win32utils.GetWindowThreadProcessId( hwnd )==0:
+                    if windows.GetWindowThreadProcessId( hwnd )==0:
                         self.textsource.hwnd=0
                         setandrefresh(False)
                     elif 'once' not in dir(self.textsource):
@@ -569,8 +572,8 @@ class MAINUI() :
             time.sleep(1)
             
             try:
-                _hwnd=win32utils.GetForegroundWindow()
-                _pid=win32utils.GetWindowThreadProcessId(_hwnd)
+                _hwnd=windows.GetForegroundWindow()
+                _pid=windows.GetWindowThreadProcessId(_hwnd)
                 if self.textsource and 'pids' in dir(self.textsource) and len(self.textsource.pids):
                     try:
                         if _pid in self.textsource.pids:

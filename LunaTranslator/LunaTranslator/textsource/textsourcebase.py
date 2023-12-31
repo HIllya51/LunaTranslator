@@ -1,8 +1,8 @@
 import threading ,gobject,queue
-import time,sqlite3,json,os,codecs,win32utils
+import time,sqlite3,json,os
 from traceback import print_exc
 from myutils.config import globalconfig,savehook_new_data
-from myutils.utils import getfilemd5
+from myutils.utils import getfilemd5,autosql
 class basetext:
     def __init__(self,md5,basename)  :  
         self.textgetmethod=gobject.baseobject.textgetmethod  
@@ -23,7 +23,7 @@ class basetext:
         try:
             
             # self.sqlwrite=sqlite3.connect(self.sqlfname,check_same_thread = False, isolation_level=None)
-            self.sqlwrite2=sqlite3.connect(sqlfname_all,check_same_thread = False, isolation_level=None)
+            self.sqlwrite2=autosql(sqlite3.connect(sqlfname_all,check_same_thread = False, isolation_level=None))
             # try:
             #     self.sqlwrite.execute('CREATE TABLE artificialtrans(id INTEGER PRIMARY KEY AUTOINCREMENT,source TEXT,machineTrans TEXT,userTrans TEXT);')
             # except:
@@ -41,11 +41,7 @@ class basetext:
     def gettextonce(self):
         return None
     def end(self):
-        self.ending=True
-        try:
-            self.sqlwrite2.close()
-        except:
-            print_exc()
+        self.ending=True 
     ##################
     def sqlqueueput(self,xx):
         try:

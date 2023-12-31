@@ -2,7 +2,8 @@
 import time  
 from textsource.textsourcebase import basetext
 from myutils.config import globalconfig
-import winsharedutils,ctypes,win32utils,os
+import winsharedutils,os
+import windows
 class copyboard(basetext):
     def __init__(self) -> None:
         self.last_paste_str = '' 
@@ -16,7 +17,7 @@ class copyboard(basetext):
             
             if self.last_paste_str != paste_str:
                 self.last_paste_str =paste_str 
-                if globalconfig['excule_from_self']   and win32utils.GetWindowThreadProcessId(win32utils.GetClipboardOwner())==os.getpid():
+                if globalconfig['excule_from_self']   and windows.GetWindowThreadProcessId(windows.GetClipboardOwner())==os.getpid():
                     return  
                 return (paste_str)
     def gettextonce(self): 

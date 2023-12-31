@@ -1,18 +1,16 @@
 from myutils.config import globalconfig
 import sqlite3,os
 import winsharedutils
-from myutils.utils import argsort
+from myutils.utils import argsort,autosql
 class xiaoxueguan():
     def __init__(self):
         self.sql=None
         try:
             path=(globalconfig['cishu']['xiaoxueguan']['path'] )
             if os.path.exists(path):
-                self.sql=sqlite3.connect( path,check_same_thread=False) 
+                self.sql=autosql(sqlite3.connect( path,check_same_thread=False) )
         except:
-            pass
-    def end(self):
-        self.sql.close()
+            pass 
     def search(self,word): 
             
                 x=self.sql.execute("select word,explanation from xiaoxueguanrizhong where word like ?",('%{}%'.format(word),))

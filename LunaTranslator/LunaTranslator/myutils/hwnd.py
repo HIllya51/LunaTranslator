@@ -1,9 +1,7 @@
-
-import win32con ,win32utils,threading
-from traceback import print_exc
-from PyQt5.QtWinExtras  import QtWin
+import windows
+import threading
 from PyQt5.QtGui import   QPixmap,QColor ,QIcon
-from PyQt5.QtWidgets import QWidget, QLabel, QPushButton, QVBoxLayout,QApplication
+from PyQt5.QtWidgets import QApplication
 import gobject
 import os
 import time,winrtutils,winsharedutils
@@ -11,11 +9,10 @@ from myutils.wrapper import threader
 from myutils.utils import argsort
 def pid_running(pid): 
     try:
-        process =win32utils.OpenProcess(win32con.SYNCHRONIZE, False, pid);
+        process =windows.AutoHandle(windows.OpenProcess(windows.SYNCHRONIZE, False, pid))
         if(process==0):return False
-        ret =win32utils.WaitForSingleObject(process, 0);
-        win32utils.CloseHandle(process);
-        return (ret == win32con.WAIT_TIMEOUT);
+        ret =windows.WaitForSingleObject(process, 0); 
+        return (ret == windows.WAIT_TIMEOUT);
 
     except:
         return False
@@ -35,13 +32,13 @@ def grabwindow():
                 os.mkdir(fnamebase)
         fname='{}/{}-{}-{}-{}-{}-{}'.format(fnamebase,tm.tm_year,tm.tm_mon,tm.tm_mday,tm.tm_hour,tm.tm_min,tm.tm_sec)
         
-        hwnd=win32utils.FindWindow('Window_Magpie_967EB565-6F73-4E94-AE53-00CC42592A22',None) 
+        hwnd=windows.FindWindow('Window_Magpie_967EB565-6F73-4E94-AE53-00CC42592A22',None) 
         if hwnd: 
                 @threader
                 def _():
                         winrtutils._winrt_capture_window(fname+'_winrt_magpie.png',hwnd)
                 _()
-        hwnd= win32utils.GetForegroundWindow()  
+        hwnd= windows.GetForegroundWindow()  
         try:
                 if hwnd==int(gobject.baseobject.translation_ui.winId()):
                         hwnd=gobject.baseobject.textsource.hwnd
@@ -51,7 +48,7 @@ def grabwindow():
         def _():
                 winrtutils._winrt_capture_window(fname+'_winrt.png',hwnd)
         _()
-        _=win32utils.GetClientRect(hwnd)
+        _=windows.GetClientRect(hwnd)
         rate=dynamic_rate(hwnd,_)
         h,w= _[2]/rate,_[3]/rate
         p=QApplication.primaryScreen().grabWindow(hwnd,0,0,h,w)
@@ -66,13 +63,13 @@ def dynamic_rate(hwnd,rect):
                 rate=hwndscalerate(hwnd)
         return rate
 def getscreenp():       #一些游戏全屏时会修改分辨率，但不会修改系统gdi
-        hDC = win32utils.GetDC(0) 
-        h = win32utils.GetDeviceCaps(hDC, 8)
-        w = win32utils.GetDeviceCaps(hDC, 10)
-        win32utils._ReleaseDC(None, hDC); 
+        hDC = windows.GetDC(0) 
+        h = windows.GetDeviceCaps(hDC, 8)
+        w = windows.GetDeviceCaps(hDC, 10)
+        windows.ReleaseDC(None, hDC); 
         return h,w
 def hwndscalerate(hwnd):
-        dpi=(win32utils.GetDpiForWindow(hwnd))
+        dpi=(windows.GetDpiForWindow(hwnd))
         rate=getScreenRate()*96/dpi
         return rate
 
@@ -80,45 +77,43 @@ def getpidhwndfirst(pid):
         try:
                 hwnds=list()
                 def get_all_hwnd(hwnd,_): 
-                        if win32utils.IsWindow(hwnd) and win32utils.IsWindowEnabled(hwnd) and win32utils.IsWindowVisible(hwnd): 
-                                if  win32utils.GetWindowThreadProcessId(hwnd)==pid:
+                        if windows.IsWindow(hwnd) and windows.IsWindowEnabled(hwnd) and windows.IsWindowVisible(hwnd): 
+                                if  windows.GetWindowThreadProcessId(hwnd)==pid:
                                         hwnds.append( (hwnd) )
-                win32utils.EnumWindows(get_all_hwnd, 0)  
+                windows.EnumWindows(get_all_hwnd, 0)  
                 return hwnds[0]
         except:
                 return 0
 def getwindowlist():
         windows_list=[]
         pidlist=[]
-        win32utils.EnumWindows(lambda hWnd, param: windows_list.append(hWnd), 0) 
+        windows.EnumWindows(lambda hWnd, param: windows_list.append(hWnd), 0) 
         for hwnd in windows_list:
                 try:
-                        pid=win32utils.GetWindowThreadProcessId(hwnd) 
+                        pid=windows.GetWindowThreadProcessId(hwnd) 
                         pidlist.append(pid)
                 except:
                         pass
         return list(set(pidlist))
 def getprocesslist():
         
-        pids= win32utils.EnumProcesses()
+        pids= windows.EnumProcesses()
         return pids
  
 
 
 def getpidexe(pid):
-        hwnd1=win32utils.OpenProcess(win32con.PROCESS_ALL_ACCESS,False, (pid))
+        hwnd1=windows.AutoHandle(windows.OpenProcess(windows.PROCESS_ALL_ACCESS,False, (pid)))
         if(hwnd1==0):
                 
-                hwnd1=win32utils.OpenProcess(win32con.PROCESS_QUERY_LIMITED_INFORMATION,False, (pid))
+                hwnd1=windows.OpenProcess(windows.PROCESS_QUERY_LIMITED_INFORMATION,False, (pid))
         if(hwnd1==0):
                 name_=None
         else:
-                name_ = win32utils.GetProcessFileName( hwnd1)
-        win32utils.CloseHandle(hwnd1)
+                name_ = windows.GetProcessFileName( hwnd1) 
         return name_
 def testprivilege(pid):
-       hwnd1=win32utils.OpenProcess(win32con.PROCESS_INJECT_ACCESS,False, (pid))
-       win32utils.CloseHandle(hwnd1)
+       hwnd1=windows.AutoHandle(windows.OpenProcess(windows.PROCESS_INJECT_ACCESS,False, (pid)))
        return hwnd1!=0
 
 
@@ -161,10 +156,11 @@ def getExeIcon( name,icon=True ):
                           name=iconpath
                   elif os.path.exists(exepath):
                           name=exepath
-            large = win32utils.ExtractIconEx(name)
-            if large:
-                    pixmap =QtWin.fromHICON(large)
-            else:
+            data=winsharedutils.extracticon2data(name)
+            if data: 
+                pixmap=QPixmap()
+                pixmap.loadFromData(data)  
+            else: 
                    pixmap=QPixmap(100,100)
                    pixmap.fill(QColor.fromRgba(0))
             if icon:
@@ -175,9 +171,9 @@ __rate=0
 def getScreenRate() :
     global __rate
     if __rate==0:
-        hDC = win32utils.GetDC(0) 
-        dpiX = win32utils.GetDeviceCaps(hDC, win32con.LOGPIXELSX) /96.0;
-        win32utils._ReleaseDC(None, hDC); 
+        hDC = windows.GetDC(0) 
+        dpiX = windows.GetDeviceCaps(hDC, windows.LOGPIXELSX) /96.0;
+        windows.ReleaseDC(None, hDC); 
         __rate = round(dpiX, 2)  
     return __rate
 
@@ -186,14 +182,14 @@ def mouseselectwindow(callback):
         
         def _loop():
                 while True:
-                        keystate=win32utils.GetKeyState(win32con.VK_LBUTTON ) #必须使用GetKeyState, GetAsyncKeyState或SetWindowHookEx都无法检测到高权限应用上的点击事件。
+                        keystate=windows.GetKeyState(windows.VK_LBUTTON ) #必须使用GetKeyState, GetAsyncKeyState或SetWindowHookEx都无法检测到高权限应用上的点击事件。
                         if(keystate<0):
                                 break
                         time.sleep(0.01)
                 try:
-                        pos=win32utils.GetCursorPos()
-                        hwnd=win32utils.GetAncestor(win32utils.WindowFromPoint(pos))
-                        pid=win32utils.GetWindowThreadProcessId(hwnd)
+                        pos=windows.GetCursorPos()
+                        hwnd=windows.GetAncestor(windows.WindowFromPoint(pos))
+                        pid=windows.GetWindowThreadProcessId(hwnd)
                         callback(pid,hwnd)
                 except:
                         pass
@@ -201,32 +197,32 @@ def mouseselectwindow(callback):
         
 
 def letfullscreen(hwnd):
-        wpc=win32utils. GetWindowPlacement( hwnd,False )
-        HWNDStyle = win32utils.GetWindowLong( hwnd, win32con.GWL_STYLE )
-        HWNDStyleEx = win32utils.GetWindowLong( hwnd, win32con.GWL_EXSTYLE  )
+        wpc= windows.GetWindowPlacement( hwnd,False )
+        HWNDStyle = windows.GetWindowLong( hwnd, windows.GWL_STYLE )
+        HWNDStyleEx = windows.GetWindowLong( hwnd, windows.GWL_EXSTYLE  )
         NewHWNDStyle=HWNDStyle
-        NewHWNDStyle &= ~win32con.WS_BORDER;
-        NewHWNDStyle &= ~win32con.WS_DLGFRAME;
-        NewHWNDStyle &= ~win32con.WS_THICKFRAME;
+        NewHWNDStyle &= ~windows.WS_BORDER;
+        NewHWNDStyle &= ~windows.WS_DLGFRAME;
+        NewHWNDStyle &= ~windows.WS_THICKFRAME;
         NewHWNDStyleEx=HWNDStyleEx
-        NewHWNDStyleEx &= ~win32con.WS_EX_WINDOWEDGE;
-        win32utils.SetWindowLong( hwnd, win32con.GWL_STYLE, NewHWNDStyle | win32con.WS_POPUP );
-        win32utils.SetWindowLong( hwnd, win32con.GWL_EXSTYLE, NewHWNDStyleEx | win32con.WS_EX_TOPMOST )
-        win32utils.ShowWindow(hwnd,win32con.SW_SHOWMAXIMIZED )
+        NewHWNDStyleEx &= ~windows.WS_EX_WINDOWEDGE;
+        windows.SetWindowLong( hwnd, windows.GWL_STYLE, NewHWNDStyle | windows.WS_POPUP );
+        windows.SetWindowLong( hwnd, windows.GWL_EXSTYLE, NewHWNDStyleEx | windows.WS_EX_TOPMOST )
+        windows.ShowWindow(hwnd,windows.SW_SHOWMAXIMIZED )
         return (wpc,HWNDStyle,HWNDStyleEx)
 
 def recoverwindow(hwnd,status):
         wpc,HWNDStyle,HWNDStyleEx=status
-        win32utils.SetWindowLong( hwnd, win32con.GWL_STYLE,  HWNDStyle );
-        win32utils.SetWindowLong( hwnd, win32con.GWL_EXSTYLE,  HWNDStyleEx );
-        win32utils.ShowWindow( hwnd, win32con.SW_SHOWNORMAL );
-        win32utils.SetWindowPlacement( hwnd, wpc );
+        windows.SetWindowLong( hwnd, windows.GWL_STYLE,  HWNDStyle );
+        windows.SetWindowLong( hwnd, windows.GWL_EXSTYLE,  HWNDStyleEx );
+        windows.ShowWindow( hwnd, windows.SW_SHOWNORMAL );
+        windows.SetWindowPlacement( hwnd, wpc );
 def showintab(hwnd,show):
-        style_ex=win32utils.GetWindowLong( hwnd, win32con.GWL_EXSTYLE )
+        style_ex=windows.GetWindowLong( hwnd, windows.GWL_EXSTYLE )
         if(show):
-                style_ex|=win32con.WS_EX_APPWINDOW
-                style_ex &= ~win32con.WS_EX_TOOLWINDOW
+                style_ex|=windows.WS_EX_APPWINDOW
+                style_ex &= ~windows.WS_EX_TOOLWINDOW
         else: 
-                style_ex &=~win32con.WS_EX_APPWINDOW
-                style_ex |= win32con.WS_EX_TOOLWINDOW
-        win32utils.SetWindowLong(hwnd,win32con.GWL_EXSTYLE,style_ex)
+                style_ex &=~windows.WS_EX_APPWINDOW
+                style_ex |= windows.WS_EX_TOOLWINDOW
+        windows.SetWindowLong(hwnd,windows.GWL_EXSTYLE,style_ex)

@@ -1,18 +1,15 @@
 
-from myutils.subproc import subproc_w       
+from myutils.subproc import subproc_w       ,autoproc
 from translator.basetranslator import basetrans 
-import os  ,time,win32utils,win32con
+import os  ,time
+import windows
 
 class TS(basetrans): 
     def inittranslator(self ) : 
         self.path=None
         self.pair=None
         self.checkpath()
-    def end(self):
-        try:
-            self.engine.kill()
-        except:
-            pass
+     
     def checkpath(self):
         if self.config['路径']=="":
             return  False
@@ -34,12 +31,12 @@ class TS(basetrans):
             else:
                 path2=os.path.join(path,'TransCOMEC.dll')
             
-            self.engine=subproc_w('./files/plugins/shareddllproxy32.exe dreye "{}"  "{}" {} {} {} '.format(path,path2,str(mp[pairs]),pipename,waitsignal),name='dreye')
+            self.engine=autoproc(subproc_w('./files/plugins/shareddllproxy32.exe dreye "{}"  "{}" {} {} {} '.format(path,path2,str(mp[pairs]),pipename,waitsignal),name='dreye'))
             
-            win32utils.WaitForSingleObject(win32utils.CreateEvent(False, False, waitsignal),win32utils.INFINITE); 
-            win32utils.WaitNamedPipe(pipename,win32con.NMPWAIT_WAIT_FOREVER)
-            self.hPipe = win32utils.CreateFile( pipename, win32con.GENERIC_READ | win32con.GENERIC_WRITE, 0,
-                    None, win32con.OPEN_EXISTING, win32con.FILE_ATTRIBUTE_NORMAL, None);
+            windows.WaitForSingleObject(windows.AutoHandle(windows.CreateEvent(False, False, waitsignal)),windows.INFINITE); 
+            windows.WaitNamedPipe(pipename,windows.NMPWAIT_WAIT_FOREVER)
+            self.hPipe =windows.AutoHandle(windows.CreateFile( pipename,windows. GENERIC_READ | windows.GENERIC_WRITE, 0,
+                    None, windows.OPEN_EXISTING, windows.FILE_ATTRIBUTE_NORMAL, None))
         return True
     def x64(self,content):  
             
@@ -49,8 +46,8 @@ class TS(basetrans):
             for line in content.split('\n'):
                 if len(line)==0:
                     continue
-                win32utils.WriteFile(self.hPipe,line.encode(codes[self.srclang])) 
-                ress.append(win32utils.ReadFile(self.hPipe,4096,None).decode(codes[self.tgtlang]))
+                windows.WriteFile(self.hPipe,line.encode(codes[self.srclang])) 
+                ress.append(windows.ReadFile(self.hPipe,4096,None).decode(codes[self.tgtlang]))
             return '\n'.join(ress)
               
     def translate(self,content): 

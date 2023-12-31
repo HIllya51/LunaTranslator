@@ -1,19 +1,15 @@
 from translator.basetranslator import basetrans 
 import ctypes 
 import os ,time 
-import  win32con ,win32utils
-from myutils.subproc import subproc_w
+import windows
+from myutils.subproc import subproc_w,autoproc
 class TS(basetrans):  
     def inittranslator(self ) : 
                  
         self.path=None
         self.userdict=None
         self.checkpath()
-    def end(self):
-        try:
-            self.engine.kill()
-        except:
-            pass
+     
     def checkpath(self):
         if self.config['路径']=="":
             return False
@@ -34,13 +30,13 @@ class TS(basetrans):
             pipename='\\\\.\\Pipe\\jbj7_'+t
             waitsignal='jbjwaitload_'+t
 
-            self.engine=subproc_w('./files/plugins/shareddllproxy32.exe jbj7 "{}" {} {} '.format(self.dllpath,pipename,waitsignal)+dictpath,name='jbj7')
+            self.engine=autoproc(subproc_w('./files/plugins/shareddllproxy32.exe jbj7 "{}" {} {} '.format(self.dllpath,pipename,waitsignal)+dictpath,name='jbj7'))
             #!!!!!!!!!!!!!!stdout=subprocess.PIPE 之后，隔一段时间之后，exe侧writefile就写不进去了！！！！！不知道为什么！！！
            
-            win32utils.WaitForSingleObject(win32utils.CreateEvent(False, False, waitsignal),win32utils.INFINITE); 
-            win32utils.WaitNamedPipe(pipename,win32con.NMPWAIT_WAIT_FOREVER)
-            self.hPipe = win32utils.CreateFile( pipename, win32con.GENERIC_READ | win32con.GENERIC_WRITE, 0,
-                    None, win32con.OPEN_EXISTING, win32con.FILE_ATTRIBUTE_NORMAL, None);
+            windows.WaitForSingleObject(windows.AutoHandle(windows.CreateEvent(False, False, waitsignal)),windows.INFINITE); 
+            windows.WaitNamedPipe(pipename,windows.NMPWAIT_WAIT_FOREVER)
+            self.hPipe = windows.AutoHandle(windows.CreateFile( pipename, windows.GENERIC_READ | windows.GENERIC_WRITE, 0,
+                    None, windows.OPEN_EXISTING, windows.FILE_ATTRIBUTE_NORMAL, None))
         return True
     def packuint32(self,i): # int -> str 
         return bytes(chr((i >> 24) & 0xff) + chr((i >> 16) & 0xff) + chr((i >> 8) & 0xff) + chr(i & 0xff),encoding='latin-1')
@@ -59,8 +55,8 @@ class TS(basetrans):
             for line in lines: 
                 if len(line)==0:continue
                 code1=line.encode('utf-16-le') 
-                win32utils.WriteFile(self.hPipe,self.packuint32(int(self.tgtlang))+code1) 
-                xx=win32utils.ReadFile(self.hPipe, 65535, None)
+                windows.WriteFile(self.hPipe,self.packuint32(int(self.tgtlang))+code1) 
+                xx=windows.ReadFile(self.hPipe, 65535, None)
                 xx=xx.decode('utf-16-le',errors='ignore') 
                 ress.append(xx)  
             return '\n'.join(ress)

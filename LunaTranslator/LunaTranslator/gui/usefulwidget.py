@@ -5,7 +5,7 @@ from PyQt5.QtCore import Qt,pyqtSignal ,QSize ,QRect ,QPoint ,QObject
 from myutils.config import _TR,globalconfig
 from PyQt5.QtWidgets import  QColorDialog,QSpinBox,QDoubleSpinBox,QPushButton,QComboBox,QLabel,QDialogButtonBox,QLineEdit,QGridLayout,QApplication,QTabBar,QVBoxLayout
 from traceback import print_exc
-import qtawesome ,functools,gobject,win32utils,threading
+import qtawesome ,functools,gobject,threading
 from myutils.wrapper import  Singleton 
 from myutils.hwnd import getScreenRate,showintab
 @Singleton

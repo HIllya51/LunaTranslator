@@ -5,7 +5,7 @@ from myutils.utils import getproxy
 from traceback import print_exc
 import zipfile,os
 from myutils.config import globalconfig  ,_TR ,static_data
-import win32utils,win32con
+import windows
 def getvesionmethod():
     url='https://github.com/HIllya51/LunaTranslator/releases/'
     
@@ -44,7 +44,7 @@ timeout 1
 xcopy .\cache\update\LunaTranslator'''+bit+''' .\ /s /e /c /y /h /r 
 exit
                 ''') 
-    win32utils.ShellExecute(None, "open", 'cache\\update\\update.bat', "", os.path.dirname('.'), win32con.SW_HIDE)
+    windows.ShellExecute(None, "open", 'cache\\update\\update.bat', "", os.path.dirname('.'), windows.SW_HIDE)
 
 def updatemethod(_version,progresscallback):
 

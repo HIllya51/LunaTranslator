@@ -3,7 +3,14 @@ import time,threading
 from traceback import print_exc
 import subprocess
 allsubprocess2={}
- 
+class autoproc:
+    def __init__(self,proc) -> None:
+        self.proc=proc
+    def __del__(self):
+        try:
+            self.proc.kill()
+        except:
+            pass
 def subproc_w(cmd,cwd=None ,needstdio=False ,name=None,encoding=None,run=False):
      
     _pipe=subprocess.PIPE if needstdio else None

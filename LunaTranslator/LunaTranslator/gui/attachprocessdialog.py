@@ -5,7 +5,8 @@ from PyQt5.QtGui import  QStandardItemModel,QPixmap,QColor,QIcon,QStandardItem ,
 import functools
 from traceback import print_exc
 from myutils.config import globalconfig ,_TR,_TRL
-import sys,win32utils
+import sys
+import windows
 import time   ,os
 from myutils.hwnd import getpidexe,ListProcess,mouseselectwindow,getExeIcon,testprivilege,getpidhwndfirst
 import qtawesome
@@ -30,7 +31,7 @@ class AttachProcessDialog(closeashidewindow):
                     self.processEdit.setText(name)
                     self.processIdEdit.setText(','.join([str(pid) for pid in _pids]))
                     [_.show() for _ in self.windowtextlayoutwidgets]
-                    self.windowtext.setText(win32utils.GetWindowText(hwnd))
+                    self.windowtext.setText(windows.GetWindowText(hwnd))
                     self.selectedp=(_pids,name,hwnd)
     def __init__(self ,parent,callback,hookselectdialog=None):
         super(AttachProcessDialog, self).__init__( parent ,globalconfig,'attachprocessgeo') 
@@ -41,7 +42,7 @@ class AttachProcessDialog(closeashidewindow):
         self.callback=callback
         self.hookselectdialog=hookselectdialog
         self.selectedp=None
-        self.setWindowTitle(_TR('选择进程')+" "+_TR("当前权限")+" "+_TR("管理员" if win32utils.IsUserAnAdmin() else "非管理员"))
+        self.setWindowTitle(_TR('选择进程')+" "+_TR("当前权限")+" "+_TR("管理员" if windows.IsUserAnAdmin() else "非管理员"))
         self.setWindowIcon(qtawesome.icon("fa.gear" )) 
         w=QWidget()
         self.layout1=QVBoxLayout()

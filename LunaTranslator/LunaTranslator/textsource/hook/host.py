@@ -5,15 +5,13 @@ import ctypes,time
 from ctypes import Structure,c_int,c_char,sizeof,cast,POINTER
 from myutils.wrapper import threader
 import sys
-import os  ,subprocess
-import win32utils
+import os  ,subprocess 
 from myutils.config import globalconfig 
-import win32utils
+import windows
 from myutils.hwnd import testprivilege
 
 import ctypes
 import textsource.hook.hookcode as hookcode
-import win32con
 class ProcessRecord():
     def __init__(self,pipe,processId,_is64bit) -> None:
         self.pipe=pipe
@@ -26,11 +24,11 @@ class ProcessRecord():
         HOOK_SECTION_SIZE=sizeof(buff)
         self.buff=buff 
         self.OnHookFound=0
-        fmap1=win32utils.OpenFileMapping(win32utils.FILE_MAP_READ,False,define.SHAREDMEMDPREFIX+str(processId))
-        address1=win32utils.MapViewOfFile(fmap1, win32utils.FILE_MAP_READ,   HOOK_SECTION_SIZE)
+        fmap1=windows.OpenFileMapping(windows.FILE_MAP_READ,False,define.SHAREDMEMDPREFIX+str(processId))
+        address1=windows.MapViewOfFile(fmap1, windows.FILE_MAP_READ,   HOOK_SECTION_SIZE)
         
-        fmap2=win32utils.OpenFileMapping(win32utils.FILE_MAP_READ,False,define.HOOKCODEGET+str(processId))
-        address2=win32utils.MapViewOfFile(fmap2, win32utils.FILE_MAP_READ,   sizeof(define.MAX_HOOK*define.Hookcodeshared))
+        fmap2=windows.OpenFileMapping(windows.FILE_MAP_READ,False,define.HOOKCODEGET+str(processId))
+        address2=windows.MapViewOfFile(fmap2, windows.FILE_MAP_READ,   sizeof(define.MAX_HOOK*define.Hookcodeshared))
 
         self.sharedtexthook=cast(address1,POINTER(buff)) 
         self.sharedhookcode=cast(address2,POINTER(define.MAX_HOOK*define.Hookcodeshared)) 
@@ -42,7 +40,7 @@ class ProcessRecord():
                 return _hook,code
         return None,None
     def Send(self,struct):
-        win32utils.WriteFile(self.pipe,bytes(struct))
+        windows.WriteFile(self.pipe,bytes(struct))
     #calls
     def Detach(self):
         self.Send(define.DetachCmd()) 
@@ -119,7 +117,7 @@ class TextThread():
                 buff=self.leadbyte+buff
                 self.leadbyte=0
             else:
-                if(win32utils.IsDBCSLeadByteEx(cp,buff[0])):
+                if(windows.IsDBCSLeadByteEx(cp,buff[0])):
                     self.leadbyte=buff
                     return ''
         
@@ -136,7 +134,7 @@ class TextThread():
                 cp=self.host.setting.defaultcodepag
             else:
                 cp=hp.codepage
-            _ret=win32utils.MultiByteToWideChar(buff,len(buff),cp)
+            _ret=windows.MultiByteToWideChar(buff,len(buff),cp)
             if _ret is None:
                 _ret=''	
         if hp.type&hookcode.FULL_STRING:
@@ -161,7 +159,7 @@ class RPC():
         return c_int.from_buffer_copy(byte4).value
     def end(self):
         for _ in self.hookPipes:
-            win32utils.CancelIo(_)
+            windows.CancelIo(_)
     def __init__(self) -> None:
         self.ProcessRecord={}
         self.textthreadslock=threading.Lock()
@@ -185,43 +183,41 @@ class RPC():
             self.textthreadslock.release()
     def start(self,pid):
     
-        hookPipe = win32utils.CreateNamedPipe(define.HOOK_PIPE_NAME+str(pid),
-                                            win32con.PIPE_ACCESS_INBOUND,
-                                            win32con.PIPE_TYPE_MESSAGE | win32con.PIPE_READMODE_MESSAGE | win32con.PIPE_WAIT,
-                                            win32con.PIPE_UNLIMITED_INSTANCES,
+        hookPipe = windows.CreateNamedPipe(define.HOOK_PIPE_NAME+str(pid),
+                                            windows.PIPE_ACCESS_INBOUND,
+                                            windows.PIPE_TYPE_MESSAGE | windows.PIPE_READMODE_MESSAGE | windows.PIPE_WAIT,
+                                            windows.PIPE_UNLIMITED_INSTANCES,
                                             0,
                                             0,
-                                            0,
-                                            win32utils.pointer(win32utils.get_SECURITY_ATTRIBUTES()))
-        hostPipe = win32utils.CreateNamedPipe(define.HOST_PIPE_NAME+str(pid),
-                                                win32con.PIPE_ACCESS_OUTBOUND,
-                                                win32con.PIPE_TYPE_MESSAGE | win32con.PIPE_READMODE_MESSAGE | win32con.PIPE_WAIT,
-                                                win32con.PIPE_UNLIMITED_INSTANCES,
+                                            0)
+        hostPipe = windows.CreateNamedPipe(define.HOST_PIPE_NAME+str(pid),
+                                                windows.PIPE_ACCESS_OUTBOUND,
+                                                windows.PIPE_TYPE_MESSAGE | windows.PIPE_READMODE_MESSAGE | windows.PIPE_WAIT,
+                                                windows.PIPE_UNLIMITED_INSTANCES,
                                                 0,
                                                 0,
-                                                0,
-                                                win32utils.pointer(win32utils.get_SECURITY_ATTRIBUTES()))
+                                                0 )
         
-        pipeAvailableEvent = win32utils.CreateEvent(False, False, define.PIPE_AVAILABLE_EVENT+str(pid))
-        win32utils.SetEvent(pipeAvailableEvent)
+        pipeAvailableEvent = windows.CreateEvent(False, False, define.PIPE_AVAILABLE_EVENT+str(pid))
+        windows.SetEvent(pipeAvailableEvent)
         self.hookPipes.append(hookPipe)
         def _():
-            win32utils.ConnectNamedPipe(hookPipe, None)
-            win32utils.CloseHandle(pipeAvailableEvent)
-            processId = self.toint(win32utils.ReadFile(hookPipe, 4,None) )
+            windows.ConnectNamedPipe(hookPipe, None)
+            windows.CloseHandle(pipeAvailableEvent)
+            processId = self.toint(windows.ReadFile(hookPipe, 4,None) )
             
-            _is64bit=win32utils.Is64bit(processId)
+            _is64bit=windows.Is64bit(processId)
             self.ProcessRecord[processId]=ProcessRecord(hostPipe,processId,_is64bit)
             self.OnConnect(processId) 
             
             while True:  
-                data=win32utils.ReadFile(hookPipe,50000,None) 
+                data=windows.ReadFile(hookPipe,50000,None) 
                 if len(data)==0 :break
                 if len(data)==50000:continue
                 self.OnMessage(data,processId,_is64bit)
             self.ProcessRecord.pop(processId)
-            win32utils.CloseHandle(hookPipe)
-            win32utils.CloseHandle(hostPipe)
+            windows.CloseHandle(hookPipe)
+            windows.CloseHandle(hostPipe)
             self.removethreads(processId)
             self.OnDisconnect((processId))
         threading.Thread(target=_,daemon=True).start()
@@ -267,7 +263,7 @@ class RPC():
             for codepage in codepages:
                 try:
                     hp.codepage=codepage
-                    text=win32utils.MultiByteToWideChar(_HookFoundNotif.text.text,sizeof(define.hookfoundtext),hp.codepage)
+                    text=windows.MultiByteToWideChar(_HookFoundNotif.text.text,sizeof(define.hookfoundtext),hp.codepage)
                     if text is not None and len(text)>12:
                         self.ProcessRecord[processId].OnHookFound(hookcode.Generate(hp,processId),text)
                 except:pass
@@ -301,11 +297,11 @@ class RPC():
         #subprocess.Popen('"{}" dllinject {} "{}"'.format(injecter,pid,dll))
         pid=' '.join([str(_) for _ in pids])
         if any(map(testprivilege,pids))==False: 
-            win32utils.ShellExecute(0,'runas',injecter,'dllinject {} "{}"'.format(pid,dll),None,win32con.SW_HIDE)
+            windows.ShellExecute(0,'runas',injecter,'dllinject {} "{}"'.format(pid,dll),None,windows.SW_HIDE)
         else:
             ret=subprocess.run('"{}" dllinject {} "{}"'.format(injecter,pid,dll)).returncode
             if(ret==0):
-                win32utils.ShellExecute(0,'runas',injecter,'dllinject {} "{}"'.format(pid,dll),None,win32con.SW_HIDE)
+                windows.ShellExecute(0,'runas',injecter,'dllinject {} "{}"'.format(pid,dll),None,windows.SW_HIDE)
     @threader
     def InsertHookCode(self,pid,hookcode):
         if pid in self.ProcessRecord:

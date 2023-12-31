@@ -399,6 +399,7 @@ class Textbrowser( ):
     def getfh(self,half ,origin=True   ):
         
         font=QFont()
+        font.setBold(globalconfig['showbold'])
         if origin:
             font.setFamily(globalconfig['fonttype']) 
         else:

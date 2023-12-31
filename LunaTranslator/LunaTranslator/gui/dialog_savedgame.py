@@ -4,7 +4,8 @@ from PyQt5.QtWidgets import  QPushButton,QDialog,QVBoxLayout ,QHeaderView,QFileD
 import functools,threading
 from traceback import print_exc 
 from PyQt5.QtWidgets import    QHBoxLayout, QTableView, QAbstractItemView, QLabel, QVBoxLayout,QSpacerItem,QTabWidget,QComboBox
-import win32utils  ,importlib
+import importlib
+import windows
 from PyQt5.QtCore import QPoint, QRect, QSize, Qt,pyqtSignal,QCoreApplication
 import os,subprocess
 from PyQt5 import QtCore, QtGui, QtWidgets
@@ -22,7 +23,7 @@ from myutils.config import   savehook_new_list,savehook_new_data
 from myutils.hwnd import getExeIcon  
 import gobject
 from myutils.config import _TR,_TRL,globalconfig,static_data 
-import winsharedutils,win32con
+import winsharedutils
 from myutils.wrapper import Singleton_close,Singleton,threader
 from myutils.utils import checkifnewgame ,loadfridascriptslist
 from gui.usefulwidget import yuitsu_switch,saveposwindow,getboxlayout
@@ -342,7 +343,7 @@ class dialog_setting_game(QDialog):
                 ]))
                 
                 
-                b=win32utils.GetBinaryType(exepath)
+                b=windows.GetBinaryType(exepath)
                 
                 if type==2: 
                         formLayout.addLayout(getboxlayout([
@@ -540,7 +541,7 @@ def startgame(game):
                         return
                 if savehook_new_data[game]['leuse']==False or (game.lower()[-4:] not in ['.lnk','.exe']):
                         #对于其他文件，需要AssocQueryStringW获取命令行才能正确le，太麻烦，放弃。
-                        win32utils.ShellExecute(None, "open", game, "", os.path.dirname(game), win32con.SW_SHOW) 
+                        windows.ShellExecute(None, "open", game, "", os.path.dirname(game), windows.SW_SHOW) 
                         return 
                 
                 execheck3264=game
@@ -561,7 +562,7 @@ def startgame(game):
                         dirpath=dirp
                 
                 localeswitcher=savehook_new_data[game]['localeswitcher'] 
-                b=win32utils.GetBinaryType(execheck3264) 
+                b=windows.GetBinaryType(execheck3264) 
                 if b==6 and localeswitcher==0:
                         localeswitcher=1
                 if (localeswitcher==2 and b==6):
@@ -570,7 +571,7 @@ def startgame(game):
                         _shareddllproxy='shareddllproxy32'
                 shareddllproxy=os.path.abspath('./files/plugins/'+_shareddllproxy)
                 _cmd={0:'le',1:"LR",2:"ntleas"}[localeswitcher] 
-                win32utils.CreateProcess(None,'"{}" {} {}'.format(shareddllproxy,_cmd,usearg), None,None,False,0,None, dirpath, win32utils.STARTUPINFO()  )  
+                windows.CreateProcess(None,'"{}" {} {}'.format(shareddllproxy,_cmd,usearg), None,None,False,0,None, dirpath, windows.STARTUPINFO()  )  
     except:
             print_exc()
 

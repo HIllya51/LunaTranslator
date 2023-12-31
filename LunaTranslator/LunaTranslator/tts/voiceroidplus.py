@@ -1,17 +1,14 @@
     
 from myutils.config import globalconfig   ,_TR
 import time
-import os ,threading,win32utils,win32con
+import os 
+import windows
 from traceback import print_exc
 from tts.basettsclass import TTSbase 
 
-from myutils.subproc import subproc_w
+from myutils.subproc import subproc_w,autoproc
 class TTS(TTSbase):
-    def end(self):
-        try:
-            self.engine.kill()
-        except:
-            pass
+    
     def init(self): 
         self.path=''
         self.voice=''
@@ -81,12 +78,12 @@ class TTS(TTSbase):
             pipename='\\\\.\\Pipe\\voiceroid2_'+t
             waitsignal='voiceroid2waitload_'+t
             #速率不可调
-            self.engine=subproc_w('"{}" voiceroid2 "{}" "{}" {} 22050 0 "{}"  {} {}'.format(exepath,self.config["path"],dllpath,self.config["voice"],savepath,pipename,waitsignal),name='voicevoid2') 
+            self.engine=autoproc(subproc_w('"{}" voiceroid2 "{}" "{}" {} 22050 0 "{}"  {} {}'.format(exepath,self.config["path"],dllpath,self.config["voice"],savepath,pipename,waitsignal),name='voicevoid2') )
             
-            win32utils.WaitForSingleObject(win32utils.CreateEvent(False, False, waitsignal),win32utils.INFINITE); 
-            win32utils.WaitNamedPipe(pipename,win32con.NMPWAIT_WAIT_FOREVER)
-            self.hPipe = win32utils.CreateFile( pipename, win32con.GENERIC_READ | win32con.GENERIC_WRITE, 0,
-                    None, win32con.OPEN_EXISTING, win32con.FILE_ATTRIBUTE_NORMAL, None);
+            windows.WaitForSingleObject(windows.AutoHandle(windows.CreateEvent(False, False, waitsignal)),windows.INFINITE); 
+            windows.WaitNamedPipe(pipename,windows.NMPWAIT_WAIT_FOREVER)
+            self.hPipe = windows.AutoHandle(windows.CreateFile( pipename, windows.GENERIC_READ | windows.GENERIC_WRITE, 0,
+                    None, windows.OPEN_EXISTING,windows. FILE_ATTRIBUTE_NORMAL, None))
     def speak(self,content,rate,voice,voice_idx):  
         self.checkpath()
         #def _():
@@ -98,9 +95,9 @@ class TTS(TTSbase):
                 return
             code1=content.encode('shift-jis') 
             #print(code1)
-            win32utils.WriteFile(self.hPipe,code1)
+            windows.WriteFile(self.hPipe,code1)
             
-            fname=win32utils.ReadFile(self.hPipe,1024,None).decode('utf8')
+            fname=windows.ReadFile(self.hPipe,1024,None).decode('utf8')
             if os.path.exists(fname):
                 return(fname)
         

@@ -64,15 +64,8 @@ class WebSocket:
               
     def close(self): 
         if self.hWebSocketHandle:
-            WinHttpWebSocketClose(self.hWebSocketHandle, WINHTTP_WEB_SOCKET_SUCCESS_CLOSE_STATUS, NULL, None)
-            WinHttpCloseHandle(self.hWebSocketHandle)
-            self.hWebSocketHandle=0
-        if self.hConnect:
-            WinHttpCloseHandle(self.hConnect)
-            self.hConnect=0
-        if self.hSession:
-            WinHttpCloseHandle(self.hSession)
-            self.hSession=0
+            WinHttpWebSocketClose(self.hWebSocketHandle, WINHTTP_WEB_SOCKET_SUCCESS_CLOSE_STATUS, NULL, None) 
+            self.hWebSocketHandle=0 
     def __del__(self):
         self.close()
     def __init__(self) -> None:
@@ -107,17 +100,22 @@ class WebSocket:
         if header is None:
             return WINHTTP_NO_ADDITIONAL_HEADERS
         return '\r\n'.join(header)
-    def connect(self,url,header=None):
+    def _setproxy(self,hsess,http_proxy_host,http_proxy_port):
+        if http_proxy_host is None or http_proxy_port is None:return 
+        proxy= '{}:{}'.format(http_proxy_host,http_proxy_port)
+        winhttpsetproxy(hsess,proxy)
+    def connect(self,url,header=None,http_proxy_host=None,http_proxy_port=None):
         https,server,port,path=self._parseurl2serverandpath(url)
         if https:
             flag=WINHTTP_FLAG_SECURE 
         else:
             flag=0 
-        self.hSession = WinHttpOpen( "WebSocket Client", WINHTTP_ACCESS_TYPE_DEFAULT_PROXY, WINHTTP_NO_PROXY_NAME, WINHTTP_NO_PROXY_BYPASS, 0);
+        self.hSession = AutoWinHttpHandle(WinHttpOpen( "WebSocket Client", WINHTTP_ACCESS_TYPE_DEFAULT_PROXY, WINHTTP_NO_PROXY_NAME, WINHTTP_NO_PROXY_BYPASS, 0))
         if self.hSession==0: raise WinhttpException(GetLastError())
-        self.hConnect = WinHttpConnect(self.hSession,  server, port, 0);
+        self._setproxy(self.hSession,http_proxy_host,http_proxy_port)
+        self.hConnect = AutoWinHttpHandle(WinHttpConnect(self.hSession,  server, port, 0))
         if self.hConnect==0:  raise WinhttpException(GetLastError())
-        hRequest = WinHttpOpenRequest(self.hConnect, "GET", path, None, WINHTTP_NO_REFERER, WINHTTP_DEFAULT_ACCEPT_TYPES, flag);
+        hRequest = AutoWinHttpHandle(WinHttpOpenRequest(self.hConnect, "GET", path, None, WINHTTP_NO_REFERER, WINHTTP_DEFAULT_ACCEPT_TYPES, flag))
         if hRequest==0:   raise WinhttpException(GetLastError())
         fStatus = WinHttpSetOption(hRequest,
                                WINHTTP_OPTION_UPGRADE_TO_WEB_SOCKET,
@@ -137,9 +135,8 @@ class WebSocket:
         fStatus = WinHttpReceiveResponse(hRequest, 0);
       
         if fStatus==0: raise WinhttpException(GetLastError())
-        self.hWebSocketHandle = WinHttpWebSocketCompleteUpgrade(hRequest, NULL);
-     
-        WinHttpCloseHandle(hRequest);
+        self.hWebSocketHandle =AutoWinHttpHandle(WinHttpWebSocketCompleteUpgrade(hRequest, NULL))
+      
         if self.hWebSocketHandle==0:
             raise WinhttpException(GetLastError())
         

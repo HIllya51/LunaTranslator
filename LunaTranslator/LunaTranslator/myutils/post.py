@@ -268,6 +268,8 @@ def POSTSOLVE(line):
            functions.update({
                    '_11':_.POSTSOLVE
                   } )
+    except ModuleNotFoundError:
+           pass
     except:
            print_exc()
            pass

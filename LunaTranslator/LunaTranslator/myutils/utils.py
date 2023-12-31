@@ -1,17 +1,17 @@
-
+import windows
 from threading import Thread
 import os,time,sys
 from traceback import print_exc
 import codecs,hashlib
-import os,win32con,time 
+import os,time 
 import socket,functools
 import ctypes
 import time
 import ctypes.wintypes
-import win32con,gobject
+import gobject
 from traceback import print_exc
 from myutils.config import globalconfig,static_data,savehook_new_list,savehook_new_data,getdefaultsavehook,translatorsetting
-import win32utils,threading,queue
+import threading,queue
 from urllib.request import getproxies_registry
 import importlib,re
 def checkimage(gamepath):
@@ -101,13 +101,13 @@ def getsysproxy():
          return proxies[list(proxies.keys())[0]].split('//')[1]
     except:
          return ''
-    # hkey=win32utils.RegOpenKeyEx(win32utils.HKEY_CURRENT_USER,'Software\Microsoft\Windows\CurrentVersion\Internet Settings',0,win32utils.KEY_ALL_ACCESS)
+    # hkey=RegOpenKeyEx(HKEY_CURRENT_USER,'Software\Microsoft\Windows\CurrentVersion\Internet Settings',0,KEY_ALL_ACCESS)
 
-    # count,MaxValueNameLen,MaxValueLen=(win32utils.RegQueryInfoKey(hkey))
+    # count,MaxValueNameLen,MaxValueLen=(RegQueryInfoKey(hkey))
     # ProxyEnable=False
     # ProxyServer=''
     # for i in range(count):
-    #     k,v=(win32utils.RegEnumValue(hkey,i,MaxValueNameLen,MaxValueLen))
+    #     k,v=(RegEnumValue(hkey,i,MaxValueNameLen,MaxValueLen))
     #     if k=='ProxyEnable':
     #         ProxyEnable=(v=='\x01')
     #     elif  k=='ProxyServer':
@@ -116,7 +116,7 @@ def getsysproxy():
     #      return ProxyServer
     # else:
     #      return ''
-def getproxy():
+def _getproxy():
     if globalconfig['useproxy']:
             if globalconfig['usesysproxy']:
                 p=getsysproxy()
@@ -125,6 +125,11 @@ def getproxy():
     else:
         p=None
     return {'https':p,'http':p}
+def getproxy(pair=None):
+    if pair is None or ('useproxy' not in  globalconfig[pair[0]][pair[1]]) or globalconfig[pair[0]][pair[1]]['useproxy']:
+        return _getproxy()
+    else:
+        return {'https':None,'http':None}
 def checkportavailable(port):
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     try:
@@ -161,15 +166,15 @@ class wavmp3player( ):
     def _playsoundWin(self,sound,volume ):  
         try:
             
-            win32utils.mciSendString(("stop lunatranslator_mci_{}".format(self.i)) );
-            win32utils.mciSendString(("close lunatranslator_mci_{}".format(self.i)) );
+            windows.mciSendString(("stop lunatranslator_mci_{}".format(self.i)) );
+            windows.mciSendString(("close lunatranslator_mci_{}".format(self.i)) );
             self.i+=1 
             if self.lastfile:
                 os.remove(self.lastfile)
             self.lastfile=sound
-            win32utils.mciSendString('open "{}" type mpegvideo  alias lunatranslator_mci_{}'.format(sound,self.i));  
-            win32utils.mciSendString('setaudio lunatranslator_mci_{} volume to {}'.format(self.i,volume*10)); 
-            win32utils.mciSendString(('play lunatranslator_mci_{}'.format(self.i)))
+            windows.mciSendString('open "{}" type mpegvideo  alias lunatranslator_mci_{}'.format(sound,self.i));  
+            windows.mciSendString('setaudio lunatranslator_mci_{} volume to {}'.format(self.i,volume*10)); 
+            windows.mciSendString(('play lunatranslator_mci_{}'.format(self.i)))
         except:
             pass
         
@@ -263,8 +268,8 @@ def minmaxmoveobservefunc(self):
                 if gobject.baseobject.textsource.hwnd==0: 
                     return
                 
-                _focusp=win32utils.GetWindowThreadProcessId(hwnd)
-                if event ==win32con.EVENT_SYSTEM_FOREGROUND:  
+                _focusp=windows.GetWindowThreadProcessId(hwnd)
+                if event ==windows.EVENT_SYSTEM_FOREGROUND:  
                     if globalconfig['focusfollow']: 
                         if _focusp ==os.getpid():
                             pass 
@@ -279,19 +284,19 @@ def minmaxmoveobservefunc(self):
                             gobject.baseobject.translation_ui.settop()
                         else:
                             gobject.baseobject.translation_ui.canceltop()
-                if _focusp!= win32utils.GetWindowThreadProcessId(gobject.baseobject.textsource.hwnd ) :
+                if _focusp!=windows. GetWindowThreadProcessId(gobject.baseobject.textsource.hwnd ) :
                     return
                  
-                rect=win32utils.GetWindowRect( hwnd) 
-                if event == win32con.EVENT_SYSTEM_MINIMIZEEND: 
+                rect=windows.GetWindowRect( hwnd) 
+                if event == windows.EVENT_SYSTEM_MINIMIZEEND: 
                     if globalconfig['minifollow']:
                         self.hookfollowsignal.emit(3,(hwnd,))
-                elif event == win32con.EVENT_SYSTEM_MINIMIZESTART: 
+                elif event == windows.EVENT_SYSTEM_MINIMIZESTART: 
                     if globalconfig['minifollow']:
                         self.hookfollowsignal.emit(4,(0,0)) 
-                elif event == win32con.EVENT_SYSTEM_MOVESIZESTART: # 
+                elif event == windows.EVENT_SYSTEM_MOVESIZESTART: # 
                     self.lastpos=rect
-                elif event == win32con.EVENT_SYSTEM_MOVESIZEEND: # 
+                elif event == windows.EVENT_SYSTEM_MOVESIZEEND: # 
                     if globalconfig['movefollow']:
                         if self.lastpos:
                             self.hookfollowsignal.emit(5,(rect[0]-self.lastpos[0],rect[1]-self.lastpos[1]))
@@ -301,9 +306,9 @@ def minmaxmoveobservefunc(self):
         win_event_callback_cfunc = WinEventProcType(win_event_callback)
 
         eventpairs=(
-            (win32con.EVENT_SYSTEM_MOVESIZESTART,win32con.EVENT_SYSTEM_MOVESIZEEND),
-            (win32con.EVENT_SYSTEM_MINIMIZESTART,win32con.EVENT_SYSTEM_MINIMIZEEND),
-            (win32con.EVENT_SYSTEM_FOREGROUND,win32con.EVENT_SYSTEM_FOREGROUND),
+            (windows.EVENT_SYSTEM_MOVESIZESTART,windows.EVENT_SYSTEM_MOVESIZEEND),
+            (windows.EVENT_SYSTEM_MINIMIZESTART,windows.EVENT_SYSTEM_MINIMIZEEND),
+            (windows.EVENT_SYSTEM_FOREGROUND,windows.EVENT_SYSTEM_FOREGROUND),
         )
 
         def _():
@@ -356,3 +361,9 @@ def loadfridascriptslist(path,Scriptscombo):
             fridascripts=[]
     Scriptscombo.addItems(fridascripts)
     return fridascripts
+import sqlite3
+class autosql(sqlite3.Connection): 
+    def __new__(cls,v) -> None:  
+        return v
+    def __del__(self): 
+        self.close() 

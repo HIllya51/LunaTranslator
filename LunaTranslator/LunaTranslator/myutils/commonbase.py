@@ -3,17 +3,17 @@ from myutils.config import globalconfig,_TR,static_data
 from myutils.wrapper import stripwrapper
 from traceback import print_exc
 import requests
-
+ 
 class ArgsEmptyExc(Exception):
     def __init__(self,valuelist) -> None:
         super().__init__(' , '.join(valuelist)+_TR("不能为空"))
 
 class proxysession(requests.Session):
-    def __init__(self,_proxygetter) :
+    def __init__(self,_key1,_key2) :
         super().__init__()
-        self.proxygetter=_proxygetter
+        self.proxyconf=_key1,_key2
     def request(self,*args,**kwargs):
-        kwargs['proxies']=self.proxygetter()
+        kwargs['proxies']=getproxy( self.proxyconf)
         return super().request(*args,**kwargs)
 class commonbase:
     _globalconfig_key=None
@@ -23,10 +23,7 @@ class commonbase:
         return {}
     @property
     def proxy(self):
-        if ('useproxy' not in  globalconfig[self._globalconfig_key][self.typename]) or globalconfig[self._globalconfig_key][self.typename]['useproxy']:
-            return getproxy()
-        else:
-            return {'https':None,'http':None}
+        return getproxy((self._globalconfig_key,self.typename) )
     @property
     def srclang(self):
         try:
@@ -74,7 +71,7 @@ class commonbase:
         return _
     def __init__(self,typename) -> None:
         self.typename=typename 
-        self.session=proxysession(lambda:self.proxy)
+        self.session=proxysession(self._globalconfig_key,self.typename)
         self.level2init()
     def level2init(self):
         pass

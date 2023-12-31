@@ -1,5 +1,5 @@
 import textsource.hook.define as define
-import win32utils,win32con
+import windows
 from traceback import print_exc
 #import define
 import re,copy
@@ -224,16 +224,16 @@ def GenerateHCode(hp,processId):
     # Attempt to make the address relative
     try:
         if processId and not (hp.type & MODULE_OFFSET):
-            process =win32utils.OpenProcess(win32con.PROCESS_VM_READ | win32con.PROCESS_QUERY_INFORMATION, False, processId)
+            process =windows.AutoHandle(windows.OpenProcess(windows.PROCESS_VM_READ | windows.PROCESS_QUERY_INFORMATION, False, processId))
             if process:
-                info=win32utils.VirtualQueryEx(process,hp.address) 
+                info=windows.VirtualQueryEx(process,hp.address) 
                 if info.AllocationBase:
-                    module_name =win32utils.GetModuleFileNameEx(process, info.AllocationBase)
+                    module_name =windows.GetModuleFileNameEx(process, info.AllocationBase)
                     if module_name:
                         hp.address -= info.AllocationBase
                         hp.type |= MODULE_OFFSET
                         hp.module = module_name[module_name.rfind('\\')+1:][:120]
-                win32utils.CloseHandle(process)
+              
     except:
         pass
         #print_exc()

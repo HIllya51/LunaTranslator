@@ -5,7 +5,7 @@ import threading
 import os,sys
 import winsharedutils
 from PyQt5.QtCore import QT_VERSION_STR
-
+import windows
 from traceback import print_exc
 from PyQt5.QtWidgets import QWidget, QLabel, QPushButton, QVBoxLayout,QApplication
 from PyQt5.QtCore import Qt, pyqtSignal  ,QThread
@@ -13,13 +13,12 @@ import qtawesome
 from PyQt5.QtCore import pyqtSignal,Qt,QRect,QSize  
 from PyQt5.QtGui import  QFont  ,QIcon,QPixmap  ,QMouseEvent,QCursor
 from PyQt5.QtWidgets import  QLabel ,QPushButton ,QSystemTrayIcon ,QAction,QMenu 
-import win32utils,gobject
+import gobject
 from myutils.wrapper import threader
 import winsharedutils,queue
 from myutils.config import globalconfig,saveallconfig,_TR
 from myutils.subproc import endsubprocs
 from myutils.ocrutil import ocr_run,imageCut
-import  win32con
 from myutils.hwnd import mouseselectwindow ,showintab,getScreenRate,grabwindow,getExeIcon
 from gui.dialog_savedgame import dialog_savedgame,dialog_savedgame_new
 from gui.dialog_memory import dialog_memory
@@ -51,11 +50,11 @@ class QUnFrameWindow(resizableframeless):
             if self.hideshownotauto:
                 self.show_()
                 try:
-                    _h=win32utils.GetForegroundWindow()
-                    _fpid=win32utils.GetWindowThreadProcessId(_h)
-                    _hpid=win32utils.GetWindowThreadProcessId(other[0])
+                    _h=windows.GetForegroundWindow()
+                    _fpid=windows.GetWindowThreadProcessId(_h)
+                    _hpid=windows.GetWindowThreadProcessId(other[0])
                     if _fpid!=_hpid:
-                        win32utils.SetForegroundWindow(other[0])
+                        windows.SetForegroundWindow(other[0])
                 except:
                     pass
         elif code==4: 
@@ -224,19 +223,19 @@ class QUnFrameWindow(resizableframeless):
         self.setMinimumWidth(int(globalconfig['buttonsize']*2*self.rate))
     def addbuttons(self):
         def simulate_key_enter():
-            win32utils.SetForegroundWindow(gobject.baseobject.textsource.hwnd)
+            windows.SetForegroundWindow(gobject.baseobject.textsource.hwnd)
             time.sleep(0.1)
-            while win32utils.GetForegroundWindow()==gobject.baseobject.textsource.hwnd:
+            while windows.GetForegroundWindow()==gobject.baseobject.textsource.hwnd:
                 time.sleep(0.001)
-                win32utils.keybd_event(13,0,0,0)
-            win32utils.keybd_event(13,0,win32con.KEYEVENTF_KEYUP,0)
+                windows.keybd_event(13,0,0,0)
+            windows.keybd_event(13,0,windows.KEYEVENTF_KEYUP,0)
         def simulate_key_ctrl():
-            win32utils.SetForegroundWindow(gobject.baseobject.textsource.hwnd)
+            windows.SetForegroundWindow(gobject.baseobject.textsource.hwnd)
             time.sleep(0.1)
-            win32utils.keybd_event(17,0,0,0) 
-            while win32utils.GetForegroundWindow()==gobject.baseobject.textsource.hwnd:
+            windows.keybd_event(17,0,0,0) 
+            while windows.GetForegroundWindow()==gobject.baseobject.textsource.hwnd:
                 time.sleep(0.001)
-            win32utils.keybd_event(17,0,win32con.KEYEVENTF_KEYUP,0)
+            windows.keybd_event(17,0,windows.KEYEVENTF_KEYUP,0)
         @threader
         def ocroncefunction(rect):
             img=imageCut(0,rect[0][0],rect[0][1],rect[1][0],rect[1][1]) 
@@ -291,15 +290,15 @@ class QUnFrameWindow(resizableframeless):
                
     def hide_(self):  
         if self.showintab: 
-            win32utils.ShowWindow(int(self.winId()),win32con.SW_SHOWMINIMIZED )
+            windows.ShowWindow(int(self.winId()),windows.SW_SHOWMINIMIZED )
         else:
             self.hide()
     def show_(self):   
         if self.showintab:
-            win32utils.ShowWindow(int(self.winId()),win32con.SW_SHOWNOACTIVATE )
+            windows.ShowWindow(int(self.winId()),windows.SW_SHOWNOACTIVATE )
         else:
             self.show()
-        win32utils.SetForegroundWindow(int(self.winId()))
+        windows.SetForegroundWindow(int(self.winId()))
     def showEvent(self, a0 ) -> None: 
         if self.isfirstshow:
             self.showline(True,[None,_TR('欢迎使用')],'',1,False)
@@ -323,22 +322,22 @@ class QUnFrameWindow(resizableframeless):
             # 将菜单栏加入到右键按钮中
             self.tray.setContextMenu(self.trayMenu) 
             self.tray.show()
-            win32utils.SetForegroundWindow(int(self.winId()))
+            windows.SetForegroundWindow(int(self.winId()))
             self.isfirstshow=False 
             self.setontopthread()
         return super().showEvent(a0)
-    def canceltop(self,hwnd=win32con.HWND_NOTOPMOST):
-        win32utils.SetWindowPos(int(int(self.winId())), hwnd, 0, 0, 0, 0,win32con. SWP_NOACTIVATE |win32con. SWP_NOSIZE | win32con.SWP_NOMOVE) 
+    def canceltop(self,hwnd=windows.HWND_NOTOPMOST):
+        windows.SetWindowPos(int(int(self.winId())), hwnd, 0, 0, 0, 0, windows.SWP_NOACTIVATE | windows.SWP_NOSIZE | windows.SWP_NOMOVE) 
     def settop(self):
-        win32utils.SetWindowPos(int(int(self.winId())), win32con.HWND_TOPMOST, 0, 0, 0, 0,win32con. SWP_NOACTIVATE |win32con. SWP_NOSIZE | win32con.SWP_NOMOVE)  
+        windows.SetWindowPos(int(int(self.winId())), windows.HWND_TOPMOST, 0, 0, 0, 0, windows.SWP_NOACTIVATE | windows.SWP_NOSIZE | windows.SWP_NOMOVE)  
     def setontopthread(self):
         def _():
             self.settop()
             while globalconfig['keepontop']:
                 
                 try:   
-                    hwnd=win32utils.GetForegroundWindow()
-                    pid=win32utils.GetWindowThreadProcessId(hwnd)
+                    hwnd=windows.GetForegroundWindow()
+                    pid=windows.GetWindowThreadProcessId(hwnd)
                     if pid ==os.getpid():
                         pass
                     elif (globalconfig['focusnotop']):
@@ -457,8 +456,8 @@ class QUnFrameWindow(resizableframeless):
         if gobject.baseobject.textsource and  gobject.baseobject.textsource.hwnd:
             _hwnd=gobject.baseobject.textsource.hwnd
         else:
-            _hwnd=win32utils.GetForegroundWindow()
-            _pid=win32utils.GetWindowThreadProcessId(_hwnd) 
+            _hwnd=windows.GetForegroundWindow()
+            _pid=windows.GetWindowThreadProcessId(_hwnd) 
             if _pid ==os.getpid():return 
         self.isletgamefullscreened=not self.isletgamefullscreened
         self.refreshtoolicon()
@@ -479,14 +478,14 @@ class QUnFrameWindow(resizableframeless):
                  
                 if self.isinrect(cursor_pos,[self._TitleLabel.x(),self._TitleLabel.x()+self._TitleLabel.width(),self._TitleLabel.y(),self._TitleLabel.y()+self._TitleLabel.height()]): 
                     
-                    win32utils.SetWindowLong(int(self.winId()), win32con.GWL_EXSTYLE, win32utils.GetWindowLong(hwnd, win32con.GWL_EXSTYLE) &~ win32con.WS_EX_TRANSPARENT)
+                    windows.SetWindowLong(int(self.winId()), windows.GWL_EXSTYLE, windows.GetWindowLong(hwnd, windows.GWL_EXSTYLE) &~ windows.WS_EX_TRANSPARENT)
                 else:  
-                    win32utils.SetWindowLong(int(self.winId()), win32con.GWL_EXSTYLE, win32utils.GetWindowLong(hwnd, win32con.GWL_EXSTYLE) | win32con.WS_EX_TRANSPARENT)
+                    windows.SetWindowLong(int(self.winId()), windows.GWL_EXSTYLE, windows.GetWindowLong(hwnd, windows.GWL_EXSTYLE) | windows.WS_EX_TRANSPARENT)
                 if self.isinrect(cursor_pos,[self._TitleLabel.x(),self._TitleLabel.x()+self._TitleLabel.width(),self._TitleLabel.y(),self._TitleLabel.y()+self._TitleLabel.height()+self._padding]): 
                     self.entersignal.emit()
                 time.sleep(0.1) 
             #结束时取消穿透(可能以快捷键终止)
-            win32utils.SetWindowLong(int(self.winId()), win32con.GWL_EXSTYLE, win32utils.GetWindowLong(hwnd, win32con.GWL_EXSTYLE) &~ win32con.WS_EX_TRANSPARENT)
+            windows.SetWindowLong(int(self.winId()), windows.GWL_EXSTYLE, windows.GetWindowLong(hwnd, windows.GWL_EXSTYLE) &~ windows.WS_EX_TRANSPARENT)
         if self.mousetransparent:
                 #globalconfig['locktools']=True #锁定，否则无法恢复。
                 threading.Thread(target=_checkplace).start()

@@ -20,10 +20,13 @@ extern "C" {
 
     __declspec(dllexport) void* mecab_init(char* utf8path, wchar_t*);
     __declspec(dllexport) bool mecab_parse(void* trigger, char* utf8string, char*** surface, char*** features, int* num);
+    __declspec(dllexport) void mecab_end(void*trigger);
 
 
     __declspec(dllexport) wchar_t* clipboard_get();
     __declspec(dllexport) bool clipboard_set(wchar_t* text);
     __declspec(dllexport) void GetLnkTargetPath(wchar_t* lnkFilePath,wchar_t *path,wchar_t*tgtpath,wchar_t*iconpath,wchar_t*dirpath) ;
     __declspec(dllexport) bool otsu_binary(const void*image,int thresh);
+
+    __declspec(dllexport) void* extracticon2data(const wchar_t*name,size_t *l);
 }

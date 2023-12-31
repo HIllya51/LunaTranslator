@@ -1,6 +1,7 @@
 from traceback import print_exc
 from translator.basetranslator import basetrans
 from myutils.config import globalconfig
+from myutils.utils import autosql
 import os
 import json
 import sqlite3
@@ -9,10 +10,9 @@ class TS(basetrans):
     def checkfilechanged(self,p):
         if self.path!=p:
             if os.path.exists(p):
-                    self.sql=sqlite3.connect(p,check_same_thread=False)
+                    self.sql=autosql(sqlite3.connect(p,check_same_thread=False))
                     self.path=p
-    def end(self):
-        self.sql.close()
+    
     def inittranslator(self):
         self.path=''
         self.checkfilechanged(self.config['sqlite文件'])

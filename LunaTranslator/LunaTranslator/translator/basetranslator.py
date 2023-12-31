@@ -8,7 +8,7 @@ import zhconv,gobject
 import sqlite3
 from myutils.commonbase import commonbase
 
-from myutils.utils import stringfyerror
+from myutils.utils import stringfyerror,autosql
 from myutils.commonbase import ArgsEmptyExc
 from myutils.wrapper import stripwrapper
 class TimeOut(Exception):
@@ -50,8 +50,6 @@ def timeoutfunction( func, timeout=100,default=None,ignoreexceptions=False,check
 class basetrans(commonbase): 
     def langmap(self):
         return {}
-    def end(self):
-        pass
     def inittranslator(self):
         pass
     def translate(self,content):
@@ -77,16 +75,17 @@ class basetrans(commonbase):
     def level2init(self ) :  
         self.multiapikeycurrentidx=-1
         self.queue=Queue()  
+        self.sqlqueue=None
         self._safe_private_init()
          
         self.lastrequesttime=0
         self._cache={}
         
         self.newline=None
-
+        
         if self.transtype!='pre':
             try:
-                self.sqlwrite2=sqlite3.connect('./translation_record/cache/{}.sqlite'.format(self.typename),check_same_thread = False, isolation_level=None)
+                self.sqlwrite2=autosql(sqlite3.connect('./translation_record/cache/{}.sqlite'.format(self.typename),check_same_thread = False, isolation_level=None))
                 try:
                     self.sqlwrite2.execute('CREATE TABLE cache(srclang,tgtlang,source,trans);')
                 except:
@@ -101,12 +100,17 @@ class basetrans(commonbase):
             self._private_init()
         except Exception as e:
             gobject.baseobject.textgetmethod('<msg_error_not_refresh>'+globalconfig['fanyi'][self.typename]['name']+' inittranslator failed : '+str(stringfyerror(e)))
-            print_exc()
+            print_exc() 
+    def notifyqueuforend(self):
+        if self.sqlqueue:
+            self.sqlqueue.put(None)
+        self.queue.put(None)
     def _private_init(self):
         self.inittranslator()
     def _sqlitethread(self):
-        while True:
+        while self.using:
             task=self.sqlqueue.get()
+            if task is None:break
             try:
                 
                 src,trans=task 
@@ -227,6 +231,7 @@ class basetrans(commonbase):
             savelast=[]
             while True:
                 _=self.queue.get() 
+                if _ is None:break
                 callback,contentraw,contentsolved,skip,embedcallback,is_auto_run,hira=_
                 if embedcallback is not None:
                     savelast.clear()
@@ -234,6 +239,7 @@ class basetrans(commonbase):
                 savelast.append(_)
                 if self.queue.empty():
                     break
+            if self.using==False:break
             if savelast[0][4] is not None:
                 callback,contentraw,contentsolved,skip,embedcallback,is_auto_run,hira=savelast.pop(0)
                 for _ in savelast:

@@ -1,5 +1,6 @@
 from translator.basetranslator import basetrans
 import sys
+from myutils.subproc import autoproc
 import subprocess,os,platform,glob
 
 class TS(basetrans):  
@@ -16,8 +17,7 @@ class TS(basetrans):
         except ValueError:
             raise Exception(pipe_out)
         return self.tokenizer.decode(output_ids)
-    def end(self):
-        self.proc.kill()
+     
     def inittranslator(self):
         self.checkempty(['路径'])
         path=self.config['路径']
@@ -51,7 +51,7 @@ class TS(basetrans):
         startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
         startupinfo.wShowWindow=subprocess.SW_HIDE
         self.proc = subprocess.Popen([ort_mt5_path, model_path, str(max_length_int), str(min_length_int), str(num_beams_int), str(num_return_sequences_int), str(length_penalty_float), str(repetition_penalty_float)], stdin=subprocess.PIPE, stdout=subprocess.PIPE, bufsize=1, universal_newlines=True,startupinfo=startupinfo)
-
+        self._p=autoproc(self.proc)
         if platform.architecture()[0]=="64bit":
             sys.path.append(os.path.join(path,'libtokenizers/x64'))
         else:

@@ -5,7 +5,7 @@ from PyQt5.QtCore import Qt,QPoint,QRect,QEvent,pyqtSignal
 import gobject
 from myutils.config import globalconfig
 from gui.resizeablemainwindow import Mainw
-import win32utils,win32con
+import windows
 class rangeadjust(Mainw) :
  
     def __init__(self,parent):
@@ -154,7 +154,7 @@ def rangeselct_function(parent,callback,clickrelease,startauto):
         screen_shot_ui.reset()
         screen_shot_ui.show()
         screen_shot_ui.callback=callback
-        win32utils.SetFocus(int(screen_shot_ui.winId() )   )
+        windows.SetFocus(int(screen_shot_ui.winId() )   )
          
         screen_shot_ui.startauto=startauto
         screen_shot_ui.clickrelease=clickrelease
@@ -165,7 +165,7 @@ class moveresizegame(QDialog) :
     def __init__(self, parent,hwnd ): 
         super().__init__(parent)
         self.setWindowFlags(Qt.Dialog|Qt.WindowMaximizeButtonHint|Qt.WindowCloseButtonHint)
-        self.setWindowTitle("调整窗口  "+ win32utils.GetWindowText(hwnd))
+        self.setWindowTitle("调整窗口  "+ windows.GetWindowText(hwnd))
         # self.setWindowFlags(Qt.WindowStaysOnTopHint | Qt.FramelessWindowHint  )
         # self.setAttribute(Qt.WA_TranslucentBackground) 
         self.setWindowOpacity(0.5)
@@ -180,7 +180,7 @@ class moveresizegame(QDialog) :
         if self.hwnd==0:
             self.close()
         try:
-            rect=win32utils.GetWindowRect(self.hwnd)  
+            rect=windows.GetWindowRect(self.hwnd)  
             if rect:
                 self.setGeometry(rect[0],rect[1],rect[2]-rect[0],rect[3]-rect[1])
             self.show()
@@ -190,7 +190,7 @@ class moveresizegame(QDialog) :
         rect = self.geometry() 
         if self.isMaximized()==False:
             try:
-                win32utils.MoveWindow(self.hwnd,  rect.left(),rect.top(),rect.right()-rect.left(), rect.bottom()-rect.top(),  False)
+                windows.MoveWindow(self.hwnd,  rect.left(),rect.top(),rect.right()-rect.left(), rect.bottom()-rect.top(),  False)
             except:
                 pass
         return super().moveEvent(a0)
@@ -205,7 +205,7 @@ class moveresizegame(QDialog) :
             rect = self.geometry() 
             if self.isMaximized()==False:
                 try:
-                    win32utils.MoveWindow(self.hwnd,  rect.left(),rect.top(),rect.right()-rect.left(), rect.bottom()-rect.top(),  False)
+                    windows.MoveWindow(self.hwnd,  rect.left(),rect.top(),rect.right()-rect.left(), rect.bottom()-rect.top(),  False)
                 except:
                     pass
     def mousePressEvent(self, e ) : 
@@ -221,16 +221,16 @@ class moveresizegame(QDialog) :
         if a0.type() == QEvent.WindowStateChange:
             try:
                 if self.isMaximized():
-                    win32utils.ShowWindow(self.hwnd,win32con.SW_MAXIMIZE) 
+                    windows.ShowWindow(self.hwnd,windows.SW_MAXIMIZE) 
                 else:  
-                    win32utils.ShowWindow(self.hwnd,win32con.SW_SHOWNORMAL)
+                    windows.ShowWindow(self.hwnd,windows.SW_SHOWNORMAL)
             except:
                 pass
     def resizeEvent(self, a0 ) :
         if self.isMaximized()==False: 
             rect = self.geometry()
             try:
-                win32utils.MoveWindow(self.hwnd,  rect.left(),rect.top(),rect.right()-rect.left(), rect.bottom()-rect.top(),  False)
+                windows.MoveWindow(self.hwnd,  rect.left(),rect.top(),rect.right()-rect.left(), rect.bottom()-rect.top(),  False)
             except:
                 pass
             

@@ -2,9 +2,7 @@ from myutils.config import globalconfig
 import threading
 class TTSbase():
     def init(self):
-        pass
-    def end(self):
-        pass    #仅部分需要额外加载exe需要
+        pass 
     def getvoicelist(self):
         return []
     def voiceshowmap(self,voice):
@@ -18,6 +16,7 @@ class TTSbase():
         return globalconfig['reader'][self.typename]
      
     ########################
+    
     def __init__(self,typename,showlistsignal ,mp3playsignal ) -> None:
         self.typename=typename
         self.showlistsignal=showlistsignal 

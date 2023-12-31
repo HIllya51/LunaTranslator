@@ -146,7 +146,6 @@ class ocrtext(basetext):
 
     def end(self):
         super().end()
-        try: ocr_end()
-        except:pass
+        ocr_end()
 
         self.range_ui.close()

@@ -2,7 +2,7 @@
 from collections.abc import Callable, Mapping, MutableMapping
 from collections import OrderedDict
 from urllib.parse import urlencode,urlsplit
-import gzip,json
+import gzip,json,base64
 from winhttp import *
 
 class CaseInsensitiveDict(MutableMapping): 
@@ -48,23 +48,16 @@ class CaseInsensitiveDict(MutableMapping):
 
     def __repr__(self):
         return str(dict(self.items()))
-class saferequest:
-    def __init__(self,hreq,selfclose) -> None:
-        self.hreq=hreq
-        self.selfclose=selfclose
-    def __enter__(self): 
-        return self.hreq
-    def __exit__(self,*arg):
-        if self.selfclose==False:
-            WinHttpCloseHandle(self.hreq)
+ 
 class Session:
     def __init__(self) -> None:
-        self.hSession=None 
-        self.hConnect=None
+        self.UA='Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+        self.hSession=0
+        self.hConnects={}
         self.status_code=0
         self.content=b'{}'
         self.cookies={}
-        self.UA='Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+        
         self.dfheaders=CaseInsensitiveDict({
             "User-Agent": self.UA,
             "Accept-Encoding": 'gzip, deflate',#br
@@ -72,18 +65,12 @@ class Session:
             "Connection": "keep-alive",
         })
         self.headers=CaseInsensitiveDict()
-        self.target=None
     def __enter__(self):
         return self 
     def __exit__(self, *args):
         self.close()
     def close(self):
-        if (self.hConnect) :
-            WinHttpCloseHandle(self.hConnect)
-            self.hConnect=0
-        if (self.hSession) :
-            WinHttpCloseHandle(self.hSession)
-            self.hSession=0
+        self.hConnects.clear()
     def __del__(self):
         self.close()
     @staticmethod
@@ -218,13 +205,7 @@ class Session:
         if proxy is None:return 
         proxy= proxy.get(scheme,None)
         if proxy is None or proxy=='':return 
-        proxyInfo=WINHTTP_PROXY_INFO()
-        proxyInfo.dwAccessType = WINHTTP_ACCESS_TYPE_NAMED_PROXY;
-        proxyInfo.lpszProxy = proxy
-        proxyInfo.lpszProxyBypass =None
-        succ=WinHttpSetOption(hsess, WINHTTP_OPTION_PROXY, pointer(proxyInfo), sizeof(proxyInfo));
-        if succ==0:
-            raise WinhttpException('invalid proxy: {}'.format(proxy))
+        winhttpsetproxy(hsess,proxy)
     
     def request(self,
         method, url, params=None, data=None, headers=None,proxies=None, json=None,cookies=None,  files=None,
@@ -233,12 +214,8 @@ class Session:
             headers=self.dfheaders
         else:
             headers=CaseInsensitiveDict(headers)
-        if auth and isinstance(auth,tuple) and len(auth)==2:
-            import base64
-            headers['Authorization']="Basic " +   (
-            base64.b64encode(b":".join((auth[0].encode("latin1"), auth[1].encode("latin1")))).strip()
-            ).decode()
-        UA=headers.get('User-Agent',self.UA)
+        if auth and isinstance(auth,tuple) and len(auth)==2: 
+            headers['Authorization']="Basic " +   ( base64.b64encode(b":".join((auth[0].encode("latin1"), auth[1].encode("latin1")))).strip() ).decode() 
         
         scheme,ishttps,server,port,param=self._parseurl(url,params) 
         headers,dataptr,datalen=self._parsedata(data,headers,json)
@@ -246,52 +223,53 @@ class Session:
         #print(server,port,param,dataptr)
         headers= self._parseheader(headers,cookies)
         
-        if server!=self.target:
-            self.close()
-            self.hSession=WinHttpOpen(UA,WINHTTP_ACCESS_TYPE_DEFAULT_PROXY,WINHTTP_NO_PROXY_NAME,WINHTTP_NO_PROXY_BYPASS,0)
+        if self.hSession==0:
+            self.hSession=AutoWinHttpHandle(WinHttpOpen(self.UA,WINHTTP_ACCESS_TYPE_DEFAULT_PROXY,WINHTTP_NO_PROXY_NAME,WINHTTP_NO_PROXY_BYPASS,0))
             if self.hSession==0:
-                raise WinhttpException(GetLastError())
-            self._setproxy(self.hSession,proxies,scheme)
-            self.hConnect=WinHttpConnect(self.hSession,server,port,0)
-            if self.hConnect==0:
-                raise WinhttpException(GetLastError())
-            self.target=server
+                raise WinhttpException(GetLastError())  
+        target=server,port
+        if self.hConnects.get(target,0)==0:
+            hConnect=AutoWinHttpHandle(WinHttpConnect(self.hSession,server,port,0))
+            if hConnect==0:
+                raise WinhttpException(GetLastError()) 
+            self.hConnects[target]=hConnect
+        hRequest=AutoWinHttpHandle(WinHttpOpenRequest(self.hConnects[target],method,param,None,WINHTTP_NO_REFERER,WINHTTP_DEFAULT_ACCEPT_TYPES,flag) )
+    
+        self._setproxy(hRequest,proxies,scheme) 
         
-        with saferequest(WinHttpOpenRequest(self.hConnect,method,param,None,WINHTTP_NO_REFERER,WINHTTP_DEFAULT_ACCEPT_TYPES,flag),stream==True) as hRequest:
-            
-            if hRequest==0:
-                raise WinhttpException(GetLastError())
-            succ=WinHttpSendRequest(hRequest,headers,-1,dataptr,datalen,datalen,None)
-            if succ==0:
-                raise WinhttpException(GetLastError())
-            
-            succ=WinHttpReceiveResponse(hRequest,None)
-            if succ==0:
-                raise WinhttpException(GetLastError())
-            
-            self.headers,self.cookies=((self._getheaders(hRequest))) 
-            self.status_code=self._getStatusCode(hRequest)
-            if stream:
-                self.hreq=hRequest
-                return self
-            availableSize=DWORD()
-            downloadedSize=DWORD()
-            downloadeddata=b''
-            while True:
-                succ=WinHttpQueryDataAvailable(hRequest,pointer(availableSize))
-                if succ==0:
-                    raise WinhttpException(GetLastError())
-                if availableSize.value==0:
-                    break
-                buff=create_string_buffer(availableSize.value)
-                #这里可以做成流式的
-                succ=WinHttpReadData(hRequest,buff,availableSize,pointer(downloadedSize))
-                if succ==0:raise WinhttpException(GetLastError())
-                downloadeddata+=buff[:downloadedSize.value]
-            self.content=downloadeddata
-            #print(self.text)
-            
+        if hRequest==0:
+            raise WinhttpException(GetLastError())
+        succ=WinHttpSendRequest(hRequest,headers,-1,dataptr,datalen,datalen,None)
+        if succ==0:
+            raise WinhttpException(GetLastError())
+        
+        succ=WinHttpReceiveResponse(hRequest,None)
+        if succ==0:
+            raise WinhttpException(GetLastError())
+        
+        self.headers,self.cookies=((self._getheaders(hRequest))) 
+        self.status_code=self._getStatusCode(hRequest)
+        if stream:
+            self.hreq=hRequest
             return self
+        availableSize=DWORD()
+        downloadedSize=DWORD()
+        downloadeddata=b''
+        while True:
+            succ=WinHttpQueryDataAvailable(hRequest,pointer(availableSize))
+            if succ==0:
+                raise WinhttpException(GetLastError())
+            if availableSize.value==0:
+                break
+            buff=create_string_buffer(availableSize.value)
+            #这里可以做成流式的
+            succ=WinHttpReadData(hRequest,buff,availableSize,pointer(downloadedSize))
+            if succ==0:raise WinhttpException(GetLastError())
+            downloadeddata+=buff[:downloadedSize.value]
+        self.content=downloadeddata
+        #print(self.text)
+        
+        return self
     def iter_content(self,chunk_size=1024):
         downloadedSize=DWORD()
         buff=create_string_buffer(chunk_size)
@@ -300,7 +278,7 @@ class Session:
             succ=WinHttpReadData(self.hreq,buff,chunk_size,pointer(downloadedSize))
             if succ==0:raise WinhttpException(GetLastError())
             if downloadedSize.value==0:
-                WinHttpCloseHandle(self.hreq)
+                del self.hreq
                 break
             yield buff[:downloadedSize.value]
     @property

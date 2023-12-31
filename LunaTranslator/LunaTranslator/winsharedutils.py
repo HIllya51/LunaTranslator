@@ -1,4 +1,4 @@
-from ctypes import c_uint,c_bool,POINTER,c_char_p,c_uint64,c_wchar_p,pointer,CDLL,c_int,Structure,c_void_p,cast,memmove,create_unicode_buffer,create_string_buffer
+from ctypes import c_uint,c_bool,POINTER,c_char_p,c_uint64,c_wchar_p,pointer,CDLL,c_int,Structure,c_void_p,cast,memmove,create_unicode_buffer,create_string_buffer,c_size_t
 import platform,os
 
 if platform.architecture()[0]=='64bit':
@@ -43,6 +43,8 @@ _mecab_parse=utilsdll.mecab_parse
 _mecab_parse.argtypes=c_void_p,c_char_p,POINTER(POINTER(c_char_p)),POINTER(POINTER(c_char_p)),POINTER(c_uint)
 _mecab_parse.restype=c_bool
 
+_mecab_end=utilsdll.mecab_end
+_mecab_end.argtypes=c_void_p,
 
 _clipboard_get=utilsdll.clipboard_get
 _clipboard_get.restype=c_void_p  #实际上是c_wchar_p，但是写c_wchar_p 傻逼python自动转成str，没法拿到指针
@@ -72,24 +74,27 @@ def SAPI_Speak(content,v,voiceid,  rate,  volume,  Filename):
 
 def distance(s1,s2):
     return _levenshtein_distance(len(s1),s1,len(s2),s2)
-
-
-def mecab_init(path):
-    return _mecab_init(path.encode('utf8'),os.path.abspath('./files/plugins/libmecab{}.dll'.format(pythonbit)) )
-
-def mecab_parse(trigger,string):
-    surface=POINTER(c_char_p)()
-    feature=POINTER(c_char_p)()
-    num=c_uint()
-    _mecab_parse(trigger,string.encode('utf8'),pointer(surface),pointer(feature),pointer(num))
-    res=[]
-    for i in range(num.value):
-        f=feature[i]
-        fields=f.decode('utf8').split(',')
-        res.append((surface[i].decode('utf8'),fields))
-    _freestringlist(feature,num.value)
-    _freestringlist(surface,num.value)
-    return res
+ 
+class mecabwrap:
+    def __init__(self,mecabpath) -> None:
+         
+        self.kks=_mecab_init(mecabpath.encode('utf8'),os.path.abspath('./files/plugins/libmecab{}.dll'.format(pythonbit)) ) 
+    def __del__(self):
+        _mecab_end(self.kks)
+    def parse(self,text):
+        surface=POINTER(c_char_p)()
+        feature=POINTER(c_char_p)()
+        num=c_uint()
+        _mecab_parse(self.kks,text.encode('utf8'),pointer(surface),pointer(feature),pointer(num))
+        res=[]
+        for i in range(num.value):
+            f=feature[i]
+            fields=f.decode('utf8').split(',')
+            res.append((surface[i].decode('utf8'),fields))
+        _freestringlist(feature,num.value)
+        _freestringlist(surface,num.value)
+        return res 
+  
  
 
 def clipboard_set(text):
@@ -146,3 +151,17 @@ def otsu_binary(image,thresh):
     memmove(buf,image,len(image))
     _otsu_binary(buf,thresh)
     return buf
+
+_extracticon2data=utilsdll.extracticon2data
+_extracticon2data.argtypes=c_wchar_p,POINTER(c_size_t)
+_extracticon2data.restype=c_void_p
+def extracticon2data(fname):
+    length=c_size_t()
+    datap=_extracticon2data(fname,pointer(length))
+    if datap :
+        save=create_string_buffer(length.value) 
+        memmove(save,datap,length.value) 
+        _free_all(datap) 
+        return save 
+    else:
+        return None

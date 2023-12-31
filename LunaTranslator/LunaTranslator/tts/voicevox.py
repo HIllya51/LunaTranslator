@@ -6,19 +6,15 @@ import requests,json,threading
 from traceback import print_exc
 from tts.basettsclass import TTSbase 
 
-from myutils.subproc import subproc_w
+from myutils.subproc import subproc_w,autoproc
 class TTS(TTSbase):
-    def end(self):
-        try:
-            self.engine.kill()
-        except:
-            pass
+    
     def init(self): 
          
         if os.path.exists(self.config['path'])==False or \
             os.path.exists(os.path.join(self.config['path'],'run.exe'))==False   :
             return
-        self.engine=subproc_w(os.path.join(self.config['path'],'run.exe'),cwd=self.config['path'] ,name='voicevox')
+        self.engine=autoproc(subproc_w(os.path.join(self.config['path'],'run.exe'),cwd=self.config['path'] ,name='voicevox'))
     def getvoicelist(self):
         while True:
             try:

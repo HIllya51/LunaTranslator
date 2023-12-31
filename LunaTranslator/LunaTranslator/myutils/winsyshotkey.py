@@ -3,10 +3,9 @@ import queue
 import time 
 
 import _thread as thread 
-
+import windows
 import ctypes 
 from ctypes import wintypes
-import win32con
 byref = ctypes.byref
 user32 = ctypes.windll.user32
 PM_REMOVE = 0x0001
@@ -76,7 +75,7 @@ class SystemHotkey( ):
             else:
                 remove_or_add()
             if user32.PeekMessageA(byref(msg), 0, 0, 0, PM_REMOVE): 
-                if msg.message == win32con.WM_HOTKEY:
+                if msg.message == windows.WM_HOTKEY:
                     self.changedlock.acquire()
                     hotkey = self.hk_ref[msg.wParam][0], self.hk_ref[msg.wParam][1]
                     if hotkey in self.keybinds:

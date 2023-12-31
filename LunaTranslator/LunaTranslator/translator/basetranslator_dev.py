@@ -62,7 +62,7 @@ class basetransdev(basetrans):
         if use is None: 
                 ws=websocket.create_connection(infos[0]['webSocketDebuggerUrl'])  
                 a=self._SendRequest(ws,'Target.createTarget',{'url':url})  
-                ws.close()
+                 
                 use= 'ws://127.0.0.1:{}/devtools/page/'.format(port)+a['targetId']
         self.ws=websocket.create_connection(use)  
         self._wait_document_ready()
@@ -76,5 +76,4 @@ class basetransdev(basetrans):
             except:
                 pass
             time.sleep(0.1)
-    def end(self):
-        self.ws.close()
+   
