@@ -53,7 +53,6 @@ class Session:
     def __init__(self) -> None:
         self.UA='Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
         self.hSession=0
-        self.hConnects={}
         self.status_code=0
         self.content=b'{}'
         self.cookies={}
@@ -68,11 +67,7 @@ class Session:
     def __enter__(self):
         return self 
     def __exit__(self, *args):
-        self.close()
-    def close(self):
-        self.hConnects.clear()
-    def __del__(self):
-        self.close()
+        pass
     @staticmethod
     def _encode_params(data): 
         if isinstance(data, (str, bytes)):
@@ -227,13 +222,11 @@ class Session:
             self.hSession=AutoWinHttpHandle(WinHttpOpen(self.UA,WINHTTP_ACCESS_TYPE_DEFAULT_PROXY,WINHTTP_NO_PROXY_NAME,WINHTTP_NO_PROXY_BYPASS,0))
             if self.hSession==0:
                 raise WinhttpException(GetLastError())  
-        target=server,port
-        if self.hConnects.get(target,0)==0:
-            hConnect=AutoWinHttpHandle(WinHttpConnect(self.hSession,server,port,0))
-            if hConnect==0:
-                raise WinhttpException(GetLastError()) 
-            self.hConnects[target]=hConnect
-        hRequest=AutoWinHttpHandle(WinHttpOpenRequest(self.hConnects[target],method,param,None,WINHTTP_NO_REFERER,WINHTTP_DEFAULT_ACCEPT_TYPES,flag) )
+        
+        hConnect=AutoWinHttpHandle(WinHttpConnect(self.hSession,server,port,0))
+        if hConnect==0:
+            raise WinhttpException(GetLastError())  
+        hRequest=AutoWinHttpHandle(WinHttpOpenRequest( hConnect ,method,param,None,WINHTTP_NO_REFERER,WINHTTP_DEFAULT_ACCEPT_TYPES,flag) )
     
         self._setproxy(hRequest,proxies,scheme) 
         
@@ -250,6 +243,7 @@ class Session:
         self.headers,self.cookies=((self._getheaders(hRequest))) 
         self.status_code=self._getStatusCode(hRequest)
         if stream:
+            self.hconn=hConnect
             self.hreq=hRequest
             return self
         availableSize=DWORD()
@@ -279,6 +273,7 @@ class Session:
             if succ==0:raise WinhttpException(GetLastError())
             if downloadedSize.value==0:
                 del self.hreq
+                del self.hconn
                 break
             yield buff[:downloadedSize.value]
     @property
