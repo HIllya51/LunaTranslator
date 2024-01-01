@@ -95,10 +95,20 @@ class mecabwrap:
         _freestringlist(surface,num.value)
         return res 
   
- 
+from queue import Queue
+from threading import Thread
+_set_clip_board_queue=Queue()
+def _set_clipboard_thread():
+    while 1:
+        data=_set_clip_board_queue.get()
+        _clipboard_set(data)
+Thread(target=_set_clipboard_thread).start()
+
 
 def clipboard_set(text):
-    return _clipboard_set(text)
+    _set_clip_board_queue.put(text)
+    #return _clipboard_set(text)
+    #若不这样，在python线程里调用后，再在qt线程里第一次调用时，会卡在emptyclipboard上
 
 def clipboard_get():
     p=_clipboard_get() 
