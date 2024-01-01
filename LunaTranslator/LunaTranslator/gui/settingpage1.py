@@ -41,7 +41,7 @@ def updatescripts( self):
         if (os.path.exists(os.path.join(globalconfig['fridahook']['path'],'runtime/x86/frida')) or os.path.exists(os.path.join(globalconfig['fridahook']['path'],'runtime/x64/frida')))==False:return
         info_url='https://api.github.com/repos/0xDC00/scripts'
         scripts_url = f'https://api.github.com/repos/0xDC00/scripts/zipball'
-        updated_at = requests.get(info_url ,proxies=getproxy()).json()['updated_at']
+        updated_at = requests.get(info_url ,proxies=getproxy()).json()['pushed_at']
         updatetimef=os.path.join(globalconfig['fridahook']['path'],'updatetime.txt')
         savezip=os.path.join(globalconfig['fridahook']['path'],'latest.zip')
         scriptspath=os.path.join(globalconfig['fridahook']['path'],'scripts')
