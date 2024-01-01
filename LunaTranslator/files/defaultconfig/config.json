@@ -11,6 +11,7 @@
     "read_trans": false,
     "read_translator": 0,
     "disappear_delay": 5,
+    "network":0,
     "direct_filterrepeat":false,
     "allow_set_text_name":false,
     "embedded": {

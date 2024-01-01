@@ -54,7 +54,7 @@ class TS(basetrans):
         ) 
         response=self.session.post(
             self.config['OPENAI_API_BASE'] + '/chat/completions',
-            headers=headers, data=data
+            headers=headers, json=data
         ).json()
         try:
             message = response['choices'][0]['message']['content'].replace('\n\n', '\n').strip()

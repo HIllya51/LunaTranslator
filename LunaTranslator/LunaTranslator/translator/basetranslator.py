@@ -257,6 +257,7 @@ class basetrans(commonbase):
                     def reinitandtrans():
                         if self.needreinit:
                             self.needreinit=False
+                            self.renewsesion()
                             self._private_init()
                         return self.maybecachetranslate(contentraw,contentsolved,hira,is_auto_run)
                     res=timeoutfunction(reinitandtrans,checktutukufunction=checktutukufunction ) 

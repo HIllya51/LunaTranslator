@@ -426,6 +426,7 @@ class MAINUI() :
                     return None
                 aclass=importlib.import_module('translator.'+classname).TS  
         except Exception as e:
+            print_exc()
             self.textgetmethod('<msg_error_not_refresh>'+globalconfig['fanyi'][classname]['name']+' import failed : '+str(stringfyerror(e)))
             return None
         return aclass(classname)   

@@ -3,7 +3,8 @@ from PyQt5.QtCore import QCoreApplication ,Qt
 from PyQt5.QtWidgets import  QApplication
 import os
 import platform,os
-def initpath(): 
+
+if __name__ == "__main__" :
     # dirname=os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     # os.chdir(dirname) 
 
@@ -27,13 +28,13 @@ def initpath():
         os.mkdir('./cache/screenshot')
     if os.path.exists('./cache/tts')==False:
         os.mkdir('./cache/tts')
+        
+    from myutils.config import _TR,static_data,testpriv,globalconfig
 
     sys.path.append('./userconfig')
-   
-
-if __name__ == "__main__" :
-    initpath()
-    from myutils.config import _TR,static_data,testpriv
+    sys.path.insert(0,'./LunaTranslator/network/'+['winhttp','libcurl'][globalconfig['network']])
+ 
+    
     from gui.usefulwidget import getQMessageBox
     from LunaTranslator import MAINUI
     import gobject 

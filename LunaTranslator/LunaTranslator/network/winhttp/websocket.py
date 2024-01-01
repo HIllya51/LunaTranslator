@@ -1,30 +1,6 @@
 from winhttp import *
 from urllib.parse import urlencode,urlsplit
-try:
-    WinHttpWebSocketCompleteUpgrade=Winhttp.WinHttpWebSocketCompleteUpgrade
-    WinHttpWebSocketCompleteUpgrade.argtypes=HINTERNET,DWORD_PTR
-    WinHttpWebSocketCompleteUpgrade.restype=HINTERNET
-    WinHttpWebSocketSend=Winhttp.WinHttpWebSocketSend
-    WinHttpWebSocketSend.argtypes=HINTERNET,DWORD,LPVOID,DWORD
-    WinHttpWebSocketSend.restype=DWORD
-    WinHttpWebSocketReceive=Winhttp.WinHttpWebSocketReceive
-    WinHttpWebSocketReceive.argtypes=HINTERNET,LPVOID,DWORD,DWORD_PTR,DWORD_PTR
-    WinHttpWebSocketReceive.restype=DWORD
-    WinHttpWebSocketClose=Winhttp.WinHttpWebSocketClose
-    WinHttpWebSocketClose.argtypes=HINTERNET,USHORT,LPVOID,DWORD_PTR
-    WinHttpWebSocketClose.restype=DWORD
-except:
-    pass
 
-WINHTTP_OPTION_UPGRADE_TO_WEB_SOCKET=114
-
-WINHTTP_WEB_SOCKET_BINARY_MESSAGE_BUFFER_TYPE       = 0
-WINHTTP_WEB_SOCKET_BINARY_FRAGMENT_BUFFER_TYPE      = 1
-WINHTTP_WEB_SOCKET_UTF8_MESSAGE_BUFFER_TYPE         = 2
-WINHTTP_WEB_SOCKET_UTF8_FRAGMENT_BUFFER_TYPE        = 3
-WINHTTP_WEB_SOCKET_CLOSE_BUFFER_TYPE                = 4
-ERROR_SUCCESS=0
-WINHTTP_WEB_SOCKET_SUCCESS_CLOSE_STATUS                = 1000
 class WebSocket:
     def send(self,data):  
         if isinstance(data,str):
@@ -46,8 +22,7 @@ class WebSocket:
         dwBytesTransferred=DWORD()
         newBufferSize=DWORD(10240)
          
-        pbCurrentBufferPointer=create_string_buffer(10240)
-        WinHttpWebSocketReceive
+        pbCurrentBufferPointer=create_string_buffer(10240) 
         
         dwError = WinHttpWebSocketReceive(self.hWebSocketHandle,
                                         pbCurrentBufferPointer,

@@ -5,7 +5,7 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QPixmap,QImage
 from PyQt5.QtWidgets import QWidget,QLabel ,QProgressBar,QLineEdit,QPushButton 
 import os,threading
-from gui.usefulwidget import getsimpleswitch
+from gui.usefulwidget import getsimpleswitch,getsimplecombobox
 from myutils.config import globalconfig  ,_TR ,static_data
 from myutils.wrapper import threader
 import time,json,platform,zipfile
@@ -89,7 +89,9 @@ def setTab_aboutlazy(self) :
                 [('自动下载更新(需要连接github)',5),(getsimpleswitch(globalconfig ,'autoupdate',callback= lambda x:getversion(self)),1) ,('',10)],
                 [(self.versionlabel,10)], 
                 [(self.downloadprogress,10)],
-                #[(self.versionlabel4,10)] 
+                [],
+                [('Internet',5)],
+                [(getsimplecombobox(['winhttp','libcurl'],globalconfig,'network'),5)]
         ]  
          
           
@@ -101,7 +103,7 @@ def setTab_aboutlazy(self) :
             
         ] 
         
-        tab=self.makesubtab_lazy(['相关说明', '自动更新','资源下载' ],[
+        tab=self.makesubtab_lazy(['相关说明', '其他设置','资源下载' ],[
                 lambda:self.makevbox([self.makegrid(shuominggrid),imgwidget("./files/zan.jpg")]), 
                 lambda: self.makescroll(self.makegrid(grid2 )   ) ,
                 

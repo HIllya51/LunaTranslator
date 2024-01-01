@@ -2,7 +2,7 @@
 #include"define.h"
 #include<iostream>
 #include"cinterface.h"
-
+#include<malloc.h>
 void free_all(void* str) {
     delete str;
 }
@@ -49,4 +49,34 @@ wchar_t** vecwstr2c(std::vector<std::wstring>& vs) {
         argv[i][vs[i].size()] = 0;
     }
     return argv;
+}
+
+struct MemoryStruct {
+  char *memory;
+  size_t size;
+};
+size_t WriteMemoryCallback(void *contents, size_t size, size_t nmemb, void *userp){
+  size_t realsize = size * nmemb;
+  struct MemoryStruct *mem = (struct MemoryStruct *)userp;
+
+  char *ptr;
+  if(mem->memory)
+    ptr=(char*)realloc(mem->memory, mem->size + realsize + 1);
+  else
+    ptr=(char*)malloc( mem->size + realsize + 1);
+  if(!ptr) {
+    /* out of memory! */
+    printf("not enough memory (realloc returned NULL)\n");
+    return 0;
+  }
+
+  mem->memory = ptr;
+  memcpy(&(mem->memory[mem->size]), contents, realsize);
+  mem->size += realsize;
+  mem->memory[mem->size] = 0;
+
+  return realsize;
+}
+void c_free(void* ptr){
+    free(ptr);
 }

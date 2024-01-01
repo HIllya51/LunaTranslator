@@ -71,18 +71,17 @@ def settab2d(self):
         lixians,pre,mianfei,develop,shoufei=splittranslatortypes()
         while True:
             port=globalconfig['debugport']
+            _path=globalconfig['chromepath']
+            needstart=any([globalconfig['fanyi'][dev]['use'] for dev in develop])  and os.path.exists(_path)
             try:
-                needstart=any([globalconfig['fanyi'][dev]['use'] for dev in develop])
-                if needstart:
+                
+                if needstart :
                     requests.get('http://127.0.0.1:{}/json/list'.format(port)).json()
                     self.statuslabel.setText(_TR("连接成功"))
             except:
                 if (checkportavailable(port)):
-                    self.statuslabel.setText(_TR("连接失败"))
-                    needstart=any([globalconfig['fanyi'][dev]['use'] for dev in develop])
-                    if needstart:
-                        _path=globalconfig['chromepath']
-                    
+                    self.statuslabel.setText(_TR("连接失败")) 
+                    if needstart:  
                         call="\"%s\" --disable-extensions --remote-allow-origins=* --disable-gpu --no-first-run --remote-debugging-port=%d --user-data-dir=\"%s\"" %(_path ,port,os.path.abspath('./chrome_cache/'+hashtext(_path))) 
                         print(call)
                         self.engine=subproc_w(call) 

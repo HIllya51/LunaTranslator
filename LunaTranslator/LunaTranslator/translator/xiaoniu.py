@@ -28,10 +28,9 @@ class TS(basetrans):
             'src_text':query,
             'apikey':apikey
         }
+        response = self.session.post('https://api.niutrans.com/NiuTransServer/translation',  headers=headers, params=params , verify=False)
         
-        try:
-            response = self.session.post('https://api.niutrans.com/NiuTransServer/translation',  headers=headers, params=params , verify=False)
-        # print(response.json())
+        try: 
             self.countnum(query)
         #print(res['trans_result'][0]['dst'])
             return response.json()['tgt_text'] 

@@ -2,7 +2,8 @@
 from translator.basetranslator import basetrans
 import json,requests
 from myutils.config import globalconfig
-import websocket,time,winhttp
+import websocket,time,os
+from traceback import print_exc
 class basetransdev(basetrans): 
     target_url=None
     def check_url_is_translator_url(self,url):
@@ -24,7 +25,9 @@ class basetransdev(basetrans):
             time.sleep(0.1)
 #########################################
     def _private_init(self):
-        self._id=1      
+        if os.path.exists(globalconfig['chromepath'])==False:
+            raise Exception("can't find chromium")
+        self._id=1
         self._createtarget()  
         super()._private_init()
     def _SendRequest(self,ws,method,params): 
@@ -32,7 +35,8 @@ class basetransdev(basetrans):
         try:
             ws.send(json.dumps({'id':self._id,'method':method,'params':params}))
             res=ws.recv()
-        except winhttp.WinhttpException as e:
+        except :
+            print_exc()
             self._createtarget()
             return self._SendRequest(self.ws,method,params)
         res=json.loads(res)
@@ -45,15 +49,15 @@ class basetransdev(basetrans):
                 return self._SendRequest(self.ws,method,params)
      
 
-    def _createtarget(self  ): 
+    def _createtarget(self): 
         port=globalconfig['debugport']
         url=self.target_url
         try:
             infos=requests.get('http://127.0.0.1:{}/json/list'.format(port)).json() 
-        except winhttp.WinhttpException as e:
-            if e.errorcode==winhttp.WinhttpException.ERROR_WINHTTP_CANNOT_CONNECT:
-                self._createtarget()
-                return
+        except :
+            print_exc()
+            self._createtarget()
+            return
         use=None
         for info in infos: 
             if self.check_url_is_translator_url(info['url']):

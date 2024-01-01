@@ -29,4 +29,8 @@ extern "C" {
     __declspec(dllexport) bool otsu_binary(const void*image,int thresh);
 
     __declspec(dllexport) void* extracticon2data(const wchar_t*name,size_t *l);
+
+    
+    __declspec(dllexport) size_t WriteMemoryCallback(void *contents, size_t size, size_t nmemb, void *userp);
+    __declspec(dllexport) void c_free(void*);
 }

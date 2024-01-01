@@ -15,6 +15,7 @@ xcopy .\LunaTranslator\translator %targetdir_in%\translator /e /y /I
 xcopy .\LunaTranslator\cishu %targetdir_in%\cishu /e /y /I
 xcopy .\LunaTranslator\tts %targetdir_in%\tts /e /y /I
 xcopy .\LunaTranslator\hiraparse %targetdir_in%\hiraparse /e /y /I
+xcopy .\LunaTranslator\network %targetdir_in%\network /e /y /I
 
 xcopy ..\plugins\exec\builds\_x86 %targetdir%\ /e /y /I
 del %targetdir_in%\qt5qml.dll
@@ -43,6 +44,7 @@ del %targetdir_in%\_ssl.pyd
  
 
 
+del %targetdir%\files\plugins\libcurl-x64.dll
 del %targetdir%\files\plugins\ocr64.dll
 del %targetdir%\files\plugins\winsharedutils64.dll
 del %targetdir%\files\plugins\winrtutils64.dll

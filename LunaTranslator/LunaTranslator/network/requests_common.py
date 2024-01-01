@@ -1,9 +1,7 @@
-
+import json,gzip,base64
 from collections.abc import Callable, Mapping, MutableMapping
 from collections import OrderedDict
 from urllib.parse import urlencode,urlsplit
-import gzip,json,base64
-from winhttp import *
 
 class CaseInsensitiveDict(MutableMapping): 
 
@@ -48,15 +46,17 @@ class CaseInsensitiveDict(MutableMapping):
 
     def __repr__(self):
         return str(dict(self.items()))
- 
-class Session:
+
+class Sessionbase:
     def __init__(self) -> None:
         self.UA='Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
         self.hSession=0
+        self.curl=0
+        self.last_error=0
         self.status_code=0
         self.content=b'{}'
         self.cookies={}
-        
+        self.proxy=None
         self.dfheaders=CaseInsensitiveDict({
             "User-Agent": self.UA,
             "Accept-Encoding": 'gzip, deflate',#br
@@ -93,7 +93,7 @@ class Session:
     def _parsedata(self,data,headers,js): 
          
         if data is None and js is None:
-            dataptr=WINHTTP_NO_REQUEST_DATA
+            dataptr=None
             datalen=0
         else:
             if data:
@@ -115,14 +115,32 @@ class Session:
         #print(headers,dataptr,datalen)
         return headers,dataptr,datalen
      
-    def raise_for_status(self):
-        error=GetLastError()
-        if error:
-            raise WinhttpException(error)
-     
+    def _parseurl(self,url,param):
+        url=url.strip()
+        scheme,server,path,query,_=urlsplit(url)
+        if scheme not in ['https','http']:
+            raise Exception('unknown scheme '+scheme)
+        spl=server.split(':')
+        if len(spl)==2:
+            server=spl[0]
+            port=int(spl[1])
+        elif len(spl)==1:
+            spl[0]
+            if scheme=='https':
+                port=443
+            else:
+                port=80
+        else:
+            raise Exception('invalid url')
+        if param:
+            param=self._encode_params(param)
+            query+=('&' if len(query) else '')+param
+        if len(query):
+            path+='?'+query
+        url=scheme+'://'+server+path
+        return scheme,server,port,path,url
     def _parseheader(self,headers,cookies):
-        _x=[]
-        #print(headers)
+        _x=[] 
         
         if cookies:
             
@@ -134,27 +152,10 @@ class Session:
             headers.update({'Cookie':cookie})
         for k  in sorted(headers.keys()):
             _x.append('{}: {}'.format(k,headers[k]))
-        return '\r\n'.join(_x)
-    
-    def _getheaders(self,hreq):
-        dwSize=DWORD()
-        WinHttpQueryHeaders(hreq, WINHTTP_QUERY_RAW_HEADERS_CRLF, WINHTTP_HEADER_NAME_BY_INDEX, None, pointer(dwSize), WINHTTP_NO_HEADER_INDEX);
-        
-        pszCookies=create_unicode_buffer(dwSize.value//2+1)
-        succ=WinHttpQueryHeaders(hreq, WINHTTP_QUERY_RAW_HEADERS_CRLF, WINHTTP_HEADER_NAME_BY_INDEX, pszCookies , pointer(dwSize), WINHTTP_NO_HEADER_INDEX)
-        if succ==0:
-            return {},{}
-        return self._parseheader2dict(pszCookies.value)
-    def _getStatusCode(self,hreq):
-        dwSize=DWORD(sizeof(DWORD))
-        dwStatusCode=DWORD()
-        bResults = WinHttpQueryHeaders( hreq,   WINHTTP_QUERY_STATUS_CODE |   WINHTTP_QUERY_FLAG_NUMBER,  None, 
-                                      pointer(dwStatusCode), 
-                                      pointer(dwSize), 
-                                      None )
-        if bResults==0:
-            self.raise_for_status()
-        return dwStatusCode.value
+        return _x
+    def _update_header_cookie(self,headerstr):
+        self.headers,cookies=self._parseheader2dict(headerstr)
+        self.cookies.update(cookies) 
     def _parseheader2dict(self,headerstr):
         #print(headerstr)
         header=CaseInsensitiveDict()
@@ -168,114 +169,7 @@ class Session:
             else:   
                 header[line[:idx]]=line[idx+2:] 
         return CaseInsensitiveDict(header),cookie
-     
-    def _parseurl(self,url,param):
-        url=url.strip()
-        scheme,server,path,query,_=urlsplit(url)
-        if scheme=='https':
-            ishttps=True
-        elif scheme=='http':
-            ishttps=False
-        else:
-            raise WinhttpException('unknown scheme '+scheme)
-        spl=server.split(':')
-        if len(spl)==2:
-            server=spl[0]
-            port=int(spl[1])
-        elif len(spl)==1:
-            spl[0]
-            if ishttps:
-                port=INTERNET_DEFAULT_HTTPS_PORT
-            else:
-                port=INTERNET_DEFAULT_HTTP_PORT
-        else:
-            raise WinhttpException('invalid url')
-        if param:
-            param=self._encode_params(param)
-            query+=('&' if len(query) else '')+param
-        if len(query):
-            path+='?'+query
-        return scheme,ishttps,server,port,path
-    def _setproxy(self,hsess,proxy,scheme):
-        if proxy is None:return 
-        proxy= proxy.get(scheme,None)
-        if proxy is None or proxy=='':return 
-        winhttpsetproxy(hsess,proxy)
-    
-    def request(self,
-        method, url, params=None, data=None, headers=None,proxies=None, json=None,cookies=None,  files=None,
-        auth=None, timeout=None, allow_redirects=True,  hooks=None,   stream=None, verify=None, cert=None, ):
-        if headers is None:
-            headers=self.dfheaders
-        else:
-            headers=CaseInsensitiveDict(headers)
-        if auth and isinstance(auth,tuple) and len(auth)==2: 
-            headers['Authorization']="Basic " +   ( base64.b64encode(b":".join((auth[0].encode("latin1"), auth[1].encode("latin1")))).strip() ).decode() 
-        
-        scheme,ishttps,server,port,param=self._parseurl(url,params) 
-        headers,dataptr,datalen=self._parsedata(data,headers,json)
-        flag=WINHTTP_FLAG_SECURE if ishttps else 0
-        #print(server,port,param,dataptr)
-        headers= self._parseheader(headers,cookies)
-        
-        if self.hSession==0:
-            self.hSession=AutoWinHttpHandle(WinHttpOpen(self.UA,WINHTTP_ACCESS_TYPE_DEFAULT_PROXY,WINHTTP_NO_PROXY_NAME,WINHTTP_NO_PROXY_BYPASS,0))
-            if self.hSession==0:
-                raise WinhttpException(GetLastError())  
-        
-        hConnect=AutoWinHttpHandle(WinHttpConnect(self.hSession,server,port,0))
-        if hConnect==0:
-            raise WinhttpException(GetLastError())  
-        hRequest=AutoWinHttpHandle(WinHttpOpenRequest( hConnect ,method,param,None,WINHTTP_NO_REFERER,WINHTTP_DEFAULT_ACCEPT_TYPES,flag) )
-    
-        if hRequest==0:
-            raise WinhttpException(GetLastError())
-        self._setproxy(hRequest,proxies,scheme) 
-        
-        succ=WinHttpSendRequest(hRequest,headers,-1,dataptr,datalen,datalen,None)
-        if succ==0:
-            raise WinhttpException(GetLastError())
-        
-        succ=WinHttpReceiveResponse(hRequest,None)
-        if succ==0:
-            raise WinhttpException(GetLastError())
-        
-        self.headers,self.cookies=((self._getheaders(hRequest))) 
-        self.status_code=self._getStatusCode(hRequest)
-        if stream:
-            self.hconn=hConnect
-            self.hreq=hRequest
-            return self
-        availableSize=DWORD()
-        downloadedSize=DWORD()
-        downloadeddata=b''
-        while True:
-            succ=WinHttpQueryDataAvailable(hRequest,pointer(availableSize))
-            if succ==0:
-                raise WinhttpException(GetLastError())
-            if availableSize.value==0:
-                break
-            buff=create_string_buffer(availableSize.value)
-            #这里可以做成流式的
-            succ=WinHttpReadData(hRequest,buff,availableSize,pointer(downloadedSize))
-            if succ==0:raise WinhttpException(GetLastError())
-            downloadeddata+=buff[:downloadedSize.value]
-        self.content=downloadeddata
-        #print(self.text)
-        
-        return self
-    def iter_content(self,chunk_size=1024):
-        downloadedSize=DWORD()
-        buff=create_string_buffer(chunk_size)
-            
-        while True:
-            succ=WinHttpReadData(self.hreq,buff,chunk_size,pointer(downloadedSize))
-            if succ==0:raise WinhttpException(GetLastError())
-            if downloadedSize.value==0:
-                del self.hreq
-                del self.hconn
-                break
-            yield buff[:downloadedSize.value]
+       
     @property
     def text(self): 
         encode=self.headers.get('Content-Encoding',None)
@@ -295,8 +189,27 @@ class Session:
         return self.request("POST", url, **kwargs)
     def options(self, url, **kwargs): 
         return self.request("OPTIONS", url, **kwargs)
+    def request_impl(self,*args):
+        pass
+    def request(self,
+        method, url, params=None, data=None, headers=None,proxies=None, json=None,cookies=None,  files=None,
+        auth=None, timeout=None, allow_redirects=True,  hooks=None,   stream=None, verify=False, cert=None, ):
+        
+        headers=CaseInsensitiveDict(headers) if headers else self.dfheaders
+        if auth and isinstance(auth,tuple) and len(auth)==2: 
+            headers['Authorization']="Basic " +   ( base64.b64encode(b":".join((auth[0].encode("latin1"), auth[1].encode("latin1")))).strip() ).decode() 
+        
+        
+        scheme,server,port,param,url=self._parseurl(url,params) 
+        headers,dataptr,datalen=self._parsedata(data,headers,json)
+        headers=self._parseheader(headers,cookies)
+        proxy= proxies.get(scheme,None) if proxies  else None
+        _= self.request_impl(method,scheme,server,port,param,url,headers,dataptr,datalen,proxy,stream,verify)
+
+        return _
+Sessionimpl=[Sessionbase]
 def request(method, url, **kwargs): 
-    with Session() as session:
+    with Sessionimpl[0]() as session:
         return session.request(method=method, url=url, **kwargs)
 def get(url, params=None, **kwargs):
     return request("GET", url, params=params, **kwargs)
@@ -305,8 +218,5 @@ def post(url, params=None, **kwargs):
 def options(url, params=None, **kwargs):
     return request("OPTIONS", url, params=params, **kwargs)
 def session():
-    with Session() as session:
+    with Sessionimpl[0]() as session:
         return session
-if __name__=='__main__':
-    pass
-     

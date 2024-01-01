@@ -71,7 +71,9 @@ class commonbase:
         return _
     def __init__(self,typename) -> None:
         self.typename=typename 
-        self.session=proxysession(self._globalconfig_key,self.typename)
+        self.renewsesion()
         self.level2init()
+    def renewsesion(self):
+        self.session=proxysession(self._globalconfig_key,self.typename) 
     def level2init(self):
         pass

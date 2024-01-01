@@ -84,13 +84,16 @@ class TS(basetrans):
         response =self.session.post('https://fanyi.youdao.com/translate_o', params=params ,headers=headers, data=data)
     
         res='' 
-        for js in response.json()['translateResult']:
-            if res!='':
-                res+='\n'
-            for _ in js:
-                res+=_['tgt']
-            
-        return res 
+        try:
+            for js in response.json()['translateResult']:
+                if res!='':
+                    res+='\n'
+                for _ in js:
+                    res+=_['tgt']
+                
+            return res 
+        except:
+            raise Exception(response.text)
     def show(self,res):
         print('有道','\033[0;33;47m',res,'\033[0m',flush=True)
  
