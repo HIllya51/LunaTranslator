@@ -44,12 +44,12 @@ def _3_f(line,args):
                         guesstimes-=1
         line=line[:len(line)//guesstimes] 
         return line
-def _3_2(line,args):
+def _3_2(line):
         cache=''
         
         
 
-        while len(line,args):
+        while len(line):
                 last=None
                 dumplength=len(line)//2
                 while dumplength>1:
@@ -94,7 +94,7 @@ def _10_f(line):
          
         line=sorted(saveline, key=len, reverse=True)[0]
         return line
-def _13_f(line,args): #递增式
+def _13_f(line): #递增式
         cnt=Counter(line)
         saveline=[]
         for k in sorted(cnt.keys(),key= lambda x :-cnt[x]) :
@@ -102,12 +102,12 @@ def _13_f(line,args): #递增式
                 first=line.find(k)
                 length=1
                 while True:
-                        if first+length>=len(line,args):
+                        if first+length>=len(line):
                           break
                         
                         if line[first]==line[first+length]:
                             first+=length
-                        if first+length<len(line,args):
+                        if first+length<len(line):
                                
                                 length+=1
                         else:
