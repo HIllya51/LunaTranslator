@@ -933,6 +933,12 @@
             "type": "dev",
             "name": "彩云"
         },
+        "gemini": {
+            "type": "api",
+            "use": false,
+            "color": "blue",
+            "name": "gemini"
+        },
         "jb7": {
             "type": "offline",
             "use": false,

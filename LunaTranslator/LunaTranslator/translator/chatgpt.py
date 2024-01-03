@@ -6,7 +6,7 @@ import os
 
 class TS(basetrans):
     def langmap(self):
-        return {"zh": "zh-CN", "cht": "zh-TW"}
+        return {'zh': 'Simplified Chinese', 'ja': 'Japanese', 'en': 'English', 'ru': 'Russian', 'es': 'Spanish', 'ko': 'Korean', 'fr': 'French', 'cht': 'Traditional Chinese', 'vi': 'Vietnamese', 'tr': 'Turkish', 'pl': 'Polish', 'uk': 'Ukrainian', 'it': 'Italian', 'ar': 'Arabic', 'th': 'Thai'}
     def __init__(self,typename ) :  
         self.context=[]
         super( ).__init__(typename) 
