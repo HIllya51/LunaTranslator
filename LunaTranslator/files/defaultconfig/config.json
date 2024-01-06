@@ -1151,6 +1151,12 @@
             "color": "blue",
             "name": "MT5"
         },
+        "ort_sp": {
+            "use": false,
+            "type": "offline",
+            "color": "blue",
+            "name": "ort_sp"
+        },
         "sakura": {
             "use": false,
             "type": "offline",
