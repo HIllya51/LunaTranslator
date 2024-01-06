@@ -65,6 +65,7 @@ class TS(basetrans):
         self.ortmtlib.create_ort_session.restype = ctypes.c_int
         self.ortmtlib.create_ort_session.argtypes = (
                 ctypes.c_char_p,
+                ctypes.c_int
                 )
 
         self.ortmtlib.create_tensor_int32.restype = ctypes.c_int
@@ -99,8 +100,10 @@ class TS(basetrans):
         self.ortmtlib.run_session.restype=ctypes.c_int
 
         model_path_ctypes = ctypes.c_char_p(bytes(model_path, 'utf8'))
+        n_threads_ctypes = ctypes.c_int(6)
         res = self.ortmtlib.create_ort_session(
                 model_path_ctypes,
+                n_threads_ctypes
                 )
         return
 
