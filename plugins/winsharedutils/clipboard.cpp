@@ -31,9 +31,9 @@ wchar_t* clipboard_get() {
     CloseClipboard();
     return data;
 }
-bool clipboard_set(wchar_t* text) {
+bool clipboard_set(HWND hwnd,wchar_t* text) {
     bool success = false;
-    static HWND hwnd=CreateWindowExA(0,"STATIC",0,0,0,0,0,0,0,0,0,0);
+    //static HWND hwnd=CreateWindowExA(0,"STATIC",0,0,0,0,0,0,0,0,0,0);
     if (tryopenclipboard(hwnd) == false)return false;
     EmptyClipboard();
     do {

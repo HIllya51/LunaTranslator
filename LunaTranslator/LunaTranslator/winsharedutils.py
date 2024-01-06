@@ -1,4 +1,4 @@
-from ctypes import c_uint,c_bool,POINTER,c_char_p,c_uint64,c_wchar_p,pointer,CDLL,c_int,Structure,c_void_p,cast,memmove,create_unicode_buffer,create_string_buffer,c_size_t
+from ctypes import c_uint,c_bool,POINTER,c_char_p,c_uint64,c_wchar_p,pointer,CDLL,c_int,Structure,c_void_p,cast,memmove,create_unicode_buffer,create_string_buffer,c_size_t,windll
 import platform,os
 
 if platform.architecture()[0]=='64bit':
@@ -49,7 +49,7 @@ _mecab_end.argtypes=c_void_p,
 _clipboard_get=utilsdll.clipboard_get
 _clipboard_get.restype=c_void_p  #实际上是c_wchar_p，但是写c_wchar_p 傻逼python自动转成str，没法拿到指针
 _clipboard_set=utilsdll.clipboard_set
-_clipboard_set.argtypes=c_wchar_p,
+_clipboard_set.argtypes=c_void_p,c_wchar_p,
 
 def SetProcessMute(pid,mute):
     _SetProcessMute(pid,mute)
@@ -94,21 +94,13 @@ class mecabwrap:
         _freestringlist(feature,num.value)
         _freestringlist(surface,num.value)
         return res 
-  
-from queue import Queue
-from threading import Thread
-_set_clip_board_queue=Queue()
-def _set_clipboard_thread():
-    while 1:
-        data=_set_clip_board_queue.get()
-        _clipboard_set(data)
-Thread(target=_set_clipboard_thread).start()
+ 
 
-
+clphwnd=windll.user32.CreateWindowExW(0,"STATIC",0,0,0,0,0,0,0,0,0,0);
 def clipboard_set(text):
-    _set_clip_board_queue.put(text)
-    #return _clipboard_set(text)
-    #若不这样，在python线程里调用后，再在qt线程里第一次调用时，会卡在emptyclipboard上
+    global clphwnd
+    #_set_clip_board_queue.put(text)
+    return _clipboard_set(clphwnd,text) 
 
 def clipboard_get():
     p=_clipboard_get() 

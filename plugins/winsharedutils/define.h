@@ -24,7 +24,7 @@ extern "C" {
 
 
     __declspec(dllexport) wchar_t* clipboard_get();
-    __declspec(dllexport) bool clipboard_set(wchar_t* text);
+    __declspec(dllexport) bool clipboard_set(HWND hwnd,wchar_t* text);
     __declspec(dllexport) void GetLnkTargetPath(wchar_t* lnkFilePath,wchar_t *path,wchar_t*tgtpath,wchar_t*iconpath,wchar_t*dirpath) ;
     __declspec(dllexport) bool otsu_binary(const void*image,int thresh);
 
