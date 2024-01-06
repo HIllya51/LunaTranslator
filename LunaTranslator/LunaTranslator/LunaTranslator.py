@@ -24,7 +24,7 @@ from functools import partial
 from gui.settin import Settin 
 from gui.showocrimage import showocrimage
 from gui.attachprocessdialog import AttachProcessDialog
-import websocket,pytz
+import hmac,pytz,uuid
 import windows
 import re ,gobject
 import winsharedutils
