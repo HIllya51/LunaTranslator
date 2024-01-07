@@ -38,11 +38,8 @@
                     "link": "https://github.com/HIllya51/LunaTranslator/releases/download/v1.0/DR.eye.zip"
                 },
                 {
-                    "name": "MT5",
-                    "link": [
-                        "https://github.com/chaihahaha/OrtMT5/releases/download/0.0.4/mt5-translator.part1.rar",
-                        "https://github.com/chaihahaha/OrtMT5/releases/download/0.0.4/mt5-translator.part2.rar"
-                    ]
+                    "name": "OrtSp",
+                    "link": "https://github.com/chaihahaha/OrtMT5/releases/tag/v0.1.0"
                 },
                 {
                     "name": "OneRingTranslator_local_REST_service",

@@ -1145,17 +1145,11 @@
             "color": "blue",
             "name": "OneRingTranslator"
         },
-        "MT5": {
-            "use": false,
-            "type": "offline",
-            "color": "blue",
-            "name": "MT5"
-        },
         "ort_sp": {
             "use": false,
             "type": "offline",
             "color": "blue",
-            "name": "ort_sp"
+            "name": "OrtSp"
         },
         "sakura": {
             "use": false,
