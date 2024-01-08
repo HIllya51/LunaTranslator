@@ -1,5 +1,5 @@
 {
-    "version":"v2.33.0",
+    "version":"v2.33.1",
     "language_list_show":["简体中文","日本語","English","Русский язык","Español","한국어","Français","繁體中文","Tiếng Việt","Türkçe","Polski","Українська Мова","Italiano","اللغة العربية","ภาษาไทย"] ,
     "language_list_translator":["简体中文","日文","英文","俄语","西班牙语","韩语","法语","繁体中文","越南语","土耳其语","波兰语","乌克兰语","意大利语","阿拉伯语","泰语"],
     "language_list_translator_inner":["zh", "ja", "en","ru","es","ko","fr","cht","vi","tr","pl","uk","it","ar","th"],
@@ -19,23 +19,23 @@
             "sources":[
                 {
                     "name": "J北京7",
-                    "link": "https://github.com/HIllya51/LunaTranslator/releases/download/v1.0/JBeijing7.zip"
-                },
-                {
-                    "name": "YakuYaku",
-                    "link": "https://github.com/HIllya51/LunaTranslator/releases/download/v1.34.5/YakuYaku.zip"
+                    "link": "https://github.com/HIllya51/RESOURCES/releases/download/offline_translator/JBeijing7.zip"
                 },
                 {
                     "name": "J北京7_用户词典",
-                    "link": "https://github.com/HIllya51/LunaTranslator/releases/download/v1.0/JBeijing7UserDict.zip"
+                    "link": "https://github.com/HIllya51/RESOURCES/releases/download/offline_translator/JBeijing7UserDict.zip"
                 },
                 {
                     "name": "金山快译",
-                    "link": "https://github.com/HIllya51/LunaTranslator/releases/download/v1.0/FastAIT09_Setup.25269.4101.zip"
+                    "link": "https://github.com/HIllya51/RESOURCES/releases/download/offline_translator/FastAIT09_Setup.25269.4101.zip"
+                },
+                {
+                    "name": "YakuYaku",
+                    "link": "https://github.com/HIllya51/RESOURCES/releases/download/offline_translator/YakuYaku.zip"
                 },
                 {
                     "name": "快译通",
-                    "link": "https://github.com/HIllya51/LunaTranslator/releases/download/v1.0/DR.eye.zip"
+                    "link": "https://github.com/HIllya51/RESOURCES/releases/download/offline_translator/DR.eye.zip"
                 },
                 {
                     "name": "OrtSp",
@@ -52,27 +52,27 @@
             "sources":[
                 {
                     "name": "日语",
-                    "link": "https://github.com/HIllya51/LunaTranslator/releases/download/v1.40.2/ja.zip"
+                    "link": "https://github.com/HIllya51/RESOURCES/releases/download/ocr_models/ja.zip"
                 },
                 {
                     "name": "英文",
-                    "link": "https://github.com/HIllya51/LunaTranslator/releases/download/v1.40.2/en.zip"
+                    "link": "https://github.com/HIllya51/RESOURCES/releases/download/ocr_models/en.zip"
                 },
                 {
                     "name": "简体中文",
-                    "link": "https://github.com/HIllya51/LunaTranslator/releases/download/v1.40.2/zh.zip"
+                    "link": "https://github.com/HIllya51/RESOURCES/releases/download/ocr_models/zh.zip"
                 },
                 {
                     "name": "繁体中文",
-                    "link": "https://github.com/HIllya51/LunaTranslator/releases/download/v1.40.2/cht.zip"
+                    "link": "https://github.com/HIllya51/RESOURCES/releases/download/ocr_models/cht.zip"
                 },
                 {
                     "name": "韩语",
-                    "link": "https://github.com/HIllya51/LunaTranslator/releases/download/v1.40.2/ko.zip"
+                    "link": "https://github.com/HIllya51/RESOURCES/releases/download/ocr_models/ko.zip"
                 },
                 {
                     "name": "俄语",
-                    "link": "https://github.com/HIllya51/LunaTranslator/releases/download/v1.40.2/ru.zip"
+                    "link": "https://github.com/HIllya51/RESOURCES/releases/download/ocr_models/ru.zip"
                 }
             ]
         },
@@ -81,27 +81,27 @@
             "sources":[
                 {
                     "name": "MeCab",
-                    "link": "https://github.com/HIllya51/LunaTranslator/releases/download/v1.0/Mecab.zip"
+                    "link": "https://github.com/HIllya51/RESOURCES/releases/download/dictionary/Mecab.zip"
                 },
                 {
                     "name": "Unidic",
-                    "link": "https://github.com/HIllya51/LunaTranslator/releases/download/v1.0/unidic-cwj-202302.zip"
+                    "link": "https://clrd.ninjal.ac.jp/unidic_archive/2302/unidic-cwj-202302.zip"
                 },
                 {
                     "name": "小学馆",
-                    "link": "https://github.com/HIllya51/LunaTranslator/releases/download/v1.0/xiaoxueguan.db"
+                    "link": "https://github.com/HIllya51/RESOURCES/releases/download/dictionary/xiaoxueguan.db"
                 },
                 {
                     "name": "EDICT",
-                    "link": "https://github.com/HIllya51/LunaTranslator/releases/download/v1.0/edict.db"
+                    "link": "https://github.com/HIllya51/RESOURCES/releases/download/dictionary/edict.db"
                 },
                 {
                     "name": "EDICT2",
-                    "link": "https://github.com/HIllya51/LunaTranslator/releases/download/v1.1.2/edict2"
+                    "link": "https://github.com/HIllya51/RESOURCES/releases/download/dictionary/edict2"
                 },
                 {
                     "name": "灵格斯词典",
-                    "link": "https://github.com/HIllya51/LunaTranslator/releases/download/v1.0/Lingoes.zip"
+                    "link": "https://github.com/HIllya51/RESOURCES/releases/download/dictionary/Lingoes.zip"
                 }
             ]
         },
@@ -110,7 +110,7 @@
             "sources":[
                 {
                     "name": "NeoSpeech",
-                    "link": "https://github.com/HIllya51/LunaTranslator/releases/download/v1.0/NeoSpeech.Japanese.Misaki.zip"
+                    "link": "https://github.com/HIllya51/RESOURCES/releases/download/speech_synthesis_packages/NeoSpeech.Japanese.Misaki.zip"
                 },
                 {
                     "name": "VOICEVOX",
@@ -118,111 +118,111 @@
                 },
                 {
                     "name": "VoiceRoid+_東北ずん子/东北俊子",
-                    "link": "https://github.com/HIllya51/LunaTranslator/releases/download/v1.1.2/VOICEROID+zunko.7z"
+                    "link": "https://github.com/HIllya51/RESOURCES/releases/download/voiceroid_plus/VOICEROID+zunko.7z"
                 },
                 {
                     "name": "VoiceRoid2_SFE_結月ゆかり/结月缘",
-                    "link": "https://github.com/HIllya51/LunaTranslator/releases/download/v1.0/Yukari2.zip"
+                    "link": "https://github.com/HIllya51/RESOURCES/releases/download/speech_synthesis_packages/Yukari2.zip"
                 },
                 {
                     "name": "VoiceRoid2_結月ゆかり/结月缘",
-                    "link": "https://github.com/HIllya51/LunaTranslator/releases/download/v1.0/VOICEROID2_Yuzuki_Yukari.zip"
+                    "link": "https://github.com/HIllya51/RESOURCES/releases/download/speech_synthesis_packages/VOICEROID2_Yuzuki_Yukari.zip"
                 },
                 {
                     "name": "VoiceRoid2_紲星あかり/绁星灯",
-                    "link": "https://github.com/HIllya51/LunaTranslator/releases/download/v1.0/VOICEROID2_Kizuna_Akari.zip"
+                    "link": "https://github.com/HIllya51/RESOURCES/releases/download/speech_synthesis_packages/VOICEROID2_Kizuna_Akari.zip"
                 },
                 {
                     "name": "VoiceRoid2_琴葉 茜・葵",
-                    "link": "https://github.com/HIllya51/LunaTranslator/releases/download/v1.0/VOICEROID2_Kotonoha_Akane_Aoi.zip"
+                    "link": "https://github.com/HIllya51/RESOURCES/releases/download/speech_synthesis_packages/VOICEROID2_Kotonoha_Akane_Aoi.zip"
                 },
                 {
                     "name": "VoiceRoid2_伊織弓鶴",
-                    "link": "https://github.com/HIllya51/LunaTranslator/releases/download/v1.0/VOICEROID2_Iori_Yuzuru.zip"
+                    "link": "https://github.com/HIllya51/RESOURCES/releases/download/speech_synthesis_packages/VOICEROID2_Iori_Yuzuru.zip"
                 },
                 {
                     "name": "VoiceRoid2_ついなちゃん",
-                    "link": "https://github.com/HIllya51/LunaTranslator/releases/download/v1.1.2/VOICEROID2_tsuina-chan_dl_e.zip"
+                    "link": "https://github.com/HIllya51/RESOURCES/releases/download/speech_synthesis_packages/VOICEROID2_tsuina-chan_dl_e.zip"
                 },
                 {
                     "name": "VoiceRoid2_東北イタコ/东北伊达子",
-                    "link": "https://github.com/HIllya51/LunaTranslator/releases/download/v1.0/VOICEROID2_Tohoku_Itako.zip"
+                    "link": "https://github.com/HIllya51/RESOURCES/releases/download/speech_synthesis_packages/VOICEROID2_Tohoku_Itako.zip"
                 },
                 {
                     "name": "VoiceRoid2_附加音源_結月ゆかり",
-                    "link": "https://github.com/HIllya51/LunaTranslator/releases/download/v1.1.2/yukari_emo_44.zip"
+                    "link": "https://github.com/HIllya51/RESOURCES/releases/download/install_free_voice_packages/yukari_emo_44.zip"
                 },
                 {
                     "name": "VoiceRoid2_附加音源_紲星あかり",
-                    "link": "https://github.com/HIllya51/LunaTranslator/releases/download/v1.1.2/akari_44.zip"
+                    "link": "https://github.com/HIllya51/RESOURCES/releases/download/install_free_voice_packages/akari_44.zip"
                 },
                 {
                     "name": "VoiceRoid2_附加音源_東北きりたん",
-                    "link": "https://github.com/HIllya51/LunaTranslator/releases/download/v1.1.2/kiritan_44.zip"
+                    "link": "https://github.com/HIllya51/RESOURCES/releases/download/install_free_voice_packages/kiritan_44.zip"
                 },
                 {
                     "name": "VoiceRoid2_附加音源_東北イタコ",
-                    "link": "https://github.com/HIllya51/LunaTranslator/releases/download/v1.1.2/itako_emo_44.zip"
+                    "link": "https://github.com/HIllya51/RESOURCES/releases/download/install_free_voice_packages/itako_emo_44.zip"
                 },
                 {
                     "name": "VoiceRoid2_附加音源_東北ずん子",
-                    "link": "https://github.com/HIllya51/LunaTranslator/releases/download/v1.1.2/zunko_44.zip"
+                    "link": "https://github.com/HIllya51/RESOURCES/releases/download/install_free_voice_packages/zunko_44.zip"
                 },
                 {
                     "name": "VoiceRoid2_附加音源_伊織弓鶴",
-                    "link": "https://github.com/HIllya51/LunaTranslator/releases/download/v1.1.2/yuzuru_emo_44.zip"
+                    "link": "https://github.com/HIllya51/RESOURCES/releases/download/install_free_voice_packages/yuzuru_emo_44.zip"
                 },
                 {
                     "name": "VoiceRoid2_附加音源_ついなちゃん",
-                    "link": "https://github.com/HIllya51/LunaTranslator/releases/download/v1.1.2/tsuina_44.zip"
+                    "link": "https://github.com/HIllya51/RESOURCES/releases/download/install_free_voice_packages/tsuina_44.zip"
                 },
                 {
                     "name": "VoiceRoid2_附加音源_ついなちゃん（関西弁）",
-                    "link": "https://github.com/HIllya51/LunaTranslator/releases/download/v1.1.2/tsuina_west_44.zip"
+                    "link": "https://github.com/HIllya51/RESOURCES/releases/download/install_free_voice_packages/tsuina_west_44.zip"
                 },
                 {
                     "name": "VoiceRoid2_附加音源_琴葉茜",
-                    "link": "https://github.com/HIllya51/LunaTranslator/releases/download/v1.1.2/akane_west_emo_44.zip"
+                    "link": "https://github.com/HIllya51/RESOURCES/releases/download/install_free_voice_packages/akane_west_emo_44.zip"
                 },
                 {
                     "name": "VoiceRoid2_附加音源_琴葉葵",
-                    "link": "https://github.com/HIllya51/LunaTranslator/releases/download/v1.1.2/aoi_emo_44.zip"
+                    "link": "https://github.com/HIllya51/RESOURCES/releases/download/install_free_voice_packages/aoi_emo_44.zip"
                 },
                 {
                     "name": "VoiceRoid2_附加音源_水奈瀬コウ",
-                    "link": "https://github.com/HIllya51/LunaTranslator/releases/download/v1.1.2/kou_44.zip"
+                    "link": "https://github.com/HIllya51/RESOURCES/releases/download/install_free_voice_packages/kou_44.zip"
                 },
                 {
                     "name": "VoiceRoid2_附加音源_桜乃そら",
-                    "link": "https://github.com/HIllya51/LunaTranslator/releases/download/v1.1.2/sora_44.zip"
+                    "link": "https://github.com/HIllya51/RESOURCES/releases/download/install_free_voice_packages/sora_44.zip"
                 },
                 {
                     "name": "VoiceRoid2_附加音源_民安ともえ",
-                    "link": "https://github.com/HIllya51/LunaTranslator/releases/download/v1.1.2/tamiyasu_44.zip"
+                    "link": "https://github.com/HIllya51/RESOURCES/releases/download/install_free_voice_packages/tamiyasu_44.zip"
                 },
                 {
                     "name": "VoiceRoid2_附加音源_月読アイ",
-                    "link": "https://github.com/HIllya51/LunaTranslator/releases/download/v1.1.2/ai_44.zip"
+                    "link": "https://github.com/HIllya51/RESOURCES/releases/download/install_free_voice_packages/ai_44.zip"
                 },
                 {
                     "name": "VoiceRoid2_附加音源_月読ショウタ",
-                    "link": "https://github.com/HIllya51/LunaTranslator/releases/download/v1.1.2/shouta_44.zip"
+                    "link": "https://github.com/HIllya51/RESOURCES/releases/download/install_free_voice_packages/shouta_44.zip"
                 },
                 {
                     "name": "VoiceRoid2_附加音源_京町セイカ",
-                    "link": "https://github.com/HIllya51/LunaTranslator/releases/download/v1.1.2/seika_44.zip"
+                    "link": "https://github.com/HIllya51/RESOURCES/releases/download/install_free_voice_packages/seika_44.zip"
                 },
                 {
                     "name": "VoiceRoid2_附加音源_音街ウナ",
-                    "link": "https://github.com/HIllya51/LunaTranslator/releases/download/v1.1.2/una_44.zip"
+                    "link": "https://github.com/HIllya51/RESOURCES/releases/download/install_free_voice_packages/una_44.zip"
                 },
                 {
                     "name": "VoiceRoid2_附加音源_鷹の爪吉田",
-                    "link": "https://github.com/HIllya51/LunaTranslator/releases/download/v1.1.2/yoshidakun_44.zip"
+                    "link": "https://github.com/HIllya51/RESOURCES/releases/download/install_free_voice_packages/yoshidakun_44.zip"
                 },
                 {
                     "name": "VoiceRoid2_附加音源_ギャラ子",
-                    "link": "https://github.com/HIllya51/LunaTranslator/releases/download/v1.1.2/galaco_44.zip"
+                    "link": "https://github.com/HIllya51/RESOURCES/releases/download/install_free_voice_packages/galaco_44.zip"
                 }
             ]
         },
