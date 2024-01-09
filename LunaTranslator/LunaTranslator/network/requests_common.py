@@ -50,13 +50,10 @@ class CaseInsensitiveDict(MutableMapping):
 class Sessionbase:
     def __init__(self) -> None:
         self.UA='Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
-        self.hSession=0
-        self.curl=0
         self.last_error=0
         self.status_code=0
         self.content=b'{}'
         self.cookies={}
-        self.proxy=None
         self.dfheaders=CaseInsensitiveDict({
             "User-Agent": self.UA,
             "Accept-Encoding": 'gzip, deflate',#br
@@ -145,11 +142,11 @@ class Sessionbase:
         if cookies:
             
             self.cookies.update(cookies)
-            _c=[]
-            for k ,v in self.cookies.items():
-                _c.append('{}={}'.format(k,v)) 
-            cookie='; '.join(_c)
-            headers.update({'Cookie':cookie})
+        _c=[]
+        for k ,v in self.cookies.items():
+            _c.append('{}={}'.format(k,v)) 
+        cookie='; '.join(_c)
+        headers.update({'Cookie':cookie})
         for k  in sorted(headers.keys()):
             _x.append('{}: {}'.format(k,headers[k]))
         return _x

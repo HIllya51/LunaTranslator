@@ -2,7 +2,11 @@
 from winhttp import * 
 from network.requests_common import *
 class Session(Sessionbase):
- 
+    def __init__(self) -> None:
+        super().__init__()
+        self.hSession=AutoWinHttpHandle(WinHttpOpen(self.UA,WINHTTP_ACCESS_TYPE_DEFAULT_PROXY,WINHTTP_NO_PROXY_NAME,WINHTTP_NO_PROXY_BYPASS,0))
+        if self.hSession==0:
+            raise WinhttpException(GetLastError())  
      
     def raise_for_status(self):
         error=GetLastError()
@@ -40,13 +44,7 @@ class Session(Sessionbase):
         flag=WINHTTP_FLAG_SECURE if scheme=='https' else 0
         #print(server,port,param,dataptr)
         headers='\r\n'.join(headers) 
-        
-        if self.hSession==0 or proxy!=self.proxy:
-            self.proxy=proxy
-            self.hSession=AutoWinHttpHandle(WinHttpOpen(self.UA,WINHTTP_ACCESS_TYPE_DEFAULT_PROXY,WINHTTP_NO_PROXY_NAME,WINHTTP_NO_PROXY_BYPASS,0))
-            if self.hSession==0:
-                raise WinhttpException(GetLastError())  
-        
+         
         hConnect=AutoWinHttpHandle(WinHttpConnect(self.hSession,server,port,0))
         if hConnect==0:
             raise WinhttpException(GetLastError())  

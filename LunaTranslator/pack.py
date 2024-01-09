@@ -35,8 +35,8 @@ def get_import_table(file_path):
     return import_dlls 
  
 
-
-shutil.rmtree(targetdir)
+if os.path.exists(targetdir):
+    shutil.rmtree(targetdir)
 shutil.copytree(nuitkadist,targetdir_in)
 shutil.copytree(launch,targetdir,dirs_exist_ok=True)
 shutil.copytree(r'.\files',rf'{targetdir}\files')
@@ -79,5 +79,6 @@ for f in set(dlls):
         continue
     elif os.path.exists(rf'{downlevel}\{f}'):
         shutil.copy(rf'{downlevel}\{f}',targetdir_in)
-os.remove(rf'{targetdir}\..\{target}')
+if os.path.exists(rf'{targetdir}\..\{target}'):
+    os.remove(rf'{targetdir}\..\{target}')
 os.system(rf'"C:\Program Files\7-Zip\7z.exe" a -m0=LZMA -mx9 {targetdir}\..\{target} {targetdir}')

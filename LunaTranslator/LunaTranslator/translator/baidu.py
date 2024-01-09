@@ -107,7 +107,7 @@ class BaiduV1(Tse):
 
         not_update_cond_freq = 1 if self.query_count < update_session_after_freq else 0
         not_update_cond_time = 1 if time.time() - self.begin_time < update_session_after_seconds else 0
-        if not (self.session and self.language_map and not_update_cond_freq and not_update_cond_time):
+        if not (self.session):
             self.session = requests.Session()
             _ = self.session.get(self.host_url, headers=self.host_headers, timeout=timeout, proxies=proxies)  # must twice, send cookies.
             host_html = self.session.get(self.host_url, headers=self.host_headers, timeout=timeout, proxies=proxies).text
