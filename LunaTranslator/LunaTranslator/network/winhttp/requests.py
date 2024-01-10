@@ -39,8 +39,8 @@ class Session(Sessionbase):
             winhttpsetproxy(hsess,proxy)
     
     def request_impl(self,
-        method,scheme,server,port,param,url,headers,dataptr,datalen,proxy,stream,verify):
-          
+        method,scheme,server,port,param,url,headers,cookies,dataptr,datalen,proxy,stream,verify):
+        headers=self._parseheader(headers,cookies)
         flag=WINHTTP_FLAG_SECURE if scheme=='https' else 0
         #print(server,port,param,dataptr)
         headers='\r\n'.join(headers) 

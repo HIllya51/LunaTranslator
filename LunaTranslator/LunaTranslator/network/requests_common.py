@@ -140,16 +140,16 @@ class Sessionbase:
         _x=[] 
         
         if cookies:
-            
-            self.cookies.update(cookies)
-        _c=[]
-        for k ,v in self.cookies.items():
-            _c.append('{}={}'.format(k,v)) 
-        cookie='; '.join(_c)
-        headers.update({'Cookie':cookie})
+            cookie=self._parsecookie(cookies)
+            headers.update({'Cookie':cookie}) 
         for k  in sorted(headers.keys()):
             _x.append('{}: {}'.format(k,headers[k]))
         return _x
+    def _parsecookie(self,cookie):
+        _c=[]
+        for k ,v in cookie.items():
+            _c.append('{}={}'.format(k,v)) 
+        return '; '.join(_c)
     def _update_header_cookie(self,headerstr):
         self.headers,cookies=self._parseheader2dict(headerstr)
         self.cookies.update(cookies) 
@@ -162,7 +162,7 @@ class Sessionbase:
             if line[:idx].lower()=='set-cookie':
                 _c=line[idx+2:].split('; ')[0]
                 _idx=_c.find('=')
-                cookie[_c[:_idx]]=_c[idx+1:]
+                cookie[_c[:_idx]]=_c[_idx+1:]
             else:   
                 header[line[:idx]]=line[idx+2:] 
         return CaseInsensitiveDict(header),cookie
@@ -199,9 +199,9 @@ class Sessionbase:
         
         scheme,server,port,param,url=self._parseurl(url,params) 
         headers,dataptr,datalen=self._parsedata(data,headers,json)
-        headers=self._parseheader(headers,cookies)
         proxy= proxies.get(scheme,None) if proxies  else None
-        _= self.request_impl(method,scheme,server,port,param,url,headers,dataptr,datalen,proxy,stream,verify)
+        
+        _= self.request_impl(method,scheme,server,port,param,url,headers,cookies,dataptr,datalen,proxy,stream,verify)
 
         return _
 Sessionimpl=[Sessionbase]

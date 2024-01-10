@@ -49,15 +49,22 @@ class Session(Sessionbase):
     def _getmembyte(self,mem):
         return cast(mem.memory,POINTER(c_char))[:mem.size]
     def request_impl(self,
-        method,scheme,server,port,param,url,headers,dataptr,datalen,proxy,stream,verify ):
+        method,scheme,server,port,param,url,headers,cookies,dataptr,datalen,proxy,stream,verify):
          
-            
+        headers=self._parseheader(headers,None)#curl对于headers中有cookie且session中也有cookie的情况下，不会自动合并而是会有两个cookie键，所以不能在header里放cookie
         if self._status==0:
             curl=self.curl
             __=autostatus(self)
         else:
             #不能多线程同时复用同一个curl对象
             curl=AutoCURLHandle(curl_easy_duphandle(self.curl)) 
+            if cookies:
+                cookies.update(self.cookies)
+            else:
+                cookies=self.cookies
+        if cookies:
+            cookie=self._parsecookie(cookies)
+            curl_easy_setopt(curl, CURLoption.CURLOPT_COOKIE, cookie.encode('utf8'));
         curl_easy_setopt(curl,CURLoption.CURLOPT_CUSTOMREQUEST,method.upper().encode('utf8'))
         
         self.last_error=curl_easy_setopt(curl,CURLoption.CURLOPT_URL,url.encode('utf8'))
