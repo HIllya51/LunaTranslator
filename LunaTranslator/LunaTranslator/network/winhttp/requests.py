@@ -7,7 +7,7 @@ try:
     from brotli_dec import decompress
 except:
     pass
-class winhttp_resp(Response):  
+class Response(ResponseBase):  
     def iter_content(self,chunk_size=1024):
         downloadedSize=DWORD()
         buff=create_string_buffer(chunk_size) 
@@ -19,17 +19,16 @@ class winhttp_resp(Response):
                 del self.hconn
                 break
             yield buff[:downloadedSize.value]
+    def raise_for_status(self):
+        error=GetLastError()
+        if error:
+            raise WinhttpException(error)        
 class Session(Sessionbase):
     def __init__(self) -> None:
         super().__init__()
         self.hSession=AutoWinHttpHandle(WinHttpOpen(self.UA,WINHTTP_ACCESS_TYPE_DEFAULT_PROXY,WINHTTP_NO_PROXY_NAME,WINHTTP_NO_PROXY_BYPASS,0))
         if self.hSession==0:
             raise WinhttpException(GetLastError())  
-     
-    def raise_for_status(self):
-        error=GetLastError()
-        if error:
-            raise WinhttpException(error)
       
     
     def _getheaders(self,hreq):
@@ -49,7 +48,9 @@ class Session(Sessionbase):
                                       pointer(dwSize), 
                                       None )
         if bResults==0:
-            self.raise_for_status()
+            error=GetLastError()
+            if error:
+                raise WinhttpException(error)        
         return dwStatusCode.value
      
     def _set_proxy(self,hsess,proxy):
@@ -81,7 +82,7 @@ class Session(Sessionbase):
             raise WinhttpException(GetLastError())
         
         headers=self._update_header_cookie(self._getheaders(hRequest))
-        resp=winhttp_resp()
+        resp=Response()
         resp.status_code=self._getStatusCode(hRequest)
         resp.headers=headers
         resp.cookies=self.cookies

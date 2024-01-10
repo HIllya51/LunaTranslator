@@ -10,6 +10,15 @@ class autostatus:
         
     def __del__(self):
         self.ref._status=0
+class Response(ResponseBase):  
+    def __init__(self):
+        super().__init__()
+        self.last_error=0
+    def iter_content(self,chunk_size=1024):
+        yield self.content
+    def raise_for_status(self): 
+        if self.last_error:
+            raise CURLException(self.last_error) 
 class Session(Sessionbase):
  
     def __init__(self) -> None:
@@ -95,9 +104,10 @@ class Session(Sessionbase):
         resp=Response()
         resp.content=self._getmembyte(_content)
         resp.status_code=self._getStatusCode(curl) 
-        
+        resp.last_error=self.last_error
         resp.headers=self._update_header_cookie(self._getmembyte(_headers).decode('utf8'))
         resp.cookies=self.cookies
+        curl_easy_reset(curl)
         return resp
     
 Sessionimpl[0]=Session

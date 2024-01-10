@@ -46,7 +46,7 @@ class CaseInsensitiveDict(MutableMapping):
 
     def __repr__(self):
         return str(dict(self.items()))
-class Response:
+class ResponseBase:
     def __init__(self):
         self.headers=CaseInsensitiveDict()
         self.cookies={}
@@ -67,8 +67,6 @@ class Response:
         return charset
     def json(self):
         return json.loads(self.text)
-    def iter_content(self,chunk_size=1024):
-        yield self.content
 class Sessionbase:
     def __init__(self) -> None:
         self.UA='Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
