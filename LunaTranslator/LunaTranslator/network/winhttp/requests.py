@@ -1,6 +1,12 @@
 
 from winhttp import * 
 from network.requests_common import *
+import gzip,zlib
+from ctypes import pointer,create_string_buffer
+try:
+    from brotli_dec import decompress
+except:
+    pass
 class Session(Sessionbase):
     def __init__(self) -> None:
         super().__init__()
@@ -83,7 +89,7 @@ class Session(Sessionbase):
             succ=WinHttpReadData(hRequest,buff,availableSize,pointer(downloadedSize))
             if succ==0:raise WinhttpException(GetLastError())
             downloadeddata+=buff[:downloadedSize.value]
-        self.content=downloadeddata
+        self.rawdata=downloadeddata
         #print(self.text)
         
         return self
@@ -99,7 +105,20 @@ class Session(Sessionbase):
                 del self.hconn
                 break
             yield buff[:downloadedSize.value]
-    
+    def decompress_impl(self,data,encode): 
+        #WINHTTP_OPTION_DECOMPRESSION
+        #支持gzip和deflate，WINHTTP_DECOMPRESSION_FLAG_GZIP|WINHTTP_DECOMPRESSION_FLAG_DEFLATE
+        #但只支持win8.1+,不支持br
+        try:
+            if encode =='gzip':
+                data=gzip.decompress(data)
+            elif encode =='deflate':
+                data=zlib.decompress(data, -zlib.MAX_WBITS)
+            elif encode=='br':  
+                data=decompress(data)
+            return data
+        except:
+            raise Exception('unenable to decompress {}'.format(encode))
 Sessionimpl[0]=Session
 if __name__=='__main__':
     pass

@@ -50,8 +50,7 @@ class Session(Sessionbase):
         return cast(mem.memory,POINTER(c_char))[:mem.size]
     def request_impl(self,
         method,scheme,server,port,param,url,headers,cookies,dataptr,datalen,proxy,stream,verify):
-         
-        headers=self._parseheader(headers,None)#curl对于headers中有cookie且session中也有cookie的情况下，不会自动合并而是会有两个cookie键，所以不能在header里放cookie
+          
         if self._status==0:
             curl=self.curl
             __=autostatus(self)
@@ -65,6 +64,8 @@ class Session(Sessionbase):
         if cookies:
             cookie=self._parsecookie(cookies)
             curl_easy_setopt(curl, CURLoption.CURLOPT_COOKIE, cookie.encode('utf8'));
+        curl_easy_setopt(curl,CURLoption.CURLOPT_ACCEPT_ENCODING, headers['Accept-Encoding'].encode('utf8'))
+
         curl_easy_setopt(curl,CURLoption.CURLOPT_CUSTOMREQUEST,method.upper().encode('utf8'))
         
         self.last_error=curl_easy_setopt(curl,CURLoption.CURLOPT_URL,url.encode('utf8'))
@@ -72,7 +73,7 @@ class Session(Sessionbase):
         curl_easy_setopt(curl, CURLoption.CURLOPT_PORT, port ) 
 
         lheaders=Autoslist()
-        for _ in headers:
+        for _ in self._parseheader(headers,None):
             lheaders = curl_slist_append(cast(lheaders,POINTER(curl_slist)), _.encode('utf8'));
         self.last_error=curl_easy_setopt(curl, CURLoption.CURLOPT_HTTPHEADER, lheaders);
         self.raise_for_status()
@@ -91,7 +92,7 @@ class Session(Sessionbase):
         curl_easy_setopt(curl,CURLoption.CURLOPT_HEADERFUNCTION,winsharedutils.WriteMemoryCallback)  
 
         self._perform(curl)
-        self.content=self._getmembyte(_content)
+        self.rawdata=self._getmembyte(_content)
          
         self._update_header_cookie(self._getmembyte(_headers).decode('utf8'))
         

@@ -9,7 +9,9 @@ if x86:
     badcdlls= [
         'libcurl-x64.dll','libmecab64.dll',
         'ocr64.dll',
-        'winsharedutils64.dll','winrtutils64.dll'
+        'winsharedutils64.dll','winrtutils64.dll',
+        r'brotli\x64\brotlicommon.dll',
+        r'brotli\x64\brotlidec.dll',
     ]
     downlevel=f'C:\Windows\SysWOW64\downlevel'
     target='LunaTranslator_x86.zip'
@@ -21,7 +23,9 @@ else:
     badcdlls= [
         'libcurl.dll','libmecab32.dll',
         'ocr32.dll',
-        'winsharedutils32.dll','winrtutils32.dll'
+        'winsharedutils32.dll','winrtutils32.dll',
+        r'brotli\x86\brotlicommon.dll',
+        r'brotli\x86\brotlidec.dll',
     ]
     downlevel=f'C:\Windows\system32\downlevel'
 targetdir_in=rf'{targetdir}\LunaTranslator'

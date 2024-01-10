@@ -1,8 +1,8 @@
-import json,gzip,base64
+import json,base64,re
 from collections.abc import Callable, Mapping, MutableMapping
 from collections import OrderedDict
 from urllib.parse import urlencode,urlsplit
-
+from functools import partial,partialmethod
 class CaseInsensitiveDict(MutableMapping): 
 
     def __init__(self, data=None, **kwargs):
@@ -52,11 +52,11 @@ class Sessionbase:
         self.UA='Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
         self.last_error=0
         self.status_code=0
-        self.content=b'{}'
+        self.rawdata=b'{}'
         self.cookies={}
         self.dfheaders=CaseInsensitiveDict({
             "User-Agent": self.UA,
-            "Accept-Encoding": 'gzip, deflate',#br
+            "Accept-Encoding": 'gzip, deflate, br',
             "Accept": "*/*",
             "Connection": "keep-alive",
         })
@@ -166,33 +166,34 @@ class Sessionbase:
             else:   
                 header[line[:idx]]=line[idx+2:] 
         return CaseInsensitiveDict(header),cookie
-       
+    def decompress_impl(self,data,encode):
+        return data
     @property
-    def text(self): 
-        encode=self.headers.get('Content-Encoding',None)
-        try:
-            if encode =='gzip':
-                self.content=gzip.decompress(self.content)
-            # elif encode=='br':
-            #     self.content=brotli.decompress(self.content)
-            return self.content.decode('utf8')
+    def content(self):
+        return self.decompress_impl(self.rawdata,self.headers.get('Content-Encoding',None))
+    @property
+    def text(self):  
+        try: 
+            return self.content.decode(self.charset)
         except:
-            raise Exception('unenable to decode {}'.format(encode))
+            raise Exception('unenable to decode with {}'.format(self.charset))
+    @property
+    def charset(self):
+        content_type=self.headers.get('Content-Type','')
+        m = re.search(r"charset=([\w-]+)", content_type)
+        charset = m.group(1) if m else "utf-8"
+        return charset
     def json(self):
         return json.loads(self.text)
-    def get(self, url, **kwargs): 
-        return self.request("GET", url, **kwargs)
-    def post(self, url, **kwargs): 
-        return self.request("POST", url, **kwargs)
-    def options(self, url, **kwargs): 
-        return self.request("OPTIONS", url, **kwargs)
+    
     def request_impl(self,*args):
         pass
     def request(self,
         method, url, params=None, data=None, headers=None,proxies=None, json=None,cookies=None,  files=None,
         auth=None, timeout=None, allow_redirects=True,  hooks=None,   stream=None, verify=False, cert=None, ):
         
-        headers=CaseInsensitiveDict(headers) if headers else self.dfheaders
+        headers=CaseInsensitiveDict(headers if headers else {}) 
+        headers.update(self.dfheaders)
         if auth and isinstance(auth,tuple) and len(auth)==2: 
             headers['Authorization']="Basic " +   ( base64.b64encode(b":".join((auth[0].encode("latin1"), auth[1].encode("latin1")))).strip() ).decode() 
         
@@ -204,16 +205,16 @@ class Sessionbase:
         _= self.request_impl(method,scheme,server,port,param,url,headers,cookies,dataptr,datalen,proxy,stream,verify)
 
         return _
+    get=partialmethod(request,"GET")
+    post=partialmethod(request,"POST")
+    options=partialmethod(request,"OPTIONS")
 Sessionimpl=[Sessionbase]
 def request(method, url, **kwargs): 
     with Sessionimpl[0]() as session:
         return session.request(method=method, url=url, **kwargs)
-def get(url, params=None, **kwargs):
-    return request("GET", url, params=params, **kwargs)
-def post(url, params=None, **kwargs):
-    return request("POST", url, params=params, **kwargs)
-def options(url, params=None, **kwargs):
-    return request("OPTIONS", url, params=params, **kwargs)
 def session():
     with Sessionimpl[0]() as session:
         return session
+get=partial(request,"GET")
+post=partial(request,"POST")
+options=partial(request,"OPTIONS")
