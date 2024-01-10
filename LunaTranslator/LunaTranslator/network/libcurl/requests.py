@@ -92,14 +92,14 @@ class Session(Sessionbase):
         curl_easy_setopt(curl,CURLoption.CURLOPT_HEADERFUNCTION,winsharedutils.WriteMemoryCallback)  
 
         self._perform(curl)
-        self.rawdata=self._getmembyte(_content)
-         
-        self._update_header_cookie(self._getmembyte(_headers).decode('utf8'))
+        resp=Response()
+        resp.content=self._getmembyte(_content)
+        resp.status_code=self._getStatusCode(curl) 
         
-        self.status_code=self._getStatusCode(curl)
-        return self
-    def iter_content(self,chunk_size=1024):
-        yield self.content
+        resp.headers=self._update_header_cookie(self._getmembyte(_headers).decode('utf8'))
+        resp.cookies=self.cookies
+        return resp
+    
 Sessionimpl[0]=Session
 if __name__=='__main__':
      pass

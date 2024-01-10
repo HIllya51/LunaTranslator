@@ -46,21 +46,40 @@ class CaseInsensitiveDict(MutableMapping):
 
     def __repr__(self):
         return str(dict(self.items()))
-
+class Response:
+    def __init__(self):
+        self.headers=CaseInsensitiveDict()
+        self.cookies={}
+        self.status_code=0
+        self.content=b'{}'
+    
+    @property
+    def text(self):  
+        try: 
+            return self.content.decode(self.charset)
+        except:
+            raise Exception('unenable to decode with {}'.format(self.charset))
+    @property
+    def charset(self):
+        content_type=self.headers.get('Content-Type','')
+        m = re.search(r"charset=([\w-]+)", content_type)
+        charset = m.group(1) if m else "utf-8"
+        return charset
+    def json(self):
+        return json.loads(self.text)
+    def iter_content(self,chunk_size=1024):
+        yield self.content
 class Sessionbase:
     def __init__(self) -> None:
         self.UA='Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
         self.last_error=0
-        self.status_code=0
-        self.rawdata=b'{}'
         self.cookies={}
-        self.dfheaders=CaseInsensitiveDict({
+        self.headers=CaseInsensitiveDict({
             "User-Agent": self.UA,
             "Accept-Encoding": 'gzip, deflate, br',
             "Accept": "*/*",
             "Connection": "keep-alive",
         })
-        self.headers=CaseInsensitiveDict()
     def __enter__(self):
         return self 
     def __exit__(self, *args):
@@ -151,8 +170,9 @@ class Sessionbase:
             _c.append('{}={}'.format(k,v)) 
         return '; '.join(_c)
     def _update_header_cookie(self,headerstr):
-        self.headers,cookies=self._parseheader2dict(headerstr)
+        headers,cookies=self._parseheader2dict(headerstr)
         self.cookies.update(cookies) 
+        return headers
     def _parseheader2dict(self,headerstr):
         #print(headerstr)
         header=CaseInsensitiveDict()
@@ -166,25 +186,6 @@ class Sessionbase:
             else:   
                 header[line[:idx]]=line[idx+2:] 
         return CaseInsensitiveDict(header),cookie
-    def decompress_impl(self,data,encode):
-        return data
-    @property
-    def content(self):
-        return self.decompress_impl(self.rawdata,self.headers.get('Content-Encoding',None))
-    @property
-    def text(self):  
-        try: 
-            return self.content.decode(self.charset)
-        except:
-            raise Exception('unenable to decode with {}'.format(self.charset))
-    @property
-    def charset(self):
-        content_type=self.headers.get('Content-Type','')
-        m = re.search(r"charset=([\w-]+)", content_type)
-        charset = m.group(1) if m else "utf-8"
-        return charset
-    def json(self):
-        return json.loads(self.text)
     
     def request_impl(self,*args):
         pass
@@ -193,7 +194,7 @@ class Sessionbase:
         auth=None, timeout=None, allow_redirects=True,  hooks=None,   stream=None, verify=False, cert=None, ):
         
         headers=CaseInsensitiveDict(headers if headers else {}) 
-        headers.update(self.dfheaders)
+        headers.update(self.headers)
         if auth and isinstance(auth,tuple) and len(auth)==2: 
             headers['Authorization']="Basic " +   ( base64.b64encode(b":".join((auth[0].encode("latin1"), auth[1].encode("latin1")))).strip() ).decode() 
         

@@ -7,6 +7,18 @@ try:
     from brotli_dec import decompress
 except:
     pass
+class winhttp_resp(Response):  
+    def iter_content(self,chunk_size=1024):
+        downloadedSize=DWORD()
+        buff=create_string_buffer(chunk_size) 
+        while True:
+            succ=WinHttpReadData(self.hreq,buff,chunk_size,pointer(downloadedSize))
+            if succ==0:raise WinhttpException(GetLastError())
+            if downloadedSize.value==0:
+                del self.hreq
+                del self.hconn
+                break
+            yield buff[:downloadedSize.value]
 class Session(Sessionbase):
     def __init__(self) -> None:
         super().__init__()
@@ -68,13 +80,15 @@ class Session(Sessionbase):
         if succ==0:
             raise WinhttpException(GetLastError())
         
-        self._update_header_cookie(self._getheaders(hRequest))
-        
-        self.status_code=self._getStatusCode(hRequest)
+        headers=self._update_header_cookie(self._getheaders(hRequest))
+        resp=winhttp_resp()
+        resp.status_code=self._getStatusCode(hRequest)
+        resp.headers=headers
+        resp.cookies=self.cookies
         if stream:
-            self.hconn=hConnect
-            self.hreq=hRequest
-            return self
+            resp.hconn=hConnect
+            resp.hreq=hRequest
+            return resp
         availableSize=DWORD()
         downloadedSize=DWORD()
         downloadeddata=b''
@@ -85,30 +99,19 @@ class Session(Sessionbase):
             if availableSize.value==0:
                 break
             buff=create_string_buffer(availableSize.value)
-            #这里可以做成流式的
             succ=WinHttpReadData(hRequest,buff,availableSize,pointer(downloadedSize))
             if succ==0:raise WinhttpException(GetLastError())
             downloadeddata+=buff[:downloadedSize.value]
-        self.rawdata=downloadeddata
-        #print(self.text)
+         
+        resp.content=self.decompress(downloadeddata,headers)
         
-        return self
-    def iter_content(self,chunk_size=1024):
-        downloadedSize=DWORD()
-        buff=create_string_buffer(chunk_size)
-            
-        while True:
-            succ=WinHttpReadData(self.hreq,buff,chunk_size,pointer(downloadedSize))
-            if succ==0:raise WinhttpException(GetLastError())
-            if downloadedSize.value==0:
-                del self.hreq
-                del self.hconn
-                break
-            yield buff[:downloadedSize.value]
-    def decompress_impl(self,data,encode): 
+        return resp
+     
+    def decompress(self,data,headers): 
         #WINHTTP_OPTION_DECOMPRESSION
         #支持gzip和deflate，WINHTTP_DECOMPRESSION_FLAG_GZIP|WINHTTP_DECOMPRESSION_FLAG_DEFLATE
         #但只支持win8.1+,不支持br
+        encode=headers.get('Content-Encoding',None)
         try:
             if encode =='gzip':
                 data=gzip.decompress(data)
