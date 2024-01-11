@@ -190,9 +190,11 @@ class Sessionbase:
     def request(self,
         method, url, params=None, data=None, headers=None,proxies=None, json=None,cookies=None,  files=None,
         auth=None, timeout=None, allow_redirects=True,  hooks=None,   stream=None, verify=False, cert=None, ):
+        _h=self.headers.copy()
+        if headers: 
+            _h.update(headers) 
+        headers=_h
         
-        headers=CaseInsensitiveDict(headers if headers else {}) 
-        headers.update(self.headers)
         if auth and isinstance(auth,tuple) and len(auth)==2: 
             headers['Authorization']="Basic " +   ( base64.b64encode(b":".join((auth[0].encode("latin1"), auth[1].encode("latin1")))).strip() ).decode() 
         
@@ -204,9 +206,12 @@ class Sessionbase:
         _= self.request_impl(method,scheme,server,port,param,url,headers,cookies,dataptr,datalen,proxy,stream,verify)
 
         return _
-    get=partialmethod(request,"GET")
-    post=partialmethod(request,"POST")
-    options=partialmethod(request,"OPTIONS")
+    def get(self, url, **kwargs): 
+        return self.request("GET", url, **kwargs)
+    def post(self, url, **kwargs): 
+        return self.request("POST", url, **kwargs)
+    def options(self, url, **kwargs): 
+        return self.request("OPTIONS", url, **kwargs)
 Sessionimpl=[Sessionbase]
 def request(method, url, **kwargs): 
     with Sessionimpl[0]() as session:
