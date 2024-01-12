@@ -293,7 +293,7 @@ class MAINUI() :
             self.refresh_on_get_trans_signature=_showrawfunction_sig
             _showrawfunction()
         
-        if currentsignature==self.currentsignature:
+        if currentsignature==self.currentsignature and globalconfig['showfanyi']:
             self.translation_ui.displayres.emit(globalconfig['fanyi'][classname]['name'],globalconfig['fanyi'][classname]['color'],res,onlytrans)
         
         if embedcallback: 

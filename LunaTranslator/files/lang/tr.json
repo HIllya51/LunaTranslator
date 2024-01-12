@@ -685,5 +685,7 @@
     "文本缓冲区长度": "Metin buffer uzunluğu",
     "显示/隐藏历史翻译和调试输出": "Tarihi çevirimi ve arızasızlandırma çıkışını göster/gizle",
     "历史翻译和调试输出": "Tarihi çeviri ve hata ayıklama çıkışı",
-    "调试输出": "Hata ayıklama çıkışı"
+    "调试输出": "Hata ayıklama çıkışı",
+    "显示翻译": "Çeviri göster",
+    "使用YAPI注入": "YAPI injeksiyonu kullanıyor"
 }

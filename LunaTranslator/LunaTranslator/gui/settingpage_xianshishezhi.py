@@ -133,7 +133,7 @@ def setTabThree_lazy(self) :
         [('显示日语注音',4),self.show_hira_switch,'',('注音颜色',4),getcolorbutton(globalconfig,'jiamingcolor',callback=lambda: selectcolor(self,globalconfig, "jiamingcolor", self.jiamingcolor_b),name='jiamingcolor_b',parent=self),'',('注音字体缩放',3),(getspinbox(0.05,1,globalconfig,'kanarate',double=True,step=0.05,dec=2),2)],  
         [('语法加亮',4 ),self.show_fenciswitch,'',
          ('词性颜色(需要Mecab)',4), getcolorbutton(globalconfig,'',callback=lambda  : multicolorset(self),icon='fa.gear',constcolor="#FF69B4") ,],
-        [("显示翻译器名称",4),(getsimpleswitch(globalconfig  ,'showfanyisource'),1)],
+        [("显示翻译器名称",4),(getsimpleswitch(globalconfig  ,'showfanyisource'),1),'',("显示翻译",4),(getsimpleswitch(globalconfig  ,'showfanyi'),1)],
        [('最长显示字数',4),(getspinbox(0,1000000,globalconfig,'maxoriginlength'),2)],
          
         [],

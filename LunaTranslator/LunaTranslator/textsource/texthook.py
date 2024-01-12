@@ -4,17 +4,67 @@ import re ,os
 import time ,gobject
 from collections import OrderedDict
 import ctypes,functools
-import windows
-import textsource.hook.define as define
+import windows,subprocess
 from myutils.config import globalconfig ,savehook_new_data ,_TR,static_data 
 from textsource.textsourcebase import basetext 
-from myutils.utils import checkchaos   
-from textsource.hook.host import RPC
-
+from myutils.utils import checkchaos
+from myutils.hwnd import testprivilege
+from myutils.wrapper import threader 
+from ctypes import CDLL,c_bool,POINTER,Structure,c_int,pointer,c_wchar_p,c_uint64,sizeof,c_void_p,cast,c_wchar,c_uint32,c_uint8,c_uint,c_char,c_short
+from ctypes.wintypes import DWORD,LPCWSTR,HANDLE
+from gui.usefulwidget import getQMessageBox
+  
+MAX_MODULE_SIZE = 120 
+HOOK_NAME_SIZE = 60
+HOOKCODE_LEN=500
+class ThreadParam(Structure):
+    _fields_=[
+        ('processId',c_uint),
+        ('addr',c_uint64),
+        ('ctx',c_uint64),
+        ('ctx2',c_uint64)
+    ]   
+    def __hash__(self):
+        return hash((self.processId, self.addr,self.ctx,self.ctx2))
+    def __eq__(self, __value ):
+        return self.__hash__()==__value.__hash__()
+ 
+class SearchParam(Structure):
+    _fields_=[
+        ('pattern',c_char*30),
+        ('address_method',c_int),
+        ('search_method',c_int),
+        ('length',c_int),
+        ('offset',c_int),
+        ('searchTime',c_int),
+        ('maxRecords',c_int),
+        ('codepage',c_int), 
+        ('padding',c_uint64), 
+        ('minAddress',c_uint64), 
+        ('maxAddress',c_uint64),
+        ('boundaryModule',c_wchar*120),
+        ('exportModule',c_wchar*120),
+        ('text',c_wchar*30),
+        ('_1',c_uint64)
+    ] 
+class Message(Structure):
+    _fields_=[ 
+        ('read',c_bool),
+        ('type',c_int),
+        ('pid',DWORD),
+        ('hn',c_char*HOOK_NAME_SIZE),
+        ('hc',c_wchar*HOOKCODE_LEN),
+        ('tp',ThreadParam),
+        ('stringptr',c_void_p),
+        ('addr',c_uint64)
+    ]
+class simplehooks(Structure):
+    _fields_=[
+        ('hookcode',c_wchar*500),
+        ('text',c_void_p)
+    ]
 class texthook(basetext  ): 
     def __init__(self,pids,hwnd,pname  ,autostarthookcode=None,needinserthookcode=None) :
-        print(pids,hwnd,pname  ,autostarthookcode,needinserthookcode)
-        self.RPC=RPC()
         if autostarthookcode is None:
             autostarthookcode=[]
         if needinserthookcode is None:
@@ -43,84 +93,143 @@ class texthook(basetext  ):
         self.isremoveuseless=savehook_new_data[self.pname]["removeuseless"] and len(self.autostarthookcode)
         self.needinserthookcode=needinserthookcode
         self.removedaddress=[] 
-        self.HookCode=None 
-        self.sharedcell=None
-        self.RPC.callbacks(
-            lambda pid:time.sleep(savehook_new_data[self.pname]['inserthooktimeout']/1000) or [self.RPC.InsertHookCode(pid,hookcode) for hookcode in needinserthookcode]+[self.createembedsharedmem(pid),self.showgamename()],
-            lambda pid: print(pid,"disconenct"),
-            self.onnewhook,
-            self.onremovehook,
-            self.handle_output,
-            gobject.baseobject.hookselectdialog.sysmessagesignal.emit,
-            self.getembedtext,
-            self.newhookinsert
-        )  
-        self.setsettings()
-
+        
         gobject.baseobject.hookselectdialog.changeprocessclearsignal.emit()
         if len(autostarthookcode)==0 and len(savehook_new_data[self.pname]['embedablehook'])==0:
             gobject.baseobject.hookselectdialog.realshowhide.emit(True)
         
           
         threading.Thread(target=self.delaycollectallselectedoutput).start()
-        _pids=[]
-        for pid in self.pids:
-            if self.testalready(pid)==False:
-                self.RPC.start(pid)
-                _pids.append(pid)
          
-        if len(_pids):
-            self.RPC.Attach(_pids,'64' if self.is64bit else '32')
         super(texthook,self).__init__(*self.checkmd5prefix(pname))
-    def testalready(self,pid):
-        _mutext=windows.AutoHandle(windows.CreateMutex(False,define.ITH_HOOKMAN_MUTEX_+str(pid)))
-        err=windows.GetLastError()
-        exists= err==windows.ERROR_ALREADY_EXISTS
-        return exists
+        self.declare()
+        self.start()
+    def declare(self):
+        LunaHost=CDLL(gobject.GetDllpath(('LunaHost32.dll','LunaHost64.dll')))
+        self.Luna_Settings=LunaHost.Luna_Settings
+        self.Luna_Settings.argtypes=c_int,c_bool,c_int,c_int
+        self.Luna_Start=LunaHost.Luna_Start
+        self.Luna_Start.argtypes=POINTER(HANDLE),
+        self.Luna_Inject=LunaHost.Luna_Inject
+        self.Luna_Inject.argtypes=DWORD,LPCWSTR
+        self.Luna_CreatePipeAndCheck=LunaHost.Luna_CreatePipeAndCheck
+        self.Luna_CreatePipeAndCheck.argtypes=DWORD,
+        self.Luna_CreatePipeAndCheck.restype=c_bool
+        self.Luna_InsertHookCode=LunaHost.Luna_InsertHookCode
+        self.Luna_InsertHookCode.argtypes=DWORD,LPCWSTR
+        self.Luna_InsertHookCode.restype=c_bool
+        self.Luna_RemoveHook=LunaHost.Luna_RemoveHook
+        self.Luna_RemoveHook.argtypes=DWORD,c_uint64
+        self.Luna_Detach=LunaHost.Luna_Detach
+        self.Luna_Detach.argtypes=DWORD,
+        self.Luna_cfree=LunaHost.Luna_cfree
+        self.Luna_cfree.argtypes=c_void_p,
+        self.Luna_FindHooks=LunaHost.Luna_FindHooks
+        self.Luna_FindHooks.argtypes=DWORD,SearchParam,POINTER(HANDLE),POINTER(POINTER(c_int))
+        self.Luna_FindHooks_waiting=LunaHost.Luna_FindHooks_waiting
+        self.Luna_FindHooks_waiting.argtypes=POINTER(c_int),
+        self.Luna_EmbedSettings=LunaHost.Luna_EmbedSettings
+        self.Luna_EmbedSettings.argtypes=DWORD,c_uint32,c_uint8,c_bool,c_wchar_p,c_uint32,c_uint32
+        self.Luna_checkisusingembed=LunaHost.Luna_checkisusingembed
+        self.Luna_checkisusingembed.argtypes=DWORD,c_uint64,c_uint64,c_uint64
+        self.Luna_checkisusingembed.restype=c_bool
+        self.Luna_useembed=LunaHost.Luna_useembed
+        self.Luna_useembed.argtypes=DWORD,c_uint64,c_uint64,c_uint64,c_bool
+        self.Luna_embedcallback=LunaHost.Luna_embedcallback
+        self.Luna_embedcallback.argtypes=DWORD,LPCWSTR,LPCWSTR
+    def start(self):
+        self.hRead=HANDLE() 
+        self.Luna_Start(pointer(self.hRead) ) 
+        self.setsettings() 
+
+        injectpids=[]
+        for pid in self.pids:
+            if globalconfig['use_yapi']:
+                self.Luna_Inject(pid,os.path.abspath('./files/plugins/LunaHook'))
+            else:
+                if(self.Luna_CreatePipeAndCheck(pid)):
+                    injectpids.append(pid)
+        if len(injectpids):
+            arch=['32','64'][self.is64bit]
+            injecter=os.path.abspath('./files/plugins/shareddllproxy{}.exe'.format(arch))
+            dll=os.path.abspath('./files/plugins/LunaHook/LunaHook{}.dll'.format(arch))
+            print(injecter,os.path.exists(injecter))
+            print(dll,os.path.exists(dll))
+            #subprocess.Popen('"{}" dllinject {} "{}"'.format(injecter,pid,dll))
+            pid=' '.join([str(_) for _ in injectpids])
+            if any(map(testprivilege,injectpids))==False: 
+                windows.ShellExecute(0,'runas',injecter,'dllinject {} "{}"'.format(pid,dll),None,windows.SW_HIDE)
+            else:
+                ret=subprocess.run('"{}" dllinject {} "{}"'.format(injecter,pid,dll)).returncode
+                if(ret==0):
+                    windows.ShellExecute(0,'runas',injecter,'dllinject {} "{}"'.format(pid,dll),None,windows.SW_HIDE)
+        threading.Thread(target=self.solveeventthread).start()
+    @threader
+    def onprocconnect(self,pid):
+        time.sleep(savehook_new_data[self.pname]['inserthooktimeout']/1000) 
+        for hookcode in self.needinserthookcode:
+            self.Luna_InsertHookCode(pid,hookcode)
+        self.showgamename()
+        self.flashembedsettings(pid)
+    def solveeventthread(self): 
+        while self.ending==False:
+            message=windows.ReadFile(self.hRead,sizeof(Message),None)
+            if len(message)!=sizeof(Message):break
+            message=Message.from_buffer_copy(message)
+            _type=message.type
+            if _type in [0,1]:
+                pid=(message.pid)
+                if _type==0:
+                    self.onprocconnect(pid)
+                elif _type==1:
+                    gobject.baseobject.hookselectdialog.sysmessagesignal.emit('{} disconenct'.format(pid))
+            elif _type in [2,3]:
+                if _type==2:
+                    self.onnewhook(message.hc,message.hn,message.tp)
+                elif _type==3:
+                    self.onremovehook(message.tp)
+            elif _type==4:
+                self.handle_output(message.hc,message.hn,message.tp,cast(message.stringptr,c_wchar_p).value)
+            elif _type==5:
+                gobject.baseobject.hookselectdialog.sysmessagesignal.emit(cast(message.stringptr,c_wchar_p).value)
+            elif _type==6:
+                self.newhookinsert(message.addr,cast(message.stringptr,c_wchar_p).value)
+            elif _type==7:
+                self.getembedtext(cast(message.stringptr,c_wchar_p).value,message.tp)
+            if message.stringptr:
+                self.Luna_cfree(message.stringptr)
+   
 
     def newhookinsert(self,addr,hcode):
         for _hc,_addr,_ctx1,_ctx2 in savehook_new_data[self.pname]['embedablehook']:
             if hcode==_hc:
                 self.useembed(addr,_ctx1,_ctx2,True) 
-    def getembedtext(self,text,tt):  
+    def getembedtext(self,text,tp): 
         if globalconfig['autorun']==False:
             self.embedcallback(text,0,text)
             return 
-        if self.checkisusingembed(tt.tp.addr,tt.tp.ctx,tt.tp.ctx2):
+        if self.checkisusingembed(tp.addr,tp.ctx,tp.ctx2):
             self.newline.put((text,False, functools.partial(self.embedcallback,text),True))
         
     def embedcallback(self,text,_unused,trans): 
-        self.sharedcell.contents.text=trans 
         
-        self.notify(self.EMBEDPID,text)
-    def createembedsharedmem(self,pid):
-         
-        self.EMBEDPID=pid
-        fmap1=windows.OpenFileMapping(windows.FILE_MAP_READ|0x2,False,'EMBED_SHARED_MEM'+str(pid))
-        address1=windows.MapViewOfFile(fmap1, windows.FILE_MAP_READ|0x2,  4096)
-         
-        self.sharedcell=ctypes.cast(address1,ctypes.POINTER(define.EmbedSharedMem)) 
-        self.flashembedsettings()
-    def flashembedsettings(self):
-        if self.sharedcell is None:return
-        self.sharedcell.contents.waittime=int(1000* globalconfig['embedded']['timeout_translate'])
-        self.sharedcell.contents.fontCharSet=2#static_data["charsetmap"][globalconfig['embedded']['changecharset_charset']]
-        self.sharedcell.contents.fontCharSetEnabled=False#globalconfig['embedded']['changecharset']
-        self.sharedcell.contents.fontFamily=globalconfig['embedded']['changefont_font'] if globalconfig['embedded']['changefont'] else ''
-        self.sharedcell.contents.spaceadjustpolicy=globalconfig['embedded']['insertspace_policy']
-        self.sharedcell.contents.keeprawtext=globalconfig['embedded']['keeprawtext']
-    def notify(self,pid,text):
-        _b=text.encode('utf-16-le')
-        def hs(text):
-            _b=text.encode('utf-16-le')
-            u64=ctypes.c_uint64(5381)
-            for i in range(len(_b)): 
-                u64=ctypes.c_uint64((u64.value<<5)+u64.value+_b[i])
-            return (u64.value)
-        hash_=hs(text)
-        eventName = define.LUNA_NOTIFY % (pid, hash_) 
-        ev = windows.AutoHandle(windows.CreateEvent( False, False, eventName)  )
-        windows.SetEvent(ev) 
+        for pid in self.pids:
+            self.Luna_embedcallback(pid,text,trans) 
+     
+    def flashembedsettings(self,pid=None):
+        if pid:
+            pids=[pid]
+        else:
+            pids=self.pids 
+        for pid in pids:
+            self.Luna_EmbedSettings(pid,
+                                    int(1000* globalconfig['embedded']['timeout_translate']),
+                                    2,  #static_data["charsetmap"][globalconfig['embedded']['changecharset_charset']]
+                                    False,#globalconfig['embedded']['changecharset']
+                                    globalconfig['embedded']['changefont_font'] if globalconfig['embedded']['changefont'] else '',
+                                    globalconfig['embedded']['insertspace_policy'],
+                                    globalconfig['embedded']['keeprawtext']) 
+    
     def onremovehook(self,tp): 
         toremove=[]
         self.lock.acquire()
@@ -131,26 +240,26 @@ class texthook(basetext  ):
                 gobject.baseobject.hookselectdialog.removehooksignal.emit(key)
                 self.hookdatacollecter.pop(key) 
         self.lock.release()
-    def parsetextthread(self,textthread):
+    def parsetextthread(self,hc,hn,tp):
         key=(
-            textthread.tp.processId,
-            textthread.tp.addr,
-            textthread.tp.ctx,
-            textthread.tp.ctx2,
-            textthread.hp.name.decode('ascii'),
-            textthread.hpcode
+            tp.processId,
+            tp.addr,
+            tp.ctx,
+            tp.ctx2,
+            hn.decode('ascii'),
+            hc
             )
         return key
     def match_compatibility(self,key,autostarthookcode):
         base= (key[2]&0xffff,key[3]&0xffff,key[5])==(autostarthookcode[2]&0xffff,autostarthookcode[3]&0xffff,autostarthookcode[5])
         name=((key[-1][:8]=='UserHook' and autostarthookcode[-1][:8]=='UserHook' )or(key[-1]==autostarthookcode[-1]))
         return base and name
-    def onnewhook(self,textthread):
+    def onnewhook(self,hc,hn,tp):
         
-        key=self.parsetextthread(textthread)
+        key=self.parsetextthread(hc,hn,tp)
         if self.isremoveuseless:
             if key[1] not in [_[1] for _ in self.autostarthookcode]:
-                self.RPC.RemoveHook(key[0],key[1])
+                self.Luna_RemoveHook(key[0],key[1])
                 return False
         
         self.lock.acquire()
@@ -164,13 +273,11 @@ class texthook(basetext  ):
         
         self.hookdatacollecter[key]=[] 
         self.hooktypecollecter[key]=0
-        gobject.baseobject.hookselectdialog.addnewhooksignal.emit(key  ,select,[textthread]) 
+        gobject.baseobject.hookselectdialog.addnewhooksignal.emit(key  ,select,[hc,hn,tp]) 
         self.lock.release()
         return True
     def setsettings(self):
-        self.RPC.setting.timeout=globalconfig['textthreaddelay']
-        self.RPC.setting.flushbuffersize=globalconfig['flushbuffersize']
-        self.RPC.setting.defaultcodepag=self.codepage() 
+        self.Luna_Settings(globalconfig['textthreaddelay'],globalconfig['direct_filterrepeat'],self.codepage() ,globalconfig['flushbuffersize'])
     def codepage(self):
         try:
             cpi=savehook_new_data[self.pname]["codepage_index"]
@@ -180,7 +287,7 @@ class texthook(basetext  ):
         return cp
      
     def defaultsp(self):
-        usestruct=define.SearchParam()
+        usestruct=SearchParam()
         if not self.is64bit:
             usestruct.pattern=bytes([0x55,0x8b,0xec])
             usestruct.length=3
@@ -200,44 +307,44 @@ class texthook(basetext  ):
         usestruct.codepage=self.codepage()
         usestruct.boundaryModule=os.path.basename(self.pname)
         return usestruct
-
+    @threader
     def findhook(self,usestruct):
-        self.savefound={}
-        self.foundnum=0
-        def __waitforok():
-            #time.sleep(usestruct.searchTime/1000)
-            _last=0
-            for i in range(100):
-                #print(self.foundnum)
-                if _last!=self.foundnum or _last==0:
-                    _last=self.foundnum
-                    time.sleep(1)
-                else:
-                    break
-            print('??',_last,self.foundnum)
-            gobject.baseobject.hookselectdialog.getfoundhooksignal.emit(self.savefound.copy())
-        def _(hc,text):
-            # try:print(hc,text)
-            # except:print(hc)
-            if hc not in self.savefound:
-                self.savefound[hc]=[]
-            self.savefound[hc].append(text)
-            if self.foundnum==0:
-                threading.Thread(target=__waitforok).start()
-            self.foundnum+=1
-            #print(self.foundnum)
-        for pid in self.pids:  
-            self.RPC.FindHooks(pid,usestruct,_)
+        savefound={}
+        pids=self.pids.copy()
         
-        
-    def inserthook(self,hookcode):  
-        for pid in self.pids:
-            print(hookcode)
-            self.RPC.InsertHookCode(pid,hookcode)
+        headers={}
+        waiters={}
+        for pid in pids:  
+            headers[pid]=HANDLE()
+            count=POINTER(c_int)()
+            waiters[pid]=count
+            self.Luna_FindHooks(pid,usestruct,pointer(headers[pid]),pointer(count))
+            def ReadThread(hread):
+                while True:
+                    message=windows.ReadFile(hread,sizeof(simplehooks),None)
+                    if len(message)!=sizeof(simplehooks):break
+                    message=simplehooks.from_buffer_copy(message)
+                    hc=message.hookcode
+                    text=cast(message.text,c_wchar_p).value
+                    if hc not in savefound:
+                        savefound[hc]=[]
+                    savefound[hc].append(text)
+                    self.Luna_cfree(message.text)
+                windows.CloseHandle(hread)
+            threading.Thread(target=ReadThread,args=(headers[pid],)).start()
+        for pid in pids:
+            self.Luna_FindHooks_waiting(waiters[pid])
+        gobject.baseobject.hookselectdialog.getfoundhooksignal.emit(savefound)
+    def inserthook(self,hookcode):
+        succ=True
+        for pid in self.pids: 
+            succ=self.Luna_InsertHookCode(pid,hookcode) and succ
+        if succ==False:
+            getQMessageBox(gobject.baseobject.hookselectdialog,"Error","Invalie Hook Code Format!")
         
     def removehook(self,pid,address):
         for pid in self.pids:
-            self.RPC.RemoveHook(pid,address)
+            self.Luna_RemoveHook(pid,address)
     def delaycollectallselectedoutput(self):
         collector=[]
         while True:
@@ -249,16 +356,15 @@ class texthook(basetext  ):
             self.newline.put(collector)
             self.runonce_line=collector 
             collector=[]
-    def handle_output(self,textthread,output):   
-            #print(output)       
-            key=self.parsetextthread(textthread)
+    def handle_output(self,hc,hn,tp,output):   
+            key=self.parsetextthread(hc,hn,tp)
             
             if globalconfig['filter_chaos_code'] and checkchaos(output): 
                 return
             
             
             if key not in self.hookdatacollecter:
-                if self.onnewhook(textthread)==False:
+                if self.onnewhook(hc,hn,tp)==False:
                     return
             self.lock.acquire()
             if self.hooktypecollecter[key]==1:
@@ -284,31 +390,13 @@ class texthook(basetext  ):
             
             self.lock.release()  
     def checkisusingembed(self,address,ctx1,ctx2):
-        if self.sharedcell is None:return
-        for i in range(10):
-            if(self.sharedcell.contents.using[i]):
-                if (self.sharedcell.contents.addr[i],self.sharedcell.contents.ctx1[i],self.sharedcell.contents.ctx2[i])==(address,ctx1,ctx2):
-                    return True
-        
-        return False
+        for pid in self.pids:
+            if self.Luna_checkisusingembed(pid,address,ctx1,ctx2):
+                return True
+        return False 
     def useembed(self,address,ctx1,ctx2,use):
-        if self.sharedcell is None:return
-        for i in range(10):
-            if(self.sharedcell.contents.using[i]):
-                if (self.sharedcell.contents.addr[i],self.sharedcell.contents.ctx1[i],self.sharedcell.contents.ctx2[i])==(address,ctx1,ctx2):
-                    if use==False:
-                        self.sharedcell.contents.addr[i]=0
-                        self.sharedcell.contents.ctx1[i]=0
-                        self.sharedcell.contents.ctx2[i]=0
-                        self.sharedcell.contents.using[i]=0
-        if use:
-            for i in range(10):
-                if(self.sharedcell.contents.using[i]==0): 
-                        self.sharedcell.contents.using[i]=1
-                        self.sharedcell.contents.addr[i]=address
-                        self.sharedcell.contents.ctx1[i]=ctx1
-                        self.sharedcell.contents.ctx2[i]=ctx2
-                        break
+        for pid in self.pids:
+            self.Luna_useembed(pid,address,ctx1,ctx2,use)
         
     def gettextthread(self ):
             text=self.newline.get()
@@ -320,8 +408,7 @@ class texthook(basetext  ):
         return self.runonce_line
     def end(self):    
         for pid in self.pids:
-            self.RPC.Detach(pid)
-        self.RPC.end()
+            self.Luna_Detach(pid)
         time.sleep(0.1)
         super().end()
      

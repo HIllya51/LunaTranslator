@@ -1,7 +1,7 @@
-import platform,os
+import gobject,os
 from ctypes import CDLL,c_void_p,c_int,c_char_p,c_long,cast,CFUNCTYPE,c_size_t,Structure,pointer,create_string_buffer,memmove,POINTER,c_char,c_int64,c_uint
-curlpath=os.path.abspath(os.path.join('./files/plugins',['./libcurl-x64.dll','./libcurl.dll'][platform.architecture()[0]=='32bit']))
-libcurl=CDLL(curlpath)
+libcurl=CDLL(os.path.join(gobject.DLL3264path,('./libcurl.dll','./libcurl-x64.dll')[gobject.isbit64]))
+
 CURL = c_void_p  
 CURLSH=c_void_p
 class curl_slist(Structure):

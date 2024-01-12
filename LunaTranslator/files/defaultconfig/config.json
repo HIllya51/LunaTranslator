@@ -118,6 +118,8 @@
     "isshowhira": false,
     "locktools": true,
     "showfanyisource": false,
+    "use_yapi":true,
+    "showfanyi":true,
     "autoread": false,
     "show_fenci": false,
     "jiamingcolor": "black",
@@ -465,7 +467,7 @@
             },
             "_6": {
                 "use": false,
-                "name": "显示/隐藏历史翻译",
+                "name": "显示/隐藏历史翻译和调试输出",
                 "key1": -1,
                 "key2": -1,
                 "keystring": ""

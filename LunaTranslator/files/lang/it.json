@@ -685,5 +685,7 @@
     "文本缓冲区长度": "Lunghezza buffer di testo",
     "显示/隐藏历史翻译和调试输出": "Mostra/nasconde l'output storico di traduzione e debug",
     "历史翻译和调试输出": "Risultato storico di traduzione e debug",
-    "调试输出": "Debug output"
+    "调试输出": "Debug output",
+    "显示翻译": "Mostra traduzione",
+    "使用YAPI注入": "Uso dell'iniezione di YAPI"
 }

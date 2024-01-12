@@ -685,5 +685,7 @@
     "文本缓冲区长度": "Text buffer length",
     "显示/隐藏历史翻译和调试输出": "Show/hide historical translation and debugging output",
     "历史翻译和调试输出": "Historical translation and debugging output",
-    "调试输出": "Debugging output"
+    "调试输出": "Debugging output",
+    "显示翻译": "Display translation",
+    "使用YAPI注入": "Using YAPI injection"
 }

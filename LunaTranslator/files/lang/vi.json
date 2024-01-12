@@ -685,5 +685,7 @@
     "文本缓冲区长度": "Chiều dài bộ đệm văn bản",
     "显示/隐藏历史翻译和调试输出": "Hiển thị/ẩn lịch sử dịch và đầu ra gỡ lỗi",
     "历史翻译和调试输出": "Lịch sử dịch và gỡ lỗi đầu ra",
-    "调试输出": "Đầu ra gỡ lỗi"
+    "调试输出": "Đầu ra gỡ lỗi",
+    "显示翻译": "Hiện bản dịch",
+    "使用YAPI注入": "Sử dụng YAPI Injection"
 }

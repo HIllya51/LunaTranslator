@@ -28,7 +28,8 @@ def gethookgrid(self) :
                 [('文本缓冲区长度',5),(getspinbox(0,10000,globalconfig,'flushbuffersize',callback=lambda x:gobject.baseobject.textsource.setsettings()),3)],
                 [('过滤包含乱码的文本行',5),(getsimpleswitch(globalconfig,'filter_chaos_code'),1),(getcolorbutton(globalconfig,'',icon='fa.gear',constcolor="#FF69B4",callback=lambda:codeacceptdialog(self)),1)],
                 [],
-                [('区分人名和文本',5),getsimpleswitch(globalconfig,'allow_set_text_name')]
+                [('区分人名和文本',5),getsimpleswitch(globalconfig,'allow_set_text_name')],
+                [('使用YAPI注入',5),getsimpleswitch(globalconfig,'use_yapi')],
                 
         ]
          

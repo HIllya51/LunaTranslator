@@ -304,6 +304,7 @@ class hookselect(closeashidewindow):
         self.allres=OrderedDict() 
         self.hidesearchhookbuttons()
     def addnewhook(self,ss ,select,textthread):
+        hc,hn,tp=textthread
         if len(self.save)==0:
             if gobject.baseobject.textsource.allow_set_text_name:
                 self.ttCombomodelmodel.setHorizontalHeaderLabels(_TRL(['显示','类型','HOOK','文本']))
@@ -354,8 +355,8 @@ class hookselect(closeashidewindow):
             label.setStyleSheet("background-color: rgba(255, 255, 255, 0)")
             checkbtn=QPushButton()
             checkbtn.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Preferred)
-            def _t():
-                _isusing=gobject.baseobject.textsource.checkisusingembed(textthread[0].tp.addr,textthread[0].tp.ctx,textthread[0].tp.ctx2)
+            def _t(tp):
+                _isusing=gobject.baseobject.textsource.checkisusingembed(tp.addr,tp.ctx,tp.ctx2)
                 if _isusing:
                     _text='取消内嵌翻译'
                     checkifnewgame(gobject.baseobject.textsource.pname)
@@ -371,21 +372,21 @@ class hookselect(closeashidewindow):
                     _text="使用内嵌翻译"
                 checkbtn.setText('【'+_TR(_text)+'】') 
                 return _isusing
-            _t() 
-            def _c(_):
-                gobject.baseobject.textsource.useembed(textthread[0].tp.addr,textthread[0].tp.ctx,textthread[0].tp.ctx2,not _t())
-                _use=_t()
+            _t(tp) 
+            def _c(hc,tp,_):
+                gobject.baseobject.textsource.useembed(tp.addr,tp.ctx,tp.ctx2,not _t(tp))
+                _use=_t(tp)
                 if _use:
-                    savehook_new_data[gobject.baseobject.textsource.pname]['embedablehook'].append([textthread[0].hpcode,textthread[0].tp.addr,textthread[0].tp.ctx,textthread[0].tp.ctx2])
+                    savehook_new_data[gobject.baseobject.textsource.pname]['embedablehook'].append([hc,tp.addr,tp.ctx,tp.ctx2])
                 else:
                     save=[]
                     for _ in savehook_new_data[gobject.baseobject.textsource.pname]['embedablehook']:
                         hc,ad,c1,c2=_
-                        if(hc,ad,c1,c2)==(textthread[0].hpcode,textthread[0].tp.addr,textthread[0].tp.ctx,textthread[0].tp.ctx2):
+                        if(hc,ad,c1,c2)==(hc,tp.addr,tp.ctx,tp.ctx2):
                             save.append(_)
                     for _ in save:
                         savehook_new_data[gobject.baseobject.textsource.pname]['embedablehook'].remove(_)
-            checkbtn.clicked.connect(_c)
+            checkbtn.clicked.connect(functools.partial(_c,hc,tp))
             hlay.addWidget(checkbtn)
             colidx=2+(gobject.baseobject.textsource.allow_set_text_name)
             self.tttable.setIndexWidget(self.ttCombomodelmodel.index(rown,colidx),embedw)

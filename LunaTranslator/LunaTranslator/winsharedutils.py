@@ -1,11 +1,7 @@
 from ctypes import c_uint,c_bool,POINTER,c_char_p,c_uint64,c_wchar_p,pointer,CDLL,c_int,Structure,c_void_p,cast,memmove,create_unicode_buffer,create_string_buffer,c_size_t,windll
-import platform,os
-
-if platform.architecture()[0]=='64bit':
-    pythonbit='64' 
-else:
-    pythonbit='32' 
-utilsdll=CDLL(os.path.abspath('./files/plugins/winsharedutils{}.dll'.format(pythonbit)) )
+import os,gobject
+ 
+utilsdll=CDLL(gobject.GetDllpath(('winsharedutils32.dll','winsharedutils64.dll')))
 
 _freewstringlist=utilsdll.freewstringlist
 _freewstringlist.argtypes=POINTER(c_wchar_p),c_uint
@@ -77,8 +73,7 @@ def distance(s1,s2):
  
 class mecabwrap:
     def __init__(self,mecabpath) -> None:
-         
-        self.kks=_mecab_init(mecabpath.encode('utf8'),os.path.abspath('./files/plugins/libmecab{}.dll'.format(pythonbit)) ) 
+        self.kks=_mecab_init(mecabpath.encode('utf8'),gobject.GetDllpath('libmecab.dll') )
     def __del__(self):
         _mecab_end(self.kks)
     def parse(self,text):

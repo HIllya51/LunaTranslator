@@ -1,15 +1,11 @@
 from ctypes import c_uint,c_bool,POINTER,c_char_p,c_uint64,c_wchar_p,pointer,CDLL,Structure,c_void_p,cast
-import platform,os
+import platform,os,gobject
 
-if platform.architecture()[0]=='64bit':
-    pythonbit='64' 
-else:
-    pythonbit='32' 
 try: 
     if platform.system() != "Windows" or int(platform.version().split('.')[0])<6:
         raise Exception()
          
-    winrtutilsdll=CDLL(os.path.abspath('./files/plugins/winrtutils{}.dll'.format(pythonbit)) )
+    winrtutilsdll=CDLL(gobject.GetDllpath(('winrtutils32.dll','winrtutils64.dll')))
 except:
     winrtutilsdll=0
     

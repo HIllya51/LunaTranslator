@@ -685,5 +685,7 @@
     "文本缓冲区长度": "Długość bufora tekstu",
     "显示/隐藏历史翻译和调试输出": "Pokaż/ukryj historyczne tłumaczenie i wyjście debugowania",
     "历史翻译和调试输出": "Historiczne tłumaczenie i debugowanie",
-    "调试输出": "Wyjście debugowania"
+    "调试输出": "Wyjście debugowania",
+    "显示翻译": "Wyświetl tłumaczenie",
+    "使用YAPI注入": "Zastosowanie wstrzykiwań YAPI"
 }

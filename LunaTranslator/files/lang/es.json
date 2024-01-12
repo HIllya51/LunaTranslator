@@ -685,5 +685,7 @@
     "文本缓冲区长度": "Longitud del colchón de texto",
     "显示/隐藏历史翻译和调试输出": "Mostrar / ocultar la traducción histórica y depurar la salida",
     "历史翻译和调试输出": "Traducción histórica y salida de depuración",
-    "调试输出": "Salida de depuración"
+    "调试输出": "Salida de depuración",
+    "显示翻译": "Mostrar traducción",
+    "使用YAPI注入": "Inyección con Yapi"
 }

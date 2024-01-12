@@ -685,5 +685,7 @@
     "文本缓冲区长度": "Longueur du tampon de texte",
     "显示/隐藏历史翻译和调试输出": "Afficher / masquer la traduction historique et la sortie de débogage",
     "历史翻译和调试输出": "Traduction historique et sortie de débogage",
-    "调试输出": "Sortie de débogage"
+    "调试输出": "Sortie de débogage",
+    "显示翻译": "Afficher la traduction",
+    "使用YAPI注入": "Injection avec Yapi"
 }

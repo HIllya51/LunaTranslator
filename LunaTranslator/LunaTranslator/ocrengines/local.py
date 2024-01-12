@@ -7,15 +7,10 @@ import base64
 from ocrengines.baseocrclass import baseocr 
 from ctypes import CDLL,c_char_p ,create_string_buffer,c_uint32,POINTER,c_int32
 import os
-import platform
+import gobject
 class ocrwrapper:
-    def __init__(self) -> None:
-                
-        if platform.architecture()[0]=='64bit':
-            bit='64' 
-        else:
-            bit='32' 
-        self.dll=CDLL(os.path.abspath('./files/plugins/ocr{}.dll'.format(bit)) )
+    def __init__(self) -> None: 
+        self.dll=CDLL(gobject.GetDllpath(('ocr32.dll','ocr64.dll')))
     def _OcrInit(self,szDetModel, szRecModel, szKeyPath,szClsModel='', nThreads=4):
         
         _OcrInit=self.dll.OcrInit
