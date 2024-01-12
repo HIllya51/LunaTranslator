@@ -180,14 +180,13 @@ class texthook(basetext  ):
         return cp
      
     def defaultsp(self):
+        usestruct=define.SearchParam()
         if not self.is64bit:
-            usestruct=define.SearchParam32()
             usestruct.pattern=bytes([0x55,0x8b,0xec])
             usestruct.length=3
             usestruct.offset=0
             usestruct.maxAddress=0xFFFFFFFF
         else:
-            usestruct=define.SearchParam64()
             usestruct.pattern=bytes([0xCC,0xCC,0x48,0x89])
             usestruct.length=4
             usestruct.offset=2

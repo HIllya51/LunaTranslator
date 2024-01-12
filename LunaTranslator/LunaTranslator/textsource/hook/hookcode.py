@@ -31,8 +31,8 @@ def ConsumeHexInt(HCode):
         return HCode,0
 def Hex(st):
     return hex(st).replace('0x','').upper()
-def ParseRCode(RCode,hp) :
-        
+def ParseRCode(RCode) :
+    hp=define.HookParam()
     hp.type |= DIRECT_READ
     if RCode[0]=='S':
         pass
@@ -62,8 +62,8 @@ def ParseRCode(RCode,hp) :
     hp.address = int(match.group(1), 16)
     return hp
 
-def ParseHCode(HCode,hp):
-    #print(HCode)
+def ParseHCode(HCode):
+    hp=define.HookParam()
     if HCode[0] == 'A':
         hp.type |= BIG_ENDIAN
         hp.length_offset = 1
@@ -144,14 +144,14 @@ def ParseHCode(HCode,hp):
         hp.split -= 4
 
     return hp 
-def Parse(code,hp):
+def Parse(code):
     code=code.strip().replace('\r','').replace('\n','').replace('\t','')
     if(code[0]=='/'):code=code[1:]
     if('/' in code):code=code.split('/')[0]
     if(code[0]=='R'):
-        hp=ParseRCode(code[1:],hp)
+        hp=ParseRCode(code[1:])
     elif(code[0]=='H'):
-        hp=ParseHCode(code[1:],hp)
+        hp=ParseHCode(code[1:])
     else:
         hp=None
     return hp
@@ -254,13 +254,12 @@ def Generate(_hp,process_id):
      
     return code 
 if __name__=='__main__':
-    hp=define.HookParam32()
     # print(Parse("/HQN936#1+-c*C:C*1C@4AA:gdi.dll:GetTextOutA",hp))
     # print(Parse("/HQN936#-c*C:C*1C@4AA:gdi.dll:GetTextOutA /KF",hp))
     # print(Parse("HB4@0" ,hp)),
     # print(Parse("/RS65001#@44",hp)),
     # print(Parse("HQ@4",hp,))
-    print(Parse('HS8:-14@76D85270',hp))
+    print(Parse('/HS8:-14@76D85270'))
     # print(Parse("/RW@44",hp)),
     # print(Parse("/HWG@33",hp))
     

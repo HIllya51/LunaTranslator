@@ -39,7 +39,7 @@ class ThreadParam(Structure):
     def __eq__(self, __value ):
         return self.__hash__()==__value.__hash__()
 
-class HookParam64(Structure):
+class HookParam(Structure):
     _fields_=[
         ('address',c_uint64),
         ('offset',c_int),
@@ -63,35 +63,10 @@ class HookParam64(Structure):
         ('_3',c_uint64),  
         ('_4',c_uint64),  
         ('name',c_char*HOOK_NAME_SIZE)
-    ]
-class HookParam32(Structure):
+    ] 
+class TextHook(Structure):
     _fields_=[
-        ('address',c_uint64),
-        ('offset',c_int),
-        ('index',c_int),
-        ('split',c_int),
-        ('split_index',c_int),
-        ('null_length',c_int),
-        ('module',c_wchar*MAX_MODULE_SIZE),
-        ('function',c_char*MAX_MODULE_SIZE),
-        ('type',c_uint),
-        ('codepage', c_uint),
-        ('length_offset',c_short),
-        ('padding',c_uint32),   #uintptr_t
-        ('user_value',c_uint),
-        ('text_fun',c_uint32),
-        ('filter_fun',c_uint32),
-        ('hook_fun',c_uint32),
-        ('length_fun',c_uint32),  #函数指针
-        ('_1',c_uint32),
-        ('_2',c_uint32),  
-        ('_3',c_uint32),  
-        ('_4',c_uint32),  
-        ('name',c_char*HOOK_NAME_SIZE) 
-    ]
-class TextHook64(Structure):
-    _fields_=[
-        ('hp',HookParam64),
+        ('hp',HookParam),
         ('address',c_uint64),  #union{uint64 && void*}
         ('useCount',c_uint),
         ('readerThread',c_uint64), #HANLDE ->void*
@@ -100,38 +75,9 @@ class TextHook64(Structure):
         ('trampoline',c_ubyte*140),
         ('local_buffer',c_uint64)
     ]
-class TextHook32(Structure):
-    _fields_=[
-        ('hp',HookParam32),
-        ('address',c_uint64),  #union{uint64 && void*}
-        ('useCount',c_uint),
-        ('readerThread',c_uint32), #HANLDE ->void*
-        ('readerEvent',c_uint32),
-        ('err',c_bool),
-        ('trampoline',c_ubyte*40),
-        ('local_buffer',c_uint32)
-    ] 
 MAX_HOOK=2500   
 
-
-class SearchParam32(Structure):
-    _fields_=[
-        ('pattern',c_char*30),
-        ('address_method',c_int),
-        ('search_method',c_int),
-        ('length',c_int),
-        ('offset',c_int),
-        ('searchTime',c_int),
-        ('maxRecords',c_int),
-        ('codepage',c_int), 
-        ('padding',c_uint), 
-        ('minAddress',c_uint), 
-        ('maxAddress',c_uint),
-        ('boundaryModule',c_wchar*120),
-        ('exportModule',c_wchar*120),
-        ('text',c_wchar*30)
-    ] 
-class SearchParam64(Structure):
+class SearchParam(Structure):
     _fields_=[
         ('pattern',c_char*30),
         ('address_method',c_int),
@@ -164,18 +110,11 @@ class RemoveHookCmd(Structure):
     def __init__(self, address) -> None:
         self.command=HOST_COMMAND_REMOVE_HOOK
         self.address=address
-class InsertHookCmd32(Structure):
+
+class InsertHookCmd(Structure):
     _fields_=[
         ('command',HostCommandType),
-        ('hp',HookParam32)
-    ]
-    def __init__(self, hp) -> None:
-        self.command=HOST_COMMAND_NEW_HOOK
-        self.hp=hp
-class InsertHookCmd64(Structure):
-    _fields_=[
-        ('command',HostCommandType),
-        ('hp',HookParam64)
+        ('hp',HookParam)
     ]
     def __init__(self, hp) -> None:
         self.command=HOST_COMMAND_NEW_HOOK
@@ -188,18 +127,11 @@ class InsertHookCodeNaive(Structure):
     def __init__(self, hp) -> None:
         self.command=HOST_COMMAND_NEW_HOOK_NAIVE
         self.hcode=hp
-class FindHookCmd32(Structure):
+
+class FindHookCmd(Structure):
     _fields_=[
         ('command',HostCommandType),
-        ('sp',SearchParam32)
-    ]
-    def __init__(self, sp) -> None:
-        self.command=HOST_COMMAND_FIND_HOOK
-        self.sp=sp
-class FindHookCmd64(Structure):
-    _fields_=[
-        ('command',HostCommandType),
-        ('sp',SearchParam64)
+        ('sp',SearchParam)
     ]
     def __init__(self, sp) -> None:
         self.command=HOST_COMMAND_FIND_HOOK
@@ -216,18 +148,10 @@ class hookfoundtext(Structure):
     _fields_=[('text',c_wchar*MESSAGE_SIZE)]
 
 
-class HookFoundNotif32(Structure):
+class HookFoundNotif(Structure):
 	_fields_=[
         ('command',HostNotificationType),
-        ('hp',HookParam32),
-        ('hcode',c_wchar*500),
-        ('text',hookfoundtext)
-    ] 
-
-class HookFoundNotif64(Structure):
-	_fields_=[
-        ('command',HostNotificationType),
-        ('hp',HookParam64),
+        ('hp',HookParam),
         ('hcode',c_wchar*500),
         ('text',hookfoundtext)
     ] 
