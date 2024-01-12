@@ -119,7 +119,7 @@ def getfridahookgrid(self) :
                 [('show error',3),getsimpleswitch( globalconfig['fridahook'],'showerror' )],
                 [('autoupdate',3),getsimpleswitch( globalconfig['fridahook'],'autoupdate' )],
                 [],
-                [('资源下载',3),(makehtml("https://github.com/HIllya51/LunaTranslator/releases/download/v1.34.5/FridaHook.zip",True),3,'link')],
+                [('资源下载',3),(makehtml("https://github.com/HIllya51/RESOURCES/releases/download/dictionary/FridaHook.zip",True),3,'link')],
                 
                 [('latest scripts',3),(makehtml("https://github.com/0xDC00/scripts"),6,'link')],
                 [('capable emulator',3),(makehtml("https://github.com/koukdw/emulators/releases"),6,"link")]
