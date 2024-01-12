@@ -15,9 +15,9 @@ class TS(basetrans):
         self.history.append(query)
         if len(self.history) > 4:
             del self.history[0]
-    def get_history(self, query_list):
+    def get_history(self):
         prompt = ""
-        for q in query_list:
+        for q in self.history:
             prompt += q + "\n"
         prompt = prompt.strip()
         return prompt
@@ -70,12 +70,12 @@ class TS(basetrans):
         frequency_penalty = self.config['frequency_penalty']
         if not self.config['利用上文信息翻译（通常会有一定的效果提升，但会导致变慢）']:
             output = self.send_request(query)
-            finish_reason = output.choices[0].finish_reason
+            completion_tokens = output.usage.completion_tokens
             output_text = output.choices[0].message.content
 
             if bool(self.config['fix_degeneration']):
                 cnt = 0
-                while finish_reason == "length":
+                while completion_tokens == int(self.config['max_new_token']):
                     # detect degeneration, fixing
                     frequency_penalty += 0.1
                     output = self.send_request(query, frequency_penalty=frequency_penalty)
@@ -83,20 +83,14 @@ class TS(basetrans):
                     if cnt == 2:
                         break
         else:
-            # query_list = self.sliding_window(query)
-            # query = self.list_to_prompt(query_list)
-            # request['prompt'] = self.make_prompt(query)
-            # output, new_token, _ = self.do_post(request)
-
             history_prompt = self.get_history()
             output = self.send_request(query, history=history_prompt)
-            finish_reason = output.choices[0].finish_reason
+            completion_tokens = output.usage.completion_tokens
             output_text = output.choices[0].message.content
 
             if bool(self.config['fix_degeneration']):
                 cnt = 0
-                while finish_reason == "length":
-                    # detect degeneration, fixing
+                while completion_tokens == int(self.config['max_new_token']):
                     frequency_penalty += 0.1
                     output = self.send_request(query, history=history_prompt, frequency_penalty=frequency_penalty)
                     cnt += 1
