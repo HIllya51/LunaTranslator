@@ -35,12 +35,12 @@ class TS(basetrans):
                 "content": history
             })
 
-        messages.append({
+        messages.append(
             {
                 "role": "user",
                 "content": f"将下面的日文文本翻译成中文：{query}"
             }
-        })
+        )
         return messages
 
 
