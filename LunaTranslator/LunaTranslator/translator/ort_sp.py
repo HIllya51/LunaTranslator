@@ -158,6 +158,7 @@ class TS(basetrans):
                 )
         input_ids_len = n_tokens.value
         input_ids_py = [token_ids[i] for i in range(input_ids_len)]
+        input_ids_py += [1] # add EOS token to notify the end of sentence and prevent repetition
         return input_ids_py
 
     def decode_from_ids(self, output_ids_py):
