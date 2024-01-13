@@ -1,7 +1,8 @@
 from traceback import print_exc
 from translator.basetranslator import basetrans
 import requests
-from openai import OpenAI
+# OpenAI
+# from openai import OpenAI
 
 class TS(basetrans):
     def langmap(self):
@@ -12,6 +13,7 @@ class TS(basetrans):
             "ja": [],
             "zh": []
         }
+        self.session = requests.Session()
         super( ).__init__(typename)
     def sliding_window(self, text_ja, text_zh):
         if text_ja == "" or text_zh == "":
@@ -36,9 +38,9 @@ class TS(basetrans):
             api_url += "v1"
         else:
             api_url += "/v1"
-        print(api_url)
         self.api_url = api_url
-        self.client = OpenAI(api_key="114514", base_url=api_url)
+        # OpenAI
+        # self.client = OpenAI(api_key="114514", base_url=api_url)
     def make_messages(self, query, history_ja=None, history_zh=None, **kwargs):
         messages = [
             {
@@ -74,9 +76,9 @@ class TS(basetrans):
         }
         messages = self.make_messages(query, **kwargs)
         try:
-            output = self.client.chat.completions.create(
-            # TODO: 如果Luna实现了流式显示，此处可以直接改成流式输出。
-            # for output in client.chat.completions.create(
+            # OpenAI
+            # output = self.client.chat.completions.create(
+            data = dict(
                 model="sukinishiro",
                 messages=messages,
                 temperature=float(self.config['temperature']),
@@ -87,6 +89,7 @@ class TS(basetrans):
                 extra_query=extra_query,
                 stream=False,
             )
+            output = self.session.post(self.api_url + "/chat/completions", json=data).json()
         except Exception as e:
             raise ValueError(f"无法连接到Sakura API：{self.api_url}，请检查你的API链接是否正确填写，以及API后端是否成功启动。")
         return output
@@ -98,8 +101,8 @@ class TS(basetrans):
         frequency_penalty = float(self.config['frequency_penalty'])
         if not bool(self.config['利用上文信息翻译（通常会有一定的效果提升，但会导致变慢）']):
             output = self.send_request(query)
-            completion_tokens = output.usage.completion_tokens
-            output_text = output.choices[0].message.content
+            completion_tokens = output["usage"]["completion_tokens"]
+            output_text = output["choices"][0]["message"]["content"]
 
             if bool(self.config['fix_degeneration']):
                 cnt = 0
@@ -107,8 +110,8 @@ class TS(basetrans):
                     # detect degeneration, fixing
                     frequency_penalty += 0.1
                     output = self.send_request(query, frequency_penalty=frequency_penalty)
-                    completion_tokens = output.usage.completion_tokens
-                    output_text = output.choices[0].message.content
+                    completion_tokens = output["usage"]["completion_tokens"]
+                    output_text = output["choices"][0]["message"]["content"]
                     cnt += 1
                     if cnt == 2:
                         break
@@ -130,16 +133,16 @@ class TS(basetrans):
 
             history_prompt = self.get_history('zh')
             output = self.send_request(query, history_zh=history_prompt)
-            completion_tokens = output.usage.completion_tokens
-            output_text = output.choices[0].message.content
+            completion_tokens = output["usage"]["completion_tokens"]
+            output_text = output["choices"][0]["message"]["content"]
 
             if bool(self.config['fix_degeneration']):
                 cnt = 0
                 while completion_tokens == int(self.config['max_new_token']):
                     frequency_penalty += 0.1
                     output = self.send_request(query, history_zh=history_prompt, frequency_penalty=frequency_penalty)
-                    completion_tokens = output.usage.completion_tokens
-                    output_text = output.choices[0].message.content
+                    completion_tokens = output["usage"]["completion_tokens"]
+                    output_text = output["choices"][0]["message"]["content"]
                     cnt += 1
                     if cnt == 3:
                         output_text = "Error：模型无法完整输出或退化无法解决，请调大设置中的max_new_token！！！原输出：" + output_text
