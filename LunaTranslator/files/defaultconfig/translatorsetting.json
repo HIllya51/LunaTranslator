@@ -463,10 +463,11 @@
     },
 	"sakura": {
         "args": {
-			"Sakura部署教程": "https://sakura.srpr.moe",
+			"Sakura部署教程": "https://github.com/SakuraLLM/Sakura-13B-Galgame/wiki",
 			"Github仓库": "https://github.com/SakuraLLM/Sakura-13B-Galgame",
-            "API接口地址": "http://127.0.0.1:5000/",
+            "API接口地址": "http://127.0.0.1:8080/",
             "利用上文信息翻译（通常会有一定的效果提升，但会导致变慢）": false,
+			"附带上下文个数（必须打开利用上文翻译）": 3,
             "temperature": 0.1,
 			"top_p": 0.3,
 			"num_beams": 1,
@@ -491,6 +492,12 @@
 			},
 			"利用上文信息翻译（通常会有一定的效果提升，但会导致变慢）": {
 				"type": "switch"
+			},
+			"附带上下文个数（必须打开利用上文翻译）":{
+				"type":"intspin",
+				"min":1,
+				"max":32,
+				"step":1
 			},
 			"temperature":{
 				"type":"spin",
