@@ -95,8 +95,8 @@ class TS(basetrans):
         self.checkempty(['API接口地址'])
         if self.api_url == "":
             self.get_client(self.config['API接口地址'])
-        frequency_penalty = self.config['frequency_penalty']
-        if not self.config['利用上文信息翻译（通常会有一定的效果提升，但会导致变慢）']:
+        frequency_penalty = float(self.config['frequency_penalty'])
+        if not bool(self.config['利用上文信息翻译（通常会有一定的效果提升，但会导致变慢）']):
             output = self.send_request(query)
             completion_tokens = output.usage.completion_tokens
             output_text = output.choices[0].message.content
