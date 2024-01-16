@@ -35,8 +35,10 @@ class ocrwrapper:
         self._OcrInit(det,rec,key)
     def ocr(self,path,name,angle=0):
         try:
-            self._OcrDetect(path,name,angle) 
-            return self._OcrGet().decode('utf8')
+            if (self._OcrDetect(path,name,angle) ):
+                return self._OcrGet().decode('utf8')
+            else:
+                return ''
         except:
         
             return ''
