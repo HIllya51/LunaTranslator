@@ -205,6 +205,14 @@ class Sessionbase:
         
         _= self.request_impl(method,scheme,server,port,param,url,headers,cookies,dataptr,datalen,proxy,stream,verify)
 
+        if _.status_code==301:
+            location=_.headers['Location']
+            if location.startswith('/'):#vndb
+                url=url=scheme+'://'+server+location
+                param=location
+                _= self.request_impl(method,scheme,server,port,param,url,headers,cookies,dataptr,datalen,proxy,stream,verify)
+            else:
+                raise Exception('301 redirect '+location)
         return _
     def get(self, url, **kwargs): 
         return self.request("GET", url, **kwargs)
