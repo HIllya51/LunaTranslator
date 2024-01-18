@@ -60,6 +60,7 @@ class TS(basetrans):
         return
     
     def setup_ortmtlib(self, ort_dll_path, model_path):
+        self.ort = ctypes.CDLL(os.path.join(os.path.dirname(ort_dll_path), "onnxruntime.dll"))
         self.ortmtlib = ctypes.CDLL(ort_dll_path)
 
         self.ortmtlib.create_ort_session.restype = ctypes.c_int
