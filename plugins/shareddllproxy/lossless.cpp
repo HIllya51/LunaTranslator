@@ -212,9 +212,9 @@ int losslesswmain(int argc, wchar_t* wargv[])
     SetDriverSettings(); 
 	
     if(version==1)
-        ((ApplySettings_t1)ApplySettings)(scalingMode-1, scalingFitMode, scalingType, scalingSubtype, scaleFactor, resizeBeforeScale, windowedMode, sharpness, VRS, clipCursor, cursorSensitivity, hideCursor, scaleCursor, doubleBuffering, vrrSupport, hdrSupport, allowTearing, legacyCaptureApi, drawFps, gpuId, displayId, captureOffsetLeft, captureOffsetTop, captureOffsetRight, captureOffsetBottom, multiDisplayMode);
+        ((ApplySettings_t1)ApplySettings)(scalingMode, scalingFitMode, scalingType-1, scalingSubtype, scaleFactor, resizeBeforeScale, windowedMode, sharpness, VRS, clipCursor, cursorSensitivity, hideCursor, scaleCursor, doubleBuffering, vrrSupport, hdrSupport, allowTearing, legacyCaptureApi, drawFps, gpuId, displayId, captureOffsetLeft, captureOffsetTop, captureOffsetRight, captureOffsetBottom, multiDisplayMode);
     else if(version==2)
-        ((ApplySettings_t2)ApplySettings)(scalingMode-1, scalingFitMode, scalingType, scalingSubtype, scaleFactor, resizeBeforeScale, windowedMode, sharpness, VRS,frameGeneration, clipCursor, cursorSensitivity, hideCursor, scaleCursor, doubleBuffering, vrrSupport, hdrSupport, allowTearing, legacyCaptureApi, drawFps, gpuId, displayId, captureOffsetLeft, captureOffsetTop, captureOffsetRight, captureOffsetBottom, multiDisplayMode);
+        ((ApplySettings_t2)ApplySettings)(scalingMode, scalingFitMode, scalingType-1, scalingSubtype, scaleFactor, resizeBeforeScale, windowedMode, sharpness, VRS,frameGeneration, clipCursor, cursorSensitivity, hideCursor, scaleCursor, doubleBuffering, vrrSupport, hdrSupport, allowTearing, legacyCaptureApi, drawFps, gpuId, displayId, captureOffsetLeft, captureOffsetTop, captureOffsetRight, captureOffsetBottom, multiDisplayMode);
     else if(version==3)
         ((ApplySettings_t3)ApplySettings)(scalingMode, scalingFitMode, scalingType, scalingSubtype, scaleFactor, resizeBeforeScale, windowedMode, sharpness, VRS,frameGeneration, clipCursor, cursorSensitivity, hideCursor, scaleCursor,syncInterval, doubleBuffering, vrrSupport, hdrSupport, allowTearing, legacyCaptureApi, drawFps, gpuId, displayId, captureOffsetLeft, captureOffsetTop, captureOffsetRight, captureOffsetBottom, multiDisplayMode);
 	SetForegroundWindow(hwnd);
