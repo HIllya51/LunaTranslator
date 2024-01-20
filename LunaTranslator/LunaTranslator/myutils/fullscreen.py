@@ -55,7 +55,7 @@ class fullscreen():
     #             windows.keybd_event(mp1[mp[k]],0,windows.KEYEVENTF_KEYUP,0)
     def _4(self,hwnd,full):
         if full:  
-            self.engine= subproc_w(r'./files/plugins/shareddllproxy64.exe lossless "{}" "{}" {} {} {} {} {} {} {} {} {} {} {} {} {} {} {} {} {} {} {} {} {} {} {} {} {} {} {} {}'.format(globalconfig['lossless']['path'],hwnd,
+            self.engine= subproc_w(r'./files/plugins/shareddllproxy64.exe lossless "{}" "{}" {} {} {} {} {} {} {} {} {} {} {} {} {} {} {} {} {} {} {} {} {} {} {} {} {} {} {} {} {}'.format(globalconfig['lossless']['path'],hwnd,
                                                                                                                                                                              
             globalconfig['lossless']['scalingMode'],
             globalconfig['lossless']['scalingFitMode'],
@@ -84,7 +84,8 @@ class fullscreen():
             globalconfig['lossless']['captureOffsetBottom'],
             globalconfig['lossless']['multiDisplayMode'],
             os.getpid(),
-            globalconfig['lossless']['frameGeneration']),cwd=globalconfig['lossless']['path'])
+            globalconfig['lossless']['frameGeneration'],
+            globalconfig['lossless']['syncInterval']),cwd=globalconfig['lossless']['path'])
             self._waitenginestop()
         else:
             endevent =windows.AutoHandle(windows.CreateEvent(False, False,'LOSSLESS_WAITFOR_STOP_SIGNAL'+str(self.engine.pid)))

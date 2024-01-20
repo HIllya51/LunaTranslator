@@ -14,6 +14,7 @@ typedef void (*UnInit_t)();
 typedef bool (*Activate_t)(HWND hwnd);
 typedef void(*ApplySettings_t1)(int scalingMode, int scalingFitMode, int scalingType, int scalingSubtype, float scaleFactor, bool resizeBeforeScale, bool windowedMode, int sharpness, bool VRS, bool clipCursor, bool cursorSensitivity, bool hideCursor, bool scaleCursor, bool doubleBuffering, bool vrrSupport, bool hdrSupport, bool allowTearing, bool legacyCaptureApi, bool drawFps, int gpuId, int displayId, int captureOffsetLeft, int captureOffsetTop, int captureOffsetRight, int captureOffsetBottom, bool multiDisplayMode);
 typedef void(*ApplySettings_t2)(int scalingMode, int scalingFitMode, int scalingType, int scalingSubtype, float scaleFactor, bool resizeBeforeScale, bool windowedMode, int sharpness, bool VRS,int frameGeneration, bool clipCursor, bool cursorSensitivity, bool hideCursor, bool scaleCursor, bool doubleBuffering, bool vrrSupport, bool hdrSupport, bool allowTearing, bool legacyCaptureApi, bool drawFps, int gpuId, int displayId, int captureOffsetLeft, int captureOffsetTop, int captureOffsetRight, int captureOffsetBottom, bool multiDisplayMode);
+typedef void(*ApplySettings_t3)(int scalingMode, int scalingFitMode, int scalingType, int scalingSubtype, float scaleFactor, bool resizeBeforeScale, bool windowedMode, int sharpness, bool VRS,int frameGeneration, bool clipCursor, bool cursorSensitivity, bool hideCursor, bool scaleCursor,int syncInterval, bool doubleBuffering, bool vrrSupport, bool hdrSupport, bool allowTearing, bool legacyCaptureApi, bool drawFps, int gpuId, int displayId, int captureOffsetLeft, int captureOffsetTop, int captureOffsetRight, int captureOffsetBottom, bool multiDisplayMode);
 enum ErrorCode
 {
     NO_CODE,
@@ -78,6 +79,13 @@ int checkversion(uintptr_t ApplySettings_ptr) {
         }
     }
     if (retptr == 0)return 0;
+    //2.5.1.0
+    /*
+    .text:0000000180016E93 0F B6 84 24 E0 00 00 00       movzx   eax, [rsp+arg_D8]
+    .text:0000000180016E9B 88 05 05 4D 01 00             mov     cs:byte_18002BBA6, al
+    .text:0000000180016EA1 44 89 0D 1C 4D 01 00          mov     cs:dword_18002BBC4, r9d
+    .text:0000000180016EA8 C3                            retn
+    */
     //2.5.0.1.b2
        /* .text:0000000180016DCE 0F B6 84 24 D8 00 00 00       movzx   eax, [rsp + arg_D0]
         .text:0000000180016DD6 88 05 CA 4D 01 00             mov     cs : byte_18002BBA6, al
@@ -100,6 +108,7 @@ int checkversion(uintptr_t ApplySettings_ptr) {
     wprintf(L"%x\n", argnum);
     if (argnum == 0xd0)return 1;
     else if (argnum == 0xd8)return 2;
+    else if (argnum == 0xE0)return 3;
     return 0;
 }
 void enable_log(LPVOID Initptr) {
@@ -166,9 +175,9 @@ int losslesswmain(int argc, wchar_t* wargv[])
 	auto captureOffsetRight=std::stoi(wargv[26]);
 	auto captureOffsetBottom=std::stoi(wargv[27]);
 	auto multiDisplayMode=wcscmp(wargv[28],L"True")==0;
-
-	lunapid=std::stoi(wargv[29]);
+    lunapid=std::stoi(wargv[29]);
     auto frameGeneration=std::stoi(wargv[30]);
+    auto syncInterval=std::stoi(wargv[31]);
 
     auto Lossless = LoadLibraryW(LR"(.\Lossless.dll)");
     if (Lossless == 0)return 0;
@@ -206,6 +215,8 @@ int losslesswmain(int argc, wchar_t* wargv[])
         ((ApplySettings_t1)ApplySettings)(scalingMode, scalingFitMode, scalingType, scalingSubtype, scaleFactor, resizeBeforeScale, windowedMode, sharpness, VRS, clipCursor, cursorSensitivity, hideCursor, scaleCursor, doubleBuffering, vrrSupport, hdrSupport, allowTearing, legacyCaptureApi, drawFps, gpuId, displayId, captureOffsetLeft, captureOffsetTop, captureOffsetRight, captureOffsetBottom, multiDisplayMode);
     else if(version==2)
         ((ApplySettings_t2)ApplySettings)(scalingMode, scalingFitMode, scalingType, scalingSubtype, scaleFactor, resizeBeforeScale, windowedMode, sharpness, VRS,frameGeneration, clipCursor, cursorSensitivity, hideCursor, scaleCursor, doubleBuffering, vrrSupport, hdrSupport, allowTearing, legacyCaptureApi, drawFps, gpuId, displayId, captureOffsetLeft, captureOffsetTop, captureOffsetRight, captureOffsetBottom, multiDisplayMode);
+    else if(version==3)
+        ((ApplySettings_t3)ApplySettings)(scalingMode, scalingFitMode, scalingType, scalingSubtype, scaleFactor, resizeBeforeScale, windowedMode, sharpness, VRS,frameGeneration, clipCursor, cursorSensitivity, hideCursor, scaleCursor,syncInterval, doubleBuffering, vrrSupport, hdrSupport, allowTearing, legacyCaptureApi, drawFps, gpuId, displayId, captureOffsetLeft, captureOffsetTop, captureOffsetRight, captureOffsetBottom, multiDisplayMode);
 	SetForegroundWindow(hwnd);
     Activate(hwnd); 
     std::thread([=]() {

@@ -237,7 +237,6 @@ def setTabThree_lazy(self) :
     setsubtype()
     losslessgrid=[
         [('LosslessScaling_路径',4),(getcolorbutton(globalconfig,'',callback=lambda x: getsomepath1(self,'LosslessScaling_路径',globalconfig['lossless'],'path','LosslessScaling_路径',isdir=True),icon='fa.gear',constcolor="#FF69B4"),1)],
-        [('If version is not 2.2.6 or 2.5.0.1.Beta2, maybe not useful.',10)],
         [('缩放模式',4),(getsimplecombobox(['自动','自定义'],globalconfig['lossless'],'scalingMode',lambda _: setenables()),6),''],
         [('',4),(sfm,6)],
         [('',4),('缩放系数',4),(sf,2)],
@@ -247,7 +246,7 @@ def setTabThree_lazy(self) :
         [('',4),('锐度',4),(sharp,2)],
         [('',4),('优化版本',4),(sub1,2)],
         [('',4),('尺寸',4),(sub2,2)],
-        [('',4),('Performance',4),(sub3,2)],
+        [('',4),('性能',4),(sub3,2)],
         [('',4),('VRS',4),(vrs,2)],
         [('Frame Generation',4),(getsimplecombobox(['Off','LSFI'],globalconfig['lossless'],'frameGeneration'),6)],
         [('光标选项',4)],
@@ -256,6 +255,7 @@ def setTabThree_lazy(self) :
         [('',4),('隐藏光标',4),(getsimpleswitch(globalconfig['lossless'],'hideCursor'),2)],
         [('',4),('缩放光标',4),(getsimpleswitch(globalconfig['lossless'],'scaleCursor'),2)],
         [('渲染选项',4)],
+        [('',4),('Sycn Interval',4),(getspinbox(0,4,globalconfig['lossless'],'syncInterval'),2)],
         [('',4),('双缓冲',4),(getsimpleswitch(globalconfig['lossless'],'doubleBuffering'),2)],
         [('',4),('VRR支持',4),(getsimpleswitch(globalconfig['lossless'],'vrrSupport'),2)],
         [('',4),('HDR支持',4),(getsimpleswitch(globalconfig['lossless'],'hdrSupport'),2)],
