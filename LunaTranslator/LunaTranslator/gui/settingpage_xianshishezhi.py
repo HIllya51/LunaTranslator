@@ -222,16 +222,16 @@ def setTabThree_lazy(self) :
     sub3=getsimpleswitch(globalconfig['lossless'],'scalingSubtype3',callback=lambda _:setsubtype())
     vrs=getsimpleswitch(globalconfig['lossless'],'VRS')
     def setsubtype():
-        vrs.setEnabled( globalconfig['lossless']['scalingType'] in [5]) 
-        sharp.setEnabled( globalconfig['lossless']['scalingType'] in [0,1,7,8]) 
-        sub1.setEnabled( globalconfig['lossless']['scalingType'] in [0]) 
-        sub2.setEnabled( globalconfig['lossless']['scalingType'] in [5]) 
-        sub3.setEnabled( globalconfig['lossless']['scalingType'] in [7]) 
-        if globalconfig['lossless']['scalingType']==0:
+        vrs.setEnabled( globalconfig['lossless']['scalingType'] in [6]) 
+        sharp.setEnabled( globalconfig['lossless']['scalingType'] in [1,2,8,9]) 
+        sub1.setEnabled( globalconfig['lossless']['scalingType'] in [1]) 
+        sub2.setEnabled( globalconfig['lossless']['scalingType'] in [6]) 
+        sub3.setEnabled( globalconfig['lossless']['scalingType'] in [8]) 
+        if globalconfig['lossless']['scalingType']==1:
             globalconfig['lossless']['scalingSubtype']=int(globalconfig['lossless']['scalingSubtype1'])
-        elif globalconfig['lossless']['scalingType']==5:
+        elif globalconfig['lossless']['scalingType']==6:
             globalconfig['lossless']['scalingSubtype']=globalconfig['lossless']['scalingSubtype2']
-        elif globalconfig['lossless']['scalingType']==7:
+        elif globalconfig['lossless']['scalingType']==8:
             globalconfig['lossless']['scalingSubtype']=int(globalconfig['lossless']['scalingSubtype3'])
     setenables()
     setsubtype()
