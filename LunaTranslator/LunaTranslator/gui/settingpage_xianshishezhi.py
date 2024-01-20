@@ -242,7 +242,7 @@ def setTabThree_lazy(self) :
         [('',4),('缩放系数',4),(sf,2)],
         [('',4),('缩放前调整大小',4),(rbs,2)],
         [('',4),('视窗模式',4),(wm,2)],
-        [('缩放类型',4),(getsimplecombobox(['AMD FSR','NVIDIA Image Scaling','整数缩放','近邻缩放','xBR','Anime4K','锐化双线性','LS1','Bicubic CAS'],globalconfig['lossless'],'scalingType',callback=lambda _:setsubtype()),6)],
+        [('缩放类型',4),(getsimplecombobox(['Off','AMD FSR','NVIDIA Image Scaling','整数缩放','近邻缩放','xBR','Anime4K','锐化双线性','LS1','Bicubic CAS'],globalconfig['lossless'],'scalingType',callback=lambda _:setsubtype()),6)],
         [('',4),('锐度',4),(sharp,2)],
         [('',4),('优化版本',4),(sub1,2)],
         [('',4),('尺寸',4),(sub2,2)],
