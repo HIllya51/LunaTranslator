@@ -149,8 +149,7 @@
     "ocrrangewidth": 2,
     "useproxy": true,
     "usesysproxy": true,
-    "fullscreenmethod_2": 0,
-    "magpie10path": "",
+    "fullscreenmethod_3": 0,
     "getvesionmethod": "githubrelease",
     "updatemethod": "githubrelease",
     "dialog_savegame_layout": {
@@ -271,7 +270,7 @@
             },
             "fullscreen": {
                 "use": true,
-                "tip": "全屏/恢复游戏窗口",
+                "tip": "缩放/恢复游戏窗口",
                 "icon": "fa.compress",
                 "icon2": "fa.expand"
             },
@@ -565,7 +564,7 @@
             },
             "_20": {
                 "use": false,
-                "name": "全屏/恢复游戏窗口",
+                "name": "缩放/恢复游戏窗口",
                 "key1": -1,
                 "key2": -1,
                 "keystring": ""
@@ -1187,5 +1186,38 @@
         "use": false,
         "path": ""
     },
-    "proxies": null
+    "proxies": null,
+    "lossless":{
+        "path":"",
+        "scalingMode":0,
+        "scalingFitMode":0,
+        "scalingType":0,
+        "scalingSubtype":0,
+        "scalingSubtype1":0,
+        "scalingSubtype2":0,
+        "scalingSubtype3":0,
+        "scaleFactor":1.0,
+        "resizeBeforeScale":true,
+        "windowedMode":true,
+        "sharpness":1,
+        "VRS":false,
+        "frameGeneration":0,
+        "clipCursor":false,
+        "cursorSensitivity":false,
+        "hideCursor":false,
+        "scaleCursor":false,
+        "doubleBuffering":false,
+        "vrrSupport":false,
+        "hdrSupport":false,
+        "allowTearing":false,
+        "legacyCaptureApi":false,
+        "drawFps":false,
+        "gpuId":0,
+        "displayId":0,
+        "captureOffsetLeft":0,
+        "captureOffsetTop":0,
+        "captureOffsetRight":0,
+        "captureOffsetBottom":0,
+        "multiDisplayMode":false
+    }
 }

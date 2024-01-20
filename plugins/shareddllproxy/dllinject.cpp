@@ -1,4 +1,4 @@
-#include <iostream>
+﻿#include <iostream>
 #include<Windows.h>
 int dllinjectwmain(int argc, wchar_t* argv[])
 {

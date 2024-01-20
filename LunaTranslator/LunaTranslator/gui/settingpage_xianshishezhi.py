@@ -178,17 +178,11 @@ def setTabThree_lazy(self) :
         else:
             magpie10_config['downscalingEffect']={'name':alleffect[idx]}
     downscalecombo.currentIndexChanged.connect(_downschange)
-    fullscreengrid=[
-        [('全屏化方式',4),(getsimplecombobox(_TRL(['内置Magpie10','自行下载的Magpie10','游戏原生全屏', 'SW_SHOWMAXIMIZED']),globalconfig,'fullscreenmethod_2'),6)],
-        [],
-        [('自行下载的Magpie10路径',4),(getcolorbutton(globalconfig,'',callback=lambda x: getsomepath1(self,'Magpie路径',globalconfig,'magpie10path','Magpie路径',isdir=True),icon='fa.gear',constcolor="#FF69B4"),1)],
-        [],
- 
-        [("内置Magpie10设置",4) ],
+    innermagpie=[ 
         [("通用",4)],
         [('',1),('默认降采样效果',4),(downscalecombo,6)],
         [("常规",4)],
-        [('',1),('缩放模式',4),(getsimplecombobox([_['name'] for _ in magpie10_config['scalingModes'] ],magpie10_config['profiles'][globalconfig['profiles_index']],'scalingMode'),6)],
+        [('',1),('缩放模式',4),(getsimplecombobox([_['name'] for _ in magpie10_config['scalingModes'] ],magpie10_config['profiles'][globalconfig['profiles_index']],'scalingMode'),6),''],
         [('',1),('捕获模式',4),(getsimplecombobox(['Graphics Capture','Desktop Duplication','GDI','DwmSharedSurface'],magpie10_config['profiles'][globalconfig['profiles_index']],'captureMethod'),6)],
         [('',1),('3D游戏模式',4),(getsimpleswitch(magpie10_config['profiles'][globalconfig['profiles_index']],'3DGameMode'))],
         [("性能",4)],
@@ -208,15 +202,78 @@ def setTabThree_lazy(self) :
         [('',1),('禁用DirectFlip',4),(getsimpleswitch(magpie10_config['profiles'][globalconfig['profiles_index']],'disableDirectFlip'))],
         [('',1),('允许缩放最大化或全屏的窗口',4),(getsimpleswitch(magpie10_config,'allowScalingMaximized'))],
         [('',1),('缩放时模拟独占全屏',4),(getsimpleswitch(magpie10_config,'simulateExclusiveFullscreen'))],
-        [],
         
-          
-
     ] 
-    tab=self.makesubtab_lazy(['文本设置', '界面设置','游戏全屏'],[
+    commonfsgrid=[
+        [('缩放方式',4),(getsimplecombobox(_TRL(['Magpie10','ALT+ENTER', 'SW_SHOWMAXIMIZED','LosslessScaling']),globalconfig,'fullscreenmethod_3'),6)]
+    ]
+    sfm=getsimplecombobox(['宽高比','全屏'],globalconfig['lossless'],'scalingFitMode')
+    sf=getspinbox(1,10,globalconfig['lossless'],'scaleFactor',double=True,step=0.1,dec=1)
+    rbs=getsimpleswitch(globalconfig['lossless'],'resizeBeforeScale')
+    wm=getsimpleswitch(globalconfig['lossless'],'windowedMode')
+    def setenables():
+        sfm.setEnabled(globalconfig['lossless']['scalingMode']==0)
+        sf.setEnabled(globalconfig['lossless']['scalingMode']==1)
+        rbs.setEnabled(globalconfig['lossless']['scalingMode']==1)
+        wm.setEnabled(globalconfig['lossless']['scalingMode']==1)
+    sharp=getspinbox(0,10,globalconfig['lossless'],'sharpness')
+    sub1=getsimpleswitch(globalconfig['lossless'],'scalingSubtype1',callback=lambda _:setsubtype())
+    sub2=getsimplecombobox(['小','中','大','非常大','极大'],globalconfig['lossless'],'scalingSubtype2',callback=lambda _:setsubtype())
+    sub3=getsimpleswitch(globalconfig['lossless'],'scalingSubtype3',callback=lambda _:setsubtype())
+    vrs=getsimpleswitch(globalconfig['lossless'],'VRS')
+    def setsubtype():
+        vrs.setEnabled( globalconfig['lossless']['scalingType'] in [5]) 
+        sharp.setEnabled( globalconfig['lossless']['scalingType'] in [0,1,7,8]) 
+        sub1.setEnabled( globalconfig['lossless']['scalingType'] in [0]) 
+        sub2.setEnabled( globalconfig['lossless']['scalingType'] in [5]) 
+        sub3.setEnabled( globalconfig['lossless']['scalingType'] in [7]) 
+        if globalconfig['lossless']['scalingType']==0:
+            globalconfig['lossless']['scalingSubtype']=int(globalconfig['lossless']['scalingSubtype1'])
+        elif globalconfig['lossless']['scalingType']==5:
+            globalconfig['lossless']['scalingSubtype']=globalconfig['lossless']['scalingSubtype2']
+        elif globalconfig['lossless']['scalingType']==7:
+            globalconfig['lossless']['scalingSubtype']=int(globalconfig['lossless']['scalingSubtype3'])
+    setenables()
+    setsubtype()
+    losslessgrid=[
+        [('LosslessScaling_路径',4),(getcolorbutton(globalconfig,'',callback=lambda x: getsomepath1(self,'LosslessScaling_路径',globalconfig['lossless'],'path','LosslessScaling_路径',isdir=True),icon='fa.gear',constcolor="#FF69B4"),1)],
+        [('If version is not 2.2.6 or 2.5.0.1.Beta2, maybe not useful.',10)],
+        [('缩放模式',4),(getsimplecombobox(['自动','自定义'],globalconfig['lossless'],'scalingMode',lambda _: setenables()),6),''],
+        [('',4),(sfm,6)],
+        [('',4),('缩放系数',4),(sf,2)],
+        [('',4),('缩放前调整大小',4),(rbs,2)],
+        [('',4),('视窗模式',4),(wm,2)],
+        [('缩放类型',4),(getsimplecombobox(['AMD FSR','NVIDIA Image Scaling','整数缩放','近邻缩放','xBR','Anime4K','锐化双线性','LS1','Bicubic CAS'],globalconfig['lossless'],'scalingType',callback=lambda _:setsubtype()),6)],
+        [('',4),('锐度',4),(sharp,2)],
+        [('',4),('优化版本',4),(sub1,2)],
+        [('',4),('尺寸',4),(sub2,2)],
+        [('',4),('Performance',4),(sub3,2)],
+        [('',4),('VRS',4),(vrs,2)],
+        [('Frame Generation',4),(getsimplecombobox(['Off','LSFI'],globalconfig['lossless'],'frameGeneration'),6)],
+        [('光标选项',4)],
+        [('',4),('固定光标',4),(getsimpleswitch(globalconfig['lossless'],'clipCursor'),2)],
+        [('',4),('调整光标速度',4),(getsimpleswitch(globalconfig['lossless'],'cursorSensitivity'),2)],
+        [('',4),('隐藏光标',4),(getsimpleswitch(globalconfig['lossless'],'hideCursor'),2)],
+        [('',4),('缩放光标',4),(getsimpleswitch(globalconfig['lossless'],'scaleCursor'),2)],
+        [('渲染选项',4)],
+        [('',4),('双缓冲',4),(getsimpleswitch(globalconfig['lossless'],'doubleBuffering'),2)],
+        [('',4),('VRR支持',4),(getsimpleswitch(globalconfig['lossless'],'vrrSupport'),2)],
+        [('',4),('HDR支持',4),(getsimpleswitch(globalconfig['lossless'],'hdrSupport'),2)],
+        [('',4),('允许撕裂',4),(getsimpleswitch(globalconfig['lossless'],'allowTearing'),2)],
+        [('',4),('传统捕获API',4),(getsimpleswitch(globalconfig['lossless'],'legacyCaptureApi'),2)],
+        [('',4),('绘制帧率',4),(getsimpleswitch(globalconfig['lossless'],'drawFps'),2)],
+    ]
+    tab=self.makesubtab_lazy(['文本设置', '界面设置','窗口缩放'],[
         lambda:self.makescroll(self.makegrid(textgrid )   ),
         lambda:self.makescroll(self.makegrid(uigrid )   ),
-        lambda:self.makescroll(self.makegrid(fullscreengrid )   )
+        lambda:self.makevbox(
+            [
+                self.makegrid(commonfsgrid ),
+                self.makesubtab_lazy(['Magpie10','LosslessScaling'],[
+                    lambda:self.makescroll(self.makegrid(innermagpie )   ),
+                    lambda:self.makescroll(self.makegrid(losslessgrid )   )
+
+            ])] )
 
         ]) 
  

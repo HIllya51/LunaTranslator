@@ -38,6 +38,12 @@ def grabwindow():
                 def _():
                         winrtutils._winrt_capture_window(fname+'_winrt_magpie.png',hwnd)
                 _()
+        hwnd=windows.FindWindow('LosslessScaling',None) 
+        if hwnd: 
+                @threader
+                def _():
+                        winrtutils._winrt_capture_window(fname+'_winrt_lossless.png',hwnd)
+                _()
         hwnd= windows.GetForegroundWindow()  
         try:
                 if hwnd==int(gobject.baseobject.translation_ui.winId()):
@@ -50,7 +56,7 @@ def grabwindow():
         _()
         _=windows.GetClientRect(hwnd)
         rate=dynamic_rate(hwnd,_)
-        h,w= _[2]/rate,_[3]/rate
+        h,w= int(_[2]/rate),int(_[3]/rate)
         p=QApplication.primaryScreen().grabWindow(hwnd,0,0,h,w)
         if(not p.toImage().allGray()):
                 p.save(fname+'_gdi.png')

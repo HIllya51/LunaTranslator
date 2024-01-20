@@ -664,6 +664,7 @@ class QUnFrameWindow(resizableframeless):
          
 
     def closeEvent(self, a0 ) -> None: 
+        self.fullscreenmanager.end()
         gobject.baseobject.isrunning=False
         self.tray.hide()
         self.tray = None  

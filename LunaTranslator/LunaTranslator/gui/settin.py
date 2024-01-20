@@ -172,6 +172,8 @@ class Settin(closeashidewindow) :
         gridlayoutwidget.setStyleSheet("gridwidget{background-color:transparent;}") 
         self.needfitwidgets.append(gridlayoutwidget)
         gridlayoutwidget.setFixedHeight(int(len(grid)*35*self.rate))
+        margins=gridlay.contentsMargins()
+        gridlay.setContentsMargins(margins.left(),0,margins.right(),0)
         self.automakegrid(gridlay,grid,save,savelist  ) 
         if save:
             savelay.append(gridlay)

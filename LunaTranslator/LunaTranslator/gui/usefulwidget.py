@@ -93,6 +93,18 @@ class closeashidewindow(saveposwindow):
         super().closeEvent(event)
 class MySwitch(QPushButton): 
     def __init__(self,rate, parent = None,sign=True ,enable=True):
+        self.status1=0
+        self.status2=0
+        self.colors=[
+            '#7f7f7f',
+            '#afafaf',
+            '#FFa9d4',
+            '#FF69B4',
+        ]
+        self.icons=[
+            "fa.times",
+            "fa.check"
+        ]
         super().__init__(parent) 
         
         self.setStyleSheet('''background-color: rgba(255, 255, 255, 0);
@@ -106,10 +118,15 @@ class MySwitch(QPushButton):
         self.setEnabled(enable)
         self.setCheckable(True)
         self.setChecked(sign)  
+        
     def setChecked(self,  a0)  :
         super().setChecked(a0) 
-        self.setIcon(qtawesome.icon("fa.check" ,color="#FF69B4") if a0 else qtawesome.icon("fa.times" ,color='#afafaf'))
-
+        self.status1=a0
+        self.setIcon(qtawesome.icon(self.icons[self.status1] ,color=self.colors[self.status1*2+self.status2]))
+    def setEnabled(self,a0):
+        super().setEnabled(a0)
+        self.status2=a0
+        self.setIcon(qtawesome.icon(self.icons[self.status1] ,color=self.colors[self.status1*2+self.status2]))
 class resizableframeless(saveposwindow):
     def __init__(self, parent , flags,dic,key ) -> None:
         super().__init__(parent, dic,key,flags)

@@ -284,7 +284,7 @@ class hookselect(closeashidewindow):
     def update_item_new_line_function(self,hook,output): 
         if hook not in self.save:return
         row=self.save.index(hook)
-        output=output[:200]  
+        output=output[:200].replace('\n','') 
         colidx=2+(gobject.baseobject.textsource.allow_set_text_name)
         self.ttCombomodelmodel.item(row,colidx).setText(output) 
     def removehook(self,key):
@@ -585,7 +585,7 @@ class hookselect(closeashidewindow):
                 ishide=True  
                 for i in range(min(len(gobject.baseobject.textsource.hookdatacollecter[key]),20)):
                     
-                    if searchtext  in gobject.baseobject.textsource.hookdatacollecter[key][-i]:
+                    if searchtext  in [_.replace('\n','') for _ in gobject.baseobject.textsource.hookdatacollecter[key][-i]]:
                         ishide=False
                         break
                 self.tttable.setRowHidden(index,ishide) 
