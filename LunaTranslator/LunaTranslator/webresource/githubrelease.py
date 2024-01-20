@@ -41,7 +41,7 @@ if %errorlevel%==0 (
     goto waitloop
 )
 timeout 1
-xcopy .\cache\update\LunaTranslator'''+bit+''' .\ /s /e /c /y /h /r 
+xcopy .\cache\update\LunaTranslator'''+bit+r''' .\ /s /e /c /y /h /r 
 exit
                 ''') 
     windows.ShellExecute(None, "open", 'cache\\update\\update.bat', "", os.path.dirname('.'), windows.SW_HIDE)

@@ -117,9 +117,9 @@ def _13_f(line): #递增式
         line=sorted(saveline, key=len, reverse=True)[0]
         return line
 def _1_f(line):
-        r=re.compile('\{(.*?)/.*?\}')
+        r=re.compile(r'\{(.*?)/.*?\}')
         line=r.sub(lambda x:x.groups()[0],line)
-        r=re.compile('\{(.*?):.*?\}')
+        r=re.compile(r'\{(.*?):.*?\}')
         line=r.sub(lambda x:x.groups()[0],line)
         return line
 def _4_f(line):
