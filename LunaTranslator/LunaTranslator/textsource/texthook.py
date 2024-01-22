@@ -8,7 +8,7 @@ import windows,subprocess
 from myutils.config import globalconfig ,savehook_new_data ,_TR,static_data 
 from textsource.textsourcebase import basetext 
 from myutils.utils import checkchaos
-from myutils.hwnd import testprivilege,pid_running
+from myutils.hwnd import testprivilege
 from myutils.wrapper import threader 
 from ctypes import CDLL,c_bool,POINTER,Structure,c_int,pointer,c_wchar_p,c_uint64,sizeof,c_void_p,cast,c_wchar,c_uint32,c_uint8,c_uint,c_char,c_short
 from ctypes.wintypes import DWORD,LPCWSTR,HANDLE
@@ -86,7 +86,6 @@ class texthook(basetext  ):
         self.allow_set_text_name=globalconfig['allow_set_text_name']
         
         self.pids=pids
-        self.connectedpids=[]
         self.pname=pname
         self.hwnd=hwnd
         self.runonce_line=''
@@ -172,7 +171,6 @@ class texthook(basetext  ):
             self.Luna_InsertHookCode(pid,hookcode)
         self.showgamename()
         self.flashembedsettings(pid)
-        self.connectedpids.append(pid)
     @threader
     def solveeventthread(self): 
         while self.ending==False:
@@ -411,9 +409,8 @@ class texthook(basetext  ):
          
         return self.runonce_line
     def end(self):    
-        for pid in self.connectedpids:
-            if pid_running(pid):
-                self.Luna_Detach(pid)
+        for pid in self.pids:
+            self.Luna_Detach(pid)
         time.sleep(0.1)
         super().end()
      
