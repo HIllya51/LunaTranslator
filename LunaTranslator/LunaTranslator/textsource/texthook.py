@@ -8,7 +8,7 @@ import windows,subprocess
 from myutils.config import globalconfig ,savehook_new_data ,_TR,static_data 
 from textsource.textsourcebase import basetext 
 from myutils.utils import checkchaos
-from myutils.hwnd import testprivilege
+from myutils.hwnd import testprivilege,pid_running
 from myutils.wrapper import threader 
 from ctypes import CDLL,c_bool,POINTER,Structure,c_int,pointer,c_wchar_p,c_uint64,sizeof,c_void_p,cast,c_wchar,c_uint32,c_uint8,c_uint,c_char,c_short
 from ctypes.wintypes import DWORD,LPCWSTR,HANDLE
@@ -86,6 +86,7 @@ class texthook(basetext  ):
         self.allow_set_text_name=globalconfig['allow_set_text_name']
         
         self.pids=pids
+        self.connectedpids=[]
         self.pname=pname
         self.hwnd=hwnd
         self.runonce_line=''
@@ -99,7 +100,7 @@ class texthook(basetext  ):
             gobject.baseobject.hookselectdialog.realshowhide.emit(True)
         
           
-        threading.Thread(target=self.delaycollectallselectedoutput).start()
+        self.delaycollectallselectedoutput()
          
         super(texthook,self).__init__(*self.checkmd5prefix(pname))
         self.declare()
@@ -140,6 +141,7 @@ class texthook(basetext  ):
     def start(self):
         self.hRead=HANDLE() 
         self.Luna_Start(pointer(self.hRead) ) 
+        self.solveeventthread()
         self.setsettings() 
 
         injectpids=[]
@@ -163,7 +165,6 @@ class texthook(basetext  ):
                 ret=subprocess.run('"{}" dllinject {} "{}"'.format(injecter,pid,dll)).returncode
                 if(ret==0):
                     windows.ShellExecute(0,'runas',injecter,'dllinject {} "{}"'.format(pid,dll),None,windows.SW_HIDE)
-        threading.Thread(target=self.solveeventthread).start()
     @threader
     def onprocconnect(self,pid):
         time.sleep(savehook_new_data[self.pname]['inserthooktimeout']/1000) 
@@ -171,6 +172,8 @@ class texthook(basetext  ):
             self.Luna_InsertHookCode(pid,hookcode)
         self.showgamename()
         self.flashembedsettings(pid)
+        self.connectedpids.append(pid)
+    @threader
     def solveeventthread(self): 
         while self.ending==False:
             message=windows.ReadFile(self.hRead,sizeof(Message),None)
@@ -345,6 +348,7 @@ class texthook(basetext  ):
     def removehook(self,pid,address):
         for pid in self.pids:
             self.Luna_RemoveHook(pid,address)
+    @threader
     def delaycollectallselectedoutput(self):
         collector=[]
         while True:
@@ -407,8 +411,9 @@ class texthook(basetext  ):
          
         return self.runonce_line
     def end(self):    
-        for pid in self.pids:
-            self.Luna_Detach(pid)
+        for pid in self.connectedpids:
+            if pid_running(pid):
+                self.Luna_Detach(pid)
         time.sleep(0.1)
         super().end()
      
