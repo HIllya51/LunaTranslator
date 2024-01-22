@@ -26,6 +26,61 @@
 #include "MWebBrowser.hpp" 
   
 
+BOOL GetIEVersion(LPWSTR pszVersion, DWORD cchVersionMax)
+{
+    pszVersion[0] = 0;
+    HKEY hKey = NULL;
+    RegOpenKeyExW(HKEY_LOCAL_MACHINE, L"SOFTWARE\\Microsoft\\Internet Explorer", 0,
+        KEY_READ, &hKey);
+    if (hKey)
+    {
+        DWORD cb = cchVersionMax * sizeof(WCHAR);
+        LONG ret = RegQueryValueExW(hKey, L"svcVersion", NULL, NULL, (LPBYTE)pszVersion, &cb);
+        if (ret != ERROR_SUCCESS)
+        {
+            ret = RegQueryValueExW(hKey, L"Version", NULL, NULL, (LPBYTE)pszVersion, &cb);
+        }
+        RegCloseKey(hKey);
+
+        return ret == ERROR_SUCCESS;
+    }
+
+    return FALSE;
+}
+static DWORD getemulation(){
+    DWORD m_emulation = 0;
+    WCHAR szVersion[32];
+    if (GetIEVersion(szVersion, ARRAYSIZE(szVersion)))
+    {
+        if (szVersion[1] == L'.')
+        {
+            switch (szVersion[0])
+            {
+            case '7':
+                m_emulation = 7000;
+                break;
+            case '8':
+                m_emulation = 8888;
+                break;
+            case '9':
+                m_emulation = 9999;
+                break;
+            }
+        }
+        else if (szVersion[2] == L'.')
+        {
+            if (szVersion[0] == L'1' && szVersion[1] == L'0')
+            {
+                m_emulation = 10001;
+            }
+            if (szVersion[0] == L'1' && szVersion[1] == L'1')
+            {
+                m_emulation = 11001;
+            }
+        }
+    }
+    return m_emulation;
+}
 BOOL DoSetBrowserEmulation(DWORD dwValue)
 {
     static const TCHAR s_szFeatureControl[] =
@@ -67,7 +122,7 @@ BOOL DoSetBrowserEmulation(DWORD dwValue)
     return bOK;
 }
 extern "C" __declspec(dllexport) void* html_new( HWND parent) {
-	DoSetBrowserEmulation(1);
+	DoSetBrowserEmulation(getemulation());
 	auto s_pWebBrowser = MWebBrowser::Create(parent);
     if (!s_pWebBrowser)
         return NULL;
