@@ -86,6 +86,7 @@ class texthook(basetext  ):
         self.allow_set_text_name=globalconfig['allow_set_text_name']
         
         self.pids=pids
+        self.connectedpids=[]
         self.pname=pname
         self.hwnd=hwnd
         self.runonce_line=''
@@ -166,6 +167,7 @@ class texthook(basetext  ):
                     windows.ShellExecute(0,'runas',injecter,'dllinject {} "{}"'.format(pid,dll),None,windows.SW_HIDE)
     @threader
     def onprocconnect(self,pid):
+        self.connectedpids.append(pid)
         time.sleep(savehook_new_data[self.pname]['inserthooktimeout']/1000) 
         for hookcode in self.needinserthookcode:
             self.Luna_InsertHookCode(pid,hookcode)
@@ -183,6 +185,7 @@ class texthook(basetext  ):
                 if _type==0:
                     self.onprocconnect(pid)
                 elif _type==1:
+                    self.connectedpids.remove(pid)
                     gobject.baseobject.hookselectdialog.sysmessagesignal.emit('{} disconenct'.format(pid))
             elif _type in [2,3]:
                 if _type==2:
@@ -214,14 +217,14 @@ class texthook(basetext  ):
         
     def embedcallback(self,text,_unused,trans): 
         
-        for pid in self.pids:
+        for pid in self.connectedpids:
             self.Luna_embedcallback(pid,text,trans) 
      
     def flashembedsettings(self,pid=None):
         if pid:
             pids=[pid]
         else:
-            pids=self.pids 
+            pids=self.connectedpids.copy() 
         for pid in pids:
             self.Luna_EmbedSettings(pid,
                                     int(1000* globalconfig['embedded']['timeout_translate']),
@@ -311,7 +314,7 @@ class texthook(basetext  ):
     @threader
     def findhook(self,usestruct):
         savefound={}
-        pids=self.pids.copy()
+        pids=self.connectedpids.copy()
         
         headers={}
         waiters={}
@@ -338,13 +341,13 @@ class texthook(basetext  ):
         gobject.baseobject.hookselectdialog.getfoundhooksignal.emit(savefound)
     def inserthook(self,hookcode):
         succ=True
-        for pid in self.pids: 
+        for pid in self.connectedpids: 
             succ=self.Luna_InsertHookCode(pid,hookcode) and succ
         if succ==False:
             getQMessageBox(gobject.baseobject.hookselectdialog,"Error","Invalie Hook Code Format!")
         
     def removehook(self,pid,address):
-        for pid in self.pids:
+        for pid in self.connectedpids:
             self.Luna_RemoveHook(pid,address)
     @threader
     def delaycollectallselectedoutput(self):
@@ -392,12 +395,12 @@ class texthook(basetext  ):
             
             self.lock.release()  
     def checkisusingembed(self,address,ctx1,ctx2):
-        for pid in self.pids:
+        for pid in self.connectedpids:
             if self.Luna_checkisusingembed(pid,address,ctx1,ctx2):
                 return True
         return False 
     def useembed(self,address,ctx1,ctx2,use):
-        for pid in self.pids:
+        for pid in self.connectedpids:
             self.Luna_useembed(pid,address,ctx1,ctx2,use)
         
     def gettextthread(self ):
@@ -409,7 +412,7 @@ class texthook(basetext  ):
          
         return self.runonce_line
     def end(self):    
-        for pid in self.pids:
+        for pid in self.connectedpids:
             self.Luna_Detach(pid)
         time.sleep(0.1)
         super().end()
