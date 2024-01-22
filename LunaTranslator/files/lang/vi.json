@@ -696,5 +696,10 @@
     "绘制帧率": "Vẽ tỷ lệ khung",
     "窗口缩放": "Thu phóng cửa sổ",
     "缩放方式": "Cách thu phóng",
-    "缩放/恢复游戏窗口": "Thu phóng/khôi phục cửa sổ trò chơi"
+    "缩放/恢复游戏窗口": "Thu phóng/khôi phục cửa sổ trò chơi",
+    "打开关联页面": "Mở trang liên kết",
+    "添加关联页面": "Thêm trang liên kết",
+    "页面类型": "Loại trang",
+    "页面链接": "Liên kết trang",
+    "缓存": "Bộ nhớ tạm"
 }

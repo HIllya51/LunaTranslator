@@ -2,7 +2,7 @@ from myutils.config import globalconfig
 import requests
 from urllib.parse import quote
 import re
-from myutils.utils import getproxy
+from myutils.proxy import getproxy
 from traceback import print_exc
 class goo:
      

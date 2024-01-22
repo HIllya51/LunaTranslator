@@ -696,5 +696,10 @@
     "绘制帧率": "Dibuja la tasa de fotogramas",
     "窗口缩放": "Ampliación de la ventana",
     "缩放方式": "Modo de zoom",
-    "缩放/恢复游戏窗口": "Ampliar / restaurar la ventana del juego"
+    "缩放/恢复游戏窗口": "Ampliar / restaurar la ventana del juego",
+    "打开关联页面": "Abrir página asociada",
+    "添加关联页面": "Añadir página asociada",
+    "页面类型": "Tipo de página",
+    "页面链接": "Enlace de página",
+    "缓存": "Caché"
 }

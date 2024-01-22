@@ -696,5 +696,10 @@
     "绘制帧率": "Çerçive hızını çiz",
     "窗口缩放": "Pencere Yakınlaştır",
     "缩放方式": "Yakınlaştırma yöntemi",
-    "缩放/恢复游戏窗口": "Oyun Penceresini Yakınlaştır/Geri Döndür"
+    "缩放/恢复游戏窗口": "Oyun Penceresini Yakınlaştır/Geri Döndür",
+    "打开关联页面": "İlişkili sayfanı aç",
+    "添加关联页面": "İlişkili sayfa ekle",
+    "页面类型": "Sayfa Türü",
+    "页面链接": "Sayfa Bağlantısı",
+    "缓存": "cache"
 }

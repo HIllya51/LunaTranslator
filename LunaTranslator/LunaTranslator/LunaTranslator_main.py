@@ -28,6 +28,8 @@ if __name__ == "__main__" :
         os.mkdir('./cache/screenshot')
     if os.path.exists('./cache/tts')==False:
         os.mkdir('./cache/tts')
+    if os.path.exists('./cache/icon')==False:
+        os.mkdir('./cache/icon')
         
     from myutils.config import _TR,static_data,testpriv,globalconfig
 

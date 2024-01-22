@@ -12,15 +12,11 @@ import time,json,platform,zipfile
 from myutils.utils import makehtml
 import importlib 
 from functools import partial  
-
+from myutils.githubupdate import updatemethod,getvesionmethod
 @threader
 def getversion(self):
     self.versiontextsignal.emit(('当前版本')+':'+  static_data["version"]+'  '+("最新版本")+':'+ ('获取中'))#,'',url,url)) 
-    methods=globalconfig['getvesionmethod']
-    getvesionmethod=importlib.import_module('webresource.'+methods).getvesionmethod  
     _version=getvesionmethod()
-    methods=globalconfig['updatemethod']
-    updatemethod=importlib.import_module('webresource.'+methods).updatemethod  
     
     if _version is None:
         sversion=_TR("获取失败")

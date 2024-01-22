@@ -1,5 +1,5 @@
 import requests
-from myutils.utils import getproxy
+from myutils.proxy import getproxy
 
 class mojidict:
     def search(self, word):

@@ -26,6 +26,7 @@ from gui.textbrowser import Textbrowser
 from myutils.fullscreen import fullscreen
 from gui.rangeselect  import moveresizegame ,rangeselct_function
 from gui.usefulwidget import resizableframeless
+from gui.dialog_savedgame import browserdialog
 class QUnFrameWindow(resizableframeless):   
     displayres =  pyqtSignal(str,str,str ,bool) 
     displayraw1 =  pyqtSignal(list, str,str,bool )  
@@ -274,6 +275,7 @@ class QUnFrameWindow(resizableframeless):
             ("simulate_key_ctrl",lambda:threading.Thread(target=simulate_key_ctrl).start()),
             ("simulate_key_enter",lambda:threading.Thread(target=simulate_key_enter).start() ),
             ("copy_once",lambda:gobject.baseobject.textgetmethod(winsharedutils.clipboard_get(),False) ),
+            ("open_relative_link",lambda:browserdialog(gobject.baseobject.settin_ui,gobject.baseobject.textsource.pname) ),
             
             ("ocr_once",lambda:rangeselct_function(self,ocroncefunction,False,False) ),
             ("minmize",self.hide_and_disableautohide),

@@ -95,13 +95,14 @@ def buildfridaclass(copycallback,pexe):
                 r= savehook_new_data[pexe]['fridahook']['prompt'][t]
             except:
                 pass
-            def callback(text):
+            def callback(texts):
+                text=texts[0]
                 self.script.post({'type':payload.key,'result':text})
                 try:
                     savehook_new_data[pexe]['fridahook']['prompt'].update({t:text})
                 except:
                     savehook_new_data[pexe]['fridahook'].update({'prompt':{t:text}})
-            gobject.baseobject.Prompt.call.emit('prompt',t,r,[callback])
+            gobject.baseobject.Prompt.call.emit('prompt',t,[r],[callback])
             
             
         def on_message(self,raw_message: str, data):

@@ -4,86 +4,86 @@ import os,time,sys
 from traceback import print_exc
 import codecs,hashlib
 import os,time 
-import socket,functools
+import socket,gobject
 import ctypes
 import time
 import ctypes.wintypes
-import gobject
+import time
 from traceback import print_exc
 from myutils.config import globalconfig,static_data,savehook_new_list,savehook_new_data,getdefaultsavehook,translatorsetting
 import threading,queue
-from urllib.request import getproxies_registry
 import importlib,re
+from myutils.vndb import searchforidimage
 def checkimage(gamepath):
     return (savehook_new_data[gamepath]['imagepath'] is None) or (os.path.exists(savehook_new_data[gamepath]['imagepath'])==False)
 def checkinfo(gamepath):
     return (savehook_new_data[gamepath]['infopath'] is None) or ((savehook_new_data[gamepath]['infopath'][:4].lower()!='http') and os.path.exists(savehook_new_data[gamepath]['infopath'])==False)
+def checkvid(gamepath):
+    if savehook_new_data[gamepath]['vid']:
+        return  checkimage(gamepath) or checkinfo(gamepath)
+    else:
+        return time.time()-savehook_new_data[gamepath]['searchnoresulttime']>3600*24*7
 def checkneed(gamepath):
     return (gamepath in savehook_new_data) and \
-            (checkimage(gamepath) or checkinfo(gamepath) )
-methodsqueues=[]
+            (checkvid(gamepath))
+searchvndbqueue=queue.Queue()
 
-def dispatchnext(gamepath,args,idx):
-     if idx+1<len(methodsqueues):
-            methodsqueues[idx+1].put((gamepath,args))
 def dispatachtask(gamepath): 
     if checkneed(gamepath)==False:
         return
-    title=savehook_new_data[gamepath]['title']
-    p=gamepath.split('\\')  
     __t=[]
-    for _ in [title,p[-2],p[-1][:-4]]:
-        _=_.replace('(同人ゲーム)','').replace('(18禁ゲーム)','')
-        _=re.sub(r'\[RJ(.*?)\]','',_)
-        _=re.sub(r'\[\d{4}-?\d{2}\-?\d{2}\]','',_)
-        __t.append(_)
-        _=re.sub(r'\[(.*?)\]','',_)
-        if _ !=__t[-1]:
-            __t.append(_) 
-        _=re.sub(r'\((.*?)\)','',_)
-        if _ !=__t[-1]:
-            __t.append(_) 
-    lst=[] 
-    for i,t in enumerate(__t): 
-        t=t.strip()
-        if t in lst :continue
-        if i>0  and (len(t)<10) and (all(ord(c) < 128 for c in t)):
-            continue
-        lst.append(t)
-    dispatchnext(gamepath,lst,-1) 
+    if savehook_new_data[gamepath]['vid']:
+        searchvndbqueue.put((gamepath,[savehook_new_data[gamepath]['vid']]))
+    else:
+        for _ in [savehook_new_data[gamepath]['title'],os.path.basename(os.path.dirname(gamepath)),os.path.basename(gamepath)[:-4]]:
+            _=_.replace('(同人ゲーム)','').replace('(18禁ゲーム)','')
+            _=re.sub(r'\[RJ(.*?)\]','',_)
+            _=re.sub(r'\[\d{4}-?\d{2}\-?\d{2}\]','',_)
+            __t.append(_)
+            _=re.sub(r'\[(.*?)\]','',_)
+            if _ !=__t[-1]:
+                __t.append(_) 
+            _=re.sub(r'\((.*?)\)','',_)
+            if _ !=__t[-1]:
+                __t.append(_) 
+        lst=[] 
+        for i,t in enumerate(__t): 
+            t=t.strip()
+            if t in lst :continue
+            if (len(t)<10) and (all(ord(c) < 128 for c in t)):
+                continue
+            lst.append(t)
+        searchvndbqueue.put((gamepath,lst))
           
-def everymethodsthread(methodsidx):
-    methods=static_data['searchimgmethods']
-    searchdatamethod=importlib.import_module('webresource.'+methods[methodsidx]).searchdatamethod   
+def everymethodsthread():
     while True:
-        gamepath,searchargs=methodsqueues[methodsidx].get()
+        gamepath,searchargs=searchvndbqueue.get()
         
         if checkneed(gamepath)==False:
             continue
-        failed=True
+        print(gamepath)
+        succ=False
         for searcharg in searchargs:
             try:
-                data= searchdatamethod(searcharg)  
+                data= searchforidimage(searcharg)  
             except:
-                data={}
+                print_exc()
+                continue
             saveimg=data.get('imagepath',None)
             saveinfo=data.get('infopath',None)
-            if saveimg: 
-                if checkimage(gamepath) : 
-                    savehook_new_data[gamepath]['imagepath']=saveimg
-            
-            if saveinfo:
-                if checkinfo(gamepath) : 
-                    savehook_new_data[gamepath]['infopath']=saveinfo
-                    savehook_new_data[gamepath]['infomethod']=methods[methodsidx]
-            if saveinfo is not None and saveimg is not None:
-                failed=False
-                break  
-        if failed:
-            dispatchnext(gamepath,searchargs,methodsidx)
-for i in range(len(static_data['searchimgmethods'])):
-    methodsqueues.append(queue.Queue())
-    threading.Thread(target=everymethodsthread,args=(i,)).start()
+            vid=data.get('vid',None)
+            print(data)
+            if not vid:
+                continue
+            savehook_new_data[gamepath]['vid']=int(vid[1:])
+            if checkimage(gamepath):
+                savehook_new_data[gamepath]['imagepath']=saveimg
+            savehook_new_data[gamepath]['infopath']=saveinfo
+            succ=True
+            break
+        if succ==False:
+            savehook_new_data[gamepath]['searchnoresulttime']=time.time()
+threading.Thread(target=everymethodsthread).start()
 def checkifnewgame(gamepath):
     if gamepath not in savehook_new_list:
             savehook_new_list.insert(0,gamepath) 
@@ -95,41 +95,7 @@ def kanjitrans(k):
     return k.translate(kanjichs2ja) 
 def stringfyerror(e):
     return str(type(e))[8:-2]+' '+str(e).replace('\n','').replace('\r','')
-def getsysproxy():
-    proxies=getproxies_registry()
-    try:
-         return proxies[list(proxies.keys())[0]].split('//')[1]
-    except:
-         return ''
-    # hkey=RegOpenKeyEx(HKEY_CURRENT_USER,'Software\Microsoft\Windows\CurrentVersion\Internet Settings',0,KEY_ALL_ACCESS)
 
-    # count,MaxValueNameLen,MaxValueLen=(RegQueryInfoKey(hkey))
-    # ProxyEnable=False
-    # ProxyServer=''
-    # for i in range(count):
-    #     k,v=(RegEnumValue(hkey,i,MaxValueNameLen,MaxValueLen))
-    #     if k=='ProxyEnable':
-    #         ProxyEnable=(v=='\x01')
-    #     elif  k=='ProxyServer':
-    #         ProxyServer=v
-    # if ProxyEnable:
-    #      return ProxyServer
-    # else:
-    #      return ''
-def _getproxy():
-    if globalconfig['useproxy']:
-            if globalconfig['usesysproxy']:
-                p=getsysproxy()
-            else:
-                p=(globalconfig['proxy'])
-    else:
-        p=None
-    return {'https':p,'http':p}
-def getproxy(pair=None):
-    if pair is None or ('useproxy' not in  globalconfig[pair[0]][pair[1]]) or globalconfig[pair[0]][pair[1]]['useproxy']:
-        return _getproxy()
-    else:
-        return {'https':None,'http':None}
 def checkportavailable(port):
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     try:

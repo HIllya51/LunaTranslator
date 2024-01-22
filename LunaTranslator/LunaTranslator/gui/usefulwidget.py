@@ -263,8 +263,16 @@ class Prompt_dialog(QDialog):
         _layout=QVBoxLayout()
         
         _layout.addWidget(QLabel(info))
-        self.text=QLineEdit(default)
-        _layout.addWidget(self.text)
+        
+        self.text=[]
+        for _ in default:
+            if isinstance(_,str):
+                self.text.append(QLineEdit(_))
+            else:
+                le=QLineEdit()
+                le.setPlaceholderText(_[0])
+                self.text.append((le))
+            _layout.addWidget(self.text[-1])
         button = QDialogButtonBox(QDialogButtonBox.Ok) 
         button.accepted.connect(self.accept)
         _layout.addWidget(button)
@@ -279,7 +287,7 @@ class Prompt_dialog(QDialog):
                 self.move(_rect.width()//2 - self.width() // 2, _rect.height()//3)
                 break
 class Prompt(QObject):
-    call=pyqtSignal(str,str,str,list)
+    call=pyqtSignal(str,str,list,list)
     def __init__(self ) -> None:
         super().__init__( )
         self.call.connect(self.getinputfunc)
@@ -288,7 +296,10 @@ class Prompt(QObject):
         _dia=Prompt_dialog(gobject.baseobject.settin_ui, title, info,default)
         
         _dia.exec()
-        text=_dia.text.text()
+    
+        text=[]
+        for _t in _dia.text:
+            text.append(_t.text())
         callback[0](text)
 def callbackwrap(d,k,call,_):
     d[k]=_ 

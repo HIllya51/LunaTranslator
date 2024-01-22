@@ -54,7 +54,7 @@ def getdefaultsavehook(gamepath):
         'embedablehook':[],
         'imagepath':None,
         'infopath':None,
-        'infomethod':None,
+        'vid':0,
         'statistic_playtime':0,
         'statistic_wordcount':0,
         'statistic_wordcount_nodump':0,
@@ -68,7 +68,9 @@ def getdefaultsavehook(gamepath):
         "allow_tts_auto_names":'',
         "hooktypeasname":{},
         "use_saved_text_process":False,
-        "fridahook":{}
+        "fridahook":{},
+        "searchnoresulttime":0,
+        'relationlinks':[]
     }
     return default
 

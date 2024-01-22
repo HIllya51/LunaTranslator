@@ -696,5 +696,10 @@
     "绘制帧率": "Disegna frame rate",
     "窗口缩放": "Zoom finestra",
     "缩放方式": "Metodo zoom",
-    "缩放/恢复游戏窗口": "Zoom/ripristina finestra di gioco"
+    "缩放/恢复游戏窗口": "Zoom/ripristina finestra di gioco",
+    "打开关联页面": "Apri la pagina associata",
+    "添加关联页面": "Aggiungi pagina associata",
+    "页面类型": "Tipo di pagina",
+    "页面链接": "Link pagina",
+    "缓存": "cache"
 }

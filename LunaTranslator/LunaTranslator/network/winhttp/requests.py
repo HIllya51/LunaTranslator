@@ -56,7 +56,10 @@ class Session(Sessionbase):
     def _set_proxy(self,hsess,proxy):
         if proxy:
             winhttpsetproxy(hsess,proxy)
-    
+    def _set_verify(self,curl,verify):
+        if verify==False:
+            dwFlags=DWORD(SECURITY_FLAG_IGNORE_ALL_CERT_ERRORS)
+            WinHttpSetOption(curl,WINHTTP_OPTION_SECURITY_FLAGS, pointer(dwFlags),sizeof(dwFlags))
     def request_impl(self,
         method,scheme,server,port,param,url,headers,cookies,dataptr,datalen,proxy,stream,verify):
         headers=self._parseheader(headers,cookies)
@@ -71,6 +74,7 @@ class Session(Sessionbase):
     
         if hRequest==0:
             raise WinhttpException(GetLastError())
+        self._set_verify(hRequest,verify)
         self._set_proxy(hRequest,proxy) 
         
         succ=WinHttpSendRequest(hRequest,headers,-1,dataptr,datalen,datalen,None)

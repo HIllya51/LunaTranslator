@@ -1,7 +1,7 @@
 import platform
 import requests 
 import shutil
-from myutils.utils import getproxy
+from myutils.proxy import getproxy
 from traceback import print_exc
 import zipfile,os
 from myutils.config import globalconfig  ,_TR ,static_data

@@ -3,7 +3,7 @@ import threading
 from traceback import print_exc
 import requests
 from myutils.config import globalconfig    
-from myutils.utils import getproxy
+from myutils.proxy import getproxy
 
 import websocket
 from datetime import datetime

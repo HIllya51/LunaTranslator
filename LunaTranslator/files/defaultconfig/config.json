@@ -150,8 +150,6 @@
     "useproxy": true,
     "usesysproxy": true,
     "fullscreenmethod_3": 0,
-    "getvesionmethod": "githubrelease",
-    "updatemethod": "githubrelease",
     "dialog_savegame_layout": {
         "itemw": 250,
         "itemh": 350,
@@ -190,6 +188,11 @@
                 "use": false,
                 "tip": "读取剪贴板",
                 "icon": "fa.file-o"
+            },
+            "open_relative_link": {
+                "use": false,
+                "tip": "打开关联页面",
+                "icon": "fa.sitemap"
             },
             "mousetransbutton": {
                 "use": true,

@@ -7,10 +7,10 @@ from PyQt5.QtWidgets import    QHBoxLayout, QTableView, QAbstractItemView, QLabe
 import importlib
 import windows
 from PyQt5.QtCore import QPoint, QRect, QSize, Qt,pyqtSignal,QCoreApplication
-import os,subprocess
+import os,hashlib
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtWidgets import   QApplication, QLayout, QSizePolicy, QWidget, QGridLayout 
-from PyQt5.QtGui import QPalette, QColor,QResizeEvent,QIcon,QPixmap
+from PyQt5.QtWidgets import   QApplication, QLayout, QSizePolicy, QWidget, QGridLayout ,QMenu,QAction,QTabBar
+from PyQt5.QtGui import QIntValidator, QColor,QResizeEvent,QIcon,QPixmap
 from PyQt5.QtCore import Qt 
 from gui.usefulwidget import getsimplecombobox,getspinbox,getcolorbutton,getsimpleswitch,getspinbox,selectcolor
 from PyQt5.QtCore import QPoint, QRect, QSize, Qt,pyqtSignal
@@ -26,7 +26,9 @@ from myutils.config import _TR,_TRL,globalconfig,static_data
 import winsharedutils
 from myutils.wrapper import Singleton_close,Singleton,threader
 from myutils.utils import checkifnewgame ,loadfridascriptslist
+from myutils.proxy import getproxy
 from gui.usefulwidget import yuitsu_switch,saveposwindow,getboxlayout
+from myutils.vndb import parsehtmlmethod
 class ItemWidget(QWidget):
   focuschanged=pyqtSignal(bool,str)
   doubleclicked=pyqtSignal(str)
@@ -237,30 +239,129 @@ def opendir( k):
                         os.startfile(os.path.dirname(k))
                 except:
                         pass
+class CustomTabBar(QTabBar):
+    lastclick=pyqtSignal()
+    def __init__(self, parent=None):
+        super().__init__(parent)
+
+    def mousePressEvent(self, event):
+        index = self.tabAt(event.pos())
+        if index == self.count() - 1 and event.button() == Qt.LeftButton:
+            self.lastclick.emit()
+        else:
+            super().mousePressEvent(event)
 @Singleton
 class browserdialog(QDialog):
-        def resizeEvent(self, a0: QResizeEvent) -> None:
-                try:
-                        self.browser.resize(0,0,a0.size().width(),a0.size().height())
-                except:
-                      pass
+         
         def parsehtml(self,exepath):
                 try:
-                        parsehtmlmethod=importlib.import_module('webresource.'+savehook_new_data[exepath]['infomethod']).parsehtmlmethod
-                        newpath=parsehtmlmethod(savehook_new_data[exepath]['infopath'])   
+                        newpath=parsehtmlmethod(savehook_new_data[exepath]['vid'],savehook_new_data[exepath]['infopath'])   
                 except:
+                        print_exc()
                         newpath=savehook_new_data[exepath]['infopath']
                 if newpath[:4].lower()!='http':
                       newpath=os.path.abspath(newpath)
                 return newpath
         def __init__(self, parent,exepath ) -> None:
                 super().__init__(parent, Qt.WindowMinMaxButtonsHint|Qt.WindowCloseButtonHint)
-                self.browser=winsharedutils.HTMLBrowser(int(self.winId())) 
+                self.exepath=exepath
+                vbox=QVBoxLayout()
+                vbox.setContentsMargins(0,0,0,0) 
+                self.setLayout(vbox)
+                class QWW(QWidget):
+                    def resizeEvent(self, a0: QResizeEvent) -> None:
+                        try:
+                            self.browser.resize(0,0,a0.size().width(),a0.size().height())
+                        except:
+                            pass
+                qww=QWW(self)
+                self.browser=qww.browser=winsharedutils.HTMLBrowser(int(qww.winId()))
                 self.setWindowTitle(savehook_new_data[exepath]['title'])
-                self.browser.navigate((self.parsehtml( exepath)))
-                
+                self.nettab=QTabWidget()
+                self.nettab.setFixedHeight(self.nettab.tabBar().height()+10)
+                tabBar = CustomTabBar(self)
+                self.nettab.setTabBar(tabBar)
+                tabBar.lastclick.connect(self.lastclicked)
+                #self.nettab.setSizePolicy( QSizePolicy.Preferred,QSizePolicy.Fixed)
+                self.nettab.addTab(QWidget(),"vndb")
+                for lnk in savehook_new_data[self.exepath]['relationlinks']:
+                      self.nettab.addTab(QWidget(),lnk[0])
+                self.nettab.addTab(QWidget(),"+")
+                self.nettab.currentChanged.connect(self.changetab)
+                self.nettab.setContextMenuPolicy(Qt.CustomContextMenu)
+                self.nettab.customContextMenuRequested.connect(self.showmenu) 
+                self.changetab(0)
+                vbox.addWidget(self.nettab)
+                vbox.addWidget(qww)
                 self.resize(1300,800)
                 self.show()
+        def showmenu(self,p):  
+                tab_index = self.nettab.tabBar().tabAt(p)
+                if tab_index ==0 or tab_index==self.nettab.count()-1:
+                      return
+                menu=QMenu(self ) 
+                shanchu=QAction(_TR("删除"))  
+                cache=QAction(_TR("缓存"))  
+                menu.addAction(cache) 
+                menu.addAction(shanchu) 
+                action=menu.exec(self.mapToGlobal(p))
+                if action==shanchu:
+                        self.nettab.setCurrentIndex(0)
+                        self.nettab.removeTab(tab_index)
+                        savehook_new_data[self.exepath]['relationlinks'].pop(tab_index-1)
+                elif action==cache:
+                      def cachehtml(exepath,idx):
+                                url=savehook_new_data[exepath]['relationlinks'][idx][1]
+                                import requests
+
+                                headers = {
+                                'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
+                                'accept-language': 'zh-CN,zh;q=0.9,ar;q=0.8,sq;q=0.7',
+                                'cache-control': 'no-cache',
+                                'pragma': 'no-cache',
+                                'sec-ch-ua': '"Not_A Brand";v="8", "Chromium";v="120", "Google Chrome";v="120"',
+                                'sec-ch-ua-mobile': '?0',
+                                'sec-ch-ua-platform': '"Windows"',
+                                'sec-fetch-dest': 'document',
+                                'sec-fetch-mode': 'navigate',
+                                'sec-fetch-site': 'same-origin',
+                                'sec-fetch-user': '?1',
+                                'upgrade-insecure-requests': '1',
+                                'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+                                }
+
+                                response = requests.get(url, headers=headers,proxies=getproxy())
+                                os.makedirs('./cache/cachehtml',exist_ok=True)
+                                fn='./cache/cachehtml/'+hashlib.md5(url.encode('utf8')).hexdigest()+'.html'
+                                with open(fn,'w',encoding='utf8') as ff:
+                                      ff.write(response.text.replace('<HEAD>','<HEAD><base href="{}">'.format(url)).replace('<head>','<head><base href="{}">'.format(url)))
+                                for i in range(len(savehook_new_data[exepath]['relationlinks'])):
+                                        if url==savehook_new_data[exepath]['relationlinks'][i][1]:
+                                              if len(savehook_new_data[exepath]['relationlinks'][i])==3:
+                                                    savehook_new_data[exepath]['relationlinks'][i][2]=fn
+                                              else:
+                                                      savehook_new_data[exepath]['relationlinks'][i].append(fn)
+                      threading.Thread(target=cachehtml,args=(self.exepath,tab_index-1)).start()
+        def lastclicked(self):
+                def callback(texts):
+                            if len(texts[0].strip()) and len(texts[1].strip()):
+                                  savehook_new_data[self.exepath]['relationlinks'].append(texts)
+                                  self.nettab.insertTab(self.nettab.count()-1,QWidget(),texts[0])
+                gobject.baseobject.Prompt.call.emit(_TR('添加关联页面'),_TR('页面类型_页面链接'),[['vndb/2df/...'],'about:blank'],[callback])
+        def changetab(self,idx):
+                if idx==0:
+                        try:
+                                self.browser.navigate((self.parsehtml( self.exepath)))
+                        except:
+                              self.browser.navigate('about:blank')
+                else:
+                      lnks=savehook_new_data[self.exepath]['relationlinks'][idx-1]
+                      if len(lnks)==3 and os.path.exists(lnks[2]):
+                            link=os.path.abspath(lnks[2])
+                      else:
+                            link=lnks[1]  
+                      print(link)      
+                      self.browser.navigate(link)
 @Singleton
 class dialog_setting_game(QDialog):
         def selectexe(self ):
@@ -274,13 +375,13 @@ class dialog_setting_game(QDialog):
                         savehook_new_list[savehook_new_list.index(self.exepath)]=res 
                         savehook_new_data[res]=savehook_new_data[self.exepath] 
                         savehook_new_data.pop(self.exepath)
-                        _icon=getExeIcon(res)
+                        _icon=getExeIcon(res,cache=True)
                         if self.item:
                                 self.item.savetext=res   
                                 self.table.setIndexWidget(self.model.index(self.model.indexFromItem(self.item).row(), 1),getcolorbutton('','',functools.partial( opendir,res),qicon=_icon ))
                         if self.gametitleitme:
                               if savehook_new_data[res]['imagepath'] is None:
-                                      self.gametitleitme.setimg(getExeIcon(res,False))
+                                      self.gametitleitme.setimg(getExeIcon(res,False,cache=True))
                               self.gametitleitme.connectexepath(res) 
                          
                         self.setWindowIcon(_icon)
@@ -299,6 +400,7 @@ class dialog_setting_game(QDialog):
                         titleedit=QLineEdit(savehook_new_data[exepath]['title'])
                         def _titlechange(x):
                                 savehook_new_data[exepath]['title']=x
+                                savehook_new_data[exepath]['searchnoresulttime']=0
                                 self.setWindowTitle(x)
                                 gametitleitme.settitle(x)
                         titleedit.textChanged.connect(_titlechange)
@@ -320,12 +422,26 @@ class dialog_setting_game(QDialog):
                                        
                         formLayout.addLayout(getboxlayout([
                               QLabel(_TR("封面")),imgpath,
-                              getcolorbutton('','',selectimg,icon='fa.gear',constcolor="#FF69B4")
+                              getcolorbutton('','',selectimg,icon='fa.gear',constcolor="#FF69B4"),
+                              
+
                         ]))
 
-                        statiswids=[QLabel(_TR("统计信息")),getcolorbutton('','',lambda:dialog_statistic(self,exepath),icon='fa.bar-chart',constcolor="#FF69B4")]
-                        if savehook_new_data[exepath]['infopath']: 
-                                statiswids+=[QLabel(_TR("游戏信息")),getcolorbutton('','',lambda:browserdialog(self,exepath),icon='fa.book',constcolor="#FF69B4")]
+                        vndbid=QLineEdit(str(savehook_new_data[exepath]['vid']))
+                        vndbid.setValidator(QIntValidator())
+                        vndbid.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Fixed)
+
+                        def changevid(exepath,text):
+                              savehook_new_data[exepath]['vid']=int(text)
+                              savehook_new_data[exepath]['infopath']=None
+                              savehook_new_data[exepath]['searchnoresulttime']=0
+                              #savehook_new_data[exepath]['imagepath']=None
+                        vndbid.textEdited.connect(functools.partial(changevid,exepath))
+                        
+                        statiswids=[
+                              QLabel(_TR("统计信息")),getcolorbutton('','',lambda:dialog_statistic(self,exepath),icon='fa.bar-chart',constcolor="#FF69B4"),
+                              QLabel(_TR("vndbid")),vndbid,getcolorbutton('','',lambda: browserdialog(self,exepath),icon='fa.book',constcolor="#FF69B4")
+                        ]
                         formLayout.addLayout(getboxlayout(statiswids))
                 editpath=QLineEdit(exepath)
                 editpath.setReadOnly(True)
@@ -336,7 +452,7 @@ class dialog_setting_game(QDialog):
                 self.editpath=editpath
                 self.setWindowTitle(savehook_new_data[exepath]['title'])
                 self.resize(QSize(600,200))
-                self.setWindowIcon(getExeIcon(exepath))
+                self.setWindowIcon(getExeIcon(exepath,cache=True))
                 formLayout.addLayout(getboxlayout([
                       QLabel(_TR("修改路径")),editpath,
                       getcolorbutton('','',functools.partial(self.selectexe),icon='fa.gear',constcolor="#FF69B4")
@@ -649,9 +765,7 @@ class dialog_savedgame_new(saveposwindow):
                      self.idxsave.append(k)
                      if i==0:
                            self.top1focus() 
-                     
                      QApplication.processEvents()
- 
         def showsettingdialog(self ):
                 idx =self.idxsave.index(self.currentfocuspath)
                 
@@ -686,7 +800,7 @@ class dialog_savedgame_new(saveposwindow):
                 def _getpixfunction(kk):
                         _pix=QPixmap(savehook_new_data[kk]['imagepath'])
                         if _pix.isNull():
-                              _pix=getExeIcon(kk,False)
+                              _pix=getExeIcon(kk,False,cache=True)
                         return _pix
                 gameitem=ItemWidget(functools.partial(_getpixfunction,k),savehook_new_data[k]['title'])
                 gameitem.connectexepath(k)
@@ -745,7 +859,7 @@ class dialog_savedgame(QDialog):
                 checkifnewgame(k)
                 self.model.insertRow(row,[QStandardItem( ),QStandardItem( ),keyitem,QStandardItem( (savehook_new_data[k]['title'] ) )])  
                 self.table.setIndexWidget(self.model.index(row, 0),getsimpleswitch(savehook_new_data[k],'leuse'))
-                self.table.setIndexWidget(self.model.index(row, 1),getcolorbutton('','',functools.partial( opendir,k),qicon=getExeIcon(k) ))
+                self.table.setIndexWidget(self.model.index(row, 1),getcolorbutton('','',functools.partial( opendir,k),qicon=getExeIcon(k,cache=True) ))
                 
                 self.table.setIndexWidget(self.model.index(row, 2),getcolorbutton('','',functools.partial(self.showsettingdialog,k,keyitem ),icon='fa.gear',constcolor="#FF69B4")) 
         def __init__(self, parent ) -> None:
@@ -769,8 +883,7 @@ class dialog_savedgame(QDialog):
                 table.setWordWrap(False) 
                 table.setModel(model) 
                 self.table=table 
-                for row,k in enumerate(savehook_new_list):                                   # 2
-                        self.newline(row,k) 
+                
                 button=QPushButton( )
                 button.setText(_TR('开始游戏'))
                 self.button=button
@@ -791,4 +904,6 @@ class dialog_savedgame(QDialog):
                 formLayout.addWidget(button2) 
                 self.resize(QSize(800,400))
                 self.show() 
-
+                for row,k in enumerate(savehook_new_list):                                   # 2
+                        self.newline(row,k) 
+                        QApplication.processEvents()

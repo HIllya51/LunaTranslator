@@ -4,9 +4,10 @@ from PyQt5.QtGui import   QPixmap,QColor ,QIcon
 from PyQt5.QtWidgets import QApplication
 import gobject
 import os
-import time,winrtutils,winsharedutils
+import time,winrtutils,winsharedutils,base64,hashlib
 from myutils.wrapper import threader
 from myutils.utils import argsort
+from traceback import print_exc
 def pid_running(pid): 
     try:
         process =windows.AutoHandle(windows.OpenProcess(windows.SYNCHRONIZE, False, pid))
@@ -155,7 +156,7 @@ def ListProcess(filt=True):
                 xxx.append([kv[exe]['pid'],exe])
         return xxx
 
-def getExeIcon( name,icon=True ): 
+def getExeIcon( name,icon=True,cache=False ): 
             if name.lower()[-4:]=='.lnk':
                   exepath,args,iconpath,dirp=(winsharedutils.GetLnkTargetPath(name))
                   if os.path.exists(iconpath):
@@ -163,12 +164,29 @@ def getExeIcon( name,icon=True ):
                   elif os.path.exists(exepath):
                           name=exepath
             data=winsharedutils.extracticon2data(name)
+            if cache:
+                fn='./cache/icon/{}.bmp'.format(hashlib.md5(name.encode('utf8')).hexdigest())
             if data: 
                 pixmap=QPixmap()
                 pixmap.loadFromData(data)  
+                if cache:
+                        with open(fn,'wb') as ff:
+                                ff.write(data)
             else: 
-                   pixmap=QPixmap(100,100)
-                   pixmap.fill(QColor.fromRgba(0))
+                   succ=False
+                   if cache and os.path.exists(fn):
+                        try:
+                                with open(fn,'rb') as ff:
+                                        data=ff.read()
+                                pixmap=QPixmap()
+                                pixmap.loadFromData(data)  
+                                succ=True
+                        except:
+                                pass
+                                #print_exc()
+                   if succ==False:
+                           pixmap=QPixmap(100,100)
+                           pixmap.fill(QColor.fromRgba(0))
             if icon:
                     return QIcon(pixmap)
             else:

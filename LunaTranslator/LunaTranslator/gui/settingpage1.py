@@ -12,7 +12,8 @@ from gui.inputdialog import autoinitdialog
 from gui.usefulwidget import getsimplecombobox,getspinbox,getcolorbutton,yuitsu_switch,getsimpleswitch,getQMessageBox
 from gui.codeacceptdialog import codeacceptdialog   
 from textsource.fridahook import fridahook
-from myutils.utils import loadfridascriptslist,checkifnewgame,makehtml,getproxy
+from myutils.utils import loadfridascriptslist,checkifnewgame,makehtml
+from myutils.proxy import getproxy
 def gethookgrid(self) :
  
         grids=[

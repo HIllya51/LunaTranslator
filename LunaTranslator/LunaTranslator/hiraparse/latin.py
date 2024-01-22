@@ -1,8 +1,4 @@
-from myutils.config import globalconfig
 
-from myutils.utils import getproxy
-import os,requests
-from traceback import print_exc
 class hira:
     def __init__(self) -> None: 
         pass 
