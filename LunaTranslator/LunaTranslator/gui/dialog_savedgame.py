@@ -29,6 +29,7 @@ from myutils.utils import checkifnewgame ,loadfridascriptslist
 from myutils.proxy import getproxy
 from gui.usefulwidget import yuitsu_switch,saveposwindow,getboxlayout
 from myutils.vndb import parsehtmlmethod
+from webview import Webview
 class ItemWidget(QWidget):
   focuschanged=pyqtSignal(bool,str)
   doubleclicked=pyqtSignal(str)
@@ -262,22 +263,23 @@ class browserdialog(QDialog):
                 if newpath[:4].lower()!='http':
                       newpath=os.path.abspath(newpath)
                 return newpath
+        def resizeEvent(self, a0: QResizeEvent) -> None:
+              self.nettab.resize(a0.size().width(),self.nettab.height())
+              if self.webviewv==0:
+                    self.browser.resize(0,self.nettab.height(),a0.size().width(),a0.size().height()-self.nettab.height())
+              elif self.webviewv==1:  
+                      self.browser.set_geo(0,self.nettab.height(),a0.size().width(),a0.size().height()-self.nettab.height())
         def __init__(self, parent,exepath ) -> None:
                 super().__init__(parent, Qt.WindowMinMaxButtonsHint|Qt.WindowCloseButtonHint)
                 self.exepath=exepath
-                vbox=QVBoxLayout()
-                vbox.setContentsMargins(0,0,0,0) 
-                self.setLayout(vbox)
-                class QWW(QWidget):
-                    def resizeEvent(self, a0: QResizeEvent) -> None:
-                        try:
-                            self.browser.resize(0,0,a0.size().width(),a0.size().height())
-                        except:
-                            pass
-                qww=QWW(self)
-                self.browser=qww.browser=winsharedutils.HTMLBrowser(int(qww.winId()))
+                self.webviewv=globalconfig['usewebview']
+                self.resize(1300,800)
+                if self.webviewv==0:
+                        self.browser= winsharedutils.HTMLBrowser(int(self.winId()))
+                elif self.webviewv==1:
+                      self.browser=Webview(0,int(self.winId()))
                 self.setWindowTitle(savehook_new_data[exepath]['title'])
-                self.nettab=QTabWidget()
+                self.nettab=QTabWidget(self)
                 self.nettab.setFixedHeight(self.nettab.tabBar().height()+10)
                 tabBar = CustomTabBar(self)
                 self.nettab.setTabBar(tabBar)
@@ -291,9 +293,9 @@ class browserdialog(QDialog):
                 self.nettab.setContextMenuPolicy(Qt.CustomContextMenu)
                 self.nettab.customContextMenuRequested.connect(self.showmenu) 
                 self.changetab(0)
-                vbox.addWidget(self.nettab)
-                vbox.addWidget(qww)
-                self.resize(1300,800)
+                #vbox.addWidget(self.nettab)
+                #vbox.addWidget(qww)
+                
                 self.show()
         def showmenu(self,p):  
                 tab_index = self.nettab.tabBar().tabAt(p)

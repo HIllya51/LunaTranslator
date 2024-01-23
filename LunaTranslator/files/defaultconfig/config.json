@@ -98,6 +98,7 @@
     "ocr_stable_sim": 0,
     "ocr_diff_sim": 0.95,
     "autorun": true,
+    "usewebview":0,
     "transparent": 80,
     "fontsize": 17.0,
     "localeswitchmethod": 0,

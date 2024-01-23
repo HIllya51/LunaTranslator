@@ -87,7 +87,9 @@ def setTab_aboutlazy(self) :
                 [(self.downloadprogress,10)],
                 [],
                 [('Internet',5)],
-                [(getsimplecombobox(['winhttp','libcurl'],globalconfig,'network'),5)]
+                [(getsimplecombobox(['winhttp','libcurl'],globalconfig,'network'),5)],
+                [('WebView',5)],
+                [(getsimplecombobox(['IEFrame','WebView2'],globalconfig,'usewebview'),5)]
         ]  
          
           
