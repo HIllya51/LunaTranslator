@@ -360,8 +360,8 @@ class MAINUI() :
             
     def selectprocess(self,selectedp): 
         self.textsource=None
-        pids,pexe,hwnd=(  selectedp)   
-        checkifnewgame(pexe) 
+        pids,pexe,hwnd=(  selectedp)
+        checkifnewgame(pexe,windows.GetWindowText(hwnd)) 
         if globalconfig['sourcestatus2']['texthook']['use']:
             self.textsource=texthook(pids,hwnd,pexe)  
         elif globalconfig['sourcestatus2']['fridahook']['use']:

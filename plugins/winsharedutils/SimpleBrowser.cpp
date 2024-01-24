@@ -153,5 +153,5 @@ extern "C" __declspec(dllexport) void html_release(void* web) {
     if(!web)return;
     auto ww =  static_cast<MWebBrowser*>(web);
     ww->Destroy();
-    ww->Release();
+    //ww->Release(); Destroy减少引用计数，自动del
 }

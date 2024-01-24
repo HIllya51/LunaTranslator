@@ -9,44 +9,43 @@ class stripwrapper(dict):
                 return t.strip()
             else:
                 return t
-def Singleton(cls,**kw):
-        _instance={}
-        def _singleton(*args,**kwagrs): 
-                try:
-                    if _instance[cls] .isHidden():
-                        _instance[cls].deleteLater() 
-                        _instance[cls]=cls(*args,**kwagrs)
-                    else: 
-                        _instance[cls].activateWindow() 
-                        _instance[cls].show() 
-                except:
-                        _instance[cls]=cls(*args,**kwagrs) 
-                return _instance[cls]
-        return _singleton
-def Singleton_close(cls,**kw):
-        _instance={}
+def Singleton_impl(cls,behavior='activate'):
         _lock=threading.Lock()
-        _status={}
+        _instance={}
         def _singleton(*args,**kwagrs):
-                _lock.acquire()
-                if len(_status):    #qapp.processevent会导致卡在#1处，从而多次点击鼠标都会弹出
-                    _lock.release()
-                    return None
-                _status[0]=0
-                _lock.release()
-                try: 
-                    if _instance[cls].isHidden():
-                        _instance[cls].deleteLater() 
-                        _instance[cls]=cls(*args,**kwagrs) #1
-                    else: 
-                        _instance[cls].close()
-                except:
-                    _instance[cls]=cls(*args,**kwagrs) 
-                _lock.acquire()
-                _status.pop(0)
-                _lock.release()
-                return _instance[cls]
+            if _lock.locked():
+                if cls not in _instance:#__init__很慢，来不及放入_instance
+                    pass
+                elif behavior=='activate':
+                    _instance[cls].activateWindow() 
+                    _instance[cls].show() 
+                elif behavior=='close':
+                    _instance[cls].close()
+                return
+            _lock.acquire()
+            class __(cls):
+                    Singleton_flag=1
+                    def closeEvent( self, a0  ) -> None:
+                        super().closeEvent(a0)
+                        self.Singleton_flag=0
+                        if cls not in _instance:
+                            pass    #__init__没做完的时候不能deletelator
+                        else:
+                            for child in (self.children()):
+                                if hasattr(child,'Singleton_flag'):
+                                    child.close()
+                            self.deleteLater()
+                            _instance.pop(cls)
+                        _lock.release()
+            _inst=__(*args,**kwagrs) 
+            if _inst.Singleton_flag:
+                _instance[cls]=_inst
+            return _inst
         return _singleton
+def Singleton(cls):
+    return Singleton_impl(cls,behavior='activate')
+def Singleton_close(cls):
+    return Singleton_impl(cls,behavior='close')
 def retryer(**kw):
     def wrapper(func):
         def _wrapper(*args,**kwargs): 

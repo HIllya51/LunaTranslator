@@ -275,7 +275,7 @@ class QUnFrameWindow(resizableframeless):
             ("simulate_key_ctrl",lambda:threading.Thread(target=simulate_key_ctrl).start()),
             ("simulate_key_enter",lambda:threading.Thread(target=simulate_key_enter).start() ),
             ("copy_once",lambda:gobject.baseobject.textgetmethod(winsharedutils.clipboard_get(),False) ),
-            ("open_relative_link",lambda:browserdialog(gobject.baseobject.settin_ui,gobject.baseobject.textsource.pname) ),
+            ("open_relative_link",lambda:browserdialog(gobject.baseobject.settin_ui,gobject.baseobject.textsource) ),
             
             ("ocr_once",lambda:rangeselct_function(self,ocroncefunction,False,False) ),
             ("minmize",self.hide_and_disableautohide),

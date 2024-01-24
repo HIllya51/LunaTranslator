@@ -84,12 +84,14 @@ def everymethodsthread():
         if succ==False:
             savehook_new_data[gamepath]['searchnoresulttime']=time.time()
 threading.Thread(target=everymethodsthread).start()
-def checkifnewgame(gamepath):
+def checkifnewgame(gamepath,title=None):
     if gamepath not in savehook_new_list:
             savehook_new_list.insert(0,gamepath) 
     if gamepath not in savehook_new_data:
-            savehook_new_data[gamepath]=getdefaultsavehook(gamepath)
-    dispatachtask(gamepath)
+            savehook_new_data[gamepath]=getdefaultsavehook(gamepath,title)
+    if gamepath!='0':
+        dispatachtask(gamepath)
+checkifnewgame('0')
 kanjichs2ja=str.maketrans(static_data['kanjichs2ja'])
 def kanjitrans(k): 
     return k.translate(kanjichs2ja) 

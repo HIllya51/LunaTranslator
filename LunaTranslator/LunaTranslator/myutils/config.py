@@ -46,7 +46,7 @@ except:
 translatorsetting=tryreadconfig('translatorsetting.json') 
 ocrsetting=tryreadconfig('ocrsetting.json') 
 
-def getdefaultsavehook(gamepath):
+def getdefaultsavehook(gamepath,title=None):
     default={
         'localeswitcher':0,
         'onloadautochangemode2':0,
@@ -63,7 +63,6 @@ def getdefaultsavehook(gamepath):
         'inserthooktimeout':0,
         'needinserthookcode':[],
         "removeuseless":False,
-        'title':os.path.basename(os.path.dirname(gamepath))+'/'+ os.path.basename(gamepath),
         "codepage_index":0,
         "allow_tts_auto_names":'',
         "hooktypeasname":{},
@@ -72,6 +71,12 @@ def getdefaultsavehook(gamepath):
         "searchnoresulttime":0,
         'relationlinks':[]
     }
+    if gamepath=='0':
+        default['title']='No Game'
+    elif title and len(title):
+        default['title']=title
+    else:
+        default['title']=os.path.basename(os.path.dirname(gamepath))+'/'+ os.path.basename(gamepath)
     return default
 
 _dfsavehook=getdefaultsavehook('')

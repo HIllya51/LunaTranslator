@@ -118,7 +118,7 @@ def searchforidimage(title):
     return {'vid':vid,'infopath':vndbdowloadinfo(vid),'imagepath':vndbdownloadimg(img)}
 
 import re
-def parsehtmlmethod(vid,infopath):
+def parsehtmlmethod(infopath):
     with open(infopath,'r',encoding='utf8') as ff:
         text=ff.read()
     ##隐藏横向滚动

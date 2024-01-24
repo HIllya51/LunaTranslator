@@ -29,7 +29,6 @@ from myutils.utils import checkifnewgame ,loadfridascriptslist
 from myutils.proxy import getproxy
 from gui.usefulwidget import yuitsu_switch,saveposwindow,getboxlayout
 from myutils.vndb import parsehtmlmethod
-from webview import Webview
 class ItemWidget(QWidget):
   focuschanged=pyqtSignal(bool,str)
   doubleclicked=pyqtSignal(str)
@@ -256,7 +255,7 @@ class browserdialog(QDialog):
          
         def parsehtml(self,exepath):
                 try:
-                        newpath=parsehtmlmethod(savehook_new_data[exepath]['vid'],savehook_new_data[exepath]['infopath'])   
+                        newpath=parsehtmlmethod(savehook_new_data[exepath]['infopath'])   
                 except:
                         print_exc()
                         newpath=savehook_new_data[exepath]['infopath']
@@ -264,42 +263,56 @@ class browserdialog(QDialog):
                       newpath=os.path.abspath(newpath)
                 return newpath
         def resizeEvent(self, a0: QResizeEvent) -> None:
+              if self._resizable==False:return
               self.nettab.resize(a0.size().width(),self.nettab.height())
               if self.webviewv==0:
                     self.browser.resize(0,self.nettab.height(),a0.size().width(),a0.size().height()-self.nettab.height())
               elif self.webviewv==1:  
                       self.browser.set_geo(0,self.nettab.height(),a0.size().width(),a0.size().height()-self.nettab.height())
-        def __init__(self, parent,exepath ) -> None:
+        def __init__(self, parent,textsource_or_exepath ) -> None:
                 super().__init__(parent, Qt.WindowMinMaxButtonsHint|Qt.WindowCloseButtonHint)
-                self.exepath=exepath
+                if isinstance(textsource_or_exepath,str):
+                      self.exepath=textsource_or_exepath
+                else:
+                        try:
+                                self.exepath=textsource_or_exepath.pname
+                        except:
+                                self.exepath='0'
+                self._resizable=False
+                self.resize(1300,801)
                 self.webviewv=globalconfig['usewebview']
-                self.resize(1300,800)
                 if self.webviewv==0:
                         self.browser= winsharedutils.HTMLBrowser(int(self.winId()))
                 elif self.webviewv==1:
-                      self.browser=Webview(0,int(self.winId()))
-                self.setWindowTitle(savehook_new_data[exepath]['title'])
+                      from webview import Webview
+                      self.browser=Webview(0,int(self.winId())) #构造函数里会触发ResizeEvent。虽然确实有问题，但很奇怪前一天晚上正常，第二天起来就崩溃了。
+                self.setWindowTitle(savehook_new_data[self.exepath]['title'])
                 self.nettab=QTabWidget(self)
                 self.nettab.setFixedHeight(self.nettab.tabBar().height()+10)
                 tabBar = CustomTabBar(self)
                 self.nettab.setTabBar(tabBar)
                 tabBar.lastclick.connect(self.lastclicked)
                 #self.nettab.setSizePolicy( QSizePolicy.Preferred,QSizePolicy.Fixed)
-                self.nettab.addTab(QWidget(),"vndb")
+                self.hasvndb=bool(savehook_new_data[self.exepath]['infopath'] and os.path.exists(savehook_new_data[self.exepath]['infopath']))
+                if self.hasvndb:
+                        self.nettab.addTab(QWidget(),"vndb")
                 for lnk in savehook_new_data[self.exepath]['relationlinks']:
                       self.nettab.addTab(QWidget(),lnk[0])
                 self.nettab.addTab(QWidget(),"+")
                 self.nettab.currentChanged.connect(self.changetab)
                 self.nettab.setContextMenuPolicy(Qt.CustomContextMenu)
                 self.nettab.customContextMenuRequested.connect(self.showmenu) 
-                self.changetab(0)
+                if self.hasvndb + len(savehook_new_data[self.exepath]['relationlinks']):
+                        self.changetab(0)
                 #vbox.addWidget(self.nettab)
                 #vbox.addWidget(qww)
+                self._resizable=True
+                self.resize(1300,800)
                 
                 self.show()
         def showmenu(self,p):  
                 tab_index = self.nettab.tabBar().tabAt(p)
-                if tab_index ==0 or tab_index==self.nettab.count()-1:
+                if (self.hasvndb and tab_index ==0) or tab_index==self.nettab.count()-1:
                       return
                 menu=QMenu(self ) 
                 shanchu=QAction(_TR("删除"))  
@@ -310,7 +323,7 @@ class browserdialog(QDialog):
                 if action==shanchu:
                         self.nettab.setCurrentIndex(0)
                         self.nettab.removeTab(tab_index)
-                        savehook_new_data[self.exepath]['relationlinks'].pop(tab_index-1)
+                        savehook_new_data[self.exepath]['relationlinks'].pop(tab_index-self.hasvndb)
                 elif action==cache:
                       def cachehtml(exepath,idx):
                                 url=savehook_new_data[exepath]['relationlinks'][idx][1]
@@ -343,7 +356,7 @@ class browserdialog(QDialog):
                                                     savehook_new_data[exepath]['relationlinks'][i][2]=fn
                                               else:
                                                       savehook_new_data[exepath]['relationlinks'][i].append(fn)
-                      threading.Thread(target=cachehtml,args=(self.exepath,tab_index-1)).start()
+                      threading.Thread(target=cachehtml,args=(self.exepath,tab_index-self.hasvndb)).start()
         def lastclicked(self):
                 def callback(texts):
                             if len(texts[0].strip()) and len(texts[1].strip()):
@@ -351,13 +364,13 @@ class browserdialog(QDialog):
                                   self.nettab.insertTab(self.nettab.count()-1,QWidget(),texts[0])
                 gobject.baseobject.Prompt.call.emit(_TR('添加关联页面'),_TR('页面类型_页面链接'),[['vndb/2df/...'],'about:blank'],[callback])
         def changetab(self,idx):
-                if idx==0:
+                if self.hasvndb and idx==0:
                         try:
                                 self.browser.navigate((self.parsehtml( self.exepath)))
                         except:
                               self.browser.navigate('about:blank')
                 else:
-                      lnks=savehook_new_data[self.exepath]['relationlinks'][idx-1]
+                      lnks=savehook_new_data[self.exepath]['relationlinks'][idx-self.hasvndb]
                       if len(lnks)==3 and os.path.exists(lnks[2]):
                             link=os.path.abspath(lnks[2])
                       else:
