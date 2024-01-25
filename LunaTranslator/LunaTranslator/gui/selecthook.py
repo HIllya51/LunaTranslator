@@ -585,7 +585,7 @@ class hookselect(closeashidewindow):
                 ishide=True  
                 for i in range(min(len(gobject.baseobject.textsource.hookdatacollecter[key]),20)):
                     
-                    if searchtext  in [_.replace('\n','') for _ in gobject.baseobject.textsource.hookdatacollecter[key][-i]]:
+                    if searchtext  in [_.replace('\n','') for _ in gobject.baseobject.textsource.hookdatacollecter[key][-i:]]:
                         ishide=False
                         break
                 self.tttable.setRowHidden(index,ishide) 
