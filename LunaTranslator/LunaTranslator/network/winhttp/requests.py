@@ -23,6 +23,18 @@ class Response(ResponseBase):
         error=GetLastError()
         if error:
             raise WinhttpException(error)        
+def ExceptionFilter(func):
+    def _wrapper(*args,**kwargs): 
+        try:
+            _= func(*args,**kwargs)
+            return _
+        except WinhttpException as e:
+            if e.errorcode==WinhttpException.ERROR_WINHTTP_TIMEOUT:
+                raise Timeout(e)
+            else:
+                raise e
+    return _wrapper
+       
 class Session(Sessionbase):
     def __init__(self) -> None:
         super().__init__()
@@ -60,17 +72,8 @@ class Session(Sessionbase):
         if verify==False:
             dwFlags=DWORD(SECURITY_FLAG_IGNORE_ALL_CERT_ERRORS)
             WinHttpSetOption(curl,WINHTTP_OPTION_SECURITY_FLAGS, pointer(dwFlags),sizeof(dwFlags))
+    @ExceptionFilter
     def request_impl(self,
-        method,scheme,server,port,param,url,headers,cookies,dataptr,datalen,proxy,stream,verify,timeout):
-        try:
-            _= self.request_impl_1(method,scheme,server,port,param,url,headers,cookies,dataptr,datalen,proxy,stream,verify,timeout)
-            return _
-        except WinhttpException as e:
-            if e.errorcode==WinhttpException.ERROR_WINHTTP_TIMEOUT:
-                raise Timeout(e)
-            else:
-                raise e
-    def request_impl_1(self,
         method,scheme,server,port,param,url,headers,cookies,dataptr,datalen,proxy,stream,verify,timeout):
         headers=self._parseheader(headers,cookies)
         flag=WINHTTP_FLAG_SECURE if scheme=='https' else 0

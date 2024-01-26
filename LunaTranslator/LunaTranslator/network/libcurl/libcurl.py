@@ -282,8 +282,8 @@ class AutoCURLHandle(CURL):
 
 class CURLException(Exception):
     def __init__(self,code) -> None:
-        self.errorcode=code.value
         if isinstance(code,CURLcode):
+            self.errorcode=code.value
             error=curl_easy_strerror(code).decode('utf8')
             for _ in dir(CURLcode): 
                 if _.startswith('CURLE_') and code.value==getattr(CURLcode,_):

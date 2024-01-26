@@ -19,6 +19,17 @@ class Response(ResponseBase):
     def raise_for_status(self): 
         if self.last_error:
             raise CURLException(self.last_error) 
+def ExceptionFilter(func):
+    def _wrapper(*args,**kwargs): 
+        try:
+            _= func(*args,**kwargs)
+            return _
+        except CURLException as e:
+            if e.errorcode==CURLcode.CURLE_OPERATION_TIMEDOUT:
+                raise Timeout(e)
+            else:
+                raise e
+    return _wrapper
 class Session(Sessionbase):
  
     def __init__(self) -> None:
@@ -57,17 +68,8 @@ class Session(Sessionbase):
      
     def _getmembyte(self,mem):
         return cast(mem.memory,POINTER(c_char))[:mem.size]
+    @ExceptionFilter
     def request_impl(self,
-        method,scheme,server,port,param,url,headers,cookies,dataptr,datalen,proxy,stream,verify,timeout):
-        try:
-            _= self.request_impl_1(method,scheme,server,port,param,url,headers,cookies,dataptr,datalen,proxy,stream,verify,timeout)
-            return _
-        except CURLException as e:
-            if e.errorcode==CURLcode.CURLE_OPERATION_TIMEDOUT:
-                raise Timeout(e)
-            else:
-                raise e
-    def request_impl_1(self,
         method,scheme,server,port,param,url,headers,cookies,dataptr,datalen,proxy,stream,verify,timeout):
           
         if self._status==0:
