@@ -1,3 +1,4 @@
+import winhttp
 from traceback import print_exc
 from translator.basetranslator import basetrans
 import requests
@@ -8,6 +9,7 @@ class TS(basetrans):
     def langmap(self):
         return {"zh": "zh-CN"}
     def __init__(self, typename) :
+        self.timeout = 30
         self.api_url = ""
         self.history = {
             "ja": [],
@@ -89,13 +91,21 @@ class TS(basetrans):
                 extra_query=extra_query,
                 stream=False,
             )
-            output = self.session.post(self.api_url + "/chat/completions", json=data).json()
+            output = self.session.post(self.api_url + "/chat/completions", timeout=self.timeout, json=data).json()
+        except winhttp.WinhttpException as e:
+            code = e.errorcode
+            if code == winhttp.WinhttpException.ERROR_WINHTTP_TIMEOUT:
+                raise ValueError(f"连接到Sakura API超时：{self.api_url}，当前最大连接时间为: {self.timeout}，请尝试修改参数。")
+            else:
+                raise ValueError(f"连接到Sakura API网络错误：{self.api_url}，错误代码： {code}")
         except Exception as e:
+            print(e)
             raise ValueError(f"无法连接到Sakura API：{self.api_url}，请检查你的API链接是否正确填写，以及API后端是否成功启动。")
         return output
 
     def translate(self, query):
         self.checkempty(['API接口地址'])
+        self.timeout = self.config['API超时(秒)']
         if self.api_url == "":
             self.get_client(self.config['API接口地址'])
         frequency_penalty = float(self.config['frequency_penalty'])

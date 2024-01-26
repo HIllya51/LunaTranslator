@@ -466,6 +466,7 @@
 			"Sakura部署教程": "https://github.com/SakuraLLM/Sakura-13B-Galgame/wiki",
 			"Github仓库": "https://github.com/SakuraLLM/Sakura-13B-Galgame",
             "API接口地址": "http://127.0.0.1:8080/",
+			"API超时(秒)": 30,
             "利用上文信息翻译（通常会有一定的效果提升，但会导致变慢）": false,
 			"附带上下文个数（必须打开利用上文翻译）": 3,
             "temperature": 0.1,
@@ -489,6 +490,12 @@
 			"使用说明":{
 				"type":"label",
 				"islink":false
+			},
+			"API超时(秒)":{
+				"type":"intspin",
+				"min":30,
+				"max":120,
+				"step":1
 			},
 			"利用上文信息翻译（通常会有一定的效果提升，但会导致变慢）": {
 				"type": "switch"

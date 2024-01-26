@@ -190,6 +190,8 @@ class Sessionbase:
     def request(self,
         method, url, params=None, data=None, headers=None,proxies=None, json=None,cookies=None,  files=None,
         auth=None, timeout=None, allow_redirects=True,  hooks=None,   stream=None, verify=False, cert=None, ):
+        # 0 means infinity, cite: WinHttpSetTimeouts
+        timeout = timeout or 0
         _h=self.headers.copy()
         if headers: 
             _h.update(headers) 
@@ -203,7 +205,7 @@ class Sessionbase:
         headers,dataptr,datalen=self._parsedata(data,headers,json)
         proxy= proxies.get(scheme,None) if proxies  else None
         
-        _= self.request_impl(method,scheme,server,port,param,url,headers,cookies,dataptr,datalen,proxy,stream,verify)
+        _= self.request_impl(method,scheme,server,port,param,url,headers,cookies,dataptr,datalen,proxy,stream,verify,timeout)
 
         if _.status_code==301:
             location=_.headers['Location']

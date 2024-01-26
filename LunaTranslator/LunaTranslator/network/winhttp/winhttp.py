@@ -121,6 +121,10 @@ WinHttpOpen.restype=HINTERNET
 WinHttpCloseHandle=Winhttp.WinHttpCloseHandle
 WinHttpCloseHandle.argtypes=HINTERNET,
 
+WinHttpSetTimeouts=Winhttp.WinHttpSetTimeouts
+WinHttpSetTimeouts.argtypes=HINTERNET,DWORD,DWORD,DWORD,DWORD
+WinHttpSetTimeouts.restype=BOOL
+
 WinHttpConnect=Winhttp.WinHttpConnect
 WinHttpConnect.argtypes=HINTERNET,LPCWSTR,INTERNET_PORT,DWORD
 WinHttpConnect.restype=HINTERNET
