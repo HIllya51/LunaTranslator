@@ -60,18 +60,31 @@ class Session(Sessionbase):
         if verify==False:
             dwFlags=DWORD(SECURITY_FLAG_IGNORE_ALL_CERT_ERRORS)
             WinHttpSetOption(curl,WINHTTP_OPTION_SECURITY_FLAGS, pointer(dwFlags),sizeof(dwFlags))
+
+    # 30s is the default timeout on Windows
     def request_impl(self,
-        method,scheme,server,port,param,url,headers,cookies,dataptr,datalen,proxy,stream,verify):
+        method,scheme,server,port,param,url,headers,cookies,dataptr,datalen,proxy,stream,verify,timeout=30):
         headers=self._parseheader(headers,cookies)
         flag=WINHTTP_FLAG_SECURE if scheme=='https' else 0
         #print(server,port,param,dataptr)
-        headers='\r\n'.join(headers) 
-         
+        headers='\r\n'.join(headers)
+
         hConnect=AutoWinHttpHandle(WinHttpConnect(self.hSession,server,port,0))
         if hConnect==0:
             raise WinhttpException(GetLastError())  
         hRequest=AutoWinHttpHandle(WinHttpOpenRequest( hConnect ,method,param,None,WINHTTP_NO_REFERER,WINHTTP_DEFAULT_ACCEPT_TYPES,flag) )
-    
+        timeout = timeout * 1000  # convert to milliseconds
+        '''
+            WINHTTPAPI BOOL WinHttpSetTimeouts(
+                [in] HINTERNET hInternet,
+                [in] int       nResolveTimeout,
+                [in] int       nConnectTimeout,
+                [in] int       nSendTimeout,
+                [in] int       nReceiveTimeout
+            );
+        '''
+        WinHttpSetTimeouts(hRequest, timeout, timeout, timeout, timeout)
+
         if hRequest==0:
             raise WinhttpException(GetLastError())
         self._set_verify(hRequest,verify)
