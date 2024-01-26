@@ -3,6 +3,8 @@ from collections.abc import Callable, Mapping, MutableMapping
 from collections import OrderedDict
 from urllib.parse import urlencode,urlsplit
 from functools import partial,partialmethod
+class Timeout(Exception):
+    pass
 class CaseInsensitiveDict(MutableMapping): 
 
     def __init__(self, data=None, **kwargs):
@@ -190,8 +192,6 @@ class Sessionbase:
     def request(self,
         method, url, params=None, data=None, headers=None,proxies=None, json=None,cookies=None,  files=None,
         auth=None, timeout=None, allow_redirects=True,  hooks=None,   stream=None, verify=False, cert=None, ):
-        # 0 means infinity, cite: WinHttpSetTimeouts
-        timeout = timeout or 0
         _h=self.headers.copy()
         if headers: 
             _h.update(headers) 
@@ -204,7 +204,8 @@ class Sessionbase:
         scheme,server,port,param,url=self._parseurl(url,params) 
         headers,dataptr,datalen=self._parsedata(data,headers,json)
         proxy= proxies.get(scheme,None) if proxies  else None
-        
+        if timeout:
+            timeout = int(timeout * 1000)  # convert to milliseconds
         _= self.request_impl(method,scheme,server,port,param,url,headers,cookies,dataptr,datalen,proxy,stream,verify,timeout)
 
         if _.status_code==301:

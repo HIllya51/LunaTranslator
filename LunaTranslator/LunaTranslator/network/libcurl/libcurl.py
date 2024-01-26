@@ -140,6 +140,8 @@ class CURLoption(c_int):
     CURLOPT_SHARE=CURLOPTTYPE_OBJECTPOINT+100
     CURLOPT_ACCEPT_ENCODING=CURLOPTTYPE_STRINGPOINT+102
     CURLOPT_CONNECT_ONLY=CURLOPTTYPE_LONG+141
+    CURLOPT_TIMEOUT_MS=CURLOPTTYPE_LONG+155
+    CURLOPT_CONNECTTIMEOUT_MS=CURLOPTTYPE_LONG+156
 class CURLINFO(c_int): 
     CURLINFO_STRING   =0x100000
     CURLINFO_LONG     =0x200000
@@ -280,15 +282,13 @@ class AutoCURLHandle(CURL):
 
 class CURLException(Exception):
     def __init__(self,code) -> None:
-        self.errorcode=code
+        self.errorcode=code.value
         if isinstance(code,CURLcode):
             error=curl_easy_strerror(code).decode('utf8')
             for _ in dir(CURLcode): 
                 if _.startswith('CURLE_') and code.value==getattr(CURLcode,_):
                     error=str(code.value)+' '+_+' : '+error
                     break
-        elif isinstance(code,str):
-            error=code
         else:
-            error=''
+            raise Exception("not a valid CURLException")
         super().__init__(error)

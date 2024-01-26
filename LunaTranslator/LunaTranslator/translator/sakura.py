@@ -1,4 +1,3 @@
-import winhttp
 from traceback import print_exc
 from translator.basetranslator import basetrans
 import requests
@@ -92,12 +91,9 @@ class TS(basetrans):
                 stream=False,
             )
             output = self.session.post(self.api_url + "/chat/completions", timeout=self.timeout, json=data).json()
-        except winhttp.WinhttpException as e:
-            code = e.errorcode
-            if code == winhttp.WinhttpException.ERROR_WINHTTP_TIMEOUT:
-                raise ValueError(f"连接到Sakura API超时：{self.api_url}，当前最大连接时间为: {self.timeout}，请尝试修改参数。")
-            else:
-                raise ValueError(f"连接到Sakura API网络错误：{self.api_url}，错误代码： {code}")
+        except requests.Timeout as e:
+            raise ValueError(f"连接到Sakura API超时：{self.api_url}，当前最大连接时间为: {self.timeout}，请尝试修改参数。")
+            
         except Exception as e:
             print(e)
             raise ValueError(f"无法连接到Sakura API：{self.api_url}，请检查你的API链接是否正确填写，以及API后端是否成功启动。")
