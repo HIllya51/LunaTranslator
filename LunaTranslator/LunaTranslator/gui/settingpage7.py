@@ -3,7 +3,7 @@ import functools
 
 from PyQt5.QtWidgets import  QDialog,QLabel ,QLineEdit,QSpinBox,QPushButton ,QTableView,   QVBoxLayout,QHBoxLayout,QHeaderView ,QTextEdit,QHBoxLayout,QWidget,QMenu,QAction
 from PyQt5.QtCore import QSize,Qt,pyqtSignal,QPoint
-from PyQt5.QtGui import QStandardItem, QStandardItemModel 
+from PyQt5.QtGui import QCloseEvent, QStandardItem, QStandardItemModel 
 from traceback import print_exc
 from myutils.config import globalconfig ,postprocessconfig,noundictconfig,transerrorfixdictconfig,_TR,_TRL,defaultglobalconfig 
 import functools ,gobject
@@ -162,15 +162,15 @@ def setTab7_lazy(self) :
 
 @Singleton
 class noundictconfigdialog1(QDialog):
-    def __init__(dialog,parent,configdict,title,label=[  '原文','翻译'] ,_=None) -> None:
+    def __init__(self,parent,configdict,title,label=[  '原文','翻译'] ,_=None) -> None:
         super().__init__(parent,Qt.WindowCloseButtonHint)
             
-        dialog.setWindowTitle(_TR(title))
-        #dialog.setWindowModality(Qt.ApplicationModal)
+        self.setWindowTitle(_TR(title))
+        #self.setWindowModality(Qt.ApplicationModal)
         
-        formLayout = QVBoxLayout(dialog)  # 配置layout
+        formLayout = QVBoxLayout(self)  # 配置layout
             
-        model=QStandardItemModel(len(list(configdict['dict'].keys())),1 , dialog)
+        model=QStandardItemModel(len(list(configdict['dict'].keys())),1 , self)
         row=0
         for key in  (configdict['dict']):                                   # 2
                 
@@ -180,7 +180,7 @@ class noundictconfigdialog1(QDialog):
                 model.setItem(row, 1, item)
                 row+=1
         model.setHorizontalHeaderLabels(_TRL(label))
-        table = QTableView(dialog)
+        table = QTableView(self)
         table.setModel(model)
         table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch) 
         #table.setEditTriggers(QAbstractItemView.NoEditTriggers)
@@ -209,46 +209,58 @@ class noundictconfigdialog1(QDialog):
         search.addWidget(button4)
          
 
-        button=QPushButton(dialog)
+        button=QPushButton(self)
         button.setText(_TR('添加行'))
         def clicked1(): 
             model.insertRow(0,[ QStandardItem(''),QStandardItem('')]) 
         button.clicked.connect(clicked1)
-        button2=QPushButton(dialog)
+        button2=QPushButton(self)
         button2.setText(_TR('删除选中行'))
         def clicked2():
             
             model.removeRow(table.currentIndex().row())
         button2.clicked.connect(clicked2)
-        
-        def clicked3(_):
-            button.setFocus()
-            rows=model.rowCount() 
-            newdict={}
-            for row in range(rows):
-                if model.item(row,0).text()=="":
-                    continue
-                newdict[model.item(row,0).text()]=model.item(row,1).text()
-            configdict['dict']=newdict 
-            
-        dialog.closeEvent=clicked3
+        self.button=button
+        self.model=model
+        self.configdict=configdict
         formLayout.addWidget(table)
         formLayout.addLayout(search)
         formLayout.addWidget(button)
         formLayout.addWidget(button2) 
-        dialog.resize(QSize(600,400))
-        dialog.show()
+        self.resize(QSize(600,400))
+        self.show()
+    def closeEvent(self, a0: QCloseEvent) -> None:
+        self.button.setFocus()
+        rows=self.model.rowCount() 
+        newdict={}
+        for row in range(rows):
+            if self.model.item(row,0).text()=="":
+                continue
+            newdict[self.model.item(row,0).text()]=self.model.item(row,1).text()
+        self.configdict['dict']=newdict 
 @Singleton
 class noundictconfigdialog(QDialog):
-    def __init__(dialog,parent,configdict,title,label=['游戏ID MD5' ,'原文','翻译'] ,_=None) -> None:
+    def closeEvent(self, a0: QCloseEvent) -> None:
+        self.button.setFocus()
+        rows=self.model.rowCount() 
+        newdict={}
+        for row in range(rows):
+            if self.model.item(row,1).text()=="":
+                continue
+            if self.model.item(row,1).text() not in newdict:
+                newdict[self.model.item(row,1).text()]=[self.model.item(row,0).text(),self.model.item(row,2).text()]
+            else:
+                newdict[self.model.item(row,1).text()]+=[self.model.item(row,0).text(),self.model.item(row,2).text()]
+        self.configdict['dict']=newdict  
+    def __init__(self,parent,configdict,title,label=['游戏ID MD5' ,'原文','翻译'] ,_=None) -> None:
         super().__init__(parent,Qt.WindowCloseButtonHint)
         
-        dialog.setWindowTitle(_TR(title))
-        #dialog.setWindowModality(Qt.ApplicationModal)
+        self.setWindowTitle(_TR(title))
+        #self.setWindowModality(Qt.ApplicationModal)
         
-        formLayout = QVBoxLayout(dialog)  # 配置layout
+        formLayout = QVBoxLayout(self)  # 配置layout
             
-        model=QStandardItemModel(len(list(configdict['dict'].keys())),1 , dialog)
+        model=QStandardItemModel(len(list(configdict['dict'].keys())),1 , self)
         row=0
         for key in  (configdict['dict']):                                   # 2
                 if type(configdict['dict'][key])==str:
@@ -263,12 +275,12 @@ class noundictconfigdialog(QDialog):
                     model.setItem(row, 2, item)
                     row+=1
         model.setHorizontalHeaderLabels(_TRL(label))
-        table = QTableView(dialog)
+        table = QTableView(self)
         table.setModel(model)
         table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch) 
         #table.setEditTriggers(QAbstractItemView.NoEditTriggers)
         #table.clicked.connect(self.show_info)
-        button=QPushButton(dialog)
+        button=QPushButton(self)
         button.setText(_TR('添加行'))
         def clicked1(): 
             try:
@@ -278,13 +290,13 @@ class noundictconfigdialog(QDialog):
                 print_exc()
                 model.insertRow(0,[QStandardItem('0'),QStandardItem(''),QStandardItem('')]) 
         button.clicked.connect(clicked1)
-        button2=QPushButton(dialog)
+        button2=QPushButton(self)
         button2.setText(_TR('删除选中行'))
         def clicked2():
             
             model.removeRow(table.currentIndex().row())
         button2.clicked.connect(clicked2)
-        button5=QPushButton(dialog)
+        button5=QPushButton(self)
         button5.setText(_TR('设置所有词条为全局词条'))
         def clicked5():
             rows=model.rowCount()  
@@ -292,20 +304,6 @@ class noundictconfigdialog(QDialog):
                 model.item(row,0).setText('0')
         button5.clicked.connect(clicked5)
         
-        def clicked3(_):
-            button.setFocus()
-            rows=model.rowCount() 
-            newdict={}
-            for row in range(rows):
-                if model.item(row,1).text()=="":
-                    continue
-                if model.item(row,1).text() not in newdict:
-                    newdict[model.item(row,1).text()]=[model.item(row,0).text(),model.item(row,2).text()]
-                else:
-                    newdict[model.item(row,1).text()]+=[model.item(row,0).text(),model.item(row,2).text()]
-            configdict['dict']=newdict  
-
-        dialog.closeEvent=clicked3 
         search=QHBoxLayout()
         searchcontent=QLineEdit()
         search.addWidget(searchcontent)
@@ -341,7 +339,9 @@ class noundictconfigdialog(QDialog):
         button5.clicked.connect(lambda x:gobject.baseobject.__setattr__('currentmd5',md5content.text()))
         button5.setText(_TR('修改'))
         setmd5layout.addWidget(button5)
-        
+        self.button=button
+        self.model=model
+        self.configdict=configdict
         formLayout.addLayout(setmd5layout)
-        dialog.resize(QSize(600,400))
-        dialog.show()
+        self.resize(QSize(600,400))
+        self.show()

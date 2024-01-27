@@ -1,7 +1,7 @@
 import functools
 from PyQt5.QtWidgets import QDialogButtonBox,QDialog,QHeaderView,QComboBox,QFormLayout,QDoubleSpinBox,QSpinBox,QHBoxLayout,QLineEdit,QFileDialog,QPushButton,QLabel,QTableView,QVBoxLayout
 from PyQt5.QtCore import Qt,QSize
-from PyQt5.QtGui import QStandardItem, QStandardItemModel 
+from PyQt5.QtGui import QCloseEvent, QStandardItem, QStandardItemModel 
 
 from PyQt5.QtGui import QColor 
 import qtawesome,importlib
@@ -11,18 +11,18 @@ from myutils.utils import makehtml
 from myutils.wrapper import Singleton
 @Singleton
 class autoinitdialog(QDialog):
-    def __init__(dialog, parent,title,width,lines,_=None  ) -> None:
+    def __init__(self, parent,title,width,lines,_=None  ) -> None:
         super().__init__(parent,  Qt.WindowCloseButtonHint)
     
-        dialog.setWindowTitle(_TR(title))
-        dialog.resize(QSize(width,10))
+        self.setWindowTitle(_TR(title))
+        self.resize(QSize(width,10))
         formLayout = QFormLayout()
-        dialog.setLayout(formLayout)
+        self.setLayout(formLayout)
         regist=[]
         def save(callback=None):
             for l in regist:
                 l[0][l[1]]=l[2]() 
-            dialog.close()
+            self.close()
             if callback:
                 callback()
         def openfiledirectory(multi,edit,isdir,filter1='*.*'):
@@ -68,7 +68,7 @@ class autoinitdialog(QDialog):
                 lineW.currentIndexChanged.connect(functools.partial(dd.__setitem__,key)) 
             elif line['t']=='okcancel':
                 lineW = QDialogButtonBox(QDialogButtonBox.Ok|QDialogButtonBox.Cancel)  
-                lineW.rejected.connect(dialog.close)
+                lineW.rejected.connect(self.close)
                 lineW.accepted.connect(functools.partial(save,None if 'callback' not in line else line['callback']))
 
                 lineW.button(QDialogButtonBox.Ok).setText(_TR('确定'))
@@ -106,7 +106,7 @@ class autoinitdialog(QDialog):
                 formLayout.addRow(_TR(line['l']),lineW)  
             else:
                 formLayout.addRow( lineW)  
-        dialog.show()
+        self.show()
  
 def getsomepath1(parent,title,d,k,label,callback=None,isdir=False,filter1="*.db"):
     autoinitdialog(parent,title,800,[ 
@@ -161,34 +161,44 @@ class multicolorset(QDialog):
         self.show() 
 
 @Singleton
-class postconfigdialog(QDialog):
-    def __init__(dialog, parent,configdict,title,_=None) -> None:
+class postconfigdialog_(QDialog):
+    def closeEvent(self, a0: QCloseEvent) -> None:
+        if self.closeevent:
+            self.button.setFocus()
+            rows=self.model.rowCount() 
+            newdict={}
+            for row in range(rows):
+                if self.model.item(row,0).text()=="":
+                    continue
+                newdict[(self.model.item(row,0).text())]=(self.model.item(row,1).text())
+            self.configdict[self.key]=newdict 
+    def __init__(self, parent,configdict,title) -> None:
         super().__init__(parent,Qt.WindowCloseButtonHint)
-    
-        dialog.setWindowTitle(_TR(title))
-        #dialog.setWindowModality(Qt.ApplicationModal)
-        
-        formLayout = QVBoxLayout(dialog)  # 配置layout
+        print(title)
+        self.setWindowTitle(_TR(title))
+        #self.setWindowModality(Qt.ApplicationModal)
+        self.closeevent=False
+        formLayout = QVBoxLayout(self)  # 配置layout
         
         key=list(configdict.keys())[0]
-        lb=QLabel(dialog)
+        lb=QLabel(self)
         lb.setText(_TR(key) )
         formLayout.addWidget(lb) 
         if type(configdict[key]) in (float,int): 
-            spin=QSpinBox(dialog)
+            spin=QSpinBox(self)
             spin.setMinimum(1)
             spin.setMaximum(100)
             spin.setValue(configdict[key])
             spin.valueChanged.connect(lambda x:configdict.__setitem__(key,x))
             formLayout.addWidget(spin)
-            dialog.resize(QSize(600,1))
+            self.resize(QSize(600,1))
         
         elif type(configdict[key])==type({}): 
-            # lines=QTextEdit(dialog)
+            # lines=QTextEdit(self)
             # lines.setPlainText('\n'.join(configdict[key]))
             # lines.textChanged.connect(lambda   :configdict.__setitem__(key,lines.toPlainText().split('\n')))
             # formLayout.addWidget(lines)
-            model=QStandardItemModel(len(configdict[key]),1 , dialog)
+            model=QStandardItemModel(len(configdict[key]),1 , self)
             row=0
             
             for key1  in  ( (configdict[key])):                                   # 2
@@ -200,37 +210,33 @@ class postconfigdialog(QDialog):
                     model.setItem(row, 1, item)
                     row+=1
             model.setHorizontalHeaderLabels(_TRL([ '原文内容','替换为']))
-            table = QTableView(dialog)
+            table = QTableView(self)
             table.setModel(model)
             table.setWordWrap(False) 
             table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch) 
             #table.setEditTriggers(QAbstractItemView.NoEditTriggers)
             #table.clicked.connect(self.show_info)
-            button=QPushButton(dialog)
+            button=QPushButton(self)
             button.setText(_TR('添加行'))
             def clicked1(): 
                 model.insertRow(0,[QStandardItem(''),QStandardItem('')])   
             button.clicked.connect(clicked1)
-            button2=QPushButton(dialog)
+            button2=QPushButton(self)
             button2.setText(_TR('删除选中行'))
             def clicked2():
                 
                 model.removeRow(table.currentIndex().row())
             button2.clicked.connect(clicked2)
-        
-            def clicked3(_):
-                button.setFocus()
-                rows=model.rowCount() 
-                newdict={}
-                for row in range(rows):
-                    if model.item(row,0).text()=="":
-                        continue
-                    newdict[(model.item(row,0).text())]=(model.item(row,1).text())
-                configdict[key]=newdict 
-            dialog.closeEvent=(clicked3)
+            self.button=button
+            self.model=model
+            self.key=key
+            self.configdict=configdict
+            self.closeevent=True
             formLayout.addWidget(table)
             formLayout.addWidget(button)
             formLayout.addWidget(button2) 
-            dialog.resize(QSize(600,400))
-        dialog.show()
-    
+            self.resize(QSize(600,400))
+        self.show()
+
+def postconfigdialog(parent,configdict,title):
+    postconfigdialog_(parent,configdict,title)
