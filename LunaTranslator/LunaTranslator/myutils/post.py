@@ -4,7 +4,7 @@ from traceback import print_exc
 from collections import Counter
 import importlib,gobject
 from myutils.utils import getfilemd5
-from myutils.config import postprocessconfig,globalconfig ,savehook_new_data
+from myutils.config import postprocessconfig,globalconfig ,savehook_new_data,static_data
 def _2_f(line,args):
         times=args['重复次数(若为1则自动分析去重)']
          
@@ -127,7 +127,12 @@ def _4_f(line):
         line=re.sub('</(.*?)>',"*",line)
         return line
 def _6_f(line):
-        line=line.replace('\r','').replace('\n','')
+        srclang=static_data["language_list_translator_inner"][globalconfig['srclang3']]
+        if srclang in ["zh","ja"]:
+               white=''
+        else:
+               white=' '
+        line=line.replace('\r',white).replace('\n',white)
         return line
 def _91_f(line):
         line=re.sub('([0-9]+)','',line)
