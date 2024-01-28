@@ -136,8 +136,6 @@
     "翻译优化": "Çeviri iyileştirmesi",
     "文本预处理": "Metin ön işleme",
     "调整执行顺序": "İşletim emrini ayarla",
-    "去除重复字符(AAAABBBBCCCC->ABC)": "Çift karakterleri sil (AAABBBCCCC ->ABC)",
-    "去除重复行(ABCDABCDABCD->ABCD)": "Çiftli çizgileri sil (ABCD ABCD ->ABCD)",
     "去除花括号{}": "Kıpırdam bileklerini sil {}",
     "过滤HTML标签": "HTML etiketleri sil",
     "过滤换行符": "Süzgüç çizgi kırılması",
@@ -368,8 +366,6 @@
     "将汉字转换成繁体/日式汉字": "Çin karakterlerini geleneksel/Japon karakterlerine dönüştür",
     "无法识别的引擎": "Bilinmegen motor",
     "连接超时": "bağlantı zamanı aştıSocket error code InProgress",
-    "HOOK 连接进程": "HOOK bağlantı süreci",
-    "HOOK 离开进程": "HOOK süreci terk ediyor",
     "文本源": "Metin kaynağı",
     "快捷键": "Kısayol tuşları",
     "文本输入": "Metin girdi",
@@ -443,7 +439,6 @@
     "备忘录": "memorandum",
     "备忘录按钮": "Memo düğmesi",
     "插入图片": "Resim Gir",
-    "去除重复行(S1S1S1S2S2S2->S1S2)": "Çiftli satırları sil (S1S1S1S2S2S2 ->S1S2)",
     "当前权限": "Güncel izinler",
     "非管理员": "Yönetici olmayan",
     "管理员": "yöneticiler",
@@ -451,8 +446,6 @@
     "所选文件格式错误！": "Seçili dosya format ı yanlış!",
     "进程号": "İşlem numarası",
     "窗口名": "Pencere İsmi",
-    "去除重复行(ABCDBCDCDD->ABCD)": "Çiftli hatları sil (ABCDCDCDDD ->ABCD)",
-    "去除重复行(AABABCABCD->ABCD)": "Çift hatları sil (AABABCABCD ->ABCD)",
     "无法识别的路径！": "Bilinmeyen yol!",
     "进程": "işlem",
     "到进程": "İşleme",
@@ -705,5 +698,6 @@
     "附带上下文个数（必须打开利用上文翻译）": "İlerleyen anlaşmalar sayısı (önceki metin kullanarak açılıp çevirilmeli olmalı)",
     "API超时(秒)": "API zaman aşımı (saniyeler)",
     "API接口格式如下，可根据自己的设置进行修改IP和端口。": "API arayüz format ı böyle, ve IP ve port kendi ayarlarınıza göre değiştirilebilir.",
-    "语言自适应": "Dil Yönetimi"
+    "语言自适应": "Dil Yönetimi",
+    "去除重复字符": "Çift karakterleri sil"
 }

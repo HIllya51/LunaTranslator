@@ -136,8 +136,6 @@
     "翻译优化": "Tối ưu hóa dịch",
     "文本预处理": "Tiền xử lý văn bản",
     "调整执行顺序": "Điều chỉnh thứ tự thực hiện",
-    "去除重复字符(AAAABBBBCCCC->ABC)": "Loại bỏ các ký tự trùng lặp (AAAABBBBCCCC ->ABC)",
-    "去除重复行(ABCDABCDABCD->ABCD)": "Loại bỏ các dòng trùng lặp (ABCDABCDABCD ->ABCD)",
     "去除花括号{}": "Bỏ dấu ngoặc nhọn {}",
     "过滤HTML标签": "Lọc thẻ HTML",
     "过滤换行符": "Lọc ngắt dòng",
@@ -368,8 +366,6 @@
     "将汉字转换成繁体/日式汉字": "Chuyển đổi Kanji sang Kanji truyền thống/Nhật Bản",
     "无法识别的引擎": "Động cơ không xác định",
     "连接超时": "Hết giờ kết nối",
-    "HOOK 连接进程": "Quá trình kết nối hook",
-    "HOOK 离开进程": "hook rời khỏi process",
     "文本源": "Nguồn gốc văn bản",
     "快捷键": "Phím tắt",
     "文本输入": "Nhập văn bản",
@@ -443,7 +439,6 @@
     "备忘录": "Bản ghi nhớ",
     "备忘录按钮": "Nút ghi nhớ",
     "插入图片": "Chèn ảnh",
-    "去除重复行(S1S1S1S2S2S2->S1S2)": "Loại bỏ hàng trùng lặp (S1S1S2S2S2 ->S1S2)",
     "当前权限": "Quyền hiện tại",
     "非管理员": "Không quản trị",
     "管理员": "Trang chủ",
@@ -451,8 +446,6 @@
     "所选文件格式错误！": "Lỗi định dạng tập tin đã chọn!",
     "进程号": "Số tiến trình",
     "窗口名": "Tên cửa sổ",
-    "去除重复行(ABCDBCDCDD->ABCD)": "Loại bỏ các dòng trùng lặp (ABCDBCDCDD ->ABCD)",
-    "去除重复行(AABABCABCD->ABCD)": "Loại bỏ hàng trùng lặp (AABABCABCD ->ABCD)",
     "无法识别的路径！": "Đường không nhận ra!",
     "进程": "Quy trình",
     "到进程": "Tiến trình",
@@ -705,5 +698,6 @@
     "附带上下文个数（必须打开利用上文翻译）": "Kèm theo số ngữ cảnh (phải được mở để sử dụng bản dịch ở trên)",
     "API超时(秒)": "Thời gian chờ API (giây)",
     "API接口格式如下，可根据自己的设置进行修改IP和端口。": "Giao diện API được định dạng như sau và IP và cổng có thể được sửa đổi theo cài đặt của riêng bạn.",
-    "语言自适应": "Thích nghi ngôn ngữ"
+    "语言自适应": "Thích nghi ngôn ngữ",
+    "去除重复字符": "Loại bỏ các ký tự trùng lặp"
 }

@@ -130,8 +130,6 @@
     "翻译优化": "Ottimizzazione della traduzione",
     "文本预处理": "Preelaborazione del testo",
     "调整执行顺序": "Regolazione dell'ordine di esecuzione",
-    "去除重复字符(AAAABBBBCCCC->ABC)": "Rimuovi caratteri duplicati (AAAABBBCCCC -> ABC)",
-    "去除重复行(ABCDABCDABCD->ABCD)": "Rimuovi righe duplicate (ABCDABCD ->ABCD)",
     "去除花括号{}": "Rimuovi parentesi graffette ricci {}",
     "过滤HTML标签": "Filtra tag HTML",
     "过滤换行符": "Interruzioni di linea del filtro",
@@ -358,8 +356,6 @@
     "将汉字转换成繁体/日式汉字": "Converti caratteri cinesi in caratteri tradizionali/giapponesi",
     "无法识别的引擎": "Motore non riconosciuto",
     "连接超时": "connessione scaduta",
-    "HOOK 连接进程": "Processo di connessione HOOK",
-    "HOOK 离开进程": "HOOK Leave Process",
     "文本源": "Sorgente testo",
     "快捷键": "Tasti scorciatoie",
     "文本输入": "Inserimento testo",
@@ -431,7 +427,6 @@
     "附带上下文个数": "Numero di contesti di accompagnamento",
     "备忘录": "memorandum",
     "插入图片": "Inserisci immagine",
-    "去除重复行(S1S1S1S2S2S2->S1S2)": "Rimuovi righe duplicate (S1S1S1S2S2->S1S2)",
     "当前权限": "Autorizzazioni attuali",
     "非管理员": "Non amministratore",
     "管理员": "amministratori",
@@ -439,8 +434,6 @@
     "所选文件格式错误！": "Il formato del file selezionato non è corretto!",
     "进程号": "Numero del processo",
     "窗口名": "Nome finestra",
-    "去除重复行(ABCDBCDCDD->ABCD)": "Rimuovi linee duplicate (ABCDCDDD ->ABCD)",
-    "去除重复行(AABABCABCD->ABCD)": "Rimuovi righe duplicate (AABABCABCD ->ABCD)",
     "无法识别的路径！": "Percorso sconosciuto!",
     "进程": "processo",
     "到进程": "Da elaborare",
@@ -705,5 +698,6 @@
     "附带上下文个数（必须打开利用上文翻译）": "Numero di contesti di accompagnamento (devono essere aperti e tradotti utilizzando il testo precedente)",
     "API超时(秒)": "Timeout API (secondi)",
     "API接口格式如下，可根据自己的设置进行修改IP和端口。": "Il formato dell'interfaccia API è il seguente e l'IP e la porta possono essere modificati in base alle proprie impostazioni.",
-    "语言自适应": "Adattamento linguistico"
+    "语言自适应": "Adattamento linguistico",
+    "去除重复字符": "Rimuovi caratteri duplicati"
 }

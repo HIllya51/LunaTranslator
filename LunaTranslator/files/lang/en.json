@@ -235,8 +235,6 @@
     "OCR范围框宽度": "OCR Scope Box Width",
     "文本预处理": "Text preprocessing",
     "调整执行顺序": "Adjust execution order",
-    "去除重复字符(AAAABBBBCCCC->ABC)": "Remove duplicate characters (AAAABBBBCCCC ->ABC)",
-    "去除重复行(ABCDABCDABCD->ABCD)": "Remove duplicate lines (ABCDABCDABCD ->ABCD)",
     "搜索特殊码": "Search for special codes",
     "过滤控制字符": "Filter control characters",
     "过滤路径": "Filter Path",
@@ -368,8 +366,6 @@
     "将汉字转换成繁体/日式汉字": "Convert Chinese characters to traditional/Japanese characters",
     "无法识别的引擎": "Unrecognized engine",
     "连接超时": "connection timed out",
-    "HOOK 连接进程": "HOOK connection process",
-    "HOOK 离开进程": "HOOK leaves the process",
     "文本源": "Text source",
     "快捷键": "Shortcut keys",
     "文本输入": "Text input",
@@ -443,7 +439,6 @@
     "备忘录": "memorandum",
     "备忘录按钮": "Memo button",
     "插入图片": "Insert Picture",
-    "去除重复行(S1S1S1S2S2S2->S1S2)": "Remove duplicate rows (S1S1S1S2S2S2 ->S1S2)",
     "当前权限": "Current permissions",
     "非管理员": "Non Administrator",
     "管理员": "administrators",
@@ -451,8 +446,6 @@
     "所选文件格式错误！": "The selected file format is incorrect!",
     "进程号": "Process number",
     "窗口名": "Window Name",
-    "去除重复行(ABCDBCDCDD->ABCD)": "Remove duplicate lines (ABCDCDCDCDDD ->ABCD)",
-    "去除重复行(AABABCABCD->ABCD)": "Remove duplicate lines (AABABCABCD ->ABCD)",
     "无法识别的路径！": "Unrecognized path!",
     "进程": "process",
     "到进程": "To process",
@@ -705,5 +698,6 @@
     "附带上下文个数（必须打开利用上文翻译）": "Number of accompanying contexts (must be opened and translated using the previous text)",
     "API超时(秒)": "API timeout (seconds)",
     "API接口格式如下，可根据自己的设置进行修改IP和端口。": "The API interface format is as follows, and the IP and port can be modified according to your own settings.",
-    "语言自适应": "Language Adaptation"
+    "语言自适应": "Language Adaptation",
+    "去除重复字符": "Remove duplicate characters"
 }

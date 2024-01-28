@@ -136,8 +136,6 @@
     "翻译优化": "Optimisation de la traduction",
     "文本预处理": "Prétraitement de texte",
     "调整执行顺序": "Ajuster la séquence d'exécution",
-    "去除重复字符(AAAABBBBCCCC->ABC)": "Supprimer les caractères dupliqués (aaaabbbbbccc - > ABC)",
-    "去除重复行(ABCDABCDABCD->ABCD)": "Supprimer les lignes dupliquées (abcdabcdabcd - > ABCD)",
     "去除花括号{}": "Supprimer les accolades bouclées {}",
     "过滤HTML标签": "Filtrer les étiquettes HTML",
     "过滤换行符": "Filtrer les sauts de ligne",
@@ -368,8 +366,6 @@
     "将汉字转换成繁体/日式汉字": "Convertir des caractères chinois en caractères traditionnels / japonais",
     "无法识别的引擎": "Moteur non reconnu",
     "连接超时": "Délai de connexion dépassé",
-    "HOOK 连接进程": "Hook processus de connexion",
-    "HOOK 离开进程": "Hook quitte le processus",
     "文本源": "Source du texte",
     "快捷键": "Touches de raccourci",
     "文本输入": "Entrée de texte",
@@ -443,7 +439,6 @@
     "备忘录": "Memorandum",
     "备忘录按钮": "Bouton memo",
     "插入图片": "Insérer une image",
-    "去除重复行(S1S1S1S2S2S2->S1S2)": "Supprimer les lignes répétitives (s1s1s1s2s2s2 - > s1s2)",
     "当前权限": "Autorisations actuelles",
     "非管理员": "Non - Administrateur",
     "管理员": "Administrateur",
@@ -451,8 +446,6 @@
     "所选文件格式错误！": "Mauvais format de fichier sélectionné!",
     "进程号": "Numéro de processus",
     "窗口名": "Nom de la fenêtre",
-    "去除重复行(ABCDBCDCDD->ABCD)": "Supprimer les lignes répétitives (abcdbcdcdd - > ABCD)",
-    "去除重复行(AABABCABCD->ABCD)": "Supprimer les lignes répétitives (aababcabcd - > ABCD)",
     "无法识别的路径！": "Un chemin méconnaissable!",
     "进程": "Processus",
     "到进程": "Au processus",
@@ -705,5 +698,6 @@
     "附带上下文个数（必须打开利用上文翻译）": "Livré avec le nombre de contextes (doit être ouvert pour tirer parti de la traduction ci - dessus)",
     "API超时(秒)": "API timeout (secondes)",
     "API接口格式如下，可根据自己的设置进行修改IP和端口。": "Le format de l'interface API est le suivant, avec la possibilité de modifier l'IP et les ports en fonction de vos propres paramètres.",
-    "语言自适应": "Adaptation linguistique"
+    "语言自适应": "Adaptation linguistique",
+    "去除重复字符": "Supprimer les caractères dupliqués"
 }

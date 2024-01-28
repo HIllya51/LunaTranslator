@@ -136,8 +136,6 @@
     "翻译优化": "Optimización de la traducción",
     "文本预处理": "Preprocesamiento de texto",
     "调整执行顺序": "Ajustar el orden de ejecución",
-    "去除重复字符(AAAABBBBCCCC->ABC)": "Eliminar caracteres duplicados (aaaabbbbcccc - > abc)",
-    "去除重复行(ABCDABCDABCD->ABCD)": "Eliminar filas duplicadas (abcdabcdabcd - > abcd)",
     "去除花括号{}": "Eliminar los paréntesis (...)",
     "过滤HTML标签": "Filtrar etiquetas https",
     "过滤换行符": "Filtrar saltos de línea",
@@ -368,8 +366,6 @@
     "将汉字转换成繁体/日式汉字": "Convertir caracteres chinos en caracteres chinos tradicionales / japoneses",
     "无法识别的引擎": "Motor no reconocido",
     "连接超时": "Tiempo de conexión",
-    "HOOK 连接进程": "Proceso de conexión Hook",
-    "HOOK 离开进程": "Proceso de salida de Hook",
     "文本源": "Fuente literaria",
     "快捷键": "Teclas de acceso rápido",
     "文本输入": "Entrada de texto",
@@ -443,7 +439,6 @@
     "备忘录": "Memorando",
     "备忘录按钮": "Botón de memorando",
     "插入图片": "Insertar imagen",
-    "去除重复行(S1S1S1S2S2S2->S1S2)": "Eliminar filas duplicadas (s1s1s1s2s2 - > s1s2)",
     "当前权限": "Permisos actuales",
     "非管理员": "No Administrador",
     "管理员": "Administrador",
@@ -451,8 +446,6 @@
     "所选文件格式错误！": "¡¡ el archivo seleccionado tiene un formato incorrecto!",
     "进程号": "Número de proceso",
     "窗口名": "Nombre de la ventana",
-    "去除重复行(ABCDBCDCDD->ABCD)": "Eliminar filas duplicadas (abcdbcdcdd - > abcd)",
-    "去除重复行(AABABCABCD->ABCD)": "Eliminar filas duplicadas (aababcbabcd - > abcd)",
     "无法识别的路径！": "¡Caminos no reconocibles!",
     "进程": "Proceso",
     "到进程": "Al proceso",
@@ -705,5 +698,6 @@
     "附带上下文个数（必须打开利用上文翻译）": "Número de contextos adjuntos (debe abrirse para usar la traducción anterior)",
     "API超时(秒)": "Horas extras API (segundos)",
     "API接口格式如下，可根据自己的设置进行修改IP和端口。": "El formato de la interfaz API es el siguiente, que puede modificar la IP y el puerto de acuerdo con su propia configuración.",
-    "语言自适应": "Adaptación lingüística"
+    "语言自适应": "Adaptación lingüística",
+    "去除重复字符": "Eliminar caracteres duplicados"
 }

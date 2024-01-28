@@ -136,8 +136,6 @@
     "翻译优化": "Optymalizacja tłumaczeń",
     "文本预处理": "Wstępne przetwarzanie tekstu",
     "调整执行顺序": "Dostosowanie kolejności wykonania",
-    "去除重复字符(AAAABBBBCCCC->ABC)": "Usuń duplikaty znaków (AAAABBBCCCC ->ABC)",
-    "去除重复行(ABCDABCDABCD->ABCD)": "Usuń zduplikowane wiersze (ABCDABCD ->ABCD)",
     "去除花括号{}": "Usuń kręcony aparat.",
     "过滤HTML标签": "Filtruj tagi HTML",
     "过滤换行符": "Podziały linii filtrujących",
@@ -368,8 +366,6 @@
     "将汉字转换成繁体/日式汉字": "Konwersja znaków chińskich na znaki tradycyjne/japońskie",
     "无法识别的引擎": "Nierozpoznany silnik",
     "连接超时": "limit czasu połączenia",
-    "HOOK 连接进程": "Proces połączenia HOOK",
-    "HOOK 离开进程": "Proces opuszczenia HOOK",
     "文本源": "Źródło tekstu",
     "快捷键": "Klawisze skrótów",
     "文本输入": "Wprowadzanie tekstu",
@@ -443,7 +439,6 @@
     "备忘录": "memorandum",
     "备忘录按钮": "Przycisk Memo",
     "插入图片": "Wstaw obrazek",
-    "去除重复行(S1S1S1S2S2S2->S1S2)": "Usuń zduplikowane wiersze (S1S1S1S2S2S2->S1S2)",
     "当前权限": "Aktualne uprawnienia",
     "非管理员": "Nieadministrator",
     "管理员": "administratorzy",
@@ -451,8 +446,6 @@
     "所选文件格式错误！": "Wybrany format pliku jest niepoprawny!",
     "进程号": "Numer procesu",
     "窗口名": "Nazwa okna",
-    "去除重复行(ABCDBCDCDD->ABCD)": "Usuń zduplikowane wiersze (ABCDCDDD ->ABCD)",
-    "去除重复行(AABABCABCD->ABCD)": "Usuń zduplikowane wiersze (AABABCABCD ->ABCD)",
     "无法识别的路径！": "Nierozpoznana ścieżka!",
     "进程": "proces",
     "到进程": "Do przetwarzania",
@@ -705,5 +698,6 @@
     "附带上下文个数（必须打开利用上文翻译）": "Liczba kontekstów towarzyszących (należy otworzyć i przetłumaczyć za pomocą poprzedniego tekstu)",
     "API超时(秒)": "Limit czasu API (sekundy)",
     "API接口格式如下，可根据自己的设置进行修改IP和端口。": "Format interfejsu API jest następujący, a IP i port można modyfikować zgodnie z własnymi ustawieniami.",
-    "语言自适应": "Dostosowanie języka"
+    "语言自适应": "Dostosowanie języka",
+    "去除重复字符": "Usuń duplikaty znaków"
 }
