@@ -116,6 +116,24 @@ def _13_f(line): #递增式
          
         line=sorted(saveline, key=len, reverse=True)[0]
         return line
+def _13_fEX(line:str): 
+    saves=[]
+    while len(line):
+        for i in range(len(line)):
+            maxlongline=line[i:]
+            shengyu=line
+            _maxlong=maxlongline
+            succ=True
+            while len(_maxlong):
+                if shengyu.endswith(_maxlong)==False:
+                    succ=False
+                    break
+                shengyu=shengyu[:-len(_maxlong)]
+                _maxlong=_maxlong[:-1]
+            if succ:break
+        saves.append(maxlongline)
+        line=line[:-((len(maxlongline)*(1+len(maxlongline))))//2]
+    return ''.join(reversed(saves))
 def _1_f(line):
         r=re.compile(r'\{(.*?)/.*?\}')
         line=r.sub(lambda x:x.groups()[0],line)
@@ -126,13 +144,16 @@ def _4_f(line):
         line =re.sub('<(.*?)>','',line) 
         line=re.sub('</(.*?)>',"*",line)
         return line
-def _6_f(line):
+def _6_fEX(line):
         srclang=static_data["language_list_translator_inner"][globalconfig['srclang3']]
         if srclang in ["zh","ja"]:
                white=''
         else:
                white=' '
         line=line.replace('\r',white).replace('\n',white)
+        return line
+def _6_f(line):
+        line=line.replace('\r','').replace('\n','')
         return line
 def _91_f(line):
         line=re.sub('([0-9]+)','',line)
@@ -233,11 +254,13 @@ def POSTSOLVE(line):
         '_1':_1_f,
         '_4':_4_f,
         '_6':_6_f,
+        '_6EX':_6_fEX,
         '_91':_91_f,
         '_92':_92_f,
         '_7':_7_f,
         '_8':_8_f,
         '_13':_13_f,
+        '_13EX':_13_fEX,
         '_7_zhuanyi':_7_zhuanyi_f,
         '_remove_non_shiftjis_char':_remove_non_shiftjis_char,
         "_remove_latin":_remove_latin,

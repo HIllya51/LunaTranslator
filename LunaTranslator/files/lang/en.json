@@ -701,5 +701,9 @@
     "添加关联页面": "Add associated page",
     "页面类型": "Page Type",
     "页面链接": "Page Link",
-    "缓存": "cache"
+    "缓存": "cache",
+    "附带上下文个数（必须打开利用上文翻译）": "Number of accompanying contexts (must be opened and translated using the previous text)",
+    "API超时(秒)": "API timeout (seconds)",
+    "API接口格式如下，可根据自己的设置进行修改IP和端口。": "The API interface format is as follows, and the IP and port can be modified according to your own settings.",
+    "语言自适应": "Language Adaptation"
 }

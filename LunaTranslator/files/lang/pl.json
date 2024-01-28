@@ -701,5 +701,9 @@
     "添加关联页面": "Dodaj powiązaną stronę",
     "页面类型": "Typ strony",
     "页面链接": "Link do strony",
-    "缓存": "pamięć podręczna"
+    "缓存": "pamięć podręczna",
+    "附带上下文个数（必须打开利用上文翻译）": "Liczba kontekstów towarzyszących (należy otworzyć i przetłumaczyć za pomocą poprzedniego tekstu)",
+    "API超时(秒)": "Limit czasu API (sekundy)",
+    "API接口格式如下，可根据自己的设置进行修改IP和端口。": "Format interfejsu API jest następujący, a IP i port można modyfikować zgodnie z własnymi ustawieniami.",
+    "语言自适应": "Dostosowanie języka"
 }

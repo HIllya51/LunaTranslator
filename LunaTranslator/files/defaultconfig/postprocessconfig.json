@@ -49,6 +49,10 @@
         "use": false,
         "name": "过滤换行符"
     },
+    "_6EX": {
+        "use": false,
+        "name": "过滤换行符_语言自适应"
+    },
     "_91": {
         "use": false,
         "name": "过滤数字"
@@ -80,6 +84,10 @@
     "_13": {
         "use": false,
         "name": "去除重复行(AABABCABCD->ABCD)"
+    },
+    "_13EX": {
+        "use": false,
+        "name": "去除重复行(AABABCABCD->ABCD)_EX"
     },
     "_11": {
         "use": false,

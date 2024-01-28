@@ -701,5 +701,9 @@
     "添加关联页面": "Thêm trang liên kết",
     "页面类型": "Loại trang",
     "页面链接": "Liên kết trang",
-    "缓存": "Bộ nhớ tạm"
+    "缓存": "Bộ nhớ tạm",
+    "附带上下文个数（必须打开利用上文翻译）": "Kèm theo số ngữ cảnh (phải được mở để sử dụng bản dịch ở trên)",
+    "API超时(秒)": "Thời gian chờ API (giây)",
+    "API接口格式如下，可根据自己的设置进行修改IP和端口。": "Giao diện API được định dạng như sau và IP và cổng có thể được sửa đổi theo cài đặt của riêng bạn.",
+    "语言自适应": "Thích nghi ngôn ngữ"
 }

@@ -701,5 +701,9 @@
     "添加关联页面": "İlişkili sayfa ekle",
     "页面类型": "Sayfa Türü",
     "页面链接": "Sayfa Bağlantısı",
-    "缓存": "cache"
+    "缓存": "cache",
+    "附带上下文个数（必须打开利用上文翻译）": "İlerleyen anlaşmalar sayısı (önceki metin kullanarak açılıp çevirilmeli olmalı)",
+    "API超时(秒)": "API zaman aşımı (saniyeler)",
+    "API接口格式如下，可根据自己的设置进行修改IP和端口。": "API arayüz format ı böyle, ve IP ve port kendi ayarlarınıza göre değiştirilebilir.",
+    "语言自适应": "Dil Yönetimi"
 }
