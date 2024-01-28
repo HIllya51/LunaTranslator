@@ -5,14 +5,14 @@ x86=int(sys.argv[1])
 if x86:
     nuitkadist=r'..\build\x86\LunaTranslator_main.dist'
     targetdir=r'..\build\LunaTranslator_x86'
-    launch=r'..\plugins\exec\builds\_x86'
+    launch=r'..\plugins\builds\_x86'
     downlevel=f'C:\Windows\SysWOW64\downlevel'
     target='LunaTranslator_x86.zip'
     baddll='DLL64'
 else:
     baddll='DLL32'
     target='LunaTranslator.zip'
-    launch=r'..\plugins\exec\builds\_x64'
+    launch=r'..\plugins\builds\_x64'
     nuitkadist=r'..\build\x64\LunaTranslator_main.dist'
     targetdir=r'..\build\LunaTranslator'
     downlevel=f'C:\Windows\system32\downlevel'
@@ -30,7 +30,8 @@ def get_import_table(file_path):
 if os.path.exists(targetdir):
     shutil.rmtree(targetdir)
 shutil.copytree(nuitkadist,targetdir_in)
-shutil.copytree(launch,targetdir,dirs_exist_ok=True)
+for f in ['LunaTranslator_admin.exe','LunaTranslator.exe']:
+    shutil.copy(os.path.join(launch,f),targetdir)
 shutil.copytree(r'.\files',rf'{targetdir}\files')
 shutil.copy(r'..\LICENSE',targetdir) 
 

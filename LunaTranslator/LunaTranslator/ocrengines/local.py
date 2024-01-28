@@ -10,7 +10,7 @@ import os
 import gobject
 class ocrwrapper:
     def __init__(self) -> None: 
-        self.dll=CDLL(gobject.GetDllpath(('ocr32.dll','ocr64.dll')))
+        self.dll=CDLL(gobject.GetDllpath(('LunaOCR32.dll','LunaOCR64.dll')))
     def _OcrInit(self,szDetModel, szRecModel, szKeyPath,szClsModel='', nThreads=4):
         
         _OcrInit=self.dll.OcrInit
