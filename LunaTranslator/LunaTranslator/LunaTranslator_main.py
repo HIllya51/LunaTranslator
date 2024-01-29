@@ -1,7 +1,6 @@
 import sys
 from PyQt5.QtCore import QCoreApplication ,Qt 
 from PyQt5.QtWidgets import  QApplication
-import os
 import platform,os
 
 if __name__ == "__main__" :
@@ -41,6 +40,8 @@ if __name__ == "__main__" :
     from LunaTranslator import MAINUI
     import gobject 
 
+    gobject.overridepathexists()
+    
     QCoreApplication.setAttribute(Qt.AA_UseHighDpiPixmaps, True)
     app = QApplication(sys.argv)
     app.setQuitOnLastWindowClosed(False) 

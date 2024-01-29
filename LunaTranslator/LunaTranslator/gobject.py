@@ -1,6 +1,7 @@
 baseobject=None
 from traceback import print_exc
 import io,sys,platform,os
+from ctypes import windll,wintypes
 isbit64= platform.architecture()[0]=='64bit'
 DLL3264path=os.path.abspath('files/plugins/DLL'+('32','64')[isbit64])
 def GetDllpath(_):
@@ -22,6 +23,12 @@ class debugoutput(io.IOBase):
             self.originfile.flush()
 
 
+def overridepathexists():
+    PathFileExists=windll.Shlwapi.PathFileExistsW
+    PathFileExists.argtypes=wintypes.LPCWSTR,
+    PathFileExists.restype=wintypes.BOOL
+    #win7上，如果假如没有D盘，然后os.path.exists("D:/...")，就会弹窗说不存在D盘
+    os.path.exists=lambda file:bool(PathFileExists(os.path.abspath(file)))
 _jsconsole=debugoutput('jsconsole',sys.stdout)
 def overridestdio():
     sys.stderr=debugoutput('stderr',sys.stderr)
