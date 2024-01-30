@@ -215,7 +215,7 @@ class texthook(basetext  ):
         if self.checkisusingembed(tp.addr,tp.ctx,tp.ctx2):
             self.newline.put((text,False, functools.partial(self.embedcallback,text),True))
         
-    def embedcallback(self,text,_unused,trans): 
+    def embedcallback(self,text,trans): 
         
         for pid in self.connectedpids:
             self.Luna_embedcallback(pid,text,trans) 

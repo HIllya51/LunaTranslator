@@ -41,6 +41,7 @@ class MAINUI() :
     def __init__(self,app) -> None:
         super().__init__()
         self.lasttranslatorindex=0
+        self.usefultranslators=0
         self.app=app   
         self.translators={}
         self.cishus={}
@@ -167,7 +168,7 @@ class MAINUI() :
                         return 
             if text=='' or len(text)>100000:
                 if embedcallback:
-                    embedcallback('zhs', text) 
+                    embedcallback('') 
                 return 
  
         try:
@@ -187,7 +188,7 @@ class MAINUI() :
             
         if text=='' or (is_auto_run and (text==self.currenttext or len(text)>(max(globalconfig['maxoriginlength'],globalconfig['maxlength'])))):
             if embedcallback:
-                embedcallback('zhs', text) 
+                embedcallback('') 
             return 
         
         
@@ -237,6 +238,7 @@ class MAINUI() :
         skip=is_auto_run and  (len(text_solved)<globalconfig['minlength'] or len(text_solved)>globalconfig['maxlength'] )
 
         self.premtalready=['premt']
+        self.usefultranslators=len(self.translators)
         if 'premt' in self.translators:
             try:
                 res=self.translators['premt'].translate(text_solved)
@@ -270,16 +272,26 @@ class MAINUI() :
                     break
                 
     
-        
     def GetTranslationCallback(self,onlytrans,classname,currentsignature,optimization_params,_showrawfunction,_showrawfunction_sig,contentraw,res,embedcallback):
-        if embedcallback is None and currentsignature!=self.currentsignature:
-            return 
+        self.usefultranslators-=1
+        if embedcallback is None and currentsignature!=self.currentsignature:return
+
+        embedtrans=self.GetTranslationCallback_(onlytrans,classname,currentsignature,optimization_params,_showrawfunction,_showrawfunction_sig,contentraw,res)
         
-        if currentsignature==self.currentsignature:
-            if type(res)==str:
-                if res.startswith('<msg_translator>'):
+        
+        if embedtrans is None and self.usefultranslators==0:
+            embedtrans=''
+        if embedcallback and embedtrans is not None:
+            embedcallback(embedtrans)
+        
+    def GetTranslationCallback_(self,onlytrans,classname,currentsignature,optimization_params,_showrawfunction,_showrawfunction_sig,contentraw,res):
+        
+        
+        if type(res)==str:
+            if res.startswith('<msg_translator>'):
+                if currentsignature==self.currentsignature:
                     self.translation_ui.displaystatus.emit(globalconfig['fanyi'][classname]['name']+' '+res[len('<msg_translator>'):],'red',onlytrans,False)
-                    return   
+                return
         
         res=self.solveaftertrans(res,optimization_params)
         
@@ -295,16 +307,16 @@ class MAINUI() :
         
         if currentsignature==self.currentsignature and globalconfig['showfanyi']:
             self.translation_ui.displayres.emit(globalconfig['fanyi'][classname]['name'],globalconfig['fanyi'][classname]['color'],res,onlytrans)
+         
         
-        if embedcallback: 
-
-            if globalconfig['embedded']['as_fast_as_posible'] or classname==list(globalconfig['fanyi'])[globalconfig['embedded']['translator']]:    
-                
-                embedcallback('zhs', kanjitrans(zhconv.convert(res,'zh-tw')) if globalconfig['embedded']['trans_kanji'] else res) 
-    
         try:
             self.textsource.sqlqueueput((contentraw,classname,res))
         except:pass
+
+        if globalconfig['embedded']['as_fast_as_posible'] or classname==list(globalconfig['fanyi'])[globalconfig['embedded']['translator']]:    
+                
+            return (kanjitrans(zhconv.convert(res,'zh-tw')) if globalconfig['embedded']['trans_kanji'] else res) 
+    
     @threader
     def autoreadcheckname(self):
         try:

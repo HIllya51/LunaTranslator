@@ -205,17 +205,27 @@ class Sessionbase:
         headers,dataptr,datalen=self._parsedata(data,headers,json)
         proxy= proxies.get(scheme,None) if proxies  else None
         if timeout:
-            timeout = int(timeout * 1000)  # convert to milliseconds
+            if isinstance(timeout,(float,int)):
+                timeout = int(timeout * 1000)  # convert to milliseconds
+            else:
+                try:
+                    timeout=max(int(_ * 1000) for _ in timeout)
+                except:
+                    print("Error invalid timeout",timeout)
+                    timeout=None
         _= self.request_impl(method,scheme,server,port,param,url,headers,cookies,dataptr,datalen,proxy,stream,verify,timeout)
 
-        if _.status_code==301:
+        if allow_redirects and (_.status_code==301 or _.status_code==302):
             location=_.headers['Location']
             if location.startswith('/'):#vndb
                 url=url=scheme+'://'+server+location
                 param=location
-                _= self.request_impl(method,scheme,server,port,param,url,headers,cookies,dataptr,datalen,proxy,stream,verify)
+            elif location.startswith('http'):#https://api.github.com/repos/XXX/XXX/zipball
+                scheme,server,port,param,url=self._parseurl(location,None) 
             else:
-                raise Exception('301 redirect '+location)
+                raise Exception('redirect {}: {}'.format(_.status_code,location))
+            _= self.request_impl(method,scheme,server,port,param,url,headers,cookies,dataptr,datalen,proxy,stream,verify,timeout)
+            
         return _
     def get(self, url, **kwargs): 
         return self.request("GET", url, **kwargs)
