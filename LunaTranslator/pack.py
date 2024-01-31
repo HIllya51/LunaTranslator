@@ -53,23 +53,49 @@ for f in ['imageformats','platforms','styles']:
 
 remove(rf'{targetdir}\files\plugins\{baddll}')
 
+shutil.copy(rf'{downlevel}\ucrtbase.dll',targetdir_in)
 collect=[]
 for _dir,_,fs in os.walk(targetdir):
     for f in fs:
         collect.append(os.path.join(_dir,f))
-dlls=[]
 for f in collect:
     if f.endswith('.pyc') or f.endswith('Thumbs.db'):
         os.remove(f)
     elif f.endswith('.exe') or f.endswith('.pyd') or f.endswith('.dll'):
-        print(f)
-        dlls+=get_import_table(f) 
-dlls+=get_import_table(rf'{downlevel}\ucrtbase.dll')+['ucrtbase.dll']
-for f in set(dlls):
-    if os.path.exists(rf'{targetdir_in}\{f}'):
-        continue
-    elif os.path.exists(rf'{downlevel}\{f}'):
-        shutil.copy(rf'{downlevel}\{f}',targetdir_in)
+        
+        try:
+            pe = pefile.PE(f)
+            import_table = pe.DIRECTORY_ENTRY_IMPORT
+            imports=[]
+            for entry in import_table:
+                if entry.dll.decode("utf-8").lower().startswith('api'):
+                    imports.append(entry.dll.decode("utf-8"))
+            pe.close()
+        except:
+            continue
+        if f.endswith('Magpie.Core.exe'):continue
+        if f.endswith('QtWidgets.pyd'):
+            imports+=['api-ms-win-crt-runtime-l1-1-0.dll','api-ms-win-crt-heap-l1-1-0.dll'] 
+            #pefile好像有bug，仅对于QtWidgets.pyd这个文件，只能读取到导入了Qt5Widgets.dll
+        print(f,imports)
+        if len(imports)==0:continue
+        with open(f,'rb') as ff:
+            bs=bytearray(ff.read())
+        for _dll in imports:
+            if _dll.lower().startswith('api-ms-win-core'):
+                #其实对于api-ms-win-core-winrt-XXX实际上是到ComBase.dll之类的，不过此项目中不包含这些
+                _target='kernel32.dll'
+            elif _dll.lower().startswith('api-ms-win-crt'):
+                _target='ucrtbase.dll'
+            _dll=_dll.encode()
+            _target=_target.encode()
+            idx=bs.find(_dll)
+            #print(len(bs))
+            bs[idx:idx+len(_dll)]=_target+b'\0'*(len(_dll)-len(_target))
+            #print(len(bs))
+        with open(f,'wb') as ff:
+            ff.write(bs)
+
 if os.path.exists(rf'{targetdir}\..\{target}'):
     os.remove(rf'{targetdir}\..\{target}')
 os.system(rf'"C:\Program Files\7-Zip\7z.exe" a -m0=LZMA -mx9 {targetdir}\..\{target} {targetdir}')
