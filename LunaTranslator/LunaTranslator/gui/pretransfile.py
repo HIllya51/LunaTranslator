@@ -29,15 +29,15 @@ def sqlite2json(self):
                 _id,source,mt =_aret
                 js[source]={'userTrans':'','machineTrans':''}
                 js_format2[source]=''
-                mtjs=json.loads(mt)
-                for _i,_t in enumerate(mtjs):
-                    if  _i==0  :
-                        js[source]['machineTrans']=mtjs[_t]
-                        js_format2[source]=mtjs[_t]
-                    js[source]['result_'+str(_i)]=mtjs[_t]
-                    js[source]['api_'+str(_i)]=_t
+            mtjs=json.loads(mt)
+            for _i,_t in enumerate(mtjs):
+                if  _i==0  :
+                    js[source]['machineTrans']=mtjs[_t]
+                    js_format2[source]=mtjs[_t]
+                js[source]['result_'+str(_i)]=mtjs[_t]
+                js[source]['api_'+str(_i)]=_t
 
-                    collect[_t]='result_'+str(_i)
+                collect[_t]='result_'+str(_i)
             
     except:
         print_exc()
