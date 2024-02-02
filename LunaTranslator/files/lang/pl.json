@@ -699,5 +699,6 @@
     "API超时(秒)": "Limit czasu API (sekundy)",
     "API接口格式如下，可根据自己的设置进行修改IP和端口。": "Format interfejsu API jest następujący, a IP i port można modyfikować zgodnie z własnymi ustawieniami.",
     "语言自适应": "Dostosowanie języka",
-    "去除重复字符": "Usuń duplikaty znaków"
+    "去除重复字符": "Usuń duplikaty znaków",
+    "游戏内叠加层": "Warstwa nakładki w grze"
 }

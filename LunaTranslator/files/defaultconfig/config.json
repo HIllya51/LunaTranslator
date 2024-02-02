@@ -593,6 +593,13 @@
                 "key1": -1,
                 "key2": -1,
                 "keystring": ""
+            },
+            "_25": {
+                "use": false,
+                "name": "Magpie_游戏内叠加层",
+                "key1": -1,
+                "key2": -1,
+                "keystring": ""
             }
         }
     },

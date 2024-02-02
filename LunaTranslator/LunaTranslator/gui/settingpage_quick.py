@@ -7,7 +7,7 @@ from PyQt5.QtGui import QKeySequence
 from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtWidgets import QComboBox,QKeySequenceEdit,QLabel
 import winsharedutils 
-import gobject
+import gobject,windows
 from gui.usefulwidget import getsimpleswitch
 from myutils.hwnd import grabwindow
 def setTab_quick_direct(self):
@@ -43,6 +43,7 @@ def setTab_quick_direct(self):
             '_21':lambda:grabwindow(),
             '_22':gobject.baseobject.translation_ui.muteprocessignal.emit,
             "_23":lambda: gobject.baseobject.translation_ui.clickRange_signal.emit(True),
+            "_25":lambda: windows.SendMessage(windows.FindWindow('Magpie_Core_CLI_Message',None),windows.RegisterWindowMessage('Magpie_Core_CLI_Message_ToggleOverlay')),
             
         }
     for name in globalconfig['quick_setting']['all']: 

@@ -5,7 +5,7 @@ from myutils.hwnd import  letfullscreen,recoverwindow,pid_running
 from traceback import print_exc
 from myutils.subproc import subproc_w
 import time,threading
-
+from myutils.wrapper import threader
 class fullscreen():
     def __init__(self,_externalfsend) -> None: 
         self.savewindowstatus=None 
@@ -98,6 +98,11 @@ class fullscreen():
             self._externalfsend()
             self.status=False
         threading.Thread(target=_waitexternalend ).start()
+    @threader
+    def _waitenginestop_magpie(self):
+        self.engine.wait()
+        self._externalfsend()
+        self.status=False
     def _0(self,hwnd,full):
         if full:  
             profiles_index=globalconfig['profiles_index']
@@ -108,11 +113,10 @@ class fullscreen():
             with open(jspath,'w',encoding='utf-8') as ff:
                     ff.write(json.dumps(magpie10_config,ensure_ascii=False,sort_keys=False, indent=4))
             self.engine= subproc_w('./files/plugins/Magpie10/Magpie.Core.exe {} {} "{}"'.format(profiles_index,hwnd,jspath),cwd='./files/plugins/Magpie10/')
-            self._waitenginestop()
+            self._waitenginestop_magpie()
         else:
-            endevent =windows.AutoHandle(windows.CreateEvent(False, False,'MAGPIE_WAITFOR_STOP_SIGNAL'+str(self.engine.pid)))
-            windows.SetEvent(endevent)
-             
+            windows.SendMessage(windows.FindWindow('Magpie_Core_CLI_Message',None),windows.RegisterWindowMessage('Magpie_Core_CLI_Message_Stop'))
+            
     # magpie9
     # def _0(self,hwnd,full):
     #     if full:
