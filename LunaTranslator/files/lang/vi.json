@@ -700,5 +700,6 @@
     "API接口格式如下，可根据自己的设置进行修改IP和端口。": "Giao diện API được định dạng như sau và IP và cổng có thể được sửa đổi theo cài đặt của riêng bạn.",
     "语言自适应": "Thích nghi ngôn ngữ",
     "去除重复字符": "Loại bỏ các ký tự trùng lặp",
-    "游戏内叠加层": "Lớp phủ trong trò chơi"
+    "游戏内叠加层": "Lớp phủ trong trò chơi",
+    "内联效果参数": "Tham số hiệu ứng nội tuyến"
 }

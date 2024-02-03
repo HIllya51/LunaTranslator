@@ -202,6 +202,7 @@ def setTabThree_lazy(self) :
         [('',1),('禁用DirectFlip',4),(getsimpleswitch(magpie10_config['profiles'][globalconfig['profiles_index']],'disableDirectFlip'))],
         [('',1),('允许缩放最大化或全屏的窗口',4),(getsimpleswitch(magpie10_config,'allowScalingMaximized'))],
         [('',1),('缩放时模拟独占全屏',4),(getsimpleswitch(magpie10_config,'simulateExclusiveFullscreen'))],
+        [('',1),('内联效果参数',4),(getsimpleswitch(magpie10_config,'inlineParams'))],
         
     ] 
     commonfsgrid=[

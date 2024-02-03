@@ -700,5 +700,6 @@
     "API接口格式如下，可根据自己的设置进行修改IP和端口。": "The API interface format is as follows, and the IP and port can be modified according to your own settings.",
     "语言自适应": "Language Adaptation",
     "去除重复字符": "Remove duplicate characters",
-    "游戏内叠加层": "In-game overlay layer"
+    "游戏内叠加层": "In-game overlay layer",
+    "内联效果参数": "Inline effect parameters"
 }
