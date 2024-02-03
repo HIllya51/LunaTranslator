@@ -210,7 +210,7 @@ class texthook(basetext  ):
                 self.useembed(addr,_ctx1,_ctx2,True) 
     def getembedtext(self,text,tp): 
         if globalconfig['autorun']==False:
-            self.embedcallback(text,0,text)
+            self.embedcallback(text,text)
             return 
         if self.checkisusingembed(tp.addr,tp.ctx,tp.ctx2):
             self.newline.put((text,False, functools.partial(self.embedcallback,text),True))
