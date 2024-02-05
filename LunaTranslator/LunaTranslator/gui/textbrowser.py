@@ -557,7 +557,7 @@ class Textbrowser( ):
         else:
             x=tl1.x()/2+tl2.x()/2-w/2
             y=tl2.y()-fh   
-        y+=globalconfig['buttonsize']*1.5 *self.parent.rate
+        y+=globalconfig['buttonsize']*1.5
         y+=self.jiaming_y_delta
         
         label.move(int(x),int(y))   

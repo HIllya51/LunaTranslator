@@ -19,7 +19,7 @@ import winsharedutils,queue
 from myutils.config import globalconfig,saveallconfig,_TR
 from myutils.subproc import endsubprocs
 from myutils.ocrutil import ocr_run,imageCut
-from myutils.hwnd import mouseselectwindow ,showintab,getScreenRate,grabwindow,getExeIcon
+from myutils.hwnd import mouseselectwindow ,showintab,grabwindow,getExeIcon
 from gui.dialog_savedgame import dialog_savedgame,dialog_savedgame_new
 from gui.dialog_memory import dialog_memory
 from gui.textbrowser import Textbrowser
@@ -69,7 +69,6 @@ class QUnFrameWindow(resizableframeless):
             except:
                 pass
             self.move(self.pos().x()+ other[0],self.pos().y()+ other[1])
-            #self.move(self.pos().x()+self.rate *other[0],self.pos().y()+self.rate *other[1])
         
     def showres(self,name,color,res,onlyshowhist):  
         try:
@@ -199,7 +198,7 @@ class QUnFrameWindow(resizableframeless):
                       "locktoolsbutton": globalconfig['locktools'], "hideocrrange": self.showhidestate, "bindwindow": self.isbindedwindow, "keepontop": globalconfig['keepontop']}
         onstatecolor="#FF69B4"
          
-        self._TitleLabel.setFixedHeight(int(globalconfig['buttonsize']*1.5*self.rate)  )
+        self._TitleLabel.setFixedHeight(int(globalconfig['buttonsize']*1.5)  )
         for i in range(len(self.buttons)):
             name=self.buttons[i].name
             if name in colorstate:
@@ -211,17 +210,16 @@ class QUnFrameWindow(resizableframeless):
             else:
                 icon=globalconfig['toolbutton']['buttons'][name]['icon']
             self.buttons[i].setIcon(qtawesome.icon(icon,color=color))#(icon[i])
-            self.buttons[i].resize(int(globalconfig['buttonsize']*2 *self.rate),int(globalconfig['buttonsize']*1.5*self.rate))
+            self.buttons[i].resize(int(globalconfig['buttonsize']*2),int(globalconfig['buttonsize']*1.5))
         
             if self.buttons[i].adjast:
                 self.buttons[i].adjast()
-            self.buttons[i].setIconSize(QSize(int(globalconfig['buttonsize']*self.rate),
-                                 int(globalconfig['buttonsize']*self.rate)))
+            self.buttons[i].setIconSize(QSize(globalconfig['buttonsize'],globalconfig['buttonsize']))
         self.showhidetoolbuttons()
-        self.translate_text.movep(0,globalconfig['buttonsize']*1.5*self.rate)
+        self.translate_text.movep(0,globalconfig['buttonsize']*1.5)
         self.textAreaChanged()
-        self.setMinimumHeight(int(globalconfig['buttonsize']*1.5*self.rate+10))
-        self.setMinimumWidth(int(globalconfig['buttonsize']*2*self.rate))
+        self.setMinimumHeight(int(globalconfig['buttonsize']*1.5+10))
+        self.setMinimumWidth(globalconfig['buttonsize']*2)
     def addbuttons(self):
         def simulate_key_enter():
             windows.SetForegroundWindow(gobject.baseobject.textsource.hwnd)
@@ -376,7 +374,6 @@ class QUnFrameWindow(resizableframeless):
         self.lastrefreshtime=time.time()
         self.autohidestart=False
         threading.Thread(target=self.autohidedelaythread).start()
-        self.rate = getScreenRate()
         self.muteprocessignal.connect(self.muteprocessfuntion) 
         self.toolbarhidedelaysignal.connect(self.toolbarhidedelay)
         
@@ -523,7 +520,7 @@ class QUnFrameWindow(resizableframeless):
             return
         newHeight = self.document.size().height() 
         width = self.width()
-        self.resize(width,int( 5+newHeight + globalconfig['buttonsize']*1.5*self.rate) )
+        self.resize(width,int( 5+newHeight + globalconfig['buttonsize']*1.5) )
        
         
     def clickRange(self,auto): 
@@ -578,9 +575,9 @@ class QUnFrameWindow(resizableframeless):
     def resizeEvent(self, e):
         super().resizeEvent(e);
         wh=globalconfig['buttonsize'] *1.5
-        height = self.height() - wh *self.rate 
+        height = self.height() - wh 
          
-        self.translate_text.resize(self.width()-5, height * self.rate)
+        self.translate_text.resize(self.width()-5, height )
         for button in self.buttons[-2:]:
               button.adjast( ) 
         # 自定义窗口调整大小事件

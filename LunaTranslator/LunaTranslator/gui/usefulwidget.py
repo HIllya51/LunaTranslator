@@ -7,7 +7,7 @@ from PyQt5.QtWidgets import  QColorDialog,QSpinBox,QDoubleSpinBox,QPushButton,QC
 from traceback import print_exc
 import qtawesome ,functools,gobject,threading
 from myutils.wrapper import  Singleton 
-from myutils.hwnd import getScreenRate,showintab
+from myutils.hwnd import showintab
 @Singleton
 class dialog_showinfo(QDialog):
         
@@ -92,7 +92,7 @@ class closeashidewindow(saveposwindow):
         event.ignore() 
         super().closeEvent(event)
 class MySwitch(QPushButton): 
-    def __init__(self,rate, parent = None,sign=True ,enable=True):
+    def __init__(self, parent = None,sign=True ,enable=True):
         self.status1=0
         self.status2=0
         self.colors=[
@@ -111,10 +111,9 @@ class MySwitch(QPushButton):
           color: black;
           border: 0px;
           font: 100 10pt;''')
-        self.rate= rate
+        
         self.clicked.connect(self.setChecked)
-        self.setIconSize(QSize(int(25*self.rate),
-                                 int(25*self.rate)))  
+        self.setIconSize(QSize(25,25))  
         self.setEnabled(enable)
         self.setCheckable(True)
         self.setChecked(sign)  
@@ -335,8 +334,7 @@ def getcolorbutton(d,key,callback,name=None,parent=None,icon="fa.paint-brush",co
         qicon=qtawesome.icon(icon, color=constcolor if constcolor else d[key])
     b=QPushButton(qicon, ""  )
     b.setEnabled(enable) 
-    b.setIconSize(QSize(int(20*getScreenRate()),
-                                int(20*getScreenRate())))
+    b.setIconSize(QSize(20,20))
     if transparent:
         b.setStyleSheet('''background-color: rgba(255, 255, 255, 0);
             color: black;
@@ -362,7 +360,7 @@ def getsimpleswitch(d,key,enable=True,callback=None,name=None,pair=None,parent=N
         if key not in d:
             d[key]=default
 
-    b=MySwitch(getScreenRate(),sign=d[key],enable=enable)
+    b=MySwitch(sign=d[key],enable=enable)
     b.clicked.connect(functools.partial(callbackwrap,d,key,callback) )
     
     if pair:

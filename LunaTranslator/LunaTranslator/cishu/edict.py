@@ -2,7 +2,6 @@ from myutils.config import globalconfig
 import sqlite3,os
 import winsharedutils,re
 from myutils.utils import argsort,autosql
-from traceback import print_exc
 class edict():
     def __init__(self):
         self.sql=None

@@ -1,6 +1,7 @@
 import sys
-from PyQt5.QtCore import QCoreApplication ,Qt 
+from PyQt5.QtCore import Qt 
 from PyQt5.QtWidgets import  QApplication
+from PyQt5.QtGui import QFont
 import platform,os
 
 if __name__ == "__main__" :
@@ -42,7 +43,14 @@ if __name__ == "__main__" :
 
     gobject.overridepathexists()
     
-    QCoreApplication.setAttribute(Qt.AA_UseHighDpiPixmaps, True)
+    QApplication.setAttribute(Qt.ApplicationAttribute.AA_EnableHighDpiScaling)
+    QApplication.setAttribute(Qt.ApplicationAttribute.AA_UseHighDpiPixmaps)
+    QApplication.setHighDpiScaleFactorRoundingPolicy(Qt.HighDpiScaleFactorRoundingPolicy.PassThrough)
+    font=QFont()
+    font.setStyleStrategy(QFont.StyleStrategy.PreferAntialias)
+    font.setHintingPreference(QFont.HintingPreference.PreferFullHinting)
+    QApplication.setFont(font)
+    
     app = QApplication(sys.argv)
     app.setQuitOnLastWindowClosed(False) 
 

@@ -4,10 +4,8 @@ from PyQt5.QtGui import   QPixmap,QColor ,QIcon
 from PyQt5.QtWidgets import QApplication
 import gobject
 import os
-import time,winrtutils,winsharedutils,base64,hashlib
+import time,winrtutils,winsharedutils,hashlib
 from myutils.wrapper import threader
-from myutils.utils import argsort
-from traceback import print_exc
 def pid_running(pid): 
     try:
         process =windows.AutoHandle(windows.OpenProcess(windows.SYNCHRONIZE, False, pid))
@@ -57,11 +55,13 @@ def grabwindow():
         _()
         _=windows.GetClientRect(hwnd)
         rate=dynamic_rate(hwnd,_)
-        h,w= int(_[2]/rate),int(_[3]/rate)
-        p=QApplication.primaryScreen().grabWindow(hwnd,0,0,h,w)
-        if(not p.toImage().allGray()):
+        w,h= int(_[2]/rate),int(_[3]/rate)
+        print(_)
+        print(h,w,rate)
+        p=QApplication.primaryScreen().grabWindow(hwnd,0,0,w,h)
+        p=p.toImage().copy(0,0,w,h)
+        if(not p.allGray()):
                 p.save(fname+'_gdi.png')
-                 
         gobject.baseobject.translation_ui.displaystatus.emit("saved to "+fname,'red',True,True)
 def dynamic_rate(hwnd,rect):
         if(getscreenp()==(rect[2],rect[3])):

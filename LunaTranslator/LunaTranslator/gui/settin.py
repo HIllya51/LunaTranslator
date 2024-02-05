@@ -1,15 +1,14 @@
  
-from PyQt5.QtCore import Qt,QSize,pyqtSignal  
-from PyQt5.QtWidgets import  QColorDialog,QSpinBox,QDoubleSpinBox,QPushButton,QComboBox,QLabel,QScrollArea,QWidget,QGridLayout,QApplication,QTabBar,QVBoxLayout
-from PyQt5.QtGui import QColor  ,QResizeEvent 
+from PyQt5.QtCore import pyqtSignal  
+from PyQt5.QtWidgets import QLabel,QScrollArea,QWidget,QGridLayout,QVBoxLayout
+from PyQt5.QtGui import QResizeEvent 
 from PyQt5.QtWidgets import  QTabWidget 
-import qtawesome  
-import functools,time
+import qtawesome
+import functools
 from traceback import print_exc 
 from myutils.config import globalconfig ,_TR
 from myutils.utils import wavmp3player
-from myutils.config import globalconfig 
-from myutils.hwnd import getScreenRate
+from myutils.config import globalconfig
 from gui.settingpage1 import setTabOne,setTabOne_direct
 from gui.settingpage2 import setTabTwo,settab2d
 from gui.settingpage_xianshishezhi import setTabThree ,setTabThree_direct
@@ -77,7 +76,7 @@ class Settin(closeashidewindow) :
                 if save:
                     savelist.append(ll)
 
-                grid.setRowMinimumHeight(nowr,int(35*self.rate))
+                grid.setRowMinimumHeight(nowr,35)
         self.needfitcols.append([grid,maxl])
     
     def __init__(self, parent): 
@@ -92,13 +91,11 @@ class Settin(closeashidewindow) :
         
         
         self.setMinimumSize(100,100)
-        # 界面缩放比例
-        self.rate = getScreenRate()
         # 界面尺寸
-        self.window_width = int((900 if globalconfig['languageuse']==0 else 1200)*self.rate)
+        self.window_width = 900 if globalconfig['languageuse']==0 else 1200
          
-        self.window_height = int(500*self.rate)
-        self.scrollwidth=20*self.rate
+        self.window_height = 500
+        self.scrollwidth=20
         self.savelastrect=None 
            
         
@@ -136,7 +133,7 @@ class Settin(closeashidewindow) :
                     width: %spx;
                     height: %spx;
                     font:%spt  ;  }
-                '''%(50*self.rate,self.window_width*0.2,globalconfig['tabfont_chs'] if globalconfig['languageuse']==0 else globalconfig['tabfont_otherlang']  )
+                '''%(50,self.window_width*0.2,globalconfig['tabfont_chs'] if globalconfig['languageuse']==0 else globalconfig['tabfont_otherlang']  )
             )
             self.tab_widget.setTabPosition(QTabWidget.West)
             setTabOne(self)   
@@ -171,7 +168,7 @@ class Settin(closeashidewindow) :
         gridlayoutwidget.setLayout(gridlay)   
         gridlayoutwidget.setStyleSheet("gridwidget{background-color:transparent;}") 
         self.needfitwidgets.append(gridlayoutwidget)
-        gridlayoutwidget.setFixedHeight(int(len(grid)*35*self.rate))
+        gridlayoutwidget.setFixedHeight(len(grid)*35)
         margins=gridlay.contentsMargins()
         gridlay.setContentsMargins(margins.left(),0,margins.right(),0)
         self.automakegrid(gridlay,grid,save,savelist  ) 
