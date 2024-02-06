@@ -16,7 +16,7 @@ from gui.usefulwidget import getsimplecombobox,getspinbox,getcolorbutton,getsimp
 from PyQt5.QtCore import QPoint, QRect, QSize, Qt,pyqtSignal
 import os   
 from textsource.fridahook import fridahook
-from myutils.hwnd import showintab
+from myutils.hwnd import showintab,getScreenRate
 from PyQt5.QtGui import QStandardItem, QStandardItemModel   
 from PyQt5.QtCore import Qt,QSize  
 from myutils.config import   savehook_new_list,savehook_new_data
@@ -265,10 +265,12 @@ class browserdialog(QDialog):
         def resizeEvent(self, a0: QResizeEvent) -> None:
               if self._resizable==False:return
               self.nettab.resize(a0.size().width(),self.nettab.height())
+              rate=getScreenRate()
+              rect=0,int(rate*self.nettab.height()),int(rate*a0.size().width()),int(rate*(a0.size().height()-self.nettab.height()))
               if self.webviewv==0:
-                    self.browser.resize(0,self.nettab.height(),a0.size().width(),a0.size().height()-self.nettab.height())
+                    self.browser.resize(*rect)
               elif self.webviewv==1:  
-                      self.browser.set_geo(0,self.nettab.height(),a0.size().width(),a0.size().height()-self.nettab.height())
+                      self.browser.set_geo(*rect)
         def __init__(self, parent,textsource_or_exepath ) -> None:
                 super().__init__(parent, Qt.WindowMinMaxButtonsHint|Qt.WindowCloseButtonHint)
                 if isinstance(textsource_or_exepath,str):
@@ -288,7 +290,7 @@ class browserdialog(QDialog):
                       self.browser=Webview(0,int(self.winId())) #构造函数里会触发ResizeEvent。虽然确实有问题，但很奇怪前一天晚上正常，第二天起来就崩溃了。
                 self.setWindowTitle(savehook_new_data[self.exepath]['title'])
                 self.nettab=QTabWidget(self)
-                self.nettab.setFixedHeight(self.nettab.tabBar().height()+10)
+                self.nettab.setFixedHeight(self.nettab.tabBar().height())
                 tabBar = CustomTabBar(self)
                 self.nettab.setTabBar(tabBar)
                 tabBar.lastclick.connect(self.lastclicked)
