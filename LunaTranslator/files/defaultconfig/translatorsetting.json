@@ -175,11 +175,17 @@
 		"model":"gpt-3.5-turbo",
 		"附带上下文个数":0,
 		"OPENAI_API_BASE":"https://api.openai.com/v1",
+		"Appedix":"/chat/completions",
 		"使用自定义promt":false,
-		"自定义promt":""
+		"自定义promt":"",
+		"api_type":0
       }
 	  ,
 		"argstype":{
+			"api_type":{
+				"type":"combo",
+				"list":["open_ai","azure","azure_ad"]
+			},
 			"使用自定义promt":{
 				"type":"switch"
 			},

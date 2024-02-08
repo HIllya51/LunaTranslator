@@ -17,7 +17,12 @@ class TS(basetrans):
         os.environ['http_proxy']=self.proxy['http'] if self.proxy['http'] else ''
         self.checkempty(['SECRET_KEY','model'])
         self.contextnum=int(self.config['附带上下文个数'])
-          
+        api_type=self.config['api_type']
+        if api_type in [1,2]:
+            api_version='2023-05-15'
+        else :
+            api_version=None
+
         try:
             temperature = float(self.config['Temperature'])
         except:
@@ -37,10 +42,16 @@ class TS(basetrans):
             message.append(self.context[i*2])
             message.append(self.context[i*2+1])
         message.append({"role": "user", "content": query}) 
-        headers = {
-            'Authorization': 'Bearer ' + self.multiapikeycurrent['SECRET_KEY'],
-            'Content-Type': 'application/json',
-        }
+        if api_type==1:#azure
+            headers={'api-key':self.multiapikeycurrent['SECRET_KEY']}
+        else:#open_ai/azure_ad
+            headers = {
+                'Authorization': 'Bearer ' + self.multiapikeycurrent['SECRET_KEY'],
+                'Content-Type': 'application/json',
+            }
+        if api_version:
+            params={'api-version':api_version}
+        else:params=None
         data=dict(
             model=self.config['model'],
             messages=message,
@@ -53,8 +64,10 @@ class TS(basetrans):
             stream=False
         ) 
         response=self.session.post(
-            self.config['OPENAI_API_BASE'] + '/chat/completions',
-            headers=headers, json=data
+            self.config['OPENAI_API_BASE'] + self.config['Appedix'],
+            params=params,
+            headers=headers, 
+            json=data
         ).json()
         try:
             message = response['choices'][0]['message']['content'].replace('\n\n', '\n').strip()
