@@ -16,7 +16,8 @@ class hira:
     def fy(self,text): 
             start=0
             result=[] 
-            for node,fields in self.kks.parse( text):# self.kks.parseToNodeList(text): 
+            codec=['utf8','shiftjis'][globalconfig['hirasetting']['mecab']['codec']]
+            for node,fields in self.kks.parse( text,codec):# self.kks.parseToNodeList(text): 
                 if len(fields):
                     pos1=fields[0] 
                     if len(fields)>29:
@@ -27,6 +28,8 @@ class hira:
                         kana=fields[17]
                     elif len(fields)>9:
                         kana=fields[9] #无kana，用lform代替
+                    elif len(fields)==9:
+                        kana=fields[8]#7/8均可，issues/514
                     else:
                         kana=''
                 else:

@@ -25,14 +25,18 @@ def gethiragrid(self) :
                  getsimpleswitch(globalconfig['hirasetting'][name],'use',parent=self,name=name,callback=functools.partial(yuitsu_switch,self,globalconfig['hirasetting'],'hiraswitchs',name,gobject.baseobject.starthira),pair='hiraswitchs'), 
                  
                  ] 
-            if 'path' in globalconfig['hirasetting'][name]:
-                 line+=[getcolorbutton(globalconfig,'',callback=functools.partial(getsomepath1,self,globalconfig['hirasetting'][name]['name'],globalconfig['hirasetting'][name], 'path',globalconfig['hirasetting'][name]['name'],gobject.baseobject.starthira,True),icon='fa.gear',constcolor="#FF69B4")]
-            elif 'token' in globalconfig['hirasetting'][name] and 'token_name' in globalconfig['hirasetting'][name]:
-                items=[{
-                        't':'lineedit','l': globalconfig['hirasetting'][name]['token_name'],'d':globalconfig['hirasetting'][name],'k':'token'
-                    },
-                    {'t':'okcancel' }]
-                line+=[getcolorbutton(globalconfig,'',callback= functools.partial(autoinitdialog,self,  globalconfig['hirasetting'][name]['name'],800,items) ,icon='fa.gear',constcolor="#FF69B4")]
+            items=[]
+            for key in globalconfig['hirasetting'][name]:
+                  if key=='path':
+                        items.append({'t':'file','l':globalconfig['hirasetting'][name]['name'],'d':globalconfig['hirasetting'][name],'k':'path','dir':True})
+                  elif key=='token':
+                        items.append({'t':'lineedit','l': globalconfig['hirasetting'][name]['token_name'],'d':globalconfig['hirasetting'][name],'k':'token'})
+                  elif key=='codec':
+                        items.append({'t':'combo','l': 'codec','d':globalconfig['hirasetting'][name],'k':'codec','list':['utf8','shiftjis']})
+            if len(items):
+                        items.append({'t':'okcancel','callback':gobject.baseobject.starthira})
+                        line+=[getcolorbutton(globalconfig,'',callback= functools.partial(autoinitdialog,self,  globalconfig['hirasetting'][name]['name'],800,items) ,icon='fa.gear',constcolor="#FF69B4")]
+            
             else:
                   line+=['']
             if i%3==2  :

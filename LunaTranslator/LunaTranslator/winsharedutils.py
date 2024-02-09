@@ -76,16 +76,16 @@ class mecabwrap:
         self.kks=_mecab_init(mecabpath.encode('utf8'),gobject.GetDllpath('libmecab.dll') )
     def __del__(self):
         _mecab_end(self.kks)
-    def parse(self,text):
+    def parse(self,text,codec):
         surface=POINTER(c_char_p)()
         feature=POINTER(c_char_p)()
         num=c_uint()
-        _mecab_parse(self.kks,text.encode('utf8'),pointer(surface),pointer(feature),pointer(num))
+        _mecab_parse(self.kks,text.encode(codec),pointer(surface),pointer(feature),pointer(num))
         res=[]
         for i in range(num.value):
             f=feature[i]
-            fields=f.decode('utf8').split(',')
-            res.append((surface[i].decode('utf8'),fields))
+            fields=f.decode(codec).split(',')
+            res.append((surface[i].decode(codec),fields))
         _freestringlist(feature,num.value)
         _freestringlist(surface,num.value)
         return res 
