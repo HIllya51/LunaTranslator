@@ -705,5 +705,5 @@
     "外部缩放软件": "Software de zoom externo",
     "Hook Magpie进程使其不会退出缩放": "El proceso Hook magpie hace que no salga del zoom",
     "Hook LosslessScaling进程使其不会退出缩放": "El proceso Hook losslessscaling hace que no salga del zoom",
-    "找不到英语识别模型，正在使用日语模型作为代替，可能效果不佳": "No se puede encontrar el modelo de reconocimiento inglés, se está utilizando el modelo japonés como sustituto y puede no funcionar bien."
+    "正在使用日语模型作为代替，可能效果不佳": "Se está utilizando el modelo japonés como sustituto y puede que no funcione bien"
 }

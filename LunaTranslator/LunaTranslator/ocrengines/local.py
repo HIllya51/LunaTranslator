@@ -91,5 +91,5 @@ class OCR(baseocr):
         
         res=self.common_solve_text_orientation(box,text)
         if self.isusingjaasen:
-            res='<msg_warning_with_text>'+_TR('找不到英语识别模型，正在使用日语模型作为代替，可能效果不佳')+'</msg_warning_with_text>'+res
+            res='<msg_warning_with_text>'+_TR('未下载该语言的OCR模型,请从软件主页下载模型解压到files/ocr路径后使用')+'\n'+_TR('正在使用日语模型作为代替，可能效果不佳')+'</msg_warning_with_text>'+res
         return res

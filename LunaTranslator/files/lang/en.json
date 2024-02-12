@@ -705,5 +705,5 @@
     "外部缩放软件": "External scaling software",
     "Hook Magpie进程使其不会退出缩放": "Hook Magpie process prevents it from exiting scaling",
     "Hook LosslessScaling进程使其不会退出缩放": "Hook LosslessScaling process prevents it from exiting scaling",
-    "找不到英语识别模型，正在使用日语模型作为代替，可能效果不佳": "Unable to find English recognition model, using Japanese model as a substitute, may not be effective"
+    "正在使用日语模型作为代替，可能效果不佳": "Using Japanese models as a substitute may not be effective"
 }

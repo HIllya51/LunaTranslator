@@ -705,5 +705,5 @@
     "外部缩放软件": "Dışarı skalama yazılımı",
     "Hook Magpie进程使其不会退出缩放": "Hook Magpie süreci ölçeklenmesini engelledi",
     "Hook LosslessScaling进程使其不会退出缩放": "Hook LosslessScaling süreç ölçeklenmesini engelledi",
-    "找不到英语识别模型，正在使用日语模型作为代替，可能效果不佳": "İngilizce tanıma modeli bulamadı. Japon modeli yerine koyarak kullanarak etkili olabilir."
+    "正在使用日语模型作为代替，可能效果不佳": "Japon modellerini yerine koymak etkili olmayabilir."
 }

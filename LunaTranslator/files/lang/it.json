@@ -705,5 +705,5 @@
     "外部缩放软件": "Software di ridimensionamento esterno",
     "Hook Magpie进程使其不会退出缩放": "Il processo Hook Magpie impedisce di uscire dalla scala",
     "Hook LosslessScaling进程使其不会退出缩放": "Hook LosslessScaling processo impedisce di uscire dalla scalabilità",
-    "找不到英语识别模型，正在使用日语模型作为代替，可能效果不佳": "Impossibile trovare il modello di riconoscimento inglese, utilizzando il modello giapponese come sostituto, potrebbe non essere efficace"
+    "正在使用日语模型作为代替，可能效果不佳": "Utilizzare modelli giapponesi come sostituto potrebbe non essere efficace"
 }
