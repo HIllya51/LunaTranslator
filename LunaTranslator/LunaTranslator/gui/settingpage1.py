@@ -31,7 +31,8 @@ def gethookgrid(self) :
                 [],
                 [('区分人名和文本',5),getsimpleswitch(globalconfig,'allow_set_text_name')],
                 [('使用YAPI注入',5),getsimpleswitch(globalconfig,'use_yapi')],
-                
+                [],
+                [('获取最新提取器核心&错误反馈&游戏支持',8),(makehtml("https://github.com/HIllya51/LunaHook"),8,"link")]
         ]
          
         return grids
@@ -180,7 +181,7 @@ def setTabOne_direct(self) :
                 ], 
                 [
                          ('HOOK',3),(getsimpleswitch(globalconfig['sourcestatus2']['texthook'],'use',name='texthook',parent=self,callback= functools.partial(yuitsu_switch,self,globalconfig['sourcestatus2'],'sourceswitchs','texthook',gobject.baseobject.starttextsource),pair='sourceswitchs'),1), '',
-                         ('Experimental',3),(getsimpleswitch(globalconfig['sourcestatus2']['fridahook'],'use',name='fridahook',parent=self,callback= functools.partial(yuitsu_switch,self,globalconfig['sourcestatus2'],'sourceswitchs','fridahook',gobject.baseobject.starttextsource),pair='sourceswitchs'),1),
+                         ('FridaScripts',3),(getsimpleswitch(globalconfig['sourcestatus2']['fridahook'],'use',name='fridahook',parent=self,callback= functools.partial(yuitsu_switch,self,globalconfig['sourcestatus2'],'sourceswitchs','fridahook',gobject.baseobject.starttextsource),pair='sourceswitchs'),1),
 
                      
                 ] ,
@@ -205,7 +206,7 @@ def setTabOne_lazy(self) :
         
          
          
-        tab=self.makesubtab_lazy(['HOOK设置','OCR设置','剪贴板','内嵌翻译','Experimental'],
+        tab=self.makesubtab_lazy(['HOOK设置','OCR设置','剪贴板','内嵌翻译','FridaScripts'],
                                 [       
                                         lambda:self.makescroll(self.makegrid(gethookgrid(self))),
                                         lambda:self.makescroll(self.makegrid(getocrgrid(self))),

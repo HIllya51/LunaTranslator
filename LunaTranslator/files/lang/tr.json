@@ -662,7 +662,6 @@
     "Sakura部署教程": "Sakura Deployment Tutorial",
     "Github仓库": "Github deposu",
     "利用上文信息翻译（通常会有一定的效果提升，但会导致变慢）": "Önceki metinde verilen bilgileri kullanarak çevirin (genelde etkinliğinde bazı gelişmelerle, fakat daha yavaş çeviriye yol açabilir)",
-    "范围选取遮罩透明度": "Aralık seçim maskesi transparency",
     "文本缓冲区长度": "Metin buffer uzunluğu",
     "显示/隐藏历史翻译和调试输出": "Tarihi çevirimi ve arızasızlandırma çıkışını göster/gizle",
     "历史翻译和调试输出": "Tarihi çeviri ve hata ayıklama çıkışı",
@@ -701,5 +700,10 @@
     "语言自适应": "Dil Yönetimi",
     "去除重复字符": "Çift karakterleri sil",
     "游戏内叠加层": "Oyun üzerindeki katı",
-    "内联效果参数": "İçeri etkisi parametreleri"
+    "内联效果参数": "İçeri etkisi parametreleri",
+    "获取最新提取器核心&错误反馈&游戏支持": "Son ekstraktör çekirdek&hata geri veri&oyunu desteğini alın",
+    "外部缩放软件": "Dışarı skalama yazılımı",
+    "Hook Magpie进程使其不会退出缩放": "Hook Magpie süreci ölçeklenmesini engelledi",
+    "Hook LosslessScaling进程使其不会退出缩放": "Hook LosslessScaling süreç ölçeklenmesini engelledi",
+    "找不到英语识别模型，正在使用日语模型作为代替，可能效果不佳": "İngilizce tanıma modeli bulamadı. Japon modeli yerine koyarak kullanarak etkili olabilir."
 }

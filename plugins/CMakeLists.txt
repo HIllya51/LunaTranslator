@@ -28,4 +28,4 @@ add_subdirectory(exec)
 add_subdirectory(shareddllproxy)
 add_subdirectory(winrtutils)
 add_subdirectory(winsharedutils)
-	
+add_subdirectory(hookmagpie)

@@ -3,7 +3,7 @@ from ctypes import  c_int,POINTER,pointer,c_uint,windll,c_char_p,create_unicode_
 from ctypes import Structure,c_int,POINTER,c_uint,WINFUNCTYPE,c_void_p,sizeof,byref
 import ctypes
 from traceback import print_exc
-from ctypes.wintypes import RECT,POINT,HWND,BOOL,WORD,DWORD,BYTE ,LPCWSTR,HANDLE
+from ctypes.wintypes import RECT,POINT,HWND,BOOL,WORD,DWORD,BYTE ,LPCWSTR,HANDLE,UINT
 
 WAIT_TIMEOUT                        = 258 
 SW_HIDE = 0
@@ -749,3 +749,11 @@ class AutoHandle(HANDLE):
  
 
  
+_MapVirtualKey=_user32.MapVirtualKeyW
+_MapVirtualKey.argtypes=UINT,UINT
+_MapVirtualKey.restype=UINT
+MAPVK_VK_TO_VSC=0
+MAPVK_VSC_TO_VK=1
+MAPVK_VK_TO_CHAR=2
+def MapVirtualKey(char,uMapType=MAPVK_VK_TO_CHAR):
+    return _MapVirtualKey(ord(char),uMapType)

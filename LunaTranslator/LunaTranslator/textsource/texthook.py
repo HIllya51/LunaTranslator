@@ -8,7 +8,7 @@ import windows,subprocess
 from myutils.config import globalconfig ,savehook_new_data ,_TR,static_data 
 from textsource.textsourcebase import basetext 
 from myutils.utils import checkchaos
-from myutils.hwnd import testprivilege
+from myutils.hwnd import testprivilege,injectdll
 from myutils.wrapper import threader 
 from ctypes import CDLL,c_bool,POINTER,Structure,c_int,pointer,c_wchar_p,c_uint64,sizeof,c_void_p,cast,c_wchar,c_uint32,c_uint8,c_uint,c_char,c_short
 from ctypes.wintypes import DWORD,LPCWSTR,HANDLE
@@ -158,13 +158,7 @@ class texthook(basetext  ):
             print(injecter,os.path.exists(injecter))
             print(dll,os.path.exists(dll))
             #subprocess.Popen('"{}" dllinject {} "{}"'.format(injecter,pid,dll))
-            pid=' '.join([str(_) for _ in injectpids])
-            if any(map(testprivilege,injectpids))==False: 
-                windows.ShellExecute(0,'runas',injecter,'dllinject {} "{}"'.format(pid,dll),None,windows.SW_HIDE)
-            else:
-                ret=subprocess.run('"{}" dllinject {} "{}"'.format(injecter,pid,dll)).returncode
-                if(ret==0):
-                    windows.ShellExecute(0,'runas',injecter,'dllinject {} "{}"'.format(pid,dll),None,windows.SW_HIDE)
+            injectdll(injectpids,injecter,dll)
     @threader
     def onprocconnect(self,pid):
         self.connectedpids.append(pid)

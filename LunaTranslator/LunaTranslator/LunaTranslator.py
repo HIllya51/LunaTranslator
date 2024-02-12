@@ -147,14 +147,22 @@ class MAINUI() :
         return ss
     def textgetmethod(self,text,is_auto_run=True,embedcallback=None,onlytrans=False):
         _autolock(self.solvegottextlock)
+        needclear=True
         if onlytrans==False:
             self.currentsignature=time.time()
         if type(text)==str:
-            if text[:len('<notrans>')]=='<notrans>':
+            if text.startswith('<notrans>'):
                 self.translation_ui.displayres.emit('',globalconfig['rawtextcolor'],text[len('<notrans>'):],onlytrans)
                 self.currenttext=text
                 self.currentread=text
                 return   
+            elif text.startswith('<msg_warning_with_text>'):
+                length=len('<msg_warning_with_text>')
+                idx=text.find('</msg_warning_with_text>')
+                warningtext=text[length:idx]
+                text=text[idx+length+1:]
+                self.translation_ui.displaystatus.emit(warningtext,'red',True,False)
+                needclear=False
             else:
                 msgs=[
                     ('<msg_info_not_refresh>',globalconfig['rawtextcolor'],False),
@@ -226,11 +234,11 @@ class MAINUI() :
             print_exc()
             hira=[]
         if globalconfig['refresh_on_get_trans']==False:
-            self.translation_ui.displayraw1.emit(hira,text,globalconfig['rawtextcolor'] ,onlytrans)
+            self.translation_ui.displayraw1.emit(hira,text,globalconfig['rawtextcolor'] ,onlytrans,needclear)
             _showrawfunction=None
             _showrawfunction_sig=0
         else:
-            _showrawfunction=functools.partial(self.translation_ui.displayraw1.emit,hira,text,globalconfig['rawtextcolor'],onlytrans )
+            _showrawfunction=functools.partial(self.translation_ui.displayraw1.emit,hira,text,globalconfig['rawtextcolor'],onlytrans,needclear)
             _showrawfunction_sig=time.time()
          
         text_solved,optimization_params= self.solvebeforetrans(text) 

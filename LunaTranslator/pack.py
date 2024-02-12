@@ -6,7 +6,7 @@ if x86:
     nuitkadist=r'..\build\x86\LunaTranslator_main.dist'
     targetdir=r'..\build\LunaTranslator_x86'
     launch=r'..\plugins\builds\_x86'
-    downlevel=f'C:\Windows\SysWOW64\downlevel'
+    downlevel=r'C:\Windows\SysWOW64\downlevel'
     target='LunaTranslator_x86.zip'
     baddll='DLL64'
 else:
@@ -15,7 +15,7 @@ else:
     launch=r'..\plugins\builds\_x64'
     nuitkadist=r'..\build\x64\LunaTranslator_main.dist'
     targetdir=r'..\build\LunaTranslator'
-    downlevel=f'C:\Windows\system32\downlevel'
+    downlevel=r'C:\Windows\system32\downlevel'
 targetdir_in=rf'{targetdir}\LunaTranslator'
 def get_import_table(file_path):
     pe = pefile.PE(file_path) 

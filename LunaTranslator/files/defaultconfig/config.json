@@ -12,6 +12,8 @@
     "read_translator": 0,
     "disappear_delay": 5,
     "network":0,
+    "hookmagpie":true,
+    "hooklossless":true,
     "direct_filterrepeat":false,
     "allow_set_text_name":false,
     "embedded": {
@@ -94,7 +96,6 @@
         500,
         500
     ],
-    "OCR_mask_Opacity":0.5,
     "ocr_stable_sim": 0,
     "ocr_diff_sim": 0.95,
     "autorun": true,

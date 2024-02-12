@@ -3,7 +3,7 @@ import threading
 from PyQt5.QtGui import   QPixmap,QColor ,QIcon
 from PyQt5.QtWidgets import QApplication
 import gobject
-import os
+import os,subprocess
 import time,winrtutils,winsharedutils,hashlib
 from myutils.wrapper import threader
 def pid_running(pid): 
@@ -200,7 +200,14 @@ def getScreenRate() :
         windows.ReleaseDC(None, hDC); 
         __rate = round(dpiX, 2)  
     return __rate
-
+def injectdll(injectpids,injecter,dll):
+    pid=' '.join([str(_) for _ in injectpids])
+    if any(map(testprivilege,injectpids))==False: 
+        windows.ShellExecute(0,'runas',injecter,'dllinject {} "{}"'.format(pid,dll),None,windows.SW_HIDE)
+    else:
+        ret=subprocess.run('"{}" dllinject {} "{}"'.format(injecter,pid,dll)).returncode
+        if(ret==0):
+            windows.ShellExecute(0,'runas',injecter,'dllinject {} "{}"'.format(pid,dll),None,windows.SW_HIDE)
 
 def mouseselectwindow(callback): 
         

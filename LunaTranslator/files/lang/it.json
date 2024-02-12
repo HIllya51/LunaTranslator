@@ -662,7 +662,6 @@
     "Sakura部署教程": "Tutorial sull'implementazione di Sakura",
     "Github仓库": "Magazzino Github",
     "利用上文信息翻译（通常会有一定的效果提升，但会导致变慢）": "Tradurre utilizzando le informazioni fornite nel testo precedente (di solito con qualche miglioramento in efficacia, ma può portare a una traduzione più lenta)",
-    "范围选取遮罩透明度": "Trasparenza maschera di selezione intervallo",
     "文本缓冲区长度": "Lunghezza buffer di testo",
     "显示/隐藏历史翻译和调试输出": "Mostra/nasconde l'output storico di traduzione e debug",
     "历史翻译和调试输出": "Risultato storico di traduzione e debug",
@@ -701,5 +700,10 @@
     "语言自适应": "Adattamento linguistico",
     "去除重复字符": "Rimuovi caratteri duplicati",
     "游戏内叠加层": "Livello di sovrapposizione in gioco",
-    "内联效果参数": "Parametri degli effetti in linea"
+    "内联效果参数": "Parametri degli effetti in linea",
+    "获取最新提取器核心&错误反馈&游戏支持": "Ottieni l'ultimo core&error feedback & supporto al gioco dell'estrattore",
+    "外部缩放软件": "Software di ridimensionamento esterno",
+    "Hook Magpie进程使其不会退出缩放": "Il processo Hook Magpie impedisce di uscire dalla scala",
+    "Hook LosslessScaling进程使其不会退出缩放": "Hook LosslessScaling processo impedisce di uscire dalla scalabilità",
+    "找不到英语识别模型，正在使用日语模型作为代替，可能效果不佳": "Impossibile trovare il modello di riconoscimento inglese, utilizzando il modello giapponese come sostituto, potrebbe non essere efficace"
 }

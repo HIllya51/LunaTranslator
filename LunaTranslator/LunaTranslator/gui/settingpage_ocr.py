@@ -66,7 +66,6 @@ def getocrgrid(self) :
             [(("选取OCR范围后立即进行一次识别"),12),getsimpleswitch(globalconfig ,'ocrafterrangeselect')],
             [(("选取OCR范围后显示范围框"),12),getsimpleswitch(globalconfig ,'showrangeafterrangeselect')],
             [(("OCR识别易错内容修正"),12),getsimpleswitch(ocrerrorfix ,'use'),getcolorbutton(globalconfig,'',callback= functools.partial( postconfigdialog,self,ocrerrorfix['args'],'OCR识别易错内容修正'),icon='fa.gear',constcolor="#FF69B4")],
-            [(("范围选取遮罩透明度"),12),(getspinbox(0.01,1,globalconfig ,'OCR_mask_Opacity',double=True,step=0.01,dec=2),4),],
         ] 
         return grids
        
