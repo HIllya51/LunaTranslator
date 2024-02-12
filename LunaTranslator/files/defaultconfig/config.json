@@ -650,10 +650,6 @@
         }
     },
     "hirasetting": {
-        "local": {
-            "use": false,
-            "name": "内置"
-        },
         "mecab": {
             "use": false,
             "path": "",
