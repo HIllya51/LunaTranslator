@@ -11,7 +11,7 @@
     "read_trans": false,
     "read_translator": 0,
     "disappear_delay": 5,
-    "network":0,
+    "network":1,
     "hookmagpie":true,
     "hooklossless":true,
     "direct_filterrepeat":false,
