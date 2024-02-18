@@ -4,7 +4,7 @@
 #include<Windows.h>
 #include <io.h>
 #include <fcntl.h> 
-
+#include<Shlwapi.h>
 
 #define CODEPAGE_JA  932
 #define CODEPAGE_GB  936 
@@ -43,8 +43,16 @@ int jbjwmain(int argc, wchar_t* argv[])
     int MAX_USERDIC_COUNT = 3;
     int USERDIC_BUFFER_SIZE = USERDIC_PATH_SIZE * MAX_USERDIC_COUNT;// 1548, sizeof(wchar_t)
     wchar_t cache[1548] = { 0 };
+    int __i=0;
+    
     for (int i = 4; i < argc; i++) {
-        wcscpy(cache + (i - 4) * USERDIC_PATH_SIZE, argv[i]);
+        wchar_t _[MAX_PATH];
+        wcscpy(_,argv[i]);wcscat(_,L".DIC");
+        if(PathFileExistsW(_))
+        {
+            wcscpy(cache + __i * USERDIC_PATH_SIZE, argv[i]);
+            __i++;
+        }
     }
     DJC_OpenAllUserDic_Unicode(cache, 0);
     wchar_t* fr = new wchar_t[3000];
