@@ -705,5 +705,7 @@
     "外部缩放软件": "Phần mềm Zoom ngoài",
     "Hook Magpie进程使其不会退出缩放": "Quá trình Hook Magpie làm cho nó không thoát khỏi zoom",
     "Hook LosslessScaling进程使其不会退出缩放": "Quá trình Hook LosslessScaling làm cho nó không thoát khỏi zoom",
-    "正在使用日语模型作为代替，可能效果不佳": "Các mô hình tiếng Nhật đang được sử dụng thay thế và có thể không hiệu quả"
+    "正在使用日语模型作为代替，可能效果不佳": "Các mô hình tiếng Nhật đang được sử dụng thay thế và có thể không hiệu quả",
+    "保持非重复字符": "Giữ các ký tự không trùng lặp",
+    "选择文本窗口中文本框只读": "Chọn hộp văn bản chỉ đọc trong cửa sổ văn bản"
 }

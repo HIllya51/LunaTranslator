@@ -9,6 +9,21 @@ from myutils.config import globalconfig ,_TR,_TRL
 from gui.usefulwidget import MySwitch ,selectcolor
 from myutils.utils import makehtml
 from myutils.wrapper import Singleton
+def autoinitdialog_items(dict):
+    items=[] 
+    for arg in dict['args']: 
+        items.append({
+                'l':arg,'d':dict['args'],'k':arg
+            })
+        if 'argstype' in dict and arg in dict['argstype']:
+            
+            items[-1].update(dict['argstype'][arg]) 
+        else:
+            items[-1].update(
+                {'t':'lineedit'}
+            )
+    items.append({'t':'okcancel' })
+    return items
 @Singleton
 class autoinitdialog(QDialog):
     def __init__(self, parent,title,width,lines,_=None  ) -> None:
@@ -184,58 +199,49 @@ class postconfigdialog_(QDialog):
         lb=QLabel(self)
         lb.setText(_TR(key) )
         formLayout.addWidget(lb) 
-        if type(configdict[key]) in (float,int): 
-            spin=QSpinBox(self)
-            spin.setMinimum(1)
-            spin.setMaximum(100)
-            spin.setValue(configdict[key])
-            spin.valueChanged.connect(lambda x:configdict.__setitem__(key,x))
-            formLayout.addWidget(spin)
-            self.resize(QSize(600,1))
+    
+        # lines=QTextEdit(self)
+        # lines.setPlainText('\n'.join(configdict[key]))
+        # lines.textChanged.connect(lambda   :configdict.__setitem__(key,lines.toPlainText().split('\n')))
+        # formLayout.addWidget(lines)
+        model=QStandardItemModel(len(configdict[key]),1 , self)
+        row=0
         
-        elif type(configdict[key])==type({}): 
-            # lines=QTextEdit(self)
-            # lines.setPlainText('\n'.join(configdict[key]))
-            # lines.textChanged.connect(lambda   :configdict.__setitem__(key,lines.toPlainText().split('\n')))
-            # formLayout.addWidget(lines)
-            model=QStandardItemModel(len(configdict[key]),1 , self)
-            row=0
+        for key1  in  ( (configdict[key])):                                   # 2
             
-            for key1  in  ( (configdict[key])):                                   # 2
+                item = QStandardItem(key1)
+                model.setItem(row, 0, item)
                 
-                    item = QStandardItem(key1)
-                    model.setItem(row, 0, item)
-                    
-                    item = QStandardItem(configdict[key][key1])
-                    model.setItem(row, 1, item)
-                    row+=1
-            model.setHorizontalHeaderLabels(_TRL([ '原文内容','替换为']))
-            table = QTableView(self)
-            table.setModel(model)
-            table.setWordWrap(False) 
-            table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch) 
-            #table.setEditTriggers(QAbstractItemView.NoEditTriggers)
-            #table.clicked.connect(self.show_info)
-            button=QPushButton(self)
-            button.setText(_TR('添加行'))
-            def clicked1(): 
-                model.insertRow(0,[QStandardItem(''),QStandardItem('')])   
-            button.clicked.connect(clicked1)
-            button2=QPushButton(self)
-            button2.setText(_TR('删除选中行'))
-            def clicked2():
-                
-                model.removeRow(table.currentIndex().row())
-            button2.clicked.connect(clicked2)
-            self.button=button
-            self.model=model
-            self.key=key
-            self.configdict=configdict
-            self.closeevent=True
-            formLayout.addWidget(table)
-            formLayout.addWidget(button)
-            formLayout.addWidget(button2) 
-            self.resize(QSize(600,400))
+                item = QStandardItem(configdict[key][key1])
+                model.setItem(row, 1, item)
+                row+=1
+        model.setHorizontalHeaderLabels(_TRL([ '原文内容','替换为']))
+        table = QTableView(self)
+        table.setModel(model)
+        table.setWordWrap(False) 
+        table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch) 
+        #table.setEditTriggers(QAbstractItemView.NoEditTriggers)
+        #table.clicked.connect(self.show_info)
+        button=QPushButton(self)
+        button.setText(_TR('添加行'))
+        def clicked1(): 
+            model.insertRow(0,[QStandardItem(''),QStandardItem('')])   
+        button.clicked.connect(clicked1)
+        button2=QPushButton(self)
+        button2.setText(_TR('删除选中行'))
+        def clicked2():
+            
+            model.removeRow(table.currentIndex().row())
+        button2.clicked.connect(clicked2)
+        self.button=button
+        self.model=model
+        self.key=key
+        self.configdict=configdict
+        self.closeevent=True
+        formLayout.addWidget(table)
+        formLayout.addWidget(button)
+        formLayout.addWidget(button2) 
+        self.resize(QSize(600,400))
         self.show()
 
 def postconfigdialog(parent,configdict,title):

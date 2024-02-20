@@ -9,7 +9,7 @@ from myutils.config import globalconfig ,postprocessconfig,noundictconfig,transe
 import functools ,gobject
 from gui.usefulwidget import getcolorbutton,getsimpleswitch
 from gui.codeacceptdialog import codeacceptdialog  
-from gui.inputdialog import getsomepath1  ,postconfigdialog 
+from gui.inputdialog import getsomepath1  ,postconfigdialog,autoinitdialog,autoinitdialog_items
 from myutils.utils import selectdebugfile
 from myutils.wrapper import Singleton
 from myutils.config import   savehook_new_list,savehook_new_data
@@ -105,8 +105,12 @@ def setTab7_lazy(self) :
                 if post=='_remove_chaos':
                     config=(getcolorbutton(globalconfig,'',icon='fa.gear',constcolor="#FF69B4",callback=lambda:codeacceptdialog(self))) 
                 elif 'args' in postprocessconfig[post]:
-                    
-                    config=(getcolorbutton(globalconfig,'',callback= functools.partial( postconfigdialog,self,postprocessconfig[post]['args'],postprocessconfig[post]['name']),icon='fa.gear',constcolor="#FF69B4")) 
+                    if isinstance(list(postprocessconfig[post]['args'].values())[0],dict):
+                        callback=functools.partial( postconfigdialog,self,postprocessconfig[post]['args'],postprocessconfig[post]['name']) 
+                    else:
+                        items=autoinitdialog_items(postprocessconfig[post])
+                        callback=functools.partial(autoinitdialog,self,postprocessconfig[post]['name'],600,items)
+                    config=(getcolorbutton(globalconfig,'',callback= callback,icon='fa.gear',constcolor="#FF69B4")) 
                 else:
                     config=('')
              

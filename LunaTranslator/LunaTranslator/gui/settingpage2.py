@@ -8,7 +8,7 @@ from gui.pretransfile import sqlite2json
 from myutils.config import globalconfig ,_TR,_TRL,static_data
 from myutils.utils import selectdebugfile,splittranslatortypes,checkportavailable
 import os ,time,requests,threading
-from gui.inputdialog import autoinitdialog 
+from gui.inputdialog import autoinitdialog ,autoinitdialog_items
 from gui.usefulwidget import getspinbox,getcolorbutton,getsimpleswitch,selectcolor
 import time,hashlib
 def hashtext(a): 
@@ -33,19 +33,7 @@ def initsome11(self,l,label=None):
         
         if fanyi in translatorsetting :
             
-            items=[] 
-            for arg in translatorsetting[fanyi]['args']: 
-                items.append({
-                        'l':arg,'d':translatorsetting[fanyi]['args'],'k':arg
-                    })
-                if 'argstype' in translatorsetting[fanyi] and arg in translatorsetting[fanyi]['argstype']:
-                   
-                    items[-1].update(translatorsetting[fanyi]['argstype'][arg]) 
-                else:
-                    items[-1].update(
-                        {'t':'lineedit'}
-                    )
-            items.append({'t':'okcancel' })
+            items=autoinitdialog_items(translatorsetting[fanyi])
             last=getcolorbutton(globalconfig,'',callback=functools.partial(autoinitdialog,self, (globalconfig['fanyi'][fanyi]['name']),800,items),icon='fa.gear',constcolor="#FF69B4")
         elif fanyi=='selfbuild': 
             last=getcolorbutton(globalconfig,'',callback=lambda:selectdebugfile('./userconfig/selfbuild.py' ),icon='fa.gear',constcolor="#FF69B4")

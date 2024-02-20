@@ -28,7 +28,19 @@
         "use": false,
         "name": "去除重复字符_AAAABBBBCCCC->ABC",
         "args": {
-            "重复次数(若为1则自动分析去重)": 1
+            "重复次数(若为1则自动分析去重)": 1,
+            "保持非重复字符":true
+        },
+        "argstype":{
+            "保持非重复字符": {
+                "type": "switch"
+            },
+            "重复次数(若为1则自动分析去重)": {
+                "type": "intspin",
+                "min": 0,
+                "max": 10000,
+                "step": 1
+            }
         }
     },
     "_3": {
@@ -36,6 +48,14 @@
         "name": "去除重复行_ABCDABCDABCD->ABCD",
         "args": {
             "重复次数(若为1则自动分析去重)": 1
+        },
+        "argstype":{
+            "重复次数(若为1则自动分析去重)": {
+                "type": "intspin",
+                "min": 0,
+                "max": 10000,
+                "step": 1
+            }
         }
     },"_3_2": {
         "use": false,

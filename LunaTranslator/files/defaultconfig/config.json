@@ -96,6 +96,7 @@
         500,
         500
     ],
+    "textboxreadonly":true,
     "ocr_stable_sim": 0,
     "ocr_diff_sim": 0.95,
     "autorun": true,

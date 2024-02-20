@@ -1,7 +1,7 @@
 import functools  ,os
 from myutils.config import globalconfig ,ocrsetting,_TRL,ocrerrorfix
 from gui.usefulwidget import getsimplecombobox,getspinbox,getcolorbutton,yuitsu_switch,getsimpleswitch,selectcolor
-from gui.inputdialog import autoinitdialog   ,postconfigdialog
+from gui.inputdialog import autoinitdialog   ,postconfigdialog,autoinitdialog_items
 import gobject
 def getocrgrid(self) :
         
@@ -18,19 +18,7 @@ def getocrgrid(self) :
             if os.path.exists(_f)==False:  
                 continue 
             if name in ocrsetting:
-                items=[] 
-                for arg in ocrsetting[name]['args']: 
-                    items.append({
-                        'l':arg,'d':ocrsetting[name]['args'],'k':arg
-                    })
-                    if 'argstype' in ocrsetting[name] and arg in ocrsetting[name]['argstype']:
-                    
-                        items[-1].update(ocrsetting[name]['argstype'][arg]) 
-                    else:
-                        items[-1].update(
-                            {'t':'lineedit'}
-                        )
-                items.append({'t':'okcancel' })
+                items=autoinitdialog_items(ocrsetting[name]) 
                 _3=getcolorbutton(globalconfig,'',callback=functools.partial(autoinitdialog,self,globalconfig['ocr'][name]['name'],800,items),icon='fa.gear',constcolor="#FF69B4")
                 
             else:

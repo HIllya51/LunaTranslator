@@ -6,6 +6,7 @@ import importlib,gobject
 from myutils.utils import getfilemd5
 from myutils.config import postprocessconfig,globalconfig ,savehook_new_data,static_data
 def _2_f(line,args):
+        keepnodump=args['保持非重复字符']
         times=args['重复次数(若为1则自动分析去重)']
          
         if times>=2:
@@ -27,9 +28,21 @@ def _2_f(line,args):
                         guesstimes=sorted(x.keys(),key= lambda x1:x[x1])[-1]
                 else:
                         guesstimes=1
-        
-        newline=[line[i*guesstimes] for i in range(len(line)//guesstimes)]
-        line=''.join(newline)
+        if keepnodump:
+               newline=''
+               i=0
+               while i<len(line):
+                      newline+=line[i]
+                      nextn=line[i:i+guesstimes]
+                      print(guesstimes,nextn,len(set(nextn)))
+                      if len(nextn)==guesstimes and len(set(nextn))==1:
+                             i+=guesstimes
+                      else:
+                             i+=1  
+               line=newline
+        else:
+                newline=[line[i*guesstimes] for i in range(len(line)//guesstimes)]
+                line=''.join(newline)
         return line
 def _3_f(line,args):
         times=args['重复次数(若为1则自动分析去重)']
