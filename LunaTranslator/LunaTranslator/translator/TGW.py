@@ -42,6 +42,13 @@ class TS(basetrans):
             api_url += "/v1"
         self.api_url = api_url
 
+    def stop_words(self):
+        if self.config['stop(自定义停止符，多个用逗号隔开)']:
+            stop_words = [word.strip() for word in self.config['stop(自定义停止符，多个用逗号隔开)'].replace('，', ',').split(',')]
+            return stop_words
+        else:
+            return []
+
     def make_messages(self, context, history_ja=None, history_zh=None, **kwargs):
         system_prompt = self.config['system_prompt(系统人设)']
         prompt = self.config['prompt(文本起始)']
@@ -73,11 +80,13 @@ class TS(basetrans):
     def send_request(self, text, **kwargs):
         try:
             url = self.api_url + "/chat/completions"
+            stop_words_result = self.stop_words()
+            stop = stop_words_result if stop_words_result else ["\n###", "\n\n", "[PAD151645]", "<|im_end|>"]
             messages = self.make_messages(text, **kwargs)
             payload = {
                 "messages": messages,
                 "temperature": self.config['temperature'],
-                "stop": self.config['stop(自定义停止符，多个用逗号隔开)'] if self.config['stop(自定义停止符，多个用逗号隔开)'] is None else ["\n###", "\n\n", "[PAD151645]", "<|im_end|>"],
+                "stop": stop,
                 "instruction_template": self.config['instruction_template(需要按照模型模板选择)'],
                 "mode": self.config['mode'],
                 "top_p": self.config['top_p'],
