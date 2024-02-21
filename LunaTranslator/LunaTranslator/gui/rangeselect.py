@@ -16,7 +16,7 @@ class rangeadjust(Mainw) :
         self.drag_label = QLabel(self)
         self.drag_label.setGeometry(0, 0, 4000, 2000)
         self._isTracking=False 
-        
+        self._rect=None
         self.setWindowFlags(Qt.WindowStaysOnTopHint | Qt.FramelessWindowHint | Qt.Tool)
         self.setAttribute(Qt.WA_TranslucentBackground) 
 
@@ -39,11 +39,7 @@ class rangeadjust(Mainw) :
                 self._endPos = None  
     def moveEvent(self,e):
                 rect = self.geometry() 
-                try:    
-                    if self.isVisible():
-                        gobject.baseobject.textsource.rect=[(rect.left(),rect.top()),(rect.right(),rect.bottom())]  
-                except:
-                    pass
+                self._rect=[(rect.left()+globalconfig['ocrrangewidth'],rect.top()+globalconfig['ocrrangewidth']),(rect.right()-globalconfig['ocrrangewidth'],rect.bottom()-globalconfig['ocrrangewidth'])] 
     def enterEvent(self, QEvent) :  
         self.drag_label.setStyleSheet("background-color:rgba(0,0,0, 0.1)") 
     def leaveEvent(self, QEvent): 
@@ -52,12 +48,10 @@ class rangeadjust(Mainw) :
           
          self.label.setGeometry(0, 0, self.width(), self.height())  
          rect = self.geometry() 
-         try:    
-             if self.isVisible():
-                 gobject.baseobject.textsource.rect=[(rect.left(),rect.top()),(rect.right(),rect.bottom())]  
-         except:pass
+         self._rect=[(rect.left()+globalconfig['ocrrangewidth'],rect.top()+globalconfig['ocrrangewidth']),(rect.right()-globalconfig['ocrrangewidth'],rect.bottom()-globalconfig['ocrrangewidth'])] 
          super(rangeadjust, self).resizeEvent(a0)  
-
+    def getrect(self):
+         return self._rect
 
 class rangeselct(QMainWindow) :
     def __init__(self, parent ) :

@@ -531,6 +531,7 @@ class QUnFrameWindow(resizableframeless):
         rangeselct_function(self,self.afterrange,auto,auto)
          
     def afterrange(self,rect): 
+        gobject.baseobject.textsource.newrangeadjustor()
         gobject.baseobject.textsource.setrect(rect)
         self.showhideocrrange()
         if globalconfig['showrangeafterrangeselect']==False:

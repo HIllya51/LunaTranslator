@@ -9,6 +9,7 @@ import ctypes
 import time
 import ctypes.wintypes
 import time
+from myutils.hwnd import getScreenRate
 from traceback import print_exc
 from myutils.config import globalconfig,static_data,savehook_new_list,savehook_new_data,getdefaultsavehook,translatorsetting
 import threading,queue
@@ -267,7 +268,8 @@ def minmaxmoveobservefunc(self):
                 elif event == windows.EVENT_SYSTEM_MOVESIZEEND: # 
                     if globalconfig['movefollow']:
                         if self.lastpos:
-                            self.hookfollowsignal.emit(5,(rect[0]-self.lastpos[0],rect[1]-self.lastpos[1]))
+                            rate=getScreenRate()
+                            self.hookfollowsignal.emit(5,(int((rect[0]-self.lastpos[0])/rate),int((rect[1]-self.lastpos[1])/rate)))
                     
             except:
                 print_exc()

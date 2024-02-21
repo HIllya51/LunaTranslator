@@ -350,6 +350,14 @@ def SetWindowLong(hwnd,nIndex,value):
     return _SetWindowLongW(hwnd,nIndex,value)
 def GetDC(hwnd):
     return _GetDC(hwnd)
+def GetDpiForWindow(hwnd):
+    try:
+        _GetDpiForWindow=_user32.GetDpiForWindow
+        _GetDpiForWindow.argtypes=HWND,
+        _GetDpiForWindow.restype=UINT
+        return _GetDpiForWindow(hwnd)
+    except:
+        return 96
 def GetCursorPos():
     _p=POINT()
     _GetCursorPos(pointer(_p))
@@ -733,8 +741,8 @@ _ScreenToClient=_user32.ScreenToClient
 _ScreenToClient.argtypes=c_void_p,POINTER(POINT)
 def ScreenToClient(hwnd,x,y):
     P=POINT()
-    P.x=x
-    P.y=y
+    P.x=int(x)
+    P.y=int(y)
     _ScreenToClient(hwnd,pointer(P))
     return (P.x,P.y)
 

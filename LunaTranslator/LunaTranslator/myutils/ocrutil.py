@@ -36,7 +36,7 @@ def imagesolve(image):
     elif globalconfig['ocr_presolve_method']==3:
         image2=otsu_threshold_fast(image,-1)
     return image2
-def imageCut(hwnd,x1,y1,x2,y2):
+def imageCut(hwnd,x1,y1,x2,y2,viscompare=True):
     screen = QApplication.primaryScreen() 
     
     for _ in range(2):
@@ -48,10 +48,11 @@ def imageCut(hwnd,x1,y1,x2,y2):
                 if rect is None:
                     continue
                 
-                x1,y1=windows.ScreenToClient(hwnd,x1,y1)
-                x2,y2=windows.ScreenToClient(hwnd,x2,y2)
                 rate=dynamic_rate(hwnd,rect)
-                pix = screen.grabWindow(hwnd, (x1)/rate, (y1)/rate, (x2-x1)/rate, (y2-y1)/rate) 
+                hwndrate=windows.GetDpiForWindow(hwnd)/96
+                x1,y1=windows.ScreenToClient(hwnd,x1*rate*hwndrate,y1*rate*hwndrate)
+                x2,y2=windows.ScreenToClient(hwnd,x2*rate*hwndrate,y2*rate*hwndrate)
+                pix = screen.grabWindow(hwnd, int(x1/rate/rate/hwndrate), int(y1/rate/rate/hwndrate), int((x2-x1)/rate/rate/hwndrate), int((y2-y1)/rate/rate/hwndrate))
                 if pix.toImage().allGray():
                     continue
                 break
@@ -62,7 +63,8 @@ def imageCut(hwnd,x1,y1,x2,y2):
           
     image= pix.toImage()
     image2=imagesolve(image)
-    gobject.baseobject.showocrimage.setimage.emit([image,image2])
+    if viscompare:
+        gobject.baseobject.showocrimage.setimage.emit([image,image2])
     return image2
 
 _nowuseocr=None

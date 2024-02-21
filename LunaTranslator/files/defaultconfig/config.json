@@ -96,6 +96,7 @@
         500,
         500
     ],
+    "multiregion":false,
     "textboxreadonly":true,
     "ocr_stable_sim": 0,
     "ocr_diff_sim": 0.95,

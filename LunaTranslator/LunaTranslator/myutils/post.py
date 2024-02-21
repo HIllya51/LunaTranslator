@@ -34,7 +34,7 @@ def _2_f(line,args):
                while i<len(line):
                       newline+=line[i]
                       nextn=line[i:i+guesstimes]
-                      print(guesstimes,nextn,len(set(nextn)))
+                      #print(guesstimes,nextn,len(set(nextn)))
                       if len(nextn)==guesstimes and len(set(nextn))==1:
                              i+=guesstimes
                       else:
