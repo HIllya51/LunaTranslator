@@ -1167,6 +1167,12 @@
             "type": "offline",
             "color": "blue",
             "name": "Sakura大模型"
+        },
+        "TGW": {
+            "use": false,
+            "type": "offline",
+            "color": "blue",
+            "name": "TGW语言模型"
         }
     },
     "minifollow": false,
