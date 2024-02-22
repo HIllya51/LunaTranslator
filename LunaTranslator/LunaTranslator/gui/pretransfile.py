@@ -82,9 +82,9 @@ def sqlite2json(self):
                 if collect[transkirokuuse] in js[k]:
                     js[k]['machineTrans']=js[k][collect[transkirokuuse]]  
                     
-        with open(e.text()+'.complex.json','w',encoding='utf8') as ff:
-            ff.write(json.dumps(js,ensure_ascii=False,sort_keys=False, indent=4))
-        with open(e.text()+'.simple.json','w',encoding='utf8') as ff:
+        # with open(e.text()+'.complex.json','w',encoding='utf8') as ff:
+        #     ff.write(json.dumps(js,ensure_ascii=False,sort_keys=False, indent=4))
+        with open(e.text()+'.json','w',encoding='utf8') as ff:
             ff.write(json.dumps(js_format2,ensure_ascii=False,sort_keys=False, indent=4))
         dialog.close()
     button.accepted.connect(__savefunction)
