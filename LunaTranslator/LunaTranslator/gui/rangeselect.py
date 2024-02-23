@@ -1,7 +1,7 @@
-from PyQt5.QtWidgets import QWidget,QDesktopWidget,QMainWindow,QLabel,QPushButton,QStatusBar,QDialog,QApplication
+from PyQt5.QtWidgets import QMenu,QDesktopWidget,QMainWindow,QLabel,QAction,QStatusBar,QDialog,QApplication
 from PyQt5.QtGui import  QBitmap,QPainter,QPen,QColor,QFont,QMouseEvent,QCursor
 from PyQt5.QtCore import Qt,QPoint,QRect,QEvent,pyqtSignal
-
+from myutils.config import _TR
 import gobject
 from myutils.config import globalconfig
 from gui.resizeablemainwindow import Mainw
@@ -19,9 +19,19 @@ class rangeadjust(Mainw) :
         self._rect=None
         self.setWindowFlags(Qt.WindowStaysOnTopHint | Qt.FramelessWindowHint | Qt.Tool)
         self.setAttribute(Qt.WA_TranslucentBackground) 
-
+        self.setContextMenuPolicy(Qt.CustomContextMenu)
+        self.customContextMenuRequested.connect(self.showmenu) 
         for s in self.cornerGrips: 
             s.raise_()
+    def showmenu(self,p):   
+        menu=QMenu(self ) 
+        close=QAction(_TR("关闭"))
+        menu.addAction(close) 
+        action=menu.exec(self.mapToGlobal(p))
+        if action==close:
+            self._rect=None
+            self.close()
+         
     def setstyle(self):
         self.label.setStyleSheet(" border:%spx solid %s; background-color: rgba(0,0,0, 0.01)"   %(globalconfig['ocrrangewidth'],globalconfig['ocrrangecolor'] ))
     def mouseMoveEvent(self, e ) :  
@@ -39,7 +49,8 @@ class rangeadjust(Mainw) :
                 self._endPos = None  
     def moveEvent(self,e):
                 rect = self.geometry() 
-                self._rect=[(rect.left()+globalconfig['ocrrangewidth'],rect.top()+globalconfig['ocrrangewidth']),(rect.right()-globalconfig['ocrrangewidth'],rect.bottom()-globalconfig['ocrrangewidth'])] 
+                if self._rect:
+                    self._rect=[(rect.left()+globalconfig['ocrrangewidth'],rect.top()+globalconfig['ocrrangewidth']),(rect.right()-globalconfig['ocrrangewidth'],rect.bottom()-globalconfig['ocrrangewidth'])] 
     def enterEvent(self, QEvent) :  
         self.drag_label.setStyleSheet("background-color:rgba(0,0,0, 0.1)") 
     def leaveEvent(self, QEvent): 
@@ -48,11 +59,17 @@ class rangeadjust(Mainw) :
           
          self.label.setGeometry(0, 0, self.width(), self.height())  
          rect = self.geometry() 
-         self._rect=[(rect.left()+globalconfig['ocrrangewidth'],rect.top()+globalconfig['ocrrangewidth']),(rect.right()-globalconfig['ocrrangewidth'],rect.bottom()-globalconfig['ocrrangewidth'])] 
+         if self._rect:
+             self._rect=[(rect.left()+globalconfig['ocrrangewidth'],rect.top()+globalconfig['ocrrangewidth']),(rect.right()-globalconfig['ocrrangewidth'],rect.bottom()-globalconfig['ocrrangewidth'])] 
          super(rangeadjust, self).resizeEvent(a0)  
     def getrect(self):
          return self._rect
-
+    def setrect(self,rect):
+         self._rect=rect
+         if rect:
+            (x1,y1),(x2,y2)=rect
+            self.setGeometry(x1-globalconfig['ocrrangewidth'],y1-globalconfig['ocrrangewidth'],x2-x1+2*globalconfig['ocrrangewidth'],y2-y1+2*globalconfig['ocrrangewidth']) 
+            self.show() 
 class rangeselct(QMainWindow) :
     def __init__(self, parent ) :
 

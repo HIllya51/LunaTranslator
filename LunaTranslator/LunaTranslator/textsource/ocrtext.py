@@ -45,6 +45,11 @@ class ocrtext(basetext):
         self.range_ui = []   
         self.timestamp=time.time() 
         super(ocrtext,self ).__init__('0','ocr') 
+        if globalconfig['rememberocrregions']:
+            for region in globalconfig['ocrregions']:
+                if region:
+                    self.newrangeadjustor()
+                    self.setrect(region)
     def newrangeadjustor(self):
         if len(self.range_ui)==0 or globalconfig['multiregion']:
             self.range_ui.append(rangeadjust(gobject.baseobject.translation_ui))
@@ -56,13 +61,13 @@ class ocrtext(basetext):
         for _r in self.range_ui:
             _r.move(_r.pos().x()+ x,_r.pos().y()+ y)
     def setrect(self,rect):
-        (x1,y1),(x2,y2)=rect
-        self.range_ui[-1].setGeometry(x1-globalconfig['ocrrangewidth'],y1-globalconfig['ocrrangewidth'],x2-x1+2*globalconfig['ocrrangewidth'],y2-y1+2*globalconfig['ocrrangewidth']) 
-        self.range_ui[-1].show() 
+        self.range_ui[-1].setrect(rect) 
     def setstyle(self):
         [_.setstyle() for _ in self.range_ui]
     def showhiderangeui(self,b):
-        [_.setVisible(b) for _ in self.range_ui]
+        for _ in self.range_ui:
+            if _.getrect():
+                _.setVisible(b)
     def gettextthread(self ):
         if all([_.getrect() is None for _ in self.range_ui]):
             time.sleep(1)
@@ -155,6 +160,7 @@ class ocrtext(basetext):
         
 
     def end(self):
+        globalconfig['ocrregions']=[_.getrect() for _ in self.range_ui]
+        [_.close() for _ in self.range_ui]
         super().end()
         ocr_end()
-        [_.close() for _ in self.range_ui]

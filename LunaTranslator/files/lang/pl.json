@@ -708,5 +708,7 @@
     "正在使用日语模型作为代替，可能效果不佳": "Używanie japońskich modeli jako substytutów może nie być skuteczne",
     "保持非重复字符": "Zachowaj niepowtarzające się znaki",
     "选择文本窗口中文本框只读": "Zaznaczanie pola tekstowe tylko do odczytu w oknie tekstowym",
-    "多重区域模式": "Tryb wielu regionów"
+    "多重区域模式": "Tryb wielu regionów",
+    "记忆选定区域": "Obszar wyboru pamięci",
+    "关闭": "zamknij"
 }

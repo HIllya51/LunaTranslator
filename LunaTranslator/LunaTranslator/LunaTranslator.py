@@ -38,11 +38,10 @@ class _autolock:
         def __del__(self):
             self.lock.release()
 class MAINUI() : 
-    def __init__(self,app) -> None:
+    def __init__(self) -> None:
         super().__init__()
         self.lasttranslatorindex=0
         self.usefultranslators=0
-        self.app=app   
         self.translators={}
         self.cishus={}
         self.reader=None

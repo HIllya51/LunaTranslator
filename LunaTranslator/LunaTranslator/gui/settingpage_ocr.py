@@ -50,6 +50,8 @@ def getocrgrid(self) :
 
             [],
             [(("多重区域模式"),12),getsimpleswitch(globalconfig ,'multiregion')],
+            [(("记忆选定区域"),12),getsimpleswitch(globalconfig ,'rememberocrregions')],
+            [],
             [(("OCR范围框颜色"),12),(getcolorbutton(globalconfig,'ocrrangecolor',callback=lambda  : selectcolor(self,globalconfig,'ocrrangecolor',self.ocrrangecolor_button,callback=lambda :gobject.baseobject.textsource.setstyle()),name='ocrrangecolor_button',parent=self),1)],
             [(("OCR范围框宽度"),12),(getspinbox(1,100,globalconfig,'ocrrangewidth'  ,callback=lambda x: gobject.baseobject.textsource.setstyle()  ),4)],
             [(("选取OCR范围后立即进行一次识别"),12),getsimpleswitch(globalconfig ,'ocrafterrangeselect')],

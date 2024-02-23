@@ -708,5 +708,7 @@
     "正在使用日语模型作为代替，可能效果不佳": "Japon modellerini yerine koymak etkili olmayabilir.",
     "保持非重复字符": "Tekrarlamayan karakterleri tut",
     "选择文本窗口中文本框只读": "Metin penceresindeki sadece okuyulmuş metin kutularını seçin",
-    "多重区域模式": "Çok bölge modu"
+    "多重区域模式": "Çok bölge modu",
+    "记忆选定区域": "Hafıza seçim alanı",
+    "关闭": "kapat"
 }

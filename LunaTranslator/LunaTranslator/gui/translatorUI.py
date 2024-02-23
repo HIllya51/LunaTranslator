@@ -669,12 +669,12 @@ class QUnFrameWindow(resizableframeless):
         self.tray.hide()
         self.tray = None  
         self.hide()
-        saveallconfig() 
          
         if gobject.baseobject.textsource:
             
             gobject.baseobject.textsource=None
         
+        saveallconfig() 
         
         endsubprocs()
         os._exit(0) 

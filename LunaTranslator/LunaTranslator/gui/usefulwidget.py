@@ -382,7 +382,10 @@ def selectcolor(parent,configdict,configkey,button,item=None,name=None,callback=
     configdict[configkey]=color.name() 
         
     if callback:
-        callback()
+        try:
+            callback()
+        except:
+            print_exc()
 
 def getboxlayout(widgets,lc=QHBoxLayout):
     cp_layout=lc()

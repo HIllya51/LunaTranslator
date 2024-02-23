@@ -74,7 +74,7 @@ if __name__ == "__main__" :
         getQMessageBox(None,"错误","当前路径读写权限不足，请使用管理员权限运行！")
         os._exit(0) 
     
-    gobject.baseobject=MAINUI(app) 
+    gobject.baseobject=MAINUI() 
     gobject.baseobject.checklang() 
     gobject.baseobject.aa() 
     app.exit(app.exec_())
