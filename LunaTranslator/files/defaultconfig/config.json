@@ -1178,6 +1178,7 @@
             "name": "TGW语言模型"
         }
     },
+    "magpie10path":"",
     "minifollow": false,
     "movefollow": false,
     "focusfollow": false,
