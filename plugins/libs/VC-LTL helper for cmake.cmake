@@ -84,5 +84,7 @@ if(NOT VC_LTL_Root)
 endif()
 
 if(VC_LTL_Root)
-    include("${VC_LTL_Root}\\config\\config.cmake")
+    if(EXISTS "${VC_LTL_Root}\\config\\config.cmake")
+        include("${VC_LTL_Root}\\config\\config.cmake")
+    endif()
 endif()

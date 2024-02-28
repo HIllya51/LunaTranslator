@@ -3,3 +3,4 @@ PyQt5-Qt5==5.15.2
 
 nuitka==1.9.6
 imageio
+pefile

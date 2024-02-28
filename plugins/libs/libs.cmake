@@ -7,6 +7,7 @@ endif()
 include_directories(${CMAKE_CURRENT_LIST_DIR})
 include_directories(${CMAKE_CURRENT_LIST_DIR}/Detours-4.0.1/include)
 
+add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/minhook)
 
 if(${CMAKE_SIZEOF_VOID_P} EQUAL 4)
     set(LTLPlatform "Win32")

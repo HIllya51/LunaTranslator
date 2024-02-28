@@ -673,39 +673,39 @@
     },
     "cishu": {
         "xiaoxueguan": {
-            "use": true,
+            "use": false,
             "path": "",
             "name": "小学馆",
             "filter": "*.db",
             "isdir": false
         },
         "edict": {
-            "use": true,
+            "use": false,
             "path": "",
             "name": "EDICT",
             "filter": "*.db",
             "isdir": false
         },
         "edict2": {
-            "use": true,
+            "use": false,
             "path": "",
             "name": "EDICT2",
             "filter": "",
             "isdir": false
         },
         "linggesi": {
-            "use": true,
+            "use": false,
             "path": "",
             "name": "灵格斯词典",
             "filter": "",
             "isdir": true
         },
         "mojidict": {
-            "use": true,
+            "use": false,
             "name": "Moji辞书"
         },
         "youdao": {
-            "use": true,
+            "use": false,
             "name": "youdao"
         },
         "weblio": {
@@ -813,7 +813,7 @@
             "name": "Azure"
         },
         "baidu": {
-            "use": true,
+            "use": false,
             "color": "#ff65db",
             "name": "百度"
         },
@@ -1053,7 +1053,7 @@
             "name": "小牛api"
         },
         "huoshan": {
-            "use": true,
+            "use": false,
             "color": "blue",
             "name": "huoshan"
         },
@@ -1076,7 +1076,7 @@
             "name": "飞书"
         },
         "papago": {
-            "use": true,
+            "use": false,
             "color": "blue",
             "name": "papago"
         },

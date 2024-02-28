@@ -5,8 +5,8 @@ from PyQt5.QtGui import QFont
 import platform,os
 
 if __name__ == "__main__" :
-    # dirname=os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    # os.chdir(dirname) 
+    dirname=os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    os.chdir(dirname) 
 
     if os.path.exists('./userconfig')==False:
         os.mkdir('./userconfig')

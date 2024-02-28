@@ -710,5 +710,6 @@
     "选择文本窗口中文本框只读": "Select read-only text boxes in the text window",
     "多重区域模式": "Multi region mode",
     "记忆选定区域": "Memory selection area",
-    "关闭": "close"
+    "关闭": "close",
+    "TGW语言模型": "TGW language model"
 }

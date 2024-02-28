@@ -710,5 +710,6 @@
     "选择文本窗口中文本框只读": "Sélectionner une zone de texte en lecture seule dans la fenêtre de texte",
     "多重区域模式": "Mode Multi - zones",
     "记忆选定区域": "Mémoriser la zone sélectionnée",
-    "关闭": "Fermé"
+    "关闭": "Fermé",
+    "TGW语言模型": "Modèle de langage tgw"
 }
