@@ -1,1 +1,0 @@
-%LOCALAPPDATA%\Programs\Python\Python37\python.exe -m nuitka --standalone    --plugin-enable=pyqt5    --output-dir=..\build\x64 LunaTranslator\LunaTranslator_main.py  --windows-icon-from-ico=..\plugins\exec\luna.ico

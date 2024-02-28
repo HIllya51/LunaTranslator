@@ -39,7 +39,7 @@
     "sw_fontstring": "Arial,12,-1,5,50,0,0,0,0,0,Regular",
     "edit_fontstring": "Arial,12,-1,5,50,0,0,0,0,0,Regular",
     "fixedheight": false,
-    "showintab": false,
+    "showintab": true,
     "remove_useless_hook": false,
     "button_color_close": "#D32424",
     "button_color_normal": "#FFFFFF",
