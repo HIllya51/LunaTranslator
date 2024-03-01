@@ -50,6 +50,7 @@ def getdefaultsavehook(gamepath,title=None):
     default={
         'localeswitcher':0,
         'onloadautochangemode2':0,
+        'onloadautoswitchsrclang':0,
         'needinserthookcode':[],
         'embedablehook':[],
         'imagepath':None,
@@ -59,6 +60,8 @@ def getdefaultsavehook(gamepath,title=None):
         'statistic_wordcount':0,
         'statistic_wordcount_nodump':0,
         'leuse':True,
+        'startcmd':'"{exepath}"',
+        'startcmduse':False,
         'hook':[],
         'inserthooktimeout':0,
         'needinserthookcode':[],

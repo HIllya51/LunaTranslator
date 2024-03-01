@@ -15,7 +15,7 @@ from gui.settingpage_xianshishezhi import setTabThree ,setTabThree_direct
 from gui.settingpage_tts import setTab5 ,setTab5_direct 
 from gui.settingpage_cishu import setTabcishu
 from gui.settingpage_quick import setTab_quick,setTab_quick_direct
-from gui.setting_lang import setTablang
+from gui.setting_lang import setTablang,setTablangd
 from gui.setting_proxy import setTab_proxy
 from gui.settingpage7 import setTab7 ,settab7direct
 from gui.settingpage_about import setTab_about,setTab_about_dicrect  
@@ -111,7 +111,7 @@ class Settin(closeashidewindow) :
         setTabThree_direct(self) 
         setTab5_direct(self)
         setTab_quick_direct(self)
-
+        setTablangd(self)
         setTab_about_dicrect(self)
 
         self.setstylesheet()

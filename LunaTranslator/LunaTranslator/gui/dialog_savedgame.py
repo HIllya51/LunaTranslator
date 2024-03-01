@@ -478,13 +478,6 @@ class dialog_setting_game(QDialog):
                 
                 b=windows.GetBinaryType(exepath)
                 
-                if type==2: 
-                        formLayout.addLayout(getboxlayout([
-                              QLabel(_TR("转区启动")),
-                              getsimpleswitch(savehook_new_data[exepath],'leuse')
-                        ]))
-
-
                 if b==6: 
                         _methods=['','Locale_Remulator','Ntleas' ]
                 else:
@@ -492,13 +485,29 @@ class dialog_setting_game(QDialog):
                 if b==6 and savehook_new_data[exepath]['localeswitcher']==0:
                         savehook_new_data[exepath]['localeswitcher']=2 
                 formLayout.addLayout(getboxlayout([
-                      QLabel(_TR("转区方法")),getsimplecombobox(_TRL(_methods),savehook_new_data[exepath],'localeswitcher')
+                        QLabel(_TR("转区启动")),
+                        getsimpleswitch(savehook_new_data[exepath],'leuse'),
+                        QLabel(_TR("转区方法")),
+                        getsimplecombobox(_TRL(_methods),savehook_new_data[exepath],'localeswitcher')
+                ][(type!=2)*2:])) 
+                
+                editcmd=QLineEdit(savehook_new_data[exepath]['startcmd'])
+                editcmd.textEdited.connect(lambda _:savehook_new_data[exepath].__setitem__('startcmd',_)) 
+                
+                formLayout.addLayout(getboxlayout([
+                        QLabel(_TR("命令行启动")),
+                        getsimpleswitch(savehook_new_data[exepath],'startcmduse'),
+                        editcmd
                 ])) 
-
  
                 formLayout.addLayout(getboxlayout([
                       QLabel(_TR("自动切换到模式")),
                       getsimplecombobox(_TRL(['不切换','HOOK','剪贴板','OCR','FridaHook']),savehook_new_data[exepath],'onloadautochangemode2')
+                ]))
+                 
+                formLayout.addLayout(getboxlayout([
+                      QLabel(_TR("自动切换源语言")),
+                      getsimplecombobox(_TRL(['不切换'])+_TRL(static_data['language_list_translator']),savehook_new_data[exepath],'onloadautoswitchsrclang')
                 ]))
                  
 
@@ -655,9 +664,7 @@ def startgame(game):
     try:         
         if os.path.exists(game):
                 mode=savehook_new_data[game]['onloadautochangemode2']
-                if mode==0:
-                        pass
-                else:
+                if mode>0:
                     _={
                     1:'texthook', 
                     2:'copy',
@@ -672,14 +679,20 @@ def startgame(game):
                 if globalconfig['sourcestatus2']['fridahook']['use'] and savehook_new_data[game]['fridahook'].get('loadmethod')==1:
                         gobject.baseobject.textsource=fridahook(1,savehook_new_data[game]['fridahook'].get('js'),game)
                         return
+                
+                dirpath=os.path.dirname(game)
+
+                if savehook_new_data[game]['startcmduse']:
+                        usearg=savehook_new_data[game]['startcmd'].format(exepath=game)
+                        windows.CreateProcess(None,usearg, None,None,False,0,None, dirpath, windows.STARTUPINFO()  )  
+                        return
                 if savehook_new_data[game]['leuse']==False or (game.lower()[-4:] not in ['.lnk','.exe']):
                         #对于其他文件，需要AssocQueryStringW获取命令行才能正确le，太麻烦，放弃。
-                        windows.ShellExecute(None, "open", game, "", os.path.dirname(game), windows.SW_SHOW) 
+                        windows.ShellExecute(None, "open", game, "", dirpath, windows.SW_SHOW) 
                         return 
                 
                 execheck3264=game
                 usearg='"{}"'.format(game)
-                dirpath=os.path.dirname(game)
                 if game.lower()[-4:]=='.lnk':
                   exepath,args,iconpath,dirp=(winsharedutils.GetLnkTargetPath(game))
                   

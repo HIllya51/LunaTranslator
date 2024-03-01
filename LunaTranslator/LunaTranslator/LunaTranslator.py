@@ -528,6 +528,11 @@ class MAINUI() :
                                             self.textsource=texthook(pids,hwnd,name_ ,autostarthookcode=savehook_new_data[name_]['hook'],needinserthookcode=needinserthookcode)
                                         elif len(pids)==1 and globalconfig['sourcestatus2']['fridahook']['use'] and savehook_new_data[name_]['fridahook']['loadmethod']==0:
                                             self.textsource=fridahook(0,savehook_new_data[name_]['fridahook']['js'],name_,pids[0],hwnd)
+                                        
+                                                                
+                                        onloadautoswitchsrclang=savehook_new_data[name_]['onloadautoswitchsrclang']
+                                        if onloadautoswitchsrclang>0:
+                                            self.settin_ui.srclangswitcher.setCurrentIndex(onloadautoswitchsrclang-1)
                                         break
                 
                 else: 

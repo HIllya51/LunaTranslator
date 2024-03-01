@@ -711,5 +711,7 @@
     "多重区域模式": "Modalità multi regione",
     "记忆选定区域": "Area di selezione della memoria",
     "关闭": "chiudi",
-    "TGW语言模型": "Modello linguistico TGW"
+    "TGW语言模型": "Modello linguistico TGW",
+    "自动切换源语言": "Cambia automaticamente la lingua sorgente",
+    "命令行启动": "Avvio della riga di comando"
 }

@@ -711,5 +711,7 @@
     "多重区域模式": "Mode Multi - zones",
     "记忆选定区域": "Mémoriser la zone sélectionnée",
     "关闭": "Fermé",
-    "TGW语言模型": "Modèle de langage tgw"
+    "TGW语言模型": "Modèle de langage tgw",
+    "自动切换源语言": "Changement automatique de langue source",
+    "命令行启动": "Démarrage de la ligne de commande"
 }

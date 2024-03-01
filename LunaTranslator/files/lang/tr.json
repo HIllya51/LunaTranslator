@@ -711,5 +711,7 @@
     "多重区域模式": "Çok bölge modu",
     "记忆选定区域": "Hafıza seçim alanı",
     "关闭": "kapat",
-    "TGW语言模型": "TGW dil modeli"
+    "TGW语言模型": "TGW dil modeli",
+    "自动切换源语言": "Avtomatik kaynak dilini değiştir",
+    "命令行启动": "Komut satırı başlatma"
 }
