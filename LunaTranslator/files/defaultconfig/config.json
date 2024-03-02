@@ -1126,13 +1126,15 @@
             "type": "api",
             "use": false,
             "color": "blue",
-            "name": "ChatGPT"
+            "name": "ChatGPT",
+            "is_gpt_like":true
         },
         "chatgpt-3rd-party": {
             "type": "api",
             "use": false,
             "color": "blue",
-            "name": "ChatGPT(第三方接口)"
+            "name": "ChatGPT(第三方接口)",
+            "is_gpt_like":true
         },
         "hanshant": {
             "type": "offline",

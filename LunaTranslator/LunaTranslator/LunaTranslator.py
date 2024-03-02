@@ -41,9 +41,9 @@ class MAINUI() :
     def __init__(self) -> None:
         super().__init__()
         self.lasttranslatorindex=0
-        self.usefultranslators=0
         self.translators={}
         self.cishus={}
+        self.iterresstatus={}
         self.reader=None
         self.textsource_p=None 
         self.currentmd5='0'
@@ -151,7 +151,7 @@ class MAINUI() :
             self.currentsignature=time.time()
         if type(text)==str:
             if text.startswith('<notrans>'):
-                self.translation_ui.displayres.emit('',globalconfig['rawtextcolor'],text[len('<notrans>'):],onlytrans)
+                self.translation_ui.displayres.emit('',globalconfig['rawtextcolor'],text[len('<notrans>'):],onlytrans,[])
                 self.currenttext=text
                 self.currentread=text
                 return   
@@ -245,7 +245,7 @@ class MAINUI() :
         skip=is_auto_run and  (len(text_solved)<globalconfig['minlength'] or len(text_solved)>globalconfig['maxlength'] )
 
         self.premtalready=['premt']
-        self.usefultranslators=len(self.translators)
+        self.usefultranslators=list(self.translators.keys())
         if 'premt' in self.translators:
             try:
                 res=self.translators['premt'].translate(text_solved)
@@ -255,7 +255,7 @@ class MAINUI() :
                         _colork=k
                     else:
                         _colork='premt' 
-                    self.GetTranslationCallback(onlytrans,_colork,self.currentsignature,optimization_params,_showrawfunction,_showrawfunction_sig,text,res[k],embedcallback)
+                    self.GetTranslationCallback(onlytrans,_colork,self.currentsignature,optimization_params,_showrawfunction,_showrawfunction_sig,text,res[k],embedcallback,False)
                 
             except:
                 print_exc()
@@ -270,6 +270,7 @@ class MAINUI() :
             keys=list(self.translators.keys())+list(self.translators.keys())
             keys=keys[self.lasttranslatorindex:self.lasttranslatorindex+_len]
             #print(keys,usenum,self.lasttranslatorindex)
+            self.iterresstatus.clear()
             for engine in keys:  
                 if engine not in self.premtalready:
                     self.translators[engine].gettask((partial(self.GetTranslationCallback,onlytrans,engine,self.currentsignature, optimization_params,_showrawfunction,_showrawfunction_sig,text),text,text_solved,skip,embedcallback,is_auto_run,hira)) 
@@ -279,19 +280,21 @@ class MAINUI() :
                     break
                 
     
-    def GetTranslationCallback(self,onlytrans,classname,currentsignature,optimization_params,_showrawfunction,_showrawfunction_sig,contentraw,res,embedcallback):
-        self.usefultranslators-=1
+    def GetTranslationCallback(self,onlytrans,classname,currentsignature,optimization_params,_showrawfunction,_showrawfunction_sig,contentraw,res,embedcallback,is_iter_res):
+    
+        if classname in self.usefultranslators:
+            self.usefultranslators.remove(classname)
         if embedcallback is None and currentsignature!=self.currentsignature:return
 
-        embedtrans=self.GetTranslationCallback_(onlytrans,classname,currentsignature,optimization_params,_showrawfunction,_showrawfunction_sig,contentraw,res)
+        embedtrans=self.GetTranslationCallback_(onlytrans,classname,currentsignature,optimization_params,_showrawfunction,_showrawfunction_sig,contentraw,res,is_iter_res)
         
         
-        if embedtrans is None and self.usefultranslators==0:
+        if embedtrans is None and len(self.usefultranslators)==0:
             embedtrans=''
         if embedcallback and embedtrans is not None:
             embedcallback(embedtrans)
         
-    def GetTranslationCallback_(self,onlytrans,classname,currentsignature,optimization_params,_showrawfunction,_showrawfunction_sig,contentraw,res):
+    def GetTranslationCallback_(self,onlytrans,classname,currentsignature,optimization_params,_showrawfunction,_showrawfunction_sig,contentraw,res,is_iter_res):
         
         
         if type(res)==str:
@@ -313,7 +316,14 @@ class MAINUI() :
             _showrawfunction()
         
         if currentsignature==self.currentsignature and globalconfig['showfanyi']:
-            self.translation_ui.displayres.emit(globalconfig['fanyi'][classname]['name'],globalconfig['fanyi'][classname]['color'],res,onlytrans)
+            if is_iter_res:
+                if classname not in self.iterresstatus:
+                    self.iterresstatus[classname]=1
+                    self.translation_ui.displayres.emit(globalconfig['fanyi'][classname]['name'],globalconfig['fanyi'][classname]['color'],res,onlytrans,[True,classname])
+                else:
+                    self.translation_ui.displayres.emit(globalconfig['fanyi'][classname]['name'],globalconfig['fanyi'][classname]['color'],res,onlytrans,[False,classname])
+            else:
+                self.translation_ui.displayres.emit(globalconfig['fanyi'][classname]['name'],globalconfig['fanyi'][classname]['color'],res,onlytrans,[])
          
         
         try:

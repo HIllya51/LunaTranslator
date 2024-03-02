@@ -225,6 +225,16 @@ class Textbrowser( ):
             self.addtag(tag)
 
         self.movep(0,self.savey)
+    def getcurrpointer(self):
+        return self.textcursor.position()
+    def insertatpointer(self,pointer,text):
+        if self.needdouble:
+            self.textcursorback.setPosition(pointer)
+            self.textbrowserback.setTextCursor(self.textcursorback) 
+            self.textbrowserback.insertPlainText(text) 
+        self.textcursor.setPosition(pointer) 
+        self.textbrowser.setTextCursor(self.textcursor) 
+        self.textbrowser.insertPlainText(text) 
     def showyinyingtext(self,color ):   
          
         linei=self.yinyingposline

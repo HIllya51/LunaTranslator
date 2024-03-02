@@ -28,7 +28,7 @@ from gui.rangeselect  import moveresizegame ,rangeselct_function
 from gui.usefulwidget import resizableframeless
 from gui.dialog_savedgame import browserdialog
 class QUnFrameWindow(resizableframeless):   
-    displayres =  pyqtSignal(str,str,str ,bool) 
+    displayres =  pyqtSignal(str,str,str ,bool,list) 
     displayraw1 =  pyqtSignal(list, str,str,bool,bool)  
     displaystatus=pyqtSignal(str,str,bool,bool) 
     showhideuisignal=pyqtSignal()
@@ -70,8 +70,16 @@ class QUnFrameWindow(resizableframeless):
                 pass
             self.move(self.pos().x()+ other[0],self.pos().y()+ other[1])
         
-    def showres(self,name,color,res,onlyshowhist):  
+    def showres(self,name,color,res,onlyshowhist,iter_res_info):  
         try:
+            if len(iter_res_info):
+                starting,klass=iter_res_info
+                print(starting,klass,res)
+                if not starting:
+                    print(self.saveiterclasspointer[klass])
+                    self.translate_text.insertatpointer(self.saveiterclasspointer[klass],res)
+                    self.saveiterclasspointer[klass]=self.translate_text.getcurrpointer()
+                    return
             gobject.baseobject.transhis.getnewtranssignal.emit(name,res)
             if onlyshowhist:
                 return 
@@ -89,7 +97,8 @@ class QUnFrameWindow(resizableframeless):
                 self.showline(clear,[None,_res],color  ,1,False)
             #print(globalconfig['fanyi'][_type]['name']+'  '+res+'\n')
             
-            
+            if len(iter_res_info) and starting:
+                self.saveiterclasspointer[klass]=self.translate_text.getcurrpointer()+len(res)
         except:
             print_exc() 
     def showraw(self,hira,res,color ,onlyshowhist,clear): 
@@ -406,6 +415,7 @@ class QUnFrameWindow(resizableframeless):
         self.isbindedwindow=False
         self.buttons=[] 
         self.showbuttons=[] 
+        self.saveiterclasspointer={}
         self.addbuttons() 
          
         

@@ -3,7 +3,7 @@ from queue import Queue
 
 from myutils.config import globalconfig,translatorsetting,static_data
 from threading import Thread,Lock
-import os,time ,codecs
+import os,time ,types
 import zhconv,gobject
 import sqlite3
 from myutils.commonbase import commonbase
@@ -122,7 +122,7 @@ class basetrans(commonbase):
     @property
     def is_gpt_like(self):
         try:
-            return translatorsetting[self.typename]['is_gpt_like']
+            return globalconfig['fanyi'][self.typename]['is_gpt_like']
         except:
             return False
     @property
@@ -183,13 +183,11 @@ class basetrans(commonbase):
             res=self.dispatch_translate(contentsolved,hira)
         else:
             res=self.intervaledtranslate(contentsolved,hira)
-         
+        return res
+    def cachesetatend(self,contentsolved,res):
         if globalconfig['uselongtermcache']:
             self.longtermcacheset(contentsolved,res)
         self.shorttermcacheset(contentsolved,res)
-        
-        return res
-    
     def maybecachetranslate(self,contentraw,contentsolved,hira,is_auto_run):
         if self.transtype=='pre':
             res=self.translate(contentraw)
@@ -261,11 +259,18 @@ class basetrans(commonbase):
                             self._private_init()
                         return self.maybecachetranslate(contentraw,contentsolved,hira,is_auto_run)
                     res=timeoutfunction(reinitandtrans,checktutukufunction=checktutukufunction ) 
-                    if self.needzhconv:
-                        res=zhconv.convert(res,  'zh-tw' )  
-                    
-                    callback(res,embedcallback) 
-                
+                    collectiterres=[]
+                    def __callback(_,is_iter_res):
+                        if self.needzhconv:
+                            _=zhconv.convert(_,  'zh-tw' )  
+                        callback(_,embedcallback,is_iter_res) 
+                        collectiterres.append(_)
+                    if isinstance(res,types.GeneratorType):
+                        for _res in res:
+                            __callback(_res,True)
+                    else:
+                        __callback(res,False)
+                    self.cachesetatend(contentsolved,''.join(collectiterres))
             except Exception as e:
                 if self.using and globalconfig['showtranexception']:
                     if isinstance(e,ArgsEmptyExc):
@@ -279,6 +284,6 @@ class basetrans(commonbase):
                         self.needreinit=True
                     msg='<msg_translator>'+msg
             
-                    callback(msg,embedcallback) 
+                    callback(msg,embedcallback,False) 
                     
         
