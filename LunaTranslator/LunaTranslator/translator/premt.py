@@ -1,23 +1,34 @@
 from traceback import print_exc
 from translator.basetranslator import basetrans
-from myutils.config import globalconfig
+from myutils.config import globalconfig,savehook_new_data
 from myutils.utils import autosql
 import os
+import gobject
 import json
 import sqlite3
 import winsharedutils
 class TS(basetrans):  
-    def checkfilechanged(self,p):
-        if self.path!=p:
-            if os.path.exists(p):
+    def unsafegetcurrentgameconfig(self):
+        try:
+            _path=gobject.baseobject.textsource.pname
+            _path=savehook_new_data[_path]['gamesqlitefile']
+            return _path
+        except:
+            return None
+    def checkfilechanged(self,p1,p):
+        if self.paths!=(p1,p):
+            if p:
+                if os.path.exists(p):
                     self.sql=autosql(sqlite3.connect(p,check_same_thread=False))
-                    self.path=p
-    
+            if p1:
+                if os.path.exists(p1):
+                    self.sql=autosql(sqlite3.connect(p1,check_same_thread=False))
+            self.paths=(p1,p)
     def inittranslator(self):
-        self.path=''
-        self.checkfilechanged(self.config['sqlite文件'])
+        self.paths=(None,None)
+        self.checkfilechanged(self.unsafegetcurrentgameconfig(),self.config['sqlite文件'])
     def translate(self,content): 
-        self.checkfilechanged(self.config['sqlite文件'])
+        self.checkfilechanged(self.unsafegetcurrentgameconfig(),self.config['sqlite文件'])
         if globalconfig['premtsimiuse']:
             mindis=9999999
             savet="{}"

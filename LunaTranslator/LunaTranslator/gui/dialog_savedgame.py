@@ -514,9 +514,34 @@ class dialog_setting_game(QDialog):
                 methodtab=QTabWidget()
                 methodtab.addTab(self.gethooktab(exepath),"HOOK")
                 methodtab.addTab(self.getfridatab(exepath),"FridaHook")
+                methodtab.addTab(self.getpretranstab(exepath),"预翻译")
                 formLayout.addWidget(methodtab)
                 
                 self.show()
+        def getpretranstab(self,exepath):
+                _w=QWidget()
+                formLayout = QVBoxLayout()
+                formLayout.setAlignment(Qt.AlignTop)
+                _w.setLayout(formLayout)
+                def selectimg(key,filter1,le):
+                        f=QFileDialog.getOpenFileName(directory=savehook_new_data[exepath][key],filter=filter1)
+                        res=f[0]
+                        if res!='':
+                                savehook_new_data[exepath][key]=res
+                                le.setText(res)
+                for showname,key,filt in [
+                        ("json翻译文件",'gamejsonfile',"*.json"),
+                        ("sqlite翻译记录",'gamesqlitefile',"*.sqlite"),
+                        ("VNR人工翻译文件",'gamexmlfile',"*.xml"),
+                ]:
+                        editjson=QLineEdit(exepath)
+                        editjson.setReadOnly(True)
+                        editjson.setText(savehook_new_data[exepath][key])
+                        formLayout.addLayout(getboxlayout([
+                        QLabel(_TR(showname)),editjson,
+                        getcolorbutton('','',functools.partial(selectimg,key,filt,editjson),icon='fa.gear',constcolor="#FF69B4")
+                        ]))
+                return _w
         def getfridatab(self,exepath):
                 _w=QWidget()
                 formLayout = QVBoxLayout()

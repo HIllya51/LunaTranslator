@@ -538,7 +538,7 @@ class hookselect(closeashidewindow):
         gobject.baseobject.settin_ui.opensolvetextsig.emit()
     def opengamesetting(self):
         try:
-            dialog_setting_game(self,gobject.baseobject.textsource.pname) 
+            dialog_setting_game(self,gobject.baseobject.textsource.pname,None,type=2) 
         except:
             print_exc()
     def gethide(self,res ):

@@ -72,7 +72,10 @@ def getdefaultsavehook(gamepath,title=None):
         "use_saved_text_process":False,
         "fridahook":{},
         "searchnoresulttime":0,
-        'relationlinks':[]
+        'relationlinks':[],
+        'gamejsonfile':'',
+        'gamesqlitefile':'',
+        'gamexmlfile':'',
     }
     if gamepath=='0':
         default['title']='No Game'
