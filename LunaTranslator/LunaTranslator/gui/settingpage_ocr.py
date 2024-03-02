@@ -47,6 +47,7 @@ def getocrgrid(self) :
             [(("执行周期(s)"),8),(getspinbox(0.1,100,globalconfig,'ocr_interval',double=True,step=0.1  ),4)],  
             [(("图像稳定性阈值"),8),(getspinbox(0,1,globalconfig,'ocr_stable_sim'  ,double=True,step=0.01 ,dec=3),4),(self.threshold1label,4)], 
             [(("图像一致性阈值"),8),(getspinbox(0,1,globalconfig,'ocr_diff_sim'  ,double=True,step=0.01 ,dec=3),4),(self.threshold2label,4)], 
+            [(("文本相似度阈值"),8),(getspinbox(0,100000,globalconfig,'ocr_text_diff'),4)], 
 
             [],
             [(("多重区域模式"),12),getsimpleswitch(globalconfig ,'multiregion')],

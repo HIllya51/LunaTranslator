@@ -713,5 +713,6 @@
     "关闭": "Đóng cửa",
     "TGW语言模型": "Mô hình ngôn ngữ TGW",
     "自动切换源语言": "Tự động chuyển đổi ngôn ngữ nguồn",
-    "命令行启动": "Chạy dòng lệnh"
+    "命令行启动": "Chạy dòng lệnh",
+    "文本相似度阈值": "Ngưỡng tương tự văn bản"
 }

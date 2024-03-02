@@ -102,6 +102,7 @@
     "textboxreadonly":true,
     "ocr_stable_sim": 0,
     "ocr_diff_sim": 0.95,
+    "ocr_text_diff":3,
     "autorun": true,
     "usewebview":0,
     "transparent": 80,

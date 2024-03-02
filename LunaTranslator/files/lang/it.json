@@ -713,5 +713,6 @@
     "关闭": "chiudi",
     "TGW语言模型": "Modello linguistico TGW",
     "自动切换源语言": "Cambia automaticamente la lingua sorgente",
-    "命令行启动": "Avvio della riga di comando"
+    "命令行启动": "Avvio della riga di comando",
+    "文本相似度阈值": "Soglia di somiglianza del testo"
 }

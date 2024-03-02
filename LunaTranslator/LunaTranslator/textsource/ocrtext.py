@@ -2,8 +2,7 @@
 import time,os
 from traceback import print_exc 
 from myutils.config import globalconfig,_TR
-import importlib  
-from difflib import SequenceMatcher 
+import winsharedutils  
 from gui.rangeselect    import rangeadjust
 from myutils.ocrutil import imageCut,ocr_run,ocr_end
 import time  ,gobject
@@ -28,12 +27,7 @@ def compareImage(img1:QImage,img2):
         return sample_compare(img1,img2,img1.height(),img1.width())
     else:
         return sample_compare(img1,img2)
-def getEqualRate(  str1, str2):
-    
-        score = SequenceMatcher(None, str1, str2).quick_ratio()
-        score = score 
 
-        return score
 class ocrtext(basetext):
      
     def __init__(self)  :
@@ -121,9 +115,9 @@ class ocrtext(basetext):
             self.lastocrtime[i]=time.time()
             
             if self.savelasttext[i] is not None:
-                sim=getEqualRate(self.savelasttext[i],text)
-                #print('text',sim)
-                if sim>0.9: 
+                sim=winsharedutils.distance(self.savelasttext[i],text)
+                #print(text,sim)
+                if sim<globalconfig['ocr_text_diff']: 
                     continue
             self.savelasttext[i]=text
             
