@@ -79,6 +79,7 @@ class basetrans(commonbase):
         self._safe_private_init()
          
         self.lastrequesttime=0
+        self.requestid=0
         self._cache={}
         
         self.newline=None
@@ -248,9 +249,9 @@ class basetrans(commonbase):
                 if is_auto_run and self.onlymanual:
                     continue
             
-                
+            self.requestid+=1
             try:
-                checktutukufunction=lambda:( (embedcallback is not None) or   self.queue.empty()) and self.using
+                checktutukufunction=lambda:( (embedcallback is not None) or self.queue.empty()) and self.using
                 if checktutukufunction(): 
                     def reinitandtrans():
                         if self.needreinit:
@@ -266,8 +267,13 @@ class basetrans(commonbase):
                         callback(_,embedcallback,is_iter_res) 
                         collectiterres.append(_)
                     if isinstance(res,types.GeneratorType):
-                        for _res in res:
-                            __callback(_res,True)
+                        def _iterget():
+                            rid=self.requestid
+                            for _res in res:
+                                if self.requestid!=rid:break
+                                __callback(_res,True)
+                        timeoutfunction(_iterget,checktutukufunction=checktutukufunction ) 
+                        
                     else:
                         __callback(res,False)
                     self.cachesetatend(contentsolved,''.join(collectiterres))
