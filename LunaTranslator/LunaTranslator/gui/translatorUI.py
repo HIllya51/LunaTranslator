@@ -74,7 +74,7 @@ class QUnFrameWindow(resizableframeless):
         try:
             if len(iter_res_info):
                 starting,klass=iter_res_info
-                if not starting:
+                if not starting and klass in self.saveiterclasspointer:
                     self.translate_text.insertatpointer(self.saveiterclasspointer[klass],res)
                     self.saveiterclasspointer[klass]=self.translate_text.getcurrpointer()
                     return
