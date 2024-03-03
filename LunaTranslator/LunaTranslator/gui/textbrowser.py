@@ -235,6 +235,14 @@ class Textbrowser( ):
         self.textcursor.setPosition(pointer) 
         self.textbrowser.setTextCursor(self.textcursor) 
         self.textbrowser.insertPlainText(text) 
+    def deletebetween(self,p1,p2):
+        if self.needdouble:
+            self.textcursorback.setPosition(p1,QTextCursor.MoveAnchor)
+            self.textcursorback.setPosition(p2,QTextCursor.KeepAnchor)
+            self.textcursorback.removeSelectedText()
+        self.textcursor.setPosition(p1,QTextCursor.MoveAnchor)
+        self.textcursor.setPosition(p2,QTextCursor.KeepAnchor)
+        self.textcursor.removeSelectedText()
     def showyinyingtext(self,color ):   
          
         linei=self.yinyingposline

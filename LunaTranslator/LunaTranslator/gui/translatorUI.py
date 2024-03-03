@@ -75,8 +75,11 @@ class QUnFrameWindow(resizableframeless):
             if len(iter_res_info):
                 starting,klass=iter_res_info
                 if not starting and klass in self.saveiterclasspointer:
-                    self.translate_text.insertatpointer(self.saveiterclasspointer[klass],res)
-                    self.saveiterclasspointer[klass]=self.translate_text.getcurrpointer()
+                    if res=='\0':#清除前面的输出
+                        self.translate_text.deletebetween(self.saveiterclasspointer[klass]['start'],self.translate_text.getcurrpointer())
+                    else:   
+                        self.translate_text.insertatpointer(self.saveiterclasspointer[klass]['curr'],res)
+                    self.saveiterclasspointer[klass]['curr']=self.translate_text.getcurrpointer()
                     return
             gobject.baseobject.transhis.getnewtranssignal.emit(name,res)
             if onlyshowhist:
@@ -86,17 +89,15 @@ class QUnFrameWindow(resizableframeless):
                 _res=res[:globalconfig['maxoriginlength']]+'……'
             else:
                 _res=res
+            
             if globalconfig['showfanyisource']:
-                #print(_type)
-                #self.showline((None,globalconfig['fanyi'][_type]['name']+'  '+res),globalconfig['fanyi'][_type]['color']  )
-                self.showline(clear,[None,name+'  '+_res],color ,1,False )
+                _showtext=name+'  '+_res
             else:
-                #self.showline((None,res),globalconfig['fanyi'][_type]['color']  )
-                self.showline(clear,[None,_res],color  ,1,False)
-            #print(globalconfig['fanyi'][_type]['name']+'  '+res+'\n')
+                _showtext=_res
+            self.showline(clear,[None,_showtext],color,1,False)
             
             if len(iter_res_info) and starting:
-                self.saveiterclasspointer[klass]=self.translate_text.getcurrpointer()+len(res)
+                self.saveiterclasspointer[klass]={'curr':self.translate_text.getcurrpointer()+len(_showtext),'start':self.translate_text.getcurrpointer()+len(_showtext)-len(res)}
         except:
             print_exc() 
     def showraw(self,hira,res,color ,onlyshowhist,clear): 
