@@ -1,7 +1,7 @@
 
 import time
 import re
-import os,threading ,ctypes
+import os,threading,codecs
 from traceback import  print_exc   
 from myutils.config import globalconfig ,savehook_new_list,savehook_new_data,noundictconfig,transerrorfixdictconfig,setlanguage ,_TR,static_data
 import threading 
@@ -136,8 +136,11 @@ class MAINUI() :
                 if key in res:
                     res=res.replace(key,value['text']) 
         if transerrorfixdictconfig['use']:
-            for key in transerrorfixdictconfig['dict']:
-                res=res.replace(key,transerrorfixdictconfig['dict'][key])
+            for item in transerrorfixdictconfig['dict_v2']:
+                if item['regex']:
+                    res=re.sub(codecs.escape_decode(bytes(item['key'], "utf-8"))[0].decode("utf-8"),codecs.escape_decode(bytes(item['value'], "utf-8"))[0].decode("utf-8"),res)
+                else:
+                    res=res.replace(item['key'],item['value'])
         return res
 
     def _POSTSOLVE(self,s):

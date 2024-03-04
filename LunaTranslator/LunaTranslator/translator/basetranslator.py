@@ -113,10 +113,9 @@ class basetrans(commonbase):
             task=self.sqlqueue.get()
             if task is None:break
             try:
-                
-                src,trans=task 
+                src,trans=task
+                self.sqlwrite2.execute('DELETE from cache WHERE (srclang,tgtlang,source)=(?,?,?)',(self.srclang,self.tgtlang,src))
                 self.sqlwrite2.execute('INSERT into cache VALUES(?,?,?,?)',(self.srclang,self.tgtlang,src,trans))
-                
             except:
                 print_exc()
     
@@ -144,13 +143,12 @@ class basetrans(commonbase):
     
     def longtermcacheget(self,src):
         try:
-            ret=self.sqlwrite2.execute('SELECT * FROM cache WHERE source = ?',(src,)).fetchall()
-            #有的时候，莫名其妙的卡住，不停的查询失败时的那个句子。。。
+            ret=self.sqlwrite2.execute('SELECT trans FROM cache WHERE (srclang,tgtlang,source)=(?,?,?)',(self.srclang,self.tgtlang,src)).fetchone()
+            if ret:
+                return ret[0]
+            return None
         except:
             return None
-        for srclang,tgtlang,source,trans in ret:
-            if (srclang,tgtlang)==(self.srclang,self.tgtlang):
-                return trans
     
     def longtermcacheset(self,src,tgt):
         self.sqlqueue.put((src,tgt))

@@ -225,7 +225,7 @@ class postconfigdialog_(QDialog):
         button=QPushButton(self)
         button.setText(_TR('添加行'))
         def clicked1(): 
-            model.insertRow(0,[QStandardItem(''),QStandardItem('')])   
+            model.insertRow(0,[QStandardItem(),QStandardItem()])   
         button.clicked.connect(clicked1)
         button2=QPushButton(self)
         button2.setText(_TR('删除选中行'))

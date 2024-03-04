@@ -50,7 +50,7 @@ class codeacceptdialog(QDialog):
                     idx=nowsuppertcodespy.index(code)
             else:
                     idx=len(nowsuppertcodespy)
-            itemsaver=QStandardItem('')
+            itemsaver=QStandardItem()
             self.model.setItem(row,0,itemsaver) 
             index=self.model.index(row,0)
             codecombox=QComboBox() 
@@ -100,7 +100,7 @@ class codeacceptdialog(QDialog):
         self.resize(QSize(600,500))
         self.show()
     def clicked1(self): 
-            itemsaver=QStandardItem('')
+            itemsaver=QStandardItem()
             self.model.insertRow(0,[itemsaver]) 
             codecombox=QComboBox() 
             codecombox.addItems((nowsuppertcodes)) 

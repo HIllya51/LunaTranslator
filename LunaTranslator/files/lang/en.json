@@ -713,5 +713,6 @@
     "TGW语言模型": "TGW language model",
     "自动切换源语言": "Automatically switch source language",
     "命令行启动": "Command line startup",
-    "文本相似度阈值": "Text similarity threshold"
+    "文本相似度阈值": "Text similarity threshold",
+    "正则": "Regular"
 }

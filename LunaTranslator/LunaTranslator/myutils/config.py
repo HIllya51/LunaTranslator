@@ -113,6 +113,15 @@ def syncconfig(config1,default,drop=False,deep=0,skipdict=False):
 
 syncconfig(globalconfig,defaultglobalconfig) 
 syncconfig(transerrorfixdictconfig,defaulterrorfix)
+if True:#transerrorfixdictconfig cast v1 to v2:
+    if 'dict' in transerrorfixdictconfig:
+        for key in transerrorfixdictconfig['dict']:
+            value=transerrorfixdictconfig['dict'][key]
+            transerrorfixdictconfig['dict_v2'].append({
+                'key':key,'value':value,'regex':False
+            })
+        transerrorfixdictconfig.pop('dict')
+
 
 syncconfig(noundictconfig,defaultnoun)
 syncconfig(magpie10_config,dfmagpie10_config,skipdict=True)
