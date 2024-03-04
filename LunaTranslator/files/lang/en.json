@@ -705,7 +705,6 @@
     "外部缩放软件": "External scaling software",
     "Hook Magpie进程使其不会退出缩放": "Hook Magpie process prevents it from exiting scaling",
     "Hook LosslessScaling进程使其不会退出缩放": "Hook LosslessScaling process prevents it from exiting scaling",
-    "正在使用日语模型作为代替，可能效果不佳": "Using Japanese models as a substitute may not be effective",
     "保持非重复字符": "Keep non repeating characters",
     "选择文本窗口中文本框只读": "Select read-only text boxes in the text window",
     "多重区域模式": "Multi region mode",

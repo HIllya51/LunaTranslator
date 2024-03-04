@@ -29,7 +29,7 @@ from gui.usefulwidget import resizableframeless
 from gui.dialog_savedgame import browserdialog
 class QUnFrameWindow(resizableframeless):   
     displayres =  pyqtSignal(str,str,str ,bool,list) 
-    displayraw1 =  pyqtSignal(list, str,str,bool,bool)  
+    displayraw1 =  pyqtSignal(list, str,str,bool)  
     displaystatus=pyqtSignal(str,str,bool,bool) 
     showhideuisignal=pyqtSignal()
     hookfollowsignal=pyqtSignal(int,tuple)
@@ -101,8 +101,8 @@ class QUnFrameWindow(resizableframeless):
                 self.saveiterclasspointer[klass]={'curr':self.translate_text.getcurrpointer()+len(_showtext),'start':self.translate_text.getcurrpointer()+len(_showtext)-len(res)}
         except:
             print_exc() 
-    def showraw(self,hira,res,color ,onlyshowhist,clear): 
-        #print(res,onlyshowhist)
+    def showraw(self,hira,res,color ,onlyshowhist):
+        clear=True
         gobject.baseobject.transhis.getnewsentencesignal.emit(res) 
         if onlyshowhist:
             return 

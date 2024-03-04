@@ -1,7 +1,5 @@
-import os  
- 
+import os
 from myutils.config import globalconfig,_TR,static_data
- 
 from ocrengines.baseocrclass import baseocr 
 from ctypes import CDLL,c_char_p ,create_string_buffer,c_uint32,POINTER,c_int32
 import os
@@ -23,7 +21,6 @@ class ocrwrapper:
         _OcrGetResult=self.dll.OcrGetResult
         length=_OcrGetLen(self.pOcrObj)
         buff = create_string_buffer(length)
-
         _OcrGetResult(self.pOcrObj,buff,length)
         return buff.value
     def _OcrDestroy(self):
@@ -52,27 +49,14 @@ class OCR(baseocr):
     def initocr(self):
         self._ocr=ocrwrapper()
         self._savelang=None
-        self.isusingjaasen=False
         self.checkchange()
     def checkchange(self):
         if self._savelang==self.srclang: 
             return 
-        
-        self.isusingjaasen=False
         self._ocr.trydestroy() 
-        
-        innerlang=static_data["language_list_translator_inner"][globalconfig["srclang3"]]
-        path='./files/ocr/{}'.format(innerlang)
-        failed=False
+
+        path='./files/ocr/{}'.format(static_data["language_list_translator_inner"][globalconfig["srclang3"]])
         if not(os.path.exists(path+'/det.onnx') and os.path.exists(path+'/rec.onnx') and os.path.exists(path+'/dict.txt') ):
-            failed=True
-            if(innerlang=='en'):
-                path2='./files/ocr/{}'.format('ja')
-                if (os.path.exists(path2+'/det.onnx') and os.path.exists(path2+'/rec.onnx') and os.path.exists(path2+'/dict.txt') ):
-                    path=path2
-                    failed=False
-                    self.isusingjaasen=True
-        if failed:
             raise Exception(_TR('未下载该语言的OCR模型,请从软件主页下载模型解压到files/ocr路径后使用') )
         self._ocr.init(path+'/det.onnx',path+'/rec.onnx',path+'/dict.txt')
         self._savelang=self.srclang
@@ -88,8 +72,5 @@ class OCR(baseocr):
         for i in range(len(ls)//2):
             box.append([int(_)  for _ in ls[i*2].split(',')])
             text.append(ls[i*2+1])   
-        
-        res=self.common_solve_text_orientation(box,text)
-        if self.isusingjaasen:
-            res='<msg_warning_with_text>'+_TR('未下载该语言的OCR模型,请从软件主页下载模型解压到files/ocr路径后使用')+'\n'+_TR('正在使用日语模型作为代替，可能效果不佳')+'</msg_warning_with_text>'+res
-        return res
+
+        return self.common_solve_text_orientation(box,text)
