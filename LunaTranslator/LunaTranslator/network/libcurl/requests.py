@@ -178,7 +178,7 @@ class Session(Sessionbase):
             while True:
                 _headerb=headerqueue.get()
                 if _headerb is None:
-                    break
+                    self.raise_for_status()
                 headerb+=_headerb
                 if _headerb==b'\r\n':
                     break
