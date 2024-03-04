@@ -521,13 +521,6 @@ def WaitNamedPipe(pipename,timeout):
 # def TerminateProcess(phandle,code):
 #     return _TerminateProcess(phandle,code)
  
-# _CreatePipe=_kernel32.CreatePipe 
-# _CreatePipe.argtypes=c_void_p,c_void_p,c_void_p,c_uint
-# def CreatePipe(lpsecu,sz):
-#     hread=c_void_p()
-#     hwrite=c_void_p()
-#     _CreatePipe(pointer(hread),pointer(hwrite),lpsecu,sz)
-#     return hread.value,hwrite.value
 
 # _GetCurrentProcess=_kernel32.GetCurrentProcess
 # _DuplicateHandle=_kernel32.DuplicateHandle
@@ -765,3 +758,12 @@ MAPVK_VSC_TO_VK=1
 MAPVK_VK_TO_CHAR=2
 def MapVirtualKey(char,uMapType=MAPVK_VK_TO_CHAR):
     return _MapVirtualKey(ord(char),uMapType)
+
+
+_CreatePipe=_kernel32.CreatePipe 
+_CreatePipe.argtypes=c_void_p,c_void_p,c_void_p,c_uint
+def CreatePipe(lpsecu=None,sz=0):
+    hread=HANDLE()
+    hwrite=HANDLE()
+    _CreatePipe(pointer(hread),pointer(hwrite),lpsecu,sz)
+    return AutoHandle(hread.value),AutoHandle(hwrite.value)

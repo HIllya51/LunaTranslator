@@ -69,6 +69,41 @@ class ResponseBase:
         return charset
     def json(self):
         return json.loads(self.text)
+    def iter_content(self,chunk_size=1,decode_unicode=False):
+        for chunk in self.iter_content_impl(chunk_size):
+            if decode_unicode:
+                yield chunk.decode('utf8')
+            else:
+                yield chunk
+    def iter_content_impl(self,chunk_size=1):
+        pass
+    def iter_lines(
+        self, chunk_size=512, decode_unicode=False, delimiter=None
+    ):
+        pending = None
+        size=0
+        for chunk in self.iter_content(
+            chunk_size=chunk_size, decode_unicode=decode_unicode
+        ):
+            size+=len(chunk)
+            if pending is not None:
+                chunk = pending + chunk
+
+            if delimiter:
+                lines = chunk.split(delimiter)
+            else:
+                lines = chunk.splitlines()
+
+            if lines and lines[-1] and chunk and lines[-1][-1] == chunk[-1]:
+                pending = lines.pop()
+            else:
+                pending = None
+
+            yield from lines
+
+        if pending is not None:
+            yield pending
+        print(size)
 class Sessionbase:
     def __init__(self) -> None:
         self.UA='Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'

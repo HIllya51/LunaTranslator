@@ -8,11 +8,7 @@ try:
 except:
     pass
 class Response(ResponseBase):
-    def __del__(self):
-        del self.hreq
-        del self.hconn
-        del self.keepref
-    def iter_content(self,chunk_size=None):
+    def iter_content_impl(self,chunk_size=1):
         availableSize=DWORD()
         downloadedSize=DWORD()
         downloadeddata=b''

@@ -1,8 +1,9 @@
  
 from libcurl import *
-import winsharedutils 
-
+import winsharedutils,windows
+import threading,queue
 from network.requests_common import *
+from traceback import print_exc
 class autostatus:
     def __init__(self,ref) -> None:
         self.ref=ref
@@ -10,12 +11,37 @@ class autostatus:
         
     def __del__(self):
         self.ref._status=0
-class Response(ResponseBase):  
+class Response(ResponseBase):
     def __init__(self):
         super().__init__()
         self.last_error=0
-    def iter_content(self,chunk_size=1024):
-        yield self.content
+    def iter_content_impl(self,chunk_size=1):
+        
+        downloadeddata=b''
+        getnum=0
+        canend=False
+        allbs=0
+        while not(getnum==self._contentd.size and canend):
+            buff=self.queue.get()
+            
+            if buff is None:
+                canend=True
+                continue
+            allbs+=len(buff)
+            if chunk_size:
+                downloadeddata+=buff
+                while len(downloadeddata)>chunk_size:
+                    yield downloadeddata[:chunk_size]
+                    downloadeddata=downloadeddata[chunk_size:]
+            else:
+                yield buff
+            getnum+=1
+        while len(downloadeddata):
+            yield downloadeddata[:chunk_size]
+            downloadeddata=downloadeddata[chunk_size:]
+        del self.hreadd
+        del self.hwrited
+        
     def raise_for_status(self): 
         if self.last_error:
             raise CURLException(self.last_error) 
@@ -107,22 +133,73 @@ class Session(Sessionbase):
         if datalen:
             curl_easy_setopt(curl,CURLoption.CURLOPT_POSTFIELDS,dataptr)
             curl_easy_setopt(curl,CURLoption.CURLOPT_POSTFIELDSIZE,datalen)
-
-        _content=winsharedutils.MemoryStruct() 
-        curl_easy_setopt(curl,CURLoption.CURLOPT_WRITEDATA,pointer(_content))
-        curl_easy_setopt(curl,CURLoption.CURLOPT_WRITEFUNCTION,winsharedutils.WriteMemoryCallback)
-        _headers=winsharedutils.MemoryStruct() 
-        curl_easy_setopt(curl,CURLoption.CURLOPT_HEADERDATA,pointer(_headers))
-        curl_easy_setopt(curl,CURLoption.CURLOPT_HEADERFUNCTION,winsharedutils.WriteMemoryCallback)  
-
-        self._perform(curl)
+        
         resp=Response()
-        resp.content=self._getmembyte(_content)
-        resp.status_code=self._getStatusCode(curl) 
+
+        if stream:
+            resp.queue=queue.Queue()
+            hreadd,hwrited=windows.CreatePipe(None,1024*1024*4)
+            resp.hreadd=hreadd
+            resp.hwrited=hwrited
+            _contentd=winsharedutils.Pipeinfo()
+            _contentd.memory=hwrited
+            resp._contentd=_contentd
+            curl_easy_setopt(curl,CURLoption.CURLOPT_WRITEDATA,pointer(resp._contentd))
+            curl_easy_setopt(curl,CURLoption.CURLOPT_WRITEFUNCTION,winsharedutils.WriteMemoryToPipe)
+
+            hreadh,hwriteh=windows.CreatePipe(None,1024*1024*4)
+            _contenth=winsharedutils.Pipeinfo() 
+            _contenth.memory=hwriteh
+            curl_easy_setopt(curl,CURLoption.CURLOPT_HEADERDATA,pointer(_contenth))
+            curl_easy_setopt(curl,CURLoption.CURLOPT_HEADERFUNCTION,winsharedutils.WriteMemoryToPipe)
+            headerqueue=queue.Queue()
+            headerok=threading.Lock()
+            headerok.acquire()
+            def ___perform():
+                try:
+                    self._perform(curl)
+                except:
+                    print_exc()
+                    headerqueue.put(None)
+                headerok.acquire()
+                curl_easy_reset(curl)
+                resp.queue.put(None)
+            def ___read(q,h):
+                while True:
+                    size=windows.ReadFile(h,4,None)
+                    if len(size)==0:break
+                    data=windows.ReadFile(h,c_uint.from_buffer_copy(size).value,None)
+                    q.put(data)
+            threading.Thread(target=___read,args=(resp.queue,hreadd),daemon=True).start()
+            threading.Thread(target=___read,args=(headerqueue,hreadh),daemon=True).start()
+            threading.Thread(target=___perform,daemon=True).start()
+            
+            headerb=b''
+            while True:
+                _headerb=headerqueue.get()
+                if _headerb is None:
+                    break
+                headerb+=_headerb
+                if _headerb==b'\r\n':
+                    break
+            resp.headers=self._update_header_cookie(headerb.decode('utf8'))
+            headerok.release()
+        else:
+            _content=winsharedutils.MemoryStruct() 
+            curl_easy_setopt(curl,CURLoption.CURLOPT_WRITEDATA,pointer(_content))
+            curl_easy_setopt(curl,CURLoption.CURLOPT_WRITEFUNCTION,winsharedutils.WriteMemoryCallback)
+            _headers=winsharedutils.MemoryStruct() 
+            curl_easy_setopt(curl,CURLoption.CURLOPT_HEADERDATA,pointer(_headers))
+            curl_easy_setopt(curl,CURLoption.CURLOPT_HEADERFUNCTION,winsharedutils.WriteMemoryCallback)
+            #curl_easy_setopt(curl,CURLoption.CURLOPT_HEADERFUNCTION,cast(WRITEFUNCTION(WRITEFUNCTIONXX),c_void_p))
+            self._perform(curl)
+            resp.content=self._getmembyte(_content)
+            resp.headers=self._update_header_cookie(self._getmembyte(_headers).decode('utf8'))
+        resp.status_code=self._getStatusCode(curl)
         resp.last_error=self.last_error
-        resp.headers=self._update_header_cookie(self._getmembyte(_headers).decode('utf8'))
         resp.cookies=self.cookies
-        curl_easy_reset(curl)
+        if stream==False:
+            curl_easy_reset(curl)
         return resp
     
 Sessionimpl[0]=Session

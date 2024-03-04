@@ -164,6 +164,7 @@ def extracticon2data(fname):
         return None
     
 WriteMemoryCallback=utilsdll.WriteMemoryCallback
+WriteMemoryToPipe=utilsdll.WriteMemoryToPipe
 c_free=utilsdll.c_free
 c_free.argtypes=c_void_p,
 class MemoryStruct(Structure):
@@ -178,3 +179,14 @@ class MemoryStruct(Structure):
     def __del__(self):
         if self.memory:
             c_free(self.memory)
+
+
+class Pipeinfo(Structure):
+    _fields_=[
+        ('memory',c_void_p),
+        ('size',c_size_t)
+    ]
+    def __init__(self )  :
+        super().__init__( )
+        self.memory=0
+        self.size=0

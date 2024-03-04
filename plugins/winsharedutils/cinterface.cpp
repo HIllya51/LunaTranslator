@@ -80,3 +80,14 @@ size_t WriteMemoryCallback(void *contents, size_t size, size_t nmemb, void *user
 void c_free(void* ptr){
     free(ptr);
 }
+
+size_t WriteMemoryToPipe(void *contents, size_t size, size_t nmemb, void *userp){
+  size_t realsize = size * nmemb;
+  auto mem=(MemoryStruct*)userp;
+  auto hWrite=(HANDLE)mem->memory;
+  mem->size+=1;
+  DWORD _;
+  WriteFile(hWrite,&realsize,4,&_,NULL);
+  WriteFile(hWrite,contents,realsize,&_,NULL);
+  return realsize;
+}

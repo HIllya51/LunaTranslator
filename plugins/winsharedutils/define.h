@@ -32,5 +32,6 @@ extern "C" {
 
     
     __declspec(dllexport) size_t WriteMemoryCallback(void *contents, size_t size, size_t nmemb, void *userp);
+    __declspec(dllexport) size_t WriteMemoryToPipe(void *contents, size_t size, size_t nmemb, void *userp);
     __declspec(dllexport) void c_free(void*);
 }
