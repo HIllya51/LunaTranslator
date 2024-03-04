@@ -45,6 +45,8 @@ def setTab_quick_direct(self):
             "_23":lambda: gobject.baseobject.translation_ui.clickRange_signal.emit(True),
             "_25":lambda: windows.SendMessage(windows.FindWindow('Magpie_Core_CLI_Message',None),windows.RegisterWindowMessage('Magpie_Core_CLI_Message_ToggleOverlay')),
             
+            "_26":gobject.baseobject.translation_ui.ocr_once_signal.emit,
+            
         }
     for name in globalconfig['quick_setting']['all']: 
         if name not in self.bindfunctions:

@@ -44,6 +44,7 @@ class QUnFrameWindow(resizableframeless):
     hidesignal=pyqtSignal()
     muteprocessignal=pyqtSignal()   
     entersignal=pyqtSignal()
+    ocr_once_signal=pyqtSignal()
     def hookfollowsignalsolve(self,code,other): 
         if self._move_drag:
             return 
@@ -228,6 +229,15 @@ class QUnFrameWindow(resizableframeless):
         self.textAreaChanged()
         self.setMinimumHeight(int(globalconfig['buttonsize']*1.5+10))
         self.setMinimumWidth(globalconfig['buttonsize']*2)
+    def ocr_once_function(self):
+        @threader
+        def ocroncefunction(rect):
+            img=imageCut(0,rect[0][0],rect[0][1],rect[1][0],rect[1][1]) 
+            fname='./cache/ocr/once.png' 
+            img.save(fname)
+            text=ocr_run(fname)
+            gobject.baseobject.textgetmethod(text,False)
+        rangeselct_function(self,ocroncefunction,False,False)
     def addbuttons(self):
         def simulate_key_enter():
             windows.SetForegroundWindow(gobject.baseobject.textsource.hwnd)
@@ -243,13 +253,7 @@ class QUnFrameWindow(resizableframeless):
             while windows.GetForegroundWindow()==gobject.baseobject.textsource.hwnd:
                 time.sleep(0.001)
             windows.keybd_event(17,0,windows.KEYEVENTF_KEYUP,0)
-        @threader
-        def ocroncefunction(rect):
-            img=imageCut(0,rect[0][0],rect[0][1],rect[1][0],rect[1][1]) 
-            fname='./cache/ocr/once.png' 
-            img.save(fname)
-            text=ocr_run(fname)
-            gobject.baseobject.textgetmethod(text,False)
+        
         functions=(
             ("move",None),
             ("retrans",self.startTranslater),
@@ -283,7 +287,7 @@ class QUnFrameWindow(resizableframeless):
             ("copy_once",lambda:gobject.baseobject.textgetmethod(winsharedutils.clipboard_get(),False) ),
             ("open_relative_link",lambda:browserdialog(gobject.baseobject.settin_ui,gobject.baseobject.textsource) ),
             
-            ("ocr_once",lambda:rangeselct_function(self,ocroncefunction,False,False) ),
+            ("ocr_once",self.ocr_once_signal.emit ),
             ("minmize",self.hide_and_disableautohide),
             ("quit",self.close)
         )
@@ -387,6 +391,7 @@ class QUnFrameWindow(resizableframeless):
         
          
         self.hideshownotauto=True
+        self.ocr_once_signal.connect(self.ocr_once_function)
         self.entersignal.connect(self.enterfunction)
         self.displaystatus.connect(self.showstatus)
         self.showhideuisignal.connect(self.showhideui)

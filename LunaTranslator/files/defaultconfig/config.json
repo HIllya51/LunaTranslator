@@ -421,190 +421,141 @@
             "_A": {
                 "use": false,
                 "name": "选择翻译源_剪贴板",
-                "key1": -1,
-                "key2": -1,
                 "keystring": ""
             },
             "_B": {
                 "use": false,
                 "name": "选择翻译源_OCR",
-                "key1": -1,
-                "key2": -1,
                 "keystring": ""
             },
             "_C": {
                 "use": false,
                 "name": "选择翻译源_HOOK",
-                "key1": -1,
-                "key2": -1,
                 "keystring": ""
             },
             "_1": {
                 "use": false,
                 "name": "重新翻译",
-                "key1": -1,
-                "key2": -1,
                 "keystring": ""
             },
             "_2": {
                 "use": false,
                 "name": "自动翻译",
-                "key1": -1,
-                "key2": -1,
                 "keystring": ""
             },
             "_3": {
                 "use": false,
                 "name": "打开设置",
-                "key1": -1,
-                "key2": -1,
                 "keystring": ""
             },
             "_4": {
                 "use": false,
                 "name": "复制到剪贴板",
-                "key1": -1,
-                "key2": -1,
                 "keystring": ""
             },
             "_5": {
                 "use": false,
                 "name": "显示/隐藏原文",
-                "key1": -1,
-                "key2": -1,
                 "keystring": ""
             },
             "_6": {
                 "use": false,
                 "name": "显示/隐藏历史翻译和调试输出",
-                "key1": -1,
-                "key2": -1,
                 "keystring": ""
             },
             "_7": {
                 "use": false,
                 "name": "朗读",
-                "key1": -1,
-                "key2": -1,
                 "keystring": ""
             },
             "_8": {
                 "use": false,
                 "name": "鼠标穿透窗口",
-                "key1": -1,
-                "key2": -1,
                 "keystring": ""
             },
             "_9": {
                 "use": false,
                 "name": "锁定工具栏",
-                "key1": -1,
-                "key2": -1,
                 "keystring": ""
             },
             "_10": {
                 "use": false,
                 "name": "打开保存的游戏",
-                "key1": -1,
-                "key2": -1,
                 "keystring": ""
             },
             "_11": {
                 "use": false,
                 "name": "选择游戏",
-                "key1": -1,
-                "key2": -1,
                 "keystring": ""
             },
             "_12": {
                 "use": false,
                 "name": "选择文本",
-                "key1": -1,
-                "key2": -1,
                 "keystring": ""
             },
             "_13": {
                 "use": false,
                 "name": "选取OCR范围",
-                "key1": -1,
-                "key2": -1,
                 "keystring": ""
             },
             "_14": {
                 "use": false,
                 "name": "显示/隐藏范围框",
-                "key1": -1,
-                "key2": -1,
                 "keystring": ""
             },
             "_15": {
                 "use": false,
                 "name": "绑定截图窗口",
-                "key1": -1,
-                "key2": -1,
                 "keystring": ""
             },
             "_16": {
                 "use": false,
                 "name": "显示/隐藏翻译窗口",
-                "key1": -1,
-                "key2": -1,
                 "keystring": ""
             },
             "_17": {
                 "use": false,
                 "name": "退出",
-                "key1": -1,
-                "key2": -1,
                 "keystring": ""
             },
             "_18": {
                 "use": false,
                 "name": "字体增大（可长按）",
-                "key1": -1,
-                "key2": -1,
                 "keystring": ""
             },
             "_19": {
                 "use": false,
                 "name": "字体缩小（可长按）",
-                "key1": -1,
-                "key2": -1,
                 "keystring": ""
             },
             "_20": {
                 "use": false,
                 "name": "缩放/恢复游戏窗口",
-                "key1": -1,
-                "key2": -1,
                 "keystring": ""
             },
             "_21": {
                 "use": false,
                 "name": "前景窗口截屏",
-                "key1": -1,
-                "key2": -1,
                 "keystring": ""
             },
             "_22": {
                 "use": false,
                 "name": "游戏静音",
-                "key1": -1,
-                "key2": -1,
                 "keystring": ""
             },
             "_23": {
                 "use": false,
                 "name": "选取OCR范围——立即",
-                "key1": -1,
-                "key2": -1,
                 "keystring": ""
             },
             "_25": {
                 "use": false,
                 "name": "Magpie_游戏内叠加层",
-                "key1": -1,
-                "key2": -1,
+                "keystring": ""
+            },
+            "_26": {
+                "use": false,
+                "name": "进行一次OCR",
                 "keystring": ""
             }
         }
