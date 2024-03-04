@@ -7,18 +7,33 @@ try:
     from brotli_dec import decompress
 except:
     pass
-class Response(ResponseBase):  
-    def iter_content(self,chunk_size=1024):
+class Response(ResponseBase):
+    def __del__(self):
+        del self.hreq
+        del self.hconn
+        del self.keepref
+    def iter_content(self,chunk_size=None):
+        availableSize=DWORD()
         downloadedSize=DWORD()
-        buff=create_string_buffer(chunk_size) 
+        downloadeddata=b''
         while True:
-            succ=WinHttpReadData(self.hreq,buff,chunk_size,pointer(downloadedSize))
+            succ=WinHttpQueryDataAvailable(self.hreq,pointer(availableSize))
             if succ==0:raise WinhttpException(GetLastError())
-            if downloadedSize.value==0:
-                del self.hreq
-                del self.hconn
-                break
-            yield buff[:downloadedSize.value]
+            if availableSize.value==0:break
+            buff=create_string_buffer(availableSize.value)
+            succ=WinHttpReadData(self.hreq,buff,availableSize,pointer(downloadedSize))
+            if succ==0:raise WinhttpException(GetLastError())
+            
+            if chunk_size:
+                downloadeddata+=buff[:downloadedSize.value]
+                if len(downloadeddata)>chunk_size:
+                    yield downloadeddata[:chunk_size]
+                    downloadeddata=downloadeddata[chunk_size:]
+            else:
+                yield buff[:downloadedSize.value]
+        if len(downloadeddata):
+            yield downloadeddata
+        
     def raise_for_status(self):
         error=GetLastError()
         if error:
@@ -107,6 +122,7 @@ class Session(Sessionbase):
         if stream:
             resp.hconn=hConnect
             resp.hreq=hRequest
+            resp.keepref=self
             return resp
         availableSize=DWORD()
         downloadedSize=DWORD()
