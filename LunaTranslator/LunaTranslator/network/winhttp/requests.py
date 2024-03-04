@@ -26,13 +26,14 @@ class Response(ResponseBase):
             
             if chunk_size:
                 downloadeddata+=buff[:downloadedSize.value]
-                if len(downloadeddata)>chunk_size:
+                while len(downloadeddata)>chunk_size:
                     yield downloadeddata[:chunk_size]
                     downloadeddata=downloadeddata[chunk_size:]
             else:
                 yield buff[:downloadedSize.value]
-        if len(downloadeddata):
-            yield downloadeddata
+        while len(downloadeddata):
+            yield downloadeddata[:chunk_size]
+            downloadeddata=downloadeddata[chunk_size:]
         
     def raise_for_status(self):
         error=GetLastError()
