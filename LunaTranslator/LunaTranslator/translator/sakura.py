@@ -8,7 +8,8 @@ import json
 class TS(basetrans):
     def langmap(self):
         return {"zh": "zh-CN"}
-    def inittranslator(self) :
+    def __init__(self, typename) :
+        super( ).__init__(typename)
         self.timeout = 30
         self.api_url = ""
         self.history = {
