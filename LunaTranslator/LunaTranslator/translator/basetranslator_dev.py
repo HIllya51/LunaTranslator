@@ -25,8 +25,6 @@ class basetransdev(basetrans):
             time.sleep(0.1)
 #########################################
     def _private_init(self):
-        if os.path.exists(globalconfig['chromepath'])==False:
-            raise Exception("can't find chromium")
         self._id=1
         self._createtarget()  
         super()._private_init()

@@ -59,8 +59,16 @@ def settab2d(self):
         lixians,pre,mianfei,develop,shoufei=splittranslatortypes()
         while True:
             port=globalconfig['debugport']
-            _path=globalconfig['chromepath']
-            needstart=any([globalconfig['fanyi'][dev]['use'] for dev in develop])  and os.path.exists(_path)
+            _path=None
+            for syspath in [
+                globalconfig['chromepath'],
+                r'C:\Program Files\Google\Chrome\Application\chrome.exe',
+                r'C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe',
+            ]:
+                if os.path.exists(syspath) and os.path.isfile(syspath):
+                    _path=syspath
+                    break
+            needstart=any([globalconfig['fanyi'][dev]['use'] for dev in develop])  and _path
             try:
                 
                 if needstart :

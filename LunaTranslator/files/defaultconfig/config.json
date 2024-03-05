@@ -769,6 +769,11 @@
             "color": "#ff65db",
             "name": "百度"
         },
+        "baidu_ai": {
+            "use": false,
+            "color": "#ff65db",
+            "name": "百度_ai"
+        },
         "bing": {
             "use": false,
             "color": "#000ff0",
