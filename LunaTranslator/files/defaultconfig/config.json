@@ -1144,7 +1144,7 @@
     "focusnotop": false,
     "autostarthook": true,
     "minlength": 0,
-    "maxlength": 200,
+    "maxlength": 1000,
     "maxoriginlength":1000,
     "srclang3": 1,
     "tgtlang3": 0,
