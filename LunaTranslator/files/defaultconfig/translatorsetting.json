@@ -177,10 +177,14 @@
 		"Appedix":"/chat/completions",
 		"使用自定义promt":false,
 		"自定义promt":"",
-		"api_type":0
+		"api_type":0,
+		"流式输出":false
       }
 	  ,
 		"argstype":{
+			"流式输出":{
+				"type": "switch"
+			},
 			"api_type":{
 				"type":"combo",
 				"list":["open_ai","azure","azure_ad"]
@@ -220,11 +224,16 @@
 		"model":"gpt-3.5-turbo",
 		"附带上下文个数":0,
 		"API接口地址":"https://api.openai.com/v1",
+		"Appedix":"/chat/completions",
 		"使用自定义promt":false,
-		"自定义promt":""
+		"自定义promt":"",
+		"流式输出":false
       }
 	  ,
 		"argstype":{
+			"流式输出":{
+				"type": "switch"
+			},
 			"使用自定义promt":{
 				"type":"switch"
 			},

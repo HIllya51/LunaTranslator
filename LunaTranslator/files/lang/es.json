@@ -714,5 +714,6 @@
     "自动切换源语言": "Cambiar automáticamente el lenguaje fuente",
     "命令行启动": "Se inicia la línea de órdenes",
     "文本相似度阈值": "Umbral de similitud de texto",
-    "正则": "Regular"
+    "正则": "Regular",
+    "流式输出": "Salida de flujo"
 }

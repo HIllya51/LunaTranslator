@@ -714,5 +714,6 @@
     "自动切换源语言": "Automatycznie przełączaj język źródłowy",
     "命令行启动": "Uruchamianie wiersza poleceń",
     "文本相似度阈值": "Próg podobieństwa tekstu",
-    "正则": "regularne"
+    "正则": "regularne",
+    "流式输出": "Wyjście strumieniowe"
 }

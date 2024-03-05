@@ -13,8 +13,6 @@ class TS(basetrans):
     def inittranslator(self):
         self.api_key=None 
     def translate(self, query):
-        os.environ['https_proxy']=self.proxy['https'] if self.proxy['https'] else ''
-        os.environ['http_proxy']=self.proxy['http'] if self.proxy['http'] else ''
         self.checkempty(['SECRET_KEY','model'])
         self.contextnum=int(self.config['附带上下文个数'])
         api_type=self.config['api_type']
@@ -52,6 +50,7 @@ class TS(basetrans):
         if api_version:
             params={'api-version':api_version}
         else:params=None
+        usingstream=self.config['流式输出']
         data=dict(
             model=self.config['model'],
             messages=message,
@@ -61,21 +60,37 @@ class TS(basetrans):
             stop=None,
             top_p=1,
             temperature=temperature,
-            stream=False
+            stream=usingstream
         ) 
         response=self.session.post(
             self.config['OPENAI_API_BASE'] + self.config['Appedix'],
             params=params,
             headers=headers, 
-            json=data
-        ).json()
-        try:
-            message = response['choices'][0]['message']['content'].replace('\n\n', '\n').strip()
-            self.context.append( {"role": "user", "content": query})
-            self.context.append({
-                'role':"assistant",
-                "content":message
-            })
-            return message
-        except: 
-            raise Exception(json.dumps(response,ensure_ascii=False))
+            json=data,
+            stream=usingstream
+        )
+        if usingstream:
+            message=''
+            for chunk in response.iter_lines():
+                response_data = chunk.decode("utf-8").strip()
+                if not response_data:
+                    continue
+                try:
+                    json_data = json.loads(response_data[6:])
+                    msg = json_data["choices"][0]["delta"]['content']
+                    yield msg
+                    message+=msg
+                except:
+                    raise Exception(response_data)
+            
+        else:
+            try:
+                message = response.json()['choices'][0]['message']['content'].replace('\n\n', '\n').strip()
+                yield message
+            except: 
+                raise Exception(response.text)
+        self.context.append( {"role": "user", "content": query})
+        self.context.append({
+            'role':"assistant",
+            "content":message
+        })

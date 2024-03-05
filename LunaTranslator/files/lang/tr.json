@@ -714,5 +714,6 @@
     "自动切换源语言": "Avtomatik kaynak dilini değiştir",
     "命令行启动": "Komut satırı başlatma",
     "文本相似度阈值": "Metin benzerliği eşiği",
-    "正则": "normal"
+    "正则": "normal",
+    "流式输出": "Aktarma çıkışı"
 }

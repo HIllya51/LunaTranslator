@@ -714,5 +714,6 @@
     "自动切换源语言": "Changement automatique de langue source",
     "命令行启动": "Démarrage de la ligne de commande",
     "文本相似度阈值": "Seuil de similarité du texte",
-    "正则": "Régulière"
+    "正则": "Régulière",
+    "流式输出": "Sortie de flux"
 }

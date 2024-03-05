@@ -123,7 +123,7 @@ class TS(basetrans):
             )
             output = self.session.post(self.api_url + "/chat/completions", timeout=self.timeout, json=data, stream=True)
             for o in output.iter_lines(delimiter="\n\n".encode()):
-                res = o.decode("utf-8").strip().replace("data: ", "")
+                res = o.decode("utf-8").strip()[6:]#.replace("data: ", "")
                 print(res)
                 if res != "":
                     yield json.loads(res)
