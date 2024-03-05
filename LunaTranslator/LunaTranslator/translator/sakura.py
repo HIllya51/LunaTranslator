@@ -8,7 +8,7 @@ import json
 class TS(basetrans):
     def langmap(self):
         return {"zh": "zh-CN"}
-    def __init__(self, typename) :
+    def inittranslator(self) :
         self.timeout = 30
         self.api_url = ""
         self.history = {
@@ -16,7 +16,6 @@ class TS(basetrans):
             "zh": []
         }
         self.session = requests.Session()
-        super( ).__init__(typename)
     def sliding_window(self, text_ja, text_zh):
         if text_ja == "" or text_zh == "":
             return
