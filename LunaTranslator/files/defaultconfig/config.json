@@ -867,6 +867,18 @@
             "type": "dev",
             "name": "百度"
         },
+        "dev_baidu_ai": {
+            "use": false,
+            "color": "blue",
+            "type": "dev",
+            "name": "百度_ai"
+        },
+        "dev_poe": {
+            "use": false,
+            "color": "blue",
+            "type": "dev",
+            "name": "poe"
+        },
         "google_dev": {
             "use": false,
             "color": "blue",
