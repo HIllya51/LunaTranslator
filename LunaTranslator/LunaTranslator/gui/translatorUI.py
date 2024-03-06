@@ -156,13 +156,13 @@ class QUnFrameWindow(resizableframeless):
             self.translate_text.mergeCurrentCharFormat( color, globalconfig['miaobianwidth']) 
         elif globalconfig['zitiyangshi'] ==0: 
             self.translate_text.simplecharformat(color)
-        elif globalconfig['zitiyangshi'] ==3: 
+        elif globalconfig['zitiyangshi'] ==3:
             self.translate_text.simplecharformat(color)
 
         if iter_context:
             iter_res_status,iter_context_class=iter_context
             if iter_res_status==3:
-                self.translate_text.append(text,hira,origin)
+                self.translate_text.append(' ',hira,origin)
                 self.saveiterclasspointer[iter_context_class]={'curr':self.translate_text.getcurrpointer()+len(text),'start':self.translate_text.getcurrpointer()}
             else:
                 self.translate_text.deletebetween(self.saveiterclasspointer[iter_context_class]['start'],self.saveiterclasspointer[iter_context_class]['curr'])

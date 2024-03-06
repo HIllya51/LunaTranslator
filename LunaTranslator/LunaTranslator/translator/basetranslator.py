@@ -276,8 +276,8 @@ class basetrans(commonbase):
                     if isinstance(res,types.GeneratorType):
                         def _iterget():
                             rid=self.requestid
-                            __callback('',3)
-                            for _res in res:
+                            for i,_res in enumerate(res):
+                                if i==0:__callback('',3)
                                 if self.requestid!=rid:break
                                 __callback(_res,1)
                             __callback('',2)
