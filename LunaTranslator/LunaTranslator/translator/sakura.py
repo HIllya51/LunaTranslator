@@ -169,11 +169,13 @@ class TS(basetrans):
                     # detect degeneration, fixing
                     frequency_penalty += 0.1
                     yield '\0'
+                    yield "[检测到退化，重试中]"
                     print("------------------清零------------------")
                     if bool(self.config['流式输出']) == True:
                         output = self.send_request_stream(query, frequency_penalty=frequency_penalty)
                         completion_tokens = 0
                         output_text = ""
+                        yield '\0'
                         for o in output:
                             text_partial = o['choices'][0]['delta']['content']
                             if o['choices'][0]['finish_reason'] == None:
@@ -184,6 +186,7 @@ class TS(basetrans):
                                 finish_reason = o['choices'][0]['finish_reason']
                     else:
                         output = self.send_request(query, frequency_penalty=frequency_penalty)
+                        yield '\0'
                         for o in output:
                             completion_tokens = o["usage"]["completion_tokens"]
                             output_text = o["choices"][0]["message"]["content"]
@@ -241,11 +244,13 @@ class TS(basetrans):
                 while completion_tokens == int(self.config['max_new_token']):
                     frequency_penalty += 0.1
                     yield '\0'
+                    yield "[检测到退化，重试中]"
                     print("------------------清零------------------")
                     if bool(self.config['流式输出']) == True:
                         output = self.send_request_stream(query, history_zh=history_prompt, frequency_penalty=frequency_penalty)
                         completion_tokens = 0
                         output_text = ""
+                        yield '\0'
                         for o in output:
                             text_partial = o['choices'][0]['delta']['content']
                             if o['choices'][0]['finish_reason'] == None:
@@ -256,6 +261,7 @@ class TS(basetrans):
                                 finish_reason = o['choices'][0]['finish_reason']
                     else:
                         output = self.send_request(query, history_zh=history_prompt, frequency_penalty=frequency_penalty)
+                        yield '\0'
                         for o in output:
                             completion_tokens = o["usage"]["completion_tokens"]
                             output_text = o["choices"][0]["message"]["content"]
