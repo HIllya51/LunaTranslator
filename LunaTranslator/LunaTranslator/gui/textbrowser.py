@@ -121,6 +121,7 @@ class Textbrowser( ):
         self.setselectable() 
         self.blockcount=0
         self.needdouble=False
+        self.iteryinyinglabelsave={}
     def setselectable(self):
         self.masklabel.setHidden(globalconfig['selectable'])
         self.toplabel2.setHidden(globalconfig['selectable'] and globalconfig['zitiyangshi']!=3) 
@@ -187,7 +188,7 @@ class Textbrowser( ):
         else:
             self.align=False
      
-    def append(self,x ,tag,origin ): 
+    def append(self,x,tag,origin): 
         
         if self.cleared:
             _space=''
@@ -243,6 +244,44 @@ class Textbrowser( ):
         self.textcursor.setPosition(p1,QTextCursor.MoveAnchor)
         self.textcursor.setPosition(p2,QTextCursor.KeepAnchor)
         self.textcursor.removeSelectedText()
+    def showyinyingtext2(self,color,iter_context_class,pos,text):
+        if iter_context_class not in self.iteryinyinglabelsave:
+            self.iteryinyinglabelsave[iter_context_class]=[]
+        for label in self.iteryinyinglabelsave[iter_context_class]:
+            label.hide()
+        
+        
+        subtext=[]
+        subpos=[]
+        lastpos=None
+        posx=pos
+        for i in range(len(text)):
+            if text[i] =='\n':continue
+            self.textcursor.setPosition(posx)
+            posx+=1
+            tl1=self.textbrowser.cursorRect(self.textcursor).topLeft()
+            if lastpos is None or tl1.y()!=lastpos.y():
+                lastpos=tl1
+                subpos.append(lastpos)
+                subtext.append('')
+            subtext[-1]+=text[i]
+        
+    
+        if (len(subtext))>len(self.iteryinyinglabelsave[iter_context_class]):
+            _newlabels=[QLabel(self.toplabel2) for i in range(len(subtext)-len(self.iteryinyinglabelsave[iter_context_class]))]
+            self.iteryinyinglabelsave[iter_context_class]+=_newlabels
+            for lb in _newlabels:
+                lb.setTextFormat(Qt.PlainText)
+        for i in range(len(subtext)):
+            _=self.iteryinyinglabelsave[iter_context_class][i]
+            _.move(subpos[i])
+            _.setText(subtext[i])
+            _.setFont(self.textbrowser.currentCharFormat().font())
+                
+            _.setStyleSheet("color:{}; background-color:rgba(0,0,0,0)".format(globalconfig['miaobiancolor']))
+            _.setGraphicsEffect(self.geteffect(globalconfig['fontsize'],color,globalconfig['shadowforce']))
+            _.show()
+
     def showyinyingtext(self,color ):   
          
         linei=self.yinyingposline
@@ -610,6 +649,9 @@ class Textbrowser( ):
             label.hide()
         for label in self.yinyinglabels:
             label.hide()
+        for klass,labels in self.iteryinyinglabelsave.items():
+            for label in labels:
+                label.hide()
         # self.textbrowser.clear()
         # self.textbrowserback.clear()
         self.yinyingpos=0

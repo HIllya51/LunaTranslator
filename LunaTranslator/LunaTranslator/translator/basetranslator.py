@@ -261,19 +261,26 @@ class basetrans(commonbase):
                     collectiterres=[]
                     def __callback(_,is_iter_res):
                         if self.needzhconv:
-                            _=zhconv.convert(_,  'zh-tw' )  
-                        callback(_,embedcallback,is_iter_res) 
-                        collectiterres.append(_)
+                            _=zhconv.convert(_,  'zh-tw' )
+                        if _=='\0':#清除前面的输出
+                            collectiterres.clear()
+                            pass
+                        else:
+                            collectiterres.append(_)
+                        callback(''.join(collectiterres),embedcallback,is_iter_res) 
+                        
                     if isinstance(res,types.GeneratorType):
                         def _iterget():
                             rid=self.requestid
+                            __callback('',3)
                             for _res in res:
                                 if self.requestid!=rid:break
-                                __callback(_res,True)
+                                __callback(_res,1)
+                            __callback('',2)
                         timeoutfunction(_iterget,checktutukufunction=checktutukufunction ) 
                         
                     else:
-                        __callback(res,False)
+                        __callback(res,0)
                     self.cachesetatend(contentsolved,''.join(collectiterres))
             except Exception as e:
                 if self.using and globalconfig['showtranexception']:

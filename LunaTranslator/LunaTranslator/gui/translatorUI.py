@@ -28,8 +28,8 @@ from gui.rangeselect  import moveresizegame ,rangeselct_function
 from gui.usefulwidget import resizableframeless
 from gui.dialog_savedgame import browserdialog
 class QUnFrameWindow(resizableframeless):   
-    displayres =  pyqtSignal(str,str,str ,bool,list) 
-    displayraw1 =  pyqtSignal(list, str,str,bool)  
+    displayres=pyqtSignal(dict) 
+    displayraw1=pyqtSignal(list, str,str,bool)  
     displaystatus=pyqtSignal(str,str,bool,bool) 
     showhideuisignal=pyqtSignal()
     hookfollowsignal=pyqtSignal(int,tuple)
@@ -71,18 +71,22 @@ class QUnFrameWindow(resizableframeless):
                 pass
             self.move(self.pos().x()+ other[0],self.pos().y()+ other[1])
         
-    def showres(self,name,color,res,onlyshowhist,iter_res_info):  
+    def showres(self,kwargs):#name,color,res,onlyshowhist,iter_context):  
         try:
-            if len(iter_res_info):
-                starting,klass=iter_res_info
-                if not starting and klass in self.saveiterclasspointer:
-                    if res=='\0':#清除前面的输出
-                        self.translate_text.deletebetween(self.saveiterclasspointer[klass]['start'],self.translate_text.getcurrpointer())
-                    else:   
-                        self.translate_text.insertatpointer(self.saveiterclasspointer[klass]['curr'],res)
-                    self.saveiterclasspointer[klass]['curr']=self.translate_text.getcurrpointer()
+            name=kwargs.get('name','')
+            color=kwargs.get('color')
+            res=kwargs.get('res')
+            onlyshowhist=kwargs.get('onlyshowhist')
+            iter_context=kwargs.get('iter_context',None)
+        
+            if iter_context:
+                iter_res_status,iter_context_class=iter_context
+                if iter_res_status==2:   #iter结束
+                    gobject.baseobject.transhis.getnewtranssignal.emit(name,res)
                     return
-            gobject.baseobject.transhis.getnewtranssignal.emit(name,res)
+            else:
+                gobject.baseobject.transhis.getnewtranssignal.emit(name,res)
+              
             if onlyshowhist:
                 return 
             clear=name==''
@@ -90,15 +94,13 @@ class QUnFrameWindow(resizableframeless):
                 _res=res[:globalconfig['maxoriginlength']]+'……'
             else:
                 _res=res
-            
+        
             if globalconfig['showfanyisource']:
                 _showtext=name+'  '+_res
             else:
                 _showtext=_res
-            self.showline(clear,[None,_showtext],color,1,False)
+            self.showline(clear=clear,text=_showtext,color=color,origin=False,iter_context=iter_context)
             
-            if len(iter_res_info) and starting:
-                self.saveiterclasspointer[klass]={'curr':self.translate_text.getcurrpointer()+len(_showtext),'start':self.translate_text.getcurrpointer()+len(_showtext)-len(res)}
         except:
             print_exc() 
     def showraw(self,hira,res,color ,onlyshowhist):
@@ -111,22 +113,30 @@ class QUnFrameWindow(resizableframeless):
         else:
             _res=res
         if globalconfig['isshowhira'] and globalconfig['isshowrawtext']:
-            self.showline(clear,[hira,_res],color , 2 )
+            self.showline(clear=clear,text=_res,hira=hira,color=color)
         elif globalconfig['isshowrawtext']:
-            self.showline(clear,[hira,_res],color,1)
+            self.showline(clear=clear,text=_res,color=color)
         else:
-            self.showline(clear,None,None,1) 
+            self.showline(clear=clear)
         
         gobject.baseobject.edittextui.getnewsentencesignal.emit(res)  
     def showstatus(self,res,color,clear,origin): 
-        self.showline(clear,[None,res],color,1,origin)
-    def showline (self,clear,res,color ,type_=1,origin=True):   
+        self.showline(clear=clear,text=res,color=color,origin=origin)
+    def showline (self,**kwargs):# clear,res,color ,type_=1,origin=True):   
+        clear=kwargs.get('clear',True)
+        origin=kwargs.get('origin',True)
+        text=kwargs.get('text',None)
+        color=kwargs.get('color',None)
+        hira=kwargs.get('hira',[])
+        iter_context=kwargs.get('iter_context',None)
+        
         if clear:
             self.translate_text.clear()
-        self.translate_text.setnextfont(origin)
-        if res is None:
+        if text is None:
             return 
         
+        self.translate_text.setnextfont(origin)
+
         if globalconfig['showatcenter']:
             self.translate_text.setAlignment(Qt.AlignCenter)
         else:
@@ -142,20 +152,33 @@ class QUnFrameWindow(resizableframeless):
         elif globalconfig['zitiyangshi'] ==0: 
             self.translate_text.simplecharformat(color)
         elif globalconfig['zitiyangshi'] ==3: 
-            self.translate_text.simplecharformat(color)  
-        if type_==1: 
-            self.translate_text.append (res[1],[],origin) 
-        else:   
-            self.translate_text.append (res[1],res[0],origin)    
-        if globalconfig['zitiyangshi'] ==3:
-            self.translate_text.showyinyingtext(color  ) 
-        if (globalconfig['usesearchword'] or globalconfig['usecopyword'] or globalconfig['show_fenci']  ) and res[0]:
+            self.translate_text.simplecharformat(color)
+
+        if iter_context:
+            iter_res_status,iter_context_class=iter_context
+            if iter_res_status==3:
+                self.translate_text.append(text,hira,origin)
+                self.saveiterclasspointer[iter_context_class]={'curr':self.translate_text.getcurrpointer()+len(text),'start':self.translate_text.getcurrpointer()}
+            else:
+                self.translate_text.deletebetween(self.saveiterclasspointer[iter_context_class]['start'],self.saveiterclasspointer[iter_context_class]['curr'])
+                self.translate_text.insertatpointer(self.saveiterclasspointer[iter_context_class]['start'],text)
+                self.saveiterclasspointer[iter_context_class]['curr']=self.translate_text.getcurrpointer()
+            
+            if globalconfig['zitiyangshi'] ==3:
+                self.translate_text.showyinyingtext2(color,iter_context_class,self.saveiterclasspointer[iter_context_class]['start'],text) 
+            return
+                
+        else:
+            self.translate_text.append(text,hira,origin)
+            if globalconfig['zitiyangshi'] ==3:
+                self.translate_text.showyinyingtext(color) 
+        if (globalconfig['usesearchword'] or globalconfig['usecopyword'] or globalconfig['show_fenci']  ) and hira:
             def callback(word):
                 if globalconfig['usecopyword'] :
                     winsharedutils.clipboard_set(word)
                 if globalconfig['usesearchword']:
                     gobject.baseobject.searchwordW.getnewsentencesignal.emit(word)
-            self.translate_text.addsearchwordmask(res[0],res[1],callback   ) 
+            self.translate_text.addsearchwordmask(hira,text,callback) 
         
         
         if globalconfig['autodisappear']:
@@ -165,7 +188,7 @@ class QUnFrameWindow(resizableframeless):
                 if flag:
                     self.show_()
             self.lastrefreshtime=time.time()
-            self.autohidestart=True  
+            self.autohidestart=True
     def autohidedelaythread(self):
         while True:
             if globalconfig['autodisappear'] and self.autohidestart:
@@ -313,7 +336,7 @@ class QUnFrameWindow(resizableframeless):
         windows.SetForegroundWindow(int(self.winId()))
     def showEvent(self, a0 ) -> None: 
         if self.isfirstshow:
-            self.showline(True,[None,_TR('欢迎使用')],'',1,False)
+            self.showline(clear=True,text=_TR('欢迎使用'),origin=False)
             
             
             showAction = QAction(_TR("&显示"), self, triggered = self.show_and_enableautohide)
