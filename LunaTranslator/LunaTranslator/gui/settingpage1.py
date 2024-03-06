@@ -1,15 +1,15 @@
  
 import functools,os,shutil
-from PyQt5.QtGui import  QFont
+from PyQt5.QtGui import  QFont,QStandardItem,QStandardItemModel
+from PyQt5.QtCore import Qt,QSize
 from traceback import print_exc
-from PyQt5.QtWidgets import  QFontComboBox  ,QLabel,QComboBox,QPushButton,QFileDialog
+from PyQt5.QtWidgets import  QFontComboBox,QDialog,QLabel,QComboBox,QPushButton,QFileDialog,QVBoxLayout,QTableView,QHeaderView,QHBoxLayout,QLineEdit
 from gui.settingpage_ocr import getocrgrid  
-from myutils.config import globalconfig ,_TR,_TRL  ,savehook_new_data
-from myutils.hwnd import getpidexe
+from myutils.config import globalconfig ,_TR,_TRL
 from gui.dialog_savedgame import dialog_savedgame 
 import threading,gobject,requests,datetime,zipfile
 from gui.inputdialog import autoinitdialog 
-from gui.usefulwidget import getsimplecombobox,getspinbox,getcolorbutton,yuitsu_switch,getsimpleswitch,getQMessageBox
+from gui.usefulwidget import getsimplecombobox,getspinbox,getcolorbutton,yuitsu_switch,getsimpleswitch,Singleton
 from gui.codeacceptdialog import codeacceptdialog   
 from textsource.fridahook import fridahook
 from myutils.utils import loadfridascriptslist,checkifnewgame,makehtml
@@ -130,6 +130,59 @@ def getfridahookgrid(self) :
          
         return grids
 
+@Singleton
+class safeembedcheckdialog(QDialog):
+    def newline(self,row):
+        self.model.insertRow(row,[QStandardItem(globalconfig['embedded']['safecheckregexs'][row])])
+    def __init__(self,parent) -> None:
+        super().__init__(parent,Qt.WindowCloseButtonHint)
+        self.setWindowTitle(_TR('正则匹配'))
+
+        formLayout = QVBoxLayout(self)  # 配置layout
+        
+        self.model=QStandardItemModel()
+        self.model.setHorizontalHeaderLabels(_TRL(['正则']))
+        table = QTableView(self)
+        table.setModel(self.model)
+        
+        table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+        
+        self.table=table
+        for row,regex in enumerate(globalconfig['embedded']['safecheckregexs']):
+            self.model.insertRow(row,[QStandardItem(regex)])
+         
+
+        button=QPushButton(self)
+        button.setText(_TR('添加行'))
+        def clicked1():
+            globalconfig['embedded']['safecheckregexs'].insert(0,'')
+            self.model.insertRow(0,[QStandardItem()])
+        button.clicked.connect(clicked1)
+        button2=QPushButton(self)
+        button2.setText(_TR('删除选中行'))
+        def clicked2():
+            self.model.removeRow(table.currentIndex().row())
+            globalconfig['embedded']['safecheckregexs'].pop(table.currentIndex().row())
+        button2.clicked.connect(clicked2)
+        self.button=button
+        formLayout.addWidget(table)
+        formLayout.addWidget(button)
+        formLayout.addWidget(button2) 
+        self.resize(QSize(600,400))
+        self.show()
+    def closeEvent(self,_) -> None:
+        self.button.setFocus()
+        rows=self.model.rowCount() 
+        rowoffset=0
+        dedump=set()
+        for row in range(rows):
+            regex=self.model.item(row,0).text()
+            if regex=="" or regex in dedump:
+                globalconfig['embedded']['safecheckregexs'].pop(row-rowoffset)
+                rowoffset+=1
+                continue
+            globalconfig['embedded']['safecheckregexs'][row-rowoffset]=regex
+            dedump.add(regex)
 def gethookembedgrid(self) :   
         self.gamefont_comboBox = QFontComboBox( ) 
         def callback(x):
@@ -149,7 +202,9 @@ def gethookembedgrid(self) :
                 [('内嵌的翻译器',5),'',(getsimplecombobox(_TRL([globalconfig['fanyi'][x]['name'] for x in globalconfig['fanyi']]),globalconfig['embedded'],'translator'),5) ],
                 [('将汉字转换成繁体/日式汉字',5),(getsimpleswitch( globalconfig['embedded'] ,'trans_kanji'),1) ],
                 [('在重叠显示的字间插入空格',5),'',(getsimplecombobox(_TRL(['不插入空格','每个字后插入空格','仅在无法编码的字后插入']),globalconfig['embedded'],'insertspace_policy',callback=lambda _:gobject.baseobject.textsource.flashembedsettings()),5) ],
-                [('修改游戏字体',5),(getsimpleswitch( globalconfig['embedded'] ,'changefont',callback=lambda _:gobject.baseobject.textsource.flashembedsettings()),1), (self.gamefont_comboBox,5) ],
+                [('修改游戏字体',5),(getsimpleswitch( globalconfig['embedded'] ,'changefont',callback=lambda _:gobject.baseobject.textsource.flashembedsettings()),1), (self.gamefont_comboBox,5)],
+                [],
+                [('内嵌安全性检查',5),getcolorbutton(globalconfig,'',callback=lambda x:safeembedcheckdialog(self),icon='fa.gear',constcolor="#FF69B4")]
                 #[('修改字体字符集',5),(getsimpleswitch( globalconfig['embedded'] ,'changecharset',callback=lambda _:gobject.baseobject.textsource.flashembedsettings()),1) ,(getsimplecombobox(_TRL(static_data["charsetmapshow"]),globalconfig['embedded'],'changecharset_charset',callback=lambda _:gobject.baseobject.textsource.flashembedsettings()),5)],
 
         ]

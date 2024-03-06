@@ -3,7 +3,7 @@ from queue import Queue
 import re ,os
 import time ,gobject
 from collections import OrderedDict
-import ctypes,functools
+import codecs,functools
 import windows,subprocess
 from myutils.config import globalconfig ,savehook_new_data ,_TR,static_data 
 from textsource.textsourcebase import basetext 
@@ -201,8 +201,19 @@ class texthook(basetext  ):
     def newhookinsert(self,addr,hcode):
         for _hc,_addr,_ctx1,_ctx2 in savehook_new_data[self.pname]['embedablehook']:
             if hcode==_hc:
-                self.useembed(addr,_ctx1,_ctx2,True) 
-    def getembedtext(self,text,tp): 
+                self.useembed(addr,_ctx1,_ctx2,True)
+    def safeembedcheck(self,text):
+        try:
+            for regex in (globalconfig['embedded']['safecheckregexs']):
+                if re.match(codecs.escape_decode(bytes(regex,"utf-8"))[0].decode("utf-8"),text):
+                    return False
+            return True
+        except:
+            return False
+    def getembedtext(self,text,tp):
+        if self.safeembedcheck(text)==False:
+            self.embedcallback(text,text)
+            return
         if globalconfig['autorun']==False:
             self.embedcallback(text,text)
             return 

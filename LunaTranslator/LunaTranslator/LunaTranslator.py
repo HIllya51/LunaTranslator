@@ -148,8 +148,7 @@ class MAINUI() :
         return ss
     def textgetmethod(self,text,is_auto_run=True,embedcallback=None,onlytrans=False):
         _autolock(self.solvegottextlock)
-        if onlytrans==False:
-            self.currentsignature=time.time()
+        
         if type(text)==str:
             if text.startswith('<notrans>'):
                 self.translation_ui.displayres.emit(dict(color=globalconfig['rawtextcolor'],res=text[len('<notrans>'):],onlytrans=onlytrans))
@@ -171,7 +170,8 @@ class MAINUI() :
                 if embedcallback:
                     embedcallback('') 
                 return 
- 
+        if onlytrans==False:
+            self.currentsignature=time.time()
         try:
             if type(text)==list:
                 origin='\n'.join(text)
@@ -227,11 +227,11 @@ class MAINUI() :
             print_exc()
             hira=[]
         if globalconfig['refresh_on_get_trans']==False:
-            self.translation_ui.displayraw1.emit(hira,text,globalconfig['rawtextcolor'] ,onlytrans)
+            self.translation_ui.displayraw1.emit(dict(hira=hira,text=text,color=globalconfig['rawtextcolor'],onlytrans=onlytrans))
             _showrawfunction=None
             _showrawfunction_sig=0
         else:
-            _showrawfunction=functools.partial(self.translation_ui.displayraw1.emit,hira,text,globalconfig['rawtextcolor'],onlytrans)
+            _showrawfunction=functools.partial(self.translation_ui.displayraw1.emit,dict(hira=hira,text=text,color=globalconfig['rawtextcolor'],onlytrans=onlytrans))
             _showrawfunction_sig=time.time()
          
         text_solved,optimization_params= self.solvebeforetrans(text) 
@@ -274,7 +274,6 @@ class MAINUI() :
                 
     
     def GetTranslationCallback(self,onlytrans,classname,currentsignature,optimization_params,_showrawfunction,_showrawfunction_sig,contentraw,res,embedcallback,iter_res_status):
-    
         if classname in self.usefultranslators:
             self.usefultranslators.remove(classname)
         if embedcallback is None and currentsignature!=self.currentsignature:return

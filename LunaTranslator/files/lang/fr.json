@@ -715,5 +715,18 @@
     "命令行启动": "Démarrage de la ligne de commande",
     "文本相似度阈值": "Seuil de similarité du texte",
     "正则": "Régulière",
-    "流式输出": "Sortie de flux"
+    "流式输出": "Sortie de flux",
+    "内嵌安全性检查": "Inspection de sécurité intégrée",
+    "正则匹配": "Match régulier",
+    "TGW懒人包": "Tgw sac pour paresseux",
+    "TGW懒人包1": "Tgw sac paresseux 1",
+    "API接口地址(默认为http://127.0.0.1:5000/)": "Adresse de l'interface API (par défaut http://127.0.0.1:5000/ ) et",
+    "利用上文信息翻译": "Traduire avec les informations ci - dessus",
+    "附带上下文个数(必须打开利用上文翻译)": "Livré avec le nombre de contextes (doit être ouvert pour tirer parti de la traduction ci - dessus)",
+    "prompt(系统人设)": "Prompt (configuration du système)",
+    "prompt(文本起始)": "Prompt (début du texte)",
+    "prompt(不懂可以不写)": "Prompt (ne sait pas écrire)",
+    "stop(自定义停止符，多个用逗号隔开)": "Stop (STOP personnalisé, plusieurs séparés par des virgules)",
+    "tokens(单次生成上限)": "Tokens (limite supérieure de génération unique)",
+    "template(需要按照模型模板选择)": "Template (doit être choisi selon le modèle de modèle)"
 }

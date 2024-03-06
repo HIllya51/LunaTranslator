@@ -715,5 +715,18 @@
     "命令行启动": "Chạy dòng lệnh",
     "文本相似度阈值": "Ngưỡng tương tự văn bản",
     "正则": "Chính quy",
-    "流式输出": "Đầu ra dòng"
+    "流式输出": "Đầu ra dòng",
+    "内嵌安全性检查": "Kiểm tra an ninh nội tuyến",
+    "正则匹配": "Khớp chính quy",
+    "TGW懒人包": "Túi xách lười TGW",
+    "TGW懒人包1": "Túi xách lười TGW 1",
+    "API接口地址(默认为http://127.0.0.1:5000/)": "Địa chỉ giao diện API (mặc định là http://127.0.0.1:5000/ )",
+    "利用上文信息翻译": "Sử dụng thông tin trên để dịch",
+    "附带上下文个数(必须打开利用上文翻译)": "Kèm theo số ngữ cảnh (phải được mở để sử dụng bản dịch ở trên)",
+    "prompt(系统人设)": "Prompt (hệ thống)",
+    "prompt(文本起始)": "Prompt (văn bản bắt đầu)",
+    "prompt(不懂可以不写)": "Prompt (không hiểu có thể viết)",
+    "stop(自定义停止符，多个用逗号隔开)": "Stop (dừng tùy chỉnh, nhiều ngăn cách bằng dấu phẩy)",
+    "tokens(单次生成上限)": "Tokens (Giới hạn phát sinh một lần)",
+    "template(需要按照模型模板选择)": "REFERENCES [Tên bảng tham chiếu] ("
 }

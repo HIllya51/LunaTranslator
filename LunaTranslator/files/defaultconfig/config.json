@@ -17,6 +17,10 @@
     "direct_filterrepeat":false,
     "allow_set_text_name":false,
     "embedded": {
+        "safecheckregexs": [
+            "(.*?)\\{(.*?)\\}(.*?)",
+            "(.*?)\\[(.*?)\\](.*?)"
+        ],
         "translator": 0,
         "as_fast_as_posible": true,
         "timeout_translate": 2,

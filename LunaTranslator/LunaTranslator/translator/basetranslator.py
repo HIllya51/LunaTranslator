@@ -76,7 +76,11 @@ class basetrans(commonbase):
         self.multiapikeycurrentidx=-1
         self.queue=Queue()  
         self.sqlqueue=None
-        self._safe_private_init()
+        try:
+            self._private_init()
+        except Exception as e:
+            gobject.baseobject.textgetmethod('<msg_error_not_refresh>'+globalconfig['fanyi'][self.typename]['name']+' inittranslator failed : '+str(stringfyerror(e)))
+            print_exc() 
          
         self.lastrequesttime=0
         self.requestid=0
@@ -96,18 +100,14 @@ class basetrans(commonbase):
             self.sqlqueue=Queue()
             Thread(target= self._sqlitethread).start()
         Thread(target=self._fythread).start() 
-    def _safe_private_init(self):
-        try:
-            self._private_init()
-        except Exception as e:
-            gobject.baseobject.textgetmethod('<msg_error_not_refresh>'+globalconfig['fanyi'][self.typename]['name']+' inittranslator failed : '+str(stringfyerror(e)))
-            print_exc() 
     def notifyqueuforend(self):
         if self.sqlqueue:
             self.sqlqueue.put(None)
         self.queue.put(None)
     def _private_init(self):
+        self.initok=False
         self.inittranslator()
+        self.initok=True
     def _sqlitethread(self):
         while self.using:
             task=self.sqlqueue.get()
@@ -252,11 +252,15 @@ class basetrans(commonbase):
                 checktutukufunction=lambda:( (embedcallback is not None) or self.queue.empty()) and self.using
                 if checktutukufunction(): 
                     def reinitandtrans():
-                        if self.needreinit:
+                        if self.needreinit or self.initok==False:
                             self.needreinit=False
                             self.renewsesion()
-                            self._private_init()
+                            try:
+                                self._private_init()
+                            except Exception as e:
+                                raise Exception('inittranslator failed : '+str(stringfyerror(e)))
                         return self.maybecachetranslate(contentraw,contentsolved,hira,is_auto_run)
+
                     res=timeoutfunction(reinitandtrans,checktutukufunction=checktutukufunction ) 
                     collectiterres=[]
                     def __callback(_,is_iter_res):

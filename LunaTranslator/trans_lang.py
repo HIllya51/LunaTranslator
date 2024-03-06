@@ -1,6 +1,6 @@
 import sys,time
 sys.path.append('./LunaTranslator')
-from translator.baidu import TS
+from translator.baidu_ai import TS
 class TS1(TS):
             
             @property

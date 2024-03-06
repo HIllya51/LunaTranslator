@@ -715,5 +715,18 @@
     "命令行启动": "Komut satırı başlatma",
     "文本相似度阈值": "Metin benzerliği eşiği",
     "正则": "normal",
-    "流式输出": "Aktarma çıkışı"
+    "流式输出": "Aktarma çıkışı",
+    "内嵌安全性检查": "İçeri giriş güvenlik kontrolü",
+    "正则匹配": "Normal eşleşme",
+    "TGW懒人包": "TGW Lazy Bag",
+    "TGW懒人包1": "TGW Lazy Bag 1",
+    "API接口地址(默认为http://127.0.0.1:5000/)": "API arayüz adresi (öntanımlı olarak) http://127.0.0.1:5000/ - Evet.",
+    "利用上文信息翻译": "Önceki metinden bilgi kullanarak çevirin",
+    "附带上下文个数(必须打开利用上文翻译)": "İlerleyen anlaşmalar sayısı (önceki metin kullanarak açılıp çevirilmeli olmalı)",
+    "prompt(系统人设)": "Soru (sistem kişisi)",
+    "prompt(文本起始)": "Soru (metin başlaması)",
+    "prompt(不懂可以不写)": "Soru (anlamazsa terk edilebilir)",
+    "stop(自定义停止符，多个用逗号隔开)": "Dur (özel durma karakteri, komuta ile birçok ayrı)",
+    "tokens(单次生成上限)": "Tokenler (tek nesilin üst sınırı)",
+    "template(需要按照模型模板选择)": "Şablon (model şablona göre seçilmeli)"
 }

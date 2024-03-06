@@ -29,7 +29,7 @@ from gui.usefulwidget import resizableframeless
 from gui.dialog_savedgame import browserdialog
 class QUnFrameWindow(resizableframeless):   
     displayres=pyqtSignal(dict) 
-    displayraw1=pyqtSignal(list, str,str,bool)  
+    displayraw1=pyqtSignal(dict)
     displaystatus=pyqtSignal(str,str,bool,bool) 
     showhideuisignal=pyqtSignal()
     hookfollowsignal=pyqtSignal(int,tuple)
@@ -71,12 +71,12 @@ class QUnFrameWindow(resizableframeless):
                 pass
             self.move(self.pos().x()+ other[0],self.pos().y()+ other[1])
         
-    def showres(self,kwargs):#name,color,res,onlyshowhist,iter_context):  
+    def showres(self,kwargs):#name,color,res,onlytrans,iter_context):  
         try:
             name=kwargs.get('name','')
             color=kwargs.get('color')
             res=kwargs.get('res')
-            onlyshowhist=kwargs.get('onlyshowhist')
+            onlytrans=kwargs.get('onlytrans')
             iter_context=kwargs.get('iter_context',None)
         
             if iter_context:
@@ -87,8 +87,8 @@ class QUnFrameWindow(resizableframeless):
             else:
                 gobject.baseobject.transhis.getnewtranssignal.emit(name,res)
               
-            if onlyshowhist:
-                return 
+            if onlytrans:
+                return
             clear=name==''
             if len(res)>globalconfig['maxoriginlength']:
                 _res=res[:globalconfig['maxoriginlength']]+'……'
@@ -103,15 +103,20 @@ class QUnFrameWindow(resizableframeless):
             
         except:
             print_exc() 
-    def showraw(self,hira,res,color ,onlyshowhist):
+    def showraw(self,kwargs):#hira,res,color,onlytrans):
+        hira=kwargs.get('hira')
+        text=kwargs.get('text')
+        color=kwargs.get('color')
+        onlytrans=kwargs.get('onlytrans')
+
         clear=True
-        gobject.baseobject.transhis.getnewsentencesignal.emit(res) 
-        if onlyshowhist:
+        gobject.baseobject.transhis.getnewsentencesignal.emit(text) 
+        if onlytrans:
             return 
-        if len(res)>globalconfig['maxoriginlength']:
-            _res=res[:globalconfig['maxoriginlength']]+'……'
+        if len(text)>globalconfig['maxoriginlength']:
+            _res=text[:globalconfig['maxoriginlength']]+'……'
         else:
-            _res=res
+            _res=text
         if globalconfig['isshowhira'] and globalconfig['isshowrawtext']:
             self.showline(clear=clear,text=_res,hira=hira,color=color)
         elif globalconfig['isshowrawtext']:
@@ -119,7 +124,7 @@ class QUnFrameWindow(resizableframeless):
         else:
             self.showline(clear=clear)
         
-        gobject.baseobject.edittextui.getnewsentencesignal.emit(res)  
+        gobject.baseobject.edittextui.getnewsentencesignal.emit(text)  
     def showstatus(self,res,color,clear,origin): 
         self.showline(clear=clear,text=res,color=color,origin=origin)
     def showline (self,**kwargs):# clear,res,color ,type_=1,origin=True):   

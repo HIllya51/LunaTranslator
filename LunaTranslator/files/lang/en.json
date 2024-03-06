@@ -715,5 +715,18 @@
     "命令行启动": "Command line startup",
     "文本相似度阈值": "Text similarity threshold",
     "正则": "Regular",
-    "流式输出": "Streaming output"
+    "流式输出": "Streaming output",
+    "内嵌安全性检查": "Embedded security check",
+    "正则匹配": "Regular matching",
+    "TGW懒人包": "TGW Lazy Bag",
+    "TGW懒人包1": "TGW Lazy Bag 1",
+    "API接口地址(默认为http://127.0.0.1:5000/)": "API interface address (default to http://127.0.0.1:5000/ ）",
+    "利用上文信息翻译": "Translate using the information from the previous text",
+    "附带上下文个数(必须打开利用上文翻译)": "Number of accompanying contexts (must be opened and translated using the previous text)",
+    "prompt(系统人设)": "Prompt (system persona)",
+    "prompt(文本起始)": "Prompt (start of text)",
+    "prompt(不懂可以不写)": "Prompt (can be omitted if not understood)",
+    "stop(自定义停止符，多个用逗号隔开)": "Stop (custom stop character, multiple separated by commas)",
+    "tokens(单次生成上限)": "Tokens (upper limit of single generation)",
+    "template(需要按照模型模板选择)": "Template (needs to be selected according to the model template)"
 }
