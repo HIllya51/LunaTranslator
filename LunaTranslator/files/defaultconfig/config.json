@@ -920,6 +920,12 @@
             "color": "#1839f0",
             "name": "Jbeijing7"
         },
+        "sugoi": {
+            "type": "offline",
+            "use": false,
+            "color": "#1839f0",
+            "name": "Sugoi"
+        },
         "yakuyaku": {
             "type": "offline",
             "use": false,
