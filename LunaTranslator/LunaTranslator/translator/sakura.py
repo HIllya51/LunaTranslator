@@ -148,8 +148,8 @@ class TS(basetrans):
                 completion_tokens = 0
                 output_text = ""
                 for o in output:
-                    text_partial = o['choices'][0]['delta']['content']
                     if o['choices'][0]['finish_reason'] == None:
+                        text_partial = o['choices'][0]['delta']['content']
                         output_text += text_partial
                         yield text_partial
                         completion_tokens += 1
@@ -177,8 +177,8 @@ class TS(basetrans):
                         output_text = ""
                         yield '\0'
                         for o in output:
-                            text_partial = o['choices'][0]['delta']['content']
                             if o['choices'][0]['finish_reason'] == None:
+                                text_partial = o['choices'][0]['delta']['content']
                                 output_text += text_partial
                                 yield text_partial
                                 completion_tokens += 1
@@ -224,8 +224,8 @@ class TS(basetrans):
                 completion_tokens = 0
                 output_text = ""
                 for o in output:
-                    text_partial = o['choices'][0]['delta']['content']
                     if o['choices'][0]['finish_reason'] == None:
+                        text_partial = o['choices'][0]['delta']['content']
                         output_text += text_partial
                         yield text_partial
                         completion_tokens += 1
@@ -252,8 +252,8 @@ class TS(basetrans):
                         output_text = ""
                         yield '\0'
                         for o in output:
-                            text_partial = o['choices'][0]['delta']['content']
                             if o['choices'][0]['finish_reason'] == None:
+                                text_partial = o['choices'][0]['delta']['content']
                                 output_text += text_partial
                                 yield text_partial
                                 completion_tokens += 1
