@@ -244,6 +244,7 @@ class TS(basetrans):
                     print("------------------清零------------------")
                     if bool(self.config['流式输出']) == True:
                         output = self.send_request_stream(query, history_zh=history_prompt, frequency_penalty=frequency_penalty)
+                        completion_tokens = 0
                         output_text = ""
                         for o in output:
                             text_partial = o['choices'][0]['delta']['content']
