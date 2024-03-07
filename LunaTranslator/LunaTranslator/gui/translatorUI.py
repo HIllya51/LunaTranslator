@@ -170,6 +170,7 @@ class QUnFrameWindow(resizableframeless):
                 self.translate_text.insertatpointer(self.saveiterclasspointer[iter_context_class]['start'],text)
                 self.saveiterclasspointer[iter_context_class]['curr']=self.translate_text.getcurrpointer()
                 self.document.blockSignals(False)
+                self.textAreaChanged()
             if globalconfig['zitiyangshi'] ==3:
                 self.translate_text.showyinyingtext2(color,iter_context_class,self.saveiterclasspointer[iter_context_class]['start'],text) 
             return
