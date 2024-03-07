@@ -163,7 +163,7 @@ class QUnFrameWindow(resizableframeless):
             iter_res_status,iter_context_class=iter_context
             if iter_res_status==3:
                 self.translate_text.append(' ',hira,origin)
-                self.saveiterclasspointer[iter_context_class]={'curr':self.translate_text.getcurrpointer(),'start':self.translate_text.getcurrpointer()}
+                self.saveiterclasspointer[iter_context_class]={'curr':self.translate_text.getcurrpointer()+1,'start':self.translate_text.getcurrpointer()}
             else:
                 currbefore=self.saveiterclasspointer[iter_context_class]['curr']
                 self.document.blockSignals(True)
