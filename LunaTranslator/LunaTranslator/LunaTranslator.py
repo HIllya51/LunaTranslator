@@ -52,8 +52,6 @@ class MAINUI() :
         self.currentsignature=None
         self.isrunning=True
         self.solvegottextlock=threading.Lock()
-        self.castkata2hira=str.maketrans(static_data['allkata'],static_data['allhira'])
-        self.casthira2kata=str.maketrans(static_data['allhira'],static_data['allkata'])
     @property
     def textsource(self):return self.textsource_p
     @textsource.setter
@@ -183,9 +181,6 @@ class MAINUI() :
             msg=str(type(e))[8:-2]+' '+str(e).replace('\n','').replace('\r','')
             self.translation_ui.displaystatus.emit(msg,'red',True,True)
             return 
-        
-        while len(text) and text[-1] in '\r\n \t':  #在后处理之后在去除换行，这样换行符可以当作行结束符给后处理用
-            text=text[:-1]  
             
         if text=='' or (is_auto_run and (text==self.currenttext or len(text)>(max(globalconfig['maxoriginlength'],globalconfig['maxlength'])))):
             if embedcallback:
@@ -205,33 +200,12 @@ class MAINUI() :
                 self.currentread=text
                 self.autoreadcheckname()
 
-        try:
-            if self.hira_:
-                hira=self.hira_.fy(text)
-                for _1 in range(len(hira)):
-                    _=len(hira)-1-_1
-                    if globalconfig['hira_vis_type']==0:
-                        hira[_]['hira']=hira[_]['hira'].translate(self.castkata2hira)
-                    elif globalconfig['hira_vis_type']==1:
-                        hira[_]['hira']=hira[_]['hira'].translate(self.casthira2kata)
-                    elif globalconfig['hira_vis_type']==2:
-                        __kanas=[static_data['hira']+['っ'],static_data['kata']+['ッ']]
-                        target=static_data['roma']+['-']
-                        for _ka in __kanas:
-                            for __idx in  range(len(_ka)):
-                                _reverse_idx=len(_ka)-1-__idx
-                                hira[_]['hira']=hira[_]['hira'].replace(_ka[_reverse_idx],target[_reverse_idx]) 
-            else:
-                hira=[]           
-        except:
-            print_exc()
-            hira=[]
         if globalconfig['refresh_on_get_trans']==False:
-            self.translation_ui.displayraw1.emit(dict(hira=hira,text=text,color=globalconfig['rawtextcolor'],onlytrans=onlytrans))
+            self.translation_ui.displayraw1.emit(dict(text=text,color=globalconfig['rawtextcolor'],onlytrans=onlytrans))
             _showrawfunction=None
             _showrawfunction_sig=0
         else:
-            _showrawfunction=functools.partial(self.translation_ui.displayraw1.emit,dict(hira=hira,text=text,color=globalconfig['rawtextcolor'],onlytrans=onlytrans))
+            _showrawfunction=functools.partial(self.translation_ui.displayraw1.emit,dict(text=text,color=globalconfig['rawtextcolor'],onlytrans=onlytrans))
             _showrawfunction_sig=time.time()
          
         text_solved,optimization_params= self.solvebeforetrans(text) 
@@ -266,7 +240,7 @@ class MAINUI() :
             #print(keys,usenum,self.lasttranslatorindex)
             for engine in keys:  
                 if engine not in self.premtalready:
-                    self.translators[engine].gettask((partial(self.GetTranslationCallback,onlytrans,engine,self.currentsignature, optimization_params,_showrawfunction,_showrawfunction_sig,text),text,text_solved,skip,embedcallback,is_auto_run,hira)) 
+                    self.translators[engine].gettask((partial(self.GetTranslationCallback,onlytrans,engine,self.currentsignature, optimization_params,_showrawfunction,_showrawfunction_sig,text),text,text_solved,skip,embedcallback,is_auto_run)) 
                 thistimeusednum+=1
                 self.lasttranslatorindex+=1
                 if(thistimeusednum>=usenum):

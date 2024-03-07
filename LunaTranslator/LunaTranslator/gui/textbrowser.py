@@ -363,7 +363,7 @@ class Textbrowser( ):
                 tl3=self.textbrowser.cursorRect(self.textcursor).topLeft()   
                 color=self.randomcolor(word)
                 if color:
-                    if word['orig'] not in ['\n','\r',' ',''] :
+                    if word['orig'] not in ['\n',' ',''] :
                         if labeli >=len(self.searchmasklabels)-1:
                             ql=QLabel(self.atback2) 
                             ql.setMouseTracking(True)

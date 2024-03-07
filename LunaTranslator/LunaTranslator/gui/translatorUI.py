@@ -7,8 +7,7 @@ import winsharedutils
 from PyQt5.QtCore import QT_VERSION_STR
 import windows
 from traceback import print_exc
-from PyQt5.QtWidgets import QWidget, QLabel, QPushButton, QVBoxLayout,QApplication
-from PyQt5.QtCore import Qt, pyqtSignal  ,QThread
+from PyQt5.QtCore import Qt, pyqtSignal
 import qtawesome 
 from PyQt5.QtCore import pyqtSignal,Qt,QRect,QSize  
 from PyQt5.QtGui import  QFont  ,QIcon,QPixmap  ,QMouseEvent,QCursor
@@ -16,7 +15,7 @@ from PyQt5.QtWidgets import  QLabel ,QPushButton ,QSystemTrayIcon ,QAction,QMenu
 import gobject
 from myutils.wrapper import threader
 import winsharedutils,queue
-from myutils.config import globalconfig,saveallconfig,_TR
+from myutils.config import globalconfig,saveallconfig,_TR,static_data
 from myutils.subproc import endsubprocs
 from myutils.ocrutil import ocr_run,imageCut
 from myutils.hwnd import mouseselectwindow ,showintab,grabwindow,getExeIcon
@@ -104,7 +103,6 @@ class QUnFrameWindow(resizableframeless):
         except:
             print_exc() 
     def showraw(self,kwargs):#hira,res,color,onlytrans):
-        hira=kwargs.get('hira')
         text=kwargs.get('text')
         color=kwargs.get('color')
         onlytrans=kwargs.get('onlytrans')
@@ -118,7 +116,7 @@ class QUnFrameWindow(resizableframeless):
         else:
             _res=text
         if globalconfig['isshowhira'] and globalconfig['isshowrawtext']:
-            self.showline(clear=clear,text=_res,hira=hira,color=color)
+            self.showline(clear=clear,text=_res,hira=True,color=color)
         elif globalconfig['isshowrawtext']:
             self.showline(clear=clear,text=_res,color=color)
         else:
@@ -127,19 +125,53 @@ class QUnFrameWindow(resizableframeless):
         gobject.baseobject.edittextui.getnewsentencesignal.emit(text)  
     def showstatus(self,res,color,clear,origin): 
         self.showline(clear=clear,text=res,color=color,origin=origin)
+    def cleartext(self,text):
+        text=text.replace('\t',' ')
+        text=text.replace('\r','\n')
+        lines=text.split('\n')
+        newlines=[]
+        for line in lines:
+            if len(line.strip()):
+                newlines.append(line)
+        return '\n'.join(newlines)
+    def parsehira(self,text):
+        hira=[]
+        try:
+            if gobject.baseobject.hira_:
+                hira=gobject.baseobject.hira_.fy(text)
+                for _1 in range(len(hira)):
+                    _=len(hira)-1-_1
+                    if globalconfig['hira_vis_type']==0:
+                        hira[_]['hira']=hira[_]['hira'].translate(self.castkata2hira)
+                    elif globalconfig['hira_vis_type']==1:
+                        hira[_]['hira']=hira[_]['hira'].translate(self.casthira2kata)
+                    elif globalconfig['hira_vis_type']==2:
+                        __kanas=[static_data['hira']+['っ'],static_data['kata']+['ッ']]
+                        target=static_data['roma']+['-']
+                        for _ka in __kanas:
+                            for __idx in  range(len(_ka)):
+                                _reverse_idx=len(_ka)-1-__idx
+                                hira[_]['hira']=hira[_]['hira'].replace(_ka[_reverse_idx],target[_reverse_idx]) 
+        except:
+            print_exc()
+        return hira
     def showline (self,**kwargs):# clear,res,color ,type_=1,origin=True):   
         clear=kwargs.get('clear',True)
         origin=kwargs.get('origin',True)
         text=kwargs.get('text',None)
         color=kwargs.get('color',None)
-        hira=kwargs.get('hira',[])
+        hira=kwargs.get('hira',False)
         iter_context=kwargs.get('iter_context',None)
         
         if clear:
             self.translate_text.clear()
         if text is None:
             return 
-        
+        text=self.cleartext(text)
+        if hira:
+            hira=self.parsehira(text)
+        else:
+            hira=[]
         self.translate_text.setnextfont(origin)
 
         if globalconfig['showatcenter']:
@@ -444,6 +476,8 @@ class QUnFrameWindow(resizableframeless):
         self.quitf_signal.connect(self.close)
         self.fullsgame_signal.connect(self._fullsgame) 
         
+        self.castkata2hira=str.maketrans(static_data['allkata'],static_data['allhira'])
+        self.casthira2kata=str.maketrans(static_data['allhira'],static_data['allkata'])
         self.isletgamefullscreened=False
         self.fullscreenmanager=fullscreen(self._externalfsend)
         self._isTracking=False

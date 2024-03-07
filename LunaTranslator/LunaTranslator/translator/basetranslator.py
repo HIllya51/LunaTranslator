@@ -167,7 +167,7 @@ class basetrans(commonbase):
         if langkey not in self._cache:
             self._cache[langkey]={}
         self._cache[langkey][src] = tgt
-    def cached_translate(self,contentsolved,hira,is_auto_run):
+    def cached_translate(self,contentsolved,is_auto_run):
         is_using_gpt_and_retrans= is_auto_run==False and self.is_gpt_like
         if is_using_gpt_and_retrans==False:
             res=self.shorttermcacheget(contentsolved)
@@ -179,21 +179,21 @@ class basetrans(commonbase):
                 return res
         
         if self.transtype=='offline':
-            res=self.dispatch_translate(contentsolved,hira)
+            res=self.translate(contentsolved)
         else:
-            res=self.intervaledtranslate(contentsolved,hira)
+            res=self.intervaledtranslate(contentsolved)
         return res
     def cachesetatend(self,contentsolved,res):
         if globalconfig['uselongtermcache']:
             self.longtermcacheset(contentsolved,res)
         self.shorttermcacheset(contentsolved,res)
-    def maybecachetranslate(self,contentraw,contentsolved,hira,is_auto_run):
+    def maybecachetranslate(self,contentraw,contentsolved,is_auto_run):
         if self.transtype=='pre':
             res=self.translate(contentraw)
         else: 
-            res=self.cached_translate(contentsolved,hira,is_auto_run)
+            res=self.cached_translate(contentsolved,is_auto_run)
         return res
-    def intervaledtranslate(self,content,hira):
+    def intervaledtranslate(self,content):
         interval=globalconfig['requestinterval']
         current=time.time() 
         self.current=current 
@@ -207,14 +207,8 @@ class basetrans(commonbase):
 
         self.multiapikeycurrentidx+=1
          
-        res=self.dispatch_translate(content,hira)
+        res=self.translate(content)
         
-        return res
-    def dispatch_translate(self,content,hira):
-        if 'translate_with_extra' in dir(self):
-            res=self.translate_with_extra(content,{'hira':hira})
-        else:
-            res=self.translate(content)
         return res
     @property
     def onlymanual(self):
@@ -229,7 +223,7 @@ class basetrans(commonbase):
             while True:
                 _=self.queue.get() 
                 if _ is None:break
-                callback,contentraw,contentsolved,skip,embedcallback,is_auto_run,hira=_
+                callback,contentraw,contentsolved,skip,embedcallback,is_auto_run=_
                 if embedcallback is not None:
                     savelast.clear()
                 
@@ -238,7 +232,7 @@ class basetrans(commonbase):
                     break
             if self.using==False:break
             if savelast[0][4] is not None:
-                callback,contentraw,contentsolved,skip,embedcallback,is_auto_run,hira=savelast.pop(0)
+                callback,contentraw,contentsolved,skip,embedcallback,is_auto_run=savelast.pop(0)
                 for _ in savelast:
                     self.gettask(_)
             if embedcallback is None:
@@ -259,7 +253,7 @@ class basetrans(commonbase):
                                 self._private_init()
                             except Exception as e:
                                 raise Exception('inittranslator failed : '+str(stringfyerror(e)))
-                        return self.maybecachetranslate(contentraw,contentsolved,hira,is_auto_run)
+                        return self.maybecachetranslate(contentraw,contentsolved,is_auto_run)
 
                     res=timeoutfunction(reinitandtrans,checktutukufunction=checktutukufunction ) 
                     collectiterres=[]
