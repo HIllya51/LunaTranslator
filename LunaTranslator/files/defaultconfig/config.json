@@ -1157,6 +1157,12 @@
             "type": "offline",
             "color": "blue",
             "name": "TGW语言模型"
+        },
+        "dev_theb": {
+            "use": false,
+            "type": "dev",
+            "color": "blue",
+            "name": "beta.theb.ai"
         }
     },
     "magpie10path":"",

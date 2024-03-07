@@ -14,6 +14,16 @@
 			}
 		}
 	},
+	"dev_theb":{
+		"args":{
+			"流式输出":false
+		},
+		"argstype":{
+			"流式输出":{
+				"type": "switch"
+			}
+		}
+	},
     "baiduapi": {
         "args": {
             "注册网址": "https://fanyi-api.baidu.com/api/trans/product/desktop",

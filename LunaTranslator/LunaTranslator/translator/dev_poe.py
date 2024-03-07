@@ -7,7 +7,7 @@ import time
 class TS(basetransdev): 
     target_url='https://poe.com/'
     def inittranslator(self):
-        list(self.translate('Please help me translate the following text into: '+self.tgtlang))
+        list(self.translate('Please help me translate the following {} text into {}'.format(self.srclang,self.tgtlang)))
     def langmap(self):
         return {'zh': 'Simplified Chinese', 'ja': 'Japanese', 'en': 'English', 'ru': 'Russian', 'es': 'Spanish', 'ko': 'Korean', 'fr': 'French', 'cht': 'Traditional Chinese', 'vi': 'Vietnamese', 'tr': 'Turkish', 'pl': 'Polish', 'uk': 'Ukrainian', 'it': 'Italian', 'ar': 'Arabic', 'th': 'Thai'}
     def translate(self,content):
