@@ -198,9 +198,13 @@ class QUnFrameWindow(resizableframeless):
                 self.saveiterclasspointer[iter_context_class]={'curr':self.translate_text.getcurrpointer(),'start':self.translate_text.getcurrpointer()}
             else:
                 currbefore=self.saveiterclasspointer[iter_context_class]['curr']
-                self.document.blockSignals(True)
+                if globalconfig['zitiyangshi'] !=3:
+                    #阴影字体blcoksignal会UpdateLayeredWindowIndirect failed for
+                    #其他字体不blocksignal会高度抖动
+                    self.document.blockSignals(True)
                 self.translate_text.deletebetween(self.saveiterclasspointer[iter_context_class]['start'],self.saveiterclasspointer[iter_context_class]['curr'])
-                self.document.blockSignals(False)
+                if globalconfig['zitiyangshi'] !=3:
+                    self.document.blockSignals(False)
                 self.translate_text.insertatpointer(self.saveiterclasspointer[iter_context_class]['start'],text)
                 currcurrent=self.translate_text.getcurrpointer()
                 self.saveiterclasspointer[iter_context_class]['curr']=currcurrent

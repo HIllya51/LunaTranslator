@@ -7,7 +7,7 @@ import os,time ,types
 import zhconv,gobject
 import sqlite3
 from myutils.commonbase import commonbase
-
+import functools
 from myutils.utils import stringfyerror,autosql
 from myutils.commonbase import ArgsEmptyExc
 from myutils.wrapper import stripwrapper
@@ -268,14 +268,13 @@ class basetrans(commonbase):
                         callback(''.join(collectiterres),embedcallback,is_iter_res) 
                         
                     if isinstance(res,types.GeneratorType):
-                        def _iterget():
-                            rid=self.requestid
-                            for i,_res in enumerate(res):
+                        def _iterget(rid,__res):
+                            for i,_res in enumerate(__res):
                                 if i==0:__callback('',3)
                                 if self.requestid!=rid:break
                                 __callback(_res,1)
                             __callback('',2)
-                        timeoutfunction(_iterget,checktutukufunction=checktutukufunction ) 
+                        timeoutfunction(functools.partial(_iterget,self.requestid,res),checktutukufunction=checktutukufunction ) 
                         
                     else:
                         __callback(res,0)
