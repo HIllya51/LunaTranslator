@@ -256,11 +256,10 @@ class Textbrowser( ):
         lastpos=None
         posx=pos
         for i in range(len(text)):
-            if text[i] =='\n':continue
             self.textcursor.setPosition(posx)
             posx+=1
             tl1=self.textbrowser.cursorRect(self.textcursor).topLeft()
-            if lastpos is None or tl1.y()!=lastpos.y():
+            if lastpos is None or tl1.y()!=lastpos.y() or text[i] =='\n':
                 lastpos=tl1
                 subpos.append(lastpos)
                 subtext.append('')

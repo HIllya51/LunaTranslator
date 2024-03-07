@@ -61,10 +61,13 @@ class TS(basetrans):
                     continue
                 try:
                     json_data = json.loads(response_data[6:])
+                    if json_data['choices'][0]['finish_reason']:
+                        break
                     msg = json_data["choices"][0]["delta"]['content']
                     yield msg
                     message+=msg
                 except:
+                    print_exc()
                     raise Exception(response_data)
             
         else:
