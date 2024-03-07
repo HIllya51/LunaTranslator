@@ -4,6 +4,16 @@
             "host": "translate.plausibility.cloud"
         }
 	},
+	"dev_phind":{
+		"args":{
+			"流式输出":false
+		},
+		"argstype":{
+			"流式输出":{
+				"type": "switch"
+			}
+		}
+	},
 	"dev_poe":{
 		"args":{
 			"流式输出":false

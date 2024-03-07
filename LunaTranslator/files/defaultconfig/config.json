@@ -1163,6 +1163,12 @@
             "color": "blue",
             "type": "dev",
             "name": "poe"
+        },
+        "dev_phind": {
+            "use": false,
+            "color": "blue",
+            "type": "dev",
+            "name": "phind"
         }
     },
     "magpie10path":"",
