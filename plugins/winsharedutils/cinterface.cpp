@@ -3,6 +3,9 @@
 #include<iostream>
 #include"cinterface.h"
 #include<malloc.h>
+#include<mutex>
+#include<queue>
+#include<Windows.h>
 void free_all(void* str) {
     delete str;
 }
@@ -81,13 +84,56 @@ void c_free(void* ptr){
     free(ptr);
 }
 
-size_t WriteMemoryToPipe(void *contents, size_t size, size_t nmemb, void *userp){
+class lockedqueue{
+  std::mutex lock;
+  std::queue<std::string>data;
+  HANDLE hsema;
+  public:
+  lockedqueue(){
+    hsema=CreateSemaphore(NULL,0,65535,NULL);
+  }
+  ~lockedqueue(){
+    CloseHandle(hsema);
+  }
+  void push(std::string&& _){
+    std::lock_guard _l(lock);
+    data.push(std::move(_));
+    ReleaseSemaphore(hsema,1,NULL);
+  }
+  std::string pop(){
+    WaitForSingleObject(hsema,INFINITE);
+    std::lock_guard _l(lock);
+    auto _=data.front();
+    data.pop();
+    return _;
+  }
+  bool empty(){
+    return data.empty();
+  }
+};
+void* lockedqueuecreate(){
+  return new lockedqueue();
+}
+void lockedqueuefree(void* q){
+  delete reinterpret_cast<lockedqueue*>(q);
+}
+void* lockedqueueget(void* q,size_t* l){
+  auto data=reinterpret_cast<lockedqueue*>(q)->pop();
+  auto datastatic=new char[data.size()];
+  memcpy(datastatic,data.data(),data.size());
+  *l=data.size();
+  return datastatic;
+}
+void lockedqueuepush(void* q,size_t l,void*ptr){
+  reinterpret_cast<lockedqueue*>(q)->push(std::string((char*)ptr,l));
+}
+bool lockedqueueempty(void* q){
+  return reinterpret_cast<lockedqueue*>(q)->empty();
+}
+
+size_t WriteMemoryToQueue(void *contents, size_t size, size_t nmemb, void *userp){
   size_t realsize = size * nmemb;
-  auto mem=(MemoryStruct*)userp;
-  auto hWrite=(HANDLE)mem->memory;
-  mem->size+=1;
-  DWORD _;
-  WriteFile(hWrite,&realsize,4,&_,NULL);
-  WriteFile(hWrite,contents,realsize,&_,NULL);
+  auto queue=reinterpret_cast<lockedqueue*>(userp);
+  queue->push(std::string((char*)contents,realsize));
   return realsize;
 }

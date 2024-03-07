@@ -32,6 +32,12 @@ extern "C" {
 
     
     __declspec(dllexport) size_t WriteMemoryCallback(void *contents, size_t size, size_t nmemb, void *userp);
-    __declspec(dllexport) size_t WriteMemoryToPipe(void *contents, size_t size, size_t nmemb, void *userp);
+    __declspec(dllexport) size_t WriteMemoryToQueue(void *contents, size_t size, size_t nmemb, void *userp);
+    __declspec(dllexport) void* lockedqueuecreate();
+    __declspec(dllexport) void lockedqueuefree(void*);
+    __declspec(dllexport) void* lockedqueueget(void*,size_t*);
+    __declspec(dllexport) void lockedqueuepush(void*,size_t,void*);
+    __declspec(dllexport) bool lockedqueueempty(void*);
     __declspec(dllexport) void c_free(void*);
+
 }

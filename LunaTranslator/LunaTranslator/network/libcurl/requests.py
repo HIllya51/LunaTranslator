@@ -18,11 +18,10 @@ class Response(ResponseBase):
     def iter_content_impl(self,chunk_size=1):
         
         downloadeddata=b''
-        getnum=0
         canend=False
         allbs=0
-        while not(getnum==self._contentd.size and canend):
-            buff=self.queue.get()
+        while not(self.cqueue.empty() and canend):
+            buff=self.cqueue.get()
             
             if buff is None:
                 canend=True
@@ -35,12 +34,9 @@ class Response(ResponseBase):
                     downloadeddata=downloadeddata[chunk_size:]
             else:
                 yield buff
-            getnum+=1
         while len(downloadeddata):
             yield downloadeddata[:chunk_size]
             downloadeddata=downloadeddata[chunk_size:]
-        del self.hreadd
-        del self.hwrited
         
     def raise_for_status(self): 
         if self.last_error:
@@ -137,22 +133,13 @@ class Session(Sessionbase):
         resp=Response()
 
         if stream:
-            resp.queue=queue.Queue()
-            hreadd,hwrited=windows.CreatePipe(None,1024*1024*4)
-            resp.hreadd=hreadd
-            resp.hwrited=hwrited
-            _contentd=winsharedutils.Pipeinfo()
-            _contentd.memory=hwrited
-            resp._contentd=_contentd
-            curl_easy_setopt(curl,CURLoption.CURLOPT_WRITEDATA,pointer(resp._contentd))
-            curl_easy_setopt(curl,CURLoption.CURLOPT_WRITEFUNCTION,winsharedutils.WriteMemoryToPipe)
+            resp.cqueue=winsharedutils.lockedqueue()
+            curl_easy_setopt(curl,CURLoption.CURLOPT_WRITEDATA,resp.cqueue.ptr)
+            curl_easy_setopt(curl,CURLoption.CURLOPT_WRITEFUNCTION,winsharedutils.WriteMemoryToQueue)
 
-            hreadh,hwriteh=windows.CreatePipe(None,1024*1024*4)
-            _contenth=winsharedutils.Pipeinfo() 
-            _contenth.memory=hwriteh
-            curl_easy_setopt(curl,CURLoption.CURLOPT_HEADERDATA,pointer(_contenth))
-            curl_easy_setopt(curl,CURLoption.CURLOPT_HEADERFUNCTION,winsharedutils.WriteMemoryToPipe)
-            headerqueue=queue.Queue()
+            headercqueue=winsharedutils.lockedqueue()
+            curl_easy_setopt(curl,CURLoption.CURLOPT_HEADERDATA,headercqueue.ptr)
+            curl_easy_setopt(curl,CURLoption.CURLOPT_HEADERFUNCTION,winsharedutils.WriteMemoryToQueue)
             headerok=threading.Lock()
             headerok.acquire()
             def ___perform():
@@ -160,23 +147,15 @@ class Session(Sessionbase):
                     self._perform(curl)
                 except:
                     print_exc()
-                    headerqueue.put(None)
+                    headercqueue.pushnone()
                 headerok.acquire()
                 curl_easy_reset(curl)
-                resp.queue.put(None)
-            def ___read(q,h):
-                while True:
-                    size=windows.ReadFile(h,4,None)
-                    if len(size)==0:break
-                    data=windows.ReadFile(h,c_uint.from_buffer_copy(size).value,None)
-                    q.put(data)
-            threading.Thread(target=___read,args=(resp.queue,hreadd),daemon=True).start()
-            threading.Thread(target=___read,args=(headerqueue,hreadh),daemon=True).start()
+                resp.cqueue.pushnone()
             threading.Thread(target=___perform,daemon=True).start()
             
             headerb=b''
             while True:
-                _headerb=headerqueue.get()
+                _headerb=headercqueue.get()
                 if _headerb is None:
                     self.raise_for_status()
                 headerb+=_headerb
