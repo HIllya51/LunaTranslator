@@ -873,12 +873,6 @@
             "type": "dev",
             "name": "百度_ai"
         },
-        "dev_poe": {
-            "use": false,
-            "color": "blue",
-            "type": "dev",
-            "name": "poe"
-        },
         "google_dev": {
             "use": false,
             "color": "blue",
@@ -1163,6 +1157,12 @@
             "type": "dev",
             "color": "blue",
             "name": "beta.theb.ai"
+        },
+        "dev_poe": {
+            "use": false,
+            "color": "blue",
+            "type": "dev",
+            "name": "poe"
         }
     },
     "magpie10path":"",
