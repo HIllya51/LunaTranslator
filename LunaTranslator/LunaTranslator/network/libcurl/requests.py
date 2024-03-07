@@ -88,8 +88,6 @@ class Session(Sessionbase):
         self.last_error=curl_easy_perform(curl)
         self.raise_for_status()
      
-    def _getmembyte(self,mem):
-        return cast(mem.memory,POINTER(c_char))[:mem.size]
     @ExceptionFilter
     def request_impl(self,
         method,scheme,server,port,param,url,headers,cookies,dataptr,datalen,proxy,stream,verify,timeout):
@@ -147,6 +145,7 @@ class Session(Sessionbase):
                     self._perform(curl)
                 except:
                     print_exc()
+                    self.raise_for_status()
                     headercqueue.pushnone()
                 headerok.acquire()
                 curl_easy_reset(curl)
@@ -154,15 +153,27 @@ class Session(Sessionbase):
             threading.Thread(target=___perform,daemon=True).start()
             
             headerb=b''
+            CLRFnum=1+int(proxy is not None)
             while True:
                 _headerb=headercqueue.get()
                 if _headerb is None:
                     self.raise_for_status()
                 headerb+=_headerb
                 if _headerb==b'\r\n':
-                    break
+                    #使用代理时：
+                    #b'HTTP/1.1 200 Connection established\r\n'
+                    #b'\r\n'
+                    CLRFnum-=1
+                    if CLRFnum==0:
+                        break
+                    else:
+                        headerb=b''
             resp.headers=self._update_header_cookie(headerb.decode('utf8'))
             headerok.release()
+            if proxy:
+                resp.status_code=int(headerb.decode('utf8').split('\r\n')[0].split(' ')[1])
+            else:
+                resp.status_code=self._getStatusCode(curl)
         else:
             _content=winsharedutils.MemoryStruct() 
             curl_easy_setopt(curl,CURLoption.CURLOPT_WRITEDATA,pointer(_content))
@@ -172,15 +183,12 @@ class Session(Sessionbase):
             curl_easy_setopt(curl,CURLoption.CURLOPT_HEADERFUNCTION,winsharedutils.WriteMemoryCallback)
             #curl_easy_setopt(curl,CURLoption.CURLOPT_HEADERFUNCTION,cast(WRITEFUNCTION(WRITEFUNCTIONXX),c_void_p))
             self._perform(curl)
-            resp.content=self._getmembyte(_content)
-            resp.headers=self._update_header_cookie(self._getmembyte(_headers).decode('utf8'))
-        resp.status_code=self._getStatusCode(curl)
+            resp.content=_content.get()
+            resp.headers=self._update_header_cookie(_headers.get().decode('utf8'))
+            resp.status_code=self._getStatusCode(curl)
+            curl_easy_reset(curl)
         resp.last_error=self.last_error
         resp.cookies=self.cookies
-        if stream==False:
-            curl_easy_reset(curl)
         return resp
     
 Sessionimpl[0]=Session
-if __name__=='__main__':
-     pass

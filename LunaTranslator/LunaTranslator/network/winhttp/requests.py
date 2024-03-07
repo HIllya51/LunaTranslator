@@ -155,6 +155,3 @@ class Session(Sessionbase):
         except:
             raise Exception('unenable to decompress {}'.format(encode))
 Sessionimpl[0]=Session
-if __name__=='__main__':
-    pass
-     

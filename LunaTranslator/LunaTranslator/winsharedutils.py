@@ -1,4 +1,4 @@
-from ctypes import c_uint,c_bool,POINTER,c_char_p,c_uint64,c_wchar_p,pointer,CDLL,c_int,Structure,c_void_p,cast,memmove,create_unicode_buffer,create_string_buffer,c_size_t,windll
+from ctypes import c_uint,c_bool,POINTER,c_char_p,c_uint64,c_wchar_p,pointer,CDLL,c_int,Structure,c_void_p,cast,memmove,create_unicode_buffer,create_string_buffer,c_size_t,windll,c_char
 import os,gobject
  
 utilsdll=CDLL(gobject.GetDllpath(('winsharedutils32.dll','winsharedutils64.dll')))
@@ -178,7 +178,8 @@ class MemoryStruct(Structure):
     def __del__(self):
         if self.memory:
             c_free(self.memory)
-
+    def get(self):
+        return cast(self.memory,POINTER(c_char))[:self.size]
 WriteMemoryToQueue=utilsdll.WriteMemoryToQueue
 lockedqueuecreate=utilsdll.lockedqueuecreate
 lockedqueuecreate.restype=c_void_p
@@ -200,7 +201,7 @@ class lockedqueue:
     def get(self):
         sz=c_size_t()
         dataptr=lockedqueueget(self.ptr,pointer(sz))
-        data=cast(dataptr,c_char_p).value[:sz.value]
+        data=cast(dataptr,POINTER(c_char))[:sz.value]
         c_free(dataptr)
         if sz.value==0:
             return None
