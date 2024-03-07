@@ -29,7 +29,7 @@ class TS(basetransdev):
                 yield newcurr[len(currtext):]
                 currtext=newcurr
                 if 'className' not in (self.Runtime_evaluate('''document.querySelector("#__next > div > div > div.col-lg-12.sidebar > main > div > div > div > div > div.fixed-bottom.bg-gradient-light > div > div > div.col-12 > div > button")'''))['result']:
-                    newcurr=self.wait_for_result('''ddocument.querySelector("#__next > div > div > div.col-lg-12.sidebar > main > div > div > div > div > div.mt-8 > div:nth-child({}) > div > div > div > div:nth-child(1) > div:nth-child(3)").textContent'''.format(num+2))
+                    newcurr=self.wait_for_result('''document.querySelector("#__next > div > div > div.col-lg-12.sidebar > main > div > div > div > div > div.mt-8 > div:nth-child({}) > div > div > div > div:nth-child(1) > div:nth-child(3)").textContent'''.format(num+2))
                     yield newcurr[len(currtext):]
                     break
 

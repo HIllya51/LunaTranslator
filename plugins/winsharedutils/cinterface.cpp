@@ -108,6 +108,7 @@ class lockedqueue{
     return _;
   }
   bool empty(){
+    std::lock_guard _l(lock);
     return data.empty();
   }
 };

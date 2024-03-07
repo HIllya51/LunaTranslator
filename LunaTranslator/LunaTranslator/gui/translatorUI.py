@@ -163,14 +163,22 @@ class QUnFrameWindow(resizableframeless):
             iter_res_status,iter_context_class=iter_context
             if iter_res_status==3:
                 self.translate_text.append(' ',hira,origin)
-                self.saveiterclasspointer[iter_context_class]={'curr':self.translate_text.getcurrpointer()+len(text),'start':self.translate_text.getcurrpointer()}
+                self.saveiterclasspointer[iter_context_class]={'curr':self.translate_text.getcurrpointer(),'start':self.translate_text.getcurrpointer()}
             else:
+                currbefore=self.saveiterclasspointer[iter_context_class]['curr']
                 self.document.blockSignals(True)
                 self.translate_text.deletebetween(self.saveiterclasspointer[iter_context_class]['start'],self.saveiterclasspointer[iter_context_class]['curr'])
-                self.translate_text.insertatpointer(self.saveiterclasspointer[iter_context_class]['start'],text)
-                self.saveiterclasspointer[iter_context_class]['curr']=self.translate_text.getcurrpointer()
                 self.document.blockSignals(False)
-                self.textAreaChanged()
+                self.translate_text.insertatpointer(self.saveiterclasspointer[iter_context_class]['start'],text)
+                currcurrent=self.translate_text.getcurrpointer()
+                self.saveiterclasspointer[iter_context_class]['curr']=currcurrent
+                currchange=currcurrent-currbefore
+                for klass in self.saveiterclasspointer:
+                    if klass==iter_context_class:continue
+                    if self.saveiterclasspointer[klass]['curr']>currbefore:
+                        self.saveiterclasspointer[klass]['curr']+=currchange
+                        self.saveiterclasspointer[klass]['start']+=currchange
+
             if globalconfig['zitiyangshi'] ==3:
                 self.translate_text.showyinyingtext2(color,iter_context_class,self.saveiterclasspointer[iter_context_class]['start'],text) 
             return
