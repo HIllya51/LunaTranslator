@@ -247,9 +247,13 @@ class Textbrowser( ):
     def showyinyingtext2(self,color,iter_context_class,pos,text):
         if iter_context_class not in self.iteryinyinglabelsave:
             self.iteryinyinglabelsave[iter_context_class]=[]
+        maxh=0
+        maxh2=9999999
         for label in self.iteryinyinglabelsave[iter_context_class]:
+            maxh2=min(label.pos().y(),maxh2)
+            if label.isVisible()==False:continue
             label.hide()
-        
+            maxh=max(label.pos().y(),maxh)
         
         subtext=[]
         subpos=[]
@@ -265,13 +269,14 @@ class Textbrowser( ):
                 subtext.append('')
             subtext[-1]+=text[i]
         
-    
+        maxnewh=0
         if (len(subtext))>len(self.iteryinyinglabelsave[iter_context_class]):
             _newlabels=[QLabel(self.toplabel2) for i in range(len(subtext)-len(self.iteryinyinglabelsave[iter_context_class]))]
             self.iteryinyinglabelsave[iter_context_class]+=_newlabels
             for lb in _newlabels:
                 lb.setTextFormat(Qt.PlainText)
         for i in range(len(subtext)):
+            maxnewh=max(maxnewh,subpos[i].y())
             _=self.iteryinyinglabelsave[iter_context_class][i]
             _.move(subpos[i])
             _.setText(subtext[i])
@@ -280,7 +285,13 @@ class Textbrowser( ):
             _.setStyleSheet("color:{}; background-color:rgba(0,0,0,0)".format(globalconfig['miaobiancolor']))
             _.setGraphicsEffect(self.geteffect(globalconfig['fontsize'],color,globalconfig['shadowforce']))
             _.show()
-
+        if maxh:
+            for label in self.yinyinglabels:
+                if label.isVisible()==False:continue
+                if label.pos().y()>maxh:
+                    if maxnewh==0:
+                        maxnewh=maxh2
+                    label.move(label.pos().x(),label.pos().y()+maxnewh-maxh)
     def showyinyingtext(self,color ):   
          
         linei=self.yinyingposline

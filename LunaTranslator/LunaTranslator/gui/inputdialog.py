@@ -238,7 +238,28 @@ class postconfigdialog_(QDialog):
         self.key=key
         self.configdict=configdict
         self.closeevent=True
+        search=QHBoxLayout()
+        searchcontent=QLineEdit()
+        search.addWidget(searchcontent)
+        button4=QPushButton()
+        button4.setText(_TR('搜索'))
+        def clicked4():
+            text=searchcontent.text()
+            
+            rows=model.rowCount() 
+            cols=model.columnCount()
+            for row in range(rows):
+                ishide=True
+                for c in range(cols):
+                    if text in model.item(row,c).text(): 
+                        ishide=False
+                        break 
+                table.setRowHidden(row,ishide)
+        button4.clicked.connect(clicked4)
+        search.addWidget(button4)
+        
         formLayout.addWidget(table)
+        formLayout.addLayout(search)
         formLayout.addWidget(button)
         formLayout.addWidget(button2) 
         self.resize(QSize(600,400))

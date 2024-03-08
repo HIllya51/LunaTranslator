@@ -195,17 +195,17 @@ class QUnFrameWindow(resizableframeless):
             iter_res_status,iter_context_class=iter_context
             if iter_res_status==3:
                 self.translate_text.append(' ',hira,origin)
-                self.saveiterclasspointer[iter_context_class]={'curr':self.translate_text.getcurrpointer(),'start':self.translate_text.getcurrpointer()}
+                self.saveiterclasspointer[iter_context_class]={'currtext':'','curr':self.translate_text.getcurrpointer(),'start':self.translate_text.getcurrpointer()}
             else:
                 currbefore=self.saveiterclasspointer[iter_context_class]['curr']
-                if globalconfig['zitiyangshi'] !=3:
-                    #阴影字体blcoksignal会UpdateLayeredWindowIndirect failed for
-                    #其他字体不blocksignal会高度抖动
-                    self.document.blockSignals(True)
-                self.translate_text.deletebetween(self.saveiterclasspointer[iter_context_class]['start'],self.saveiterclasspointer[iter_context_class]['curr'])
-                if globalconfig['zitiyangshi'] !=3:
-                    self.document.blockSignals(False)
-                self.translate_text.insertatpointer(self.saveiterclasspointer[iter_context_class]['start'],text)
+                currlen=len(self.saveiterclasspointer[iter_context_class]['currtext'])
+                if len(text)<currlen:
+                    self.translate_text.deletebetween(self.saveiterclasspointer[iter_context_class]['start']+len(text),self.saveiterclasspointer[iter_context_class]['curr'])
+                else:
+                    newtext=text[currlen:]
+                    self.translate_text.insertatpointer(self.saveiterclasspointer[iter_context_class]['start']+currlen,newtext)
+
+                self.saveiterclasspointer[iter_context_class]['currtext']=text
                 currcurrent=self.translate_text.getcurrpointer()
                 self.saveiterclasspointer[iter_context_class]['curr']=currcurrent
                 currchange=currcurrent-currbefore
@@ -217,8 +217,7 @@ class QUnFrameWindow(resizableframeless):
 
             if globalconfig['zitiyangshi'] ==3:
                 self.translate_text.showyinyingtext2(color,iter_context_class,self.saveiterclasspointer[iter_context_class]['start'],text) 
-            return
-                
+            
         else:
             self.translate_text.append(text,hira,origin)
             if globalconfig['zitiyangshi'] ==3:
