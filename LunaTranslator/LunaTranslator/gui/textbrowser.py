@@ -286,12 +286,18 @@ class Textbrowser( ):
             _.setGraphicsEffect(self.geteffect(globalconfig['fontsize'],color,globalconfig['shadowforce']))
             _.show()
         if maxh:
+            if maxnewh==0:
+                maxnewh=maxh2
             for label in self.yinyinglabels:
                 if label.isVisible()==False:continue
                 if label.pos().y()>maxh:
-                    if maxnewh==0:
-                        maxnewh=maxh2
                     label.move(label.pos().x(),label.pos().y()+maxnewh-maxh)
+            for klass in self.iteryinyinglabelsave:
+                if klass==iter_context_class:continue
+                for label in self.iteryinyinglabelsave[klass]:
+                    if label.isVisible()==False:continue
+                    if label.pos().y()>maxh:
+                        label.move(label.pos().x(),label.pos().y()+maxnewh-maxh)
     def showyinyingtext(self,color ):   
          
         linei=self.yinyingposline
