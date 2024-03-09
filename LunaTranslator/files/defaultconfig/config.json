@@ -608,10 +608,10 @@
             "path": "",
             "name": "VOICEVOX"
         },
-        "vitstts": {
+        "vitsSimpleAPI": {
             "use": false,
             "voice": "",
-            "name": "vitsSimpleAPI"
+            "name": "vits-simple-api"
         }
     },
     "hirasetting": {
