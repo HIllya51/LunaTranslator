@@ -231,6 +231,18 @@
                 {
                     "name": "VoiceRoid2_附加音源_ギャラ子",
                     "link": "https://github.com/HIllya51/RESOURCES/releases/download/install_free_voice_packages/galaco_44.zip"
+                },
+                {
+                    "name": "vits-simple-api",
+                    "link": "https://github.com/Artrajz/vits-simple-api/releases"
+                },
+                {
+                    "name": "vits-simple-api_CPU版附模型vits-uma-genshin-honkai",
+                    "link": "https://github.com/raindrop213/LunaTranslator-re/releases/download/v0.0.1/vits-simple-api-windows-cpu-v0.6.9_vits-uma-genshin-honkai.rar"
+                },
+                {
+                    "name": "vits-simple-api_GPU版附模型vits-uma-genshin-honkai",
+                    "link": "https://github.com/raindrop213/LunaTranslator-re/releases/download/v0.0.1/vits-simple-api-windows-gpu-v0.6.9_vits-uma-genshin-honkai.7z"
                 }
             ]
         },

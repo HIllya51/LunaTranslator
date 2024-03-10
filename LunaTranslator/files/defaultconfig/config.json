@@ -607,6 +607,11 @@
             "voice": "",
             "path": "",
             "name": "VOICEVOX"
+        },
+        "vitsSimpleAPI": {
+            "use": false,
+            "voice": "",
+            "name": "vits-simple-api"
         }
     },
     "hirasetting": {
