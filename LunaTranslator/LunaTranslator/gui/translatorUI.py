@@ -554,30 +554,27 @@ class QUnFrameWindow(resizableframeless):
     def changemousetransparentstate(self,idx): 
         if idx==0:  
             self.mousetransparent= not self.mousetransparent
-        elif idx==1:
-            self.backtransparent=not self.backtransparent
-        
-        
-        
-        def _checkplace():
-            hwnd =int(int(self.winId()))
-            while self.mousetransparent: 
-                cursor_pos = self.mapFromGlobal(QCursor.pos()) 
-                 
-                if self.isinrect(cursor_pos,[self._TitleLabel.x(),self._TitleLabel.x()+self._TitleLabel.width(),self._TitleLabel.y(),self._TitleLabel.y()+self._TitleLabel.height()]): 
+            def _checkplace():
+                hwnd =int(int(self.winId()))
+                while self.mousetransparent: 
+                    cursor_pos = self.mapFromGlobal(QCursor.pos()) 
                     
-                    windows.SetWindowLong(int(self.winId()), windows.GWL_EXSTYLE, windows.GetWindowLong(hwnd, windows.GWL_EXSTYLE) &~ windows.WS_EX_TRANSPARENT)
-                else:  
-                    windows.SetWindowLong(int(self.winId()), windows.GWL_EXSTYLE, windows.GetWindowLong(hwnd, windows.GWL_EXSTYLE) | windows.WS_EX_TRANSPARENT)
-                if self.isinrect(cursor_pos,[self._TitleLabel.x(),self._TitleLabel.x()+self._TitleLabel.width(),self._TitleLabel.y(),self._TitleLabel.y()+self._TitleLabel.height()+self._padding]): 
-                    self.entersignal.emit()
-                time.sleep(0.1) 
-            #结束时取消穿透(可能以快捷键终止)
-            windows.SetWindowLong(int(self.winId()), windows.GWL_EXSTYLE, windows.GetWindowLong(hwnd, windows.GWL_EXSTYLE) &~ windows.WS_EX_TRANSPARENT)
-        if self.mousetransparent:
+                    if self.isinrect(cursor_pos,[self._TitleLabel.x(),self._TitleLabel.x()+self._TitleLabel.width(),self._TitleLabel.y(),self._TitleLabel.y()+self._TitleLabel.height()]): 
+                        
+                        windows.SetWindowLong(int(self.winId()), windows.GWL_EXSTYLE, windows.GetWindowLong(hwnd, windows.GWL_EXSTYLE) &~ windows.WS_EX_TRANSPARENT)
+                    else:  
+                        windows.SetWindowLong(int(self.winId()), windows.GWL_EXSTYLE, windows.GetWindowLong(hwnd, windows.GWL_EXSTYLE) | windows.WS_EX_TRANSPARENT)
+                    if self.isinrect(cursor_pos,[self._TitleLabel.x(),self._TitleLabel.x()+self._TitleLabel.width(),self._TitleLabel.y(),self._TitleLabel.y()+self._TitleLabel.height()+self._padding]): 
+                        self.entersignal.emit()
+                    time.sleep(0.1) 
+                #结束时取消穿透(可能以快捷键终止)
+                windows.SetWindowLong(int(self.winId()), windows.GWL_EXSTYLE, windows.GetWindowLong(hwnd, windows.GWL_EXSTYLE) &~ windows.WS_EX_TRANSPARENT)
+            if self.mousetransparent:
                 #globalconfig['locktools']=True #锁定，否则无法恢复。
                 threading.Thread(target=_checkplace).start()
-        self.set_color_transparency()
+        elif idx==1:
+            self.backtransparent=not self.backtransparent
+            self.set_color_transparency()
         self.refreshtoolicon()
     def showhideocrrange(self): 
         try:

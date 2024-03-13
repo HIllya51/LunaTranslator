@@ -485,7 +485,6 @@
     "结束地址(hex)": "Adres końcowy (hex)",
     "搜索文本过短！": "Tekst wyszukiwania jest zbyt krótki!",
     "移除非选定hook": "Usuń niezaznaczone haki",
-    "ChatGPT(第三方接口)": "ChatGPT (interfejs stron trzecich)",
     "不能为空": "Nie może być pusty",
     "阿里api": "API Alibaba",
     "找不到重要组件：": "Nie znaleziono ważnego komponentu:",
@@ -576,7 +575,6 @@
     "自定义promt": "Niestandardowy promt",
     "使用自定义promt": "Użyj niestandardowego promta",
     "项目地址": "Adres projektu",
-    "直接调用chat/completions接口而不使用openaiSDK。\n可以使用官方的Key也可以使用one-api对多个ChatGPT账户进行聚合请求，避免出现限流。\n也兼容大多数第三方接口，接口地址请填写到/v1即可。": "Bezpośrednio wywołaj interfejs czatu/uzupełnienia bez używania openaSDK.\nMożesz użyć oficjalnego klucza lub jednego API do agregowania żądań dla wielu kont ChatGPT, aby uniknąć ograniczeń ruchu.\nJest również kompatybilny z większością interfejsów innych firm. Proszę wypełnić adres interfejsu do/v1.",
     "使用说明": "Instrukcja użytkowania",
     "注册地址": "Adres zarejestrowany w firmie",
     "API接口地址": "Adres interfejsu API",
@@ -718,15 +716,6 @@
     "流式输出": "Wyjście strumieniowe",
     "内嵌安全性检查": "Wbudowana kontrola bezpieczeństwa",
     "正则匹配": "Regularne dopasowanie",
-    "TGW懒人包": "TGW Lazy Bag",
-    "TGW懒人包1": "TGW Lazy Bag 1",
-    "API接口地址(默认为http://127.0.0.1:5000/)": "Adres interfejsu API (domyślnie http://127.0.0.1:5000/ ）",
-    "利用上文信息翻译": "Przetłumacz za pomocą informacji z poprzedniego tekstu",
-    "附带上下文个数(必须打开利用上文翻译)": "Liczba kontekstów towarzyszących (należy otworzyć i przetłumaczyć za pomocą poprzedniego tekstu)",
-    "prompt(系统人设)": "Zapytanie (osoba systemowa)",
-    "prompt(文本起始)": "Pytanie (początek tekstu)",
-    "prompt(不懂可以不写)": "Zapytanie (może być pominięte, jeśli nie jest zrozumiane)",
-    "stop(自定义停止符，多个用逗号隔开)": "Stop (niestandardowy znak stop, wielokrotnie oddzielony przecinkami)",
-    "tokens(单次生成上限)": "Tokeny (górna granica pojedynczej generacji)",
-    "template(需要按照模型模板选择)": "Szablon (należy wybrać według szablonu modelu)"
+    "非官方": "Nieoficjalne",
+    "离线": "off-line"
 }

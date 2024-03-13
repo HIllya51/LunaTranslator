@@ -485,7 +485,6 @@
     "结束地址(hex)": "End Address (hex)",
     "搜索文本过短！": "Search text is too short!",
     "移除非选定hook": "Remove non selected hooks",
-    "ChatGPT(第三方接口)": "ChatGPT (Third Party Interface)",
     "不能为空": "Cannot be empty",
     "阿里api": "Alibaba API",
     "找不到重要组件：": "Important component not found:",
@@ -576,7 +575,6 @@
     "自定义promt": "Custom promt",
     "使用自定义promt": "Use custom promt",
     "项目地址": "Project address",
-    "直接调用chat/completions接口而不使用openaiSDK。\n可以使用官方的Key也可以使用one-api对多个ChatGPT账户进行聚合请求，避免出现限流。\n也兼容大多数第三方接口，接口地址请填写到/v1即可。": "Directly call the chat/completions interface without using the openaiSDK.\nYou can use the official key or one API to aggregate requests for multiple ChatGPT accounts to avoid traffic restrictions.\nIt is also compatible with most third-party interfaces. Please fill in the interface address to/v1.",
     "使用说明": "Instructions for use",
     "注册地址": "Company Registered Address",
     "API接口地址": "API interface address",
@@ -718,15 +716,6 @@
     "流式输出": "Streaming output",
     "内嵌安全性检查": "Embedded security check",
     "正则匹配": "Regular matching",
-    "TGW懒人包": "TGW Lazy Bag",
-    "TGW懒人包1": "TGW Lazy Bag 1",
-    "API接口地址(默认为http://127.0.0.1:5000/)": "API interface address (default to http://127.0.0.1:5000/ ）",
-    "利用上文信息翻译": "Translate using the information from the previous text",
-    "附带上下文个数(必须打开利用上文翻译)": "Number of accompanying contexts (must be opened and translated using the previous text)",
-    "prompt(系统人设)": "Prompt (system persona)",
-    "prompt(文本起始)": "Prompt (start of text)",
-    "prompt(不懂可以不写)": "Prompt (can be omitted if not understood)",
-    "stop(自定义停止符，多个用逗号隔开)": "Stop (custom stop character, multiple separated by commas)",
-    "tokens(单次生成上限)": "Tokens (upper limit of single generation)",
-    "template(需要按照模型模板选择)": "Template (needs to be selected according to the model template)"
+    "非官方": "Unofficial",
+    "离线": "off-line"
 }

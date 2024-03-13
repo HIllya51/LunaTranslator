@@ -485,7 +485,6 @@
     "结束地址(hex)": "Dirección final (hex)",
     "搜索文本过短！": "¡El texto de búsqueda es demasiado corto!",
     "移除非选定hook": "Eliminar gancho no seleccionado",
-    "ChatGPT(第三方接口)": "Chatgpt (interfaz de terceros)",
     "不能为空": "No puede estar vacío",
     "阿里api": "Ali API",
     "找不到重要组件：": "No se pueden encontrar componentes importantes:",
@@ -576,7 +575,6 @@
     "自定义promt": "Personalizado promt",
     "使用自定义promt": "Usar promt personalizado",
     "项目地址": "Dirección del proyecto",
-    "直接调用chat/completions接口而不使用openaiSDK。\n可以使用官方的Key也可以使用one-api对多个ChatGPT账户进行聚合请求，避免出现限流。\n也兼容大多数第三方接口，接口地址请填写到/v1即可。": "Llame directamente a la interfaz chat / Completions sin usar openai sdk.\nSe puede utilizar la clave oficial o la API one para agregar solicitudes a varias cuentas chatgpt para evitar restricciones de flujo.\nTambién es compatible con la mayoría de las interfaces de terceros, por favor complete la dirección de la interfaz en / v1.",
     "使用说明": "Instrucciones de uso",
     "注册地址": "Dirección registrada",
     "API接口地址": "Dirección de la interfaz API",
@@ -718,15 +716,6 @@
     "流式输出": "Salida de flujo",
     "内嵌安全性检查": "Inspección de Seguridad incorporada",
     "正则匹配": "Coincidencia regular",
-    "TGW懒人包": "Bolsa perezosa tgw",
-    "TGW懒人包1": "Paquete perezoso tgw 1",
-    "API接口地址(默认为http://127.0.0.1:5000/)": "Dirección de la interfaz API (por defecto http://127.0.0.1:5000/ (...)",
-    "利用上文信息翻译": "Traducción utilizando la información anterior",
-    "附带上下文个数(必须打开利用上文翻译)": "Número de contextos adjuntos (debe abrirse para usar la traducción anterior)",
-    "prompt(系统人设)": "Prompt (configuración humana del sistema)",
-    "prompt(文本起始)": "Prompt (inicio del texto)",
-    "prompt(不懂可以不写)": "Prompt (no se puede escribir si no se entiende)",
-    "stop(自定义停止符，多个用逗号隔开)": "Stop (stop personalizado, varios separados por comas)",
-    "tokens(单次生成上限)": "Tokens (límite superior de generación única)",
-    "template(需要按照模型模板选择)": "Plantilla (se debe seleccionar de acuerdo con la plantilla del modelo)"
+    "非官方": "No oficial",
+    "离线": "Fuera de línea"
 }

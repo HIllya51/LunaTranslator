@@ -16,7 +16,16 @@ class TS(basetrans):
 
     def inittranslator(self):
         self.api_key = None
-
+    def checkv1(self,api_url):
+        if api_url[-4:] == "/v1/":
+            api_url = api_url[:-1]
+        elif api_url[-3:] == "/v1":
+            pass
+        elif api_url[-1] == '/':
+            api_url += "v1"
+        else:
+            api_url += "/v1"
+        return api_url
     def translate(self, query):
         self.checkempty(['SECRET_KEY', 'model'])
         self.contextnum = int(self.config['附带上下文个数'])
@@ -43,16 +52,21 @@ class TS(basetrans):
         message.append({"role": "user", "content": query})
 
         headers = {
-            'Authorization': 'Bearer ' + self.multiapikeycurrent['SECRET_KEY'],
-            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + self.multiapikeycurrent['SECRET_KEY']
         }
         usingstream=self.config['流式输出']
-        data = '{ "model": ' + json.dumps(
-            self.config['model']) + ', "stream": '+str(usingstream).lower()+', "temperature": ' + json.dumps(temperature) + ', "messages": ' + json.dumps(
-            message) + ' }'
-        if self.config['API接口地址'].endswith('/'):
-            self.config['API接口地址']=self.config['API接口地址'][:-1]
-        response = self.session.post(self.config['API接口地址'] + self.config['Appedix'], headers=headers, data=data,stream=usingstream)
+        data=dict(
+            model=self.config['model'],
+            messages=message,
+            # optional
+            max_tokens=2048,
+            n=1,
+            stop=None,
+            top_p=1,
+            temperature=temperature,
+            stream=usingstream
+        ) 
+        response = self.session.post(self.checkv1(self.config['API接口地址']) + '/chat/completions', headers=headers, json=data,stream=usingstream)
         if usingstream:
             message=''
             for chunk in response.iter_lines():

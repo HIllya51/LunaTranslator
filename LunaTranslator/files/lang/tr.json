@@ -485,7 +485,6 @@
     "结束地址(hex)": "Sonu Adresi (hex)",
     "搜索文本过短！": "Arama mesajı çok kısa!",
     "移除非选定hook": "Seçilmemiş halkaları kaldır",
-    "ChatGPT(第三方接口)": "ChatGPT (Üçüncü Parti Arayüzü)",
     "不能为空": "Boş olamaz",
     "阿里api": "Alibaba API",
     "找不到重要组件：": "Önemli komponent bulunamadı:",
@@ -576,7 +575,6 @@
     "自定义promt": "Özel promt",
     "使用自定义promt": "Özel promt kullan",
     "项目地址": "Proje adresi",
-    "直接调用chat/completions接口而不使用openaiSDK。\n可以使用官方的Key也可以使用one-api对多个ChatGPT账户进行聚合请求，避免出现限流。\n也兼容大多数第三方接口，接口地址请填写到/v1即可。": "openaiSDK kullanmadan sohbet/tamamlama arayüzünü doğrudan arayın.\nTrafik sınırlarını önlemek için çoklu ChatGPT hesaplarını toplamak için resmi anahtarı ya da bir API kullanabilirsiniz.\nBu da üçüncü taraflı arayüzlerle uyumlu. Lütfen arayüz adresini/v1'e doldurun.",
     "使用说明": "Kullanılacak talimatlar",
     "注册地址": "Şirket Kayıtlı Adresi",
     "API接口地址": "API arayüz adresi",
@@ -718,15 +716,6 @@
     "流式输出": "Aktarma çıkışı",
     "内嵌安全性检查": "İçeri giriş güvenlik kontrolü",
     "正则匹配": "Normal eşleşme",
-    "TGW懒人包": "TGW Lazy Bag",
-    "TGW懒人包1": "TGW Lazy Bag 1",
-    "API接口地址(默认为http://127.0.0.1:5000/)": "API arayüz adresi (öntanımlı olarak) http://127.0.0.1:5000/ - Evet.",
-    "利用上文信息翻译": "Önceki metinden bilgi kullanarak çevirin",
-    "附带上下文个数(必须打开利用上文翻译)": "İlerleyen anlaşmalar sayısı (önceki metin kullanarak açılıp çevirilmeli olmalı)",
-    "prompt(系统人设)": "Soru (sistem kişisi)",
-    "prompt(文本起始)": "Soru (metin başlaması)",
-    "prompt(不懂可以不写)": "Soru (anlamazsa terk edilebilir)",
-    "stop(自定义停止符，多个用逗号隔开)": "Dur (özel durma karakteri, komuta ile birçok ayrı)",
-    "tokens(单次生成上限)": "Tokenler (tek nesilin üst sınırı)",
-    "template(需要按照模型模板选择)": "Şablon (model şablona göre seçilmeli)"
+    "非官方": "Resmi olmayan",
+    "离线": "off line"
 }

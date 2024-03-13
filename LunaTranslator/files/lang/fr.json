@@ -485,7 +485,6 @@
     "结束地址(hex)": "Adresse de fin (Hex)",
     "搜索文本过短！": "Le texte de recherche est trop court!",
     "移除非选定hook": "Supprimer le hook non sélectionné",
-    "ChatGPT(第三方接口)": "Chatgpt (interface tierce partie)",
     "不能为空": "Ne peut pas être vide",
     "阿里api": "Ali API",
     "找不到重要组件：": "Aucun composant important trouvé:",
@@ -576,7 +575,6 @@
     "自定义promt": "Promt personnalisé",
     "使用自定义promt": "Utiliser un promt personnalisé",
     "项目地址": "Adresse du projet",
-    "直接调用chat/completions接口而不使用openaiSDK。\n可以使用官方的Key也可以使用one-api对多个ChatGPT账户进行聚合请求，避免出现限流。\n也兼容大多数第三方接口，接口地址请填写到/v1即可。": "Appelez directement l'interface chat / completions sans utiliser openaisdk.\nIl est possible d'utiliser la clé officielle ou d'utiliser l'API one pour agréger des requêtes sur plusieurs comptes chatgpt, évitant ainsi les restrictions de flux.\nÉgalement compatible avec la plupart des interfaces tierces, l'adresse de l'interface doit être remplie dans / v1.",
     "使用说明": "Instructions d'utilisation",
     "注册地址": "Adresse enregistrée",
     "API接口地址": "Adresse de l'interface API",
@@ -718,15 +716,6 @@
     "流式输出": "Sortie de flux",
     "内嵌安全性检查": "Inspection de sécurité intégrée",
     "正则匹配": "Match régulier",
-    "TGW懒人包": "Tgw sac pour paresseux",
-    "TGW懒人包1": "Tgw sac paresseux 1",
-    "API接口地址(默认为http://127.0.0.1:5000/)": "Adresse de l'interface API (par défaut http://127.0.0.1:5000/ ) et",
-    "利用上文信息翻译": "Traduire avec les informations ci - dessus",
-    "附带上下文个数(必须打开利用上文翻译)": "Livré avec le nombre de contextes (doit être ouvert pour tirer parti de la traduction ci - dessus)",
-    "prompt(系统人设)": "Prompt (configuration du système)",
-    "prompt(文本起始)": "Prompt (début du texte)",
-    "prompt(不懂可以不写)": "Prompt (ne sait pas écrire)",
-    "stop(自定义停止符，多个用逗号隔开)": "Stop (STOP personnalisé, plusieurs séparés par des virgules)",
-    "tokens(单次生成上限)": "Tokens (limite supérieure de génération unique)",
-    "template(需要按照模型模板选择)": "Template (doit être choisi selon le modèle de modèle)"
+    "非官方": "Non officiel",
+    "离线": "Hors ligne"
 }

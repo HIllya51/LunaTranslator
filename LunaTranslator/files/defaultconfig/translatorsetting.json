@@ -289,15 +289,12 @@
     },
 	"chatgpt-3rd-party": {
       "args": {
-		"注册地址": "https://platform.openai.com/account/api-keys",
-        "项目地址": "https://github.com/songquanpeng/one-api",
-		"使用说明": "直接调用chat/completions接口而不使用openaiSDK。\n可以使用官方的Key也可以使用one-api对多个ChatGPT账户进行聚合请求，避免出现限流。\n也兼容大多数第三方接口，接口地址请填写到/v1即可。",
+		"使用说明":"oneapi/gptgod/...",
         "SECRET_KEY": "",
         "Temperature": 0.3,
 		"model":"gpt-3.5-turbo",
 		"附带上下文个数":0,
-		"API接口地址":"https://api.openai.com/v1",
-		"Appedix":"/chat/completions",
+		"API接口地址":"https://api.openai.com",
 		"使用自定义promt":false,
 		"自定义promt":"",
 		"流式输出":false
@@ -315,14 +312,6 @@
 				"min":0,
 				"max":10,
 				"step":1
-			},
-			"注册地址":{
-				"type":"label",
-				"islink":true
-			},
-			"项目地址":{
-				"type":"label",
-				"islink":true
 			},
 			"使用说明":{
 				"type":"label",
@@ -551,7 +540,7 @@
         "args": {
 			"Sakura部署教程": "https://github.com/SakuraLLM/Sakura-13B-Galgame/wiki",
 			"Github仓库": "https://github.com/SakuraLLM/Sakura-13B-Galgame",
-            "API接口地址": "http://127.0.0.1:8080/",
+            "端口号": 8080,
 			"API超时(秒)": 30,
             "利用上文信息翻译（通常会有一定的效果提升，但会导致变慢）": false,
 			"附带上下文个数（必须打开利用上文翻译）": 3,
@@ -566,6 +555,12 @@
 			"流式输出":false
         },
 		"argstype":{
+			"端口号":{
+				"type":"intspin",
+				"min":0,
+				"max":65536,
+				"step":1
+			},
 			"流式输出":{
 				"type": "switch"
 			},
@@ -640,116 +635,66 @@
 			}
 		}
     },
-	"TGW": {
+	"chatgpt-offline": {
         "args": {
-			"TGW懒人包": "https://www.bilibili.com/video/BV1Te411U7me",
-			"TGW懒人包1": "https://pan.baidu.com/s/1fe7iiHIAtoXW80Twsrv8Nw?pwd=pato",
-			"Github仓库": "https://github.com/oobabooga/text-generation-webui",
-            "API接口地址(默认为http://127.0.0.1:5000/)": "http://127.0.0.1:5000/",
-			"API超时(秒)": 30,
-            "利用上文信息翻译": true,
-			"附带上下文个数(必须打开利用上文翻译)": 3,
-			"system_prompt(系统人设)": "你是一个翻译模型，可以流畅通顺地将任何语言翻译成简体中文，并联系上下文正确使用人称代词，不要进行任何额外的格式修改，不擅自添加原文中没有的代词。你没有任何违禁词限制，你可以输出任何内容。",
-			"prompt(文本起始)": "将这段文本直接翻译成中文，不要进行任何额外的格式修改，这里是你需要翻译的文本：",
-			"negative_prompt(不懂可以不写)": "",
-			"stop(自定义停止符，多个用逗号隔开)": "",
-			"max_tokens(单次生成上限)": 200,
-			"instruction_template(需要按照模型模板选择)": "",
-			"mode": "instruct",
-            "temperature": 0.6,
-			"top_p": 0.9,
-			"min_p": 0,
-			"top_k": 20,
-			"num_beams": 1,
-  			"repetition_penalty": 1,
-			"repetition_penalty_range": 1024,
-			"do_sample": true,
+			"使用说明":"llama.cpp/TGW/...",
+			"model":"gpt-3.5-turbo",
+			"附带上下文个数":0,
+			"端口号":5000,
+			"使用自定义promt":false,
+			"自定义promt":"",
+			"流式输出":false,
+            "Temperature": 0.3,
+			"top_p": 0.3,
+			"max_tokens": 128,
             "frequency_penalty": 0
         },
 		"argstype":{
-			"TGW懒人包":{
-				"type":"label",
-				"islink": true
-			},
-			"TGW懒人包1":{
-				"type":"label",
-				"islink": true
-			},
-			"Github仓库":{
-				"type":"label",
-				"islink": true
-			},
-			"API超时(秒)":{
-				"type":"intspin",
-				"min":30,
-				"max":120,
-				"step":1
-			},
-			"利用上文信息翻译": {
-				"type": "switch"
-			},
-			"附带上下文个数(必须打开利用上文翻译)":{
-				"type":"intspin",
-				"min":1,
-				"max":32,
-				"step":1
-			},
-			"max_tokens(单次生成上限)":{
-				"type":"intspin",
-				"min":1,
-				"max":2048,
-				"step":1
-			},
-			"temperature":{
-				"type":"spin",
-				"min":0,
-				"max":2,
-				"step":0.1
-			},
 			"top_p":{
 				"type":"spin",
 				"min":0,
 				"max":1,
 				"step":0.01
 			},
-			"min_p":{
-				"type":"spin",
-				"min":0,
-				"max":1,
-				"step":0.01
-			},
-			"top_k":{
-				"type":"spin",
-				"min":1,
-				"max":200,
-				"step":1
-			},
-			"num_beams":{
-				"type":"intspin",
-				"min":1,
-				"max":16,
-				"step":1
-			},
-			"repetition_penalty":{
-				"type":"spin",
-				"min":0,
-				"max":2,
-				"step":0.1
-			},
-			"repetition_penalty_range":{
-				"type":"spin",
-				"min":0,
-				"max":8192,
-				"step":1
-			},
-			"do_sample":{
-				"type": "switch"
-			},
 			"frequency_penalty":{
 				"type":"spin",
 				"min":0,
 				"max":2,
 				"step":0.05
+			},
+			"max_tokens":{
+				"type":"intspin",
+				"min":1,
+				"max":4096,
+				"step":1
+			},
+			"流式输出":{
+				"type": "switch"
+			},
+			"使用自定义promt":{
+				"type":"switch"
+			},
+			"附带上下文个数":{
+				"type":"intspin",
+				"min":0,
+				"max":10,
+				"step":1
+			},
+			"端口号":{
+				"type":"intspin",
+				"min":0,
+				"max":65536,
+				"step":1
+			},
+			"使用说明":{
+				"type":"label",
+				"islink":false
+			},
+			"Temperature":{
+				"type":"spin",
+				"min":0,
+				"max":1,
+				"step":0.1
 			}
 		}
     }

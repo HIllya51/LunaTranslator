@@ -6,8 +6,6 @@ import json
 # from openai import OpenAI
 
 class TS(basetrans):
-    def langmap(self):
-        return {"zh": "zh-CN"}
     def __init__(self, typename) :
         super( ).__init__(typename)
         self.timeout = 30
@@ -139,8 +137,7 @@ class TS(basetrans):
     def translate(self, query):
         self.checkempty(['API接口地址'])
         self.timeout = self.config['API超时(秒)']
-        if self.api_url == "":
-            self.get_client(self.config['API接口地址'])
+        self.api_url='http://127.0.0.1:{}/v1'.format(self.config['端口号'])
         frequency_penalty = float(self.config['frequency_penalty'])
         if not bool(self.config['利用上文信息翻译（通常会有一定的效果提升，但会导致变慢）']):
             if bool(self.config['流式输出']) == True:

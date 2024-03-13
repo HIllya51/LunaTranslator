@@ -1110,7 +1110,7 @@
             "type": "api",
             "use": false,
             "color": "blue",
-            "name": "ChatGPT(第三方接口)",
+            "name": "ChatGPT_非官方",
             "is_gpt_like":true
         },
         "hanshant": {
@@ -1151,11 +1151,11 @@
             "color": "blue",
             "name": "Sakura大模型"
         },
-        "TGW": {
+        "chatgpt-offline": {
             "use": false,
             "type": "offline",
             "color": "blue",
-            "name": "TGW语言模型"
+            "name": "ChatGPT_离线"
         },
         "dev_theb": {
             "use": false,
