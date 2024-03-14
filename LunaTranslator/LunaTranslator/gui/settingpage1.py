@@ -9,7 +9,7 @@ from myutils.config import globalconfig ,_TR,_TRL
 from gui.dialog_savedgame import dialog_savedgame 
 import threading,gobject,requests,datetime,zipfile
 from gui.inputdialog import autoinitdialog 
-from gui.usefulwidget import getsimplecombobox,getspinbox,getcolorbutton,yuitsu_switch,getsimpleswitch,Singleton
+from gui.usefulwidget import getsimplecombobox,getspinbox,getcolorbutton,yuitsu_switch,getsimpleswitch,Singleton,getQMessageBox
 from gui.codeacceptdialog import codeacceptdialog   
 from textsource.fridahook import fridahook
 from myutils.utils import loadfridascriptslist,checkifnewgame,makehtml
@@ -17,6 +17,8 @@ from myutils.proxy import getproxy
 def gethookgrid(self) :
  
         grids=[
+                [('获取最新提取器核心&错误反馈&游戏支持',8),(makehtml("https://github.com/HIllya51/LunaHook"),8,"link")],
+                [],
                 [('选择游戏',5),self.selectbutton,('',5)],
                 [('选择文本',5),self.selecthookbutton],
                 [],
@@ -31,8 +33,6 @@ def gethookgrid(self) :
                 [],
                 [('区分人名和文本',5),getsimpleswitch(globalconfig,'allow_set_text_name')],
                 [('使用YAPI注入',5),getsimpleswitch(globalconfig,'use_yapi')],
-                [],
-                [('获取最新提取器核心&错误反馈&游戏支持',8),(makehtml("https://github.com/HIllya51/LunaHook"),8,"link")]
         ]
          
         return grids
@@ -113,16 +113,15 @@ def getfridahookgrid(self) :
         grids=[
                 
                 [('FridaHook_路径',3),(getcolorbutton(globalconfig,'',callback=functools.partial(autoinitdialog,self, 'FridaHook_路径',800,_items),icon='fa.gear',constcolor="#FF69B4"))],
+                [('下载',3),(makehtml("https://github.com/HIllya51/RESOURCES/releases/download/dictionary/FridaHook.zip",True),3,'link')],
+                [],
 
                 [('Scripts',3),(self.Scriptscombo,10)],
-                [],
                 [(attachbutton,3),(execbutton,3)] ,
                 [],
-                [('show info',3),getsimpleswitch( globalconfig['fridahook'],'showinfo' ),],
-                [('show error',3),getsimpleswitch( globalconfig['fridahook'],'showerror' )],
                 [('autoupdate',3),getsimpleswitch( globalconfig['fridahook'],'autoupdate' )],
                 [],
-                [('资源下载',3),(makehtml("https://github.com/HIllya51/RESOURCES/releases/download/dictionary/FridaHook.zip",True),3,'link')],
+                
                 
                 [('latest scripts',3),(makehtml("https://github.com/0xDC00/scripts"),6,'link')],
                 [('capable emulator',3),(makehtml("https://github.com/koukdw/emulators/releases"),6,"link")]
@@ -256,18 +255,58 @@ def setTabOne_direct(self) :
 def setTabOne(self) :  
         self.tabadd_lazy(self.tab_widget, ('文本输入'), lambda :setTabOne_lazy(self)) 
 
- 
+def jspatchgrid(self) :
+        
+        
+        execbutton=QPushButton('Select RPGMakeMV/TyranoScript exe')
+        def findindexhtml(exe):
+                for f in os.walk(os.path.dirname(exe)):
+                              director,_,fs=f
+                              for _f in fs:
+                                    if _f=='index.html':
+                                          return os.path.join(director,_f)
+                return None
+                                          
+        def execclicked():
+                
+                f=QFileDialog.getOpenFileName(filter='*.exe')
+                pname=f[0]
+                if pname!='':
+                        index=findindexhtml(pname)
+                        if index:
+                              with open(index,'r',encoding='utf8') as ff:
+                                    html=ff.read()
+                              if 'lunajspatch.js' not in html:
+                                    html=html.replace('</body>','<script type="text/javascript" src="./lunajspatch.js"></script></body>')
+                                    with open(index,'w',encoding='utf8') as ff:
+                                          ff.write(html)
+                              with open('./files/lunajspatch.js','rb') as ff:
+                                    with open(os.path.join(os.path.dirname(index),'lunajspatch.js'),'wb') as fw:
+                                          fw.write(ff.read())
+                              getQMessageBox(self,'',_TR("success!"))
+                        else:
+                              getQMessageBox(self,_TR("错误"),_TR("can't find index.html!"))
+        execbutton.clicked.connect(execclicked)
+        
+        grids=[
+                [],
+                [(execbutton,10)] ,
+        ]
+         
+        return grids
+
 def setTabOne_lazy(self) : 
         
          
          
-        tab=self.makesubtab_lazy(['HOOK设置','OCR设置','剪贴板','内嵌翻译','FridaScripts'],
+        tab=self.makesubtab_lazy(['HOOK设置','OCR设置','剪贴板','内嵌翻译','FridaScripts','JS Patch'],
                                 [       
                                         lambda:self.makescroll(self.makegrid(gethookgrid(self))),
                                         lambda:self.makescroll(self.makegrid(getocrgrid(self))),
                                         lambda:self.makescroll(self.makegrid(setTabclip(self))),
                                         lambda:self.makescroll(self.makegrid(gethookembedgrid(self) )),
                                         lambda:self.makescroll(self.makegrid(getfridahookgrid(self) )),
+                                        lambda:self.makescroll(self.makegrid(jspatchgrid(self) )),
                                 ]) 
 
         gridlayoutwidget=self.makegrid(self.tab1grids )    
