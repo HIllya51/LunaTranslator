@@ -165,5 +165,28 @@
                 "list_function":["ocrengines.tesseract5","list_langs"]
             }
 		}
+    },
+    "mangaocr": {
+        "args": {
+            "项目仓库": "https://github.com/kha-white/manga-ocr",
+            "整合包": "https://github.com/raindrop213/LunaTranslator-re/releases/download/v0.0.2/manga-ocr_v0.1.11.zip",
+            "Port":5665
+        },
+        "argstype": {
+            "项目仓库": {
+                "type": "label",
+                "islink": true
+            },
+            "整合包": {
+                "type": "label",
+                "islink": true
+            },
+            "Port":{
+				"type":"intspin",
+				"min":1,
+				"max":65535,
+				"step":1
+			}
+        }
     }
 }

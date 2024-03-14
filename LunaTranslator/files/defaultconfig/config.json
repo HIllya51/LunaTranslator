@@ -754,6 +754,10 @@
         "volcengine": {
             "use": false,
             "name": "火山OCR"
+        },
+        "mangaocr": {
+            "use": false,
+            "name": "manga-ocr"
         }
     },
     "fanyi": {
