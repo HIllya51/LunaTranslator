@@ -9,7 +9,7 @@ class OCR(baseocr):
         self.checkempty(['api_url'])
         api_url=self.config['api_url']
         
-        response = requests.get(api_url, json={'image_path': os.path.abspath(img_path)})
+        response = requests.get(f'{api_url}?image_path={os.path.abspath(img_path)}')
 
         try:
             return response.json()['text']
