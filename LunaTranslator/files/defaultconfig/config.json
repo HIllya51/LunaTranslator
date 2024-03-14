@@ -757,7 +757,7 @@
         },
         "mangaocr": {
             "use": false,
-            "name": "mangaOCR"
+            "name": "manga-ocr"
         }
     },
     "fanyi": {
