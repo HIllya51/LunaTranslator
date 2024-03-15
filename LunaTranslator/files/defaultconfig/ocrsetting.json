@@ -169,7 +169,8 @@
     "mangaocr": {
         "args": {
             "项目仓库": "https://github.com/kha-white/manga-ocr",
-            "整合包": "https://github.com/raindrop213/LunaTranslator-re/releases/download/v0.0.2/manga-ocr_v0.1.11.zip",
+            "整合包-CPU": "https://github.com/raindrop213/LunaTranslator-re/releases/download/v0.0.2/manga-ocr_cpu_v0.1.11.zip",
+            "整合包-GPU": "https://github.com/raindrop213/LunaTranslator-re/releases/download/v0.0.2/manga-ocr_gpu_v0.1.11.7z",
             "Port":5665
         },
         "argstype": {
@@ -177,7 +178,11 @@
                 "type": "label",
                 "islink": true
             },
-            "整合包": {
+            "整合包-CPU": {
+                "type": "label",
+                "islink": true
+            },
+            "整合包-GPU": {
                 "type": "label",
                 "islink": true
             },
