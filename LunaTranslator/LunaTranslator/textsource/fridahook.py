@@ -54,10 +54,6 @@ def buildfridaclass(copycallback,pexe):
             with open(e,i) as ff:
                 ff.write(t)
         def log_handler(self,e,t):
-            if e=='error' and globalconfig['fridahook']['showerror']:
-                gobject.baseobject.textgetmethod('<msg_error_not_refresh>'+str(e)+' '+str(t))
-            elif e=='info' and globalconfig['fridahook']['showinfo']:
-                gobject.baseobject.textgetmethod('<msg_info_not_refresh>'+str(e)+' '+str(t)) 
             gprint(e,t)
             pass
         def cmd_copy(self,payload):

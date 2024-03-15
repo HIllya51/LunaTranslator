@@ -704,8 +704,6 @@
     "ocrmergelines": true,
     "fridahook":{
         "path":"",
-        "showinfo":false,
-        "showerror":false,
         "autoupdate":true
     },
     "ocr": {
