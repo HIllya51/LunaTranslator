@@ -255,58 +255,17 @@ def setTabOne_direct(self) :
 def setTabOne(self) :  
         self.tabadd_lazy(self.tab_widget, ('文本输入'), lambda :setTabOne_lazy(self)) 
 
-def jspatchgrid(self) :
-        
-        
-        execbutton=QPushButton('Select RPGMakeMV/TyranoScript exe')
-        def findindexhtml(exe):
-                for f in os.walk(os.path.dirname(exe)):
-                              director,_,fs=f
-                              for _f in fs:
-                                    if _f=='index.html':
-                                          return os.path.join(director,_f)
-                return None
-                                          
-        def execclicked():
-                
-                f=QFileDialog.getOpenFileName(filter='*.exe')
-                pname=f[0]
-                if pname!='':
-                        index=findindexhtml(pname)
-                        if index:
-                              with open(index,'r',encoding='utf8') as ff:
-                                    html=ff.read()
-                              if 'lunajspatch.js' not in html:
-                                    html=html.replace('</body>','<script type="text/javascript" src="./lunajspatch.js"></script></body>')
-                                    with open(index,'w',encoding='utf8') as ff:
-                                          ff.write(html)
-                              with open('./files/lunajspatch.js','rb') as ff:
-                                    with open(os.path.join(os.path.dirname(index),'lunajspatch.js'),'wb') as fw:
-                                          fw.write(ff.read())
-                              getQMessageBox(self,'',_TR("success!"))
-                        else:
-                              getQMessageBox(self,_TR("错误"),_TR("can't find index.html!"))
-        execbutton.clicked.connect(execclicked)
-        
-        grids=[
-                [],
-                [(execbutton,10)] ,
-        ]
-         
-        return grids
-
 def setTabOne_lazy(self) : 
         
          
          
-        tab=self.makesubtab_lazy(['HOOK设置','OCR设置','剪贴板','内嵌翻译','FridaScripts','JS Patch'],
+        tab=self.makesubtab_lazy(['HOOK设置','OCR设置','剪贴板','内嵌翻译','FridaScripts'],
                                 [       
                                         lambda:self.makescroll(self.makegrid(gethookgrid(self))),
                                         lambda:self.makescroll(self.makegrid(getocrgrid(self))),
                                         lambda:self.makescroll(self.makegrid(setTabclip(self))),
                                         lambda:self.makescroll(self.makegrid(gethookembedgrid(self) )),
-                                        lambda:self.makescroll(self.makegrid(getfridahookgrid(self) )),
-                                        lambda:self.makescroll(self.makegrid(jspatchgrid(self) )),
+                                        lambda:self.makescroll(self.makegrid(getfridahookgrid(self) ))
                                 ]) 
 
         gridlayoutwidget=self.makegrid(self.tab1grids )    
