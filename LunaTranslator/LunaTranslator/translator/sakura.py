@@ -38,7 +38,7 @@ class TS(basetrans):
             api_url += "v1"
         else:
             api_url += "/v1"
-        self.api_url = api_url
+        return api_url
         # OpenAI
         # self.client = OpenAI(api_key="114514", base_url=api_url)
     def make_messages(self, query, history_ja=None, history_zh=None, **kwargs):
@@ -137,7 +137,7 @@ class TS(basetrans):
     def translate(self, query):
         self.checkempty(['API接口地址'])
         self.timeout = self.config['API超时(秒)']
-        self.api_url='http://127.0.0.1:{}/v1'.format(self.config['端口号'])
+        self.api_url = self.get_client(self.config['API接口地址'])
         frequency_penalty = float(self.config['frequency_penalty'])
         if not bool(self.config['利用上文信息翻译（通常会有一定的效果提升，但会导致变慢）']):
             if bool(self.config['流式输出']) == True:
