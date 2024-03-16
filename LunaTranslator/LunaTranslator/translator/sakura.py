@@ -135,7 +135,6 @@ class TS(basetrans):
             raise ValueError(f"Error: {str(e1)}. 无法连接到Sakura API：{self.api_url}，请检查你的API链接是否正确填写，以及API后端是否成功启动。")
 
     def translate(self, query):
-        self.checkempty(['API接口地址'])
         self.timeout = self.config['API超时(秒)']
         self.api_url='http://127.0.0.1:{}/v1'.format(self.config['端口号'])
         frequency_penalty = float(self.config['frequency_penalty'])
