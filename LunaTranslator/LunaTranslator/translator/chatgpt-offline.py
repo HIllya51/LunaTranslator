@@ -47,7 +47,7 @@ class TS(basetrans):
             # optional
             max_tokens=self.config['max_tokens'],
             n=1,
-            stop=["\n###", "\n\n", "[PAD151645]", "<|im_end|>"],
+            stop=None,
             top_p=self.config['top_p'],
             temperature=temperature,
             frequency_penalty=self.config['frequency_penalty'],
