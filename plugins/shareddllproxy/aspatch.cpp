@@ -105,7 +105,6 @@ class lunapatch{
 public:
     HANDLE hMessage;
     HANDLE hwait;
-    std::wstring target_exe;
     nlohmann::json config;
     std::map<std::string,std::string>translation;
     std::unordered_set<DWORD>connectedpids;
@@ -116,6 +115,7 @@ public:
     bool (*Luna_checkisusingembed)(DWORD pid,uint64_t address,uint64_t ctx1,uint64_t ctx2);
     void (*Luna_embedcallback)(DWORD pid,LPCWSTR text,LPCWSTR trans);
     std::set<std::string>notranslation;
+    HANDLE hsema;
     lunapatch(std::wstring dll,nlohmann::json&&_translation,nlohmann::json&&_config):translation(_translation),config(_config){
         auto LunaHost=LoadLibraryW(dll.c_str());
             
@@ -125,13 +125,12 @@ public:
         Luna_useembed=(decltype(Luna_useembed))GetProcAddress(LunaHost,"Luna_useembed");
         Luna_checkisusingembed=(decltype(Luna_checkisusingembed))GetProcAddress(LunaHost,"Luna_checkisusingembed");
         Luna_embedcallback=(decltype(Luna_embedcallback))GetProcAddress(LunaHost,"Luna_embedcallback");
-        
-
+        hsema=CreateSemaphore(NULL,0,100,NULL);
         Luna_Start(&hMessage);
         std::thread([&](){Parsehostmessage();}).detach();
     }
     void run(){
-        target_exe=StringToWideString(config["target_exe"]);
+        auto target_exe=StringToWideString(config["target_exe"]);
             
         auto _startup_argument=config["startup_argument"];
 
@@ -147,29 +146,29 @@ public:
             for(auto &text:notranslation){
                 translation[text]="";
             }
-            auto notrs=nlohmann::json(notranslation).dump(4);
+            auto notrs=nlohmann::json(translation).dump(4);
             std::ofstream of;
-            of.open("no_translation.json");
-            of<<notrs;
-            of.close();
-            notrs=nlohmann::json(translation).dump(4);
-            
-            of.open("no_translation_and_translation.json");
+            of.open(std::string(config["translation_file"]));
             of<<notrs;
             of.close();
         }
     }
     void wait(){
         WaitForSingleObject(hwait,INFINITE);
+        while(connectedpids.size())
+            WaitForSingleObject(hsema,INFINITE);
     }
     void inject(){
         //chrome has multi process
         Sleep(config["inject_timeout"]);
-        auto pids=EnumerateProcesses(target_exe);
-        for(auto pid:pids){
-            Luna_Inject(pid,L"");
+        for(auto exe :std::set<std::string>{config["target_exe"],config["target_exe2"]})
+        {
+            auto pids=EnumerateProcesses(StringToWideString(exe));
+            for(auto pid:pids){
+                wprintf(L"%d\n",pid);
+                Luna_Inject(pid,L"");
+            }
         }
-        
     }
     std::wstring findtranslation(const std::wstring& text){
         auto utf8text=WideStringToString(text);
@@ -200,6 +199,7 @@ public:
             case 1:
             {
                 connectedpids.erase(message.pid);
+                ReleaseSemaphore(hsema,1,NULL);
             }
             break;
             case 7:
@@ -272,18 +272,12 @@ bool checkisapatch(){
     std::string translation_file=configjson["translation_file"];
     
     jsonfile.open(translation_file);
-
     std::map<std::string,std::string> translation=nlohmann::json::parse(jsonfile);
     jsonfile.close();
 
-
-    bool isbit64=configjson["isbit64"];
-    auto bitappendix=isbit64?L"64":L"32";
-    auto LunaHost=(curr/(std::wstring(L"LunaHost")+bitappendix)).wstring();
-    auto LunaHook=(curr/(std::wstring(L"LunaHook")+bitappendix)).wstring();
+    auto LunaHost=(curr/(std::wstring(L"LunaHost")+std::to_wstring(8*sizeof(void*)))).wstring();
 
     lunapatch _lunapatch(LunaHost,std::move(translation),std::move(configjson));
-    
     _lunapatch.run();
     _lunapatch.inject();
     _lunapatch.wait();

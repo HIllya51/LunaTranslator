@@ -17,8 +17,8 @@ def sqlite2json2(self,sqlitefile,targetjson=None):
         for _aret  in ret:
             if len(_aret)==4: 
                     
-                _id,source,mt,realsource=_aret
-                js_format2[realsource]=mt
+                _id,source_parsed,mt,source=_aret
+                js_format2[source]=mt
             elif len(_aret)==3: 
                 _id,source,mt =_aret
                 js_format2[source]=mt
@@ -70,7 +70,6 @@ def sqlite2json2(self,sqlitefile,targetjson=None):
             transkirokuuse=collect[combo.currentIndex()]
             for k in js_format2:
                 js_format2[k]=js_format2[k].get(transkirokuuse,'')
-
         # with open(e.text()+'.complex.json','w',encoding='utf8') as ff:
         #     ff.write(json.dumps(js,ensure_ascii=False,sort_keys=False, indent=4))
          

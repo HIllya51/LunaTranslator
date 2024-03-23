@@ -720,5 +720,7 @@
     "离线": "off line",
     "导出翻译补丁": "Çeviri örneklerini dışarı aktar",
     "语音修正": "Ses düzeltmesi",
-    "藏语": "TibetanKCharselect unicode block name"
+    "藏语": "TibetanKCharselect unicode block name",
+    "选择EXE文件": "Select EXE file",
+    "选择预翻译文件": "Önceden çevirilen dosya seçin"
 }

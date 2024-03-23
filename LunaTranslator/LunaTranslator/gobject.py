@@ -4,11 +4,13 @@ import io,sys,platform,os
 from ctypes import windll,wintypes
 isbit64= platform.architecture()[0]=='64bit'
 DLL3264path=os.path.abspath('files/plugins/DLL'+('32','64')[isbit64])
-def GetDllpath(_):
+def GetDllpath(_,base=None):
+    if base is None:
+        base=DLL3264path
     if isinstance(_,str):
-        return os.path.join(DLL3264path,_)
+        return os.path.join(base,_)
     elif isinstance(_,(list,tuple)):
-        return os.path.join(DLL3264path,_[isbit64])
+        return os.path.join(base,_[isbit64])
 class debugoutput(io.IOBase):
     def __init__(self,idx,file=sys.stdout) -> None:
         super().__init__()

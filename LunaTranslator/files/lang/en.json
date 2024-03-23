@@ -720,5 +720,7 @@
     "离线": "off-line",
     "导出翻译补丁": "Export translation patches",
     "语音修正": "Voice correction",
-    "藏语": "Tibetan"
+    "藏语": "Tibetan",
+    "选择EXE文件": "Select EXE file",
+    "选择预翻译文件": "Select pre translated file"
 }

@@ -3,7 +3,7 @@ import functools,os,shutil,windows,json
 from PyQt5.QtGui import  QFont,QStandardItem,QStandardItemModel
 from PyQt5.QtCore import Qt,QSize
 from traceback import print_exc
-from PyQt5.QtWidgets import  QFontComboBox,QDialog,QLabel,QComboBox,QPushButton,QFileDialog,QVBoxLayout,QTableView,QHeaderView,QHBoxLayout,QLineEdit
+from PyQt5.QtWidgets import  QFontComboBox,QDialog,QLabel,QComboBox,QPushButton,QFileDialog,QFormLayout,QDialogButtonBox,QHeaderView,QHBoxLayout,QLineEdit
 from gui.pretransfile import sqlite2json2
 from gui.settingpage_ocr import getocrgrid  
 from myutils.config import globalconfig ,_TR,_TRL,savehook_new_data,savehook_new_list
@@ -130,14 +130,14 @@ def getfridahookgrid(self) :
          
         return grids
 
-def doexportchspatch(exe):
+def doexportchspatch(exe,realgame):
         
         b=windows.GetBinaryType(exe) 
         is64=(b==6)
         arch=['32','64'][is64]
         
         dllhook=os.path.abspath('./files/plugins/LunaHook/LunaHook{}.dll'.format(arch))
-        dllhost=os.path.abspath('./files/plugins/DLL{}/LunaHost{}.dll'.format(arch,arch))
+        dllhost=os.path.abspath('./files/plugins/LunaHook/LunaHost{}.dll'.format(arch,arch))
         runner=os.path.abspath('./files/plugins/shareddllproxy{}.exe'.format(arch))
 
         windows.CopyFile(dllhook,os.path.join(os.path.dirname(exe),os.path.basename(dllhook)),False)
@@ -147,10 +147,10 @@ def doexportchspatch(exe):
         embedconfig={
               'translation_file':'translation.json',
               'target_exe':os.path.basename(exe),
+              'target_exe2':os.path.basename(realgame),
               'startup_argument':None,
-              'isbit64':is64,
               'inject_timeout':1000,
-              'embedhook':savehook_new_data[exe]['embedablehook'],
+              'embedhook':savehook_new_data[realgame]['embedablehook'],
               'embedsettings':{
                     'font':globalconfig['embedded']['changefont_font'] if globalconfig['embedded']['changefont'] else '',
                     'insertspace_policy':globalconfig['embedded']['insertspace_policy'],
@@ -159,18 +159,49 @@ def doexportchspatch(exe):
         }
         with open(os.path.join(os.path.dirname(exe),'LunaPatch.json'),'w',encoding='utf8') as ff:
               ff.write(json.dumps(embedconfig,ensure_ascii=False,indent=4))
-        
+def getunknowgameexe(self): 
+     
+
+    dialog = QDialog(self,Qt.WindowCloseButtonHint)  # 自定义一个dialog
+    dialog.setWindowTitle(_TR("选择游戏"))
+    dialog.resize(QSize(800,10))
+    formLayout = QFormLayout(dialog) 
+    dialog.setLayout(formLayout)
+
+    combo=QComboBox()
+    combo.addItems([savehook_new_data[_]['title'] for _ in savehook_new_list])
+
+    formLayout.addRow(_TR("选择游戏"),combo) 
+     
+    button = QDialogButtonBox(QDialogButtonBox.Ok|QDialogButtonBox.Cancel) 
+    formLayout.addRow(button)
+    button.rejected.connect(dialog.close)
+    button.accepted.connect(dialog.accept)
+    button.button(QDialogButtonBox.Ok).setText(_TR('确定'))
+    button.button(QDialogButtonBox.Cancel).setText(_TR('取消'))
+    if(dialog.exec()):
+        return savehook_new_list[combo.currentIndex()]
 def exportchspatch(self):
-        f=QFileDialog.getOpenFileName(filter='*.exe')
-        exe=f[0]
-        if exe=='':return
-        exe=exe.replace('/','\\')
-        if exe not in savehook_new_list:return
-        doexportchspatch(exe)
+        realgame=getunknowgameexe(self)
+        if realgame is None:return
+        exe=realgame
+        if exe.lower().endswith('.exe')==False:
+                f=QFileDialog.getOpenFileName(self,caption= _TR("选择EXE文件"),filter='*.exe')
+                exe=f[0]
+                if exe=='':return
+                exe=exe.replace('/','\\')
+        doexportchspatch(exe,realgame)
         md5=getfilemd5(exe)
         name= os.path.basename(exe).replace('.'+os.path.basename(exe).split('.')[-1],'') 
         sqlfname_all='./translation_record/'+name+'_'+md5+'.sqlite'
-        sqlite2json2(self,sqlfname_all,os.path.join(os.path.dirname(exe),'translation.json'))
+        if os.path.exists(sqlfname_all)==False:
+                f=QFileDialog.getOpenFileName(self,caption=_TR("选择预翻译文件"), directory='./translation_record/',filter='*.sqlite')
+                sqlfname_all=f[0]
+        if os.path.exists(sqlfname_all):
+                sqlite2json2(self,sqlfname_all,os.path.join(os.path.dirname(exe),'translation.json'))
+        else:
+                with open(os.path.join(os.path.dirname(exe),'translation.json'),'w') as ff:
+                      ff.write("{}")
 def gethookembedgrid(self) :   
         self.gamefont_comboBox = QFontComboBox( ) 
         def callback(x):

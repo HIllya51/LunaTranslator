@@ -308,6 +308,8 @@
          "./files/plugins/shareddllproxy64.exe",
          "./files/plugins/LunaHook/LunaHook32.dll",
          "./files/plugins/LunaHook/LunaHook64.dll",
+         "./files/plugins/LunaHook/LunaHost64.dll",
+         "./files/plugins/LunaHook/LunaHost32.dll",
          "./files/plugins/LoaderDll.dll",
          "./files/plugins/LocaleEmulator.dll",
          "./files/plugins/hookmagpie.dll"
@@ -317,16 +319,14 @@
             "./files/plugins/DLL64/winrtutils64.dll",
             "./files/plugins/DLL64/LunaOCR64.dll", 
             "./files/plugins/DLL64/libmecab.dll",
-            "./files/plugins/DLL64/libcurl-x64.dll",
-            "./files/plugins/DLL64/LunaHost64.dll"
+            "./files/plugins/DLL64/libcurl-x64.dll"
         ],
         "32":[
             "./files/plugins/DLL32/winsharedutils32.dll",
             "./files/plugins/DLL32/winrtutils32.dll",
             "./files/plugins/DLL32/LunaOCR32.dll", 
             "./files/plugins/DLL32/libmecab.dll",
-            "./files/plugins/DLL32/libcurl.dll",
-            "./files/plugins/DLL32/LunaHost32.dll"
+            "./files/plugins/DLL32/libcurl.dll"
         ]
     }
 

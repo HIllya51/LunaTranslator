@@ -106,7 +106,7 @@ class texthook(basetext  ):
         self.declare()
         self.start()
     def declare(self):
-        LunaHost=CDLL(gobject.GetDllpath(('LunaHost32.dll','LunaHost64.dll')))
+        LunaHost=CDLL(gobject.GetDllpath(('LunaHost32.dll','LunaHost64.dll'),os.path.abspath('files/plugins/LunaHook')))
         self.Luna_Settings=LunaHost.Luna_Settings
         self.Luna_Settings.argtypes=c_int,c_bool,c_int,c_int
         self.Luna_Start=LunaHost.Luna_Start
