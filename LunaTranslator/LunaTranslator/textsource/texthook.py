@@ -130,7 +130,7 @@ class texthook(basetext  ):
         self.Luna_FindHooks_waiting=LunaHost.Luna_FindHooks_waiting
         self.Luna_FindHooks_waiting.argtypes=POINTER(c_int),
         self.Luna_EmbedSettings=LunaHost.Luna_EmbedSettings
-        self.Luna_EmbedSettings.argtypes=DWORD,c_uint32,c_uint8,c_bool,c_wchar_p,c_uint32,c_uint32
+        self.Luna_EmbedSettings.argtypes=DWORD,c_uint32,c_uint8,c_bool,c_wchar_p,c_uint32,c_uint32,c_bool
         self.Luna_checkisusingembed=LunaHost.Luna_checkisusingembed
         self.Luna_checkisusingembed.argtypes=DWORD,c_uint64,c_uint64,c_uint64
         self.Luna_checkisusingembed.restype=c_bool
@@ -204,6 +204,8 @@ class texthook(basetext  ):
                 self.useembed(addr,_ctx1,_ctx2,True)
     def safeembedcheck(self,text):
         try:
+            if globalconfig['embedded']['safecheck_use']==False:
+                return True
             for regex in (globalconfig['embedded']['safecheckregexs']):
                 if re.match(codecs.escape_decode(bytes(regex,"utf-8"))[0].decode("utf-8"),text):
                     return False
@@ -213,6 +215,7 @@ class texthook(basetext  ):
     def getembedtext(self,text,tp):
         if self.safeembedcheck(text)==False:
             self.embedcallback(text,text)
+            self.newline.put((text,False, lambda trans:1,True))
             return
         if globalconfig['autorun']==False:
             self.embedcallback(text,text)
@@ -237,7 +240,8 @@ class texthook(basetext  ):
                                     False,#globalconfig['embedded']['changecharset']
                                     globalconfig['embedded']['changefont_font'] if globalconfig['embedded']['changefont'] else '',
                                     globalconfig['embedded']['insertspace_policy'],
-                                    globalconfig['embedded']['keeprawtext']) 
+                                    globalconfig['embedded']['keeprawtext'],
+                                    True) 
     
     def onremovehook(self,tp): 
         toremove=[]

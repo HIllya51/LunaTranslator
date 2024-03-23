@@ -767,3 +767,9 @@ def CreatePipe(lpsecu=None,sz=0):
     hwrite=HANDLE()
     _CreatePipe(pointer(hread),pointer(hwrite),lpsecu,sz)
     return AutoHandle(hread.value),AutoHandle(hwrite.value)
+
+_CopyFile=_kernel32.CopyFileW
+_CopyFile.argtypes=LPCWSTR,LPCWSTR,BOOL
+_CopyFile.restype=BOOL
+def CopyFile(src,dst,bFailIfExists):
+    return _CopyFile(src,dst,bFailIfExists)

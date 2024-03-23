@@ -1,6 +1,7 @@
 ﻿
 #define _CRT_SECURE_NO_WARNINGS
 #include <iostream>
+#include <fstream>
 #include<Windows.h>
 #include <io.h>
 #include <fcntl.h> 
@@ -100,42 +101,58 @@ std::vector<std::wstring>_List(const wchar_t* token) {
 }
 
 
-int neospeech(int argc, wchar_t* argv[]) { 
-    auto speechs = _List(L"HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Speech\\Voices");
-    int idx = -1;
-    for (int i = 0; i < speechs.size(); i++) {
-        if (speechs[i] == L"VW Misaki") {
-            idx = i;
+int neospeechlist(int argc, wchar_t* argv[]) { 
+    FILE* f=_wfopen(argv[1],L"wb");
+    for(auto key:{L"HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Speech\\Voices",L"HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Speech_OneCore\\Voices"})
+    {
+        auto speechs=_List(key);
+        for (int i = 0; i < speechs.size(); i++) {
+            if (speechs[i].substr(0,2) == L"VW") {
+                fwrite(speechs[i].c_str(),1,speechs[i].size()*2,f);
+                fwrite(L"\n",1,2,f);
+                fwrite(key,1,wcslen(key)*2,f);
+                fwrite(L"\n",1,2,f);
+                auto idx=std::to_wstring(i);
+                fwrite(idx.c_str(),1,idx.size()*2,f);
+                fwrite(L"\n",1,2,f);
+            }
         }
     }
-    if (idx == -1)return 0;
+     fclose(f);
+    return 0;
+    
+}
+int neospeech(int argc, wchar_t* argv[]) { 
+    auto hkey=argv[4];
+    auto idx=std::stoi(argv[5]);
+    
 
-        HANDLE hPipe = CreateNamedPipe(argv[1], PIPE_ACCESS_DUPLEX, PIPE_TYPE_MESSAGE | PIPE_READMODE_MESSAGE | PIPE_WAIT
-            , PIPE_UNLIMITED_INSTANCES, 65535, 65535, NMPWAIT_WAIT_FOREVER, 0);
-          
-        SECURITY_DESCRIPTOR sd = {};
-        InitializeSecurityDescriptor(&sd, SECURITY_DESCRIPTOR_REVISION);
-        SetSecurityDescriptorDacl(&sd, TRUE, NULL, FALSE);
-        SECURITY_ATTRIBUTES allAccess = SECURITY_ATTRIBUTES{ sizeof(SECURITY_ATTRIBUTES), &sd, FALSE };
-        SetEvent(CreateEvent(&allAccess, FALSE, FALSE, argv[2]));
-        if (ConnectNamedPipe(hPipe, NULL) != NULL) {
-            DWORD len = 0;
+    HANDLE hPipe = CreateNamedPipe(argv[1], PIPE_ACCESS_DUPLEX, PIPE_TYPE_MESSAGE | PIPE_READMODE_MESSAGE | PIPE_WAIT
+        , PIPE_UNLIMITED_INSTANCES, 65535, 65535, NMPWAIT_WAIT_FOREVER, 0);
+        
+    SECURITY_DESCRIPTOR sd = {};
+    InitializeSecurityDescriptor(&sd, SECURITY_DESCRIPTOR_REVISION);
+    SetSecurityDescriptorDacl(&sd, TRUE, NULL, FALSE);
+    SECURITY_ATTRIBUTES allAccess = SECURITY_ATTRIBUTES{ sizeof(SECURITY_ATTRIBUTES), &sd, FALSE };
+    SetEvent(CreateEvent(&allAccess, FALSE, FALSE, argv[2]));
+    if (ConnectNamedPipe(hPipe, NULL) != NULL) {
+        DWORD len = 0;
 
-        } 
-        int II = 0;
-        while (true) {
-            wchar_t text[10000]; 
-            II += 1;
-            DWORD _;
-            int speed;
-            if (!ReadFile(hPipe, (unsigned char*)&speed,4, &_, NULL))break;
-            if (!ReadFile(hPipe, (unsigned char*)text, 10000*2, &_, NULL))break;
-            std::wstring content = text;
-            wchar_t newname[1024] = { 0 };
-            wsprintf(newname, L"%s%d.wav", argv[3], II);
-            std::wstring newname_ = newname;
-            _Speak(content, L"HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Speech\\Voices", idx, speed, 100, newname_);
-            WriteFile(hPipe, newname, wcslen(newname)*2, &_, NULL);
-        } 
-        return 0; 
+    } 
+    int II = 0;
+    while (true) {
+        wchar_t text[10000]; 
+        II += 1;
+        DWORD _;
+        int speed;
+        if (!ReadFile(hPipe, (unsigned char*)&speed,4, &_, NULL))break;
+        if (!ReadFile(hPipe, (unsigned char*)text, 10000*2, &_, NULL))break;
+        std::wstring content = text;
+        wchar_t newname[1024] = { 0 };
+        wsprintf(newname, L"%s%d.wav", argv[3], II);
+        std::wstring newname_ = newname;
+        _Speak(content, hkey, idx, speed, 100, newname_);
+        WriteFile(hPipe, newname, wcslen(newname)*2, &_, NULL);
+    } 
+    return 0; 
 }

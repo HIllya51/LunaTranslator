@@ -717,5 +717,8 @@
     "内嵌安全性检查": "Embedded security check",
     "正则匹配": "Regular matching",
     "非官方": "Unofficial",
-    "离线": "off-line"
+    "离线": "off-line",
+    "导出翻译补丁": "Export translation patches",
+    "语音修正": "Voice correction",
+    "藏语": "Tibetan"
 }

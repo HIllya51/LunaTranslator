@@ -109,7 +109,13 @@ class MAINUI() :
         
         return content,(mp1,mp2,mp3)
      
-        
+    def parsemayberegexreplace(self,dict,res):
+        for item in dict:
+            if item['regex']:
+                res=re.sub(codecs.escape_decode(bytes(item['key'], "utf-8"))[0].decode("utf-8"),codecs.escape_decode(bytes(item['value'], "utf-8"))[0].decode("utf-8"),res)
+            else:
+                res=res.replace(item['key'],item['value'])
+        return res
     def solveaftertrans(self,res,mp): 
         mp1,mp2,mp3=mp
         #print(res,mp)#hello
@@ -133,11 +139,7 @@ class MAINUI() :
                 if key in res:
                     res=res.replace(key,value['text']) 
         if transerrorfixdictconfig['use']:
-            for item in transerrorfixdictconfig['dict_v2']:
-                if item['regex']:
-                    res=re.sub(codecs.escape_decode(bytes(item['key'], "utf-8"))[0].decode("utf-8"),codecs.escape_decode(bytes(item['value'], "utf-8"))[0].decode("utf-8"),res)
-                else:
-                    res=res.replace(item['key'],item['value'])
+            res=self.parsemayberegexreplace(transerrorfixdictconfig['dict_v2'])
         return res
 
     def _POSTSOLVE(self,s):
@@ -325,7 +327,8 @@ class MAINUI() :
     def readcurrent(self,force=False):
         try: 
             if force or globalconfig['autoread']:
-                self.reader.read(self.currentread) 
+                text=self.parsemayberegexreplace(globalconfig['ttscommon']['tts_repair_regex'],self.currenttext)
+                self.reader.read(text) 
         except:
             print_exc()
     @threader

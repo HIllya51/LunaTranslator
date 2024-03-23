@@ -142,8 +142,11 @@ if len(globalconfig['toolbutton']['rank'])!=len(globalconfig['toolbutton']['butt
 def setlanguage():
     global language,languageshow
     language=globalconfig['languageuse']
-    with open('./files/lang/{}.json'.format(static_data["language_list_translator_inner"][language]),'r',encoding='utf8') as ff:
-        languageshow=json.load(ff)
+    try:
+        with open('./files/lang/{}.json'.format(static_data["language_list_translator_inner"][language]),'r',encoding='utf8') as ff:
+            languageshow=json.load(ff)
+    except:
+        languageshow={}
 setlanguage()
 
 def _TR(k):

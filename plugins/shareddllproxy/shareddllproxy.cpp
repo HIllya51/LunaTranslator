@@ -9,7 +9,7 @@
 
 int dllinjectwmain(int argc, wchar_t* argv[]);
 int ntleaswmain(int argc, wchar_t* wargv[]);
-
+bool checkisapatch();
 #ifndef _WIN64
 int LRwmain(int argc, wchar_t* argv[]);  
 int jbjwmain(int argc, wchar_t* argv[]);
@@ -18,6 +18,7 @@ int kingsoftwmain(int argc, wchar_t* argv[]);
 int voiceroid2wmain(int argc, wchar_t* argv[]);
 int lewmain(int argc, wchar_t* argv[]);
 int neospeech(int argc, wchar_t* argv[]);
+int neospeechlist(int argc, wchar_t* argv[]);
 #else
 int magpiewmain(int argc, wchar_t* wargv[]);
 int losslesswmain(int argc, wchar_t* wargv[]);
@@ -55,6 +56,7 @@ int listprocessmodule(int argc,wchar_t *argv[]){
 
 int wmain(int argc, wchar_t* argv[])
 {
+    if(checkisapatch())return 1;
     auto argv0 = std::wstring(argv[1]);
     if (argv0 == L"dllinject")
         return dllinjectwmain(argc - 1, argv + 1);
@@ -78,6 +80,8 @@ int wmain(int argc, wchar_t* argv[])
         return voiceroid2wmain(argc - 1, argv + 1);
     else if (argv0 == L"neospeech")
         return neospeech(argc - 1, argv + 1);
+    else if (argv0 == L"neospeechlist")
+        return neospeechlist(argc - 1, argv + 1);
 #else
     else if (argv0 == L"magpie")
         return magpiewmain(argc - 1, argv + 1);

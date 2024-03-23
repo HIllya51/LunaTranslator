@@ -2,7 +2,7 @@
 project(shareddllproxy)
  
 
-add_executable(shareddllproxy shareddllproxy.cpp dllinject.cpp ntleas.cpp)
+add_executable(shareddllproxy shareddllproxy.cpp dllinject.cpp ntleas.cpp aspatch.cpp)
 if(${CMAKE_SIZEOF_VOID_P} EQUAL 8)
 	add_library(x64lib magpie.cpp lossless.cpp)
 	target_link_libraries(shareddllproxy x64lib   ${Detours})

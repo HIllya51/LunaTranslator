@@ -1,7 +1,7 @@
 import functools 
 
 from PyQt5.QtWidgets import   QComboBox 
-from gui.inputdialog import getsomepath1
+from gui.inputdialog import getsomepath1,noundictconfigdialog1
 from myutils.config import globalconfig ,_TRL
 import os,functools
 import gobject
@@ -59,6 +59,8 @@ def setTab5lz(self) :
                 [ ('自动朗读',6),(getsimpleswitch(globalconfig,'autoread' ),1)],
                 [ ('朗读原文',6),(getsimpleswitch(globalconfig,'read_raw' ),1),'','',('朗读翻译',6),(getsimpleswitch(globalconfig,'read_trans' ),1)],
                 [('朗读的翻译',6),(getsimplecombobox(_TRL([globalconfig['fanyi'][x]['name'] for x in globalconfig['fanyi']]),globalconfig,'read_translator'),15) ],
+                [],
+                [('语音修正',6),getsimpleswitch(globalconfig['ttscommon'],'tts_repair' ),getcolorbutton(globalconfig,'',callback=lambda x:  noundictconfigdialog1(self,globalconfig['ttscommon'],'tts_repair_regex','语音修正',['正则','原文','替换']),icon='fa.gear',constcolor="#FF69B4") ],
         ]  
         gridlayoutwidget=self.makegrid(grids )  
         gridlayoutwidget=self.makescroll( gridlayoutwidget  )

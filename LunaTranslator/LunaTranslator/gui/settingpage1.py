@@ -1,18 +1,19 @@
  
-import functools,os,shutil
+import functools,os,shutil,windows,json
 from PyQt5.QtGui import  QFont,QStandardItem,QStandardItemModel
 from PyQt5.QtCore import Qt,QSize
 from traceback import print_exc
 from PyQt5.QtWidgets import  QFontComboBox,QDialog,QLabel,QComboBox,QPushButton,QFileDialog,QVBoxLayout,QTableView,QHeaderView,QHBoxLayout,QLineEdit
+from gui.pretransfile import sqlite2json2
 from gui.settingpage_ocr import getocrgrid  
-from myutils.config import globalconfig ,_TR,_TRL
+from myutils.config import globalconfig ,_TR,_TRL,savehook_new_data,savehook_new_list
 from gui.dialog_savedgame import dialog_savedgame 
 import threading,gobject,requests,datetime,zipfile
-from gui.inputdialog import autoinitdialog 
+from gui.inputdialog import autoinitdialog,regexedit
 from gui.usefulwidget import getsimplecombobox,getspinbox,getcolorbutton,yuitsu_switch,getsimpleswitch,Singleton,getQMessageBox
 from gui.codeacceptdialog import codeacceptdialog   
 from textsource.fridahook import fridahook
-from myutils.utils import loadfridascriptslist,checkifnewgame,makehtml
+from myutils.utils import loadfridascriptslist,checkifnewgame,makehtml,getfilemd5
 from myutils.proxy import getproxy
 def gethookgrid(self) :
  
@@ -129,59 +130,47 @@ def getfridahookgrid(self) :
          
         return grids
 
-@Singleton
-class safeembedcheckdialog(QDialog):
-    def newline(self,row):
-        self.model.insertRow(row,[QStandardItem(globalconfig['embedded']['safecheckregexs'][row])])
-    def __init__(self,parent) -> None:
-        super().__init__(parent,Qt.WindowCloseButtonHint)
-        self.setWindowTitle(_TR('正则匹配'))
+def doexportchspatch(exe):
+        
+        b=windows.GetBinaryType(exe) 
+        is64=(b==6)
+        arch=['32','64'][is64]
+        
+        dllhook=os.path.abspath('./files/plugins/LunaHook/LunaHook{}.dll'.format(arch))
+        dllhost=os.path.abspath('./files/plugins/DLL{}/LunaHost{}.dll'.format(arch,arch))
+        runner=os.path.abspath('./files/plugins/shareddllproxy{}.exe'.format(arch))
 
-        formLayout = QVBoxLayout(self)  # 配置layout
-        
-        self.model=QStandardItemModel()
-        self.model.setHorizontalHeaderLabels(_TRL(['正则']))
-        table = QTableView(self)
-        table.setModel(self.model)
-        
-        table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
-        
-        self.table=table
-        for row,regex in enumerate(globalconfig['embedded']['safecheckregexs']):
-            self.model.insertRow(row,[QStandardItem(regex)])
-         
+        windows.CopyFile(dllhook,os.path.join(os.path.dirname(exe),os.path.basename(dllhook)),False)
+        windows.CopyFile(dllhost,os.path.join(os.path.dirname(exe),os.path.basename(dllhost)),False)
+        windows.CopyFile(runner,os.path.join(os.path.dirname(exe),'LunaPatch.exe'),False)
 
-        button=QPushButton(self)
-        button.setText(_TR('添加行'))
-        def clicked1():
-            globalconfig['embedded']['safecheckregexs'].insert(0,'')
-            self.model.insertRow(0,[QStandardItem()])
-        button.clicked.connect(clicked1)
-        button2=QPushButton(self)
-        button2.setText(_TR('删除选中行'))
-        def clicked2():
-            self.model.removeRow(table.currentIndex().row())
-            globalconfig['embedded']['safecheckregexs'].pop(table.currentIndex().row())
-        button2.clicked.connect(clicked2)
-        self.button=button
-        formLayout.addWidget(table)
-        formLayout.addWidget(button)
-        formLayout.addWidget(button2) 
-        self.resize(QSize(600,400))
-        self.show()
-    def closeEvent(self,_) -> None:
-        self.button.setFocus()
-        rows=self.model.rowCount() 
-        rowoffset=0
-        dedump=set()
-        for row in range(rows):
-            regex=self.model.item(row,0).text()
-            if regex=="" or regex in dedump:
-                globalconfig['embedded']['safecheckregexs'].pop(row-rowoffset)
-                rowoffset+=1
-                continue
-            globalconfig['embedded']['safecheckregexs'][row-rowoffset]=regex
-            dedump.add(regex)
+        embedconfig={
+              'translation_file':'translation.json',
+              'target_exe':os.path.basename(exe),
+              'startup_argument':None,
+              'isbit64':is64,
+              'inject_timeout':1000,
+              'embedhook':savehook_new_data[exe]['embedablehook'],
+              'embedsettings':{
+                    'font':globalconfig['embedded']['changefont_font'] if globalconfig['embedded']['changefont'] else '',
+                    'insertspace_policy':globalconfig['embedded']['insertspace_policy'],
+                    'keeprawtext':globalconfig['embedded']['keeprawtext']
+              }
+        }
+        with open(os.path.join(os.path.dirname(exe),'LunaPatch.json'),'w',encoding='utf8') as ff:
+              ff.write(json.dumps(embedconfig,ensure_ascii=False,indent=4))
+        
+def exportchspatch(self):
+        f=QFileDialog.getOpenFileName(filter='*.exe')
+        exe=f[0]
+        if exe=='':return
+        exe=exe.replace('/','\\')
+        if exe not in savehook_new_list:return
+        doexportchspatch(exe)
+        md5=getfilemd5(exe)
+        name= os.path.basename(exe).replace('.'+os.path.basename(exe).split('.')[-1],'') 
+        sqlfname_all='./translation_record/'+name+'_'+md5+'.sqlite'
+        sqlite2json2(self,sqlfname_all,os.path.join(os.path.dirname(exe),'translation.json'))
 def gethookembedgrid(self) :   
         self.gamefont_comboBox = QFontComboBox( ) 
         def callback(x):
@@ -194,6 +183,8 @@ def gethookembedgrid(self) :
         self.gamefont_comboBox.setCurrentFont(QFont(globalconfig['embedded']['changefont_font']))  
         grids=[
                  
+                [('导出翻译补丁',5),getcolorbutton(globalconfig,'',callback=lambda x:exportchspatch(self),icon='fa.gear',constcolor="#FF69B4")],
+                [],
                 [('保留原文',5),(getsimpleswitch( globalconfig['embedded'],'keeprawtext',callback=lambda _:gobject.baseobject.textsource.flashembedsettings())  ,1) ],
                  
                 [('翻译等待时间(s)',5),'',(getspinbox(0,30,globalconfig['embedded'],'timeout_translate',double=True,step=0.1,callback=lambda x:gobject.baseobject.textsource.flashembedsettings()),3) ],
@@ -203,7 +194,7 @@ def gethookembedgrid(self) :
                 [('在重叠显示的字间插入空格',5),'',(getsimplecombobox(_TRL(['不插入空格','每个字后插入空格','仅在无法编码的字后插入']),globalconfig['embedded'],'insertspace_policy',callback=lambda _:gobject.baseobject.textsource.flashembedsettings()),5) ],
                 [('修改游戏字体',5),(getsimpleswitch( globalconfig['embedded'] ,'changefont',callback=lambda _:gobject.baseobject.textsource.flashembedsettings()),1), (self.gamefont_comboBox,5)],
                 [],
-                [('内嵌安全性检查',5),getcolorbutton(globalconfig,'',callback=lambda x:safeembedcheckdialog(self),icon='fa.gear',constcolor="#FF69B4")]
+                [('内嵌安全性检查',5),getsimpleswitch(globalconfig['embedded'],'safecheck_use' ),getcolorbutton(globalconfig,'',callback=lambda x:regexedit(self,globalconfig['embedded']['safecheckregexs']),icon='fa.gear',constcolor="#FF69B4")]
                 #[('修改字体字符集',5),(getsimpleswitch( globalconfig['embedded'] ,'changecharset',callback=lambda _:gobject.baseobject.textsource.flashembedsettings()),1) ,(getsimplecombobox(_TRL(static_data["charsetmapshow"]),globalconfig['embedded'],'changecharset_charset',callback=lambda _:gobject.baseobject.textsource.flashembedsettings()),5)],
 
         ]
