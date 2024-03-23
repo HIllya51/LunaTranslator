@@ -212,7 +212,7 @@ public:
                     {
                         auto trans=findtranslation(text);
                         Luna_embedcallback(pid,text.c_str(),trans.c_str());
-                        break;
+                        
                     }
                 }
             }
