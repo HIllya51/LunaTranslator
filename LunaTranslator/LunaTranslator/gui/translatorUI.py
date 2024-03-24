@@ -169,7 +169,11 @@ class QUnFrameWindow(resizableframeless):
             return 
         text=self.cleartext(text)
         if hira:
-            hira=self.parsehira(text)
+            hiras=[self.parsehira(_) for _ in text.split('\n')]
+            hira=[]
+            for i,_h in enumerate(hiras):
+                if i: hira+=[{'orig':'\n','hira':'\n'}]
+                hira+=_h
         else:
             hira=[]
         self.translate_text.setnextfont(origin)

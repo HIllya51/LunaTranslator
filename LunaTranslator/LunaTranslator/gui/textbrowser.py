@@ -363,9 +363,6 @@ class Textbrowser( ):
         wwww=self.parent.width()
         for word in x:
             idx+=1
-            if word['orig']=='\n':
-                guesslinehead=None 
-                continue
             l=len(word['orig'])
             tl1=self.textbrowser.cursorRect(self.textcursor).topLeft()
              
@@ -526,8 +523,6 @@ class Textbrowser( ):
         x=self.nearmerge(x,pos,fonthira,fontorig) 
         self.settextposcursor(pos)
         for word in x:
-            if word['orig']=='\n':
-                continue
             l=len(word['orig'])
 
             tl1=self.textbrowser.cursorRect(self.textcursor).topLeft()  
@@ -562,8 +557,7 @@ class Textbrowser( ):
             word['hira_w']=_metrichira.width(word['hira'])
             #print(word['hira'],word['hira_w'])
             newline.append(word)
-            if word['orig']=='\n':
-                continue
+            
             l=len(word['orig'])
             tl1=self.textbrowser.cursorRect(self.textcursor).topLeft()  
             self.settextposcursor(pos+l)
