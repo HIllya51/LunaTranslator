@@ -75,6 +75,7 @@ class baseocr(commonbase):
         text= self.ocr(imgpath)
         return self._100_f(text)
     def _100_f(self,line):
+        if ocrerrorfix['use']==False:return line
         filters=ocrerrorfix['args']['替换内容']
         for fil in filters: 
                 if fil=="":
