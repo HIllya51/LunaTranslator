@@ -942,12 +942,6 @@
             "color": "#1839f0",
             "name": "Sugoi"
         },
-        "yakuyaku": {
-            "type": "offline",
-            "use": false,
-            "color": "#1839f0",
-            "name": "YakuYaku"
-        },
         "kingsoft": {
             "type": "offline",
             "use": false,
