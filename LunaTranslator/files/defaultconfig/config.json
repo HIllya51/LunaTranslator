@@ -1132,12 +1132,6 @@
             "name": "ibm api",
             "useproxy": true
         },
-        "oneringtranslator": {
-            "use": false,
-            "type": "offline",
-            "color": "blue",
-            "name": "OneRingTranslator"
-        },
         "ort_sp": {
             "use": false,
             "type": "offline",
