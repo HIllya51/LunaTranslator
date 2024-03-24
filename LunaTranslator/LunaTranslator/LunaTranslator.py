@@ -139,7 +139,7 @@ class MAINUI() :
                 if key in res:
                     res=res.replace(key,value['text']) 
         if transerrorfixdictconfig['use']:
-            res=self.parsemayberegexreplace(transerrorfixdictconfig['dict_v2'])
+            res=self.parsemayberegexreplace(transerrorfixdictconfig['dict_v2'],res)
         return res
 
     def _POSTSOLVE(self,s):
