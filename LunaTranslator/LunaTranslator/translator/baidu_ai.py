@@ -70,4 +70,4 @@ class TS(basetrans):
             event=js['data']['event']
             if event=='Translating':
                 trans='\n'.join([_['dst'] for _ in js['data']['list']])
-                return trans
+                yield trans

@@ -238,6 +238,7 @@ class Sessionbase:
         scheme,server,port,param,url=self._parseurl(url,params) 
         headers,dataptr,datalen=self._parsedata(data,headers,json)
         proxy= proxies.get(scheme,None) if proxies  else None
+        proxy= None if proxy=='' else proxy
         if timeout:
             if isinstance(timeout,(float,int)):
                 timeout = int(timeout * 1000)  # convert to milliseconds

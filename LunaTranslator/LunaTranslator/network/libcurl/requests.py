@@ -153,7 +153,7 @@ class Session(Sessionbase):
             threading.Thread(target=___perform,daemon=True).start()
             
             headerb=b''
-            CLRFnum=1+int(proxy is not None)
+            CLRFnum=1+int(bool((proxy)))
             while True:
                 _headerb=headercqueue.get()
                 if _headerb is None:

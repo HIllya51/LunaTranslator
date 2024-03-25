@@ -86,7 +86,7 @@ class MAINUI() :
                             break
                      
                 if usedict and  key in content:
-                    xx='ZX{}Z'.format(chr(ord("B")+zhanweifu))
+                    xx='{{{}}}'.format(zhanweifu)
                     content=content.replace(key,xx)
                     mp1[xx]=key
                     zhanweifu+=1
@@ -102,7 +102,7 @@ class MAINUI() :
                     # if self.vnrshareddict[key]['src']==self.vnrshareddict[key]['tgt']:
                     #     content=content.replace(key,self.vnrshareddict[key]['text'])
                     # else:
-                    xx='ZX{}Z'.format(chr(ord("B")+zhanweifu))
+                    xx='{{{}}}'.format(zhanweifu)
                     content=content.replace(key,xx)
                     mp2[xx]=key
                     zhanweifu+=1
