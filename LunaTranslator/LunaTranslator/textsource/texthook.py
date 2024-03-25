@@ -215,13 +215,13 @@ class texthook(basetext  ):
     def getembedtext(self,text,tp):
         if self.safeembedcheck(text)==False:
             self.embedcallback(text,text)
-            self.newline.put((text,False, lambda trans:1,True))
+            self.newline.put((text,True, lambda trans:1,True))
             return
         if globalconfig['autorun']==False:
             self.embedcallback(text,text)
             return 
         if self.checkisusingembed(tp.addr,tp.ctx,tp.ctx2):
-            self.newline.put((text,False, functools.partial(self.embedcallback,text),True))
+            self.newline.put((text,True, functools.partial(self.embedcallback,text),True))
         
     def embedcallback(self,text,trans): 
         

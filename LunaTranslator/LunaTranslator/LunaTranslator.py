@@ -148,7 +148,9 @@ class MAINUI() :
         return ss
     def textgetmethod(self,text,is_auto_run=True,embedcallback=None,onlytrans=False):
         _autolock(self.solvegottextlock)
-        
+
+        returnandembedcallback = lambda : embedcallback('') if embedcallback else ''
+
         if type(text)==str:
             if text.startswith('<notrans>'):
                 self.translation_ui.displayres.emit(dict(color=globalconfig['rawtextcolor'],res=text[len('<notrans>'):],onlytrans=onlytrans))
@@ -167,9 +169,7 @@ class MAINUI() :
                         self.translation_ui.displaystatus.emit(text[len(msg):],color,refresh,False)
                         return 
             if text=='' or len(text)>100000:
-                if embedcallback:
-                    embedcallback('') 
-                return 
+                return returnandembedcallback()
         if onlytrans==False:
             self.currentsignature=time.time()
         try:
@@ -185,9 +185,7 @@ class MAINUI() :
             return 
             
         if text=='' or (is_auto_run and (text==self.currenttext or len(text)>(max(globalconfig['maxoriginlength'],globalconfig['maxlength'])))):
-            if embedcallback:
-                embedcallback('') 
-            return 
+            return returnandembedcallback()
         
         
         try:
@@ -212,7 +210,8 @@ class MAINUI() :
          
         text_solved,optimization_params= self.solvebeforetrans(text) 
         
-        skip=is_auto_run and  (len(text_solved)<globalconfig['minlength'] or len(text_solved)>globalconfig['maxlength'] )
+        if is_auto_run and  (len(text_solved)<globalconfig['minlength'] or len(text_solved)>globalconfig['maxlength'] ):
+            return returnandembedcallback()
 
         self.premtalready=['premt']
         self.usefultranslators=list(self.translators.keys())
@@ -242,7 +241,7 @@ class MAINUI() :
             #print(keys,usenum,self.lasttranslatorindex)
             for engine in keys:  
                 if engine not in self.premtalready:
-                    self.translators[engine].gettask((partial(self.GetTranslationCallback,onlytrans,engine,self.currentsignature, optimization_params,_showrawfunction,_showrawfunction_sig,text),text,text_solved,skip,embedcallback,is_auto_run)) 
+                    self.translators[engine].gettask((partial(self.GetTranslationCallback,onlytrans,engine,self.currentsignature, optimization_params,_showrawfunction,_showrawfunction_sig,text),text,text_solved,embedcallback,is_auto_run)) 
                 thistimeusednum+=1
                 self.lasttranslatorindex+=1
                 if(thistimeusednum>=usenum):

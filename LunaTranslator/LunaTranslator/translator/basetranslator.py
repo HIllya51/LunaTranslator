@@ -223,7 +223,7 @@ class basetrans(commonbase):
             while True:
                 _=self.queue.get() 
                 if _ is None:break
-                callback,contentraw,contentsolved,skip,embedcallback,is_auto_run=_
+                callback,contentraw,contentsolved,embedcallback,is_auto_run=_
                 if embedcallback is not None:
                     savelast.clear()
                 
@@ -232,12 +232,10 @@ class basetrans(commonbase):
                     break
             if self.using==False:break
             if savelast[0][4] is not None:
-                callback,contentraw,contentsolved,skip,embedcallback,is_auto_run=savelast.pop(0)
+                callback,contentraw,contentsolved,embedcallback,is_auto_run=savelast.pop(0)
                 for _ in savelast:
                     self.gettask(_)
             if embedcallback is None:
-                if skip:
-                    continue
                 if is_auto_run and self.onlymanual:
                     continue
             
