@@ -198,7 +198,7 @@ def exportchspatch(self):
                 f=QFileDialog.getOpenFileName(self,caption=_TR("选择预翻译文件"), directory='./translation_record/',filter='*.sqlite')
                 sqlfname_all=f[0]
         if os.path.exists(sqlfname_all):
-                sqlite2json2(self,sqlfname_all,os.path.join(os.path.dirname(exe),'translation.json'))
+                sqlite2json2(self,sqlfname_all,os.path.join(os.path.dirname(exe),'translation.json'),existsmerge=True)
         else:
                 with open(os.path.join(os.path.dirname(exe),'translation.json'),'w') as ff:
                       ff.write("{}")
