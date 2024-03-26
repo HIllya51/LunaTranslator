@@ -251,24 +251,15 @@ class MAINUI() :
     def GetTranslationCallback(self,onlytrans,classname,currentsignature,optimization_params,_showrawfunction,_showrawfunction_sig,contentraw,res,embedcallback,iter_res_status):
         if classname in self.usefultranslators:
             self.usefultranslators.remove(classname)
-        if embedcallback is None and currentsignature!=self.currentsignature:return
-
-        embedtrans=self.GetTranslationCallback_(onlytrans,classname,currentsignature,optimization_params,_showrawfunction,_showrawfunction_sig,contentraw,res,iter_res_status)
-        
-        
-        if embedtrans is None and len(self.usefultranslators)==0:
-            embedtrans=''
-        if embedcallback and embedtrans is not None:
-            embedcallback(embedtrans)
-        
-    def GetTranslationCallback_(self,onlytrans,classname,currentsignature,optimization_params,_showrawfunction,_showrawfunction_sig,contentraw,res,iter_res_status):
-        
+        if embedcallback is None and currentsignature!=self.currentsignature:return        
         
         if type(res)==str:
             if res.startswith('<msg_translator>'):
                 if currentsignature==self.currentsignature:
                     self.translation_ui.displaystatus.emit(globalconfig['fanyi'][classname]['name']+' '+res[len('<msg_translator>'):],'red',onlytrans,False)
-                return
+                if len(self.usefultranslators)==0:
+                    embedcallback('')
+                    return
         
         res=self.solveaftertrans(res,optimization_params)
         
@@ -288,16 +279,17 @@ class MAINUI() :
                 displayreskwargs.update(iter_context=(iter_res_status,classname))
             self.translation_ui.displayres.emit(displayreskwargs)
          
-        
-        try:
-            if iter_res_status in (0,2):#0为普通，1为iter，2为iter终止，3为起始
-                self.textsource.sqlqueueput((contentraw,classname,res))
-        except:
-            pass
+        if iter_res_status in (0,2):#0为普通，1为iter，2为iter终止，3为起始
+            try:
+                    self.textsource.sqlqueueput((contentraw,classname,res))
+            except:
+                pass
 
-        if globalconfig['embedded']['as_fast_as_posible'] or classname==list(globalconfig['fanyi'])[globalconfig['embedded']['translator']]:    
-                
-            return (kanjitrans(zhconv.convert(res,'zh-tw')) if globalconfig['embedded']['trans_kanji'] else res) 
+            if globalconfig['embedded']['as_fast_as_posible'] or classname==list(globalconfig['fanyi'])[globalconfig['embedded']['translator']]:    
+                    
+                embedcallback(kanjitrans(zhconv.convert(res,'zh-tw')) if globalconfig['embedded']['trans_kanji'] else res) 
+                return
+            
     
     @threader
     def autoreadcheckname(self):
