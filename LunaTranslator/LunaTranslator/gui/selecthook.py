@@ -56,7 +56,7 @@ class QButtonGroup_switch_widegt(QWidget):
         self._parent.resize(self._parent.width(),1)
     def addW(self,text,widget):
         self.mainlayout.addWidget(widget)
-        btn=QRadioButton(text)
+        btn=QRadioButton(_TR(text))
         self.selectGroup.addButton(btn,len(self.wlist))
         self.selectlayout.addWidget(btn)
         if len(self.wlist)==0:

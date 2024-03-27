@@ -722,5 +722,10 @@
     "语音修正": "Sửa giọng nói",
     "藏语": "Tây Tạng",
     "选择EXE文件": "Chọn tập tin EXE",
-    "选择预翻译文件": "Chọn tập tin pre-translate"
+    "选择预翻译文件": "Chọn tập tin pre-translate",
+    "绝对地址": "Địa chỉ tuyệt đối",
+    "相对地址": "Địa chỉ tương đối",
+    "特征匹配": "Khớp tính năng",
+    "函数对齐": "Căn chỉnh chức năng",
+    "函数调用": "Gọi hàm"
 }

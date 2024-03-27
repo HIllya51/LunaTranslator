@@ -722,5 +722,10 @@
     "语音修正": "Ses düzeltmesi",
     "藏语": "TibetanKCharselect unicode block name",
     "选择EXE文件": "Select EXE file",
-    "选择预翻译文件": "Önceden çevirilen dosya seçin"
+    "选择预翻译文件": "Önceden çevirilen dosya seçin",
+    "绝对地址": "Kesinlikle adres",
+    "相对地址": "Relatif adres",
+    "特征匹配": "Özellik eşleştirmesi",
+    "函数对齐": "Funksiyon hizalama",
+    "函数调用": "fonksiyon araması"
 }

@@ -722,5 +722,10 @@
     "语音修正": "Correction vocale",
     "藏语": "Tibétain",
     "选择EXE文件": "Sélectionner un fichier exe",
-    "选择预翻译文件": "Choisir un fichier pré - traduit"
+    "选择预翻译文件": "Choisir un fichier pré - traduit",
+    "绝对地址": "Adresse absolue",
+    "相对地址": "Adresse relative",
+    "特征匹配": "Correspondance des caractéristiques",
+    "函数对齐": "Alignement des fonctions",
+    "函数调用": "Appel de fonction"
 }

@@ -59,7 +59,7 @@ if __name__=='__main__':
         for k in js:
             
             if k not in jsen or  jsen[k]=='':
-                jsen[k]= a.translate(k)
+                jsen[k]= list(a.translate(k))[0]
                 print(k,jsen[k]) 
                 with open(f'./files/lang/{kk}.json','w',encoding='utf8')  as ff:
                     ff.write( json.dumps(jsen,ensure_ascii=False,sort_keys=False, indent=4))
