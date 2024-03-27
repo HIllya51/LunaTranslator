@@ -65,7 +65,8 @@ class TTS(TTSbase):
     def speak(self,content,rate,voice,voice_idx):    
             self.checkchange()
             windows.WriteFile(self.hPipe,bytes(ctypes.c_uint(rate)))
-            windows.WriteFile(self.hPipe,content.encode('utf-16-le'))
+            buf=ctypes.create_unicode_buffer(content,10000)
+            windows.WriteFile(self.hPipe,bytes(buf))
             fname=windows.ReadFile(self.hPipe,1024,None).decode('utf-16-le')
             if os.path.exists(fname):
                 return(fname)

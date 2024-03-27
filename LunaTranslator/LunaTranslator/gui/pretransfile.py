@@ -17,7 +17,10 @@ def sqlite2json2(self,sqlitefile,targetjson=None,existsmerge=False):
         for _aret  in ret:
             if len(_aret)==4: 
                     
-                _id,source_parsed,mt,source=_aret
+                _id,source,mt,source_origin=_aret
+                if targetjson:
+                    source=source_origin
+
                 js_format2[source]=mt
             elif len(_aret)==3: 
                 _id,source,mt =_aret
