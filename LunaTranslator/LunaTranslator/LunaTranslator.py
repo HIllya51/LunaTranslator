@@ -253,13 +253,14 @@ class MAINUI() :
             self.usefultranslators.remove(classname)
         if embedcallback is None and currentsignature!=self.currentsignature:return        
         
+        returnandembedcallback = lambda x: embedcallback(x) if embedcallback else ''
+
         if type(res)==str:
             if res.startswith('<msg_translator>'):
                 if currentsignature==self.currentsignature:
                     self.translation_ui.displaystatus.emit(globalconfig['fanyi'][classname]['name']+' '+res[len('<msg_translator>'):],'red',onlytrans,False)
                 if len(self.usefultranslators)==0:
-                    embedcallback('')
-                    return
+                    return returnandembedcallback('')
         
         res=self.solveaftertrans(res,optimization_params)
         
@@ -286,9 +287,7 @@ class MAINUI() :
                 pass
 
             if globalconfig['embedded']['as_fast_as_posible'] or classname==list(globalconfig['fanyi'])[globalconfig['embedded']['translator']]:    
-                    
-                embedcallback(kanjitrans(zhconv.convert(res,'zh-tw')) if globalconfig['embedded']['trans_kanji'] else res) 
-                return
+                return returnandembedcallback(kanjitrans(zhconv.convert(res,'zh-tw')) if globalconfig['embedded']['trans_kanji'] else res)
             
     
     @threader
