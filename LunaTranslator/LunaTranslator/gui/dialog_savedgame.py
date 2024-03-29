@@ -15,7 +15,6 @@ from PyQt5.QtCore import Qt
 from gui.usefulwidget import getsimplecombobox,getspinbox,getcolorbutton,getsimpleswitch,getspinbox,selectcolor
 from PyQt5.QtCore import QPoint, QRect, QSize, Qt,pyqtSignal
 import os   
-from textsource.fridahook import fridahook
 from myutils.hwnd import showintab,getScreenRate
 from PyQt5.QtGui import QStandardItem, QStandardItemModel   
 from PyQt5.QtCore import Qt,QSize  
@@ -25,7 +24,7 @@ import gobject
 from myutils.config import _TR,_TRL,globalconfig,static_data 
 import winsharedutils
 from myutils.wrapper import Singleton_close,Singleton,threader
-from myutils.utils import checkifnewgame ,loadfridascriptslist
+from myutils.utils import checkifnewgame
 from myutils.proxy import getproxy
 from gui.usefulwidget import yuitsu_switch,saveposwindow,getboxlayout
 from myutils.vndb import parsehtmlmethod
@@ -502,7 +501,7 @@ class dialog_setting_game(QDialog):
  
                 formLayout.addLayout(getboxlayout([
                       QLabel(_TR("自动切换到模式")),
-                      getsimplecombobox(_TRL(['不切换','HOOK','剪贴板','OCR','FridaHook']),savehook_new_data[exepath],'onloadautochangemode2')
+                      getsimplecombobox(_TRL(['不切换','HOOK','剪贴板','OCR']),savehook_new_data[exepath],'onloadautochangemode2')
                 ]))
                  
                 formLayout.addLayout(getboxlayout([
@@ -513,7 +512,6 @@ class dialog_setting_game(QDialog):
 
                 methodtab=QTabWidget()
                 methodtab.addTab(self.gethooktab(exepath),"HOOK")
-                methodtab.addTab(self.getfridatab(exepath),"FridaHook")
                 methodtab.addTab(self.getpretranstab(exepath),"预翻译")
                 formLayout.addWidget(methodtab)
                 
@@ -542,31 +540,7 @@ class dialog_setting_game(QDialog):
                         getcolorbutton('','',functools.partial(selectimg,key,filt,editjson),icon='fa.gear',constcolor="#FF69B4")
                         ]))
                 return _w
-        def getfridatab(self,exepath):
-                _w=QWidget()
-                formLayout = QVBoxLayout()
-                formLayout.setAlignment(Qt.AlignTop)
-                _w.setLayout(formLayout)
-                Scriptscombo=QComboBox() 
-                Scriptscombo.setSizeAdjustPolicy(QComboBox.AdjustToMinimumContentsLength)
-                fridascripts=loadfridascriptslist(globalconfig['fridahook']['path'],Scriptscombo)
-                fridahook=savehook_new_data[exepath]['fridahook']
-                try:
-                      Scriptscombo.setCurrentIndex(fridascripts.index(fridahook['js']))
-                except:
-                      Scriptscombo.setCurrentIndex(0)
-                Scriptscombo.currentTextChanged.connect(lambda text:fridahook.__setitem__('js',text))
-                wids=[QLabel('Scripts'),Scriptscombo]
-                wids[0].setFixedWidth(100)
-                formLayout.addLayout(getboxlayout(wids))
-
-                formLayout.addLayout(getboxlayout([
-                      QLabel('Load Method'),
-                      getsimplecombobox(['Attach','Spawn'],fridahook,'loadmethod')
-                ]))
-
-
-                return _w
+        
         def gethooktab(self,exepath):
                 _w=QWidget()
                 formLayout = QVBoxLayout()
@@ -693,17 +667,13 @@ def startgame(game):
                     _={
                     1:'texthook', 
                     2:'copy',
-                    3:'ocr',
-                    4:'fridahook'
+                    3:'ocr'
                     } 
                     if globalconfig['sourcestatus2'][_[mode]]['use']==False:
                             globalconfig['sourcestatus2'][_[mode]]['use']=True
                             
                             yuitsu_switch(gobject.baseobject.settin_ui,globalconfig['sourcestatus2'],'sourceswitchs',_[mode],None ,True) 
                             gobject.baseobject.starttextsource(use=_[mode],checked=True)
-                if globalconfig['sourcestatus2']['fridahook']['use'] and savehook_new_data[game]['fridahook'].get('loadmethod')==1:
-                        gobject.baseobject.textsource=fridahook(1,savehook_new_data[game]['fridahook'].get('js'),game)
-                        return
                 
                 dirpath=os.path.dirname(game)
 

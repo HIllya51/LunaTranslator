@@ -31,11 +31,7 @@ def overridepathexists():
     PathFileExists.restype=wintypes.BOOL
     #win7上，如果假如没有D盘，然后os.path.exists("D:/...")，就会弹窗说不存在D盘
     os.path.exists=lambda file:bool(PathFileExists(os.path.abspath(file)))
-_jsconsole=debugoutput('jsconsole',sys.stdout)
+
 def overridestdio():
     sys.stderr=debugoutput('stderr',sys.stderr)
     sys.stdout=debugoutput('stdout',sys.stdout)
-def gprint(*args,**kwargs):  
-    kwargs['file']=_jsconsole
-    print(*args,**kwargs)
-

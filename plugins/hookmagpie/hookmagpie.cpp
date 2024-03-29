@@ -4,7 +4,7 @@
 #include<detours.h>  
 #include<string>
 #include<assert.h>
-#include<MinHook.h>
+#include"veh_hook.h"
 namespace Win32Utils{
 static HANDLE SafeHandle(HANDLE h) noexcept { return (h == INVALID_HANDLE_VALUE) ? nullptr : h; }
 struct HandleCloser { void operator()(HANDLE h) noexcept { assert(h != INVALID_HANDLE_VALUE); if (h) CloseHandle(h); } };
@@ -126,88 +126,14 @@ bool checkislunawindow(HWND hwndSrc)
 		return true;
 	else return false;
 }
-class hooks{
-public:
-void IsValidSrcWindow_hooked(uintptr_t lpDataBase)
-{
-    auto stack=(hook_stack*)(lpDataBase-sizeof(hook_stack)+sizeof(uintptr_t));
-    auto hwndSrc=(HWND)(stack->rcx);
+void hookedisvalidwindow(PCONTEXT context){
+	auto hwndSrc=(HWND)(context->Rcx);
     if (checkislunawindow(hwndSrc))
     {
         //MessageBoxW(0,GetExeName(hwndSrc).c_str(),L"",0);
-        stack->rcx=(uintptr_t)FindWindow(L"Shell_TrayWnd",nullptr);
+        context->Rcx=(uintptr_t)FindWindow(L"Shell_TrayWnd",nullptr);
     }
 }
-hooks(LPVOID location){
-    BYTE common_hook[] = {
-		0x9c, // push rflags
-		0x50, // push rax
-		0x53, // push rbx
-		0x51, // push rcx
-		0x52, // push rdx
-		0x54, // push rsp
-		0x55, // push rbp
-		0x56, // push rsi
-		0x57, // push rdi
-		0x41, 0x50, // push r8
-		0x41, 0x51, // push r9
-		0x41, 0x52, // push r10
-		0x41, 0x53, // push r11
-		0x41, 0x54, // push r12
-		0x41, 0x55, // push r13
-		0x41, 0x56, // push r14
-		0x41, 0x57, // push r15
-		// https://docs.microsoft.com/en-us/cpp/build/x64-calling-convention
-		// https://stackoverflow.com/questions/43358429/save-value-of-xmm-registers
-		0x48, 0x83, 0xec, 0x20, // sub rsp,0x20
-		0xf3, 0x0f, 0x7f, 0x24, 0x24, // movdqu [rsp],xmm4
-		0xf3, 0x0f, 0x7f, 0x6c, 0x24, 0x10, // movdqu [rsp+0x10],xmm5
-		0x48, 0x8d, 0x94, 0x24, 0xa8, 0x00, 0x00, 0x00, // lea rdx,[rsp+0xa8]
-		0x48, 0xb9, 0,0,0,0,0,0,0,0, // mov rcx,@this
-		0x48, 0xb8, 0,0,0,0,0,0,0,0, // mov rax,@TextHook::Send
-		0x48, 0x89, 0xe3, // mov rbx,rsp
-		0x48, 0x83, 0xe4, 0xf0, // and rsp,0xfffffffffffffff0 ; align stack
-		0xff, 0xd0, // call rax
-		0x48, 0x89, 0xdc, // mov rsp,rbx
-		0xf3, 0x0f, 0x6f, 0x6c, 0x24, 0x10, // movdqu xmm5,XMMWORD PTR[rsp + 0x10]
-		0xf3, 0x0f, 0x6f, 0x24, 0x24, // movdqu xmm4,XMMWORD PTR[rsp]
-		0x48, 0x83, 0xc4, 0x20, // add rsp,0x20
-		0x41, 0x5f, // pop r15
-		0x41, 0x5e, // pop r14
-		0x41, 0x5d, // pop r13
-		0x41, 0x5c, // pop r12
-		0x41, 0x5b, // pop r11
-		0x41, 0x5a, // pop r10
-		0x41, 0x59, // pop r9
-		0x41, 0x58, // pop r8
-		0x5f, // pop rdi
-		0x5e, // pop rsi
-		0x5d, // pop rbp
-		0x5c, // pop rsp
-		0x5a, // pop rdx
-		0x59, // pop rcx
-		0x5b, // pop rbx
-		0x58, // pop rax
-		0x9d, // pop rflags
-		0xff, 0x25, 0x00, 0x00, 0x00, 0x00, // jmp qword ptr [rip]
-		0,0,0,0,0,0,0,0 // @original
-	};
-	int this_offset = 50, send_offset = 60, original_offset = 126;
-    DWORD _;
-    VirtualProtect(location, 10, PAGE_EXECUTE_READWRITE, &_);
-    auto trampoline=VirtualAlloc(0,sizeof(common_hook),MEM_COMMIT,PAGE_EXECUTE_READWRITE);
-	void* original;
-	MH_STATUS error;
-	if ((error = MH_CreateHook(location, trampoline, &original)) != MH_OK)
-		return;
- 
-	*(hooks**)(common_hook + this_offset) = this;
-	*(void(hooks::**)(uintptr_t))(common_hook + send_offset) = &hooks::IsValidSrcWindow_hooked;
-	*(void**)(common_hook + original_offset) = original;
-	memcpy(trampoline, common_hook, sizeof(common_hook));
-	MH_EnableHook(location);
-}
-};
 void starthookmagpie()
 {
     uintptr_t IsValidSrcWindow=0;
@@ -239,8 +165,7 @@ void starthookmagpie()
     if(IsValidSrcWindow==0)return;
     
     //IsValidSrcWindow=(decltype(IsValidSrcWindow))((uintptr_t)GetModuleHandle(L"Magpie.App.dll")+0x180146860-0x180000000);
-    MH_Initialize(); 
-    hooks _((LPVOID)IsValidSrcWindow);
+    add_veh_hook((LPVOID)IsValidSrcWindow,hookedisvalidwindow,0);
     // DetourTransactionBegin();
     // DetourUpdateThread(GetCurrentThread()); 
     // DetourAttach(&(PVOID&)IsValidSrcWindow,IsValidSrcWindow_hooked);

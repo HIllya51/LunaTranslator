@@ -698,17 +698,10 @@
         },
         "texthook": {
             "use": true
-        },
-        "fridahook":{
-            "use": false
         }
     },
     "verticalocr": false,
     "ocrmergelines": true,
-    "fridahook":{
-        "path":"",
-        "autoupdate":true
-    },
     "ocr": {
         "local": {
             "use": true,

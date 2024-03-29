@@ -11,7 +11,6 @@ from gui.showword import searchwordW
 from myutils.hwnd import pid_running,getpidexe ,testprivilege,ListProcess
 from textsource.copyboard import copyboard   
 from textsource.texthook import texthook   
-from textsource.fridahook import fridahook
 from textsource.ocrtext import ocrtext
 import  gui.selecthook     
 import gui.translatorUI
@@ -349,26 +348,17 @@ class MAINUI() :
         pids,pexe,hwnd=(  selectedp)
         checkifnewgame(pexe,windows.GetWindowText(hwnd)) 
         if globalconfig['sourcestatus2']['texthook']['use']:
-            self.textsource=texthook(pids,hwnd,pexe)  
-        elif globalconfig['sourcestatus2']['fridahook']['use']:
-            if len(pids)!=1:
-                getQMessageBox(self.settin_ui,"错误","Only support pid num of 1")
-                return  
-            try:
-                self.textsource=fridahook(0,self.settin_ui.fridascripts[self.settin_ui.Scriptscombo.currentIndex()],pexe,pids[0])
-            except:
-                print_exc()
-        
+            self.textsource=texthook(pids,hwnd,pexe) 
          
     #@threader
     def starttextsource(self,use=None,checked=True):   
         self.translation_ui.showhidestate=False 
         self.translation_ui.refreshtooliconsignal.emit()
-        self.settin_ui.selectbutton.setEnabled(globalconfig['sourcestatus2']['texthook']['use'] or globalconfig['sourcestatus2']['fridahook']['use']) 
+        self.settin_ui.selectbutton.setEnabled(globalconfig['sourcestatus2']['texthook']['use']) 
         self.settin_ui.selecthookbutton.setEnabled(globalconfig['sourcestatus2']['texthook']['use'] )
         self.textsource=None
         if checked: 
-            classes={'ocr':ocrtext,'copy':copyboard,'texthook':None,'fridahook':None} 
+            classes={'ocr':ocrtext,'copy':copyboard,'texthook':None} 
             if use is None:
                 use=list(filter(lambda _ :globalconfig['sourcestatus2'][_]['use'],classes.keys()) )
                 use=None if len(use)==0 else use[0]
@@ -469,7 +459,7 @@ class MAINUI() :
       
 
     def onwindowloadautohook(self): 
-        textsourceusing=globalconfig['sourcestatus2']['texthook']['use'] or globalconfig['sourcestatus2']['fridahook']['use']
+        textsourceusing=globalconfig['sourcestatus2']['texthook']['use']
         if not(globalconfig['autostarthook'] and textsourceusing):
             return  
         elif self.AttachProcessDialog.isVisible():
@@ -493,9 +483,6 @@ class MAINUI() :
                                             savehook_new_list.insert(0,savehook_new_list.pop(idx)) 
                                             needinserthookcode=savehook_new_data[name_]['needinserthookcode']
                                             self.textsource=texthook(pids,hwnd,name_ ,autostarthookcode=savehook_new_data[name_]['hook'],needinserthookcode=needinserthookcode)
-                                        elif len(pids)==1 and globalconfig['sourcestatus2']['fridahook']['use'] and savehook_new_data[name_]['fridahook']['loadmethod']==0:
-                                            self.textsource=fridahook(0,savehook_new_data[name_]['fridahook']['js'],name_,pids[0],hwnd)
-                                        
                                                                 
                                         onloadautoswitchsrclang=savehook_new_data[name_]['onloadautoswitchsrclang']
                                         if onloadautoswitchsrclang>0:

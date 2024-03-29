@@ -70,7 +70,6 @@ def getdefaultsavehook(gamepath,title=None):
         "allow_tts_auto_names":'',
         "hooktypeasname":{},
         "use_saved_text_process":False,
-        "fridahook":{},
         "searchnoresulttime":0,
         'relationlinks':[],
         'gamejsonfile':'',

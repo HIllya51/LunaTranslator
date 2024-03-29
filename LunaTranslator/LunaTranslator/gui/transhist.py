@@ -43,7 +43,7 @@ class transhist(closeashidewindow):
         self.textOutput=gettb(1)
         self.tabwidget.addTab(self.textOutput,_TR("历史翻译"))
         self.debugoutputs={}
-        for _text in ['stderr','stdout','jsconsole']:
+        for _text in ['stderr','stdout']:
             _x=gettb(0) 
             self.tabwidget.addTab(_x,_TR(_text))
             self.debugoutputs[_text]=(_x)

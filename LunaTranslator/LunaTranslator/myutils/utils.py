@@ -310,27 +310,6 @@ def makehtml(text,base=False,show=None):
           show=text
     return '<a href="{}">{}</a>'.format(text,show)
 
-def loadfridascriptslist(path,Scriptscombo):
-    Scriptscombo.clear()
-    try:
-            def check(f):
-                if f.endswith('.js')==False:return False
-                if f.startswith('lib'):return False
-                return True
-            fridascripts =[]
-            for f in os.listdir(os.path.join(path,'scripts')):
-                    
-                    if os.path.isdir(os.path.join(path,'scripts',f)):
-                        for ff in os.listdir(os.path.join(path,'scripts',f)):
-                            if check(ff):
-                                fridascripts.append(f+'/'+ff[:-3])
-                    else:
-                        if check(f):
-                            fridascripts.append(f[:-3])
-    except:
-            fridascripts=[]
-    Scriptscombo.addItems(fridascripts)
-    return fridascripts
 import sqlite3
 class autosql(sqlite3.Connection): 
     def __new__(cls,v) -> None:  
