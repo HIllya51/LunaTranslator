@@ -3,7 +3,7 @@ from queue import Queue
 
 from myutils.config import globalconfig,translatorsetting,static_data
 from threading import Thread,Lock
-import os,time ,types
+import threading,time ,types,heapq
 import zhconv,gobject
 import sqlite3
 from myutils.commonbase import commonbase
@@ -47,6 +47,20 @@ def timeoutfunction( func, timeout=100,default=None,ignoreexceptions=False,check
     t.start()
     return t.get_result(timeout,checktutukufunction)
 
+class PriorityQueue:
+    def __init__(self):
+        self._heap = []
+        self._sema=threading.Semaphore(0)
+        self._idx=0
+    def put(self, item, priority=0):
+        heapq.heappush(self._heap, (-priority,self._idx, item))
+        self._idx+=1
+        self._sema.release()
+    def get(self):
+        self._sema.acquire()
+        return heapq.heappop(self._heap)[-1]
+    def empty(self):
+        return bool(len(self._heap)==0)
 class basetrans(commonbase): 
     def langmap(self):
         return {}
@@ -74,7 +88,7 @@ class basetrans(commonbase):
     _setting_dict=translatorsetting 
     def level2init(self ) :  
         self.multiapikeycurrentidx=-1
-        self.queue=Queue()  
+        self.queue=PriorityQueue()  
         self.sqlqueue=None
         try:
             self._private_init()
@@ -103,7 +117,7 @@ class basetrans(commonbase):
     def notifyqueuforend(self):
         if self.sqlqueue:
             self.sqlqueue.put(None)
-        self.queue.put(None)
+        self.queue.put(None,999)
     def _private_init(self):
         self.initok=False
         self.inittranslator()
@@ -138,7 +152,10 @@ class basetrans(commonbase):
     def transtype(self):
         return globalconfig['fanyi'][self.typename].get('type','free')
     def gettask(self,content):
-        self.queue.put((content)) 
+        embedcallback=content[-2]
+        if embedcallback:priority=1
+        else:priority=0
+        self.queue.put(content,priority) 
     
     
     def longtermcacheget(self,src):
@@ -210,34 +227,16 @@ class basetrans(commonbase):
         res=self.translate(content)
         
         return res
-    @property
-    def onlymanual(self):
-        if 'manual' not in globalconfig['fanyi'][self.typename] :
-            return False
-        return globalconfig['fanyi'][self.typename]['manual']
+    
     def _fythread(self):
         self.needreinit=False
         while self.using:  
+        
+            _=self.queue.get() 
+            if _ is None:break
+            callback,contentraw,contentsolved,embedcallback,is_auto_run=_
             
-            savelast=[]
-            while True:
-                _=self.queue.get() 
-                if _ is None:break
-                callback,contentraw,contentsolved,embedcallback,is_auto_run=_
-                if embedcallback is not None:
-                    savelast.clear()
-                
-                savelast.append(_)
-                if self.queue.empty():
-                    break
             if self.using==False:break
-            if savelast[0][4] is not None:
-                callback,contentraw,contentsolved,embedcallback,is_auto_run=savelast.pop(0)
-                for _ in savelast:
-                    self.gettask(_)
-            if embedcallback is None:
-                if is_auto_run and self.onlymanual:
-                    continue
             
             self.requestid+=1
             try:
