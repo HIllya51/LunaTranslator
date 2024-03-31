@@ -1,6 +1,6 @@
  
-from PyQt5.QtCore import pyqtSignal  
-from PyQt5.QtWidgets import QLabel,QScrollArea,QWidget,QGridLayout,QVBoxLayout
+from PyQt5.QtCore import pyqtSignal  ,Qt,QSize
+from PyQt5.QtWidgets import QLabel,QScrollArea,QWidget,QGridLayout,QVBoxLayout,QListWidget,QHBoxLayout,QListWidgetItem
 from PyQt5.QtGui import QResizeEvent 
 from PyQt5.QtWidgets import  QTabWidget 
 import qtawesome,darkdetect
@@ -123,19 +123,44 @@ class Settin(closeashidewindow) :
             self.setWindowTitle(_TR("设置"))
             self.setWindowIcon(qtawesome.icon("fa.gear" )) 
             
-            self.tab_widget = self.makesubtab_lazy() 
+            class TabWidget(QWidget):
+                currentChanged=pyqtSignal(int)
+                def __init__(self, parent=None):
+                    super(TabWidget, self).__init__(parent)
+                    layout=QHBoxLayout()
+                    layout.setContentsMargins(0,0,0,0)
+                    self.setLayout(layout)
+                    self.list_widget = QListWidget(self)
+                    self.tab_widget=QTabWidget(self)
+                    self.tab_widget.tabBar().hide()  # 隐藏默认的 TabBar
+                    self.tab_widget.setTabPosition(QTabWidget.West)  # 将 Tab 放在左侧
+                    layout.addWidget(self.list_widget)
+                    layout.addWidget(self.tab_widget)
+                    self.currentChanged.connect(self.tab_widget.setCurrentIndex)  # 监听 Tab 切换事件
+                    self.list_widget.currentRowChanged.connect(self.currentChanged)
+                    self.idx=0
+
+                def addTab(self, widget, title):
+                    self.tab_widget.addTab(widget, title)
+                    item=QListWidgetItem(title)
+                    item.setTextAlignment(Qt.AlignCenter)
+                    item.setSizeHint(QSize(self.tab_widget.width(),50))
+                    self.list_widget.addItem(item)
+                    if self.idx==0:
+                        self.list_widget.setCurrentRow(0)
+                    self.idx+=1
+                def currentWidget(self):
+                    return self.tab_widget.currentWidget()
+            self.tab_widget = self.makesubtab_lazy(klass=TabWidget) 
             self.setCentralWidget(self.tab_widget)
-            self.tabbar=rotatetab(self.tab_widget)
-            self.tab_widget.setTabBar(self.tabbar) 
-            self.tab_widget.tabBar().setObjectName("basetabbar")
+            self.tab_widget.list_widget.setFixedWidth(int(self.window_width*0.2))
+            
             self.tab_widget.setStyleSheet(
-                '''QTabBar#basetabbar:tab { 
-                    width: %spx;
-                    height: %spx;
+                '''QListWidget { 
                     font:%spt  ;  }
-                '''%(50,self.window_width*0.2,globalconfig['tabfont_chs'] if globalconfig['languageuse']==0 else globalconfig['tabfont_otherlang']  )
+                '''%(globalconfig['tabfont_chs'] if globalconfig['languageuse']==0 else globalconfig['tabfont_otherlang']  )
             )
-            self.tab_widget.setTabPosition(QTabWidget.West)
+            # self.tab_widget.setTabPosition(QTabWidget.West)
             setTabOne(self)   
             setTabTwo(self)  
             
@@ -208,8 +233,10 @@ class Settin(closeashidewindow) :
             self.tabadd(tab,titles[i], wid )
         return tab
      
-    def makesubtab_lazy(self,titles=None,functions=None):
-        tab=QTabWidget()
+    def makesubtab_lazy(self,titles=None,functions=None,klass=None):
+        if klass:
+            tab=klass()
+        else:tab=QTabWidget()
         def __(t,i):
             try:
                 w=t.currentWidget()
