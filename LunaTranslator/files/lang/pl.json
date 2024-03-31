@@ -727,5 +727,9 @@
     "相对地址": "Adres względny",
     "特征匹配": "Dopasowanie cech",
     "函数对齐": "Wyrównanie funkcji",
-    "函数调用": "wywołanie funkcji"
+    "函数调用": "wywołanie funkcji",
+    "明亮": "jasne",
+    "黑暗": "ciemność",
+    "跟随系统": "System śledzenia",
+    "明暗": "Jasność i ciemność"
 }

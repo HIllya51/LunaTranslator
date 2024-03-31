@@ -1,8 +1,7 @@
 
 from re import search
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QWidget,QHBoxLayout,QMainWindow,QApplication,QVBoxLayout,QFontDialog,QTextBrowser,QLineEdit,QPushButton,QTabWidget,QMenu,QAction
-from PyQt5.QtGui import QFont,QTextCursor,QFontMetrics
+from PyQt5.QtWidgets import QWidget,QHBoxLayout,QVBoxLayout,QTextBrowser,QLineEdit,QPushButton,QTabWidget
 from PyQt5.QtCore import Qt,pyqtSignal,QSize
 import qtawesome,functools,json
 import threading ,gobject
@@ -96,39 +95,13 @@ class searchwordW(closeashidewindow):
             textOutput.setContextMenuPolicy(Qt.CustomContextMenu)
         
         
-            textOutput.customContextMenuRequested.connect(functools.partial( self.showmenu ,i,textOutput) )
         self.hiding=True
         self.searchthreadsignal.connect(self.searchthread)
-        self.setfonts( )
-    def setfonts(self):
-        font = QFont() 
-        font.fromString(globalconfig['sw_fontstring'])
-        fm=QFontMetrics(font)
-        self.searchbutton.setIconSize(QSize(fm.height(),fm.height() )) 
-        self.soundbutton.setIconSize(QSize(fm.height(),fm.height() ))
-        self.setFont(font)
-        self.tab.setFont(font)
-        self.searchtext.setFont(font)
-
-        for _ in self.textbs:
-            self.textbs[_].setFont(font)
+    
     def langdu(self): 
         if gobject.baseobject.reader:
             gobject.baseobject.reader.read(self.searchtext.text() )  
-    def showmenu(self,ii,to:QTextBrowser,p):  
-        menu=QMenu(self ) 
-        ziti=QAction(_TR("字体") ) 
-        menu.addAction(ziti)
-        action=menu.exec( to.mapToGlobal(p))
-        if action==ziti :
-            
-            font, ok = QFontDialog.getFont(self.font(), parent=self)
-            
-             
-            if ok : 
-                globalconfig['sw_fontstring']=font.toString()
-                self.setfonts()
-                 
+    
     def getnewsentence(self,sentence):
         self.showNormal()
         self.searchtext.setText(sentence  )

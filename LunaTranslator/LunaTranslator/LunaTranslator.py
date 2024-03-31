@@ -566,7 +566,7 @@ class MAINUI() :
             except:
                 print_exc()
     def mainuiloadafter(self):    
-        self.transhis=gui.transhist.transhist(self.translation_ui)  
+        
         gobject.overridestdio()
         
         self.loadvnrshareddict()
@@ -575,11 +575,12 @@ class MAINUI() :
         self.starthira()      
         
         self.settin_ui = Settin(self.translation_ui)  
+        self.transhis=gui.transhist.transhist(self.settin_ui)  
         gobject.baseobject.Prompt=Prompt()
         self.startreader()  
         
-        self.edittextui=gui.edittext.edittext(self.translation_ui)  
-        self.searchwordW=searchwordW(self.translation_ui)
+        self.edittextui=gui.edittext.edittext(self.settin_ui)  
+        self.searchwordW=searchwordW(self.settin_ui)
         self.hookselectdialog=gui.selecthook.hookselect(self.settin_ui) 
         self.showocrimage=showocrimage(self.settin_ui)
         self.AttachProcessDialog=AttachProcessDialog(self.settin_ui,self.selectprocess,self.hookselectdialog)

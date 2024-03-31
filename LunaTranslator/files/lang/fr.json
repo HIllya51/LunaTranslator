@@ -727,5 +727,9 @@
     "相对地址": "Adresse relative",
     "特征匹配": "Correspondance des caractéristiques",
     "函数对齐": "Alignement des fonctions",
-    "函数调用": "Appel de fonction"
+    "函数调用": "Appel de fonction",
+    "明亮": "Lumineux",
+    "黑暗": "L'obscurité",
+    "跟随系统": "Suivre le système",
+    "明暗": "Lumière et obscurité"
 }

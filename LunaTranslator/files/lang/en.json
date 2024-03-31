@@ -727,5 +727,9 @@
     "相对地址": "Relative address",
     "特征匹配": "Feature matching",
     "函数对齐": "Function alignment",
-    "函数调用": "function call"
+    "函数调用": "function call",
+    "明亮": "bright",
+    "黑暗": "dark",
+    "跟随系统": "Follow system",
+    "明暗": "Brightness and darkness"
 }

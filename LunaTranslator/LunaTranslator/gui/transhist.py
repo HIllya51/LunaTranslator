@@ -1,7 +1,6 @@
  
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QTabWidget,QTextBrowser,QMainWindow,QFontDialog,QAction,QMenu,QFileDialog
-from PyQt5.QtGui import QFont,QTextCursor
+from PyQt5.QtWidgets import QTabWidget,QTextBrowser,QAction,QMenu,QFileDialog
 from PyQt5.QtCore import Qt,pyqtSignal 
 import qtawesome,functools
 
@@ -26,9 +25,6 @@ class transhist(closeashidewindow):
         self.setWindowTitle(_TR('历史翻译和调试输出'))
     def setupUi(self):
         self.setWindowIcon(qtawesome.icon("fa.rotate-left"  ))
-        font = QFont() 
-        font.fromString(globalconfig['hist_fontstring'])
-        self.setFont(font)
         self.tabwidget=QTabWidget()
         self.tabwidget.setTabPosition(QTabWidget.East)
         self.setCentralWidget(self.tabwidget) 
@@ -52,7 +48,6 @@ class transhist(closeashidewindow):
         menu=QMenu(self ) 
         qingkong=QAction(_TR("清空")) 
         baocun=QAction(_TR("保存"))  
-        ziti=QAction(_TR("字体") ) 
         hideshowraw=QAction(_TR("显示原文"    if self.hiderawflag else "不显示原文") ) 
         hideshowapi=QAction(_TR("显示api"    if self.hideapiflag else "不显示api") ) 
         menu.addAction(qingkong)
@@ -60,7 +55,6 @@ class transhist(closeashidewindow):
         if flag==1:
             menu.addAction(hideshowraw)
             menu.addAction(hideshowapi)
-        menu.addAction(ziti)
         
         action=menu.exec(self.mapToGlobal(p))
         if action==qingkong:
@@ -77,13 +71,7 @@ class transhist(closeashidewindow):
         elif action==hideshowapi:
             
             self.hideapiflag=not self.hideapiflag
-        elif action==ziti :
-            
-            font, ok = QFontDialog.getFont(self.font(), parent=self) 
-             
-            if ok : 
-                globalconfig['hist_fontstring']=font.toString() 
-                self.setFont(font)
+        
     def debugprint(self,idx,sentence):
         textbrowappendandmovetoend(self.debugoutputs[idx],sentence,False) 
     def getnewsentence(self,sentence):

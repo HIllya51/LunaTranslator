@@ -40,9 +40,6 @@
     "postprocess_rank": [],
     "uselongtermcache": false,
     "hist_split": false,
-    "hist_fontstring": "Arial,12,-1,5,50,0,0,0,0,0,Regular",
-    "sw_fontstring": "Arial,12,-1,5,50,0,0,0,0,0,Regular",
-    "edit_fontstring": "Arial,12,-1,5,50,0,0,0,0,0,Regular",
     "fixedheight": false,
     "showintab": true,
     "remove_useless_hook": false,
@@ -679,6 +676,7 @@
             "name": "goo"
         }
     },
+    "darklight":0,
     "usesearchword": false,
     "usecopyword":false,
     "outputtopasteboard": false,

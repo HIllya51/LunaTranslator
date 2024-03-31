@@ -3,7 +3,7 @@ from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtWidgets import QLabel,QScrollArea,QWidget,QGridLayout,QVBoxLayout
 from PyQt5.QtGui import QResizeEvent 
 from PyQt5.QtWidgets import  QTabWidget 
-import qtawesome
+import qtawesome,darkdetect
 import functools
 from traceback import print_exc 
 from myutils.config import globalconfig ,_TR
@@ -151,7 +151,24 @@ class Settin(closeashidewindow) :
             setTab_about(self) 
             self.isfirstshow=False
     def setstylesheet(self):
-        self.setStyleSheet("font: %spt '"%(globalconfig['settingfontsize'])+(globalconfig['settingfonttype']  )+"' ;  " )  
+    
+        dl=globalconfig['darklight']
+        if dl==0:
+            dark=False
+        elif dl==1:
+            dark=True
+        elif dl==2:
+            dark=darkdetect.isDark()
+        if dark:
+            try:
+                with open('./files/dark.qss','r') as ff:
+                    style=ff.read()
+            except:
+                style=''
+        else:
+            style=''
+        style+="*{font: %spt '"%(globalconfig['settingfontsize'])+(globalconfig['settingfonttype']  )+"' ;  }" 
+        self.setStyleSheet(style)
     def makevbox(self,wids): 
         q=QWidget()
         v=QVBoxLayout()

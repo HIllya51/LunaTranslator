@@ -1,7 +1,6 @@
  
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QApplication,QTextBrowser,QMainWindow,QFontDialog,QAction,QMenu,QHBoxLayout,QWidget,QPushButton,QVBoxLayout
-from PyQt5.QtGui import QFont,QFontMetrics
+from PyQt5.QtWidgets import QApplication,QTextBrowser,QAction,QMenu,QHBoxLayout,QWidget,QPushButton,QVBoxLayout
 from PyQt5.QtCore import Qt,pyqtSignal ,QSize,QPoint
 import qtawesome 
 import json,threading 
@@ -21,8 +20,7 @@ class edittext(closeashidewindow):
         self.setWindowTitle(_TR('编辑'))  
     def setupUi(self):
         self.setWindowIcon(qtawesome.icon("fa.edit"  ))
-        font = QFont() 
-        font.fromString(globalconfig['edit_fontstring'])
+        
  
         self.textOutput = QTextBrowser(self)
         
@@ -60,14 +58,7 @@ class edittext(closeashidewindow):
         
 
         self.hiding=True
-        self.setfonts()
-    def setfonts(self):
-        font = QFont() 
-        font.fromString(globalconfig['sw_fontstring'])
-        fm=QFontMetrics(font)
-        self.bt1.setIconSize(QSize(fm.height(),fm.height() )) 
-        self.bt2.setIconSize(QSize(fm.height(),fm.height() ))
-        self.textOutput.setFont(font) 
+        
     def run(self):
         threading.Thread(target=gobject.baseobject.textgetmethod,args=(self.textOutput.toPlainText(),False)).start()
     def changestate(self):
@@ -76,21 +67,11 @@ class edittext(closeashidewindow):
     def showmenu(self,point:QPoint):  
         menu=QMenu(self.textOutput ) 
         qingkong=QAction(_TR("清空"))  
-        ziti=QAction(_TR("字体") ) 
         menu.addAction(qingkong)  
-        menu.addAction(ziti)
         action=menu.exec(self.mapToGlobal(self.textOutput.pos())+point)
         if action==qingkong:
             self.textOutput.clear()
          
-        elif action==ziti :
-            
-            font, ok = QFontDialog.getFont(self.textOutput.font(), parent=self)
-            
-             
-            if ok : 
-                globalconfig['edit_fontstring']=font.toString()
-                self.setfonts()
     def getnewsentence(self,sentence):
         if self.sync: 
             self.textOutput.setCurrentCharFormat(self.charformat)
