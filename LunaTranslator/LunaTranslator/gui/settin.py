@@ -159,13 +159,13 @@ class Settin(closeashidewindow) :
             dark=True
         elif dl==2:
             dark=darkdetect.isDark()
-        if dark:
-            try:
-                with open('./files/dark.qss','r') as ff:
-                    style=ff.read()
-            except:
-                style=''
-        else:
+        darklight=['light','dark'][dark]
+    
+        try:
+            with open('./files/{}{}.qss'.format(darklight,globalconfig[darklight+'theme']),'r') as ff:
+                style=ff.read()
+        except:
+            print_exc()
             style=''
         style+="*{font: %spt '"%(globalconfig['settingfontsize'])+(globalconfig['settingfonttype']  )+"' ;  }" 
         self.setStyleSheet(style)

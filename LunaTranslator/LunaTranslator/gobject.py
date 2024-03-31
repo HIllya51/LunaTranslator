@@ -19,7 +19,8 @@ class debugoutput(io.IOBase):
     def write(self,data):
         if self.originfile:
             self.originfile.write(data)
-        baseobject.transhis.getdebuginfosignal.emit(self.idx,str(data))
+        if 'transhis' in dir(baseobject):
+            baseobject.transhis.getdebuginfosignal.emit(self.idx,str(data))
     def flush(self):
         if self.originfile:
             self.originfile.flush()

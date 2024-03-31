@@ -677,6 +677,8 @@
         }
     },
     "darklight":0,
+    "darktheme":0,
+    "lighttheme":0,
     "usesearchword": false,
     "usecopyword":false,
     "outputtopasteboard": false,

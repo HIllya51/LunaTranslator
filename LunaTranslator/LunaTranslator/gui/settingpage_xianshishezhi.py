@@ -166,7 +166,9 @@ def setTabThree_lazy(self) :
         [('子窗口任务栏中显示',6),getsimpleswitch(globalconfig,'showintab_sub')],
         [('选择文本窗口中文本框只读',6),getsimpleswitch(globalconfig,'textboxreadonly',callback=lambda x:gobject.baseobject.hookselectdialog.textOutput.setReadOnly(x) )],
         [],
-        [('明暗',6),(getsimplecombobox(_TRL(['明亮','黑暗','跟随系统']),globalconfig,'darklight',callback=lambda _: self.setstylesheet()),5)]
+        [('明暗',6),(getsimplecombobox(_TRL(['明亮','黑暗','跟随系统']),globalconfig,'darklight',callback=lambda _: self.setstylesheet()),5)],
+        [('明亮',6),(getsimplecombobox(_TRL(['default','1','2']),globalconfig,'lighttheme',callback=lambda _: self.setstylesheet()),5)],
+        [('黑暗',6),(getsimplecombobox(_TRL(['0','1']),globalconfig,'darktheme',callback=lambda _: self.setstylesheet()),5)],
     ]  
     alleffect=['无','Bicubic','Bilinear','Jinc','Lanczos','Nearest','SSimDownscaler']
     downsname=magpie10_config.get('downscalingEffect',{'name':'无'}).get('name')
