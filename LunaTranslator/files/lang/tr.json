@@ -731,5 +731,8 @@
     "明亮": "bright",
     "黑暗": "karanlık",
     "跟随系统": "Sistemi takip et",
-    "明暗": "Parılık ve karanlık"
+    "明暗": "Parılık ve karanlık",
+    "默认": "öntanımlı",
+    "明亮主题": "Işık Tema",
+    "黑暗主题": "Karanlık Tema"
 }

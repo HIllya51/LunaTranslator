@@ -731,5 +731,8 @@
     "明亮": "bright",
     "黑暗": "dark",
     "跟随系统": "Follow system",
-    "明暗": "Brightness and darkness"
+    "明暗": "Brightness and darkness",
+    "默认": "default",
+    "明亮主题": "Bright Theme",
+    "黑暗主题": "Dark Theme"
 }

@@ -731,5 +731,8 @@
     "明亮": "jasne",
     "黑暗": "ciemność",
     "跟随系统": "System śledzenia",
-    "明暗": "Jasność i ciemność"
+    "明暗": "Jasność i ciemność",
+    "默认": "domyślne",
+    "明亮主题": "Jasny motyw",
+    "黑暗主题": "Ciemny motyw"
 }

@@ -229,29 +229,7 @@ class resizableframeless(saveposwindow):
         self._lcorner_drag = False
         self._right_drag = False
         self._left_drag = False
-class rotatetab(QTabBar): 
-    def tabSizeHint(self, index): 
-        s = QTabBar.tabSizeHint(self, index)
-        s.transpose()
-        return s
-    def paintEvent(self, e) : 
-        painter = QStylePainter(self)
-        opt = QStyleOptionTab() 
-        for i in range(self.count()) :
-            self.initStyleOption(opt, i)
-            painter.drawControl(QStyle.CE_TabBarTabShape, opt)
-            painter.save() 
-            s = opt.rect.size()
-            s.transpose()
-            r = QRect(QPoint(), s)
-            r.moveCenter(opt.rect.center())
-            opt.rect = r 
-            c = self.tabRect(i).center()
-            painter.translate(c)
-            painter.rotate(90)
-            painter.translate(-c)
-            painter.drawControl(QStyle.CE_TabBarTabLabel, opt)
-            painter.restore()  
+
 class Prompt_dialog(QDialog):
     def __init__(self, parent,title,info,default='' ) -> None:
         super().__init__(parent)

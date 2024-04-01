@@ -731,5 +731,8 @@
     "明亮": "luminoso",
     "黑暗": "scuro",
     "跟随系统": "Sistema di monitoraggio",
-    "明暗": "Luminosità e oscurità"
+    "明暗": "Luminosità e oscurità",
+    "默认": "default",
+    "明亮主题": "Tema luminoso",
+    "黑暗主题": "Tema scuro"
 }

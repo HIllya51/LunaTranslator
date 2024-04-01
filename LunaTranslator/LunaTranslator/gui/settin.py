@@ -8,7 +8,7 @@ import functools
 from traceback import print_exc 
 from myutils.config import globalconfig ,_TR
 from myutils.utils import wavmp3player
-from myutils.config import globalconfig
+from myutils.config import static_data
 from gui.settingpage1 import setTabOne,setTabOne_direct
 from gui.settingpage2 import setTabTwo,settab2d
 from gui.settingpage_xianshishezhi import setTabThree ,setTabThree_direct
@@ -19,7 +19,6 @@ from gui.setting_lang import setTablang,setTablangd
 from gui.setting_proxy import setTab_proxy
 from gui.settingpage7 import setTab7 ,settab7direct
 from gui.settingpage_about import setTab_about,setTab_about_dicrect  
-from gui.usefulwidget import  rotatetab
 from gui.usefulwidget import closeashidewindow   
 class gridwidget(QWidget):
     pass
@@ -187,10 +186,12 @@ class Settin(closeashidewindow) :
         darklight=['light','dark'][dark]
     
         try:
-            with open('./files/{}{}.qss'.format(darklight,globalconfig[darklight+'theme']),'r') as ff:
+            idx=globalconfig[darklight+'theme']-int(not dark)
+            if idx==-1:raise Exception()
+            with open('./files/themes/{}'.format(static_data['themes'][darklight][idx]["file"] ),'r') as ff:
                 style=ff.read()
         except:
-            print_exc()
+            #print_exc()
             style=''
         style+="*{font: %spt '"%(globalconfig['settingfontsize'])+(globalconfig['settingfonttype']  )+"' ;  }" 
         self.setStyleSheet(style)
