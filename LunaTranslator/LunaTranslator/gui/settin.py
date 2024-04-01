@@ -1,9 +1,9 @@
  
-from PyQt5.QtCore import pyqtSignal  ,Qt,QSize
-from PyQt5.QtWidgets import QLabel,QScrollArea,QWidget,QGridLayout,QVBoxLayout,QListWidget,QHBoxLayout,QListWidgetItem
+from PyQt5.QtCore import pyqtSignal  ,Qt,QSize,QObject,QEvent
+from PyQt5.QtWidgets import QLabel,QScrollArea,QWidget,QGridLayout,QVBoxLayout,QListWidget,QHBoxLayout,QListWidgetItem,QApplication
 from PyQt5.QtGui import QResizeEvent 
 from PyQt5.QtWidgets import  QTabWidget 
-import qtawesome,darkdetect
+import qtawesome,darkdetect,ctypes
 import functools
 from traceback import print_exc 
 from myutils.config import globalconfig ,_TR
@@ -185,6 +185,29 @@ class Settin(closeashidewindow) :
             dark=darkdetect.isDark()
         darklight=['light','dark'][dark]
     
+        top_level_widgets = QApplication.topLevelWidgets()
+        def ChangeDWMAttrib(hWnd: int, attrib: int, color) -> None:
+            try:
+                ctypes.windll.dwmapi.DwmSetWindowAttribute(hWnd, attrib, ctypes.byref(color), ctypes.sizeof(ctypes.c_int))
+            except:
+                pass
+        def darkchange(hwnd):
+            if dark:
+                ChangeDWMAttrib(hwnd, 19, ctypes.c_int(1))
+                ChangeDWMAttrib(hwnd, 20, ctypes.c_int(1))
+            else:
+                ChangeDWMAttrib(hwnd, 19, ctypes.c_int(0))
+                ChangeDWMAttrib(hwnd, 20, ctypes.c_int(0))
+        class WindowEventFilter(QObject):
+            def eventFilter(self, obj, event):
+                if event.type() == QEvent.Type.WindowTitleChange:
+                    darkchange(int(obj.winId()))
+                return False
+        self.__filter=WindowEventFilter()
+        QApplication.instance().installEventFilter(self.__filter)
+        for widget in top_level_widgets:
+            darkchange(int(widget.winId()))
+            
         try:
             idx=globalconfig[darklight+'theme']-int(not dark)
             if idx==-1:raise Exception()
