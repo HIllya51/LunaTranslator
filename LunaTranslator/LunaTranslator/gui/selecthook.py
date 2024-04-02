@@ -133,6 +133,7 @@ class searchhookparam(QDialog):
             usestruct.boundaryModule=dumpvalues['module'][:120]
             usestruct.address_method=self.search_addr_range.idx()
             usestruct.search_method=self.search_method.idx()
+            usestruct.jittype=['PC','YUZU','PPSSPP'].index(dumpvalues['jittype'])
             if self.search_addr_range.idx()==0:
                 usestruct.minAddress=self.safehex(dumpvalues['startaddr'], usestruct.minAddress)
                 usestruct.maxAddress=self.safehex(dumpvalues['stopaddr'], usestruct.maxAddress)
@@ -183,7 +184,7 @@ class searchhookparam(QDialog):
         self.wlist=[_,w1,w2]
 
         self.regists={}
-        def autoaddline(reg, _vis,_val,_type,uselayout=self.layoutsettings,getlistcall=None):
+        def autoaddline(reg, _vis,_val,_type,uselayout=self.layoutsettings,getlistcall=None,listeditable=True):
             if _type==0:
                 line=QLineEdit(_val) 
                 regwid=addwid=line
@@ -193,7 +194,7 @@ class searchhookparam(QDialog):
                 sp.setValue(_val) 
                 regwid=addwid=sp
             elif _type==2:
-                line=QLineEdit(_val) 
+                line=QLineEdit(str(_val) )
                 line._idx=0
                 try:
                     _list=getlistcall()
@@ -216,7 +217,8 @@ class searchhookparam(QDialog):
                     _w,_l=getformlayoutw(cls=QHBoxLayout) 
                     _l.addWidget(line)
                     _l.addWidget(combo)
-                    _l.addWidget(btn)
+                    if listeditable:
+                        _l.addWidget(btn)
                     addwid=_w
                     regwid=line
             uselayout.addRow(_TR(_vis),addwid)
@@ -244,9 +246,12 @@ class searchhookparam(QDialog):
         self.search_method.addW("特征匹配",patternW)
         self.search_method.addW("函数对齐",QLabel())
         self.search_method.addW("函数调用",QLabel())
+        widjit,layoutjit=getformlayoutw() 
+        self.search_method.addW("JIT",widjit)
 
         autoaddline('pattern','搜索匹配的特征(hex)',self.hex2str(usestruct.pattern),0,uselayout=patternWl)
         autoaddline('offset','相对特征地址的偏移',usestruct.offset,1,uselayout=patternWl)
+        autoaddline('jittype','type','PC',2,uselayout=layoutjit,getlistcall=lambda:['PC','YUZU','PPSSPP'],listeditable=False)
 
         autoaddline('time','搜索持续时间(s)',usestruct.searchTime//1000,1)
         autoaddline('maxrecords','搜索结果数上限',usestruct.maxRecords,1)  

@@ -45,7 +45,7 @@ class SearchParam(Structure):
         ('boundaryModule',c_wchar*120),
         ('exportModule',c_wchar*120),
         ('text',c_wchar*30),
-        ('_1',c_uint64)
+        ('jittype',c_int)
     ] 
 class Message(Structure):
     _fields_=[ 
@@ -319,6 +319,7 @@ class texthook(basetext  ):
         usestruct.maxRecords=100000
         usestruct.codepage=self.codepage()
         usestruct.boundaryModule=os.path.basename(self.pname)
+        usestruct.jittype=0
         return usestruct
     @threader
     def findhook(self,usestruct):
