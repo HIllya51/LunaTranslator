@@ -32,7 +32,7 @@ class TS(basetransdev):
             )
         )
         if "This content may violate our usage policies." == res:
-            if error:
+            if error or len(self.last) == 0:
                 raise Exception("This content may violate our usage policies.")
             return self.last
         self.last = res
