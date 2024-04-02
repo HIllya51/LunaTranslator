@@ -316,7 +316,9 @@ class MAINUI() :
     def readcurrent(self,force=False):
         try: 
             if force or globalconfig['autoread']:
-                text=self.parsemayberegexreplace(globalconfig['ttscommon']['tts_repair_regex'],self.currenttext)
+                if globalconfig['ttscommon']['tts_repair']:
+                    text=self.parsemayberegexreplace(globalconfig['ttscommon']['tts_repair_regex'],self.currentread)
+                else :text=self.currentread
                 self.reader.read(text) 
         except:
             print_exc()
