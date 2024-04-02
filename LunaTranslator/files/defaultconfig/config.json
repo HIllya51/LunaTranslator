@@ -846,6 +846,12 @@
             "color": "blue",
             "name": "deepl_v2"
         },
+        "dev_chatgpt":{
+            "use": false,
+            "color": "blue",
+            "type": "dev",
+            "name": "chatgpt"
+        },
         "deepl_dev": {
             "use": false,
             "color": "blue",
