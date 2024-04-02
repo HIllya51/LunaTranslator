@@ -24,7 +24,7 @@ class TS(basetransdev):
             "th": "Thai",
         }
 
-    def getcurr(self, idx):
+    def getcurr(self, idx, error=False):
 
         res = self.wait_for_result(
             r"""document.querySelector("#__next > div.relative.z-0.flex.h-full.w-full.overflow-hidden > div.relative.flex.h-full.max-w-full.flex-1.flex-col.overflow-hidden > main > div.flex.h-full.flex-col > div.flex-1.overflow-hidden > div > div > div > div > div:nth-child({}) > div > div > div.relative.flex.w-full.flex-col.agent-turn > div.flex-col.gap-1.md\\:gap-3 > div.flex.flex-grow.flex-col.max-w-full > div > div").textContent""".format(
@@ -32,6 +32,8 @@ class TS(basetransdev):
             )
         )
         if "This content may violate our usage policies." == res:
+            if error:
+                raise Exception("This content may violate our usage policies.")
             return self.last
         self.last = res
         return res
@@ -65,7 +67,7 @@ class TS(basetransdev):
                 None,
             )  # copy button
 
-            yield self.getcurr(idx)
+            yield self.getcurr(idx, True)
         else:
             currtext = ""
             tutuku = True
