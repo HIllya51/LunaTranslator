@@ -1,29 +1,29 @@
 #pragma once
-#define MAX_VOICENAME  80
-#define MAX_JEITACONTROL  12
+#define MAX_VOICENAME 80
+#define MAX_JEITACONTROL 12
 struct TConfig
 {
     unsigned int hzVoiceDB;
-    char* dirVoiceDBS;
+    char *dirVoiceDBS;
     unsigned int msecTimeout;
-    char* pathLicense;
-    char* codeAuthSeed;
+    char *pathLicense;
+    char *codeAuthSeed;
     unsigned int __reserved__;
-
 };
-typedef int(*ProcTextBuf)(int, int, void*);
-typedef int(*ProcRawBuf)(int, int, int, unsigned long long, void*);
-typedef int(*ProcEventTts)(int, int, int, unsigned long long, char*, void*);
-struct TJeitaParam {
+typedef int (*ProcTextBuf)(int, int, void *);
+typedef int (*ProcRawBuf)(int, int, int, unsigned long long, void *);
+typedef int (*ProcEventTts)(int, int, int, unsigned long long, char *, void *);
+struct TJeitaParam
+{
     char femaleName[MAX_VOICENAME];
     char maleName[MAX_VOICENAME];
     int pauseMiddle;
     int pauseLong;
     int pauseSentence;
     char control[MAX_JEITACONTROL];
-
 };
-struct TSpeakerParam {
+struct TSpeakerParam
+{
     char voiceName[MAX_VOICENAME];
     float volume;
     float speed;
@@ -34,7 +34,8 @@ struct TSpeakerParam {
     int pauseSentence;
     char styleRate[MAX_VOICENAME];
 };
-struct TTtsParam {
+struct TTtsParam
+{
     unsigned int size;
     ProcTextBuf procTextBuf;
     ProcRawBuf procRawBuf;
@@ -43,18 +44,18 @@ struct TTtsParam {
     unsigned int lenRawBufBytes;
     float volume;
     int pauseBegin;
-    int  pauseTerm;
+    int pauseTerm;
     int extendFormat;
     char voiceName[MAX_VOICENAME];
     TJeitaParam jeita;
     unsigned int numSpeakers;
     int __reserved__;
     TSpeakerParam speaker[1];
-
 };
-struct TJobParam {
+struct TJobParam
+{
     unsigned int modeInOut;
-    void* userData;
+    void *userData;
 };
 enum Result
 {
@@ -84,13 +85,13 @@ enum Result
     UserDictionaryLocked = -1011,
     UserDictionaryNoEntry = -1012
 };
-typedef Result(__stdcall* AITalkAPI_Init)(TConfig*);
-typedef Result(__stdcall* AITalkAPI_LangClear)();
-typedef Result(__stdcall* AITalkAPI_LangLoad)(char*);
-typedef Result(__stdcall* AITalkAPI_VoiceLoad)(char*);
-typedef Result(__stdcall* AITalkAPI_SetParam)(TTtsParam*);
-typedef Result(__stdcall* AITalkAPI_GetParam)(TTtsParam*, int*);
-typedef Result(__stdcall* AITalkAPI_GetKana)(int, char*, int, int*, int*);
-typedef Result(__stdcall* AITalkAPI_TextToKana)(int*, TJobParam*, char*);
+typedef Result(__stdcall *AITalkAPI_Init)(TConfig *);
+typedef Result(__stdcall *AITalkAPI_LangClear)();
+typedef Result(__stdcall *AITalkAPI_LangLoad)(char *);
+typedef Result(__stdcall *AITalkAPI_VoiceLoad)(char *);
+typedef Result(__stdcall *AITalkAPI_SetParam)(TTtsParam *);
+typedef Result(__stdcall *AITalkAPI_GetParam)(TTtsParam *, int *);
+typedef Result(__stdcall *AITalkAPI_GetKana)(int, char *, int, int *, int *);
+typedef Result(__stdcall *AITalkAPI_TextToKana)(int *, TJobParam *, char *);
 
-char* UnicodeToShift_jis(const wchar_t* unicode);
+char *UnicodeToShift_jis(const wchar_t *unicode);

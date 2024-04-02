@@ -1,19 +1,17 @@
- 
 import json
 from collections import OrderedDict
-import  requests
-from traceback import print_exc 
- 
-import requests  
-from translator.basetranslator import basetrans 
-from urllib.parse import urlencode 
+import requests
+from translator.basetranslator import basetrans
+from urllib.parse import urlencode
 from functools import reduce
-import hmac 
+import hmac
 import datetime
-import pytz 
+import pytz
 import hashlib
 import sys
 from urllib.parse import quote
+
+
 class ApiInfo(object):
     def __init__(self, method, path, query, form, header):
         self.method = method
@@ -23,17 +21,18 @@ class ApiInfo(object):
         self.header = header
 
     def __str__(self):
-        return 'method: ' + self.method + ', path: ' + self.path
+        return "method: " + self.method + ", path: " + self.path
+
 
 class Request(object):
     def __init__(self):
-        self.schema = ''
-        self.method = ''
-        self.host = ''
-        self.path = ''
+        self.schema = ""
+        self.method = ""
+        self.host = ""
+        self.path = ""
         self.headers = OrderedDict()
         self.query = OrderedDict()
-        self.body = ''
+        self.body = ""
         self.form = dict()
         self.connection_timeout = 0
         self.socket_timeout = 0
@@ -66,7 +65,14 @@ class Request(object):
         self.socket_timeout = socket_timeout
 
     def build(self, doseq=0):
-        return self.schema + '://' + self.host + self.path + '?' + urlencode(self.query, doseq)
+        return (
+            self.schema
+            + "://"
+            + self.host
+            + self.path
+            + "?"
+            + urlencode(self.query, doseq)
+        )
 
 
 class Credentials(object):
@@ -82,22 +88,33 @@ class Credentials(object):
     def set_sk(self, sk):
         self.sk = sk
 
+
 class ServiceInfo(object):
-    def __init__(self, host, header, credentials, connection_timeout, socket_timeout, scheme='http'):
+    def __init__(
+        self,
+        host,
+        header,
+        credentials,
+        connection_timeout,
+        socket_timeout,
+        scheme="http",
+    ):
         self.host = host
         self.header = header
         self.credentials = credentials
         self.connection_timeout = connection_timeout
         self.socket_timeout = socket_timeout
         self.scheme = scheme
+
+
 class MetaData(object):
     def __init__(self):
-        self.algorithm = ''
-        self.credential_scope = ''
-        self.signed_headers = ''
-        self.date = ''
-        self.region = ''
-        self.service = ''
+        self.algorithm = ""
+        self.credential_scope = ""
+        self.signed_headers = ""
+        self.date = ""
+        self.region = ""
+        self.service = ""
 
     def set_date(self, date):
         self.date = date
@@ -117,42 +134,59 @@ class MetaData(object):
     def set_signed_headers(self, signed_headers):
         self.signed_headers = signed_headers
 
+
 class Util(object):
     @staticmethod
     def norm_uri(path):
-        return quote(path).replace('%2F', '/').replace('+', '%20')
+        return quote(path).replace("%2F", "/").replace("+", "%20")
 
     @staticmethod
     def norm_query(params):
-        query = ''
+        query = ""
         for key in sorted(params.keys()):
             if type(params[key]) == list:
                 for k in params[key]:
-                    query = query + quote(key, safe='-_.~') + '=' + quote(k, safe='-_.~') + '&'
+                    query = (
+                        query
+                        + quote(key, safe="-_.~")
+                        + "="
+                        + quote(k, safe="-_.~")
+                        + "&"
+                    )
             else:
-                query = query + quote(key, safe='-_.~') + '=' + quote(params[key], safe='-_.~') + '&'
+                query = (
+                    query
+                    + quote(key, safe="-_.~")
+                    + "="
+                    + quote(params[key], safe="-_.~")
+                    + "&"
+                )
         query = query[:-1]
-        return query.replace('+', '%20')
+        return query.replace("+", "%20")
 
     @staticmethod
     def hmac_sha256(key, content):
         # type(key) == <class 'bytes'>
         if sys.version_info[0] == 3:
-            return hmac.new(key, bytes(content, encoding='utf-8'), hashlib.sha256).digest()
+            return hmac.new(
+                key, bytes(content, encoding="utf-8"), hashlib.sha256
+            ).digest()
         else:
-            return hmac.new(key, bytes(content.encode('utf-8')), hashlib.sha256).digest()
- 
+            return hmac.new(
+                key, bytes(content.encode("utf-8")), hashlib.sha256
+            ).digest()
+
     @staticmethod
     def sha256(content):
         # type(content) == <class 'str'>
         if sys.version_info[0] == 3:
             if isinstance(content, str) is True:
-                return hashlib.sha256(content.encode('utf-8')).hexdigest()
+                return hashlib.sha256(content.encode("utf-8")).hexdigest()
             else:
                 return hashlib.sha256(content).hexdigest()
         else:
             if isinstance(content, (str, unicode)) is True:
-                return hashlib.sha256(content.encode('utf-8')).hexdigest()
+                return hashlib.sha256(content.encode("utf-8")).hexdigest()
             else:
                 return hashlib.sha256(content).hexdigest()
 
@@ -161,92 +195,115 @@ class Util(object):
         lst = []
         for ch in content:
             if sys.version_info[0] == 3:
-                hv = hex(ch).replace('0x', '')
+                hv = hex(ch).replace("0x", "")
             else:
-                hv = hex(ord(ch)).replace('0x', '')
+                hv = hex(ord(ch)).replace("0x", "")
             if len(hv) == 1:
-                hv = '0' + hv
+                hv = "0" + hv
             lst.append(hv)
         return reduce(lambda x, y: x + y, lst)
-  
+
 
 class SignerV4(object):
     @staticmethod
     def sign(request, credentials):
-        if request.path == '':
-            request.path = '/'
-        if request.method != 'GET' and not ('Content-Type' in request.headers):
-            request.headers['Content-Type'] = 'application/x-www-form-urlencoded; charset=utf-8'
+        if request.path == "":
+            request.path = "/"
+        if request.method != "GET" and not ("Content-Type" in request.headers):
+            request.headers["Content-Type"] = (
+                "application/x-www-form-urlencoded; charset=utf-8"
+            )
 
         format_date = SignerV4.get_current_format_date()
-        request.headers['X-Date'] = format_date
+        request.headers["X-Date"] = format_date
 
         md = MetaData()
-        md.set_algorithm('HMAC-SHA256')
+        md.set_algorithm("HMAC-SHA256")
         md.set_service(credentials.service)
         md.set_region(credentials.region)
         md.set_date(format_date[:8])
 
         hashed_canon_req = SignerV4.hashed_canonical_request_v4(request, md)
-        md.set_credential_scope('/'.join([md.date, md.region, md.service, 'request']))
+        md.set_credential_scope("/".join([md.date, md.region, md.service, "request"]))
 
-        signing_str = '\n'.join([md.algorithm, format_date, md.credential_scope, hashed_canon_req])
-        signing_key = SignerV4.get_signing_secret_key_v4(credentials.sk, md.date, md.region, md.service)
+        signing_str = "\n".join(
+            [md.algorithm, format_date, md.credential_scope, hashed_canon_req]
+        )
+        signing_key = SignerV4.get_signing_secret_key_v4(
+            credentials.sk, md.date, md.region, md.service
+        )
         sign = Util.to_hex(Util.hmac_sha256(signing_key, signing_str))
-        request.headers['Authorization'] = SignerV4.build_auth_header_v4(sign, md, credentials)
-        return 
- 
+        request.headers["Authorization"] = SignerV4.build_auth_header_v4(
+            sign, md, credentials
+        )
+        return
+
     @staticmethod
     def hashed_canonical_request_v4(request, meta):
         # if sys.version_info[0] == 3:
         #     body_hash = Util.sha256(request.body.decode('utf-8'))
         # else:
         body_hash = Util.sha256(request.body)
-        request.headers['X-Content-Sha256'] = body_hash
+        request.headers["X-Content-Sha256"] = body_hash
 
         signed_headers = dict()
         for key in request.headers:
-            if key in ['Content-Type', 'Content-Md5', 'Host'] or key.startswith('X-'):
+            if key in ["Content-Type", "Content-Md5", "Host"] or key.startswith("X-"):
                 signed_headers[key.lower()] = request.headers[key]
 
-        if 'host' in signed_headers:
-            v = signed_headers['host']
-            if v.find(':') != -1:
-                split = v.split(':')
+        if "host" in signed_headers:
+            v = signed_headers["host"]
+            if v.find(":") != -1:
+                split = v.split(":")
                 port = split[1]
-                if str(port) == '80' or str(port) == '443':
-                    signed_headers['host'] = split[0]
+                if str(port) == "80" or str(port) == "443":
+                    signed_headers["host"] = split[0]
 
-        signed_str = ''
+        signed_str = ""
         for key in sorted(signed_headers.keys()):
-            signed_str += key + ':' + signed_headers[key] + '\n'
+            signed_str += key + ":" + signed_headers[key] + "\n"
 
-        meta.set_signed_headers(';'.join(sorted(signed_headers.keys())))
+        meta.set_signed_headers(";".join(sorted(signed_headers.keys())))
 
-        canoncial_request = '\n'.join(
-            [request.method, Util.norm_uri(request.path), Util.norm_query(request.query), signed_str,
-             meta.signed_headers, body_hash])
+        canoncial_request = "\n".join(
+            [
+                request.method,
+                Util.norm_uri(request.path),
+                Util.norm_query(request.query),
+                signed_str,
+                meta.signed_headers,
+                body_hash,
+            ]
+        )
 
         return Util.sha256(canoncial_request)
- 
+
     @staticmethod
     def get_signing_secret_key_v4(sk, date, region, service):
         if sys.version_info[0] == 3:
-            kdate = Util.hmac_sha256(bytes(sk, encoding='utf-8'), date)
+            kdate = Util.hmac_sha256(bytes(sk, encoding="utf-8"), date)
         else:
-            kdate = Util.hmac_sha256(sk.encode('utf-8'), date)
+            kdate = Util.hmac_sha256(sk.encode("utf-8"), date)
         kregion = Util.hmac_sha256(kdate, region)
         kservice = Util.hmac_sha256(kregion, service)
-        return Util.hmac_sha256(kservice, 'request')
+        return Util.hmac_sha256(kservice, "request")
 
     @staticmethod
     def build_auth_header_v4(signature, meta, credentials):
-        credential = credentials.ak + '/' + meta.credential_scope
-        return meta.algorithm + ' Credential=' + credential + ', SignedHeaders=' + meta.signed_headers + ', Signature=' + signature
+        credential = credentials.ak + "/" + meta.credential_scope
+        return (
+            meta.algorithm
+            + " Credential="
+            + credential
+            + ", SignedHeaders="
+            + meta.signed_headers
+            + ", Signature="
+            + signature
+        )
 
     @staticmethod
     def get_current_format_date():
-        return datetime.datetime.now(tz=pytz.timezone('UTC')).strftime("%Y%m%dT%H%M%SZ")
+        return datetime.datetime.now(tz=pytz.timezone("UTC")).strftime("%Y%m%dT%H%M%SZ")
 
 
 class Service(object):
@@ -254,35 +311,47 @@ class Service(object):
         self.service_info = service_info
         self.api_info = api_info
         self.session = requests.session()
-      
-    def json(self, api, params, body,proxy):
+
+    def json(self, api, params, body, proxy):
         if not (api in self.api_info):
             raise Exception("no such api")
         api_info = self.api_info[api]
         r = self.prepare_request(api_info, params)
-        r.headers['Content-Type'] = 'application/json'
+        r.headers["Content-Type"] = "application/json"
         r.body = body
 
         SignerV4.sign(r, self.service_info.credentials)
 
-        url = r.build() 
-        resp = self.session.post(url, headers=r.headers, data=r.body.encode('utf8').decode("latin1"),
-                                 timeout=(self.service_info.connection_timeout, self.service_info.socket_timeout), proxies=  proxy)
+        url = r.build()
+        resp = self.session.post(
+            url,
+            headers=r.headers,
+            data=r.body.encode("utf8").decode("latin1"),
+            timeout=(
+                self.service_info.connection_timeout,
+                self.service_info.socket_timeout,
+            ),
+            proxies=proxy,
+        )
         if resp.status_code == 200:
             return json.dumps(resp.json())
         else:
-            raise Exception(resp.text )
+            raise Exception(resp.text)
 
     def prepare_request(self, api_info, params, doseq=0):
         for key in params:
-            if type(params[key]) == int or type(params[key]) == float or type(params[key]) == bool:
+            if (
+                type(params[key]) == int
+                or type(params[key]) == float
+                or type(params[key]) == bool
+            ):
                 params[key] = str(params[key])
             elif sys.version_info[0] != 3:
                 if type(params[key]) == unicode:
-                    params[key] = params[key].encode('utf-8')
+                    params[key] = params[key].encode("utf-8")
             elif type(params[key]) == list:
                 if not doseq:
-                    params[key] = ','.join(params[key])
+                    params[key] = ",".join(params[key])
 
         connection_timeout = self.service_info.connection_timeout
         socket_timeout = self.service_info.socket_timeout
@@ -294,8 +363,8 @@ class Service(object):
         r.set_socket_timeout(socket_timeout)
 
         mheaders = self.merge(api_info.header, self.service_info.header)
-        mheaders['Host'] = self.service_info.host
-        mheaders['User-Agent'] = 'volc-sdk-python/' + 'v1.0.59'
+        mheaders["Host"] = self.service_info.host
+        mheaders["User-Agent"] = "volc-sdk-python/" + "v1.0.59"
         r.set_headers(mheaders)
 
         mquery = self.merge(api_info.query, params)
@@ -316,47 +385,45 @@ class Service(object):
 
         return od
 
-def trans(TextList,k_access_key,k_secret_key,src,tgt,proxy):
-    # k_access_key = 'AKLTY2IzNTM1YzQzNDQ1NDFkMzk0MTRjNTE2YmEzNTgzNWY' # https://console.volcengine.com/iam/keymanage/
-    # k_secret_key = 'TVRRMk1qaGxOMk14Tmpoa05EQXhZbUUwT1RFeU1qYzVPVEptTXpRMU9HRQ=='
-  
-    k_service_info = \
-        ServiceInfo('open.volcengineapi.com',
-                    {'Content-Type': 'application/json'},
-                    Credentials(k_access_key, k_secret_key, 'translate', 'cn-north-1'),
-                    5,
-                    5)
-    k_query = {
-        'Action': 'TranslateText',
-        'Version': '2020-06-01'
-    }
-    k_api_info = {
-        'translate': ApiInfo('POST', '/', k_query, {}, {})
-    }
+
+def trans(TextList, k_access_key, k_secret_key, src, tgt, proxy):
+
+    k_service_info = ServiceInfo(
+        "open.volcengineapi.com",
+        {"Content-Type": "application/json"},
+        Credentials(k_access_key, k_secret_key, "translate", "cn-north-1"),
+        5,
+        5,
+    )
+    k_query = {"Action": "TranslateText", "Version": "2020-06-01"}
+    k_api_info = {"translate": ApiInfo("POST", "/", k_query, {}, {})}
     service = Service(k_service_info, k_api_info)
     body = {
-        'TargetLanguage': tgt,
-        'SourceLanguage':src,
-        'TextList': [ TextList],
+        "TargetLanguage": tgt,
+        "SourceLanguage": src,
+        "TextList": [TextList],
     }
-    res = service.json('translate', {}, json.dumps(body) ,proxy)
+    res = service.json("translate", {}, json.dumps(body), proxy)
     return res
 
-class TS(basetrans):  
+
+class TS(basetrans):
     def langmap(self):
-        return {"cht":"zh-Hant"}
-    def translate(self,query): 
-        self.checkempty(['Access Key ID','Secret Access Key'])
-  
-        keyid = self.multiapikeycurrent['Access Key ID']
-        acckey = self.multiapikeycurrent['Secret Access Key']
-        res=trans(query,keyid,acckey,self.srclang,self.tgtlang,self.proxy)
+        return {"cht": "zh-Hant"}
+
+    def translate(self, query):
+        self.checkempty(["Access Key ID", "Secret Access Key"])
+
+        keyid = self.multiapikeycurrent["Access Key ID"]
+        acckey = self.multiapikeycurrent["Secret Access Key"]
+        res = trans(query, keyid, acckey, self.srclang, self.tgtlang, self.proxy)
         try:
-            
-            res='\n'.join( [ _['Translation'] for _ in json.loads(res)['TranslationList'] ])
+
+            res = "\n".join(
+                [_["Translation"] for _ in json.loads(res)["TranslationList"]]
+            )
             self.countnum(query)
-        #print(res['trans_result'][0]['dst'])
+            # print(res['trans_result'][0]['dst'])
             return res
         except:
             raise Exception(res)
-         

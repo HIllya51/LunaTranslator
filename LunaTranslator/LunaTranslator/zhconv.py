@@ -1,6 +1,5 @@
- 
 import json
-  
+
 _DEFAULT_DICT = "./files/zhconv/zhcdict.json"
 DICTIONARY = _DEFAULT_DICT
 
@@ -10,7 +9,8 @@ dict_zhsg = None
 dict_zhtw = None
 dict_zhhk = None
 pfsdict = {}
- 
+
+
 def loaddict(filename=DICTIONARY):
     """
     Load the dictionary from a specific JSON file.
@@ -18,11 +18,12 @@ def loaddict(filename=DICTIONARY):
     global zhcdicts
     if zhcdicts:
         return
-    if filename == _DEFAULT_DICT: 
-        zhcdicts = json.loads(open(filename,'rb').read().decode('utf-8'))
+    if filename == _DEFAULT_DICT:
+        zhcdicts = json.loads(open(filename, "rb").read().decode("utf-8"))
     else:
-        with open(filename, 'rb') as f:
-            zhcdicts = json.loads(f.read().decode('utf-8')) 
+        with open(filename, "rb") as f:
+            zhcdicts = json.loads(f.read().decode("utf-8"))
+
 
 def getdict(locale):
     """
@@ -32,37 +33,39 @@ def getdict(locale):
     global zhcdicts, dict_zhcn, dict_zhsg, dict_zhtw, dict_zhhk, pfsdict
     if zhcdicts is None:
         loaddict(DICTIONARY)
-    if locale == 'zh-cn':
+    if locale == "zh-cn":
         if dict_zhcn:
             got = dict_zhcn
         else:
-            dict_zhcn = zhcdicts['zh2Hans'].copy()
-            dict_zhcn.update(zhcdicts['zh2CN'])
+            dict_zhcn = zhcdicts["zh2Hans"].copy()
+            dict_zhcn.update(zhcdicts["zh2CN"])
             got = dict_zhcn
-    elif locale == 'zh-tw':
+    elif locale == "zh-tw":
         if dict_zhtw:
             got = dict_zhtw
         else:
-            dict_zhtw = zhcdicts['zh2Hant'].copy()
-            dict_zhtw.update(zhcdicts['zh2TW'])
+            dict_zhtw = zhcdicts["zh2Hant"].copy()
+            dict_zhtw.update(zhcdicts["zh2TW"])
             got = dict_zhtw
-     
+
     if locale not in pfsdict:
         pfsdict[locale] = getpfset(got)
     return got
+
 
 def getpfset(convdict):
     pfset = []
     for word in convdict:
         for ch in range(len(word)):
-            pfset.append(word[:ch+1])
+            pfset.append(word[: ch + 1])
     return frozenset(pfset)
-   
-def convert(s, locale ): 
-    zhdict = getdict(locale) 
-    pfset = pfsdict[locale] 
+
+
+def convert(s, locale):
+    zhdict = getdict(locale)
+    pfset = pfsdict[locale]
     newset = set()
-     
+
     ch = []
     N = len(s)
     pos = 0
@@ -76,12 +79,11 @@ def convert(s, locale ):
                 maxword = zhdict[frag]
                 maxpos = i
             i += 1
-            frag = s[pos:i+1]
+            frag = s[pos : i + 1]
         if maxword is None:
             maxword = s[pos]
             pos += 1
         else:
             pos = maxpos + 1
         ch.append(maxword)
-    return ''.join(ch)
- 
+    return "".join(ch)

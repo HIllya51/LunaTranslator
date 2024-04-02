@@ -1,106 +1,120 @@
-
-from libcurl import * 
-from urllib.parse import urlencode,urlsplit
+from ctypes import c_void_p, cast, c_size_t, pointer, create_string_buffer, POINTER
+from libcurl import *
+from urllib.parse import urlsplit
 import time
+
+
 class WebSocket:
-    def send(self,data):  
-        if isinstance(data,str): 
-            _t=CURLWS_TEXT
-            data=data.encode('utf8')  
+    def send(self, data):
+        if isinstance(data, str):
+            _t = CURLWS_TEXT
+            data = data.encode("utf8")
         else:
-            _t=CURLWS_BINARY 
-        sent=c_size_t()
-        error=curl_ws_send(self.curl, data, len(data),pointer(sent), 0, _t)
+            _t = CURLWS_BINARY
+        sent = c_size_t()
+        error = curl_ws_send(self.curl, data, len(data), pointer(sent), 0, _t)
         if error:
             raise CURLException(error)
-    def recv(self):   
+
+    def recv(self):
         time.sleep(0.01)
-        rlen=c_size_t()
-        meta=c_void_p() 
-        meta=cast(meta,POINTER(curl_ws_frame))
-        buffer=create_string_buffer(10240)
+        rlen = c_size_t()
+        meta = c_void_p()
+        meta = cast(meta, POINTER(curl_ws_frame))
+        buffer = create_string_buffer(10240)
         while 1:
-            error = curl_ws_recv(self.curl, buffer, (10240), pointer(rlen),pointer(meta))
-            if error.value==CURLcode.CURLE_AGAIN:
+            error = curl_ws_recv(
+                self.curl, buffer, (10240), pointer(rlen), pointer(meta)
+            )
+            if error.value == CURLcode.CURLE_AGAIN:
                 time.sleep(0.01)
             elif error:
                 raise CURLException(error)
             else:
                 break
-        if(meta.contents.flags & CURLWS_TEXT):
-            ret= buffer[:rlen.value].decode('utf8')
-        elif (meta.contents.flags & CURLWS_BINARY) :
-            ret= buffer[:rlen.value] 
+        if meta.contents.flags & CURLWS_TEXT:
+            ret = buffer[: rlen.value].decode("utf8")
+        elif meta.contents.flags & CURLWS_BINARY:
+            ret = buffer[: rlen.value]
         else:
-            #unknown
-            ret= buffer[:rlen.value] 
+            # unknown
+            ret = buffer[: rlen.value]
         return ret
-              
-    def close(self): 
+
+    def close(self):
         if self.curl:
-            sent=c_size_t();
-            curl_ws_send(self.curl, "", 0,pointer(sent), 0, CURLWS_CLOSE);
-            self.curl=0 
+            sent = c_size_t()
+            curl_ws_send(self.curl, "", 0, pointer(sent), 0, CURLWS_CLOSE)
+            self.curl = 0
+
     def __del__(self):
         self.close()
-    def __init__(self) -> None: 
-        self.curl=0 
-    def _setproxy(self,curl,http_proxy_host,http_proxy_port):
-        if http_proxy_host is None or http_proxy_port is None:return 
-        proxy= '{}:{}'.format(http_proxy_host,http_proxy_port)
-        curl_easy_setopt(curl,CURLoption.CURLOPT_PROXY,proxy.encode('utf8') )
-    def _parseurl2serverandpath(self,url): 
-        url=url.strip()
-        scheme,server,path,query,_=urlsplit(url)
-        if scheme=='wss':
-            ishttps=True
-        elif scheme=='ws':
-            ishttps=False
+
+    def __init__(self) -> None:
+        self.curl = 0
+
+    def _setproxy(self, curl, http_proxy_host, http_proxy_port):
+        if http_proxy_host is None or http_proxy_port is None:
+            return
+        proxy = "{}:{}".format(http_proxy_host, http_proxy_port)
+        curl_easy_setopt(curl, CURLoption.CURLOPT_PROXY, proxy.encode("utf8"))
+
+    def _parseurl2serverandpath(self, url):
+        url = url.strip()
+        scheme, server, path, query, _ = urlsplit(url)
+        if scheme == "wss":
+            ishttps = True
+        elif scheme == "ws":
+            ishttps = False
         else:
-            raise Exception('unknown scheme '+scheme)
-        spl=server.split(':')
-        if len(spl)==2:
-            server=spl[0]
-            port=int(spl[1])
-        elif len(spl)==1:
+            raise Exception("unknown scheme " + scheme)
+        spl = server.split(":")
+        if len(spl) == 2:
+            server = spl[0]
+            port = int(spl[1])
+        elif len(spl) == 1:
             spl[0]
             if ishttps:
-                port=443
+                port = 443
             else:
-                port=80
+                port = 80
         else:
-            raise Exception('invalid url')
+            raise Exception("invalid url")
         if len(query):
-            path+='?'+query
-        return ishttps,server,port,path
-    def _set_verify(self,curl,verify):
-        if verify==False:
-            curl_easy_setopt(curl,CURLoption.CURLOPT_SSL_VERIFYPEER, 0)
-            curl_easy_setopt(curl,CURLoption.CURLOPT_SSL_VERIFYHOST, 0)
+            path += "?" + query
+        return ishttps, server, port, path
+
+    def _set_verify(self, curl, verify):
+        if verify == False:
+            curl_easy_setopt(curl, CURLoption.CURLOPT_SSL_VERIFYPEER, 0)
+            curl_easy_setopt(curl, CURLoption.CURLOPT_SSL_VERIFYHOST, 0)
         else:
-            curl_easy_setopt(curl,CURLoption.CURLOPT_SSL_VERIFYPEER, 1)
-            curl_easy_setopt(curl,CURLoption.CURLOPT_SSL_VERIFYHOST, 2)
-    def connect(self,url,header=None,http_proxy_host=None,http_proxy_port=None):
-        https,server,port,path=self._parseurl2serverandpath(url)
-        self.curl=AutoCURLHandle(curl_easy_init())  
-        curl_easy_setopt(self.curl,CURLoption.CURLOPT_URL,url.encode('utf8'))
-         
-        curl_easy_setopt(self.curl, CURLoption.CURLOPT_CONNECT_ONLY, 2 ) 
-        curl_easy_setopt(self.curl, CURLoption.CURLOPT_PORT, port ) 
-        self._setproxy(self.curl,http_proxy_host,http_proxy_port)
-        self._set_verify(self.curl,False)
-        lheaders=Autoslist()
+            curl_easy_setopt(curl, CURLoption.CURLOPT_SSL_VERIFYPEER, 1)
+            curl_easy_setopt(curl, CURLoption.CURLOPT_SSL_VERIFYHOST, 2)
+
+    def connect(self, url, header=None, http_proxy_host=None, http_proxy_port=None):
+        https, server, port, path = self._parseurl2serverandpath(url)
+        self.curl = AutoCURLHandle(curl_easy_init())
+        curl_easy_setopt(self.curl, CURLoption.CURLOPT_URL, url.encode("utf8"))
+
+        curl_easy_setopt(self.curl, CURLoption.CURLOPT_CONNECT_ONLY, 2)
+        curl_easy_setopt(self.curl, CURLoption.CURLOPT_PORT, port)
+        self._setproxy(self.curl, http_proxy_host, http_proxy_port)
+        self._set_verify(self.curl, False)
+        lheaders = Autoslist()
         if header:
             for _ in header:
-                lheaders = curl_slist_append(cast(lheaders,POINTER(curl_slist)), _.encode('utf8'));
-        curl_easy_setopt(self.curl, CURLoption.CURLOPT_HTTPHEADER, lheaders);
+                lheaders = curl_slist_append(
+                    cast(lheaders, POINTER(curl_slist)), _.encode("utf8")
+                )
+        curl_easy_setopt(self.curl, CURLoption.CURLOPT_HTTPHEADER, lheaders)
 
-        error=curl_easy_perform(self.curl)
+        error = curl_easy_perform(self.curl)
         if error:
             raise CURLException(error)
- 
-        
-def create_connection(url,**x):
-    _=WebSocket()
+
+
+def create_connection(url, **x):
+    _ = WebSocket()
     _.connect(url)
     return _

@@ -1,24 +1,45 @@
-import gobject,os
-from ctypes import CDLL,c_void_p,c_int,c_char_p,c_long,cast,CFUNCTYPE,c_size_t,Structure,pointer,create_string_buffer,memmove,POINTER,c_char,c_int64,c_uint
-libcurl=CDLL(os.path.join(gobject.DLL3264path,('./libcurl.dll','./libcurl-x64.dll')[gobject.isbit64]))
+import gobject, os
+from ctypes import (
+    CDLL,
+    c_void_p,
+    c_int,
+    c_char_p,
+    c_long,
+    CFUNCTYPE,
+    c_size_t,
+    Structure,
+    POINTER,
+    c_int64,
+    c_uint,
+)
 
-CURL = c_void_p  
-CURLSH=c_void_p
+libcurl = CDLL(
+    os.path.join(
+        gobject.DLL3264path, ("./libcurl.dll", "./libcurl-x64.dll")[gobject.isbit64]
+    )
+)
+
+CURL = c_void_p
+CURLSH = c_void_p
+
+
 class curl_slist(Structure):
     pass
-curl_slist._fields_=[
-        ('data',c_char_p),
-        ('next',POINTER(curl_slist))
-    ]
+
+
+curl_slist._fields_ = [("data", c_char_p), ("next", POINTER(curl_slist))]
+
 
 class curl_ws_frame(Structure):
-    _fields_=[
-        ('age',c_int),
-        ('flags',c_int),
-        ('offset',c_int64),
-        ('bytesleft',c_int64),
-        ('len',c_size_t)
+    _fields_ = [
+        ("age", c_int),
+        ("flags", c_int),
+        ("offset", c_int64),
+        ("bytesleft", c_int64),
+        ("len", c_size_t),
     ]
+
+
 class CURLcode(c_int):
     CURLE_OK = 0
     CURLE_UNSUPPORTED_PROTOCOL = 1
@@ -91,203 +112,218 @@ class CURLcode(c_int):
     CURLE_AGAIN = 81
     CURLE_SSL_CRL_BADFILE = 82
     CURLE_SSL_ISSUER_ERROR = 83
-    CURLE_FTP_PRET_FAILED=84
-    CURLE_RTSP_CSEQ_ERROR=85
-    CURLE_RTSP_SESSION_ERROR=86
-    CURLE_FTP_BAD_FILE_LIST=87
-    CURLE_CHUNK_FAILED=88
-    CURLE_NO_CONNECTION_AVAILABLE=89
-    CURLE_SSL_PINNEDPUBKEYNOTMATCH=90
-    CURLE_SSL_INVALIDCERTSTATUS=91
-    CURLE_HTTP2_STREAM=92
-    CURLE_RECURSIVE_API_CALL=93
-    CURLE_AUTH_ERROR=94
-    CURLE_HTTP3=95
-    CURLE_QUIC_CONNECT_ERROR=96
-    CURLE_PROXY=97
-    CURLE_SSL_CLIENTCERT=98
-    CURLE_UNRECOVERABLE_POLL=99
-    CURL_LAST=100
+    CURLE_FTP_PRET_FAILED = 84
+    CURLE_RTSP_CSEQ_ERROR = 85
+    CURLE_RTSP_SESSION_ERROR = 86
+    CURLE_FTP_BAD_FILE_LIST = 87
+    CURLE_CHUNK_FAILED = 88
+    CURLE_NO_CONNECTION_AVAILABLE = 89
+    CURLE_SSL_PINNEDPUBKEYNOTMATCH = 90
+    CURLE_SSL_INVALIDCERTSTATUS = 91
+    CURLE_HTTP2_STREAM = 92
+    CURLE_RECURSIVE_API_CALL = 93
+    CURLE_AUTH_ERROR = 94
+    CURLE_HTTP3 = 95
+    CURLE_QUIC_CONNECT_ERROR = 96
+    CURLE_PROXY = 97
+    CURLE_SSL_CLIENTCERT = 98
+    CURLE_UNRECOVERABLE_POLL = 99
+    CURL_LAST = 100
+
+
 class CURLoption(c_int):
-    CURLOPTTYPE_LONG=0
-    CURLOPTTYPE_OBJECTPOINT=10000
-    CURLOPTTYPE_FUNCTIONPOINT=20000
+    CURLOPTTYPE_LONG = 0
+    CURLOPTTYPE_OBJECTPOINT = 10000
+    CURLOPTTYPE_FUNCTIONPOINT = 20000
 
-    CURLOPTTYPE_SLISTPOINT=CURLOPTTYPE_OBJECTPOINT
-    CURLOPTTYPE_STRINGPOINT=CURLOPTTYPE_OBJECTPOINT
-    CURLOPTTYPE_CBPOINT=CURLOPTTYPE_OBJECTPOINT
+    CURLOPTTYPE_SLISTPOINT = CURLOPTTYPE_OBJECTPOINT
+    CURLOPTTYPE_STRINGPOINT = CURLOPTTYPE_OBJECTPOINT
+    CURLOPTTYPE_CBPOINT = CURLOPTTYPE_OBJECTPOINT
 
-    CURLOPT_WRITEDATA=CURLOPTTYPE_CBPOINT+1
-    CURLOPT_URL=CURLOPTTYPE_STRINGPOINT+2
-    CURLOPT_PORT=CURLOPTTYPE_LONG+3
-    CURLOPT_PROXY=CURLOPTTYPE_STRINGPOINT+4
-    CURLOPT_WRITEFUNCTION=CURLOPTTYPE_FUNCTIONPOINT+11
-    CURLOPT_POSTFIELDS=CURLOPTTYPE_OBJECTPOINT+15
-    CURLOPT_USERAGENT=CURLOPTTYPE_STRINGPOINT+18
-    CURLOPT_COOKIE=CURLOPTTYPE_STRINGPOINT+22
-    CURLOPT_HTTPHEADER=CURLOPTTYPE_SLISTPOINT+23
-    CURLOPT_HEADERDATA=CURLOPTTYPE_CBPOINT+29
-    CURLOPT_COOKIEFILE=CURLOPTTYPE_STRINGPOINT+31
-    CURLOPT_CUSTOMREQUEST=CURLOPTTYPE_STRINGPOINT+36
-    CURLOPT_POST=CURLOPTTYPE_LONG+47
-    CURLOPT_POSTFIELDSIZE=CURLOPTTYPE_LONG+60
-    CURLOPT_SSL_VERIFYPEER=CURLOPTTYPE_LONG+ 64
-    CURLOPT_HEADERFUNCTION=CURLOPTTYPE_FUNCTIONPOINT+79
-    CURLOPT_HTTPGET=CURLOPTTYPE_LONG+80
-    CURLOPT_SSL_VERIFYHOST=CURLOPTTYPE_LONG+81
-    CURLOPT_COOKIEJAR=CURLOPTTYPE_STRINGPOINT+82
-    CURLOPT_COOKIESESSION=CURLOPTTYPE_LONG+96
-    CURLOPT_SHARE=CURLOPTTYPE_OBJECTPOINT+100
-    CURLOPT_ACCEPT_ENCODING=CURLOPTTYPE_STRINGPOINT+102
-    CURLOPT_CONNECT_ONLY=CURLOPTTYPE_LONG+141
-    CURLOPT_TIMEOUT_MS=CURLOPTTYPE_LONG+155
-    CURLOPT_CONNECTTIMEOUT_MS=CURLOPTTYPE_LONG+156
-class CURLINFO(c_int): 
-    CURLINFO_STRING   =0x100000
-    CURLINFO_LONG     =0x200000
-    CURLINFO_DOUBLE   =0x300000
-    CURLINFO_SLIST    =0x400000
-    CURLINFO_PTR      =0x400000 
-    CURLINFO_SOCKET   =0x500000
-    CURLINFO_OFF_T    =0x600000
-    CURLINFO_MASK     =0x0fffff
-    CURLINFO_TYPEMASK =0xf00000
-    CURLINFO_NONE   =0
-    CURLINFO_EFFECTIVE_URL    = CURLINFO_STRING + 1
-    CURLINFO_RESPONSE_CODE    = CURLINFO_LONG   + 2
-    CURLINFO_TOTAL_TIME       = CURLINFO_DOUBLE + 3
-    CURLINFO_NAMELOOKUP_TIME  = CURLINFO_DOUBLE + 4
-    CURLINFO_CONNECT_TIME     = CURLINFO_DOUBLE + 5
+    CURLOPT_WRITEDATA = CURLOPTTYPE_CBPOINT + 1
+    CURLOPT_URL = CURLOPTTYPE_STRINGPOINT + 2
+    CURLOPT_PORT = CURLOPTTYPE_LONG + 3
+    CURLOPT_PROXY = CURLOPTTYPE_STRINGPOINT + 4
+    CURLOPT_WRITEFUNCTION = CURLOPTTYPE_FUNCTIONPOINT + 11
+    CURLOPT_POSTFIELDS = CURLOPTTYPE_OBJECTPOINT + 15
+    CURLOPT_USERAGENT = CURLOPTTYPE_STRINGPOINT + 18
+    CURLOPT_COOKIE = CURLOPTTYPE_STRINGPOINT + 22
+    CURLOPT_HTTPHEADER = CURLOPTTYPE_SLISTPOINT + 23
+    CURLOPT_HEADERDATA = CURLOPTTYPE_CBPOINT + 29
+    CURLOPT_COOKIEFILE = CURLOPTTYPE_STRINGPOINT + 31
+    CURLOPT_CUSTOMREQUEST = CURLOPTTYPE_STRINGPOINT + 36
+    CURLOPT_POST = CURLOPTTYPE_LONG + 47
+    CURLOPT_POSTFIELDSIZE = CURLOPTTYPE_LONG + 60
+    CURLOPT_SSL_VERIFYPEER = CURLOPTTYPE_LONG + 64
+    CURLOPT_HEADERFUNCTION = CURLOPTTYPE_FUNCTIONPOINT + 79
+    CURLOPT_HTTPGET = CURLOPTTYPE_LONG + 80
+    CURLOPT_SSL_VERIFYHOST = CURLOPTTYPE_LONG + 81
+    CURLOPT_COOKIEJAR = CURLOPTTYPE_STRINGPOINT + 82
+    CURLOPT_COOKIESESSION = CURLOPTTYPE_LONG + 96
+    CURLOPT_SHARE = CURLOPTTYPE_OBJECTPOINT + 100
+    CURLOPT_ACCEPT_ENCODING = CURLOPTTYPE_STRINGPOINT + 102
+    CURLOPT_CONNECT_ONLY = CURLOPTTYPE_LONG + 141
+    CURLOPT_TIMEOUT_MS = CURLOPTTYPE_LONG + 155
+    CURLOPT_CONNECTTIMEOUT_MS = CURLOPTTYPE_LONG + 156
+
+
+class CURLINFO(c_int):
+    CURLINFO_STRING = 0x100000
+    CURLINFO_LONG = 0x200000
+    CURLINFO_DOUBLE = 0x300000
+    CURLINFO_SLIST = 0x400000
+    CURLINFO_PTR = 0x400000
+    CURLINFO_SOCKET = 0x500000
+    CURLINFO_OFF_T = 0x600000
+    CURLINFO_MASK = 0x0FFFFF
+    CURLINFO_TYPEMASK = 0xF00000
+    CURLINFO_NONE = 0
+    CURLINFO_EFFECTIVE_URL = CURLINFO_STRING + 1
+    CURLINFO_RESPONSE_CODE = CURLINFO_LONG + 2
+    CURLINFO_TOTAL_TIME = CURLINFO_DOUBLE + 3
+    CURLINFO_NAMELOOKUP_TIME = CURLINFO_DOUBLE + 4
+    CURLINFO_CONNECT_TIME = CURLINFO_DOUBLE + 5
     CURLINFO_PRETRANSFER_TIME = CURLINFO_DOUBLE + 6
-    CURLINFO_SIZE_UPLOAD  = CURLINFO_DOUBLE + 7
-    CURLINFO_SIZE_UPLOAD_T    = CURLINFO_OFF_T  + 7
+    CURLINFO_SIZE_UPLOAD = CURLINFO_DOUBLE + 7
+    CURLINFO_SIZE_UPLOAD_T = CURLINFO_OFF_T + 7
     CURLINFO_SIZE_DOWNLOAD = CURLINFO_DOUBLE + 8
-    CURLINFO_SIZE_DOWNLOAD_T  = CURLINFO_OFF_T  + 8
-    CURLINFO_SPEED_DOWNLOAD   = CURLINFO_DOUBLE + 9
-    CURLINFO_SPEED_DOWNLOAD_T = CURLINFO_OFF_T  + 9
-    CURLINFO_SPEED_UPLOAD  = CURLINFO_DOUBLE + 10
-    CURLINFO_SPEED_UPLOAD_T   = CURLINFO_OFF_T  + 10
-    CURLINFO_HEADER_SIZE      = CURLINFO_LONG   + 11
-    CURLINFO_REQUEST_SIZE     = CURLINFO_LONG   + 12
-    CURLINFO_SSL_VERIFYRESULT = CURLINFO_LONG   + 13
-    CURLINFO_FILETIME         = CURLINFO_LONG   + 14
-    CURLINFO_FILETIME_T       = CURLINFO_OFF_T  + 14
-    CURLINFO_CONTENT_LENGTH_DOWNLOAD  = CURLINFO_DOUBLE + 15
-    CURLINFO_CONTENT_LENGTH_DOWNLOAD_T = CURLINFO_OFF_T  + 15
+    CURLINFO_SIZE_DOWNLOAD_T = CURLINFO_OFF_T + 8
+    CURLINFO_SPEED_DOWNLOAD = CURLINFO_DOUBLE + 9
+    CURLINFO_SPEED_DOWNLOAD_T = CURLINFO_OFF_T + 9
+    CURLINFO_SPEED_UPLOAD = CURLINFO_DOUBLE + 10
+    CURLINFO_SPEED_UPLOAD_T = CURLINFO_OFF_T + 10
+    CURLINFO_HEADER_SIZE = CURLINFO_LONG + 11
+    CURLINFO_REQUEST_SIZE = CURLINFO_LONG + 12
+    CURLINFO_SSL_VERIFYRESULT = CURLINFO_LONG + 13
+    CURLINFO_FILETIME = CURLINFO_LONG + 14
+    CURLINFO_FILETIME_T = CURLINFO_OFF_T + 14
+    CURLINFO_CONTENT_LENGTH_DOWNLOAD = CURLINFO_DOUBLE + 15
+    CURLINFO_CONTENT_LENGTH_DOWNLOAD_T = CURLINFO_OFF_T + 15
     CURLINFO_CONTENT_LENGTH_UPLOAD = CURLINFO_DOUBLE + 16
-    CURLINFO_CONTENT_LENGTH_UPLOAD_T   = CURLINFO_OFF_T  + 16
+    CURLINFO_CONTENT_LENGTH_UPLOAD_T = CURLINFO_OFF_T + 16
     CURLINFO_STARTTRANSFER_TIME = CURLINFO_DOUBLE + 17
-    CURLINFO_CONTENT_TYPE     = CURLINFO_STRING + 18
-    CURLINFO_REDIRECT_TIME    = CURLINFO_DOUBLE + 19
-    CURLINFO_REDIRECT_COUNT   = CURLINFO_LONG   + 20
-    CURLINFO_PRIVATE          = CURLINFO_STRING + 21
-    CURLINFO_HTTP_CONNECTCODE = CURLINFO_LONG   + 22
-    CURLINFO_HTTPAUTH_AVAIL   = CURLINFO_LONG   + 23
-    CURLINFO_PROXYAUTH_AVAIL  = CURLINFO_LONG   + 24
-    CURLINFO_OS_ERRNO         = CURLINFO_LONG   + 25
-    CURLINFO_NUM_CONNECTS     = CURLINFO_LONG   + 26
-    CURLINFO_SSL_ENGINES      = CURLINFO_SLIST  + 27
-    CURLINFO_COOKIELIST       = CURLINFO_SLIST  + 28
-    CURLINFO_LASTSOCKET       = CURLINFO_LONG   + 29
-    CURLINFO_FTP_ENTRY_PATH   = CURLINFO_STRING + 30
-    CURLINFO_REDIRECT_URL     = CURLINFO_STRING + 31
-    CURLINFO_PRIMARY_IP       = CURLINFO_STRING + 32
-    CURLINFO_APPCONNECT_TIME  = CURLINFO_DOUBLE + 33
-    CURLINFO_CERTINFO         = CURLINFO_PTR    + 34
-    CURLINFO_CONDITION_UNMET  = CURLINFO_LONG   + 35
-    CURLINFO_RTSP_SESSION_ID  = CURLINFO_STRING + 36
-    CURLINFO_RTSP_CLIENT_CSEQ = CURLINFO_LONG   + 37
-    CURLINFO_RTSP_SERVER_CSEQ = CURLINFO_LONG   + 38
-    CURLINFO_RTSP_CSEQ_RECV   = CURLINFO_LONG   + 39
-    CURLINFO_PRIMARY_PORT     = CURLINFO_LONG   + 40
-    CURLINFO_LOCAL_IP         = CURLINFO_STRING + 41
-    CURLINFO_LOCAL_PORT       = CURLINFO_LONG   + 42
-    CURLINFO_TLS_SESSION      = CURLINFO_PTR    + 43
-    CURLINFO_ACTIVESOCKET     = CURLINFO_SOCKET + 44
-    CURLINFO_TLS_SSL_PTR      = CURLINFO_PTR    + 45
-    CURLINFO_HTTP_VERSION     = CURLINFO_LONG   + 46
+    CURLINFO_CONTENT_TYPE = CURLINFO_STRING + 18
+    CURLINFO_REDIRECT_TIME = CURLINFO_DOUBLE + 19
+    CURLINFO_REDIRECT_COUNT = CURLINFO_LONG + 20
+    CURLINFO_PRIVATE = CURLINFO_STRING + 21
+    CURLINFO_HTTP_CONNECTCODE = CURLINFO_LONG + 22
+    CURLINFO_HTTPAUTH_AVAIL = CURLINFO_LONG + 23
+    CURLINFO_PROXYAUTH_AVAIL = CURLINFO_LONG + 24
+    CURLINFO_OS_ERRNO = CURLINFO_LONG + 25
+    CURLINFO_NUM_CONNECTS = CURLINFO_LONG + 26
+    CURLINFO_SSL_ENGINES = CURLINFO_SLIST + 27
+    CURLINFO_COOKIELIST = CURLINFO_SLIST + 28
+    CURLINFO_LASTSOCKET = CURLINFO_LONG + 29
+    CURLINFO_FTP_ENTRY_PATH = CURLINFO_STRING + 30
+    CURLINFO_REDIRECT_URL = CURLINFO_STRING + 31
+    CURLINFO_PRIMARY_IP = CURLINFO_STRING + 32
+    CURLINFO_APPCONNECT_TIME = CURLINFO_DOUBLE + 33
+    CURLINFO_CERTINFO = CURLINFO_PTR + 34
+    CURLINFO_CONDITION_UNMET = CURLINFO_LONG + 35
+    CURLINFO_RTSP_SESSION_ID = CURLINFO_STRING + 36
+    CURLINFO_RTSP_CLIENT_CSEQ = CURLINFO_LONG + 37
+    CURLINFO_RTSP_SERVER_CSEQ = CURLINFO_LONG + 38
+    CURLINFO_RTSP_CSEQ_RECV = CURLINFO_LONG + 39
+    CURLINFO_PRIMARY_PORT = CURLINFO_LONG + 40
+    CURLINFO_LOCAL_IP = CURLINFO_STRING + 41
+    CURLINFO_LOCAL_PORT = CURLINFO_LONG + 42
+    CURLINFO_TLS_SESSION = CURLINFO_PTR + 43
+    CURLINFO_ACTIVESOCKET = CURLINFO_SOCKET + 44
+    CURLINFO_TLS_SSL_PTR = CURLINFO_PTR + 45
+    CURLINFO_HTTP_VERSION = CURLINFO_LONG + 46
     CURLINFO_PROXY_SSL_VERIFYRESULT = CURLINFO_LONG + 47
-    CURLINFO_PROTOCOL         = CURLINFO_LONG   + 48
-    CURLINFO_SCHEME           = CURLINFO_STRING + 49
-    CURLINFO_TOTAL_TIME_T     = CURLINFO_OFF_T + 50
+    CURLINFO_PROTOCOL = CURLINFO_LONG + 48
+    CURLINFO_SCHEME = CURLINFO_STRING + 49
+    CURLINFO_TOTAL_TIME_T = CURLINFO_OFF_T + 50
     CURLINFO_NAMELOOKUP_TIME_T = CURLINFO_OFF_T + 51
-    CURLINFO_CONNECT_TIME_T   = CURLINFO_OFF_T + 52
+    CURLINFO_CONNECT_TIME_T = CURLINFO_OFF_T + 52
     CURLINFO_PRETRANSFER_TIME_T = CURLINFO_OFF_T + 53
     CURLINFO_STARTTRANSFER_TIME_T = CURLINFO_OFF_T + 54
-    CURLINFO_REDIRECT_TIME_T  = CURLINFO_OFF_T + 55
+    CURLINFO_REDIRECT_TIME_T = CURLINFO_OFF_T + 55
     CURLINFO_APPCONNECT_TIME_T = CURLINFO_OFF_T + 56
-    CURLINFO_RETRY_AFTER      = CURLINFO_OFF_T + 57
+    CURLINFO_RETRY_AFTER = CURLINFO_OFF_T + 57
     CURLINFO_EFFECTIVE_METHOD = CURLINFO_STRING + 58
-    CURLINFO_PROXY_ERROR      = CURLINFO_LONG + 59
-    CURLINFO_REFERER          = CURLINFO_STRING + 60
-    CURLINFO_CAINFO           = CURLINFO_STRING + 61
-    CURLINFO_CAPATH           = CURLINFO_STRING + 62
-    CURLINFO_XFER_ID          = CURLINFO_OFF_T + 63
-    CURLINFO_CONN_ID          = CURLINFO_OFF_T + 64
-    CURLINFO_LASTONE          = 64
+    CURLINFO_PROXY_ERROR = CURLINFO_LONG + 59
+    CURLINFO_REFERER = CURLINFO_STRING + 60
+    CURLINFO_CAINFO = CURLINFO_STRING + 61
+    CURLINFO_CAPATH = CURLINFO_STRING + 62
+    CURLINFO_XFER_ID = CURLINFO_OFF_T + 63
+    CURLINFO_CONN_ID = CURLINFO_OFF_T + 64
+    CURLINFO_LASTONE = 64
 
-curl_global_init=libcurl.curl_global_init
-curl_global_init.argtypes=c_long,
-curl_global_init.restype=CURLcode
+
+curl_global_init = libcurl.curl_global_init
+curl_global_init.argtypes = (c_long,)
+curl_global_init.restype = CURLcode
 curl_global_init(3)
-curl_global_cleanup=libcurl.curl_global_cleanup
-curl_easy_init=libcurl.curl_easy_init
-curl_easy_init.restype=CURL
-curl_easy_setopt=libcurl.curl_easy_setopt
-curl_easy_setopt.argtypes=CURL,CURLoption,c_void_p
-curl_easy_setopt.restype=CURLcode
-curl_easy_perform=libcurl.curl_easy_perform
-curl_easy_perform.argtypes=CURL,
-curl_easy_perform.restype=CURLcode
-curl_easy_cleanup=libcurl.curl_easy_cleanup
-curl_easy_cleanup.argtypes=CURL,
-curl_slist_append=libcurl.curl_slist_append
-curl_slist_append.argtypes=POINTER(curl_slist),c_char_p
-curl_slist_append.restype=POINTER(curl_slist)
-curl_slist_free_all=libcurl.curl_slist_free_all
-curl_slist_free_all.argtypes=POINTER(curl_slist),
-curl_easy_getinfo=libcurl.curl_easy_getinfo
-curl_easy_getinfo.argtypes=CURL,CURLINFO,c_void_p
-curl_easy_getinfo.restype=CURLcode
-curl_easy_recv=libcurl.curl_easy_recv
-curl_easy_recv.argtypes=CURL,c_void_p,c_size_t,POINTER(c_size_t)
-curl_easy_recv.restype=CURLcode
-curl_easy_strerror=libcurl.curl_easy_strerror
-curl_easy_strerror.argtypes=CURLcode,
-curl_easy_strerror.restype=c_char_p
-curl_ws_recv=libcurl.curl_ws_recv
-curl_ws_recv.argtypes=CURL,c_void_p,c_size_t,POINTER(c_size_t),POINTER(POINTER(curl_ws_frame))
-curl_ws_recv.restype=CURLcode
-curl_ws_send=libcurl.curl_ws_send
-curl_ws_send.argtypes=CURL,c_void_p,c_size_t,POINTER(c_size_t),c_int64,c_uint
-curl_ws_send.restype=CURLcode
-curl_easy_duphandle=libcurl.curl_easy_duphandle
-curl_easy_duphandle.argtypes=CURL,
-curl_easy_duphandle.restype=CURL
-curl_easy_reset=libcurl.curl_easy_reset
-curl_easy_reset.argtypes=CURL,
-CURLWS_TEXT=1<<0
-CURLWS_BINARY=1<<1
-CURLWS_CLOSE=1<<3
-WRITEFUNCTION=CFUNCTYPE(c_size_t,c_void_p,c_size_t,c_size_t,c_void_p)
+curl_global_cleanup = libcurl.curl_global_cleanup
+curl_easy_init = libcurl.curl_easy_init
+curl_easy_init.restype = CURL
+curl_easy_setopt = libcurl.curl_easy_setopt
+curl_easy_setopt.argtypes = CURL, CURLoption, c_void_p
+curl_easy_setopt.restype = CURLcode
+curl_easy_perform = libcurl.curl_easy_perform
+curl_easy_perform.argtypes = (CURL,)
+curl_easy_perform.restype = CURLcode
+curl_easy_cleanup = libcurl.curl_easy_cleanup
+curl_easy_cleanup.argtypes = (CURL,)
+curl_slist_append = libcurl.curl_slist_append
+curl_slist_append.argtypes = POINTER(curl_slist), c_char_p
+curl_slist_append.restype = POINTER(curl_slist)
+curl_slist_free_all = libcurl.curl_slist_free_all
+curl_slist_free_all.argtypes = (POINTER(curl_slist),)
+curl_easy_getinfo = libcurl.curl_easy_getinfo
+curl_easy_getinfo.argtypes = CURL, CURLINFO, c_void_p
+curl_easy_getinfo.restype = CURLcode
+curl_easy_recv = libcurl.curl_easy_recv
+curl_easy_recv.argtypes = CURL, c_void_p, c_size_t, POINTER(c_size_t)
+curl_easy_recv.restype = CURLcode
+curl_easy_strerror = libcurl.curl_easy_strerror
+curl_easy_strerror.argtypes = (CURLcode,)
+curl_easy_strerror.restype = c_char_p
+curl_ws_recv = libcurl.curl_ws_recv
+curl_ws_recv.argtypes = (
+    CURL,
+    c_void_p,
+    c_size_t,
+    POINTER(c_size_t),
+    POINTER(POINTER(curl_ws_frame)),
+)
+curl_ws_recv.restype = CURLcode
+curl_ws_send = libcurl.curl_ws_send
+curl_ws_send.argtypes = CURL, c_void_p, c_size_t, POINTER(c_size_t), c_int64, c_uint
+curl_ws_send.restype = CURLcode
+curl_easy_duphandle = libcurl.curl_easy_duphandle
+curl_easy_duphandle.argtypes = (CURL,)
+curl_easy_duphandle.restype = CURL
+curl_easy_reset = libcurl.curl_easy_reset
+curl_easy_reset.argtypes = (CURL,)
+CURLWS_TEXT = 1 << 0
+CURLWS_BINARY = 1 << 1
+CURLWS_CLOSE = 1 << 3
+WRITEFUNCTION = CFUNCTYPE(c_size_t, c_void_p, c_size_t, c_size_t, c_void_p)
+
 
 class Autoslist(c_void_p):
     def __del__(self):
         if self:
             curl_slist_free_all(self)
-class AutoCURLHandle(CURL):  
+
+
+class AutoCURLHandle(CURL):
     def __del__(self):
         if self:
             curl_easy_cleanup(self)
 
+
 class CURLException(Exception):
-    def __init__(self,code) -> None:
-        if isinstance(code,CURLcode):
-            self.errorcode=code.value
-            error=curl_easy_strerror(code).decode('utf8')
-            for _ in dir(CURLcode): 
-                if _.startswith('CURLE_') and code.value==getattr(CURLcode,_):
-                    error=str(code.value)+' '+_+' : '+error
+    def __init__(self, code) -> None:
+        if isinstance(code, CURLcode):
+            self.errorcode = code.value
+            error = curl_easy_strerror(code).decode("utf8")
+            for _ in dir(CURLcode):
+                if _.startswith("CURLE_") and code.value == getattr(CURLcode, _):
+                    error = str(code.value) + " " + _ + " : " + error
                     break
         else:
             raise Exception("not a valid CURLException")

@@ -1,6 +1,6 @@
-#include"pch.h"
-#include"define.h"
-#include<windows.h>
+#include "pch.h"
+#include "define.h"
+#include <windows.h>
 #include <winrt/Windows.Foundation.h>
 #include <winrt/Windows.Storage.Pickers.h>
 #include <winrt/Windows.Storage.Streams.h>
@@ -16,7 +16,7 @@
 #include <winrt/Windows.Globalization.h>
 #include <iostream>
 #include <fstream>
-#include<vector>
+#include <vector>
 using namespace winrt;
 
 using namespace Windows::Foundation;
@@ -31,27 +31,31 @@ using namespace Windows::Media::Devices;
 using namespace Windows::Security::Cryptography;
 using namespace Windows::Globalization;
 using namespace Windows::Foundation::Collections;
-bool check_language_valid(wchar_t* language) {
+bool check_language_valid(wchar_t *language)
+{
     OcrEngine ocrEngine = OcrEngine::TryCreateFromUserProfileLanguages();
     std::wstring l = language;
-    try {
+    try
+    {
         Language language1(l);
         return ocrEngine.IsLanguageSupported(language1);
     }
-    catch (...) {
+    catch (...)
+    {
         return false;
     }
 }
-wchar_t** getlanguagelist(int* num) {
+wchar_t **getlanguagelist(int *num)
+{
     OcrEngine ocrEngine = OcrEngine::TryCreateFromUserProfileLanguages();
     auto languages = ocrEngine.AvailableRecognizerLanguages();
-    auto ret = new wchar_t* [languages.Size()];
+    auto ret = new wchar_t *[languages.Size()];
     int i = 0;
-    for (auto&& language : languages)
+    for (auto &&language : languages)
     {
-        //std::wcout << language.LanguageTag().c_str() << L" " << language.DisplayName().c_str() << L" " << language.AbbreviatedName().c_str() << L'\n';
-        //zh-Hans-CN  ÖÐÎÄ(¼òÌå£¬ÖÐ¹ú)  ¼òÌå
-        //ja  ÈÕÓï   
+        // std::wcout << language.LanguageTag().c_str() << L" " << language.DisplayName().c_str() << L" " << language.AbbreviatedName().c_str() << L'\n';
+        // zh-Hans-CN  ï¿½ï¿½ï¿½ï¿½(ï¿½ï¿½ï¿½å£¬ï¿½Ð¹ï¿½)  ï¿½ï¿½ï¿½ï¿½
+        // ja  ï¿½ï¿½ï¿½ï¿½
         auto lang = language.LanguageTag();
         size_t len = lang.size() + 1;
         ret[i] = new wchar_t[len];
@@ -61,55 +65,57 @@ wchar_t** getlanguagelist(int* num) {
     *num = languages.Size();
     return ret;
 }
-ocrres OCR(wchar_t* fname, wchar_t* lang, wchar_t* space, int* num)
+ocrres OCR(wchar_t *fname, wchar_t *lang, wchar_t *space, int *num)
 {
-    // Ö¸¶¨ÒªÊ¶±ðµÄÍ¼ÏñÎÄ¼þÂ·¾¶
+    // Ö¸ï¿½ï¿½ÒªÊ¶ï¿½ï¿½ï¿½Í¼ï¿½ï¿½ï¿½Ä¼ï¿½Â·ï¿½ï¿½
     std::wstring imagePath = fname;
 
-    // ´ò¿ªÍ¼ÏñÎÄ¼þ
+    // ï¿½ï¿½Í¼ï¿½ï¿½ï¿½Ä¼ï¿½
     StorageFile imageFile = StorageFile::GetFileFromPathAsync(imagePath).get();
     IRandomAccessStream imageStream = imageFile.OpenAsync(FileAccessMode::Read).get();
-    // ´´½¨ BitmapDecoder ¶ÔÏó½âÂëÍ¼Ïñ
+    // ï¿½ï¿½ï¿½ï¿½ BitmapDecoder ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í¼ï¿½ï¿½
     BitmapDecoder decoder = BitmapDecoder::CreateAsync(imageStream).get();
 
-    // ´Ó½âÂëÆ÷ÖÐ»ñÈ¡Î»Í¼Êý¾Ý
+    // ï¿½Ó½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð»ï¿½È¡Î»Í¼ï¿½ï¿½ï¿½ï¿½
     SoftwareBitmap softwareBitmap = decoder.GetSoftwareBitmapAsync().get();
     std::wstring l = lang;
     Language language(l);
-    // ´´½¨ OcrEngine ¶ÔÏó
+    // ï¿½ï¿½ï¿½ï¿½ OcrEngine ï¿½ï¿½ï¿½ï¿½
     OcrEngine ocrEngine = OcrEngine::TryCreateFromLanguage(language);
-    // ´´½¨ OcrResult ¶ÔÏó²¢½øÐÐÊ¶±ð
+    // ï¿½ï¿½ï¿½ï¿½ OcrResult ï¿½ï¿½ï¿½ó²¢½ï¿½ï¿½ï¿½Ê¶ï¿½ï¿½
     OcrResult ocrResult = ocrEngine.RecognizeAsync(softwareBitmap).get();
-    // Êä³öÊ¶±ð½á¹û
-    auto res = ocrResult.Lines(); 
-    std::vector<std::wstring>rets;
-    std::vector< int>xs,ys,xs2,ys2; 
+    // ï¿½ï¿½ï¿½Ê¶ï¿½ï¿½ï¿½ï¿½
+    auto res = ocrResult.Lines();
+    std::vector<std::wstring> rets;
+    std::vector<int> xs, ys, xs2, ys2;
     int i = 0;
-    std::wstring sspace = space;//Ä¬ÈÏ¼´Ê¹ÈÕÎÄÒ²ÓÐ¿Õ¸ñ
+    std::wstring sspace = space; // Ä¬ï¿½Ï¼ï¿½Ê¹ï¿½ï¿½ï¿½ï¿½Ò²ï¿½Ð¿Õ¸ï¿½
     for (auto line : res)
     {
 
         std::wstring xx = L"";
         bool start = true;
-        unsigned int x1=-1,x2=0,y1=-1,y2=0;
-        
-        for (auto word : line.Words()) {
-            if (!start)xx += sspace;
+        unsigned int x1 = -1, x2 = 0, y1 = -1, y2 = 0;
+
+        for (auto word : line.Words())
+        {
+            if (!start)
+                xx += sspace;
             start = false;
             xx += word.Text();
-            auto &rect=word.BoundingRect();
-            x1=min(rect.X,x1);
-            x2=max(x2,rect.X+rect.Width);
-            y1=min(rect.Y,y1);
-            y2=max(y2,rect.Y+rect.Height);
+            auto &rect = word.BoundingRect();
+            x1 = min(rect.X, x1);
+            x2 = max(x2, rect.X + rect.Width);
+            y1 = min(rect.Y, y1);
+            y2 = max(y2, rect.Y + rect.Height);
         }
         ys.push_back(y1);
         xs.push_back(x1);
         xs2.push_back(x2);
         ys2.push_back(y2);
-        rets.emplace_back(xx); 
+        rets.emplace_back(xx);
         i += 1;
     }
     *num = res.Size();
-    return ocrres{ vecwstr2c(rets),vecint2c(xs),vecint2c(ys),vecint2c(xs2),vecint2c(ys2)};
+    return ocrres{vecwstr2c(rets), vecint2c(xs), vecint2c(ys), vecint2c(xs2), vecint2c(ys2)};
 }

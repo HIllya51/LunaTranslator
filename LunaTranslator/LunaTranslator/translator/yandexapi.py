@@ -1,26 +1,24 @@
+from translator.basetranslator import basetrans
 
-import requests
-from translator.basetranslator import basetrans   
-class TS(basetrans): 
-     
-    def translate(self, content): 
-        self.checkempty(['key'])
-        
-        key = self.multiapikeycurrent['key']
-        
-        
-        url = 'https://translate.yandex.net/api/v1.5/tr.json/translate'    
-    
+
+class TS(basetrans):
+
+    def translate(self, content):
+        self.checkempty(["key"])
+
+        key = self.multiapikeycurrent["key"]
+
+        url = "https://translate.yandex.net/api/v1.5/tr.json/translate"
+
         params = {
-            'key': key,
-            'lang': '{}-{}'.format(self.srclang,self.tgtlang) ,
-            'text': content,
+            "key": key,
+            "lang": "{}-{}".format(self.srclang, self.tgtlang),
+            "text": content,
         }
 
         response = self.session.get(url, params=params)
-        
+
         try:
-            return response.json() ['text'][0]
+            return response.json()["text"][0]
         except:
-            raise Exception( response.text)
-    
+            raise Exception(response.text)

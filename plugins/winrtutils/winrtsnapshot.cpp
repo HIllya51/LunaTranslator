@@ -1,5 +1,5 @@
-﻿#include"pch.h"
-#include"define.h"
+﻿#include "pch.h"
+#include "define.h"
 #include <dxgi.h>
 #include <inspectable.h>
 #include <dxgi1_2.h>
@@ -10,41 +10,41 @@
 #include <winrt/Windows.Graphics.Capture.h>
 #include <Windows.Graphics.Capture.Interop.h>
 #include <windows.graphics.directx.direct3d11.interop.h>
-#include <winrt/Windows.Foundation.Metadata.h> 
+#include <winrt/Windows.Foundation.Metadata.h>
 #include <winrt/Windows.Graphics.DirectX.h>
 #include <winrt/Windows.Graphics.DirectX.Direct3d11.h>
 #include <winrt/Windows.Graphics.Imaging.h>
 #include <winrt/Windows.Security.Authorization.AppCapabilityAccess.h>
 #include <winrt/Windows.Storage.h>
 #include <winrt/Windows.Storage.Pickers.h>
-#include <winrt/Windows.Storage.Streams.h> 
-#include <roerrorapi.h> 
+#include <winrt/Windows.Storage.Streams.h>
+#include <roerrorapi.h>
 #include <dwmapi.h>
 #include <filesystem>
-#include<Windows.h>
+#include <Windows.h>
 #include <gdiplus.h>
-//#include "ImageFormatConversion.hpp"
+// #include "ImageFormatConversion.hpp"
 
 #pragma comment(lib, "Dwmapi.lib")
 #pragma comment(lib, "windowsapp.lib")
 #pragma comment(lib, "DXGI.lib")
 #pragma comment(lib, "gdiplus.lib")
 #pragma comment(lib, "d3d11.lib")
-#pragma comment(lib, "Windowscodecs.lib") 
-int GetEncoderClsid(const WCHAR* format, CLSID* pClsid)
+#pragma comment(lib, "Windowscodecs.lib")
+int GetEncoderClsid(const WCHAR *format, CLSID *pClsid)
 {
-    UINT  num = 0;          // number of image encoders
-    UINT  size = 0;         // size of the image encoder array in bytes
+    UINT num = 0;  // number of image encoders
+    UINT size = 0; // size of the image encoder array in bytes
 
-    Gdiplus::ImageCodecInfo* pImageCodecInfo = NULL;
+    Gdiplus::ImageCodecInfo *pImageCodecInfo = NULL;
 
     Gdiplus::GetImageEncodersSize(&num, &size);
     if (size == 0)
-        return -1;  // Failure
+        return -1; // Failure
 
-    pImageCodecInfo = (Gdiplus::ImageCodecInfo*)(malloc(size));
+    pImageCodecInfo = (Gdiplus::ImageCodecInfo *)(malloc(size));
     if (pImageCodecInfo == NULL)
-        return -1;  // Failure
+        return -1; // Failure
 
     GetImageEncoders(num, size, pImageCodecInfo);
 
@@ -54,31 +54,32 @@ int GetEncoderClsid(const WCHAR* format, CLSID* pClsid)
         {
             *pClsid = pImageCodecInfo[j].Clsid;
             free(pImageCodecInfo);
-            return j;  // Success
+            return j; // Success
         }
     }
 
     free(pImageCodecInfo);
-    return -1;  // Failure
+    return -1; // Failure
 }
-void capture_window(HWND window_handle, const std::wstring& output_file_path)
+void capture_window(HWND window_handle, const std::wstring &output_file_path)
 {
     HMODULE hModule = LoadLibrary(TEXT("d3d11.dll"));
-    HRESULT typedef (_stdcall *CreateDirect3D11DeviceFromDXGIDevice_t)(
-    _In_         IDXGIDevice* dxgiDevice,
-    _COM_Outptr_ IInspectable** graphicsDevice);
+    HRESULT typedef(_stdcall * CreateDirect3D11DeviceFromDXGIDevice_t)(
+        _In_ IDXGIDevice * dxgiDevice,
+        _COM_Outptr_ IInspectable * *graphicsDevice);
     CreateDirect3D11DeviceFromDXGIDevice_t CreateDirect3D11DeviceFromDXGIDevice = reinterpret_cast<CreateDirect3D11DeviceFromDXGIDevice_t>(
         GetProcAddress(hModule, "CreateDirect3D11DeviceFromDXGIDevice"));
-    if (CreateDirect3D11DeviceFromDXGIDevice == NULL)return;
-    // Init COM 
-    //init_apartment(winrt::apartment_type::multi_threaded);
-    
+    if (CreateDirect3D11DeviceFromDXGIDevice == NULL)
+        return;
+    // Init COM
+    // init_apartment(winrt::apartment_type::multi_threaded);
+
     // Create Direct 3D Device
     winrt::com_ptr<ID3D11Device> d3d_device;
 
     winrt::check_hresult(D3D11CreateDevice(nullptr, D3D_DRIVER_TYPE_HARDWARE, nullptr, D3D11_CREATE_DEVICE_BGRA_SUPPORT,
-        nullptr, 0, D3D11_SDK_VERSION, d3d_device.put(), nullptr, nullptr));
-    
+                                           nullptr, 0, D3D11_SDK_VERSION, d3d_device.put(), nullptr, nullptr));
+
     winrt::Windows::Graphics::DirectX::Direct3D11::IDirect3DDevice device;
     const auto dxgiDevice = d3d_device.as<IDXGIDevice>();
     {
@@ -86,40 +87,40 @@ void capture_window(HWND window_handle, const std::wstring& output_file_path)
         winrt::check_hresult(CreateDirect3D11DeviceFromDXGIDevice(dxgiDevice.get(), inspectable.put()));
         device = inspectable.as<winrt::Windows::Graphics::DirectX::Direct3D11::IDirect3DDevice>();
     }
-    
+
     auto idxgi_device2 = dxgiDevice.as<IDXGIDevice2>();
     winrt::com_ptr<IDXGIAdapter> adapter;
     winrt::check_hresult(idxgi_device2->GetParent(winrt::guid_of<IDXGIAdapter>(), adapter.put_void()));
     winrt::com_ptr<IDXGIFactory2> factory;
     winrt::check_hresult(adapter->GetParent(winrt::guid_of<IDXGIFactory2>(), factory.put_void()));
 
-    ID3D11DeviceContext* d3d_context = nullptr;
+    ID3D11DeviceContext *d3d_context = nullptr;
     d3d_device->GetImmediateContext(&d3d_context);
 
     RECT rect{};
     DwmGetWindowAttribute(window_handle, DWMWA_EXTENDED_FRAME_BOUNDS, &rect, sizeof(RECT));
-    const auto size = winrt::Windows::Graphics::SizeInt32{ rect.right - rect.left, rect.bottom - rect.top };
-    
+    const auto size = winrt::Windows::Graphics::SizeInt32{rect.right - rect.left, rect.bottom - rect.top};
+
     winrt::Windows::Graphics::Capture::Direct3D11CaptureFramePool m_frame_pool =
         winrt::Windows::Graphics::Capture::Direct3D11CaptureFramePool::Create(
             device,
             winrt::Windows::Graphics::DirectX::DirectXPixelFormat::B8G8R8A8UIntNormalized,
             2,
             size);
-    
+
     const auto activation_factory = winrt::get_activation_factory<
         winrt::Windows::Graphics::Capture::GraphicsCaptureItem>();
     auto interop_factory = activation_factory.as<IGraphicsCaptureItemInterop>();
-    winrt::Windows::Graphics::Capture::GraphicsCaptureItem capture_item = { nullptr };
+    winrt::Windows::Graphics::Capture::GraphicsCaptureItem capture_item = {nullptr};
     interop_factory->CreateForWindow(window_handle, winrt::guid_of<ABI::Windows::Graphics::Capture::IGraphicsCaptureItem>(),
-        winrt::put_abi(capture_item));
+                                     winrt::put_abi(capture_item));
 
     auto is_frame_arrived = false;
     winrt::com_ptr<ID3D11Texture2D> texture;
     const auto session = m_frame_pool.CreateCaptureSession(capture_item);
     session.IsCursorCaptureEnabled(false);
-    m_frame_pool.FrameArrived([&](auto& frame_pool, auto&)
-        {
+    m_frame_pool.FrameArrived([&](auto &frame_pool, auto &)
+                              {
             if (is_frame_arrived)
             {
                 return;
@@ -135,8 +136,7 @@ void capture_window(HWND window_handle, const std::wstring& output_file_path)
             auto access = frame.Surface().as<IDirect3DDxgiInterfaceAccess>();
             access->GetInterface(winrt::guid_of<ID3D11Texture2D>(), texture.put_void());
             is_frame_arrived = true;
-            return;
-        });
+            return; });
 
     session.StartCapture();
 
@@ -183,7 +183,7 @@ void capture_window(HWND window_handle, const std::wstring& output_file_path)
 
     std::unique_ptr<BYTE> p_buf(new BYTE[l_bmp_info.bmiHeader.biSizeImage]);
     UINT l_bmp_row_pitch = captured_texture_desc.Width * 4;
-    auto sptr = static_cast<BYTE*>(resource.pData);
+    auto sptr = static_cast<BYTE *>(resource.pData);
     auto dptr = p_buf.get() + l_bmp_info.bmiHeader.biSizeImage - l_bmp_row_pitch;
 
     UINT l_row_pitch = std::min<UINT>(l_bmp_row_pitch, resource.RowPitch);
@@ -195,17 +195,16 @@ void capture_window(HWND window_handle, const std::wstring& output_file_path)
         dptr -= l_bmp_row_pitch;
     }
 
+    // FILE* lfile = nullptr;
 
-    //FILE* lfile = nullptr;
-
-    //if (auto lerr = _wfopen_s(&lfile, output_file_path.c_str(), L"wb"); lerr != 0)
+    // if (auto lerr = _wfopen_s(&lfile, output_file_path.c_str(), L"wb"); lerr != 0)
     //{
-    //    return;
-    //}
+    //     return;
+    // }
 
-    //if (lfile != nullptr)
+    // if (lfile != nullptr)
     //{
-    //    BITMAPFILEHEADER bmp_file_header;
+    //     BITMAPFILEHEADER bmp_file_header;
 
     //    bmp_file_header.bfReserved1 = 0;
     //    bmp_file_header.bfReserved2 = 0;
@@ -224,28 +223,29 @@ void capture_window(HWND window_handle, const std::wstring& output_file_path)
     Gdiplus::GdiplusStartupInput gdiplusStartupInput;
     ULONG_PTR gdiplusToken;
     GdiplusStartup(&gdiplusToken, &gdiplusStartupInput, NULL);
-    Gdiplus::Bitmap* image = Gdiplus::Bitmap::FromBITMAPINFO(&l_bmp_info, p_buf.get());
+    Gdiplus::Bitmap *image = Gdiplus::Bitmap::FromBITMAPINFO(&l_bmp_info, p_buf.get());
 
-    CLSID   encoderClsid;
+    CLSID encoderClsid;
     GetEncoderClsid(L"image/png", &encoderClsid);
 
     image->Save(output_file_path.c_str(), &encoderClsid, NULL);
     Gdiplus::GdiplusShutdown(gdiplusToken);
 }
-void winrt_capture_window(wchar_t* savepath, HWND hwnd) {
-    //auto hwnd = GetForegroundWindow();// FindWindow(L"Window_Magpie_967EB565-6F73-4E94-AE53-00CC42592A22", 0);
+void winrt_capture_window(wchar_t *savepath, HWND hwnd)
+{
+    // auto hwnd = GetForegroundWindow();// FindWindow(L"Window_Magpie_967EB565-6F73-4E94-AE53-00CC42592A22", 0);
     auto style_ex = GetWindowLong(hwnd, GWL_EXSTYLE);
     auto style_ex_save = style_ex;
-    bool needset = !( ((style_ex & WS_EX_APPWINDOW) && !(style_ex & WS_EX_TOOLWINDOW)));
-    if (needset) {
+    bool needset = !(((style_ex & WS_EX_APPWINDOW) && !(style_ex & WS_EX_TOOLWINDOW)));
+    if (needset)
+    {
 
         style_ex |= WS_EX_APPWINDOW;
         style_ex &= ~WS_EX_TOOLWINDOW;
         SetWindowLong(hwnd, GWL_EXSTYLE, style_ex);
     }
-     
+
     capture_window(hwnd, savepath);
     if (needset)
         SetWindowLong(hwnd, GWL_EXSTYLE, style_ex_save);
 }
- 

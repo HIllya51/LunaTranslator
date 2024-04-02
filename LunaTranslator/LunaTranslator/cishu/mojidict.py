@@ -1,6 +1,7 @@
 import requests
 from myutils.proxy import getproxy
 
+
 class mojidict:
     def search(self, word):
         try:
@@ -25,7 +26,8 @@ class mojidict:
                 headers={
                     "content-type": "text/plain",
                     "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36",
-                },proxies=getproxy()
+                },
+                proxies=getproxy(),
             )
 
             result = ""
@@ -33,7 +35,7 @@ class mojidict:
             for i in response.json()["result"]["results"]["search-all"]["result"][
                 "word"
             ]["searchResult"]:
-                result += '{}<br>{}<br><br>'.format(i["title"],i["excerpt"])
+                result += "{}<br>{}<br><br>".format(i["title"], i["excerpt"])
 
             return result
 

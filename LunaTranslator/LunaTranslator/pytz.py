@@ -1,7 +1,9 @@
 import datetime
+
 ZERO = datetime.timedelta(0)
 HOUR = datetime.timedelta(hours=1)
-from datetime import datetime, timedelta, tzinfo
+from datetime import datetime, tzinfo
+
 
 class BaseTzInfo(tzinfo):
     # Overridden in subclass
@@ -12,14 +14,18 @@ class BaseTzInfo(tzinfo):
     def __str__(self):
         return self.zone
 
-def _UTC(): 
+
+def _UTC():
     return utc
+
+
 class UTC(BaseTzInfo):
     """UTC
 
     Optimized UTC implementation. It unpickles using the single module global
     instance defined beneath this class declaration.
     """
+
     zone = "UTC"
 
     _utcoffset = ZERO
@@ -44,17 +50,17 @@ class UTC(BaseTzInfo):
         return _UTC, ()
 
     def localize(self, dt, is_dst=False):
-        '''Convert naive time to local time'''
+        """Convert naive time to local time"""
         if dt.tzinfo is not None:
-            raise ValueError('Not naive datetime (tzinfo is already set)')
+            raise ValueError("Not naive datetime (tzinfo is already set)")
         return dt.replace(tzinfo=self)
 
     def normalize(self, dt, is_dst=False):
-        '''Correct the timezone information on the given datetime'''
+        """Correct the timezone information on the given datetime"""
         if dt.tzinfo is self:
             return dt
         if dt.tzinfo is None:
-            raise ValueError('Naive time - no tzinfo set')
+            raise ValueError("Naive time - no tzinfo set")
         return dt.astimezone(self)
 
     def __repr__(self):
@@ -62,12 +68,13 @@ class UTC(BaseTzInfo):
 
     def __str__(self):
         return "UTC"
-    
+
 
 UTC = utc = UTC()  # UTC is a singleton
 
+
 def timezone(zone):
-    if zone=='UTC':
+    if zone == "UTC":
         return utc
     else:
         raise Exception(zone)

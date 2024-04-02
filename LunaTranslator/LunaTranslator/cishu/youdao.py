@@ -1,20 +1,27 @@
-from myutils.config import globalconfig,static_data
+from myutils.config import globalconfig, static_data
 import requests
 from urllib.parse import quote
 import re
 from myutils.proxy import getproxy
-from traceback import print_exc
+
+
 class youdao:
     @property
     def srclang(self):
-        
+
         try:
-            l=static_data["language_list_translator_inner"][globalconfig['srclang3']]
+            l = static_data["language_list_translator_inner"][globalconfig["srclang3"]]
             return l
-             
+
         except:
-            return ''
-    def search(self,word):
-        text=requests.get('https://dict.youdao.com/result?word={}&lang={}'.format(quote(word),self.srclang), proxies= getproxy()).text
-        fnd=re.findall('<section class="modules"(.*?)>([\\s\\S]*?)</section>',text)
+            return ""
+
+    def search(self, word):
+        text = requests.get(
+            "https://dict.youdao.com/result?word={}&lang={}".format(
+                quote(word), self.srclang
+            ),
+            proxies=getproxy(),
+        ).text
+        fnd = re.findall('<section class="modules"(.*?)>([\\s\\S]*?)</section>', text)
         return fnd[0][1]

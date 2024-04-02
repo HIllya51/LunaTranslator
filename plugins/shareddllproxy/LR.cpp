@@ -1,6 +1,6 @@
-#include<Windows.h>
-#include<detours.h>  
-#include<string>
+#include <Windows.h>
+#include <detours.h>
+#include <string>
 struct LRProfile
 {
 	UINT CodePage;
@@ -9,7 +9,7 @@ struct LRProfile
 	int HookIME;
 	int HookLCID;
 };
-int WrtieConfigFileMap(LRProfile* profile)
+int WrtieConfigFileMap(LRProfile *profile)
 {
 	SetEnvironmentVariableW(L"LRCodePage", (LPCWSTR)&profile->CodePage);
 	SetEnvironmentVariableW(L"LRLCID", (LPCWSTR)&profile->LCID);
@@ -18,27 +18,29 @@ int WrtieConfigFileMap(LRProfile* profile)
 	SetEnvironmentVariableW(L"LRHookLCID", (LPCWSTR)&profile->HookLCID);
 	return 0;
 }
-//https://github.com/InWILL/Locale_Remulator/blob/master/LRProc/LRProc.cpp
-int LRwmain(int argc, wchar_t* wargv[]) {
+// https://github.com/InWILL/Locale_Remulator/blob/master/LRProc/LRProc.cpp
+int LRwmain(int argc, wchar_t *wargv[])
+{
 	char current[2048];
 	GetModuleFileNameA(NULL, current, 2048);
-	std::string _s = current; 
+	std::string _s = current;
 	_s = _s.substr(0, _s.find_last_of("\\"));
 	auto dllpath = _s + "\\Locale_Remulator\\";
 	auto targetexe = wargv[1];
-	std::wstring cmd=L"";
-	for(int i=1;i<argc;i++){
-		cmd+=L"\"";
-		cmd+=wargv[i];
-		cmd+=L"\" ";
+	std::wstring cmd = L"";
+	for (int i = 1; i < argc; i++)
+	{
+		cmd += L"\"";
+		cmd += wargv[i];
+		cmd += L"\" ";
 	}
-	auto cmd_x=new wchar_t[cmd.size()+1];
-	wcscpy(cmd_x,cmd.c_str());
+	auto cmd_x = new wchar_t[cmd.size() + 1];
+	wcscpy(cmd_x, cmd.c_str());
 	DWORD type;
 	GetBinaryTypeW(targetexe, &type);
-	if (type == 6)  
-		dllpath += "LRHookx64.dll";  
-	else 
+	if (type == 6)
+		dllpath += "LRHookx64.dll";
+	else
 		dllpath += "LRHookx32.dll";
 	LRProfile beta;
 	beta.CodePage = 932;
@@ -54,8 +56,8 @@ int LRwmain(int argc, wchar_t* wargv[]) {
 	ZeroMemory(&pi, sizeof(PROCESS_INFORMATION));
 	si.cb = sizeof(STARTUPINFO);
 	DetourCreateProcessWithDllExW(NULL, cmd_x, NULL,
-		NULL, FALSE, CREATE_DEFAULT_ERROR_MODE, NULL, NULL,
-		&si, &pi, dllpath.c_str(), NULL);
-	 
+								  NULL, FALSE, CREATE_DEFAULT_ERROR_MODE, NULL, NULL,
+								  &si, &pi, dllpath.c_str(), NULL);
+
 	return 0;
 }
