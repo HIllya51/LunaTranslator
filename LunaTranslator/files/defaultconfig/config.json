@@ -1154,24 +1154,6 @@
             "type": "offline",
             "color": "blue",
             "name": "TGW语言模型"
-        },
-        "dev_theb": {
-            "use": false,
-            "type": "dev",
-            "color": "blue",
-            "name": "beta.theb.ai"
-        },
-        "dev_poe": {
-            "use": false,
-            "color": "blue",
-            "type": "dev",
-            "name": "poe"
-        },
-        "dev_phind": {
-            "use": false,
-            "color": "blue",
-            "type": "dev",
-            "name": "phind"
         }
     },
     "magpie10path":"",
