@@ -18,6 +18,7 @@ from ctypes import (
     windll,
     c_char,
 )
+from ctypes.wintypes import WORD
 import gobject
 
 utilsdll = CDLL(gobject.GetDllpath(("winsharedutils32.dll", "winsharedutils64.dll")))
@@ -286,3 +287,25 @@ class lockedqueue:
 
     def empty(self):
         return lockedqueueempty(self.ptr)
+
+
+_queryversion = utilsdll.queryversion
+_queryversion.restype = c_bool
+_queryversion.argtypes = (
+    c_wchar_p,
+    POINTER(WORD),
+    POINTER(WORD),
+    POINTER(WORD),
+    POINTER(WORD),
+)
+
+
+def queryversion(exe):
+    _1 = WORD()
+    _2 = WORD()
+    _3 = WORD()
+    _4 = WORD()
+    succ = _queryversion(exe, pointer(_1), pointer(_2), pointer(_3), pointer(_4))
+    if succ:
+        return _1.value, _2.value, _3.value, _4.value
+    return None

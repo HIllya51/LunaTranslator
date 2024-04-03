@@ -1,5 +1,5 @@
 import os, json
-import windows
+import windows, winsharedutils
 from myutils.config import globalconfig, magpie10_config
 from myutils.hwnd import letfullscreen, recoverwindow, ListProcess, injectdll
 from traceback import print_exc
@@ -123,12 +123,30 @@ class fullscreen:
     def _external_magpie10(self, hwnd, full):
 
         configpath = os.path.join(globalconfig["magpie10path"], "config/config.json")
+
         if os.path.exists(configpath) == False:
-            configpath = os.path.join(
-                os.environ["LOCALAPPDATA"], "Magpie/config/config.json"
+            version = winsharedutils.queryversion(
+                os.path.join(globalconfig["magpie10path"], "Magpie.exe")
             )
+            checks = [
+                os.path.join(
+                    os.environ["LOCALAPPDATA"], "Magpie/config/v2/config.json"
+                ),
+                os.path.join(os.environ["LOCALAPPDATA"], "Magpie/config/config.json"),
+            ]
+            if version:
+                if version[:3] >= (0, 10, 100):  # v0.11.0-preview1
+                    checks = [checks[0]]
+                else:
+                    checks = [checks[1]]
+            for ck in checks:
+                if os.path.exists(ck):
+                    configpath = ck
+                    break
+
         if os.path.exists(configpath) == False:
             return
+
         with open(configpath, "r", encoding="utf8") as ff:
             config = json.load(ff)
         autoRestore = config["autoRestore"]
