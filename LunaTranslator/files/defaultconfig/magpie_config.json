@@ -1,16 +1,15 @@
 {
-    "version": 1,
     "language": "",
     "theme": 2,
     "windowPos": {
-        "centerX": 676.5,
-        "centerY": 495.5,
-        "width": 980.0,
-        "height": 690.4000244140625,
+        "centerX": 1188.0,
+        "centerY": 902.0,
+        "width": 998.6666870117188,
+        "height": 604.0,
         "maximized": false
     },
     "shortcuts": {
-        "scale": 2369,
+        "scale": 2129,
         "overlay": 2372
     },
     "autoRestore": false,
@@ -24,18 +23,13 @@
     "allowScalingMaximized": false,
     "simulateExclusiveFullscreen": false,
     "alwaysRunAsAdmin": false,
-    "showTrayIcon": true,
+    "showNotifyIcon": true,
     "inlineParams": false,
     "autoCheckForUpdates": true,
     "checkForPreviewUpdates": false,
-    "updateCheckDate": 17069328388745614,
-    "downscalingEffect": {
-        "name": "Bicubic",
-        "parameters": {
-            "paramB": 0.0,
-            "paramC": 0.5
-        }
-    },
+    "updateCheckDate": 17121608925479923,
+    "duplicateFrameDetectionMode": 1,
+    "enableStatisticsForDynamicDetection": false,
     "scalingModes": [
         {
             "name": "Lanczos",
@@ -133,13 +127,13 @@
             "captureMethod": 0,
             "multiMonitorUsage": 0,
             "graphicsCard": -1,
+            "frameRateLimiterEnabled": false,
+            "maxFrameRate": 60.0,
             "disableWindowResizing": false,
             "3DGameMode": false,
             "showFPS": false,
-            "VSync": true,
-            "tripleBuffering": false,
             "captureTitleBar": false,
-            "adjustCursorSpeed": true,
+            "adjustCursorSpeed": false,
             "drawCursor": true,
             "disableDirectFlip": false,
             "cursorScaling": 2,

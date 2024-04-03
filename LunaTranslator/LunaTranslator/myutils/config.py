@@ -28,7 +28,7 @@ static_data = tryreadconfig2("static_data.json")
 defaultpost = tryreadconfig2("postprocessconfig.json")
 defaultglobalconfig = tryreadconfig2("config.json")
 defaulterrorfix = tryreadconfig2("transerrorfixdictconfig.json")
-dfmagpie10_config = tryreadconfig2("magpie10_config.json")
+dfmagpie_config = tryreadconfig2("magpie_config.json")
 defaultnoun = tryreadconfig2("noundictconfig.json")
 translatordfsetting = tryreadconfig2("translatorsetting.json")
 ocrdfsetting = tryreadconfig2("ocrsetting.json")
@@ -36,7 +36,7 @@ ocrerrorfixdefault = tryreadconfig2("ocrerrorfix.json")
 
 ocrerrorfix = tryreadconfig("ocrerrorfix.json")
 globalconfig = tryreadconfig("config.json")
-magpie10_config = tryreadconfig("magpie10_config.json")
+magpie_config = tryreadconfig("magpie_config.json")
 postprocessconfig = tryreadconfig("postprocessconfig.json")
 noundictconfig = tryreadconfig("noundictconfig.json")
 transerrorfixdictconfig = tryreadconfig("transerrorfixdictconfig.json")
@@ -137,7 +137,7 @@ if True:  # transerrorfixdictconfig cast v1 to v2:
 
 
 syncconfig(noundictconfig, defaultnoun)
-syncconfig(magpie10_config, dfmagpie10_config, skipdict=True)
+syncconfig(magpie_config, dfmagpie_config, skipdict=True)
 syncconfig(translatorsetting, translatordfsetting)
 
 syncconfig(ocrsetting, ocrdfsetting)
@@ -220,7 +220,7 @@ def saveallconfig():
         os.rename(fname + ".tmp", fname)
 
     safesave("./userconfig/config.json", globalconfig)
-    safesave("./userconfig/magpie10_config.json", magpie10_config)
+    safesave("./userconfig/magpie_config.json", magpie_config)
     safesave("./userconfig/postprocessconfig.json", postprocessconfig)
     safesave("./userconfig/transerrorfixdictconfig.json", transerrorfixdictconfig)
     safesave("./userconfig/noundictconfig.json", noundictconfig)

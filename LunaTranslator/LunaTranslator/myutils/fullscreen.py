@@ -1,6 +1,6 @@
 import os, json
 import windows, winsharedutils
-from myutils.config import globalconfig, magpie10_config
+from myutils.config import globalconfig, magpie_config
 from myutils.hwnd import letfullscreen, recoverwindow, ListProcess, injectdll
 from traceback import print_exc
 from myutils.subproc import subproc_w
@@ -86,12 +86,12 @@ class fullscreen:
         for k in mods:
             windows.keybd_event(mp1[k], 0, windows.KEYEVENTF_KEYUP, 0)
 
-    def runmagpie10(self):
+    def runmagpie(self):
         if windows.FindWindow("Magpie_Hotkey", None) == 0:
             subproc_w(
-                os.path.join(globalconfig["magpie10path"], "Magpie.exe"),
-                cwd=globalconfig["magpie10path"],
-                name="magpie10",
+                os.path.join(globalconfig["magpiepath"], "Magpie.exe"),
+                cwd=globalconfig["magpiepath"],
+                name="magpie",
             )
             while windows.FindWindow("Magpie_Hotkey", None) == 0:
                 time.sleep(0.5)
@@ -120,13 +120,13 @@ class fullscreen:
             time.sleep(0.5)
         self.internal_stopped()
 
-    def _external_magpie10(self, hwnd, full):
+    def _external_magpie(self, hwnd, full):
 
-        configpath = os.path.join(globalconfig["magpie10path"], "config/config.json")
+        configpath = os.path.join(globalconfig["magpiepath"], "config/config.json")
 
         if os.path.exists(configpath) == False:
             version = winsharedutils.queryversion(
-                os.path.join(globalconfig["magpie10path"], "Magpie.exe")
+                os.path.join(globalconfig["magpiepath"], "Magpie.exe")
             )
             checks = [
                 os.path.join(
@@ -155,7 +155,7 @@ class fullscreen:
         mp = {0x100: "WIN", 0x200: "CTRL", 0x400: "ALT", 0x800: "SHIFT"}
 
         if full:
-            self.runmagpie10()
+            self.runmagpie()
             if autoRestore == False:
                 self._wait_magpie_stop_external()
 
@@ -219,21 +219,21 @@ class fullscreen:
     def _magpie_builtin(self, hwnd, full):
         if full:
             profiles_index = globalconfig["profiles_index"]
-            if profiles_index > len(magpie10_config["profiles"]):
+            if profiles_index > len(magpie_config["profiles"]):
                 profiles_index = 0
 
-            jspath = os.path.abspath("./userconfig/magpie10_config.json")
+            jspath = os.path.abspath("./userconfig/magpie_config.json")
             with open(jspath, "w", encoding="utf-8") as ff:
                 ff.write(
                     json.dumps(
-                        magpie10_config, ensure_ascii=False, sort_keys=False, indent=4
+                        magpie_config, ensure_ascii=False, sort_keys=False, indent=4
                     )
                 )
             self.engine = subproc_w(
-                './files/plugins/Magpie10/Magpie.Core.exe {} {} "{}"'.format(
+                './files/plugins/Magpie/Magpie.Core.exe {} {} "{}"'.format(
                     profiles_index, hwnd, jspath
                 ),
-                cwd="./files/plugins/Magpie10/",
+                cwd="./files/plugins/Magpie/",
             )
             self._waitenginestop_magpie()
         else:
@@ -275,7 +275,7 @@ class fullscreen:
                 self._alt_enter,
                 self._SW_SHOWMAXIMIZED,
                 self._external_lossless,
-                self._external_magpie10,
+                self._external_magpie,
             ][self.fsmethod](hwnd, full)
             self.status = full
             self.lasthwnd = hwnd

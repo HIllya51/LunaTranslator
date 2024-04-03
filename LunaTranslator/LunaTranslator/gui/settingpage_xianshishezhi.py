@@ -9,7 +9,7 @@ from PyQt5.QtCore import Qt, QSize
 from PyQt5.QtGui import QStandardItem, QStandardItemModel
 from PyQt5.QtWidgets import QLabel, QSlider, QFontComboBox, QDialog, QGridLayout
 from gui.inputdialog import multicolorset
-from myutils.config import globalconfig, _TR, _TRL, magpie10_config, static_data
+from myutils.config import globalconfig, _TR, _TRL, magpie_config, static_data
 from myutils.wrapper import Singleton
 import qtawesome, gobject, json
 from myutils.hwnd import showintab
@@ -528,39 +528,16 @@ def setTabThree_lazy(self):
             ),
         ],
     ]
-    alleffect = [
-        "无",
-        "Bicubic",
-        "Bilinear",
-        "Jinc",
-        "Lanczos",
-        "Nearest",
-        "SSimDownscaler",
-    ]
-    downsname = magpie10_config.get("downscalingEffect", {"name": "无"}).get("name")
-    if downsname not in alleffect:
-        alleffect.append(downsname)
-    idx = alleffect.index(downsname)
-    downscalecombo = getsimplecombobox(alleffect, {1: idx}, 1)
 
-    def _downschange(idx):
-        if idx == 0:
-            magpie10_config.pop("downscalingEffect")
-        else:
-            magpie10_config["downscalingEffect"] = {"name": alleffect[idx]}
-
-    downscalecombo.currentIndexChanged.connect(_downschange)
     innermagpie = [
-        [("通用", 4)],
-        [("", 1), ("默认降采样效果", 4), (downscalecombo, 6)],
         [("常规", 4)],
         [
             ("", 1),
             ("缩放模式", 4),
             (
                 getsimplecombobox(
-                    [_["name"] for _ in magpie10_config["scalingModes"]],
-                    magpie10_config["profiles"][globalconfig["profiles_index"]],
+                    [_["name"] for _ in magpie_config["scalingModes"]],
+                    magpie_config["profiles"][globalconfig["profiles_index"]],
                     "scalingMode",
                 ),
                 6,
@@ -578,7 +555,7 @@ def setTabThree_lazy(self):
                         "GDI",
                         "DwmSharedSurface",
                     ],
-                    magpie10_config["profiles"][globalconfig["profiles_index"]],
+                    magpie_config["profiles"][globalconfig["profiles_index"]],
                     "captureMethod",
                 ),
                 6,
@@ -589,7 +566,7 @@ def setTabThree_lazy(self):
             ("3D游戏模式", 4),
             (
                 getsimpleswitch(
-                    magpie10_config["profiles"][globalconfig["profiles_index"]],
+                    magpie_config["profiles"][globalconfig["profiles_index"]],
                     "3DGameMode",
                 )
             ),
@@ -600,28 +577,32 @@ def setTabThree_lazy(self):
             ("显示帧率", 4),
             (
                 getsimpleswitch(
-                    magpie10_config["profiles"][globalconfig["profiles_index"]],
+                    magpie_config["profiles"][globalconfig["profiles_index"]],
                     "showFPS",
                 )
             ),
         ],
         [
             ("", 1),
-            ("垂直同步", 4),
+            ("限制帧率", 4),
             (
                 getsimpleswitch(
-                    magpie10_config["profiles"][globalconfig["profiles_index"]], "VSync"
+                    magpie_config["profiles"][globalconfig["profiles_index"]],
+                    "frameRateLimiterEnabled",
                 )
             ),
         ],
         [
             ("", 1),
-            ("垂直同步_允许额外的延迟以提高性能", 4),
+            ("最大帧率", 4),
             (
-                getsimpleswitch(
-                    magpie10_config["profiles"][globalconfig["profiles_index"]],
-                    "tripleBuffering",
-                )
+                getspinbox(
+                    0,
+                    9999,
+                    magpie_config["profiles"][globalconfig["profiles_index"]],
+                    "maxFrameRate",
+                ),
+                2,
             ),
         ],
         [("源窗口", 4)],
@@ -630,7 +611,7 @@ def setTabThree_lazy(self):
             ("缩放时禁用窗口大小调整", 4),
             (
                 getsimpleswitch(
-                    magpie10_config["profiles"][globalconfig["profiles_index"]],
+                    magpie_config["profiles"][globalconfig["profiles_index"]],
                     "disableWindowResizing",
                 )
             ),
@@ -640,7 +621,7 @@ def setTabThree_lazy(self):
             ("捕获标题栏", 4),
             (
                 getsimpleswitch(
-                    magpie10_config["profiles"][globalconfig["profiles_index"]],
+                    magpie_config["profiles"][globalconfig["profiles_index"]],
                     "captureTitleBar",
                 )
             ),
@@ -650,7 +631,7 @@ def setTabThree_lazy(self):
             ("自定义剪裁", 4),
             (
                 getsimpleswitch(
-                    magpie10_config["profiles"][globalconfig["profiles_index"]],
+                    magpie_config["profiles"][globalconfig["profiles_index"]],
                     "croppingEnabled",
                 )
             ),
@@ -661,7 +642,7 @@ def setTabThree_lazy(self):
             ("绘制光标", 4),
             (
                 getsimpleswitch(
-                    magpie10_config["profiles"][globalconfig["profiles_index"]],
+                    magpie_config["profiles"][globalconfig["profiles_index"]],
                     "drawCursor",
                 )
             ),
@@ -672,7 +653,7 @@ def setTabThree_lazy(self):
             (
                 getsimplecombobox(
                     ["0.5x", "0.75x", "无缩放", "1.25x", "1.5x", "2x", "和源窗口相同"],
-                    magpie10_config["profiles"][globalconfig["profiles_index"]],
+                    magpie_config["profiles"][globalconfig["profiles_index"]],
                     "cursorScaling",
                 ),
                 6,
@@ -684,7 +665,7 @@ def setTabThree_lazy(self):
             (
                 getsimplecombobox(
                     ["最邻近", "双线性"],
-                    magpie10_config["profiles"][globalconfig["profiles_index"]],
+                    magpie_config["profiles"][globalconfig["profiles_index"]],
                     "cursorInterpolationMode",
                 ),
                 6,
@@ -695,7 +676,7 @@ def setTabThree_lazy(self):
             ("缩放时调整光标速度", 4),
             (
                 getsimpleswitch(
-                    magpie10_config["profiles"][globalconfig["profiles_index"]],
+                    magpie_config["profiles"][globalconfig["profiles_index"]],
                     "adjustCursorSpeed",
                 )
             ),
@@ -706,7 +687,7 @@ def setTabThree_lazy(self):
             ("禁用DirectFlip", 4),
             (
                 getsimpleswitch(
-                    magpie10_config["profiles"][globalconfig["profiles_index"]],
+                    magpie_config["profiles"][globalconfig["profiles_index"]],
                     "disableDirectFlip",
                 )
             ),
@@ -714,17 +695,90 @@ def setTabThree_lazy(self):
         [
             ("", 1),
             ("允许缩放最大化或全屏的窗口", 4),
-            (getsimpleswitch(magpie10_config, "allowScalingMaximized")),
+            (getsimpleswitch(magpie_config, "allowScalingMaximized")),
         ],
         [
             ("", 1),
             ("缩放时模拟独占全屏", 4),
-            (getsimpleswitch(magpie10_config, "simulateExclusiveFullscreen")),
+            (getsimpleswitch(magpie_config, "simulateExclusiveFullscreen")),
         ],
         [
             ("", 1),
             ("内联效果参数", 4),
-            (getsimpleswitch(magpie10_config, "inlineParams")),
+            (getsimpleswitch(magpie_config, "inlineParams")),
+        ],
+        [("开发者选项", 4)],
+        [
+            ("", 1),
+            ("调试模式", 4),
+            (
+                getsimpleswitch(
+                    magpie_config,
+                    "debugMode",
+                )
+            ),
+        ],
+        [
+            ("", 1),
+            ("禁用效果缓存", 4),
+            (
+                getsimpleswitch(
+                    magpie_config,
+                    "disableEffectCache",
+                )
+            ),
+        ],
+        [
+            ("", 1),
+            ("禁用字体缓存", 4),
+            (
+                getsimpleswitch(
+                    magpie_config,
+                    "disableFontCache",
+                )
+            ),
+        ],
+        [
+            ("", 1),
+            ("解析效果时保存源代码", 4),
+            (
+                getsimpleswitch(
+                    magpie_config,
+                    "saveEffectSources",
+                )
+            ),
+        ],
+        [
+            ("", 1),
+            ("编译效果时将警告视为错误", 4),
+            (
+                getsimpleswitch(
+                    magpie_config,
+                    "warningsAreErrors",
+                )
+            ),
+        ],
+        [
+            ("", 1),
+            ("检测重复帧", 4),
+            (
+                getsimplecombobox(
+                    ["总是检测", "动态检测", "从不检测"],
+                    magpie_config,
+                    "duplicateFrameDetectionMode",
+                ),
+                6,
+            ),
+        ],
+        [
+            ("", 1),
+            ("启用动态检测统计", 4),
+            (
+                getsimpleswitch(
+                    magpie_config,
+                    "enableStatisticsForDynamicDetection",
+                )
+            ),
         ],
     ]
     commonfsgrid = [
@@ -738,7 +792,7 @@ def setTabThree_lazy(self):
                             "ALT+ENTER",
                             "SW_SHOWMAXIMIZED",
                             "LosslessScaling",
-                            "Magpie10_External",
+                            "Magpie_External",
                         ]
                     ),
                     globalconfig,
@@ -751,17 +805,17 @@ def setTabThree_lazy(self):
 
     losslessgrid = [
         [
-            ("Magpie10_路径", 4),
+            ("Magpie_路径", 4),
             (
                 getcolorbutton(
                     globalconfig,
                     "",
                     callback=lambda x: getsomepath1(
                         self,
-                        "Magpie10_路径",
+                        "Magpie_路径",
                         globalconfig,
-                        "magpie10path",
-                        "Magpie10_路径",
+                        "magpiepath",
+                        "Magpie_路径",
                         isdir=True,
                     ),
                     icon="fa.gear",
