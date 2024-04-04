@@ -51,7 +51,7 @@ class ocrtext(basetext):
 
     def newrangeadjustor(self):
         if len(self.range_ui) == 0 or globalconfig["multiregion"]:
-            self.range_ui.append(rangeadjust(gobject.baseobject.translation_ui))
+            self.range_ui.append(rangeadjust(gobject.baseobject.settin_ui))
             self.savelastimg.append(None)
             self.savelastrecimg.append(None)
             self.lastocrtime.append(0)

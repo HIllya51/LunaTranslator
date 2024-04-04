@@ -756,7 +756,10 @@ def mciSendString(s):
     _winmm = windll.winmm
     _mciSendStringW = _winmm.mciSendStringW
     _mciSendStringW.argtypes = c_wchar_p, c_wchar_p, c_uint, c_void_p
-    return _mciSendStringW(s, None, 0, None)
+    bf = create_unicode_buffer(1024)
+    if _mciSendStringW(s, bf, 1024, None) != 0:
+        return None
+    return bf.value
 
 
 # _RegOpenKeyExW=_Advapi32.RegOpenKeyExW

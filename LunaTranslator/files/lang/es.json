@@ -741,5 +741,6 @@
     "解析效果时保存源代码": "Guardar el código fuente al analizar el efecto",
     "编译效果时将警告视为错误": "Tratar la advertencia como un error al compilar el efecto",
     "检测重复帧": "Detección de cuadros duplicados",
-    "启用动态检测统计": "Activar estadísticas de detección dinámica"
+    "启用动态检测统计": "Activar estadísticas de detección dinámica",
+    "不被打断": "Sin ser interrumpido"
 }

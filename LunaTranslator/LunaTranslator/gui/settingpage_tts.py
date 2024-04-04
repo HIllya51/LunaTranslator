@@ -101,6 +101,7 @@ def setTab5lz(self):
             (getspinbox(0, 100, globalconfig["ttscommon"], "volume"), 3),
         ],
         [("自动朗读", 6), (getsimpleswitch(globalconfig, "autoread"), 1)],
+        [("不被打断", 6), (getsimpleswitch(globalconfig, "ttsnointerrupt"), 1)],
         [
             ("朗读原文", 6),
             (getsimpleswitch(globalconfig, "read_raw"), 1),

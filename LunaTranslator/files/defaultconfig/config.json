@@ -130,6 +130,7 @@
     "use_yapi":true,
     "showfanyi":true,
     "autoread": false,
+    "ttsnointerrupt":false,
     "show_fenci": false,
     "jiamingcolor": "black",
     "settingfonttype": "Arial",

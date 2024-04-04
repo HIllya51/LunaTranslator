@@ -531,28 +531,8 @@ class QUnFrameWindow(resizableframeless):
         if self.isfirstshow:
             self.showline(clear=True, text=_TR("欢迎使用"), origin=False)
 
-            showAction = QAction(
-                _TR("&显示"), self, triggered=self.show_and_enableautohide
-            )
-            settingAction = QAction(
-                _TR("&设置"),
-                self,
-                triggered=lambda: gobject.baseobject.settin_ui.showsignal.emit(),
-            )
-            quitAction = QAction(_TR("&退出"), self, triggered=self.close)
-
             self.tray.activated.connect(self.leftclicktray)
 
-            # 创建菜单对象
-            self.trayMenu = QMenu(self)
-            # 将动作对象添加到菜单
-            self.trayMenu.addAction(showAction)
-            self.trayMenu.addAction(settingAction)
-            # 增加分割线
-            self.trayMenu.addSeparator()
-            self.trayMenu.addAction(quitAction)
-            # 将菜单栏加入到右键按钮中
-            self.tray.setContextMenu(self.trayMenu)
             self.tray.show()
             windows.SetForegroundWindow(int(self.winId()))
             self.isfirstshow = False

@@ -50,7 +50,7 @@ class TTSbase:
 
         threading.Thread(target=_).start()
 
-    def read(self, content):
+    def read(self, content, force=False):
 
         if self.loadok == False:
             return
@@ -67,6 +67,6 @@ class TTSbase:
         def _():
             fname = self.speak(content, rate, voice, voice_index)
             if fname:
-                self.mp3playsignal.emit(fname, volume)
+                self.mp3playsignal.emit(fname, volume, force)
 
         threading.Thread(target=_).start()

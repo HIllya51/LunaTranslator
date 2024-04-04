@@ -58,6 +58,7 @@ from myutils.utils import checkifnewgame
 from myutils.proxy import getproxy
 from gui.usefulwidget import yuitsu_switch, saveposwindow, getboxlayout
 from myutils.vndb import parsehtmlmethod
+from gui.inputdialog import noundictconfigdialog1
 
 
 class ItemWidget(QWidget):
@@ -691,9 +692,46 @@ class dialog_setting_game(QDialog):
         methodtab = QTabWidget()
         methodtab.addTab(self.gethooktab(exepath), "HOOK")
         methodtab.addTab(self.getpretranstab(exepath), "预翻译")
+        methodtab.addTab(self.getttssetting(exepath), "语音")
         formLayout.addWidget(methodtab)
 
         self.show()
+
+    def getttssetting(self, exepath):
+        _w = QWidget()
+        formLayout = QVBoxLayout()
+        formLayout.setAlignment(Qt.AlignTop)
+        _w.setLayout(formLayout)
+
+        edit = QLineEdit(savehook_new_data[exepath]["allow_tts_auto_names"])
+        edit.textChanged.connect(
+            lambda x: savehook_new_data[exepath].__setitem__("allow_tts_auto_names", x)
+        )
+        formLayout.addLayout(
+            getboxlayout([QLabel(_TR("禁止自动朗读的人名(以|分隔多个)")), edit])
+        )
+        formLayout.addLayout(
+            getboxlayout(
+                [
+                    QLabel(_TR("语音修正")),
+                    getsimpleswitch(savehook_new_data[exepath], "tts_repair"),
+                    getcolorbutton(
+                        globalconfig,
+                        "",
+                        callback=lambda x: noundictconfigdialog1(
+                            self,
+                            savehook_new_data[exepath],
+                            "tts_repair_regex",
+                            "语音修正",
+                            ["正则", "原文", "替换"],
+                        ),
+                        icon="fa.gear",
+                        constcolor="#FF69B4",
+                    ),
+                ]
+            )
+        )
+        return _w
 
     def getpretranstab(self, exepath):
         _w = QWidget()
@@ -812,16 +850,6 @@ class dialog_setting_game(QDialog):
                         ),
                     ]
                 )
-            )
-        if globalconfig["allow_set_text_name"]:
-            edit = QLineEdit(savehook_new_data[exepath]["allow_tts_auto_names"])
-            edit.textChanged.connect(
-                lambda x: savehook_new_data[exepath].__setitem__(
-                    "allow_tts_auto_names", x
-                )
-            )
-            formLayout.addLayout(
-                getboxlayout([QLabel(_TR("禁止自动朗读的人名(以|分隔多个)")), edit])
             )
         return _w
 

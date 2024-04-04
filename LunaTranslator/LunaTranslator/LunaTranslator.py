@@ -451,16 +451,22 @@ class MAINUI:
             # print_exc()
             self.readcurrent()
 
+    def ttsrepair(self, text, usedict):
+        if usedict["tts_repair"]:
+            text = self.parsemayberegexreplace(usedict["tts_repair_regex"], text)
+        return text
+
     def readcurrent(self, force=False):
         try:
             if force or globalconfig["autoread"]:
-                if globalconfig["ttscommon"]["tts_repair"]:
-                    text = self.parsemayberegexreplace(
-                        globalconfig["ttscommon"]["tts_repair_regex"], self.currentread
+                text = self.ttsrepair(self.currentread, globalconfig["ttscommon"])
+                try:
+                    text = self.ttsrepair(
+                        text, savehook_new_data[self.textsource.pname]
                     )
-                else:
-                    text = self.currentread
-                self.reader.read(text)
+                except:
+                    print_exc()
+                self.reader.read(text, force)
         except:
             print_exc()
 

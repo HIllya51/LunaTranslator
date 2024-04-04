@@ -173,11 +173,42 @@ class wavmp3player:
     def __init__(self):
         self.i = 0
         self.lastfile = None
+        self.tasks = None
+        self.lock = threading.Lock()
+        self.lock.acquire()
+        threading.Thread(target=self.dotasks).start()
 
-    def mp3playfunction(self, path, volume):
-        if os.path.exists(path) == False:
-            return
-        self._playsoundWin(path, volume)
+    def mp3playfunction(self, path, volume, force):
+        try:
+            self.tasks = (path, volume, force)
+            self.lock.release()
+        except:
+            pass
+
+    def dotasks(self):
+        durationms = 0
+        try:
+            while True:
+                self.lock.acquire()
+                task = self.tasks
+                self.tasks = None
+                if task is None:
+                    continue
+                path, volume, force = task
+
+                if os.path.exists(path) == False:
+                    continue
+                durationms = self._playsoundWin(path, volume)
+
+                if durationms and globalconfig["ttsnointerrupt"]:
+                    while durationms > 0:
+                        durationms -= 100
+                        time.sleep(0.1)
+                        if self.tasks and self.tasks[-1]:
+                            break
+                        # time.sleep(durationms / 1000)
+        except:
+            print_exc()
 
     def _playsoundWin(self, sound, volume):
         try:
@@ -193,6 +224,11 @@ class wavmp3player:
                     sound, self.i
                 )
             )
+            durationms = int(
+                windows.mciSendString(
+                    "status lunatranslator_mci_{} length".format(self.i)
+                )
+            )
             windows.mciSendString(
                 "setaudio lunatranslator_mci_{} volume to {}".format(
                     self.i, volume * 10
@@ -200,7 +236,9 @@ class wavmp3player:
             )
             windows.mciSendString(("play lunatranslator_mci_{}".format(self.i)))
         except:
-            pass
+            durationms = 0
+
+        return durationms
 
 
 def selectdebugfile(path):

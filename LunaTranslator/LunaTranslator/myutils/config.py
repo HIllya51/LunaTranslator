@@ -74,6 +74,8 @@ def getdefaultsavehook(gamepath, title=None):
         "removeuseless": False,
         "codepage_index": 0,
         "allow_tts_auto_names": "",
+        "tts_repair": False,
+        "tts_repair_regex": [],
         "hooktypeasname": {},
         "use_saved_text_process": False,
         "searchnoresulttime": 0,

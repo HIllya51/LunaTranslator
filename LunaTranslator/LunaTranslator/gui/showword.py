@@ -100,7 +100,7 @@ class searchwordW(closeashidewindow):
 
     def langdu(self):
         if gobject.baseobject.reader:
-            gobject.baseobject.reader.read(self.searchtext.text())
+            gobject.baseobject.reader.read(self.searchtext.text(), True)
 
     def getnewsentence(self, sentence):
         self.showNormal()

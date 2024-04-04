@@ -741,5 +741,6 @@
     "解析效果时保存源代码": "Efektleri ayırıştığında kaynak kodu kaydet",
     "编译效果时将警告视为错误": "Efektleri birleştirirken uyarımları hata olarak tedavi edin",
     "检测重复帧": "Çiftleri keşfet",
-    "启用动态检测统计": "Dinamik tanıma istatistiklerini etkinleştir"
+    "启用动态检测统计": "Dinamik tanıma istatistiklerini etkinleştir",
+    "不被打断": "Bırakılmadı"
 }

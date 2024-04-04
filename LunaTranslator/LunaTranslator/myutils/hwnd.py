@@ -2,7 +2,7 @@ import windows
 import threading
 from PyQt5.QtGui import QPixmap, QColor, QIcon
 from PyQt5.QtWidgets import QApplication
-import gobject
+import gobject, ctypes
 import os, subprocess
 import time, winrtutils, winsharedutils, hashlib
 from myutils.wrapper import threader
@@ -338,3 +338,44 @@ def showintab(hwnd, show):
         style_ex &= ~windows.WS_EX_APPWINDOW
         style_ex |= windows.WS_EX_TOOLWINDOW
     windows.SetWindowLong(hwnd, windows.GWL_EXSTYLE, style_ex)
+
+
+def darkchange(hwnd, dark):
+    def ChangeDWMAttrib(hWnd: int, attrib: int, color) -> None:
+        try:
+            ctypes.windll.dwmapi.DwmSetWindowAttribute(
+                hWnd, attrib, ctypes.byref(color), ctypes.sizeof(ctypes.c_int)
+            )
+        except:
+            pass
+
+    def systemmenu(mode):
+        try:
+            # https://stackoverflow.com/questions/53501268/win10-dark-theme-how-to-use-in-winapi
+            # https://gist.github.com/rounk-ctrl/b04e5622e30e0d62956870d5c22b7017
+            LoadLibrary = ctypes.windll.Kernel32.LoadLibraryW
+            LoadLibrary.argtypes = (ctypes.c_wchar_p,)
+            LoadLibrary.restype = ctypes.c_void_p
+            GetProcAddress = ctypes.windll.Kernel32.GetProcAddress
+            GetProcAddress.argtypes = ctypes.c_void_p, ctypes.c_void_p
+            GetProcAddress.restype = ctypes.c_void_p
+            uxtheme = LoadLibrary("uxtheme.dll")
+            SetPreferredAppMode = GetProcAddress(uxtheme, 135)
+            FlushMenuThemes = GetProcAddress(uxtheme, 136)
+            SetPreferredAppMode = ctypes.CFUNCTYPE(ctypes.c_int, ctypes.c_int)(
+                SetPreferredAppMode
+            )
+            FlushMenuThemes = ctypes.CFUNCTYPE(None)(FlushMenuThemes)
+            SetPreferredAppMode(mode)
+            FlushMenuThemes()
+        except:
+            pass
+
+    if dark:
+        ChangeDWMAttrib(hwnd, 19, ctypes.c_int(1))
+        ChangeDWMAttrib(hwnd, 20, ctypes.c_int(1))
+        systemmenu(2)
+    else:
+        ChangeDWMAttrib(hwnd, 19, ctypes.c_int(0))
+        ChangeDWMAttrib(hwnd, 20, ctypes.c_int(0))
+        systemmenu(3)

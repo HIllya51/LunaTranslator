@@ -8,11 +8,13 @@ from PyQt5.QtWidgets import (
     QListWidget,
     QHBoxLayout,
     QListWidgetItem,
+    QMenu,
+    QAction,
     QApplication,
 )
 from PyQt5.QtGui import QResizeEvent
 from PyQt5.QtWidgets import QTabWidget
-import qtawesome, darkdetect, ctypes
+import qtawesome, darkdetect, gobject
 import functools
 from traceback import print_exc
 from myutils.config import globalconfig, _TR
@@ -29,6 +31,7 @@ from gui.setting_proxy import setTab_proxy
 from gui.settingpage7 import setTab7, settab7direct
 from gui.settingpage_about import setTab_about, setTab_about_dicrect
 from gui.usefulwidget import closeashidewindow
+from myutils.hwnd import darkchange
 
 
 class gridwidget(QWidget):
@@ -37,7 +40,7 @@ class gridwidget(QWidget):
 
 class Settin(closeashidewindow):
     voicelistsignal = pyqtSignal(list, int)
-    mp3playsignal = pyqtSignal(str, int)
+    mp3playsignal = pyqtSignal(str, int, bool)
     versiontextsignal = pyqtSignal(str)
     progresssignal = pyqtSignal(str, int)
     fontbigsmallsignal = pyqtSignal(int)
@@ -124,7 +127,7 @@ class Settin(closeashidewindow):
 
         self.usevoice = 0
         self.isfirstshow = True
-
+        self.inittray()
         setTabOne_direct(self)
         settab2d(self)
         settab7direct(self)
@@ -135,6 +138,26 @@ class Settin(closeashidewindow):
         setTab_about_dicrect(self)
 
         self.setstylesheet()
+
+    def inittray(self):
+
+        showAction = QAction(
+            _TR("&显示"),
+            self,
+            triggered=gobject.baseobject.translation_ui.show_and_enableautohide,
+        )
+        settingAction = QAction(
+            _TR("&设置"),
+            self,
+            triggered=lambda: gobject.baseobject.settin_ui.showsignal.emit(),
+        )
+        quitAction = QAction(_TR("&退出"), self, triggered=self.close)
+        self.trayMenu = QMenu(self)
+        self.trayMenu.addAction(showAction)
+        self.trayMenu.addAction(settingAction)
+        self.trayMenu.addSeparator()
+        self.trayMenu.addAction(quitAction)
+        gobject.baseobject.translation_ui.tray.setContextMenu(self.trayMenu)
 
     def opensolvetextfun(self):
         self.show()
@@ -219,34 +242,18 @@ class Settin(closeashidewindow):
             dark = darkdetect.isDark()
         darklight = ["light", "dark"][dark]
 
-        top_level_widgets = QApplication.topLevelWidgets()
-
-        def ChangeDWMAttrib(hWnd: int, attrib: int, color) -> None:
-            try:
-                ctypes.windll.dwmapi.DwmSetWindowAttribute(
-                    hWnd, attrib, ctypes.byref(color), ctypes.sizeof(ctypes.c_int)
-                )
-            except:
-                pass
-
-        def darkchange(hwnd):
-            if dark:
-                ChangeDWMAttrib(hwnd, 19, ctypes.c_int(1))
-                ChangeDWMAttrib(hwnd, 20, ctypes.c_int(1))
-            else:
-                ChangeDWMAttrib(hwnd, 19, ctypes.c_int(0))
-                ChangeDWMAttrib(hwnd, 20, ctypes.c_int(0))
-
         class WindowEventFilter(QObject):
             def eventFilter(self, obj, event):
-                if event.type() == QEvent.Type.WindowTitleChange:
-                    darkchange(int(obj.winId()))
+                if event.type() == QEvent.Type.WinIdChange:
+                    hwnd = obj.winId()
+                    if hwnd:  # window create/destroy,when destroy winId is None
+                        darkchange(int(obj.winId()), dark)
                 return False
 
-        self.__filter = WindowEventFilter()
+        self.__filter = WindowEventFilter()  # keep ref
         QApplication.instance().installEventFilter(self.__filter)
-        for widget in top_level_widgets:
-            darkchange(int(widget.winId()))
+        for widget in QApplication.topLevelWidgets():
+            darkchange(int(widget.winId()), dark)
 
         try:
             idx = globalconfig[darklight + "theme"] - int(not dark)
