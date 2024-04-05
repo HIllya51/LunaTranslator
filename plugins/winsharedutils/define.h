@@ -2,6 +2,7 @@
 #include <Windows.h>
 extern "C"
 {
+    __declspec(dllexport) HANDLE startdarklistener();
     __declspec(dllexport) bool queryversion(const wchar_t *exe, WORD *_1, WORD *_2, WORD *_3, WORD *_4);
 
     __declspec(dllexport) bool SAPI_Speak(const wchar_t *Content, int version, int voiceid, int rate, int volume, const wchar_t *Filename);

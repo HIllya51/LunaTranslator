@@ -18,7 +18,7 @@ from ctypes import (
     windll,
     c_char,
 )
-from ctypes.wintypes import WORD
+from ctypes.wintypes import WORD, HANDLE
 import gobject
 
 utilsdll = CDLL(gobject.GetDllpath(("winsharedutils32.dll", "winsharedutils64.dll")))
@@ -309,3 +309,7 @@ def queryversion(exe):
     if succ:
         return _1.value, _2.value, _3.value, _4.value
     return None
+
+
+startdarklistener = utilsdll.startdarklistener
+startdarklistener.restype = HANDLE

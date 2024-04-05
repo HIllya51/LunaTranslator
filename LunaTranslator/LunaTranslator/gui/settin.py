@@ -15,7 +15,7 @@ from PyQt5.QtWidgets import (
 from PyQt5.QtGui import QResizeEvent
 from PyQt5.QtWidgets import QTabWidget
 import qtawesome, darkdetect, gobject
-import functools
+import functools, threading, windows, os, winsharedutils
 from traceback import print_exc
 from myutils.config import globalconfig, _TR
 from myutils.utils import wavmp3player
@@ -47,6 +47,7 @@ class Settin(closeashidewindow):
     clicksourcesignal = pyqtSignal(str)
     opensolvetextsig = pyqtSignal()
     showandsolvesig = pyqtSignal(str)
+    setstylesheetsignal = pyqtSignal()
 
     def resizefunction(self):
 
@@ -138,6 +139,8 @@ class Settin(closeashidewindow):
         setTab_about_dicrect(self)
 
         self.setstylesheet()
+        self.setstylesheetsignal.connect(self.setstylesheet)
+        threading.Thread(target=self.darklistener).start()
 
     def inittray(self):
 
@@ -230,6 +233,15 @@ class Settin(closeashidewindow):
             setTab_proxy(self)
             setTab_about(self)
             self.isfirstshow = False
+
+    def darklistener(self):
+        sema = winsharedutils.startdarklistener()
+        while True:
+            # 会触发两次
+            windows.WaitForSingleObject(sema, windows.INFINITE)
+            windows.WaitForSingleObject(sema, windows.INFINITE)
+            if globalconfig["darklight"] == 2:
+                self.setstylesheetsignal.emit()
 
     def setstylesheet(self):
 
