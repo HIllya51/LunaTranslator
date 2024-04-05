@@ -239,9 +239,9 @@ class Settin(closeashidewindow):
         while True:
             # 会触发两次
             windows.WaitForSingleObject(sema, windows.INFINITE)
-            windows.WaitForSingleObject(sema, windows.INFINITE)
             if globalconfig["darklight"] == 2:
                 self.setstylesheetsignal.emit()
+            windows.WaitForSingleObject(sema, windows.INFINITE)
 
     def setstylesheet(self):
 
