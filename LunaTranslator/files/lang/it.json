@@ -742,5 +742,7 @@
     "编译效果时将警告视为错误": "Tratta gli avvisi come errori durante la compilazione degli effetti",
     "检测重复帧": "Rileva quadri duplicati",
     "启用动态检测统计": "Abilita statistiche di rilevamento dinamico",
-    "不被打断": "Non interrotto"
+    "不被打断": "Non interrotto",
+    "显示/隐藏历史翻译": "Mostra/nasconde traduzioni storiche",
+    "全屏/恢复游戏窗口": "Finestra di gioco a schermo intero/ripristino"
 }

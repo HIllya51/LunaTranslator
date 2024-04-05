@@ -281,6 +281,12 @@ class basetrans(commonbase):
 
         return res
 
+    @property
+    def onlymanual(self):
+        if "manual" not in globalconfig["fanyi"][self.typename]:
+            return False
+        return globalconfig["fanyi"][self.typename]["manual"]
+
     def _fythread(self):
         self.needreinit = False
         while self.using:
@@ -289,7 +295,8 @@ class basetrans(commonbase):
             if _ is None:
                 break
             callback, contentraw, contentsolved, embedcallback, is_auto_run = _
-
+            if self.onlymanual and is_auto_run:
+                continue
             if self.using == False:
                 break
 

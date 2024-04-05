@@ -742,5 +742,7 @@
     "编译效果时将警告视为错误": "Efektleri birleştirirken uyarımları hata olarak tedavi edin",
     "检测重复帧": "Çiftleri keşfet",
     "启用动态检测统计": "Dinamik tanıma istatistiklerini etkinleştir",
-    "不被打断": "Bırakılmadı"
+    "不被打断": "Bırakılmadı",
+    "显示/隐藏历史翻译": "Tarihi çevirimleri göster/gizle",
+    "全屏/恢复游戏窗口": "Full screen/restore game window"
 }

@@ -742,5 +742,7 @@
     "编译效果时将警告视为错误": "Traktuj ostrzeżenia jako błędy podczas kompilowania efektów",
     "检测重复帧": "Wykryj duplikaty klatek",
     "启用动态检测统计": "Włącz dynamiczne statystyki wykrywania",
-    "不被打断": "Bez przerwy"
+    "不被打断": "Bez przerwy",
+    "显示/隐藏历史翻译": "Pokaż/ukryj tłumaczenia historyczne",
+    "全屏/恢复游戏窗口": "Pełny ekran/przywróć okno gry"
 }

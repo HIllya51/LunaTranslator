@@ -742,5 +742,7 @@
     "编译效果时将警告视为错误": "Treat warnings as errors when compiling effects",
     "检测重复帧": "Detect duplicate frames",
     "启用动态检测统计": "Enable dynamic detection statistics",
-    "不被打断": "Not interrupted"
+    "不被打断": "Not interrupted",
+    "显示/隐藏历史翻译": "Show/hide historical translations",
+    "全屏/恢复游戏窗口": "Full screen/restore game window"
 }
