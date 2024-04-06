@@ -100,7 +100,7 @@ class basetransdev(basetrans):
             time.sleep(0.1)
 
     def send_keys(self, text):
-        self._SendRequest("Input.setIgnoreInputEvents", {"ignore": False})
+        #self._SendRequest("Input.setIgnoreInputEvents", {"ignore": False})
         try:
             self._SendRequest("Input.insertText", {"text": text})
         except:
@@ -127,4 +127,4 @@ class basetransdev(basetrans):
                 )
                 # self._SendRequest('Input.dispatchKeyEvent', {'type': 'keyUp', 'modifiers': 0, 'timestamp': 0, 'text': '', 'unmodifiedText': '', 'keyIdentifier': '', 'code': f'Key{char.upper()}', 'key': char, 'windowsVirtualKeyCode': code, 'nativeVirtualKeyCode': code, 'autoRepeat': False, 'isKeypad': False, 'isSystemKey': False, 'location': 0})
 
-        self._SendRequest("Input.setIgnoreInputEvents", {"ignore": True})
+        #self._SendRequest("Input.setIgnoreInputEvents", {"ignore": True})
