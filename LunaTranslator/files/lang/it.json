@@ -331,7 +331,6 @@
     "模糊匹配相似度": "Similitudine di corrispondenza sfocata",
     "翻译器字体": "Font del traduttore",
     "设置界面字体": "Imposta carattere interfaccia",
-    "未下载该语言的OCR模型": "Il modello OCR per questa lingua non è stato scaricato",
     "内嵌的翻译器": "Traduttore incorporato",
     "使用最快翻译而非指定翻译器": "Usa la traduzione più veloce invece di specificare un traduttore",
     "剪贴板设置": "Impostazioni degli appunti",
@@ -358,7 +357,6 @@
     "快捷键": "Tasti scorciatoie",
     "文本输入": "Inserimento testo",
     "快捷按键": "Tasti scorciatoie",
-    "未下载该语言的OCR模型,请从软件主页下载模型解压到files/ocr路径后使用": "Il modello OCR per questa lingua non è stato scaricato. Si prega di scaricare il modello dalla homepage del software ed estrarlo nel percorso file/OCR prima di utilizzarlo",
     "用户词典1": "Dizionario utente 1",
     "用户词典2": "Dizionario utente 2",
     "用户词典3": "Dizionario utente 3",
@@ -744,5 +742,6 @@
     "启用动态检测统计": "Abilita statistiche di rilevamento dinamico",
     "不被打断": "Non interrotto",
     "显示/隐藏历史翻译": "Mostra/nasconde traduzioni storiche",
-    "全屏/恢复游戏窗口": "Finestra di gioco a schermo intero/ripristino"
+    "全屏/恢复游戏窗口": "Finestra di gioco a schermo intero/ripristino",
+    "未下载该语言的OCR模型,请在[其他设置]->[资源下载]->[OCR语言包]下载模型解压到files/ocr路径后使用": "Il modello OCR per questa lingua non è stato scaricato. Si prega di decomprimere il modello nel percorso file/ocr in [Altre impostazioni] ->[Scaricare risorse] ->[OCR Language Pack] e utilizzarlo"
 }

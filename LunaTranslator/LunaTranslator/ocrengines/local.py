@@ -87,7 +87,7 @@ class OCR(baseocr):
         ):
             raise Exception(
                 _TR(
-                    "未下载该语言的OCR模型,请从软件主页下载模型解压到files/ocr路径后使用"
+                    "未下载该语言的OCR模型,请在[其他设置]->[资源下载]->[OCR语言包]下载模型解压到files/ocr路径后使用"
                 )
             )
         self._ocr.init(path + "/det.onnx", path + "/rec.onnx", path + "/dict.txt")

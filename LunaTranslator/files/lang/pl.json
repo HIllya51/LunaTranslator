@@ -341,7 +341,6 @@
     "设置界面字体": "Ustaw czcionkę interfejsu",
     "专有名词翻译设置按钮": "Przycisk ustawienia tłumaczenia właściwego rzeczownika",
     "调整游戏窗口按钮": "Dostosuj przyciski okna gry",
-    "未下载该语言的OCR模型": "Model OCR dla tego języka nie został pobrany",
     "内嵌的翻译器": "Wbudowany tłumacz",
     "使用最快翻译而非指定翻译器": "Użyj najszybszego tłumaczenia zamiast określać tłumacza",
     "剪贴板设置": "Ustawienia schowka",
@@ -368,7 +367,6 @@
     "快捷键": "Klawisze skrótów",
     "文本输入": "Wprowadzanie tekstu",
     "快捷按键": "Klawisze skrótów",
-    "未下载该语言的OCR模型,请从软件主页下载模型解压到files/ocr路径后使用": "Model OCR dla tego języka nie został pobrany. Proszę pobrać model ze strony głównej oprogramowania i wyodrębnić go do ścieżki plików/OCR przed użyciem go",
     "用户词典1": "Słownik użytkownika 1",
     "用户词典2": "Słownik użytkownika 2",
     "用户词典3": "Słownik użytkownika 3",
@@ -744,5 +742,6 @@
     "启用动态检测统计": "Włącz dynamiczne statystyki wykrywania",
     "不被打断": "Bez przerwy",
     "显示/隐藏历史翻译": "Pokaż/ukryj tłumaczenia historyczne",
-    "全屏/恢复游戏窗口": "Pełny ekran/przywróć okno gry"
+    "全屏/恢复游戏窗口": "Pełny ekran/przywróć okno gry",
+    "未下载该语言的OCR模型,请在[其他设置]->[资源下载]->[OCR语言包]下载模型解压到files/ocr路径后使用": "Model OCR dla tego języka nie został pobrany. Proszę rozpakować model do ścieżki plików/ocr w [Inne ustawienia] ->[Pobieranie zasobów] ->[OCR Language Pack] i użyć go"
 }

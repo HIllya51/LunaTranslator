@@ -341,7 +341,6 @@
     "设置界面字体": "Đặt phông giao diện",
     "专有名词翻译设置按钮": "Nút cài đặt danh từ độc quyền",
     "调整游戏窗口按钮": "Điều chỉnh nút cửa sổ trò chơi",
-    "未下载该语言的OCR模型": "Mô hình OCR cho ngôn ngữ này chưa được tải xuống",
     "内嵌的翻译器": "Trình dịch nội tuyến",
     "使用最快翻译而非指定翻译器": "Sử dụng bản dịch nhanh nhất thay vì chỉ định",
     "剪贴板设置": "Thiết lập bảng nháp",
@@ -368,7 +367,6 @@
     "快捷键": "Phím tắt",
     "文本输入": "Nhập văn bản",
     "快捷按键": "Phím tắt",
-    "未下载该语言的OCR模型,请从软件主页下载模型解压到files/ocr路径后使用": "Chưa tải xuống mô hình OCR cho ngôn ngữ này, vui lòng sử dụng nó sau khi giải nén mô hình từ trang chủ của phần mềm vào đường dẫn files/ocr",
     "用户词典1": "Từ điển người dùng 1",
     "用户词典2": "Từ điển người dùng 2",
     "用户词典3": "Từ điển người dùng 3",
@@ -744,5 +742,6 @@
     "不被打断": "Không bị gián đoạn",
     "非官方": "Không chính thức",
     "显示/隐藏历史翻译": "Hiện/ẩn bản dịch lịch sử",
-    "全屏/恢复游戏窗口": "Toàn màn hình/Khôi phục cửa sổ trò chơi"
+    "全屏/恢复游戏窗口": "Toàn màn hình/Khôi phục cửa sổ trò chơi",
+    "未下载该语言的OCR模型,请在[其他设置]->[资源下载]->[OCR语言包]下载模型解压到files/ocr路径后使用": "Mô hình OCR cho ngôn ngữ này chưa được tải xuống, vui lòng sử dụng sau khi [Cài đặt bổ sung] ->[Tải xuống tài nguyên] ->[Gói ngôn ngữ OCR] mô hình tải xuống đã được giải nén vào đường dẫn files/ocr"
 }

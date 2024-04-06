@@ -341,7 +341,6 @@
     "设置界面字体": "Set interface font",
     "专有名词翻译设置按钮": "Proper noun translation setting button",
     "调整游戏窗口按钮": "Adjust game window buttons",
-    "未下载该语言的OCR模型": "OCR model for this language is not downloaded",
     "内嵌的翻译器": "Embedded translator",
     "使用最快翻译而非指定翻译器": "Use the fastest translation instead of specifying the translator",
     "剪贴板设置": "Clipboard settings",
@@ -368,7 +367,6 @@
     "快捷键": "Shortcut keys",
     "文本输入": "Text input",
     "快捷按键": "Shortcut keys",
-    "未下载该语言的OCR模型,请从软件主页下载模型解压到files/ocr路径后使用": "The OCR model of this language is not downloaded. Please download the model from the software home page and extract it to the files/ocr path before use",
     "用户词典1": "User dictionary 1",
     "用户词典2": "User dictionary 2",
     "用户词典3": "User dictionary 3",
@@ -744,5 +742,6 @@
     "启用动态检测统计": "Enable dynamic detection statistics",
     "不被打断": "Not interrupted",
     "显示/隐藏历史翻译": "Show/hide historical translations",
-    "全屏/恢复游戏窗口": "Full screen/restore game window"
+    "全屏/恢复游戏窗口": "Full screen/restore game window",
+    "未下载该语言的OCR模型,请在[其他设置]->[资源下载]->[OCR语言包]下载模型解压到files/ocr路径后使用": "The OCR model for this language has not been downloaded. Please unzip the model to the files/ocr path in [Other Settings] ->[Resource Download] ->[OCR Language Pack] and use it"
 }
