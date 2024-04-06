@@ -252,6 +252,8 @@ class Settin(closeashidewindow):
             dark = True
         elif dl == 2:
             dark = darkdetect.isDark()
+            if dark is None:
+                dark = False
         darklight = ["light", "dark"][dark]
 
         class WindowEventFilter(QObject):
