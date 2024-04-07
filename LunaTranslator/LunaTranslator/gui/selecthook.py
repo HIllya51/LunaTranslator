@@ -183,7 +183,7 @@ class searchhookparam(QDialog):
             usestruct.boundaryModule = dumpvalues["module"][:120]
             usestruct.address_method = self.search_addr_range.idx()
             usestruct.search_method = self.search_method.idx()
-            usestruct.jittype = ["PC", "YUZU", "PPSSPP", "VITA3K"].index(
+            usestruct.jittype = ["PC", "YUZU", "PPSSPP", "VITA3K", "RPCS3"].index(
                 dumpvalues["jittype"]
             )
             if self.search_addr_range.idx() == 0:
@@ -398,7 +398,7 @@ class searchhookparam(QDialog):
             "PC",
             2,
             uselayout=layoutjit,
-            getlistcall=lambda: ["PC", "YUZU", "PPSSPP", "VITA3K"],
+            getlistcall=lambda: ["PC", "YUZU", "PPSSPP", "VITA3K", "RPCS3"],
             listeditable=False,
         )
 
