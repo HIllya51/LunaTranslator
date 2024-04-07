@@ -1,4 +1,4 @@
-import functools, json
+import functools, json, windows
 from traceback import print_exc
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import (
@@ -183,7 +183,9 @@ class searchhookparam(QDialog):
             usestruct.boundaryModule = dumpvalues["module"][:120]
             usestruct.address_method = self.search_addr_range.idx()
             usestruct.search_method = self.search_method.idx()
-            usestruct.jittype = ["PC", "YUZU", "PPSSPP"].index(dumpvalues["jittype"])
+            usestruct.jittype = ["PC", "YUZU", "PPSSPP", "VITA3K"].index(
+                dumpvalues["jittype"]
+            )
             if self.search_addr_range.idx() == 0:
                 usestruct.minAddress = self.safehex(
                     dumpvalues["startaddr"], usestruct.minAddress
@@ -220,6 +222,15 @@ class searchhookparam(QDialog):
 
     def __init__(self, parent) -> None:
         super().__init__(parent, Qt.WindowCloseButtonHint)
+        windows.SetWindowPos(
+            int(int(self.winId())),
+            windows.HWND_TOPMOST,
+            0,
+            0,
+            0,
+            0,
+            windows.SWP_NOACTIVATE | windows.SWP_NOSIZE | windows.SWP_NOMOVE,
+        )
         self.setWindowTitle(_TR("搜索设置"))
         mainlayout = QVBoxLayout()
         checks = QButtonGroup_switch_widegt(self)
@@ -387,7 +398,7 @@ class searchhookparam(QDialog):
             "PC",
             2,
             uselayout=layoutjit,
-            getlistcall=lambda: ["PC", "YUZU", "PPSSPP"],
+            getlistcall=lambda: ["PC", "YUZU", "PPSSPP", "VITA3K"],
             listeditable=False,
         )
 
