@@ -1019,7 +1019,7 @@
             "name": "yandex_api"
         },
         "qqimt": {
-            "use": true,
+            "use": false,
             "color": "blue",
             "name": "qqimt"
         },
