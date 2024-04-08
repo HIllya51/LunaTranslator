@@ -256,7 +256,46 @@
 				"step":0.1
 			}
 		}
-    },
+    },"claude": {
+		"args": {
+		  "BASE_URL":"https://api.anthropic.com",
+		  "model":"claude-3-opus-20240229",
+		  "API_KEY": "",
+		  "max_tokens":2048,
+		  "Temperature": 0.3,
+		  "附带上下文个数":0,
+		  "使用自定义promt":false,
+		  "自定义promt":"",
+		  "流式输出":false
+		}
+		,
+		  "argstype":{
+			  "流式输出":{
+				  "type": "switch"
+			  },
+			  "使用自定义promt":{
+				  "type":"switch"
+			  },
+			  "max_tokens":{
+				  "type":"intspin",
+				  "min":0,
+				  "max":1000000,
+				  "step":1
+			  },
+			  "附带上下文个数":{
+				  "type":"intspin",
+				  "min":0,
+				  "max":10,
+				  "step":1
+			  },
+			  "Temperature":{
+				  "type":"spin",
+				  "min":0,
+				  "max":1,
+				  "step":0.1
+			  }
+		  }
+	  },
 	"chatgpt-3rd-party": {
       "args": {
 		"使用说明":"oneapi/gptgod/...",

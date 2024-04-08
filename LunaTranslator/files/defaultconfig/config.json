@@ -1105,6 +1105,12 @@
             "name": "ChatGPT",
             "is_gpt_like":true
         },
+        "claude": {
+            "type": "api",
+            "use": false,
+            "color": "blue",
+            "name": "claude"
+        },
         "chatgpt-3rd-party": {
             "type": "api",
             "use": false,
