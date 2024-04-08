@@ -54,7 +54,7 @@ import gobject
 from myutils.config import _TR, _TRL, globalconfig, static_data
 import winsharedutils
 from myutils.wrapper import Singleton_close, Singleton, threader
-from myutils.utils import checkifnewgame
+from myutils.utils import checkifnewgame, vidchangedtask
 from myutils.proxy import getproxy
 from gui.usefulwidget import yuitsu_switch, saveposwindow, getboxlayout
 from myutils.vndb import parsehtmlmethod
@@ -533,6 +533,7 @@ class dialog_setting_game(QDialog):
 
             def _titlechange(x):
                 savehook_new_data[exepath]["title"] = x
+                savehook_new_data[exepath]["istitlesetted"] = True
                 savehook_new_data[exepath]["searchnoresulttime"] = 0
                 self.setWindowTitle(x)
                 gametitleitme.settitle(x)
@@ -553,6 +554,7 @@ class dialog_setting_game(QDialog):
                     _pixmap = QPixmap(res)
                     if _pixmap.isNull() == False:
                         savehook_new_data[exepath]["imagepath"] = res
+                        savehook_new_data[exepath]["isimagepathusersetted"] = True
                         imgpath.setText(res)
                         gametitleitme.setimg(_pixmap)
 
@@ -572,13 +574,7 @@ class dialog_setting_game(QDialog):
             vndbid.setValidator(QIntValidator())
             vndbid.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Fixed)
 
-            def changevid(exepath, text):
-                savehook_new_data[exepath]["vid"] = int(text)
-                savehook_new_data[exepath]["infopath"] = None
-                savehook_new_data[exepath]["searchnoresulttime"] = 0
-                # savehook_new_data[exepath]['imagepath']=None
-
-            vndbid.textEdited.connect(functools.partial(changevid, exepath))
+            vndbid.textEdited.connect(functools.partial(vidchangedtask, exepath))
 
             statiswids = [
                 QLabel(_TR("统计信息")),
@@ -691,8 +687,8 @@ class dialog_setting_game(QDialog):
 
         methodtab = QTabWidget()
         methodtab.addTab(self.gethooktab(exepath), "HOOK")
-        methodtab.addTab(self.getpretranstab(exepath), "预翻译")
-        methodtab.addTab(self.getttssetting(exepath), "语音")
+        methodtab.addTab(self.getpretranstab(exepath), _TR("预翻译"))
+        methodtab.addTab(self.getttssetting(exepath), _TR("语音"))
         formLayout.addWidget(methodtab)
 
         self.show()

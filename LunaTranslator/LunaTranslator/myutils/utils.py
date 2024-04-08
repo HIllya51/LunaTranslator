@@ -18,8 +18,27 @@ from myutils.config import (
     getdefaultsavehook,
 )
 import threading, queue
-import re
+import re, heapq
 from myutils.vndb import searchforidimage
+
+
+class PriorityQueue:
+    def __init__(self):
+        self._heap = []
+        self._sema = threading.Semaphore(0)
+        self._idx = 0
+
+    def put(self, item, priority=0):
+        heapq.heappush(self._heap, (-priority, self._idx, item))
+        self._idx += 1
+        self._sema.release()
+
+    def get(self):
+        self._sema.acquire()
+        return heapq.heappop(self._heap)[-1]
+
+    def empty(self):
+        return bool(len(self._heap) == 0)
 
 
 def checkimage(gamepath):
@@ -49,7 +68,7 @@ def checkneed(gamepath):
     return (gamepath in savehook_new_data) and (checkvid(gamepath))
 
 
-searchvndbqueue = queue.Queue()
+searchvndbqueue = PriorityQueue()
 
 
 def dispatachtask(gamepath):
@@ -57,7 +76,7 @@ def dispatachtask(gamepath):
         return
     __t = []
     if savehook_new_data[gamepath]["vid"]:
-        searchvndbqueue.put((gamepath, [savehook_new_data[gamepath]["vid"]]))
+        searchvndbqueue.put((gamepath, [savehook_new_data[gamepath]["vid"]]), 0)
     else:
         for _ in [
             savehook_new_data[gamepath]["title"],
@@ -82,7 +101,7 @@ def dispatachtask(gamepath):
             if (len(t) < 10) and (all(ord(c) < 128 for c in t)):
                 continue
             lst.append(t)
-        searchvndbqueue.put((gamepath, lst))
+        searchvndbqueue.put((gamepath, lst), 0)
 
 
 def everymethodsthread():
@@ -102,13 +121,21 @@ def everymethodsthread():
             saveimg = data.get("imagepath", None)
             saveinfo = data.get("infopath", None)
             vid = data.get("vid", None)
-            print(data)
+            title = data.get("title", None)
+            namemap = data.get("namemap", None)
+            
             if not vid:
                 continue
             savehook_new_data[gamepath]["vid"] = int(vid[1:])
-            if checkimage(gamepath):
+            if saveimg and (not savehook_new_data[gamepath]["isimagepathusersetted"]):
                 savehook_new_data[gamepath]["imagepath"] = saveimg
-            savehook_new_data[gamepath]["infopath"] = saveinfo
+            if title and (not savehook_new_data[gamepath]["istitlesetted"]):
+                savehook_new_data[gamepath]["title"] = title
+            if saveinfo:
+                savehook_new_data[gamepath]["infopath"] = saveinfo
+            if namemap:
+                savehook_new_data[gamepath]["namemap"] = namemap
+            print(namemap)
             succ = True
             break
         if succ == False:
@@ -116,6 +143,17 @@ def everymethodsthread():
 
 
 threading.Thread(target=everymethodsthread).start()
+
+
+def vidchangedtask(gamepath, vid):
+    try:
+        vid = int(vid)
+    except:
+        return
+    savehook_new_data[gamepath]["vid"] = vid
+    savehook_new_data[gamepath]["infopath"] = None
+    savehook_new_data[gamepath]["searchnoresulttime"] = 0
+    searchvndbqueue.put((gamepath, [vid]), 1)
 
 
 def checkifnewgame(gamepath, title=None):

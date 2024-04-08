@@ -93,6 +93,8 @@ def resourcegrid(self):
             else:
                 if link[-8:] == "releases":
                     __ = False
+                elif link[-1] == "/":
+                    __ = False
                 else:
                     __ = True
                 grid.append([(_TR(name), 1, ""), (makehtml(link, __), 2, "link")])

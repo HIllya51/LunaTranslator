@@ -280,6 +280,13 @@ def setTab7_lazy(self):
             "",
         ],
     ]
+    if globalconfig["languageuse"] == 2:  # en
+        grids2 += [
+            [
+                (("使用VNDB数据替换人名"), 6),
+                getsimpleswitch(globalconfig, "vndbmapname"),
+            ]
+        ]
 
     def __():
         _w = self.makescroll(self.makegrid(grids, True, savelist, savelay))

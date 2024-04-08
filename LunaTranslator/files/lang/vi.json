@@ -743,5 +743,6 @@
     "非官方": "Không chính thức",
     "显示/隐藏历史翻译": "Hiện/ẩn bản dịch lịch sử",
     "全屏/恢复游戏窗口": "Toàn màn hình/Khôi phục cửa sổ trò chơi",
-    "未下载该语言的OCR模型,请在[其他设置]->[资源下载]->[OCR语言包]下载模型解压到files/ocr路径后使用": "Mô hình OCR cho ngôn ngữ này chưa được tải xuống, vui lòng sử dụng sau khi [Cài đặt bổ sung] ->[Tải xuống tài nguyên] ->[Gói ngôn ngữ OCR] mô hình tải xuống đã được giải nén vào đường dẫn files/ocr"
+    "未下载该语言的OCR模型,请在[其他设置]->[资源下载]->[OCR语言包]下载模型解压到files/ocr路径后使用": "Mô hình OCR cho ngôn ngữ này chưa được tải xuống, vui lòng sử dụng sau khi [Cài đặt bổ sung] ->[Tải xuống tài nguyên] ->[Gói ngôn ngữ OCR] mô hình tải xuống đã được giải nén vào đường dẫn files/ocr",
+    "使用VNDB数据替换人名": "Thay tên người bằng dữ liệu VNDB"
 }

@@ -3,12 +3,12 @@ from queue import Queue
 
 from myutils.config import globalconfig, translatorsetting, static_data
 from threading import Thread
-import threading, time, types, heapq
+import time, types
 import zhconv, gobject
 import sqlite3
 from myutils.commonbase import commonbase
 import functools
-from myutils.utils import stringfyerror, autosql
+from myutils.utils import stringfyerror, autosql, PriorityQueue
 from myutils.commonbase import ArgsEmptyExc
 
 
@@ -55,25 +55,6 @@ def timeoutfunction(
     t = Threadwithresult(func, default, ignoreexceptions)
     t.start()
     return t.get_result(timeout, checktutukufunction)
-
-
-class PriorityQueue:
-    def __init__(self):
-        self._heap = []
-        self._sema = threading.Semaphore(0)
-        self._idx = 0
-
-    def put(self, item, priority=0):
-        heapq.heappush(self._heap, (-priority, self._idx, item))
-        self._idx += 1
-        self._sema.release()
-
-    def get(self):
-        self._sema.acquire()
-        return heapq.heappop(self._heap)[-1]
-
-    def empty(self):
-        return bool(len(self._heap) == 0)
 
 
 class basetrans(commonbase):

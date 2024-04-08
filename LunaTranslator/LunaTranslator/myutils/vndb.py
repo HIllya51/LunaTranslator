@@ -72,69 +72,103 @@ def vndbdowloadinfo(vid):
     return savepath
 
 
-def searchforidimage(title):
-    if isinstance(title, str):
-        if os.path.exists("./cache/vndb") == False:
-            os.mkdir("./cache/vndb")
-        js = requests.post(
-            "https://api.vndb.org/kana/vn",
-            json={
-                "filters": ["search", "=", title],
-                "fields": "image.url",
-                "sort": "searchrank",
-            },
+def safegetvndbjson(url, json, getter):
+    try:
+        _ = requests.post(
+            url,
+            json=json,
             proxies=getproxy(),
         )
         try:
-            results = js.json()["results"]
+            return getter(_.json())
         except:
-            print(js.text)
-            return {}
-        if len(results) == 0:
-            js = requests.post(
-                "https://api.vndb.org/kana/release",
-                json={
-                    "filters": ["search", "=", title],
-                    "fields": "vns.id",
-                    "sort": "searchrank",
-                },
-                proxies=getproxy(),
-            )
-            results = js.json()["results"]
-            if len(results) == 0:
-                return {}
-            vns = results[0]["vns"]
-            if len(vns) == 0:
-                return {}
-            vid = vns[0]["id"]
-            js = requests.post(
-                "https://api.vndb.org/kana/vn",
-                json={"filters": ["id", "=", vid], "fields": "image.url"},
-                proxies=getproxy(),
-            )
-            try:
-                results = js.json()["results"]
-            except:
-                print(js.text)
-                return {}
-            img = results[0]["image"]["url"]
-        else:
-            img = results[0]["image"]["url"]
-            vid = results[0]["id"]
-    elif isinstance(title, int):
-        vid = "v{}".format(title)
-        js = requests.post(
-            "https://api.vndb.org/kana/vn",
-            json={"filters": ["id", "=", vid], "fields": "image.url"},
-            proxies=getproxy(),
-        )
+            print(_.text)
+            return None
+    except:
+        return None
+
+
+def gettitlebyid(vid):
+    def _getter(js):
         try:
-            results = js.json()["results"]
+            return js["results"][0]["titles"][0]["title"]  # ja title
         except:
-            print(js.text)
-            return {}
-        img = results[0]["image"]["url"]
+            return js["results"][0]["title"]  # en title
+
+    return safegetvndbjson(
+        "https://api.vndb.org/kana/vn",
+        {"filters": ["id", "=", vid], "fields": "title,titles.title"},
+        _getter,
+    )
+
+
+def getimgbyid(vid):
+    return safegetvndbjson(
+        "https://api.vndb.org/kana/vn",
+        {"filters": ["id", "=", vid], "fields": "image.url"},
+        lambda js: js["results"][0]["image"]["url"],
+    )
+
+
+def getvidbytitle_vn(title):
+    return safegetvndbjson(
+        "https://api.vndb.org/kana/vn",
+        {"filters": ["search", "=", title], "fields": "id", "sort": "searchrank"},
+        lambda js: js["results"][0]["id"],
+    )
+
+
+def getvidbytitle_release(title):
+    return safegetvndbjson(
+        "https://api.vndb.org/kana/release",
+        {"filters": ["search", "=", title], "fields": "id", "sort": "searchrank"},
+        lambda js: js["results"][0]["id"],
+    )
+
+
+def getvidbytitle(title):
+    vid = getvidbytitle_vn(title)
+    if vid:
+        return vid
+    return getvidbytitle_release(title)
+
+
+def getcharnamemapbyid(vid):
+    res = safegetvndbjson(
+        "https://api.vndb.org/kana/character",
+        {
+            "filters": [
+                "vn",
+                "=",
+                ["id", "=", vid],
+            ],
+            "fields": "name,original",
+        },
+        lambda js: js["results"],
+    )
+    namemap = {}
+    try:
+        for r in res:
+            namemap[r["original"]] = r["name"]
+    except:
+        pass
+    return namemap
+
+
+def searchforidimage(titleorid):
+    print(titleorid)
+    if os.path.exists("./cache/vndb") == False:
+        os.mkdir("./cache/vndb")
+    if isinstance(titleorid, str):
+        vid = getvidbytitle(titleorid)
+    elif isinstance(titleorid, int):
+        vid = "v{}".format(titleorid)
+    img = getimgbyid(vid)
+    title = gettitlebyid(vid)
+    namemap = getcharnamemapbyid(vid)
     return {
+        "namemap": namemap,
+        "title": title,
         "vid": vid,
         "infopath": vndbdowloadinfo(vid),
         "imagepath": vndbdownloadimg(img),

@@ -69,6 +69,7 @@ class MAINUI:
         self.currentsignature = None
         self.isrunning = True
         self.solvegottextlock = threading.Lock()
+        self.outputers = {}
 
     @property
     def textsource(self):
@@ -248,13 +249,8 @@ class MAINUI:
         except:
             pass
         if onlytrans == False:
+            self.dispatchoutputer(text)
             self.currenttext = text
-            if (
-                globalconfig["outputtopasteboard"]
-                and globalconfig["sourcestatus2"]["copy"]["use"] == False
-            ):
-                winsharedutils.clipboard_set(text)
-
             if globalconfig["read_raw"]:
                 self.currentread = text
                 self.autoreadcheckname()
@@ -556,16 +552,32 @@ class MAINUI:
         else:
             self.hira_ = None
 
+    @threader
+    def startoutputer_re(self, klass):
+        self.outputers[klass].init()
+
+    @threader
+    def startoutputer(self):
+        for classname in globalconfig["textoutputer"]:
+            if not os.path.exists("./LunaTranslator/textoutput/" + classname + ".py"):
+                continue
+            aclass = importlib.import_module("textoutput." + classname).Outputer
+            self.outputers[classname] = aclass(classname)
+
+    def dispatchoutputer(self, text):
+        for _, kls in self.outputers.items():
+            if kls.config["use"]:
+                kls.puttask(text)
+
     def fanyiinitmethod(self, classname):
         try:
             if classname == "selfbuild":
-                if os.path.exists("./userconfig/selfbuild.py") == False:
+                if not os.path.exists("./userconfig/selfbuild.py"):
                     return None
                 aclass = importlib.import_module("selfbuild").TS
             else:
-                if (
-                    os.path.exists("./LunaTranslator/translator/" + classname + ".py")
-                    == False
+                if not os.path.exists(
+                    "./LunaTranslator/translator/" + classname + ".py"
                 ):
                     return None
                 aclass = importlib.import_module("translator." + classname).TS
@@ -783,7 +795,7 @@ class MAINUI:
         self.prepare()
         self.startxiaoxueguan()
         self.starthira()
-
+        self.startoutputer()
         self.settin_ui = Settin(self.translation_ui)
         self.transhis = gui.transhist.transhist(self.settin_ui)
         gobject.baseobject.Prompt = Prompt()

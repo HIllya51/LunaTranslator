@@ -334,17 +334,55 @@ def gethookembedgrid(self):
     return grids
 
 
-def setTabclip(self):
+def getTabclip(self):
 
     grids = [
         [
-            ("提取的文本自动复制到剪贴板", 5),
-            (getsimpleswitch(globalconfig, "outputtopasteboard"), 1),
+            ("排除复制自翻译器的文本", 3),
+            getsimpleswitch(globalconfig, "excule_from_self"),
             ("", 3),
+        ]
+    ]
+    return grids
+
+
+def outputgrid(self):
+
+    grids = [
+        [("自动输出提取的文本", 10)],
+        [],
+        [("剪贴板", 10)],
+        [
+            "",
+            ("输出到剪贴板", 5),
+            (getsimpleswitch(globalconfig["textoutputer"]["clipboard"], "use"), 1),
+        ],
+        [("WebSocket", 10)],
+        [
+            "",
+            ("输出到WebSocket", 5),
+            (
+                getsimpleswitch(
+                    globalconfig["textoutputer"]["websocket"],
+                    "use",
+                    callback=lambda _: gobject.baseobject.startoutputer_re("websocket"),
+                ),
+                1,
+            ),
         ],
         [
-            ("排除复制自翻译器的文本", 5),
-            (getsimpleswitch(globalconfig, "excule_from_self"), 1),
+            "",
+            ("端口号", 5),
+            (
+                getspinbox(
+                    0,
+                    65535,
+                    globalconfig["textoutputer"]["websocket"],
+                    "port",
+                    callback=lambda _: gobject.baseobject.startoutputer_re("websocket"),
+                ),
+                3,
+            ),
         ],
     ]
     return grids
@@ -462,12 +500,13 @@ def setTabOne(self):
 def setTabOne_lazy(self):
 
     tab = self.makesubtab_lazy(
-        ["HOOK设置", "OCR设置", "剪贴板", "内嵌翻译"],
+        ["HOOK设置", "OCR设置", "剪贴板", "内嵌翻译", "文本输出"],
         [
             lambda: self.makescroll(self.makegrid(gethookgrid(self))),
             lambda: self.makescroll(self.makegrid(getocrgrid(self))),
-            lambda: self.makescroll(self.makegrid(setTabclip(self))),
+            lambda: self.makescroll(self.makegrid(getTabclip(self))),
             lambda: self.makescroll(self.makegrid(gethookembedgrid(self))),
+            lambda: self.makescroll(self.makegrid(outputgrid(self))),
         ],
     )
 

@@ -11,11 +11,21 @@
     "read_trans": false,
     "read_translator": 0,
     "disappear_delay": 5,
+    "vndbmapname":false,
     "network":1,
     "hookmagpie":true,
     "hooklossless":true,
     "direct_filterrepeat":false,
     "allow_set_text_name":false,
+    "textoutputer":{
+        "clipboard":{
+            "use":false
+        },
+        "websocket":{
+            "use":false,
+            "port":2333
+        }
+    },
     "embedded": {
         "safecheck_use":true,
         "safecheckregexs": [
@@ -682,7 +692,6 @@
     "lighttheme":0,
     "usesearchword": false,
     "usecopyword":false,
-    "outputtopasteboard": false,
     "ttscommon": {
         "rate": 1.0,
         "volume": 100.0,

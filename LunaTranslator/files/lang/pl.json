@@ -743,5 +743,6 @@
     "不被打断": "Bez przerwy",
     "显示/隐藏历史翻译": "Pokaż/ukryj tłumaczenia historyczne",
     "全屏/恢复游戏窗口": "Pełny ekran/przywróć okno gry",
-    "未下载该语言的OCR模型,请在[其他设置]->[资源下载]->[OCR语言包]下载模型解压到files/ocr路径后使用": "Model OCR dla tego języka nie został pobrany. Proszę rozpakować model do ścieżki plików/ocr w [Inne ustawienia] ->[Pobieranie zasobów] ->[OCR Language Pack] i użyć go"
+    "未下载该语言的OCR模型,请在[其他设置]->[资源下载]->[OCR语言包]下载模型解压到files/ocr路径后使用": "Model OCR dla tego języka nie został pobrany. Proszę rozpakować model do ścieżki plików/ocr w [Inne ustawienia] ->[Pobieranie zasobów] ->[OCR Language Pack] i użyć go",
+    "使用VNDB数据替换人名": "Zastąp nazwiska osób na dane VNDB"
 }
