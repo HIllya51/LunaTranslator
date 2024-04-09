@@ -35,7 +35,7 @@ for f in ['LunaTranslator_admin.exe','LunaTranslator.exe']:
 shutil.copytree(r'.\files',rf'{targetdir}\files')
 shutil.copy(r'..\LICENSE',targetdir) 
 
-for f in ['hiraparse','ocrengines','translator','cishu','tts','network']:
+for f in ['hiraparse','ocrengines','translator','cishu','tts','network','textoutput']:
     shutil.copytree(rf'.\LunaTranslator\{f}',rf'{targetdir_in}\{f}') 
 
 def remove(f):
