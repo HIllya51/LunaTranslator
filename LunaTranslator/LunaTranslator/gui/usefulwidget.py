@@ -6,6 +6,7 @@ from PyQt5.QtWidgets import (
     QMessageBox,
     QDialog,
     QLabel,
+    QSizePolicy,
     QHBoxLayout,
 )
 from PyQt5.QtGui import QCursor, QCloseEvent, QColor, QTextCursor
@@ -435,12 +436,16 @@ def getcolorbutton(
     enable=True,
     transparent=True,
     qicon=None,
+    sizefixed=False,
 ):
     if qicon is None:
         qicon = qtawesome.icon(icon, color=constcolor if constcolor else d[key])
-    b = QPushButton(qicon, "")
+    b = QPushButton()
+    b.setIcon(qicon)
     b.setEnabled(enable)
     b.setIconSize(QSize(20, 20))
+    if sizefixed:
+        b.setFixedSize(QSize(20, 20))
     if transparent:
         b.setStyleSheet(
             """background-color: rgba(255, 255, 255, 0);
@@ -449,6 +454,7 @@ def getcolorbutton(
             font: 100 10pt;"""
         )
     b.clicked.connect(callback)
+    b.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
     if name:
         setattr(parent, name, b)
     return b
@@ -474,7 +480,7 @@ def getsimpleswitch(
 
     b = MySwitch(sign=d[key], enable=enable)
     b.clicked.connect(functools.partial(callbackwrap, d, key, callback))
-
+    b.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
     if pair:
         if pair not in dir(parent):
             setattr(parent, pair, {})

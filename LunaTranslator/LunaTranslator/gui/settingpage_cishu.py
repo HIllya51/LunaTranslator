@@ -141,6 +141,10 @@ def setTabcishu_l(self):
                 ("点击单词复制", 5),
                 (getsimpleswitch(globalconfig, "usecopyword"), 1),
             ],
+            [
+                ("使用原型查询", 5),
+                (getsimpleswitch(globalconfig, "usewordorigin"), 1),
+            ],
             [],
             [("辞书", 10)],
         ]

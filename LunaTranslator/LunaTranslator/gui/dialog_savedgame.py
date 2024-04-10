@@ -1,4 +1,4 @@
-import functools, time
+import functools, time, qtawesome
 from PyQt5.QtWidgets import (
     QPushButton,
     QDialog,
@@ -32,7 +32,16 @@ from PyQt5.QtWidgets import (
     QAction,
     QTabBar,
 )
-from PyQt5.QtGui import QIntValidator, QResizeEvent, QPixmap, QPainter
+from PyQt5.QtGui import (
+    QCloseEvent,
+    QIntValidator,
+    QPaintEvent,
+    QResizeEvent,
+    QPixmap,
+    QPainter,
+    QPen,
+    QColor,
+)
 from PyQt5.QtCore import Qt
 from gui.usefulwidget import (
     getsimplecombobox,
@@ -117,11 +126,11 @@ class ItemWidget(QWidget):
         # margin = (
         #     self.itemw - self.imgw
         # ) // 2  # globalconfig['dialog_savegame_layout']['margin']
-        margin=globalconfig["dialog_savegame_layout"]["margin"]
-        textH=globalconfig["dialog_savegame_layout"]["textH"]
-        self.imgw = self.itemw-2*margin
-        self.imgh = self.itemh-textH-2*margin
-        # 
+        margin = globalconfig["dialog_savegame_layout"]["margin"]
+        textH = globalconfig["dialog_savegame_layout"]["textH"]
+        self.imgw = self.itemw - 2 * margin
+        self.imgh = self.itemh - textH - 2 * margin
+        #
         self.setFixedSize(QSize(self.itemw, self.itemh))
         self.setFocusPolicy(Qt.StrongFocus)
         self.maskshowfileexists = QLabel(self)
@@ -129,11 +138,11 @@ class ItemWidget(QWidget):
         layout = QVBoxLayout()
         layout.setContentsMargins(0, 0, 0, 0)
         self._img = IMGWidget(self.imgw, self.imgh, pixmap)
-        _w=QWidget()
-        _w.setStyleSheet('background-color: rgba(255,255,255, 0);')
-        wrap=QVBoxLayout()
+        _w = QWidget()
+        _w.setStyleSheet("background-color: rgba(255,255,255, 0);")
+        wrap = QVBoxLayout()
         _w.setLayout(wrap)
-        _w.setFixedHeight(self.imgh+2*margin)
+        _w.setFixedHeight(self.imgh + 2 * margin)
         wrap.setContentsMargins(margin, margin, margin, margin)
         wrap.addWidget(self._img)
         layout.addWidget(_w)
@@ -186,13 +195,14 @@ class IMGWidget(QLabel):
         pixmap = QPixmap(self.size())
         pixmap.fill(Qt.transparent)
         painter = QPainter(pixmap)
-        painter.setRenderHint(QPainter.SmoothPixmapTransform) 
+        painter.setRenderHint(QPainter.SmoothPixmapTransform)
         painter.setRenderHint(QPainter.Antialiasing)
         painter.drawPixmap(self.getrect(), self.pix)
         painter.end()
-        
+
         self.setPixmap(pixmap)
         self.setFixedSize(pixmap.size())
+
     def getrect(self):
         size = self.adaptsize(self.pix.size())
         rect = QRect()
@@ -525,6 +535,14 @@ class browserdialog(QDialog):
             self.browser.navigate(link)
 
 
+def getvndbrealtags(vndbtags_naive):
+    vndbtags = []
+    for tagid in vndbtags_naive:
+        if tagid in globalconfig["vndbcache"]["tagid2name"]:
+            vndbtags.append(globalconfig["vndbcache"]["tagid2name"][tagid])
+    return vndbtags
+
+
 @Singleton
 class dialog_setting_game(QDialog):
     def selectexe(self):
@@ -611,7 +629,7 @@ class dialog_setting_game(QDialog):
         vndbid.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Fixed)
 
         vndbid.textEdited.connect(functools.partial(vidchangedtask, exepath))
-
+        
         statiswids = [
             QLabel(_TR("统计信息")),
             getcolorbutton(
@@ -628,6 +646,13 @@ class dialog_setting_game(QDialog):
                 "",
                 lambda: browserdialog(self, exepath),
                 icon="fa.book",
+                constcolor="#FF69B4",
+            ),
+            getcolorbutton(
+                "",
+                "",
+                lambda: vidchangedtask(exepath, savehook_new_data[exepath]["vid"]),
+                icon="fa.refresh",
                 constcolor="#FF69B4",
             ),
         ]
@@ -725,9 +750,64 @@ class dialog_setting_game(QDialog):
         methodtab.addTab(self.gethooktab(exepath), "HOOK")
         methodtab.addTab(self.getpretranstab(exepath), _TR("预翻译"))
         methodtab.addTab(self.getttssetting(exepath), _TR("语音"))
+        methodtab.addTab(self.getlabelsetting(exepath), _TR("标签"))
         formLayout.addWidget(methodtab)
 
         self.show()
+
+    def getlabelsetting(self, exepath):
+        _w = QWidget()
+        formLayout = QVBoxLayout()
+        # formLayout.setAlignment(Qt.AlignTop)
+        _w.setLayout(formLayout)
+        formLayout.setContentsMargins(0, 0, 0, 0)
+        self.labelflow = ScrollFlow()
+
+        def newitem(text, removeable):
+            qw = tagitem(text, removeable)
+
+            def __(_qw, t):
+                _qw.remove()
+                i = savehook_new_data[exepath]["usertags"].index(t)
+                self.labelflow.removeidx(i)
+                savehook_new_data[exepath]["usertags"].remove(t)
+
+            if removeable:
+                qw.removesignal.connect(functools.partial(__, qw))
+
+            def _lbclick(t):
+                self.parent().tagswidget.addTag(t)
+
+            qw.labelclicked.connect(_lbclick)
+            self.labelflow.addwidget(qw)
+
+        for tag in savehook_new_data[exepath]["usertags"]:
+            newitem(tag, True)
+        for tag in getvndbrealtags(savehook_new_data[exepath]["vndbtags"]):
+            newitem(tag, False)
+        formLayout.addWidget(self.labelflow)
+        _dict = {"new": 0}
+
+        formLayout.addWidget(self.labelflow)
+        button = QPushButton(_TR("添加"))
+
+        def _add(_):
+            tag = globalconfig["labelset"][_dict["new"]]
+            if tag not in savehook_new_data[exepath]["usertags"]:
+                savehook_new_data[exepath]["usertags"].append(tag)
+                newitem(tag, True)
+
+        button.clicked.connect(_add)
+
+        formLayout.addLayout(
+            getboxlayout(
+                [
+                    getsimplecombobox(globalconfig["labelset"], _dict, "new"),
+                    button,
+                ]
+            )
+        )
+        return _w
 
     def getttssetting(self, exepath):
         _w = QWidget()
@@ -922,8 +1002,8 @@ class dialog_syssetting(QDialog):
             ("itemh", "高度"),
             # ("imgw", "图片宽度"),
             # ("imgh", "图片高度"),
-            ('margin','边距'),
-            ('textH','文字区高度')
+            ("margin", "边距"),
+            ("textH", "文字区高度"),
         ]:
             formLayout.addRow(
                 (_TR(name)),
@@ -1013,6 +1093,7 @@ class dialog_statistic(QDialog):
         threading.Thread(target=self.refresh).start()
 
 
+@threader
 def startgame(game):
     try:
         if os.path.exists(game):
@@ -1097,6 +1178,199 @@ def startgame(game):
 
 
 @Singleton_close
+class labelsetedit(QDialog):
+    def __init__(self, p) -> None:
+        super().__init__(p)
+        try:
+            self.setWindowTitle(_TR("标签集"))
+            model = QStandardItemModel()
+            model.setHorizontalHeaderLabels(
+                _TRL(
+                    [
+                        "删除",
+                        "标签",
+                    ]
+                )
+            )
+            self.hcmodel = model
+
+            table = QTableView()
+            table.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
+            table.horizontalHeader().setStretchLastSection(True)
+            # table.setEditTriggers(QAbstractItemView.NoEditTriggers);
+            table.setSelectionBehavior(QAbstractItemView.SelectRows)
+            table.setSelectionMode((QAbstractItemView.SingleSelection))
+            table.setWordWrap(False)
+            table.setModel(model)
+            self.hctable = table
+
+            for row, k in enumerate(globalconfig["labelset"]):  # 2
+                self.newline(row, k)
+            formLayout = QVBoxLayout()
+            formLayout.addWidget(self.hctable)
+            button = QPushButton(_TR("添加行"))
+            button.clicked.connect(lambda _: self.newline(0, ""))
+            formLayout.addWidget(button)
+            self.setLayout(formLayout)
+            self.show()
+        except:
+            print_exc()
+
+    def clicked2(self):
+        try:
+            globalconfig["labelset"].pop(self.hctable.currentIndex().row())
+            self.hcmodel.removeRow(self.hctable.currentIndex().row())
+        except:
+            pass
+
+    def closeEvent(self, a0: QCloseEvent) -> None:
+        rows = self.hcmodel.rowCount()
+        rowoffset = 0
+        dedump = set()
+        globalconfig["labelset"].clear()
+        for row in range(rows):
+            k = self.hcmodel.item(row, 1).text()
+            if k == "" or k in dedump:
+                rowoffset += 1
+                continue
+            globalconfig["labelset"].append(k)
+            dedump.add(k)
+
+    def newline(self, row, k):
+        self.hcmodel.insertRow(row, [QStandardItem(), QStandardItem(k)])
+        self.hctable.setIndexWidget(
+            self.hcmodel.index(row, 0),
+            getcolorbutton(
+                "", "", self.clicked2, icon="fa.times", constcolor="#FF69B4"
+            ),
+        )
+
+
+class ClickableLabel(QLabel):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setClickable(True)
+
+    def setClickable(self, clickable):
+        self._clickable = clickable
+
+    def mousePressEvent(self, event):
+        if self._clickable and event.button() == Qt.LeftButton:
+            self.clicked.emit()
+
+    clicked = pyqtSignal()
+
+
+class tagitem(QWidget):
+
+    removesignal = pyqtSignal(str)
+    labelclicked = pyqtSignal(str)
+
+    def remove(self):
+        self.hide()
+        _lay = self.layout()
+        _ws = []
+        for i in range(_lay.count()):
+            witem = _lay.itemAt(i)
+            _ws.append(witem.widget())
+        for w in _ws:
+            _lay.removeWidget(w)
+
+    def paintEvent(self, event):
+        painter = QPainter(self)
+        painter.setRenderHint(QPainter.Antialiasing)
+
+        border_color = Qt.black
+        border_width = 1
+        pen = QPen(border_color)
+        pen.setWidth(border_width)
+        painter.setPen(pen)
+        painter.drawRect(self.rect())
+
+    def __init__(self, tag, removeable=True) -> None:
+        super().__init__()
+        tagLayout = QHBoxLayout()
+        tagLayout.setContentsMargins(0, 0, 0, 0)
+
+        self.setLayout(tagLayout)
+
+        lb = ClickableLabel(tag)
+        lb.clicked.connect(lambda: self.labelclicked.emit(tag))
+        tagLayout.addWidget(lb)
+        if removeable:
+            button = getcolorbutton(
+                None,
+                None,
+                lambda: self.removesignal.emit(tag),  # self.removeTag(tag),
+                qicon=qtawesome.icon(
+                    "fa.times",
+                    color="#FF69B4",
+                ),
+                sizefixed=True,
+            )
+            tagLayout.addWidget(button)
+
+
+class TagWidget(QWidget):
+    tagschanged = pyqtSignal(tuple)
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.tags = []
+
+        layout = QHBoxLayout()
+        layout.setContentsMargins(0, 0, 0, 0)
+        layout.addWidget(QLabel(_TR("标签")))
+        self.setLayout(layout)
+
+        self.lineEdit = QLineEdit()
+        self.lineEdit.returnPressed.connect(lambda: self.addTag(self.lineEdit.text()))
+        layout.addWidget(self.lineEdit)
+        self.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Fixed)
+
+        self.tag2widget = {}
+        layout.addWidget(
+            getcolorbutton(
+                "",
+                "",
+                lambda _: labelsetedit(parent),
+                icon="fa.gear",
+                constcolor="#FF69B4",
+            ),
+        )
+
+    def addTag(self, tag):
+        try:
+
+            if not tag:
+                return
+            if tag in self.tag2widget:
+                return
+            self.tags.append(tag)
+            qw = tagitem(tag)
+            qw.removesignal.connect(self.removeTag)
+
+            layout = self.layout()
+            # layout.insertLayout(layout.count() - 1, tagLayout)
+            layout.insertWidget(layout.count() - 2, qw)
+            self.tag2widget[tag] = qw
+            self.lineEdit.clear()
+            self.lineEdit.setFocus()
+            self.tagschanged.emit(tuple(self.tag2widget.keys()))
+        except:
+            print_exc()
+
+    def removeTag(self, tag):
+        _w = self.tag2widget[tag]
+        _w.remove()
+
+        self.layout().removeWidget(_w)
+        self.tag2widget.pop(tag)
+        self.lineEdit.setFocus()
+        self.tagschanged.emit(tuple(self.tag2widget.keys()))
+
+
+@Singleton_close
 class dialog_savedgame_new(saveposwindow):
     def startgame(self, game):
         if os.path.exists(game):
@@ -1143,6 +1417,35 @@ class dialog_savedgame_new(saveposwindow):
         if len(savehook_new_list):
             self.flow.l._item_list[0].widget().setFocus()
 
+    def tagschanged(self, tags):
+        checkexists = _TR("存在") in tags
+        if checkexists:
+            _ = list(tags)
+            _.remove(_TR("存在"))
+            tags = tuple(_)
+        self.formLayout.removeWidget(self.flow)
+        self.idxsave.clear()
+        self.flow = ScrollFlow()
+        self.formLayout.insertWidget(self.formLayout.count() - 1, self.flow)
+        for k in savehook_new_list:
+            if checkexists and os.path.exists(k) == False:
+                continue
+
+            # print(vndbtags)
+            notshow = False
+            for tag in tags:
+                if (
+                    tag not in getvndbrealtags(savehook_new_data[k]["vndbtags"])
+                    and tag not in savehook_new_data[k]["usertags"]
+                ):
+                    notshow = True
+                    break
+            if notshow:
+                continue
+            self.newline(k)
+            self.idxsave.append(k)
+            QApplication.processEvents()
+
     def __init__(self, parent) -> None:
         super().__init__(
             parent,
@@ -1153,11 +1456,14 @@ class dialog_savedgame_new(saveposwindow):
         self.setWindowTitle(_TR("已保存游戏"))
         if globalconfig["showintab_sub"]:
             showintab(int(self.winId()), True)
-        formLayout = QVBoxLayout()  #
+        formLayout = QVBoxLayout()
+        self.tagswidget = TagWidget(self)
+        self.tagswidget.tagschanged.connect(self.tagschanged)
+        formLayout.addWidget(self.tagswidget)
         self.flow = ScrollFlow()
 
         formLayout.addWidget(self.flow)
-
+        self.formLayout = formLayout
         buttonlayout = QHBoxLayout()
         self.buttonlayout = buttonlayout
         self.savebutton = []
@@ -1178,14 +1484,10 @@ class dialog_savedgame_new(saveposwindow):
         self.itemfocuschanged(False, None)
         self.show()
         self.idxsave = []
-        for i, k in enumerate(savehook_new_list):
-            if globalconfig["hide_not_exists"] and os.path.exists(k) == False:
-                continue
-            self.newline(k)
-            self.idxsave.append(k)
-            if i == 0:
-                self.top1focus()
-            QApplication.processEvents()
+        if globalconfig["hide_not_exists"]:
+            self.tagswidget.addTag(_TR("存在"))
+        else:
+            self.tagschanged(tuple())
 
     def showsettingdialog(self):
         idx = self.idxsave.index(self.currentfocuspath)

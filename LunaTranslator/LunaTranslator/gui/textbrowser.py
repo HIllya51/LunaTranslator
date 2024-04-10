@@ -490,7 +490,7 @@ class Textbrowser:
                                 )
                                 if callback:
                                     self.searchmasklabels_clicked[labeli].callback = (
-                                        functools.partial(callback, (word["orig"]))
+                                        functools.partial(callback, (word))
                                     )
 
                                 self.searchmasklabels_clicked[labeli + 1].setGeometry(
@@ -503,9 +503,7 @@ class Textbrowser:
                                 if callback:
                                     self.searchmasklabels_clicked[
                                         labeli + 1
-                                    ].callback = functools.partial(
-                                        callback, (word["orig"])
-                                    )
+                                    ].callback = functools.partial(callback, (word))
 
                             if globalconfig["show_fenci"]:
                                 self.searchmasklabels[labeli].setGeometry(*pos1)
@@ -540,7 +538,7 @@ class Textbrowser:
                                 self.searchmasklabels_clicked[labeli].show()
                                 if callback:
                                     self.searchmasklabels_clicked[labeli].callback = (
-                                        functools.partial(callback, (word["orig"]))
+                                        functools.partial(callback, word)
                                     )
                             if globalconfig["show_fenci"]:
                                 self.searchmasklabels[labeli].setGeometry(*pos1)

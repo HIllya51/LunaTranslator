@@ -752,5 +752,10 @@
     "拉伸": "Stretch",
     "居中": "Centré",
     "边距": "Les marges",
-    "文字区高度": "Hauteur de la zone de texte"
+    "文字区高度": "Hauteur de la zone de texte",
+    "标签": "Étiquettes",
+    "存在": "Présence",
+    "标签集": "Ensemble d'étiquettes",
+    "添加": "Ajouter",
+    "使用原型查询": "Utiliser une requête prototype"
 }

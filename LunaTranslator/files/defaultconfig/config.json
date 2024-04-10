@@ -688,6 +688,7 @@
     "lighttheme":0,
     "usesearchword": false,
     "usecopyword":false,
+    "usewordorigin":false,
     "ttscommon": {
         "rate": 1.0,
         "volume": 100.0,
@@ -1230,5 +1231,9 @@
         "captureOffsetRight":0,
         "captureOffsetBottom":0,
         "multiDisplayMode":false
-    }
+    },
+    "vndbcache":{
+        "tagid2name":{}
+    },
+    "labelset":[]
 }

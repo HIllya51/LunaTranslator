@@ -125,9 +125,10 @@ def everymethodsthread():
             vid = data.get("vid", None)
             title = data.get("title", None)
             namemap = data.get("namemap", None)
-            
+            vndbtags = data.get("vndbtags", None)
             if not vid:
                 continue
+            print(data)
             savehook_new_data[gamepath]["vid"] = int(vid[1:])
             if saveimg and (not savehook_new_data[gamepath]["isimagepathusersetted"]):
                 savehook_new_data[gamepath]["imagepath"] = saveimg
@@ -137,7 +138,9 @@ def everymethodsthread():
                 savehook_new_data[gamepath]["infopath"] = saveinfo
             if namemap:
                 savehook_new_data[gamepath]["namemap"] = namemap
-            print(namemap)
+            if vndbtags:
+                savehook_new_data[gamepath]["vndbtags"] = vndbtags
+            
             succ = True
             break
         if succ == False:

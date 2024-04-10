@@ -752,5 +752,10 @@
     "拉伸": "stretching",
     "居中": "Centered",
     "边距": "Margins",
-    "文字区高度": "Text area height"
+    "文字区高度": "Text area height",
+    "标签": "label",
+    "存在": "existence",
+    "标签集": "Label set",
+    "添加": "Add",
+    "使用原型查询": "Using prototype queries"
 }

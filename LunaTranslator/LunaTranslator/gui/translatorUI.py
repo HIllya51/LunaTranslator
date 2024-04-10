@@ -273,6 +273,11 @@ class QUnFrameWindow(resizableframeless):
         ) and hira:
 
             def callback(word):
+                if globalconfig["usewordorigin"] == False:
+                    word = word["orig"]
+                else:
+                    word = word.get("origorig", word["orig"])
+
                 if globalconfig["usecopyword"]:
                     winsharedutils.clipboard_set(word)
                 if globalconfig["usesearchword"]:

@@ -2,6 +2,7 @@ import time, requests, re, os, hashlib
 from myutils.proxy import getproxy
 from myutils.config import globalconfig
 from threading import Thread
+from traceback import print_exc
 
 
 def b64string(a):
@@ -82,6 +83,7 @@ def safegetvndbjson(url, json, getter):
         try:
             return getter(_.json())
         except:
+            # print_exc()
             print(_.text)
             return None
     except:
@@ -155,23 +157,74 @@ def getcharnamemapbyid(vid):
     return namemap
 
 
+def gettagnamebytagid(gid):
+
+    return safegetvndbjson(
+        "https://api.vndb.org/kana/tag",
+        {
+            "filters": [
+                "id",
+                "=",
+                gid,
+            ],
+            "fields": "name",
+        },
+        lambda js: js["results"][0]["name"],
+    )
+
+
+def getvntagsbyid(vid):
+
+    res = safegetvndbjson(
+        "https://api.vndb.org/kana/vn",
+        {
+            "filters": [
+                "id",
+                "=",
+                vid,
+            ],
+            "fields": "tags.rating",
+        },
+        lambda js: js["results"][0]["tags"],
+    )
+    if not res:
+        return
+    tags = []
+    try:
+        for r in res:
+            tag = r["id"]
+            if tag not in globalconfig["vndbcache"]["tagid2name"]:
+                name = gettagnamebytagid(tag)
+                if name:
+                    globalconfig["vndbcache"]["tagid2name"][tag] = name
+
+            tags.append(r["id"])
+    except:
+        pass
+    return tags
+
+
 def searchforidimage(titleorid):
     print(titleorid)
     if os.path.exists("./cache/vndb") == False:
         os.mkdir("./cache/vndb")
     if isinstance(titleorid, str):
         vid = getvidbytitle(titleorid)
+        if not vid:
+            return {}
     elif isinstance(titleorid, int):
         vid = "v{}".format(titleorid)
     img = getimgbyid(vid)
     title = gettitlebyid(vid)
     namemap = getcharnamemapbyid(vid)
+    vndbtags = getvntagsbyid(vid)
     return {
         "namemap": namemap,
         "title": title,
         "vid": vid,
         "infopath": vndbdowloadinfo(vid),
         "imagepath": vndbdownloadimg(img),
+        "vndbtags": vndbtags,
     }
 
 

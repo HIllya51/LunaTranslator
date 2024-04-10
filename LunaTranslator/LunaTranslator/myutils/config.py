@@ -86,6 +86,8 @@ def getdefaultsavehook(gamepath, title=None):
         "gamejsonfile": "",
         "gamesqlitefile": "",
         "gamexmlfile": "",
+        "vndbtags": [],
+        "usertags": [],
     }
     if gamepath == "0":
         default["title"] = "No Game"

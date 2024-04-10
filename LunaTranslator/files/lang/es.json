@@ -752,5 +752,10 @@
     "拉伸": "Estiramiento",
     "居中": "En el Centro",
     "边距": "Margen",
-    "文字区高度": "Altura del área de texto"
+    "文字区高度": "Altura del área de texto",
+    "标签": "Etiquetas",
+    "存在": "Existencia",
+    "标签集": "Conjunto de etiquetas",
+    "添加": "Añadir",
+    "使用原型查询": "Consulta con prototipo"
 }
