@@ -27,7 +27,6 @@
     "基本设置": "Cài đặt cơ bản",
     "选择文本输入源": "Chọn nguồn nhập văn bản",
     "剪贴板": "Bảng nháp",
-    "提取的文本自动复制到剪贴板": "Văn bản đã trích xuất được tự động sao chép vào bảng tạm",
     "确定": "Xác định",
     "百度": "100 triệu",
     "必应": "Trang chủ",
@@ -744,5 +743,14 @@
     "显示/隐藏历史翻译": "Hiện/ẩn bản dịch lịch sử",
     "全屏/恢复游戏窗口": "Toàn màn hình/Khôi phục cửa sổ trò chơi",
     "未下载该语言的OCR模型,请在[其他设置]->[资源下载]->[OCR语言包]下载模型解压到files/ocr路径后使用": "Mô hình OCR cho ngôn ngữ này chưa được tải xuống, vui lòng sử dụng sau khi [Cài đặt bổ sung] ->[Tải xuống tài nguyên] ->[Gói ngôn ngữ OCR] mô hình tải xuống đã được giải nén vào đường dẫn files/ocr",
-    "使用VNDB数据替换人名": "Thay tên người bằng dữ liệu VNDB"
+    "使用VNDB数据替换人名": "Thay tên người bằng dữ liệu VNDB",
+    "文本输出": "Xuất văn bản",
+    "自动输出提取的文本": "Tự động xuất văn bản đã trích xuất",
+    "输出到剪贴板": "Xuất ra bảng nháp",
+    "输出到WebSocket": "Xuất ra WebSocket",
+    "缩放": "Phóng to",
+    "填充": "Điền",
+    "适应": "Điều chỉnh",
+    "拉伸": "căng",
+    "居中": "Ở giữa"
 }

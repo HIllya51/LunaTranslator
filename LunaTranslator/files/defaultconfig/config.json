@@ -14,6 +14,7 @@
     "vndbmapname":false,
     "network":1,
     "hookmagpie":true,
+    "imagewrapmode":0,
     "hooklossless":true,
     "direct_filterrepeat":false,
     "allow_set_text_name":false,

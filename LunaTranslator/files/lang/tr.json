@@ -27,7 +27,6 @@
     "基本设置": "Temel ayarlar",
     "选择文本输入源": "Metin girdi kaynağını seç",
     "剪贴板": "clipboard",
-    "提取的文本自动复制到剪贴板": "Ekstra metin otomatik olarak clipboard'a kopyalandı",
     "确定": "belirle",
     "百度": "Baiduzaire2006. kgm",
     "必应": "Bing",
@@ -744,5 +743,14 @@
     "显示/隐藏历史翻译": "Tarihi çevirimleri göster/gizle",
     "全屏/恢复游戏窗口": "Full screen/restore game window",
     "未下载该语言的OCR模型,请在[其他设置]->[资源下载]->[OCR语言包]下载模型解压到files/ocr路径后使用": "Bu dilin OCR modeli indirilmedi. Lütfen modelini [Diğer Ayarlar] ->[Kaynak İndirme] ->[OCR Dil Paketi] içindeki dosyalara/ikiyüzlü yola bağlayın ve kullanın",
-    "使用VNDB数据替换人名": "İnsan isimlerini VNDB veriyle değiştir"
+    "使用VNDB数据替换人名": "İnsan isimlerini VNDB veriyle değiştir",
+    "文本输出": "Metin çıkış",
+    "自动输出提取的文本": "Automatically output extracted text",
+    "输出到剪贴板": "Output to clipboard",
+    "输出到WebSocket": "WebSocket'e çıkış",
+    "缩放": "zoom",
+    "填充": "dolduruyor",
+    "适应": "adapt",
+    "拉伸": "stretching",
+    "居中": "Centered"
 }

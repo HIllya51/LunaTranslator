@@ -27,7 +27,6 @@
     "基本设置": "Configuración básica",
     "选择文本输入源": "Seleccionar fuente de entrada de texto",
     "剪贴板": "Portapapeles",
-    "提取的文本自动复制到剪贴板": "El texto extraído se copia automáticamente al portapapeles",
     "确定": "Determinar",
     "百度": "Baidu",
     "必应": "Debe responder",
@@ -744,5 +743,14 @@
     "显示/隐藏历史翻译": "Mostrar / ocultar la traducción histórica",
     "全屏/恢复游戏窗口": "Pantalla completa / restaurar la ventana del juego",
     "未下载该语言的OCR模型,请在[其他设置]->[资源下载]->[OCR语言包]下载模型解压到files/ocr路径后使用": "El modelo OCR del idioma no se ha descargado, por favor use después de descargar el modelo a la ruta files / OCR [configuración adicional] - > descarga de recursos] - > paquete de lenguaje ocr]",
-    "使用VNDB数据替换人名": "Reemplazar nombres con datos vndb"
+    "使用VNDB数据替换人名": "Reemplazar nombres con datos vndb",
+    "文本输出": "Salida de texto",
+    "自动输出提取的文本": "Salida automática del Texto extraído",
+    "输出到剪贴板": "Exportar al portapapeles",
+    "输出到WebSocket": "Exportar a websocket",
+    "缩放": "Zoom",
+    "填充": "Relleno",
+    "适应": "Adaptación",
+    "拉伸": "Estiramiento",
+    "居中": "En el Centro"
 }

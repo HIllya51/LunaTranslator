@@ -133,43 +133,63 @@ class ItemWidget(QWidget):
         self.setLayout(layout)
 
 
-class IMGWidget(QWidget):
+class IMGWidget(QLabel):
 
     def adaptsize(self, size: QSize):
         h, w = size.height(), size.width()
-        if h < self.imgmaxheigth and w < self.imgmaxwidth:
-            return size
-        r = float(w) / h
-        max_r = float(self.imgmaxwidth) / self.imgmaxheigth
-        if r > max_r:
+        if globalconfig["imagewrapmode"] == 0:
+
+            # if h < self.imgmaxheigth and w < self.imgmaxwidth:
+            #     return size
+            r = float(w) / h
+            max_r = float(self.imgmaxwidth) / self.imgmaxheigth
+            if r < max_r:
+                new_w = self.imgmaxwidth
+                new_h = int(new_w / r)
+            else:
+                new_h = self.imgmaxheigth
+                new_w = int(new_h * r)
+            return QSize(new_w, new_h)
+        elif globalconfig["imagewrapmode"] == 1:
+            r = float(w) / h
+            max_r = float(self.imgmaxwidth) / self.imgmaxheigth
+            if r > max_r:
+                new_w = self.imgmaxwidth
+                new_h = int(new_w / r)
+            else:
+                new_h = self.imgmaxheigth
+                new_w = int(new_h * r)
+            return QSize(new_w, new_h)
+        elif globalconfig["imagewrapmode"] == 2:
             new_w = self.imgmaxwidth
-            new_h = int(new_w / r)
-        else:
             new_h = self.imgmaxheigth
-            new_w = int(new_h * r)
-        return QSize(new_w, new_h)
+            return QSize(new_w, new_h)
+        elif globalconfig["imagewrapmode"] == 3:
+            new_w = w
+            new_h = h
+            return QSize(new_w, new_h)
 
     @threader
     def setimg(self, pixmap):
         if type(pixmap) != QPixmap:
             pixmap = pixmap()
-        self.label.setPixmap(pixmap)
-        self.label.setFixedSize(self.adaptsize(pixmap.size()))
+
+        self.setPixmap(
+            pixmap.scaled(
+                self.adaptsize(pixmap.size()),
+                Qt.IgnoreAspectRatio,
+                Qt.SmoothTransformation,
+            )
+        )
 
     def __init__(self, w, h, pixmap) -> None:
         super().__init__()
         self.imgmaxwidth = w
         self.imgmaxheigth = h
         self.setFixedSize(QSize(self.imgmaxwidth, self.imgmaxheigth))
-        layout = QGridLayout()
-        layout.setContentsMargins(0, 0, 0, 0)
-        self.label = QLabel()
-        self.label.setScaledContents(True)
 
+        self.setAlignment(Qt.AlignCenter)
         self.setimg(pixmap)
-        layout.addWidget(self.label)
-
-        self.setLayout(layout)
 
 
 class ScrollFlow(QWidget):
@@ -888,7 +908,7 @@ class dialog_syssetting(QDialog):
             ("imgh", "图片高度"),
         ]:
             formLayout.addRow(
-                QLabel(_TR(name)),
+                (_TR(name)),
                 getspinbox(0, 1000, globalconfig["dialog_savegame_layout"], key),
             )
         for key, name in [
@@ -896,7 +916,7 @@ class dialog_syssetting(QDialog):
             ("onfilenoexistscolor", "游戏不存在时颜色"),
         ]:
             formLayout.addRow(
-                QLabel(_TR(name)),
+                (_TR(name)),
                 getcolorbutton(
                     globalconfig["dialog_savegame_layout"],
                     key,
@@ -913,7 +933,14 @@ class dialog_syssetting(QDialog):
                     parent=self,
                 ),
             )
-
+        formLayout.addRow(
+            _TR("缩放"),
+            getsimplecombobox(
+                _TRL(["填充", "适应", "拉伸", "居中"]),
+                globalconfig,
+                "imagewrapmode",
+            ),
+        )
         self.show()
 
 
