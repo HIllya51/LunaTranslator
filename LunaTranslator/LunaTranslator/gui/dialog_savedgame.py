@@ -44,7 +44,7 @@ from gui.usefulwidget import (
 )
 from PyQt5.QtCore import QPoint, QRect, QSize, Qt, pyqtSignal
 import os
-from myutils.hwnd import showintab, getScreenRate
+from myutils.hwnd import showintab
 from PyQt5.QtGui import QStandardItem, QStandardItemModel
 from PyQt5.QtCore import Qt, QSize
 from myutils.config import savehook_new_list, savehook_new_data
@@ -363,7 +363,7 @@ class browserdialog(QDialog):
         if self._resizable == False:
             return
         self.nettab.resize(a0.size().width(), self.nettab.height())
-        rate = getScreenRate()
+        rate = QApplication.instance().devicePixelRatio()
         rect = (
             0,
             int(rate * self.nettab.height()),

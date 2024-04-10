@@ -103,7 +103,7 @@ def getscreenp():  # 一些游戏全屏时会修改分辨率，但不会修改�
 
 def hwndscalerate(hwnd):
     dpi = windows.GetDpiForWindow(hwnd)
-    rate = getScreenRate() * 96 / dpi
+    rate = QApplication.instance().devicePixelRatio() * 96 / dpi
     return rate
 
 
@@ -241,19 +241,6 @@ def getExeIcon(name, icon=True, cache=False):
         return QIcon(pixmap)
     else:
         return pixmap
-
-
-__rate = 0
-
-
-def getScreenRate():
-    global __rate
-    if __rate == 0:
-        hDC = windows.GetDC(0)
-        dpiX = windows.GetDeviceCaps(hDC, windows.LOGPIXELSX) / 96.0
-        windows.ReleaseDC(None, hDC)
-        __rate = round(dpiX, 2)
-    return __rate
 
 
 def injectdll(injectpids, injecter, dll):

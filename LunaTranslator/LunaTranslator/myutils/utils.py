@@ -8,7 +8,9 @@ import ctypes
 import time
 import ctypes.wintypes
 import time
-from myutils.hwnd import getScreenRate
+from PyQt5.QtWidgets import (
+    QApplication,
+)
 from traceback import print_exc
 from myutils.config import (
     globalconfig,
@@ -17,7 +19,7 @@ from myutils.config import (
     savehook_new_data,
     getdefaultsavehook,
 )
-import threading, queue
+import threading
 import re, heapq
 from myutils.vndb import searchforidimage
 
@@ -410,7 +412,7 @@ def minmaxmoveobservefunc(self):
             elif event == windows.EVENT_SYSTEM_MOVESIZEEND:  #
                 if globalconfig["movefollow"]:
                     if self.lastpos:
-                        rate = getScreenRate()
+                        rate = QApplication.instance().devicePixelRatio()
                         self.hookfollowsignal.emit(
                             5,
                             (
