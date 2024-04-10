@@ -50,19 +50,17 @@ class QUnFrameWindow(resizableframeless):
         if self._move_drag:
             return
         if code == 3:
-            if self.hideshownotauto:
-                self.show_()
-                try:
-                    _h = windows.GetForegroundWindow()
-                    _fpid = windows.GetWindowThreadProcessId(_h)
-                    _hpid = windows.GetWindowThreadProcessId(other[0])
-                    if _fpid != _hpid:
-                        windows.SetForegroundWindow(other[0])
-                except:
-                    pass
+            self.show_()
+            try:
+                _h = windows.GetForegroundWindow()
+                _fpid = windows.GetWindowThreadProcessId(_h)
+                _hpid = windows.GetWindowThreadProcessId(other[0])
+                if _fpid != _hpid:
+                    windows.SetForegroundWindow(other[0])
+            except:
+                pass
         elif code == 4:
-            if self.hideshownotauto:
-                self.hide_()
+            self.hide_()
         elif code == 5:
             # print(self.pos())
             # self.move(self.pos() + self._endPos)z
@@ -283,13 +281,12 @@ class QUnFrameWindow(resizableframeless):
             self.translate_text.addsearchwordmask(hira, text, callback)
 
         if globalconfig["autodisappear"]:
-            if self.hideshownotauto:
-                flag = (self.showintab and self.isMinimized()) or (
-                    not self.showintab and self.isHidden()
-                )
+            flag = (self.showintab and self.isMinimized()) or (
+                not self.showintab and self.isHidden()
+            )
 
-                if flag:
-                    self.show_()
+            if flag:
+                self.show_()
             self.lastrefreshtime = time.time()
             self.autohidestart = True
 
@@ -313,22 +310,14 @@ class QUnFrameWindow(resizableframeless):
         )
 
         if flag:
-            self.show_and_enableautohide()
+            self.show_()
         else:
-            self.hide_and_disableautohide()
+            self.hide_()
 
     def leftclicktray(self, reason):
         # 鼠标左键点击
         if reason == QSystemTrayIcon.Trigger:
             self.showhideui()
-
-    def hide_and_disableautohide(self):
-        self.hideshownotauto = False
-        self.hide_()
-
-    def show_and_enableautohide(self):
-        self.hideshownotauto = True
-        self.show_()
 
     def refreshtoolicon(self):
 
@@ -491,7 +480,7 @@ class QUnFrameWindow(resizableframeless):
                 ),
             ),
             ("ocr_once", self.ocr_once_signal.emit),
-            ("minmize", self.hide_and_disableautohide),
+            ("minmize", self.hide_),
             ("quit", self.close),
         )
         adjast = {"minmize": -2, "quit": -1}
@@ -613,7 +602,6 @@ class QUnFrameWindow(resizableframeless):
         self.muteprocessignal.connect(self.muteprocessfuntion)
         self.toolbarhidedelaysignal.connect(self.toolbarhidedelay)
 
-        self.hideshownotauto = True
         self.ocr_once_signal.connect(self.ocr_once_function)
         self.entersignal.connect(self.enterfunction)
         self.displaystatus.connect(self.showstatus)

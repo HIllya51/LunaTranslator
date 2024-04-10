@@ -147,7 +147,7 @@ class Settin(closeashidewindow):
         showAction = QAction(
             _TR("&显示"),
             self,
-            triggered=gobject.baseobject.translation_ui.show_and_enableautohide,
+            triggered=gobject.baseobject.translation_ui.show_,
         )
         settingAction = QAction(
             _TR("&设置"),
