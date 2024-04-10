@@ -779,7 +779,7 @@ class hookselect(closeashidewindow):
 
     def opengamesetting(self):
         try:
-            dialog_setting_game(self, gobject.baseobject.textsource.pname, None, type=2)
+            dialog_setting_game(self, gobject.baseobject.textsource.pname, None)
         except:
             print_exc()
 

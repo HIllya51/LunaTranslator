@@ -10,7 +10,7 @@ from PyQt5.QtCore import Qt, pyqtSignal
 import qtawesome
 from PyQt5.QtCore import pyqtSignal, Qt, QSize
 from PyQt5.QtGui import QCursor
-from PyQt5.QtWidgets import QLabel, QPushButton, QSystemTrayIcon, QAction, QMenu
+from PyQt5.QtWidgets import QLabel, QPushButton, QSystemTrayIcon
 import gobject
 from myutils.wrapper import threader
 import winsharedutils
@@ -18,7 +18,7 @@ from myutils.config import globalconfig, saveallconfig, _TR, static_data
 from myutils.subproc import endsubprocs
 from myutils.ocrutil import ocr_run, imageCut
 from myutils.hwnd import mouseselectwindow, showintab, grabwindow, getExeIcon
-from gui.dialog_savedgame import dialog_savedgame, dialog_savedgame_new
+from gui.dialog_savedgame import dialog_savedgame_new
 from gui.dialog_memory import dialog_memory
 from gui.textbrowser import Textbrowser
 from myutils.fullscreen import fullscreen
@@ -34,7 +34,7 @@ class QUnFrameWindow(resizableframeless):
     showhideuisignal = pyqtSignal()
     hookfollowsignal = pyqtSignal(int, tuple)
     toolbarhidedelaysignal = pyqtSignal()
-    showsavegame_signal = pyqtSignal(int)
+    showsavegame_signal = pyqtSignal()
     clickRange_signal = pyqtSignal(bool)
     showhide_signal = pyqtSignal()
     bindcropwindow_signal = pyqtSignal()
@@ -420,7 +420,6 @@ class QUnFrameWindow(resizableframeless):
             ("mousetransbutton", lambda: self.changemousetransparentstate(0)),
             ("backtransbutton", lambda: self.changemousetransparentstate(1)),
             ("locktoolsbutton", self.changetoolslockstate),
-            ("gamepad", lambda: dialog_savedgame(gobject.baseobject.settin_ui)),
             ("gamepad_new", lambda: dialog_savedgame_new(gobject.baseobject.settin_ui)),
             (
                 "selectgame",
@@ -610,7 +609,9 @@ class QUnFrameWindow(resizableframeless):
         self.displayres.connect(self.showres)
         self.displayraw1.connect(self.showraw)
         self.refreshtooliconsignal.connect(self.refreshtoolicon)
-        self.showsavegame_signal.connect(self.showsavegame_f)
+        self.showsavegame_signal.connect(
+            lambda: dialog_savedgame_new(gobject.baseobject.settin_ui)
+        )
         self.clickRange_signal.connect(self.clickRange)
         self.showhide_signal.connect(self.showhideocrrange)
         self.bindcropwindow_signal.connect(
@@ -649,12 +650,6 @@ class QUnFrameWindow(resizableframeless):
         self.document.contentsChanged.connect(self.textAreaChanged)
         self.set_color_transparency()
         self.refreshtoolicon()
-
-    def showsavegame_f(self, i):
-        if i == 0:
-            dialog_savedgame(gobject.baseobject.settin_ui)
-        else:
-            dialog_savedgame_new(gobject.baseobject.settin_ui)
 
     def set_color_transparency(self):
         self.translate_text.setStyleSheet(

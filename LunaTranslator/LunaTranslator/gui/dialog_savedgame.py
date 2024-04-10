@@ -28,12 +28,11 @@ from PyQt5.QtWidgets import (
     QLayout,
     QSizePolicy,
     QWidget,
-    QGridLayout,
     QMenu,
     QAction,
     QTabBar,
 )
-from PyQt5.QtGui import QIntValidator, QResizeEvent, QPixmap
+from PyQt5.QtGui import QIntValidator, QResizeEvent, QPixmap, QPainter
 from PyQt5.QtCore import Qt
 from gui.usefulwidget import (
     getsimplecombobox,
@@ -136,59 +135,65 @@ class ItemWidget(QWidget):
 class IMGWidget(QLabel):
 
     def adaptsize(self, size: QSize):
-        h, w = size.height(), size.width()
-        if globalconfig["imagewrapmode"] == 0:
 
-            # if h < self.imgmaxheigth and w < self.imgmaxwidth:
-            #     return size
+        if globalconfig["imagewrapmode"] == 0:
+            h, w = size.height(), size.width()
             r = float(w) / h
-            max_r = float(self.imgmaxwidth) / self.imgmaxheigth
+            max_r = float(self.width()) / self.height()
             if r < max_r:
-                new_w = self.imgmaxwidth
+                new_w = self.width()
                 new_h = int(new_w / r)
             else:
-                new_h = self.imgmaxheigth
+                new_h = self.height()
                 new_w = int(new_h * r)
             return QSize(new_w, new_h)
         elif globalconfig["imagewrapmode"] == 1:
+            h, w = size.height(), size.width()
             r = float(w) / h
-            max_r = float(self.imgmaxwidth) / self.imgmaxheigth
+            max_r = float(self.width()) / self.height()
             if r > max_r:
-                new_w = self.imgmaxwidth
+                new_w = self.width()
                 new_h = int(new_w / r)
             else:
-                new_h = self.imgmaxheigth
+                new_h = self.height()
                 new_w = int(new_h * r)
             return QSize(new_w, new_h)
         elif globalconfig["imagewrapmode"] == 2:
-            new_w = self.imgmaxwidth
-            new_h = self.imgmaxheigth
-            return QSize(new_w, new_h)
+            return self.size()
         elif globalconfig["imagewrapmode"] == 3:
-            new_w = w
-            new_h = h
-            return QSize(new_w, new_h)
+            return size
 
     @threader
     def setimg(self, pixmap):
         if type(pixmap) != QPixmap:
             pixmap = pixmap()
 
-        self.setPixmap(
-            pixmap.scaled(
-                self.adaptsize(pixmap.size()),
-                Qt.IgnoreAspectRatio,
-                Qt.SmoothTransformation,
-            )
-        )
+        self.pix = pixmap
+
+    def getrect(self):
+        size = self.adaptsize(self.pix.size())
+        rect = QRect()
+        rect.setX(int((self.width() - size.width()) / 2))
+        rect.setY(int((self.height() - size.height()) / 2))
+        rect.setSize(size)
+        return rect
+
+    def paintEvent(self, a0) -> None:
+        if self.pix:
+            try:
+                painter = QPainter(self)
+                painter.setRenderHint(QPainter.Antialiasing, True)
+                painter.setRenderHint(QPainter.HighQualityAntialiasing, True)
+                painter.setRenderHint(QPainter.LosslessImageRendering, True)
+                painter.drawPixmap(self.getrect(), self.pix)
+            except:
+                print_exc()
+        return super().paintEvent(a0)
 
     def __init__(self, w, h, pixmap) -> None:
         super().__init__()
-        self.imgmaxwidth = w
-        self.imgmaxheigth = h
-        self.setFixedSize(QSize(self.imgmaxwidth, self.imgmaxheigth))
-
-        self.setAlignment(Qt.AlignCenter)
+        self.setFixedSize(QSize(w, h))
+        self.pix = None
         self.setimg(pixmap)
 
 
@@ -540,7 +545,7 @@ class dialog_setting_game(QDialog):
             self.editpath.setText(res)
             self.exepath = res
 
-    def __init__(self, parent, exepath, item=None, type=1, gametitleitme=None) -> None:
+    def __init__(self, parent, exepath, item=None, gametitleitme=None) -> None:
         super().__init__(parent, Qt.WindowCloseButtonHint)
         checkifnewgame(exepath)
         formLayout = QVBoxLayout(self)  # 配置layout
@@ -548,74 +553,74 @@ class dialog_setting_game(QDialog):
         self.item = item
         self.exepath = exepath
         self.gametitleitme = gametitleitme
-        if type == 2:
-            titleedit = QLineEdit(savehook_new_data[exepath]["title"])
 
-            def _titlechange(x):
-                savehook_new_data[exepath]["title"] = x
-                savehook_new_data[exepath]["istitlesetted"] = True
-                savehook_new_data[exepath]["searchnoresulttime"] = 0
-                self.setWindowTitle(x)
-                gametitleitme.settitle(x)
+        titleedit = QLineEdit(savehook_new_data[exepath]["title"])
 
-            titleedit.textChanged.connect(_titlechange)
-            formLayout.addLayout(getboxlayout([QLabel(_TR("标题")), titleedit]))
+        def _titlechange(x):
+            savehook_new_data[exepath]["title"] = x
+            savehook_new_data[exepath]["istitlesetted"] = True
+            savehook_new_data[exepath]["searchnoresulttime"] = 0
+            self.setWindowTitle(x)
+            gametitleitme.settitle(x)
 
-            imgpath = QLineEdit(savehook_new_data[exepath]["imagepath"])
-            imgpath.setReadOnly(True)
+        titleedit.textChanged.connect(_titlechange)
+        formLayout.addLayout(getboxlayout([QLabel(_TR("标题")), titleedit]))
 
-            def selectimg():
-                f = QFileDialog.getOpenFileName(
-                    directory=savehook_new_data[exepath]["imagepath"]
-                )
-                res = f[0]
-                if res != "":
+        imgpath = QLineEdit(savehook_new_data[exepath]["imagepath"])
+        imgpath.setReadOnly(True)
 
-                    _pixmap = QPixmap(res)
-                    if _pixmap.isNull() == False:
-                        savehook_new_data[exepath]["imagepath"] = res
-                        savehook_new_data[exepath]["isimagepathusersetted"] = True
-                        imgpath.setText(res)
-                        gametitleitme.setimg(_pixmap)
-
-            formLayout.addLayout(
-                getboxlayout(
-                    [
-                        QLabel(_TR("封面")),
-                        imgpath,
-                        getcolorbutton(
-                            "", "", selectimg, icon="fa.gear", constcolor="#FF69B4"
-                        ),
-                    ]
-                )
+        def selectimg():
+            f = QFileDialog.getOpenFileName(
+                directory=savehook_new_data[exepath]["imagepath"]
             )
+            res = f[0]
+            if res != "":
 
-            vndbid = QLineEdit(str(savehook_new_data[exepath]["vid"]))
-            vndbid.setValidator(QIntValidator())
-            vndbid.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Fixed)
+                _pixmap = QPixmap(res)
+                if _pixmap.isNull() == False:
+                    savehook_new_data[exepath]["imagepath"] = res
+                    savehook_new_data[exepath]["isimagepathusersetted"] = True
+                    imgpath.setText(res)
+                    gametitleitme.setimg(_pixmap)
 
-            vndbid.textEdited.connect(functools.partial(vidchangedtask, exepath))
+        formLayout.addLayout(
+            getboxlayout(
+                [
+                    QLabel(_TR("封面")),
+                    imgpath,
+                    getcolorbutton(
+                        "", "", selectimg, icon="fa.gear", constcolor="#FF69B4"
+                    ),
+                ]
+            )
+        )
 
-            statiswids = [
-                QLabel(_TR("统计信息")),
-                getcolorbutton(
-                    "",
-                    "",
-                    lambda: dialog_statistic(self, exepath),
-                    icon="fa.bar-chart",
-                    constcolor="#FF69B4",
-                ),
-                QLabel(_TR("vndbid")),
-                vndbid,
-                getcolorbutton(
-                    "",
-                    "",
-                    lambda: browserdialog(self, exepath),
-                    icon="fa.book",
-                    constcolor="#FF69B4",
-                ),
-            ]
-            formLayout.addLayout(getboxlayout(statiswids))
+        vndbid = QLineEdit(str(savehook_new_data[exepath]["vid"]))
+        vndbid.setValidator(QIntValidator())
+        vndbid.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Fixed)
+
+        vndbid.textEdited.connect(functools.partial(vidchangedtask, exepath))
+
+        statiswids = [
+            QLabel(_TR("统计信息")),
+            getcolorbutton(
+                "",
+                "",
+                lambda: dialog_statistic(self, exepath),
+                icon="fa.bar-chart",
+                constcolor="#FF69B4",
+            ),
+            QLabel(_TR("vndbid")),
+            vndbid,
+            getcolorbutton(
+                "",
+                "",
+                lambda: browserdialog(self, exepath),
+                icon="fa.book",
+                constcolor="#FF69B4",
+            ),
+        ]
+        formLayout.addLayout(getboxlayout(statiswids))
         editpath = QLineEdit(exepath)
         editpath.setReadOnly(True)
         if item:
@@ -1176,7 +1181,6 @@ class dialog_savedgame_new(saveposwindow):
             self,
             self.currentfocuspath,
             None,
-            type=2,
             gametitleitme=self.flow.l._item_list[idx].widget(),
         )
 
@@ -1227,131 +1231,3 @@ class dialog_savedgame_new(saveposwindow):
         gameitem.doubleclicked.connect(self.startgame)
         gameitem.focuschanged.connect(self.itemfocuschanged)
         self.flow.addwidget(gameitem)
-
-
-@Singleton_close
-class dialog_savedgame(QDialog):
-    # _sigleton=False
-    def closeEvent(self, a0) -> None:
-
-        self.button.setFocus()
-        rows = self.model.rowCount()
-
-        for row in range(rows):
-            savehook_new_data[self.model.item(row, 2).savetext]["title"] = (
-                self.model.item(row, 3).text()
-            )
-        # dialog_savedgame._sigleton=False
-        return QDialog().closeEvent(a0)
-
-    def showsettingdialog(self, k, item):
-        dialog_setting_game(self, k, item)
-
-    def clicked2(self):
-        try:
-            key = savehook_new_list.pop(self.table.currentIndex().row())
-            if key in savehook_new_data:
-                savehook_new_data.pop(key)
-            self.model.removeRow(self.table.currentIndex().row())
-        except:
-            pass
-
-    def clicked3(self):
-
-        f = QFileDialog.getOpenFileName(directory="")
-        res = f[0]
-        if res != "":
-            res = res.replace("/", "\\")
-            if res in savehook_new_list:
-                return
-
-            self.newline(0, res)
-            self.table.setCurrentIndex(self.model.index(0, 0))
-
-    def clicked(self):
-        if os.path.exists(self.model.item(self.table.currentIndex().row(), 2).savetext):
-            savehook_new_list.insert(
-                0, savehook_new_list.pop(self.table.currentIndex().row())
-            )
-            self.close()
-            startgame(self.model.item(self.table.currentIndex().row(), 2).savetext)
-
-    def newline(self, row, k):
-        keyitem = QStandardItem()
-        keyitem.savetext = k
-        k = k.replace("/", "\\")
-        checkifnewgame(k)
-        self.model.insertRow(
-            row,
-            [
-                QStandardItem(),
-                QStandardItem(),
-                keyitem,
-                QStandardItem((savehook_new_data[k]["title"])),
-            ],
-        )
-        self.table.setIndexWidget(
-            self.model.index(row, 0), getsimpleswitch(savehook_new_data[k], "leuse")
-        )
-        self.table.setIndexWidget(
-            self.model.index(row, 1),
-            getcolorbutton(
-                "", "", functools.partial(opendir, k), qicon=getExeIcon(k, cache=True)
-            ),
-        )
-
-        self.table.setIndexWidget(
-            self.model.index(row, 2),
-            getcolorbutton(
-                "",
-                "",
-                functools.partial(self.showsettingdialog, k, keyitem),
-                icon="fa.gear",
-                constcolor="#FF69B4",
-            ),
-        )
-
-    def __init__(self, parent) -> None:
-        # if dialog_savedgame._sigleton :
-        #         return
-        # dialog_savedgame._sigleton=True
-        super().__init__(parent, Qt.WindowCloseButtonHint)
-        self.setWindowTitle(_TR("已保存游戏"))
-        formLayout = QVBoxLayout(self)  #
-        model = QStandardItemModel()
-        model.setHorizontalHeaderLabels(_TRL(["转区", "", "设置", "游戏"]))  # ,'HOOK'])
-
-        self.model = model
-
-        table = QTableView()
-        table.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
-        table.horizontalHeader().setStretchLastSection(True)
-        # table.setEditTriggers(QAbstractItemView.NoEditTriggers);
-        table.setSelectionBehavior(QAbstractItemView.SelectRows)
-        table.setSelectionMode((QAbstractItemView.SingleSelection))
-        table.setWordWrap(False)
-        table.setModel(model)
-        self.table = table
-
-        button = QPushButton()
-        button.setText(_TR("开始游戏"))
-        self.button = button
-        button.clicked.connect(self.clicked)
-        button3 = QPushButton()
-        button3.setText(_TR("添加游戏"))
-
-        button3.clicked.connect(self.clicked3)
-        button2 = QPushButton()
-        button2.setText(_TR("删除游戏"))
-
-        button2.clicked.connect(self.clicked2)
-
-        formLayout.addWidget(table)
-        formLayout.addWidget(button)
-        formLayout.addWidget(button3)
-        formLayout.addWidget(button2)
-        self.resize(QSize(800, 400))
-        self.show()
-        for row, k in enumerate(savehook_new_list):  # 2
-            self.newline(row, k)
-            QApplication.processEvents()
