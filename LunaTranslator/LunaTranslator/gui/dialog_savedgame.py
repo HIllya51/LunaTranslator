@@ -183,6 +183,16 @@ class IMGWidget(QLabel):
 
         self.pix = pixmap
 
+        pixmap = QPixmap(self.size())
+        pixmap.fill(Qt.transparent)
+        painter = QPainter(pixmap)
+        painter.setRenderHint(QPainter.SmoothPixmapTransform) 
+        painter.setRenderHint(QPainter.Antialiasing)
+        painter.drawPixmap(self.getrect(), self.pix)
+        painter.end()
+        
+        self.setPixmap(pixmap)
+        self.setFixedSize(pixmap.size())
     def getrect(self):
         size = self.adaptsize(self.pix.size())
         rect = QRect()
@@ -191,22 +201,10 @@ class IMGWidget(QLabel):
         rect.setSize(size)
         return rect
 
-    def paintEvent(self, a0) -> None:
-        if self.pix:
-            try:
-                painter = QPainter(self)
-                painter.setRenderHint(QPainter.Antialiasing, True)
-                painter.setRenderHint(QPainter.HighQualityAntialiasing, True)
-                painter.setRenderHint(QPainter.LosslessImageRendering, True)
-                painter.drawPixmap(self.getrect(), self.pix)
-            except:
-                print_exc()
-        return super().paintEvent(a0)
-
     def __init__(self, w, h, pixmap) -> None:
         super().__init__()
         self.setFixedSize(QSize(w, h))
-        self.pix = None
+        self.setScaledContents(True)
         self.setimg(pixmap)
 
 
