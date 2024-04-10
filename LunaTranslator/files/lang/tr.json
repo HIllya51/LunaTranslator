@@ -599,8 +599,6 @@
     "隐藏不存在的游戏": "Olmadığı oyunları gizleyin",
     "宽度": "genişlik",
     "高度": "yükseklik",
-    "图片宽度": "resim genişliği",
-    "图片高度": "Görüntü yüksekliği",
     "选中时颜色": "Seçildiğinde renk",
     "游戏不存在时颜色": "Oyun yok olduğunda renk",
     "原文": "orijinal metin",
@@ -752,5 +750,7 @@
     "填充": "dolduruyor",
     "适应": "adapt",
     "拉伸": "stretching",
-    "居中": "Centered"
+    "居中": "Centered",
+    "边距": "Margins",
+    "文字区高度": "Metin alanının yüksekliği"
 }

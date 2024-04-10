@@ -599,8 +599,6 @@
     "隐藏不存在的游戏": "Nascondi giochi che non esistono",
     "宽度": "larghezza",
     "高度": "altezza",
-    "图片宽度": "larghezza immagine",
-    "图片高度": "Altezza immagine",
     "选中时颜色": "Colore quando selezionato",
     "游戏不存在时颜色": "Colore quando il gioco non esiste",
     "原文": "testo originale",
@@ -752,5 +750,7 @@
     "填充": "riempimento",
     "适应": "adattare",
     "拉伸": "stretching",
-    "居中": "Centrato"
+    "居中": "Centrato",
+    "边距": "Margini",
+    "文字区高度": "Altezza area testo"
 }

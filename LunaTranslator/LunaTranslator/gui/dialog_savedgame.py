@@ -112,22 +112,35 @@ class ItemWidget(QWidget):
         super().__init__()
         self.itemw = globalconfig["dialog_savegame_layout"]["itemw"]
         self.itemh = globalconfig["dialog_savegame_layout"]["itemh"]
-        self.imgw = globalconfig["dialog_savegame_layout"]["imgw"]
-        self.imgh = globalconfig["dialog_savegame_layout"]["imgh"]
-        margin = (
-            self.itemw - self.imgw
-        ) // 2  # globalconfig['dialog_savegame_layout']['margin']
+        # self.imgw = globalconfig["dialog_savegame_layout"]["imgw"]
+        # self.imgh = globalconfig["dialog_savegame_layout"]["imgh"]
+        # margin = (
+        #     self.itemw - self.imgw
+        # ) // 2  # globalconfig['dialog_savegame_layout']['margin']
+        margin=globalconfig["dialog_savegame_layout"]["margin"]
+        textH=globalconfig["dialog_savegame_layout"]["textH"]
+        self.imgw = self.itemw-2*margin
+        self.imgh = self.itemh-textH-2*margin
+        # 
         self.setFixedSize(QSize(self.itemw, self.itemh))
         self.setFocusPolicy(Qt.StrongFocus)
         self.maskshowfileexists = QLabel(self)
         self.bottommask = QLabel(self)
         layout = QVBoxLayout()
-        layout.setContentsMargins(margin, 0, margin, 0)
+        layout.setContentsMargins(0, 0, 0, 0)
         self._img = IMGWidget(self.imgw, self.imgh, pixmap)
-        layout.addWidget(self._img)
+        _w=QWidget()
+        _w.setStyleSheet('background-color: rgba(255,255,255, 0);')
+        wrap=QVBoxLayout()
+        _w.setLayout(wrap)
+        _w.setFixedHeight(self.imgh+2*margin)
+        wrap.setContentsMargins(margin, margin, margin, margin)
+        wrap.addWidget(self._img)
+        layout.addWidget(_w)
 
         self._lb = QLabel(file)
         self._lb.setWordWrap(True)
+        self._lb.setAlignment(Qt.AlignCenter)
         layout.addWidget(self._lb)
         self.setLayout(layout)
 
@@ -909,8 +922,10 @@ class dialog_syssetting(QDialog):
         for key, name in [
             ("itemw", "宽度"),
             ("itemh", "高度"),
-            ("imgw", "图片宽度"),
-            ("imgh", "图片高度"),
+            # ("imgw", "图片宽度"),
+            # ("imgh", "图片高度"),
+            ('margin','边距'),
+            ('textH','文字区高度')
         ]:
             formLayout.addRow(
                 (_TR(name)),

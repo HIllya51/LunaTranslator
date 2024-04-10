@@ -599,8 +599,6 @@
     "隐藏不存在的游戏": "Ẩn các trò chơi không tồn tại",
     "宽度": "Chiều rộng",
     "高度": "Chiều cao",
-    "图片宽度": "Chiều rộng ảnh",
-    "图片高度": "Chiều cao ảnh",
     "选中时颜色": "Màu khi chọn",
     "游戏不存在时颜色": "Màu sắc khi trò chơi không tồn tại",
     "原文": "Văn bản gốc",
@@ -752,5 +750,7 @@
     "填充": "Điền",
     "适应": "Điều chỉnh",
     "拉伸": "căng",
-    "居中": "Ở giữa"
+    "居中": "Ở giữa",
+    "边距": "Viền",
+    "文字区高度": "Chiều cao vùng văn bản"
 }

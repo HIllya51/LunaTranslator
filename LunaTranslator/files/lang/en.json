@@ -599,8 +599,6 @@
     "隐藏不存在的游戏": "Hide games that do not exist",
     "宽度": "width",
     "高度": "height",
-    "图片宽度": "image width",
-    "图片高度": "Image height",
     "选中时颜色": "Color when selected",
     "游戏不存在时颜色": "Color when game does not exist",
     "原文": "original text",
@@ -752,5 +750,7 @@
     "填充": "filling",
     "适应": "adapt",
     "拉伸": "stretching",
-    "居中": "Centered"
+    "居中": "Centered",
+    "边距": "Margins",
+    "文字区高度": "Text area height"
 }
