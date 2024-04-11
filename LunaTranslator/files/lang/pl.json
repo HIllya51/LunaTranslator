@@ -756,5 +756,9 @@
     "时": "Czas",
     "禁止自动朗读的人名": "Nazwy, które są zabronione automatycznego odczytu",
     "启动": "uruchomienie",
-    "批量添加": "Dodaj partię"
+    "批量添加": "Dodaj partię",
+    "过滤": "filtr",
+    "备份路径": "Ścieżka kopii zapasowej",
+    "存档备份": "Kopia zapasowa archiwum",
+    "备份到": "Powrót do"
 }

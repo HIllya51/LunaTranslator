@@ -580,11 +580,74 @@ class dialog_setting_game(QDialog):
         methodtab.addTab(self.getttssetting(exepath), _TR("语音"))
         methodtab.addTab(self.getlabelsetting(exepath), _TR("标签"))
         methodtab.addTab(self.getstatistic(exepath), _TR("统计信息"))
+        methodtab.addTab(self.getbackup(exepath), _TR("存档备份"))
 
         vbox.addWidget(formwidget)
         vbox.addWidget(methodtab)
 
         self.show()
+
+    def selectbackupdir(self, edit):
+        res = QFileDialog.getExistingDirectory(
+            directory=edit.text(),
+            options=QFileDialog.DontResolveSymlinks,
+        )
+        if not res:
+            return
+        res = os.path.abspath(res)
+        edit.setText(res)
+
+    def getbackup(self, exepath):
+        _w = QWidget()
+        formLayout = QFormLayout()
+        _w.setLayout(formLayout)
+
+        editpath = QLineEdit(savehook_new_data[exepath]["autosavesavedata"])
+        editpath.textChanged.connect(
+            lambda _: savehook_new_data[exepath].__setitem__("autosavesavedata", _)
+        )
+        editpath.setReadOnly(True)
+        formLayout.addRow(
+            _TR("路径"),
+            getboxlayout(
+                [
+                    editpath,
+                    getcolorbutton(
+                        "",
+                        "",
+                        functools.partial(self.selectbackupdir, editpath),
+                        icon="fa.gear",
+                        constcolor="#FF69B4",
+                    ),
+                ]
+            ),
+        )
+
+        if os.path.exists(globalconfig["backupsavedatato"]) == False:
+            globalconfig["backupsavedatato"] = os.path.abspath("./cache/backup")
+        editpath = QLineEdit(globalconfig["backupsavedatato"])
+        editpath.textChanged.connect(
+            lambda _: globalconfig.__setitem__("backupsavedatato", _)
+        )
+
+        editpath.setReadOnly(True)
+        formLayout.addRow(
+            _TR("备份到"),
+            getboxlayout(
+                [
+                    editpath,
+                    getcolorbutton(
+                        "",
+                        "",
+                        functools.partial(self.selectbackupdir, editpath),
+                        icon="fa.gear",
+                        constcolor="#FF69B4",
+                    ),
+                ]
+            ),
+        )
+
+        return _w
 
     def starttab(self, exepath):
         _w = QWidget()
@@ -1260,28 +1323,8 @@ class TagWidget(QWidget):
 
         layout = QHBoxLayout()
         layout.setContentsMargins(0, 0, 0, 0)
-        layout.addWidget(QLabel(_TR("标签")))
-        self.setLayout(layout)
 
-
-        self.lineEdit = QComboBox()
-        self.lineEdit.setLineEdit(QLineEdit())
-        self.lineEdit.lineEdit().returnPressed.connect(
-            lambda: self.addTag(self.lineEdit.currentText())
-        )
-
-        self.lineEdit.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Maximum)
-
-        layout.addWidget(self.lineEdit)
-        self.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Fixed)
-
-        self.tag2widget = {}
-
-        def refreshcombo():
-            self.lineEdit.clear()
-            self.lineEdit.addItems(globalconfig["labelset"])
-
-        refreshcombo()
+        layout.addWidget(QLabel(_TR("过滤")))
         layout.addWidget(
             getcolorbutton(
                 "",
@@ -1302,6 +1345,28 @@ class TagWidget(QWidget):
                 constcolor="#FF69B4",
             ),
         )
+        self.setLayout(layout)
+
+        self.lineEdit = QComboBox()
+        self.lineEdit.setLineEdit(QLineEdit())
+        self.lineEdit.lineEdit().returnPressed.connect(
+            lambda: self.addTag(self.lineEdit.currentText())
+        )
+
+        self.lineEdit.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Maximum)
+
+        layout.addWidget(self.lineEdit)
+        self.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Fixed)
+
+        self.tag2widget = {}
+
+        def refreshcombo():
+            _ = self.lineEdit.currentText()
+            self.lineEdit.clear()
+            self.lineEdit.addItems(globalconfig["labelset"])
+            self.lineEdit.setCurrentText(_)
+
+        refreshcombo()
 
     def addTag(self, tag):
         try:
@@ -1316,7 +1381,7 @@ class TagWidget(QWidget):
 
             layout = self.layout()
             # layout.insertLayout(layout.count() - 1, tagLayout)
-            layout.insertWidget(layout.count() - 2, qw)
+            layout.insertWidget(layout.count() - 1, qw)
             self.tag2widget[tag] = qw
             self.lineEdit.clearEditText()
             self.lineEdit.setFocus()

@@ -89,6 +89,7 @@ def getdefaultsavehook(gamepath, title=None):
         "vndbtags": [],
         "usertags": [],
         "traceplaytime_v2": [],  # [[start,end]]
+        "autosavesavedata": "",
     }
     if gamepath == "0":
         default["title"] = "No Game"

@@ -756,5 +756,9 @@
     "时": "Time",
     "禁止自动朗读的人名": "Names that are prohibited from automatic reading",
     "启动": "start-up",
-    "批量添加": "Batch Add"
+    "批量添加": "Batch Add",
+    "过滤": "filter",
+    "备份路径": "Backup path",
+    "存档备份": "Archive backup",
+    "备份到": "Back up to"
 }

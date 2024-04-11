@@ -25,8 +25,6 @@ def pid_running(pid):
 @threader
 def grabwindow():
 
-    tm = time.localtime()
-
     fnamebase = "./cache/screenshot/{}".format(0)
     try:
         if gobject.baseobject.textsource.md5 != "0":
@@ -37,8 +35,8 @@ def grabwindow():
         pass
     if os.path.exists(fnamebase) == False:
         os.mkdir(fnamebase)
-    fname = "{}/{}-{}-{}-{}-{}-{}".format(
-        fnamebase, tm.tm_year, tm.tm_mon, tm.tm_mday, tm.tm_hour, tm.tm_min, tm.tm_sec
+    fname = "{}/{}".format(
+        fnamebase, time.strftime("%Y-%m-%d-%H-%M-%S", time.localtime())
     )
 
     hwnd = windows.FindWindow(

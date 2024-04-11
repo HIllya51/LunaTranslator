@@ -756,5 +756,9 @@
     "时": "Tempo",
     "禁止自动朗读的人名": "Nomi vietati dalla lettura automatica",
     "启动": "avviamento",
-    "批量添加": "Aggiungi batch"
+    "批量添加": "Aggiungi batch",
+    "过滤": "filtro",
+    "备份路径": "Percorso di backup",
+    "存档备份": "Archivia backup",
+    "备份到": "Torna a"
 }

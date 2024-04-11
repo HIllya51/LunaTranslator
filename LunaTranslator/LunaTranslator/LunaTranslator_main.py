@@ -7,29 +7,21 @@ import platform, os
 if __name__ == "__main__":
     dirname = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     os.chdir(dirname)
+    for p in (
+        "./userconfig/memory",
+        "./userconfig/memory",
+        "./userconfig/posts",
+        "./translation_record",
+        "./translation_record/cache",
+        "./cache",
+        "./cache/ocr",
+        "./cache/update",
+        "./cache/screenshot",
+        "./cache/tts",
+        "./cache/icon",
+    ):
 
-    if os.path.exists("./userconfig") == False:
-        os.mkdir("./userconfig")
-    if os.path.exists("./userconfig/memory") == False:
-        os.mkdir("./userconfig/memory")
-    if os.path.exists("./userconfig/posts") == False:
-        os.mkdir("./userconfig/posts")
-    if os.path.exists("./translation_record") == False:
-        os.mkdir("./translation_record")
-    if os.path.exists("./translation_record/cache") == False:
-        os.mkdir("./translation_record/cache")
-    if os.path.exists("./cache") == False:
-        os.mkdir("./cache")
-    if os.path.exists("./cache/ocr") == False:
-        os.mkdir("./cache/ocr")
-    if os.path.exists("./cache/update") == False:
-        os.mkdir("./cache/update")
-    if os.path.exists("./cache/screenshot") == False:
-        os.mkdir("./cache/screenshot")
-    if os.path.exists("./cache/tts") == False:
-        os.mkdir("./cache/tts")
-    if os.path.exists("./cache/icon") == False:
-        os.mkdir("./cache/icon")
+        os.makedirs(p, exist_ok=True)
 
     from myutils.config import _TR, static_data, testpriv, globalconfig
 
