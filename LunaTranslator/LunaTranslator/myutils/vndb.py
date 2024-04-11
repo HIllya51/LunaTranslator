@@ -1,6 +1,6 @@
 import time, requests, re, os, hashlib
 from myutils.proxy import getproxy
-from myutils.config import globalconfig,vndbtagdata
+from myutils.config import globalconfig, vndbtagdata
 from threading import Thread
 import gzip, json
 import shutil
@@ -138,6 +138,20 @@ def getvidbytitle_release(title):
     )
 
 
+def getdevelopersbyid(vid):
+    def _js(js):
+        _ = []
+        for item in js["results"][0]["developers"]:
+            _.append(item["name"])
+        return _
+
+    return safegetvndbjson(
+        "https://api.vndb.org/kana/vn",
+        {"filters": ["id", "=", vid], "fields": "developers.name"},
+        _js,
+    )
+
+
 def getvidbytitle(title):
     vid = getvidbytitle_vn(title)
     if vid:
@@ -188,12 +202,13 @@ def safedownload():
             js = json.load(ff)
         newjs = {}
         for item in js:
-            gid = 'g'+str(item['id'])
+            gid = "g" + str(item["id"])
             name = item["name"]
             newjs[gid] = name
         return newjs
     except:
         from traceback import print_exc
+
         print_exc()
         return None
 
@@ -222,7 +237,7 @@ def getvntagsbyid(vid):
                 js = safedownload()
                 if js:
                     vndbtagdata.update(js)
-                
+
             tags.append(r["id"])
     except:
         pass
@@ -243,6 +258,7 @@ def searchforidimage(titleorid):
     title = gettitlebyid(vid)
     namemap = getcharnamemapbyid(vid)
     vndbtags = getvntagsbyid(vid)
+    developers = getdevelopersbyid(vid)
     return {
         "namemap": namemap,
         "title": title,
@@ -250,6 +266,7 @@ def searchforidimage(titleorid):
         "infopath": vndbdowloadinfo(vid),
         "imagepath": vndbdownloadimg(img),
         "vndbtags": vndbtags,
+        "developers": developers,
     }
 
 

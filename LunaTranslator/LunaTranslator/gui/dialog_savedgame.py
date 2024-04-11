@@ -54,7 +54,7 @@ import os
 from myutils.hwnd import showintab
 from PyQt5.QtGui import QStandardItem, QStandardItemModel
 from PyQt5.QtCore import Qt, QSize
-from myutils.config import savehook_new_list, savehook_new_data,vndbtagdata
+from myutils.config import savehook_new_list, savehook_new_data, vndbtagdata
 from myutils.hwnd import getExeIcon
 import gobject
 from myutils.config import _TR, _TRL, globalconfig, static_data
@@ -563,6 +563,13 @@ class dialog_setting_game(QDialog):
                     getcolorbutton(
                         "",
                         "",
+                        lambda: os.startfile('https://vndb.org/v{}'.format(savehook_new_data[exepath]["vid"])),
+                        icon="fa.chrome",
+                        constcolor="#FF69B4",
+                    ),
+                    getcolorbutton(
+                        "",
+                        "",
                         lambda: vidchangedtask(
                             exepath, savehook_new_data[exepath]["vid"]
                         ),
@@ -812,10 +819,10 @@ class dialog_setting_game(QDialog):
         formLayout.setContentsMargins(0, 0, 0, 0)
         self.labelflow = ScrollFlow()
 
-        def newitem(text, removeable, first=False):
-            qw = tagitem(text, removeable)
+        def newitem(text, removeable, first=False, _type=tagitem.TYPE_RAND):
+            qw = tagitem(text, removeable, _type)
 
-            def __(_qw, t):
+            def __(_qw, t, _type):
                 _qw.remove()
                 i = savehook_new_data[exepath]["usertags"].index(t)
                 self.labelflow.removeidx(i)
@@ -824,22 +831,24 @@ class dialog_setting_game(QDialog):
             if removeable:
                 qw.removesignal.connect(functools.partial(__, qw))
 
-            def _lbclick(t):
+            def _lbclick(tp, t):
                 try:
-                    self.parent().tagswidget.addTag(t)
+                    self.parent().tagswidget.addTag(t, tp)
                 except:
                     pass
 
-            qw.labelclicked.connect(_lbclick)
+            qw.labelclicked.connect(functools.partial(_lbclick, _type))
             if first:
                 self.labelflow.insertwidget(0, qw)
             else:
                 self.labelflow.addwidget(qw)
 
         for tag in savehook_new_data[exepath]["usertags"]:
-            newitem(tag, True)
+            newitem(tag, True, _type=tagitem.TYPE_USERTAG)
+        for tag in savehook_new_data[exepath]["developers"]:
+            newitem(tag, False, _type=tagitem.TYPE_DEVELOPER)
         for tag in getvndbrealtags(savehook_new_data[exepath]["vndbtags"]):
-            newitem(tag, False)
+            newitem(tag, False, _type=tagitem.TYPE_TAG)
         formLayout.addWidget(self.labelflow)
         _dict = {"new": 0}
 
@@ -856,7 +865,7 @@ class dialog_setting_game(QDialog):
             # tag = globalconfig["labelset"][_dict["new"]]
             if tag and tag not in savehook_new_data[exepath]["usertags"]:
                 savehook_new_data[exepath]["usertags"].insert(0, tag)
-                newitem(tag, True, True)
+                newitem(tag, True, True, _type=tagitem.TYPE_USERTAG)
             combo.clearEditText()
 
         button.clicked.connect(_add)
@@ -1250,8 +1259,8 @@ class listediter(QDialog):
 
 
 class ClickableLabel(QLabel):
-    def __init__(self, parent=None):
-        super().__init__(parent)
+    def __init__(self):
+        super().__init__()
         self.setClickable(True)
 
     def setClickable(self, clickable):
@@ -1265,8 +1274,12 @@ class ClickableLabel(QLabel):
 
 
 class tagitem(QWidget):
-
-    removesignal = pyqtSignal(str)
+    TYPE_RAND = 0
+    TYPE_DEVELOPER = 1
+    TYPE_TAG = 2
+    TYPE_USERTAG = 3
+    TYPE_EXISTS = 4
+    removesignal = pyqtSignal(str, int)
     labelclicked = pyqtSignal(str)
 
     def remove(self):
@@ -1282,29 +1295,38 @@ class tagitem(QWidget):
     def paintEvent(self, event):
         painter = QPainter(self)
         painter.setRenderHint(QPainter.Antialiasing)
-
-        border_color = Qt.black
+        if self._type == tagitem.TYPE_RAND:
+            border_color = Qt.black
+        elif self._type == tagitem.TYPE_DEVELOPER:
+            border_color = Qt.red
+        elif self._type == tagitem.TYPE_TAG:
+            border_color = Qt.green
+        elif self._type == tagitem.TYPE_USERTAG:
+            border_color = Qt.blue
+        elif self._type == tagitem.TYPE_EXISTS:
+            border_color = Qt.yellow
         border_width = 1
         pen = QPen(border_color)
         pen.setWidth(border_width)
         painter.setPen(pen)
         painter.drawRect(self.rect())
 
-    def __init__(self, tag, removeable=True) -> None:
+    def __init__(self, tag, removeable=True, _type=TYPE_RAND) -> None:
         super().__init__()
         tagLayout = QHBoxLayout()
         tagLayout.setContentsMargins(0, 0, 0, 0)
-
+        self._type = _type
         self.setLayout(tagLayout)
 
-        lb = ClickableLabel(tag)
+        lb = ClickableLabel()
+        lb.setText(tag)
         lb.clicked.connect(lambda: self.labelclicked.emit(tag))
         tagLayout.addWidget(lb)
         if removeable:
             button = getcolorbutton(
                 None,
                 None,
-                lambda: self.removesignal.emit(tag),  # self.removeTag(tag),
+                lambda: self.removesignal.emit(tag, self._type),  # self.removeTag(tag),
                 qicon=qtawesome.icon(
                     "fa.times",
                     color="#FF69B4",
@@ -1349,9 +1371,20 @@ class TagWidget(QWidget):
 
         self.lineEdit = QComboBox()
         self.lineEdit.setLineEdit(QLineEdit())
-        self.lineEdit.lineEdit().returnPressed.connect(
-            lambda: self.addTag(self.lineEdit.currentText())
-        )
+
+        def callback():
+            t = self.lineEdit.currentText()
+
+            if t in globalconfig["labelset"]:
+                tp = tagitem.TYPE_USERTAG
+            else:
+                tp = tagitem.TYPE_RAND
+            self.addTag(self.lineEdit.currentText(), tp)
+            self.lineEdit.clear()
+            self.lineEdit.addItems(globalconfig["labelset"])
+            self.lineEdit.clearEditText()
+
+        self.lineEdit.lineEdit().returnPressed.connect(callback)
 
         self.lineEdit.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Maximum)
 
@@ -1368,33 +1401,32 @@ class TagWidget(QWidget):
 
         refreshcombo()
 
-    def addTag(self, tag):
+    def addTag(self, tag, _type):
         try:
-
             if not tag:
                 return
-            if tag in self.tag2widget:
+            if (tag, _type) in self.tag2widget:
                 return
             self.tags.append(tag)
-            qw = tagitem(tag)
+            qw = tagitem(tag, _type=_type)
             qw.removesignal.connect(self.removeTag)
 
             layout = self.layout()
             # layout.insertLayout(layout.count() - 1, tagLayout)
             layout.insertWidget(layout.count() - 1, qw)
-            self.tag2widget[tag] = qw
+            self.tag2widget[(tag, _type)] = qw
             self.lineEdit.clearEditText()
             self.lineEdit.setFocus()
             self.tagschanged.emit(tuple(self.tag2widget.keys()))
         except:
             print_exc()
 
-    def removeTag(self, tag):
-        _w = self.tag2widget[tag]
+    def removeTag(self, tag, _type):
+        _w = self.tag2widget[(tag, _type)]
         _w.remove()
 
         self.layout().removeWidget(_w)
-        self.tag2widget.pop(tag)
+        self.tag2widget.pop((tag, _type))
         self.lineEdit.setFocus()
         self.tagschanged.emit(tuple(self.tag2widget.keys()))
 
@@ -1448,11 +1480,9 @@ class dialog_savedgame_new(saveposwindow):
                 self.newline(res, True)
 
     def tagschanged(self, tags):
-        checkexists = _TR("存在") in tags
-        if checkexists:
-            _ = list(tags)
-            _.remove(_TR("存在"))
-            tags = tuple(_)
+        self.currtags = tags
+        newtags = tags
+        print(tags)
         ItemWidget.clearfocus()
         self.formLayout.removeWidget(self.flow)
         self.idxsave.clear()
@@ -1460,20 +1490,35 @@ class dialog_savedgame_new(saveposwindow):
         self.flow.bgclicked.connect(ItemWidget.clearfocus)
         self.formLayout.insertWidget(self.formLayout.count() - 1, self.flow)
         for k in savehook_new_list:
-            if checkexists and os.path.exists(k) == False:
-                continue
-
-            # print(vndbtags)
+            if newtags != self.currtags:
+                break
             notshow = False
-            for tag in tags:
-                if (
-                    tag not in getvndbrealtags(savehook_new_data[k]["vndbtags"])
-                    and tag not in savehook_new_data[k]["usertags"]
-                    and tag not in savehook_new_data[k]["title"]
-                    and tag != str(savehook_new_data[k]["vid"])
-                ):
-                    notshow = True
-                    break
+            for tag, _type in tags:
+                if _type == tagitem.TYPE_EXISTS:
+                    if os.path.exists(k) == False:
+                        notshow = True
+                        break
+                elif _type == tagitem.TYPE_DEVELOPER:
+                    if tag not in savehook_new_data[k]["developers"]:
+                        notshow = True
+                        break
+                elif _type == tagitem.TYPE_TAG:
+                    if tag not in getvndbrealtags(savehook_new_data[k]["vndbtags"]):
+                        notshow = True
+                        break
+                elif _type == tagitem.TYPE_USERTAG:
+                    if tag not in savehook_new_data[k]["usertags"]:
+                        notshow = True
+                        break
+                elif _type == tagitem.TYPE_RAND:
+                    if (
+                        tag not in getvndbrealtags(savehook_new_data[k]["vndbtags"])
+                        and tag not in savehook_new_data[k]["usertags"]
+                        and tag not in savehook_new_data[k]["title"]
+                        and tag not in savehook_new_data[k]["developers"]
+                    ):
+                        notshow = True
+                        break
             if notshow:
                 continue
             self.newline(k)
@@ -1526,6 +1571,7 @@ class dialog_savedgame_new(saveposwindow):
             showintab(int(self.winId()), True)
         formLayout = QVBoxLayout()
         self.tagswidget = TagWidget(self)
+        self.currtags = tuple()
         self.tagswidget.tagschanged.connect(self.tagschanged)
         formLayout.addWidget(self.tagswidget)
         self.flow = ScrollFlow()
@@ -1555,7 +1601,7 @@ class dialog_savedgame_new(saveposwindow):
         self.show()
         self.idxsave = []
         if globalconfig["hide_not_exists"]:
-            self.tagswidget.addTag(_TR("存在"))
+            self.tagswidget.addTag(_TR("存在"), tagitem.TYPE_EXISTS)
         else:
             self.tagschanged(tuple())
 

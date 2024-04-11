@@ -54,7 +54,6 @@ ocrsetting = tryreadconfig("ocrsetting.json")
 vndbtagdata = tryreadconfig("vndbtagdata.json")
 
 
-
 def getdefaultsavehook(gamepath, title=None):
     default = {
         "localeswitcher": 0,
@@ -93,6 +92,7 @@ def getdefaultsavehook(gamepath, title=None):
         "usertags": [],
         "traceplaytime_v2": [],  # [[start,end]]
         "autosavesavedata": "",
+        "developers": [],
     }
     if gamepath == "0":
         default["title"] = "No Game"

@@ -62,6 +62,7 @@ def checkvid(gamepath):
             checkimage(gamepath)
             or checkinfo(gamepath)
             or (len(savehook_new_data[gamepath]["vndbtags"]) == 0)
+            or (len(savehook_new_data[gamepath]["developers"]) == 0)
         )
     else:
         return (
@@ -131,6 +132,7 @@ def everymethodsthread():
             vid = data.get("vid", None)
             title = data.get("title", None)
             namemap = data.get("namemap", None)
+            developers = data.get("developers", None)
             vndbtags = data.get("vndbtags", None)
             if not vid:
                 continue
@@ -146,7 +148,8 @@ def everymethodsthread():
                 savehook_new_data[gamepath]["namemap"] = namemap
             if vndbtags:
                 savehook_new_data[gamepath]["vndbtags"] = vndbtags
-
+            if developers:
+                savehook_new_data[gamepath]["developers"] = developers
             succ = True
             break
         if succ == False:
