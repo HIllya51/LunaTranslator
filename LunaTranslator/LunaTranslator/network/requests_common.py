@@ -309,7 +309,9 @@ class Sessionbase:
             timeout,
         )
 
-        if allow_redirects and (_.status_code == 301 or _.status_code == 302):
+        if allow_redirects and (
+            _.status_code == 301 or _.status_code == 302 or _.status_code == 307
+        ):
             location = _.headers["Location"]
             if location.startswith("/"):  # vndb
                 url = url = scheme + "://" + server + location

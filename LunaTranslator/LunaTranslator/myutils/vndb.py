@@ -1,8 +1,9 @@
 import time, requests, re, os, hashlib
 from myutils.proxy import getproxy
-from myutils.config import globalconfig
+from myutils.config import globalconfig,vndbtagdata
 from threading import Thread
-from traceback import print_exc
+import gzip, json
+import shutil
 
 
 def b64string(a):
@@ -166,20 +167,35 @@ def getcharnamemapbyid(vid):
     return namemap
 
 
-def gettagnamebytagid(gid):
+def decompress_gzip_file(gzip_file, output_file):
+    with gzip.open(gzip_file, "rb") as f_in:
+        with open(output_file, "wb") as f_out:
+            shutil.copyfileobj(f_in, f_out)
 
-    return safegetvndbjson(
-        "https://api.vndb.org/kana/tag",
-        {
-            "filters": [
-                "id",
-                "=",
-                gid,
-            ],
-            "fields": "name",
-        },
-        lambda js: js["results"][0]["name"],
-    )
+
+def safedownload():
+    try:
+        resp = requests.get(
+            "https://dl.vndb.org/dump/vndb-tags-latest.json.gz",
+            proxies=getproxy(),
+        )
+        with open("./cache/vndb-tags-latest.json.gz", "wb") as ff:
+            ff.write(resp.content)
+        decompress_gzip_file(
+            "./cache/vndb-tags-latest.json.gz", "./cache/vndb-tags-latest.json"
+        )
+        with open("./cache/vndb-tags-latest.json", "r", encoding="utf8") as ff:
+            js = json.load(ff)
+        newjs = {}
+        for item in js:
+            gid = 'g'+str(item['id'])
+            name = item["name"]
+            newjs[gid] = name
+        return newjs
+    except:
+        from traceback import print_exc
+        print_exc()
+        return None
 
 
 def getvntagsbyid(vid):
@@ -202,11 +218,11 @@ def getvntagsbyid(vid):
     try:
         for r in res:
             tag = r["id"]
-            if tag not in globalconfig["vndbcache"]["tagid2name"]:
-                name = gettagnamebytagid(tag)
-                if name:
-                    globalconfig["vndbcache"]["tagid2name"][tag] = name
-
+            if tag not in vndbtagdata:
+                js = safedownload()
+                if js:
+                    vndbtagdata.update(js)
+                
             tags.append(r["id"])
     except:
         pass

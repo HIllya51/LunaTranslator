@@ -58,7 +58,11 @@ def checkinfo(gamepath):
 
 def checkvid(gamepath):
     if savehook_new_data[gamepath]["vid"]:
-        return checkimage(gamepath) or checkinfo(gamepath)
+        return (
+            checkimage(gamepath)
+            or checkinfo(gamepath)
+            or (len(savehook_new_data[gamepath]["vndbtags"]) == 0)
+        )
     else:
         return (
             time.time() - savehook_new_data[gamepath]["searchnoresulttime"]
@@ -67,7 +71,9 @@ def checkvid(gamepath):
 
 
 def checkneed(gamepath):
-    return (gamepath in savehook_new_data) and (checkvid(gamepath))
+    return ((gamepath in savehook_new_data) and (gamepath in savehook_new_list)) and (
+        (checkvid(gamepath))
+    )
 
 
 searchvndbqueue = PriorityQueue()
@@ -140,7 +146,7 @@ def everymethodsthread():
                 savehook_new_data[gamepath]["namemap"] = namemap
             if vndbtags:
                 savehook_new_data[gamepath]["vndbtags"] = vndbtags
-            
+
             succ = True
             break
         if succ == False:

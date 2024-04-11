@@ -1242,9 +1242,6 @@
         "captureOffsetBottom":0,
         "multiDisplayMode":false
     },
-    "vndbcache":{
-        "tagid2name":{}
-    },
     "labelset":[],
     "backupsavedatato":""
 }

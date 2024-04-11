@@ -54,7 +54,7 @@ import os
 from myutils.hwnd import showintab
 from PyQt5.QtGui import QStandardItem, QStandardItemModel
 from PyQt5.QtCore import Qt, QSize
-from myutils.config import savehook_new_list, savehook_new_data
+from myutils.config import savehook_new_list, savehook_new_data,vndbtagdata
 from myutils.hwnd import getExeIcon
 import gobject
 from myutils.config import _TR, _TRL, globalconfig, static_data
@@ -425,8 +425,8 @@ class browserdialog(QDialog):
 def getvndbrealtags(vndbtags_naive):
     vndbtags = []
     for tagid in vndbtags_naive:
-        if tagid in globalconfig["vndbcache"]["tagid2name"]:
-            vndbtags.append(globalconfig["vndbcache"]["tagid2name"][tagid])
+        if tagid in vndbtagdata:
+            vndbtags.append(vndbtagdata[tagid])
     return vndbtags
 
 

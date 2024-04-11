@@ -51,6 +51,9 @@ except:
 translatorsetting = tryreadconfig("translatorsetting.json")
 ocrsetting = tryreadconfig("ocrsetting.json")
 
+vndbtagdata = tryreadconfig("vndbtagdata.json")
+
+
 
 def getdefaultsavehook(gamepath, title=None):
     default = {
@@ -255,6 +258,7 @@ def saveallconfig():
     safesave("./userconfig/translatorsetting.json", translatorsetting)
     safesave("./userconfig/ocrerrorfix.json", ocrerrorfix)
     safesave("./userconfig/ocrsetting.json", ocrsetting)
+    safesave("./userconfig/vndbtagdata.json", vndbtagdata)
     safesave(
         "./userconfig/savehook_new_1.39.4.json", [savehook_new_list, savehook_new_data]
     )

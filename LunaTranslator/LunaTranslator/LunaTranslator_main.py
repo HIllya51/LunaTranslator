@@ -19,6 +19,7 @@ if __name__ == "__main__":
         "./cache/screenshot",
         "./cache/tts",
         "./cache/icon",
+        "./cache/backup",
     ):
 
         os.makedirs(p, exist_ok=True)
