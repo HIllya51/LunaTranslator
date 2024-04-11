@@ -406,7 +406,6 @@
     "删除": "Supprimer",
     "自动切换到模式": "Basculement automatique en mode",
     "不切换": "Pas de commutation",
-    "修改路径": "Modifier le chemin",
     "类型": "Type",
     "人名": "Nom de la personne",
     "显示": "Afficher",
@@ -492,7 +491,6 @@
     "有道TTS": "Avec tts",
     "不支持的键位": "Clés non supportées",
     "快捷键冲突": "Conflit de touches de raccourci",
-    "转区方法": "Méthode de transfert de zone",
     "乌克兰语": "Ukrainien",
     "打开目录": "Ouvrir le catalogue",
     "标题": "Titre",
@@ -606,7 +604,6 @@
     "译文字体": "Police de traduction",
     "额外的行间距": "Espacement des lignes supplémentaire",
     "区分人名和文本": "Différencier les noms de personnes et les textes",
-    "禁止自动朗读的人名(以|分隔多个)": "Noms de personnes interdits en lecture automatique (séparés par |)",
     "选取OCR范围后显示范围框": "Afficher la zone de portée après avoir sélectionné la plage ocr",
     "下载": "Télécharger",
     "附加参数": "Paramètres supplémentaires",
@@ -757,5 +754,7 @@
     "存在": "Présence",
     "标签集": "Ensemble d'étiquettes",
     "添加": "Ajouter",
-    "使用原型查询": "Utiliser une requête prototype"
+    "使用原型查询": "Utiliser une requête prototype",
+    "时": "Lorsque",
+    "禁止自动朗读的人名": "Noms de personnes interdits de Lecture automatique"
 }

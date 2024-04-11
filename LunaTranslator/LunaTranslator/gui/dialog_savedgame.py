@@ -1,4 +1,6 @@
 import functools, time, qtawesome
+from datetime import datetime, timedelta
+from gui.specialwidget import ScrollFlow, chartwidget
 from PyQt5.QtWidgets import (
     QPushButton,
     QDialog,
@@ -15,17 +17,13 @@ from PyQt5.QtWidgets import (
     QTableView,
     QAbstractItemView,
     QLabel,
-    QVBoxLayout,
-    QSpacerItem,
     QTabWidget,
 )
 import windows
-from PyQt5.QtCore import QPoint, QRect, QSize, Qt, pyqtSignal
+from PyQt5.QtCore import QRect, QSize, Qt, pyqtSignal
 import os, hashlib
-from PyQt5 import QtWidgets
 from PyQt5.QtWidgets import (
     QApplication,
-    QLayout,
     QSizePolicy,
     QWidget,
     QMenu,
@@ -35,12 +33,10 @@ from PyQt5.QtWidgets import (
 from PyQt5.QtGui import (
     QCloseEvent,
     QIntValidator,
-    QPaintEvent,
     QResizeEvent,
     QPixmap,
     QPainter,
     QPen,
-    QColor,
 )
 from PyQt5.QtCore import Qt
 from gui.usefulwidget import (
@@ -51,7 +47,7 @@ from gui.usefulwidget import (
     getspinbox,
     selectcolor,
 )
-from PyQt5.QtCore import QPoint, QRect, QSize, Qt, pyqtSignal
+from PyQt5.QtCore import QRect, QSize, Qt, pyqtSignal
 import os
 from myutils.hwnd import showintab
 from PyQt5.QtGui import QStandardItem, QStandardItemModel
@@ -216,134 +212,6 @@ class IMGWidget(QLabel):
         self.setFixedSize(QSize(w, h))
         self.setScaledContents(True)
         self.setimg(pixmap)
-
-
-class ScrollFlow(QWidget):
-    def resizeEvent(self, a0) -> None:
-        self.qscrollarea.resize(self.size())
-        return super().resizeEvent(a0)
-
-    def __init__(self):
-        super(ScrollFlow, self).__init__()
-
-        self.listWidget = QtWidgets.QListWidget(self)
-        # self.listWidget.setFixedWidth(600)
-
-        self.l = FlowLayout()
-
-        self.listWidget.setLayout(self.l)
-
-        self.qscrollarea = QtWidgets.QScrollArea(self)
-        self.qscrollarea.setWidgetResizable(True)
-        self.qscrollarea.setWidget(self.listWidget)
-
-    def addwidget(self, wid):
-        self.l.addWidget(wid)
-
-    def removeidx(self, index):
-        _ = self.l.takeAt(index)
-        _.widget().hide()
-
-
-class FlowLayout(QLayout):
-    heightChanged = pyqtSignal(int)
-
-    def __init__(self, parent=None, margin=0, spacing=-1):
-        super().__init__(parent)
-        if parent is not None:
-            self.setContentsMargins(margin, margin, margin, margin)
-        self.setSpacing(spacing)
-
-        self._item_list = []
-
-    def __del__(self):
-        while self.count():
-            self.takeAt(0)
-
-    def addItem(self, item):  # pylint: disable=invalid-name
-        self._item_list.append(item)
-
-    def addSpacing(self, size):  # pylint: disable=invalid-name
-        self.addItem(QSpacerItem(size, 0, QSizePolicy.Fixed, QSizePolicy.Minimum))
-
-    def count(self):
-        return len(self._item_list)
-
-    def itemAt(self, index):  # pylint: disable=invalid-name
-        if 0 <= index < len(self._item_list):
-            return self._item_list[index]
-        return None
-
-    def takeAt(self, index):  # pylint: disable=invalid-name
-        if 0 <= index < len(self._item_list):
-            return self._item_list.pop(index)
-        return None
-
-    def expandingDirections(self):  # pylint: disable=invalid-name,no-self-use
-        return Qt.Orientations(Qt.Orientation(0))
-
-    def hasHeightForWidth(self):  # pylint: disable=invalid-name,no-self-use
-        return True
-
-    def heightForWidth(self, width):  # pylint: disable=invalid-name
-        height = self._do_layout(QRect(0, 0, width, 0), True)
-        return height
-
-    def setGeometry(self, rect):  # pylint: disable=invalid-name
-        super().setGeometry(rect)
-        self._do_layout(rect, False)
-
-    def sizeHint(self):  # pylint: disable=invalid-name
-        return self.minimumSize()
-
-    def minimumSize(self):  # pylint: disable=invalid-name
-        size = QSize()
-
-        for item in self._item_list:
-            minsize = item.minimumSize()
-            extent = item.geometry().bottomRight()
-            size = size.expandedTo(QSize(minsize.width(), extent.y()))
-
-        margin = self.contentsMargins().left()
-        size += QSize(2 * margin, 2 * margin)
-        return size
-
-    def _do_layout(self, rect, test_only=False):
-        m = self.contentsMargins()
-        effective_rect = rect.adjusted(+m.left(), +m.top(), -m.right(), -m.bottom())
-        x = effective_rect.x()
-        y = effective_rect.y()
-        line_height = 0
-
-        for item in self._item_list:
-            wid = item.widget()
-
-            space_x = self.spacing()
-            space_y = self.spacing()
-            if wid is not None:
-                space_x += wid.style().layoutSpacing(
-                    QSizePolicy.PushButton, QSizePolicy.PushButton, Qt.Horizontal
-                )
-                space_y += wid.style().layoutSpacing(
-                    QSizePolicy.PushButton, QSizePolicy.PushButton, Qt.Vertical
-                )
-
-            next_x = x + item.sizeHint().width() + space_x
-            if next_x - space_x > effective_rect.right() and line_height > 0:
-                x = effective_rect.x()
-                y = y + line_height + space_y
-                next_x = x + item.sizeHint().width() + space_x
-                line_height = 0
-
-            if not test_only:
-                item.setGeometry(QRect(QPoint(x, y), item.sizeHint()))
-
-            x = next_x
-            line_height = max(line_height, item.sizeHint().height())
-
-        new_height = y + line_height - rect.y()
-        self.heightChanged.emit(new_height)
-        return new_height
 
 
 def opendir(k):
@@ -574,15 +442,47 @@ class dialog_setting_game(QDialog):
             self.editpath.setText(res)
             self.exepath = res
 
+    def closeEvent(self, a0: QCloseEvent) -> None:
+        self.isopened = False
+        return super().closeEvent(a0)
+
     def __init__(self, parent, exepath, item=None, gametitleitme=None) -> None:
         super().__init__(parent, Qt.WindowCloseButtonHint)
+        self.isopened = True
         checkifnewgame(exepath)
-        formLayout = QVBoxLayout(self)  # 配置layout
-
+        vbox = QVBoxLayout(self)  # 配置layout
+        self.setLayout(vbox)
+        formwidget = QWidget()
+        formLayout = QFormLayout()
+        formwidget.setLayout(formLayout)
         self.item = item
         self.exepath = exepath
         self.gametitleitme = gametitleitme
-
+        editpath = QLineEdit(exepath)
+        editpath.setReadOnly(True)
+        if item:
+            self.table = parent.table
+            self.model = parent.model
+            editpath.textEdited.connect(lambda _: item.__setitem__("savetext", _))
+        self.editpath = editpath
+        self.setWindowTitle(savehook_new_data[exepath]["title"])
+        self.resize(QSize(600, 200))
+        self.setWindowIcon(getExeIcon(exepath, cache=True))
+        formLayout.addRow(
+            _TR("路径"),
+            getboxlayout(
+                [
+                    editpath,
+                    getcolorbutton(
+                        "",
+                        "",
+                        functools.partial(self.selectexe),
+                        icon="fa.gear",
+                        constcolor="#FF69B4",
+                    ),
+                ]
+            ),
+        )
         titleedit = QLineEdit(savehook_new_data[exepath]["title"])
 
         def _titlechange(x):
@@ -593,7 +493,7 @@ class dialog_setting_game(QDialog):
             gametitleitme.settitle(x)
 
         titleedit.textChanged.connect(_titlechange)
-        formLayout.addLayout(getboxlayout([QLabel(_TR("标题")), titleedit]))
+        formLayout.addRow(_TR("标题"), titleedit)
 
         imgpath = QLineEdit(savehook_new_data[exepath]["imagepath"])
         imgpath.setReadOnly(True)
@@ -612,76 +512,65 @@ class dialog_setting_game(QDialog):
                     imgpath.setText(res)
                     gametitleitme.setimg(_pixmap)
 
-        formLayout.addLayout(
-            getboxlayout(
-                [
-                    QLabel(_TR("封面")),
-                    imgpath,
-                    getcolorbutton(
-                        "", "", selectimg, icon="fa.gear", constcolor="#FF69B4"
-                    ),
-                ]
-            )
-        )
-
         vndbid = QLineEdit(str(savehook_new_data[exepath]["vid"]))
         vndbid.setValidator(QIntValidator())
         vndbid.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Fixed)
 
         vndbid.textEdited.connect(functools.partial(vidchangedtask, exepath))
 
-        statiswids = [
-            QLabel(_TR("统计信息")),
-            getcolorbutton(
-                "",
-                "",
-                lambda: dialog_statistic(self, exepath),
-                icon="fa.bar-chart",
-                constcolor="#FF69B4",
-            ),
-            QLabel(_TR("vndbid")),
-            vndbid,
-            getcolorbutton(
-                "",
-                "",
-                lambda: browserdialog(self, exepath),
-                icon="fa.book",
-                constcolor="#FF69B4",
-            ),
-            getcolorbutton(
-                "",
-                "",
-                lambda: vidchangedtask(exepath, savehook_new_data[exepath]["vid"]),
-                icon="fa.refresh",
-                constcolor="#FF69B4",
-            ),
-        ]
-        formLayout.addLayout(getboxlayout(statiswids))
-        editpath = QLineEdit(exepath)
-        editpath.setReadOnly(True)
-        if item:
-            self.table = parent.table
-            self.model = parent.model
-            editpath.textEdited.connect(lambda _: item.__setitem__("savetext", _))
-        self.editpath = editpath
-        self.setWindowTitle(savehook_new_data[exepath]["title"])
-        self.resize(QSize(600, 200))
-        self.setWindowIcon(getExeIcon(exepath, cache=True))
-        formLayout.addLayout(
+        formLayout.addRow(
+            _TR("封面"),
             getboxlayout(
                 [
-                    QLabel(_TR("修改路径")),
-                    editpath,
+                    imgpath,
+                    getcolorbutton(
+                        "", "", selectimg, icon="fa.gear", constcolor="#FF69B4"
+                    ),
+                ]
+            ),
+        )
+        formLayout.addRow(
+            "vndbid",
+            getboxlayout(
+                [
+                    vndbid,
                     getcolorbutton(
                         "",
                         "",
-                        functools.partial(self.selectexe),
-                        icon="fa.gear",
+                        lambda: browserdialog(self, exepath),
+                        icon="fa.book",
+                        constcolor="#FF69B4",
+                    ),
+                    getcolorbutton(
+                        "",
+                        "",
+                        lambda: vidchangedtask(
+                            exepath, savehook_new_data[exepath]["vid"]
+                        ),
+                        icon="fa.refresh",
                         constcolor="#FF69B4",
                     ),
                 ]
-            )
+            ),
         )
+
+        methodtab = QTabWidget()
+        methodtab.addTab(self.starttab(exepath), "启动")
+        methodtab.addTab(self.gethooktab(exepath), "HOOK")
+        methodtab.addTab(self.getpretranstab(exepath), _TR("预翻译"))
+        methodtab.addTab(self.getttssetting(exepath), _TR("语音"))
+        methodtab.addTab(self.getlabelsetting(exepath), _TR("标签"))
+        methodtab.addTab(self.getstatistic(exepath), _TR("统计信息"))
+
+        vbox.addWidget(formwidget)
+        vbox.addWidget(methodtab)
+
+        self.show()
+
+    def starttab(self, exepath):
+        _w = QWidget()
+        formLayout = QFormLayout()
+        _w.setLayout(formLayout)
 
         b = windows.GetBinaryType(exepath)
 
@@ -691,17 +580,16 @@ class dialog_setting_game(QDialog):
             _methods = ["Locale-Emulator", "Locale_Remulator", "Ntleas"]
         if b == 6 and savehook_new_data[exepath]["localeswitcher"] == 0:
             savehook_new_data[exepath]["localeswitcher"] = 2
-        formLayout.addLayout(
+        formLayout.addRow(
+            _TR("转区启动"),
             getboxlayout(
                 [
-                    QLabel(_TR("转区启动")),
                     getsimpleswitch(savehook_new_data[exepath], "leuse"),
-                    QLabel(_TR("转区方法")),
                     getsimplecombobox(
                         _TRL(_methods), savehook_new_data[exepath], "localeswitcher"
                     ),
-                ][(type != 2) * 2 :]
-            )
+                ]
+            ),
         )
 
         editcmd = QLineEdit(savehook_new_data[exepath]["startcmd"])
@@ -709,61 +597,140 @@ class dialog_setting_game(QDialog):
             lambda _: savehook_new_data[exepath].__setitem__("startcmd", _)
         )
 
-        formLayout.addLayout(
+        formLayout.addRow(
+            _TR("命令行启动"),
             getboxlayout(
                 [
-                    QLabel(_TR("命令行启动")),
                     getsimpleswitch(savehook_new_data[exepath], "startcmduse"),
                     editcmd,
                 ]
-            )
+            ),
         )
 
-        formLayout.addLayout(
-            getboxlayout(
-                [
-                    QLabel(_TR("自动切换到模式")),
-                    getsimplecombobox(
-                        _TRL(["不切换", "HOOK", "剪贴板", "OCR"]),
-                        savehook_new_data[exepath],
-                        "onloadautochangemode2",
-                    ),
-                ]
-            )
+        formLayout.addRow(
+            _TR("自动切换到模式"),
+            getsimplecombobox(
+                _TRL(["不切换", "HOOK", "剪贴板", "OCR"]),
+                savehook_new_data[exepath],
+                "onloadautochangemode2",
+            ),
         )
 
-        formLayout.addLayout(
-            getboxlayout(
-                [
-                    QLabel(_TR("自动切换源语言")),
-                    getsimplecombobox(
-                        _TRL(["不切换"])
-                        + _TRL(static_data["language_list_translator"]),
-                        savehook_new_data[exepath],
-                        "onloadautoswitchsrclang",
-                    ),
-                ]
-            )
+        formLayout.addRow(
+            _TR("自动切换源语言"),
+            getsimplecombobox(
+                _TRL(["不切换"]) + _TRL(static_data["language_list_translator"]),
+                savehook_new_data[exepath],
+                "onloadautoswitchsrclang",
+            ),
         )
 
-        methodtab = QTabWidget()
-        methodtab.addTab(self.gethooktab(exepath), "HOOK")
-        methodtab.addTab(self.getpretranstab(exepath), _TR("预翻译"))
-        methodtab.addTab(self.getttssetting(exepath), _TR("语音"))
-        methodtab.addTab(self.getlabelsetting(exepath), _TR("标签"))
-        formLayout.addWidget(methodtab)
+        return _w
 
-        self.show()
+    def getstatistic(self, exepath):
+        _w = QWidget()
+        formLayout = QVBoxLayout()
+
+        _w.setLayout(formLayout)
+        formLayout.setContentsMargins(0, 0, 0, 0)
+        chart = chartwidget()
+        chart.xtext = lambda x: (
+            "0" if x == 0 else str(datetime.fromtimestamp(x)).split(" ")[0]
+        )
+        chart.ytext = lambda y: self.formattime(y, False)
+
+        self.chart = chart
+        self._timelabel = QLabel()
+        self._wordlabel = QLabel()
+        self._wordlabel.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Fixed)
+        self._timelabel.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Fixed)
+        formLayout.addLayout(getboxlayout([QLabel(_TR("文字计数")), self._wordlabel]))
+        formLayout.addLayout(getboxlayout([QLabel(_TR("游戏时间")), self._timelabel]))
+
+        formLayout.addWidget(chart)
+
+        threading.Thread(target=self.refresh).start()
+        return _w
+
+    def split_range_into_days(self, times):
+        everyday = {}
+        for start, end in times:
+            if start == 0:
+                everyday[0] = end
+                continue
+
+            start_date = datetime.fromtimestamp(start)
+            end_date = datetime.fromtimestamp(end)
+
+            current_date = start_date
+            while current_date <= end_date:
+                end_of_day = current_date.replace(
+                    hour=23, minute=59, second=59, microsecond=0
+                )
+                end_of_day = end_of_day.timestamp() + 1
+
+                if end_of_day >= end_date.timestamp():
+                    useend = end_date.timestamp()
+                else:
+                    useend = end_of_day
+                duration = useend - current_date.timestamp()
+                today = end_of_day - 1
+                if today not in everyday:
+                    everyday[today] = 0
+                everyday[today] += duration
+                current_date += timedelta(days=1)
+                current_date = current_date.replace(
+                    hour=0, minute=0, second=0, microsecond=0
+                )
+        lists = []
+        for k in sorted(everyday.keys()):
+            lists.append((k, everyday[k]))
+        return lists
+
+    def refresh(self):
+        while self.isopened:
+            self._timelabel.setText(
+                self.formattime(savehook_new_data[self.exepath]["statistic_playtime"])
+            )
+            self._wordlabel.setText(
+                str(savehook_new_data[self.exepath]["statistic_wordcount"])
+            )
+            self.chart.setdata(
+                self.split_range_into_days(
+                    savehook_new_data[self.exepath]["traceplaytime_v2"]
+                )
+            )
+            time.sleep(1)
+
+    def formattime(self, t, usingnotstart=True):
+        t = int(t)
+        s = t % 60
+        t = t // 60
+        m = t % 60
+        t = t // 60
+        h = t
+        string = ""
+        if h:
+            string += str(h) + _TR("时")
+        if m:
+            string += str(m) + _TR("分")
+        if s:
+            string += str(s) + _TR("秒")
+        if string == "":
+            if usingnotstart:
+                string = _TR("未开始")
+            else:
+                string = "0"
+        return string
 
     def getlabelsetting(self, exepath):
         _w = QWidget()
         formLayout = QVBoxLayout()
-        # formLayout.setAlignment(Qt.AlignTop)
         _w.setLayout(formLayout)
         formLayout.setContentsMargins(0, 0, 0, 0)
         self.labelflow = ScrollFlow()
 
-        def newitem(text, removeable):
+        def newitem(text, removeable, first=False):
             qw = tagitem(text, removeable)
 
             def __(_qw, t):
@@ -779,7 +746,10 @@ class dialog_setting_game(QDialog):
                 self.parent().tagswidget.addTag(t)
 
             qw.labelclicked.connect(_lbclick)
-            self.labelflow.addwidget(qw)
+            if first:
+                self.labelflow.insertwidget(0, qw)
+            else:
+                self.labelflow.addwidget(qw)
 
         for tag in savehook_new_data[exepath]["usertags"]:
             newitem(tag, True)
@@ -794,8 +764,8 @@ class dialog_setting_game(QDialog):
         def _add(_):
             tag = globalconfig["labelset"][_dict["new"]]
             if tag not in savehook_new_data[exepath]["usertags"]:
-                savehook_new_data[exepath]["usertags"].append(tag)
-                newitem(tag, True)
+                savehook_new_data[exepath]["usertags"].insert(0, tag)
+                newitem(tag, True, True)
 
         button.clicked.connect(_add)
 
@@ -815,12 +785,29 @@ class dialog_setting_game(QDialog):
         formLayout.setAlignment(Qt.AlignTop)
         _w.setLayout(formLayout)
 
-        edit = QLineEdit(savehook_new_data[exepath]["allow_tts_auto_names"])
-        edit.textChanged.connect(
-            lambda x: savehook_new_data[exepath].__setitem__("allow_tts_auto_names", x)
-        )
         formLayout.addLayout(
-            getboxlayout([QLabel(_TR("禁止自动朗读的人名(以|分隔多个)")), edit])
+            getboxlayout(
+                [
+                    QLabel(_TR("禁止自动朗读的人名")),
+                    getcolorbutton(
+                        "",
+                        "",
+                        lambda _: listediter(
+                            self,
+                            _TR("禁止自动朗读的人名"),
+                            _TRL(
+                                [
+                                    "删除",
+                                    "人名",
+                                ]
+                            ),
+                            savehook_new_data[exepath]["allow_tts_auto_names_v4"],
+                        ),
+                        icon="fa.gear",
+                        constcolor="#FF69B4",
+                    ),
+                ]
+            )
         )
         formLayout.addLayout(
             getboxlayout(
@@ -847,8 +834,7 @@ class dialog_setting_game(QDialog):
 
     def getpretranstab(self, exepath):
         _w = QWidget()
-        formLayout = QVBoxLayout()
-        formLayout.setAlignment(Qt.AlignTop)
+        formLayout = QFormLayout()
         _w.setLayout(formLayout)
 
         def selectimg(key, filter1, le):
@@ -868,10 +854,10 @@ class dialog_setting_game(QDialog):
             editjson = QLineEdit(exepath)
             editjson.setReadOnly(True)
             editjson.setText(savehook_new_data[exepath][key])
-            formLayout.addLayout(
+            formLayout.addRow(
+                _TR(showname),
                 getboxlayout(
                     [
-                        QLabel(_TR(showname)),
                         editjson,
                         getcolorbutton(
                             "",
@@ -881,35 +867,27 @@ class dialog_setting_game(QDialog):
                             constcolor="#FF69B4",
                         ),
                     ]
-                )
+                ),
             )
         return _w
 
     def gethooktab(self, exepath):
         _w = QWidget()
-        formLayout = QVBoxLayout()
+        formLayout = QFormLayout()
         _w.setLayout(formLayout)
-        formLayout.addLayout(
-            getboxlayout(
-                [
-                    QLabel(_TR("代码页")),
-                    getsimplecombobox(
-                        _TRL(static_data["codepage_display"]),
-                        savehook_new_data[exepath],
-                        "codepage_index",
-                        lambda x: gobject.baseobject.textsource.setsettings(),
-                    ),
-                ]
-            )
+        formLayout.addRow(
+            _TR("代码页"),
+            getsimplecombobox(
+                _TRL(static_data["codepage_display"]),
+                savehook_new_data[exepath],
+                "codepage_index",
+                lambda x: gobject.baseobject.textsource.setsettings(),
+            ),
         )
 
-        formLayout.addLayout(
-            getboxlayout(
-                [
-                    QLabel(_TR("移除非选定hook")),
-                    getsimpleswitch(savehook_new_data[exepath], "removeuseless"),
-                ]
-            )
+        formLayout.addRow(
+            _TR("移除非选定hook"),
+            getsimpleswitch(savehook_new_data[exepath], "removeuseless"),
         )
 
         model = QStandardItemModel()
@@ -937,31 +915,19 @@ class dialog_setting_game(QDialog):
         for row, k in enumerate(savehook_new_data[exepath]["needinserthookcode"]):  # 2
             self.newline(row, k)
 
-        formLayout.addWidget(self.hctable)
+        formLayout.addRow(self.hctable)
 
-        formLayout.addLayout(
-            getboxlayout(
-                [
-                    QLabel(_TR("插入特殊码延迟(ms)")),
-                    getspinbox(
-                        0, 1000000, savehook_new_data[exepath], "inserthooktimeout"
-                    ),
-                ]
-            )
+        formLayout.addRow(
+            _TR("插入特殊码延迟(ms)"),
+            getspinbox(0, 1000000, savehook_new_data[exepath], "inserthooktimeout"),
         )
         if (
             savehook_new_data[exepath]["use_saved_text_process"]
             or "save_text_process_info" in savehook_new_data[exepath]
         ):
-            formLayout.addLayout(
-                getboxlayout(
-                    [
-                        QLabel(_TR("使用保存的文本处理流程")),
-                        getsimpleswitch(
-                            savehook_new_data[exepath], "use_saved_text_process"
-                        ),
-                    ]
-                )
+            formLayout.addRow(
+                _TR("使用保存的文本处理流程"),
+                getsimpleswitch(savehook_new_data[exepath], "use_saved_text_process"),
             )
         return _w
 
@@ -1040,57 +1006,6 @@ class dialog_syssetting(QDialog):
             ),
         )
         self.show()
-
-
-@Singleton
-class dialog_statistic(QDialog):
-    def formattime(self, t):
-        t = int(t)
-        s = t % 60
-        t = t // 60
-        m = t % 60
-        t = t // 60
-        h = t
-        string = ""
-        if h:
-            string += str(h) + _TR("时")
-        if m:
-            string += str(m) + _TR("分")
-        if s:
-            string += str(s) + _TR("秒")
-        if string == "":
-            string = _TR("未开始")
-        return string
-
-    refreshsignal = pyqtSignal()
-
-    def refresh(self):
-        while self.isVisible():
-            time.sleep(1)
-            self._timelabel.setText(
-                self.formattime(savehook_new_data[self.exepath]["statistic_playtime"])
-            )
-            self._wordlabel.setText(
-                str(savehook_new_data[self.exepath]["statistic_wordcount"])
-            )
-
-    def __init__(self, parent, exepath) -> None:
-        super().__init__(parent, Qt.WindowCloseButtonHint)
-        checkifnewgame(exepath)
-        self.exepath = exepath
-        self.setWindowTitle(_TR("统计信息"))
-        # self.resize(QSize(800,400))
-        formlayout = QFormLayout()
-        self._timelabel = QLabel(
-            self.formattime(savehook_new_data[exepath]["statistic_playtime"])
-        )
-        formlayout.addRow(_TR("游戏时间"), self._timelabel)
-        self._wordlabel = QLabel(str(savehook_new_data[exepath]["statistic_wordcount"]))
-        formlayout.addRow(_TR("文字计数"), self._wordlabel)
-        self.setLayout(formlayout)
-        self.refreshsignal.connect(self.refresh)
-        self.show()
-        threading.Thread(target=self.refresh).start()
 
 
 @threader
@@ -1178,20 +1093,14 @@ def startgame(game):
 
 
 @Singleton_close
-class labelsetedit(QDialog):
-    def __init__(self, p) -> None:
+class listediter(QDialog):
+    def __init__(self, p, title, headers, lst) -> None:
         super().__init__(p)
+        self.lst = lst
         try:
-            self.setWindowTitle(_TR("标签集"))
+            self.setWindowTitle(title)
             model = QStandardItemModel()
-            model.setHorizontalHeaderLabels(
-                _TRL(
-                    [
-                        "删除",
-                        "标签",
-                    ]
-                )
-            )
+            model.setHorizontalHeaderLabels(headers)
             self.hcmodel = model
 
             table = QTableView()
@@ -1204,7 +1113,7 @@ class labelsetedit(QDialog):
             table.setModel(model)
             self.hctable = table
 
-            for row, k in enumerate(globalconfig["labelset"]):  # 2
+            for row, k in enumerate(lst):  # 2
                 self.newline(row, k)
             formLayout = QVBoxLayout()
             formLayout.addWidget(self.hctable)
@@ -1218,7 +1127,7 @@ class labelsetedit(QDialog):
 
     def clicked2(self):
         try:
-            globalconfig["labelset"].pop(self.hctable.currentIndex().row())
+            self.lst.pop(self.hctable.currentIndex().row())
             self.hcmodel.removeRow(self.hctable.currentIndex().row())
         except:
             pass
@@ -1227,13 +1136,13 @@ class labelsetedit(QDialog):
         rows = self.hcmodel.rowCount()
         rowoffset = 0
         dedump = set()
-        globalconfig["labelset"].clear()
+        self.lst.clear()
         for row in range(rows):
             k = self.hcmodel.item(row, 1).text()
             if k == "" or k in dedump:
                 rowoffset += 1
                 continue
-            globalconfig["labelset"].append(k)
+            self.lst.append(k)
             dedump.add(k)
 
     def newline(self, row, k):
@@ -1333,7 +1242,17 @@ class TagWidget(QWidget):
             getcolorbutton(
                 "",
                 "",
-                lambda _: labelsetedit(parent),
+                lambda _: listediter(
+                    parent,
+                    _TR("标签集"),
+                    _TRL(
+                        [
+                            "删除",
+                            "标签",
+                        ]
+                    ),
+                    globalconfig["labelset"],
+                ),
                 icon="fa.gear",
                 constcolor="#FF69B4",
             ),
@@ -1386,9 +1305,11 @@ class dialog_savedgame_new(saveposwindow):
             savehook_new_list.pop(idx)
             if game in savehook_new_data:
                 savehook_new_data.pop(game)
-            self.flow.removeidx(self.idxsave.index(game))
-            self.idxsave.pop(self.idxsave.index(game))
-            self.keepocus(idx)
+
+            idx2 = self.idxsave.index(game)
+            self.flow.removeidx(idx2)
+            self.idxsave.pop(idx2)
+            self.flow.setfocus(idx2)
         except:
             pass
 
@@ -1405,17 +1326,8 @@ class dialog_savedgame_new(saveposwindow):
         if res != "":
             res = res.replace("/", "\\")
             if res not in savehook_new_list:
-                self.newline(res)
-                self.idxsave.append(res)
-
-    def keepocus(self, idx):
-        idx = min(len(savehook_new_list) - 1, idx)
-        if len(savehook_new_list):
-            self.flow.l._item_list[idx].widget().setFocus()
-
-    def top1focus(self):
-        if len(savehook_new_list):
-            self.flow.l._item_list[0].widget().setFocus()
+                self.newline(res, True)
+                self.idxsave.insert(0, res)
 
     def tagschanged(self, tags):
         checkexists = _TR("存在") in tags
@@ -1493,13 +1405,15 @@ class dialog_savedgame_new(saveposwindow):
 
     def showsettingdialog(self):
         idx = self.idxsave.index(self.currentfocuspath)
-
-        dialog_setting_game(
-            self,
-            self.currentfocuspath,
-            None,
-            gametitleitme=self.flow.l._item_list[idx].widget(),
-        )
+        try:
+            dialog_setting_game(
+                self,
+                self.currentfocuspath,
+                None,
+                gametitleitme=self.flow.widget(idx),
+            )
+        except:
+            print_exc()
 
     def simplebutton(self, text, save, callback, exists):
         button5 = QPushButton()
@@ -1532,7 +1446,7 @@ class dialog_savedgame_new(saveposwindow):
             )
             _btn.setEnabled(_able1)
 
-    def newline(self, k):
+    def newline(self, k, first=False):
         checkifnewgame(k)
 
         def _getpixfunction(kk):
@@ -1547,4 +1461,7 @@ class dialog_savedgame_new(saveposwindow):
         gameitem.connectexepath(k)
         gameitem.doubleclicked.connect(self.startgame)
         gameitem.focuschanged.connect(self.itemfocuschanged)
-        self.flow.addwidget(gameitem)
+        if first:
+            self.flow.insertwidget(0, gameitem)
+        else:
+            self.flow.addwidget(gameitem)

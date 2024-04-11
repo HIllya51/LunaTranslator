@@ -406,7 +406,6 @@
     "删除": "Sil",
     "自动切换到模式": "Otomatik moda değiştir",
     "不切换": "Değiştirme",
-    "修改路径": "Yolu değiştir",
     "类型": "tür",
     "人名": "isim",
     "显示": "Ekran",
@@ -492,7 +491,6 @@
     "有道TTS": "Youdao TTS",
     "不支持的键位": "Desteklenmeyen anahtar pozisyonu",
     "快捷键冲突": "Kısayol tuş çatışması",
-    "转区方法": "Transfer yöntemi",
     "乌克兰语": "Ukraince",
     "打开目录": "Dizini Aç",
     "标题": "isim",
@@ -606,7 +604,6 @@
     "译文字体": "Çeviri yazıtipi",
     "额外的行间距": "Ekstra çizgi boşluğu",
     "区分人名和文本": "Kişisel isimler ve metin arasında ayrı",
-    "禁止自动朗读的人名(以|分隔多个)": "Otomatik okunmaya izin verilmeyen insanların isimleri (ayrılmış .).",
     "选取OCR范围后显示范围框": "OCR menzili seçmeden sonra menzil kutusunu göster",
     "下载": "indir",
     "附加参数": "Ekstra parametre",
@@ -757,5 +754,7 @@
     "存在": "varlığı",
     "标签集": "Etiket seti",
     "添加": "Ekle",
-    "使用原型查询": "Prototip sorguları kullanılıyor"
+    "使用原型查询": "Prototip sorguları kullanılıyor",
+    "时": "Zaman",
+    "禁止自动朗读的人名": "Otomatik okuma yasaklanmış isimler"
 }

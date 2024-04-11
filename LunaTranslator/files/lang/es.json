@@ -406,7 +406,6 @@
     "删除": "Eliminar",
     "自动切换到模式": "Cambiar automáticamente al modo",
     "不切换": "Sin cambiar",
-    "修改路径": "Modificar ruta",
     "类型": "Tipo",
     "人名": "Nombre",
     "显示": "Mostrar",
@@ -492,7 +491,6 @@
     "有道TTS": "Youdao TTS",
     "不支持的键位": "Teclas no soportadas",
     "快捷键冲突": "Conflicto de teclas de acceso rápido",
-    "转区方法": "Método de transferencia",
     "乌克兰语": "Ucraniano",
     "打开目录": "Abrir catálogo",
     "标题": "Título",
@@ -606,7 +604,6 @@
     "译文字体": "Fuente de traducción",
     "额外的行间距": "Espaciamiento adicional de filas",
     "区分人名和文本": "Distinguir entre nombre y texto",
-    "禁止自动朗读的人名(以|分隔多个)": "Nombres de personas cuya lectura automática está prohibida (separados por | varios)",
     "选取OCR范围后显示范围框": "Después de seleccionar el rango ocr, se muestra el cuadro de rango.",
     "下载": "Descargar",
     "附加参数": "Parámetros adicionales",
@@ -757,5 +754,7 @@
     "存在": "Existencia",
     "标签集": "Conjunto de etiquetas",
     "添加": "Añadir",
-    "使用原型查询": "Consulta con prototipo"
+    "使用原型查询": "Consulta con prototipo",
+    "时": "Hora",
+    "禁止自动朗读的人名": "Nombres de personas cuya lectura automática está prohibida"
 }

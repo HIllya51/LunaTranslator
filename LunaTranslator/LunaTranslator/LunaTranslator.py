@@ -425,9 +425,7 @@ class MAINUI:
         try:
             time.sleep(globalconfig["textthreaddelay"] / 1000)
             name = self.textsource.currentname
-            names = savehook_new_data[self.textsource.pname][
-                "allow_tts_auto_names"
-            ].split("|")
+            names = savehook_new_data[self.textsource.pname]["allow_tts_auto_names_v4"]
             needpass = False
             if name in names:
                 needpass = True
@@ -759,9 +757,23 @@ class MAINUI:
         self.mainuiloadafter()
 
     def checkgameplayingthread(self):
+        self.tracestarted = False
         while True:
             statistictime = time.time()
             time.sleep(1)
+
+            def isok(name_):
+                now = time.time()
+                if self.tracestarted == False:
+                    self.tracestarted = True
+                    savehook_new_data[name_]["traceplaytime_v2"].append(
+                        [statistictime, statistictime]
+                    )
+                savehook_new_data[name_]["statistic_playtime"] += now - statistictime
+                savehook_new_data[name_]["traceplaytime_v2"][-1][1] = now
+
+            def isbad():
+                self.tracestarted = False
 
             try:
                 _hwnd = windows.GetForegroundWindow()
@@ -773,17 +785,17 @@ class MAINUI:
                 ):
                     try:
                         if _pid in self.textsource.pids:
-                            savehook_new_data[self.textsource.pname][
-                                "statistic_playtime"
-                            ] += (time.time() - statistictime)
+                            isok(self.textsource.pname)
+                        else:
+                            isbad()
                     except:
                         pass
                 else:
                     name_ = getpidexe(_pid)
                     if name_ and name_ in savehook_new_list:
-                        savehook_new_data[name_]["statistic_playtime"] += (
-                            time.time() - statistictime
-                        )
+                        isok(name_)
+                    else:
+                        isbad()
             except:
                 print_exc()
 

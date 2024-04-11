@@ -45,7 +45,6 @@ def imagesolve(image):
 
 def imageCut(hwnd, x1, y1, x2, y2, viscompare=True):
     screen = QApplication.primaryScreen()
-
     for _ in range(2):
 
         if _ % 2 == 0:

@@ -1,5 +1,5 @@
 import json
-import os
+import os, time
 
 
 def tryreadconfig(path, default=None):
@@ -76,7 +76,8 @@ def getdefaultsavehook(gamepath, title=None):
         "needinserthookcode": [],
         "removeuseless": False,
         "codepage_index": 0,
-        "allow_tts_auto_names": "",
+        # "allow_tts_auto_names": "",
+        "allow_tts_auto_names_v4": [],
         "tts_repair": False,
         "tts_repair_regex": [],
         "hooktypeasname": {},
@@ -88,6 +89,7 @@ def getdefaultsavehook(gamepath, title=None):
         "gamexmlfile": "",
         "vndbtags": [],
         "usertags": [],
+        "traceplaytime_v2": [],  # [[start,end]]
     }
     if gamepath == "0":
         default["title"] = "No Game"
@@ -99,11 +101,30 @@ def getdefaultsavehook(gamepath, title=None):
             + "/"
             + os.path.basename(gamepath)
         )
+
     return default
 
 
 _dfsavehook = getdefaultsavehook("")
 for game in savehook_new_data:
+    if ("traceplaytime_v2" not in savehook_new_data[game]) and (
+        "statistic_playtime" in savehook_new_data[game]
+    ):
+        savehook_new_data[game]["traceplaytime_v2"] = [
+            [
+                0,
+                savehook_new_data[game]["statistic_playtime"],
+            ]
+        ]
+    if (
+        ("allow_tts_auto_names_v4" not in savehook_new_data[game])
+        and ("allow_tts_auto_names" in savehook_new_data[game])
+        and len(savehook_new_data[game]["allow_tts_auto_names"])
+    ):
+        savehook_new_data[game]["allow_tts_auto_names_v4"] = savehook_new_data[game][
+            "allow_tts_auto_names"
+        ].split("|")
+
     for k in _dfsavehook:
         if k not in savehook_new_data[game]:
             savehook_new_data[game][k] = _dfsavehook[k]

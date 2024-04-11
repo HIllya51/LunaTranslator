@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QMenu, QDesktopWidget, QMainWindow, QLabel, QAction, QDialog
+from PyQt5.QtWidgets import QMenu, QApplication, QMainWindow, QLabel, QAction, QDialog
 from PyQt5.QtGui import QPainter, QPen, QColor
 from PyQt5.QtCore import Qt, QPoint, QRect, QEvent
 from myutils.config import _TR
@@ -57,19 +57,21 @@ class rangeadjust(Mainw):
             self._startPos = None
             self._endPos = None
 
+    def rectoffset(self, rect):
+        return [
+            (
+                rect.left() + globalconfig["ocrrangewidth"],
+                rect.top() + globalconfig["ocrrangewidth"],
+            ),
+            (
+                rect.right() - globalconfig["ocrrangewidth"],
+                rect.bottom() - globalconfig["ocrrangewidth"],
+            ),
+        ]
+
     def moveEvent(self, e):
-        rect = self.geometry()
         if self._rect:
-            self._rect = [
-                (
-                    rect.left() + globalconfig["ocrrangewidth"],
-                    rect.top() + globalconfig["ocrrangewidth"],
-                ),
-                (
-                    rect.right() - globalconfig["ocrrangewidth"],
-                    rect.bottom() - globalconfig["ocrrangewidth"],
-                ),
-            ]
+            self._rect = self.rectoffset(self.geometry())
 
     def enterEvent(self, QEvent):
         self.drag_label.setStyleSheet("background-color:rgba(0,0,0, 0.1)")
@@ -80,18 +82,8 @@ class rangeadjust(Mainw):
     def resizeEvent(self, a0):
 
         self.label.setGeometry(0, 0, self.width(), self.height())
-        rect = self.geometry()
         if self._rect:
-            self._rect = [
-                (
-                    rect.left() + globalconfig["ocrrangewidth"],
-                    rect.top() + globalconfig["ocrrangewidth"],
-                ),
-                (
-                    rect.right() - globalconfig["ocrrangewidth"],
-                    rect.bottom() - globalconfig["ocrrangewidth"],
-                ),
-            ]
+            self._rect = self.rectoffset(self.geometry())
         super(rangeadjust, self).resizeEvent(a0)
 
     def getrect(self):
@@ -121,16 +113,13 @@ class rangeselct(QMainWindow):
         self.setAttribute(Qt.WA_TranslucentBackground)
 
     def reset(self):
-        num_screens = QDesktopWidget().screenCount()
-        x, y, x2, y2 = 9999, 9999, 0, 0
-        for i in range(num_screens):
-            _rect = QDesktopWidget().screenGeometry(i)
-            x = min(x, _rect.x())
-            y = min(y, _rect.y())
-            x2 = max(x2, _rect.x() + _rect.width())
-            y2 = max(y2, _rect.y() + _rect.height())
-        self.setGeometry(x, y, x2 - x, y2 - y)
-        self.rectlabel.setGeometry(x, y, x2 - x, y2 - y)
+        # screens = QDesktopWidget().screenCount()
+        # desktop = QDesktopWidget().screenGeometry(0)
+        # for i in range(1, screens):
+        #     desktop = desktop.united(QDesktopWidget().screenGeometry(i))
+        desktop = QApplication.primaryScreen().virtualGeometry()
+        self.setGeometry(desktop)
+        self.rectlabel.resize(desktop.size())
         self.setCursor(Qt.CrossCursor)
         self.is_drawing = False
         self.setMouseTracking(True)

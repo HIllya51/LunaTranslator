@@ -406,7 +406,6 @@
     "删除": "Xoá",
     "自动切换到模式": "Tự động chuyển sang chế độ",
     "不切换": "Không chuyển đổi",
-    "修改路径": "Sửa đổi đường dẫn",
     "类型": "Loại",
     "人名": "Tên người",
     "显示": "Hiển thị",
@@ -492,7 +491,6 @@
     "有道TTS": "Có TTS",
     "不支持的键位": "Các phím không được hỗ trợ",
     "快捷键冲突": "Xung đột phím tắt",
-    "转区方法": "Phương pháp chuyển vùng",
     "乌克兰语": "Tiếng Việt",
     "打开目录": "Mở thư mục",
     "标题": "Tiêu đề",
@@ -606,7 +604,6 @@
     "译文字体": "Phông chữ dịch",
     "额外的行间距": "Thêm khoảng cách hàng",
     "区分人名和文本": "Phân biệt tên người và văn bản",
-    "禁止自动朗读的人名(以|分隔多个)": "Tên của những người bị cấm tự động đọc to (để phân tách nhiều hơn một)",
     "选取OCR范围后显示范围框": "Hiển thị hộp phạm vi sau khi chọn phạm vi OCR",
     "下载": "Tải về",
     "附加参数": "Tham số bổ sung",
@@ -757,5 +754,7 @@
     "存在": "Hiện diện",
     "标签集": "Bộ thẻ",
     "添加": "Thêm",
-    "使用原型查询": "Truy vấn với Prototype"
+    "使用原型查询": "Truy vấn với Prototype",
+    "时": "Khi",
+    "禁止自动朗读的人名": "Tên người bị cấm đọc tự động"
 }

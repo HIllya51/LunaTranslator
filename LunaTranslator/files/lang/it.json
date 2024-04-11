@@ -396,7 +396,6 @@
     "删除": "elimina",
     "自动切换到模式": "Passa automaticamente alla modalità",
     "不切换": "Non cambiare",
-    "修改路径": "Modifica tracciato",
     "类型": "tipo",
     "人名": "nome",
     "用户词典选择JcUserdic文件夹": "Selezione dizionario utente Cartella JcUserdic",
@@ -492,7 +491,6 @@
     "有道TTS": "Youdao TTS",
     "不支持的键位": "Posizione chiave non supportata",
     "快捷键冲突": "Conflitto di tasti scorciatoie",
-    "转区方法": "Metodo di trasferimento",
     "乌克兰语": "Ucraino",
     "打开目录": "Apri directory",
     "标题": "titolo",
@@ -606,7 +604,6 @@
     "译文字体": "Carattere di traduzione",
     "额外的行间距": "Spaziatura riga aggiuntiva",
     "区分人名和文本": "Distinguere i nomi delle persone e il testo",
-    "禁止自动朗读的人名(以|分隔多个)": "Nomi di persone che non possono essere letti automaticamente (separati da |)",
     "选取OCR范围后显示范围框": "Mostra la casella di intervallo dopo aver selezionato l'intervallo OCR",
     "下载": "download",
     "附加参数": "Parametri aggiuntivi",
@@ -757,5 +754,7 @@
     "存在": "esistenza",
     "标签集": "Set di etichette",
     "添加": "Aggiungi",
-    "使用原型查询": "Utilizzo di query prototipali"
+    "使用原型查询": "Utilizzo di query prototipali",
+    "时": "Tempo",
+    "禁止自动朗读的人名": "Nomi vietati dalla lettura automatica"
 }
