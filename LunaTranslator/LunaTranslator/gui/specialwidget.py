@@ -1,5 +1,5 @@
 from PyQt5.QtWidgets import QWidget, QSizePolicy, QListWidget, QScrollArea
-from PyQt5.QtGui import QPainter, QPen, QFont, QFontMetrics
+from PyQt5.QtGui import QMouseEvent, QPainter, QPen, QFont, QFontMetrics
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import (
     QSpacerItem,
@@ -119,6 +119,8 @@ class chartwidget(QWidget):
 
 
 class ScrollFlow(QWidget):
+    bgclicked = pyqtSignal()
+
     def resizeEvent(self, a0) -> None:
         self.qscrollarea.resize(self.size())
         return super().resizeEvent(a0)
@@ -126,7 +128,11 @@ class ScrollFlow(QWidget):
     def __init__(self):
         super(ScrollFlow, self).__init__()
 
-        self.listWidget = QListWidget(self)
+        class _QListWidget(QListWidget):
+            def mousePressEvent(_, _2) -> None:
+                self.bgclicked.emit()
+
+        self.listWidget = _QListWidget(self)
         # self.listWidget.setFixedWidth(600)
 
         self.l = FlowLayout()

@@ -33,6 +33,7 @@ from PyQt5.QtWidgets import (
 from PyQt5.QtGui import (
     QCloseEvent,
     QIntValidator,
+    QMouseEvent,
     QResizeEvent,
     QPixmap,
     QPainter,
@@ -68,16 +69,33 @@ from gui.inputdialog import noundictconfigdialog1
 class ItemWidget(QWidget):
     focuschanged = pyqtSignal(bool, str)
     doubleclicked = pyqtSignal(str)
+    globallashfocus = None
+    
+    @classmethod
+    def clearfocus(cls):
+        try:  # 可能已被删除
+            if ItemWidget.globallashfocus:
+                ItemWidget.globallashfocus.focusOut()
+        except:
+            pass
+        ItemWidget.globallashfocus = None
 
-    def focusInEvent(self, ev) -> None:
-        self.bottommask.setStyleSheet(
-            "QLabel { background-color: "
-            + globalconfig["dialog_savegame_layout"]["onselectcolor"]
-            + "; }"
-        )
-        self.focuschanged.emit(True, self.exe)
+    def mousePressEvent(self, ev) -> None:
+        try:
+            self.bottommask.setStyleSheet(
+                "QLabel { background-color: "
+                + globalconfig["dialog_savegame_layout"]["onselectcolor"]
+                + "; }"
+            )
 
-    def focusOutEvent(self, event):
+            if self != ItemWidget.globallashfocus:
+                ItemWidget.clearfocus()
+            ItemWidget.globallashfocus = self
+            self.focuschanged.emit(True, self.exe)
+        except:
+            print_exc()
+
+    def focusOut(self):
         self.bottommask.setStyleSheet(
             "QLabel { background-color: rgba(255,255,255, 0); }"
         )
@@ -128,7 +146,7 @@ class ItemWidget(QWidget):
         self.imgh = self.itemh - textH - 2 * margin
         #
         self.setFixedSize(QSize(self.itemw, self.itemh))
-        self.setFocusPolicy(Qt.StrongFocus)
+        # self.setFocusPolicy(Qt.StrongFocus)
         self.maskshowfileexists = QLabel(self)
         self.bottommask = QLabel(self)
         layout = QVBoxLayout()
@@ -1331,9 +1349,7 @@ class dialog_savedgame_new(saveposwindow):
 
     def clicked3(self):
 
-        f = QFileDialog.getOpenFileName(
-            directory="", options=QFileDialog.DontResolveSymlinks
-        )
+        f = QFileDialog.getOpenFileName(options=QFileDialog.DontResolveSymlinks)
 
         res = f[0]
         if res != "":
@@ -1347,9 +1363,11 @@ class dialog_savedgame_new(saveposwindow):
             _ = list(tags)
             _.remove(_TR("存在"))
             tags = tuple(_)
+        ItemWidget.clearfocus()
         self.formLayout.removeWidget(self.flow)
         self.idxsave.clear()
         self.flow = ScrollFlow()
+        self.flow.bgclicked.connect(ItemWidget.clearfocus)
         self.formLayout.insertWidget(self.formLayout.count() - 1, self.flow)
         for k in savehook_new_list:
             if checkexists and os.path.exists(k) == False:
@@ -1371,6 +1389,41 @@ class dialog_savedgame_new(saveposwindow):
             self.newline(k)
             QApplication.processEvents()
 
+    def showmenu(self, p):
+        menu = QMenu(self)
+        startgame = QAction(_TR("开始游戏"))
+        gamesetting = QAction(_TR("游戏设置"))
+        delgame = QAction(_TR("删除游戏"))
+        opendir = QAction(_TR("打开目录"))
+        addgame = QAction(_TR("添加游戏"))
+        batchadd = QAction(_TR("批量添加"))
+        othersetting = QAction(_TR("其他设置"))
+
+        if self.currentfocuspath:
+            menu.addAction(startgame)
+            menu.addAction(gamesetting)
+            menu.addAction(delgame)
+            menu.addAction(opendir)
+        else:
+            menu.addAction(addgame)
+            menu.addAction(batchadd)
+            menu.addAction(othersetting)
+        action = menu.exec(self.mapToGlobal(p))
+        if action == startgame:
+            self.startgame(self.currentfocuspath)
+        elif action == gamesetting:
+            self.showsettingdialog()
+        elif action == delgame:
+            self.clicked2()
+        elif action == opendir:
+            self.clicked4()
+        elif action == addgame:
+            self.clicked3()
+        elif action == batchadd:
+            self.clicked3_batch()
+        elif action == othersetting:
+            dialog_syssetting(self)
+
     def __init__(self, parent) -> None:
         super().__init__(
             parent,
@@ -1386,7 +1439,8 @@ class dialog_savedgame_new(saveposwindow):
         self.tagswidget.tagschanged.connect(self.tagschanged)
         formLayout.addWidget(self.tagswidget)
         self.flow = ScrollFlow()
-
+        self.setContextMenuPolicy(Qt.CustomContextMenu)
+        self.customContextMenuRequested.connect(self.showmenu)
         formLayout.addWidget(self.flow)
         self.formLayout = formLayout
         buttonlayout = QHBoxLayout()
@@ -1440,18 +1494,12 @@ class dialog_savedgame_new(saveposwindow):
     def itemfocuschanged(self, b, k):
 
         if b:
-            if self.currentfocuspath == k:
-                return
-            self.activategamenum += 1
             self.currentfocuspath = k
         else:
-            self.activategamenum -= 1
             self.currentfocuspath = None
 
-        _able = self.activategamenum > 0
-
         for _btn, exists in self.savebutton:
-            _able1 = _able and (
+            _able1 = b and (
                 (not exists)
                 or (self.currentfocuspath)
                 and (os.path.exists(self.currentfocuspath))
