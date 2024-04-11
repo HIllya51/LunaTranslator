@@ -390,15 +390,16 @@ class QUnFrameWindow(resizableframeless):
 
         rangeselct_function(self, ocroncefunction, False, False)
 
-    def addbuttons(self):
-        def simulate_key_enter():
-            windows.SetForegroundWindow(gobject.baseobject.textsource.hwnd)
-            time.sleep(0.1)
-            while windows.GetForegroundWindow() == gobject.baseobject.textsource.hwnd:
-                time.sleep(0.001)
-                windows.keybd_event(13, 0, 0, 0)
-            windows.keybd_event(13, 0, windows.KEYEVENTF_KEYUP, 0)
+    @threader
+    def simulate_key_enter(self):
+        windows.SetForegroundWindow(gobject.baseobject.textsource.hwnd)
+        time.sleep(0.1)
+        while windows.GetForegroundWindow() == gobject.baseobject.textsource.hwnd:
+            time.sleep(0.001)
+            windows.keybd_event(13, 0, 0, 0)
+        windows.keybd_event(13, 0, windows.KEYEVENTF_KEYUP, 0)
 
+    def addbuttons(self):
         def simulate_key_ctrl():
             windows.SetForegroundWindow(gobject.baseobject.textsource.hwnd)
             time.sleep(0.1)
@@ -469,7 +470,7 @@ class QUnFrameWindow(resizableframeless):
             ),
             (
                 "simulate_key_enter",
-                lambda: threading.Thread(target=simulate_key_enter).start(),
+                self.simulate_key_enter,
             ),
             (
                 "copy_once",

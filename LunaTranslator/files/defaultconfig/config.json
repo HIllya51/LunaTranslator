@@ -571,6 +571,11 @@
                 "use": false,
                 "name": "进行一次OCR",
                 "keystring": ""
+            },
+            "_27": {
+                "use": false,
+                "name": "模拟按键Enter",
+                "keystring": ""
             }
         }
     },
