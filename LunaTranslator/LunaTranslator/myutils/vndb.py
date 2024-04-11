@@ -150,7 +150,7 @@ def getdevelopersbyid(vid):
 
     name = safegetvndbjson(
         "https://api.vndb.org/kana/vn",
-        {"filters": ["id", "=", vid], "fields": "developers.name,developers.origin"},
+        {"filters": ["id", "=", vid], "fields": "developers.name,developers.original"},
         _js,
     )
     return name
