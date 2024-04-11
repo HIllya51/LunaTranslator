@@ -743,7 +743,10 @@ class dialog_setting_game(QDialog):
                 qw.removesignal.connect(functools.partial(__, qw))
 
             def _lbclick(t):
-                self.parent().tagswidget.addTag(t)
+                try:
+                    self.parent().tagswidget.addTag(t)
+                except:
+                    pass
 
             qw.labelclicked.connect(_lbclick)
             if first:

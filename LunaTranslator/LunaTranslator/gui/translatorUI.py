@@ -483,6 +483,10 @@ class QUnFrameWindow(resizableframeless):
                     gobject.baseobject.settin_ui, gobject.baseobject.textsource
                 ),
             ),
+            (
+                "open_game_setting",
+                lambda: gobject.baseobject.hookselectdialog.opengamesetting(),
+            ),
             ("ocr_once", self.ocr_once_signal.emit),
             ("minmize", self.hide_),
             ("quit", self.close),

@@ -215,6 +215,11 @@
                 "tip": "打开关联页面",
                 "icon": "fa.sitemap"
             },
+            "open_game_setting":{
+                "use":false,
+                "tip":"游戏设置",
+                "icon":"fa.futbol-o"
+            },
             "mousetransbutton": {
                 "use": true,
                 "tip": "鼠标穿透窗口",
