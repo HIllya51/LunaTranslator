@@ -59,7 +59,15 @@ class chartwidget(QWidget):
 
             xmargin = xmargin + self.scalelinelen
 
-            width = self.width() - xmargin - self.fmetrics.width(x_labels[-1]) // 2
+            width = (
+                self.width()
+                - xmargin
+                - max(
+                    self.fmetrics.width(x_labels[-1]) // 2,
+                    self.fmetrics.width(self.ytext(self.data[-1][1])) // 2,
+                )
+            )
+
             height = self.height() - 2 * ymargin
 
             # 纵坐标
