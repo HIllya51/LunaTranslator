@@ -8,6 +8,7 @@ from PyQt5.QtWidgets import (
     QHeaderView,
     QFileDialog,
     QLineEdit,
+    QComboBox,
     QFormLayout,
 )
 import functools, threading
@@ -70,7 +71,7 @@ class ItemWidget(QWidget):
     focuschanged = pyqtSignal(bool, str)
     doubleclicked = pyqtSignal(str)
     globallashfocus = None
-    
+
     @classmethod
     def clearfocus(cls):
         try:  # 可能已被删除
@@ -782,18 +783,25 @@ class dialog_setting_game(QDialog):
         formLayout.addWidget(self.labelflow)
         button = QPushButton(_TR("添加"))
 
+        combo = getsimplecombobox(globalconfig["labelset"], _dict, "new")
+        combo.setEditable(True)
+        combo.clearEditText()
+
         def _add(_):
-            tag = globalconfig["labelset"][_dict["new"]]
-            if tag not in savehook_new_data[exepath]["usertags"]:
+
+            tag = combo.currentText()
+            # tag = globalconfig["labelset"][_dict["new"]]
+            if tag and tag not in savehook_new_data[exepath]["usertags"]:
                 savehook_new_data[exepath]["usertags"].insert(0, tag)
                 newitem(tag, True, True)
+            combo.clearEditText()
 
         button.clicked.connect(_add)
 
         formLayout.addLayout(
             getboxlayout(
                 [
-                    getsimplecombobox(globalconfig["labelset"], _dict, "new"),
+                    combo,
                     button,
                 ]
             )
@@ -1114,9 +1122,10 @@ def startgame(game):
 
 @Singleton_close
 class listediter(QDialog):
-    def __init__(self, p, title, headers, lst) -> None:
+    def __init__(self, p, title, headers, lst, closecallback=None) -> None:
         super().__init__(p)
         self.lst = lst
+        self.closecallback = closecallback
         try:
             self.setWindowTitle(title)
             model = QStandardItemModel()
@@ -1164,6 +1173,8 @@ class listediter(QDialog):
                 continue
             self.lst.append(k)
             dedump.add(k)
+        if self.closecallback:
+            self.closecallback()
 
     def newline(self, row, k):
         self.hcmodel.insertRow(row, [QStandardItem(), QStandardItem(k)])
@@ -1252,12 +1263,25 @@ class TagWidget(QWidget):
         layout.addWidget(QLabel(_TR("标签")))
         self.setLayout(layout)
 
-        self.lineEdit = QLineEdit()
-        self.lineEdit.returnPressed.connect(lambda: self.addTag(self.lineEdit.text()))
+
+        self.lineEdit = QComboBox()
+        self.lineEdit.setLineEdit(QLineEdit())
+        self.lineEdit.lineEdit().returnPressed.connect(
+            lambda: self.addTag(self.lineEdit.currentText())
+        )
+
+        self.lineEdit.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Maximum)
+
         layout.addWidget(self.lineEdit)
         self.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Fixed)
 
         self.tag2widget = {}
+
+        def refreshcombo():
+            self.lineEdit.clear()
+            self.lineEdit.addItems(globalconfig["labelset"])
+
+        refreshcombo()
         layout.addWidget(
             getcolorbutton(
                 "",
@@ -1272,6 +1296,7 @@ class TagWidget(QWidget):
                         ]
                     ),
                     globalconfig["labelset"],
+                    closecallback=refreshcombo,
                 ),
                 icon="fa.gear",
                 constcolor="#FF69B4",
@@ -1293,7 +1318,7 @@ class TagWidget(QWidget):
             # layout.insertLayout(layout.count() - 1, tagLayout)
             layout.insertWidget(layout.count() - 2, qw)
             self.tag2widget[tag] = qw
-            self.lineEdit.clear()
+            self.lineEdit.clearEditText()
             self.lineEdit.setFocus()
             self.tagschanged.emit(tuple(self.tag2widget.keys()))
         except:

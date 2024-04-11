@@ -297,32 +297,10 @@ class searchhookparam(QDialog):
                     combo = QComboBox()
                     combo.addItems(_list)
 
-                    def __(_line, __list, idx):
-                        _line.setText(__list[idx])
+                    combo.setLineEdit(line)
+                    line.setReadOnly(not listeditable)
 
-                    combo.currentIndexChanged.connect(
-                        functools.partial(__, line, _list)
-                    )
-
-                    def switch(_1, _2):
-                        _1._idx += 1
-                        _1.setVisible(_1._idx % 2 == 0)
-                        _2.setVisible(_1._idx % 2 == 1)
-
-                    btn = getcolorbutton(
-                        "",
-                        "",
-                        functools.partial(switch, line, combo),
-                        icon="fa.edit",
-                        constcolor="#FF69B4",
-                    )
-                    btn.click()
-                    _w, _l = getformlayoutw(cls=QHBoxLayout)
-                    _l.addWidget(line)
-                    _l.addWidget(combo)
-                    if listeditable:
-                        _l.addWidget(btn)
-                    addwid = _w
+                    addwid = combo
                     regwid = line
             uselayout.addRow(_TR(_vis), addwid)
             self.regists[reg] = regwid
