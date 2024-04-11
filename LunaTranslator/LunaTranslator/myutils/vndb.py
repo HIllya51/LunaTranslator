@@ -142,14 +142,28 @@ def getdevelopersbyid(vid):
     def _js(js):
         _ = []
         for item in js["results"][0]["developers"]:
+            if item["original"]:
+                _.append(item["original"])
+        return _
+
+    origin = safegetvndbjson(
+        "https://api.vndb.org/kana/vn",
+        {"filters": ["id", "=", vid], "fields": "developers.original"},
+        _js,
+    )
+
+    def _js(js):
+        _ = []
+        for item in js["results"][0]["developers"]:
             _.append(item["name"])
         return _
 
-    return safegetvndbjson(
+    name = safegetvndbjson(
         "https://api.vndb.org/kana/vn",
         {"filters": ["id", "=", vid], "fields": "developers.name"},
         _js,
     )
+    return name + origin
 
 
 def getvidbytitle(title):
