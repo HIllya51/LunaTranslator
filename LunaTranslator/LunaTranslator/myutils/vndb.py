@@ -75,16 +75,17 @@ def vndbdowloadinfo(vid):
 
 def safegetvndbjson(url, json, getter):
     try:
+        print(url, json)
         _ = requests.post(
             url,
             json=json,
             proxies=getproxy(),
         )
+        print(_.text)
         try:
             return getter(_.json())
         except:
             # print_exc()
-            print(_.text)
             return None
     except:
         return None

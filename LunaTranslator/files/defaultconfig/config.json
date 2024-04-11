@@ -948,6 +948,12 @@
             "color": "#1839f0",
             "name": "Sugoi"
         },
+        "sugoionline": {
+            "use": true,
+            "color": "#1839f0",
+            "name": "Sugoi",
+            "useproxy": true
+        },
         "kingsoft": {
             "type": "offline",
             "use": false,
