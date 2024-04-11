@@ -629,7 +629,7 @@ class dialog_setting_game(QDialog):
         vndbid.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Fixed)
 
         vndbid.textEdited.connect(functools.partial(vidchangedtask, exepath))
-        
+
         statiswids = [
             QLabel(_TR("统计信息")),
             getcolorbutton(
@@ -1437,6 +1437,8 @@ class dialog_savedgame_new(saveposwindow):
                 if (
                     tag not in getvndbrealtags(savehook_new_data[k]["vndbtags"])
                     and tag not in savehook_new_data[k]["usertags"]
+                    and tag not in savehook_new_data[k]["title"]
+                    and tag != str(savehook_new_data[k]["vid"])
                 ):
                     notshow = True
                     break
