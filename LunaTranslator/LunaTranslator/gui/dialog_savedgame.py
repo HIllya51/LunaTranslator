@@ -1318,6 +1318,17 @@ class dialog_savedgame_new(saveposwindow):
     def clicked4(self):
         opendir(self.currentfocuspath)
 
+    def clicked3_batch(self):
+        res = QFileDialog.getExistingDirectory(options=QFileDialog.DontResolveSymlinks)
+        if res != "":
+            for _dir, _, _fs in os.walk(res):
+                for _f in _fs:
+                    path = os.path.abspath(os.path.join(_dir, _f))
+                    if path.lower().endswith(".exe") == False:
+                        continue
+                    if path not in savehook_new_list:
+                        self.newline(path, True)
+
     def clicked3(self):
 
         f = QFileDialog.getOpenFileName(
@@ -1329,7 +1340,6 @@ class dialog_savedgame_new(saveposwindow):
             res = res.replace("/", "\\")
             if res not in savehook_new_list:
                 self.newline(res, True)
-                self.idxsave.insert(0, res)
 
     def tagschanged(self, tags):
         checkexists = _TR("存在") in tags
@@ -1359,7 +1369,6 @@ class dialog_savedgame_new(saveposwindow):
             if notshow:
                 continue
             self.newline(k)
-            self.idxsave.append(k)
             QApplication.processEvents()
 
     def __init__(self, parent) -> None:
@@ -1391,6 +1400,7 @@ class dialog_savedgame_new(saveposwindow):
         self.simplebutton("打开目录", True, self.clicked4, True)
 
         self.simplebutton("添加游戏", False, self.clicked3, 1)
+        self.simplebutton("批量添加", False, self.clicked3_batch, 1)
         self.simplebutton("其他设置", False, lambda: dialog_syssetting(self), False)
         formLayout.addLayout(buttonlayout)
         _W = QWidget()
@@ -1465,5 +1475,8 @@ class dialog_savedgame_new(saveposwindow):
         gameitem.focuschanged.connect(self.itemfocuschanged)
         if first:
             self.flow.insertwidget(0, gameitem)
+            self.idxsave.insert(0, k)
         else:
             self.flow.addwidget(gameitem)
+
+            self.idxsave.append(k)

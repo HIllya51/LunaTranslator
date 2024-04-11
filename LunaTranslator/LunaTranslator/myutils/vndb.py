@@ -93,14 +93,22 @@ def safegetvndbjson(url, json, getter):
 
 def gettitlebyid(vid):
     def _getter(js):
+
         try:
-            return js["results"][0]["titles"][0]["title"]  # ja title
+
+            for _ in js["results"][0]["titles"]:
+                main = _["main"]
+                title = _["title"]
+                if main:
+                    return title
+
+            raise Exception()
         except:
-            return js["results"][0]["title"]  # en title
+            return js["results"][0]["title"]
 
     return safegetvndbjson(
         "https://api.vndb.org/kana/vn",
-        {"filters": ["id", "=", vid], "fields": "title,titles.title"},
+        {"filters": ["id", "=", vid], "fields": "title,titles.title,titles.main"},
         _getter,
     )
 
