@@ -778,19 +778,14 @@ class MAINUI:
             try:
                 _hwnd = windows.GetForegroundWindow()
                 _pid = windows.GetWindowThreadProcessId(_hwnd)
-                if (
-                    self.textsource
-                    and "pids" in dir(self.textsource)
-                    and len(self.textsource.pids)
-                ):
-                    try:
-                        if _pid in self.textsource.pids:
-                            isok(self.textsource.pname)
-                        else:
-                            isbad()
-                    except:
-                        pass
-                else:
+                try:
+                    if (
+                        _pid in self.textsource.pids or _pid == os.getpid()
+                    ):  # or的顺序不可以修改
+                        isok(self.textsource.pname)
+                    else:
+                        isbad()
+                except:
                     name_ = getpidexe(_pid)
                     if name_ and name_ in savehook_new_list:
                         isok(name_)
