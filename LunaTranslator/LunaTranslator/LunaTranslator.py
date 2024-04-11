@@ -778,10 +778,11 @@ class MAINUI:
             try:
                 _hwnd = windows.GetForegroundWindow()
                 _pid = windows.GetWindowThreadProcessId(_hwnd)
+
                 try:
-                    if (
-                        _pid in self.textsource.pids or _pid == os.getpid()
-                    ):  # or的顺序不可以修改
+                    if len(self.textsource.pids) == 0:
+                        raise Exception()
+                    if _pid in self.textsource.pids or _pid == os.getpid():
                         isok(self.textsource.pname)
                     else:
                         isbad()
