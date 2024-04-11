@@ -86,7 +86,6 @@ def getdefaultsavehook(gamepath, title=None):
         "relationlinks": [],
         "gamejsonfile": "",
         "gamesqlitefile": "",
-        "gamexmlfile": "",
         "vndbtags": [],
         "usertags": [],
         "traceplaytime_v2": [],  # [[start,end]]

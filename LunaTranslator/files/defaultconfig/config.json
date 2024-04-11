@@ -1080,12 +1080,6 @@
             "color": "blue",
             "name": "json翻译文件"
         },
-        "rengong_vnr": {
-            "type": "pre",
-            "use": false,
-            "color": "blue",
-            "name": "VNR人工翻译文件"
-        },
         "premt": {
             "type": "pre",
             "use": false,

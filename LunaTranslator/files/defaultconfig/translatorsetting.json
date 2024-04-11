@@ -400,17 +400,6 @@
 				"multi":true
 			}
 		}
-    },"rengong_vnr": {
-        "args": {
-            "xml文件": ""
-        },
-		"argstype":{
-			"xml文件":{
-				"type":"file",
-				"dir":false,
-				"filter":"*.xml"
-			}
-		}
     },
     "premt": {
         "args": {

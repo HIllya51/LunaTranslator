@@ -852,7 +852,6 @@ class dialog_setting_game(QDialog):
         for showname, key, filt in [
             ("json翻译文件", "gamejsonfile", "*.json"),
             ("sqlite翻译记录", "gamesqlitefile", "*.sqlite"),
-            ("VNR人工翻译文件", "gamexmlfile", "*.xml"),
         ]:
             editjson = QLineEdit(exepath)
             editjson.setReadOnly(True)
