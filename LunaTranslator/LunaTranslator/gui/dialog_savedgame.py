@@ -555,7 +555,7 @@ class dialog_setting_game(QDialog):
         )
 
         methodtab = QTabWidget()
-        methodtab.addTab(self.starttab(exepath), "启动")
+        methodtab.addTab(self.starttab(exepath), _TR("启动"))
         methodtab.addTab(self.gethooktab(exepath), "HOOK")
         methodtab.addTab(self.getpretranstab(exepath), _TR("预翻译"))
         methodtab.addTab(self.getttssetting(exepath), _TR("语音"))
