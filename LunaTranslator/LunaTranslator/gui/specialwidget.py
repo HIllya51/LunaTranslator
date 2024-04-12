@@ -208,13 +208,6 @@ class FlowLayout(QLayout):
     def expandingDirections(self):  # pylint: disable=invalid-name,no-self-use
         return Qt.Orientations(Qt.Orientation(0))
 
-    def hasHeightForWidth(self):  # pylint: disable=invalid-name,no-self-use
-        return True
-
-    def heightForWidth(self, width):  # pylint: disable=invalid-name
-        height = self._do_layout(QRect(0, 0, width, 0), True)
-        return height
-
     def setGeometry(self, rect):  # pylint: disable=invalid-name
         super().setGeometry(rect)
         self._do_layout(rect, False)
