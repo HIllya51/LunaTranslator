@@ -563,7 +563,11 @@ class dialog_setting_game(QDialog):
                     getcolorbutton(
                         "",
                         "",
-                        lambda: os.startfile('https://vndb.org/v{}'.format(savehook_new_data[exepath]["vid"])),
+                        lambda: os.startfile(
+                            "https://vndb.org/v{}".format(
+                                savehook_new_data[exepath]["vid"]
+                            )
+                        ),
                         icon="fa.chrome",
                         constcolor="#FF69B4",
                     ),
@@ -1482,9 +1486,10 @@ class dialog_savedgame_new(saveposwindow):
     def tagschanged(self, tags):
         self.currtags = tags
         newtags = tags
-        print(tags)
+
         ItemWidget.clearfocus()
         self.formLayout.removeWidget(self.flow)
+        self.flow.deleteLater()
         self.idxsave.clear()
         self.flow = ScrollFlow()
         self.flow.bgclicked.connect(ItemWidget.clearfocus)
@@ -1522,7 +1527,8 @@ class dialog_savedgame_new(saveposwindow):
             if notshow:
                 continue
             self.newline(k)
-            QApplication.processEvents()
+            if len(self.idxsave) < 10 or len(self.idxsave) % 10 == 0:
+                QApplication.processEvents()
 
     def showmenu(self, p):
         menu = QMenu(self)

@@ -85,6 +85,16 @@ def threader(func):
     return _wrapper
 
 
+def trypass(func):
+    def _wrapper(*args, **kwargs):
+        try:
+            return func(*args, **kwargs)
+        except:
+            pass
+
+    return _wrapper
+
+
 def timer(func):
     def _wrapper(*args, **kwargs):
         t = time.time()

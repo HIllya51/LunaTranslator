@@ -8,7 +8,7 @@ from PyQt5.QtWidgets import (
 from PyQt5.QtCore import QPoint, QRect, QSize, Qt, pyqtSignal
 from PyQt5.QtWidgets import QLayout
 from traceback import print_exc
-
+from myutils.wrapper import trypass
 
 class chartwidget(QWidget):
     def __init__(self) -> None:
@@ -128,11 +128,11 @@ class ScrollFlow(QWidget):
     def __init__(self):
         super(ScrollFlow, self).__init__()
 
-        class _QListWidget(QListWidget):
+        class qw(QWidget):
             def mousePressEvent(_, _2) -> None:
                 self.bgclicked.emit()
 
-        self.listWidget = _QListWidget(self)
+        self.listWidget = qw(self)
         # self.listWidget.setFixedWidth(600)
 
         self.l = FlowLayout()
@@ -142,20 +142,20 @@ class ScrollFlow(QWidget):
         self.qscrollarea = QScrollArea(self)
         self.qscrollarea.setWidgetResizable(True)
         self.qscrollarea.setWidget(self.listWidget)
-
+    @trypass
     def addwidget(self, wid):
         self.l.addWidget(wid)
-
+    @trypass
     def insertwidget(self, idx, wid):
         self.l.insertWidget(idx, wid)
-
+    @trypass
     def removeidx(self, index):
         _ = self.l.takeAt(index)
         _.widget().hide()
-
+    @trypass
     def setfocus(self, idx):
         self.widget(idx).setFocus()
-
+    @trypass
     def widget(self, idx):
         idx = min(idx, len(self.l._item_list) - 1)
         idx = max(idx, 0)
