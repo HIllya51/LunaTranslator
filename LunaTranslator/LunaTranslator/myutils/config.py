@@ -94,9 +94,7 @@ def getdefaultsavehook(gamepath, title=None):
         "autosavesavedata": "",
         "developers": [],
     }
-    if gamepath == "0":
-        default["title"] = "No Game"
-    elif title and len(title):
+    if title and len(title):
         default["title"] = title
     else:
         default["title"] = (

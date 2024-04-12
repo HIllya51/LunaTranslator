@@ -179,7 +179,6 @@ def checkifnewgame(gamepath, title=None):
         dispatachtask(gamepath)
 
 
-checkifnewgame("0")
 kanjichs2ja = str.maketrans(static_data["kanjichs2ja"])
 
 
