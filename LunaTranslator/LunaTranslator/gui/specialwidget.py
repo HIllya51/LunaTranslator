@@ -173,22 +173,19 @@ class ScrollFlow(QWidget):
         self.qscrollarea.setWidgetResizable(True)
         self.qscrollarea.setWidget(self.listWidget)
         self.qscrollarea.scrolled.connect(self.doshowlazywidget)
+    @trypass
     def doshowlazywidget(self,region:QRect):
-        try:
-            #print(region)
-            for i,widget in enumerate(self.lazyitems):
-                if i in self.lazydoneidx:
-                    continue
-                widget_rect = widget.geometry() #有可能已被delete，必须try
-                #print(widget_rect)
-                if region.intersects(widget_rect):
-                    #print(i,widget_rect)
-                    self.lazydoneidx.append(i)
-                    widget.do()
-                    QApplication.processEvents()
-        except:
-            print_exc()
-    
+        for i,widget in enumerate(self.lazyitems):
+            if i in self.lazydoneidx:
+                continue
+            widget_rect = widget.geometry() #有可能已被delete，必须try
+            #print(widget_rect)
+            if region.intersects(widget_rect):
+                #print(i,widget_rect)
+                self.lazydoneidx.append(i)
+                widget.do()
+                QApplication.processEvents()
+         
     def refreshscroll(self):
         QApplication.processEvents()
         self.doshowlazywidget(self.geometry())
