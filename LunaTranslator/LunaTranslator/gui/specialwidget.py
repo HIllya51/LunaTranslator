@@ -1,6 +1,6 @@
-from PyQt5.QtWidgets import QWidget, QSizePolicy, QListWidget, QScrollArea
-from PyQt5.QtGui import QMouseEvent, QPainter, QPen, QFont, QFontMetrics
-from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import QWidget, QSizePolicy, QLabel, QScrollArea,QApplication
+from PyQt5.QtGui import QMouseEvent, QPainter, QPen, QFont, QFontMetrics,QRegion
+from PyQt5.QtCore import Qt,QEvent
 from PyQt5.QtWidgets import (
     QSpacerItem,
     QWidgetItem,
@@ -118,6 +118,39 @@ class chartwidget(QWidget):
             print_exc()
 
 
+class ScrollArea(QScrollArea):
+    scrolled=pyqtSignal(QRect)
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.verticalScrollBar().valueChanged.connect(self.handleScroll)
+    def refreshscroll(self):
+        QApplication.processEvents()#必须，否则尺寸是最大的。
+        viewport_rect = self.viewport().rect()
+        self.scrolled.emit(viewport_rect)
+    def handleScroll(self, value):
+        
+        viewport_rect = self.viewport().rect()
+        horizontal_scrollbar = self.horizontalScrollBar()
+        vertical_scrollbar = self.verticalScrollBar()
+
+        x = horizontal_scrollbar.value()
+        y = vertical_scrollbar.value()
+        width = viewport_rect.width()
+        height = viewport_rect.height()
+
+        visible_rect = QRect(x, y, width, height)
+        self.scrolled.emit(visible_rect)
+class lazynotify(QWidget):
+    
+    def __init__(self,getrealwid) -> None:
+        super().__init__()
+        self.done=False
+        self.getrealwid=getrealwid
+    def do(self):
+        wid=self.getrealwid()
+        wid.setParent(self)
+        wid.adjustSize()
+        wid.setVisible(True)
 class ScrollFlow(QWidget):
     bgclicked = pyqtSignal()
 
@@ -134,14 +167,40 @@ class ScrollFlow(QWidget):
 
         self.listWidget = qw(self)
         # self.listWidget.setFixedWidth(600)
-
+        self.lazyitems=[]
+        self.lazydoneidx=[]
         self.l = FlowLayout()
 
         self.listWidget.setLayout(self.l)
 
-        self.qscrollarea = QScrollArea(self)
+        self.qscrollarea = ScrollArea(self)
         self.qscrollarea.setWidgetResizable(True)
         self.qscrollarea.setWidget(self.listWidget)
+        self.qscrollarea.scrolled.connect(self.doshowlazywidget)
+    def doshowlazywidget(self,region:QRect):
+        try:
+            #print(region)
+            for i,widget in enumerate(self.lazyitems):
+                if i in self.lazydoneidx:
+                    continue
+                widget_rect = widget.geometry() #有可能已被delete，必须try
+                #print(widget_rect)
+                if region.intersects(widget_rect):
+                    #print(i,widget_rect)
+                    self.lazydoneidx.append(i)
+                    widget.do()
+                    QApplication.processEvents()
+        except:
+            print_exc()
+    @trypass
+    def refreshscroll(self):
+        self.qscrollarea.refreshscroll()
+    @trypass
+    def addwidgetlazy(self,wid,size):
+        wid=lazynotify(wid)
+        self.lazyitems.append(wid)
+        wid.setFixedSize(size)
+        self.l.addWidget(wid)
     @trypass
     def addwidget(self, wid):
         self.l.addWidget(wid)
