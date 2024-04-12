@@ -1494,7 +1494,7 @@ class dialog_savedgame_new(saveposwindow):
         self.flow = ScrollFlow()
         self.flow.bgclicked.connect(ItemWidget.clearfocus)
         self.formLayout.insertWidget(self.formLayout.count() - 1, self.flow)
-       
+        
         for k in savehook_new_list:
             if newtags != self.currtags:
                 break

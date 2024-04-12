@@ -123,10 +123,6 @@ class ScrollArea(QScrollArea):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.verticalScrollBar().valueChanged.connect(self.handleScroll)
-    def refreshscroll(self):
-        QApplication.processEvents()#必须，否则尺寸是最大的。
-        viewport_rect = self.viewport().rect()
-        self.scrolled.emit(viewport_rect)
     def handleScroll(self, value):
         
         viewport_rect = self.viewport().rect()
@@ -192,9 +188,10 @@ class ScrollFlow(QWidget):
                     QApplication.processEvents()
         except:
             print_exc()
-    @trypass
+    
     def refreshscroll(self):
-        self.qscrollarea.refreshscroll()
+        QApplication.processEvents()
+        self.doshowlazywidget(self.geometry())
     @trypass
     def addwidgetlazy(self,wid,size):
         wid=lazynotify(wid)
