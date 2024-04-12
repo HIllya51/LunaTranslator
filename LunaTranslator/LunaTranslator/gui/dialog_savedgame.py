@@ -634,13 +634,14 @@ class dialog_setting_game(QDialog):
             ),
         )
 
-        if os.path.exists(globalconfig["backupsavedatato"]) == False:
-            globalconfig["backupsavedatato"] = os.path.abspath("./cache/backup")
-        editpath = QLineEdit(globalconfig["backupsavedatato"])
         editpath.textChanged.connect(
             lambda _: globalconfig.__setitem__("backupsavedatato", _)
         )
-
+        editpath = QLineEdit(
+            globalconfig["backupsavedatato"]
+            if os.path.exists(globalconfig["backupsavedatato"])
+            else os.path.abspath("./cache/backup")
+        )
         editpath.setReadOnly(True)
         formLayout.addRow(
             _TR("备份到"),
@@ -1494,7 +1495,7 @@ class dialog_savedgame_new(saveposwindow):
         self.flow = ScrollFlow()
         self.flow.bgclicked.connect(ItemWidget.clearfocus)
         self.formLayout.insertWidget(self.formLayout.count() - 1, self.flow)
-        
+
         for k in savehook_new_list:
             if newtags != self.currtags:
                 break
@@ -1529,6 +1530,7 @@ class dialog_savedgame_new(saveposwindow):
                 continue
             self.newline(k)
         self.flow.refreshscroll()
+
     def showmenu(self, p):
         menu = QMenu(self)
         startgame = QAction(_TR("开始游戏"))
@@ -1647,13 +1649,14 @@ class dialog_savedgame_new(saveposwindow):
             )
             _btn.setEnabled(_able1)
 
-    def _getpixfunction(self,kk):
+    def _getpixfunction(self, kk):
         _pix = QPixmap(savehook_new_data[kk]["imagepath"])
         if _pix.isNull():
             _pix = getExeIcon(kk, False, cache=True)
         return _pix
-    def getagameitem(self,k):
-    
+
+    def getagameitem(self, k):
+
         gameitem = ItemWidget(
             functools.partial(self._getpixfunction, k), savehook_new_data[k]["title"]
         )
@@ -1661,19 +1664,20 @@ class dialog_savedgame_new(saveposwindow):
         gameitem.doubleclicked.connect(self.startgame)
         gameitem.focuschanged.connect(self.itemfocuschanged)
         return gameitem
+
     def newline(self, k, first=False):
         checkifnewgame(k)
 
-
         if first:
-                
+
             self.flow.insertwidget(0, self.getagameitem(k))
             self.idxsave.insert(0, k)
         else:
             itemw = globalconfig["dialog_savegame_layout"]["itemw"]
             itemh = globalconfig["dialog_savegame_layout"]["itemh"]
-           
-            
-            self.flow.addwidgetlazy( functools.partial(self.getagameitem, k),QSize(itemw,itemh))
-            #self.flow.addwidget( self.getagameitem(k))
+
+            self.flow.addwidgetlazy(
+                functools.partial(self.getagameitem, k), QSize(itemw, itemh)
+            )
+            # self.flow.addwidget( self.getagameitem(k))
             self.idxsave.append(k)
