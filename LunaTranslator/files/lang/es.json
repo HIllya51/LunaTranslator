@@ -760,5 +760,8 @@
     "过滤": "Filtrar",
     "备份路径": "Ruta de respaldo",
     "存档备份": "Archivo de copias de Seguridad",
-    "备份到": "Copia de Seguridad a"
+    "备份到": "Copia de Seguridad a",
+    "左移": "Desplazamiento a la izquierda",
+    "右移": "A la derecha",
+    "启动游戏不修改顺序": "Iniciar el juego sin modificar el orden"
 }

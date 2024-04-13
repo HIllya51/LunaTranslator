@@ -1116,6 +1116,10 @@ class dialog_syssetting(QDialog):
                 "imagewrapmode",
             ),
         )
+        formLayout.addRow(
+            QLabel(_TR("启动游戏不修改顺序")),
+            getsimpleswitch(globalconfig, "startgamenototop"),
+        )
         self.show()
 
 
@@ -1446,8 +1450,9 @@ class TagWidget(QWidget):
 class dialog_savedgame_new(saveposwindow):
     def startgame(self, game):
         if os.path.exists(game):
-            idx = savehook_new_list.index(game)
-            savehook_new_list.insert(0, savehook_new_list.pop(idx))
+            if globalconfig["startgamenototop"] == False:
+                idx = savehook_new_list.index(game)
+                savehook_new_list.insert(0, savehook_new_list.pop(idx))
             self.close()
             startgame(game)
 
@@ -1606,6 +1611,9 @@ class dialog_savedgame_new(saveposwindow):
         self.simplebutton("删除游戏", True, self.clicked2, False)
         self.simplebutton("打开目录", True, self.clicked4, True)
 
+        if globalconfig["startgamenototop"]:
+            self.simplebutton("左移", True, functools.partial(self.moverank, -1), False)
+            self.simplebutton("右移", True, functools.partial(self.moverank, 1), False)
         self.simplebutton("添加游戏", False, self.clicked3, 1)
         self.simplebutton("批量添加", False, self.clicked3_batch, 1)
         self.simplebutton("其他设置", False, lambda: dialog_syssetting(self), False)
@@ -1634,6 +1642,21 @@ class dialog_savedgame_new(saveposwindow):
 
         self.__filter = WindowEventFilter()  # keep ref
         self.installEventFilter(self.__filter)
+
+    def moverank(self, dx):
+        game = self.currentfocuspath
+
+        idx1 = self.idxsave.index(game)
+        idx2 = (idx1 + dx) % len(self.idxsave)
+        game2 = self.idxsave[idx2]
+        self.idxsave[idx1], self.idxsave[idx2] = self.idxsave[idx2], self.idxsave[idx1]
+        self.flow.switchidx(idx1, idx2)
+        idx1 = savehook_new_list.index(game)
+        idx2 = savehook_new_list.index(game2)
+        savehook_new_list[idx1], savehook_new_list[idx2] = (
+            savehook_new_list[idx2],
+            savehook_new_list[idx1],
+        )
 
     def showsettingdialog(self):
         try:

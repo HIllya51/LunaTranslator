@@ -760,5 +760,8 @@
     "过滤": "filter",
     "备份路径": "Backup path",
     "存档备份": "Archive backup",
-    "备份到": "Back up to"
+    "备份到": "Back up to",
+    "左移": "Left shift",
+    "右移": "Right shift",
+    "启动游戏不修改顺序": "Start the game without changing the order"
 }

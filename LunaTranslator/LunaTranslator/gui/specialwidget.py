@@ -390,9 +390,9 @@ class lazyscrollflow(QWidget):
                     widfunc.setVisible(True)
                     widfunc.setGeometry(self.fakegeos[i])
                     self.widgets[i] = widfunc
-                    
+
                 QApplication.processEvents()
-                
+
             except:
                 pass
 
@@ -403,7 +403,20 @@ class lazyscrollflow(QWidget):
 
     def addwidget(self, widfunc):
         self.insertwidget(-1, widfunc)
-        
+
+    @trypass
+    def switchidx(self, idx1, idx2):
+        with self.lock:
+            self.widgets[idx1], self.widgets[idx2] = (
+                self.widgets[idx2],
+                self.widgets[idx1],
+            )
+            self.fakegeos[idx1], self.fakegeos[idx2] = (
+                self.fakegeos[idx2],
+                self.fakegeos[idx1],
+            )
+        self.resizeandshow()
+
     @trypass
     def insertwidget(self, idx, widfunc):
         refresh = True

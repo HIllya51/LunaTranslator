@@ -760,5 +760,8 @@
     "过滤": "filter",
     "备份路径": "Yedekleme yolu",
     "存档备份": "Arşiv yedekleme",
-    "备份到": "Geri dön."
+    "备份到": "Geri dön.",
+    "左移": "Sol vardiyası",
+    "右移": "Sağ değişiklik",
+    "启动游戏不修改顺序": "Düzeni değiştirmeden oyunu başlat"
 }

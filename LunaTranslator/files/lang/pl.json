@@ -760,5 +760,8 @@
     "过滤": "filtr",
     "备份路径": "Ścieżka kopii zapasowej",
     "存档备份": "Kopia zapasowa archiwum",
-    "备份到": "Powrót do"
+    "备份到": "Powrót do",
+    "左移": "Przesunięcie w lewo",
+    "右移": "Prawa zmiana",
+    "启动游戏不修改顺序": "Rozpocznij grę bez zmiany kolejności"
 }

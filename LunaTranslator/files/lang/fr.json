@@ -760,5 +760,8 @@
     "过滤": "Filtration",
     "备份路径": "Chemin de sauvegarde",
     "存档备份": "Sauvegarde archivée",
-    "备份到": "Sauvegarder à"
+    "备份到": "Sauvegarder à",
+    "左移": "Déplacement à gauche",
+    "右移": "Déplacement à droite",
+    "启动游戏不修改顺序": "Lancer le jeu sans modifier l'ordre"
 }
