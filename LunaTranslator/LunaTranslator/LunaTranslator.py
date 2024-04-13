@@ -664,11 +664,11 @@ class MAINUI:
                                 # if any(map(testprivilege,pids)):
                                 self.textsource = None
                                 if globalconfig["sourcestatus2"]["texthook"]["use"]:
-
-                                    idx = savehook_new_list.index(name_)
-                                    savehook_new_list.insert(
-                                        0, savehook_new_list.pop(idx)
-                                    )
+                                    if globalconfig["startgamenototop"] == False:
+                                        idx = savehook_new_list.index(name_)
+                                        savehook_new_list.insert(
+                                            0, savehook_new_list.pop(idx)
+                                        )
                                     needinserthookcode = savehook_new_data[name_][
                                         "needinserthookcode"
                                     ]
