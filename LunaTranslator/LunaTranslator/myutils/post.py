@@ -320,12 +320,13 @@ def trymapnameofvndb(s):
         namemap = savehook_new_data[exepath]["namemap"]
         bettermap = {}
         for k, v in namemap.items():
-            spja = k.split("・")
-            spen = v.split(" ")
-            if len(spja) == len(spen) and len(spen) > 1:
-                for i in range(len(spja)):
-                    if len(spja[i]) >= 2:
-                        bettermap[spja[i]] = spen[i]
+            for sp in ['・',' ']:
+                spja = k.split(sp)
+                spen = v.split(" ")
+                if len(spja) == len(spen) and len(spen) > 1:
+                    for i in range(len(spja)):
+                        if len(spja[i]) >= 2:
+                            bettermap[spja[i]] = spen[i]
 
         for k, v in namemap.items():
             s = s.replace(k, v)
