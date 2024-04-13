@@ -1,6 +1,14 @@
-from PyQt5.QtWidgets import QWidget, QSizePolicy, QLabel, QScrollArea,QApplication
-from PyQt5.QtGui import QMouseEvent, QPainter, QPen, QFont, QFontMetrics,QRegion
-from PyQt5.QtCore import Qt,QEvent
+from PyQt5.QtWidgets import QWidget, QSizePolicy, QLabel, QScrollArea, QApplication
+from PyQt5.QtGui import (
+    QMouseEvent,
+    QPainter,
+    QPen,
+    QFont,
+    QFontMetrics,
+    QRegion,
+    QResizeEvent,
+)
+from PyQt5.QtCore import Qt, QEvent
 from PyQt5.QtWidgets import (
     QSpacerItem,
     QWidgetItem,
@@ -9,6 +17,8 @@ from PyQt5.QtCore import QPoint, QRect, QSize, Qt, pyqtSignal
 from PyQt5.QtWidgets import QLayout
 from traceback import print_exc
 from myutils.wrapper import trypass
+import threading
+
 
 class chartwidget(QWidget):
     def __init__(self) -> None:
@@ -119,12 +129,14 @@ class chartwidget(QWidget):
 
 
 class ScrollArea(QScrollArea):
-    scrolled=pyqtSignal(QRect)
+    scrolled = pyqtSignal(QRect)
+
     def __init__(self, parent=None):
         super().__init__(parent)
         self.verticalScrollBar().valueChanged.connect(self.handleScroll)
+
     def handleScroll(self, value):
-        
+
         viewport_rect = self.viewport().rect()
         horizontal_scrollbar = self.horizontalScrollBar()
         vertical_scrollbar = self.verticalScrollBar()
@@ -136,17 +148,22 @@ class ScrollArea(QScrollArea):
 
         visible_rect = QRect(x, y, width, height)
         self.scrolled.emit(visible_rect)
+
+
 class lazynotify(QWidget):
-    
-    def __init__(self,getrealwid) -> None:
+
+    def __init__(self, getrealwid) -> None:
         super().__init__()
-        self.done=False
-        self.getrealwid=getrealwid
+        self.done = False
+        self.getrealwid = getrealwid
+
     def do(self):
-        wid=self.getrealwid()
+        wid = self.getrealwid()
         wid.setParent(self)
         wid.adjustSize()
         wid.setVisible(True)
+
+
 class ScrollFlow(QWidget):
     bgclicked = pyqtSignal()
 
@@ -163,8 +180,8 @@ class ScrollFlow(QWidget):
 
         self.listWidget = qw(self)
         # self.listWidget.setFixedWidth(600)
-        self.lazyitems=[]
-        self.lazydoneidx=[]
+        self.lazyitems = []
+        self.lazydoneidx = []
         self.l = FlowLayout()
 
         self.listWidget.setLayout(self.l)
@@ -173,41 +190,48 @@ class ScrollFlow(QWidget):
         self.qscrollarea.setWidgetResizable(True)
         self.qscrollarea.setWidget(self.listWidget)
         self.qscrollarea.scrolled.connect(self.doshowlazywidget)
+
     @trypass
-    def doshowlazywidget(self,region:QRect):
-        for i,widget in enumerate(self.lazyitems):
+    def doshowlazywidget(self, region: QRect):
+        for i, widget in enumerate(self.lazyitems):
             if i in self.lazydoneidx:
                 continue
-            widget_rect = widget.geometry() #有可能已被delete，必须try
-            #print(widget_rect)
+            widget_rect = widget.geometry()  # 有可能已被delete，必须try
+            # print(widget_rect)
             if region.intersects(widget_rect):
-                #print(i,widget_rect)
+                # print(i,widget_rect)
                 self.lazydoneidx.append(i)
                 widget.do()
                 QApplication.processEvents()
-         
+
     def refreshscroll(self):
         QApplication.processEvents()
         self.doshowlazywidget(self.geometry())
+
     @trypass
-    def addwidgetlazy(self,wid,size):
-        wid=lazynotify(wid)
+    def addwidgetlazy(self, wid, size):
+        wid = lazynotify(wid)
         self.lazyitems.append(wid)
         wid.setFixedSize(size)
         self.l.addWidget(wid)
+
     @trypass
     def addwidget(self, wid):
         self.l.addWidget(wid)
+
     @trypass
     def insertwidget(self, idx, wid):
         self.l.insertWidget(idx, wid)
+
     @trypass
     def removeidx(self, index):
         _ = self.l.takeAt(index)
         _.widget().hide()
+
     @trypass
     def setfocus(self, idx):
         self.widget(idx).setFocus()
+
     @trypass
     def widget(self, idx):
         idx = min(idx, len(self.l._item_list) - 1)
@@ -286,7 +310,6 @@ class FlowLayout(QLayout):
         x = effective_rect.x()
         y = effective_rect.y()
         line_height = 0
-
         for item in self._item_list:
             wid = item.widget()
 
@@ -316,3 +339,152 @@ class FlowLayout(QLayout):
         new_height = y + line_height - rect.y()
         self.heightChanged.emit(new_height)
         return new_height
+
+
+class lazyscrollflow(QWidget):
+    bgclicked = pyqtSignal()
+
+    def mousePressEvent(self, _2) -> None:
+        self.bgclicked.emit()
+
+    def __init__(self):
+        super().__init__()
+        self.widgets = []
+        self.fakegeos = []
+        self._spacing = 6
+        self._margin = 9
+        self.lock = threading.Lock()
+        self.internalwid = QWidget(self)
+        self.qscrollarea = ScrollArea(self)
+        self.qscrollarea.setWidgetResizable(True)
+        self.qscrollarea.setWidget(self.internalwid)
+        self.qscrollarea.scrolled.connect(self.doshowlazywidget)
+
+    def resizeEvent(self, a0: QResizeEvent) -> None:
+        self.qscrollarea.resize(self.size())
+        self.resizeandshow()
+        return super().resizeEvent(a0)
+
+    @trypass
+    def doshowlazywidget(self, region: QRect):
+        needdos = []
+        with self.lock:
+            for i, geo in enumerate(self.fakegeos):
+                if isinstance(self.widgets[i], QWidget):
+                    continue
+
+                if not region.intersects(geo):
+                    continue
+
+                widfunc, _ = self.widgets[i]
+                if not widfunc:
+                    continue
+                self.widgets[i] = (None, _)
+                needdos.append((i, widfunc))
+        for i, widfunc in needdos:
+            try:
+                with self.lock:
+                    widfunc = widfunc()
+                    widfunc.setParent(self.internalwid)
+                    widfunc.adjustSize()
+                    widfunc.setVisible(True)
+                    widfunc.setGeometry(self.fakegeos[i])
+                    self.widgets[i] = widfunc
+                    
+                QApplication.processEvents()
+                
+            except:
+                pass
+
+    @trypass
+    def resizeandshow(self):
+        self.fakeresize()
+        self.doshowlazywidget(self.internalwid.visibleRegion())
+
+    def addwidget(self, widfunc):
+        self.insertwidget(-1, widfunc)
+        
+    @trypass
+    def insertwidget(self, idx, widfunc):
+        refresh = True
+        with self.lock:
+            if idx == -1:
+                refresh = False
+                idx = len(self.widgets)
+            self.widgets.insert(idx, widfunc)
+            self.fakegeos.insert(idx, QRect())
+
+            if isinstance(widfunc, QWidget):
+                widfunc.setParent(self.internalwid)
+                widfunc.adjustSize()
+                widfunc.setVisible(True)
+        if refresh:
+            self.resizeandshow()
+
+    @trypass
+    def removeidx(self, idx):
+        with self.lock:
+            if idx >= 0 and idx < len(self.widgets):
+                w = self.widgets[idx]
+                w.setParent(None)
+                w.deleteLater()
+                self.widgets.pop(idx)
+                self.fakegeos.pop(idx)
+        self.resizeandshow()
+
+    @trypass
+    def setfocus(self, idx):
+        self.widget(idx).setFocus()
+
+    @trypass
+    def widget(self, idx):
+        with self.lock:
+            if idx > 0 or idx < len(self.widgets):
+                return self.widgets[idx]
+            else:
+                return None
+
+    def spacing(self):
+        return self._spacing
+
+    def fakeresize(self):
+        if self.qscrollarea.verticalScrollBar().isVisible():
+            scrollw = self.qscrollarea.verticalScrollBar().width()
+        else:
+            scrollw = 0
+        with self.lock:
+            # m = self.contentsMargins()
+            rect = QRect()
+            rect.setSize(self.size())
+            effective_rect = rect.adjusted(
+                self._margin, self._margin, -self._margin, -self._margin
+            )  # (+m.left(), +m.top(), -m.right(), -m.bottom())
+            x = effective_rect.x()
+            y = effective_rect.y()
+            line_height = 0
+            for i, wid in enumerate(self.widgets):
+
+                space_x = self.spacing()
+                space_y = self.spacing()
+
+                if isinstance(wid, QWidget):
+                    sz = wid.size()
+                    resize = True
+                else:
+                    _, sz = wid
+                    resize = False
+                next_x = x + sz.width() + space_x
+                if next_x > effective_rect.right() - scrollw and line_height > 0:
+                    x = effective_rect.x()
+                    y = y + line_height + space_y
+                    next_x = x + sz.width() + space_x
+                    line_height = 0
+                if resize:
+                    wid.setGeometry(QRect(QPoint(x, y), sz))
+                self.fakegeos[i] = QRect(QPoint(x, y), sz)
+                x = next_x
+                line_height = max(line_height, sz.height())
+
+            new_height = y + line_height - rect.y() + self._margin
+            self.internalwid.setFixedHeight(new_height)
+            return new_height

@@ -115,7 +115,13 @@ def dispatachtask(gamepath):
 
 def everymethodsthread():
     while True:
-        gamepath, searchargs = searchvndbqueue.get()
+        _ = searchvndbqueue.get()
+        if isinstance(_, tuple):
+            gamepath, searchargs = _
+        else:
+            gamepath = _
+            dispatachtask(gamepath)
+            continue
 
         if checkneed(gamepath) == False:
             continue
@@ -175,8 +181,7 @@ def checkifnewgame(gamepath, title=None):
         savehook_new_list.insert(0, gamepath)
     if gamepath not in savehook_new_data:
         savehook_new_data[gamepath] = getdefaultsavehook(gamepath, title)
-    if gamepath != "0":
-        dispatachtask(gamepath)
+    searchvndbqueue.put(gamepath)
 
 
 kanjichs2ja = str.maketrans(static_data["kanjichs2ja"])

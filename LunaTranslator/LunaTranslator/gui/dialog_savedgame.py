@@ -1,6 +1,6 @@
 import functools, time, qtawesome
 from datetime import datetime, timedelta
-from gui.specialwidget import ScrollFlow, chartwidget
+from gui.specialwidget import ScrollFlow, chartwidget, lazyscrollflow
 from PyQt5.QtWidgets import (
     QPushButton,
     QDialog,
@@ -114,24 +114,7 @@ class ItemWidget(QWidget):
     def setimg(self, pixmap):
         self._img.setimg(pixmap)
 
-    def connectexepath(self, exe):
-        self.exe = exe
-        self.latershowfileexits(exe)
-
-    @threader
-    def latershowfileexits(self, exe):
-        if os.path.exists(exe):
-            self.maskshowfileexists.setStyleSheet(
-                "QLabel { background-color: rgba(255,255,255, 0); }"
-            )
-        else:
-            self.maskshowfileexists.setStyleSheet(
-                "QLabel { background-color: "
-                + globalconfig["dialog_savegame_layout"]["onfilenoexistscolor"]
-                + "; }"
-            )
-
-    def __init__(self, pixmap, file) -> None:
+    def __init__(self, exe, pixmap, file) -> None:
         super().__init__()
         self.itemw = globalconfig["dialog_savegame_layout"]["itemw"]
         self.itemh = globalconfig["dialog_savegame_layout"]["itemh"]
@@ -166,6 +149,17 @@ class ItemWidget(QWidget):
         self._lb.setAlignment(Qt.AlignCenter)
         layout.addWidget(self._lb)
         self.setLayout(layout)
+        self.exe = exe
+        if os.path.exists(exe):
+            self.maskshowfileexists.setStyleSheet(
+                "QLabel { background-color: rgba(255,255,255, 0); }"
+            )
+        else:
+            self.maskshowfileexists.setStyleSheet(
+                "QLabel { background-color: "
+                + globalconfig["dialog_savegame_layout"]["onfilenoexistscolor"]
+                + "; }"
+            )
 
 
 class IMGWidget(QLabel):
@@ -199,7 +193,6 @@ class IMGWidget(QLabel):
         elif globalconfig["imagewrapmode"] == 3:
             return size
 
-    @threader
     def setimg(self, pixmap):
         if type(pixmap) != QPixmap:
             pixmap = pixmap()
@@ -1505,10 +1498,10 @@ class dialog_savedgame_new(saveposwindow):
         self.formLayout.removeWidget(self.flow)
         self.flow.deleteLater()
         self.idxsave.clear()
-        self.flow = ScrollFlow()
+        self.flow = lazyscrollflow()
         self.flow.bgclicked.connect(ItemWidget.clearfocus)
         self.formLayout.insertWidget(self.formLayout.count() - 1, self.flow)
-
+        QApplication.processEvents()
         for k in savehook_new_list:
             if newtags != self.currtags:
                 break
@@ -1542,7 +1535,9 @@ class dialog_savedgame_new(saveposwindow):
             if notshow:
                 continue
             self.newline(k)
-        self.flow.refreshscroll()
+
+        QApplication.processEvents()
+        self.flow.resizeandshow()
 
     def showmenu(self, p):
         menu = QMenu(self)
@@ -1596,7 +1591,7 @@ class dialog_savedgame_new(saveposwindow):
         self.currtags = tuple()
         self.tagswidget.tagschanged.connect(self.tagschanged)
         formLayout.addWidget(self.tagswidget)
-        self.flow = ScrollFlow()
+        self.flow = lazyscrollflow()
         self.setContextMenuPolicy(Qt.CustomContextMenu)
         self.customContextMenuRequested.connect(self.showmenu)
         formLayout.addWidget(self.flow)
@@ -1678,11 +1673,9 @@ class dialog_savedgame_new(saveposwindow):
         return _pix
 
     def getagameitem(self, k):
-
         gameitem = ItemWidget(
-            functools.partial(self._getpixfunction, k), savehook_new_data[k]["title"]
+            k, functools.partial(self._getpixfunction, k), savehook_new_data[k]["title"]
         )
-        gameitem.connectexepath(k)
         gameitem.doubleclicked.connect(self.startgame)
         gameitem.focuschanged.connect(self.itemfocuschanged)
         return gameitem
@@ -1690,16 +1683,18 @@ class dialog_savedgame_new(saveposwindow):
     def newline(self, k, first=False):
         checkifnewgame(k)
 
+        itemw = globalconfig["dialog_savegame_layout"]["itemw"]
+        itemh = globalconfig["dialog_savegame_layout"]["itemh"]
+
         if first:
 
-            self.flow.insertwidget(0, self.getagameitem(k))
+            self.flow.insertwidget(
+                0, (functools.partial(self.getagameitem, k), QSize(itemw, itemh))
+            )
             self.idxsave.insert(0, k)
         else:
-            itemw = globalconfig["dialog_savegame_layout"]["itemw"]
-            itemh = globalconfig["dialog_savegame_layout"]["itemh"]
-
-            self.flow.addwidgetlazy(
-                functools.partial(self.getagameitem, k), QSize(itemw, itemh)
+            self.flow.addwidget(
+                (functools.partial(self.getagameitem, k), QSize(itemw, itemh))
             )
             # self.flow.addwidget( self.getagameitem(k))
             self.idxsave.append(k)
