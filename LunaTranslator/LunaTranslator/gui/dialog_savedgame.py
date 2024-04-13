@@ -21,7 +21,7 @@ from PyQt5.QtWidgets import (
     QTabWidget,
 )
 import windows
-from PyQt5.QtCore import QRect, QSize, Qt, pyqtSignal
+from PyQt5.QtCore import QRect, QSize, Qt, pyqtSignal, QObject
 import os, hashlib
 from PyQt5.QtWidgets import (
     QApplication,
@@ -34,13 +34,12 @@ from PyQt5.QtWidgets import (
 from PyQt5.QtGui import (
     QCloseEvent,
     QIntValidator,
-    QMouseEvent,
     QResizeEvent,
     QPixmap,
     QPainter,
     QPen,
 )
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, QPoint
 from gui.usefulwidget import (
     getsimplecombobox,
     getspinbox,
@@ -430,7 +429,19 @@ def getvndbrealtags(vndbtags_naive):
     return vndbtags
 
 
-@Singleton
+_global_dialog_savedgame_new = None
+_global_dialog_setting_game = None
+
+
+def calculate_centered_rect(original_rect: QRect, size: QSize) -> QRect:
+    original_center = original_rect.center()
+    new_left = original_center.x() - size.width() // 2
+    new_top = original_center.y() - size.height() // 2
+    new_rect = QRect(new_left, new_top, size.width(), size.height())
+    return new_rect
+
+
+@Singleton_close
 class dialog_setting_game(QDialog):
     def selectexe(self):
         f = QFileDialog.getOpenFileName(directory=self.exepath)
@@ -452,10 +463,6 @@ class dialog_setting_game(QDialog):
                         "", "", functools.partial(opendir, res), qicon=_icon
                     ),
                 )
-            if self.gametitleitme:
-                if savehook_new_data[res]["imagepath"] is None:
-                    self.gametitleitme.setimg(getExeIcon(res, False, cache=True))
-                self.gametitleitme.connectexepath(res)
 
             self.setWindowIcon(_icon)
             self.editpath.setText(res)
@@ -465,10 +472,13 @@ class dialog_setting_game(QDialog):
         self.isopened = False
         return super().closeEvent(a0)
 
-    def __init__(self, parent, exepath, item=None, gametitleitme=None) -> None:
+    def __init__(self, parent, exepath, item=None) -> None:
         super().__init__(parent, Qt.WindowCloseButtonHint)
+        global _global_dialog_setting_game
+        _global_dialog_setting_game = self
         self.isopened = True
         checkifnewgame(exepath)
+        print(item)
         vbox = QVBoxLayout(self)  # 配置layout
         self.setLayout(vbox)
         formwidget = QWidget()
@@ -476,16 +486,10 @@ class dialog_setting_game(QDialog):
         formwidget.setLayout(formLayout)
         self.item = item
         self.exepath = exepath
-        self.gametitleitme = gametitleitme
         editpath = QLineEdit(exepath)
         editpath.setReadOnly(True)
-        if item:
-            self.table = parent.table
-            self.model = parent.model
-            editpath.textEdited.connect(lambda _: item.__setitem__("savetext", _))
-        self.editpath = editpath
         self.setWindowTitle(savehook_new_data[exepath]["title"])
-        self.resize(QSize(600, 200))
+
         self.setWindowIcon(getExeIcon(exepath, cache=True))
         formLayout.addRow(
             _TR("路径"),
@@ -509,7 +513,6 @@ class dialog_setting_game(QDialog):
             savehook_new_data[exepath]["istitlesetted"] = True
             savehook_new_data[exepath]["searchnoresulttime"] = 0
             self.setWindowTitle(x)
-            gametitleitme.settitle(x)
 
         titleedit.textChanged.connect(_titlechange)
         formLayout.addRow(_TR("标题"), titleedit)
@@ -529,7 +532,6 @@ class dialog_setting_game(QDialog):
                     savehook_new_data[exepath]["imagepath"] = res
                     savehook_new_data[exepath]["isimagepathusersetted"] = True
                     imgpath.setText(res)
-                    gametitleitme.setimg(_pixmap)
 
         vndbid = QLineEdit(str(savehook_new_data[exepath]["vid"]))
         vndbid.setValidator(QIntValidator())
@@ -597,6 +599,17 @@ class dialog_setting_game(QDialog):
         vbox.addWidget(methodtab)
 
         self.show()
+        self.resize(QSize(600, 1))
+        self.adjustSize()
+        self.resize(QSize(600, self.height()))
+        try:
+            self.setGeometry(
+                calculate_centered_rect(
+                    _global_dialog_savedgame_new.geometry(), self.size()
+                )
+            )
+        except:
+            pass
 
     def selectbackupdir(self, edit):
         res = QFileDialog.getExistingDirectory(
@@ -838,7 +851,7 @@ class dialog_setting_game(QDialog):
 
             def _lbclick(tp, t):
                 try:
-                    self.parent().tagswidget.addTag(t, tp)
+                    _global_dialog_savedgame_new.tagswidget.addTag(t, tp)
                 except:
                     pass
 
@@ -1573,6 +1586,8 @@ class dialog_savedgame_new(saveposwindow):
             dic=globalconfig,
             key="savegamedialoggeo",
         )
+        global _global_dialog_savedgame_new
+        _global_dialog_savedgame_new = self
         self.setWindowTitle(_TR("已保存游戏"))
         if globalconfig["showintab_sub"]:
             showintab(int(self.winId()), True)
@@ -1612,15 +1627,22 @@ class dialog_savedgame_new(saveposwindow):
         else:
             self.tagschanged(tuple())
 
+        class WindowEventFilter(QObject):
+            def eventFilter(__, obj, event):
+                try:
+                    if obj == self:
+                        global _global_dialog_setting_game
+                        _global_dialog_setting_game.raise_()
+                except:
+                    pass
+                return False
+
+        self.__filter = WindowEventFilter()  # keep ref
+        self.installEventFilter(self.__filter)
+
     def showsettingdialog(self):
-        idx = self.idxsave.index(self.currentfocuspath)
         try:
-            dialog_setting_game(
-                self,
-                self.currentfocuspath,
-                None,
-                gametitleitme=self.flow.widget(idx),
-            )
+            dialog_setting_game(self.parent(), self.currentfocuspath)
         except:
             print_exc()
 
