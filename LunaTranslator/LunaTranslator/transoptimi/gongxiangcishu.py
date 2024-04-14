@@ -87,9 +87,6 @@ def vnrshareddict(self):
 
 
 class Process:
-    @property
-    def using(self):
-        return globalconfig["gongxiangcishu"]["use"]
 
     def __init__(self) -> None:
         self.status = None

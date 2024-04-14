@@ -91,7 +91,12 @@ class MAINUI:
 
     @threader
     def safeloadprocessmodels(self):
-        for model in ["noundict", "gongxiangcishu", "transerrorfix", "myprocess"]:
+        for model, d, k in [
+            ("noundict", noundictconfig, "use"),
+            ("transerrorfix", transerrorfixdictconfig, "use"),
+            ("gongxiangcishu", globalconfig["gongxiangcishu"], "use"),
+            ("myprocess", globalconfig, "selfdefinedprocesspair"),
+        ]:
             try:
                 if model == "myprocess":
                     mm = "myprocess"
@@ -101,7 +106,17 @@ class MAINUI:
                     checkpath = "./LunaTranslator/transoptimi/" + model + ".py"
                 if os.path.exists(checkpath) == False:
                     continue
-                klass = importlib.import_module(mm).Process()
+                Process = importlib.import_module(mm).Process
+
+                def __(kls, _d, _k):
+                    class klass(kls):
+                        @property
+                        def using(self):
+                            return _d[_k]
+
+                    return klass()
+
+                klass = __(Process, d, k)
                 process_before = klass.process_before
                 process_after = klass.process_after
                 self.processmethods.append(klass)

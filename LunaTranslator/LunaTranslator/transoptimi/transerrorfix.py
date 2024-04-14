@@ -3,9 +3,6 @@ from myutils.utils import parsemayberegexreplace
 
 
 class Process:
-    @property
-    def using(self):
-        return transerrorfixdictconfig["use"]
 
     def process_before(self, content):
 

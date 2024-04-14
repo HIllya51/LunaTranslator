@@ -3,9 +3,6 @@ import gobject, re
 
 
 class Process:
-    @property
-    def using(self):
-        return noundictconfig["use"]
 
     def process_before(self, content):
 

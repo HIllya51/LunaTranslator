@@ -326,10 +326,6 @@ def POSTSOLVE(line):
                 ff.write(
                     """
 class Process:
-    @property
-    def using(self):
-        return True
-
     def process_before(self, text):
         context = {}
         return text, context
