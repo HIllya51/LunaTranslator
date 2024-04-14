@@ -562,24 +562,15 @@ class QUnFrameWindow(resizableframeless):
             windows.SWP_NOACTIVATE | windows.SWP_NOSIZE | windows.SWP_NOMOVE,
         )
 
-    def settop(self):
-        if (
+    def istopmost(self):
+        return bool(
             windows.GetWindowLong(int(self.winId()), windows.GWL_EXSTYLE)
             & windows.WS_EX_TOPMOST
-        ) == 0:
-            windows.SetWindowPos(
-                int(self.winId()),
-                windows.HWND_NOTOPMOST,
-                0,
-                0,
-                0,
-                0,
-                windows.SWP_NOACTIVATE | windows.SWP_NOSIZE | windows.SWP_NOMOVE,
-            )
-            HWNDStyleEx = windows.GetWindowLong(int(self.winId()), windows.GWL_EXSTYLE)
-            windows.SetWindowLong(
-                int(self.winId()), windows.GWL_EXSTYLE, HWNDStyleEx & ~windows.WS_EX_TOPMOST
-            )
+        )
+
+    def settop(self):
+        if not self.istopmost():
+            self.canceltop()
         HWNDStyleEx = windows.GetWindowLong(int(self.winId()), windows.GWL_EXSTYLE)
         windows.SetWindowLong(
             int(self.winId()), windows.GWL_EXSTYLE, HWNDStyleEx | windows.WS_EX_TOPMOST

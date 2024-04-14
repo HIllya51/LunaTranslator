@@ -425,15 +425,22 @@ def minmaxmoveobservefunc(self):
                 if globalconfig["keepontop"] and globalconfig["focusnotop"]:
                     if _focusp == os.getpid():
                         pass
-                    elif (
-                        len(gobject.baseobject.textsource.pids) == 0
-                        or _focusp in gobject.baseobject.textsource.pids
-                    ):
-                        gobject.baseobject.translation_ui.thistimenotsetop = False
-                        gobject.baseobject.translation_ui.settop()
                     else:
-                        gobject.baseobject.translation_ui.thistimenotsetop = True
-                        gobject.baseobject.translation_ui.canceltop()
+                        hwndmagpie = windows.FindWindow(
+                            "Window_Magpie_967EB565-6F73-4E94-AE53-00CC42592A22", None
+                        )
+                        hwndlossless = windows.FindWindow("LosslessScaling", None)
+                        if (
+                            len(gobject.baseobject.textsource.pids) == 0
+                            or _focusp in gobject.baseobject.textsource.pids
+                            or hwnd == hwndmagpie
+                            or hwnd == hwndlossless
+                        ):
+                            gobject.baseobject.translation_ui.thistimenotsetop = False
+                            gobject.baseobject.translation_ui.settop()
+                        else:
+                            gobject.baseobject.translation_ui.thistimenotsetop = True
+                            gobject.baseobject.translation_ui.canceltop()
             if _focusp != windows.GetWindowThreadProcessId(
                 gobject.baseobject.textsource.hwnd
             ):
