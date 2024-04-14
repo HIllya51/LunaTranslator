@@ -7,6 +7,7 @@
     "only_from_exe": [],
     "showrangeafterrangeselect": true,
     "autodisappear": false,
+    "WindowBackdrop":0,
     "read_raw": true,
     "read_trans": false,
     "read_translator": 0,

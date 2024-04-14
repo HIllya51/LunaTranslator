@@ -6,7 +6,7 @@ from PyQt5.QtCore import Qt
 from myutils.config import _TR, globalconfig
 from gui.usefulwidget import saveposwindow
 from myutils.wrapper import Singleton_close
-from myutils.hwnd import showintab
+from winsharedutils import showintab
 
 
 @Singleton_close

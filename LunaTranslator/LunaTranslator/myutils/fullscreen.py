@@ -1,7 +1,8 @@
 import os, json
 import windows, winsharedutils
+from winsharedutils import letfullscreen, recoverwindow
 from myutils.config import globalconfig, magpie_config
-from myutils.hwnd import letfullscreen, recoverwindow, ListProcess, injectdll
+from myutils.hwnd import ListProcess, injectdll
 from traceback import print_exc
 from myutils.subproc import subproc_w
 import time

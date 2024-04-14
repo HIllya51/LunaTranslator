@@ -31,7 +31,6 @@ from gui.setting_proxy import setTab_proxy
 from gui.settingpage7 import setTab7, settab7direct
 from gui.settingpage_about import setTab_about, setTab_about_dicrect
 from gui.usefulwidget import closeashidewindow
-from myutils.hwnd import darkchange
 
 
 class gridwidget(QWidget):
@@ -257,17 +256,25 @@ class Settin(closeashidewindow):
         darklight = ["light", "dark"][dark]
 
         class WindowEventFilter(QObject):
-            def eventFilter(self, obj, event):
+            def eventFilter(_, obj, event):
                 if event.type() == QEvent.Type.WinIdChange:
+                    if obj == self.parent():
+                        return False
                     hwnd = obj.winId()
                     if hwnd:  # window create/destroy,when destroy winId is None
-                        darkchange(int(obj.winId()), dark)
+                        winsharedutils.SetTheme(
+                            int(obj.winId()), dark, globalconfig["WindowBackdrop"]
+                        )
                 return False
 
         self.__filter = WindowEventFilter()  # keep ref
         QApplication.instance().installEventFilter(self.__filter)
         for widget in QApplication.topLevelWidgets():
-            darkchange(int(widget.winId()), dark)
+            if widget == self.parent():
+                continue
+            winsharedutils.SetTheme(
+                int(widget.winId()), dark, globalconfig["WindowBackdrop"]
+            )
 
         try:
             idx = globalconfig[darklight + "theme"] - int(not dark)

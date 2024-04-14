@@ -27,7 +27,7 @@ from PyQt5.QtWidgets import (
 from traceback import print_exc
 import qtawesome, functools, gobject
 from myutils.wrapper import Singleton
-from myutils.hwnd import showintab
+from winsharedutils import showintab
 
 
 @Singleton

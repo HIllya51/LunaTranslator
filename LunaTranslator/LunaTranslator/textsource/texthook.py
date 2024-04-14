@@ -1,10 +1,10 @@
-import threading
+import threading, windows
 from queue import Queue
 import re, os
 import time, gobject
 from collections import OrderedDict
 import codecs, functools
-import windows
+from winsharedutils import Is64bit
 from myutils.config import globalconfig, savehook_new_data, static_data
 from textsource.textsourcebase import basetext
 from myutils.utils import checkchaos
@@ -99,7 +99,7 @@ class texthook(basetext):
 
         self.newline = Queue()
         self.newline_delaywait = Queue()
-        self.is64bit = windows.Is64bit(pids[0])
+        self.is64bit = Is64bit(pids[0])
         self.lock = threading.Lock()
         self.hookdatacollecter = OrderedDict()
         self.hooktypecollecter = OrderedDict()

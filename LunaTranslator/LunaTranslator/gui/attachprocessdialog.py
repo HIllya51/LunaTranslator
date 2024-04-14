@@ -10,6 +10,7 @@ from PyQt5.QtWidgets import (
     QApplication,
     QPushButton,
 )
+from winsharedutils import getpidhwndfirst
 from PyQt5.QtGui import QStandardItemModel, QStandardItem
 import functools
 from myutils.config import globalconfig, _TR
@@ -21,7 +22,6 @@ from myutils.hwnd import (
     ListProcess,
     mouseselectwindow,
     getExeIcon,
-    getpidhwndfirst,
 )
 import qtawesome
 

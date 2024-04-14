@@ -50,7 +50,7 @@ from gui.usefulwidget import (
 )
 from PyQt5.QtCore import QRect, QSize, Qt, pyqtSignal
 import os
-from myutils.hwnd import showintab
+from winsharedutils import showintab
 from PyQt5.QtGui import QStandardItem, QStandardItemModel
 from PyQt5.QtCore import Qt, QSize
 from myutils.config import savehook_new_list, savehook_new_data, vndbtagdata

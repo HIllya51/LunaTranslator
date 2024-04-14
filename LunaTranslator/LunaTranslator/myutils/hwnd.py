@@ -8,20 +8,6 @@ import time, winrtutils, winsharedutils, hashlib
 from myutils.wrapper import threader
 
 
-def pid_running(pid):
-    try:
-        process = windows.AutoHandle(
-            windows.OpenProcess(windows.SYNCHRONIZE, False, pid)
-        )
-        if process == 0:
-            return False
-        ret = windows.WaitForSingleObject(process, 0)
-        return ret == windows.WAIT_TIMEOUT
-
-    except:
-        return False
-
-
 @threader
 def grabwindow():
 
@@ -123,18 +109,6 @@ def getpidhwndfirst(pid):
     except:
         return 0
 
-
-def getwindowlist():
-    windows_list = []
-    pidlist = []
-    windows.EnumWindows(lambda hWnd, param: windows_list.append(hWnd), 0)
-    for hwnd in windows_list:
-        try:
-            pid = windows.GetWindowThreadProcessId(hwnd)
-            pidlist.append(pid)
-        except:
-            pass
-    return list(set(pidlist))
 
 
 def getprocesslist():
@@ -286,81 +260,3 @@ def mouseselectwindow(callback):
             pass
 
     threading.Thread(target=_loop).start()
-
-
-def letfullscreen(hwnd):
-    wpc = windows.GetWindowPlacement(hwnd, False)
-    HWNDStyle = windows.GetWindowLong(hwnd, windows.GWL_STYLE)
-    HWNDStyleEx = windows.GetWindowLong(hwnd, windows.GWL_EXSTYLE)
-    NewHWNDStyle = HWNDStyle
-    NewHWNDStyle &= ~windows.WS_BORDER
-    NewHWNDStyle &= ~windows.WS_DLGFRAME
-    NewHWNDStyle &= ~windows.WS_THICKFRAME
-    NewHWNDStyleEx = HWNDStyleEx
-    NewHWNDStyleEx &= ~windows.WS_EX_WINDOWEDGE
-    windows.SetWindowLong(hwnd, windows.GWL_STYLE, NewHWNDStyle | windows.WS_POPUP)
-    windows.SetWindowLong(
-        hwnd, windows.GWL_EXSTYLE, NewHWNDStyleEx | windows.WS_EX_TOPMOST
-    )
-    windows.ShowWindow(hwnd, windows.SW_SHOWMAXIMIZED)
-    return (wpc, HWNDStyle, HWNDStyleEx)
-
-
-def recoverwindow(hwnd, status):
-    wpc, HWNDStyle, HWNDStyleEx = status
-    windows.SetWindowLong(hwnd, windows.GWL_STYLE, HWNDStyle)
-    windows.SetWindowLong(hwnd, windows.GWL_EXSTYLE, HWNDStyleEx)
-    windows.ShowWindow(hwnd, windows.SW_SHOWNORMAL)
-    windows.SetWindowPlacement(hwnd, wpc)
-
-
-def showintab(hwnd, show):
-    style_ex = windows.GetWindowLong(hwnd, windows.GWL_EXSTYLE)
-    if show:
-        style_ex |= windows.WS_EX_APPWINDOW
-        style_ex &= ~windows.WS_EX_TOOLWINDOW
-    else:
-        style_ex &= ~windows.WS_EX_APPWINDOW
-        style_ex |= windows.WS_EX_TOOLWINDOW
-    windows.SetWindowLong(hwnd, windows.GWL_EXSTYLE, style_ex)
-
-
-def darkchange(hwnd, dark):
-    def ChangeDWMAttrib(hWnd: int, attrib: int, color) -> None:
-        try:
-            ctypes.windll.dwmapi.DwmSetWindowAttribute(
-                hWnd, attrib, ctypes.byref(color), ctypes.sizeof(ctypes.c_int)
-            )
-        except:
-            pass
-
-    def systemmenu(mode):
-        try:
-            # https://stackoverflow.com/questions/53501268/win10-dark-theme-how-to-use-in-winapi
-            # https://gist.github.com/rounk-ctrl/b04e5622e30e0d62956870d5c22b7017
-            LoadLibrary = ctypes.windll.Kernel32.LoadLibraryW
-            LoadLibrary.argtypes = (ctypes.c_wchar_p,)
-            LoadLibrary.restype = ctypes.c_void_p
-            GetProcAddress = ctypes.windll.Kernel32.GetProcAddress
-            GetProcAddress.argtypes = ctypes.c_void_p, ctypes.c_void_p
-            GetProcAddress.restype = ctypes.c_void_p
-            uxtheme = LoadLibrary("uxtheme.dll")
-            SetPreferredAppMode = GetProcAddress(uxtheme, 135)
-            FlushMenuThemes = GetProcAddress(uxtheme, 136)
-            SetPreferredAppMode = ctypes.CFUNCTYPE(ctypes.c_int, ctypes.c_int)(
-                SetPreferredAppMode
-            )
-            FlushMenuThemes = ctypes.CFUNCTYPE(None)(FlushMenuThemes)
-            SetPreferredAppMode(mode)
-            FlushMenuThemes()
-        except:
-            pass
-
-    if dark:
-        ChangeDWMAttrib(hwnd, 19, ctypes.c_int(1))
-        ChangeDWMAttrib(hwnd, 20, ctypes.c_int(1))
-        systemmenu(2)
-    else:
-        ChangeDWMAttrib(hwnd, 19, ctypes.c_int(0))
-        ChangeDWMAttrib(hwnd, 20, ctypes.c_int(0))
-        systemmenu(3)

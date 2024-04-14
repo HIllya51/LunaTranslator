@@ -345,7 +345,6 @@ def GetProcessFileName(hHandle):
         return v
 
 
-_IsWow64Process = _kernel32.IsWow64Process
 _CreateProcessW = _kernel32.CreateProcessW
 _CreateProcessW.argtypes = (
     c_wchar_p,
@@ -389,12 +388,6 @@ def CreateProcess(
         byref(_pinfo),
     )
     return _pinfo
-
-
-def IsWow64Process(phandle):
-    b = c_bool()
-    _IsWow64Process(phandle, byref(b))
-    return b.value
 
 
 def GetClipboardOwner():
@@ -868,133 +861,6 @@ _ConnectNamedPipe = _kernel32.ConnectNamedPipe
 
 def ConnectNamedPipe(pipe, lpoverlap):
     return _ConnectNamedPipe(pipe, lpoverlap)
-
-
-FILE_MAP_READ = 0x4
-_OpenFileMappingW = _kernel32.OpenFileMappingW
-_OpenFileMappingW.argtypes = c_uint, c_bool, c_wchar_p
-
-
-def OpenFileMapping(access, inherit, name):
-    map_handle = _OpenFileMappingW(access, inherit, name)
-    return map_handle
-
-
-_MapViewOfFile = _kernel32.MapViewOfFile
-_MapViewOfFile.argtypes = c_void_p, c_uint, c_uint, c_uint, c_uint
-_MapViewOfFile.restype = c_void_p
-
-
-def MapViewOfFile(fhandel, access, size):
-    return _MapViewOfFile(fhandel, access, 0, 0, size)
-
-
-_CreateFileMappingW = _kernel32.CreateFileMappingW
-_CreateFileMappingW.argtypes = c_void_p, c_void_p, c_uint, c_uint, c_uint, c_wchar_p
-_CreateFileMappingW.restype = c_void_p
-
-
-def CreateFileMapping(name, acc, size):
-    return _CreateFileMappingW(
-        -1, pointer(get_SECURITY_ATTRIBUTES()), acc, 0, size, name
-    )
-
-
-_MultiByteToWideChar = _kernel32.MultiByteToWideChar
-_MultiByteToWideChar.argtypes = c_uint, c_uint, c_void_p, c_int, c_wchar_p, c_int
-
-
-def MultiByteToWideChar(buff, length, codepage):
-    _w = create_unicode_buffer(length + 1)
-    l = _MultiByteToWideChar(codepage, 0, buff, length, _w, length)
-    if l == 0:
-        return None
-    return _w.value
-
-
-class MEMORY_BASIC_INFORMATION32(Structure):
-    _fields_ = [
-        ("BaseAddress", c_void_p),
-        ("AllocationBase", c_void_p),
-        ("AllocationProtect", c_uint),
-        ("RegionSize", c_void_p),
-        ("State", c_uint),
-        ("Protect", c_uint),
-        ("Type", c_uint),
-    ]
-
-
-class MEMORY_BASIC_INFORMATION64(Structure):
-    _fields_ = [
-        ("BaseAddress", c_void_p),
-        ("AllocationBase", c_void_p),
-        ("AllocationProtect", c_uint),
-        ("PartitionId", c_short),
-        ("RegionSize", c_void_p),
-        ("State", c_uint),
-        ("Protect", c_uint),
-        ("Type", c_uint),
-    ]
-
-
-_VirtualQueryEx = _kernel32.VirtualQueryEx
-_VirtualQueryEx.argtypes = c_void_p, c_void_p, c_void_p, c_int
-
-
-def VirtualQueryEx(hprocess, address):
-    if sizeof(c_void_p) == 4:
-        MEMORY_BASIC_INFORMATION = MEMORY_BASIC_INFORMATION32
-    else:
-        MEMORY_BASIC_INFORMATION = MEMORY_BASIC_INFORMATION64
-    info = MEMORY_BASIC_INFORMATION()
-    _VirtualQueryEx(hprocess, address, pointer(info), sizeof(info))
-    return info
-
-
-_IsDBCSLeadByteEx = _kernel32.IsDBCSLeadByteEx
-_IsDBCSLeadByteEx.argtypes = c_uint, c_byte
-
-
-def IsDBCSLeadByteEx(codepage, char):
-    return _IsDBCSLeadByteEx(codepage, char)
-
-
-_GetNativeSystemInfo = _kernel32.GetNativeSystemInfo
-_GetNativeSystemInfo.argtypes = (c_void_p,)
-
-
-class SYSTEM_INFO(Structure):
-    _fields_ = [
-        ("wProcessorArchitecture", c_ushort),
-        ("wReserved", c_ushort),
-        ("dwPageSize", c_uint),
-        ("lpMinimumApplicationAddress", c_void_p),
-        ("lpMaximumApplicationAddress", c_void_p),
-        ("dwActiveProcessorMask", c_void_p),
-        ("dwNumberOfProcessors", c_uint),
-        ("dwProcessorType", c_uint),
-        ("dwAllocationGranularity", c_uint),
-        ("wProcessorLevel", c_ushort),
-        ("wProcessorRevision", c_ushort),
-    ]
-
-
-def GetNativeSystemInfo():
-    _SYSTEM_INFO = SYSTEM_INFO()
-    _GetNativeSystemInfo(pointer(_SYSTEM_INFO))
-    return _SYSTEM_INFO
-
-
-def Is64bit(pid):
-    sysinfo = GetNativeSystemInfo()
-    if sysinfo.wProcessorArchitecture == 9 or sysinfo.wProcessorArchitecture == 6:
-        hprocess = AutoHandle(OpenProcess(PROCESS_QUERY_INFORMATION, False, pid))
-        if hprocess == 0:
-            return False
-        res = not IsWow64Process(hprocess)
-        return res
-    else:
-        return False
 
 
 _MessageBoxW = _user32.MessageBoxW

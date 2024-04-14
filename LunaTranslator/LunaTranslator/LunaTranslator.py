@@ -23,7 +23,7 @@ from myutils.utils import (
 )
 from myutils.wrapper import threader
 from gui.showword import searchwordW
-from myutils.hwnd import pid_running, getpidexe, testprivilege, ListProcess
+from myutils.hwnd import getpidexe, testprivilege, ListProcess
 from textsource.copyboard import copyboard
 from textsource.texthook import texthook
 from textsource.ocrtext import ocrtext
@@ -42,6 +42,7 @@ import hmac, pytz, uuid
 import windows
 import re, gobject
 import winsharedutils
+from winsharedutils import pid_running
 from myutils.post import POSTSOLVE
 from gui.usefulwidget import Prompt, getQMessageBox
 

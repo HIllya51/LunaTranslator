@@ -18,7 +18,8 @@ from ctypes import (
     windll,
     c_char,
 )
-from ctypes.wintypes import WORD, HANDLE
+from ctypes.wintypes import WORD, HANDLE, HWND, LONG, DWORD
+from windows import WINDOWPLACEMENT
 import gobject
 
 utilsdll = CDLL(gobject.GetDllpath(("winsharedutils32.dll", "winsharedutils64.dll")))
@@ -313,3 +314,33 @@ def queryversion(exe):
 
 startdarklistener = utilsdll.startdarklistener
 startdarklistener.restype = HANDLE
+
+SetTheme = utilsdll._SetTheme
+SetTheme.argtypes = HWND, c_bool, c_int
+
+showintab = utilsdll.showintab
+showintab.argtypes = HWND, c_bool
+
+
+class windowstatus(Structure):
+    _fields_ = [("wpc", WINDOWPLACEMENT), ("HWNDStyle", LONG), ("HWNDStyleEx", LONG)]
+
+
+letfullscreen = utilsdll.letfullscreen
+letfullscreen.argtypes = (HWND,)
+letfullscreen.restype = windowstatus
+
+recoverwindow = utilsdll.recoverwindow
+recoverwindow.argtypes = HWND, windowstatus
+
+pid_running = utilsdll.pid_running
+pid_running.argtypes = (DWORD,)
+pid_running.restype = c_bool
+
+getpidhwndfirst = utilsdll.getpidhwndfirst
+getpidhwndfirst.argtypes = (DWORD,)
+getpidhwndfirst.restype = HWND
+
+Is64bit = utilsdll.Is64bit
+Is64bit.argtypes = (DWORD,)
+Is64bit.restype = c_bool

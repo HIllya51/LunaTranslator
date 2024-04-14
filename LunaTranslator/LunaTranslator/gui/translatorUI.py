@@ -2,7 +2,6 @@ import time
 import functools
 import threading
 import os, sys
-import winsharedutils
 from PyQt5.QtCore import QT_VERSION_STR
 import windows
 from traceback import print_exc
@@ -17,7 +16,7 @@ import winsharedutils
 from myutils.config import globalconfig, saveallconfig, _TR, static_data
 from myutils.subproc import endsubprocs
 from myutils.ocrutil import ocr_run, imageCut
-from myutils.hwnd import mouseselectwindow, showintab, grabwindow, getExeIcon
+from myutils.hwnd import mouseselectwindow, grabwindow, getExeIcon
 from gui.dialog_savedgame import dialog_savedgame_new
 from gui.dialog_memory import dialog_memory
 from gui.textbrowser import Textbrowser
@@ -25,7 +24,7 @@ from myutils.fullscreen import fullscreen
 from gui.rangeselect import moveresizegame, rangeselct_function
 from gui.usefulwidget import resizableframeless
 from gui.dialog_savedgame import browserdialog
-
+from winsharedutils import showintab
 
 class QUnFrameWindow(resizableframeless):
     displayres = pyqtSignal(dict)

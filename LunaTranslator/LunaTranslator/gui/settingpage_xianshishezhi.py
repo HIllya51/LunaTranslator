@@ -12,7 +12,7 @@ from gui.inputdialog import multicolorset
 from myutils.config import globalconfig, _TR, _TRL, magpie_config, static_data
 from myutils.wrapper import Singleton
 import qtawesome, gobject, json
-from myutils.hwnd import showintab
+from winsharedutils import showintab
 from gui.inputdialog import getsomepath1
 from gui.usefulwidget import (
     getsimplecombobox,
@@ -522,6 +522,18 @@ def setTabThree_lazy(self):
                     themelist("dark"),
                     globalconfig,
                     "darktheme",
+                    callback=lambda _: self.setstylesheet(),
+                ),
+                5,
+            ),
+        ],
+        [
+            ("WindowBackdrop", 6),
+            (
+                getsimplecombobox(
+                    ["Solid", "Acrylic", "Mica", "MicaAlt"],
+                    globalconfig,
+                    "WindowBackdrop",
                     callback=lambda _: self.setstylesheet(),
                 ),
                 5,
