@@ -15,8 +15,10 @@ from myutils.config import (
 import zipfile
 from myutils.utils import (
     minmaxmoveobservefunc,
+    parsemayberegexreplace,
     kanjitrans,
     checkifnewgame,
+    getfilemd5,
     stringfyerror,
 )
 from myutils.wrapper import threader
@@ -41,7 +43,6 @@ import windows
 import re, gobject
 import winsharedutils
 from myutils.post import POSTSOLVE
-from myutils.vnrshareddict import vnrshareddict
 from gui.usefulwidget import Prompt, getQMessageBox
 
 
@@ -70,6 +71,8 @@ class MAINUI:
         self.isrunning = True
         self.solvegottextlock = threading.Lock()
         self.outputers = {}
+        self.processmethods = []
+        self.zhanweifu = 0
 
     @property
     def textsource(self):
@@ -87,93 +90,47 @@ class MAINUI:
         self.currentmd5 = "0" if _ is None else _.md5
 
     @threader
-    def loadvnrshareddict(self, _=None):
-        vnrshareddict(self)
+    def safeloadprocessmodels(self):
+        for model in ["noundict", "gongxiangcishu", "transerrorfix", "myprocess"]:
+            try:
+                if model == "myprocess":
+                    mm = "myprocess"
+                    checkpath = "./userconfig/myprocess.py"
+                else:
+                    mm = "transoptimi." + model
+                    checkpath = "./LunaTranslator/transoptimi/" + model + ".py"
+                if os.path.exists(checkpath) == False:
+                    continue
+                klass = importlib.import_module(mm).Process()
+                process_before = klass.process_before
+                process_after = klass.process_after
+                self.processmethods.append(klass)
+            except:
+                print_exc()
 
     def solvebeforetrans(self, content):
-
-        zhanweifu = 0
-        mp1 = {}
-        mp2 = {}
-        mp3 = {}
-        if noundictconfig["use"]:
-            for key in noundictconfig["dict"]:
-                usedict = False
-                if type(noundictconfig["dict"][key]) == str:
-                    usedict = True
+        contexts = []
+        for i in range(len(self.processmethods)):
+            try:
+                if self.processmethods[i].using:
+                    content, context = self.processmethods[i].process_before(content)
                 else:
-                    for i in range(len(noundictconfig["dict"][key]) // 2):
-                        if noundictconfig["dict"][key][i * 2] in ["0", self.currentmd5]:
-                            usedict = True
-                            break
-
-                if usedict and key in content:
-                    xx = "{{{}}}".format(zhanweifu)
-                    content = content.replace(key, xx)
-                    mp1[xx] = key
-                    zhanweifu += 1
-        if globalconfig["gongxiangcishu"]["use"]:
-            for key, value in self.sorted_vnrshareddict_pre:
-
-                if key in content:
-                    content = content.replace(key, value["text"])
-            for key, value in self.sorted_vnrshareddict:
-
-                if key in content:
-                    # print(key)
-                    # if self.vnrshareddict[key]['src']==self.vnrshareddict[key]['tgt']:
-                    #     content=content.replace(key,self.vnrshareddict[key]['text'])
-                    # else:
-                    xx = "{{{}}}".format(zhanweifu)
-                    content = content.replace(key, xx)
-                    mp2[xx] = key
-                    zhanweifu += 1
-
-        return content, (mp1, mp2, mp3)
-
-    def parsemayberegexreplace(self, dict, res):
-        for item in dict:
-            if item["regex"]:
-                res = re.sub(
-                    codecs.escape_decode(bytes(item["key"], "utf-8"))[0].decode(
-                        "utf-8"
-                    ),
-                    codecs.escape_decode(bytes(item["value"], "utf-8"))[0].decode(
-                        "utf-8"
-                    ),
-                    res,
-                )
-            else:
-                res = res.replace(item["key"], item["value"])
-        return res
+                    context = None
+            except:
+                context = None
+                print_exc()
+            contexts.append(context)
+        return content, contexts
 
     def solveaftertrans(self, res, mp):
-        mp1, mp2, mp3 = mp
-        # print(res,mp)#hello
-        if noundictconfig["use"]:
-            for key in mp1:
-                reg = re.compile(re.escape(key), re.IGNORECASE)
-                if type(noundictconfig["dict"][mp1[key]]) == str:
-                    v = noundictconfig["dict"][mp1[key]]
-                elif type(noundictconfig["dict"][mp1[key]]) == list:
-                    v = ""
-                    for i in range(len(noundictconfig["dict"][mp1[key]]) // 2):
-                        if noundictconfig["dict"][mp1[key]][i * 2] in [
-                            "0",
-                            self.currentmd5,
-                        ]:
-                            v = noundictconfig["dict"][mp1[key]][i * 2 + 1]
-                            break
-                res = reg.sub(v, res)
-        if globalconfig["gongxiangcishu"]["use"]:
-            for key in mp2:
-                reg = re.compile(re.escape(key), re.IGNORECASE)
-                res = reg.sub(self.vnrshareddict[mp2[key]]["text"], res)
-            for key, value in self.sorted_vnrshareddict_post:
-                if key in res:
-                    res = res.replace(key, value["text"])
-        if transerrorfixdictconfig["use"]:
-            res = self.parsemayberegexreplace(transerrorfixdictconfig["dict_v2"], res)
+        for i in range(len(self.processmethods)):
+
+            context = mp[i]
+            try:
+                if self.processmethods[i].using:
+                    res = self.processmethods[i].process_after(res, context)
+            except:
+                print_exc()
         return res
 
     def _POSTSOLVE(self, s):
@@ -447,7 +404,7 @@ class MAINUI:
 
     def ttsrepair(self, text, usedict):
         if usedict["tts_repair"]:
-            text = self.parsemayberegexreplace(usedict["tts_repair_regex"], text)
+            text = parsemayberegexreplace(usedict["tts_repair_regex"], text)
         return text
 
     def readcurrent(self, force=False):
@@ -826,7 +783,7 @@ class MAINUI:
 
         gobject.overridestdio()
 
-        self.loadvnrshareddict()
+        self.safeloadprocessmodels()
         self.prepare()
         self.startxiaoxueguan()
         self.starthira()

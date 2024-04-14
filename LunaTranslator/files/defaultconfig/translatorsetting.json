@@ -334,6 +334,42 @@
 			}
 		}
     },
+	"cohere": {
+		"args": {
+		  "SECRET_KEY": "",
+		  "Temperature": 0.3,
+		  "model":"command-r",
+		  "附带上下文个数":0,
+		  "使用自定义promt":false,
+		  "自定义promt":"",
+		  "流式输出":false
+		}
+		,
+		  "argstype":{
+			  "流式输出":{
+				  "type": "switch"
+			  },
+			  "使用自定义promt":{
+				  "type":"switch"
+			  },
+			  "附带上下文个数":{
+				  "type":"intspin",
+				  "min":0,
+				  "max":10,
+				  "step":1
+			  },
+			  "使用说明":{
+				  "type":"label",
+				  "islink":false
+			  },
+			  "Temperature":{
+				  "type":"spin",
+				  "min":0,
+				  "max":1,
+				  "step":0.1
+			  }
+		  }
+	  },
     "jb7": {
         "args": {
             "路径": "",

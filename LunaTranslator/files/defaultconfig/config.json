@@ -123,6 +123,7 @@
     "localeswitchmethod": 0,
     "hide_not_exists":false,
     "startgamenototop":true,
+    "selfdefinedprocesspair":false,
     "extra_space":0,
     "fonttype": "Arial",
     "fonttype2": "Arial",
@@ -1121,6 +1122,12 @@
             "color": "blue",
             "name": "ChatGPT",
             "is_gpt_like":true
+        },
+        "cohere": {
+            "type": "api",
+            "use": false,
+            "color": "blue",
+            "name": "cohere"
         },
         "claude": {
             "type": "api",

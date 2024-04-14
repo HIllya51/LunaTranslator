@@ -1,6 +1,6 @@
 from myutils.config import globalconfig
 import xml.etree.ElementTree as ET
-import os
+import os, gobject, re
 
 
 def vnrshareddict(self):
@@ -84,3 +84,53 @@ def vnrshareddict(self):
         self.sorted_vnrshareddict_post = [
             (key, self.vnrshareddict_post[key]) for key in keys
         ]
+
+
+class Process:
+    @property
+    def using(self):
+        return globalconfig["gongxiangcishu"]["use"]
+
+    def __init__(self) -> None:
+        self.status = None
+        self.checkchange()
+
+    def checkchange(self):
+        s = (
+            globalconfig["gongxiangcishu"]["use"],
+            globalconfig["gongxiangcishu"]["path"],
+        )
+        if self.status != s:
+            self.status = s
+        vnrshareddict(self)
+
+    def process_before(self, content):
+        self.checkchange()
+        context = {}
+
+        for key, value in self.sorted_vnrshareddict_pre:
+
+            if key in content:
+                content = content.replace(key, value["text"])
+        for key, value in self.sorted_vnrshareddict:
+
+            if key in content:
+                # print(key)
+                # if self.vnrshareddict[key]['src']==self.vnrshareddict[key]['tgt']:
+                #     content=content.replace(key,self.vnrshareddict[key]['text'])
+                # else:
+                xx = "{{{}}}".format(gobject.baseobject.zhanweifu)
+                content = content.replace(key, xx)
+                context[xx] = key
+                gobject.baseobject.zhanweifu += 1
+        return content, context
+
+    def process_after(self, res, context):
+
+        for key in context:
+            reg = re.compile(re.escape(key), re.IGNORECASE)
+            res = reg.sub(self.vnrshareddict[context[key]]["text"], res)
+        for key, value in self.sorted_vnrshareddict_post:
+            if key in res:
+                res = res.replace(key, value["text"])
+        return res

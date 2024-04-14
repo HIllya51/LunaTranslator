@@ -311,14 +311,32 @@ from translator.basetranslator import basetrans
 class TS(basetrans): 
     def translate(self,content):  
         #在这里编写
-        return content"""
+        return content
+"""
                 )
             elif path == "./userconfig/mypost.py":
                 ff.write(
                     """
 def POSTSOLVE(line): 
     #请在这里编写自定义处理
-    return line"""
+    return line
+"""
+                )
+            elif path == "./userconfig/myprocess.py":
+                ff.write(
+                    """
+class Process:
+    @property
+    def using(self):
+        return True
+
+    def process_before(self, text):
+        context = {}
+        return text, context
+
+    def process_after(self, res, context):
+        return res
+"""
                 )
     os.startfile(p)
     return p
@@ -407,9 +425,14 @@ def minmaxmoveobservefunc(self):
                 if globalconfig["keepontop"] and globalconfig["focusnotop"]:
                     if _focusp == os.getpid():
                         pass
-                    elif _focusp in gobject.baseobject.textsource.pids:
+                    elif (
+                        len(gobject.baseobject.textsource.pids) == 0
+                        or _focusp in gobject.baseobject.textsource.pids
+                    ):
+                        gobject.baseobject.translation_ui.thistimenotsetop = False
                         gobject.baseobject.translation_ui.settop()
                     else:
+                        gobject.baseobject.translation_ui.thistimenotsetop = True
                         gobject.baseobject.translation_ui.canceltop()
             if _focusp != windows.GetWindowThreadProcessId(
                 gobject.baseobject.textsource.hwnd
@@ -483,3 +506,16 @@ class autosql(sqlite3.Connection):
 
     def __del__(self):
         self.close()
+
+
+def parsemayberegexreplace(dict, res):
+    for item in dict:
+        if item["regex"]:
+            res = re.sub(
+                codecs.escape_decode(bytes(item["key"], "utf-8"))[0].decode("utf-8"),
+                codecs.escape_decode(bytes(item["value"], "utf-8"))[0].decode("utf-8"),
+                res,
+            )
+        else:
+            res = res.replace(item["key"], item["value"])
+    return res

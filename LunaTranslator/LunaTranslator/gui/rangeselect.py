@@ -119,7 +119,7 @@ class rangeselct(QMainWindow):
         #     desktop = desktop.united(QDesktopWidget().screenGeometry(i))
         desktop = QApplication.primaryScreen().virtualGeometry()
         self.setGeometry(desktop)
-        self.rectlabel.resize(desktop.size())
+        self.rectlabel.setGeometry(desktop)
         self.setCursor(Qt.CrossCursor)
         self.is_drawing = False
         self.setMouseTracking(True)

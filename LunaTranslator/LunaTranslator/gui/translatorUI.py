@@ -537,10 +537,24 @@ class QUnFrameWindow(resizableframeless):
             self.setontopthread()
         return super().showEvent(a0)
 
-    def canceltop(self, hwnd=windows.HWND_NOTOPMOST):
+    def canceltop(self):
         windows.SetWindowPos(
-            int(int(self.winId())),
-            hwnd,
+            int(self.winId()),
+            windows.HWND_NOTOPMOST,
+            0,
+            0,
+            0,
+            0,
+            windows.SWP_NOACTIVATE | windows.SWP_NOSIZE | windows.SWP_NOMOVE,
+        )
+        HWNDStyleEx = windows.GetWindowLong(int(self.winId()), windows.GWL_EXSTYLE)
+        windows.SetWindowLong(
+            int(self.winId()), windows.GWL_EXSTYLE, HWNDStyleEx & ~windows.WS_EX_TOPMOST
+        )
+
+        windows.SetWindowPos(
+            int(self.winId()),
+            windows.GetForegroundWindow(),
             0,
             0,
             0,
@@ -549,8 +563,17 @@ class QUnFrameWindow(resizableframeless):
         )
 
     def settop(self):
+        if (
+            windows.GetWindowLong(int(self.winId()), windows.GWL_EXSTYLE)
+            & windows.WS_EX_TOPMOST
+        ) == 0:
+            self.canceltop()
+        HWNDStyleEx = windows.GetWindowLong(int(self.winId()), windows.GWL_EXSTYLE)
+        windows.SetWindowLong(
+            int(self.winId()), windows.GWL_EXSTYLE, HWNDStyleEx | windows.WS_EX_TOPMOST
+        )
         windows.SetWindowPos(
-            int(int(self.winId())),
+            int(self.winId()),
             windows.HWND_TOPMOST,
             0,
             0,
@@ -569,12 +592,8 @@ class QUnFrameWindow(resizableframeless):
                     pid = windows.GetWindowThreadProcessId(hwnd)
                     if pid == os.getpid():
                         pass
-                    elif globalconfig["focusnotop"]:
-                        try:
-                            if gobject.baseobject.textsource.hwnd in [0, hwnd]:
-                                self.settop()
-                        except:
-                            self.settop()
+                    elif globalconfig["focusnotop"] and self.thistimenotsetop:
+                        pass
                     else:
                         self.settop()
                 except:
@@ -660,6 +679,7 @@ class QUnFrameWindow(resizableframeless):
         self.document.contentsChanged.connect(self.textAreaChanged)
         self.set_color_transparency()
         self.refreshtoolicon()
+        self.thistimenotsetop = False
 
     def set_color_transparency(self):
         self.translate_text.setStyleSheet(

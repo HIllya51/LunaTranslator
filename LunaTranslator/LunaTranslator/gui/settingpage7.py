@@ -254,7 +254,6 @@ def setTab7_lazy(self):
             getsimpleswitch(
                 globalconfig["gongxiangcishu"],
                 "use",
-                callback=gobject.baseobject.loadvnrshareddict,
             ),
             getcolorbutton(
                 globalconfig,
@@ -265,7 +264,7 @@ def setTab7_lazy(self):
                     globalconfig["gongxiangcishu"],
                     "path",
                     "共享辞书",
-                    gobject.baseobject.loadvnrshareddict,
+                    None,
                     False,
                     "*.xml",
                 ),
@@ -278,6 +277,17 @@ def setTab7_lazy(self):
             "",
             "",
             "",
+        ],
+        [
+            ("使用自定义优化", 6),
+            getsimpleswitch(globalconfig, "selfdefinedprocesspair"),
+            getcolorbutton(
+                globalconfig,
+                "",
+                callback=lambda: selectdebugfile("./userconfig/myprocess.py"),
+                icon="fa.gear",
+                constcolor="#FF69B4",
+            ),
         ],
     ]
     if globalconfig["languageuse"] == 2:  # en
