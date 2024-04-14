@@ -91,26 +91,6 @@ def hwndscalerate(hwnd):
     return rate
 
 
-def getpidhwndfirst(pid):
-    try:
-        hwnds = list()
-
-        def get_all_hwnd(hwnd, _):
-            if (
-                windows.IsWindow(hwnd)
-                and windows.IsWindowEnabled(hwnd)
-                and windows.IsWindowVisible(hwnd)
-            ):
-                if windows.GetWindowThreadProcessId(hwnd) == pid:
-                    hwnds.append((hwnd))
-
-        windows.EnumWindows(get_all_hwnd, 0)
-        return hwnds[0]
-    except:
-        return 0
-
-
-
 def getprocesslist():
 
     pids = windows.EnumProcesses()
