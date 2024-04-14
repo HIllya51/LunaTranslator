@@ -329,8 +329,6 @@ class browserdialog(QDialog):
             return
         menu = QMenu(self)
         shanchu = QAction(_TR("删除"))
-        cache = QAction(_TR("缓存"))
-        menu.addAction(cache)
         menu.addAction(shanchu)
         action = menu.exec(self.mapToGlobal(p))
         if action == shanchu:
@@ -339,52 +337,6 @@ class browserdialog(QDialog):
             savehook_new_data[self.exepath]["relationlinks"].pop(
                 tab_index - self.hasvndb
             )
-        elif action == cache:
-
-            def cachehtml(exepath, idx):
-                url = savehook_new_data[exepath]["relationlinks"][idx][1]
-                import requests
-
-                headers = {
-                    "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
-                    "accept-language": "zh-CN,zh;q=0.9,ar;q=0.8,sq;q=0.7",
-                    "cache-control": "no-cache",
-                    "pragma": "no-cache",
-                    "sec-ch-ua": '"Not_A Brand";v="8", "Chromium";v="120", "Google Chrome";v="120"',
-                    "sec-ch-ua-mobile": "?0",
-                    "sec-ch-ua-platform": '"Windows"',
-                    "sec-fetch-dest": "document",
-                    "sec-fetch-mode": "navigate",
-                    "sec-fetch-site": "same-origin",
-                    "sec-fetch-user": "?1",
-                    "upgrade-insecure-requests": "1",
-                    "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-                }
-
-                response = requests.get(url, headers=headers, proxies=getproxy())
-                os.makedirs("./cache/cachehtml", exist_ok=True)
-                fn = (
-                    "./cache/cachehtml/"
-                    + hashlib.md5(url.encode("utf8")).hexdigest()
-                    + ".html"
-                )
-                with open(fn, "w", encoding="utf8") as ff:
-                    ff.write(
-                        response.text.replace(
-                            "<HEAD>", '<HEAD><base href="{}">'.format(url)
-                        ).replace("<head>", '<head><base href="{}">'.format(url))
-                    )
-                for i in range(len(savehook_new_data[exepath]["relationlinks"])):
-                    if url == savehook_new_data[exepath]["relationlinks"][i][1]:
-                        if len(savehook_new_data[exepath]["relationlinks"][i]) == 3:
-                            savehook_new_data[exepath]["relationlinks"][i][2] = fn
-                        else:
-                            savehook_new_data[exepath]["relationlinks"][i].append(fn)
-
-            threading.Thread(
-                target=cachehtml, args=(self.exepath, tab_index - self.hasvndb)
-            ).start()
-
     def lastclicked(self):
         def callback(texts):
             if len(texts[0].strip()) and len(texts[1].strip()):
