@@ -22,13 +22,17 @@ class Qlabel_c(QLabel):
         return super().mousePressEvent(ev)
 
     def mouseMoveEvent(self, ev):
-        self.pr = False
-        return super().mouseMoveEvent(ev)
+        pass
+        # return super().mouseMoveEvent(ev)
 
     def mouseReleaseEvent(self, ev):
         try:
-            if self.pr:
-                self.callback()
+            if self.underMouse():
+                try:
+                    if self.pr:
+                        self.callback()
+                except:
+                    print_exc()
             self.pr = False
         except:
             print_exc()

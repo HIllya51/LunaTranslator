@@ -22,9 +22,10 @@ from gui.dialog_memory import dialog_memory
 from gui.textbrowser import Textbrowser
 from myutils.fullscreen import fullscreen
 from gui.rangeselect import moveresizegame, rangeselct_function
-from gui.usefulwidget import resizableframeless
+from gui.usefulwidget import resizableframeless, isinrect
 from gui.dialog_savedgame import browserdialog
 from winsharedutils import showintab
+
 
 class QUnFrameWindow(resizableframeless):
     displayres = pyqtSignal(dict)
@@ -745,7 +746,7 @@ class QUnFrameWindow(resizableframeless):
                 while self.mousetransparent:
                     cursor_pos = self.mapFromGlobal(QCursor.pos())
 
-                    if self.isinrect(
+                    if isinrect(
                         cursor_pos,
                         [
                             self._TitleLabel.x(),
@@ -768,7 +769,7 @@ class QUnFrameWindow(resizableframeless):
                             windows.GetWindowLong(hwnd, windows.GWL_EXSTYLE)
                             | windows.WS_EX_TRANSPARENT,
                         )
-                    if self.isinrect(
+                    if isinrect(
                         cursor_pos,
                         [
                             self._TitleLabel.x(),
@@ -874,18 +875,12 @@ class QUnFrameWindow(resizableframeless):
         if globalconfig["locktools"]:
             return
 
-        def makerect(_):
-            x, y, w, h = _
-            return [x, x + w, y, y + h]
-
         def __(s):
             c = QCursor()
-            while self.isinrect(c.pos(), makerect(self.geometry().getRect())):
+            while self.underMouse():
                 time.sleep(0.1)
             time.sleep(0.5)
-            if (globalconfig["locktools"] == False) and (
-                self.isinrect(c.pos(), makerect(self.geometry().getRect())) == False
-            ):
+            if (globalconfig["locktools"] == False) and (not self.underMouse()):
                 s.toolbarhidedelaysignal.emit()
 
         threading.Thread(target=lambda: __(self)).start()

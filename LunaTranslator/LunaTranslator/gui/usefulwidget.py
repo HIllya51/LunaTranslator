@@ -80,6 +80,11 @@ def isinrect(pos, rect):
     return x >= x1 and x <= x2 and y <= y2 and y >= y1
 
 
+def makerect(_):
+    x, y, w, h = _
+    return [x, x + w, y, y + h]
+
+
 class saveposwindow(QMainWindow):
     def __init__(self, parent, dic=None, key=None, flags=None) -> None:
         if flags:
@@ -201,9 +206,6 @@ class resizableframeless(saveposwindow):
         self._right_drag = False
         self._left_drag = False
 
-    def isinrect(self, pos, rect):
-        return isinrect(pos, rect)
-
     def resizeEvent(self, e):
 
         if self._move_drag == False:
@@ -237,17 +239,17 @@ class resizableframeless(saveposwindow):
         # 重写鼠标点击的事件
 
         if (event.button() == Qt.LeftButton) and (
-            self.isinrect(event.pos(), self._corner_rect)
+            isinrect(event.pos(), self._corner_rect)
         ):
             # 鼠标左键点击右下角边界区域
             self._corner_drag = True
         elif (event.button() == Qt.LeftButton) and (
-            self.isinrect(event.pos(), self._right_rect)
+            isinrect(event.pos(), self._right_rect)
         ):
             # 鼠标左键点击右侧边界区域
             self._right_drag = True
         elif (event.button() == Qt.LeftButton) and (
-            self.isinrect(event.pos(), self._left_rect)
+            isinrect(event.pos(), self._left_rect)
         ):
             # 鼠标左键点击右侧边界区域
             self._left_drag = True
@@ -255,12 +257,12 @@ class resizableframeless(saveposwindow):
             self.startx = event.globalPos().x()
             self.startw = self.width()
         elif (event.button() == Qt.LeftButton) and (
-            self.isinrect(event.pos(), self._bottom_rect)
+            isinrect(event.pos(), self._bottom_rect)
         ):
             # 鼠标左键点击下侧边界区域
             self._bottom_drag = True
         elif (event.button() == Qt.LeftButton) and (
-            self.isinrect(event.pos(), self._lcorner_rect)
+            isinrect(event.pos(), self._lcorner_rect)
         ):
             # 鼠标左键点击下侧边界区域
             self._lcorner_drag = True
@@ -279,15 +281,15 @@ class resizableframeless(saveposwindow):
         pos = QMouseEvent.pos()
 
         if self._move_drag == False:
-            if self.isinrect(pos, self._corner_rect):
+            if isinrect(pos, self._corner_rect):
                 self.setCursor(Qt.SizeFDiagCursor)
-            elif self.isinrect(pos, self._lcorner_rect):
+            elif isinrect(pos, self._lcorner_rect):
                 self.setCursor(Qt.SizeBDiagCursor)
-            elif self.isinrect(pos, self._bottom_rect):
+            elif isinrect(pos, self._bottom_rect):
                 self.setCursor(Qt.SizeVerCursor)
-            elif self.isinrect(pos, self._right_rect):
+            elif isinrect(pos, self._right_rect):
                 self.setCursor(Qt.SizeHorCursor)
-            elif self.isinrect(pos, self._left_rect):
+            elif isinrect(pos, self._left_rect):
                 self.setCursor(Qt.SizeHorCursor)
             else:
                 self.setCursor(Qt.ArrowCursor)
