@@ -173,6 +173,9 @@ class Settin(closeashidewindow):
             class TabWidget(QWidget):
                 currentChanged = pyqtSignal(int)
 
+                def setCurrentIndex(self, idx):
+                    self.list_widget.setCurrentRow(idx)
+
                 def __init__(self, parent=None):
                     super(TabWidget, self).__init__(parent)
                     layout = QHBoxLayout()
