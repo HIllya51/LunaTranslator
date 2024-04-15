@@ -10,7 +10,7 @@
 
 > **A galgame translator**
 
-## <a href="http://hillya51.github.io/#/en/" target="_blank">Instructions</a> 
+## <a href="https://hillya51.github.io/LunaTranslator_tutorial/#/en/" target="_blank">Instructions</a> 
 
 ## Function support
 

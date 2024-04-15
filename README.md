@@ -4,14 +4,14 @@
     <a href="./LICENSE"><img src="https://img.shields.io/github/license/HIllya51/LunaTranslator"></a>
     <a href="https://github.com/HIllya51/LunaTranslator/releases"><img src="https://img.shields.io/github/v/release/HIllya51/LunaTranslator?color=ffa"></a>
     <a href="https://github.com/HIllya51/LunaTranslator/stargazers"><img src="https://img.shields.io/github/stars/HIllya51/LunaTranslator?color=ccf"></a>
-    <a href="https://hillya51.github.io/download.html" target="_blank"><img src="https://img.shields.io/badge/download-blue"/></a>
+    <a href="https://hillya51.github.io/LunaTranslator_tutorial/download.html" target="_blank"><img src="https://img.shields.io/badge/download-blue"/></a>
 </p>
  
 ## 简体中文 | [Русский язык](README_ru.md) | [English](README_en.md) | [Other Language Support](otherlang.md) 
 
 > **一款galgame翻译器**
 
-## <a href="http://hillya51.github.io/" target="_blank">使用说明</a> 
+## <a href="https://hillya51.github.io/LunaTranslator_tutorial/#/" target="_blank">使用说明</a> 
  
 
 ## 功能支持
