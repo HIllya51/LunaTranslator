@@ -400,15 +400,7 @@ class dialog_setting_game(QDialog):
             savehook_new_data[res] = savehook_new_data[self.exepath]
             savehook_new_data.pop(self.exepath)
             _icon = getExeIcon(res, cache=True)
-            if self.item:
-                self.item.savetext = res
-                self.table.setIndexWidget(
-                    self.model.index(self.model.indexFromItem(self.item).row(), 1),
-                    getcolorbutton(
-                        "", "", functools.partial(opendir, res), qicon=_icon
-                    ),
-                )
-
+            
             self.setWindowIcon(_icon)
             self.editpath.setText(res)
             self.exepath = res
@@ -417,22 +409,20 @@ class dialog_setting_game(QDialog):
         self.isopened = False
         return super().closeEvent(a0)
 
-    def __init__(self, parent, exepath, item=None) -> None:
+    def __init__(self, parent, exepath) -> None:
         super().__init__(parent, Qt.WindowCloseButtonHint)
         global _global_dialog_setting_game
         _global_dialog_setting_game = self
         self.isopened = True
         checkifnewgame(exepath)
-        print(item)
         vbox = QVBoxLayout(self)  # 配置layout
         self.setLayout(vbox)
         formwidget = QWidget()
         formLayout = QFormLayout()
         formwidget.setLayout(formLayout)
-        self.item = item
         self.exepath = exepath
-        editpath = QLineEdit(exepath)
-        editpath.setReadOnly(True)
+        self.editpath = QLineEdit(exepath)
+        self.editpath.setReadOnly(True)
         self.setWindowTitle(savehook_new_data[exepath]["title"])
 
         self.setWindowIcon(getExeIcon(exepath, cache=True))
@@ -440,7 +430,7 @@ class dialog_setting_game(QDialog):
             _TR("路径"),
             getboxlayout(
                 [
-                    editpath,
+                    self.editpath,
                     getcolorbutton(
                         "",
                         "",
