@@ -955,18 +955,6 @@
             "color": "#1839f0",
             "name": "Jbeijing7"
         },
-        "sugoi": {
-            "type": "offline",
-            "use": false,
-            "color": "#1839f0",
-            "name": "Sugoi"
-        },
-        "sugoionline": {
-            "use": true,
-            "color": "#1839f0",
-            "name": "Sugoi",
-            "useproxy": true
-        },
         "kingsoft": {
             "type": "offline",
             "use": false,

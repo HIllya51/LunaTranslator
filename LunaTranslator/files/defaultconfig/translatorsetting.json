@@ -99,48 +99,6 @@
             "key": ""
         }
     },
-	"sugoi": { 
-        "args": {
-            "Runtime": "",
-			"Port":8000,
-			"tokenizator":"",
-			"translator":"",
-			"Download_Runtime":"https://github.com/HIllya51/RESOURCES/releases/download/offline_translator/SugoiRuntime.zip",
-			"Download_Sugoi":"https://github.com/zyddnys/manga-image-translator/releases/download/beta-0.3/sugoi-models.zip"
-        }
-		,
-		"argstype":{ 
-			"Download_Runtime":{
-				"type":"label",
-				"islink":true
-			},
-			"Download_Sugoi":{
-				"type":"label",
-				"islink":true
-			},
-			"Runtime":{
-				"type":"file",
-				"dir":true,
-				"filter":"SugoiRuntime"
-			},
-			"Port":{
-				"type":"intspin",
-				"min":1,
-				"max":65535,
-				"step":1
-			},
-			"translator":{
-				"type":"file",
-				"dir":false,
-				"filter":"model.bin"
-			},
-			"tokenizator":{
-				"type":"file",
-				"dir":false,
-				"filter":"spm.*.nopretok.model"
-			}
-		}
-	},
     "huoshanapi": {
         "args": {
             "注册网址": "https://www.volcengine.com/docs/4640/130872",
