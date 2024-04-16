@@ -955,6 +955,12 @@
             "color": "#1839f0",
             "name": "Jbeijing7"
         },
+        "sugoix": {
+            "type": "offline",
+            "use": false,
+            "color": "#1839f0",
+            "name": "Sugoi"
+        },
         "kingsoft": {
             "type": "offline",
             "use": false,

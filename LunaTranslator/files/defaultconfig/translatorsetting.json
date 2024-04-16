@@ -99,6 +99,11 @@
             "key": ""
         }
     },
+	"sugoix": { 
+        "args": {
+			"api":"http://127.0.0.1:14366/"
+        }
+	},
     "huoshanapi": {
         "args": {
             "注册网址": "https://www.volcengine.com/docs/4640/130872",
