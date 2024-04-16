@@ -133,14 +133,33 @@ def setTab_aboutlazy(self):
             "问题反馈",
             (makehtml("https://github.com/HIllya51/LunaTranslator/issues"), 3, "link"),
         ],
-        [("如果你感觉该软件对你有帮助，欢迎微信扫码赞助，谢谢~", 4)],
     ]
-
+    if globalconfig["languageuse"] == 0:
+        shuominggrid += [
+            [("如果你感觉该软件对你有帮助，欢迎微信扫码赞助，谢谢~", 4)],
+        ]
+    else:
+        shuominggrid += [
+            [
+                (
+                    'If the software really helps you, welcome to become my <a href="https://patreon.com/HIllya51">sponsor</a>. Thank you ~ ',
+                    4,
+                    "link",
+                )
+            ],
+        ]
     tab = self.makesubtab_lazy(
         ["相关说明", "其他设置", "资源下载"],
         [
             lambda: self.makevbox(
-                [self.makegrid(shuominggrid), imgwidget("./files/zan.jpg")]
+                [
+                    self.makegrid(shuominggrid),
+                    (
+                        imgwidget("./files/zan.jpg")
+                        if globalconfig["languageuse"] == 0
+                        else QLabel()
+                    ),
+                ]
             ),
             lambda: self.makescroll(self.makegrid(grid2)),
             lambda: resourcegrid(self),
