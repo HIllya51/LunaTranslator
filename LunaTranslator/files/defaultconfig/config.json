@@ -345,7 +345,7 @@
             },
             "gamepad_new": {
                 "use": true,
-                "tip": "打开保存的游戏_新",
+                "tip": "游戏管理",
                 "icon": "fa.gamepad"
             },
             "edit": {

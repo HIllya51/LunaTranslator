@@ -1530,7 +1530,7 @@ class dialog_savedgame_new(saveposwindow):
         )
         global _global_dialog_savedgame_new
         _global_dialog_savedgame_new = self
-        self.setWindowTitle(_TR("已保存游戏"))
+        self.setWindowTitle(_TR("游戏管理"))
         if globalconfig["showintab_sub"]:
             showintab(int(self.winId()), True)
         formLayout = QVBoxLayout()
