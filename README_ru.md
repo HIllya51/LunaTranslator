@@ -120,7 +120,4 @@
 
 ## Support author
  
-If you feel that the software is helpful to you, you are welcome to scan WeChat code to sponsor. Thank you ~
-
-
-<img src='.\\LunaTranslator\\files\\zan.jpg' style="height: 400px !important;">
+If you feel that the software is helpful to you, welcome to become my [sponsor](https://patreon.com/HIllya51). Thank you ~ 
