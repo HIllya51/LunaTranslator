@@ -154,7 +154,7 @@ class Settin(closeashidewindow):
             self,
             triggered=lambda: gobject.baseobject.settin_ui.showsignal.emit(),
         )
-        quitAction = QAction(_TR("&退出"), self, triggered=self.close)
+        quitAction = QAction(_TR("&退出"), self, triggered=gobject.baseobject.translation_ui.close)
         self.trayMenu = QMenu(self)
         self.trayMenu.addAction(showAction)
         self.trayMenu.addAction(settingAction)
