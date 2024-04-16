@@ -599,7 +599,7 @@ class hookselect(closeashidewindow):
                         "embedablehook"
                     ]:
                         hc, ad, c1, c2 = _
-                        if (hc, ad, c1, c2) == (hc, tp.addr, tp.ctx, tp.ctx2):
+                        if (hc, 0, c1, c2) == (hc, 0, tp.ctx, tp.ctx2):
                             save.append(_)
                     for _ in save:
                         savehook_new_data[gobject.baseobject.textsource.pname][

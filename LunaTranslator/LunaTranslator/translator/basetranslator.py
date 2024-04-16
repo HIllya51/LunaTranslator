@@ -268,6 +268,38 @@ class basetrans(commonbase):
             return False
         return globalconfig["fanyi"][self.typename]["manual"]
 
+    def _iterget(self, __callback, rid, __res):
+        succ = True
+        for i, _res in enumerate(__res):
+            if i == 0:
+                __callback("", 3)
+            if self.requestid != rid:
+                succ = False
+                break
+            __callback(_res, 1)
+        if succ:
+            __callback("", 2)
+
+    def __callback(self, collectiterres, callback, embedcallback, _, is_iter_res):
+        if self.needzhconv:
+            _ = zhconv.convert(_, "zh-tw")
+        if _ == "\0":  # 清除前面的输出
+            collectiterres.clear()
+            pass
+        else:
+            collectiterres.append(_)
+        callback("".join(collectiterres), embedcallback, is_iter_res)
+
+    def reinitandtrans(self, contentraw, contentsolved, is_auto_run):
+        if self.needreinit or self.initok == False:
+            self.needreinit = False
+            self.renewsesion()
+            try:
+                self._private_init()
+            except Exception as e:
+                raise Exception("inittranslator failed : " + str(stringfyerror(e)))
+        return self.maybecachetranslate(contentraw, contentsolved, is_auto_run)
+
     def _fythread(self):
         self.needreinit = False
         while self.using:
@@ -289,48 +321,23 @@ class basetrans(commonbase):
                 )
                 if checktutukufunction():
 
-                    def reinitandtrans():
-                        if self.needreinit or self.initok == False:
-                            self.needreinit = False
-                            self.renewsesion()
-                            try:
-                                self._private_init()
-                            except Exception as e:
-                                raise Exception(
-                                    "inittranslator failed : " + str(stringfyerror(e))
-                                )
-                        return self.maybecachetranslate(
-                            contentraw, contentsolved, is_auto_run
-                        )
-
                     res = timeoutfunction(
-                        reinitandtrans, checktutukufunction=checktutukufunction
+                        functools.partial(
+                            self.reinitandtrans, contentraw, contentsolved, is_auto_run
+                        ),
+                        checktutukufunction=checktutukufunction,
                     )
                     collectiterres = []
 
-                    def __callback(_, is_iter_res):
-                        if self.needzhconv:
-                            _ = zhconv.convert(_, "zh-tw")
-                        if _ == "\0":  # 清除前面的输出
-                            collectiterres.clear()
-                            pass
-                        else:
-                            collectiterres.append(_)
-                        callback("".join(collectiterres), embedcallback, is_iter_res)
-
+                    __callback = functools.partial(
+                        self.__callback, collectiterres, callback, embedcallback
+                    )
                     if isinstance(res, types.GeneratorType):
 
-                        def _iterget(rid, __res):
-                            for i, _res in enumerate(__res):
-                                if i == 0:
-                                    __callback("", 3)
-                                if self.requestid != rid:
-                                    break
-                                __callback(_res, 1)
-                            __callback("", 2)
-
                         timeoutfunction(
-                            functools.partial(_iterget, self.requestid, res),
+                            functools.partial(
+                                self._iterget, __callback, self.requestid, res
+                            ),
                             checktutukufunction=checktutukufunction,
                         )
 
