@@ -14,8 +14,8 @@ from PyQt5.QtWidgets import (
 )
 from PyQt5.QtGui import QResizeEvent
 from PyQt5.QtWidgets import QTabWidget
-import qtawesome, darkdetect, gobject
-import functools, threading, windows, os, winsharedutils
+import qtawesome, gobject
+import functools, threading, windows, winsharedutils
 from traceback import print_exc
 from winsharedutils import isDark
 from myutils.config import globalconfig, _TR
