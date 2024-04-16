@@ -1,6 +1,7 @@
 ﻿#include <Windows.h>
 #include <stdint.h>
 #include <dwmapi.h>
+#include <string>
 #include "define.h"
 // https://github.com/Blinue/Xaml-Islands-Cpp/blob/main/src/XamlIslandsCpp/XamlWindow.h
 
@@ -169,5 +170,23 @@ bool _SetTheme(
     DWM_SYSTEMBACKDROP_TYPE value = BACKDROP_MAP[(int)backdrop];
     DwmSetWindowAttribute(_hWnd, DWMWA_SYSTEMBACKDROP_TYPE, &value, sizeof(value));
 
+    return false;
+}
+
+DECLARE bool isDark()
+{
+    HKEY hKey;
+    const char *subKey = "Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize";
+    if (RegOpenKeyExA(HKEY_CURRENT_USER, subKey, 0, KEY_READ, &hKey) == ERROR_SUCCESS)
+    {
+        DWORD value;
+        DWORD dataSize = sizeof(DWORD);
+        if (RegQueryValueExA(hKey, "AppsUseLightTheme", 0, NULL, (LPBYTE)&value, &dataSize) == ERROR_SUCCESS)
+        {
+            RegCloseKey(hKey);
+            return 1 - value;
+        }
+        RegCloseKey(hKey);
+    }
     return false;
 }

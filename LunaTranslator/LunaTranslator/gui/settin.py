@@ -17,6 +17,7 @@ from PyQt5.QtWidgets import QTabWidget
 import qtawesome, darkdetect, gobject
 import functools, threading, windows, os, winsharedutils
 from traceback import print_exc
+from winsharedutils import isDark
 from myutils.config import globalconfig, _TR
 from myutils.utils import wavmp3player
 from myutils.config import static_data
@@ -253,9 +254,7 @@ class Settin(closeashidewindow):
         elif dl == 1:
             dark = True
         elif dl == 2:
-            dark = darkdetect.isDark()
-            if dark is None:
-                dark = False
+            dark = isDark()
         darklight = ["light", "dark"][dark]
 
         class WindowEventFilter(QObject):

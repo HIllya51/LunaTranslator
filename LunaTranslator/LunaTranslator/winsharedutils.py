@@ -344,3 +344,6 @@ getpidhwndfirst.restype = HWND
 Is64bit = utilsdll.Is64bit
 Is64bit.argtypes = (DWORD,)
 Is64bit.restype = c_bool
+
+isDark = utilsdll.isDark
+isDark.restype = c_bool
