@@ -154,7 +154,9 @@ class Settin(closeashidewindow):
             self,
             triggered=lambda: gobject.baseobject.settin_ui.showsignal.emit(),
         )
-        quitAction = QAction(_TR("&退出"), self, triggered=gobject.baseobject.translation_ui.close)
+        quitAction = QAction(
+            _TR("&退出"), self, triggered=gobject.baseobject.translation_ui.close
+        )
         self.trayMenu = QMenu(self)
         self.trayMenu.addAction(showAction)
         self.trayMenu.addAction(settingAction)
@@ -260,7 +262,7 @@ class Settin(closeashidewindow):
         class WindowEventFilter(QObject):
             def eventFilter(_, obj, event):
                 if event.type() == QEvent.Type.WinIdChange:
-                    if obj == self.parent():
+                    if obj.testAttribute(Qt.WA_TranslucentBackground):
                         return False
                     hwnd = obj.winId()
                     if hwnd:  # window create/destroy,when destroy winId is None
@@ -272,7 +274,7 @@ class Settin(closeashidewindow):
         self.__filter = WindowEventFilter()  # keep ref
         QApplication.instance().installEventFilter(self.__filter)
         for widget in QApplication.topLevelWidgets():
-            if widget == self.parent():
+            if widget.testAttribute(Qt.WA_TranslucentBackground):
                 continue
             winsharedutils.SetTheme(
                 int(widget.winId()), dark, globalconfig["WindowBackdrop"]
