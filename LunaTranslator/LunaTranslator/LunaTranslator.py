@@ -126,6 +126,7 @@ class MAINUI:
 
     def solvebeforetrans(self, content):
         contexts = []
+        self.zhanweifu = 0
         for i in range(len(self.processmethods)):
             try:
                 if self.processmethods[i].using:

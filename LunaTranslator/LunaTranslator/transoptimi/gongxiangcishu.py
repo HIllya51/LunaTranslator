@@ -2,6 +2,8 @@ from myutils.config import globalconfig
 import xml.etree.ElementTree as ET
 import os, gobject, re
 
+___idx = 1
+
 
 def vnrshareddict(self):
 
@@ -102,6 +104,7 @@ class Process:
         vnrshareddict(self)
 
     def process_before(self, content):
+        ___idx = 1
         self.checkchange()
         context = {}
 
@@ -116,7 +119,12 @@ class Process:
                 # if self.vnrshareddict[key]['src']==self.vnrshareddict[key]['tgt']:
                 #     content=content.replace(key,self.vnrshareddict[key]['text'])
                 # else:
-                xx = "{{{}}}".format(gobject.baseobject.zhanweifu)
+                if ___idx == 1:
+                    xx = "ZX{}Z".format(chr(ord("B") + gobject.baseobject.zhanweifu))
+                elif ___idx == 2:
+                    xx = "{{{}}}".format(gobject.baseobject.zhanweifu)
+                elif ___idx == 3:
+                    xx = key
                 content = content.replace(key, xx)
                 context[xx] = key
                 gobject.baseobject.zhanweifu += 1

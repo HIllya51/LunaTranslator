@@ -2,44 +2,40 @@ from myutils.config import noundictconfig
 import gobject, re
 
 
+
+
 class Process:
 
     def process_before(self, content):
-
+        ___idx = 1
         mp1 = {}
         for key in noundictconfig["dict"]:
-            usedict = False
+            v = None
             if type(noundictconfig["dict"][key]) == str:
-                usedict = True
+                v = noundictconfig["dict"][mp1[key]]
             else:
                 for i in range(len(noundictconfig["dict"][key]) // 2):
                     if noundictconfig["dict"][key][i * 2] in [
                         "0",
                         gobject.baseobject.currentmd5,
                     ]:
-                        usedict = True
+                        v = noundictconfig["dict"][key][i * 2 + 1]
                         break
 
-            if usedict and key in content:
-                xx = "{{{}}}".format(gobject.baseobject.zhanweifu)
+            if v is not None and key in content:
+                if ___idx == 1:
+                    xx = "ZX{}Z".format(chr(ord("B") + gobject.baseobject.zhanweifu))
+                elif ___idx == 2:
+                    xx = "{{{}}}".format(gobject.baseobject.zhanweifu)
+                elif ___idx == 3:
+                    xx = v
                 content = content.replace(key, xx)
-                mp1[xx] = key
+                mp1[xx] = v
                 gobject.baseobject.zhanweifu += 1
         return content, mp1
 
     def process_after(self, res, mp1):
         for key in mp1:
             reg = re.compile(re.escape(key), re.IGNORECASE)
-            if type(noundictconfig["dict"][mp1[key]]) == str:
-                v = noundictconfig["dict"][mp1[key]]
-            elif type(noundictconfig["dict"][mp1[key]]) == list:
-                v = ""
-                for i in range(len(noundictconfig["dict"][mp1[key]]) // 2):
-                    if noundictconfig["dict"][mp1[key]][i * 2] in [
-                        "0",
-                        gobject.baseobject.currentmd5,
-                    ]:
-                        v = noundictconfig["dict"][mp1[key]][i * 2 + 1]
-                        break
-            res = reg.sub(v, res)
+            res = reg.sub(mp1[key], res)
         return res
