@@ -54,31 +54,10 @@ class TS(basetransdev):
             r"""document.querySelector("#__next > div.relative.z-0.flex.h-full.w-full.overflow-hidden > div.relative.flex.h-full.max-w-full.flex-1.flex-col.overflow-hidden > main > div.flex.h-full.flex-col > div.w-full.pt-2.md\\:pt-0.dark\\:border-white\\/20.md\\:border-transparent.md\\:dark\\:border-transparent.md\\:w-\\[calc\\(100\\%-\\.5rem\\)\\] > form > div > div.flex.w-full.items-center > div > button").click()"""
         )
 
-        if self.config["流式输出"] == False:
+        currtext = ""
+        while True:
+            time.sleep(0.01)  # get text before violate usage policies.
 
-            self.wait_for_result(
-                r"""document.querySelector("#__next > div.relative.z-0.flex.h-full.w-full.overflow-hidden > div.relative.flex.h-full.max-w-full.flex-1.flex-col.overflow-hidden > main > div.flex.h-full.flex-col > div.flex-1.overflow-hidden > div > div > div > div > div:nth-child({}) > div > div > div.relative.flex.w-full.flex-col.agent-turn > div.flex-col.gap-1.md\\:gap-3 > div.mt-1.flex.justify-start.gap-3.empty\\:hidden > div > span > button").innerHTML""".format(
-                    idx + 2
-                ),
-                None,
-            )  # copy button
-
-            yield self.getcurr(idx)
-        else:
-            currtext = ""
-            tutuku = True
-            while tutuku:
-                time.sleep(0.01)  # get text before violate usage policies.
-
-                tutuku = (
-                    "value"
-                    in self.Runtime_evaluate(
-                        r"""document.querySelector("#__next > div.relative.z-0.flex.h-full.w-full.overflow-hidden > div.relative.flex.h-full.max-w-full.flex-1.flex-col.overflow-hidden > main > div.flex.h-full.flex-col > div.flex-1.overflow-hidden > div > div > div > div > div:nth-child({}) > div > div > div.relative.flex.w-full.flex-col.agent-turn > div.flex-col.gap-1.md\\:gap-3 > div.mt-1.flex.justify-start.gap-3.empty\\:hidden > div > span > button")""".format(
-                            idx + 2
-                        )
-                    )["result"]
-                )
-
-                newcurr = self.getcurr(idx)
-                yield newcurr[len(currtext) :]
-                currtext = newcurr
+            newcurr = self.getcurr(idx)
+            yield newcurr[len(currtext) :]
+            currtext = newcurr
