@@ -239,9 +239,6 @@ class texthook(basetext):
                     self.onprocconnect(pid)
                 elif _type == 1:
                     self.connectedpids.remove(pid)
-                    gobject.baseobject.hookselectdialog.sysmessagesignal.emit(
-                        "{} disconenct".format(pid)
-                    )
             elif _type in [2, 3]:
                 if _type == 2:
                     self.onnewhook(message.hc, message.hn, message.tp)
