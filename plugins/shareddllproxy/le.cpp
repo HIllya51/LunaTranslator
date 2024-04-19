@@ -34,8 +34,14 @@ int lewmain(int argc, wchar_t *argv[])
 			ULONG64 Unused = 0;
 		} LEB;
 		GetTimeZoneInformation(&LEB.Timezone);
-		((LONG(__stdcall *)(decltype(&LEB), LPCWSTR appName, LPWSTR commandLine, LPCWSTR currentDir, void *, void *, PROCESS_INFORMATION *, void *, void *, void *, void *))
-			 GetProcAddress(localeEmulator, "LeCreateProcess"))(&LEB, NULL, cmd_x, path.c_str(), NULL, NULL, &info, NULL, NULL, NULL, NULL);
+		auto ret = ((LONG(__stdcall *)(decltype(&LEB), LPCWSTR appName, LPWSTR commandLine, LPCWSTR currentDir, void *, void *, PROCESS_INFORMATION *, void *, void *, void *, void *))
+						GetProcAddress(localeEmulator, "LeCreateProcess"))(&LEB, NULL, cmd_x, path.c_str(), NULL, NULL, &info, NULL, NULL, NULL, NULL);
+		if (ret == 0)
+		{
+			WaitForSingleObject(info.hProcess, INFINITE);
+			CloseHandle(info.hProcess);
+			CloseHandle(info.hThread);
+		}
 	}
 	return 1;
 }
