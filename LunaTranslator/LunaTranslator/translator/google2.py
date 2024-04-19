@@ -49,4 +49,4 @@ class TS(basetrans):
         res = re.search(
             '<div class="result-container">([\\s\\S]*?)</div>', response.text
         ).groups()
-        return res[0]
+        return res[0].replace("&quot;", '"')
