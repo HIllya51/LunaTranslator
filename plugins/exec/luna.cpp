@@ -12,7 +12,7 @@ int main()
 	auto exe = currpath + L".\\LunaTranslator\\LunaTranslator_main.exe";
 	if (!std::filesystem::exists(exe))
 	{
-		MessageBoxW(0, exe.c_str(), L"Error", 0);
+		MessageBoxW(0, (L"Can't find LunaTranslator\\LunaTranslator_main.exe, please download again."), L"Error", 0);
 		return 0;
 	}
 	STARTUPINFO _1 = {};
