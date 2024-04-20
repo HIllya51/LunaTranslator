@@ -11,8 +11,8 @@
 
 > **一款galgame翻译器**
 
-## <a href="https://hillya51.github.io/LunaTranslator_tutorial/#/zh/" target="_blank">使用说明</a> 
- 
+## <a href="https://hillya51.github.io/LunaTranslator_tutorial/#/zh/" target="_blank">使用说明</a> <a href="https://www.bilibili.com/video/BV1Tj421X7u7/?spm_id_from=333.999.0.0" target="_blank">视频简介</a> <a href="https://tieba.baidu.com/p/8982568991?see_lz=1" target="_blank">图文简介</a>  
+
 
 ## 功能支持
 
