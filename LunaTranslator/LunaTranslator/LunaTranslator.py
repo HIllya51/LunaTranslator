@@ -346,7 +346,8 @@ class MAINUI:
                         False,
                     )
                 if len(self.usefultranslators) == 0:
-                    return returnandembedcallback("")
+                    returnandembedcallback("")
+                return
 
         res = self.solveaftertrans(res, optimization_params)
 
