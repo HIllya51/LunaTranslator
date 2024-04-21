@@ -1,4 +1,4 @@
-import re
+import re, html
 from translator.basetranslator import basetrans
 
 
@@ -49,4 +49,4 @@ class TS(basetrans):
         res = re.search(
             '<div class="result-container">([\\s\\S]*?)</div>', response.text
         ).groups()
-        return res[0].replace("&quot;", '"')
+        return html.unescape(res[0])
