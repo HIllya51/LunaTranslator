@@ -15,6 +15,7 @@ body:
     label: Reproduction steps 复现步骤
     description: >
       Describe the reproduction steps precisely if possible. 
+      
       尽可能详细描述错误产生的细节。
   validations:
     required: true

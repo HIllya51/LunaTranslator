@@ -6,6 +6,7 @@ body:
   attributes:
     value: >
       Make sure it hasn't been mentioned before and not implemented in latest version.
+      
       确保此类请求之前尚未被其他人提出过且并未在最新版本中实现。
 - type: textarea
   attributes:
