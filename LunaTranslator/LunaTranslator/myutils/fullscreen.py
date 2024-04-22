@@ -16,6 +16,7 @@ class fullscreen:
         self._externalfsend = _externalfsend
         self.status = False
         self.lasthwnd = None
+        self.injectedpids = set()
 
     def end(self):
         if self.status and self.lasthwnd:
@@ -48,11 +49,14 @@ class fullscreen:
         if globalconfig["hooklossless"]:
             for pid, exe in ListProcess():
                 if exe == pexe.replace("/", "\\"):
+                    if pid in self.injectedpids:
+                        continue
                     dll = os.path.abspath("./files/plugins/hookmagpie.dll")
                     injecter = os.path.abspath(
                         "./files/plugins/shareddllproxy{}.exe".format("64")
                     )
                     injectdll(pid, injecter, dll)
+                    self.injectedpids.add(pid)
                     break
 
     def _external_lossless(self, hwnd, full):
@@ -100,11 +104,14 @@ class fullscreen:
             pid = windows.GetWindowThreadProcessId(
                 windows.FindWindow("Magpie_Hotkey", None)
             )
+            if pid in self.injectedpids:
+                return
             dll = os.path.abspath("./files/plugins/hookmagpie.dll")
             injecter = os.path.abspath(
                 "./files/plugins/shareddllproxy{}.exe".format("64")
             )
             injectdll([pid], injecter, dll)
+            self.injectedpids.add(pid)
 
     @threader
     def _wait_magpie_stop_external(self):
