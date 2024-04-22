@@ -140,9 +140,17 @@ def setTab_aboutlazy(self):
         ]
     else:
         shuominggrid += [
+            [],
             [
                 (
-                    'If the software really helps you, welcome to become my <a href="https://patreon.com/HIllya51">sponsor</a>. Thank you ~ ',
+                    'If you feel that the software is helpful to you, ',
+                    4,
+                    "link",
+                )
+            ],
+            [
+                (
+                    'welcome to become my <a href="https://patreon.com/HIllya51">sponsor</a> or buy me a <a href="https://ko-fi.com/HIllya51">Coffee</a>. Thank you ~ ',
                     4,
                     "link",
                 )
