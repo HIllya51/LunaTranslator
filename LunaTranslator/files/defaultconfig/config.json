@@ -775,11 +775,6 @@
         }
     },
     "fanyi": {
-        "ali2": {
-            "use": false,
-            "name": "阿里_v2",
-            "color": "pink"
-        },
         "microsoft": {
             "use": false,
             "color": "gray",
