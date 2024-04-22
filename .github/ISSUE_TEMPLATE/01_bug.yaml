@@ -1,0 +1,18 @@
+name: Bug Report 错误报告
+description: Report bugs 报告错误
+labels: bug
+body:
+- type: input
+  attributes:
+    label: Version 程序版本
+  validations:
+    required: true
+- type: textarea
+  attributes:
+    label: Related screenshot (optional) 相关截图（可选）
+- type: textarea
+  attributes:
+    label: Reproduction steps 复现步骤
+    description: Describe the reproduction steps precisely if possible. 尽可能详细描述错误产生的细节。
+  validations:
+    required: true

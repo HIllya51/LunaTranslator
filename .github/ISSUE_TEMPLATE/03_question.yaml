@@ -1,0 +1,23 @@
+name: Q&A 问询
+description: Ask questions about Magpie 提出关于magpie的问题
+labels: question
+body:
+- type: markdown
+  attributes:
+    value: >
+      Before asking questions, make sure it hasn't been mentioned before.
+
+      提问之前应先检索以下列表检查是否已有相关的回答。
+
+      https://github.com/HIllya51/LunaTranslator/issues
+
+      https://github.com/HIllya51/LunaTranslator/discussions
+
+      Don't ask questions about bugs. To open the right template from the previous selection.
+
+      程序报错不要使用此模板，应该返回上级重新选择 `Bug Report 错误报告` 选项。
+- type: textarea
+  attributes:
+    label: Question 问题
+  validations:
+    required: true
