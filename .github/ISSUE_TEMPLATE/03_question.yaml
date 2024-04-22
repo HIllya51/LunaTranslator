@@ -1,5 +1,5 @@
 name: Q&A 问询
-description: Ask questions about Magpie 提出关于magpie的问题
+description: Ask questions about LunaTranslator 提出关于LunaTranslator的问题
 labels: question
 body:
 - type: markdown
