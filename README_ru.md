@@ -120,4 +120,4 @@
 
 ## Support author
  
-If you feel that the software is helpful to you, welcome to become my [sponsor](https://patreon.com/HIllya51). Thank you ~ 
+If you feel that the software is helpful to you, welcome to become my [sponsor](https://patreon.com/HIllya51) or buy me a [Coffee](https://ko-fi.com/HIllya51). Thank you ~ 
