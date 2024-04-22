@@ -136,6 +136,11 @@ def setTab_aboutlazy(self):
     ]
     if globalconfig["languageuse"] == 0:
         shuominggrid += [
+            [
+                "交流群",
+                (makehtml("https://qm.qq.com/q/qE32v9NYBO", show=912525396), 3, "link"),
+            ],
+            [],
             [("如果你感觉该软件对你有帮助，欢迎微信扫码赞助，谢谢~", 4)],
         ]
     else:
@@ -143,7 +148,7 @@ def setTab_aboutlazy(self):
             [],
             [
                 (
-                    'If you feel that the software is helpful to you, ',
+                    "If you feel that the software is helpful to you, ",
                     4,
                     "link",
                 )
