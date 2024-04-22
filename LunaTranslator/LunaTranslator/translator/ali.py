@@ -1,4 +1,4 @@
-import re
+import re, html
 from translator.basetranslator import basetrans
 
 
@@ -80,11 +80,4 @@ class TS(basetrans):
             trans = data["data"]["translateText"]
         except:
             raise Exception(r.text)
-        xx = re.findall("&#(.*?);", trans)
-        xx = set(xx)
-        for _x in xx:
-            try:
-                trans = trans.replace("&#{};".format(_x), chr(int(_x)))
-            except:
-                pass
-        return trans
+        return html.unescape(trans)
