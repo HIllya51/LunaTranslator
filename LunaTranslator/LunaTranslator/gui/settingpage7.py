@@ -27,7 +27,7 @@ from myutils.config import (
     _TRL,
 )
 import functools, gobject
-from gui.usefulwidget import getcolorbutton, getsimpleswitch
+from gui.usefulwidget import getcolorbutton, getsimpleswitch, getQMessageBox
 from gui.codeacceptdialog import codeacceptdialog
 from gui.inputdialog import (
     getsomepath1,
@@ -410,7 +410,16 @@ class noundictconfigdialog(QDialog):
             for row in range(rows):
                 model.item(row, 0).setText("0")
 
-        button5.clicked.connect(clicked5)
+        button5.clicked.connect(
+            lambda: getQMessageBox(
+                self,
+                "警告",
+                "!!!",
+                True,
+                True,
+                lambda: clicked5(),
+            )
+        )
 
         search = QHBoxLayout()
         searchcontent = QLineEdit()
