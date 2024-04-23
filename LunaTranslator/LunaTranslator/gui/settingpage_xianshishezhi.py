@@ -798,15 +798,7 @@ def setTabThree_lazy(self):
             ("缩放方式", 4),
             (
                 getsimplecombobox(
-                    _TRL(
-                        [
-                            "Magpie",
-                            "ALT+ENTER",
-                            "SW_SHOWMAXIMIZED",
-                            "LosslessScaling",
-                            "Magpie_External",
-                        ]
-                    ),
+                    static_data["scalemethods_vis"],
                     globalconfig,
                     "fullscreenmethod_3",
                 ),

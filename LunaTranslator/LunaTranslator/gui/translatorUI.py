@@ -3,7 +3,7 @@ import functools
 import threading
 import os, sys
 from PyQt5.QtCore import QT_VERSION_STR
-import windows
+import windows, importlib
 from traceback import print_exc
 from PyQt5.QtCore import Qt, pyqtSignal
 import qtawesome
@@ -20,7 +20,6 @@ from myutils.hwnd import mouseselectwindow, grabwindow, getExeIcon
 from gui.dialog_savedgame import dialog_savedgame_new
 from gui.dialog_memory import dialog_memory
 from gui.textbrowser import Textbrowser
-from myutils.fullscreen import fullscreen
 from gui.rangeselect import moveresizegame, rangeselct_function
 from gui.usefulwidget import resizableframeless, isinrect
 from gui.dialog_savedgame import browserdialog
@@ -659,7 +658,8 @@ class QUnFrameWindow(resizableframeless):
             static_data["allhira"], static_data["allkata"]
         )
         self.isletgamefullscreened = False
-        self.fullscreenmanager = fullscreen(self._externalfsend)
+        self.fullscreenmanager = None
+        self.fullscreenmethod = None
         self._isTracking = False
         self.isontop = True
         self._TitleLabel = QLabel(self)
@@ -721,21 +721,41 @@ class QUnFrameWindow(resizableframeless):
             for pid in gobject.baseobject.textsource.pids:
                 winsharedutils.SetProcessMute(pid, self.processismuteed)
 
-    def _externalfsend(self):
-        self.isletgamefullscreened = False
+    def _externalfsend(self, current):
+        self.isletgamefullscreened = current
         self.refreshtooliconsignal.emit()
 
     def _fullsgame(self):
-        if gobject.baseobject.textsource and gobject.baseobject.textsource.hwnd:
-            _hwnd = gobject.baseobject.textsource.hwnd
-        else:
-            _hwnd = windows.GetForegroundWindow()
-            _pid = windows.GetWindowThreadProcessId(_hwnd)
-            if _pid == os.getpid():
+        try:
+            if gobject.baseobject.textsource and gobject.baseobject.textsource.hwnd:
+                _hwnd = gobject.baseobject.textsource.hwnd
+            else:
+                _hwnd = windows.GetForegroundWindow()
+                _pid = windows.GetWindowThreadProcessId(_hwnd)
+                if _pid == os.getpid():
+                    return
+            # self.isletgamefullscreened = not self.isletgamefullscreened
+            # self.refreshtoolicon()
+            skip = False
+            if (self.fullscreenmanager is None) or (
+                self.fullscreenmethod != globalconfig["fullscreenmethod_3"]
+            ):
+
+                self.fullscreenmethod = globalconfig["fullscreenmethod_3"]
+
+                if self.fullscreenmanager:
+                    skip = self.fullscreenmanager.endX()
+                self.fullscreenmanager = importlib.import_module(
+                    "scalemethod."
+                    + static_data["scalemethods"][globalconfig["fullscreenmethod_3"]]
+                ).Method(self._externalfsend)
+            if skip:
                 return
-        self.isletgamefullscreened = not self.isletgamefullscreened
-        self.refreshtoolicon()
-        self.fullscreenmanager(_hwnd, self.isletgamefullscreened)
+            self.fullscreenmanager.callstatuschange(
+                _hwnd
+            )  # , self.isletgamefullscreened)
+        except:
+            print_exc()
 
     def changemousetransparentstate(self, idx):
         if idx == 0:
@@ -988,7 +1008,8 @@ class QUnFrameWindow(resizableframeless):
         self.buttons.append(button)
 
     def closeEvent(self, a0) -> None:
-        self.fullscreenmanager.end()
+        if self.fullscreenmanager:
+            self.fullscreenmanager.endX()
         gobject.baseobject.isrunning = False
         self.tray.hide()
         self.tray = None
