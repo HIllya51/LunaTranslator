@@ -3,7 +3,3 @@ contact_links:
   - name: Game Request 游戏支持请求
     url: https://github.com/HIllya51/LunaHook/issues/new?assignees=&labels=enhancement&projects=&template=01_game_request.yaml
     about: Create the request for an unsupported game 请求支持尚未支持的游戏
-
-  - name: Discussions 讨论
-    url: https://github.com/HIllya51/LunaTranslator/discussions
-    about: Feel free to talk about something here 自由交流论坛
