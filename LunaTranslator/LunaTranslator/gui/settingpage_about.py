@@ -155,7 +155,7 @@ def setTab_aboutlazy(self):
             ],
             [
                 (
-                    'welcome to become my <a href="https://patreon.com/HIllya51">sponsor</a> or buy me a <a href="https://ko-fi.com/HIllya51">Coffee</a>. Thank you ~ ',
+                    'welcome to become my <a href="https://patreon.com/HIllya51">sponsor. Thank you ~ ',
                     4,
                     "link",
                 )
