@@ -436,7 +436,8 @@ def minmaxmoveobservefunc(self):
                             gobject.baseobject.translation_ui.settop()
                         else:
                             gobject.baseobject.translation_ui.thistimenotsetop = True
-                            gobject.baseobject.translation_ui.canceltop()
+                            if gobject.baseobject.translation_ui.istopmost():
+                                gobject.baseobject.translation_ui.canceltop()
             if _focusp != windows.GetWindowThreadProcessId(
                 gobject.baseobject.textsource.hwnd
             ):
