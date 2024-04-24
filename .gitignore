@@ -24,6 +24,7 @@ build/
 
 plugins/builds
 plugins/build
+temp/
 
 
 LunaTranslator/files/plugins
