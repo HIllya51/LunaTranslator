@@ -393,7 +393,13 @@ class Textbrowser:
 
                 index = linei
                 _ = self.yinyinglabels[index]
-                _.move(tl1)
+                if self.align:#不然有时候有一个微小的错位
+                    fm = QFontMetricsF(self.textbrowser.currentCharFormat().font())
+                    w = fm.width(block.text()[s : s + l])
+                    WW = self.textbrowser.width()
+                    _.move(int(WW / 2 - w / 2), tl1.y())
+                else:
+                    _.move(tl1)
                 _.setText(block.text()[s : s + l])
                 _.setFont(self.textbrowser.currentCharFormat().font())
 
