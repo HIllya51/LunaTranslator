@@ -393,19 +393,19 @@ def setTabOne_direct(self):
     self.tab1grids = [
         [("选择文本输入源", 8)],
         [
-            ("剪贴板", 3),
+            ("HOOK", 3),
             (
                 getsimpleswitch(
-                    globalconfig["sourcestatus2"]["copy"],
+                    globalconfig["sourcestatus2"]["texthook"],
                     "use",
-                    name="copy",
+                    name="texthook",
                     parent=self,
                     callback=functools.partial(
                         yuitsu_switch,
                         self,
                         globalconfig["sourcestatus2"],
                         "sourceswitchs",
-                        "copy",
+                        "texthook",
                         gobject.baseobject.starttextsource,
                     ),
                     pair="sourceswitchs",
@@ -433,21 +433,19 @@ def setTabOne_direct(self):
                 1,
             ),
             "",
-        ],
-        [
-            ("HOOK", 3),
+            ("剪贴板", 3),
             (
                 getsimpleswitch(
-                    globalconfig["sourcestatus2"]["texthook"],
+                    globalconfig["sourcestatus2"]["copy"],
                     "use",
-                    name="texthook",
+                    name="copy",
                     parent=self,
                     callback=functools.partial(
                         yuitsu_switch,
                         self,
                         globalconfig["sourcestatus2"],
                         "sourceswitchs",
-                        "texthook",
+                        "copy",
                         gobject.baseobject.starttextsource,
                     ),
                     pair="sourceswitchs",
