@@ -106,7 +106,7 @@ def downloadBrotli():
 def downloadcommon():
     os.chdir(rootDir + "\\temp")
     subprocess.run(f"curl -LO {prebuiltcommon}")
-    subprocess.run(f"7z x {brotliFileName32} -oALL")
+    subprocess.run(f"7z x ALL.zip -oALL")
         
     def move_directory_contents(source_dir, destination_dir):
         contents = os.listdir(source_dir)
