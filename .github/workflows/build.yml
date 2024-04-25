@@ -1,15 +1,14 @@
 name: Build and Upload Artifacts
 
-on:
-  push:
-    branches: [main]
-  pull_request:
-    branches: [main]
+# on:
+#   push:
+#     branches: [main]
+#   pull_request:
+#     branches: [main]
 
 jobs:
   build:
     runs-on: windows-latest
-    if: false
     if: startsWith(github.ref, 'refs/tags/v') != true
     steps:
       - name: Checkout code
