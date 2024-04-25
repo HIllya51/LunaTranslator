@@ -183,8 +183,7 @@ def buildLunaHook():
     os.chdir(rootDir + "\\temp")
     subprocess.run(f"git clone {lunaHookUrl}")
     os.chdir("LunaHook\\scripts")
-    subprocess.run("cmd /c build32.bat")
-    subprocess.run("cmd /c build64.bat")
+    subprocess.run("cmd /c build3264en.bat")
     shutil.move(
         "../builds/Release_English/LunaHook32.dll",
         f"{rootDir}/LunaTranslator/files/plugins/LunaHook",
