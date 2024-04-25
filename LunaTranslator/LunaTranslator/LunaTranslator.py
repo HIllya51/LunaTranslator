@@ -39,6 +39,7 @@ from gui.settin import Settin
 from gui.showocrimage import showocrimage
 from gui.attachprocessdialog import AttachProcessDialog
 import hmac, pytz, uuid
+import xml.etree.ElementTree as ET
 import windows
 import re, gobject
 import winsharedutils
