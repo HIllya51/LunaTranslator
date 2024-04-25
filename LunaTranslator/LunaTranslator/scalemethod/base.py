@@ -1,3 +1,6 @@
+from myutils.wrapper import threader
+
+
 class scalebase:
     def __init__(self, setuistatus) -> None:
         self._setuistatus = setuistatus
@@ -12,18 +15,25 @@ class scalebase:
         self._setuistatus(current)
         self.full = not current
 
+    @threader
     def callstatuschange(self, hwnd):
-        self.hwnd = hwnd
-        self.changestatus(hwnd, self.full)
-        self.setuistatus(self.full)
+        self.callstatuschange_(hwnd)
 
+    def callstatuschange_(self, hwnd):
+        self.hwnd = hwnd
+        if self.changestatus(hwnd, self.full):
+            self.setuistatus(self.full)
+
+    @threader
     def endX(self):
-        if not self.full and self.hwnd:
-            self.callstatuschange(self.hwnd)
-            self.end()
-            return True
         self.hasend = True
-        return False
+        ret = False
+        if not self.full and self.hwnd:
+            self.callstatuschange_(self.hwnd)
+            ret = True
+        self.end()
+
+        return ret
 
     def changestatus(self, hwnd, full):
         raise Exception

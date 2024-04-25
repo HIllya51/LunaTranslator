@@ -69,7 +69,7 @@ class TS(basetrans):
                 continue
             windows.WriteFile(self.hPipe, line.encode(codes[self.srclang]))
             ress.append(
-                windows.ReadFile(self.hPipe, 4096, None).decode(codes[self.tgtlang])
+                windows.ReadFile(self.hPipe, 4096).decode(codes[self.tgtlang])
             )
         return "\n".join(ress)
 

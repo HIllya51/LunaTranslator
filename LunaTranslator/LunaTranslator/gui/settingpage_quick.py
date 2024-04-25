@@ -41,10 +41,11 @@ def setTab_quick_direct(self):
         "_21": lambda: grabwindow(),
         "_22": gobject.baseobject.translation_ui.muteprocessignal.emit,
         "_23": lambda: gobject.baseobject.translation_ui.clickRange_signal.emit(True),
-        "_25": lambda: windows.SendMessage(
-            windows.FindWindow("Magpie_Core_CLI_Message", None),
-            windows.RegisterWindowMessage("Magpie_Core_CLI_Message_ToggleOverlay"),
-        ),
+        # 暂时有问题
+        # "_25": lambda: windows.SendMessage(
+        #     windows.FindWindow("WNDCLS_Magpie_Core_CLI_Message", None),
+        #     windows.RegisterWindowMessage("Magpie_Core_CLI_Message_ToggleOverlay"),
+        # ),
         "_26": gobject.baseobject.translation_ui.ocr_once_signal.emit,
         "_27": gobject.baseobject.translation_ui.simulate_key_enter,
     }

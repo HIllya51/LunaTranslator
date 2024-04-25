@@ -259,20 +259,8 @@ class Settin(closeashidewindow):
             dark = isDark()
         darklight = ["light", "dark"][dark]
 
-        class WindowEventFilter(QObject):
-            def eventFilter(_, obj, event):
-                if event.type() == QEvent.Type.WinIdChange:
-                    if obj.testAttribute(Qt.WA_TranslucentBackground):
-                        return False
-                    hwnd = obj.winId()
-                    if hwnd:  # window create/destroy,when destroy winId is None
-                        winsharedutils.SetTheme(
-                            int(obj.winId()), dark, globalconfig["WindowBackdrop"]
-                        )
-                return False
+        gobject.baseobject.currentisdark = dark
 
-        self.__filter = WindowEventFilter()  # keep ref
-        QApplication.instance().installEventFilter(self.__filter)
         for widget in QApplication.topLevelWidgets():
             if widget.testAttribute(Qt.WA_TranslucentBackground):
                 continue

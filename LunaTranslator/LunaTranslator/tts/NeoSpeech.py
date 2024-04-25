@@ -85,6 +85,6 @@ class TTS(TTSbase):
         windows.WriteFile(self.hPipe, bytes(ctypes.c_uint(rate)))
         buf = ctypes.create_unicode_buffer(content, 10000)
         windows.WriteFile(self.hPipe, bytes(buf))
-        fname = windows.ReadFile(self.hPipe, 1024, None).decode("utf-16-le")
+        fname = windows.ReadFile(self.hPipe, 1024).decode("utf-16-le")
         if os.path.exists(fname):
             return fname

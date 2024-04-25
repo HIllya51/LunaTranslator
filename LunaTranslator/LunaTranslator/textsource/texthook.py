@@ -228,7 +228,7 @@ class texthook(basetext):
     @threader
     def solveeventthread(self):
         while self.ending == False:
-            message = windows.ReadFile(self.hRead, sizeof(Message), None)
+            message = windows.ReadFile(self.hRead, sizeof(Message))
             if len(message) != sizeof(Message):
                 break
             message = Message.from_buffer_copy(message)
@@ -426,7 +426,7 @@ class texthook(basetext):
 
             def ReadThread(hread):
                 while True:
-                    message = windows.ReadFile(hread, sizeof(simplehooks), None)
+                    message = windows.ReadFile(hread, sizeof(simplehooks))
                     if len(message) != sizeof(simplehooks):
                         break
                     message = simplehooks.from_buffer_copy(message)

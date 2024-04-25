@@ -347,3 +347,8 @@ Is64bit.restype = c_bool
 
 isDark = utilsdll.isDark
 isDark.restype = c_bool
+
+startmaglistener = utilsdll.startmaglistener
+startmaglistener.restype = HANDLE
+endmaglistener = utilsdll.endmaglistener
+endmaglistener.argtypes = (HANDLE,)

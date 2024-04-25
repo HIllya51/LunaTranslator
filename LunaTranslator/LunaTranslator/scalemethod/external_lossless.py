@@ -55,7 +55,7 @@ class Method(scalebase):
             os.environ["LOCALAPPDATA"], "Lossless Scaling/Settings.xml"
         )
         if os.path.exists(configpath) == False:
-            return
+            return False
         with open(configpath, "r", encoding="utf8") as ff:
             config = ff.read()
 
@@ -74,3 +74,4 @@ class Method(scalebase):
         windows.keybd_event(vkcode, 0, windows.KEYEVENTF_KEYUP, 0)
         for k in mods:
             windows.keybd_event(mp1[k], 0, windows.KEYEVENTF_KEYUP, 0)
+        return True

@@ -71,7 +71,7 @@ class TS(basetrans):
             if len(line) == 0:
                 continue
             windows.WriteFile(self.hPipe, line.encode("utf-16-le"))
-            x = windows.ReadFile(self.hPipe, 4096, None)
+            x = windows.ReadFile(self.hPipe, 4096)
             ress.append(x.decode("utf-16-le"))
 
         return "\n".join(ress)

@@ -533,8 +533,8 @@ def CloseHandle(handle):
     return _CloseHandle(handle)
 
 
-def SendMessage(hwnd, message):
-    return _SendMessage(hwnd, message, 0, 0)
+def SendMessage(hwnd, message, wp=None, lp=None):
+    return _SendMessage(hwnd, message, wp, lp)
 
 
 def keybd_event(bVk, bScan, dwFlags, _):
@@ -671,7 +671,7 @@ _ReadFile = _kernel32.ReadFile
 _ReadFile.argtypes = HANDLE, c_char_p, c_uint, c_void_p, c_void_p
 
 
-def ReadFile(handle, nNumberOfBytesToRead, lpOverlapped):
+def ReadFile(handle, nNumberOfBytesToRead, lpOverlapped=None):
     buf = create_string_buffer(nNumberOfBytesToRead)
     dwread = c_int()
     _ReadFile(handle, buf, nNumberOfBytesToRead, pointer(dwread), lpOverlapped)
@@ -940,3 +940,12 @@ _CopyFile.restype = BOOL
 
 def CopyFile(src, dst, bFailIfExists):
     return _CopyFile(src, dst, bFailIfExists)
+
+
+_SetPropW = _user32.SetPropW
+_SetPropW.argtypes = HWND, LPCWSTR, HANDLE
+_SetPropW.restype = BOOL
+
+
+def SetProp(hwnd, string, hdata):
+    return _SetPropW(hwnd, string, hdata)

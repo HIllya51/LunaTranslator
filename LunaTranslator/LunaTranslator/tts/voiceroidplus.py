@@ -129,6 +129,6 @@ class TTS(TTSbase):
             # print(code1)
             windows.WriteFile(self.hPipe, code1)
 
-            fname = windows.ReadFile(self.hPipe, 1024, None).decode("utf8")
+            fname = windows.ReadFile(self.hPipe, 1024).decode("utf8")
             if os.path.exists(fname):
                 return fname

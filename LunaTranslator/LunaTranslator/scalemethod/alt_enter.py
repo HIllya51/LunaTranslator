@@ -10,3 +10,4 @@ class Method(scalebase):
 
         windows.keybd_event(13, 0, windows.KEYEVENTF_KEYUP, 0)
         windows.keybd_event(18, 0, windows.KEYEVENTF_KEYUP, 0)
+        return True

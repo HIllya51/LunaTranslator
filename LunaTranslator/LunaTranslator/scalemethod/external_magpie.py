@@ -48,7 +48,7 @@ class Method(scalebase):
         ):
             time.sleep(0.5)
         self.setuistatus(False)
-
+    
     def changestatus(self, hwnd, full):
 
         configpath = os.path.join(globalconfig["magpiepath"], "config/config.json")
@@ -74,7 +74,7 @@ class Method(scalebase):
                     break
 
         if os.path.exists(configpath) == False:
-            return
+            return False
 
         with open(configpath, "r", encoding="utf8") as ff:
             config = json.load(ff)
@@ -101,3 +101,4 @@ class Method(scalebase):
         for k in mp:
             if shortcuts & k != 0:
                 windows.keybd_event(mp1[mp[k]], 0, windows.KEYEVENTF_KEYUP, 0)
+        return True

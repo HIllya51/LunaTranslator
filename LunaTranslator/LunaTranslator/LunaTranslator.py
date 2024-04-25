@@ -21,6 +21,9 @@ from myutils.utils import (
     getfilemd5,
     stringfyerror,
 )
+import os, hashlib
+from PyQt5.QtWidgets import QApplication
+from PyQt5.QtCore import Qt, QSize, QObject, QEvent
 from myutils.wrapper import threader
 from gui.showword import searchwordW
 from myutils.hwnd import getpidexe, testprivilege, ListProcess
@@ -754,6 +757,30 @@ class MAINUI:
             time.sleep(0.5)
 
     def aa(self):
+        class WindowEventFilter(QObject):
+            def eventFilter(_, obj, event):
+                if event.type() == QEvent.Type.WinIdChange:
+
+                    hwnd = obj.winId()
+                    if hwnd:  # window create/destroy,when destroy winId is None
+                        if (
+                            self.currentisdark is not None
+                            and obj.testAttribute(Qt.WA_TranslucentBackground) == False
+                        ):
+                            winsharedutils.SetTheme(
+                                int(obj.winId()),
+                                self.currentisdark,
+                                globalconfig["WindowBackdrop"],
+                            )
+                        windows.SetProp(
+                            int(obj.winId()), "Magpie.ToolWindow", windows.HANDLE(1)
+                        )
+                return False
+
+        self.currentisdark = None
+        self.__filter = WindowEventFilter()  # keep ref
+        QApplication.instance().installEventFilter(self.__filter)
+
         self.translation_ui = gui.translatorUI.QUnFrameWindow()
 
         self.translation_ui.show()

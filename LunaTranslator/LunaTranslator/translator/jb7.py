@@ -96,7 +96,7 @@ class TS(basetrans):
                 continue
             code1 = line.encode("utf-16-le")
             windows.WriteFile(self.hPipe, self.packuint32(int(self.tgtlang)) + code1)
-            xx = windows.ReadFile(self.hPipe, 65535, None)
+            xx = windows.ReadFile(self.hPipe, 65535)
             xx = xx.decode("utf-16-le", errors="ignore")
             ress.append(xx)
         return "\n".join(ress)

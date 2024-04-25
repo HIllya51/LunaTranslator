@@ -657,6 +657,7 @@ class QUnFrameWindow(resizableframeless):
         self.casthira2kata = str.maketrans(
             static_data["allhira"], static_data["allkata"]
         )
+        self.fullscreenmanager_busy = False
         self.isletgamefullscreened = False
         self.fullscreenmanager = None
         self.fullscreenmethod = None
@@ -725,7 +726,11 @@ class QUnFrameWindow(resizableframeless):
         self.isletgamefullscreened = current
         self.refreshtooliconsignal.emit()
 
+    @threader
     def _fullsgame(self):
+        if self.fullscreenmanager_busy:
+            return
+        self.fullscreenmanager_busy = True
         try:
             if gobject.baseobject.textsource and gobject.baseobject.textsource.hwnd:
                 _hwnd = gobject.baseobject.textsource.hwnd
@@ -756,6 +761,7 @@ class QUnFrameWindow(resizableframeless):
             )  # , self.isletgamefullscreened)
         except:
             print_exc()
+        self.fullscreenmanager_busy = False
 
     def changemousetransparentstate(self, idx):
         if idx == 0:

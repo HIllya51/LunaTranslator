@@ -8,3 +8,4 @@ class Method(scalebase):
             self.savewindowstatus = letfullscreen(hwnd)
         else:
             recoverwindow(hwnd, self.savewindowstatus)
+        return True
