@@ -33,7 +33,7 @@ jobs:
           python-version: '3.11.7'
       - name: Run build script
         run: |
-          python ci/build.py --github-actions
+          python build.py --github-actions
       - name: Upload LunaTranslator artifact x86
         uses: actions/upload-artifact@v4
         with:

@@ -35,7 +35,7 @@ jobs:
           architecture: x64
       - name: Run build script
         run: |
-          python ci/build.py --github-actions
+          python build.py --github-actions
       - name: Release LunaTranslator
         uses: softprops/action-gh-release@v2
         with:
