@@ -101,7 +101,7 @@ class Process:
         )
         if self.status != s:
             self.status = s
-        vnrshareddict(self)
+            vnrshareddict(self)
 
     def process_before(self, content):
         ___idx = 1
