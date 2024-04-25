@@ -1,14 +1,16 @@
 name: Release
 
 on:
-  push:
-    tags:
-      - 'v*'
-
+  workflow_dispatch: # allows manual triggering
+    inputs:
+      create_release:
+        description: 'Create new release'
+        required: true
+        type: string
+  
 jobs:
   build:
     runs-on: windows-latest
-    if: startsWith(github.ref, 'refs/tags/v')
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -30,14 +32,17 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.11.7'
+          architecture: x64
       - name: Run build script
         run: |
-          python build.py --github-actions
+          python ci/build.py --github-actions
       - name: Release LunaTranslator
         uses: softprops/action-gh-release@v2
         with:
+          tag_name: ${{ github.event.inputs.create_release }}
           files: |
             build/LunaTranslator_x86.zip
             build/LunaTranslator.zip
+          overwrite: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

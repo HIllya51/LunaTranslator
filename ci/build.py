@@ -48,6 +48,8 @@ ocrModelUrl = "https://github.com/HIllya51/RESOURCES/releases/download/ocr_model
 availableLocales = ["cht", "en", "ja", "ko", "ru", "zh"]
 
 
+prebuiltcommon="https://github.com/HIllya51/LunaTranslator_extra_build/releases/download/common/ALL.zip"
+
 rootDir = os.path.dirname(__file__)
 
 
@@ -100,6 +102,23 @@ def downloadBrotli():
         "brotli64/brotlidec.dll", f"{rootDir}/LunaTranslator/files/plugins/DLL64"
     )
 
+
+def downloadcommon():
+    os.chdir(rootDir + "\\temp")
+    subprocess.run(f"curl -LO {prebuiltcommon}")
+    subprocess.run(f"7z x {brotliFileName32} -oALL")
+        
+    def move_directory_contents(source_dir, destination_dir):
+        contents = os.listdir(source_dir)
+
+        for item in contents:
+            item_path = os.path.join(source_dir, item)
+            destination_path = os.path.join(destination_dir, item)
+
+            shutil.move(item_path, destination_path)
+    move_directory_contents(
+        "ALL/ALL", f"{rootDir}/LunaTranslator/files/plugins"
+    )
 
 def downloadLocaleEmulator():
     os.chdir(rootDir + "\\temp")
@@ -159,53 +178,6 @@ def downloadOCRModel(locale):
     os.remove(f"{locale}.zip")
 
 
-def buildMecab():
-    os.chdir(rootDir + "\\temp")
-    subprocess.run(f"git clone {mecabUrl}")
-    os.chdir("mecab\\mecab")
-
-    subprocess.run(f'cmd /c "{vcvars32Path}" & call make.bat')
-    shutil.move("src/libmecab.dll", f"{rootDir}/LunaTranslator/files/plugins/DLL32")
-
-    subprocess.run(f'cmd /c "{vcvars64Path}" & call makeclean.bat & call make.bat')
-    shutil.move("src/libmecab.dll", f"{rootDir}/LunaTranslator/files/plugins/DLL64")
-
-
-def buildWebview():
-    os.chdir(rootDir + "\\temp")
-    subprocess.run(f"git clone {webviewUrl}")
-    os.chdir("webview\\script")
-    subprocess.run(f"cmd /c set TARGET_ARCH=x86 & call build.bat")
-    shutil.move(
-        "../build/library/webview.dll", f"{rootDir}/LunaTranslator/files/plugins/DLL32"
-    )
-    subprocess.run(f"cmd /c set TARGET_ARCH=x64 & call build.bat")
-    shutil.move(
-        "../build/library/webview.dll", f"{rootDir}/LunaTranslator/files/plugins/DLL64"
-    )
-
-
-def buildLocaleRemulator():
-    os.chdir(rootDir + "\\temp")
-    subprocess.run(f"git clone {localeRemulatorUrl}")
-    os.chdir("Locale_Remulator")
-    subprocess.run(f"nuget restore")
-    os.chdir("LRHook")
-    subprocess.run(
-        f'"{msbuildPath}" LRHook.vcxproj /p:Configuration=Release /p:Platform=x86'
-    )
-    shutil.move(
-        "x64/Release/LRHookx32.dll",
-        f"{rootDir}/LunaTranslator/files/plugins/Locale_Remulator",
-    )
-    subprocess.run(
-        f'"{msbuildPath}" LRHook.vcxproj /p:Configuration=Release /p:Platform=x64'
-    )
-    shutil.move(
-        "x64/Release/LRHookx64.dll",
-        f"{rootDir}/LunaTranslator/files/plugins/Locale_Remulator",
-    )
-
 
 def buildLunaHook():
     os.chdir(rootDir + "\\temp")
@@ -229,77 +201,6 @@ def buildLunaHook():
         "../builds/Release_English/LunaHost64.dll",
         f"{rootDir}/LunaTranslator/files/plugins/LunaHook",
     )
-
-
-def buildLunaOCR():
-    os.chdir(rootDir + "\\temp")
-    subprocess.run(f"git clone {lunaOCRUrl}")
-    os.chdir("LunaOCR")
-    os.chdir("onnxruntime-static")
-    subprocess.run(f"curl -LO {onnxruntimeFile}")
-    subprocess.run(f"7z x {onnxruntimeFileName}")
-    os.chdir("..")
-    os.chdir("opencv-static")
-    subprocess.run(f"curl -LO {opencvFile}")
-    subprocess.run(f"7z x {opencvFileName}")
-    os.chdir("..")
-
-    buildType = "Release"
-    buildOutput = "CLIB"
-    mtEnabled = "True"
-    onnxType = "CPU"
-    toolset = "v143"
-    arch32 = "Win32"
-    arch64 = "x64"
-
-    os.makedirs(f"build/win-{buildOutput}-{onnxType}-{arch32}")
-    os.chdir(f"build/win-{buildOutput}-{onnxType}-{arch32}")
-    subprocess.run(
-        f'cmake -T "{toolset},host=x64" -A {arch32} '
-        f"-DCMAKE_INSTALL_PREFIX=install "
-        f"-DCMAKE_BUILD_TYPE={buildType} -DOCR_OUTPUT={buildOutput} "
-        f"-DOCR_BUILD_CRT={mtEnabled} -DOCR_ONNX={onnxType} ../.."
-    )
-    subprocess.run(f"cmake --build . --config {buildType} -j {os.cpu_count()}")
-    subprocess.run(f"cmake --build . --config {buildType} --target install")
-
-    os.chdir(f"{rootDir}/temp/LunaOCR")
-
-    os.makedirs(f"build/win-{buildOutput}-{onnxType}-{arch64}")
-    os.chdir(f"build/win-{buildOutput}-{onnxType}-{arch64}")
-    subprocess.run(
-        f'cmake -T "{toolset},host=x64" -A {arch64} '
-        f"-DCMAKE_INSTALL_PREFIX=install "
-        f"-DCMAKE_BUILD_TYPE={buildType} -DOCR_OUTPUT={buildOutput} "
-        f"-DOCR_BUILD_CRT={mtEnabled} -DOCR_ONNX={onnxType} ../.."
-    )
-    subprocess.run(f"cmake --build . --config {buildType} -j {os.cpu_count()}")
-    subprocess.run(f"cmake --build . --config {buildType} --target install")
-
-    os.chdir(f"{rootDir}/temp/LunaOCR")
-
-    shutil.move(
-        f"build/win-{buildOutput}-{onnxType}-{arch32}/install/bin/LunaOCR32.dll",
-        f"{rootDir}/LunaTranslator/files/plugins/DLL32",
-    )
-    shutil.move(
-        f"build/win-{buildOutput}-{onnxType}-{arch64}/install/bin/LunaOCR64.dll",
-        f"{rootDir}/LunaTranslator/files/plugins/DLL64",
-    )
-
-
-def buildMagpie():
-    os.chdir(rootDir + "\\temp")
-    subprocess.run(f"git clone {magpieUrl}")
-    os.chdir("Magpie_CLI")
-    subprocess.run(
-        f'"{msbuildPath}" -restore -p:RestorePackagesConfig=true;Configuration=Release;Platform=x64;OutDir={os.getcwd()}\\publish\\x64\\ Magpie.sln'
-    )
-    shutil.move(
-        "publish/x64/Magpie.Core.exe", f"{rootDir}/LunaTranslator/files/plugins/Magpie"
-    )
-    shutil.move("publish/x64/effects", f"{rootDir}/LunaTranslator/files/plugins/Magpie")
-
 
 def buildPlugins():
     os.chdir(rootDir + "\\plugins\\scripts")
@@ -390,38 +291,7 @@ if __name__ == "__main__":
         py37Path32 = "C:\\hostedtoolcache\\windows\\Python\\3.7.9\\x86\\python.exe"
         py37Path64 = "C:\\hostedtoolcache\\windows\\Python\\3.7.9\\x64\\python.exe"
         py311Path = "C:\\hostedtoolcache\\windows\\Python\\3.11.7\\x64\\python.exe"
-    else:
-        programFiles32 = os.environ["ProgramFiles(x86)"]
-        vswherePath = (
-            f"{programFiles32}\\Microsoft Visual Studio\\Installer\\vswhere.exe"
-        )
-        msbuildPath = (
-            subprocess.run(
-                f'"{vswherePath}" -latest -requires Microsoft.Component.MSBuild -find MSBuild\\**\\Bin\\MSBuild.exe',
-                capture_output=True,
-                text=True,
-            )
-            .stdout.strip()
-            .replace("\n", "")
-        )
-        vcvars32Path = (
-            subprocess.run(
-                f'"{vswherePath}" -latest -requires Microsoft.VisualStudio.Component.VC.Tools.x86.x64 -find VC\\Auxiliary\\Build\\vcvars32.bat',
-                capture_output=True,
-                text=True,
-            )
-            .stdout.strip()
-            .replace("\n", "")
-        )
-        vcvars64Path = (
-            subprocess.run(
-                f'"{vswherePath}" -latest -requires Microsoft.VisualStudio.Component.VC.Tools.x86.x64 -find VC\\Auxiliary\\Build\\vcvars64.bat',
-                capture_output=True,
-                text=True,
-            )
-            .stdout.strip()
-            .replace("\n", "")
-        )
+   
 
     if not args.skip_python_dependencies:
         installDependencies()
@@ -431,14 +301,10 @@ if __name__ == "__main__":
         downloadNtlea()
         downloadCurl()
         downloadOCRModel("ja")
+        downloadcommon()
     if not args.skip_build:
         if not args.skip_vc_ltl:
             installVCLTL()
-        buildMecab()
-        buildWebview()
-        buildLocaleRemulator()
         buildLunaHook()
-        buildLunaOCR()
-        buildMagpie()
         buildPlugins()
     buildLunaTranslator()
