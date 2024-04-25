@@ -72,7 +72,7 @@ def installDependencies():
     os.chdir(rootDir + "\\LunaTranslator")
     subprocess.run(f"{py37Path32} -m pip install -r requirements.txt")
     subprocess.run(f"{py37Path64} -m pip install -r requirements.txt")
-    subprocess.run(f"{py311Path} -m pip install conan cmake pefile")
+    subprocess.run(f"{py311Path} -m pip install cmake pefile")
 
 
 def installVCLTL():
@@ -113,8 +113,8 @@ def downloadcommon():
 
         for item in contents:
             item_path = os.path.join(source_dir, item)
-
-            shutil.move(item_path, destination_dir)
+            shutil.copytree(item_path, destination_dir)
+            #shutil.move(item_path, destination_dir)
     move_directory_contents(
         "ALL/ALL", f"{rootDir}/LunaTranslator/files/plugins"
     )
