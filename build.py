@@ -44,6 +44,10 @@ lunaHookUrl = "https://github.com/HIllya51/LunaHook.git"
 magpieUrl = "https://github.com/HIllya51/Magpie_CLI.git"
 lunaOCRUrl = "https://github.com/HIllya51/LunaOCR.git"
 
+ocrModelUrl = "https://github.com/HIllya51/RESOURCES/releases/download/ocr_models"
+availableLocales = ["cht", "en", "ja", "ko", "ru", "zh"]
+
+
 rootDir = os.path.dirname(__file__)
 
 
@@ -141,6 +145,18 @@ def downloadCurl():
         f"{outputDirName64}/bin/libcurl-x64.dll",
         f"{rootDir}/LunaTranslator/files/plugins/DLL64",
     )
+
+
+def downloadOCRModel(locale):
+    if locale not in availableLocales:
+        return
+    os.chdir(rootDir + "\\LunaTranslator\\files")
+    if not os.path.exists("ocr"):
+        os.mkdir("ocr")
+    os.chdir("ocr")
+    subprocess.run(f"curl -LO {ocrModelUrl}/{locale}.zip")
+    subprocess.run(f"7z x {locale}.zip")
+    os.remove(f"{locale}.zip")
 
 
 def buildMecab():
@@ -414,6 +430,7 @@ if __name__ == "__main__":
         downloadLocaleEmulator()
         downloadNtlea()
         downloadCurl()
+        downloadOCRModel("ja")
     if not args.skip_build:
         if not args.skip_vc_ltl:
             installVCLTL()
