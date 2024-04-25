@@ -113,7 +113,7 @@ def downloadcommon():
 
         for item in contents:
             item_path = os.path.join(source_dir, item)
-            shutil.copytree(item_path, destination_dir)
+            shutil.copytree(item_path, destination_dir,dirs_exist_ok=True)
             #shutil.move(item_path, destination_dir)
     move_directory_contents(
         "ALL/ALL", f"{rootDir}/LunaTranslator/files/plugins"
