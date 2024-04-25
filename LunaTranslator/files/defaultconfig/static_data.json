@@ -1,5 +1,5 @@
 {
-    "version":"v2.45.12",
+    "version":"v2.45.13",
     "themes":{
         "dark":[
             {"file":"dark1.qss","name":"PyQtDarkTheme"},
