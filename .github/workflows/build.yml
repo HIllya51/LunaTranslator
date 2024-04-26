@@ -2,9 +2,9 @@ name: build
 
 on:
   push:
-    branches: [ '.github/workflows/build.yml', 'LunaTranslator/**' , 'plugins/**' ]
+    paths: [ '.github/workflows/build.yml','build.py', 'LunaTranslator/**' , 'plugins/**' ]
   pull_request:
-    branches: [ '.github/workflows/build.yml', 'LunaTranslator/**' , 'plugins/**']
+    paths: [ '.github/workflows/build.yml','build.py', 'LunaTranslator/**' , 'plugins/**']
 
 jobs:
   build:
