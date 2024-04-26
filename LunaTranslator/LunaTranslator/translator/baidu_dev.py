@@ -3,7 +3,7 @@ from urllib.parse import quote
 
 
 class TS(basetransdev):
-    target_url = "https://fanyi.baidu.com/#"
+    target_url = "https://fanyi.baidu.com/mtpe-individual/multimodal#/"
 
     def langmap(self):
         return {
