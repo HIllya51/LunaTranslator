@@ -1,10 +1,10 @@
-name: Build and Upload Artifacts
+name: build
 
 on:
   push:
-    branches: [main]
+    branches: [ '.github/workflows/build.yml', 'LunaTranslator/**' , 'plugins/**' ]
   pull_request:
-    branches: [main]
+    branches: [ '.github/workflows/build.yml', 'LunaTranslator/**' , 'plugins/**']
 
 jobs:
   build:
