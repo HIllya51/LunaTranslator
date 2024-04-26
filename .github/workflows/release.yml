@@ -43,6 +43,5 @@ jobs:
           files: |
             build/LunaTranslator_x86.zip
             build/LunaTranslator.zip
-          overwrite: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
