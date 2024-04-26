@@ -118,5 +118,7 @@ class TS(basetrans):
             headers=headers,
             json=json_data,
         )
-
-        return decrypt(response.json()["target"])
+        try:
+            return decrypt(response.json()["target"])
+        except:
+            raise Exception(response.json())
