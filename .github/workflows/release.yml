@@ -40,7 +40,7 @@ jobs:
         run: pip install cmake pefile requests
       - name: Run build script
         run: |
-          python build.py --github-actions --arch ${{ matrix.architecture }}
+          python build.py ${{ matrix.architecture }}
       - uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.fname }}
