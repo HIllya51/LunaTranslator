@@ -48,9 +48,6 @@ class Method(scalebase):
             if profiles_index > len(magpie_config["profiles"]):
                 profiles_index = 0
 
-            #显示帧率暂时有问题
-            magpie_config["profiles"][profiles_index]["showFPS"] = False
-
             self.saveconfig()
             windows.SendMessage(
                 windows.FindWindow("WNDCLS_Magpie_Core_CLI_Message", None),
