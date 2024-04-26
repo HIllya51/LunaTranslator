@@ -2,7 +2,7 @@ import argparse
 import os
 import shutil
 import subprocess
-
+import requests
 py37Path32 = os.path.join(
     os.environ["LOCALAPPDATA"], "Programs\\Python\\Python37-32\\python.exe"
 )
@@ -32,17 +32,7 @@ curlFile32 = "https://curl.se/windows/dl-8.7.1_7/curl-8.7.1_7-win32-mingw.zip"
 curlFileName32 = "curl-8.7.1_7-win32-mingw.zip"
 curlFile64 = "https://curl.se/windows/dl-8.7.1_7/curl-8.7.1_7-win64-mingw.zip"
 curlFileName64 = "curl-8.7.1_7-win64-mingw.zip"
-onnxruntimeFile = "https://github.com/RapidAI/OnnxruntimeBuilder/releases/download/1.14.1/onnxruntime-1.14.1-vs2019-static-mt.7z"
-onnxruntimeFileName = "onnxruntime-1.14.1-vs2019-static-mt.7z"
-opencvFile = "https://github.com/RapidAI/OpenCVBuilder/releases/download/4.7.0/opencv-4.7.0-windows-vs2019-mt.7z"
-opencvFileName = "opencv-4.7.0-windows-vs2019-mt.7z"
 
-mecabUrl = "https://github.com/HIllya51/mecab.git"
-webviewUrl = "https://github.com/HIllya51/webview.git"
-localeRemulatorUrl = "https://github.com/HIllya51/Locale_Remulator.git"
-lunaHookUrl = "https://github.com/HIllya51/LunaHook.git"
-magpieUrl = "https://github.com/HIllya51/Magpie_CLI.git"
-lunaOCRUrl = "https://github.com/HIllya51/LunaOCR.git"
 
 ocrModelUrl = "https://github.com/HIllya51/RESOURCES/releases/download/ocr_models"
 availableLocales = ["cht", "en", "ja", "ko", "ru", "zh"]
@@ -183,26 +173,27 @@ def downloadOCRModel(locale):
 
 
 def buildLunaHook():
-    os.chdir(rootDir + "\\temp")
-    subprocess.run(f"git clone {lunaHookUrl}")
-    os.chdir("LunaHook\\scripts")
-    subprocess.run("cmd /c build3264en.bat")
-    shutil.move(
-        "../builds/Release_English/LunaHook32.dll",
-        f"{rootDir}/LunaTranslator/files/plugins/LunaHook",
-    )
-    shutil.move(
-        "../builds/Release_English/LunaHost32.dll",
-        f"{rootDir}/LunaTranslator/files/plugins/LunaHook",
-    )
-    shutil.move(
-        "../builds/Release_English/LunaHook64.dll",
-        f"{rootDir}/LunaTranslator/files/plugins/LunaHook",
-    )
-    shutil.move(
-        "../builds/Release_English/LunaHost64.dll",
-        f"{rootDir}/LunaTranslator/files/plugins/LunaHook",
-    )
+    for ass in requests.get('https://api.github.com/repos/HIllya51/LunaHook/releases/latest').json()['assets']:
+        if ass['name']=='Release_English.zip':
+            os.chdir(rootDir + "\\temp")
+            subprocess.run(f"curl -LO {ass['browser_download_url']}")
+            subprocess.run(f"7z x Release_English.zip")
+            shutil.move(
+                "Release_English/LunaHook32.dll",
+                f"{rootDir}/LunaTranslator/files/plugins/LunaHook",
+            )
+            shutil.move(
+                "Release_English/LunaHost32.dll",
+                f"{rootDir}/LunaTranslator/files/plugins/LunaHook",
+            )
+            shutil.move(
+                "Release_English/LunaHook64.dll",
+                f"{rootDir}/LunaTranslator/files/plugins/LunaHook",
+            )
+            shutil.move(
+                "Release_English/LunaHost64.dll",
+                f"{rootDir}/LunaTranslator/files/plugins/LunaHook",
+            )
 
 def buildPlugins():
     os.chdir(rootDir + "\\plugins\\scripts")
@@ -304,9 +295,9 @@ if __name__ == "__main__":
         downloadCurl()
         downloadOCRModel("ja")
         downloadcommon()
+        buildLunaHook()
     if not args.skip_build:
         if not args.skip_vc_ltl:
             installVCLTL()
-        buildLunaHook()
         buildPlugins()
     buildLunaTranslator()
