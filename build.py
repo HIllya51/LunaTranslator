@@ -2,15 +2,12 @@ import argparse
 import os
 import shutil,json
 import subprocess
-
+import requests
 py37Path32 = os.path.join(
     os.environ["LOCALAPPDATA"], "Programs\\Python\\Python37-32\\python.exe"
 )
 py37Path64 = os.path.join(
     os.environ["LOCALAPPDATA"], "Programs\\Python\\Python37\\python.exe"
-)
-py311Path = os.path.join(
-    os.environ["LOCALAPPDATA"], "Programs\\Python\\Python311\\python.exe"
 )
 msbuildPath = "C:\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise\\MSBuild\\Current\\Bin\\MSBuild.exe"
 vcvars32Path = "C:\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise\\VC\\Auxiliary\\Build\\vcvars32.bat"
@@ -53,16 +50,18 @@ def createPluginDirs():
             os.mkdir(pluginDir)
 
 
-def installDependencies():
+def installDependencies(arch):
     os.chdir(rootDir)
-    subprocess.run(f"{py37Path32} -m pip install --upgrade pip")
-    subprocess.run(f"{py37Path64} -m pip install --upgrade pip")
-    subprocess.run(f"{py311Path} -m pip install --upgrade pip")
+    if arch=='x86':
+        subprocess.run(f"{py37Path32} -m pip install --upgrade pip")
+    else:
+        subprocess.run(f"{py37Path64} -m pip install --upgrade pip")
 
     os.chdir(rootDir + "\\LunaTranslator")
-    subprocess.run(f"{py37Path32} -m pip install -r requirements.txt")
-    subprocess.run(f"{py37Path64} -m pip install -r requirements.txt")
-    subprocess.run(f"{py311Path} -m pip install cmake pefile")
+    if arch=='x86':
+        subprocess.run(f"{py37Path32} -m pip install -r requirements.txt")
+    else:
+        subprocess.run(f"{py37Path64} -m pip install -r requirements.txt")
 
 
 def installVCLTL():
@@ -173,7 +172,7 @@ def downloadOCRModel(locale):
 
 
 def buildLunaHook():
-    for ass in json.loads(subprocess.run('curl -s https://api.github.com/repos/HIllya51/LunaHook/releases/latest',stdout=subprocess.PIPE).stdout.decode('utf8'))['assets']:
+    for ass in requests.get('https://api.github.com/repos/HIllya51/LunaHook/releases/latest').json()['assets']:
         if ass['name']=='Release_English.zip':
             os.chdir(rootDir + "\\temp")
             subprocess.run(f"curl -LO {ass['browser_download_url']}")
@@ -213,16 +212,18 @@ def buildPlugins():
     subprocess.run(f"python copytarget.py 0")
 
 
-def buildLunaTranslator():
+def buildLunaTranslator(arch):
     os.chdir(rootDir + "\\LunaTranslator")
-    subprocess.run(
-        f"{py37Path32} -m nuitka --standalone --assume-yes-for-downloads --windows-disable-console --plugin-enable=pyqt5 --output-dir=..\\build\\x86 LunaTranslator\\LunaTranslator_main.py --windows-icon-from-ico=..\\plugins\\exec\\luna.ico"
-    )
-    subprocess.run(
-        f"{py37Path64} -m nuitka --standalone --assume-yes-for-downloads --windows-disable-console --plugin-enable=pyqt5 --output-dir=..\\build\\x64 LunaTranslator\\LunaTranslator_main.py --windows-icon-from-ico=..\\plugins\\exec\\luna.ico"
-    )
-    subprocess.run(f"cmd /c pack32.cmd")
-    subprocess.run(f"cmd /c pack64.cmd")
+    if arch=='x86':
+        subprocess.run(
+            f"{py37Path32} -m nuitka --standalone --assume-yes-for-downloads --windows-disable-console --plugin-enable=pyqt5 --output-dir=..\\build\\x86 LunaTranslator\\LunaTranslator_main.py --windows-icon-from-ico=..\\plugins\\exec\\luna.ico"
+        )
+        subprocess.run(f"cmd /c pack32.cmd")
+    else:
+        subprocess.run(
+            f"{py37Path64} -m nuitka --standalone --assume-yes-for-downloads --windows-disable-console --plugin-enable=pyqt5 --output-dir=..\\build\\x64 LunaTranslator\\LunaTranslator_main.py --windows-icon-from-ico=..\\plugins\\exec\\luna.ico"
+        )
+        subprocess.run(f"cmd /c pack64.cmd")
 
 
 if __name__ == "__main__":
@@ -266,6 +267,9 @@ if __name__ == "__main__":
         default=False,
         help="Specify if running in a GitHub Actions environment",
     )
+    parser.add_argument(
+        "--arch",
+    )
 
     args = parser.parse_args()
 
@@ -283,11 +287,9 @@ if __name__ == "__main__":
     if args.github_actions:
         py37Path32 = "C:\\hostedtoolcache\\windows\\Python\\3.7.9\\x86\\python.exe"
         py37Path64 = "C:\\hostedtoolcache\\windows\\Python\\3.7.9\\x64\\python.exe"
-        py311Path = "C:\\hostedtoolcache\\windows\\Python\\3.11.7\\x64\\python.exe"
-   
 
     if not args.skip_python_dependencies:
-        installDependencies()
+        installDependencies(args.arch)
     if not args.skip_download:
         downloadBrotli()
         downloadLocaleEmulator()
@@ -300,4 +302,4 @@ if __name__ == "__main__":
         if not args.skip_vc_ltl:
             installVCLTL()
         buildPlugins()
-    buildLunaTranslator()
+    buildLunaTranslator(args.arch)

@@ -9,7 +9,14 @@ on:
 jobs:
   build:
     runs-on: windows-latest
-    if: startsWith(github.ref, 'refs/tags/v') != true
+    strategy:
+      # 矩阵配置
+      matrix:
+        include:
+          - architecture: x86
+            fname: LunaTranslator_x86.zip
+          - architecture: x64
+            fname: LunaTranslator.zip
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -17,30 +24,24 @@ jobs:
         uses: GuillaumeFalourd/setup-windows10-sdk-action@v2
         with:
           sdk-version: 22621
-      - name: Install Python 3.7.9 x86
+      - name: Install Python 3.7.9
         uses: actions/setup-python@v5
         with:
           python-version: '3.7.9'
-          architecture: x86
-      - name: Install Python 3.7.9 x64
+          architecture: ${{ matrix.architecture }}
+      - name: Install Python 3.11
         uses: actions/setup-python@v5
         with:
-          python-version: '3.7.9'
+          python-version: '3.11'
           architecture: x64
-      - name: Install Python 3.11.7
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11.7'
+      - name: Install Python 3.11 req
+        run: |
+          pip install --upgrade pip
+          pip install cmake pefile requests
       - name: Run build script
         run: |
-          python build.py --github-actions
-      - name: Upload LunaTranslator artifact x86
-        uses: actions/upload-artifact@v4
+          python build.py --github-actions --arch ${{ matrix.architecture }}
+      - uses: actions/upload-artifact@v4
         with:
-          name: LunaTranslator_x86
-          path: build/LunaTranslator_x86.zip
-      - name: Upload LunaTranslator artifact x64
-        uses: actions/upload-artifact@v4
-        with:
-          name: LunaTranslator
-          path: build/LunaTranslator.zip
+          name: ${{ matrix.fname }}
+          path: build/${{ matrix.fname }}
