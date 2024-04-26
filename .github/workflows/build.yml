@@ -14,9 +14,9 @@ jobs:
       matrix:
         include:
           - architecture: x86
-            fname: LunaTranslator_x86.zip
+            fname: LunaTranslator_x86
           - architecture: x64
-            fname: LunaTranslator.zip
+            fname: LunaTranslator
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -44,4 +44,4 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.fname }}
-          path: build/${{ matrix.fname }}
+          path: build/${{ matrix.fname }}.zip
