@@ -1,14 +1,8 @@
-import argparse
-import os
-import shutil,json
+import os, sys
+import shutil
 import subprocess
 import requests
-py37Path32 = os.path.join(
-    os.environ["LOCALAPPDATA"], "Programs\\Python\\Python37-32\\python.exe"
-)
-py37Path64 = os.path.join(
-    os.environ["LOCALAPPDATA"], "Programs\\Python\\Python37\\python.exe"
-)
+
 msbuildPath = "C:\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise\\MSBuild\\Current\\Bin\\MSBuild.exe"
 vcvars32Path = "C:\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise\\VC\\Auxiliary\\Build\\vcvars32.bat"
 vcvars64Path = "C:\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise\\VC\\Auxiliary\\Build\\vcvars64.bat"
@@ -35,8 +29,6 @@ ocrModelUrl = "https://github.com/HIllya51/RESOURCES/releases/download/ocr_model
 availableLocales = ["cht", "en", "ja", "ko", "ru", "zh"]
 
 
-prebuiltcommon="https://github.com/HIllya51/LunaTranslator_extra_build/releases/download/common/ALL.zip"
-
 rootDir = os.path.dirname(__file__)
 
 
@@ -48,20 +40,6 @@ def createPluginDirs():
     for pluginDir in pluginDirs:
         if not os.path.exists(pluginDir):
             os.mkdir(pluginDir)
-
-
-def installDependencies(arch):
-    os.chdir(rootDir)
-    if arch=='x86':
-        subprocess.run(f"{py37Path32} -m pip install --upgrade pip")
-    else:
-        subprocess.run(f"{py37Path64} -m pip install --upgrade pip")
-
-    os.chdir(rootDir + "\\LunaTranslator")
-    if arch=='x86':
-        subprocess.run(f"{py37Path32} -m pip install -r requirements.txt")
-    else:
-        subprocess.run(f"{py37Path64} -m pip install -r requirements.txt")
 
 
 def installVCLTL():
@@ -94,9 +72,27 @@ def downloadBrotli():
 
 def downloadcommon():
     os.chdir(rootDir + "\\temp")
-    subprocess.run(f"curl -LO {prebuiltcommon}")
-    subprocess.run(f"7z x ALL.zip -oALL")
-        
+    subprocess.run(
+        f"curl -LO https://github.com/HIllya51/RESOURCES/releases/download/common/lr.zip"
+    )
+    subprocess.run(f"7z x lr.zip -oALL")
+    subprocess.run(
+        f"curl -LO https://github.com/HIllya51/RESOURCES/releases/download/common/mecab.zip"
+    )
+    subprocess.run(f"7z x mecab.zip -oALL")
+    subprocess.run(
+        f"curl -LO https://github.com/HIllya51/RESOURCES/releases/download/common/ocr.zip"
+    )
+    subprocess.run(f"7z x ocr.zip -oALL")
+    subprocess.run(
+        f"curl -LO https://github.com/HIllya51/RESOURCES/releases/download/common/webview.zip"
+    )
+    subprocess.run(f"7z x webview.zip -oALL")
+    subprocess.run(
+        f"curl -LO https://github.com/HIllya51/RESOURCES/releases/download/common/magpie.zip"
+    )
+    subprocess.run(f"7z x magpie.zip -oALL")
+
     def move_directory_contents(source_dir, destination_dir):
         contents = os.listdir(source_dir)
 
@@ -106,11 +102,12 @@ def downloadcommon():
                 shutil.move(item_path, destination_dir)
             except:
                 for k in os.listdir(item_path):
-                    shutil.move(os.path.join(item_path,k), os.path.join(destination_dir,item))
+                    shutil.move(
+                        os.path.join(item_path, k), os.path.join(destination_dir, item)
+                    )
 
-    move_directory_contents(
-        "ALL/ALL", f"{rootDir}/LunaTranslator/files/plugins"
-    )
+    move_directory_contents("ALL/ALL", f"{rootDir}/LunaTranslator/files/plugins")
+
 
 def downloadLocaleEmulator():
     os.chdir(rootDir + "\\temp")
@@ -170,10 +167,11 @@ def downloadOCRModel(locale):
     os.remove(f"{locale}.zip")
 
 
-
 def buildLunaHook():
-    for ass in requests.get('https://api.github.com/repos/HIllya51/LunaHook/releases/latest').json()['assets']:
-        if ass['name']=='Release_English.zip':
+    for ass in requests.get(
+        "https://api.github.com/repos/HIllya51/LunaHook/releases/latest"
+    ).json()["assets"]:
+        if ass["name"] == "Release_English.zip":
             os.chdir(rootDir + "\\temp")
             subprocess.run(f"curl -LO {ass['browser_download_url']}")
             subprocess.run(f"7z x Release_English.zip")
@@ -194,6 +192,7 @@ def buildLunaHook():
                 f"{rootDir}/LunaTranslator/files/plugins/LunaHook",
             )
 
+
 def buildPlugins():
     os.chdir(rootDir + "\\plugins\\scripts")
     subprocess.run(
@@ -212,85 +211,14 @@ def buildPlugins():
     subprocess.run(f"python copytarget.py 0")
 
 
-def buildLunaTranslator(arch):
-    os.chdir(rootDir + "\\LunaTranslator")
-    if arch=='x86':
-        subprocess.run(
-            f"{py37Path32} -m nuitka --standalone --assume-yes-for-downloads --windows-disable-console --plugin-enable=pyqt5 --output-dir=..\\build\\x86 LunaTranslator\\LunaTranslator_main.py --windows-icon-from-ico=..\\plugins\\exec\\luna.ico"
-        )
-        subprocess.run(f"cmd /c pack32.cmd")
-    else:
-        subprocess.run(
-            f"{py37Path64} -m nuitka --standalone --assume-yes-for-downloads --windows-disable-console --plugin-enable=pyqt5 --output-dir=..\\build\\x64 LunaTranslator\\LunaTranslator_main.py --windows-icon-from-ico=..\\plugins\\exec\\luna.ico"
-        )
-        subprocess.run(f"cmd /c pack64.cmd")
-
-
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser()
-    parser.add_argument(
-        "--skip-download",
-        action="store_true",
-        default=False,
-        help="Skip download steps",
-    )
-    parser.add_argument(
-        "--skip-python-dependencies",
-        action="store_true",
-        default=False,
-        help="Skip Python dependencies installation",
-    )
-    parser.add_argument(
-        "--skip-vc-ltl",
-        action="store_true",
-        default=False,
-        help="Skip VC-LTL installation",
-    )
-    parser.add_argument(
-        "--skip-build", action="store_true", default=False, help="Skip build steps"
-    )
-    parser.add_argument(
-        "--clean-temp",
-        action="store_true",
-        default=False,
-        help="Clean temp directory before building",
-    )
-    parser.add_argument(
-        "--clean-plugins",
-        action="store_true",
-        default=False,
-        help="Clean plugins directory before building",
-    )
-    parser.add_argument(
-        "--github-actions",
-        action="store_true",
-        default=False,
-        help="Specify if running in a GitHub Actions environment",
-    )
-    parser.add_argument(
-        "--arch",
-    )
-
-    args = parser.parse_args()
-
+    arch = sys.argv[1]
     os.chdir(rootDir)
-    if args.clean_temp:
-        os.system('powershell.exe -Command "Remove-Item -Path .\\temp -Recurse -Force"')
-    if not os.path.exists("temp"):
-        os.mkdir("temp")
-    if args.clean_plugins:
-        os.system(
-            'powershell.exe -Command "Remove-Item -Path .\\LunaTranslator\\files\\plugins -Recurse -Force"'
-        )
+    os.makedirs("temp", exist_ok=True)
+
     createPluginDirs()
 
-    if args.github_actions:
-        py37Path32 = "C:\\hostedtoolcache\\windows\\Python\\3.7.9\\x86\\python.exe"
-        py37Path64 = "C:\\hostedtoolcache\\windows\\Python\\3.7.9\\x64\\python.exe"
-
-    if not args.skip_python_dependencies:
-        installDependencies(args.arch)
-    if not args.skip_download:
+    def __1():
         downloadBrotli()
         downloadLocaleEmulator()
         downloadNtlea()
@@ -298,8 +226,39 @@ if __name__ == "__main__":
         downloadOCRModel("ja")
         downloadcommon()
         buildLunaHook()
-    if not args.skip_build:
-        if not args.skip_vc_ltl:
-            installVCLTL()
+
+    def __2():
+        installVCLTL()
         buildPlugins()
-    buildLunaTranslator(args.arch)
+
+    def __3():
+        os.chdir(rootDir)
+    
+        py37Path32 = "C:\\hostedtoolcache\\windows\\Python\\3.7.9\\x86\\python.exe"
+        py37Path64 = "C:\\hostedtoolcache\\windows\\Python\\3.7.9\\x64\\python.exe"
+
+        if arch == "x86":
+            subprocess.run(f"{py37Path32} -m pip install --upgrade pip")
+        else:
+            subprocess.run(f"{py37Path64} -m pip install --upgrade pip")
+
+        os.chdir(rootDir + "\\LunaTranslator")
+
+        if arch == "x86":
+            subprocess.run(f"{py37Path32} -m pip install -r requirements.txt")
+            subprocess.run(
+                f"{py37Path32} -m nuitka --standalone --assume-yes-for-downloads --windows-disable-console --plugin-enable=pyqt5 --output-dir=..\\build\\x86 LunaTranslator\\LunaTranslator_main.py --windows-icon-from-ico=..\\plugins\\exec\\luna.ico"
+            )
+        else:
+            subprocess.run(f"{py37Path64} -m pip install -r requirements.txt")
+            subprocess.run(
+                f"{py37Path64} -m nuitka --standalone --assume-yes-for-downloads --windows-disable-console --plugin-enable=pyqt5 --output-dir=..\\build\\x64 LunaTranslator\\LunaTranslator_main.py --windows-icon-from-ico=..\\plugins\\exec\\luna.ico"
+            )
+
+    __1()
+    __2()
+    __3()
+    if arch == "x86":
+        subprocess.run(f"cmd /c pack32.cmd")
+    else:
+        subprocess.run(f"cmd /c pack64.cmd")
