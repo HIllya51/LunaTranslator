@@ -1,8 +1,8 @@
 import argparse
 import os
-import shutil
+import shutil,json
 import subprocess
-import requests
+
 py37Path32 = os.path.join(
     os.environ["LOCALAPPDATA"], "Programs\\Python\\Python37-32\\python.exe"
 )
@@ -173,7 +173,7 @@ def downloadOCRModel(locale):
 
 
 def buildLunaHook():
-    for ass in requests.get('https://api.github.com/repos/HIllya51/LunaHook/releases/latest').json()['assets']:
+    for ass in json.loads(subprocess.run('curl -s https://api.github.com/repos/HIllya51/LunaHook/releases/latest',stdout=subprocess.PIPE).stdout.decode('utf8'))['assets']:
         if ass['name']=='Release_English.zip':
             os.chdir(rootDir + "\\temp")
             subprocess.run(f"curl -LO {ass['browser_download_url']}")
