@@ -42,7 +42,9 @@ jobs:
 
       - name: loaddversion
         id: loaddversion
-        run: python build.py loaddversion
+        run: |
+          python build.py loaddversion >version.txt
+          set /p GITHUB_OUTPUT=<version.txt
       - name: Release LunaTranslator
         uses: softprops/action-gh-release@v2
         with:

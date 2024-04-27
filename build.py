@@ -209,11 +209,11 @@ def buildPlugins():
 
 
 if __name__ == "__main__":
-    if sys.argv[1]=='loaddversion':
+    if sys.argv[1]=='loadversion':
         os.chdir(rootDir)
         with open('LunaTranslator/files/defaultconfig/static_data.json','r',encoding='utf8') as ff:
             version=json.loads(ff.read())['version']
-            print('::set-output name=version::'+version)
+            print('version='+version)
             exit()
     arch = sys.argv[1]
     isdebug=len(sys.argv)>2 and int(sys.argv[2])
@@ -268,4 +268,4 @@ if __name__ == "__main__":
     subprocess.run(f"{py37Path} -m pip install -r requirements.txt")
     subprocess.run(cmdline)
         
-    subprocess.run(f'python pack.py {int(arch == "x86")} {isdebug}')
+    subprocess.run(f'python pack.py {int(arch == "x86")} {int(isdebug)}')
