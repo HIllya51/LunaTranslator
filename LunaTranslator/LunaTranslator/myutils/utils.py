@@ -530,16 +530,15 @@ def parsemayberegexreplace(dict, res):
     return res
 
 
+def getlanguse():
+    return static_data["language_list_translator_inner"][globalconfig["languageuse"]]
+
+
 def checkpostlangmatch(name):
     for item in static_data["transoptimi"]:
         if name == item["name"]:
             try:
-                return (
-                    static_data["language_list_translator_inner"][
-                        globalconfig["languageuse"]
-                    ]
-                    == item["languageuse"]
-                )
+                return getlanguse() == item["languageuse"]
             except:
                 return True
 

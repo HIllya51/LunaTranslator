@@ -58,11 +58,23 @@ class TS(basetransdev):
         )
         self.currenttext = content
         currtext = ""
-        while self.currenttext == content:
-            time.sleep(0.01)  # get text before violate usage policies.
+        if self.tgtlang == "Arabic":
 
-            newcurr = self.getcurr(idx)
-            if newcurr == currtext:
-                continue
-            yield newcurr[len(currtext) :]
-            currtext = newcurr
+            while self.currenttext == content:
+                time.sleep(1)  # get text before violate usage policies.
+
+                newcurr = self.getcurr(idx)
+                needbreak = newcurr == currtext and newcurr != ""
+                currtext = newcurr
+                if needbreak:
+                    break
+            yield currtext
+        else:
+            while self.currenttext == content:
+                time.sleep(0.01)  # get text before violate usage policies.
+
+                newcurr = self.getcurr(idx)
+                if newcurr == currtext:
+                    continue
+                yield newcurr[len(currtext) :]
+                currtext = newcurr
