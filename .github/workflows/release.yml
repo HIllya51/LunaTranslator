@@ -1,18 +1,12 @@
 name: Release
 
 on:
-  workflow_dispatch: # allows manual triggering
-    inputs:
-      create_release:
-        description: 'Create new release'
-        required: true
-        type: string
+  workflow_dispatch:
   
 jobs:
   build:
     runs-on: windows-latest
     strategy:
-      # 矩阵配置
       matrix:
         include:
           - architecture: x86
@@ -46,10 +40,13 @@ jobs:
           name: ${{ matrix.fname }}
           path: build/${{ matrix.fname }}.zip
 
+      - name: loaddversion
+        id: loaddversion
+        run: python build.py loaddversion
       - name: Release LunaTranslator
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ github.event.inputs.create_release }}
+          tag_name: ${{ steps.loaddversion.outputs.version }}
           files: build/${{ matrix.fname }}.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

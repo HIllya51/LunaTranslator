@@ -10,7 +10,6 @@ jobs:
   build:
     runs-on: windows-latest
     strategy:
-      # 矩阵配置
       matrix:
         include:
           - architecture: x86

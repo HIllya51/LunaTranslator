@@ -1,5 +1,5 @@
 import os, sys
-import shutil
+import shutil, json
 import subprocess
 import requests
 
@@ -209,6 +209,12 @@ def buildPlugins():
 
 
 if __name__ == "__main__":
+    if sys.argv[1]=='loaddversion':
+        os.chdir(rootDir)
+        with open('LunaTranslator/files/defaultconfig/static_data.json','r',encoding='utf8') as ff:
+            version=json.loads(ff.read())['version']
+            print('::set-output name=version::'+version)
+            exit()
     arch = sys.argv[1]
     isdebug=len(sys.argv)>2 and int(sys.argv[2])
     os.chdir(rootDir)
