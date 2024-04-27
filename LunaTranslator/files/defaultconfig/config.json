@@ -54,7 +54,8 @@
         "transerrorfix":false,
         "gongxiangcishu":false,
         "vndbnamemap":false,
-        "myprocess":false
+        "myprocess":false,
+        "arabic_reshaper":false
     },
     "uselongtermcache": false,
     "hist_split": false,

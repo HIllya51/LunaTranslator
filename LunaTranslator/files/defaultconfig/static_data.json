@@ -353,11 +353,16 @@
         {
             "name":"vndbnamemap",
             "visname":"使用VNDB数据替换人名",
-            "languageuse":2
+            "languageuse":"en"
         },
         {
             "name":"myprocess",
             "visname":"使用自定义优化"
+        },
+        {
+            "name":"arabic_reshaper",
+            "visname":"arabic reshaper",
+            "languageuse":"ar"
         }
     ]
 }
