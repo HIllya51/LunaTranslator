@@ -91,6 +91,8 @@ class searchwordW(closeashidewindow):
             textOutput.setReadOnly(True)
             textOutput.setOpenLinks(False)
             self.tab.addTab(textOutput, _name[i])
+            self.tab.setTabVisible(i, False)
+
             self.textbs[self._k[i]] = textOutput
 
             textOutput.setContextMenuPolicy(Qt.CustomContextMenu)
