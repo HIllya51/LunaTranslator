@@ -52,7 +52,7 @@ jobs:
         with:
           tag_name: ${{ steps.loadversion.outputs.version }}
           files: |
-          build/${{ matrix.fname }}.zip
-          build/${{ matrix.fname }}.exe
+            build/${{ matrix.fname }}.zip
+            build/${{ matrix.fname }}.exe
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
