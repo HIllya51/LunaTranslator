@@ -227,7 +227,7 @@ class IMGWidget(QLabel):
 
 def opendir(k):
     try:
-        os.startfile(os.path.dirname(k))
+        os.system(f"explorer {os.path.dirname(k)}")
     except:
         pass
 
@@ -337,6 +337,7 @@ class browserdialog(QDialog):
             savehook_new_data[self.exepath]["relationlinks"].pop(
                 tab_index - self.hasvndb
             )
+
     def lastclicked(self):
         def callback(texts):
             if len(texts[0].strip()) and len(texts[1].strip()):
@@ -400,7 +401,7 @@ class dialog_setting_game(QDialog):
             savehook_new_data[res] = savehook_new_data[self.exepath]
             savehook_new_data.pop(self.exepath)
             _icon = getExeIcon(res, cache=True)
-            
+
             self.setWindowIcon(_icon)
             self.editpath.setText(res)
             self.exepath = res
