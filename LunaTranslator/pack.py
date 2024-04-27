@@ -8,23 +8,22 @@ if x86:
     targetdir=r'..\build\LunaTranslator_x86'
     launch=r'..\plugins\builds\_x86'
     downlevel=r'C:\Windows\SysWOW64\downlevel'
-    target='LunaTranslator_x86.zip'
+    target='LunaTranslator_x86'
     baddll='DLL64'
 else:
     baddll='DLL32'
-    target='LunaTranslator.zip'
+    target='LunaTranslator'
     launch=r'..\plugins\builds\_x64'
     nuitkadist=r'..\build\x64\LunaTranslator_main.dist'
     targetdir=r'..\build\LunaTranslator'
     downlevel=r'C:\Windows\system32\downlevel'
 if isdebug:
     targetdir+=r'_debug'
+    target+='_debug'
     if x86:
         nuitkadist=r'..\build\x86_debug\LunaTranslator_main.dist'
-        target='LunaTranslator_x86_debug.zip'
     else:
         nuitkadist=r'..\build\x64_debug\LunaTranslator_main.dist'
-        target='LunaTranslator_debug.zip'
 
 
 targetdir_in=rf'{targetdir}\LunaTranslator'
@@ -107,6 +106,26 @@ for f in collect:
         with open(f,'wb') as ff:
             ff.write(bs)
 
-if os.path.exists(rf'{targetdir}\..\{target}'):
-    os.remove(rf'{targetdir}\..\{target}')
-os.system(rf'"C:\Program Files\7-Zip\7z.exe" a -m0=LZMA -mx9 {targetdir}\..\{target} {targetdir}')
+if os.path.exists(rf'{targetdir}\..\{target}.zip'):
+    os.remove(rf'{targetdir}\..\{target}.zip')
+if os.path.exists(rf'{targetdir}\..\{target}.7z'):
+    os.remove(rf'{targetdir}\..\{target}.7z')
+os.system(rf'"C:\Program Files\7-Zip\7z.exe" a -m0=LZMA -mx9 {targetdir}\..\{target}.zip {targetdir}')
+os.system(rf'"C:\Program Files\7-Zip\7z.exe" a -m0=LZMA2 -mx9 {targetdir}\..\{target}.7z {targetdir}')
+
+with open(r'C:\Program Files\7-Zip\7z.sfx','rb') as ff:
+    sfx=ff.read()
+
+config='''
+;!@Install@!UTF-8!
+
+
+;!@InstallEnd@!
+'''
+with open(rf'{targetdir}\..\{target}.7z','rb') as ff:
+    data=ff.read()
+
+with open(rf'{targetdir}\..\{target}.exe','wb') as ff:
+    ff.write(sfx)
+    ff.write(config.encode('utf8'))
+    ff.write(data)
