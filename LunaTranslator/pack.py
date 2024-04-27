@@ -110,7 +110,7 @@ if os.path.exists(rf'{targetdir}\..\{target}.zip'):
     os.remove(rf'{targetdir}\..\{target}.zip')
 if os.path.exists(rf'{targetdir}\..\{target}.7z'):
     os.remove(rf'{targetdir}\..\{target}.7z')
-os.system(rf'"C:\Program Files\7-Zip\7z.exe" a -m0=LZMA -mx9 {targetdir}\..\{target}.zip {targetdir}')
+os.system(rf'"C:\Program Files\7-Zip\7z.exe" a -m0=Deflate -mx9 {targetdir}\..\{target}.zip {targetdir}')
 os.system(rf'"C:\Program Files\7-Zip\7z.exe" a -m0=LZMA2 -mx9 {targetdir}\..\{target}.7z {targetdir}')
 
 with open(r'C:\Program Files\7-Zip\7z.sfx','rb') as ff:
