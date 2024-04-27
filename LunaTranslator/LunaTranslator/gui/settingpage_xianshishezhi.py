@@ -226,7 +226,7 @@ def setTabThree_lazy(self):
             (self.fontSize_spinBox, 2),
             "",
             ("额外的行间距", 3),
-            (getspinbox(0, 100, globalconfig, "extra_space"), 2),
+            (getspinbox(-100, 100, globalconfig, "extra_space"), 2),
         ],
         [
             ("居中显示", 4),

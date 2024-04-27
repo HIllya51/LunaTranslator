@@ -267,10 +267,12 @@ class QUnFrameWindow(resizableframeless):
                 )
 
         else:
-            self.translate_text.append(text, hira, origin)
+            self.translate_text.append(
+                text, hira if globalconfig["isshowhira"] else [], origin
+            )
             if globalconfig["zitiyangshi"] == 3:
                 self.translate_text.showyinyingtext(color)
-                
+
         if hira:
 
             def callback(word):

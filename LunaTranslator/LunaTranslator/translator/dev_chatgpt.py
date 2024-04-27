@@ -24,6 +24,9 @@ class TS(basetransdev):
             "th": "Thai",
         }
 
+    def inittranslator(self):
+        self.currenttext = None
+
     def getcurr(self, idx):
 
         res = self.wait_for_result(
@@ -53,11 +56,13 @@ class TS(basetransdev):
         self.Runtime_evaluate(
             r"""document.querySelector("#__next > div.relative.z-0.flex.h-full.w-full.overflow-hidden > div.relative.flex.h-full.max-w-full.flex-1.flex-col.overflow-hidden > main > div.flex.h-full.flex-col > div.w-full.pt-2.md\\:pt-0.dark\\:border-white\\/20.md\\:border-transparent.md\\:dark\\:border-transparent.md\\:w-\\[calc\\(100\\%-\\.5rem\\)\\] > form > div > div.flex.w-full.items-center > div > button").click()"""
         )
-
+        self.currenttext = content
         currtext = ""
-        while True:
+        while self.currenttext == content:
             time.sleep(0.01)  # get text before violate usage policies.
 
             newcurr = self.getcurr(idx)
+            if newcurr == currtext:
+                continue
             yield newcurr[len(currtext) :]
             currtext = newcurr

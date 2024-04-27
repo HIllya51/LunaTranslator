@@ -108,12 +108,6 @@ class ItemWidget(QWidget):
         self.bottommask.resize(a0.size())
         self.maskshowfileexists.resize(a0.size())
 
-    def settitle(self, text):
-        self._lb.setText(text)
-
-    def setimg(self, pixmap):
-        self._img.setimg(pixmap)
-
     def __init__(self, exe, pixmap, file) -> None:
         super().__init__()
         self.itemw = globalconfig["dialog_savegame_layout"]["itemw"]
@@ -144,7 +138,9 @@ class ItemWidget(QWidget):
         wrap.addWidget(self._img)
         layout.addWidget(_w)
 
-        self._lb = QLabel(file)
+        self._lb = QLabel()
+        if globalconfig["showgametitle"]:
+            self._lb.setText(file)
         self._lb.setWordWrap(True)
         self._lb.setAlignment(Qt.AlignCenter)
         layout.addWidget(self._lb)
@@ -1062,6 +1058,10 @@ class dialog_syssetting(QDialog):
         formLayout.addRow(
             QLabel(_TR("启动游戏不修改顺序")),
             getsimpleswitch(globalconfig, "startgamenototop"),
+        )
+        formLayout.addRow(
+            QLabel(_TR("显示标题")),
+            getsimpleswitch(globalconfig, "showgametitle"),
         )
         self.show()
 

@@ -150,20 +150,6 @@ class ScrollArea(QScrollArea):
         self.scrolled.emit(visible_rect)
 
 
-class lazynotify(QWidget):
-
-    def __init__(self, getrealwid) -> None:
-        super().__init__()
-        self.done = False
-        self.getrealwid = getrealwid
-
-    def do(self):
-        wid = self.getrealwid()
-        wid.setParent(self)
-        wid.adjustSize()
-        wid.setVisible(True)
-
-
 class ScrollFlow(QWidget):
     bgclicked = pyqtSignal()
 
@@ -186,34 +172,9 @@ class ScrollFlow(QWidget):
 
         self.listWidget.setLayout(self.l)
 
-        self.qscrollarea = ScrollArea(self)
+        self.qscrollarea = QScrollArea(self)
         self.qscrollarea.setWidgetResizable(True)
         self.qscrollarea.setWidget(self.listWidget)
-        self.qscrollarea.scrolled.connect(self.doshowlazywidget)
-
-    @trypass
-    def doshowlazywidget(self, region: QRect):
-        for i, widget in enumerate(self.lazyitems):
-            if i in self.lazydoneidx:
-                continue
-            widget_rect = widget.geometry()  # 有可能已被delete，必须try
-            # print(widget_rect)
-            if region.intersects(widget_rect):
-                # print(i,widget_rect)
-                self.lazydoneidx.append(i)
-                widget.do()
-                QApplication.processEvents()
-
-    def refreshscroll(self):
-        QApplication.processEvents()
-        self.doshowlazywidget(self.geometry())
-
-    @trypass
-    def addwidgetlazy(self, wid, size):
-        wid = lazynotify(wid)
-        self.lazyitems.append(wid)
-        wid.setFixedSize(size)
-        self.l.addWidget(wid)
 
     @trypass
     def addwidget(self, wid):
@@ -358,15 +319,15 @@ class lazyscrollflow(QWidget):
         self.qscrollarea = ScrollArea(self)
         self.qscrollarea.setWidgetResizable(True)
         self.qscrollarea.setWidget(self.internalwid)
-        self.qscrollarea.scrolled.connect(self.doshowlazywidget)
+        self.qscrollarea.scrolled.connect(lambda _: self.doshowlazywidget(True, _))
 
     def resizeEvent(self, a0: QResizeEvent) -> None:
         self.qscrollarea.resize(self.size())
-        self.resizeandshow()
+        self.resizeandshow(False)
         return super().resizeEvent(a0)
 
     @trypass
-    def doshowlazywidget(self, region: QRect):
+    def doshowlazywidget(self, procevent, region: QRect):
         needdos = []
         with self.lock:
             for i, geo in enumerate(self.fakegeos):
@@ -390,16 +351,16 @@ class lazyscrollflow(QWidget):
                     widfunc.setVisible(True)
                     widfunc.setGeometry(self.fakegeos[i])
                     self.widgets[i] = widfunc
-
-                QApplication.processEvents()
+                if procevent:
+                    QApplication.processEvents()    #会在最大化时死锁
 
             except:
                 pass
 
     @trypass
-    def resizeandshow(self):
+    def resizeandshow(self, procevent=True):
         self.fakeresize()
-        self.doshowlazywidget(self.internalwid.visibleRegion())
+        self.doshowlazywidget(procevent, self.internalwid.visibleRegion())
 
     def addwidget(self, widfunc):
         self.insertwidget(-1, widfunc)
