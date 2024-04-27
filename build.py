@@ -262,8 +262,4 @@ if __name__ == "__main__":
     subprocess.run(f"{py37Path} -m pip install -r requirements.txt")
     subprocess.run(cmdline)
         
-        
-    if arch == "x86":
-        subprocess.run(f"cmd /c pack32.cmd {isdebug}")
-    else:
-        subprocess.run(f"cmd /c pack64.cmd {isdebug}")
+    subprocess.run(f'python pack.py {int(arch == "x86")} {isdebug}')
