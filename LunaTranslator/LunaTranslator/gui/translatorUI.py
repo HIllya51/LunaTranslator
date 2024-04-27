@@ -122,10 +122,14 @@ class QUnFrameWindow(resizableframeless):
             _res = text[: globalconfig["maxoriginlength"]] + "……"
         else:
             _res = text
-        if globalconfig["isshowhira"] and globalconfig["isshowrawtext"]:
-            self.showline(clear=clear, text=_res, hira=True, color=color)
-        elif globalconfig["isshowrawtext"]:
-            self.showline(clear=clear, text=_res, color=color)
+        if globalconfig["isshowrawtext"]:
+            hira = (
+                globalconfig["isshowhira"]
+                or globalconfig["usesearchword"]
+                or globalconfig["usecopyword"]
+                or globalconfig["show_fenci"]
+            )
+            self.showline(clear=clear, text=_res, hira=hira, color=color)
         else:
             self.showline(clear=clear)
 
@@ -266,11 +270,8 @@ class QUnFrameWindow(resizableframeless):
             self.translate_text.append(text, hira, origin)
             if globalconfig["zitiyangshi"] == 3:
                 self.translate_text.showyinyingtext(color)
-        if (
-            globalconfig["usesearchword"]
-            or globalconfig["usecopyword"]
-            or globalconfig["show_fenci"]
-        ) and hira:
+                
+        if hira:
 
             def callback(word):
                 if globalconfig["usewordorigin"] == False:
