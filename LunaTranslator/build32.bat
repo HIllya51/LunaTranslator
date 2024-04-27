@@ -1,1 +1,1 @@
-%LOCALAPPDATA%\Programs\Python\Python37-32\python.exe -m nuitka --standalone   --windows-disable-console    --plugin-enable=pyqt5    --output-dir=..\build\x86 LunaTranslator\LunaTranslator_main.py  --windows-icon-from-ico=..\plugins\exec\luna.ico
+%LOCALAPPDATA%\Programs\Python\Python37-32\python.exe -m nuitka --standalone   --disable-console    --plugin-enable=pyqt5    --output-dir=..\build\x86 LunaTranslator\LunaTranslator_main.py  --windows-icon-from-ico=..\plugins\exec\luna.ico

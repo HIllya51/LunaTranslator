@@ -3,9 +3,6 @@ import shutil
 import subprocess
 import requests
 
-msbuildPath = "C:\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise\\MSBuild\\Current\\Bin\\MSBuild.exe"
-vcvars32Path = "C:\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise\\VC\\Auxiliary\\Build\\vcvars32.bat"
-vcvars64Path = "C:\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise\\VC\\Auxiliary\\Build\\vcvars64.bat"
 
 pluginDirs = ["DLL32", "DLL64", "Locale_Remulator", "LunaHook", "Magpie", "NTLEAS"]
 
@@ -213,52 +210,60 @@ def buildPlugins():
 
 if __name__ == "__main__":
     arch = sys.argv[1]
+    isdebug=len(sys.argv)>2 and int(sys.argv[2])
     os.chdir(rootDir)
     os.makedirs("temp", exist_ok=True)
 
     createPluginDirs()
 
-    def __1():
-        downloadBrotli()
-        downloadLocaleEmulator()
-        downloadNtlea()
-        downloadCurl()
-        downloadOCRModel("ja")
-        downloadcommon()
-        buildLunaHook()
 
-    def __2():
-        installVCLTL()
-        buildPlugins()
+    downloadBrotli()
+    downloadLocaleEmulator()
+    downloadNtlea()
+    downloadCurl()
+    downloadOCRModel("ja")
+    downloadcommon()
+    buildLunaHook()
 
-    def __3():
-        os.chdir(rootDir)
-    
-        py37Path32 = "C:\\hostedtoolcache\\windows\\Python\\3.7.9\\x86\\python.exe"
-        py37Path64 = "C:\\hostedtoolcache\\windows\\Python\\3.7.9\\x64\\python.exe"
 
-        if arch == "x86":
-            subprocess.run(f"{py37Path32} -m pip install --upgrade pip")
-        else:
-            subprocess.run(f"{py37Path64} -m pip install --upgrade pip")
+    installVCLTL()
+    buildPlugins()
 
-        os.chdir(rootDir + "\\LunaTranslator")
 
-        if arch == "x86":
-            subprocess.run(f"{py37Path32} -m pip install -r requirements.txt")
-            subprocess.run(
-                f"{py37Path32} -m nuitka --standalone --assume-yes-for-downloads --windows-disable-console --plugin-enable=pyqt5 --output-dir=..\\build\\x86 LunaTranslator\\LunaTranslator_main.py --windows-icon-from-ico=..\\plugins\\exec\\luna.ico"
-            )
-        else:
-            subprocess.run(f"{py37Path64} -m pip install -r requirements.txt")
-            subprocess.run(
-                f"{py37Path64} -m nuitka --standalone --assume-yes-for-downloads --windows-disable-console --plugin-enable=pyqt5 --output-dir=..\\build\\x64 LunaTranslator\\LunaTranslator_main.py --windows-icon-from-ico=..\\plugins\\exec\\luna.ico"
-            )
+    os.chdir(rootDir)
 
-    __1()
-    __2()
-    __3()
+
     if arch == "x86":
-        subprocess.run(f"cmd /c pack32.cmd")
+        py37Path = "C:\\hostedtoolcache\\windows\\Python\\3.7.9\\x86\\python.exe"
     else:
-        subprocess.run(f"cmd /c pack64.cmd")
+        py37Path = "C:\\hostedtoolcache\\windows\\Python\\3.7.9\\x64\\python.exe"
+
+    os.chdir(rootDir + "\\LunaTranslator")
+
+    cmdline=py37Path
+    cmdline+=' -m nuitka --standalone --assume-yes-for-downloads '
+    if not isdebug:
+        cmdline+=' --disable-console '
+    cmdline+=' --plugin-enable=pyqt5 '
+
+    if arch == "x86":
+        if isdebug:
+            cmdline+='--output-dir=..\\build\\x86_debug'
+        else:
+            cmdline+='--output-dir=..\\build\\x86'
+    else:
+        if isdebug:
+            cmdline+='--output-dir=..\\build\\x64_debug'
+        else:
+            cmdline+='--output-dir=..\\build\\x64'
+    cmdline+=' LunaTranslator\\LunaTranslator_main.py --windows-icon-from-ico=..\\plugins\\exec\\luna.ico '
+
+    subprocess.run(f"{py37Path} -m pip install --upgrade pip")
+    subprocess.run(f"{py37Path} -m pip install -r requirements.txt")
+    subprocess.run(cmdline)
+        
+        
+    if arch == "x86":
+        subprocess.run(f"cmd /c pack32.cmd {isdebug}")
+    else:
+        subprocess.run(f"cmd /c pack64.cmd {isdebug}")

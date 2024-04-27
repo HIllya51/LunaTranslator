@@ -2,6 +2,7 @@ import pefile
 import os,shutil,sys
 print(sys.argv)
 x86=int(sys.argv[1])
+isdebug=len(sys.argv)>2 and int(sys.argv[2])
 if x86:
     nuitkadist=r'..\build\x86\LunaTranslator_main.dist'
     targetdir=r'..\build\LunaTranslator_x86'
@@ -16,6 +17,16 @@ else:
     nuitkadist=r'..\build\x64\LunaTranslator_main.dist'
     targetdir=r'..\build\LunaTranslator'
     downlevel=r'C:\Windows\system32\downlevel'
+if isdebug:
+    targetdir+=r'_debug'
+    if x86:
+        nuitkadist=r'..\build\x86_debug\LunaTranslator_main.dist'
+        target='LunaTranslator_x86_debug.zip'
+    else:
+        nuitkadist=r'..\build\x64_debug\LunaTranslator_main.dist'
+        target='LunaTranslator_debug.zip'
+
+
 targetdir_in=rf'{targetdir}\LunaTranslator'
 def get_import_table(file_path):
     pe = pefile.PE(file_path) 

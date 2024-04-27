@@ -1,15 +1,12 @@
 import time
-import re
-import os, threading, codecs
+import keeprefs
+import os, threading
 from traceback import print_exc
 from myutils.config import (
     globalconfig,
     savehook_new_list,
     savehook_new_data,
-    noundictconfig,
-    transerrorfixdictconfig,
     setlanguage,
-    _TR,
     static_data,
 )
 import zipfile
@@ -22,12 +19,11 @@ from myutils.utils import (
     getpostfile,
     stringfyerror,
 )
-import os, hashlib
 from PyQt5.QtWidgets import QApplication
-from PyQt5.QtCore import Qt, QSize, QObject, QEvent
-from myutils.wrapper import threader, tryprint
+from PyQt5.QtCore import Qt, QObject, QEvent
+from myutils.wrapper import threader
 from gui.showword import searchwordW
-from myutils.hwnd import getpidexe, testprivilege, ListProcess
+from myutils.hwnd import getpidexe, ListProcess
 from textsource.copyboard import copyboard
 from textsource.texthook import texthook
 from textsource.ocrtext import ocrtext
@@ -42,14 +38,12 @@ from functools import partial
 from gui.settin import Settin
 from gui.showocrimage import showocrimage
 from gui.attachprocessdialog import AttachProcessDialog
-import hmac, pytz, uuid
-import xml.etree.ElementTree as ET
 import windows
-import re, gobject
+import gobject
 import winsharedutils
 from winsharedutils import pid_running
 from myutils.post import POSTSOLVE
-from gui.usefulwidget import Prompt, getQMessageBox
+from gui.usefulwidget import Prompt
 
 
 class _autolock:
