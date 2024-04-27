@@ -856,10 +856,17 @@
             "use": false,
             "color": "blue",
             "name": "deepl"
-        },"deepl2": {
+        },
+        "deepl2": {
             "use": false,
             "color": "blue",
             "name": "deepl_v2"
+        },
+        "DeepLX": {
+            "use": false,
+            "color": "blue",
+            "name": "DeepLX",
+            "useproxy":false
         },
         "dev_chatgpt":{
             "use": false,

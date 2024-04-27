@@ -4,6 +4,11 @@
             "host": "translate.plausibility.cloud"
         }
 	},
+	"DeepLX":{
+		"args": {
+            "api": "https://api.deeplx.org/translate"
+        }
+	},
     "baiduapi": {
         "args": {
             "注册网址": "https://fanyi-api.baidu.com/api/trans/product/desktop",
