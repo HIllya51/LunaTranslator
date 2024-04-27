@@ -31,16 +31,17 @@ class Method(scalebase):
             time.sleep(1)
 
         if globalconfig["hooklossless"]:
-            for pid, exe in ListProcess():
+            for pids, exe in ListProcess():
                 if exe == pexe.replace("/", "\\"):
-                    if pid in self.injectedpids:
-                        continue
-                    dll = os.path.abspath("./files/plugins/hookmagpie.dll")
-                    injecter = os.path.abspath(
-                        "./files/plugins/shareddllproxy{}.exe".format("64")
-                    )
-                    injectdll(pid, injecter, dll)
-                    self.injectedpids.add(pid)
+                    for pid in pids:
+                        if pid in self.injectedpids:
+                            continue
+                        dll = os.path.abspath("./files/plugins/hookmagpie.dll")
+                        injecter = os.path.abspath(
+                            "./files/plugins/shareddllproxy{}.exe".format("64")
+                        )
+                        injectdll([pid], injecter, dll)
+                        self.injectedpids.add(pid)
                     break
 
     def changestatus(self, hwnd, full):
