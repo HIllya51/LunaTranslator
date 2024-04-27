@@ -1,43 +1,34 @@
 import functools
 
 from PyQt5.QtWidgets import (
-    QDialog,
-    QLabel,
-    QLineEdit,
-    QPushButton,
-    QTableView,
-    QVBoxLayout,
     QHBoxLayout,
-    QHeaderView,
     QTextEdit,
     QHBoxLayout,
     QWidget,
     QMenu,
     QAction,
 )
-from PyQt5.QtCore import QSize, Qt, QPoint
-from PyQt5.QtGui import QCloseEvent, QStandardItem, QStandardItemModel
+from PyQt5.QtCore import Qt, QPoint
 from traceback import print_exc
 from myutils.config import (
     globalconfig,
     postprocessconfig,
-    noundictconfig,
-    transerrorfixdictconfig,
+    static_data,
     _TR,
-    _TRL,
 )
 import functools, gobject
-from gui.usefulwidget import getcolorbutton, getsimpleswitch, getQMessageBox
+from gui.usefulwidget import getcolorbutton, getsimpleswitch
 from gui.codeacceptdialog import codeacceptdialog
 from gui.inputdialog import (
-    getsomepath1,
     postconfigdialog,
     autoinitdialog,
     autoinitdialog_items,
-    noundictconfigdialog1,
 )
-from myutils.utils import selectdebugfile
-from myutils.wrapper import Singleton
+from myutils.utils import (
+    selectdebugfile,
+    checkpostlangmatch,
+    loadpostsettingwindowmethod,
+)
 from myutils.config import savehook_new_data
 import copy
 from myutils.post import POSTSOLVE
@@ -78,28 +69,6 @@ def savegameprocesstext():
 
 def settab7direct(self):
     self.comparelayout = getcomparelayout(self)
-    self.button_noundict = getcolorbutton(
-        globalconfig,
-        "",
-        callback=lambda x: noundictconfigdialog(
-            self, noundictconfig, "专有名词翻译设置(游戏ID 0表示全局)"
-        ),
-        icon="fa.gear",
-        constcolor="#FF69B4",
-    )
-    self.button_fix = getcolorbutton(
-        globalconfig,
-        "",
-        callback=lambda x: noundictconfigdialog1(
-            self,
-            transerrorfixdictconfig,
-            "dict_v2",
-            "翻译结果替换设置",
-            ["正则", "翻译", "替换"],
-        ),
-        icon="fa.gear",
-        constcolor="#FF69B4",
-    )
 
 
 def setTab7(self):
@@ -237,66 +206,29 @@ def setTab7_lazy(self):
             button_down,
         ]
         grids.append(l)
+    grids2 = []
+    for item in static_data["transoptimi"]:
+        name = item["name"]
+        visname = item["visname"]
+        if checkpostlangmatch(name):
+            grids2.append(
+                [((visname), 6), getsimpleswitch(globalconfig["transoptimi"], name)]
+            )
+            setting = loadpostsettingwindowmethod(name)
 
-    grids2 = [
-        [
-            (("使用专有名词翻译"), 6),
-            getsimpleswitch(noundictconfig, "use"),
-            self.button_noundict,
-        ],
-        [
-            (("使用翻译结果修正"), 6),
-            getsimpleswitch(transerrorfixdictconfig, "use"),
-            self.button_fix,
-        ],
-        [
-            (("使用VNR共享辞书"), 6),
-            getsimpleswitch(
-                globalconfig["gongxiangcishu"],
-                "use",
-            ),
-            getcolorbutton(
-                globalconfig,
-                "",
-                callback=lambda x: getsomepath1(
-                    self,
-                    "共享辞书",
-                    globalconfig["gongxiangcishu"],
-                    "path",
-                    "共享辞书",
-                    None,
-                    False,
-                    "*.xml",
-                ),
-                icon="fa.gear",
-                constcolor="#FF69B4",
-            ),
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-        ],
-        [
-            ("使用自定义优化", 6),
-            getsimpleswitch(globalconfig, "selfdefinedprocesspair"),
-            getcolorbutton(
-                globalconfig,
-                "",
-                callback=lambda: selectdebugfile("./userconfig/myprocess.py"),
-                icon="fa.gear",
-                constcolor="#FF69B4",
-            ),
-        ],
-    ]
-    if globalconfig["languageuse"] == 2:  # en
-        grids2 += [
-            [
-                (("使用VNDB数据替换人名"), 6),
-                getsimpleswitch(globalconfig, "vndbmapname"),
-            ]
-        ]
+            def __(_f, _1, _2):
+                return _f(_1)
+
+            if setting:
+                grids2[-1].append(
+                    getcolorbutton(
+                        globalconfig,
+                        "",
+                        callback=functools.partial(__, setting, self),
+                        icon="fa.gear",
+                        constcolor="#FF69B4",
+                    )
+                )
 
     def __():
         _w = self.makescroll(self.makegrid(grids, True, savelist, savelay))
@@ -325,142 +257,3 @@ def setTab7_lazy(self):
     )
 
     return self.makevbox([tab, self.comparelayout])
-
-
-@Singleton
-class noundictconfigdialog(QDialog):
-    def closeEvent(self, a0: QCloseEvent) -> None:
-        self.button.setFocus()
-        rows = self.model.rowCount()
-        newdict = {}
-        for row in range(rows):
-            if self.model.item(row, 1).text() == "":
-                continue
-            if self.model.item(row, 1).text() not in newdict:
-                newdict[self.model.item(row, 1).text()] = [
-                    self.model.item(row, 0).text(),
-                    self.model.item(row, 2).text(),
-                ]
-            else:
-                newdict[self.model.item(row, 1).text()] += [
-                    self.model.item(row, 0).text(),
-                    self.model.item(row, 2).text(),
-                ]
-        self.configdict["dict"] = newdict
-
-    def __init__(
-        self, parent, configdict, title, label=["游戏ID MD5", "原文", "翻译"], _=None
-    ) -> None:
-        super().__init__(parent, Qt.WindowCloseButtonHint)
-
-        self.setWindowTitle(_TR(title))
-        # self.setWindowModality(Qt.ApplicationModal)
-
-        formLayout = QVBoxLayout(self)  # 配置layout
-
-        model = QStandardItemModel(len(list(configdict["dict"].keys())), 1, self)
-        row = 0
-        for key in configdict["dict"]:  # 2
-            if type(configdict["dict"][key]) == str:
-                configdict["dict"][key] = ["0", configdict["dict"][key]]
-
-            for i in range(len(configdict["dict"][key]) // 2):
-                item = QStandardItem(configdict["dict"][key][i * 2])
-                model.setItem(row, 0, item)
-                item = QStandardItem(key)
-                model.setItem(row, 1, item)
-                item = QStandardItem(configdict["dict"][key][1 + i * 2])
-                model.setItem(row, 2, item)
-                row += 1
-        model.setHorizontalHeaderLabels(_TRL(label))
-        table = QTableView(self)
-        table.setModel(model)
-        table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
-        # table.setEditTriggers(QAbstractItemView.NoEditTriggers)
-        # table.clicked.connect(self.show_info)
-        button = QPushButton(self)
-        button.setText(_TR("添加行"))
-
-        def clicked1():
-            try:
-                md5 = gobject.baseobject.currentmd5
-                model.insertRow(
-                    0, [QStandardItem(md5), QStandardItem(), QStandardItem()]
-                )
-            except:
-                print_exc()
-                model.insertRow(
-                    0, [QStandardItem("0"), QStandardItem(), QStandardItem()]
-                )
-
-        button.clicked.connect(clicked1)
-        button2 = QPushButton(self)
-        button2.setText(_TR("删除选中行"))
-
-        def clicked2():
-
-            model.removeRow(table.currentIndex().row())
-
-        button2.clicked.connect(clicked2)
-        button5 = QPushButton(self)
-        button5.setText(_TR("设置所有词条为全局词条"))
-
-        def clicked5():
-            rows = model.rowCount()
-            for row in range(rows):
-                model.item(row, 0).setText("0")
-
-        button5.clicked.connect(
-            lambda: getQMessageBox(
-                self,
-                "警告",
-                "!!!",
-                True,
-                True,
-                lambda: clicked5(),
-            )
-        )
-
-        search = QHBoxLayout()
-        searchcontent = QLineEdit()
-        search.addWidget(searchcontent)
-        button4 = QPushButton()
-        button4.setText(_TR("搜索"))
-
-        def clicked4():
-            text = searchcontent.text()
-
-            rows = model.rowCount()
-            cols = model.columnCount()
-            for row in range(rows):
-                ishide = True
-                for c in range(cols):
-                    if text in model.item(row, c).text():
-                        ishide = False
-                        break
-                table.setRowHidden(row, ishide)
-
-        button4.clicked.connect(clicked4)
-        search.addWidget(button4)
-
-        formLayout.addWidget(table)
-        formLayout.addLayout(search)
-        formLayout.addWidget(button)
-        formLayout.addWidget(button2)
-        formLayout.addWidget(button5)
-        setmd5layout = QHBoxLayout()
-        setmd5layout.addWidget(QLabel(_TR("当前MD5")))
-        md5content = QLineEdit(gobject.baseobject.currentmd5)
-        setmd5layout.addWidget(md5content)
-        button5 = QPushButton()
-        button5.clicked.connect(
-            lambda x: gobject.baseobject.__setattr__("currentmd5", md5content.text())
-        )
-        button5.setText(_TR("修改"))
-        setmd5layout.addWidget(button5)
-        self.button = button
-        self.model = model
-        self.configdict = configdict
-        formLayout.addLayout(setmd5layout)
-        self.resize(QSize(600, 400))
-        self.show()

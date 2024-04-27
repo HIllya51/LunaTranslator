@@ -1,6 +1,6 @@
-import traceback
 import time
 import random, threading
+from traceback import print_exc
 
 
 class stripwrapper(dict):
@@ -68,7 +68,7 @@ def retryer(**kw):
                 try:
                     return func(*args, **kwargs)
                 except Exception as ex:
-                    traceback.print_exc()
+                    print_exc()
                     time.sleep(random.randint(2, min(2 ** (_ + 2), 32)))
                     # print('重试次数：',_+1)
 
@@ -91,6 +91,16 @@ def trypass(func):
             return func(*args, **kwargs)
         except:
             pass
+
+    return _wrapper
+
+
+def tryprint(func):
+    def _wrapper(*args, **kwargs):
+        try:
+            return func(*args, **kwargs)
+        except:
+            print_exc()
 
     return _wrapper
 

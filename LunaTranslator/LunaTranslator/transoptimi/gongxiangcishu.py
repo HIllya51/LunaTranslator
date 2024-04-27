@@ -1,8 +1,7 @@
 from myutils.config import globalconfig
 import xml.etree.ElementTree as ET
 import os, gobject, re
-
-___idx = 1
+from gui.inputdialog import getsomepath1
 
 
 def vnrshareddict(self):
@@ -139,3 +138,16 @@ class Process:
             if key in res:
                 res = res.replace(key, value["text"])
         return res
+
+    @staticmethod
+    def get_setting_window(parent_window):
+        return getsomepath1(
+            parent_window,
+            "共享辞书",
+            globalconfig["gongxiangcishu"],
+            "path",
+            "共享辞书",
+            None,
+            False,
+            "*.xml",
+        )

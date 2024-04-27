@@ -16,6 +16,7 @@ import winsharedutils
 from myutils.config import globalconfig, saveallconfig, _TR, static_data
 from myutils.subproc import endsubprocs
 from myutils.ocrutil import ocr_run, imageCut
+from myutils.utils import loadpostsettingwindowmethod
 from myutils.hwnd import mouseselectwindow, grabwindow, getExeIcon
 from gui.dialog_savedgame import dialog_savedgame_new
 from gui.dialog_memory import dialog_memory
@@ -419,8 +420,18 @@ class QUnFrameWindow(resizableframeless):
             ("edit", lambda: gobject.baseobject.edittextui.showsignal.emit()),
             ("showraw", self.changeshowhideraw),
             ("history", lambda: gobject.baseobject.transhis.showsignal.emit()),
-            ("noundict", lambda: gobject.baseobject.settin_ui.button_noundict.click()),
-            ("fix", lambda: gobject.baseobject.settin_ui.button_fix.click()),
+            (
+                "noundict",
+                lambda: loadpostsettingwindowmethod("noundict")(
+                    gobject.baseobject.settin_ui
+                ),
+            ),
+            (
+                "fix",
+                lambda: loadpostsettingwindowmethod("transerrorfix")(
+                    gobject.baseobject.settin_ui
+                ),
+            ),
             ("langdu", self.langdu),
             ("mousetransbutton", lambda: self.changemousetransparentstate(0)),
             ("backtransbutton", lambda: self.changemousetransparentstate(1)),

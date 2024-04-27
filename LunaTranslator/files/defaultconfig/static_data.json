@@ -1,5 +1,5 @@
 {
-    "version":"v2.45.14",
+    "version":"v2.46.0",
     "themes":{
         "dark":[
             {"file":"dark1.qss","name":"PyQtDarkTheme"},
@@ -336,5 +336,28 @@
         ]
     },
     "scalemethods":["magpie_builtin","alt_enter","SW_SHOWMAXIMIZED","external_lossless","external_magpie"],
-    "scalemethods_vis":["Magpie","ALT+ENTER","SW_SHOWMAXIMIZED","LosslessScaling","Magpie_External"]
+    "scalemethods_vis":["Magpie","ALT+ENTER","SW_SHOWMAXIMIZED","LosslessScaling","Magpie_External"],
+    "transoptimi":[
+        {
+            "name":"noundict",
+            "visname":"使用专有名词翻译"
+        },
+        {
+            "name":"transerrorfix",
+            "visname":"使用翻译结果修正"
+        },
+        {
+            "name":"gongxiangcishu",
+            "visname":"使用VNR共享辞书"
+        },
+        {
+            "name":"vndbnamemap",
+            "visname":"使用VNDB数据替换人名",
+            "languageuse":2
+        },
+        {
+            "name":"myprocess",
+            "visname":"使用自定义优化"
+        }
+    ]
 }

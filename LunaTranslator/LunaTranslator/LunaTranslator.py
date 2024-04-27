@@ -18,13 +18,14 @@ from myutils.utils import (
     parsemayberegexreplace,
     kanjitrans,
     checkifnewgame,
-    getfilemd5,
+    checkpostusing,
+    getpostfile,
     stringfyerror,
 )
 import os, hashlib
 from PyQt5.QtWidgets import QApplication
 from PyQt5.QtCore import Qt, QSize, QObject, QEvent
-from myutils.wrapper import threader
+from myutils.wrapper import threader, tryprint
 from gui.showword import searchwordW
 from myutils.hwnd import getpidexe, testprivilege, ListProcess
 from textsource.copyboard import copyboard
@@ -96,60 +97,48 @@ class MAINUI:
 
     @threader
     def safeloadprocessmodels(self):
-        for model, d, k in [
-            ("noundict", noundictconfig, "use"),
-            ("transerrorfix", transerrorfixdictconfig, "use"),
-            ("gongxiangcishu", globalconfig["gongxiangcishu"], "use"),
-            ("myprocess", globalconfig, "selfdefinedprocesspair"),
-        ]:
+        for item in static_data["transoptimi"]:
+            name = item["name"]
             try:
-                if model == "myprocess":
-                    mm = "myprocess"
-                    checkpath = "./userconfig/myprocess.py"
-                else:
-                    mm = "transoptimi." + model
-                    checkpath = "./LunaTranslator/transoptimi/" + model + ".py"
-                if os.path.exists(checkpath) == False:
+                mm = getpostfile(name)
+                if not mm:
                     continue
                 Process = importlib.import_module(mm).Process
 
-                def __(kls, _d, _k):
+                def __(kls, _name):
                     class klass(kls):
                         @property
                         def using(self):
-                            return _d[_k]
+                            return checkpostusing(_name)
 
                     return klass()
 
-                klass = __(Process, d, k)
-                process_before = klass.process_before
-                process_after = klass.process_after
-                self.processmethods.append(klass)
+                object = __(Process, name)
+                self.processmethods.append({"name": name, "object": object})
             except:
                 print_exc()
+
 
     def solvebeforetrans(self, content):
         contexts = []
         self.zhanweifu = 0
-        for i in range(len(self.processmethods)):
+        for method in self.processmethods:
+            context = None
             try:
-                if self.processmethods[i].using:
-                    content, context = self.processmethods[i].process_before(content)
-                else:
-                    context = None
+                if method["object"].using:
+                    content, context = method["object"].process_before(content)
             except:
-                context = None
                 print_exc()
             contexts.append(context)
         return content, contexts
 
     def solveaftertrans(self, res, mp):
-        for i in range(len(self.processmethods)):
+        for i, method in enumerate(self.processmethods):
 
             context = mp[i]
             try:
-                if self.processmethods[i].using:
-                    res = self.processmethods[i].process_after(res, context)
+                if method["object"].using:
+                    res = method["object"].process_after(res, context)
             except:
                 print_exc()
         return res

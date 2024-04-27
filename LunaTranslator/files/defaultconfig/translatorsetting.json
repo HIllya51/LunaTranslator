@@ -453,13 +453,19 @@
 	"gemini": {
         "args": {
             "注册网址": "https://ai.google.dev/tutorials/python_quickstart",
-			"api-key":""
+			"api-key":"",
+			"使用自定义promt":false,
+			"自定义promt":""
         }
 		,
 		"argstype":{
 			"注册网址":{
 				"type":"label",
 				"islink":true
+			},
+			
+			"使用自定义promt":{
+				"type":"switch"
 			}
 		}
     },

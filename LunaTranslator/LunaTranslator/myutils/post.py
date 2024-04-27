@@ -311,32 +311,6 @@ _selfdefpost = None
 _selfdefpostmd5 = None
 
 
-def trymapnameofvndb(s):
-    if not ((globalconfig["languageuse"] == 2) and globalconfig["vndbmapname"]):
-        return s
-
-    try:
-        exepath = gobject.baseobject.textsource.pname
-        namemap = savehook_new_data[exepath]["namemap"]
-        bettermap = {}
-        for k, v in namemap.items():
-            for sp in ['・',' ']:
-                spja = k.split(sp)
-                spen = v.split(" ")
-                if len(spja) == len(spen) and len(spen) > 1:
-                    for i in range(len(spja)):
-                        if len(spja[i]) >= 2:
-                            bettermap[spja[i]] = spen[i]
-
-        for k, v in namemap.items():
-            s = s.replace(k, v)
-        for k, v in bettermap.items():
-            s = s.replace(k, v)
-    except:
-        pass
-    return s
-
-
 def POSTSOLVE(line):
     global _selfdefpostmd5, _selfdefpost
     if line == "":
@@ -425,5 +399,4 @@ def POSTSOLVE(line):
                 print_exc()
                 if postitem == "_11":
                     raise e
-    line = trymapnameofvndb(line)
     return line

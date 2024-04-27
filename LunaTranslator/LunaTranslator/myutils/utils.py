@@ -4,7 +4,7 @@ from traceback import print_exc
 import codecs, hashlib
 import os, time
 import socket, gobject
-import ctypes
+import ctypes, importlib
 import time
 import ctypes.wintypes
 import time
@@ -22,6 +22,7 @@ from myutils.config import (
 import threading
 import re, heapq
 from myutils.vndb import searchforidimage
+from myutils.wrapper import tryprint
 
 
 class PriorityQueue:
@@ -332,6 +333,10 @@ class Process:
 
     def process_after(self, res, context):
         return res
+    
+    @staticmethod
+    def get_setting_window(parent_window):
+        pass
 """
                 )
     os.startfile(p)
@@ -523,3 +528,45 @@ def parsemayberegexreplace(dict, res):
         else:
             res = res.replace(item["key"], item["value"])
     return res
+
+
+def checkpostlangmatch(name):
+    for item in static_data["transoptimi"]:
+        if name == item["name"]:
+            try:
+                return globalconfig["languageuse"] == item["languageuse"]
+            except:
+                return True
+
+    return False
+
+
+def checkpostusing(name):
+    use = globalconfig["transoptimi"][name]
+    return use and checkpostlangmatch(name)
+
+
+def getpostfile(name):
+    if name == "myprocess":
+        mm = "myprocess"
+        checkpath = "./userconfig/myprocess.py"
+    else:
+        mm = "transoptimi." + name
+        checkpath = "./LunaTranslator/transoptimi/" + name + ".py"
+    if os.path.exists(checkpath) == False:
+        return None
+    return mm
+
+
+def loadpostsettingwindowmethod(name):
+    if name == "myprocess":
+        return lambda _: selectdebugfile("./userconfig/myprocess.py")
+    mm = getpostfile(name)
+    if not mm:
+        return None
+
+    try:
+        Process = importlib.import_module(mm).Process
+        return tryprint(Process.get_setting_window)
+    except:
+        return None
