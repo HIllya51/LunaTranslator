@@ -40,15 +40,15 @@ jobs:
           name: ${{ matrix.fname }}
           path: build/${{ matrix.fname }}.zip
 
-      - name: loaddversion
-        id: loaddversion
+      - name: loadversion
+        id: loadversion
         run: |
-          python build.py loaddversion >version.txt
+          python build.py loadversion >version.txt
           set /p GITHUB_OUTPUT=<version.txt
       - name: Release LunaTranslator
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ steps.loaddversion.outputs.version }}
+          tag_name: ${{ steps.loadversion.outputs.version }}
           files: build/${{ matrix.fname }}.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
