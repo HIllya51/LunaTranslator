@@ -755,16 +755,16 @@ class QUnFrameWindow(resizableframeless):
             # self.refreshtoolicon()
             skip = False
             if (self.fullscreenmanager is None) or (
-                self.fullscreenmethod != globalconfig["fullscreenmethod_3"]
+                self.fullscreenmethod != globalconfig["fullscreenmethod_4"]
             ):
 
-                self.fullscreenmethod = globalconfig["fullscreenmethod_3"]
+                self.fullscreenmethod = globalconfig["fullscreenmethod_4"]
 
                 if self.fullscreenmanager:
                     skip = self.fullscreenmanager.endX()
                 self.fullscreenmanager = importlib.import_module(
                     "scalemethod."
-                    + static_data["scalemethods"][globalconfig["fullscreenmethod_3"]]
+                    + static_data["scalemethods"][globalconfig["fullscreenmethod_4"]]
                 ).Method(self._externalfsend)
             if skip:
                 return

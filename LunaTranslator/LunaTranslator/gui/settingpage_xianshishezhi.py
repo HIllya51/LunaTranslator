@@ -800,7 +800,7 @@ def setTabThree_lazy(self):
                 getsimplecombobox(
                     static_data["scalemethods_vis"],
                     globalconfig,
-                    "fullscreenmethod_3",
+                    "fullscreenmethod_4",
                 ),
                 6,
             ),
@@ -831,31 +831,6 @@ def setTabThree_lazy(self):
         [
             ("Hook Magpie进程使其不会退出缩放", 4),
             getsimpleswitch(globalconfig, "hookmagpie"),
-        ],
-        [],
-        [
-            ("LosslessScaling_路径", 4),
-            (
-                getcolorbutton(
-                    globalconfig,
-                    "",
-                    callback=lambda x: getsomepath1(
-                        self,
-                        "LosslessScaling_路径",
-                        globalconfig["lossless"],
-                        "path",
-                        "LosslessScaling_路径",
-                        isdir=True,
-                    ),
-                    icon="fa.gear",
-                    constcolor="#FF69B4",
-                ),
-                1,
-            ),
-        ],
-        [
-            ("Hook LosslessScaling进程使其不会退出缩放", 4),
-            getsimpleswitch(globalconfig, "hooklossless"),
         ],
     ]
     tab = self.makesubtab_lazy(

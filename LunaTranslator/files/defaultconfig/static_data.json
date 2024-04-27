@@ -335,8 +335,8 @@
             "./files/plugins/DLL32/libcurl.dll"
         ]
     },
-    "scalemethods":["magpie_builtin","alt_enter","SW_SHOWMAXIMIZED","external_lossless","external_magpie"],
-    "scalemethods_vis":["Magpie","ALT+ENTER","SW_SHOWMAXIMIZED","LosslessScaling","Magpie_External"],
+    "scalemethods":["magpie_builtin","alt_enter","SW_SHOWMAXIMIZED","external_magpie"],
+    "scalemethods_vis":["Magpie","ALT+ENTER","SW_SHOWMAXIMIZED","Magpie_External"],
     "transoptimi":[
         {
             "name":"noundict",
