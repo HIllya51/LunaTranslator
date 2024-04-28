@@ -1,4 +1,4 @@
-import functools, time, qtawesome
+import functools, time, qtawesome, platform
 from datetime import datetime, timedelta
 from gui.specialwidget import ScrollFlow, chartwidget, lazyscrollflow
 from PyQt5.QtWidgets import (
@@ -269,7 +269,13 @@ class browserdialog(QDialog):
         if self.webviewv == 0:
             self.browser.resize(*rect)
         elif self.webviewv == 1:
-            self.browser.set_geo(*rect)
+            # self.browser.set_geo(*rect)
+            from webviewpy import webview_native_handle_kind_t
+
+            hwnd = self.browser.get_native_handle(
+                webview_native_handle_kind_t.WEBVIEW_NATIVE_HANDLE_KIND_UI_WIDGET
+            )
+            windows.MoveWindow(hwnd, rect[0], rect[1], rect[2], rect[3], True)
 
     def __init__(self, parent, textsource_or_exepath) -> None:
         super().__init__(parent, Qt.WindowMinMaxButtonsHint | Qt.WindowCloseButtonHint)
@@ -281,15 +287,24 @@ class browserdialog(QDialog):
             except:
                 self.exepath = "0"
         self._resizable = False
-        self.resize(1300, 801)
+
         self.webviewv = globalconfig["usewebview"]
         if self.webviewv == 0:
             self.browser = winsharedutils.HTMLBrowser(int(self.winId()))
         elif self.webviewv == 1:
-            from webview import Webview
+            from webviewpy import Webview, declare_library_path
 
+            declare_library_path(
+                os.path.abspath(
+                    os.path.join(
+                        "files/plugins/",
+                        ("DLL32", "DLL64")[platform.architecture()[0] == "64bit"],
+                        "webview",
+                    )
+                )
+            )
             self.browser = Webview(
-                0, int(self.winId())
+                False, int(self.winId())
             )  # 构造函数里会触发ResizeEvent。虽然确实有问题，但很奇怪前一天晚上正常，第二天起来就崩溃了。
         self.setWindowTitle(savehook_new_data[self.exepath]["title"])
         self.nettab = QTabWidget(self)
