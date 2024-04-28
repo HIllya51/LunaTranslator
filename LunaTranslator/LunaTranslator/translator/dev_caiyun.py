@@ -1,5 +1,5 @@
 from translator.basetranslator_dev import basetransdev
-
+import time
 
 class TS(basetransdev):
     target_url = "https://fanyi.caiyunapp.com/#/"
@@ -13,12 +13,16 @@ class TS(basetransdev):
                 content
             )
         )
-        _ = self.wait_for_result(
-            'document.querySelector("#target-textblock").innerText'
+        return self.wait_for_result(
+            r"""childs=document.querySelector("#texttarget > div").children;
+t=""
+for(i=0;i<childs.length;i++){
+	x="#texttarget > div > div:nth-child("+(i+1)+") > span"
+	if(document.querySelector(x)){
+	if(t.length)t+="\n"
+	t+=document.querySelector(x).innerText
+}
+}
+t
+"""
         )
-        if _ == "通用模型翻译中":
-            _ = self.wait_for_result(
-                'document.querySelector("#target-textblock").innerText',
-                "通用模型翻译中",
-            )
-        return _
