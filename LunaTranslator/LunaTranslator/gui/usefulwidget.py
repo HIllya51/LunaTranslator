@@ -94,6 +94,8 @@ class saveposwindow(QMainWindow):
         d = QApplication.primaryScreen()
         self.dic, self.key = dic, key
         if self.dic:
+            dic[key][2] = max(0, min(dic[key][2], d.size().width()))
+            dic[key][3] = max(0, min(dic[key][3], d.size().height()))
             dic[key][0] = min(max(dic[key][0], 0), d.size().width() - dic[key][2])
             dic[key][1] = min(max(dic[key][1], 0), d.size().height() - dic[key][3])
             self.setGeometry(*dic[key])
