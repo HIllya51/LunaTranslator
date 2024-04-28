@@ -10,13 +10,24 @@ if x86:
     downlevel=r'C:\Windows\SysWOW64\downlevel'
     target='LunaTranslator_x86'
     baddll='DLL64'
+    gooddll='DLL32'
+    py37Path = "C:\\hostedtoolcache\\windows\\Python\\3.7.9\\x86\\python.exe"
+    py37Pathlocal=os.environ['LOCALAPPDATA']+r'\Programs\Python\Python37-32\python.exe'
+    webviewappendix=r'Lib\site-packages\webviewpy\platform\win32\x86\webview.dll'
 else:
     baddll='DLL32'
+    gooddll='DLL64'
     target='LunaTranslator'
     launch=r'..\plugins\builds\_x64'
     nuitkadist=r'..\build\x64\LunaTranslator_main.dist'
     targetdir=r'..\build\LunaTranslator'
     downlevel=r'C:\Windows\system32\downlevel'
+    py37Path = "C:\\hostedtoolcache\\windows\\Python\\3.7.9\\x64\\python.exe"
+    py37Pathlocal=os.environ['LOCALAPPDATA']+r'\Programs\Python\Python37\python.exe'
+    webviewappendix=r'Lib\site-packages\webviewpy\platform\win32\x64\webview.dll'
+if os.path.exists(py37Path)==False:
+    py37Path=py37Pathlocal
+py37Pathwebview=os.path.join(os.path.dirname(py37Path),webviewappendix)
 if isdebug:
     targetdir+=r'_debug'
     target+='_debug'
@@ -44,7 +55,7 @@ for f in ['LunaTranslator_admin.exe','LunaTranslator.exe']:
     shutil.copy(os.path.join(launch,f),targetdir)
 shutil.copytree(r'.\files',rf'{targetdir}\files')
 shutil.copy(r'..\LICENSE',targetdir) 
-
+shutil.copy(py37Pathwebview,rf'{targetdir}\files\plugins\{gooddll}')
 for f in ['transoptimi','hiraparse','ocrengines','translator','cishu','tts','network','textoutput','scalemethod']:
     shutil.copytree(rf'.\LunaTranslator\{f}',rf'{targetdir_in}\{f}') 
 

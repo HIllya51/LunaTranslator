@@ -82,10 +82,6 @@ def downloadcommon():
     )
     subprocess.run(f"7z x ocr.zip -oALL")
     subprocess.run(
-        f"curl -LO https://github.com/HIllya51/RESOURCES/releases/download/common/webview.zip"
-    )
-    subprocess.run(f"7z x webview.zip -oALL")
-    subprocess.run(
         f"curl -LO https://github.com/HIllya51/RESOURCES/releases/download/common/magpie.zip"
     )
     subprocess.run(f"7z x magpie.zip -oALL")

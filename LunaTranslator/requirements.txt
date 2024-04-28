@@ -1,6 +1,6 @@
 PyQt5==5.15.10
 PyQt5-Qt5==5.15.2
-webviewpy==0.0.3
+webviewpy==0.0.4
 nuitka==2.0.5
 imageio
 pefile
