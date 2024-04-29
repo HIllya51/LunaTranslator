@@ -675,7 +675,6 @@
     "缩放方式": "Zoom method",
     "缩放/恢复游戏窗口": "Zoom/Restore Game Window",
     "打开关联页面": "Open the associated page",
-    "添加关联页面": "Add associated page",
     "页面类型": "Page Type",
     "页面链接": "Page Link",
     "缓存": "cache",
@@ -765,5 +764,8 @@
     "启动游戏不修改顺序": "Start the game without changing the order",
     "使用自定义优化": "Use custom optimization",
     "游戏管理": "Game Management",
-    "显示标题": "show heading"
+    "显示标题": "show heading",
+    "收藏": "collection",
+    "名称": "name",
+    "网址": "Website"
 }

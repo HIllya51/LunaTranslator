@@ -176,6 +176,7 @@ class dialog_selecticon(QDialog):
         self.show()
 
     def selectcallback(self, _):
+        print(_)
         self.dict[self.key] = _
         self.close()
 

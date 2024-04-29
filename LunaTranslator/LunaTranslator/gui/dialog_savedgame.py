@@ -1,4 +1,4 @@
-import functools, time, qtawesome, platform
+import functools, time
 from datetime import datetime, timedelta
 from gui.specialwidget import ScrollFlow, chartwidget, lazyscrollflow
 from PyQt5.QtWidgets import (
@@ -22,7 +22,7 @@ from PyQt5.QtWidgets import (
 )
 import windows
 from PyQt5.QtCore import QRect, QSize, Qt, pyqtSignal, QObject
-import os, hashlib
+import os
 from PyQt5.QtWidgets import (
     QApplication,
     QSizePolicy,
@@ -39,7 +39,7 @@ from PyQt5.QtGui import (
     QPainter,
     QPen,
 )
-from PyQt5.QtCore import Qt, QPoint
+from PyQt5.QtCore import Qt
 from gui.usefulwidget import (
     getsimplecombobox,
     getspinbox,
@@ -58,10 +58,15 @@ from myutils.hwnd import getExeIcon
 import gobject
 from myutils.config import _TR, _TRL, globalconfig, static_data
 import winsharedutils
-from myutils.wrapper import Singleton_close, Singleton, threader
+from myutils.wrapper import Singleton_close, Singleton, threader, tryprint
 from myutils.utils import checkifnewgame, vidchangedtask
-from myutils.proxy import getproxy
-from gui.usefulwidget import yuitsu_switch, saveposwindow, getboxlayout
+from gui.usefulwidget import (
+    yuitsu_switch,
+    saveposwindow,
+    getboxlayout,
+    auto_select_webview,
+    Prompt_dialog,
+)
 from myutils.vndb import parsehtmlmethod
 from gui.inputdialog import noundictconfigdialog1
 
@@ -242,99 +247,333 @@ class CustomTabBar(QTabBar):
             super().mousePressEvent(event)
 
 
-@Singleton
-class browserdialog(QDialog):
+class ClickableLabel(QLabel):
+    def __init__(self):
+        super().__init__()
+        self.setClickable(True)
 
-    def parsehtml(self, exepath):
+    def setClickable(self, clickable):
+        self._clickable = clickable
+
+    def mousePressEvent(self, event):
+        if self._clickable and event.button() == Qt.LeftButton:
+            self.clicked.emit()
+
+    clicked = pyqtSignal()
+
+
+class tagitem(QWidget):
+    # website
+    TYPE_GLOABL_LIKE = 3
+    TYPE_GAME_LIKE = 1
+    # search game
+    TYPE_RAND = 0
+    TYPE_DEVELOPER = 1
+    TYPE_TAG = 2
+    TYPE_USERTAG = 3
+    TYPE_EXISTS = 4
+    removesignal = pyqtSignal(tuple)
+    labelclicked = pyqtSignal(tuple)
+
+    def remove(self):
+        self.hide()
+        _lay = self.layout()
+        _ws = []
+        for i in range(_lay.count()):
+            witem = _lay.itemAt(i)
+            _ws.append(witem.widget())
+        for w in _ws:
+            _lay.removeWidget(w)
+
+    def paintEvent(self, event):
+        painter = QPainter(self)
+        painter.setRenderHint(QPainter.Antialiasing)
+        if self._type == tagitem.TYPE_RAND:
+            border_color = Qt.black
+        elif self._type == tagitem.TYPE_DEVELOPER:
+            border_color = Qt.red
+        elif self._type == tagitem.TYPE_TAG:
+            border_color = Qt.green
+        elif self._type == tagitem.TYPE_USERTAG:
+            border_color = Qt.blue
+        elif self._type == tagitem.TYPE_EXISTS:
+            border_color = Qt.yellow
+        border_width = 1
+        pen = QPen(border_color)
+        pen.setWidth(border_width)
+        painter.setPen(pen)
+        painter.drawRect(self.rect())
+
+    def __init__(self, tag, removeable=True, _type=TYPE_RAND, refdata=None) -> None:
+        super().__init__()
+        tagLayout = QHBoxLayout()
+        tagLayout.setContentsMargins(0, 0, 0, 0)
+        self._type = _type
+        key = (tag, _type, refdata)
+        self.setLayout(tagLayout)
+        lb = ClickableLabel()
+        lb.setText(tag)
+        lb.clicked.connect(functools.partial(self.labelclicked.emit, key))
+        tagLayout.addWidget(lb)
+        if removeable:
+            button = getcolorbutton(
+                None,
+                None,
+                functools.partial(self.removesignal.emit, key),  # self.removeTag(tag),
+                icon="fa.times",
+                constcolor="#FF69B4",
+                sizefixed=True,
+            )
+            tagLayout.addWidget(button)
+
+
+class TagWidget(QWidget):
+    tagschanged = pyqtSignal(tuple)  # ((tag,type,refdata),)
+    linepressedenter = pyqtSignal(str)
+    tagclicked = pyqtSignal(tuple)  # tag,type,refdata
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+
+        layout = QHBoxLayout()
+        layout.setContentsMargins(0, 0, 0, 0)
+
+        self.setLayout(layout)
+
+        self.lineEdit = QComboBox()
+        self.lineEdit.setLineEdit(QLineEdit())
+
+        self.lineEdit.lineEdit().returnPressed.connect(
+            lambda: self.linepressedenter.emit(self.lineEdit.currentText())
+        )
+
+        self.lineEdit.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Maximum)
+
+        layout.addWidget(self.lineEdit)
+        self.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Fixed)
+
+        self.tag2widget = {}
+
+    def addTags(self, tags, signal=True):
+        for key in tags:
+            self.__addTag(key)
+        self.__calltagschanged(signal)
+
+    @tryprint
+    def __addTag(self, key):
+        tag, _type, refdata = key
+        if not tag:
+            return
+        if key in self.tag2widget:
+            return
+        qw = tagitem(tag, _type=_type, refdata=refdata)
+        qw.removesignal.connect(self.removeTag)
+        qw.labelclicked.connect(self.tagclicked.emit)
+        layout = self.layout()
+        layout.insertWidget(layout.count() - 1, qw)
+        self.tag2widget[key] = qw
+        self.lineEdit.setFocus()
+
+    def addTag(self, tag, _type, refdata=None, signal=True):
+        self.__addTag((tag, _type, refdata))
+        self.__calltagschanged(signal)
+
+    @tryprint
+    def __removeTag(self, key):
+        _w = self.tag2widget[key]
+        _w.remove()
+
+        self.layout().removeWidget(_w)
+        self.tag2widget.pop(key)
+
+    def removeTag(self, key, signal=True):
+        self.__removeTag(key)
+        self.__calltagschanged(signal)
+
+    def __calltagschanged(self, signal):
+        if signal:
+            self.tagschanged.emit(tuple(self.tag2widget.keys()))
+
+    def clearTag(self, signal=True):
+        for key in self.tag2widget.copy():
+            self.__removeTag(key)
+        self.__calltagschanged(signal)
+
+
+class _browserdialog(saveposwindow):
+    seturlsignal = pyqtSignal(str)
+
+    def parsehtml(self, url):
         try:
-            newpath = parsehtmlmethod(savehook_new_data[exepath]["infopath"])
+            newpath = parsehtmlmethod(url)
         except:
             print_exc()
-            newpath = savehook_new_data[exepath]["infopath"]
+            newpath = url
         if newpath[:4].lower() != "http":
             newpath = os.path.abspath(newpath)
         return newpath
 
-    def resizeEvent(self, a0: QResizeEvent) -> None:
-        if self._resizable == False:
-            return
-        self.nettab.resize(a0.size().width(), self.nettab.height())
-        rate = QApplication.instance().devicePixelRatio()
-        rect = (
-            0,
-            int(rate * self.nettab.height()),
-            int(rate * a0.size().width()),
-            int(rate * (a0.size().height() - self.nettab.height())),
-        )
-        if self.webviewv == 0:
-            self.browser.resize(*rect)
-        elif self.webviewv == 1:
-            # self.browser.set_geo(*rect)
-            from webviewpy import webview_native_handle_kind_t
+    def startupsettitle(self, exepath):
 
-            hwnd = self.browser.get_native_handle(
-                webview_native_handle_kind_t.WEBVIEW_NATIVE_HANDLE_KIND_UI_WIDGET
-            )
-            windows.MoveWindow(hwnd, rect[0], rect[1], rect[2], rect[3], True)
-
-    def __init__(self, parent, textsource_or_exepath) -> None:
-        super().__init__(parent, Qt.WindowMinMaxButtonsHint | Qt.WindowCloseButtonHint)
-        if isinstance(textsource_or_exepath, str):
-            self.exepath = textsource_or_exepath
+        if exepath:
+            title = savehook_new_data[exepath]["title"]
         else:
-            try:
-                self.exepath = textsource_or_exepath.pname
-            except:
-                self.exepath = "0"
-        self._resizable = False
+            title = "LunaTranslator"
+        self.setWindowTitle(title)
 
-        self.webviewv = globalconfig["usewebview"]
-        if self.webviewv == 0:
-            self.browser = winsharedutils.HTMLBrowser(int(self.winId()))
-        elif self.webviewv == 1:
-            from webviewpy import Webview, declare_library_path, webview_exception
+    def loadalllinks(self, exepath):
+        items = []
+        if exepath:
+            self.setWindowTitle(savehook_new_data[exepath]["title"])
 
-            declare_library_path(
-                os.path.abspath(
-                    os.path.join(
-                        "files/plugins/",
-                        ("DLL32", "DLL64")[platform.architecture()[0] == "64bit"],
-                        "webview",
+        for link in globalconfig["relationlinks"]:
+            items.append((link[0], tagitem.TYPE_GLOABL_LIKE, link[1]))
+        if exepath:
+            for link in savehook_new_data[self.exepath]["relationlinks"]:
+                items.append((link[0], tagitem.TYPE_GAME_LIKE, link[1]))
+
+        self.tagswidget.clearTag(False)
+        self.tagswidget.addTags(items)
+
+    def startupnavi(self, exepath):
+        for idx in range(1, 100):
+            if idx == 1:
+                if exepath:
+                    hasvndb = bool(
+                        savehook_new_data[exepath]["infopath"]
+                        and os.path.exists(savehook_new_data[exepath]["infopath"])
                     )
-                )
-            )
-            try:
-                self.browser = Webview(False, int(self.winId()))
-            except webview_exception:
-                self.browser = winsharedutils.HTMLBrowser(int(self.winId()))
-                self.webviewv = 0
-        self.setWindowTitle(savehook_new_data[self.exepath]["title"])
-        self.nettab = QTabWidget(self)
-        self.nettab.setFixedHeight(self.nettab.tabBar().height())
-        tabBar = CustomTabBar(self)
-        self.nettab.setTabBar(tabBar)
-        tabBar.lastclick.connect(self.lastclicked)
-        # self.nettab.setSizePolicy( QSizePolicy.Preferred,QSizePolicy.Fixed)
-        self.hasvndb = bool(
-            savehook_new_data[self.exepath]["infopath"]
-            and os.path.exists(savehook_new_data[self.exepath]["infopath"])
-        )
-        if self.hasvndb:
-            self.nettab.addTab(QWidget(), "vndb")
-        for lnk in savehook_new_data[self.exepath]["relationlinks"]:
-            self.nettab.addTab(QWidget(), lnk[0])
-        self.nettab.addTab(QWidget(), "+")
-        self.nettab.currentChanged.connect(self.changetab)
-        self.nettab.setContextMenuPolicy(Qt.CustomContextMenu)
-        self.nettab.customContextMenuRequested.connect(self.showmenu)
-        if self.hasvndb + len(savehook_new_data[self.exepath]["relationlinks"]):
-            self.changetab(0)
-        # vbox.addWidget(self.nettab)
-        # vbox.addWidget(qww)
-        self._resizable = True
-        self.resize(1300, 800)
+                    if hasvndb:
+                        navitarget = self.parsehtml(
+                            savehook_new_data[exepath]["infopath"]
+                        )
+                        break
+            elif idx == 2:
 
-        self.show()
+                if exepath:
+                    if len(savehook_new_data[exepath]["relationlinks"]):
+                        navitarget = savehook_new_data[exepath]["relationlinks"][-1][1]
+                        break
+            elif idx == 3:
+                if len(globalconfig["relationlinks"]):
+                    navitarget = globalconfig["relationlinks"][-1][1]
+                    break
+            else:
+                navitarget = None
+                break
+        if navitarget:
+            self.browser.navigate(navitarget)
+            self.urlchanged(navitarget)
+
+    def urlchanged(self, url):
+        self.tagswidget.lineEdit.setCurrentText(url)
+        self.current = url
+
+    def likelink(self):
+        _dia = Prompt_dialog(
+            gobject.baseobject.settin_ui,
+            _TR("收藏"),
+            "",
+            [
+                [
+                    _TR("名称"),
+                    (
+                        self.current.split("/")[-1]
+                        if len(self.current.split("/"))
+                        else "?"
+                    ),
+                ],
+                [_TR("网址"), self.current],
+            ],
+        )
+
+        _dia.exec()
+
+        text = []
+        for _t in _dia.text:
+            text.append(_t.text())
+        if self.exepath:
+            savehook_new_data[self.exepath]["relationlinks"].append(text)
+            self.tagswidget.addTag(text[0], tagitem.TYPE_GAME_LIKE, text[1])
+        else:
+            globalconfig["relationlinks"].append(text)
+            self.tagswidget.addTag(text[0], tagitem.TYPE_GLOABL_LIKE, text[1])
+
+    def tagschanged(self, tags):
+        __ = []
+        __2 = []
+        for _name, _type, _url in tags:
+            if _type == tagitem.TYPE_GLOABL_LIKE:
+                __.append([_name, _url])
+            elif _type == tagitem.TYPE_GAME_LIKE:
+                __2.append([_name, _url])
+        globalconfig["relationlinks"] = __
+        if self.exepath:
+            savehook_new_data[self.exepath]["relationlinks"] = __2
+
+    def reinit(self, exepath=None):
+
+        self.exepath = exepath
+        self.loadalllinks(exepath)
+        self.startupnavi(exepath)
+        self.startupsettitle(exepath)
+
+    def closeEvent(self, event: QCloseEvent):
+        self.hide()
+        event.ignore()
+
+    def __init__(self, parent) -> None:
+        super().__init__(parent, globalconfig, "browserwidget")
+
+        self.browser = auto_select_webview(self)
+
+        self.tagswidget = TagWidget(self)
+        self.tagswidget.tagschanged.connect(self.tagschanged)
+
+        self.tagswidget.tagclicked.connect(self.urlclicked)
+        self.tagswidget.linepressedenter.connect(self.browser.navigate)
+        self.browser.on_load.connect(self.urlchanged)
+
+        hlay = QHBoxLayout()
+        hlay.addWidget(self.tagswidget)
+
+        hlay.addWidget(
+            getcolorbutton(
+                "",
+                "",
+                lambda _: self.likelink(),
+                icon="fa.heart",
+                constcolor="#FF69B4",
+                sizefixed=True,
+            )
+        )
+        hlay.addWidget(
+            getcolorbutton(
+                "",
+                "",
+                lambda _: self.urlclicked((None, None, self.current)),
+                icon="fa.repeat",
+                constcolor="#FF69B4",
+                sizefixed=True,
+            )
+        )
+        _topw = QWidget()
+        _topw.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Fixed)
+        _topw.setLayout(hlay)
+        layout = QVBoxLayout()
+        layout.setContentsMargins(*(0 for i in range(4)))
+        hlay.setContentsMargins(*(0 for i in range(4)))
+        layout.addWidget(_topw)
+        layout.addWidget(self.browser)
+        __w = QWidget()
+        __w.setLayout(layout)
+        self.setCentralWidget(__w)
+
+    def urlclicked(self, _):
+        tag, _, url = _
+        if url.startswith("./cache/vndb"):
+            url = self.parsehtml(url)
+        self.browser.navigate(url)
 
     def showmenu(self, p):
         tab_index = self.nettab.tabBar().tabAt(p)
@@ -351,33 +590,25 @@ class browserdialog(QDialog):
                 tab_index - self.hasvndb
             )
 
-    def lastclicked(self):
-        def callback(texts):
-            if len(texts[0].strip()) and len(texts[1].strip()):
-                savehook_new_data[self.exepath]["relationlinks"].append(texts)
-                self.nettab.insertTab(self.nettab.count() - 1, QWidget(), texts[0])
 
-        gobject.baseobject.Prompt.call.emit(
-            _TR("添加关联页面"),
-            _TR("页面类型_页面链接"),
-            [["vndb/2df/..."], "about:blank"],
-            [callback],
-        )
+_global_single_browser = (None, None)
+_browser_lock = threading.Lock()
 
-    def changetab(self, idx):
-        if self.hasvndb and idx == 0:
-            try:
-                self.browser.navigate((self.parsehtml(self.exepath)))
-            except:
-                self.browser.navigate("about:blank")
-        else:
-            lnks = savehook_new_data[self.exepath]["relationlinks"][idx - self.hasvndb]
-            if len(lnks) == 3 and os.path.exists(lnks[2]):
-                link = os.path.abspath(lnks[2])
-            else:
-                link = lnks[1]
-            print(link)
-            self.browser.navigate(link)
+
+def browserdialog(parent, exepath=None):
+
+    # webview2两次启动之间间隔不能太短。。。不然会在清理的时候又再次加载会崩溃
+    with _browser_lock:
+        global _global_single_browser
+        if (_global_single_browser[0] != globalconfig["usewebview"]) or (
+            _global_single_browser[1] is None
+        ):
+            _global_single_browser = (
+                globalconfig["usewebview"],
+                _browserdialog(parent),
+            )
+        _global_single_browser[1].reinit(exepath)
+        _global_single_browser[1].show()
 
 
 def getvndbrealtags(vndbtags_naive):
@@ -789,7 +1020,8 @@ class dialog_setting_game(QDialog):
         def newitem(text, removeable, first=False, _type=tagitem.TYPE_RAND):
             qw = tagitem(text, removeable, _type)
 
-            def __(_qw, t, _type):
+            def __(_qw, _):
+                t, _type, _ = _
                 _qw.remove()
                 i = savehook_new_data[exepath]["usertags"].index(t)
                 self.labelflow.removeidx(i)
@@ -798,13 +1030,9 @@ class dialog_setting_game(QDialog):
             if removeable:
                 qw.removesignal.connect(functools.partial(__, qw))
 
-            def _lbclick(tp, t):
-                try:
-                    _global_dialog_savedgame_new.tagswidget.addTag(t, tp)
-                except:
-                    pass
-
-            qw.labelclicked.connect(functools.partial(_lbclick, _type))
+            qw.labelclicked.connect(
+                lambda _: _global_dialog_savedgame_new.tagswidget.addTag(*_)
+            )
             if first:
                 self.labelflow.insertwidget(0, qw)
             else:
@@ -1233,179 +1461,6 @@ class listediter(QDialog):
         )
 
 
-class ClickableLabel(QLabel):
-    def __init__(self):
-        super().__init__()
-        self.setClickable(True)
-
-    def setClickable(self, clickable):
-        self._clickable = clickable
-
-    def mousePressEvent(self, event):
-        if self._clickable and event.button() == Qt.LeftButton:
-            self.clicked.emit()
-
-    clicked = pyqtSignal()
-
-
-class tagitem(QWidget):
-    TYPE_RAND = 0
-    TYPE_DEVELOPER = 1
-    TYPE_TAG = 2
-    TYPE_USERTAG = 3
-    TYPE_EXISTS = 4
-    removesignal = pyqtSignal(str, int)
-    labelclicked = pyqtSignal(str)
-
-    def remove(self):
-        self.hide()
-        _lay = self.layout()
-        _ws = []
-        for i in range(_lay.count()):
-            witem = _lay.itemAt(i)
-            _ws.append(witem.widget())
-        for w in _ws:
-            _lay.removeWidget(w)
-
-    def paintEvent(self, event):
-        painter = QPainter(self)
-        painter.setRenderHint(QPainter.Antialiasing)
-        if self._type == tagitem.TYPE_RAND:
-            border_color = Qt.black
-        elif self._type == tagitem.TYPE_DEVELOPER:
-            border_color = Qt.red
-        elif self._type == tagitem.TYPE_TAG:
-            border_color = Qt.green
-        elif self._type == tagitem.TYPE_USERTAG:
-            border_color = Qt.blue
-        elif self._type == tagitem.TYPE_EXISTS:
-            border_color = Qt.yellow
-        border_width = 1
-        pen = QPen(border_color)
-        pen.setWidth(border_width)
-        painter.setPen(pen)
-        painter.drawRect(self.rect())
-
-    def __init__(self, tag, removeable=True, _type=TYPE_RAND) -> None:
-        super().__init__()
-        tagLayout = QHBoxLayout()
-        tagLayout.setContentsMargins(0, 0, 0, 0)
-        self._type = _type
-        self.setLayout(tagLayout)
-
-        lb = ClickableLabel()
-        lb.setText(tag)
-        lb.clicked.connect(lambda: self.labelclicked.emit(tag))
-        tagLayout.addWidget(lb)
-        if removeable:
-            button = getcolorbutton(
-                None,
-                None,
-                lambda: self.removesignal.emit(tag, self._type),  # self.removeTag(tag),
-                qicon=qtawesome.icon(
-                    "fa.times",
-                    color="#FF69B4",
-                ),
-                sizefixed=True,
-            )
-            tagLayout.addWidget(button)
-
-
-class TagWidget(QWidget):
-    tagschanged = pyqtSignal(tuple)
-
-    def __init__(self, parent=None):
-        super().__init__(parent)
-        self.tags = []
-
-        layout = QHBoxLayout()
-        layout.setContentsMargins(0, 0, 0, 0)
-
-        layout.addWidget(QLabel(_TR("过滤")))
-        layout.addWidget(
-            getcolorbutton(
-                "",
-                "",
-                lambda _: listediter(
-                    parent,
-                    _TR("标签集"),
-                    _TRL(
-                        [
-                            "删除",
-                            "标签",
-                        ]
-                    ),
-                    globalconfig["labelset"],
-                    closecallback=refreshcombo,
-                ),
-                icon="fa.gear",
-                constcolor="#FF69B4",
-            ),
-        )
-        self.setLayout(layout)
-
-        self.lineEdit = QComboBox()
-        self.lineEdit.setLineEdit(QLineEdit())
-
-        def callback():
-            t = self.lineEdit.currentText()
-
-            if t in globalconfig["labelset"]:
-                tp = tagitem.TYPE_USERTAG
-            else:
-                tp = tagitem.TYPE_RAND
-            self.addTag(self.lineEdit.currentText(), tp)
-            self.lineEdit.clear()
-            self.lineEdit.addItems(globalconfig["labelset"])
-            self.lineEdit.clearEditText()
-
-        self.lineEdit.lineEdit().returnPressed.connect(callback)
-
-        self.lineEdit.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Maximum)
-
-        layout.addWidget(self.lineEdit)
-        self.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Fixed)
-
-        self.tag2widget = {}
-
-        def refreshcombo():
-            _ = self.lineEdit.currentText()
-            self.lineEdit.clear()
-            self.lineEdit.addItems(globalconfig["labelset"])
-            self.lineEdit.setCurrentText(_)
-
-        refreshcombo()
-
-    def addTag(self, tag, _type):
-        try:
-            if not tag:
-                return
-            if (tag, _type) in self.tag2widget:
-                return
-            self.tags.append(tag)
-            qw = tagitem(tag, _type=_type)
-            qw.removesignal.connect(self.removeTag)
-
-            layout = self.layout()
-            # layout.insertLayout(layout.count() - 1, tagLayout)
-            layout.insertWidget(layout.count() - 1, qw)
-            self.tag2widget[(tag, _type)] = qw
-            self.lineEdit.clearEditText()
-            self.lineEdit.setFocus()
-            self.tagschanged.emit(tuple(self.tag2widget.keys()))
-        except:
-            print_exc()
-
-    def removeTag(self, tag, _type):
-        _w = self.tag2widget[(tag, _type)]
-        _w.remove()
-
-        self.layout().removeWidget(_w)
-        self.tag2widget.pop((tag, _type))
-        self.lineEdit.setFocus()
-        self.tagschanged.emit(tuple(self.tag2widget.keys()))
-
-
 @Singleton_close
 class dialog_savedgame_new(saveposwindow):
     def startgame(self, game):
@@ -1471,7 +1526,7 @@ class dialog_savedgame_new(saveposwindow):
             if newtags != self.currtags:
                 break
             notshow = False
-            for tag, _type in tags:
+            for tag, _type, _ in tags:
                 if _type == tagitem.TYPE_EXISTS:
                     if os.path.exists(k) == False:
                         notshow = True
@@ -1552,10 +1607,55 @@ class dialog_savedgame_new(saveposwindow):
         if globalconfig["showintab_sub"]:
             showintab(int(self.winId()), True)
         formLayout = QVBoxLayout()
+
+        layout = QHBoxLayout()
+        layout.setContentsMargins(0, 0, 0, 0)
+        layout.addWidget(QLabel(_TR("过滤")))
+
+        def refreshcombo():
+            _ = self.tagswidget.lineEdit.currentText()
+            self.tagswidget.lineEdit.clear()
+            self.tagswidget.lineEdit.addItems(globalconfig["labelset"])
+            self.tagswidget.lineEdit.setCurrentText(_)
+
+        layout.addWidget(
+            getcolorbutton(
+                "",
+                "",
+                lambda _: listediter(
+                    parent,
+                    _TR("标签集"),
+                    _TRL(
+                        [
+                            "删除",
+                            "标签",
+                        ]
+                    ),
+                    globalconfig["labelset"],
+                    closecallback=refreshcombo,
+                ),
+                icon="fa.gear",
+                constcolor="#FF69B4",
+            ),
+        )
+
+        def callback(t):
+            if t in globalconfig["labelset"]:
+                tp = tagitem.TYPE_USERTAG
+            else:
+                tp = tagitem.TYPE_RAND
+            self.tagswidget.addTag(t, tp)
+
+            self.tagswidget.lineEdit.clear()
+            self.tagswidget.lineEdit.addItems(globalconfig["labelset"])
+            self.tagswidget.lineEdit.clearEditText()
+
         self.tagswidget = TagWidget(self)
+        self.tagswidget.linepressedenter.connect(callback)
         self.currtags = tuple()
         self.tagswidget.tagschanged.connect(self.tagschanged)
-        formLayout.addWidget(self.tagswidget)
+        layout.addWidget(self.tagswidget)
+        formLayout.addLayout(layout)
         self.flow = lazyscrollflow()
         self.setContextMenuPolicy(Qt.CustomContextMenu)
         self.customContextMenuRequested.connect(self.showmenu)

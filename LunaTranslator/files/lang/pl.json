@@ -675,7 +675,6 @@
     "缩放方式": "Metoda powiększania",
     "缩放/恢复游戏窗口": "Powiększ/przywróć okno gry",
     "打开关联页面": "Otwórz powiązaną stronę",
-    "添加关联页面": "Dodaj powiązaną stronę",
     "页面类型": "Typ strony",
     "页面链接": "Link do strony",
     "缓存": "pamięć podręczna",
@@ -765,5 +764,8 @@
     "启动游戏不修改顺序": "Rozpocznij grę bez zmiany kolejności",
     "使用自定义优化": "Użyj niestandardowej optymalizacji",
     "游戏管理": "Zarządzanie grą",
-    "显示标题": "pokaż nagłówek"
+    "显示标题": "pokaż nagłówek",
+    "收藏": "kolekcja",
+    "名称": "nazwa",
+    "网址": "Strona internetowa"
 }

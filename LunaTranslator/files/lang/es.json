@@ -675,7 +675,6 @@
     "缩放方式": "Modo de zoom",
     "缩放/恢复游戏窗口": "Ampliar / restaurar la ventana del juego",
     "打开关联页面": "Abrir página asociada",
-    "添加关联页面": "Añadir página asociada",
     "页面类型": "Tipo de página",
     "页面链接": "Enlace de página",
     "缓存": "Caché",
@@ -765,5 +764,8 @@
     "启动游戏不修改顺序": "Iniciar el juego sin modificar el orden",
     "使用自定义优化": "Usar optimizaciones personalizadas",
     "游戏管理": "Gestión de juegos",
-    "显示标题": "Mostrar título"
+    "显示标题": "Mostrar título",
+    "收藏": "Colección",
+    "名称": "Nombre",
+    "网址": "Sitio web"
 }

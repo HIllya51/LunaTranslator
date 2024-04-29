@@ -11,7 +11,7 @@ from PyQt5.QtCore import pyqtSignal, Qt, QSize
 from PyQt5.QtGui import QCursor
 from PyQt5.QtWidgets import QLabel, QPushButton, QSystemTrayIcon
 import gobject
-from myutils.wrapper import threader
+from myutils.wrapper import threader, trypass
 import winsharedutils
 from myutils.config import globalconfig, saveallconfig, _TR, static_data
 from myutils.subproc import endsubprocs
@@ -494,7 +494,8 @@ class QUnFrameWindow(resizableframeless):
             (
                 "open_relative_link",
                 lambda: browserdialog(
-                    gobject.baseobject.settin_ui, gobject.baseobject.textsource
+                    gobject.baseobject.settin_ui,
+                    trypass(lambda: gobject.baseobject.textsource.pname)(),
                 ),
             ),
             (

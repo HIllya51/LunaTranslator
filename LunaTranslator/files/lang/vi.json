@@ -675,7 +675,6 @@
     "缩放方式": "Cách thu phóng",
     "缩放/恢复游戏窗口": "Thu phóng/khôi phục cửa sổ trò chơi",
     "打开关联页面": "Mở trang liên kết",
-    "添加关联页面": "Thêm trang liên kết",
     "页面类型": "Loại trang",
     "页面链接": "Liên kết trang",
     "缓存": "Bộ nhớ tạm",
@@ -765,5 +764,8 @@
     "启动游戏不修改顺序": "Bắt đầu trò chơi Không thay đổi thứ tự",
     "使用自定义优化": "Sử dụng Custom Optimization",
     "游戏管理": "Quản lý trò chơi",
-    "显示标题": "Hiện tiêu đề"
+    "显示标题": "Hiện tiêu đề",
+    "收藏": "Bộ sưu tập",
+    "名称": "Tên",
+    "网址": "Trang chủ"
 }

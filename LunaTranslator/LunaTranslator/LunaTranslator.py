@@ -43,7 +43,6 @@ import gobject
 import winsharedutils
 from winsharedutils import pid_running
 from myutils.post import POSTSOLVE
-from gui.usefulwidget import Prompt
 
 
 class _autolock:
@@ -111,7 +110,6 @@ class MAINUI:
                 self.processmethods.append({"name": name, "object": object})
             except:
                 print_exc()
-
 
     def solvebeforetrans(self, content):
         contexts = []
@@ -819,7 +817,6 @@ class MAINUI:
         self.startoutputer()
         self.settin_ui = Settin(self.translation_ui)
         self.transhis = gui.transhist.transhist(self.settin_ui)
-        gobject.baseobject.Prompt = Prompt()
         self.startreader()
 
         self.edittextui = gui.edittext.edittext(self.settin_ui)

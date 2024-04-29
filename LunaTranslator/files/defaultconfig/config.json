@@ -15,6 +15,7 @@
     "network":1,
     "hookmagpie":true,
     "imagewrapmode":0,
+    "relationlinks":[["LunaTranslator","https://github.com/HIllya51/LunaTranslator"],["vndb","https://vndb.org/"]],
     "hooklossless":true,
     "direct_filterrepeat":false,
     "allow_set_text_name":false,
@@ -110,6 +111,12 @@
         100,
         1200,
         600
+    ],
+    "browserwidget": [
+        100,
+        100,
+        1300,
+        800
     ],
     "sw_geo": [
         100,

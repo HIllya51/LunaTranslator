@@ -134,8 +134,8 @@ def everymethodsthread():
             except:
                 print_exc()
                 continue
-            saveimg = data.get("imagepath", None)
-            saveinfo = data.get("infopath", None)
+            imagepath = data.get("imagepath", None)
+            infopath = data.get("infopath", None)
             vid = data.get("vid", None)
             title = data.get("title", None)
             namemap = data.get("namemap", None)
@@ -145,12 +145,24 @@ def everymethodsthread():
                 continue
             print(data)
             savehook_new_data[gamepath]["vid"] = int(vid[1:])
-            if saveimg and (not savehook_new_data[gamepath]["isimagepathusersetted"]):
-                savehook_new_data[gamepath]["imagepath"] = saveimg
+            if imagepath and (not savehook_new_data[gamepath]["isimagepathusersetted"]):
+                savehook_new_data[gamepath]["imagepath"] = imagepath
             if title and (not savehook_new_data[gamepath]["istitlesetted"]):
                 savehook_new_data[gamepath]["title"] = title
-            if saveinfo:
-                savehook_new_data[gamepath]["infopath"] = saveinfo
+            if infopath:
+                savehook_new_data[gamepath]["infopath"] = infopath
+
+                found = False
+                for link in savehook_new_data[gamepath]["relationlinks"]:
+                    if link[1] == found:
+                        found = True
+                if not found:
+                    savehook_new_data[gamepath]["relationlinks"].append(
+                        [vid, f"https://vndb.org/{vid}"]
+                    )
+                    savehook_new_data[gamepath]["relationlinks"].append(
+                        [vid + "_static", infopath]
+                    )
             if namemap:
                 savehook_new_data[gamepath]["namemap"] = namemap
             if vndbtags:

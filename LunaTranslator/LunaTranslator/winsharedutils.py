@@ -167,6 +167,8 @@ html_resize = utilsdll.html_resize
 html_resize.argtypes = c_void_p, c_uint, c_uint, c_uint, c_uint
 html_release = utilsdll.html_release
 html_release.argtypes = (c_void_p,)
+html_get_current_url = utilsdll.html_get_current_url
+html_get_current_url.argtypes = c_void_p, c_wchar_p
 
 
 class HTMLBrowser:
@@ -184,6 +186,11 @@ class HTMLBrowser:
 
     def navigate(self, url):
         html_navigate(self.html, url)
+
+    def get_current_url(self):
+        w = create_unicode_buffer(65536)
+        html_get_current_url(self.html, w)
+        return w.value
 
     def __del__(self):
         html_release(self.html)
