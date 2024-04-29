@@ -151,18 +151,6 @@ def everymethodsthread():
                 savehook_new_data[gamepath]["title"] = title
             if infopath:
                 savehook_new_data[gamepath]["infopath"] = infopath
-
-                found = False
-                for link in savehook_new_data[gamepath]["relationlinks"]:
-                    if link[1] == found:
-                        found = True
-                if not found:
-                    savehook_new_data[gamepath]["relationlinks"].append(
-                        [vid, f"https://vndb.org/{vid}"]
-                    )
-                    savehook_new_data[gamepath]["relationlinks"].append(
-                        [vid + "_static", infopath]
-                    )
             if namemap:
                 savehook_new_data[gamepath]["namemap"] = namemap
             if vndbtags:

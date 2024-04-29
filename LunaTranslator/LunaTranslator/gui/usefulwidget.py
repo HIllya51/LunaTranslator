@@ -11,7 +11,7 @@ from PyQt5.QtWidgets import (
     QWidget,
 )
 
-from webviewpy import webview_native_handle_kind_t, Webview, declare_library_path
+from webviewpy import webview_error_t, webview_native_handle_kind_t, Webview, declare_library_path
 from PyQt5.QtGui import QCursor, QCloseEvent, QColor, QTextCursor, QResizeEvent
 from PyQt5.QtCore import Qt, pyqtSignal, QSize
 from myutils.config import _TR, globalconfig
@@ -545,10 +545,14 @@ class WebivewWidget(QWidget):
                 )
             )
         )
-        self.webview = Webview(debug=debug, window=int(self.winId()))
+        class _Webview(Webview):
+            def navigate(_, url: str) -> webview_error_t:
+                self.on_load.emit(url)
+                return super().navigate(url)
+        self.webview = _Webview(debug=debug, window=int(self.winId()))
 
-        self.webview.bind("__on_load", self._on_load)
-        self.webview.init("""window.__on_load(window.location.href)""")
+        #self.webview.bind("__on_load", self._on_load)
+        #self.webview.init("""window.__on_load(window.location.href)""")
 
     def _on_load(self, _, href):
         self.on_load.emit(json.loads(href)[0])
