@@ -292,7 +292,7 @@ class browserdialog(QDialog):
         if self.webviewv == 0:
             self.browser = winsharedutils.HTMLBrowser(int(self.winId()))
         elif self.webviewv == 1:
-            from webviewpy import Webview, declare_library_path
+            from webviewpy import Webview, declare_library_path, webview_exception
 
             declare_library_path(
                 os.path.abspath(
@@ -303,9 +303,11 @@ class browserdialog(QDialog):
                     )
                 )
             )
-            self.browser = Webview(
-                False, int(self.winId())
-            )  # 构造函数里会触发ResizeEvent。虽然确实有问题，但很奇怪前一天晚上正常，第二天起来就崩溃了。
+            try:
+                self.browser = Webview(False, int(self.winId()))
+            except webview_exception:
+                self.browser = winsharedutils.HTMLBrowser(int(self.winId()))
+                self.webviewv == 0
         self.setWindowTitle(savehook_new_data[self.exepath]["title"])
         self.nettab = QTabWidget(self)
         self.nettab.setFixedHeight(self.nettab.tabBar().height())
