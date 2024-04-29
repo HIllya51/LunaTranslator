@@ -307,7 +307,7 @@ class browserdialog(QDialog):
                 self.browser = Webview(False, int(self.winId()))
             except webview_exception:
                 self.browser = winsharedutils.HTMLBrowser(int(self.winId()))
-                self.webviewv == 0
+                self.webviewv = 0
         self.setWindowTitle(savehook_new_data[self.exepath]["title"])
         self.nettab = QTabWidget(self)
         self.nettab.setFixedHeight(self.nettab.tabBar().height())
