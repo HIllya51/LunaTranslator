@@ -471,7 +471,7 @@ class _browserdialog(saveposwindow):
 
     def likelink(self):
         _dia = Prompt_dialog(
-            gobject.baseobject.settin_ui,
+            self,
             _TR("收藏"),
             "",
             [
@@ -487,17 +487,17 @@ class _browserdialog(saveposwindow):
             ],
         )
 
-        _dia.exec()
+        if _dia.exec():
 
-        text = []
-        for _t in _dia.text:
-            text.append(_t.text())
-        if self.exepath:
-            savehook_new_data[self.exepath]["relationlinks"].append(text)
-            self.tagswidget.addTag(text[0], tagitem.TYPE_GAME_LIKE, text[1])
-        else:
-            globalconfig["relationlinks"].append(text)
-            self.tagswidget.addTag(text[0], tagitem.TYPE_GLOABL_LIKE, text[1])
+            text = []
+            for _t in _dia.text:
+                text.append(_t.text())
+            if self.exepath:
+                savehook_new_data[self.exepath]["relationlinks"].append(text)
+                self.tagswidget.addTag(text[0], tagitem.TYPE_GAME_LIKE, text[1])
+            else:
+                globalconfig["relationlinks"].append(text)
+                self.tagswidget.addTag(text[0], tagitem.TYPE_GLOABL_LIKE, text[1])
 
     def tagschanged(self, tags):
         __ = []
