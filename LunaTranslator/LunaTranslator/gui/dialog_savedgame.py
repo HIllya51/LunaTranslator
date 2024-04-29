@@ -475,14 +475,7 @@ class _browserdialog(saveposwindow):
             _TR("收藏"),
             "",
             [
-                [
-                    _TR("名称"),
-                    (
-                        self.current.split("/")[-1]
-                        if len(self.current.split("/"))
-                        else "?"
-                    ),
-                ],
+                [_TR("名称"), ""],
                 [_TR("网址"), self.current],
             ],
         )
