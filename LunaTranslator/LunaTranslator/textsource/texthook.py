@@ -12,11 +12,13 @@ from myutils.hwnd import injectdll
 from myutils.wrapper import threader
 from ctypes import (
     CDLL,
+    CFUNCTYPE,
     c_bool,
     POINTER,
     Structure,
     c_int,
     pointer,
+    c_char_p,
     c_wchar_p,
     c_uint64,
     sizeof,
@@ -71,21 +73,13 @@ class SearchParam(Structure):
     ]
 
 
-class Message(Structure):
-    _fields_ = [
-        ("read", c_bool),
-        ("type", c_int),
-        ("pid", DWORD),
-        ("hn", c_char * HOOK_NAME_SIZE),
-        ("hc", c_wchar * HOOKCODE_LEN),
-        ("tp", ThreadParam),
-        ("stringptr", c_void_p),
-        ("addr", c_uint64),
-    ]
-
-
-class simplehooks(Structure):
-    _fields_ = [("hookcode", c_wchar * 500), ("text", c_void_p)]
+findhookcallback_t = CFUNCTYPE(None, c_wchar_p, c_wchar_p)
+ProcessEvent = CFUNCTYPE(None, DWORD)
+ThreadEvent = CFUNCTYPE(None, c_wchar_p, c_char_p, ThreadParam)
+OutputCallback = CFUNCTYPE(None, c_wchar_p, c_char_p, ThreadParam, c_wchar_p)
+ConsoleHandler = CFUNCTYPE(None, c_wchar_p)
+HookInsertHandler = CFUNCTYPE(None, c_uint64, c_wchar_p)
+EmbedCallback = CFUNCTYPE(None, c_wchar_p, ThreadParam)
 
 
 class texthook(basetext):
@@ -96,7 +90,7 @@ class texthook(basetext):
             autostarthookcode = []
         if needinserthookcode is None:
             needinserthookcode = []
-
+        self.keepref = []
         self.newline = Queue()
         self.newline_delaywait = Queue()
         self.is64bit = Is64bit(pids[0])
@@ -147,7 +141,16 @@ class texthook(basetext):
         self.Luna_Settings = LunaHost.Luna_Settings
         self.Luna_Settings.argtypes = c_int, c_bool, c_int, c_int
         self.Luna_Start = LunaHost.Luna_Start
-        self.Luna_Start.argtypes = (POINTER(HANDLE),)
+        self.Luna_Start.argtypes = (
+            c_void_p,
+            c_void_p,
+            c_void_p,
+            c_void_p,
+            c_void_p,
+            c_void_p,
+            c_void_p,
+            c_void_p,
+        )
         self.Luna_Inject = LunaHost.Luna_Inject
         self.Luna_Inject.argtypes = DWORD, LPCWSTR
         self.Luna_CreatePipeAndCheck = LunaHost.Luna_CreatePipeAndCheck
@@ -160,17 +163,12 @@ class texthook(basetext):
         self.Luna_RemoveHook.argtypes = DWORD, c_uint64
         self.Luna_Detach = LunaHost.Luna_Detach
         self.Luna_Detach.argtypes = (DWORD,)
-        self.Luna_cfree = LunaHost.Luna_cfree
-        self.Luna_cfree.argtypes = (c_void_p,)
         self.Luna_FindHooks = LunaHost.Luna_FindHooks
         self.Luna_FindHooks.argtypes = (
             DWORD,
             SearchParam,
-            POINTER(HANDLE),
-            POINTER(POINTER(c_int)),
+            c_void_p,
         )
-        self.Luna_FindHooks_waiting = LunaHost.Luna_FindHooks_waiting
-        self.Luna_FindHooks_waiting.argtypes = (POINTER(c_int),)
         self.Luna_EmbedSettings = LunaHost.Luna_EmbedSettings
         self.Luna_EmbedSettings.argtypes = (
             DWORD,
@@ -190,10 +188,24 @@ class texthook(basetext):
         self.Luna_embedcallback = LunaHost.Luna_embedcallback
         self.Luna_embedcallback.argtypes = DWORD, LPCWSTR, LPCWSTR
 
+    def Luna_Startup(self):
+        procs = [
+            ProcessEvent(self.onprocconnect),
+            ProcessEvent(self.connectedpids.remove),
+            ThreadEvent(self.onnewhook),
+            ThreadEvent(lambda _1, _2, tp: self.onremovehook(tp)),
+            OutputCallback(self.handle_output),
+            ConsoleHandler(gobject.baseobject.hookselectdialog.sysmessagesignal.emit),
+            HookInsertHandler(self.newhookinsert),
+            EmbedCallback(self.getembedtext),
+        ]
+        self.keepref += procs
+        ptrs = [cast(_, c_void_p).value for _ in procs]
+        self.Luna_Start(*ptrs)
+
     def start(self):
-        self.hRead = HANDLE()
-        self.Luna_Start(pointer(self.hRead))
-        self.solveeventthread()
+
+        self.Luna_Startup()
         self.setsettings()
 
         injectpids = []
@@ -216,7 +228,6 @@ class texthook(basetext):
             # subprocess.Popen('"{}" dllinject {} "{}"'.format(injecter,pid,dll))
             injectdll(injectpids, injecter, dll)
 
-    @threader
     def onprocconnect(self, pid):
         self.connectedpids.append(pid)
         time.sleep(savehook_new_data[self.pname]["inserthooktimeout"] / 1000)
@@ -224,45 +235,6 @@ class texthook(basetext):
             self.Luna_InsertHookCode(pid, hookcode)
         self.showgamename()
         self.flashembedsettings(pid)
-
-    @threader
-    def solveeventthread(self):
-        while self.ending == False:
-            message = windows.ReadFile(self.hRead, sizeof(Message))
-            if len(message) != sizeof(Message):
-                break
-            message = Message.from_buffer_copy(message)
-            _type = message.type
-            if _type in [0, 1]:
-                pid = message.pid
-                if _type == 0:
-                    self.onprocconnect(pid)
-                elif _type == 1:
-                    self.connectedpids.remove(pid)
-            elif _type in [2, 3]:
-                if _type == 2:
-                    self.onnewhook(message.hc, message.hn, message.tp)
-                elif _type == 3:
-                    self.onremovehook(message.tp)
-            elif _type == 4:
-                self.handle_output(
-                    message.hc,
-                    message.hn,
-                    message.tp,
-                    cast(message.stringptr, c_wchar_p).value,
-                )
-            elif _type == 5:
-                gobject.baseobject.hookselectdialog.sysmessagesignal.emit(
-                    cast(message.stringptr, c_wchar_p).value
-                )
-            elif _type == 6:
-                self.newhookinsert(
-                    message.addr, cast(message.stringptr, c_wchar_p).value
-                )
-            elif _type == 7:
-                self.getembedtext(cast(message.stringptr, c_wchar_p).value, message.tp)
-            if message.stringptr:
-                self.Luna_cfree(message.stringptr)
 
     def newhookinsert(self, addr, hcode):
         for _hc, _addr, _ctx1, _ctx2 in savehook_new_data[self.pname]["embedablehook"]:
@@ -415,32 +387,24 @@ class texthook(basetext):
     def findhook(self, usestruct):
         savefound = {}
         pids = self.connectedpids.copy()
+        cntref = []
 
-        headers = {}
-        waiters = {}
+        def __callback(cntref, hcode, text):
+            if hcode not in savefound:
+                savefound[hcode] = []
+            savefound[hcode].append(text)
+            cntref.append(0)
+
+        _callback = findhookcallback_t(functools.partial(__callback, cntref))
+        self.keepref.append(_callback)
         for pid in pids:
-            headers[pid] = HANDLE()
-            count = POINTER(c_int)()
-            waiters[pid] = count
-            self.Luna_FindHooks(pid, usestruct, pointer(headers[pid]), pointer(count))
+            self.Luna_FindHooks(pid, usestruct, cast(_callback, c_void_p).value)
 
-            def ReadThread(hread):
-                while True:
-                    message = windows.ReadFile(hread, sizeof(simplehooks))
-                    if len(message) != sizeof(simplehooks):
-                        break
-                    message = simplehooks.from_buffer_copy(message)
-                    hc = message.hookcode
-                    text = cast(message.text, c_wchar_p).value
-                    if hc not in savefound:
-                        savefound[hc] = []
-                    savefound[hc].append(text)
-                    self.Luna_cfree(message.text)
-                windows.CloseHandle(hread)
-
-            threading.Thread(target=ReadThread, args=(headers[pid],)).start()
-        for pid in pids:
-            self.Luna_FindHooks_waiting(waiters[pid])
+        while True:
+            lastsize = len(cntref)
+            time.sleep(2)
+            if lastsize == len(cntref) and lastsize != 0:
+                break
         gobject.baseobject.hookselectdialog.getfoundhooksignal.emit(savefound)
 
     def inserthook(self, hookcode):

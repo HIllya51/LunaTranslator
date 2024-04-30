@@ -1,7 +1,6 @@
 from libcurl import *
-import winsharedutils
-import threading
-from ctypes import c_long, cast, pointer, POINTER
+import threading, functools, queue
+from ctypes import c_long, cast, pointer, POINTER, c_char
 from network.requests_common import *
 from traceback import print_exc
 
@@ -25,9 +24,8 @@ class Response(ResponseBase):
         downloadeddata = b""
         canend = False
         allbs = 0
-        while not (self.cqueue.empty() and canend):
-            buff = self.cqueue.get()
-
+        while not (self.queue.empty() and canend):
+            buff = self.queue.get()
             if buff is None:
                 canend = True
                 continue
@@ -174,23 +172,33 @@ class Session(Sessionbase):
         resp = Response()
 
         if stream:
-            resp.cqueue = winsharedutils.lockedqueue()
-            curl_easy_setopt(curl, CURLoption.CURLOPT_WRITEDATA, resp.cqueue.ptr)
+
+            def WriteMemoryCallback(queue, contents, size, nmemb, userp):
+                realsize = size * nmemb
+                queue.put(cast(contents, POINTER(c_char))[:realsize])
+                return realsize
+
+            _content = []
+            _headers = []
+            resp.queue = queue.Queue()
+            headerqueue = queue.Queue()
+            resp.keepref1 = WRITEFUNCTION(
+                functools.partial(WriteMemoryCallback, resp.queue)
+            )
+            resp.keepref2 = WRITEFUNCTION(
+                functools.partial(WriteMemoryCallback, headerqueue)
+            )
             curl_easy_setopt(
                 curl,
                 CURLoption.CURLOPT_WRITEFUNCTION,
-                winsharedutils.WriteMemoryToQueue,
+                cast(resp.keepref1, c_void_p).value,
             )
 
-            headercqueue = winsharedutils.lockedqueue()
-            curl_easy_setopt(curl, CURLoption.CURLOPT_HEADERDATA, headercqueue.ptr)
             curl_easy_setopt(
                 curl,
                 CURLoption.CURLOPT_HEADERFUNCTION,
-                winsharedutils.WriteMemoryToQueue,
+                cast(resp.keepref2, c_void_p).value,
             )
-            headerok = threading.Lock()
-            headerok.acquire()
 
             def ___perform():
                 try:
@@ -198,31 +206,22 @@ class Session(Sessionbase):
                 except:
                     print_exc()
                     self.raise_for_status()
-                    headercqueue.pushnone()
-                headerok.acquire()
+                    headerqueue.put(None)
                 curl_easy_reset(curl)
-                resp.cqueue.pushnone()
+                resp.queue.put(None)
 
             threading.Thread(target=___perform, daemon=True).start()
 
             headerb = b""
-            CLRFnum = 1 + int(bool((proxy)))
             while True:
-                _headerb = headercqueue.get()
+                _headerb = headerqueue.get()
                 if _headerb is None:
                     self.raise_for_status()
                 headerb += _headerb
                 if _headerb == b"\r\n":
-                    # 使用代理时：
-                    # b'HTTP/1.1 200 Connection established\r\n'
-                    # b'\r\n'
-                    CLRFnum -= 1
-                    if CLRFnum == 0:
-                        break
-                    else:
-                        headerb = b""
+                    break
             resp.headers = self._update_header_cookie(headerb.decode("utf8"))
-            headerok.release()
+
             if proxy:
                 resp.status_code = int(
                     headerb.decode("utf8").split("\r\n")[0].split(" ")[1]
@@ -230,24 +229,35 @@ class Session(Sessionbase):
             else:
                 resp.status_code = self._getStatusCode(curl)
         else:
-            _content = winsharedutils.MemoryStruct()
-            curl_easy_setopt(curl, CURLoption.CURLOPT_WRITEDATA, pointer(_content))
+
+            def WriteMemoryCallback(saver, contents, size, nmemb, userp):
+                realsize = size * nmemb
+                saver.append(cast(contents, POINTER(c_char))[:realsize])
+                return realsize
+
+            _content = []
+            _headers = []
+            resp.keepref1 = WRITEFUNCTION(
+                functools.partial(WriteMemoryCallback, _content)
+            )
+            resp.keepref2 = WRITEFUNCTION(
+                functools.partial(WriteMemoryCallback, _headers)
+            )
+
             curl_easy_setopt(
                 curl,
                 CURLoption.CURLOPT_WRITEFUNCTION,
-                winsharedutils.WriteMemoryCallback,
+                cast(resp.keepref1, c_void_p).value,
             )
-            _headers = winsharedutils.MemoryStruct()
-            curl_easy_setopt(curl, CURLoption.CURLOPT_HEADERDATA, pointer(_headers))
             curl_easy_setopt(
                 curl,
                 CURLoption.CURLOPT_HEADERFUNCTION,
-                winsharedutils.WriteMemoryCallback,
+                cast(resp.keepref2, c_void_p).value,
             )
-            # curl_easy_setopt(curl,CURLoption.CURLOPT_HEADERFUNCTION,cast(WRITEFUNCTION(WRITEFUNCTIONXX),c_void_p))
+
             self._perform(curl)
-            resp.content = _content.get()
-            resp.headers = self._update_header_cookie(_headers.get().decode("utf8"))
+            resp.content = b"".join(_content)
+            resp.headers = self._update_header_cookie(b"".join(_headers).decode("utf8"))
             resp.status_code = self._getStatusCode(curl)
             curl_easy_reset(curl)
         resp.last_error = self.last_error

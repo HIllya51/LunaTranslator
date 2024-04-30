@@ -102,36 +102,33 @@ struct ThreadParam
     uint64_t ctx;  // The context of the hook: by default the first value on stack, usually the return address
     uint64_t ctx2; // The subcontext of the hook: 0 by default, generated in a method specific to the hook
 };
-struct messagelist
-{
-    bool read;
-    int type;
-    DWORD pid;
-    char name[HOOK_NAME_SIZE];
-    wchar_t hookcode[HOOKCODE_LEN];
-    ThreadParam tp;
-    wchar_t *stringptr;
-    uint64_t addr;
-};
-
+typedef void (*ProcessEvent)(DWORD);
+typedef void (*ThreadEvent)(wchar_t *, char *, ThreadParam);
+typedef void (*OutputCallback)(wchar_t *, char *, ThreadParam, const wchar_t *);
+typedef void (*ConsoleHandler)(const wchar_t *);
+typedef void (*HookInsertHandler)(uint64_t, const wchar_t *);
+typedef void (*EmbedCallback)(const wchar_t *, ThreadParam);
+nlohmann::json config;
+std::map<std::string, std::string> translation;
+std::unordered_set<DWORD> connectedpids;
+void (*Luna_Start)(ProcessEvent Connect, ProcessEvent Disconnect, ThreadEvent Create, ThreadEvent Destroy, OutputCallback Output, ConsoleHandler console, HookInsertHandler hookinsert, EmbedCallback embed);
+void (*Luna_Inject)(DWORD pid, LPCWSTR basepath);
+void (*Luna_EmbedSettings)(DWORD pid, UINT32 waittime, UINT8 fontCharSet, bool fontCharSetEnabled, wchar_t *fontFamily, UINT32 spaceadjustpolicy, UINT32 keeprawtext, bool fastskipignore);
+void (*Luna_useembed)(DWORD pid, uint64_t address, uint64_t ctx1, uint64_t ctx2, bool use);
+bool (*Luna_checkisusingembed)(DWORD pid, uint64_t address, uint64_t ctx1, uint64_t ctx2);
+void (*Luna_embedcallback)(DWORD pid, LPCWSTR text, LPCWSTR trans);
+std::set<std::string> notranslation;
+HANDLE hsema;
 class lunapatch
 {
 public:
     HANDLE hMessage;
     HANDLE hwait;
-    nlohmann::json config;
-    std::map<std::string, std::string> translation;
-    std::unordered_set<DWORD> connectedpids;
-    void (*Luna_Start)(HANDLE *hRead);
-    void (*Luna_Inject)(DWORD pid, LPCWSTR basepath);
-    void (*Luna_EmbedSettings)(DWORD pid, UINT32 waittime, UINT8 fontCharSet, bool fontCharSetEnabled, wchar_t *fontFamily, UINT32 spaceadjustpolicy, UINT32 keeprawtext, bool fastskipignore);
-    void (*Luna_useembed)(DWORD pid, uint64_t address, uint64_t ctx1, uint64_t ctx2, bool use);
-    bool (*Luna_checkisusingembed)(DWORD pid, uint64_t address, uint64_t ctx1, uint64_t ctx2);
-    void (*Luna_embedcallback)(DWORD pid, LPCWSTR text, LPCWSTR trans);
-    std::set<std::string> notranslation;
-    HANDLE hsema;
-    lunapatch(std::wstring dll, nlohmann::json &&_translation, nlohmann::json &&_config) : translation(_translation), config(_config)
+
+    lunapatch(std::wstring dll, nlohmann::json &&_translation, nlohmann::json &&_config)
     {
+        translation = _translation;
+        config = _config;
         auto LunaHost = LoadLibraryW(dll.c_str());
 
         Luna_Start = (decltype(Luna_Start))GetProcAddress(LunaHost, "Luna_Start");
@@ -141,10 +138,54 @@ public:
         Luna_checkisusingembed = (decltype(Luna_checkisusingembed))GetProcAddress(LunaHost, "Luna_checkisusingembed");
         Luna_embedcallback = (decltype(Luna_embedcallback))GetProcAddress(LunaHost, "Luna_embedcallback");
         hsema = CreateSemaphore(NULL, 0, 100, NULL);
-        Luna_Start(&hMessage);
-        std::thread([&]()
-                    { Parsehostmessage(); })
-            .detach();
+        Luna_Start(
+            [](DWORD pid)
+            {
+                auto font = StringToWideString(config["embedsettings"]["font"]);
+                auto insertspace_policy = config["embedsettings"]["insertspace_policy"];
+                auto keeprawtext = config["embedsettings"]["keeprawtext"];
+                Luna_EmbedSettings(pid, 1000, 2, false, font.data(), insertspace_policy, keeprawtext, false);
+                connectedpids.insert(pid);
+            },
+            [](DWORD pid)
+            {
+                connectedpids.erase(pid);
+                ReleaseSemaphore(hsema, 1, NULL);
+            },
+            [](auto, auto, auto) {},
+            [](auto, auto, auto) {},
+            [](auto, auto, auto, auto) {},
+            [](auto) {},
+            [](uint64_t addr, const wchar_t *output)
+            {
+                std::wstring newhookcode = output;
+                for (auto hook : config["embedhook"])
+                {
+                    auto hookcode = StringToWideString(hook[0]);
+                    uint64_t _addr = hook[1];
+                    uint64_t _ctx1 = hook[2];
+                    uint64_t _ctx2 = hook[3];
+                    if (hookcode == newhookcode)
+                    {
+                        for (auto pid : connectedpids)
+                        {
+                            Luna_useembed(pid, addr, _ctx1, _ctx2, true);
+                        }
+                    }
+                }
+            },
+            [](const wchar_t *output, ThreadParam tp)
+            {
+                std::wstring text = output;
+                for (auto pid : connectedpids)
+                {
+                    if ((Luna_checkisusingembed(pid, tp.addr, tp.ctx, tp.ctx2)))
+                    {
+                        auto trans = findtranslation(text);
+                        Luna_embedcallback(pid, output, trans.c_str());
+                    }
+                }
+            });
     }
     void run()
     {
@@ -194,7 +235,7 @@ public:
             }
         }
     }
-    std::wstring findtranslation(const std::wstring &text)
+    static std::wstring findtranslation(const std::wstring &text)
     {
         auto utf8text = WideStringToString(text);
         if (translation.find(utf8text) == translation.end())
@@ -204,71 +245,6 @@ public:
             return {};
         }
         return StringToWideString(translation.at(utf8text));
-    }
-    void Parsehostmessage()
-    {
-        while (true)
-        {
-            messagelist message;
-            DWORD _;
-            ReadFile(hMessage, &message, sizeof(message), &_, NULL);
-            switch (message.type)
-            {
-            case 0:
-            {
-                auto font = StringToWideString(config["embedsettings"]["font"]);
-                auto insertspace_policy = config["embedsettings"]["insertspace_policy"];
-                auto keeprawtext = config["embedsettings"]["keeprawtext"];
-                Luna_EmbedSettings(message.pid, 1000, 2, false, font.data(), insertspace_policy, keeprawtext, false);
-                connectedpids.insert(message.pid);
-            }
-            break;
-            case 1:
-            {
-                connectedpids.erase(message.pid);
-                ReleaseSemaphore(hsema, 1, NULL);
-            }
-            break;
-            case 7:
-            {
-                std::wstring text = message.stringptr;
-                auto tp = message.tp;
-                for (auto pid : connectedpids)
-                {
-                    if ((Luna_checkisusingembed(pid, tp.addr, tp.ctx, tp.ctx2)))
-                    {
-                        auto trans = findtranslation(text);
-                        Luna_embedcallback(pid, text.c_str(), trans.c_str());
-                    }
-                }
-            }
-            break;
-            case 6:
-            {
-                std::wstring newhookcode = message.stringptr;
-                for (auto hook : config["embedhook"])
-                {
-                    auto hookcode = StringToWideString(hook[0]);
-                    uint64_t _addr = hook[1];
-                    uint64_t _ctx1 = hook[2];
-                    uint64_t _ctx2 = hook[3];
-                    if (hookcode == newhookcode)
-                    {
-                        for (auto pid : connectedpids)
-                        {
-                            Luna_useembed(pid, message.addr, _ctx1, _ctx2, true);
-                        }
-                    }
-                }
-            }
-            break;
-            default:
-                break;
-            }
-
-            if (message.stringptr)
-                free(message.stringptr);
-        }
     }
 };
 std::wstring GetExecutablePath()
