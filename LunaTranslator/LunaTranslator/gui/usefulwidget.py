@@ -549,8 +549,8 @@ class WebivewWidget(QWidget):
         self.webview.bind("__on_load", self._on_load)
         self.webview.init("""window.__on_load(window.location.href)""")
 
-    def _on_load(self, _, href):
-        self.on_load.emit(json.loads(href)[0])
+    def _on_load(self, href):
+        self.on_load.emit(href)
 
     def __getattr__(self, name):
         return getattr(self.webview, (name))
