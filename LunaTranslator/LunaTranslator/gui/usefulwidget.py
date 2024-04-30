@@ -544,12 +544,7 @@ class WebivewWidget(QWidget):
             )
         )
 
-        class _Webview(Webview):
-            def navigate(_, url: str) -> webview_error_t:
-                self.on_load.emit(url)
-                return super().navigate(url)
-
-        self.webview = _Webview(debug=debug, window=int(self.winId()))
+        self.webview = Webview(debug=debug, window=int(self.winId()))
 
         self.webview.bind("__on_load", self._on_load)
         self.webview.init("""window.__on_load(window.location.href)""")
