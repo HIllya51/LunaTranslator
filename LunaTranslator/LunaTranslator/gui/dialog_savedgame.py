@@ -151,16 +151,13 @@ class ItemWidget(QWidget):
         layout.addWidget(self._lb)
         self.setLayout(layout)
         self.exe = exe
-        if os.path.exists(exe):
-            self.maskshowfileexists.setStyleSheet(
-                "QLabel { background-color: rgba(255,255,255, 0); }"
-            )
-        else:
-            self.maskshowfileexists.setStyleSheet(
-                "QLabel { background-color: "
-                + globalconfig["dialog_savegame_layout"]["onfilenoexistscolor"]
-                + "; }"
-            )
+        self.maskshowfileexists.setStyleSheet(
+            "QLabel { background-color: "
+            + globalconfig["dialog_savegame_layout"][
+                ("onfilenoexistscolor", "backcolor")[os.path.exists(exe)]
+            ]
+            + "; }"
+        )
 
 
 class IMGWidget(QLabel):
@@ -1244,6 +1241,7 @@ class dialog_syssetting(QDialog):
                 getspinbox(0, 1000, globalconfig["dialog_savegame_layout"], key),
             )
         for key, name in [
+            ("backcolor", "颜色"),
             ("onselectcolor", "选中时颜色"),
             ("onfilenoexistscolor", "游戏不存在时颜色"),
         ]:

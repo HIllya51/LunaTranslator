@@ -193,8 +193,9 @@
         "itemh": 350,
         "margin":10,
         "textH":50,
-        "onselectcolor": "rgba(0,100,200, 0.3)",
-        "onfilenoexistscolor": "rgba(25,25,25, 0.3)"
+        "backcolor": "#c38282",
+        "onselectcolor": "#007fff",
+        "onfilenoexistscolor": "#acacac"
     },
     "profiles_index": 0,
     "ocrautobindwindow": true,
