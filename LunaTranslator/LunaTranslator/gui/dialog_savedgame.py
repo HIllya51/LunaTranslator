@@ -400,7 +400,8 @@ class TagWidget(QWidget):
         self.__calltagschanged(signal)
 
 
-class _browserdialog(saveposwindow):
+@Singleton
+class browserdialog(saveposwindow):
     seturlsignal = pyqtSignal(str)
 
     def parsehtml(self, url):
@@ -511,11 +512,7 @@ class _browserdialog(saveposwindow):
         self.startupnavi(exepath)
         self.startupsettitle(exepath)
 
-    def closeEvent(self, event: QCloseEvent):
-        self.hide()
-        event.ignore()
-
-    def __init__(self, parent) -> None:
+    def __init__(self, parent, exepath=None) -> None:
         super().__init__(parent, globalconfig, "browserwidget")
 
         self.browser = auto_select_webview(self)
@@ -562,6 +559,9 @@ class _browserdialog(saveposwindow):
         __w.setLayout(layout)
         self.setCentralWidget(__w)
 
+        self.reinit(exepath)
+        self.show()
+
     def urlclicked(self, _):
         tag, _, url = _
         if url.startswith("./cache/vndb"):
@@ -582,26 +582,6 @@ class _browserdialog(saveposwindow):
             savehook_new_data[self.exepath]["relationlinks"].pop(
                 tab_index - self.hasvndb
             )
-
-
-_global_single_browser = (None, None)
-_browser_lock = threading.Lock()
-
-
-def browserdialog(parent, exepath=None):
-
-    # webview2两次启动之间间隔不能太短。。。不然会在清理的时候又再次加载会崩溃
-    with _browser_lock:
-        global _global_single_browser
-        if (_global_single_browser[0] != globalconfig["usewebview"]) or (
-            _global_single_browser[1] is None
-        ):
-            _global_single_browser = (
-                globalconfig["usewebview"],
-                _browserdialog(parent),
-            )
-        _global_single_browser[1].reinit(exepath)
-        _global_single_browser[1].show()
 
 
 def getvndbrealtags(vndbtags_naive):
