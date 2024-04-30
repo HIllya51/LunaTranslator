@@ -731,7 +731,7 @@ class dialog_setting_game(QDialog):
                     getcolorbutton(
                         "",
                         "",
-                        lambda: browserdialog(self, exepath),
+                        lambda: browserdialog(gobject.baseobject.settin_ui, exepath),
                         icon="fa.book",
                         constcolor="#FF69B4",
                     ),
