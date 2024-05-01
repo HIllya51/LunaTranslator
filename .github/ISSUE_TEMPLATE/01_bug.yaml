@@ -9,7 +9,10 @@ body:
     required: true
 - type: textarea
   attributes:
-    label: Related screenshot (optional) 相关截图（可选）
+    label: bug's screenshot 错误截图
+  validations:
+    required: true
+
 - type: textarea
   attributes:
     label: Reproduction steps 复现步骤
