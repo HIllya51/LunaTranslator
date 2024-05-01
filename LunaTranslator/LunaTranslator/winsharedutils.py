@@ -267,8 +267,16 @@ def queryversion(exe):
 startdarklistener = utilsdll.startdarklistener
 startdarklistener.restype = HANDLE
 
-SetTheme = utilsdll._SetTheme
-SetTheme.argtypes = HWND, c_bool, c_int
+_SetTheme = utilsdll._SetTheme
+_SetTheme.argtypes = HWND, c_bool, c_int
+
+
+def SetTheme(hwnd, dark, backdrop):
+    try:  # win7 x86 crash unknown why
+        _SetTheme(hwnd, dark, backdrop)
+    except:
+        pass
+
 
 showintab = utilsdll.showintab
 showintab.argtypes = HWND, c_bool

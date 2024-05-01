@@ -3,7 +3,7 @@ from PyQt5.QtWidgets import QTabWidget, QTextBrowser, QAction, QMenu, QFileDialo
 from PyQt5.QtCore import Qt, pyqtSignal
 import qtawesome, functools
 
-from gui.usefulwidget import closeashidewindow, textbrowappendandmovetoend
+from gui.usefulwidget import closeashidewindow
 from myutils.config import globalconfig, _TR
 
 
@@ -11,7 +11,6 @@ class transhist(closeashidewindow):
 
     getnewsentencesignal = pyqtSignal(str)
     getnewtranssignal = pyqtSignal(str, str)
-    getdebuginfosignal = pyqtSignal(str, str)
 
     def __init__(self, parent):
         super(transhist, self).__init__(parent, globalconfig, "hist_geo")
@@ -19,17 +18,13 @@ class transhist(closeashidewindow):
         # self.setWindowFlags(self.windowFlags()&~Qt.WindowMinimizeButtonHint)
         self.getnewsentencesignal.connect(self.getnewsentence)
         self.getnewtranssignal.connect(self.getnewtrans)
-        self.getdebuginfosignal.connect(self.debugprint)
         self.hiderawflag = False
         self.hideapiflag = False
 
-        self.setWindowTitle(_TR("历史翻译和调试输出"))
+        self.setWindowTitle(_TR("历史翻译"))
 
     def setupUi(self):
         self.setWindowIcon(qtawesome.icon("fa.rotate-left"))
-        self.tabwidget = QTabWidget()
-        self.tabwidget.setTabPosition(QTabWidget.East)
-        self.setCentralWidget(self.tabwidget)
 
         def gettb(_type):
             textOutput = QTextBrowser()
@@ -43,12 +38,8 @@ class transhist(closeashidewindow):
             return textOutput
 
         self.textOutput = gettb(1)
-        self.tabwidget.addTab(self.textOutput, _TR("历史翻译"))
-        self.debugoutputs = {}
-        for _text in ["stderr", "stdout"]:
-            _x = gettb(0)
-            self.tabwidget.addTab(_x, _TR(_text))
-            self.debugoutputs[_text] = _x
+        self.setCentralWidget(self.textOutput)
+
         self.hiding = True
 
     def showmenu(self, tb, flag, p):
@@ -78,9 +69,6 @@ class transhist(closeashidewindow):
         elif action == hideshowapi:
 
             self.hideapiflag = not self.hideapiflag
-
-    def debugprint(self, idx, sentence):
-        textbrowappendandmovetoend(self.debugoutputs[idx], sentence, False)
 
     def getnewsentence(self, sentence):
 

@@ -808,8 +808,6 @@ class MAINUI:
 
     def mainuiloadafter(self):
 
-        gobject.overridestdio()
-
         self.safeloadprocessmodels()
         self.prepare()
         self.startxiaoxueguan()

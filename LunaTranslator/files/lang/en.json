@@ -648,7 +648,6 @@
     "Github仓库": "Github warehouse",
     "利用上文信息翻译（通常会有一定的效果提升，但会导致变慢）": "Translate using the information provided in the previous text (usually with some improvement in effectiveness, but it can lead to slower translation)",
     "文本缓冲区长度": "Text buffer length",
-    "显示/隐藏历史翻译和调试输出": "Show/hide historical translation and debugging output",
     "历史翻译和调试输出": "Historical translation and debugging output",
     "调试输出": "Debugging output",
     "显示翻译": "Display translation",

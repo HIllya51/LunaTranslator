@@ -368,7 +368,7 @@
             },
             "history": {
                 "use": true,
-                "tip": "显示/隐藏历史翻译和调试输出",
+                "tip": "显示/隐藏历史翻译",
                 "icon": "fa.rotate-left"
             },
             "gamepad_new": {
@@ -505,7 +505,7 @@
             },
             "_6": {
                 "use": false,
-                "name": "显示/隐藏历史翻译和调试输出",
+                "name": "显示/隐藏历史翻译",
                 "keystring": ""
             },
             "_7": {
