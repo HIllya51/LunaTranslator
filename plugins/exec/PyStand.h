@@ -24,16 +24,11 @@ class PyStand
 public:
 	virtual ~PyStand();
 	PyStand(const wchar_t *runtime);
-	PyStand(const char *runtime);
 
 public:
-	std::wstring Ansi2Unicode(const char *text);
 
 	int RunString(const wchar_t *script);
-	int RunString(const char *script);
-
 	int DetectScript();
-
 protected:
 	bool CheckEnviron(const wchar_t *rtp);
 	bool LoadPython();

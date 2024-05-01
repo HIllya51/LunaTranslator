@@ -47,40 +47,6 @@ PyStand::PyStand(const wchar_t *runtime)
 	}
 }
 
-
-//---------------------------------------------------------------------
-// ctor for ansi
-//---------------------------------------------------------------------
-PyStand::PyStand(const char *runtime)
-{
-	_hDLL = NULL;
-	_Py_Main = NULL;
-	std::wstring rtp = Ansi2Unicode(runtime);
-	if (CheckEnviron(rtp.c_str()) == false) {
-		exit(1);
-	}
-	if (LoadPython() == false) {
-		exit(2);
-	}
-}
-
-
-//---------------------------------------------------------------------
-// char to wchar_t
-//---------------------------------------------------------------------
-std::wstring PyStand::Ansi2Unicode(const char *text)
-{
-	int len = (int)strlen(text);
-	std::wstring wide;
-	int require = MultiByteToWideChar(CP_ACP, 0, text, len, NULL, 0);
-	if (require > 0) {
-		wide.resize(require);
-		MultiByteToWideChar(CP_ACP, 0, text, len, &wide[0], require);
-	}
-	return wide;
-}
-
-
 //---------------------------------------------------------------------
 // init: _args, _argv, _cwd, _pystand, _home, _runtime, 
 //---------------------------------------------------------------------
@@ -248,25 +214,6 @@ int PyStand::RunString(const wchar_t *script)
 
 
 //---------------------------------------------------------------------
-// run ansi string
-//---------------------------------------------------------------------
-int PyStand::RunString(const char *script)
-{
-	std::wstring text = Ansi2Unicode(script);
-	return RunString(text.c_str());
-}
-
-
-
-//---------------------------------------------------------------------
-// static init script
-//---------------------------------------------------------------------
-#ifndef PYSTAND_STATIC_NAME
-#define PYSTAND_STATIC_NAME "LunaTranslator\\LunaTranslator_main.py"
-#endif
-
-
-//---------------------------------------------------------------------
 // LoadScript()
 //---------------------------------------------------------------------
 int PyStand::DetectScript()
@@ -281,33 +228,20 @@ int PyStand::DetectScript()
 	std::vector<const wchar_t*> exts;
 	std::vector<std::wstring> scripts;
 	_script.clear();
-#if !(PYSTAND_DISABLE_STATIC)
+
 	std::wstring test;
-	test = _home + L"\\" + Ansi2Unicode(PYSTAND_STATIC_NAME);
+	test = _home + L"LunaTranslator\\LunaTranslator_main.py";
 	if (PathFileExistsW(test.c_str())) {
 		_script = test;
 	}
-#endif
+
 	if (_script.empty()) {
-		exts.push_back(L".int");
-		exts.push_back(L".py");
-		exts.push_back(L".pyw");
-		for (int i = 0; i < (int)exts.size(); i++) {
-			std::wstring test = main + exts[i];
-			scripts.push_back(test);
-			if (PathFileExistsW(test.c_str())) {
-				_script = test;
-				break;
-			}
-		}
-		if (_script.size() == 0) {
 			std::wstring msg = L"Can't find either of:\r\n";
 			for (int j = 0; j < (int)scripts.size(); j++) {
 				msg += scripts[j] + L"\r\n";
 			}
 			MessageBoxW(NULL, msg.c_str(), L"ERROR", MB_OK);
 			return -1;
-		}
 	}
 	SetEnvironmentVariableW(L"PYSTAND_SCRIPT", _script.c_str());
 	return 0;
@@ -317,53 +251,53 @@ int PyStand::DetectScript()
 //---------------------------------------------------------------------
 // init script
 //---------------------------------------------------------------------
-const char *init_script = 
-"import sys\n"
-"import os\n"
-"PYSTAND = os.environ['PYSTAND']\n"
-"PYSTAND_HOME = os.environ['PYSTAND_HOME']\n"
-"PYSTAND_RUNTIME = os.environ['PYSTAND_RUNTIME']\n"
-"PYSTAND_SCRIPT = os.environ['PYSTAND_SCRIPT']\n"
-"sys.path_origin = [n for n in sys.path]\n"
-"sys.PYSTAND = PYSTAND\n"
-"sys.PYSTAND_HOME = PYSTAND_HOME\n"
-"sys.PYSTAND_SCRIPT = PYSTAND_SCRIPT\n"
-"def MessageBox(msg, info = 'Message'):\n"
-"    import ctypes\n"
-"    ctypes.windll.user32.MessageBoxW(None, str(msg), str(info), 0)\n"
-"    return 0\n"
-"os.MessageBox = MessageBox\n"
+const auto init_script = 
+L"import sys\n"
+L"import os\n"
+L"PYSTAND = os.environ['PYSTAND']\n"
+L"PYSTAND_HOME = os.environ['PYSTAND_HOME']\n"
+L"PYSTAND_RUNTIME = os.environ['PYSTAND_RUNTIME']\n"
+L"PYSTAND_SCRIPT = os.environ['PYSTAND_SCRIPT']\n"
+L"sys.path_origin = [n for n in sys.path]\n"
+L"sys.PYSTAND = PYSTAND\n"
+L"sys.PYSTAND_HOME = PYSTAND_HOME\n"
+L"sys.PYSTAND_SCRIPT = PYSTAND_SCRIPT\n"
+L"def MessageBox(msg, info = 'Message'):\n"
+L"    import ctypes\n"
+L"    ctypes.windll.user32.MessageBoxW(None, str(msg), str(info), 0)\n"
+L"    return 0\n"
+L"os.MessageBox = MessageBox\n"
 #ifndef PYSTAND_CONSOLE
-"try:\n"
-"    fd = os.open('CONOUT$', os.O_RDWR | os.O_BINARY)\n"
-"    fp = os.fdopen(fd, 'w')\n"
-"    sys.stdout = fp\n"
-"    sys.stderr = fp\n"
-"    attached = True\n"
-"except Exception as e:\n"
-"    fp = open(os.devnull, 'w')\n"
-"    sys.stdout = fp\n"
-"    sys.stderr = fp\n"
-"    attached = False\n"
+L"try:\n"
+L"    fd = os.open('CONOUT$', os.O_RDWR | os.O_BINARY)\n"
+L"    fp = os.fdopen(fd, 'w')\n"
+L"    sys.stdout = fp\n"
+L"    sys.stderr = fp\n"
+L"    attached = True\n"
+L"except Exception as e:\n"
+L"    fp = open(os.devnull, 'w')\n"
+L"    sys.stdout = fp\n"
+L"    sys.stderr = fp\n"
+L"    attached = False\n"
 #endif
-"sys.argv = [PYSTAND_SCRIPT] + sys.argv[1:]\n"
-"text = open(PYSTAND_SCRIPT, 'rb').read()\n"
-"environ = {'__file__': PYSTAND_SCRIPT, '__name__': '__main__'}\n"
-"environ['__package__'] = None\n"
+L"sys.argv = [PYSTAND_SCRIPT] + sys.argv[1:]\n"
+L"text = open(PYSTAND_SCRIPT, 'rb').read()\n"
+L"environ = {'__file__': PYSTAND_SCRIPT, '__name__': '__main__'}\n"
+L"environ['__package__'] = None\n"
 #ifndef PYSTAND_CONSOLE
-"try:\n"
-"    code = compile(text, PYSTAND_SCRIPT, 'exec')\n"
-"    exec(code, environ)\n"
-"except Exception:\n"
-"    if attached:\n"
-"        raise\n"
-"    import traceback, io\n"
-"    sio = io.StringIO()\n"
-"    traceback.print_exc(file = sio)\n"
-"    os.MessageBox(sio.getvalue(), 'Error')\n"
+L"try:\n"
+L"    code = compile(text, PYSTAND_SCRIPT, 'exec')\n"
+L"    exec(code, environ)\n"
+L"except Exception:\n"
+L"    if attached:\n"
+L"        raise\n"
+L"    import traceback, io\n"
+L"    sio = io.StringIO()\n"
+L"    traceback.print_exc(file = sio)\n"
+L"    os.MessageBox(sio.getvalue(), 'Error')\n"
 #else
-"code = compile(text, PYSTAND_SCRIPT, 'exec')\n"
-"exec(code, environ)\n"
+L"code = compile(text, PYSTAND_SCRIPT, 'exec')\n"
+L"exec(code, environ)\n"
 #endif
 "";
 
@@ -386,7 +320,7 @@ int WINAPI
 WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR args, int show)
 #endif
 {
-	PyStand ps("LunaTranslator\\runtime");
+	PyStand ps(L"LunaTranslator\\runtime");
 	if (ps.DetectScript() != 0) {
 		return 3;
 	}
