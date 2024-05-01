@@ -1,626 +1,635 @@
 {
-	"lingva":{
+	"lingva": {
 		"args": {
-            "host": "translate.plausibility.cloud"
-        }
+			"host": "translate.plausibility.cloud"
+		}
 	},
-	"DeepLX":{
+	"DeepLX": {
 		"args": {
-            "api": "https://api.deeplx.org/translate"
-        }
+			"api": "https://api.deeplx.org/translate"
+		}
 	},
-    "baiduapi": {
-        "args": {
-            "注册网址": "https://fanyi-api.baidu.com/api/trans/product/desktop",
-            "APP ID": "",
-            "密钥": "",
-            "字数统计": "0",
-            "次数统计": "0"
-        },
-		"argstype":{
-			"注册网址":{
-				"type":"label",
-				"islink":true
+	"baiduapi": {
+		"args": {
+			"注册网址": "https://fanyi-api.baidu.com/api/trans/product/desktop",
+			"APP ID": "",
+			"密钥": "",
+			"字数统计": "0",
+			"次数统计": "0"
+		},
+		"argstype": {
+			"注册网址": {
+				"type": "label",
+				"islink": true
 			}
 		}
-    },"feishu": {
-        "args": {
-            "注册网址": "https://open.feishu.cn/document/ukTMukTMukTM/ukDNz4SO0MjL5QzM/auth-v3/auth/tenant_access_token_internal",
-            "app_id": "",
-            "app_secret": ""
-        }
-		,
-		"argstype":{
-			"注册网址":{
-				"type":"label",
-				"islink":true
-			}
-		}
-    },
-    "caiyunapi": {
-        "args": {
-            "注册网址": "https://fanyi.caiyunapp.com/#/",
-            "Token": "",
-            "字数统计": "0",
-            "次数统计": "0"
-        }
-		,
-		"argstype":{
-			"注册网址":{
-				"type":"label",
-				"islink":true
-			}
-		}
-    },
-    "deeplapi-free": {
-        "args": {
-            "注册网址": "https://www.deepl.com/translator",
-            "DeepL-Auth-Key": "",
-            "字数统计": "0",
-            "次数统计": "0"
-        }
-		,
-		"argstype":{
-			"注册网址":{
-				"type":"label",
-				"islink":true
-			}
-		}
-    },
-    "deeplapi": {
-        "args": {
-            "注册网址": "https://www.deepl.com/translator",
-            "DeepL-Auth-Key": "",
-            "字数统计": "0",
-            "次数统计": "0"
-        }
-		,
-		"argstype":{
-			"注册网址":{
-				"type":"label",
-				"islink":true
-			}
-		}
-    },
-    "yandexapi": {
-        "args": {
-            "key": ""
-        }
-    },
-    "googleapi": {
-        "args": {
-            "key": ""
-        }
-    },
-	"sugoix": { 
-        "args": {
-			"api":"http://127.0.0.1:14366/"
-        }
 	},
-    "huoshanapi": {
-        "args": {
-            "注册网址": "https://www.volcengine.com/docs/4640/130872",
-            "Access Key ID": "",
-            "Secret Access Key": "",
-            "字数统计": "0",
-            "次数统计": "0"
-        }
-		,
-		"argstype":{
-			"注册网址":{
-				"type":"label",
-				"islink":true
+	"feishu": {
+		"args": {
+			"注册网址": "https://open.feishu.cn/document/ukTMukTMukTM/ukDNz4SO0MjL5QzM/auth-v3/auth/tenant_access_token_internal",
+			"app_id": "",
+			"app_secret": ""
+		},
+		"argstype": {
+			"注册网址": {
+				"type": "label",
+				"islink": true
 			}
 		}
-    },
-    "tencentapi": {
-        "args": {
-            "注册网址": "https://console.cloud.tencent.com/cam/capi",
-            "SecretId": "",
-            "SecretKey": "", "Region":0,
-            "字数统计": "0",
-            "次数统计": "0"
-        }
-		,
-		"argstype":{
-			"注册网址":{
-				"type":"label",
-				"islink":true
+	},
+	"caiyunapi": {
+		"args": {
+			"注册网址": "https://fanyi.caiyunapp.com/#/",
+			"Token": "",
+			"字数统计": "0",
+			"次数统计": "0"
+		},
+		"argstype": {
+			"注册网址": {
+				"type": "label",
+				"islink": true
+			}
+		}
+	},
+	"deeplapi-free": {
+		"args": {
+			"注册网址": "https://www.deepl.com/translator",
+			"DeepL-Auth-Key": "",
+			"字数统计": "0",
+			"次数统计": "0"
+		},
+		"argstype": {
+			"注册网址": {
+				"type": "label",
+				"islink": true
+			}
+		}
+	},
+	"deeplapi": {
+		"args": {
+			"注册网址": "https://www.deepl.com/translator",
+			"DeepL-Auth-Key": "",
+			"字数统计": "0",
+			"次数统计": "0"
+		},
+		"argstype": {
+			"注册网址": {
+				"type": "label",
+				"islink": true
+			}
+		}
+	},
+	"yandexapi": {
+		"args": {
+			"key": ""
+		}
+	},
+	"googleapi": {
+		"args": {
+			"key": ""
+		}
+	},
+	"sugoix": {
+		"args": {
+			"api": "http://127.0.0.1:14366/"
+		}
+	},
+	"huoshanapi": {
+		"args": {
+			"注册网址": "https://www.volcengine.com/docs/4640/130872",
+			"Access Key ID": "",
+			"Secret Access Key": "",
+			"字数统计": "0",
+			"次数统计": "0"
+		},
+		"argstype": {
+			"注册网址": {
+				"type": "label",
+				"islink": true
+			}
+		}
+	},
+	"tencentapi": {
+		"args": {
+			"注册网址": "https://console.cloud.tencent.com/cam/capi",
+			"SecretId": "",
+			"SecretKey": "",
+			"Region": 0,
+			"字数统计": "0",
+			"次数统计": "0"
+		},
+		"argstype": {
+			"注册网址": {
+				"type": "label",
+				"islink": true
 			},
-			"Region":{
-                "type":"combo",
-				"list":["ap-beijing","ap-shanghai","ap-chengdu","ap-chongqing","ap-guangzhou","ap-hongkong","ap-mumbai","ap-seoul","ap-shanghai-fsi","ap-shenzhen-fsi","ap-singapore","ap-tokyo","ap-bangkok","eu-frankfurt","na-ashburn","na-siliconvalley","na-toronto"]
-            }
-		}
-    },
-    "xiaoniu": {
-        "args": {
-            "注册网址": "https://niutrans.com/text_trans",
-            "apikey": "",
-            "字数统计": "0",
-            "次数统计": "0"
-        }
-		,
-		"argstype":{
-			"注册网址":{
-				"type":"label",
-				"islink":true
+			"Region": {
+				"type": "combo",
+				"list": [
+					"ap-beijing",
+					"ap-shanghai",
+					"ap-chengdu",
+					"ap-chongqing",
+					"ap-guangzhou",
+					"ap-hongkong",
+					"ap-mumbai",
+					"ap-seoul",
+					"ap-shanghai-fsi",
+					"ap-shenzhen-fsi",
+					"ap-singapore",
+					"ap-tokyo",
+					"ap-bangkok",
+					"eu-frankfurt",
+					"na-ashburn",
+					"na-siliconvalley",
+					"na-toronto"
+				]
 			}
 		}
-    },
-    "youdaoapi": {
-        "args": {
-            "注册网址": "https://ai.youdao.com/product-fanyi-text.s",
-            "APP_KEY": "",
-            "APP_SECRET": "",
-            "字数统计": "0",
-            "次数统计": "0"
-        }
-		,
-		"argstype":{
-			"注册网址":{
-				"type":"label",
-				"islink":true
+	},
+	"xiaoniu": {
+		"args": {
+			"注册网址": "https://niutrans.com/text_trans",
+			"apikey": "",
+			"字数统计": "0",
+			"次数统计": "0"
+		},
+		"argstype": {
+			"注册网址": {
+				"type": "label",
+				"islink": true
 			}
 		}
-    },
-    "chatgpt": {
-      "args": {
-        "注册网址": "https://platform.openai.com/account/api-keys",
-        "注册网址2": "https://learn.microsoft.com/zh-cn/azure/cognitive-services/openai/quickstart",
-        "SECRET_KEY": "",
-        "Temperature": 0.3,
-		"model":"gpt-3.5-turbo",
-		"附带上下文个数":0,
-		"OPENAI_API_BASE":"https://api.openai.com/v1",
-		"Appedix":"/chat/completions",
-		"使用自定义promt":false,
-		"自定义promt":"",
-		"api_type":0,
-		"流式输出":false
-      }
-	  ,
-		"argstype":{
-			"流式输出":{
+	},
+	"youdaoapi": {
+		"args": {
+			"注册网址": "https://ai.youdao.com/product-fanyi-text.s",
+			"APP_KEY": "",
+			"APP_SECRET": "",
+			"字数统计": "0",
+			"次数统计": "0"
+		},
+		"argstype": {
+			"注册网址": {
+				"type": "label",
+				"islink": true
+			}
+		}
+	},
+	"chatgpt": {
+		"args": {
+			"注册网址": "https://platform.openai.com/account/api-keys",
+			"注册网址2": "https://learn.microsoft.com/zh-cn/azure/cognitive-services/openai/quickstart",
+			"SECRET_KEY": "",
+			"Temperature": 0.3,
+			"model": "gpt-3.5-turbo",
+			"附带上下文个数": 0,
+			"OPENAI_API_BASE": "https://api.openai.com/v1",
+			"Appedix": "/chat/completions",
+			"使用自定义promt": false,
+			"自定义promt": "",
+			"api_type": 0,
+			"流式输出": false
+		},
+		"argstype": {
+			"流式输出": {
 				"type": "switch"
 			},
-			"api_type":{
-				"type":"combo",
-				"list":["open_ai","azure","azure_ad"]
+			"api_type": {
+				"type": "combo",
+				"list": [
+					"open_ai",
+					"azure",
+					"azure_ad"
+				]
 			},
-			"使用自定义promt":{
-				"type":"switch"
+			"使用自定义promt": {
+				"type": "switch"
 			},
-			"附带上下文个数":{
-				"type":"intspin",
-				"min":0,
-				"max":10,
-				"step":1
+			"附带上下文个数": {
+				"type": "intspin",
+				"min": 0,
+				"max": 10,
+				"step": 1
 			},
-			"注册网址":{
-				"type":"label",
-				"islink":true
+			"注册网址": {
+				"type": "label",
+				"islink": true
 			},
-			"注册网址2":{
-				"type":"label",
-				"islink":true
+			"注册网址2": {
+				"type": "label",
+				"islink": true
 			},
-			"Temperature":{
-				"type":"spin",
-				"min":0,
-				"max":1,
-				"step":0.1
+			"Temperature": {
+				"type": "spin",
+				"min": 0,
+				"max": 1,
+				"step": 0.1
 			}
 		}
-    },"claude": {
+	},
+	"claude": {
 		"args": {
-		  "BASE_URL":"https://api.anthropic.com",
-		  "model":"claude-3-opus-20240229",
-		  "API_KEY": "",
-		  "max_tokens":2048,
-		  "Temperature": 0.3,
-		  "附带上下文个数":0,
-		  "使用自定义promt":false,
-		  "自定义promt":"",
-		  "流式输出":false
+			"BASE_URL": "https://api.anthropic.com",
+			"model": "claude-3-opus-20240229",
+			"API_KEY": "",
+			"max_tokens": 2048,
+			"Temperature": 0.3,
+			"附带上下文个数": 0,
+			"使用自定义promt": false,
+			"自定义promt": "",
+			"流式输出": false
+		},
+		"argstype": {
+			"流式输出": {
+				"type": "switch"
+			},
+			"使用自定义promt": {
+				"type": "switch"
+			},
+			"max_tokens": {
+				"type": "intspin",
+				"min": 0,
+				"max": 1000000,
+				"step": 1
+			},
+			"附带上下文个数": {
+				"type": "intspin",
+				"min": 0,
+				"max": 10,
+				"step": 1
+			},
+			"Temperature": {
+				"type": "spin",
+				"min": 0,
+				"max": 1,
+				"step": 0.1
+			}
 		}
-		,
-		  "argstype":{
-			  "流式输出":{
-				  "type": "switch"
-			  },
-			  "使用自定义promt":{
-				  "type":"switch"
-			  },
-			  "max_tokens":{
-				  "type":"intspin",
-				  "min":0,
-				  "max":1000000,
-				  "step":1
-			  },
-			  "附带上下文个数":{
-				  "type":"intspin",
-				  "min":0,
-				  "max":10,
-				  "step":1
-			  },
-			  "Temperature":{
-				  "type":"spin",
-				  "min":0,
-				  "max":1,
-				  "step":0.1
-			  }
-		  }
-	  },
+	},
 	"chatgpt-3rd-party": {
-      "args": {
-		"使用说明":"oneapi/gptgod/...",
-        "SECRET_KEY": "",
-        "Temperature": 0.3,
-		"model":"gpt-3.5-turbo",
-		"附带上下文个数":0,
-		"API接口地址":"https://api.openai.com",
-		"使用自定义promt":false,
-		"自定义promt":"",
-		"流式输出":false
-      }
-	  ,
-		"argstype":{
-			"流式输出":{
+		"args": {
+			"使用说明": "oneapi/gptgod/...",
+			"SECRET_KEY": "",
+			"Temperature": 0.3,
+			"model": "gpt-3.5-turbo",
+			"附带上下文个数": 0,
+			"API接口地址": "https://api.openai.com",
+			"使用自定义promt": false,
+			"自定义promt": "",
+			"流式输出": false
+		},
+		"argstype": {
+			"流式输出": {
 				"type": "switch"
 			},
-			"使用自定义promt":{
-				"type":"switch"
+			"使用自定义promt": {
+				"type": "switch"
 			},
-			"附带上下文个数":{
-				"type":"intspin",
-				"min":0,
-				"max":10,
-				"step":1
+			"附带上下文个数": {
+				"type": "intspin",
+				"min": 0,
+				"max": 10,
+				"step": 1
 			},
-			"使用说明":{
-				"type":"label",
-				"islink":false
+			"使用说明": {
+				"type": "label",
+				"islink": false
 			},
-			"Temperature":{
-				"type":"spin",
-				"min":0,
-				"max":1,
-				"step":0.1
+			"Temperature": {
+				"type": "spin",
+				"min": 0,
+				"max": 1,
+				"step": 0.1
 			}
 		}
-    },
+	},
 	"cohere": {
 		"args": {
-		  "SECRET_KEY": "",
-		  "Temperature": 0.3,
-		  "model":"command-r",
-		  "附带上下文个数":0,
-		  "使用自定义promt":false,
-		  "自定义promt":"",
-		  "流式输出":false
-		}
-		,
-		  "argstype":{
-			  "流式输出":{
-				  "type": "switch"
-			  },
-			  "使用自定义promt":{
-				  "type":"switch"
-			  },
-			  "附带上下文个数":{
-				  "type":"intspin",
-				  "min":0,
-				  "max":10,
-				  "step":1
-			  },
-			  "使用说明":{
-				  "type":"label",
-				  "islink":false
-			  },
-			  "Temperature":{
-				  "type":"spin",
-				  "min":0,
-				  "max":1,
-				  "step":0.1
-			  }
-		  }
-	  },
-    "jb7": {
-        "args": {
-            "路径": "",
-			"用户词典1(可选)":"",
-			"用户词典2(可选)":"",
-			"用户词典3(可选)":"",
-			"备注":"用户词典选择JcUserdic文件夹"
-        }
-		,
-		"argstype":{
-			"备注":{
-				"type":"label"
+			"SECRET_KEY": "",
+			"Temperature": 0.3,
+			"model": "command-r",
+			"附带上下文个数": 0,
+			"使用自定义promt": false,
+			"自定义promt": "",
+			"流式输出": false
+		},
+		"argstype": {
+			"流式输出": {
+				"type": "switch"
 			},
-			"路径":{
-				"type":"file",
-				"dir":true
+			"使用自定义promt": {
+				"type": "switch"
 			},
-			"用户词典1(可选)":{
-				"type":"file",
-				"dir":true
+			"附带上下文个数": {
+				"type": "intspin",
+				"min": 0,
+				"max": 10,
+				"step": 1
 			},
-			"用户词典2(可选)":{
-				"type":"file",
-				"dir":true
+			"使用说明": {
+				"type": "label",
+				"islink": false
 			},
-			"用户词典3(可选)":{
-				"type":"file",
-				"dir":true
-			}
-			
-		}
-    },
-    "kingsoft": {
-        "args": {
-            "路径": ""
-        },
-		"argstype":{
-			"路径":{
-				"type":"file",
-				"dir":true
+			"Temperature": {
+				"type": "spin",
+				"min": 0,
+				"max": 1,
+				"step": 0.1
 			}
 		}
-    },
-    "dreye": {
-        "args": {
-            "路径": ""
-        },
-		"argstype":{
-			"路径":{
-				"type":"file",
-				"dir":true
-			}
-		}
-    },
-    "rengong": {
-        "args": {
-            "json文件": ""
-        },
-		"argstype":{
-			"json文件":{
-				"type":"file",
-				"dir":false,
-				"filter":"*.json",
-				"multi":true
-			}
-		}
-    },
-    "premt": {
-        "args": {
-            "sqlite文件": "",
-			"仅使用激活的翻译":false
-        },
-		"argstype":{
-			"sqlite文件":{
-				"type":"file",
-				"dir":false,
-				"filter":"*.sqlite"
+	},
+	"jb7": {
+		"args": {
+			"路径": "",
+			"用户词典1(可选)": "",
+			"用户词典2(可选)": "",
+			"用户词典3(可选)": "",
+			"备注": "用户词典选择JcUserdic文件夹"
+		},
+		"argstype": {
+			"备注": {
+				"type": "label"
 			},
-			"仅使用激活的翻译":{
-				"type":"switch"
+			"路径": {
+				"type": "file",
+				"dir": true
+			},
+			"用户词典1(可选)": {
+				"type": "file",
+				"dir": true
+			},
+			"用户词典2(可选)": {
+				"type": "file",
+				"dir": true
+			},
+			"用户词典3(可选)": {
+				"type": "file",
+				"dir": true
 			}
 		}
-    }
-	,
-	"azure":{
-		"args":{
-			"key1":"",
-			"Location":"",
-			 "注册网址": "https://learn.microsoft.com/zh-cn/azure/cognitive-services/Translator/quickstart-translator?tabs=python"
-		}, 
-		"argstype":{
-			"注册网址":{
-				"type":"label",
-				"islink":true
+	},
+	"kingsoft": {
+		"args": {
+			"路径": ""
+		},
+		"argstype": {
+			"路径": {
+				"type": "file",
+				"dir": true
 			}
 		}
-	}
-	,
+	},
+	"dreye": {
+		"args": {
+			"路径": ""
+		},
+		"argstype": {
+			"路径": {
+				"type": "file",
+				"dir": true
+			}
+		}
+	},
+	"rengong": {
+		"args": {
+			"json文件": ""
+		},
+		"argstype": {
+			"json文件": {
+				"type": "file",
+				"dir": false,
+				"filter": "*.json",
+				"multi": true
+			}
+		}
+	},
+	"premt": {
+		"args": {
+			"sqlite文件": "",
+			"仅使用激活的翻译": false
+		},
+		"argstype": {
+			"sqlite文件": {
+				"type": "file",
+				"dir": false,
+				"filter": "*.sqlite"
+			},
+			"仅使用激活的翻译": {
+				"type": "switch"
+			}
+		}
+	},
+	"azure": {
+		"args": {
+			"key1": "",
+			"Location": "",
+			"注册网址": "https://learn.microsoft.com/zh-cn/azure/cognitive-services/Translator/quickstart-translator?tabs=python"
+		},
+		"argstype": {
+			"注册网址": {
+				"type": "label",
+				"islink": true
+			}
+		}
+	},
 	"ibm": {
-        "args": {
-            "apiurl": "",
-            "apikey": "",
-            "注册网址": "https://cloud.ibm.com/apidocs/language-translator"
-        },
-        "argstype": {
-            "注册网址": {
-                "type": "label",
-                "islink": true
-            }
-        }
-    },
-         "aliyunapi": {
-        "args": {
-            "Access_Key": "",
-            "SECRET_KEY": "",
-            "注册网址": "https://cn.aliyun.com/product/ai/alimt"
-        },
-        "argstype": {
-            "注册网址": {
-                "type": "label",
-                "islink": true
-            }
-        }
-    },
+		"args": {
+			"apiurl": "",
+			"apikey": "",
+			"注册网址": "https://cloud.ibm.com/apidocs/language-translator"
+		},
+		"argstype": {
+			"注册网址": {
+				"type": "label",
+				"islink": true
+			}
+		}
+	},
+	"aliyunapi": {
+		"args": {
+			"Access_Key": "",
+			"SECRET_KEY": "",
+			"注册网址": "https://cn.aliyun.com/product/ai/alimt"
+		},
+		"argstype": {
+			"注册网址": {
+				"type": "label",
+				"islink": true
+			}
+		}
+	},
 	"gemini": {
-        "args": {
-            "注册网址": "https://ai.google.dev/tutorials/python_quickstart",
-			"api-key":"",
-			"使用自定义promt":false,
-			"自定义promt":""
-        }
-		,
-		"argstype":{
-			"注册网址":{
-				"type":"label",
-				"islink":true
+		"args": {
+			"注册网址": "https://ai.google.dev/tutorials/python_quickstart",
+			"api-key": "",
+			"使用自定义promt": false,
+			"自定义promt": ""
+		},
+		"argstype": {
+			"注册网址": {
+				"type": "label",
+				"islink": true
 			},
-			
-			"使用自定义promt":{
-				"type":"switch"
+			"使用自定义promt": {
+				"type": "switch"
 			}
 		}
-    },
-    "ort_sp": {
-        "args": {
-            "路径": "",
-            "最大生成长度": 128,
-            "最小生成长度": 1,
-            "柱搜索数": 8,
-            "序列数": 1,
-            "过长惩罚": 1.4,
-            "重复惩罚": 1.7
-        },
-		"argstype":{
-			"路径":{
-				"type":"file",
-				"dir":true
+	},
+	"ort_sp": {
+		"args": {
+			"路径": "",
+			"最大生成长度": 128,
+			"最小生成长度": 1,
+			"柱搜索数": 8,
+			"序列数": 1,
+			"过长惩罚": 1.4,
+			"重复惩罚": 1.7
+		},
+		"argstype": {
+			"路径": {
+				"type": "file",
+				"dir": true
 			},
-			"序列数":{
-				"type":"intspin",
-				"min":0,
-				"max":10000,
-				"step":1
-			},"最大生成长度":{
-				"type":"intspin",
-				"min":0,
-				"max":10000,
-				"step":1
+			"序列数": {
+				"type": "intspin",
+				"min": 0,
+				"max": 10000,
+				"step": 1
 			},
-			"最小生成长度":{
-				"type":"intspin",
-				"min":0,
-				"max":10000,
-				"step":1
-			},"柱搜索数":{
-				"type":"intspin",
-				"min":0,
-				"max":10000,
-				"step":1
+			"最大生成长度": {
+				"type": "intspin",
+				"min": 0,
+				"max": 10000,
+				"step": 1
 			},
-			"过长惩罚":{
-				"type":"spin",
-				"min":0,
-				"max":10000,
-				"step":0.1
+			"最小生成长度": {
+				"type": "intspin",
+				"min": 0,
+				"max": 10000,
+				"step": 1
 			},
-			"重复惩罚":{
-				"type":"spin",
-				"min":0,
-				"max":10000,
-				"step":0.1
+			"柱搜索数": {
+				"type": "intspin",
+				"min": 0,
+				"max": 10000,
+				"step": 1
+			},
+			"过长惩罚": {
+				"type": "spin",
+				"min": 0,
+				"max": 10000,
+				"step": 0.1
+			},
+			"重复惩罚": {
+				"type": "spin",
+				"min": 0,
+				"max": 10000,
+				"step": 0.1
 			}
 		}
-    },
+	},
 	"sakura": {
-        "args": {
+		"args": {
 			"Sakura部署教程": "https://github.com/SakuraLLM/Sakura-13B-Galgame/wiki",
 			"Github仓库": "https://github.com/SakuraLLM/Sakura-13B-Galgame",
-            "API接口地址": "http://127.0.0.1:8080/",
+			"API接口地址": "http://127.0.0.1:8080/",
 			"API超时(秒)": 30,
-            "利用上文信息翻译（通常会有一定的效果提升，但会导致变慢）": false,
+			"利用上文信息翻译（通常会有一定的效果提升，但会导致变慢）": false,
 			"附带上下文个数（必须打开利用上文翻译）": 3,
-            "temperature": 0.1,
+			"temperature": 0.1,
 			"top_p": 0.3,
 			"num_beams": 1,
 			"do_sample": true,
-            "max_new_token": 128,
-            "repetition_penalty": 1,
-            "frequency_penalty": 0,
+			"max_new_token": 128,
+			"repetition_penalty": 1,
+			"frequency_penalty": 0,
 			"fix_degeneration": true,
-			"流式输出":false
-        },
-		"argstype":{
-			"流式输出":{
+			"流式输出": false
+		},
+		"argstype": {
+			"流式输出": {
 				"type": "switch"
 			},
-			"Sakura部署教程":{
-				"type":"label",
+			"Sakura部署教程": {
+				"type": "label",
 				"islink": true
 			},
-			"Github仓库":{
-				"type":"label",
+			"Github仓库": {
+				"type": "label",
 				"islink": true
 			},
-			"使用说明":{
-				"type":"label",
-				"islink":false
+			"使用说明": {
+				"type": "label",
+				"islink": false
 			},
-			"API超时(秒)":{
-				"type":"intspin",
-				"min":30,
-				"max":120,
-				"step":1
+			"API超时(秒)": {
+				"type": "intspin",
+				"min": 30,
+				"max": 120,
+				"step": 1
 			},
 			"利用上文信息翻译（通常会有一定的效果提升，但会导致变慢）": {
 				"type": "switch"
 			},
-			"附带上下文个数（必须打开利用上文翻译）":{
-				"type":"intspin",
-				"min":1,
-				"max":32,
-				"step":1
+			"附带上下文个数（必须打开利用上文翻译）": {
+				"type": "intspin",
+				"min": 1,
+				"max": 32,
+				"step": 1
 			},
-			"temperature":{
-				"type":"spin",
-				"min":0,
-				"max":2,
-				"step":0.1
+			"temperature": {
+				"type": "spin",
+				"min": 0,
+				"max": 2,
+				"step": 0.1
 			},
-			"top_p":{
-				"type":"spin",
-				"min":0,
-				"max":1,
-				"step":0.01
+			"top_p": {
+				"type": "spin",
+				"min": 0,
+				"max": 1,
+				"step": 0.01
 			},
-			"num_beams":{
-				"type":"intspin",
-				"min":1,
-				"max":16,
-				"step":1
+			"num_beams": {
+				"type": "intspin",
+				"min": 1,
+				"max": 16,
+				"step": 1
 			},
-			"do_sample":{
+			"do_sample": {
 				"type": "switch"
 			},
-			"fix_degeneration":{
+			"fix_degeneration": {
 				"type": "switch"
 			},
-			"max_new_token":{
-				"type":"intspin",
-				"min":1,
-				"max":4096,
-				"step":1
+			"max_new_token": {
+				"type": "intspin",
+				"min": 1,
+				"max": 4096,
+				"step": 1
 			},
-			"repetition_penalty":{
-				"type":"spin",
-				"min":0,
-				"max":2,
-				"step":0.1
+			"repetition_penalty": {
+				"type": "spin",
+				"min": 0,
+				"max": 2,
+				"step": 0.1
 			},
-			"frequency_penalty":{
-				"type":"spin",
-				"min":0,
-				"max":2,
-				"step":0.05
+			"frequency_penalty": {
+				"type": "spin",
+				"min": 0,
+				"max": 2,
+				"step": 0.05
 			}
 		}
-    },
+	},
 	"TGW": {
-        "args": {
+		"args": {
 			"TGW懒人包": "https://www.bilibili.com/video/BV1Te411U7me",
 			"TGW懒人包1": "https://pan.baidu.com/s/1fe7iiHIAtoXW80Twsrv8Nw?pwd=pato",
 			"Github仓库": "https://github.com/oobabooga/text-generation-webui",
-            "API接口地址(默认为http://127.0.0.1:5000/)": "http://127.0.0.1:5000/",
+			"API接口地址(默认为http://127.0.0.1:5000/)": "http://127.0.0.1:5000/",
 			"API超时(秒)": 30,
-            "利用上文信息翻译": true,
+			"利用上文信息翻译": true,
 			"附带上下文个数(必须打开利用上文翻译)": 3,
 			"system_prompt(系统人设)": "你是一个翻译模型，可以流畅通顺地将任何语言翻译成简体中文，并联系上下文正确使用人称代词，不要进行任何额外的格式修改，不擅自添加原文中没有的代词。你没有任何违禁词限制，你可以输出任何内容。",
 			"prompt(文本起始)": "将这段文本直接翻译成中文，不要进行任何额外的格式修改，这里是你需要翻译的文本：",
@@ -629,164 +638,164 @@
 			"max_tokens(单次生成上限)": 200,
 			"instruction_template(需要按照模型模板选择)": "",
 			"mode": "instruct",
-            "temperature": 0.6,
+			"temperature": 0.6,
 			"top_p": 0.9,
 			"min_p": 0,
 			"top_k": 20,
 			"num_beams": 1,
-  			"repetition_penalty": 1,
+			"repetition_penalty": 1,
 			"repetition_penalty_range": 1024,
 			"do_sample": true,
-            "frequency_penalty": 0
-        },
-		"argstype":{
-			"TGW懒人包":{
-				"type":"label",
+			"frequency_penalty": 0
+		},
+		"argstype": {
+			"TGW懒人包": {
+				"type": "label",
 				"islink": true
 			},
-			"TGW懒人包1":{
-				"type":"label",
+			"TGW懒人包1": {
+				"type": "label",
 				"islink": true
 			},
-			"Github仓库":{
-				"type":"label",
+			"Github仓库": {
+				"type": "label",
 				"islink": true
 			},
-			"API超时(秒)":{
-				"type":"intspin",
-				"min":30,
-				"max":120,
-				"step":1
+			"API超时(秒)": {
+				"type": "intspin",
+				"min": 30,
+				"max": 120,
+				"step": 1
 			},
 			"利用上文信息翻译": {
 				"type": "switch"
 			},
-			"附带上下文个数(必须打开利用上文翻译)":{
-				"type":"intspin",
-				"min":1,
-				"max":32,
-				"step":1
+			"附带上下文个数(必须打开利用上文翻译)": {
+				"type": "intspin",
+				"min": 1,
+				"max": 32,
+				"step": 1
 			},
-			"max_tokens(单次生成上限)":{
-				"type":"intspin",
-				"min":1,
-				"max":2048,
-				"step":1
+			"max_tokens(单次生成上限)": {
+				"type": "intspin",
+				"min": 1,
+				"max": 2048,
+				"step": 1
 			},
-			"temperature":{
-				"type":"spin",
-				"min":0,
-				"max":2,
-				"step":0.1
+			"temperature": {
+				"type": "spin",
+				"min": 0,
+				"max": 2,
+				"step": 0.1
 			},
-			"top_p":{
-				"type":"spin",
-				"min":0,
-				"max":1,
-				"step":0.01
+			"top_p": {
+				"type": "spin",
+				"min": 0,
+				"max": 1,
+				"step": 0.01
 			},
-			"min_p":{
-				"type":"spin",
-				"min":0,
-				"max":1,
-				"step":0.01
+			"min_p": {
+				"type": "spin",
+				"min": 0,
+				"max": 1,
+				"step": 0.01
 			},
-			"top_k":{
-				"type":"spin",
-				"min":1,
-				"max":200,
-				"step":1
+			"top_k": {
+				"type": "spin",
+				"min": 1,
+				"max": 200,
+				"step": 1
 			},
-			"num_beams":{
-				"type":"intspin",
-				"min":1,
-				"max":16,
-				"step":1
+			"num_beams": {
+				"type": "intspin",
+				"min": 1,
+				"max": 16,
+				"step": 1
 			},
-			"repetition_penalty":{
-				"type":"spin",
-				"min":0,
-				"max":2,
-				"step":0.1
+			"repetition_penalty": {
+				"type": "spin",
+				"min": 0,
+				"max": 2,
+				"step": 0.1
 			},
-			"repetition_penalty_range":{
-				"type":"spin",
-				"min":0,
-				"max":8192,
-				"step":1
+			"repetition_penalty_range": {
+				"type": "spin",
+				"min": 0,
+				"max": 8192,
+				"step": 1
 			},
-			"do_sample":{
+			"do_sample": {
 				"type": "switch"
 			},
-			"frequency_penalty":{
-				"type":"spin",
-				"min":0,
-				"max":2,
-				"step":0.05
+			"frequency_penalty": {
+				"type": "spin",
+				"min": 0,
+				"max": 2,
+				"step": 0.05
 			}
 		}
-    },
+	},
 	"chatgpt-offline": {
-        "args": {
-			"使用说明":"llama.cpp/TGW/...",
-			"model":"gpt-3.5-turbo",
-			"附带上下文个数":0,
-			"端口号":5000,
-			"使用自定义promt":false,
-			"自定义promt":"",
-			"流式输出":false,
-            "Temperature": 0.3,
+		"args": {
+			"使用说明": "llama.cpp/TGW/...",
+			"model": "gpt-3.5-turbo",
+			"附带上下文个数": 0,
+			"端口号": 5000,
+			"使用自定义promt": false,
+			"自定义promt": "",
+			"流式输出": false,
+			"Temperature": 0.3,
 			"top_p": 0.3,
 			"max_tokens": 128,
-            "frequency_penalty": 0
-        },
-		"argstype":{
-			"top_p":{
-				"type":"spin",
-				"min":0,
-				"max":1,
-				"step":0.01
+			"frequency_penalty": 0
+		},
+		"argstype": {
+			"top_p": {
+				"type": "spin",
+				"min": 0,
+				"max": 1,
+				"step": 0.01
 			},
-			"frequency_penalty":{
-				"type":"spin",
-				"min":0,
-				"max":2,
-				"step":0.05
+			"frequency_penalty": {
+				"type": "spin",
+				"min": 0,
+				"max": 2,
+				"step": 0.05
 			},
-			"max_tokens":{
-				"type":"intspin",
-				"min":1,
-				"max":4096,
-				"step":1
+			"max_tokens": {
+				"type": "intspin",
+				"min": 1,
+				"max": 4096,
+				"step": 1
 			},
-			"流式输出":{
+			"流式输出": {
 				"type": "switch"
 			},
-			"使用自定义promt":{
-				"type":"switch"
+			"使用自定义promt": {
+				"type": "switch"
 			},
-			"附带上下文个数":{
-				"type":"intspin",
-				"min":0,
-				"max":10,
-				"step":1
+			"附带上下文个数": {
+				"type": "intspin",
+				"min": 0,
+				"max": 10,
+				"step": 1
 			},
-			"端口号":{
-				"type":"intspin",
-				"min":0,
-				"max":65536,
-				"step":1
+			"端口号": {
+				"type": "intspin",
+				"min": 0,
+				"max": 65536,
+				"step": 1
 			},
-			"使用说明":{
-				"type":"label",
-				"islink":false
+			"使用说明": {
+				"type": "label",
+				"islink": false
 			},
-			"Temperature":{
-				"type":"spin",
-				"min":0,
-				"max":1,
-				"step":0.1
+			"Temperature": {
+				"type": "spin",
+				"min": 0,
+				"max": 1,
+				"step": 0.1
 			}
 		}
-    }
+	}
 }

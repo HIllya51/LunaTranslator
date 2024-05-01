@@ -1,24 +1,27 @@
 {
-	"_remove_non_shiftjis_char":{
-		"use":false,
-		"name":"过滤文本中的非日语字符集字符"
-	},
-	"_remove_latin":{
-		"use":false,
-		"name":"过滤latin-1字符集"
-	},
-	"_remove_ascii":{
-		"use":false,
-		"name":"过滤ASCII字符集"
-	},"_remove_control":{
-		"use":false,
-		"name":"过滤控制字符"
-	},"_remove_chaos":{
-		"use":false,
-		"name":"过滤其他乱码"
-	},"_remove_not_in_ja_bracket":{
-        "use":false,
-        "name":"过滤「」以外的字符"
+    "_remove_non_shiftjis_char": {
+        "use": false,
+        "name": "过滤文本中的非日语字符集字符"
+    },
+    "_remove_latin": {
+        "use": false,
+        "name": "过滤latin-1字符集"
+    },
+    "_remove_ascii": {
+        "use": false,
+        "name": "过滤ASCII字符集"
+    },
+    "_remove_control": {
+        "use": false,
+        "name": "过滤控制字符"
+    },
+    "_remove_chaos": {
+        "use": false,
+        "name": "过滤其他乱码"
+    },
+    "_remove_not_in_ja_bracket": {
+        "use": false,
+        "name": "过滤「」以外的字符"
     },
     "_1": {
         "use": false,
@@ -29,9 +32,9 @@
         "name": "去除重复字符_AAAABBBBCCCC->ABC",
         "args": {
             "重复次数(若为1则自动分析去重)": 1,
-            "保持非重复字符":true
+            "保持非重复字符": true
         },
-        "argstype":{
+        "argstype": {
             "保持非重复字符": {
                 "type": "switch"
             },
@@ -49,7 +52,7 @@
         "args": {
             "重复次数(若为1则自动分析去重)": 1
         },
-        "argstype":{
+        "argstype": {
             "重复次数(若为1则自动分析去重)": {
                 "type": "intspin",
                 "min": 0,
@@ -57,7 +60,8 @@
                 "step": 1
             }
         }
-    },"_3_2": {
+    },
+    "_3_2": {
         "use": false,
         "name": "去除重复行_S1S1S1S2S2S2->S1S2"
     },
@@ -76,20 +80,25 @@
     "_91": {
         "use": false,
         "name": "过滤数字"
-    },"_92": {
+    },
+    "_92": {
         "use": false,
         "name": "过滤英文字母"
     },
-	"_7": {
+    "_7": {
         "use": true,
         "name": "简单字符串替换",
-        "args": {  "替换内容": {}}
-	},
-	"_7_zhuanyi": {
+        "args": {
+            "替换内容": {}
+        }
+    },
+    "_7_zhuanyi": {
         "use": true,
         "name": "转义字符串替换",
-        "args": {  "替换内容": {}}
-	},
+        "args": {
+            "替换内容": {}
+        }
+    },
     "_8": {
         "use": false,
         "name": "正则表达式替换",

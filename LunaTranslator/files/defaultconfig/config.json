@@ -7,29 +7,38 @@
     "only_from_exe": [],
     "showrangeafterrangeselect": true,
     "autodisappear": false,
-    "WindowBackdrop":0,
+    "WindowBackdrop": 0,
     "read_raw": true,
     "read_trans": false,
     "read_translator": 0,
     "disappear_delay": 5,
-    "network":1,
-    "hookmagpie":true,
-    "imagewrapmode":0,
-    "relationlinks":[["LunaTranslator","https://github.com/HIllya51/LunaTranslator"],["vndb","https://vndb.org/"]],
-    "hooklossless":true,
-    "direct_filterrepeat":false,
-    "allow_set_text_name":false,
-    "textoutputer":{
-        "clipboard":{
-            "use":false
+    "network": 1,
+    "hookmagpie": true,
+    "imagewrapmode": 0,
+    "relationlinks": [
+        [
+            "LunaTranslator",
+            "https://github.com/HIllya51/LunaTranslator"
+        ],
+        [
+            "vndb",
+            "https://vndb.org/"
+        ]
+    ],
+    "hooklossless": true,
+    "direct_filterrepeat": false,
+    "allow_set_text_name": false,
+    "textoutputer": {
+        "clipboard": {
+            "use": false
         },
-        "websocket":{
-            "use":false,
-            "port":2333
+        "websocket": {
+            "use": false,
+            "port": 2333
         }
     },
     "embedded": {
-        "safecheck_use":true,
+        "safecheck_use": true,
         "safecheckregexs": [
             "(.*?)\\{(.*?)\\}(.*?)",
             "(.*?)\\[(.*?)\\](.*?)"
@@ -50,13 +59,13 @@
     "buttonsize": 20,
     "language_setted_2.4.5": false,
     "postprocess_rank": [],
-    "transoptimi":{
-        "noundict":false,
-        "transerrorfix":false,
-        "gongxiangcishu":false,
-        "vndbnamemap":false,
-        "myprocess":false,
-        "arabic_reshaper":false
+    "transoptimi": {
+        "noundict": false,
+        "transerrorfix": false,
+        "gongxiangcishu": false,
+        "vndbnamemap": false,
+        "myprocess": false,
+        "arabic_reshaper": false
     },
     "uselongtermcache": false,
     "hist_split": false,
@@ -66,9 +75,12 @@
     "button_color_close": "#D32424",
     "button_color_normal": "#FFFFFF",
     "textthreaddelay": 500,
-    "flushbuffersize":3000,
-    "transuigeo":[
-        500,500,1200,200
+    "flushbuffersize": 3000,
+    "transuigeo": [
+        500,
+        500,
+        1200,
+        200
     ],
     "hist_geo": [
         100,
@@ -124,29 +136,29 @@
         500,
         500
     ],
-    "multiregion":false,
-    "rememberocrregions":false,
-    "ocrregions":[],
-    "textboxreadonly":true,
+    "multiregion": false,
+    "rememberocrregions": false,
+    "ocrregions": [],
+    "textboxreadonly": true,
     "ocr_stable_sim": 0,
     "ocr_diff_sim": 0.95,
-    "ocr_text_diff":3,
+    "ocr_text_diff": 3,
     "autorun": true,
-    "usewebview":0,
+    "usewebview": 0,
     "transparent": 80,
     "fontsize": 17.0,
     "localeswitchmethod": 0,
-    "hide_not_exists":false,
-    "startgamenototop":true,
-    "showgametitle":true,
-    "extra_space":0,
+    "hide_not_exists": false,
+    "startgamenototop": true,
+    "showgametitle": true,
+    "extra_space": 0,
     "fonttype": "Arial",
     "fonttype2": "Arial",
     "miaobianwidth2": 3,
     "miaobianwidth": 1,
     "miaobiancolor": "#eeeeee",
     "zitiyangshi": 2,
-    "hira_vis_type":0,
+    "hira_vis_type": 0,
     "iskongxin": true,
     "isshowrawtext": true,
     "kanarate": 0.5,
@@ -155,14 +167,14 @@
     "isshowhira": false,
     "locktools": true,
     "showfanyisource": false,
-    "use_yapi":true,
-    "showfanyi":true,
+    "use_yapi": true,
+    "showfanyi": true,
     "autoread": false,
-    "ttsnointerrupt":false,
+    "ttsnointerrupt": false,
     "show_fenci": false,
     "jiamingcolor": "black",
     "settingfonttype": "Arial",
-    "showintab_sub":false,
+    "showintab_sub": false,
     "setting_geo_2": [
         100,
         100,
@@ -191,8 +203,8 @@
     "dialog_savegame_layout": {
         "itemw": 250,
         "itemh": 350,
-        "margin":10,
-        "textH":50,
+        "margin": 10,
+        "textH": 50,
         "backcolor": "#c38282",
         "onselectcolor": "#007fff",
         "onfilenoexistscolor": "#acacac"
@@ -233,16 +245,17 @@
                 "tip": "打开关联页面",
                 "icon": "fa.sitemap"
             },
-            "open_game_setting":{
-                "use":false,
-                "tip":"游戏设置",
-                "icon":"fa.futbol-o"
+            "open_game_setting": {
+                "use": false,
+                "tip": "游戏设置",
+                "icon": "fa.futbol-o"
             },
             "mousetransbutton": {
                 "use": true,
                 "tip": "鼠标穿透窗口",
                 "icon": "fa.mouse-pointer"
-            },"backtransbutton": {
+            },
+            "backtransbutton": {
                 "use": true,
                 "tip": "背景窗口透明",
                 "icon": "fa.lightbulb-o"
@@ -652,7 +665,7 @@
             "use": false,
             "path": "",
             "name": "MeCab",
-            "codec":0
+            "codec": 0
         },
         "mojinlt": {
             "use": false,
@@ -711,17 +724,17 @@
             "name": "goo"
         }
     },
-    "darklight":0,
-    "darktheme":0,
-    "lighttheme":0,
+    "darklight": 0,
+    "darktheme": 0,
+    "lighttheme": 0,
     "usesearchword": false,
-    "usecopyword":false,
-    "usewordorigin":false,
+    "usecopyword": false,
+    "usewordorigin": false,
     "ttscommon": {
         "rate": 1.0,
         "volume": 100.0,
-        "tts_repair":false,
-        "tts_repair_regex":[]
+        "tts_repair": false,
+        "tts_repair_regex": []
     },
     "allowmulti": true,
     "sourcestatus2": {
@@ -753,10 +766,12 @@
         "baiduocr_X": {
             "use": false,
             "name": "baiduOCR_X"
-        },"txocr": {
+        },
+        "txocr": {
             "use": false,
             "name": "tencent.ocr"
-        },"txocrtrans": {
+        },
+        "txocrtrans": {
             "use": false,
             "name": "tencent.ImageTranslate"
         },
@@ -881,9 +896,9 @@
             "use": false,
             "color": "blue",
             "name": "DeepLX",
-            "useproxy":false
+            "useproxy": false
         },
-        "dev_chatgpt":{
+        "dev_chatgpt": {
             "use": false,
             "color": "blue",
             "type": "dev",
@@ -930,7 +945,8 @@
             "color": "blue",
             "type": "dev",
             "name": "有道"
-        },"dev_sogou": {
+        },
+        "dev_sogou": {
             "use": false,
             "color": "blue",
             "type": "dev",
@@ -1133,7 +1149,7 @@
             "use": false,
             "color": "blue",
             "name": "ChatGPT",
-            "is_gpt_like":true
+            "is_gpt_like": true
         },
         "cohere": {
             "type": "api",
@@ -1152,7 +1168,7 @@
             "use": false,
             "color": "blue",
             "name": "ChatGPT_非官方",
-            "is_gpt_like":true
+            "is_gpt_like": true
         },
         "hanshant": {
             "type": "offline",
@@ -1199,7 +1215,7 @@
             "name": "TGW语言模型"
         }
     },
-    "magpiepath":"",
+    "magpiepath": "",
     "minifollow": false,
     "movefollow": false,
     "focusfollow": false,
@@ -1207,7 +1223,7 @@
     "autostarthook": true,
     "minlength": 0,
     "maxlength": 1000,
-    "maxoriginlength":1000,
+    "maxoriginlength": 1000,
     "srclang3": 1,
     "tgtlang3": 0,
     "transkiroku": false,
@@ -1216,8 +1232,8 @@
     "image_analyse": true,
     "time_period": false,
     "ocr_auto_method": 0,
-    "ocr_presolve_method":0,
-    "binary_thresh":128,
+    "ocr_presolve_method": 0,
+    "binary_thresh": 128,
     "ocr_interval": 5,
     "mustocr_interval": 5,
     "ocrmininterval": 1,
@@ -1228,6 +1244,6 @@
         "path": ""
     },
     "proxies": null,
-    "labelset":[],
-    "backupsavedatato":""
+    "labelset": [],
+    "backupsavedatato": ""
 }
