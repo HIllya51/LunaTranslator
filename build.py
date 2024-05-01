@@ -1,7 +1,7 @@
 import os, sys
 import shutil, json
 import subprocess
-import requests
+import urllib.request
 
 
 pluginDirs = ["DLL32", "DLL64", "Locale_Remulator", "LunaHook", "Magpie", "NTLEAS"]
@@ -26,7 +26,9 @@ ocrModelUrl = "https://github.com/HIllya51/RESOURCES/releases/download/ocr_model
 availableLocales = ["cht", "en", "ja", "ko", "ru", "zh"]
 
 
-rootDir = os.path.dirname(__file__)
+rootDir = os.path.dirname(os.path.abspath(__file__))
+print(__file__)
+print(rootDir)
 
 
 def createPluginDirs():
@@ -160,10 +162,18 @@ def downloadOCRModel(locale):
     os.remove(f"{locale}.zip")
 
 
+def get_url_as_json(url):
+    response = urllib.request.urlopen(url)
+    data = response.read().decode("utf-8")
+    json_data = json.loads(data)
+
+    return json_data
+
+
 def buildLunaHook():
-    for ass in requests.get(
+    for ass in get_url_as_json(
         "https://api.github.com/repos/HIllya51/LunaHook/releases/latest"
-    ).json()["assets"]:
+    )["assets"]:
         if ass["name"] == "Release_English.zip":
             os.chdir(rootDir + "\\temp")
             subprocess.run(f"curl -LO {ass['browser_download_url']}")
@@ -205,19 +215,20 @@ def buildPlugins():
 
 
 if __name__ == "__main__":
-    if sys.argv[1]=='loadversion':
+    if sys.argv[1] == "loadversion":
         os.chdir(rootDir)
-        with open('LunaTranslator/files/defaultconfig/static_data.json','r',encoding='utf8') as ff:
-            version=json.loads(ff.read())['version']
-            print('version='+version)
+        with open(
+            "LunaTranslator/files/defaultconfig/static_data.json", "r", encoding="utf8"
+        ) as ff:
+            version = json.loads(ff.read())["version"]
+            print("version=" + version)
             exit()
     arch = sys.argv[1]
-    isdebug=len(sys.argv)>2 and int(sys.argv[2])
+    isdebug = len(sys.argv) > 2 and int(sys.argv[2])
     os.chdir(rootDir)
     os.makedirs("temp", exist_ok=True)
 
     createPluginDirs()
-
 
     downloadBrotli()
     downloadLocaleEmulator()
@@ -227,13 +238,10 @@ if __name__ == "__main__":
     downloadcommon()
     buildLunaHook()
 
-
     installVCLTL()
     buildPlugins()
 
-
     os.chdir(rootDir)
-
 
     if arch == "x86":
         py37Path = "C:\\hostedtoolcache\\windows\\Python\\3.7.9\\x86\\python.exe"
@@ -244,5 +252,5 @@ if __name__ == "__main__":
 
     subprocess.run(f"{py37Path} -m pip install --upgrade pip")
     subprocess.run(f"{py37Path} -m pip install -r requirements.txt")
-        
+
     subprocess.run(f'{py37Path} retrieval.py {int(arch == "x86")}')
