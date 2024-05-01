@@ -25,7 +25,11 @@ jobs:
         with:
           python-version: '3.7.9'
           architecture: ${{ matrix.architecture }}
-      
+      - name: Install Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          
       - name: Run build script
         run: |
           python build.py ${{ matrix.architecture }}

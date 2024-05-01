@@ -26,9 +26,10 @@ ocrModelUrl = "https://github.com/HIllya51/RESOURCES/releases/download/ocr_model
 availableLocales = ["cht", "en", "ja", "ko", "ru", "zh"]
 
 
-rootDir = os.path.dirname(os.path.abspath(__file__))
-print(__file__)
-print(rootDir)
+# rootDir = os.path.dirname(os.path.abspath(__file__))
+# print(__file__)
+# print(rootDir)
+rootDir = os.path.dirname(__file__)
 
 
 def createPluginDirs():
