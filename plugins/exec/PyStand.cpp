@@ -259,6 +259,11 @@ int PyStand::DetectScript()
 		return -1;
 	}
 	SetEnvironmentVariableW(L"PYSTAND_SCRIPT", _script.c_str());
+	
+	std::vector<wchar_t> buffer(MAX_PATH);
+	GetModuleFileNameW(GetModuleHandle(0), buffer.data(), MAX_PATH);
+	SetEnvironmentVariableW(L"LUNA_EXE_NAME", buffer.data());
+	
 	return 0;
 }
 
@@ -294,7 +299,7 @@ const auto init_script =
 	L"    sys.stderr = fp\n"
 	L"    attached = False\n"
 #endif
-	L"sys.argv = [sys.argv[0], PYSTAND_SCRIPT] + sys.argv[1:]\n"
+	L"sys.argv = [os.environ['LUNA_EXE_NAME'] ,sys.argv[0], PYSTAND_SCRIPT] + sys.argv[1:]\n"
 	L"text = open(PYSTAND_SCRIPT, 'rb').read()\n"
 	L"environ = {'__file__': PYSTAND_SCRIPT, '__name__': '__main__'}\n"
 	L"environ['__package__'] = None\n"
