@@ -1,4 +1,4 @@
-import os, sys
+import os, sys, re
 import shutil, json
 import subprocess
 import urllib.request
@@ -217,11 +217,12 @@ def buildPlugins():
 if __name__ == "__main__":
     if sys.argv[1] == "loadversion":
         os.chdir(rootDir)
-        with open(
-            "LunaTranslator/files/defaultconfig/static_data.json", "r", encoding="utf8"
-        ) as ff:
-            version = json.loads(ff.read())["version"]
-            print("version=" + version)
+        with open("plugins/CMakeLists.txt", "r", encoding="utf8") as ff:
+            pattern = r"set\(VERSION_MAJOR\s*(\d+)\s*\)\nset\(VERSION_MINOR\s*(\d+)\s*\)\nset\(VERSION_PATCH\s*(\d+)\s*\)"
+            match = re.findall(pattern, ff.read())[0]
+            version_major, version_minor, version_patch = match
+            versionstring = f"v{version_major}.{version_minor}.{version_patch}"
+            print("version=" + versionstring)
             exit()
     arch = sys.argv[1]
     isdebug = len(sys.argv) > 2 and int(sys.argv[2])

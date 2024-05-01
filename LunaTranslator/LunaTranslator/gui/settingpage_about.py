@@ -4,7 +4,7 @@ from PyQt5.QtWidgets import QWidget, QLabel, QProgressBar
 from gui.usefulwidget import getsimpleswitch, getsimplecombobox
 from myutils.config import globalconfig, _TR, static_data
 from myutils.wrapper import threader
-import platform
+import platform, winsharedutils, sys
 from myutils.utils import makehtml
 from functools import partial
 from myutils.githubupdate import updatemethod, getvesionmethod
@@ -12,14 +12,12 @@ from myutils.githubupdate import updatemethod, getvesionmethod
 
 @threader
 def getversion(self):
+    version = winsharedutils.queryversion(sys.argv[0])
+    if version is None:
+        return
+    versionstring = f"v{version[0]}.{version[1]}.{version[2]}"
     self.versiontextsignal.emit(
-        ("当前版本")
-        + ":"
-        + static_data["version"]
-        + "  "
-        + ("最新版本")
-        + ":"
-        + ("获取中")
+        ("当前版本") + ":" + versionstring + "  " + ("最新版本") + ":" + ("获取中")
     )  # ,'',url,url))
     _version = getvesionmethod()
 
@@ -31,15 +29,14 @@ def getversion(self):
         (
             "{}:{}  {}  {}:{}".format(
                 _TR("当前版本"),
-                static_data["version"],
+                versionstring,
                 platform.architecture()[0],
                 _TR("最新版本"),
                 sversion,
             )
         )
-    )  # ,'' if static_data["version"]== _version else  newcontent,url,'LunaTranslator.zip'))
-
-    if _version is not None and static_data["version"] < _version:
+    )
+    if _version is not None and versionstring < _version:
         if globalconfig["autoupdate"]:
             updatemethod(_version, self.progresssignal.emit)
 

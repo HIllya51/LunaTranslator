@@ -2,7 +2,17 @@
 project(shareddllproxy)
  
 
-add_executable(shareddllproxy shareddllproxy.cpp dllinject.cpp ntleas.cpp aspatch.cpp)
+generate_product_version(
+   versioninfo
+   NAME "LunaTranslator shareddllproxy"
+   COMPANY_COPYRIGHT "HIllya51 (C) 2024"
+   VERSION_MAJOR ${VERSION_MAJOR}
+   VERSION_MINOR ${VERSION_MINOR}
+   VERSION_PATCH ${VERSION_PATCH}
+)
+
+
+add_executable(shareddllproxy shareddllproxy.cpp dllinject.cpp ntleas.cpp aspatch.cpp ${versioninfo})
 if(${CMAKE_SIZEOF_VOID_P} EQUAL 8)
 	add_library(x64lib magpie.cpp lossless.cpp)
 	target_link_libraries(shareddllproxy x64lib   ${Detours})

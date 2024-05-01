@@ -24,6 +24,13 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY $<1:${CMAKE_FINAL_OUTPUT_DIRECTORY}>)
 
 include(libs/libs.cmake)
 
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_SOURCE_DIR}/version)
+include(generate_product_version)
+
+set(VERSION_MAJOR 2)
+set(VERSION_MINOR 48)
+set(VERSION_PATCH 0)
+
 add_subdirectory(exec)
 add_subdirectory(shareddllproxy)
 add_subdirectory(winrtutils)
