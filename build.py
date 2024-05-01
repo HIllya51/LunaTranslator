@@ -242,26 +242,7 @@ if __name__ == "__main__":
 
     os.chdir(rootDir + "\\LunaTranslator")
 
-    cmdline=py37Path
-    cmdline+=' -m nuitka --standalone --assume-yes-for-downloads '
-    if not isdebug:
-        cmdline+=' --disable-console '
-    cmdline+=' --plugin-enable=pyqt5 '
-
-    if arch == "x86":
-        if isdebug:
-            cmdline+='--output-dir=..\\build\\x86_debug'
-        else:
-            cmdline+='--output-dir=..\\build\\x86'
-    else:
-        if isdebug:
-            cmdline+='--output-dir=..\\build\\x64_debug'
-        else:
-            cmdline+='--output-dir=..\\build\\x64'
-    cmdline+=' LunaTranslator\\LunaTranslator_main.py --windows-icon-from-ico=..\\plugins\\exec\\luna.ico '
-
     subprocess.run(f"{py37Path} -m pip install --upgrade pip")
     subprocess.run(f"{py37Path} -m pip install -r requirements.txt")
-    subprocess.run(cmdline)
         
-    subprocess.run(f'python pack.py {int(arch == "x86")} {int(isdebug)}')
+    subprocess.run(f'{py37Path} retrieval.py {int(arch == "x86")}')
