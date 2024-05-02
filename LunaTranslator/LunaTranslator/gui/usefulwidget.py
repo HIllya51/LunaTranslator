@@ -543,7 +543,7 @@ class WebivewWidget(QWidget):
                 )
             )
         )
-
+        self.webview = None
         self.webview = Webview(debug=debug, window=int(self.winId()))
 
         self.webview.bind("__on_load", self._on_load)
@@ -552,15 +552,16 @@ class WebivewWidget(QWidget):
     def _on_load(self, href):
         self.on_load.emit(href)
 
-    def __getattr__(self, name):
-        return getattr(self.webview, (name))
+    def navigate(self, url):
+        self.webview.navigate(url)
 
     def resizeEvent(self, a0: QResizeEvent) -> None:
-        hwnd = self.webview.get_native_handle(
-            webview_native_handle_kind_t.WEBVIEW_NATIVE_HANDLE_KIND_UI_WIDGET
-        )
-        size = getscaledrect(a0.size())
-        windows.MoveWindow(hwnd, 0, 0, size[0], size[1], True)
+        if self.webview:
+            hwnd = self.webview.get_native_handle(
+                webview_native_handle_kind_t.WEBVIEW_NATIVE_HANDLE_KIND_UI_WIDGET
+            )
+            size = getscaledrect(a0.size())
+            windows.MoveWindow(hwnd, 0, 0, size[0], size[1], True)
 
 
 class mshtmlWidget(QWidget):
@@ -577,11 +578,14 @@ class mshtmlWidget(QWidget):
             _u = self.browser.get_current_url()
             if url != _u:
                 url = _u
-                self.on_load.emit(_u)
+                try:
+                    self.on_load.emit(_u)
+                except:  # RuntimeError: wrapped C/C++ object of type mshtmlWidget has been deleted
+                    break
             time.sleep(0.5)
 
-    def __getattr__(self, name):
-        return getattr(self.browser, (name))
+    def navigate(self, url):
+        self.browser.navigate(url)
 
     def resizeEvent(self, a0: QResizeEvent) -> None:
         size = getscaledrect(a0.size())
