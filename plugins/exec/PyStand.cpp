@@ -1,14 +1,4 @@
-//=====================================================================
-//
-// PyStand.cpp -
-//
-// Created by skywind on 2022/02/03
-// Last Modified: 2023/03/17 20:06
-//
-//=====================================================================
-#ifdef _MSC_VER
-#define _CRT_SECURE_NO_WARNINGS 1
-#endif
+
 #include "PyStand.h"
 
 
