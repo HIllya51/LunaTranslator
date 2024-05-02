@@ -1,6 +1,4 @@
-﻿#include <iostream>
-#include <Windows.h>
-int dllinjectwmain(int argc, wchar_t *argv[])
+﻿int dllinjectwmain(int argc, wchar_t *argv[])
 {
 
     for (int i = 1; i < argc - 1; i += 1)

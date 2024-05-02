@@ -1,7 +1,5 @@
 #include "api_settings.h"
 
-#include <stdexcept>
-
 #include "ebyutil.h"
 namespace ebyroid
 {

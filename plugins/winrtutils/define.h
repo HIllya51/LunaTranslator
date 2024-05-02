@@ -1,7 +1,4 @@
 #pragma once
-#include <string>
-#include <vector>
-#include <windows.h>
 struct ocrres
 {
     wchar_t **lines;

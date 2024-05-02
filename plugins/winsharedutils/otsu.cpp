@@ -1,10 +1,4 @@
 #include "define.h"
-#include <iostream>
-
-#include <windows.h>
-#include <vector>
-#include <cmath>
-
 typedef struct
 {
     BYTE b;

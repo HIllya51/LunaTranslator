@@ -1,11 +1,4 @@
-﻿
-#include <Windows.h>
-#include <iostream>
-#include <string>
-#include <psapi.h>
-#include <memory>
-#include <fstream>
-#pragma comment(linker, "/subsystem:windows /entry:wmainCRTStartup")
+﻿#pragma comment(linker, "/subsystem:windows /entry:wmainCRTStartup")
 
 int dllinjectwmain(int argc, wchar_t *argv[]);
 int ntleaswmain(int argc, wchar_t *wargv[]);

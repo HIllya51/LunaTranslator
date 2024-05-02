@@ -1,8 +1,4 @@
-﻿#include <Windows.h>
-#include <stdint.h>
-#include <dwmapi.h>
-#include <string>
-#include "define.h"
+﻿#include "define.h"
 // https://github.com/Blinue/Xaml-Islands-Cpp/blob/main/src/XamlIslandsCpp/XamlWindow.h
 
 enum WindowBackdrop : int32_t

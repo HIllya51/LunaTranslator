@@ -1,6 +1,4 @@
 
-#include <iostream>
-#include <Windows.h>
 #define SHIFT_JIS 932
 
 int lewmain(int argc, wchar_t *argv[])

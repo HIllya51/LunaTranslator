@@ -1,8 +1,5 @@
 
 #include "define.h"
-#include <windows.h>
-#include <iostream>
-#include <fstream>
 size_t lev_u_edit_distance(size_t len1, const wchar_t *string1,
                            size_t len2, const wchar_t *string2,
                            int xcost)

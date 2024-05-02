@@ -1,12 +1,5 @@
 #include "ebyroid.h"
 
-#include <cstdint>
-#include <functional>
-#include <stdexcept>
-#include <string>
-
-#include <Windows.h>
-
 #include "api_adapter.h"
 #include "api_settings.h"
 #include "ebyutil.h"

@@ -1,6 +1,4 @@
-#include <windows.h>
-#include <thread>
-#include <string>
+
 #include "define.h"
 HANDLE hsema;
 void IsColorSchemeChangeMessage(LPARAM lParam)

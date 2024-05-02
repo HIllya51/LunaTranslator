@@ -1,10 +1,3 @@
-#include <Shobjidl.h>
-#include <Windows.h>
-#include <Shobjidl.h>
-#include <iostream>
-#include <initguid.h>
-#include <ShlGuid.h>
-#include <strsafe.h>
 #include "define.h"
 void GetLnkTargetPath(wchar_t *lnkFilePath, wchar_t *path, wchar_t *tgtpath, wchar_t *iconpath, wchar_t *dirpath)
 {

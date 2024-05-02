@@ -1,9 +1,4 @@
 
-#include <iostream>
-#include <Windows.h>
-#include <string>
-#include <io.h>
-#include <fcntl.h>
 extern "C"
 {
     typedef DWORD(__stdcall *StartSession)(wchar_t *path, void *bufferStart, void *bufferStop, const wchar_t *app);

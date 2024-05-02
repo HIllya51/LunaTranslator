@@ -1,6 +1,4 @@
-#include "pch.h"
 #include "define.h"
-#include <windows.h>
 #include <winrt/Windows.Foundation.h>
 #include <winrt/Windows.Storage.Pickers.h>
 #include <winrt/Windows.Storage.Streams.h>
@@ -14,9 +12,6 @@
 
 #include <winrt/Windows.Security.Cryptography.h>
 #include <winrt/Windows.Globalization.h>
-#include <iostream>
-#include <fstream>
-#include <vector>
 using namespace winrt;
 
 using namespace Windows::Foundation;

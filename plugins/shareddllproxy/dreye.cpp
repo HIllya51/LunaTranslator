@@ -1,6 +1,3 @@
-#include <Windows.h>
-#include <iostream>
-#include <string>
 extern "C"
 {
     typedef int(__stdcall *MTInitCJ)(int);

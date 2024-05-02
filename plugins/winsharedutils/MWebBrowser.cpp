@@ -3,13 +3,6 @@
 // This file is public domain software.
 
 #include "MWebBrowser.hpp"
-#include <cwchar>
-#include <comdef.h>
-#include <shlwapi.h>
-#include <cstdio>
-#include <cstring>
-#include <cassert>
-#include <mshtmhst.h>
 
 /*static*/ MWebBrowser *
 MWebBrowser::Create(HWND hwndParent)

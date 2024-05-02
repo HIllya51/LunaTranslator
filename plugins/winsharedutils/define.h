@@ -1,5 +1,4 @@
 #pragma once
-#include <Windows.h>
 #define DECLARE extern "C" __declspec(dllexport)
 extern "C"
 {

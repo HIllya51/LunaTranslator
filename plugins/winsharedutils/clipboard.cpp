@@ -1,6 +1,5 @@
 
 #include "define.h"
-#include <windows.h>
 bool tryopenclipboard(HWND hwnd = 0)
 {
     bool success = false;

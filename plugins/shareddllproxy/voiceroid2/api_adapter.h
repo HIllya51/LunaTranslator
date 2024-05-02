@@ -1,8 +1,6 @@
 #ifndef API_ADAPTER_H
 #define API_ADAPTER_H
 
-#include <cstdint>
-
 // forward-declaration to avoid including Windows.h in header
 #ifndef _WINDEF_
 struct HINSTANCE__;

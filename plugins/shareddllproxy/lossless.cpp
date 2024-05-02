@@ -1,9 +1,4 @@
 ﻿
-#include <iostream>
-#include <windows.h>
-#include <thread>
-#include <detours.h>
-#include <string>
 typedef BSTR (*GetAdapterNames_t)();
 typedef BSTR (*GetDisplayNames_t)();
 

@@ -6,10 +6,6 @@
 #define MWEB_BROWSER_HPP_   13   // Version 13
 
 #define INITGUID
-#include <windows.h>
-#include <exdisp.h>
-#include <mshtml.h>
-#include <mshtmhst.h>
 
 class MWebBrowser :
     public IOleClientSite,

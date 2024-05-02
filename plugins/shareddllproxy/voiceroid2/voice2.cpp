@@ -1,13 +1,9 @@
 
 #include "ebyroid.h"
-#include <Windows.h>
 #include "api_adapter.h"
 #include "ebyutil.h"
-#include <io.h>
-#include <fcntl.h>
 using ebyroid::Ebyroid;
 #include "types.h"
-#pragma comment(lib, "winmm.lib")
 
 int voiceroid2wmain(int argc, wchar_t *wargv[])
 {

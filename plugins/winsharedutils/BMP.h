@@ -1,8 +1,4 @@
 #pragma once
-#include <fstream>
-#include <vector>
-#include <stdexcept>
-#include <iostream>
 
 #pragma pack(push, 1)
 struct BMPFileHeader {

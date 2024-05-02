@@ -1,9 +1,6 @@
 #ifndef EBYROID_H
 #define EBYROID_H
 
-#include <cstdint>
-#include <string>
-#include <vector>
 
 namespace ebyroid
 {

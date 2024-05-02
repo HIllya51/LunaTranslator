@@ -1,6 +1,4 @@
-#include "pch.h"
 #include "define.h"
-#include <iostream>
 
 void free_all(void *str)
 {

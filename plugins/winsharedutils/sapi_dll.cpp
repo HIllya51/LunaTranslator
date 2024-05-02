@@ -1,9 +1,4 @@
 ﻿
-#include <sapi.h>
-#include <stdio.h>
-#include <iostream>
-#include <string>
-#include <sphelper.h>
 #include "define.h"
 #include "cinterface.h"
 bool _Speak(std::wstring &Content, const wchar_t *token, int voiceid, int rate, int volume, std::wstring &FileName)

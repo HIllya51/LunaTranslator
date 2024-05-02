@@ -1,14 +1,5 @@
 
-
-#include <Audiopolicy.h>
-#include <iostream>
-#include <string>
-#include <mmdeviceapi.h>
-#include <Psapi.h>
-#include <Windows.h>
-#include <atlbase.h>
 #include "define.h"
-#pragma comment(lib, "Psapi.lib")
 class CAudioMgr
 {
 public:

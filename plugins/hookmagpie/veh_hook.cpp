@@ -4,9 +4,7 @@ Version: 24-March-2008
 **/
 // #define WINVER 0x0501
 // #define _WIN32_WINNT 0x0501
-#include <windows.h>
 #include "veh_hook.h"
-#include <mutex>
 static veh_list_t *list = NULL;
 char int3bp[] = "\xCC";
 std::mutex vehlistlock;

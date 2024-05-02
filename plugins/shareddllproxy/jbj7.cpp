@@ -1,11 +1,4 @@
 
-#define _CRT_SECURE_NO_WARNINGS
-#include <iostream>
-#include <Windows.h>
-#include <io.h>
-#include <fcntl.h>
-#include <Shlwapi.h>
-
 #define CODEPAGE_JA 932
 #define CODEPAGE_GB 936
 

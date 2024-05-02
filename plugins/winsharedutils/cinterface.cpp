@@ -1,11 +1,5 @@
 
 #include "define.h"
-#include <iostream>
-#include "cinterface.h"
-#include <malloc.h>
-#include <mutex>
-#include <queue>
-#include <Windows.h>
 void free_all(void *str)
 {
   delete str;

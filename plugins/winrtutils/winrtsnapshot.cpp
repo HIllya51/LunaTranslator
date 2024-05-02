@@ -1,5 +1,4 @@
-﻿#include "pch.h"
-#include "define.h"
+﻿#include "define.h"
 #include <dxgi.h>
 #include <inspectable.h>
 #include <dxgi1_2.h>
@@ -19,13 +18,9 @@
 #include <winrt/Windows.Storage.Pickers.h>
 #include <winrt/Windows.Storage.Streams.h>
 #include <roerrorapi.h>
-#include <dwmapi.h>
-#include <filesystem>
-#include <Windows.h>
 #include <gdiplus.h>
 // #include "ImageFormatConversion.hpp"
 
-#pragma comment(lib, "Dwmapi.lib")
 #pragma comment(lib, "windowsapp.lib")
 #pragma comment(lib, "DXGI.lib")
 #pragma comment(lib, "gdiplus.lib")

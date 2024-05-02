@@ -1,8 +1,5 @@
-#include <windows.h>
-#include <vector>
 #include "define.h"
 
-#pragma comment(lib, "Version.lib")
 
 bool queryversion(const wchar_t *exe, WORD *_1, WORD *_2, WORD *_3, WORD *_4)
 {

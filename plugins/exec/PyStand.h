@@ -9,13 +9,6 @@
 #ifndef _PYSTAND_H_
 #define _PYSTAND_H_
 
-#include <stdio.h>
-#include <windows.h>
-#include <shlwapi.h>
-#include <string>
-#include <vector>
-
-
 //---------------------------------------------------------------------
 // PyStand
 //---------------------------------------------------------------------

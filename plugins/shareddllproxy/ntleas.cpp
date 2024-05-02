@@ -1,6 +1,4 @@
-#include <string>
-#include <Windows.h>
-#include <crtdefs.h>
+
 #define NTLEA_PARAMETERS_LENGTH (LF_FACESIZE + 20)
 
 #define szRcpIntMtx "RcpInternalMutex"

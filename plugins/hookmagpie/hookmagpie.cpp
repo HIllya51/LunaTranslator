@@ -1,8 +1,4 @@
-#include <iostream>
-#include <windows.h>
-#include <thread>
-#include <string>
-#include <assert.h>
+
 #include "veh_hook.h"
 namespace Win32Utils
 {

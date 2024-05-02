@@ -9,18 +9,8 @@
 #ifdef _MSC_VER
 #define _CRT_SECURE_NO_WARNINGS 1
 #endif
-
-#include <shlwapi.h>
-#include <string>
-#include <string.h>
-#include <winbase.h>
-#include <wincon.h>
-
 #include "PyStand.h"
 
-#ifdef _MSC_VER
-#pragma comment(lib, "shlwapi.lib")
-#endif
 
 //---------------------------------------------------------------------
 // dtor

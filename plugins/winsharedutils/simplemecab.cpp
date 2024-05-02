@@ -1,9 +1,5 @@
 
 #pragma execution_character_set("utf-8")
-#include <windows.h>
-#include <iostream>
-#include <fstream>
-#include <vector>
 #include "define.h"
 #include "cinterface.h"
 struct mecab_node_t

@@ -1,9 +1,5 @@
 #include "api_adapter.h"
 
-#include <stdexcept>
-
-#include <Windows.h>
-
 #include "ebyutil.h"
 
 namespace ebyroid

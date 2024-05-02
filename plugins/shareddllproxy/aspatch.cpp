@@ -1,12 +1,3 @@
-#include <nlohmann/json.hpp>
-#include <filesystem>
-#include <fstream>
-#include <optional>
-#include <thread>
-#include <Windows.h>
-#include <unordered_set>
-#include <set>
-#include <tlhelp32.h>
 static std::wstring StringToWideString(const std::string &text, UINT encoding = CP_UTF8)
 {
     std::vector<wchar_t> buffer(text.size() + 1);

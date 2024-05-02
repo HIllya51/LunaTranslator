@@ -1,16 +1,4 @@
 ﻿
-#define _CRT_SECURE_NO_WARNINGS
-#include <iostream>
-#include <fstream>
-#include <Windows.h>
-#include <io.h>
-#include <fcntl.h>
-#include <vector>
-#include <sapi.h>
-#include <stdio.h>
-#include <iostream>
-#include <string>
-#include <sphelper.h>
 bool _Speak(std::wstring &Content, const wchar_t *token, int voiceid, int rate, int volume, std::wstring &FileName)
 {
     ISpVoice *pVoice = NULL;

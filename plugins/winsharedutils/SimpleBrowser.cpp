@@ -8,21 +8,6 @@
 // This file is public domain software.
 
 #define _CRT_SECURE_NO_WARNINGS
-#include <windows.h>
-#include <windowsx.h>
-#include <commctrl.h>
-#include <commdlg.h>
-#include <mmsystem.h>
-#include <shlobj.h>
-#include <shlwapi.h>
-#include <mshtml.h>
-#include <string>
-#include <cctype>
-#include <cassert>
-#include <strsafe.h>
-#include <comdef.h>
-#include <mshtmcid.h>
-#include <process.h>
 #include "MWebBrowser.hpp"
 
 BOOL GetIEVersion(LPWSTR pszVersion, DWORD cchVersionMax)

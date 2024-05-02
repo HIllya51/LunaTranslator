@@ -1,6 +1,3 @@
-#include <windows.h>
-#include <thread>
-#include <string>
 #include "define.h"
 
 static UINT WM_MAGPIE_SCALINGCHANGED = RegisterWindowMessage(L"MagpieScalingChanged");

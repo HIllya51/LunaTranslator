@@ -31,8 +31,12 @@ set(VERSION_MAJOR 2)
 set(VERSION_MINOR 48)
 set(VERSION_PATCH 0)
 
+add_library(pch pch.cpp)
+target_precompile_headers(pch PUBLIC pch.h)
+
+
 add_subdirectory(exec)
-add_subdirectory(shareddllproxy)
 add_subdirectory(winrtutils)
 add_subdirectory(winsharedutils)
 add_subdirectory(hookmagpie)
+add_subdirectory(shareddllproxy)

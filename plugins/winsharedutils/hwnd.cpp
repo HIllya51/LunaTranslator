@@ -1,4 +1,3 @@
-#include <Windows.h>
 #include "define.h"
 
 DECLARE void showintab(HWND hwnd, bool show)

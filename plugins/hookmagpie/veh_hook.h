@@ -5,10 +5,6 @@ Version: 24-March-2008
 
 #ifndef LIST_T_H_INCLUDED
 #define LIST_T_H_INCLUDED
-#include <windows.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <functional>
 // VEH Hooking types
 #define VEH_HK_INT3 0
 #define VEH_HK_MEM 1
