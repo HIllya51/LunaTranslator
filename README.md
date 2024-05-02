@@ -13,7 +13,7 @@
 
 ## <a href="https://hillya51.github.io/LunaTranslator_tutorial/#/zh/" target="_blank">使用说明</a> <a href="https://www.bilibili.com/video/BV1G1421R7EH/" target="_blank">视频教程</a>
 
-## 欢迎觉得有帮助的朋友一起完善[说明文档](https://github.com/HIllya51/LunaTranslator_tutorial)。交流群[912525396](https://qm.qq.com/q/qE32v9NYBO)
+欢迎觉得有帮助的朋友一起完善[说明文档](https://github.com/HIllya51/LunaTranslator_tutorial)。交流群[912525396](https://qm.qq.com/q/qE32v9NYBO)
 
 
 ## 功能支持
