@@ -67,10 +67,6 @@ class BaiduV1(Tse):
         super().__init__()
         self.host_url = "https://fanyi.baidu.com"
         self.api_url = "https://fanyi.baidu.com/transapi"
-        self.get_lang_url = None
-        self.get_lang_url_pattern = (
-            "https://fanyi-cdn.cdn.bcebos.com/webStatic/translation/js/index.(.*?).js"
-        )
         self.host_headers = self.get_headers(self.host_url, if_api=False)
         self.api_headers = self.get_headers(self.host_url, if_api=True)
         self.language_map = None
@@ -143,11 +139,6 @@ class BaiduV1(Tse):
                 proxies=proxies,
             ).text
             # self.language_map = self.get_language_map(host_html, from_language=from_language, to_language=to_language)
-
-            if not self.get_lang_url:
-                self.get_lang_url = (
-                    re.compile(self.get_lang_url_pattern).search(host_html).group()
-                )
 
         form_data = {
             "from": from_language,
