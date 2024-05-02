@@ -36,7 +36,9 @@ if __name__ == "__main__":
     import gobject
 
     gobject.overridepathexists()
-
+    QApplication.addLibraryPath(
+        "./LunaTranslator/runtime/PyQt5/Qt5/plugins"
+    )  # 中文字符下不能自动加载
     QApplication.setAttribute(Qt.ApplicationAttribute.AA_EnableHighDpiScaling)
     QApplication.setAttribute(Qt.ApplicationAttribute.AA_UseHighDpiPixmaps)
     QApplication.setHighDpiScaleFactorRoundingPolicy(
