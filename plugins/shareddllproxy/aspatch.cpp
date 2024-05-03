@@ -1,16 +1,4 @@
-static std::wstring StringToWideString(const std::string &text, UINT encoding = CP_UTF8)
-{
-    std::vector<wchar_t> buffer(text.size() + 1);
-    int length = MultiByteToWideChar(encoding, 0, text.c_str(), text.size() + 1, buffer.data(), buffer.size());
-    return std::wstring(buffer.data(), length - 1);
-}
-std::string WideStringToString(const std::wstring &text, UINT cp = CP_UTF8)
-{
-    std::vector<char> buffer((text.size() + 1) * 4);
 
-    WideCharToMultiByte(cp, 0, text.c_str(), -1, buffer.data(), buffer.size(), nullptr, nullptr);
-    return buffer.data();
-}
 HANDLE runexe(const std::wstring &exe, const std::optional<std::wstring> &startup_argument)
 {
     STARTUPINFOW si;

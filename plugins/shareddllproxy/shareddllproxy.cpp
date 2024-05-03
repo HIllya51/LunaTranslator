@@ -14,7 +14,6 @@ int neospeech(int argc, wchar_t *argv[]);
 int neospeechlist(int argc, wchar_t *argv[]);
 #else
 int magpiewmain(int argc, wchar_t *wargv[]);
-int losslesswmain(int argc, wchar_t *wargv[]);
 #endif // !_WIN64
 
 void listprocessmodule_1(std::ofstream &of, DWORD processPID)
@@ -84,7 +83,5 @@ int wmain(int argc, wchar_t *argv[])
 #else
     else if (argv0 == L"magpie")
         return magpiewmain(argc - 1, argv + 1);
-    else if (argv0 == L"lossless")
-        return losslesswmain(argc - 1, argv + 1);
 #endif // !_WIN64
 }

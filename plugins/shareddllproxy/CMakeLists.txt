@@ -15,7 +15,7 @@ generate_product_version(
 add_executable(shareddllproxy shareddllproxy.cpp dllinject.cpp ntleas.cpp aspatch.cpp ${versioninfo})
 target_precompile_headers(shareddllproxy REUSE_FROM pch) 
 if(${CMAKE_SIZEOF_VOID_P} EQUAL 8)
-	add_library(x64lib magpie.cpp lossless.cpp)
+	add_library(x64lib magpie.cpp)
 	target_precompile_headers(x64lib REUSE_FROM pch) 
 	target_link_libraries(shareddllproxy x64lib   ${Detours})
 	set_target_properties(shareddllproxy PROPERTIES OUTPUT_NAME "shareddllproxy64")

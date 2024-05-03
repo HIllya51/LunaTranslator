@@ -48,9 +48,6 @@ wchar_t **getlanguagelist(int *num)
     int i = 0;
     for (auto &&language : languages)
     {
-        // std::wcout << language.LanguageTag().c_str() << L" " << language.DisplayName().c_str() << L" " << language.AbbreviatedName().c_str() << L'\n';
-        // zh-Hans-CN  ����(���壬�й�)  ����
-        // ja  ����
         auto lang = language.LanguageTag();
         size_t len = lang.size() + 1;
         ret[i] = new wchar_t[len];
@@ -62,29 +59,22 @@ wchar_t **getlanguagelist(int *num)
 }
 ocrres OCR(wchar_t *fname, wchar_t *lang, wchar_t *space, int *num)
 {
-    // ָ��Ҫʶ���ͼ���ļ�·��
     std::wstring imagePath = fname;
 
-    // ��ͼ���ļ�
     StorageFile imageFile = StorageFile::GetFileFromPathAsync(imagePath).get();
     IRandomAccessStream imageStream = imageFile.OpenAsync(FileAccessMode::Read).get();
-    // ���� BitmapDecoder �������ͼ��
     BitmapDecoder decoder = BitmapDecoder::CreateAsync(imageStream).get();
 
-    // �ӽ������л�ȡλͼ����
     SoftwareBitmap softwareBitmap = decoder.GetSoftwareBitmapAsync().get();
     std::wstring l = lang;
     Language language(l);
-    // ���� OcrEngine ����
     OcrEngine ocrEngine = OcrEngine::TryCreateFromLanguage(language);
-    // ���� OcrResult ���󲢽���ʶ��
     OcrResult ocrResult = ocrEngine.RecognizeAsync(softwareBitmap).get();
-    // ���ʶ����
     auto res = ocrResult.Lines();
     std::vector<std::wstring> rets;
     std::vector<int> xs, ys, xs2, ys2;
     int i = 0;
-    std::wstring sspace = space; // Ĭ�ϼ�ʹ����Ҳ�пո�
+    std::wstring sspace = space;
     for (auto line : res)
     {
 

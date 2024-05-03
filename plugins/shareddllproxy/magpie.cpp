@@ -42,7 +42,7 @@ int magpiewmain(int argc, wchar_t *wargv[])
 	fgets(magpiepath, 4096, fp);
 	magpiepath[strlen(magpiepath) - 1] = 0;
 	fgets(cache, 4096, fp);
-	sscanf_s(cache, "%lld\n", &m_hWnd);
+	sscanf_s(cache, "%lld\n", (__int64 *)&m_hWnd);
 	fgets(effect, 4096, fp);
 	effect[strlen(effect) - 1] = 0;
 	fgets(cache, 4096, fp);
@@ -66,4 +66,5 @@ int magpiewmain(int argc, wchar_t *wargv[])
 	auto _1 = Initialize_f(6, "./Runtime.log", 100000, 1);
 	auto _2 = Run_f(m_hWnd, effect, flags, captureMode, CursorZoomFactor, CursorInterpolationMode, AdapterIdx, MultiMonitorUsage, 0, 0, 0, 0);
 	// printf("%d %s\n", _1, _2);
+	return 0;
 }

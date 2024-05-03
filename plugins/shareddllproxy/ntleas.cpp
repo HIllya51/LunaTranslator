@@ -495,7 +495,7 @@ int CreateProcessEndExt(NtleaProcess *process, PROCESS_INFORMATION const *proinf
 						};
 						if (GetThreadContext(proinfo->hThread, &threadctx))
 						{ // Wow64GetThreadContext
-							fprintf(stderr, "EIP at 0x%p to 0x%p\n", threadctx.RegIP, process->EntryPoint);
+							fprintf(stderr, "EIP at 0x%p to 0x%p\n", (void *)threadctx.RegIP, process->EntryPoint);
 							threadctx.RegIP = (DWORD)(DWORD_PTR)process->EntryPoint; // X86 only ??
 							SetThreadContext(proinfo->hThread, &threadctx);
 						}

@@ -48,23 +48,6 @@ DECLARE void recoverwindow(HWND hwnd, windowstatus status)
     ShowWindow(hwnd, SW_SHOWNORMAL);
     SetWindowPlacement(hwnd, &status.wpc);
 }
-struct AutoHandle
-{
-    HANDLE _handle;
-    AutoHandle(HANDLE handle) : _handle(handle){};
-    ~AutoHandle()
-    {
-        CloseHandle(_handle);
-    }
-    operator HANDLE()
-    {
-        return _handle;
-    }
-    operator bool()
-    {
-        return _handle == INVALID_HANDLE_VALUE;
-    }
-};
 DECLARE bool pid_running(DWORD pid)
 {
     DWORD code;

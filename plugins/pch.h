@@ -75,3 +75,5 @@
 #pragma comment(lib, "dwmapi.lib")
 #pragma comment(lib, "Psapi.lib")
 #pragma comment(lib, "Version.lib")
+
+#include"common.hpp"

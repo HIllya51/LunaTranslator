@@ -31,10 +31,7 @@ int voiceroid2wmain(int argc, wchar_t *wargv[])
                               (const char *)argv[3],        //"yukari_emo_44",
                               2,                            // �̶��������
                               atof((const char *)argv[5])); // 1); //0.1-2,0.5-4
-    SECURITY_DESCRIPTOR sd = {};
-    InitializeSecurityDescriptor(&sd, SECURITY_DESCRIPTOR_REVISION);
-    SetSecurityDescriptorDacl(&sd, TRUE, NULL, FALSE);
-    SECURITY_ATTRIBUTES allAccess = SECURITY_ATTRIBUTES{sizeof(SECURITY_ATTRIBUTES), &sd, FALSE};
+    
     SetEvent(CreateEventA(&allAccess, FALSE, FALSE, argv[8]));
     if (ConnectNamedPipe(hPipe, NULL) != NULL)
     {
