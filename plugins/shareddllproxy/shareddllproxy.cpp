@@ -13,7 +13,6 @@ int lewmain(int argc, wchar_t *argv[]);
 int neospeech(int argc, wchar_t *argv[]);
 int neospeechlist(int argc, wchar_t *argv[]);
 #else
-int magpiewmain(int argc, wchar_t *wargv[]);
 #endif // !_WIN64
 
 void listprocessmodule_1(std::ofstream &of, DWORD processPID)
@@ -81,7 +80,6 @@ int wmain(int argc, wchar_t *argv[])
     else if (argv0 == L"neospeechlist")
         return neospeechlist(argc - 1, argv + 1);
 #else
-    else if (argv0 == L"magpie")
-        return magpiewmain(argc - 1, argv + 1);
+    
 #endif // !_WIN64
 }
