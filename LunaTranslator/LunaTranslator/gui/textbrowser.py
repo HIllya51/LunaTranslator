@@ -9,7 +9,12 @@ from PyQt5.QtGui import (
     QColor,
     QFontMetricsF,
 )
-from PyQt5.QtWidgets import QTextBrowser, QLabel, QGraphicsDropShadowEffect
+from PyQt5.QtWidgets import (
+    QTextBrowser,
+    QLabel,
+    QGraphicsDropShadowEffect,
+    QApplication,
+)
 import functools
 from myutils.config import globalconfig
 from traceback import print_exc
@@ -225,8 +230,12 @@ class Textbrowser:
         else:
             self.align = False
 
-    def append(self, x, tag, origin):
+    def showhide(self):
+        self.textbrowserback.setVisible(globalconfig["zitiyangshi"] != 3)
+        self.textbrowser.setVisible(globalconfig["zitiyangshi"] != 3)
+        QApplication.processEvents()
 
+    def append(self, x, tag, origin):
         if self.cleared:
             _space = ""
             self.blockcount = 0
@@ -393,13 +402,9 @@ class Textbrowser:
 
                 index = linei
                 _ = self.yinyinglabels[index]
-                if self.align:
-                    _.setAlignment(Qt.AlignCenter)
-                    _.move(0,tl1.y())
-                    _.setFixedWidth(self.textbrowser.width())
-                else:
-                    _.setAlignment(Qt.AlignLeft)
-                    _.move(tl1)
+
+                _.setAlignment(Qt.AlignLeft)
+                _.move(tl1)
                 _.setText(block.text()[s : s + l])
                 _.setFont(self.textbrowser.currentCharFormat().font())
 
