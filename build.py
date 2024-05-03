@@ -70,12 +70,30 @@ def downloadBrotli():
     )
 
 
+def downloadlr():
+
+    for ass in get_url_as_json(
+        "https://api.github.com/repos/InWILL/Locale_Remulator/releases/latest"
+    )["assets"]:
+        if "browser_download_url" in ass:
+            os.chdir(rootDir + "\\temp")
+            subprocess.run(f"7z x {ass['name']} -oLR")
+            os.makedirs(
+                f"{rootDir}/LunaTranslator/files/plugins/Locale_Remulator",
+                exist_ok=True,
+            )
+            for _dir, _, _fs in os.walk("LR"):
+                for f in _fs:
+                    if f in ["LRHookx64.dll", "LRHookx32.dll"]:
+                        shutil.move(
+                            os.path.join(_dir, f),
+                            f"{rootDir}/LunaTranslator/files/plugins/Locale_Remulator",
+                        )
+
+
 def downloadcommon():
     os.chdir(rootDir + "\\temp")
-    subprocess.run(
-        f"curl -LO https://github.com/HIllya51/RESOURCES/releases/download/common/lr.zip"
-    )
-    subprocess.run(f"7z x lr.zip -oALL")
+    downloadlr()
     subprocess.run(
         f"curl -LO https://github.com/HIllya51/RESOURCES/releases/download/common/mecab.zip"
     )
