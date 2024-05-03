@@ -1,0 +1,36 @@
+#pragma comment(linker, "/subsystem:windows /entry:wmainCRTStartup")
+
+int updatewmain(int argc, wchar_t *argv[])
+{
+    if (argc <= 1)
+        return 0;
+    AutoHandle hMutex = CreateMutex(NULL, FALSE, L"LUNA_UPDATER_SINGLE");
+
+    if (GetLastError() == ERROR_ALREADY_EXISTS)
+        return 0;
+    while (true)
+    {
+        AutoHandle semaphore = CreateMutex(NULL, FALSE, L"LUNA_UPDATER_BLOCK");
+        if (GetLastError() != ERROR_ALREADY_EXISTS)
+            break;
+        Sleep(1000);
+    }
+    WCHAR path[MAX_PATH];
+    GetModuleFileNameW(GetModuleHandle(0), path, MAX_PATH);
+
+    *(wcsrchr(path, '\\')) = 0;
+    *(wcsrchr(path, '\\')) = 0;
+
+    SetCurrentDirectory(path);
+    try
+    {
+        std::filesystem::copy(argv[1], L".\\", std::filesystem::copy_options::recursive | std::filesystem::copy_options::overwrite_existing);
+        MessageBoxW(0, L"Update success", L"Success", 0);
+    }
+    catch (std::exception &e)
+    {
+        MessageBoxW(0, (StringToWideString(e.what()) + L"\r\nUpdate failed, maybe you should download again to fix errors").c_str(), L"Error", 0);
+        ShellExecute(0, L"open", L"https://github.com/HIllya51/LunaTranslator/releases", NULL, NULL, SW_SHOWNORMAL);
+    }
+    return 0;
+}

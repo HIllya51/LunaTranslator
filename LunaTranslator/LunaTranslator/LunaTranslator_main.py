@@ -2,6 +2,7 @@ import sys, windows
 import platform, os
 
 if __name__ == "__main__":
+    _lock = windows.AutoHandle(windows.CreateMutex(False, "LUNA_UPDATER_BLOCK"))
     dirname = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     os.chdir(dirname)
     windows.addenvpath("./LunaTranslator/runtime/")  # win7 no vcredist2015

@@ -12,7 +12,7 @@ generate_product_version(
 )
 
 
-add_executable(shareddllproxy shareddllproxy.cpp dllinject.cpp ntleas.cpp aspatch.cpp ${versioninfo})
+add_executable(shareddllproxy shareddllproxy.cpp dllinject.cpp ntleas.cpp aspatch.cpp update.cpp ${versioninfo})
 target_precompile_headers(shareddllproxy REUSE_FROM pch) 
 if(${CMAKE_SIZEOF_VOID_P} EQUAL 8)
 	
