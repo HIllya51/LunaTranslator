@@ -25,11 +25,11 @@ int updatewmain(int argc, wchar_t *argv[])
     try
     {
         std::filesystem::copy(argv[1], L".\\", std::filesystem::copy_options::recursive | std::filesystem::copy_options::overwrite_existing);
-        MessageBoxW(0, L"Update success", L"Success", 0);
+        MessageBoxW(GetForegroundWindow(), L"Update success", L"Success", 0);
     }
     catch (std::exception &e)
     {
-        MessageBoxW(0, (StringToWideString(e.what()) + L"\r\nUpdate failed, maybe you should download again to fix errors").c_str(), L"Error", 0);
+        MessageBoxW(GetForegroundWindow(), (StringToWideString(e.what()) + L"\r\nUpdate failed, maybe you should download again to fix errors").c_str(), L"Error", 0);
         ShellExecute(0, L"open", L"https://github.com/HIllya51/LunaTranslator/releases", NULL, NULL, SW_SHOWNORMAL);
     }
     return 0;
