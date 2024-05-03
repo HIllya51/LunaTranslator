@@ -131,6 +131,7 @@ class Session(Sessionbase):
                 cookies.update(self.cookies)
             else:
                 cookies = self.cookies
+        curl_easy_reset(curl)
         if cookies:
             cookie = self._parsecookie(cookies)
             curl_easy_setopt(curl, CURLoption.CURLOPT_COOKIE, cookie.encode("utf8"))
@@ -201,31 +202,43 @@ class Session(Sessionbase):
             )
 
             def ___perform():
+                error = False
                 try:
                     self._perform(curl)
                 except:
                     print_exc()
-                    self.raise_for_status()
                     headerqueue.put(None)
-                curl_easy_reset(curl)
+                    error = True
                 resp.queue.put(None)
+                if error:
+                    print(url)
+                    self.raise_for_status()
 
             threading.Thread(target=___perform, daemon=True).start()
 
-            headerb = b""
+            headerb = ""
+            cnt = 1
             while True:
                 _headerb = headerqueue.get()
                 if _headerb is None:
                     self.raise_for_status()
-                headerb += _headerb
-                if _headerb == b"\r\n":
-                    break
-            resp.headers = self._update_header_cookie(headerb.decode("utf8"))
+                _headerb = _headerb.decode("utf8")
+
+                if _headerb.endswith(
+                    "200 Connection established\r\n"
+                ):  # HTTP/1.1 200 Connection established\r\n
+                    cnt += 1
+                elif _headerb == "\r\n":
+                    cnt -= 1
+                    if cnt == 0:
+                        break
+                else:
+                    headerb += _headerb
+
+            resp.headers = self._update_header_cookie(headerb)
 
             if proxy:
-                resp.status_code = int(
-                    headerb.decode("utf8").split("\r\n")[0].split(" ")[1]
-                )
+                resp.status_code = int(headerb[:-2].split(" ")[1])
             else:
                 resp.status_code = self._getStatusCode(curl)
         else:
@@ -259,7 +272,7 @@ class Session(Sessionbase):
             resp.content = b"".join(_content)
             resp.headers = self._update_header_cookie(b"".join(_headers).decode("utf8"))
             resp.status_code = self._getStatusCode(curl)
-            curl_easy_reset(curl)
+            
         resp.last_error = self.last_error
         resp.cookies = self.cookies
         return resp

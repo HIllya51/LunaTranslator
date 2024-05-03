@@ -122,7 +122,7 @@ def updatemethod(_version, progresscallback):
                     file_size += thislen
 
                     progresscallback(
-                        "总大小{} MB 进度 {}% ".format(
+                        "总大小{} MB 进度 {:0.2f}% ".format(
                             int(1000 * (int(size / 1024) / 1024)) / 1000,
                             int(10000 * (file_size / size)) / 100,
                         ),
