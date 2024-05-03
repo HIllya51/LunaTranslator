@@ -77,6 +77,7 @@ def downloadlr():
     )["assets"]:
         if "browser_download_url" in ass:
             os.chdir(rootDir + "\\temp")
+            subprocess.run(f"curl -LO {ass['browser_download_url']}")
             subprocess.run(f"7z x {ass['name']} -oLR")
             os.makedirs(
                 f"{rootDir}/LunaTranslator/files/plugins/Locale_Remulator",
