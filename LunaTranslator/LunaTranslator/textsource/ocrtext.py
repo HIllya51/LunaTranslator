@@ -3,7 +3,7 @@ from myutils.config import globalconfig
 import winsharedutils
 from gui.rangeselect import rangeadjust
 from myutils.ocrutil import imageCut, ocr_run, ocr_end
-import time, gobject
+import time, gobject, os
 from PyQt5.QtWidgets import QApplication
 from PyQt5.QtGui import QImage
 from textsource.textsourcebase import basetext
@@ -164,7 +164,7 @@ class ocrtext(basetext):
         return "\n".join(__text)
 
     def ocrtest(self, img):
-
+        os.makedirs("./cache/ocr", exist_ok=True)
         fname = "./cache/ocr/{}.png".format(self.timestamp)
         img.save(fname)
         # print(fname)

@@ -16,7 +16,7 @@ class basetext:
             self.pids = []
         self.md5 = md5
         self.basename = basename
-
+        os.makedirs("./translation_record", exist_ok=True)
         sqlfname_all_old = (
             "./translation_record/" + md5 + "_" + basename + ".pretrans_common.sqlite"
         )

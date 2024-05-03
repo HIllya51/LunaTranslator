@@ -1,5 +1,5 @@
 import requests
-import time
+import time, os
 from tts.basettsclass import TTSbase
 
 
@@ -39,6 +39,7 @@ class TTS(TTSbase):
             proxies={"http": None, "https": None},
         ).content
         fname = str(time.time())
+        os.makedirs("./cache/tts/", exist_ok=True)
         with open("./cache/tts/" + fname + ".mp3", "wb") as ff:
             ff.write(response)
 

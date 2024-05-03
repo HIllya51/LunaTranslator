@@ -569,7 +569,6 @@
     "使用说明": "Instrukcja użytkowania",
     "注册地址": "Adres zarejestrowany w firmie",
     "API接口地址": "Adres interfejsu API",
-    "当前路径读写权限不足，请使用管理员权限运行！": "Bieżąca ścieżka ma niewystarczające uprawnienia do odczytu i zapisu. Proszę uruchomić z uprawnieniami administratora!",
     "通用文字识别（标准版）": "Uniwersalne rozpoznawanie tekstu (wersja standardowa)",
     "通用文字识别（标准含位置版）": "Uniwersalne rozpoznawanie tekstu (standardowo z wersją pozycyjną)",
     "通用文字识别（高精度版）": "Uniwersalne rozpoznawanie tekstu (High Precision Edition)",

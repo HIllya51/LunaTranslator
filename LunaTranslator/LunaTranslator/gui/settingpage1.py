@@ -190,6 +190,7 @@ def exportchspatch(self):
     doexportchspatch(exe, realgame)
     md5 = getfilemd5(exe)
     name = os.path.basename(exe).replace("." + os.path.basename(exe).split(".")[-1], "")
+    os.makedirs("./translation_record", exist_ok=True)
     sqlfname_all = "./translation_record/" + name + "_" + md5 + ".sqlite"
     if os.path.exists(sqlfname_all) == False:
         f = QFileDialog.getOpenFileName(

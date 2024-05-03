@@ -120,6 +120,7 @@ def sqlite2json2(self, sqlitefile, targetjson=None, existsmerge=False):
 
 
 def sqlite2json(self):
+    os.makedirs("./translation_record", exist_ok=True)
     f = QFileDialog.getOpenFileName(directory="./translation_record", filter="*.sqlite")
     if f[0] == "":
         return

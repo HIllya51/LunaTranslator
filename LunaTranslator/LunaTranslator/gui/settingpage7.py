@@ -30,7 +30,7 @@ from myutils.utils import (
     loadpostsettingwindowmethod,
 )
 from myutils.config import savehook_new_data
-import copy
+import copy, os
 from myutils.post import POSTSOLVE
 
 
@@ -39,6 +39,7 @@ def savegameprocesstext():
         try:
             with open("./userconfig/mypost.py", "r", encoding="utf8") as ff:
                 _mypost = ff.read()
+            os.makedirs("./userconfig/posts", exist_ok=True)
             with open(
                 "./userconfig/posts/{}.py".format(gobject.baseobject.textsource.uuname),
                 "w",

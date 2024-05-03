@@ -25,6 +25,7 @@ class Method(scalebase):
 
     def init(self):
         self.statuslistener()
+        os.makedirs("./cache", exist_ok=True)
         self.jspath = os.path.abspath("./cache/magpie.config.json")
         self.engine = subproc_w(
             './files/plugins/Magpie/Magpie.Core.exe "{}"'.format(self.jspath),

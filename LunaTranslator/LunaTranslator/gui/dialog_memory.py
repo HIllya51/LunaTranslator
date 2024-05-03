@@ -7,6 +7,7 @@ from myutils.config import _TR, globalconfig
 from gui.usefulwidget import saveposwindow
 from myutils.wrapper import Singleton_close
 from winsharedutils import showintab
+import os
 
 
 @Singleton_close
@@ -36,6 +37,7 @@ class dialog_memory(saveposwindow):
         self.gamemd5 = gamemd5
         formLayout = QVBoxLayout()  #
         self.showtext = QTextEdit()
+        os.makedirs("./userconfig/memory", exist_ok=True)
         self.rwpath = "./userconfig/memory/{}.html".format(gamemd5)
         try:
             with open(self.rwpath, "r", encoding="utf8") as ff:

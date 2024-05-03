@@ -5,7 +5,7 @@ import websocket
 from datetime import datetime
 import time
 import re
-import uuid
+import uuid, os
 import time
 import requests
 import time
@@ -193,6 +193,7 @@ def transferMsTTSData(rate, content, voice):
         else:
             break
     ws.close()
+    os.makedirs("./cache/tts/", exist_ok=True)
     outputPath = "./cache/tts/" + str(time.time()) + ".mp3"
     with open(outputPath, "wb") as audio_out:
         audio_out.write(audio_stream)

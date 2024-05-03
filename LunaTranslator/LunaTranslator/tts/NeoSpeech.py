@@ -10,6 +10,7 @@ from myutils.subproc import subproc_w, autoproc
 class TTS(TTSbase):
     def checkchange(self):
         fname = str(time.time())
+        os.makedirs("./cache/tts/", exist_ok=True)
         savepath = os.path.join(os.getcwd(), "cache/tts", fname)
         exepath = os.path.join(os.getcwd(), "files/plugins/shareddllproxy32.exe")
         t = time.time()

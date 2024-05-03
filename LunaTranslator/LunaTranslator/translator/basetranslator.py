@@ -5,7 +5,7 @@ from myutils.config import globalconfig, translatorsetting, static_data
 from threading import Thread
 import time, types
 import zhconv, gobject
-import sqlite3
+import sqlite3, os
 from myutils.commonbase import commonbase
 import functools
 from myutils.utils import stringfyerror, autosql, PriorityQueue
@@ -109,6 +109,7 @@ class basetrans(commonbase):
 
         if self.transtype != "pre":
             try:
+                os.makedirs("./translation_record/cache", exist_ok=True)
                 self.sqlwrite2 = autosql(
                     sqlite3.connect(
                         "./translation_record/cache/{}.sqlite".format(self.typename),

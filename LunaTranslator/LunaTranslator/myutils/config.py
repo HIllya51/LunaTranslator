@@ -232,13 +232,6 @@ def _TRL(kk):
     return x
 
 
-def testpriv():
-    fname = f"./userconfig/{os.getpid()}"
-    with open(fname, "w") as ff:
-        ff.write("")
-    os.remove(fname)
-
-
 def saveallconfig():
     def safesave(fname, js):
         # 有时保存时意外退出，会导致config文件被清空
@@ -248,6 +241,7 @@ def saveallconfig():
             os.remove(fname)
         os.rename(fname + ".tmp", fname)
 
+    os.makedirs("./userconfig", exist_ok=True)
     safesave("./userconfig/config.json", globalconfig)
     safesave("./userconfig/magpie_config.json", magpie_config)
     safesave("./userconfig/postprocessconfig.json", postprocessconfig)

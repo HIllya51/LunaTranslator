@@ -8,24 +8,8 @@ if __name__ == "__main__":
     windows.loadlibrary(
         "./LunaTranslator/runtime/PyQt5/Qt5/bin/Qt5Core.dll"
     )  # win7 no vcredist2015
-    for p in (
-        "./userconfig/memory",
-        "./userconfig/memory",
-        "./userconfig/posts",
-        "./translation_record",
-        "./translation_record/cache",
-        "./cache",
-        "./cache/ocr",
-        "./cache/update",
-        "./cache/screenshot",
-        "./cache/tts",
-        "./cache/icon",
-        "./cache/backup",
-    ):
 
-        os.makedirs(p, exist_ok=True)
-
-    from myutils.config import _TR, static_data, testpriv, globalconfig
+    from myutils.config import _TR, static_data, globalconfig
 
     sys.path.append("./userconfig")
     sys.path.insert(
@@ -79,12 +63,6 @@ if __name__ == "__main__":
             + _TR("请重新下载并关闭杀毒软件后重试"),
             tr=False,
         )
-        os._exit(0)
-
-    try:
-        testpriv()
-    except:
-        getQMessageBox(None, "错误", "当前路径读写权限不足，请使用管理员权限运行！")
         os._exit(0)
 
     gobject.baseobject = MAINUI()

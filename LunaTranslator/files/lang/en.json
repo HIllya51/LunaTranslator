@@ -569,7 +569,6 @@
     "使用说明": "Instructions for use",
     "注册地址": "Company Registered Address",
     "API接口地址": "API interface address",
-    "当前路径读写权限不足，请使用管理员权限运行！": "The current path has insufficient read and write permissions. Please run with administrator privileges!",
     "通用文字识别（标准版）": "Universal Text Recognition (Standard Edition)",
     "通用文字识别（标准含位置版）": "Universal text recognition (standard with positional version)",
     "通用文字识别（高精度版）": "Universal Text Recognition (High Precision Edition)",

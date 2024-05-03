@@ -73,6 +73,7 @@ class TTS(TTSbase):
             self.rate = globalconfig["ttscommon"]["rate"]
             self.voice = self.config["voice"]
             fname = str(time.time())
+            os.makedirs("./cache/tts/", exist_ok=True)
             savepath = os.path.join(os.getcwd(), "cache/tts", fname + ".wav")
             dllpath = os.path.join(self.path, "aitalked.dll")
 

@@ -1,7 +1,7 @@
 from traceback import print_exc
 import requests
 import base64
-import time
+import time, os
 from tts.basettsclass import TTSbase
 
 
@@ -48,7 +48,7 @@ class TTS(TTSbase):
             )
             fname = str(time.time())
             b64 = base64.b64decode(response.json()["audio"]["data"])
-
+            os.makedirs("./cache/tts/", exist_ok=True)
             with open("./cache/tts/" + fname + ".mp3", "wb") as ff:
                 ff.write(b64)
 

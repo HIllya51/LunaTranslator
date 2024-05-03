@@ -167,6 +167,7 @@ def getExeIcon(name, icon=True, cache=False):
             name = exepath
     data = winsharedutils.extracticon2data(name)
     if cache:
+        os.makedirs("./cache/icon", exist_ok=True)
         fn = "./cache/icon/{}.bmp".format(hashlib.md5(name.encode("utf8")).hexdigest())
     if data:
         pixmap = QPixmap()
