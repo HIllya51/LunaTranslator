@@ -1,12 +1,13 @@
-import sys
-from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QApplication
-from PyQt5.QtGui import QFont
+import sys, windows
 import platform, os
 
 if __name__ == "__main__":
     dirname = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     os.chdir(dirname)
+    windows.addenvpath("./LunaTranslator/runtime/")  # win7 no vcredist2015
+    windows.loadlibrary(
+        "./LunaTranslator/runtime/PyQt5/Qt5/bin/Qt5Core.dll"
+    )  # win7 no vcredist2015
     for p in (
         "./userconfig/memory",
         "./userconfig/memory",
@@ -36,6 +37,11 @@ if __name__ == "__main__":
     import gobject
 
     gobject.overridepathexists()
+
+    from PyQt5.QtCore import Qt
+    from PyQt5.QtWidgets import QApplication
+    from PyQt5.QtGui import QFont
+
     QApplication.addLibraryPath(
         "./LunaTranslator/runtime/PyQt5/Qt5/plugins"
     )  # 中文字符下不能自动加载

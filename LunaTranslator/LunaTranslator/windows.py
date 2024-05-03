@@ -25,7 +25,7 @@ from ctypes import (
     sizeof,
     byref,
 )
-import ctypes
+import ctypes, os
 from traceback import print_exc
 from ctypes.wintypes import (
     RECT,
@@ -949,3 +949,24 @@ _SetPropW.restype = BOOL
 
 def SetProp(hwnd, string, hdata):
     return _SetPropW(hwnd, string, hdata)
+
+
+_GetEnvironmentVariableW = _kernel32.GetEnvironmentVariableW
+_GetEnvironmentVariableW.argtypes = c_wchar_p, c_wchar_p, DWORD
+_SetEnvironmentVariableW = _kernel32.SetEnvironmentVariableW
+_SetEnvironmentVariableW.argtypes = LPCWSTR, LPCWSTR
+
+
+def addenvpath(path):
+    path = os.path.abspath(path)
+    env = create_unicode_buffer(65535)
+    _GetEnvironmentVariableW("PATH", env, 65535)
+    _SetEnvironmentVariableW("PATH", env.value + ";" + path)
+
+
+_LoadLibraryW = _kernel32.LoadLibraryW
+_LoadLibraryW.argtypes = (LPCWSTR,)
+
+
+def loadlibrary(path):
+    _LoadLibraryW(path)
