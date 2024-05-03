@@ -263,7 +263,7 @@ namespace ebyroid
         param->speaker[0].pause_long = 100;
         param->speaker[0].range = 0.893;*/
         param->speaker[0].speed = speed;
-        printf("2 %d %d\n", volume, speed);
+        //printf("2 %d %d\n", volume, speed);
         result = adapter->SetParam(param);
         printf("3 %d\n", result);
         if (result != ERR_SUCCESS)

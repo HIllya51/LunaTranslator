@@ -29,7 +29,7 @@ int voiceroid2wmain(int argc, wchar_t *wargv[])
     ebyroid = Ebyroid::Create((const char *)argv[1], //"C:\\dataH\\Yukari2",
                               (const char *)argv[2],
                               (const char *)argv[3],        //"yukari_emo_44",
-                              2,                            // �̶��������
+                              2,                            
                               atof((const char *)argv[5])); // 1); //0.1-2,0.5-4
     
     SetEvent(CreateEventA(&allAccess, FALSE, FALSE, argv[8]));
