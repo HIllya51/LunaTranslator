@@ -3,7 +3,7 @@ import time
 
 
 class TS(basetransdev):
-    target_url = "https://chat.openai.com/"
+    target_url = "https://chatgpt.com/"
 
     def langmap(self):
         return {
@@ -39,9 +39,12 @@ class TS(basetransdev):
         return res
 
     def translate(self, content):
-        idx = self.wait_for_result(
-            """document.querySelector("#__next > div.relative.z-0.flex.h-full.w-full.overflow-hidden > div.relative.flex.h-full.max-w-full.flex-1.flex-col.overflow-hidden > main > div.flex.h-full.flex-col > div.flex-1.overflow-hidden > div > div > div > div").children.length"""
-        )
+        while True:
+            idx = self.wait_for_result(
+                """document.querySelector("#__next > div.relative.z-0.flex.h-full.w-full.overflow-hidden > div.relative.flex.h-full.max-w-full.flex-1.flex-col.overflow-hidden > main > div.flex.h-full.flex-col > div.flex-1.overflow-hidden > div > div > div > div").children.length"""
+            )
+            if isinstance(idx, int):
+                break
         content = (
             "Please help me translate the following {} text into {}, and you should only tell me the translation.\n".format(
                 self.srclang, self.tgtlang
@@ -54,7 +57,7 @@ class TS(basetransdev):
             )
         )
         self.Runtime_evaluate(
-            r"""document.querySelector("#__next > div.relative.z-0.flex.h-full.w-full.overflow-hidden > div.relative.flex.h-full.max-w-full.flex-1.flex-col.overflow-hidden > main > div.flex.h-full.flex-col > div.w-full.pt-2.md\\:pt-0.dark\\:border-white\\/20.md\\:border-transparent.md\\:dark\\:border-transparent.md\\:w-\\[calc\\(100\\%-\\.5rem\\)\\] > form > div > div.flex.w-full.items-center > div > button").click()"""
+            r"""document.querySelector("#__next > div.relative.z-0.flex.h-full.w-full.overflow-hidden > div.relative.flex.h-full.max-w-full.flex-1.flex-col.overflow-hidden > main > div.flex.h-full.flex-col.focus-visible\\:outline-0 > div.w-full.md\\:pt-0.dark\\:border-white\\/20.md\\:border-transparent.md\\:dark\\:border-transparent.md\\:w-\\[calc\\(100\\%-\\.5rem\\)\\].juice\\:w-full > div.px-3.text-base.md\\:px-4.m-auto.md\\:px-5.lg\\:px-1.xl\\:px-5 > div > form > div > div.flex.w-full.items-center > div > button").click()"""
         )
         self.currenttext = content
         currtext = ""
