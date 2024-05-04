@@ -381,7 +381,7 @@ class Textbrowser:
                 self.textcursor.setPosition(blockstart + s)
                 self.textbrowser.setTextCursor(self.textcursor)
                 tl1 = self.textbrowser.cursorRect(self.textcursor).topLeft()
-                print(tl1)
+                
                 if (lc + linei) > len(self.yinyinglabels):
                     _newlabels = [
                         QLabel(self.toplabel2)
