@@ -42,10 +42,9 @@ from gui.usefulwidget import (
     dialog_showinfo,
     getsimplecombobox,
     getsimpleswitch,
-    getcolorbutton,
     textbrowappendandmovetoend,
 )
-from myutils.utils import checkchaos, checkifnewgame
+from myutils.utils import checkchaos
 from gui.dialog_savedgame import dialog_setting_game
 
 
@@ -566,7 +565,6 @@ class hookselect(closeashidewindow):
                 )
                 if _isusing:
                     _text = "取消内嵌翻译"
-                    checkifnewgame(gobject.baseobject.textsource.pname)
 
                     if ss[-2][:8] == "UserHook":
                         needinserthookcode = savehook_new_data[
@@ -908,7 +906,6 @@ class hookselect(closeashidewindow):
 
             gobject.baseobject.textsource.lock.acquire()
 
-            checkifnewgame(gobject.baseobject.textsource.pname)
             if key in gobject.baseobject.textsource.selectedhook:
                 gobject.baseobject.textsource.selectedhook.remove(key)
 

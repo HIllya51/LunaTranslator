@@ -687,8 +687,6 @@ class MAINUI:
         zip_directory(path, savedir + "/" + data_head)
 
     def autohookmonitorthread(self):
-        for game in savehook_new_data:
-            checkifnewgame(game)
         while self.isrunning:
             self.onwindowloadautohook()
             time.sleep(

@@ -59,7 +59,12 @@ import gobject
 from myutils.config import _TR, _TRL, globalconfig, static_data
 import winsharedutils
 from myutils.wrapper import Singleton_close, Singleton, threader, tryprint
-from myutils.utils import checkifnewgame, vidchangedtask
+from myutils.utils import (
+    checkifnewgame,
+    vidchangedtask,
+    titlechangedtask,
+    imgchangedtask,
+)
 from gui.usefulwidget import (
     yuitsu_switch,
     saveposwindow,
@@ -629,7 +634,6 @@ class dialog_setting_game(QDialog):
         global _global_dialog_setting_game
         _global_dialog_setting_game = self
         self.isopened = True
-        checkifnewgame(exepath)
         vbox = QVBoxLayout(self)  # 配置layout
         self.setLayout(vbox)
         formwidget = QWidget()
@@ -659,9 +663,7 @@ class dialog_setting_game(QDialog):
         titleedit = QLineEdit(savehook_new_data[exepath]["title"])
 
         def _titlechange(x):
-            savehook_new_data[exepath]["title"] = x
-            savehook_new_data[exepath]["istitlesetted"] = True
-            savehook_new_data[exepath]["searchnoresulttime"] = 0
+            titlechangedtask(exepath, x)
             self.setWindowTitle(x)
 
         titleedit.textChanged.connect(_titlechange)
@@ -679,8 +681,7 @@ class dialog_setting_game(QDialog):
 
                 _pixmap = QPixmap(res)
                 if _pixmap.isNull() == False:
-                    savehook_new_data[exepath]["imagepath"] = res
-                    savehook_new_data[exepath]["isimagepathusersetted"] = True
+                    imgchangedtask(exepath, res)
                     imgpath.setText(res)
 
         vndbid = QLineEdit(str(savehook_new_data[exepath]["vid"]))
