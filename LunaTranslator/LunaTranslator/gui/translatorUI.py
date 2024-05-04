@@ -258,7 +258,6 @@ class QUnFrameWindow(resizableframeless):
                         self.saveiterclasspointer[klass]["curr"] += currchange
                         self.saveiterclasspointer[klass]["start"] += currchange
 
-            self.translate_text.showhide()
             if globalconfig["zitiyangshi"] == 3:
                 self.translate_text.showyinyingtext2(
                     color,
@@ -269,11 +268,8 @@ class QUnFrameWindow(resizableframeless):
 
         else:
             self.translate_text.append(
-                text, hira if globalconfig["isshowhira"] else [], origin
+                text, hira if globalconfig["isshowhira"] else [], color
             )
-            self.translate_text.showhide()
-            if globalconfig["zitiyangshi"] == 3:
-                self.translate_text.showyinyingtext(color)
 
         if hira:
 

@@ -13,7 +13,6 @@ class TS(basetrans):
     def __init__(self, typename):
         super().__init__(typename)
         self.timeout = 30
-        self.api_url = ""
         self.history = {"ja": [], "zh": []}
         self.session = requests.Session()
 
@@ -161,8 +160,7 @@ class TS(basetrans):
     def translate(self, query):
         self.checkempty(["API接口地址"])
         self.timeout = self.config["API超时(秒)"]
-        if self.api_url == "":
-            self.get_client(self.config["API接口地址"])
+        self.get_client(self.config["API接口地址"])
         frequency_penalty = float(self.config["frequency_penalty"])
         if not bool(
             self.config["利用上文信息翻译（通常会有一定的效果提升，但会导致变慢）"]
