@@ -872,7 +872,14 @@ class QUnFrameWindow(resizableframeless):
             return
         newHeight = self.document.size().height()
         width = self.width()
-        self.resize(width, int(5 + newHeight + globalconfig["buttonsize"] * 1.5))
+        self.resize(
+            width,
+            int(
+                max(0, -globalconfig["extra_space"])
+                + newHeight
+                + globalconfig["buttonsize"] * 1.5
+            ),
+        )
 
     def clickRange(self, auto):
         if globalconfig["sourcestatus2"]["ocr"]["use"] == False:

@@ -266,7 +266,14 @@ class Textbrowser:
         self.movep(0, self.savey)
 
         if globalconfig["zitiyangshi"] == 3:
+            self.textbrowser.show()
+            self.textbrowserback.show()
             self.showyinyingtext(color, b1, b2)
+            self.textbrowser.hide()
+            self.textbrowserback.hide()
+        else:
+            self.textbrowser.show()
+            self.textbrowserback.show()
 
     def getcurrpointer(self):
         return self.textcursor.position()
