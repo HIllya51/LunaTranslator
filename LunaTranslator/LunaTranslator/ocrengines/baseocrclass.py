@@ -94,13 +94,21 @@ class baseocr(commonbase):
 
     ########################################################
     def level2init(self):
+        self.needinit = True
         try:
             self.initocr()
         except Exception as e:
             raise e
+        self.needinit = False
 
     def _private_ocr(self, imgpath):
-        text = self.ocr(imgpath)
+        if self.needinit:
+            self.level2init()
+        try:
+            text = self.ocr(imgpath)
+        except Exception as e:
+            self.needinit = True
+            raise e
         return self._100_f(text)
 
     def _100_f(self, line):
