@@ -212,6 +212,11 @@
             }
         }
     },
+	"googlecloudvision": {
+		"args": {
+			"key": ""
+		}
+	},
     "mangaocr": {
         "args": {
             "项目仓库": "https://github.com/kha-white/manga-ocr",

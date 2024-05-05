@@ -787,6 +787,10 @@
             "use": false,
             "name": "docsumo"
         },
+        "googlecloudvision": {
+            "use": false,
+            "name": "googlecloudvision"
+        },
         "youdaocr": {
             "use": false,
             "name": "有道OCR"
