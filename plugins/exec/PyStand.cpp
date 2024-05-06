@@ -269,7 +269,7 @@ const auto init_script =
 #ifndef PYSTAND_CONSOLE
 	L"try:\n"
 	L"    fd = os.open('CONOUT$', os.O_RDWR | os.O_BINARY)\n"
-	L"    fp = os.fdopen(fd, 'w', encoding='utf8')\n"
+	L"    fp = os.fdopen(fd, 'w')\n"
 	L"    sys.stdout = fp\n"
 	L"    sys.stderr = fp\n"
 	L"    attached = True\n"
