@@ -274,7 +274,7 @@ const auto init_script =
 	L"    sys.stderr = fp\n"
 	L"    attached = True\n"
 	L"except Exception as e:\n"
-	L"    fp = open(os.devnull, 'w', encoding='utf8')\n"
+	L"    fp = open(os.devnull, 'w', errors='ignore')\n"
 	L"    sys.stdout = fp\n"
 	L"    sys.stderr = fp\n"
 	L"    attached = False\n"
