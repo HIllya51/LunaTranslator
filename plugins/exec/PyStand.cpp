@@ -268,7 +268,7 @@ const auto init_script =
 	L"os.MessageBox = MessageBox\n"
 #ifndef PYSTAND_CONSOLE
 	L"try:\n"
-	L"    fd = os.open('CONOUT$', os.O_RDWR | os.O_BINARY, encoding='utf8')\n"
+	L"    fd = os.open('CONOUT$', os.O_RDWR | os.O_BINARY)\n"
 	L"    fp = os.fdopen(fd, 'w', encoding='utf8')\n"
 	L"    sys.stdout = fp\n"
 	L"    sys.stderr = fp\n"
