@@ -266,19 +266,7 @@ const auto init_script =
 	L"    ctypes.windll.user32.MessageBoxW(None, str(msg), str(info), 0)\n"
 	L"    return 0\n"
 	L"os.MessageBox = MessageBox\n"
-#ifndef PYSTAND_CONSOLE
-	L"try:\n"
-	L"    fd = os.open('CONOUT$', os.O_RDWR | os.O_BINARY)\n"
-	L"    fp = os.fdopen(fd, 'w')\n"
-	L"    sys.stdout = fp\n"
-	L"    sys.stderr = fp\n"
-	L"    attached = True\n"
-	L"except Exception as e:\n"
-	L"    fp = open(os.devnull, 'w')\n"
-	L"    sys.stdout = fp\n"
-	L"    sys.stderr = fp\n"
-	L"    attached = False\n"
-#endif
+
 	L"sys.argv = [os.environ['LUNA_EXE_NAME'] ,sys.argv[0], PYSTAND_SCRIPT] + sys.argv[1:]\n"
 	L"text = open(PYSTAND_SCRIPT, 'rb').read()\n"
 	L"environ = {'__file__': PYSTAND_SCRIPT, '__name__': '__main__'}\n"
