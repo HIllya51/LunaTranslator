@@ -116,14 +116,22 @@ class chartwidget(QWidget):
                     painter.drawText(
                         x2 - self.fmetrics.width(text) // 2, y2 - 10, text
                     )  # value
-
+            lastx2 = -999
             for i, (x, y) in enumerate(points):
                 painter.drawLine(x, ymargin + height, x, ymargin + height + 5)  # 刻度线
-                painter.drawText(
-                    x - self.fmetrics.width(x_labels[i]) // 2,
-                    ymargin + height + 20,
-                    x_labels[i],
-                )  # 标签
+
+                thisw = self.fmetrics.width(x_labels[i])
+                thisx = x - thisw // 2
+
+                if thisx > lastx2:
+
+                    painter.drawText(
+                        thisx,
+                        ymargin + height + 20,
+                        x_labels[i],
+                    )  # 标签
+                    lastx2 = thisx + thisw
+
         except:
             print_exc()
 
@@ -352,7 +360,7 @@ class lazyscrollflow(QWidget):
                     widfunc.setGeometry(self.fakegeos[i])
                     self.widgets[i] = widfunc
                 if procevent:
-                    QApplication.processEvents()    #会在最大化时死锁
+                    QApplication.processEvents()  # 会在最大化时死锁
 
             except:
                 pass
