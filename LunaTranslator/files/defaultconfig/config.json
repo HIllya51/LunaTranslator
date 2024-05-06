@@ -167,7 +167,7 @@
     "isshowhira": false,
     "locktools": true,
     "showfanyisource": false,
-    "use_yapi": true,
+    "use_yapi": false,
     "showfanyi": true,
     "autoread": false,
     "ttsnointerrupt": false,
