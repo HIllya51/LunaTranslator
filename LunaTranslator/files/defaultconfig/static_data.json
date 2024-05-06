@@ -671,14 +671,6 @@
                     "link": "https://github.com/chaihahaha/OrtMT5/releases/tag/v0.1.0"
                 },
                 {
-                    "name": "Sugoi Runtime",
-                    "link": "https://github.com/HIllya51/RESOURCES/releases/download/offline_translator/SugoiRuntime.zip"
-                },
-                {
-                    "name": "Sugoi Models",
-                    "link": "https://github.com/zyddnys/manga-image-translator/releases/download/beta-0.3/sugoi-models.zip"
-                },
-                {
                     "name": "Sakura大模型",
                     "link": "https://github.com/SakuraLLM/Sakura-13B-Galgame"
                 },
