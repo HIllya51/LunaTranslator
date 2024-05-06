@@ -276,8 +276,6 @@ const auto init_script =
 	L"    code = compile(text, PYSTAND_SCRIPT, 'exec')\n"
 	L"    exec(code, environ)\n"
 	L"except Exception:\n"
-	L"    if attached:\n"
-	L"        raise\n"
 	L"    import traceback, io\n"
 	L"    sio = io.StringIO()\n"
 	L"    traceback.print_exc(file = sio)\n"
