@@ -59,6 +59,8 @@ def timeoutfunction(
 
 class basetrans(commonbase):
     def langmap(self):
+        # The mapping between standard language code and API language code, if not declared, defaults to using standard language code.
+        # But the exception is cht. If api support cht, if must be explicitly declared the support of cht, otherwise it will translate to chs and then convert to cht.
         return {}
 
     def inittranslator(self):
@@ -159,13 +161,17 @@ class basetrans(commonbase):
 
     @property
     def is_gpt_like(self):
-        try:
-            return globalconfig["fanyi"][self.typename]["is_gpt_like"]
-        except:
-            return False
+        # Don't use short-term cache, only use long-term cache, useful for gpt like apis to modify prompt
+        return globalconfig["fanyi"][self.typename].get("is_gpt_like", False)
+
+    @property
+    def onlymanual(self):
+        # Only used during manual translation, not used during automatic translation
+        return globalconfig["fanyi"][self.typename].get("manual", False)
 
     @property
     def needzhconv(self):
+        # The API does not support direct translation to Traditional Chinese, only Simplified Chinese can be translated first and then converted to Traditional Chinese
         l = static_data["language_list_translator_inner"][globalconfig["tgtlang3"]]
         return l == "cht" and "cht" not in self.langmap()
 
@@ -175,6 +181,7 @@ class basetrans(commonbase):
 
     @property
     def transtype(self):
+        # free/dev/api/offline/pre
         return globalconfig["fanyi"][self.typename].get("type", "free")
 
     def gettask(self, content):
@@ -262,12 +269,6 @@ class basetrans(commonbase):
         res = self.translate(content)
 
         return res
-
-    @property
-    def onlymanual(self):
-        if "manual" not in globalconfig["fanyi"][self.typename]:
-            return False
-        return globalconfig["fanyi"][self.typename]["manual"]
 
     def _iterget(self, __callback, rid, __res):
         succ = True
