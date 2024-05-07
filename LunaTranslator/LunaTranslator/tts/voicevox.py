@@ -10,19 +10,21 @@ from myutils.subproc import subproc_w, autoproc
 class TTS(TTSbase):
 
     def init(self):
-
-        if (
-            os.path.exists(self.config["path"]) == False
-            or os.path.exists(os.path.join(self.config["path"], "run.exe")) == False
+        for cwd in (
+            self.config["path"],
+            os.path.join(self.config["path"], "vv-engine"),
         ):
-            return
-        self.engine = autoproc(
-            subproc_w(
-                os.path.join(self.config["path"], "run.exe"),
-                cwd=self.config["path"],
-                name="voicevox",
+            run = os.path.join(cwd, "run.exe")
+            if os.path.exists(run) == False:
+                return
+            self.engine = autoproc(
+                subproc_w(
+                    run,
+                    cwd=cwd,
+                    name="voicevox",
+                )
             )
-        )
+            break
 
     def getvoicelist(self):
         while True:
