@@ -212,18 +212,25 @@
             }
         }
     },
-	"googlecloudvision": {
-		"args": {
-			"key": ""
-		}
-	},
-	"xunfei": {
-		"args": {
-			"APPId": "",
-			"APISecret": "",
-			"APIKey": ""
-		}
-	},
+    "googlecloudvision": {
+        "args": {
+            "key": ""
+        }
+    },
+    "xunfei": {
+        "args": {
+            "link": "https://www.xfyun.cn/doc/words/multi_print_recognition/API.html",
+            "APPId": "",
+            "APISecret": "",
+            "APIKey": ""
+        },
+        "argstype": {
+            "link": {
+                "type": "label",
+                "islink": true
+            }
+        }
+    },
     "mangaocr": {
         "args": {
             "项目仓库": "https://github.com/kha-white/manga-ocr",
