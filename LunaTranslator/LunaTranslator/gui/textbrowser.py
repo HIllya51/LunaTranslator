@@ -105,21 +105,15 @@ class Textbrowser:
         self.toplabel.setMouseTracking(True)
         self.textbrowser.setStyleSheet(
             "border-width: 0;\
-                                           border-style: outset;\
-                                           border-top: 0px solid #e8f3f9;\
-                                           color: white;\
-                                            \
-                                           background-color: rgba(%s, %s, %s, %s)"
-            % (0, 0, 0, 0)
+            border-style: outset;\
+            color: rgba(0, 0, 0, 0);\
+            background-color: rgba(0, 0, 0, 0)"
         )
         self.textbrowserback.setStyleSheet(
             "border-width: 0;\
-                                           border-style: outset;\
-                                           border-top: 0px solid #e8f3f9;\
-                                           color: white;\
-                                            \
-                                           background-color: rgba(%s, %s, %s, %s)"
-            % (0, 0, 0, 0)
+            border-style: outset;\
+            color: rgba(0, 0, 0, 0);\
+            background-color: rgba(0, 0, 0, 0)"
         )
 
         self.textcursor = self.textbrowser.textCursor()
@@ -266,14 +260,7 @@ class Textbrowser:
         self.movep(0, self.savey)
 
         if globalconfig["zitiyangshi"] == 3:
-            self.textbrowser.show()
-            self.textbrowserback.show()
             self.showyinyingtext(color, b1, b2)
-            self.textbrowser.hide()
-            self.textbrowserback.hide()
-        else:
-            self.textbrowser.show()
-            self.textbrowserback.show()
 
     def getcurrpointer(self):
         return self.textcursor.position()

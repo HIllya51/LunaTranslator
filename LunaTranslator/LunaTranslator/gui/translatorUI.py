@@ -8,7 +8,7 @@ from traceback import print_exc
 from PyQt5.QtCore import Qt, pyqtSignal
 import qtawesome
 from PyQt5.QtCore import pyqtSignal, Qt, QSize
-from PyQt5.QtGui import QCursor
+from PyQt5.QtGui import QCursor, QColor
 from PyQt5.QtWidgets import QLabel, QPushButton, QSystemTrayIcon
 import gobject
 from myutils.wrapper import threader, trypass
@@ -219,7 +219,10 @@ class QUnFrameWindow(resizableframeless):
         elif globalconfig["zitiyangshi"] == 0:
             self.translate_text.simplecharformat(color)
         elif globalconfig["zitiyangshi"] == 3:
-            self.translate_text.simplecharformat(color)
+            # hide后无法重新计算布局。设置和背景相同的颜色和alpha来模拟hide
+            c = QColor(globalconfig["backcolor"])
+            c.setAlpha(globalconfig["transparent"] * (not self.backtransparent) / 100)
+            self.translate_text.simplecharformat(c)
 
         if iter_context:
             iter_res_status, iter_context_class = iter_context
