@@ -219,9 +219,8 @@ class QUnFrameWindow(resizableframeless):
         elif globalconfig["zitiyangshi"] == 0:
             self.translate_text.simplecharformat(color)
         elif globalconfig["zitiyangshi"] == 3:
-            # hide后无法重新计算布局。设置和背景相同的颜色和alpha来模拟hide
-            c = QColor(globalconfig["backcolor"])
-            c.setAlpha(globalconfig["transparent"] * (not self.backtransparent) / 100)
+            c = QColor()
+            c.setAlpha(0)
             self.translate_text.simplecharformat(c)
 
         if iter_context:

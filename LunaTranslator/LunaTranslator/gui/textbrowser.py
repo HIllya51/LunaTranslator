@@ -106,13 +106,11 @@ class Textbrowser:
         self.textbrowser.setStyleSheet(
             "border-width: 0;\
             border-style: outset;\
-            color: rgba(0, 0, 0, 0);\
             background-color: rgba(0, 0, 0, 0)"
         )
         self.textbrowserback.setStyleSheet(
             "border-width: 0;\
             border-style: outset;\
-            color: rgba(0, 0, 0, 0);\
             background-color: rgba(0, 0, 0, 0)"
         )
 
