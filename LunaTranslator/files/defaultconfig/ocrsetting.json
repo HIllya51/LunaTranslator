@@ -217,6 +217,13 @@
 			"key": ""
 		}
 	},
+	"xunfei": {
+		"args": {
+			"APPId": "",
+			"APISecret": "",
+			"APIKey": ""
+		}
+	},
     "mangaocr": {
         "args": {
             "项目仓库": "https://github.com/kha-white/manga-ocr",

@@ -791,6 +791,10 @@
             "use": false,
             "name": "googlecloudvision"
         },
+        "xunfei": {
+            "use": false,
+            "name": "xun fei"
+        },
         "youdaocr": {
             "use": false,
             "name": "有道OCR"
