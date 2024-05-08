@@ -95,7 +95,6 @@
     "普通字体": "Normal yazıtipi",
     "空心字体": "Beyaz yazıtipi",
     "描边字体": "Sıçrama yazıtipi",
-    "阴影字体": "Gölge yazıtipi",
     "显示设置": "Gösterim ayarları",
     "不透明度": "Opacity",
     "原文颜色": "Orijinal renk",
@@ -112,7 +111,6 @@
     "居中显示": "Orta gösterim",
     "空心线宽": "Yavaş çizgi ağırlığı",
     "描边宽度": "stroke-method",
-    "阴影强度": "Gölge şiddeti",
     "显示显示原文按钮": "Metin düğmesini göster",
     "显示复制原文按钮": "Orijinal Kopyalama düğmesini göster",
     "显示朗读按钮": "Okuma düğmesini göster",
@@ -768,5 +766,9 @@
     "可选取模式": "Seçilebilir modlar",
     "百度OCR": "Baidu OCR",
     "飞书OCR": "Feishu OCR",
-    "讯飞OCR": "IFlytek OCR"
+    "讯飞OCR": "IFlytek OCR",
+    "投影字体": "Projeksyon yazıtipi",
+    "发光字体": "Açık yazıtipi",
+    "发光亮度": "ışık",
+    "投影距离": "Projeksyon mesafesi"
 }

@@ -89,7 +89,6 @@
     "使用正则表达式替换": "Replace with regular expression",
     "接頭辞": "Joint diction",
     "谷歌": "Google",
-    "阴影字体": "Shaded fonts",
     "工具按钮颜色": "Tool button color",
     "助詞": "Auxiliary word",
     "連体詞": "Conjunctions",
@@ -192,7 +191,6 @@
     "模糊匹配相似度限制": "Similarity limit of fuzzy matching",
     "翻译器字体类型": "Translator Font Type",
     "检测到游戏时自动开始": "Start automatically when a game is detected",
-    "阴影强度": "Shadow intensity",
     "去除重复行": "Remove duplicate lines",
     "字体大小": "font size",
     "最短翻译字数": "Minimum number of translated words",
@@ -768,5 +766,9 @@
     "可选取模式": "Selectable modes",
     "百度OCR": "Baidu OCR",
     "飞书OCR": "Feishu OCR",
-    "讯飞OCR": "IFlytek OCR"
+    "讯飞OCR": "IFlytek OCR",
+    "投影字体": "Projection font",
+    "发光字体": "Luminous font",
+    "发光亮度": "luminance",
+    "投影距离": "Projection distance"
 }

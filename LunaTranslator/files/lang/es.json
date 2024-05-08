@@ -95,7 +95,6 @@
     "普通字体": "Fuente normal",
     "空心字体": "Fuente hueca",
     "描边字体": "Fuente de dibujo",
-    "阴影字体": "Fuente de sombra",
     "显示设置": "Configuración de la pantalla",
     "不透明度": "Opacidad",
     "原文颜色": "Color del texto original",
@@ -112,7 +111,6 @@
     "居中显示": "Mostrar en el Centro",
     "空心线宽": "Ancho de línea hueco",
     "描边宽度": "Ancho de dibujo",
-    "阴影强度": "Intensidad de la sombra",
     "显示显示原文按钮": "Mostrar el botón mostrar texto original",
     "显示复制原文按钮": "Muestra el botón Copiar texto original",
     "显示朗读按钮": "Muestra el botón de lectura en voz alta",
@@ -768,5 +766,9 @@
     "可选取模式": "Modo seleccionable",
     "百度OCR": "Baidu OCR",
     "飞书OCR": "Flying Book OCR",
-    "讯飞OCR": "IFLYTEK OCR"
+    "讯飞OCR": "IFLYTEK OCR",
+    "投影字体": "Fuente de proyección",
+    "发光字体": "Fuente luminosa",
+    "发光亮度": "Brillo luminoso",
+    "投影距离": "Distancia de proyección"
 }

@@ -95,7 +95,6 @@
     "普通字体": "Police normale",
     "空心字体": "Polices vides",
     "描边字体": "Police de bord",
-    "阴影字体": "Police d'ombre",
     "显示设置": "Paramètres d 'affichage",
     "不透明度": "Opacité",
     "原文颜色": "Couleur originale",
@@ -112,7 +111,6 @@
     "居中显示": "Affichage Central",
     "空心线宽": "Poids de ligne creux",
     "描边宽度": "Largeur de la bordure",
-    "阴影强度": "Intensité de l'ombre",
     "显示显示原文按钮": "Afficher le bouton afficher le texte original",
     "显示复制原文按钮": "Afficher le bouton copier le texte original",
     "显示朗读按钮": "Afficher le bouton lecture",
@@ -768,5 +766,9 @@
     "可选取模式": "Mode sélectionnable",
     "百度OCR": "Baidu ocr",
     "飞书OCR": "Livre volant ocr",
-    "讯飞OCR": "OCR volant"
+    "讯飞OCR": "OCR volant",
+    "投影字体": "Polices de projection",
+    "发光字体": "Polices lumineuses",
+    "发光亮度": "Luminosité lumineuse",
+    "投影距离": "Distance de projection"
 }

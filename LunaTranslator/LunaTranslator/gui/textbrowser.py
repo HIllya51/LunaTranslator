@@ -153,6 +153,15 @@ class BorderedLabel(QLabel):
             elif self._type == 1:
                 painter.fillPath(path, QBrush(self.m_contentColor))
                 painter.strokePath(path, pen)
+            elif self._type == 2:
+                w = self.m_fontOutLineWidth
+                while w > 0:
+                    painter.fillPath(
+                        path.translated(w, w),
+                        self.m_contentColor,
+                    )
+                    w -= 0.2
+                painter.fillPath(path, self.m_outLineColor)
 
         painter = QPainter(self)
         painter.drawPixmap(0, 0, self._pix)
@@ -344,8 +353,6 @@ class Textbrowser:
                 self.toplabel2,
                 color,
                 globalconfig["miaobiancolor"],
-                globalconfig["miaobianwidth"],
-                globalconfig["miaobianwidth2"],
             )
             _.move(subpos[i])
             _.setText(subtext[i])
@@ -395,8 +402,6 @@ class Textbrowser:
                     self.toplabel2,
                     color,
                     globalconfig["miaobiancolor"],
-                    globalconfig["miaobianwidth"],
-                    globalconfig["miaobianwidth2"],
                 )
 
                 _.move(tl1)
@@ -690,22 +695,26 @@ class Textbrowser:
         self.settextposcursor(startpos)
         return res
 
-    def guesscreatelabel(self, p, c1, c2, w1, w2):
-        if globalconfig["zitiyangshi"] == 2:
+    def guesscreatelabel(self, p, c1, c2):
+        if globalconfig["zitiyangshi2"] == 2:
             label = BorderedLabel(p)
-            label.setColorWidth(c1, c2, w2)
+            label.setColorWidth(c1, c2, globalconfig["miaobianwidth2"])
 
-        elif globalconfig["zitiyangshi"] == 4:
+        elif globalconfig["zitiyangshi2"] == 3:
             label = BorderedLabel(p)
-            label.setColorWidth(c2, c1, w2)
-        elif globalconfig["zitiyangshi"] == 1:
+            label.setColorWidth(c2, c1, globalconfig["miaobianwidth2"])
+        elif globalconfig["zitiyangshi2"] == 1:
 
             label = BorderedLabel(p)
-            label.setColorWidth(c1, c2, w1, 1)
-        elif globalconfig["zitiyangshi"] == 0:
+            label.setColorWidth(c1, c2, globalconfig["miaobianwidth"], 1)
+        elif globalconfig["zitiyangshi2"] == 4:
+
+            label = BorderedLabel(p)
+            label.setColorWidth(c1, c2, globalconfig["traceoffset"], 2)
+        elif globalconfig["zitiyangshi2"] == 0:
             label = PlainLabel(p)
             label.setStyleSheet("color:{}; background-color:(0,0,0,0)".format(c1))
-        elif globalconfig["zitiyangshi"] == 3:
+        elif globalconfig["zitiyangshi2"] == 5:
             label = ShadowLabel(p)
             label.setColorWidth(
                 c1, c2, globalconfig["fontsize"], globalconfig["shadowforce"]
@@ -717,8 +726,6 @@ class Textbrowser:
             self.parent,
             globalconfig["jiamingcolor"],
             globalconfig["miaobiancolor"],
-            globalconfig["miaobianwidth"],
-            globalconfig["miaobianwidth2"],
         )
 
         _.setText(word["hira"])

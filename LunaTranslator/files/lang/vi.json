@@ -95,7 +95,6 @@
     "普通字体": "Phông thường",
     "空心字体": "Phông rỗng",
     "描边字体": "Phông viền",
-    "阴影字体": "Phông bóng",
     "显示设置": "Thiết lập hiển thị",
     "不透明度": "Độ mờ",
     "原文颜色": "Màu gốc",
@@ -112,7 +111,6 @@
     "居中显示": "Hiện ở giữa",
     "空心线宽": "Chiều rộng đường rỗng",
     "描边宽度": "Chiều rộng viền",
-    "阴影强度": "Cường độ bóng",
     "显示显示原文按钮": "Hiển thị nút hiển thị gốc",
     "显示复制原文按钮": "Hiển thị nút sao chép gốc",
     "显示朗读按钮": "Hiện nút đọc to",
@@ -768,5 +766,9 @@
     "可选取模式": "Chế độ chọn",
     "百度OCR": "Số lượng OCR",
     "飞书OCR": "Sách bay OCR",
-    "讯飞OCR": "Máy bay OCR"
+    "讯飞OCR": "Máy bay OCR",
+    "投影字体": "Phông chiếu",
+    "发光字体": "Phông phát sáng",
+    "发光亮度": "Độ sáng phát sáng",
+    "投影距离": "Khoảng cách chiếu"
 }

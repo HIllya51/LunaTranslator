@@ -157,7 +157,7 @@
     "miaobianwidth2": 3,
     "miaobianwidth": 1,
     "miaobiancolor": "#eeeeee",
-    "zitiyangshi": 2,
+    "zitiyangshi2": 5,
     "hira_vis_type": 0,
     "iskongxin": true,
     "isshowrawtext": true,
@@ -417,6 +417,7 @@
     "shadowcolor": "blue",
     "ocr_hori_extend": true,
     "shadowforce": 5,
+    "traceoffset": 2,
     "showcixing_touming": 30,
     "cixingcolor": {
         "形容詞": "aliceblue",

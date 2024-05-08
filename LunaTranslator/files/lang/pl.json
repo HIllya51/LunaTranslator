@@ -95,7 +95,6 @@
     "普通字体": "Normalna czcionka",
     "空心字体": "Biała czcionka",
     "描边字体": "Czcionka kresu",
-    "阴影字体": "Czcionka cienia",
     "显示设置": "Ustawienia wyświetlania",
     "不透明度": "Nieprzezroczystość",
     "原文颜色": "Kolor oryginalny",
@@ -112,7 +111,6 @@
     "居中显示": "Środkowy wyświetlacz",
     "空心线宽": "Szerokość linii pustej",
     "描边宽度": "Szerokość skoku",
-    "阴影强度": "Intensywność cienia",
     "显示显示原文按钮": "Pokaż przycisk Pokaż oryginalny",
     "显示复制原文按钮": "Pokaż przycisk Kopiuj oryginał",
     "显示朗读按钮": "Pokaż przycisk Mów",
@@ -768,5 +766,9 @@
     "可选取模式": "Tryby wyboru",
     "百度OCR": "OCR Baidu",
     "飞书OCR": "OCR Feishu",
-    "讯飞OCR": "OCR IFlytek"
+    "讯飞OCR": "OCR IFlytek",
+    "投影字体": "Czcionka projekcji",
+    "发光字体": "Jasna czcionka",
+    "发光亮度": "luminancja",
+    "投影距离": "Odległość projekcji"
 }

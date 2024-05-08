@@ -248,12 +248,13 @@ def setTabThree_lazy(self):
                             "普通字体",
                             "空心字体",
                             "描边字体",
-                            "阴影字体",
-                            "描边字体_reverse",
+                            "描边字体_2",
+                            "投影字体",
+                            "发光字体",
                         ]
                     ),
                     globalconfig,
-                    "zitiyangshi",
+                    "zitiyangshi2",
                 ),
                 5,
             ),
@@ -287,9 +288,18 @@ def setTabThree_lazy(self):
                 ),
                 2,
             ),
+        ],
+        [
+            ("发光亮度", 3),
+            (getspinbox(1, 100, globalconfig, "shadowforce"), 2),
             "",
-            ("阴影强度", 3),
-            (getspinbox(1, 20, globalconfig, "shadowforce"), 2),
+            ("投影距离", 3),
+            (
+                getspinbox(
+                    0.1, 100, globalconfig, "traceoffset", double=True, step=0.1
+                ),
+                2,
+            ),
         ],
         [],
         [
