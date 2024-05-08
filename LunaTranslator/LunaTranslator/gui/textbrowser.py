@@ -767,7 +767,6 @@ class Textbrowser:
         for label in self.yinyinglabels:
             label.deleteLater()
             del label
-        print(self.yinyinglabels)
         self.yinyinglabels.clear()
         for klass, labels in self.iteryinyinglabelsave.items():
             for label in labels:
