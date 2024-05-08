@@ -1,5 +1,5 @@
 from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QPixmap, QImage
+from PyQt5.QtGui import QPixmap, QImage, QPainter
 from PyQt5.QtWidgets import QWidget, QLabel, QProgressBar
 from gui.usefulwidget import getsimpleswitch, getsimplecombobox
 from myutils.config import globalconfig, _TR, static_data
@@ -182,12 +182,17 @@ class imgwidget(QWidget):
     def __init__(self, src) -> None:
         super().__init__()
         self.lb = QLabel(self)
-
+        rate = self.devicePixelRatioF()
         self.img = QPixmap.fromImage(QImage(src))
+        self.img.setDevicePixelRatio(rate)
 
     def paintEvent(self, a0) -> None:
         self.lb.resize(self.size())
         self.lb.setPixmap(
-            self.img.scaled(self.size(), Qt.KeepAspectRatio, Qt.SmoothTransformation)
+            self.img.scaled(
+                self.size() * self.devicePixelRatioF(),
+                Qt.KeepAspectRatio,
+                Qt.SmoothTransformation,
+            )
         )
         return super().paintEvent(a0)
