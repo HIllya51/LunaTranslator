@@ -762,13 +762,17 @@ class Textbrowser:
             label.hide()
         for label in self.savetaglabels:
             label.deleteLater()
+            del label
         self.savetaglabels.clear()
         for label in self.yinyinglabels:
             label.deleteLater()
+            del label
+        print(self.yinyinglabels)
         self.yinyinglabels.clear()
         for klass, labels in self.iteryinyinglabelsave.items():
             for label in labels:
                 label.deleteLater()
+                del label
         self.iteryinyinglabelsave.clear()
         self.yinyingpos = 0
         self.yinyingposline = 0
