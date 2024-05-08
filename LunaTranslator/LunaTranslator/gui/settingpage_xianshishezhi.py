@@ -358,10 +358,8 @@ def setTabThree_lazy(self):
         [
             ("收到翻译结果时才刷新", 4),
             getsimpleswitch(globalconfig, "refresh_on_get_trans"),
-        ],
-        [],
-        [
-            ("可选取模式(阴影字体下无效)", 6),
+            "",
+            ("可选取模式", 4),
             getsimpleswitch(
                 globalconfig,
                 "selectable",

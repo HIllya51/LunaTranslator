@@ -204,25 +204,6 @@ class QUnFrameWindow(resizableframeless):
         else:
             self.translate_text.setAlignment(Qt.AlignLeft)
 
-        if globalconfig["zitiyangshi"] == 2:
-            self.translate_text.mergeCurrentCharFormat_out(
-                globalconfig["miaobiancolor"], color, globalconfig["miaobianwidth2"]
-            )
-        elif globalconfig["zitiyangshi"] == 4:
-            self.translate_text.mergeCurrentCharFormat_out(
-                color, globalconfig["miaobiancolor"], globalconfig["miaobianwidth2"]
-            )
-        elif globalconfig["zitiyangshi"] == 1:
-            self.translate_text.mergeCurrentCharFormat(
-                color, globalconfig["miaobianwidth"]
-            )
-        elif globalconfig["zitiyangshi"] == 0:
-            self.translate_text.simplecharformat(color)
-        elif globalconfig["zitiyangshi"] == 3:
-            c = QColor()
-            c.setAlpha(0)
-            self.translate_text.simplecharformat(c)
-
         if iter_context:
             iter_res_status, iter_context_class = iter_context
             if iter_res_status == 3:
@@ -260,13 +241,12 @@ class QUnFrameWindow(resizableframeless):
                         self.saveiterclasspointer[klass]["curr"] += currchange
                         self.saveiterclasspointer[klass]["start"] += currchange
 
-            if globalconfig["zitiyangshi"] == 3:
-                self.translate_text.showyinyingtext2(
-                    color,
-                    iter_context_class,
-                    self.saveiterclasspointer[iter_context_class]["start"],
-                    text,
-                )
+            self.translate_text.showyinyingtext2(
+                color,
+                iter_context_class,
+                self.saveiterclasspointer[iter_context_class]["start"],
+                text,
+            )
 
         else:
             self.translate_text.append(

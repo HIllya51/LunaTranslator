@@ -117,7 +117,6 @@
     "游戏失去焦点时窗口隐藏": "Finestra nascosta quando il gioco perde fuoco",
     "游戏窗口移动时同步移动": "Sincronizza il movimento quando la finestra di gioco si muove",
     "固定窗口尺寸": "Dimensione finestra fissa",
-    "可选取模式(阴影字体下无效)": "Modalità selezionabile (non valida sotto font ombreggiati)",
     "翻译结果繁简体显示": "Visualizzazione tradizionale e semplificata dei risultati della traduzione",
     "翻译器显示语言(重启生效)": "Lingua di visualizzazione del traduttore (efficace dopo il riavvio)",
     "语音设置": "Impostazioni vocali",
@@ -765,5 +764,9 @@
     "显示标题": "mostra intestazione",
     "收藏": "raccolta",
     "名称": "nome",
-    "网址": "Sito web"
+    "网址": "Sito web",
+    "可选取模式": "Modalità selezionabili",
+    "百度OCR": "OCR Baidu",
+    "飞书OCR": "OCR Feishu",
+    "讯飞OCR": "OCR IFlytek"
 }

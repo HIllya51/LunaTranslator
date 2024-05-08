@@ -123,7 +123,6 @@
     "游戏失去焦点时窗口隐藏": "Oyun fokus kaybettiğinde pencere gizlenmiştir.",
     "游戏窗口移动时同步移动": "Oyun penceresi hareket ettiğinde eşzamanlı hareket et",
     "固定窗口尺寸": "Tam pencere ölçüsi",
-    "可选取模式(阴影字体下无效)": "Seçilebilir mod (gölgelik yazıtipi altında geçersiz)",
     "翻译结果繁简体显示": "Çeviri sonuçlarının geleneksel ve basitleştirilmesi",
     "翻译器显示语言(重启生效)": "Çevirme dili (yeniden başlatma etkisi oluyor)",
     "语音设置": "Ses ayarları",
@@ -765,5 +764,9 @@
     "显示标题": "başlığı göster",
     "收藏": "koleksiyon",
     "名称": "isim",
-    "网址": "Web sitesi"
+    "网址": "Web sitesi",
+    "可选取模式": "Seçilebilir modlar",
+    "百度OCR": "Baidu OCR",
+    "飞书OCR": "Feishu OCR",
+    "讯飞OCR": "IFlytek OCR"
 }

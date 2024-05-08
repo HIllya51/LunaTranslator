@@ -123,7 +123,6 @@
     "游戏失去焦点时窗口隐藏": "Fenêtre cachée lorsque le jeu perd son focus",
     "游戏窗口移动时同步移动": "Synchroniser le mouvement lorsque la fenêtre de jeu se déplace",
     "固定窗口尺寸": "Taille fixe de la fenêtre",
-    "可选取模式(阴影字体下无效)": "Mode optionnel (non valable en police d'ombre)",
     "翻译结果繁简体显示": "Affichage simplifié des résultats de la traduction",
     "翻译器显示语言(重启生效)": "Langue d'affichage du traducteur (redémarrage en vigueur)",
     "语音设置": "Paramètres vocaux",
@@ -765,5 +764,9 @@
     "显示标题": "Afficher le titre",
     "收藏": "Collections",
     "名称": "Le nom",
-    "网址": "Adresse Web"
+    "网址": "Adresse Web",
+    "可选取模式": "Mode sélectionnable",
+    "百度OCR": "Baidu ocr",
+    "飞书OCR": "Livre volant ocr",
+    "讯飞OCR": "OCR volant"
 }

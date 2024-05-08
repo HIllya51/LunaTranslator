@@ -765,7 +765,7 @@
         },
         "baiduocr_X": {
             "use": false,
-            "name": "baiduOCR_X"
+            "name": "百度OCR"
         },
         "txocr": {
             "use": false,
@@ -777,7 +777,7 @@
         },
         "feishu": {
             "use": false,
-            "name": "飞书"
+            "name": "飞书OCR"
         },
         "ocrspace": {
             "use": false,
@@ -793,7 +793,7 @@
         },
         "xunfei": {
             "use": false,
-            "name": "xun fei"
+            "name": "讯飞OCR"
         },
         "youdaocr": {
             "use": false,

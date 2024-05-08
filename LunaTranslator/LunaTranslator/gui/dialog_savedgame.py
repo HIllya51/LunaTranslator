@@ -200,21 +200,20 @@ class IMGWidget(QLabel):
         if type(pixmap) != QPixmap:
             pixmap = pixmap()
 
-        self.pix = pixmap
-
-        pixmap = QPixmap(self.size())
-        pixmap.fill(Qt.transparent)
-        painter = QPainter(pixmap)
+        rate = self.devicePixelRatioF()
+        newpixmap = QPixmap(self.size() * rate)
+        newpixmap.setDevicePixelRatio(rate)
+        newpixmap.fill(Qt.transparent)
+        painter = QPainter(newpixmap)
         painter.setRenderHint(QPainter.SmoothPixmapTransform)
         painter.setRenderHint(QPainter.Antialiasing)
-        painter.drawPixmap(self.getrect(), self.pix)
+        painter.drawPixmap(self.getrect(pixmap.size()), pixmap)
         painter.end()
 
-        self.setPixmap(pixmap)
-        self.setFixedSize(pixmap.size())
+        self.setPixmap(newpixmap)
 
-    def getrect(self):
-        size = self.adaptsize(self.pix.size())
+    def getrect(self, size):
+        size = self.adaptsize(size)
         rect = QRect()
         rect.setX(int((self.width() - size.width()) / 2))
         rect.setY(int((self.height() - size.height()) / 2))

@@ -123,7 +123,6 @@
     "游戏失去焦点时窗口隐藏": "Cửa sổ ẩn khi trò chơi mất tập trung",
     "游戏窗口移动时同步移动": "Đồng bộ di chuyển khi cửa sổ trò chơi di chuyển",
     "固定窗口尺寸": "Kích thước cửa sổ cố định",
-    "可选取模式(阴影字体下无效)": "Chế độ có thể chọn (không hợp lệ dưới phông bóng)",
     "翻译结果繁简体显示": "Kết quả phiên dịch Hiển thị đơn giản",
     "翻译器显示语言(重启生效)": "Ngôn ngữ hiển thị trình dịch (có hiệu lực khởi động lại)",
     "语音设置": "Thiết lập giọng nói",
@@ -765,5 +764,9 @@
     "显示标题": "Hiện tiêu đề",
     "收藏": "Bộ sưu tập",
     "名称": "Tên",
-    "网址": "Trang chủ"
+    "网址": "Trang chủ",
+    "可选取模式": "Chế độ chọn",
+    "百度OCR": "Số lượng OCR",
+    "飞书OCR": "Sách bay OCR",
+    "讯飞OCR": "Máy bay OCR"
 }

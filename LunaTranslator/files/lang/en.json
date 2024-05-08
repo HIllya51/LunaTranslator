@@ -98,7 +98,6 @@
     "替换": "replace",
     "補助記号": "Subsidy mark",
     "繁体中文": "Traditional Chinese",
-    "可选取模式(阴影字体下无效)": "Selectable mode (invalid under shaded font)",
     "空心线宽": "Void lineweight",
     "删除游戏": "Delete Game",
     "和源窗口相同": "Same as source window",
@@ -765,5 +764,9 @@
     "显示标题": "show heading",
     "收藏": "collection",
     "名称": "name",
-    "网址": "Website"
+    "网址": "Website",
+    "可选取模式": "Selectable modes",
+    "百度OCR": "Baidu OCR",
+    "飞书OCR": "Feishu OCR",
+    "讯飞OCR": "IFlytek OCR"
 }
