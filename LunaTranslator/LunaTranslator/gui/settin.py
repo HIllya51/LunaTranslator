@@ -50,20 +50,14 @@ class Settin(closeashidewindow):
     setstylesheetsignal = pyqtSignal()
 
     def resizefunction(self):
-
+        ww = self.size().width() - self.window_width * 0.2 - 30
         for w in self.needfitwidgets:
-            w.setFixedWidth(
-                int(self.size().width() - self.window_width * 0.2 - self.scrollwidth)
-            )
+            w.setFixedWidth(int(ww))
         for grid, maxl in self.needfitcols:
             for c in range(maxl):
                 grid.setColumnMinimumWidth(
                     c,
-                    int(
-                        self.size().width()
-                        - self.window_width * 0.2
-                        - self.scrollwidth // maxl
-                    ),
+                    int(ww / maxl),
                 )
 
     def resizeEvent(self, a0: QResizeEvent) -> None:
@@ -121,7 +115,6 @@ class Settin(closeashidewindow):
         self.window_width = 900 if globalconfig["languageuse"] == 0 else 1200
 
         self.window_height = 500
-        self.scrollwidth = 20
         self.savelastrect = None
 
         self.hooks = []
@@ -317,9 +310,6 @@ class Settin(closeashidewindow):
         scroll = QScrollArea()
         scroll.setHorizontalScrollBarPolicy(1)
         scroll.setStyleSheet("""QScrollArea{background-color:transparent;border:0px}""")
-        scroll.verticalScrollBar().setStyleSheet(
-            "QScrollBar{width:%spx;}" % self.scrollwidth
-        )
 
         self.needfitwidgets.append(widget)
         scroll.setWidget(widget)

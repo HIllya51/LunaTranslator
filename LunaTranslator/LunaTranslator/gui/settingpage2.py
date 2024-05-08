@@ -87,7 +87,7 @@ def initsome11(self, l, label=None):
             grids.append(line)
             line = []
         else:
-            line += []
+            line += [""]
     if len(line):
         grids.append(line)
     return grids

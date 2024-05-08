@@ -66,7 +66,7 @@ def getocrgrid(self):
             grids.append(line)
             line = []
         else:
-            line += []
+            line += [""]
         i += 1
     if len(line):
         grids.append(line)
