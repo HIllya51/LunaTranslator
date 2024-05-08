@@ -1,4 +1,4 @@
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, QPoint
 from PyQt5.QtGui import (
     QTextCharFormat,
     QTextBlockFormat,
@@ -105,11 +105,19 @@ class BorderedLabel(QLabel):
         self.m_fontOutLineWidth = width
         self._type = _type
 
+    def move(self, point: QPoint):
+        point.setX(point.x() - self.m_fontOutLineWidth)
+        point.setY(point.y() - self.m_fontOutLineWidth)
+        super().move(point)
+
     def adjustSize(self):
         font = self.font()
         text = self._m_text
         font_m = QFontMetrics(font)
-        self.resize(font_m.width(text), font_m.height())
+        self.resize(
+            font_m.width(text) + 2 * self.m_fontOutLineWidth,
+            font_m.height() + 2 * self.m_fontOutLineWidth,
+        )
 
     def paintEvent(self, event):
         if not self._pix:
@@ -123,7 +131,12 @@ class BorderedLabel(QLabel):
             painter = QPainter(self._pix)
 
             path = QPainterPath()
-            path.addText(0, font_m.ascent(), font, text)
+            path.addText(
+                self.m_fontOutLineWidth,
+                self.m_fontOutLineWidth + font_m.ascent(),
+                font,
+                text,
+            )
 
             pen = QPen(
                 self.m_outLineColor,
@@ -737,7 +750,7 @@ class Textbrowser:
         y += globalconfig["buttonsize"] * 1.5
         y += self.jiaming_y_delta
 
-        _.move(int(x), int(y))
+        _.move(QPoint(int(x), int(y)))
 
         _.show()
         return _
