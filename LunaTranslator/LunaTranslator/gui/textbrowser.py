@@ -349,11 +349,7 @@ class Textbrowser:
         maxnewh = 0
         for i in range(len(subtext)):
             maxnewh = max(maxnewh, subpos[i].y())
-            _ = self.guesscreatelabel(
-                self.toplabel2,
-                color,
-                globalconfig["miaobiancolor"],
-            )
+            _ = self.guesscreatelabel(self.toplabel2, color)
             _.move(subpos[i])
             _.setText(subtext[i])
             _.setFont(self.font)
@@ -398,11 +394,7 @@ class Textbrowser:
                 self.textbrowser.setTextCursor(self.textcursor)
                 tl1 = self.textbrowser.cursorRect(self.textcursor).topLeft()
 
-                _ = self.guesscreatelabel(
-                    self.toplabel2,
-                    color,
-                    globalconfig["miaobiancolor"],
-                )
+                _ = self.guesscreatelabel(self.toplabel2, color)
 
                 _.move(tl1)
                 _.setText(block.text()[s : s + l])
@@ -695,7 +687,9 @@ class Textbrowser:
         self.settextposcursor(startpos)
         return res
 
-    def guesscreatelabel(self, p, c1, c2):
+    def guesscreatelabel(self, p, color):
+        c1 = color
+        c2 = globalconfig["miaobiancolor"]
         if globalconfig["zitiyangshi2"] == 2:
             label = BorderedLabel(p)
             label.setColorWidth(c1, c2, globalconfig["miaobianwidth2"])
@@ -722,11 +716,7 @@ class Textbrowser:
         return label
 
     def solvejiaminglabel(self, word, font, tl1, tl2, fh):
-        _ = self.guesscreatelabel(
-            self.parent,
-            globalconfig["jiamingcolor"],
-            globalconfig["miaobiancolor"],
-        )
+        _ = self.guesscreatelabel(self.parent, globalconfig["jiamingcolor"])
 
         _.setText(word["hira"])
         _.setFont(font)
