@@ -213,7 +213,6 @@ class Textbrowser:
 
         self.yinyinglabels = []
 
-        self.addtaged = False
         self.yinyingpos = 0
         self.yinyingposline = 0
         self.lastcolor = None
@@ -278,19 +277,16 @@ class Textbrowser:
 
         b2 = self.textbrowser.document().blockCount()
 
-        if True:  # self.addtaged:
-            if self.addtaged:
-                self.addtaged = False
+        fh = globalconfig["extra_space"]
+        for i in range(self.blockcount, self.textbrowser.document().blockCount()):
+            b = self.textbrowser.document().findBlockByNumber(i)
+            tf = b.blockFormat()
+            tf.setLineHeight(fh, QTextBlockFormat.LineDistanceHeight)
+            self.textcursor.setPosition(b.position())
+            self.textcursor.setBlockFormat(tf)
+            self.textbrowser.setTextCursor(self.textcursor)
+        self.blockcount = self.textbrowser.document().blockCount()
 
-            fh = globalconfig["extra_space"]
-            for i in range(self.blockcount, self.textbrowser.document().blockCount()):
-                b = self.textbrowser.document().findBlockByNumber(i)
-                tf = b.blockFormat()
-                tf.setLineHeight(fh, QTextBlockFormat.LineDistanceHeight)
-                self.textcursor.setPosition(b.position())
-                self.textcursor.setBlockFormat(tf)
-                self.textbrowser.setTextCursor(self.textcursor)
-            self.blockcount = self.textbrowser.document().blockCount()
         if len(tag) > 0:
             self.addtag(tag)
 
@@ -586,19 +582,14 @@ class Textbrowser:
 
     def addtag(self, x):
         pos = 0
-        self.addtaged = True
 
         fhall, fontorig = self.getfh(False)
-
         fhhalf, fonthira = self.getfh(True)
-        fh, _ = self.getfh(False, True)
-        fh += globalconfig["extra_space"]
         for i in range(0, self.textbrowser.document().blockCount()):
             b = self.textbrowser.document().findBlockByNumber(i)
 
             tf = b.blockFormat()
-            # tf.setLineHeight(fh,QTextBlockFormat.LineDistanceHeight)
-            tf.setLineHeight(max(fh, fhall + fhhalf), QTextBlockFormat.FixedHeight)
+            tf.setLineHeight(fhall + fhhalf, QTextBlockFormat.FixedHeight)
 
             self.textcursor.setPosition(b.position())
             self.textcursor.setBlockFormat(tf)
