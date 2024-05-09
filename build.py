@@ -1,6 +1,6 @@
 import os, sys, re
 import shutil, json
-import subprocess
+import subprocess, time
 import urllib.request
 
 
@@ -183,11 +183,16 @@ def downloadOCRModel(locale):
 
 
 def get_url_as_json(url):
-    response = urllib.request.urlopen(url)
-    data = response.read().decode("utf-8")
-    json_data = json.loads(data)
+    for i in range(10):
+        try:
+            response = urllib.request.urlopen(url)
+            data = response.read().decode("utf-8")
+            json_data = json.loads(data)
+            return json_data
+        except:
+            time.sleep(3)
 
-    return json_data
+    
 
 
 def buildLunaHook():

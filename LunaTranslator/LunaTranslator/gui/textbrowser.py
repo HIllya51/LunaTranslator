@@ -78,16 +78,14 @@ class PlainLabel(QLabel):
 
 
 class ShadowLabel(PlainLabel):
-    def setShadow(self, colorshadow, colortext, width, deepth, trace=False):
+    def setShadow(self, colorshadow, width, deepth, trace=False):
         shadow2 = QGraphicsDropShadowEffect_multi(deepth)
         if trace:
-
             shadow2.setBlurRadius(width)
             shadow2.setOffset(QPointF(width, width))
         else:
             shadow2.setBlurRadius(width)
             shadow2.setOffset(0)
-            self.setStyleSheet("color:{}; background-color:(0,0,0,0)".format(colortext))
         shadow2.setColor(QColor(colorshadow))
         self.setGraphicsEffect(shadow2)
 
@@ -701,15 +699,14 @@ class Textbrowser:
         elif globalconfig["zitiyangshi2"] == 4:
             label = BorderedLabel(p)
             label.setColorWidth(c2, c1, globalconfig["miaobianwidth2"])
-            label.setShadow(c2, None, globalconfig["traceoffset"], 1, True)
+            label.setShadow(c2, globalconfig["traceoffset"], 1, True)
         elif globalconfig["zitiyangshi2"] == 0:
             label = PlainLabel(p)
             label.setStyleSheet("color:{}; background-color:(0,0,0,0)".format(c1))
         elif globalconfig["zitiyangshi2"] == 5:
-            label = ShadowLabel(p)
-            label.setShadow(
-                c1, c2, globalconfig["fontsize"], globalconfig["shadowforce"]
-            )
+            label = BorderedLabel(p)
+            label.setStyleSheet("color:{}; background-color:(0,0,0,0)".format(c2))
+            label.setShadow(c1, globalconfig["fontsize"], globalconfig["shadowforce"])
         return label
 
     def solvejiaminglabel(self, word, font, tl1, tl2, fh):
