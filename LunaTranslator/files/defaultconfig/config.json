@@ -193,8 +193,6 @@
     "premtsimiuse": false,
     "buttoncolor": "#001f9f",
     "premtsimi": 5,
-    "tabfont_chs": 18,
-    "tabfont_otherlang": 10,
     "ocrrangecolor": "#000000",
     "ocrrangewidth": 2,
     "useproxy": true,

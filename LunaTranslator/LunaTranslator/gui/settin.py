@@ -12,7 +12,7 @@ from PyQt5.QtWidgets import (
     QAction,
     QApplication,
 )
-from PyQt5.QtGui import QResizeEvent
+from PyQt5.QtGui import QResizeEvent, QFont, QFontMetrics
 from PyQt5.QtWidgets import QTabWidget
 import qtawesome, gobject
 import functools, threading, windows, winsharedutils
@@ -38,6 +38,45 @@ class gridwidget(QWidget):
     pass
 
 
+class TabWidget(QWidget):
+    currentChanged = pyqtSignal(int)
+
+    def setCurrentIndex(self, idx):
+        self.list_widget.setCurrentRow(idx)
+
+    def __init__(self, parent=None):
+        super(TabWidget, self).__init__(parent)
+        layout = QHBoxLayout()
+        layout.setContentsMargins(0, 0, 0, 0)
+        self.setLayout(layout)
+        self.list_widget = QListWidget(self)
+        self.tab_widget = QTabWidget(self)
+        self.tab_widget.tabBar().hide()  # 隐藏默认的 TabBar
+        self.tab_widget.setTabPosition(QTabWidget.West)  # 将 Tab 放在左侧
+        layout.addWidget(self.list_widget)
+        layout.addWidget(self.tab_widget)
+        self.currentChanged.connect(
+            self.tab_widget.setCurrentIndex
+        )  # 监听 Tab 切换事件
+        self.list_widget.currentRowChanged.connect(self.currentChanged)
+        self.idx = 0
+        self.titles = []
+
+    def addTab(self, widget, title):
+        self.titles.append(title)
+        self.tab_widget.addTab(widget, title)
+        item = QListWidgetItem(title)
+        item.setTextAlignment(Qt.AlignCenter)
+        item.setSizeHint(QSize(self.tab_widget.width(), 50))
+        self.list_widget.addItem(item)
+        if self.idx == 0:
+            self.list_widget.setCurrentRow(0)
+        self.idx += 1
+
+    def currentWidget(self):
+        return self.tab_widget.currentWidget()
+
+
 class Settin(closeashidewindow):
     voicelistsignal = pyqtSignal(list, int)
     mp3playsignal = pyqtSignal(str, int, bool)
@@ -50,7 +89,7 @@ class Settin(closeashidewindow):
     setstylesheetsignal = pyqtSignal()
 
     def resizefunction(self):
-        ww = self.size().width() - self.window_width * 0.2 - 30
+        ww = self.size().width() - self.list_width - 30
         for w in self.needfitwidgets:
             w.setFixedWidth(int(ww))
         for grid, maxl in self.needfitcols:
@@ -111,16 +150,13 @@ class Settin(closeashidewindow):
         self.opensolvetextsig.connect(self.opensolvetextfun)
 
         self.setMinimumSize(100, 100)
-        # 界面尺寸
-        self.window_width = 900 if globalconfig["languageuse"] == 0 else 1200
-
+        self.list_width=100
         self.window_height = 500
         self.savelastrect = None
 
         self.hooks = []
 
         self.usevoice = 0
-        self.isfirstshow = True
         self.inittray()
         setTabOne_direct(self)
         settab2d(self)
@@ -134,6 +170,43 @@ class Settin(closeashidewindow):
         self.setstylesheet()
         self.setstylesheetsignal.connect(self.setstylesheet)
         threading.Thread(target=self.darklistener).start()
+
+        self.setWindowTitle(_TR("设置"))
+        self.setWindowIcon(qtawesome.icon("fa.gear"))
+
+        self.tab_widget = self.makesubtab_lazy(klass=TabWidget)
+        self.setCentralWidget(self.tab_widget)
+
+        self.tab_widget.setStyleSheet(
+            """QListWidget { 
+                font:16pt  ;  }
+            """
+        )
+        # self.tab_widget.setTabPosition(QTabWidget.West)
+        setTabOne(self)
+        setTabTwo(self)
+
+        setTabThree(self)
+        setTab7(self)
+        setTabcishu(self)
+        setTab5(self)
+
+        setTab_quick(self)
+
+        setTablang(self)
+        setTab_proxy(self)
+        setTab_about(self)
+
+        width = 0
+        fn = QFont()
+        fn.setPixelSize(16)
+        fn.setFamily(globalconfig["settingfonttype"])
+        fm = QFontMetrics(fn)
+        for title in self.tab_widget.titles:
+            width = max(fm.width(title), width)
+        width += 100
+        self.tab_widget.list_widget.setFixedWidth(width)
+        self.list_width = width
 
     def inittray(self):
 
@@ -160,77 +233,6 @@ class Settin(closeashidewindow):
     def opensolvetextfun(self):
         self.show()
         self.tab_widget.setCurrentIndex(3)
-
-    def showEvent(self, e):
-        if self.isfirstshow:
-            self.setWindowTitle(_TR("设置"))
-            self.setWindowIcon(qtawesome.icon("fa.gear"))
-
-            class TabWidget(QWidget):
-                currentChanged = pyqtSignal(int)
-
-                def setCurrentIndex(self, idx):
-                    self.list_widget.setCurrentRow(idx)
-
-                def __init__(self, parent=None):
-                    super(TabWidget, self).__init__(parent)
-                    layout = QHBoxLayout()
-                    layout.setContentsMargins(0, 0, 0, 0)
-                    self.setLayout(layout)
-                    self.list_widget = QListWidget(self)
-                    self.tab_widget = QTabWidget(self)
-                    self.tab_widget.tabBar().hide()  # 隐藏默认的 TabBar
-                    self.tab_widget.setTabPosition(QTabWidget.West)  # 将 Tab 放在左侧
-                    layout.addWidget(self.list_widget)
-                    layout.addWidget(self.tab_widget)
-                    self.currentChanged.connect(
-                        self.tab_widget.setCurrentIndex
-                    )  # 监听 Tab 切换事件
-                    self.list_widget.currentRowChanged.connect(self.currentChanged)
-                    self.idx = 0
-
-                def addTab(self, widget, title):
-                    self.tab_widget.addTab(widget, title)
-                    item = QListWidgetItem(title)
-                    item.setTextAlignment(Qt.AlignCenter)
-                    item.setSizeHint(QSize(self.tab_widget.width(), 50))
-                    self.list_widget.addItem(item)
-                    if self.idx == 0:
-                        self.list_widget.setCurrentRow(0)
-                    self.idx += 1
-
-                def currentWidget(self):
-                    return self.tab_widget.currentWidget()
-
-            self.tab_widget = self.makesubtab_lazy(klass=TabWidget)
-            self.setCentralWidget(self.tab_widget)
-            self.tab_widget.list_widget.setFixedWidth(int(self.window_width * 0.2))
-
-            self.tab_widget.setStyleSheet(
-                """QListWidget { 
-                    font:%spt  ;  }
-                """
-                % (
-                    globalconfig["tabfont_chs"]
-                    if globalconfig["languageuse"] == 0
-                    else globalconfig["tabfont_otherlang"]
-                )
-            )
-            # self.tab_widget.setTabPosition(QTabWidget.West)
-            setTabOne(self)
-            setTabTwo(self)
-
-            setTabThree(self)
-            setTab7(self)
-            setTabcishu(self)
-            setTab5(self)
-
-            setTab_quick(self)
-
-            setTablang(self)
-            setTab_proxy(self)
-            setTab_about(self)
-            self.isfirstshow = False
 
     def darklistener(self):
         sema = winsharedutils.startdarklistener()
