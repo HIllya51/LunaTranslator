@@ -704,7 +704,7 @@ class Textbrowser:
             label = PlainLabel(p)
             label.setStyleSheet("color:{}; background-color:(0,0,0,0)".format(c1))
         elif globalconfig["zitiyangshi2"] == 5:
-            label = BorderedLabel(p)
+            label = ShadowLabel(p)
             label.setStyleSheet("color:{}; background-color:(0,0,0,0)".format(c2))
             label.setShadow(c1, globalconfig["fontsize"], globalconfig["shadowforce"])
         return label
