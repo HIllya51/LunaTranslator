@@ -147,4 +147,4 @@ class basetext:
     def runonce(self):
         t = self.gettextonce()
         if t:
-            self.textgetmethod(self.gettextonce(), False)
+            self.textgetmethod(t, False)
