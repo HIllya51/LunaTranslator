@@ -682,35 +682,39 @@ class Textbrowser:
         self.settextposcursor(startpos)
         return res
 
-    def guesscreatelabel(self, p, color):
+    def guesscreatelabel(self, p, color, rate=1):
         c1 = color
         c2 = globalconfig["miaobiancolor"]
         if globalconfig["zitiyangshi2"] == 2:
             label = BorderedLabel(p)
-            label.setColorWidth(c1, c2, globalconfig["miaobianwidth2"])
+            label.setColorWidth(c1, c2, rate * globalconfig["miaobianwidth2"])
 
         elif globalconfig["zitiyangshi2"] == 3:
             label = BorderedLabel(p)
-            label.setColorWidth(c2, c1, globalconfig["miaobianwidth2"])
+            label.setColorWidth(c2, c1, rate * globalconfig["miaobianwidth2"])
         elif globalconfig["zitiyangshi2"] == 1:
 
             label = BorderedLabel(p)
-            label.setColorWidth(c1, c2, globalconfig["miaobianwidth"], 1)
+            label.setColorWidth(c1, c2, rate * globalconfig["miaobianwidth"], 1)
         elif globalconfig["zitiyangshi2"] == 4:
             label = BorderedLabel(p)
-            label.setColorWidth(c2, c1, globalconfig["miaobianwidth2"])
-            label.setShadow(c2, globalconfig["traceoffset"], 1, True)
+            label.setColorWidth(c2, c1, rate * globalconfig["miaobianwidth2"])
+            label.setShadow(c2, rate * globalconfig["traceoffset"], 1, True)
         elif globalconfig["zitiyangshi2"] == 0:
             label = PlainLabel(p)
             label.setStyleSheet("color:{}; background-color:(0,0,0,0)".format(c1))
         elif globalconfig["zitiyangshi2"] == 5:
             label = ShadowLabel(p)
             label.setStyleSheet("color:{}; background-color:(0,0,0,0)".format(c2))
-            label.setShadow(c1, globalconfig["fontsize"], globalconfig["shadowforce"])
+            label.setShadow(
+                c1, rate * globalconfig["fontsize"], globalconfig["shadowforce"]
+            )
         return label
 
     def solvejiaminglabel(self, word, font, tl1, tl2, fh):
-        _ = self.guesscreatelabel(self.parent, globalconfig["jiamingcolor"])
+        _ = self.guesscreatelabel(
+            self.parent, globalconfig["jiamingcolor"], rate=globalconfig["kanarate"]
+        )
 
         _.setText(word["hira"])
         _.setFont(font)
