@@ -1,4 +1,4 @@
-from PyQt5.QtCore import Qt, QPoint
+from PyQt5.QtCore import Qt, QPoint, QPointF
 from PyQt5.QtGui import (
     QTextCharFormat,
     QTextBlockFormat,
@@ -78,16 +78,22 @@ class PlainLabel(QLabel):
 
 
 class ShadowLabel(PlainLabel):
-    def setColorWidth(self, colorshadow, colortext, width, deepth):
+    def setShadow(self, colorshadow, colortext, width, deepth, trace=False):
         shadow2 = QGraphicsDropShadowEffect_multi(deepth)
-        shadow2.setBlurRadius(width)
-        shadow2.setOffset(0)
+        if trace:
+
+            shadow2.setBlurRadius(width)
+            shadow2.setOffset(QPointF(width, width))
+        else:
+            shadow2.setBlurRadius(width)
+            shadow2.setOffset(0)
+            self.setStyleSheet("color:{}; background-color:(0,0,0,0)".format(colortext))
         shadow2.setColor(QColor(colorshadow))
         self.setGraphicsEffect(shadow2)
-        self.setStyleSheet("color:{}; background-color:(0,0,0,0)".format(colortext))
 
 
-class BorderedLabel(QLabel):
+class BorderedLabel(ShadowLabel):
+
     def __init__(self, parent=None):
         super().__init__(parent)
         self.m_outLineColor = QColor()
@@ -153,15 +159,6 @@ class BorderedLabel(QLabel):
             elif self._type == 1:
                 painter.fillPath(path, QBrush(self.m_contentColor))
                 painter.strokePath(path, pen)
-            elif self._type == 2:
-                w = self.m_fontOutLineWidth
-                while w > 0:
-                    painter.fillPath(
-                        path.translated(w, w),
-                        self.m_contentColor,
-                    )
-                    w -= 0.2
-                painter.fillPath(path, self.m_outLineColor)
 
         painter = QPainter(self)
         painter.drawPixmap(0, 0, self._pix)
@@ -702,15 +699,15 @@ class Textbrowser:
             label = BorderedLabel(p)
             label.setColorWidth(c1, c2, globalconfig["miaobianwidth"], 1)
         elif globalconfig["zitiyangshi2"] == 4:
-
             label = BorderedLabel(p)
-            label.setColorWidth(c1, c2, globalconfig["traceoffset"], 2)
+            label.setColorWidth(c2, c1, globalconfig["miaobianwidth2"])
+            label.setShadow(c2, None, globalconfig["traceoffset"], 1, True)
         elif globalconfig["zitiyangshi2"] == 0:
             label = PlainLabel(p)
             label.setStyleSheet("color:{}; background-color:(0,0,0,0)".format(c1))
         elif globalconfig["zitiyangshi2"] == 5:
             label = ShadowLabel(p)
-            label.setColorWidth(
+            label.setShadow(
                 c1, c2, globalconfig["fontsize"], globalconfig["shadowforce"]
             )
         return label
