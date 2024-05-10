@@ -75,7 +75,8 @@
     "button_color_close": "#D32424",
     "button_color_normal": "#FFFFFF",
     "textthreaddelay": 500,
-    "flushbuffersize": 3000,
+    "maxBufferSize": 3000,
+    "maxHistorySize": 1000000,
     "transuigeo": [
         500,
         500,

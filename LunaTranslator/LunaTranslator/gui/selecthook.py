@@ -808,7 +808,7 @@ class hookselect(closeashidewindow):
             ):
                 ishide = True
                 for i in range(
-                    min(len(gobject.baseobject.textsource.hookdatacollecter[key]), 20)
+                    len(gobject.baseobject.textsource.hookdatacollecter[key])
                 ):
 
                     if any(
@@ -975,13 +975,10 @@ class hookselect(closeashidewindow):
         try:
             # print(gobject.baseobject.textsource)
             gobject.baseobject.textsource.selectinghook = self.save[index.row()]
+            pid, addr, ctx1, ctx2, _, _ = self.save[index.row()]
 
             self.textOutput.setPlainText(
-                "\n".join(
-                    gobject.baseobject.textsource.hookdatacollecter[
-                        self.save[index.row()]
-                    ]
-                )
+                gobject.baseobject.textsource.QueryThreadHistory(pid, addr, ctx1, ctx2)
             )
             self.textOutput.moveCursor(QTextCursor.End)
 

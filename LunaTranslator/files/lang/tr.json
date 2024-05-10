@@ -643,7 +643,6 @@
     "Sakura部署教程": "Sakura Deployment Tutorial",
     "Github仓库": "Github deposu",
     "利用上文信息翻译（通常会有一定的效果提升，但会导致变慢）": "Önceki metinde verilen bilgileri kullanarak çevirin (genelde etkinliğinde bazı gelişmelerle, fakat daha yavaş çeviriye yol açabilir)",
-    "文本缓冲区长度": "Metin buffer uzunluğu",
     "历史翻译和调试输出": "Tarihi çeviri ve hata ayıklama çıkışı",
     "调试输出": "Hata ayıklama çıkışı",
     "显示翻译": "Çeviri göster",
@@ -770,5 +769,7 @@
     "投影字体": "Projeksyon yazıtipi",
     "发光字体": "Açık yazıtipi",
     "发光亮度": "ışık",
-    "投影距离": "Projeksyon mesafesi"
+    "投影距离": "Projeksyon mesafesi",
+    "最大缓冲区长度": "Azamik buffer uzunluğu",
+    "最大缓存文本长度": "Maximum cached text length"
 }

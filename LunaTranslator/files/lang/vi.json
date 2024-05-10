@@ -643,7 +643,6 @@
     "Sakura部署教程": "Hướng dẫn triển khai Sakura",
     "Github仓库": "Kho Github",
     "利用上文信息翻译（通常会有一定的效果提升，但会导致变慢）": "Sử dụng thông tin trên để dịch (thường có một số hiệu ứng tăng lên, nhưng có thể dẫn đến chậm hơn)",
-    "文本缓冲区长度": "Chiều dài bộ đệm văn bản",
     "历史翻译和调试输出": "Lịch sử dịch và gỡ lỗi đầu ra",
     "调试输出": "Đầu ra gỡ lỗi",
     "显示翻译": "Hiện bản dịch",
@@ -770,5 +769,7 @@
     "投影字体": "Phông chiếu",
     "发光字体": "Phông phát sáng",
     "发光亮度": "Độ sáng phát sáng",
-    "投影距离": "Khoảng cách chiếu"
+    "投影距离": "Khoảng cách chiếu",
+    "最大缓冲区长度": "Chiều dài bộ đệm tối đa",
+    "最大缓存文本长度": "Độ dài văn bản bộ nhớ cache tối đa"
 }

@@ -74,18 +74,32 @@ def gethookgrid(self):
             ),
         ],
         [
-            ("文本缓冲区长度", 5),
+            ("最大缓冲区长度", 5),
             (
                 getspinbox(
                     0,
-                    10000,
+                    1000000,
                     globalconfig,
-                    "flushbuffersize",
+                    "maxBufferSize",
                     callback=lambda x: gobject.baseobject.textsource.setsettings(),
                 ),
                 3,
             ),
         ],
+        [
+            ("最大缓存文本长度", 5),
+            (
+                getspinbox(
+                    0,
+                    1000000000,
+                    globalconfig,
+                    "maxHistorySize",
+                    callback=lambda x: gobject.baseobject.textsource.setsettings(),
+                ),
+                3,
+            ),
+        ],
+        [],
         [
             ("过滤包含乱码的文本行", 5),
             (getsimpleswitch(globalconfig, "filter_chaos_code"), 1),

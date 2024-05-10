@@ -76,7 +76,7 @@ class SearchParam(Structure):
 findhookcallback_t = CFUNCTYPE(None, c_wchar_p, c_wchar_p)
 ProcessEvent = CFUNCTYPE(None, DWORD)
 ThreadEvent = CFUNCTYPE(None, c_wchar_p, c_char_p, ThreadParam)
-OutputCallback = CFUNCTYPE(None, c_wchar_p, c_char_p, ThreadParam, c_wchar_p)
+OutputCallback = CFUNCTYPE(c_bool, c_wchar_p, c_char_p, ThreadParam, c_wchar_p)
 ConsoleHandler = CFUNCTYPE(None, c_wchar_p)
 HookInsertHandler = CFUNCTYPE(None, c_uint64, c_wchar_p)
 EmbedCallback = CFUNCTYPE(None, c_wchar_p, ThreadParam)
@@ -98,7 +98,6 @@ class texthook(basetext):
         self.hookdatacollecter = OrderedDict()
         self.hooktypecollecter = OrderedDict()
         self.currentname = None
-        self.numcharactorcounter = {}
         self.reverse = {}
         self.forward = []
         self.selectinghook = None
@@ -139,7 +138,7 @@ class texthook(basetext):
             )
         )
         self.Luna_Settings = LunaHost.Luna_Settings
-        self.Luna_Settings.argtypes = c_int, c_bool, c_int, c_int
+        self.Luna_Settings.argtypes = c_int, c_bool, c_int, c_int, c_int
         self.Luna_Start = LunaHost.Luna_Start
         self.Luna_Start.argtypes = (
             c_void_p,
@@ -187,6 +186,24 @@ class texthook(basetext):
         self.Luna_useembed.argtypes = DWORD, c_uint64, c_uint64, c_uint64, c_bool
         self.Luna_embedcallback = LunaHost.Luna_embedcallback
         self.Luna_embedcallback.argtypes = DWORD, LPCWSTR, LPCWSTR
+
+        self.Luna_FreePtr = LunaHost.Luna_FreePtr
+        self.Luna_FreePtr.argtypes = (c_void_p,)
+
+        self.Luna_QueryThreadHistory = LunaHost.Luna_QueryThreadHistory
+        self.Luna_QueryThreadHistory.argtypes = (ThreadParam,)
+        self.Luna_QueryThreadHistory.restype = c_void_p
+
+    def QueryThreadHistory(self, pid, addr, ctx1, ctx2):
+        tp = ThreadParam()
+        tp.addr = addr
+        tp.processId = pid
+        tp.ctx = ctx1
+        tp.ctx2 = ctx2
+        ws = self.Luna_QueryThreadHistory(tp)
+        string = cast(ws, c_wchar_p).value
+        self.Luna_FreePtr(ws)
+        return string
 
     def Luna_Startup(self):
         procs = [
@@ -349,7 +366,8 @@ class texthook(basetext):
             globalconfig["textthreaddelay"],
             globalconfig["direct_filterrepeat"],
             self.codepage(),
-            globalconfig["flushbuffersize"],
+            globalconfig["maxBufferSize"],
+            globalconfig["maxHistorySize"],
         )
 
     def codepage(self):
@@ -439,11 +457,11 @@ class texthook(basetext):
         key = self.parsetextthread(hc, hn, tp)
 
         if globalconfig["filter_chaos_code"] and checkchaos(output):
-            return
+            return False
 
         if key not in self.hookdatacollecter:
             if self.onnewhook(hc, hn, tp) == False:
-                return
+                return False
         self.lock.acquire()
         if self.hooktypecollecter[key] == 1:
             self.currentname = output
@@ -457,16 +475,12 @@ class texthook(basetext):
         if key == self.selectinghook:
             gobject.baseobject.hookselectdialog.getnewsentencesignal.emit(output)
 
-        if key not in self.numcharactorcounter:
-            self.numcharactorcounter[key] = 0
-        while self.numcharactorcounter[key] > 1000000:
-            _ = self.hookdatacollecter[key].pop(0)
-            self.numcharactorcounter[key] -= len(_)
         self.hookdatacollecter[key].append(output)
-        self.numcharactorcounter[key] += len(output)
+        self.hookdatacollecter[key] = self.hookdatacollecter[key][-100:]
         gobject.baseobject.hookselectdialog.update_item_new_line.emit(key, output)
 
         self.lock.release()
+        return True
 
     def checkisusingembed(self, address, ctx1, ctx2):
         for pid in self.connectedpids:

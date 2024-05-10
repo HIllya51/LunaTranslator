@@ -643,7 +643,6 @@
     "Sakura部署教程": "Tutorial sull'implementazione di Sakura",
     "Github仓库": "Magazzino Github",
     "利用上文信息翻译（通常会有一定的效果提升，但会导致变慢）": "Tradurre utilizzando le informazioni fornite nel testo precedente (di solito con qualche miglioramento in efficacia, ma può portare a una traduzione più lenta)",
-    "文本缓冲区长度": "Lunghezza buffer di testo",
     "历史翻译和调试输出": "Risultato storico di traduzione e debug",
     "调试输出": "Debug output",
     "显示翻译": "Mostra traduzione",
@@ -770,5 +769,7 @@
     "投影字体": "Carattere di proiezione",
     "发光字体": "Carattere luminoso",
     "发光亮度": "luminanza",
-    "投影距离": "Distanza di proiezione"
+    "投影距离": "Distanza di proiezione",
+    "最大缓冲区长度": "Lunghezza massima del buffer",
+    "最大缓存文本长度": "Lunghezza massima del testo memorizzato nella cache"
 }
