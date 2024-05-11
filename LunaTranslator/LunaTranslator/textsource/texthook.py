@@ -94,7 +94,6 @@ class texthook(basetext):
         self.newline = Queue()
         self.newline_delaywait = Queue()
         self.is64bit = Is64bit(pids[0])
-        self.lock = threading.Lock()
         self.hookdatacollecter = OrderedDict()
         self.hooktypecollecter = OrderedDict()
         self.currentname = None
@@ -312,14 +311,13 @@ class texthook(basetext):
 
     def onremovehook(self, tp):
         toremove = []
-        self.lock.acquire()
+    
         for key in self.hookdatacollecter:
             if key[1] == tp.addr:
                 toremove.append(key)
         for key in toremove:
             gobject.baseobject.hookselectdialog.removehooksignal.emit(key)
             self.hookdatacollecter.pop(key)
-        self.lock.release()
 
     def parsetextthread(self, hc, hn, tp):
         key = (tp.processId, tp.addr, tp.ctx, tp.ctx2, hn.decode("ascii"), hc)
@@ -344,7 +342,7 @@ class texthook(basetext):
                 self.Luna_RemoveHook(key[0], key[1])
                 return False
 
-        self.lock.acquire()
+    
         select = False
         for _i, autostarthookcode in enumerate(self.autostarthookcode):
             if self.match_compatibility(key, autostarthookcode):
@@ -358,7 +356,6 @@ class texthook(basetext):
         gobject.baseobject.hookselectdialog.addnewhooksignal.emit(
             key, select, [hc, hn, tp]
         )
-        self.lock.release()
         return True
 
     def setsettings(self):
@@ -462,7 +459,7 @@ class texthook(basetext):
         if key not in self.hookdatacollecter:
             if self.onnewhook(hc, hn, tp) == False:
                 return False
-        self.lock.acquire()
+    
         if self.hooktypecollecter[key] == 1:
             self.currentname = output
         if len(self.selectedhook) == 1:
@@ -479,7 +476,6 @@ class texthook(basetext):
         self.hookdatacollecter[key] = self.hookdatacollecter[key][-100:]
         gobject.baseobject.hookselectdialog.update_item_new_line.emit(key, output)
 
-        self.lock.release()
         return True
 
     def checkisusingembed(self, address, ctx1, ctx2):

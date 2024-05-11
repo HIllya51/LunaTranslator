@@ -904,8 +904,6 @@ class hookselect(closeashidewindow):
     def accept(self, key, select):
         try:
 
-            gobject.baseobject.textsource.lock.acquire()
-
             if key in gobject.baseobject.textsource.selectedhook:
                 gobject.baseobject.textsource.selectedhook.remove(key)
 
@@ -928,7 +926,6 @@ class hookselect(closeashidewindow):
             savehook_new_data[gobject.baseobject.textsource.pname].update(
                 {"hook": gobject.baseobject.textsource.selectedhook}
             )
-            gobject.baseobject.textsource.lock.release()
         except:
             print_exc()
 

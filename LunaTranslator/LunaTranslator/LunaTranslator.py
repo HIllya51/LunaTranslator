@@ -45,15 +45,6 @@ from winsharedutils import pid_running
 from myutils.post import POSTSOLVE
 
 
-class _autolock:
-    def __init__(self, lock) -> None:
-        self.lock = lock
-        lock.acquire()
-
-    def __del__(self):
-        self.lock.release()
-
-
 class MAINUI:
     def __init__(self) -> None:
         super().__init__()
@@ -143,7 +134,12 @@ class MAINUI:
     def textgetmethod(
         self, text, is_auto_run=True, embedcallback=None, onlytrans=False
     ):
-        _autolock(self.solvegottextlock)
+        with self.solvegottextlock:
+            return self.textgetmethod_1(text, is_auto_run, embedcallback, onlytrans)
+
+    def textgetmethod_1(
+        self, text, is_auto_run=True, embedcallback=None, onlytrans=False
+    ):
 
         returnandembedcallback = lambda: embedcallback("") if embedcallback else ""
 
