@@ -1,5 +1,5 @@
 blank_issues_enabled: true
 contact_links:
-  - name: Game Request 游戏支持请求
+  - name: Specific Game Related 特定游戏相关
     url: https://github.com/HIllya51/LunaHook/issues/new?assignees=&labels=enhancement&projects=&template=01_game_request.yaml
-    about: Create the request for an unsupported game 请求支持尚未支持的游戏
+    about: Request for an unsupported game, or hooked text is incorrect 请求支持尚未支持的游戏，或提取的文本不正确
