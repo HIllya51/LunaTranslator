@@ -682,31 +682,67 @@ class QUnFrameWindow(resizableframeless):
         self.refreshtoolicon()
         self.thistimenotsetop = False
 
+    def createborderradiusstring(self, r, merge, top=False):
+        if merge:
+            if top:
+                return """
+                border-top-left-radius: %spx;
+                border-top-right-radius: %spx;
+                border-bottom-left-radius: 0;
+                border-bottom-right-radius: 0;
+                """ % (
+                    r,
+                    r,
+                )
+            else:
+                return """
+                border-bottom-left-radius: %spx;
+                border-bottom-right-radius: %spx;
+                border-top-left-radius: 0;
+                border-top-right-radius: 0;
+                """ % (
+                    r,
+                    r,
+                )
+        else:
+            return "border-radius:%spx" % r
+
     def set_color_transparency(self):
-        use_r = min(
+
+        use_r1 = min(
             self.translate_text.textbrowser.height() // 2,
             self.translate_text.textbrowser.width() // 2,
             globalconfig["yuanjiao_r"],
         )
+        use_r2 = min(
+            self._TitleLabel.height() // 2,
+            self._TitleLabel.width() // 2,
+            globalconfig["yuanjiao_r"],
+        )
+        topr = self.createborderradiusstring(
+            use_r1,
+            globalconfig["yuanjiao_merge"] and self._TitleLabel.isVisible(),
+            False,
+        )
+        bottomr2 = self.createborderradiusstring(use_r2, False)
+        bottomr = self.createborderradiusstring(
+            use_r2, globalconfig["yuanjiao_merge"], True
+        )
+
         self.translate_text.setStyleSheet(
-            "border-width: 0;border-radius:%spx;background-color: rgba(%s, %s, %s, %s)"
+            "border-width: 0;%s;background-color: rgba(%s, %s, %s, %s)"
             % (
-                use_r,
+                topr,
                 int(globalconfig["backcolor"][1:3], 16),
                 int(globalconfig["backcolor"][3:5], 16),
                 int(globalconfig["backcolor"][5:7], 16),
                 globalconfig["transparent"] * (not self.backtransparent) / 100,
             )
         )
-        use_r = min(
-            self._TitleLabel.height() // 2,
-            self._TitleLabel.width() // 2,
-            globalconfig["yuanjiao_r"],
-        )
         self._TitleLabel.setStyleSheet(
-            "border-width: 0;border-radius:%spx;background-color: rgba(%s, %s, %s, %s)"
+            "border-width: 0;%s;background-color: rgba(%s, %s, %s, %s)"
             % (
-                use_r,
+                bottomr,
                 int(globalconfig["backcolor"][1:3], 16),
                 int(globalconfig["backcolor"][3:5], 16),
                 int(globalconfig["backcolor"][5:7], 16),
@@ -716,36 +752,25 @@ class QUnFrameWindow(resizableframeless):
         for _type in self.stylebuttons:
             style = """
             QPushButton{
-            background-color: rgba(255, 255, 255, 0);
-            color: black;border-radius:%spx;
-            border: 0px;
-            font: 100 10pt;
-        }
-        
+                background-color: rgba(255, 255, 255, 0);
+                color: black;%s;
+                border: 0px;
+                font: 100 10pt;
+            }
+            QPushButton:hover{
+                background-color: %s;
+                border: 0px;%s;
+                font: 100 10pt;
+            }
             """ % (
-                use_r,
-            )
-            if _type == 1:
-                style += """
-                QPushButton:hover{
-            background-color: %s;
-            border: 0px;border-radius:%spx;
-            font: 100 10pt;
-                }""" % (
+                bottomr2,
+                (
                     globalconfig["button_color_normal"],
-                    use_r,
-                )
-            elif _type == 2:
-                style += """
-                QPushButton:hover{
-            background-color: %s;
-            color: white;border-radius:%spx;
-            border: 0px;
-            font: 100 10pt;
-        }""" % (
                     globalconfig["button_color_close"],
-                    use_r,
-                )
+                )[_type - 1],
+                bottomr2,
+            )
+
             for btn in self.stylebuttons[_type]:
                 btn.setStyleSheet(style)
 
@@ -929,6 +954,7 @@ class QUnFrameWindow(resizableframeless):
         for button in self.buttons:
             button.hide()
         self._TitleLabel.hide()
+        self.set_color_transparency()
 
     def enterEvent(self, QEvent):
         self.enterfunction()
@@ -951,6 +977,7 @@ class QUnFrameWindow(resizableframeless):
                 s.toolbarhidedelaysignal.emit()
 
         threading.Thread(target=lambda: __(self)).start()
+        self.set_color_transparency()
 
     def resizeEvent(self, e):
         super().resizeEvent(e)

@@ -771,6 +771,8 @@
     "投影距离": "Projeksyon mesafesi",
     "最大缓冲区长度": "Azamik buffer uzunluğu",
     "最大缓存文本长度": "Maximum cached text length",
-    "圆角半径": "Sıradan",
-    "投影": "projection"
+    "投影": "projection",
+    "半径": "radius",
+    "圆角": "fillet",
+    "合并": "birleştir"
 }

@@ -771,6 +771,8 @@
     "投影距离": "Distanza di proiezione",
     "最大缓冲区长度": "Lunghezza massima del buffer",
     "最大缓存文本长度": "Lunghezza massima del testo memorizzato nella cache",
-    "圆角半径": "Raggio rotondo",
-    "投影": "proiezione"
+    "投影": "proiezione",
+    "半径": "raggio",
+    "圆角": "filetto",
+    "合并": "fusione"
 }

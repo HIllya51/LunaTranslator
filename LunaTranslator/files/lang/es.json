@@ -771,6 +771,8 @@
     "投影距离": "Distancia de proyección",
     "最大缓冲区长度": "Longitud máxima de la zona de amortiguación",
     "最大缓存文本长度": "Longitud máxima del texto en caché",
-    "圆角半径": "Radio redondeado",
-    "投影": "Proyección"
+    "投影": "Proyección",
+    "半径": "Radio",
+    "圆角": "Redondeado",
+    "合并": "Fusión"
 }

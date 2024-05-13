@@ -771,6 +771,8 @@
     "投影距离": "Projection distance",
     "最大缓冲区长度": "Maximum buffer length",
     "最大缓存文本长度": "Maximum cached text length",
-    "圆角半径": "Round radius",
-    "投影": "projection"
+    "投影": "projection",
+    "半径": "radius",
+    "圆角": "fillet",
+    "合并": "merge"
 }

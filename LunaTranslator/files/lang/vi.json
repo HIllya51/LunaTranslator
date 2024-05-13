@@ -771,6 +771,8 @@
     "投影距离": "Khoảng cách chiếu",
     "最大缓冲区长度": "Chiều dài bộ đệm tối đa",
     "最大缓存文本长度": "Độ dài văn bản bộ nhớ cache tối đa",
-    "圆角半径": "Bán kính góc tròn",
-    "投影": "Chiếu"
+    "投影": "Chiếu",
+    "半径": "Bán kính",
+    "圆角": "Góc tròn",
+    "合并": "Hợp nhất"
 }

@@ -771,6 +771,8 @@
     "投影距离": "Odległość projekcji",
     "最大缓冲区长度": "Maksymalna długość bufora",
     "最大缓存文本长度": "Maksymalna długość buforowanego tekstu",
-    "圆角半径": "Promień okrągły",
-    "投影": "projekcja"
+    "投影": "projekcja",
+    "半径": "promień",
+    "圆角": "filet",
+    "合并": "połączenie"
 }

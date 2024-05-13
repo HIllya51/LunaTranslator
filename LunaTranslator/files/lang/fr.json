@@ -771,6 +771,8 @@
     "投影距离": "Distance de projection",
     "最大缓冲区长度": "Longueur maximale du tampon",
     "最大缓存文本长度": "Longueur maximale du texte mis en cache",
-    "圆角半径": "Rayon des coins arrondis",
-    "投影": "Projection"
+    "投影": "Projection",
+    "半径": "Rayon",
+    "圆角": "Coins arrondis",
+    "合并": "Consolidation"
 }
