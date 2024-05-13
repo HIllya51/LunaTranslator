@@ -18,7 +18,7 @@ from gui.usefulwidget import closeashidewindow
 
 
 class searchwordW(closeashidewindow):
-    getnewsentencesignal = pyqtSignal(str)
+    getnewsentencesignal = pyqtSignal(str, bool)
     searchthreadsignal = pyqtSignal(str, dict, str)
     showtabsignal = pyqtSignal(str, str)
 
@@ -104,8 +104,10 @@ class searchwordW(closeashidewindow):
         if gobject.baseobject.reader:
             gobject.baseobject.reader.read(self.searchtext.text(), True)
 
-    def getnewsentence(self, sentence):
+    def getnewsentence(self, sentence, append):
         self.showNormal()
+        if append:
+            sentence = self.searchtext.text() + sentence
         self.searchtext.setText(sentence)
 
         self.search(sentence)

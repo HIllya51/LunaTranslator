@@ -6,6 +6,7 @@ from PyQt5.QtGui import (
     QTextCursor,
     QPixmap,
     QFontMetricsF,
+    QMouseEvent,
 )
 from PyQt5.QtWidgets import (
     QTextBrowser,
@@ -36,18 +37,21 @@ class Qlabel_c(QLabel):
         pass
         # return super().mouseMoveEvent(ev)
 
-    def mouseReleaseEvent(self, ev):
+    def mouseReleaseEvent(self, event: QMouseEvent):
         try:
             if self.underMouse():
                 try:
                     if self.pr:
-                        self.callback()
+                        if event.button() == Qt.RightButton:
+                            self.callback(True)
+                        else:
+                            self.callback(False)
                 except:
                     print_exc()
             self.pr = False
         except:
             print_exc()
-        return super().mouseReleaseEvent(ev)
+        return super().mouseReleaseEvent(event)
 
     def enterEvent(self, a0) -> None:
         if self.company:

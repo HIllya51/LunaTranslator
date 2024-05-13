@@ -255,7 +255,7 @@ class QUnFrameWindow(resizableframeless):
 
         if hira:
 
-            def callback(word):
+            def callback(word, append):
                 if globalconfig["usewordorigin"] == False:
                     word = word["orig"]
                 else:
@@ -264,7 +264,9 @@ class QUnFrameWindow(resizableframeless):
                 if globalconfig["usecopyword"]:
                     winsharedutils.clipboard_set(word)
                 if globalconfig["usesearchword"]:
-                    gobject.baseobject.searchwordW.getnewsentencesignal.emit(word)
+                    gobject.baseobject.searchwordW.getnewsentencesignal.emit(
+                        word, append
+                    )
 
             self.translate_text.addsearchwordmask(hira, text, callback)
 
