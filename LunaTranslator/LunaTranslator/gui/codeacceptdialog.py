@@ -12,7 +12,7 @@ from PyQt5.QtWidgets import QHBoxLayout, QTableView
 from PyQt5.QtGui import QStandardItem, QStandardItemModel
 from PyQt5.QtWidgets import QComboBox
 from PyQt5.QtCore import Qt, QSize
-from gui.usefulwidget import getspinbox
+from gui.usefulwidget import getspinbox, threebuttons
 from myutils.utils import checkencoding
 from myutils.config import globalconfig, _TR, _TRL
 
@@ -87,19 +87,13 @@ class codeacceptdialog(QDialog):
             )
 
             row += 1
-
-        button = QPushButton(self)
-        button.setText(_TR("添加行"))
-
-        button.clicked.connect(self.clicked1)
-        button2 = QPushButton(self)
-        button2.setText(_TR("删除选中行"))
-
-        button2.clicked.connect(self.clicked2)
+        button = threebuttons()
+        button.btn1clicked.connect(self.clicked1)
+        button.btn2clicked.connect(self.clicked2)
+        button.btn3clicked.connect(self.apply)
         self.button = button
         formLayout.addWidget(self.table)
         formLayout.addWidget(button)
-        formLayout.addWidget(button2)
         formLayout.addWidget(QLabel())
 
         _checkunicode = QCheckBox(_TR("使用Unicode范围过滤"))
@@ -146,8 +140,8 @@ class codeacceptdialog(QDialog):
 
         self.model.removeRow(self.table.currentIndex().row())
 
-    def closeEvent(self, _):
-        self.button.setFocus()
+    def apply(self):
+
         rows = self.model.rowCount()
         ll = []
         for row in range(rows):
@@ -167,3 +161,7 @@ class codeacceptdialog(QDialog):
                 continue
             ll.append(code)
         globalconfig["accept_encoding"] = ll
+
+    def closeEvent(self, _):
+        self.button.setFocus()
+        self.apply()

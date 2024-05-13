@@ -602,3 +602,27 @@ def auto_select_webview(parent):
         except Exception:
             browser = mshtmlWidget(parent)
     return browser
+
+
+class threebuttons(QWidget):
+    btn1clicked = pyqtSignal()
+    btn2clicked = pyqtSignal()
+    btn3clicked = pyqtSignal()
+
+    def __init__(self):
+        super().__init__()
+        layout = QHBoxLayout()
+        layout.setContentsMargins(0, 0, 0, 0)
+        self.setLayout(layout)
+        button = QPushButton(self)
+        button.setText(_TR("添加行"))
+        button.clicked.connect(self.btn1clicked)
+        button2 = QPushButton(self)
+        button2.setText(_TR("删除选中行"))
+        button2.clicked.connect(self.btn2clicked)
+        button3 = QPushButton(self)
+        button3.setText(_TR("立即应用"))
+        button3.clicked.connect(self.btn3clicked)
+        layout.addWidget(button)
+        layout.addWidget(button2)
+        layout.addWidget(button3)

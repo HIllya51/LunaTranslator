@@ -774,5 +774,6 @@
     "投影": "projection",
     "半径": "radius",
     "圆角": "fillet",
-    "合并": "merge"
+    "合并": "merge",
+    "立即应用": "apply now"
 }

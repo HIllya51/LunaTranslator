@@ -20,7 +20,7 @@ from PyQt5.QtGui import QCloseEvent, QStandardItem, QStandardItemModel
 
 import qtawesome, importlib
 from myutils.config import globalconfig, _TR, _TRL
-from gui.usefulwidget import MySwitch, selectcolor, getsimpleswitch
+from gui.usefulwidget import MySwitch, selectcolor, getsimpleswitch, threebuttons
 from myutils.utils import makehtml
 from myutils.wrapper import Singleton
 
@@ -79,8 +79,7 @@ class noundictconfigdialog1(QDialog):
         button4.clicked.connect(clicked4)
         search.addWidget(button4)
 
-        button = QPushButton(self)
-        button.setText(_TR("添加行"))
+        button = threebuttons()
 
         def clicked1():
             self.configdict[configkey].insert(
@@ -88,27 +87,24 @@ class noundictconfigdialog1(QDialog):
             )
             self.newline(0, self.configdict[configkey][0])
 
-        button.clicked.connect(clicked1)
-        button2 = QPushButton(self)
-        button2.setText(_TR("删除选中行"))
+        button.btn1clicked.connect(clicked1)
 
         def clicked2():
             self.model.removeRow(table.currentIndex().row())
             self.configdict[configkey].pop(table.currentIndex().row())
 
-        button2.clicked.connect(clicked2)
+        button.btn2clicked.connect(clicked2)
+        button.btn3clicked.connect(self.apply)
         self.button = button
         self.configdict = configdict
         self.configkey = configkey
         formLayout.addWidget(table)
         formLayout.addLayout(search)
         formLayout.addWidget(button)
-        formLayout.addWidget(button2)
         self.resize(QSize(600, 400))
         self.show()
 
-    def closeEvent(self, a0: QCloseEvent) -> None:
-        self.button.setFocus()
+    def apply(self):
         rows = self.model.rowCount()
         rowoffset = 0
         dedump = set()
@@ -122,6 +118,10 @@ class noundictconfigdialog1(QDialog):
                 {"key": k, "value": v}
             )
             dedump.add(k)
+
+    def closeEvent(self, a0: QCloseEvent) -> None:
+        self.button.setFocus()
+        self.apply()
 
 
 @Singleton
@@ -144,31 +144,27 @@ class regexedit(QDialog):
         for row, regex in enumerate(regexlist):
             self.model.insertRow(row, [QStandardItem(regex)])
 
-        button = QPushButton(self)
-        button.setText(_TR("添加行"))
+        button = threebuttons()
 
         def clicked1():
             regexlist.insert(0, "")
             self.model.insertRow(0, [QStandardItem()])
 
-        button.clicked.connect(clicked1)
-        button2 = QPushButton(self)
-        button2.setText(_TR("删除选中行"))
+        button.btn1clicked.connect(clicked1)
 
         def clicked2():
             self.model.removeRow(table.currentIndex().row())
             regexlist.pop(table.currentIndex().row())
 
-        button2.clicked.connect(clicked2)
+        button.btn2clicked.connect(clicked2)
+        button.btn3clicked.connect(self.apply)
         self.button = button
         formLayout.addWidget(table)
         formLayout.addWidget(button)
-        formLayout.addWidget(button2)
         self.resize(QSize(600, 400))
         self.show()
 
-    def closeEvent(self, _) -> None:
-        self.button.setFocus()
+    def apply(self):
         rows = self.model.rowCount()
         rowoffset = 0
         dedump = set()
@@ -180,6 +176,10 @@ class regexedit(QDialog):
                 continue
             self.regexlist[row - rowoffset] = regex
             dedump.add(regex)
+
+    def closeEvent(self, _) -> None:
+        self.button.setFocus()
+        self.apply()
 
 
 def autoinitdialog_items(dict):
@@ -391,15 +391,16 @@ class postconfigdialog_(QDialog):
     def closeEvent(self, a0: QCloseEvent) -> None:
         if self.closeevent:
             self.button.setFocus()
-            rows = self.model.rowCount()
-            newdict = {}
-            for row in range(rows):
-                if self.model.item(row, 0).text() == "":
-                    continue
-                newdict[(self.model.item(row, 0).text())] = self.model.item(
-                    row, 1
-                ).text()
-            self.configdict[self.key] = newdict
+            self.apply()
+
+    def apply(self):
+        rows = self.model.rowCount()
+        newdict = {}
+        for row in range(rows):
+            if self.model.item(row, 0).text() == "":
+                continue
+            newdict[(self.model.item(row, 0).text())] = self.model.item(row, 1).text()
+        self.configdict[self.key] = newdict
 
     def __init__(self, parent, configdict, title) -> None:
         super().__init__(parent, Qt.WindowCloseButtonHint)
@@ -436,21 +437,19 @@ class postconfigdialog_(QDialog):
         table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
         # table.setEditTriggers(QAbstractItemView.NoEditTriggers)
         # table.clicked.connect(self.show_info)
-        button = QPushButton(self)
-        button.setText(_TR("添加行"))
+        button = threebuttons()
 
         def clicked1():
             model.insertRow(0, [QStandardItem(), QStandardItem()])
 
-        button.clicked.connect(clicked1)
-        button2 = QPushButton(self)
-        button2.setText(_TR("删除选中行"))
+        button.btn1clicked.connect(clicked1)
 
         def clicked2():
 
             model.removeRow(table.currentIndex().row())
 
-        button2.clicked.connect(clicked2)
+        button.btn2clicked.connect(clicked2)
+        button.btn3clicked.connect(self.apply)
         self.button = button
         self.model = model
         self.key = key
@@ -481,7 +480,6 @@ class postconfigdialog_(QDialog):
         formLayout.addWidget(table)
         formLayout.addLayout(search)
         formLayout.addWidget(button)
-        formLayout.addWidget(button2)
         self.resize(QSize(600, 400))
         self.show()
 

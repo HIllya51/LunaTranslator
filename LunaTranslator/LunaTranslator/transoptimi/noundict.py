@@ -21,7 +21,7 @@ from myutils.config import (
     _TRL,
 )
 import gobject
-from gui.usefulwidget import getQMessageBox
+from gui.usefulwidget import getQMessageBox, threebuttons
 from myutils.wrapper import Singleton
 
 
@@ -29,6 +29,9 @@ from myutils.wrapper import Singleton
 class noundictconfigdialog(QDialog):
     def closeEvent(self, a0: QCloseEvent) -> None:
         self.button.setFocus()
+        self.apply()
+
+    def apply(self):
         rows = self.model.rowCount()
         newdict = {}
         for row in range(rows):
@@ -76,8 +79,7 @@ class noundictconfigdialog(QDialog):
         table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
         # table.setEditTriggers(QAbstractItemView.NoEditTriggers)
         # table.clicked.connect(self.show_info)
-        button = QPushButton(self)
-        button.setText(_TR("添加行"))
+        button = threebuttons()
 
         def clicked1():
             try:
@@ -91,15 +93,14 @@ class noundictconfigdialog(QDialog):
                     0, [QStandardItem("0"), QStandardItem(), QStandardItem()]
                 )
 
-        button.clicked.connect(clicked1)
-        button2 = QPushButton(self)
-        button2.setText(_TR("删除选中行"))
+        button.btn1clicked.connect(clicked1)
 
         def clicked2():
 
             model.removeRow(table.currentIndex().row())
 
-        button2.clicked.connect(clicked2)
+        button.btn2clicked.connect(clicked2)
+        button.btn3clicked.connect(self.apply)
         button5 = QPushButton(self)
         button5.setText(_TR("设置所有词条为全局词条"))
 
@@ -144,7 +145,6 @@ class noundictconfigdialog(QDialog):
         formLayout.addWidget(table)
         formLayout.addLayout(search)
         formLayout.addWidget(button)
-        formLayout.addWidget(button2)
         formLayout.addWidget(button5)
         setmd5layout = QHBoxLayout()
         setmd5layout.addWidget(QLabel(_TR("当前MD5")))
