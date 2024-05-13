@@ -766,11 +766,11 @@
     "百度OCR": "Baidu OCR",
     "飞书OCR": "Flying Book OCR",
     "讯飞OCR": "IFLYTEK OCR",
-    "投影字体": "Fuente de proyección",
     "发光字体": "Fuente luminosa",
     "发光亮度": "Brillo luminoso",
     "投影距离": "Distancia de proyección",
     "最大缓冲区长度": "Longitud máxima de la zona de amortiguación",
     "最大缓存文本长度": "Longitud máxima del texto en caché",
-    "圆角半径": "Radio redondeado"
+    "圆角半径": "Radio redondeado",
+    "投影": "Proyección"
 }

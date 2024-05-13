@@ -766,11 +766,11 @@
     "百度OCR": "Số lượng OCR",
     "飞书OCR": "Sách bay OCR",
     "讯飞OCR": "Máy bay OCR",
-    "投影字体": "Phông chiếu",
     "发光字体": "Phông phát sáng",
     "发光亮度": "Độ sáng phát sáng",
     "投影距离": "Khoảng cách chiếu",
     "最大缓冲区长度": "Chiều dài bộ đệm tối đa",
     "最大缓存文本长度": "Độ dài văn bản bộ nhớ cache tối đa",
-    "圆角半径": "Bán kính góc tròn"
+    "圆角半径": "Bán kính góc tròn",
+    "投影": "Chiếu"
 }

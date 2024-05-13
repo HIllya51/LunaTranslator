@@ -766,11 +766,11 @@
     "百度OCR": "OCR Baidu",
     "飞书OCR": "OCR Feishu",
     "讯飞OCR": "OCR IFlytek",
-    "投影字体": "Czcionka projekcji",
     "发光字体": "Jasna czcionka",
     "发光亮度": "luminancja",
     "投影距离": "Odległość projekcji",
     "最大缓冲区长度": "Maksymalna długość bufora",
     "最大缓存文本长度": "Maksymalna długość buforowanego tekstu",
-    "圆角半径": "Promień okrągły"
+    "圆角半径": "Promień okrągły",
+    "投影": "projekcja"
 }
