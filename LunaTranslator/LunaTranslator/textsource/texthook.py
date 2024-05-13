@@ -193,12 +193,7 @@ class texthook(basetext):
         self.Luna_QueryThreadHistory.argtypes = (ThreadParam,)
         self.Luna_QueryThreadHistory.restype = c_void_p
 
-    def QueryThreadHistory(self, pid, addr, ctx1, ctx2):
-        tp = ThreadParam()
-        tp.addr = addr
-        tp.processId = pid
-        tp.ctx = ctx1
-        tp.ctx2 = ctx2
+    def QueryThreadHistory(self, tp):
         ws = self.Luna_QueryThreadHistory(tp)
         string = cast(ws, c_wchar_p).value
         self.Luna_FreePtr(ws)
@@ -209,7 +204,7 @@ class texthook(basetext):
             ProcessEvent(self.onprocconnect),
             ProcessEvent(self.connectedpids.remove),
             ThreadEvent(self.onnewhook),
-            ThreadEvent(lambda _1, _2, tp: self.onremovehook(tp)),
+            ThreadEvent(self.onremovehook),
             OutputCallback(self.handle_output),
             ConsoleHandler(gobject.baseobject.hookselectdialog.sysmessagesignal.emit),
             HookInsertHandler(self.newhookinsert),
@@ -309,43 +304,32 @@ class texthook(basetext):
                 True,
             )
 
-    def onremovehook(self, tp):
-        toremove = []
-    
-        for key in self.hookdatacollecter:
-            if key[1] == tp.addr:
-                toremove.append(key)
-        for key in toremove:
-            gobject.baseobject.hookselectdialog.removehooksignal.emit(key)
-            self.hookdatacollecter.pop(key)
+    def onremovehook(self, hc, hn, tp):
+        key = (hc, hn.decode('utf8'), tp)
+        self.hookdatacollecter.pop(key)
+        gobject.baseobject.hookselectdialog.removehooksignal.emit(key)
 
-    def parsetextthread(self, hc, hn, tp):
-        key = (tp.processId, tp.addr, tp.ctx, tp.ctx2, hn.decode("ascii"), hc)
-        return key
-
-    def match_compatibility(self, key, autostarthookcode):
-        base = (key[2] & 0xFFFF, key[3] & 0xFFFF, key[5]) == (
+    def match_compatibility(self, tp, hc, autostarthookcode):
+        base = (tp.ctx & 0xFFFF, tp.ctx2 & 0xFFFF, hc) == (
             autostarthookcode[2] & 0xFFFF,
             autostarthookcode[3] & 0xFFFF,
             autostarthookcode[5],
         )
-        name = (
-            key[-1][:8] == "UserHook" and autostarthookcode[-1][:8] == "UserHook"
-        ) or (key[-1] == autostarthookcode[-1])
+        name = (hc[:8] == "UserHook" and autostarthookcode[-1][:8] == "UserHook") or (
+            hc == autostarthookcode[-1]
+        )
         return base and name
 
     def onnewhook(self, hc, hn, tp):
-
-        key = self.parsetextthread(hc, hn, tp)
+        key = (hc, hn.decode("utf8"), tp)
         if self.isremoveuseless:
-            if key[1] not in [_[1] for _ in self.autostarthookcode]:
-                self.Luna_RemoveHook(key[0], key[1])
+            if tp.addr not in [_[1] for _ in self.autostarthookcode]:
+                self.Luna_RemoveHook(tp.processId, tp.addr)
                 return False
 
-    
         select = False
         for _i, autostarthookcode in enumerate(self.autostarthookcode):
-            if self.match_compatibility(key, autostarthookcode):
+            if self.match_compatibility(tp, hc, autostarthookcode):
                 self.selectedhook += [key]
                 self.selectinghook = key
                 select = True
@@ -353,9 +337,7 @@ class texthook(basetext):
 
         self.hookdatacollecter[key] = []
         self.hooktypecollecter[key] = 0
-        gobject.baseobject.hookselectdialog.addnewhooksignal.emit(
-            key, select, [hc, hn, tp]
-        )
+        gobject.baseobject.hookselectdialog.addnewhooksignal.emit(key, select)
         return True
 
     def setsettings(self):
@@ -451,15 +433,11 @@ class texthook(basetext):
             collector = []
 
     def handle_output(self, hc, hn, tp, output):
-        key = self.parsetextthread(hc, hn, tp)
 
         if globalconfig["filter_chaos_code"] and checkchaos(output):
             return False
+        key = (hc, hn.decode("utf8"), tp)
 
-        if key not in self.hookdatacollecter:
-            if self.onnewhook(hc, hn, tp) == False:
-                return False
-    
         if self.hooktypecollecter[key] == 1:
             self.currentname = output
         if len(self.selectedhook) == 1:
@@ -477,6 +455,12 @@ class texthook(basetext):
         gobject.baseobject.hookselectdialog.update_item_new_line.emit(key, output)
 
         return True
+
+    def serialselectedhook(self):
+        xx = []
+        for hc, hn, tp in self.selectedhook:
+            xx.append((tp.processId, tp.addr, tp.ctx, tp.ctx2, hn, hc))
+        return xx
 
     def checkisusingembed(self, address, ctx1, ctx2):
         for pid in self.connectedpids:
