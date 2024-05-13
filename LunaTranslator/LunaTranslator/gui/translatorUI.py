@@ -262,7 +262,12 @@ class QUnFrameWindow(resizableframeless):
                     word = word.get("origorig", word["orig"])
 
                 if globalconfig["usecopyword"]:
-                    winsharedutils.clipboard_set(word)
+                    if append:
+                        winsharedutils.clipboard_set(
+                            winsharedutils.clipboard_get() + word
+                        )
+                    else:
+                        winsharedutils.clipboard_set(word)
                 if globalconfig["usesearchword"]:
                     gobject.baseobject.searchwordW.getnewsentencesignal.emit(
                         word, append
