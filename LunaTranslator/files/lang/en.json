@@ -771,5 +771,6 @@
     "发光亮度": "luminance",
     "投影距离": "Projection distance",
     "最大缓冲区长度": "Maximum buffer length",
-    "最大缓存文本长度": "Maximum cached text length"
+    "最大缓存文本长度": "Maximum cached text length",
+    "圆角半径": "Round radius"
 }

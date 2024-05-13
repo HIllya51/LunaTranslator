@@ -77,6 +77,7 @@
     "textthreaddelay": 500,
     "maxBufferSize": 3000,
     "maxHistorySize": 1000000,
+    "yuanjiao_r": 0,
     "transuigeo": [
         500,
         500,

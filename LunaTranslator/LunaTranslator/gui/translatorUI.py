@@ -361,6 +361,7 @@ class QUnFrameWindow(resizableframeless):
         self.textAreaChanged()
         self.setMinimumHeight(int(globalconfig["buttonsize"] * 1.5 + 10))
         self.setMinimumWidth(globalconfig["buttonsize"] * 2)
+        self.set_color_transparency()
 
     def ocr_once_function(self):
         @threader
@@ -667,10 +668,10 @@ class QUnFrameWindow(resizableframeless):
         self.backtransparent = False
         self.isbindedwindow = False
         self.buttons = []
+        self.stylebuttons = {}
         self.showbuttons = []
         self.saveiterclasspointer = {}
         self.addbuttons()
-
         self.translate_text = Textbrowser(self)
 
         # 翻译框根据内容自适应大小
@@ -682,34 +683,71 @@ class QUnFrameWindow(resizableframeless):
         self.thistimenotsetop = False
 
     def set_color_transparency(self):
+        use_r = min(
+            self.translate_text.textbrowser.height() // 2,
+            self.translate_text.textbrowser.width() // 2,
+            globalconfig["yuanjiao_r"],
+        )
         self.translate_text.setStyleSheet(
-            "border-width: 0;\
-                                           border-style: outset;\
-                                           border-top: 0px solid #e8f3f9;\
-                                           color: white;\
-                                            \
-                                           background-color: rgba(%s, %s, %s, %s)"
+            "border-width: 0;border-radius:%spx;background-color: rgba(%s, %s, %s, %s)"
             % (
+                use_r,
                 int(globalconfig["backcolor"][1:3], 16),
                 int(globalconfig["backcolor"][3:5], 16),
                 int(globalconfig["backcolor"][5:7], 16),
                 globalconfig["transparent"] * (not self.backtransparent) / 100,
             )
         )
+        use_r = min(
+            self._TitleLabel.height() // 2,
+            self._TitleLabel.width() // 2,
+            globalconfig["yuanjiao_r"],
+        )
         self._TitleLabel.setStyleSheet(
-            "border-width: 0;\
-                                           border-style: outset;\
-                                           border-top: 0px solid #e8f3f9;\
-                                           color: white;\
-                                           font-weight: bold;\
-                                           background-color: rgba(%s, %s, %s, %s)"
+            "border-width: 0;border-radius:%spx;background-color: rgba(%s, %s, %s, %s)"
             % (
+                use_r,
                 int(globalconfig["backcolor"][1:3], 16),
                 int(globalconfig["backcolor"][3:5], 16),
                 int(globalconfig["backcolor"][5:7], 16),
                 globalconfig["transparent"] / 200,
             )
         )
+        for _type in self.stylebuttons:
+            style = """
+            QPushButton{
+            background-color: rgba(255, 255, 255, 0);
+            color: black;border-radius:%spx;
+            border: 0px;
+            font: 100 10pt;
+        }
+        
+            """ % (
+                use_r,
+            )
+            if _type == 1:
+                style += """
+                QPushButton:hover{
+            background-color: %s;
+            border: 0px;border-radius:%spx;
+            font: 100 10pt;
+                }""" % (
+                    globalconfig["button_color_normal"],
+                    use_r,
+                )
+            elif _type == 2:
+                style += """
+                QPushButton:hover{
+            background-color: %s;
+            color: white;border-radius:%spx;
+            border: 0px;
+            font: 100 10pt;
+        }""" % (
+                    globalconfig["button_color_close"],
+                    use_r,
+                )
+            for btn in self.stylebuttons[_type]:
+                btn.setStyleSheet(style)
 
     def muteprocessfuntion(self):
         if gobject.baseobject.textsource and gobject.baseobject.textsource.pids:
@@ -919,7 +957,7 @@ class QUnFrameWindow(resizableframeless):
         wh = globalconfig["buttonsize"] * 1.5
         height = self.height() - wh
 
-        self.translate_text.resize(self.width() - 5, height)
+        self.translate_text.resize(self.width(), height)
         for button in self.buttons[-2:]:
             button.adjast()
         # 自定义窗口调整大小事件
@@ -968,39 +1006,9 @@ class QUnFrameWindow(resizableframeless):
         button = QPushButton(self)
         if tips:
             button.setToolTip(_TR(tips))
-
-        style = """
-        QPushButton{
-          background-color: rgba(255, 255, 255, 0);
-          color: black;
-          border: 0px;
-          font: 100 10pt;
-      }
-       
-        """
-        if _type == 1:
-            style += (
-                """
-            QPushButton:hover{
-           background-color: %s;
-           border: 0px;
-           font: 100 10pt;
-            }"""
-                % globalconfig["button_color_normal"]
-            )
-        elif _type == 2:
-            style += """
-             QPushButton:hover{
-           background-color: %s;
-           color: white;
-           border: 0px;
-           font: 100 10pt;
-       }""" % (
-                globalconfig["button_color_close"]
-            )
-
-        button.setStyleSheet(style)
-
+        if _type not in self.stylebuttons:
+            self.stylebuttons[_type] = []
+        self.stylebuttons[_type].append(button)
         if clickfunc:
             button.clicked.connect(functools.partial(self.callwrap, clickfunc))
         else:

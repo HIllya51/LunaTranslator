@@ -2,6 +2,7 @@ from PyQt5.QtCore import Qt, QPoint, QPointF
 from PyQt5.QtGui import (
     QTextCharFormat,
     QTextBlockFormat,
+    QResizeEvent,
     QTextCursor,
     QPixmap,
     QFontMetricsF,
@@ -165,14 +166,14 @@ class BorderedLabel(ShadowLabel):
 class Textbrowser:
     def movep(self, x, y):
         self.savey = y
-        self.atback.setGeometry(0, int(y), 9999, 9999)
+        self.atback.move(0, int(y))
         if globalconfig["isshowhira"] and globalconfig["isshowrawtext"]:
             if self.jiaming_y_delta > 0:
                 y = y + self.jiaming_y_delta
         self.textbrowser.move(int(x), int(y))
 
-        self.atback2.setGeometry(0, int(y), 9999, 9999)
-        self.toplabel2.setGeometry(0, int(y), 9999, 9999)
+        self.atback2.move(0, int(y))
+        self.toplabel2.move(0, int(y))
 
     def __init__(self, parent):
         self.parent = parent
@@ -189,6 +190,13 @@ class Textbrowser:
         self.toplabel2 = QLabel(parent)
         self.atback2.setMouseTracking(True)
         self.textbrowser = QTextBrowser(parent)
+
+        def __resizeevent(event: QResizeEvent):
+            self.atback.resize(event.size())
+            self.atback2.resize(event.size())
+            self.toplabel2.resize(event.size())
+
+        self.textbrowser.resizeEvent = __resizeevent
         self.tranparentcolor = QColor()
         self.tranparentcolor.setAlpha(0)
         self.textbrowser.setTextColor(self.tranparentcolor)

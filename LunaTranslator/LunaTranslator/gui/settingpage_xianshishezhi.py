@@ -448,6 +448,19 @@ def setTabThree_lazy(self):
                 2,
             ),
         ],
+        [
+            ("圆角半径", 4),
+            (
+                getspinbox(
+                    0,
+                    100,
+                    globalconfig,
+                    "yuanjiao_r",
+                    callback=lambda _: gobject.baseobject.translation_ui.set_color_transparency(),
+                ),
+                2,
+            ),
+        ],
         [],
         [
             ("窗口按钮设置", 6),

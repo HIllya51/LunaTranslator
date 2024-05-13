@@ -771,5 +771,6 @@
     "发光亮度": "Luminosité lumineuse",
     "投影距离": "Distance de projection",
     "最大缓冲区长度": "Longueur maximale du tampon",
-    "最大缓存文本长度": "Longueur maximale du texte mis en cache"
+    "最大缓存文本长度": "Longueur maximale du texte mis en cache",
+    "圆角半径": "Rayon des coins arrondis"
 }

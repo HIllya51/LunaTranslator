@@ -771,5 +771,6 @@
     "发光亮度": "Brillo luminoso",
     "投影距离": "Distancia de proyección",
     "最大缓冲区长度": "Longitud máxima de la zona de amortiguación",
-    "最大缓存文本长度": "Longitud máxima del texto en caché"
+    "最大缓存文本长度": "Longitud máxima del texto en caché",
+    "圆角半径": "Radio redondeado"
 }

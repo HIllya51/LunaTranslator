@@ -771,5 +771,6 @@
     "发光亮度": "luminancja",
     "投影距离": "Odległość projekcji",
     "最大缓冲区长度": "Maksymalna długość bufora",
-    "最大缓存文本长度": "Maksymalna długość buforowanego tekstu"
+    "最大缓存文本长度": "Maksymalna długość buforowanego tekstu",
+    "圆角半径": "Promień okrągły"
 }
