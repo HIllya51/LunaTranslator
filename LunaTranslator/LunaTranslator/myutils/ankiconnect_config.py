@@ -15,6 +15,7 @@ model_htmlfront = """
 {{explain}}
 <br>
 {{image}}
+<div class='icon_audio'>{{audio}}</div>
     """
 model_htmlback = """
 {{word}}
@@ -22,4 +23,5 @@ model_htmlback = """
 {{explain}}
 <br>
 {{image}}
+<div class='icon_audio'>{{audio}}</div>
     """

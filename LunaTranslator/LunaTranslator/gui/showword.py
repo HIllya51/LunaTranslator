@@ -119,6 +119,7 @@ class AnkiWindow(QDialog):
                 }
             )
         media = []
+        tempfiles=[]
         for k, _ in [("audio", self.audiofile), ("image", self.cropedimagepath)]:
             if _:
                 media.append(
@@ -130,6 +131,7 @@ class AnkiWindow(QDialog):
                         }
                     ]
                 )
+                tempfiles.append(_)
             else:
                 media.append([])
 
@@ -145,7 +147,11 @@ class AnkiWindow(QDialog):
             media[0],
             media[1],
         )
-
+        for _ in tempfiles:
+            try:
+                os.remove(_)
+            except:
+                pass
 
 class searchwordW(closeashidewindow):
     getnewsentencesignal = pyqtSignal(str, bool)

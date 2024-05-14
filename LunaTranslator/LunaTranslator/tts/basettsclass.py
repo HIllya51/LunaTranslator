@@ -1,5 +1,5 @@
 from myutils.config import globalconfig
-import threading
+import threading, os
 
 
 class TTSbase:
@@ -71,4 +71,4 @@ class TTSbase:
         voice = globalconfig["reader"][self.typename]["voice"]
         voice_index = self.voicelist.index(voice)
         fname = self.speak(content, rate, voice, voice_index)
-        return fname
+        return os.path.abspath(fname)
