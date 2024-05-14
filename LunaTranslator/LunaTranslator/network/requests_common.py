@@ -4,8 +4,10 @@ from collections import OrderedDict
 from urllib.parse import urlencode, urlsplit
 from functools import partial
 
+class NetWorkException(Exception):
+    pass
 
-class Timeout(Exception):
+class Timeout(NetWorkException):
     pass
 
 

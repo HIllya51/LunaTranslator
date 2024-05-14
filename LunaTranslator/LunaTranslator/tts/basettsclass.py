@@ -51,7 +51,15 @@ class TTSbase:
         threading.Thread(target=_).start()
 
     def read(self, content, force=False):
+        def _(content, force):
+            fname = self.syncttstofile(content)
+            volume = globalconfig["ttscommon"]["volume"]
+            if fname:
+                self.mp3playsignal.emit(fname, volume, force)
 
+        threading.Thread(target=_, args=(content, force)).start()
+
+    def syncttstofile(self, content):
         if self.loadok == False:
             return
         if len(content) == 0:
@@ -60,13 +68,7 @@ class TTSbase:
             return
 
         rate = globalconfig["ttscommon"]["rate"]
-        volume = globalconfig["ttscommon"]["volume"]
         voice = globalconfig["reader"][self.typename]["voice"]
         voice_index = self.voicelist.index(voice)
-
-        def _():
-            fname = self.speak(content, rate, voice, voice_index)
-            if fname:
-                self.mp3playsignal.emit(fname, volume, force)
-
-        threading.Thread(target=_).start()
+        fname = self.speak(content, rate, voice, voice_index)
+        return fname

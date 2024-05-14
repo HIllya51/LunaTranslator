@@ -1,4 +1,4 @@
-import time
+import time, os
 import winsharedutils
 
 from tts.basettsclass import TTSbase

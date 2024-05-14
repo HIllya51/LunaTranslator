@@ -1,4 +1,5 @@
 import gobject, os
+from network.requests_common import NetWorkException
 from ctypes import (
     CDLL,
     c_void_p,
@@ -316,7 +317,7 @@ class AutoCURLHandle(CURL):
             curl_easy_cleanup(self)
 
 
-class CURLException(Exception):
+class CURLException(NetWorkException):
     def __init__(self, code) -> None:
         if isinstance(code, CURLcode):
             self.errorcode = code.value

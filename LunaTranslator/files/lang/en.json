@@ -775,5 +775,7 @@
     "半径": "radius",
     "圆角": "fillet",
     "合并": "merge",
-    "立即应用": "apply now"
+    "立即应用": "apply now",
+    "无法连接到anki": "Unable to connect to Anki",
+    "追加": "Add"
 }

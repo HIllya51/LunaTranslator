@@ -775,5 +775,7 @@
     "半径": "radius",
     "圆角": "fillet",
     "合并": "birleştir",
-    "立即应用": "şimdi uygulayın"
+    "立即应用": "şimdi uygulayın",
+    "无法连接到anki": "Anki ile bağlanılamadı",
+    "追加": "Ekle"
 }

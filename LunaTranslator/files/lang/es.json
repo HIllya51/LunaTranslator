@@ -775,5 +775,7 @@
     "半径": "Radio",
     "圆角": "Redondeado",
     "合并": "Fusión",
-    "立即应用": "Aplicar de inmediato"
+    "立即应用": "Aplicar de inmediato",
+    "无法连接到anki": "No se puede conectar a Anki",
+    "追加": "Añadido"
 }

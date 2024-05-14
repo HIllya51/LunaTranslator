@@ -415,7 +415,7 @@ class MAINUI:
                         text, savehook_new_data[self.textsource.pname]
                     )
                 except:
-                    print_exc()
+                    pass
                 self.reader.read(text, force)
         except:
             print_exc()
