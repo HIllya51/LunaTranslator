@@ -449,7 +449,7 @@ def setTabThree_lazy(self):
             ),
         ],
         [
-            ("圆角半径", 4),
+            ("圆角_半径", 4),
             (
                 getspinbox(
                     0,
