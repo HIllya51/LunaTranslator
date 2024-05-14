@@ -52,6 +52,9 @@ class ThreadParam(Structure):
     def __eq__(self, __value):
         return self.__hash__() == __value.__hash__()
 
+    def __repr__(self):
+        return "(%s,%s,%s,%s)" % (self.processId, self.addr, self.ctx, self.ctx2)
+
 
 class SearchParam(Structure):
     _fields_ = [
@@ -305,7 +308,7 @@ class texthook(basetext):
             )
 
     def onremovehook(self, hc, hn, tp):
-        key = (hc, hn.decode('utf8'), tp)
+        key = (hc, hn.decode("utf8"), tp)
         self.hookdatacollecter.pop(key)
         gobject.baseobject.hookselectdialog.removehooksignal.emit(key)
 
@@ -322,6 +325,10 @@ class texthook(basetext):
 
     def onnewhook(self, hc, hn, tp):
         key = (hc, hn.decode("utf8"), tp)
+
+        self.hookdatacollecter[key] = []
+        self.hooktypecollecter[key] = 0
+
         if self.isremoveuseless:
             if tp.addr not in [_[1] for _ in self.autostarthookcode]:
                 self.Luna_RemoveHook(tp.processId, tp.addr)
@@ -334,9 +341,6 @@ class texthook(basetext):
                 self.selectinghook = key
                 select = True
                 break
-
-        self.hookdatacollecter[key] = []
-        self.hooktypecollecter[key] = 0
         gobject.baseobject.hookselectdialog.addnewhooksignal.emit(key, select)
         return True
 
