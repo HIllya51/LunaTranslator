@@ -48,16 +48,22 @@ class hira:
             orig = text[start : start + l]
             if origorig is None:
                 origorig = orig
-            
-            if "-" in origorig:
-                hira = origorig.split("-")[1]
-                origorig = origorig.split("-")[0]
+
+
             start += l
             hira = kana  # .translate(self.h2k)
 
             if hira == "*":
                 hira = ""
             # print(node.feature)
+
+            if "-" in origorig:
+                try:
+                    hira = origorig.split("-")[1]
+                    origorig = origorig.split("-")[0]
+                except:
+                    pass
+
             result.append(
                 {"orig": orig, "hira": hira, "cixing": pos1, "origorig": origorig}
             )
