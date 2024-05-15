@@ -179,9 +179,9 @@
     "ankiconnect": {
         "port": 8765,
         "DeckName": "lunadeck",
-        "ModelName": "lunamodel",
-        "allowDuplicate":true
-
+        "ModelName2": "lunamodel2",
+        "allowDuplicate": true,
+        "autoUpdateModel": true
     },
     "ankiwindow": [
         100,
@@ -678,15 +678,31 @@
     "hirasetting": {
         "mecab": {
             "use": false,
-            "path": "",
             "name": "MeCab",
-            "codec": 0
+            "args": {
+                "path": "",
+                "codec": 0
+            },
+            "argstype": {
+                "path": {
+                    "type": "file",
+                    "dir": true
+                },
+                "codec": {
+                    "type": "combo",
+                    "list": [
+                        "utf8",
+                        "shiftjis"
+                    ]
+                }
+            }
         },
         "mojinlt": {
             "use": false,
-            "token": "",
-            "token_name": "Moji NLT Token",
-            "name": "mojinlt"
+            "name": "mojinlt",
+            "args": {
+                "Moji NLT Token": ""
+            }
         },
         "latin": {
             "use": false,
@@ -695,48 +711,146 @@
     },
     "cishu": {
         "xiaoxueguan": {
+            "args": {
+                "path": "",
+                "priority": 100
+            },
+            "argstype": {
+                "path": {
+                    "type": "file",
+                    "dir": false,
+                    "filter": "*.db"
+                },
+                "priority": {
+                    "type": "intspin",
+                    "min": 0,
+                    "max": 10000,
+                    "step": 1
+                }
+            },
             "use": false,
-            "path": "",
-            "name": "小学馆",
-            "filter": "*.db",
-            "isdir": false
+            "name": "小学馆"
         },
         "edict": {
             "use": false,
-            "path": "",
             "name": "EDICT",
-            "filter": "*.db",
-            "isdir": false
+            "args": {
+                "path": "",
+                "priority": 100
+            },
+            "argstype": {
+                "path": {
+                    "type": "file",
+                    "dir": false,
+                    "filter": "*.db"
+                },
+                "priority": {
+                    "type": "intspin",
+                    "min": 0,
+                    "max": 10000,
+                    "step": 1
+                }
+            }
         },
         "edict2": {
             "use": false,
-            "path": "",
             "name": "EDICT2",
-            "filter": "",
-            "isdir": false
+            "args": {
+                "path": "",
+                "priority": 100
+            },
+            "argstype": {
+                "path": {
+                    "type": "file",
+                    "dir": false
+                },
+                "priority": {
+                    "type": "intspin",
+                    "min": 0,
+                    "max": 10000,
+                    "step": 1
+                }
+            }
         },
         "linggesi": {
             "use": false,
-            "path": "",
             "name": "灵格斯词典",
-            "filter": "",
-            "isdir": true
+            "args": {
+                "path": "",
+                "priority": 100
+            },
+            "argstype": {
+                "path": {
+                    "type": "file",
+                    "dir": true
+                },
+                "priority": {
+                    "type": "intspin",
+                    "min": 0,
+                    "max": 10000,
+                    "step": 1
+                }
+            }
         },
         "mojidict": {
             "use": false,
-            "name": "Moji辞书"
+            "name": "Moji辞书",
+            "args": {
+                "priority": 100
+            },
+            "argstype": {
+                "priority": {
+                    "type": "intspin",
+                    "min": 0,
+                    "max": 10000,
+                    "step": 1
+                }
+            }
         },
         "youdao": {
             "use": false,
-            "name": "youdao"
+            "name": "有道",
+            "args": {
+                "priority": 100
+            },
+            "argstype": {
+                "priority": {
+                    "type": "intspin",
+                    "min": 0,
+                    "max": 10000,
+                    "step": 1
+                }
+            }
         },
         "weblio": {
             "use": false,
-            "name": "weblio"
+            "name": "weblio",
+            "args": {
+                "priority": 100
+            },
+            "argstype": {
+                "priority": {
+                    "type": "intspin",
+                    "min": 0,
+                    "max": 10000,
+                    "step": 1
+                }
+            }
         },
         "goo": {
             "use": false,
-            "name": "goo"
+            "name": "goo",
+            "args": {
+                "priority": 100
+            },
+            "argstype": {
+                "priority": {
+                    "type": "intspin",
+                    "min": 0,
+                    "max": 10000,
+                    "step": 1
+                }
+            }
         }
     },
     "darklight": 0,
@@ -950,12 +1064,6 @@
             "color": "blue",
             "type": "dev",
             "name": "百度"
-        },
-        "dev_baidu_ai": {
-            "use": false,
-            "color": "blue",
-            "type": "dev",
-            "name": "百度_ai"
         },
         "google_dev": {
             "use": false,

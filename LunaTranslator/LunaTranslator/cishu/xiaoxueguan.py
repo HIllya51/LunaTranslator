@@ -1,14 +1,15 @@
-from myutils.config import globalconfig
 import sqlite3, os
 import winsharedutils
 from myutils.utils import argsort, autosql
 
+from cishu.cishubase import cishubase
 
-class xiaoxueguan:
-    def __init__(self):
+
+class xiaoxueguan(cishubase):
+    def init(self):
         self.sql = None
         try:
-            path = globalconfig["cishu"]["xiaoxueguan"]["path"]
+            path = self.config["path"]
             if os.path.exists(path):
                 self.sql = autosql(sqlite3.connect(path, check_same_thread=False))
         except:

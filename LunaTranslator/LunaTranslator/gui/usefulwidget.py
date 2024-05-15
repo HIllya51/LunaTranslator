@@ -9,6 +9,7 @@ from PyQt5.QtWidgets import (
     QSizePolicy,
     QHBoxLayout,
     QWidget,
+    QLayout,
 )
 
 from webviewpy import (
@@ -507,7 +508,10 @@ def selectcolor(
 def getboxlayout(widgets, lc=QHBoxLayout, margin0=False, makewidget=False):
     cp_layout = lc()
     for w in widgets:
-        cp_layout.addWidget(w)
+        if isinstance(w, QWidget):
+            cp_layout.addWidget(w)
+        elif isinstance(w, QLayout):
+            cp_layout.addLayout(w)
     if margin0:
         cp_layout.setContentsMargins(0, 0, 0, 0)
     if makewidget:

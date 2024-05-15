@@ -520,7 +520,7 @@ class hookselect(closeashidewindow):
                         savehook_new_data[gobject.baseobject.textsource.pname][
                             "hooktypeasname"
                         ].__setitem__,
-                        json.dumps(key),
+                        json.dumps(gobject.baseobject.textsource.serialkey(key)),
                     ),
                 ),
             )

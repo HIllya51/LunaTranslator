@@ -1,35 +1,28 @@
-from myutils.config import globalconfig
 from myutils.utils import autosql
 import sqlite3
 import winsharedutils
 import os
+from cishu.cishubase import cishubase
 
 
-class linggesi:
-    def __init__(self):
+class linggesi(cishubase):
+    def init(self):
         self.sql = None
         try:
             if (
-                os.path.exists(
-                    os.path.join(globalconfig["cishu"]["linggesi"]["path"], "ja-zh.db")
-                )
-                == False
-                or os.path.exists(
-                    os.path.join(
-                        globalconfig["cishu"]["linggesi"]["path"], "ja-zh-gbk.db"
-                    )
-                )
+                os.path.exists(os.path.join(self.config["path"], "ja-zh.db")) == False
+                or os.path.exists(os.path.join(self.config["path"], "ja-zh-gbk.db"))
                 == False
             ):
                 return
             self.sql = autosql(
                 sqlite3.connect(
-                    os.path.join(globalconfig["cishu"]["linggesi"]["path"], "ja-zh.db"),
+                    os.path.join(self.config["path"], "ja-zh.db"),
                     check_same_thread=False,
                 )
             )
             self.sql2 = sqlite3.connect(
-                os.path.join(globalconfig["cishu"]["linggesi"]["path"], "ja-zh-gbk.db"),
+                os.path.join(self.config["path"], "ja-zh-gbk.db"),
                 check_same_thread=False,
             )
         except:

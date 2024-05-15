@@ -1,6 +1,9 @@
-<div class="hide-style">{{audio}}</div>
+<div class="hide-style">
+    <div id="audio">{{audio}}</div>
+    <div id="audio_sentence">{{audio_sentence}}</div>
+</div>
 <div class="centerdiv">
-    <div id="rubyword" class="ruby-div"></div>
+    <div id="rubyword" class="ruby-div" onclick='playAudio("audio")'></div>
 </div>
 
 <script>
@@ -13,15 +16,11 @@
 
 </script>
 
-<div id="example_sentence" class="centerdiv example-div">
+<div id="example_sentence" class="centerdiv example-div" onclick='playAudio("audio_sentence")'>
     {{example_sentence}}
 </div>
 <div id="image" class="centerdiv">
     {{image}}
-</div>
-
-<div id="remarks" class="centerdiv remark-div">
-    {{remarks}}
 </div>
 
 <div class="tab-widget">
@@ -46,11 +45,22 @@
 
 <script>
     explains = {{ explain }}
+
+    function safehtml(html) {
+        var tempParent = document.createElement('div');
+        tempParent.innerHTML = html;
+        var fragment = document.createElement('div');
+        while (tempParent.firstChild) {
+            fragment.appendChild(tempParent.firstChild);
+        }
+
+        return fragment.innerHTML
+    }
     htmltabbuttons = ''
     htmlcontents = ''
     for (i = 0; i < explains.length; i++) {
         htmltabbuttons += '<button type="button" class="tab-button" data-tab="tab' + (i + 0).toString() + '">' + explains[i]['source'] + '</button>'
-        htmlcontents += '<div id="tab' + (i + 0).toString() + '" class="tab-pane">' + explains[i]['content'] + '</div>'
+        htmlcontents += '<div id="tab' + (i + 0).toString() + '" class="tab-pane">' + safehtml(explains[i]['content']) + '</div>'
     }
     document.getElementById('tab_buttons').innerHTML = htmltabbuttons
     document.getElementById('tab_contents').innerHTML = htmlcontents
@@ -78,6 +88,13 @@
 </script>
 
 <script>
+    function playAudio(audioId) {
+        var audioDiv = document.getElementById(audioId);
+        var audio = audioDiv.getElementsByTagName('*');
+        if (audio.length > 0) {
+            audio[0].click();
+        }
+    }
     function checkhide(eid) {
         var emptyDiv = document.getElementById(eid);
         if (emptyDiv && emptyDiv.innerText.trim() === "") {

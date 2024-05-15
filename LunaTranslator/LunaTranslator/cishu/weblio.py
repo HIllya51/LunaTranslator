@@ -1,11 +1,12 @@
 import requests
 from urllib.parse import quote
+from cishu.cishubase import cishubase
 
 from myutils.proxy import getproxy
 import re
 
 
-class weblio:
+class weblio(cishubase):
 
     def search(self, word):
         url = "https://www.weblio.jp/content/" + quote(word)

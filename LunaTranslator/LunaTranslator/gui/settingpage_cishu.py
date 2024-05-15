@@ -1,6 +1,6 @@
 import functools, os
 from myutils.config import globalconfig, _TRL
-from gui.inputdialog import getsomepath1, autoinitdialog
+from gui.inputdialog import autoinitdialog, autoinitdialog_items
 from gui.usefulwidget import (
     getcolorbutton,
     yuitsu_switch,
@@ -18,83 +18,54 @@ def gethiragrid(self):
 
     grids = []
     i = 0
-    self.ocrswitchs = {}
+    self.hiraswitchs = {}
     line = []
     for name in globalconfig["hirasetting"]:
 
         _f = "./LunaTranslator/hiraparse/{}.py".format(name)
         if os.path.exists(_f) == False:
             continue
-
-        line += [
-            ((globalconfig["hirasetting"][name]["name"]), 5),
-            getsimpleswitch(
-                globalconfig["hirasetting"][name],
-                "use",
-                parent=self,
-                name=name,
+        if "args" in globalconfig["hirasetting"][name]:
+            items = autoinitdialog_items(globalconfig["hirasetting"][name])
+            _3 = getcolorbutton(
+                globalconfig,
+                "",
                 callback=functools.partial(
-                    yuitsu_switch,
+                    autoinitdialog,
                     self,
-                    globalconfig["hirasetting"],
-                    "hiraswitchs",
-                    name,
-                    gobject.baseobject.starthira,
+                    globalconfig["hirasetting"][name]["name"],
+                    800,
+                    items,
                 ),
-                pair="hiraswitchs",
-            ),
-        ]
-        items = []
-        for key in globalconfig["hirasetting"][name]:
-            if key == "path":
-                items.append(
-                    {
-                        "t": "file",
-                        "l": globalconfig["hirasetting"][name]["name"],
-                        "d": globalconfig["hirasetting"][name],
-                        "k": "path",
-                        "dir": True,
-                    }
-                )
-            elif key == "token":
-                items.append(
-                    {
-                        "t": "lineedit",
-                        "l": globalconfig["hirasetting"][name]["token_name"],
-                        "d": globalconfig["hirasetting"][name],
-                        "k": "token",
-                    }
-                )
-            elif key == "codec":
-                items.append(
-                    {
-                        "t": "combo",
-                        "l": "codec",
-                        "d": globalconfig["hirasetting"][name],
-                        "k": "codec",
-                        "list": ["utf8", "shiftjis"],
-                    }
-                )
-        if len(items):
-            items.append({"t": "okcancel", "callback": gobject.baseobject.starthira})
-            line += [
-                getcolorbutton(
-                    globalconfig,
-                    "",
-                    callback=functools.partial(
-                        autoinitdialog,
-                        self,
-                        globalconfig["hirasetting"][name]["name"],
-                        800,
-                        items,
-                    ),
-                    icon="fa.gear",
-                    constcolor="#FF69B4",
-                )
-            ]
+                icon="fa.gear",
+                constcolor="#FF69B4",
+            )
 
         else:
-            line += [""]
+            _3 = ""
+
+        line += [
+            ((globalconfig["hirasetting"][name]["name"]), 6),
+            (
+                getsimpleswitch(
+                    globalconfig["hirasetting"][name],
+                    "use",
+                    name=name,
+                    parent=self,
+                    callback=functools.partial(
+                        yuitsu_switch,
+                        self,
+                        globalconfig["hirasetting"],
+                        "hiraswitchs",
+                        name,
+                        gobject.baseobject.starthira,
+                    ),
+                    pair="hiraswitchs",
+                ),
+                1,
+            ),
+            _3,
+        ]
         if i % 3 == 2:
             grids.append(line)
             line = []
@@ -112,7 +83,7 @@ def setTabcishu_l(self):
         [
             [("分词&假名分析器", 10)],
             [
-                ("日语注音方案", 5),
+                ("日语注音方案", 6),
                 (
                     getsimplecombobox(
                         _TRL(["平假名", "片假名", "罗马音"]),
@@ -128,7 +99,7 @@ def setTabcishu_l(self):
             [],
             [],
             [
-                ("点击单词查词", 5),
+                ("点击单词查词", 6),
                 (getsimpleswitch(globalconfig, "usesearchword"), 1),
                 getcolorbutton(
                     globalconfig,
@@ -138,11 +109,11 @@ def setTabcishu_l(self):
                     constcolor="#FF69B4",
                 ),
                 "",
-                ("点击单词复制", 5),
+                ("点击单词复制", 6),
                 (getsimpleswitch(globalconfig, "usecopyword"), 1),
             ],
             [
-                ("使用原型查询", 5),
+                ("使用原型查询", 6),
                 (getsimpleswitch(globalconfig, "usewordorigin"), 1),
             ],
             [],
@@ -156,33 +127,28 @@ def setTabcishu_l(self):
         _f = "./LunaTranslator/cishu/{}.py".format(cishu)
         if os.path.exists(_f) == False:
             continue
+
+        items = autoinitdialog_items(globalconfig["cishu"][cishu])
+
         line += [
-            (globalconfig["cishu"][cishu]["name"], 5),
+            (globalconfig["cishu"][cishu]["name"], 6),
             getsimpleswitch(
                 globalconfig["cishu"][cishu],
                 "use",
                 callback=functools.partial(gobject.baseobject.startxiaoxueguan, cishu),
             ),
-            (
-                getcolorbutton(
-                    globalconfig,
-                    "",
-                    callback=functools.partial(
-                        getsomepath1,
-                        self,
-                        globalconfig["cishu"][cishu]["name"],
-                        globalconfig["cishu"][cishu],
-                        "path",
-                        globalconfig["cishu"][cishu]["name"],
-                        functools.partial(gobject.baseobject.startxiaoxueguan, cishu),
-                        globalconfig["cishu"][cishu]["isdir"],
-                        globalconfig["cishu"][cishu]["filter"],
-                    ),
-                    icon="fa.gear",
-                    constcolor="#FF69B4",
-                )
-                if "path" in globalconfig["cishu"][cishu]
-                else ""
+            getcolorbutton(
+                globalconfig,
+                "",
+                callback=functools.partial(
+                    autoinitdialog,
+                    self,
+                    globalconfig["cishu"][cishu]["name"],
+                    800,
+                    items,
+                ),
+                icon="fa.gear",
+                constcolor="#FF69B4",
             ),
         ]
 

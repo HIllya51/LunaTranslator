@@ -1,5 +1,4 @@
 from translator.basetranslator_dev import basetransdev
-from urllib.parse import quote
 
 
 class TS(basetransdev):
@@ -18,15 +17,12 @@ class TS(basetransdev):
 
     def translate(self, content):
         self.Runtime_evaluate(
-            "document.getElementsByClassName('textarea-clear-btn')[0].click()"
+            """document.querySelector("#editor-text > div.AZLVLJHb > div.Ssl84aLh > span").click()"""
         )
-
-        self.Page_navigate(
-            "https://fanyi.baidu.com/#{}/{}/{}".format(
-                self.srclang, self.tgtlang, quote(content)
-            )
+        self.Runtime_evaluate(
+            """document.querySelector("#editor-text > div.AZLVLJHb > div.Ssl84aLh > div > div > div").click()"""
         )
-        res = self.wait_for_result(
-            "document.querySelector('div.output-bd')===null?'':document.querySelector('div.output-bd').innerText"
-        ).replace("\n\n", "\n")
-        return res
+        self.send_keys(content)
+        return self.wait_for_result(
+            """document.querySelector("#trans-selection").innerText"""
+        )

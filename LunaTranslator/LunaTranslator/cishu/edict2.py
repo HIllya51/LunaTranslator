@@ -1,15 +1,15 @@
-from myutils.config import globalconfig
 import winsharedutils, os
 import re
 from myutils.utils import argsort
 from traceback import print_exc
+from cishu.cishubase import cishubase
 
 
-class edict2:
-    def __init__(self):
+class edict2(cishubase):
+    def init(self):
         self.sql = None
         try:
-            path = globalconfig["cishu"]["edict2"]["path"]
+            path = self.config["path"]
             if os.path.exists(path):
                 with open(path, "r", encoding="euc-jp") as ff:
                     _ = ff.read()

@@ -1,4 +1,3 @@
-from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import (
     QWidget,
     QHBoxLayout,
@@ -7,24 +6,21 @@ from PyQt5.QtWidgets import (
     QLineEdit,
     QPlainTextEdit,
     QFormLayout,
-    QAction,
     QSizePolicy,
-    QStylePainter,
-    QStyleOptionTab,
-    QStyle,
     QPushButton,
     QTextEdit,
-    QTabWidget,QFileDialog,
+    QTabWidget,
+    QFileDialog,
     QTabBar,
     QLabel,
 )
+from PyQt5.QtGui import QPixmap, QImage
 from traceback import print_exc
 import requests, json
-from PyQt5.QtCore import Qt, pyqtSignal
-from PyQt5.QtGui import QCursor
-import qtawesome, functools, os, re, base64
-import threading, gobject, uuid
-from myutils.config import globalconfig, _TR, _TRL, static_data
+from PyQt5.QtCore import pyqtSignal, Qt
+import qtawesome, functools, os, base64
+import gobject, uuid
+from myutils.config import globalconfig, _TR, static_data
 import myutils.ankiconnect as anki
 from gui.usefulwidget import (
     closeashidewindow,
@@ -33,8 +29,8 @@ from gui.usefulwidget import (
     getboxlayout,
     getspinbox,
     getlineedit,
-    saveposwindow,
-    getsimpleswitch,getcolorbutton,
+    getsimpleswitch,
+    getcolorbutton,
     tabadd_lazy,
 )
 from myutils.wrapper import threader
@@ -42,16 +38,22 @@ from myutils.ocrutil import imageCut, ocr_run
 from gui.rangeselect import rangeselct_function
 
 
-class AnkiWindow(closeashidewindow):
+class AnkiWindow(QWidget):
     setcurrenttext = pyqtSignal(str)
     __ocrsettext = pyqtSignal(str)
     refreshhtml = pyqtSignal()
 
     def langdu(self):
         if gobject.baseobject.reader:
-            self.audiopath.setText(gobject.baseobject.reader.syncttstofile(
-                self.wordedit.text()
-            ))
+            self.audiopath.setText(
+                gobject.baseobject.reader.syncttstofile(self.currentword)
+            )
+
+    def langdu2(self):
+        if gobject.baseobject.reader:
+            self.audiopath_sentence.setText(
+                gobject.baseobject.reader.syncttstofile(self.example.toPlainText())
+            )
 
     @threader
     def asyncocr(self, fname):
@@ -63,20 +65,26 @@ class AnkiWindow(closeashidewindow):
             fname = "./cache/ocr/cropforanki.png"
             os.makedirs("./cache/ocr", exist_ok=True)
             img.save(fname)
+            self.editpath.setText("")
             self.editpath.setText(os.path.abspath(fname))
             self.asyncocr(fname)
 
         rangeselct_function(self, ocroncefunction, False, False)
 
-    def __init__(self, parent) -> None:
-        super().__init__(parent, globalconfig, "ankiwindow")
+    def __init__(self) -> None:
+        super().__init__()
         self.setWindowTitle("Anki Connect")
-
+        self.currentword = ""
         self.tabs = QTabWidget()
         self.tabs.addTab(self.createaddtab(), _TR("添加"))
         tabadd_lazy(self.tabs, "设置", self.creatsetdtab)
         tabadd_lazy(self.tabs, "模板", self.creattemplatetab)
-        self.setCentralWidget(self.tabs)
+
+        l = QHBoxLayout()
+        l.setContentsMargins(0, 0, 0, 0)
+        l.setSpacing(0)
+        l.addWidget(self.tabs)
+        self.setLayout(l)
         self.refreshhtml.connect(self.refreshhtmlfunction)
         self.tabs.currentChanged.connect(self.ifshowrefresh)
 
@@ -127,6 +135,7 @@ class AnkiWindow(closeashidewindow):
 
         layout = QHBoxLayout()
         layout.setContentsMargins(0, 0, 0, 0)
+        layout.setSpacing(0)
         wid = QWidget()
         wid.setLayout(layout)
 
@@ -139,7 +148,6 @@ class AnkiWindow(closeashidewindow):
         layout.addLayout(
             getboxlayout(
                 [
-                    QLabel(_TR("编辑")),
                     edittemptab,
                     getboxlayout([revertbtn, savebtn], makewidget=True),
                 ],
@@ -152,7 +160,7 @@ class AnkiWindow(closeashidewindow):
         self.htmlbrowser.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         layout.addLayout(
             getboxlayout(
-                [QLabel(_TR("预览")), self.previewtab, self.htmlbrowser],
+                [self.previewtab, self.htmlbrowser],
                 lc=QVBoxLayout,
                 margin0=True,
             )
@@ -179,7 +187,7 @@ class AnkiWindow(closeashidewindow):
             object.setPlainText(text)
 
     def loadfileds(self):
-        word = self.wordedit.text()
+        word = self.currentword
         explain = json.dumps(gobject.baseobject.searchwordW.generate_explains())
         remarks = self.remarks.toHtml()
         example = self.example.toPlainText()
@@ -205,12 +213,24 @@ class AnkiWindow(closeashidewindow):
         if len(self.audiopath.text()):
             with open(self.audiopath.text(), "rb") as image_file:
                 encoded_string2 = base64.b64encode(image_file.read()).decode("utf-8")
-            encoded_string2 = '<audio controls><source src="data:audio/mpeg;base64,{}"></audio>'.format(
+            encoded_string2 = """<button onclick='document.getElementById("audio1111").play()'>play audio<audio controls id="audio1111" style="display: none"><source src="data:audio/mpeg;base64,{}"></audio></button>""".format(
                 encoded_string2
             )
         else:
             encoded_string2 = ""
-        fields = {"audio": encoded_string2, "image": encoded_string}
+        if len(self.audiopath_sentence.text()):
+            with open(self.audiopath_sentence.text(), "rb") as image_file:
+                encoded_string3 = base64.b64encode(image_file.read()).decode("utf-8")
+            encoded_string3 = """<button onclick='document.getElementById("audio2222").play()'>play audio_sentence<audio controls id="audio2222" style="display: none"><source src="data:audio/mpeg;base64,{}"></audio></button>""".format(
+                encoded_string3
+            )
+        else:
+            encoded_string3 = ""
+        fields = {
+            "audio": encoded_string2,
+            "audio_sentence": encoded_string3,
+            "image": encoded_string,
+        }
         return fields
 
     def saveedits(self):
@@ -236,12 +256,16 @@ class AnkiWindow(closeashidewindow):
             _TR("DeckName"), getlineedit(globalconfig["ankiconnect"], "DeckName")
         )
         layout.addRow(
-            _TR("ModelName"), getlineedit(globalconfig["ankiconnect"], "ModelName")
+            _TR("ModelName"), getlineedit(globalconfig["ankiconnect"], "ModelName2")
         )
 
         layout.addRow(
             _TR("allowDuplicate"),
             getsimpleswitch(globalconfig["ankiconnect"], "allowDuplicate"),
+        )
+        layout.addRow(
+            _TR("autoUpdateModel"),
+            getsimpleswitch(globalconfig["ankiconnect"], "autoUpdateModel"),
         )
 
         return wid
@@ -252,42 +276,94 @@ class AnkiWindow(closeashidewindow):
         wid.setLayout(layout)
         soundbutton = QPushButton(qtawesome.icon("fa.music"), "")
         soundbutton.clicked.connect(self.langdu)
+        soundbutton2 = QPushButton(qtawesome.icon("fa.music"), "")
+        soundbutton2.clicked.connect(self.langdu2)
         cropbutton = QPushButton(qtawesome.icon("fa.crop"), "")
         cropbutton.clicked.connect(self.crop)
-        self.wordedit = QLineEdit()
-        self.wordedit.textEdited.connect(self.reset)
-        layout.addLayout(
-            getboxlayout([QLabel(_TR("Word")), self.wordedit])
-        )
+
+        self.audiopath = QLineEdit()
+        self.audiopath.setReadOnly(True)
+        self.audiopath_sentence = QLineEdit()
+        self.audiopath_sentence.setReadOnly(True)
+        self.editpath = QLineEdit()
+        self.editpath.setReadOnly(True)
+        self.viewimagelabel = QLabel()
+        self.editpath.textChanged.connect(self.wrappedpixmap)
         self.example = QPlainTextEdit()
-        layout.addWidget(QLabel(_TR("例句")))
-        layout.addWidget(self.example)
         self.remarks = QTextEdit()
-        layout.addWidget(QLabel(_TR("备注")))
-        layout.addWidget(self.remarks)
+        layout.addLayout(
+            getboxlayout(
+                [
+                    getboxlayout(
+                        [
+                            getboxlayout(
+                                [QLabel(_TR("例句")), self.example],
+                                QVBoxLayout,
+                                margin0=True,
+                            ),
+                            getboxlayout(
+                                [QLabel(_TR("备注")), self.remarks],
+                                QVBoxLayout,
+                                margin0=True,
+                            ),
+                        ],
+                        QVBoxLayout,
+                    ),
+                    getboxlayout(
+                        [
+                            getboxlayout(
+                                [
+                                    QLabel(_TR("语音")),
+                                    self.audiopath,
+                                    soundbutton,
+                                    getcolorbutton(
+                                        "",
+                                        "",
+                                        functools.partial(self.selectaudio),
+                                        icon="fa.gear",
+                                        constcolor="#FF69B4",
+                                    ),
+                                ]
+                            ),
+                            getboxlayout(
+                                [
+                                    QLabel(_TR("语音_例句")),
+                                    self.audiopath_sentence,
+                                    soundbutton2,
+                                    getcolorbutton(
+                                        "",
+                                        "",
+                                        functools.partial(self.selectaudio2),
+                                        icon="fa.gear",
+                                        constcolor="#FF69B4",
+                                    ),
+                                ]
+                            ),
+                            getboxlayout(
+                                [
+                                    QLabel(_TR("截图")),
+                                    self.editpath,
+                                    cropbutton,
+                                    getcolorbutton(
+                                        "",
+                                        "",
+                                        functools.partial(self.selectimage),
+                                        icon="fa.gear",
+                                        constcolor="#FF69B4",
+                                    ),
+                                ]
+                            ),
+                            self.viewimagelabel,
+                        ],
+                        QVBoxLayout,
+                    ),
+                ]
+            )
+        )
 
         self.tagsedit = QLineEdit()
         layout.addLayout(getboxlayout([QLabel(_TR("Tags(split by |)")), self.tagsedit]))
-        
-        self.audiopath = QLineEdit()
-        self.audiopath.setReadOnly(True)
-        layout.addLayout(getboxlayout([QLabel(_TR("语音")),self.audiopath,soundbutton,getcolorbutton(
-                        "",
-                        "",
-                        functools.partial(self.selectaudio),
-                        icon="fa.gear",
-                        constcolor="#FF69B4",
-                    )]))
-        
-        self.editpath = QLineEdit()
-        self.editpath.setReadOnly(True)
-        layout.addLayout(getboxlayout([QLabel(_TR("截图")),self.editpath,cropbutton,getcolorbutton(
-                        "",
-                        "",
-                        functools.partial(self.selectimage),
-                        icon="fa.gear",
-                        constcolor="#FF69B4",
-                    )]))
+
         btn = QPushButton(_TR("添加"))
         btn.clicked.connect(self.errorwrap)
         layout.addWidget(btn)
@@ -298,24 +374,46 @@ class AnkiWindow(closeashidewindow):
 
         self.reset("")
         return wid
+
+    def wrappedpixmap(self, src):
+        pix = QPixmap.fromImage(QImage(src))
+        rate = self.devicePixelRatioF()
+        pix.setDevicePixelRatio(rate)
+        if (
+            pix.width() > self.viewimagelabel.width()
+            or pix.height() > self.viewimagelabel.height()
+        ):
+            pix = pix.scaled(self.viewimagelabel.size() * rate, Qt.KeepAspectRatio)
+        self.viewimagelabel.setPixmap(pix)
+
     def selectimage(self):
         f = QFileDialog.getOpenFileName()
         res = f[0]
         if res != "":
             self.editpath.setText(res)
+
     def selectaudio(self):
         f = QFileDialog.getOpenFileName()
         res = f[0]
         if res != "":
             self.audiopath.setText(res)
+
+    def selectaudio2(self):
+        f = QFileDialog.getOpenFileName()
+        res = f[0]
+        if res != "":
+            self.audiopath_sentence.setText(res)
+
     def reset(self, text):
-        self.wordedit.setText(text)
+        self.currentword = text
         if text and len(text):
             self.ruby = json.dumps(gobject.baseobject.translation_ui.parsehira(text))
         else:
             self.ruby = ""
         self.editpath.clear()
         self.audiopath.clear()
+        self.audiopath_sentence.clear()
+
     def errorwrap(self):
         try:
             self.addanki()
@@ -345,9 +443,10 @@ class AnkiWindow(closeashidewindow):
         return model_htmlfront, model_htmlback, model_css
 
     def addanki(self):
+        autoUpdateModel = globalconfig["ankiconnect"]["autoUpdateModel"]
         allowDuplicate = globalconfig["ankiconnect"]["allowDuplicate"]
         anki.global_port = globalconfig["ankiconnect"]["port"]
-        ModelName = globalconfig["ankiconnect"]["ModelName"]
+        ModelName = globalconfig["ankiconnect"]["ModelName2"]
         DeckName = globalconfig["ankiconnect"]["DeckName"]
         model_htmlfront, model_htmlback, model_css = self.tryloadankitemplates()
         try:
@@ -370,19 +469,24 @@ class AnkiWindow(closeashidewindow):
                 ],
             )
         except anki.AnkiModelExists:
-            model = anki.Model(ModelName)
-            model.updateStyling(model_css)
-            model.updateTemplates(
-                {
-                    "LUNACARDTEMPLATE1": {
-                        "Front": model_htmlfront,
-                        "Back": model_htmlback,
+            if autoUpdateModel:
+                model = anki.Model(ModelName)
+                model.updateStyling(model_css)
+                model.updateTemplates(
+                    {
+                        "LUNACARDTEMPLATE1": {
+                            "Front": model_htmlfront,
+                            "Back": model_htmlback,
+                        }
                     }
-                }
-            )
+                )
         media = []
         tempfiles = []
-        for k, _ in [("audio", self.audiopath.text()), ("image", self.editpath.text())]:
+        for k, _ in [
+            ("audio", self.audiopath.text()),
+            ("audio_sentence", self.audiopath_sentence.text()),
+            ("image", self.editpath.text()),
+        ]:
             if len(_):
                 media.append(
                     [
@@ -403,49 +507,47 @@ class AnkiWindow(closeashidewindow):
             self.loadfileds(),
             allowDuplicate,
             tags,
-            media[0],
-            media[1],
+            media[0] + media[1],
+            media[2],
         )
 
 
 class searchwordW(closeashidewindow):
     getnewsentencesignal = pyqtSignal(str, bool)
-    searchthreadsignal = pyqtSignal(str, dict, str)
     showtabsignal = pyqtSignal(str, str)
 
     def __init__(self, parent):
         super(searchwordW, self).__init__(parent, globalconfig, "sw_geo")
-        self.ankiwindow = AnkiWindow(self)
+        self.ankiwindow = AnkiWindow()
         self.setupUi()
         # self.setWindowFlags(self.windowFlags()&~Qt.WindowMinimizeButtonHint)
         self.getnewsentencesignal.connect(self.getnewsentence)
         self.setWindowTitle(_TR("查词"))
 
     def showresfun(self, k, res):
-        first = res.split("<hr>")[0]
+        self.cache_results[k] = res
 
-        self.textbs[k].insertHtml(first)
-        self.textbs[k].firsttext = self.textbs[k].toPlainText()
-        self.textbs[k].insertHtml(res[len(first) :])
-
-        scrollbar = self.textbs[k].verticalScrollBar()
-        scrollbar.setValue(0)
-        self.tab.setTabVisible(self._k.index(k), True)
+        thisp = globalconfig["cishu"][k]["args"]["priority"]
+        idx = 0
+        for kk in self.tabks:
+            if globalconfig["cishu"][kk]["args"]["priority"] >= thisp:
+                idx += 1
+        self.tabks.insert(idx, k)
+        self.tab.insertTab(idx, _TR(globalconfig["cishu"][k]["name"]))
 
     def setupUi(self):
         self.setWindowIcon(qtawesome.icon("fa.search"))
 
         self.showtabsignal.connect(self.showresfun)
 
-        self.centralWidget = QWidget(self)
+        ww = QWidget(self)
         self.setWindowIcon(qtawesome.icon("fa.gear"))
-        self.hboxlayout = QHBoxLayout(self.centralWidget)
         self.vboxlayout = QVBoxLayout()
-
+        ww.setLayout(self.vboxlayout)
         self.searchlayout = QHBoxLayout()
         self.vboxlayout.addLayout(self.searchlayout)
         self.searchtext = QLineEdit()
-        # self.searchtext.setFont(font)
+        self.searchtext.textChanged.connect(self.ankiwindow.reset)
         self.searchlayout.addWidget(self.searchtext)
         searchbutton = QPushButton(qtawesome.icon("fa.search"), "")  # _TR("搜索"))
 
@@ -457,38 +559,41 @@ class searchwordW(closeashidewindow):
         self.searchlayout.addWidget(soundbutton)
 
         ankiconnect = QPushButton(qtawesome.icon("fa.adn"), "")
-        ankiconnect.clicked.connect(self.ankiwindow.show)
+        ankiconnect.clicked.connect(self.onceaddankiwindow)
         self.searchlayout.addWidget(ankiconnect)
 
-        self.tab = QTabWidget(self)
+        self.tab = QTabBar(self)
+        self.tab.currentChanged.connect(
+            lambda idx: self.textOutput.setHtml(self.cache_results[self.tabks[idx]])
+        )
+        self.tabks = []
+        self.setCentralWidget(ww)
 
-        self.vboxlayout.addWidget(self.tab)
-        self.hboxlayout.addLayout(self.vboxlayout)
-        self.setCentralWidget(self.centralWidget)
-
-        self.textbs = {}
-
-        _k = []
-        _name = []
-        for cishu in globalconfig["cishu"]:
-            _name.append(globalconfig["cishu"][cishu]["name"])
-            _k.append(cishu)
-        self._k = _k
-        _name = _TRL(_name)
-
-        for i in range(len(_name)):
-
-            textOutput = QTextBrowser(self)
-            # textOutput.setFont(font)
-            textOutput.setUndoRedoEnabled(False)
-            textOutput.setReadOnly(True)
-            textOutput.setOpenLinks(False)
-            self.tab.addTab(textOutput, _name[i])
-            self.tab.setTabVisible(i, False)
-
-            self.textbs[self._k[i]] = textOutput
+        textOutput = QTextBrowser(self)
+        textOutput.setUndoRedoEnabled(False)
+        textOutput.setReadOnly(True)
+        textOutput.setOpenLinks(False)
+        self.textOutput = textOutput
+        self.cache_results = {}
         self.hiding = True
-        self.searchthreadsignal.connect(self.searchthread)
+        self.addankiwindowidx = 0
+
+        tablayout = QVBoxLayout()
+        tablayout.addWidget(self.tab)
+        tablayout.addWidget(textOutput)
+        tablayout.setContentsMargins(0, 0, 0, 0)
+        tablayout.setSpacing(0)
+        self.vboxlayout.addLayout(tablayout)
+
+    def onceaddankiwindow(self):
+        if self.addankiwindowidx == 0:
+            self.vboxlayout.addWidget(self.ankiwindow)
+        else:
+            if self.addankiwindowidx % 2 == 0:
+                self.ankiwindow.show()
+            else:
+                self.ankiwindow.hide()
+        self.addankiwindowidx += 1
 
     def langdu(self):
         if gobject.baseobject.reader:
@@ -496,13 +601,18 @@ class searchwordW(closeashidewindow):
 
     def generate_explains(self):
         res = []
-        for i in range(len(self._k)):
-            if len(self.textbs[self._k[i]].toPlainText()) == 0:
+        tabks = []
+        for k, v in self.cache_results.items():
+            if len(v) == 0:
                 continue
-
-            res.append(
-                {"source": self._k[i], "content": self.textbs[self._k[i]].toHtml()}
-            )
+            thisp = globalconfig["cishu"][k]["args"]["priority"]
+            idx = 0
+            for i in tabks:
+                if i >= thisp:
+                    idx += 1
+            k = _TR(globalconfig["cishu"][k]["name"])
+            tabks.append(thisp)
+            res.insert(idx, {"source": k, "content": v})
         return res
 
     def getnewsentence(self, sentence, append):
@@ -513,22 +623,14 @@ class searchwordW(closeashidewindow):
 
         self.search(sentence)
 
-    def searchthread(self, k, _mp, sentence):
-
-        _mp[k].callback = functools.partial(self.showtabsignal.emit, k)
-        _mp[k].search(sentence)
-
     def search(self, sentence):
         if sentence == "":
             return
         self.ankiwindow.setcurrenttext.emit(sentence)
-        _mp = {}
-        _mp.update(gobject.baseobject.cishus)
-
-        for k in self._k:
-            self.tab.setTabVisible(self._k.index(k), False)
-            self.textbs[k].clear()
-            if k in _mp:
-                threading.Thread(
-                    target=self.searchthreadsignal.emit, args=(k, _mp, sentence)
-                ).start()
+        for i in range(self.tab.count()):
+            self.tab.removeTab(0)
+        self.tabks.clear()
+        self.cache_results.clear()
+        for k, cishu in gobject.baseobject.cishus.items():
+            cishu.callback = functools.partial(self.showtabsignal.emit, k)
+            cishu.safesearch(sentence)

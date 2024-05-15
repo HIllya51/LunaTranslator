@@ -1,6 +1,9 @@
-<div class="hide-style">{{audio}}</div>
+<div class="hide-style">
+    <div id="audio">{{audio}}</div>
+    <div id="audio_sentence">{{audio_sentence}}</div>
+</div>
 <div class="centerdiv">
-    <div id="rubyword" class="ruby-div"></div>
+    <div id="rubyword" class="ruby-div" onclick='playAudio("audio")'></div>
 </div>
 
 <script>
@@ -13,7 +16,7 @@
 
 </script>
 
-<div id="example_sentence" class="centerdiv example-div">
+<div id="example_sentence" class="centerdiv example-div" onclick='playAudio("audio_sentence")'>
     {{example_sentence}}
 </div>
 <div id="image" class="centerdiv">
@@ -22,6 +25,13 @@
 
 
 <script>
+    function playAudio(audioId) {
+        var audioDiv = document.getElementById(audioId);
+        var audio = audioDiv.getElementsByTagName('*');
+        if (audio.length > 0) {
+            audio[0].click();
+        }
+    }
     function checkhide(eid) {
         var emptyDiv = document.getElementById(eid);
         if (emptyDiv && emptyDiv.innerText.trim() === "") {

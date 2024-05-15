@@ -1,22 +1,21 @@
-from myutils.config import globalconfig
 import winsharedutils
 import os
 
+from hiraparse.basehira import basehira
 
-class hira:
-    def __init__(self) -> None:
-        hirasettingbase = globalconfig["hirasetting"]
 
-        mecabpath = hirasettingbase["mecab"]["path"]
+class mecab(basehira):
+    def init(self) -> None:
+        mecabpath = self.config["path"]
         if os.path.exists(mecabpath):
             self.kks = winsharedutils.mecabwrap(
                 mecabpath
             )  #  fugashi.Tagger('-r nul -d "{}" -Owakati'.format(mecabpath))
 
-    def fy(self, text):
+    def parse(self, text):
         start = 0
         result = []
-        codec = ["utf8", "shiftjis"][globalconfig["hirasetting"]["mecab"]["codec"]]
+        codec = ["utf8", "shiftjis"][self.config["codec"]]
         for node, fields in self.kks.parse(
             text, codec
         ):  # self.kks.parseToNodeList(text):
@@ -48,7 +47,6 @@ class hira:
             orig = text[start : start + l]
             if origorig is None:
                 origorig = orig
-
 
             start += l
             hira = kana  # .translate(self.h2k)

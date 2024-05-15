@@ -40,28 +40,21 @@ class basetransdev(basetrans):
         if self.using == False:
             return
         self._id += 1
-        try:
-            if ws is None:
-                ws = self.ws
-            ws.send(json.dumps({"id": self._id, "method": method, "params": params}))
-            res = ws.recv()
-        except:
-            print_exc()
-            self._createtarget()
-            time.sleep(1)
-            return self._SendRequest(method, params, ws)
+        
+        if ws is None:
+            ws = self.ws
+        ws.send(json.dumps({"id": self._id, "method": method, "params": params}))
+        res = ws.recv() 
+            
         res = json.loads(res)
         try:
             return res["result"]
         except:
-            print(res)
-            if (
-                res["method"] == "Inspector.detached"
-                and res["params"]["reason"] == "target_closed"
-            ):
-                self._createtarget()
-                return self._SendRequest(method, params, ws)
-
+            if res['error']['code']==-32600:
+                self._id+=1
+                self._SendRequest(method,params,ws)
+            else:
+                raise
     def _createtarget(self):
         if self.using == False:
             return

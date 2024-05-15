@@ -1,8 +1,10 @@
 import requests
 from myutils.proxy import getproxy
 
+from cishu.cishubase import cishubase
 
-class mojidict:
+
+class mojidict(cishubase):
     def search(self, word):
         try:
             response = requests.post(

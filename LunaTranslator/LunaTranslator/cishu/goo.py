@@ -2,9 +2,10 @@ import requests
 from urllib.parse import quote
 import re
 from myutils.proxy import getproxy
+from cishu.cishubase import cishubase
 
 
-class goo:
+class goo(cishubase):
 
     def search(self, word):
         url = "https://dictionary.goo.ne.jp/srch/all/{}/m1u/".format(quote(word))

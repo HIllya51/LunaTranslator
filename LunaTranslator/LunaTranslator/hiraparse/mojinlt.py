@@ -1,14 +1,10 @@
-from myutils.config import globalconfig
-
 from myutils.proxy import getproxy
 import requests
+from hiraparse.basehira import basehira
 
 
-class hira:
-    def __init__(self) -> None:
-        pass
-
-    def fy(self, text):
+class mojinlt(basehira):
+    def parse(self, text):
 
         def nlt(text, token):
             try:
@@ -37,4 +33,4 @@ class hira:
             except:
                 return []
 
-        return nlt(text, globalconfig["hirasetting"]["mojinlt"]["token"])
+        return nlt(text, self.config["Moji NLT Token"])

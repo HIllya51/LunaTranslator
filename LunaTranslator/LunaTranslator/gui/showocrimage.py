@@ -65,4 +65,6 @@ class showocrimage(closeashidewindow):
         self.originimage = originimage
         self.img1 = QPixmap.fromImage(originimage)
         self.img2 = QPixmap.fromImage(solved)
+        self.img1.setDevicePixelRatio(self.devicePixelRatioF())
+        self.img2.setDevicePixelRatio(self.devicePixelRatioF())
         self.showimg()

@@ -492,12 +492,13 @@ class MAINUI:
                         == False
                     ):
                         continue
-                    _hira = importlib.import_module("hiraparse." + name).hira
+                    _hira = importlib.import_module("hiraparse." + name)
+                    _hira = getattr(_hira, name)
                     break
 
             try:
                 if _hira:
-                    self.hira_ = _hira()
+                    self.hira_ = _hira(name)
                 else:
                     self.hira_ = None
             except:
@@ -583,22 +584,7 @@ class MAINUI:
         except:
             return
 
-        class cishuwrapper:
-            def __init__(self, _type) -> None:
-                self._ = _type()
-
-            @threader
-            def search(self, sentence):
-                try:
-                    res = self._.search(sentence)
-                    if res is None or res == "":
-                        return
-                    self.callback(res)
-                except:
-                    pass
-
-        _ = cishuwrapper(aclass)
-        return _
+        return aclass(type_)
 
     def onwindowloadautohook(self):
         textsourceusing = globalconfig["sourcestatus2"]["texthook"]["use"]

@@ -2,13 +2,12 @@ import time
 import functools
 import threading
 import os, sys
-from PyQt5.QtCore import QT_VERSION_STR
 import windows, importlib
 from traceback import print_exc
 from PyQt5.QtCore import Qt, pyqtSignal
 import qtawesome
 from PyQt5.QtCore import pyqtSignal, Qt, QSize
-from PyQt5.QtGui import QCursor, QColor
+from PyQt5.QtGui import QCursor
 from PyQt5.QtWidgets import QLabel, QPushButton, QSystemTrayIcon
 import gobject
 from myutils.wrapper import threader, trypass
@@ -152,25 +151,8 @@ class QUnFrameWindow(resizableframeless):
         hira = []
         try:
             if gobject.baseobject.hira_:
-                hira = gobject.baseobject.hira_.fy(text)
-                for _1 in range(len(hira)):
-                    _ = len(hira) - 1 - _1
-                    if globalconfig["hira_vis_type"] == 0:
-                        hira[_]["hira"] = hira[_]["hira"].translate(self.castkata2hira)
-                    elif globalconfig["hira_vis_type"] == 1:
-                        hira[_]["hira"] = hira[_]["hira"].translate(self.casthira2kata)
-                    elif globalconfig["hira_vis_type"] == 2:
-                        __kanas = [
-                            static_data["hira"] + ["っ"],
-                            static_data["kata"] + ["ッ"],
-                        ]
-                        target = static_data["roma"] + ["-"]
-                        for _ka in __kanas:
-                            for __idx in range(len(_ka)):
-                                _reverse_idx = len(_ka) - 1 - __idx
-                                hira[_]["hira"] = hira[_]["hira"].replace(
-                                    _ka[_reverse_idx], target[_reverse_idx]
-                                )
+                hira = gobject.baseobject.hira_.parseparse(text)
+
         except:
             print_exc()
         return hira
@@ -624,8 +606,7 @@ class QUnFrameWindow(resizableframeless):
         self.tray.setIcon(icon)
         showintab(int(self.winId()), globalconfig["showintab"])
         self.isfirstshow = True
-        if QT_VERSION_STR != "5.5.1":
-            self.setAttribute(Qt.WA_TranslucentBackground)
+        self.setAttribute(Qt.WA_TranslucentBackground)
         self.setAttribute(Qt.WA_ShowWithoutActivating, True)
         self.showintab = globalconfig["showintab"]
         self.setWindowTitle("LunaTranslator")
@@ -655,12 +636,6 @@ class QUnFrameWindow(resizableframeless):
         self.quitf_signal.connect(self.close)
         self.fullsgame_signal.connect(self._fullsgame)
 
-        self.castkata2hira = str.maketrans(
-            static_data["allkata"], static_data["allhira"]
-        )
-        self.casthira2kata = str.maketrans(
-            static_data["allhira"], static_data["allkata"]
-        )
         self.fullscreenmanager_busy = False
         self.isletgamefullscreened = False
         self.fullscreenmanager = None

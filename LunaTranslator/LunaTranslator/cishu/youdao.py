@@ -3,9 +3,10 @@ import requests
 from urllib.parse import quote
 import re
 from myutils.proxy import getproxy
+from cishu.cishubase import cishubase
 
 
-class youdao:
+class youdao(cishubase):
     @property
     def srclang(self):
 

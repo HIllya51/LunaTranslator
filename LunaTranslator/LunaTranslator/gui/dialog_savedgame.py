@@ -310,6 +310,7 @@ class tagitem(QWidget):
         super().__init__()
         tagLayout = QHBoxLayout()
         tagLayout.setContentsMargins(0, 0, 0, 0)
+        tagLayout.setSpacing(0)
         self._type = _type
         key = (tag, _type, refdata)
         self.setLayout(tagLayout)

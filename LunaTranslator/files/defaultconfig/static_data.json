@@ -1625,6 +1625,7 @@
         "explain",
         "image",
         "audio",
+        "audio_sentence",
         "example_sentence",
         "rubytext",
         "remarks"

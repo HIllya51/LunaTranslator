@@ -1,14 +1,14 @@
-from myutils.config import globalconfig
 import sqlite3, os
 import winsharedutils, re
 from myutils.utils import argsort, autosql
+from cishu.cishubase import cishubase
 
 
-class edict:
-    def __init__(self):
+class edict(cishubase):
+    def init(self):
         self.sql = None
         try:
-            path = globalconfig["cishu"]["edict"]["path"]
+            path = self.config["path"]
             if os.path.exists(path):
                 self.sql = autosql(sqlite3.connect(path, check_same_thread=False))
         except:

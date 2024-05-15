@@ -460,10 +460,14 @@ class texthook(basetext):
 
         return True
 
+    def serialkey(self, key):
+        hc, hn, tp = key
+        return (tp.processId, tp.addr, tp.ctx, tp.ctx2, hn, hc)
+
     def serialselectedhook(self):
         xx = []
-        for hc, hn, tp in self.selectedhook:
-            xx.append((tp.processId, tp.addr, tp.ctx, tp.ctx2, hn, hc))
+        for key in self.selectedhook:
+            xx.append(self.serialkey(key))
         return xx
 
     def checkisusingembed(self, address, ctx1, ctx2):
