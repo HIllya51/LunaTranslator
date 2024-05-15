@@ -1,0 +1,57 @@
+.hide-style {
+    display: none;
+    height: 0;
+    width: 0;
+}
+
+.centerdiv {
+    display: flex;
+    justify-content: center;
+}
+
+
+.centerdiv img {
+    max-width: 100%;
+    height: auto;
+}
+
+.example-div {
+    font-family: BIZ UDGothic;
+    font-size: 24px;
+    text-align: center;
+}
+
+.remark-div {
+    font-family: BIZ UDGothic;
+    font-size: 22px;
+}
+
+.ruby-div {
+    font-family: BIZ UDGothic;
+    font-size: 48px;
+    cursor: pointer;
+}
+
+.tab-widget .tab-buttons {
+    display: flex;
+}
+
+.tab-widget .tab-button {
+    padding: 10px 20px;
+    background-color: #ccc;
+    border: none;
+    cursor: pointer;
+    display: inline-block;
+}
+
+.tab-widget .tab-button.active {
+    background-color: #f0f0f0;
+}
+
+.tab-widget .tab-content .tab-pane {
+    display: none;
+}
+
+.tab-widget .tab-content .tab-pane.active {
+    display: block;
+}

@@ -31,7 +31,7 @@ from gui.setting_lang import setTablang, setTablangd
 from gui.setting_proxy import setTab_proxy
 from gui.settingpage7 import setTab7, settab7direct
 from gui.settingpage_about import setTab_about, setTab_about_dicrect
-from gui.usefulwidget import closeashidewindow
+from gui.usefulwidget import closeashidewindow, tabadd_lazy
 
 
 class gridwidget(QWidget):
@@ -150,7 +150,7 @@ class Settin(closeashidewindow):
         self.opensolvetextsig.connect(self.opensolvetextfun)
 
         self.setMinimumSize(100, 100)
-        self.list_width=100
+        self.list_width = 100
         self.window_height = 500
         self.savelastrect = None
 
@@ -320,7 +320,7 @@ class Settin(closeashidewindow):
     def makesubtab(self, titles, widgets):
         tab = QTabWidget()
         for i, wid in enumerate(widgets):
-            self.tabadd(tab, titles[i], wid)
+            tab.addTab(wid, _TR(titles[i]))
         return tab
 
     def makesubtab_lazy(self, titles=None, functions=None, klass=None):
@@ -346,12 +346,4 @@ class Settin(closeashidewindow):
         return tab
 
     def tabadd_lazy(self, tab, title, getrealwidgetfunction):
-        q = QWidget()
-        v = QVBoxLayout()
-        q.setLayout(v)
-        v.setContentsMargins(0, 0, 0, 0)
-        q.lazyfunction = lambda: v.addWidget(getrealwidgetfunction())
-        self.tabadd(tab, title, q)
-
-    def tabadd(self, tab, title, widgets):
-        tab.addTab(widgets, _TR(title))
+        tabadd_lazy(tab, title, getrealwidgetfunction)

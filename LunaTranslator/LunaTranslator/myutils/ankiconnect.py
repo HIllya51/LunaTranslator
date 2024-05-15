@@ -1,12 +1,13 @@
 import requests
-from .ankiconnect_config import *
+
+global_port = 999
 
 
 class AnkiException(Exception):
     pass
 
 
-class AnkiModelExists(Exception):
+class AnkiModelExists(AnkiException):
     pass
 
 
@@ -120,20 +121,6 @@ class Model:
         )
 
 
-class AnkiConnect:
-    @staticmethod
-    def version() -> int:
-        return invoke("version")
-
-    @staticmethod
-    def createDeck(deck):
-        return invoke("createDeck", deck=deck)
-
-    @staticmethod
-    def findCards(query="deck:current"):
-        return Card.find(query)
-
-
 class Note:
     @staticmethod
     def add(
@@ -153,78 +140,15 @@ class Note:
                 "fields": fields,
                 "options": {
                     "allowDuplicate": allowDuplicate,
-                    "duplicateScope": "deck",
-                    "duplicateScopeOptions": {
-                        "deckName": "Default",
-                        "checkChildren": False,
-                        "checkAllModels": False,
-                    },
+                    # "duplicateScope": "deck",
+                    # "duplicateScopeOptions": {
+                    #     "deckName": "Default",
+                    #     "checkChildren": False,
+                    #     "checkAllModels": False,
+                    # },
                 },
                 "tags": tags,
                 "audio": audio,
                 "picture": picture,
             },
         )
-
-
-if __name__ == "__main__":
-    print(AnkiConnect.version())
-    print(AnkiConnect.createDeck("shit2"))
-    # print(AnkiConnect.findCards()[0].Info['cardId'])
-    # print(Card(1504404537724).Info)
-    # print(AnkiConnect.findCards()[0].Deck)
-    print(Deck.NamesAndIds())
-    deck = Deck.NamesAndIds()[0]
-    print(deck)
-    Deck.create("test1111")
-    # print(deck.Config)
-    # deck.Config=deck.Config
-    # print(deck.delete())
-    # print(AnkiConnect.findCards()[0].Deck.delete())
-
-    model = Model.create(
-        "newModelName3111",
-        ["expression", "sentence", "audio-text", "image"],
-        "Optional CSS with default to builtin css",
-        False,
-        [{"Name": "My Card 1", "Front": html, "Back": html}],
-    )
-
-    model.updateStyling("shitcss")
-    model.updateTemplates(
-        {
-            "My Card 1": {
-                "Front": html + "shit",
-                "Back": html + "shit",
-            }
-        }
-    )
-    Note.add(
-        "test1111",
-        "newModelName3111",
-        {
-            "expression": "shit122",
-            "sentence": "hahaa",
-            "meaning": "meaning",
-            "glossary-brief": "ss",
-            # "audio-text": Media(
-            #     r"C:\dataH\LunaTranslator\cache\tts\1714228732.8068416.mp3"
-            # ).audio,
-        },
-        False,
-        [],
-        [
-            # {
-            #     "path": r"C:\dataH\LunaTranslator\cache\tts\1714228732.8068416.mp3",
-            #     "filename": str(uuid.uuid4()) + "1714228732.8068416.mp3",
-            #     "fields": ["audio-text"],
-            # }
-        ],
-        [
-            # {
-            #     "path": r"C:\Users\11737\Documents\GitHub\LunaTranslator\LunaTranslator\cache\ocr\1709362617.9424458.png",
-            #     "filename": str(uuid.uuid4()) + "1714228732.8068416.png",
-            #     "fields": ["image"],
-            # }
-        ],
-    )

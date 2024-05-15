@@ -1,5 +1,5 @@
 from PyQt5.QtWidgets import (
-    QDesktopWidget,
+    QLineEdit,
     QMainWindow,
     QApplication,
     QPushButton,
@@ -33,7 +33,7 @@ from PyQt5.QtWidgets import (
     QVBoxLayout,
 )
 from traceback import print_exc
-import qtawesome, functools, threading, time, json
+import qtawesome, functools, threading, time
 from myutils.wrapper import Singleton
 from winsharedutils import showintab, HTMLBrowser
 import windows, os, platform
@@ -398,6 +398,13 @@ def getsimplecombobox(lst, d, k, callback=None):
     return s
 
 
+def getlineedit(d, key, callback=None):
+    s = QLineEdit()
+    s.setText(d[key])
+    s.textChanged.connect(functools.partial(callbackwrap, d, key, callback))
+    return s
+
+
 def getspinbox(mini, maxi, d, key, double=False, step=1, callback=None, dec=1):
     if double:
         s = QDoubleSpinBox()
@@ -497,10 +504,16 @@ def selectcolor(
             print_exc()
 
 
-def getboxlayout(widgets, lc=QHBoxLayout):
+def getboxlayout(widgets, lc=QHBoxLayout, margin0=False, makewidget=False):
     cp_layout = lc()
     for w in widgets:
         cp_layout.addWidget(w)
+    if margin0:
+        cp_layout.setContentsMargins(0, 0, 0, 0)
+    if makewidget:
+        w = QWidget()
+        w.setLayout(cp_layout)
+        return w
     return cp_layout
 
 
@@ -563,6 +576,9 @@ class WebivewWidget(QWidget):
             size = getscaledrect(a0.size())
             windows.MoveWindow(hwnd, 0, 0, size[0], size[1], True)
 
+    def set_html(self, html):
+        self.webview.set_html(html)
+
 
 class mshtmlWidget(QWidget):
     on_load = pyqtSignal(str)
@@ -590,6 +606,9 @@ class mshtmlWidget(QWidget):
     def resizeEvent(self, a0: QResizeEvent) -> None:
         size = getscaledrect(a0.size())
         self.browser.resize(0, 0, size[0], size[1])
+
+    def set_html(self, html):
+        print("not support, please use webview2")
 
 
 def auto_select_webview(parent):
@@ -626,3 +645,12 @@ class threebuttons(QWidget):
         layout.addWidget(button)
         layout.addWidget(button2)
         layout.addWidget(button3)
+
+
+def tabadd_lazy(tab, title, getrealwidgetfunction):
+    q = QWidget()
+    v = QVBoxLayout()
+    q.setLayout(v)
+    v.setContentsMargins(0, 0, 0, 0)
+    q.lazyfunction = lambda: v.addWidget(getrealwidgetfunction())
+    tab.addTab(q, _TR(title))

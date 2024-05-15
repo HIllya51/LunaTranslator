@@ -1619,5 +1619,14 @@
             "visname": "arabic reshaper",
             "languageuse": "ar"
         }
+    ],
+    "model_fileds": [
+        "word",
+        "explain",
+        "image",
+        "audio",
+        "example_sentence",
+        "rubytext",
+        "remarks"
     ]
 }

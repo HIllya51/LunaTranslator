@@ -12,7 +12,7 @@ from PyQt5.QtWidgets import QHBoxLayout, QTableView
 from PyQt5.QtGui import QStandardItem, QStandardItemModel
 from PyQt5.QtWidgets import QComboBox
 from PyQt5.QtCore import Qt, QSize
-from gui.usefulwidget import getspinbox, threebuttons
+from gui.usefulwidget import getspinbox, threebuttons, getlineedit
 from myutils.utils import checkencoding
 from myutils.config import globalconfig, _TR, _TRL
 
@@ -102,10 +102,6 @@ class codeacceptdialog(QDialog):
             lambda x: globalconfig.__setitem__("accept_use_unicode", x)
         )
         formLayout.addWidget(_checkunicode)
-        liwai = QLineEdit(globalconfig["accept_character"])
-        liwai.textChanged.connect(
-            lambda x: globalconfig.__setitem__("accept_character", x)
-        )
         _hb = QHBoxLayout()
         _hb.addWidget(QLabel(_TR("Unicode范围")))
         _hb.addWidget(getspinbox(0, 65535, globalconfig, "accept_use_unicode_start"))
@@ -115,7 +111,7 @@ class codeacceptdialog(QDialog):
         formLayout.addWidget(QLabel())
         _hb = QHBoxLayout()
         _hb.addWidget(QLabel(_TR("例外允许的字符")))
-        _hb.addWidget(liwai)
+        _hb.addWidget(getlineedit(globalconfig, "accept_character"))
 
         formLayout.addLayout(_hb)
         self.resize(QSize(600, 500))

@@ -777,5 +777,13 @@
     "合并": "merge",
     "立即应用": "apply now",
     "无法连接到anki": "Unable to connect to Anki",
-    "追加": "Add"
+    "追加": "Add",
+    "例句": "Example sentence",
+    "正面": "front",
+    "背面": "Back",
+    "样式": "style",
+    "预览": "preview",
+    "恢复": "recovery",
+    "模板": "Template",
+    "截图": "screenshot"
 }

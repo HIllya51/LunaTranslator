@@ -69,6 +69,7 @@ from gui.usefulwidget import (
     yuitsu_switch,
     saveposwindow,
     getboxlayout,
+    getlineedit,
     auto_select_webview,
     Prompt_dialog,
 )
@@ -849,17 +850,12 @@ class dialog_setting_game(QDialog):
             ),
         )
 
-        editcmd = QLineEdit(savehook_new_data[exepath]["startcmd"])
-        editcmd.textEdited.connect(
-            lambda _: savehook_new_data[exepath].__setitem__("startcmd", _)
-        )
-
         formLayout.addRow(
             _TR("命令行启动"),
             getboxlayout(
                 [
                     getsimpleswitch(savehook_new_data[exepath], "startcmduse"),
-                    editcmd,
+                    getlineedit(savehook_new_data[exepath], "startcmd"),
                 ]
             ),
         )

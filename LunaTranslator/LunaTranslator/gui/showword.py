@@ -5,38 +5,57 @@ from PyQt5.QtWidgets import (
     QVBoxLayout,
     QTextBrowser,
     QLineEdit,
-    QMenu,
+    QPlainTextEdit,
+    QFormLayout,
     QAction,
+    QSizePolicy,
+    QStylePainter,
+    QStyleOptionTab,
+    QStyle,
     QPushButton,
     QTextEdit,
-    QTabWidget,
-    QDialog,
+    QTabWidget,QFileDialog,
+    QTabBar,
     QLabel,
 )
 from traceback import print_exc
-import requests
+import requests, json
 from PyQt5.QtCore import Qt, pyqtSignal
 from PyQt5.QtGui import QCursor
-import qtawesome, functools, os
+import qtawesome, functools, os, re, base64
 import threading, gobject, uuid
-from myutils.config import globalconfig
-from myutils.config import globalconfig, _TR, _TRL
+from myutils.config import globalconfig, _TR, _TRL, static_data
 import myutils.ankiconnect as anki
-from gui.usefulwidget import closeashidewindow, getQMessageBox, getboxlayout
-
-from myutils.ocrutil import imageCut
+from gui.usefulwidget import (
+    closeashidewindow,
+    getQMessageBox,
+    auto_select_webview,
+    getboxlayout,
+    getspinbox,
+    getlineedit,
+    saveposwindow,
+    getsimpleswitch,getcolorbutton,
+    tabadd_lazy,
+)
+from myutils.wrapper import threader
+from myutils.ocrutil import imageCut, ocr_run
 from gui.rangeselect import rangeselct_function
 
 
-class AnkiWindow(QDialog):
+class AnkiWindow(closeashidewindow):
     setcurrenttext = pyqtSignal(str)
-    appenddictionary = pyqtSignal(str)
+    __ocrsettext = pyqtSignal(str)
+    refreshhtml = pyqtSignal()
 
     def langdu(self):
         if gobject.baseobject.reader:
-            self.audiofile = gobject.baseobject.reader.syncttstofile(
+            self.audiopath.setText(gobject.baseobject.reader.syncttstofile(
                 self.wordedit.text()
-            )
+            ))
+
+    @threader
+    def asyncocr(self, fname):
+        self.__ocrsettext.emit(ocr_run(fname))
 
     def crop(self):
         def ocroncefunction(rect):
@@ -44,40 +63,259 @@ class AnkiWindow(QDialog):
             fname = "./cache/ocr/cropforanki.png"
             os.makedirs("./cache/ocr", exist_ok=True)
             img.save(fname)
-            self.cropedimagepath = os.path.abspath(fname)
+            self.editpath.setText(os.path.abspath(fname))
+            self.asyncocr(fname)
 
         rangeselct_function(self, ocroncefunction, False, False)
 
     def __init__(self, parent) -> None:
-        super().__init__(parent, Qt.WindowCloseButtonHint)
+        super().__init__(parent, globalconfig, "ankiwindow")
         self.setWindowTitle("Anki Connect")
-        self.audiofile = None
-        self.cropedimagepath = None
+
+        self.tabs = QTabWidget()
+        self.tabs.addTab(self.createaddtab(), _TR("添加"))
+        tabadd_lazy(self.tabs, "设置", self.creatsetdtab)
+        tabadd_lazy(self.tabs, "模板", self.creattemplatetab)
+        self.setCentralWidget(self.tabs)
+        self.refreshhtml.connect(self.refreshhtmlfunction)
+        self.tabs.currentChanged.connect(self.ifshowrefresh)
+
+    def ifshowrefresh(self, idx):
+        try:
+            w = self.tabs.currentWidget()
+            if "lazyfunction" in dir(w):
+                w.lazyfunction()
+                delattr(w, "lazyfunction")
+        except:
+            print_exc()
+        if idx == 2:
+            self.refreshhtml.emit()
+
+    def parse_template(self, template, data):
+        result = ""
+        i = 0
+        while i < len(template):
+            if template[i : i + 2] == "{{":
+                end_index = template.find("}}", i + 2)
+                if end_index != -1:
+                    field = template[i + 2 : end_index].strip()
+                    if field in data:
+                        result += str(data[field])
+                    else:
+                        result += template[i : end_index + 2]
+                    i = end_index + 2
+                else:
+                    result += template[i:]
+                    break
+            else:
+                result += template[i]
+                i += 1
+        return result
+
+    def refreshhtmlfunction(self):
+        html = (self.fronttext, self.backtext)[
+            self.previewtab.currentIndex()
+        ].toPlainText()
+        model_css = self.csstext.toPlainText()
+        fields = self.loadfileds()
+        fields.update(self.loadfakefields())
+        html = self.parse_template(html, fields)
+        html = "<style>" + model_css + "</style>" + html
+        self.htmlbrowser.set_html(html)
+
+    def creattemplatetab(self):
+
+        layout = QHBoxLayout()
+        layout.setContentsMargins(0, 0, 0, 0)
+        wid = QWidget()
+        wid.setLayout(layout)
+
+        edittemptab = QTabWidget()
+        self.previewtab = QTabBar()
+        revertbtn = QPushButton(_TR("恢复"))
+        revertbtn.clicked.connect(self.loadedits)
+        savebtn = QPushButton(_TR("保存"))
+        savebtn.clicked.connect(self.saveedits)
+        layout.addLayout(
+            getboxlayout(
+                [
+                    QLabel(_TR("编辑")),
+                    edittemptab,
+                    getboxlayout([revertbtn, savebtn], makewidget=True),
+                ],
+                lc=QVBoxLayout,
+                margin0=True,
+            )
+        )
+
+        self.htmlbrowser = auto_select_webview(self)
+        self.htmlbrowser.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        layout.addLayout(
+            getboxlayout(
+                [QLabel(_TR("预览")), self.previewtab, self.htmlbrowser],
+                lc=QVBoxLayout,
+                margin0=True,
+            )
+        )
+        self.fronttext = QPlainTextEdit()
+        self.backtext = QPlainTextEdit()
+        self.csstext = QPlainTextEdit()
+        edittemptab.addTab(self.fronttext, _TR("正面"))
+        edittemptab.addTab(self.backtext, _TR("背面"))
+        edittemptab.addTab(self.csstext, _TR("样式"))
+        self.previewtab.addTab(_TR("正面"))
+        self.previewtab.addTab(_TR("背面"))
+        self.loadedits()
+        self.fronttext.textChanged.connect(lambda: self.refreshhtml.emit())
+        self.backtext.textChanged.connect(lambda: self.refreshhtml.emit())
+        self.csstext.textChanged.connect(lambda: self.refreshhtml.emit())
+        self.previewtab.currentChanged.connect(lambda: self.refreshhtml.emit())
+        return wid
+
+    def loadedits(self):
+        for text, object in zip(
+            self.tryloadankitemplates(), (self.fronttext, self.backtext, self.csstext)
+        ):
+            object.setPlainText(text)
+
+    def loadfileds(self):
+        word = self.wordedit.text()
+        explain = json.dumps(gobject.baseobject.searchwordW.generate_explains())
+        remarks = self.remarks.toHtml()
+        example = self.example.toPlainText()
+        ruby = self.ruby
+        fields = {
+            "word": word,
+            "rubytext": ruby,
+            "explain": explain,
+            "example_sentence": example,
+            "remarks": remarks,
+        }
+        return fields
+
+    def loadfakefields(self):
+        if len(self.editpath.text()):
+            with open(self.editpath.text(), "rb") as image_file:
+                encoded_string = base64.b64encode(image_file.read()).decode("utf-8")
+            encoded_string = '<img src="data:image/png;base64,{}">'.format(
+                encoded_string
+            )
+        else:
+            encoded_string = ""
+        if len(self.audiopath.text()):
+            with open(self.audiopath.text(), "rb") as image_file:
+                encoded_string2 = base64.b64encode(image_file.read()).decode("utf-8")
+            encoded_string2 = '<audio controls><source src="data:audio/mpeg;base64,{}"></audio>'.format(
+                encoded_string2
+            )
+        else:
+            encoded_string2 = ""
+        fields = {"audio": encoded_string2, "image": encoded_string}
+        return fields
+
+    def saveedits(self):
+        model_htmlfront = self.fronttext.toPlainText()
+        model_htmlback = self.backtext.toPlainText()
+        model_css = self.csstext.toPlainText()
+        os.makedirs("userconfig/anki", exist_ok=True)
+        with open("userconfig/anki/back.html", "w", encoding="utf8") as ff:
+            ff.write(model_htmlback)
+        with open("userconfig/anki/front.html", "w", encoding="utf8") as ff:
+            ff.write(model_htmlfront)
+        with open("userconfig/anki/style.css", "w", encoding="utf8") as ff:
+            ff.write(model_css)
+
+    def creatsetdtab(self):
+        layout = QFormLayout()
+        wid = QWidget()
+        wid.setLayout(layout)
+        layout.addRow(
+            _TR("port"), getspinbox(0, 65536, globalconfig["ankiconnect"], "port")
+        )
+        layout.addRow(
+            _TR("DeckName"), getlineedit(globalconfig["ankiconnect"], "DeckName")
+        )
+        layout.addRow(
+            _TR("ModelName"), getlineedit(globalconfig["ankiconnect"], "ModelName")
+        )
+
+        layout.addRow(
+            _TR("allowDuplicate"),
+            getsimpleswitch(globalconfig["ankiconnect"], "allowDuplicate"),
+        )
+
+        return wid
+
+    def createaddtab(self):
         layout = QVBoxLayout()
-        self.setLayout(layout)
+        wid = QWidget()
+        wid.setLayout(layout)
         soundbutton = QPushButton(qtawesome.icon("fa.music"), "")
         soundbutton.clicked.connect(self.langdu)
         cropbutton = QPushButton(qtawesome.icon("fa.crop"), "")
         cropbutton.clicked.connect(self.crop)
         self.wordedit = QLineEdit()
+        self.wordedit.textEdited.connect(self.reset)
         layout.addLayout(
-            getboxlayout([QLabel(_TR("Word")), self.wordedit, soundbutton, cropbutton])
+            getboxlayout([QLabel(_TR("Word")), self.wordedit])
         )
-        self.textedit = QTextEdit()
-        layout.addWidget(self.textedit)
+        self.example = QPlainTextEdit()
+        layout.addWidget(QLabel(_TR("例句")))
+        layout.addWidget(self.example)
+        self.remarks = QTextEdit()
+        layout.addWidget(QLabel(_TR("备注")))
+        layout.addWidget(self.remarks)
 
+        self.tagsedit = QLineEdit()
+        layout.addLayout(getboxlayout([QLabel(_TR("Tags(split by |)")), self.tagsedit]))
+        
+        self.audiopath = QLineEdit()
+        self.audiopath.setReadOnly(True)
+        layout.addLayout(getboxlayout([QLabel(_TR("语音")),self.audiopath,soundbutton,getcolorbutton(
+                        "",
+                        "",
+                        functools.partial(self.selectaudio),
+                        icon="fa.gear",
+                        constcolor="#FF69B4",
+                    )]))
+        
+        self.editpath = QLineEdit()
+        self.editpath.setReadOnly(True)
+        layout.addLayout(getboxlayout([QLabel(_TR("截图")),self.editpath,cropbutton,getcolorbutton(
+                        "",
+                        "",
+                        functools.partial(self.selectimage),
+                        icon="fa.gear",
+                        constcolor="#FF69B4",
+                    )]))
         btn = QPushButton(_TR("添加"))
         btn.clicked.connect(self.errorwrap)
         layout.addWidget(btn)
-        self.setcurrenttext.connect(self.reset)
-        self.appenddictionary.connect(self.textedit.append)
 
+        self.setcurrenttext.connect(self.reset)
+
+        self.__ocrsettext.connect(self.example.insertPlainText)
+
+        self.reset("")
+        return wid
+    def selectimage(self):
+        f = QFileDialog.getOpenFileName()
+        res = f[0]
+        if res != "":
+            self.editpath.setText(res)
+    def selectaudio(self):
+        f = QFileDialog.getOpenFileName()
+        res = f[0]
+        if res != "":
+            self.audiopath.setText(res)
     def reset(self, text):
         self.wordedit.setText(text)
-        self.textedit.clear()
-        self.cropedimagepath = None
-        self.audiofile = None
-
+        if text and len(text):
+            self.ruby = json.dumps(gobject.baseobject.translation_ui.parsehira(text))
+        else:
+            self.ruby = ""
+        self.editpath.clear()
+        self.audiopath.clear()
     def errorwrap(self):
         try:
             self.addanki()
@@ -89,39 +327,63 @@ class AnkiWindow(QDialog):
         except:
             print_exc()
 
+    def tryloadankitemplates(self):
+        try:
+            with open("userconfig/anki/back.html", "r", encoding="utf8") as ff:
+                model_htmlback = ff.read()
+            with open("userconfig/anki/front.html", "r", encoding="utf8") as ff:
+                model_htmlfront = ff.read()
+            with open("userconfig/anki/style.css", "r", encoding="utf8") as ff:
+                model_css = ff.read()
+        except:
+            with open("files/anki/back.html", "r", encoding="utf8") as ff:
+                model_htmlback = ff.read()
+            with open("files/anki/front.html", "r", encoding="utf8") as ff:
+                model_htmlfront = ff.read()
+            with open("files/anki/style.css", "r", encoding="utf8") as ff:
+                model_css = ff.read()
+        return model_htmlfront, model_htmlback, model_css
+
     def addanki(self):
-        word = self.wordedit.text()
-        explain = self.textedit.toHtml()
-        anki.Deck.create(anki.DeckName)
+        allowDuplicate = globalconfig["ankiconnect"]["allowDuplicate"]
+        anki.global_port = globalconfig["ankiconnect"]["port"]
+        ModelName = globalconfig["ankiconnect"]["ModelName"]
+        DeckName = globalconfig["ankiconnect"]["DeckName"]
+        model_htmlfront, model_htmlback, model_css = self.tryloadankitemplates()
+        try:
+            tags = self.tagsedit.text().split("|")
+        except:
+            tags = []
+        anki.Deck.create(DeckName)
         try:
             model = anki.Model.create(
-                anki.ModelName,
-                anki.model_fileds,
-                anki.model_css,
+                ModelName,
+                static_data["model_fileds"],
+                model_css,
                 False,
                 [
                     {
                         "Name": "LUNACARDTEMPLATE1",
-                        "Front": anki.model_htmlfront,
-                        "Back": anki.model_htmlback,
+                        "Front": model_htmlfront,
+                        "Back": model_htmlback,
                     }
                 ],
             )
         except anki.AnkiModelExists:
-            model = anki.Model(anki.ModelName)
-            model.updateStyling(anki.model_css)
+            model = anki.Model(ModelName)
+            model.updateStyling(model_css)
             model.updateTemplates(
                 {
                     "LUNACARDTEMPLATE1": {
-                        "Front": anki.model_htmlfront,
-                        "Back": anki.model_htmlback,
+                        "Front": model_htmlfront,
+                        "Back": model_htmlback,
                     }
                 }
             )
         media = []
-        tempfiles=[]
-        for k, _ in [("audio", self.audiofile), ("image", self.cropedimagepath)]:
-            if _:
+        tempfiles = []
+        for k, _ in [("audio", self.audiopath.text()), ("image", self.editpath.text())]:
+            if len(_):
                 media.append(
                     [
                         {
@@ -136,22 +398,15 @@ class AnkiWindow(QDialog):
                 media.append([])
 
         anki.Note.add(
-            anki.DeckName,
-            anki.ModelName,
-            {
-                "word": word,
-                "explain": explain,
-            },
-            False,
-            [],
+            DeckName,
+            ModelName,
+            self.loadfileds(),
+            allowDuplicate,
+            tags,
             media[0],
             media[1],
         )
-        for _ in tempfiles:
-            try:
-                os.remove(_)
-            except:
-                pass
+
 
 class searchwordW(closeashidewindow):
     getnewsentencesignal = pyqtSignal(str, bool)
@@ -232,10 +487,6 @@ class searchwordW(closeashidewindow):
             self.tab.setTabVisible(i, False)
 
             self.textbs[self._k[i]] = textOutput
-            textOutput.setContextMenuPolicy(Qt.CustomContextMenu)
-            textOutput.customContextMenuRequested.connect(
-                functools.partial(self.showmenu, textOutput)
-            )
         self.hiding = True
         self.searchthreadsignal.connect(self.searchthread)
 
@@ -243,14 +494,16 @@ class searchwordW(closeashidewindow):
         if gobject.baseobject.reader:
             gobject.baseobject.reader.read(self.searchtext.text(), True)
 
-    def showmenu(self, tb, point):
-        menu = QMenu(tb)
-        append = QAction(_TR("追加"))
-        menu.addAction(append)
-        print(point, (tb.pos()), self.mapToGlobal(tb.pos()))
-        action = menu.exec(QCursor.pos())
-        if action == append:
-            self.ankiwindow.appenddictionary.emit(tb.toHtml())
+    def generate_explains(self):
+        res = []
+        for i in range(len(self._k)):
+            if len(self.textbs[self._k[i]].toPlainText()) == 0:
+                continue
+
+            res.append(
+                {"source": self._k[i], "content": self.textbs[self._k[i]].toHtml()}
+            )
+        return res
 
     def getnewsentence(self, sentence, append):
         self.showNormal()

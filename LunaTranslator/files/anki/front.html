@@ -1,0 +1,40 @@
+<div class="hide-style">{{audio}}</div>
+<div class="centerdiv">
+    <div id="rubyword" class="ruby-div"></div>
+</div>
+
+<script>
+    ruby = {{ rubytext }}
+    html = ''
+    for (i = 0; i < ruby.length; i++) {
+        html += ruby[i]['orig'] + '<rt>' + ruby[i]['hira'] + '</rt>';
+    }
+    document.getElementById('rubyword').innerHTML = '<ruby>' + html + '</ruby>'
+
+</script>
+
+<div id="example_sentence" class="centerdiv example-div">
+    {{example_sentence}}
+</div>
+<div id="image" class="centerdiv">
+    {{image}}
+</div>
+
+
+<script>
+    function checkhide(eid) {
+        var emptyDiv = document.getElementById(eid);
+        if (emptyDiv && emptyDiv.innerText.trim() === "") {
+            emptyDiv.classList.add("hide-style");
+        }
+    }
+    function checkhide2(eid) {
+        var emptyDiv = document.getElementById(eid);
+        if (emptyDiv && emptyDiv.children.length == 0) {
+            emptyDiv.classList.add("hide-style");
+        }
+    }
+    checkhide("example_sentence")
+    checkhide2("image")
+    checkhide("remarks")
+</script>

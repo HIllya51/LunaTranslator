@@ -1,0 +1,96 @@
+<div class="hide-style">{{audio}}</div>
+<div class="centerdiv">
+    <div id="rubyword" class="ruby-div"></div>
+</div>
+
+<script>
+    ruby = {{ rubytext }}
+    html = ''
+    for (i = 0; i < ruby.length; i++) {
+        html += ruby[i]['orig'] + '<rt>' + ruby[i]['hira'] + '</rt>';
+    }
+    document.getElementById('rubyword').innerHTML = '<ruby>' + html + '</ruby>'
+
+</script>
+
+<div id="example_sentence" class="centerdiv example-div">
+    {{example_sentence}}
+</div>
+<div id="image" class="centerdiv">
+    {{image}}
+</div>
+
+<div id="remarks" class="centerdiv remark-div">
+    {{remarks}}
+</div>
+
+<div class="tab-widget">
+    <div class="centerdiv">
+        <div class="tab-buttons" id="tab_buttons">
+            <!-- <button type="button" class="tab-button active" data-tab="tab1">Tab 1</button>
+        <button type="button" class="tab-button" data-tab="tab2">Tab 2</button>
+        <button type="button" class="tab-button" data-tab="tab3">Tab 3</button> -->
+        </div>
+    </div>
+    <div class="centerdiv">
+        <div class="tab-content" id="tab_contents">
+            <!-- <div id="tab1" class="tab-pane active">
+        </div>
+        <div id="tab2" class="tab-pane">
+        </div>
+        <div id="tab3" class="tab-pane">
+        </div> -->
+        </div>
+    </div>
+</div>
+
+<script>
+    explains = {{ explain }}
+    htmltabbuttons = ''
+    htmlcontents = ''
+    for (i = 0; i < explains.length; i++) {
+        htmltabbuttons += '<button type="button" class="tab-button" data-tab="tab' + (i + 0).toString() + '">' + explains[i]['source'] + '</button>'
+        htmlcontents += '<div id="tab' + (i + 0).toString() + '" class="tab-pane">' + explains[i]['content'] + '</div>'
+    }
+    document.getElementById('tab_buttons').innerHTML = htmltabbuttons
+    document.getElementById('tab_contents').innerHTML = htmlcontents
+
+
+    tabButtons = document.querySelectorAll('.tab-widget .tab-button');
+    tabPanes = document.querySelectorAll('.tab-widget .tab-pane');
+
+    tabButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            tabButtons.forEach(btn => btn.classList.remove('active'));
+
+            tabPanes.forEach(pane => pane.classList.remove('active'));
+
+            button.classList.add('active');
+
+            const tabId = button.getAttribute('data-tab');
+            const tabPane = document.getElementById(tabId);
+            tabPane.classList.add('active');
+        });
+    });
+    if (tabButtons.length) {
+        tabButtons[0].click()
+    }
+</script>
+
+<script>
+    function checkhide(eid) {
+        var emptyDiv = document.getElementById(eid);
+        if (emptyDiv && emptyDiv.innerText.trim() === "") {
+            emptyDiv.classList.add("hide-style");
+        }
+    }
+    function checkhide2(eid) {
+        var emptyDiv = document.getElementById(eid);
+        if (emptyDiv && emptyDiv.children.length == 0) {
+            emptyDiv.classList.add("hide-style");
+        }
+    }
+    checkhide("example_sentence")
+    checkhide2("image")
+    checkhide("remarks")
+</script>

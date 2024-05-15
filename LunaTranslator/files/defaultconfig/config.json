@@ -176,6 +176,19 @@
     "ttsnointerrupt": false,
     "show_fenci": false,
     "jiamingcolor": "black",
+    "ankiconnect": {
+        "port": 8765,
+        "DeckName": "lunadeck",
+        "ModelName": "lunamodel",
+        "allowDuplicate":true
+
+    },
+    "ankiwindow": [
+        100,
+        100,
+        600,
+        600
+    ],
     "settingfonttype": "Arial",
     "showintab_sub": false,
     "setting_geo_2": [
