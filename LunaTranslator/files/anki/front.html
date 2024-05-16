@@ -2,25 +2,25 @@
     <div id="audio">{{audio}}</div>
     <div id="audio_sentence">{{audio_sentence}}</div>
 </div>
-<div class="centerdiv">
-    <div id="rubyword" class="ruby-div" onclick='playAudio("audio")'></div>
+<div class="centerdiv" onclick='playAudio("audio")'>
+    <div class="ruby-div" id="word">{{ word }}</div>
+    <div id="rubyword" class="ruby-div"></div>
 </div>
 
 <script>
     ruby = {{ rubytext }}
-    word = '{{ word }}'
     html = ''
     if (ruby.length) {
         for (i = 0; i < ruby.length; i++) {
             html += ruby[i]['orig'] + '<rt>' + ruby[i]['hira'] + '</rt>';
         }
         html = '<ruby>' + html + '</ruby>'
+        document.getElementById('rubyword').innerHTML = html
+        document.getElementById('word').classList.add("hide-style");
     }
     else {
-        html = word
+        document.getElementById('rubyword').classList.add("hide-style");
     }
-    document.getElementById('rubyword').innerHTML = html
-
 
 </script>
 
