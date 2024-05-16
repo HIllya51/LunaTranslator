@@ -1,4 +1,4 @@
-import threading, windows
+import threading, windows, json
 from queue import Queue
 import re, os
 import time, gobject
@@ -112,7 +112,7 @@ class texthook(basetext):
         self.pname = pname
         self.hwnd = hwnd
         self.runonce_line = ""
-        self.autostarthookcode = [tuple(__) for __ in autostarthookcode]
+        self.autostarthookcode = [self.deserial(__) for __ in autostarthookcode]
         self.isremoveuseless = savehook_new_data[self.pname]["removeuseless"] and len(
             self.autostarthookcode
         )
@@ -312,15 +312,15 @@ class texthook(basetext):
         self.hookdatacollecter.pop(key)
         gobject.baseobject.hookselectdialog.removehooksignal.emit(key)
 
-    def match_compatibility(self, tp, hc, autostarthookcode):
+    def match_compatibility(self, key, key2):
+        hc, hn, tp = key
+        _hc, _hn, _tp = key2
         base = (tp.ctx & 0xFFFF, tp.ctx2 & 0xFFFF, hc) == (
-            autostarthookcode[2] & 0xFFFF,
-            autostarthookcode[3] & 0xFFFF,
-            autostarthookcode[5],
+            _tp.ctx & 0xFFFF,
+            _tp.ctx2 & 0xFFFF,
+            _hc,
         )
-        name = (hc[:8] == "UserHook" and autostarthookcode[-1][:8] == "UserHook") or (
-            hc == autostarthookcode[-1]
-        )
+        name = (hc[:8] == "UserHook" and _hc[:8] == "UserHook") or (hc == _hc)
         return base and name
 
     def onnewhook(self, hc, hn, tp):
@@ -328,15 +328,21 @@ class texthook(basetext):
 
         self.hookdatacollecter[key] = []
         self.hooktypecollecter[key] = 0
-
+        if self.allow_set_text_name:
+            for jskey in savehook_new_data[self.pname]["hooktypeasname"]:
+                if savehook_new_data[self.pname]["hooktypeasname"][jskey] == 0:
+                    continue
+                if self.match_compatibility(self.deserial(json.loads(jskey)), key):
+                    self.hooktypecollecter[key] = 1
+                    break
         if self.isremoveuseless:
-            if tp.addr not in [_[1] for _ in self.autostarthookcode]:
+            if hc not in [_[-1] for _ in self.autostarthookcode]:
                 self.Luna_RemoveHook(tp.processId, tp.addr)
                 return False
 
         select = False
         for _i, autostarthookcode in enumerate(self.autostarthookcode):
-            if self.match_compatibility(tp, hc, autostarthookcode):
+            if self.match_compatibility(key, autostarthookcode):
                 self.selectedhook += [key]
                 self.selectinghook = key
                 select = True
@@ -463,6 +469,11 @@ class texthook(basetext):
     def serialkey(self, key):
         hc, hn, tp = key
         return (tp.processId, tp.addr, tp.ctx, tp.ctx2, hn, hc)
+
+    def deserial(self, lst):
+        tp = ThreadParam()
+        tp.processId, tp.addr, tp.ctx, tp.ctx2, hn, hc = lst
+        return hc, hn, tp
 
     def serialselectedhook(self):
         xx = []

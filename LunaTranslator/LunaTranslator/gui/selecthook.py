@@ -496,20 +496,7 @@ class hookselect(closeashidewindow):
                 )
             )
         if gobject.baseobject.textsource.allow_set_text_name:
-            for jskey in savehook_new_data[gobject.baseobject.textsource.pname][
-                "hooktypeasname"
-            ]:
-                if (
-                    savehook_new_data[gobject.baseobject.textsource.pname][
-                        "hooktypeasname"
-                    ][jskey]
-                    == 0
-                ):
-                    continue
-                if gobject.baseobject.textsource.match_compatibility(
-                    json.loads(jskey), key
-                ):
-                    gobject.baseobject.textsource.hooktypecollecter[key] = 1
+
             self.typecombo.insert(
                 rown,
                 getsimplecombobox(
