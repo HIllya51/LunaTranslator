@@ -29,7 +29,7 @@ include(generate_product_version)
 
 set(VERSION_MAJOR 2)
 set(VERSION_MINOR 51)
-set(VERSION_PATCH 0)
+set(VERSION_PATCH 1)
 
 add_library(pch pch.cpp)
 target_precompile_headers(pch PUBLIC pch.h)
