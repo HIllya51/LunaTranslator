@@ -195,7 +195,7 @@ class AnkiWindow(QWidget):
         example = self.example.toPlainText()
         ruby = self.ruby
         fields = {
-            "word": json.dumps(word),
+            "word": word,
             "rubytext": ruby,
             "explain": explain,
             "example_sentence": example,
