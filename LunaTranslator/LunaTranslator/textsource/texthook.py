@@ -336,7 +336,7 @@ class texthook(basetext):
                     self.hooktypecollecter[key] = 1
                     break
         if self.isremoveuseless:
-            if hc not in [_[-1] for _ in self.autostarthookcode]:
+            if hc not in [_[0] for _ in self.autostarthookcode]:
                 self.Luna_RemoveHook(tp.processId, tp.addr)
                 return False
 
