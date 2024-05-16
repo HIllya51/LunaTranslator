@@ -1,5 +1,5 @@
 from myutils.proxy import getproxy
-from myutils.config import globalconfig, _TR, static_data
+from myutils.config import getlangtgt, _TR, static_data, getlangsrc
 from myutils.wrapper import stripwrapper
 import requests
 
@@ -34,7 +34,7 @@ class commonbase:
     @property
     def srclang(self):
         try:
-            l = static_data["language_list_translator_inner"][globalconfig["srclang3"]]
+            l = getlangsrc()
             return self.langmap_[l]
         except:
             return ""
@@ -42,7 +42,7 @@ class commonbase:
     @property
     def tgtlang(self):
         try:
-            l = static_data["language_list_translator_inner"][globalconfig["tgtlang3"]]
+            l = getlangtgt()
             return self.langmap_[l]
         except:
             return ""

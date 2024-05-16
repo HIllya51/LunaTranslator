@@ -187,14 +187,22 @@ if len(globalconfig["toolbutton"]["rank"]) != len(
     )
 
 
+def getlanguse():
+    global language, languageshow
+    return static_data["language_list_translator_inner"][language]
+
+def getlangsrc():
+    return static_data["language_list_translator_inner"][globalconfig["srclang3"]]
+
+def getlangtgt():
+    return static_data["language_list_translator_inner"][globalconfig["tgtlang3"]]
+
 def setlanguage():
     global language, languageshow
     language = globalconfig["languageuse"]
     try:
         with open(
-            "./files/lang/{}.json".format(
-                static_data["language_list_translator_inner"][language]
-            ),
+            "./files/lang/{}.json".format(getlanguse()),
             "r",
             encoding="utf8",
         ) as ff:
@@ -255,8 +263,6 @@ def saveallconfig():
         "./userconfig/savehook_new_1.39.4.json", [savehook_new_list, savehook_new_data]
     )
     safesave(
-        "./files/lang/{}.json".format(
-            static_data["language_list_translator_inner"][language]
-        ),
+        "./files/lang/{}.json".format(getlanguse()),
         languageshow,
     )

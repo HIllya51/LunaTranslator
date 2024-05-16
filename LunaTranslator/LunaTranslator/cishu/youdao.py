@@ -1,4 +1,4 @@
-from myutils.config import globalconfig, static_data
+from myutils.config import getlangsrc
 import requests
 from urllib.parse import quote
 import re
@@ -11,7 +11,7 @@ class youdao(cishubase):
     def srclang(self):
 
         try:
-            l = static_data["language_list_translator_inner"][globalconfig["srclang3"]]
+            l = getlangsrc()
             return l
 
         except:

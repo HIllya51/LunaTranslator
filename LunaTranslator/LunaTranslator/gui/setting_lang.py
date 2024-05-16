@@ -1,5 +1,5 @@
 import os
-from myutils.config import globalconfig, _TRL, static_data
+from myutils.config import globalconfig, _TRL, static_data,getlanguse
 from gui.usefulwidget import getsimplecombobox, getcolorbutton
 
 
@@ -46,11 +46,7 @@ def setTablanglz(self):
                     "",
                     callback=lambda: os.startfile(
                         os.path.abspath(
-                            "./files/lang/{}.json".format(
-                                static_data["language_list_translator_inner"][
-                                    globalconfig["languageuse"]
-                                ]
-                            )
+                            "./files/lang/{}.json".format(getlanguse())
                         )
                     ),
                     icon="fa.gear",

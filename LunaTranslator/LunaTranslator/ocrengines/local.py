@@ -1,5 +1,5 @@
 import os
-from myutils.config import globalconfig, _TR, static_data
+from myutils.config import globalconfig, _TR, getlangsrc
 from ocrengines.baseocrclass import baseocr
 from ctypes import (
     CDLL,
@@ -131,9 +131,7 @@ class OCR(baseocr):
             return
         self._ocr.trydestroy()
 
-        path = "./files/ocr/{}".format(
-            static_data["language_list_translator_inner"][globalconfig["srclang3"]]
-        )
+        path = "./files/ocr/{}".format(getlangsrc())
         if not (
             os.path.exists(path + "/det.onnx")
             and os.path.exists(path + "/rec.onnx")

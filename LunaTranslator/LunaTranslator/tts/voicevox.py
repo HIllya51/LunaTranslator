@@ -74,36 +74,33 @@ class TTS(TTSbase):
 
     def speak(self, content, rate, voice, voiceidx):
 
-        # def _():
-        if True:
+        headers = {
+            "Content-Type": "application/x-www-form-urlencoded",
+        }
 
-            headers = {
-                "Content-Type": "application/x-www-form-urlencoded",
-            }
+        params = {"speaker": voiceidx, "text": content}
 
-            params = {"speaker": voiceidx, "text": content}
-
-            response = requests.post(
-                f"http://localhost:{self.config['Port']}/audio_query",
-                params=params,
-                headers=headers,
-                proxies={"http": None, "https": None},
-            )
-            print(response.json())
-            fname = str(time.time())
-            headers = {
-                "Content-Type": "application/json",
-            }
-            params = {
-                "speaker": voiceidx,
-            }
-            response = requests.post(
-                f"http://localhost:{self.config['Port']}/synthesis",
-                params=params,
-                headers=headers,
-                data=json.dumps(response.json()),
-            )
-            os.makedirs("./cache/tts/", exist_ok=True)
-            with open("./cache/tts/" + fname + ".wav", "wb") as ff:
-                ff.write(response.content)
-            return "./cache/tts/" + fname + ".wav"
+        response = requests.post(
+            f"http://localhost:{self.config['Port']}/audio_query",
+            params=params,
+            headers=headers,
+            proxies={"http": None, "https": None},
+        )
+        print(response.json())
+        fname = str(time.time())
+        headers = {
+            "Content-Type": "application/json",
+        }
+        params = {
+            "speaker": voiceidx,
+        }
+        response = requests.post(
+            f"http://localhost:{self.config['Port']}/synthesis",
+            params=params,
+            headers=headers,
+            data=json.dumps(response.json()),
+        )
+        os.makedirs("./cache/tts/", exist_ok=True)
+        with open("./cache/tts/" + fname + ".wav", "wb") as ff:
+            ff.write(response.content)
+        return "./cache/tts/" + fname + ".wav"

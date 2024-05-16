@@ -15,6 +15,7 @@ from traceback import print_exc
 from myutils.config import (
     globalconfig,
     static_data,
+    getlanguse,
     savehook_new_list,
     savehook_new_data,
     getdefaultsavehook,
@@ -535,10 +536,6 @@ def parsemayberegexreplace(dict, res):
         else:
             res = res.replace(item["key"], item["value"])
     return res
-
-
-def getlanguse():
-    return static_data["language_list_translator_inner"][globalconfig["languageuse"]]
 
 
 def checkpostlangmatch(name):

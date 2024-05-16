@@ -1,6 +1,7 @@
 from myutils.config import globalconfig
-import threading, os
-
+import threading, os, functools
+from myutils.wrapper import threader
+from traceback import print_exc
 
 class TTSbase:
     def init(self):
@@ -19,15 +20,16 @@ class TTSbase:
     # 一些可能需要的属性
     @property
     def config(self):
-        return self.privateconfig['args']
+        return self.privateconfig["args"]
 
     @property
     def privateconfig(self):
         return globalconfig["reader"][self.typename]
-    
+
     @property
     def publicconfig(self):
         return globalconfig["ttscommon"]
+
     ########################
 
     def __init__(self, typename, showlistsignal, mp3playsignal) -> None:
@@ -58,15 +60,14 @@ class TTSbase:
         threading.Thread(target=_).start()
 
     def read(self, content, force=False):
-        def _(content, force):
-            fname = self.syncttstofile(content)
+        def _(force, fname):
             volume = self.publicconfig["volume"]
-            if fname:
-                self.mp3playsignal.emit(fname, volume, force)
+            self.mp3playsignal.emit(fname, volume, force)
 
-        threading.Thread(target=_, args=(content, force)).start()
+        self.ttscallback(content, functools.partial(_, force))
 
-    def syncttstofile(self, content):
+    @threader
+    def ttscallback(self, content, callback):
         if self.loadok == False:
             return
         if len(content) == 0:
@@ -77,5 +78,10 @@ class TTSbase:
         rate = self.publicconfig["rate"]
         voice = self.privateconfig["voice"]
         voice_index = self.voicelist.index(voice)
-        fname = self.speak(content, rate, voice, voice_index)
-        return os.path.abspath(fname)
+        try:
+            fname = self.speak(content, rate, voice, voice_index)
+            if fname:
+                callback(os.path.abspath(fname))
+        except:
+            print_exc()
+            return

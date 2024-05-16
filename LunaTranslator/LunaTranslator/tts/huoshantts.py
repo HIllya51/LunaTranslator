@@ -24,36 +24,31 @@ class TTS(TTSbase):
 
     def speak(self, content, rate, voice, voiceidx):
 
-        try:
-            headers = {
-                "authority": "translate.volcengine.com",
-                "accept": "application/json, text/plain, */*",
-                "accept-language": "zh-CN,zh;q=0.9",
-                "origin": "chrome-extension://klgfhbdadaspgppeadghjjemk",
-                "sec-fetch-dest": "empty",
-                "sec-fetch-mode": "cors",
-                "sec-fetch-site": "none",
-                "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36",
-            }
+        headers = {
+            "authority": "translate.volcengine.com",
+            "accept": "application/json, text/plain, */*",
+            "accept-language": "zh-CN,zh;q=0.9",
+            "origin": "chrome-extension://klgfhbdadaspgppeadghjjemk",
+            "sec-fetch-dest": "empty",
+            "sec-fetch-mode": "cors",
+            "sec-fetch-site": "none",
+            "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36",
+        }
 
-            json_data = {
-                "text": content,
-                "speaker": voice,
-            }  #
-            response = requests.post(
-                "https://translate.volcengine.com/crx/tts/v1/",
-                headers=headers,
-                json=json_data,
-                proxies={"http": None, "https": None},
-            )
-            fname = str(time.time())
-            b64 = base64.b64decode(response.json()["audio"]["data"])
-            os.makedirs("./cache/tts/", exist_ok=True)
-            with open("./cache/tts/" + fname + ".mp3", "wb") as ff:
-                ff.write(b64)
+        json_data = {
+            "text": content,
+            "speaker": voice,
+        }  #
+        response = requests.post(
+            "https://translate.volcengine.com/crx/tts/v1/",
+            headers=headers,
+            json=json_data,
+            proxies={"http": None, "https": None},
+        )
+        fname = str(time.time())
+        b64 = base64.b64decode(response.json()["audio"]["data"])
+        os.makedirs("./cache/tts/", exist_ok=True)
+        with open("./cache/tts/" + fname + ".mp3", "wb") as ff:
+            ff.write(b64)
 
-            return "./cache/tts/" + fname + ".mp3"
-
-        except:
-            print_exc()
-            return None
+        return "./cache/tts/" + fname + ".mp3"

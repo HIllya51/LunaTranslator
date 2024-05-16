@@ -1,7 +1,7 @@
 from traceback import print_exc
 from queue import Queue
 
-from myutils.config import globalconfig, translatorsetting, static_data
+from myutils.config import globalconfig, translatorsetting, getlangtgt
 from threading import Thread
 import time, types
 import zhconv, gobject
@@ -172,7 +172,7 @@ class basetrans(commonbase):
     @property
     def needzhconv(self):
         # The API does not support direct translation to Traditional Chinese, only Simplified Chinese can be translated first and then converted to Traditional Chinese
-        l = static_data["language_list_translator_inner"][globalconfig["tgtlang3"]]
+        l = getlangtgt()
         return l == "cht" and "cht" not in self.langmap()
 
     @property

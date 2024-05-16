@@ -7,7 +7,7 @@ from myutils.config import (
     postprocessconfig,
     globalconfig,
     savehook_new_data,
-    static_data,
+    getlangsrc,
 )
 
 
@@ -179,7 +179,7 @@ def _4_f(line):
 
 
 def _6_fEX(line):
-    srclang = static_data["language_list_translator_inner"][globalconfig["srclang3"]]
+    srclang = getlangsrc()
     if srclang in ["zh", "ja"]:
         white = ""
     else:

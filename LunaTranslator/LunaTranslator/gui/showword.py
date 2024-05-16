@@ -44,14 +44,14 @@ class AnkiWindow(QWidget):
 
     def langdu(self):
         if gobject.baseobject.reader:
-            self.audiopath.setText(
-                gobject.baseobject.reader.syncttstofile(self.currentword)
+            gobject.baseobject.reader.ttscallback(
+                self.currentword, self.audiopath.setText
             )
 
     def langdu2(self):
         if gobject.baseobject.reader:
-            self.audiopath_sentence.setText(
-                gobject.baseobject.reader.syncttstofile(self.example.toPlainText())
+            gobject.baseobject.reader.ttscallback(
+                self.example.toPlainText(), self.audiopath_sentence.setText
             )
 
     @threader
@@ -205,27 +205,41 @@ class AnkiWindow(QWidget):
 
     def loadfakefields(self):
         if len(self.editpath.text()):
-            with open(self.editpath.text(), "rb") as image_file:
-                encoded_string = base64.b64encode(image_file.read()).decode("utf-8")
-            encoded_string = '<img src="data:image/png;base64,{}">'.format(
-                encoded_string
-            )
+            try:
+                with open(self.editpath.text(), "rb") as image_file:
+                    encoded_string = base64.b64encode(image_file.read()).decode("utf-8")
+                encoded_string = '<img src="data:image/png;base64,{}">'.format(
+                    encoded_string
+                )
+            except:
+                encoded_string = ""
         else:
             encoded_string = ""
         if len(self.audiopath.text()):
-            with open(self.audiopath.text(), "rb") as image_file:
-                encoded_string2 = base64.b64encode(image_file.read()).decode("utf-8")
-            encoded_string2 = """<button onclick='document.getElementById("audio1111").play()'>play audio<audio controls id="audio1111" style="display: none"><source src="data:audio/mpeg;base64,{}"></audio></button>""".format(
-                encoded_string2
-            )
+            try:
+                with open(self.audiopath.text(), "rb") as image_file:
+                    encoded_string2 = base64.b64encode(image_file.read()).decode(
+                        "utf-8"
+                    )
+                encoded_string2 = """<button onclick='document.getElementById("audio1111").play()'>play audio<audio controls id="audio1111" style="display: none"><source src="data:audio/mpeg;base64,{}"></audio></button>""".format(
+                    encoded_string2
+                )
+            except:
+                encoded_string2 = ""
         else:
             encoded_string2 = ""
         if len(self.audiopath_sentence.text()):
-            with open(self.audiopath_sentence.text(), "rb") as image_file:
-                encoded_string3 = base64.b64encode(image_file.read()).decode("utf-8")
-            encoded_string3 = """<button onclick='document.getElementById("audio2222").play()'>play audio_sentence<audio controls id="audio2222" style="display: none"><source src="data:audio/mpeg;base64,{}"></audio></button>""".format(
-                encoded_string3
-            )
+            try:
+                with open(self.audiopath_sentence.text(), "rb") as image_file:
+                    encoded_string3 = base64.b64encode(image_file.read()).decode(
+                        "utf-8"
+                    )
+                encoded_string3 = """<button onclick='document.getElementById("audio2222").play()'>play audio_sentence<audio controls id="audio2222" style="display: none"><source src="data:audio/mpeg;base64,{}"></audio></button>""".format(
+                    encoded_string3
+                )
+            except:
+
+                encoded_string3 = ""
         else:
             encoded_string3 = ""
         fields = {

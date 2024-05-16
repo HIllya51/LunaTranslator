@@ -115,17 +115,16 @@ class TTS(TTSbase):
 
     def speak(self, content, rate, voice, voice_idx):
         self.checkpath()
-        # def _():
-        if True:
+         
 
-            try:
-                content.encode("shift-jis")
-            except:
-                return
-            code1 = content.encode("shift-jis")
-            # print(code1)
-            windows.WriteFile(self.hPipe, code1)
+        try:
+            content.encode("shift-jis")
+        except:
+            return
+        code1 = content.encode("shift-jis")
+        # print(code1)
+        windows.WriteFile(self.hPipe, code1)
 
-            fname = windows.ReadFile(self.hPipe, 1024).decode("utf8")
-            if os.path.exists(fname):
-                return fname
+        fname = windows.ReadFile(self.hPipe, 1024).decode("utf8")
+        if os.path.exists(fname):
+            return fname

@@ -725,6 +725,11 @@
                     "name": "GPT-SOVITS preset"
                 }
             }
+        },
+        "gtts": {
+            "use": false,
+            "name": "谷歌",
+            "voice": ""
         }
     },
     "hirasetting": {
