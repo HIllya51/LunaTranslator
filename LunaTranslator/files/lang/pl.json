@@ -783,5 +783,10 @@
     "样式": "styl",
     "恢复": "odzyskiwanie",
     "模板": "Szablon",
-    "截图": "zrzut ekranu"
+    "截图": "zrzut ekranu",
+    "允许重复": "Zezwalaj na duplikaty",
+    "添加时更新模板": "Aktualizuj szablon podczas dodawania",
+    "截图后进行OCR": "Wykonanie OCR po wykonaniu zrzutów ekranu",
+    "优先级": "priorytet",
+    "编码": "kodowanie"
 }

@@ -783,5 +783,10 @@
     "样式": "stile",
     "恢复": "recupero",
     "模板": "Modello",
-    "截图": "screenshot"
+    "截图": "screenshot",
+    "允许重复": "Consenti duplicati",
+    "添加时更新模板": "Aggiorna modello quando aggiungi",
+    "截图后进行OCR": "Esegui OCR dopo aver scattato screenshot",
+    "优先级": "priorità",
+    "编码": "codifica"
 }

@@ -181,7 +181,8 @@
         "DeckName": "lunadeck",
         "ModelName2": "lunamodel2",
         "allowDuplicate": true,
-        "autoUpdateModel": true
+        "autoUpdateModel": true,
+        "ocrcroped": false
     },
     "ankiwindow": [
         100,
@@ -686,10 +687,12 @@
             "argstype": {
                 "path": {
                     "type": "file",
+                    "name": "路径",
                     "dir": true
                 },
                 "codec": {
                     "type": "combo",
+                    "name": "编码",
                     "list": [
                         "utf8",
                         "shiftjis"
@@ -718,11 +721,13 @@
             "argstype": {
                 "path": {
                     "type": "file",
+                    "name": "路径",
                     "dir": false,
                     "filter": "*.db"
                 },
                 "priority": {
                     "type": "intspin",
+                    "name": "优先级",
                     "min": 0,
                     "max": 10000,
                     "step": 1
@@ -741,11 +746,13 @@
             "argstype": {
                 "path": {
                     "type": "file",
+                    "name": "路径",
                     "dir": false,
                     "filter": "*.db"
                 },
                 "priority": {
                     "type": "intspin",
+                    "name": "优先级",
                     "min": 0,
                     "max": 10000,
                     "step": 1
@@ -762,10 +769,12 @@
             "argstype": {
                 "path": {
                     "type": "file",
+                    "name": "路径",
                     "dir": false
                 },
                 "priority": {
                     "type": "intspin",
+                    "name": "优先级",
                     "min": 0,
                     "max": 10000,
                     "step": 1
@@ -782,10 +791,12 @@
             "argstype": {
                 "path": {
                     "type": "file",
+                    "name": "路径",
                     "dir": true
                 },
                 "priority": {
                     "type": "intspin",
+                    "name": "优先级",
                     "min": 0,
                     "max": 10000,
                     "step": 1
@@ -801,6 +812,7 @@
             "argstype": {
                 "priority": {
                     "type": "intspin",
+                    "name": "优先级",
                     "min": 0,
                     "max": 10000,
                     "step": 1
@@ -816,6 +828,7 @@
             "argstype": {
                 "priority": {
                     "type": "intspin",
+                    "name": "优先级",
                     "min": 0,
                     "max": 10000,
                     "step": 1
@@ -831,6 +844,7 @@
             "argstype": {
                 "priority": {
                     "type": "intspin",
+                    "name": "优先级",
                     "min": 0,
                     "max": 10000,
                     "step": 1
@@ -846,6 +860,7 @@
             "argstype": {
                 "priority": {
                     "type": "intspin",
+                    "name": "优先级",
                     "min": 0,
                     "max": 10000,
                     "step": 1

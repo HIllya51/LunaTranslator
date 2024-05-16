@@ -182,16 +182,15 @@ class regexedit(QDialog):
         self.apply()
 
 
-def autoinitdialog_items(dict):
+def autoinitdialog_items(dic):
     items = []
-    for arg in dict["args"]:
-        items.append({"l": arg, "d": dict["args"], "k": arg})
-        if "argstype" in dict and arg in dict["argstype"]:
+    for arg in dic["args"]:
+        default = dict(name=arg, d=dic["args"], k=arg, type="lineedit")
 
-            items[-1].update(dict["argstype"][arg])
-        else:
-            items[-1].update({"t": "lineedit"})
-    items.append({"t": "okcancel"})
+        if "argstype" in dic and arg in dic["argstype"]:
+            default.update(dic["argstype"][arg])
+        items.append(default)
+    items.append({"type": "okcancel"})
     return items
 
 
@@ -233,20 +232,18 @@ class autoinitdialog(QDialog):
                 edit.setText(res)
 
         for line in lines:
-            if "type" in line:
-                line["t"] = line["type"]
             if "d" in line:
                 dd = line["d"]
             if "k" in line:
                 key = line["k"]
-            if line["t"] == "label":
+            if line["type"] == "label":
 
                 if "islink" in line and line["islink"]:
                     lineW = QLabel(makehtml(dd[key]))
                     lineW.setOpenExternalLinks(True)
                 else:
                     lineW = QLabel(_TR(dd[key]))
-            elif line["t"] == "combo":
+            elif line["type"] == "combo":
                 lineW = QComboBox()
                 if "list_function" in line:
                     try:
@@ -264,7 +261,7 @@ class autoinitdialog(QDialog):
                 lineW.currentIndexChanged.connect(
                     functools.partial(dd.__setitem__, key)
                 )
-            elif line["t"] == "okcancel":
+            elif line["type"] == "okcancel":
                 lineW = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel)
                 lineW.rejected.connect(self.close)
                 lineW.accepted.connect(
@@ -275,10 +272,10 @@ class autoinitdialog(QDialog):
 
                 lineW.button(QDialogButtonBox.Ok).setText(_TR("确定"))
                 lineW.button(QDialogButtonBox.Cancel).setText(_TR("取消"))
-            elif line["t"] == "lineedit":
+            elif line["type"] == "lineedit":
                 lineW = QLineEdit(dd[key])
                 regist.append([dd, key, lineW.text])
-            elif line["t"] == "file":
+            elif line["type"] == "file":
                 e = QLineEdit(dd[key])
                 regist.append([dd, key, e.text])
                 bu = QPushButton(_TR("选择" + ("文件夹" if line["dir"] else "文件")))
@@ -294,10 +291,10 @@ class autoinitdialog(QDialog):
                 lineW = QHBoxLayout()
                 lineW.addWidget(e)
                 lineW.addWidget(bu)
-            elif line["t"] == "switch":
+            elif line["type"] == "switch":
                 lineW = MySwitch(sign=dd[key])
                 regist.append([dd, key, lineW.isChecked])
-            elif line["t"] == "spin":
+            elif line["type"] == "spin":
                 lineW = QDoubleSpinBox()
                 lineW.setMinimum(0 if "min" not in line else line["min"])
                 lineW.setMaximum(100 if "max" not in line else line["max"])
@@ -305,15 +302,15 @@ class autoinitdialog(QDialog):
                 lineW.setValue(dd[key])
                 lineW.valueChanged.connect(functools.partial(dd.__setitem__, key))
 
-            elif line["t"] == "intspin":
+            elif line["type"] == "intspin":
                 lineW = QSpinBox()
                 lineW.setMinimum(0 if "min" not in line else line["min"])
                 lineW.setMaximum(100 if "max" not in line else line["max"])
                 lineW.setSingleStep(1 if "step" not in line else line["step"])
                 lineW.setValue(dd[key])
                 lineW.valueChanged.connect(functools.partial(dd.__setitem__, key))
-            if "l" in line:
-                formLayout.addRow(_TR(line["l"]), lineW)
+            if "name" in line:
+                formLayout.addRow(_TR(line["name"]), lineW)
             else:
                 formLayout.addRow(lineW)
         self.show()
@@ -327,8 +324,15 @@ def getsomepath1(
         title,
         800,
         [
-            {"t": "file", "l": label, "d": d, "k": k, "dir": isdir, "filter": filter1},
-            {"t": "okcancel", "callback": callback},
+            {
+                "type": "file",
+                "name": label,
+                "d": d,
+                "k": k,
+                "dir": isdir,
+                "filter": filter1,
+            },
+            {"type": "okcancel", "callback": callback},
         ],
     )
 

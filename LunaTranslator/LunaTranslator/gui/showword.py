@@ -39,7 +39,6 @@ from gui.rangeselect import rangeselct_function
 
 
 class AnkiWindow(QWidget):
-    setcurrenttext = pyqtSignal(str)
     __ocrsettext = pyqtSignal(str)
     refreshhtml = pyqtSignal()
 
@@ -67,7 +66,8 @@ class AnkiWindow(QWidget):
             img.save(fname)
             self.editpath.setText("")
             self.editpath.setText(os.path.abspath(fname))
-            self.asyncocr(fname)
+            if globalconfig["ankiconnect"]["ocrcroped"]:
+                self.asyncocr(fname)
 
         rangeselct_function(self, ocroncefunction, False, False)
 
@@ -250,7 +250,7 @@ class AnkiWindow(QWidget):
         wid = QWidget()
         wid.setLayout(layout)
         layout.addRow(
-            _TR("port"), getspinbox(0, 65536, globalconfig["ankiconnect"], "port")
+            _TR("端口号"), getspinbox(0, 65536, globalconfig["ankiconnect"], "port")
         )
         layout.addRow(
             _TR("DeckName"), getlineedit(globalconfig["ankiconnect"], "DeckName")
@@ -260,12 +260,16 @@ class AnkiWindow(QWidget):
         )
 
         layout.addRow(
-            _TR("allowDuplicate"),
+            _TR("允许重复"),
             getsimpleswitch(globalconfig["ankiconnect"], "allowDuplicate"),
         )
         layout.addRow(
-            _TR("autoUpdateModel"),
+            _TR("添加时更新模板"),
             getsimpleswitch(globalconfig["ankiconnect"], "autoUpdateModel"),
+        )
+        layout.addRow(
+            _TR("截图后进行OCR"),
+            getsimpleswitch(globalconfig["ankiconnect"], "ocrcroped"),
         )
 
         return wid
@@ -368,9 +372,7 @@ class AnkiWindow(QWidget):
         btn.clicked.connect(self.errorwrap)
         layout.addWidget(btn)
 
-        self.setcurrenttext.connect(self.reset)
-
-        self.__ocrsettext.connect(self.example.insertPlainText)
+        self.__ocrsettext.connect(self.example.appendPlainText)
 
         self.reset("")
         return wid
@@ -621,12 +623,13 @@ class searchwordW(closeashidewindow):
             sentence = self.searchtext.text() + sentence
         self.searchtext.setText(sentence)
 
+        self.ankiwindow.example.setPlainText(gobject.baseobject.currenttext)
         self.search(sentence)
 
     def search(self, sentence):
         if sentence == "":
             return
-        self.ankiwindow.setcurrenttext.emit(sentence)
+        self.ankiwindow.reset(sentence)
         for i in range(self.tab.count()):
             self.tab.removeTab(0)
         self.tabks.clear()
