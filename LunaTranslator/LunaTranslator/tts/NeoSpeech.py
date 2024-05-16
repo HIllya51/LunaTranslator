@@ -1,4 +1,3 @@
-from myutils.config import globalconfig
 import time
 import os
 import windows
@@ -18,8 +17,8 @@ class TTS(TTSbase):
         pipename = "\\\\.\\Pipe\\voiceroid2_" + t
         waitsignal = "voiceroid2waitload_" + t
 
-        idx = self.config["voice"].split("_")[-1]
-        hkey = self.config["voice"][: -len(idx) - 1]
+        idx = self.privateconfig["voice"].split("_")[-1]
+        hkey = self.privateconfig["voice"][: -len(idx) - 1]
 
         if self.voicexx != (hkey, idx):
             self.voicexx = (hkey, idx)
@@ -50,9 +49,6 @@ class TTS(TTSbase):
 
         self.voicexx = (0, 0)
         self.voicelist = self.getvoicelist()
-        if globalconfig["reader"][self.typename]["voice"] not in self.voicelist:
-            globalconfig["reader"][self.typename]["voice"] = self.voicelist[0]
-
         self.checkchange()
 
     def voiceshowmap(self, voice):

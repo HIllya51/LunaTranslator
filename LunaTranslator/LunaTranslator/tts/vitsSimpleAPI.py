@@ -6,7 +6,9 @@ from urllib.parse import quote
 
 class TTS(TTSbase):
     def getvoicelist(self):
-        responseVits = requests.get("http://127.0.0.1:23456/voice/speakers").json()
+        responseVits = requests.get(
+            f"http://127.0.0.1:{self.config['Port']}/voice/speakers"
+        ).json()
         self.voicelist = []
 
         # 获取所有模型类型，对于每个模型类型下的模型信息，将其 modelType、id、name 合成一个字符串
@@ -26,7 +28,7 @@ class TTS(TTSbase):
         idx = int(voice.split("_")[1])
         model = str.lower(voice.split("_")[0])
         response = requests.get(
-            f"http://127.0.0.1:23456/voice/{model}?text={encoded_content}&id={idx}&lang=auto&format=wav"
+            f"http://127.0.0.1:{self.config['Port']}/voice/{model}?text={encoded_content}&id={idx}&lang=auto&prompt_lang=auto&format=wav&preset={self.config['preset']}"
         ).content
         fname = str(time.time())
         os.makedirs("./cache/tts/", exist_ok=True)

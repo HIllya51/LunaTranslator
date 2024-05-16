@@ -1,7 +1,7 @@
 import functools
 
 from PyQt5.QtWidgets import QComboBox
-from gui.inputdialog import getsomepath1, noundictconfigdialog1
+from gui.inputdialog import autoinitdialog_items, noundictconfigdialog1, autoinitdialog
 from myutils.config import globalconfig, _TRL
 import os, functools
 import gobject
@@ -28,53 +28,54 @@ def getttsgrid(self):
 
     grids = []
     i = 0
-    self.ocrswitchs = {}
+    self.ttswitchs = {}
     line = []
     for name in globalconfig["reader"]:
 
         _f = "./LunaTranslator/tts/{}.py".format(name)
         if os.path.exists(_f) == False:
             continue
+        if "args" in globalconfig["reader"][name]:
+            items = autoinitdialog_items(globalconfig["reader"][name])
+            _3 = getcolorbutton(
+                globalconfig,
+                "",
+                callback=functools.partial(
+                    autoinitdialog,
+                    self,
+                    globalconfig["reader"][name]["name"],
+                    800,
+                    items,
+                ),
+                icon="fa.gear",
+                constcolor="#FF69B4",
+            )
+
+        else:
+            _3 = ""
 
         line += [
             ((globalconfig["reader"][name]["name"]), 6),
-            getsimpleswitch(
-                globalconfig["reader"][name],
-                "use",
-                name=name,
-                parent=self,
-                callback=functools.partial(
-                    yuitsu_switch,
-                    self,
-                    globalconfig["reader"],
-                    "readerswitchs",
-                    name,
-                    gobject.baseobject.startreader,
-                ),
-                pair="readerswitchs",
-            ),
-        ]
-        if "path" in globalconfig["reader"][name]:
-            line += [
-                getcolorbutton(
-                    globalconfig,
-                    "",
+            (
+                getsimpleswitch(
+                    globalconfig["reader"][name],
+                    "use",
+                    name=name,
+                    parent=self,
                     callback=functools.partial(
-                        getsomepath1,
+                        yuitsu_switch,
                         self,
-                        globalconfig["reader"][name]["name"],
-                        globalconfig["reader"][name],
-                        "path",
-                        globalconfig["reader"][name]["name"],
+                        globalconfig["reader"],
+                        "ttswitchs",
+                        name,
                         gobject.baseobject.startreader,
-                        True,
                     ),
-                    icon="fa.gear",
-                    constcolor="#FF69B4",
-                )
-            ]
-        else:
-            line += [""]
+                    pair="ttswitchs",
+                ),
+                1,
+            ),
+            _3,
+        ]
         if i % 3 == 2:
             grids.append(line)
             line = []

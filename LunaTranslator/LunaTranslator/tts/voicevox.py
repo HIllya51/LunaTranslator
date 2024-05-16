@@ -48,7 +48,7 @@ class TTS(TTSbase):
                 }
 
                 response = requests.get(
-                    "http://127.0.0.1:50021/speakers",
+                    f"http://127.0.0.1:{self.config['Port']}/speakers",
                     headers=headers,
                     proxies={"http": None, "https": None},
                 ).json()
@@ -84,7 +84,7 @@ class TTS(TTSbase):
             params = {"speaker": voiceidx, "text": content}
 
             response = requests.post(
-                "http://localhost:50021/audio_query",
+                f"http://localhost:{self.config['Port']}/audio_query",
                 params=params,
                 headers=headers,
                 proxies={"http": None, "https": None},
@@ -98,7 +98,7 @@ class TTS(TTSbase):
                 "speaker": voiceidx,
             }
             response = requests.post(
-                "http://localhost:50021/synthesis",
+                f"http://localhost:{self.config['Port']}/synthesis",
                 params=params,
                 headers=headers,
                 data=json.dumps(response.json()),

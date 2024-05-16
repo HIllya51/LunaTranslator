@@ -1,4 +1,3 @@
-from myutils.config import globalconfig
 import time
 import os
 import windows
@@ -15,9 +14,6 @@ class TTS(TTSbase):
         self.rate = ""
 
         self.voicelist = self.getvoicelist()
-        if globalconfig["reader"][self.typename]["voice"] not in self.voicelist:
-            globalconfig["reader"][self.typename]["voice"] = self.voicelist[0]
-
     def voiceshowmap(self, voice):
         name = voice.split("_")[0]
         jpname = {
@@ -66,12 +62,12 @@ class TTS(TTSbase):
             return False
         if (
             self.config["path"] != self.path
-            or self.config["voice"] != self.voice
-            or globalconfig["ttscommon"]["rate"] != self.rate
+            or self.privateconfig["voice"] != self.voice
+            or self.publicconfig["rate"] != self.rate
         ):
             self.path = self.config["path"]
-            self.rate = globalconfig["ttscommon"]["rate"]
-            self.voice = self.config["voice"]
+            self.rate = self.publicconfig["rate"]
+            self.voice = self.privateconfig["voice"]
             fname = str(time.time())
             os.makedirs("./cache/tts/", exist_ok=True)
             savepath = os.path.join(os.getcwd(), "cache/tts", fname + ".wav")
@@ -91,7 +87,7 @@ class TTS(TTSbase):
                         exepath,
                         self.config["path"],
                         dllpath,
-                        self.config["voice"],
+                        self.privateconfig["voice"],
                         savepath,
                         pipename,
                         waitsignal,

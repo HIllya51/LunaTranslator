@@ -19,8 +19,15 @@ class TTSbase:
     # 一些可能需要的属性
     @property
     def config(self):
-        return globalconfig["reader"][self.typename]
+        return self.privateconfig['args']
 
+    @property
+    def privateconfig(self):
+        return globalconfig["reader"][self.typename]
+    
+    @property
+    def publicconfig(self):
+        return globalconfig["ttscommon"]
     ########################
 
     def __init__(self, typename, showlistsignal, mp3playsignal) -> None:
@@ -39,12 +46,12 @@ class TTSbase:
                 except:
                     _v = k
                 self.voiceshowlist.append(_v)
-            if globalconfig["reader"][self.typename]["voice"] not in self.voicelist:
-                globalconfig["reader"][self.typename]["voice"] = self.voicelist[0]
+            if self.privateconfig["voice"] not in self.voicelist:
+                self.privateconfig["voice"] = self.voicelist[0]
 
             showlistsignal.emit(
                 self.voiceshowlist,
-                self.voicelist.index(globalconfig["reader"][self.typename]["voice"]),
+                self.voicelist.index(self.privateconfig["voice"]),
             )
             self.loadok = True
 
@@ -53,7 +60,7 @@ class TTSbase:
     def read(self, content, force=False):
         def _(content, force):
             fname = self.syncttstofile(content)
-            volume = globalconfig["ttscommon"]["volume"]
+            volume = self.publicconfig["volume"]
             if fname:
                 self.mp3playsignal.emit(fname, volume, force)
 
@@ -67,8 +74,8 @@ class TTSbase:
         if len(self.voicelist) == 0:
             return
 
-        rate = globalconfig["ttscommon"]["rate"]
-        voice = globalconfig["reader"][self.typename]["voice"]
+        rate = self.publicconfig["rate"]
+        voice = self.privateconfig["voice"]
         voice_index = self.voicelist.index(voice)
         fname = self.speak(content, rate, voice, voice_index)
         return os.path.abspath(fname)

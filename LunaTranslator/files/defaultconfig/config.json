@@ -655,25 +655,76 @@
         "voiceroid2": {
             "use": false,
             "voice": "",
-            "path": "",
-            "name": "VoiceRoid2"
+            "name": "VoiceRoid2",
+            "args": {
+                "path": ""
+            },
+            "argstype": {
+                "path": {
+                    "type": "file",
+                    "name": "路径",
+                    "dir": true
+                }
+            }
         },
         "voiceroidplus": {
             "use": false,
             "voice": "",
-            "path": "",
-            "name": "VoiceRoid+"
+            "name": "VoiceRoid+",
+            "args": {
+                "path": ""
+            },
+            "argstype": {
+                "path": {
+                    "type": "file",
+                    "name": "路径",
+                    "dir": true
+                }
+            }
         },
         "voicevox": {
             "use": false,
             "voice": "",
-            "path": "",
-            "name": "VOICEVOX"
+            "name": "VOICEVOX",
+            "args": {
+                "path": "",
+                "Port": 50021
+            },
+            "argstype": {
+                "Port": {
+                    "type": "intspin",
+                    "min": 1,
+                    "max": 65535,
+                    "step": 1,
+                    "name": "端口号"
+                },
+                "path": {
+                    "type": "file",
+                    "name": "路径",
+                    "dir": true
+                }
+            }
         },
         "vitsSimpleAPI": {
             "use": false,
             "voice": "",
-            "name": "vits-simple-api"
+            "name": "vits-simple-api",
+            "args": {
+                "Port": 23456,
+                "preset": ""
+            },
+            "argstype": {
+                "Port": {
+                    "type": "intspin",
+                    "min": 1,
+                    "max": 65535,
+                    "step": 1,
+                    "name": "端口号"
+                },
+                "preset": {
+                    "name": "GPT-SOVITS preset"
+                }
+            }
         }
     },
     "hirasetting": {
