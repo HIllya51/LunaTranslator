@@ -3,7 +3,7 @@ from ocrengines.baseocrclass import baseocr
 
 class OCR(baseocr):
 
-    def ocr(self, imgfile):
+    def ocr(self, imagebinary):
         self.checkempty(["token"])
 
         headers = {
@@ -29,7 +29,7 @@ class OCR(baseocr):
             '------WebKitFormBoundaryUjYOv45hug6CFh3t\r\nContent-Disposition: form-data; name="file"; filename="screenshot.png"\r\nContent-Type: application/octet-stream\r\n\r\n'.encode(
                 "latin-1"
             )
-            + open(imgfile, "rb").read()
+            + imagebinary
             + "\r\n------WebKitFormBoundaryUjYOv45hug6CFh3t--\r\n".encode("latin-1")
         )
 

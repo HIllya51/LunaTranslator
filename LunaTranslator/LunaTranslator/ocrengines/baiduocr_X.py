@@ -36,7 +36,7 @@ class OCR(baseocr):
                 + self.secretKey
             ).json()["access_token"]
 
-    def ocr(self, imgfile):
+    def ocr(self, imagebinary):
         self.checkchange()
         if self.accstoken == "":
             return ""
@@ -57,9 +57,8 @@ class OCR(baseocr):
         }
 
         params = {"access_token": self.accstoken}  # '',
-        with open(imgfile, "rb") as ff:
-            f = ff.read()
-        b64 = base64.b64encode(f)
+        
+        b64 = base64.b64encode(imagebinary)
 
         data = {
             "image": b64,

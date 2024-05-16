@@ -24,11 +24,9 @@ class OCR(baseocr):
             self.tokens[(app_id, app_secret)] = token
         return self.tokens[(app_id, app_secret)]
 
-    def ocr(self, imgfile):
+    def ocr(self, imagebinary):
         token = self.check()
-        with open(imgfile, "rb") as ff:
-            f = ff.read()
-        b64 = base64.b64encode(f)
+        b64 = base64.b64encode(imagebinary)
         res = self.session.post(
             "https://open.feishu.cn/open-apis/optical_char_recognition/v1/image/basic_recognize",
             headers={

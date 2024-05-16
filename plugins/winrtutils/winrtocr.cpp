@@ -57,13 +57,13 @@ wchar_t **getlanguagelist(int *num)
     *num = languages.Size();
     return ret;
 }
-ocrres OCR(wchar_t *fname, wchar_t *lang, wchar_t *space, int *num)
+ocrres OCR(void *ptr, size_t size, wchar_t *lang, wchar_t *space, int *num)
 {
-    std::wstring imagePath = fname;
-
-    StorageFile imageFile = StorageFile::GetFileFromPathAsync(imagePath).get();
-    IRandomAccessStream imageStream = imageFile.OpenAsync(FileAccessMode::Read).get();
-    BitmapDecoder decoder = BitmapDecoder::CreateAsync(imageStream).get();
+    IBuffer buffer = CryptographicBuffer::CreateFromByteArray(
+        winrt::array_view<uint8_t>(static_cast<uint8_t *>(ptr), size));
+    InMemoryRandomAccessStream memoryStream;
+    memoryStream.WriteAsync(buffer).get();
+    BitmapDecoder decoder = BitmapDecoder::CreateAsync(memoryStream).get();
 
     SoftwareBitmap softwareBitmap = decoder.GetSoftwareBitmapAsync().get();
     std::wstring l = lang;

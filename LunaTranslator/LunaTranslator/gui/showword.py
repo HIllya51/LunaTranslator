@@ -55,19 +55,21 @@ class AnkiWindow(QWidget):
             )
 
     @threader
-    def asyncocr(self, fname):
-        self.__ocrsettext.emit(ocr_run(fname))
+    def asyncocr(self, img):
+        self.__ocrsettext.emit(ocr_run(img))
 
     def crop(self):
         def ocroncefunction(rect):
-            img = imageCut(0, rect[0][0], rect[0][1], rect[1][0], rect[1][1])
+            img = imageCut(
+                0, rect[0][0], rect[0][1], rect[1][0], rect[1][1], False, True
+            )
             fname = "./cache/ocr/cropforanki.png"
             os.makedirs("./cache/ocr", exist_ok=True)
             img.save(fname)
             self.editpath.setText("")
             self.editpath.setText(os.path.abspath(fname))
             if globalconfig["ankiconnect"]["ocrcroped"]:
-                self.asyncocr(fname)
+                self.asyncocr(img)
 
         rangeselct_function(self, ocroncefunction, False, False)
 
@@ -378,6 +380,8 @@ class AnkiWindow(QWidget):
         return wid
 
     def wrappedpixmap(self, src):
+        if not src:
+            return
         pix = QPixmap.fromImage(QImage(src))
         rate = self.devicePixelRatioF()
         pix.setDevicePixelRatio(rate)

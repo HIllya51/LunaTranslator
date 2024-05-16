@@ -9,7 +9,7 @@ class baseocr(commonbase):
     def initocr(self):
         pass
 
-    def ocr(self, imgpath):
+    def ocr(self, imagebinary):
         raise Exception
 
     def end(self):
@@ -101,11 +101,11 @@ class baseocr(commonbase):
             raise e
         self.needinit = False
 
-    def _private_ocr(self, imgpath):
+    def _private_ocr(self, imagebinary):
         if self.needinit:
             self.level2init()
         try:
-            text = self.ocr(imgpath)
+            text = self.ocr(imagebinary)
         except Exception as e:
             self.needinit = True
             raise e

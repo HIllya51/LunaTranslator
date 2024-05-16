@@ -356,10 +356,7 @@ class QUnFrameWindow(resizableframeless):
         @threader
         def ocroncefunction(rect):
             img = imageCut(0, rect[0][0], rect[0][1], rect[1][0], rect[1][1])
-            fname = "./cache/ocr/once.png"
-            os.makedirs("./cache/ocr", exist_ok=True)
-            img.save(fname)
-            text = ocr_run(fname)
+            text = ocr_run(img)
             gobject.baseobject.textgetmethod(text, False)
 
         rangeselct_function(self, ocroncefunction, False, False)

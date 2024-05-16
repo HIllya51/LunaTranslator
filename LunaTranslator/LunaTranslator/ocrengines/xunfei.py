@@ -11,7 +11,7 @@ import json
 
 
 class OCR(baseocr):
-    def ocr(self, imgfile):
+    def ocr(self, imagebinary):
         self.checkempty(["APPId", "APISecret", "APIKey"])
 
         APPId = self.config["APPId"]
@@ -50,9 +50,8 @@ class OCR(baseocr):
                 u = Url(host, path, schema)
                 return u
 
-            def get_body(self, file_path):
-                file = open(file_path, "rb")
-                buf = file.read()
+            def get_body(self, imagebinary):
+                buf = imagebinary
                 body = {
                     "header": {"app_id": self.appid, "status": 3},
                     "parameter": {
@@ -120,7 +119,7 @@ class OCR(baseocr):
         }
         # print("request_url:", request_url)
 
-        body = printed_word_recognition.get_body(file_path=imgfile)
+        body = printed_word_recognition.get_body(file_path=imagebinary)
         response = self.session.post(
             request_url, data=json.dumps(body), headers=headers
         )

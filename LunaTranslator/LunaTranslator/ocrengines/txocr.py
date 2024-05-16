@@ -19,12 +19,10 @@ class OCR(baseocr):
             "th": "tha",
         }
 
-    def ocr(self, imgfile):
+    def ocr(self, imagebinary):
         self.checkempty(["SecretId", "SecretKey"])
 
-        with open(imgfile, "rb") as f:
-            data = f.read()
-            encodestr = str(base64.b64encode(data), "utf-8")
+        encodestr = str(base64.b64encode(imagebinary), "utf-8")
         req_para = {
             "LanguageType": self.srclang,
             "Action": "GeneralBasicOCR",

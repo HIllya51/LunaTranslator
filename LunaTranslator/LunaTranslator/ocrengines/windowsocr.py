@@ -25,7 +25,7 @@ class OCR(baseocr):
             v = self.supportmap.pop("zh-Hant")
             self.supportmap["cht"] = v
 
-    def ocr(self, imgfile):
+    def ocr(self, imagebinary):
         if self.srclang not in self.supportmap:
             idx = static_data["language_list_translator_inner"].index(self.srclang)
             raise Exception(
@@ -39,9 +39,7 @@ class OCR(baseocr):
         else:
             space = " "
 
-        ret = winrtutils.OCR_f(
-            os.path.abspath(imgfile), self.supportmap[self.srclang], space
-        )
+        ret = winrtutils.OCR_f(imagebinary, self.supportmap[self.srclang], space)
         boxs = [_[1:] for _ in ret]
         texts = [_[0] for _ in ret]
 

@@ -2,7 +2,7 @@ import time
 from myutils.config import globalconfig
 import winsharedutils
 from gui.rangeselect import rangeadjust
-from myutils.ocrutil import imageCut, ocr_run, ocr_end
+from myutils.ocrutil import imageCut, ocr_run, ocr_end,qimage2binary
 import time, gobject, os
 from PyQt5.QtWidgets import QApplication
 from PyQt5.QtGui import QImage
@@ -131,7 +131,7 @@ class ocrtext(basetext):
                     ok = False
             if ok == False:
                 continue
-            text = self.ocrtest(imgr)
+            text = ocr_run(imgr)
             self.lastocrtime[i] = time.time()
 
             if self.savelasttext[i] is not None:
@@ -154,7 +154,7 @@ class ocrtext(basetext):
                 return
             img = imageCut(self.hwnd, rect[0][0], rect[0][1], rect[1][0], rect[1][1])
 
-            text = self.ocrtest(img)
+            text = ocr_run(img)
             imgr1 = qimge2np(img)
             self.savelastimg[i] = imgr1
             self.savelastrecimg[i] = imgr1
@@ -163,14 +163,6 @@ class ocrtext(basetext):
             __text.append(text)
         return "\n".join(__text)
 
-    def ocrtest(self, img):
-        os.makedirs("./cache/ocr", exist_ok=True)
-        fname = "./cache/ocr/{}.png".format(self.timestamp)
-        img.save(fname)
-        # print(fname)
-        text = ocr_run(fname)
-        # print(text)
-        return text
 
     def end(self):
         globalconfig["ocrregions"] = [_.getrect() for _ in self.range_ui]

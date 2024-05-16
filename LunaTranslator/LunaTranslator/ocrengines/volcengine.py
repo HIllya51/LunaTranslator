@@ -1740,7 +1740,7 @@ from ocrengines.baseocrclass import baseocr
 
 class OCR(baseocr):
 
-    def ocr(self, imgfile):
+    def ocr(self, imagebinary):
         visual_service = VisualService()
         self.checkempty(["Access Key ID", "Secret Access Key"])
         # call below method if you dont set ak and sk in $HOME/.volc/config
@@ -1753,11 +1753,8 @@ class OCR(baseocr):
         # if you cannot find the needed one, please check other example files in the same dir
         # or contact us for further help
         form = dict()
-        import base64
 
-        with open(imgfile, "rb") as ff:
-            f = ff.read()
-        b64 = base64.b64encode(f)
+        b64 = base64.b64encode(imagebinary)
         form["image_base64"] = b64
         resp = visual_service.ocr_api("MultiLanguageOCR", form, self.proxy)
         try:

@@ -10,7 +10,7 @@ class OCR(baseocr):
     def langmap(self):
         return {"zh": "zh-CHS", "cht": "zh-CHT"}
 
-    def freetest(self, imgfile):
+    def freetest(self, imagebinary):
         headers = {
             "authority": "aidemo.youdao.com",
             "accept": "*/*",
@@ -26,9 +26,7 @@ class OCR(baseocr):
             "sec-fetch-site": "same-site",
             "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36",
         }
-        with open(imgfile, "rb") as ff:
-            f = ff.read()
-        b64 = base64.b64encode(f)
+        b64 = base64.b64encode(imagebinary)
         data = {
             "imgBase": "data:image/jpeg;base64," + str(b64, encoding="utf8"),
             "lang": "",
@@ -50,7 +48,7 @@ class OCR(baseocr):
         except:
             raise Exception(response.text)
 
-    def ocrapi(self, imgfile):
+    def ocrapi(self, imagebinary):
         def truncate(q):
             if q is None:
                 return None
@@ -65,9 +63,7 @@ class OCR(baseocr):
         self.checkempty(["APP_KEY", "APP_SECRET"])
         APP_KEY, APP_SECRET = self.config["APP_KEY"], self.config["APP_SECRET"]
         YOUDAO_URL = "https://openapi.youdao.com/ocrapi"
-        file = open(imgfile, "rb")
-        content = base64.b64encode(file.read()).decode("utf-8")
-        file.close()
+        content = base64.b64encode(imagebinary).decode("utf-8")
 
         data = {}
         data["img"] = content
@@ -99,10 +95,10 @@ class OCR(baseocr):
         except:
             raise Exception(response.text)
 
-    def ocr(self, imgfile):
+    def ocr(self, imagebinary):
         interfacetype = self.config["接口"]
         if interfacetype == 0:
-            return self.freetest(imgfile)
+            return self.freetest(imagebinary)
         elif interfacetype == 1:
-            return self.ocrapi(imgfile)
+            return self.ocrapi(imagebinary)
         raise Exception("unknown")

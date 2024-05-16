@@ -5,6 +5,7 @@ from ctypes import (
     c_wchar_p,
     pointer,
     CDLL,
+    c_size_t,
     Structure,
     c_void_p,
 )
@@ -30,7 +31,7 @@ if winrtutilsdll:
         ]
 
     _OCR_f = winrtutilsdll.OCR
-    _OCR_f.argtypes = c_wchar_p, c_wchar_p, c_wchar_p, POINTER(c_uint)
+    _OCR_f.argtypes = c_void_p, c_size_t, c_wchar_p, c_wchar_p, POINTER(c_uint)
     _OCR_f.restype = ocrres
     _freeocrres = winrtutilsdll.freeocrres
     _freeocrres.argtypes = ocrres, c_uint
@@ -54,9 +55,9 @@ if winrtutilsdll:
         _freewstringlist(ret, num.value)
         return _allsupport
 
-    def OCR_f(imgpath, lang, space):
+    def OCR_f(data, lang, space):
         num = c_uint()
-        ret = _OCR_f(imgpath, lang, space, pointer(num))
+        ret = _OCR_f(data, len(data), lang, space, pointer(num))
         res = []
         for i in range(num.value):
             res.append((ret.lines[i], ret.xs[i], ret.ys[i], ret.xs2[i], ret.ys2[i]))

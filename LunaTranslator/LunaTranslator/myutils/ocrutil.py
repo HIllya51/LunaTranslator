@@ -11,24 +11,31 @@ from traceback import print_exc
 import gobject, winsharedutils
 
 
+def qimage2binary(qimage: QImage):
+    byte_array = QByteArray()
+    buffer = QBuffer(byte_array)
+    buffer.open(QBuffer.WriteOnly)
+    qimage.save(buffer, "BMP")
+    buffer.close()
+    image_data = byte_array.data()
+    return image_data
+
+
+def binary2qimage(binary):
+    image = QImage()
+    image.loadFromData(binary)
+    return image
+
+
 def togray(image):
     gray_image = image.convertToFormat(QImage.Format_Grayscale8)
     return gray_image
 
 
 def otsu_threshold_fast(image: QImage, thresh):
-
-    byte_array = QByteArray()
-    buffer = QBuffer(byte_array)
-    buffer.open(QBuffer.WriteOnly)
-    image.save(buffer, "BMP")
-    buffer.close()
-    image_data = byte_array.data()
-
+    image_data = qimage2binary(image)
     solved = winsharedutils.otsu_binary(image_data, thresh)
-    image = QImage()
-    image.loadFromData(solved)
-    return image
+    return binary2qimage(solved)
 
 
 def imagesolve(image):
@@ -43,7 +50,7 @@ def imagesolve(image):
     return image2
 
 
-def imageCut(hwnd, x1, y1, x2, y2, viscompare=True):
+def imageCut(hwnd, x1, y1, x2, y2, viscompare=True, rawimage=False) -> QImage:
     screen = QApplication.primaryScreen()
     for _ in range(2):
 
@@ -81,6 +88,8 @@ def imageCut(hwnd, x1, y1, x2, y2, viscompare=True):
             )
 
     image = pix.toImage()
+    if rawimage:
+        return image
     image2 = imagesolve(image)
     if viscompare:
         gobject.baseobject.showocrimage.setimage.emit([image, image2])
@@ -101,7 +110,7 @@ def ocr_end():
     _ocrengine = None
 
 
-def ocr_run(img):
+def ocr_run(qimage: QImage):
     global _nowuseocr, _ocrengine
 
     use = None
@@ -123,7 +132,7 @@ def ocr_run(img):
             aclass = importlib.import_module("ocrengines." + use).OCR
             _ocrengine = aclass(use)
             _nowuseocr = use
-        text = _ocrengine._private_ocr(img)
+        text = _ocrengine._private_ocr(qimage2binary(qimage))
     except Exception as e:
         if isinstance(e, ArgsEmptyExc):
             msg = str(e)

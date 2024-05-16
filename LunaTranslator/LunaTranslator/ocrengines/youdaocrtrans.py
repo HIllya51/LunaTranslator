@@ -9,7 +9,7 @@ class OCR(baseocr):
     def langmap(self):
         return {"zh": "zh-CHS", "cht": "zh-CHT"}
 
-    def freetest(self, imgfile):
+    def freetest(self, imagebinary):
 
         headers = {
             "authority": "aidemo.youdao.com",
@@ -26,9 +26,7 @@ class OCR(baseocr):
             "sec-fetch-site": "same-site",
             "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36",
         }
-        with open(imgfile, "rb") as ff:
-            f = ff.read()
-        b64 = base64.b64encode(f)
+        b64 = base64.b64encode(imagebinary)
         data = {
             "imgBase": "data:image/jpeg;base64," + str(b64, encoding="utf8"),
             "lang": "",
@@ -46,13 +44,11 @@ class OCR(baseocr):
         except:
             raise Exception(response.text)
 
-    def ocrapi(self, imgfile):
+    def ocrapi(self, imagebinary):
 
         self.checkempty(["APP_KEY", "APP_SECRET"])
         APP_KEY, APP_SECRET = self.config["APP_KEY"], self.config["APP_SECRET"]
-
-        # 待翻译图片路径, 例windows路径：PATH = "C:\\youdao\\media.jpg"
-        PATH = imgfile
+ 
 
         """
         添加鉴权相关参数 -
@@ -121,7 +117,7 @@ class OCR(baseocr):
             type = "1"
 
             # 数据的base64编码
-            q = readFileAsBase64(PATH)
+            q = readFileAsBase64(imagebinary)
             data = {
                 "q": q,
                 "from": lang_from,
@@ -142,10 +138,8 @@ class OCR(baseocr):
             elif "post" == method:
                 return self.session.post(url, params, header)
 
-        def readFileAsBase64(path):
-            f = open(path, "rb")
-            data = f.read()
-            return str(base64.b64encode(data), "utf-8")
+        def readFileAsBase64(imagebinary):
+            return str(base64.b64encode(imagebinary), "utf-8")
 
         self.countnum()
 
@@ -161,10 +155,10 @@ class OCR(baseocr):
         except:
             raise Exception(response.text)
 
-    def ocr(self, imgfile):
+    def ocr(self, imagebinary):
         interfacetype = self.config["接口"]
         if interfacetype == 0:
-            return self.freetest(imgfile)
+            return self.freetest(imagebinary)
         elif interfacetype == 1:
-            return self.ocrapi(imgfile)
+            return self.ocrapi(imagebinary)
         raise Exception("unknown")

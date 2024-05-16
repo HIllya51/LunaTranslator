@@ -15,7 +15,7 @@ class OCR(baseocr):
             "cht": "cht",
         }
 
-    def ocr(self, imgfile):
+    def ocr(self, imagebinary):
         self.checkempty(["apikey"])
         apikey = self.config["apikey"]
         if self.config["interface"] == 1:
@@ -39,9 +39,7 @@ class OCR(baseocr):
             "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36 Edg/105.0.1343.53",
         }
 
-        with open(imgfile, "rb") as ff:
-            f = ff.read()
-        b64 = base64.b64encode(f)
+        b64 = base64.b64encode(imagebinary)
         data = {
             "language": self.srclang,
             "base64Image": "data:image/jpeg;base64," + str(b64, encoding="utf8"),

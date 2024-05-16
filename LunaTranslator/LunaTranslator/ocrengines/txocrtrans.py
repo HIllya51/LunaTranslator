@@ -8,12 +8,10 @@ class OCR(baseocr):
         # https://cloud.tencent.com/document/product/551/17232
         return {"cht": "zh-TW"}
 
-    def ocr(self, imgfile):
+    def ocr(self, imagebinary):
         self.checkempty(["SecretId", "SecretKey"])
 
-        with open(imgfile, "rb") as f:
-            data = f.read()
-            encodestr = str(base64.b64encode(data), "utf-8")
+        encodestr = str(base64.b64encode(imagebinary), "utf-8")
         req_para = {
             "Source": self.srclang,
             "Target": self.tgtlang,
