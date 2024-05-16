@@ -8,11 +8,19 @@
 
 <script>
     ruby = {{ rubytext }}
+    word = {{ word }}
     html = ''
-    for (i = 0; i < ruby.length; i++) {
-        html += ruby[i]['orig'] + '<rt>' + ruby[i]['hira'] + '</rt>';
+    if (ruby.length) {
+        for (i = 0; i < ruby.length; i++) {
+            html += ruby[i]['orig'] + '<rt>' + ruby[i]['hira'] + '</rt>';
+        }
+        html = '<ruby>' + html + '</ruby>'
     }
-    document.getElementById('rubyword').innerHTML = '<ruby>' + html + '</ruby>'
+    else {
+        html = word
+    }
+    document.getElementById('rubyword').innerHTML = html
+
 
 </script>
 
