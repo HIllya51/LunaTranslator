@@ -11,11 +11,11 @@ from traceback import print_exc
 import gobject, winsharedutils
 
 
-def qimage2binary(qimage: QImage):
+def qimage2binary(qimage: QImage, fmt="BMP"):
     byte_array = QByteArray()
     buffer = QBuffer(byte_array)
     buffer.open(QBuffer.WriteOnly)
-    qimage.save(buffer, "BMP")
+    qimage.save(buffer, fmt)
     buffer.close()
     image_data = byte_array.data()
     return image_data
@@ -132,7 +132,7 @@ def ocr_run(qimage: QImage):
             aclass = importlib.import_module("ocrengines." + use).OCR
             _ocrengine = aclass(use)
             _nowuseocr = use
-        text = _ocrengine._private_ocr(qimage2binary(qimage))
+        text = _ocrengine._private_ocr(qimage2binary(qimage, "PNG"))
     except Exception as e:
         if isinstance(e, ArgsEmptyExc):
             msg = str(e)

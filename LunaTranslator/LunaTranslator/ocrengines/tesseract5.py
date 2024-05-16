@@ -24,10 +24,11 @@ class OCR(baseocr):
         path = self.config["路径"]
         if os.path.exists(path) == False:
             raise Exception(_TR("路径不存在"))
-        qimage = binary2qimage(imagebinary)
+        
         os.makedirs("./cache/ocr", exist_ok=True)
         fname = "./cache/ocr/" + str(uuid.uuid4()) + ".png"
-        qimage.save(fname)
+        with open(fname, "wb") as ff:
+            ff.write(imagebinary)
         imgfile = os.path.abspath(fname)
         _ = subproc_w(
             '"{}" "{}" - -l {} {}'.format(

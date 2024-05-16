@@ -7,10 +7,11 @@ from myutils.ocrutil import binary2qimage
 class OCR(baseocr):
 
     def ocr(self, imagebinary):
-        qimage = binary2qimage(imagebinary)
+
         os.makedirs("./cache/ocr", exist_ok=True)
         fname = "./cache/ocr/" + str(uuid.uuid4()) + ".png"
-        qimage.save(fname)
+        with open(fname, "wb") as ff:
+            ff.write(imagebinary)
         self.checkempty(["Port"])
         self.port = self.config["Port"]
 
