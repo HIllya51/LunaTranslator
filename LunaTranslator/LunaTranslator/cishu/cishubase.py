@@ -30,9 +30,8 @@ class cishubase:
             except:
                 self.needinit = True
 
-            if res is None or res == "":
-                return
-            self.callback(res)
+            if res and len(res):
+                self.callback(res)
         except:
             pass
 
