@@ -4,26 +4,26 @@ import windows
 from tts.basettsclass import TTSbase
 import ctypes, subprocess
 from myutils.subproc import subproc_w, autoproc
+from ctypes import cast, POINTER, c_char, c_int32
 
 
 class TTS(TTSbase):
     def checkchange(self):
         fname = str(time.time())
         os.makedirs("./cache/tts/", exist_ok=True)
-        savepath = os.path.join(os.getcwd(), "cache/tts", fname)
         exepath = os.path.join(os.getcwd(), "files/plugins/shareddllproxy32.exe")
         t = time.time()
         t = str(t)
         pipename = "\\\\.\\Pipe\\voiceroid2_" + t
         waitsignal = "voiceroid2waitload_" + t
-
+        mapname = "voiceroid2filemap" + t
         idx = self.privateconfig["voice"].split("_")[-1]
         hkey = self.privateconfig["voice"][: -len(idx) - 1]
 
         if self.voicexx != (hkey, idx):
             self.voicexx = (hkey, idx)
-            cmd = '"{}" neospeech  {} {}  "{}" {} {} '.format(
-                exepath, pipename, waitsignal, savepath, hkey, idx
+            cmd = '"{}" neospeech  {} {} {} {} {} '.format(
+                exepath, pipename, waitsignal, mapname, hkey, idx
             )
 
             self.engine = autoproc(subproc_w(cmd, name="neospeech"))
@@ -45,11 +45,23 @@ class TTS(TTSbase):
                 )
             )
 
+            self.mappedFile2 = windows.AutoHandle(
+                windows.OpenFileMapping(
+                    windows.FILE_MAP_READ | windows.FILE_MAP_WRITE, False, mapname
+                )
+            )
+            self.mem = windows.MapViewOfFile(
+                self.mappedFile2,
+                windows.FILE_MAP_READ | windows.FILE_MAP_WRITE,
+                0,
+                0,
+                1024 * 1024 * 10,
+            )
+
     def init(self):
 
         self.voicexx = (0, 0)
         self.voicelist = self.getvoicelist()
-        self.checkchange()
 
     def voiceshowmap(self, voice):
 
@@ -82,10 +94,6 @@ class TTS(TTSbase):
         windows.WriteFile(self.hPipe, bytes(ctypes.c_uint(rate)))
         buf = ctypes.create_unicode_buffer(content, 10000)
         windows.WriteFile(self.hPipe, bytes(buf))
-        fname = windows.ReadFile(self.hPipe, 1024).decode("utf-16-le")
-        if os.path.exists(fname):
-            with open("./cache/tts/" + fname + ".wav", "rb") as ff:
-                data = ff.read()
-            os.remove("./cache/tts/" + fname + ".wav")
-            return data
-        return None
+        size = c_int32.from_buffer_copy(windows.ReadFile(self.hPipe, 4)).value
+        
+        return cast(self.mem, POINTER(c_char))[:size]

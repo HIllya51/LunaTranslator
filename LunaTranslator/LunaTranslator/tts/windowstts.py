@@ -35,12 +35,8 @@ class TTS(TTSbase):
         else:
             version = 7
             voice_idx = self._7m[voice]
-        fname = str(time.time())
-        os.makedirs("./cache/tts/", exist_ok=True)
-        winsharedutils.SAPI_Speak(
-            content, version, voice_idx, rate, 100, "./cache/tts/" + fname + ".wav"
+        
+        data=winsharedutils.SAPI_Speak(
+            content, version, voice_idx, rate, 100 
         )
-        with open("./cache/tts/" + fname + ".wav", "rb") as ff:
-            data = ff.read()
-        os.remove("./cache/tts/" + fname + ".wav")
         return data

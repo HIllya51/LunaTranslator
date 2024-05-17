@@ -1,100 +1,6 @@
-﻿
-bool _Speak(std::wstring &Content, const wchar_t *token, int voiceid, int rate, int volume, std::wstring &FileName)
-{
-    ISpVoice *pVoice = NULL;
-    if (FAILED(::CoInitialize(NULL)))
-        return false;
-    bool ret = true;
-    do
-    {
-        HRESULT hr = CoCreateInstance(CLSID_SpVoice, NULL, CLSCTX_ALL, IID_ISpVoice, (void **)&pVoice);
-        if (FAILED(hr) || (NULL == pVoice))
-        {
-            ret = false;
-            break;
-        }
-        IEnumSpObjectTokens *pSpEnumTokens = NULL;
-        if (SUCCEEDED(SpEnumTokens(token, NULL, NULL, &pSpEnumTokens)))
-        {
-            ULONG ulTokensNumber = 0;
-            pSpEnumTokens->GetCount(&ulTokensNumber);
-            ISpObjectToken *m_pISpObjectToken;
+﻿bool _Speak(std::wstring &Content, const wchar_t *token, int voiceid, int rate, int volume, int *length, char **buffer);
 
-            pSpEnumTokens->Item(voiceid, &m_pISpObjectToken);
-            pVoice->SetVoice(m_pISpObjectToken);
-            pVoice->SetRate(rate);
-            pVoice->SetVolume(volume);
-
-            CComPtr<ISpStream> cpWavStream;
-            CComPtr<ISpStreamFormat> cpOldStream;
-            CSpStreamFormat originalFmt;
-            hr = pVoice->GetOutputStream(&cpOldStream);
-            if (FAILED(hr) || (NULL == cpOldStream))
-            {
-                ret = false;
-                break;
-            }
-            originalFmt.AssignFormat(cpOldStream);
-            hr = SPBindToFile(FileName.c_str(), SPFM_CREATE_ALWAYS, &cpWavStream, &originalFmt.FormatId(), originalFmt.WaveFormatExPtr());
-            if (FAILED(hr))
-            {
-                ret = false;
-                break;
-            }
-            pVoice->SetOutput(cpWavStream, TRUE);
-            pVoice->Speak(Content.c_str(), SPF_IS_XML, NULL);
-            pVoice->Release();
-            pSpEnumTokens->Release();
-            pVoice = NULL;
-        }
-
-    } while (0);
-
-    ::CoUninitialize();
-    return ret;
-}
-
-std::vector<std::wstring> _List(const wchar_t *token)
-{
-    if (FAILED(::CoInitialize(NULL)))
-        return {};
-    ISpVoice *pSpVoice = NULL;
-    std::vector<std::wstring> ret;
-    IEnumSpObjectTokens *pSpEnumTokens = NULL;
-    if (FAILED(CoCreateInstance(CLSID_SpVoice, NULL, CLSCTX_ALL, IID_ISpVoice, (void **)&pSpVoice)))
-    {
-        return {};
-    }
-    if (SUCCEEDED(SpEnumTokens(token, NULL, NULL, &pSpEnumTokens)))
-    {
-        ULONG ulTokensNumber = 0;
-        pSpEnumTokens->GetCount(&ulTokensNumber);
-        ISpObjectToken *m_pISpObjectToken;
-        for (ULONG i = 0; i < ulTokensNumber; i++)
-        {
-            pSpEnumTokens->Item(i, &m_pISpObjectToken);
-            WCHAR *pszVoiceId = NULL;
-            LPWSTR pszVoiceName;
-            if (SUCCEEDED(m_pISpObjectToken->GetId(&pszVoiceId)))
-            {
-                if (SUCCEEDED(m_pISpObjectToken->GetStringValue(NULL, &pszVoiceName)))
-                {
-                    ret.emplace_back(pszVoiceName);
-                    CoTaskMemFree(pszVoiceName);
-                }
-
-                CoTaskMemFree(pszVoiceId);
-            }
-        }
-        m_pISpObjectToken->Release();
-
-        pSpEnumTokens->Release();
-    }
-    pSpVoice->Release();
-    ::CoUninitialize();
-    return ret;
-}
-
+std::vector<std::wstring> _List(const wchar_t *token);
 int neospeechlist(int argc, wchar_t *argv[])
 {
     FILE *f = _wfopen(argv[1], L"wb");
@@ -125,7 +31,11 @@ int neospeech(int argc, wchar_t *argv[])
 
     HANDLE hPipe = CreateNamedPipe(argv[1], PIPE_ACCESS_DUPLEX, PIPE_TYPE_MESSAGE | PIPE_READMODE_MESSAGE | PIPE_WAIT, PIPE_UNLIMITED_INSTANCES, 65535, 65535, NMPWAIT_WAIT_FOREVER, 0);
 
-    
+    auto handle = CreateFileMappingW(INVALID_HANDLE_VALUE, &allAccess, PAGE_EXECUTE_READWRITE, 0, 1024 * 1024 * 10, argv[3]);
+
+    auto mapview = (char *)MapViewOfFile(handle, FILE_MAP_ALL_ACCESS | FILE_MAP_EXECUTE, 0, 0, 1024 * 1024 * 10);
+    memset(mapview, 0, 1024 * 1024 * 10);
+
     SetEvent(CreateEvent(&allAccess, FALSE, FALSE, argv[2]));
     if (ConnectNamedPipe(hPipe, NULL) != NULL)
     {
@@ -143,11 +53,12 @@ int neospeech(int argc, wchar_t *argv[])
         if (!ReadFile(hPipe, (unsigned char *)text, 10000 * 2, &_, NULL))
             break;
         std::wstring content = text;
-        wchar_t newname[1024] = {0};
-        wsprintf(newname, L"%s%d.wav", argv[3], II);
-        std::wstring newname_ = newname;
-        _Speak(content, hkey, idx, speed, 100, newname_);
-        WriteFile(hPipe, newname, wcslen(newname) * 2, &_, NULL);
+        int fsize;
+        char *buff;
+        _Speak(content, hkey, idx, speed, 100, &fsize, &buff);
+        memcpy(mapview, buff, fsize);
+        delete buff;
+        WriteFile(hPipe, &fsize, 4, &_, NULL);
     }
     return 0;
 }
