@@ -8,7 +8,7 @@
 </div>
 
 <script>
-    ruby = {{ rubytext }}
+    ruby = JSON.parse({{ rubytext }})
     html = ''
     if (ruby.length) {
         for (i = 0; i < ruby.length; i++) {
@@ -56,7 +56,7 @@
 </div>
 
 <script>
-    explains = {{ explain }}
+    explains = JSON.parse({{ explain }})
 
     function safehtml(html) {
         var tempParent = document.createElement('div');

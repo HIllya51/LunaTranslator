@@ -251,7 +251,12 @@ class AnkiWindow(QWidget):
 
     def loadfileds(self):
         word = self.currentword
-        explain = json.dumps(gobject.baseobject.searchwordW.generate_explains())
+        explain = json.dumps(
+            json.dumps(
+                gobject.baseobject.searchwordW.generate_explains(), ensure_ascii=False
+            ),
+            ensure_ascii=False,
+        )
         remarks = self.remarks.toHtml()
         example = self.example.toPlainText()
         ruby = self.ruby
@@ -531,7 +536,13 @@ class AnkiWindow(QWidget):
     def reset(self, text):
         self.currentword = text
         if text and len(text):
-            self.ruby = json.dumps(gobject.baseobject.translation_ui.parsehira(text))
+            self.ruby = json.dumps(
+                json.dumps(
+                    gobject.baseobject.translation_ui.parsehira(text),
+                    ensure_ascii=False,
+                ),
+                ensure_ascii=False,
+            )
         else:
             self.ruby = ""
         self.editpath.clear()
