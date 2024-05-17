@@ -18,4 +18,9 @@ class goo(cishubase):
 
         xx = re.sub("</a>", "", xx)
 
-        return xx
+        return (
+            '<div  style="text-align: center;"><a target="_blank" href="{}">link</a></div>'.format(
+                url
+            )
+            + xx
+        )

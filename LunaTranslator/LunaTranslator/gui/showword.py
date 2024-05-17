@@ -17,7 +17,7 @@ from PyQt5.QtWidgets import (
 from PyQt5.QtGui import QPixmap, QImage
 from traceback import print_exc
 import requests, json, subprocess, time
-from PyQt5.QtCore import pyqtSignal, Qt
+from PyQt5.QtCore import pyqtSignal, Qt, QUrl
 import qtawesome, functools, os, base64
 import gobject, uuid, signal
 from myutils.config import globalconfig, _TR, static_data
@@ -694,6 +694,15 @@ class searchwordW(closeashidewindow):
         self.setCentralWidget(ww)
 
         textOutput = QTextBrowser(self)
+
+        def openlink(url):
+            try:
+                if url.url().lower().startswith("http"):
+                    os.startfile(url.url())
+            except:
+                pass
+
+        textOutput.anchorClicked.connect(openlink)
         textOutput.setUndoRedoEnabled(False)
         textOutput.setReadOnly(True)
         textOutput.setOpenLinks(False)
@@ -755,6 +764,7 @@ class searchwordW(closeashidewindow):
         for i in range(self.tab.count()):
             self.tab.removeTab(0)
         self.tabks.clear()
+        self.textOutput.clear()
         self.cache_results.clear()
         for k, cishu in gobject.baseobject.cishus.items():
             cishu.callback = functools.partial(self.showtabsignal.emit, k)

@@ -25,4 +25,11 @@ class youdao(cishubase):
             proxies=getproxy(),
         ).text
         fnd = re.findall('<section class="modules"(.*?)>([\\s\\S]*?)</section>', text)
-        return fnd[0][1]
+        return (
+            '<div  style="text-align: center;"><a target="_blank" href="{}">link</a></div><br>'.format(
+                "https://dict.youdao.com/result?word={}&lang={}".format(
+                    quote(word), self.srclang
+                )
+            )
+            + fnd[0][1]
+        )
