@@ -12,7 +12,7 @@ from PyQt5.QtWidgets import (
     QTabWidget,
     QFileDialog,
     QTabBar,
-    QLabel
+    QLabel,
 )
 from PyQt5.QtGui import QPixmap, QImage
 from traceback import print_exc
@@ -31,7 +31,7 @@ from gui.usefulwidget import (
     getlineedit,
     getsimpleswitch,
     getcolorbutton,
-    tabadd_lazy
+    tabadd_lazy,
 )
 from myutils.wrapper import threader
 from myutils.ocrutil import imageCut, ocr_run
@@ -54,6 +54,7 @@ class ffmpeg_virtual_audio_capturer:
             )
         except:
             print_exc()
+
     def end(self):
         try:
             self.engine.stdin.write(b"q")
@@ -94,16 +95,24 @@ class AnkiWindow(QWidget):
     __ocrsettext = pyqtSignal(str)
     refreshhtml = pyqtSignal()
 
+    def callbacktts(self, edit, data):
+        fname = "./cache/tts/" + str(uuid.uuid4()) + ".mp3"
+        os.makedirs("./cache/tts", exist_ok=True)
+        with open(fname, "wb") as ff:
+            ff.write(data)
+        edit.setText(os.path.abspath(fname))
+
     def langdu(self):
         if gobject.baseobject.reader:
             gobject.baseobject.reader.ttscallback(
-                self.currentword, self.audiopath.setText
+                self.currentword, functools.partial(self.callbacktts, self.audiopath)
             )
 
     def langdu2(self):
         if gobject.baseobject.reader:
             gobject.baseobject.reader.ttscallback(
-                self.example.toPlainText(), self.audiopath_sentence.setText
+                self.example.toPlainText(),
+                functools.partial(self.callbacktts, self.audiopath_sentence),
             )
 
     @threader

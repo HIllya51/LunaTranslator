@@ -30,9 +30,5 @@ class TTS(TTSbase):
         response = requests.get(
             f"http://127.0.0.1:{self.config['Port']}/voice/{model}?text={encoded_content}&id={idx}&lang=auto&prompt_lang=auto&format=wav&preset={self.config['preset']}"
         ).content
-        fname = str(time.time())
-        os.makedirs("./cache/tts/", exist_ok=True)
-        with open("./cache/tts/" + fname + ".wav", "wb") as ff:
-            ff.write(response)
 
-        return "./cache/tts/" + fname + ".wav"
+        return response

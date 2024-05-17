@@ -100,7 +100,4 @@ class TTS(TTSbase):
             headers=headers,
             data=json.dumps(response.json()),
         )
-        os.makedirs("./cache/tts/", exist_ok=True)
-        with open("./cache/tts/" + fname + ".wav", "wb") as ff:
-            ff.write(response.content)
-        return "./cache/tts/" + fname + ".wav"
+        return response.content

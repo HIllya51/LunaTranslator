@@ -79,7 +79,7 @@ class TabWidget(QWidget):
 
 class Settin(closeashidewindow):
     voicelistsignal = pyqtSignal(list, int)
-    mp3playsignal = pyqtSignal(str, int, bool)
+    mp3playsignal = pyqtSignal(bytes, int, bool)
     versiontextsignal = pyqtSignal(str)
     progresssignal = pyqtSignal(str, int)
     fontbigsmallsignal = pyqtSignal(int)

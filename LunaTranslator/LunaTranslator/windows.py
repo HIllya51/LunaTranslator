@@ -970,3 +970,25 @@ _LoadLibraryW.argtypes = (LPCWSTR,)
 
 def loadlibrary(path):
     _LoadLibraryW(path)
+
+
+SECTION_MAP_WRITE = 0x0002
+SECTION_MAP_READ = 0x0004
+FILE_MAP_WRITE = SECTION_MAP_WRITE
+FILE_MAP_READ = SECTION_MAP_READ
+_OpenFileMapping = _kernel32.OpenFileMappingW
+_OpenFileMapping.argtypes = DWORD, BOOL, LPCWSTR
+_OpenFileMapping.restype = HANDLE
+
+
+def OpenFileMapping(acc, inher, name):
+    return _OpenFileMapping(acc, inher, name)
+
+
+_MapViewOfFile = _kernel32.MapViewOfFile
+_MapViewOfFile.argtypes = HANDLE, DWORD, DWORD, DWORD, c_size_t
+_MapViewOfFile.restype = c_void_p
+
+
+def MapViewOfFile(hfmap, acc, high, low, size):
+    return _MapViewOfFile(hfmap, acc, high, low, size)

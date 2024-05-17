@@ -325,6 +325,7 @@ import re
 
 _ALL_PUNC_OR_SPACE = re.compile("^[{}]*$".format(re.escape(punc + ws)))
 
+
 def _minimize(the_string, delim, max_size):
     if the_string.startswith(delim):
         the_string = the_string[len(delim) :]
@@ -543,11 +544,11 @@ class gTTS:
                 "'fp' is not a file-like object or it does not take bytes: %s" % str(e)
             )
 
-    def save(self, savefile):
-        with open(str(savefile), "wb") as f:
-            self.write_to_fp(f)
-            f.flush()
-            log.debug("Saved to %s", savefile)
+    def save(self):
+        bs = b""
+        for idx, decoded in enumerate(self.stream()):
+            bs += decoded
+        return bs
 
 
 class gTTSError(Exception):
@@ -605,8 +606,4 @@ class TTS(TTSbase):
 
     def speak(self, content, rate, voice, voiceidx):
         tts = gTTS(content, lang=getlangsrc())
-        fname = str(time.time())
-        os.makedirs("./cache/tts/", exist_ok=True)
-
-        tts.save("./cache/tts/" + fname + ".mp3")
-        return "./cache/tts/" + fname + ".mp3"
+        return tts.save()

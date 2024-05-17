@@ -182,6 +182,21 @@ copycheck(
     os.path.join(py37Path, "Lib/site-packages/PyQt5/Qt5/bin/Qt5Gui.dll"),
     os.path.join(runtime, "PyQt5/Qt5/bin"),
 )
+
+###
+copycheck(
+    os.path.join(py37Path, "Lib/site-packages/PyQt5/Qt5/bin/Qt5Multimedia.dll"),
+    os.path.join(runtime, "PyQt5/Qt5/bin"),
+)
+copycheck(
+    os.path.join(py37Path, "Lib/site-packages/PyQt5/Qt5/bin/Qt5Network.dll"),
+    os.path.join(runtime, "PyQt5/Qt5/bin"),
+)
+copycheck(
+    os.path.join(py37Path, "Lib/site-packages/PyQt5/QtNetwork.pyd"),
+    os.path.join(runtime, "PyQt5"),
+)
+###
 copycheck(
     os.path.join(py37Path, "Lib/site-packages/PyQt5/Qt5/bin/Qt5Widgets.dll"),
     os.path.join(runtime, "PyQt5/Qt5/bin"),
@@ -189,6 +204,10 @@ copycheck(
 
 copycheck(
     os.path.join(py37Path, "Lib/site-packages/PyQt5/Qt5/plugins/imageformats"),
+    os.path.join(runtime, "PyQt5/Qt5/plugins"),
+)
+copycheck(
+    os.path.join(py37Path, "Lib/site-packages/PyQt5/Qt5/plugins/mediaservice"),
     os.path.join(runtime, "PyQt5/Qt5/plugins"),
 )
 copycheck(

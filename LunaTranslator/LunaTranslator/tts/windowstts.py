@@ -40,4 +40,7 @@ class TTS(TTSbase):
         winsharedutils.SAPI_Speak(
             content, version, voice_idx, rate, 100, "./cache/tts/" + fname + ".wav"
         )
-        return "./cache/tts/" + fname + ".wav"
+        with open("./cache/tts/" + fname + ".wav", "rb") as ff:
+            data = ff.read()
+        os.remove("./cache/tts/" + fname + ".wav")
+        return data

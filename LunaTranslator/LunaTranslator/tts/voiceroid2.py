@@ -2,19 +2,18 @@ import time
 import os
 import windows
 from tts.basettsclass import TTSbase
-
+from ctypes import cast, POINTER, c_char, c_int32
 from myutils.subproc import subproc_w, autoproc
+import threading
 
 
 class TTS(TTSbase):
 
     def init(self):
-        self.path = ""
-        self.voice = ""
-        self.rate = ""
+        self.status = None
 
         self.voicelist = self.getvoicelist()
-        self.checkpath()
+        threading.Thread(target=self.checkpath).start()
 
     def getvoicelist(self):
         voicelist = []
@@ -26,7 +25,7 @@ class TTS(TTSbase):
             if "_" in _:
                 _l = _.split("_")
                 if len(_l) >= 2:
-                    if _l[-1] == "44":
+                    if _l[-1] == "44" or _l[-1] == "22":
                         voicelist.append(_)
         return voicelist
 
@@ -63,25 +62,19 @@ class TTS(TTSbase):
         if os.path.exists(self.config["path"]) == False:
             return False
         if (
-            self.config["path"] != self.path
-            or self.privateconfig["voice"] != self.voice
-            or self.publicconfig["rate"] != self.rate
-        ):
-            self.path = self.config["path"]
-            self.rate = self.publicconfig["rate"]
-            self.voice = self.privateconfig["voice"]
-            fname = str(time.time())
-            os.makedirs("./cache/tts/", exist_ok=True)
-            savepath = os.path.join(os.getcwd(), "cache/tts", fname + ".wav")
-            dllpath = os.path.join(self.path, "aitalked.dll")
+            self.config["path"],
+            self.privateconfig["voice"],
+            self.publicconfig["rate"],
+        ) != self.status:
+            dllpath = os.path.join(self.config["path"], "aitalked.dll")
             ##dllpath=r'C:\Users\wcy\Downloads\zunko\aitalked.dll'
             exepath = os.path.join(os.getcwd(), "files/plugins/shareddllproxy32.exe")
-            self.savepath = savepath
 
             t = time.time()
             t = str(t)
             pipename = "\\\\.\\Pipe\\voiceroid2_" + t
             waitsignal = "voiceroid2waitload_" + t
+            mapname = "voiceroid2filemap" + t
 
             def linear_map(x):
                 if x >= 0:
@@ -90,22 +83,29 @@ class TTS(TTSbase):
                     x = 0.05 * x + 1.0
                 return x
 
+            "".endswith
+            if self.privateconfig["voice"].endswith("_44"):
+                _1 = 44100
+                _2 = linear_map(self.publicconfig["rate"])
+            elif self.privateconfig["voice"].endswith("_22"):
+                _1 = 22050
+                _2 = 0
             self.engine = autoproc(
                 subproc_w(
-                    '"{}" voiceroid2 "{}" "{}" {} 44100 {} "{}"  {} {}'.format(
+                    '"{}" voiceroid2 "{}" "{}" {} {} {} {} {} {}'.format(
                         exepath,
                         self.config["path"],
                         dllpath,
                         self.privateconfig["voice"],
-                        linear_map(self.publicconfig["rate"]),
-                        savepath,
+                        _1,
+                        _2,
                         pipename,
                         waitsignal,
+                        mapname,
                     ),
                     name="voicevoid2",
                 )
             )
-
             windows.WaitForSingleObject(
                 windows.AutoHandle(windows.CreateEvent(False, False, waitsignal)),
                 windows.INFINITE,
@@ -122,20 +122,35 @@ class TTS(TTSbase):
                     None,
                 )
             )
+            self.mappedFile2 = windows.AutoHandle(
+                windows.OpenFileMapping(
+                    windows.FILE_MAP_READ | windows.FILE_MAP_WRITE, False, mapname
+                )
+            )
+            self.mem = windows.MapViewOfFile(
+                self.mappedFile2,
+                windows.FILE_MAP_READ | windows.FILE_MAP_WRITE,
+                0,
+                0,
+                1024 * 1024 * 10,
+            )
+
+            self.status = (
+                self.config["path"],
+                self.privateconfig["voice"],
+                self.publicconfig["rate"],
+            )
 
     def speak(self, content, rate, voice, voice_idx):
         self.checkpath()
-        # def _():
-        
 
         try:
-            content.encode("shift-jis")
+            code1 = content.encode("shift-jis")
         except:
             return
-        code1 = content.encode("shift-jis")
-        # print(code1)
         windows.WriteFile(self.hPipe, code1)
 
-        fname = windows.ReadFile(self.hPipe, 1024).decode("utf8")
-        if os.path.exists(fname):
-            return fname
+        size = c_int32.from_buffer_copy(windows.ReadFile(self.hPipe, 4)).value
+        if size == 0:
+            return None
+        return cast(self.mem, POINTER(c_char))[:size]

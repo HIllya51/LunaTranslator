@@ -7,42 +7,33 @@ using ebyroid::Ebyroid;
 
 int voiceroid2wmain(int argc, wchar_t *wargv[])
 {
-    UINT codepage = GetACP();
 
     char **argv = new char *[argc];
     for (int i = 0; i < argc; i++)
     {
-        int length = WideCharToMultiByte(codepage, 0, wargv[i], -1, NULL, 0, NULL, NULL);
+        int length = WideCharToMultiByte(CP_ACP, 0, wargv[i], -1, NULL, 0, NULL, NULL);
         argv[i] = new char[length];
-        WideCharToMultiByte(codepage, 0, wargv[i], -1, argv[i], length, NULL, NULL);
+        WideCharToMultiByte(CP_ACP, 0, wargv[i], -1, argv[i], length, NULL, NULL);
     }
-
-    HANDLE hPipe = CreateNamedPipeA(argv[7], PIPE_ACCESS_DUPLEX, PIPE_TYPE_MESSAGE | PIPE_READMODE_MESSAGE | PIPE_WAIT, PIPE_UNLIMITED_INSTANCES, 65535, 65535, NMPWAIT_WAIT_FOREVER, 0);
+    HANDLE hPipe = CreateNamedPipeA(argv[6], PIPE_ACCESS_DUPLEX, PIPE_TYPE_MESSAGE | PIPE_READMODE_MESSAGE | PIPE_WAIT, PIPE_UNLIMITED_INSTANCES, 65535, 65535, NMPWAIT_WAIT_FOREVER, 0);
 
     Ebyroid *ebyroid;
 
-    printf("argc %d \n", argc);
-    for (int i = 0; i < argc; i++)
-    {
-        printf("%d %s\n", i, argv[i]);
-    }
     ebyroid = Ebyroid::Create((const char *)argv[1], //"C:\\dataH\\Yukari2",
                               (const char *)argv[2],
-                              (const char *)argv[3],        //"yukari_emo_44",
-                              2,                            
+                              (const char *)argv[3], //"yukari_emo_44",
+                              2,
                               atof((const char *)argv[5])); // 1); //0.1-2,0.5-4
-    
-    SetEvent(CreateEventA(&allAccess, FALSE, FALSE, argv[8]));
-    if (ConnectNamedPipe(hPipe, NULL) != NULL)
-    {
-        DWORD len = 0;
-    }
+
+    auto handle = CreateFileMappingA(INVALID_HANDLE_VALUE, &allAccess, PAGE_EXECUTE_READWRITE, 0, 1024 * 1024 * 10, argv[8]);
+
+    auto mapview = (char *)MapViewOfFile(handle, FILE_MAP_ALL_ACCESS | FILE_MAP_EXECUTE, 0, 0, 1024 * 1024 * 10);
+    memset(mapview, 0, 1024 * 1024 * 10);
+    SetEvent(CreateEventA(&allAccess, FALSE, FALSE, argv[7]));
+    ConnectNamedPipe(hPipe, NULL);
     int freq1 = atoi(argv[4]);
-    printf("pipe connected");
-    int II = 0;
     while (true)
     {
-        II += 1;
         unsigned char *out;
         size_t output_size;
         int16_t *out2;
@@ -52,34 +43,43 @@ int voiceroid2wmain(int argc, wchar_t *wargv[])
         if (!ReadFile(hPipe, input_j, 4096, &_, NULL))
             break;
 
-        printf("%s\n", input_j);
         // int result = ebyroid->Hiragana((const unsigned char*)UnicodeToShift_jis(input), &out, &output_size);
         int result = ebyroid->Hiragana((const unsigned char *)input_j, &out, &output_size);
 
-        printf("%s\n", out);
         result = ebyroid->Speech(out, &out2, &output_size);
-        char newname[1024] = {0};
-        sprintf(newname, "%s%d.wav", argv[6], II);
-        FILE *F = fopen(newname, "wb");
-
         int fsize = output_size + 44;
-        fseek(F, 0, SEEK_SET);
-        fwrite("RIFF", 1, 4, F);
-        fwrite(&fsize, 4, 1, F);
-        fwrite("WAVEfmt ", 1, 8, F);
-        fwrite("\x10\x00\x00\x00\x01\x00\x01\x00", 1, 8, F);
-        int freq = freq1;
-        fwrite(&freq, 4, 1, F);
-        freq = freq * 2;
-        fwrite(&freq, 4, 1, F);
-        fwrite("\x02\x00\x10\x00", 1, 4, F);
-        fwrite("data", 1, 4, F);
-        int sz = fsize - 44;
-        fwrite(&sz, 4, 1, F);
-        printf("%d \n", ftell(F));
-        fwrite((char *)out2, 1, output_size, F);
-        fclose(F);
-        WriteFile(hPipe, newname, strlen(newname), &_, NULL);
+        if (fsize > 1024 * 1024 * 10)
+        {
+            fsize = 0;
+        }
+        else
+        {
+
+            int ptr = 0;
+            memcpy(mapview, "RIFF", 4);
+            ptr += 4;
+            memcpy(mapview + ptr, &fsize, 4);
+            ptr += 4;
+            memcpy(mapview + ptr, "WAVEfmt ", 8);
+            ptr += 8;
+            memcpy(mapview + ptr, "\x10\x00\x00\x00\x01\x00\x01\x00", 8);
+            ptr += 8;
+            int freq = freq1;
+            memcpy(mapview + ptr, &freq, 4);
+            ptr += 4;
+            freq = freq * 2;
+            memcpy(mapview + ptr, &freq, 4);
+            ptr += 4;
+            memcpy(mapview + ptr, "\x02\x00\x10\x00", 4);
+            ptr += 4;
+            memcpy(mapview + ptr, "data", 4);
+            ptr += 4;
+            memcpy(mapview + ptr, &output_size, 4);
+            ptr += 4;
+            memcpy(mapview + ptr, out2, output_size);
+        }
+        WriteFile(hPipe, &fsize, 4, &_, NULL);
+
         free(out);
         free(out2);
     }

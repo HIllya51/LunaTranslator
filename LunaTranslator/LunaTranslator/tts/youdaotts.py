@@ -38,9 +38,4 @@ class TTS(TTSbase):
             headers=headers,
             proxies={"http": None, "https": None},
         ).content
-        fname = str(time.time())
-        os.makedirs("./cache/tts/", exist_ok=True)
-        with open("./cache/tts/" + fname + ".mp3", "wb") as ff:
-            ff.write(response)
-
-        return "./cache/tts/" + fname + ".mp3"
+        return response

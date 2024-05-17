@@ -3,6 +3,7 @@ import threading, os, functools
 from myutils.wrapper import threader
 from traceback import print_exc
 
+
 class TTSbase:
     def init(self):
         pass
@@ -60,11 +61,12 @@ class TTSbase:
         threading.Thread(target=_).start()
 
     def read(self, content, force=False):
-        def _(force, fname):
-            volume = self.publicconfig["volume"]
-            self.mp3playsignal.emit(fname, volume, force)
+        volume = self.publicconfig["volume"]
 
-        self.ttscallback(content, functools.partial(_, force))
+        def _(force, volume, data):
+            self.mp3playsignal.emit(data, volume, force)
+
+        self.ttscallback(content, functools.partial(_, force, volume))
 
     @threader
     def ttscallback(self, content, callback):
@@ -74,14 +76,13 @@ class TTSbase:
             return
         if len(self.voicelist) == 0:
             return
-
         rate = self.publicconfig["rate"]
         voice = self.privateconfig["voice"]
         voice_index = self.voicelist.index(voice)
         try:
-            fname = self.speak(content, rate, voice, voice_index)
-            if fname:
-                callback(os.path.abspath(fname))
+            data = self.speak(content, rate, voice, voice_index)
+            if data and len(data):
+                callback(data)
         except:
             print_exc()
             return

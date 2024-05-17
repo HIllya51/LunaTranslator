@@ -45,10 +45,6 @@ class TTS(TTSbase):
             json=json_data,
             proxies={"http": None, "https": None},
         )
-        fname = str(time.time())
         b64 = base64.b64decode(response.json()["audio"]["data"])
-        os.makedirs("./cache/tts/", exist_ok=True)
-        with open("./cache/tts/" + fname + ".mp3", "wb") as ff:
-            ff.write(b64)
 
-        return "./cache/tts/" + fname + ".mp3"
+        return b64

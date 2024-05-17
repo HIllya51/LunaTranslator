@@ -193,8 +193,4 @@ def transferMsTTSData(rate, content, voice):
         else:
             break
     ws.close()
-    os.makedirs("./cache/tts/", exist_ok=True)
-    outputPath = "./cache/tts/" + str(time.time()) + ".mp3"
-    with open(outputPath, "wb") as audio_out:
-        audio_out.write(audio_stream)
-    return outputPath
+    return audio_stream

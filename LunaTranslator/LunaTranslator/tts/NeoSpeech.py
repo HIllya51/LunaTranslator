@@ -84,4 +84,8 @@ class TTS(TTSbase):
         windows.WriteFile(self.hPipe, bytes(buf))
         fname = windows.ReadFile(self.hPipe, 1024).decode("utf-16-le")
         if os.path.exists(fname):
-            return fname
+            with open("./cache/tts/" + fname + ".wav", "rb") as ff:
+                data = ff.read()
+            os.remove("./cache/tts/" + fname + ".wav")
+            return data
+        return None

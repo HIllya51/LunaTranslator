@@ -37,6 +37,7 @@ def getttsgrid(self):
             continue
         if "args" in globalconfig["reader"][name]:
             items = autoinitdialog_items(globalconfig["reader"][name])
+            items[-1]["callback"] = gobject.baseobject.startreader
             _3 = getcolorbutton(
                 globalconfig,
                 "",

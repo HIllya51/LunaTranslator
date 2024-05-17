@@ -656,22 +656,7 @@
         "voiceroid2": {
             "use": false,
             "voice": "",
-            "name": "VoiceRoid2",
-            "args": {
-                "path": ""
-            },
-            "argstype": {
-                "path": {
-                    "type": "file",
-                    "name": "路径",
-                    "dir": true
-                }
-            }
-        },
-        "voiceroidplus": {
-            "use": false,
-            "voice": "",
-            "name": "VoiceRoid+",
+            "name": "VoiceRoid2/VoiceRoid+",
             "args": {
                 "path": ""
             },

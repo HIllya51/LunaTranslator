@@ -115,8 +115,8 @@ class BorderedLabel(ShadowLabel):
         self._type = _type
 
     def move(self, point: QPoint):
-        point.setX(point.x() - self.m_fontOutLineWidth)
-        point.setY(point.y() - self.m_fontOutLineWidth)
+        point.setX(int(point.x() - self.m_fontOutLineWidth))
+        point.setY(int(point.y() - self.m_fontOutLineWidth))
         super().move(point)
 
     def adjustSize(self):
@@ -124,8 +124,8 @@ class BorderedLabel(ShadowLabel):
         text = self._m_text
         font_m = QFontMetrics(font)
         self.resize(
-            font_m.width(text) + 2 * self.m_fontOutLineWidth,
-            font_m.height() + 2 * self.m_fontOutLineWidth,
+            int(font_m.width(text) + 2 * self.m_fontOutLineWidth),
+            int(font_m.height() + 2 * self.m_fontOutLineWidth),
         )
 
     def paintEvent(self, event):
