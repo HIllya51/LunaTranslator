@@ -12,14 +12,14 @@ from PyQt5.QtWidgets import (
     QTabWidget,
     QFileDialog,
     QTabBar,
-    QLabel,
+    QLabel
 )
 from PyQt5.QtGui import QPixmap, QImage
 from traceback import print_exc
-import requests, json
+import requests, json, subprocess, time
 from PyQt5.QtCore import pyqtSignal, Qt
 import qtawesome, functools, os, base64
-import gobject, uuid
+import gobject, uuid, signal
 from myutils.config import globalconfig, _TR, static_data
 import myutils.ankiconnect as anki
 from gui.usefulwidget import (
@@ -31,11 +31,63 @@ from gui.usefulwidget import (
     getlineedit,
     getsimpleswitch,
     getcolorbutton,
-    tabadd_lazy,
+    tabadd_lazy
 )
 from myutils.wrapper import threader
 from myutils.ocrutil import imageCut, ocr_run
 from gui.rangeselect import rangeselct_function
+
+
+class ffmpeg_virtual_audio_capturer:
+    def __init__(self):
+        os.makedirs("./cache/tts", exist_ok=True)
+        self.file = os.path.abspath(
+            os.path.join("./cache/tts", str(time.time()) + ".mp3")
+        )
+        try:
+            self.engine = subprocess.Popen(
+                os.path.join(
+                    globalconfig["ffmpeg"],
+                    f'ffmpeg.exe -f dshow -i audio="virtual-audio-capturer" "{self.file}"',
+                ),
+                stdin=subprocess.PIPE,
+            )
+        except:
+            print_exc()
+    def end(self):
+        try:
+            self.engine.stdin.write(b"q")
+            self.engine.stdin.flush()
+        except:
+            pass
+
+
+class statusbutton(QPushButton):
+    statuschanged1 = pyqtSignal(int)
+    statuschanged2 = pyqtSignal(int)
+
+    def __init__(self, icons, colors):
+        super().__init__()
+        self.idx = 0
+        self.icons = icons
+        self.colors = colors
+        self.clicked.connect(self.setChecked)
+        self.seticon()
+
+    def seticon(self):
+        self.setIcon(
+            qtawesome.icon(
+                self.icons[(self.idx) % len(self.icons)],
+                color=self.colors[(self.idx) % len(self.colors)],
+            )
+        )
+
+    def setChecked(self, a0):
+        super().setChecked(a0)
+        self.idx += 1
+        self.statuschanged1.emit((self.idx) % len(self.icons))
+        self.statuschanged2.emit((self.idx) % len(self.colors))
+        self.seticon()
 
 
 class AnkiWindow(QWidget):
@@ -288,7 +340,46 @@ class AnkiWindow(QWidget):
             getsimpleswitch(globalconfig["ankiconnect"], "ocrcroped"),
         )
 
+        layout.addWidget(QLabel())
+        layout.addRow(_TR("录音"), QLabel())
+        lb = QLabel()
+        lb.setOpenExternalLinks(True)
+        lb.setText(
+            '<a href="https://github.com/HIllya51/RESOURCES/releases/download/softwares/virtual-audio.zip">virtual-audio-capturer</a>'
+        )
+        layout.addRow(_TR("安装录音驱动"), lb)
+        ffmpegpath = getlineedit(globalconfig, "ffmpeg", readonly=True)
+
+        def selectpath():
+            f = QFileDialog.getExistingDirectory()
+            if f != "":
+                ffmpegpath.setText(f)
+
+        layout.addRow(
+            _TR("ffmpeg"),
+            getboxlayout(
+                [
+                    ffmpegpath,
+                    getcolorbutton(
+                        "",
+                        "",
+                        selectpath,
+                        icon="fa.gear",
+                        constcolor="#FF69B4",
+                    ),
+                ],
+                makewidget=True,
+            ),
+        )
+
         return wid
+
+    def startorendrecord(self, target: QLineEdit, idx):
+        if idx == 1:
+            self.recorder = ffmpeg_virtual_audio_capturer()
+        else:
+            self.recorder.end()
+            target.setText(self.recorder.file)
 
     def createaddtab(self):
         layout = QVBoxLayout()
@@ -311,6 +402,14 @@ class AnkiWindow(QWidget):
         self.editpath.textChanged.connect(self.wrappedpixmap)
         self.example = QPlainTextEdit()
         self.remarks = QTextEdit()
+        recordbtn1 = statusbutton(icons=["fa.microphone", "fa.stop"], colors=[""])
+        recordbtn1.statuschanged1.connect(
+            functools.partial(self.startorendrecord, self.audiopath)
+        )
+        recordbtn2 = statusbutton(icons=["fa.microphone", "fa.stop"], colors=[""])
+        recordbtn2.statuschanged1.connect(
+            functools.partial(self.startorendrecord, self.audiopath_sentence)
+        )
         layout.addLayout(
             getboxlayout(
                 [
@@ -335,11 +434,14 @@ class AnkiWindow(QWidget):
                                 [
                                     QLabel(_TR("语音")),
                                     self.audiopath,
+                                    recordbtn1,
                                     soundbutton,
                                     getcolorbutton(
                                         "",
                                         "",
-                                        functools.partial(self.selectaudio),
+                                        functools.partial(
+                                            self.selecfile, self.audiopath
+                                        ),
                                         icon="fa.gear",
                                         constcolor="#FF69B4",
                                     ),
@@ -349,11 +451,14 @@ class AnkiWindow(QWidget):
                                 [
                                     QLabel(_TR("语音_例句")),
                                     self.audiopath_sentence,
+                                    recordbtn2,
                                     soundbutton2,
                                     getcolorbutton(
                                         "",
                                         "",
-                                        functools.partial(self.selectaudio2),
+                                        functools.partial(
+                                            self.selecfile, self.audiopath_sentence
+                                        ),
                                         icon="fa.gear",
                                         constcolor="#FF69B4",
                                     ),
@@ -367,7 +472,9 @@ class AnkiWindow(QWidget):
                                     getcolorbutton(
                                         "",
                                         "",
-                                        functools.partial(self.selectimage),
+                                        functools.partial(
+                                            self.selecfile, self.editpath
+                                        ),
                                         icon="fa.gear",
                                         constcolor="#FF69B4",
                                     ),
@@ -406,23 +513,11 @@ class AnkiWindow(QWidget):
             pix = pix.scaled(self.viewimagelabel.size() * rate, Qt.KeepAspectRatio)
         self.viewimagelabel.setPixmap(pix)
 
-    def selectimage(self):
+    def selecfile(self, item):
         f = QFileDialog.getOpenFileName()
         res = f[0]
         if res != "":
-            self.editpath.setText(res)
-
-    def selectaudio(self):
-        f = QFileDialog.getOpenFileName()
-        res = f[0]
-        if res != "":
-            self.audiopath.setText(res)
-
-    def selectaudio2(self):
-        f = QFileDialog.getOpenFileName()
-        res = f[0]
-        if res != "":
-            self.audiopath_sentence.setText(res)
+            item.setText(res)
 
     def reset(self, text):
         self.currentword = text
@@ -578,8 +673,8 @@ class searchwordW(closeashidewindow):
         soundbutton.clicked.connect(self.langdu)
         self.searchlayout.addWidget(soundbutton)
 
-        ankiconnect = QPushButton(qtawesome.icon("fa.adn"), "")
-        ankiconnect.clicked.connect(self.onceaddankiwindow)
+        ankiconnect = statusbutton(icons=["fa.adn"], colors=["", "#FF69B4"])
+        ankiconnect.statuschanged2.connect(self.onceaddankiwindow)
         self.searchlayout.addWidget(ankiconnect)
 
         self.tab = QTabBar(self)
@@ -596,7 +691,6 @@ class searchwordW(closeashidewindow):
         self.textOutput = textOutput
         self.cache_results = {}
         self.hiding = True
-        self.addankiwindowidx = 0
 
         tablayout = QVBoxLayout()
         tablayout.addWidget(self.tab)
@@ -604,16 +698,17 @@ class searchwordW(closeashidewindow):
         tablayout.setContentsMargins(0, 0, 0, 0)
         tablayout.setSpacing(0)
         self.vboxlayout.addLayout(tablayout)
+        self.isfirstshowanki = True
 
-    def onceaddankiwindow(self):
-        if self.addankiwindowidx == 0:
-            self.vboxlayout.addWidget(self.ankiwindow)
-        else:
-            if self.addankiwindowidx % 2 == 0:
-                self.ankiwindow.show()
+    def onceaddankiwindow(self, idx):
+        if idx == 1:
+            if self.isfirstshowanki:
+                self.vboxlayout.addWidget(self.ankiwindow)
             else:
-                self.ankiwindow.hide()
-        self.addankiwindowidx += 1
+                self.ankiwindow.show()
+        else:
+            self.ankiwindow.hide()
+        self.isfirstshowanki = False
 
     def langdu(self):
         if gobject.baseobject.reader:

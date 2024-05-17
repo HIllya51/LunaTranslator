@@ -399,9 +399,10 @@ def getsimplecombobox(lst, d, k, callback=None):
     return s
 
 
-def getlineedit(d, key, callback=None):
+def getlineedit(d, key, callback=None, readonly=False):
     s = QLineEdit()
     s.setText(d[key])
+    s.setReadOnly(readonly)
     s.textChanged.connect(functools.partial(callbackwrap, d, key, callback))
     return s
 
