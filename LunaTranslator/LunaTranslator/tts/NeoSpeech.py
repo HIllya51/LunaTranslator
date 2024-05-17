@@ -9,8 +9,6 @@ from ctypes import cast, POINTER, c_char, c_int32
 
 class TTS(TTSbase):
     def checkchange(self):
-        fname = str(time.time())
-        os.makedirs("./cache/tts/", exist_ok=True)
         exepath = os.path.join(os.getcwd(), "files/plugins/shareddllproxy32.exe")
         t = time.time()
         t = str(t)
