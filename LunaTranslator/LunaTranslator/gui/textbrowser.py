@@ -81,6 +81,13 @@ class PlainLabel(QLabel):
         super().__init__(parent)
         self.setTextFormat(Qt.PlainText)
 
+    def move(self, point: QPoint):
+        text = self.text()
+        isarabic = any((ord(char) >= 0x0600 and ord(char) <= 0x06E0) for char in text)
+        if isarabic:
+            point.setX(point.x() - self.width())
+        super().move(point)
+
 
 class ShadowLabel(PlainLabel):
     def setShadow(self, colorshadow, width, deepth, trace=False):
@@ -104,6 +111,10 @@ class BorderedLabel(ShadowLabel):
         self.m_contentColor = QColor()
         self._type = 0
         self._pix = None
+        self._m_text = ""
+
+    def text(self):
+        return self._m_text
 
     def setText(self, text):
         self._m_text = text
@@ -121,7 +132,7 @@ class BorderedLabel(ShadowLabel):
 
     def adjustSize(self):
         font = self.font()
-        text = self._m_text
+        text = self.text()
         font_m = QFontMetrics(font)
         self.resize(
             int(font_m.width(text) + 2 * self.m_fontOutLineWidth),
@@ -134,7 +145,7 @@ class BorderedLabel(ShadowLabel):
             self._pix = QPixmap(self.size() * rate)
             self._pix.setDevicePixelRatio(rate)
             self._pix.fill(Qt.transparent)
-            text = self._m_text
+            text = self.text()
             font = self.font()
             font_m = QFontMetrics(font)
             painter = QPainter(self._pix)
@@ -358,10 +369,10 @@ class Textbrowser:
         for i in range(len(subtext)):
             maxnewh = max(maxnewh, subpos[i].y())
             _ = self.guesscreatelabel(self.toplabel2, color)
-            _.move(subpos[i])
             _.setText(subtext[i])
             _.setFont(self.font)
             _.adjustSize()
+            _.move(subpos[i])
             _.show()
             self.iteryinyinglabelsave[iter_context_class].append(_)
         if maxh:
@@ -397,17 +408,15 @@ class Textbrowser:
 
                 s = line.textStart()
                 l = line.textLength()
-                # print(blockstart,s,block.text()[s:s+l])
                 self.textcursor.setPosition(blockstart + s)
                 self.textbrowser.setTextCursor(self.textcursor)
                 tl1 = self.textbrowser.cursorRect(self.textcursor).topLeft()
 
                 _ = self.guesscreatelabel(self.toplabel2, color)
-
-                _.move(tl1)
                 _.setText(block.text()[s : s + l])
                 _.setFont(self.font)
                 _.adjustSize()
+                _.move(tl1)
                 _.show()
                 self.yinyinglabels.append(_)
                 linei += 1
