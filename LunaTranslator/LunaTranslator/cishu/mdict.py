@@ -2334,16 +2334,16 @@ class mdict(cishubase):
                     pass
 
     def querycomplex(self, word, index):
-        #0 严格，1 前缀，2 后缀，3 中缀
+        # 0 严格，1 前缀，2 后缀，3 中缀
         results = []
         results += index(word)
-        if self.config['ambiguity']==0:
-            results=results[:1]
-        if self.config['ambiguity']>=2:
+        if self.config["ambiguity"] == 0:
+            results = results[:1]
+        if self.config["ambiguity"] >= 2:
             for k in index("*" + word):
                 if k not in results:
                     results.append(k)
-        if self.config['ambiguity']>=3:
+        if self.config["ambiguity"] >= 3:
             for k in index("*" + word + "*"):
                 if k not in results:
                     results.append(k)
@@ -2392,6 +2392,7 @@ class mdict(cishubase):
             elif type_ == "5":
                 html += f'<font color="#04A6B5">{string}</font>'
             else:
+                html += item + "<br>"
                 print("unknown", item)
             if string.endswith("<br>") == False:
                 html += "<br>"
@@ -2406,15 +2407,15 @@ class mdict(cishubase):
                     for k in keys:
                         results.append(self.parseashtml(index.mdx_lookup(k)[0]))
                 except:
-                   pass
+                    pass
             elif f.lower().endswith(".mdd"):
                 try:
                     keys = self.querycomplex(word, index.get_mdd_keys)
-                    
+
                     for k in keys:
                         results.append(self.parseashtml(index.mdd_lookup(k)[0]))
                 except:
-                   pass
+                    pass
         if len(results) == 0:
             return
         style = """
