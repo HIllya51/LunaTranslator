@@ -909,6 +909,38 @@
                     "step": 1
                 }
             }
+        },
+        "mdict": {
+            "use": false,
+            "name": "mdict",
+            "args": {
+                "path": "",
+                "ambiguity": 0,
+                "priority": 100
+            },
+            "argstype": {
+                "path": {
+                    "type": "file",
+                    "name": "路径",
+                    "dir": false,
+                    "multi": true,
+                    "filter": "*.mdx|*.mdd"
+                },
+                "ambiguity": {
+                    "type": "intspin",
+                    "name": "ambiguity",
+                    "min": 0,
+                    "max": 3,
+                    "step": 1
+                },
+                "priority": {
+                    "type": "intspin",
+                    "name": "优先级",
+                    "min": 0,
+                    "max": 10000,
+                    "step": 1
+                }
+            }
         }
     },
     "darklight": 0,

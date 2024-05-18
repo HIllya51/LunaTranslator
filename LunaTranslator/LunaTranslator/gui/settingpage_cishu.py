@@ -27,6 +27,7 @@ def gethiragrid(self):
             continue
         if "args" in globalconfig["hirasetting"][name]:
             items = autoinitdialog_items(globalconfig["hirasetting"][name])
+            items[-1]["callback"] = gobject.baseobject.starthira
             _3 = getcolorbutton(
                 globalconfig,
                 "",
@@ -129,7 +130,9 @@ def setTabcishu_l(self):
             continue
 
         items = autoinitdialog_items(globalconfig["cishu"][cishu])
-
+        items[-1]["callback"] = functools.partial(
+            gobject.baseobject.startxiaoxueguan, cishu
+        )
         line += [
             (globalconfig["cishu"][cishu]["name"], 6),
             getsimpleswitch(
