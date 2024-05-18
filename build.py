@@ -252,6 +252,7 @@ if __name__ == "__main__":
     arch = sys.argv[1]
     isdebug = len(sys.argv) > 2 and int(sys.argv[2])
     os.chdir(rootDir)
+    os.system('git submodule update --init --recursive')
     os.makedirs("temp", exist_ok=True)
 
     createPluginDirs()
