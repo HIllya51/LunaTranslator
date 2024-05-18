@@ -11,6 +11,7 @@ from PyQt5.QtWidgets import (
     QWidget,
     QLayout,
 )
+from PyQt5.QtGui import QFontDatabase
 
 from webviewpy import (
     webview_native_handle_kind_t,
@@ -613,8 +614,8 @@ class mshtmlWidget(QWidget):
 
     def setHtml(self, html):
         html = html.replace('target="_blank"', "")
-        html = "<html><head><meta http-equiv='x-ua-compatible' content='IE=edge'></head><body>{}</body></html>".format(
-            html
+        html = """<html><head><meta http-equiv='x-ua-compatible' content='IE=edge'></head><body style=" font-family:'{}'">{}</body></html>""".format(
+            QFontDatabase.systemFont(QFontDatabase.GeneralFont).family(), html
         )
         self.browser.set_html(html)
 
@@ -647,7 +648,6 @@ class auto_select_webview(QWidget):
         layout.setContentsMargins(0, 0, 0, 0)
         self.setLayout(layout)
         self._maybecreate()
-
 
     def _maybecreate(self):
         if globalconfig["usewebview"] != self.contex:
