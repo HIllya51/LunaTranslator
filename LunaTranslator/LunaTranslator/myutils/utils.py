@@ -11,9 +11,6 @@ import time
 from PyQt5.QtWidgets import (
     QApplication,
 )
-from PyQt5.QtCore import QIODevice, QBuffer
-from PyQt5.QtMultimedia import QMediaPlayer, QMediaContent
-
 from traceback import print_exc
 from myutils.config import (
     globalconfig,
@@ -238,38 +235,77 @@ def argsort(l):
 
 
 class wavmp3player:
-    def changepos(self, pos):
-        if pos != 0 and pos == self.player.duration():
-            if self.next:
-                content, volume = self.next
-                self.next = None
-                self.realplay(content, volume)
-
     def __init__(self):
-        self.player = QMediaPlayer()
-        self.player.positionChanged.connect(self.changepos)
-        self.next = None
+        self.i = 0
+        self.lastfile = None
+        self.tasks = None
+        self.lock = threading.Lock()
+        self.lock.acquire()
+        threading.Thread(target=self.dotasks).start()
 
-    def realplay(self, content, volume):
-        self.player.stop()
-        self.keepbuffer = []
-        buffer = QBuffer()
-        buffer.open(QIODevice.ReadWrite)
-        self.player.setMedia(QMediaContent(), buffer)
-        self.player.setVolume(volume)
-        buffer.write(content)
-        self.keepbuffer = [buffer]
-        self.player.play()
+    def mp3playfunction(self, binary, volume, force):
+        try:
+            self.tasks = (binary, volume, force)
+            self.lock.release()
+        except:
+            pass
 
-    def mp3playfunction(self, content, volume, force):
-        if (
-            globalconfig["ttsnointerrupt"]
-            and self.player.position() < self.player.duration()
-            and not force
-        ):
-            self.next = [content, volume]
-        else:
-            self.realplay(content, volume)
+    def dotasks(self):
+        durationms = 0
+        try:
+            while True:
+                self.lock.acquire()
+                task = self.tasks
+                self.tasks = None
+                if task is None:
+                    continue
+                binary, volume, force = task
+                os.makedirs("./cache/tts", exist_ok=True)
+
+                tgt = os.path.abspath("./cache/tts/" + str(time.time()) + ".wav")
+                with open(tgt, "wb") as ff:
+                    ff.write(binary)
+                durationms = self._playsoundWin(tgt, volume)
+                self.lastfile = tgt
+                if durationms and globalconfig["ttsnointerrupt"]:
+                    while durationms > 0:
+                        durationms -= 100
+                        time.sleep(0.1)
+                        if self.tasks and self.tasks[-1]:
+                            break
+                        # time.sleep(durationms / 1000)
+        except:
+            print_exc()
+
+    def _playsoundWin(self, sound, volume):
+        try:
+
+            windows.mciSendString(("stop lunatranslator_mci_{}".format(self.i)))
+            windows.mciSendString(("close lunatranslator_mci_{}".format(self.i)))
+            self.i += 1
+            if self.lastfile:
+                os.remove(self.lastfile)
+            self.lastfile = sound
+            windows.mciSendString(
+                'open "{}" type mpegvideo  alias lunatranslator_mci_{}'.format(
+                    sound, self.i
+                )
+            )
+            durationms = int(
+                windows.mciSendString(
+                    "status lunatranslator_mci_{} length".format(self.i)
+                )
+            )
+            windows.mciSendString(
+                "setaudio lunatranslator_mci_{} volume to {}".format(
+                    self.i, volume * 10
+                )
+            )
+            windows.mciSendString(("play lunatranslator_mci_{}".format(self.i)))
+        except:
+            durationms = 0
+
+        return durationms
 
 
 def selectdebugfile(path):
