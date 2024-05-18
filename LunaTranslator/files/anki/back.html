@@ -70,30 +70,28 @@
     }
     htmltabbuttons = ''
     htmlcontents = ''
+    function onclickbtn(_id) {
+        for (i = 0; i < tabButtons.length; i++)
+            tabButtons[i].classList.remove('active');
+        for (i = 0; i < tabPanes.length; i++)
+            tabPanes[i].classList.remove('active');
+
+        document.getElementById(_id).classList.add('active');
+
+        tabId = document.getElementById(_id).getAttribute('data-tab');
+        tabPane = document.getElementById(tabId);
+        tabPane.classList.add('active');
+    }
     for (i = 0; i < explains.length; i++) {
-        htmltabbuttons += '<button type="button" class="tab-button" data-tab="tab' + (i + 0).toString() + '">' + explains[i]['source'] + '</button>'
+        htmltabbuttons += '<button type="button" onclick="onclickbtn(\'buttonid' + (i + 0).toString() + '\')" id="buttonid' + (i + 0).toString() + '" class="tab-button" data-tab="tab' + (i + 0).toString() + '">' + explains[i]['source'] + '</button>'
         htmlcontents += '<div id="tab' + (i + 0).toString() + '" class="tab-pane">' + safehtml(explains[i]['content']) + '</div>'
     }
     document.getElementById('tab_buttons').innerHTML = htmltabbuttons
     document.getElementById('tab_contents').innerHTML = htmlcontents
 
-
     tabButtons = document.querySelectorAll('.tab-widget .tab-button');
     tabPanes = document.querySelectorAll('.tab-widget .tab-pane');
 
-    tabButtons.forEach(button => {
-        button.addEventListener('click', () => {
-            tabButtons.forEach(btn => btn.classList.remove('active'));
-
-            tabPanes.forEach(pane => pane.classList.remove('active'));
-
-            button.classList.add('active');
-
-            const tabId = button.getAttribute('data-tab');
-            const tabPane = document.getElementById(tabId);
-            tabPane.classList.add('active');
-        });
-    });
     if (tabButtons.length) {
         tabButtons[0].click()
     }
