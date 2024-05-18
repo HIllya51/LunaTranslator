@@ -359,11 +359,6 @@ class AnkiWindow(QWidget):
             getsimpleswitch(globalconfig["ankiconnect"], "autoruntts"),
         )
 
-        layout.addRow(
-            _TR("use QTextBrowser"),
-            getsimpleswitch(globalconfig, "searchwordusetextbrowser"),
-        )
-
         layout.addWidget(QLabel())
         layout.addRow(_TR("录音"), QLabel())
         lb = QLabel()
@@ -657,6 +652,49 @@ class AnkiWindow(QWidget):
         )
 
 
+class selectviewer(QWidget):
+    def createviewer(self):
+        if globalconfig["searchwordusewebview"] == False:
+
+            textOutput = QTextBrowser(self)
+
+            def openlink(url):
+                try:
+                    if url.url().lower().startswith("http"):
+                        os.startfile(url.url())
+                except:
+                    pass
+
+            textOutput.anchorClicked.connect(openlink)
+            textOutput.setUndoRedoEnabled(False)
+            textOutput.setReadOnly(True)
+            textOutput.setOpenLinks(False)
+        else:
+            textOutput = auto_select_webview(self)
+        return textOutput
+
+    def __init__(self, parent) -> None:
+        super().__init__(parent)
+        layout = QHBoxLayout()
+        layout.setContentsMargins(0, 0, 0, 0)
+        self.setLayout(layout)
+        self.context = globalconfig["searchwordusewebview"]
+
+        self.internal = self.createviewer()
+        layout.addWidget(self.internal)
+
+    def clear(self):
+        self.internal.clear()
+
+    def setHtml(self, html):
+        if (globalconfig["searchwordusewebview"]) != self.context:
+            self.context = globalconfig["searchwordusewebview"]
+            self.layout().removeWidget(self.internal)
+            self.internal = self.createviewer()
+            self.layout().addWidget(self.internal)
+        self.internal.setHtml(html)
+
+
 class searchwordW(closeashidewindow):
     getnewsentencesignal = pyqtSignal(str, bool)
     showtabsignal = pyqtSignal(str, str)
@@ -716,31 +754,13 @@ class searchwordW(closeashidewindow):
         )
         self.tabks = []
         self.setCentralWidget(ww)
-
-        if globalconfig["searchwordusetextbrowser"]:
-            textOutput = QTextBrowser(self)
-
-            def openlink(url):
-                try:
-                    if url.url().lower().startswith("http"):
-                        os.startfile(url.url())
-                except:
-                    pass
-
-            textOutput.anchorClicked.connect(openlink)
-            textOutput.setUndoRedoEnabled(False)
-            textOutput.setReadOnly(True)
-            textOutput.setOpenLinks(False)
-        else:
-
-            textOutput = auto_select_webview(self)
-        self.textOutput = textOutput
+        self.textOutput = selectviewer(self)
         self.cache_results = {}
         self.hiding = True
 
         tablayout = QVBoxLayout()
         tablayout.addWidget(self.tab)
-        tablayout.addWidget(textOutput)
+        tablayout.addWidget(self.textOutput)
         tablayout.setContentsMargins(0, 0, 0, 0)
         tablayout.setSpacing(0)
         self.vboxlayout.addLayout(tablayout)

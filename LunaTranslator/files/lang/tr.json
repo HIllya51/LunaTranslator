@@ -791,5 +791,6 @@
     "编码": "coding",
     "安装录音驱动": "Kayıt sürücüsünü kur",
     "录音": "kaset",
-    "自动TTS": "Otomatik TTS"
+    "自动TTS": "Otomatik TTS",
+    "使用webview显示": "Web görüntüsünü kullanarak göster"
 }

@@ -164,6 +164,13 @@ def setTabcishu_l(self):
     if len(line):
         grids.append(line)
 
+    grids += (
+        [],
+        [
+            ("使用webview显示", 6),
+            (getsimpleswitch(globalconfig, "searchwordusewebview"), 1),
+        ],
+    )
     gridlayoutwidget = self.makegrid(grids)
     gridlayoutwidget = self.makescroll(gridlayoutwidget)
 

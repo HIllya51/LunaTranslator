@@ -791,5 +791,6 @@
     "编码": "coding",
     "安装录音驱动": "Install recording driver",
     "录音": "tape",
-    "自动TTS": "Automatic TTS"
+    "自动TTS": "Automatic TTS",
+    "使用webview显示": "Display using webview"
 }

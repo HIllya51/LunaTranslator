@@ -791,5 +791,6 @@
     "编码": "Codificación",
     "安装录音驱动": "Instalación de la unidad de grabación",
     "录音": "Grabación",
-    "自动TTS": "TTS automático"
+    "自动TTS": "TTS automático",
+    "使用webview显示": "Mostrar con Webview"
 }

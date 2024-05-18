@@ -551,7 +551,6 @@ class WebivewWidget(QWidget):
 
     def __init__(self, parent=None, debug=False) -> None:
         super().__init__(parent)
-        self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         declare_library_path(
             os.path.abspath(
                 os.path.join(
@@ -584,16 +583,12 @@ class WebivewWidget(QWidget):
     def setHtml(self, html):
         self.webview.set_html(html)
 
-    def clear(self):
-        self.navigate("about:blank")
-
 
 class mshtmlWidget(QWidget):
     on_load = pyqtSignal(str)
 
     def __init__(self, parent=None) -> None:
         super().__init__(parent)
-        self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         self.browser = HTMLBrowser(int(self.winId()))
         threading.Thread(target=self.__getcurrenturl).start()
 
@@ -623,20 +618,58 @@ class mshtmlWidget(QWidget):
         )
         self.browser.set_html(html)
 
+
+class auto_select_webview(QWidget):
+    on_load = pyqtSignal(str)
+
     def clear(self):
         self.navigate("about:blank")
 
+    def navigate(self, url):
+        self._maybecreate()
+        self.internal.navigate(url)
 
-def auto_select_webview(parent):
+    def setHtml(self, html):
+        self._maybecreate()
+        self.internal.setHtml(html)
 
-    if globalconfig["usewebview"] == 0:
-        browser = mshtmlWidget(parent)
-    elif globalconfig["usewebview"] == 1:
-        try:
-            browser = WebivewWidget(parent, True)
-        except Exception:
-            browser = mshtmlWidget(parent)
-    return browser
+    def navigate(self, url):
+        self._maybecreate()
+        self.internal.navigate(url)
+
+    def __init__(self, parent) -> None:
+        super().__init__(parent)
+        self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        self.cantusewebview2 = False
+        self.internal = None
+        self.contex = -1
+        layout = QHBoxLayout()
+        layout.setContentsMargins(0, 0, 0, 0)
+        self.setLayout(layout)
+        self._maybecreate()
+
+
+    def _maybecreate(self):
+        if globalconfig["usewebview"] != self.contex:
+            if globalconfig["usewebview"] == 1 and self.cantusewebview2:
+                return
+            if self.internal:
+                self.layout().removeWidget(self.internal)
+            self.internal = self._createwebview()
+            self.layout().addWidget(self.internal)
+
+    def _createwebview(self):
+        self.contex = globalconfig["usewebview"]
+        if self.contex == 0:
+            browser = mshtmlWidget(self)
+        elif self.contex == 1:
+            try:
+                browser = WebivewWidget(self, True)
+            except Exception:
+                self.cantusewebview2 = True
+                browser = mshtmlWidget(self)
+        browser.on_load.connect(self.on_load)
+        return browser
 
 
 class threebuttons(QWidget):

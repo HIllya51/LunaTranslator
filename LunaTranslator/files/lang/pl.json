@@ -791,5 +791,6 @@
     "编码": "kodowanie",
     "安装录音驱动": "Zainstaluj sterownik nagrywania",
     "录音": "taśma",
-    "自动TTS": "Automatyczny TTS"
+    "自动TTS": "Automatyczny TTS",
+    "使用webview显示": "Wyświetlanie przy użyciu widoku internetowego"
 }
