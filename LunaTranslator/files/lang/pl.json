@@ -790,5 +790,6 @@
     "优先级": "priorytet",
     "编码": "kodowanie",
     "安装录音驱动": "Zainstaluj sterownik nagrywania",
-    "录音": "taśma"
+    "录音": "taśma",
+    "自动TTS": "Automatyczny TTS"
 }

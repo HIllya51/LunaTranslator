@@ -790,5 +790,6 @@
     "优先级": "Prioritet",
     "编码": "coding",
     "安装录音驱动": "Kayıt sürücüsünü kur",
-    "录音": "kaset"
+    "录音": "kaset",
+    "自动TTS": "Otomatik TTS"
 }

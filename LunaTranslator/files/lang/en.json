@@ -790,5 +790,6 @@
     "优先级": "priority",
     "编码": "coding",
     "安装录音驱动": "Install recording driver",
-    "录音": "tape"
+    "录音": "tape",
+    "自动TTS": "Automatic TTS"
 }

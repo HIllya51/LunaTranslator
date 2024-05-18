@@ -183,7 +183,8 @@
         "ModelName3": "lunamodel3",
         "allowDuplicate": true,
         "autoUpdateModel": true,
-        "ocrcroped": false
+        "ocrcroped": false,
+        "autoruntts": false
     },
     "ankiwindow": [
         100,

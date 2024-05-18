@@ -790,5 +790,6 @@
     "优先级": "Prioridad",
     "编码": "Codificación",
     "安装录音驱动": "Instalación de la unidad de grabación",
-    "录音": "Grabación"
+    "录音": "Grabación",
+    "自动TTS": "TTS automático"
 }

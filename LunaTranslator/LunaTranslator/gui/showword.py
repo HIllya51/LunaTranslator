@@ -354,6 +354,11 @@ class AnkiWindow(QWidget):
             getsimpleswitch(globalconfig["ankiconnect"], "ocrcroped"),
         )
 
+        layout.addRow(
+            _TR("自动TTS"),
+            getsimpleswitch(globalconfig["ankiconnect"], "autoruntts"),
+        )
+
         layout.addWidget(QLabel())
         layout.addRow(_TR("录音"), QLabel())
         lb = QLabel()
@@ -767,7 +772,9 @@ class searchwordW(closeashidewindow):
 
         self.ankiwindow.example.setPlainText(gobject.baseobject.currenttext)
         self.search(sentence)
-
+        if globalconfig['ankiconnect']['autoruntts']:
+            self.ankiwindow.langdu()
+            self.ankiwindow.langdu2()
     def search(self, sentence):
         if sentence == "":
             return
