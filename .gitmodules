@@ -1,0 +1,3 @@
+[submodule "plugins/libs/wil"]
+	path = plugins/libs/wil
+	url = https://github.com/microsoft/wil.git

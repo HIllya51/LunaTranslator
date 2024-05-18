@@ -19,7 +19,7 @@ from traceback import print_exc
 import requests, json, subprocess, time
 from PyQt5.QtCore import pyqtSignal, Qt, QUrl
 import qtawesome, functools, os, base64
-import gobject, uuid, signal
+import gobject, uuid, windows, platform
 from myutils.config import globalconfig, _TR, static_data
 import myutils.ankiconnect as anki
 from gui.usefulwidget import (
@@ -33,6 +33,8 @@ from gui.usefulwidget import (
     getcolorbutton,
     tabadd_lazy,
 )
+from myutils.subproc import subproc_w, autoproc
+
 from myutils.wrapper import threader
 from myutils.ocrutil import imageCut, ocr_run
 from gui.rangeselect import rangeselct_function
@@ -61,6 +63,35 @@ class ffmpeg_virtual_audio_capturer:
             self.engine.stdin.flush()
         except:
             pass
+
+
+class loopbackrecorder:
+    def __init__(self):
+        os.makedirs("./cache/tts", exist_ok=True)
+        self.file = os.path.abspath(
+            os.path.join("./cache/tts", str(time.time()) + ".wav")
+        )
+        try:
+            if platform.architecture()[0] == "64bit":
+                _6432 = "64"
+            elif platform.architecture()[0] == "32bit":
+                _6432 = "32"
+            self.waitsignal = str(time.time())
+            self.engine = autoproc(
+                subproc_w(
+                    './files/plugins/shareddllproxy{}.exe recordaudio "{}"  "{}"'.format(
+                        _6432, self.file, self.waitsignal
+                    ),
+                    name="recordaudio",
+                )
+            )
+        except:
+            print_exc()
+
+    def end(self):
+        windows.SetEvent(
+            windows.AutoHandle(windows.CreateEvent(False, False, self.waitsignal))
+        )
 
 
 class statusbutton(QPushButton):
@@ -395,7 +426,10 @@ class AnkiWindow(QWidget):
 
     def startorendrecord(self, target: QLineEdit, idx):
         if idx == 1:
-            self.recorder = ffmpeg_virtual_audio_capturer()
+            if len(globalconfig["ffmpeg"]) and os.path.exists(globalconfig["ffmpeg"]):
+                self.recorder = ffmpeg_virtual_audio_capturer()
+            else:
+                self.recorder = loopbackrecorder()
         else:
             self.recorder.end()
             target.setText(self.recorder.file)
