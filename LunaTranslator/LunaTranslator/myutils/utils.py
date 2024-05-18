@@ -525,7 +525,19 @@ def parsemayberegexreplace(dict, res):
                 res,
             )
         else:
-            res = res.replace(item["key"], item["value"])
+            if (
+                res.isascii()
+                and item["key"].isascii()
+                and item["value"].isascii()
+                and (" " not in item["key"])
+            ):  # 目标可能有空格
+                resx = res.split(" ")
+                for i in range(len(resx)):
+                    if resx[i] == item["key"]:
+                        resx[i] = item["value"]
+                res = " ".join(resx)
+            else:
+                res = res.replace(item["key"], item["value"])
     return res
 
 

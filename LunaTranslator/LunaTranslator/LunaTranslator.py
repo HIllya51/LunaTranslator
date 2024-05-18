@@ -109,7 +109,8 @@ class MAINUI:
             context = None
             try:
                 if method["object"].using:
-                    content, context = method["object"].process_before(content)
+                    if 'process_before' in dir(method["object"]):
+                        content, context = method["object"].process_before(content)
             except:
                 print_exc()
             contexts.append(context)
@@ -121,7 +122,8 @@ class MAINUI:
             context = mp[i]
             try:
                 if method["object"].using:
-                    res = method["object"].process_after(res, context)
+                    if 'process_after' in dir(method["object"]):
+                        res = method["object"].process_after(res, context)
             except:
                 print_exc()
         return res
