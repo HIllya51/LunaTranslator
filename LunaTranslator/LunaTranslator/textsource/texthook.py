@@ -1,4 +1,4 @@
-import threading, windows, json
+import json
 from queue import Queue
 import re, os
 import time, gobject
@@ -14,14 +14,11 @@ from ctypes import (
     CDLL,
     CFUNCTYPE,
     c_bool,
-    POINTER,
     Structure,
     c_int,
-    pointer,
     c_char_p,
     c_wchar_p,
     c_uint64,
-    sizeof,
     c_void_p,
     cast,
     c_wchar,
@@ -30,7 +27,7 @@ from ctypes import (
     c_uint,
     c_char,
 )
-from ctypes.wintypes import DWORD, LPCWSTR, HANDLE
+from ctypes.wintypes import DWORD, LPCWSTR
 from gui.usefulwidget import getQMessageBox
 
 MAX_MODULE_SIZE = 120
@@ -431,16 +428,21 @@ class texthook(basetext):
 
     @threader
     def delaycollectallselectedoutput(self):
-        collector = []
         while True:
-            _ = self.newline_delaywait.get()
-            collector.append(_)
             time.sleep(globalconfig["textthreaddelay"] / 1000)
+            if self.newline_delaywait.empty():
+                continue
+
+            collector = []
             while self.newline_delaywait.empty() == False:
                 collector.append(self.newline_delaywait.get())
+            try:
+                collector.sort(key=lambda xx: self.selectedhook.index(xx[0]))
+            except:
+                pass
+            collector = [_[1] for _ in collector]
             self.newline.put(collector)
             self.runonce_line = collector
-            collector = []
 
     def handle_output(self, hc, hn, tp, output):
 
@@ -456,7 +458,7 @@ class texthook(basetext):
                 self.runonce_line = output
         else:
             if key in self.selectedhook:
-                self.newline_delaywait.put(output)
+                self.newline_delaywait.put((key, output))
         if key == self.selectinghook:
             gobject.baseobject.hookselectdialog.getnewsentencesignal.emit(output)
 
