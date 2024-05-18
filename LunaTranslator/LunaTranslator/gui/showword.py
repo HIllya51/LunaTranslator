@@ -16,9 +16,9 @@ from PyQt5.QtWidgets import (
 )
 from PyQt5.QtGui import QPixmap, QImage
 from traceback import print_exc
-import requests, json, subprocess, time
-from PyQt5.QtCore import pyqtSignal, Qt, QUrl
-import qtawesome, functools, os, base64
+import requests, json, time
+from PyQt5.QtCore import pyqtSignal, Qt
+import qtawesome, functools, os, base64, winsharedutils
 import gobject, uuid, windows, platform
 from myutils.config import globalconfig, _TR, static_data
 import myutils.ankiconnect as anki
@@ -33,36 +33,10 @@ from gui.usefulwidget import (
     getcolorbutton,
     tabadd_lazy,
 )
-from myutils.subproc import subproc_w, autoproc
-
+from myutils.subproc import subproc_w
 from myutils.wrapper import threader
 from myutils.ocrutil import imageCut, ocr_run
 from gui.rangeselect import rangeselct_function
-
-
-class ffmpeg_virtual_audio_capturer:
-    def __init__(self):
-        os.makedirs("./cache/tts", exist_ok=True)
-        self.file = os.path.abspath(
-            os.path.join("./cache/tts", str(time.time()) + ".mp3")
-        )
-        try:
-            self.engine = subprocess.Popen(
-                os.path.join(
-                    globalconfig["ffmpeg"],
-                    f'ffmpeg.exe -f dshow -i audio="virtual-audio-capturer" "{self.file}"',
-                ),
-                stdin=subprocess.PIPE,
-            )
-        except:
-            print_exc()
-
-    def end(self):
-        try:
-            self.engine.stdin.write(b"q")
-            self.engine.stdin.flush()
-        except:
-            pass
 
 
 class loopbackrecorder:
@@ -72,26 +46,37 @@ class loopbackrecorder:
             os.path.join("./cache/tts", str(time.time()) + ".wav")
         )
         try:
-            if platform.architecture()[0] == "64bit":
-                _6432 = "64"
-            elif platform.architecture()[0] == "32bit":
-                _6432 = "32"
             self.waitsignal = str(time.time())
-            self.engine = autoproc(
-                subproc_w(
-                    './files/plugins/shareddllproxy{}.exe recordaudio "{}"  "{}"'.format(
-                        _6432, self.file, self.waitsignal
-                    ),
-                    name="recordaudio",
-                )
+            self.engine = subproc_w(
+                './files/plugins/shareddllproxy32.exe recordaudio "{}"  "{}"'.format(
+                    self.file, self.waitsignal
+                ),
             )
         except:
             print_exc()
 
-    def end(self):
+    @threader
+    def end(self, callback):
         windows.SetEvent(
             windows.AutoHandle(windows.CreateEvent(False, False, self.waitsignal))
         )
+        self.engine.wait()
+        filewav = self.file
+        if os.path.exists(filewav) == False:
+            callback("")
+            return
+        filemp3 = filewav.replace(".wav", ".mp3")
+        subproc_w(
+            './files/plugins/shareddllproxy32.exe mainmp3 "{}"  "{}"'.format(
+                filewav, filemp3
+            ),
+            run=True,
+        )
+        if os.path.exists(filemp3):
+            os.remove(filewav)
+            callback(filemp3)
+        else:
+            callback(filewav)
 
 
 class statusbutton(QPushButton):
@@ -390,49 +375,13 @@ class AnkiWindow(QWidget):
             getsimpleswitch(globalconfig["ankiconnect"], "autoruntts"),
         )
 
-        layout.addWidget(QLabel())
-        layout.addRow(_TR("录音"), QLabel())
-        lb = QLabel()
-        lb.setOpenExternalLinks(True)
-        lb.setText(
-            '<a href="https://github.com/HIllya51/RESOURCES/releases/download/softwares/virtual-audio.zip">virtual-audio-capturer</a>'
-        )
-        layout.addRow(_TR("安装录音驱动"), lb)
-        ffmpegpath = getlineedit(globalconfig, "ffmpeg", readonly=True)
-
-        def selectpath():
-            f = QFileDialog.getExistingDirectory()
-            if f != "":
-                ffmpegpath.setText(f)
-
-        layout.addRow(
-            _TR("ffmpeg"),
-            getboxlayout(
-                [
-                    ffmpegpath,
-                    getcolorbutton(
-                        "",
-                        "",
-                        selectpath,
-                        icon="fa.gear",
-                        constcolor="#FF69B4",
-                    ),
-                ],
-                makewidget=True,
-            ),
-        )
-
         return wid
 
     def startorendrecord(self, target: QLineEdit, idx):
         if idx == 1:
-            if len(globalconfig["ffmpeg"]) and os.path.exists(globalconfig["ffmpeg"]):
-                self.recorder = ffmpeg_virtual_audio_capturer()
-            else:
-                self.recorder = loopbackrecorder()
+            self.recorder = loopbackrecorder()
         else:
-            self.recorder.end()
-            target.setText(self.recorder.file)
+            self.recorder.end(callback=target.setText)
 
     def createaddtab(self):
         layout = QVBoxLayout()

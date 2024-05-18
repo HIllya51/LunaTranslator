@@ -8,6 +8,9 @@ include_directories(${CMAKE_CURRENT_LIST_DIR})
 include_directories(${CMAKE_CURRENT_LIST_DIR}/Detours-4.0.1/include)
 
 include_directories(${CMAKE_CURRENT_LIST_DIR}/wil/include)
+include_directories(${CMAKE_CURRENT_LIST_DIR}/miniaudio)
+include_directories(${CMAKE_CURRENT_LIST_DIR}/tinymp3)
+
 
 if(${CMAKE_SIZEOF_VOID_P} EQUAL 4)
     set(LTLPlatform "Win32")

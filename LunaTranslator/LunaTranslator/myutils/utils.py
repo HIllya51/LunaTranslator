@@ -20,8 +20,9 @@ from myutils.config import (
     savehook_new_data,
     getdefaultsavehook,
 )
+from ctypes import c_float, pointer, c_void_p
 import threading
-import re, heapq
+import re, heapq, winsharedutils
 from myutils.vndb import searchfordata, getvidbytitle
 from myutils.wrapper import tryprint
 
@@ -260,48 +261,36 @@ class wavmp3player:
                 if task is None:
                     continue
                 binary, volume, force = task
-                os.makedirs("./cache/tts", exist_ok=True)
+                durationms = self._playsoundWin(binary, volume)
 
-                tgt = os.path.abspath("./cache/tts/" + str(time.time()) + ".wav")
-                with open(tgt, "wb") as ff:
-                    ff.write(binary)
-                durationms = self._playsoundWin(tgt, volume)
-                self.lastfile = tgt
                 if durationms and globalconfig["ttsnointerrupt"]:
                     while durationms > 0:
                         durationms -= 100
                         time.sleep(0.1)
                         if self.tasks and self.tasks[-1]:
                             break
-                        # time.sleep(durationms / 1000)
         except:
             print_exc()
 
-    def _playsoundWin(self, sound, volume):
+    def _playsoundWin(self, binary, volume):
         try:
-
-            windows.mciSendString(("stop lunatranslator_mci_{}".format(self.i)))
-            windows.mciSendString(("close lunatranslator_mci_{}".format(self.i)))
-            self.i += 1
+            duration = c_float()
+            device = c_void_p()
+            decoder = c_void_p()
+            succ = winsharedutils.PlayAudioInMem(
+                binary,
+                len(binary),
+                volume / 100,
+                pointer(decoder),
+                pointer(device),
+                pointer(duration),
+            )
+            if succ != 0:
+                return 0
             if self.lastfile:
-                os.remove(self.lastfile)
-            self.lastfile = sound
-            windows.mciSendString(
-                'open "{}" type mpegvideo  alias lunatranslator_mci_{}'.format(
-                    sound, self.i
-                )
-            )
-            durationms = int(
-                windows.mciSendString(
-                    "status lunatranslator_mci_{} length".format(self.i)
-                )
-            )
-            windows.mciSendString(
-                "setaudio lunatranslator_mci_{} volume to {}".format(
-                    self.i, volume * 10
-                )
-            )
-            windows.mciSendString(("play lunatranslator_mci_{}".format(self.i)))
+                winsharedutils.PlayAudioInMem_Stop(self.lastfile[0], self.lastfile[1])
+            self.lastfile = decoder, device
+            durationms = duration.value * 1000
         except:
             durationms = 0
 

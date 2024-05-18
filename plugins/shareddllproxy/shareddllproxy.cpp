@@ -1,11 +1,12 @@
 ﻿#pragma comment(linker, "/subsystem:windows /entry:wmainCRTStartup")
-int recordaudio(int argc, wchar_t *argv[]);
 
 int dllinjectwmain(int argc, wchar_t *argv[]);
 int ntleaswmain(int argc, wchar_t *wargv[]);
 int updatewmain(int argc, wchar_t *wargv[]);
 bool checkisapatch();
 #ifndef _WIN64
+int recordaudio(int argc, wchar_t *argv[]);
+int mainmp3(int argc, wchar_t *argv[]);
 int LRwmain(int argc, wchar_t *argv[]);
 int jbjwmain(int argc, wchar_t *argv[]);
 int dreyewmain(int argc, wchar_t *argv[]);
@@ -65,9 +66,11 @@ int wmain(int argc, wchar_t *argv[])
         return listprocessmodule(argc - 1, argv + 1);
     if (argv0 == L"update")
         return updatewmain(argc - 1, argv + 1);
-    if (argv0 == L"recordaudio")
-        return recordaudio(argc - 1, argv + 1);
 #ifndef _WIN64
+    else if (argv0 == L"recordaudio")
+        return recordaudio(argc - 1, argv + 1);
+    else if (argv0 == L"mainmp3")
+        return mainmp3(argc - 1, argv + 1);
     else if (argv0 == L"LR")
         return LRwmain(argc - 1, argv + 1);
     else if (argv0 == L"le")

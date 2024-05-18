@@ -54,7 +54,6 @@
         "changecharset": false,
         "changecharset_charset": 2
     },
-    "ffmpeg": "",
     "requestinterval": 1,
     "keepontop": true,
     "buttonsize": 20,

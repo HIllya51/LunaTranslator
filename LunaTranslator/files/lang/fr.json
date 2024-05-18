@@ -789,8 +789,6 @@
     "截图后进行OCR": "OCR après capture d'écran",
     "优先级": "Priorité",
     "编码": "Codage",
-    "安装录音驱动": "Installer le driver d'enregistrement",
-    "录音": "Enregistrement sonore",
     "自动TTS": "Tts automatique",
     "使用webview显示": "Afficher avec webview"
 }

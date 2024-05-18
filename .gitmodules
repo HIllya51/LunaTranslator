@@ -1,3 +1,9 @@
 [submodule "plugins/libs/wil"]
 	path = plugins/libs/wil
 	url = https://github.com/microsoft/wil.git
+[submodule "plugins/libs/tinymp3"]
+	path = plugins/libs/tinymp3
+	url = https://github.com/HIllya51/tinymp3
+[submodule "plugins/libs/miniaudio"]
+	path = plugins/libs/miniaudio
+	url = https://github.com/HIllya51/miniaudio

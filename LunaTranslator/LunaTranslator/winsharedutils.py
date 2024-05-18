@@ -16,6 +16,7 @@ from ctypes import (
     create_string_buffer,
     c_size_t,
     windll,
+    c_float,
     c_char,
 )
 from ctypes.wintypes import WORD, HANDLE, HWND, LONG, DWORD
@@ -186,7 +187,10 @@ html_release.argtypes = (c_void_p,)
 html_get_current_url = utilsdll.html_get_current_url
 html_get_current_url.argtypes = c_void_p, c_wchar_p
 html_set_html = utilsdll.html_set_html
-html_set_html.argtypes = c_void_p, c_wchar_p,
+html_set_html.argtypes = (
+    c_void_p,
+    c_wchar_p,
+)
 
 
 class HTMLBrowser:
@@ -333,3 +337,17 @@ startmaglistener = utilsdll.startmaglistener
 startmaglistener.restype = HANDLE
 endmaglistener = utilsdll.endmaglistener
 endmaglistener.argtypes = (HANDLE,)
+
+PlayAudioInMem = utilsdll.PlayAudioInMem
+PlayAudioInMem.argtypes = (
+    c_void_p,
+    c_size_t,
+    c_float,
+    c_void_p,
+    c_void_p,
+    POINTER(c_float),
+)
+PlayAudioInMem.restype = c_int
+
+PlayAudioInMem_Stop = utilsdll.PlayAudioInMem_Stop
+PlayAudioInMem_Stop.argtypes = c_void_p, c_void_p
