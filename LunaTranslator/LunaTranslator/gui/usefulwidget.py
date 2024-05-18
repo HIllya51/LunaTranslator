@@ -613,7 +613,6 @@ class mshtmlWidget(QWidget):
         self.browser.resize(0, 0, size[0], size[1])
 
     def setHtml(self, html):
-        html = html.replace('target="_blank"', "")
         html = """<html><head><meta http-equiv='x-ua-compatible' content='IE=edge'></head><body style=" font-family:'{}'">{}</body></html>""".format(
             QFontDatabase.systemFont(QFontDatabase.GeneralFont).family(), html
         )

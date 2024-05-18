@@ -28,7 +28,7 @@ class youdao(cishubase):
 
         if len(fnd[0][1]):
             return (
-                '<div  style="text-align: center;"><a target="_blank" href="{}">link</a></div><br>'.format(
+                '<div  style="text-align: center;"><a href="{}">link</a></div><br>'.format(
                     "https://dict.youdao.com/result?word={}&lang={}".format(
                         quote(word), self.srclang
                     )

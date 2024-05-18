@@ -27,7 +27,7 @@ class weblio(cishubase):
         join = "<br>".join(_all)
         if len(join):
             return (
-                '<div  style="text-align: center;"><a target="_blank" href="{}">link</a></div>'.format(
+                '<div  style="text-align: center;"><a href="{}">link</a></div>'.format(
                     url
                 )
                 + join
