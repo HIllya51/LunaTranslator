@@ -185,11 +185,16 @@ html_release = utilsdll.html_release
 html_release.argtypes = (c_void_p,)
 html_get_current_url = utilsdll.html_get_current_url
 html_get_current_url.argtypes = c_void_p, c_wchar_p
+html_set_html = utilsdll.html_set_html
+html_set_html.argtypes = c_void_p, c_wchar_p,
 
 
 class HTMLBrowser:
     def __init__(self, parent) -> None:
         self.html = html_new(parent)
+
+    def set_html(self, html):
+        html_set_html(self.html, html)
 
     def resize(
         self,

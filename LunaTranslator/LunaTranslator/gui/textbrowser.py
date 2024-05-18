@@ -181,6 +181,7 @@ class Textbrowser:
 
     def __init__(self, parent):
         self.parent = parent
+        self.savey = 0
         # self.shadowlabel=QLabel(parent)
         # self.shadowlabel.savetext=''
         self.align = False

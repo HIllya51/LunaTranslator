@@ -153,8 +153,15 @@ extern "C" __declspec(dllexport) void html_get_current_url(void *web, wchar_t *u
     if (!web)
         return;
     auto ww = static_cast<MWebBrowser *>(web);
-    ww->Destroy();
     wchar_t *_u;
     ww->get_LocationURL(&_u);
     wcscpy(url, _u);
+}
+
+extern "C" __declspec(dllexport) void html_set_html(void *web, wchar_t *html)
+{
+    if (!web)
+        return;
+    auto ww = static_cast<MWebBrowser *>(web);
+    ww->SetHtml(html);
 }

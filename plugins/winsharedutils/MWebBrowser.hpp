@@ -8,6 +8,7 @@
 #define INITGUID
 
 class MWebBrowser :
+    public IDispatch,
     public IOleClientSite,
     public IOleInPlaceSite,
     public IStorage,
@@ -17,6 +18,18 @@ class MWebBrowser :
 {
 public:
     static MWebBrowser *Create(HWND hwndParent);
+    HRESULT OnCompleted(DISPPARAMS* args);
+    
+    // ---------- IDispatch ----------
+    virtual HRESULT STDMETHODCALLTYPE GetTypeInfoCount(__RPC__out UINT *pctinfo) override;
+    virtual HRESULT STDMETHODCALLTYPE GetTypeInfo(UINT, LCID, __RPC__deref_out_opt ITypeInfo **) override;
+    virtual HRESULT STDMETHODCALLTYPE GetIDsOfNames(__RPC__in REFIID riid, __RPC__in_ecount_full(cNames) LPOLESTR *rgszNames, __RPC__in_range(0, 16384) UINT cNames, LCID lcid, __RPC__out_ecount_full(cNames) DISPID *rgDispId) override;
+    virtual HRESULT STDMETHODCALLTYPE Invoke(_In_  DISPID dispIdMember, _In_  REFIID, _In_  LCID, _In_  WORD, _In_  DISPPARAMS *pDispParams, _Out_opt_ VARIANT *pVarResult, _Out_opt_ EXCEPINFO*, _Out_opt_ UINT*) override;
+
+
+    std::wstring htmlSource;
+    IConnectionPoint* callback;
+    DWORD eventCookie;
 
     RECT PixelToHIMETRIC(const RECT& rc);
     HWND GetControlWindow();
@@ -31,6 +44,7 @@ public:
     void Refresh();
     HRESULT Navigate(const WCHAR *url = L"about:blank");
     HRESULT Navigate2(const WCHAR *url, DWORD dwFlags = 0);
+    HRESULT SetHtml(const wchar_t* html);
     void Print(BOOL bBang = FALSE);
     void PrintPreview();
     void PageSetup();

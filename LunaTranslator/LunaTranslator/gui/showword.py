@@ -192,7 +192,7 @@ class AnkiWindow(QWidget):
         fields.update(self.loadfakefields())
         html = self.parse_template(html, fields)
         html = f'<style>{model_css}</style><div class="card">{html}</div>'
-        self.htmlbrowser.set_html(html)
+        self.htmlbrowser.setHtml(html)
 
     def creattemplatetab(self):
 
@@ -338,7 +338,7 @@ class AnkiWindow(QWidget):
             _TR("DeckName"), getlineedit(globalconfig["ankiconnect"], "DeckName")
         )
         layout.addRow(
-            _TR("ModelName"), getlineedit(globalconfig["ankiconnect"], "ModelName2")
+            _TR("ModelName"), getlineedit(globalconfig["ankiconnect"], "ModelName3")
         )
 
         layout.addRow(
@@ -357,6 +357,11 @@ class AnkiWindow(QWidget):
         layout.addRow(
             _TR("自动TTS"),
             getsimpleswitch(globalconfig["ankiconnect"], "autoruntts"),
+        )
+
+        layout.addRow(
+            _TR("use QTextBrowser"),
+            getsimpleswitch(globalconfig, "searchwordusetextbrowser"),
         )
 
         layout.addWidget(QLabel())
@@ -674,6 +679,8 @@ class searchwordW(closeashidewindow):
                 idx += 1
         self.tabks.insert(idx, k)
         self.tab.insertTab(idx, _TR(globalconfig["cishu"][k]["name"]))
+        if len(self.tabks) == 1:
+            self.tab.tabBarClicked.emit(0)
 
     def setupUi(self):
         self.setWindowIcon(qtawesome.icon("fa.search"))
@@ -703,25 +710,30 @@ class searchwordW(closeashidewindow):
         self.searchlayout.addWidget(ankiconnect)
 
         self.tab = QTabBar(self)
-        self.tab.currentChanged.connect(
+
+        self.tab.tabBarClicked.connect(
             lambda idx: self.textOutput.setHtml(self.cache_results[self.tabks[idx]])
         )
         self.tabks = []
         self.setCentralWidget(ww)
 
-        textOutput = QTextBrowser(self)
+        if globalconfig["searchwordusetextbrowser"]:
+            textOutput = QTextBrowser(self)
 
-        def openlink(url):
-            try:
-                if url.url().lower().startswith("http"):
-                    os.startfile(url.url())
-            except:
-                pass
+            def openlink(url):
+                try:
+                    if url.url().lower().startswith("http"):
+                        os.startfile(url.url())
+                except:
+                    pass
 
-        textOutput.anchorClicked.connect(openlink)
-        textOutput.setUndoRedoEnabled(False)
-        textOutput.setReadOnly(True)
-        textOutput.setOpenLinks(False)
+            textOutput.anchorClicked.connect(openlink)
+            textOutput.setUndoRedoEnabled(False)
+            textOutput.setReadOnly(True)
+            textOutput.setOpenLinks(False)
+        else:
+
+            textOutput = auto_select_webview(self)
         self.textOutput = textOutput
         self.cache_results = {}
         self.hiding = True

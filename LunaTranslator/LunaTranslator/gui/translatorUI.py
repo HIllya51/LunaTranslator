@@ -517,6 +517,8 @@ class QUnFrameWindow(resizableframeless):
             windows.SetForegroundWindow(int(self.winId()))
             self.isfirstshow = False
             self.setontopthread()
+            self.refreshtoolicon()
+        
         return super().showEvent(a0)
 
     def canceltop(self):
@@ -657,8 +659,6 @@ class QUnFrameWindow(resizableframeless):
         self.document = self.translate_text.document()
 
         self.document.contentsChanged.connect(self.textAreaChanged)
-        self.set_color_transparency()
-        self.refreshtoolicon()
         self.thistimenotsetop = False
 
     def createborderradiusstring(self, r, merge, top=False):

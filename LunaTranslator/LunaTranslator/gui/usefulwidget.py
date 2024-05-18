@@ -13,12 +13,11 @@ from PyQt5.QtWidgets import (
 )
 
 from webviewpy import (
-    webview_error_t,
     webview_native_handle_kind_t,
     Webview,
     declare_library_path,
 )
-from PyQt5.QtGui import QCursor, QCloseEvent, QColor, QTextCursor, QResizeEvent
+from PyQt5.QtGui import QCloseEvent, QColor, QTextCursor, QResizeEvent
 from PyQt5.QtCore import Qt, pyqtSignal, QSize
 from myutils.config import _TR, globalconfig
 from PyQt5.QtWidgets import (
@@ -552,6 +551,7 @@ class WebivewWidget(QWidget):
 
     def __init__(self, parent=None, debug=False) -> None:
         super().__init__(parent)
+        self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         declare_library_path(
             os.path.abspath(
                 os.path.join(
@@ -581,8 +581,11 @@ class WebivewWidget(QWidget):
             size = getscaledrect(a0.size())
             windows.MoveWindow(hwnd, 0, 0, size[0], size[1], True)
 
-    def set_html(self, html):
+    def setHtml(self, html):
         self.webview.set_html(html)
+
+    def clear(self):
+        self.navigate("about:blank")
 
 
 class mshtmlWidget(QWidget):
@@ -590,6 +593,7 @@ class mshtmlWidget(QWidget):
 
     def __init__(self, parent=None) -> None:
         super().__init__(parent)
+        self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         self.browser = HTMLBrowser(int(self.winId()))
         threading.Thread(target=self.__getcurrenturl).start()
 
@@ -612,8 +616,15 @@ class mshtmlWidget(QWidget):
         size = getscaledrect(a0.size())
         self.browser.resize(0, 0, size[0], size[1])
 
-    def set_html(self, html):
-        print("not support, please use webview2")
+    def setHtml(self, html):
+        html = html.replace('target="_blank"', "")
+        html = "<html><head><meta http-equiv='x-ua-compatible' content='IE=edge'></head><body>{}</body></html>".format(
+            html
+        )
+        self.browser.set_html(html)
+
+    def clear(self):
+        self.navigate("about:blank")
 
 
 def auto_select_webview(parent):

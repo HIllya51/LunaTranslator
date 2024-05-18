@@ -4,6 +4,7 @@
 
 #include "MWebBrowser.hpp"
 
+#include <ExDispid.h>
 /*static*/ MWebBrowser *
 MWebBrowser::Create(HWND hwndParent)
 {
@@ -16,22 +17,31 @@ MWebBrowser::Create(HWND hwndParent)
     return pBrowser;
 }
 
-MWebBrowser::MWebBrowser(HWND hwndParent) :
-    m_nRefCount(0),
-    m_hwndParent(NULL),
-    m_hwndCtrl(NULL),
-    m_hwndIEServer(NULL),
-    m_web_browser2(NULL),
-    m_ole_object(NULL),
-    m_ole_inplace_object(NULL),
-    m_pDocHostUIHandler(NULL),
-    m_hr(S_OK),
-    m_bAllowInsecure(FALSE),
-    m_nZoomPercents(100)
+MWebBrowser::MWebBrowser(HWND hwndParent) : m_nRefCount(0),
+                                            m_hwndParent(NULL),
+                                            m_hwndCtrl(NULL),
+                                            m_hwndIEServer(NULL),
+                                            m_web_browser2(NULL),
+                                            m_ole_object(NULL),
+                                            m_ole_inplace_object(NULL),
+                                            m_pDocHostUIHandler(NULL),
+                                            m_hr(S_OK),
+                                            m_bAllowInsecure(FALSE),
+                                            m_nZoomPercents(100)
 {
     ::SetRectEmpty(&m_rc);
 
     m_hr = CreateBrowser(hwndParent);
+
+    htmlSource = L"";
+    IConnectionPointContainer* container = nullptr;
+    m_web_browser2->QueryInterface(IID_IConnectionPointContainer, (void**)&container);
+    container->FindConnectionPoint(__uuidof(DWebBrowserEvents2), &callback);
+    IUnknown* punk = nullptr;
+    QueryInterface(IID_IUnknown, (void**)&punk);
+    callback->Advise(punk, &eventCookie);
+    punk->Release();
+    container->Release();
 }
 
 BOOL MWebBrowser::IsCreated() const
@@ -185,7 +195,7 @@ void MWebBrowser::Destroy()
     m_hwndIEServer = NULL;
 }
 
-RECT MWebBrowser::PixelToHIMETRIC(const RECT& rc)
+RECT MWebBrowser::PixelToHIMETRIC(const RECT &rc)
 {
     HDC hDC = ::GetDC(NULL);
     INT nPixelsPerInchX = ::GetDeviceCaps(hDC, LOGPIXELSX);
@@ -199,7 +209,7 @@ RECT MWebBrowser::PixelToHIMETRIC(const RECT& rc)
     return ret;
 }
 
-void MWebBrowser::MoveWindow(const RECT& rc)
+void MWebBrowser::MoveWindow(const RECT &rc)
 {
     m_rc = rc;
 
@@ -533,6 +543,10 @@ STDMETHODIMP MWebBrowser::QueryInterface(REFIID riid, void **ppvObj)
     {
         *ppvObj = static_cast<IDocHostUIHandler *>(this);
     }
+    else if (riid == __uuidof(IDispatch))
+        *ppvObj = static_cast<IDispatch *>(this);
+    else if (riid == __uuidof(IOleClientSite))
+        *ppvObj = static_cast<IOleClientSite *>(this);
     else
     {
         return E_NOINTERFACE;
@@ -542,13 +556,15 @@ STDMETHODIMP MWebBrowser::QueryInterface(REFIID riid, void **ppvObj)
     return S_OK;
 }
 
-STDMETHODIMP_(ULONG) MWebBrowser::AddRef()
+STDMETHODIMP_(ULONG)
+MWebBrowser::AddRef()
 {
     m_nRefCount++;
     return m_nRefCount;
 }
 
-STDMETHODIMP_(ULONG) MWebBrowser::Release()
+STDMETHODIMP_(ULONG)
+MWebBrowser::Release()
 {
     --m_nRefCount;
     if (m_nRefCount != 0)
@@ -831,7 +847,6 @@ STDMETHODIMP MWebBrowser::GetWindow(REFGUID rguidReason, HWND *phwnd)
     *phwnd = m_hwndParent;
     return S_OK;
 }
- 
 
 STDMETHODIMP MWebBrowser::OnSecurityProblem(DWORD dwProblem)
 {
@@ -844,11 +859,10 @@ STDMETHODIMP MWebBrowser::OnSecurityProblem(DWORD dwProblem)
         SysFreeString(url);
     }
 
-    
     {
         return S_OK;
     }
- 
+
     {
         return S_OK;
     }
@@ -979,4 +993,60 @@ HRESULT MWebBrowser::Quit()
         return E_NOINTERFACE;
 
     return m_web_browser2->Quit();
+}
+HRESULT MWebBrowser::GetTypeInfoCount(UINT *pctinfo) { return E_FAIL; }
+HRESULT MWebBrowser::GetTypeInfo(UINT, LCID, ITypeInfo **) { return E_FAIL; }
+HRESULT MWebBrowser::GetIDsOfNames(REFIID riid, LPOLESTR *rgszNames, UINT cNames, LCID lcid, DISPID *rgDispId) { return E_FAIL; }
+
+HRESULT MWebBrowser::Invoke(DISPID dispIdMember, REFIID, LCID, WORD,
+                            DISPPARAMS *pDispParams, VARIANT *pVarResult,
+                            EXCEPINFO *, UINT *)
+{
+    if (dispIdMember == DISPID_DOCUMENTCOMPLETE)
+        return OnCompleted(pDispParams);
+    else
+        return S_OK;
+}
+HRESULT MWebBrowser::OnCompleted(DISPPARAMS* args) {
+    HRESULT                   hr;
+
+    IDispatch                 *pDispatch = 0;
+    IHTMLDocument2            *pHtmlDoc2 = 0;
+    IPersistStreamInit        *pPSI = 0;
+    IStream                   *pStream = 0;
+    HGLOBAL                   hHTMLContent;
+
+
+    if (htmlSource.empty()) return S_OK;
+    hr = m_web_browser2->get_Document(&pDispatch);
+    if (SUCCEEDED(hr) && pDispatch) hr = pDispatch->QueryInterface(IID_IHTMLDocument2, (void **)&pHtmlDoc2);
+    if (SUCCEEDED(hr) && pHtmlDoc2) hr = pHtmlDoc2->QueryInterface(IID_IPersistStreamInit, (void **)&pPSI);
+
+
+    // allocate global memory to copy the HTML content to
+    hHTMLContent = ::GlobalAlloc(GMEM_MOVEABLE, (htmlSource.size() + 1) * sizeof(TCHAR));
+    if (hHTMLContent)
+    {
+        wchar_t * p_content(static_cast<wchar_t *>(GlobalLock(hHTMLContent)));
+        ::wcscpy(p_content, htmlSource.c_str());
+        GlobalUnlock(hHTMLContent);
+
+        // create a stream object based on the HTML content
+        if (SUCCEEDED(hr) && pPSI) hr = ::CreateStreamOnHGlobal(hHTMLContent, TRUE, &pStream);
+
+        if (SUCCEEDED(hr) && pStream) hr = pPSI->InitNew();
+        if (SUCCEEDED(hr)) hr = pPSI->Load(pStream);
+    }
+    if (pStream) pStream->Release();
+    if (pPSI) pPSI->Release();
+    if (pHtmlDoc2) pHtmlDoc2->Release();
+    if (pDispatch) pDispatch->Release();
+    htmlSource=L"";
+    return S_OK;
+}
+
+HRESULT MWebBrowser::SetHtml(const wchar_t* html){
+    htmlSource=html;
+    Navigate(L"about:blank");
+    return S_OK;
 }
