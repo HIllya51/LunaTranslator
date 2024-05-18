@@ -452,7 +452,6 @@ class MAINUI:
         if globalconfig["sourcestatus2"]["texthook"]["use"]:
             self.textsource = texthook(pids, hwnd, pexe)
 
-    # @threader
     def starttextsource(self, use=None, checked=True):
         self.translation_ui.showhidestate = False
         self.translation_ui.refreshtooliconsignal.emit()
@@ -547,6 +546,7 @@ class MAINUI:
             return None
         return aclass(classname)
 
+    @threader
     def prepare(self, now=None, _=None):
         self.commonloader("fanyi", self.translators, self.fanyiinitmethod, now)
 
@@ -574,6 +574,7 @@ class MAINUI:
         except:
             print_exc()
 
+    @threader
     def startxiaoxueguan(self, type_=None, _=None):
         self.commonloader("cishu", self.cishus, self.cishuinitmethod, type_)
 

@@ -894,6 +894,28 @@
                 }
             }
         },
+        "yomichan": {
+            "use": false,
+            "name": "yomichan termbank",
+            "args": {
+                "path": "",
+                "priority": 100
+            },
+            "argstype": {
+                "path": {
+                    "type": "file",
+                    "name": "路径",
+                    "dir": true
+                },
+                "priority": {
+                    "type": "intspin",
+                    "name": "优先级",
+                    "min": 0,
+                    "max": 10000,
+                    "step": 1
+                }
+            }
+        },
         "goo": {
             "use": false,
             "name": "goo",
