@@ -191,7 +191,7 @@ class AnkiWindow(QWidget):
         fields = self.loadfileds()
         fields.update(self.loadfakefields())
         html = self.parse_template(html, fields)
-        html = "<style>" + model_css + "</style>" + html
+        html = f'<style>{model_css}</style><div class="card">{html}</div>'
         self.htmlbrowser.set_html(html)
 
     def creattemplatetab(self):
@@ -772,9 +772,10 @@ class searchwordW(closeashidewindow):
 
         self.ankiwindow.example.setPlainText(gobject.baseobject.currenttext)
         self.search(sentence)
-        if globalconfig['ankiconnect']['autoruntts']:
+        if globalconfig["ankiconnect"]["autoruntts"]:
             self.ankiwindow.langdu()
             self.ankiwindow.langdu2()
+
     def search(self, sentence):
         if sentence == "":
             return
