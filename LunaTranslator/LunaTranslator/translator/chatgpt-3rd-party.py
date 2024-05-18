@@ -50,16 +50,13 @@ class TS(basetrans):
         except:
             temperature = 0.3
 
-        message = [
-            {"role": "system", "content": "You are a translator"},
-        ]
         if self.config["使用自定义promt"]:
-            message += [{"role": "user", "content": self.config["自定义promt"]}]
+            message = [{"role": "system", "content": self.config["自定义promt"]}]
         else:
-            message += [
+            message = [
                 {
-                    "role": "user",
-                    "content": "Please help me translate the following {} text into {}, and you should only tell me the translation.".format(
+                    "role": "system",
+                    "content": "You are a translator. Please help me translate the following {} text into {}, and you should only tell me the translation.".format(
                         self.srclang, self.tgtlang
                     ),
                 },

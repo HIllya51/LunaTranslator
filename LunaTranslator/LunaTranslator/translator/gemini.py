@@ -26,7 +26,7 @@ class TS(basetrans):
         if self.config["使用自定义promt"]:
             prompt = self.config["自定义promt"]
         else:
-            prompt = "Please help me translate the following {} text into {}, and you should only tell me the translation.".format(
+            prompt = "You are a translator. Please help me translate the following {} text into {}, and you should only tell me the translation.".format(
                 self.srclang, self.tgtlang
             )
         res = self.session.post(

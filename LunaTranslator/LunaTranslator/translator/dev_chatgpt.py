@@ -46,7 +46,7 @@ class TS(basetransdev):
             if isinstance(idx, int):
                 break
         content = (
-            "Please help me translate the following {} text into {}, and you should only tell me the translation.\n".format(
+            "You are a translator. Please help me translate the following {} text into {}, and you should only tell me the translation.\n".format(
                 self.srclang, self.tgtlang
             )
             + content

@@ -43,10 +43,9 @@ class TS(basetrans):
             message = [{"role": "user", "content": self.config["自定义promt"]}]
         else:
             message = [
-                {"role": "system", "content": "You are a translator"},
                 {
-                    "role": "user",
-                    "content": "translate from {} to {}".format(
+                    "role": "system",
+                    "content": "You are a translator. Please help me translate the following {} text into {}, and you should only tell me the translation.".format(
                         self.srclang, self.tgtlang
                     ),
                 },
