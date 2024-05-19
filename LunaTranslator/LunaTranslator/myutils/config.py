@@ -139,13 +139,16 @@ def syncconfig(config1, default, drop=False, deep=0, skipdict=False):
 
         elif key == "name":
             config1[key] = default[key]
-        if type(default[key]) != type(config1[key]) and (
-            type(default[key]) == dict or type(default[key]) == list
-        ):
+        elif key == "argstype":
             config1[key] = default[key]
-        elif type(default[key]) == dict:
-            if skipdict == False:
-                syncconfig(config1[key], default[key], drop, deep - 1)
+        else:
+            if type(default[key]) != type(config1[key]) and (
+                type(default[key]) == dict or type(default[key]) == list
+            ):
+                config1[key] = default[key]
+            elif type(default[key]) == dict:
+                if skipdict == False:
+                    syncconfig(config1[key], default[key], drop, deep - 1)
 
     if drop and deep > 0:
         for key in list(config1.keys()):
@@ -191,11 +194,14 @@ def getlanguse():
     global language, languageshow
     return static_data["language_list_translator_inner"][language]
 
+
 def getlangsrc():
     return static_data["language_list_translator_inner"][globalconfig["srclang3"]]
 
+
 def getlangtgt():
     return static_data["language_list_translator_inner"][globalconfig["tgtlang3"]]
+
 
 def setlanguage():
     global language, languageshow

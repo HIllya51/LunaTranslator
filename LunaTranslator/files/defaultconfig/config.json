@@ -946,7 +946,7 @@
                     "name": "路径",
                     "dir": false,
                     "multi": true,
-                    "filter": "*.mdx|*.mdd"
+                    "filter": "*.mdx;*.mdd"
                 },
                 "ambiguity": {
                     "type": "intspin",
