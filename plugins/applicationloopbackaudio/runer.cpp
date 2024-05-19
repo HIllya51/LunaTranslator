@@ -1,6 +1,6 @@
 
 #include "LoopbackCapture.h"
-int recordaudio(int argc, wchar_t *argv[])
+int wmain(int argc, wchar_t *argv[])
 {
     CLoopbackCapture loopbackCapture;
     loopbackCapture.StartCaptureAsync(GetCurrentProcessId(), false, argv[1]);

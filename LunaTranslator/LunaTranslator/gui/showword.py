@@ -48,7 +48,7 @@ class loopbackrecorder:
         try:
             self.waitsignal = str(time.time())
             self.engine = subproc_w(
-                './files/plugins/shareddllproxy32.exe recordaudio "{}"  "{}"'.format(
+                './files/plugins/loopbackaudio.exe "{}"  "{}"'.format(
                     self.file, self.waitsignal
                 ),
             )
