@@ -2330,8 +2330,11 @@ class mdict(cishubase):
             if os.path.exists(f):
                 try:
                     self.builders.append((IndexBuilder(f), f))
+                    # print(self.builders[-1][0].get_mdd_keys())
                 except:
-                    pass
+                    from traceback import print_exc
+
+                    print_exc()
 
     def querycomplex(self, word, index):
         # 0 严格，1 前缀，2 后缀，3 中缀
@@ -2379,6 +2382,7 @@ class mdict(cishubase):
         items = self.parse_strings(item)
         html = ""
         for type_, string in items:
+            ishtml = False
             if type_ == "1":
                 html += f'<font color="#FF0000" size=5>{string}</font>'
             elif type_ == "2":
@@ -2392,34 +2396,16 @@ class mdict(cishubase):
             elif type_ == "5":
                 html += f'<font color="#04A6B5">{string}</font>'
             else:
-                html += item + "<br>"
-                print("unknown", item)
-            if string.endswith("<br>") == False:
+                html += item
+                ishtml = True
+                # html
+
+            if (not ishtml) and not string.endswith("<br>"):
                 html += "<br>"
         return html
 
-    def search(self, word):
-        results = []
-        for index, f in self.builders:
-            if f.lower().endswith(".mdx"):
-                try:
-                    keys = self.querycomplex(word, index.get_mdx_keys)
-                    for k in keys:
-                        results.append(self.parseashtml(index.mdx_lookup(k)[0]))
-                except:
-                    pass
-            elif f.lower().endswith(".mdd"):
-                try:
-                    keys = self.querycomplex(word, index.get_mdd_keys)
-
-                    for k in keys:
-                        results.append(self.parseashtml(index.mdd_lookup(k)[0]))
-                except:
-                    pass
-        if len(results) == 0:
-            return
-        style = """
-<style>
+    def dfstyle(self):
+        return """
     .mdx_btn {
     font-size: 0.7em;
     line-height: normal;
@@ -2460,7 +2446,31 @@ class mdict(cishubase):
     .tabs ul li.tabs_active a {color:#333;}
     .tabs ul li.tabs_active a {color:#555555;}
     .ui-tabs .ui-tabs-panel {border-width:0;display:block;}
-</style>
 """
 
+    def search(self, word):
+        results = []
+        style = ""
+        for index, f in self.builders:
+
+            try:
+                keys = self.querycomplex(word, index.get_mdx_keys)
+                for k in keys:
+                    results.append(self.parseashtml(index.mdx_lookup(k)[0]))
+            except:
+                pass
+            # @@@LINK=rjx0849\r\n    ->跳转到mdxkey rjx0849
+            # <img src="/rjx0849.png" width="1080px"><br><center> <a href="entry://rjx0848">
+            # /rjx0849.png->mddkey \\rjx0849.png entry://rjx0848->跳转到mdxkey rjx0849
+            # 太麻烦，不搞了。
+            base, ext = os.path.splitext(f)
+            css = base + ".css"
+            if os.path.exists(css):
+                with open(css, "r", encoding="utf8") as ff:
+                    style1 = ff.read()
+            else:
+                style1 = self.dfstyle()
+            style += f"<style>{style1}</style>"
+        if len(results) == 0:
+            return
         return style + "".join(results)
