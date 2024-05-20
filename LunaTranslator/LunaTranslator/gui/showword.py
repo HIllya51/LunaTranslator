@@ -109,22 +109,26 @@ class statusbutton(QPushButton):
         self.statuschanged2.emit((self.idx) % len(self.colors))
         self.seticon()
 
+
 class autoremovelineedit(QLineEdit):
     def check(self):
-        last=self.text()
+        last = self.text()
         if os.path.exists(last) and os.path.isfile(last):
             norm_dir1 = os.path.normpath(last)
-            norm_dir2 = os.path.normpath(os.path.abspath('./cache'))
-            print(norm_dir1,norm_dir2)
+            norm_dir2 = os.path.normpath(os.path.abspath("./cache"))
+            print(norm_dir1, norm_dir2)
             if norm_dir1.startswith(norm_dir2):
                 os.remove(last)
-    def setText(self,s):
+
+    def setText(self, s):
         self.check()
         super().setText(s)
+
     def clear(self):
         self.check()
         super().clear()
-        
+
+
 class AnkiWindow(QWidget):
     __ocrsettext = pyqtSignal(str)
     refreshhtml = pyqtSignal()
@@ -161,7 +165,6 @@ class AnkiWindow(QWidget):
             fname = "./cache/ocr/cropforanki.png"
             os.makedirs("./cache/ocr", exist_ok=True)
             img.save(fname)
-            self.editpath.setText("")
             self.editpath.setText(os.path.abspath(fname))
             if globalconfig["ankiconnect"]["ocrcroped"]:
                 self.asyncocr(img)
@@ -552,9 +555,10 @@ class AnkiWindow(QWidget):
         return wid
 
     def wrappedpixmap(self, src):
-        if not src:
-            return
-        pix = QPixmap.fromImage(QImage(src))
+        if os.path.exists(src) == False:
+            pix = QPixmap()
+        else:
+            pix = QPixmap.fromImage(QImage(src))
         rate = self.devicePixelRatioF()
         pix.setDevicePixelRatio(rate)
         if (
@@ -584,6 +588,7 @@ class AnkiWindow(QWidget):
         self.editpath.clear()
         self.audiopath.clear()
         self.audiopath_sentence.clear()
+
     def errorwrap(self):
         try:
             self.addanki()
@@ -834,14 +839,15 @@ class searchwordW(closeashidewindow):
         self.searchtext.setText(sentence)
 
         self.search(sentence)
-    
+
         self.ankiwindow.example.setPlainText(gobject.baseobject.currenttext)
         if globalconfig["ankiconnect"]["autoruntts"]:
             self.ankiwindow.langdu()
             self.ankiwindow.langdu2()
-            
+
         if globalconfig["ankiconnect"]["autocrop"]:
             grabwindow(self.ankiwindow.editpath.setText)
+
     def search(self, sentence):
         sentence = sentence.strip()
         if sentence == "":
