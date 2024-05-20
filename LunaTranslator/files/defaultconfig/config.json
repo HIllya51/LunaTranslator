@@ -193,7 +193,8 @@
                 "use":false,
                 "keycode":120
             }
-        }
+        },
+        "autocrop":false
     },
     "ankiwindow": [
         100,
@@ -363,7 +364,7 @@
             },
             "grabwindow": {
                 "use": false,
-                "tip": "前景窗口截屏",
+                "tip": "窗口截图",
                 "icon": "fa.camera"
             },
             "resize": {
@@ -608,7 +609,7 @@
             },
             "_21": {
                 "use": false,
-                "name": "前景窗口截屏",
+                "name": "窗口截图",
                 "keystring": ""
             },
             "_22": {

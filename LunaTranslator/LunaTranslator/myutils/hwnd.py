@@ -9,7 +9,7 @@ from myutils.wrapper import threader
 
 
 @threader
-def grabwindow():
+def grabwindow(callback=None):
 
     fnamebase = "./cache/screenshot/{}".format(0)
     try:
@@ -33,6 +33,8 @@ def grabwindow():
         @threader
         def _():
             winrtutils._winrt_capture_window(fname + "_winrt_magpie.png", hwnd)
+            if callback and os.path.exists(fname + "_winrt_magpie.png"):
+                callback(os.path.abspath(fname + "_winrt_magpie.png"))
 
         _()
     hwnd = windows.FindWindow("LosslessScaling", None)
@@ -41,32 +43,39 @@ def grabwindow():
         @threader
         def _():
             winrtutils._winrt_capture_window(fname + "_winrt_lossless.png", hwnd)
+            if callback and os.path.exists(fname + "_winrt_lossless.png"):
+                callback(os.path.abspath(fname + "_winrt_lossless.png"))
 
         _()
-    hwnd = windows.GetForegroundWindow()
     try:
-        if hwnd == int(gobject.baseobject.translation_ui.winId()):
-            hwnd = gobject.baseobject.textsource.hwnd
+        hwnd = gobject.baseobject.textsource.hwnd
     except:
-        pass
+        hwnd = windows.GetForegroundWindow()
 
-    @threader
-    def _():
-        winrtutils._winrt_capture_window(fname + "_winrt.png", hwnd)
-
-    _()
     _ = windows.GetClientRect(hwnd)
     rate = dynamic_rate(hwnd, _)
     w, h = int(_[2] / rate), int(_[3] / rate)
-    print(_)
-    print(h, w, rate)
     p = QApplication.primaryScreen().grabWindow(hwnd, 0, 0, w, h)
     p = p.toImage().copy(0, 0, w, h)
     if not p.allGray():
         p.save(fname + "_gdi.png")
-    gobject.baseobject.translation_ui.displaystatus.emit(
-        "saved to " + fname, "red", True, True
-    )
+        if callback and os.path.exists(fname + "_gdi.png"):
+            callback(os.path.abspath(fname + "_gdi.png"))
+
+    if not callback:
+
+        gobject.baseobject.translation_ui.displaystatus.emit(
+            "saved to " + fname, "red", True, True
+        )
+
+    @threader
+    def _():
+        winrtutils._winrt_capture_window(fname + "_winrt.png", hwnd)
+        if callback and os.path.exists(fname + "_winrt.png"):
+            callback(os.path.abspath(fname + "_winrt.png"))
+
+    if p.allGray() or (not callback):
+        _()
 
 
 def dynamic_rate(hwnd, rect):

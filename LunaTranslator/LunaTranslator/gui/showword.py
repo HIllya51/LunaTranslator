@@ -14,6 +14,8 @@ from PyQt5.QtWidgets import (
     QTabBar,
     QLabel,
 )
+from myutils.hwnd import grabwindow
+
 from urllib.parse import quote
 from PyQt5.QtGui import QPixmap, QImage
 from traceback import print_exc
@@ -107,7 +109,21 @@ class statusbutton(QPushButton):
         self.statuschanged2.emit((self.idx) % len(self.colors))
         self.seticon()
 
-
+class autoremovelineedit(QLineEdit):
+    def check(self):
+        last=self.text()
+        if os.path.exists(last) and os.path.isfile(last):
+            norm_dir1 = os.path.normpath(last)
+            norm_dir2 = os.path.normpath(os.path.abspath('./cache'))
+            print(norm_dir1,norm_dir2)
+            if norm_dir1.startswith(norm_dir2):
+                os.remove(last)
+    def setText(self,s):
+        self.check()
+        super().setText(s)
+    def clear(self):
+        self.check()
+        
 class AnkiWindow(QWidget):
     __ocrsettext = pyqtSignal(str)
     refreshhtml = pyqtSignal()
@@ -371,6 +387,10 @@ class AnkiWindow(QWidget):
             _TR("自动TTS"),
             getsimpleswitch(globalconfig["ankiconnect"], "autoruntts"),
         )
+        layout.addRow(
+            _TR("自动截图"),
+            getsimpleswitch(globalconfig["ankiconnect"], "autocrop"),
+        )
 
         layout.addRow(
             _TR("录音时模拟按键_1"),
@@ -422,11 +442,11 @@ class AnkiWindow(QWidget):
         cropbutton = QPushButton(qtawesome.icon("fa.crop"), "")
         cropbutton.clicked.connect(self.crop)
 
-        self.audiopath = QLineEdit()
+        self.audiopath = autoremovelineedit()
         self.audiopath.setReadOnly(True)
-        self.audiopath_sentence = QLineEdit()
+        self.audiopath_sentence = autoremovelineedit()
         self.audiopath_sentence.setReadOnly(True)
-        self.editpath = QLineEdit()
+        self.editpath = autoremovelineedit()
         self.editpath.setReadOnly(True)
         self.viewimagelabel = QLabel()
         self.editpath.textChanged.connect(self.wrappedpixmap)
@@ -563,7 +583,6 @@ class AnkiWindow(QWidget):
         self.editpath.clear()
         self.audiopath.clear()
         self.audiopath_sentence.clear()
-
     def errorwrap(self):
         try:
             self.addanki()
@@ -813,12 +832,15 @@ class searchwordW(closeashidewindow):
             sentence = self.searchtext.text() + sentence
         self.searchtext.setText(sentence)
 
-        self.ankiwindow.example.setPlainText(gobject.baseobject.currenttext)
         self.search(sentence)
+    
+        self.ankiwindow.example.setPlainText(gobject.baseobject.currenttext)
         if globalconfig["ankiconnect"]["autoruntts"]:
             self.ankiwindow.langdu()
             self.ankiwindow.langdu2()
-
+            
+        if globalconfig["ankiconnect"]["autocrop"]:
+            grabwindow(self.ankiwindow.editpath.setText)
     def search(self, sentence):
         sentence = sentence.strip()
         if sentence == "":
