@@ -2516,8 +2516,8 @@ class mdict(cishubase):
                             base64_content = base64.b64encode(file_content).decode('utf-8')
                             import uuid
                             uid=str(uuid.uuid4())
-                            with open(uid+'.mp3','wb') as ff:
-                                ff.write(file_content)
+                            # with open(uid+'.mp3','wb') as ff:
+                            #     ff.write(file_content)
                             audio=f'<audio controls id="{uid}" style="display: none"><source src="data:{self.get_mime_type_from_magic(file_content)};base64,{base64_content}"></audio>'
                             html_content = audio+html_content.replace(url, f"javascript:document.getElementById('{uid}').play()")
                             file_content=None
