@@ -2330,7 +2330,10 @@ class mdict(cishubase):
             if os.path.exists(f):
                 try:
                     self.builders.append((IndexBuilder(f), f))
-                    # print(self.builders[-1][0].get_mdd_keys())
+                    # with open('1.txt','a',encoding='utf8') as ff:
+                    #     print(f,file=ff)
+                    #     print(self.builders[-1][0].get_mdx_keys(),file=ff)
+                    #     print(self.builders[-1][0].get_mdd_keys(),file=ff)
                 except:
                     from traceback import print_exc
 
@@ -2459,10 +2462,79 @@ class mdict(cishubase):
             html += htmlitem
         # print(html)
         return html
+    def get_mime_type_from_magic(self,magic_bytes):
+        if magic_bytes.startswith(b'OggS'):
+            return 'audio/ogg'
+        elif magic_bytes.startswith(b'\x1A\x45\xDF\xA3'):  # EBML header (Matroska)
+            return 'video/webm'
+        elif magic_bytes.startswith(b'\x52\x49\x46\x46') and magic_bytes[8:12] == b'WEBP':
+            return 'image/webp'
+        elif magic_bytes.startswith(b'\xFF\xD8\xFF'):
+            return 'image/jpeg'
+        elif magic_bytes.startswith(b'\x89\x50\x4E\x47\x0D\x0A\x1A\x0A'):
+            return 'image/png'
+        elif magic_bytes.startswith(b'GIF87a') or magic_bytes.startswith(b'GIF89a'):
+            return 'image/gif'
+        elif magic_bytes.startswith(b'\x00\x00\x01\xBA') or magic_bytes.startswith(b'\x00\x00\x01\xB3'):
+            return 'video/mpeg'
+        elif magic_bytes.startswith(b'\x49\x44\x33') or magic_bytes.startswith(b'\xFF\xFB'):
+            return 'audio/mpeg'
+        else:
+            return 'application/octet-stream'
+    def repairtarget(self,index,base,html_content):
+        import base64
+        src_pattern = r'src="([^"]+)"'
+        href_pattern = r'href="([^"]+)"'
 
+        src_matches = re.findall(src_pattern, html_content)
+        href_matches = re.findall(href_pattern, html_content)
+        
+        for url in src_matches + href_matches:
+            oked=False
+            try:
+                try:
+                    with open(os.path.join(base, url), 'rb') as f:
+                        file_content = f.read()
+            
+                except:
+                    url1=url.replace('/','\\')
+                    if not url1.startswith('\\'):
+                        url1='\\'+url1
+                    try:
+                        file_content=index.mdd_lookup(url1)[0]
+                    except:
+                        func=url.split(r'://')[0]
+                        
+                        url1=url.split(r'://')[1]
+                        url1=url1.replace('/','\\')
+                        
+                        if not url1.startswith('\\'):
+                            url1='\\'+url1
+                        file_content=index.mdd_lookup(url1)[0]
+                        if func=='sound':
+                        
+                            base64_content = base64.b64encode(file_content).decode('utf-8')
+                            import uuid
+                            uid=str(uuid.uuid4())
+                            with open(uid+'.mp3','wb') as ff:
+                                ff.write(file_content)
+                            audio=f'<audio controls id="{uid}" style="display: none"><source src="data:{self.get_mime_type_from_magic(file_content)};base64,{base64_content}"></audio>'
+                            html_content = audio+html_content.replace(url, f"javascript:document.getElementById('{uid}').play()")
+                            file_content=None
+                            oked=True
+                            
+                        else:
+                            print(url)
+            except:
+                file_content=None
+            if file_content:
+                base64_content = base64.b64encode(file_content).decode('utf-8')
+                html_content = html_content.replace(url, f'data:application/octet-stream;base64,{base64_content}')
+            elif not oked:
+                print(url)
+        return html_content
     def search(self, word):
         allres = []
-        style = ""
         for index, f in self.builders:
             results = []
             # print(f)
@@ -2483,19 +2555,13 @@ class mdict(cishubase):
                 print_exc()
             if len(results) == 0:
                 continue
+            
+            for i in range(len(results)):
+                results[i]=self.repairtarget(index,os.path.dirname(f),results[i])
             # <img src="/rjx0849.png" width="1080px"><br><center> <a href="entry://rjx0848">
             # /rjx0849.png->mddkey \\rjx0849.png entry://rjx0848->跳转到mdxkey rjx0849
             # 太麻烦，不搞了。
-            base, ext = os.path.splitext(f)
-            css = base + ".css"
-
-            if os.path.exists(css):
-                with open(css, "r", encoding="utf8") as ff:
-                    style1 = ff.read()
-            else:
-                style1 = ""
-            style += f"<style>{style1}</style>"
-            allres.append((f, style + "".join(results)))
+            allres.append((f, "".join(results)))
         if len(allres) == 0:
             return
         commonstyle = """
