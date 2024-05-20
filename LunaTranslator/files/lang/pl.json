@@ -790,5 +790,6 @@
     "优先级": "priorytet",
     "编码": "kodowanie",
     "自动TTS": "Automatyczny TTS",
-    "使用webview显示": "Wyświetlanie przy użyciu widoku internetowego"
+    "使用webview显示": "Wyświetlanie przy użyciu widoku internetowego",
+    "录音时模拟按键": "Symulowanie przycisków podczas nagrywania"
 }

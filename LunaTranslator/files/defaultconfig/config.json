@@ -183,7 +183,17 @@
         "allowDuplicate": true,
         "autoUpdateModel": true,
         "ocrcroped": false,
-        "autoruntts": false
+        "autoruntts": false,
+        "simulate_key":{
+            "1":{
+                "use":false,
+                "keycode":120
+            },
+            "2":{
+                "use":false,
+                "keycode":120
+            }
+        }
     },
     "ankiwindow": [
         100,

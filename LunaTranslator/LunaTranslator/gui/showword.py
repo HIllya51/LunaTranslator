@@ -372,11 +372,42 @@ class AnkiWindow(QWidget):
             getsimpleswitch(globalconfig["ankiconnect"], "autoruntts"),
         )
 
+        layout.addRow(
+            _TR("录音时模拟按键_1"),
+            getsimpleswitch(globalconfig["ankiconnect"]["simulate_key"]["1"], "use"),
+        )
+        layout.addRow(
+            _TR("录音时模拟按键_1_VirtualKeyCode"),
+            getspinbox(
+                0, 9999, globalconfig["ankiconnect"]["simulate_key"]["1"], "keycode"
+            ),
+        )
+        layout.addRow(
+            _TR("录音时模拟按键_2"),
+            getsimpleswitch(globalconfig["ankiconnect"]["simulate_key"]["2"], "use"),
+        )
+        layout.addRow(
+            _TR("录音时模拟按键_2_VirtualKeyCode"),
+            getspinbox(
+                0, 9999, globalconfig["ankiconnect"]["simulate_key"]["2"], "keycode"
+            ),
+        )
         return wid
 
-    def startorendrecord(self, target: QLineEdit, idx):
+    @threader
+    def simulate_key(self, i):
+        if not globalconfig["ankiconnect"]["simulate_key"][i]["use"]:
+            return
+        windows.SetForegroundWindow(gobject.baseobject.textsource.hwnd)
+        time.sleep(0.1)
+        key = globalconfig["ankiconnect"]["simulate_key"][i]["keycode"]
+        windows.keybd_event(key, 0, 0, 0)
+        windows.keybd_event(key, 0, windows.KEYEVENTF_KEYUP, 0)
+
+    def startorendrecord(self, i, target: QLineEdit, idx):
         if idx == 1:
             self.recorder = loopbackrecorder()
+            self.simulate_key(i)
         else:
             self.recorder.end(callback=target.setText)
 
@@ -403,11 +434,11 @@ class AnkiWindow(QWidget):
         self.remarks = QTextEdit()
         recordbtn1 = statusbutton(icons=["fa.microphone", "fa.stop"], colors=[""])
         recordbtn1.statuschanged1.connect(
-            functools.partial(self.startorendrecord, self.audiopath)
+            functools.partial(self.startorendrecord, "1", self.audiopath)
         )
         recordbtn2 = statusbutton(icons=["fa.microphone", "fa.stop"], colors=[""])
         recordbtn2.statuschanged1.connect(
-            functools.partial(self.startorendrecord, self.audiopath_sentence)
+            functools.partial(self.startorendrecord, "2", self.audiopath_sentence)
         )
         layout.addLayout(
             getboxlayout(

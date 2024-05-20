@@ -790,5 +790,6 @@
     "优先级": "Ưu tiên",
     "编码": "Mã hóa",
     "自动TTS": "Tự động TTS",
-    "使用webview显示": "Sử dụng WebView để hiển thị"
+    "使用webview显示": "Sử dụng WebView để hiển thị",
+    "录音时模拟按键": "Mô phỏng các phím khi ghi âm"
 }

@@ -790,5 +790,6 @@
     "优先级": "Prioritet",
     "编码": "coding",
     "自动TTS": "Otomatik TTS",
-    "使用webview显示": "Web görüntüsünü kullanarak göster"
+    "使用webview显示": "Web görüntüsünü kullanarak göster",
+    "录音时模拟按键": "Kaydedirken düğmeleri simüle edin"
 }
