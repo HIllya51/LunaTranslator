@@ -8,7 +8,7 @@
 </div>
 
 <script>
-    ruby = JSON.parse({{ rubytext }})
+    ruby = JSON.parse(decodeURIComponent("{{ rubytext }}"))
     html = ''
     if (ruby.length) {
         for (i = 0; i < ruby.length; i++) {
@@ -38,39 +38,34 @@
 <div class="tab-widget">
     <div class="centerdiv">
         <div class="tab-buttons" id="tab_buttons">
-            <!-- <button type="button" class="tab-button active" data-tab="tab1">Tab 1</button>
-        <button type="button" class="tab-button" data-tab="tab2">Tab 2</button>
-        <button type="button" class="tab-button" data-tab="tab3">Tab 3</button> -->
         </div>
     </div>
     <div class="centerdiv">
         <div class="tab-content" id="tab_contents">
-            <!-- <div id="tab1" class="tab-pane active">
-        </div>
-        <div id="tab2" class="tab-pane">
-        </div>
-        <div id="tab3" class="tab-pane">
-        </div> -->
         </div>
     </div>
 </div>
 
 <script>
-    explains = JSON.parse({{ explain }})
+    explains = JSON.parse(decodeURIComponent("{{ explain }}"))
 
     function safehtml(html) {
+        html = decodeURIComponent(html)
         var tempParent = document.createElement('div');
         tempParent.innerHTML = html;
+
         var fragment = document.createElement('div');
         while (tempParent.firstChild) {
             fragment.appendChild(tempParent.firstChild);
         }
-
-        return fragment.innerHTML
+        return fragment, fragment.innerHTML
     }
     htmltabbuttons = ''
     htmlcontents = ''
     function onclickbtn(_id) {
+
+        tabButtons = document.querySelectorAll('.tab-widget .tab-button');
+        tabPanes = document.querySelectorAll('.tab-widget .tab-pane');
         for (i = 0; i < tabButtons.length; i++)
             tabButtons[i].classList.remove('active');
         for (i = 0; i < tabPanes.length; i++)
@@ -82,18 +77,33 @@
         tabPane = document.getElementById(tabId);
         tabPane.classList.add('active');
     }
-    for (i = 0; i < explains.length; i++) {
-        htmltabbuttons += '<button type="button" onclick="onclickbtn(\'buttonid' + (i + 0).toString() + '\')" id="buttonid' + (i + 0).toString() + '" class="tab-button" data-tab="tab' + (i + 0).toString() + '">' + explains[i]['source'] + '</button>'
-        htmlcontents += '<div id="tab' + (i + 0).toString() + '" class="tab-pane">' + safehtml(explains[i]['content']) + '</div>'
+    scriptElementss = []
+    for (iiii = 0; iiii < explains.length; iiii++) {
+        htmltabbuttons += '<button type="button" onclick="onclickbtn(\'buttonid' + (iiii).toString() + '\')" id="buttonid' + (iiii).toString() + '" class="tab-button" data-tab="tab' + (iiii).toString() + '">' + explains[iiii]['source'] + '</button>'
+
+        var tempParent = document.createElement('div');
+        tempParent.innerHTML = explains[iiii]['content'];
+
+        var fragment = document.createElement('div');
+        while (tempParent.firstChild) {
+            fragment.appendChild(tempParent.firstChild);
+        }
+
+        htmlcontents += '<div id="tab' + (iiii).toString() + '" class="tab-pane">' + fragment.innerHTML + '</div>'
+
+        var scriptElements = fragment.getElementsByTagName('script');
+
+        for (var jjjj = 0; jjjj < scriptElements.length; jjjj++) {
+            scriptElementss.push(scriptElements[jjjj].textContent)
+        }
     }
-    document.getElementById('tab_buttons').innerHTML = htmltabbuttons
-    document.getElementById('tab_contents').innerHTML = htmlcontents
-
-    tabButtons = document.querySelectorAll('.tab-widget .tab-button');
-    tabPanes = document.querySelectorAll('.tab-widget .tab-pane');
-
-    if (tabButtons.length) {
-        tabButtons[0].click()
+    document.getElementById('tab_buttons').innerHTML = htmltabbuttons;
+    document.getElementById('tab_contents').innerHTML = htmlcontents;
+    if (document.querySelectorAll('.tab-widget .tab-button').length) {
+        document.querySelectorAll('.tab-widget .tab-button')[0].click()
+    }
+    for (iiii = 0; iiii < scriptElementss.length; iiii++) {
+        eval(scriptElementss[iiii])
     }
 </script>
 

@@ -179,7 +179,7 @@
     "ankiconnect": {
         "port": 8765,
         "DeckName": "lunadeck",
-        "ModelName3": "lunamodel3",
+        "ModelName5": "lunamodel5",
         "allowDuplicate": true,
         "autoUpdateModel": true,
         "ocrcroped": false,

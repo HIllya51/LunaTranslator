@@ -1622,12 +1622,12 @@
     ],
     "model_fileds": [
         "word",
-        "explain",
+        "remarks",
+        "example_sentence",
         "image",
         "audio",
         "audio_sentence",
-        "example_sentence",
         "rubytext",
-        "remarks"
+        "explain"
     ]
 }

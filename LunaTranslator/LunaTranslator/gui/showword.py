@@ -14,6 +14,7 @@ from PyQt5.QtWidgets import (
     QTabBar,
     QLabel,
 )
+from urllib.parse import quote
 from PyQt5.QtGui import QPixmap, QImage
 from traceback import print_exc
 import requests, json, time
@@ -267,12 +268,8 @@ class AnkiWindow(QWidget):
 
     def loadfileds(self):
         word = self.currentword
-        explain = json.dumps(
-            json.dumps(
-                gobject.baseobject.searchwordW.generate_explains(), ensure_ascii=False
-            ),
-            ensure_ascii=False,
-        )
+        explain = quote(json.dumps(gobject.baseobject.searchwordW.generate_explains()))
+
         remarks = self.remarks.toHtml()
         example = self.example.toPlainText()
         ruby = self.ruby
@@ -354,7 +351,7 @@ class AnkiWindow(QWidget):
             _TR("DeckName"), getlineedit(globalconfig["ankiconnect"], "DeckName")
         )
         layout.addRow(
-            _TR("ModelName"), getlineedit(globalconfig["ankiconnect"], "ModelName3")
+            _TR("ModelName"), getlineedit(globalconfig["ankiconnect"], "ModelName5")
         )
 
         layout.addRow(
@@ -524,12 +521,11 @@ class AnkiWindow(QWidget):
     def reset(self, text):
         self.currentword = text
         if text and len(text):
-            self.ruby = json.dumps(
+            self.ruby = quote(
                 json.dumps(
                     gobject.baseobject.translation_ui.parsehira(text),
                     ensure_ascii=False,
-                ),
-                ensure_ascii=False,
+                )
             )
         else:
             self.ruby = ""
@@ -569,7 +565,7 @@ class AnkiWindow(QWidget):
         autoUpdateModel = globalconfig["ankiconnect"]["autoUpdateModel"]
         allowDuplicate = globalconfig["ankiconnect"]["allowDuplicate"]
         anki.global_port = globalconfig["ankiconnect"]["port"]
-        ModelName = globalconfig["ankiconnect"]["ModelName2"]
+        ModelName = globalconfig["ankiconnect"]["ModelName5"]
         DeckName = globalconfig["ankiconnect"]["DeckName"]
         model_htmlfront, model_htmlback, model_css = self.tryloadankitemplates()
         try:
@@ -780,6 +776,7 @@ class searchwordW(closeashidewindow):
         return res
 
     def getnewsentence(self, sentence, append):
+        sentence = sentence.strip()
         self.showNormal()
         if append:
             sentence = self.searchtext.text() + sentence
@@ -792,6 +789,7 @@ class searchwordW(closeashidewindow):
             self.ankiwindow.langdu2()
 
     def search(self, sentence):
+        sentence = sentence.strip()
         if sentence == "":
             return
         self.ankiwindow.reset(sentence)
