@@ -2378,7 +2378,6 @@ class mdict(cishubase):
         return parsed_strings
 
     def parseashtml(self, item):
-        item = item.replace("\r\n", "<br>")
         items = self.parse_strings(item)
         html = ""
         for type_, string in items:
@@ -2402,6 +2401,8 @@ class mdict(cishubase):
 
             if (not ishtml) and not string.endswith("<br>"):
                 html += "<br>"
+        if not ishtml:
+            item = item.replace("\r\n", "<br>")
         return html
 
     def dfstyle(self):

@@ -1,8 +1,7 @@
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QTabWidget, QTextBrowser, QAction, QMenu, QFileDialog
 from PyQt5.QtCore import Qt, pyqtSignal
-import qtawesome, functools
-
+import qtawesome, functools, winsharedutils
 from gui.usefulwidget import closeashidewindow
 from myutils.config import globalconfig, _TR
 
@@ -46,10 +45,13 @@ class transhist(closeashidewindow):
         menu = QMenu(self)
         qingkong = QAction(_TR("清空"))
         baocun = QAction(_TR("保存"))
+        copy = QAction(_TR("复制到剪贴板"))
         hideshowraw = QAction(_TR("显示原文" if self.hiderawflag else "不显示原文"))
         hideshowapi = QAction(_TR("显示api" if self.hideapiflag else "不显示api"))
         menu.addAction(qingkong)
         menu.addAction(baocun)
+        if len(self.textOutput.textCursor().selectedText()):
+            menu.addAction(copy)
         if flag == 1:
             menu.addAction(hideshowraw)
             menu.addAction(hideshowapi)
@@ -57,6 +59,8 @@ class transhist(closeashidewindow):
         action = menu.exec(self.mapToGlobal(p))
         if action == qingkong:
             tb.clear()
+        elif action == copy:
+            winsharedutils.clipboard_set(self.textOutput.textCursor().selectedText())
         elif action == baocun:
             ff = QFileDialog.getSaveFileName(self, directory="save.txt")
             if ff[0] == "":
