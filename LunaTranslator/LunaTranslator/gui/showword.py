@@ -388,8 +388,12 @@ class AnkiWindow(QWidget):
         )
 
         layout.addRow(
-            _TR("自动TTS"),
+            _TR("自动TTS_1"),
             getsimpleswitch(globalconfig["ankiconnect"], "autoruntts"),
+        )
+        layout.addRow(
+            _TR("自动TTS_2"),
+            getsimpleswitch(globalconfig["ankiconnect"], "autoruntts2"),
         )
         layout.addRow(
             _TR("自动截图"),
@@ -843,6 +847,7 @@ class searchwordW(closeashidewindow):
         self.ankiwindow.example.setPlainText(gobject.baseobject.currenttext)
         if globalconfig["ankiconnect"]["autoruntts"]:
             self.ankiwindow.langdu()
+        if globalconfig["ankiconnect"]["autoruntts2"]:
             self.ankiwindow.langdu2()
 
         if globalconfig["ankiconnect"]["autocrop"]:

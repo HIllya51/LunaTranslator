@@ -184,6 +184,7 @@
         "autoUpdateModel": true,
         "ocrcroped": false,
         "autoruntts": false,
+        "autoruntts2": false,
         "simulate_key":{
             "1":{
                 "use":false,
