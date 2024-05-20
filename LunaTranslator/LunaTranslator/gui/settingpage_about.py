@@ -36,7 +36,7 @@ def getversion(self):
             )
         )
     )
-    if _version is not None and versionstring < _version:
+    if _version is not None and version < tuple(int(_) for _ in _version[1:].split(".")):
         if globalconfig["autoupdate"]:
             updatemethod(_version, self.progresssignal.emit)
 
