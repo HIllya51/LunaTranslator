@@ -123,6 +123,7 @@ class autoremovelineedit(QLineEdit):
         super().setText(s)
     def clear(self):
         self.check()
+        super().clear()
         
 class AnkiWindow(QWidget):
     __ocrsettext = pyqtSignal(str)
