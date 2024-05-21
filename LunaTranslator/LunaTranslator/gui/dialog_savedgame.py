@@ -558,6 +558,7 @@ class browserdialog(saveposwindow):
         hlay.setContentsMargins(*(0 for i in range(4)))
         layout.addWidget(_topw)
         layout.addWidget(self.browser)
+        layout.setSpacing(0)
         __w = QWidget()
         __w.setLayout(layout)
         self.setCentralWidget(__w)
