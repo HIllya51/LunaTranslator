@@ -2340,24 +2340,17 @@ class mdict(cishubase):
                     print_exc()
 
     def querycomplex(self, word, index):
-        # 0 严格，1 前缀，2 后缀，3 中缀
         results = []
-        results += index(word)
-        if self.config["ambiguity"] == 0:
-            _ = []
-            for __ in results:
-                if __.lower() == word:
-                    _.append(__)
-            results = _
-        if self.config["ambiguity"] >= 2:
-            for k in index("*" + word):
-                if k not in results:
-                    results.append(k)
-        if self.config["ambiguity"] >= 3:
-            for k in index("*" + word + "*"):
-                if k not in results:
-                    results.append(k)
-        return results
+        diss = {}
+        import winsharedutils
+
+        for k in index("*" + word + "*"):
+            dis = winsharedutils.distance(k, word)
+            if dis <= self.config["ambiguity"]:
+                results.append(k)
+                diss[k] = dis
+
+        return sorted(results, key=lambda x: diss[x])
 
     def parse_strings(self, input_string):
         parsed_strings = []
@@ -2462,77 +2455,95 @@ class mdict(cishubase):
             html += htmlitem
         # print(html)
         return html
-    def get_mime_type_from_magic(self,magic_bytes):
-        if magic_bytes.startswith(b'OggS'):
-            return 'audio/ogg'
-        elif magic_bytes.startswith(b'\x1A\x45\xDF\xA3'):  # EBML header (Matroska)
-            return 'video/webm'
-        elif magic_bytes.startswith(b'\x52\x49\x46\x46') and magic_bytes[8:12] == b'WEBP':
-            return 'image/webp'
-        elif magic_bytes.startswith(b'\xFF\xD8\xFF'):
-            return 'image/jpeg'
-        elif magic_bytes.startswith(b'\x89\x50\x4E\x47\x0D\x0A\x1A\x0A'):
-            return 'image/png'
-        elif magic_bytes.startswith(b'GIF87a') or magic_bytes.startswith(b'GIF89a'):
-            return 'image/gif'
-        elif magic_bytes.startswith(b'\x00\x00\x01\xBA') or magic_bytes.startswith(b'\x00\x00\x01\xB3'):
-            return 'video/mpeg'
-        elif magic_bytes.startswith(b'\x49\x44\x33') or magic_bytes.startswith(b'\xFF\xFB'):
-            return 'audio/mpeg'
+
+    def get_mime_type_from_magic(self, magic_bytes):
+        if magic_bytes.startswith(b"OggS"):
+            return "audio/ogg"
+        elif magic_bytes.startswith(b"\x1A\x45\xDF\xA3"):  # EBML header (Matroska)
+            return "video/webm"
+        elif (
+            magic_bytes.startswith(b"\x52\x49\x46\x46") and magic_bytes[8:12] == b"WEBP"
+        ):
+            return "image/webp"
+        elif magic_bytes.startswith(b"\xFF\xD8\xFF"):
+            return "image/jpeg"
+        elif magic_bytes.startswith(b"\x89\x50\x4E\x47\x0D\x0A\x1A\x0A"):
+            return "image/png"
+        elif magic_bytes.startswith(b"GIF87a") or magic_bytes.startswith(b"GIF89a"):
+            return "image/gif"
+        elif magic_bytes.startswith(b"\x00\x00\x01\xBA") or magic_bytes.startswith(
+            b"\x00\x00\x01\xB3"
+        ):
+            return "video/mpeg"
+        elif magic_bytes.startswith(b"\x49\x44\x33") or magic_bytes.startswith(
+            b"\xFF\xFB"
+        ):
+            return "audio/mpeg"
         else:
-            return 'application/octet-stream'
-    def repairtarget(self,index,base,html_content):
+            return "application/octet-stream"
+
+    def repairtarget(self, index, base, html_content):
         import base64
+
         src_pattern = r'src="([^"]+)"'
         href_pattern = r'href="([^"]+)"'
 
         src_matches = re.findall(src_pattern, html_content)
         href_matches = re.findall(href_pattern, html_content)
-        
+
         for url in src_matches + href_matches:
-            oked=False
+            oked = False
             try:
                 try:
-                    with open(os.path.join(base, url), 'rb') as f:
+                    with open(os.path.join(base, url), "rb") as f:
                         file_content = f.read()
-            
+
                 except:
-                    url1=url.replace('/','\\')
-                    if not url1.startswith('\\'):
-                        url1='\\'+url1
+                    url1 = url.replace("/", "\\")
+                    if not url1.startswith("\\"):
+                        url1 = "\\" + url1
                     try:
-                        file_content=index.mdd_lookup(url1)[0]
+                        file_content = index.mdd_lookup(url1)[0]
                     except:
-                        func=url.split(r'://')[0]
-                        
-                        url1=url.split(r'://')[1]
-                        url1=url1.replace('/','\\')
-                        
-                        if not url1.startswith('\\'):
-                            url1='\\'+url1
-                        file_content=index.mdd_lookup(url1)[0]
-                        if func=='sound':
-                        
-                            base64_content = base64.b64encode(file_content).decode('utf-8')
+                        func = url.split(r"://")[0]
+
+                        url1 = url.split(r"://")[1]
+                        url1 = url1.replace("/", "\\")
+
+                        if not url1.startswith("\\"):
+                            url1 = "\\" + url1
+                        file_content = index.mdd_lookup(url1)[0]
+                        if func == "sound":
+
+                            base64_content = base64.b64encode(file_content).decode(
+                                "utf-8"
+                            )
                             import uuid
-                            uid=str(uuid.uuid4())
+
+                            uid = str(uuid.uuid4())
                             # with open(uid+'.mp3','wb') as ff:
                             #     ff.write(file_content)
-                            audio=f'<audio controls id="{uid}" style="display: none"><source src="data:{self.get_mime_type_from_magic(file_content)};base64,{base64_content}"></audio>'
-                            html_content = audio+html_content.replace(url, f"javascript:document.getElementById('{uid}').play()")
-                            file_content=None
-                            oked=True
-                            
+                            audio = f'<audio controls id="{uid}" style="display: none"><source src="data:{self.get_mime_type_from_magic(file_content)};base64,{base64_content}"></audio>'
+                            html_content = audio + html_content.replace(
+                                url,
+                                f"javascript:document.getElementById('{uid}').play()",
+                            )
+                            file_content = None
+                            oked = True
+
                         else:
                             print(url)
             except:
-                file_content=None
+                file_content = None
             if file_content:
-                base64_content = base64.b64encode(file_content).decode('utf-8')
-                html_content = html_content.replace(url, f'data:application/octet-stream;base64,{base64_content}')
+                base64_content = base64.b64encode(file_content).decode("utf-8")
+                html_content = html_content.replace(
+                    url, f"data:application/octet-stream;base64,{base64_content}"
+                )
             elif not oked:
                 print(url)
         return html_content
+
     def search(self, word):
         allres = []
         for index, f in self.builders:
@@ -2555,9 +2566,9 @@ class mdict(cishubase):
                 print_exc()
             if len(results) == 0:
                 continue
-            
+
             for i in range(len(results)):
-                results[i]=self.repairtarget(index,os.path.dirname(f),results[i])
+                results[i] = self.repairtarget(index, os.path.dirname(f), results[i])
             # <img src="/rjx0849.png" width="1080px"><br><center> <a href="entry://rjx0848">
             # /rjx0849.png->mddkey \\rjx0849.png entry://rjx0848->跳转到mdxkey rjx0849
             # 太麻烦，不搞了。

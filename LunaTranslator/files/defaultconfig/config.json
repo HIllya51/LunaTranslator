@@ -979,7 +979,7 @@
                     "type": "intspin",
                     "name": "ambiguity",
                     "min": 0,
-                    "max": 3,
+                    "max": 100,
                     "step": 1
                 },
                 "priority": {
