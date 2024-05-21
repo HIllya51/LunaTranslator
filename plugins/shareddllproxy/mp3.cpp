@@ -158,7 +158,7 @@ int mainmp3(int argc, wchar_t *wargv[]) {
         print_usage();
         exit(1);
     }
-
+    config.mpeg.bitr=320;
     quiet = quiet || !strcmp(outfname, "-");
 
     if (!quiet) {
