@@ -585,6 +585,7 @@ class MAINUI:
             aclass = importlib.import_module("cishu." + type_)
             aclass = getattr(aclass, type_)
         except:
+            print_exc()
             return
 
         return aclass(type_)
