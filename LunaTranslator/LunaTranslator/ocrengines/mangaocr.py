@@ -8,8 +8,8 @@ class OCR(baseocr):
 
     def ocr(self, imagebinary):
 
-        os.makedirs("./cache/ocr", exist_ok=True)
-        fname = "./cache/ocr/" + str(uuid.uuid4()) + ".png"
+        os.makedirs("cache/temp", exist_ok=True)
+        fname = "cache/temp/" + str(uuid.uuid4()) + ".png"
         with open(fname, "wb") as ff:
             ff.write(imagebinary)
         self.checkempty(["Port"])

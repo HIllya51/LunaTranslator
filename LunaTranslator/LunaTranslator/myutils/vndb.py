@@ -203,14 +203,14 @@ def safedownload():
             "https://dl.vndb.org/dump/vndb-tags-latest.json.gz",
             proxies=getproxy(),
         )
-        os.makedirs("./cache/vndb", exist_ok=True)
-        with open("./cache/vndb/vndb-tags-latest.json.gz", "wb") as ff:
+        os.makedirs("cache/temp", exist_ok=True)
+        with open("cache/temp/vndb-tags-latest.json.gz", "wb") as ff:
             ff.write(resp.content)
         decompress_gzip_file(
-            "./cache/vndb/vndb-tags-latest.json.gz",
-            "./cache/vndb/vndb-tags-latest.json",
+            "cache/temp/vndb-tags-latest.json.gz",
+            "cache/temp/vndb-tags-latest.json",
         )
-        with open("./cache/vndb/vndb-tags-latest.json", "r", encoding="utf8") as ff:
+        with open("cache/temp/vndb-tags-latest.json", "r", encoding="utf8") as ff:
             js = json.load(ff)
         newjs = {}
         for item in js:

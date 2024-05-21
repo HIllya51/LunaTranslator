@@ -24,9 +24,9 @@ class OCR(baseocr):
         path = self.config["路径"]
         if os.path.exists(path) == False:
             raise Exception(_TR("路径不存在"))
-        
-        os.makedirs("./cache/ocr", exist_ok=True)
-        fname = "./cache/ocr/" + str(uuid.uuid4()) + ".png"
+
+        os.makedirs("cache/temp", exist_ok=True)
+        fname = "cache/temp/" + str(uuid.uuid4()) + ".png"
         with open(fname, "wb") as ff:
             ff.write(imagebinary)
         imgfile = os.path.abspath(fname)

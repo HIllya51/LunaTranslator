@@ -103,8 +103,8 @@ class QButtonGroup_switch_widegt(QWidget):
 
 
 def listprocessm():
-    os.makedirs("./cache", exist_ok=True)
-    cachefname = os.path.abspath("./cache/{}.txt".format(time.time()))
+    os.makedirs("cache/temp", exist_ok=True)
+    cachefname = os.path.abspath("cache/temp/{}.txt".format(time.time()))
     arch = "64" if gobject.baseobject.textsource.is64bit else "32"
     exe = os.path.abspath("./files/plugins/shareddllproxy{}.exe".format(arch))
     pid = " ".join([str(_) for _ in gobject.baseobject.textsource.pids])

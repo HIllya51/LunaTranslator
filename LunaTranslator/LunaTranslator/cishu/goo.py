@@ -1,6 +1,6 @@
 import requests
 from urllib.parse import quote
-import re
+import re, os
 from myutils.proxy import getproxy
 from cishu.cishubase import cishubase
 
@@ -12,15 +12,19 @@ class goo(cishubase):
         x = requests.get(url, proxies=getproxy()).text
         xx = re.findall("<section>([\\s\\S]*?)</section>", x)
 
-        xx = "".join(xx)
-        xx = re.sub("<h1>([\\s\\S]*?)</h1>", "", xx)
-        xx = re.sub("<a([\\s\\S]*?)>", "", xx)
+        xx = "".join(xx).replace('href="/', 'href="https://dictionary.goo.ne.jp/')
+        if os.path.exists("cache/temp/goo.css") == False:
+            stl = requests.get(
+                "https://dictionary.goo.ne.jp/mix/css/app.css", proxies=getproxy()
+            ).text
+            os.makedirs("cache/temp", exist_ok=True)
+            with open("cache/temp/goo.css", "w", encoding="utf8") as ff:
+                ff.write(stl)
+        else:
+            with open("cache/temp/goo.css", "r", encoding="utf8") as ff:
+                stl = ff.read()
 
-        xx = re.sub("</a>", "", xx)
         if len(xx):
-            return (
-                '<div  style="text-align: center;"><a href="{}">link</a></div>'.format(
-                    url
-                )
-                + xx
+            return '<div style="text-align: center;"><a href="{}">link</a><style>{}</style></div><div id="NR-main-in">{}</div>'.format(
+                url, stl, xx
             )

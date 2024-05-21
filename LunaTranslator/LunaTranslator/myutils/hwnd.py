@@ -10,8 +10,10 @@ from myutils.wrapper import threader
 
 @threader
 def grabwindow(callback=None):
-
-    fnamebase = "./cache/screenshot/{}".format(0)
+    if callback:
+        fnamebase = "cache/temp"
+    else:
+        fnamebase = "./cache/screenshot/{}".format(0)
     try:
         if gobject.baseobject.textsource.md5 != "0":
             fnamebase = "./cache/screenshot/{}".format(

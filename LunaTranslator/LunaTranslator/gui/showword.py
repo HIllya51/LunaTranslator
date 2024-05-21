@@ -43,9 +43,9 @@ from gui.rangeselect import rangeselct_function
 
 class loopbackrecorder:
     def __init__(self):
-        os.makedirs("./cache/tts", exist_ok=True)
+        os.makedirs("cache/temp", exist_ok=True)
         self.file = os.path.abspath(
-            os.path.join("./cache/tts", str(time.time()) + ".wav")
+            os.path.join("cache/temp", str(time.time()) + ".wav")
         )
         try:
             self.waitsignal = str(time.time())
@@ -133,8 +133,8 @@ class AnkiWindow(QWidget):
     refreshhtml = pyqtSignal()
 
     def callbacktts(self, edit, data):
-        fname = "./cache/tts/" + str(uuid.uuid4()) + ".mp3"
-        os.makedirs("./cache/tts", exist_ok=True)
+        fname = "cache/temp/" + str(uuid.uuid4()) + ".mp3"
+        os.makedirs("cache/temp", exist_ok=True)
         with open(fname, "wb") as ff:
             ff.write(data)
         edit.setText(os.path.abspath(fname))
@@ -161,8 +161,8 @@ class AnkiWindow(QWidget):
             img = imageCut(
                 0, rect[0][0], rect[0][1], rect[1][0], rect[1][1], False, True
             )
-            fname = "./cache/ocr/cropforanki.png"
-            os.makedirs("./cache/ocr", exist_ok=True)
+            fname = "cache/temp/" + str(uuid.uuid4()) + ".png"
+            os.makedirs("cache/temp", exist_ok=True)
             img.save(fname)
             self.editpath.setText(os.path.abspath(fname))
             if globalconfig["ankiconnect"]["ocrcroped"]:

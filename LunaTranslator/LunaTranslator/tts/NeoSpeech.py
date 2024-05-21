@@ -69,7 +69,8 @@ class TTS(TTSbase):
         return self.mapx[(hk, idx)]
 
     def getvoicelist(self):
-        cachefname = os.path.abspath("./cache/{}.txt".format(time.time()))
+        os.makedirs("cache/temp", exist_ok=True)
+        cachefname = os.path.abspath("cache/temp/{}.txt".format(time.time()))
         exe = os.path.abspath("./files/plugins/shareddllproxy32.exe")
         subprocess.run('"{}"  neospeechlist "{}"'.format(exe, cachefname))
 
@@ -93,5 +94,5 @@ class TTS(TTSbase):
         buf = ctypes.create_unicode_buffer(content, 10000)
         windows.WriteFile(self.hPipe, bytes(buf))
         size = c_int32.from_buffer_copy(windows.ReadFile(self.hPipe, 4)).value
-        
+
         return cast(self.mem, POINTER(c_char))[:size]
