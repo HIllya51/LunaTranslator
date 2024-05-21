@@ -48,6 +48,7 @@ class TabWidget(QWidget):
         super(TabWidget, self).__init__(parent)
         layout = QHBoxLayout()
         layout.setContentsMargins(0, 0, 0, 0)
+        layout.setSpacing(0)
         self.setLayout(layout)
         self.list_widget = QListWidget(self)
         self.tab_widget = QTabWidget(self)
