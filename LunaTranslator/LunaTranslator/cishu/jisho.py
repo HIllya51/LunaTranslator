@@ -89,7 +89,13 @@ class jisho(cishubase):
         res = get_element_by_id("page_container", html)
         if res is None:
             return
-        res = res.replace('href="//', 'href="https://')
+        res = (
+            res.replace('href="//', 'href="https://')
+            .replace("<h3>Discussions</h3>", "")
+            .replace(
+                '<a href="#" class="signin">Log in</a> to talk about this word.', ""
+            )
+        )
 
         ss = re.search('href="https://assets.jisho.org/assets/application(.*)"', html)
         stl = requests.get(ss.group()[6:-1], proxies=getproxy()).text
