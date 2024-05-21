@@ -889,6 +889,22 @@
                 }
             }
         },
+        "jisho": {
+            "use": false,
+            "name": "jisho",
+            "args": {
+                "priority": 100
+            },
+            "argstype": {
+                "priority": {
+                    "type": "intspin",
+                    "name": "优先级",
+                    "min": 0,
+                    "max": 10000,
+                    "step": 1
+                }
+            }
+        },
         "weblio": {
             "use": false,
             "name": "weblio",
