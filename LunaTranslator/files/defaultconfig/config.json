@@ -68,7 +68,6 @@
         "arabic_reshaper": false
     },
     "uselongtermcache": false,
-    "hist_split": false,
     "fixedheight": false,
     "showintab": true,
     "remove_useless_hook": false,

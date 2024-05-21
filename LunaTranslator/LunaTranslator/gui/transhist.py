@@ -1,5 +1,4 @@
-from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QTabWidget, QTextBrowser, QAction, QMenu, QFileDialog
+from PyQt5.QtWidgets import QPlainTextEdit, QAction, QMenu, QFileDialog
 from PyQt5.QtCore import Qt, pyqtSignal
 import qtawesome, functools, winsharedutils
 from gui.usefulwidget import closeashidewindow
@@ -26,14 +25,13 @@ class transhist(closeashidewindow):
         self.setWindowIcon(qtawesome.icon("fa.rotate-left"))
 
         def gettb(_type):
-            textOutput = QTextBrowser()
+            textOutput = QPlainTextEdit()
             textOutput.setContextMenuPolicy(Qt.CustomContextMenu)
             textOutput.customContextMenuRequested.connect(
                 functools.partial(self.showmenu, textOutput, _type)
             )
             textOutput.setUndoRedoEnabled(False)
             textOutput.setReadOnly(True)
-            textOutput.setObjectName("textOutput")
             return textOutput
 
         self.textOutput = gettb(1)
@@ -76,14 +74,14 @@ class transhist(closeashidewindow):
 
     def getnewsentence(self, sentence):
 
-        sentence = "<hr>" if globalconfig["hist_split"] else "\n" + sentence
+        sentence = "\n" + sentence
         if self.hiderawflag:
             sentence = ""
-        self.textOutput.append(sentence)
+        self.textOutput.appendPlainText(sentence)
 
     def getnewtrans(self, api, sentence):
         if self.hideapiflag:
             res = sentence
         else:
             res = api + "  " + sentence
-        self.textOutput.append(res)
+        self.textOutput.appendPlainText(res)

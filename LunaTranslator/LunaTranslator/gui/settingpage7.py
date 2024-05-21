@@ -2,7 +2,7 @@ import functools
 
 from PyQt5.QtWidgets import (
     QHBoxLayout,
-    QTextEdit,
+    QPlainTextEdit,
     QHBoxLayout,
     QWidget,
     QMenu,
@@ -79,8 +79,8 @@ def setTab7(self):
 def getcomparelayout(self):
 
     layout = QHBoxLayout()
-    fromtext = QTextEdit()
-    totext = QTextEdit()
+    fromtext =QPlainTextEdit()
+    totext = QPlainTextEdit()
     solvebutton = getcolorbutton(
         globalconfig,
         "",

@@ -419,10 +419,6 @@ class postconfigdialog_(QDialog):
         lb.setText(_TR(key))
         formLayout.addWidget(lb)
 
-        # lines=QTextEdit(self)
-        # lines.setPlainText('\n'.join(configdict[key]))
-        # lines.textChanged.connect(lambda   :configdict.__setitem__(key,lines.toPlainText().split('\n')))
-        # formLayout.addWidget(lines)
         model = QStandardItemModel(len(configdict[key]), 1, self)
         row = 0
 

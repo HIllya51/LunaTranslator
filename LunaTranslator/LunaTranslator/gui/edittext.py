@@ -1,6 +1,6 @@
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import (
-    QTextBrowser,
+    QPlainTextEdit,
     QAction,
     QMenu,
     QHBoxLayout,
@@ -32,7 +32,7 @@ class edittext(closeashidewindow):
     def setupUi(self):
         self.setWindowIcon(qtawesome.icon("fa.edit"))
 
-        self.textOutput = QTextBrowser(self)
+        self.textOutput = QPlainTextEdit(self)
 
         self.textOutput.setContextMenuPolicy(Qt.CustomContextMenu)
 
@@ -42,7 +42,6 @@ class edittext(closeashidewindow):
 
         self.textOutput.setUndoRedoEnabled(True)
         self.textOutput.setReadOnly(False)
-        self.textOutput.setObjectName("textOutput")
 
         qv = QHBoxLayout()
         w = QWidget()

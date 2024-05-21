@@ -8,7 +8,6 @@ from PyQt5.QtWidgets import (
     QFormLayout,
     QSizePolicy,
     QPushButton,
-    QTextEdit,
     QTabWidget,
     QFileDialog,
     QTabBar,
@@ -459,7 +458,7 @@ class AnkiWindow(QWidget):
         self.viewimagelabel = QLabel()
         self.editpath.textChanged.connect(self.wrappedpixmap)
         self.example = QPlainTextEdit()
-        self.remarks = QTextEdit()
+        self.remarks = QPlainTextEdit()
         recordbtn1 = statusbutton(icons=["fa.microphone", "fa.stop"], colors=[""])
         recordbtn1.statuschanged1.connect(
             functools.partial(self.startorendrecord, "1", self.audiopath)

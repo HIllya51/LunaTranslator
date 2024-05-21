@@ -247,7 +247,6 @@ class Textbrowser:
         self.jiaming_y_delta = 0
         self.setselectable()
         self.blockcount = 0
-        self.needdouble = False
         self.iteryinyinglabelsave = {}
 
     def setselectable(self):
@@ -331,10 +330,6 @@ class Textbrowser:
         self.textbrowser.insertPlainText(text)
 
     def deletebetween(self, p1, p2):
-        if self.needdouble:
-            self.textcursorback.setPosition(p1, QTextCursor.MoveAnchor)
-            self.textcursorback.setPosition(p2, QTextCursor.KeepAnchor)
-            self.textcursorback.removeSelectedText()
         self.textcursor.setPosition(p1, QTextCursor.MoveAnchor)
         self.textcursor.setPosition(p2, QTextCursor.KeepAnchor)
         self.textcursor.removeSelectedText()
