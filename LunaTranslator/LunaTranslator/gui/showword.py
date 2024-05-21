@@ -289,7 +289,7 @@ class AnkiWindow(QWidget):
         word = self.currentword
         explain = quote(json.dumps(gobject.baseobject.searchwordW.generate_explains()))
 
-        remarks = self.remarks.toHtml()
+        remarks = self.remarks.toPlainText()
         example = self.example.toPlainText()
         ruby = self.ruby
         fields = {
