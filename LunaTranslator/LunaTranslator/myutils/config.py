@@ -181,13 +181,15 @@ if ocrerrorfix == {}:
         ocrerrorfix = ocrerrorfixdefault
 syncconfig(postprocessconfig, defaultpost, True, 3)
 
-if len(globalconfig["toolbutton"]["rank"]) != len(
-    globalconfig["toolbutton"]["buttons"].keys()
-):
-    globalconfig["toolbutton"]["rank"] += list(
-        set(globalconfig["toolbutton"]["buttons"].keys())
-        - set(globalconfig["toolbutton"]["rank"])
-    )
+for key in defaultglobalconfig["toolbutton"]["buttons"]:
+    if key not in globalconfig["toolbutton"]["rank2"]:
+        globalconfig["toolbutton"]["rank2"].append(key)
+___ = []
+for key in globalconfig["toolbutton"]["rank2"]:
+    if key not in defaultglobalconfig["toolbutton"]["buttons"]:
+        ___.append(key)
+for key in ___:
+    globalconfig["toolbutton"]["rank2"].remove(key)
 
 
 def getlanguse():

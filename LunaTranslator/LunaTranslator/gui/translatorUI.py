@@ -318,8 +318,7 @@ class QUnFrameWindow(resizableframeless):
         onstatecolor = "#FF69B4"
 
         self._TitleLabel.setFixedHeight(int(globalconfig["buttonsize"] * 1.5))
-        for i in range(len(self.buttons)):
-            name = self.buttons[i].name
+        for name in self.buttons:
             if name in colorstate:
                 color = (
                     onstatecolor if colorstate[name] else globalconfig["buttoncolor"]
@@ -334,23 +333,20 @@ class QUnFrameWindow(resizableframeless):
                 )
             else:
                 icon = globalconfig["toolbutton"]["buttons"][name]["icon"]
-            self.buttons[i].setIcon(qtawesome.icon(icon, color=color))  # (icon[i])
-            self.buttons[i].resize(
+            self.buttons[name].setIcon(qtawesome.icon(icon, color=color))  # (icon[i])
+            self.buttons[name].resize(
                 int(globalconfig["buttonsize"] * 2),
                 int(globalconfig["buttonsize"] * 1.5),
             )
 
-            if self.buttons[i].adjast:
-                self.buttons[i].adjast()
-            self.buttons[i].setIconSize(
+            self.buttons[name].setIconSize(
                 QSize(globalconfig["buttonsize"], globalconfig["buttonsize"])
             )
-        self.showhidetoolbuttons()
-        self.translate_text.movep(0, globalconfig["buttonsize"] * 1.5)
-        self.textAreaChanged()
+        self.translate_text.move(0, int(globalconfig["buttonsize"] * 1.5))
         self.setMinimumHeight(int(globalconfig["buttonsize"] * 1.5 + 10))
         self.setMinimumWidth(globalconfig["buttonsize"] * 2)
         self.set_color_transparency()
+        self.adjustbuttons()
 
     def ocr_once_function(self):
         @threader
@@ -474,7 +470,6 @@ class QUnFrameWindow(resizableframeless):
             ("minmize", self.hide_),
             ("quit", self.close),
         )
-        adjast = {"minmize": -2, "quit": -1}
         _type = {"quit": 2}
 
         for btn, func in functions:
@@ -483,12 +478,10 @@ class QUnFrameWindow(resizableframeless):
                 if "belong" in globalconfig["toolbutton"]["buttons"][btn]
                 else None
             )
-            _adjast = adjast[btn] if btn in adjast else 0
             tp = _type[btn] if btn in _type else 1
             self.takusanbuttons(
                 tp,
                 func,
-                _adjast,
                 globalconfig["toolbutton"]["buttons"][btn]["tip"],
                 btn,
                 belong,
@@ -518,7 +511,7 @@ class QUnFrameWindow(resizableframeless):
             self.isfirstshow = False
             self.setontopthread()
             self.refreshtoolicon()
-        
+
         return super().showEvent(a0)
 
     def canceltop(self):
@@ -648,17 +641,14 @@ class QUnFrameWindow(resizableframeless):
         self.mousetransparent = False
         self.backtransparent = False
         self.isbindedwindow = False
-        self.buttons = []
-        self.stylebuttons = {}
+        self.buttons = {}
         self.showbuttons = []
+        self.stylebuttons = {}
         self.saveiterclasspointer = {}
         self.addbuttons()
         self.translate_text = Textbrowser(self)
 
-        # 翻译框根据内容自适应大小
-        self.document = self.translate_text.document()
-
-        self.document.contentsChanged.connect(self.textAreaChanged)
+        self.translate_text.contentsChanged.connect(self.textAreaChanged)
         self.thistimenotsetop = False
 
     def createborderradiusstring(self, r, merge, top=False):
@@ -889,12 +879,13 @@ class QUnFrameWindow(resizableframeless):
         globalconfig["locktools"] = not globalconfig["locktools"]
         self.refreshtoolicon()
 
-    def textAreaChanged(self):
+    def textAreaChanged(self, w, h):
+
         if globalconfig["fixedheight"]:
             return
         if self.translate_text.cleared:
             return
-        newHeight = self.document.size().height()
+        newHeight = h
         width = self.width()
         self.resize(
             width,
@@ -930,7 +921,7 @@ class QUnFrameWindow(resizableframeless):
 
     def toolbarhidedelay(self):
 
-        for button in self.buttons:
+        for button in self.buttons.values():
             button.hide()
         self._TitleLabel.hide()
         self.set_color_transparency()
@@ -940,7 +931,7 @@ class QUnFrameWindow(resizableframeless):
 
     def enterfunction(self):
 
-        for button in self.buttons[-2:] + self.showbuttons:
+        for button in self.showbuttons:
             button.show()
         self._TitleLabel.show()
 
@@ -964,16 +955,17 @@ class QUnFrameWindow(resizableframeless):
         height = self.height() - wh
 
         self.translate_text.resize(self.width(), height)
-        for button in self.buttons[-2:]:
-            button.adjast()
-        # 自定义窗口调整大小事件
+        self.adjustbuttons()
         self._TitleLabel.setFixedWidth(self.width())
 
-    def showhidetoolbuttons(self):
-        showed = 0
-        self.showbuttons = []
-
-        for i, button in enumerate(self.buttons[:-2]):
+    def adjustbuttons(self):
+        left = []
+        right = []
+        center = []
+        self.showbuttons.clear()
+        __ = [left, right, center]
+        for name in globalconfig["toolbutton"]["rank2"]:
+            button = self.buttons[name]
             if button.belong:
                 hide = True
                 for k in button.belong:
@@ -987,17 +979,29 @@ class QUnFrameWindow(resizableframeless):
                     button.hide()
                     continue
             if (
-                button.name in globalconfig["toolbutton"]["buttons"]
-                and globalconfig["toolbutton"]["buttons"][button.name]["use"] == False
+                name in globalconfig["toolbutton"]["buttons"]
+                and globalconfig["toolbutton"]["buttons"][name]["use"] == False
             ):
                 button.hide()
                 continue
-
-            button.move(showed * button.width(), 0)
+            __[globalconfig["toolbutton"]["buttons"][name]["align"]].append(button)
             self.showbuttons.append(button)
-            # button.show()
-            showed += 1
-        self.enterEvent(None)
+
+        leftmax = 0
+        rightmax = self.width()
+        for button in left:
+            button.move(leftmax, 0)
+            leftmax += button.width()
+        for button in reversed(right):
+            rightmax -= button.width()
+            button.move(rightmax, 0)
+        sumwidth = 0
+        for button in center:
+            sumwidth += button.width()
+        leftstart = leftmax + (rightmax - leftmax - sumwidth) / 2
+        for button in center:
+            button.move(leftstart, 0)
+            leftstart += button.width()
 
     def callwrap(self, call, _):
         try:
@@ -1005,9 +1009,7 @@ class QUnFrameWindow(resizableframeless):
         except:
             print_exc()
 
-    def takusanbuttons(
-        self, _type, clickfunc, adjast=None, tips=None, save=None, belong=None
-    ):
+    def takusanbuttons(self, _type, clickfunc, tips, name, belong=None):
 
         button = QPushButton(self)
         if tips:
@@ -1020,15 +1022,8 @@ class QUnFrameWindow(resizableframeless):
         else:
             button.lower()
 
-        button.name = save
         button.belong = belong
-        if adjast < 0:
-            button.adjast = lambda: button.move(
-                self.width() + adjast * button.width(), 0
-            )
-        else:
-            button.adjast = None
-        self.buttons.append(button)
+        self.buttons[name] = button
 
     def closeEvent(self, a0) -> None:
         if self.fullscreenmanager:

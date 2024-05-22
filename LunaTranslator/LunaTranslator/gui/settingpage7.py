@@ -79,7 +79,7 @@ def setTab7(self):
 def getcomparelayout(self):
 
     layout = QHBoxLayout()
-    fromtext =QPlainTextEdit()
+    fromtext = QPlainTextEdit()
     totext = QPlainTextEdit()
     solvebutton = getcolorbutton(
         globalconfig,
@@ -113,28 +113,27 @@ def setTab7_lazy(self):
 
     def changerank(item, up):
 
-        ii = sortlist.index(item)
-        if up and ii == 0:
-            return
-        if up == False and ii == len(sortlist) - 1:
+        idx = sortlist.index(item)
+        idx2 = idx + (-1 if up else 1)
+        if idx2 < 0 or idx2 >= len(sortlist):
             return
         headoffset = 1
-        toexchangei = ii + (-1 if up else 1)
-        sortlist[ii], sortlist[toexchangei] = sortlist[toexchangei], sortlist[ii]
-        for i, ww in enumerate(savelist[ii + headoffset]):
+        idx2 = idx + (-1 if up else 1)
+        sortlist[idx], sortlist[idx2] = sortlist[idx2], sortlist[idx]
+        for i, ww in enumerate(savelist[idx + headoffset]):
 
             w1 = savelay[0].indexOf(ww)
-            w2 = savelay[0].indexOf(savelist[toexchangei + headoffset][i])
+            w2 = savelay[0].indexOf(savelist[idx2 + headoffset][i])
             p1 = savelay[0].getItemPosition(w1)
             p2 = savelay[0].getItemPosition(w2)
             savelay[0].removeWidget(ww)
-            savelay[0].removeWidget(savelist[toexchangei + headoffset][i])
+            savelay[0].removeWidget(savelist[idx2 + headoffset][i])
 
-            savelay[0].addWidget(savelist[toexchangei + headoffset][i], *p1)
+            savelay[0].addWidget(savelist[idx2 + headoffset][i], *p1)
             savelay[0].addWidget(ww, *p2)
-        savelist[ii + headoffset], savelist[toexchangei + headoffset] = (
-            savelist[toexchangei + headoffset],
-            savelist[ii + headoffset],
+        savelist[idx + headoffset], savelist[idx2 + headoffset] = (
+            savelist[idx2 + headoffset],
+            savelist[idx + headoffset],
         )
 
     for i, post in enumerate(sortlist):

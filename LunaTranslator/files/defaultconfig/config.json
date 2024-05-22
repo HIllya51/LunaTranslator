@@ -240,59 +240,98 @@
     "profiles_index": 0,
     "ocrautobindwindow": true,
     "toolbutton": {
-        "rank": [
+        "rank2": [
             "move",
             "retrans",
+            "automodebutton",
             "setting",
-            "automodebutton"
+            "copy",
+            "edit",
+            "showraw",
+            "history",
+            "noundict",
+            "fix",
+            "langdu",
+            "mousetransbutton",
+            "backtransbutton",
+            "locktoolsbutton",
+            "gamepad_new",
+            "selectgame",
+            "selecttext",
+            "selectocrrange",
+            "hideocrrange",
+            "bindwindow",
+            "resize",
+            "fullscreen",
+            "grabwindow",
+            "muteprocess",
+            "memory",
+            "keepontop",
+            "simulate_key_ctrl",
+            "simulate_key_enter",
+            "copy_once",
+            "open_relative_link",
+            "open_game_setting",
+            "ocr_once",
+            "minmize",
+            "quit"
         ],
         "buttons": {
             "retrans": {
                 "use": true,
                 "tip": "重新翻译",
-                "icon": "fa.rotate-right"
+                "icon": "fa.rotate-right",
+                "align": 0
             },
             "automodebutton": {
                 "use": true,
                 "tip": "自动翻译",
                 "icon": "fa.forward",
-                "icon2": "fa.play"
+                "icon2": "fa.play",
+                "align": 0
             },
             "setting": {
                 "use": true,
                 "tip": "打开设置",
-                "icon": "fa.gear"
+                "icon": "fa.gear",
+                "align": 0
             },
             "copy_once": {
                 "use": false,
                 "tip": "读取剪贴板",
-                "icon": "fa.file-o"
+                "icon": "fa.file-o",
+                "align": 0
             },
             "open_relative_link": {
                 "use": false,
                 "tip": "打开关联页面",
-                "icon": "fa.sitemap"
+                "icon": "fa.sitemap",
+                "align": 0
             },
             "open_game_setting": {
                 "use": false,
                 "tip": "游戏设置",
-                "icon": "fa.futbol-o"
+                "icon": "fa.futbol-o",
+                "align": 0
             },
             "mousetransbutton": {
                 "use": true,
                 "tip": "鼠标穿透窗口",
-                "icon": "fa.mouse-pointer"
+                "icon": "fa.mouse-pointer",
+                "align": 0
             },
             "backtransbutton": {
                 "use": true,
                 "tip": "背景窗口透明",
-                "icon": "fa.lightbulb-o"
+                "icon": "fa.lightbulb-o",
+                "align": 0
             },
             "locktoolsbutton": {
                 "use": true,
                 "tip": "锁定工具栏",
                 "icon": "fa.lock",
-                "icon2": "fa.unlock"
+                "icon2": "fa.unlock",
+                "align": 0
             },
             "selectgame": {
                 "use": true,
@@ -300,7 +339,8 @@
                 "belong": [
                     "texthook"
                 ],
-                "icon": "fa.link"
+                "icon": "fa.link",
+                "align": 0
             },
             "selecttext": {
                 "use": true,
@@ -308,7 +348,8 @@
                 "belong": [
                     "texthook"
                 ],
-                "icon": "fa.tasks"
+                "icon": "fa.tasks",
+                "align": 0
             },
             "selectocrrange": {
                 "use": true,
@@ -316,12 +357,14 @@
                 "belong": [
                     "ocr"
                 ],
-                "icon": "fa.crop"
+                "icon": "fa.crop",
+                "align": 0
             },
             "ocr_once": {
                 "use": false,
                 "tip": "进行一次OCR",
-                "icon": "fa.crop"
+                "icon": "fa.crop",
+                "align": 0
             },
             "hideocrrange": {
                 "use": true,
@@ -329,110 +372,131 @@
                 "belong": [
                     "ocr"
                 ],
-                "icon": "fa.square"
+                "icon": "fa.square",
+                "align": 0
             },
             "fix": {
                 "use": false,
                 "tip": "翻译结果修正",
-                "icon": "fa.won"
+                "icon": "fa.won",
+                "align": 0
             },
             "noundict": {
                 "use": false,
                 "tip": "专有名词翻译设置",
-                "icon": "fa.book"
+                "icon": "fa.book",
+                "align": 0
             },
             "minmize": {
                 "use": true,
                 "tip": "最小化到托盘",
-                "icon": "fa.minus"
+                "icon": "fa.minus",
+                "align": 1
             },
             "quit": {
                 "use": true,
                 "tip": "退出",
-                "icon": "fa.times"
+                "icon": "fa.times",
+                "align": 1
             },
             "move": {
                 "use": false,
                 "tip": "移动",
-                "icon": "fa.hand-paper-o"
+                "icon": "fa.hand-paper-o",
+                "align": 0
             },
             "fullscreen": {
                 "use": true,
                 "tip": "缩放/恢复游戏窗口",
                 "icon": "fa.compress",
-                "icon2": "fa.expand"
+                "icon2": "fa.expand",
+                "align": 0
             },
             "grabwindow": {
                 "use": false,
                 "tip": "窗口截图",
-                "icon": "fa.camera"
+                "icon": "fa.camera",
+                "align": 0
             },
             "resize": {
                 "use": false,
                 "tip": "调整游戏窗口",
-                "icon": "fa.arrows"
+                "icon": "fa.arrows",
+                "align": 0
             },
             "muteprocess": {
                 "use": false,
                 "tip": "游戏静音",
                 "icon": "fa.volume-off",
-                "icon2": "fa.volume-up"
+                "icon2": "fa.volume-up",
+                "align": 0
             },
             "showraw": {
                 "use": true,
                 "tip": "显示/隐藏原文",
                 "icon": "fa.eye",
-                "icon2": "fa.eye-slash"
+                "icon2": "fa.eye-slash",
+                "align": 0
             },
             "langdu": {
                 "use": true,
                 "tip": "朗读",
-                "icon": "fa.music"
+                "icon": "fa.music",
+                "align": 0
             },
             "copy": {
                 "use": true,
                 "tip": "复制到剪贴板",
-                "icon": "fa.copy"
+                "icon": "fa.copy",
+                "align": 0
             },
             "history": {
                 "use": true,
                 "tip": "显示/隐藏历史翻译",
-                "icon": "fa.rotate-left"
+                "icon": "fa.rotate-left",
+                "align": 0
             },
             "gamepad_new": {
                 "use": true,
                 "tip": "游戏管理",
-                "icon": "fa.gamepad"
+                "icon": "fa.gamepad",
+                "align": 0
             },
             "edit": {
                 "use": false,
                 "tip": "编辑",
-                "icon": "fa.edit"
+                "icon": "fa.edit",
+                "align": 0
             },
             "simulate_key_ctrl": {
                 "use": false,
                 "tip": "模拟按键Ctrl",
-                "icon": "fa.download"
+                "icon": "fa.download",
+                "align": 0
             },
             "simulate_key_enter": {
                 "use": false,
                 "tip": "模拟按键Enter",
-                "icon": "fa.download"
+                "icon": "fa.download",
+                "align": 0
             },
             "memory": {
                 "use": false,
                 "tip": "备忘录",
-                "icon": "fa.list-ul"
+                "icon": "fa.list-ul",
+                "align": 0
             },
             "bindwindow": {
                 "use": true,
                 "tip": "绑定窗口（部分软件不支持）（点击自己取消）",
-                "icon": "fa.windows"
+                "icon": "fa.windows",
+                "align": 0
             },
             "keepontop": {
                 "use": true,
                 "tip": "窗口置顶",
-                "icon": "fa.neuter"
+                "icon": "fa.neuter",
+                "align": 0
             }
         }
     },

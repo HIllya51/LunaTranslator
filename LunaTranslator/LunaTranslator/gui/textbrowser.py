@@ -1,4 +1,4 @@
-from PyQt5.QtCore import Qt, QPoint, QPointF
+from PyQt5.QtCore import Qt, QPoint, QPointF, pyqtSignal
 from PyQt5.QtGui import (
     QTextCharFormat,
     QTextBlockFormat,
@@ -178,41 +178,36 @@ class BorderedLabel(ShadowLabel):
         painter.drawPixmap(0, 0, self._pix)
 
 
-class Textbrowser:
-    def movep(self, x, y):
-        self.savey = y
-        self.atback.move(0, int(y))
-        if globalconfig["isshowhira"] and globalconfig["isshowrawtext"]:
-            if self.jiaming_y_delta > 0:
-                y = y + self.jiaming_y_delta
-        self.textbrowser.move(int(x), int(y))
+class Textbrowser(QLabel):
+    contentsChanged = pyqtSignal(int, int)
 
-        self.atback2.move(0, int(y))
-        self.toplabel2.move(0, int(y))
+    def move(self, x, y):
+        super().move(x, y)
+        self.textbrowser.move(x, y)
+
+        self.atback2.move(x, y)
+        self.toplabel2.move(x, y)
+
+    def resizeEvent(self, event):
+        self.atback2.resize(event.size())
+        self.toplabel2.resize(event.size())
+
+    def contentchangedfunction(self):
+        sz = self.textbrowser.document().size().toSize()
+        self.textbrowser.resize(self.width(), sz.height())
+        self.contentsChanged.emit(sz.width(), sz.height())
 
     def __init__(self, parent):
-        self.parent = parent
-        self.savey = 0
-        # self.shadowlabel=QLabel(parent)
-        # self.shadowlabel.savetext=''
-        self.align = False
+        super().__init__(parent)
 
-        self.atback = QLabel(parent)
-
-        self.atback.setMouseTracking(True)
+        self.setMouseTracking(True)
 
         self.atback2 = QLabel(parent)
 
         self.toplabel2 = QLabel(parent)
         self.atback2.setMouseTracking(True)
         self.textbrowser = QTextBrowser(parent)
-
-        def __resizeevent(event: QResizeEvent):
-            self.atback.resize(event.size())
-            self.atback2.resize(event.size())
-            self.toplabel2.resize(event.size())
-
-        self.textbrowser.resizeEvent = __resizeevent
+        self.textbrowser.document().contentsChanged.connect(self.contentchangedfunction)
         self.tranparentcolor = QColor()
         self.tranparentcolor.setAlpha(0)
         self.textbrowser.setTextColor(self.tranparentcolor)
@@ -244,22 +239,12 @@ class Textbrowser:
         self.yinyingpos = 0
         self.yinyingposline = 0
         self.lastcolor = None
-        self.jiaming_y_delta = 0
         self.setselectable()
         self.blockcount = 0
         self.iteryinyinglabelsave = {}
 
     def setselectable(self):
         self.masklabel.setHidden(globalconfig["selectable"])
-
-    def setStyleSheet(self, x):
-        self.atback.setStyleSheet(x)
-
-    def document(self):
-        return self.textbrowser.document()
-
-    def resize(self, _1, _2):
-        self.textbrowser.resize(int(_1), int(_2))
 
     def setnextfont(self, origin):
         if origin:
@@ -277,19 +262,8 @@ class Textbrowser:
         c.setCharFormat(f)
         self.textbrowser.setTextCursor(c)
 
-    def setGeometry(self, _1, _2, _3, _4):
-        self.textbrowser.setGeometry(_1, _2, _3, _4)
-
-        self.savey = _2
-        # self.shadowlabel.setGeometry(_1,_2,_3,_4)
-        # self.shadowlabel.resize(_3,_4)
-
     def setAlignment(self, x):
         self.textbrowser.setAlignment(x)
-        if Qt.AlignCenter == x:
-            self.align = True
-        else:
-            self.align = False
 
     def append(self, x, tag, color):
         if self.cleared:
@@ -316,8 +290,6 @@ class Textbrowser:
 
         if len(tag) > 0:
             self.addtag(tag)
-
-        self.movep(0, self.savey)
 
         self.showyinyingtext(b1, b2, color)
 
@@ -429,7 +401,8 @@ class Textbrowser:
         idx = 0
         guesswidth = []
         guesslinehead = None
-        wwww = self.parent.width()
+        wwww = self.width()
+        heigth, __, _ = self.getfh(False)
         for word in x:
             idx += 1
             l = len(word["orig"])
@@ -473,14 +446,14 @@ class Textbrowser:
                             guesswidth1 = gw * len(word["orig"])
                             tailx = wwww - guesslinehead
                             pos1 = (
-                                tl1.x() + 2,
+                                tl1.x(),
                                 tl1.y(),
-                                tailx - tl1.x() - 4,
-                                tl4.y() - tl1.y(),
+                                tailx - tl1.x(),
+                                heigth,
                             )
                             xx = int(guesswidth1 - (tailx - tl1.x()))
                             guesslinehead = None
-                            pos2 = tl3.x() - xx + 2, tl3.y(), xx - 4, tl4.y() - tl1.y()
+                            pos2 = tl3.x() - xx, tl3.y(), xx, heigth
                             if (
                                 globalconfig["usesearchword"]
                                 or globalconfig["usecopyword"]
@@ -526,10 +499,10 @@ class Textbrowser:
                                 len(word["orig"])
                             )
                             pos1 = (
-                                tl1.x() + 2,
+                                tl1.x(),
                                 tl1.y(),
-                                tl2.x() - tl1.x() - 4,
-                                tl2.y() - tl1.y(),
+                                tl2.x() - tl1.x(),
+                                heigth,
                             )
                             if (
                                 globalconfig["usesearchword"]
@@ -585,30 +558,21 @@ class Textbrowser:
             font.setPointSizeF((globalconfig["fontsize"]))
         fm = QFontMetricsF(font)
 
-        fhall = fm.height()
-
-        return fhall, font
+        return fm.height(), fm.ascent(), font
 
     def addtag(self, x):
         pos = 0
 
-        fhall, fontorig = self.getfh(False)
-        fhhalf, fonthira = self.getfh(True)
+        fasall, _, fontorig = self.getfh(False)
+        fha, fascent, fonthira = self.getfh(True)
         for i in range(0, self.textbrowser.document().blockCount()):
             b = self.textbrowser.document().findBlockByNumber(i)
 
             tf = b.blockFormat()
-            tf.setLineHeight(fhall + fhhalf, QTextBlockFormat.FixedHeight)
-
+            tf.setLineHeight(fasall + fha, QTextBlockFormat.FixedHeight)
             self.textcursor.setPosition(b.position())
             self.textcursor.setBlockFormat(tf)
             self.textbrowser.setTextCursor(self.textcursor)
-            if i == 0:
-                tl1 = self.textbrowser.cursorRect(self.textcursor).topLeft().y()
-
-        if self.jiaming_y_delta + tl1 - fhhalf != 0:
-            self.jiaming_y_delta = fhhalf - tl1
-            self.movep(0, self.savey)
         x = self.nearmerge(x, pos, fonthira, fontorig)
         self.settextposcursor(pos)
         for word in x:
@@ -626,7 +590,7 @@ class Textbrowser:
             if word["orig"] == " ":
                 continue
             self.savetaglabels.append(
-                self.solvejiaminglabel(word, fonthira, tl1, tl2, fhhalf)
+                self.solvejiaminglabel(word, fonthira, tl1, tl2, fascent)
             )
 
     def settextposcursor(self, pos):
@@ -730,9 +694,8 @@ class Textbrowser:
 
     def solvejiaminglabel(self, word, font, tl1, tl2, fh):
         _ = self.guesscreatelabel(
-            self.parent, globalconfig["jiamingcolor"], rate=globalconfig["kanarate"]
+            self.atback2, globalconfig["jiamingcolor"], rate=globalconfig["kanarate"]
         )
-
         _.setText(word["hira"])
         _.setFont(font)
         _.adjustSize()
@@ -750,8 +713,6 @@ class Textbrowser:
         else:
             x = tl1.x() / 2 + tl2.x() / 2 - w / 2
             y = tl2.y() - fh
-        y += globalconfig["buttonsize"] * 1.5
-        y += self.jiaming_y_delta
 
         _.move(QPoint(int(x), int(y)))
 

@@ -794,5 +794,6 @@
     "自动截图": "Automatic screenshot",
     "模糊匹配": "Fuzzy matching",
     "相似度": "Similarity",
-    "编辑距离": "Edit distance"
+    "编辑距离": "Edit distance",
+    "对齐": "alignment"
 }

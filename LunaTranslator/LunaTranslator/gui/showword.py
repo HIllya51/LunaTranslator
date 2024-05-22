@@ -11,6 +11,7 @@ from PyQt5.QtWidgets import (
     QTabWidget,
     QFileDialog,
     QTabBar,
+    QSplitter,
     QLabel,
 )
 from myutils.hwnd import grabwindow
@@ -172,6 +173,7 @@ class AnkiWindow(QWidget):
 
     def __init__(self) -> None:
         super().__init__()
+        self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         self.setWindowTitle("Anki Connect")
         self.currentword = ""
         self.tabs = QTabWidget()
@@ -798,18 +800,25 @@ class searchwordW(closeashidewindow):
         self.cache_results = {}
         self.hiding = True
 
+        self.spliter = QSplitter()
+
         tablayout = QVBoxLayout()
-        tablayout.addWidget(self.tab)
-        tablayout.addWidget(self.textOutput)
         tablayout.setContentsMargins(0, 0, 0, 0)
         tablayout.setSpacing(0)
-        self.vboxlayout.addLayout(tablayout)
+        tablayout.addWidget(self.tab)
+        tablayout.addWidget(self.textOutput)
+        w = QWidget()
+        w.setLayout(tablayout)
+        self.vboxlayout.addWidget(self.spliter)
         self.isfirstshowanki = True
+        self.spliter.setOrientation(Qt.Vertical)
+
+        self.spliter.addWidget(w)
 
     def onceaddankiwindow(self, idx):
         if idx == 1:
             if self.isfirstshowanki:
-                self.vboxlayout.addWidget(self.ankiwindow)
+                self.spliter.addWidget(self.ankiwindow)
             else:
                 self.ankiwindow.show()
         else:

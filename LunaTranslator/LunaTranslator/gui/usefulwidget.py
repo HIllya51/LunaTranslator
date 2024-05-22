@@ -645,6 +645,9 @@ class auto_select_webview(QWidget):
             print("file://" + self.lastcachehtml.replace("\\", "/"))
             self.internal.navigate("file://" + self.lastcachehtml.replace("\\", "/"))
 
+    def sizeHint(self):
+        return QSize(256, 192)
+
     def clearcache(self):
         if self.lastcachehtml and os.path.exists(self.lastcachehtml):
             lastcachehtml = self.lastcachehtml

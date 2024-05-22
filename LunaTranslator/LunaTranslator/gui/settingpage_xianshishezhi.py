@@ -60,14 +60,14 @@ class dialog_toolbutton(QDialog):
         super().__init__(parent, Qt.WindowCloseButtonHint)
         self.setWindowTitle(_TR("窗口按钮设置"))
         model = QStandardItemModel()
-        model.setHorizontalHeaderLabels(_TRL(["显示", "图标", "图标2", "说明"]))
+        model.setHorizontalHeaderLabels(
+            _TRL(["显示", "", "", "对齐", "图标", "图标2", "说明"])
+        )
 
         layout = QVBoxLayout(self)  #
         self.model = model
 
         table = QTableView()
-        table.setDragEnabled(True)
-        table.setAcceptDrops(True)
 
         table.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
         table.horizontalHeader().setStretchLastSection(True)
@@ -77,12 +77,30 @@ class dialog_toolbutton(QDialog):
         table.setWordWrap(False)
         table.setModel(model)
         self.table = table
-        for row, k in enumerate(globalconfig["toolbutton"]["rank"]):
+        for row, k in enumerate(globalconfig["toolbutton"]["rank2"]):
             self.newline(row, k)
         layout.addWidget(table)
 
         self.resize(QSize(800, 400))
         self.show()
+
+    def changerank2(self, key, up):
+        idx = globalconfig["toolbutton"]["rank2"].index(key)
+        idx2 = idx + (-1 if up else 1)
+        if idx2 < 0 or idx2 >= len(globalconfig["toolbutton"]["rank2"]):
+            return
+        idx2 = idx + (-1 if up else 1)
+        (
+            globalconfig["toolbutton"]["rank2"][idx],
+            globalconfig["toolbutton"]["rank2"][idx2],
+        ) = (
+            globalconfig["toolbutton"]["rank2"][idx2],
+            globalconfig["toolbutton"]["rank2"][idx],
+        )
+
+        self.model.removeRow(idx2)
+        self.newline(idx, globalconfig["toolbutton"]["rank2"][idx]),
+        gobject.baseobject.translation_ui.adjustbuttons()
 
     def newline(self, row, k):
         if "belong" in globalconfig["toolbutton"]["buttons"][k]:
@@ -100,6 +118,9 @@ class dialog_toolbutton(QDialog):
                 QStandardItem(),
                 QStandardItem(),
                 QStandardItem(),
+                QStandardItem(),
+                QStandardItem(),
+                QStandardItem(),
                 QStandardItem(
                     _TR(globalconfig["toolbutton"]["buttons"][k]["tip"]) + " " + belong
                 ),
@@ -110,12 +131,43 @@ class dialog_toolbutton(QDialog):
             getsimpleswitch(
                 globalconfig["toolbutton"]["buttons"][k],
                 "use",
-                callback=lambda _: gobject.baseobject.translation_ui.showhidetoolbuttons(),
+                callback=lambda _: gobject.baseobject.translation_ui.adjustbuttons(),
             ),
+        )
+        button_up = getcolorbutton(
+            globalconfig,
+            "",
+            callback=functools.partial(self.changerank2, k, True),
+            icon="fa.arrow-up",
+            constcolor="#FF69B4",
+        )
+        button_down = getcolorbutton(
+            globalconfig,
+            "",
+            callback=functools.partial(self.changerank2, k, False),
+            icon="fa.arrow-down",
+            constcolor="#FF69B4",
+        )
+        self.table.setIndexWidget(
+            self.model.index(row, 1),
+            button_up,
+        )
+        self.table.setIndexWidget(
+            self.model.index(row, 2),
+            button_down,
         )
 
         self.table.setIndexWidget(
-            self.model.index(row, 1),
+            self.model.index(row, 3),
+            getsimplecombobox(
+                ["居左", "居右", "居中"],
+                globalconfig["toolbutton"]["buttons"][k],
+                "align",
+                callback=lambda _: gobject.baseobject.translation_ui.adjustbuttons(),
+            ),
+        )
+        self.table.setIndexWidget(
+            self.model.index(row, 4),
             getcolorbutton(
                 "",
                 "",
@@ -130,7 +182,7 @@ class dialog_toolbutton(QDialog):
         )
         if "icon2" in globalconfig["toolbutton"]["buttons"][k]:
             self.table.setIndexWidget(
-                self.model.index(row, 2),
+                self.model.index(row, 5),
                 getcolorbutton(
                     "",
                     "",
