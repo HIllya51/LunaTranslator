@@ -17,6 +17,7 @@ from ctypes import (
     c_size_t,
     windll,
     c_float,
+    c_double,
     c_char,
 )
 from ctypes.wintypes import WORD, HANDLE, HWND, LONG, DWORD
@@ -62,6 +63,9 @@ _SAPI_Speak.restype = c_bool
 _levenshtein_distance = utilsdll.levenshtein_distance
 _levenshtein_distance.argtypes = c_uint, c_wchar_p, c_uint, c_wchar_p
 _levenshtein_distance.restype = c_uint  # 实际上应该都是size_t，但size_t 32位64位宽度不同，都用32位就行了，用int64会内存越界
+levenshtein_ratio = utilsdll.levenshtein_ratio
+levenshtein_ratio.argtypes = c_uint, c_wchar_p, c_uint, c_wchar_p
+levenshtein_ratio.restype = c_double
 
 _mecab_init = utilsdll.mecab_init
 _mecab_init.argtypes = c_char_p, c_wchar_p
@@ -122,8 +126,12 @@ def SAPI_Speak(content, v, voiceid, rate, volume):
     return data
 
 
-def distance(s1, s2):
+def distance(s1, s2):  # 词典更适合用编辑距离，因为就一两个字符，相似度会很小，预翻译适合用相似度
     return _levenshtein_distance(len(s1), s1, len(s2), s2)
+
+
+def distance_ratio(s1, s2):
+    return levenshtein_ratio(len(s1), s1, len(s2), s2)
 
 
 class mecabwrap:

@@ -717,12 +717,8 @@
                     "link": "https://github.com/HIllya51/RESOURCES/releases/download/dictionary/Mecab.zip"
                 },
                 {
-                    "name": "MeCab_unidic_latest",
+                    "name": "MeCab_Unidic_latest",
                     "link": "https://clrd.ninjal.ac.jp/unidic/"
-                },
-                {
-                    "name": "Unidic",
-                    "link": "https://clrd.ninjal.ac.jp/unidic_archive/2302/unidic-cwj-202302.zip"
                 },
                 {
                     "name": "小学馆",
@@ -739,6 +735,10 @@
                 {
                     "name": "灵格斯词典",
                     "link": "https://github.com/HIllya51/RESOURCES/releases/download/dictionary/Lingoes.zip"
+                },
+                {
+                    "name": "mdict",
+                    "link": "https://freemdict.com/"
                 }
             ]
         },

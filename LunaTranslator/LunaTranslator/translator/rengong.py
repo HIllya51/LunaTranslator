@@ -40,13 +40,12 @@ class TS(basetrans):
             self.unsafegetcurrentgameconfig(), self.config["json文件"]
         )
         if globalconfig["premtsimiuse"]:
-            mindis = 9999999
-
+            maxsim = 0
             for jc in self.json:
                 dis = winsharedutils.distance(content, jc)
-                if dis < mindis:
-                    mindis = dis
-                    if mindis < globalconfig["premtsimi"]:
+                if dis > maxsim:
+                    maxsim = dis
+                    if maxsim * 100 >= globalconfig["premtsimi2"]:
                         if type(self.json[jc]) == str:
                             savet = self.json[jc]
                         elif (

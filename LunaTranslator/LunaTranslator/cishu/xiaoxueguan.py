@@ -28,7 +28,8 @@ class xiaoxueguan(cishubase):
         for w, xx in exp:
 
             d = winsharedutils.distance(w, word)
-            dis.append(d)
+            if d <= self.config["distance"]:
+                dis.append(d)
 
         srt = argsort(dis)[:10]
         save = ["<span h>" + exp[i][1].replace("\\n", "") for i in srt]

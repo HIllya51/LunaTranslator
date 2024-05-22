@@ -277,7 +277,7 @@ class autoinitdialog(QDialog):
                     lineW = QLineEdit(dd[key])
                     regist.append([dd, key, lineW.text])
                 except:
-                    #被废弃的参数若为int型但失去argstype注释会崩溃，直接continue;
+                    # 被废弃的参数若为int型但失去argstype注释会崩溃，直接continue;
                     continue
             elif line["type"] == "file":
                 e = QLineEdit(dd[key])
@@ -289,7 +289,7 @@ class autoinitdialog(QDialog):
                         line.get("multi", False),
                         e,
                         line["dir"],
-                        "" if line["dir"] else line["filter"],
+                        "" if line["dir"] else line.get("filter", None),
                     )
                 )
                 lineW = QHBoxLayout()

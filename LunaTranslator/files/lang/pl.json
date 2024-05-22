@@ -57,7 +57,6 @@
     "最短翻译字数": "Minimalna liczba przetłumaczonych słów",
     "最长翻译字数": "Maksymalna liczba przetłumaczonych słów",
     "预翻译采用模糊匹配": "Tłumaczenie wstępne przy użyciu dopasowania rozmytego",
-    "模糊匹配相似度限制": "Limit podobieństwa rozmytego dopasowania",
     "录制翻译文件": "Nagrywanie plików tłumaczeniowych",
     "导出的第一翻译源": "Pierwsze wyeksportowane źródło tłumaczenia",
     "离线翻译": "Tłumaczenie offline",
@@ -331,7 +330,6 @@
     "xml目录": "Katalog XML",
     "说明": "wyjaśnij",
     "分析图像更新+周期执行": "Analiza aktualizacji obrazów+wykonanie cyklu",
-    "模糊匹配相似度": "Rozmyte podobieństwo dopasowania",
     "翻译器字体": "Czcionki tłumacza",
     "设置界面字体": "Ustaw czcionkę interfejsu",
     "专有名词翻译设置按钮": "Przycisk ustawienia tłumaczenia właściwego rzeczownika",
@@ -793,5 +791,6 @@
     "使用webview显示": "Wyświetlanie przy użyciu widoku internetowego",
     "录音时模拟按键": "Symulowanie przycisków podczas nagrywania",
     "窗口截图": "Zrzut ekranu okna",
-    "自动截图": "Automatyczny zrzut ekranu"
+    "自动截图": "Automatyczny zrzut ekranu",
+    "模糊匹配": "Dopasowanie rozmyte"
 }

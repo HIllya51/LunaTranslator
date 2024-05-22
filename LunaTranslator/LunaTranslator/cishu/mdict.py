@@ -2346,7 +2346,7 @@ class mdict(cishubase):
 
         for k in index("*" + word + "*"):
             dis = winsharedutils.distance(k, word)
-            if dis <= self.config["ambiguity"]:
+            if dis <= self.config["distance"]:
                 results.append(k)
                 diss[k] = dis
 

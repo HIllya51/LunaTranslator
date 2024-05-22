@@ -57,7 +57,6 @@
     "最短翻译字数": "Nombre minimum de mots traduits",
     "最长翻译字数": "Nombre maximum de mots traduits",
     "预翻译采用模糊匹配": "Correspondance floue utilisée dans la pré - traduction",
-    "模糊匹配相似度限制": "Limite de similarité floue",
     "录制翻译文件": "Enregistrer le fichier de traduction",
     "导出的第一翻译源": "Première source de traduction exportée",
     "离线翻译": "Traduction hors ligne",
@@ -331,7 +330,6 @@
     "xml目录": "Répertoire XML",
     "说明": "Description",
     "分析图像更新+周期执行": "Mise à jour de l'image analytique + exécution du cycle",
-    "模糊匹配相似度": "Similarité de correspondance floue",
     "翻译器字体": "Police du traducteur",
     "设置界面字体": "Définir les polices d'interface",
     "专有名词翻译设置按钮": "Bouton de configuration de traduction nom propre",
@@ -793,5 +791,6 @@
     "使用webview显示": "Afficher avec webview",
     "录音时模拟按键": "Simulation des touches lors de l'enregistrement",
     "窗口截图": "Capture d'écran de la fenêtre",
-    "自动截图": "Capture d'écran automatique"
+    "自动截图": "Capture d'écran automatique",
+    "模糊匹配": "Correspondance floue"
 }

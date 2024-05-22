@@ -196,8 +196,8 @@ def setTabTwo_lazy(self):
             ("预翻译采用模糊匹配", 8),
             (getsimpleswitch(globalconfig, "premtsimiuse"), 1),
             "",
-            ("模糊匹配相似度", 8),
-            (getspinbox(0, 500, globalconfig, "premtsimi"), 3),
+            ("模糊匹配_相似度_%", 8),
+            (getspinbox(0, 100, globalconfig, "premtsimi2"), 3),
         ],
         [
             (bt, 12),

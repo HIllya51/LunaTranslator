@@ -38,17 +38,17 @@ class TS(basetrans):
             self.unsafegetcurrentgameconfig(), self.config["sqlite文件"]
         )
         if globalconfig["premtsimiuse"]:
-            mindis = 9999999
+            maxsim = 0
             savet = "{}"
             ret = self.sql.execute("SELECT * FROM artificialtrans  ").fetchall()
 
             for line in ret:
                 text = line[1]
                 trans = line[2]
-                dis = winsharedutils.distance(content, text)
-                if dis < mindis:
-                    mindis = dis
-                    if mindis < globalconfig["premtsimi"]:
+                dis = winsharedutils.distance_ratio(content, text)
+                if dis > maxsim:
+                    maxsim = dis
+                    if maxsim * 100 >= globalconfig["premtsimi2"]:
                         savet = trans
             try:
                 ret = json.loads(savet)

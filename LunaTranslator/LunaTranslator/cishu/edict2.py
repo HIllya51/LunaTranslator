@@ -32,8 +32,9 @@ class edict2(cishubase):
         for w in self.save:
             if word in w or w in word:
                 d = winsharedutils.distance(w, word)
-                dis.append(d)
-                savew.append(w)
+                if d <= self.config["distance"]:
+                    dis.append(d)
+                    savew.append(w)
         saveres = []
         srt = argsort(dis)
         for ii in srt:

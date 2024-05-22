@@ -57,7 +57,6 @@
     "最短翻译字数": "Número mínimo de palabras traducidas",
     "最长翻译字数": "Número máximo de palabras traducidas",
     "预翻译采用模糊匹配": "La traducción previa adopta una coincidencia inútil",
-    "模糊匹配相似度限制": "Restricción de similitud de coincidencia inexistente",
     "录制翻译文件": "Grabar archivos traducidos",
     "导出的第一翻译源": "La primera fuente de traducción exportada",
     "离线翻译": "Traducción fuera de línea",
@@ -331,7 +330,6 @@
     "xml目录": "Catálogo XML",
     "说明": "Explicación",
     "分析图像更新+周期执行": "Actualización de la imagen de análisis + Ejecución del ciclo",
-    "模糊匹配相似度": "Similitud de coincidencia inexistente",
     "翻译器字体": "Fuente del traductor",
     "设置界面字体": "Establecer la fuente de la interfaz",
     "专有名词翻译设置按钮": "Botón de configuración de traducción de términos propios",
@@ -793,5 +791,6 @@
     "使用webview显示": "Mostrar con Webview",
     "录音时模拟按键": "Teclas de simulación durante la grabación",
     "窗口截图": "Captura de pantalla de la ventana",
-    "自动截图": "Captura de pantalla automática"
+    "自动截图": "Captura de pantalla automática",
+    "模糊匹配": "Coincidencia inútil"
 }

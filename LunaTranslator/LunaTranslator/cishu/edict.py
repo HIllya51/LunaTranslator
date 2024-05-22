@@ -25,7 +25,8 @@ class edict(cishubase):
         dis = []
         for w, xx in exp:
             d = winsharedutils.distance(w, word)
-            dis.append(d)
+            if d <= self.config["distance"]:
+                dis.append(d)
         save = []
         srt = argsort(dis)
         for ii in srt:
