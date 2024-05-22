@@ -795,5 +795,7 @@
     "模糊匹配": "Correspondance floue",
     "相似度": "Similarité",
     "编辑距离": "Modifier la distance",
-    "对齐": "Alignement"
+    "对齐": "Alignement",
+    "居左": "Vivre à gauche",
+    "居右": "Vivre à droite"
 }

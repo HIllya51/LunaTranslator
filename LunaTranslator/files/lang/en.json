@@ -795,5 +795,7 @@
     "模糊匹配": "Fuzzy matching",
     "相似度": "Similarity",
     "编辑距离": "Edit distance",
-    "对齐": "alignment"
+    "对齐": "alignment",
+    "居左": "be at the left side",
+    "居右": "be at the right"
 }

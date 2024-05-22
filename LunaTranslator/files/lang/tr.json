@@ -795,5 +795,7 @@
     "模糊匹配": "Çılgın eşleşme",
     "相似度": "Görünüşe benziyor",
     "编辑距离": "Edit distance",
-    "对齐": "yönlendirme"
+    "对齐": "yönlendirme",
+    "居左": "sol tarafta",
+    "居右": "Sağda ol."
 }

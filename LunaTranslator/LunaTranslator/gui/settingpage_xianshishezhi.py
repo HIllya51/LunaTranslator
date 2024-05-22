@@ -160,7 +160,7 @@ class dialog_toolbutton(QDialog):
         self.table.setIndexWidget(
             self.model.index(row, 3),
             getsimplecombobox(
-                ["居左", "居右", "居中"],
+                _TRL(["居左", "居右", "居中"]),
                 globalconfig["toolbutton"]["buttons"][k],
                 "align",
                 callback=lambda _: gobject.baseobject.translation_ui.adjustbuttons(),
