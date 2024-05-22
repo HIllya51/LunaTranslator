@@ -130,6 +130,10 @@ def setTab_aboutlazy(self):
             "问题反馈",
             (makehtml("https://github.com/HIllya51/LunaTranslator/issues"), 3, "link"),
         ],
+        [
+            "使用说明",
+            (makehtml("https://hillya51.github.io/LunaTranslator_tutorial/#/zh/"), 3, "link"),
+        ],
     ]
     if globalconfig["languageuse"] == 0:
         shuominggrid += [
