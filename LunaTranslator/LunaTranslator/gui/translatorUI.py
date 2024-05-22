@@ -679,8 +679,8 @@ class QUnFrameWindow(resizableframeless):
     def set_color_transparency(self):
 
         use_r1 = min(
-            self.translate_text.textbrowser.height() // 2,
-            self.translate_text.textbrowser.width() // 2,
+            self.translate_text.height() // 2,
+            self.translate_text.width() // 2,
             globalconfig["yuanjiao_r"],
         )
         use_r2 = min(
