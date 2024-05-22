@@ -735,7 +735,7 @@ class selectviewer(QWidget):
 
 class searchwordW(closeashidewindow):
     getnewsentencesignal = pyqtSignal(str, bool)
-    showtabsignal = pyqtSignal(str, str)
+    showtabsignal = pyqtSignal(float, str, str)
 
     def __init__(self, parent):
         super(searchwordW, self).__init__(parent, globalconfig, "sw_geo")
@@ -745,7 +745,9 @@ class searchwordW(closeashidewindow):
         self.getnewsentencesignal.connect(self.getnewsentence)
         self.setWindowTitle(_TR("查词"))
 
-    def showresfun(self, k, res):
+    def showresfun(self, timestamp, k, res):
+        if self.current != timestamp:
+            return
         self.cache_results[k] = res
 
         thisp = globalconfig["cishu"][k]["args"]["priority"]
@@ -853,6 +855,8 @@ class searchwordW(closeashidewindow):
             grabwindow(self.ankiwindow.editpath.setText)
 
     def search(self, sentence):
+        current = time.time()
+        self.current = current
         sentence = sentence.strip()
         if sentence == "":
             return
@@ -863,5 +867,6 @@ class searchwordW(closeashidewindow):
         self.textOutput.clear()
         self.cache_results.clear()
         for k, cishu in gobject.baseobject.cishus.items():
-            cishu.callback = functools.partial(self.showtabsignal.emit, k)
-            cishu.safesearch(sentence)
+            cishu.safesearch(
+                sentence, functools.partial(self.showtabsignal.emit, current, k)
+            )

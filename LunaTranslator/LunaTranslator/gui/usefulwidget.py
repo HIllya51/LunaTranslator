@@ -627,15 +627,27 @@ class auto_select_webview(QWidget):
 
     def navigate(self, url):
         self._maybecreate()
+        self.clearcache()
         self.internal.navigate(url)
 
     def setHtml(self, html):
         self._maybecreate()
-        self.internal.setHtml(html)
+        self.clearcache()
+        if len(html) < 1 * 1024 * 1024:  # 1mb
+            self.internal.setHtml(html)
+        else:
+            os.makedirs("cache/temp", exist_ok=True)
+            self.lastcachehtml = os.path.abspath(
+                "cache/temp/" + str(time.time()) + ".html"
+            )
+            with open(self.lastcachehtml, "w", encoding="utf8") as ff:
+                ff.write(html)
+            print("file://" + self.lastcachehtml.replace("\\", "/"))
+            self.internal.navigate("file://" + self.lastcachehtml.replace("\\", "/"))
 
-    def navigate(self, url):
-        self._maybecreate()
-        self.internal.navigate(url)
+    def clearcache(self):
+        if self.lastcachehtml and os.path.exists(self.lastcachehtml):
+            os.remove(self.lastcachehtml)
 
     def __init__(self, parent) -> None:
         super().__init__(parent)
@@ -647,6 +659,7 @@ class auto_select_webview(QWidget):
         layout.setContentsMargins(0, 0, 0, 0)
         self.setLayout(layout)
         self._maybecreate()
+        self.lastcachehtml = None
 
     def _maybecreate(self):
         if globalconfig["usewebview"] != self.contex:

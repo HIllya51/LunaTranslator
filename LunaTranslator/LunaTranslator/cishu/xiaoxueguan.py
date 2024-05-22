@@ -16,7 +16,8 @@ class xiaoxueguan(cishubase):
             pass
 
     def search(self, word):
-
+        if not self.sql:
+            return
         x = self.sql.execute(
             "select word,explanation from xiaoxueguanrizhong where word like ?",
             ("%{}%".format(word),),

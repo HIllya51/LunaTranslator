@@ -7,7 +7,7 @@ from cishu.cishubase import cishubase
 
 class edict2(cishubase):
     def init(self):
-        self.sql = None
+        self.save = None
         try:
             path = self.config["path"]
             if os.path.exists(path):
@@ -25,7 +25,8 @@ class edict2(cishubase):
             print_exc()
 
     def search(self, word):
-
+        if not self.save:
+            return
         dis = 9999
         dis = []
         savew = []

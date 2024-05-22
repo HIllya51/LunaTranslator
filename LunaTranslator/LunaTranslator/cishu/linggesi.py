@@ -29,7 +29,8 @@ class linggesi(cishubase):
             pass
 
     def search(self, word):
-
+        if not self.sql:
+            return
         mp = {}
         for sql in [self.sql, self.sql2]:
             x = sql.execute(

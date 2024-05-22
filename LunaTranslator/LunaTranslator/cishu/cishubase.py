@@ -20,7 +20,7 @@ class cishubase:
             pass
 
     @threader
-    def safesearch(self, sentence):
+    def safesearch(self, sentence, callback):
         try:
             if self.needinit:
                 self.init()
@@ -32,7 +32,7 @@ class cishubase:
                 self.needinit = True
 
             if res and len(res):
-                self.callback(res)
+                callback(res)
         except:
             pass
 

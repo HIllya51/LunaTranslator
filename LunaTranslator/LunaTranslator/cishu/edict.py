@@ -15,7 +15,8 @@ class edict(cishubase):
             pass
 
     def search(self, word):
-
+        if not self.sql:
+            return
         x = self.sql.execute(
             "select text, entry_id from surface where  text like ?",
             ("%{}%".format(word),),
