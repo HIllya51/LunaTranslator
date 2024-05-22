@@ -647,7 +647,9 @@ class auto_select_webview(QWidget):
 
     def clearcache(self):
         if self.lastcachehtml and os.path.exists(self.lastcachehtml):
-            os.remove(self.lastcachehtml)
+            lastcachehtml = self.lastcachehtml
+            self.lastcachehtml = None
+            os.remove(lastcachehtml)
 
     def __init__(self, parent) -> None:
         super().__init__(parent)
