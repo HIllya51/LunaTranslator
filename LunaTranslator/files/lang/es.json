@@ -792,5 +792,7 @@
     "录音时模拟按键": "Teclas de simulación durante la grabación",
     "窗口截图": "Captura de pantalla de la ventana",
     "自动截图": "Captura de pantalla automática",
-    "模糊匹配": "Coincidencia inútil"
+    "模糊匹配": "Coincidencia inútil",
+    "相似度": "Similitud",
+    "编辑距离": "Distancia de edición"
 }

@@ -792,5 +792,7 @@
     "录音时模拟按键": "Simula pulsanti durante la registrazione",
     "窗口截图": "Schermata finestra",
     "自动截图": "Schermata automatica",
-    "模糊匹配": "Corrispondenza sfocata"
+    "模糊匹配": "Corrispondenza sfocata",
+    "相似度": "Similitudine",
+    "编辑距离": "Modifica distanza"
 }

@@ -792,5 +792,7 @@
     "录音时模拟按键": "Mô phỏng các phím khi ghi âm",
     "窗口截图": "Ảnh chụp cửa sổ",
     "自动截图": "Ảnh chụp màn hình tự động",
-    "模糊匹配": "Phù hợp mờ"
+    "模糊匹配": "Phù hợp mờ",
+    "相似度": "Tương tự",
+    "编辑距离": "Chỉnh sửa khoảng cách"
 }

@@ -792,5 +792,7 @@
     "录音时模拟按键": "Simulation des touches lors de l'enregistrement",
     "窗口截图": "Capture d'écran de la fenêtre",
     "自动截图": "Capture d'écran automatique",
-    "模糊匹配": "Correspondance floue"
+    "模糊匹配": "Correspondance floue",
+    "相似度": "Similarité",
+    "编辑距离": "Modifier la distance"
 }
