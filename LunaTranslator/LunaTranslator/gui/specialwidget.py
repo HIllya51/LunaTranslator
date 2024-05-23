@@ -106,6 +106,8 @@ class chartwidget(QWidget):
                 points.append((int(x_coord), int(y_coord)))
 
             # 绘制折线
+            rects = []
+            texth = self.fmetrics.height()
             for i in range(len(points) - 1):
                 x1, y1 = points[i]
                 x2, y2 = points[i + 1]
@@ -113,9 +115,13 @@ class chartwidget(QWidget):
 
                 if self.data[i + 1][1]:  #!=0
                     text = self.ytext(self.data[i + 1][1])
-                    painter.drawText(
-                        x2 - self.fmetrics.width(text) // 2, y2 - 10, text
-                    )  # value
+                    W = self.fmetrics.width(text)
+                    newrect = QRect(x2 - W // 2, y2 - 10, W, texth)
+                    if any(_.intersected(newrect) for _ in rects):
+                        continue
+                    else:
+                        rects.append(newrect)
+                        painter.drawText(x2 - W // 2, y2 - 10, text)  # value
             lastx2 = -999
             for i, (x, y) in enumerate(points):
                 painter.drawLine(x, ymargin + height, x, ymargin + height + 5)  # 刻度线
