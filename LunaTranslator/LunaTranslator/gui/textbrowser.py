@@ -446,14 +446,14 @@ class Textbrowser(QLabel):
                             guesswidth1 = gw * len(word["orig"])
                             tailx = wwww - guesslinehead
                             pos1 = (
-                                tl1.x(),
+                                tl1.x() + 1,
                                 tl1.y(),
-                                tailx - tl1.x(),
+                                tailx - tl1.x() - 2,
                                 heigth,
                             )
                             xx = int(guesswidth1 - (tailx - tl1.x()))
                             guesslinehead = None
-                            pos2 = tl3.x() - xx, tl3.y(), xx, heigth
+                            pos2 = tl3.x() + 1 - xx, tl3.y(), xx - 2, heigth
                             if (
                                 globalconfig["usesearchword"]
                                 or globalconfig["usecopyword"]
@@ -499,9 +499,9 @@ class Textbrowser(QLabel):
                                 len(word["orig"])
                             )
                             pos1 = (
-                                tl1.x(),
+                                tl1.x() + 1,
                                 tl1.y(),
-                                tl2.x() - tl1.x(),
+                                tl2.x() - tl1.x() - 2,
                                 heigth,
                             )
                             if (
