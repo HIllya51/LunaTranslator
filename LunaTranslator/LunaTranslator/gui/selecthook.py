@@ -821,7 +821,6 @@ class hookselect(closeashidewindow):
             return
 
         if gobject.baseobject.textsource:
-            print(hookcode)
             gobject.baseobject.textsource.inserthook(hookcode)
             self.tabwidget.setCurrentIndex(1)
         else:
@@ -897,7 +896,6 @@ class hookselect(closeashidewindow):
             if select:
                 gobject.baseobject.textsource.selectedhook.append(key)
 
-                print(key)
                 if key[-2][:8] == "UserHook":
                     needinserthookcode = savehook_new_data[
                         gobject.baseobject.textsource.pname

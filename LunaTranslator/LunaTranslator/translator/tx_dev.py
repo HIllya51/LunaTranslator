@@ -29,8 +29,10 @@ class TS(basetransdev):
         else:
             tgtidx = 1
         self.Runtime_evaluate(
-            """document.querySelector('div.textpanel-tool.tool-close').click();
-            document.querySelector("#language-button-group-source > div.language-button-dropdown.language-source > ul > li:nth-child(1) > span").click();
+            'document.querySelector("div.textpanel-tool.tool-close").click()'
+        )
+        self.Runtime_evaluate(
+            """document.querySelector("#language-button-group-source > div.language-button-dropdown.language-source > ul > li:nth-child(1) > span").click();
             document.querySelector("#language-button-group-target > div.language-button-dropdown.language-target > ul > li:nth-child({}) > span");
             document.getElementsByClassName('textinput')[0].value=`{}`;
             document.getElementsByClassName('language-translate-button')[0].click();

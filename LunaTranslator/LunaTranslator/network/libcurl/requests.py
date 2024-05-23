@@ -5,19 +5,12 @@ from network.requests_common import *
 from traceback import print_exc
 
 
-class autostatus:
-    def __init__(self, ref) -> None:
-        self.ref = ref
-        ref._status = 1
-
-    def __del__(self):
-        self.ref._status = 0
-
-
 class Response(ResponseBase):
     def __init__(self):
         super().__init__()
         self.last_error = 0
+        self.keeprefs = []
+        self.queue = queue.Queue()
 
     def iter_content_impl(self, chunk_size=1):
 
@@ -61,15 +54,6 @@ def ExceptionFilter(func):
 
 
 class Session(Sessionbase):
-
-    def __init__(self) -> None:
-        super().__init__()
-        self._status = 0
-        self.curl = AutoCURLHandle(curl_easy_init())
-        curl_easy_setopt(self.curl, CURLoption.CURLOPT_COOKIEJAR, "")
-        curl_easy_setopt(
-            self.curl, CURLoption.CURLOPT_USERAGENT, self.UA.encode("utf8")
-        )
 
     def raise_for_status(self):
         if self.last_error:
@@ -120,18 +104,14 @@ class Session(Sessionbase):
         verify,
         timeout,
     ):
-
-        if self._status == 0:
-            curl = self.curl
-            __ = autostatus(self)
+        curl = AutoCURLHandle(curl_easy_init())
+        curl_easy_setopt(curl, CURLoption.CURLOPT_COOKIEJAR, "")
+        curl_easy_setopt(curl, CURLoption.CURLOPT_USERAGENT, self.UA.encode("utf8"))
+        if cookies:
+            cookies.update(self.cookies)
         else:
-            # 不能多线程同时复用同一个curl对象
-            curl = AutoCURLHandle(curl_easy_duphandle(self.curl))
-            if cookies:
-                cookies.update(self.cookies)
-            else:
-                cookies = self.cookies
-        curl_easy_reset(curl)
+            cookies = self.cookies
+
         if cookies:
             cookie = self._parsecookie(cookies)
             curl_easy_setopt(curl, CURLoption.CURLOPT_COOKIE, cookie.encode("utf8"))
@@ -171,7 +151,7 @@ class Session(Sessionbase):
             curl_easy_setopt(curl, CURLoption.CURLOPT_POSTFIELDSIZE, datalen)
 
         resp = Response()
-
+        resp.keeprefs.append(curl)
         if stream:
 
             def WriteMemoryCallback(queue, contents, size, nmemb, userp):
@@ -181,25 +161,23 @@ class Session(Sessionbase):
 
             _content = []
             _headers = []
-            resp.queue = queue.Queue()
             headerqueue = queue.Queue()
-            resp.keepref1 = WRITEFUNCTION(
-                functools.partial(WriteMemoryCallback, resp.queue)
-            )
-            resp.keepref2 = WRITEFUNCTION(
+            keepref1 = WRITEFUNCTION(functools.partial(WriteMemoryCallback, resp.queue))
+            keepref2 = WRITEFUNCTION(
                 functools.partial(WriteMemoryCallback, headerqueue)
             )
             curl_easy_setopt(
                 curl,
                 CURLoption.CURLOPT_WRITEFUNCTION,
-                cast(resp.keepref1, c_void_p).value,
+                cast(keepref1, c_void_p).value,
             )
 
             curl_easy_setopt(
                 curl,
                 CURLoption.CURLOPT_HEADERFUNCTION,
-                cast(resp.keepref2, c_void_p).value,
+                cast(keepref2, c_void_p).value,
             )
+            resp.keeprefs += [keepref1, keepref2]
 
             def ___perform():
                 error = False
@@ -250,29 +228,25 @@ class Session(Sessionbase):
 
             _content = []
             _headers = []
-            resp.keepref1 = WRITEFUNCTION(
-                functools.partial(WriteMemoryCallback, _content)
-            )
-            resp.keepref2 = WRITEFUNCTION(
-                functools.partial(WriteMemoryCallback, _headers)
-            )
+            keepref1 = WRITEFUNCTION(functools.partial(WriteMemoryCallback, _content))
+            keepref2 = WRITEFUNCTION(functools.partial(WriteMemoryCallback, _headers))
 
             curl_easy_setopt(
                 curl,
                 CURLoption.CURLOPT_WRITEFUNCTION,
-                cast(resp.keepref1, c_void_p).value,
+                cast(keepref1, c_void_p).value,
             )
             curl_easy_setopt(
                 curl,
                 CURLoption.CURLOPT_HEADERFUNCTION,
-                cast(resp.keepref2, c_void_p).value,
+                cast(keepref2, c_void_p).value,
             )
-
+            resp.keeprefs += [keepref1, keepref2]
             self._perform(curl)
             resp.content = b"".join(_content)
             resp.headers = self._update_header_cookie(b"".join(_headers).decode("utf8"))
             resp.status_code = self._getStatusCode(curl)
-            
+
         resp.last_error = self.last_error
         resp.cookies = self.cookies
         return resp

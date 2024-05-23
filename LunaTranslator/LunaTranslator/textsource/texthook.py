@@ -234,8 +234,6 @@ class texthook(basetext):
             dll = os.path.abspath(
                 "./files/plugins/LunaHook/LunaHook{}.dll".format(arch)
             )
-            print(injecter, os.path.exists(injecter))
-            print(dll, os.path.exists(dll))
             # subprocess.Popen('"{}" dllinject {} "{}"'.format(injecter,pid,dll))
             injectdll(injectpids, injecter, dll)
 

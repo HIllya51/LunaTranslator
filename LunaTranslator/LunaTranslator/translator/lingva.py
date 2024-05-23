@@ -21,11 +21,7 @@ class TS(basetrans):
     # self.url=self.config['host']+'_next/data/{}/%s/%s/%s.json'.format(_id)
     def translate(self, content):
         # print(self.url%(self.srclang,self.tgtlang,urllib.parse.quote(content)))
-        print(
-            "https://"
-            + self.config["host"]
-            + "/api/v1/%s/%s/%s" % (self.srclang, self.tgtlang, quote_plus(content))
-        )
+        
         x = self.session.get(
             "https://"
             + self.config["host"]

@@ -5,9 +5,11 @@ class TS(basetransdev):
     target_url = "https://fanyi.youdao.com/"
 
     def translate(self, content):
-
         self.Runtime_evaluate(
-            '(a=document.querySelector("#TextTranslate > div.source > a"))?a.click():"";i=document.querySelector("#js_fanyi_input");i.innerText=`{}`;event = new Event("input", {{bubbles: true, cancelable: true }});i.dispatchEvent(event);'.format(
+            'document.querySelector("#TextTranslate > div.source > div.text-translate-top-right > a").click()'
+        )
+        self.Runtime_evaluate(
+            'i=document.querySelector("#js_fanyi_input");i.innerText=`{}`;event = new Event("input", {{bubbles: true, cancelable: true }});i.dispatchEvent(event);'.format(
                 content
             )
         )
