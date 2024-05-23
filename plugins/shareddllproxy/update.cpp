@@ -29,7 +29,7 @@ int updatewmain(int argc, wchar_t *argv[])
     }
     catch (std::exception &e)
     {
-        MessageBoxW(GetForegroundWindow(), (StringToWideString(e.what()) + L"\r\nUpdate failed, maybe you should download again to fix errors").c_str(), L"Error", 0);
+        MessageBoxW(GetForegroundWindow(), (StringToWideString(e.what(),CP_ACP) + L"\r\nUpdate failed, maybe you should download again to fix errors").c_str(), L"Error", 0);
         ShellExecute(0, L"open", L"https://github.com/HIllya51/LunaTranslator/releases", NULL, NULL, SW_SHOWNORMAL);
     }
     return 0;
