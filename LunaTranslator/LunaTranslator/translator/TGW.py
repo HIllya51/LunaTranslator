@@ -164,13 +164,25 @@ class TS(basetrans):
                 history_prompt = self.get_history("zh")
                 payload = self.make_request_stream(context, history_zh=history_prompt)
 
-            response = requests.post(url, timeout=self.timeout, json=payload, stream=True)
-            if response.status_code == 200:
-                for line in response.iter_lines():
-                    if line:
-                        if line.startswith(b"data: "):
-                            line = line[len(b"data: "):]
-                        payload = json.loads(line)
-                        chunk = payload['choices'][0]['delta']['content']
-                        yield chunk
+            try:
+                response = requests.post(url, timeout=self.timeout, json=payload, stream=True)
+                if response.status_code == 200:
+                    for line in response.iter_lines():
+                        if line:
+                            if line.startswith(b"data: "):
+                                line = line[len(b"data: "):]
+                            payload = json.loads(line)
+                            chunk = payload['choices'][0]['delta']['content']
+                            yield chunk
+
+                else:
+                    raise ValueError(f"API无响应")
+            except requests.Timeout as e:
+                raise ValueError(
+                    f"连接到TGW超时：{self.api_url}，当前最大连接时间为: {self.timeout}，请尝试修改参数。"
+                )
+
+            except Exception as e:
+                print(e)
+                raise ValueError(f"无法连接到TGW:{e}")
 
