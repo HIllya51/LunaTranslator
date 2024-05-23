@@ -4,6 +4,7 @@ int updatewmain(int argc, wchar_t *argv[])
 {
     if (argc <= 1)
         return 0;
+    SetProcessDPIAware();
     AutoHandle hMutex = CreateMutex(NULL, FALSE, L"LUNA_UPDATER_SINGLE");
 
     if (GetLastError() == ERROR_ALREADY_EXISTS)
@@ -29,7 +30,7 @@ int updatewmain(int argc, wchar_t *argv[])
     }
     catch (std::exception &e)
     {
-        MessageBoxW(GetForegroundWindow(), (StringToWideString(e.what(),CP_ACP) + L"\r\nUpdate failed, maybe you should download again to fix errors").c_str(), L"Error", 0);
+        MessageBoxA(GetForegroundWindow(), (std::string("Update failed!\r\n") + e.what()).c_str(), "Error", 0);
         ShellExecute(0, L"open", L"https://github.com/HIllya51/LunaTranslator/releases", NULL, NULL, SW_SHOWNORMAL);
     }
     return 0;

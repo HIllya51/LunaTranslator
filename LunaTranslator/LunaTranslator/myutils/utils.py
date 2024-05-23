@@ -11,6 +11,7 @@ import time
 from PyQt5.QtWidgets import (
     QApplication,
 )
+from PyQt5.QtGui import QImageWriter
 from traceback import print_exc
 from myutils.config import (
     globalconfig,
@@ -25,6 +26,18 @@ import threading
 import re, heapq, winsharedutils
 from myutils.vndb import searchfordata, getvidbytitle
 from myutils.wrapper import tryprint
+
+
+def getimageformatlist():
+    _ = [_.data().decode() for _ in QImageWriter.supportedImageFormats()]
+    if globalconfig["imageformat"] == -1 or globalconfig["imageformat"] >= len(_):
+        globalconfig["imageformat"] = _.index("png")
+    return _
+
+
+def getimageformat():
+
+    return getimageformatlist()[globalconfig["imageformat"]]
 
 
 class PriorityQueue:

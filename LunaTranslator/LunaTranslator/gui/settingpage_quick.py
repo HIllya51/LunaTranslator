@@ -8,6 +8,7 @@ import winsharedutils
 import gobject, windows
 from gui.usefulwidget import getsimpleswitch
 from myutils.hwnd import grabwindow
+from myutils.utils import getimageformat
 
 
 def setTab_quick_direct(self):
@@ -38,10 +39,9 @@ def setTab_quick_direct(self):
         "_18": lambda: gobject.baseobject.settin_ui.fontbigsmallsignal.emit(1),
         "_19": lambda: gobject.baseobject.settin_ui.fontbigsmallsignal.emit(-1),
         "_20": gobject.baseobject.translation_ui.fullsgame_signal.emit,
-        "_21": lambda: grabwindow(),
+        "_21": lambda: grabwindow(getimageformat()),
         "_22": gobject.baseobject.translation_ui.muteprocessignal.emit,
         "_23": lambda: gobject.baseobject.translation_ui.clickRange_signal.emit(True),
-        
         "_25": lambda: windows.SendMessage(
             windows.FindWindow("WNDCLS_Magpie_Core_CLI_Message", None),
             windows.RegisterWindowMessage("Magpie_Core_CLI_Message_ToggleOverlay"),

@@ -2,25 +2,25 @@ import windows
 import threading
 from PyQt5.QtGui import QPixmap, QColor, QIcon
 from PyQt5.QtWidgets import QApplication
-import gobject, ctypes
+import gobject
 import os, subprocess
 import time, winrtutils, winsharedutils, hashlib
 from myutils.wrapper import threader
 
 
 @threader
-def grabwindow(callback=None):
+def grabwindow(app, callback=None):
     if callback:
         fnamebase = "cache/temp"
     else:
-        fnamebase = "./cache/screenshot/{}".format(0)
-    try:
-        if gobject.baseobject.textsource.md5 != "0":
-            fnamebase = "./cache/screenshot/{}".format(
-                gobject.baseobject.textsource.basename
-            )
-    except:
-        pass
+        fnamebase = "cache/screenshot/{}".format(0)
+        try:
+            if gobject.baseobject.textsource.md5 != "0":
+                fnamebase = "cache/screenshot/{}".format(
+                    gobject.baseobject.textsource.basename
+                )
+        except:
+            pass
     if os.path.exists(fnamebase) == False:
         os.mkdir(fnamebase)
     fname = "{}/{}".format(
@@ -34,9 +34,9 @@ def grabwindow(callback=None):
 
         @threader
         def _():
-            winrtutils._winrt_capture_window(fname + "_winrt_magpie.png", hwnd)
-            if callback and os.path.exists(fname + "_winrt_magpie.png"):
-                callback(os.path.abspath(fname + "_winrt_magpie.png"))
+            winrtutils._winrt_capture_window(fname + "_winrt_magpie." + app, hwnd)
+            if callback and os.path.exists(fname + "_winrt_magpie." + app):
+                callback(os.path.abspath(fname + "_winrt_magpie." + app))
 
         _()
     hwnd = windows.FindWindow("LosslessScaling", None)
@@ -44,9 +44,9 @@ def grabwindow(callback=None):
 
         @threader
         def _():
-            winrtutils._winrt_capture_window(fname + "_winrt_lossless.png", hwnd)
-            if callback and os.path.exists(fname + "_winrt_lossless.png"):
-                callback(os.path.abspath(fname + "_winrt_lossless.png"))
+            winrtutils._winrt_capture_window(fname + "_winrt_lossless." + app, hwnd)
+            if callback and os.path.exists(fname + "_winrt_lossless." + app):
+                callback(os.path.abspath(fname + "_winrt_lossless." + app))
 
         _()
     try:
@@ -60,9 +60,9 @@ def grabwindow(callback=None):
     p = QApplication.primaryScreen().grabWindow(hwnd, 0, 0, w, h)
     p = p.toImage().copy(0, 0, w, h)
     if not p.allGray():
-        p.save(fname + "_gdi.png")
-        if callback and os.path.exists(fname + "_gdi.png"):
-            callback(os.path.abspath(fname + "_gdi.png"))
+        p.save(fname + "_gdi." + app)
+        if callback and os.path.exists(fname + "_gdi." + app):
+            callback(os.path.abspath(fname + "_gdi." + app))
 
     if not callback:
 
@@ -72,9 +72,9 @@ def grabwindow(callback=None):
 
     @threader
     def _():
-        winrtutils._winrt_capture_window(fname + "_winrt.png", hwnd)
-        if callback and os.path.exists(fname + "_winrt.png"):
-            callback(os.path.abspath(fname + "_winrt.png"))
+        winrtutils._winrt_capture_window(fname + "_winrt." + app, hwnd)
+        if callback and os.path.exists(fname + "_winrt." + app):
+            callback(os.path.abspath(fname + "_winrt." + app))
 
     if p.allGray() or (not callback):
         _()

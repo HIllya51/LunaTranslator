@@ -196,6 +196,7 @@
         },
         "autocrop": false
     },
+    "imageformat": -1,
     "ankiwindow": [
         100,
         100,

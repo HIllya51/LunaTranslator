@@ -1,11 +1,11 @@
 from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QPixmap, QImage, QPainter
+from PyQt5.QtGui import QPixmap, QImage
 from PyQt5.QtWidgets import QWidget, QLabel, QProgressBar
 from gui.usefulwidget import getsimpleswitch, getsimplecombobox
 from myutils.config import globalconfig, _TR, static_data
 from myutils.wrapper import threader
 import platform, winsharedutils, sys
-from myutils.utils import makehtml
+from myutils.utils import makehtml, getimageformatlist
 from functools import partial
 from myutils.githubupdate import updatemethod, getvesionmethod
 
@@ -36,7 +36,9 @@ def getversion(self):
             )
         )
     )
-    if _version is not None and version < tuple(int(_) for _ in _version[1:].split(".")):
+    if _version is not None and version < tuple(
+        int(_) for _ in _version[1:].split(".")
+    ):
         if globalconfig["autoupdate"]:
             updatemethod(_version, self.progresssignal.emit)
 
@@ -100,7 +102,6 @@ def resourcegrid(self):
 
 
 def setTab_aboutlazy(self):
-
     grid2 = [
         [
             ("自动下载更新(需要连接github)", 5),
@@ -119,6 +120,8 @@ def setTab_aboutlazy(self):
         [(getsimplecombobox(["winhttp", "libcurl"], globalconfig, "network"), 5)],
         [("WebView", 5)],
         [(getsimplecombobox(["IEFrame", "WebView2"], globalconfig, "usewebview"), 5)],
+        [("截图保存格式", 5)],
+        [(getsimplecombobox(getimageformatlist(), globalconfig, "imageformat"), 5)],
     ]
 
     shuominggrid = [
@@ -132,7 +135,11 @@ def setTab_aboutlazy(self):
         ],
         [
             "使用说明",
-            (makehtml("https://hillya51.github.io/LunaTranslator_tutorial/#/zh/"), 3, "link"),
+            (
+                makehtml("https://hillya51.github.io/LunaTranslator_tutorial/#/zh/"),
+                3,
+                "link",
+            ),
         ],
     ]
     if globalconfig["languageuse"] == 0:

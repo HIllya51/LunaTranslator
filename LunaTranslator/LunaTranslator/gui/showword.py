@@ -17,12 +17,13 @@ from PyQt5.QtWidgets import (
 from myutils.hwnd import grabwindow
 
 from urllib.parse import quote
-from PyQt5.QtGui import QPixmap, QImage
+from PyQt5.QtGui import QPixmap, QImage, QImageWriter
 from traceback import print_exc
 import requests, json, time
 from PyQt5.QtCore import pyqtSignal, Qt
-import qtawesome, functools, os, base64, winsharedutils
-import gobject, uuid, windows, platform
+import qtawesome, functools, os, base64
+import gobject, uuid, windows
+from myutils.utils import getimageformat
 from myutils.config import globalconfig, _TR, static_data
 import myutils.ankiconnect as anki
 from gui.usefulwidget import (
@@ -33,6 +34,7 @@ from gui.usefulwidget import (
     getspinbox,
     getlineedit,
     getsimpleswitch,
+    getsimplecombobox,
     getcolorbutton,
     tabadd_lazy,
 )
@@ -116,7 +118,6 @@ class autoremovelineedit(QLineEdit):
         if os.path.exists(last) and os.path.isfile(last):
             norm_dir1 = os.path.normpath(last)
             norm_dir2 = os.path.normpath(os.path.abspath("./cache"))
-            print(norm_dir1, norm_dir2)
             if norm_dir1.startswith(norm_dir2):
                 os.remove(last)
 
@@ -162,7 +163,7 @@ class AnkiWindow(QWidget):
             img = imageCut(
                 0, rect[0][0], rect[0][1], rect[1][0], rect[1][1], False, True
             )
-            fname = "cache/temp/" + str(uuid.uuid4()) + ".png"
+            fname = "cache/temp/" + str(uuid.uuid4()) + "." + getimageformat()
             os.makedirs("cache/temp", exist_ok=True)
             img.save(fname)
             self.editpath.setText(os.path.abspath(fname))
@@ -861,7 +862,10 @@ class searchwordW(closeashidewindow):
             self.ankiwindow.langdu2()
 
         if globalconfig["ankiconnect"]["autocrop"]:
-            grabwindow(self.ankiwindow.editpath.setText)
+            grabwindow(
+                getimageformat(),
+                self.ankiwindow.editpath.setText,
+            )
 
     def search(self, sentence):
         current = time.time()

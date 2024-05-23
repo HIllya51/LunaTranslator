@@ -15,7 +15,7 @@ import winsharedutils
 from myutils.config import globalconfig, saveallconfig, _TR, static_data
 from myutils.subproc import endsubprocs
 from myutils.ocrutil import ocr_run, imageCut
-from myutils.utils import loadpostsettingwindowmethod
+from myutils.utils import loadpostsettingwindowmethod, getimageformat
 from myutils.hwnd import mouseselectwindow, grabwindow, getExeIcon
 from gui.dialog_savedgame import dialog_savedgame_new
 from gui.dialog_memory import dialog_memory
@@ -424,7 +424,7 @@ class QUnFrameWindow(resizableframeless):
                 ),
             ),
             ("fullscreen", self._fullsgame),
-            ("grabwindow", lambda: grabwindow()),
+            ("grabwindow", lambda: grabwindow(getimageformat())),
             ("muteprocess", self.muteprocessfuntion),
             (
                 "memory",
