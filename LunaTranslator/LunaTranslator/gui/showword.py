@@ -149,8 +149,11 @@ class AnkiWindow(QWidget):
 
     def langdu2(self):
         if gobject.baseobject.reader:
+            example_text = self.example.toPlainText()
+            example_text = example_text.replace("<b>", "")
+            example_text = example_text.replace("</b>", "")
             gobject.baseobject.reader.ttscallback(
-                self.example.toPlainText(),
+                example_text,
                 functools.partial(self.callbacktts, self.audiopath_sentence),
             )
 
