@@ -12,7 +12,11 @@
     html = ''
     if (ruby.length) {
         for (i = 0; i < ruby.length; i++) {
-            html += ruby[i]['orig'] + '<rt>' + ruby[i]['hira'] + '</rt>';
+            html += ruby[i]['orig'];
+            if (ruby[i]['orig'] != ruby[i]['hira'])
+                html += '<rt>' + ruby[i]['hira'] + '</rt>';
+            else
+                html += '<rt></rt>';
         }
         html = '<ruby>' + html + '</ruby>'
         document.getElementById('rubyword').innerHTML = html
@@ -24,7 +28,7 @@
 
 </script>
 
-<div id="example_sentence" class="centerdiv example-div" onclick='playAudio("audio_sentence")'>
+<div id="example_sentence" class="example-div" onclick='playAudio("audio_sentence")'>
     {{example_sentence}}
 </div>
 <div id="image" class="centerdiv">

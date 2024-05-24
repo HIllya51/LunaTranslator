@@ -149,10 +149,15 @@ class QUnFrameWindow(resizableframeless):
 
     def parsehira(self, text):
         hira = []
+
         try:
             if gobject.baseobject.hira_:
-                hira = gobject.baseobject.hira_.parseparse(text)
+                for i, _ in enumerate(text.split("\n")):
 
+                    h = gobject.baseobject.hira_.parseparse(_)
+                    if i:
+                        hira += [{"orig": "\n", "hira": "\n"}]
+                    hira += h
         except:
             print_exc()
         return hira
@@ -171,12 +176,7 @@ class QUnFrameWindow(resizableframeless):
             return
         text = self.cleartext(text)
         if hira:
-            hiras = [self.parsehira(_) for _ in text.split("\n")]
-            hira = []
-            for i, _h in enumerate(hiras):
-                if i:
-                    hira += [{"orig": "\n", "hira": "\n"}]
-                hira += _h
+            hira = self.parsehira(text)
         else:
             hira = []
         self.translate_text.setnextfont(origin)

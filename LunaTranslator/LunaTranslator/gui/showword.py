@@ -294,12 +294,22 @@ class AnkiWindow(QWidget):
 
         remarks = self.remarks.toPlainText()
         example = self.example.toPlainText()
+        if globalconfig["ankiconnect"]["boldword"]:
+            if self.example.hiras is None:
+                self.example.hiras = gobject.baseobject.translation_ui.parsehira(example)
+            collect = []
+            for hira in self.example.hiras:
+                if hira["orig"] == word or hira.get("origorig", None) == word:
+                    collect.append(f'<b>{hira["orig"]}</b>')
+                else:
+                    collect.append(hira["orig"])
+            example = "".join(collect)
         ruby = self.ruby
         fields = {
             "word": word,
             "rubytext": ruby,
             "explain": explain,
-            "example_sentence": example,
+            "example_sentence": example.replace("\n", "<br>"),
             "remarks": remarks,
         }
         return fields
@@ -401,6 +411,10 @@ class AnkiWindow(QWidget):
             _TR("自动截图"),
             getsimpleswitch(globalconfig["ankiconnect"], "autocrop"),
         )
+        layout.addRow(
+            _TR("例句中加粗单词"),
+            getsimpleswitch(globalconfig["ankiconnect"], "boldword"),
+        )
 
         layout.addRow(
             _TR("录音时模拟按键_1"),
@@ -461,6 +475,12 @@ class AnkiWindow(QWidget):
         self.viewimagelabel = QLabel()
         self.editpath.textChanged.connect(self.wrappedpixmap)
         self.example = QPlainTextEdit()
+        self.example.hiras = None
+
+        def __():
+            self.example.hiras = None
+
+        self.example.textChanged.connect(__)
         self.remarks = QPlainTextEdit()
         recordbtn1 = statusbutton(icons=["fa.microphone", "fa.stop"], colors=[""])
         recordbtn1.statuschanged1.connect(

@@ -194,7 +194,8 @@
                 "keycode": 120
             }
         },
-        "autocrop": false
+        "autocrop": false,
+        "boldword": false
     },
     "imageformat": -1,
     "ankiwindow": [
