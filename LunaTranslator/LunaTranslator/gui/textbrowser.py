@@ -78,14 +78,23 @@ class QGraphicsDropShadowEffect_multi(QGraphicsDropShadowEffect):
 
 class BorderedLabel(QLabel):
     def move(self, point: QPoint):
+        self.movedx = 0
+        self.movedy = 0
         text = self.text()
         isarabic = any((ord(char) >= 0x0600 and ord(char) <= 0x06E0) for char in text)
         if isarabic:
-            point.setX(point.x() - self.width())
-
-        point.setX(int(point.x() - self.m_fontOutLineWidth))
-        point.setY(int(point.y() - self.m_fontOutLineWidth))
+            self.movedx -= self.width()
+        self.movedx -= self.m_fontOutLineWidth
+        self.movedy -= self.m_fontOutLineWidth
+        point.setX(int(point.x() + self.movedx))
+        point.setY(int(point.y() + self.movedy))
         super().move(point)
+
+    def pos(self) -> QPoint:
+        p = super().pos()
+        p.setX(int(p.x() - self.movedx))
+        p.setY(int(p.y() - self.movedy))
+        return p
 
     def clearShadow(self):
         self.setGraphicsEffect(None)
@@ -104,6 +113,8 @@ class BorderedLabel(QLabel):
 
     def __init__(self, parent=None):
         super().__init__(parent)
+        self.movedy = 0
+        self.movedx = 0
         self.m_outLineColor = QColor()
         self.m_fontOutLineWidth = 1
         self.m_contentColor = QColor()
@@ -380,6 +391,7 @@ class Textbrowser(QLabel):
             _.move(subpos[i])
             _.show()
             self.iteryinyinglabelsave[iter_context_class][1] += 1
+
         if maxh:
             if maxnewh == 0:
                 maxnewh = maxh2
@@ -387,7 +399,9 @@ class Textbrowser(QLabel):
                 if label.isVisible() == False:
                     continue
                 if label.pos().y() > maxh:
-                    label.move(label.pos().x(), label.pos().y() + maxnewh - maxh)
+                    label.move(
+                        QPoint(label.pos().x(), label.pos().y() + maxnewh - maxh)
+                    )
             for klass in self.iteryinyinglabelsave:
                 if klass == iter_context_class:
                     continue
@@ -395,7 +409,9 @@ class Textbrowser(QLabel):
                     if label.isVisible() == False:
                         continue
                     if label.pos().y() > maxh:
-                        label.move(label.pos().x(), label.pos().y() + maxnewh - maxh)
+                        label.move(
+                            QPoint(label.pos().x(), label.pos().y() + maxnewh - maxh)
+                        )
 
     def showyinyingtext(self, b1, b2, color):
         linei = self.yinyingposline
