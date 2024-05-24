@@ -149,8 +149,11 @@ class AnkiWindow(QWidget):
 
     def langdu2(self):
         if gobject.baseobject.reader:
+            example_text = self.example.toPlainText()
+            example_text = example_text.replace("<b>", "")
+            example_text = example_text.replace("</b>", "")
             gobject.baseobject.reader.ttscallback(
-                self.example.toPlainText(),
+                example_text,
                 functools.partial(self.callbacktts, self.audiopath_sentence),
             )
 
@@ -737,7 +740,7 @@ class selectviewer(QWidget):
 
 
 class searchwordW(closeashidewindow):
-    getnewsentencesignal = pyqtSignal(str, bool)
+    getnewsentencesignal = pyqtSignal(str, str, bool)
     showtabsignal = pyqtSignal(float, str, str)
 
     def __init__(self, parent):
@@ -846,16 +849,19 @@ class searchwordW(closeashidewindow):
             res.insert(idx, {"source": k, "content": v})
         return res
 
-    def getnewsentence(self, sentence, append):
+    def getnewsentence(self, sentence, sentence_trans, append):
         sentence = sentence.strip()
+        sentence_trans = sentence_trans.strip()
         self.showNormal()
         if append:
             sentence = self.searchtext.text() + sentence
         self.searchtext.setText(sentence)
 
         self.search(sentence)
-
-        self.ankiwindow.example.setPlainText(gobject.baseobject.currenttext)
+        example_text = gobject.baseobject.currenttext
+        if sentence_trans in example_text:
+            example_text = example_text.replace(sentence_trans, f"<b>{sentence_trans}</b>")
+        self.ankiwindow.example.setPlainText(example_text)
         if globalconfig["ankiconnect"]["autoruntts"]:
             self.ankiwindow.langdu()
         if globalconfig["ankiconnect"]["autoruntts2"]:
