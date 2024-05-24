@@ -186,10 +186,13 @@ def transferMsTTSData(rate, content, voice):
                 # Extract binary data
                 try:
                     needle = b"Path:audio\r\n"
-                    start_ind = response.find(needle) + len(needle)
+                    idx = response.find(needle)
+                    if idx == -1:
+                        raise
+                    start_ind = idx + len(needle)
                     audio_stream += response[start_ind:]
                 except:
-                    pass
+                    audio_stream += response
         else:
             break
     ws.close()

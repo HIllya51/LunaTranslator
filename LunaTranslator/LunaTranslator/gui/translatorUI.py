@@ -954,7 +954,7 @@ class QUnFrameWindow(resizableframeless):
         wh = globalconfig["buttonsize"] * 1.5
         height = self.height() - wh
 
-        self.translate_text.resize(self.width(), height)
+        self.translate_text.resize(self.width(), int(height))
         self.adjustbuttons()
         self._TitleLabel.setFixedWidth(self.width())
 
@@ -1000,7 +1000,7 @@ class QUnFrameWindow(resizableframeless):
             sumwidth += button.width()
         leftstart = leftmax + (rightmax - leftmax - sumwidth) / 2
         for button in center:
-            button.move(leftstart, 0)
+            button.move(int(leftstart), 0)
             leftstart += button.width()
 
     def callwrap(self, call, _):
