@@ -2643,7 +2643,7 @@ function onclickbtn_mdict_internal(_id) {
         {''.join(btns)}
         </div>
     </div>
-    <div class="centerdiv_mdict_internal">
+    <div>
         <div class="tab-content_mdict_internal" id="tab_contents_mdict_internal">
             {''.join(contents)}
         </div>
