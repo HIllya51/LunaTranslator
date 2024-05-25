@@ -42,7 +42,7 @@ class TS(basetrans):
         if globalconfig["premtsimiuse"]:
             maxsim = 0
             for jc in self.json:
-                dis = winsharedutils.distance(content, jc)
+                dis = winsharedutils.distance_ratio(content, jc)
                 if dis > maxsim:
                     maxsim = dis
                     if maxsim * 100 >= globalconfig["premtsimi2"]:
