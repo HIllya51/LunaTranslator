@@ -2,13 +2,12 @@ import functools
 from myutils.config import globalconfig, static_data, _TR
 from myutils.winsyshotkey import SystemHotkey, registerException
 from PyQt5.QtGui import QKeySequence
-from PyQt5.QtCore import pyqtSignal
-from PyQt5.QtWidgets import QKeySequenceEdit, QLabel
 import winsharedutils
 import gobject, windows
-from gui.usefulwidget import getsimpleswitch
+from PyQt5.QtWidgets import QLabel
+from gui.usefulwidget import getsimpleswitch, getsimplekeyseq
 from myutils.hwnd import grabwindow
-from myutils.utils import getimageformat
+from myutils.utils import getimageformat, parsekeystringtomodvkcode, unsupportkey
 
 
 def setTab_quick_direct(self):
@@ -62,21 +61,6 @@ def setTab_quick(self):
     self.tabadd_lazy(self.tab_widget, ("快捷按键"), lambda: setTab_quick_lazy(self))
 
 
-class CustomKeySequenceEdit(QKeySequenceEdit):
-    changeedvent = pyqtSignal(str)
-
-    def __init__(self, parent=None):
-        super(CustomKeySequenceEdit, self).__init__(parent)
-
-    def keyPressEvent(self, QKeyEvent):
-        super(CustomKeySequenceEdit, self).keyPressEvent(QKeyEvent)
-        value = self.keySequence()
-        if len(value.toString()):
-            self.clearFocus()
-        self.changeedvent.emit(value.toString().replace("Meta", "Win"))
-        self.setKeySequence(QKeySequence(value))
-
-
 def setTab_quick_lazy(self):
 
     grids = [
@@ -93,10 +77,6 @@ def setTab_quick_lazy(self):
     for name in globalconfig["quick_setting"]["all"]:
         if name not in self.bindfunctions:
             continue
-        key1 = CustomKeySequenceEdit(
-            QKeySequence(globalconfig["quick_setting"]["all"][name]["keystring"])
-        )
-        key1.changeedvent.connect(functools.partial(__changekeynew, self, name))
 
         grids.append(
             [
@@ -106,7 +86,14 @@ def setTab_quick_lazy(self):
                     "use",
                     callback=functools.partial(fanyiselect, self, name),
                 ),
-                (key1, 2),
+                (
+                    getsimplekeyseq(
+                        globalconfig["quick_setting"]["all"][name],
+                        "keystring",
+                        functools.partial(regist_or_not_key, self, name),
+                    ),
+                    2,
+                ),
                 (self.referlabels[name], 4),
             ]
         )
@@ -125,40 +112,6 @@ def __enable(self, x):
 
 def fanyiselect(self, who, checked):
     regist_or_not_key(self, who)
-
-
-class unsupportkey(Exception):
-    pass
-
-
-def parsekeystringtomodvkcode(keystring):
-    keys = []
-    mode = 0
-    if keystring[-1] == "+":
-        keys += ["+"]
-        keystring = keystring[:-2]
-    ksl = keystring.split("+")
-    ksl = ksl + keys
-    unsupports = []
-    if ksl[-1].upper() in static_data["vkcode_map"]:
-        vkcode = static_data["vkcode_map"][ksl[-1].upper()]
-    else:
-        unsupports.append(ksl[-1])
-
-    for k in ksl[:-1]:
-        if k.upper() in static_data["mod_map"]:
-            mode = mode | static_data["mod_map"][k.upper()]
-        else:
-            unsupports.append(k)
-    if len(unsupports):
-        raise unsupportkey(unsupports)
-    return mode, vkcode
-
-
-def __changekeynew(self, name, keystring):
-    globalconfig["quick_setting"]["all"][name]["keystring"] = keystring
-
-    regist_or_not_key(self, name)
 
 
 def regist_or_not_key(self, name):

@@ -187,11 +187,11 @@
         "simulate_key": {
             "1": {
                 "use": false,
-                "keycode": 120
+                "keystring": ""
             },
             "2": {
                 "use": false,
-                "keycode": 120
+                "keystring": ""
             }
         },
         "autocrop": false,

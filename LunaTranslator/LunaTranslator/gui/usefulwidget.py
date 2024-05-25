@@ -11,7 +11,10 @@ from PyQt5.QtWidgets import (
     QWidget,
     QLayout,
 )
+from PyQt5.QtCore import pyqtSignal
+from PyQt5.QtWidgets import QKeySequenceEdit, QLabel
 from PyQt5.QtGui import QFontDatabase
+from PyQt5.QtGui import QKeySequence
 
 from webviewpy import (
     webview_native_handle_kind_t,
@@ -624,6 +627,32 @@ class mshtmlWidget(QWidget):
         )
         return html
 
+
+class CustomKeySequenceEdit(QKeySequenceEdit):
+    changeedvent = pyqtSignal(str)
+
+    def __init__(self, parent=None):
+        super(CustomKeySequenceEdit, self).__init__(parent)
+
+    def keyPressEvent(self, QKeyEvent):
+        super(CustomKeySequenceEdit, self).keyPressEvent(QKeyEvent)
+        value = self.keySequence()
+        if len(value.toString()):
+            self.clearFocus()
+        self.changeedvent.emit(value.toString().replace("Meta", "Win"))
+        self.setKeySequence(QKeySequence(value))
+
+
+def getsimplekeyseq(dic, key, callback=None):
+    key1 = CustomKeySequenceEdit(QKeySequence(dic[key]))
+
+    def __(_d, _k, cb, s):
+        _d[_k] = s
+        if cb:
+            cb()
+
+    key1.changeedvent.connect(functools.partial(__, dic, key, callback))
+    return key1
 
 class auto_select_webview(QWidget):
     on_load = pyqtSignal(str)

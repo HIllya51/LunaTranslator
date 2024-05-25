@@ -1002,6 +1002,8 @@ class QUnFrameWindow(resizableframeless):
         for button in center:
             button.move(int(leftstart), 0)
             leftstart += button.width()
+        for button in self.showbuttons:
+            button.show()
 
     def callwrap(self, call, _):
         try:

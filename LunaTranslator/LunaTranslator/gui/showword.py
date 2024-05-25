@@ -17,13 +17,13 @@ from PyQt5.QtWidgets import (
 from myutils.hwnd import grabwindow
 
 from urllib.parse import quote
-from PyQt5.QtGui import QPixmap, QImage, QImageWriter
+from PyQt5.QtGui import QPixmap, QImage
 from traceback import print_exc
 import requests, json, time
 from PyQt5.QtCore import pyqtSignal, Qt
 import qtawesome, functools, os, base64
 import gobject, uuid, windows
-from myutils.utils import getimageformat
+from myutils.utils import getimageformat, parsekeystringtomodvkcode, unsupportkey
 from myutils.config import globalconfig, _TR, static_data
 import myutils.ankiconnect as anki
 from gui.usefulwidget import (
@@ -34,7 +34,7 @@ from gui.usefulwidget import (
     getspinbox,
     getlineedit,
     getsimpleswitch,
-    getsimplecombobox,
+    getsimplekeyseq,
     getcolorbutton,
     tabadd_lazy,
 )
@@ -296,7 +296,9 @@ class AnkiWindow(QWidget):
         example = self.example.toPlainText()
         if globalconfig["ankiconnect"]["boldword"]:
             if self.example.hiras is None:
-                self.example.hiras = gobject.baseobject.translation_ui.parsehira(example)
+                self.example.hiras = gobject.baseobject.translation_ui.parsehira(
+                    example
+                )
             collect = []
             for hira in self.example.hiras:
                 if hira["orig"] == word or hira.get("origorig", None) == word:
@@ -400,11 +402,11 @@ class AnkiWindow(QWidget):
         )
 
         layout.addRow(
-            _TR("自动TTS_1"),
+            _TR("自动TTS"),
             getsimpleswitch(globalconfig["ankiconnect"], "autoruntts"),
         )
         layout.addRow(
-            _TR("自动TTS_2"),
+            _TR("自动TTS_例句"),
             getsimpleswitch(globalconfig["ankiconnect"], "autoruntts2"),
         )
         layout.addRow(
@@ -417,23 +419,33 @@ class AnkiWindow(QWidget):
         )
 
         layout.addRow(
-            _TR("录音时模拟按键_1"),
-            getsimpleswitch(globalconfig["ankiconnect"]["simulate_key"]["1"], "use"),
-        )
-        layout.addRow(
-            _TR("录音时模拟按键_1_VirtualKeyCode"),
-            getspinbox(
-                0, 9999, globalconfig["ankiconnect"]["simulate_key"]["1"], "keycode"
+            _TR("录音时模拟按键"),
+            getboxlayout(
+                [
+                    getsimpleswitch(
+                        globalconfig["ankiconnect"]["simulate_key"]["1"], "use"
+                    ),
+                    getsimplekeyseq(
+                        globalconfig["ankiconnect"]["simulate_key"]["1"], "keystring"
+                    ),
+                ],
+                margin0=True,
+                makewidget=True,
             ),
         )
         layout.addRow(
-            _TR("录音时模拟按键_2"),
-            getsimpleswitch(globalconfig["ankiconnect"]["simulate_key"]["2"], "use"),
-        )
-        layout.addRow(
-            _TR("录音时模拟按键_2_VirtualKeyCode"),
-            getspinbox(
-                0, 9999, globalconfig["ankiconnect"]["simulate_key"]["2"], "keycode"
+            _TR("录音时模拟按键_例句"),
+            getboxlayout(
+                [
+                    getsimpleswitch(
+                        globalconfig["ankiconnect"]["simulate_key"]["2"], "use"
+                    ),
+                    getsimplekeyseq(
+                        globalconfig["ankiconnect"]["simulate_key"]["2"], "keystring"
+                    ),
+                ],
+                margin0=True,
+                makewidget=True,
             ),
         )
         return wid
@@ -444,9 +456,20 @@ class AnkiWindow(QWidget):
             return
         windows.SetForegroundWindow(gobject.baseobject.textsource.hwnd)
         time.sleep(0.1)
-        key = globalconfig["ankiconnect"]["simulate_key"][i]["keycode"]
-        windows.keybd_event(key, 0, 0, 0)
-        windows.keybd_event(key, 0, windows.KEYEVENTF_KEYUP, 0)
+        try:
+            modes, vkcode = parsekeystringtomodvkcode(
+                globalconfig["ankiconnect"]["simulate_key"][i]["keystring"], modes=True
+            )
+        except unsupportkey as e:
+            print("不支持的键")
+            return
+        for mode in modes:
+            windows.keybd_event(mode, 0, 0, 0)
+        windows.keybd_event(vkcode, 0, 0, 0)
+        time.sleep(0.1)
+        windows.keybd_event(vkcode, 0, windows.KEYEVENTF_KEYUP, 0)
+        for mode in modes:
+            windows.keybd_event(mode, 0, windows.KEYEVENTF_KEYUP, 0)
 
     def startorendrecord(self, i, target: QLineEdit, idx):
         if idx == 1:

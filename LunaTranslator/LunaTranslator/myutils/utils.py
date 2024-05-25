@@ -594,3 +594,35 @@ def loadpostsettingwindowmethod(name):
         return tryprint(Process.get_setting_window)
     except:
         return None
+
+
+class unsupportkey(Exception):
+    pass
+
+
+def parsekeystringtomodvkcode(keystring, modes=False):
+    keys = []
+    mode = 0
+    _modes = []
+    if keystring[-1] == "+":
+        keys += ["+"]
+        keystring = keystring[:-2]
+    ksl = keystring.split("+")
+    ksl = ksl + keys
+    unsupports = []
+    if ksl[-1].upper() in static_data["vkcode_map"]:
+        vkcode = static_data["vkcode_map"][ksl[-1].upper()]
+    else:
+        unsupports.append(ksl[-1])
+
+    for k in ksl[:-1]:
+        if k.upper() in static_data["mod_map"]:
+            mode = mode | static_data["mod_map"][k.upper()]
+            _modes.append(static_data["mod_map"][k.upper()])
+        else:
+            unsupports.append(k)
+    if len(unsupports):
+        raise unsupportkey(unsupports)
+    if modes:
+        mode = _modes
+    return mode, vkcode
