@@ -31,13 +31,13 @@
 
 支持几乎所有能想得到的翻译引擎，包括： 
 
-&emsp;&emsp;**离线翻译** 支持使用J北京7、金山快译、译典通进行离线翻译 
+&emsp;&emsp;**离线翻译** 支持使用J北京7、金山快译、译典通、Sakura、TGW、Sugoi进行离线翻译 
 
 &emsp;&emsp;**免费在线翻译** 支持使用百度、必应、谷歌、阿里、有道、彩云、搜狗、DeepL、金山、讯飞、腾讯、字节、火山、papago、yeekit等进行翻译
 
-&emsp;&emsp;**注册在线翻译** 支持使用用户注册的百度、腾讯、有道、小牛、彩云、火山、deepl、yandex、google、飞书、ChatGPT、Azure翻译
+&emsp;&emsp;**注册在线翻译** 支持使用用户注册的百度、腾讯、有道、小牛、彩云、火山、deepl、yandex、google、ibm、飞书、ChatGPT、Azure、cohere、claude、gemini等翻译
 
-&emsp;&emsp;**Chrome调试翻译** 支持deepl、yandex、有道、百度、腾讯、必应、彩云、小牛、阿里、谷歌、Poe.com、OpenAI
+&emsp;&emsp;**Chrome调试翻译** 支持deepl、yandex、有道、百度、腾讯、必应、彩云、小牛、阿里、谷歌、OpenAI
 
 &emsp;&emsp;**预翻译** 支持读取人工翻译和聚合机器预翻译文件，支持翻译缓存
 
@@ -46,9 +46,9 @@
 
 #### 语音合成
 
-&emsp;&emsp;**离线TTS** 支持windowsTTS，支持VoiceRoid2，支持VoiceRoid+，支持NeoSpeech，支持VOICEVOX
+&emsp;&emsp;**离线TTS** 支持windowsTTS，支持VoiceRoid2，支持VoiceRoid+，支持NeoSpeech，支持VOICEVOX，支持Vits
 
-&emsp;&emsp;**在线TTS** 支持火山TTS，有道TTS，EdgeTTS
+&emsp;&emsp;**在线TTS** 支持火山TTS，有道TTS，EdgeTTS，谷歌TTS
 
 #### 翻译优化
 
@@ -60,7 +60,9 @@
 
 &emsp;&emsp;**日语分词及假名显示** 支持使用内置分词及假名显示工具，支持使用Mecab优化分词及假名显示
 
-&emsp;&emsp;**查词** 支持使用小学馆、灵格斯词典、EDICT(日英)词典、有道在线、weblio、Goo、Moji等在线词典进行单词查询
+&emsp;&emsp;**查词** 支持使用MDICT、小学馆、灵格斯、EDICT、yomichan、有道、weblio、Goo、Moji、jisho等在线和离线词典进行单词查询
+
+&emsp;&emsp;**Anki** 支持使用一键添加单词到anki中
 
 ## 引用
 
