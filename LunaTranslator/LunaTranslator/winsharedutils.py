@@ -22,7 +22,7 @@ from ctypes import (
 )
 from ctypes.wintypes import WORD, HANDLE, HWND, LONG, DWORD
 from windows import WINDOWPLACEMENT
-import gobject
+import gobject, csv
 
 utilsdll = CDLL(gobject.GetDllpath(("winsharedutils32.dll", "winsharedutils64.dll")))
 
@@ -157,7 +157,7 @@ class mecabwrap:
         res = []
         for i in range(num.value):
             f = feature[i]
-            fields = f.decode(codec).split(",")
+            fields = list(csv.reader([f.decode(codec)]))[0]
             res.append((surface[i].decode(codec), fields))
         _freestringlist(feature, num.value)
         _freestringlist(surface, num.value)

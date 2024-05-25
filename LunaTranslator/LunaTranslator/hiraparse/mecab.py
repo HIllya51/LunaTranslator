@@ -3,6 +3,25 @@ import os
 
 from hiraparse.basehira import basehira
 
+# # 2.1.2 src schema
+# UnidicFeatures17 = namedtuple('UnidicFeatures17',
+#         ('pos1 pos2 pos3 pos4 cType cForm lForm lemma orth pron '
+#         'orthBase pronBase goshu iType iForm fType fForm').split(' '))
+
+# # 2.1.2 bin schema
+# # The unidic-mecab-2.1.2_bin distribution adds kana accent fields.
+# UnidicFeatures26 = namedtuple('UnidicFeatures26',
+#         ('pos1 pos2 pos3 pos4 cType cForm lForm lemma orth pron '
+#         'orthBase pronBase goshu iType iForm fType fForm '
+#         'kana kanaBase form formBase iConType fConType aType '
+#         'aConType aModeType').split(' '))
+
+# # schema used in 2.2.0, 2.3.0
+# UnidicFeatures29 = namedtuple('UnidicFeatures29', 'pos1 pos2 pos3 pos4 cType '
+#         'cForm lForm lemma orth pron orthBase pronBase goshu iType iForm fType '
+#         'fForm iConType fConType type kana kanaBase form formBase aType aConType '
+#         'aModType lid lemma_id'.split(' '))
+
 
 class mecab(basehira):
     def init(self) -> None:
@@ -20,34 +39,26 @@ class mecab(basehira):
             text, codec
         ):  # self.kks.parseToNodeList(text):
             kana = ""
-            pos1 = ""
-            origorig = None
-            if len(fields):
-                pos1 = fields[0]
-                if len(fields) > 29:
-                    kana = fields[22]
-                elif len(fields) == 29:
-                    kana = fields[20]
-                elif 29 > len(fields) >= 26:
-                    kana = fields[17]
-                    origorig = fields[7]
-                elif len(fields) > 9:
-                    kana = fields[9]  # 无kana，用lform代替
-                elif len(fields) == 9:
-                    kana = fields[8]  # 7/8均可，issues/514
-                else:
-                    kana = ""
-                if len(fields) >= 8:
-                    origorig = fields[7]  # unsafe
+            origorig = ""
+            pos1 = fields[0]
+            if len(fields) == 26:
+                kana = fields[17]
+                origorig = fields[7]
+            elif len(fields) == 29:
+                kana = fields[20]
+                origorig = fields[7]
+            elif len(fields) == 17:
+                kana = fields[9]
+                origorig = fields[7]
+            elif len(fields) == 9:
+                kana = fields[8]
+                origorig = fields[7]
+            
             l = 0
-            if text[start] == "\n":
-                start += 1
+            
             while str(node) not in text[start : start + l]:
                 l += 1
             orig = text[start : start + l]
-            if origorig is None:
-                origorig = orig
-
             start += l
             hira = kana  # .translate(self.h2k)
 
@@ -65,5 +76,10 @@ class mecab(basehira):
 
             result.append(
                 {"orig": orig, "hira": hira, "cixing": pos1, "origorig": origorig}
+            )
+        extras=text[start :]
+        if len(extras):
+            result.append(
+                {"orig": extras, "hira": extras, "cixing": '', "origorig": extras}
             )
         return result
