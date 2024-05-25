@@ -22,7 +22,7 @@
 
 &emsp;&emsp;**剪贴板** 支持从剪贴板中获取文本进行翻译
 
-&emsp;&emsp;**OCR** 除内置OCR引擎外，还支持WindowsOCR、百度OCR、有道OCR、ocrspace、docsumo、飞书OCR等。
+&emsp;&emsp;**OCR** 除内置OCR引擎外，还支持WindowsOCR、百度OCR、有道OCR、ocrspace、docsumo、飞书OCR、Tessearact5、腾讯OCR、火山OCR、讯飞OCR、谷歌OCR、manga-ocr等。
 
 &emsp;&emsp;**HOOK** 支持使用HOOK方式获取文本，支持使用特殊码，支持自动保存游戏及HOOK、自动加载HOOK等。对于部分引擎，还支持内嵌翻译。
 
@@ -46,9 +46,9 @@
 
 #### 语音合成
 
-&emsp;&emsp;**离线TTS** 支持windowsTTS，支持VoiceRoid2，支持VoiceRoid+，支持NeoSpeech，支持VOICEVOX，支持Vits
+&emsp;&emsp;**离线TTS** 支持windowsTTS、VoiceRoid2、VoiceRoid+、NeoSpeech、VOICEVOX、VITS等
 
-&emsp;&emsp;**在线TTS** 支持火山TTS，有道TTS，EdgeTTS，谷歌TTS
+&emsp;&emsp;**在线TTS** 支持火山TTS、有道TTS、EdgeTTS、谷歌TTS等
 
 #### 翻译优化
 
@@ -58,7 +58,7 @@
 
 #### 日语学习
 
-&emsp;&emsp;**日语分词及假名显示** 支持使用内置分词及假名显示工具，支持使用Mecab优化分词及假名显示
+&emsp;&emsp;**日语分词及假名显示** 支持使用Mecab等分词和显示假名
 
 &emsp;&emsp;**查词** 支持使用MDICT、小学馆、灵格斯、EDICT、yomichan、有道、weblio、Goo、Moji、jisho等在线和离线词典进行单词查询
 
