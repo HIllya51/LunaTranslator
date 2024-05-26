@@ -252,3 +252,10 @@ def mouseselectwindow(callback):
             pass
 
     threading.Thread(target=_loop).start()
+
+
+def screenshot(x1, y1, x2, y2):
+    bs = winsharedutils.gdi_screenshot(x1, y1, x2, y2)
+    pixmap = QPixmap()
+    pixmap.loadFromData(bs)
+    return pixmap

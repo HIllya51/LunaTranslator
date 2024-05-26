@@ -5,7 +5,7 @@ from PyQt5.QtWidgets import QApplication, QDesktopWidget
 from PyQt5.QtGui import QImage
 from PyQt5.QtCore import QByteArray, QBuffer
 from myutils.commonbase import ArgsEmptyExc
-from myutils.hwnd import dynamic_rate
+from myutils.hwnd import dynamic_rate, screenshot
 from myutils.utils import stringfyerror
 from traceback import print_exc
 import gobject, winsharedutils
@@ -83,20 +83,9 @@ def imageCut(hwnd, x1, y1, x2, y2, viscompare=True, rawimage=False) -> QImage:
             except:
                 print_exc()
         else:
+
             if QDesktopWidget().screenCount() > 1:
-                desktop = QApplication.primaryScreen().virtualGeometry()
-                pix = screen.grabWindow(
-                    QApplication.desktop().winId(),
-                    desktop.x(),
-                    desktop.y(),
-                    desktop.width(),
-                    desktop.height(),
-                )
-                x1 = x1 - desktop.x()
-                y1 = y1 - desktop.y()
-                x2 = x2 - desktop.x()
-                y2 = y2 - desktop.y()
-                pix = pix.copy(x1, y1, x2 - x1, y2 - y1)
+                pix = screenshot(x1, y1, x2, y2)
             else:
                 pix = screen.grabWindow(
                     QApplication.desktop().winId(), x1, y1, x2 - x1, y2 - y1

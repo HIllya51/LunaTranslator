@@ -20,7 +20,7 @@ from ctypes import (
     c_double,
     c_char,
 )
-from ctypes.wintypes import WORD, HANDLE, HWND, LONG, DWORD
+from ctypes.wintypes import WORD, HANDLE, HWND, LONG, DWORD, RECT, BYTE
 from windows import WINDOWPLACEMENT
 import gobject, csv
 
@@ -126,7 +126,9 @@ def SAPI_Speak(content, v, voiceid, rate, volume):
     return data
 
 
-def distance(s1, s2):  # 词典更适合用编辑距离，因为就一两个字符，相似度会很小，预翻译适合用相似度
+def distance(
+    s1, s2
+):  # 词典更适合用编辑距离，因为就一两个字符，相似度会很小，预翻译适合用相似度
     return _levenshtein_distance(len(s1), s1, len(s2), s2)
 
 
@@ -359,3 +361,24 @@ PlayAudioInMem.restype = c_int
 
 PlayAudioInMem_Stop = utilsdll.PlayAudioInMem_Stop
 PlayAudioInMem_Stop.argtypes = c_void_p, c_void_p
+
+_gdi_screenshot = utilsdll.gdi_screenshot
+_gdi_screenshot.argtypes = RECT, POINTER(c_size_t)
+_gdi_screenshot.restype = POINTER(BYTE)
+
+
+def gdi_screenshot(x1, y1, x2, y2):
+    sz = c_size_t()
+    rect = RECT()
+    rect.left = x1
+    rect.top = y1
+    rect.right = x2
+    rect.bottom = y2
+    bf = _gdi_screenshot(rect, pointer(sz))
+    data = cast(bf, POINTER(c_char))[: sz.value]
+    c_free(bf)
+    return data
+
+
+maximum_window = utilsdll.maximum_window
+maximum_window.argtypes = (HWND,)

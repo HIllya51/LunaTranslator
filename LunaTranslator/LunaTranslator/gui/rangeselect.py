@@ -7,13 +7,13 @@ from PyQt5.QtWidgets import (
     QDialog,
     QDesktopWidget,
 )
-from PyQt5.QtGui import QPainter, QPen, QColor
+from PyQt5.QtGui import QPainter, QPen, QColor, QResizeEvent
 from PyQt5.QtCore import Qt, QPoint, QRect, QEvent
 from myutils.config import _TR
 import gobject
 from myutils.config import globalconfig
 from gui.resizeablemainwindow import Mainw
-import windows
+import windows, winsharedutils
 
 
 class rangeadjust(Mainw):
@@ -131,25 +131,24 @@ class rangeselct(QMainWindow):
             Qt.FramelessWindowHint | Qt.Tool
         )  # |Qt.WindowStaysOnTopHint  )
         self.rectlabel = QLabel(self)
-        self.setAttribute(Qt.WA_TranslucentBackground)
+        # self.setAttribute(Qt.WA_TranslucentBackground)
+        self.setWindowOpacity(0.5)
+        self.setMouseTracking(True)
+        self.setCursor(Qt.CrossCursor)
+        self.reset()
 
     def reset(self):
-        # screens = QDesktopWidget().screenCount()
-        # desktop = QDesktopWidget().screenGeometry(0)
-        # for i in range(1, screens):
-        #     desktop = desktop.united(QDesktopWidget().screenGeometry(i))
-        desktop = QApplication.primaryScreen().virtualGeometry()
-        self.setGeometry(desktop)
-        self.rectlabel.setGeometry(desktop)
-        self.setCursor(Qt.CrossCursor)
+        winsharedutils.maximum_window(int(self.winId()))
+        # desktop = QApplication.primaryScreen().virtualGeometry()
+        # self.setGeometry(desktop)
         self.is_drawing = False
-        self.setMouseTracking(True)
         self.start_point = QPoint()
         self.end_point = QPoint()
         self.__start = None
         self.__end = None
         self.startauto = False
         self.clickrelease = False
+        self.rectlabel.resize(0, 0)
         self.rectlabel.setStyleSheet(
             " border:%spx solid %s; background-color: rgba(0,0,0, 0.01)"
             % (globalconfig["ocrrangewidth"], globalconfig["ocrrangecolor"])
@@ -246,8 +245,8 @@ def rangeselct_function(parent, callback, clickrelease, startauto):
     global screen_shot_ui
     if screen_shot_ui is None:
         screen_shot_ui = rangeselct(parent)
-    screen_shot_ui.reset()
     screen_shot_ui.show()
+    screen_shot_ui.reset()
     screen_shot_ui.callback = callback
     windows.SetFocus(int(screen_shot_ui.winId()))
 
