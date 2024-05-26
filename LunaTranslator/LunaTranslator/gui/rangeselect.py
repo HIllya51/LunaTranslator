@@ -1,4 +1,12 @@
-from PyQt5.QtWidgets import QMenu, QApplication, QMainWindow, QLabel, QAction, QDialog
+from PyQt5.QtWidgets import (
+    QMenu,
+    QApplication,
+    QMainWindow,
+    QLabel,
+    QAction,
+    QDialog,
+    QDesktopWidget,
+)
 from PyQt5.QtGui import QPainter, QPen, QColor
 from PyQt5.QtCore import Qt, QPoint, QRect, QEvent
 from myutils.config import _TR
@@ -69,6 +77,19 @@ class rangeadjust(Mainw):
             ),
         ]
 
+    def setGeometry(self, x, y, w, h):
+        if QDesktopWidget().screenCount() > 1:
+            windows.MoveWindow(int(self.winId()), x, y, w, h, True)
+        else:
+            super().setGeometry(x, y, w, h)
+
+    def geometry(self):
+        if QDesktopWidget().screenCount() > 1:
+            rect = windows.GetWindowRect(int(self.winId()))
+            return QRect(rect[0], rect[1], rect[2] - rect[0], rect[3] - rect[1])
+        else:
+            return super().geometry()
+
     def moveEvent(self, e):
         if self._rect:
             self._rect = self.rectoffset(self.geometry())
@@ -125,6 +146,8 @@ class rangeselct(QMainWindow):
         self.setMouseTracking(True)
         self.start_point = QPoint()
         self.end_point = QPoint()
+        self.__start = None
+        self.__end = None
         self.startauto = False
         self.clickrelease = False
         self.rectlabel.setStyleSheet(
@@ -172,27 +195,37 @@ class rangeselct(QMainWindow):
                 self.start_point = event.pos()
                 self.end_point = self.start_point
                 self.is_drawing = True
+                self.__start = self.__end = windows.GetCursorPos()
 
     def mouseMoveEvent(self, event):
 
         if self.startauto and self.is_drawing == False:
             self.is_drawing = True
             self.end_point = self.start_point = event.pos()
+            self.__start = self.__end = windows.GetCursorPos()
             self.startauto = False
         if self.is_drawing:
             self.end_point = event.pos()
+            self.__end = windows.GetCursorPos()
             self.update()
 
     def getRange(self):
-        start_point = self.mapToGlobal(self.start_point)
-        end_point = self.mapToGlobal(self.end_point)
-        x1, y1, x2, y2 = (
-            start_point.x(),
-            start_point.y(),
-            end_point.x(),
-            end_point.y(),
-        )
-
+        if QDesktopWidget().screenCount() > 1:
+            x1, y1, x2, y2 = (
+                self.__start.x,
+                self.__start.y,
+                self.__end.x,
+                self.__end.y,
+            )
+        else:
+            start_point = self.mapToGlobal(self.start_point)
+            end_point = self.mapToGlobal(self.end_point)
+            x1, y1, x2, y2 = (
+                start_point.x(),
+                start_point.y(),
+                end_point.x(),
+                end_point.y(),
+            )
         x1, x2 = min(x1, x2), max(x1, x2)
         y1, y2 = min(y1, y2), max(y1, y2)
 

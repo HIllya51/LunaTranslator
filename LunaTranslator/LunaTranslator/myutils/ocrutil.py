@@ -1,7 +1,7 @@
 import windows
 import os, importlib
 from myutils.config import globalconfig, _TR
-from PyQt5.QtWidgets import QApplication
+from PyQt5.QtWidgets import QApplication, QDesktopWidget
 from PyQt5.QtGui import QImage
 from PyQt5.QtCore import QByteArray, QBuffer
 from myutils.commonbase import ArgsEmptyExc
@@ -83,9 +83,20 @@ def imageCut(hwnd, x1, y1, x2, y2, viscompare=True, rawimage=False) -> QImage:
             except:
                 print_exc()
         else:
-            pix = screen.grabWindow(
-                QApplication.desktop().winId(), x1, y1, x2 - x1, y2 - y1
-            )
+            if QDesktopWidget().screenCount() > 1:
+                desktop = QApplication.primaryScreen().virtualGeometry()
+                pix = screen.grabWindow(
+                    QApplication.desktop().winId(),
+                    desktop.x(),
+                    desktop.y(),
+                    desktop.width(),
+                    desktop.height(),
+                )
+                pix = pix.copy(x1, y1, x2 - x1, y2 - y1)
+            else:
+                pix = screen.grabWindow(
+                    QApplication.desktop().winId(), x1, y1, x2 - x1, y2 - y1
+                )
 
     image = pix.toImage()
     if rawimage:
