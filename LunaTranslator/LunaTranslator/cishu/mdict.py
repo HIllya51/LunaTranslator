@@ -2560,13 +2560,10 @@ class mdict(cishubase):
                 # print(keys)
                 for k in keys:
                     content = index.mdx_lookup(k)[0]
-                    while True:#あさひ
-                        match = re.match("@@@LINK=(.*)", content.strip())
-                        if match:
-                            match = match.groups()[0]
-                            content = index.mdx_lookup(match)[0]
-                        else:
-                            break
+                    match = re.match("@@@LINK=(.*)", content.strip())
+                    if match:
+                        match = match.groups()[0]
+                        content = index.mdx_lookup(match)[0]
                     results.append(self.parseashtml(content))
             except:
                 from traceback import print_exc
