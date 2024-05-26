@@ -8,13 +8,9 @@ class TS(basetransdev):
         return ".bing.com/translator/" in url
 
     def translate(self, content):
-        self.Runtime_evaluate(
-            """document.getElementById('tta_clear').click();document.getElementById('tta_input_ta').value=`{}`;
-            document.getElementById('tta_input_ta').click();
-            """.format(
-                content
-            )
-        )
+        self.Runtime_evaluate('document.getElementById("tta_clear").click();')
+        self.Runtime_evaluate('document.querySelector("#tta_input_ta").click();')
+        self.send_keys(content)
         return self.wait_for_result(
             "document.getElementById('tta_output_ta').value", " ..."
         )
