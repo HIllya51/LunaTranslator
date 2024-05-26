@@ -92,6 +92,10 @@ def imageCut(hwnd, x1, y1, x2, y2, viscompare=True, rawimage=False) -> QImage:
                     desktop.width(),
                     desktop.height(),
                 )
+                x1 = x1 - desktop.x()
+                y1 = y1 - desktop.y()
+                x2 = x2 - desktop.x()
+                y2 = y2 - desktop.y()
                 pix = pix.copy(x1, y1, x2 - x1, y2 - y1)
             else:
                 pix = screen.grabWindow(
