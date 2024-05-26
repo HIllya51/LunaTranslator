@@ -18,14 +18,20 @@ class basetransdev(basetrans):
     def Runtime_evaluate(self, expression):
         return self._SendRequest("Runtime.evaluate", {"expression": expression})
 
-    def wait_for_result(self, expression, badresult=""):
+    def wait_for_result(self, expression, badresult="", multi=False):
         for i in range(10000):
             if self.using == False:
                 return
             state = self.Runtime_evaluate(expression)
             try:
-                if state["result"]["value"] != badresult:
-                    return state["result"]["value"]
+                value = state["result"]["value"]
+                print(value)
+                if multi:
+                    if not (value in badresult):
+                        return value
+                else:
+                    if value != badresult:
+                        return value
             except:
                 pass
             time.sleep(0.1)
@@ -40,21 +46,22 @@ class basetransdev(basetrans):
         if self.using == False:
             return
         self._id += 1
-        
+
         if ws is None:
             ws = self.ws
         ws.send(json.dumps({"id": self._id, "method": method, "params": params}))
-        res = ws.recv() 
-            
+        res = ws.recv()
+
         res = json.loads(res)
         try:
             return res["result"]
         except:
-            if res['error']['code']==-32600:
-                self._id+=1
-                self._SendRequest(method,params,ws)
+            if res["error"]["code"] == -32600:
+                self._id += 1
+                self._SendRequest(method, params, ws)
             else:
                 raise
+
     def _createtarget(self):
         if self.using == False:
             return
@@ -93,7 +100,7 @@ class basetransdev(basetrans):
             time.sleep(0.1)
 
     def send_keys(self, text):
-        #self._SendRequest("Input.setIgnoreInputEvents", {"ignore": False})
+        # self._SendRequest("Input.setIgnoreInputEvents", {"ignore": False})
         try:
             self._SendRequest("Input.insertText", {"text": text})
         except:
@@ -120,4 +127,4 @@ class basetransdev(basetrans):
                 )
                 # self._SendRequest('Input.dispatchKeyEvent', {'type': 'keyUp', 'modifiers': 0, 'timestamp': 0, 'text': '', 'unmodifiedText': '', 'keyIdentifier': '', 'code': f'Key{char.upper()}', 'key': char, 'windowsVirtualKeyCode': code, 'nativeVirtualKeyCode': code, 'autoRepeat': False, 'isKeypad': False, 'isSystemKey': False, 'location': 0})
 
-        #self._SendRequest("Input.setIgnoreInputEvents", {"ignore": True})
+        # self._SendRequest("Input.setIgnoreInputEvents", {"ignore": True})

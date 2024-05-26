@@ -12,5 +12,7 @@ class TS(basetransdev):
             )
         )
         return self.wait_for_result(
-            r"""document.querySelector("#textareasContainer > div.rounded-ee-inherit.relative.min-h-\\[240px\\].min-w-0.md\\:min-h-\\[clamp\\(250px\\,50vh\\,557px\\)\\].mobile\\:min-h-0.mobile\\:flex-1.max-\\[768px\\]\\:min-h-\\[375px\\] > section > div.rounded-inherit.mobile\\:min-h-0.relative.flex.flex-1.flex-col > d-textarea").textContent"""
+            'document.getElementsByTagName("d-textarea")[1].textContent',
+            ("complete", ""),
+            multi=True,
         )
