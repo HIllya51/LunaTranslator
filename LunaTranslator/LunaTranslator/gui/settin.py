@@ -263,6 +263,7 @@ class Settin(closeashidewindow):
             winsharedutils.SetTheme(
                 int(widget.winId()), dark, globalconfig["WindowBackdrop"]
             )
+        style = ""
         for _ in (0,):
             try:
                 idx = globalconfig[darklight + "theme"] - int(not dark)
