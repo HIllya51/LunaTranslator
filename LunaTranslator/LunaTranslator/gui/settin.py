@@ -259,12 +259,6 @@ class Settin(closeashidewindow):
 
         for widget in QApplication.topLevelWidgets():
             if widget.testAttribute(Qt.WA_TranslucentBackground):
-                if globalconfig["WindowEffect"] == 0:
-                    winsharedutils.clearEffect(int(widget.winId()))
-                elif globalconfig["WindowEffect"] == 1:
-                    winsharedutils.setAcrylicEffect(int(widget.winId()))
-                elif globalconfig["WindowEffect"] == 2:
-                    winsharedutils.setAeroEffect(int(widget.winId()))
                 continue
             winsharedutils.SetTheme(
                 int(widget.winId()), dark, globalconfig["WindowBackdrop"]

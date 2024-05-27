@@ -654,8 +654,8 @@ def setTabThree_lazy(self):
                     globalconfig,
                     "WindowEffect",
                     callback=lambda _: [
-                        self.setstylesheet(),
                         gobject.baseobject.translation_ui.set_color_transparency(),
+                        gobject.baseobject.translation_ui.seteffect(),
                     ],
                 ),
                 5,

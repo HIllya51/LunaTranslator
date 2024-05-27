@@ -346,6 +346,7 @@ class QUnFrameWindow(resizableframeless):
         self.setMinimumHeight(int(globalconfig["buttonsize"] * 1.5 + 10))
         self.setMinimumWidth(globalconfig["buttonsize"] * 2)
         self.set_color_transparency()
+        self.seteffect()
         self.adjustbuttons()
 
     def ocr_once_function(self):
@@ -574,6 +575,14 @@ class QUnFrameWindow(resizableframeless):
             self.canceltop()
 
         threading.Thread(target=_).start()
+
+    def seteffect(self):
+        if globalconfig["WindowEffect"] == 0:
+            winsharedutils.clearEffect(int(self.winId()))
+        elif globalconfig["WindowEffect"] == 1:
+            winsharedutils.setAcrylicEffect(int(self.winId()))
+        elif globalconfig["WindowEffect"] == 2:
+            winsharedutils.setAeroEffect(int(self.winId()))
 
     def __init__(self):
 
