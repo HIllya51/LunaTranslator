@@ -14,7 +14,7 @@ from PyQt5.QtWidgets import (
 )
 from PyQt5.QtGui import QResizeEvent, QFont, QFontMetrics
 from PyQt5.QtWidgets import QTabWidget
-import qtawesome, gobject
+import qtawesome, gobject, importlib, sys
 import functools, threading, windows, winsharedutils
 from traceback import print_exc
 from winsharedutils import isDark
@@ -263,20 +263,26 @@ class Settin(closeashidewindow):
             winsharedutils.SetTheme(
                 int(widget.winId()), dark, globalconfig["WindowBackdrop"]
             )
-        try:
-            idx = globalconfig[darklight + "theme"] - int(not dark)
-            if idx == -1:
-                raise Exception()
-            with open(
-                "./files/themes/{}".format(
-                    static_data["themes"][darklight][idx]["file"]
-                ),
-                "r",
-            ) as ff:
-                style = ff.read()
-        except:
-            # print_exc()
-            style = ""
+        for _ in (0,):
+            try:
+                idx = globalconfig[darklight + "theme"] - int(not dark)
+                if idx == -1:
+                    break
+                _fn = static_data["themes"][darklight][idx]["file"]
+
+                if _fn.endswith(".py"):
+                    style = importlib.import_module(
+                        "files.themes." + _fn[:-3]
+                    ).stylesheet()
+                elif _fn.endswith(".qss"):
+                    with open(
+                        "./files/themes/{}".format(_fn),
+                        "r",
+                    ) as ff:
+                        style = ff.read()
+            except:
+                print_exc()
+                style = ""
         style += (
             "*{font: %spt '" % (globalconfig["settingfontsize"])
             + (globalconfig["settingfonttype"])

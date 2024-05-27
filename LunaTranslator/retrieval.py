@@ -179,6 +179,10 @@ copycheck(
     os.path.join(runtime, "PyQt5/Qt5/bin"),
 )
 copycheck(
+    os.path.join(py37Path, "Lib/site-packages/PyQt5/Qt5/bin/Qt5Svg.dll"),
+    os.path.join(runtime, "PyQt5/Qt5/bin"),
+)
+copycheck(
     os.path.join(py37Path, "Lib/site-packages/PyQt5/Qt5/bin/Qt5Gui.dll"),
     os.path.join(runtime, "PyQt5/Qt5/bin"),
 )
@@ -188,6 +192,10 @@ copycheck(
     os.path.join(runtime, "PyQt5/Qt5/bin"),
 )
 
+copycheck(
+    os.path.join(py37Path, "Lib/site-packages/PyQt5/Qt5/plugins/iconengines"),
+    os.path.join(runtime, "PyQt5/Qt5/plugins"),
+)
 copycheck(
     os.path.join(py37Path, "Lib/site-packages/PyQt5/Qt5/plugins/imageformats"),
     os.path.join(runtime, "PyQt5/Qt5/plugins"),
@@ -209,6 +217,18 @@ copycheck(
         py37Path, "Lib/site-packages/PyQt5/Qt5/plugins/styles/qwindowsvistastyle.dll"
     ),
     os.path.join(runtime, "PyQt5/Qt5/plugins/styles"),
+)
+copycheck(
+    os.path.join(
+        py37Path, "Lib/site-packages/qdarktheme"
+    ),
+    os.path.join(runtime),
+)
+copycheck(
+    os.path.join(
+        py37Path, "Lib/site-packages/qdarkstyle"
+    ),
+    os.path.join(runtime),
 )
 
 collect = []

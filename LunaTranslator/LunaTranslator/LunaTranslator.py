@@ -1,5 +1,4 @@
 import time
-import keeprefs
 import os, threading
 from traceback import print_exc
 from myutils.config import (

@@ -2,21 +2,21 @@
     "themes": {
         "dark": [
             {
-                "file": "dark1.qss",
+                "file": "dark1.py",
                 "name": "PyQtDarkTheme"
             },
             {
-                "file": "dark2.qss",
+                "file": "dark2.py",
                 "name": "QDarkStyleSheet"
             }
         ],
         "light": [
             {
-                "file": "light1.qss",
+                "file": "light1.py",
                 "name": "PyQtDarkTheme"
             },
             {
-                "file": "light2.qss",
+                "file": "light2.py",
                 "name": "QDarkStyleSheet"
             }
         ]

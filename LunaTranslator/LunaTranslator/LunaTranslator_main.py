@@ -11,7 +11,8 @@ if __name__ == "__main__":
     )  # win7 no vcredist2015
 
     from myutils.config import _TR, static_data, globalconfig
-
+    
+    sys.path.append("./")
     sys.path.append("./userconfig")
     sys.path.insert(
         0, "./LunaTranslator/network/" + ["winhttp", "libcurl"][globalconfig["network"]]
