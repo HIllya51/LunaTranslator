@@ -51,7 +51,7 @@ def imagesolve(image):
 
 
 def imageCut(hwnd, x1, y1, x2, y2, viscompare=True, rawimage=False) -> QImage:
-    screen = QApplication.primaryScreen()
+
     for _ in range(2):
 
         if _ % 2 == 0:
@@ -62,34 +62,16 @@ def imageCut(hwnd, x1, y1, x2, y2, viscompare=True, rawimage=False) -> QImage:
                 if rect is None:
                     continue
 
-                rate = dynamic_rate(hwnd, rect)
-                hwndrate = windows.GetDpiForWindow(hwnd) / 96
-                x1, y1 = windows.ScreenToClient(
-                    hwnd, x1 * rate * hwndrate, y1 * rate * hwndrate
-                )
-                x2, y2 = windows.ScreenToClient(
-                    hwnd, x2 * rate * hwndrate, y2 * rate * hwndrate
-                )
-                pix = screen.grabWindow(
-                    hwnd,
-                    int(x1 / rate / rate / hwndrate),
-                    int(y1 / rate / rate / hwndrate),
-                    int((x2 - x1) / rate / rate / hwndrate),
-                    int((y2 - y1) / rate / rate / hwndrate),
-                )
+                x1, y1 = windows.ScreenToClient(hwnd, x1, y1)
+                x2, y2 = windows.ScreenToClient(hwnd, x2, y2)
+                pix = screenshot(x1, y1, x2, y2, hwnd)
                 if pix.toImage().allGray():
                     continue
                 break
             except:
                 print_exc()
         else:
-
-            if QDesktopWidget().screenCount() > 1:
-                pix = screenshot(x1, y1, x2, y2)
-            else:
-                pix = screen.grabWindow(
-                    QApplication.desktop().winId(), x1, y1, x2 - x1, y2 - y1
-                )
+            pix = screenshot(x1, y1, x2, y2)
 
     image = pix.toImage()
     if rawimage:

@@ -363,18 +363,18 @@ PlayAudioInMem_Stop = utilsdll.PlayAudioInMem_Stop
 PlayAudioInMem_Stop.argtypes = c_void_p, c_void_p
 
 _gdi_screenshot = utilsdll.gdi_screenshot
-_gdi_screenshot.argtypes = RECT, POINTER(c_size_t)
+_gdi_screenshot.argtypes = HWND, RECT, POINTER(c_size_t)
 _gdi_screenshot.restype = POINTER(BYTE)
 
 
-def gdi_screenshot(x1, y1, x2, y2):
+def gdi_screenshot(x1, y1, x2, y2, hwnd=None):
     sz = c_size_t()
     rect = RECT()
     rect.left = x1
     rect.top = y1
     rect.right = x2
     rect.bottom = y2
-    bf = _gdi_screenshot(rect, pointer(sz))
+    bf = _gdi_screenshot(hwnd, rect, pointer(sz))
     data = cast(bf, POINTER(c_char))[: sz.value]
     c_free(bf)
     return data

@@ -131,40 +131,39 @@ BYTE *SaveBitmapToBuffer(HBITMAP hBitmap, size_t *size)
     bmfHdr.bfReserved1 = 0;
     bmfHdr.bfReserved2 = 0;
     bmfHdr.bfOffBits = (DWORD)sizeof(BITMAPFILEHEADER) + (DWORD)sizeof(BITMAPINFOHEADER);
-
+    auto buffer = new BYTE[sizeof(BITMAPFILEHEADER) + sizeof(BITMAPINFOHEADER) + dwBmBitsSize];
     // 写入位图文件头
     // WriteFile(fh, (LPSTR)&bmfHdr, sizeof(BITMAPFILEHEADER), &dwWritten, NULL);
     // 写入位图信息头
     // WriteFile(fh, (LPSTR)&bi, sizeof(BITMAPINFOHEADER), &dwWritten, NULL);
 
+    memcpy(buffer, &bmfHdr, sizeof(BITMAPFILEHEADER));
+    memcpy(buffer + sizeof(BITMAPFILEHEADER), &bi, sizeof(BITMAPINFOHEADER));
     // 获取位图阵列
     lpmem = new char[dwBmBitsSize];
-    lpbk = (LPSTR) new char[dwBmBitsSize];
     GetBitmapBits(hBitmap, dwBmBitsSize, lpmem); // 正向的内存图象数据
 
     for (int i = 0; i < Bitmap.bmHeight; i++)
     {
-        memcpy(lpbk + Bitmap.bmWidth * i * 4, lpmem + Bitmap.bmWidth * (Bitmap.bmHeight - i - 1) * 4, Bitmap.bmWidth * 4);
+        memcpy(buffer + sizeof(BITMAPFILEHEADER) + sizeof(BITMAPINFOHEADER) + Bitmap.bmWidth * i * 4, lpmem + Bitmap.bmWidth * (Bitmap.bmHeight - i - 1) * 4, Bitmap.bmWidth * 4);
     }
     // 写位图数据
     // WriteFile(fh, lpbk, dwBmBitsSize, &dwWritten, NULL);
-    auto buffer = new BYTE[sizeof(BITMAPFILEHEADER) + sizeof(BITMAPINFOHEADER) + dwBmBitsSize];
-    memcpy(buffer, &bmfHdr, sizeof(BITMAPFILEHEADER));
-    memcpy(buffer + sizeof(BITMAPFILEHEADER), &bi, sizeof(BITMAPINFOHEADER));
-    memcpy(buffer + sizeof(BITMAPFILEHEADER) + sizeof(BITMAPINFOHEADER), lpbk, dwBmBitsSize);
+
     *size = sizeof(BITMAPFILEHEADER) + sizeof(BITMAPINFOHEADER) + dwBmBitsSize;
     // 清除
-    delete[] lpbk;
     delete[] lpmem;
 
     return buffer;
 }
-DECLARE BYTE *gdi_screenshot(RECT rect, size_t *size)
+DECLARE BYTE *gdi_screenshot(HWND hwnd, RECT rect, size_t *size)
 {
-    auto bm = GetBitmap(rect, GetDC(GetDesktopWindow()));
+    if (!hwnd)
+        hwnd = GetDesktopWindow();
+    auto bm = GetBitmap(rect, GetDC(hwnd));
     // SaveBitmapToFile(bm, LR"(.\2.bmp)");
     auto bf = SaveBitmapToBuffer(bm, size);
-    DeleteObject(bf);
+    DeleteObject(bm);
     return bf;
 }
 

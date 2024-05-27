@@ -88,9 +88,9 @@ void capture_window(HWND window_handle, const std::wstring &output_file_path)
     winrt::check_hresult(idxgi_device2->GetParent(winrt::guid_of<IDXGIAdapter>(), adapter.put_void()));
     winrt::com_ptr<IDXGIFactory2> factory;
     winrt::check_hresult(adapter->GetParent(winrt::guid_of<IDXGIFactory2>(), factory.put_void()));
-
-    ID3D11DeviceContext *d3d_context = nullptr;
-    d3d_device->GetImmediateContext(&d3d_context);
+        
+    winrt::com_ptr<ID3D11DeviceContext> d3d_context;
+    d3d_device->GetImmediateContext(d3d_context.put());
 
     RECT rect{};
     DwmGetWindowAttribute(window_handle, DWMWA_EXTENDED_FRAME_BOUNDS, &rect, sizeof(RECT));
@@ -176,7 +176,7 @@ void capture_window(HWND window_handle, const std::wstring &output_file_path)
     l_bmp_info.bmiHeader.biPlanes = 1;
     l_bmp_info.bmiHeader.biSizeImage = captured_texture_desc.Width * captured_texture_desc.Height * 4;
 
-    std::unique_ptr<BYTE> p_buf(new BYTE[l_bmp_info.bmiHeader.biSizeImage]);
+    auto p_buf = std::make_unique<BYTE[]>(l_bmp_info.bmiHeader.biSizeImage);
     UINT l_bmp_row_pitch = captured_texture_desc.Width * 4;
     auto sptr = static_cast<BYTE *>(resource.pData);
     auto dptr = p_buf.get() + l_bmp_info.bmiHeader.biSizeImage - l_bmp_row_pitch;
@@ -224,6 +224,7 @@ void capture_window(HWND window_handle, const std::wstring &output_file_path)
     GetEncoderClsid(L"image/png", &encoderClsid);
 
     image->Save(output_file_path.c_str(), &encoderClsid, NULL);
+    delete image;
     Gdiplus::GdiplusShutdown(gdiplusToken);
 }
 void winrt_capture_window(wchar_t *savepath, HWND hwnd)

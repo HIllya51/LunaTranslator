@@ -66,29 +66,25 @@ class rangeadjust(Mainw):
             self._endPos = None
 
     def rectoffset(self, rect):
-        return [
+        r = self.devicePixelRatioF()
+        _ = [
             (
-                rect.left() + globalconfig["ocrrangewidth"],
-                rect.top() + globalconfig["ocrrangewidth"],
+                rect.left() + int(globalconfig["ocrrangewidth"] * r),
+                rect.top() + int(globalconfig["ocrrangewidth"] * r),
             ),
             (
-                rect.right() - globalconfig["ocrrangewidth"],
-                rect.bottom() - globalconfig["ocrrangewidth"],
+                rect.right() - int(globalconfig["ocrrangewidth"] * r),
+                rect.bottom() - int(globalconfig["ocrrangewidth"] * r),
             ),
         ]
+        return _
 
     def setGeometry(self, x, y, w, h):
-        if QDesktopWidget().screenCount() > 1:
-            windows.MoveWindow(int(self.winId()), x, y, w, h, True)
-        else:
-            super().setGeometry(x, y, w, h)
+        windows.MoveWindow(int(self.winId()), x, y, w, h, True)
 
     def geometry(self):
-        if QDesktopWidget().screenCount() > 1:
-            rect = windows.GetWindowRect(int(self.winId()))
-            return QRect(rect[0], rect[1], rect[2] - rect[0], rect[3] - rect[1])
-        else:
-            return super().geometry()
+        rect = windows.GetWindowRect(int(self.winId()))
+        return QRect(rect[0], rect[1], rect[2] - rect[0], rect[3] - rect[1])
 
     def moveEvent(self, e):
         if self._rect:
@@ -111,16 +107,17 @@ class rangeadjust(Mainw):
         return self._rect
 
     def setrect(self, rect):
-        self._rect = rect
         if rect:
             (x1, y1), (x2, y2) = rect
+            self.show()
             self.setGeometry(
                 x1 - globalconfig["ocrrangewidth"],
                 y1 - globalconfig["ocrrangewidth"],
                 x2 - x1 + 2 * globalconfig["ocrrangewidth"],
                 y2 - y1 + 2 * globalconfig["ocrrangewidth"],
             )
-            self.show()
+        self._rect = rect
+        # 由于使用movewindow而非qt函数，导致内部执行绪有问题。
 
 
 class rangeselct(QMainWindow):
@@ -191,8 +188,7 @@ class rangeselct(QMainWindow):
                 self.clickrelease = False
                 self.mouseReleaseEvent(event)
             else:
-                self.start_point = event.pos()
-                self.end_point = self.start_point
+                self.end_point = self.start_point = event.pos()
                 self.is_drawing = True
                 self.__start = self.__end = windows.GetCursorPos()
 
@@ -209,22 +205,14 @@ class rangeselct(QMainWindow):
             self.update()
 
     def getRange(self):
-        if QDesktopWidget().screenCount() > 1:
-            x1, y1, x2, y2 = (
-                self.__start.x,
-                self.__start.y,
-                self.__end.x,
-                self.__end.y,
-            )
-        else:
-            start_point = self.mapToGlobal(self.start_point)
-            end_point = self.mapToGlobal(self.end_point)
-            x1, y1, x2, y2 = (
-                start_point.x(),
-                start_point.y(),
-                end_point.x(),
-                end_point.y(),
-            )
+
+        x1, y1, x2, y2 = (
+            self.__start.x,
+            self.__start.y,
+            self.__end.x,
+            self.__end.y,
+        )
+
         x1, x2 = min(x1, x2), max(x1, x2)
         y1, y2 = min(y1, y2), max(y1, y2)
 
@@ -233,6 +221,7 @@ class rangeselct(QMainWindow):
     def mouseReleaseEvent(self, event):
         if event.button() == Qt.LeftButton:
             self.end_point = event.pos()
+            self.__end = windows.GetCursorPos()
 
             self.close()
             self.callback(self.getRange())

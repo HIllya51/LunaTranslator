@@ -55,10 +55,7 @@ def grabwindow(app, callback=None):
         hwnd = windows.GetForegroundWindow()
 
     _ = windows.GetClientRect(hwnd)
-    rate = dynamic_rate(hwnd, _)
-    w, h = int(_[2] / rate), int(_[3] / rate)
-    p = QApplication.primaryScreen().grabWindow(hwnd, 0, 0, w, h)
-    p = p.toImage().copy(0, 0, w, h)
+    p = screenshot(0, 0, _[2], _[3], hwnd).toImage()
     if not p.allGray():
         p.save(fname + "_gdi." + app)
         if callback and os.path.exists(fname + "_gdi." + app):
@@ -254,8 +251,8 @@ def mouseselectwindow(callback):
     threading.Thread(target=_loop).start()
 
 
-def screenshot(x1, y1, x2, y2):
-    bs = winsharedutils.gdi_screenshot(x1, y1, x2, y2)
+def screenshot(x1, y1, x2, y2, hwnd=None):
+    bs = winsharedutils.gdi_screenshot(x1, y1, x2, y2, hwnd)
     pixmap = QPixmap()
     pixmap.loadFromData(bs)
     return pixmap
