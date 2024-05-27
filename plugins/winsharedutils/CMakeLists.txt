@@ -11,7 +11,7 @@ generate_product_version(
    VERSION_PATCH ${VERSION_PATCH}
 )
 
-add_library(winsharedutils MODULE  screenshot.cpp audio.cpp ../implsapi.cpp hwnd.cpp darklistener.cpp theme.cpp version.cpp otsu.cpp cinterface.cpp clipboard.cpp lnk.cpp dllmain.cpp levenshtein.cpp muteprocess.cpp sapi_dll.cpp simplemecab.cpp SimpleBrowser.cpp MWebBrowser.cpp icon.cpp maglistener.cpp ${versioninfo})
+add_library(winsharedutils MODULE  AreoAcrylic.cpp screenshot.cpp audio.cpp ../implsapi.cpp hwnd.cpp darklistener.cpp theme.cpp version.cpp otsu.cpp cinterface.cpp clipboard.cpp lnk.cpp dllmain.cpp levenshtein.cpp muteprocess.cpp sapi_dll.cpp simplemecab.cpp SimpleBrowser.cpp MWebBrowser.cpp icon.cpp maglistener.cpp ${versioninfo})
 target_precompile_headers(winsharedutils REUSE_FROM pch) 
 if(${CMAKE_SIZEOF_VOID_P} EQUAL 8)
 	set_target_properties(winsharedutils PROPERTIES OUTPUT_NAME "winsharedutils64")

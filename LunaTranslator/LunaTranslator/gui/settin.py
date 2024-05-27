@@ -32,7 +32,6 @@ from gui.setting_proxy import setTab_proxy
 from gui.settingpage7 import setTab7, settab7direct
 from gui.settingpage_about import setTab_about, setTab_about_dicrect
 from gui.usefulwidget import closeashidewindow, tabadd_lazy
-from myutils.Acrylic import WindowEffect
 
 
 class gridwidget(QWidget):
@@ -261,11 +260,11 @@ class Settin(closeashidewindow):
         for widget in QApplication.topLevelWidgets():
             if widget.testAttribute(Qt.WA_TranslucentBackground):
                 if globalconfig["WindowEffect"] == 0:
-                    WindowEffect().clear(int(widget.winId()))
+                    winsharedutils.clearEffect(int(widget.winId()))
                 elif globalconfig["WindowEffect"] == 1:
-                    WindowEffect().setAcrylicEffect(int(widget.winId()))
+                    winsharedutils.setAcrylicEffect(int(widget.winId()))
                 elif globalconfig["WindowEffect"] == 2:
-                    WindowEffect().setAeroEffect(int(widget.winId()))
+                    winsharedutils.setAeroEffect(int(widget.winId()))
                 continue
             winsharedutils.SetTheme(
                 int(widget.winId()), dark, globalconfig["WindowBackdrop"]
