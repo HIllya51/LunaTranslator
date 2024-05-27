@@ -94,9 +94,7 @@ class ItemWidget(QWidget):
     def mousePressEvent(self, ev) -> None:
         try:
             self.bottommask.setStyleSheet(
-                "QLabel { background-color: "
-                + globalconfig["dialog_savegame_layout"]["onselectcolor"]
-                + "; }"
+                f'background-color: {globalconfig["dialog_savegame_layout"]["onselectcolor"]};'
             )
 
             if self != ItemWidget.globallashfocus:
@@ -107,9 +105,7 @@ class ItemWidget(QWidget):
             print_exc()
 
     def focusOut(self):
-        self.bottommask.setStyleSheet(
-            "QLabel { background-color: rgba(255,255,255, 0); }"
-        )
+        self.bottommask.setStyleSheet("background-color: rgba(255,255,255, 0);")
         self.focuschanged.emit(False, self.exe)
 
     def mouseDoubleClickEvent(self, e):
@@ -137,6 +133,7 @@ class ItemWidget(QWidget):
         # self.setFocusPolicy(Qt.StrongFocus)
         self.maskshowfileexists = QLabel(self)
         self.bottommask = QLabel(self)
+        self.bottommask.setStyleSheet("background-color: rgba(255,255,255, 0);")
         layout = QVBoxLayout()
         layout.setContentsMargins(0, 0, 0, 0)
         self._img = IMGWidget(self.imgw, self.imgh, pixmap)
@@ -158,13 +155,10 @@ class ItemWidget(QWidget):
         layout.addWidget(self._lb)
         self.setLayout(layout)
         self.exe = exe
-        self.maskshowfileexists.setStyleSheet(
-            "QLabel { background-color: "
-            + globalconfig["dialog_savegame_layout"][
-                ("onfilenoexistscolor", "backcolor")[os.path.exists(exe)]
-            ]
-            + "; }"
-        )
+        c = globalconfig["dialog_savegame_layout"][
+            ("onfilenoexistscolor", "backcolor")[os.path.exists(exe)]
+        ]
+        self.maskshowfileexists.setStyleSheet(f"background-color:{c};")
 
 
 class IMGWidget(QLabel):
