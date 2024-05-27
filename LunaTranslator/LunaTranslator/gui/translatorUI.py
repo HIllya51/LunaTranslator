@@ -1013,17 +1013,36 @@ class QUnFrameWindow(resizableframeless):
             print_exc()
 
     def takusanbuttons(self, _type, clickfunc, tips, name, belong=None):
+        if clickfunc:
+            button = QPushButton(self)
+            button.clicked.connect(functools.partial(self.callwrap, clickfunc))
+        else:
 
-        button = QPushButton(self)
+            class __(QPushButton):
+                def __init__(self, p):
+                    super().__init__(p)
+                    self._lb = QLabel(p)
+                    self._lb.raise_()
+
+                def hideEvent(self, _):
+                    self._lb.hide()
+
+                def showEvent(self, _):
+                    self._lb.show()
+
+                def moveEvent(self, event):
+                    self._lb.move(event.pos())
+
+                def resizeEvent(self, event):
+                    self._lb.resize(event.size())
+
+            button = __(self)
+
         if tips:
             button.setToolTip(_TR(tips))
         if _type not in self.stylebuttons:
             self.stylebuttons[_type] = []
         self.stylebuttons[_type].append(button)
-        if clickfunc:
-            button.clicked.connect(functools.partial(self.callwrap, clickfunc))
-        else:
-            button.lower()
 
         button.belong = belong
         self.buttons[name] = button
