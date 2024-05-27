@@ -263,7 +263,6 @@
             "selectocrrange",
             "hideocrrange",
             "bindwindow",
-            "resize",
             "fullscreen",
             "grabwindow",
             "muteprocess",
@@ -418,12 +417,6 @@
                 "use": false,
                 "tip": "窗口截图",
                 "icon": "fa.camera",
-                "align": 0
-            },
-            "resize": {
-                "use": false,
-                "tip": "调整游戏窗口",
-                "icon": "fa.arrows",
                 "align": 0
             },
             "muteprocess": {

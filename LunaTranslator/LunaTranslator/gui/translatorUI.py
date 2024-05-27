@@ -20,7 +20,7 @@ from myutils.hwnd import mouseselectwindow, grabwindow, getExeIcon
 from gui.dialog_savedgame import dialog_savedgame_new
 from gui.dialog_memory import dialog_memory
 from gui.textbrowser import Textbrowser
-from gui.rangeselect import moveresizegame, rangeselct_function
+from gui.rangeselect import rangeselct_function
 from gui.usefulwidget import resizableframeless, isinrect
 from gui.dialog_savedgame import browserdialog
 from winsharedutils import showintab
@@ -415,14 +415,6 @@ class QUnFrameWindow(resizableframeless):
             ("selectocrrange", lambda: self.clickRange(False)),
             ("hideocrrange", self.showhideocrrange),
             ("bindwindow", self.bindcropwindow_signal.emit),
-            (
-                "resize",
-                lambda: (
-                    moveresizegame(self, gobject.baseobject.textsource.hwnd)
-                    if gobject.baseobject.textsource.hwnd
-                    else 0
-                ),
-            ),
             ("fullscreen", self._fullsgame),
             ("grabwindow", lambda: grabwindow(getimageformat())),
             ("muteprocess", self.muteprocessfuntion),
