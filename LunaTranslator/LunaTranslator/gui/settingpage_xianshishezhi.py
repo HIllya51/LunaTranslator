@@ -245,7 +245,8 @@ def setTabThree_lazy(self):
         functools.partial(changeHorizontal, self)
     )
     self.horizontal_slider_label = QLabel()
-    self.horizontal_slider_label.setText("{}%".format(globalconfig["transparent_tool"]))
+    self.horizontal_slider_label.setText("{}%".format(globalconfig["transparent"]))
+
     self.horizontal_slider_tool = QSlider()
     self.horizontal_slider_tool.setMaximum(100)
     self.horizontal_slider_tool.setMinimum(1)
@@ -259,6 +260,7 @@ def setTabThree_lazy(self):
     self.horizontal_slider_tool_label.setText(
         "{}%".format(globalconfig["transparent_tool"])
     )
+
     self.font_comboBox = QFontComboBox()
     self.font_comboBox.activated[str].connect(
         lambda x: globalconfig.__setitem__("fonttype", x)
@@ -640,6 +642,21 @@ def setTabThree_lazy(self):
                     globalconfig,
                     "darktheme",
                     callback=lambda _: self.setstylesheet(),
+                ),
+                5,
+            ),
+        ],
+        [
+            ("WindowEffect", 6),
+            (
+                getsimplecombobox(
+                    ["Disable", "Acrylic", "Aero"],
+                    globalconfig,
+                    "WindowEffect",
+                    callback=lambda _: [
+                        self.setstylesheet(),
+                        gobject.baseobject.translation_ui.set_color_transparency(),
+                    ],
                 ),
                 5,
             ),

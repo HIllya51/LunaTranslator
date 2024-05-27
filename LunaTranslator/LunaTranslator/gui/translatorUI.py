@@ -669,7 +669,7 @@ class QUnFrameWindow(resizableframeless):
             return "border-radius:%spx" % r
 
     def set_color_transparency(self):
-
+        rate = int(globalconfig["WindowEffect"] == 0)
         use_r1 = min(
             self.translate_text.height() // 2,
             self.translate_text.width() // 2,
@@ -681,13 +681,13 @@ class QUnFrameWindow(resizableframeless):
             globalconfig["yuanjiao_r"],
         )
         topr = self.createborderradiusstring(
-            use_r1,
+            rate * use_r1,
             globalconfig["yuanjiao_merge"] and self._TitleLabel.isVisible(),
             False,
         )
-        bottomr2 = self.createborderradiusstring(use_r2, False)
+        bottomr3 = self.createborderradiusstring(use_r2, False)
         bottomr = self.createborderradiusstring(
-            use_r2, globalconfig["yuanjiao_merge"], True
+            rate * use_r2, globalconfig["yuanjiao_merge"], True
         )
 
         self.translate_text.setStyleSheet(
@@ -724,12 +724,12 @@ class QUnFrameWindow(resizableframeless):
                 font: 100 10pt;
             }
             """ % (
-                bottomr2,
+                bottomr3,
                 (
                     globalconfig["button_color_normal"],
                     globalconfig["button_color_close"],
                 )[_type - 1],
-                bottomr2,
+                bottomr3,
             )
 
             for btn in self.stylebuttons[_type]:
