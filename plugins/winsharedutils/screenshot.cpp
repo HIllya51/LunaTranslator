@@ -160,10 +160,14 @@ DECLARE BYTE *gdi_screenshot(HWND hwnd, RECT rect, size_t *size)
 {
     if (!hwnd)
         hwnd = GetDesktopWindow();
-    auto bm = GetBitmap(rect, GetDC(hwnd));
+    auto hdc = GetDC(hwnd);
+    if (!hdc)
+        return nullptr;
+    auto bm = GetBitmap(rect, hdc);
     // SaveBitmapToFile(bm, LR"(.\2.bmp)");
     auto bf = SaveBitmapToBuffer(bm, size);
     DeleteObject(bm);
+    ReleaseDC(hwnd, hdc);
     return bf;
 }
 

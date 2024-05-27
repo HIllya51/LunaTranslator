@@ -77,27 +77,6 @@ def grabwindow(app, callback=None):
         _()
 
 
-def dynamic_rate(hwnd, rect):
-    if getscreenp() == (rect[2], rect[3]):
-        rate = 1
-    else:
-        rate = hwndscalerate(hwnd)
-    return rate
-
-
-def getscreenp():  # 一些游戏全屏时会修改分辨率，但不会修改系统gdi
-    hDC = windows.GetDC(0)
-    h = windows.GetDeviceCaps(hDC, 8)
-    w = windows.GetDeviceCaps(hDC, 10)
-    windows.ReleaseDC(None, hDC)
-    return h, w
-
-
-def hwndscalerate(hwnd):
-    dpi = windows.GetDpiForWindow(hwnd)
-    rate = QApplication.instance().devicePixelRatio() * 96 / dpi
-    return rate
-
 
 def getprocesslist():
 
