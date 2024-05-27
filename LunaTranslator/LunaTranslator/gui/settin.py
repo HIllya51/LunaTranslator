@@ -51,9 +51,9 @@ class TabWidget(QWidget):
         layout.setSpacing(0)
         self.setLayout(layout)
         self.list_widget = QListWidget(self)
+        self.list_widget.setStyleSheet("QListWidget:focus {outline: 0px;}")
         self.tab_widget = QTabWidget(self)
-        self.tab_widget.tabBar().hide()  # 隐藏默认的 TabBar
-        self.tab_widget.setTabPosition(QTabWidget.West)  # 将 Tab 放在左侧
+        self.tab_widget.tabBar().hide()
         layout.addWidget(self.list_widget)
         layout.addWidget(self.tab_widget)
         self.currentChanged.connect(

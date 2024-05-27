@@ -238,7 +238,11 @@ def buildPlugins():
     )
     subprocess.run(f"python copytarget.py 0")
 
-
+def downloadsomething():
+    os.chdir(rootDir + "\\temp")
+    os.system('git clone https://github.com/Alexhuszagh/BreezeStyleSheets')
+    shutil.copy('BreezeStyleSheets/breeze_resources.py',rootDir + "\\LunaTranslator\\files\\themes")
+    
 if __name__ == "__main__":
     if sys.argv[1] == "loadversion":
         os.chdir(rootDir)
@@ -256,7 +260,7 @@ if __name__ == "__main__":
     os.makedirs("temp", exist_ok=True)
 
     createPluginDirs()
-
+    downloadsomething()
     downloadBrotli()
     downloadLocaleEmulator()
     downloadNtlea()
