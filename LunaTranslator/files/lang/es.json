@@ -340,7 +340,6 @@
     "代理设置": "Configuración del agente",
     "自动更新": "Actualización automática",
     "排除复制自翻译器的文本": "Excluir el texto copiado del traductor",
-    "界面设置": "Configuración de la interfaz",
     "文本设置": "Configuración de texto",
     "语法加亮": "Resaltado gramatical",
     "语音合成": "Síntesis de voz",
@@ -450,7 +449,6 @@
     "处理": "Tratamiento",
     "波兰语": "Polaco",
     "窗口置顶": "La ventana está en la parte superior",
-    "窗口按钮设置": "Configuración del botón de la ventana",
     "仅": "Solo",
     "注册网址2": "Sitio web de registro 2",
     "任务栏中显示": "Se muestra en la barra de tareas",
@@ -801,5 +799,8 @@
     "例句中加粗单词": "Palabras en negrita en oraciones de ejemplo",
     "工具栏": "Barra de herramientas",
     "背景颜色": "Color de fondo",
-    "翻译窗口": "Ventana de traducción"
+    "翻译窗口": "Ventana de traducción",
+    "工具按钮": "Botones de herramientas",
+    "界面主题": "Tema de la interfaz",
+    "窗口行为": "Comportamiento de la ventana"
 }

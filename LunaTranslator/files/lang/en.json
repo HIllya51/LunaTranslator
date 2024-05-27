@@ -340,7 +340,6 @@
     "代理设置": "Proxy Settings",
     "自动更新": "Automatic update",
     "排除复制自翻译器的文本": "Exclude text copied from the translator",
-    "界面设置": "Interface settings",
     "文本设置": "Text Settings",
     "语法加亮": "Grammar highlighting",
     "语音合成": "speech synthesis",
@@ -450,7 +449,6 @@
     "处理": "handle",
     "波兰语": "Polish",
     "窗口置顶": "Window Top",
-    "窗口按钮设置": "Window button settings",
     "仅": "only",
     "注册网址2": "Registration website 2",
     "任务栏中显示": "Show in taskbar",
@@ -801,5 +799,8 @@
     "例句中加粗单词": "Bold words in the example sentence",
     "工具栏": "toolbar",
     "背景颜色": "background color ",
-    "翻译窗口": "Translation Window"
+    "翻译窗口": "Translation Window",
+    "工具按钮": "Tool buttons",
+    "界面主题": "Interface Theme",
+    "窗口行为": "Window behavior"
 }

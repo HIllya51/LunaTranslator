@@ -330,7 +330,6 @@
     "代理设置": "Impostazioni proxy",
     "自动更新": "Aggiornamento automatico",
     "排除复制自翻译器的文本": "Escludi testo copiato dal traduttore",
-    "界面设置": "Impostazioni interfaccia",
     "文本设置": "Impostazioni testo",
     "语法加亮": "Evidenziazione grammaticale",
     "语音合成": "sintesi vocale",
@@ -436,7 +435,6 @@
     "绑定窗口（部分软件不支持）（点击自己取消）": "Finestra di associazione (non supportata da alcuni software) (clicca per annullarti)",
     "处理": "maniglia",
     "波兰语": "Polacco",
-    "窗口按钮设置": "Impostazioni pulsante finestra",
     "窗口置顶": "Finestra in alto",
     "显示显示原文按钮": "Mostra pulsante originale",
     "显示复制原文按钮": "Mostra pulsante Copia originale",
@@ -801,5 +799,8 @@
     "例句中加粗单词": "Parole grasse nella frase di esempio",
     "工具栏": "barra degli strumenti",
     "背景颜色": "colore di sfondo",
-    "翻译窗口": "Finestra di traduzione"
+    "翻译窗口": "Finestra di traduzione",
+    "工具按钮": "Pulsanti strumenti",
+    "界面主题": "Tema interfaccia",
+    "窗口行为": "Comportamento delle finestre"
 }

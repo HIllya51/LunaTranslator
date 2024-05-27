@@ -340,7 +340,6 @@
     "代理设置": "Thiết lập ủy nhiệm",
     "自动更新": "Cập nhật tự động",
     "排除复制自翻译器的文本": "Loại trừ văn bản sao chép tự dịch",
-    "界面设置": "Thiết lập giao diện",
     "文本设置": "Thiết lập văn bản",
     "语法加亮": "Ngữ pháp tô sáng",
     "语音合成": "Tổng hợp giọng nói",
@@ -450,7 +449,6 @@
     "处理": "Xử lý",
     "波兰语": "Ba Lan",
     "窗口置顶": "Cửa sổ trên cùng",
-    "窗口按钮设置": "Cài đặt nút cửa sổ",
     "仅": "Chỉ",
     "注册网址2": "Đăng ký địa chỉ web 2",
     "任务栏中显示": "Hiển thị trong Taskbar",
@@ -801,5 +799,8 @@
     "例句中加粗单词": "Từ in đậm trong câu ví dụ",
     "工具栏": "Thanh công cụ",
     "背景颜色": "Màu nền",
-    "翻译窗口": "Cửa sổ dịch"
+    "翻译窗口": "Cửa sổ dịch",
+    "工具按钮": "Nút công cụ",
+    "界面主题": "Giao diện sắc thái",
+    "窗口行为": "Ứng xử cửa sổ"
 }

@@ -340,7 +340,6 @@
     "代理设置": "Proksi Ayarları",
     "自动更新": "Otomatik güncelleştirme",
     "排除复制自翻译器的文本": "Tercümeden kopyalanan metin dışarı çıkar",
-    "界面设置": "Arayüz ayarları",
     "文本设置": "Metin Ayarları",
     "语法加亮": "Grammar ışıklandırma",
     "语音合成": "konuşma sintezi",
@@ -450,7 +449,6 @@
     "处理": "Döndür",
     "波兰语": "Polonyca@ item Spelling dictionary",
     "窗口置顶": "Pencere Üst",
-    "窗口按钮设置": "Pencere düğme ayarları",
     "仅": "Sadece",
     "注册网址2": "Kayıt sitesi 2",
     "任务栏中显示": "Görev çubuğunda göster",
@@ -801,5 +799,8 @@
     "例句中加粗单词": "Örneğin cümlelerinde kalın kelimeler",
     "工具栏": "araç çubuğu",
     "背景颜色": "Arkaplan rengi",
-    "翻译窗口": "Çeviri Penceresi"
+    "翻译窗口": "Çeviri Penceresi",
+    "工具按钮": "Araç düğmeleri",
+    "界面主题": "Interface Theme",
+    "窗口行为": "Pencere davranışları"
 }

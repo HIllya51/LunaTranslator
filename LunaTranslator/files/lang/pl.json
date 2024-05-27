@@ -340,7 +340,6 @@
     "代理设置": "Ustawienia proxy",
     "自动更新": "Automatyczna aktualizacja",
     "排除复制自翻译器的文本": "Wyklucz tekst skopiowany z tłumacza",
-    "界面设置": "Ustawienia interfejsu",
     "文本设置": "Ustawienia tekstu",
     "语法加亮": "Podkreślenie gramatyki",
     "语音合成": "synteza mowy",
@@ -450,7 +449,6 @@
     "处理": "uchwyt",
     "波兰语": "Polski",
     "窗口置顶": "Góra okna",
-    "窗口按钮设置": "Ustawienia przycisku okna",
     "仅": "Tylko",
     "注册网址2": "Strona internetowa rejestracyjna 2",
     "任务栏中显示": "Pokaż na pasku zadań",
@@ -801,5 +799,8 @@
     "例句中加粗单词": "Pogrubione słowa w zdaniu przykładowym",
     "工具栏": "pasek narzędzi",
     "背景颜色": "Kolor tła",
-    "翻译窗口": "Okno tłumaczenia"
+    "翻译窗口": "Okno tłumaczenia",
+    "工具按钮": "Przyciski narzędziowe",
+    "界面主题": "Motyw interfejsu",
+    "窗口行为": "Zachowanie okna"
 }

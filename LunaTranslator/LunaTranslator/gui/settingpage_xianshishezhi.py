@@ -54,37 +54,24 @@ def setTabThree(self):
     self.tabadd_lazy(self.tab_widget, ("显示设置"), lambda: setTabThree_lazy(self))
 
 
-@Singleton
-class dialog_toolbutton(QDialog):
-    def __init__(self, parent) -> None:
-        super().__init__(parent, Qt.WindowCloseButtonHint)
-        self.setWindowTitle(_TR("窗口按钮设置"))
-        model = QStandardItemModel()
-        model.setHorizontalHeaderLabels(
-            _TRL(["显示", "", "", "对齐", "图标", "图标2", "说明"])
-        )
+def createbuttonwidget(self):
 
-        layout = QVBoxLayout(self)  #
-        self.model = model
+    model = QStandardItemModel()
+    model.setHorizontalHeaderLabels(
+        _TRL(["显示", "", "", "对齐", "图标", "图标2", "说明"])
+    )
 
-        table = QTableView()
+    table = QTableView()
 
-        table.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
-        table.horizontalHeader().setStretchLastSection(True)
-        table.setEditTriggers(QAbstractItemView.NoEditTriggers)
-        table.setSelectionBehavior(QAbstractItemView.SelectRows)
-        table.setSelectionMode((QAbstractItemView.SingleSelection))
-        table.setWordWrap(False)
-        table.setModel(model)
-        self.table = table
-        for row, k in enumerate(globalconfig["toolbutton"]["rank2"]):
-            self.newline(row, k)
-        layout.addWidget(table)
+    table.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
+    table.horizontalHeader().setStretchLastSection(True)
+    table.setEditTriggers(QAbstractItemView.NoEditTriggers)
+    table.setSelectionBehavior(QAbstractItemView.SelectRows)
+    table.setSelectionMode((QAbstractItemView.SingleSelection))
+    table.setWordWrap(False)
+    table.setModel(model)
 
-        self.resize(QSize(800, 400))
-        self.show()
-
-    def changerank2(self, key, up):
+    def changerank2(key, up):
         idx = globalconfig["toolbutton"]["rank2"].index(key)
         idx2 = idx + (-1 if up else 1)
         if idx2 < 0 or idx2 >= len(globalconfig["toolbutton"]["rank2"]):
@@ -98,11 +85,11 @@ class dialog_toolbutton(QDialog):
             globalconfig["toolbutton"]["rank2"][idx],
         )
 
-        self.model.removeRow(idx2)
-        self.newline(idx, globalconfig["toolbutton"]["rank2"][idx]),
+        model.removeRow(idx2)
+        newline(idx, globalconfig["toolbutton"]["rank2"][idx]),
         gobject.baseobject.translation_ui.adjustbuttons()
 
-    def newline(self, row, k):
+    def newline(row, k):
         if "belong" in globalconfig["toolbutton"]["buttons"][k]:
             belong = (
                 "("
@@ -112,7 +99,7 @@ class dialog_toolbutton(QDialog):
             )
         else:
             belong = ""
-        self.model.insertRow(
+        model.insertRow(
             row,
             [
                 QStandardItem(),
@@ -126,8 +113,8 @@ class dialog_toolbutton(QDialog):
                 ),
             ],
         )
-        self.table.setIndexWidget(
-            self.model.index(row, 0),
+        table.setIndexWidget(
+            model.index(row, 0),
             getsimpleswitch(
                 globalconfig["toolbutton"]["buttons"][k],
                 "use",
@@ -137,28 +124,28 @@ class dialog_toolbutton(QDialog):
         button_up = getcolorbutton(
             globalconfig,
             "",
-            callback=functools.partial(self.changerank2, k, True),
+            callback=functools.partial(changerank2, k, True),
             icon="fa.arrow-up",
             constcolor="#FF69B4",
         )
         button_down = getcolorbutton(
             globalconfig,
             "",
-            callback=functools.partial(self.changerank2, k, False),
+            callback=functools.partial(changerank2, k, False),
             icon="fa.arrow-down",
             constcolor="#FF69B4",
         )
-        self.table.setIndexWidget(
-            self.model.index(row, 1),
+        table.setIndexWidget(
+            model.index(row, 1),
             button_up,
         )
-        self.table.setIndexWidget(
-            self.model.index(row, 2),
+        table.setIndexWidget(
+            model.index(row, 2),
             button_down,
         )
 
-        self.table.setIndexWidget(
-            self.model.index(row, 3),
+        table.setIndexWidget(
+            model.index(row, 3),
             getsimplecombobox(
                 _TRL(["居左", "居右", "居中"]),
                 globalconfig["toolbutton"]["buttons"][k],
@@ -166,8 +153,8 @@ class dialog_toolbutton(QDialog):
                 callback=lambda _: gobject.baseobject.translation_ui.adjustbuttons(),
             ),
         )
-        self.table.setIndexWidget(
-            self.model.index(row, 4),
+        table.setIndexWidget(
+            model.index(row, 4),
             getcolorbutton(
                 "",
                 "",
@@ -181,8 +168,8 @@ class dialog_toolbutton(QDialog):
             ),
         )
         if "icon2" in globalconfig["toolbutton"]["buttons"][k]:
-            self.table.setIndexWidget(
-                self.model.index(row, 5),
+            table.setIndexWidget(
+                model.index(row, 5),
                 getcolorbutton(
                     "",
                     "",
@@ -195,6 +182,11 @@ class dialog_toolbutton(QDialog):
                     ),
                 ),
             )
+
+    for row, k in enumerate(globalconfig["toolbutton"]["rank2"]):
+        newline(row, k)
+
+    return table
 
 
 @Singleton
@@ -456,6 +448,47 @@ def setTabThree_lazy(self):
     def themelist(t):
         return [_["name"] for _ in static_data["themes"][t]]
 
+    xingweigrid = [
+        [("游戏最小化时窗口隐藏", 6), (getsimpleswitch(globalconfig, "minifollow"), 1)],
+        [
+            ("游戏失去焦点时窗口隐藏", 6),
+            (getsimpleswitch(globalconfig, "focusfollow"), 1),
+        ],
+        [
+            ("游戏失去焦点时取消置顶", 6),
+            (getsimpleswitch(globalconfig, "focusnotop"), 1),
+        ],
+        [
+            ("游戏窗口移动时同步移动", 6),
+            (getsimpleswitch(globalconfig, "movefollow"), 1),
+        ],
+        [
+            ("固定窗口尺寸", 6),
+            getsimpleswitch(globalconfig, "fixedheight"),
+        ],
+        [
+            ("自动隐藏窗口", 6),
+            (getsimpleswitch(globalconfig, "autodisappear"), 1),
+            "",
+            ("隐藏延迟(s)", 3),
+            (getspinbox(1, 100, globalconfig, "disappear_delay"), 2),
+        ],
+        [
+            ("任务栏中显示", 6),
+            getsimpleswitch(globalconfig, "showintab", callback=__changeshowintab),
+        ],
+        [("子窗口任务栏中显示", 6), getsimpleswitch(globalconfig, "showintab_sub")],
+        [
+            ("选择文本窗口中文本框只读", 6),
+            getsimpleswitch(
+                globalconfig,
+                "textboxreadonly",
+                callback=lambda x: gobject.baseobject.hookselectdialog.textOutput.setReadOnly(
+                    x
+                ),
+            ),
+        ],
+    ]
     uigrid = [
         [("设置界面字体", 4), (self.sfont_comboBox, 5)],
         [
@@ -559,56 +592,6 @@ def setTabThree_lazy(self):
             ),
         ],
         [],
-        [
-            ("窗口按钮设置", 6),
-            getcolorbutton(
-                globalconfig,
-                "",
-                callback=lambda x: dialog_toolbutton(self),
-                icon="fa.gear",
-                constcolor="#FF69B4",
-            ),
-        ],
-        [],
-        [("游戏最小化时窗口隐藏", 6), (getsimpleswitch(globalconfig, "minifollow"), 1)],
-        [
-            ("游戏失去焦点时窗口隐藏", 6),
-            (getsimpleswitch(globalconfig, "focusfollow"), 1),
-        ],
-        [
-            ("游戏失去焦点时取消置顶", 6),
-            (getsimpleswitch(globalconfig, "focusnotop"), 1),
-        ],
-        [
-            ("游戏窗口移动时同步移动", 6),
-            (getsimpleswitch(globalconfig, "movefollow"), 1),
-        ],
-        [
-            ("固定窗口尺寸", 6),
-            getsimpleswitch(globalconfig, "fixedheight"),
-        ],
-        [
-            ("自动隐藏窗口", 6),
-            (getsimpleswitch(globalconfig, "autodisappear"), 1),
-            "",
-            ("隐藏延迟(s)", 3),
-            (getspinbox(1, 100, globalconfig, "disappear_delay"), 2),
-        ],
-        [
-            ("任务栏中显示", 6),
-            getsimpleswitch(globalconfig, "showintab", callback=__changeshowintab),
-        ],
-        [("子窗口任务栏中显示", 6), getsimpleswitch(globalconfig, "showintab_sub")],
-        [
-            ("选择文本窗口中文本框只读", 6),
-            getsimpleswitch(
-                globalconfig,
-                "textboxreadonly",
-                callback=lambda x: gobject.baseobject.hookselectdialog.textOutput.setReadOnly(
-                    x
-                ),
-            ),
-        ],
         [],
         [
             ("明暗", 6),
@@ -968,10 +951,12 @@ def setTabThree_lazy(self):
         ],
     ]
     tab = self.makesubtab_lazy(
-        ["文本设置", "界面设置", "窗口缩放"],
+        ["文本设置", "界面主题", "窗口行为", "工具按钮", "窗口缩放"],
         [
             lambda: self.makescroll(self.makegrid(textgrid)),
             lambda: self.makescroll(self.makegrid(uigrid)),
+            lambda: self.makescroll(self.makegrid(xingweigrid)),
+            lambda: createbuttonwidget(self),
             lambda: self.makevbox(
                 [
                     self.makegrid(commonfsgrid),
