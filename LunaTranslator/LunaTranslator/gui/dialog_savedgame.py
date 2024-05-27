@@ -153,6 +153,7 @@ class ItemWidget(QWidget):
         if globalconfig["showgametitle"]:
             self._lb.setText(file)
         self._lb.setWordWrap(True)
+        self._lb.setStyleSheet("background-color: rgba(255,255,255, 0);")
         self._lb.setAlignment(Qt.AlignCenter)
         layout.addWidget(self._lb)
         self.setLayout(layout)
