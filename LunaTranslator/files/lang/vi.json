@@ -97,7 +97,6 @@
     "显示设置": "Thiết lập hiển thị",
     "不透明度": "Độ mờ",
     "原文颜色": "Màu gốc",
-    "翻译窗口背景颜色": "Màu nền cửa sổ dịch",
     "工具按钮颜色": "Màu nút công cụ",
     "显示原文": "Hiển thị văn bản gốc",
     "显示分词结果": "Hiển thị kết quả phân từ",
@@ -799,5 +798,8 @@
     "居右": "Bên phải",
     "截图保存格式": "Định dạng lưu ảnh chụp màn hình",
     "交流群": "Nhóm trao đổi",
-    "例句中加粗单词": "Từ in đậm trong câu ví dụ"
+    "例句中加粗单词": "Từ in đậm trong câu ví dụ",
+    "工具栏": "Thanh công cụ",
+    "背景颜色": "Màu nền",
+    "翻译窗口": "Cửa sổ dịch"
 }

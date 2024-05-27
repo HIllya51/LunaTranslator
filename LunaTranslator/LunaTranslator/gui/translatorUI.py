@@ -704,10 +704,10 @@ class QUnFrameWindow(resizableframeless):
             "border-width: 0;%s;background-color: rgba(%s, %s, %s, %s)"
             % (
                 bottomr,
-                int(globalconfig["backcolor"][1:3], 16),
-                int(globalconfig["backcolor"][3:5], 16),
-                int(globalconfig["backcolor"][5:7], 16),
-                globalconfig["transparent"] / 200,
+                int(globalconfig["backcolor_tool"][1:3], 16),
+                int(globalconfig["backcolor_tool"][3:5], 16),
+                int(globalconfig["backcolor_tool"][5:7], 16),
+                globalconfig["transparent_tool"] / 100,
             )
         )
         for _type in self.stylebuttons:

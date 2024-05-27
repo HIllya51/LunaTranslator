@@ -97,7 +97,6 @@
     "显示设置": "Paramètres d 'affichage",
     "不透明度": "Opacité",
     "原文颜色": "Couleur originale",
-    "翻译窗口背景颜色": "Couleur de fond de la fenêtre de traduction",
     "工具按钮颜色": "Couleurs des boutons d'outils",
     "显示原文": "Afficher le texte original",
     "显示分词结果": "Afficher les résultats du participant",
@@ -799,5 +798,8 @@
     "居右": "Vivre à droite",
     "截图保存格式": "Format de sauvegarde des captures d'écran",
     "交流群": "Groupe d'échange",
-    "例句中加粗单词": "Mots épaissis dans une phrase d'exemple"
+    "例句中加粗单词": "Mots épaissis dans une phrase d'exemple",
+    "工具栏": "Barre d'outils",
+    "背景颜色": "Couleur de fond",
+    "翻译窗口": "Fenêtre de traduction"
 }

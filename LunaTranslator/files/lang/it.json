@@ -97,7 +97,6 @@
     "显示设置": "Impostazioni di visualizzazione",
     "不透明度": "Opacità",
     "原文颜色": "Colore originale",
-    "翻译窗口背景颜色": "Colore di sfondo della finestra di traduzione",
     "工具按钮颜色": "Colore pulsante strumento",
     "显示原文": "Mostra testo originale",
     "显示分词结果": "Mostra i risultati della segmentazione",
@@ -799,5 +798,8 @@
     "居右": "essere a destra",
     "截图保存格式": "Schermata Salva formato",
     "交流群": "Gruppi di comunicazione",
-    "例句中加粗单词": "Parole grasse nella frase di esempio"
+    "例句中加粗单词": "Parole grasse nella frase di esempio",
+    "工具栏": "barra degli strumenti",
+    "背景颜色": "colore di sfondo",
+    "翻译窗口": "Finestra di traduzione"
 }

@@ -97,7 +97,6 @@
     "显示设置": "Gösterim ayarları",
     "不透明度": "Opacity",
     "原文颜色": "Orijinal renk",
-    "翻译窗口背景颜色": "Çeviri penceresinin arkaplan rengi",
     "工具按钮颜色": "Araç düğmesi rengi",
     "显示原文": "Orijinal metni göster",
     "显示分词结果": "Bölümleme sonuçlarını göster",
@@ -799,5 +798,8 @@
     "居右": "Sağda ol.",
     "截图保存格式": "Ekran Görüntüsü Kaydet Format",
     "交流群": "İletişim grupları",
-    "例句中加粗单词": "Örneğin cümlelerinde kalın kelimeler"
+    "例句中加粗单词": "Örneğin cümlelerinde kalın kelimeler",
+    "工具栏": "araç çubuğu",
+    "背景颜色": "Arkaplan rengi",
+    "翻译窗口": "Çeviri Penceresi"
 }

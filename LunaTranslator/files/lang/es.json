@@ -97,7 +97,6 @@
     "显示设置": "Configuración de la pantalla",
     "不透明度": "Opacidad",
     "原文颜色": "Color del texto original",
-    "翻译窗口背景颜色": "Color de fondo de la ventana de traducción",
     "工具按钮颜色": "Color del botón de la herramienta",
     "显示原文": "Muestra el texto original",
     "显示分词结果": "Mostrar los resultados de la segmentación de palabras",
@@ -799,5 +798,8 @@
     "居右": "A la derecha",
     "截图保存格式": "Formato de Guardar captura de pantalla",
     "交流群": "Grupo de comunicación",
-    "例句中加粗单词": "Palabras en negrita en oraciones de ejemplo"
+    "例句中加粗单词": "Palabras en negrita en oraciones de ejemplo",
+    "工具栏": "Barra de herramientas",
+    "背景颜色": "Color de fondo",
+    "翻译窗口": "Ventana de traducción"
 }

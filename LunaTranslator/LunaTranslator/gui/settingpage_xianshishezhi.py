@@ -245,7 +245,20 @@ def setTabThree_lazy(self):
         functools.partial(changeHorizontal, self)
     )
     self.horizontal_slider_label = QLabel()
-    self.horizontal_slider_label.setText("{}%".format(globalconfig["transparent"]))
+    self.horizontal_slider_label.setText("{}%".format(globalconfig["transparent_tool"]))
+    self.horizontal_slider_tool = QSlider()
+    self.horizontal_slider_tool.setMaximum(100)
+    self.horizontal_slider_tool.setMinimum(1)
+    self.horizontal_slider_tool.setOrientation(Qt.Horizontal)
+    self.horizontal_slider_tool.setValue(0)
+    self.horizontal_slider_tool.setValue(globalconfig["transparent_tool"])
+    self.horizontal_slider_tool.valueChanged.connect(
+        functools.partial(changeHorizontal_tool, self)
+    )
+    self.horizontal_slider_tool_label = QLabel()
+    self.horizontal_slider_tool_label.setText(
+        "{}%".format(globalconfig["transparent_tool"])
+    )
     self.font_comboBox = QFontComboBox()
     self.font_comboBox.activated[str].connect(
         lambda x: globalconfig.__setitem__("fonttype", x)
@@ -453,12 +466,17 @@ def setTabThree_lazy(self):
             ),
         ],
         [
-            ("不透明度", 4),
+            ("不透明度_翻译窗口", 4),
             (self.horizontal_slider, 8),
             (self.horizontal_slider_label, 2),
         ],
         [
-            ("翻译窗口背景颜色", 4),
+            ("不透明度_工具栏", 4),
+            (self.horizontal_slider_tool, 8),
+            (self.horizontal_slider_tool_label, 2),
+        ],
+        [
+            ("背景颜色_翻译窗口", 4),
             getcolorbutton(
                 globalconfig,
                 "backcolor",
@@ -473,6 +491,23 @@ def setTabThree_lazy(self):
                 parent=self,
             ),
             "",
+            "",
+            ("背景颜色_工具栏", 4),
+            getcolorbutton(
+                globalconfig,
+                "backcolor_tool",
+                callback=lambda: selectcolor(
+                    self,
+                    globalconfig,
+                    "backcolor_tool",
+                    self.back_color_button_tool,
+                    callback=gobject.baseobject.translation_ui.set_color_transparency,
+                ),
+                name="back_color_button_tool",
+                parent=self,
+            ),
+        ],
+        [
             ("工具按钮颜色", 4),
             getcolorbutton(
                 globalconfig,
@@ -487,6 +522,7 @@ def setTabThree_lazy(self):
                 name="buttoncolorbutton",
                 parent=self,
             ),
+            "",
             "",
             ("工具按钮大小", 4),
             (
@@ -941,5 +977,15 @@ def changeHorizontal(self):
 
     globalconfig["transparent"] = self.horizontal_slider.value()
     self.horizontal_slider_label.setText("{}%".format(globalconfig["transparent"]))
+    #
+    gobject.baseobject.translation_ui.set_color_transparency()
+
+
+def changeHorizontal_tool(self):
+
+    globalconfig["transparent_tool"] = self.horizontal_slider_tool.value()
+    self.horizontal_slider_tool_label.setText(
+        "{}%".format(globalconfig["transparent_tool"])
+    )
     #
     gobject.baseobject.translation_ui.set_color_transparency()

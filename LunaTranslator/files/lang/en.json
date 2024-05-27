@@ -156,7 +156,6 @@
     "感動詞": "Moving words",
     "字数统计": "word count",
     "描边字体": "Stroke font",
-    "翻译窗口背景颜色": "Translation window background color",
     "特殊字体样式填充颜色": "Special Font Style Fill Color",
     "字体缩小（可长按）": "Reduce font size (long press is allowed)",
     "不透明度": "Opacity",
@@ -799,5 +798,8 @@
     "居右": "be at the right",
     "截图保存格式": "Screenshot Save Format",
     "交流群": "Communication groups",
-    "例句中加粗单词": "Bold words in the example sentence"
+    "例句中加粗单词": "Bold words in the example sentence",
+    "工具栏": "toolbar",
+    "背景颜色": "background color ",
+    "翻译窗口": "Translation Window"
 }

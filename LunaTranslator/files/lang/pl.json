@@ -97,7 +97,6 @@
     "显示设置": "Ustawienia wyświetlania",
     "不透明度": "Nieprzezroczystość",
     "原文颜色": "Kolor oryginalny",
-    "翻译窗口背景颜色": "Kolor tła okna tłumaczenia",
     "工具按钮颜色": "Kolor przycisku narzędzia",
     "显示原文": "Pokaż oryginalny tekst",
     "显示分词结果": "Pokaż wyniki segmentacji",
@@ -799,5 +798,8 @@
     "居右": "bądź po prawej stronie",
     "截图保存格式": "Zrzut ekranu Zapisz format",
     "交流群": "Grupy ds. komunikacji",
-    "例句中加粗单词": "Pogrubione słowa w zdaniu przykładowym"
+    "例句中加粗单词": "Pogrubione słowa w zdaniu przykładowym",
+    "工具栏": "pasek narzędzi",
+    "背景颜色": "Kolor tła",
+    "翻译窗口": "Okno tłumaczenia"
 }
