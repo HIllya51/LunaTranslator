@@ -1,11 +1,16 @@
 import functools
-from myutils.config import globalconfig, static_data, _TR
+from myutils.config import globalconfig, _TR
 from myutils.winsyshotkey import SystemHotkey, registerException
-from PyQt5.QtGui import QKeySequence
 import winsharedutils
 import gobject, windows
 from PyQt5.QtWidgets import QLabel
-from gui.usefulwidget import getsimpleswitch, getsimplekeyseq
+from gui.usefulwidget import (
+    getsimpleswitch,
+    getsimplekeyseq,
+    makegrid,
+    tabadd_lazy,
+    makescroll,
+)
 from myutils.hwnd import grabwindow
 from myutils.utils import getimageformat, parsekeystringtomodvkcode, unsupportkey
 
@@ -58,7 +63,7 @@ def setTab_quick_direct(self):
 
 def setTab_quick(self):
 
-    self.tabadd_lazy(self.tab_widget, ("快捷按键"), lambda: setTab_quick_lazy(self))
+    tabadd_lazy(self.tab_widget, ("快捷按键"), lambda: setTab_quick_lazy(self))
 
 
 def setTab_quick_lazy(self):
@@ -97,8 +102,8 @@ def setTab_quick_lazy(self):
                 (self.referlabels[name], 4),
             ]
         )
-    gridlayoutwidget = self.makegrid(grids)
-    gridlayoutwidget = self.makescroll(gridlayoutwidget)
+    gridlayoutwidget = makegrid(grids)
+    gridlayoutwidget = makescroll(gridlayoutwidget)
     return gridlayoutwidget
     # self.yitiaolong("快捷按键",grids)
 

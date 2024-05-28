@@ -1,4 +1,4 @@
-from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QCursor
 from PyQt5.QtWidgets import (
     QPlainTextEdit,
     QAction,
@@ -90,7 +90,7 @@ class edittext(closeashidewindow):
         menu = QMenu(self.textOutput)
         qingkong = QAction(_TR("清空"))
         menu.addAction(qingkong)
-        action = menu.exec(self.mapToGlobal(self.textOutput.pos()) + point)
+        action = menu.exec(QCursor.pos())
         if action == qingkong:
             self.textOutput.clear()
 

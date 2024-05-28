@@ -1,10 +1,16 @@
 import os
-from myutils.config import globalconfig, _TRL, static_data,getlanguse
-from gui.usefulwidget import getsimplecombobox, getcolorbutton
+from myutils.config import globalconfig, _TRL, static_data, getlanguse
+from gui.usefulwidget import (
+    getsimplecombobox,
+    getcolorbutton,
+    makegrid,
+    tabadd_lazy,
+    makescroll,
+)
 
 
 def setTablang(self):
-    self.tabadd_lazy(self.tab_widget, ("语言设置"), lambda: setTablanglz(self))
+    tabadd_lazy(self.tab_widget, ("语言设置"), lambda: setTablanglz(self))
 
 
 def setTablangd(self):
@@ -45,9 +51,7 @@ def setTablanglz(self):
                     globalconfig,
                     "",
                     callback=lambda: os.startfile(
-                        os.path.abspath(
-                            "./files/lang/{}.json".format(getlanguse())
-                        )
+                        os.path.abspath("./files/lang/{}.json".format(getlanguse()))
                     ),
                     icon="fa.gear",
                     constcolor="#FF69B4",
@@ -58,7 +62,7 @@ def setTablanglz(self):
         [],
     ]
 
-    gridlayoutwidget = self.makegrid(grids)
-    gridlayoutwidget = self.makescroll(gridlayoutwidget)
+    gridlayoutwidget = makegrid(grids)
+    gridlayoutwidget = makescroll(gridlayoutwidget)
 
     return gridlayoutwidget

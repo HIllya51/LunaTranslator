@@ -4,6 +4,9 @@ from gui.inputdialog import autoinitdialog, autoinitdialog_items
 from gui.usefulwidget import (
     getcolorbutton,
     yuitsu_switch,
+    makescroll,
+    makegrid,
+    tabadd_lazy,
     getsimpleswitch,
     getsimplecombobox,
 )
@@ -11,7 +14,7 @@ import gobject
 
 
 def setTabcishu(self):
-    self.tabadd_lazy(self.tab_widget, ("辞书设置"), lambda: setTabcishu_l(self))
+    tabadd_lazy(self.tab_widget, ("辞书设置"), lambda: setTabcishu_l(self))
 
 
 def gethiragrid(self):
@@ -171,7 +174,7 @@ def setTabcishu_l(self):
             (getsimpleswitch(globalconfig, "searchwordusewebview"), 1),
         ],
     )
-    gridlayoutwidget = self.makegrid(grids)
-    gridlayoutwidget = self.makescroll(gridlayoutwidget)
+    gridlayoutwidget = makegrid(grids)
+    gridlayoutwidget = makescroll(gridlayoutwidget)
 
     return gridlayoutwidget

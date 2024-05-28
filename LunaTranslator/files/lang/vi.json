@@ -570,7 +570,6 @@
     "过滤反复刷新的句子": "Lọc các câu được làm mới nhiều lần",
     "选择图标": "Chọn biểu tượng",
     "图标2": "Biểu tượng 2",
-    "子窗口任务栏中显示": "Hiển thị trong thanh tác vụ cửa sổ con",
     "刷新": "Làm mới",
     "读取剪贴板": "Đọc bảng nháp",
     "进行一次OCR": "Thực hiện OCR",
@@ -802,5 +801,6 @@
     "翻译窗口": "Cửa sổ dịch",
     "工具按钮": "Nút công cụ",
     "界面主题": "Giao diện sắc thái",
-    "窗口行为": "Ứng xử cửa sổ"
+    "窗口行为": "Ứng xử cửa sổ",
+    "窗口特效": "Hiệu ứng cửa sổ"
 }

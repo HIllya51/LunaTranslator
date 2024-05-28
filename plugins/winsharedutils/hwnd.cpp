@@ -6,12 +6,12 @@ DECLARE void showintab(HWND hwnd, bool show)
     if (show)
     {
         style_ex |= WS_EX_APPWINDOW;
-        style_ex &= ~WS_EX_TOOLWINDOW;
+        // style_ex &= ~WS_EX_TOOLWINDOW;
     }
     else
     {
         style_ex &= ~WS_EX_APPWINDOW;
-        style_ex |= WS_EX_TOOLWINDOW;
+        // style_ex |= WS_EX_TOOLWINDOW;
     }
     SetWindowLong(hwnd, GWL_EXSTYLE, style_ex);
 }

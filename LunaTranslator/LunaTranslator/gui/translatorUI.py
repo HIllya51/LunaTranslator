@@ -258,8 +258,8 @@ class QUnFrameWindow(resizableframeless):
             self.translate_text.addsearchwordmask(hira, text, callback)
 
         if globalconfig["autodisappear"]:
-            flag = (self.showintab and self.isMinimized()) or (
-                not self.showintab and self.isHidden()
+            flag = (globalconfig['showintab'] and self.isMinimized()) or (
+                not globalconfig['showintab'] and self.isHidden()
             )
 
             if flag:
@@ -282,8 +282,8 @@ class QUnFrameWindow(resizableframeless):
         if self._move_drag:
             return
 
-        flag = (self.showintab and self.isMinimized()) or (
-            not self.showintab and self.isHidden()
+        flag = (globalconfig['showintab'] and self.isMinimized()) or (
+            not globalconfig['showintab'] and self.isHidden()
         )
 
         if flag:
@@ -481,13 +481,13 @@ class QUnFrameWindow(resizableframeless):
             )
 
     def hide_(self):
-        if self.showintab:
+        if globalconfig['showintab']:
             windows.ShowWindow(int(self.winId()), windows.SW_SHOWMINIMIZED)
         else:
             self.hide()
 
     def show_(self):
-        if self.showintab:
+        if globalconfig['showintab']:
             windows.ShowWindow(int(self.winId()), windows.SW_SHOWNOACTIVATE)
         else:
             self.show()
@@ -597,11 +597,9 @@ class QUnFrameWindow(resizableframeless):
         self.setWindowIcon(icon)
         self.tray = QSystemTrayIcon()
         self.tray.setIcon(icon)
-        showintab(int(self.winId()), globalconfig["showintab"])
         self.isfirstshow = True
         self.setAttribute(Qt.WA_TranslucentBackground)
         self.setAttribute(Qt.WA_ShowWithoutActivating, True)
-        self.showintab = globalconfig["showintab"]
         self.setWindowTitle("LunaTranslator")
         self.hidesignal.connect(self.hide_)
         self.lastrefreshtime = time.time()

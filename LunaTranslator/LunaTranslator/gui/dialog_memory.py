@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QPushButton, QVBoxLayout, QFileDialog
+from PyQt5.QtWidgets import QPushButton, QFileDialog
 from PyQt5.QtWidgets import QHBoxLayout, QVBoxLayout, QTextEdit, QWidget
 
 from PyQt5.QtGui import QTextCursor
@@ -6,7 +6,6 @@ from PyQt5.QtCore import Qt
 from myutils.config import _TR, globalconfig
 from gui.usefulwidget import saveposwindow
 from myutils.wrapper import Singleton_close
-from winsharedutils import showintab
 import os
 
 
@@ -32,8 +31,6 @@ class dialog_memory(saveposwindow):
             key="memorydialoggeo",
         )
         self.setWindowTitle(_TR("备忘录"))
-        if globalconfig["showintab_sub"]:
-            showintab(int(self.winId()), True)
         self.gamemd5 = gamemd5
         formLayout = QVBoxLayout()  #
         self.showtext = QTextEdit()

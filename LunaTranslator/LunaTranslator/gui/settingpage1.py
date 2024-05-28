@@ -19,9 +19,14 @@ from gui.inputdialog import regexedit
 from gui.usefulwidget import (
     getsimplecombobox,
     getspinbox,
+    makescroll,
     getcolorbutton,
+    makegrid,
+    tabadd_lazy,
     yuitsu_switch,
+    makevbox,
     getsimpleswitch,
+    makesubtab_lazy,
 )
 from gui.codeacceptdialog import codeacceptdialog
 from myutils.utils import makehtml, getfilemd5
@@ -507,21 +512,21 @@ def setTabOne_direct(self):
 
 
 def setTabOne(self):
-    self.tabadd_lazy(self.tab_widget, ("文本输入"), lambda: setTabOne_lazy(self))
+    tabadd_lazy(self.tab_widget, ("文本输入"), lambda: setTabOne_lazy(self))
 
 
 def setTabOne_lazy(self):
 
-    tab = self.makesubtab_lazy(
+    tab = makesubtab_lazy(
         ["HOOK设置", "OCR设置", "剪贴板", "内嵌翻译", "文本输出"],
         [
-            lambda: self.makescroll(self.makegrid(gethookgrid(self))),
-            lambda: self.makescroll(self.makegrid(getocrgrid(self))),
-            lambda: self.makescroll(self.makegrid(getTabclip(self))),
-            lambda: self.makescroll(self.makegrid(gethookembedgrid(self))),
-            lambda: self.makescroll(self.makegrid(outputgrid(self))),
+            lambda: makescroll(makegrid(gethookgrid(self))),
+            lambda: makescroll(makegrid(getocrgrid(self))),
+            lambda: makescroll(makegrid(getTabclip(self))),
+            lambda: makescroll(makegrid(gethookembedgrid(self))),
+            lambda: makescroll(makegrid(outputgrid(self))),
         ],
     )
 
-    gridlayoutwidget = self.makegrid(self.tab1grids)
-    return self.makevbox([gridlayoutwidget, tab])
+    gridlayoutwidget = makegrid(self.tab1grids)
+    return makevbox([gridlayoutwidget, tab])

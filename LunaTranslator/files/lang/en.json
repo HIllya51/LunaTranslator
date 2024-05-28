@@ -570,7 +570,6 @@
     "过滤反复刷新的句子": "Filter repeatedly refreshed sentences",
     "选择图标": "Select icon",
     "图标2": "Icon 2",
-    "子窗口任务栏中显示": "Display in the sub window Taskbar",
     "刷新": "Refresh",
     "读取剪贴板": "Read clipboard",
     "进行一次OCR": "Conduct an OCR",
@@ -802,5 +801,6 @@
     "翻译窗口": "Translation Window",
     "工具按钮": "Tool buttons",
     "界面主题": "Interface Theme",
-    "窗口行为": "Window behavior"
+    "窗口行为": "Window behavior",
+    "窗口特效": "Window effects"
 }

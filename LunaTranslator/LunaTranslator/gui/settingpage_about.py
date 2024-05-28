@@ -1,7 +1,14 @@
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QPixmap, QImage
-from PyQt5.QtWidgets import QWidget, QLabel, QProgressBar
-from gui.usefulwidget import getsimpleswitch, getsimplecombobox
+from PyQt5.QtWidgets import QLabel, QProgressBar
+from gui.usefulwidget import (
+    getsimpleswitch,
+    getsimplecombobox,
+    makegrid,
+    makescroll,
+    makesubtab_lazy,
+    tabadd_lazy,
+)
 from myutils.config import globalconfig, _TR, static_data
 from myutils.wrapper import threader
 import platform, winsharedutils, sys
@@ -64,11 +71,11 @@ def setTab_about_dicrect(self):
 
 
 def setTab_about(self):
-    self.tabadd_lazy(self.tab_widget, ("其他设置"), lambda: setTab_aboutlazy(self))
+    tabadd_lazy(self.tab_widget, ("其他设置"), lambda: setTab_aboutlazy(self))
 
 
 def double_(self, grid):
-    return self.makescroll(self.makegrid(grid))
+    return makescroll(makegrid(grid))
 
 
 def resourcegrid(self):
@@ -98,7 +105,7 @@ def resourcegrid(self):
                     __ = True
                 grid.append([(_TR(name), 1, ""), (makehtml(link, __), 2, "link")])
         makewidgetsfunctions.append(partial(double_, self, grid))
-    return self.makesubtab_lazy(titles, makewidgetsfunctions)
+    return makesubtab_lazy(titles, makewidgetsfunctions)
 
 
 def setTab_aboutlazy(self):
@@ -149,8 +156,19 @@ def setTab_aboutlazy(self):
                 (makehtml("https://qm.qq.com/q/qE32v9NYBO", show=912525396), 3, "link"),
             ],
             [],
-            [("如果你感觉该软件对你有帮助，欢迎微信扫码赞助，谢谢~", 4)],
+            [("如果你感觉该软件对你有帮助，欢迎微信扫码赞助，谢谢~", 0)],
         ]
+        lb = QLabel(self)
+        img = QPixmap.fromImage(QImage("./files/zan.jpg"))
+        img.setDevicePixelRatio(self.devicePixelRatioF())
+        img = img.scaled(
+            600,
+            600,
+            Qt.KeepAspectRatio,
+            Qt.SmoothTransformation,
+        )
+        lb.setPixmap(img)
+        shuominggrid += [[(lb, 0)]]
     else:
         shuominggrid += [
             [],
@@ -169,41 +187,15 @@ def setTab_aboutlazy(self):
                 )
             ],
         ]
-    tab = self.makesubtab_lazy(
+
+    tab = makesubtab_lazy(
         ["相关说明", "其他设置", "资源下载"],
         [
-            lambda: self.makevbox(
-                [
-                    self.makegrid(shuominggrid),
-                    (
-                        imgwidget("./files/zan.jpg")
-                        if globalconfig["languageuse"] == 0
-                        else QLabel()
-                    ),
-                ]
+            lambda: makescroll(
+                makegrid(shuominggrid),
             ),
-            lambda: self.makescroll(self.makegrid(grid2)),
+            lambda: makescroll(makegrid(grid2)),
             lambda: resourcegrid(self),
         ],
     )
     return tab
-
-
-class imgwidget(QWidget):
-    def __init__(self, src) -> None:
-        super().__init__()
-        self.lb = QLabel(self)
-        rate = self.devicePixelRatioF()
-        self.img = QPixmap.fromImage(QImage(src))
-        self.img.setDevicePixelRatio(rate)
-
-    def paintEvent(self, a0) -> None:
-        self.lb.resize(self.size())
-        self.lb.setPixmap(
-            self.img.scaled(
-                self.size() * self.devicePixelRatioF(),
-                Qt.KeepAspectRatio,
-                Qt.SmoothTransformation,
-            )
-        )
-        return super().paintEvent(a0)

@@ -716,6 +716,9 @@ class hookselect(closeashidewindow):
         self.changeprocessclear()
 
     def showmenu(self, p: QPoint):
+        r = self.tttable.currentIndex().row()
+        if r < 0:
+            return
         menu = QMenu(self.tttable)
         remove = QAction(_TR("移除"))
         copy = QAction(_TR("复制特殊码"))
@@ -723,9 +726,6 @@ class hookselect(closeashidewindow):
         menu.addAction(copy)
         action = menu.exec(self.tttable.cursor().pos())
 
-        r = self.tttable.currentIndex().row()
-        if r < 0:
-            return
         hc, hn, tp = self.save[r]
         if action == remove:
             pid = tp.processId

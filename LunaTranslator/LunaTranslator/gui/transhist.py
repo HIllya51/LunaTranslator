@@ -1,5 +1,6 @@
 from PyQt5.QtWidgets import QPlainTextEdit, QAction, QMenu, QFileDialog
 from PyQt5.QtCore import Qt, pyqtSignal
+from PyQt5.QtGui import QCursor
 import qtawesome, functools, winsharedutils
 from gui.usefulwidget import closeashidewindow
 from myutils.config import globalconfig, _TR
@@ -54,7 +55,7 @@ class transhist(closeashidewindow):
             menu.addAction(hideshowraw)
             menu.addAction(hideshowapi)
 
-        action = menu.exec(self.mapToGlobal(p))
+        action = menu.exec(QCursor.pos())
         if action == qingkong:
             tb.clear()
         elif action == copy:

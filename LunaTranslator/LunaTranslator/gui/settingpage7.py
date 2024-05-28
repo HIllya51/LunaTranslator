@@ -17,7 +17,15 @@ from myutils.config import (
     _TR,
 )
 import functools, gobject
-from gui.usefulwidget import getcolorbutton, getsimpleswitch
+from gui.usefulwidget import (
+    getcolorbutton,
+    getsimpleswitch,
+    makevbox,
+    makescroll,
+    makegrid,
+    makesubtab_lazy,
+    tabadd_lazy,
+)
 from gui.codeacceptdialog import codeacceptdialog
 from gui.inputdialog import (
     postconfigdialog,
@@ -73,7 +81,7 @@ def settab7direct(self):
 
 
 def setTab7(self):
-    self.tabadd_lazy(self.tab_widget, ("文本处理"), lambda: setTab7_lazy(self))
+    tabadd_lazy(self.tab_widget, ("文本处理"), lambda: setTab7_lazy(self))
 
 
 def getcomparelayout(self):
@@ -229,9 +237,10 @@ def setTab7_lazy(self):
                         constcolor="#FF69B4",
                     )
                 )
+    grids2 += [[("", 12)]]
 
     def __():
-        _w = self.makescroll(self.makegrid(grids, True, savelist, savelay))
+        _w = makescroll(makegrid(grids, True, savelist, savelay))
         _w.setContextMenuPolicy(Qt.CustomContextMenu)
 
         def showmenu(p: QPoint):
@@ -251,9 +260,9 @@ def setTab7_lazy(self):
         _w.customContextMenuRequested.connect(showmenu)
         return _w
 
-    tab = self.makesubtab_lazy(
+    tab = makesubtab_lazy(
         ["文本预处理", "翻译优化"],
-        [lambda: __(), lambda: self.makescroll(self.makegrid(grids2))],
+        [lambda: __(), lambda: makescroll(makegrid(grids2))],
     )
 
-    return self.makevbox([tab, self.comparelayout])
+    return makevbox([tab, self.comparelayout])

@@ -1,4 +1,4 @@
-import functools, time
+import time
 from datetime import datetime, timedelta
 from gui.specialwidget import ScrollFlow, chartwidget, lazyscrollflow
 from PyQt5.QtWidgets import (
@@ -10,20 +10,11 @@ from PyQt5.QtWidgets import (
     QLineEdit,
     QComboBox,
     QFormLayout,
-)
-import functools, threading
-from traceback import print_exc
-from PyQt5.QtWidgets import (
     QHBoxLayout,
     QTableView,
     QAbstractItemView,
     QLabel,
     QTabWidget,
-)
-import windows
-from PyQt5.QtCore import QRect, QSize, Qt, pyqtSignal, QObject
-import os
-from PyQt5.QtWidgets import (
     QApplication,
     QSizePolicy,
     QWidget,
@@ -31,6 +22,11 @@ from PyQt5.QtWidgets import (
     QAction,
     QTabBar,
 )
+import functools, threading
+from traceback import print_exc
+import windows
+from PyQt5.QtCore import QRect, QSize, Qt, pyqtSignal, QObject
+import os
 from PyQt5.QtGui import (
     QCloseEvent,
     QIntValidator,
@@ -38,8 +34,9 @@ from PyQt5.QtGui import (
     QPixmap,
     QPainter,
     QPen,
+    QStandardItem,
+    QStandardItemModel,
 )
-from PyQt5.QtCore import Qt
 from gui.usefulwidget import (
     getsimplecombobox,
     getspinbox,
@@ -48,11 +45,7 @@ from gui.usefulwidget import (
     getspinbox,
     selectcolor,
 )
-from PyQt5.QtCore import QRect, QSize, Qt, pyqtSignal
 import os
-from winsharedutils import showintab
-from PyQt5.QtGui import QStandardItem, QStandardItemModel
-from PyQt5.QtCore import Qt, QSize
 from myutils.config import savehook_new_list, savehook_new_data, vndbtagdata
 from myutils.hwnd import getExeIcon
 import gobject
@@ -1462,6 +1455,7 @@ class dialog_savedgame_new(saveposwindow):
                     if path.lower().endswith(".exe") == False:
                         continue
                     if path not in savehook_new_list:
+                        checkifnewgame(path)
                         self.newline(path, True)
 
     def clicked3(self):
@@ -1472,6 +1466,7 @@ class dialog_savedgame_new(saveposwindow):
         if res != "":
             res = res.replace("/", "\\")
             if res not in savehook_new_list:
+                checkifnewgame(res)
                 self.newline(res, True)
 
     def tagschanged(self, tags):
@@ -1568,8 +1563,6 @@ class dialog_savedgame_new(saveposwindow):
         global _global_dialog_savedgame_new
         _global_dialog_savedgame_new = self
         self.setWindowTitle(_TR("游戏管理"))
-        if globalconfig["showintab_sub"]:
-            showintab(int(self.winId()), True)
         formLayout = QVBoxLayout()
 
         layout = QHBoxLayout()
@@ -1728,7 +1721,6 @@ class dialog_savedgame_new(saveposwindow):
         return gameitem
 
     def newline(self, k, first=False):
-        checkifnewgame(k)
 
         itemw = globalconfig["dialog_savegame_layout"]["itemw"]
         itemh = globalconfig["dialog_savegame_layout"]["itemh"]

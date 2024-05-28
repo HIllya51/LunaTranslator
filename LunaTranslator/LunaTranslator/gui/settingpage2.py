@@ -8,7 +8,17 @@ from myutils.config import globalconfig, _TR
 from myutils.utils import selectdebugfile, splittranslatortypes, checkportavailable
 import os, time, requests, threading
 from gui.inputdialog import autoinitdialog, autoinitdialog_items
-from gui.usefulwidget import getspinbox, getcolorbutton, getsimpleswitch, selectcolor
+from gui.usefulwidget import (
+    getspinbox,
+    getcolorbutton,
+    getsimpleswitch,
+    selectcolor,
+    makegrid,
+    makesubtab_lazy,
+    makescroll,
+    makevbox,
+    tabadd_lazy,
+)
 import time, hashlib
 
 
@@ -94,7 +104,7 @@ def initsome11(self, l, label=None):
 
 
 def setTabTwo(self):
-    self.tabadd_lazy(self.tab_widget, ("翻译设置"), lambda: setTabTwo_lazy(self))
+    tabadd_lazy(self.tab_widget, ("翻译设置"), lambda: setTabTwo_lazy(self))
 
 
 def settab2d(self):
@@ -245,16 +255,16 @@ def setTabTwo_lazy(self):
     developgrid += initsome11(self, develop)
     online_reg_grid += initsome11(self, shoufei)
     pretransgrid += initsome11(self, pre)
-    tab = self.makesubtab_lazy(
+    tab = makesubtab_lazy(
         ["在线翻译", "develop", "注册在线翻译", "离线翻译", "预翻译"],
         [
-            lambda: self.makescroll(self.makegrid(onlinegrid)),
-            lambda: self.makescroll(self.makegrid(developgrid)),
-            lambda: self.makescroll(self.makegrid(online_reg_grid)),
-            lambda: self.makescroll(self.makegrid(offlinegrid)),
-            lambda: self.makescroll(self.makegrid(pretransgrid)),
+            lambda: makescroll(makegrid(onlinegrid)),
+            lambda: makescroll(makegrid(developgrid)),
+            lambda: makescroll(makegrid(online_reg_grid)),
+            lambda: makescroll(makegrid(offlinegrid)),
+            lambda: makescroll(makegrid(pretransgrid)),
         ],
     )
 
-    gridlayoutwidget = self.makegrid(grids)
-    return self.makevbox([gridlayoutwidget, tab])
+    gridlayoutwidget = makegrid(grids)
+    return makevbox([gridlayoutwidget, tab])

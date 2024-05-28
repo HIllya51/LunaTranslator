@@ -2,7 +2,14 @@ from PyQt5.QtWidgets import QLineEdit, QPushButton
 from myutils.config import _TR
 from myutils.config import globalconfig
 from myutils.utils import splittranslatortypes
-from gui.usefulwidget import getsimpleswitch
+from gui.usefulwidget import (
+    getsimpleswitch,
+    makegrid,
+    makesubtab_lazy,
+    tabadd_lazy,
+    makevbox,
+    makescroll,
+)
 import os
 
 
@@ -77,18 +84,18 @@ def setTab_proxy_lazy(self):
         item="ocr",
         name="./Lunatranslator/ocrengines/%s.py",
     )
-    tab = self.makesubtab_lazy(
+    tab = makesubtab_lazy(
         ["在线翻译", "注册在线翻译", "在线OCR"],
         [
-            lambda: self.makescroll(self.makegrid(mianfei)),
-            lambda: self.makescroll(self.makegrid(shoufei)),
-            lambda: self.makescroll(self.makegrid(ocrs)),
+            lambda: makescroll(makegrid(mianfei)),
+            lambda: makescroll(makegrid(shoufei)),
+            lambda: makescroll(makegrid(ocrs)),
         ],
     )
 
-    gridlayoutwidget = self.makegrid(grid1)
-    return self.makevbox([gridlayoutwidget, tab])
+    gridlayoutwidget = makegrid(grid1)
+    return makevbox([gridlayoutwidget, tab])
 
 
 def setTab_proxy(self):
-    self.tabadd_lazy(self.tab_widget, ("代理设置"), lambda: setTab_proxy_lazy(self))
+    tabadd_lazy(self.tab_widget, ("代理设置"), lambda: setTab_proxy_lazy(self))

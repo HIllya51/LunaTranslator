@@ -1,26 +1,18 @@
-from PyQt5.QtCore import pyqtSignal, Qt, QSize, QObject, QEvent
+from PyQt5.QtCore import pyqtSignal, Qt, QSize
 from PyQt5.QtWidgets import (
-    QLabel,
-    QScrollArea,
     QWidget,
-    QGridLayout,
-    QVBoxLayout,
     QListWidget,
     QHBoxLayout,
     QListWidgetItem,
     QMenu,
     QAction,
-    QApplication,
 )
-from PyQt5.QtGui import QResizeEvent, QFont, QFontMetrics
+from PyQt5.QtGui import QFont, QFontMetrics
 from PyQt5.QtWidgets import QTabWidget
-import qtawesome, gobject, importlib, sys
-import functools, threading, windows, winsharedutils
-from traceback import print_exc
-from winsharedutils import isDark
+import qtawesome, gobject
+import threading, windows, winsharedutils
 from myutils.config import globalconfig, _TR
 from myutils.utils import wavmp3player
-from myutils.config import static_data
 from gui.settingpage1 import setTabOne, setTabOne_direct
 from gui.settingpage2 import setTabTwo, settab2d
 from gui.settingpage_xianshishezhi import setTabThree, setTabThree_direct
@@ -31,11 +23,7 @@ from gui.setting_lang import setTablang, setTablangd
 from gui.setting_proxy import setTab_proxy
 from gui.settingpage7 import setTab7, settab7direct
 from gui.settingpage_about import setTab_about, setTab_about_dicrect
-from gui.usefulwidget import closeashidewindow, tabadd_lazy
-
-
-class gridwidget(QWidget):
-    pass
+from gui.usefulwidget import closeashidewindow, makesubtab_lazy
 
 
 class TabWidget(QWidget):
@@ -89,60 +77,7 @@ class Settin(closeashidewindow):
     showandsolvesig = pyqtSignal(str)
     setstylesheetsignal = pyqtSignal()
 
-    def resizefunction(self):
-        ww = self.size().width() - self.list_width - 30
-        for w in self.needfitwidgets:
-            w.setFixedWidth(int(ww))
-        for grid, maxl in self.needfitcols:
-            for c in range(maxl):
-                grid.setColumnMinimumWidth(
-                    c,
-                    int(ww / maxl),
-                )
-
-    def resizeEvent(self, a0: QResizeEvent) -> None:
-
-        self.resizefunction()
-        return super().resizeEvent(a0)
-
-    def automakegrid(self, grid, lis, save=False, savelist=None):
-        maxl = 0
-
-        for nowr, line in enumerate(lis):
-            nowc = 0
-            if save:
-                ll = []
-            for i in line:
-                if type(i) == str:
-                    cols = 1
-                    wid = QLabel(_TR(i))
-                elif type(i) != tuple:
-                    wid, cols = i, 1
-                elif len(i) == 2:
-
-                    wid, cols = i
-                    if type(wid) == str:
-                        wid = QLabel(_TR(wid))
-                elif len(i) == 3:
-                    wid, cols, arg = i
-                    if type(wid) == str:
-                        wid = QLabel((wid))
-                        if arg == "link":
-                            wid.setOpenExternalLinks(True)
-                grid.addWidget(wid, nowr, nowc, 1, cols)
-                if save:
-                    ll.append(wid)
-                nowc += cols
-            maxl = max(maxl, nowc)
-            if save:
-                savelist.append(ll)
-
-            grid.setRowMinimumHeight(nowr, 35)
-        self.needfitcols.append([grid, maxl])
-
     def __init__(self, parent):
-        self.needfitwidgets = []
-        self.needfitcols = []
         super(Settin, self).__init__(parent, globalconfig, "setting_geo_2")
         # self.setWindowFlag(Qt.Tool,False)
         # self.setWindowFlags(self.windowFlags()&~Qt.WindowMinimizeButtonHint)
@@ -158,7 +93,6 @@ class Settin(closeashidewindow):
         self.hooks = []
 
         self.usevoice = 0
-        self.inittray()
         setTabOne_direct(self)
         settab2d(self)
         settab7direct(self)
@@ -168,14 +102,13 @@ class Settin(closeashidewindow):
         setTablangd(self)
         setTab_about_dicrect(self)
 
-        self.setstylesheet()
-        self.setstylesheetsignal.connect(self.setstylesheet)
+        self.setstylesheetsignal.connect(gobject.baseobject.setcommonstylesheet)
         threading.Thread(target=self.darklistener).start()
 
         self.setWindowTitle(_TR("设置"))
         self.setWindowIcon(qtawesome.icon("fa.gear"))
 
-        self.tab_widget = self.makesubtab_lazy(klass=TabWidget)
+        self.tab_widget = makesubtab_lazy(klass=TabWidget)
         self.setCentralWidget(self.tab_widget)
 
         self.tab_widget.setStyleSheet(
@@ -209,28 +142,6 @@ class Settin(closeashidewindow):
         self.tab_widget.list_widget.setFixedWidth(width)
         self.list_width = width
 
-    def inittray(self):
-
-        showAction = QAction(
-            _TR("&显示"),
-            self,
-            triggered=gobject.baseobject.translation_ui.show_,
-        )
-        settingAction = QAction(
-            _TR("&设置"),
-            self,
-            triggered=lambda: gobject.baseobject.settin_ui.showsignal.emit(),
-        )
-        quitAction = QAction(
-            _TR("&退出"), self, triggered=gobject.baseobject.translation_ui.close
-        )
-        self.trayMenu = QMenu(self)
-        self.trayMenu.addAction(showAction)
-        self.trayMenu.addAction(settingAction)
-        self.trayMenu.addSeparator()
-        self.trayMenu.addAction(quitAction)
-        gobject.baseobject.translation_ui.tray.setContextMenu(self.trayMenu)
-
     def opensolvetextfun(self):
         self.show()
         self.tab_widget.setCurrentIndex(3)
@@ -243,114 +154,3 @@ class Settin(closeashidewindow):
             if globalconfig["darklight"] == 2:
                 self.setstylesheetsignal.emit()
             windows.WaitForSingleObject(sema, windows.INFINITE)
-
-    def setstylesheet(self):
-
-        dl = globalconfig["darklight"]
-        if dl == 0:
-            dark = False
-        elif dl == 1:
-            dark = True
-        elif dl == 2:
-            dark = isDark()
-        darklight = ["light", "dark"][dark]
-
-        gobject.baseobject.currentisdark = dark
-
-        for widget in QApplication.topLevelWidgets():
-            if widget.testAttribute(Qt.WA_TranslucentBackground):
-                continue
-            winsharedutils.SetTheme(
-                int(widget.winId()), dark, globalconfig["WindowBackdrop"]
-            )
-        style = ""
-        for _ in (0,):
-            try:
-                idx = globalconfig[darklight + "theme"] - int(not dark)
-                if idx == -1:
-                    break
-                _fn = static_data["themes"][darklight][idx]["file"]
-
-                if _fn.endswith(".py"):
-                    style = importlib.import_module(
-                        "files.themes." + _fn[:-3]
-                    ).stylesheet()
-                elif _fn.endswith(".qss"):
-                    with open(
-                        "./files/themes/{}".format(_fn),
-                        "r",
-                    ) as ff:
-                        style = ff.read()
-            except:
-                print_exc()
-                style = ""
-        style += (
-            "*{font: %spt '" % (globalconfig["settingfontsize"])
-            + (globalconfig["settingfonttype"])
-            + "' ;  }"
-        )
-        self.setStyleSheet(style)
-
-    def makevbox(self, wids):
-        q = QWidget()
-        v = QVBoxLayout()
-        q.setLayout(v)
-        v.setContentsMargins(0, 0, 0, 0)
-        for wid in wids:
-            v.addWidget(wid)
-        return q
-
-    def makegrid(self, grid, save=False, savelist=None, savelay=None):
-
-        gridlayoutwidget = gridwidget()
-        gridlay = QGridLayout()
-        gridlayoutwidget.setLayout(gridlay)
-        gridlayoutwidget.setStyleSheet("gridwidget{background-color:transparent;}")
-        self.needfitwidgets.append(gridlayoutwidget)
-        gridlayoutwidget.setFixedHeight(len(grid) * 35)
-        margins = gridlay.contentsMargins()
-        gridlay.setContentsMargins(margins.left(), 0, margins.right(), 0)
-        self.automakegrid(gridlay, grid, save, savelist)
-        if save:
-            savelay.append(gridlay)
-        return gridlayoutwidget
-
-    def makescroll(self, widget):
-        scroll = QScrollArea()
-        scroll.setHorizontalScrollBarPolicy(1)
-        scroll.setStyleSheet("""QScrollArea{background-color:transparent;border:0px}""")
-
-        self.needfitwidgets.append(widget)
-        scroll.setWidget(widget)
-        return scroll
-
-    def makesubtab(self, titles, widgets):
-        tab = QTabWidget()
-        for i, wid in enumerate(widgets):
-            tab.addTab(wid, _TR(titles[i]))
-        return tab
-
-    def makesubtab_lazy(self, titles=None, functions=None, klass=None):
-        if klass:
-            tab = klass()
-        else:
-            tab = QTabWidget()
-
-        def __(t, i):
-            try:
-                w = t.currentWidget()
-                if "lazyfunction" in dir(w):
-                    w.lazyfunction()
-                    delattr(w, "lazyfunction")
-                    self.resizefunction()
-            except:
-                print_exc()
-
-        tab.currentChanged.connect(functools.partial(__, tab))
-        if titles and functions:
-            for i, func in enumerate(functions):
-                self.tabadd_lazy(tab, titles[i], func)
-        return tab
-
-    def tabadd_lazy(self, tab, title, getrealwidgetfunction):
-        tabadd_lazy(tab, title, getrealwidgetfunction)

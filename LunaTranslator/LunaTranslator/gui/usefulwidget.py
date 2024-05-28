@@ -4,8 +4,11 @@ from PyQt5.QtWidgets import (
     QApplication,
     QPushButton,
     QMessageBox,
+    QTabWidget,
+    QScrollArea,
     QDialog,
     QLabel,
+    QGridLayout,
     QSizePolicy,
     QHBoxLayout,
     QWidget,
@@ -39,7 +42,7 @@ from PyQt5.QtWidgets import (
 from traceback import print_exc
 import qtawesome, functools, threading, time
 from myutils.wrapper import Singleton
-from winsharedutils import showintab, HTMLBrowser
+from winsharedutils import HTMLBrowser
 import windows, os, platform
 
 
@@ -137,8 +140,6 @@ class closeashidewindow(saveposwindow):
         super().__init__(parent, dic, key)
         self.showsignal.connect(self.showfunction)
         self.realshowhide.connect(self.realshowhidefunction)
-        if globalconfig["showintab_sub"]:
-            showintab(int(self.winId()), True)
 
     def realshowhidefunction(self, show):
         if show:
@@ -392,13 +393,15 @@ def callbackwrap(d, k, call, _):
             print_exc()
 
 
-def getsimplecombobox(lst, d, k, callback=None):
+def getsimplecombobox(lst, d, k, callback=None, fixedsize=False):
     s = QComboBox()
     s.addItems(lst)
     if (k not in d) or (d[k] >= len(lst)):
         d[k] = 0
     s.setCurrentIndex(d[k])
     s.currentIndexChanged.connect(functools.partial(callbackwrap, d, k, callback))
+    if fixedsize:
+        s.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
     return s
 
 
@@ -523,6 +526,10 @@ def getboxlayout(widgets, lc=QHBoxLayout, margin0=False, makewidget=False):
         w.setLayout(cp_layout)
         return w
     return cp_layout
+
+
+def makevbox(wids):
+    return getboxlayout(wids, lc=QVBoxLayout, margin0=True, makewidget=True)
 
 
 def textbrowappendandmovetoend(textOutput, sentence, addspace=True):
@@ -654,6 +661,7 @@ def getsimplekeyseq(dic, key, callback=None):
     key1.changeedvent.connect(functools.partial(__, dic, key, callback))
     return key1
 
+
 class auto_select_webview(QWidget):
     on_load = pyqtSignal(str)
 
@@ -756,3 +764,105 @@ def tabadd_lazy(tab, title, getrealwidgetfunction):
     v.setContentsMargins(0, 0, 0, 0)
     q.lazyfunction = lambda: v.addWidget(getrealwidgetfunction())
     tab.addTab(q, _TR(title))
+
+
+def automakegrid(grid: QGridLayout, lis, save=False, savelist=None):
+
+    maxl = 0
+    for nowr, line in enumerate(lis):
+        nowc = 0
+        for i in line:
+            if type(i) == str:
+                cols = 1
+            elif type(i) != tuple:
+                wid, cols = i, 1
+            elif len(i) == 2:
+
+                wid, cols = i
+            elif len(i) == 3:
+                wid, cols, arg = i
+            nowc += cols
+        maxl = max(maxl, nowc)
+
+    for nowr, line in enumerate(lis):
+        nowc = 0
+        if save:
+            ll = []
+        for i in line:
+            if type(i) == str:
+                cols = 1
+                wid = QLabel(_TR(i))
+            elif type(i) != tuple:
+                wid, cols = i, 1
+            elif len(i) == 2:
+
+                wid, cols = i
+                if type(wid) == str:
+                    wid = QLabel(_TR(wid))
+            elif len(i) == 3:
+                wid, cols, arg = i
+                if type(wid) == str:
+                    wid = QLabel((wid))
+                    if arg == "link":
+                        wid.setOpenExternalLinks(True)
+            if cols > 0:
+                col = cols
+            elif cols == 0:
+                col = maxl
+            else:
+                col = -maxl // cols
+            grid.addWidget(wid, nowr, nowc, 1, col)
+            if save:
+                ll.append(wid)
+            nowc += cols
+        if save:
+            savelist.append(ll)
+        grid.setRowMinimumHeight(nowr, 30)
+
+
+def makegrid(grid, save=False, savelist=None, savelay=None):
+
+    class gridwidget(QWidget):
+        pass
+
+    gridlayoutwidget = gridwidget()
+    gridlay = QGridLayout()
+    gridlay.setAlignment(Qt.AlignTop)
+    gridlayoutwidget.setLayout(gridlay)
+    gridlayoutwidget.setStyleSheet("gridwidget{background-color:transparent;}")
+
+    automakegrid(gridlay, grid, save, savelist)
+    if save:
+        savelay.append(gridlay)
+    return gridlayoutwidget
+
+
+def makesubtab_lazy(titles=None, functions=None, klass=None):
+    if klass:
+        tab = klass()
+    else:
+        tab = QTabWidget()
+
+    def __(t, i):
+        try:
+            w = t.currentWidget()
+            if "lazyfunction" in dir(w):
+                w.lazyfunction()
+                delattr(w, "lazyfunction")
+        except:
+            print_exc()
+
+    tab.currentChanged.connect(functools.partial(__, tab))
+    if titles and functions:
+        for i, func in enumerate(functions):
+            tabadd_lazy(tab, titles[i], func)
+    return tab
+
+
+def makescroll(widget):
+    scroll = QScrollArea()
+    # scroll.setHorizontalScrollBarPolicy(1)
+    scroll.setStyleSheet("""QScrollArea{background-color:transparent;border:0px}""")
+    scroll.setWidgetResizable(True)
+    scroll.setWidget(widget)
+    return scroll

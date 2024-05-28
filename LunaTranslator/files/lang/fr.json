@@ -570,7 +570,6 @@
     "过滤反复刷新的句子": "Filtrer phrases rafraîchies à plusieurs reprises",
     "选择图标": "Sélectionner une icône",
     "图标2": "Icône 2",
-    "子窗口任务栏中显示": "Affichage dans la barre des tâches de la Sous - fenêtre",
     "刷新": "Rafraîchir",
     "读取剪贴板": "Lire le presse - papiers",
     "进行一次OCR": "Faites une ocr",
@@ -802,5 +801,6 @@
     "翻译窗口": "Fenêtre de traduction",
     "工具按钮": "Le bouton outils",
     "界面主题": "Thème de l'interface",
-    "窗口行为": "Comportement de la fenêtre"
+    "窗口行为": "Comportement de la fenêtre",
+    "窗口特效": "Effets spéciaux de fenêtre"
 }

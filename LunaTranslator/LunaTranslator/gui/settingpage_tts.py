@@ -8,7 +8,10 @@ import gobject
 from gui.usefulwidget import (
     getsimplecombobox,
     getspinbox,
+    makegrid,
+    makescroll,
     getcolorbutton,
+    tabadd_lazy,
     yuitsu_switch,
     getsimpleswitch,
 )
@@ -21,7 +24,7 @@ def setTab5_direct(self):
 
 
 def setTab5(self):
-    self.tabadd_lazy(self.tab_widget, ("语音合成"), lambda: setTab5lz(self))
+    tabadd_lazy(self.tab_widget, ("语音合成"), lambda: setTab5lz(self))
 
 
 def getttsgrid(self):
@@ -147,8 +150,8 @@ def setTab5lz(self):
             ),
         ],
     ]
-    gridlayoutwidget = self.makegrid(grids)
-    gridlayoutwidget = self.makescroll(gridlayoutwidget)
+    gridlayoutwidget = makegrid(grids)
+    gridlayoutwidget = makescroll(gridlayoutwidget)
     return gridlayoutwidget
 
 

@@ -3,6 +3,7 @@ import os, threading
 from traceback import print_exc
 from myutils.config import (
     globalconfig,
+    _TR,
     savehook_new_list,
     savehook_new_data,
     setlanguage,
@@ -18,7 +19,7 @@ from myutils.utils import (
     getpostfile,
     stringfyerror,
 )
-from PyQt5.QtWidgets import QApplication
+from PyQt5.QtWidgets import QApplication, QMenu, QAction, QFrame
 from PyQt5.QtCore import Qt, QObject, QEvent
 from myutils.wrapper import threader
 from gui.showword import searchwordW
@@ -32,7 +33,7 @@ from gui.languageset import languageset
 import zhconv, functools
 import gui.transhist
 import gui.edittext
-import importlib
+import importlib, qtawesome
 from functools import partial
 from gui.settin import Settin
 from gui.showocrimage import showocrimage
@@ -40,7 +41,7 @@ from gui.attachprocessdialog import AttachProcessDialog
 import windows
 import gobject
 import winsharedutils
-from winsharedutils import pid_running
+from winsharedutils import pid_running, isDark
 from myutils.post import POSTSOLVE
 
 
@@ -108,7 +109,7 @@ class MAINUI:
             context = None
             try:
                 if method["object"].using:
-                    if 'process_before' in dir(method["object"]):
+                    if "process_before" in dir(method["object"]):
                         content, context = method["object"].process_before(content)
             except:
                 print_exc()
@@ -121,7 +122,7 @@ class MAINUI:
             context = mp[i]
             try:
                 if method["object"].using:
-                    if 'process_after' in dir(method["object"]):
+                    if "process_after" in dir(method["object"]):
                         res = method["object"].process_after(res, context)
             except:
                 print_exc()
@@ -720,6 +721,13 @@ class MAINUI:
 
             time.sleep(0.5)
 
+    def setdarktheme(self, widget, dark):
+        if widget.testAttribute(Qt.WA_TranslucentBackground):
+            return
+        winsharedutils.SetTheme(
+            int(widget.winId()), dark, globalconfig["WindowBackdrop"]
+        )
+
     def aa(self):
         class WindowEventFilter(QObject):
             def eventFilter(_, obj, event):
@@ -727,18 +735,12 @@ class MAINUI:
 
                     hwnd = obj.winId()
                     if hwnd:  # window create/destroy,when destroy winId is None
-                        if (
-                            self.currentisdark is not None
-                            and obj.testAttribute(Qt.WA_TranslucentBackground) == False
-                        ):
-                            winsharedutils.SetTheme(
-                                int(obj.winId()),
-                                self.currentisdark,
-                                globalconfig["WindowBackdrop"],
-                            )
+                        if self.currentisdark is not None:
+                            self.setdarktheme(obj, self.currentisdark)
                         windows.SetProp(
                             int(obj.winId()), "Magpie.ToolWindow", windows.HANDLE(1)
                         )
+                        self.setshowintab_checked(obj)
                 return False
 
         self.currentisdark = None
@@ -789,14 +791,101 @@ class MAINUI:
             except:
                 print_exc()
 
-    def mainuiloadafter(self):
+    def setshowintab_checked(self, widget):
+        if widget == self.translation_ui:
+            winsharedutils.showintab(int(widget.winId()), globalconfig["showintab"])
+            return
+        window_flags = widget.windowFlags()
+        if Qt.FramelessWindowHint & window_flags == Qt.FramelessWindowHint:
+            return
+        if isinstance(widget, QMenu):
+            return
+        if isinstance(widget, QFrame):
+            return
+        winsharedutils.showintab(int(widget.winId()), globalconfig["showintab_sub"])
 
+    def inittray(self):
+
+        trayMenu = QMenu(self.settin_ui)
+        showAction = QAction(
+            _TR("&显示"),
+            trayMenu,
+            triggered=self.translation_ui.show_,
+        )
+        settingAction = QAction(
+            qtawesome.icon("fa.gear"),
+            _TR("&设置"),
+            trayMenu,
+            triggered=lambda: self.settin_ui.showsignal.emit(),
+        )
+        quitAction = QAction(
+            qtawesome.icon("fa.times"),
+            _TR("&退出"),
+            trayMenu,
+            triggered=self.translation_ui.close,
+        )
+        trayMenu.addAction(showAction)
+        trayMenu.addAction(settingAction)
+        trayMenu.addSeparator()
+        trayMenu.addAction(quitAction)
+        self.translation_ui.tray.setContextMenu(trayMenu)
+
+    def setshowintab(self):
+        for widget in QApplication.topLevelWidgets():
+            self.setshowintab_checked(widget)
+
+    def setcommonstylesheet(self):
+
+        dl = globalconfig["darklight"]
+        if dl == 0:
+            dark = False
+        elif dl == 1:
+            dark = True
+        elif dl == 2:
+            dark = isDark()
+        darklight = ["light", "dark"][dark]
+
+        self.currentisdark = dark
+
+        for widget in QApplication.topLevelWidgets():
+            self.setdarktheme(widget, dark)
+        style = ""
+        for _ in (0,):
+            try:
+                idx = globalconfig[darklight + "theme"] - int(not dark)
+                if idx == -1:
+                    break
+                _fn = static_data["themes"][darklight][idx]["file"]
+
+                if _fn.endswith(".py"):
+                    style = importlib.import_module(
+                        "files.themes." + _fn[:-3]
+                    ).stylesheet()
+                elif _fn.endswith(".qss"):
+                    with open(
+                        "./files/themes/{}".format(_fn),
+                        "r",
+                    ) as ff:
+                        style = ff.read()
+            except:
+                print_exc()
+        style += (
+            "*{font: %spt '" % (globalconfig["settingfontsize"])
+            + (globalconfig["settingfonttype"])
+            + "' ;  }"
+        )
+        self.settin_ui.setStyleSheet(style)
+
+    def mainuiloadafter(self):
+        self.setshowintab()
         self.safeloadprocessmodels()
         self.prepare()
         self.startxiaoxueguan()
         self.starthira()
         self.startoutputer()
         self.settin_ui = Settin(self.translation_ui)
+        self.inittray()
+        self.setcommonstylesheet()
         self.transhis = gui.transhist.transhist(self.settin_ui)
         self.startreader()
 

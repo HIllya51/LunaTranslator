@@ -71,6 +71,7 @@
     "uselongtermcache": false,
     "fixedheight": false,
     "showintab": true,
+    "showintab_sub": true,
     "remove_useless_hook": false,
     "button_color_close": "#D32424",
     "button_color_normal": "#FFFFFF",
@@ -209,7 +210,6 @@
     ],
     "searchwordusewebview": false,
     "settingfonttype": "Arial",
-    "showintab_sub": false,
     "setting_geo_2": [
         100,
         100,

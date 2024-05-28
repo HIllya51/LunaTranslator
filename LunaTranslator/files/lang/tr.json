@@ -570,7 +570,6 @@
     "过滤反复刷新的句子": "Süzgücü tekrar yenilenmiş cümleler",
     "选择图标": "İşaretçiyi seç",
     "图标2": "İşaretçi 2",
-    "子窗口任务栏中显示": "Alt pencere Görev Çubuğunda Gösterin",
     "刷新": "Tazele",
     "读取剪贴板": "Pano Oku",
     "进行一次OCR": "OCR yap",
@@ -802,5 +801,6 @@
     "翻译窗口": "Çeviri Penceresi",
     "工具按钮": "Araç düğmeleri",
     "界面主题": "Interface Theme",
-    "窗口行为": "Pencere davranışları"
+    "窗口行为": "Pencere davranışları",
+    "窗口特效": "Pencere etkileri"
 }

@@ -1,10 +1,9 @@
 import functools
-from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QFont
 
-from PyQt5.QtWidgets import QTableView, QAbstractItemView, QLabel, QVBoxLayout
-from PyQt5.QtWidgets import QDialog, QVBoxLayout, QHeaderView
-from PyQt5.QtCore import Qt, QSize
+from PyQt5.QtWidgets import QTableView, QAbstractItemView
+from PyQt5.QtWidgets import QHeaderView
+from PyQt5.QtCore import Qt
 
 from PyQt5.QtGui import QStandardItem, QStandardItemModel
 from PyQt5.QtWidgets import QLabel, QSlider, QFontComboBox, QDialog, QGridLayout
@@ -16,8 +15,13 @@ from winsharedutils import showintab
 from gui.inputdialog import getsomepath1
 from gui.usefulwidget import (
     getsimplecombobox,
+    makegrid,
     getspinbox,
+    tabadd_lazy,
+    makescroll,
+    makevbox,
     getcolorbutton,
+    makesubtab_lazy,
     getsimpleswitch,
     selectcolor,
 )
@@ -51,110 +55,74 @@ def setTabThree_direct(self):
 
 def setTabThree(self):
 
-    self.tabadd_lazy(self.tab_widget, ("显示设置"), lambda: setTabThree_lazy(self))
+    tabadd_lazy(self.tab_widget, ("显示设置"), lambda: setTabThree_lazy(self))
 
 
 def createbuttonwidget(self):
+    # return table
+    grids = [["显示", "", "", "对齐", "图标", "图标2", "说明"]]
+    sortlist = globalconfig["toolbutton"]["rank2"]
+    savelist = []
+    savelay = []
 
-    model = QStandardItemModel()
-    model.setHorizontalHeaderLabels(
-        _TRL(["显示", "", "", "对齐", "图标", "图标2", "说明"])
-    )
+    def changerank(item, up):
 
-    table = QTableView()
-
-    table.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
-    table.horizontalHeader().setStretchLastSection(True)
-    table.setEditTriggers(QAbstractItemView.NoEditTriggers)
-    table.setSelectionBehavior(QAbstractItemView.SelectRows)
-    table.setSelectionMode((QAbstractItemView.SingleSelection))
-    table.setWordWrap(False)
-    table.setModel(model)
-
-    def changerank2(key, up):
-        idx = globalconfig["toolbutton"]["rank2"].index(key)
+        idx = sortlist.index(item)
         idx2 = idx + (-1 if up else 1)
-        if idx2 < 0 or idx2 >= len(globalconfig["toolbutton"]["rank2"]):
+        if idx2 < 0 or idx2 >= len(sortlist):
             return
+        headoffset = 1
         idx2 = idx + (-1 if up else 1)
-        (
-            globalconfig["toolbutton"]["rank2"][idx],
-            globalconfig["toolbutton"]["rank2"][idx2],
-        ) = (
-            globalconfig["toolbutton"]["rank2"][idx2],
-            globalconfig["toolbutton"]["rank2"][idx],
-        )
+        sortlist[idx], sortlist[idx2] = sortlist[idx2], sortlist[idx]
+        for i, ww in enumerate(savelist[idx + headoffset]):
 
-        model.removeRow(idx2)
-        newline(idx, globalconfig["toolbutton"]["rank2"][idx]),
+            w1 = savelay[0].indexOf(ww)
+            w2 = savelay[0].indexOf(savelist[idx2 + headoffset][i])
+            p1 = savelay[0].getItemPosition(w1)
+            p2 = savelay[0].getItemPosition(w2)
+            savelay[0].removeWidget(ww)
+            savelay[0].removeWidget(savelist[idx2 + headoffset][i])
+
+            savelay[0].addWidget(savelist[idx2 + headoffset][i], *p1)
+            savelay[0].addWidget(ww, *p2)
+        savelist[idx + headoffset], savelist[idx2 + headoffset] = (
+            savelist[idx2 + headoffset],
+            savelist[idx + headoffset],
+        )
         gobject.baseobject.translation_ui.adjustbuttons()
 
-    def newline(row, k):
-        if "belong" in globalconfig["toolbutton"]["buttons"][k]:
-            belong = (
-                "("
-                + _TR("仅")
-                + " ".join(globalconfig["toolbutton"]["buttons"][k]["belong"])
-                + ")"
-            )
-        else:
-            belong = ""
-        model.insertRow(
-            row,
-            [
-                QStandardItem(),
-                QStandardItem(),
-                QStandardItem(),
-                QStandardItem(),
-                QStandardItem(),
-                QStandardItem(),
-                QStandardItem(
-                    _TR(globalconfig["toolbutton"]["buttons"][k]["tip"]) + " " + belong
-                ),
-            ],
-        )
-        table.setIndexWidget(
-            model.index(row, 0),
-            getsimpleswitch(
-                globalconfig["toolbutton"]["buttons"][k],
-                "use",
-                callback=lambda _: gobject.baseobject.translation_ui.adjustbuttons(),
-            ),
-        )
+    for i, k in enumerate(sortlist):
+
         button_up = getcolorbutton(
             globalconfig,
             "",
-            callback=functools.partial(changerank2, k, True),
+            callback=functools.partial(changerank, k, True),
             icon="fa.arrow-up",
             constcolor="#FF69B4",
         )
         button_down = getcolorbutton(
             globalconfig,
             "",
-            callback=functools.partial(changerank2, k, False),
+            callback=functools.partial(changerank, k, False),
             icon="fa.arrow-down",
             constcolor="#FF69B4",
         )
-        table.setIndexWidget(
-            model.index(row, 1),
-            button_up,
-        )
-        table.setIndexWidget(
-            model.index(row, 2),
-            button_down,
-        )
 
-        table.setIndexWidget(
-            model.index(row, 3),
+        l = [
+            getsimpleswitch(
+                globalconfig["toolbutton"]["buttons"][k],
+                "use",
+                callback=lambda _: gobject.baseobject.translation_ui.adjustbuttons(),
+            ),
+            button_up,
+            button_down,
             getsimplecombobox(
                 _TRL(["居左", "居右", "居中"]),
                 globalconfig["toolbutton"]["buttons"][k],
                 "align",
                 callback=lambda _: gobject.baseobject.translation_ui.adjustbuttons(),
+                fixedsize=True,
             ),
-        )
-        table.setIndexWidget(
-            model.index(row, 4),
             getcolorbutton(
                 "",
                 "",
@@ -166,10 +134,9 @@ def createbuttonwidget(self):
                     color=globalconfig["buttoncolor"],
                 ),
             ),
-        )
+        ]
         if "icon2" in globalconfig["toolbutton"]["buttons"][k]:
-            table.setIndexWidget(
-                model.index(row, 5),
+            l.append(
                 getcolorbutton(
                     "",
                     "",
@@ -182,11 +149,20 @@ def createbuttonwidget(self):
                     ),
                 ),
             )
-
-    for row, k in enumerate(globalconfig["toolbutton"]["rank2"]):
-        newline(row, k)
-
-    return table
+        else:
+            l.append("")
+        if "belong" in globalconfig["toolbutton"]["buttons"][k]:
+            belong = (
+                "_"
+                + "仅"
+                + "_"
+                + " ".join(globalconfig["toolbutton"]["buttons"][k]["belong"])
+            )
+        else:
+            belong = ""
+        l.append(globalconfig["toolbutton"]["buttons"][k]["tip"] + belong)
+        grids.append(l)
+    return makescroll(makegrid(grids, True, savelist, savelay))
 
 
 @Singleton
@@ -268,7 +244,7 @@ def setTabThree_lazy(self):
 
     def callback(x):
         globalconfig.__setitem__("settingfonttype", x)
-        self.setstylesheet()
+        gobject.baseobject.setcommonstylesheet()
 
     self.sfont_comboBox.activated[str].connect(callback)
     self.sfont_comboBox.setCurrentFont(QFont(globalconfig["settingfonttype"]))
@@ -437,14 +413,6 @@ def setTabThree_lazy(self):
         ],
     ]
 
-    def __changefontsize(x):
-        self.setstylesheet()
-        self.resizefunction()
-
-    def __changeshowintab(x):
-        gobject.baseobject.translation_ui.showintab = x
-        showintab(int(gobject.baseobject.translation_ui.winId()), x)
-
     def themelist(t):
         return [_["name"] for _ in static_data["themes"][t]]
 
@@ -474,10 +442,21 @@ def setTabThree_lazy(self):
             (getspinbox(1, 100, globalconfig, "disappear_delay"), 2),
         ],
         [
-            ("任务栏中显示", 6),
-            getsimpleswitch(globalconfig, "showintab", callback=__changeshowintab),
+            ("任务栏中显示_翻译窗口", 6),
+            getsimpleswitch(
+                globalconfig,
+                "showintab",
+                callback=lambda _: gobject.baseobject.setshowintab(),
+            ),
         ],
-        [("子窗口任务栏中显示", 6), getsimpleswitch(globalconfig, "showintab_sub")],
+        [
+            ("任务栏中显示_其他", 6),
+            getsimpleswitch(
+                globalconfig,
+                "showintab_sub",
+                callback=lambda _: gobject.baseobject.setshowintab(),
+            ),
+        ],
         [
             ("选择文本窗口中文本框只读", 6),
             getsimpleswitch(
@@ -495,7 +474,11 @@ def setTabThree_lazy(self):
             ("字体大小", 4),
             (
                 getspinbox(
-                    1, 100, globalconfig, "settingfontsize", callback=__changefontsize
+                    1,
+                    100,
+                    globalconfig,
+                    "settingfontsize",
+                    callback=lambda _: gobject.baseobject.setcommonstylesheet(),
                 ),
                 2,
             ),
@@ -592,7 +575,6 @@ def setTabThree_lazy(self):
             ),
         ],
         [],
-        [],
         [
             ("明暗", 6),
             (
@@ -600,7 +582,7 @@ def setTabThree_lazy(self):
                     _TRL(["明亮", "黑暗", "跟随系统"]),
                     globalconfig,
                     "darklight",
-                    callback=lambda _: self.setstylesheet(),
+                    callback=lambda _: gobject.baseobject.setcommonstylesheet(),
                 ),
                 5,
             ),
@@ -612,7 +594,7 @@ def setTabThree_lazy(self):
                     _TRL(["默认"]) + themelist("light"),
                     globalconfig,
                     "lighttheme",
-                    callback=lambda _: self.setstylesheet(),
+                    callback=lambda _: gobject.baseobject.setcommonstylesheet(),
                 ),
                 5,
             ),
@@ -624,13 +606,14 @@ def setTabThree_lazy(self):
                     themelist("dark"),
                     globalconfig,
                     "darktheme",
-                    callback=lambda _: self.setstylesheet(),
+                    callback=lambda _: gobject.baseobject.setcommonstylesheet(),
                 ),
                 5,
             ),
         ],
+        [],
         [
-            ("WindowEffect", 6),
+            ("窗口特效_翻译窗口", 6),
             (
                 getsimplecombobox(
                     ["Disable", "Acrylic", "Aero"],
@@ -645,13 +628,13 @@ def setTabThree_lazy(self):
             ),
         ],
         [
-            ("WindowBackdrop", 6),
+            ("窗口特效_其他", 6),
             (
                 getsimplecombobox(
                     ["Solid", "Acrylic", "Mica", "MicaAlt"],
                     globalconfig,
                     "WindowBackdrop",
-                    callback=lambda _: self.setstylesheet(),
+                    callback=lambda _: gobject.baseobject.setcommonstylesheet(),
                 ),
                 5,
             ),
@@ -950,21 +933,21 @@ def setTabThree_lazy(self):
             getsimpleswitch(globalconfig, "hookmagpie"),
         ],
     ]
-    tab = self.makesubtab_lazy(
+    tab = makesubtab_lazy(
         ["文本设置", "界面主题", "窗口行为", "工具按钮", "窗口缩放"],
         [
-            lambda: self.makescroll(self.makegrid(textgrid)),
-            lambda: self.makescroll(self.makegrid(uigrid)),
-            lambda: self.makescroll(self.makegrid(xingweigrid)),
+            lambda: makescroll(makegrid(textgrid)),
+            lambda: makescroll(makegrid(uigrid)),
+            lambda: makescroll(makegrid(xingweigrid)),
             lambda: createbuttonwidget(self),
-            lambda: self.makevbox(
+            lambda: makevbox(
                 [
-                    self.makegrid(commonfsgrid),
-                    self.makesubtab_lazy(
+                    makegrid(commonfsgrid),
+                    makesubtab_lazy(
                         ["Magpie", "外部缩放软件"],
                         [
-                            lambda: self.makescroll(self.makegrid(innermagpie)),
-                            lambda: self.makescroll(self.makegrid(losslessgrid)),
+                            lambda: makescroll(makegrid(innermagpie)),
+                            lambda: makescroll(makegrid(losslessgrid)),
                         ],
                     ),
                 ]

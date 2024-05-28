@@ -15,7 +15,7 @@
             },
             {
                 "file": "dark_win11like.py",
-                "name": "win11like"
+                "name": "QTWin11"
             }
         ],
         "light": [
@@ -33,7 +33,7 @@
             },
             {
                 "file": "light_win11like.py",
-                "name": "win11like"
+                "name": "QTWin11"
             }
         ]
     },

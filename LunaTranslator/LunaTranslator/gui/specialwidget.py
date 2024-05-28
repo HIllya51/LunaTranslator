@@ -327,7 +327,7 @@ class lazyscrollflow(QWidget):
         self.widgets = []
         self.fakegeos = []
         self._spacing = 6
-        self._margin = 9
+        self._margin = self._spacing  # 9
         self.lock = threading.Lock()
         self.internalwid = QWidget(self)
         self.qscrollarea = ScrollArea(self)

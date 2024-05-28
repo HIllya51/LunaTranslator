@@ -1,16 +1,12 @@
 from PyQt5.QtWidgets import (
     QMenu,
-    QApplication,
     QMainWindow,
     QLabel,
     QAction,
-    QDialog,
-    QDesktopWidget,
 )
-from PyQt5.QtGui import QPainter, QPen, QColor, QResizeEvent
-from PyQt5.QtCore import Qt, QPoint, QRect, QEvent
+from PyQt5.QtGui import QPainter, QPen, QColor, QCursor
+from PyQt5.QtCore import Qt, QPoint, QRect
 from myutils.config import _TR
-import gobject
 from myutils.config import globalconfig
 from gui.resizeablemainwindow import Mainw
 import windows, winsharedutils
@@ -38,7 +34,7 @@ class rangeadjust(Mainw):
         menu = QMenu(self)
         close = QAction(_TR("关闭"))
         menu.addAction(close)
-        action = menu.exec(self.mapToGlobal(p))
+        action = menu.exec(QCursor.pos())
         if action == close:
             self._rect = None
             self.close()
