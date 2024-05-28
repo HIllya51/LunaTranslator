@@ -158,6 +158,9 @@ BYTE *SaveBitmapToBuffer(HBITMAP hBitmap, size_t *size)
 }
 DECLARE BYTE *gdi_screenshot(HWND hwnd, RECT rect, size_t *size)
 {
+    *size = 0;
+    if (rect.bottom == rect.top || rect.left == rect.right)
+        return nullptr;
     if (!hwnd)
         hwnd = GetDesktopWindow();
     auto hdc = GetDC(hwnd);

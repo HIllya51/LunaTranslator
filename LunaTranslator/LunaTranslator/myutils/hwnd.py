@@ -51,6 +51,8 @@ def grabwindow(app, callback=None):
         _()
     try:
         hwnd = gobject.baseobject.textsource.hwnd
+        if not hwnd:
+            raise
     except:
         hwnd = windows.GetForegroundWindow()
 
@@ -75,7 +77,6 @@ def grabwindow(app, callback=None):
 
     if p.allGray() or (not callback):
         _()
-
 
 
 def getprocesslist():
@@ -233,5 +234,6 @@ def mouseselectwindow(callback):
 def screenshot(x1, y1, x2, y2, hwnd=None):
     bs = winsharedutils.gdi_screenshot(x1, y1, x2, y2, hwnd)
     pixmap = QPixmap()
-    pixmap.loadFromData(bs)
+    if bs:
+        pixmap.loadFromData(bs)
     return pixmap

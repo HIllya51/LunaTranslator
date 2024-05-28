@@ -375,6 +375,8 @@ def gdi_screenshot(x1, y1, x2, y2, hwnd=None):
     rect.right = x2
     rect.bottom = y2
     bf = _gdi_screenshot(hwnd, rect, pointer(sz))
+    if not (sz.value and bf):
+        return None
     data = cast(bf, POINTER(c_char))[: sz.value]
     c_free(bf)
     return data
