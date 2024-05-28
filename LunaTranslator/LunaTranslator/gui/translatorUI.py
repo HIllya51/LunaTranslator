@@ -588,7 +588,7 @@ class QUnFrameWindow(resizableframeless):
 
         super(QUnFrameWindow, self).__init__(
             None,
-            flags=Qt.FramelessWindowHint | Qt.WindowMinimizeButtonHint,
+            flags=Qt.FramelessWindowHint | Qt.Tool,
             dic=globalconfig,
             key="transuigeo",
         )  # 设置为顶级窗口，无边框
