@@ -240,8 +240,10 @@ def buildPlugins():
 
 def downloadsomething():
     os.chdir(rootDir + "\\temp")
-    os.system('git clone https://github.com/Alexhuszagh/BreezeStyleSheets')
-    shutil.copy('BreezeStyleSheets/breeze_resources.py',rootDir + "\\LunaTranslator\\files\\themes")
+    os.system('git clone https://github.com/HIllya51/stylesheets')
+    for f in os.listdir('stylesheets'):
+        if os.path.isfile(os.path.join('stylesheets',f)):
+            shutil.copy(os.path.join('stylesheets',f),rootDir + "\\LunaTranslator\\files\\themes")
     
 if __name__ == "__main__":
     if sys.argv[1] == "loadversion":

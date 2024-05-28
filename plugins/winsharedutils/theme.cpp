@@ -164,6 +164,10 @@ bool _SetTheme(
     static const DWM_SYSTEMBACKDROP_TYPE BACKDROP_MAP[] = {
         DWMSBT_AUTO, DWMSBT_TRANSIENTWINDOW, DWMSBT_MAINWINDOW, DWMSBT_TABBEDWINDOW};
     DWM_SYSTEMBACKDROP_TYPE value = BACKDROP_MAP[(int)backdrop];
+
+    MARGINS mar{-1,-1,-1,-1};
+    DwmExtendFrameIntoClientArea(_hWnd,&mar);
+   
     DwmSetWindowAttribute(_hWnd, DWMWA_SYSTEMBACKDROP_TYPE, &value, sizeof(value));
 
     return false;

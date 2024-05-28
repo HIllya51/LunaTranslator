@@ -12,6 +12,10 @@
             {
                 "file": "dark3.py",
                 "name": "BreezeStyleSheets"
+            },
+            {
+                "file": "dark_win11like.py",
+                "name": "win11like"
             }
         ],
         "light": [
@@ -26,6 +30,10 @@
             {
                 "file": "light3.py",
                 "name": "BreezeStyleSheets"
+            },
+            {
+                "file": "light_win11like.py",
+                "name": "win11like"
             }
         ]
     },
