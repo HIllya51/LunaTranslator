@@ -2,37 +2,37 @@
     "themes": {
         "dark": [
             {
-                "file": "dark1.py",
+                "file": "PyQtDarkTheme/dark.py",
                 "name": "PyQtDarkTheme"
             },
             {
-                "file": "dark2.py",
+                "file": "QDarkStyleSheet/dark.py",
                 "name": "QDarkStyleSheet"
             },
             {
-                "file": "dark3.py",
+                "file": "BreezeStyleSheets/dark.py",
                 "name": "BreezeStyleSheets"
             },
             {
-                "file": "dark_win11like.py",
+                "file": "QTWin11/dark.py",
                 "name": "QTWin11"
             }
         ],
         "light": [
             {
-                "file": "light1.py",
+                "file": "PyQtDarkTheme/light.py",
                 "name": "PyQtDarkTheme"
             },
             {
-                "file": "light2.py",
+                "file": "QDarkStyleSheet/light.py",
                 "name": "QDarkStyleSheet"
             },
             {
-                "file": "light3.py",
+                "file": "BreezeStyleSheets/light.py",
                 "name": "BreezeStyleSheets"
             },
             {
-                "file": "light_win11like.py",
+                "file": "QTWin11/light.py",
                 "name": "QTWin11"
             }
         ]

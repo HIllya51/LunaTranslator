@@ -92,6 +92,22 @@ def downloadlr():
                         )
 
 
+def move_directory_contents(source_dir, destination_dir):
+    contents = os.listdir(source_dir)
+
+    for item in contents:
+        if item == ".git":
+            continue
+        item_path = os.path.join(source_dir, item)
+        try:
+            shutil.move(item_path, destination_dir)
+        except:
+            for k in os.listdir(item_path):
+                shutil.move(
+                    os.path.join(item_path, k), os.path.join(destination_dir, item)
+                )
+
+
 def downloadcommon():
     os.chdir(rootDir + "\\temp")
     downloadlr()
@@ -107,19 +123,6 @@ def downloadcommon():
         f"curl -LO https://github.com/HIllya51/RESOURCES/releases/download/common/magpie.zip"
     )
     subprocess.run(f"7z x magpie.zip -oALL")
-
-    def move_directory_contents(source_dir, destination_dir):
-        contents = os.listdir(source_dir)
-
-        for item in contents:
-            item_path = os.path.join(source_dir, item)
-            try:
-                shutil.move(item_path, destination_dir)
-            except:
-                for k in os.listdir(item_path):
-                    shutil.move(
-                        os.path.join(item_path, k), os.path.join(destination_dir, item)
-                    )
 
     move_directory_contents("ALL/ALL", f"{rootDir}/LunaTranslator/files/plugins")
 
@@ -192,8 +195,6 @@ def get_url_as_json(url):
         except:
             time.sleep(3)
 
-    
-
 
 def buildLunaHook():
     for ass in get_url_as_json(
@@ -238,13 +239,13 @@ def buildPlugins():
     )
     subprocess.run(f"python copytarget.py 0")
 
+
 def downloadsomething():
     os.chdir(rootDir + "\\temp")
-    os.system('git clone https://github.com/HIllya51/stylesheets')
-    for f in os.listdir('stylesheets'):
-        if os.path.isfile(os.path.join('stylesheets',f)):
-            shutil.copy(os.path.join('stylesheets',f),rootDir + "\\LunaTranslator\\files\\themes")
-    
+    os.system("git clone https://github.com/HIllya51/stylesheets")
+    move_directory_contents("stylesheets", rootDir + "\\LunaTranslator\\files\\themes")
+
+
 if __name__ == "__main__":
     if sys.argv[1] == "loadversion":
         os.chdir(rootDir)
@@ -258,7 +259,7 @@ if __name__ == "__main__":
     arch = sys.argv[1]
     isdebug = len(sys.argv) > 2 and int(sys.argv[2])
     os.chdir(rootDir)
-    os.system('git submodule update --init --recursive')
+    os.system("git submodule update --init --recursive")
     os.makedirs("temp", exist_ok=True)
 
     createPluginDirs()

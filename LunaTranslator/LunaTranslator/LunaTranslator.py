@@ -859,7 +859,7 @@ class MAINUI:
 
                 if _fn.endswith(".py"):
                     style = importlib.import_module(
-                        "files.themes." + _fn[:-3]
+                        "files.themes." + _fn[:-3].replace("/", ".")
                     ).stylesheet()
                 elif _fn.endswith(".qss"):
                     with open(

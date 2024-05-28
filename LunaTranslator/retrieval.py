@@ -218,18 +218,6 @@ copycheck(
     ),
     os.path.join(runtime, "PyQt5/Qt5/plugins/styles"),
 )
-copycheck(
-    os.path.join(
-        py37Path, "Lib/site-packages/qdarktheme"
-    ),
-    os.path.join(runtime),
-)
-copycheck(
-    os.path.join(
-        py37Path, "Lib/site-packages/qdarkstyle"
-    ),
-    os.path.join(runtime),
-)
 
 collect = []
 for _dir, _, fs in os.walk(targetdir):
