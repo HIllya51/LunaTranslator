@@ -186,13 +186,6 @@ class IMGWidget(QLabel):
         self.setimg(pixmap)
 
 
-def opendir(k):
-    try:
-        os.system(f"explorer {os.path.dirname(k)}")
-    except:
-        pass
-
-
 class CustomTabBar(QTabBar):
     lastclick = pyqtSignal()
 
@@ -1424,7 +1417,9 @@ class dialog_savedgame_new(saveposwindow):
             pass
 
     def clicked4(self):
-        opendir(self.currentfocuspath)
+        f = os.path.dirname(self.currentfocuspath)
+        if os.path.exists(f) and os.path.isdir(f):
+            os.startfile(f)
 
     def clicked3_batch(self):
         res = QFileDialog.getExistingDirectory(
