@@ -2,7 +2,6 @@
 #define DECLARE extern "C" __declspec(dllexport)
 extern "C"
 {
-    __declspec(dllexport) bool _SetTheme(HWND _hWnd, bool dark, int backdrop);
 
     __declspec(dllexport) HANDLE startdarklistener();
     __declspec(dllexport) bool queryversion(const wchar_t *exe, WORD *_1, WORD *_2, WORD *_3, WORD *_4);

@@ -1,14 +1,6 @@
 ﻿#include "define.h"
 // https://github.com/Blinue/Xaml-Islands-Cpp/blob/main/src/XamlIslandsCpp/XamlWindow.h
 
-enum WindowBackdrop : int32_t
-{
-    SolidColor = 0,
-    Acrylic = 1,
-    Mica = 2,
-    MicaAlt = 3,
-};
-
 static uint32_t GetOSBuild() noexcept
 {
     HMODULE hNtDll = GetModuleHandle(L"ntdll.dll");
@@ -137,40 +129,41 @@ static void SetWindowTheme(HWND hWnd, bool darkBorder, bool darkMenu) noexcept
     RefreshImmersiveColorPolicyState();
     FlushMenuThemes();
 }
-bool _SetTheme(
+DECLARE void _SetTheme(
     HWND _hWnd,
     bool dark,
     int backdrop)
 {
-    auto _isBackgroundSolidColor = backdrop == WindowBackdrop::SolidColor;
-    if (Win32Helper::GetOSVersion().Is22H2OrNewer() &&
-        _isBackgroundSolidColor != (backdrop == WindowBackdrop::SolidColor))
-    {
-        return true;
-    }
+    // auto _isBackgroundSolidColor = backdrop == WindowBackdrop::SolidColor;
+    // if (Win32Helper::GetOSVersion().Is22H2OrNewer() &&
+    //     _isBackgroundSolidColor != (backdrop == WindowBackdrop::SolidColor))
+    // {
+    //     return true;
+    // }
 
-    // Win10 中即使在亮色主题下我们也使用暗色边框，这也是 UWP 窗口的行为
+    //  Win10 中即使在亮色主题下我们也使用暗色边框，这也是 UWP 窗口的行为
     SetWindowTheme(
         _hWnd,
         Win32Helper::GetOSVersion().IsWin11() ? dark : true,
         dark);
 
-    if (!Win32Helper::GetOSVersion().Is22H2OrNewer())
-    {
-        return false;
-    }
+    // if (!Win32Helper::GetOSVersion().Is22H2OrNewer())
+    // {
+    //     return false;
+    // }
 
+    // https://learn.microsoft.com/zh-cn/windows/win32/api/dwmapi/ne-dwmapi-dwm_systembackdrop_type
     // 设置背景
     static const DWM_SYSTEMBACKDROP_TYPE BACKDROP_MAP[] = {
         DWMSBT_AUTO, DWMSBT_TRANSIENTWINDOW, DWMSBT_MAINWINDOW, DWMSBT_TABBEDWINDOW};
     DWM_SYSTEMBACKDROP_TYPE value = BACKDROP_MAP[(int)backdrop];
-
-    MARGINS mar{-1,-1,-1,-1};
-    DwmExtendFrameIntoClientArea(_hWnd,&mar);
    
+    MARGINS mar{-1, -1, -1, -1};
+    DwmExtendFrameIntoClientArea(_hWnd, &mar);
+
     DwmSetWindowAttribute(_hWnd, DWMWA_SYSTEMBACKDROP_TYPE, &value, sizeof(value));
 
-    return false;
+    
 }
 
 DECLARE bool isDark()
