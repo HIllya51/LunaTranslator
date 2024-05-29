@@ -103,10 +103,10 @@ class edittext(closeashidewindow):
 class edittrans(QMainWindow):
     rssignal = pyqtSignal(QSize)
     mvsignal = pyqtSignal(QPoint)
+    swsignal = pyqtSignal()
 
     def __init__(self, parent):
         super().__init__(parent, Qt.FramelessWindowHint)
-        self.setupUi()
         self.setAttribute(Qt.WA_TranslucentBackground)
         self.setStyleSheet(
             "background-color: rgba(%s, %s, %s, %s)"
@@ -117,21 +117,30 @@ class edittrans(QMainWindow):
                 globalconfig["transparent"],
             )
         )
+        self.setupUi()
+
         self.rssignal.connect(self.resize)
         self.mvsignal.connect(self.move)
+        self.swsignal.connect(self.show)
         self.trykeeppos()
 
     def trykeeppos(self):
         self.followhwnd = gobject.baseobject.textsource.hwnd
+        rect = windows.GetWindowRect(self.followhwnd)
+        if rect is None:
+            raise
         self.follow()
-        self.show()
-        
+
     @threader
     def follow(self):
+        i = 0
         while True:
             rect = windows.GetWindowRect(self.followhwnd)
             self.mvsignal.emit((QPoint(rect[0], rect[3])) / self.devicePixelRatioF())
             self.rssignal.emit((QSize(rect[2] - rect[0], 1)) / self.devicePixelRatioF())
+            if i == 0:
+                self.swsignal.emit()
+            i += 1
             time.sleep(0.3)
 
     def setupUi(self):
