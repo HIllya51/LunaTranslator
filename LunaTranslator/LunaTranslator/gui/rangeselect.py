@@ -17,9 +17,7 @@ class rangeadjust(Mainw):
         self._isTracking = False
         self._rect = None
         self.setWindowFlags(
-            Qt.WindowType.WindowStaysOnTopHint
-            | Qt.WindowType.FramelessWindowHint
-            | Qt.WindowType.Tool
+            Qt.WindowType.WindowStaysOnTopHint | Qt.WindowType.FramelessWindowHint
         )
         self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
         self.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
@@ -119,8 +117,8 @@ class rangeselct(QMainWindow):
 
         super(rangeselct, self).__init__(parent)
         self.setWindowFlags(
-            Qt.WindowType.FramelessWindowHint | Qt.WindowType.Tool
-        )  # |Qt.WindowStaysOnTopHint  )
+            Qt.WindowType.FramelessWindowHint | Qt.WindowType.WindowStaysOnTopHint
+        )
         self.rectlabel = QLabel(self)
         # self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
         self.setWindowOpacity(0.5)
