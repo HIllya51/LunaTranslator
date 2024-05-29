@@ -112,24 +112,6 @@ class statusbutton(QPushButton):
         self.seticon()
 
 
-class autoremovelineedit(QLineEdit):
-    def check(self):
-        last = self.text()
-        if os.path.exists(last) and os.path.isfile(last):
-            norm_dir1 = os.path.normpath(last)
-            norm_dir2 = os.path.normpath(os.path.abspath("./cache"))
-            if norm_dir1.startswith(norm_dir2):
-                os.remove(last)
-
-    def setText(self, s):
-        self.check()
-        super().setText(s)
-
-    def clear(self):
-        self.check()
-        super().clear()
-
-
 class AnkiWindow(QWidget):
     __ocrsettext = pyqtSignal(str)
     refreshhtml = pyqtSignal()
@@ -489,11 +471,11 @@ class AnkiWindow(QWidget):
         cropbutton = QPushButton(qtawesome.icon("fa.crop"), "")
         cropbutton.clicked.connect(self.crop)
 
-        self.audiopath = autoremovelineedit()
+        self.audiopath = QLineEdit()
         self.audiopath.setReadOnly(True)
-        self.audiopath_sentence = autoremovelineedit()
+        self.audiopath_sentence = QLineEdit()
         self.audiopath_sentence.setReadOnly(True)
-        self.editpath = autoremovelineedit()
+        self.editpath = QLineEdit()
         self.editpath.setReadOnly(True)
         self.viewimagelabel = QLabel()
         self.editpath.textChanged.connect(self.wrappedpixmap)
