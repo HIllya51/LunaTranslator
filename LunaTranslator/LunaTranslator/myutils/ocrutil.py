@@ -1,8 +1,7 @@
 import windows
 import os, importlib
 from myutils.config import globalconfig, _TR
-from PyQt5.QtGui import QImage
-from PyQt5.QtCore import QByteArray, QBuffer
+from qtsymbols import *
 from myutils.commonbase import ArgsEmptyExc
 from myutils.hwnd import screenshot
 from myutils.utils import stringfyerror

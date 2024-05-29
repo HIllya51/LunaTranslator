@@ -1,26 +1,9 @@
-from PyQt5.QtWidgets import (
-    QWidget,
-    QHBoxLayout,
-    QVBoxLayout,
-    QTextBrowser,
-    QLineEdit,
-    QPlainTextEdit,
-    QFormLayout,
-    QSizePolicy,
-    QPushButton,
-    QTabWidget,
-    QFileDialog,
-    QTabBar,
-    QSplitter,
-    QLabel,
-)
+from qtsymbols import *
 from myutils.hwnd import grabwindow
 
 from urllib.parse import quote
-from PyQt5.QtGui import QPixmap, QImage
 from traceback import print_exc
 import requests, json, time
-from PyQt5.QtCore import pyqtSignal, Qt
 import qtawesome, functools, os, base64
 import gobject, uuid, windows
 from myutils.utils import getimageformat, parsekeystringtomodvkcode, unsupportkey
@@ -156,7 +139,7 @@ class AnkiWindow(QWidget):
 
     def __init__(self) -> None:
         super().__init__()
-        self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
         self.setWindowTitle("Anki Connect")
         self.currentword = ""
         self.tabs = QTabWidget()
@@ -241,7 +224,9 @@ class AnkiWindow(QWidget):
         )
 
         self.htmlbrowser = auto_select_webview(self)
-        self.htmlbrowser.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        self.htmlbrowser.setSizePolicy(
+            QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding
+        )
         layout.addLayout(
             getboxlayout(
                 [self.previewtab, self.htmlbrowser],
@@ -596,7 +581,9 @@ class AnkiWindow(QWidget):
             pix.width() > self.viewimagelabel.width()
             or pix.height() > self.viewimagelabel.height()
         ):
-            pix = pix.scaled(self.viewimagelabel.size() * rate, Qt.KeepAspectRatio)
+            pix = pix.scaled(
+                self.viewimagelabel.size() * rate, Qt.AspectRatioMode.KeepAspectRatio
+            )
         self.viewimagelabel.setPixmap(pix)
 
     def selecfile(self, item):
@@ -837,7 +824,7 @@ class searchwordW(closeashidewindow):
         w.setLayout(tablayout)
         self.vboxlayout.addWidget(self.spliter)
         self.isfirstshowanki = True
-        self.spliter.setOrientation(Qt.Vertical)
+        self.spliter.setOrientation(Qt.Orientation.Vertical)
 
         self.spliter.addWidget(w)
 

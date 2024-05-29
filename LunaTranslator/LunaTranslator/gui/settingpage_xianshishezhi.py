@@ -1,17 +1,9 @@
 import functools
-from PyQt5.QtGui import QFont
-
-from PyQt5.QtWidgets import QTableView, QAbstractItemView
-from PyQt5.QtWidgets import QHeaderView
-from PyQt5.QtCore import Qt
-
-from PyQt5.QtGui import QStandardItem, QStandardItemModel
-from PyQt5.QtWidgets import QLabel, QSlider, QFontComboBox, QDialog, QGridLayout
+from qtsymbols import *
 from gui.inputdialog import multicolorset
 from myutils.config import globalconfig, _TR, _TRL, magpie_config, static_data
 from myutils.wrapper import Singleton
 import qtawesome, gobject, json
-from winsharedutils import showintab
 from gui.inputdialog import getsomepath1
 from gui.usefulwidget import (
     getsimplecombobox,
@@ -179,7 +171,7 @@ def createbuttonwidget(self):
 class dialog_selecticon(QDialog):
     def __init__(self, parent, dict, key, _nouse_for_click_arg) -> None:
 
-        super().__init__(parent, Qt.WindowCloseButtonHint)
+        super().__init__(parent, Qt.WindowType.WindowCloseButtonHint)
         self.dict = dict
         self.key = key
         self.setWindowTitle(_TR("选择图标"))
@@ -216,7 +208,7 @@ def setTabThree_lazy(self):
     self.horizontal_slider = QSlider()
     self.horizontal_slider.setMaximum(100)
     self.horizontal_slider.setMinimum(1)
-    self.horizontal_slider.setOrientation(Qt.Horizontal)
+    self.horizontal_slider.setOrientation(Qt.Orientation.Horizontal)
     self.horizontal_slider.setValue(0)
     self.horizontal_slider.setValue(globalconfig["transparent"])
     self.horizontal_slider.valueChanged.connect(
@@ -228,7 +220,7 @@ def setTabThree_lazy(self):
     self.horizontal_slider_tool = QSlider()
     self.horizontal_slider_tool.setMaximum(100)
     self.horizontal_slider_tool.setMinimum(1)
-    self.horizontal_slider_tool.setOrientation(Qt.Horizontal)
+    self.horizontal_slider_tool.setOrientation(Qt.Orientation.Horizontal)
     self.horizontal_slider_tool.setValue(0)
     self.horizontal_slider_tool.setValue(globalconfig["transparent_tool"])
     self.horizontal_slider_tool.valueChanged.connect(
@@ -240,12 +232,12 @@ def setTabThree_lazy(self):
     )
 
     self.font_comboBox = QFontComboBox()
-    self.font_comboBox.activated[str].connect(
+    self.font_comboBox.currentTextChanged.connect(
         lambda x: globalconfig.__setitem__("fonttype", x)
     )
     self.font_comboBox.setCurrentFont(QFont(globalconfig["fonttype"]))
     self.font_comboBox2 = QFontComboBox()
-    self.font_comboBox2.activated[str].connect(
+    self.font_comboBox2.currentTextChanged.connect(
         lambda x: globalconfig.__setitem__("fonttype2", x)
     )
     self.font_comboBox2.setCurrentFont(QFont(globalconfig["fonttype2"]))
@@ -256,29 +248,27 @@ def setTabThree_lazy(self):
         globalconfig.__setitem__("settingfonttype", x)
         gobject.baseobject.setcommonstylesheet()
 
-    self.sfont_comboBox.activated[str].connect(callback)
+    self.sfont_comboBox.currentTextChanged.connect(callback)
     self.sfont_comboBox.setCurrentFont(QFont(globalconfig["settingfonttype"]))
 
     textgrid = [
+        [("原文字体", 3), (self.font_comboBox, 6), ("", 5)],
         [
-            ("原文字体", 3),
-            (self.font_comboBox, 5),
-            "",
             ("译文字体", 3),
-            (self.font_comboBox2, 5),
+            (self.font_comboBox2, 6),
         ],
         [
             ("字体大小", 3),
-            (self.fontSize_spinBox, 2),
+            (self.fontSize_spinBox, 3),
             "",
             ("额外的行间距", 3),
-            (getspinbox(-100, 100, globalconfig, "extra_space"), 2),
+            (getspinbox(-100, 100, globalconfig, "extra_space"), 3),
         ],
         [
-            ("居中显示", 4),
+            ("居中显示", 5),
             getsimpleswitch(globalconfig, "showatcenter"),
             "",
-            ("加粗字体", 4),
+            ("加粗字体", 5),
             getsimpleswitch(globalconfig, "showbold"),
         ],
         [
@@ -301,11 +291,11 @@ def setTabThree_lazy(self):
                     globalconfig,
                     "zitiyangshi2",
                 ),
-                5,
+                6,
             ),
         ],
         [
-            ("特殊字体样式填充颜色", 4),
+            ("特殊字体样式填充颜色", 5),
             getcolorbutton(
                 globalconfig,
                 "miaobiancolor",
@@ -323,7 +313,7 @@ def setTabThree_lazy(self):
                 getspinbox(
                     0.1, 100, globalconfig, "miaobianwidth", double=True, step=0.1
                 ),
-                2,
+                3,
             ),
             "",
             ("描边宽度", 3),
@@ -331,27 +321,31 @@ def setTabThree_lazy(self):
                 getspinbox(
                     0.1, 100, globalconfig, "miaobianwidth2", double=True, step=0.1
                 ),
-                2,
+                3,
             ),
         ],
         [
             ("发光亮度", 3),
-            (getspinbox(1, 100, globalconfig, "shadowforce"), 2),
+            (getspinbox(1, 100, globalconfig, "shadowforce"), 3),
             "",
             ("投影距离", 3),
             (
                 getspinbox(
                     0.1, 100, globalconfig, "traceoffset", double=True, step=0.1
                 ),
-                2,
+                3,
             ),
         ],
         [],
         [
-            ("显示原文", 4),
+            ("显示原文", 5),
             self.show_original_switch,
             "",
-            ("原文颜色", 4),
+            ("显示翻译", 5),
+            (getsimpleswitch(globalconfig, "showfanyi"), 1),
+        ],
+        [
+            ("原文颜色", 5),
             getcolorbutton(
                 globalconfig,
                 "rawtextcolor",
@@ -361,12 +355,21 @@ def setTabThree_lazy(self):
                 name="original_color_button",
                 parent=self,
             ),
+            "",
+            ("显示翻译器名称", 5),
+            (getsimpleswitch(globalconfig, "showfanyisource"), 1),
         ],
         [
-            ("显示日语注音", 4),
+            ("最长显示字数", 3),
+            (getspinbox(0, 1000000, globalconfig, "maxoriginlength"), 3),
+        ],
+        [],
+        [
+            ("显示日语注音", 5),
             self.show_hira_switch,
-            "",
-            ("注音颜色", 4),
+        ],
+        [
+            ("注音颜色", 5),
             getcolorbutton(
                 globalconfig,
                 "jiamingcolor",
@@ -382,14 +385,14 @@ def setTabThree_lazy(self):
                 getspinbox(
                     0.05, 1, globalconfig, "kanarate", double=True, step=0.05, dec=2
                 ),
-                2,
+                3,
             ),
         ],
         [
-            ("语法加亮", 4),
+            ("语法加亮", 5),
             self.show_fenciswitch,
             "",
-            ("词性颜色(需要Mecab)", 4),
+            ("词性颜色(需要Mecab)", 5),
             getcolorbutton(
                 globalconfig,
                 "",
@@ -398,28 +401,10 @@ def setTabThree_lazy(self):
                 constcolor="#FF69B4",
             ),
         ],
-        [
-            ("显示翻译器名称", 4),
-            (getsimpleswitch(globalconfig, "showfanyisource"), 1),
-            "",
-            ("显示翻译", 4),
-            (getsimpleswitch(globalconfig, "showfanyi"), 1),
-        ],
-        [
-            ("最长显示字数", 4),
-            (getspinbox(0, 1000000, globalconfig, "maxoriginlength"), 2),
-        ],
         [],
         [
-            ("收到翻译结果时才刷新", 4),
+            ("收到翻译结果时才刷新", 5),
             getsimpleswitch(globalconfig, "refresh_on_get_trans"),
-            "",
-            ("可选取模式", 4),
-            getsimpleswitch(
-                globalconfig,
-                "selectable",
-                callback=lambda x: gobject.baseobject.translation_ui.translate_text.setselectable(),
-            ),
         ],
     ]
 
@@ -475,6 +460,14 @@ def setTabThree_lazy(self):
                 callback=lambda x: gobject.baseobject.hookselectdialog.textOutput.setReadOnly(
                     x
                 ),
+            ),
+        ],
+        [
+            ("可选取模式", 6),
+            getsimpleswitch(
+                globalconfig,
+                "selectable",
+                callback=lambda x: gobject.baseobject.translation_ui.translate_text.setselectable(),
             ),
         ],
     ]
@@ -586,7 +579,7 @@ def setTabThree_lazy(self):
         ],
         [],
         [
-            ("明暗", 6),
+            ("明暗", 4),
             (
                 getsimplecombobox(
                     _TRL(["明亮", "黑暗", "跟随系统"]),
@@ -598,7 +591,7 @@ def setTabThree_lazy(self):
             ),
         ],
         [
-            ("明亮主题", 6),
+            ("明亮主题", 4),
             (
                 getsimplecombobox(
                     _TRL(["默认"]) + themelist("light"),
@@ -610,7 +603,7 @@ def setTabThree_lazy(self):
             ),
         ],
         [
-            ("黑暗主题", 6),
+            ("黑暗主题", 4),
             (
                 getsimplecombobox(
                     themelist("dark"),
@@ -623,7 +616,7 @@ def setTabThree_lazy(self):
         ],
         [],
         [
-            ("窗口特效_翻译窗口", 6),
+            ("窗口特效_翻译窗口", 4),
             (
                 getsimplecombobox(
                     ["Disable", "Acrylic", "Aero"],
@@ -638,7 +631,7 @@ def setTabThree_lazy(self):
             ),
         ],
         [
-            ("窗口特效_其他", 6),
+            ("窗口特效_其他", 4),
             (
                 getsimplecombobox(
                     ["Solid", "Acrylic", "Mica", "MicaAlt"],

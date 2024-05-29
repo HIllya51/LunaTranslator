@@ -1,20 +1,7 @@
-from PyQt5.QtCore import pyqtSignal
-from PyQt5.QtWidgets import (
-    QWidget,
-    QVBoxLayout,
-    QHBoxLayout,
-    QLabel,
-    QLineEdit,
-    QListView,
-    QDialogButtonBox,
-    QApplication,
-    QPushButton,
-)
+from qtsymbols import *
 from winsharedutils import getpidhwndfirst
-from PyQt5.QtGui import QStandardItemModel, QStandardItem
 import functools
 from myutils.config import globalconfig, _TR
-import sys
 import windows
 import os
 from myutils.hwnd import (
@@ -98,7 +85,9 @@ class AttachProcessDialog(closeashidewindow):
         self.layout2.addWidget(self.windowtextlayoutwidgets[1])
         self.processList = QListView()
         self.buttonBox = QDialogButtonBox()
-        self.buttonBox.setStandardButtons(QDialogButtonBox.Ok | QDialogButtonBox.Cancel)
+        self.buttonBox.setStandardButtons(
+            QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel
+        )
         self.layout1.addLayout(self.layout2)
         self.layout1.addLayout(self.layout3)
         self.layout1.addWidget(self.processList)
@@ -192,11 +181,3 @@ class AttachProcessDialog(closeashidewindow):
             #         return
             self.close()
             self.callback(self.selectedp)
-
-
-if __name__ == "__main__":
-    app = QApplication(sys.argv)
-    a = AttachProcessDialog()
-    a.show()
-
-    app.exit(app.exec_())

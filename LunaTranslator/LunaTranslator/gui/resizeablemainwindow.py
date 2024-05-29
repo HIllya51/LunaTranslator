@@ -1,20 +1,20 @@
-from PyQt5 import QtCore, QtWidgets
+from qtsymbols import *
 
 
-class SideGrip(QtWidgets.QWidget):
+class SideGrip(QWidget):
     def __init__(self, parent, edge):
-        QtWidgets.QWidget.__init__(self, parent)
-        if edge == QtCore.Qt.LeftEdge:
-            self.setCursor(QtCore.Qt.SizeHorCursor)
+        QWidget.__init__(self, parent)
+        if edge == Qt.Edge.LeftEdge:
+            self.setCursor(Qt.CursorShape.SizeHorCursor)
             self.resizeFunc = self.resizeLeft
-        elif edge == QtCore.Qt.TopEdge:
-            self.setCursor(QtCore.Qt.SizeVerCursor)
+        elif edge == Qt.Edge.TopEdge:
+            self.setCursor(Qt.CursorShape.SizeVerCursor)
             self.resizeFunc = self.resizeTop
-        elif edge == QtCore.Qt.RightEdge:
-            self.setCursor(QtCore.Qt.SizeHorCursor)
+        elif edge == Qt.Edge.RightEdge:
+            self.setCursor(Qt.CursorShape.SizeHorCursor)
             self.resizeFunc = self.resizeRight
         else:
-            self.setCursor(QtCore.Qt.SizeVerCursor)
+            self.setCursor(Qt.CursorShape.SizeVerCursor)
             self.resizeFunc = self.resizeBottom
         self.mousePos = None
 
@@ -43,7 +43,7 @@ class SideGrip(QtWidgets.QWidget):
         window.resize(window.width(), height)
 
     def mousePressEvent(self, event):
-        if event.button() == QtCore.Qt.LeftButton:
+        if event.button() == Qt.MouseButton.LeftButton:
             self.mousePos = event.pos()
 
     def mouseMoveEvent(self, event):
@@ -55,24 +55,24 @@ class SideGrip(QtWidgets.QWidget):
         self.mousePos = None
 
 
-class Mainw(QtWidgets.QMainWindow):
+class Mainw(QMainWindow):
     _gripSize = 8
 
     def __init__(self, x):
-        QtWidgets.QMainWindow.__init__(self, x)
+        QMainWindow.__init__(self, x)
 
-        self.setWindowFlags(QtCore.Qt.FramelessWindowHint)
+        self.setWindowFlags(Qt.WindowType.FramelessWindowHint)
 
         self.sideGrips = [
-            SideGrip(self, QtCore.Qt.LeftEdge),
-            SideGrip(self, QtCore.Qt.TopEdge),
-            SideGrip(self, QtCore.Qt.RightEdge),
-            SideGrip(self, QtCore.Qt.BottomEdge),
+            SideGrip(self, Qt.Edge.LeftEdge),
+            SideGrip(self, Qt.Edge.TopEdge),
+            SideGrip(self, Qt.Edge.RightEdge),
+            SideGrip(self, Qt.Edge.BottomEdge),
         ]
         # corner grips should be "on top" of everything, otherwise the side grips
         # will take precedence on mouse events, so we are adding them *after*;
         # alternatively, widget.raise_() can be used
-        self.cornerGrips = [QtWidgets.QSizeGrip(self) for i in range(4)]
+        self.cornerGrips = [QSizeGrip(self) for i in range(4)]
         for s in self.cornerGrips:
             s.setStyleSheet(""" background-color: transparent;  """)
 
@@ -96,20 +96,18 @@ class Mainw(QtWidgets.QMainWindow):
         )
 
         # top left
-        self.cornerGrips[0].setGeometry(
-            QtCore.QRect(outRect.topLeft(), inRect.topLeft())
-        )
+        self.cornerGrips[0].setGeometry(QRect(outRect.topLeft(), inRect.topLeft()))
         # top right
         self.cornerGrips[1].setGeometry(
-            QtCore.QRect(outRect.topRight(), inRect.topRight()).normalized()
+            QRect(outRect.topRight(), inRect.topRight()).normalized()
         )
         # bottom right
         self.cornerGrips[2].setGeometry(
-            QtCore.QRect(inRect.bottomRight(), outRect.bottomRight())
+            QRect(inRect.bottomRight(), outRect.bottomRight())
         )
         # bottom left
         self.cornerGrips[3].setGeometry(
-            QtCore.QRect(outRect.bottomLeft(), inRect.bottomLeft()).normalized()
+            QRect(outRect.bottomLeft(), inRect.bottomLeft()).normalized()
         )
 
         # left edge
@@ -126,11 +124,11 @@ class Mainw(QtWidgets.QMainWindow):
         )
 
     def resizeEvent(self, event):
-        QtWidgets.QMainWindow.resizeEvent(self, event)
+        QMainWindow.resizeEvent(self, event)
         self.updateGrips()
 
 
-# app = QtWidgets.QApplication([])
+# app = QApplication([])
 # m = Mainw()
 # m.show()
 # m.resize(240, 160)

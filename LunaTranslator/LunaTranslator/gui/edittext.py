@@ -1,16 +1,4 @@
-from PyQt5.QtGui import QCursor
-from PyQt5.QtWidgets import (
-    QPlainTextEdit,
-    QAction,
-    QMenu,
-    QHBoxLayout,
-    QMainWindow,
-    QLineEdit,
-    QWidget,
-    QPushButton,
-    QVBoxLayout,
-)
-from PyQt5.QtCore import Qt, pyqtSignal, QPoint, QSize
+from qtsymbols import *
 import qtawesome
 import threading, windows
 import gobject, time
@@ -37,7 +25,7 @@ class edittext(closeashidewindow):
 
         self.textOutput = QPlainTextEdit(self)
 
-        self.textOutput.setContextMenuPolicy(Qt.CustomContextMenu)
+        self.textOutput.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
 
         self.textOutput.customContextMenuRequested.connect(self.showmenu)
         # self.setCentralWidget(self.textOutput)
@@ -106,8 +94,8 @@ class edittrans(QMainWindow):
     swsignal = pyqtSignal()
 
     def __init__(self, parent):
-        super().__init__(parent, Qt.FramelessWindowHint)
-        self.setAttribute(Qt.WA_TranslucentBackground)
+        super().__init__(parent, Qt.WindowType.FramelessWindowHint)
+        self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
         self.setStyleSheet(
             "background-color: rgba(%s, %s, %s, %s)"
             % (

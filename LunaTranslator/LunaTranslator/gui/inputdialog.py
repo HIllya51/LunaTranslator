@@ -1,23 +1,5 @@
 import functools
-from PyQt5.QtWidgets import (
-    QDialogButtonBox,
-    QDialog,
-    QHeaderView,
-    QComboBox,
-    QFormLayout,
-    QDoubleSpinBox,
-    QSpinBox,
-    QHBoxLayout,
-    QLineEdit,
-    QFileDialog,
-    QPushButton,
-    QLabel,
-    QTableView,
-    QVBoxLayout,
-)
-from PyQt5.QtCore import Qt, QSize
-from PyQt5.QtGui import QCloseEvent, QStandardItem, QStandardItemModel
-
+from qtsymbols import *
 import qtawesome, importlib
 from myutils.config import globalconfig, _TR, _TRL
 from gui.usefulwidget import MySwitch, selectcolor, getsimpleswitch, threebuttons
@@ -37,7 +19,7 @@ class noundictconfigdialog1(QDialog):
         )
 
     def __init__(self, parent, configdict, configkey, title, label) -> None:
-        super().__init__(parent, Qt.WindowCloseButtonHint)
+        super().__init__(parent, Qt.WindowType.WindowCloseButtonHint)
 
         self.setWindowTitle(_TR(title))
         # self.setWindowModality(Qt.ApplicationModal)
@@ -49,9 +31,11 @@ class noundictconfigdialog1(QDialog):
         table = QTableView(self)
         table.setModel(self.model)
 
-        table.horizontalHeader().setSectionResizeMode(2, QHeaderView.Stretch)
-        table.horizontalHeader().setSectionResizeMode(1, QHeaderView.Stretch)
-        table.horizontalHeader().setSectionResizeMode(0, QHeaderView.ResizeToContents)
+        table.horizontalHeader().setSectionResizeMode(2, QHeaderView.ResizeMode.Stretch)
+        table.horizontalHeader().setSectionResizeMode(1, QHeaderView.ResizeMode.Stretch)
+        table.horizontalHeader().setSectionResizeMode(
+            0, QHeaderView.ResizeMode.ResizeToContents
+        )
 
         self.table = table
         for row, item in enumerate(configdict[configkey]):
@@ -127,7 +111,7 @@ class noundictconfigdialog1(QDialog):
 @Singleton
 class regexedit(QDialog):
     def __init__(self, parent, regexlist) -> None:
-        super().__init__(parent, Qt.WindowCloseButtonHint)
+        super().__init__(parent, Qt.WindowType.WindowCloseButtonHint)
         self.regexlist = regexlist
         self.setWindowTitle(_TR("正则匹配"))
 
@@ -138,7 +122,7 @@ class regexedit(QDialog):
         table = QTableView(self)
         table.setModel(self.model)
 
-        table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+        table.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
 
         self.table = table
         for row, regex in enumerate(regexlist):
@@ -197,7 +181,7 @@ def autoinitdialog_items(dic):
 @Singleton
 class autoinitdialog(QDialog):
     def __init__(self, parent, title, width, lines, _=None) -> None:
-        super().__init__(parent, Qt.WindowCloseButtonHint)
+        super().__init__(parent, Qt.WindowType.WindowCloseButtonHint)
 
         self.setWindowTitle(_TR(title))
         self.resize(QSize(width, 10))
@@ -262,7 +246,10 @@ class autoinitdialog(QDialog):
                     functools.partial(dd.__setitem__, key)
                 )
             elif line["type"] == "okcancel":
-                lineW = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel)
+                lineW = QDialogButtonBox(
+                    QDialogButtonBox.StandardButton.Ok
+                    | QDialogButtonBox.StandardButton.Cancel
+                )
                 lineW.rejected.connect(self.close)
                 lineW.accepted.connect(
                     functools.partial(
@@ -270,8 +257,10 @@ class autoinitdialog(QDialog):
                     )
                 )
 
-                lineW.button(QDialogButtonBox.Ok).setText(_TR("确定"))
-                lineW.button(QDialogButtonBox.Cancel).setText(_TR("取消"))
+                lineW.button(QDialogButtonBox.StandardButton.Ok).setText(_TR("确定"))
+                lineW.button(QDialogButtonBox.StandardButton.Cancel).setText(
+                    _TR("取消")
+                )
             elif line["type"] == "lineedit":
                 try:
                     lineW = QLineEdit(dd[key])
@@ -344,7 +333,7 @@ def getsomepath1(
 @Singleton
 class multicolorset(QDialog):
     def __init__(self, parent) -> None:
-        super().__init__(parent, Qt.WindowCloseButtonHint)
+        super().__init__(parent, Qt.WindowType.WindowCloseButtonHint)
         self.setWindowTitle(_TR("颜色设置"))
         self.resize(QSize(300, 10))
         formLayout = QFormLayout(self)  # 配置layout
@@ -411,7 +400,7 @@ class postconfigdialog_(QDialog):
         self.configdict[self.key] = newdict
 
     def __init__(self, parent, configdict, title) -> None:
-        super().__init__(parent, Qt.WindowCloseButtonHint)
+        super().__init__(parent, Qt.WindowType.WindowCloseButtonHint)
         print(title)
         self.setWindowTitle(_TR(title))
         # self.setWindowModality(Qt.ApplicationModal)
@@ -438,8 +427,8 @@ class postconfigdialog_(QDialog):
         table = QTableView(self)
         table.setModel(model)
         table.setWordWrap(False)
-        table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
-        # table.setEditTriggers(QAbstractItemView.NoEditTriggers)
+        table.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
+        # table.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
         # table.clicked.connect(self.show_info)
         button = threebuttons()
 

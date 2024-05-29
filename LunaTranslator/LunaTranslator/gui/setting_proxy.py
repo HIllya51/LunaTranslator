@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QLineEdit, QPushButton
+from qtsymbols import *
 from myutils.config import _TR
 from myutils.config import globalconfig
 from myutils.utils import splittranslatortypes
@@ -13,7 +13,7 @@ from gui.usefulwidget import (
 import os
 
 
-def getall(self, l, item="fanyi", name=""):
+def getall(l, item="fanyi", name=""):
     grids = []
     i = 0
     line = []
@@ -29,6 +29,7 @@ def getall(self, l, item="fanyi", name=""):
         line += [
             (globalconfig[item][fanyi]["name"], 6),
             getsimpleswitch(globalconfig[item][fanyi], "useproxy", default=True),
+            "",
         ]
         if i % 3 == 0:
             grids.append(line)
@@ -72,14 +73,9 @@ def setTab_proxy_lazy(self):
     ]
     lixians, pre, mianfei, develop, shoufei = splittranslatortypes()
 
-    mianfei = getall(
-        self, l=mianfei, item="fanyi", name="./Lunatranslator/translator/%s.py"
-    )
-    shoufei = getall(
-        self, l=shoufei, item="fanyi", name="./Lunatranslator/translator/%s.py"
-    )
+    mianfei = getall(l=mianfei, item="fanyi", name="./Lunatranslator/translator/%s.py")
+    shoufei = getall(l=shoufei, item="fanyi", name="./Lunatranslator/translator/%s.py")
     ocrs = getall(
-        self,
         l=set(globalconfig["ocr"].keys()) - set(["local", "windowsocr"]),
         item="ocr",
         name="./Lunatranslator/ocrengines/%s.py",

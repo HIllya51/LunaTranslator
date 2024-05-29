@@ -8,10 +8,7 @@ import ctypes, importlib
 import time
 import ctypes.wintypes
 import time
-from PyQt5.QtWidgets import (
-    QApplication,
-)
-from PyQt5.QtGui import QImageWriter
+from qtsymbols import *
 from traceback import print_exc
 from myutils.config import (
     globalconfig,

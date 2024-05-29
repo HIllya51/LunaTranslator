@@ -4,11 +4,8 @@ import threading
 import os, sys
 import windows, importlib
 from traceback import print_exc
-from PyQt5.QtCore import Qt, pyqtSignal
 import qtawesome
-from PyQt5.QtCore import pyqtSignal, Qt, QSize
-from PyQt5.QtGui import QCursor
-from PyQt5.QtWidgets import QLabel, QPushButton, QSystemTrayIcon
+from qtsymbols import *
 import gobject
 from myutils.wrapper import threader, trypass
 import winsharedutils
@@ -183,9 +180,9 @@ class QUnFrameWindow(resizableframeless):
         self.translate_text.setnextfont(origin)
 
         if globalconfig["showatcenter"]:
-            self.translate_text.setAlignment(Qt.AlignCenter)
+            self.translate_text.setAlignment(Qt.AlignmentFlag.AlignCenter)
         else:
-            self.translate_text.setAlignment(Qt.AlignLeft)
+            self.translate_text.setAlignment(Qt.AlignmentFlag.AlignLeft)
 
         if iter_context:
             iter_res_status, iter_context_class = iter_context
@@ -590,7 +587,7 @@ class QUnFrameWindow(resizableframeless):
 
         super(QUnFrameWindow, self).__init__(
             None,
-            flags=Qt.FramelessWindowHint | Qt.Tool,
+            flags=Qt.WindowType.FramelessWindowHint | Qt.WindowType.Tool,
             dic=globalconfig,
             key="transuigeo",
         )  # 设置为顶级窗口，无边框
@@ -600,8 +597,8 @@ class QUnFrameWindow(resizableframeless):
         self.tray = QSystemTrayIcon()
         self.tray.setIcon(icon)
         self.isfirstshow = True
-        self.setAttribute(Qt.WA_TranslucentBackground)
-        self.setAttribute(Qt.WA_ShowWithoutActivating, True)
+        self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
+        self.setAttribute(Qt.WidgetAttribute.WA_ShowWithoutActivating, True)
         self.setWindowTitle("LunaTranslator")
         self.hidesignal.connect(self.hide_)
         self.lastrefreshtime = time.time()

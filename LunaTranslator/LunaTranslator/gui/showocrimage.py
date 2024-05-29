@@ -1,7 +1,4 @@
-from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QWidget, QPushButton, QHBoxLayout, QVBoxLayout, QLabel
-from PyQt5.QtGui import QPixmap
-from PyQt5.QtCore import Qt, pyqtSignal
+from qtsymbols import *
 import qtawesome
 from myutils.ocrutil import imagesolve
 from gui.usefulwidget import closeashidewindow
@@ -46,12 +43,16 @@ class showocrimage(closeashidewindow):
 
         self.originlabel.setPixmap(
             self.img1.scaled(
-                self.originlabel.size(), Qt.KeepAspectRatio, Qt.SmoothTransformation
+                self.originlabel.size(),
+                Qt.AspectRatioMode.KeepAspectRatio,
+                Qt.TransformationMode.SmoothTransformation,
             )
         )
         self.solvedlabel.setPixmap(
             self.img2.scaled(
-                self.solvedlabel.size(), Qt.KeepAspectRatio, Qt.SmoothTransformation
+                self.solvedlabel.size(),
+                Qt.AspectRatioMode.KeepAspectRatio,
+                Qt.TransformationMode.SmoothTransformation,
             )
         )
 

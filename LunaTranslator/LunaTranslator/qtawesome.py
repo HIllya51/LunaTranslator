@@ -1,15 +1,6 @@
 import json
 import os
-from PyQt5.QtCore import QByteArray, QObject, QPoint, QRect, Qt
-from PyQt5.QtGui import (
-    QColor,
-    QFont,
-    QFontDatabase,
-    QIcon,
-    QIconEngine,
-    QPainter,
-    QPixmap,
-)
+from qtsymbols import *
 
 
 class CharIconPainter:
@@ -20,7 +11,11 @@ class CharIconPainter:
         painter.setPen(qcolor)
         draw_size = round(0.875 * rect.height())
         painter.setFont(iconic.font(draw_size))
-        painter.drawText(rect, int(Qt.AlignCenter | Qt.AlignVCenter), char)
+        painter.drawText(
+            rect,
+            int(Qt.AlignmentFlag.AlignCenter | Qt.AlignmentFlag.AlignVCenter),
+            char,
+        )
         painter.restore()
 
 
@@ -38,7 +33,7 @@ class CharIconEngine(QIconEngine):
 
     def pixmap(self, size, mode, state):
         pm = QPixmap(size)
-        pm.fill(Qt.transparent)
+        pm.fill(Qt.GlobalColor.transparent)
         self.paint(QPainter(pm), QRect(QPoint(0, 0), size))
         return pm
 

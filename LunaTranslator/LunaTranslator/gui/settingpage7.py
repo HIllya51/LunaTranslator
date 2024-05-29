@@ -1,14 +1,5 @@
 import functools
-
-from PyQt5.QtWidgets import (
-    QHBoxLayout,
-    QPlainTextEdit,
-    QHBoxLayout,
-    QWidget,
-    QMenu,
-    QAction,
-)
-from PyQt5.QtCore import Qt, QPoint
+from qtsymbols import *
 from traceback import print_exc
 from myutils.config import (
     globalconfig,
@@ -241,7 +232,7 @@ def setTab7_lazy(self):
 
     def __():
         _w = makescroll(makegrid(grids, True, savelist, savelay))
-        _w.setContextMenuPolicy(Qt.CustomContextMenu)
+        _w.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
 
         def showmenu(p: QPoint):
 

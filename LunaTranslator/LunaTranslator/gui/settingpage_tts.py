@@ -1,6 +1,5 @@
 import functools
-
-from PyQt5.QtWidgets import QComboBox
+from qtsymbols import *
 from gui.inputdialog import autoinitdialog_items, noundictconfigdialog1, autoinitdialog
 from myutils.config import globalconfig, _TRL
 import os, functools

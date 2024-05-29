@@ -1,15 +1,4 @@
-from PyQt5.QtWidgets import (
-    QComboBox,
-    QPushButton,
-    QFormLayout,
-    QHBoxLayout,
-    QDialogButtonBox,
-    QDialog,
-    QLineEdit,
-    QFileDialog,
-)
-
-from PyQt5.QtCore import Qt, QSize
+from qtsymbols import *
 import sqlite3, os
 import json
 from traceback import print_exc
@@ -54,7 +43,7 @@ def sqlite2json2(self, sqlitefile, targetjson=None, existsmerge=False):
             _collect.append(_)
     collect = _collect
 
-    dialog = QDialog(self, Qt.WindowCloseButtonHint)  # 自定义一个dialog
+    dialog = QDialog(self, Qt.WindowType.WindowCloseButtonHint)  # 自定义一个dialog
     dialog.setWindowTitle(_TR("导出翻译记录为json文件"))
     dialog.resize(QSize(800, 10))
     formLayout = QFormLayout(dialog)  # 配置layout
@@ -85,7 +74,9 @@ def sqlite2json2(self, sqlitefile, targetjson=None, existsmerge=False):
     if targetjson is None:
         formLayout.addRow(_TR("保存路径"), hori)
 
-    button = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel)
+    button = QDialogButtonBox(
+        QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel
+    )
     formLayout.addRow(button)
     button.rejected.connect(dialog.close)
 
@@ -114,8 +105,8 @@ def sqlite2json2(self, sqlitefile, targetjson=None, existsmerge=False):
         dialog.close()
 
     button.accepted.connect(functools.partial(__savefunction, targetjson, existsmerge))
-    button.button(QDialogButtonBox.Ok).setText(_TR("确定"))
-    button.button(QDialogButtonBox.Cancel).setText(_TR("取消"))
+    button.button(QDialogButtonBox.StandardButton.Ok).setText(_TR("确定"))
+    button.button(QDialogButtonBox.StandardButton.Cancel).setText(_TR("取消"))
     dialog.show()
 
 

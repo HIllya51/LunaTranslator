@@ -1,44 +1,11 @@
-from PyQt5.QtWidgets import (
-    QLineEdit,
-    QMainWindow,
-    QApplication,
-    QPushButton,
-    QMessageBox,
-    QTabWidget,
-    QScrollArea,
-    QDialog,
-    QLabel,
-    QGridLayout,
-    QSizePolicy,
-    QHBoxLayout,
-    QWidget,
-    QLayout,
-)
-from PyQt5.QtCore import pyqtSignal
-from PyQt5.QtWidgets import QKeySequenceEdit, QLabel
-from PyQt5.QtGui import QFontDatabase
-from PyQt5.QtGui import QKeySequence
-
+from qtsymbols import *
 from webviewpy import (
     webview_native_handle_kind_t,
     Webview,
     declare_library_path,
 )
-from PyQt5.QtGui import QCloseEvent, QColor, QTextCursor, QResizeEvent
-from PyQt5.QtCore import Qt, pyqtSignal, QSize
 from myutils.config import _TR, globalconfig
-from PyQt5.QtWidgets import (
-    QColorDialog,
-    QSpinBox,
-    QDoubleSpinBox,
-    QPushButton,
-    QComboBox,
-    QLabel,
-    QDialogButtonBox,
-    QLineEdit,
-    QApplication,
-    QVBoxLayout,
-)
+
 from traceback import print_exc
 import qtawesome, functools, threading, time
 from myutils.wrapper import Singleton
@@ -50,7 +17,7 @@ import windows, os, platform
 class dialog_showinfo(QDialog):
 
     def __init__(self, parent, title, info) -> None:
-        super().__init__(parent, Qt.WindowCloseButtonHint)
+        super().__init__(parent, Qt.WindowType.WindowCloseButtonHint)
         self.setWindowTitle(title)
         l = QLabel(info)
         layout = QHBoxLayout()
@@ -251,94 +218,100 @@ class resizableframeless(saveposwindow):
                 self.height() + 1,
             ]
 
-    def mousePressEvent(self, event):
+    def mousePressEvent(self, event: QMouseEvent):
         # 重写鼠标点击的事件
-
-        if (event.button() == Qt.LeftButton) and (
+        if isqt5:
+            gpos = event.globalPos()
+        else:
+            gpos = event.globalPosition().toPoint()
+        if (event.button() == Qt.MouseButton.LeftButton) and (
             isinrect(event.pos(), self._corner_rect)
         ):
             # 鼠标左键点击右下角边界区域
             self._corner_drag = True
-        elif (event.button() == Qt.LeftButton) and (
+        elif (event.button() == Qt.MouseButton.LeftButton) and (
             isinrect(event.pos(), self._right_rect)
         ):
             # 鼠标左键点击右侧边界区域
             self._right_drag = True
-        elif (event.button() == Qt.LeftButton) and (
+        elif (event.button() == Qt.MouseButton.LeftButton) and (
             isinrect(event.pos(), self._left_rect)
         ):
             # 鼠标左键点击右侧边界区域
             self._left_drag = True
-            self.startxp = event.globalPos() - self.pos()
-            self.startx = event.globalPos().x()
+            self.startxp = gpos - self.pos()
+            self.startx = gpos.x()
             self.startw = self.width()
-        elif (event.button() == Qt.LeftButton) and (
+        elif (event.button() == Qt.MouseButton.LeftButton) and (
             isinrect(event.pos(), self._bottom_rect)
         ):
             # 鼠标左键点击下侧边界区域
             self._bottom_drag = True
-        elif (event.button() == Qt.LeftButton) and (
+        elif (event.button() == Qt.MouseButton.LeftButton) and (
             isinrect(event.pos(), self._lcorner_rect)
         ):
             # 鼠标左键点击下侧边界区域
             self._lcorner_drag = True
-            self.startxp = event.globalPos() - self.pos()
-            self.startx = event.globalPos().x()
+            self.startxp = gpos - self.pos()
+            self.startx = gpos.x()
             self.startw = self.width()
         # and (event.y() < self._TitleLabel.height()):
-        elif event.button() == Qt.LeftButton:
+        elif event.button() == Qt.MouseButton.LeftButton:
             # 鼠标左键点击标题栏区域
             self._move_drag = True
-            self.move_DragPosition = event.globalPos() - self.pos()
+            self.move_DragPosition = gpos - self.pos()
 
-    def mouseMoveEvent(self, QMouseEvent):
+    def mouseMoveEvent(self, event):
         # 判断鼠标位置切换鼠标手势
 
-        pos = QMouseEvent.pos()
-
+        pos = event.pos()
+        if isqt5:
+            gpos = event.globalPos()
+        else:
+            gpos = event.globalPosition().toPoint()
         if self._move_drag == False:
             if isinrect(pos, self._corner_rect):
-                self.setCursor(Qt.SizeFDiagCursor)
+                self.setCursor(Qt.CursorShape.SizeFDiagCursor)
             elif isinrect(pos, self._lcorner_rect):
-                self.setCursor(Qt.SizeBDiagCursor)
+                self.setCursor(Qt.CursorShape.SizeBDiagCursor)
             elif isinrect(pos, self._bottom_rect):
-                self.setCursor(Qt.SizeVerCursor)
+                self.setCursor(Qt.CursorShape.SizeVerCursor)
             elif isinrect(pos, self._right_rect):
-                self.setCursor(Qt.SizeHorCursor)
+                self.setCursor(Qt.CursorShape.SizeHorCursor)
             elif isinrect(pos, self._left_rect):
-                self.setCursor(Qt.SizeHorCursor)
+                self.setCursor(Qt.CursorShape.SizeHorCursor)
             else:
-                self.setCursor(Qt.ArrowCursor)
-        if Qt.LeftButton and self._right_drag:
+                self.setCursor(Qt.CursorShape.ArrowCursor)
+        if Qt.MouseButton.LeftButton and self._right_drag:
 
             # 右侧调整窗口宽度
             self.resize(pos.x(), self.height())
-        elif Qt.LeftButton and self._left_drag:
+        elif Qt.MouseButton.LeftButton and self._left_drag:
             # 右侧调整窗口宽度
             self.setGeometry(
-                (QMouseEvent.globalPos() - self.startxp).x(),
+                (gpos - self.startxp).x(),
                 self.y(),
-                self.startw - (QMouseEvent.globalPos().x() - self.startx),
+                self.startw - (gpos.x() - self.startx),
                 self.height(),
             )
             # self.resize(pos.x(), self.height())
-        elif Qt.LeftButton and self._bottom_drag:
+        elif Qt.MouseButton.LeftButton and self._bottom_drag:
             # 下侧调整窗口高度
-            self.resize(self.width(), QMouseEvent.pos().y())
-        elif Qt.LeftButton and self._lcorner_drag:
+            self.resize(self.width(), event.pos().y())
+        elif Qt.MouseButton.LeftButton and self._lcorner_drag:
             # 下侧调整窗口高度
             self.setGeometry(
-                (QMouseEvent.globalPos() - self.startxp).x(),
+                (gpos - self.startxp).x(),
                 self.y(),
-                self.startw - (QMouseEvent.globalPos().x() - self.startx),
-                QMouseEvent.pos().y(),
+                self.startw - (gpos.x() - self.startx),
+                event.pos().y(),
             )
-        elif Qt.LeftButton and self._corner_drag:
+        elif Qt.MouseButton.LeftButton and self._corner_drag:
             # 右下角同时调整高度和宽度
             self.resize(pos.x(), pos.y())
-        elif Qt.LeftButton and self._move_drag:
+        elif Qt.MouseButton.LeftButton and self._move_drag:
             # 标题栏拖放窗口位置
-            self.move(QMouseEvent.globalPos() - self.move_DragPosition)
+            self.move(gpos - self.move_DragPosition)
 
     def mouseReleaseEvent(self, QMouseEvent):
         # 鼠标释放后，各扳机复位
@@ -356,7 +329,7 @@ class Prompt_dialog(QDialog):
         self.setWindowFlags(
             self.windowFlags()
             & ~Qt.WindowContextHelpButtonHint
-            & ~Qt.WindowCloseButtonHint
+            & ~Qt.WindowType.WindowCloseButtonHint
             | Qt.WindowStaysOnTopHint
         )
         self.setWindowTitle(title)
@@ -376,7 +349,9 @@ class Prompt_dialog(QDialog):
             hl.addWidget(QLabel(_[0]))
             hl.addWidget(le)
             _layout.addLayout(hl)
-        button = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel)
+        button = QDialogButtonBox(
+            QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel
+        )
         button.accepted.connect(self.accept)
         button.rejected.connect(self.reject)
         _layout.addWidget(button)
@@ -401,7 +376,7 @@ def getsimplecombobox(lst, d, k, callback=None, fixedsize=False):
     s.setCurrentIndex(d[k])
     s.currentIndexChanged.connect(functools.partial(callbackwrap, d, k, callback))
     if fixedsize:
-        s.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
+        s.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
     return s
 
 
@@ -457,7 +432,7 @@ def getcolorbutton(
             font: 100 10pt;"""
         )
     b.clicked.connect(callback)
-    b.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
+    b.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
     if name:
         setattr(parent, name, b)
     return b
@@ -483,7 +458,7 @@ def getsimpleswitch(
 
     b = MySwitch(sign=d[key], enable=enable)
     b.clicked.connect(functools.partial(callbackwrap, d, key, callback))
-    b.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
+    b.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
     if pair:
         if pair not in dir(parent):
             setattr(parent, pair, {})
@@ -539,7 +514,7 @@ def textbrowappendandmovetoend(textOutput, sentence, addspace=True):
         or scrollbar.value() / scrollbar.maximum() > 0.975
     )
     cursor = QTextCursor(textOutput.document())
-    cursor.movePosition(QTextCursor.End)
+    cursor.movePosition(QTextCursor.MoveOperation.End)
     cursor.insertText(
         (("" if textOutput.document().isEmpty() else "\n") if addspace else "")
         + sentence
@@ -700,7 +675,7 @@ class auto_select_webview(QWidget):
 
     def __init__(self, parent) -> None:
         super().__init__(parent)
-        self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
         self.cantusewebview2 = False
         self.internal = None
         self.contex = -1
@@ -817,7 +792,7 @@ def automakegrid(grid: QGridLayout, lis, save=False, savelist=None):
             nowc += cols
         if save:
             savelist.append(ll)
-        grid.setRowMinimumHeight(nowr, 30)
+        grid.setRowMinimumHeight(nowr, 25)
 
 
 def makegrid(grid, save=False, savelist=None, savelay=None):
@@ -827,7 +802,7 @@ def makegrid(grid, save=False, savelist=None, savelay=None):
 
     gridlayoutwidget = gridwidget()
     gridlay = QGridLayout()
-    gridlay.setAlignment(Qt.AlignTop)
+    gridlay.setAlignment(Qt.AlignmentFlag.AlignTop)
     gridlayoutwidget.setLayout(gridlay)
     gridlayoutwidget.setStyleSheet("gridwidget{background-color:transparent;}")
 

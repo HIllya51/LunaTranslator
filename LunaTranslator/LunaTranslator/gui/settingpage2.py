@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QPushButton, QLabel
+from qtsymbols import *
 import functools, gobject
 from myutils.config import globalconfig, translatorsetting
 
@@ -243,7 +243,7 @@ def setTabTwo_lazy(self):
         ],
         [
             ("端口号", 8),
-            (getspinbox(0, 65535, globalconfig, "debugport"), 3),
+            (getspinbox(0, 65535, globalconfig, "debugport"), 4),
         ],
         [(self.statuslabel, 16)],
         [],

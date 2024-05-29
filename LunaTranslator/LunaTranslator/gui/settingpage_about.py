@@ -1,6 +1,4 @@
-from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QPixmap, QImage
-from PyQt5.QtWidgets import QLabel, QProgressBar
+from qtsymbols import *
 from gui.usefulwidget import (
     getsimpleswitch,
     getsimplecombobox,
@@ -59,13 +57,17 @@ def setTab_about_dicrect(self):
 
     self.versionlabel = QLabel()
     self.versionlabel.setOpenExternalLinks(True)
-    self.versionlabel.setTextInteractionFlags(Qt.LinksAccessibleByMouse)
+    self.versionlabel.setTextInteractionFlags(
+        Qt.TextInteractionFlag.LinksAccessibleByMouse
+    )
     self.versiontextsignal.connect(lambda x: self.versionlabel.setText(x))
     self.downloadprogress = QProgressBar()
 
     self.downloadprogress.setRange(0, 10000)
 
-    self.downloadprogress.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
+    self.downloadprogress.setAlignment(
+        Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter
+    )
     self.progresssignal.connect(lambda text, val: updateprogress(self, text, val))
     getversion(self)
 
@@ -164,8 +166,8 @@ def setTab_aboutlazy(self):
         img = img.scaled(
             600,
             600,
-            Qt.KeepAspectRatio,
-            Qt.SmoothTransformation,
+            Qt.AspectRatioMode.KeepAspectRatio,
+            Qt.TransformationMode.SmoothTransformation,
         )
         lb.setPixmap(img)
         shuominggrid += [[(lb, 0)]]

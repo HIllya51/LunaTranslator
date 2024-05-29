@@ -1,42 +1,12 @@
 import time
 from datetime import datetime, timedelta
 from gui.specialwidget import ScrollFlow, chartwidget, lazyscrollflow
-from PyQt5.QtWidgets import (
-    QPushButton,
-    QDialog,
-    QVBoxLayout,
-    QHeaderView,
-    QFileDialog,
-    QLineEdit,
-    QComboBox,
-    QFormLayout,
-    QHBoxLayout,
-    QTableView,
-    QAbstractItemView,
-    QLabel,
-    QTabWidget,
-    QApplication,
-    QSizePolicy,
-    QWidget,
-    QMenu,
-    QAction,
-    QTabBar,
-)
+from qtsymbols import *
 import functools, threading
 from traceback import print_exc
 import windows
-from PyQt5.QtCore import QRect, QSize, Qt, pyqtSignal, QObject
 import os
-from PyQt5.QtGui import (
-    QCloseEvent,
-    QIntValidator,
-    QResizeEvent,
-    QPixmap,
-    QPainter,
-    QPen,
-    QStandardItem,
-    QStandardItemModel,
-)
+
 from gui.usefulwidget import (
     getsimplecombobox,
     getspinbox,
@@ -144,7 +114,7 @@ class ItemWidget(QWidget):
             self._lb.setText(file)
         self._lb.setWordWrap(True)
         self._lb.setStyleSheet("background-color: rgba(255,255,255, 0);")
-        self._lb.setAlignment(Qt.AlignCenter)
+        self._lb.setAlignment(Qt.AlignmentFlag.AlignCenter)
         layout.addWidget(self._lb)
         self.setLayout(layout)
         self.exe = exe
@@ -192,10 +162,10 @@ class IMGWidget(QLabel):
         rate = self.devicePixelRatioF()
         newpixmap = QPixmap(self.size() * rate)
         newpixmap.setDevicePixelRatio(rate)
-        newpixmap.fill(Qt.transparent)
+        newpixmap.fill(Qt.GlobalColor.transparent)
         painter = QPainter(newpixmap)
-        painter.setRenderHint(QPainter.SmoothPixmapTransform)
-        painter.setRenderHint(QPainter.Antialiasing)
+        painter.setRenderHint(QPainter.RenderHint.SmoothPixmapTransform)
+        painter.setRenderHint(QPainter.RenderHint.Antialiasing)
         painter.drawPixmap(self.getrect(pixmap.size()), pixmap)
         painter.end()
 
@@ -231,7 +201,7 @@ class CustomTabBar(QTabBar):
 
     def mousePressEvent(self, event):
         index = self.tabAt(event.pos())
-        if index == self.count() - 1 and event.button() == Qt.LeftButton:
+        if index == self.count() - 1 and event.button() == Qt.MouseButton.LeftButton:
             self.lastclick.emit()
         else:
             super().mousePressEvent(event)
@@ -246,7 +216,7 @@ class ClickableLabel(QLabel):
         self._clickable = clickable
 
     def mousePressEvent(self, event):
-        if self._clickable and event.button() == Qt.LeftButton:
+        if self._clickable and event.button() == Qt.MouseButton.LeftButton:
             self.clicked.emit()
 
     clicked = pyqtSignal()
@@ -277,17 +247,17 @@ class tagitem(QWidget):
 
     def paintEvent(self, event):
         painter = QPainter(self)
-        painter.setRenderHint(QPainter.Antialiasing)
+        painter.setRenderHint(QPainter.RenderHint.Antialiasing)
         if self._type == tagitem.TYPE_RAND:
-            border_color = Qt.black
+            border_color = Qt.GlobalColor.black
         elif self._type == tagitem.TYPE_DEVELOPER:
-            border_color = Qt.red
+            border_color = Qt.GlobalColor.red
         elif self._type == tagitem.TYPE_TAG:
-            border_color = Qt.green
+            border_color = Qt.GlobalColor.green
         elif self._type == tagitem.TYPE_USERTAG:
-            border_color = Qt.blue
+            border_color = Qt.GlobalColor.blue
         elif self._type == tagitem.TYPE_EXISTS:
-            border_color = Qt.yellow
+            border_color = Qt.GlobalColor.yellow
         border_width = 1
         pen = QPen(border_color)
         pen.setWidth(border_width)
@@ -338,10 +308,12 @@ class TagWidget(QWidget):
             lambda: self.linepressedenter.emit(self.lineEdit.currentText())
         )
 
-        self.lineEdit.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Maximum)
+        self.lineEdit.setSizePolicy(
+            QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Maximum
+        )
 
         layout.addWidget(self.lineEdit)
-        self.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Fixed)
+        self.setSizePolicy(QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Fixed)
 
         self.tag2widget = {}
 
@@ -539,7 +511,7 @@ class browserdialog(saveposwindow):
             )
         )
         _topw = QWidget()
-        _topw.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Fixed)
+        _topw.setSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Fixed)
         _topw.setLayout(hlay)
         layout = QVBoxLayout()
         layout.setContentsMargins(*(0 for i in range(4)))
@@ -620,7 +592,7 @@ class dialog_setting_game(QDialog):
         return super().closeEvent(a0)
 
     def __init__(self, parent, exepath) -> None:
-        super().__init__(parent, Qt.WindowCloseButtonHint)
+        super().__init__(parent, Qt.WindowType.WindowCloseButtonHint)
         global _global_dialog_setting_game
         _global_dialog_setting_game = self
         self.isopened = True
@@ -676,7 +648,7 @@ class dialog_setting_game(QDialog):
 
         vndbid = QLineEdit(str(savehook_new_data[exepath]["vid"]))
         vndbid.setValidator(QIntValidator())
-        vndbid.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Fixed)
+        vndbid.setSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Fixed)
 
         vndbid.textEdited.connect(functools.partial(vidchangedtask, exepath))
 
@@ -755,7 +727,7 @@ class dialog_setting_game(QDialog):
     def selectbackupdir(self, edit):
         res = QFileDialog.getExistingDirectory(
             directory=edit.text(),
-            options=QFileDialog.DontResolveSymlinks,
+            options=QFileDialog.Option.DontResolveSymlinks,
         )
         if not res:
             return
@@ -885,8 +857,12 @@ class dialog_setting_game(QDialog):
         self.chart = chart
         self._timelabel = QLabel()
         self._wordlabel = QLabel()
-        self._wordlabel.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Fixed)
-        self._timelabel.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Fixed)
+        self._wordlabel.setSizePolicy(
+            QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Fixed
+        )
+        self._timelabel.setSizePolicy(
+            QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Fixed
+        )
         formLayout.addLayout(getboxlayout([QLabel(_TR("文字计数")), self._wordlabel]))
         formLayout.addLayout(getboxlayout([QLabel(_TR("游戏时间")), self._timelabel]))
 
@@ -1034,7 +1010,7 @@ class dialog_setting_game(QDialog):
     def getttssetting(self, exepath):
         _w = QWidget()
         formLayout = QVBoxLayout()
-        formLayout.setAlignment(Qt.AlignTop)
+        formLayout.setAlignment(Qt.AlignmentFlag.AlignTop)
         _w.setLayout(formLayout)
 
         formLayout.addLayout(
@@ -1154,11 +1130,13 @@ class dialog_setting_game(QDialog):
         self.hcmodel = model
 
         table = QTableView()
-        table.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
+        table.horizontalHeader().setSectionResizeMode(
+            QHeaderView.ResizeMode.ResizeToContents
+        )
         table.horizontalHeader().setStretchLastSection(True)
-        # table.setEditTriggers(QAbstractItemView.NoEditTriggers);
-        table.setSelectionBehavior(QAbstractItemView.SelectRows)
-        table.setSelectionMode((QAbstractItemView.SingleSelection))
+        # table.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers);
+        table.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
+        table.setSelectionMode((QAbstractItemView.SelectionMode.SingleSelection))
         table.setWordWrap(False)
         table.setModel(model)
         self.hctable = table
@@ -1207,7 +1185,7 @@ class dialog_setting_game(QDialog):
 class dialog_syssetting(QDialog):
 
     def __init__(self, parent) -> None:
-        super().__init__(parent, Qt.WindowCloseButtonHint)
+        super().__init__(parent, Qt.WindowType.WindowCloseButtonHint)
         self.setWindowTitle(_TR("其他设置"))
         formLayout = QFormLayout(self)
         formLayout.addRow(
@@ -1365,11 +1343,13 @@ class listediter(QDialog):
             self.hcmodel = model
 
             table = QTableView()
-            table.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
+            table.horizontalHeader().setSectionResizeMode(
+                QHeaderView.ResizeMode.ResizeToContents
+            )
             table.horizontalHeader().setStretchLastSection(True)
-            # table.setEditTriggers(QAbstractItemView.NoEditTriggers);
-            table.setSelectionBehavior(QAbstractItemView.SelectRows)
-            table.setSelectionMode((QAbstractItemView.SingleSelection))
+            # table.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers);
+            table.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
+            table.setSelectionMode((QAbstractItemView.SelectionMode.SingleSelection))
             table.setWordWrap(False)
             table.setModel(model)
             self.hctable = table
@@ -1447,7 +1427,9 @@ class dialog_savedgame_new(saveposwindow):
         opendir(self.currentfocuspath)
 
     def clicked3_batch(self):
-        res = QFileDialog.getExistingDirectory(options=QFileDialog.DontResolveSymlinks)
+        res = QFileDialog.getExistingDirectory(
+            options=QFileDialog.Option.DontResolveSymlinks
+        )
         if res != "":
             for _dir, _, _fs in os.walk(res):
                 for _f in _fs:
@@ -1460,7 +1442,7 @@ class dialog_savedgame_new(saveposwindow):
 
     def clicked3(self):
 
-        f = QFileDialog.getOpenFileName(options=QFileDialog.DontResolveSymlinks)
+        f = QFileDialog.getOpenFileName(options=QFileDialog.Option.DontResolveSymlinks)
 
         res = f[0]
         if res != "":
@@ -1556,7 +1538,8 @@ class dialog_savedgame_new(saveposwindow):
     def __init__(self, parent) -> None:
         super().__init__(
             parent,
-            flags=Qt.WindowMinMaxButtonsHint | Qt.WindowCloseButtonHint,
+            flags=Qt.WindowType.WindowMinMaxButtonsHint
+            | Qt.WindowType.WindowCloseButtonHint,
             dic=globalconfig,
             key="savegamedialoggeo",
         )
@@ -1614,7 +1597,7 @@ class dialog_savedgame_new(saveposwindow):
         layout.addWidget(self.tagswidget)
         formLayout.addLayout(layout)
         self.flow = lazyscrollflow()
-        self.setContextMenuPolicy(Qt.CustomContextMenu)
+        self.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
         self.customContextMenuRequested.connect(self.showmenu)
         formLayout.addWidget(self.flow)
         self.formLayout = formLayout
@@ -1687,7 +1670,7 @@ class dialog_savedgame_new(saveposwindow):
         if save:
             self.savebutton.append((button5, exists))
         button5.clicked.connect(callback)
-        button5.setFocusPolicy(Qt.NoFocus)
+        button5.setFocusPolicy(Qt.FocusPolicy.NoFocus)
         self.buttonlayout.addWidget(button5)
         return button5
 

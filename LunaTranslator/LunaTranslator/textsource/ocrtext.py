@@ -2,10 +2,9 @@ import time
 from myutils.config import globalconfig
 import winsharedutils
 from gui.rangeselect import rangeadjust
-from myutils.ocrutil import imageCut, ocr_run, ocr_end, qimage2binary
-import time, gobject, os
-from PyQt5.QtWidgets import QApplication
-from PyQt5.QtGui import QImage
+from myutils.ocrutil import imageCut, ocr_run, ocr_end
+import time, gobject
+from qtsymbols import *
 from textsource.textsourcebase import basetext
 
 

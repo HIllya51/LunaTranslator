@@ -3,7 +3,7 @@ from myutils.config import globalconfig, _TR
 from myutils.winsyshotkey import SystemHotkey, registerException
 import winsharedutils
 import gobject, windows
-from PyQt5.QtWidgets import QLabel
+from qtsymbols import *
 from gui.usefulwidget import (
     getsimpleswitch,
     getsimplekeyseq,

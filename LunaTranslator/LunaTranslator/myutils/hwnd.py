@@ -1,7 +1,6 @@
 import windows
 import threading
-from PyQt5.QtGui import QPixmap, QColor, QIcon
-from PyQt5.QtWidgets import QApplication
+from qtsymbols import *
 import gobject
 import os, subprocess
 import time, winrtutils, winsharedutils, hashlib

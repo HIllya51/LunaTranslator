@@ -1,19 +1,6 @@
 from myutils.config import noundictconfig
 import gobject, re
-
-from PyQt5.QtWidgets import (
-    QDialog,
-    QLabel,
-    QLineEdit,
-    QPushButton,
-    QTableView,
-    QVBoxLayout,
-    QHBoxLayout,
-    QHeaderView,
-    QHBoxLayout,
-)
-from PyQt5.QtCore import QSize, Qt
-from PyQt5.QtGui import QCloseEvent, QStandardItem, QStandardItemModel
+from qtsymbols import *
 from traceback import print_exc
 from myutils.config import (
     noundictconfig,
@@ -52,7 +39,7 @@ class noundictconfigdialog(QDialog):
     def __init__(
         self, parent, configdict, title, label=["游戏ID MD5", "原文", "翻译"], _=None
     ) -> None:
-        super().__init__(parent, Qt.WindowCloseButtonHint)
+        super().__init__(parent, Qt.WindowType.WindowCloseButtonHint)
 
         self.setWindowTitle(_TR(title))
         # self.setWindowModality(Qt.ApplicationModal)
@@ -76,8 +63,8 @@ class noundictconfigdialog(QDialog):
         model.setHorizontalHeaderLabels(_TRL(label))
         table = QTableView(self)
         table.setModel(model)
-        table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
-        # table.setEditTriggers(QAbstractItemView.NoEditTriggers)
+        table.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
+        # table.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
         # table.clicked.connect(self.show_info)
         button = threebuttons()
 

@@ -1,17 +1,5 @@
 import functools
-from PyQt5.QtWidgets import (
-    QCheckBox,
-    QLabel,
-    QLineEdit,
-    QPushButton,
-    QDialog,
-    QVBoxLayout,
-    QHeaderView,
-)
-from PyQt5.QtWidgets import QHBoxLayout, QTableView
-from PyQt5.QtGui import QStandardItem, QStandardItemModel
-from PyQt5.QtWidgets import QComboBox
-from PyQt5.QtCore import Qt, QSize
+from qtsymbols import *
 from gui.usefulwidget import getspinbox, threebuttons, getlineedit
 from myutils.utils import checkencoding
 from myutils.config import globalconfig, _TR, _TRL
@@ -49,7 +37,7 @@ class codeacceptdialog(QDialog):
             itemsaver_.setText(code)
 
     def __init__(self, parent) -> None:
-        super().__init__(parent, Qt.WindowCloseButtonHint)
+        super().__init__(parent, Qt.WindowType.WindowCloseButtonHint)
         title = "接受的编码"
         self.setWindowTitle(_TR(title))
         # self.setWindowModality(Qt.ApplicationModal)
@@ -61,7 +49,9 @@ class codeacceptdialog(QDialog):
         self.model.setHorizontalHeaderLabels(_TRL(["接受的编码"]))
         self.table = QTableView(self)
         self.table.setModel(self.model)
-        self.table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+        self.table.horizontalHeader().setSectionResizeMode(
+            QHeaderView.ResizeMode.Stretch
+        )
 
         row = 0
         for code in globalconfig["accept_encoding"]:  # 2

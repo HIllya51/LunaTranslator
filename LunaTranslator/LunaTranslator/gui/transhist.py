@@ -1,6 +1,4 @@
-from PyQt5.QtWidgets import QPlainTextEdit, QAction, QMenu, QFileDialog
-from PyQt5.QtCore import Qt, pyqtSignal
-from PyQt5.QtGui import QCursor
+from qtsymbols import *
 import qtawesome, functools, winsharedutils
 from gui.usefulwidget import closeashidewindow
 from myutils.config import globalconfig, _TR
@@ -27,7 +25,7 @@ class transhist(closeashidewindow):
 
         def gettb(_type):
             textOutput = QPlainTextEdit()
-            textOutput.setContextMenuPolicy(Qt.CustomContextMenu)
+            textOutput.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
             textOutput.customContextMenuRequested.connect(
                 functools.partial(self.showmenu, textOutput, _type)
             )

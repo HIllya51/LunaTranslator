@@ -1,0 +1,5 @@
+PyQt6==6.7.0
+PyQt6-Qt6==6.7.0
+webviewpy==1.2.0
+pefile
+#python3.11.8

@@ -1,20 +1,4 @@
-from PyQt5.QtWidgets import QWidget, QSizePolicy, QLabel, QScrollArea, QApplication
-from PyQt5.QtGui import (
-    QMouseEvent,
-    QPainter,
-    QPen,
-    QFont,
-    QFontMetrics,
-    QRegion,
-    QResizeEvent,
-)
-from PyQt5.QtCore import Qt, QEvent
-from PyQt5.QtWidgets import (
-    QSpacerItem,
-    QWidgetItem,
-)
-from PyQt5.QtCore import QPoint, QRect, QSize, Qt, pyqtSignal
-from PyQt5.QtWidgets import QLayout
+from qtsymbols import *
 from traceback import print_exc
 from myutils.wrapper import trypass
 import threading
@@ -48,9 +32,9 @@ class chartwidget(QWidget):
             if len(self.data) == 1:
                 self.data.insert(0, (0, 0))
             painter = QPainter(self)
-            painter.setRenderHint(QPainter.Antialiasing)
+            painter.setRenderHint(QPainter.RenderHint.Antialiasing)
 
-            pen = QPen(Qt.blue)
+            pen = QPen(Qt.GlobalColor.blue)
             pen.setWidth(2)
             painter.setPen(pen)
 
@@ -65,7 +49,7 @@ class chartwidget(QWidget):
 
             x_labels = [self.xtext(x) for x, _ in self.data]
             for l in y_labels:
-                xmargin = max(xmargin, self.fmetrics.width(l))
+                xmargin = max(xmargin, self.fmetrics.size(0, l).width())
 
             xmargin = xmargin + self.scalelinelen
 
@@ -73,8 +57,8 @@ class chartwidget(QWidget):
                 self.width()
                 - xmargin
                 - max(
-                    self.fmetrics.width(x_labels[-1]) // 2,
-                    self.fmetrics.width(self.ytext(self.data[-1][1])) // 2,
+                    self.fmetrics.size(0, x_labels[-1]).width() // 2,
+                    self.fmetrics.size(0, self.ytext(self.data[-1][1])).width() // 2,
                 )
             )
 
@@ -85,7 +69,7 @@ class chartwidget(QWidget):
                 y = int(ymargin + height - i * (height / 5))
                 painter.drawLine(xmargin - self.scalelinelen, y, xmargin, y)
                 painter.drawText(
-                    xmargin - self.scalelinelen - self.fmetrics.width(label),
+                    xmargin - self.scalelinelen - self.fmetrics.size(0, label).width(),
                     y + 5,
                     label,
                 )
@@ -115,7 +99,7 @@ class chartwidget(QWidget):
 
                 if self.data[i + 1][1]:  #!=0
                     text = self.ytext(self.data[i + 1][1])
-                    W = self.fmetrics.width(text)
+                    W = self.fmetrics.size(0, text).width()
                     newrect = QRect(x2 - W // 2, y2 - 10, W, texth)
                     if any(_.intersected(newrect) for _ in rects):
                         continue
@@ -126,7 +110,7 @@ class chartwidget(QWidget):
             for i, (x, y) in enumerate(points):
                 painter.drawLine(x, ymargin + height, x, ymargin + height + 5)  # 刻度线
 
-                thisw = self.fmetrics.width(x_labels[i])
+                thisw = self.fmetrics.size(0, x_labels[i]).width()
                 thisx = x - thisw // 2
 
                 if thisx > lastx2:
@@ -242,7 +226,9 @@ class FlowLayout(QLayout):
         self._item_list.append(item)
 
     def addSpacing(self, size):  # pylint: disable=invalid-name
-        self.addItem(QSpacerItem(size, 0, QSizePolicy.Fixed, QSizePolicy.Minimum))
+        self.addItem(
+            QSpacerItem(size, 0, QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Minimum)
+        )
 
     def count(self):
         return len(self._item_list)
@@ -256,9 +242,6 @@ class FlowLayout(QLayout):
         if 0 <= index < len(self._item_list):
             return self._item_list.pop(index)
         return None
-
-    def expandingDirections(self):  # pylint: disable=invalid-name,no-self-use
-        return Qt.Orientations(Qt.Orientation(0))
 
     def setGeometry(self, rect):  # pylint: disable=invalid-name
         super().setGeometry(rect)
@@ -292,10 +275,14 @@ class FlowLayout(QLayout):
             space_y = self.spacing()
             if wid is not None:
                 space_x += wid.style().layoutSpacing(
-                    QSizePolicy.PushButton, QSizePolicy.PushButton, Qt.Horizontal
+                    QSizePolicy.ControlType.PushButton,
+                    QSizePolicy.ControlType.PushButton,
+                    Qt.Orientation.Horizontal,
                 )
                 space_y += wid.style().layoutSpacing(
-                    QSizePolicy.PushButton, QSizePolicy.PushButton, Qt.Vertical
+                    QSizePolicy.ControlType.PushButton,
+                    QSizePolicy.ControlType.PushButton,
+                    Qt.Orientation.Vertical,
                 )
 
             next_x = x + item.sizeHint().width() + space_x

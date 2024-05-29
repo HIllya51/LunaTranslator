@@ -10,4 +10,3 @@ from importlib import resources
 from distutils.version import StrictVersion
 from dataclasses import dataclass
 import colorsys
-from PyQt5 import QtSvg

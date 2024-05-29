@@ -1,8 +1,4 @@
-from PyQt5.QtWidgets import QPushButton, QFileDialog
-from PyQt5.QtWidgets import QHBoxLayout, QVBoxLayout, QTextEdit, QWidget
-
-from PyQt5.QtGui import QTextCursor
-from PyQt5.QtCore import Qt
+from qtsymbols import *
 from myutils.config import _TR, globalconfig
 from gui.usefulwidget import saveposwindow
 from myutils.wrapper import Singleton_close
@@ -26,7 +22,8 @@ class dialog_memory(saveposwindow):
 
         super().__init__(
             parent,
-            flags=Qt.WindowCloseButtonHint | Qt.WindowMinMaxButtonsHint,
+            flags=Qt.WindowType.WindowCloseButtonHint
+            | Qt.WindowType.WindowMinMaxButtonsHint,
             dic=globalconfig,
             key="memorydialoggeo",
         )
@@ -42,7 +39,7 @@ class dialog_memory(saveposwindow):
         except:
             text = ""
         self.showtext.insertHtml(text)
-        self.showtext.moveCursor(QTextCursor.Start)
+        self.showtext.moveCursor(QTextCursor.MoveOperation.Start)
         formLayout.addWidget(self.showtext)
 
         x = QHBoxLayout()

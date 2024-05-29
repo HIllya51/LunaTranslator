@@ -1,33 +1,7 @@
 import functools, json, windows
 from traceback import print_exc
-from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import (
-    QSizePolicy,
-    QWidget,
-    QHBoxLayout,
-    QDialog,
-    QAction,
-    QVBoxLayout,
-    QMenu,
-    QPlainTextEdit,
-    QTabWidget,
-    QComboBox,
-    QLineEdit,
-    QPushButton,
-    QTableView,
-    QAbstractItemView,
-    QRadioButton,
-    QButtonGroup,
-    QHeaderView,
-    QCheckBox,
-    QSpinBox,
-    QFormLayout,
-    QLabel,
-)
+from qtsymbols import *
 from myutils.config import savehook_new_data, static_data
-from PyQt5.QtGui import QStandardItem, QStandardItemModel
-from PyQt5.QtGui import QTextCursor
-from PyQt5.QtCore import Qt, pyqtSignal, QModelIndex, QPoint
 import qtawesome
 import subprocess
 import winsharedutils
@@ -221,7 +195,7 @@ class searchhookparam(QDialog):
         return space_hex_str
 
     def __init__(self, parent) -> None:
-        super().__init__(parent, Qt.WindowCloseButtonHint)
+        super().__init__(parent, Qt.WindowType.WindowCloseButtonHint)
         windows.SetWindowPos(
             int(int(self.winId())),
             windows.HWND_TOPMOST,
@@ -450,17 +424,17 @@ class hookselect(closeashidewindow):
                 )
 
                 self.tttable.horizontalHeader().setSectionResizeMode(
-                    2, QHeaderView.Interactive
+                    2, QHeaderView.ResizeMode.Interactive
                 )
                 self.tttable.horizontalHeader().setSectionResizeMode(
-                    3, QHeaderView.Interactive
+                    3, QHeaderView.ResizeMode.Interactive
                 )
 
                 self.tttable.horizontalHeader().setSectionResizeMode(
-                    0, QHeaderView.ResizeToContents
+                    0, QHeaderView.ResizeMode.ResizeToContents
                 )
                 self.tttable.horizontalHeader().setSectionResizeMode(
-                    1, QHeaderView.ResizeToContents
+                    1, QHeaderView.ResizeMode.ResizeToContents
                 )
             else:
                 self.ttCombomodelmodel.setHorizontalHeaderLabels(
@@ -468,14 +442,14 @@ class hookselect(closeashidewindow):
                 )
 
                 self.tttable.horizontalHeader().setSectionResizeMode(
-                    1, QHeaderView.Interactive
+                    1, QHeaderView.ResizeMode.Interactive
                 )
                 self.tttable.horizontalHeader().setSectionResizeMode(
-                    2, QHeaderView.Interactive
+                    2, QHeaderView.ResizeMode.Interactive
                 )
 
                 self.tttable.horizontalHeader().setSectionResizeMode(
-                    0, QHeaderView.ResizeToContents
+                    0, QHeaderView.ResizeMode.ResizeToContents
                 )
 
         if hc[0] == "E":
@@ -544,7 +518,9 @@ class hookselect(closeashidewindow):
             hlay.addWidget(label)
             label.setStyleSheet("background-color: rgba(255, 255, 255, 0)")
             checkbtn = QPushButton()
-            checkbtn.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Preferred)
+            checkbtn.setSizePolicy(
+                QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Preferred
+            )
 
             def _t(tp):
                 _isusing = gobject.baseobject.textsource.checkisusingembed(
@@ -610,20 +586,22 @@ class hookselect(closeashidewindow):
 
         self.tttable = QTableView()
         self.tttable.setModel(self.ttCombomodelmodel)
-        # self.tttable .horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+        # self.tttable .horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
         self.tttable.horizontalHeader().setStretchLastSection(True)
-        self.tttable.setSelectionBehavior(QAbstractItemView.SelectRows)
-        self.tttable.setSelectionMode(QAbstractItemView.SingleSelection)
-        self.tttable.setEditTriggers(QAbstractItemView.NoEditTriggers)
+        self.tttable.setSelectionBehavior(
+            QAbstractItemView.SelectionBehavior.SelectRows
+        )
+        self.tttable.setSelectionMode(QAbstractItemView.SelectionMode.SingleSelection)
+        self.tttable.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
 
         self.tttable.doubleClicked.connect(self.table1doubleclicked)
         self.tttable.clicked.connect(self.ViewThread)
         # self.tttable.setFont(font)
         self.vboxlayout.addWidget(self.tttable)
-        # table.setEditTriggers(QAbstractItemView.NoEditTriggers)
+        # table.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
         # table.clicked.connect(self.show_info)
 
-        self.tttable.setContextMenuPolicy(Qt.CustomContextMenu)
+        self.tttable.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
         self.tttable.customContextMenuRequested.connect(self.showmenu)
 
         # self.ttCombo.setMaxVisibleItems(50)
@@ -671,11 +649,13 @@ class hookselect(closeashidewindow):
 
         self.tttable2 = QTableView(self)
         self.tttable2.setModel(self.ttCombomodelmodel2)
-        # self.tttable2 .horizontalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
+        # self.tttable2 .horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.ResizeToContents)
         self.tttable2.horizontalHeader().setStretchLastSection(True)
-        self.tttable2.setSelectionBehavior(QAbstractItemView.SelectRows)
-        self.tttable2.setSelectionMode(QAbstractItemView.SingleSelection)
-        self.tttable2.setEditTriggers(QAbstractItemView.NoEditTriggers)
+        self.tttable2.setSelectionBehavior(
+            QAbstractItemView.SelectionBehavior.SelectRows
+        )
+        self.tttable2.setSelectionMode(QAbstractItemView.SelectionMode.SingleSelection)
+        self.tttable2.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
         self.tttable2.clicked.connect(self.ViewThread2)
 
         self.vboxlayout.addWidget(self.tttable2)
@@ -705,7 +685,7 @@ class hookselect(closeashidewindow):
         self.sysOutput.setReadOnly(True)
 
         self.tabwidget = QTabWidget()
-        self.tabwidget.setTabPosition(QTabWidget.East)
+        self.tabwidget.setTabPosition(QTabWidget.TabPosition.East)
         self.tabwidget.addTab(self.textOutput, _TR("文本"))
         self.tabwidget.addTab(self.sysOutput, _TR("系统"))
 
@@ -962,7 +942,7 @@ class hookselect(closeashidewindow):
             self.textOutput.setPlainText(
                 gobject.baseobject.textsource.QueryThreadHistory(tp)
             )
-            self.textOutput.moveCursor(QTextCursor.End)
+            self.textOutput.moveCursor(QTextCursor.MoveOperation.End)
 
         except:
             print_exc()

@@ -11,7 +11,7 @@ if __name__ == "__main__":
     )  # win7 no vcredist2015
 
     from myutils.config import _TR, static_data, globalconfig
-    
+
     sys.path.append("./")
     sys.path.append("./userconfig")
     sys.path.insert(
@@ -23,16 +23,14 @@ if __name__ == "__main__":
     import gobject
 
     gobject.overridepathexists()
+    from qtsymbols import *
 
-    from PyQt5.QtCore import Qt
-    from PyQt5.QtWidgets import QApplication
-    from PyQt5.QtGui import QFont
-
-    QApplication.addLibraryPath(
-        "./LunaTranslator/runtime/PyQt5/Qt5/plugins"
-    )  # 中文字符下不能自动加载
-    QApplication.setAttribute(Qt.ApplicationAttribute.AA_EnableHighDpiScaling)
-    QApplication.setAttribute(Qt.ApplicationAttribute.AA_UseHighDpiPixmaps)
+    if isqt5:
+        QApplication.addLibraryPath(
+            "./LunaTranslator/runtime/PyQt5/Qt5/plugins"
+        )  # 中文字符下不能自动加载
+        QApplication.setAttribute(Qt.ApplicationAttribute.AA_EnableHighDpiScaling)
+        QApplication.setAttribute(Qt.ApplicationAttribute.AA_UseHighDpiPixmaps)
     QApplication.setHighDpiScaleFactorRoundingPolicy(
         Qt.HighDpiScaleFactorRoundingPolicy.PassThrough
     )
@@ -70,4 +68,4 @@ if __name__ == "__main__":
     gobject.baseobject = MAINUI()
     gobject.baseobject.checklang()
     gobject.baseobject.aa()
-    app.exit(app.exec_())
+    app.exit(app.exec())

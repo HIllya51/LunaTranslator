@@ -1,7 +1,4 @@
-from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QVBoxLayout, QComboBox, QPushButton, QDialog
-from PyQt5.QtGui import QFont
-from PyQt5.QtCore import Qt, pyqtSignal
+from qtsymbols import *
 import qtawesome
 
 
@@ -13,7 +10,7 @@ class languageset(QDialog):
     def __init__(self, language_list):
 
         super(languageset, self).__init__(
-            None, Qt.WindowStaysOnTopHint
+            None, Qt.WindowType.WindowStaysOnTopHint
         )  # 设置为顶级窗口，无边框
         self.setWindowIcon(qtawesome.icon("fa.language"))
         self.setMinimumSize(400, 100)

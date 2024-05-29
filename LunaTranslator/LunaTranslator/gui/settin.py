@@ -1,14 +1,4 @@
-from PyQt5.QtCore import pyqtSignal, Qt, QSize
-from PyQt5.QtWidgets import (
-    QWidget,
-    QListWidget,
-    QHBoxLayout,
-    QListWidgetItem,
-    QMenu,
-    QAction,
-)
-from PyQt5.QtGui import QFont, QFontMetrics
-from PyQt5.QtWidgets import QTabWidget
+from qtsymbols import *
 import qtawesome, gobject
 import threading, windows, winsharedutils
 from myutils.config import globalconfig, _TR
@@ -55,7 +45,7 @@ class TabWidget(QWidget):
         self.titles.append(title)
         self.tab_widget.addTab(widget, title)
         item = QListWidgetItem(title)
-        item.setTextAlignment(Qt.AlignCenter)
+        item.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
         item.setSizeHint(QSize(self.tab_widget.width(), 50))
         self.list_widget.addItem(item)
         if self.idx == 0:
@@ -135,7 +125,7 @@ class Settin(closeashidewindow):
         fn.setFamily(globalconfig["settingfonttype"])
         fm = QFontMetrics(fn)
         for title in self.tab_widget.titles:
-            width = max(fm.width(title), width)
+            width = max(fm.size(0, title).width(), width)
         width += 100
         self.tab_widget.list_widget.setFixedWidth(width)
         self.list_width = width

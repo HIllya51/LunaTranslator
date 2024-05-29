@@ -1,5 +1,6 @@
 import time
 import os, threading
+from qtsymbols import *
 from traceback import print_exc
 from myutils.config import (
     globalconfig,
@@ -19,8 +20,6 @@ from myutils.utils import (
     getpostfile,
     stringfyerror,
 )
-from PyQt5.QtWidgets import QApplication, QMenu, QAction, QFrame
-from PyQt5.QtCore import Qt, QObject, QEvent
 from myutils.wrapper import threader
 from gui.showword import searchwordW
 from myutils.hwnd import getpidexe, ListProcess
@@ -723,7 +722,7 @@ class MAINUI:
             time.sleep(0.5)
 
     def setdarktheme(self, widget, dark):
-        if widget.testAttribute(Qt.WA_TranslucentBackground):
+        if widget.testAttribute(Qt.WidgetAttribute.WA_TranslucentBackground):
             return
         winsharedutils.SetTheme(
             int(widget.winId()), dark, globalconfig["WindowBackdrop"]
@@ -739,7 +738,9 @@ class MAINUI:
                         if self.currentisdark is not None:
                             self.setdarktheme(obj, self.currentisdark)
                         windows.SetProp(
-                            int(obj.winId()), "Magpie.ToolWindow", windows.HANDLE(1)
+                            int(obj.winId()),
+                            "Magpie.WindowType.ToolWindow",
+                            windows.HANDLE(1),
                         )
                         self.setshowintab_checked(obj)
                 return False
@@ -797,11 +798,21 @@ class MAINUI:
             winsharedutils.showintab(int(widget.winId()), globalconfig["showintab"])
             return
         window_flags = widget.windowFlags()
-        if Qt.FramelessWindowHint & window_flags == Qt.FramelessWindowHint:
+        if (
+            Qt.WindowType.FramelessWindowHint & window_flags
+            == Qt.WindowType.FramelessWindowHint
+        ):
             return
         if isinstance(widget, QMenu):
             return
         if isinstance(widget, QFrame):
+            return
+        if (
+            isinstance(widget, QWidget)
+            and widget.parent() is None
+            and len(widget.children()) == 0
+        ):
+            # combobox的下拉框，然后这个widget会迅速销毁，会导致任务栏闪一下。没别的办法了姑且这样过滤一下
             return
         winsharedutils.showintab(int(widget.winId()), globalconfig["showintab_sub"])
 

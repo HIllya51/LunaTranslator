@@ -1,15 +1,5 @@
 import functools, os, windows, json
-from PyQt5.QtGui import QFont
-from PyQt5.QtCore import Qt, QSize
-from PyQt5.QtWidgets import (
-    QFontComboBox,
-    QDialog,
-    QLabel,
-    QComboBox,
-    QFileDialog,
-    QFormLayout,
-    QDialogButtonBox,
-)
+from qtsymbols import *
 from gui.pretransfile import sqlite2json2
 from gui.settingpage_ocr import getocrgrid
 from myutils.config import globalconfig, _TR, _TRL, savehook_new_data, savehook_new_list
@@ -172,7 +162,7 @@ def doexportchspatch(exe, realgame):
 
 def getunknowgameexe(self):
 
-    dialog = QDialog(self, Qt.WindowCloseButtonHint)  # 自定义一个dialog
+    dialog = QDialog(self, Qt.WindowType.WindowCloseButtonHint)  # 自定义一个dialog
     dialog.setWindowTitle(_TR("选择游戏"))
     dialog.resize(QSize(800, 10))
     formLayout = QFormLayout(dialog)
@@ -183,12 +173,14 @@ def getunknowgameexe(self):
 
     formLayout.addRow(_TR("选择游戏"), combo)
 
-    button = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel)
+    button = QDialogButtonBox(
+        QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel
+    )
     formLayout.addRow(button)
     button.rejected.connect(dialog.close)
     button.accepted.connect(dialog.accept)
-    button.button(QDialogButtonBox.Ok).setText(_TR("确定"))
-    button.button(QDialogButtonBox.Cancel).setText(_TR("取消"))
+    button.button(QDialogButtonBox.StandardButton.Ok).setText(_TR("确定"))
+    button.button(QDialogButtonBox.StandardButton.Cancel).setText(_TR("取消"))
     if dialog.exec():
         return savehook_new_list[combo.currentIndex()]
 
@@ -241,7 +233,7 @@ def gethookembedgrid(self):
         except:
             pass
 
-    self.gamefont_comboBox.activated[str].connect(callback)
+    self.gamefont_comboBox.currentTextChanged.connect(callback)
     self.gamefont_comboBox.setCurrentFont(
         QFont(globalconfig["embedded"]["changefont_font"])
     )

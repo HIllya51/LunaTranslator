@@ -1,11 +1,4 @@
-from PyQt5.QtWidgets import (
-    QMenu,
-    QMainWindow,
-    QLabel,
-    QAction,
-)
-from PyQt5.QtGui import QPainter, QPen, QColor, QCursor
-from PyQt5.QtCore import Qt, QPoint, QRect
+from qtsymbols import *
 from myutils.config import _TR
 from myutils.config import globalconfig
 from gui.resizeablemainwindow import Mainw
@@ -23,9 +16,13 @@ class rangeadjust(Mainw):
         self.drag_label.setGeometry(0, 0, 4000, 2000)
         self._isTracking = False
         self._rect = None
-        self.setWindowFlags(Qt.WindowStaysOnTopHint | Qt.FramelessWindowHint | Qt.Tool)
-        self.setAttribute(Qt.WA_TranslucentBackground)
-        self.setContextMenuPolicy(Qt.CustomContextMenu)
+        self.setWindowFlags(
+            Qt.WindowType.WindowStaysOnTopHint
+            | Qt.WindowType.FramelessWindowHint
+            | Qt.WindowType.Tool
+        )
+        self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
+        self.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
         self.customContextMenuRequested.connect(self.showmenu)
         for s in self.cornerGrips:
             s.raise_()
@@ -51,12 +48,12 @@ class rangeadjust(Mainw):
             self.move(self.pos() + self._endPos)
 
     def mousePressEvent(self, e):
-        if e.button() == Qt.LeftButton:
+        if e.button() == Qt.MouseButton.LeftButton:
             self._isTracking = True
             self._startPos = QPoint(e.x(), e.y())
 
     def mouseReleaseEvent(self, e):
-        if e.button() == Qt.LeftButton:
+        if e.button() == Qt.MouseButton.LeftButton:
             self._isTracking = False
             self._startPos = None
             self._endPos = None
@@ -122,13 +119,13 @@ class rangeselct(QMainWindow):
 
         super(rangeselct, self).__init__(parent)
         self.setWindowFlags(
-            Qt.FramelessWindowHint | Qt.Tool
+            Qt.WindowType.FramelessWindowHint | Qt.WindowType.Tool
         )  # |Qt.WindowStaysOnTopHint  )
         self.rectlabel = QLabel(self)
-        # self.setAttribute(Qt.WA_TranslucentBackground)
+        # self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
         self.setWindowOpacity(0.5)
         self.setMouseTracking(True)
-        self.setCursor(Qt.CrossCursor)
+        self.setCursor(Qt.CursorShape.CrossCursor)
         self.reset()
 
     def reset(self):
@@ -180,7 +177,7 @@ class rangeselct(QMainWindow):
             self.rectlabel.setGeometry(QRect(_sp, _ep))
 
     def mousePressEvent(self, event):
-        if event.button() == Qt.LeftButton:
+        if event.button() == Qt.MouseButton.LeftButton:
             if self.clickrelease:
                 self.clickrelease = False
                 self.mouseReleaseEvent(event)
@@ -216,7 +213,7 @@ class rangeselct(QMainWindow):
         return ((x1, y1), (x2, y2))
 
     def mouseReleaseEvent(self, event):
-        if event.button() == Qt.LeftButton:
+        if event.button() == Qt.MouseButton.LeftButton:
             self.end_point = event.pos()
             self.__end = windows.GetCursorPos()
 
