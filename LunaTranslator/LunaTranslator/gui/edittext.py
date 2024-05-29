@@ -156,7 +156,8 @@ class edittrans(QMainWindow):
                 (gobject.baseobject.currenttext, "realtime_edit", text)
             )
             displayreskwargs = dict(
-                color="red",
+                name=globalconfig["fanyi"]["realtime_edit"]["name"],
+                color=globalconfig["fanyi"]["realtime_edit"]["color"],
                 res=text,
                 onlytrans=False,
             )
