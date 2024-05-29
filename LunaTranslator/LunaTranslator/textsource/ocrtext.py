@@ -2,7 +2,7 @@ import time
 from myutils.config import globalconfig
 import winsharedutils
 from gui.rangeselect import rangeadjust
-from myutils.ocrutil import imageCut, ocr_run, ocr_end,qimage2binary
+from myutils.ocrutil import imageCut, ocr_run, ocr_end, qimage2binary
 import time, gobject, os
 from PyQt5.QtWidgets import QApplication
 from PyQt5.QtGui import QImage
@@ -69,8 +69,12 @@ class ocrtext(basetext):
 
     def showhiderangeui(self, b):
         for _ in self.range_ui:
-            if _.getrect():
-                _.setVisible(b)
+            if b:
+                _r = _.getrect()
+                if _r:
+                    _.setrect(_r)
+            else:
+                _.hide()
 
     def gettextthread(self):
         if all([_.getrect() is None for _ in self.range_ui]):
@@ -162,7 +166,6 @@ class ocrtext(basetext):
             self.savelasttext[i] = text
             __text.append(text)
         return "\n".join(__text)
-
 
     def end(self):
         globalconfig["ocrregions"] = [_.getrect() for _ in self.range_ui]

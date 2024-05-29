@@ -258,8 +258,8 @@ class QUnFrameWindow(resizableframeless):
             self.translate_text.addsearchwordmask(hira, text, callback)
 
         if globalconfig["autodisappear"]:
-            flag = (globalconfig['showintab'] and self.isMinimized()) or (
-                not globalconfig['showintab'] and self.isHidden()
+            flag = (globalconfig["showintab"] and self.isMinimized()) or (
+                not globalconfig["showintab"] and self.isHidden()
             )
 
             if flag:
@@ -282,8 +282,8 @@ class QUnFrameWindow(resizableframeless):
         if self._move_drag:
             return
 
-        flag = (globalconfig['showintab'] and self.isMinimized()) or (
-            not globalconfig['showintab'] and self.isHidden()
+        flag = (globalconfig["showintab"] and self.isMinimized()) or (
+            not globalconfig["showintab"] and self.isHidden()
         )
 
         if flag:
@@ -481,13 +481,13 @@ class QUnFrameWindow(resizableframeless):
             )
 
     def hide_(self):
-        if globalconfig['showintab']:
+        if globalconfig["showintab"]:
             windows.ShowWindow(int(self.winId()), windows.SW_SHOWMINIMIZED)
         else:
             self.hide()
 
     def show_(self):
-        if globalconfig['showintab']:
+        if globalconfig["showintab"]:
             windows.ShowWindow(int(self.winId()), windows.SW_SHOWNOACTIVATE)
         else:
             self.show()
@@ -933,9 +933,7 @@ class QUnFrameWindow(resizableframeless):
         for button in self.showbuttons:
             button.show()
         self._TitleLabel.show()
-
-        if globalconfig["locktools"]:
-            return
+        self.set_color_transparency()
 
         def __(s):
             c = QCursor()
@@ -946,7 +944,6 @@ class QUnFrameWindow(resizableframeless):
                 s.toolbarhidedelaysignal.emit()
 
         threading.Thread(target=lambda: __(self)).start()
-        self.set_color_transparency()
 
     def resizeEvent(self, e):
         super().resizeEvent(e)

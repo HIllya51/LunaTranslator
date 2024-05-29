@@ -106,11 +106,12 @@ class rangeadjust(Mainw):
         if rect:
             (x1, y1), (x2, y2) = rect
             self.show()
+            r = self.devicePixelRatioF()
             self.setGeometry(
-                x1 - globalconfig["ocrrangewidth"],
-                y1 - globalconfig["ocrrangewidth"],
-                x2 - x1 + 2 * globalconfig["ocrrangewidth"],
-                y2 - y1 + 2 * globalconfig["ocrrangewidth"],
+                x1 - int(globalconfig["ocrrangewidth"] * r),
+                y1 - int(globalconfig["ocrrangewidth"] * r),
+                x2 - x1 + int(2 * globalconfig["ocrrangewidth"] * r),
+                y2 - y1 + int(2 * globalconfig["ocrrangewidth"] * r),
             )
         self._rect = rect
         # 由于使用movewindow而非qt函数，导致内部执行绪有问题。
