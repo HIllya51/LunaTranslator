@@ -43,8 +43,12 @@ def Singleton_impl(cls, behavior="activate"):
                     self.deleteLater()
                     _instance.pop(cls)
                 _lock.release()
-
-        _inst = __(*args, **kwagrs)
+        try:
+            _inst = __(*args, **kwagrs)
+        except:
+            print_exc()
+            _lock.release()
+            return None
         if _inst.Singleton_flag:
             _instance[cls] = _inst
         return _inst

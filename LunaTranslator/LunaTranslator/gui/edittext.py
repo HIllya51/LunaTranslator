@@ -122,13 +122,10 @@ class edittrans(QMainWindow):
         self.trykeeppos()
 
     def trykeeppos(self):
-        try:
-            self.followhwnd = gobject.baseobject.textsource.hwnd
-            self.follow()
-            self.show()
-        except:
-            pass
-
+        self.followhwnd = gobject.baseobject.textsource.hwnd
+        self.follow()
+        self.show()
+        
     @threader
     def follow(self):
         while True:
