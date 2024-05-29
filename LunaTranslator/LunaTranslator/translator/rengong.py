@@ -41,6 +41,7 @@ class TS(basetrans):
         )
         if globalconfig["premtsimiuse"]:
             maxsim = 0
+            savet = None
             for jc in self.json:
                 dis = winsharedutils.distance_ratio(content, jc)
                 if dis > maxsim:
@@ -59,8 +60,12 @@ class TS(basetrans):
                             and self.json[jc]["machineTrans"] != ""
                         ):
                             savet = self.json[jc]["machineTrans"]
+            if savet is None:
+                raise Exception(f"can't find: {content}")
             return savet
         else:
+            if content not in self.json:
+                raise Exception(f"can't find: {content}")
             if type(self.json[content]) == str:
                 return self.json[content]
             elif (

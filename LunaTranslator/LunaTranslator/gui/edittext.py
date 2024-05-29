@@ -4,17 +4,19 @@ from PyQt5.QtWidgets import (
     QAction,
     QMenu,
     QHBoxLayout,
+    QMainWindow,
     QWidget,
     QPushButton,
     QVBoxLayout,
 )
 from PyQt5.QtCore import Qt, pyqtSignal, QPoint
 import qtawesome
-import threading
+import threading, windows
 import gobject
 from myutils.config import globalconfig, _TR
-from gui.usefulwidget import closeashidewindow
+from gui.usefulwidget import closeashidewindow, saveposwindow
 from myutils.config import globalconfig
+from myutils.wrapper import Singleton_close
 
 
 class edittext(closeashidewindow):
@@ -36,7 +38,6 @@ class edittext(closeashidewindow):
 
         self.textOutput.setContextMenuPolicy(Qt.CustomContextMenu)
 
-        self.charformat = self.textOutput.currentCharFormat()
         self.textOutput.customContextMenuRequested.connect(self.showmenu)
         # self.setCentralWidget(self.textOutput)
 
@@ -69,8 +70,6 @@ class edittext(closeashidewindow):
         qv.addLayout(qvb)
         qv.addWidget(self.textOutput)
 
-        self.hiding = True
-
     def run(self):
         threading.Thread(
             target=gobject.baseobject.textgetmethod,
@@ -96,5 +95,60 @@ class edittext(closeashidewindow):
 
     def getnewsentence(self, sentence):
         if self.sync:
-            self.textOutput.setCurrentCharFormat(self.charformat)
             self.textOutput.setPlainText(sentence)
+
+
+@Singleton_close
+class edittrans(saveposwindow):
+    def __init__(self, parent):
+        super().__init__(parent, globalconfig, "edit_geo")
+        self.setupUi()
+
+        self.setWindowTitle(_TR("编辑_翻译"))
+        self.trykeeppos()
+        self.show()
+
+    def trykeeppos(self):
+        try:
+            rect = windows.GetWindowRect(gobject.baseobject.textsource.hwnd)
+
+            self.move((QPoint(rect[0], rect[3])) / self.devicePixelRatioF())
+        except:
+            pass
+
+    def setupUi(self):
+        self.setWindowIcon(qtawesome.icon("fa.edit"))
+
+        self.textOutput = QPlainTextEdit(self)
+
+        self.textOutput.setUndoRedoEnabled(True)
+        self.textOutput.setReadOnly(False)
+
+        qv = QHBoxLayout()
+        w = QWidget()
+        self.setCentralWidget(w)
+        w.setLayout(qv)
+
+        submit = QPushButton(_TR("确定"))
+        qv.addWidget(self.textOutput)
+        qv.addWidget(submit)
+
+        submit.clicked.connect(self.submitfunction)
+
+    def submitfunction(self):
+        text = self.textOutput.toPlainText()
+        if len(text) == 0:
+            return
+        try:
+            gobject.baseobject.textsource.sqlqueueput(
+                (gobject.baseobject.currenttext, "realtime_edit", text)
+            )
+            displayreskwargs = dict(
+                color="red",
+                res=text,
+                onlytrans=False,
+            )
+            gobject.baseobject.translation_ui.displayres.emit(displayreskwargs)
+            self.textOutput.clear()
+        except:
+            pass

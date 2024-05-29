@@ -23,7 +23,7 @@ from gui.textbrowser import Textbrowser
 from gui.rangeselect import rangeselct_function
 from gui.usefulwidget import resizableframeless, isinrect
 from gui.dialog_savedgame import browserdialog
-from winsharedutils import showintab
+from gui.edittext import edittrans
 
 
 class QUnFrameWindow(resizableframeless):
@@ -74,8 +74,9 @@ class QUnFrameWindow(resizableframeless):
             name = kwargs.get("name", "")
             color = kwargs.get("color")
             res = kwargs.get("res")
-            onlytrans = kwargs.get("onlytrans")
+            onlytrans = kwargs.get("onlytrans")  # 仅翻译，不显示
             iter_context = kwargs.get("iter_context", None)
+            clear = kwargs.get("clear", False)
 
             if iter_context:
                 iter_res_status, iter_context_class = iter_context
@@ -87,7 +88,6 @@ class QUnFrameWindow(resizableframeless):
 
             if onlytrans:
                 return
-            clear = name == ""
             if len(res) > globalconfig["maxoriginlength"]:
                 _res = res[: globalconfig["maxoriginlength"]] + "……"
             else:
@@ -386,6 +386,7 @@ class QUnFrameWindow(resizableframeless):
                 lambda: winsharedutils.clipboard_set(gobject.baseobject.currenttext),
             ),
             ("edit", lambda: gobject.baseobject.edittextui.showsignal.emit()),
+            ("edittrans", lambda: edittrans(gobject.baseobject.settin_ui)),
             ("showraw", self.changeshowhideraw),
             ("history", lambda: gobject.baseobject.transhis.showsignal.emit()),
             (
@@ -609,6 +610,7 @@ class QUnFrameWindow(resizableframeless):
         self.toolbarhidedelaysignal.connect(self.toolbarhidedelay)
 
         self.ocr_once_signal.connect(self.ocr_once_function)
+        self.enter_sig = 0
         self.entersignal.connect(self.enterfunction)
         self.displaystatus.connect(self.showstatus)
         self.showhideuisignal.connect(self.showhideui)
@@ -928,22 +930,27 @@ class QUnFrameWindow(resizableframeless):
     def enterEvent(self, QEvent):
         self.enterfunction()
 
-    def enterfunction(self):
+    @threader
+    def dodelayhide(self, delay):
+        enter_sig = time.time()
+        self.enter_sig = enter_sig
+        while self.underMouse():
+            time.sleep(0.1)
+        time.sleep(delay)
+        if self.enter_sig != enter_sig:
+            return
+        if globalconfig["locktools"]:
+            return
+        self.toolbarhidedelaysignal.emit()
+
+    def enterfunction(self, delay=0.5):
 
         for button in self.showbuttons:
             button.show()
         self._TitleLabel.show()
         self.set_color_transparency()
 
-        def __(s):
-            c = QCursor()
-            while self.underMouse():
-                time.sleep(0.1)
-            time.sleep(0.5)
-            if (globalconfig["locktools"] == False) and (not self.underMouse()):
-                s.toolbarhidedelaysignal.emit()
-
-        threading.Thread(target=lambda: __(self)).start()
+        self.dodelayhide(delay)
 
     def resizeEvent(self, e):
         super().resizeEvent(e)

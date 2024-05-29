@@ -98,6 +98,12 @@
         1000,
         300
     ],
+    "edit_geo2": [
+        100,
+        100,
+        1000,
+        300
+    ],
     "showocrgeo": [
         100,
         100,
@@ -252,6 +258,7 @@
             "setting",
             "copy",
             "edit",
+            "edittrans",
             "showraw",
             "history",
             "noundict",
@@ -463,6 +470,12 @@
             "edit": {
                 "use": false,
                 "tip": "编辑",
+                "icon": "fa.edit",
+                "align": 0
+            },
+            "edittrans": {
+                "use": false,
+                "tip": "编辑_预翻译",
                 "icon": "fa.edit",
                 "align": 0
             },
@@ -1591,6 +1604,12 @@
             "color": "blue",
             "name": "TGW语言模型",
             "is_gpt_like": true
+        },
+        "realtime_edit": {
+            "use": false,
+            "type": "pre",
+            "color": "blue",
+            "name": "即时编辑"
         }
     },
     "magpiepath": "",

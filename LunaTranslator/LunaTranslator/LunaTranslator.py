@@ -152,6 +152,7 @@ class MAINUI:
                         color=globalconfig["rawtextcolor"],
                         res=text[len("<notrans>") :],
                         onlytrans=onlytrans,
+                        clear=True,
                     )
                 )
                 self.currenttext = text

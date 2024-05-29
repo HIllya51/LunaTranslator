@@ -65,6 +65,10 @@ def createbuttonwidget(self):
     savelist = []
     savelay = []
 
+    def doadjust():
+        gobject.baseobject.translation_ui.enterfunction(delay=3)
+        gobject.baseobject.translation_ui.adjustbuttons()
+
     def changerank(item, up):
 
         idx = sortlist.index(item)
@@ -89,7 +93,7 @@ def createbuttonwidget(self):
             savelist[idx2 + headoffset],
             savelist[idx + headoffset],
         )
-        gobject.baseobject.translation_ui.adjustbuttons()
+        doadjust()
 
     for i, k in enumerate(sortlist):
 
@@ -112,7 +116,7 @@ def createbuttonwidget(self):
             getsimpleswitch(
                 globalconfig["toolbutton"]["buttons"][k],
                 "use",
-                callback=lambda _: gobject.baseobject.translation_ui.adjustbuttons(),
+                callback=lambda _: doadjust(),
             ),
             button_up,
             button_down,
@@ -120,14 +124,17 @@ def createbuttonwidget(self):
                 _TRL(["居左", "居右", "居中"]),
                 globalconfig["toolbutton"]["buttons"][k],
                 "align",
-                callback=lambda _: gobject.baseobject.translation_ui.adjustbuttons(),
+                callback=lambda _: doadjust(),
                 fixedsize=True,
             ),
             getcolorbutton(
                 "",
                 "",
-                lambda: dialog_selecticon(
-                    self, globalconfig["toolbutton"]["buttons"][k], "icon"
+                functools.partial(
+                    dialog_selecticon,
+                    self,
+                    globalconfig["toolbutton"]["buttons"][k],
+                    "icon",
                 ),
                 qicon=qtawesome.icon(
                     globalconfig["toolbutton"]["buttons"][k]["icon"],
@@ -140,8 +147,11 @@ def createbuttonwidget(self):
                 getcolorbutton(
                     "",
                     "",
-                    lambda: dialog_selecticon(
-                        self, globalconfig["toolbutton"]["buttons"][k], "icon2"
+                    functools.partial(
+                        dialog_selecticon,
+                        self,
+                        globalconfig["toolbutton"]["buttons"][k],
+                        "icon2",
                     ),
                     qicon=qtawesome.icon(
                         globalconfig["toolbutton"]["buttons"][k]["icon2"],
@@ -167,7 +177,7 @@ def createbuttonwidget(self):
 
 @Singleton
 class dialog_selecticon(QDialog):
-    def __init__(self, parent, dict, key) -> None:
+    def __init__(self, parent, dict, key, _nouse_for_click_arg) -> None:
 
         super().__init__(parent, Qt.WindowCloseButtonHint)
         self.dict = dict
