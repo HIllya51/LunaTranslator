@@ -114,7 +114,7 @@ class ItemWidget(QWidget):
             self._lb.setText(file)
         self._lb.setWordWrap(True)
         self._lb.setStyleSheet("background-color: rgba(255,255,255, 0);")
-        self._lb.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self._lb.setAlignment(Qt.AlignmentFlag.AlignHCenter)
         layout.addWidget(self._lb)
         self.setLayout(layout)
         self.exe = exe
