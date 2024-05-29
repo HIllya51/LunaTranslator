@@ -59,6 +59,8 @@ def updatemethod(_version, progresscallback):
 
     savep = "./cache/update/LunaTranslator{}.zip".format(bit)
 
+    os.makedirs("./cache/update", exist_ok=True)
+
     def endcallback():
         os.makedirs("./cache/update", exist_ok=True)
         if os.path.exists("./cache/update/LunaTranslator"):
