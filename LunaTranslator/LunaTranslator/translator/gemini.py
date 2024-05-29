@@ -54,7 +54,11 @@ class TS(basetrans):
                 ],
             },
             verify=False,
-        ).json()
+        )
+        try:
+            res = res.json()
+        except:
+            raise Exception(res.text)
         try:
             line = res["candidates"][0]["content"]["parts"][0]["text"]
             return line
