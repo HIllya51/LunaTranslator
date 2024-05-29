@@ -157,13 +157,13 @@ DECLARE void _SetTheme(
     static const DWM_SYSTEMBACKDROP_TYPE BACKDROP_MAP[] = {
         DWMSBT_AUTO, DWMSBT_TRANSIENTWINDOW, DWMSBT_MAINWINDOW, DWMSBT_TABBEDWINDOW};
     DWM_SYSTEMBACKDROP_TYPE value = BACKDROP_MAP[(int)backdrop];
-   
+
     MARGINS mar{-1, -1, -1, -1};
+    // 这个最重要，不可以跳过，否则transaprent会黑。win7无效，仍然是黑的，所以win7不可以使用QTWIN11主题。
     DwmExtendFrameIntoClientArea(_hWnd, &mar);
 
+    // 不管操作系统版本了，硬设置就行，测试不会崩溃，让系统自己处理。
     DwmSetWindowAttribute(_hWnd, DWMWA_SYSTEMBACKDROP_TYPE, &value, sizeof(value));
-
-    
 }
 
 DECLARE bool isDark()

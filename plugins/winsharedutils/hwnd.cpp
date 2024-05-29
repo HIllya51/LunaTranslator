@@ -2,16 +2,20 @@
 
 DECLARE void showintab(HWND hwnd, bool show)
 {
+    // WS_EX_TOOLWINDOW可以立即生效，WS_EX_APPWINDOW必须切换焦点才生效。但是WS_EX_TOOLWINDOW会改变窗口样式，因此只对无边框窗口使用。
+    LONG style = GetWindowLong(hwnd, GWL_STYLE);
     auto style_ex = GetWindowLong(hwnd, GWL_EXSTYLE);
     if (show)
     {
         style_ex |= WS_EX_APPWINDOW;
-        // style_ex &= ~WS_EX_TOOLWINDOW;
+        if ((style & WS_OVERLAPPEDWINDOW) != WS_OVERLAPPEDWINDOW)
+            style_ex &= ~WS_EX_TOOLWINDOW;
     }
     else
     {
         style_ex &= ~WS_EX_APPWINDOW;
-        // style_ex |= WS_EX_TOOLWINDOW;
+        if ((style & WS_OVERLAPPEDWINDOW) != WS_OVERLAPPEDWINDOW)
+            style_ex |= WS_EX_TOOLWINDOW;
     }
     SetWindowLong(hwnd, GWL_EXSTYLE, style_ex);
 }
