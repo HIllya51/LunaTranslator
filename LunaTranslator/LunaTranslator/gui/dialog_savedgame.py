@@ -108,7 +108,7 @@ class ItemWidget(QWidget):
         wrap.setContentsMargins(margin, margin, margin, margin)
         wrap.addWidget(self._img)
         layout.addWidget(_w)
-
+        layout.setSpacing(0)
         self._lb = QLabel()
         if globalconfig["showgametitle"]:
             self._lb.setText(file)
