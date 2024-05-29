@@ -79,8 +79,6 @@ class Settin(closeashidewindow):
 
     def __init__(self, parent):
         super(Settin, self).__init__(parent, globalconfig, "setting_geo_2")
-        # self.setWindowFlag(Qt.Tool,False)
-        # self.setWindowFlags(self.windowFlags()&~Qt.WindowMinimizeButtonHint)
         self.mp3player = wavmp3player()
         self.mp3playsignal.connect(self.mp3player.mp3playfunction)
         self.opensolvetextsig.connect(self.opensolvetextfun)
