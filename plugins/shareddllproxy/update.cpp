@@ -32,6 +32,15 @@ int updatewmain(int argc, wchar_t *argv[])
     {
         MessageBoxA(GetForegroundWindow(), (std::string("Update failed!\r\n") + e.what()).c_str(), "Error", 0);
         ShellExecute(0, L"open", L"https://github.com/HIllya51/LunaTranslator/releases", NULL, NULL, SW_SHOWNORMAL);
+        return 0;
+    }
+    try
+    {
+        wcscat(path, L"\\cache\\update");
+        std::filesystem::remove_all(path);
+    }
+    catch (std::exception &e)
+    {
     }
     return 0;
 }

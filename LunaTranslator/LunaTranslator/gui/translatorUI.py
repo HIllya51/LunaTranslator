@@ -24,6 +24,7 @@ from gui.rangeselect import rangeselct_function
 from gui.usefulwidget import resizableframeless, isinrect
 from gui.dialog_savedgame import browserdialog
 from gui.edittext import edittrans
+import shutil
 
 
 class QUnFrameWindow(resizableframeless):
@@ -1049,6 +1050,17 @@ class QUnFrameWindow(resizableframeless):
         button.belong = belong
         self.buttons[name] = button
 
+    def tryremoveuseless(self):
+
+        try:
+            shutil.rmtree("./cache/temp")
+        except:
+            pass
+        try:
+            os.remove("./cache/Updater.exe")
+        except:
+            pass
+
     def closeEvent(self, a0) -> None:
         if self.fullscreenmanager:
             self.fullscreenmanager.endX()
@@ -1064,4 +1076,5 @@ class QUnFrameWindow(resizableframeless):
         saveallconfig()
 
         endsubprocs()
+        self.tryremoveuseless()
         os._exit(0)

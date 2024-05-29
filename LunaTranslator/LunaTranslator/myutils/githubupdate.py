@@ -72,13 +72,17 @@ def updatemethod(_version, progresscallback):
             stats = os.stat(savep)
             if stats.st_size == size:
                 progresscallback(
-                    "总大小{} MB 进度 {}% ".format(
+                    "总大小{} MB 进度 {}% ,正在解压……".format(
                         int(1000 * (int(size / 1024) / 1024)) / 1000,
                         int(10000 * (size / size)) / 100,
                     ),
                     10000,
                 )
                 endcallback()
+                progresscallback(
+                    "准备完毕，等待更新",
+                    10000,
+                )
                 return True
         return False
 
