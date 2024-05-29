@@ -232,6 +232,11 @@ def mouseselectwindow(callback):
 
 
 def screenshot(x1, y1, x2, y2, hwnd=None):
+    if hwnd:
+        rate = QApplication.instance().devicePixelRatio() / (
+            windows.GetDpiForWindow(hwnd) / 96
+        )
+        x1, y1, x2, y2 = (int(_ / rate) for _ in (x1, y1, x2, y2))
     bs = winsharedutils.gdi_screenshot(x1, y1, x2, y2, hwnd)
     pixmap = QPixmap()
     if bs:
