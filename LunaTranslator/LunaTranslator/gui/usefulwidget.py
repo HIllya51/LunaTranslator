@@ -649,9 +649,9 @@ class auto_select_webview(QWidget):
         self.internal.navigate(url)
 
     def setHtml(self, html):
-        html = self.internal.parsehtml(html)
         self._maybecreate()
         self.clearcache()
+        html = self.internal.parsehtml(html)
         if len(html) < 1 * 1024 * 1024:  # 1mb
             self.internal.setHtml(html)
         else:
