@@ -1023,36 +1023,6 @@
                 }
             }
         },
-        "yomichan": {
-            "use": false,
-            "name": "yomichan termbank",
-            "args": {
-                "path": "",
-                "distance": 0,
-                "priority": 100
-            },
-            "argstype": {
-                "path": {
-                    "type": "file",
-                    "name": "路径",
-                    "dir": true
-                },
-                "distance": {
-                    "type": "intspin",
-                    "name": "模糊匹配_编辑距离",
-                    "min": 0,
-                    "max": 100,
-                    "step": 1
-                },
-                "priority": {
-                    "type": "intspin",
-                    "name": "优先级",
-                    "min": 0,
-                    "max": 10000,
-                    "step": 1
-                }
-            }
-        },
         "goo": {
             "use": false,
             "name": "goo",
