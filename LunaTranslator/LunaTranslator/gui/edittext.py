@@ -4,7 +4,7 @@ import threading, windows
 import gobject, time
 from myutils.config import globalconfig, _TR
 from gui.usefulwidget import closeashidewindow, saveposwindow
-from myutils.config import globalconfig
+from myutils.utils import str2rgba
 from myutils.wrapper import Singleton_close, threader
 
 
@@ -97,13 +97,8 @@ class edittrans(QMainWindow):
         super().__init__(parent, Qt.WindowType.FramelessWindowHint)
         self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
         self.setStyleSheet(
-            "background-color: rgba(%s, %s, %s, %s)"
-            % (
-                int(globalconfig["backcolor"][1:3], 16),
-                int(globalconfig["backcolor"][3:5], 16),
-                int(globalconfig["backcolor"][5:7], 16),
-                globalconfig["transparent"],
-            )
+            "background-color: %s"
+            % str2rgba(globalconfig["backcolor"], globalconfig["transparent"])
         )
         self.setupUi()
 

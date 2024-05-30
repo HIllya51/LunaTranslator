@@ -19,6 +19,7 @@ from gui.usefulwidget import (
     getsimpleswitch,
     getsimplekeyseq,
     getcolorbutton,
+    makesubtab_lazy,
     tabadd_lazy,
 )
 from myutils.subproc import subproc_w
@@ -142,7 +143,7 @@ class AnkiWindow(QWidget):
         self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
         self.setWindowTitle("Anki Connect")
         self.currentword = ""
-        self.tabs = QTabWidget()
+        self.tabs = makesubtab_lazy(callback=self.ifshowrefresh)
         self.tabs.addTab(self.createaddtab(), _TR("添加"))
         tabadd_lazy(self.tabs, "设置", self.creatsetdtab)
         tabadd_lazy(self.tabs, "模板", self.creattemplatetab)
@@ -156,13 +157,6 @@ class AnkiWindow(QWidget):
         self.tabs.currentChanged.connect(self.ifshowrefresh)
 
     def ifshowrefresh(self, idx):
-        try:
-            w = self.tabs.currentWidget()
-            if "lazyfunction" in dir(w):
-                w.lazyfunction()
-                delattr(w, "lazyfunction")
-        except:
-            print_exc()
         if idx == 2:
             self.refreshhtml.emit()
 

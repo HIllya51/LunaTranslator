@@ -12,7 +12,7 @@ import winsharedutils
 from myutils.config import globalconfig, saveallconfig, _TR, static_data
 from myutils.subproc import endsubprocs
 from myutils.ocrutil import ocr_run, imageCut
-from myutils.utils import loadpostsettingwindowmethod, getimageformat
+from myutils.utils import loadpostsettingwindowmethod, getimageformat, str2rgba
 from myutils.hwnd import mouseselectwindow, grabwindow, getExeIcon
 from gui.dialog_savedgame import dialog_savedgame_new
 from gui.dialog_memory import dialog_memory
@@ -699,23 +699,22 @@ class QUnFrameWindow(resizableframeless):
         )
 
         self.translate_text.setStyleSheet(
-            "border-width: 0;%s;background-color: rgba(%s, %s, %s, %s)"
+            "border-width: 0;%s;background-color: %s"
             % (
                 topr,
-                int(globalconfig["backcolor"][1:3], 16),
-                int(globalconfig["backcolor"][3:5], 16),
-                int(globalconfig["backcolor"][5:7], 16),
-                globalconfig["transparent"] * (not self.backtransparent) / 100,
+                str2rgba(
+                    globalconfig["backcolor"],
+                    globalconfig["transparent"] * (not self.backtransparent),
+                ),
             )
         )
         self._TitleLabel.setStyleSheet(
-            "border-width: 0;%s;background-color: rgba(%s, %s, %s, %s)"
+            "border-width: 0;%s;background-color: %s"
             % (
                 bottomr,
-                int(globalconfig["backcolor_tool"][1:3], 16),
-                int(globalconfig["backcolor_tool"][3:5], 16),
-                int(globalconfig["backcolor_tool"][5:7], 16),
-                globalconfig["transparent_tool"] / 100,
+                str2rgba(
+                    globalconfig["backcolor_tool"], globalconfig["transparent_tool"]
+                ),
             )
         )
         for _type in self.stylebuttons:
@@ -951,14 +950,15 @@ class QUnFrameWindow(resizableframeless):
 
         self.dodelayhide(delay)
 
-    def resizeEvent(self, e):
+    def resizeEvent(self, e: QResizeEvent):
         super().resizeEvent(e)
         wh = globalconfig["buttonsize"] * 1.5
         height = self.height() - wh
 
         self.translate_text.resize(self.width(), int(height))
-        self.adjustbuttons()
-        self._TitleLabel.setFixedWidth(self.width())
+        if e.oldSize().width() != e.size().width():
+            self.adjustbuttons()
+            self._TitleLabel.setFixedWidth(self.width())
 
     def adjustbuttons(self):
         left = []

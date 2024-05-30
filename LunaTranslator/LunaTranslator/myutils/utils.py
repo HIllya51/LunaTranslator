@@ -623,3 +623,12 @@ def parsekeystringtomodvkcode(keystring, modes=False):
     if modes:
         mode = _modes
     return mode, vkcode
+
+
+def str2rgba(string, alpha100):
+    return "rgba(%s, %s, %s, %s)" % (
+        int(string[1:3], 16),
+        int(string[3:5], 16),
+        int(string[5:7], 16),
+        alpha100 / 100,
+    )

@@ -240,7 +240,8 @@
         "textH": 50,
         "backcolor": "#c38282",
         "onselectcolor": "#007fff",
-        "onfilenoexistscolor": "#acacac"
+        "onfilenoexistscolor": "#acacac",
+        "transparent": 25
     },
     "profiles_index": 0,
     "ocrautobindwindow": true,

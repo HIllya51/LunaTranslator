@@ -211,6 +211,7 @@ class Textbrowser(QLabel):
     def resizeEvent(self, event):
         self.atback2.resize(event.size())
         self.toplabel2.resize(event.size())
+        self.masklabel.resize(event.size())
 
     def contentchangedfunction(self):
         sz = self.textbrowser.document().size().toSize()
@@ -250,7 +251,6 @@ class Textbrowser(QLabel):
             Qt.ScrollBarPolicy.ScrollBarAlwaysOff
         )
         self.masklabel = QLabel(self.textbrowser)
-        self.masklabel.setGeometry(0, 0, 9999, 9999)
         self.masklabel.setMouseTracking(True)
 
         self.savetaglabels = []

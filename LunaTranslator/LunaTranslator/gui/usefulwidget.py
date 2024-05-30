@@ -117,10 +117,10 @@ class closeashidewindow(saveposwindow):
     def showfunction(self):
         if self.isMinimized():
             self.showNormal()
-        elif self.isHidden():
-            self.show()
-        else:
+        elif self.isVisible():
             self.hide()
+        else:
+            self.show()
 
     def closeEvent(self, event: QCloseEvent):
         self.hide()
@@ -812,7 +812,7 @@ def makegrid(grid, save=False, savelist=None, savelay=None):
     return gridlayoutwidget
 
 
-def makesubtab_lazy(titles=None, functions=None, klass=None):
+def makesubtab_lazy(titles=None, functions=None, klass=None, callback=None):
     if klass:
         tab = klass()
     else:
@@ -826,6 +826,8 @@ def makesubtab_lazy(titles=None, functions=None, klass=None):
                 delattr(w, "lazyfunction")
         except:
             print_exc()
+        if callback:
+            callback(i)
 
     tab.currentChanged.connect(functools.partial(__, tab))
     if titles and functions:

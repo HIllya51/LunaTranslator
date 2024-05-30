@@ -24,6 +24,7 @@ import winsharedutils
 from myutils.wrapper import Singleton_close, Singleton, threader, tryprint
 from myutils.utils import (
     checkifnewgame,
+    str2rgba,
     vidchangedtask,
     titlechangedtask,
     imgchangedtask,
@@ -57,7 +58,7 @@ class ItemWidget(QWidget):
     def mousePressEvent(self, ev) -> None:
         try:
             self.bottommask.setStyleSheet(
-                f'background-color: {globalconfig["dialog_savegame_layout"]["onselectcolor"]};'
+                f'background-color: {str2rgba(globalconfig["dialog_savegame_layout"]["onselectcolor"],globalconfig["dialog_savegame_layout"]["transparent"])};'
             )
 
             if self != ItemWidget.globallashfocus:
@@ -121,6 +122,7 @@ class ItemWidget(QWidget):
         c = globalconfig["dialog_savegame_layout"][
             ("onfilenoexistscolor", "backcolor")[os.path.exists(exe)]
         ]
+        c = str2rgba(c, globalconfig["dialog_savegame_layout"]["transparent"])
         self.maskshowfileexists.setStyleSheet(f"background-color:{c};")
 
 
@@ -1221,6 +1223,10 @@ class dialog_syssetting(QDialog):
                     parent=self,
                 ),
             )
+        formLayout.addRow(
+            (_TR("不透明度")),
+            getspinbox(0, 100, globalconfig["dialog_savegame_layout"], "transparent"),
+        )
         formLayout.addRow(
             _TR("缩放"),
             getsimplecombobox(
