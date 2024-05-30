@@ -234,7 +234,7 @@ class QUnFrameWindow(resizableframeless):
             )
 
         if hira:
-
+            @threader
             def callback(word, append):
                 if globalconfig["usewordorigin"] == False:
                     word = word["orig"]

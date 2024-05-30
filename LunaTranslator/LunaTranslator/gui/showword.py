@@ -699,47 +699,16 @@ class AnkiWindow(QWidget):
         )
 
 
-class selectviewer(QWidget):
-    def createviewer(self):
-        if globalconfig["searchwordusewebview"] == False:
+class CustomTabBar(QTabBar):
+    def __init__(self) -> None:
+        super().__init__()
+        self.savesizehint = QSize()
 
-            textOutput = QTextBrowser(self)
-
-            def openlink(url):
-                try:
-                    if url.url().lower().startswith("http"):
-                        os.startfile(url.url())
-                except:
-                    pass
-
-            textOutput.anchorClicked.connect(openlink)
-            textOutput.setUndoRedoEnabled(False)
-            textOutput.setReadOnly(True)
-            textOutput.setOpenLinks(False)
-        else:
-            textOutput = auto_select_webview(self)
-        return textOutput
-
-    def __init__(self, parent) -> None:
-        super().__init__(parent)
-        layout = QHBoxLayout()
-        layout.setContentsMargins(0, 0, 0, 0)
-        self.setLayout(layout)
-        self.context = globalconfig["searchwordusewebview"]
-
-        self.internal = self.createviewer()
-        layout.addWidget(self.internal)
-
-    def clear(self):
-        self.internal.clear()
-
-    def setHtml(self, html):
-        if (globalconfig["searchwordusewebview"]) != self.context:
-            self.context = globalconfig["searchwordusewebview"]
-            self.layout().removeWidget(self.internal)
-            self.internal = self.createviewer()
-            self.layout().addWidget(self.internal)
-        self.internal.setHtml(html)
+    def sizeHint(self):
+        size_hint = super().sizeHint()
+        if size_hint.height():
+            self.savesizehint = size_hint
+        return self.savesizehint
 
 
 class searchwordW(closeashidewindow):
@@ -748,11 +717,12 @@ class searchwordW(closeashidewindow):
 
     def __init__(self, parent):
         super(searchwordW, self).__init__(parent, globalconfig, "sw_geo")
-        self.ankiwindow = AnkiWindow()
-        self.setupUi()
         # self.setWindowFlags(self.windowFlags()&~Qt.WindowMinimizeButtonHint)
         self.getnewsentencesignal.connect(self.getnewsentence)
+    
         self.setWindowTitle(_TR("查词"))
+        self.ankiwindow = AnkiWindow()
+        self.setupUi()
 
     def showresfun(self, timestamp, k, res):
         if self.current != timestamp:
@@ -766,12 +736,23 @@ class searchwordW(closeashidewindow):
                 idx += 1
         self.tabks.insert(idx, k)
         self.tab.insertTab(idx, _TR(globalconfig["cishu"][k]["name"]))
-        if len(self.tabks) == 1:
+
+        if thisp >= self.thismaxp:
+            self.tab.setCurrentIndex(0)
             self.tab.tabBarClicked.emit(0)
+            self.thismaxp += 1
+
+    def tabclicked(self, idx):
+        self.thismaxp += 1
+        try:
+            html = self.cache_results[self.tabks[idx]]
+        except:
+            return
+        self.textOutput.setHtml(html)
 
     def setupUi(self):
         self.setWindowIcon(qtawesome.icon("fa.search"))
-
+        self.thismaxp = 0
         self.showtabsignal.connect(self.showresfun)
 
         ww = QWidget(self)
@@ -796,14 +777,11 @@ class searchwordW(closeashidewindow):
         ankiconnect.statuschanged2.connect(self.onceaddankiwindow)
         self.searchlayout.addWidget(ankiconnect)
 
-        self.tab = QTabBar(self)
-
-        self.tab.tabBarClicked.connect(
-            lambda idx: self.textOutput.setHtml(self.cache_results[self.tabks[idx]])
-        )
+        self.tab = CustomTabBar()
+        self.tab.tabBarClicked.connect(self.tabclicked)
         self.tabks = []
         self.setCentralWidget(ww)
-        self.textOutput = selectviewer(self)
+        self.textOutput = auto_select_webview(self)
         self.cache_results = {}
         self.hiding = True
 
@@ -885,7 +863,11 @@ class searchwordW(closeashidewindow):
         self.tabks.clear()
         self.textOutput.clear()
         self.cache_results.clear()
+        self.thismaxp = 0
         for k, cishu in gobject.baseobject.cishus.items():
+            self.thismaxp = max(
+                self.thismaxp, globalconfig["cishu"][k]["args"]["priority"]
+            )
             cishu.safesearch(
                 sentence, functools.partial(self.showtabsignal.emit, current, k)
             )
