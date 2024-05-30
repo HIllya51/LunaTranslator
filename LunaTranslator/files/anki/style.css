@@ -34,9 +34,6 @@
     cursor: pointer;
 }
 
-.tab-widget .tab-buttons {
-    display: flex;
-}
 
 .tab-widget .tab-button {
     padding: 10px 20px;

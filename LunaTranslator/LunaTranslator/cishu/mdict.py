@@ -2483,14 +2483,14 @@ class mdict(cishubase):
             return "application/octet-stream"
 
     def repairtarget(self, index, base, html_content):
-        import base64
+        import base64, uuid
 
         src_pattern = r'src="([^"]+)"'
         href_pattern = r'href="([^"]+)"'
 
         src_matches = re.findall(src_pattern, html_content)
         href_matches = re.findall(href_pattern, html_content)
-
+        divid = "luna_internal_" + str(uuid.uuid4())
         for url in src_matches + href_matches:
             oked = False
             iscss = url.lower().endswith(".css")
@@ -2537,6 +2537,34 @@ class mdict(cishubase):
             except:
                 file_content = None
             if file_content:
+                if iscss:
+                    try:
+                        import sass
+
+                        css = file_content.decode("utf8")
+                        css = sass.compile(string=(f"#{divid} {{ {css} }}"))
+                        csss = css.split("\n")
+                        i = 0
+                        while i < len(csss):
+                            css = csss[i]
+                            if css.endswith(" body {"):
+                                csss[i] = css[: -len(" body {")] + "{"
+                            elif css == "@font-face {":
+                                csss[i + 1] = ""
+                                for j in range(i + 2, len(csss)):
+                                    if csss[j].endswith("} }"):
+                                        i = j
+                                        csss[j] = csss[j][:-1]
+                                        break
+                            i += 1
+                        css = "\n".join(csss)
+                        file_content = css.encode("utf8")
+                        # print(css)
+                    except:
+                        from traceback import print_exc
+
+                        print_exc()
+
                 base64_content = base64.b64encode(file_content).decode("utf-8")
                 if iscss:
                     html_content = html_content.replace(
@@ -2548,7 +2576,7 @@ class mdict(cishubase):
                     )
             elif not oked:
                 print(url)
-        return html_content
+        return f'<div id="{divid}">{html_content}</div>'
 
     def search(self, word):
         allres = []
@@ -2644,12 +2672,10 @@ function onclickbtn_mdict_internal(_id) {
     {commonstyle}
 <div class="tab-widget_mdict_internal">
     <div class="centerdiv_mdict_internal">
-        <div class="tab-buttons_mdict_internal" id="tab_buttons_mdict_internal">
         {''.join(btns)}
-        </div>
     </div>
     <div>
-        <div class="tab-content_mdict_internal" id="tab_contents_mdict_internal">
+        <div class="tab-content_mdict_internal">
             {''.join(contents)}
         </div>
     </div>
