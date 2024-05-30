@@ -266,6 +266,7 @@ class tagitem(QWidget):
         key = (tag, _type, refdata)
         self.setLayout(tagLayout)
         lb = ClickableLabel()
+        lb.setStyleSheet("background: transparent;")
         lb.setText(tag)
         lb.clicked.connect(functools.partial(self.labelclicked.emit, key))
         tagLayout.addWidget(lb)
