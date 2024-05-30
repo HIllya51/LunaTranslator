@@ -677,12 +677,14 @@ class auto_select_webview(QWidget):
         super().__init__(parent)
         self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
         self.cantusewebview2 = False
-        self.internal = None
+        self.internal = (
+            QWidget()
+        )  # 加个占位的widget，否则等待加载的时候有一瞬间的灰色背景。
         self.contex = -1
         layout = QHBoxLayout()
         layout.setContentsMargins(0, 0, 0, 0)
+        layout.addWidget(self.internal)
         self.setLayout(layout)
-        self._maybecreate()
         self.lastcachehtml = None
 
     def _maybecreate(self):

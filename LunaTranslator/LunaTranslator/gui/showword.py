@@ -719,7 +719,7 @@ class searchwordW(closeashidewindow):
         super(searchwordW, self).__init__(parent, globalconfig, "sw_geo")
         # self.setWindowFlags(self.windowFlags()&~Qt.WindowMinimizeButtonHint)
         self.getnewsentencesignal.connect(self.getnewsentence)
-    
+
         self.setWindowTitle(_TR("查词"))
         self.ankiwindow = AnkiWindow()
         self.setupUi()
