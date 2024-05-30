@@ -2,8 +2,8 @@ from qtsymbols import *
 import qtawesome
 import threading, windows
 import gobject, time
-from myutils.config import globalconfig, _TR
-from gui.usefulwidget import closeashidewindow, saveposwindow
+from myutils.config import globalconfig, _TR, _TRL
+from gui.usefulwidget import closeashidewindow, getsimplecombobox
 from myutils.utils import str2rgba
 from myutils.wrapper import Singleton_close, threader
 
@@ -138,6 +138,14 @@ class edittrans(QMainWindow):
 
         submit = QPushButton(_TR("确定"))
         qv.addWidget(self.textOutput)
+        qv.addWidget(
+            getsimplecombobox(
+                _TRL([globalconfig["fanyi"][x]["name"] for x in globalconfig["fanyi"]]),
+                globalconfig,
+                "realtime_edit_target",
+                internallist=list(globalconfig["fanyi"]),
+            )
+        )
         qv.addWidget(submit)
 
         submit.clicked.connect(self.submitfunction)
@@ -148,7 +156,11 @@ class edittrans(QMainWindow):
             return
         try:
             gobject.baseobject.textsource.sqlqueueput(
-                (gobject.baseobject.currenttext, "realtime_edit", text)
+                (
+                    gobject.baseobject.currenttext,
+                    globalconfig["realtime_edit_target"],
+                    text,
+                )
             )
             displayreskwargs = dict(
                 name=globalconfig["fanyi"]["realtime_edit"]["name"],

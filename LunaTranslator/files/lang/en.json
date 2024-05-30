@@ -801,5 +801,8 @@
     "工具按钮": "Tool buttons",
     "界面主题": "Interface Theme",
     "窗口行为": "Window behavior",
-    "窗口特效": "Window effects"
+    "窗口特效": "Window effects",
+    "实时编辑": "Real time editing",
+    "翻译记录": "Translation records",
+    "遍历目录中的全部词典文件": "Traverse all dictionary files in the directory"
 }

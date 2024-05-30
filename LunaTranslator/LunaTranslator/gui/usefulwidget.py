@@ -368,13 +368,32 @@ def callbackwrap(d, k, call, _):
             print_exc()
 
 
-def getsimplecombobox(lst, d, k, callback=None, fixedsize=False):
+def comboboxcallbackwrap(internallist, d, k, call, _):
+    d[k] = internallist[_]
+    if call:
+        try:
+            call(_)
+        except:
+            print_exc()
+
+
+def getsimplecombobox(lst, d, k, callback=None, fixedsize=False, internallist=None):
     s = QComboBox()
     s.addItems(lst)
-    if (k not in d) or (d[k] >= len(lst)):
-        d[k] = 0
-    s.setCurrentIndex(d[k])
-    s.currentIndexChanged.connect(functools.partial(callbackwrap, d, k, callback))
+
+    if internallist:
+        if (k not in d) or (d[k] not in internallist):
+            d[k] = internallist[0]
+        s.setCurrentIndex(internallist.index(d[k]))
+        s.currentIndexChanged.connect(
+            functools.partial(comboboxcallbackwrap, internallist, d, k, callback)
+        )
+    else:
+        if (k not in d) or (d[k] >= len(lst)):
+            d[k] = 0
+        s.setCurrentIndex(d[k])
+        s.currentIndexChanged.connect(functools.partial(callbackwrap, d, k, callback))
+
     if fixedsize:
         s.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
     return s

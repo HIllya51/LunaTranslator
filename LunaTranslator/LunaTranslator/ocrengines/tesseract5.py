@@ -1,6 +1,5 @@
 import os, uuid
 from myutils.config import _TR, ocrsetting
-from myutils.ocrutil import binary2qimage
 from ocrengines.baseocrclass import baseocr
 from myutils.subproc import subproc_w
 

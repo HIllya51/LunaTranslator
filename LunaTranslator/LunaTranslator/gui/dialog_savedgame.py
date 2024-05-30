@@ -571,7 +571,7 @@ class dialog_setting_game(QDialog):
         res = f[0]
         if res != "":
 
-            res = res.replace("/", "\\")
+            res = os.path.normpath(res)
             if res in savehook_new_list:
                 return
             savehook_new_list[savehook_new_list.index(self.exepath)] = res
@@ -1448,7 +1448,7 @@ class dialog_savedgame_new(saveposwindow):
 
         res = f[0]
         if res != "":
-            res = res.replace("/", "\\")
+            res = os.path.normpath(res)
             if res not in savehook_new_list:
                 checkifnewgame(res)
                 self.newline(res, True)

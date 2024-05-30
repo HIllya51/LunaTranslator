@@ -17,7 +17,7 @@ class cishubase:
             self.init()
             self.needinit = False
         except:
-            pass
+            print_exc()
 
     @threader
     def safesearch(self, sentence, callback):

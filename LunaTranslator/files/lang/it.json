@@ -801,5 +801,8 @@
     "工具按钮": "Pulsanti strumenti",
     "界面主题": "Tema interfaccia",
     "窗口行为": "Comportamento delle finestre",
-    "窗口特效": "Effetti finestra"
+    "窗口特效": "Effetti finestra",
+    "实时编辑": "Modifica in tempo reale",
+    "翻译记录": "Record di traduzione",
+    "遍历目录中的全部词典文件": "Attraversa tutti i file del dizionario nella directory"
 }

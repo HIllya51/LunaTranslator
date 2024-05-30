@@ -197,7 +197,7 @@ def exportchspatch(self):
         exe = f[0]
         if exe == "":
             return
-        exe = exe.replace("/", "\\")
+        exe = os.path.normpath(exe)
     doexportchspatch(exe, realgame)
     md5 = getfilemd5(exe)
     name = os.path.basename(exe).replace("." + os.path.basename(exe).split(".")[-1], "")
@@ -292,7 +292,8 @@ def gethookembedgrid(self):
                         ]
                     ),
                     globalconfig["embedded"],
-                    "translator",
+                    "translator_2",
+                    internallist=list(globalconfig["fanyi"]),
                 ),
                 5,
             ),

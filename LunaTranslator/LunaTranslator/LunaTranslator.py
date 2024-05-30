@@ -369,8 +369,7 @@ class MAINUI:
 
             if (
                 globalconfig["embedded"]["as_fast_as_posible"]
-                or classname
-                == list(globalconfig["fanyi"])[globalconfig["embedded"]["translator"]]
+                or classname == globalconfig["embedded"]["translator_2"]
             ):
                 return returnandembedcallback(
                     kanjitrans(zhconv.convert(res, "zh-tw"))

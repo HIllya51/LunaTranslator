@@ -1,4 +1,5 @@
-import math
+import math, base64, uuid
+import threading, time
 
 
 class FlexBuffer:
@@ -1934,6 +1935,8 @@ if sys.hexversion >= 0x03000000:
 
 version = "1.1"
 
+import hashlib
+
 
 class IndexBuilder(object):
     # todo: enable history
@@ -1959,13 +1962,20 @@ class IndexBuilder(object):
         _filename, _file_extension = os.path.splitext(fname)
         assert _file_extension == ".mdx"
         assert os.path.isfile(fname)
-        self._mdx_db = _filename + ".mdx.db"
+        os.makedirs("cache/mdict/index", exist_ok=True)
+        _mdxmd5 = (
+            os.path.basename(_filename)
+            + "_"
+            + hashlib.md5(_filename.encode("utf8")).hexdigest()
+        )
+        _targetfilenamebase = os.path.join("cache/mdict/index", _mdxmd5)
+        self._mdx_db = _targetfilenamebase + ".mdx.db"
         # make index anyway
         if force_rebuild:
             self._make_mdx_index(self._mdx_db)
             if os.path.isfile(_filename + ".mdd"):
                 self._mdd_file = _filename + ".mdd"
-                self._mdd_db = _filename + ".mdd.db"
+                self._mdd_db = _targetfilenamebase + ".mdd.db"
                 self._make_mdd_index(self._mdd_db)
 
         if os.path.isfile(self._mdx_db):
@@ -1984,7 +1994,7 @@ class IndexBuilder(object):
                 print("mdx.db rebuilt!")
                 if os.path.isfile(_filename + ".mdd"):
                     self._mdd_file = _filename + ".mdd"
-                    self._mdd_db = _filename + ".mdd.db"
+                    self._mdd_db = _targetfilenamebase + ".mdd.db"
                     self._make_mdd_index(self._mdd_db)
                     print("mdd.db rebuilt!")
                 return None
@@ -2020,7 +2030,7 @@ class IndexBuilder(object):
 
         if os.path.isfile(_filename + ".mdd"):
             self._mdd_file = _filename + ".mdd"
-            self._mdd_db = _filename + ".mdd.db"
+            self._mdd_db = _targetfilenamebase + ".mdd.db"
             if not os.path.isfile(self._mdd_db):
                 self._make_mdd_index(self._mdd_db)
         pass
@@ -2037,54 +2047,6 @@ class IndexBuilder(object):
             else:
                 txt_styled = txt_styled + style[0] + p + style[1]
         return txt_styled
-
-    def make_sqlite(self):
-        sqlite_file = self._mdx_file + ".sqlite.db"
-        if os.path.exists(sqlite_file):
-            os.remove(sqlite_file)
-        mdx = MDX(self._mdx_file)
-        conn = sqlite3.connect(sqlite_file)
-        cursor = conn.cursor()
-        cursor.execute(
-            """ CREATE TABLE MDX_DICT
-                (key text not null,
-                value text
-                )"""
-        )
-
-        # remove '(pīnyīn)', remove `1`:
-        aeiou = "āáǎàĀÁǍÀēéěèêềếĒÉĚÈÊỀẾīíǐìÍǏÌōóǒòŌÓǑÒūúǔùŪÚǓÙǖǘǚǜǕǗǙǛḾǹňŃŇ"
-        pattern = r"`\d+`|[（\(]?['a-z%s]*[%s]['a-z%s]*[\)）]?" % (aeiou, aeiou, aeiou)
-        tuple_list = [
-            (key.decode(), re.sub(pattern, "", value.decode()))
-            for key, value in mdx.items()
-        ]
-
-        cursor.executemany("INSERT INTO MDX_DICT VALUES (?,?)", tuple_list)
-
-        returned_index = mdx.get_index(check_block=self._check)
-        meta = returned_index["meta"]
-        cursor.execute("""CREATE TABLE META (key text, value text)""")
-
-        cursor.executemany(
-            "INSERT INTO META VALUES (?,?)",
-            [
-                ("encoding", meta["encoding"]),
-                ("stylesheet", meta["stylesheet"]),
-                ("title", meta["title"]),
-                ("description", meta["description"]),
-                ("version", version),
-            ],
-        )
-
-        if self._sql_index:
-            cursor.execute(
-                """
-                CREATE INDEX key_index ON MDX_DICT (key)
-                """
-            )
-        conn.commit()
-        conn.close()
 
     def _make_mdx_index(self, db_name):
         if os.path.exists(db_name):
@@ -2321,32 +2283,82 @@ import re
 
 
 class mdict(cishubase):
+    def init_once_mdx(self, f):
+        if not os.path.isfile(f):
+            return
+        f = os.path.normpath(f)
+        if f in self.dedump:
+            return
+        self.dedump.add(f)
+        _ = self.extraconf[f] = self.extraconf.get(f, {})
+        _["priority"] = _.get("priority", 100)  # 越大展示的越靠前
+        _["distance"] = _.get(
+            "distance", -1
+        )  # -1是跟随mdict全局distance，否则使用私有distance
+        _["title"] = _.get("title", None)  # None是使用默认显示名，否则使用自定义显示名
+        if os.path.exists(f):
+            try:
+                index = IndexBuilder(f)
+
+                title = _["title"]
+                if title is None:
+                    t = os.path.basename(f)[:-4]
+                    if index._title.strip() != "":
+                        t1 = index._title.strip()
+                        if (t1.isascii()) and (t.isascii()):
+                            t = t1
+                        elif not t1.isascii():
+                            t = t1
+                    title = t
+                distance = _["distance"]
+                if distance == -1:
+                    distance = self.config["distance"]
+                self.builders.append((f, index, title, distance, _["priority"]))
+
+            except:
+                print(f)
+                from traceback import print_exc
+
+                print_exc()
+
     def init(self):
+        try:
+            with open("cache/mdict/config.json", "r", encoding="utf8") as ff:
+                self.extraconf = json.loads(ff.read())
+        except:
+            self.extraconf = {}
         self.sql = None
-
         paths = self.config["path"]
+
         self.builders = []
+        self.dedump = set()
+
         for f in paths.split("|"):
-            if os.path.exists(f):
-                try:
-                    self.builders.append((IndexBuilder(f), f))
-                    # with open('1.txt','a',encoding='utf8') as ff:
-                    #     print(f,file=ff)
-                    #     print(self.builders[-1][0].get_mdx_keys(),file=ff)
-                    #     print(self.builders[-1][0].get_mdd_keys(),file=ff)
-                except:
-                    from traceback import print_exc
+            if f.strip() == "":
+                continue
+            self.init_once_mdx(f)
 
-                    print_exc()
+        for _dir, _, _fs in os.walk(self.config["path_dir"]):
+            for f in _fs:
+                if not f.lower().endswith(".mdx"):
+                    continue
+                f = os.path.join(_dir, f)
+                self.init_once_mdx(f)
 
-    def querycomplex(self, word, index):
+        try:
+            with open("cache/mdict/config.json", "w", encoding="utf8") as ff:
+                ff.write(json.dumps(self.extraconf, ensure_ascii=False, indent=4))
+        except:
+            pass
+
+    def querycomplex(self, word, distance, index):
         results = []
         diss = {}
         import winsharedutils
 
         for k in index("*" + word + "*"):
             dis = winsharedutils.distance(k, word)
-            if dis <= self.config["distance"]:
+            if dis <= distance:
                 results.append(k)
                 diss[k] = dis
 
@@ -2482,8 +2494,94 @@ class mdict(cishubase):
         else:
             return "application/octet-stream"
 
+    def parseaudio(self, html_content, url, file_content):
+        base64_content = base64.b64encode(file_content).decode("utf-8")
+
+        uid = str(uuid.uuid4())
+        # with open(uid+'.mp3','wb') as ff:
+        #     ff.write(file_content)
+        audio = f'<audio controls id="{uid}" style="display: none"><source src="data:{self.get_mime_type_from_magic(file_content)};base64,{base64_content}"></audio>'
+        html_content = audio + html_content.replace(
+            url,
+            f"javascript:document.getElementById('{uid}').play()",
+        )
+        return html_content
+
+    def tryloadurl(self, index: IndexBuilder, base, url: str):
+        _local = os.path.join(base, url)
+        iscss = url.lower().endswith(".css")
+        _type = 0
+        file_content = None
+        if iscss:
+            _type = 1
+        if os.path.exists(_local) and os.path.isfile(_local):
+            with open(os.path.join(base, url), "rb") as f:
+                file_content = f.read()
+            return _type, file_content
+
+        if url.startswith("#"):  # a href # 页内跳转
+            return -1, None
+
+        url1 = url.replace("/", "\\")
+        if not url1.startswith("\\"):
+            url1 = "\\" + url1
+        try:
+            file_content = index.mdd_lookup(url1)[0]
+        except:
+            pass
+        if file_content:
+            return _type, file_content
+
+        func = url.split(r"://")[0]
+        if func == "entry":
+            return -1, None
+        url1 = url.split(r"://")[1]
+        url1 = url1.replace("/", "\\")
+
+        if not url1.startswith("\\"):
+            url1 = "\\" + url1
+        try:
+            file_content = index.mdd_lookup(url1)[0]
+        except:
+            return None
+        if func == "sound":
+            _type = 2
+        return _type, file_content
+
+    def tryparsecss(self, html_content, url, file_content, divid):
+        try:
+            import sass
+
+            css = file_content.decode("utf8")
+            css = sass.compile(string=(f"#{divid} {{ {css} }}"))
+            csss = css.split("\n")
+            i = 0
+            while i < len(csss):
+                css = csss[i]
+                if css.endswith(" body {"):
+                    csss[i] = css[: -len(" body {")] + "{"
+                elif css == "@font-face {":
+                    csss[i + 1] = ""
+                    for j in range(i + 2, len(csss)):
+                        if csss[j].endswith("} }"):
+                            i = j
+                            csss[j] = csss[j][:-1]
+                            break
+                i += 1
+            css = "\n".join(csss)
+            file_content = css.encode("utf8")
+            # print(css)
+        except:
+            from traceback import print_exc
+
+            print_exc()
+        base64_content = base64.b64encode(file_content).decode("utf-8")
+        html_content = html_content.replace(
+            url, f"data:text/css;base64,{base64_content}"
+        )
+        return html_content
+
     def repairtarget(self, index, base, html_content):
-        import base64, uuid
 
         src_pattern = r'src="([^"]+)"'
         href_pattern = r'href="([^"]+)"'
@@ -2492,122 +2590,62 @@ class mdict(cishubase):
         href_matches = re.findall(href_pattern, html_content)
         divid = "luna_internal_" + str(uuid.uuid4())
         for url in src_matches + href_matches:
-            oked = False
-            iscss = url.lower().endswith(".css")
             try:
-                try:
-                    with open(os.path.join(base, url), "rb") as f:
-                        file_content = f.read()
-
-                except:
-                    url1 = url.replace("/", "\\")
-                    if not url1.startswith("\\"):
-                        url1 = "\\" + url1
-                    try:
-                        file_content = index.mdd_lookup(url1)[0]
-                    except:
-                        func = url.split(r"://")[0]
-                        if func == "entry":
-                            continue
-                        url1 = url.split(r"://")[1]
-                        url1 = url1.replace("/", "\\")
-
-                        if not url1.startswith("\\"):
-                            url1 = "\\" + url1
-                        file_content = index.mdd_lookup(url1)[0]
-                        if func == "sound":
-
-                            base64_content = base64.b64encode(file_content).decode(
-                                "utf-8"
-                            )
-                            import uuid
-
-                            uid = str(uuid.uuid4())
-                            # with open(uid+'.mp3','wb') as ff:
-                            #     ff.write(file_content)
-                            audio = f'<audio controls id="{uid}" style="display: none"><source src="data:{self.get_mime_type_from_magic(file_content)};base64,{base64_content}"></audio>'
-                            html_content = audio + html_content.replace(
-                                url,
-                                f"javascript:document.getElementById('{uid}').play()",
-                            )
-                            file_content = None
-                            oked = True
-                        else:
-                            print(url)
+                file_content = self.tryloadurl(index, base, url)
             except:
-                file_content = None
-            if file_content:
-                if iscss:
-                    try:
-                        import sass
-
-                        css = file_content.decode("utf8")
-                        css = sass.compile(string=(f"#{divid} {{ {css} }}"))
-                        csss = css.split("\n")
-                        i = 0
-                        while i < len(csss):
-                            css = csss[i]
-                            if css.endswith(" body {"):
-                                csss[i] = css[: -len(" body {")] + "{"
-                            elif css == "@font-face {":
-                                csss[i + 1] = ""
-                                for j in range(i + 2, len(csss)):
-                                    if csss[j].endswith("} }"):
-                                        i = j
-                                        csss[j] = csss[j][:-1]
-                                        break
-                            i += 1
-                        css = "\n".join(csss)
-                        file_content = css.encode("utf8")
-                        # print(css)
-                    except:
-                        from traceback import print_exc
-
-                        print_exc()
-
-                base64_content = base64.b64encode(file_content).decode("utf-8")
-                if iscss:
-                    html_content = html_content.replace(
-                        url, f"data:text/css;base64,{base64_content}"
-                    )
-                else:
-                    html_content = html_content.replace(
-                        url, f"data:application/octet-stream;base64,{base64_content}"
-                    )
-            elif not oked:
+                print("unknown", url)
+                continue
+            if not file_content:
                 print(url)
+                continue
+            _type, file_content = file_content
+            if _type == -1:
+                continue
+            elif _type == 1:
+                html_content = self.tryparsecss(html_content, url, file_content, divid)
+            elif _type == 2:
+                html_content = self.parseaudio(html_content, url, file_content)
+            elif _type == 0:
+                base64_content = base64.b64encode(file_content).decode("utf-8")
+                html_content = html_content.replace(
+                    url, f"data:application/octet-stream;base64,{base64_content}"
+                )
         return f'<div id="{divid}">{html_content}</div>'
 
-    def search(self, word):
-        allres = []
-        for index, f in self.builders:
-            results = []
-            # print(f)
-            try:
-                keys = self.querycomplex(word, index.get_mdx_keys)
-                # print(keys)
-                for k in keys:
-                    content = index.mdx_lookup(k)[0]
-                    match = re.match("@@@LINK=(.*)", content.strip())
-                    if match:
-                        match = match.groups()[0]
-                        content = index.mdx_lookup(match)[0]
-                    results.append(self.parseashtml(content))
-            except:
-                from traceback import print_exc
+    def searchthread(self, allres, i, word):
+        f, index, title, distance, priority = self.builders[i]
+        results = []
+        try:
+            keys = self.querycomplex(word, distance, index.get_mdx_keys)
+            # print(keys)
+            for k in keys:
+                content = index.mdx_lookup(k)[0]
+                match = re.match("@@@LINK=(.*)", content.strip())
+                if match:
+                    match = match.groups()[0]
+                    content = index.mdx_lookup(match)[0]
+                results.append(self.parseashtml(content))
+        except:
+            from traceback import print_exc
 
-                print_exc()
-            if len(results) == 0:
-                continue
+            print_exc()
+        for i in range(len(results)):
+            results[i] = self.repairtarget(index, os.path.dirname(f), results[i])
+        if len(results):
+            allres.append((priority, title, "".join(results)))
 
-            for i in range(len(results)):
-                results[i] = self.repairtarget(index, os.path.dirname(f), results[i])
-            # <img src="/rjx0849.png" width="1080px"><br><center> <a href="entry://rjx0848">
-            # /rjx0849.png->mddkey \\rjx0849.png entry://rjx0848->跳转到mdxkey rjx0849
-            # 太麻烦，不搞了。
-            allres.append((f, "".join(results)))
-        if len(allres) == 0:
-            return
+    def generatehtml_tabswitch(self, allres):
+        btns = []
+        contents = []
+        idx = 0
+        for _, title, res in allres:
+            idx += 1
+            btns.append(
+                f"""<button type="button" onclick="onclickbtn_mdict_internal('buttonid_mdict_internal{idx}')" id="buttonid_mdict_internal{idx}" class="tab-button_mdict_internal" data-tab="tab_mdict_internal{idx}">{title}</button>"""
+            )
+            contents.append(
+                f"""<div id="tab_mdict_internal{idx}" class="tab-pane_mdict_internal">{res}</div>"""
+            )
         commonstyle = """
 <script>
 function onclickbtn_mdict_internal(_id) {
@@ -2656,23 +2694,13 @@ function onclickbtn_mdict_internal(_id) {
 </style>
 """
 
-        btns = []
-        contents = []
-        idx = 0
-        for f, res in allres:
-            idx += 1
-            ff = os.path.basename(f)[:-4]
-            btns.append(
-                f"""<button type="button" onclick="onclickbtn_mdict_internal('buttonid_mdict_internal{idx}')" id="buttonid_mdict_internal{idx}" class="tab-button_mdict_internal" data-tab="tab_mdict_internal{idx}">{ff}</button>"""
-            )
-            contents.append(
-                f"""<div id="tab_mdict_internal{idx}" class="tab-pane_mdict_internal">{res}</div>"""
-            )
         res = f"""
     {commonstyle}
 <div class="tab-widget_mdict_internal">
-    <div class="centerdiv_mdict_internal">
+
+    <div class="centerdiv_mdict_internal"><div>
         {''.join(btns)}
+    </div>
     </div>
     <div>
         <div class="tab-content_mdict_internal">
@@ -2686,3 +2714,71 @@ document.querySelectorAll('.tab-widget_mdict_internal .tab-button_mdict_internal
 </script>
 """
         return res
+
+    def generatehtml_flow(self, allres):
+        content = """<style>.collapsible-list {
+        list-style: none;
+        padding: 0;
+    }
+    
+    .collapsible-header {
+        background-color: #f4f4f4;
+        padding: 10px;
+        cursor: pointer;
+        border: 1px solid #ddd;
+        border-bottom: none;
+    }
+    
+    .collapsible-content {
+        display: none;
+        padding: 10px;
+        border: 1px solid #ddd;
+        background-color: #fff;
+    }</style>"""
+        content += """
+<script>
+function mdict_flowstyle_clickcallback(_id)
+{
+content = document.getElementById(_id).nextElementSibling;
+if (content.style.display === 'block') {
+    content.style.display = 'none';
+} else {
+    content.style.display = 'block';
+}
+}</script>"""
+        lis = []
+        for _, title, res in allres:
+            uid = str(uuid.uuid4())
+            lis.append(
+                rf"""<li><div class="collapsible-header" id="{uid}" onclick="mdict_flowstyle_clickcallback('{uid}')">{title}</div><div class="collapsible-content" style="display: block;">
+               {res}
+            </div></li>"""
+            )
+        content += rf"""
+<ul class="collapsible-list">
+         {''.join(lis)}
+    </ul>"""
+
+        return content
+
+    def search(self, word):
+        allres = []
+        # threads = []
+        # for i in range(len(self.builders)):
+        #     threads.append(
+        #         threading.Thread(target=self.searchthread, args=(allres, i, word))
+        #     )
+
+        # for _ in threads:
+        #     _.start()
+        # for _ in threads:
+        #     _.join()
+        for i in range(len(self.builders)):
+            self.searchthread(allres, i, word)
+        if len(allres) == 0:
+            return
+        allres.sort(key=lambda _: -_[0])
+        if self.config["stylehv"] == 0:
+            return self.generatehtml_tabswitch(allres)
+        elif self.config["stylehv"] == 1:
+            return self.generatehtml_flow(allres)

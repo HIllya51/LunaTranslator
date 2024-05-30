@@ -1,5 +1,6 @@
 import json
 import os, time
+from traceback import print_exc
 
 
 def tryreadconfig(path, default=None):
@@ -137,7 +138,7 @@ def syncconfig(config1, default, drop=False, deep=0, skipdict=False):
         if key not in config1:
             config1[key] = default[key]
 
-        elif key == "name":
+        elif key in ("name", "tip"):
             config1[key] = default[key]
         elif key == "argstype":
             config1[key] = default[key]
@@ -241,6 +242,70 @@ def _TR(k):
             return languageshow[k]
 
 
+lastapppath = os.path.normpath(globalconfig["lastapppath"])
+thisapppath = os.path.normpath(os.getcwd())
+
+if lastapppath is None:
+    lastapppath = thisapppath
+
+
+def dynamicrelativepath(abspath):
+    if os.path.exists(abspath):
+        return abspath
+    _ = os.path.normpath(abspath)
+    if _.startswith(lastapppath):
+        np = thisapppath + _[len(lastapppath) :]
+        if os.path.exists(np):
+            return np
+    return abspath
+
+
+def parsetarget(dict, key):
+    t = dict[key]
+    if type(t) != str:
+        raise Exception("not a path")
+    if "|" in t:
+        t = "|".join([dynamicrelativepath(_) for _ in t.split("|")])
+    else:
+        t = dynamicrelativepath(t)
+    dict[key] = t
+
+
+def autoparsedynamicpath():
+    for dic, routine, target in (
+        (globalconfig, ("cishu", "mdict", "args"), "path"),
+        (globalconfig, ("cishu", "mdict", "args"), "path_dir"),
+        (globalconfig, ("cishu", "edict", "args"), "path"),
+        (globalconfig, ("cishu", "linggesi", "args"), "path"),
+        (globalconfig, ("cishu", "xiaoxueguan", "args"), "path"),
+        (globalconfig, ("hirasetting", "mecab", "args"), "path"),
+        (globalconfig, ("hirasetting", "mecab", "args"), "path"),
+        (globalconfig, ("reader", "voiceroid2", "args"), "path"),
+        (translatorsetting, ("dreye", "args"), "路径"),
+        (translatorsetting, ("jb7", "args"), "路径"),
+        (translatorsetting, ("jb7", "args"), "用户词典3(可选)"),
+        (translatorsetting, ("jb7", "args"), "用户词典1(可选)"),
+        (translatorsetting, ("jb7", "args"), "用户词典2(可选)"),
+        (translatorsetting, ("kingsoft", "args"), "路径"),
+        (translatorsetting, ("ort_sp", "args"), "路径"),
+        (translatorsetting, ("premt", "args"), "sqlite文件"),
+        (translatorsetting, ("rengong", "args"), "json文件"),
+    ):
+        try:
+            for _k in routine:
+                dic = dic.get(_k, None)
+                if dic is None:
+                    break
+            if dic is None:
+                continue
+            parsetarget(dic, target)
+        except:
+            print_exc()
+
+
+autoparsedynamicpath()
+
+
 def _TRL(kk):
     x = []
     for k in kk:
@@ -249,6 +314,8 @@ def _TRL(kk):
 
 
 def saveallconfig():
+    globalconfig["lastapppath"] = thisapppath
+
     def safesave(fname, js):
         # 有时保存时意外退出，会导致config文件被清空
         with open(fname + ".tmp", "w", encoding="utf-8") as ff:
