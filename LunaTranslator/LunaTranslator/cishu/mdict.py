@@ -2360,7 +2360,11 @@ class mdict(cishubase):
         diss = {}
         import winsharedutils
 
+        dedump = set()
         for k in index("*" + word + "*"):
+            if k in dedump:
+                continue
+            dedump.add(k)
             dis = winsharedutils.distance(k, word)
             if dis <= distance:
                 results.append(k)
