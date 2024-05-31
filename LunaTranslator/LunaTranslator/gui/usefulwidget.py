@@ -553,6 +553,7 @@ def getscaledrect(size: QSize):
 
 class WebivewWidget(QWidget):
     on_load = pyqtSignal(str)
+    html_limit = 2 * 1024 * 1024  # 2mb
 
     def __init__(self, parent=None, debug=False) -> None:
         super().__init__(parent)
@@ -594,6 +595,7 @@ class WebivewWidget(QWidget):
 
 class mshtmlWidget(QWidget):
     on_load = pyqtSignal(str)
+    html_limit = 2 * 1024 * 1024
 
     def __init__(self, parent=None) -> None:
         super().__init__(parent)
@@ -656,6 +658,36 @@ def getsimplekeyseq(dic, key, callback=None):
     return key1
 
 
+class QWebWrap(QWidget):
+    on_load = pyqtSignal(str)
+    html_limit = 2 * 1024 * 1024
+
+    def __init__(self) -> None:
+        super().__init__()
+        from PyQt5.QtWebEngineWidgets import QWebEngineView
+
+        self.internal = QWebEngineView(self)
+        self.internal.page().urlChanged.connect(
+            lambda qurl: self.on_load.emit(qurl.url())
+        )
+
+    def navigate(self, url: str):
+        from PyQt5.QtCore import QUrl
+
+        if not url.lower().startswith("http"):
+            url = url.replace("\\", "/")
+        self.internal.load(QUrl(url))
+
+    def setHtml(self, html):
+        self.internal.setHtml(html)
+
+    def parsehtml(self, html):
+        return html
+
+    def resizeEvent(self, a0: QResizeEvent) -> None:
+        self.internal.resize(a0.size())
+
+
 class auto_select_webview(QWidget):
     on_load = pyqtSignal(str)
 
@@ -664,67 +696,64 @@ class auto_select_webview(QWidget):
 
     def navigate(self, url):
         self._maybecreate()
-        self.clearcache()
         self.internal.navigate(url)
 
     def setHtml(self, html):
         self._maybecreate()
-        self.clearcache()
         html = self.internal.parsehtml(html)
-        if len(html) < 1 * 1024 * 1024:  # 1mb
+        if len(html) < self.internal.html_limit:
             self.internal.setHtml(html)
         else:
             os.makedirs("cache/temp", exist_ok=True)
-            self.lastcachehtml = os.path.abspath(
-                "cache/temp/" + str(time.time()) + ".html"
-            )
-            with open(self.lastcachehtml, "w", encoding="utf8") as ff:
+            lastcachehtml = os.path.abspath("cache/temp/" + str(time.time()) + ".html")
+            with open(lastcachehtml, "w", encoding="utf8") as ff:
                 ff.write(html)
-            print("file://" + self.lastcachehtml.replace("\\", "/"))
-            self.internal.navigate("file://" + self.lastcachehtml.replace("\\", "/"))
+            self.internal.navigate(lastcachehtml)
 
     def sizeHint(self):
         return QSize(256, 192)
 
-    def clearcache(self):
-        if self.lastcachehtml and os.path.exists(self.lastcachehtml):
-            lastcachehtml = self.lastcachehtml
-            self.lastcachehtml = None
-            os.remove(lastcachehtml)
-
     def __init__(self, parent) -> None:
         super().__init__(parent)
         self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
-        self.cantusewebview2 = False
+        self.is_fallback = -2
+        self.contex = -1
         self.internal = (
             QWidget()
         )  # 加个占位的widget，否则等待加载的时候有一瞬间的灰色背景。
-        self.contex = -1
+        self.lock = threading.Lock()
         layout = QHBoxLayout()
         layout.setContentsMargins(0, 0, 0, 0)
         layout.addWidget(self.internal)
         self.setLayout(layout)
-        self.lastcachehtml = None
 
     def _maybecreate(self):
-        if globalconfig["usewebview"] != self.contex:
-            if globalconfig["usewebview"] == 1 and self.cantusewebview2:
-                return
-            if self.internal:
-                self.layout().removeWidget(self.internal)
-            self.internal = self._createwebview()
-            self.layout().addWidget(self.internal)
+        with self.lock:
+            self._maybecreate_internal()
+
+    def _maybecreate_internal(self):
+        if globalconfig["usewebview"] == self.contex:
+            return
+        if self.is_fallback == globalconfig["usewebview"]:
+            return
+        if self.internal:
+            self.layout().removeWidget(self.internal)
+        self.internal = self._createwebview()
+        self.layout().addWidget(self.internal)
 
     def _createwebview(self):
         self.contex = globalconfig["usewebview"]
-        if self.contex == 0:
-            browser = mshtmlWidget(self)
-        elif self.contex == 1:
-            try:
-                browser = WebivewWidget(self, True)
-            except Exception:
-                self.cantusewebview2 = True
-                browser = mshtmlWidget(self)
+        try:
+            if self.contex == 0:
+                browser = mshtmlWidget()
+            elif self.contex == 1:
+                browser = WebivewWidget(debug=True)
+            elif self.contex == 2:
+                browser = QWebWrap()
+        except:
+            print_exc()
+            self.is_fallback = self.contex
+            browser = mshtmlWidget()
         browser.on_load.connect(self.on_load)
         return browser
 

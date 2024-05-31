@@ -31,6 +31,13 @@ if __name__ == "__main__":
         )  # 中文字符下不能自动加载
         QApplication.setAttribute(Qt.ApplicationAttribute.AA_EnableHighDpiScaling)
         QApplication.setAttribute(Qt.ApplicationAttribute.AA_UseHighDpiPixmaps)
+        if os.path.exists(
+            "./LunaTranslator/runtime/PyQt5/Qt5/bin/Qt5WebEngineCore.dll"
+        ):
+            QApplication.setAttribute(
+                Qt.ApplicationAttribute.AA_ShareOpenGLContexts
+            )  # maybe use qwebengine
+
     QApplication.setHighDpiScaleFactorRoundingPolicy(
         Qt.HighDpiScaleFactorRoundingPolicy.PassThrough
     )

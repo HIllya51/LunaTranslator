@@ -128,7 +128,16 @@ def setTab_aboutlazy(self):
         [("Internet", 5)],
         [(getsimplecombobox(["winhttp", "libcurl"], globalconfig, "network"), 5)],
         [("WebView", 5)],
-        [(getsimplecombobox(["IEFrame", "WebView2"], globalconfig, "usewebview"), 5)],
+        [
+            (
+                getsimplecombobox(
+                    ["IEFrame", "WebView2"],  # , "QWebEngine"]
+                    globalconfig,
+                    "usewebview",
+                ),
+                5,
+            )
+        ],
         [("截图保存格式", 5)],
         [(getsimplecombobox(getimageformatlist(), globalconfig, "imageformat"), 5)],
     ]
