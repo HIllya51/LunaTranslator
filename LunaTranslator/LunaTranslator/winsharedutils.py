@@ -149,13 +149,15 @@ class mecabwrap:
         surface = POINTER(c_char_p)()
         feature = POINTER(c_char_p)()
         num = c_uint()
-        _mecab_parse(
+        succ = _mecab_parse(
             self.kks,
             text.encode(codec),
             pointer(surface),
             pointer(feature),
             pointer(num),
         )
+        if not succ:
+            raise Exception  # failed
         res = []
         for i in range(num.value):
             f = feature[i]
@@ -185,6 +187,8 @@ def clipboard_get():
         return ""
 
 
+html_version = utilsdll.html_version
+html_version.restype = DWORD
 html_new = utilsdll.html_new
 html_new.argtypes = (c_void_p,)
 html_new.restype = c_void_p
@@ -204,6 +208,10 @@ html_set_html.argtypes = (
 
 
 class HTMLBrowser:
+    @staticmethod
+    def version():
+        return html_version()
+
     def __init__(self, parent) -> None:
         self.html = html_new(parent)
 

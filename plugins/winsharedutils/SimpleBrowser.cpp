@@ -106,6 +106,10 @@ BOOL DoSetBrowserEmulation(DWORD dwValue)
 
     return bOK;
 }
+extern "C" __declspec(dllexport) DWORD html_version()
+{
+    return getemulation();
+}
 extern "C" __declspec(dllexport) void *html_new(HWND parent)
 {
     DoSetBrowserEmulation(getemulation());

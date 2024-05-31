@@ -247,7 +247,10 @@ thisapppath = os.path.normpath(os.getcwd())
 
 if lastapppath is None:
     lastapppath = thisapppath
-lastapppath = os.path.normpath(lastapppath)
+else:
+    lastapppath = os.path.normpath(lastapppath)
+
+globalconfig["lastapppath"] = thisapppath
 
 
 def dynamicrelativepath(abspath):
@@ -316,8 +319,6 @@ def _TRL(kk):
 
 
 def saveallconfig():
-    globalconfig["lastapppath"] = thisapppath
-
     def safesave(fname, js):
         # 有时保存时意外退出，会导致config文件被清空
         with open(fname + ".tmp", "w", encoding="utf-8") as ff:

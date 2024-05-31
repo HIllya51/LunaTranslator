@@ -599,6 +599,8 @@ class mshtmlWidget(QWidget):
 
     def __init__(self, parent=None) -> None:
         super().__init__(parent)
+        if HTMLBrowser.version() < 10001:  # ie10之前，sethtml会乱码
+            self.html_limit = 0
         self.browser = HTMLBrowser(int(self.winId()))
         threading.Thread(target=self.__getcurrenturl).start()
 
@@ -625,7 +627,7 @@ class mshtmlWidget(QWidget):
         self.browser.set_html(html)
 
     def parsehtml(self, html):
-        html = """<html><head><meta http-equiv='x-ua-compatible' content='IE=edge' charset="utf-8"></head><body style=" font-family:'{}'">{}</body></html>""".format(
+        html = """<html><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8" /></head><body style=" font-family:'{}'">{}</body></html>""".format(
             QFontDatabase.systemFont(QFontDatabase.GeneralFont).family(), html
         )
         return html
