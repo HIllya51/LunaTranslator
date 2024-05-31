@@ -2323,10 +2323,14 @@ class mdict(cishubase):
 
     def init(self):
         try:
-            with open("cache/mdict/config.json", "r", encoding="utf8") as ff:
+            with open("userconfig/mdict_config.json", "r", encoding="utf8") as ff:
                 self.extraconf = json.loads(ff.read())
         except:
-            self.extraconf = {}
+            try:
+                with open("cache/mdict/config.json", "r", encoding="utf8") as ff:
+                    self.extraconf = json.loads(ff.read())
+            except:
+                self.extraconf = {}
         self.sql = None
         paths = self.config["path"]
 
@@ -2346,7 +2350,7 @@ class mdict(cishubase):
                 self.init_once_mdx(f)
 
         try:
-            with open("cache/mdict/config.json", "w", encoding="utf8") as ff:
+            with open("userconfig/mdict_config.json", "w", encoding="utf8") as ff:
                 ff.write(json.dumps(self.extraconf, ensure_ascii=False, indent=4))
         except:
             pass
