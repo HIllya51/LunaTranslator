@@ -303,7 +303,8 @@ def autoparsedynamicpath():
             print_exc()
 
 
-autoparsedynamicpath()
+if thisapppath != lastapppath:
+    autoparsedynamicpath()
 
 
 def _TRL(kk):
