@@ -2550,32 +2550,91 @@ class mdict(cishubase):
 
     def tryparsecss(self, html_content, url, file_content, divid):
         try:
-            import sass
+            file_content = file_content.decode("utf8")
+        except:
+            return html_content
+        try:
+            from tinycss2 import parse_stylesheet, serialize
+            from tinycss2.ast import (
+                HashToken,
+                WhitespaceToken,
+                AtRule,
+                QualifiedRule,
+                ParseError,
+            )
 
-            css = file_content.decode("utf8")
-            css = sass.compile(string=(f"#{divid} {{ {css} }}"))
-            csss = css.split("\n")
-            i = 0
-            while i < len(csss):
-                css = csss[i]
-                if css.endswith(" body {"):
-                    csss[i] = css[: -len(" body {")] + "{"
-                elif css == "@font-face {":
-                    csss[i + 1] = ""
-                    for j in range(i + 2, len(csss)):
-                        if csss[j].endswith("} }"):
-                            i = j
-                            csss[j] = csss[j][:-1]
-                            break
-                i += 1
-            css = "\n".join(csss)
-            file_content = css.encode("utf8")
-            # print(css)
+            rules = parse_stylesheet(file_content, True, True)
+
+            def parseaqr(rule: QualifiedRule):
+                start = True
+                idx = 0
+                skip = False
+                for token in rule.prelude.copy():
+                    if skip and token.type == "whitespace":
+                        skip = False
+                        idx += 1
+                        continue
+                    if start:
+                        if token.type == "ident" and token.value == "body":
+                            # body
+                            rule.prelude.insert(idx + 1, HashToken(0, 0, divid, True))
+                            rule.prelude.insert(idx + 1, WhitespaceToken(0, 0, " "))
+                            idx += 2
+                        else:
+                            # .id tag
+                            # tag
+                            # #class tag
+                            rule.prelude.insert(idx, WhitespaceToken(0, 0, " "))
+                            rule.prelude.insert(idx, HashToken(0, 0, divid, True))
+                            idx += 2
+                        start = False
+                    elif token.type == "literal" and token.value == ",":
+                        # 有多个限定符
+                        start = True
+                        skip = True
+                    idx += 1
+
+            class shitrule(AtRule):
+                def __init__(self, __):
+                    super().__init__(0, 0, " ", " ", [], [])
+                    self.__ = __
+
+                def _serialize_to(self, _):
+                    return _(self.__)
+
+            def parserules(rules):
+                # print(stylesheet)
+                for i, rule in enumerate(rules.copy()):
+                    if isinstance(rule, AtRule):
+                        if not rule.content:
+                            # @charset "UTF-8";
+                            continue
+                        internal = "".join([_.serialize() for _ in rule.content])
+                        internal = parse_stylesheet(internal, True, True)
+                        if len(internal) and isinstance(internal[0], ParseError):
+                            # @font-face
+                            continue
+                        # @....{ .klas{} }
+                        internal = parserules(internal)
+                        ser = "@"
+                        ser += rule.at_keyword
+                        ser += "{"
+                        for _ in internal:
+                            ser += _.serialize()
+                        ser += "}"
+                        # rule.serialize=functools.partial(__,ser)
+                        rules[i] = shitrule(ser)
+                    elif isinstance(rule, QualifiedRule):
+                        parseaqr(rules[i])
+                return rules
+
+            file_content = serialize(parserules(rules))
+            # print(file_content)
         except:
             from traceback import print_exc
 
             print_exc()
-        base64_content = base64.b64encode(file_content).decode("utf-8")
+        base64_content = base64.b64encode(file_content.encode("utf8")).decode("utf-8")
         html_content = html_content.replace(
             url, f"data:text/css;base64,{base64_content}"
         )
