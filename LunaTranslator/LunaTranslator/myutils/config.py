@@ -242,11 +242,12 @@ def _TR(k):
             return languageshow[k]
 
 
-lastapppath = os.path.normpath(globalconfig["lastapppath"])
+lastapppath = globalconfig["lastapppath"]
 thisapppath = os.path.normpath(os.getcwd())
 
 if lastapppath is None:
     lastapppath = thisapppath
+lastapppath = os.path.normpath(lastapppath)
 
 
 def dynamicrelativepath(abspath):
