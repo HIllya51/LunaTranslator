@@ -961,7 +961,7 @@
             ]
         },
         {
-            "name": "超分",
+            "name": "其他",
             "sources": [
                 {
                     "name": "Magpie",
@@ -970,6 +970,14 @@
                 {
                     "name": "Magpie9_win7适配版",
                     "link": "https://github.com/HIllya51/Magpie9_win7/releases"
+                },
+                {
+                    "name": "QWebEngine x86",
+                    "link": "https://github.com/HIllya51/RESOURCES/releases/download/softwares/QWebEngine_x86.zip"
+                },
+                {
+                    "name": "QWebEngine x64",
+                    "link": "https://github.com/HIllya51/RESOURCES/releases/download/softwares/QWebEngine_x64.zip"
                 }
             ]
         }

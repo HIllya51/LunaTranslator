@@ -9,7 +9,7 @@ from gui.usefulwidget import (
 )
 from myutils.config import globalconfig, _TR, static_data
 from myutils.wrapper import threader
-import platform, winsharedutils, sys
+import platform, winsharedutils, sys, os
 from myutils.utils import makehtml, getimageformatlist
 from functools import partial
 from myutils.githubupdate import updatemethod, getvesionmethod
@@ -111,6 +111,9 @@ def resourcegrid(self):
 
 
 def setTab_aboutlazy(self):
+    webviews = ["IEFrame", "WebView2"]
+    if os.path.exists("./LunaTranslator/runtime/PyQt5/Qt5/bin/Qt5WebEngineCore.dll"):
+        webviews.append("QWebEngine")
     grid2 = [
         [
             ("自动下载更新(需要连接github)", 5),
@@ -131,7 +134,7 @@ def setTab_aboutlazy(self):
         [
             (
                 getsimplecombobox(
-                    ["IEFrame", "WebView2"],  # , "QWebEngine"]
+                    webviews,
                     globalconfig,
                     "usewebview",
                 ),
