@@ -14,7 +14,7 @@ from myutils.subproc import endsubprocs
 from myutils.ocrutil import ocr_run, imageCut
 from myutils.utils import loadpostsettingwindowmethod, getimageformat, str2rgba
 from myutils.hwnd import mouseselectwindow, grabwindow, getExeIcon
-from gui.dialog_savedgame import dialog_savedgame_new
+from gui.dialog_savedgame import dialog_savedgame_new, dialog_savedgame_lagacy
 from gui.dialog_memory import dialog_memory
 from gui.textbrowser import Textbrowser
 from gui.rangeselect import rangeselct_function
@@ -405,6 +405,7 @@ class QUnFrameWindow(resizableframeless):
             ("backtransbutton", lambda: self.changemousetransparentstate(1)),
             ("locktoolsbutton", self.changetoolslockstate),
             ("gamepad_new", lambda: dialog_savedgame_new(gobject.baseobject.settin_ui)),
+            ("gamepad_lagacy", lambda: dialog_savedgame_lagacy(gobject.baseobject.settin_ui)),
             (
                 "selectgame",
                 lambda: gobject.baseobject.createattachprocess(),

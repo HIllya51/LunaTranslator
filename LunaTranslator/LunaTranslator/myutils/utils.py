@@ -8,7 +8,6 @@ import ctypes, importlib
 import time
 import ctypes.wintypes
 import time
-from collections import OrderedDict
 from qtsymbols import *
 from traceback import print_exc
 from myutils.config import (

@@ -76,7 +76,7 @@ class MAINUI:
         self.AttachProcessDialog = None
         self.edittextui = None
         self.edittextui_cached = None
-        self.edittextui_sync=True
+        self.edittextui_sync = True
 
     @property
     def textsource(self):
@@ -608,32 +608,54 @@ class MAINUI:
         return aclass(type_)
 
     def maybesetimage(self, pair):
-
         if self.showocrimage:
-            self.showocrimage.setimage.emit(pair)
+            try:
+                self.showocrimage.setimage.emit(pair)
+            except:
+                print_exc()
         self.showocrimage_cached = pair
 
     def createshowocrimage(self):
-        self.showocrimage = showocrimage(self.settin_ui, self.showocrimage_cached)
-        if self.showocrimage:
-            self.showocrimage.show()
+        try:
+            self.showocrimage = showocrimage(self.settin_ui, self.showocrimage_cached)
+            if self.showocrimage:
+                self.showocrimage.show()
+        except:
+            print_exc()
 
     def maybesetedittext(self, text):
         if self.edittextui:
-            self.edittextui.getnewsentencesignal.emit(text)
+            try:
+                self.edittextui.getnewsentencesignal.emit(text)
+            except:
+                print_exc()
         self.edittextui_cached = text
 
     def createedittextui(self):
-        self.edittextui = edittext(self.settin_ui, self.edittextui_cached)
-        if self.edittextui:
-            self.edittextui.show()
+        try:
+            self.edittextui = edittext(self.settin_ui, self.edittextui_cached)
+            if self.edittextui:
+                self.edittextui.show()
+        except:
+            print_exc()
+
+    def safecloseattachprocess(self):
+
+        if self.AttachProcessDialog:
+            try:
+                self.AttachProcessDialog.close()
+            except:
+                pass
 
     def createattachprocess(self):
-        self.AttachProcessDialog = AttachProcessDialog(
-            self.settin_ui, self.selectprocess, self.hookselectdialog
-        )
-        if self.AttachProcessDialog:
-            self.AttachProcessDialog.show()
+        try:
+            self.AttachProcessDialog = AttachProcessDialog(
+                self.settin_ui, self.selectprocess, self.hookselectdialog
+            )
+            if self.AttachProcessDialog:
+                self.AttachProcessDialog.show()
+        except:
+            print_exc()
 
     def onwindowloadautohook(self):
         textsourceusing = globalconfig["sourcestatus2"]["texthook"]["use"]

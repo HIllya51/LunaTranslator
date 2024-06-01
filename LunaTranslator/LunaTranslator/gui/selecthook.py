@@ -576,7 +576,7 @@ class hookselect(closeashidewindow):
 
     def setupUi(self):
         self.widget = QWidget()
-        
+
         self.setCentralWidget(self.widget)
         self.setWindowIcon(qtawesome.icon("fa.gear"))
         self.hboxlayout = QHBoxLayout()
@@ -689,6 +689,7 @@ class hookselect(closeashidewindow):
         self.tabwidget.addTab(self.sysOutput, _TR("系统"))
 
         self.changeprocessclear()
+
     def showmenu(self, p: QPoint):
         r = self.tttable.currentIndex().row()
         if r < 0:
@@ -889,8 +890,7 @@ class hookselect(closeashidewindow):
             print_exc()
 
     def showEvent(self, e):
-        if gobject.baseobject.AttachProcessDialog:
-            gobject.baseobject.AttachProcessDialog.close()
+        gobject.baseobject.safecloseattachprocess()
         try:
             for i in range(len(self.save)):
                 if self.save[i] in gobject.baseobject.textsource.selectedhook:
@@ -899,12 +899,9 @@ class hookselect(closeashidewindow):
         except:
             print_exc()
 
-
     def sysmessage(self, sentence):
 
-        textbrowappendandmovetoend(
-            self.sysOutput, get_time_stamp() + " " + sentence
-        )
+        textbrowappendandmovetoend(self.sysOutput, get_time_stamp() + " " + sentence)
 
     def getnewsentence(self, sentence):
         if self.at1 == 2:

@@ -263,6 +263,7 @@
             "backtransbutton",
             "locktoolsbutton",
             "gamepad_new",
+            "gamepad_lagacy",
             "selectgame",
             "selecttext",
             "selectocrrange",
@@ -459,6 +460,12 @@
             "gamepad_new": {
                 "use": true,
                 "tip": "游戏管理",
+                "icon": "fa.gamepad",
+                "align": 0
+            },
+            "gamepad_lagacy": {
+                "use": false,
+                "tip": "游戏管理_lagacy",
                 "icon": "fa.gamepad",
                 "align": 0
             },
