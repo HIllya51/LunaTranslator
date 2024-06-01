@@ -2,6 +2,7 @@ from qtsymbols import *
 import qtawesome, functools, winsharedutils
 from gui.usefulwidget import closeashidewindow
 from myutils.config import globalconfig, _TR
+from myutils.utils import get_time_stamp
 
 
 class transhist(closeashidewindow):
@@ -17,6 +18,7 @@ class transhist(closeashidewindow):
         self.getnewtranssignal.connect(self.getnewtrans)
         self.hiderawflag = False
         self.hideapiflag = False
+        self.hidetime = True
 
         self.setWindowTitle(_TR("历史翻译"))
 
@@ -45,6 +47,7 @@ class transhist(closeashidewindow):
         copy = QAction(_TR("复制到剪贴板"))
         hideshowraw = QAction(_TR("显示原文" if self.hiderawflag else "不显示原文"))
         hideshowapi = QAction(_TR("显示api" if self.hideapiflag else "不显示api"))
+        hidetime = QAction(_TR("显示时间" if self.hidetime else "不显示时间"))
         menu.addAction(qingkong)
         menu.addAction(baocun)
         if len(self.textOutput.textCursor().selectedText()):
@@ -52,6 +55,7 @@ class transhist(closeashidewindow):
         if flag == 1:
             menu.addAction(hideshowraw)
             menu.addAction(hideshowapi)
+            menu.addAction(hidetime)
 
         action = menu.exec(QCursor.pos())
         if action == qingkong:
@@ -67,20 +71,27 @@ class transhist(closeashidewindow):
         elif action == hideshowraw:
 
             self.hiderawflag = not self.hiderawflag
+        elif action == hidetime:
+
+            self.hidetime = not self.hidetime
         elif action == hideshowapi:
 
             self.hideapiflag = not self.hideapiflag
 
     def getnewsentence(self, sentence):
 
-        sentence = "\n" + sentence
         if self.hiderawflag:
             sentence = ""
+        else:
+            if not self.hidetime:
+                sentence = get_time_stamp() + " " + sentence
+            sentence = "\n" + sentence
         self.textOutput.appendPlainText(sentence)
 
     def getnewtrans(self, api, sentence):
-        if self.hideapiflag:
-            res = sentence
-        else:
-            res = api + "  " + sentence
-        self.textOutput.appendPlainText(res)
+        if not self.hideapiflag:
+            sentence = api + " " + sentence
+        if not self.hidetime:
+            sentence = get_time_stamp() + " " + sentence
+
+        self.textOutput.appendPlainText(sentence)

@@ -130,7 +130,7 @@ class QUnFrameWindow(resizableframeless):
         else:
             self.showline(clear=clear)
 
-        gobject.baseobject.edittextui.getnewsentencesignal.emit(text)
+        gobject.baseobject.maybesetedittext(text)
 
     def showstatus(self, res, color, clear, origin):
         self.showline(clear=clear, text=res, color=color, origin=origin)
@@ -234,6 +234,7 @@ class QUnFrameWindow(resizableframeless):
             )
 
         if hira:
+
             @threader
             def callback(word, append):
                 if globalconfig["usewordorigin"] == False:
@@ -265,6 +266,7 @@ class QUnFrameWindow(resizableframeless):
             self.lastrefreshtime = time.time()
             self.autohidestart = True
 
+    @threader
     def autohidedelaythread(self):
         while True:
             if globalconfig["autodisappear"] and self.autohidestart:
@@ -295,7 +297,6 @@ class QUnFrameWindow(resizableframeless):
             self.showhideui()
 
     def refreshtoolicon(self):
-
         iconstate = {
             "fullscreen": self.isletgamefullscreened,
             "muteprocess": self.processismuteed,
@@ -383,7 +384,7 @@ class QUnFrameWindow(resizableframeless):
                 "copy",
                 lambda: winsharedutils.clipboard_set(gobject.baseobject.currenttext),
             ),
-            ("edit", lambda: gobject.baseobject.edittextui.showsignal.emit()),
+            ("edit", gobject.baseobject.createedittextui),
             ("edittrans", lambda: edittrans(gobject.baseobject.settin_ui)),
             ("showraw", self.changeshowhideraw),
             ("history", lambda: gobject.baseobject.transhis.showsignal.emit()),
@@ -406,7 +407,7 @@ class QUnFrameWindow(resizableframeless):
             ("gamepad_new", lambda: dialog_savedgame_new(gobject.baseobject.settin_ui)),
             (
                 "selectgame",
-                lambda: gobject.baseobject.AttachProcessDialog.showsignal.emit(),
+                lambda: gobject.baseobject.createattachprocess(),
             ),
             (
                 "selecttext",
@@ -492,19 +493,13 @@ class QUnFrameWindow(resizableframeless):
             self.show()
         windows.SetForegroundWindow(int(self.winId()))
 
-    def showEvent(self, a0) -> None:
-        if self.isfirstshow:
-            self.showline(clear=True, text=_TR("欢迎使用"), origin=False)
+    def aftershowdosomething(self):
+        self.showline(clear=True, text=_TR("欢迎使用"), origin=False)
 
-            self.tray.activated.connect(self.leftclicktray)
-
-            self.tray.show()
-            windows.SetForegroundWindow(int(self.winId()))
-            self.isfirstshow = False
-            self.setontopthread()
-            self.refreshtoolicon()
-
-        return super().showEvent(a0)
+        windows.SetForegroundWindow(int(self.winId()))
+        self.refreshtoolicon()
+        self.setontopthread()
+        self.autohidedelaythread()
 
     def canceltop(self):
         windows.SetWindowPos(
@@ -554,26 +549,24 @@ class QUnFrameWindow(resizableframeless):
             windows.SWP_NOACTIVATE | windows.SWP_NOSIZE | windows.SWP_NOMOVE,
         )
 
+    @threader
     def setontopthread(self):
-        def _():
-            self.settop()
-            while globalconfig["keepontop"]:
+        self.settop()
+        while globalconfig["keepontop"]:
 
-                try:
-                    hwnd = windows.GetForegroundWindow()
-                    pid = windows.GetWindowThreadProcessId(hwnd)
-                    if pid == os.getpid():
-                        pass
-                    elif globalconfig["focusnotop"] and self.thistimenotsetop:
-                        pass
-                    else:
-                        self.settop()
-                except:
-                    print_exc()
-                time.sleep(0.5)
-            self.canceltop()
-
-        threading.Thread(target=_).start()
+            try:
+                hwnd = windows.GetForegroundWindow()
+                pid = windows.GetWindowThreadProcessId(hwnd)
+                if pid == os.getpid():
+                    pass
+                elif globalconfig["focusnotop"] and self.thistimenotsetop:
+                    pass
+                else:
+                    self.settop()
+            except:
+                print_exc()
+            time.sleep(0.5)
+        self.canceltop()
 
     def seteffect(self):
         if globalconfig["WindowEffect"] == 0:
@@ -583,33 +576,31 @@ class QUnFrameWindow(resizableframeless):
         elif globalconfig["WindowEffect"] == 2:
             winsharedutils.setAeroEffect(int(self.winId()))
 
-    def __init__(self):
-
-        super(QUnFrameWindow, self).__init__(
-            None,
-            flags=Qt.WindowType.FramelessWindowHint
-            | Qt.WindowType.WindowMinimizeButtonHint,
-            dic=globalconfig,
-            key="transuigeo",
-        )  # 设置为顶级窗口，无边框
-        icon = getExeIcon(sys.argv[0])  #'./LunaTranslator.exe')# QIcon()
-        # icon.addPixmap(QPixmap('./files/luna.png'), QIcon.Normal, QIcon.On)
-        self.setWindowIcon(icon)
-        self.tray = QSystemTrayIcon()
-        self.tray.setIcon(icon)
-        self.isfirstshow = True
-        self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
-        self.setAttribute(Qt.WidgetAttribute.WA_ShowWithoutActivating, True)
-        self.setWindowTitle("LunaTranslator")
-        self.hidesignal.connect(self.hide_)
+    def initvalues(self):
         self.lastrefreshtime = time.time()
         self.autohidestart = False
-        threading.Thread(target=self.autohidedelaythread).start()
-        self.muteprocessignal.connect(self.muteprocessfuntion)
-        self.toolbarhidedelaysignal.connect(self.toolbarhidedelay)
+        self.enter_sig = 0
+        self.fullscreenmanager_busy = False
+        self.isletgamefullscreened = False
+        self.fullscreenmanager = None
+        self.fullscreenmethod = None
+        self._isTracking = False
+        self.isontop = True
+        self.showhidestate = False
+        self.processismuteed = False
+        self.mousetransparent = False
+        self.thistimenotsetop = False
+        self.backtransparent = False
+        self.isbindedwindow = False
+        self.buttons = {}
+        self.showbuttons = []
+        self.stylebuttons = {}
+        self.saveiterclasspointer = {}
+
+    def initsignals(self):
+        self.hidesignal.connect(self.hide_)
 
         self.ocr_once_signal.connect(self.ocr_once_function)
-        self.enter_sig = 0
         self.entersignal.connect(self.enterfunction)
         self.displaystatus.connect(self.showstatus)
         self.showhideuisignal.connect(self.showhideui)
@@ -628,28 +619,32 @@ class QUnFrameWindow(resizableframeless):
         self.quitf_signal.connect(self.close)
         self.fullsgame_signal.connect(self._fullsgame)
 
-        self.fullscreenmanager_busy = False
-        self.isletgamefullscreened = False
-        self.fullscreenmanager = None
-        self.fullscreenmethod = None
-        self._isTracking = False
-        self.isontop = True
+        self.muteprocessignal.connect(self.muteprocessfuntion)
+        self.toolbarhidedelaysignal.connect(self.toolbarhidedelay)
+
+    def __init__(self):
+
+        super(QUnFrameWindow, self).__init__(
+            None,
+            flags=Qt.WindowType.FramelessWindowHint
+            | Qt.WindowType.WindowMinimizeButtonHint,
+            dic=globalconfig,
+            key="transuigeo",
+        )  # 设置为顶级窗口，无边框
+        icon = getExeIcon(sys.argv[0])  #'./LunaTranslator.exe')# QIcon()
+        # icon.addPixmap(QPixmap('./files/luna.png'), QIcon.Normal, QIcon.On)
+        self.setWindowIcon(icon)
+
+        self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
+        self.setAttribute(Qt.WidgetAttribute.WA_ShowWithoutActivating, True)
+        self.setWindowTitle("LunaTranslator")
+        self.initvalues()
+        self.initsignals()
         self._TitleLabel = QLabel(self)
-        self._TitleLabel.move(0, 0)
-        self.showhidestate = False
-        self.processismuteed = False
-        self.mousetransparent = False
-        self.backtransparent = False
-        self.isbindedwindow = False
-        self.buttons = {}
-        self.showbuttons = []
-        self.stylebuttons = {}
-        self.saveiterclasspointer = {}
         self.addbuttons()
         self.translate_text = Textbrowser(self)
 
         self.translate_text.contentsChanged.connect(self.textAreaChanged)
-        self.thistimenotsetop = False
 
     def createborderradiusstring(self, r, merge, top=False):
         if merge:
@@ -868,7 +863,10 @@ class QUnFrameWindow(resizableframeless):
         self.refreshtoolicon()
 
     def changeshowhideraw(self):
-        gobject.baseobject.settin_ui.show_original_switch.click()
+        try:
+            gobject.baseobject.settin_ui.show_original_switch.click()
+        except:
+            pass
 
     def changeTranslateMode(self):
         globalconfig["autorun"] = not globalconfig["autorun"]
@@ -1061,8 +1059,6 @@ class QUnFrameWindow(resizableframeless):
         if self.fullscreenmanager:
             self.fullscreenmanager.endX()
         gobject.baseobject.isrunning = False
-        self.tray.hide()
-        self.tray = None
         self.hide()
 
         if gobject.baseobject.textsource:
@@ -1073,4 +1069,5 @@ class QUnFrameWindow(resizableframeless):
 
         endsubprocs()
         self.tryremoveuseless()
+        gobject.baseobject.destroytray()
         os._exit(0)

@@ -1,18 +1,24 @@
 from qtsymbols import *
-import qtawesome, gobject
-import threading, windows, winsharedutils
+import qtawesome
+import functools
 from myutils.config import globalconfig, _TR
 from myutils.utils import wavmp3player
-from gui.settingpage1 import setTabOne, setTabOne_direct
-from gui.settingpage2 import setTabTwo, settab2d
-from gui.settingpage_xianshishezhi import setTabThree, setTabThree_direct
-from gui.settingpage_tts import setTab5, setTab5_direct
+from gui.settingpage1 import setTabOne_lazy
+from gui.settingpage2 import setTabTwo_lazy, checkconnected
+from gui.settingpage_xianshishezhi import setTabThree_lazy
+from gui.gui_xianshi_text import maybehavefontsizespin
+from gui.settingpage_tts import setTab5, showvoicelist
 from gui.settingpage_cishu import setTabcishu
-from gui.settingpage_quick import setTab_quick, setTab_quick_direct
-from gui.setting_lang import setTablang, setTablangd
+from gui.settingpage_quick import setTab_quick, registrhotkeys
+from gui.setting_lang import setTablang
 from gui.setting_proxy import setTab_proxy
-from gui.settingpage7 import setTab7, settab7direct
-from gui.settingpage_about import setTab_about, setTab_about_dicrect
+from gui.settingpage7 import setTab7_lazy, delaysetcomparetext
+from gui.settingpage_about import (
+    setTab_aboutlazy,
+    versionlabelmaybesettext,
+    updateprogress,
+    getversion,
+)
 from gui.usefulwidget import closeashidewindow, makesubtab_lazy
 
 
@@ -62,63 +68,73 @@ class Settin(closeashidewindow):
     versiontextsignal = pyqtSignal(str)
     progresssignal = pyqtSignal(str, int)
     fontbigsmallsignal = pyqtSignal(int)
-    clicksourcesignal = pyqtSignal(str)
     opensolvetextsig = pyqtSignal()
     showandsolvesig = pyqtSignal(str)
-    setstylesheetsignal = pyqtSignal()
 
     def __init__(self, parent):
         super(Settin, self).__init__(parent, globalconfig, "setting_geo_2")
+        self.setWindowIcon(qtawesome.icon("fa.gear"))
         self.mp3player = wavmp3player()
         self.mp3playsignal.connect(self.mp3player.mp3playfunction)
         self.opensolvetextsig.connect(self.opensolvetextfun)
+        self.showandsolvesig.connect(functools.partial(delaysetcomparetext, self))
+        self.fontbigsmallsignal.connect(functools.partial(maybehavefontsizespin, self))
+        self.voicelistsignal.connect(functools.partial(showvoicelist, self))
+        self.versiontextsignal.connect(
+            functools.partial(versionlabelmaybesettext, self)
+        )
+        self.progresssignal.connect(lambda text, val: updateprogress(self, text, val))
+        self.isfirst = True
+        getversion(self)
+        checkconnected(self)
+        registrhotkeys(self)
+
+    def showEvent(self, e: QShowEvent):
+        if self.isfirst:
+            self.isfirst = False
+            self.firstshow()
+        super().showEvent(e)
+
+    def firstshow(self):
 
         self.setMinimumSize(100, 100)
-        self.list_width = 100
-        self.window_height = 500
-        self.savelastrect = None
-
-        self.hooks = []
-
-        self.usevoice = 0
-        setTabOne_direct(self)
-        settab2d(self)
-        settab7direct(self)
-        setTabThree_direct(self)
-        setTab5_direct(self)
-        setTab_quick_direct(self)
-        setTablangd(self)
-        setTab_about_dicrect(self)
-
-        self.setstylesheetsignal.connect(gobject.baseobject.setcommonstylesheet)
-        threading.Thread(target=self.darklistener).start()
-
         self.setWindowTitle(_TR("设置"))
-        self.setWindowIcon(qtawesome.icon("fa.gear"))
 
-        self.tab_widget = makesubtab_lazy(klass=TabWidget)
+        self.tab_widget, do = makesubtab_lazy(
+            [
+                "文本输入",
+                "翻译设置",
+                "显示设置",
+                "文本处理",
+                "辞书设置",
+                "语音合成",
+                "快捷按键",
+                "语言设置",
+                "代理设置",
+                "其他设置",
+            ],
+            [
+                functools.partial(setTabOne_lazy, self),
+                functools.partial(setTabTwo_lazy, self),
+                functools.partial(setTabThree_lazy, self),
+                functools.partial(setTab7_lazy, self),
+                functools.partial(setTabcishu, self),
+                functools.partial(setTab5, self),
+                functools.partial(setTab_quick, self),
+                functools.partial(setTablang, self),
+                functools.partial(setTab_proxy, self),
+                functools.partial(setTab_aboutlazy, self),
+            ],
+            klass=TabWidget,
+            delay=True,
+        )
         self.setCentralWidget(self.tab_widget)
-
+        do()
         self.tab_widget.setStyleSheet(
             """QListWidget { 
                 font:16pt  ;  }
             """
         )
-        # self.tab_widget.setTabPosition(QTabWidget.West)
-        setTabOne(self)
-        setTabTwo(self)
-
-        setTabThree(self)
-        setTab7(self)
-        setTabcishu(self)
-        setTab5(self)
-
-        setTab_quick(self)
-
-        setTablang(self)
-        setTab_proxy(self)
-        setTab_about(self)
-
         width = 0
         fn = QFont()
         fn.setPixelSize(16)
@@ -128,17 +144,7 @@ class Settin(closeashidewindow):
             width = max(fm.size(0, title).width(), width)
         width += 100
         self.tab_widget.list_widget.setFixedWidth(width)
-        self.list_width = width
 
     def opensolvetextfun(self):
         self.show()
         self.tab_widget.setCurrentIndex(3)
-
-    def darklistener(self):
-        sema = winsharedutils.startdarklistener()
-        while True:
-            # 会触发两次
-            windows.WaitForSingleObject(sema, windows.INFINITE)
-            if globalconfig["darklight"] == 2:
-                self.setstylesheetsignal.emit()
-            windows.WaitForSingleObject(sema, windows.INFINITE)

@@ -620,7 +620,6 @@
     "过长惩罚": "Excessive punishment",
     "重复惩罚": "Repetitive punishment",
     "OCR语言包": "OCR Language Pack",
-    "选择翻译源": "Select Translation Source",
     "最长显示字数": "Maximum number of displayed words",
     "显示日语注音": "Display Japanese Pinyin",
     "注音颜色": "Pinyin color",
@@ -804,5 +803,9 @@
     "窗口特效": "Window effects",
     "实时编辑": "Real time editing",
     "翻译记录": "Translation records",
-    "遍历目录中的全部词典文件": "Traverse all dictionary files in the directory"
+    "遍历目录中的全部词典文件": "Traverse all dictionary files in the directory",
+    "网络请求": "Network request",
+    "网页显示": "Web page display",
+    "显示时间": "Display time",
+    "不显示时间": "Do not display time"
 }

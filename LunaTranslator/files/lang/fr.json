@@ -620,7 +620,6 @@
     "过长惩罚": "Pénalité trop longue",
     "重复惩罚": "Punition répétée",
     "OCR语言包": "Pack de langue ocr",
-    "选择翻译源": "Choisir une source de traduction",
     "最长显示字数": "Nombre maximal de mots affichés",
     "显示日语注音": "Afficher les notes en japonais",
     "注音颜色": "Couleur d'accent",
@@ -804,5 +803,9 @@
     "窗口特效": "Effets spéciaux de fenêtre",
     "实时编辑": "Edit en temps réel",
     "翻译记录": "Record de traduction",
-    "遍历目录中的全部词典文件": "Parcourir tous les fichiers de dictionnaire dans le Répertoire"
+    "遍历目录中的全部词典文件": "Parcourir tous les fichiers de dictionnaire dans le Répertoire",
+    "网络请求": "Demande de réseau",
+    "网页显示": "Affichage de la page Web",
+    "显示时间": "Afficher l'heure",
+    "不显示时间": "Ne pas afficher l'heure"
 }

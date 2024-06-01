@@ -1,5 +1,5 @@
 import time
-import os, threading
+import os, threading, sys
 from qtsymbols import *
 from traceback import print_exc
 from myutils.config import (
@@ -22,16 +22,16 @@ from myutils.utils import (
 )
 from myutils.wrapper import threader
 from gui.showword import searchwordW
-from myutils.hwnd import getpidexe, ListProcess
+from myutils.hwnd import getpidexe, ListProcess, getExeIcon
 from textsource.copyboard import copyboard
 from textsource.texthook import texthook
 from textsource.ocrtext import ocrtext
-import gui.selecthook
-import gui.translatorUI
+from gui.selecthook import hookselect
+from gui.translatorUI import QUnFrameWindow
 from gui.languageset import languageset
 import zhconv, functools
-import gui.transhist
-import gui.edittext
+from gui.transhist import transhist
+from gui.edittext import edittext
 import importlib, qtawesome
 from functools import partial
 from gui.settin import Settin
@@ -44,6 +44,14 @@ from winsharedutils import pid_running, isDark
 from myutils.post import POSTSOLVE
 
 
+class commonstylebase(QWidget):
+    setstylesheetsignal = pyqtSignal()
+
+    def __init__(self, parent) -> None:
+        super().__init__(parent)
+        self.setstylesheetsignal.connect(gobject.baseobject.setcommonstylesheet)
+
+
 class MAINUI:
     def __init__(self) -> None:
         super().__init__()
@@ -54,6 +62,7 @@ class MAINUI:
         self.textsource_p = None
         self.currentmd5 = "0"
         self.currenttext = ""
+        self.currenttranslate = ""
         self.currentread = ""
         self.refresh_on_get_trans_signature = 0
         self.currentsignature = None
@@ -62,6 +71,12 @@ class MAINUI:
         self.outputers = {}
         self.processmethods = []
         self.zhanweifu = 0
+        self.showocrimage = None
+        self.showocrimage_cached = None
+        self.AttachProcessDialog = None
+        self.edittextui = None
+        self.edittextui_cached = None
+        self.edittextui_sync=True
 
     @property
     def textsource(self):
@@ -366,7 +381,7 @@ class MAINUI:
                 self.textsource.sqlqueueput((contentraw, classname, res))
             except:
                 pass
-
+            self.currenttranslate = res
             if (
                 globalconfig["embedded"]["as_fast_as_posible"]
                 or classname == globalconfig["embedded"]["translator_2"]
@@ -456,12 +471,15 @@ class MAINUI:
     def starttextsource(self, use=None, checked=True):
         self.translation_ui.showhidestate = False
         self.translation_ui.refreshtooliconsignal.emit()
-        self.settin_ui.selectbutton.setEnabled(
-            globalconfig["sourcestatus2"]["texthook"]["use"]
-        )
-        self.settin_ui.selecthookbutton.setEnabled(
-            globalconfig["sourcestatus2"]["texthook"]["use"]
-        )
+        try:
+            self.settin_ui.selectbutton.setEnabled(
+                globalconfig["sourcestatus2"]["texthook"]["use"]
+            )
+            self.settin_ui.selecthookbutton.setEnabled(
+                globalconfig["sourcestatus2"]["texthook"]["use"]
+            )
+        except:
+            pass
         self.textsource = None
         if checked:
             classes = {"ocr": ocrtext, "copy": copyboard, "texthook": None}
@@ -589,11 +607,39 @@ class MAINUI:
 
         return aclass(type_)
 
+    def maybesetimage(self, pair):
+
+        if self.showocrimage:
+            self.showocrimage.setimage.emit(pair)
+        self.showocrimage_cached = pair
+
+    def createshowocrimage(self):
+        self.showocrimage = showocrimage(self.settin_ui, self.showocrimage_cached)
+        if self.showocrimage:
+            self.showocrimage.show()
+
+    def maybesetedittext(self, text):
+        if self.edittextui:
+            self.edittextui.getnewsentencesignal.emit(text)
+        self.edittextui_cached = text
+
+    def createedittextui(self):
+        self.edittextui = edittext(self.settin_ui, self.edittextui_cached)
+        if self.edittextui:
+            self.edittextui.show()
+
+    def createattachprocess(self):
+        self.AttachProcessDialog = AttachProcessDialog(
+            self.settin_ui, self.selectprocess, self.hookselectdialog
+        )
+        if self.AttachProcessDialog:
+            self.AttachProcessDialog.show()
+
     def onwindowloadautohook(self):
         textsourceusing = globalconfig["sourcestatus2"]["texthook"]["use"]
         if not (globalconfig["autostarthook"] and textsourceusing):
             return
-        elif self.AttachProcessDialog.isVisible():
+        elif self.AttachProcessDialog and self.AttachProcessDialog.isVisible():
             return
         else:
             try:
@@ -631,9 +677,14 @@ class MAINUI:
                                     "onloadautoswitchsrclang"
                                 ]
                                 if onloadautoswitchsrclang > 0:
-                                    self.settin_ui.srclangswitcher.setCurrentIndex(
-                                        onloadautoswitchsrclang - 1
-                                    )
+                                    try:
+                                        self.settin_ui.srclangswitcher.setCurrentIndex(
+                                            onloadautoswitchsrclang - 1
+                                        )
+                                    except:
+                                        globalconfig["srclang3"] = (
+                                            onloadautoswitchsrclang - 1
+                                        )
                                 break
 
                 else:
@@ -727,32 +778,6 @@ class MAINUI:
             int(widget.winId()), dark, globalconfig["WindowBackdrop"]
         )
 
-    def aa(self):
-        class WindowEventFilter(QObject):
-            def eventFilter(_, obj, event):
-                if event.type() == QEvent.Type.WinIdChange:
-
-                    hwnd = obj.winId()
-                    if hwnd:  # window create/destroy,when destroy winId is None
-                        if self.currentisdark is not None:
-                            self.setdarktheme(obj, self.currentisdark)
-                        windows.SetProp(
-                            int(obj.winId()),
-                            "Magpie.WindowType.ToolWindow",
-                            windows.HANDLE(1),
-                        )
-                        self.setshowintab_checked(obj)
-                return False
-
-        self.currentisdark = None
-        self.__filter = WindowEventFilter()  # keep ref
-        QApplication.instance().installEventFilter(self.__filter)
-
-        self.translation_ui = gui.translatorUI.QUnFrameWindow()
-
-        self.translation_ui.show()
-        self.mainuiloadafter()
-
     def checkgameplayingthread(self):
         self.tracestarted = False
         while True:
@@ -839,7 +864,18 @@ class MAINUI:
         trayMenu.addAction(settingAction)
         trayMenu.addSeparator()
         trayMenu.addAction(quitAction)
-        self.translation_ui.tray.setContextMenu(trayMenu)
+        self.tray = QSystemTrayIcon()
+
+        icon = getExeIcon(sys.argv[0])  #'./LunaTranslator.exe')# QIcon()
+        self.tray.setIcon(icon)
+
+        self.tray.activated.connect(self.translation_ui.leftclicktray)
+        self.tray.show()
+        self.tray.setContextMenu(trayMenu)
+
+    def destroytray(self):
+        self.tray.hide()
+        self.tray = None
 
     def setshowintab(self):
         for widget in QApplication.topLevelWidgets():
@@ -885,28 +921,28 @@ class MAINUI:
             + (globalconfig["settingfonttype"])
             + "' ;  }"
         )
-        self.settin_ui.setStyleSheet(style)
+        self.__commonstylebase.setStyleSheet(style)
+
+    def loadui(self):
+        self.installeventfillter()
+        self.translation_ui = QUnFrameWindow()
+        self.translation_ui.show()
+        self.translation_ui.aftershowdosomething()
+        self.mainuiloadafter()
 
     def mainuiloadafter(self):
-        self.setshowintab()
         self.safeloadprocessmodels()
         self.prepare()
         self.startxiaoxueguan()
         self.starthira()
         self.startoutputer()
-        self.settin_ui = Settin(self.translation_ui)
-        self.inittray()
+        self.__commonstylebase = commonstylebase(self.translation_ui)
         self.setcommonstylesheet()
-        self.transhis = gui.transhist.transhist(self.settin_ui)
+        self.settin_ui = Settin(self.__commonstylebase)
+        self.transhis = transhist(self.settin_ui)
         self.startreader()
-
-        self.edittextui = gui.edittext.edittext(self.settin_ui)
         self.searchwordW = searchwordW(self.settin_ui)
-        self.hookselectdialog = gui.selecthook.hookselect(self.settin_ui)
-        self.showocrimage = showocrimage(self.settin_ui)
-        self.AttachProcessDialog = AttachProcessDialog(
-            self.settin_ui, self.selectprocess, self.hookselectdialog
-        )
+        self.hookselectdialog = hookselect(self.settin_ui)
         self.starttextsource()
         threading.Thread(target=self.autocheckhwndexists).start()
         threading.Thread(target=self.autohookmonitorthread).start()
@@ -914,6 +950,38 @@ class MAINUI:
             target=minmaxmoveobservefunc, args=(self.translation_ui,)
         ).start()
         threading.Thread(target=self.checkgameplayingthread).start()
+        threading.Thread(target=self.darklistener).start()
+        self.inittray()
+
+    def darklistener(self):
+        sema = winsharedutils.startdarklistener()
+        while True:
+            # 会触发两次
+            windows.WaitForSingleObject(sema, windows.INFINITE)
+            if globalconfig["darklight"] == 2:
+                self.__commonstylebase.setstylesheetsignal.emit()
+            windows.WaitForSingleObject(sema, windows.INFINITE)
+
+    def installeventfillter(self):
+        class WindowEventFilter(QObject):
+            def eventFilter(_, obj, event):
+                if event.type() == QEvent.Type.WinIdChange:
+
+                    hwnd = obj.winId()
+                    if hwnd:  # window create/destroy,when destroy winId is None
+                        if self.currentisdark is not None:
+                            self.setdarktheme(obj, self.currentisdark)
+                        windows.SetProp(
+                            int(obj.winId()),
+                            "Magpie.WindowType.ToolWindow",
+                            windows.HANDLE(1),
+                        )
+                        self.setshowintab_checked(obj)
+                return False
+
+        self.currentisdark = None
+        self.__filter = WindowEventFilter()  # keep ref
+        QApplication.instance().installEventFilter(self.__filter)
 
     def checklang(self):
         if globalconfig["language_setted_2.4.5"] == False:

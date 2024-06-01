@@ -220,7 +220,6 @@ class Textbrowser(QLabel):
 
     def __init__(self, parent):
         super().__init__(parent)
-
         self.setMouseTracking(True)
 
         self.atback2 = QLabel(parent)

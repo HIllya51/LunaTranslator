@@ -105,9 +105,12 @@ class ocrtext(basetext):
                 else:
                     image_score = 0
                 if i == 0:
-                    gobject.baseobject.settin_ui.threshold1label.setText(
-                        str(image_score)
-                    )
+                    try:
+                        gobject.baseobject.settin_ui.threshold1label.setText(
+                            str(image_score)
+                        )
+                    except:
+                        pass
                 self.savelastimg[i] = imgr1
 
                 if image_score > globalconfig["ocr_stable_sim"]:
@@ -118,9 +121,12 @@ class ocrtext(basetext):
                     else:
                         image_score2 = 0
                     if i == 0:
-                        gobject.baseobject.settin_ui.threshold2label.setText(
-                            str(image_score2)
-                        )
+                        try:
+                            gobject.baseobject.settin_ui.threshold2label.setText(
+                                str(image_score2)
+                            )
+                        except:
+                            pass
                     if image_score2 > globalconfig["ocr_diff_sim"]:
                         ok = False
                     else:

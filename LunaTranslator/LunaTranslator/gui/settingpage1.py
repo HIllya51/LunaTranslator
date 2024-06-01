@@ -7,16 +7,16 @@ from gui.dialog_savedgame import dialog_savedgame_new
 import gobject
 from gui.inputdialog import regexedit
 from gui.usefulwidget import (
-    getsimplecombobox,
-    getspinbox,
-    makescroll,
-    getcolorbutton,
+    D_getsimplecombobox,
+    D_getspinbox,
+    D_getcolorbutton,
     makegrid,
     tabadd_lazy,
     yuitsu_switch,
-    makevbox,
-    getsimpleswitch,
+    getvboxwidget,
+    D_getsimpleswitch,
     makesubtab_lazy,
+    makescrollgrid,
 )
 from gui.codeacceptdialog import codeacceptdialog
 from myutils.utils import makehtml, getfilemd5
@@ -30,17 +30,40 @@ def gethookgrid(self):
             (makehtml("https://github.com/HIllya51/LunaHook"), 8, "link"),
         ],
         [],
-        [("选择游戏", 5), self.selectbutton, ("", 5)],
-        [("选择文本", 5), self.selecthookbutton],
+        [
+            ("选择游戏", 5),
+            D_getcolorbutton(
+                globalconfig,
+                "",
+                gobject.baseobject.createattachprocess,
+                name="selectbutton",
+                parent=self,
+                icon="fa.gear",
+                constcolor="#FF69B4",
+            ),
+            ("", 5),
+        ],
+        [
+            ("选择文本", 5),
+            D_getcolorbutton(
+                globalconfig,
+                "",
+                lambda: gobject.baseobject.hookselectdialog.showsignal.emit(),
+                name="selecthookbutton",
+                parent=self,
+                icon="fa.gear",
+                constcolor="#FF69B4",
+            ),
+        ],
         [],
         [
             ("检测到游戏时自动开始", 5),
-            (getsimpleswitch(globalconfig, "autostarthook"), 1),
+            (D_getsimpleswitch(globalconfig, "autostarthook"), 1),
         ],
         [
             ("已保存游戏", 5),
             (
-                getcolorbutton(
+                D_getcolorbutton(
                     globalconfig,
                     "",
                     icon="fa.gamepad",
@@ -53,12 +76,12 @@ def gethookgrid(self):
         [],
         [
             ("过滤反复刷新的句子", 5),
-            (getsimpleswitch(globalconfig, "direct_filterrepeat"), 1),
+            (D_getsimpleswitch(globalconfig, "direct_filterrepeat"), 1),
         ],
         [
             ("刷新延迟(ms)", 5),
             (
-                getspinbox(
+                D_getspinbox(
                     0,
                     10000,
                     globalconfig,
@@ -71,7 +94,7 @@ def gethookgrid(self):
         [
             ("最大缓冲区长度", 5),
             (
-                getspinbox(
+                D_getspinbox(
                     0,
                     1000000,
                     globalconfig,
@@ -84,7 +107,7 @@ def gethookgrid(self):
         [
             ("最大缓存文本长度", 5),
             (
-                getspinbox(
+                D_getspinbox(
                     0,
                     1000000000,
                     globalconfig,
@@ -97,9 +120,9 @@ def gethookgrid(self):
         [],
         [
             ("过滤包含乱码的文本行", 5),
-            (getsimpleswitch(globalconfig, "filter_chaos_code"), 1),
+            (D_getsimpleswitch(globalconfig, "filter_chaos_code"), 1),
             (
-                getcolorbutton(
+                D_getcolorbutton(
                     globalconfig,
                     "",
                     icon="fa.gear",
@@ -110,8 +133,8 @@ def gethookgrid(self):
             ),
         ],
         [],
-        [("区分人名和文本", 5), getsimpleswitch(globalconfig, "allow_set_text_name")],
-        [("使用YAPI注入", 5), getsimpleswitch(globalconfig, "use_yapi")],
+        [("区分人名和文本", 5), D_getsimpleswitch(globalconfig, "allow_set_text_name")],
+        [("使用YAPI注入", 5), D_getsimpleswitch(globalconfig, "use_yapi")],
     ]
 
     return grids
@@ -223,8 +246,9 @@ def exportchspatch(self):
             ff.write("{}")
 
 
-def gethookembedgrid(self):
-    self.gamefont_comboBox = QFontComboBox()
+def creategamefont_comboBox():
+
+    gamefont_comboBox = QFontComboBox()
 
     def callback(x):
         globalconfig["embedded"].__setitem__("changefont_font", x)
@@ -233,14 +257,16 @@ def gethookembedgrid(self):
         except:
             pass
 
-    self.gamefont_comboBox.currentTextChanged.connect(callback)
-    self.gamefont_comboBox.setCurrentFont(
-        QFont(globalconfig["embedded"]["changefont_font"])
-    )
+    gamefont_comboBox.currentTextChanged.connect(callback)
+    gamefont_comboBox.setCurrentFont(QFont(globalconfig["embedded"]["changefont_font"]))
+    return gamefont_comboBox
+
+
+def gethookembedgrid(self):
     grids = [
         [
             ("导出翻译补丁", 5),
-            getcolorbutton(
+            D_getcolorbutton(
                 globalconfig,
                 "",
                 callback=lambda x: exportchspatch(self),
@@ -252,7 +278,7 @@ def gethookembedgrid(self):
         [
             ("保留原文", 5),
             (
-                getsimpleswitch(
+                D_getsimpleswitch(
                     globalconfig["embedded"],
                     "keeprawtext",
                     callback=lambda _: gobject.baseobject.textsource.flashembedsettings(),
@@ -264,7 +290,7 @@ def gethookembedgrid(self):
             ("翻译等待时间(s)", 5),
             "",
             (
-                getspinbox(
+                D_getspinbox(
                     0,
                     30,
                     globalconfig["embedded"],
@@ -278,13 +304,13 @@ def gethookembedgrid(self):
         ],
         [
             ("使用最快翻译而非指定翻译器", 5),
-            (getsimpleswitch(globalconfig["embedded"], "as_fast_as_posible"), 1),
+            (D_getsimpleswitch(globalconfig["embedded"], "as_fast_as_posible"), 1),
         ],
         [
             ("内嵌的翻译器", 5),
             "",
             (
-                getsimplecombobox(
+                D_getsimplecombobox(
                     _TRL(
                         [
                             globalconfig["fanyi"][x]["name"]
@@ -300,13 +326,13 @@ def gethookembedgrid(self):
         ],
         [
             ("将汉字转换成繁体/日式汉字", 5),
-            (getsimpleswitch(globalconfig["embedded"], "trans_kanji"), 1),
+            (D_getsimpleswitch(globalconfig["embedded"], "trans_kanji"), 1),
         ],
         [
             ("在重叠显示的字间插入空格", 5),
             "",
             (
-                getsimplecombobox(
+                D_getsimplecombobox(
                     _TRL(["不插入空格", "每个字后插入空格", "仅在无法编码的字后插入"]),
                     globalconfig["embedded"],
                     "insertspace_policy",
@@ -318,20 +344,20 @@ def gethookembedgrid(self):
         [
             ("修改游戏字体", 5),
             (
-                getsimpleswitch(
+                D_getsimpleswitch(
                     globalconfig["embedded"],
                     "changefont",
                     callback=lambda _: gobject.baseobject.textsource.flashembedsettings(),
                 ),
                 1,
             ),
-            (self.gamefont_comboBox, 5),
+            (creategamefont_comboBox, 5),
         ],
         [],
         [
             ("内嵌安全性检查", 5),
-            getsimpleswitch(globalconfig["embedded"], "safecheck_use"),
-            getcolorbutton(
+            D_getsimpleswitch(globalconfig["embedded"], "safecheck_use"),
+            D_getcolorbutton(
                 globalconfig,
                 "",
                 callback=lambda x: regexedit(
@@ -341,7 +367,6 @@ def gethookembedgrid(self):
                 constcolor="#FF69B4",
             ),
         ],
-        # [('修改字体字符集',5),(getsimpleswitch( globalconfig['embedded'] ,'changecharset',callback=lambda _:gobject.baseobject.textsource.flashembedsettings()),1) ,(getsimplecombobox(_TRL(static_data["charsetmapshow"]),globalconfig['embedded'],'changecharset_charset',callback=lambda _:gobject.baseobject.textsource.flashembedsettings()),5)],
     ]
 
     return grids
@@ -352,7 +377,7 @@ def getTabclip(self):
     grids = [
         [
             ("排除复制自翻译器的文本", 3),
-            getsimpleswitch(globalconfig, "excule_from_self"),
+            D_getsimpleswitch(globalconfig, "excule_from_self"),
             ("", 3),
         ]
     ]
@@ -362,20 +387,20 @@ def getTabclip(self):
 def outputgrid(self):
 
     grids = [
-        [("自动输出提取的文本", 10)],
+        [("自动输出提取的文本", 15)],
         [],
-        [("剪贴板", 10)],
+        [("剪贴板", 0)],
         [
             "",
             ("输出到剪贴板", 5),
-            (getsimpleswitch(globalconfig["textoutputer"]["clipboard"], "use"), 1),
+            (D_getsimpleswitch(globalconfig["textoutputer"]["clipboard"], "use"), 1),
         ],
-        [("WebSocket", 10)],
+        [("WebSocket", -1)],
         [
             "",
             ("输出到WebSocket", 5),
             (
-                getsimpleswitch(
+                D_getsimpleswitch(
                     globalconfig["textoutputer"]["websocket"],
                     "use",
                     callback=lambda _: gobject.baseobject.startoutputer_re("websocket"),
@@ -387,7 +412,7 @@ def outputgrid(self):
             "",
             ("端口号", 5),
             (
-                getspinbox(
+                D_getspinbox(
                     0,
                     65535,
                     globalconfig["textoutputer"]["websocket"],
@@ -401,14 +426,17 @@ def outputgrid(self):
     return grids
 
 
-def setTabOne_direct(self):
+def setTabOne(self):
+    tabadd_lazy(self.tab_widget, ("文本输入"), lambda l: setTabOne_lazy(self, l))
 
-    self.tab1grids = [
-        [("选择文本输入源", 8)],
+
+def setTabOne_lazy(self, basel):
+    tab1grids = [
+        [("选择文本输入源", -1)],
         [
             ("HOOK", 3),
             (
-                getsimpleswitch(
+                D_getsimpleswitch(
                     globalconfig["sourcestatus2"]["texthook"],
                     "use",
                     name="texthook",
@@ -428,7 +456,7 @@ def setTabOne_direct(self):
             "",
             ("OCR", 3),
             (
-                getsimpleswitch(
+                D_getsimpleswitch(
                     globalconfig["sourcestatus2"]["ocr"],
                     "use",
                     name="ocr",
@@ -448,7 +476,7 @@ def setTabOne_direct(self):
             "",
             ("剪贴板", 3),
             (
-                getsimpleswitch(
+                D_getsimpleswitch(
                     globalconfig["sourcestatus2"]["copy"],
                     "use",
                     name="copy",
@@ -469,57 +497,21 @@ def setTabOne_direct(self):
         ],
     ]
 
-    getcolorbutton(
-        globalconfig,
-        "",
-        name="selectbutton",
-        parent=self,
-        icon="fa.gear",
-        constcolor="#FF69B4",
-        callback=lambda: gobject.baseobject.AttachProcessDialog.showsignal.emit(),
-    )
-    getcolorbutton(
-        globalconfig,
-        "",
-        name="selectbuttonembed",
-        parent=self,
-        icon="fa.gear",
-        constcolor="#FF69B4",
-        callback=lambda: gobject.baseobject.AttachProcessDialog.showsignal.emit(),
-    )
-    getcolorbutton(
-        globalconfig,
-        "",
-        name="selecthookbutton",
-        parent=self,
-        icon="fa.gear",
-        constcolor="#FF69B4",
-        callback=lambda: gobject.baseobject.hookselectdialog.showsignal.emit(),
-    )
-    self.clicksourcesignal.connect(lambda k: getattr(self, "sourceswitchs")[k].click())
-
-    self.threshold1label = QLabel()
-    self.threshold2label = QLabel()
-
-    self.Scriptscombo = QComboBox()
-
-
-def setTabOne(self):
-    tabadd_lazy(self.tab_widget, ("文本输入"), lambda: setTabOne_lazy(self))
-
-
-def setTabOne_lazy(self):
-
-    tab = makesubtab_lazy(
+    vw, vl = getvboxwidget()
+    basel.addWidget(vw)
+    gridlayoutwidget, do = makegrid(tab1grids, delay=True)
+    vl.addWidget(gridlayoutwidget)
+    tab, dotab = makesubtab_lazy(
         ["HOOK设置", "OCR设置", "剪贴板", "内嵌翻译", "文本输出"],
         [
-            lambda: makescroll(makegrid(gethookgrid(self))),
-            lambda: makescroll(makegrid(getocrgrid(self))),
-            lambda: makescroll(makegrid(getTabclip(self))),
-            lambda: makescroll(makegrid(gethookembedgrid(self))),
-            lambda: makescroll(makegrid(outputgrid(self))),
+            lambda l: makescrollgrid(gethookgrid(self), l),
+            lambda l: makescrollgrid(getocrgrid(self), l),
+            lambda l: makescrollgrid(getTabclip(self), l),
+            lambda l: makescrollgrid(gethookembedgrid(self), l),
+            lambda l: makescrollgrid(outputgrid(self), l),
         ],
+        delay=True,
     )
-
-    gridlayoutwidget = makegrid(self.tab1grids)
-    return makevbox([gridlayoutwidget, tab])
+    vl.addWidget(tab)
+    do()
+    dotab()

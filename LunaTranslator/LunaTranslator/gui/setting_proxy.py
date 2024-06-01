@@ -3,14 +3,13 @@ from myutils.config import _TR
 from myutils.config import globalconfig
 from myutils.utils import splittranslatortypes
 from gui.usefulwidget import (
-    getsimpleswitch,
+    D_getsimpleswitch,
     makegrid,
     makesubtab_lazy,
-    tabadd_lazy,
-    makevbox,
-    makescroll,
+    getvboxwidget,
+    makescrollgrid,
 )
-import os
+import os, functools
 
 
 def getall(l, item="fanyi", name=""):
@@ -28,7 +27,7 @@ def getall(l, item="fanyi", name=""):
 
         line += [
             (globalconfig[item][fanyi]["name"], 6),
-            getsimpleswitch(globalconfig[item][fanyi], "useproxy", default=True),
+            D_getsimpleswitch(globalconfig[item][fanyi], "useproxy", default=True),
             "",
         ]
         if i % 3 == 0:
@@ -41,35 +40,50 @@ def getall(l, item="fanyi", name=""):
     return grids
 
 
-def setTab_proxy_lazy(self):
+def createcheckbtn(self):
 
-    proxy = QLineEdit(globalconfig["proxy"])
     btn = QPushButton(_TR("确定"))
 
-    btn.clicked.connect(lambda x: globalconfig.__setitem__("proxy", proxy.text()))
+    btn.clicked.connect(
+        lambda x: globalconfig.__setitem__("proxy", self.__proxyedit.text())
+    )
+    self.__checkproxybtn = btn
+    _ifusesysproxy(self, globalconfig["usesysproxy"])
+    return btn
 
-    def _ifusesysproxy(x):
-        proxy.setEnabled(not x)
-        btn.setEnabled(not x)
 
-    _ifusesysproxy(globalconfig["usesysproxy"])
+def createproxyedit(self):
+    proxy = QLineEdit(globalconfig["proxy"])
+    self.__proxyedit = proxy
+    return proxy
+
+
+def _ifusesysproxy(self, x):
+    self.__proxyedit.setEnabled(not x)
+    self.__checkproxybtn.setEnabled(not x)
+
+
+def setTab_proxy_lazy(self, basel):
+
     grid1 = [
-        [("使用代理", 5), (getsimpleswitch(globalconfig, "useproxy"), 1), ("", 10)],
+        [("使用代理", 5), (D_getsimpleswitch(globalconfig, "useproxy"), 1), ("", 10)],
         [
             ("自动获取系统代理", 5),
             (
-                getsimpleswitch(
-                    globalconfig, "usesysproxy", callback=lambda x: _ifusesysproxy(x)
+                D_getsimpleswitch(
+                    globalconfig,
+                    "usesysproxy",
+                    callback=lambda x: _ifusesysproxy(self, x),
                 )
             ),
         ],
         [
             ("手动设置代理(ip:port)", 5),
-            (proxy, 5),
-            (btn, 2),
+            (functools.partial(createproxyedit, self), 5),
+            (functools.partial(createcheckbtn, self), 2),
         ],
         [],
-        [("使用代理的项目", 5)],
+        [("使用代理的项目", -1)],
     ]
     lixians, pre, mianfei, develop, shoufei = splittranslatortypes()
 
@@ -80,18 +94,23 @@ def setTab_proxy_lazy(self):
         item="ocr",
         name="./Lunatranslator/ocrengines/%s.py",
     )
-    tab = makesubtab_lazy(
+    vw, vl = getvboxwidget()
+    basel.addWidget(vw)
+    gridlayoutwidget, do = makegrid(grid1, delay=True)
+    vl.addWidget(gridlayoutwidget)
+    tab, dotab = makesubtab_lazy(
         ["在线翻译", "注册在线翻译", "在线OCR"],
         [
-            lambda: makescroll(makegrid(mianfei)),
-            lambda: makescroll(makegrid(shoufei)),
-            lambda: makescroll(makegrid(ocrs)),
+            functools.partial(makescrollgrid, mianfei),
+            functools.partial(makescrollgrid, shoufei),
+            functools.partial(makescrollgrid, ocrs),
         ],
+        delay=True,
     )
+    vl.addWidget(tab)
+    do()
+    dotab()
 
-    gridlayoutwidget = makegrid(grid1)
-    return makevbox([gridlayoutwidget, tab])
 
-
-def setTab_proxy(self):
-    tabadd_lazy(self.tab_widget, ("代理设置"), lambda: setTab_proxy_lazy(self))
+def setTab_proxy(self, l):
+    setTab_proxy_lazy(self, l)

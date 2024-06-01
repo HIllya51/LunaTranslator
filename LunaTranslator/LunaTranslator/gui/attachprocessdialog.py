@@ -3,7 +3,8 @@ from winsharedutils import getpidhwndfirst
 import functools
 from myutils.config import globalconfig, _TR
 import windows
-import os
+import os, gobject
+from myutils.wrapper import Singleton_close
 from myutils.hwnd import (
     getpidexe,
     ListProcess,
@@ -12,10 +13,11 @@ from myutils.hwnd import (
 )
 import qtawesome
 
-from gui.usefulwidget import closeashidewindow, getQMessageBox
+from gui.usefulwidget import saveposwindow, getQMessageBox
 
 
-class AttachProcessDialog(closeashidewindow):
+@Singleton_close
+class AttachProcessDialog(saveposwindow):
 
     setcurrentpidpnamesignal = pyqtSignal(int, int)
 
@@ -37,10 +39,12 @@ class AttachProcessDialog(closeashidewindow):
         self.windowtext.setText(windows.GetWindowText(hwnd))
         self.selectedp = (_pids, name, hwnd)
 
+    def closeEvent(self, e):
+        gobject.baseobject.AttachProcessDialog = None
+        super().closeEvent(e)
+
     def __init__(self, parent, callback, hookselectdialog=None):
-        super(AttachProcessDialog, self).__init__(
-            parent, globalconfig, "attachprocessgeo"
-        )
+        super().__init__(parent, globalconfig, "attachprocessgeo")
         self.setcurrentpidpnamesignal.connect(self.selectwindowcallback)
 
         self.iconcache = {}

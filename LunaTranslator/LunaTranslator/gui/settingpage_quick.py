@@ -2,27 +2,40 @@ import functools
 from myutils.config import globalconfig, _TR
 from myutils.winsyshotkey import SystemHotkey, registerException
 import winsharedutils
-import gobject, windows
+import gobject, windows, functools
 from qtsymbols import *
 from gui.usefulwidget import (
-    getsimpleswitch,
-    getsimplekeyseq,
-    makegrid,
-    tabadd_lazy,
-    makescroll,
+    D_getsimpleswitch,
+    D_getsimplekeyseq,
+    makescrollgrid,
 )
 from myutils.hwnd import grabwindow
 from myutils.utils import getimageformat, parsekeystringtomodvkcode, unsupportkey
 
 
-def setTab_quick_direct(self):
+def delaycreatereferlabels(self, name):
+    referlabel = QLabel()
+    self.referlabels[name] = referlabel
+    try:
+        referlabel.setText(self.referlabels_data[name])
+    except:
+        pass
+    return referlabel
+
+
+def maybesetreferlabels(self, name, text):
+    try:
+        self.referlabels[name].setText(text)
+    except:
+        self.referlabels_data[name] = text
+
+
+def registrhotkeys(self):
     self.hotkeymanager = SystemHotkey()
     self.referlabels = {}
+    self.referlabels_data = {}
     self.registok = {}
     self.bindfunctions = {
-        "_A": lambda: gobject.baseobject.settin_ui.clicksourcesignal.emit("copy"),
-        "_B": lambda: gobject.baseobject.settin_ui.clicksourcesignal.emit("ocr"),
-        "_C": lambda: gobject.baseobject.settin_ui.clicksourcesignal.emit("texthook"),
         "_1": gobject.baseobject.translation_ui.startTranslater,
         "_2": gobject.baseobject.translation_ui.changeTranslateMode,
         "_3": self.showsignal.emit,
@@ -33,7 +46,7 @@ def setTab_quick_direct(self):
         "_8": lambda: gobject.baseobject.translation_ui.changemousetransparentstate(0),
         "_9": gobject.baseobject.translation_ui.changetoolslockstate,
         "_10": lambda: gobject.baseobject.translation_ui.showsavegame_signal.emit(),
-        "_11": lambda: gobject.baseobject.AttachProcessDialog.showsignal.emit(),
+        "_11": gobject.baseobject.createattachprocess,
         "_12": lambda: gobject.baseobject.hookselectdialog.showsignal.emit(),
         "_13": lambda: gobject.baseobject.translation_ui.clickRange_signal.emit(False),
         "_14": gobject.baseobject.translation_ui.showhide_signal.emit,
@@ -52,18 +65,19 @@ def setTab_quick_direct(self):
         ),
         "_26": gobject.baseobject.translation_ui.ocr_once_signal.emit,
         "_27": gobject.baseobject.translation_ui.simulate_key_enter,
+        "_28": lambda: winsharedutils.clipboard_set(
+            gobject.baseobject.currenttranslate
+        ),
     }
     for name in globalconfig["quick_setting"]["all"]:
         if name not in self.bindfunctions:
             continue
-        referlabel = QLabel()
-        self.referlabels[name] = referlabel
         regist_or_not_key(self, name)
 
 
-def setTab_quick(self):
+def setTab_quick(self, l):
 
-    tabadd_lazy(self.tab_widget, ("快捷按键"), lambda: setTab_quick_lazy(self))
+    makescrollgrid(setTab_quick_lazy(self), l)
 
 
 def setTab_quick_lazy(self):
@@ -71,7 +85,7 @@ def setTab_quick_lazy(self):
     grids = [
         [
             (("是否使用快捷键"), 4),
-            getsimpleswitch(
+            D_getsimpleswitch(
                 globalconfig["quick_setting"],
                 "use",
                 callback=functools.partial(__enable, self),
@@ -86,26 +100,23 @@ def setTab_quick_lazy(self):
         grids.append(
             [
                 ((globalconfig["quick_setting"]["all"][name]["name"]), 4),
-                getsimpleswitch(
+                D_getsimpleswitch(
                     globalconfig["quick_setting"]["all"][name],
                     "use",
                     callback=functools.partial(fanyiselect, self, name),
                 ),
                 (
-                    getsimplekeyseq(
+                    D_getsimplekeyseq(
                         globalconfig["quick_setting"]["all"][name],
                         "keystring",
                         functools.partial(regist_or_not_key, self, name),
                     ),
                     2,
                 ),
-                (self.referlabels[name], 4),
+                (functools.partial(delaycreatereferlabels, self, name), 4),
             ]
         )
-    gridlayoutwidget = makegrid(grids)
-    gridlayoutwidget = makescroll(gridlayoutwidget)
-    return gridlayoutwidget
-    # self.yitiaolong("快捷按键",grids)
+    return grids
 
 
 def __enable(self, x):
@@ -120,7 +131,7 @@ def fanyiselect(self, who, checked):
 
 
 def regist_or_not_key(self, name):
-    self.referlabels[name].setText("")
+    maybesetreferlabels(self, name, "")
 
     if name in self.registok:
         self.hotkeymanager.unregister(self.registok[name])
@@ -137,11 +148,11 @@ def regist_or_not_key(self, name):
     try:
         mode, vkcode = parsekeystringtomodvkcode(keystring)
     except unsupportkey as e:
-        self.referlabels[name].setText(_TR("不支持的键位") + ",".join(e.args[0]))
+        maybesetreferlabels(self, name, _TR("不支持的键位") + ",".join(e.args[0]))
         return
 
     try:
         self.hotkeymanager.register((mode, vkcode), callback=self.bindfunctions[name])
         self.registok[name] = (mode, vkcode)
     except registerException:
-        self.referlabels[name].setText(_TR("快捷键冲突"))
+        maybesetreferlabels(self, name, _TR("快捷键冲突"))

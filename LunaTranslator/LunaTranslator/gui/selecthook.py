@@ -18,7 +18,7 @@ from gui.usefulwidget import (
     getsimpleswitch,
     textbrowappendandmovetoend,
 )
-from myutils.utils import checkchaos
+from myutils.utils import checkchaos, get_time_stamp
 from gui.dialog_savedgame import dialog_setting_game
 
 
@@ -379,7 +379,6 @@ class hookselect(closeashidewindow):
     def __init__(self, parent):
         super(hookselect, self).__init__(parent, globalconfig, "selecthookgeo")
         self.setupUi()
-
         self.changeprocessclearsignal.connect(self.changeprocessclear)
         self.removehooksignal.connect(self.removehook)
         self.addnewhooksignal.connect(self.addnewhook)
@@ -576,12 +575,14 @@ class hookselect(closeashidewindow):
             )
 
     def setupUi(self):
-
         self.widget = QWidget()
+        
+        self.setCentralWidget(self.widget)
         self.setWindowIcon(qtawesome.icon("fa.gear"))
         self.hboxlayout = QHBoxLayout()
         self.widget.setLayout(self.hboxlayout)
         self.vboxlayout = QVBoxLayout()
+        self.hboxlayout.addLayout(self.vboxlayout)
         self.ttCombomodelmodel = QStandardItemModel()
 
         self.tttable = QTableView()
@@ -643,11 +644,9 @@ class hookselect(closeashidewindow):
         self.searchtextbutton.clicked.connect(self.searchtextfunc)
         self.searchtextlayout.addWidget(self.searchtextbutton)
         ###################
-        self.ttCombomodelmodel2 = QStandardItemModel(self)
-        # self.ttCombomodelmodel.setColumnCount(2)
-        self.ttCombomodelmodel2.setHorizontalHeaderLabels(_TRL(["HOOK", "文本"]))
-
-        self.tttable2 = QTableView(self)
+        self.ttCombomodelmodel2 = QStandardItemModel()
+        self.tttable2 = QTableView()
+        self.vboxlayout.addWidget(self.tttable2)
         self.tttable2.setModel(self.ttCombomodelmodel2)
         # self.tttable2 .horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.ResizeToContents)
         self.tttable2.horizontalHeader().setStretchLastSection(True)
@@ -658,7 +657,6 @@ class hookselect(closeashidewindow):
         self.tttable2.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
         self.tttable2.clicked.connect(self.ViewThread2)
 
-        self.vboxlayout.addWidget(self.tttable2)
         self.searchtextlayout2 = QHBoxLayout()
         self.vboxlayout.addLayout(self.searchtextlayout2)
         self.searchtext2 = QLineEdit()
@@ -685,16 +683,12 @@ class hookselect(closeashidewindow):
         self.sysOutput.setReadOnly(True)
 
         self.tabwidget = QTabWidget()
+        self.vboxlayout.addWidget(self.tabwidget)
         self.tabwidget.setTabPosition(QTabWidget.TabPosition.East)
         self.tabwidget.addTab(self.textOutput, _TR("文本"))
         self.tabwidget.addTab(self.sysOutput, _TR("系统"))
 
-        self.vboxlayout.addWidget(self.tabwidget)
-        self.hboxlayout.addLayout(self.vboxlayout)
-        self.setCentralWidget(self.widget)
-
         self.changeprocessclear()
-
     def showmenu(self, p: QPoint):
         r = self.tttable.currentIndex().row()
         if r < 0:
@@ -895,7 +889,8 @@ class hookselect(closeashidewindow):
             print_exc()
 
     def showEvent(self, e):
-        gobject.baseobject.AttachProcessDialog.realshowhide.emit(False)
+        if gobject.baseobject.AttachProcessDialog:
+            gobject.baseobject.AttachProcessDialog.close()
         try:
             for i in range(len(self.save)):
                 if self.save[i] in gobject.baseobject.textsource.selectedhook:
@@ -904,18 +899,11 @@ class hookselect(closeashidewindow):
         except:
             print_exc()
 
-    def get_time_stamp(self):
-        ct = time.time()
-        local_time = time.localtime(ct)
-        data_head = time.strftime("%Y-%m-%d %H:%M:%S", local_time)
-        data_secs = (ct - int(ct)) * 1000
-        time_stamp = "%s.%03d" % (data_head, data_secs)
-        return time_stamp
 
     def sysmessage(self, sentence):
 
         textbrowappendandmovetoend(
-            self.sysOutput, self.get_time_stamp() + " " + sentence
+            self.sysOutput, get_time_stamp() + " " + sentence
         )
 
     def getnewsentence(self, sentence):

@@ -76,7 +76,7 @@ def imageCut(hwnd, x1, y1, x2, y2, viscompare=True, rawimage=False) -> QImage:
         return image
     image2 = imagesolve(image)
     if viscompare:
-        gobject.baseobject.showocrimage.setimage.emit([image, image2])
+        gobject.baseobject.maybesetimage([image, image2])
     return image2
 
 

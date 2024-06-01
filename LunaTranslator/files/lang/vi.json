@@ -620,7 +620,6 @@
     "过长惩罚": "Hình phạt quá dài",
     "重复惩罚": "Hình phạt lặp lại",
     "OCR语言包": "Gói ngôn ngữ OCR",
-    "选择翻译源": "Chọn nguồn dịch",
     "最长显示字数": "Hiển thị tối đa số từ",
     "显示日语注音": "Hiện chú thích tiếng Nhật",
     "注音颜色": "Màu chú thích",
@@ -804,5 +803,9 @@
     "窗口特效": "Hiệu ứng cửa sổ",
     "实时编辑": "Chỉnh sửa thời gian thực",
     "翻译记录": "Bản dịch",
-    "遍历目录中的全部词典文件": "Đi qua tất cả các tập tin từ điển trong thư mục"
+    "遍历目录中的全部词典文件": "Đi qua tất cả các tập tin từ điển trong thư mục",
+    "网络请求": "Yêu cầu mạng",
+    "网页显示": "Hiển thị trang web",
+    "显示时间": "Thời gian hiển thị",
+    "不显示时间": "Không hiển thị thời gian"
 }

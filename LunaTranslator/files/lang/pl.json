@@ -620,7 +620,6 @@
     "过长惩罚": "Nadmierna kara",
     "重复惩罚": "Kary powtarzające się",
     "OCR语言包": "Pakiet językowy OCR",
-    "选择翻译源": "Wybierz źródło tłumaczenia",
     "最长显示字数": "Maksymalna liczba wyświetlanych słów",
     "显示日语注音": "Wyświetl japoński pinyin",
     "注音颜色": "Kolor pinyin",
@@ -804,5 +803,9 @@
     "窗口特效": "Efekty okien",
     "实时编辑": "Edycja w czasie rzeczywistym",
     "翻译记录": "Zapisy tłumaczeń",
-    "遍历目录中的全部词典文件": "Przejrzyj wszystkie pliki słownika w katalogu"
+    "遍历目录中的全部词典文件": "Przejrzyj wszystkie pliki słownika w katalogu",
+    "网络请求": "Żądanie sieci",
+    "网页显示": "Wyświetlanie strony internetowej",
+    "显示时间": "Czas wyświetlania",
+    "不显示时间": "Nie wyświetlaj czasu"
 }

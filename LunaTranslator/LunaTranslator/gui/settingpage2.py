@@ -6,19 +6,20 @@ from myutils.subproc import subproc_w
 from gui.pretransfile import sqlite2json
 from myutils.config import globalconfig, _TR
 from myutils.utils import selectdebugfile, splittranslatortypes, checkportavailable
-import os, time, requests, threading
+import os, time, requests
 from gui.inputdialog import autoinitdialog, autoinitdialog_items
 from gui.usefulwidget import (
+    D_getspinbox,
     getspinbox,
-    getcolorbutton,
-    getsimpleswitch,
+    D_getcolorbutton,
+    D_getsimpleswitch,
     selectcolor,
     makegrid,
     makesubtab_lazy,
-    makescroll,
-    makevbox,
-    tabadd_lazy,
+    makescrollgrid,
+    getvboxwidget,
 )
+from myutils.wrapper import threader
 import time, hashlib
 
 
@@ -45,7 +46,7 @@ def initsome11(self, l, label=None):
         if fanyi in translatorsetting:
 
             items = autoinitdialog_items(translatorsetting[fanyi])
-            last = getcolorbutton(
+            last = D_getcolorbutton(
                 globalconfig,
                 "",
                 callback=functools.partial(
@@ -59,7 +60,7 @@ def initsome11(self, l, label=None):
                 constcolor="#FF69B4",
             )
         elif fanyi == "selfbuild":
-            last = getcolorbutton(
+            last = D_getcolorbutton(
                 globalconfig,
                 "",
                 callback=lambda: selectdebugfile("./userconfig/selfbuild.py"),
@@ -70,12 +71,12 @@ def initsome11(self, l, label=None):
             last = ""
         line += [
             (globalconfig["fanyi"][fanyi]["name"], 6),
-            getsimpleswitch(
+            D_getsimpleswitch(
                 globalconfig["fanyi"][fanyi],
                 "use",
                 callback=functools.partial(gobject.baseobject.prepare, fanyi),
             ),
-            getcolorbutton(
+            D_getcolorbutton(
                 globalconfig["fanyi"][fanyi],
                 "color",
                 parent=self,
@@ -103,83 +104,98 @@ def initsome11(self, l, label=None):
     return grids
 
 
-def setTabTwo(self):
-    tabadd_lazy(self.tab_widget, ("翻译设置"), lambda: setTabTwo_lazy(self))
+def statuslabelsettext(self, text):
+    try:
+        self.statuslabel.setText(text)
+    except:
+        pass
 
 
-def settab2d(self):
+def createstatuslabel(self):
+
     self.statuslabel = QLabel()
+    return self.statuslabel
 
-    def checkconnected():
-        lixians, pre, mianfei, develop, shoufei = splittranslatortypes()
-        while True:
-            port = globalconfig["debugport"]
-            _path = None
-            for syspath in [
-                globalconfig["chromepath"],
-                r"C:\Program Files\Google\Chrome\Application\chrome.exe",
-                r"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe",
-            ]:
-                if os.path.exists(syspath) and os.path.isfile(syspath):
-                    _path = syspath
-                    break
-            needstart = (
-                any([globalconfig["fanyi"][dev]["use"] for dev in develop]) and _path
-            )
-            try:
 
+@threader
+def checkconnected(self):
+    lixians, pre, mianfei, develop, shoufei = splittranslatortypes()
+    while True:
+        port = globalconfig["debugport"]
+        _path = None
+        for syspath in [
+            globalconfig["chromepath"],
+            r"C:\Program Files\Google\Chrome\Application\chrome.exe",
+            r"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe",
+        ]:
+            if os.path.exists(syspath) and os.path.isfile(syspath):
+                _path = syspath
+                break
+        needstart = (
+            any([globalconfig["fanyi"][dev]["use"] for dev in develop]) and _path
+        )
+        try:
+
+            if needstart:
+                requests.get("http://127.0.0.1:{}/json/list".format(port)).json()
+                statuslabelsettext(self, _TR("连接成功"))
+        except:
+            if checkportavailable(port):
+                statuslabelsettext(self, _TR("连接失败"))
                 if needstart:
-                    requests.get("http://127.0.0.1:{}/json/list".format(port)).json()
-                    self.statuslabel.setText(_TR("连接成功"))
-            except:
-                if checkportavailable(port):
-                    self.statuslabel.setText(_TR("连接失败"))
-                    if needstart:
-                        call = (
-                            '"%s" --disable-extensions --remote-allow-origins=* --disable-gpu --no-first-run --remote-debugging-port=%d --user-data-dir="%s"'
-                            % (
-                                _path,
-                                port,
-                                os.path.abspath("./chrome_cache/" + hashtext(_path)),
-                            )
+                    call = (
+                        '"%s" --disable-extensions --remote-allow-origins=* --disable-gpu --no-first-run --remote-debugging-port=%d --user-data-dir="%s"'
+                        % (
+                            _path,
+                            port,
+                            os.path.abspath("./chrome_cache/" + hashtext(_path)),
                         )
-                        print(call)
-                        self.engine = subproc_w(call)
-                else:
-                    self.statuslabel.setText(_TR("端口冲突"))
-            time.sleep(1)
+                    )
+                    print(call)
+                    self.engine = subproc_w(call)
+            else:
+                statuslabelsettext(self, _TR("端口冲突"))
+        time.sleep(1)
 
-    threading.Thread(target=checkconnected).start()
 
-
-def setTabTwo_lazy(self):
+def createbtnexport(self):
 
     bt = QPushButton(_TR("导出翻译记录为json文件"))
     bt.clicked.connect(lambda x: sqlite2json(self))
+    return bt
+
+
+def createfuzspin(self):
 
     _fuzainum = getspinbox(1, 99999, globalconfig, "loadbalance_oncenum", step=1)
     _fuzainum.setEnabled(globalconfig["loadbalance"])
+    self._fuzainum = _fuzainum
+    return _fuzainum
+
+
+def setTabTwo_lazy(self, basel):
+
     grids = [
         [
             ("最短翻译字数", 7),
-            (getspinbox(0, 9999, globalconfig, "minlength"), 3),
+            (D_getspinbox(0, 9999, globalconfig, "minlength"), 3),
             "",
             ("最长翻译字数", 7),
-            (getspinbox(0, 9999, globalconfig, "maxlength"), 3),
+            (D_getspinbox(0, 9999, globalconfig, "maxlength"), 3),
             "",
         ],
         [
             ("使用翻译缓存", 8),
-            (getsimpleswitch(globalconfig, "uselongtermcache")),
+            (D_getsimpleswitch(globalconfig, "uselongtermcache")),
             "",
             "",
             ("显示错误信息", 8),
-            (getsimpleswitch(globalconfig, "showtranexception"), 1),
+            (D_getsimpleswitch(globalconfig, "showtranexception"), 1),
             "",
             "",
             ("翻译请求间隔(s)", 7),
             (
-                getspinbox(
+                D_getspinbox(
                     0, 9999, globalconfig, "requestinterval", step=0.1, double=True
                 ),
                 3,
@@ -188,29 +204,29 @@ def setTabTwo_lazy(self):
         [
             ("均衡负载", 8),
             (
-                getsimpleswitch(
+                D_getsimpleswitch(
                     globalconfig,
                     "loadbalance",
-                    callback=lambda x: _fuzainum.setEnabled(x),
+                    callback=lambda x: self._fuzainum.setEnabled(x),
                 )
             ),
             "",
             "",
             ("单次负载个数", 7),
-            (_fuzainum, 3),
+            (functools.partial(createfuzspin, self), 3),
         ],
     ]
-    online_reg_grid = [[("若有多个api key，用|将每个key连接后填入，即可轮流使用", 24)]]
+    online_reg_grid = [[("若有多个api key，用|将每个key连接后填入，即可轮流使用", -1)]]
     pretransgrid = [
         [
             ("预翻译采用模糊匹配", 8),
-            (getsimpleswitch(globalconfig, "premtsimiuse"), 1),
+            (D_getsimpleswitch(globalconfig, "premtsimiuse"), 1),
             "",
             ("模糊匹配_相似度_%", 8),
-            (getspinbox(0, 100, globalconfig, "premtsimi2"), 3),
+            (D_getspinbox(0, 100, globalconfig, "premtsimi2"), 3),
         ],
         [
-            (bt, 12),
+            (functools.partial(createbtnexport, self), 12),
         ],
         [],
     ]
@@ -230,7 +246,7 @@ def setTabTwo_lazy(self):
         [
             ("Chromium_路径", 8),
             (
-                getcolorbutton(
+                D_getcolorbutton(
                     globalconfig,
                     "",
                     callback=functools.partial(
@@ -243,9 +259,9 @@ def setTabTwo_lazy(self):
         ],
         [
             ("端口号", 8),
-            (getspinbox(0, 65535, globalconfig, "debugport"), 4),
+            (D_getspinbox(0, 65535, globalconfig, "debugport"), 4),
         ],
-        [(self.statuslabel, 16)],
+        [(functools.partial(createstatuslabel, self), 16)],
         [],
     ]
     lixians, pre, mianfei, develop, shoufei = splittranslatortypes()
@@ -255,16 +271,23 @@ def setTabTwo_lazy(self):
     developgrid += initsome11(self, develop)
     online_reg_grid += initsome11(self, shoufei)
     pretransgrid += initsome11(self, pre)
-    tab = makesubtab_lazy(
+    vw, vl = getvboxwidget()
+    basel.addWidget(vw)
+
+    gridlayoutwidget, do = makegrid(grids, delay=True)
+    vl.addWidget(gridlayoutwidget)
+    tab, dotab = makesubtab_lazy(
         ["在线翻译", "develop", "注册在线翻译", "离线翻译", "预翻译"],
         [
-            lambda: makescroll(makegrid(onlinegrid)),
-            lambda: makescroll(makegrid(developgrid)),
-            lambda: makescroll(makegrid(online_reg_grid)),
-            lambda: makescroll(makegrid(offlinegrid)),
-            lambda: makescroll(makegrid(pretransgrid)),
+            functools.partial(makescrollgrid, onlinegrid),
+            functools.partial(makescrollgrid, developgrid),
+            functools.partial(makescrollgrid, online_reg_grid),
+            functools.partial(makescrollgrid, offlinegrid),
+            functools.partial(makescrollgrid, pretransgrid),
         ],
+        delay=True,
     )
+    vl.addWidget(tab)
 
-    gridlayoutwidget = makegrid(grids)
-    return makevbox([gridlayoutwidget, tab])
+    do()
+    dotab()

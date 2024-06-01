@@ -473,7 +473,8 @@ class browserdialog(saveposwindow):
 
     def __init__(self, parent, exepath=None) -> None:
         super().__init__(parent, globalconfig, "browserwidget")
-
+        if exepath:
+            self.setWindowIcon(getExeIcon(exepath, cache=True))
         self.browser = auto_select_webview(self)
 
         self.tagswidget = TagWidget(self)

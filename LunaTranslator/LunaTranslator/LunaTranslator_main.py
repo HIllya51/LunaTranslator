@@ -1,5 +1,5 @@
 import sys, windows
-import platform, os
+import platform, os, time
 
 if __name__ == "__main__":
     _lock = windows.AutoHandle(windows.CreateMutex(False, "LUNA_UPDATER_BLOCK"))
@@ -18,8 +18,6 @@ if __name__ == "__main__":
         0, "./LunaTranslator/network/" + ["winhttp", "libcurl"][globalconfig["network"]]
     )
 
-    from gui.usefulwidget import getQMessageBox
-    from LunaTranslator import MAINUI
     import gobject
 
     gobject.overridepathexists()
@@ -60,6 +58,8 @@ if __name__ == "__main__":
         if os.path.exists(f) == False:
             collect.append(f)
     if len(collect):
+        from gui.usefulwidget import getQMessageBox
+
         getQMessageBox(
             None,
             _TR("错误"),
@@ -72,7 +72,9 @@ if __name__ == "__main__":
         )
         os._exit(0)
 
+    from LunaTranslator import MAINUI
+
     gobject.baseobject = MAINUI()
     gobject.baseobject.checklang()
-    gobject.baseobject.aa()
+    gobject.baseobject.loadui()
     app.exit(app.exec())

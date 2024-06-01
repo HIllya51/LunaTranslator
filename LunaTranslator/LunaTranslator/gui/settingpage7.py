@@ -1,21 +1,20 @@
-import functools
+import functools, copy, os, gobject
 from qtsymbols import *
 from traceback import print_exc
 from myutils.config import (
     globalconfig,
     postprocessconfig,
     static_data,
+    savehook_new_data,
     _TR,
 )
-import functools, gobject
 from gui.usefulwidget import (
     getcolorbutton,
-    getsimpleswitch,
-    makevbox,
-    makescroll,
-    makegrid,
+    D_getcolorbutton,
+    D_getsimpleswitch,
+    makescrollgrid,
+    getvboxwidget,
     makesubtab_lazy,
-    tabadd_lazy,
 )
 from gui.codeacceptdialog import codeacceptdialog
 from gui.inputdialog import (
@@ -28,8 +27,6 @@ from myutils.utils import (
     checkpostlangmatch,
     loadpostsettingwindowmethod,
 )
-from myutils.config import savehook_new_data
-import copy, os
 from myutils.post import POSTSOLVE
 
 
@@ -67,12 +64,13 @@ def savegameprocesstext():
         print_exc()
 
 
-def settab7direct(self):
-    self.comparelayout = getcomparelayout(self)
-
-
-def setTab7(self):
-    tabadd_lazy(self.tab_widget, ("文本处理"), lambda: setTab7_lazy(self))
+def delaysetcomparetext(self, s):
+    try:
+        self.__fromtext.setPlainText(s)
+        self.__totext.setPlainText(POSTSOLVE(s))
+    except:
+        self.__fromtext_cache = s
+        self.__totext_cache = POSTSOLVE(s)
 
 
 def getcomparelayout(self):
@@ -93,16 +91,17 @@ def getcomparelayout(self):
     layout.addWidget(totext)
     w = QWidget()
     w.setLayout(layout)
-
-    def _(s):
-        fromtext.setPlainText(s)
-        totext.setPlainText(POSTSOLVE(fromtext.toPlainText()))
-
-    self.showandsolvesig.connect(_)
+    self.__fromtext = fromtext
+    self.__totext = totext
+    try:
+        fromtext.setPlainText(self.__fromtext_cache)
+        totext.setPlainText(self.__totext_cache)
+    except:
+        pass
     return w
 
 
-def setTab7_lazy(self):
+def setTab7_lazy(self, basel):
     grids = [[("预处理方法", 6), "", "", ("调整执行顺序", 6)]]
     if set(postprocessconfig.keys()) != set(globalconfig["postprocess_rank"]):
         globalconfig["postprocess_rank"] = list(postprocessconfig.keys())
@@ -137,7 +136,7 @@ def setTab7_lazy(self):
 
     for i, post in enumerate(sortlist):
         if post == "_11":
-            config = getcolorbutton(
+            config = D_getcolorbutton(
                 globalconfig,
                 "",
                 callback=lambda: selectdebugfile("./userconfig/mypost.py"),
@@ -148,7 +147,7 @@ def setTab7_lazy(self):
             if post not in postprocessconfig:
                 continue
             if post == "_remove_chaos":
-                config = getcolorbutton(
+                config = D_getcolorbutton(
                     globalconfig,
                     "",
                     icon="fa.gear",
@@ -172,7 +171,7 @@ def setTab7_lazy(self):
                         600,
                         items,
                     )
-                config = getcolorbutton(
+                config = D_getcolorbutton(
                     globalconfig,
                     "",
                     callback=callback,
@@ -182,14 +181,14 @@ def setTab7_lazy(self):
             else:
                 config = ""
 
-        button_up = getcolorbutton(
+        button_up = D_getcolorbutton(
             globalconfig,
             "",
             callback=functools.partial(changerank, post, True),
             icon="fa.arrow-up",
             constcolor="#FF69B4",
         )
-        button_down = getcolorbutton(
+        button_down = D_getcolorbutton(
             globalconfig,
             "",
             callback=functools.partial(changerank, post, False),
@@ -199,7 +198,7 @@ def setTab7_lazy(self):
 
         l = [
             ((postprocessconfig[post]["name"]), 6),
-            getsimpleswitch(postprocessconfig[post], "use"),
+            D_getsimpleswitch(postprocessconfig[post], "use"),
             config,
             button_up,
             button_down,
@@ -211,7 +210,7 @@ def setTab7_lazy(self):
         visname = item["visname"]
         if checkpostlangmatch(name):
             grids2.append(
-                [((visname), 6), getsimpleswitch(globalconfig["transoptimi"], name)]
+                [((visname), 6), D_getsimpleswitch(globalconfig["transoptimi"], name)]
             )
             setting = loadpostsettingwindowmethod(name)
 
@@ -220,7 +219,7 @@ def setTab7_lazy(self):
 
             if setting:
                 grids2[-1].append(
-                    getcolorbutton(
+                    D_getcolorbutton(
                         globalconfig,
                         "",
                         callback=functools.partial(__, setting, self),
@@ -230,8 +229,10 @@ def setTab7_lazy(self):
                 )
     grids2 += [[("", 12)]]
 
-    def __():
-        _w = makescroll(makegrid(grids, True, savelist, savelay))
+    def ___(lay):
+        vboxw, vbox = getvboxwidget()
+        lay.addWidget(vboxw)
+        _w = makescrollgrid(grids, vbox, True, savelist, savelay)
         _w.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
 
         def showmenu(p: QPoint):
@@ -249,11 +250,13 @@ def setTab7_lazy(self):
                 pass
 
         _w.customContextMenuRequested.connect(showmenu)
-        return _w
 
-    tab = makesubtab_lazy(
+        vbox.addWidget(getcomparelayout(self))
+
+    tab, dotab = makesubtab_lazy(
         ["文本预处理", "翻译优化"],
-        [lambda: __(), lambda: makescroll(makegrid(grids2))],
+        [___, functools.partial(makescrollgrid, grids2)],
+        delay=True,
     )
-
-    return makevbox([tab, self.comparelayout])
+    basel.addWidget(tab)
+    dotab()

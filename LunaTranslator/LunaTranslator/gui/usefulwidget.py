@@ -399,6 +399,10 @@ def getsimplecombobox(lst, d, k, callback=None, fixedsize=False, internallist=No
     return s
 
 
+def D_getsimplecombobox(lst, d, k, callback=None, fixedsize=False, internallist=None):
+    return lambda: getsimplecombobox(lst, d, k, callback, fixedsize, internallist)
+
+
 def getlineedit(d, key, callback=None, readonly=False):
     s = QLineEdit()
     s.setText(d[key])
@@ -420,6 +424,10 @@ def getspinbox(mini, maxi, d, key, double=False, step=1, callback=None, dec=1):
     s.setValue(d[key])
     s.valueChanged.connect(functools.partial(callbackwrap, d, key, callback))
     return s
+
+
+def D_getspinbox(mini, maxi, d, key, double=False, step=1, callback=None, dec=1):
+    return lambda: getspinbox(mini, maxi, d, key, double, step, callback, dec)
 
 
 def getcolorbutton(
@@ -457,6 +465,34 @@ def getcolorbutton(
     return b
 
 
+def D_getcolorbutton(
+    d,
+    key,
+    callback,
+    name=None,
+    parent=None,
+    icon="fa.paint-brush",
+    constcolor=None,
+    enable=True,
+    transparent=True,
+    qicon=None,
+    sizefixed=False,
+):
+    return lambda: getcolorbutton(
+        d,
+        key,
+        callback,
+        name,
+        parent,
+        icon,
+        constcolor,
+        enable,
+        transparent,
+        qicon,
+        sizefixed,
+    )
+
+
 def yuitsu_switch(parent, configdict, dictobjectn, key, callback, checked):
     dictobject = getattr(parent, dictobjectn)
     if checked:
@@ -487,6 +523,14 @@ def getsimpleswitch(
     return b
 
 
+def D_getsimpleswitch(
+    d, key, enable=True, callback=None, name=None, pair=None, parent=None, default=None
+):
+    return lambda: getsimpleswitch(
+        d, key, enable, callback, name, pair, parent, default
+    )
+
+
 def selectcolor(
     parent, configdict, configkey, button, item=None, name=None, callback=None
 ):
@@ -506,24 +550,39 @@ def selectcolor(
             print_exc()
 
 
-def getboxlayout(widgets, lc=QHBoxLayout, margin0=False, makewidget=False):
+def getboxlayout(
+    widgets, lc=QHBoxLayout, margin0=False, makewidget=False, delay=False, both=False
+):
     cp_layout = lc()
-    for w in widgets:
-        if isinstance(w, QWidget):
-            cp_layout.addWidget(w)
-        elif isinstance(w, QLayout):
-            cp_layout.addLayout(w)
+
+    def __do(cp_layout, widgets):
+        for w in widgets:
+            if callable(w):
+                w = w()
+            if isinstance(w, QWidget):
+                cp_layout.addWidget(w)
+            elif isinstance(w, QLayout):
+                cp_layout.addLayout(w)
+
+    _do = functools.partial(__do, cp_layout, widgets)
     if margin0:
         cp_layout.setContentsMargins(0, 0, 0, 0)
+    if not delay:
+        _do()
     if makewidget:
         w = QWidget()
         w.setLayout(cp_layout)
+    if delay:
+        return w, _do
+    if both:
+        return w, cp_layout
+    if makewidget:
         return w
     return cp_layout
 
 
-def makevbox(wids):
-    return getboxlayout(wids, lc=QVBoxLayout, margin0=True, makewidget=True)
+def getvboxwidget():
+    return getboxlayout([], lc=QVBoxLayout, margin0=True, makewidget=True, both=True)
 
 
 def textbrowappendandmovetoend(textOutput, sentence, addspace=True):
@@ -660,6 +719,10 @@ def getsimplekeyseq(dic, key, callback=None):
     return key1
 
 
+def D_getsimplekeyseq(dic, key, callback=None):
+    return lambda: getsimplekeyseq(dic, key, callback)
+
+
 class QWebWrap(QWidget):
     on_load = pyqtSignal(str)
     html_limit = 2 * 1024 * 1024
@@ -789,7 +852,7 @@ def tabadd_lazy(tab, title, getrealwidgetfunction):
     v = QVBoxLayout()
     q.setLayout(v)
     v.setContentsMargins(0, 0, 0, 0)
-    q.lazyfunction = lambda: v.addWidget(getrealwidgetfunction())
+    q.lazyfunction = functools.partial(getrealwidgetfunction, v)
     tab.addTab(q, _TR(title))
 
 
@@ -835,9 +898,11 @@ def automakegrid(grid: QGridLayout, lis, save=False, savelist=None):
             if cols > 0:
                 col = cols
             elif cols == 0:
-                col = maxl
+                col = maxl - nowc
             else:
                 col = -maxl // cols
+            if callable(wid):
+                wid = wid()
             grid.addWidget(wid, nowr, nowc, 1, col)
             if save:
                 ll.append(wid)
@@ -847,7 +912,7 @@ def automakegrid(grid: QGridLayout, lis, save=False, savelist=None):
         grid.setRowMinimumHeight(nowr, 25)
 
 
-def makegrid(grid, save=False, savelist=None, savelay=None):
+def makegrid(grid=None, save=False, savelist=None, savelay=None, delay=False):
 
     class gridwidget(QWidget):
         pass
@@ -858,13 +923,38 @@ def makegrid(grid, save=False, savelist=None, savelay=None):
     gridlayoutwidget.setLayout(gridlay)
     gridlayoutwidget.setStyleSheet("gridwidget{background-color:transparent;}")
 
-    automakegrid(gridlay, grid, save, savelist)
-    if save:
-        savelay.append(gridlay)
-    return gridlayoutwidget
+    def do(gridlay, grid, save, savelist, savelay):
+        automakegrid(gridlay, grid, save, savelist)
+        if save:
+            savelay.append(gridlay)
+
+    __do = functools.partial(do, gridlay, grid, save, savelist, savelay)
+    if not delay:
+        __do()
+        return gridlayoutwidget
+    return gridlayoutwidget, __do
 
 
-def makesubtab_lazy(titles=None, functions=None, klass=None, callback=None):
+def makescroll(widget):
+    scroll = QScrollArea()
+    # scroll.setHorizontalScrollBarPolicy(1)
+    scroll.setStyleSheet("""QScrollArea{background-color:transparent;border:0px}""")
+    scroll.setWidgetResizable(True)
+    return scroll
+
+
+def makescrollgrid(grid, lay, save=False, savelist=None, savelay=None):
+    wid, do = makegrid(grid, save, savelist, savelay, delay=True)
+    swid = makescroll(wid)
+    lay.addWidget(swid)
+    swid.setWidget(wid)
+    do()
+    return wid
+
+
+def makesubtab_lazy(
+    titles=None, functions=None, klass=None, callback=None, delay=False
+):
     if klass:
         tab = klass()
     else:
@@ -882,16 +972,15 @@ def makesubtab_lazy(titles=None, functions=None, klass=None, callback=None):
             callback(i)
 
     tab.currentChanged.connect(functools.partial(__, tab))
-    if titles and functions:
-        for i, func in enumerate(functions):
-            tabadd_lazy(tab, titles[i], func)
-    return tab
 
+    def __do(tab, titles, functions):
+        if titles and functions:
+            for i, func in enumerate(functions):
+                tabadd_lazy(tab, titles[i], func)
 
-def makescroll(widget):
-    scroll = QScrollArea()
-    # scroll.setHorizontalScrollBarPolicy(1)
-    scroll.setStyleSheet("""QScrollArea{background-color:transparent;border:0px}""")
-    scroll.setWidgetResizable(True)
-    scroll.setWidget(widget)
-    return scroll
+    ___do = functools.partial(__do, tab, titles, functions)
+    if not delay:
+        ___do()
+        return tab
+    else:
+        return tab, ___do

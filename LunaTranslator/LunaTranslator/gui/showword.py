@@ -192,14 +192,14 @@ class AnkiWindow(QWidget):
         html = f'<style>{model_css}</style><div class="card">{html}</div>'
         self.htmlbrowser.setHtml(html)
 
-    def creattemplatetab(self):
+    def creattemplatetab(self, baselay):
 
         layout = QHBoxLayout()
         layout.setContentsMargins(0, 0, 0, 0)
         layout.setSpacing(0)
         wid = QWidget()
         wid.setLayout(layout)
-
+        baselay.addWidget(wid)
         edittemptab = QTabWidget()
         self.previewtab = QTabBar()
         revertbtn = QPushButton(_TR("恢复"))
@@ -241,7 +241,6 @@ class AnkiWindow(QWidget):
         self.backtext.textChanged.connect(lambda: self.refreshhtml.emit())
         self.csstext.textChanged.connect(lambda: self.refreshhtml.emit())
         self.previewtab.currentChanged.connect(lambda: self.refreshhtml.emit())
-        return wid
 
     def loadedits(self):
         for text, object in zip(
@@ -335,10 +334,11 @@ class AnkiWindow(QWidget):
         with open("userconfig/anki/style.css", "w", encoding="utf8") as ff:
             ff.write(model_css)
 
-    def creatsetdtab(self):
+    def creatsetdtab(self, baselay):
         layout = QFormLayout()
         wid = QWidget()
         wid.setLayout(layout)
+        baselay.addWidget(wid)
         layout.addRow(
             _TR("端口号"), getspinbox(0, 65536, globalconfig["ankiconnect"], "port")
         )
@@ -409,7 +409,6 @@ class AnkiWindow(QWidget):
                 makewidget=True,
             ),
         )
-        return wid
 
     @threader
     def simulate_key(self, i):

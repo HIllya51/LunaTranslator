@@ -562,21 +562,6 @@
     "quick_setting": {
         "use": false,
         "all": {
-            "_A": {
-                "use": false,
-                "name": "选择翻译源_剪贴板",
-                "keystring": ""
-            },
-            "_B": {
-                "use": false,
-                "name": "选择翻译源_OCR",
-                "keystring": ""
-            },
-            "_C": {
-                "use": false,
-                "name": "选择翻译源_HOOK",
-                "keystring": ""
-            },
             "_1": {
                 "use": false,
                 "name": "重新翻译",
@@ -705,6 +690,11 @@
             "_27": {
                 "use": false,
                 "name": "模拟按键Enter",
+                "keystring": ""
+            },
+            "_28": {
+                "use": false,
+                "name": "复制到剪贴板_翻译",
                 "keystring": ""
             }
         }

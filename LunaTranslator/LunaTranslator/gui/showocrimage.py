@@ -1,18 +1,23 @@
 from qtsymbols import *
-import qtawesome
+import qtawesome, gobject
 from myutils.ocrutil import imagesolve
-from gui.usefulwidget import closeashidewindow
+from gui.usefulwidget import saveposwindow
 from myutils.config import globalconfig, _TR
-from myutils.config import globalconfig
+from myutils.wrapper import Singleton_close
 
 
-class showocrimage(closeashidewindow):
+@Singleton_close
+class showocrimage(saveposwindow):
     setimage = pyqtSignal(list)
 
-    def __init__(self, parent):
+    def closeEvent(self, e):
+        gobject.baseobject.showocrimage = None
+        super().closeEvent(e)
+
+    def __init__(self, parent, cached):
         self.img1 = None
         self.originimage = None
-        super(showocrimage, self).__init__(parent, globalconfig, "showocrgeo")
+        super().__init__(parent, globalconfig, "showocrgeo")
         self.setWindowIcon(qtawesome.icon("fa.picture-o"))
         self.setWindowTitle(_TR("查看处理效果"))
         self.originlabel = QLabel(self)
@@ -32,6 +37,8 @@ class showocrimage(closeashidewindow):
         self.layout1.addWidget(button)
         self.layout1.addWidget(self.solvedlabel)
         self.setimage.connect(self.setimagefunction)
+        if cached:
+            self.setimagefunction(cached)
 
     def retest(self):
         if self.originimage is None:

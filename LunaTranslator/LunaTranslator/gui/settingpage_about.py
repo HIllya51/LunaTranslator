@@ -1,17 +1,15 @@
 from qtsymbols import *
 from gui.usefulwidget import (
-    getsimpleswitch,
-    getsimplecombobox,
-    makegrid,
-    makescroll,
+    D_getsimpleswitch,
+    D_getsimplecombobox,
+    makescrollgrid,
     makesubtab_lazy,
-    tabadd_lazy,
 )
 from myutils.config import globalconfig, _TR, static_data
 from myutils.wrapper import threader
 import platform, winsharedutils, sys, os
 from myutils.utils import makehtml, getimageformatlist
-from functools import partial
+import functools
 from myutils.githubupdate import updatemethod, getvesionmethod
 
 
@@ -19,6 +17,7 @@ from myutils.githubupdate import updatemethod, getvesionmethod
 def getversion(self):
     version = winsharedutils.queryversion(sys.argv[0])
     if version is None:
+        self.versiontextsignal.emit("unknown")
         return
     versionstring = f"v{version[0]}.{version[1]}.{version[2]}"
     self.versiontextsignal.emit(
@@ -49,18 +48,15 @@ def getversion(self):
 
 
 def updateprogress(self, text, val):
-    self.downloadprogress.setValue(val)
-    self.downloadprogress.setFormat(text)
+    try:
+        self.downloadprogress.setValue(val)
+        self.downloadprogress.setFormat(text)
+    except:
+        self.downloadprogress_cache = val, text
 
 
-def setTab_about_dicrect(self):
+def createdownloadprogress(self):
 
-    self.versionlabel = QLabel()
-    self.versionlabel.setOpenExternalLinks(True)
-    self.versionlabel.setTextInteractionFlags(
-        Qt.TextInteractionFlag.LinksAccessibleByMouse
-    )
-    self.versiontextsignal.connect(lambda x: self.versionlabel.setText(x))
     self.downloadprogress = QProgressBar()
 
     self.downloadprogress.setRange(0, 10000)
@@ -68,19 +64,37 @@ def setTab_about_dicrect(self):
     self.downloadprogress.setAlignment(
         Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter
     )
-    self.progresssignal.connect(lambda text, val: updateprogress(self, text, val))
-    getversion(self)
+    try:
+        val, text = self.downloadprogress_cache
+        self.downloadprogress.setValue(val)
+        self.downloadprogress.setFormat(text)
+    except:
+        pass
+    return self.downloadprogress
 
 
-def setTab_about(self):
-    tabadd_lazy(self.tab_widget, ("其他设置"), lambda: setTab_aboutlazy(self))
+def createversionlabel(self):
+
+    self.versionlabel = QLabel()
+    self.versionlabel.setOpenExternalLinks(True)
+    self.versionlabel.setTextInteractionFlags(
+        Qt.TextInteractionFlag.LinksAccessibleByMouse
+    )
+    try:
+        self.versionlabel.setText(self.versionlabel_cache)
+    except:
+        pass
+    return self.versionlabel
 
 
-def double_(self, grid):
-    return makescroll(makegrid(grid))
+def versionlabelmaybesettext(self, x):
+    try:
+        self.versionlabel.setText(x)
+    except:
+        self.versionlabel_cache = x
 
 
-def resourcegrid(self):
+def resourcegrid(self, l):
     titles = []
     makewidgetsfunctions = []
     for sourcetype in static_data["aboutsource"]:
@@ -106,11 +120,27 @@ def resourcegrid(self):
                 else:
                     __ = True
                 grid.append([(_TR(name), 1, ""), (makehtml(link, __), 2, "link")])
-        makewidgetsfunctions.append(partial(double_, self, grid))
-    return makesubtab_lazy(titles, makewidgetsfunctions)
+        makewidgetsfunctions.append(functools.partial(makescrollgrid, grid))
+    tab, dotab = makesubtab_lazy(titles, makewidgetsfunctions, delay=True)
+    l.addWidget(tab)
+    dotab()
 
 
-def setTab_aboutlazy(self):
+def createimageview(self):
+    lb = QLabel()
+    img = QPixmap.fromImage(QImage("./files/zan.jpg"))
+    img.setDevicePixelRatio(self.devicePixelRatioF())
+    img = img.scaled(
+        600,
+        600,
+        Qt.AspectRatioMode.KeepAspectRatio,
+        Qt.TransformationMode.SmoothTransformation,
+    )
+    lb.setPixmap(img)
+    return lb
+
+
+def setTab_aboutlazy(self, basel):
     webviews = ["IEFrame", "WebView2"]
     if os.path.exists("./LunaTranslator/runtime/PyQt5/Qt5/bin/Qt5WebEngineCore.dll"):
         webviews.append("QWebEngine")
@@ -118,22 +148,22 @@ def setTab_aboutlazy(self):
         [
             ("自动下载更新(需要连接github)", 5),
             (
-                getsimpleswitch(
+                D_getsimpleswitch(
                     globalconfig, "autoupdate", callback=lambda x: getversion(self)
                 ),
                 1,
             ),
             ("", 10),
         ],
-        [(self.versionlabel, 10)],
-        [(self.downloadprogress, 10)],
+        [(functools.partial(createversionlabel, self), 10)],
+        [(functools.partial(createdownloadprogress, self), 10)],
         [],
-        [("Internet", 5)],
-        [(getsimplecombobox(["winhttp", "libcurl"], globalconfig, "network"), 5)],
-        [("WebView", 5)],
+        [("网络请求", -1)],
+        [(D_getsimplecombobox(["winhttp", "libcurl"], globalconfig, "network"), 5)],
+        [("网页显示", -1)],
         [
             (
-                getsimplecombobox(
+                D_getsimplecombobox(
                     webviews,
                     globalconfig,
                     "usewebview",
@@ -141,8 +171,8 @@ def setTab_aboutlazy(self):
                 5,
             )
         ],
-        [("截图保存格式", 5)],
-        [(getsimplecombobox(getimageformatlist(), globalconfig, "imageformat"), 5)],
+        [("截图保存格式", -1)],
+        [(D_getsimplecombobox(getimageformatlist(), globalconfig, "imageformat"), 5)],
     ]
 
     shuominggrid = [
@@ -170,19 +200,10 @@ def setTab_aboutlazy(self):
                 (makehtml("https://qm.qq.com/q/qE32v9NYBO", show=912525396), 3, "link"),
             ],
             [],
-            [("如果你感觉该软件对你有帮助，欢迎微信扫码赞助，谢谢~", 0)],
+            [("如果你感觉该软件对你有帮助，欢迎微信扫码赞助，谢谢~", -1)],
         ]
-        lb = QLabel(self)
-        img = QPixmap.fromImage(QImage("./files/zan.jpg"))
-        img.setDevicePixelRatio(self.devicePixelRatioF())
-        img = img.scaled(
-            600,
-            600,
-            Qt.AspectRatioMode.KeepAspectRatio,
-            Qt.TransformationMode.SmoothTransformation,
-        )
-        lb.setPixmap(img)
-        shuominggrid += [[(lb, 0)]]
+
+        shuominggrid += [[(functools.partial(createimageview, self), -1)]]
     else:
         shuominggrid += [
             [],
@@ -202,14 +223,14 @@ def setTab_aboutlazy(self):
             ],
         ]
 
-    tab = makesubtab_lazy(
+    tab, dotab = makesubtab_lazy(
         ["相关说明", "其他设置", "资源下载"],
         [
-            lambda: makescroll(
-                makegrid(shuominggrid),
-            ),
-            lambda: makescroll(makegrid(grid2)),
-            lambda: resourcegrid(self),
+            functools.partial(makescrollgrid, shuominggrid),
+            functools.partial(makescrollgrid, grid2),
+            functools.partial(resourcegrid, self),
         ],
+        delay=True,
     )
-    return tab
+    basel.addWidget(tab)
+    dotab()

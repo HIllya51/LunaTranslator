@@ -5,25 +5,50 @@ from myutils.config import globalconfig, _TRL
 import os, functools
 import gobject
 from gui.usefulwidget import (
-    getsimplecombobox,
-    getspinbox,
-    makegrid,
-    makescroll,
-    getcolorbutton,
-    tabadd_lazy,
+    D_getsimplecombobox,
+    D_getspinbox,
+    makescrollgrid,
+    D_getcolorbutton,
     yuitsu_switch,
-    getsimpleswitch,
+    D_getsimpleswitch,
 )
 
 
-def setTab5_direct(self):
+def showvoicelist(self, vl, idx):
+    try:
+        self.voicecombo.blockSignals(True)
+        self.voicecombo.clear()
+        self.voicecombo.addItems(vl)
+        if idx >= 0:
+            self.voicecombo.setCurrentIndex(idx)
+        self.voicecombo.blockSignals(False)
+    except:
+        self.voicecombo_cache = vl, idx
+
+
+def changevoice(self, text):
+
+    globalconfig["reader"][gobject.baseobject.reader_usevoice]["voice"] = (
+        gobject.baseobject.reader.voicelist[self.voicecombo.currentIndex()]
+    )
+
+
+def createvoicecombo(self):
+
     self.voicecombo = QComboBox()
-    self.voicelistsignal.connect(functools.partial(showvoicelist, self))
     self.voicecombo.currentTextChanged.connect(lambda x: changevoice(self, x))
+    try:
+        vl, idx = self.voicecombo_cache
+        self.voicecombo.addItems(vl)
+        if idx >= 0:
+            self.voicecombo.setCurrentIndex(idx)
+    except:
+        pass
+    return self.voicecombo
 
 
-def setTab5(self):
-    tabadd_lazy(self.tab_widget, ("语音合成"), lambda: setTab5lz(self))
+def setTab5(self, l):
+    makescrollgrid(setTab5lz(self), l)
 
 
 def getttsgrid(self):
@@ -40,7 +65,7 @@ def getttsgrid(self):
         if "args" in globalconfig["reader"][name]:
             items = autoinitdialog_items(globalconfig["reader"][name])
             items[-1]["callback"] = gobject.baseobject.startreader
-            _3 = getcolorbutton(
+            _3 = D_getcolorbutton(
                 globalconfig,
                 "",
                 callback=functools.partial(
@@ -60,7 +85,7 @@ def getttsgrid(self):
         line += [
             ((globalconfig["reader"][name]["name"]), 6),
             (
-                getsimpleswitch(
+                D_getsimpleswitch(
                     globalconfig["reader"][name],
                     "use",
                     name=name,
@@ -95,29 +120,29 @@ def setTab5lz(self):
     grids = getttsgrid(self)
     grids += [
         [],
-        [("选择声音", 6), (self.voicecombo, 15)],
+        [("选择声音", 6), (functools.partial(createvoicecombo, self), 15)],
         [
             ("语速:(-10~10)", 6),
-            (getspinbox(-10, 10, globalconfig["ttscommon"], "rate"), 3),
+            (D_getspinbox(-10, 10, globalconfig["ttscommon"], "rate"), 3),
         ],
         [
             ("音量:(0~100)", 6),
-            (getspinbox(0, 100, globalconfig["ttscommon"], "volume"), 3),
+            (D_getspinbox(0, 100, globalconfig["ttscommon"], "volume"), 3),
         ],
-        [("自动朗读", 6), (getsimpleswitch(globalconfig, "autoread"), 1)],
-        [("不被打断", 6), (getsimpleswitch(globalconfig, "ttsnointerrupt"), 1)],
+        [("自动朗读", 6), (D_getsimpleswitch(globalconfig, "autoread"), 1)],
+        [("不被打断", 6), (D_getsimpleswitch(globalconfig, "ttsnointerrupt"), 1)],
         [
             ("朗读原文", 6),
-            (getsimpleswitch(globalconfig, "read_raw"), 1),
+            (D_getsimpleswitch(globalconfig, "read_raw"), 1),
             "",
             "",
             ("朗读翻译", 6),
-            (getsimpleswitch(globalconfig, "read_trans"), 1),
+            (D_getsimpleswitch(globalconfig, "read_trans"), 1),
         ],
         [
             ("朗读的翻译", 6),
             (
-                getsimplecombobox(
+                D_getsimplecombobox(
                     _TRL(
                         [
                             globalconfig["fanyi"][x]["name"]
@@ -133,8 +158,8 @@ def setTab5lz(self):
         [],
         [
             ("语音修正", 6),
-            getsimpleswitch(globalconfig["ttscommon"], "tts_repair"),
-            getcolorbutton(
+            D_getsimpleswitch(globalconfig["ttscommon"], "tts_repair"),
+            D_getcolorbutton(
                 globalconfig,
                 "",
                 callback=lambda x: noundictconfigdialog1(
@@ -149,22 +174,4 @@ def setTab5lz(self):
             ),
         ],
     ]
-    gridlayoutwidget = makegrid(grids)
-    gridlayoutwidget = makescroll(gridlayoutwidget)
-    return gridlayoutwidget
-
-
-def changevoice(self, text):
-
-    globalconfig["reader"][gobject.baseobject.reader_usevoice]["voice"] = (
-        gobject.baseobject.reader.voicelist[self.voicecombo.currentIndex()]
-    )
-
-
-def showvoicelist(self, vl, idx):
-    self.voicecombo.blockSignals(True)
-    self.voicecombo.clear()
-    self.voicecombo.addItems(vl)
-    if idx >= 0:
-        self.voicecombo.setCurrentIndex(idx)
-    self.voicecombo.blockSignals(False)
+    return grids

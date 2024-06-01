@@ -3,22 +3,28 @@ import qtawesome
 import threading, windows
 import gobject, time
 from myutils.config import globalconfig, _TR, _TRL
-from gui.usefulwidget import closeashidewindow, getsimplecombobox
+from gui.usefulwidget import saveposwindow, getsimplecombobox
 from myutils.utils import str2rgba
 from myutils.wrapper import Singleton_close, threader
 
 
-class edittext(closeashidewindow):
+@Singleton_close
+class edittext(saveposwindow):
     getnewsentencesignal = pyqtSignal(str)
 
-    def __init__(self, parent):
-        super(edittext, self).__init__(parent, globalconfig, "edit_geo")
-        self.sync = True
+    def closeEvent(self, e):
+        gobject.baseobject.edittextui = None
+        super().closeEvent(e)
+
+    def __init__(self, parent, cached):
+        super().__init__(parent, globalconfig, "edit_geo")
         self.setupUi()
 
         # self.setWindowFlags(self.windowFlags()&~Qt.WindowMinimizeButtonHint)
         self.getnewsentencesignal.connect(self.getnewsentence)
         self.setWindowTitle(_TR("编辑"))
+        if cached:
+            self.getnewsentence(cached)
 
     def setupUi(self):
         self.setWindowIcon(qtawesome.icon("fa.edit"))
@@ -43,8 +49,12 @@ class edittext(closeashidewindow):
         )
         bt2 = QPushButton(
             icon=qtawesome.icon(
-                "fa.forward" if self.sync else "fa.play",
-                color="#FF69B4" if self.sync else globalconfig["buttoncolor"],
+                "fa.forward" if gobject.baseobject.edittextui_sync else "fa.play",
+                color=(
+                    "#FF69B4"
+                    if gobject.baseobject.edittextui_sync
+                    else globalconfig["buttoncolor"]
+                ),
             )
         )
 
@@ -66,11 +76,15 @@ class edittext(closeashidewindow):
         ).start()
 
     def changestate(self):
-        self.sync = not self.sync
+        gobject.baseobject.edittextui_sync = not gobject.baseobject.edittextui_sync
         self.bt2.setIcon(
             qtawesome.icon(
-                "fa.forward" if self.sync else "fa.play",
-                color="#FF69B4" if self.sync else globalconfig["buttoncolor"],
+                "fa.forward" if gobject.baseobject.edittextui_sync else "fa.play",
+                color=(
+                    "#FF69B4"
+                    if gobject.baseobject.edittextui_sync
+                    else globalconfig["buttoncolor"]
+                ),
             )
         )
 
@@ -83,7 +97,7 @@ class edittext(closeashidewindow):
             self.textOutput.clear()
 
     def getnewsentence(self, sentence):
-        if self.sync:
+        if gobject.baseobject.edittextui_sync:
             self.textOutput.setPlainText(sentence)
 
 

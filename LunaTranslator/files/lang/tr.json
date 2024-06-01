@@ -620,7 +620,6 @@
     "过长惩罚": "Çok fazla ceza",
     "重复惩罚": "Tekrar cezalandırıcı",
     "OCR语言包": "OCR Language Pack",
-    "选择翻译源": "Çeviri Kaynağını Seç",
     "最长显示字数": "Gösterilen sözlerin en yüksek sayısı",
     "显示日语注音": "Display Japanese Pinyin",
     "注音颜色": "Pinyin rengi",
@@ -804,5 +803,9 @@
     "窗口特效": "Pencere etkileri",
     "实时编辑": "Gerçek zamanlı düzenleme",
     "翻译记录": "Çeviri kayıtları",
-    "遍历目录中的全部词典文件": "Dizindeki bütün sözlük dosyalarını yolla"
+    "遍历目录中的全部词典文件": "Dizindeki bütün sözlük dosyalarını yolla",
+    "网络请求": "Network request",
+    "网页显示": "Web sayfası gösterisi",
+    "显示时间": "Display time",
+    "不显示时间": "Zamanı gösterme"
 }
