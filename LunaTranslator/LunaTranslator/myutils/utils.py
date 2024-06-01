@@ -8,6 +8,7 @@ import ctypes, importlib
 import time
 import ctypes.wintypes
 import time
+from collections import OrderedDict
 from qtsymbols import *
 from traceback import print_exc
 from myutils.config import (
@@ -633,6 +634,7 @@ def str2rgba(string, alpha100):
         alpha100 / 100,
     )
 
+
 def get_time_stamp():
     ct = time.time()
     local_time = time.localtime(ct)
@@ -640,3 +642,41 @@ def get_time_stamp():
     data_secs = (ct - int(ct)) * 1000
     time_stamp = "%s.%03d" % (data_head, data_secs)
     return time_stamp
+
+
+class LRUCache:
+    def __init__(self, capacity: int):
+        self.cache = {}
+        self.capacity = capacity
+        self.order = []
+
+    def setcap(self, cap):
+        if cap == -1:
+            cap = 9999999999
+        self.capacity = cap
+        while len(self.cache) > self.capacity:
+            self.cache.popitem(last=False)
+
+    def get(self, key: int) -> bool:
+        if key in self.cache:
+            self.order.remove(key)
+            self.order.append(key)
+            return True
+        return False
+
+    def put(self, key: int) -> None:
+        if not self.capacity:
+            return
+        if key in self.cache:
+            self.order.remove(key)
+        elif len(self.order) == self.capacity:
+            old_key = self.order.pop(0)
+            del self.cache[old_key]
+        self.cache[key] = None
+        self.order.append(key)
+
+    def test(self, key):
+        _ = self.get(key)
+        if not _:
+            self.put(key)
+        return _

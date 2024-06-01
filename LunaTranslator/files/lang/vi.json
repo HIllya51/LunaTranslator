@@ -807,5 +807,7 @@
     "网络请求": "Yêu cầu mạng",
     "网页显示": "Hiển thị trang web",
     "显示时间": "Thời gian hiển thị",
-    "不显示时间": "Không hiển thị thời gian"
+    "不显示时间": "Không hiển thị thời gian",
+    "过滤历史重复": "Lọc lịch sử lặp lại",
+    "缓存条数": "Số thanh bộ nhớ cache"
 }

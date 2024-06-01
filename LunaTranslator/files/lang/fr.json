@@ -807,5 +807,7 @@
     "网络请求": "Demande de réseau",
     "网页显示": "Affichage de la page Web",
     "显示时间": "Afficher l'heure",
-    "不显示时间": "Ne pas afficher l'heure"
+    "不显示时间": "Ne pas afficher l'heure",
+    "过滤历史重复": "Filtrer historique répétition",
+    "缓存条数": "Nombre de barres de cache"
 }

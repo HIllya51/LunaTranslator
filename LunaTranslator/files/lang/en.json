@@ -807,5 +807,7 @@
     "网络请求": "Network request",
     "网页显示": "Web page display",
     "显示时间": "Display time",
-    "不显示时间": "Do not display time"
+    "不显示时间": "Do not display time",
+    "过滤历史重复": "Filter historical duplicates",
+    "缓存条数": "Number of cache entries"
 }

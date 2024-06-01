@@ -2,13 +2,24 @@ import re, codecs
 from traceback import print_exc
 from collections import Counter
 import importlib, gobject
-from myutils.utils import getfilemd5
+from myutils.utils import getfilemd5, LRUCache
 from myutils.config import (
     postprocessconfig,
     globalconfig,
     savehook_new_data,
     getlangsrc,
 )
+
+lrucache = LRUCache(0)
+
+
+def dedump(line, args):
+    size = args["cachesize"]
+    lrucache.setcap(size)
+    if lrucache.test(line):
+        return ""
+    else:
+        return line
 
 
 def _2_f(line, args):
@@ -337,6 +348,7 @@ def POSTSOLVE(line):
         "_remove_control": _remove_control,
         "_remove_chaos": _remove_chaos,
         "_remove_not_in_ja_bracket": _remove_not_in_ja_bracket,
+        "dedump": dedump,
     }
     useranklist = globalconfig["postprocess_rank"]
     usedpostprocessconfig = postprocessconfig

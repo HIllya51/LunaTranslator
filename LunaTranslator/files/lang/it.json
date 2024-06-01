@@ -807,5 +807,7 @@
     "网络请求": "Richiesta di rete",
     "网页显示": "Visualizzazione pagina web",
     "显示时间": "Tempo di visualizzazione",
-    "不显示时间": "Non visualizzare l'ora"
+    "不显示时间": "Non visualizzare l'ora",
+    "过滤历史重复": "Filtra duplicati storici",
+    "缓存条数": "Numero di voci della cache"
 }

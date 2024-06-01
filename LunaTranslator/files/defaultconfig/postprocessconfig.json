@@ -46,6 +46,22 @@
             }
         }
     },
+    "dedump": {
+        "use": true,
+        "name": "过滤历史重复_LRU",
+        "args": {
+            "cachesize": 3
+        },
+        "argstype": {
+            "cachesize": {
+                "type": "intspin",
+                "name": "缓存条数",
+                "min": -1,
+                "max": 10000,
+                "step": 1
+            }
+        }
+    },
     "_3": {
         "use": false,
         "name": "去除重复行_ABCDABCDABCD->ABCD",
