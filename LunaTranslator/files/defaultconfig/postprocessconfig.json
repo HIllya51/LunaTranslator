@@ -47,7 +47,7 @@
         }
     },
     "dedump": {
-        "use": true,
+        "use": false,
         "name": "过滤历史重复_LRU",
         "args": {
             "cachesize": 3
