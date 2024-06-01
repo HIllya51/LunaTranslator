@@ -3,7 +3,7 @@ from qtsymbols import *
 from gui.pretransfile import sqlite2json2
 from gui.settingpage_ocr import getocrgrid
 from myutils.config import globalconfig, _TR, _TRL, savehook_new_data, savehook_new_list
-from gui.dialog_savedgame import dialog_savedgame_new
+from gui.dialog_savedgame import dialog_savedgame_new, dialog_savedgame_lagacy
 import gobject
 from gui.inputdialog import regexedit
 from gui.usefulwidget import (
@@ -20,6 +20,13 @@ from gui.usefulwidget import (
 )
 from gui.codeacceptdialog import codeacceptdialog
 from myutils.utils import makehtml, getfilemd5
+
+
+def dynamicusemanager(self):
+    if globalconfig["gamemanageruseversion"] == 0:
+        dialog_savedgame_new(self)
+    elif globalconfig["gamemanageruseversion"] == 1:
+        dialog_savedgame_lagacy(self)
 
 
 def gethookgrid(self):
@@ -66,9 +73,9 @@ def gethookgrid(self):
                 D_getcolorbutton(
                     globalconfig,
                     "",
+                    functools.partial(dynamicusemanager, self),
                     icon="fa.gamepad",
                     constcolor="#FF69B4",
-                    callback=lambda: dialog_savedgame_new(self),
                 ),
                 1,
             ),

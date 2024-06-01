@@ -243,6 +243,7 @@
         "onfilenoexistscolor": "#acacac",
         "transparent": 25
     },
+    "gamemanageruseversion": 0,
     "profiles_index": 0,
     "ocrautobindwindow": true,
     "toolbutton": {

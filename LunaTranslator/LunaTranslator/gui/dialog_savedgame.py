@@ -1554,6 +1554,7 @@ class dialog_savedgame_new(saveposwindow):
             dic=globalconfig,
             key="savegamedialoggeo",
         )
+        globalconfig["gamemanageruseversion"] = 0
         global _global_dialog_savedgame_new
         _global_dialog_savedgame_new = self
         self.setWindowTitle(_TR("游戏管理"))
@@ -1818,6 +1819,7 @@ class dialog_savedgame_lagacy(QDialog):
         #         return
         # dialog_savedgame._sigleton=True
         super().__init__(parent, Qt.WindowCloseButtonHint)
+        globalconfig["gamemanageruseversion"] = 1
         self.setWindowTitle(_TR("已保存游戏"))
         formLayout = QVBoxLayout(self)  #
         model = QStandardItemModel()
