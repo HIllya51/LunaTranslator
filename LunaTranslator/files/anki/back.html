@@ -63,7 +63,6 @@
         return fragment, fragment.innerHTML
     }
     let htmltabbuttons = ''
-    let htmlcontents = ''
     function onclickbtn(_id) {
 
         let tabButtons = document.querySelectorAll('.tab-widget .tab-button');
@@ -81,7 +80,7 @@
     }
     let scriptElementss = []
     for (let iiii = 0; iiii < explains.length; iiii++) {
-        htmltabbuttons += `<button type="button" onclick="onclickbtn('buttonid${iiii}')" id="buttonid${iiii}" class="tab-button" data-tab="tab${iiii}"> ${explains[iiii]['source']} </button>`
+        htmltabbuttons += '<button type="button" onclick="onclickbtn(\'buttonid' + (iiii).toString() + '\')" id="buttonid' + (iiii).toString() + '" class="tab-button" data-tab="tab' + (iiii).toString() + '">' + explains[iiii]['source'] + '</button>'
 
         let tempParent = document.createElement('div');
         tempParent.innerHTML = explains[iiii]['content'];
@@ -91,7 +90,12 @@
             fragment.appendChild(tempParent.firstChild);
         }
 
-        htmlcontents += `<div id="tab${iiii}" class="tab-pane"> ${fragment.innerHTML} </div>`
+        const newDiv = document.createElement('div');
+        newDiv.id = 'tab' + iiii.toString();
+        newDiv.className = 'tab-pane';
+        newDiv.innerHTML = fragment.innerHTML;
+
+        document.getElementById('tab_contents').appendChild(newDiv);
 
         let scriptElements = fragment.getElementsByTagName('script');
 
@@ -100,7 +104,6 @@
         }
     }
     document.getElementById('tab_buttons').innerHTML = htmltabbuttons;
-    document.getElementById('tab_contents').innerHTML = htmlcontents;
     if (document.querySelectorAll('.tab-widget .tab-button').length) {
         document.querySelectorAll('.tab-widget .tab-button')[0].click()
     }
