@@ -1,16 +1,15 @@
+from qtsymbols import *
 import functools
+import gobject, windows, winsharedutils
 from myutils.config import globalconfig, _TR
 from myutils.winsyshotkey import SystemHotkey, registerException
-import winsharedutils
-import gobject, windows, functools
-from qtsymbols import *
+from myutils.hwnd import grabwindow
+from myutils.utils import getimageformat, parsekeystringtomodvkcode, unsupportkey
 from gui.usefulwidget import (
     D_getsimpleswitch,
     D_getsimplekeyseq,
     makescrollgrid,
 )
-from myutils.hwnd import grabwindow
-from myutils.utils import getimageformat, parsekeystringtomodvkcode, unsupportkey
 
 
 def delaycreatereferlabels(self, name):

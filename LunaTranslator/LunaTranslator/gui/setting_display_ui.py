@@ -1,7 +1,7 @@
-import functools
 from qtsymbols import *
-from myutils.config import globalconfig, _TRL, static_data
+import functools
 import gobject
+from myutils.config import globalconfig, _TRL, static_data
 from gui.usefulwidget import (
     D_getsimplecombobox,
     D_getspinbox,

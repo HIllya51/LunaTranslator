@@ -1,7 +1,7 @@
 from qtsymbols import *
+import threading
 from traceback import print_exc
 from myutils.wrapper import trypass
-import threading
 
 
 class chartwidget(QWidget):
@@ -13,7 +13,7 @@ class chartwidget(QWidget):
 
         fhall = fmetrics.height()
         self.font = font
-
+        self.data = None
         self.ymargin = int(fhall) + 10  # 20
         self.valuewidth = 10
         self.xtext = lambda x: str(x)
@@ -463,3 +463,96 @@ class lazyscrollflow(QWidget):
             new_height = y + line_height - rect.y() + self._margin
             self.internalwid.setFixedHeight(new_height)
             return new_height
+
+
+class simplelistw(QWidget):
+    def __init__(self):
+        super().__init__()
+        self.lay = QVBoxLayout()
+        self.lay.setContentsMargins(0, 0, 0, 0)
+        self.lay.setSpacing(0)
+        self.setLayout(self.lay)
+
+    def addw(self, w):
+        self.lay.addWidget(w)
+
+    def insertw(self, i, w):
+        self.lay.insertWidget(i, w)
+
+    def popw(self, i):
+        return self.lay.takeAt(i).widget()
+
+    def w(self, i):
+        return self.lay.itemAt(i).widget()
+
+    def len(self):
+        return self.lay.count()
+
+
+class shrinkableitem(QWidget):
+    def __init__(self, shrinker: QPushButton):
+        super().__init__()
+        self.lay = QVBoxLayout()
+        # self.setSizePolicy(QSizePolicy.Policy.Expanding,QSizePolicy.Policy.Fixed)
+        self.setLayout(self.lay)
+        self.lay.setContentsMargins(0, 0, 0, 0)
+        self.lay.setSpacing(0)
+        self.btn = shrinker
+        self.items = simplelistw()
+        self.btn.clicked.connect(self.Revert)
+        self.lay.addWidget(self.btn)
+        self.lay.addWidget(self.items)
+
+    def Revert(self):
+        self.items.setVisible(not self.items.isVisible())
+
+    def Show(self):
+        self.items.show()
+
+    def Hide(self):
+        self.items.hide()
+
+    def addw(self, w):
+        self.items.addw(w)
+
+    def insertw(self, i, w):
+        self.items.insertw(i, w)
+
+    def popw(self, i):
+        return self.items.popw(i)
+
+    def w(self, i):
+        return self.items.w(i)
+
+    def len(self):
+        return self.items.len()
+
+
+class stackedlist(QScrollArea):
+    def __init__(self):
+        super().__init__()
+        self.setStyleSheet("""QScrollArea{background-color:transparent;border:0px}""")
+        self.setWidgetResizable(True)
+        internal = QWidget()
+        self.setWidget(internal)
+        self.lay = QVBoxLayout()
+        self.lay.setAlignment(Qt.AlignmentFlag.AlignTop)
+        self.lay.setSpacing(0)
+        self.lay.setContentsMargins(0, 0, 0, 0)
+        internal.setLayout(self.lay)
+        self.internal = internal
+
+    def addw(self, w):
+        self.lay.addWidget(w)
+
+    def insertw(self, i, w):
+        self.lay.insertWidget(i, w)
+
+    def popw(self, i):
+        return self.lay.takeAt(i).widget()
+
+    def w(self, i):
+        return self.lay.itemAt(i).widget()
+
+    def len(self):
+        return self.lay.count()

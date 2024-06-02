@@ -2326,11 +2326,7 @@ class mdict(cishubase):
             with open("userconfig/mdict_config.json", "r", encoding="utf8") as ff:
                 self.extraconf = json.loads(ff.read())
         except:
-            try:
-                with open("cache/mdict/config.json", "r", encoding="utf8") as ff:
-                    self.extraconf = json.loads(ff.read())
-            except:
-                self.extraconf = {}
+            self.extraconf = {}
         self.sql = None
         paths = self.config["path"]
 

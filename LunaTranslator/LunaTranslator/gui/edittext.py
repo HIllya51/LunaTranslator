@@ -1,11 +1,10 @@
 from qtsymbols import *
-import qtawesome
-import threading, windows
-import gobject, time
+import threading, windows, time
+import gobject, qtawesome
 from myutils.config import globalconfig, _TR, _TRL
-from gui.usefulwidget import saveposwindow, getsimplecombobox
 from myutils.utils import str2rgba
 from myutils.wrapper import Singleton_close, threader
+from gui.usefulwidget import saveposwindow, getsimplecombobox
 
 
 @Singleton_close

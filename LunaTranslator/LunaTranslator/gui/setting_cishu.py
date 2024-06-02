@@ -1,4 +1,5 @@
 import functools, os
+import gobject
 from myutils.config import globalconfig, _TRL
 from gui.inputdialog import autoinitdialog, autoinitdialog_items
 from gui.usefulwidget import (
@@ -8,7 +9,6 @@ from gui.usefulwidget import (
     D_getsimpleswitch,
     D_getsimplecombobox,
 )
-import gobject
 
 
 def setTabcishu(self, basel):

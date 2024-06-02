@@ -1,9 +1,8 @@
 from qtsymbols import *
+import os, functools
+import windows, qtawesome, gobject
 from winsharedutils import getpidhwndfirst
-import functools
 from myutils.config import globalconfig, _TR
-import windows
-import os, gobject
 from myutils.wrapper import Singleton_close
 from myutils.hwnd import (
     getpidexe,
@@ -11,8 +10,6 @@ from myutils.hwnd import (
     mouseselectwindow,
     getExeIcon,
 )
-import qtawesome
-
 from gui.usefulwidget import saveposwindow, getQMessageBox
 
 

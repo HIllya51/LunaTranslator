@@ -1,10 +1,9 @@
-import functools
 from qtsymbols import *
-from gui.usefulwidget import getspinbox, threebuttons, getlineedit
+import functools
 from myutils.utils import checkencoding
 from myutils.config import globalconfig, _TR, _TRL
-
 from myutils.wrapper import Singleton
+from gui.usefulwidget import getspinbox, threebuttons, getlineedit
 
 nowsuppertcodes = _TRL(
     [

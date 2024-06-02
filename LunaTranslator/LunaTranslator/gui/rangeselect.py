@@ -1,8 +1,7 @@
 from qtsymbols import *
-from myutils.config import _TR
-from myutils.config import globalconfig
-from gui.resizeablemainwindow import Mainw
 import windows, winsharedutils
+from myutils.config import _TR, globalconfig
+from gui.resizeablemainwindow import Mainw
 
 
 class rangeadjust(Mainw):

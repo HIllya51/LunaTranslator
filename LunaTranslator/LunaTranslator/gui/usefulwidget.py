@@ -1,16 +1,15 @@
 from qtsymbols import *
+import os, platform, functools, threading, time
+from traceback import print_exc
+import windows, qtawesome
 from webviewpy import (
     webview_native_handle_kind_t,
     Webview,
     declare_library_path,
 )
-from myutils.config import _TR, globalconfig
-
-from traceback import print_exc
-import qtawesome, functools, threading, time
-from myutils.wrapper import Singleton
 from winsharedutils import HTMLBrowser
-import windows, os, platform
+from myutils.config import _TR, globalconfig
+from myutils.wrapper import Singleton
 
 
 @Singleton
@@ -853,7 +852,7 @@ def tabadd_lazy(tab, title, getrealwidgetfunction):
     q.setLayout(v)
     v.setContentsMargins(0, 0, 0, 0)
     q.lazyfunction = functools.partial(getrealwidgetfunction, v)
-    tab.addTab(q, _TR(title))
+    tab.addTab(q, title)
 
 
 def automakegrid(grid: QGridLayout, lis, save=False, savelist=None):

@@ -1,25 +1,28 @@
-import functools, os, windows, json
 from qtsymbols import *
-from gui.pretransfile import sqlite2json2
-from gui.settingpage_ocr import getocrgrid
+import functools, os, json
+import windows, gobject
+from myutils.utils import makehtml, getfilemd5
 from myutils.config import globalconfig, _TR, _TRL, savehook_new_data, savehook_new_list
-from gui.dialog_savedgame import dialog_savedgame_new, dialog_savedgame_lagacy
-import gobject
+from gui.pretransfile import sqlite2json2
+from gui.codeacceptdialog import codeacceptdialog
+from gui.setting_textinput_ocr import getocrgrid
+from gui.dialog_savedgame import (
+    dialog_savedgame_new,
+    dialog_savedgame_lagacy,
+    dialog_savedgame_v3,
+)
 from gui.inputdialog import regexedit
 from gui.usefulwidget import (
     D_getsimplecombobox,
     D_getspinbox,
     D_getcolorbutton,
     makegrid,
-    tabadd_lazy,
     yuitsu_switch,
     getvboxwidget,
     D_getsimpleswitch,
     makesubtab_lazy,
     makescrollgrid,
 )
-from gui.codeacceptdialog import codeacceptdialog
-from myutils.utils import makehtml, getfilemd5
 
 
 def dynamicusemanager(self):
@@ -27,6 +30,8 @@ def dynamicusemanager(self):
         dialog_savedgame_new(self)
     elif globalconfig["gamemanageruseversion"] == 1:
         dialog_savedgame_lagacy(self)
+    elif globalconfig["gamemanageruseversion"] == 2:
+        dialog_savedgame_v3(self)
 
 
 def gethookgrid(self):
@@ -433,10 +438,6 @@ def outputgrid(self):
     return grids
 
 
-def setTabOne(self):
-    tabadd_lazy(self.tab_widget, ("文本输入"), lambda l: setTabOne_lazy(self, l))
-
-
 def setTabOne_lazy(self, basel):
     tab1grids = [
         [("选择文本输入源", -1)],
@@ -509,7 +510,7 @@ def setTabOne_lazy(self, basel):
     gridlayoutwidget, do = makegrid(tab1grids, delay=True)
     vl.addWidget(gridlayoutwidget)
     tab, dotab = makesubtab_lazy(
-        ["HOOK设置", "OCR设置", "剪贴板", "内嵌翻译", "文本输出"],
+        _TRL(["HOOK设置", "OCR设置", "剪贴板", "内嵌翻译", "文本输出"]),
         [
             lambda l: makescrollgrid(gethookgrid(self), l),
             lambda l: makescrollgrid(getocrgrid(self), l),

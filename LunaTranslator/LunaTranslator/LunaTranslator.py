@@ -34,7 +34,7 @@ from gui.transhist import transhist
 from gui.edittext import edittext
 import importlib, qtawesome
 from functools import partial
-from gui.settin import Settin
+from gui.setting import Setting
 from gui.showocrimage import showocrimage
 from gui.attachprocessdialog import AttachProcessDialog
 import windows
@@ -960,7 +960,7 @@ class MAINUI:
         self.startoutputer()
         self.__commonstylebase = commonstylebase(self.translation_ui)
         self.setcommonstylesheet()
-        self.settin_ui = Settin(self.__commonstylebase)
+        self.settin_ui = Setting(self.__commonstylebase)
         self.transhis = transhist(self.settin_ui)
         self.startreader()
         self.searchwordW = searchwordW(self.settin_ui)

@@ -1,5 +1,8 @@
+from qtsymbols import *
 import functools, os
+import gobject
 from myutils.config import globalconfig, ocrsetting, _TRL, ocrerrorfix
+from gui.inputdialog import autoinitdialog, postconfigdialog, autoinitdialog_items
 from gui.usefulwidget import (
     D_getsimplecombobox,
     D_getspinbox,
@@ -8,9 +11,6 @@ from gui.usefulwidget import (
     D_getsimpleswitch,
     selectcolor,
 )
-from qtsymbols import *
-from gui.inputdialog import autoinitdialog, postconfigdialog, autoinitdialog_items
-import gobject
 
 
 def __label1(self):

@@ -1,6 +1,6 @@
-import functools
 from qtsymbols import *
-from myutils.config import globalconfig, magpie_config, static_data
+import functools
+from myutils.config import globalconfig, magpie_config, static_data, _TRL
 from gui.inputdialog import getsomepath1
 from gui.usefulwidget import (
     D_getsimplecombobox,
@@ -315,7 +315,7 @@ def makescalew(self, lay):
     gw, gd = makegrid(commonfsgrid, delay=True)
     vl.addWidget(gw)
     tw, td = makesubtab_lazy(
-        ["Magpie", "外部缩放软件"],
+        _TRL(["Magpie", "外部缩放软件"]),
         [
             functools.partial(makescrollgrid, innermagpie),
             functools.partial(makescrollgrid, losslessgrid),

@@ -1,15 +1,11 @@
-import functools, json, windows
-from traceback import print_exc
 from qtsymbols import *
-from myutils.config import savehook_new_data, static_data
-import qtawesome
-import subprocess
-import winsharedutils
-import os, time
-import gobject
-import binascii
-from myutils.config import globalconfig, _TR, _TRL
+import functools, json, subprocess, os, time, binascii
 from collections import OrderedDict
+from traceback import print_exc
+import qtawesome, windows, winsharedutils, gobject
+from myutils.config import savehook_new_data, static_data, globalconfig, _TR, _TRL
+from myutils.utils import checkchaos, get_time_stamp
+from gui.dialog_savedgame import dialog_setting_game
 from gui.usefulwidget import (
     closeashidewindow,
     getQMessageBox,
@@ -18,8 +14,6 @@ from gui.usefulwidget import (
     getsimpleswitch,
     textbrowappendandmovetoend,
 )
-from myutils.utils import checkchaos, get_time_stamp
-from gui.dialog_savedgame import dialog_setting_game
 
 
 def getformlayoutw(w=None, cls=QFormLayout, hide=False):

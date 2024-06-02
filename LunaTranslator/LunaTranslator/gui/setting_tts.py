@@ -1,9 +1,8 @@
-import functools
 from qtsymbols import *
-from gui.inputdialog import autoinitdialog_items, noundictconfigdialog1, autoinitdialog
-from myutils.config import globalconfig, _TRL
 import os, functools
 import gobject
+from myutils.config import globalconfig, _TRL
+from gui.inputdialog import autoinitdialog_items, noundictconfigdialog1, autoinitdialog
 from gui.usefulwidget import (
     D_getsimplecombobox,
     D_getspinbox,

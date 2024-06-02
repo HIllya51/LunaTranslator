@@ -1,13 +1,22 @@
-import functools, copy, os, gobject
 from qtsymbols import *
+import functools, copy, os
 from traceback import print_exc
+import gobject
+from myutils.post import POSTSOLVE
+from myutils.utils import (
+    selectdebugfile,
+    checkpostlangmatch,
+    loadpostsettingwindowmethod,
+)
 from myutils.config import (
     globalconfig,
     postprocessconfig,
     static_data,
+    _TRL,
     savehook_new_data,
     _TR,
 )
+from gui.codeacceptdialog import codeacceptdialog
 from gui.usefulwidget import (
     getcolorbutton,
     D_getcolorbutton,
@@ -16,18 +25,11 @@ from gui.usefulwidget import (
     getvboxwidget,
     makesubtab_lazy,
 )
-from gui.codeacceptdialog import codeacceptdialog
 from gui.inputdialog import (
     postconfigdialog,
     autoinitdialog,
     autoinitdialog_items,
 )
-from myutils.utils import (
-    selectdebugfile,
-    checkpostlangmatch,
-    loadpostsettingwindowmethod,
-)
-from myutils.post import POSTSOLVE
 
 
 def savegameprocesstext():
@@ -254,7 +256,7 @@ def setTab7_lazy(self, basel):
         vbox.addWidget(getcomparelayout(self))
 
     tab, dotab = makesubtab_lazy(
-        ["文本预处理", "翻译优化"],
+        _TRL(["文本预处理", "翻译优化"]),
         [___, functools.partial(makescrollgrid, grids2)],
         delay=True,
     )

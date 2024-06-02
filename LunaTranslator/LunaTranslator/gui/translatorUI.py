@@ -1,27 +1,24 @@
-import time
-import functools
-import threading
-import os, sys
-import windows, importlib
-from traceback import print_exc
-import qtawesome
 from qtsymbols import *
-import gobject
+import time, functools, threading, os, sys, importlib, shutil
+from traceback import print_exc
+import windows, qtawesome, gobject, winsharedutils
 from myutils.wrapper import threader, trypass
-import winsharedutils
 from myutils.config import globalconfig, saveallconfig, _TR, static_data
 from myutils.subproc import endsubprocs
 from myutils.ocrutil import ocr_run, imageCut
 from myutils.utils import loadpostsettingwindowmethod, getimageformat, str2rgba
 from myutils.hwnd import mouseselectwindow, grabwindow, getExeIcon
-from gui.dialog_savedgame import dialog_savedgame_new, dialog_savedgame_lagacy
 from gui.dialog_memory import dialog_memory
 from gui.textbrowser import Textbrowser
 from gui.rangeselect import rangeselct_function
 from gui.usefulwidget import resizableframeless, isinrect
-from gui.dialog_savedgame import browserdialog
 from gui.edittext import edittrans
-import shutil
+from gui.dialog_savedgame import (
+    browserdialog,
+    dialog_savedgame_new,
+    dialog_savedgame_lagacy,
+    dialog_savedgame_v3,
+)
 
 
 class QUnFrameWindow(resizableframeless):
@@ -405,7 +402,11 @@ class QUnFrameWindow(resizableframeless):
             ("backtransbutton", lambda: self.changemousetransparentstate(1)),
             ("locktoolsbutton", self.changetoolslockstate),
             ("gamepad_new", lambda: dialog_savedgame_new(gobject.baseobject.settin_ui)),
-            ("gamepad_lagacy", lambda: dialog_savedgame_lagacy(gobject.baseobject.settin_ui)),
+            (
+                "gamepad_lagacy",
+                lambda: dialog_savedgame_lagacy(gobject.baseobject.settin_ui),
+            ),
+            ("gamepad_v3", lambda: dialog_savedgame_v3(gobject.baseobject.settin_ui)),
             (
                 "selectgame",
                 lambda: gobject.baseobject.createattachprocess(),

@@ -1,8 +1,8 @@
-import functools
 from qtsymbols import *
+import functools, json
+import qtawesome, gobject
 from myutils.config import globalconfig, _TR, _TRL
 from myutils.wrapper import Singleton
-import qtawesome, gobject, json
 from gui.usefulwidget import (
     D_getsimplecombobox,
     D_getcolorbutton,

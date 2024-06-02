@@ -1,9 +1,9 @@
 from qtsymbols import *
 import qtawesome, gobject
 from myutils.ocrutil import imagesolve
-from gui.usefulwidget import saveposwindow
 from myutils.config import globalconfig, _TR
 from myutils.wrapper import Singleton_close
+from gui.usefulwidget import saveposwindow
 
 
 @Singleton_close

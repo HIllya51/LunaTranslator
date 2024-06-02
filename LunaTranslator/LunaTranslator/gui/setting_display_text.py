@@ -1,8 +1,8 @@
-import functools
 from qtsymbols import *
-from gui.inputdialog import multicolorset
-from myutils.config import globalconfig, _TRL
+import functools
 import gobject
+from myutils.config import globalconfig, _TRL
+from gui.inputdialog import multicolorset
 from gui.usefulwidget import (
     D_getsimplecombobox,
     getsimpleswitch,

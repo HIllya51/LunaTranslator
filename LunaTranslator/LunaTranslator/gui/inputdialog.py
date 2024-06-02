@@ -1,10 +1,10 @@
-import functools
 from qtsymbols import *
-import qtawesome, importlib
+import functools, importlib
+import qtawesome
 from myutils.config import globalconfig, _TR, _TRL
-from gui.usefulwidget import MySwitch, selectcolor, getsimpleswitch, threebuttons
 from myutils.utils import makehtml
 from myutils.wrapper import Singleton
+from gui.usefulwidget import MySwitch, selectcolor, getsimpleswitch, threebuttons
 
 
 @Singleton

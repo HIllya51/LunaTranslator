@@ -1,12 +1,12 @@
 from qtsymbols import *
-import functools, gobject
+import functools, os, time, hashlib
+import requests, gobject
+from myutils.wrapper import threader
 from myutils.config import globalconfig, translatorsetting
-
 from myutils.subproc import subproc_w
-from gui.pretransfile import sqlite2json
-from myutils.config import globalconfig, _TR
+from myutils.config import globalconfig, _TR, _TRL
 from myutils.utils import selectdebugfile, splittranslatortypes, checkportavailable
-import os, time, requests
+from gui.pretransfile import sqlite2json
 from gui.inputdialog import autoinitdialog, autoinitdialog_items
 from gui.usefulwidget import (
     D_getspinbox,
@@ -19,8 +19,6 @@ from gui.usefulwidget import (
     makescrollgrid,
     getvboxwidget,
 )
-from myutils.wrapper import threader
-import time, hashlib
 
 
 def hashtext(a):
@@ -277,7 +275,7 @@ def setTabTwo_lazy(self, basel):
     gridlayoutwidget, do = makegrid(grids, delay=True)
     vl.addWidget(gridlayoutwidget)
     tab, dotab = makesubtab_lazy(
-        ["在线翻译", "develop", "注册在线翻译", "离线翻译", "预翻译"],
+        _TRL(["在线翻译", "develop", "注册在线翻译", "离线翻译", "预翻译"]),
         [
             functools.partial(makescrollgrid, onlinegrid),
             functools.partial(makescrollgrid, developgrid),

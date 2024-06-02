@@ -1,8 +1,8 @@
 from qtsymbols import *
-from myutils.config import _TR, globalconfig
-from gui.usefulwidget import saveposwindow
-from myutils.wrapper import Singleton_close
 import os
+from myutils.config import _TR, globalconfig
+from myutils.wrapper import Singleton_close
+from gui.usefulwidget import saveposwindow
 
 
 @Singleton_close

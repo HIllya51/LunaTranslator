@@ -1,8 +1,9 @@
 from qtsymbols import *
-import qtawesome, functools, winsharedutils
-from gui.usefulwidget import closeashidewindow
+import functools
+import qtawesome, winsharedutils
 from myutils.config import globalconfig, _TR
 from myutils.utils import get_time_stamp
+from gui.usefulwidget import closeashidewindow
 
 
 class transhist(closeashidewindow):

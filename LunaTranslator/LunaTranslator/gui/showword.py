@@ -1,14 +1,16 @@
 from qtsymbols import *
-from myutils.hwnd import grabwindow
-
+import json, time, functools, os, base64, uuid
 from urllib.parse import quote
 from traceback import print_exc
-import requests, json, time
-import qtawesome, functools, os, base64
-import gobject, uuid, windows
+import qtawesome, requests, gobject, windows
+import myutils.ankiconnect as anki
+from myutils.hwnd import grabwindow
 from myutils.utils import getimageformat, parsekeystringtomodvkcode, unsupportkey
 from myutils.config import globalconfig, _TR, static_data
-import myutils.ankiconnect as anki
+from myutils.subproc import subproc_w
+from myutils.wrapper import threader
+from myutils.ocrutil import imageCut, ocr_run
+from gui.rangeselect import rangeselct_function
 from gui.usefulwidget import (
     closeashidewindow,
     getQMessageBox,
@@ -22,10 +24,6 @@ from gui.usefulwidget import (
     makesubtab_lazy,
     tabadd_lazy,
 )
-from myutils.subproc import subproc_w
-from myutils.wrapper import threader
-from myutils.ocrutil import imageCut, ocr_run
-from gui.rangeselect import rangeselct_function
 
 
 class loopbackrecorder:
@@ -145,8 +143,8 @@ class AnkiWindow(QWidget):
         self.currentword = ""
         self.tabs = makesubtab_lazy(callback=self.ifshowrefresh)
         self.tabs.addTab(self.createaddtab(), _TR("添加"))
-        tabadd_lazy(self.tabs, "设置", self.creatsetdtab)
-        tabadd_lazy(self.tabs, "模板", self.creattemplatetab)
+        tabadd_lazy(self.tabs, _TR("设置"), self.creatsetdtab)
+        tabadd_lazy(self.tabs, _TR("模板"), self.creattemplatetab)
 
         l = QHBoxLayout()
         l.setContentsMargins(0, 0, 0, 0)

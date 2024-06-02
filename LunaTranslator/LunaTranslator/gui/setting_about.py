@@ -1,17 +1,16 @@
 from qtsymbols import *
+import platform, functools, sys, os
+import winsharedutils
+from myutils.config import globalconfig, _TR, static_data, _TRL
+from myutils.wrapper import threader
+from myutils.utils import makehtml, getimageformatlist
+from myutils.githubupdate import updatemethod, getvesionmethod
 from gui.usefulwidget import (
     D_getsimpleswitch,
     D_getsimplecombobox,
     makescrollgrid,
     makesubtab_lazy,
 )
-from myutils.config import globalconfig, _TR, static_data
-from myutils.wrapper import threader
-import platform, winsharedutils, sys, os
-from myutils.utils import makehtml, getimageformatlist
-import functools
-from myutils.githubupdate import updatemethod, getvesionmethod
-
 
 @threader
 def getversion(self):
@@ -121,7 +120,7 @@ def resourcegrid(self, l):
                     __ = True
                 grid.append([(_TR(name), 1, ""), (makehtml(link, __), 2, "link")])
         makewidgetsfunctions.append(functools.partial(makescrollgrid, grid))
-    tab, dotab = makesubtab_lazy(titles, makewidgetsfunctions, delay=True)
+    tab, dotab = makesubtab_lazy(_TRL(titles), makewidgetsfunctions, delay=True)
     l.addWidget(tab)
     dotab()
 
@@ -224,7 +223,7 @@ def setTab_aboutlazy(self, basel):
         ]
 
     tab, dotab = makesubtab_lazy(
-        ["相关说明", "其他设置", "资源下载"],
+        _TRL(["相关说明", "其他设置", "资源下载"]),
         [
             functools.partial(makescrollgrid, shuominggrid),
             functools.partial(makescrollgrid, grid2),

@@ -1,7 +1,7 @@
 from qtsymbols import *
 import functools
-from myutils.config import globalconfig
 from traceback import print_exc
+from myutils.config import globalconfig
 
 
 class Qlabel_c(QLabel):

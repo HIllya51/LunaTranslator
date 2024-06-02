@@ -129,6 +129,12 @@
         1200,
         600
     ],
+    "savegamedialoggeo3": [
+        100,
+        100,
+        1200,
+        600
+    ],
     "browserwidget": [
         100,
         100,
@@ -265,6 +271,7 @@
             "locktoolsbutton",
             "gamepad_new",
             "gamepad_lagacy",
+            "gamepad_v3",
             "selectgame",
             "selecttext",
             "selectocrrange",
@@ -467,6 +474,12 @@
             "gamepad_lagacy": {
                 "use": false,
                 "tip": "游戏管理_lagacy",
+                "icon": "fa.gamepad",
+                "align": 0
+            },
+            "gamepad_v3": {
+                "use": false,
+                "tip": "游戏管理_v3",
                 "icon": "fa.gamepad",
                 "align": 0
             },
@@ -1130,7 +1143,7 @@
         },
         "txocr": {
             "use": false,
-            "name": "tencent.ocr"
+            "name": "腾讯OCR"
         },
         "txocrtrans": {
             "use": false,
@@ -1150,7 +1163,7 @@
         },
         "googlecloudvision": {
             "use": false,
-            "name": "googlecloudvision"
+            "name": "Google Cloud Vision"
         },
         "xunfei": {
             "use": false,

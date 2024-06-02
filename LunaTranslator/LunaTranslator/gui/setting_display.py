@@ -1,11 +1,11 @@
-import functools
 from qtsymbols import *
-from myutils.config import globalconfig
+import functools
 import gobject
-from gui.gui_xianshi_buttons import createbuttonwidget
-from gui.gui_xianshi_text import xianshigrid
-from gui.gui_xianshi_ui import uisetting
-from gui.gui_xianshi_scale import makescalew
+from myutils.config import globalconfig, _TRL
+from gui.setting_display_buttons  import createbuttonwidget
+from gui.setting_display_text import xianshigrid
+from gui.setting_display_ui import uisetting
+from gui.setting_display_scale import makescalew
 from gui.usefulwidget import (
     D_getspinbox,
     makesubtab_lazy,
@@ -85,7 +85,7 @@ def _xingw():
 def setTabThree_lazy(self, basel):
 
     tab, do = makesubtab_lazy(
-        ["文本设置", "界面主题", "窗口行为", "工具按钮", "窗口缩放"],
+        _TRL(["文本设置", "界面主题", "窗口行为", "工具按钮", "窗口缩放"]),
         [
             lambda l: makescrollgrid(xianshigrid(self), l),
             lambda l: makescrollgrid(uisetting(self), l),

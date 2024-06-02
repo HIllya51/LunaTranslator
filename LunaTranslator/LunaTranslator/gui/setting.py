@@ -1,25 +1,25 @@
 from qtsymbols import *
-import qtawesome
 import functools
-from myutils.config import globalconfig, _TR
+import qtawesome
+from myutils.config import globalconfig, _TR, _TRL
 from myutils.utils import wavmp3player
-from gui.settingpage1 import setTabOne_lazy
-from gui.settingpage2 import setTabTwo_lazy, checkconnected
-from gui.settingpage_xianshishezhi import setTabThree_lazy
-from gui.gui_xianshi_text import maybehavefontsizespin
-from gui.settingpage_tts import setTab5, showvoicelist
-from gui.settingpage_cishu import setTabcishu
-from gui.settingpage_quick import setTab_quick, registrhotkeys
+from gui.usefulwidget import closeashidewindow, makesubtab_lazy
+from gui.setting_textinput import setTabOne_lazy
+from gui.setting_translate import setTabTwo_lazy, checkconnected
+from gui.setting_display import setTabThree_lazy
+from gui.setting_display_text import maybehavefontsizespin
+from gui.setting_tts import setTab5, showvoicelist
+from gui.setting_cishu import setTabcishu
+from gui.setting_hotkey import setTab_quick, registrhotkeys
 from gui.setting_lang import setTablang
 from gui.setting_proxy import setTab_proxy
-from gui.settingpage7 import setTab7_lazy, delaysetcomparetext
-from gui.settingpage_about import (
+from gui.setting_transopti import setTab7_lazy, delaysetcomparetext
+from gui.setting_about import (
     setTab_aboutlazy,
     versionlabelmaybesettext,
     updateprogress,
     getversion,
 )
-from gui.usefulwidget import closeashidewindow, makesubtab_lazy
 
 
 class TabWidget(QWidget):
@@ -62,7 +62,7 @@ class TabWidget(QWidget):
         return self.tab_widget.currentWidget()
 
 
-class Settin(closeashidewindow):
+class Setting(closeashidewindow):
     voicelistsignal = pyqtSignal(list, int)
     mp3playsignal = pyqtSignal(bytes, int, bool)
     versiontextsignal = pyqtSignal(str)
@@ -72,7 +72,7 @@ class Settin(closeashidewindow):
     showandsolvesig = pyqtSignal(str)
 
     def __init__(self, parent):
-        super(Settin, self).__init__(parent, globalconfig, "setting_geo_2")
+        super(Setting, self).__init__(parent, globalconfig, "setting_geo_2")
         self.setWindowIcon(qtawesome.icon("fa.gear"))
         self.mp3player = wavmp3player()
         self.mp3playsignal.connect(self.mp3player.mp3playfunction)
@@ -101,18 +101,20 @@ class Settin(closeashidewindow):
         self.setWindowTitle(_TR("设置"))
 
         self.tab_widget, do = makesubtab_lazy(
-            [
-                "文本输入",
-                "翻译设置",
-                "显示设置",
-                "文本处理",
-                "辞书设置",
-                "语音合成",
-                "快捷按键",
-                "语言设置",
-                "代理设置",
-                "其他设置",
-            ],
+            _TRL(
+                [
+                    "文本输入",
+                    "翻译设置",
+                    "显示设置",
+                    "文本处理",
+                    "辞书设置",
+                    "语音合成",
+                    "快捷按键",
+                    "语言设置",
+                    "代理设置",
+                    "其他设置",
+                ]
+            ),
             [
                 functools.partial(setTabOne_lazy, self),
                 functools.partial(setTabTwo_lazy, self),

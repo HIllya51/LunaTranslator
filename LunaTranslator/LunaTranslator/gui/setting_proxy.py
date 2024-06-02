@@ -1,6 +1,6 @@
 from qtsymbols import *
-from myutils.config import _TR
-from myutils.config import globalconfig
+import os, functools
+from myutils.config import _TR, _TRL, globalconfig
 from myutils.utils import splittranslatortypes
 from gui.usefulwidget import (
     D_getsimpleswitch,
@@ -9,7 +9,6 @@ from gui.usefulwidget import (
     getvboxwidget,
     makescrollgrid,
 )
-import os, functools
 
 
 def getall(l, item="fanyi", name=""):
@@ -99,7 +98,7 @@ def setTab_proxy_lazy(self, basel):
     gridlayoutwidget, do = makegrid(grid1, delay=True)
     vl.addWidget(gridlayoutwidget)
     tab, dotab = makesubtab_lazy(
-        ["在线翻译", "注册在线翻译", "在线OCR"],
+        _TRL(["在线翻译", "注册在线翻译", "在线OCR"]),
         [
             functools.partial(makescrollgrid, mianfei),
             functools.partial(makescrollgrid, shoufei),

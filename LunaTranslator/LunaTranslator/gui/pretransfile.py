@@ -1,8 +1,6 @@
 from qtsymbols import *
-import sqlite3, os
-import json
+import sqlite3, os, json, functools
 from traceback import print_exc
-import functools
 from myutils.config import globalconfig, _TR
 from myutils.utils import autosql
 from gui.usefulwidget import getQMessageBox
