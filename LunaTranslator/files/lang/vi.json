@@ -810,5 +810,9 @@
     "不显示时间": "Không hiển thị thời gian",
     "过滤历史重复": "Lọc lịch sử lặp lại",
     "缓存条数": "Số thanh bộ nhớ cache",
-    "腾讯OCR": "Thông tin OCR"
+    "腾讯OCR": "Thông tin OCR",
+    "添加列表": "Thêm danh sách",
+    "删除列表": "Xoá danh sách",
+    "上移": "Di chuyển lên",
+    "下移": "Di chuyển xuống"
 }

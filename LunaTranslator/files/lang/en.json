@@ -810,5 +810,9 @@
     "不显示时间": "Do not display time",
     "过滤历史重复": "Filter historical duplicates",
     "缓存条数": "Number of cache entries",
-    "腾讯OCR": "Tencent OCR"
+    "腾讯OCR": "Tencent OCR",
+    "添加列表": "Add List",
+    "删除列表": "Delete List",
+    "上移": "Move Up",
+    "下移": "Move Down"
 }

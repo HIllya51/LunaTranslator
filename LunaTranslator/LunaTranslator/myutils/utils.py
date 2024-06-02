@@ -196,13 +196,15 @@ def imgchangedtask(gamepath, res):
     savehook_new_data[gamepath]["isimagepathusersetted"] = True
 
 
-def checkifnewgame(gamepath, title=None):
-    if gamepath not in savehook_new_list:
-        savehook_new_list.insert(0, gamepath)
+def checkifnewgame(targetlist, gamepath, title=None):
+    if gamepath  in targetlist:
+        return False
+    targetlist.insert(0, gamepath)
+    
     if gamepath not in savehook_new_data:
         savehook_new_data[gamepath] = getdefaultsavehook(gamepath, title)
     searchvndbqueue.put((2, gamepath, None))
-
+    return True
 
 kanjichs2ja = str.maketrans(static_data["kanjichs2ja"])
 

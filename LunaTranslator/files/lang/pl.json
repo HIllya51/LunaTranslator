@@ -810,5 +810,9 @@
     "不显示时间": "Nie wyświetlaj czasu",
     "过滤历史重复": "Filtruj duplikaty historyczne",
     "缓存条数": "Liczba wpisów pamięci podręcznej",
-    "腾讯OCR": "Dziesięć OCR"
+    "腾讯OCR": "Dziesięć OCR",
+    "添加列表": "Dodaj listę",
+    "删除列表": "Usuń listę",
+    "上移": "Przesuń się w górę",
+    "下移": "Przesuń w dół"
 }

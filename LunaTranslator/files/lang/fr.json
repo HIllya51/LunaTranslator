@@ -810,5 +810,9 @@
     "不显示时间": "Ne pas afficher l'heure",
     "过滤历史重复": "Filtrer historique répétition",
     "缓存条数": "Nombre de barres de cache",
-    "腾讯OCR": "OCR Tencent"
+    "腾讯OCR": "OCR Tencent",
+    "添加列表": "Ajouter une liste",
+    "删除列表": "Supprimer une liste",
+    "上移": "Déplacement vers le Haut",
+    "下移": "Descendre"
 }

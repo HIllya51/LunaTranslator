@@ -49,6 +49,11 @@ except:
     savehook_new_list = []
     savehook_new_data = {}
 
+try:
+    savegametaged = _savehook[2]
+except:
+    savegametaged = [None]
+
 translatorsetting = tryreadconfig("translatorsetting.json")
 ocrsetting = tryreadconfig("ocrsetting.json")
 
@@ -338,7 +343,8 @@ def saveallconfig():
     safesave("./userconfig/ocrsetting.json", ocrsetting)
     safesave("./userconfig/vndbtagdata.json", vndbtagdata)
     safesave(
-        "./userconfig/savehook_new_1.39.4.json", [savehook_new_list, savehook_new_data]
+        "./userconfig/savehook_new_1.39.4.json",
+        [savehook_new_list, savehook_new_data, savegametaged],
     )
     safesave(
         "./files/lang/{}.json".format(getlanguse()),

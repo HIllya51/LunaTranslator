@@ -509,7 +509,7 @@ class hookselect(closeashidewindow):
             embedw, hlay = getformlayoutw(cls=QHBoxLayout)
             label = QLabel()
             hlay.addWidget(label)
-            label.setStyleSheet("background-color: rgba(255, 255, 255, 0)")
+            embedw.setStyleSheet("background-color: rgba(255, 255, 255, 0)")
             checkbtn = QPushButton()
             checkbtn.setSizePolicy(
                 QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Preferred

@@ -464,7 +464,7 @@ class MAINUI:
     def selectprocess(self, selectedp):
         self.textsource = None
         pids, pexe, hwnd = selectedp
-        checkifnewgame(pexe, windows.GetWindowText(hwnd))
+        checkifnewgame(savehook_new_list, pexe, windows.GetWindowText(hwnd))
         if globalconfig["sourcestatus2"]["texthook"]["use"]:
             self.textsource = texthook(pids, hwnd, pexe)
 
