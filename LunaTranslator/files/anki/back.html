@@ -8,10 +8,10 @@
 </div>
 
 <script>
-    ruby = JSON.parse(decodeURIComponent("{{ rubytext }}"))
-    html = ''
+    const ruby = JSON.parse(decodeURIComponent("{{ rubytext }}"))
+    let html = ''
     if (ruby.length) {
-        for (i = 0; i < ruby.length; i++) {
+        for (let i = 0; i < ruby.length; i++) {
             html += ruby[i]['orig'];
             if (ruby[i]['orig'] != ruby[i]['hira'])
                 html += '<rt>' + ruby[i]['hira'] + '</rt>';
@@ -49,82 +49,85 @@
 </div>
 
 <script>
-    explains = JSON.parse(decodeURIComponent("{{ explain }}"))
+    let explains = JSON.parse(decodeURIComponent("{{ explain }}"))
 
     function safehtml(html) {
         html = decodeURIComponent(html)
-        var tempParent = document.createElement('div');
+        const tempParent = document.createElement('div');
         tempParent.innerHTML = html;
 
-        var fragment = document.createElement('div');
+        let fragment = document.createElement('div');
         while (tempParent.firstChild) {
             fragment.appendChild(tempParent.firstChild);
         }
         return fragment, fragment.innerHTML
     }
-    htmltabbuttons = ''
-    htmlcontents = ''
+    let htmltabbuttons = ''
     function onclickbtn(_id) {
 
-        tabButtons = document.querySelectorAll('.tab-widget .tab-button');
-        tabPanes = document.querySelectorAll('.tab-widget .tab-pane');
-        for (i = 0; i < tabButtons.length; i++)
+        let tabButtons = document.querySelectorAll('.tab-widget .tab-button');
+        let tabPanes = document.querySelectorAll('.tab-widget .tab-pane');
+        for (let i = 0; i < tabButtons.length; i++)
             tabButtons[i].classList.remove('active');
-        for (i = 0; i < tabPanes.length; i++)
+        for (let i = 0; i < tabPanes.length; i++)
             tabPanes[i].classList.remove('active');
 
         document.getElementById(_id).classList.add('active');
 
-        tabId = document.getElementById(_id).getAttribute('data-tab');
-        tabPane = document.getElementById(tabId);
+        let tabId = document.getElementById(_id).getAttribute('data-tab');
+        let tabPane = document.getElementById(tabId);
         tabPane.classList.add('active');
     }
-    scriptElementss = []
-    for (iiii = 0; iiii < explains.length; iiii++) {
+    let scriptElementss = []
+    for (let iiii = 0; iiii < explains.length; iiii++) {
         htmltabbuttons += '<button type="button" onclick="onclickbtn(\'buttonid' + (iiii).toString() + '\')" id="buttonid' + (iiii).toString() + '" class="tab-button" data-tab="tab' + (iiii).toString() + '">' + explains[iiii]['source'] + '</button>'
 
-        var tempParent = document.createElement('div');
+        let tempParent = document.createElement('div');
         tempParent.innerHTML = explains[iiii]['content'];
 
-        var fragment = document.createElement('div');
+        let fragment = document.createElement('div');
         while (tempParent.firstChild) {
             fragment.appendChild(tempParent.firstChild);
         }
 
-        htmlcontents += '<div id="tab' + (iiii).toString() + '" class="tab-pane">' + fragment.innerHTML + '</div>'
+        const newDiv = document.createElement('div');
+        newDiv.id = 'tab' + iiii.toString();
+        newDiv.className = 'tab-pane';
+        newDiv.innerHTML = fragment.innerHTML;
 
-        var scriptElements = fragment.getElementsByTagName('script');
+        document.getElementById('tab_contents').appendChild(newDiv);
 
-        for (var jjjj = 0; jjjj < scriptElements.length; jjjj++) {
+        let scriptElements = fragment.getElementsByTagName('script');
+
+        for (let jjjj = 0; jjjj < scriptElements.length; jjjj++) {
             scriptElementss.push(scriptElements[jjjj].textContent)
         }
     }
     document.getElementById('tab_buttons').innerHTML = htmltabbuttons;
-    document.getElementById('tab_contents').innerHTML = htmlcontents;
     if (document.querySelectorAll('.tab-widget .tab-button').length) {
         document.querySelectorAll('.tab-widget .tab-button')[0].click()
     }
-    for (iiii = 0; iiii < scriptElementss.length; iiii++) {
+    for (let iiii = 0; iiii < scriptElementss.length; iiii++) {
         eval(scriptElementss[iiii])
     }
 </script>
 
 <script>
     function playAudio(audioId) {
-        var audioDiv = document.getElementById(audioId);
-        var audio = audioDiv.getElementsByTagName('*');
+        let audioDiv = document.getElementById(audioId);
+        let audio = audioDiv.getElementsByTagName('*');
         if (audio.length > 0) {
             audio[0].click();
         }
     }
     function checkhide(eid) {
-        var emptyDiv = document.getElementById(eid);
+        let emptyDiv = document.getElementById(eid);
         if (emptyDiv && emptyDiv.innerText.trim() === "") {
             emptyDiv.classList.add("hide-style");
         }
     }
     function checkhide2(eid) {
-        var emptyDiv = document.getElementById(eid);
+        let emptyDiv = document.getElementById(eid);
         if (emptyDiv && emptyDiv.children.length == 0) {
             emptyDiv.classList.add("hide-style");
         }
