@@ -2737,14 +2737,14 @@ function onclickbtn_mdict_internal(_id) {
 
 .tab-widget_mdict_internal .tab-button_mdict_internal {
     padding: 10px 20px;
-    background-color: #ccc;
+    background-color: #cccccccc;
     border: none;
     cursor: pointer;
     display: inline-block;
 }
 
 .tab-widget_mdict_internal .tab-button_mdict_internal.active {
-    background-color: #f0f0f0;
+    background-color: #cccccc44;
 }
 
 .tab-widget_mdict_internal .tab-content_mdict_internal .tab-pane_mdict_internal {
@@ -2785,7 +2785,7 @@ document.querySelectorAll('.tab-widget_mdict_internal .tab-button_mdict_internal
     }
     
     .collapsible-header {
-        background-color: #f4f4f4;
+        background-color: #dddddd50;
         padding: 10px;
         cursor: pointer;
         border: 1px solid #ddd;
@@ -2796,7 +2796,6 @@ document.querySelectorAll('.tab-widget_mdict_internal .tab-button_mdict_internal
         display: none;
         padding: 10px;
         border: 1px solid #ddd;
-        background-color: #fff;
     }</style>"""
         content += """
 <script>

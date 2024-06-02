@@ -247,9 +247,12 @@
         "backcolor": "#c38282",
         "onselectcolor": "#007fff",
         "onfilenoexistscolor": "#acacac",
-        "transparent": 25
+        "transparent": 25,
+        "listitemheight": 40,
+        "listitemwidth": 300
     },
     "gamemanageruseversion": 0,
+    "gamemanager_integrated_internal_layout": 0,
     "profiles_index": 0,
     "ocrautobindwindow": true,
     "toolbutton": {
@@ -270,8 +273,6 @@
             "backtransbutton",
             "locktoolsbutton",
             "gamepad_new",
-            "gamepad_lagacy",
-            "gamepad_v3",
             "selectgame",
             "selecttext",
             "selectocrrange",
@@ -468,18 +469,6 @@
             "gamepad_new": {
                 "use": true,
                 "tip": "游戏管理",
-                "icon": "fa.gamepad",
-                "align": 0
-            },
-            "gamepad_lagacy": {
-                "use": false,
-                "tip": "游戏管理_lagacy",
-                "icon": "fa.gamepad",
-                "align": 0
-            },
-            "gamepad_v3": {
-                "use": false,
-                "tip": "游戏管理_v3",
                 "icon": "fa.gamepad",
                 "align": 0
             },
@@ -1141,13 +1130,17 @@
             "use": false,
             "name": "百度OCR"
         },
+        "baiduocr_ts": {
+            "use": false,
+            "name": "百度图片翻译"
+        },
         "txocr": {
             "use": false,
             "name": "腾讯OCR"
         },
         "txocrtrans": {
             "use": false,
-            "name": "tencent.ImageTranslate"
+            "name": "腾讯图片翻译"
         },
         "feishu": {
             "use": false,

@@ -37,14 +37,14 @@
 
 .tab-widget .tab-button {
     padding: 10px 20px;
-    background-color: #ccc;
+    background-color: #cccccccc;
     border: none;
     cursor: pointer;
     display: inline-block;
 }
 
 .tab-widget .tab-button.active {
-    background-color: #f0f0f0;
+    background-color: #f0f0f050;
 }
 
 .tab-widget .tab-content .tab-pane {

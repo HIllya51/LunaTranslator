@@ -128,16 +128,23 @@ class closeashidewindow(saveposwindow):
 
 
 class MySwitch(QPushButton):
-    def __init__(self, parent=None, sign=True, enable=True):
+    def __init__(
+        self, parent=None, sign=True, enable=True, icons=None, size=25, colors=None
+    ):
         self.status1 = 0
         self.status2 = 0
-        self.colors = [
-            "#7f7f7f",
-            "#afafaf",
-            "#FFa9d4",
-            "#FF69B4",
-        ]
-        self.icons = ["fa.times", "fa.check"]
+        if colors is None:
+            colors = [
+                "#7f7f7f",
+                "#afafaf",
+                "#FFa9d4",
+                "#FF69B4",
+            ]
+        self.colors = colors
+        if icons is None:
+            icons = ["fa.times", "fa.check"]
+        self.icons = icons
+
         super().__init__(parent)
 
         self.setStyleSheet(
@@ -148,7 +155,7 @@ class MySwitch(QPushButton):
         )
 
         self.clicked.connect(self.setChecked)
-        self.setIconSize(QSize(25, 25))
+        self.setIconSize(QSize(size, size))
         self.setEnabled(enable)
         self.setCheckable(True)
         self.setChecked(sign)
@@ -511,8 +518,8 @@ def getsimpleswitch(
             d[key] = default
 
     b = MySwitch(sign=d[key], enable=enable)
-    b.clicked.connect(functools.partial(callbackwrap, d, key, callback))
     b.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
+    b.clicked.connect(functools.partial(callbackwrap, d, key, callback))
     if pair:
         if pair not in dir(parent):
             setattr(parent, pair, {})
@@ -846,11 +853,12 @@ class threebuttons(QWidget):
         layout.addWidget(button3)
 
 
-def tabadd_lazy(tab, title, getrealwidgetfunction):
+def tabadd_lazy(tab, title, getrealwidgetfunction, margin0=True):
     q = QWidget()
     v = QVBoxLayout()
     q.setLayout(v)
-    v.setContentsMargins(0, 0, 0, 0)
+    if margin0:
+        v.setContentsMargins(0, 0, 0, 0)
     q.lazyfunction = functools.partial(getrealwidgetfunction, v)
     tab.addTab(q, title)
 

@@ -13,12 +13,7 @@ from gui.textbrowser import Textbrowser
 from gui.rangeselect import rangeselct_function
 from gui.usefulwidget import resizableframeless, isinrect
 from gui.edittext import edittrans
-from gui.dialog_savedgame import (
-    browserdialog,
-    dialog_savedgame_new,
-    dialog_savedgame_lagacy,
-    dialog_savedgame_v3,
-)
+from gui.dialog_savedgame import browserdialog, dialog_savedgame_integrated
 
 
 class QUnFrameWindow(resizableframeless):
@@ -401,12 +396,10 @@ class QUnFrameWindow(resizableframeless):
             ("mousetransbutton", lambda: self.changemousetransparentstate(0)),
             ("backtransbutton", lambda: self.changemousetransparentstate(1)),
             ("locktoolsbutton", self.changetoolslockstate),
-            ("gamepad_new", lambda: dialog_savedgame_new(gobject.baseobject.settin_ui)),
             (
-                "gamepad_lagacy",
-                lambda: dialog_savedgame_lagacy(gobject.baseobject.settin_ui),
+                "gamepad_new",
+                lambda: dialog_savedgame_integrated(gobject.baseobject.settin_ui),
             ),
-            ("gamepad_v3", lambda: dialog_savedgame_v3(gobject.baseobject.settin_ui)),
             (
                 "selectgame",
                 lambda: gobject.baseobject.createattachprocess(),

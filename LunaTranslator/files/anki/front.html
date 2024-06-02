@@ -8,10 +8,10 @@
 </div>
 
 <script>
-    let ruby = JSON.parse(decodeURIComponent("{{ rubytext }}"))
-    let html = ''
+    var ruby = JSON.parse(decodeURIComponent("{{ rubytext }}"))
+    var html = ''
     if (ruby.length) {
-        for (let i = 0; i < ruby.length; i++) {
+        for (var i = 0; i < ruby.length; i++) {
             html += ruby[i]['orig'];
             if (ruby[i]['orig'] != ruby[i]['hira'])
                 html += '<rt>' + ruby[i]['hira'] + '</rt>';
@@ -38,20 +38,20 @@
 
 <script>
     function playAudio(audioId) {
-        let audioDiv = document.getElementById(audioId);
-        let audio = audioDiv.getElementsByTagName('*');
+        var audioDiv = document.getElementById(audioId);
+        var audio = audioDiv.getElementsByTagName('*');
         if (audio.length > 0) {
             audio[0].click();
         }
     }
     function checkhide(eid) {
-        let emptyDiv = document.getElementById(eid);
+        var emptyDiv = document.getElementById(eid);
         if (emptyDiv && emptyDiv.innerText.trim() === "") {
             emptyDiv.classList.add("hide-style");
         }
     }
     function checkhide2(eid) {
-        let emptyDiv = document.getElementById(eid);
+        var emptyDiv = document.getElementById(eid);
         if (emptyDiv && emptyDiv.children.length == 0) {
             emptyDiv.classList.add("hide-style");
         }

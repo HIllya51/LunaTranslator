@@ -6,11 +6,7 @@ from myutils.config import globalconfig, _TR, _TRL, savehook_new_data, savehook_
 from gui.pretransfile import sqlite2json2
 from gui.codeacceptdialog import codeacceptdialog
 from gui.setting_textinput_ocr import getocrgrid
-from gui.dialog_savedgame import (
-    dialog_savedgame_new,
-    dialog_savedgame_lagacy,
-    dialog_savedgame_v3,
-)
+from gui.dialog_savedgame import dialog_savedgame_integrated
 from gui.inputdialog import regexedit
 from gui.usefulwidget import (
     D_getsimplecombobox,
@@ -23,15 +19,6 @@ from gui.usefulwidget import (
     makesubtab_lazy,
     makescrollgrid,
 )
-
-
-def dynamicusemanager(self):
-    if globalconfig["gamemanageruseversion"] == 0:
-        dialog_savedgame_new(self)
-    elif globalconfig["gamemanageruseversion"] == 1:
-        dialog_savedgame_lagacy(self)
-    elif globalconfig["gamemanageruseversion"] == 2:
-        dialog_savedgame_v3(self)
 
 
 def gethookgrid(self):
@@ -78,7 +65,7 @@ def gethookgrid(self):
                 D_getcolorbutton(
                     globalconfig,
                     "",
-                    functools.partial(dynamicusemanager, self),
+                    functools.partial(dialog_savedgame_integrated, self),
                     icon="fa.gamepad",
                     constcolor="#FF69B4",
                 ),

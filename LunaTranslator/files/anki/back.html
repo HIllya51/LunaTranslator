@@ -8,10 +8,10 @@
 </div>
 
 <script>
-    const ruby = JSON.parse(decodeURIComponent("{{ rubytext }}"))
-    let html = ''
+    var ruby = JSON.parse(decodeURIComponent("{{ rubytext }}"))
+    var html = ''
     if (ruby.length) {
-        for (let i = 0; i < ruby.length; i++) {
+        for (var i = 0; i < ruby.length; i++) {
             html += ruby[i]['orig'];
             if (ruby[i]['orig'] != ruby[i]['hira'])
                 html += '<rt>' + ruby[i]['hira'] + '</rt>';
@@ -49,85 +49,81 @@
 </div>
 
 <script>
-    let explains = JSON.parse(decodeURIComponent("{{ explain }}"))
+    var explains = JSON.parse(decodeURIComponent("{{ explain }}"))
 
     function safehtml(html) {
         html = decodeURIComponent(html)
-        const tempParent = document.createElement('div');
+        var tempParent = document.createElement('div');
         tempParent.innerHTML = html;
 
-        let fragment = document.createElement('div');
+        var fragment = document.createElement('div');
         while (tempParent.firstChild) {
             fragment.appendChild(tempParent.firstChild);
         }
         return fragment, fragment.innerHTML
     }
-    let htmltabbuttons = ''
+    var htmltabbuttons = ''
+    var htmlcontents = ''
     function onclickbtn(_id) {
 
-        let tabButtons = document.querySelectorAll('.tab-widget .tab-button');
-        let tabPanes = document.querySelectorAll('.tab-widget .tab-pane');
-        for (let i = 0; i < tabButtons.length; i++)
+        var tabButtons = document.querySelectorAll('.tab-widget .tab-button');
+        var tabPanes = document.querySelectorAll('.tab-widget .tab-pane');
+        for (var i = 0; i < tabButtons.length; i++)
             tabButtons[i].classList.remove('active');
-        for (let i = 0; i < tabPanes.length; i++)
+        for (var i = 0; i < tabPanes.length; i++)
             tabPanes[i].classList.remove('active');
 
         document.getElementById(_id).classList.add('active');
 
-        let tabId = document.getElementById(_id).getAttribute('data-tab');
-        let tabPane = document.getElementById(tabId);
+        var tabId = document.getElementById(_id).getAttribute('data-tab');
+        var tabPane = document.getElementById(tabId);
         tabPane.classList.add('active');
     }
-    let scriptElementss = []
-    for (let iiii = 0; iiii < explains.length; iiii++) {
+    var scriptElementss = []
+    for (var iiii = 0; iiii < explains.length; iiii++) {
         htmltabbuttons += '<button type="button" onclick="onclickbtn(\'buttonid' + (iiii).toString() + '\')" id="buttonid' + (iiii).toString() + '" class="tab-button" data-tab="tab' + (iiii).toString() + '">' + explains[iiii]['source'] + '</button>'
 
-        let tempParent = document.createElement('div');
+        var tempParent = document.createElement('div');
         tempParent.innerHTML = explains[iiii]['content'];
 
-        let fragment = document.createElement('div');
+        var fragment = document.createElement('div');
         while (tempParent.firstChild) {
             fragment.appendChild(tempParent.firstChild);
         }
 
-        const newDiv = document.createElement('div');
-        newDiv.id = 'tab' + iiii.toString();
-        newDiv.className = 'tab-pane';
-        newDiv.innerHTML = fragment.innerHTML;
+        htmlcontents += '<div id="tab' + (iiii).toString() + '" class="tab-pane">' + fragment.innerHTML + '</div>'
+        var scriptElements = fragment.getElementsByTagName('script');
 
-        document.getElementById('tab_contents').appendChild(newDiv);
-
-        let scriptElements = fragment.getElementsByTagName('script');
-
-        for (let jjjj = 0; jjjj < scriptElements.length; jjjj++) {
+        for (var jjjj = 0; jjjj < scriptElements.length; jjjj++) {
             scriptElementss.push(scriptElements[jjjj].textContent)
         }
     }
+    document.getElementById('tab_contents').innerHTML = htmlcontents;
     document.getElementById('tab_buttons').innerHTML = htmltabbuttons;
     if (document.querySelectorAll('.tab-widget .tab-button').length) {
         document.querySelectorAll('.tab-widget .tab-button')[0].click()
     }
-    for (let iiii = 0; iiii < scriptElementss.length; iiii++) {
+    for (var iiii = 0; iiii < scriptElementss.length; iiii++) {
         eval(scriptElementss[iiii])
     }
 </script>
 
 <script>
     function playAudio(audioId) {
-        let audioDiv = document.getElementById(audioId);
-        let audio = audioDiv.getElementsByTagName('*');
+        var audioDiv = document.getElementById(audioId);
+        var audio = audioDiv.getElementsByTagName('*');
         if (audio.length > 0) {
             audio[0].click();
         }
     }
     function checkhide(eid) {
-        let emptyDiv = document.getElementById(eid);
+        var emptyDiv = document.getElementById(eid);
         if (emptyDiv && emptyDiv.innerText.trim() === "") {
             emptyDiv.classList.add("hide-style");
         }
     }
     function checkhide2(eid) {
-        let emptyDiv = document.getElementById(eid);
+        var emptyDiv = document.getElementById(eid);
         if (emptyDiv && emptyDiv.children.length == 0) {
             emptyDiv.classList.add("hide-style");
         }

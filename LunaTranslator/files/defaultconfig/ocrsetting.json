@@ -23,6 +23,19 @@
             }
         }
     },
+    "baiduocr_ts": {
+        "args": {
+            "注册网址": "https://fanyi-api.baidu.com/product/223",
+            "app_id": "",
+            "app_key": ""
+        },
+        "argstype": {
+            "注册网址": {
+                "type": "label",
+                "islink": true
+            }
+        }
+    },
     "txocr": {
         "args": {
             "注册网址": "https://cloud.tencent.com/document/product/866/33526",

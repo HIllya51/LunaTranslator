@@ -814,5 +814,8 @@
     "添加列表": "Add List",
     "删除列表": "Delete List",
     "上移": "Move Up",
-    "下移": "Move Down"
+    "下移": "Move Down",
+    "腾讯图片翻译": "Tencent Image Translation",
+    "百度图片翻译": "Baidu Image Translation",
+    "修改名称": "Change Name"
 }

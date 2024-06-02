@@ -1,3 +1,4 @@
+from PyQt5.QtGui import QMouseEvent
 from qtsymbols import *
 import os, functools, uuid
 from datetime import datetime, timedelta
@@ -36,6 +37,7 @@ from gui.usefulwidget import (
     saveposwindow,
     getboxlayout,
     getlineedit,
+    MySwitch,
     auto_select_webview,
     Prompt_dialog,
     getsimplecombobox,
@@ -626,38 +628,12 @@ class dialog_setting_game_internal(QWidget):
         titleedit.textChanged.connect(_titlechange)
         formLayout.addRow(_TR("标题"), titleedit)
 
-        imgpath = QLineEdit(savehook_new_data[exepath]["imagepath"])
-        imgpath.setReadOnly(True)
-
-        def selectimg():
-            f = QFileDialog.getOpenFileName(
-                directory=savehook_new_data[exepath]["imagepath"]
-            )
-            res = f[0]
-            if res != "":
-
-                _pixmap = QPixmap(res)
-                if _pixmap.isNull() == False:
-                    imgchangedtask(exepath, res)
-                    imgpath.setText(res)
-
         vndbid = QLineEdit(str(savehook_new_data[exepath]["vid"]))
         vndbid.setValidator(QIntValidator())
         vndbid.setSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Fixed)
 
         vndbid.textEdited.connect(functools.partial(vidchangedtask, exepath))
 
-        formLayout.addRow(
-            _TR("封面"),
-            getboxlayout(
-                [
-                    imgpath,
-                    getcolorbutton(
-                        "", "", selectimg, icon="fa.gear", constcolor="#FF69B4"
-                    ),
-                ]
-            ),
-        )
         formLayout.addRow(
             "vndbid",
             getboxlayout(
@@ -695,7 +671,18 @@ class dialog_setting_game_internal(QWidget):
         )
 
         methodtab, do = makesubtab_lazy(
-            _TRL(["启动", "HOOK", "预翻译", "语音", "标签", "统计信息", "存档备份"]),
+            _TRL(
+                [
+                    "启动",
+                    "HOOK",
+                    "预翻译",
+                    "语音",
+                    "标签",
+                    "统计信息",
+                    "存档备份",
+                    "封面",
+                ]
+            ),
             [
                 functools.partial(self.doaddtab, self.starttab, exepath),
                 functools.partial(self.doaddtab, self.gethooktab, exepath),
@@ -704,6 +691,7 @@ class dialog_setting_game_internal(QWidget):
                 functools.partial(self.doaddtab, self.getlabelsetting, exepath),
                 functools.partial(self.doaddtab, self.getstatistic, exepath),
                 functools.partial(self.doaddtab, self.getbackup, exepath),
+                functools.partial(self.doaddtab, self.fengmiantab, exepath),
             ],
             delay=True,
         )
@@ -711,6 +699,61 @@ class dialog_setting_game_internal(QWidget):
         vbox.addLayout(formLayout)
         vbox.addWidget(methodtab)
         do()
+
+    def fengmiantab(self, exepath):
+        _w = QWidget()
+        formLayout = QFormLayout()
+        _w.setLayout(formLayout)
+
+        imgpath = QLineEdit(savehook_new_data[exepath]["imagepath"])
+        imgpath.setReadOnly(True)
+
+        def selectimg():
+            f = QFileDialog.getOpenFileName(
+                directory=savehook_new_data[exepath]["imagepath"]
+            )
+            res = f[0]
+            if res != "":
+
+                _pixmap = QPixmap(res)
+                if _pixmap.isNull() == False:
+                    imgchangedtask(exepath, res)
+                    imgpath.setText(res)
+
+        formLayout.addRow(
+            _TR("封面"),
+            getboxlayout(
+                [
+                    imgpath,
+                    getcolorbutton(
+                        "", "", selectimg, icon="fa.gear", constcolor="#FF69B4"
+                    ),
+                ]
+            ),
+        )
+
+        imgpath2 = QLineEdit("|".join(savehook_new_data[exepath]["imagepath_much2"]))
+        imgpath2.setReadOnly(True)
+
+        def selectimg2():
+            f = QFileDialog.getOpenFileNames()
+            res = f[0]
+            res = "|".join(f[0])
+            savehook_new_data[exepath]["imagepath_much2"] = f[0]
+            imgpath2.setText(res)
+
+        formLayout.addRow(
+            _TR("封面_其他"),
+            getboxlayout(
+                [
+                    imgpath2,
+                    getcolorbutton(
+                        "", "", selectimg2, icon="fa.gear", constcolor="#FF69B4"
+                    ),
+                ]
+            ),
+        )
+        return _w
 
     def doaddtab(self, wfunct, exe, layout):
         w = wfunct(exe)
@@ -1213,6 +1256,7 @@ class dialog_syssetting(QDialog):
         super().__init__(parent, Qt.WindowType.WindowCloseButtonHint)
         self.setWindowTitle(_TR("其他设置"))
         formLayout = QFormLayout(self)
+
         formLayout.addRow(
             QLabel(_TR("隐藏不存在的游戏")),
             getsimpleswitch(globalconfig, "hide_not_exists"),
@@ -1230,6 +1274,16 @@ class dialog_syssetting(QDialog):
                     (_TR(name)),
                     getspinbox(0, 1000, globalconfig["dialog_savegame_layout"], key),
                 )
+        elif type_ == 2:
+            for key, name in [
+                ("listitemheight", "文字区高度"),
+                ("listitemwidth", "高度"),
+            ]:
+                formLayout.addRow(
+                    (_TR(name)),
+                    getspinbox(0, 1000, globalconfig["dialog_savegame_layout"], key),
+                )
+
         for key, name in [
             ("backcolor", "颜色"),
             ("onselectcolor", "选中时颜色"),
@@ -1452,7 +1506,7 @@ def startgamecheck(self, game):
     if globalconfig["startgamenototop"] == False:
         idx = savehook_new_list.index(game)
         savehook_new_list.insert(0, savehook_new_list.pop(idx))
-    self.close()
+    self.parent().parent().close()
     startgame(game)
 
 
@@ -1483,18 +1537,105 @@ def addgamebatch(callback, targetlist):
 
 
 @Singleton_close
-class dialog_savedgame_new(saveposwindow):
+class dialog_savedgame_integrated(saveposwindow):
+    def selectlayout(self, type):
+        globalconfig["gamemanager_integrated_internal_layout"] = type
+        klass = [dialog_savedgame_new, dialog_savedgame_v3, dialog_savedgame_lagacy][
+            type
+        ]
+
+        [self.layout1btn, self.layout2btn, self.layout3btn][(type) % 3].setEnabled(
+            False
+        )
+        [self.layout1btn, self.layout2btn, self.layout3btn][(type + 1) % 3].setEnabled(
+            False
+        )
+        [self.layout1btn, self.layout2btn, self.layout3btn][(type + 2) % 3].setEnabled(
+            False
+        )
+        [self.layout1btn, self.layout2btn, self.layout3btn][(type + 1) % 3].setChecked(
+            False
+        )
+        [self.layout1btn, self.layout2btn, self.layout3btn][(type + 2) % 3].setChecked(
+            False
+        )
+        _old = self.internallayout.takeAt(0).widget()
+        _old.hide()
+        _ = klass(self)
+        self.internallayout.addWidget(_)
+        _.directshow()
+        _old.deleteLater()
+        [self.layout1btn, self.layout2btn, self.layout3btn][(type + 1) % 3].setEnabled(
+            True
+        )
+        [self.layout1btn, self.layout2btn, self.layout3btn][(type + 2) % 3].setEnabled(
+            True
+        )
+
+    def __init__(self, parent) -> None:
+        super().__init__(
+            parent,
+            flags=Qt.WindowType.WindowMinMaxButtonsHint
+            | Qt.WindowType.WindowCloseButtonHint,
+            dic=globalconfig,
+            key="savegamedialoggeo",
+        )
+        self.setWindowTitle(_TR("游戏管理"))
+
+        w, self.internallayout = getboxlayout(
+            [], margin0=True, makewidget=True, both=True
+        )
+
+        self.internallayout.addWidget(QWidget())
+        self.setCentralWidget(w)
+        colors = ["#7f7f7f", "#7f7f7f", "#FF69B4", "#FF69B4"]
+        self.layout1btn = MySwitch(
+            self, icons=["fa.th", "fa.th"], size=20, colors=colors
+        )
+        self.layout2btn = MySwitch(
+            self, icons=["fa.th-list", "fa.th-list"], size=20, colors=colors
+        )
+        self.layout3btn = MySwitch(
+            self, icons=["fa.list", "fa.list"], size=20, colors=colors
+        )
+        self.layout1btn.clicked.connect(functools.partial(self.selectlayout, 0))
+        self.layout2btn.clicked.connect(functools.partial(self.selectlayout, 1))
+        self.layout3btn.clicked.connect(functools.partial(self.selectlayout, 2))
+        self.layout1btn.setFixedSize(QSize(20, 20))
+        self.layout2btn.setFixedSize(QSize(20, 20))
+        self.layout3btn.setFixedSize(QSize(20, 20))
+        self.show()
+        self.selectlayout(globalconfig["gamemanager_integrated_internal_layout"])
+
+    def resizeEvent(self, e: QResizeEvent):
+        self.layout1btn.move(e.size().width() - self.layout1btn.width(), 0)
+        self.layout2btn.move(
+            e.size().width() - self.layout2btn.width() - self.layout1btn.width(), 0
+        )
+        self.layout3btn.move(
+            e.size().width()
+            - self.layout3btn.width()
+            - self.layout2btn.width()
+            - self.layout1btn.width(),
+            0,
+        )
+
+
+class dialog_savedgame_new(QWidget):
     def clicked2(self):
         try:
             game = self.currentfocuspath
             idx2 = savehook_new_list.index(game)
             savehook_new_list.pop(idx2)
+
+            idx2 = self.idxsave.index(game)
             self.flow.removeidx(idx2)
-            IMGWidget.clearFocus()
+            self.idxsave.pop(idx2)
+            ItemWidget.clearfocus()
             try:
                 self.flow.widget(idx2).click()
             except:
-                self.flow.widget(0).click()
+                self.flow.widget(idx2 - 1).click()
 
         except:
             print_exc()
@@ -1511,14 +1652,13 @@ class dialog_savedgame_new(saveposwindow):
     def tagschanged(self, tags):
         self.currtags = tags
         newtags = tags
-
+        self.idxsave.clear()
         ItemWidget.clearfocus()
         self.formLayout.removeWidget(self.flow)
         self.flow.deleteLater()
         self.flow = lazyscrollflow()
         self.flow.bgclicked.connect(ItemWidget.clearfocus)
         self.formLayout.insertWidget(self.formLayout.count() - 1, self.flow)
-        QApplication.processEvents()
         for k in savehook_new_list:
             if newtags != self.currtags:
                 break
@@ -1553,8 +1693,6 @@ class dialog_savedgame_new(saveposwindow):
                 continue
             self.newline(k)
 
-        QApplication.processEvents()
-        self.flow.resizeandshow()
 
     def showmenu(self, p):
         menu = QMenu(self)
@@ -1594,18 +1732,13 @@ class dialog_savedgame_new(saveposwindow):
         elif action == othersetting:
             dialog_syssetting(self)
 
+    def directshow(self):
+        self.flow.directshow()
+
     def __init__(self, parent) -> None:
-        super().__init__(
-            parent,
-            flags=Qt.WindowType.WindowMinMaxButtonsHint
-            | Qt.WindowType.WindowCloseButtonHint,
-            dic=globalconfig,
-            key="savegamedialoggeo",
-        )
-        globalconfig["gamemanageruseversion"] = 0
+        super().__init__(parent)
         global _global_dialog_savedgame_new
         _global_dialog_savedgame_new = self
-        self.setWindowTitle(_TR("游戏管理"))
         formLayout = QVBoxLayout()
 
         layout = QHBoxLayout()
@@ -1651,12 +1784,16 @@ class dialog_savedgame_new(saveposwindow):
             self.tagswidget.lineEdit.clearEditText()
 
         self.tagswidget = TagWidget(self)
+        self.tagswidget.lineEdit.addItems(globalconfig["labelset"])
         self.tagswidget.linepressedenter.connect(callback)
         self.currtags = tuple()
         self.tagswidget.tagschanged.connect(self.tagschanged)
+        _ = QLabel()
+        _.setFixedWidth(60)
         layout.addWidget(self.tagswidget)
+        layout.addWidget(_)
         formLayout.addLayout(layout)
-        self.flow = lazyscrollflow()
+        self.flow = QWidget()
         self.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
         self.customContextMenuRequested.connect(self.showmenu)
         formLayout.addWidget(self.flow)
@@ -1678,12 +1815,10 @@ class dialog_savedgame_new(saveposwindow):
         self.simplebutton("批量添加", False, self.clicked3_batch, 1)
         self.simplebutton("其他设置", False, lambda: dialog_syssetting(self), False)
         formLayout.addLayout(buttonlayout)
-        _W = QWidget()
-        _W.setLayout(formLayout)
-        self.setCentralWidget(_W)
+        self.idxsave = []
+        self.setLayout(formLayout)
         self.activategamenum = 1
         self.itemfocuschanged(False, None)
-        self.show()
         if globalconfig["hide_not_exists"]:
             self.tagswidget.addTag(_TR("存在"), tagitem.TYPE_EXISTS)
         else:
@@ -1705,10 +1840,15 @@ class dialog_savedgame_new(saveposwindow):
     def moverank(self, dx):
         game = self.currentfocuspath
 
-        idx1 = savehook_new_list.index(game)
-        idx2 = (idx1 + dx) % len(savehook_new_list)
-        savehook_new_list.insert(idx2, savehook_new_list.pop(idx1))
+        idx1 = self.idxsave.index(game)
+        idx2 = (idx1 + dx) % len(self.idxsave)
+        game2 = self.idxsave[idx2]
+        self.idxsave.insert(idx2, self.idxsave.pop(idx1))
         self.flow.switchidx(idx1, idx2)
+
+        idx1 = savehook_new_list.index(game)
+        idx2 = savehook_new_list.index(game2)
+        savehook_new_list.insert(idx2, savehook_new_list.pop(idx1))
 
     def showsettingdialog(self):
         try:
@@ -1755,30 +1895,21 @@ class dialog_savedgame_new(saveposwindow):
         itemh = globalconfig["dialog_savegame_layout"]["itemh"]
 
         if first:
-
+            self.idxsave.insert(0, k)
             self.flow.insertwidget(
                 0, (functools.partial(self.getagameitem, k), QSize(itemw, itemh))
             )
         else:
+            self.idxsave.append(k)
             self.flow.addwidget(
                 (functools.partial(self.getagameitem, k), QSize(itemw, itemh))
             )
 
 
-@Singleton_close
-class dialog_savedgame_lagacy(QDialog):
-    # _sigleton=False
-    def closeEvent(self, a0) -> None:
+class dialog_savedgame_lagacy(QWidget):
 
-        self.button.setFocus()
-        rows = self.model.rowCount()
-
-        for row in range(rows):
-            savehook_new_data[self.model.item(row, 2).savetext]["title"] = (
-                self.model.item(row, 3).text()
-            )
-        # dialog_savedgame._sigleton=False
-        return QDialog().closeEvent(a0)
+    def directshow(self):
+        pass
 
     def showsettingdialog(self, k, item):
         dialog_setting_game(self, k)
@@ -1842,9 +1973,8 @@ class dialog_savedgame_lagacy(QDialog):
         # if dialog_savedgame._sigleton :
         #         return
         # dialog_savedgame._sigleton=True
-        super().__init__(parent, Qt.WindowType.WindowCloseButtonHint)
-        globalconfig["gamemanageruseversion"] = 1
-        self.setWindowTitle(_TR("游戏管理"))
+        super().__init__(parent)
+
         formLayout = QVBoxLayout(self)  #
         model = QStandardItemModel()
         model.setHorizontalHeaderLabels(_TRL(["转区", "", "设置", "游戏"]))  # ,'HOOK'])
@@ -1881,8 +2011,6 @@ class dialog_savedgame_lagacy(QDialog):
         formLayout.addWidget(button)
         formLayout.addWidget(button3)
         formLayout.addWidget(button2)
-        self.resize(QSize(800, 400))
-        self.show()
 
 
 class clickitem(QWidget):
@@ -1946,10 +2074,10 @@ class clickitem(QWidget):
         self.bottommask.setStyleSheet("background-color: rgba(255,255,255, 0);")
         _ = QLabel(self)
         _.setStyleSheet(
-            """background-color: rgba(255,255,255, 0);border-bottom: 1px solid black;"""
+            """background-color: rgba(255,255,255, 0);border-bottom: 1px solid gray;"""
         )
         self.bottomline = _
-        size = 40
+        size = globalconfig["dialog_savegame_layout"]["listitemheight"]
         _ = QLabel()
         _.setFixedSize(QSize(size, size))
         _.setScaledContents(True)
@@ -1970,17 +2098,39 @@ class pixwrapper(QWidget):
     def __init__(self) -> None:
         super().__init__()
         self.pixview = QLabel(self)
-        self.pixmap = None
+        self.pixmaps = []
+        self.pixmapi = 0
+        self.pixview.setAlignment(Qt.AlignmentFlag.AlignCenter)
+
+    def tolastnext(self, dx):
+        self.pixmapi = (self.pixmapi + dx) % len(self.pixmaps)
+        self.visidx()
+
+    def mousePressEvent(self, a0: QMouseEvent) -> None:
+        if a0.pos().x() < self.width() * 2 / 5:
+            self.tolastnext(-1)
+        elif a0.pos().x() > self.width() * 3 / 5:
+            self.tolastnext(1)
+        else:
+            pass
+        return super().mousePressEvent(a0)
 
     def resizeEvent(self, e: QResizeEvent):
-        self.pixview.resize(e.size())
-        if self.pixmap:
-            self.pixview.setPixmap(self.scalepix(self.pixmap))
+        self.pixview.resize(e.size().width(), e.size().height())
+        self.visidx()
 
-    def setpix(self, pix: QPixmap):
-        pix.setDevicePixelRatio(self.devicePixelRatioF())
-        self.pixmap = pix
-        self.pixview.setPixmap(self.scalepix(pix))
+    def visidx(self):
+        if self.pixmapi < len(self.pixmaps):
+            pixmap = self.pixmaps[self.pixmapi]
+            if isinstance(pixmap, str):
+                pixmap = QPixmap.fromImage(QImage(pixmap))
+            pixmap.setDevicePixelRatio(self.devicePixelRatioF())
+            self.pixview.setPixmap(self.scalepix(pixmap))
+
+    def setpix(self, pixs):
+        self.pixmaps = pixs
+        self.pixmapi = 0
+        self.visidx()
 
     def scalepix(self, pix: QPixmap):
         pix = pix.scaled(
@@ -1991,12 +2141,14 @@ class pixwrapper(QWidget):
         return pix
 
 
-@Singleton_close
-class dialog_savedgame_v3(saveposwindow):
+class dialog_savedgame_v3(QWidget):
     def viewitem(self, k):
         try:
             _pix = _getpixfunction(k)
-            self.pixview.setpix(_pix)
+            if len(savehook_new_data[k]["imagepath_much2"]):
+                self.pixview.setpix(savehook_new_data[k]["imagepath_much2"])
+            else:
+                self.pixview.setpix([_pix])
             self.currentfocuspath = k
             if self.righttop.count() > 1:
                 self.righttop.removeTab(1)
@@ -2004,14 +2156,14 @@ class dialog_savedgame_v3(saveposwindow):
                 self.righttop,
                 savehook_new_data[k]["title"],
                 lambda v: v.addWidget(dialog_setting_game_internal(self, k)),
+                margin0=False,
             )
 
         except:
             print_exc()
 
-    def itemfocuschanged(self, reflst, reftagid, b, k):
+    def itemfocuschanged(self, reftagid, b, k):
 
-        self.reflst = reflst
         self.reftagid = reftagid
         if b:
             self.currentfocuspath = k
@@ -2028,29 +2180,28 @@ class dialog_savedgame_v3(saveposwindow):
         if self.currentfocuspath:
             self.viewitem(k)
 
-    def delayitemcreater(self, k, select, reflst, reftagid):
+    def delayitemcreater(self, k, select, reftagid):
 
         item = clickitem(k)
         item.doubleclicked.connect(functools.partial(startgamecheck, self))
-        item.focuschanged.connect(
-            functools.partial(self.itemfocuschanged, reflst, reftagid)
-        )
+        item.focuschanged.connect(functools.partial(self.itemfocuschanged, reftagid))
         if select:
             item.click()
         return item
 
-    def newline(self, row, k, select):
+    def newline(self, res):
+        self.reallist[self.reftagid].insert(0, res)
         self.stack.w(self.calculatetagidx(self.reftagid)).insertw(
-            row,
+            0,
             functools.partial(
                 self.delayitemcreater,
-                k,
-                select,
-                self.reflst,
+                res,
+                True,
                 self.reftagid,
             ),
-            41,
+            1 + globalconfig["dialog_savegame_layout"]["listitemheight"],
         )
+        self.stack.directshow()
 
     def stack_showmenu(self, p):
         if not self.currentfocuspath:
@@ -2074,36 +2225,30 @@ class dialog_savedgame_v3(saveposwindow):
         elif action == opendir:
             self.clicked4()
 
+    def directshow(self):
+        self.stack.directshow()
+
     def __init__(self, parent) -> None:
-        super().__init__(
-            parent,
-            flags=Qt.WindowType.WindowMinMaxButtonsHint
-            | Qt.WindowType.WindowCloseButtonHint,
-            dic=globalconfig,
-            key="savegamedialoggeo3",
-        )
-        globalconfig["gamemanageruseversion"] = 2
-        self.setWindowTitle(_TR("游戏管理"))
+        super().__init__(parent)
         self.currentfocuspath = None
         self.reftagid = None
-        self.reflst = None
+        self.reallist = {}
         self.stack = stackedlist()
         self.stack.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
         self.stack.customContextMenuRequested.connect(self.stack_showmenu)
-        self.stack.setFixedWidth(300)
+        self.stack.setFixedWidth(globalconfig["dialog_savegame_layout"]["listitemwidth"])
         self.stack.bgclicked.connect(clickitem.clearfocus)
-        w = QWidget()
-        self.setCentralWidget(w)
         lay = QHBoxLayout()
-        w.setLayout(lay)
+        self.setLayout(lay)
         lay.addWidget(self.stack)
+        lay.setSpacing(0)
         self.righttop = makesubtab_lazy()
         self.pixview = pixwrapper()
         _w = QWidget()
         rightlay = QVBoxLayout()
         rightlay.setContentsMargins(0, 0, 0, 0)
         _w.setLayout(rightlay)
-        self.righttop.addTab(_w, "   ")
+        self.righttop.addTab(_w, _TR("封面"))
         lay.addWidget(self.righttop)
         rightlay.addWidget(self.pixview)
 
@@ -2126,7 +2271,6 @@ class dialog_savedgame_v3(saveposwindow):
             "其他设置", False, lambda: dialog_syssetting(self, type_=2), False
         )
 
-        self.show()
         for i, tag in enumerate(savegametaged):
             # None
             # {
@@ -2145,17 +2289,20 @@ class dialog_savedgame_v3(saveposwindow):
                 opened = tag.get("opened", True)
             group0 = self.createtaglist(title, tagid, opened)
             self.stack.insertw(i, group0)
+            rowreal = 0
             for row, k in enumerate(lst):
-                if globalconfig["hide_not_exists"]:
-                    if not os.path.exists(k):
-                        continue
+                if globalconfig["hide_not_exists"] and not os.path.exists(k):
+                    continue
+                self.reallist[tagid].append(k)
                 group0.insertw(
-                    row,
+                    rowreal,
                     functools.partial(
-                        self.delayitemcreater, k, i == 0 and row == 0, lst, tagid
+                        self.delayitemcreater, k, i == 0 and rowreal == 0, tagid
                     ),
-                    41,
+                    1 + globalconfig["dialog_savegame_layout"]["listitemheight"],
                 )
+
+                rowreal += 1
 
     def taglistrerank(self, tagid, dx):
         idx1 = self.calculatetagidx(tagid)
@@ -2178,11 +2325,8 @@ class dialog_savedgame_v3(saveposwindow):
     def tagbuttonmenu(self, tagid):
         self.currentfocuspath = None
         self.reftagid = tagid
-        if tagid is None:
-            self.reflst = savehook_new_list
-        else:
-            self.reflst = savegametaged[self.calculatetagidx(tagid)]["games"]
         menu = QMenu(self)
+        editname = QAction(_TR("修改名称"))
         addlist = QAction(_TR("添加列表"))
         dellist = QAction(_TR("删除列表"))
         Upaction = QAction(_TR("上移"))
@@ -2192,6 +2336,7 @@ class dialog_savedgame_v3(saveposwindow):
 
         menu.addAction(Upaction)
         menu.addAction(Downaction)
+        menu.addAction(editname)
         menu.addAction(addlist)
         if tagid:
             menu.addAction(dellist)
@@ -2206,7 +2351,7 @@ class dialog_savedgame_v3(saveposwindow):
             self.taglistrerank(tagid, -1)
         elif action == Downaction:
             self.taglistrerank(tagid, 1)
-        elif action == addlist:
+        elif action == editname or action == addlist:
             _dia = Prompt_dialog(
                 self,
                 _TR("添加列表"),
@@ -2221,23 +2366,29 @@ class dialog_savedgame_v3(saveposwindow):
                 title = _dia.text[0].text()
                 if title != "":
                     i = self.calculatetagidx(tagid)
+                    if action == addlist:
+                        tag = {
+                            "title": title,
+                            "games": [],
+                            "uid": str(uuid.uuid4()),
+                            "opened": True,
+                        }
+                        savegametaged.insert(i, tag)
+                        group0 = self.createtaglist(title, tag["uid"], True)
+                        self.stack.insertw(i, group0)
+                    elif action == editname:
+                        self.stack.w(i).settitle(title)
+                        savegametaged[i]["title"] = title
 
-                    tag = {
-                        "title": title,
-                        "games": [],
-                        "uid": str(uuid.uuid4()),
-                        "opened": True,
-                    }
-                    savegametaged.insert(i, tag)
-                    group0 = self.createtaglist(title, tag["uid"], True)
-
-                    self.stack.insertw(i, group0)
         elif action == dellist:
             i = self.calculatetagidx(tagid)
             savegametaged.pop(i)
             self.stack.popw(i)
+            self.reallist.pop(tagid)
 
     def createtaglist(self, title, tagid, opened):
+
+        self.reallist[tagid] = []
         _btn = QPushButton(title)
         _btn.customContextMenuRequested
         _btn.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
@@ -2247,12 +2398,31 @@ class dialog_savedgame_v3(saveposwindow):
         )
         return shrinkableitem(_btn, opened)
 
+    def getreflist(self):
+        tag = savegametaged[self.calculatetagidx(self.reftagid)]
+        if tag is None:
+            return savehook_new_list
+        return tag["games"]
+
+    def getrefid(self):
+        tag = savegametaged[self.calculatetagidx(self.reftagid)]
+        if tag is None:
+            return None
+        return tag["uid"]
+
     def moverank(self, dx):
         game = self.currentfocuspath
-        idx1 = self.reflst.index(game)
-        idx2 = (idx1 + dx) % len(self.reflst)
-        self.reflst.insert(idx2, self.reflst.pop(idx1))
+        idx1 = self.reallist[self.getrefid()].index(game)
+        idx2 = (idx1 + dx) % len(self.reallist[self.getrefid()])
+        game2 = self.reallist[self.getrefid()][idx2]
+        self.reallist[self.getrefid()].insert(
+            idx2, self.reallist[self.getrefid()].pop(idx1)
+        )
+
         self.stack.w(self.calculatetagidx(self.reftagid)).switchidx(idx1, idx2)
+        idx1 = self.getreflist().index(game)
+        idx2 = self.getreflist().index(game2)
+        self.getreflist().insert(idx2, self.getreflist().pop(idx1))
 
     def clicked2(self):
         if not self.currentfocuspath:
@@ -2260,15 +2430,18 @@ class dialog_savedgame_v3(saveposwindow):
 
         try:
             game = self.currentfocuspath
-            idx2 = self.reflst.index(game)
+            idx2 = self.getreflist().index(game)
+            self.getreflist().pop(idx2)
+
+            idx2 = self.reallist[self.getrefid()].index(game)
+            self.reallist[self.getrefid()].pop(idx2)
+            clickitem.clearfocus()
             group0 = self.stack.w(self.calculatetagidx(self.reftagid))
             group0.popw(idx2)
-            self.reflst.pop(idx2)
-            clickitem.clearfocus()
             try:
                 group0.w(idx2).click()
             except:
-                group0.w(0).click()
+                group0.w(idx2 - 1).click()
         except:
             print_exc()
 
@@ -2276,10 +2449,10 @@ class dialog_savedgame_v3(saveposwindow):
         opendir(self.currentfocuspath)
 
     def clicked3_batch(self):
-        addgamebatch(lambda res: self.newline(res, True, False), self.reflst)
+        addgamebatch(lambda res: self.newline(res), self.getreflist())
 
     def clicked3(self):
-        addgamesingle(lambda res: self.newline(0, res, True), self.reflst)
+        addgamesingle(lambda res: self.newline(res), self.getreflist())
 
     def clicked(self):
         startgamecheck(self, self.currentfocuspath)

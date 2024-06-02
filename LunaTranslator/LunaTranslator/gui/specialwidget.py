@@ -309,6 +309,10 @@ class lazyscrollflow(ScrollArea):
     def mousePressEvent(self, _2) -> None:
         self.bgclicked.emit()
 
+    def directshow(self):
+        QApplication.processEvents()
+        self.doshowlazywidget(True, self.internalwid.visibleRegion().rects()[0])
+
     def __init__(self):
         super().__init__()
         self.widgets = []
@@ -468,13 +472,15 @@ class delayloadvbox(QWidget):
         self.lock = threading.Lock()
         self.nowvisregion = QRect()
 
+
     def resizeEvent(self, e: QResizeEvent):
+
         if e.oldSize().width() != e.size().width():
             with self.lock:
                 for w in self.internal_widgets:
                     if isinstance(w, QWidget):
                         w.resize(self.width(), w.height())
-
+        return super().resizeEvent(e)
     def _dovisinternal(self, procevent, region: QRect):
         if region.isEmpty():
             return
@@ -531,8 +537,8 @@ class delayloadvbox(QWidget):
                     w.deleteLater()
                 self.internal_widgets.pop(i)
                 self.internal_itemH.pop(i)
-                self.setFixedHeight(sum(self.internal_itemH))
-
+            self.setFixedHeight(sum(self.internal_itemH))
+            # setFixedHeight会导致上面的闪烁
         self._dovisinternal(False, self.nowvisregion)
 
     def insertw(self, i, wf, height):
@@ -543,9 +549,7 @@ class delayloadvbox(QWidget):
                 i = self.len()
             self.internal_itemH.insert(i, height)
             self.internal_widgets.insert(i, wf)
-
             self.setFixedHeight(sum(self.internal_itemH))
-
         if refresh:
             self._dovisinternal(False, self.nowvisregion)
 
@@ -580,6 +584,9 @@ class shrinkableitem(QWidget):
     def Revert(self):
         self.items.setVisible(not self.items.isVisible())
 
+    def settitle(self, text):
+        self.btn.setText(text)
+
     @trypass
     def switchidx(self, idx1, idx2):
         self.items.switchidx(idx1, idx2)
@@ -603,9 +610,16 @@ class stackedlist(ScrollArea):
     def mousePressEvent(self, _2) -> None:
         self.bgclicked.emit()
 
-    @trypass
+    def directshow(self):
+        QApplication.processEvents()
+        self.doshowlazywidget(True, self.internal.visibleRegion().rects()[0])
+
     def resizeEvent(self, e: QResizeEvent):
-        self.doshowlazywidget(False, self.internal.visibleRegion().rects()[0])
+        try:
+            self.doshowlazywidget(False, self.internal.visibleRegion().rects()[0])
+        except:
+            pass
+        return super().resizeEvent(e)
 
     def __init__(self):
         super().__init__()

@@ -68,6 +68,7 @@ def getdefaultsavehook(gamepath, title=None):
         "needinserthookcode": [],
         "embedablehook": [],
         "imagepath": None,
+        "imagepath_much2": [],
         "isimagepathusersetted": False,
         "istitlesetted": False,
         "infopath": None,
