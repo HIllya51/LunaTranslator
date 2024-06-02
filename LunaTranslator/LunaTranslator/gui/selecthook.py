@@ -386,7 +386,7 @@ class hookselect(closeashidewindow):
         if hook not in self.save:
             return
         row = self.save.index(hook)
-        output = output[:200].replace("\n", "")
+        output = output[:200].replace("\n", " ")
         colidx = 2 + (gobject.baseobject.textsource.allow_set_text_name)
         self.ttCombomodelmodel.item(row, colidx).setText(output)
 
