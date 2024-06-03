@@ -358,7 +358,8 @@ class lazyscrollflow(ScrollArea):
                     QApplication.processEvents()  # 会在最大化时死锁
 
             except:
-                pass
+                print_exc()
+                break
 
     @trypass
     def resizeandshow(self, procevent=True):
@@ -518,6 +519,7 @@ class delayloadvbox(QWidget):
                     QApplication.processEvents()
             except:
                 print_exc()
+                break
 
         self.nowvisregion = region
 
