@@ -594,7 +594,6 @@ class dialog_setting_game_internal(QWidget):
     def __init__(self, parent, exepath) -> None:
         super().__init__(parent)
         vbox = QVBoxLayout(self)
-        vbox.setContentsMargins(0, 0, 0, 0)
         self.setLayout(vbox)
         formLayout = QFormLayout()
         self.exepath = exepath
@@ -1235,12 +1234,12 @@ class dialog_setting_game(QDialog):
         l = QHBoxLayout(self)
         self.setLayout(l)
         l.addWidget(_)
-
+        l.setContentsMargins(0,0,0,0)
         self.show()
         try:
             self.setGeometry(
                 calculate_centered_rect(
-                    _global_dialog_savedgame_new.geometry(), self.size()
+                    _global_dialog_savedgame_new.parent().parent().geometry(), self.size()
                 )
             )
         except:
@@ -2249,8 +2248,7 @@ class dialog_savedgame_v3(QWidget):
             tabadd_lazy(
                 self.righttop,
                 savehook_new_data[k]["title"],
-                lambda v: v.addWidget(dialog_setting_game_internal(self, k)),
-                margin0=False,
+                lambda v: v.addWidget(dialog_setting_game_internal(self, k))
             )
 
         except:

@@ -853,12 +853,11 @@ class threebuttons(QWidget):
         layout.addWidget(button3)
 
 
-def tabadd_lazy(tab, title, getrealwidgetfunction, margin0=True):
+def tabadd_lazy(tab, title, getrealwidgetfunction):
     q = QWidget()
     v = QVBoxLayout()
     q.setLayout(v)
-    if margin0:
-        v.setContentsMargins(0, 0, 0, 0)
+    v.setContentsMargins(0, 0, 0, 0)
     q.lazyfunction = functools.partial(getrealwidgetfunction, v)
     tab.addTab(q, title)
 
