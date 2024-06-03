@@ -818,5 +818,6 @@
     "腾讯图片翻译": "Bản dịch hình ảnh Tencent",
     "百度图片翻译": "100 hình ảnh dịch",
     "修改名称": "Thay đổi tên",
-    "大": "Lớn"
+    "大": "Lớn",
+    "权限不足，请以管理员权限运行！": "Không đủ quyền, hãy chạy với quyền quản trị viên!"
 }

@@ -173,7 +173,7 @@ class AttachProcessDialog(saveposwindow):
             self.close()
         else:
             if self.selectedp[1] is None:
-                getQMessageBox(self, "错误", "无法识别的路径！")
+                getQMessageBox(self, "错误", "权限不足，请以管理员权限运行！")
                 return
             # for pid in self.selectedp[0]:
 

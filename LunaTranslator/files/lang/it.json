@@ -818,5 +818,6 @@
     "腾讯图片翻译": "Traduzione di immagini tencenti",
     "百度图片翻译": "Traduzione immagine Baidu",
     "修改名称": "Cambia nome",
-    "大": "grande"
+    "大": "grande",
+    "权限不足，请以管理员权限运行！": "Permessi insufficienti, si prega di eseguire con privilegi di amministratore!"
 }
