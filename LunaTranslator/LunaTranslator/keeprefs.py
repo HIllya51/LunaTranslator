@@ -11,3 +11,5 @@ from distutils.version import StrictVersion
 from dataclasses import dataclass
 import colorsys
 import tinycss2
+from numbers import Number
+from xml.dom.minidom import parse
