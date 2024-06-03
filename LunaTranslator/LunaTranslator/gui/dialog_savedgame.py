@@ -17,13 +17,7 @@ from myutils.config import (
 )
 from myutils.hwnd import getExeIcon
 from myutils.wrapper import Singleton_close, Singleton, threader, tryprint
-from myutils.utils import (
-    checkifnewgame,
-    str2rgba,
-    vidchangedtask,
-    titlechangedtask,
-    imgchangedtask,
-)
+from myutils.utils import checkifnewgame, str2rgba, vidchangedtask, titlechangedtask
 from gui.inputdialog import noundictconfigdialog1
 from gui.specialwidget import (
     ScrollFlow,
@@ -719,7 +713,8 @@ class dialog_setting_game_internal(QWidget):
 
                 _pixmap = QPixmap(res)
                 if _pixmap.isNull() == False:
-                    imgchangedtask(exepath, res)
+                    savehook_new_data[exepath]["imagepath"] = res
+                    savehook_new_data[exepath]["isimagepathusersetted"] = True
                     imgpath.setText(res)
 
         formLayout.addRow(
@@ -741,6 +736,7 @@ class dialog_setting_game_internal(QWidget):
             f = QFileDialog.getOpenFileNames()
             res = f[0]
             res = "|".join(f[0])
+            savehook_new_data[exepath]["isimagepathusersetted_much"] = True
             savehook_new_data[exepath]["imagepath_much2"] = f[0]
             imgpath2.setText(res)
 
@@ -2191,10 +2187,13 @@ class pixwrapper(QWidget):
         super().__init__()
         self.pixview = QLabel(self)
         self.pixmaps = []
+        self.k = None
         self.pixmapi = 0
         self.pixview.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
     def tolastnext(self, dx):
+        if len(self.pixmaps) == 0:
+            return
         self.pixmapi = (self.pixmapi + dx) % len(self.pixmaps)
         self.visidx()
 
@@ -2212,15 +2211,22 @@ class pixwrapper(QWidget):
         self.visidx()
 
     def visidx(self):
+        if self.k and len(self.pixmaps) == 0:
+            self.pixmaps = [_getpixfunction(self.k)]
         if self.pixmapi < len(self.pixmaps):
             pixmap = self.pixmaps[self.pixmapi]
             if isinstance(pixmap, str):
                 pixmap = QPixmap.fromImage(QImage(pixmap))
+            if pixmap.isNull():
+                self.pixmaps.pop(self.pixmapi)
+                return self.visidx()
             pixmap.setDevicePixelRatio(self.devicePixelRatioF())
             self.pixview.setPixmap(self.scalepix(pixmap))
 
-    def setpix(self, pixs):
-        self.pixmaps = pixs
+    def setpix(self, k):
+
+        self.k = k
+        self.pixmaps = savehook_new_data[k]["imagepath_much2"]
         self.pixmapi = 0
         self.visidx()
 
@@ -2236,11 +2242,7 @@ class pixwrapper(QWidget):
 class dialog_savedgame_v3(QWidget):
     def viewitem(self, k):
         try:
-            _pix = _getpixfunction(k)
-            if len(savehook_new_data[k]["imagepath_much2"]):
-                self.pixview.setpix(savehook_new_data[k]["imagepath_much2"])
-            else:
-                self.pixview.setpix([_pix])
+            self.pixview.setpix(k)
             self.currentfocuspath = k
             if self.righttop.count() > 1:
                 self.righttop.removeTab(1)

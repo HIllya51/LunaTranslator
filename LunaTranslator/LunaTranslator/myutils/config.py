@@ -70,6 +70,7 @@ def getdefaultsavehook(gamepath, title=None):
         "imagepath": None,
         "imagepath_much2": [],
         "isimagepathusersetted": False,
+        "isimagepathusersetted_much": False,
         "istitlesetted": False,
         "infopath": None,
         "vid": 0,

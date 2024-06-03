@@ -116,6 +116,22 @@ def gettitlebyid(vid):
     )
 
 
+def getscreenshotsbyid(vid):
+    def _getter(js):
+
+        ___ = []
+        for _ in js["results"][0]["screenshots"]:
+            url = _["url"]
+            ___.append(url)
+        return ___
+
+    return safegetvndbjson(
+        "https://api.vndb.org/kana/vn",
+        {"filters": ["id", "=", vid], "fields": "screenshots.url"},
+        _getter,
+    )
+
+
 def getimgbyid(vid):
     return safegetvndbjson(
         "https://api.vndb.org/kana/vn",
@@ -265,11 +281,16 @@ def searchfordata(vid):
     namemap = getcharnamemapbyid(vid)
     vndbtags = getvntagsbyid(vid)
     developers = getdevelopersbyid(vid)
+    try:
+        imagepath_much2 = [vndbdownloadimg(_) for _ in getscreenshotsbyid(vid)]
+    except:
+        imagepath_much2 = []
     return {
         "namemap": namemap,
         "title": title,
         "infopath": vndbdowloadinfo(vid),
         "imagepath": vndbdownloadimg(img),
+        "imagepath_much2": imagepath_much2,
         "vndbtags": vndbtags,
         "developers": developers,
     }

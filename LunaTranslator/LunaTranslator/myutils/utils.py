@@ -151,9 +151,11 @@ def parsetask(_type, gamepath, arg):
         namemap = data.get("namemap", None)
         developers = data.get("developers", None)
         vndbtags = data.get("vndbtags", None)
-
+        imagepath_much2=data.get('imagepath_much2',[])
         if imagepath and (not savehook_new_data[gamepath]["isimagepathusersetted"]):
             savehook_new_data[gamepath]["imagepath"] = imagepath
+        if len(imagepath_much2) and (not savehook_new_data[gamepath]["isimagepathusersetted_much"]):
+            savehook_new_data[gamepath]["imagepath_much2"] = imagepath_much2
         if title and (not savehook_new_data[gamepath]["istitlesetted"]):
             savehook_new_data[gamepath]["title"] = title
         if infopath:
@@ -181,6 +183,9 @@ def vidchangedtask(gamepath, vid):
         vid = int(vid)
     except:
         return
+    
+    savehook_new_data[gamepath]["isimagepathusersetted_much"] = False
+    savehook_new_data[gamepath]["isimagepathusersetted"] = False
     savehook_new_data[gamepath]["vid"] = vid
     searchvndbqueue.put((1, gamepath, vid), 1)
 
@@ -189,11 +194,6 @@ def titlechangedtask(gamepath, title):
     savehook_new_data[gamepath]["title"] = title
     savehook_new_data[gamepath]["istitlesetted"] = True
     searchvndbqueue.put((0, gamepath, [title]), 1)
-
-
-def imgchangedtask(gamepath, res):
-    savehook_new_data[gamepath]["imagepath"] = res
-    savehook_new_data[gamepath]["isimagepathusersetted"] = True
 
 
 def checkifnewgame(targetlist, gamepath, title=None):
