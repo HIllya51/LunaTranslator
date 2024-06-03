@@ -1787,6 +1787,7 @@ class dialog_savedgame_new(QWidget):
 
         self.tagswidget = TagWidget(self)
         self.tagswidget.lineEdit.addItems(globalconfig["labelset"])
+        self.tagswidget.lineEdit.setCurrentText("")
         self.tagswidget.linepressedenter.connect(callback)
         self.currtags = tuple()
         self.tagswidget.tagschanged.connect(self.tagschanged)
