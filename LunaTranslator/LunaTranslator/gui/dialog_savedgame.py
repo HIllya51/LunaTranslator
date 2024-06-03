@@ -745,7 +745,7 @@ class dialog_setting_game_internal(QWidget):
             imgpath2.setText(res)
 
         formLayout.addRow(
-            _TR("封面_其他"),
+            _TR("封面_大"),
             getboxlayout(
                 [
                     imgpath2,
@@ -2080,6 +2080,8 @@ class dialog_savedgame_lagacy(QWidget):
         for row, k in enumerate(savehook_new_list):  # 2
             self.newline(row, k)
         self.table.starttraceir()
+        bottom = QHBoxLayout()
+
         button = QPushButton()
         button.setText(_TR("开始游戏"))
         self.button = button
@@ -2092,11 +2094,15 @@ class dialog_savedgame_lagacy(QWidget):
         button2.setText(_TR("删除游戏"))
 
         button2.clicked.connect(self.clicked2)
-
+        bottom.addWidget(button)
+        bottom.addWidget(button2)
+        bottom.addWidget(button3)
+        _ = QLabel()
+        _.setFixedHeight(20)
+        _.setStyleSheet("background: transparent;")
+        formLayout.addWidget(_)
         formLayout.addWidget(table)
-        formLayout.addWidget(button)
-        formLayout.addWidget(button3)
-        formLayout.addWidget(button2)
+        formLayout.addLayout(bottom)
 
 
 class clickitem(QWidget):
