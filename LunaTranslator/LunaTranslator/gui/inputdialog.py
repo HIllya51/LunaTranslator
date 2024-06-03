@@ -241,7 +241,7 @@ class autoinitdialog(QDialog):
                 else:
                     items = line["list"]
                 lineW.addItems(_TRL(items))
-                lineW.setCurrentIndex(dd[key])
+                lineW.setCurrentIndex(dd.get(key, 0))
                 lineW.currentIndexChanged.connect(
                     functools.partial(dd.__setitem__, key)
                 )

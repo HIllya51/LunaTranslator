@@ -18,40 +18,12 @@
                 "name": "QTWin11"
             },
             {
-                "file": "QtVSCodeStyle/ABYSS.py",
-                "name": "QtVSCodeStyle Abyss"
+                "file": "QtVSCodeStyle/dark.py",
+                "name": "QtVSCodeStyle Dark"
             },
             {
-                "file": "QtVSCodeStyle/DARK_VS.py",
-                "name": "QtVSCodeStyle Dark (Visual Studio)"
-            },
-            {
-                "file": "QtVSCodeStyle/KIMBIE_DARK.py",
-                "name": "QtVSCodeStyle Kimbie Dark"
-            },
-            {
-                "file": "QtVSCodeStyle/MONOKAI.py",
-                "name": "QtVSCodeStyle Monokai"
-            },
-            {
-                "file": "QtVSCodeStyle/MONOKAI_DIMMED.py",
-                "name": "QtVSCodeStyle Monokai Dimmed"
-            },
-            {
-                "file": "QtVSCodeStyle/RED.py",
-                "name": "QtVSCodeStyle Red"
-            },
-            {
-                "file": "QtVSCodeStyle/SOLARIZED_DARK.py",
-                "name": "QtVSCodeStyle Solarized Dark"
-            },
-            {
-                "file": "QtVSCodeStyle/TOMORROW_NIGHT_BLUE.py",
-                "name": "QtVSCodeStyle Tomorrow Night Blue"
-            },
-            {
-                "file": "QtVSCodeStyle/DARK_HIGH_CONTRAST.py",
-                "name": "QtVSCodeStyle Dark High Contrast"
+                "file": "qt_material/dark.py",
+                "name": "qt-material"
             }
         ],
         "light": [
@@ -72,16 +44,12 @@
                 "name": "QTWin11"
             },
             {
-                "file": "QtVSCodeStyle/LIGHT_VS.py",
-                "name": "QtVSCodeStyle Light (Visual Studio)"
+                "file": "QtVSCodeStyle/light.py",
+                "name": "QtVSCodeStyle Light"
             },
             {
-                "file": "QtVSCodeStyle/QUIET_LIGHT.py",
-                "name": "QtVSCodeStyle Quiet Light"
-            },
-            {
-                "file": "QtVSCodeStyle/SOLARIZED_LIGHT.py",
-                "name": "QtVSCodeStyle Solarized Light"
+                "file": "qt_material/light.py",
+                "name": "qt-material"
             }
         ]
     },

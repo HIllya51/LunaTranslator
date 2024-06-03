@@ -1,11 +1,14 @@
 from qtsymbols import *
-import functools
+import functools, importlib
+from traceback import print_exc
 import gobject
 from myutils.config import globalconfig, _TRL, static_data
+from myutils.utils import nowisdark
 from gui.usefulwidget import (
     D_getsimplecombobox,
     D_getspinbox,
     D_getcolorbutton,
+    getcolorbutton,
     D_getsimpleswitch,
     selectcolor,
 )
@@ -79,7 +82,7 @@ def createhorizontal_slider_tool_label(self):
 
 
 def createfontcombo():
-    
+
     sfont_comboBox = QFontComboBox()
 
     def callback(x):
@@ -89,6 +92,115 @@ def createfontcombo():
     sfont_comboBox.setCurrentFont(QFont(globalconfig["settingfonttype"]))
     sfont_comboBox.currentTextChanged.connect(callback)
     return sfont_comboBox
+
+
+def maybesetstyle(_dark):
+    if _dark == nowisdark():
+        gobject.baseobject.setcommonstylesheet()
+
+
+def wrapedsetstylecallback(_dark, self, func):
+    try:
+        func(self, functools.partial(maybesetstyle, _dark))
+    except:
+        print_exc()
+
+
+def checkthemeissetable(self, dark: bool):
+    try:
+        darklight = ["light", "dark"][dark]
+        idx = globalconfig[darklight + "theme"] - int(not dark)
+        if idx == -1:
+            return None
+        _fn = static_data["themes"][darklight][idx]["file"]
+
+        if _fn.endswith(".py"):
+            try:
+                return functools.partial(
+                    wrapedsetstylecallback,
+                    dark,
+                    self,
+                    importlib.import_module(
+                        "files.themes." + _fn[:-3].replace("/", ".")
+                    ).get_setting_window,
+                )
+            except:
+                return None
+        elif _fn.endswith(".qss"):
+            return None
+    except:
+        return None
+
+
+def checkthemesettingvisandapply_1(self, _dark):
+    try:
+        if _dark:
+
+            darksetting = checkthemeissetable(self, True)
+            self.darksetting = darksetting
+            if not self.darksetting:
+                self.btnthemedark.hide()
+            else:
+                self.btnthemedark.show()
+                self.btnthemedark.clicked.connect(self.darksetting)
+        else:
+
+            lightsetting = checkthemeissetable(self, False)
+            self.lightsetting = lightsetting
+
+            if not self.lightsetting:
+                self.btnthemelight.hide()
+            else:
+                self.btnthemelight.show()
+                self.btnthemelight.clicked.connect(self.lightsetting)
+
+    except:
+        print_exc()
+
+
+def createbtnthemelight(self):
+    lightsetting = checkthemeissetable(self, False)
+    self.lightsetting = lightsetting
+    self.btnthemelight = getcolorbutton(
+        globalconfig,
+        "",
+        callback=lambda: 1,
+        icon="fa.gear",
+        constcolor="#FF69B4",
+    )
+    try:
+        if not self.lightsetting:
+            self.btnthemelight.hide()
+        else:
+            self.btnthemelight.clicked.connect(self.lightsetting)
+    except:
+        pass
+    return self.btnthemelight
+
+
+def createbtnthemedark(self):
+    darksetting = checkthemeissetable(self, True)
+    self.darksetting = darksetting
+    self.btnthemedark = getcolorbutton(
+        globalconfig,
+        "",
+        callback=lambda: 1,
+        icon="fa.gear",
+        constcolor="#FF69B4",
+    )
+    try:
+        if not self.darksetting:
+            self.btnthemedark.hide()
+        else:
+            self.btnthemedark.clicked.connect(self.darksetting)
+    except:
+        pass
+    return self.btnthemedark
+
+
+def checkthemesettingvisandapply(self, _dark):
+    checkthemesettingvisandapply_1(self, _dark)
+    maybesetstyle(_dark)
 
 
 def uisetting(self):
@@ -210,7 +322,7 @@ def uisetting(self):
                     _TRL(["明亮", "黑暗", "跟随系统"]),
                     globalconfig,
                     "darklight",
-                    callback=lambda _: gobject.baseobject.setcommonstylesheet(),
+                    gobject.baseobject.setcommonstylesheet,
                 ),
                 5,
             ),
@@ -222,10 +334,11 @@ def uisetting(self):
                     _TRL(["默认"]) + themelist("light"),
                     globalconfig,
                     "lighttheme",
-                    callback=lambda _: gobject.baseobject.setcommonstylesheet(),
+                    functools.partial(checkthemesettingvisandapply, self, False),
                 ),
                 5,
             ),
+            (functools.partial(createbtnthemelight, self), 0),
         ],
         [
             ("黑暗主题", 4),
@@ -234,10 +347,11 @@ def uisetting(self):
                     themelist("dark"),
                     globalconfig,
                     "darktheme",
-                    callback=lambda _: gobject.baseobject.setcommonstylesheet(),
+                    functools.partial(checkthemesettingvisandapply, self, True),
                 ),
                 5,
             ),
+            (functools.partial(createbtnthemedark, self), 0),
         ],
         [],
         [

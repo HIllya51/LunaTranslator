@@ -500,7 +500,7 @@ class browserdialog(saveposwindow):
             getcolorbutton(
                 "",
                 "",
-                lambda _: self.likelink(),
+                self.likelink,
                 icon="fa.heart",
                 constcolor="#FF69B4",
                 sizefixed=True,
@@ -510,7 +510,7 @@ class browserdialog(saveposwindow):
             getcolorbutton(
                 "",
                 "",
-                lambda _: self.urlclicked((None, None, self.current)),
+                lambda: self.urlclicked((None, None, self.current)),
                 icon="fa.repeat",
                 constcolor="#FF69B4",
                 sizefixed=True,
@@ -1056,7 +1056,7 @@ class dialog_setting_game_internal(QWidget):
                     getcolorbutton(
                         "",
                         "",
-                        lambda _: listediter(
+                        lambda: listediter(
                             self,
                             _TR("禁止自动朗读的人名"),
                             _TRL(
@@ -1234,12 +1234,13 @@ class dialog_setting_game(QDialog):
         l = QHBoxLayout(self)
         self.setLayout(l)
         l.addWidget(_)
-        l.setContentsMargins(0,0,0,0)
+        l.setContentsMargins(0, 0, 0, 0)
         self.show()
         try:
             self.setGeometry(
                 calculate_centered_rect(
-                    _global_dialog_savedgame_new.parent().parent().geometry(), self.size()
+                    _global_dialog_savedgame_new.parent().parent().geometry(),
+                    self.size(),
                 )
             )
         except:
@@ -2249,7 +2250,7 @@ class dialog_savedgame_v3(QWidget):
             tabadd_lazy(
                 self.righttop,
                 savehook_new_data[k]["title"],
-                lambda v: v.addWidget(dialog_setting_game_internal(self, k))
+                lambda v: v.addWidget(dialog_setting_game_internal(self, k)),
             )
 
         except:

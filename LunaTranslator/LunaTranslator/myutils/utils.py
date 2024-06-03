@@ -14,7 +14,6 @@ from myutils.config import (
     globalconfig,
     static_data,
     getlanguse,
-    savehook_new_list,
     savehook_new_data,
     getdefaultsavehook,
 )
@@ -24,6 +23,15 @@ import re, heapq, winsharedutils
 from myutils.vndb import searchfordata, getvidbytitle
 from myutils.wrapper import tryprint
 
+def nowisdark():
+    dl = globalconfig["darklight"]
+    if dl == 0:
+        dark = False
+    elif dl == 1:
+        dark = True
+    elif dl == 2:
+        dark = winsharedutils.isDark()
+    return dark
 
 def getimageformatlist():
     _ = [_.data().decode() for _ in QImageWriter.supportedImageFormats()]

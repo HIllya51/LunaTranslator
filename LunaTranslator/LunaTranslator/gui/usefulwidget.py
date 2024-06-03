@@ -372,6 +372,10 @@ def callbackwrap(d, k, call, _):
             call(_)
         except:
             print_exc()
+            try:
+                call()
+            except:
+                print_exc()
 
 
 def comboboxcallbackwrap(internallist, d, k, call, _):
@@ -381,6 +385,10 @@ def comboboxcallbackwrap(internallist, d, k, call, _):
             call(_)
         except:
             print_exc()
+            try:
+                call()
+            except:
+                print_exc()
 
 
 def getsimplecombobox(lst, d, k, callback=None, fixedsize=False, internallist=None):

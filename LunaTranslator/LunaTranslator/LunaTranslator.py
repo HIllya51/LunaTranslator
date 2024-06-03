@@ -40,9 +40,9 @@ from gui.attachprocessdialog import AttachProcessDialog
 import windows
 import gobject
 import winsharedutils
-from winsharedutils import pid_running, isDark
+from winsharedutils import pid_running
 from myutils.post import POSTSOLVE
-
+from myutils.utils import nowisdark
 
 class commonstylebase(QWidget):
     setstylesheetsignal = pyqtSignal()
@@ -905,13 +905,7 @@ class MAINUI:
 
     def setcommonstylesheet(self):
 
-        dl = globalconfig["darklight"]
-        if dl == 0:
-            dark = False
-        elif dl == 1:
-            dark = True
-        elif dl == 2:
-            dark = isDark()
+        dark = nowisdark()
         darklight = ["light", "dark"][dark]
 
         self.currentisdark = dark
