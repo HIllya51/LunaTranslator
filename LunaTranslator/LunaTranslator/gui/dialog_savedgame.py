@@ -2430,7 +2430,8 @@ class dialog_savedgame_v3(QWidget):
 
         menu.addAction(Upaction)
         menu.addAction(Downaction)
-        menu.addAction(editname)
+        if tagid:
+            menu.addAction(editname)
         menu.addAction(addlist)
         if tagid:
             menu.addAction(dellist)
