@@ -13,3 +13,4 @@ import colorsys
 import tinycss2
 from numbers import Number
 from xml.dom.minidom import parse
+from PyQt5 import uic
