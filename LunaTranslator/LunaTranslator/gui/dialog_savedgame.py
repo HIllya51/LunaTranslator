@@ -1,6 +1,6 @@
 from PyQt5.QtGui import QMouseEvent
 from qtsymbols import *
-import os, functools, uuid
+import os, functools, uuid, threading
 from datetime import datetime, timedelta
 from traceback import print_exc
 import windows, gobject, winsharedutils
@@ -41,8 +41,10 @@ from gui.usefulwidget import (
     auto_select_webview,
     Prompt_dialog,
     getsimplecombobox,
+    D_getsimpleswitch,
     getspinbox,
     getcolorbutton,
+    D_getcolorbutton,
     makesubtab_lazy,
     tabadd_lazy,
     getsimpleswitch,
@@ -1538,39 +1540,45 @@ def addgamebatch(callback, targetlist):
 
 @Singleton_close
 class dialog_savedgame_integrated(saveposwindow):
-    def selectlayout(self, type):
-        globalconfig["gamemanager_integrated_internal_layout"] = type
-        klass = [dialog_savedgame_new, dialog_savedgame_v3, dialog_savedgame_lagacy][
-            type
-        ]
 
-        [self.layout1btn, self.layout2btn, self.layout3btn][(type) % 3].setEnabled(
-            False
-        )
-        [self.layout1btn, self.layout2btn, self.layout3btn][(type + 1) % 3].setEnabled(
-            False
-        )
-        [self.layout1btn, self.layout2btn, self.layout3btn][(type + 2) % 3].setEnabled(
-            False
-        )
-        [self.layout1btn, self.layout2btn, self.layout3btn][(type + 1) % 3].setChecked(
-            False
-        )
-        [self.layout1btn, self.layout2btn, self.layout3btn][(type + 2) % 3].setChecked(
-            False
-        )
-        _old = self.internallayout.takeAt(0).widget()
-        _old.hide()
-        _ = klass(self)
-        self.internallayout.addWidget(_)
-        _.directshow()
-        _old.deleteLater()
-        [self.layout1btn, self.layout2btn, self.layout3btn][(type + 1) % 3].setEnabled(
-            True
-        )
-        [self.layout1btn, self.layout2btn, self.layout3btn][(type + 2) % 3].setEnabled(
-            True
-        )
+    def selectlayout(self, type):
+        try:
+            globalconfig["gamemanager_integrated_internal_layout"] = type
+            klass = [
+                dialog_savedgame_new,
+                dialog_savedgame_v3,
+                dialog_savedgame_lagacy,
+            ][type]
+
+            [self.layout1btn, self.layout2btn, self.layout3btn][(type) % 3].setEnabled(
+                False
+            )
+            [self.layout1btn, self.layout2btn, self.layout3btn][
+                (type + 1) % 3
+            ].setEnabled(False)
+            [self.layout1btn, self.layout2btn, self.layout3btn][
+                (type + 2) % 3
+            ].setEnabled(False)
+            [self.layout1btn, self.layout2btn, self.layout3btn][
+                (type + 1) % 3
+            ].setChecked(False)
+            [self.layout1btn, self.layout2btn, self.layout3btn][
+                (type + 2) % 3
+            ].setChecked(False)
+            _old = self.internallayout.takeAt(0).widget()
+            _old.hide()
+            _ = klass(self)
+            self.internallayout.addWidget(_)
+            _.directshow()
+            _old.deleteLater()
+            [self.layout1btn, self.layout2btn, self.layout3btn][
+                (type + 1) % 3
+            ].setEnabled(True)
+            [self.layout1btn, self.layout2btn, self.layout3btn][
+                (type + 2) % 3
+            ].setEnabled(True)
+        except:
+            print_exc()
 
     def __init__(self, parent) -> None:
         super().__init__(
@@ -1692,7 +1700,6 @@ class dialog_savedgame_new(QWidget):
             if notshow:
                 continue
             self.newline(k)
-
 
     def showmenu(self, p):
         menu = QMenu(self)
@@ -1906,12 +1913,88 @@ class dialog_savedgame_new(QWidget):
             )
 
 
+class LazyLoadTableView(QTableView):
+    def __init__(self, model: QStandardItemModel) -> None:
+        super().__init__()
+        self.widgetfunction = []
+        self.lock = threading.Lock()
+        self.setModel(model)
+        self.started = False
+
+    def starttraceir(self):
+        self.started = True
+        self.model().rowsRemoved.connect(functools.partial(self.insertremove))
+        self.model().rowsInserted.connect(functools.partial(self.insert))
+
+    def resizeEvent(self, e):
+        self.loadVisibleRows()
+        super().resizeEvent(e)
+
+    def insertremove(self, index, start, end):
+        off = end - start + 1
+        with self.lock:
+            collect = []
+            for i in range(len(self.widgetfunction)):
+                if self.widgetfunction[i][0] > end:
+                    self.widgetfunction[i][0] -= off
+                elif (
+                    self.widgetfunction[i][0] >= start
+                    and self.widgetfunction[i][0] <= end
+                ):
+                    collect.append(i)
+            for i in collect:
+                self.widgetfunction.pop(i)
+
+        self.loadVisibleRows()
+
+    def insert(self, index, start, end):
+        off = end - start + 1
+        with self.lock:
+            for i in range(len(self.widgetfunction)):
+                if self.widgetfunction[i][0] >= start:
+                    self.widgetfunction[i][0] += off
+                    print(self.widgetfunction[i])
+
+        self.loadVisibleRows()
+
+    def setIndexWidget(self, index: QModelIndex, widgetf):
+        if not self.started:
+            self.widgetfunction.append([index.row(), index.column(), widgetf])
+            return
+        if self.visualRect(index).intersects(self.viewport().rect()):
+            w = widgetf()
+            super().setIndexWidget(index, w)
+        else:
+            with self.lock:
+                self.widgetfunction.append([index.row(), index.column(), widgetf])
+
+    def scrollContentsBy(self, dx, dy):
+        super().scrollContentsBy(dx, dy)
+        self.loadVisibleRows()
+
+    def loadVisibleRows(self):
+        with self.lock:
+            collect = []
+            for i, index in enumerate(self.widgetfunction):
+                row, col, wf = index
+                if self.visualRect(self.model().index(row, col)).intersects(
+                    self.viewport().rect()
+                ):
+                    collect.insert(0, i)
+
+            for i in collect:
+                row, col, wf = self.widgetfunction.pop(i)
+
+                w = wf()
+                super().setIndexWidget(self.model().index(row, col), w)
+
+
 class dialog_savedgame_lagacy(QWidget):
 
     def directshow(self):
         pass
 
-    def showsettingdialog(self, k, item):
+    def showsettingdialog(self, k):
         dialog_setting_game(self, k)
 
     def clicked2(self):
@@ -1935,6 +2018,11 @@ class dialog_savedgame_lagacy(QWidget):
             self, self.model.item(self.table.currentIndex().row(), 2).savetext
         )
 
+    def delayloadicon(self, k):
+        return getcolorbutton(
+            "", "", functools.partial(opendir, k), qicon=getExeIcon(k, cache=True)
+        )
+
     def newline(self, row, k):
         keyitem = QStandardItem()
         keyitem.savetext = k
@@ -1949,21 +2037,19 @@ class dialog_savedgame_lagacy(QWidget):
             ],
         )
         self.table.setIndexWidget(
-            self.model.index(row, 0), getsimpleswitch(savehook_new_data[k], "leuse")
+            self.model.index(row, 0), D_getsimpleswitch(savehook_new_data[k], "leuse")
         )
         self.table.setIndexWidget(
             self.model.index(row, 1),
-            getcolorbutton(
-                "", "", functools.partial(opendir, k), qicon=getExeIcon(k, cache=True)
-            ),
+            functools.partial(self.delayloadicon, k),
         )
 
         self.table.setIndexWidget(
             self.model.index(row, 2),
-            getcolorbutton(
+            D_getcolorbutton(
                 "",
                 "",
-                functools.partial(self.showsettingdialog, k, keyitem),
+                functools.partial(self.showsettingdialog, k),
                 icon="fa.gear",
                 constcolor="#FF69B4",
             ),
@@ -1981,7 +2067,7 @@ class dialog_savedgame_lagacy(QWidget):
 
         self.model = model
 
-        table = QTableView()
+        table = LazyLoadTableView(model)
         table.horizontalHeader().setSectionResizeMode(
             QHeaderView.ResizeMode.ResizeToContents
         )
@@ -1990,10 +2076,10 @@ class dialog_savedgame_lagacy(QWidget):
         table.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
         table.setSelectionMode((QAbstractItemView.SelectionMode.SingleSelection))
         table.setWordWrap(False)
-        table.setModel(model)
         self.table = table
         for row, k in enumerate(savehook_new_list):  # 2
             self.newline(row, k)
+        self.table.starttraceir()
         button = QPushButton()
         button.setText(_TR("开始游戏"))
         self.button = button
@@ -2236,7 +2322,9 @@ class dialog_savedgame_v3(QWidget):
         self.stack = stackedlist()
         self.stack.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
         self.stack.customContextMenuRequested.connect(self.stack_showmenu)
-        self.stack.setFixedWidth(globalconfig["dialog_savegame_layout"]["listitemwidth"])
+        self.stack.setFixedWidth(
+            globalconfig["dialog_savegame_layout"]["listitemwidth"]
+        )
         self.stack.bgclicked.connect(clickitem.clearfocus)
         lay = QHBoxLayout()
         self.setLayout(lay)
