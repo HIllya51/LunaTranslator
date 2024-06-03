@@ -1,4 +1,4 @@
-import re, codecs
+import re, codecs, inspect
 from traceback import print_exc
 from collections import Counter
 import importlib, gobject
@@ -398,9 +398,12 @@ def POSTSOLVE(line):
         if usedpostprocessconfig[postitem]["use"]:
             try:
                 _f = functions[postitem]
-                if _f.__code__.co_argcount == 1:
+                                
+                sig = inspect.signature(_f)
+                np = len(sig.parameters)
+                if np == 1:
                     line = functions[postitem](line)
-                elif _f.__code__.co_argcount == 2:
+                elif np == 2:
                     line = functions[postitem](
                         line, usedpostprocessconfig[postitem].get("args", {})
                     )

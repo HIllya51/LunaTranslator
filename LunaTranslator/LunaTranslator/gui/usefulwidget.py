@@ -1,5 +1,5 @@
 from qtsymbols import *
-import os, platform, functools, threading, time
+import os, platform, functools, threading, time, inspect
 from traceback import print_exc
 import windows, qtawesome
 from webviewpy import (
@@ -369,26 +369,28 @@ def callbackwrap(d, k, call, _):
     d[k] = _
     if call:
         try:
-            call(_)
+            sig = inspect.signature(call)
+            np = len(sig.parameters)
+            if np == 1:
+                call(_)
+            elif np == 0:
+                call()
         except:
             print_exc()
-            try:
-                call()
-            except:
-                print_exc()
 
 
 def comboboxcallbackwrap(internallist, d, k, call, _):
     d[k] = internallist[_]
     if call:
         try:
-            call(_)
+            sig = inspect.signature(call)
+            np = len(sig.parameters)
+            if np == 1:
+                call(_)
+            elif np == 0:
+                call()
         except:
             print_exc()
-            try:
-                call()
-            except:
-                print_exc()
 
 
 def getsimplecombobox(lst, d, k, callback=None, fixedsize=False, internallist=None):

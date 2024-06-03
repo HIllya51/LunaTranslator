@@ -129,6 +129,7 @@ def checkthemeissetable(self, dark: bool):
         elif _fn.endswith(".qss"):
             return None
     except:
+        print_exc()
         return None
 
 
@@ -142,16 +143,17 @@ def checkthemesettingvisandapply_1(self, _dark):
                 self.btnthemedark.hide()
             else:
                 self.btnthemedark.show()
+                self.btnthemedark.clicked.disconnect()
                 self.btnthemedark.clicked.connect(self.darksetting)
         else:
 
             lightsetting = checkthemeissetable(self, False)
             self.lightsetting = lightsetting
-
             if not self.lightsetting:
                 self.btnthemelight.hide()
             else:
                 self.btnthemelight.show()
+                self.btnthemelight.clicked.disconnect()
                 self.btnthemelight.clicked.connect(self.lightsetting)
 
     except:
@@ -172,6 +174,7 @@ def createbtnthemelight(self):
         if not self.lightsetting:
             self.btnthemelight.hide()
         else:
+            self.btnthemelight.clicked.disconnect()
             self.btnthemelight.clicked.connect(self.lightsetting)
     except:
         pass
@@ -192,6 +195,7 @@ def createbtnthemedark(self):
         if not self.darksetting:
             self.btnthemedark.hide()
         else:
+            self.btnthemedark.clicked.disconnect()
             self.btnthemedark.clicked.connect(self.darksetting)
     except:
         pass
