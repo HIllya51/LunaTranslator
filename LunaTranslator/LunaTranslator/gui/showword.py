@@ -785,6 +785,10 @@ class searchwordW(closeashidewindow):
         self.tabks = []
         self.setCentralWidget(ww)
         self.textOutput = auto_select_webview(self)
+        self.textOutput.set_zoom(globalconfig["ZoomFactor"])
+        self.textOutput.on_ZoomFactorChanged.connect(
+            functools.partial(globalconfig.__setitem__, "ZoomFactor")
+        )
         self.cache_results = {}
         self.hiding = True
 

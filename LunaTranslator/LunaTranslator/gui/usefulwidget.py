@@ -627,13 +627,27 @@ def getscaledrect(size: QSize):
     return rect
 
 
-class WebivewWidget(QWidget):
+class abstractwebview(QWidget):
     on_load = pyqtSignal(str)
     on_ZoomFactorChanged = pyqtSignal(float)
-    html_limit = 2 * 1024 * 1024  # 2mb
+    html_limit = 2 * 1024 * 1024
+
+    def parsehtml(self, html):
+        return html
+
+    def set_zoom(self, zoom):
+        pass
+
+
+class WebivewWidget(abstractwebview):
 
     def __del__(self):
-        winsharedutils.remove_ZoomFactorChanged(self.__token)
+        winsharedutils.remove_ZoomFactorChanged(
+            self.webview.get_native_handle(
+                webview_native_handle_kind_t.WEBVIEW_NATIVE_HANDLE_KIND_BROWSER_CONTROLLER
+            ),
+            self.__token,
+        )
 
     def __init__(self, parent=None, debug=False) -> None:
         super().__init__(parent)
@@ -648,11 +662,9 @@ class WebivewWidget(QWidget):
         )
         self.webview = None
         self.webview = Webview(debug=debug, window=int(self.winId()))
-        # 直接写在这里了
-        self._putzoom()
-        self.on_ZoomFactorChanged.connect(self._zoomchanged)
-        #
-        zoomfunc = winsharedutils.add_ZoomFactorChanged_CALLBACK(self.ZoomFactorChanged)
+        zoomfunc = winsharedutils.add_ZoomFactorChanged_CALLBACK(
+            self.on_ZoomFactorChanged.emit
+        )
         self.__token = winsharedutils.add_ZoomFactorChanged(
             self.webview.get_native_handle(
                 webview_native_handle_kind_t.WEBVIEW_NATIVE_HANDLE_KIND_BROWSER_CONTROLLER
@@ -663,14 +675,8 @@ class WebivewWidget(QWidget):
         self.webview.bind("__on_load", self._on_load)
         self.webview.init("""window.__on_load(window.location.href)""")
 
-    def _putzoom(self):
-        self.put_ZoomFactor(globalconfig["webview2"]["ZoomFactor"])
-
-    def _zoomchanged(self, zoom):
-        globalconfig["webview2"]["ZoomFactor"] = zoom
-
-    def ZoomFactorChanged(self, zoom):
-        self.on_ZoomFactorChanged.emit(zoom)
+    def set_zoom(self, zoom):
+        self.put_ZoomFactor(zoom)
 
     def put_ZoomFactor(self, zoom):
         winsharedutils.put_ZoomFactor(
@@ -680,18 +686,10 @@ class WebivewWidget(QWidget):
             zoom,
         )
 
-    def get_ZoomFactor(self, zoom):
-        return winsharedutils.get_ZoomFactor(
-            self.webview.get_native_handle(
-                webview_native_handle_kind_t.WEBVIEW_NATIVE_HANDLE_KIND_BROWSER_CONTROLLER
-            )
-        )
-
     def _on_load(self, href):
         self.on_load.emit(href)
 
     def navigate(self, url):
-        self._putzoom()
         self.webview.navigate(url)
 
     def resizeEvent(self, a0: QResizeEvent) -> None:
@@ -703,35 +701,27 @@ class WebivewWidget(QWidget):
             windows.MoveWindow(hwnd, 0, 0, size[0], size[1], True)
 
     def setHtml(self, html):
-        self._putzoom()
         self.webview.set_html(html)
 
-    def parsehtml(self, html):
-        return html
 
-
-class mshtmlWidget(QWidget):
-    on_load = pyqtSignal(str)
-    html_limit = 2 * 1024 * 1024
+class mshtmlWidget(abstractwebview):
 
     def __init__(self, parent=None) -> None:
         super().__init__(parent)
         if HTMLBrowser.version() < 10001:  # ie10之前，sethtml会乱码
             self.html_limit = 0
         self.browser = HTMLBrowser(int(self.winId()))
-        threading.Thread(target=self.__getcurrenturl).start()
+        t = QTimer(self)
+        t.setInterval(100)
+        t.timeout.connect(self.__getcurrenturl)
+        t.start(0)
+        self.curr_url = None
 
     def __getcurrenturl(self):
-        url = None
-        while True:
-            _u = self.browser.get_current_url()
-            if url != _u:
-                url = _u
-                try:
-                    self.on_load.emit(_u)
-                except:  # RuntimeError: wrapped C/C++ object of type mshtmlWidget has been deleted
-                    break
-            time.sleep(0.5)
+        _u = self.browser.get_current_url()
+        if self.curr_url != _u:
+            self.curr_url = _u
+            self.on_load.emit(_u)
 
     def navigate(self, url):
         self.browser.navigate(url)
@@ -781,9 +771,7 @@ def D_getsimplekeyseq(dic, key, callback=None):
     return lambda: getsimplekeyseq(dic, key, callback)
 
 
-class QWebWrap(QWidget):
-    on_load = pyqtSignal(str)
-    html_limit = 2 * 1024 * 1024
+class QWebWrap(abstractwebview):
 
     def __init__(self) -> None:
         super().__init__()
@@ -793,15 +781,20 @@ class QWebWrap(QWidget):
         self.internal.page().urlChanged.connect(
             lambda qurl: self.on_load.emit(qurl.url())
         )
-
-        self.internal.setZoomFactor(globalconfig["QWebEngineView"]["ZoomFactor"])
+        self.internal_zoom = 1
         t = QTimer(self)
-        t.setInterval(1000)
+        t.setInterval(100)
         t.timeout.connect(self.__getzoomfactor)
         t.start(0)
 
+    def set_zoom(self, zoom):
+        self.internal.setZoomFactor(zoom)
+
     def __getzoomfactor(self):
-        globalconfig["QWebEngineView"]["ZoomFactor"] = self.internal.zoomFactor()
+        z = self.internal.zoomFactor()
+        if z != self.internal_zoom:
+            self.internal_zoom = z
+            self.on_ZoomFactorChanged.emit(z)
 
     def navigate(self, url: str):
         from PyQt5.QtCore import QUrl
@@ -813,15 +806,13 @@ class QWebWrap(QWidget):
     def setHtml(self, html):
         self.internal.setHtml(html)
 
-    def parsehtml(self, html):
-        return html
-
     def resizeEvent(self, a0: QResizeEvent) -> None:
         self.internal.resize(a0.size())
 
 
 class auto_select_webview(QWidget):
     on_load = pyqtSignal(str)
+    on_ZoomFactorChanged = pyqtSignal(float)
 
     def clear(self):
         self.navigate("about:blank")
@@ -842,6 +833,10 @@ class auto_select_webview(QWidget):
                 ff.write(html)
             self.internal.navigate(lastcachehtml)
 
+    def set_zoom(self, zoom):
+        print(zoom)
+        self.internal.set_zoom(zoom)
+
     def sizeHint(self):
         return QSize(256, 192)
 
@@ -851,13 +846,18 @@ class auto_select_webview(QWidget):
         self.is_fallback = -2
         self.contex = -1
         self.internal = (
-            QWidget()
+            abstractwebview()
         )  # 加个占位的widget，否则等待加载的时候有一瞬间的灰色背景。
         self.lock = threading.Lock()
         layout = QHBoxLayout()
         layout.setContentsMargins(0, 0, 0, 0)
         layout.addWidget(self.internal)
         self.setLayout(layout)
+        self.internalsavedzoom = 1
+
+    def internalzoomchanged(self, zoom):
+        self.internalsavedzoom = zoom
+        self.on_ZoomFactorChanged.emit(zoom)
 
     def _maybecreate(self):
         with self.lock:
@@ -886,7 +886,9 @@ class auto_select_webview(QWidget):
             print_exc()
             self.is_fallback = self.contex
             browser = mshtmlWidget()
+        browser.set_zoom(self.internalsavedzoom)
         browser.on_load.connect(self.on_load)
+        browser.on_ZoomFactorChanged.connect(self.internalzoomchanged)
         return browser
 
 
