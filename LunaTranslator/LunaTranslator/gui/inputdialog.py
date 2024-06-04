@@ -269,7 +269,6 @@ class autoinitdialog(QDialog):
                     line.get("multi", False),
                     line["dir"],
                     line.get("filter", None),
-                    False,
                     callback=functools.partial(__temp.__setitem__, "k"),
                 )
 

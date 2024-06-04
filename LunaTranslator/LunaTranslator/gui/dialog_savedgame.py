@@ -714,7 +714,6 @@ class dialog_setting_game_internal(QWidget):
                 False,
                 False,
                 None,
-                True,
                 selectimg,
                 True,
             ),
@@ -731,7 +730,6 @@ class dialog_setting_game_internal(QWidget):
                 True,
                 False,
                 None,
-                True,
                 selectimg2,
                 True,
             ),
@@ -754,7 +752,6 @@ class dialog_setting_game_internal(QWidget):
                 False,
                 True,
                 None,
-                True,
                 lambda _: savehook_new_data[exepath].__setitem__(
                     "autosavesavedata", os.path.normpath(_)
                 ),
@@ -773,7 +770,6 @@ class dialog_setting_game_internal(QWidget):
                 False,
                 True,
                 None,
-                True,
                 lambda _: savehook_new_data[exepath].__setitem__(
                     "backupsavedatato", os.path.normpath(_)
                 ),
@@ -1067,7 +1063,6 @@ class dialog_setting_game_internal(QWidget):
                     False,
                     False,
                     filt,
-                    True,
                     functools.partial(selectimg, exepath, key),
                     True,
                 ),

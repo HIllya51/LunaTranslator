@@ -1111,7 +1111,6 @@ def getsimplepatheditor(
     multi,
     isdir,
     filter1="*.*",
-    ro=True,
     callback=None,
     useiconbutton=False,
 ):
@@ -1120,7 +1119,7 @@ def getsimplepatheditor(
     
     director=(text[0] if len(text) else '') if multi else text
     e = QLineEdit('|'.join(text) if multi else text)
-    e.setReadOnly(ro)
+    e.setReadOnly(True)
     if useiconbutton:
         bu = getcolorbutton("", "", None, icon="fa.gear", constcolor="#FF69B4")
     else:
