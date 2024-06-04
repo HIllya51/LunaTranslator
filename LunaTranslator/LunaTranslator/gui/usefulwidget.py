@@ -788,6 +788,7 @@ class QWebWrap(abstractwebview):
         t.start(0)
 
     def set_zoom(self, zoom):
+        self.internal_zoom = zoom
         self.internal.setZoomFactor(zoom)
 
     def __getzoomfactor(self):
@@ -819,10 +820,12 @@ class auto_select_webview(QWidget):
 
     def navigate(self, url):
         self._maybecreate()
+        self.internal.set_zoom(self.internalsavedzoom)
         self.internal.navigate(url)
 
     def setHtml(self, html):
         self._maybecreate()
+        self.internal.set_zoom(self.internalsavedzoom)
         html = self.internal.parsehtml(html)
         if len(html) < self.internal.html_limit:
             self.internal.setHtml(html)
@@ -834,6 +837,7 @@ class auto_select_webview(QWidget):
             self.internal.navigate(lastcachehtml)
 
     def set_zoom(self, zoom):
+        self.internalsavedzoom = zoom
         self.internal.set_zoom(zoom)
 
     def sizeHint(self):
@@ -870,6 +874,9 @@ class auto_select_webview(QWidget):
         if self.internal:
             self.layout().removeWidget(self.internal)
         self.internal = self._createwebview()
+        self.internal.set_zoom(self.internalsavedzoom)
+        self.internal.on_load.connect(self.on_load)
+        self.internal.on_ZoomFactorChanged.connect(self.internalzoomchanged)
         self.layout().addWidget(self.internal)
 
     def _createwebview(self):
@@ -885,9 +892,6 @@ class auto_select_webview(QWidget):
             print_exc()
             self.is_fallback = self.contex
             browser = mshtmlWidget()
-        browser.set_zoom(self.internalsavedzoom)
-        browser.on_load.connect(self.on_load)
-        browser.on_ZoomFactorChanged.connect(self.internalzoomchanged)
         return browser
 
 
