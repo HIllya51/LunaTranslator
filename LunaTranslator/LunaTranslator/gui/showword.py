@@ -18,6 +18,7 @@ from gui.usefulwidget import (
     getboxlayout,
     getspinbox,
     getlineedit,
+    listediterline,
     getsimpleswitch,
     getsimplekeyseq,
     getcolorbutton,
@@ -549,8 +550,16 @@ class AnkiWindow(QWidget):
             )
         )
 
-        self.tagsedit = QLineEdit()
-        layout.addLayout(getboxlayout([QLabel(_TR("Tags(split by |)")), self.tagsedit]))
+        layout.addLayout(
+            getboxlayout(
+                [
+                    QLabel(_TR("标签")),
+                    listediterline(
+                        _TR("标签"), _TR("标签"), globalconfig["ankiconnect"]["tags"]
+                    ),
+                ]
+            )
+        )
 
         btn = QPushButton(_TR("添加"))
         btn.clicked.connect(self.errorwrap)
@@ -633,10 +642,7 @@ class AnkiWindow(QWidget):
         ModelName = globalconfig["ankiconnect"]["ModelName5"]
         DeckName = globalconfig["ankiconnect"]["DeckName"]
         model_htmlfront, model_htmlback, model_css = self.tryloadankitemplates()
-        try:
-            tags = self.tagsedit.text().split("|")
-        except:
-            tags = []
+        tags = globalconfig["ankiconnect"]["tags"]
         anki.Deck.create(DeckName)
         try:
             model = anki.Model.create(

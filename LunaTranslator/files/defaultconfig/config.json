@@ -206,7 +206,8 @@
             }
         },
         "autocrop": false,
-        "boldword": false
+        "boldword": false,
+        "tags": []
     },
     "imageformat": -1,
     "ankiwindow": [
