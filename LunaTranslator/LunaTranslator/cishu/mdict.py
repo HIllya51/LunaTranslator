@@ -2283,6 +2283,34 @@ import re
 
 
 class mdict(cishubase):
+    def getdistance(self, f):
+        _ = self.extraconf[f]
+
+        distance = _["distance"]
+        if distance == -1:
+            distance = self.config["distance"]
+        return distance
+
+    def gettitle(self, f, index):
+        _ = self.extraconf[f]
+        title = _["title"]
+        if title is None:
+            t = os.path.basename(f)[:-4]
+            if index._title.strip() != "":
+                t1 = index._title.strip()
+                if (t1.isascii()) and (t.isascii()):
+                    t = t1
+                elif not t1.isascii():
+                    t = t1
+            title = t
+        return title
+
+    def getpriority(self, f):
+        return self.extraconf[f]["priority"]
+
+    def getFoldFlow(self, f):
+        return self.extraconf[f]["FoldFlow"]
+
     def init_once_mdx(self, f):
         if not os.path.isfile(f):
             return
@@ -2296,24 +2324,14 @@ class mdict(cishubase):
             "distance", -1
         )  # -1是跟随mdict全局distance，否则使用私有distance
         _["title"] = _.get("title", None)  # None是使用默认显示名，否则使用自定义显示名
+        _["FoldFlow"] = _.get(
+            "FoldFlow", False
+        )  # None是使用默认显示名，否则使用自定义显示名
         if os.path.exists(f):
             try:
                 index = IndexBuilder(f)
 
-                title = _["title"]
-                if title is None:
-                    t = os.path.basename(f)[:-4]
-                    if index._title.strip() != "":
-                        t1 = index._title.strip()
-                        if (t1.isascii()) and (t.isascii()):
-                            t = t1
-                        elif not t1.isascii():
-                            t = t1
-                    title = t
-                distance = _["distance"]
-                if distance == -1:
-                    distance = self.config["distance"]
-                self.builders.append((f, index, title, distance, _["priority"]))
+                self.builders.append((f, index))
 
             except:
                 print(f)
@@ -2327,18 +2345,11 @@ class mdict(cishubase):
                 self.extraconf = json.loads(ff.read())
         except:
             self.extraconf = {}
-        try:
-            with open("userconfig/mdict_config2.json", "r", encoding="utf8") as ff:
-                self.extraconf2 = json.loads(ff.read())
-        except:
-            self.extraconf2 = {}
         self.sql = None
         paths = self.config["paths"]
 
         self.builders = []
         self.dedump = set()
-        self.FoldFlow = self.extraconf2.get("FoldFlow", False)
-        self.extraconf2["FoldFlow"] = self.FoldFlow
         for f in paths:
             if f.strip() == "":
                 continue
@@ -2354,11 +2365,6 @@ class mdict(cishubase):
         try:
             with open("userconfig/mdict_config.json", "w", encoding="utf8") as ff:
                 ff.write(json.dumps(self.extraconf, ensure_ascii=False, indent=4))
-        except:
-            pass
-        try:
-            with open("userconfig/mdict_config2.json", "w", encoding="utf8") as ff:
-                ff.write(json.dumps(self.extraconf2, ensure_ascii=False, indent=4))
         except:
             pass
 
@@ -2701,10 +2707,10 @@ class mdict(cishubase):
         return allres
 
     def searchthread(self, allres, i, word):
-        f, index, title, distance, priority = self.builders[i]
+        f, index = self.builders[i]
         results = []
         try:
-            keys = self.querycomplex(word, distance, index.get_mdx_keys)
+            keys = self.querycomplex(word, self.getdistance(f), index.get_mdx_keys)
             # print(keys)
             for k in keys:
                 __safe = []
@@ -2717,13 +2723,20 @@ class mdict(cishubase):
         for i in range(len(results)):
             results[i] = self.repairtarget(index, os.path.dirname(f), results[i])
         if len(results):
-            allres.append((priority, title, "".join(results)))
+            allres.append(
+                (
+                    self.getpriority(f),
+                    self.getFoldFlow(f),
+                    self.gettitle(f, index),
+                    "".join(results),
+                )
+            )
 
     def generatehtml_tabswitch(self, allres):
         btns = []
         contents = []
         idx = 0
-        for _, title, res in allres:
+        for _, foldflow, title, res in allres:
             idx += 1
             btns.append(
                 f"""<button type="button" onclick="onclickbtn_mdict_internal('buttonid_mdict_internal{idx}')" id="buttonid_mdict_internal{idx}" class="tab-button_mdict_internal" data-tab="tab_mdict_internal{idx}">{title}</button>"""
@@ -2831,10 +2844,11 @@ if (content.style.display === 'block') {
 }
 }</script>"""
         lis = []
-        extra = "display: block;"
-        if self.FoldFlow:
-            extra = "display: none;"
-        for _, title, res in allres:
+
+        for _, foldflow, title, res in allres:
+            extra = "display: block;"
+            if foldflow:
+                extra = "display: none;"
             uid = str(uuid.uuid4())
             lis.append(
                 rf"""<li><div class="collapsible-header" id="{uid}" onclick="mdict_flowstyle_clickcallback('{uid}')">{title}</div><div class="collapsible-content" style="{extra}">
