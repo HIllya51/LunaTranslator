@@ -224,20 +224,8 @@ def buildLunaHook():
 
 def buildPlugins():
     os.chdir(rootDir + "\\plugins\\scripts")
-    subprocess.run(
-        f'cmake ../CMakeLists.txt -G "Visual Studio 17 2022" -A win32 -T host=x86 -B ../build/x86 -DCMAKE_SYSTEM_VERSION=10.0.26621.0'
-    )
-    subprocess.run(
-        f"cmake --build ../build/x86 --config Release --target ALL_BUILD -j 14"
-    )
-    subprocess.run(f"python copytarget.py 1")
-    subprocess.run(
-        f'cmake ../CMakeLists.txt -G "Visual Studio 17 2022" -A x64 -T host=x64 -B ../build/x64 -DCMAKE_SYSTEM_VERSION=10.0.26621.0'
-    )
-    subprocess.run(
-        f"cmake --build ../build/x64 --config Release --target ALL_BUILD -j 14"
-    )
-    subprocess.run(f"python copytarget.py 0")
+    subprocess.run(f"build32.bat")
+    subprocess.run(f"build64.bat")
 
 
 def downloadsomething():
