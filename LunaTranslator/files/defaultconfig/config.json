@@ -833,7 +833,48 @@
         },
         "latin": {
             "use": false,
-            "name": "latin"
+            "name": "标点",
+            "args": {
+                "punctuations": [
+                    " ",
+                    ",",
+                    ".",
+                    "'",
+                    "\"",
+                    "?",
+                    "/",
+                    ";",
+                    ":",
+                    "|",
+                    "\\",
+                    "[",
+                    "]",
+                    "{",
+                    "}",
+                    "-",
+                    "_",
+                    "=",
+                    "+",
+                    "`",
+                    "~",
+                    "!",
+                    "#",
+                    "$",
+                    "%",
+                    "^",
+                    "&",
+                    "*",
+                    "(",
+                    ")"
+                ]
+            },
+            "argstype": {
+                "punctuations": {
+                    "type": "textlist",
+                    "name": "标点",
+                    "header": "标点"
+                }
+            }
         }
     },
     "cishu": {
@@ -1043,14 +1084,14 @@
             "use": false,
             "name": "mdict",
             "args": {
-                "path": "",
+                "paths": [],
                 "distance": 0,
                 "priority": 100,
                 "stylehv": 0,
                 "path_dir": ""
             },
             "argstype": {
-                "path": {
+                "paths": {
                     "type": "file",
                     "name": "路径",
                     "dir": false,

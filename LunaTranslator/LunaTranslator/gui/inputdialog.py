@@ -4,7 +4,14 @@ import qtawesome
 from myutils.config import globalconfig, _TR, _TRL
 from myutils.utils import makehtml
 from myutils.wrapper import Singleton
-from gui.usefulwidget import MySwitch, selectcolor, getsimpleswitch, threebuttons
+from gui.usefulwidget import (
+    MySwitch,
+    selectcolor,
+    getsimpleswitch,
+    threebuttons,
+    listediterline,
+    getsimplepatheditor,
+)
 
 
 @Singleton
@@ -196,24 +203,8 @@ class autoinitdialog(QDialog):
             if callback:
                 callback()
 
-        def openfiledirectory(multi, edit, isdir, filter1="*.*"):
-            if isdir:
-                f = QFileDialog.getExistingDirectory(directory=edit.text())
-                res = f
-            else:
-                if multi:
-                    f = QFileDialog.getOpenFileNames(
-                        directory=edit.text(), filter=filter1
-                    )
-                    res = "|".join(f[0])
-                else:
-                    f = QFileDialog.getOpenFileName(
-                        directory=edit.text(), filter=filter1
-                    )
-                    res = f[0]
-
-            if res != "":
-                edit.setText(res)
+        def __getv(l):
+            return l
 
         for line in lines:
             if "d" in line:
@@ -227,6 +218,13 @@ class autoinitdialog(QDialog):
                     lineW.setOpenExternalLinks(True)
                 else:
                     lineW = QLabel(_TR(dd[key]))
+            elif line["type"] == "textlist":
+                __list = dd[key]
+                e = listediterline(_TR(line["name"]), _TR(line["header"]), __list)
+
+                regist.append([dd, key, functools.partial(__getv, __list)])
+                lineW = QHBoxLayout()
+                lineW.addWidget(e)
             elif line["type"] == "combo":
                 lineW = QComboBox()
                 if "list_function" in line:
@@ -262,28 +260,21 @@ class autoinitdialog(QDialog):
                     _TR("取消")
                 )
             elif line["type"] == "lineedit":
-                try:
-                    lineW = QLineEdit(dd[key])
-                    regist.append([dd, key, lineW.text])
-                except:
-                    # 被废弃的参数若为int型但失去argstype注释会崩溃，直接continue;
-                    continue
+                lineW = QLineEdit(dd[key])
+                regist.append([dd, key, lineW.text])
             elif line["type"] == "file":
-                e = QLineEdit(dd[key])
-                regist.append([dd, key, e.text])
-                bu = QPushButton(_TR("选择" + ("文件夹" if line["dir"] else "文件")))
-                bu.clicked.connect(
-                    functools.partial(
-                        openfiledirectory,
-                        line.get("multi", False),
-                        e,
-                        line["dir"],
-                        "" if line["dir"] else line.get("filter", None),
-                    )
+                __temp = {"k": dd[key]}
+                lineW = getsimplepatheditor(
+                    dd[key],
+                    line.get("multi", False),
+                    line["dir"],
+                    line.get("filter", None),
+                    False,
+                    callback=functools.partial(__temp.__setitem__, "k"),
                 )
-                lineW = QHBoxLayout()
-                lineW.addWidget(e)
-                lineW.addWidget(bu)
+
+                regist.append([dd, key, functools.partial(__temp.__getitem__, "k")])
+
             elif line["type"] == "switch":
                 lineW = MySwitch(sign=dd[key])
                 regist.append([dd, key, lineW.isChecked])

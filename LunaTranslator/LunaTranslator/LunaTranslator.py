@@ -989,7 +989,7 @@ class MAINUI:
                             self.setdarktheme(obj, self.currentisdark)
                         windows.SetProp(
                             int(obj.winId()),
-                            "Magpie.WindowType.ToolWindow",
+                            "Magpie.ToolWindow",
                             windows.HANDLE(1),
                         )
                         self.setshowintab_checked(obj)

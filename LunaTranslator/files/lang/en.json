@@ -819,5 +819,6 @@
     "百度图片翻译": "Baidu Image Translation",
     "修改名称": "Change Name",
     "大": "large",
-    "权限不足，请以管理员权限运行！": "Insufficient permissions, please run with administrator privileges!"
+    "权限不足，请以管理员权限运行！": "Insufficient permissions, please run with administrator privileges!",
+    "标点": "punctuation"
 }

@@ -2328,12 +2328,12 @@ class mdict(cishubase):
         except:
             self.extraconf = {}
         self.sql = None
-        paths = self.config["path"]
+        paths = self.config["paths"]
 
         self.builders = []
         self.dedump = set()
 
-        for f in paths.split("|"):
+        for f in paths:
             if f.strip() == "":
                 continue
             self.init_once_mdx(f)

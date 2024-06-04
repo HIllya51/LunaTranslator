@@ -13,10 +13,10 @@ class TS(basetrans):
     def checkpath(self):
 
         pairs = (self.srclang, self.tgtlang)
-        if self.config["路径"] != self.path11 or pairs != self.pair:
+        if self.config["path"] != self.path11 or pairs != self.pair:
 
             base = os.path.join(
-                self.config["路径"], "GTS/" + self.srclang + self.tgtlang
+                self.config["path"], "GTS/" + self.srclang + self.tgtlang
             )
             if os.path.exists(base) == False:
                 return False
@@ -27,7 +27,7 @@ class TS(basetrans):
                     break
             if dll is None:
                 return False
-            self.path11 = self.config["路径"]
+            self.path11 = self.config["path"]
             self.pair = pairs
             self.path = os.path.join(base, dll)
             self.path2 = os.path.join(base, "DCT")

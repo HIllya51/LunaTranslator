@@ -341,40 +341,45 @@
 	},
 	"jb7": {
 		"args": {
-			"路径": "",
-			"用户词典1(可选)": "",
-			"用户词典2(可选)": "",
-			"用户词典3(可选)": "",
+			"path": "",
+			"path_userdict1": "",
+			"path_userdict2": "",
+			"path_userdict3": "",
 			"备注": "用户词典选择JcUserdic文件夹"
 		},
 		"argstype": {
 			"备注": {
 				"type": "label"
 			},
-			"路径": {
+			"path": {
 				"type": "file",
-				"dir": true
+				"dir": true,
+				"name": "路径"
 			},
-			"用户词典1(可选)": {
+			"path_userdict1": {
 				"type": "file",
-				"dir": true
+				"dir": true,
+				"name": "用户词典1(可选)"
 			},
-			"用户词典2(可选)": {
+			"path_userdict2": {
 				"type": "file",
-				"dir": true
+				"dir": true,
+				"name": "用户词典2(可选)"
 			},
-			"用户词典3(可选)": {
+			"path_userdict3": {
 				"type": "file",
-				"dir": true
+				"dir": true,
+				"name": "用户词典3(可选)"
 			}
 		}
 	},
 	"kingsoft": {
 		"args": {
-			"路径": ""
+			"path": ""
 		},
 		"argstype": {
-			"路径": {
+			"path": {
+				"name": "路径",
 				"type": "file",
 				"dir": true
 			}
@@ -382,10 +387,11 @@
 	},
 	"dreye": {
 		"args": {
-			"路径": ""
+			"path": ""
 		},
 		"argstype": {
-			"路径": {
+			"path": {
+				"name": "路径",
 				"type": "file",
 				"dir": true
 			}
@@ -393,11 +399,12 @@
 	},
 	"rengong": {
 		"args": {
-			"json文件": ""
+			"jsonfile": []
 		},
 		"argstype": {
-			"json文件": {
+			"jsonfile": {
 				"type": "file",
+				"name": "json文件",
 				"dir": false,
 				"filter": "*.json",
 				"multi": true
@@ -406,12 +413,13 @@
 	},
 	"premt": {
 		"args": {
-			"sqlite文件": "",
+			"sqlitefile": "",
 			"仅使用激活的翻译": false
 		},
 		"argstype": {
-			"sqlite文件": {
+			"sqlitefile": {
 				"type": "file",
+				"name": "sqlite文件",
 				"dir": false,
 				"filter": "*.sqlite"
 			},
@@ -478,7 +486,7 @@
 	},
 	"ort_sp": {
 		"args": {
-			"路径": "",
+			"path": "",
 			"最大生成长度": 128,
 			"最小生成长度": 1,
 			"柱搜索数": 8,
@@ -487,7 +495,8 @@
 			"重复惩罚": 1.7
 		},
 		"argstype": {
-			"路径": {
+			"path": {
+				"name": "路径",
 				"type": "file",
 				"dir": true
 			},

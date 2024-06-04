@@ -11,13 +11,13 @@ class TS(basetrans):
         self.checkpath()
 
     def checkpath(self):
-        if self.config["路径"] == "":
+        if self.config["path"] == "":
             return False
-        if os.path.exists(self.config["路径"]) == False:
+        if os.path.exists(self.config["path"]) == False:
             return False
         pairs = (self.srclang, self.tgtlang)
-        if self.config["路径"] != self.path or pairs != self.pair:
-            self.path = self.config["路径"]
+        if self.config["path"] != self.path or pairs != self.pair:
+            self.path = self.config["path"]
 
             self.pair = pairs
             t = time.time()
