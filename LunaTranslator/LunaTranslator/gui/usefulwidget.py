@@ -834,7 +834,6 @@ class auto_select_webview(QWidget):
             self.internal.navigate(lastcachehtml)
 
     def set_zoom(self, zoom):
-        print(zoom)
         self.internal.set_zoom(zoom)
 
     def sizeHint(self):

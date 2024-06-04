@@ -751,6 +751,7 @@ class searchwordW(closeashidewindow):
             html = self.cache_results[self.tabks[idx]]
         except:
             return
+        self.textOutput.set_zoom(globalconfig["ZoomFactor"])
         self.textOutput.setHtml(html)
 
     def setupUi(self):
