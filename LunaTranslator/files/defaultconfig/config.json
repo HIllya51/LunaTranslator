@@ -155,7 +155,7 @@
     "ocr_diff_sim": 0.95,
     "ocr_text_diff": 3,
     "autorun": true,
-    "usewebview": 0,
+    "usewebview": 1,
     "transparent": 80,
     "transparent_tool": 50,
     "fontsize": 17.0,
