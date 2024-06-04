@@ -2327,12 +2327,18 @@ class mdict(cishubase):
                 self.extraconf = json.loads(ff.read())
         except:
             self.extraconf = {}
+        try:
+            with open("userconfig/mdict_config2.json", "r", encoding="utf8") as ff:
+                self.extraconf2 = json.loads(ff.read())
+        except:
+            self.extraconf2 = {}
         self.sql = None
         paths = self.config["paths"]
 
         self.builders = []
         self.dedump = set()
-
+        self.FoldFlow = self.extraconf2.get("FoldFlow", False)
+        self.extraconf2["FoldFlow"] = self.FoldFlow
         for f in paths:
             if f.strip() == "":
                 continue
@@ -2348,6 +2354,11 @@ class mdict(cishubase):
         try:
             with open("userconfig/mdict_config.json", "w", encoding="utf8") as ff:
                 ff.write(json.dumps(self.extraconf, ensure_ascii=False, indent=4))
+        except:
+            pass
+        try:
+            with open("userconfig/mdict_config2.json", "w", encoding="utf8") as ff:
+                ff.write(json.dumps(self.extraconf2, ensure_ascii=False, indent=4))
         except:
             pass
 
@@ -2820,10 +2831,13 @@ if (content.style.display === 'block') {
 }
 }</script>"""
         lis = []
+        extra = "display: block;"
+        if self.FoldFlow:
+            extra = "display: none;"
         for _, title, res in allres:
             uid = str(uuid.uuid4())
             lis.append(
-                rf"""<li><div class="collapsible-header" id="{uid}" onclick="mdict_flowstyle_clickcallback('{uid}')">{title}</div><div class="collapsible-content" style="display: block;">
+                rf"""<li><div class="collapsible-header" id="{uid}" onclick="mdict_flowstyle_clickcallback('{uid}')">{title}</div><div class="collapsible-content" style="{extra}">
                {res}
             </div></li>"""
             )
