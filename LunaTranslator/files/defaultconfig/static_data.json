@@ -770,7 +770,11 @@
                 },
                 {
                     "name": "mdict",
-                    "link": "https://freemdict.com/"
+                    "link": "https://forum.freemdict.com/"
+                },
+                {
+                    "name": "mdict",
+                    "link": "https://search.freemdict.com/"
                 }
             ]
         },

@@ -2675,6 +2675,20 @@ class mdict(cishubase):
                 )
         return f'<div id="{divid}">{html_content}</div>'
 
+    def searchthread_internal(self, index, k, __safe):
+        allres = []
+        if k in __safe:  # 避免循环引用
+            return []
+        __safe.append(k)
+        for content in index.mdx_lookup(k):
+            match = re.match("@@@LINK=(.*)", content.strip())
+            if match:
+                match = match.groups()[0]
+                allres += self.searchthread_internal(index, match, __safe)
+            else:
+                allres.append(content)
+        return allres
+
     def searchthread(self, allres, i, word):
         f, index, title, distance, priority = self.builders[i]
         results = []
@@ -2682,12 +2696,9 @@ class mdict(cishubase):
             keys = self.querycomplex(word, distance, index.get_mdx_keys)
             # print(keys)
             for k in keys:
-                content = index.mdx_lookup(k)[0]
-                match = re.match("@@@LINK=(.*)", content.strip())
-                if match:
-                    match = match.groups()[0]
-                    content = index.mdx_lookup(match)[0]
-                results.append(self.parseashtml(content))
+                __safe = []
+                for content in set(self.searchthread_internal(index, k, __safe)):
+                    results.append(self.parseashtml(content))
         except:
             from traceback import print_exc
 
