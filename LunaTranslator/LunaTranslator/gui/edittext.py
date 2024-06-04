@@ -108,11 +108,6 @@ class edittrans(QMainWindow):
 
     def __init__(self, parent):
         super().__init__(parent, Qt.WindowType.FramelessWindowHint)
-        self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
-        self.setStyleSheet(
-            "background-color: %s"
-            % str2rgba(globalconfig["backcolor"], globalconfig["transparent"])
-        )
         self.setupUi()
 
         self.rssignal.connect(self.resize)
@@ -142,8 +137,7 @@ class edittrans(QMainWindow):
     def setupUi(self):
         self.setWindowIcon(qtawesome.icon("fa.edit"))
 
-        self.textOutput = QLineEdit(self)
-
+        self.textOutput = QPlainTextEdit(self)
         qv = QHBoxLayout()
         w = QWidget()
         self.setCentralWidget(w)
@@ -160,11 +154,10 @@ class edittrans(QMainWindow):
             )
         )
         qv.addWidget(submit)
-
         submit.clicked.connect(self.submitfunction)
 
     def submitfunction(self):
-        text = self.textOutput.text()
+        text = self.textOutput.toPlainText()
         if len(text) == 0:
             return
         try:

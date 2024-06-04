@@ -241,6 +241,8 @@ class basetrans(commonbase):
         return res
 
     def cachesetatend(self, contentsolved, res):
+        if self.transtype == "pre":
+            return
         if globalconfig["uselongtermcache"]:
             self.longtermcacheset(contentsolved, res)
         self.shorttermcacheset(contentsolved, res)
@@ -290,7 +292,8 @@ class basetrans(commonbase):
             pass
         else:
             collectiterres.append(_)
-        callback("".join(collectiterres), embedcallback, is_iter_res)
+        if all([_ is not None for _ in collectiterres]):
+            callback("".join(collectiterres), embedcallback, is_iter_res)
 
     def reinitandtrans(self, contentraw, contentsolved, is_auto_run):
         if self.needreinit or self.initok == False:
@@ -345,7 +348,8 @@ class basetrans(commonbase):
 
                     else:
                         __callback(res, 0)
-                    self.cachesetatend(contentsolved, "".join(collectiterres))
+                    if all([_ is not None for _ in collectiterres]):
+                        self.cachesetatend(contentsolved, "".join(collectiterres))
             except Exception as e:
                 if self.using and globalconfig["showtranexception"]:
                     if isinstance(e, ArgsEmptyExc):
