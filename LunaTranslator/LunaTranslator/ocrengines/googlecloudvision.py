@@ -8,7 +8,7 @@ class OCR(baseocr):
         # https://github.com/dmotz/thing-translator/blob/d1fec3f38d24e973af49766669f9ee00bd9e98a8/src/effects/snap.js
         # https://cloud.google.com/vision/docs/ocr?hl=zh-cn
         # https://cloud.google.com/vision/docs/reference/rest/v1/AnnotateImageResponse#EntityAnnotation
-        self.checkempty(["googlecloudvision"])
+        self.checkempty(["key"])
         ocr_url = (
             "https://vision.googleapis.com/v1/images:annotate?key=" + self.config["key"]
         )
