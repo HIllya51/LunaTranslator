@@ -1638,6 +1638,12 @@
             "name": "实时编辑"
         }
     },
+    "webview2":{
+        "ZoomFactor": 1
+    },
+    "QWebEngineView":{
+        "ZoomFactor": 1
+    },
     "realtime_edit_target": "realtime_edit",
     "magpiepath": "",
     "minifollow": false,

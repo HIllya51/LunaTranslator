@@ -1,7 +1,7 @@
 from qtsymbols import *
 import os, platform, functools, threading, time, inspect
 from traceback import print_exc
-import windows, qtawesome
+import windows, qtawesome, winsharedutils
 from webviewpy import (
     webview_native_handle_kind_t,
     Webview,
@@ -629,7 +629,11 @@ def getscaledrect(size: QSize):
 
 class WebivewWidget(QWidget):
     on_load = pyqtSignal(str)
+    on_ZoomFactorChanged = pyqtSignal(float)
     html_limit = 2 * 1024 * 1024  # 2mb
+
+    def __del__(self):
+        winsharedutils.remove_ZoomFactorChanged(self.__token)
 
     def __init__(self, parent=None, debug=False) -> None:
         super().__init__(parent)
@@ -644,14 +648,50 @@ class WebivewWidget(QWidget):
         )
         self.webview = None
         self.webview = Webview(debug=debug, window=int(self.winId()))
-
+        # 直接写在这里了
+        self._putzoom()
+        self.on_ZoomFactorChanged.connect(self._zoomchanged)
+        #
+        zoomfunc = winsharedutils.add_ZoomFactorChanged_CALLBACK(self.ZoomFactorChanged)
+        self.__token = winsharedutils.add_ZoomFactorChanged(
+            self.webview.get_native_handle(
+                webview_native_handle_kind_t.WEBVIEW_NATIVE_HANDLE_KIND_BROWSER_CONTROLLER
+            ),
+            zoomfunc,
+        )
+        self.keepref = [zoomfunc]
         self.webview.bind("__on_load", self._on_load)
         self.webview.init("""window.__on_load(window.location.href)""")
+
+    def _putzoom(self):
+        self.put_ZoomFactor(globalconfig["webview2"]["ZoomFactor"])
+
+    def _zoomchanged(self, zoom):
+        globalconfig["webview2"]["ZoomFactor"] = zoom
+
+    def ZoomFactorChanged(self, zoom):
+        self.on_ZoomFactorChanged.emit(zoom)
+
+    def put_ZoomFactor(self, zoom):
+        winsharedutils.put_ZoomFactor(
+            self.webview.get_native_handle(
+                webview_native_handle_kind_t.WEBVIEW_NATIVE_HANDLE_KIND_BROWSER_CONTROLLER
+            ),
+            zoom,
+        )
+
+    def get_ZoomFactor(self, zoom):
+        return winsharedutils.get_ZoomFactor(
+            self.webview.get_native_handle(
+                webview_native_handle_kind_t.WEBVIEW_NATIVE_HANDLE_KIND_BROWSER_CONTROLLER
+            )
+        )
 
     def _on_load(self, href):
         self.on_load.emit(href)
 
     def navigate(self, url):
+        self._putzoom()
         self.webview.navigate(url)
 
     def resizeEvent(self, a0: QResizeEvent) -> None:
@@ -663,6 +703,7 @@ class WebivewWidget(QWidget):
             windows.MoveWindow(hwnd, 0, 0, size[0], size[1], True)
 
     def setHtml(self, html):
+        self._putzoom()
         self.webview.set_html(html)
 
     def parsehtml(self, html):
@@ -752,6 +793,15 @@ class QWebWrap(QWidget):
         self.internal.page().urlChanged.connect(
             lambda qurl: self.on_load.emit(qurl.url())
         )
+
+        self.internal.setZoomFactor(globalconfig["QWebEngineView"]["ZoomFactor"])
+        t = QTimer(self)
+        t.setInterval(1000)
+        t.timeout.connect(self.__getzoomfactor)
+        t.start(0)
+
+    def __getzoomfactor(self):
+        globalconfig["QWebEngineView"]["ZoomFactor"] = self.internal.zoomFactor()
 
     def navigate(self, url: str):
         from PyQt5.QtCore import QUrl
@@ -1088,7 +1138,7 @@ class listediterline(QLineEdit):
         super().mousePressEvent(e)
 
 
-def openfiledirectory(directory,multi, edit, isdir, filter1="*.*", callback=None):
+def openfiledirectory(directory, multi, edit, isdir, filter1="*.*", callback=None):
     if isdir:
         f = QFileDialog.getExistingDirectory(directory=directory)
         res = f
@@ -1101,7 +1151,7 @@ def openfiledirectory(directory,multi, edit, isdir, filter1="*.*", callback=None
 
     if len(res) == 0:
         return
-    edit.setText('|'.join(res) if multi else res)
+    edit.setText("|".join(res) if multi else res)
     if callback:
         callback(res)
 
@@ -1116,9 +1166,9 @@ def getsimplepatheditor(
 ):
     lay = QHBoxLayout()
     lay.setContentsMargins(0, 0, 0, 0)
-    
-    director=(text[0] if len(text) else '') if multi else text
-    e = QLineEdit('|'.join(text) if multi else text)
+
+    director = (text[0] if len(text) else "") if multi else text
+    e = QLineEdit("|".join(text) if multi else text)
     e.setReadOnly(True)
     if useiconbutton:
         bu = getcolorbutton("", "", None, icon="fa.gear", constcolor="#FF69B4")
@@ -1126,7 +1176,13 @@ def getsimplepatheditor(
         bu = QPushButton(_TR("选择" + ("文件夹" if isdir else "文件")))
     bu.clicked.connect(
         functools.partial(
-            openfiledirectory,director, multi, e, isdir, "" if isdir else filter1, callback
+            openfiledirectory,
+            director,
+            multi,
+            e,
+            isdir,
+            "" if isdir else filter1,
+            callback,
         )
     )
     lay.addWidget(e)
