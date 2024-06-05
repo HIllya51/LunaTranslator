@@ -102,17 +102,11 @@ class edittext(saveposwindow):
 
 @Singleton_close
 class edittrans(QMainWindow):
-    rssignal = pyqtSignal(QSize)
-    mvsignal = pyqtSignal(QPoint)
-    swsignal = pyqtSignal()
 
     def __init__(self, parent):
         super().__init__(parent, Qt.WindowType.FramelessWindowHint)
         self.setupUi()
-
-        self.rssignal.connect(self.resize)
-        self.mvsignal.connect(self.move)
-        self.swsignal.connect(self.show)
+        self.idx = 0
         self.trykeeppos()
 
     def trykeeppos(self):
@@ -120,19 +114,20 @@ class edittrans(QMainWindow):
         rect = windows.GetWindowRect(self.followhwnd)
         if rect is None:
             raise
-        self.follow()
+        t = QTimer(self)
+        t.setInterval(100)
+        t.timeout.connect(self.follow)
+        t.start(0)
 
-    @threader
     def follow(self):
-        i = 0
-        while True:
-            rect = windows.GetWindowRect(self.followhwnd)
-            self.mvsignal.emit((QPoint(rect[0], rect[3])) / self.devicePixelRatioF())
-            self.rssignal.emit((QSize(rect[2] - rect[0], 1)) / self.devicePixelRatioF())
-            if i == 0:
-                self.swsignal.emit()
-            i += 1
-            time.sleep(0.3)
+        rect = windows.GetWindowRect(self.followhwnd)
+        if rect is None:
+            return
+        self.move((QPoint(rect[0], rect[3])) / self.devicePixelRatioF())
+        self.resize((QSize(rect[2] - rect[0], 1)) / self.devicePixelRatioF())
+        if self.idx == 0:
+            self.show()
+        self.idx += 1
 
     def setupUi(self):
         self.setWindowIcon(qtawesome.icon("fa.edit"))
