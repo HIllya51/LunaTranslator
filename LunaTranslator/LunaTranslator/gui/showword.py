@@ -610,7 +610,10 @@ class AnkiWindow(QWidget):
     def errorwrap(self):
         try:
             self.addanki()
-            getQMessageBox(self, _TR("成功"), _TR("成功"))
+            if globalconfig["ankiconnect"]["addsuccautoclose"]:
+                self.parent().parent().parent().close()
+            else:
+                QToolTip.showText(QCursor.pos(), _TR("添加_成功"), self)
         except requests.NetWorkException:
             getQMessageBox(self, _TR("错误"), _TR("无法连接到anki"))
         except anki.AnkiException as e:

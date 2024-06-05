@@ -206,6 +206,7 @@
             }
         },
         "autocrop": false,
+        "addsuccautoclose": false,
         "boldword": false,
         "tags": []
     },
