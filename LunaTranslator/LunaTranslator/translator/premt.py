@@ -30,12 +30,12 @@ class TS(basetrans):
     def inittranslator(self):
         self.paths = (None, None)
         self.checkfilechanged(
-            self.unsafegetcurrentgameconfig(), self.config["sqlite文件"]
+            self.unsafegetcurrentgameconfig(), self.config["sqlitefile"]
         )
 
     def translate(self, content):
         self.checkfilechanged(
-            self.unsafegetcurrentgameconfig(), self.config["sqlite文件"]
+            self.unsafegetcurrentgameconfig(), self.config["sqlitefile"]
         )
         if globalconfig["premtsimiuse"]:
             maxsim = 0

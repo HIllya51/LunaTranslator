@@ -19,6 +19,7 @@ from ctypes import (
     c_float,
     c_double,
     c_char,
+    CFUNCTYPE,
 )
 from ctypes.wintypes import WORD, HANDLE, HWND, LONG, DWORD, RECT, BYTE
 from windows import WINDOWPLACEMENT
@@ -315,10 +316,7 @@ _SetTheme.argtypes = HWND, c_bool, c_int
 
 
 def SetTheme(hwnd, dark, backdrop):
-    try:  # win7 x86 crash unknown why
-        _SetTheme(hwnd, dark, backdrop)
-    except:
-        pass
+    _SetTheme(hwnd, dark, backdrop)
 
 
 showintab = utilsdll.showintab
@@ -399,3 +397,15 @@ setAcrylicEffect = utilsdll.setAcrylicEffect
 setAcrylicEffect.argtypes = (HWND,)
 clearEffect = utilsdll.clearEffect
 clearEffect.argtypes = (HWND,)
+
+add_ZoomFactorChanged_CALLBACK = CFUNCTYPE(None, c_double)
+add_ZoomFactorChanged = utilsdll.add_ZoomFactorChanged
+add_ZoomFactorChanged.argtypes = (c_void_p, c_void_p)
+add_ZoomFactorChanged.restype = c_void_p
+remove_ZoomFactorChanged = utilsdll.remove_ZoomFactorChanged
+remove_ZoomFactorChanged.argtypes = c_void_p, c_void_p
+get_ZoomFactor = utilsdll.get_ZoomFactor
+get_ZoomFactor.argtypes = (c_void_p,)
+get_ZoomFactor.restype = c_double
+put_ZoomFactor = utilsdll.put_ZoomFactor
+put_ZoomFactor.argtypes = c_void_p, c_double

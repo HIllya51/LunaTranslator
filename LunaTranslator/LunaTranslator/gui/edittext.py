@@ -102,22 +102,11 @@ class edittext(saveposwindow):
 
 @Singleton_close
 class edittrans(QMainWindow):
-    rssignal = pyqtSignal(QSize)
-    mvsignal = pyqtSignal(QPoint)
-    swsignal = pyqtSignal()
 
     def __init__(self, parent):
         super().__init__(parent, Qt.WindowType.FramelessWindowHint)
-        self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
-        self.setStyleSheet(
-            "background-color: %s"
-            % str2rgba(globalconfig["backcolor"], globalconfig["transparent"])
-        )
         self.setupUi()
-
-        self.rssignal.connect(self.resize)
-        self.mvsignal.connect(self.move)
-        self.swsignal.connect(self.show)
+        self.idx = 0
         self.trykeeppos()
 
     def trykeeppos(self):
@@ -125,25 +114,25 @@ class edittrans(QMainWindow):
         rect = windows.GetWindowRect(self.followhwnd)
         if rect is None:
             raise
-        self.follow()
+        t = QTimer(self)
+        t.setInterval(100)
+        t.timeout.connect(self.follow)
+        t.start(0)
 
-    @threader
     def follow(self):
-        i = 0
-        while True:
-            rect = windows.GetWindowRect(self.followhwnd)
-            self.mvsignal.emit((QPoint(rect[0], rect[3])) / self.devicePixelRatioF())
-            self.rssignal.emit((QSize(rect[2] - rect[0], 1)) / self.devicePixelRatioF())
-            if i == 0:
-                self.swsignal.emit()
-            i += 1
-            time.sleep(0.3)
+        rect = windows.GetWindowRect(self.followhwnd)
+        if rect is None:
+            return
+        self.move((QPoint(rect[0], rect[3])) / self.devicePixelRatioF())
+        self.resize((QSize(rect[2] - rect[0], 1)) / self.devicePixelRatioF())
+        if self.idx == 0:
+            self.show()
+        self.idx += 1
 
     def setupUi(self):
         self.setWindowIcon(qtawesome.icon("fa.edit"))
 
-        self.textOutput = QLineEdit(self)
-
+        self.textOutput = QPlainTextEdit(self)
         qv = QHBoxLayout()
         w = QWidget()
         self.setCentralWidget(w)
@@ -160,11 +149,10 @@ class edittrans(QMainWindow):
             )
         )
         qv.addWidget(submit)
-
         submit.clicked.connect(self.submitfunction)
 
     def submitfunction(self):
-        text = self.textOutput.text()
+        text = self.textOutput.toPlainText()
         if len(text) == 0:
             return
         try:
@@ -180,7 +168,12 @@ class edittrans(QMainWindow):
                 color=globalconfig["fanyi"]["realtime_edit"]["color"],
                 res=text,
                 onlytrans=False,
+                iter_context=(1, "realtime_edit_directvis_fakeclass"),
             )
+            gobject.baseobject.translation_ui.displayres.emit(displayreskwargs)
+            displayreskwargs.update(
+                dict(iter_context=(2, "realtime_edit_directvis_fakeclass"))
+            )  # 显示到历史翻译
             gobject.baseobject.translation_ui.displayres.emit(displayreskwargs)
             self.textOutput.clear()
         except:

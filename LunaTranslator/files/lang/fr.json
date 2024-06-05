@@ -766,7 +766,6 @@
     "投影": "Projection",
     "半径": "Rayon",
     "圆角": "Coins arrondis",
-    "合并": "Consolidation",
     "立即应用": "Appliquer maintenant",
     "无法连接到anki": "Impossible de se connecter à Anki",
     "例句": "Phrases d'exemple",
@@ -819,5 +818,8 @@
     "百度图片翻译": "Baidu traduction d'images",
     "修改名称": "Modifier le nom",
     "大": "Grand",
-    "权限不足，请以管理员权限运行！": "Autorisations insuffisantes, exécutez avec des privilèges d'administrateur!"
+    "权限不足，请以管理员权限运行！": "Autorisations insuffisantes, exécutez avec des privilèges d'administrateur!",
+    "标点": "Ponctuation",
+    "添加到列表": "Ajouter à la Liste",
+    "目标": "Objectifs"
 }

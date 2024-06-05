@@ -766,7 +766,6 @@
     "投影": "projection",
     "半径": "radius",
     "圆角": "fillet",
-    "合并": "merge",
     "立即应用": "apply now",
     "无法连接到anki": "Unable to connect to Anki",
     "例句": "Example sentence",
@@ -819,5 +818,8 @@
     "百度图片翻译": "Baidu Image Translation",
     "修改名称": "Change Name",
     "大": "large",
-    "权限不足，请以管理员权限运行！": "Insufficient permissions, please run with administrator privileges!"
+    "权限不足，请以管理员权限运行！": "Insufficient permissions, please run with administrator privileges!",
+    "标点": "punctuation",
+    "添加到列表": "Add to list",
+    "目标": "target"
 }

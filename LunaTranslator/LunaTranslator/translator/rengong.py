@@ -11,7 +11,7 @@ class TS(basetrans):
         if self.paths != (p1, p):
             self.json = {}
             if p:
-                for pp in p.split("|"):
+                for pp in p:
                     if os.path.exists(pp):
                         with open(pp, "r", encoding="utf8") as f:
                             self.json.update(json.load(f))
@@ -32,12 +32,12 @@ class TS(basetrans):
     def inittranslator(self):
         self.paths = (None, None)
         self.checkfilechanged(
-            self.unsafegetcurrentgameconfig(), self.config["json文件"]
+            self.unsafegetcurrentgameconfig(), self.config["jsonfile"]
         )
 
     def translate(self, content):
         self.checkfilechanged(
-            self.unsafegetcurrentgameconfig(), self.config["json文件"]
+            self.unsafegetcurrentgameconfig(), self.config["jsonfile"]
         )
         if globalconfig["premtsimiuse"]:
             maxsim = 0

@@ -376,7 +376,7 @@ class MAINUI:
                 displayreskwargs.update(iter_context=(iter_res_status, classname))
             self.translation_ui.displayres.emit(displayreskwargs)
 
-        if iter_res_status in (0, 2):  # 0为普通，1为iter，2为iter终止，3为起始
+        if iter_res_status in (0, 2):  # 0为普通，1为iter，2为iter终止
             try:
                 self.textsource.sqlqueueput((contentraw, classname, res))
             except:
@@ -989,7 +989,7 @@ class MAINUI:
                             self.setdarktheme(obj, self.currentisdark)
                         windows.SetProp(
                             int(obj.winId()),
-                            "Magpie.WindowType.ToolWindow",
+                            "Magpie.ToolWindow",
                             windows.HANDLE(1),
                         )
                         self.setshowintab_checked(obj)

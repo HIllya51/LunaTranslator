@@ -80,7 +80,7 @@
     "maxBufferSize": 3000,
     "maxHistorySize": 1000000,
     "yuanjiao_r": 0,
-    "yuanjiao_merge": false,
+    "yuanjiao_merge": true,
     "transuigeo": [
         500,
         500,
@@ -155,7 +155,7 @@
     "ocr_diff_sim": 0.95,
     "ocr_text_diff": 3,
     "autorun": true,
-    "usewebview": 0,
+    "usewebview": 1,
     "transparent": 80,
     "transparent_tool": 50,
     "fontsize": 17.0,
@@ -206,7 +206,9 @@
             }
         },
         "autocrop": false,
-        "boldword": false
+        "addsuccautoclose": false,
+        "boldword": false,
+        "tags": []
     },
     "imageformat": -1,
     "ankiwindow": [
@@ -833,7 +835,48 @@
         },
         "latin": {
             "use": false,
-            "name": "latin"
+            "name": "标点",
+            "args": {
+                "punctuations": [
+                    " ",
+                    ",",
+                    ".",
+                    "'",
+                    "\"",
+                    "?",
+                    "/",
+                    ";",
+                    ":",
+                    "|",
+                    "\\",
+                    "[",
+                    "]",
+                    "{",
+                    "}",
+                    "-",
+                    "_",
+                    "=",
+                    "+",
+                    "`",
+                    "~",
+                    "!",
+                    "#",
+                    "$",
+                    "%",
+                    "^",
+                    "&",
+                    "*",
+                    "(",
+                    ")"
+                ]
+            },
+            "argstype": {
+                "punctuations": {
+                    "type": "textlist",
+                    "name": "标点",
+                    "header": "标点"
+                }
+            }
         }
     },
     "cishu": {
@@ -1043,14 +1086,14 @@
             "use": false,
             "name": "mdict",
             "args": {
-                "path": "",
+                "paths": [],
                 "distance": 0,
                 "priority": 100,
                 "stylehv": 0,
                 "path_dir": ""
             },
             "argstype": {
-                "path": {
+                "paths": {
                     "type": "file",
                     "name": "路径",
                     "dir": false,
@@ -1596,6 +1639,7 @@
             "name": "实时编辑"
         }
     },
+    "ZoomFactor": 1,
     "realtime_edit_target": "realtime_edit",
     "magpiepath": "",
     "minifollow": false,

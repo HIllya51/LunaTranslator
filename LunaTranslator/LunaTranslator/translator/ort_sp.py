@@ -7,8 +7,8 @@ import platform
 
 class TS(basetrans):
     def inittranslator(self):
-        self.checkempty(["路径"])
-        path = self.config["路径"]
+        self.checkempty(["path"])
+        path = self.config["path"]
         if os.path.exists(path) == False:
             raise Exception("OrtMTLib translator path incorrect")
 

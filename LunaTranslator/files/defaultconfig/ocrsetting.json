@@ -213,8 +213,7 @@
             "路径": {
                 "type": "file",
                 "dir": false,
-                "filter": "tesseract.exe",
-                "multi": false
+                "filter": "tesseract.exe"
             },
             "语言": {
                 "type": "combo",

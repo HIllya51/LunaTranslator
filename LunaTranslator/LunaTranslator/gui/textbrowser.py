@@ -577,6 +577,8 @@ class Textbrowser(QLabel):
                 pos += l
 
     def randomcolor(self, word):
+        if word.get('isdeli',False):
+            return None
         c = QColor("white")
         if "cixing" in word:
             try:

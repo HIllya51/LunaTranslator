@@ -766,7 +766,6 @@
     "投影": "projekcja",
     "半径": "promień",
     "圆角": "filet",
-    "合并": "połączenie",
     "立即应用": "aplikuj teraz",
     "无法连接到anki": "Nie można połączyć się z Anki",
     "例句": "Zdanie przykładowe",
@@ -819,5 +818,8 @@
     "百度图片翻译": "Tłumaczenie obrazów Baidu",
     "修改名称": "Zmień nazwę",
     "大": "duże",
-    "权限不足，请以管理员权限运行！": "Niewystarczające uprawnienia, proszę uruchomić z uprawnieniami administratora!"
+    "权限不足，请以管理员权限运行！": "Niewystarczające uprawnienia, proszę uruchomić z uprawnieniami administratora!",
+    "标点": "interpunkcja",
+    "添加到列表": "Dodaj do listy",
+    "目标": "cel"
 }

@@ -18,7 +18,7 @@ from myutils.config import (
 from myutils.hwnd import getExeIcon
 from myutils.wrapper import Singleton_close, Singleton, threader, tryprint
 from myutils.utils import checkifnewgame, str2rgba, vidchangedtask, titlechangedtask
-from gui.inputdialog import noundictconfigdialog1
+from gui.inputdialog import noundictconfigdialog1, autoinitdialog
 from gui.specialwidget import (
     ScrollFlow,
     chartwidget,
@@ -29,6 +29,7 @@ from gui.specialwidget import (
 from gui.usefulwidget import (
     yuitsu_switch,
     saveposwindow,
+    getsimplepatheditor,
     getboxlayout,
     getlineedit,
     MySwitch,
@@ -44,6 +45,8 @@ from gui.usefulwidget import (
     getsimpleswitch,
     getspinbox,
     selectcolor,
+    listediter,
+    listediterline,
 )
 
 
@@ -700,54 +703,35 @@ class dialog_setting_game_internal(QWidget):
         formLayout = QFormLayout()
         _w.setLayout(formLayout)
 
-        imgpath = QLineEdit(savehook_new_data[exepath]["imagepath"])
-        imgpath.setReadOnly(True)
-
-        def selectimg():
-            f = QFileDialog.getOpenFileName(
-                directory=savehook_new_data[exepath]["imagepath"]
-            )
-            res = f[0]
-            if res != "":
-
-                _pixmap = QPixmap(res)
-                if _pixmap.isNull() == False:
-                    savehook_new_data[exepath]["imagepath"] = res
-                    savehook_new_data[exepath]["isimagepathusersetted"] = True
-                    imgpath.setText(res)
+        def selectimg(res):
+            savehook_new_data[exepath]["imagepath"] = res
+            savehook_new_data[exepath]["isimagepathusersetted"] = True
 
         formLayout.addRow(
             _TR("封面"),
-            getboxlayout(
-                [
-                    imgpath,
-                    getcolorbutton(
-                        "", "", selectimg, icon="fa.gear", constcolor="#FF69B4"
-                    ),
-                ]
+            getsimplepatheditor(
+                savehook_new_data[exepath]["imagepath"],
+                False,
+                False,
+                None,
+                selectimg,
+                True,
             ),
         )
 
-        imgpath2 = QLineEdit("|".join(savehook_new_data[exepath]["imagepath_much2"]))
-        imgpath2.setReadOnly(True)
-
-        def selectimg2():
-            f = QFileDialog.getOpenFileNames()
-            res = f[0]
-            res = "|".join(f[0])
+        def selectimg2(ress):
             savehook_new_data[exepath]["isimagepathusersetted_much"] = True
-            savehook_new_data[exepath]["imagepath_much2"] = f[0]
-            imgpath2.setText(res)
+            savehook_new_data[exepath]["imagepath_much2"] = ress
 
         formLayout.addRow(
             _TR("封面_大"),
-            getboxlayout(
-                [
-                    imgpath2,
-                    getcolorbutton(
-                        "", "", selectimg2, icon="fa.gear", constcolor="#FF69B4"
-                    ),
-                ]
+            getsimplepatheditor(
+                savehook_new_data[exepath]["imagepath_much2"],
+                True,
+                False,
+                None,
+                selectimg2,
+                True,
             ),
         )
         return _w
@@ -756,64 +740,40 @@ class dialog_setting_game_internal(QWidget):
         w = wfunct(exe)
         layout.addWidget(w)
 
-    def selectbackupdir(self, edit):
-        res = QFileDialog.getExistingDirectory(
-            directory=edit.text(),
-            options=QFileDialog.Option.DontResolveSymlinks,
-        )
-        if not res:
-            return
-        res = os.path.abspath(res)
-        edit.setText(res)
-
     def getbackup(self, exepath):
         _w = QWidget()
         formLayout = QFormLayout()
         _w.setLayout(formLayout)
 
-        editpath = QLineEdit(savehook_new_data[exepath]["autosavesavedata"])
-        editpath.textChanged.connect(
-            lambda _: savehook_new_data[exepath].__setitem__("autosavesavedata", _)
-        )
-        editpath.setReadOnly(True)
         formLayout.addRow(
             _TR("路径"),
-            getboxlayout(
-                [
-                    editpath,
-                    getcolorbutton(
-                        "",
-                        "",
-                        functools.partial(self.selectbackupdir, editpath),
-                        icon="fa.gear",
-                        constcolor="#FF69B4",
-                    ),
-                ]
+            getsimplepatheditor(
+                savehook_new_data[exepath]["autosavesavedata"],
+                False,
+                True,
+                None,
+                lambda _: savehook_new_data[exepath].__setitem__(
+                    "autosavesavedata", os.path.normpath(_)
+                ),
+                True,
             ),
         )
 
-        editpath.textChanged.connect(
-            lambda _: globalconfig.__setitem__("backupsavedatato", _)
-        )
-        editpath = QLineEdit(
-            globalconfig["backupsavedatato"]
-            if os.path.exists(globalconfig["backupsavedatato"])
-            else os.path.abspath("./cache/backup")
-        )
-        editpath.setReadOnly(True)
         formLayout.addRow(
             _TR("备份到"),
-            getboxlayout(
-                [
-                    editpath,
-                    getcolorbutton(
-                        "",
-                        "",
-                        functools.partial(self.selectbackupdir, editpath),
-                        icon="fa.gear",
-                        constcolor="#FF69B4",
-                    ),
-                ]
+            getsimplepatheditor(
+                (
+                    globalconfig["backupsavedatato"]
+                    if os.path.exists(globalconfig["backupsavedatato"])
+                    else os.path.abspath("./cache/backup")
+                ),
+                False,
+                True,
+                None,
+                lambda _: savehook_new_data[exepath].__setitem__(
+                    "backupsavedatato", os.path.normpath(_)
+                ),
+                True,
             ),
         )
 
@@ -1053,22 +1013,10 @@ class dialog_setting_game_internal(QWidget):
             getboxlayout(
                 [
                     QLabel(_TR("禁止自动朗读的人名")),
-                    getcolorbutton(
-                        "",
-                        "",
-                        lambda: listediter(
-                            self,
-                            _TR("禁止自动朗读的人名"),
-                            _TRL(
-                                [
-                                    "删除",
-                                    "人名",
-                                ]
-                            ),
-                            savehook_new_data[exepath]["allow_tts_auto_names_v4"],
-                        ),
-                        icon="fa.gear",
-                        constcolor="#FF69B4",
+                    listediterline(
+                        _TR("禁止自动朗读的人名"),
+                        _TR("人名"),
+                        savehook_new_data[exepath]["allow_tts_auto_names_v4"],
                     ),
                 ]
             )
@@ -1101,35 +1049,22 @@ class dialog_setting_game_internal(QWidget):
         formLayout = QFormLayout()
         _w.setLayout(formLayout)
 
-        def selectimg(key, filter1, le):
-            f = QFileDialog.getOpenFileName(
-                directory=savehook_new_data[exepath][key], filter=filter1
-            )
-            res = f[0]
-            if res != "":
-                savehook_new_data[exepath][key] = res
-                le.setText(res)
+        def selectimg(exepath, key, res):
+            savehook_new_data[exepath][key] = res
 
         for showname, key, filt in [
             ("json翻译文件", "gamejsonfile", "*.json"),
             ("sqlite翻译记录", "gamesqlitefile", "*.sqlite"),
         ]:
-            editjson = QLineEdit(exepath)
-            editjson.setReadOnly(True)
-            editjson.setText(savehook_new_data[exepath][key])
             formLayout.addRow(
                 _TR(showname),
-                getboxlayout(
-                    [
-                        editjson,
-                        getcolorbutton(
-                            "",
-                            "",
-                            functools.partial(selectimg, key, filt, editjson),
-                            icon="fa.gear",
-                            constcolor="#FF69B4",
-                        ),
-                    ]
+                getsimplepatheditor(
+                    savehook_new_data[exepath][key],
+                    False,
+                    False,
+                    filt,
+                    functools.partial(selectimg, exepath, key),
+                    True,
                 ),
             )
         return _w
@@ -1421,74 +1356,6 @@ def opendir(f):
         os.startfile(f)
 
 
-@Singleton_close
-class listediter(QDialog):
-    def __init__(self, p, title, headers, lst, closecallback=None) -> None:
-        super().__init__(p)
-        self.lst = lst
-        self.closecallback = closecallback
-        try:
-            self.setWindowTitle(title)
-            model = QStandardItemModel()
-            model.setHorizontalHeaderLabels(headers)
-            self.hcmodel = model
-
-            table = QTableView()
-            table.horizontalHeader().setSectionResizeMode(
-                QHeaderView.ResizeMode.ResizeToContents
-            )
-            table.horizontalHeader().setStretchLastSection(True)
-            # table.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers);
-            table.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
-            table.setSelectionMode((QAbstractItemView.SelectionMode.SingleSelection))
-            table.setWordWrap(False)
-            table.setModel(model)
-            self.hctable = table
-
-            for row, k in enumerate(lst):  # 2
-                self.newline(row, k)
-            formLayout = QVBoxLayout()
-            formLayout.addWidget(self.hctable)
-            button = QPushButton(_TR("添加行"))
-            button.clicked.connect(lambda _: self.newline(0, ""))
-            formLayout.addWidget(button)
-            self.setLayout(formLayout)
-            self.show()
-        except:
-            print_exc()
-
-    def clicked2(self):
-        try:
-            self.lst.pop(self.hctable.currentIndex().row())
-            self.hcmodel.removeRow(self.hctable.currentIndex().row())
-        except:
-            pass
-
-    def closeEvent(self, a0: QCloseEvent) -> None:
-        rows = self.hcmodel.rowCount()
-        rowoffset = 0
-        dedump = set()
-        self.lst.clear()
-        for row in range(rows):
-            k = self.hcmodel.item(row, 1).text()
-            if k == "" or k in dedump:
-                rowoffset += 1
-                continue
-            self.lst.append(k)
-            dedump.add(k)
-        if self.closecallback:
-            self.closecallback()
-
-    def newline(self, row, k):
-        self.hcmodel.insertRow(row, [QStandardItem(), QStandardItem(k)])
-        self.hctable.setIndexWidget(
-            self.hcmodel.index(row, 0),
-            getcolorbutton(
-                "", "", self.clicked2, icon="fa.times", constcolor="#FF69B4"
-            ),
-        )
-
-
 def _getpixfunction(kk):
     _pix = QPixmap(savehook_new_data[kk]["imagepath"])
     if _pix.isNull():
@@ -1761,12 +1628,7 @@ class dialog_savedgame_new(QWidget):
                 lambda _: listediter(
                     parent,
                     _TR("标签集"),
-                    _TRL(
-                        [
-                            "删除",
-                            "标签",
-                        ]
-                    ),
+                    _TR("标签"),
                     globalconfig["labelset"],
                     closecallback=refreshcombo,
                 ),
@@ -2304,6 +2166,7 @@ class dialog_savedgame_v3(QWidget):
         startgame = QAction(_TR("开始游戏"))
         delgame = QAction(_TR("删除游戏"))
         opendir = QAction(_TR("打开目录"))
+        addtolist = QAction(_TR("添加到列表"))
 
         exists = os.path.exists(self.currentfocuspath)
         if exists:
@@ -2311,6 +2174,7 @@ class dialog_savedgame_v3(QWidget):
         menu.addAction(delgame)
         if exists:
             menu.addAction(opendir)
+        menu.addAction(addtolist)
         action = menu.exec(QCursor.pos())
         if action == startgame:
             startgamecheck(self, self.currentfocuspath)
@@ -2318,6 +2182,58 @@ class dialog_savedgame_v3(QWidget):
             self.clicked2()
         elif action == opendir:
             self.clicked4()
+        elif action == addtolist:
+            self.addtolist()
+
+    def addtolistcallback(self, __d, __uid, path):
+
+        if len(__uid) == 0:
+            return
+
+        uid = __uid[__d["k"]]
+        __save = self.reftagid
+        self.reftagid = uid
+
+        if path not in self.getreflist():
+            self.getreflist().insert(0, path)
+            self.newline(path)
+        self.reftagid = __save
+
+    def addtolist(self):
+        __d = {"k": 0}
+
+        __vis = []
+        __uid = []
+        for _ in savegametaged:
+            if _ is None:
+                __vis.append("GLOBAL")
+                __uid.append(None)
+            else:
+                __vis.append(_["title"])
+                __uid.append(_["uid"])
+            if self.reftagid == __uid[-1]:
+                __uid.pop(-1)
+                __vis.pop(-1)
+        autoinitdialog(
+            self,
+            _TR("目标"),
+            600,
+            [
+                {
+                    "type": "combo",
+                    "name": _TR("目标"),
+                    "d": __d,
+                    "k": "k",
+                    "list": __vis,
+                },
+                {
+                    "type": "okcancel",
+                    "callback": functools.partial(
+                        self.addtolistcallback, __d, __uid, self.currentfocuspath
+                    ),
+                },
+            ],
+        )
 
     def directshow(self):
         self.stack.directshow()
@@ -2347,7 +2263,8 @@ class dialog_savedgame_v3(QWidget):
         self.righttop.addTab(_w, _TR("封面"))
         lay.addWidget(self.righttop)
         rightlay.addWidget(self.pixview)
-
+        self.pixview.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
+        self.pixview.customContextMenuRequested.connect(self.stack_showmenu)
         self.buttonlayout = QHBoxLayout()
         self.savebutton = []
         rightlay.addLayout(self.buttonlayout)
@@ -2357,7 +2274,7 @@ class dialog_savedgame_v3(QWidget):
         )
         self.simplebutton("删除游戏", True, self.clicked2, False)
         self.simplebutton("打开目录", True, self.clicked4, True)
-
+        self.simplebutton("添加到列表", False, self.addtolist, 1)
         if globalconfig["startgamenototop"]:
             self.simplebutton("上移", True, functools.partial(self.moverank, -1), False)
             self.simplebutton("下移", True, functools.partial(self.moverank, 1), False)

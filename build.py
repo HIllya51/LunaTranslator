@@ -224,6 +224,7 @@ def buildLunaHook():
 
 def buildPlugins():
     os.chdir(rootDir + "\\plugins\\scripts")
+    subprocess.run("python fetchwebview2.py")
     subprocess.run(
         f'cmake ../CMakeLists.txt -G "Visual Studio 17 2022" -A win32 -T host=x86 -B ../build/x86 -DCMAKE_SYSTEM_VERSION=10.0.26621.0'
     )

@@ -162,6 +162,7 @@ class QUnFrameWindow(resizableframeless):
 
         if clear:
             self.translate_text.clear()
+            self.saveiterclasspointer.clear()
         if text is None:
             return
         text = self.cleartext(text)
@@ -177,41 +178,40 @@ class QUnFrameWindow(resizableframeless):
             self.translate_text.setAlignment(Qt.AlignmentFlag.AlignLeft)
 
         if iter_context:
-            iter_res_status, iter_context_class = iter_context
-            if iter_res_status == 3:
+            _, iter_context_class = iter_context
+
+            if iter_context_class not in self.saveiterclasspointer:
                 self.translate_text.append(" ", hira, origin)
                 self.saveiterclasspointer[iter_context_class] = {
                     "currtext": "",
                     "curr": self.translate_text.getcurrpointer(),
                     "start": self.translate_text.getcurrpointer(),
                 }
-            else:
-                currbefore = self.saveiterclasspointer[iter_context_class]["curr"]
-                currlen = len(self.saveiterclasspointer[iter_context_class]["currtext"])
-                if len(text) < currlen:
-                    self.translate_text.deletebetween(
-                        self.saveiterclasspointer[iter_context_class]["start"]
-                        + len(text),
-                        self.saveiterclasspointer[iter_context_class]["curr"],
-                    )
-                else:
-                    newtext = text[currlen:]
-                    self.translate_text.insertatpointer(
-                        self.saveiterclasspointer[iter_context_class]["start"]
-                        + currlen,
-                        newtext,
-                    )
 
-                self.saveiterclasspointer[iter_context_class]["currtext"] = text
-                currcurrent = self.translate_text.getcurrpointer()
-                self.saveiterclasspointer[iter_context_class]["curr"] = currcurrent
-                currchange = currcurrent - currbefore
-                for klass in self.saveiterclasspointer:
-                    if klass == iter_context_class:
-                        continue
-                    if self.saveiterclasspointer[klass]["curr"] > currbefore:
-                        self.saveiterclasspointer[klass]["curr"] += currchange
-                        self.saveiterclasspointer[klass]["start"] += currchange
+            currbefore = self.saveiterclasspointer[iter_context_class]["curr"]
+            currlen = len(self.saveiterclasspointer[iter_context_class]["currtext"])
+            if len(text) < currlen:
+                self.translate_text.deletebetween(
+                    self.saveiterclasspointer[iter_context_class]["start"] + len(text),
+                    self.saveiterclasspointer[iter_context_class]["curr"],
+                )
+            else:
+                newtext = text[currlen:]
+                self.translate_text.insertatpointer(
+                    self.saveiterclasspointer[iter_context_class]["start"] + currlen,
+                    newtext,
+                )
+
+            self.saveiterclasspointer[iter_context_class]["currtext"] = text
+            currcurrent = self.translate_text.getcurrpointer()
+            self.saveiterclasspointer[iter_context_class]["curr"] = currcurrent
+            currchange = currcurrent - currbefore
+            for klass in self.saveiterclasspointer:
+                if klass == iter_context_class:
+                    continue
+                if self.saveiterclasspointer[klass]["curr"] > currbefore:
+                    self.saveiterclasspointer[klass]["curr"] += currchange
+                    self.saveiterclasspointer[klass]["start"] += currchange
 
             self.translate_text.showyinyingtext2(
                 color,
@@ -604,7 +604,7 @@ class QUnFrameWindow(resizableframeless):
         self.displayraw1.connect(self.showraw)
         self.refreshtooliconsignal.connect(self.refreshtoolicon)
         self.showsavegame_signal.connect(
-            lambda: dialog_savedgame_new(gobject.baseobject.settin_ui)
+            lambda: dialog_savedgame_integrated(gobject.baseobject.settin_ui)
         )
         self.clickRange_signal.connect(self.clickRange)
         self.showhide_signal.connect(self.showhideocrrange)

@@ -149,6 +149,17 @@ def syncconfig(config1, default, drop=False, deep=0, skipdict=False):
             config1[key] = default[key]
         elif key == "argstype":
             config1[key] = default[key]
+        elif key == "args":
+            _nuse = []
+            for k in default[key]:
+                if k not in config1[key]:
+                    config1[key][k] = default[key][k]
+            for k in config1[key]:
+                if k not in default[key]:
+                    _nuse.append(k)
+            for k in _nuse:
+                config1[key].pop(k)
+
         else:
             if type(default[key]) != type(config1[key]) and (
                 type(default[key]) == dict or type(default[key]) == list
@@ -271,20 +282,19 @@ def dynamicrelativepath(abspath):
     return abspath
 
 
-def parsetarget(dict, key):
-    t = dict[key]
-    if type(t) != str:
-        raise Exception("not a path")
-    if "|" in t:
-        t = "|".join([dynamicrelativepath(_) for _ in t.split("|")])
+def parsetarget(dict_, key):
+    t = dict_[key]
+
+    if isinstance(t, list):
+        t = [dynamicrelativepath(_) for _ in t]
     else:
         t = dynamicrelativepath(t)
-    dict[key] = t
+    dict_[key] = t
 
 
 def autoparsedynamicpath():
     for dic, routine, target in (
-        (globalconfig, ("cishu", "mdict", "args"), "path"),
+        (globalconfig, ("cishu", "mdict", "args"), "paths"),
         (globalconfig, ("cishu", "mdict", "args"), "path_dir"),
         (globalconfig, ("cishu", "edict", "args"), "path"),
         (globalconfig, ("cishu", "linggesi", "args"), "path"),
@@ -292,15 +302,15 @@ def autoparsedynamicpath():
         (globalconfig, ("hirasetting", "mecab", "args"), "path"),
         (globalconfig, ("hirasetting", "mecab", "args"), "path"),
         (globalconfig, ("reader", "voiceroid2", "args"), "path"),
-        (translatorsetting, ("dreye", "args"), "路径"),
-        (translatorsetting, ("jb7", "args"), "路径"),
-        (translatorsetting, ("jb7", "args"), "用户词典3(可选)"),
-        (translatorsetting, ("jb7", "args"), "用户词典1(可选)"),
-        (translatorsetting, ("jb7", "args"), "用户词典2(可选)"),
-        (translatorsetting, ("kingsoft", "args"), "路径"),
-        (translatorsetting, ("ort_sp", "args"), "路径"),
-        (translatorsetting, ("premt", "args"), "sqlite文件"),
-        (translatorsetting, ("rengong", "args"), "json文件"),
+        (translatorsetting, ("dreye", "args"), "path"),
+        (translatorsetting, ("jb7", "args"), "path"),
+        (translatorsetting, ("jb7", "args"), "path_userdict3"),
+        (translatorsetting, ("jb7", "args"), "path_userdict1"),
+        (translatorsetting, ("jb7", "args"), "path_userdict2"),
+        (translatorsetting, ("kingsoft", "args"), "path"),
+        (translatorsetting, ("ort_sp", "args"), "path"),
+        (translatorsetting, ("premt", "args"), "sqlitefile"),
+        (translatorsetting, ("rengong", "args"), "jsonfile"),
     ):
         try:
             for _k in routine:

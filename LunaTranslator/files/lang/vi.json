@@ -766,7 +766,6 @@
     "投影": "Chiếu",
     "半径": "Bán kính",
     "圆角": "Góc tròn",
-    "合并": "Hợp nhất",
     "立即应用": "Áp dụng ngay",
     "无法连接到anki": "Không thể kết nối với Anki",
     "例句": "Câu ví dụ",
@@ -819,5 +818,8 @@
     "百度图片翻译": "100 hình ảnh dịch",
     "修改名称": "Thay đổi tên",
     "大": "Lớn",
-    "权限不足，请以管理员权限运行！": "Không đủ quyền, hãy chạy với quyền quản trị viên!"
+    "权限不足，请以管理员权限运行！": "Không đủ quyền, hãy chạy với quyền quản trị viên!",
+    "标点": "Chấm câu",
+    "添加到列表": "Thêm vào danh sách",
+    "目标": "Mục tiêu"
 }

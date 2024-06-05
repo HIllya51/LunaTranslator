@@ -310,13 +310,6 @@ def uisetting(self):
                 ),
                 2,
             ),
-            "",
-            ("圆角_合并", 4),
-            D_getsimpleswitch(
-                globalconfig,
-                "yuanjiao_merge",
-                callback=lambda _: gobject.baseobject.translation_ui.set_color_transparency(),
-            ),
         ],
         [],
         [

@@ -766,7 +766,6 @@
     "投影": "proiezione",
     "半径": "raggio",
     "圆角": "filetto",
-    "合并": "fusione",
     "立即应用": "Applica ora",
     "无法连接到anki": "Impossibile connettersi ad Anki",
     "例句": "Esempio di frase",
@@ -819,5 +818,8 @@
     "百度图片翻译": "Traduzione immagine Baidu",
     "修改名称": "Cambia nome",
     "大": "grande",
-    "权限不足，请以管理员权限运行！": "Permessi insufficienti, si prega di eseguire con privilegi di amministratore!"
+    "权限不足，请以管理员权限运行！": "Permessi insufficienti, si prega di eseguire con privilegi di amministratore!",
+    "标点": "punteggiatura",
+    "添加到列表": "Aggiungi alla lista",
+    "目标": "obiettivo"
 }

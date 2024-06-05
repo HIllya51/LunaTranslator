@@ -18,6 +18,7 @@ from gui.usefulwidget import (
     getboxlayout,
     getspinbox,
     getlineedit,
+    listediterline,
     getsimpleswitch,
     getsimplekeyseq,
     getcolorbutton,
@@ -549,8 +550,16 @@ class AnkiWindow(QWidget):
             )
         )
 
-        self.tagsedit = QLineEdit()
-        layout.addLayout(getboxlayout([QLabel(_TR("Tags(split by |)")), self.tagsedit]))
+        layout.addLayout(
+            getboxlayout(
+                [
+                    QLabel(_TR("标签")),
+                    listediterline(
+                        _TR("标签"), _TR("标签"), globalconfig["ankiconnect"]["tags"]
+                    ),
+                ]
+            )
+        )
 
         btn = QPushButton(_TR("添加"))
         btn.clicked.connect(self.errorwrap)
@@ -601,7 +610,10 @@ class AnkiWindow(QWidget):
     def errorwrap(self):
         try:
             self.addanki()
-            getQMessageBox(self, _TR("成功"), _TR("成功"))
+            if globalconfig["ankiconnect"]["addsuccautoclose"]:
+                self.parent().parent().parent().close()
+            else:
+                QToolTip.showText(QCursor.pos(), _TR("添加_成功"), self)
         except requests.NetWorkException:
             getQMessageBox(self, _TR("错误"), _TR("无法连接到anki"))
         except anki.AnkiException as e:
@@ -633,10 +645,7 @@ class AnkiWindow(QWidget):
         ModelName = globalconfig["ankiconnect"]["ModelName5"]
         DeckName = globalconfig["ankiconnect"]["DeckName"]
         model_htmlfront, model_htmlback, model_css = self.tryloadankitemplates()
-        try:
-            tags = self.tagsedit.text().split("|")
-        except:
-            tags = []
+        tags = globalconfig["ankiconnect"]["tags"]
         anki.Deck.create(DeckName)
         try:
             model = anki.Model.create(
@@ -779,6 +788,10 @@ class searchwordW(closeashidewindow):
         self.tabks = []
         self.setCentralWidget(ww)
         self.textOutput = auto_select_webview(self)
+        self.textOutput.set_zoom(globalconfig["ZoomFactor"])
+        self.textOutput.on_ZoomFactorChanged.connect(
+            functools.partial(globalconfig.__setitem__, "ZoomFactor")
+        )
         self.cache_results = {}
         self.hiding = True
 

@@ -21,7 +21,7 @@ Thumbs.db
 *.wav 
 build/
 
-
+plugins/libs/webview2
 plugins/builds
 plugins/build
 temp/

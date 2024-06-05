@@ -1,7 +1,7 @@
 from qtsymbols import *
 import os, platform, functools, threading, time, inspect
 from traceback import print_exc
-import windows, qtawesome
+import windows, qtawesome, winsharedutils
 from webviewpy import (
     webview_native_handle_kind_t,
     Webview,
@@ -9,7 +9,7 @@ from webviewpy import (
 )
 from winsharedutils import HTMLBrowser
 from myutils.config import _TR, globalconfig
-from myutils.wrapper import Singleton
+from myutils.wrapper import Singleton, Singleton_close
 
 
 @Singleton
@@ -474,7 +474,8 @@ def getcolorbutton(
             border: 0px;
             font: 100 10pt;"""
         )
-    b.clicked.connect(callback)
+    if callback:
+        b.clicked.connect(callback)
     b.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
     if name:
         setattr(parent, name, b)
@@ -626,9 +627,27 @@ def getscaledrect(size: QSize):
     return rect
 
 
-class WebivewWidget(QWidget):
+class abstractwebview(QWidget):
     on_load = pyqtSignal(str)
-    html_limit = 2 * 1024 * 1024  # 2mb
+    on_ZoomFactorChanged = pyqtSignal(float)
+    html_limit = 2 * 1024 * 1024
+
+    def parsehtml(self, html):
+        return html
+
+    def set_zoom(self, zoom):
+        pass
+
+
+class WebivewWidget(abstractwebview):
+
+    def __del__(self):
+        winsharedutils.remove_ZoomFactorChanged(
+            self.webview.get_native_handle(
+                webview_native_handle_kind_t.WEBVIEW_NATIVE_HANDLE_KIND_BROWSER_CONTROLLER
+            ),
+            self.__token,
+        )
 
     def __init__(self, parent=None, debug=False) -> None:
         super().__init__(parent)
@@ -643,9 +662,29 @@ class WebivewWidget(QWidget):
         )
         self.webview = None
         self.webview = Webview(debug=debug, window=int(self.winId()))
-
+        zoomfunc = winsharedutils.add_ZoomFactorChanged_CALLBACK(
+            self.on_ZoomFactorChanged.emit
+        )
+        self.__token = winsharedutils.add_ZoomFactorChanged(
+            self.webview.get_native_handle(
+                webview_native_handle_kind_t.WEBVIEW_NATIVE_HANDLE_KIND_BROWSER_CONTROLLER
+            ),
+            zoomfunc,
+        )
+        self.keepref = [zoomfunc]
         self.webview.bind("__on_load", self._on_load)
         self.webview.init("""window.__on_load(window.location.href)""")
+
+    def set_zoom(self, zoom):
+        self.put_ZoomFactor(zoom)
+
+    def put_ZoomFactor(self, zoom):
+        winsharedutils.put_ZoomFactor(
+            self.webview.get_native_handle(
+                webview_native_handle_kind_t.WEBVIEW_NATIVE_HANDLE_KIND_BROWSER_CONTROLLER
+            ),
+            zoom,
+        )
 
     def _on_load(self, href):
         self.on_load.emit(href)
@@ -664,32 +703,25 @@ class WebivewWidget(QWidget):
     def setHtml(self, html):
         self.webview.set_html(html)
 
-    def parsehtml(self, html):
-        return html
 
-
-class mshtmlWidget(QWidget):
-    on_load = pyqtSignal(str)
-    html_limit = 2 * 1024 * 1024
+class mshtmlWidget(abstractwebview):
 
     def __init__(self, parent=None) -> None:
         super().__init__(parent)
         if HTMLBrowser.version() < 10001:  # ie10之前，sethtml会乱码
             self.html_limit = 0
         self.browser = HTMLBrowser(int(self.winId()))
-        threading.Thread(target=self.__getcurrenturl).start()
+        t = QTimer(self)
+        t.setInterval(100)
+        t.timeout.connect(self.__getcurrenturl)
+        t.start(0)
+        self.curr_url = None
 
     def __getcurrenturl(self):
-        url = None
-        while True:
-            _u = self.browser.get_current_url()
-            if url != _u:
-                url = _u
-                try:
-                    self.on_load.emit(_u)
-                except:  # RuntimeError: wrapped C/C++ object of type mshtmlWidget has been deleted
-                    break
-            time.sleep(0.5)
+        _u = self.browser.get_current_url()
+        if self.curr_url != _u:
+            self.curr_url = _u
+            self.on_load.emit(_u)
 
     def navigate(self, url):
         self.browser.navigate(url)
@@ -739,9 +771,7 @@ def D_getsimplekeyseq(dic, key, callback=None):
     return lambda: getsimplekeyseq(dic, key, callback)
 
 
-class QWebWrap(QWidget):
-    on_load = pyqtSignal(str)
-    html_limit = 2 * 1024 * 1024
+class QWebWrap(abstractwebview):
 
     def __init__(self) -> None:
         super().__init__()
@@ -751,6 +781,21 @@ class QWebWrap(QWidget):
         self.internal.page().urlChanged.connect(
             lambda qurl: self.on_load.emit(qurl.url())
         )
+        self.internal_zoom = 1
+        t = QTimer(self)
+        t.setInterval(100)
+        t.timeout.connect(self.__getzoomfactor)
+        t.start(0)
+
+    def set_zoom(self, zoom):
+        self.internal_zoom = zoom
+        self.internal.setZoomFactor(zoom)
+
+    def __getzoomfactor(self):
+        z = self.internal.zoomFactor()
+        if z != self.internal_zoom:
+            self.internal_zoom = z
+            self.on_ZoomFactorChanged.emit(z)
 
     def navigate(self, url: str):
         from PyQt5.QtCore import QUrl
@@ -762,25 +807,25 @@ class QWebWrap(QWidget):
     def setHtml(self, html):
         self.internal.setHtml(html)
 
-    def parsehtml(self, html):
-        return html
-
     def resizeEvent(self, a0: QResizeEvent) -> None:
         self.internal.resize(a0.size())
 
 
 class auto_select_webview(QWidget):
     on_load = pyqtSignal(str)
+    on_ZoomFactorChanged = pyqtSignal(float)
 
     def clear(self):
         self.navigate("about:blank")
 
     def navigate(self, url):
         self._maybecreate()
+        self.internal.set_zoom(self.internalsavedzoom)
         self.internal.navigate(url)
 
     def setHtml(self, html):
         self._maybecreate()
+        self.internal.set_zoom(self.internalsavedzoom)
         html = self.internal.parsehtml(html)
         if len(html) < self.internal.html_limit:
             self.internal.setHtml(html)
@@ -791,6 +836,10 @@ class auto_select_webview(QWidget):
                 ff.write(html)
             self.internal.navigate(lastcachehtml)
 
+    def set_zoom(self, zoom):
+        self.internalsavedzoom = zoom
+        self.internal.set_zoom(zoom)
+
     def sizeHint(self):
         return QSize(256, 192)
 
@@ -800,13 +849,18 @@ class auto_select_webview(QWidget):
         self.is_fallback = -2
         self.contex = -1
         self.internal = (
-            QWidget()
+            abstractwebview()
         )  # 加个占位的widget，否则等待加载的时候有一瞬间的灰色背景。
         self.lock = threading.Lock()
         layout = QHBoxLayout()
         layout.setContentsMargins(0, 0, 0, 0)
         layout.addWidget(self.internal)
         self.setLayout(layout)
+        self.internalsavedzoom = 1
+
+    def internalzoomchanged(self, zoom):
+        self.internalsavedzoom = zoom
+        self.on_ZoomFactorChanged.emit(zoom)
 
     def _maybecreate(self):
         with self.lock:
@@ -820,6 +874,9 @@ class auto_select_webview(QWidget):
         if self.internal:
             self.layout().removeWidget(self.internal)
         self.internal = self._createwebview()
+        self.internal.set_zoom(self.internalsavedzoom)
+        self.internal.on_load.connect(self.on_load)
+        self.internal.on_ZoomFactorChanged.connect(self.internalzoomchanged)
         self.layout().addWidget(self.internal)
 
     def _createwebview(self):
@@ -835,7 +892,6 @@ class auto_select_webview(QWidget):
             print_exc()
             self.is_fallback = self.contex
             browser = mshtmlWidget()
-        browser.on_load.connect(self.on_load)
         return browser
 
 
@@ -844,7 +900,7 @@ class threebuttons(QWidget):
     btn2clicked = pyqtSignal()
     btn3clicked = pyqtSignal()
 
-    def __init__(self):
+    def __init__(self, btns=3):
         super().__init__()
         layout = QHBoxLayout()
         layout.setContentsMargins(0, 0, 0, 0)
@@ -855,12 +911,13 @@ class threebuttons(QWidget):
         button2 = QPushButton(self)
         button2.setText(_TR("删除选中行"))
         button2.clicked.connect(self.btn2clicked)
-        button3 = QPushButton(self)
-        button3.setText(_TR("立即应用"))
-        button3.clicked.connect(self.btn3clicked)
         layout.addWidget(button)
         layout.addWidget(button2)
-        layout.addWidget(button3)
+        if btns == 3:
+            button3 = QPushButton(self)
+            button3.setText(_TR("立即应用"))
+            button3.clicked.connect(self.btn3clicked)
+            layout.addWidget(button3)
 
 
 def tabadd_lazy(tab, title, getrealwidgetfunction):
@@ -1000,3 +1057,139 @@ def makesubtab_lazy(
         return tab
     else:
         return tab, ___do
+
+
+@Singleton_close
+class listediter(QDialog):
+    def __init__(self, p, title, header, lst, closecallback=None) -> None:
+        super().__init__(p)
+        self.lst = lst
+        self.closecallback = closecallback
+        try:
+            self.setWindowTitle(title)
+            model = QStandardItemModel()
+            model.setHorizontalHeaderLabels([header])
+            self.hcmodel = model
+
+            table = QTableView()
+            table.horizontalHeader().setSectionResizeMode(
+                QHeaderView.ResizeMode.ResizeToContents
+            )
+            table.horizontalHeader().setStretchLastSection(True)
+            # table.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers);
+            table.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
+            table.setSelectionMode((QAbstractItemView.SelectionMode.SingleSelection))
+            table.setWordWrap(False)
+            table.setModel(model)
+            self.hctable = table
+
+            for row, k in enumerate(lst):  # 2
+                self.newline(row, k)
+            formLayout = QVBoxLayout()
+            formLayout.addWidget(self.hctable)
+            self.buttons = threebuttons(btns=2)
+            self.buttons.btn1clicked.connect(lambda: self.newline(0, ""))
+            self.buttons.btn2clicked.connect(self.clicked2)
+
+            formLayout.addWidget(self.buttons)
+            self.setLayout(formLayout)
+            self.show()
+        except:
+            print_exc()
+
+    def clicked2(self):
+        self.hcmodel.removeRow(self.hctable.currentIndex().row())
+
+    def closeEvent(self, a0: QCloseEvent) -> None:
+        self.buttons.setFocus()
+        rows = self.hcmodel.rowCount()
+        rowoffset = 0
+        dedump = set()
+        self.lst.clear()
+        for row in range(rows):
+            k = self.hcmodel.item(row, 0).text()
+            if k == "" or k in dedump:
+                rowoffset += 1
+                continue
+            self.lst.append(k)
+            dedump.add(k)
+        if self.closecallback:
+            self.closecallback()
+
+    def newline(self, row, k):
+        self.hcmodel.insertRow(row, [QStandardItem(k)])
+
+
+class listediterline(QLineEdit):
+    clicked = pyqtSignal()
+
+    def __init__(self, name, header, reflist):
+        super().__init__()
+        self.setReadOnly(True)
+        self.reflist = reflist
+        self.setText("|".join(reflist))
+
+        self.clicked.connect(
+            functools.partial(
+                listediter, self, name, header, reflist, closecallback=self.callback
+            )
+        )
+
+    def callback(self):
+        self.setText("|".join(self.reflist))
+
+    def mousePressEvent(self, e):
+        self.clicked.emit()
+        super().mousePressEvent(e)
+
+
+def openfiledirectory(directory, multi, edit, isdir, filter1="*.*", callback=None):
+    if isdir:
+        f = QFileDialog.getExistingDirectory(directory=directory)
+        res = f
+    else:
+        if multi:
+            f = QFileDialog.getOpenFileNames(directory=directory, filter=filter1)
+        else:
+            f = QFileDialog.getOpenFileName(directory=directory, filter=filter1)
+        res = f[0]
+
+    if len(res) == 0:
+        return
+    edit.setText("|".join(res) if multi else res)
+    if callback:
+        callback(res)
+
+
+def getsimplepatheditor(
+    text,
+    multi,
+    isdir,
+    filter1="*.*",
+    callback=None,
+    useiconbutton=False,
+):
+    lay = QHBoxLayout()
+    lay.setContentsMargins(0, 0, 0, 0)
+
+    director = (text[0] if len(text) else "") if multi else text
+    e = QLineEdit("|".join(text) if multi else text)
+    e.setReadOnly(True)
+    if useiconbutton:
+        bu = getcolorbutton("", "", None, icon="fa.gear", constcolor="#FF69B4")
+    else:
+        bu = QPushButton(_TR("选择" + ("文件夹" if isdir else "文件")))
+    bu.clicked.connect(
+        functools.partial(
+            openfiledirectory,
+            director,
+            multi,
+            e,
+            isdir,
+            "" if isdir else filter1,
+            callback,
+        )
+    )
+    lay.addWidget(e)
+    lay.addWidget(bu)
+    return lay
