@@ -18,7 +18,7 @@ from myutils.config import (
 from myutils.hwnd import getExeIcon
 from myutils.wrapper import Singleton_close, Singleton, threader, tryprint
 from myutils.utils import checkifnewgame, str2rgba, vidchangedtask, titlechangedtask
-from gui.inputdialog import noundictconfigdialog1
+from gui.inputdialog import noundictconfigdialog1, autoinitdialog
 from gui.specialwidget import (
     ScrollFlow,
     chartwidget,
@@ -2166,6 +2166,7 @@ class dialog_savedgame_v3(QWidget):
         startgame = QAction(_TR("开始游戏"))
         delgame = QAction(_TR("删除游戏"))
         opendir = QAction(_TR("打开目录"))
+        addtolist = QAction(_TR("添加到列表"))
 
         exists = os.path.exists(self.currentfocuspath)
         if exists:
@@ -2173,6 +2174,7 @@ class dialog_savedgame_v3(QWidget):
         menu.addAction(delgame)
         if exists:
             menu.addAction(opendir)
+        menu.addAction(addtolist)
         action = menu.exec(QCursor.pos())
         if action == startgame:
             startgamecheck(self, self.currentfocuspath)
@@ -2180,6 +2182,58 @@ class dialog_savedgame_v3(QWidget):
             self.clicked2()
         elif action == opendir:
             self.clicked4()
+        elif action == addtolist:
+            self.addtolist()
+
+    def addtolistcallback(self, __d, __uid, path):
+
+        if len(__uid) == 0:
+            return
+
+        uid = __uid[__d["k"]]
+        __save = self.reftagid
+        self.reftagid = uid
+
+        if path not in self.getreflist():
+            self.getreflist().insert(0, path)
+            self.newline(path)
+        self.reftagid = __save
+
+    def addtolist(self):
+        __d = {"k": 0}
+
+        __vis = []
+        __uid = []
+        for _ in savegametaged:
+            if _ is None:
+                __vis.append("GLOBAL")
+                __uid.append(None)
+            else:
+                __vis.append(_["title"])
+                __uid.append(_["uid"])
+            if self.reftagid == __uid[-1]:
+                __uid.pop(-1)
+                __vis.pop(-1)
+        autoinitdialog(
+            self,
+            _TR("目标"),
+            600,
+            [
+                {
+                    "type": "combo",
+                    "name": _TR("目标"),
+                    "d": __d,
+                    "k": "k",
+                    "list": __vis,
+                },
+                {
+                    "type": "okcancel",
+                    "callback": functools.partial(
+                        self.addtolistcallback, __d, __uid, self.currentfocuspath
+                    ),
+                },
+            ],
+        )
 
     def directshow(self):
         self.stack.directshow()
@@ -2220,7 +2274,7 @@ class dialog_savedgame_v3(QWidget):
         )
         self.simplebutton("删除游戏", True, self.clicked2, False)
         self.simplebutton("打开目录", True, self.clicked4, True)
-
+        self.simplebutton("添加到列表", False, self.addtolist, 1)
         if globalconfig["startgamenototop"]:
             self.simplebutton("上移", True, functools.partial(self.moverank, -1), False)
             self.simplebutton("下移", True, functools.partial(self.moverank, 1), False)
