@@ -10,10 +10,11 @@ class TS(basetrans):
 
         except:
             return None
-        (ret,) = sql.execute(
+        ret = sql.execute(
             "SELECT machineTrans FROM artificialtrans WHERE source = ?", (content,)
         ).fetchone()
         if ret is None:
             return None
+        (ret,) = ret
         ret = json.loads(ret)
         return ret.get("realtime_edit", None)

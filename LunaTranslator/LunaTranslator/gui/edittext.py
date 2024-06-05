@@ -173,7 +173,12 @@ class edittrans(QMainWindow):
                 color=globalconfig["fanyi"]["realtime_edit"]["color"],
                 res=text,
                 onlytrans=False,
+                iter_context=(1, "realtime_edit_directvis_fakeclass"),
             )
+            gobject.baseobject.translation_ui.displayres.emit(displayreskwargs)
+            displayreskwargs.update(
+                dict(iter_context=(2, "realtime_edit_directvis_fakeclass"))
+            )  # 显示到历史翻译
             gobject.baseobject.translation_ui.displayres.emit(displayreskwargs)
             self.textOutput.clear()
         except:

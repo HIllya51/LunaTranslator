@@ -274,9 +274,7 @@ class basetrans(commonbase):
 
     def _iterget(self, __callback, rid, __res):
         succ = True
-        for i, _res in enumerate(__res):
-            if i == 0:
-                __callback("", 3)
+        for _res in __res:
             if self.requestid != rid:
                 succ = False
                 break
