@@ -1,6 +1,28 @@
 ﻿#include "define.h"
 // https://github.com/Blinue/Xaml-Islands-Cpp/blob/main/src/XamlIslandsCpp/XamlWindow.h
 
+static uint32_t GetOSversion() noexcept
+{
+    HMODULE hNtDll = GetModuleHandle(L"ntdll.dll");
+    if (!hNtDll)
+    {
+        return 0;
+    }
+
+    auto rtlGetVersion = (LONG(WINAPI *)(PRTL_OSVERSIONINFOW))GetProcAddress(hNtDll, "RtlGetVersion");
+    if (rtlGetVersion == nullptr)
+    {
+        // assert(false);
+        return 0;
+    }
+
+    RTL_OSVERSIONINFOW version{};
+    version.dwOSVersionInfoSize = sizeof(version);
+    rtlGetVersion(&version);
+
+    return version.dwMajorVersion;
+}
+
 static uint32_t GetOSBuild() noexcept
 {
     HMODULE hNtDll = GetModuleHandle(L"ntdll.dll");
@@ -22,7 +44,6 @@ static uint32_t GetOSBuild() noexcept
 
     return version.dwBuildNumber;
 }
-
 struct Win32Helper
 {
     struct OSVersion
@@ -134,6 +155,9 @@ DECLARE void _SetTheme(
     bool dark,
     int backdrop)
 {
+    // printf("%d %d\n",GetOSversion(),GetOSBuild());
+    if (GetOSversion() <= 6)//win7 x32 DwmSetWindowAttribute会崩，直接禁了反正没用。不知道win8怎么样。
+        return;
     // auto _isBackgroundSolidColor = backdrop == WindowBackdrop::SolidColor;
     // if (Win32Helper::GetOSVersion().Is22H2OrNewer() &&
     //     _isBackgroundSolidColor != (backdrop == WindowBackdrop::SolidColor))

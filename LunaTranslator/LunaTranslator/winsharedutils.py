@@ -316,10 +316,7 @@ _SetTheme.argtypes = HWND, c_bool, c_int
 
 
 def SetTheme(hwnd, dark, backdrop):
-    try:  # win7 x86 crash unknown why
-        _SetTheme(hwnd, dark, backdrop)
-    except:
-        pass
+    _SetTheme(hwnd, dark, backdrop)
 
 
 showintab = utilsdll.showintab
