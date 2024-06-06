@@ -474,19 +474,25 @@
 			"SECRET_KEY": "",
 			"Temperature": 0.3,
 			"model": "gemini-1.5-flash",
-			"附带上下文个数": 0,
-			"使用自定义promt": false,
-			"自定义promt": ""
+			"context": 0,
+			"use_custom_prompt": false,
+			"custom_prompt": "",
+
 		},
 		"argstype": {
-			"使用自定义promt": {
-				"type": "switch"
+			"custom_prompt": {
+				"name": "自定义promt"
 			},
-			"附带上下文个数": {
+			"use_custom_prompt": {
+				"type": "switch",
+				"name": "使用自定义promt"
+			},
+			"context": {
 				"type": "intspin",
 				"min": 0,
 				"max": 10,
-				"step": 1
+				"step": 1,
+				"name": "附带上下文个数"
 			},
 			"注册网址": {
 				"type": "label",
@@ -500,7 +506,8 @@
 				"type": "spin",
 				"min": 0,
 				"max": 1,
-				"step": 0.1
+				"step": 0.1,
+
 			}
 		}
 	},
