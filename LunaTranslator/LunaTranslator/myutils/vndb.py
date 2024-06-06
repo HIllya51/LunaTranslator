@@ -324,34 +324,6 @@ def parsehtmlmethod(infopath):
             text,
         )
 
-    hrefs = re.findall('src="(.*?)" width="(.*?)" height="(.*?)"', text)
-    # print(hrefs)
-    for href in hrefs:
-        if href[0].startswith("https://t.vndb.org/st/"):
-            href1 = href[0].replace("https://t.vndb.org/st/", "https://t.vndb.org/sf/")
-            localimg = vndbdownloadimg(href1, False)
-            if localimg:
-                text = text.replace(
-                    'src="{}" width="{}" height="{}"'.format(href[0], href[1], href[2]),
-                    'src="file://{}" width="512"'.format(
-                        os.path.abspath(localimg).replace("\\", "/")
-                    ),
-                )
-                text = text.replace(
-                    'href="{}"'.format(href1),
-                    'href="file://{}"'.format(
-                        os.path.abspath(localimg).replace("\\", "/")
-                    ),
-                )
-        elif href[0].startswith("https://t.vndb.org/cv/"):
-            localimg = vndbdownloadimg(href[0], False)
-            if localimg:
-                text = text.replace(
-                    'src="{}"'.format(href[0]),
-                    'src="file://{}"'.format(
-                        os.path.abspath(localimg).replace("\\", "/")
-                    ),
-                )
 
     with open(resavepath, "w", encoding="utf8") as ff:
         ff.write(text)
