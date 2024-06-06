@@ -129,9 +129,18 @@ def checkconnected(self):
             if os.path.exists(syspath) and os.path.isfile(syspath):
                 _path = syspath
                 break
-        needstart = (
-            any([globalconfig["fanyi"][dev]["use"] for dev in develop]) and _path
-        )
+        needstart = False
+        for dev in develop:
+            if not globalconfig["fanyi"][dev]["use"]:
+                continue
+            if dev == "selfbuild":
+                if not os.path.exists("./userconfig/selfbuild.py"):
+                    continue
+            else:
+                if not os.path.exists("./LunaTranslator/translator/" + dev + ".py"):
+                    continue
+            needstart = True
+            break
         try:
 
             if needstart:
