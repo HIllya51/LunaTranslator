@@ -30,7 +30,7 @@ class TS(basetrans):
 
     def translate(self, query):
         self.checkempty(["SECRET_KEY", "model"])
-        self.contextnum = int(self.config["附带上下文个数"])
+        self.contextnum = int(self.config["context"])
         try:
             gen_config = {"generationConfig": {"stopSequences": [" \n"], "temperature": float(self.config["Temperature"])}}
         except:
@@ -59,8 +59,8 @@ class TS(basetrans):
             ]
         }
 
-        if self.config["使用自定义promt"]:
-            sys_message = {"systemInstruction": {"parts": {"text":self.config["自定义promt"]}}}
+        if self.config["use_custom_prompt"]:
+            sys_message = {"systemInstruction": {"parts": {"text":self.config["custom_prompt"]}}}
         else:
             sys_message= {"systemInstruction":
                 {
