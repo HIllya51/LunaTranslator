@@ -476,7 +476,7 @@
 			"model": "gemini-1.5-flash",
 			"context": 0,
 			"use_custom_prompt": false,
-			"custom_prompt": "",
+			"custom_prompt": ""
 
 		},
 		"argstype": {
@@ -506,7 +506,7 @@
 				"type": "spin",
 				"min": 0,
 				"max": 1,
-				"step": 0.1,
+				"step": 0.1
 
 			}
 		}
