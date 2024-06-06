@@ -409,3 +409,10 @@ get_ZoomFactor.argtypes = (c_void_p,)
 get_ZoomFactor.restype = c_double
 put_ZoomFactor = utilsdll.put_ZoomFactor
 put_ZoomFactor.argtypes = c_void_p, c_double
+
+clipboard_callback = utilsdll.clipboard_callback
+clipboard_callback.argtypes = (c_void_p,)
+clipboard_callback.restype = HWND
+clipboard_callback_stop = utilsdll.clipboard_callback_stop
+clipboard_callback_stop.argtypes = (HWND,)
+clipboard_callback_type = CFUNCTYPE(None, c_wchar_p, c_bool)

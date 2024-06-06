@@ -1,30 +1,29 @@
 import time
 from textsource.textsourcebase import basetext
 from myutils.config import globalconfig
-import winsharedutils, os
+import winsharedutils, os, queue
 import windows
 
 
 class copyboard(basetext):
-    def __init__(self) -> None:
-        self.last_paste_str = ""
 
+    def end(self):
+        winsharedutils.clipboard_callback_stop(self.__hwnd)
+        super().end()
+
+    def __callback(self, string, ismy):
+        if globalconfig["excule_from_self"] and ismy:
+            return
+        return self.__queue.put(string)
+
+    def __init__(self) -> None:
+        self.__ref = winsharedutils.clipboard_callback_type(self.__callback)
+        self.__hwnd = winsharedutils.clipboard_callback(self.__ref)
+        self.__queue = queue.Queue()
         super(copyboard, self).__init__("0", "copy")
 
     def gettextthread(self):
-
-        time.sleep(0.1)
-        paste_str = winsharedutils.clipboard_get()
-
-        if self.last_paste_str != paste_str:
-            self.last_paste_str = paste_str
-            if (
-                globalconfig["excule_from_self"]
-                and windows.GetWindowThreadProcessId(windows.GetClipboardOwner())
-                == os.getpid()
-            ):
-                return
-            return paste_str
+        return self.__queue.get()
 
     def gettextonce(self):
         return winsharedutils.clipboard_get()
