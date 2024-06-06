@@ -246,9 +246,9 @@
         "itemh": 350,
         "margin": 10,
         "textH": 50,
-        "backcolor": "#c38282",
-        "onselectcolor": "#007fff",
-        "onfilenoexistscolor": "#acacac",
+        "backcolor1": "#c38282",
+        "onselectcolor1": "#007fff",
+        "onfilenoexistscolor1": "#acacac",
         "transparent": 25,
         "listitemheight": 40,
         "listitemwidth": 300

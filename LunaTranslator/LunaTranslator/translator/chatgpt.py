@@ -1,125 +1,25 @@
-from traceback import print_exc
-import json
-from translator.basetranslator import basetrans
+from translator.gptcommon import gptcommon
 
 
-class TS(basetrans):
-    def langmap(self):
-        return {
-            "zh": "Simplified Chinese",
-            "ja": "Japanese",
-            "en": "English",
-            "ru": "Russian",
-            "es": "Spanish",
-            "ko": "Korean",
-            "fr": "French",
-            "cht": "Traditional Chinese",
-            "vi": "Vietnamese",
-            "tr": "Turkish",
-            "pl": "Polish",
-            "uk": "Ukrainian",
-            "it": "Italian",
-            "ar": "Arabic",
-            "th": "Thai",
-        }
+class TS(gptcommon):
+    def createurl(self):
+        return self.config["OPENAI_API_BASE"] + self.config["Appedix"]
 
-    def __init__(self, typename):
-        self.context = []
-        super().__init__(typename)
-
-    def inittranslator(self):
-        self.api_key = None
-
-    def translate(self, query):
-        self.checkempty(["SECRET_KEY", "model"])
-        self.contextnum = int(self.config["附带上下文个数"])
+    def createparam(self):
         api_type = self.config["api_type"]
         if api_type in [1, 2]:
             api_version = "2023-05-15"
+            return {"api-version": api_version}
         else:
-            api_version = None
+            return super().createparam()
 
-        try:
-            temperature = float(self.config["Temperature"])
-        except:
-            temperature = 0.3
-
-        if self.config["使用自定义promt"]:
-            message = [{"role": "system", "content": self.config["自定义promt"]}]
-        else:
-            message = [
-                {
-                    "role": "system",
-                    "content": "You are a translator. Please help me translate the following {} text into {}, and you should only tell me the translation.".format(
-                        self.srclang, self.tgtlang
-                    ),
-                },
-            ]
-
-        for _i in range(min(len(self.context) // 2, self.contextnum)):
-            i = (
-                len(self.context) // 2
-                - min(len(self.context) // 2, self.contextnum)
-                + _i
-            )
-            message.append(self.context[i * 2])
-            message.append(self.context[i * 2 + 1])
-        message.append({"role": "user", "content": query})
+    def createheaders(self):
+        api_type = self.config["api_type"]
+        _ = super().createheaders()
         if api_type == 1:  # azure
-            headers = {"api-key": self.multiapikeycurrent["SECRET_KEY"]}
-        else:  # open_ai/azure_ad
-            headers = {
-                "Authorization": "Bearer " + self.multiapikeycurrent["SECRET_KEY"]
-            }
-        if api_version:
-            params = {"api-version": api_version}
-        else:
-            params = None
-        usingstream = self.config["流式输出"]
-        data = dict(
-            model=self.config["model"],
-            messages=message,
-            # optional
-            max_tokens=2048,
-            n=1,
-            stop=None,
-            top_p=1,
-            temperature=temperature,
-            stream=usingstream,
-        )
-        response = self.session.post(
-            self.config["OPENAI_API_BASE"] + self.config["Appedix"],
-            params=params,
-            headers=headers,
-            json=data,
-            stream=usingstream,
-        )
-        if usingstream:
-            message = ""
-            for chunk in response.iter_lines():
-                response_data = chunk.decode("utf-8").strip()
-                if not response_data:
-                    continue
-                try:
-                    json_data = json.loads(response_data[6:])
-                    if json_data["choices"][0]["finish_reason"]:
-                        break
-                    msg = json_data["choices"][0]["delta"]["content"]
-                    yield msg
-                    message += msg
-                except:
-                    print_exc()
-                    raise Exception(response_data)
+            _.update({"api-key": self.multiapikeycurrent["SECRET_KEY"]})
+        return _
 
-        else:
-            try:
-                message = (
-                    response.json()["choices"][0]["message"]["content"]
-                    .replace("\n\n", "\n")
-                    .strip()
-                )
-                yield message
-            except:
-                raise Exception(response.text)
-        self.context.append({"role": "user", "content": query})
-        self.context.append({"role": "assistant", "content": message})
+    def translate(self, query):
+        self.checkempty(["SECRET_KEY", "model"])
+        return super().translate(query)

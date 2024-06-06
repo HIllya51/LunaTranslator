@@ -67,7 +67,7 @@ class ItemWidget(QWidget):
     def click(self):
         try:
             self.bottommask.setStyleSheet(
-                f'background-color: {str2rgba(globalconfig["dialog_savegame_layout"]["onselectcolor"],globalconfig["dialog_savegame_layout"]["transparent"])};'
+                f'background-color: {str2rgba(globalconfig["dialog_savegame_layout"]["onselectcolor1"],globalconfig["dialog_savegame_layout"]["transparent"])};'
             )
 
             if self != ItemWidget.globallashfocus:
@@ -132,7 +132,7 @@ class ItemWidget(QWidget):
         self.setLayout(layout)
         self.exe = exe
         c = globalconfig["dialog_savegame_layout"][
-            ("onfilenoexistscolor", "backcolor")[os.path.exists(exe)]
+            ("onfilenoexistscolor1", "backcolor1")[os.path.exists(exe)]
         ]
         c = str2rgba(c, globalconfig["dialog_savegame_layout"]["transparent"])
         self.maskshowfileexists.setStyleSheet(f"background-color:{c};")
@@ -1218,9 +1218,9 @@ class dialog_syssetting(QDialog):
                 )
 
         for key, name in [
-            ("backcolor", "颜色"),
-            ("onselectcolor", "选中时颜色"),
-            ("onfilenoexistscolor", "游戏不存在时颜色"),
+            ("backcolor1", "颜色"),
+            ("onselectcolor1", "选中时颜色"),
+            ("onfilenoexistscolor1", "游戏不存在时颜色"),
         ]:
             formLayout.addRow(
                 (_TR(name)),
@@ -1987,7 +1987,7 @@ class clickitem(QWidget):
     def click(self):
         try:
             self.bottommask.setStyleSheet(
-                f'background-color: {str2rgba(globalconfig["dialog_savegame_layout"]["onselectcolor"],globalconfig["dialog_savegame_layout"]["transparent"])};'
+                f'background-color: {str2rgba(globalconfig["dialog_savegame_layout"]["onselectcolor1"],globalconfig["dialog_savegame_layout"]["transparent"])};'
             )
 
             if self != clickitem.globallashfocus:
@@ -2020,7 +2020,7 @@ class clickitem(QWidget):
         self.maskshowfileexists = QLabel(self)
 
         c = globalconfig["dialog_savegame_layout"][
-            ("onfilenoexistscolor", "backcolor")[os.path.exists(exe)]
+            ("onfilenoexistscolor1", "backcolor1")[os.path.exists(exe)]
         ]
         c = str2rgba(c, globalconfig["dialog_savegame_layout"]["transparent"])
         self.maskshowfileexists.setStyleSheet(f"background-color:{c};")
