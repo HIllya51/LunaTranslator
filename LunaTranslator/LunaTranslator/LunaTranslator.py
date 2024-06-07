@@ -806,6 +806,7 @@ class MAINUI:
         )
 
     def createsavegamedb(self):
+        os.makedirs("userconfig", exist_ok=True)
         self.sqlsavegameinfo = sqlite3.connect(
             "userconfig/savegame.db", check_same_thread=False, isolation_level=None
         )
