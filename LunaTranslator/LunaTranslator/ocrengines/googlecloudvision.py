@@ -21,7 +21,7 @@ class OCR(baseocr):
                 }
             ]
         }
-        response = self.session.post(ocr_url, json=data)
+        response = self.proxysession.post(ocr_url, json=data)
         try:
             boxs = []
             texts = []

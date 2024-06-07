@@ -57,8 +57,6 @@ except:
 translatorsetting = tryreadconfig("translatorsetting.json")
 ocrsetting = tryreadconfig("ocrsetting.json")
 
-vndbtagdata = tryreadconfig("vndbtagdata.json")
-
 
 def getdefaultsavehook(gamepath, title=None):
     default = {
@@ -67,14 +65,6 @@ def getdefaultsavehook(gamepath, title=None):
         "onloadautoswitchsrclang": 0,
         "needinserthookcode": [],
         "embedablehook": [],
-        "imagepath": None,
-        "imagepath_much2": [],
-        "isimagepathusersetted": False,
-        "isimagepathusersetted_much": False,
-        "istitlesetted": False,
-        "infopath": None,
-        "vid": 0,
-        "namemap": {},
         "statistic_playtime": 0,
         "statistic_wordcount": 0,
         "statistic_wordcount_nodump": 0,
@@ -86,24 +76,42 @@ def getdefaultsavehook(gamepath, title=None):
         "needinserthookcode": [],
         "removeuseless": False,
         "codepage_index": 0,
-        # "allow_tts_auto_names": "",
+        # "allow_tts_auto_names": "",#->v4
         "allow_tts_auto_names_v4": [],
         "tts_repair": False,
         "tts_repair_regex": [],
         "hooktypeasname": {},
         "use_saved_text_process": False,
-        "searchnoresulttime": 0,
-        "relationlinks": [],
+        # "searchnoresulttime": 0,
         "gamejsonfile": "",
         "gamesqlitefile": "",
-        "vndbtags": [],
+        "relationlinks": [],
+        # "vndbtags": [],#->webtags
         "usertags": [],
-        "traceplaytime_v2": [],  # [[start,end]]
+        # "traceplaytime_v2": [],  # [[start,end]]->db.traceplaytime_v4，这个东西增加到太快了，有点膨胀
         "autosavesavedata": "",
+        # 判断是否为自定义元数据，避免覆写
+        # "isimagepathusersetted": False,
+        # "isimagepathusersetted_much": False,
+        "istitlesetted": False,
+        "currentvisimage": None,
+        "currentmainimage": "",
+        # 元数据
+        "namemap": {},  # 人名翻译映射，vndb独占，用于优化翻译
+        #
+        "vid": 0,
+        "bgmsid": 0,
+        "dlsiteid": 'RJ',
+        "title": "",
+        # "imagepath": None,  # 封面->imagepath_all[0]
+        # "imagepath_much2": [],  # 截图->imagepath_all[1:]
+        "imagepath_all": [],
         "developers": [],
+        "webtags": [],  # 标签
+        "infopath": None,  # 离线存储的主页
     }
     if title and len(title):
-        default["title"] = title
+        default["title"] = title  # metadata
     else:
         default["title"] = (
             os.path.basename(os.path.dirname(gamepath))
@@ -116,15 +124,6 @@ def getdefaultsavehook(gamepath, title=None):
 
 _dfsavehook = getdefaultsavehook("")
 for game in savehook_new_data:
-    if ("traceplaytime_v2" not in savehook_new_data[game]) and (
-        "statistic_playtime" in savehook_new_data[game]
-    ):
-        savehook_new_data[game]["traceplaytime_v2"] = [
-            [
-                0,
-                savehook_new_data[game]["statistic_playtime"],
-            ]
-        ]
     if (
         ("allow_tts_auto_names_v4" not in savehook_new_data[game])
         and ("allow_tts_auto_names" in savehook_new_data[game])
@@ -335,16 +334,18 @@ def _TRL(kk):
     return x
 
 
-def saveallconfig():
-    def safesave(fname, js):
-        # 有时保存时意外退出，会导致config文件被清空
-        with open(fname + ".tmp", "w", encoding="utf-8") as ff:
-            ff.write(json.dumps(js, ensure_ascii=False, sort_keys=False, indent=4))
-        if os.path.exists(fname):
-            os.remove(fname)
-        os.rename(fname + ".tmp", fname)
-
+def safesave(fname, js):
+    # 有时保存时意外退出，会导致config文件被清空
     os.makedirs("./userconfig", exist_ok=True)
+    with open(fname + ".tmp", "w", encoding="utf-8") as ff:
+        ff.write(json.dumps(js, ensure_ascii=False, sort_keys=False, indent=4))
+    if os.path.exists(fname):
+        os.remove(fname)
+    os.rename(fname + ".tmp", fname)
+
+
+def saveallconfig():
+
     safesave("./userconfig/config.json", globalconfig)
     safesave("./userconfig/magpie_config.json", magpie_config)
     safesave("./userconfig/postprocessconfig.json", postprocessconfig)
@@ -353,7 +354,6 @@ def saveallconfig():
     safesave("./userconfig/translatorsetting.json", translatorsetting)
     safesave("./userconfig/ocrerrorfix.json", ocrerrorfix)
     safesave("./userconfig/ocrsetting.json", ocrsetting)
-    safesave("./userconfig/vndbtagdata.json", vndbtagdata)
     safesave(
         "./userconfig/savehook_new_1.39.4.json",
         [savehook_new_list, savehook_new_data, savegametaged],

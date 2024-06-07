@@ -4,7 +4,6 @@ import json, time
 import logging, os
 import re
 import urllib
-from myutils.proxy import getproxy
 import requests
 
 _langs = {
@@ -379,6 +378,7 @@ class gTTS:
 
     def __init__(
         self,
+        ref,
         text,
         tld="com",
         lang="en",
@@ -400,7 +400,7 @@ class gTTS:
         ).run,
         timeout=None,
     ):
-
+        self.ref = ref
         # Debug
         for k, v in dict(locals()).items():
             if k == "self":
@@ -492,7 +492,7 @@ class gTTS:
                 url=translate_url,
                 data=data,
                 headers=self.GOOGLE_TTS_HEADERS,
-                proxies=getproxy(),
+                proxies=self.ref.proxy,
             )
 
             # Prepare request
@@ -597,6 +597,7 @@ class gTTSError(Exception):
 
 
 from tts.basettsclass import TTSbase
+
 from myutils.config import getlangsrc
 
 
@@ -605,5 +606,5 @@ class TTS(TTSbase):
         return [""]
 
     def speak(self, content, rate, voice, voiceidx):
-        tts = gTTS(content, lang=getlangsrc())
+        tts = gTTS(self, content, lang=getlangsrc())
         return tts.save()

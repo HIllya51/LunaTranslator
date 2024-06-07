@@ -28,7 +28,7 @@ class TS(basetrans):
             "src_text": query,
             "apikey": apikey,
         }
-        response = self.session.post(
+        response = self.proxysession.post(
             "https://api.niutrans.com/NiuTransServer/translation",
             headers=headers,
             params=params,

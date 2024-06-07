@@ -28,7 +28,7 @@ class TS(basetrans):
             + self.srclang
         )
 
-        response = self.session.post(
+        response = self.proxysession.post(
             "https://api.deepl.com/v2/translate",
             headers=headers,
             verify=False,

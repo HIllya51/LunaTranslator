@@ -1,5 +1,4 @@
 import requests
-from myutils.proxy import getproxy
 
 import websocket
 from datetime import datetime
@@ -17,12 +16,12 @@ class TTS(TTSbase):
     def getvoicelist(self):
         self.alllist = requests.get(
             "https://speech.platform.bing.com/consumer/speech/synthesize/readaloud/voices/list?trustedclienttoken=6A5AA1D4EAFF4E9FB37E23D68491D6F4",
-            proxies=getproxy(),
+            proxies=self.proxy,
         ).json()
         return [_["ShortName"] for _ in self.alllist]
 
     def speak(self, content, rate, voice, voiceidx):
-        return transferMsTTSData(rate, content, voice)
+        return transferMsTTSData(rate, content, voice, self.proxy)
 
 
 # Fix the time to match Americanisms
@@ -123,7 +122,7 @@ def connect_id() -> str:
     return str(uuid.uuid4()).replace("-", "")
 
 
-def transferMsTTSData(rate, content, voice):
+def transferMsTTSData(rate, content, voice, proxy):
 
     endpoint2 = "wss://speech.platform.bing.com/consumer/speech/synthesize/readaloud/edge/v1?TrustedClientToken=6A5AA1D4EAFF4E9FB37E23D68491D6F4"
     headers = {
@@ -144,7 +143,7 @@ def transferMsTTSData(rate, content, voice):
         "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
         " (KHTML, like Gecko) Chrome/91.0.4472.77 Safari/537.36 Edg/91.0.864.41",
     ]
-    proxy = getproxy()["https"]
+    proxy = proxy["https"]
 
     if proxy:
         ip, port = proxy.split(":")

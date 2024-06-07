@@ -33,7 +33,7 @@ class OCR(baseocr):
             "company": "",
         }
 
-        response = self.session.post(
+        response = self.proxysession.post(
             "https://aidemo.youdao.com/ocrapi1", headers=headers, data=data
         )
 
@@ -82,7 +82,7 @@ class OCR(baseocr):
         data["sign"] = sign
 
         headers = {"Content-Type": "application/x-www-form-urlencoded"}
-        response = self.session.post(YOUDAO_URL, data=data, headers=headers)
+        response = self.proxysession.post(YOUDAO_URL, data=data, headers=headers)
         self.countnum()
         try:
             _ = []

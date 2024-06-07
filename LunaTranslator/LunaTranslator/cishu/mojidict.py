@@ -1,10 +1,9 @@
 import requests, re, json
-from myutils.proxy import getproxy
 
 from cishu.cishubase import cishubase
 
 
-def mojiclicksearch(word):
+def mojiclicksearch(self,word):
 
     headers = {
         "accept": "*/*",
@@ -39,7 +38,7 @@ def mojiclicksearch(word):
         "https://api.mojidict.com/parse/functions/word-clickSearchV2",
         headers=headers,
         data=data,
-        proxies=getproxy(),
+        proxies=self.proxy,
     )
 
     result = response.json()["result"]["result"]
@@ -574,7 +573,7 @@ def mojiclicksearch(word):
     return result
 
 
-def mojizonghe(word):
+def mojizonghe(self,word):
     response = requests.post(
         "https://api.mojidict.com/parse/functions/union-api",
         json={
@@ -597,7 +596,7 @@ def mojizonghe(word):
             "content-type": "text/plain",
             "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36",
         },
-        proxies=getproxy(),
+        proxies=self.proxy,
     )
 
     result = ""
@@ -614,12 +613,12 @@ class mojidict(cishubase):
 
         result = ""
         try:
-            result += mojiclicksearch(word)
+            result += mojiclicksearch(self,word)
             result += "<br>"
         except:
             pass
         try:
-            result += mojizonghe(word)
+            result += mojizonghe(self,word)
             result += "<br>"
         except:
             pass

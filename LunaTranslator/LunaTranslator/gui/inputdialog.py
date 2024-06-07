@@ -270,6 +270,9 @@ class autoinitdialog(QDialog):
                     line["dir"],
                     line.get("filter", None),
                     callback=functools.partial(__temp.__setitem__, "k"),
+                    reflist=__temp["k"],
+                    name=line.get("name", ""),
+                    header=line.get("name", ""),
                 )
 
                 regist.append([dd, key, functools.partial(__temp.__getitem__, "k")])

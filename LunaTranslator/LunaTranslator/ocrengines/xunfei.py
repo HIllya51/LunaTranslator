@@ -120,7 +120,7 @@ class OCR(baseocr):
         # print("request_url:", request_url)
 
         body = printed_word_recognition.get_body(file_path=imagebinary)
-        response = self.session.post(
+        response = self.proxysession.post(
             request_url, data=json.dumps(body), headers=headers
         )
 

@@ -9,8 +9,9 @@ from myutils.config import (
     savehook_new_data,
     setlanguage,
     static_data,
+    tryreadconfig,
 )
-import zipfile
+import zipfile, sqlite3
 from myutils.utils import (
     minmaxmoveobservefunc,
     parsemayberegexreplace,
@@ -43,6 +44,7 @@ import winsharedutils
 from winsharedutils import pid_running
 from myutils.post import POSTSOLVE
 from myutils.utils import nowisdark
+
 
 class commonstylebase(QWidget):
     setstylesheetsignal = pyqtSignal()
@@ -77,6 +79,7 @@ class MAINUI:
         self.edittextui = None
         self.edittextui_cached = None
         self.edittextui_sync = True
+        self.sqlsavegameinfo = None
 
     @property
     def textsource(self):
@@ -800,24 +803,124 @@ class MAINUI:
             int(widget.winId()), dark, globalconfig["WindowBackdrop"]
         )
 
-    def checkgameplayingthread(self):
-        self.tracestarted = False
+    def createsavegamedb(self):
+        self.sqlsavegameinfo = sqlite3.connect(
+            "userconfig/savegame.db", check_same_thread=False, isolation_level=None
+        )
+        try:
+            self.sqlsavegameinfo.execute(
+                "CREATE TABLE gameinternalid(gameinternalid INTEGER PRIMARY KEY AUTOINCREMENT,gamepath TEXT);"
+            )
+            self.sqlsavegameinfo.execute(
+                "CREATE TABLE traceplaytime_v4(id INTEGER PRIMARY KEY AUTOINCREMENT,gameinternalid INT,timestart BIGINT,timestop BIGINT);"
+            )
+        except:
+            pass
+        self.migrate_info()
+
+    @threader
+    def migrate_info(self):
+        for k in savehook_new_data:
+            self.migrate_traceplaytime_v2(k)
+            self.migrate_vndbtags(k)
+            self.migrate_images(k)
+
+    def migrate_traceplaytime_v2(self, k):
+
+        if "traceplaytime_v2" not in savehook_new_data[k]:
+            return
+        traceplaytime_v2 = savehook_new_data[k].get("traceplaytime_v2", [])
+        for slice in traceplaytime_v2.copy():
+            self.traceplaytime(k, slice[0], slice[1], True)
+            savehook_new_data[k]["traceplaytime_v2"].pop(0)
+        savehook_new_data[k].pop("traceplaytime_v2")
+
+    def migrate_vndbtags(self, k):
+        def getvndbrealtags(vndbtags_naive):
+            vndbtagdata = tryreadconfig("vndbtagdata.json")
+            vndbtags = []
+            for tagid in vndbtags_naive:
+                if tagid in vndbtagdata:
+                    vndbtags.append(vndbtagdata[tagid])
+            return vndbtags
+
+        if "vndbtags" not in savehook_new_data[k]:
+            return
+        vndbtags = savehook_new_data[k].get("vndbtags", [])
+        vndbtags = getvndbrealtags(vndbtags)
+        savehook_new_data[k]["webtags"] = vndbtags
+        savehook_new_data[k].pop("vndbtags")
+
+    def migrate_images(self, k):
+
+        if (
+            "imagepath" not in savehook_new_data[k]
+            and "imagepath_much2" not in savehook_new_data[k]
+        ):
+            return
+        single = savehook_new_data[k].get("imagepath", None)
+        much = savehook_new_data[k].get("imagepath_much2", [])
+        __ = []
+        if single:
+            __.append(single)
+        __ += much
+        savehook_new_data[k]["imagepath_all"] = __
+        savehook_new_data[k].pop("imagepath")
+        savehook_new_data[k].pop("imagepath_much2")
+
+    def querytraceplaytime_v4(self, k):
+        gameinternalid = self.get_gameinternalid(k)
+        return self.sqlsavegameinfo.execute(
+            "SELECT timestart,timestop FROM traceplaytime_v4 WHERE gameinternalid = ?",
+            (gameinternalid,),
+        ).fetchall()
+
+    def get_gameinternalid(self, k):
         while True:
-            statistictime = time.time()
+            ret = self.sqlsavegameinfo.execute(
+                "SELECT gameinternalid FROM gameinternalid WHERE gamepath = ?", (k,)
+            ).fetchone()
+            if ret is None:
+                self.sqlsavegameinfo.execute(
+                    "INSERT INTO gameinternalid VALUES(NULL,?)", (k,)
+                )
+            else:
+                return ret[0]
+
+    def traceplaytime(self, k, start, end, new):
+
+        gameinternalid = self.get_gameinternalid(k)
+        if new:
+            self.sqlsavegameinfo.execute(
+                "INSERT INTO traceplaytime_v4 VALUES(NULL,?,?,?)",
+                (gameinternalid, start, end),
+            )
+        else:
+            self.sqlsavegameinfo.execute(
+                "UPDATE traceplaytime_v4 SET timestop = ? WHERE (gameinternalid = ? and timestart = ?)",
+                (end, gameinternalid, start),
+            )
+
+    def checkgameplayingthread(self):
+        self.__currentexe = None
+        self.__statistictime = time.time()
+        while True:
             time.sleep(1)
 
             def isok(name_):
-                now = time.time()
-                if self.tracestarted == False:
-                    self.tracestarted = True
-                    savehook_new_data[name_]["traceplaytime_v2"].append(
-                        [statistictime, statistictime]
+                if self.__currentexe == name_:
+                    _t = time.time()
+                    self.traceplaytime(name_, self.__statistictime - 1, _t, False)
+                    savehook_new_data[name_]["statistic_playtime"] += (
+                        _t + 1 - self.__statistictime
                     )
-                savehook_new_data[name_]["statistic_playtime"] += now - statistictime
-                savehook_new_data[name_]["traceplaytime_v2"][-1][1] = now
-
-            def isbad():
-                self.tracestarted = False
+                else:
+                    self.__statistictime = time.time()
+                    self.__currentexe = name_
+                    self.traceplaytime(
+                        name_, self.__statistictime - 1, self.__statistictime, True
+                    )
+                    savehook_new_data[name_]["statistic_playtime"] += 1
 
             try:
                 _hwnd = windows.GetForegroundWindow()
@@ -829,13 +932,13 @@ class MAINUI:
                     if _pid in self.textsource.pids or _pid == os.getpid():
                         isok(self.textsource.pname)
                     else:
-                        isbad()
+                        self.__currentexe = None
                 except:
                     name_ = getpidexe(_pid)
                     if name_ and name_ in savehook_new_list:
                         isok(name_)
                     else:
-                        isbad()
+                        self.__currentexe = None
             except:
                 print_exc()
 
@@ -968,6 +1071,7 @@ class MAINUI:
         threading.Thread(target=self.checkgameplayingthread).start()
         threading.Thread(target=self.darklistener).start()
         self.inittray()
+        self.createsavegamedb()
 
     def darklistener(self):
         sema = winsharedutils.startdarklistener()

@@ -39,7 +39,7 @@ class TS(basetrans):
             "q": content,
         }
 
-        response = self.session.get(
+        response = self.proxysession.get(
             "https://translate.google.com/m",
             params=params,
             verify=False,

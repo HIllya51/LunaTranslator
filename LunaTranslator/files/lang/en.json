@@ -440,7 +440,6 @@
     "失败": "fail",
     "仅使用激活的翻译": "Use only active translations",
     "云译": "Cloud translation",
-    "在线OCR": "Online OCR",
     "使用代理的项目": "Projects using proxies",
     "相关说明": "Related instructions",
     "如果你感觉该软件对你有帮助，欢迎微信扫码赞助，谢谢~": "If you feel that this software is helpful to you, you are welcome to scan WeChat for sponsorship. Thank you~",
@@ -485,7 +484,6 @@
     "打开目录": "Open directory",
     "标题": "title",
     "封面": "cover",
-    "统计信息": "statistical information ",
     "游戏时间": "Game time",
     "未开始": "Not Started",
     "秒": "second",
@@ -820,5 +818,13 @@
     "权限不足，请以管理员权限运行！": "Insufficient permissions, please run with administrator privileges!",
     "标点": "punctuation",
     "添加到列表": "Add to list",
-    "目标": "target"
+    "目标": "target",
+    "统计": "statistics",
+    "元数据": "metadata",
+    "来源": "source",
+    "首选的": "Preferred",
+    "设为封面": "Set as Cover",
+    "复制": "copy",
+    "画廊": "gallery",
+    "删除图片": "Delete image"
 }

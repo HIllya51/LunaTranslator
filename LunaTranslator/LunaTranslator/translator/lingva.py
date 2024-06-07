@@ -22,7 +22,7 @@ class TS(basetrans):
     def translate(self, content):
         # print(self.url%(self.srclang,self.tgtlang,urllib.parse.quote(content)))
         
-        x = self.session.get(
+        x = self.proxysession.get(
             "https://"
             + self.config["host"]
             + "/api/v1/%s/%s/%s" % (self.srclang, self.tgtlang, quote_plus(content)),

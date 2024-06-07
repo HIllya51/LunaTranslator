@@ -428,7 +428,6 @@
     "失败": "fail",
     "仅使用激活的翻译": "Usa solo traduzioni attive",
     "云译": "Traduzione cloud",
-    "在线OCR": "OCR online",
     "使用代理的项目": "Progetti che utilizzano proxy",
     "相关说明": "Istruzioni correlate",
     "如果你感觉该软件对你有帮助，欢迎微信扫码赞助，谢谢~": "Se ritieni che questo software sia utile per te, sei il benvenuto a scansionare WeChat per la sponsorizzazione.",
@@ -485,7 +484,6 @@
     "打开目录": "Apri directory",
     "标题": "titolo",
     "封面": "cover",
-    "统计信息": "informazioni statistiche",
     "游戏时间": "Tempo di gioco",
     "未开始": "Non iniziato",
     "秒": "secondo",
@@ -820,5 +818,13 @@
     "权限不足，请以管理员权限运行！": "Permessi insufficienti, si prega di eseguire con privilegi di amministratore!",
     "标点": "punteggiatura",
     "添加到列表": "Aggiungi alla lista",
-    "目标": "obiettivo"
+    "目标": "obiettivo",
+    "统计": "statistiche",
+    "元数据": "metadati",
+    "来源": "fonte",
+    "首选的": "Preferito",
+    "设为封面": "Imposta come copertina",
+    "复制": "copia",
+    "画廊": "gallery",
+    "删除图片": "Elimina immagine"
 }

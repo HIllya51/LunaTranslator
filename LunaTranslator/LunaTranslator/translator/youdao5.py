@@ -22,9 +22,9 @@ class TS(basetrans):
             "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36",
         }
 
-        self.session.trust_env = False
-        self.session.headers.update(self.headers)
-        self.session.get("https://ai.youdao.com/product-fanyi-text.s")
+        self.proxysession.trust_env = False
+        self.proxysession.headers.update(self.headers)
+        self.proxysession.get("https://ai.youdao.com/product-fanyi-text.s")
 
     def translate(self, content):
 
@@ -50,7 +50,7 @@ class TS(basetrans):
             "to": self.tgtlang,
         }
 
-        response = self.session.post(
+        response = self.proxysession.post(
             "https://aidemo.youdao.com/trans", data=data, headers=headers
         )
         try:

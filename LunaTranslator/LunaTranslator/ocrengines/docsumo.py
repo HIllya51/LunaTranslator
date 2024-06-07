@@ -33,7 +33,7 @@ class OCR(baseocr):
             + "\r\n------WebKitFormBoundaryUjYOv45hug6CFh3t--\r\n".encode("latin-1")
         )
 
-        response = self.session.post(
+        response = self.proxysession.post(
             "https://ocrserver.docsumo.com/api/v1/ocr/extract/",
             headers=headers,
             data=data,

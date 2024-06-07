@@ -12,7 +12,7 @@ class TS(basetrans):
         headers = {"Content-Type": "application/json"}
         data = {"text": [query], "source": self.srclang, "target": self.tgtlang}
 
-        response = self.session.post(
+        response = self.proxysession.post(
             url, auth=("apikey", apikey), headers=headers, data=json.dumps(data)
         )
         try:

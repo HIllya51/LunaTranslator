@@ -45,9 +45,9 @@ class TS(basetrans):
         }
         # proxies = { "http": None, "https": None}
 
-        self.session.trust_env = False
-        self.session.headers.update(self.headers)
-        self.session.get("https://fanyi.youdao.com")
+        self.proxysession.trust_env = False
+        self.proxysession.headers.update(self.headers)
+        self.proxysession.get("https://fanyi.youdao.com")
 
     def translate(self, content):
 
@@ -91,7 +91,7 @@ class TS(basetrans):
             "sec-ch-ua-mobile": "?0",
             "sec-ch-ua-platform": '"Windows"',
         }
-        response = self.session.post(
+        response = self.proxysession.post(
             "https://fanyi.youdao.com/translate_o",
             params=params,
             headers=headers,

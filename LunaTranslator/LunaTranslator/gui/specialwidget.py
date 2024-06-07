@@ -311,7 +311,8 @@ class lazyscrollflow(ScrollArea):
 
     def directshow(self):
         QApplication.processEvents()
-        self.doshowlazywidget(True, self.internalwid.visibleRegion().rects()[0])
+        if len(self.internalwid.visibleRegion().rects()):
+            self.doshowlazywidget(True, self.internalwid.visibleRegion().rects()[0])
 
     def __init__(self):
         super().__init__()

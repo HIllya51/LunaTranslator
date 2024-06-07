@@ -12,7 +12,7 @@ class OCR(baseocr):
         app_id = self.config["app_id"]
         app_secret = self.config["app_secret"]
         if (app_id, app_secret) not in self.tokens:
-            res = self.session.post(
+            res = self.proxysession.post(
                 "https://open.feishu.cn/open-apis/auth/v3/tenant_access_token/internal",
                 headers={"Content-Type": "application/json; charset=utf-8"},
                 json={"app_id": app_id, "app_secret": app_secret},
@@ -27,7 +27,7 @@ class OCR(baseocr):
     def ocr(self, imagebinary):
         token = self.check()
         b64 = base64.b64encode(imagebinary)
-        res = self.session.post(
+        res = self.proxysession.post(
             "https://open.feishu.cn/open-apis/optical_char_recognition/v1/image/basic_recognize",
             headers={
                 "Content-Type": "application/json; charset=utf-8",

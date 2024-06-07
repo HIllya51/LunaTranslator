@@ -91,7 +91,7 @@ class gptcommon(basetrans):
             frequency_penalty=self.config["frequency_penalty"],
             stream=usingstream,
         )
-        response = self.session.post(
+        response = self.proxysession.post(
             self.createurl(),
             headers=self.createheaders(),
             params=self.createparam(),

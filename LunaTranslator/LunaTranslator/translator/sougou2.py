@@ -25,7 +25,7 @@ class TS(basetrans):
             "sec-ch-ua-mobile": "?0",
             "sec-ch-ua-platform": '"Windows"',
         }
-        res = self.session.get(
+        res = self.proxysession.get(
             "https://fanyi.sogou.com/text?keyword="
             + quote(content)
             + "&transfrom="

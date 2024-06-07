@@ -103,7 +103,7 @@ class OCR(baseocr):
             + signature
         )
 
-        r = self.session.post(
+        r = self.proxysession.post(
             url="https://tmt.tencentcloudapi.com",
             headers={
                 "Authorization": authorization,

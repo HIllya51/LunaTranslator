@@ -22,10 +22,10 @@ class TS(basetrans):
             "upgrade-insecure-requests": "1",
             "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36",
         }
-        host_html = self.session.get("https://papago.naver.com/", headers=headers).text
+        host_html = self.proxysession.get("https://papago.naver.com/", headers=headers).text
         url_path = re.compile("/home.(.*?).chunk.js").search(host_html).group()
         self.language_url = "".join(["https://papago.naver.com", url_path])
-        lang_html = self.session.get(self.language_url, headers=headers).text
+        lang_html = self.proxysession.get(self.language_url, headers=headers).text
         self.auth_key = self.get_auth_key(lang_html)
         self.uuid = uuid.uuid4().__str__()
 
@@ -80,7 +80,7 @@ class TS(basetrans):
             "text": content,
         }
 
-        r = self.session.post(
+        r = self.proxysession.post(
             "https://papago.naver.com/apis/n2mt/translate", headers=headers, data=data
         )
 

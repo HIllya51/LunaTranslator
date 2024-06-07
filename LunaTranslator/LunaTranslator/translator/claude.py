@@ -88,7 +88,7 @@ class TS(basetrans):
             temperature=temperature,
             stream=usingstream,
         )
-        response = self.session.post(
+        response = self.proxysession.post(
             self.checkv1(self.config["BASE_URL"]) + "/messages",
             headers=headers,
             json=data,

@@ -41,7 +41,7 @@ class TS(basetrans):
             "signType": "v3",  # 签名类型，固定值
             "curtime": time_curtime,  # 秒级时间戳
         }
-        r = self.session.get(youdao_url, params=data)  # 获取返回的json()内容
+        r = self.proxysession.get(youdao_url, params=data)  # 获取返回的json()内容
         try:
 
             self.countnum(content)

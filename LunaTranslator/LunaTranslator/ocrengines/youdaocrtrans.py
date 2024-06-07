@@ -33,7 +33,7 @@ class OCR(baseocr):
             "company": "",
         }
 
-        response = self.session.post(
+        response = self.proxysession.post(
             "https://aidemo.youdao.com/ocrtransapi1", headers=headers, data=data
         )
 
@@ -134,9 +134,9 @@ class OCR(baseocr):
 
         def doCall(url, header, params, method):
             if "get" == method:
-                return self.session.get(url, params)
+                return self.proxysession.get(url, params)
             elif "post" == method:
-                return self.session.post(url, params, header)
+                return self.proxysession.post(url, params, header)
 
         def readFileAsBase64(imagebinary):
             return str(base64.b64encode(imagebinary), "utf-8")

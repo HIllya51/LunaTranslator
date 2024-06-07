@@ -28,7 +28,7 @@ class TS(basetrans):
             "glossary_list": [],
             "category": "",
         }
-        response = self.session.post(
+        response = self.proxysession.post(
             "https://translate.volcengine.com/crx/translate/v1/",
             headers=headers,
             json=json_data,

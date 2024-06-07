@@ -11,7 +11,7 @@ class TS(basetrans):
             "message": "translate sentences",
         }
 
-        response = self.session.post(self.config["api"], json=json_data)
+        response = self.proxysession.post(self.config["api"], json=json_data)
         try:
             return response.json()
         except:

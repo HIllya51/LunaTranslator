@@ -440,7 +440,6 @@
     "失败": "Thất bại",
     "仅使用激活的翻译": "Chỉ sử dụng bản dịch kích hoạt",
     "云译": "Dịch Mây",
-    "在线OCR": "Trực tuyến OCR",
     "使用代理的项目": "Các dự án sử dụng proxy",
     "相关说明": "Hướng dẫn liên quan",
     "如果你感觉该软件对你有帮助，欢迎微信扫码赞助，谢谢~": "Nếu bạn cảm thấy phần mềm này có ích cho bạn, hoan nghênh tài trợ quét mã wechat, cảm ơn~",
@@ -485,7 +484,6 @@
     "打开目录": "Mở thư mục",
     "标题": "Tiêu đề",
     "封面": "Trang chủ",
-    "统计信息": "Thống kê",
     "游戏时间": "Thời gian chơi",
     "未开始": "Chưa bắt đầu",
     "秒": "giây",
@@ -820,5 +818,13 @@
     "权限不足，请以管理员权限运行！": "Không đủ quyền, hãy chạy với quyền quản trị viên!",
     "标点": "Chấm câu",
     "添加到列表": "Thêm vào danh sách",
-    "目标": "Mục tiêu"
+    "目标": "Mục tiêu",
+    "统计": "Thống kê",
+    "元数据": "Siêu dữ liệu",
+    "来源": "Nguồn",
+    "首选的": "Ưu tiên",
+    "设为封面": "Đặt làm bìa",
+    "复制": "Sao chép",
+    "画廊": "Thư viện",
+    "删除图片": "Xóa ảnh"
 }

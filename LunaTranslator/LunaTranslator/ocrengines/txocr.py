@@ -55,7 +55,7 @@ class OCR(baseocr):
         hashed = hmac.new(key, raw, sha1)
         b64output = base64.encodebytes(hashed.digest()).decode("utf-8")
         req_para.update({"Signature": b64output})
-        r = self.session.get(
+        r = self.proxysession.get(
             url="https://ocr.tencentcloudapi.com/", params=req_para, timeout=10
         )
         # print(r.text)

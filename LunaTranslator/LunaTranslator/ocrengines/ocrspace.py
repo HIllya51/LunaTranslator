@@ -48,7 +48,7 @@ class OCR(baseocr):
             "apikey": apikey,
         }
 
-        response = self.session.post(
+        response = self.proxysession.post(
             "https://" + base + "/parse/image", headers=headers, data=data
         )
         # print(response.text)

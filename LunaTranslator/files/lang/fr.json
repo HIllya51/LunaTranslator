@@ -440,7 +440,6 @@
     "失败": "L'échec",
     "仅使用激活的翻译": "Utiliser uniquement les traductions activées",
     "云译": "Traduction Cloud",
-    "在线OCR": "OCR en ligne",
     "使用代理的项目": "Projets utilisant des agents",
     "相关说明": "Instructions connexes",
     "如果你感觉该软件对你有帮助，欢迎微信扫码赞助，谢谢~": "Si vous sentez que le logiciel vous aide, bienvenue Wechat scan code sponsoring, merci ~",
@@ -485,7 +484,6 @@
     "打开目录": "Ouvrir le catalogue",
     "标题": "Titre",
     "封面": "Couverture",
-    "统计信息": "Informations statistiques",
     "游戏时间": "Temps de jeu",
     "未开始": "Pas commencé",
     "秒": "Secondes",
@@ -820,5 +818,13 @@
     "权限不足，请以管理员权限运行！": "Autorisations insuffisantes, exécutez avec des privilèges d'administrateur!",
     "标点": "Ponctuation",
     "添加到列表": "Ajouter à la Liste",
-    "目标": "Objectifs"
+    "目标": "Objectifs",
+    "统计": "Statistiques",
+    "元数据": "Métadonnées",
+    "来源": "Sources",
+    "首选的": "Préféré",
+    "设为封面": "Faire la couverture",
+    "复制": "Copier",
+    "画廊": "Galerie",
+    "删除图片": "Supprimer une image"
 }

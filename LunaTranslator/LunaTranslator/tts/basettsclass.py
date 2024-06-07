@@ -2,9 +2,12 @@ from myutils.config import globalconfig
 import threading, os, functools
 from myutils.wrapper import threader
 from traceback import print_exc
+from myutils.proxy import getproxy
 
 
 class TTSbase:
+    typename = None
+
     def init(self):
         pass
 
@@ -19,6 +22,10 @@ class TTSbase:
 
     ####################
     # 一些可能需要的属性
+    @property
+    def proxy(self):
+        return getproxy(("reader", self.typename))
+
     @property
     def config(self):
         return self.privateconfig["args"]

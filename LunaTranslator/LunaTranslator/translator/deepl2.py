@@ -77,7 +77,7 @@ class TS(basetrans):
             "id": 3266547795,
         }
 
-        response = self.session.post(
+        response = self.proxysession.post(
             "https://www2.deepl.com/jsonrpc?client=chrome-extension,1.11.2",
             headers=headers,
             json=json_data,

@@ -67,7 +67,7 @@ class OCR(baseocr):
         headers = {
             "content-type": "multipart/form-data; boundary=6d94758aed493e27c73620d74ff01fc4",
         }
-        response = self.session.post(url, params=payload, headers=headers, data=data)
+        response = self.proxysession.post(url, params=payload, headers=headers, data=data)
 
         try:
             js = response.json()

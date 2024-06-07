@@ -2,7 +2,6 @@ from myutils.config import getlangsrc
 import requests
 from urllib.parse import quote
 import re, os
-from myutils.proxy import getproxy
 from cishu.cishubase import cishubase
 
 
@@ -22,7 +21,7 @@ class youdao(cishubase):
             "https://dict.youdao.com/result?word={}&lang={}".format(
                 quote(word), self.srclang
             ),
-            proxies=getproxy(),
+            proxies=self.proxy,
         ).text
         fnd = re.search('<section class="modules"(.*?)>([\\s\\S]*?)</section>', text)
         fnd = fnd.group()

@@ -11,7 +11,7 @@ class TS(basetrans):
 
     def inittranslator(self):
 
-        _ = self.session.get(
+        _ = self.proxysession.get(
             "https://translate.google.com/",
             headers={
                 "authority": "translate.google.com",
@@ -71,7 +71,7 @@ class TS(basetrans):
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36",
         }
 
-        response = self.session.post(
+        response = self.proxysession.post(
             "https://translate.google.com/_/TranslateWebserverUi/data/batchexecute",
             verify=False,
             headers=headers,

@@ -117,7 +117,8 @@ class edittrans(QMainWindow):
         t = QTimer(self)
         t.setInterval(100)
         t.timeout.connect(self.follow)
-        t.start(0)
+        t.timeout.emit()
+        t.start()
 
     def follow(self):
         rect = windows.GetWindowRect(self.followhwnd)

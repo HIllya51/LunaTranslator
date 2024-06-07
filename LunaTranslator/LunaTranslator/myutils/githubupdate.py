@@ -22,6 +22,7 @@ def getvesionmethod():
             "https://api.github.com/repos/HIllya51/LunaTranslator/releases/latest",
             headers=headers,
             verify=False,
+            proxies=getproxy(("github", "versioncheck")),
         ).json()
         # print(res)
         _version = res["tag_name"]
@@ -89,13 +90,17 @@ def updatemethod(_version, progresscallback):
         return False
 
     try:
-        r2 = requests.get(url, stream=True, verify=False, proxies=getproxy())
+        r2 = requests.get(
+            url, stream=True, verify=False, proxies=getproxy(("github", "download"))
+        )
         size = int(r2.headers["Content-Length"])
         if checkalready(size):
             return
         with open(savep, "wb") as file:
             sess = requests.session()
-            r = sess.get(url, stream=True, verify=False, proxies=getproxy())
+            r = sess.get(
+                url, stream=True, verify=False, proxies=getproxy(("github", "download"))
+            )
             file_size = 0
             for i in r.iter_content(chunk_size=1024):
                 if globalconfig["autoupdate"] == False:

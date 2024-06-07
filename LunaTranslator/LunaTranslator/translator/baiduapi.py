@@ -47,7 +47,7 @@ class TS(basetrans):
             + sign
         )
 
-        res = self.session.get("https://api.fanyi.baidu.com" + myurl)
+        res = self.proxysession.get("https://api.fanyi.baidu.com" + myurl)
         try:
             _ = "\n".join([_["dst"] for _ in res.json()["trans_result"]])
 

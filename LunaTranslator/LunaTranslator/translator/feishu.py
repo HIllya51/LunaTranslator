@@ -14,7 +14,7 @@ class TS(basetrans):
         app_id = self.multiapikeycurrent["app_id"]
         app_secret = self.multiapikeycurrent["app_secret"]
         if (app_id, app_secret) not in self.tokens:
-            res = self.session.post(
+            res = self.proxysession.post(
                 "https://open.feishu.cn/open-apis/auth/v3/tenant_access_token/internal",
                 headers={"Content-Type": "application/json; charset=utf-8"},
                 json={"app_id": app_id, "app_secret": app_secret},
@@ -29,7 +29,7 @@ class TS(basetrans):
     def translate(self, query):
 
         token = self.check()
-        res = self.session.post(
+        res = self.proxysession.post(
             "https://open.feishu.cn/open-apis/translation/v1/text/translate",
             headers={
                 "Content-Type": "application/json; charset=utf-8",

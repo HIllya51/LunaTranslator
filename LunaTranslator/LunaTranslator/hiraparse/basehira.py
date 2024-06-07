@@ -1,5 +1,6 @@
 from myutils.config import globalconfig, static_data
 from traceback import print_exc
+from myutils.proxy import getproxy
 
 
 class basehira:
@@ -24,6 +25,10 @@ class basehira:
     @property
     def config(self):
         return globalconfig["hirasetting"][self.typename]["args"]
+
+    @property
+    def proxy(self):
+        return getproxy(("cishu", self.typename))
 
     def parseparse(self, text):
         hira = []

@@ -1,88 +1,19 @@
-import time, requests, re, os, hashlib
-from myutils.proxy import getproxy
-from myutils.config import globalconfig, vndbtagdata
+import time, requests, re, os
+from myutils.config import globalconfig, tryreadconfig, safesave
 from threading import Thread
 import gzip, json
 import shutil
 
-
-def b64string(a):
-    return hashlib.md5(a.encode("utf8")).hexdigest()
+from myutils.metadata.abstract import common
 
 
-def vndbdownloadimg(url, wait=True):
-    os.makedirs("./cache/vndb", exist_ok=True)
-    savepath = "./cache/vndb/" + b64string(url) + ".jpg"
-    if os.path.exists(savepath):
-        return savepath
-
-    def _(url, savepath):
-        headers = {
-            "sec-ch-ua": '"Microsoft Edge";v="113", "Chromium";v="113", "Not-A.Brand";v="24"',
-            "Referer": "https://vndb.org/",
-            "sec-ch-ua-mobile": "?0",
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36 Edg/113.0.1774.42",
-            "sec-ch-ua-platform": '"Windows"',
-        }
-        try:
-            time.sleep(1)
-            _content = requests.get(url, headers=headers, proxies=getproxy()).content
-            with open(savepath, "wb") as ff:
-                ff.write(_content)
-            return savepath
-        except:
-            return None
-
-    if wait:
-        return _(url, savepath)
-    else:
-        Thread(target=_, args=(url, savepath)).start()
-        return None
-
-
-def vndbdowloadinfo(vid):
-    cookies = {
-        "vndb_samesite": "1",
-    }
-
-    headers = {
-        "authority": "vndb.org",
-        "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
-        "accept-language": "zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6",
-        "sec-ch-ua": '"Microsoft Edge";v="113", "Chromium";v="113", "Not-A.Brand";v="24"',
-        "sec-ch-ua-mobile": "?0",
-        "sec-ch-ua-platform": '"Windows"',
-        "sec-fetch-dest": "document",
-        "sec-fetch-mode": "navigate",
-        "sec-fetch-site": "none",
-        "sec-fetch-user": "?1",
-        "upgrade-insecure-requests": "1",
-        "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36 Edg/113.0.1774.42",
-    }
-    url = "https://vndb.org/" + vid
-    os.makedirs("./cache/vndb", exist_ok=True)
-    savepath = "./cache/vndb/" + b64string(url) + ".html"
-    # print(url,savepath)
-    if not os.path.exists(savepath):
-        try:
-            time.sleep(1)
-            response = requests.get(
-                url, cookies=cookies, headers=headers, proxies=getproxy()
-            )
-            with open(savepath, "w", encoding="utf8") as ff:
-                ff.write(response.text)
-        except:
-            return None
-    return savepath
-
-
-def safegetvndbjson(url, json, getter):
+def safegetvndbjson(proxy, url, json, getter):
     try:
         print(url, json)
         _ = requests.post(
             url,
             json=json,
-            proxies=getproxy(),
+            proxies=proxy,
         )
         print(_.text)
         try:
@@ -94,7 +25,7 @@ def safegetvndbjson(url, json, getter):
         return None
 
 
-def gettitlebyid(vid):
+def gettitlebyid(proxy, vid):
     def _getter(js):
 
         try:
@@ -110,13 +41,14 @@ def gettitlebyid(vid):
             return js["results"][0]["title"]
 
     return safegetvndbjson(
+        proxy,
         "https://api.vndb.org/kana/vn",
         {"filters": ["id", "=", vid], "fields": "title,titles.title,titles.main"},
         _getter,
     )
 
 
-def getscreenshotsbyid(vid):
+def getscreenshotsbyid(proxy, vid):
     def _getter(js):
 
         ___ = []
@@ -126,30 +58,34 @@ def getscreenshotsbyid(vid):
         return ___
 
     return safegetvndbjson(
+        proxy,
         "https://api.vndb.org/kana/vn",
         {"filters": ["id", "=", vid], "fields": "screenshots.url"},
         _getter,
     )
 
 
-def getimgbyid(vid):
+def getimgbyid(proxy, vid):
     return safegetvndbjson(
+        proxy,
         "https://api.vndb.org/kana/vn",
         {"filters": ["id", "=", vid], "fields": "image.url"},
         lambda js: js["results"][0]["image"]["url"],
     )
 
 
-def getvidbytitle_vn(title):
+def getvidbytitle_vn(proxy, title):
     return safegetvndbjson(
+        proxy,
         "https://api.vndb.org/kana/vn",
         {"filters": ["search", "=", title], "fields": "id", "sort": "searchrank"},
         lambda js: js["results"][0]["id"],
     )
 
 
-def getvidbytitle_release(title):
+def getvidbytitle_release(proxy, title):
     return safegetvndbjson(
+        proxy,
         "https://api.vndb.org/kana/release",
         {
             "filters": ["search", "=", title],
@@ -160,7 +96,7 @@ def getvidbytitle_release(title):
     )
 
 
-def getdevelopersbyid(vid):
+def getdevelopersbyid(proxy, vid):
 
     def _js(js):
         _ = []
@@ -171,6 +107,7 @@ def getdevelopersbyid(vid):
         return _
 
     name = safegetvndbjson(
+        proxy,
         "https://api.vndb.org/kana/vn",
         {"filters": ["id", "=", vid], "fields": "developers.name,developers.original"},
         _js,
@@ -178,15 +115,16 @@ def getdevelopersbyid(vid):
     return name
 
 
-def getvidbytitle(title):
-    vid = getvidbytitle_vn(title)
+def getidbytitle_(proxy, title):
+    vid = getvidbytitle_vn(proxy, title)
     if vid:
         return vid
-    return getvidbytitle_release(title)
+    return getvidbytitle_release(proxy, title)
 
 
-def getcharnamemapbyid(vid):
+def getcharnamemapbyid(proxy, vid):
     res = safegetvndbjson(
+        proxy,
         "https://api.vndb.org/kana/character",
         {
             "filters": [
@@ -213,11 +151,11 @@ def decompress_gzip_file(gzip_file, output_file):
             shutil.copyfileobj(f_in, f_out)
 
 
-def safedownload():
+def safedownload(proxy):
     try:
         resp = requests.get(
             "https://dl.vndb.org/dump/vndb-tags-latest.json.gz",
-            proxies=getproxy(),
+            proxies=proxy,
         )
         os.makedirs("cache/temp", exist_ok=True)
         with open("cache/temp/vndb-tags-latest.json.gz", "wb") as ff:
@@ -241,7 +179,7 @@ def safedownload():
         return None
 
 
-def getvntagsbyid(vid):
+def getvntagsbyid(proxy, vid):
 
     res = safegetvndbjson(
         "https://api.vndb.org/kana/vn",
@@ -258,42 +196,24 @@ def getvntagsbyid(vid):
     if not res:
         return
     tags = []
+    vndbtagdata = tryreadconfig("vndbtagdata.json")
+    changed = False
     try:
         for r in res:
             tag = r["id"]
-            if tag not in vndbtagdata:
-                js = safedownload()
+            if tag not in vndbtagdata and not changed:
+                js = safedownload(proxy)
                 if js:
                     vndbtagdata.update(js)
-
-            tags.append(r["id"])
+                changed = True
+            if tag not in vndbtagdata:
+                continue
+            tags.append(vndbtagdata[r["id"]])
     except:
         pass
+    if changed:
+        safesave("./userconfig/vndbtagdata.json", vndbtagdata)
     return tags
-
-
-def searchfordata(vid):
-
-    os.makedirs("./cache/vndb", exist_ok=True)
-    vid = "v{}".format(vid)
-    img = getimgbyid(vid)
-    title = gettitlebyid(vid)
-    namemap = getcharnamemapbyid(vid)
-    vndbtags = getvntagsbyid(vid)
-    developers = getdevelopersbyid(vid)
-    try:
-        imagepath_much2 = [vndbdownloadimg(_) for _ in getscreenshotsbyid(vid)]
-    except:
-        imagepath_much2 = []
-    return {
-        "namemap": namemap,
-        "title": title,
-        "infopath": vndbdowloadinfo(vid),
-        "imagepath": vndbdownloadimg(img),
-        "imagepath_much2": imagepath_much2,
-        "vndbtags": vndbtags,
-        "developers": developers,
-    }
 
 
 import re
@@ -324,8 +244,70 @@ def parsehtmlmethod(infopath):
             text,
         )
 
-
     with open(resavepath, "w", encoding="utf8") as ff:
         ff.write(text)
 
     return resavepath
+
+
+def gettagfromhtml(path):
+    if path and os.path.exists(path):
+        with open(path, "r", encoding="utf8") as ff:
+            html = ff.read()
+        find = re.search('<div id="vntags">([\\s\\S]*?)</div>', html)
+        if find:
+            html = find.groups()[0]
+            return [_[1] for _ in re.findall("<a(.*?)>(.*?)</a>", html)]
+    return []
+
+
+class searcher(common):
+
+    def refmainpage(self, _id):
+        return f"https://vndb.org/v{_id}"
+
+    def getidbytitle(self, title):
+        vid = getidbytitle_(self.proxy, title)
+        if vid:
+            return int(vid[1:])
+        return None
+
+    def searchfordata(self, vid):
+        os.makedirs("./cache/vndb", exist_ok=True)
+        vid = "v{}".format(vid)
+        img = getimgbyid(self.proxy, vid)
+        title = gettitlebyid(self.proxy, vid)
+        namemap = getcharnamemapbyid(self.proxy, vid)
+        vndbtags = []  # getvntagsbyid(self.proxy, vid) #这个东西谜之慢
+        if len(vndbtags) == 0:
+            # 没代理时下不动那个tag的json
+            vndbtags = gettagfromhtml(
+                self.dispatchdownloadtask(
+                    self.refmainpage(vid), ishtml=True, delay=False
+                )
+            )
+        developers = getdevelopersbyid(self.proxy, vid)
+        try:
+            imagepath_much2 = [
+                self.dispatchdownloadtask(_)
+                for _ in getscreenshotsbyid(self.proxy, vid)
+            ]
+        except:
+            imagepath_much2 = []
+        _image = self.dispatchdownloadtask(img)
+        __ = []
+        if _image:
+            __.append(_image)
+        __ += imagepath_much2
+        return {
+            "namemap": namemap,
+            "title": title,
+            "infopath": parsehtmlmethod(
+                self.dispatchdownloadtask(
+                    self.refmainpage(vid), ishtml=True, delay=False
+                )
+            ),
+            "imagepath_all": __,
+            "webtags": vndbtags,
+            "developers": developers,
+        }

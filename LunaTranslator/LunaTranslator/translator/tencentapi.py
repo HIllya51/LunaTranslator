@@ -61,7 +61,7 @@ class TS(basetrans):
         data["Signature"] = sign_str(secret_key, s, hashlib.sha1)
 
         # 此处会实际调用，成功后可能产生计费
-        r = self.session.get("https://" + endpoint, params=data, timeout=3)
+        r = self.proxysession.get("https://" + endpoint, params=data, timeout=3)
         # print(r.json())
         return r
 

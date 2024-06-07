@@ -1,7 +1,6 @@
 import requests
 from urllib.parse import quote
 import re
-from myutils.proxy import getproxy
 from cishu.cishubase import cishubase
 
 from html.parser import HTMLParser
@@ -83,7 +82,7 @@ class jisho(cishubase):
         url = "https://jisho.org/word/{}".format(quote(word))
         html = requests.get(
             url,
-            proxies=getproxy(),
+            proxies=self.proxy,
         ).text
 
         res = get_element_by_id("page_container", html)
@@ -98,7 +97,7 @@ class jisho(cishubase):
         )
 
         ss = re.search('href="https://assets.jisho.org/assets/application(.*)"', html)
-        stl = requests.get(ss.group()[6:-1], proxies=getproxy()).text
+        stl = requests.get(ss.group()[6:-1], proxies=self.proxy).text
 
         return (
             '<div  style="text-align: center;"><a href="{}">link</a></div><br>'.format(

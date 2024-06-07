@@ -29,7 +29,7 @@ class OCR(baseocr):
                 self.config["API Key"],
                 self.config["Secret Key"],
             )
-            self.accstoken = self.session.get(
+            self.accstoken = self.proxysession.get(
                 "https://aip.baidubce.com/oauth/2.0/token?grant_type=client_credentials&client_id="
                 + self.appid
                 + "&client_secret="
@@ -73,7 +73,7 @@ class OCR(baseocr):
             "https://aip.baidubce.com/rest/2.0/ocr/v1/accurate_basic",
             "https://aip.baidubce.com/rest/2.0/ocr/v1/accurate",
         ][interfacetype]
-        response = self.session.post(url, params=params, headers=headers, data=data)
+        response = self.proxysession.post(url, params=params, headers=headers, data=data)
         try:
 
             self.countnum()

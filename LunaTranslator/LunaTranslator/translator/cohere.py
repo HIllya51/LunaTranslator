@@ -124,7 +124,7 @@ class TS(basetrans):
             temperature=temperature,
             stream=usingstream,
         )
-        response = self.session.post(
+        response = self.proxysession.post(
             "https://api.cohere.ai/v1/chat",
             headers=headers,
             json=data,

@@ -440,7 +440,6 @@
     "失败": "başarısız",
     "仅使用激活的翻译": "Sadece aktif çevirimleri kullan",
     "云译": "Bulud çevirimi",
-    "在线OCR": "Online OCR",
     "使用代理的项目": "Proksiler kullanarak projeler",
     "相关说明": "İlişkili talimatlar",
     "如果你感觉该软件对你有帮助，欢迎微信扫码赞助，谢谢~": "Eğer bu yazılım size yardımcı olduğunu hissediyorsanız, sponsorluk için WeChat'ı taramak için hoş geldiniz. Teşekkürler ~",
@@ -485,7 +484,6 @@
     "打开目录": "Dizini Aç",
     "标题": "isim",
     "封面": "cover",
-    "统计信息": "istatistik bilgi",
     "游戏时间": "Oyun zamanı",
     "未开始": "Başlanmadı",
     "秒": "saniye",
@@ -820,5 +818,13 @@
     "权限不足，请以管理员权限运行！": "Insufficient permissions, please run with administrator privileges!",
     "标点": "noqtalama",
     "添加到列表": "Listeye ekle",
-    "目标": "hedef"
+    "目标": "hedef",
+    "统计": "istatistikler",
+    "元数据": "metadata",
+    "来源": "kaynak",
+    "首选的": "Tercih et",
+    "设为封面": "Kapağı olarak ayarlayın",
+    "复制": "kopyalama",
+    "画廊": "Galeri",
+    "删除图片": "Resimi sil"
 }

@@ -32,7 +32,7 @@ class TS(basetrans):
             "target": {"lang": self.tgtlang},
         }
 
-        response = self.session.post(
+        response = self.proxysession.post(
             "https://transmart.qq.com/api/imt", headers=headers, json=data
         )
         return response.json()["auto_translation"]

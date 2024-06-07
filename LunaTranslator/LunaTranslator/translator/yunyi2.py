@@ -25,7 +25,7 @@ class TS(basetrans):
             "sec-ch-ua-platform": '"Windows"',
         }
 
-        response = self.session.post(
+        response = self.proxysession.post(
             "https://online.cloudtranslation.com/api/v1.0/request_translate/try_translate",
             data={
                 "type": "text",

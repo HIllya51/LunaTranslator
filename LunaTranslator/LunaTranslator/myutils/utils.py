@@ -20,8 +20,38 @@ from myutils.config import (
 from ctypes import c_float, pointer, c_void_p
 import threading
 import re, heapq, winsharedutils
-from myutils.vndb import searchfordata, getvidbytitle
 from myutils.wrapper import tryprint
+
+
+def findenclose(text, tag):
+    i = 0
+    tags = f"<{tag}"
+    tage = f"</{tag}>"
+    collect = ""
+    __ = 0
+    while True:
+        if text.startswith(tags):
+            i += 1
+            text = text[len(tags) :]
+            collect += tags
+        elif text.startswith(tage):
+            i -= 1
+            text = text[len(tage) :]
+            collect += tage
+        else:
+            collect += text[0]
+            text = text[1:]
+        if i == 0:
+            break
+
+    return collect
+
+
+def simplehtmlparser(text, tag, sign):
+    text = text[text.find(sign) :]
+    inner = findenclose(text, tag)
+    return inner
+
 
 def nowisdark():
     dl = globalconfig["darklight"]
@@ -32,6 +62,7 @@ def nowisdark():
     elif dl == 2:
         dark = winsharedutils.isDark()
     return dark
+
 
 def getimageformatlist():
     _ = [_.data().decode() for _ in QImageWriter.supportedImageFormats()]
@@ -67,12 +98,6 @@ class PriorityQueue:
 searchvndbqueue = PriorityQueue()
 
 
-def checkimage(gamepath):
-    return (savehook_new_data[gamepath]["imagepath"] is None) or (
-        os.path.exists(savehook_new_data[gamepath]["imagepath"]) == False
-    )
-
-
 def checkinfo(gamepath):
     return (savehook_new_data[gamepath]["infopath"] is None) or (
         (savehook_new_data[gamepath]["infopath"][:4].lower() != "http")
@@ -82,120 +107,146 @@ def checkinfo(gamepath):
 
 def checkvid(gamepath):
 
-    return (
-        checkimage(gamepath)
-        or checkinfo(gamepath)
-        or (
-            (len(savehook_new_data[gamepath]["vndbtags"]) == 0)
-            and (len(savehook_new_data[gamepath]["developers"]) == 0)
-        )
+    return checkinfo(gamepath) or (
+        (len(savehook_new_data[gamepath]["webtags"]) == 0)
+        and (len(savehook_new_data[gamepath]["developers"]) == 0)
     )
 
 
-def dispatachtask(gamepath):
+def guessmaybetitle(gamepath):
 
     __t = []
-    if savehook_new_data[gamepath]["vid"]:
-        if not checkvid(gamepath):
-            return
-        print(gamepath)
-        searchvndbqueue.put((1, gamepath, savehook_new_data[gamepath]["vid"]))
-    else:
-        if (
-            time.time()
-            < savehook_new_data[gamepath]["searchnoresulttime"] + 3600 * 24 * 7
-        ):
-            return
-        print(gamepath)
-        for _ in [
-            savehook_new_data[gamepath]["title"],
-            os.path.basename(os.path.dirname(gamepath)),
-            os.path.basename(gamepath)[:-4],
-        ]:
-            _ = _.replace("(同人ゲーム)", "").replace("(18禁ゲーム)", "")
-            _ = re.sub(r"\[RJ(.*?)\]", "", _)
-            _ = re.sub(r"\[\d{4}-?\d{2}\-?\d{2}\]", "", _)
+
+    print(gamepath)
+    for _ in [
+        savehook_new_data[gamepath]["title"],
+        os.path.basename(os.path.dirname(gamepath)),
+        os.path.basename(gamepath)[:-4],
+    ]:
+        _ = _.replace("(同人ゲーム)", "").replace("(18禁ゲーム)", "")
+        _ = re.sub(r"\[RJ(.*?)\]", "", _)
+        _ = re.sub(r"\[\d{4}-?\d{2}\-?\d{2}\]", "", _)
+        __t.append(_)
+        _ = re.sub(r"\[(.*?)\]", "", _)
+        if _ != __t[-1]:
             __t.append(_)
-            _ = re.sub(r"\[(.*?)\]", "", _)
-            if _ != __t[-1]:
-                __t.append(_)
-            _ = re.sub(r"\((.*?)\)", "", _)
-            if _ != __t[-1]:
-                __t.append(_)
-        lst = []
-        for i, t in enumerate(__t):
-            t = t.strip()
-            if t in lst:
-                continue
-            if (len(t) < 10) and (all(ord(c) < 128 for c in t)):
-                continue
-            lst.append(t)
-        searchvndbqueue.put((0, gamepath, lst))
+        _ = re.sub(r"\((.*?)\)", "", _)
+        if _ != __t[-1]:
+            __t.append(_)
+    lst = []
+    for i, t in enumerate(__t):
+        t = t.strip()
+        if t in lst:
+            continue
+        if (len(t) < 10) and (all(ord(c) < 128 for c in t)):
+            continue
+        lst.append(t)
+    return lst
 
 
-def parsetask(_type, gamepath, arg):
-    if _type == 2:
-        dispatachtask(gamepath)
-    elif _type == 0:
-        searchargs = arg
+targetmod = {}
+for k in globalconfig["metadata"]:
+    targetmod[k] = importlib.import_module(f"myutils.metadata.{k}").searcher(k)
+
+
+def trysearchforid(gamepath, searchargs: list):
+    infoid = None
+    primitivtemetaorigin = globalconfig["primitivtemetaorigin"]
+    __ = list(targetmod.keys())
+    if primitivtemetaorigin not in __:
+        primitivtemetaorigin = __[0]
+    __.remove(primitivtemetaorigin)
+    __.insert(0, primitivtemetaorigin)
+
+    for key in __:
         vid = None
         for arg in searchargs:
-            vid = getvidbytitle(arg)
+            vid = targetmod[key].getidbytitle(arg)
             if vid:
                 break
         if not vid:
-            return
-        savehook_new_data[gamepath]["vid"] = int(vid[1:])
-        savehook_new_data[gamepath]["searchnoresulttime"] = time.time()
-        searchvndbqueue.put((1, gamepath, int(vid[1:])))
+            continue
+        idname = globalconfig["metadata"][key]["target"]
+        savehook_new_data[gamepath][idname] = vid
+        if infoid is None or key == primitivtemetaorigin:
+            infoid = key, vid
+            if key == primitivtemetaorigin:
+                break
+    if infoid:
+        searchvndbqueue.put((1, gamepath, infoid))
+
+
+def trysearchfordata(gamepath, arg):
+    key, vid = arg
+    try:
+        data = targetmod[key].searchfordata(vid)
+    except:
+        data = {}
+    infopath = data.get("infopath", None)
+    title = data.get("title", None)
+    namemap = data.get("namemap", None)
+    developers = data.get("developers", [])
+    webtags = data.get("webtags", [])
+    imagepath_all = data.get("imagepath_all", [])
+
+    for _ in imagepath_all:
+        if _ is None:
+            continue
+        if _ not in savehook_new_data[gamepath]["imagepath_all"]:
+            savehook_new_data[gamepath]["imagepath_all"].append(_)
+    if title and (not savehook_new_data[gamepath]["istitlesetted"]):
+        savehook_new_data[gamepath]["title"] = title
+    if infopath:
+        savehook_new_data[gamepath]["infopath"] = infopath
+    if namemap:
+        savehook_new_data[gamepath]["namemap"] = namemap
+    if len(webtags):
+        savehook_new_data[gamepath]["webtags"] = webtags
+    if len(developers):
+        savehook_new_data[gamepath]["developers"] = developers
+
+
+def parsetask(_type, gamepath, arg):
+    if _type == 0:
+        trysearchforid(gamepath, arg)
 
     elif _type == 1:
-        vid = arg
-        data = searchfordata(vid)
-
-        imagepath = data.get("imagepath", None)
-        infopath = data.get("infopath", None)
-        title = data.get("title", None)
-        namemap = data.get("namemap", None)
-        developers = data.get("developers", None)
-        vndbtags = data.get("vndbtags", None)
-        imagepath_much2=data.get('imagepath_much2',[])
-        if imagepath and (not savehook_new_data[gamepath]["isimagepathusersetted"]):
-            savehook_new_data[gamepath]["imagepath"] = imagepath
-        if len(imagepath_much2) and (not savehook_new_data[gamepath]["isimagepathusersetted_much"]):
-            savehook_new_data[gamepath]["imagepath_much2"] = imagepath_much2
-        if title and (not savehook_new_data[gamepath]["istitlesetted"]):
-            savehook_new_data[gamepath]["title"] = title
-        if infopath:
-            savehook_new_data[gamepath]["infopath"] = infopath
-        if namemap:
-            savehook_new_data[gamepath]["namemap"] = namemap
-        if vndbtags:
-            savehook_new_data[gamepath]["vndbtags"] = vndbtags
-        if developers:
-            savehook_new_data[gamepath]["developers"] = developers
+        trysearchforid(gamepath, arg)
 
 
 def everymethodsthread():
     while True:
         _ = searchvndbqueue.get()
         _type, gamepath, arg = _
-        tryprint(parsetask)(_type, gamepath, arg)
+        try:
+            if _type == 0:
+                trysearchforid(gamepath, arg)
+
+            elif _type == 1:
+                trysearchfordata(gamepath, arg)
+        except:
+            print_exc()
 
 
 threading.Thread(target=everymethodsthread).start()
 
 
-def vidchangedtask(gamepath, vid):
-    try:
-        vid = int(vid)
-    except:
+def gamdidchangedtask(key, idname, gamepath):
+    vid = savehook_new_data[gamepath][idname]
+    if vid == "":
         return
-    
-    savehook_new_data[gamepath]["isimagepathusersetted_much"] = False
-    savehook_new_data[gamepath]["isimagepathusersetted"] = False
-    savehook_new_data[gamepath]["vid"] = vid
-    searchvndbqueue.put((1, gamepath, vid), 1)
+    else:
+        try:
+            if globalconfig["metadata"][key]["idtype"] == 0:
+                try:
+                    vid = int(vid)
+                except:
+                    print(vid)
+                    return
+            savehook_new_data[gamepath][idname] = vid
+            searchvndbqueue.put((1, gamepath, (key, vid)), 1)
+        except:
+            print_exc()
 
 
 def titlechangedtask(gamepath, title):
@@ -205,14 +256,14 @@ def titlechangedtask(gamepath, title):
 
 
 def checkifnewgame(targetlist, gamepath, title=None):
-    if gamepath  in targetlist:
-        return False
-    targetlist.insert(0, gamepath)
-    
+    isnew = gamepath in targetlist
+    if not isnew:
+        targetlist.insert(0, gamepath)
     if gamepath not in savehook_new_data:
         savehook_new_data[gamepath] = getdefaultsavehook(gamepath, title)
-    searchvndbqueue.put((2, gamepath, None))
-    return True
+        searchvndbqueue.put((0, gamepath, [title] + guessmaybetitle(gamepath)))
+    return isnew
+
 
 kanjichs2ja = str.maketrans(static_data["kanjichs2ja"])
 

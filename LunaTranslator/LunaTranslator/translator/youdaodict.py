@@ -118,7 +118,7 @@ class TS(basetrans):
                 "appVersion": "8.10.8.0",
                 "product": "deskdict",
             }
-        response = self.session.post(
+        response = self.proxysession.post(
             "https://dict.youdao.com/dicttranslate",
             params=param,
             cookies=cookies,

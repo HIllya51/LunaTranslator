@@ -39,12 +39,13 @@ if __name__=='__main__':
              js.pop(k) 
     with open(f'./files/lang/'+f,'w',encoding='utf8')  as ff:
                     ff.write( json.dumps(js,ensure_ascii=False,sort_keys=False, indent=4))
+    a=TS1('baiduapi')
     for kk in xxx:
         with open(f'./files/lang/{kk}.json','r',encoding='utf8')  as ff:
             
             jsen=json.loads(ff.read())
          
-        a=TS1('baiduapi')
+        
         a.tgtlang=xxx[kk] 
         
         needpop=[]

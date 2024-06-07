@@ -61,12 +61,12 @@ class TS(basetrans):
         json_data = {
             "browser_id": self.bid,
         }
-        self.session.options(
+        self.proxysession.options(
             "https://api.interpreter.caiyunai.com/v1/user/jwt/generate",
             headers=headers,
             json=json_data,
         )
-        self.jwt = self.session.post(
+        self.jwt = self.proxysession.post(
             "https://api.interpreter.caiyunai.com/v1/user/jwt/generate",
             headers=headers,
             json=json_data,
@@ -108,12 +108,12 @@ class TS(basetrans):
             "detect": True,
             "browser_id": self.bid,
         }
-        self.session.options(
+        self.proxysession.options(
             "https://api.interpreter.caiyunai.com/v1/translator",
             headers=headers,
             json=json_data,
         )
-        response = self.session.post(
+        response = self.proxysession.post(
             "https://api.interpreter.caiyunai.com/v1/translator",
             headers=headers,
             json=json_data,

@@ -22,7 +22,7 @@ class TS(basetrans):
             "content-type": "application/json",
             "x-authorization": "token " + token,
         }
-        response = self.session.request(
+        response = self.proxysession.request(
             "POST", url, data=json.dumps(payload), headers=headers
         )
         try:

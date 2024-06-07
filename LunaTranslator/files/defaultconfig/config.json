@@ -17,6 +17,30 @@
     "network": 1,
     "hookmagpie": true,
     "imagewrapmode": 0,
+    "primitivtemetaorigin": "vid",
+    "metadata": {
+        "vndb": {
+            "name": "vndb",
+            "downloadtasks": [],
+            "useproxy": false,
+            "target": "vid",
+            "idtype": 0
+        },
+        "dlsite": {
+            "name": "dlsite",
+            "downloadtasks": [],
+            "useproxy": true,
+            "target": "dlsiteid",
+            "idtype": 1
+        },
+        "bangumi": {
+            "name": "bangumi",
+            "downloadtasks": [],
+            "useproxy": true,
+            "target": "bgmsid",
+            "idtype": 0
+        }
+    },
     "relationlinks": [
         [
             "LunaTranslator",
@@ -715,7 +739,8 @@
         "huoshantts": {
             "use": false,
             "voice": "",
-            "name": "火山TTS"
+            "name": "火山TTS",
+            "useproxy": false
         },
         "edgetts": {
             "use": false,
@@ -725,22 +750,26 @@
         "youdaotts": {
             "use": false,
             "voice": "",
-            "name": "有道TTS"
+            "name": "有道TTS",
+            "useproxy": false
         },
         "windowstts": {
             "use": false,
             "voice": "",
-            "name": "WindowsTTS"
+            "name": "WindowsTTS",
+            "type": "offline"
         },
         "NeoSpeech": {
             "use": false,
             "voice": "",
-            "name": "NeoSpeech"
+            "name": "NeoSpeech",
+            "type": "offline"
         },
         "voiceroid2": {
             "use": false,
             "voice": "",
             "name": "VoiceRoid2/VoiceRoid+",
+            "type": "offline",
             "args": {
                 "path": ""
             },
@@ -756,6 +785,7 @@
             "use": false,
             "voice": "",
             "name": "VOICEVOX",
+            "type": "offline",
             "args": {
                 "path": "",
                 "Port": 50021
@@ -779,6 +809,7 @@
             "use": false,
             "voice": "",
             "name": "vits-simple-api",
+            "type": "offline",
             "args": {
                 "Port": 23456,
                 "preset": ""
@@ -800,6 +831,14 @@
             "use": false,
             "name": "谷歌",
             "voice": ""
+        }
+    },
+    "github": {
+        "versioncheck": {
+            "useproxy": false
+        },
+        "download": {
+            "useproxy": true
         }
     },
     "hirasetting": {
@@ -824,18 +863,21 @@
                         "shiftjis"
                     ]
                 }
-            }
+            },
+            "type": "offline"
         },
         "mojinlt": {
             "use": false,
             "name": "mojinlt",
             "args": {
                 "Moji NLT Token": ""
-            }
+            },
+            "useproxy": false
         },
         "latin": {
             "use": false,
             "name": "标点",
+            "type": "offline",
             "args": {
                 "punctuations": [
                     " ",
@@ -909,7 +951,8 @@
                 }
             },
             "use": false,
-            "name": "小学馆"
+            "name": "小学馆",
+            "type": "offline"
         },
         "edict": {
             "use": false,
@@ -940,7 +983,8 @@
                     "max": 10000,
                     "step": 1
                 }
-            }
+            },
+            "type": "offline"
         },
         "edict2": {
             "use": false,
@@ -970,7 +1014,8 @@
                     "max": 10000,
                     "step": 1
                 }
-            }
+            },
+            "type": "offline"
         },
         "linggesi": {
             "use": false,
@@ -1000,7 +1045,8 @@
                     "max": 10000,
                     "step": 1
                 }
-            }
+            },
+            "type": "offline"
         },
         "mojidict": {
             "use": false,
@@ -1016,7 +1062,8 @@
                     "max": 10000,
                     "step": 1
                 }
-            }
+            },
+            "useproxy": false
         },
         "youdao": {
             "use": false,
@@ -1032,7 +1079,8 @@
                     "max": 10000,
                     "step": 1
                 }
-            }
+            },
+            "useproxy": false
         },
         "jisho": {
             "use": false,
@@ -1127,7 +1175,8 @@
                         "Flow"
                     ]
                 }
-            }
+            },
+            "type": "offline"
         }
     },
     "darklight": 0,
@@ -1159,15 +1208,18 @@
     "ocr": {
         "local": {
             "use": true,
-            "name": "本地OCR"
+            "name": "本地OCR",
+            "type": "offline"
         },
         "windowsocr": {
             "use": false,
-            "name": "WindowsOCR"
+            "name": "WindowsOCR",
+            "type": "offline"
         },
         "tesseract5": {
             "use": false,
-            "name": "Tesseract5"
+            "name": "Tesseract5",
+            "type": "offline"
         },
         "baiduocr_X": {
             "use": false,
@@ -1219,7 +1271,8 @@
         },
         "mangaocr": {
             "use": false,
-            "name": "manga-ocr"
+            "name": "manga-ocr",
+            "type": "offline"
         }
     },
     "fanyi": {

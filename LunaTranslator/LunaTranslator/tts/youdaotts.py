@@ -36,6 +36,6 @@ class TTS(TTSbase):
             "https://dict.youdao.com/dictvoice",
             params=params,
             headers=headers,
-            proxies={"http": None, "https": None},
+            proxies=self.proxy,
         ).content
         return response

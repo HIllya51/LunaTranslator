@@ -30,7 +30,7 @@ class TS(basetrans):
         # You can pass more than one object in body.
         body = [{"text": query}]
 
-        request = self.session.post(
+        request = self.proxysession.post(
             constructed_url, params=params, headers=headers, json=body
         )
         response = request.json()

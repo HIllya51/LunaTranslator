@@ -711,11 +711,12 @@ class mshtmlWidget(abstractwebview):
         if HTMLBrowser.version() < 10001:  # ie10之前，sethtml会乱码
             self.html_limit = 0
         self.browser = HTMLBrowser(int(self.winId()))
+        self.curr_url = None
         t = QTimer(self)
         t.setInterval(100)
         t.timeout.connect(self.__getcurrenturl)
-        t.start(0)
-        self.curr_url = None
+        t.timeout.emit()
+        t.start()
 
     def __getcurrenturl(self):
         _u = self.browser.get_current_url()
@@ -785,7 +786,8 @@ class QWebWrap(abstractwebview):
         t = QTimer(self)
         t.setInterval(100)
         t.timeout.connect(self.__getzoomfactor)
-        t.start(0)
+        t.timeout.emit()
+        t.start()
 
     def set_zoom(self, zoom):
         self.internal_zoom = zoom
@@ -1061,10 +1063,54 @@ def makesubtab_lazy(
 
 @Singleton_close
 class listediter(QDialog):
-    def __init__(self, p, title, header, lst, closecallback=None) -> None:
+    def showmenu(self, p: QPoint):
+        r = self.hctable.currentIndex().row()
+        if r < 0:
+            return
+        menu = QMenu(self.hctable)
+        remove = QAction(_TR("删除"))
+        copy = QAction(_TR("复制"))
+        up = QAction(_TR("上移"))
+        down = QAction(_TR("下移"))
+        menu.addAction(remove)
+        menu.addAction(copy)
+        menu.addAction(up)
+        menu.addAction(down)
+        action = menu.exec(self.hctable.cursor().pos())
+
+        if action == remove:
+            self.hcmodel.removeRow(self.hctable.currentIndex().row())
+
+        elif action == copy:
+            winsharedutils.clipboard_set(
+                self.hcmodel.item(
+                    self.hctable.currentIndex().row(),
+                    self.hctable.currentIndex().column(),
+                ).text()
+            )
+
+        elif action == up:
+
+            self.moverank(-1)
+
+        elif action == down:
+            self.moverank(1)
+
+    def moverank(self, dy):
+        target = (self.hctable.currentIndex().row() + dy) % self.hcmodel.rowCount()
+        text = self.hcmodel.item(
+            self.hctable.currentIndex().row(), self.hctable.currentIndex().column()
+        ).text()
+        self.hcmodel.removeRow(self.hctable.currentIndex().row())
+        self.hcmodel.insertRow(target, [QStandardItem(text)])
+
+    def __init__(
+        self, p, title, header, lst, closecallback=None, ispathsedit=False
+    ) -> None:
         super().__init__(p)
         self.lst = lst
         self.closecallback = closecallback
+        self.ispathsedit = ispathsedit
         try:
             self.setWindowTitle(title)
             model = QStandardItemModel()
@@ -1076,23 +1122,28 @@ class listediter(QDialog):
                 QHeaderView.ResizeMode.ResizeToContents
             )
             table.horizontalHeader().setStretchLastSection(True)
-            # table.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers);
+            if ispathsedit:
+                table.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
             table.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
             table.setSelectionMode((QAbstractItemView.SelectionMode.SingleSelection))
             table.setWordWrap(False)
             table.setModel(model)
+
+            table.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
+            table.customContextMenuRequested.connect(self.showmenu)
             self.hctable = table
 
             for row, k in enumerate(lst):  # 2
-                self.newline(row, k)
+                self.hcmodel.insertRow(row, [QStandardItem(k)])
             formLayout = QVBoxLayout()
             formLayout.addWidget(self.hctable)
             self.buttons = threebuttons(btns=2)
-            self.buttons.btn1clicked.connect(lambda: self.newline(0, ""))
+            self.buttons.btn1clicked.connect(self.click1)
             self.buttons.btn2clicked.connect(self.clicked2)
 
             formLayout.addWidget(self.buttons)
             self.setLayout(formLayout)
+            self.resize(600, self.sizeHint().height())
             self.show()
         except:
             print_exc()
@@ -1116,14 +1167,29 @@ class listediter(QDialog):
         if self.closecallback:
             self.closecallback()
 
-    def newline(self, row, k):
-        self.hcmodel.insertRow(row, [QStandardItem(k)])
+    def __cb(self, path):
+
+        self.hcmodel.insertRow(0, [QStandardItem(path)])
+
+    def click1(self):
+
+        if self.ispathsedit:
+            openfiledirectory(
+                "",
+                multi=False,
+                edit=None,
+                isdir=self.ispathsedit["isdir"],
+                filter1=self.ispathsedit["filter1"],
+                callback=self.__cb,
+            )
+        else:
+            self.hcmodel.insertRow(0, [QStandardItem("")])
 
 
 class listediterline(QLineEdit):
     clicked = pyqtSignal()
 
-    def __init__(self, name, header, reflist):
+    def __init__(self, name, header, reflist, ispathsedit=False):
         super().__init__()
         self.setReadOnly(True)
         self.reflist = reflist
@@ -1131,7 +1197,13 @@ class listediterline(QLineEdit):
 
         self.clicked.connect(
             functools.partial(
-                listediter, self, name, header, reflist, closecallback=self.callback
+                listediter,
+                self,
+                name,
+                header,
+                reflist,
+                closecallback=self.callback,
+                ispathsedit=ispathsedit,
             )
         )
 
@@ -1156,40 +1228,49 @@ def openfiledirectory(directory, multi, edit, isdir, filter1="*.*", callback=Non
 
     if len(res) == 0:
         return
-    edit.setText("|".join(res) if multi else res)
+    if edit:
+        edit.setText("|".join(res) if multi else res)
     if callback:
         callback(res)
 
 
 def getsimplepatheditor(
-    text,
-    multi,
-    isdir,
+    text=None,
+    multi=False,
+    isdir=False,
     filter1="*.*",
     callback=None,
     useiconbutton=False,
+    reflist=None,
+    name=None,
+    header=None,
 ):
     lay = QHBoxLayout()
     lay.setContentsMargins(0, 0, 0, 0)
 
-    director = (text[0] if len(text) else "") if multi else text
-    e = QLineEdit("|".join(text) if multi else text)
-    e.setReadOnly(True)
-    if useiconbutton:
-        bu = getcolorbutton("", "", None, icon="fa.gear", constcolor="#FF69B4")
-    else:
-        bu = QPushButton(_TR("选择" + ("文件夹" if isdir else "文件")))
-    bu.clicked.connect(
-        functools.partial(
-            openfiledirectory,
-            director,
-            multi,
-            e,
-            isdir,
-            "" if isdir else filter1,
-            callback,
+    if multi:
+        e = listediterline(
+            name, header, reflist, dict(isdir=isdir, multi=False, filter1=filter1)
         )
-    )
-    lay.addWidget(e)
-    lay.addWidget(bu)
+        lay.addWidget(e)
+    else:
+        e = QLineEdit(text)
+        e.setReadOnly(True)
+        if useiconbutton:
+            bu = getcolorbutton("", "", None, icon="fa.gear", constcolor="#FF69B4")
+        else:
+            bu = QPushButton(_TR("选择" + ("文件夹" if isdir else "文件")))
+        bu.clicked.connect(
+            functools.partial(
+                openfiledirectory,
+                text,
+                multi,
+                e,
+                isdir,
+                "" if isdir else filter1,
+                callback,
+            )
+        )
+        lay.addWidget(e)
+        lay.addWidget(bu)
     return lay

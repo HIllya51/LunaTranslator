@@ -22,7 +22,7 @@ class TS(basetrans):
             "sec-ch-ua-mobile": "?0",
             "sec-ch-ua-platform": '"Windows"',
         }
-        self.session.get(
+        self.proxysession.get(
             "https://fanyi.baidu.com/mtpe-individual/multimodal#/", headers=headers
         )
 
@@ -74,7 +74,7 @@ class TS(basetrans):
             "milliTimestamp": int(time.time() * 1000),
         }
 
-        response = self.session.post(
+        response = self.proxysession.post(
             "https://fanyi.baidu.com/ait/text/translate",
             headers=headers,
             json=json_data,

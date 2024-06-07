@@ -8,7 +8,7 @@ class TS(basetrans):
 
     def inittranslator(self):
 
-        self.session.get(
+        self.proxysession.get(
             "https://translate.alibaba.com",
             headers={
                 "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
@@ -34,7 +34,7 @@ class TS(basetrans):
             },
         ).text
 
-        self.csrf = self.session.get(
+        self.csrf = self.proxysession.get(
             "https://translate.alibaba.com/api/translate/csrftoken"
         ).json()["token"]
 
@@ -69,7 +69,7 @@ class TS(basetrans):
             "query": content,
             "_csrf": self.csrf,
         }
-        r = self.session.post(
+        r = self.proxysession.post(
             "https://translate.alibaba.com/api/translate/text",
             headers=headers,
             params=form_data,

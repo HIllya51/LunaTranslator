@@ -91,7 +91,7 @@ def translate_async(text, to_language, from_language=None, self=None):
         "Content-Type": "application/json",
     }
     json_data = [{"Text": text}]
-    response = self.session.post(
+    response = self.proxysession.post(
         "https://{}".format(url),
         headers=headers,
         data=json.dumps(json_data).encode("utf-8"),

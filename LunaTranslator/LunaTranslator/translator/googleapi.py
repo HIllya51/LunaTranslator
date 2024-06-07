@@ -16,7 +16,7 @@ class TS(basetrans):
             "target": self.tgtlang,
             "q": (query),
         }
-        response = self.session.get(
+        response = self.proxysession.get(
             "https://translation.googleapis.com/language/translate/v2/", params=params
         )
 

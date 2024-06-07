@@ -86,9 +86,9 @@ class TS(basetrans):
 
 
         payload= {**contents, **safety, **sys_message, **gen_config }
-        res = self.session.post(
+        res = self.proxysession.post(
             f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent",
-            params={"key": self.config["SECRET_KEY"]},
+            params={"key": self.multiapikeycurrent["SECRET_KEY"]},
             json=payload
         )
         try:

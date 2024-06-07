@@ -861,7 +861,8 @@ class QUnFrameWindow(resizableframeless):
         try:
             gobject.baseobject.settin_ui.show_original_switch.click()
         except:
-            pass
+            globalconfig["isshowrawtext"] = not globalconfig["isshowrawtext"]
+            gobject.baseobject.translation_ui.refreshtoolicon()
 
     def changeTranslateMode(self):
         globalconfig["autorun"] = not globalconfig["autorun"]

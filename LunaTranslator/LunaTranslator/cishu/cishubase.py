@@ -1,13 +1,21 @@
 from myutils.config import globalconfig
 from myutils.wrapper import threader
 from traceback import print_exc
+from myutils.proxy import getproxy
+
 
 class cishubase:
+    typename = None
+
     def init(self):
         pass
 
     def search(self, word):
         return word
+
+    @property
+    def proxy(self):
+        return getproxy(("cishu", self.typename))
 
     def __init__(self, typename) -> None:
         self.typename = typename

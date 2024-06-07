@@ -14,7 +14,7 @@ class TS(basetrans):
         }
 
     def inittranslator(self):
-        self.session.get(
+        self.proxysession.get(
             "https://m.youdao.com/translate",
             headers={
                 "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
@@ -61,7 +61,7 @@ class TS(basetrans):
             "sec-ch-ua-platform": '"Windows"',
         }
 
-        response = self.session.post(
+        response = self.proxysession.post(
             "https://m.youdao.com/translate",
             data=data,
             headers=headers,

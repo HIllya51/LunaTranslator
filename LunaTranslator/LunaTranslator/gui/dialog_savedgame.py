@@ -4,12 +4,10 @@ import os, functools, uuid, threading
 from datetime import datetime, timedelta
 from traceback import print_exc
 import windows, gobject, winsharedutils
-from myutils.vndb import parsehtmlmethod
 from myutils.config import (
     savehook_new_list,
     savehook_new_data,
     savegametaged,
-    vndbtagdata,
     _TR,
     _TRL,
     globalconfig,
@@ -17,7 +15,13 @@ from myutils.config import (
 )
 from myutils.hwnd import getExeIcon
 from myutils.wrapper import Singleton_close, Singleton, threader, tryprint
-from myutils.utils import checkifnewgame, str2rgba, vidchangedtask, titlechangedtask
+from myutils.utils import (
+    checkifnewgame,
+    str2rgba,
+    gamdidchangedtask,
+    titlechangedtask,
+    targetmod,
+)
 from gui.inputdialog import noundictconfigdialog1, autoinitdialog
 from gui.specialwidget import (
     ScrollFlow,
@@ -375,12 +379,7 @@ class TagWidget(QWidget):
 class browserdialog(saveposwindow):
     seturlsignal = pyqtSignal(str)
 
-    def parsehtml(self, url):
-        try:
-            newpath = parsehtmlmethod(url)
-        except:
-            print_exc()
-            newpath = url
+    def parsehtml(self, newpath):
         if newpath[:4].lower() != "http":
             newpath = os.path.abspath(newpath)
         return newpath
@@ -557,14 +556,6 @@ class browserdialog(saveposwindow):
             )
 
 
-def getvndbrealtags(vndbtags_naive):
-    vndbtags = []
-    for tagid in vndbtags_naive:
-        if tagid in vndbtagdata:
-            vndbtags.append(vndbtagdata[tagid])
-    return vndbtags
-
-
 _global_dialog_savedgame_new = None
 _global_dialog_setting_game = None
 
@@ -597,8 +588,8 @@ class dialog_setting_game_internal(QWidget):
     def __init__(self, parent, exepath) -> None:
         super().__init__(parent)
         vbox = QVBoxLayout(self)
-        self.setLayout(vbox)
         formLayout = QFormLayout()
+        self.setLayout(vbox)
         self.exepath = exepath
         self.editpath = QLineEdit(exepath)
         self.editpath.setReadOnly(True)
@@ -614,29 +605,6 @@ class dialog_setting_game_internal(QWidget):
                         icon="fa.gear",
                         constcolor="#FF69B4",
                     ),
-                ]
-            ),
-        )
-        titleedit = QLineEdit(savehook_new_data[exepath]["title"])
-
-        def _titlechange(x):
-            titlechangedtask(exepath, x)
-            self.setWindowTitle(x)
-
-        titleedit.textChanged.connect(_titlechange)
-        formLayout.addRow(_TR("标题"), titleedit)
-
-        vndbid = QLineEdit(str(savehook_new_data[exepath]["vid"]))
-        vndbid.setValidator(QIntValidator())
-        vndbid.setSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Fixed)
-
-        vndbid.textEdited.connect(functools.partial(vidchangedtask, exepath))
-
-        formLayout.addRow(
-            "vndbid",
-            getboxlayout(
-                [
-                    vndbid,
                     getcolorbutton(
                         "",
                         "",
@@ -644,94 +612,124 @@ class dialog_setting_game_internal(QWidget):
                         icon="fa.book",
                         constcolor="#FF69B4",
                     ),
-                    getcolorbutton(
-                        "",
-                        "",
-                        lambda: os.startfile(
-                            "https://vndb.org/v{}".format(
-                                savehook_new_data[exepath]["vid"]
-                            )
-                        ),
-                        icon="fa.chrome",
-                        constcolor="#FF69B4",
-                    ),
-                    getcolorbutton(
-                        "",
-                        "",
-                        lambda: vidchangedtask(
-                            exepath, savehook_new_data[exepath]["vid"]
-                        ),
-                        icon="fa.refresh",
-                        constcolor="#FF69B4",
-                    ),
                 ]
             ),
         )
+        titleedit = QLineEdit(savehook_new_data[exepath]["title"])
 
+        def _titlechange():
+            x = titleedit.text()
+            titlechangedtask(exepath, x)
+            self.setWindowTitle(x)
+
+        titleedit.textEdited.connect(
+            functools.partial(savehook_new_data[exepath].__setitem__, "title")
+        )
+        titleedit.returnPressed.connect(_titlechange)
+        formLayout.addRow(_TR("标题"), titleedit)
         methodtab, do = makesubtab_lazy(
             _TRL(
                 [
                     "启动",
                     "HOOK",
+                    "画廊",
+                    "标签",
+                    "元数据",
+                    "统计",
                     "预翻译",
                     "语音",
-                    "标签",
-                    "统计信息",
                     "存档备份",
-                    "封面",
                 ]
             ),
             [
                 functools.partial(self.doaddtab, self.starttab, exepath),
                 functools.partial(self.doaddtab, self.gethooktab, exepath),
+                functools.partial(self.doaddtab, self.fengmiantab, exepath),
+                functools.partial(self.doaddtab, self.getlabelsetting, exepath),
+                functools.partial(self.doaddtab, self.metadataorigin, exepath),
+                functools.partial(self.doaddtab, self.getstatistic, exepath),
                 functools.partial(self.doaddtab, self.getpretranstab, exepath),
                 functools.partial(self.doaddtab, self.getttssetting, exepath),
-                functools.partial(self.doaddtab, self.getlabelsetting, exepath),
-                functools.partial(self.doaddtab, self.getstatistic, exepath),
                 functools.partial(self.doaddtab, self.getbackup, exepath),
-                functools.partial(self.doaddtab, self.fengmiantab, exepath),
             ],
             delay=True,
         )
-
+        self.methodtab = methodtab
         vbox.addLayout(formLayout)
         vbox.addWidget(methodtab)
         do()
+
+    def openrefmainpage(self, key, idname, exepath):
+        try:
+            os.startfile(targetmod[key].refmainpage(savehook_new_data[exepath][idname]))
+        except:
+            print_exc()
+
+    def metadataorigin(self, exepath):
+        formLayout = QFormLayout()
+        _w = QWidget()
+        _w.setLayout(formLayout)
+        formLayout.addRow(
+            _TR("首选的"),
+            getsimplecombobox(
+                list(globalconfig["metadata"].keys()),
+                globalconfig,
+                "primitivtemetaorigin",
+                internallist=list(globalconfig["metadata"].keys()),
+            ),
+        )
+        for key in globalconfig["metadata"]:
+            idname = globalconfig["metadata"][key]["target"]
+            vndbid = QLineEdit(str(savehook_new_data[exepath][idname]))
+            if globalconfig["metadata"][key]["idtype"] == 0:
+                vndbid.setValidator(QIntValidator())
+            vndbid.setSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Fixed)
+            vndbid.textEdited.connect(
+                functools.partial(savehook_new_data[exepath].__setitem__, idname)
+            )
+            vndbid.returnPressed.connect(
+                functools.partial(gamdidchangedtask, key, idname, exepath)
+            )
+
+            formLayout.addRow(
+                key,
+                getboxlayout(
+                    [
+                        vndbid,
+                        getcolorbutton(
+                            "",
+                            "",
+                            functools.partial(
+                                self.openrefmainpage, key, idname, exepath
+                            ),
+                            icon="fa.chrome",
+                            constcolor="#FF69B4",
+                        ),
+                        getcolorbutton(
+                            "",
+                            "",
+                            functools.partial(gamdidchangedtask, key, idname, exepath),
+                            icon="fa.search",
+                            constcolor="#FF69B4",
+                        ),
+                    ]
+                ),
+            )
+        return _w
 
     def fengmiantab(self, exepath):
         _w = QWidget()
         formLayout = QFormLayout()
         _w.setLayout(formLayout)
 
-        def selectimg(res):
-            savehook_new_data[exepath]["imagepath"] = res
-            savehook_new_data[exepath]["isimagepathusersetted"] = True
-
         formLayout.addRow(
-            _TR("封面"),
+            _TR("画廊"),
             getsimplepatheditor(
-                savehook_new_data[exepath]["imagepath"],
-                False,
-                False,
-                None,
-                selectimg,
-                True,
-            ),
-        )
-
-        def selectimg2(ress):
-            savehook_new_data[exepath]["isimagepathusersetted_much"] = True
-            savehook_new_data[exepath]["imagepath_much2"] = ress
-
-        formLayout.addRow(
-            _TR("封面_大"),
-            getsimplepatheditor(
-                savehook_new_data[exepath]["imagepath_much2"],
-                True,
-                False,
-                None,
-                selectimg2,
-                True,
+                reflist=savehook_new_data[exepath]["imagepath_all"],
+                multi=True,
+                isdir=False,
+                name=_TR("画廊"),
+                header=_TR("画廊"),
             ),
         )
         return _w
@@ -862,7 +860,8 @@ class dialog_setting_game_internal(QWidget):
         t = QTimer(self)
         t.setInterval(1000)
         t.timeout.connect(self.refresh)
-        t.start(0)
+        t.timeout.emit()
+        t.start()
         return _w
 
     def split_range_into_days(self, times):
@@ -909,7 +908,7 @@ class dialog_setting_game_internal(QWidget):
         )
         self.chart.setdata(
             self.split_range_into_days(
-                savehook_new_data[self.exepath]["traceplaytime_v2"]
+                gobject.baseobject.querytraceplaytime_v4(self.exepath)
             )
         )
 
@@ -970,7 +969,7 @@ class dialog_setting_game_internal(QWidget):
             newitem(tag, True, _type=tagitem.TYPE_USERTAG)
         for tag in savehook_new_data[exepath]["developers"]:
             newitem(tag, False, _type=tagitem.TYPE_DEVELOPER)
-        for tag in getvndbrealtags(savehook_new_data[exepath]["vndbtags"]):
+        for tag in savehook_new_data[exepath]["webtags"]:
             newitem(tag, False, _type=tagitem.TYPE_TAG)
         formLayout.addWidget(self.labelflow)
         _dict = {"new": 0}
@@ -1088,34 +1087,14 @@ class dialog_setting_game_internal(QWidget):
             getsimpleswitch(savehook_new_data[exepath], "removeuseless"),
         )
 
-        model = QStandardItemModel()
-        model.setHorizontalHeaderLabels(
-            _TRL(
-                [
-                    "删除",
-                    "特殊码",
-                ]
-            )
-        )  # ,'HOOK'])
-
-        self.hcmodel = model
-
-        table = QTableView()
-        table.horizontalHeader().setSectionResizeMode(
-            QHeaderView.ResizeMode.ResizeToContents
+        formLayout.addRow(
+            _TR("特殊码"),
+            listediterline(
+                _TR("特殊码"),
+                _TR("特殊码"),
+                savehook_new_data[exepath]["needinserthookcode"],
+            ),
         )
-        table.horizontalHeader().setStretchLastSection(True)
-        # table.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers);
-        table.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
-        table.setSelectionMode((QAbstractItemView.SelectionMode.SingleSelection))
-        table.setWordWrap(False)
-        table.setModel(model)
-        self.hctable = table
-
-        for row, k in enumerate(savehook_new_data[exepath]["needinserthookcode"]):  # 2
-            self.newline(row, k)
-
-        formLayout.addRow(self.hctable)
 
         formLayout.addRow(
             _TR("插入特殊码延迟(ms)"),
@@ -1131,31 +1110,11 @@ class dialog_setting_game_internal(QWidget):
             )
         return _w
 
-    def clicked2(self):
-        try:
-            savehook_new_data[self.exepath]["needinserthookcode"].pop(
-                self.hctable.currentIndex().row()
-            )
-            self.hcmodel.removeRow(self.hctable.currentIndex().row())
-        except:
-            pass
-
-    def newline(self, row, k):
-
-        self.hcmodel.insertRow(row, [QStandardItem(), QStandardItem(k)])
-
-        self.hctable.setIndexWidget(
-            self.hcmodel.index(row, 0),
-            getcolorbutton(
-                "", "", self.clicked2, icon="fa.times", constcolor="#FF69B4"
-            ),
-        )
-
 
 @Singleton_close
 class dialog_setting_game(QDialog):
 
-    def __init__(self, parent, exepath) -> None:
+    def __init__(self, parent, exepath, setindexhook=False) -> None:
         super().__init__(parent, Qt.WindowType.WindowCloseButtonHint)
         global _global_dialog_setting_game
         _global_dialog_setting_game = self
@@ -1164,7 +1123,8 @@ class dialog_setting_game(QDialog):
 
         self.setWindowIcon(getExeIcon(exepath, cache=True))
         _ = dialog_setting_game_internal(self, exepath)
-
+        if setindexhook:
+            _.methodtab.setCurrentIndex(1)
         _.setMinimumSize(QSize(600, 500))
         l = QHBoxLayout(self)
         self.setLayout(l)
@@ -1357,9 +1317,18 @@ def opendir(f):
 
 
 def _getpixfunction(kk):
-    _pix = QPixmap(savehook_new_data[kk]["imagepath"])
-    if _pix.isNull():
-        _pix = getExeIcon(kk, False, cache=True)
+    if (
+        savehook_new_data[kk]["currentmainimage"]
+        in savehook_new_data[kk]["imagepath_all"]
+    ):
+        _pix = QPixmap(savehook_new_data[kk]["currentmainimage"])
+        if _pix and not _pix.isNull():
+            return _pix
+    for _ in savehook_new_data[kk]["imagepath_all"]:
+        _pix = QPixmap(_)
+        if _pix and not _pix.isNull():
+            return _pix
+    _pix = getExeIcon(kk, False, cache=True)
     return _pix
 
 
@@ -1531,6 +1500,7 @@ class dialog_savedgame_new(QWidget):
         self.flow.bgclicked.connect(ItemWidget.clearfocus)
         self.formLayout.insertWidget(self.formLayout.count() - 1, self.flow)
         idx = 0
+
         for k in savehook_new_list:
             if newtags != self.currtags:
                 break
@@ -1545,7 +1515,7 @@ class dialog_savedgame_new(QWidget):
                         notshow = True
                         break
                 elif _type == tagitem.TYPE_TAG:
-                    if tag not in getvndbrealtags(savehook_new_data[k]["vndbtags"]):
+                    if tag not in savehook_new_data[k]["webtags"]:
                         notshow = True
                         break
                 elif _type == tagitem.TYPE_USERTAG:
@@ -1554,7 +1524,7 @@ class dialog_savedgame_new(QWidget):
                         break
                 elif _type == tagitem.TYPE_RAND:
                     if (
-                        tag not in getvndbrealtags(savehook_new_data[k]["vndbtags"])
+                        tag not in savehook_new_data[k]["webtags"]
                         and tag not in savehook_new_data[k]["usertags"]
                         and tag not in savehook_new_data[k]["title"]
                         and tag not in savehook_new_data[k]["developers"]
@@ -1565,6 +1535,7 @@ class dialog_savedgame_new(QWidget):
                 continue
             self.newline(k, idx == 0)
             idx += 1
+        self.flow.directshow()
 
     def showmenu(self, p):
         menu = QMenu(self)
@@ -2053,6 +2024,8 @@ class pixwrapper(QWidget):
         super().__init__()
         self.pixview = QLabel(self)
         self.pixmaps = []
+        self.rflist = []
+        self.iternalpixmaps = []
         self.k = None
         self.pixmapi = 0
         self.pixview.setAlignment(Qt.AlignmentFlag.AlignCenter)
@@ -2064,9 +2037,9 @@ class pixwrapper(QWidget):
         self.visidx()
 
     def mousePressEvent(self, a0: QMouseEvent) -> None:
-        if a0.pos().x() < self.width() * 2 / 5:
+        if a0.pos().x() < self.width() / 3:
             self.tolastnext(-1)
-        elif a0.pos().x() > self.width() * 3 / 5:
+        elif a0.pos().x() > self.width() * 2 / 3:
             self.tolastnext(1)
         else:
             pass
@@ -2078,22 +2051,40 @@ class pixwrapper(QWidget):
 
     def visidx(self):
         if self.k and len(self.pixmaps) == 0:
-            self.pixmaps = [_getpixfunction(self.k)]
-        if self.pixmapi < len(self.pixmaps):
+            pixmap = getExeIcon(self.k, False, cache=True)
+            pixmap.setDevicePixelRatio(self.devicePixelRatioF())
+            self.pixview.setPixmap(self.scalepix(pixmap))
+        elif self.pixmapi < len(self.pixmaps):
             pixmap = self.pixmaps[self.pixmapi]
-            if isinstance(pixmap, str):
-                pixmap = QPixmap.fromImage(QImage(pixmap))
-            if pixmap.isNull():
+
+            savehook_new_data[self.k]["currentvisimage"] = pixmap
+            pixmap = QPixmap.fromImage(QImage(pixmap))
+            if pixmap is None or pixmap.isNull():
                 self.pixmaps.pop(self.pixmapi)
                 return self.visidx()
             pixmap.setDevicePixelRatio(self.devicePixelRatioF())
             self.pixview.setPixmap(self.scalepix(pixmap))
 
+    def removecurrent(self):
+        if len(self.pixmaps):
+
+            path = self.pixmaps[self.pixmapi]
+            self.rflist.pop(self.rflist.index(path))
+            self.pixmaps.pop(self.pixmapi)
+            if self.pixmapi < len(self.pixmaps):
+                pass
+            else:
+                self.pixmapi -= 1
+            self.visidx()
+
     def setpix(self, k):
 
         self.k = k
-        self.pixmaps = savehook_new_data[k]["imagepath_much2"]
+        self.pixmaps = savehook_new_data[k]["imagepath_all"].copy()
+        self.rflist = savehook_new_data[k]["imagepath_all"]
         self.pixmapi = 0
+        if savehook_new_data[k]["currentvisimage"] in self.pixmaps:
+            self.pixmapi = self.pixmaps.index(savehook_new_data[k]["currentvisimage"])
         self.visidx()
 
     def scalepix(self, pix: QPixmap):
@@ -2162,7 +2153,7 @@ class dialog_savedgame_v3(QWidget):
         )
         self.stack.directshow()
 
-    def stack_showmenu(self, p):
+    def stack_showmenu(self, ispixmenu, p):
         if not self.currentfocuspath:
             return
         menu = QMenu(self)
@@ -2170,7 +2161,8 @@ class dialog_savedgame_v3(QWidget):
         delgame = QAction(_TR("删除游戏"))
         opendir = QAction(_TR("打开目录"))
         addtolist = QAction(_TR("添加到列表"))
-
+        setimage = QAction(_TR("设为封面"))
+        deleteimage = QAction(_TR("删除图片"))
         exists = os.path.exists(self.currentfocuspath)
         if exists:
             menu.addAction(startgame)
@@ -2178,15 +2170,24 @@ class dialog_savedgame_v3(QWidget):
         if exists:
             menu.addAction(opendir)
         menu.addAction(addtolist)
+        if ispixmenu:
+            menu.addAction(setimage)
+            menu.addAction(deleteimage)
         action = menu.exec(QCursor.pos())
         if action == startgame:
             startgamecheck(self, self.currentfocuspath)
         elif action == delgame:
             self.clicked2()
+        elif action == deleteimage:
+            self.pixview.removecurrent()
         elif action == opendir:
             self.clicked4()
         elif action == addtolist:
             self.addtolist()
+        elif action == setimage:
+            curr = savehook_new_data[self.currentfocuspath]["currentvisimage"]
+            if curr and os.path.exists(curr):
+                savehook_new_data[self.currentfocuspath]["currentmainimage"] = curr
 
     def addtolistcallback(self, __d, __uid, path):
 
@@ -2248,7 +2249,9 @@ class dialog_savedgame_v3(QWidget):
         self.reallist = {}
         self.stack = stackedlist()
         self.stack.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
-        self.stack.customContextMenuRequested.connect(self.stack_showmenu)
+        self.stack.customContextMenuRequested.connect(
+            functools.partial(self.stack_showmenu, False)
+        )
         self.stack.setFixedWidth(
             globalconfig["dialog_savegame_layout"]["listitemwidth"]
         )
@@ -2263,11 +2266,13 @@ class dialog_savedgame_v3(QWidget):
         rightlay = QVBoxLayout()
         rightlay.setContentsMargins(0, 0, 0, 0)
         _w.setLayout(rightlay)
-        self.righttop.addTab(_w, _TR("封面"))
+        self.righttop.addTab(_w, _TR("画廊"))
         lay.addWidget(self.righttop)
         rightlay.addWidget(self.pixview)
         self.pixview.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
-        self.pixview.customContextMenuRequested.connect(self.stack_showmenu)
+        self.pixview.customContextMenuRequested.connect(
+            functools.partial(self.stack_showmenu, True)
+        )
         self.buttonlayout = QHBoxLayout()
         self.savebutton = []
         rightlay.addLayout(self.buttonlayout)

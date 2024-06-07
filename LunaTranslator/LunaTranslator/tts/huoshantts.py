@@ -1,7 +1,6 @@
 from traceback import print_exc
 import requests
 import base64
-import time, os
 from tts.basettsclass import TTSbase
 
 
@@ -43,7 +42,7 @@ class TTS(TTSbase):
             "https://translate.volcengine.com/crx/tts/v1/",
             headers=headers,
             json=json_data,
-            proxies={"http": None, "https": None},
+            proxies=self.proxy,
         )
         b64 = base64.b64decode(response.json()["audio"]["data"])
 
