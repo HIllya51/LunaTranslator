@@ -272,9 +272,9 @@ class searcher(common):
             return int(vid[1:])
         return None
 
-    def searchfordata(self, vid):
+    def searchfordata(self, _vid):
         os.makedirs("./cache/vndb", exist_ok=True)
-        vid = "v{}".format(vid)
+        vid = "v{}".format(_vid)
         img = getimgbyid(self.proxy, vid)
         title = gettitlebyid(self.proxy, vid)
         namemap = getcharnamemapbyid(self.proxy, vid)
@@ -283,7 +283,7 @@ class searcher(common):
             # 没代理时下不动那个tag的json
             vndbtags = gettagfromhtml(
                 self.dispatchdownloadtask(
-                    self.refmainpage(vid), ishtml=True, delay=False
+                    self.refmainpage(_vid), ishtml=True, delay=False
                 )
             )
         developers = getdevelopersbyid(self.proxy, vid)
@@ -304,7 +304,7 @@ class searcher(common):
             "title": title,
             "infopath": parsehtmlmethod(
                 self.dispatchdownloadtask(
-                    self.refmainpage(vid), ishtml=True, delay=False
+                    self.refmainpage(_vid), ishtml=True, delay=False
                 )
             ),
             "imagepath_all": __,

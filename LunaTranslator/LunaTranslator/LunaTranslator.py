@@ -173,6 +173,7 @@ class MAINUI:
                     )
                 )
                 self.currenttext = text
+                self.currenttranslate = text
                 self.currentread = text
                 return
             else:
@@ -226,6 +227,7 @@ class MAINUI:
         if onlytrans == False:
             self.dispatchoutputer(text)
             self.currenttext = text
+            self.currenttranslate = ""
             if globalconfig["read_raw"]:
                 self.currentread = text
                 self.autoreadcheckname()
@@ -384,7 +386,7 @@ class MAINUI:
                 self.textsource.sqlqueueput((contentraw, classname, res))
             except:
                 pass
-            self.currenttranslate = res
+            self.currenttranslate = self.currenttranslate + "\n" + res
             if (
                 globalconfig["embedded"]["as_fast_as_posible"]
                 or classname == globalconfig["embedded"]["translator_2"]
