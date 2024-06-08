@@ -1223,6 +1223,14 @@ class dialog_syssetting(QDialog):
                 QLabel(_TR("显示标题")),
                 getsimpleswitch(globalconfig, "showgametitle"),
             )
+            formLayout.addRow(
+                _TR("显示的项目"),
+                getsimplecombobox(
+                    _TRL(["GLOBAL", "首位的", "指定的"]),
+                    globalconfig,
+                    "vispolicy",
+                ),
+            )
         self.show()
 
 
@@ -1461,12 +1469,34 @@ class dialog_savedgame_integrated(saveposwindow):
         )
 
 
+def calculatetagidx(tagid):
+    i = 0
+    for save in savegametaged:
+        if save is None and tagid is None:
+            return i
+        elif save and tagid and save["uid"] == tagid:
+            return i
+        i += 1
+
+    return None
+
+
+def getreflist(reftagid):
+    _idx = calculatetagidx(reftagid)
+    if _idx is None:
+        return None
+    tag = savegametaged[_idx]
+    if tag is None:
+        return savehook_new_list
+    return tag["games"]
+
+
 class dialog_savedgame_new(QWidget):
     def clicked2(self):
         try:
             game = self.currentfocuspath
-            idx2 = savehook_new_list.index(game)
-            savehook_new_list.pop(idx2)
+            idx2 = self.reflist.index(game)
+            self.reflist.pop(idx2)
 
             idx2 = self.idxsave.index(game)
             self.flow.removeidx(idx2)
@@ -1484,10 +1514,10 @@ class dialog_savedgame_new(QWidget):
         opendir(self.currentfocuspath)
 
     def clicked3_batch(self):
-        addgamebatch(lambda res: self.newline(res, True), savehook_new_list)
+        addgamebatch(lambda res: self.newline(res, True), self.reflist)
 
     def clicked3(self):
-        addgamesingle(lambda res: self.newline(res, True), savehook_new_list)
+        addgamesingle(lambda res: self.newline(res, True), self.reflist)
 
     def tagschanged(self, tags):
         self.currtags = tags
@@ -1501,7 +1531,7 @@ class dialog_savedgame_new(QWidget):
         self.formLayout.insertWidget(self.formLayout.count() - 1, self.flow)
         idx = 0
 
-        for k in savehook_new_list:
+        for k in self.reflist:
             if newtags != self.currtags:
                 break
             notshow = False
@@ -1583,6 +1613,17 @@ class dialog_savedgame_new(QWidget):
         global _global_dialog_savedgame_new
         _global_dialog_savedgame_new = self
         formLayout = QVBoxLayout()
+        if globalconfig["vispolicy"] == 0:
+            self.reflist = savehook_new_list
+        elif globalconfig["vispolicy"] == 1:
+            if savegametaged[0] is None:
+                self.reflist = savehook_new_list
+            else:
+                self.reflist = savegametaged[0]["games"]
+        elif globalconfig["vispolicy"] == 2:
+            self.reflist = getreflist(globalconfig["currvislistuid"])
+            if self.reflist is None:
+                self.reflist = savehook_new_list
 
         layout = QHBoxLayout()
         layout.setContentsMargins(0, 0, 0, 0)
@@ -1684,9 +1725,9 @@ class dialog_savedgame_new(QWidget):
         self.idxsave.insert(idx2, self.idxsave.pop(idx1))
         self.flow.switchidx(idx1, idx2)
 
-        idx1 = savehook_new_list.index(game)
-        idx2 = savehook_new_list.index(game2)
-        savehook_new_list.insert(idx2, savehook_new_list.pop(idx1))
+        idx1 = self.reflist.index(game)
+        idx2 = self.reflist.index(game2)
+        self.reflist.insert(idx2, self.reflist.pop(idx1))
 
     def showsettingdialog(self):
         try:
@@ -2141,7 +2182,7 @@ class dialog_savedgame_v3(QWidget):
 
     def newline(self, res):
         self.reallist[self.reftagid].insert(0, res)
-        self.stack.w(self.calculatetagidx(self.reftagid)).insertw(
+        self.stack.w(calculatetagidx(self.reftagid)).insertw(
             0,
             functools.partial(
                 self.delayitemcreater,
@@ -2198,8 +2239,8 @@ class dialog_savedgame_v3(QWidget):
         __save = self.reftagid
         self.reftagid = uid
 
-        if path not in self.getreflist():
-            self.getreflist().insert(0, path)
+        if path not in getreflist(self.reftagid):
+            getreflist(self.reftagid).insert(0, path)
             self.newline(path)
         self.reftagid = __save
 
@@ -2326,22 +2367,11 @@ class dialog_savedgame_v3(QWidget):
                 rowreal += 1
 
     def taglistrerank(self, tagid, dx):
-        idx1 = self.calculatetagidx(tagid)
+        idx1 = calculatetagidx(tagid)
 
         idx2 = (idx1 + dx) % len(savegametaged)
         savegametaged.insert(idx2, savegametaged.pop(idx1))
         self.stack.switchidx(idx1, idx2)
-
-    def calculatetagidx(self, tagid):
-        i = 0
-        for save in savegametaged:
-            if save is None and tagid is None:
-                break
-            elif save and tagid and save["uid"] == tagid:
-                break
-            i += 1
-
-        return i
 
     def tagbuttonmenu(self, tagid):
         self.currentfocuspath = None
@@ -2354,7 +2384,7 @@ class dialog_savedgame_v3(QWidget):
         Downaction = QAction(_TR("下移"))
         addgame = QAction(_TR("添加游戏"))
         batchadd = QAction(_TR("批量添加"))
-
+        setasvis = QAction(_TR("设为显示的项目"))
         menu.addAction(Upaction)
         menu.addAction(Downaction)
         if tagid:
@@ -2364,9 +2394,14 @@ class dialog_savedgame_v3(QWidget):
             menu.addAction(dellist)
         menu.addAction(addgame)
         menu.addAction(batchadd)
+        if globalconfig["vispolicy"] == 2:
+            menu.addAction(setasvis)
+
         action = menu.exec(QCursor.pos())
         if action == addgame:
             self.clicked3()
+        elif action == setasvis:
+            globalconfig["currvislistuid"] = self.reftagid
         elif action == batchadd:
             self.clicked3_batch()
         elif action == Upaction:
@@ -2387,7 +2422,7 @@ class dialog_savedgame_v3(QWidget):
 
                 title = _dia.text[0].text()
                 if title != "":
-                    i = self.calculatetagidx(tagid)
+                    i = calculatetagidx(tagid)
                     if action == addlist:
                         tag = {
                             "title": title,
@@ -2403,7 +2438,7 @@ class dialog_savedgame_v3(QWidget):
                         savegametaged[i]["title"] = title
 
         elif action == dellist:
-            i = self.calculatetagidx(tagid)
+            i = calculatetagidx(tagid)
             savegametaged.pop(i)
             self.stack.popw(i)
             self.reallist.pop(tagid)
@@ -2420,31 +2455,19 @@ class dialog_savedgame_v3(QWidget):
         )
         return shrinkableitem(_btn, opened)
 
-    def getreflist(self):
-        tag = savegametaged[self.calculatetagidx(self.reftagid)]
-        if tag is None:
-            return savehook_new_list
-        return tag["games"]
-
-    def getrefid(self):
-        tag = savegametaged[self.calculatetagidx(self.reftagid)]
-        if tag is None:
-            return None
-        return tag["uid"]
-
     def moverank(self, dx):
         game = self.currentfocuspath
-        idx1 = self.reallist[self.getrefid()].index(game)
-        idx2 = (idx1 + dx) % len(self.reallist[self.getrefid()])
-        game2 = self.reallist[self.getrefid()][idx2]
-        self.reallist[self.getrefid()].insert(
-            idx2, self.reallist[self.getrefid()].pop(idx1)
+        idx1 = self.reallist[self.reftagid].index(game)
+        idx2 = (idx1 + dx) % len(self.reallist[self.reftagid])
+        game2 = self.reallist[self.reftagid][idx2]
+        self.reallist[self.reftagid].insert(
+            idx2, self.reallist[self.reftagid].pop(idx1)
         )
 
-        self.stack.w(self.calculatetagidx(self.reftagid)).switchidx(idx1, idx2)
-        idx1 = self.getreflist().index(game)
-        idx2 = self.getreflist().index(game2)
-        self.getreflist().insert(idx2, self.getreflist().pop(idx1))
+        self.stack.w(calculatetagidx(self.reftagid)).switchidx(idx1, idx2)
+        idx1 = getreflist(self.reftagid).index(game)
+        idx2 = getreflist(self.reftagid).index(game2)
+        getreflist(self.reftagid).insert(idx2, getreflist(self.reftagid).pop(idx1))
 
     def clicked2(self):
         if not self.currentfocuspath:
@@ -2452,13 +2475,13 @@ class dialog_savedgame_v3(QWidget):
 
         try:
             game = self.currentfocuspath
-            idx2 = self.getreflist().index(game)
-            self.getreflist().pop(idx2)
+            idx2 = getreflist(self.reftagid).index(game)
+            getreflist(self.reftagid).pop(idx2)
 
-            idx2 = self.reallist[self.getrefid()].index(game)
-            self.reallist[self.getrefid()].pop(idx2)
+            idx2 = self.reallist[self.reftagid].index(game)
+            self.reallist[self.reftagid].pop(idx2)
             clickitem.clearfocus()
-            group0 = self.stack.w(self.calculatetagidx(self.reftagid))
+            group0 = self.stack.w(calculatetagidx(self.reftagid))
             group0.popw(idx2)
             try:
                 group0.w(idx2).click()
@@ -2471,10 +2494,10 @@ class dialog_savedgame_v3(QWidget):
         opendir(self.currentfocuspath)
 
     def clicked3_batch(self):
-        addgamebatch(lambda res: self.newline(res), self.getreflist())
+        addgamebatch(lambda res: self.newline(res), getreflist(self.reftagid))
 
     def clicked3(self):
-        addgamesingle(lambda res: self.newline(res), self.getreflist())
+        addgamesingle(lambda res: self.newline(res), getreflist(self.reftagid))
 
     def clicked(self):
         startgamecheck(self, self.currentfocuspath)
