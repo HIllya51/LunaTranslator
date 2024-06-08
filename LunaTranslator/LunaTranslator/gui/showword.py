@@ -271,7 +271,7 @@ class AnkiWindow(QWidget):
             "rubytext": ruby,
             "explain": explain,
             "example_sentence": example.replace("\n", "<br>"),
-            "remarks": remarks,
+            "remarks": remarks.replace("\n", "<br>"),
         }
         return fields
 
