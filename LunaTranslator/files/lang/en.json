@@ -826,5 +826,6 @@
     "设为封面": "Set as Cover",
     "复制": "copy",
     "画廊": "gallery",
-    "删除图片": "Delete image"
+    "删除图片": "Delete image",
+    "备注中自动填入翻译": "Automatically fill in translation in remarks"
 }

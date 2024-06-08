@@ -826,5 +826,6 @@
     "设为封面": "Faire la couverture",
     "复制": "Copier",
     "画廊": "Galerie",
-    "删除图片": "Supprimer une image"
+    "删除图片": "Supprimer une image",
+    "备注中自动填入翻译": "Remplir automatiquement la traduction dans les notes"
 }

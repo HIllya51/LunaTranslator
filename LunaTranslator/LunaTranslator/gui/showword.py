@@ -377,6 +377,10 @@ class AnkiWindow(QWidget):
             _TR("例句中加粗单词"),
             getsimpleswitch(globalconfig["ankiconnect"], "boldword"),
         )
+        layout.addRow(
+            _TR("备注中自动填入翻译"),
+            getsimpleswitch(globalconfig["ankiconnect"], "fillmaksastrans"),
+        )
 
         layout.addRow(
             _TR("录音时模拟按键"),
@@ -854,7 +858,8 @@ class searchwordW(closeashidewindow):
             self.ankiwindow.langdu()
         if globalconfig["ankiconnect"]["autoruntts2"]:
             self.ankiwindow.langdu2()
-
+        if globalconfig["ankiconnect"]["fillmaksastrans"]:
+            self.ankiwindow.remarks.setPlainText(gobject.baseobject.currenttranslate)
         if globalconfig["ankiconnect"]["autocrop"]:
             grabwindow(
                 getimageformat(),

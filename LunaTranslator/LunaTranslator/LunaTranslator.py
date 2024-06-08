@@ -386,7 +386,9 @@ class MAINUI:
                 self.textsource.sqlqueueput((contentraw, classname, res))
             except:
                 pass
-            self.currenttranslate = self.currenttranslate + "\n" + res
+            if len(self.currenttranslate):
+                self.currenttranslate += "\n"
+            self.currenttranslate += res
             if (
                 globalconfig["embedded"]["as_fast_as_posible"]
                 or classname == globalconfig["embedded"]["translator_2"]
