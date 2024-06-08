@@ -292,7 +292,7 @@
 		"args": {
 			"model": "gpt-3.5-turbo",
 			"附带上下文个数": 0,
-			"apiurl": "https://api.openai.com",
+			"API接口地址": "https://api.openai.com",
 			"SECRET_KEY": "",
 			"使用自定义promt": false,
 			"自定义promt": "",
