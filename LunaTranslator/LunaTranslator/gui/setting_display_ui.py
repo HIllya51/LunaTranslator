@@ -202,7 +202,7 @@ def createbtnthemedark(self):
     return self.btnthemedark
 
 
-def checkthemesettingvisandapply(self, _dark):
+def checkthemesettingvisandapply(self, _dark, _):
     checkthemesettingvisandapply_1(self, _dark)
     maybesetstyle(_dark)
 
@@ -319,7 +319,7 @@ def uisetting(self):
                     _TRL(["明亮", "黑暗", "跟随系统"]),
                     globalconfig,
                     "darklight",
-                    gobject.baseobject.setcommonstylesheet,
+                    lambda _: gobject.baseobject.setcommonstylesheet(),
                 ),
                 5,
             ),

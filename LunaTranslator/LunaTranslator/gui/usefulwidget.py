@@ -369,12 +369,7 @@ def callbackwrap(d, k, call, _):
     d[k] = _
     if call:
         try:
-            sig = inspect.signature(call)
-            np = len(sig.parameters)
-            if np >= 1:
-                call(_)
-            elif np == 0:
-                call()
+            call(_)
         except:
             print_exc()
 
@@ -383,12 +378,7 @@ def comboboxcallbackwrap(internallist, d, k, call, _):
     d[k] = internallist[_]
     if call:
         try:
-            sig = inspect.signature(call)
-            np = len(sig.parameters)
-            if np >= 1:
-                call(_)
-            elif np == 0:
-                call()
+            call(_)
         except:
             print_exc()
 

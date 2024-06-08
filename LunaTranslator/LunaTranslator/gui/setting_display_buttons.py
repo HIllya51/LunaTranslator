@@ -48,7 +48,7 @@ class dialog_selecticon(QDialog):
         self.close()
 
 
-def doadjust():
+def doadjust(_):
     gobject.baseobject.translation_ui.enterfunction(delay=3)
     gobject.baseobject.translation_ui.adjustbuttons()
 
@@ -77,7 +77,7 @@ def changerank(item, up, sortlist, savelist, savelay):
         savelist[idx2 + headoffset],
         savelist[idx + headoffset],
     )
-    doadjust()
+    doadjust(None)
 
 
 def createbuttonwidget(self, lay):
@@ -112,7 +112,7 @@ def createbuttonwidget(self, lay):
             D_getsimpleswitch(
                 globalconfig["toolbutton"]["buttons"][k],
                 "use",
-                callback=lambda _: doadjust(),
+                callback=doadjust,
             ),
             button_up,
             button_down,
@@ -120,7 +120,7 @@ def createbuttonwidget(self, lay):
                 _TRL(["居左", "居右", "居中"]),
                 globalconfig["toolbutton"]["buttons"][k],
                 "align",
-                callback=lambda _: doadjust(),
+                callback=doadjust,
                 fixedsize=True,
             ),
             D_getcolorbutton(
