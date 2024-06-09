@@ -15,6 +15,7 @@ from myutils.config import (
     static_data,
     getlanguse,
     savehook_new_data,
+    _TR,
     getdefaultsavehook,
 )
 from ctypes import c_float, pointer, c_void_p
@@ -157,10 +158,10 @@ def trysearchforid(gamepath, searchargs: list):
                 break
     if infoid:
         searchvndbqueue.put((1, gamepath, infoid))
+        return infoid
 
 
-def trysearchfordata(gamepath, arg):
-    key, vid = arg
+def trysearchfordata(gamepath, key, vid):
     try:
         data = targetmod[key].searchfordata(vid)
     except:
@@ -195,24 +196,20 @@ def trysearchfordata(gamepath, arg):
         savehook_new_data[gamepath]["developers"] = developers
 
 
-def parsetask(_type, gamepath, arg):
-    if _type == 0:
-        trysearchforid(gamepath, arg)
-
-    elif _type == 1:
-        trysearchforid(gamepath, arg)
-
-
 def everymethodsthread():
     while True:
         _ = searchvndbqueue.get()
         _type, gamepath, arg = _
         try:
             if _type == 0:
-                trysearchforid(gamepath, arg)
+                infoid = trysearchforid(gamepath, arg)
+                key, vid = infoid
+                gobject.baseobject.translation_ui.displayglobaltooltip.emit(f"{key}: found {vid}")
 
             elif _type == 1:
-                trysearchfordata(gamepath, arg)
+                key, vid = arg
+                trysearchfordata(gamepath, key, vid)
+                gobject.baseobject.translation_ui.displayglobaltooltip.emit(f"{key}: {vid} data loaded")
         except:
             print_exc()
 

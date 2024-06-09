@@ -17,6 +17,7 @@ from gui.dialog_savedgame import browserdialog, dialog_savedgame_integrated
 
 
 class QUnFrameWindow(resizableframeless):
+    displayglobaltooltip= pyqtSignal(str)
     displayres = pyqtSignal(dict)
     displayraw1 = pyqtSignal(dict)
     displaystatus = pyqtSignal(str, str, bool, bool)
@@ -591,10 +592,15 @@ class QUnFrameWindow(resizableframeless):
         self.showbuttons = []
         self.stylebuttons = {}
         self.saveiterclasspointer = {}
-
+    def displayglobaltooltip_f(self,string):
+        QToolTip.showText(
+                    QCursor.pos(),
+                    string,
+                    gobject.baseobject.translation_ui,
+                )
     def initsignals(self):
         self.hidesignal.connect(self.hide_)
-
+        self.displayglobaltooltip.connect(self.displayglobaltooltip_f)
         self.ocr_once_signal.connect(self.ocr_once_function)
         self.entersignal.connect(self.enterfunction)
         self.displaystatus.connect(self.showstatus)
