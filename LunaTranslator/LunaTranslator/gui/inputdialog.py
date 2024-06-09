@@ -11,6 +11,8 @@ from gui.usefulwidget import (
     threebuttons,
     listediterline,
     getsimplepatheditor,
+    FocusSpin,
+    FocusDoubleSpin
 )
 
 
@@ -281,7 +283,7 @@ class autoinitdialog(QDialog):
                 lineW = MySwitch(sign=dd[key])
                 regist.append([dd, key, lineW.isChecked])
             elif line["type"] == "spin":
-                lineW = QDoubleSpinBox()
+                lineW = FocusDoubleSpin()
                 lineW.setMinimum(0 if "min" not in line else line["min"])
                 lineW.setMaximum(100 if "max" not in line else line["max"])
                 lineW.setSingleStep(0.1 if "step" not in line else line["step"])
@@ -289,7 +291,7 @@ class autoinitdialog(QDialog):
                 lineW.valueChanged.connect(functools.partial(dd.__setitem__, key))
 
             elif line["type"] == "intspin":
-                lineW = QSpinBox()
+                lineW = FocusSpin()
                 lineW.setMinimum(0 if "min" not in line else line["min"])
                 lineW.setMaximum(100 if "max" not in line else line["max"])
                 lineW.setSingleStep(1 if "step" not in line else line["step"])
@@ -333,7 +335,7 @@ class multicolorset(QDialog):
         _hori = QHBoxLayout()
         l = QLabel(_TR("透明度"))
         _hori.addWidget(l)
-        _s = QSpinBox()
+        _s = FocusSpin()
         _s.setValue(globalconfig["showcixing_touming"])
         _s.setMinimum(1)
         _s.setMaximum(100)

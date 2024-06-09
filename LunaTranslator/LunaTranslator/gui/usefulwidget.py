@@ -12,6 +12,34 @@ from myutils.config import _TR, globalconfig
 from myutils.wrapper import Singleton, Singleton_close
 
 
+class FocusSpin(QSpinBox):
+    def __init__(self, parent: QWidget = None) -> None:
+        super().__init__(parent)
+        self.setFocusPolicy(Qt.FocusPolicy.StrongFocus)
+
+    def wheelEvent(self, e: QWheelEvent) -> None:
+
+        if not self.hasFocus():
+            e.ignore()
+            return
+        else:
+            return super().wheelEvent(e)
+
+
+class FocusDoubleSpin(QDoubleSpinBox):
+    def __init__(self, parent: QWidget = None) -> None:
+        super().__init__(parent)
+        self.setFocusPolicy(Qt.FocusPolicy.StrongFocus)
+
+    def wheelEvent(self, e: QWheelEvent) -> None:
+
+        if not self.hasFocus():
+            e.ignore()
+            return
+        else:
+            return super().wheelEvent(e)
+
+
 @Singleton
 class dialog_showinfo(QDialog):
 
@@ -419,10 +447,10 @@ def getlineedit(d, key, callback=None, readonly=False):
 
 def getspinbox(mini, maxi, d, key, double=False, step=1, callback=None, dec=1):
     if double:
-        s = QDoubleSpinBox()
+        s = FocusDoubleSpin()
         s.setDecimals(dec)
     else:
-        s = QSpinBox()
+        s = FocusSpin()
         d[key] = int(d[key])
     s.setMinimum(mini)
     s.setMaximum(maxi)

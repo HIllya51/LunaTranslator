@@ -13,6 +13,7 @@ from gui.usefulwidget import (
     getsimplecombobox,
     getsimpleswitch,
     textbrowappendandmovetoend,
+    FocusSpin
 )
 
 
@@ -133,7 +134,7 @@ class searchhookparam(QDialog):
             for k, widget in self.regists.items():
                 if type(widget) == QLineEdit:
                     dumpvalues[k] = widget.text()
-                if type(widget) == QSpinBox:
+                if type(widget) == FocusSpin:
                     dumpvalues[k] = widget.value()
             pattern = dumpvalues["pattern"]
             if "." in pattern:
@@ -248,7 +249,7 @@ class searchhookparam(QDialog):
                 line = QLineEdit(_val)
                 regwid = addwid = line
             elif _type == 1:
-                sp = QSpinBox()
+                sp = FocusSpin()
                 sp.setMaximum(10000000)
                 sp.setValue(_val)
                 regwid = addwid = sp
