@@ -917,22 +917,20 @@ class MAINUI:
         self.__currentexe = None
         self.__statistictime = time.time()
         while True:
+            __t = time.time()
             time.sleep(1)
-
+            _t = time.time()
             def isok(name_):
+                savehook_new_data[name_]["statistic_playtime"] += _t - __t
                 if self.__currentexe == name_:
-                    _t = time.time()
                     self.traceplaytime(name_, self.__statistictime - 1, _t, False)
-                    savehook_new_data[name_]["statistic_playtime"] += (
-                        _t + 1 - self.__statistictime
-                    )
+
                 else:
                     self.__statistictime = time.time()
                     self.__currentexe = name_
                     self.traceplaytime(
                         name_, self.__statistictime - 1, self.__statistictime, True
                     )
-                    savehook_new_data[name_]["statistic_playtime"] += 1
 
             try:
                 _hwnd = windows.GetForegroundWindow()
