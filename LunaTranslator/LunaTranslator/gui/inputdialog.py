@@ -12,7 +12,8 @@ from gui.usefulwidget import (
     listediterline,
     getsimplepatheditor,
     FocusSpin,
-    FocusDoubleSpin
+    FocusDoubleSpin,
+    FocusCombo
 )
 
 
@@ -228,7 +229,7 @@ class autoinitdialog(QDialog):
                 lineW = QHBoxLayout()
                 lineW.addWidget(e)
             elif line["type"] == "combo":
-                lineW = QComboBox()
+                lineW = FocusCombo()
                 if "list_function" in line:
                     try:
                         func = getattr(

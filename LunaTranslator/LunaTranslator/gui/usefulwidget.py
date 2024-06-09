@@ -12,6 +12,19 @@ from myutils.config import _TR, globalconfig
 from myutils.wrapper import Singleton, Singleton_close
 
 
+class FocusCombo(QComboBox):
+    def __init__(self, parent: QWidget = None) -> None:
+        super().__init__(parent)
+        self.setFocusPolicy(Qt.FocusPolicy.StrongFocus)
+
+    def wheelEvent(self, e: QWheelEvent) -> None:
+
+        if not self.hasFocus():
+            e.ignore()
+            return
+        else:
+            return super().wheelEvent(e)
+
 class FocusSpin(QSpinBox):
     def __init__(self, parent: QWidget = None) -> None:
         super().__init__(parent)
@@ -412,7 +425,7 @@ def comboboxcallbackwrap(internallist, d, k, call, _):
 
 
 def getsimplecombobox(lst, d, k, callback=None, fixedsize=False, internallist=None):
-    s = QComboBox()
+    s = FocusCombo()
     s.addItems(lst)
 
     if internallist:

@@ -3,7 +3,7 @@ import functools
 from myutils.utils import checkencoding
 from myutils.config import globalconfig, _TR, _TRL
 from myutils.wrapper import Singleton
-from gui.usefulwidget import getspinbox, threebuttons, getlineedit
+from gui.usefulwidget import getspinbox, threebuttons, getlineedit, FocusCombo
 
 nowsuppertcodes = _TRL(
     [
@@ -62,7 +62,7 @@ class codeacceptdialog(QDialog):
             itemsaver = QStandardItem()
             self.model.setItem(row, 0, itemsaver)
             index = self.model.index(row, 0)
-            codecombox = QComboBox()
+            codecombox = FocusCombo()
             codecombox.addItems((nowsuppertcodes))
             codecombox.setCurrentIndex(idx)
             self.table.setIndexWidget(index, codecombox)
@@ -109,7 +109,7 @@ class codeacceptdialog(QDialog):
     def clicked1(self):
         itemsaver = QStandardItem()
         self.model.insertRow(0, [itemsaver])
-        codecombox = QComboBox()
+        codecombox = FocusCombo()
         codecombox.addItems((nowsuppertcodes))
         self._setcode_i(codecombox, itemsaver)
         codecombox.currentIndexChanged.connect(

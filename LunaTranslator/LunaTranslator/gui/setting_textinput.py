@@ -25,6 +25,7 @@ from gui.usefulwidget import (
     D_getsimpleswitch,
     makesubtab_lazy,
     makescrollgrid,
+    FocusCombo
 )
 
 
@@ -211,7 +212,7 @@ def getunknowgameexe(self):
     formLayout = QFormLayout(dialog)
     dialog.setLayout(formLayout)
 
-    combo = QComboBox()
+    combo = FocusCombo()
     combo.addItems([savehook_new_data[_]["title"] for _ in savehook_new_list])
 
     formLayout.addRow(_TR("选择游戏"), combo)

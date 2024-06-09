@@ -9,6 +9,7 @@ from gui.usefulwidget import (
     makescrollgrid,
     D_getcolorbutton,
     yuitsu_switch,
+    FocusCombo,
     D_getsimpleswitch,
 )
 
@@ -34,7 +35,7 @@ def changevoice(self, text):
 
 def createvoicecombo(self):
 
-    self.voicecombo = QComboBox()
+    self.voicecombo = FocusCombo()
     self.voicecombo.currentTextChanged.connect(lambda x: changevoice(self, x))
     try:
         vl, idx = self.voicecombo_cache

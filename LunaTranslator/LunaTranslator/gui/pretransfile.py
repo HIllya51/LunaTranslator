@@ -3,7 +3,7 @@ import sqlite3, os, json, functools
 from traceback import print_exc
 from myutils.config import globalconfig, _TR
 from myutils.utils import autosql
-from gui.usefulwidget import getQMessageBox
+from gui.usefulwidget import getQMessageBox, FocusCombo
 
 
 def sqlite2json2(self, sqlitefile, targetjson=None, existsmerge=False):
@@ -47,7 +47,7 @@ def sqlite2json2(self, sqlitefile, targetjson=None, existsmerge=False):
     formLayout = QFormLayout(dialog)  # 配置layout
     dialog.setLayout(formLayout)
 
-    combo = QComboBox()
+    combo = FocusCombo()
     combo.addItems([globalconfig["fanyi"][_]["name"] for _ in collect])
 
     formLayout.addRow(_TR("首选翻译"), combo)

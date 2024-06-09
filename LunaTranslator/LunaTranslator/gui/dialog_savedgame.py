@@ -40,6 +40,7 @@ from gui.specialwidget import (
 )
 from gui.usefulwidget import (
     yuitsu_switch,
+    FocusCombo,
     saveposwindow,
     getsimplepatheditor,
     getboxlayout,
@@ -322,7 +323,7 @@ class TagWidget(QWidget):
 
         self.setLayout(layout)
 
-        self.lineEdit = QComboBox()
+        self.lineEdit = FocusCombo()
         self.lineEdit.setLineEdit(QLineEdit())
 
         self.lineEdit.lineEdit().returnPressed.connect(

@@ -13,7 +13,8 @@ from gui.usefulwidget import (
     getsimplecombobox,
     getsimpleswitch,
     textbrowappendandmovetoend,
-    FocusSpin
+    FocusSpin,
+    FocusCombo
 )
 
 
@@ -263,7 +264,7 @@ class searchhookparam(QDialog):
                 if len(_list) == 0:
                     regwid = addwid = line
                 else:
-                    combo = QComboBox()
+                    combo = FocusCombo()
                     combo.addItems(_list)
 
                     combo.setLineEdit(line)
