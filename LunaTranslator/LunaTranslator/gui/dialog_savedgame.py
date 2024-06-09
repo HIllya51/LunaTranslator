@@ -628,20 +628,24 @@ def maybehavebutton(self, game, post):
 
 class dialog_setting_game_internal(QWidget):
     def selectexe(self):
+        # 修改exe之后不要去动列表，否则会有一致性问题，很难搞，就这样吧。
         f = QFileDialog.getOpenFileName(directory=self.exepath)
         res = f[0]
-        if res != "":
+        if res == "":
+            return
 
-            res = os.path.normpath(res)
-            if res in savehook_new_list:
-                return
-            savehook_new_list[savehook_new_list.index(self.exepath)] = res
-            savehook_new_data[res] = savehook_new_data[self.exepath]
-            _icon = getExeIcon(res, cache=True)
+        res = os.path.normpath(res)
+        if res in savehook_new_list:
+            return
+        _origin = savehook_new_list[savehook_new_list.index(self.exepath)]
+        savehook_new_list[savehook_new_list.index(self.exepath)] = res
+        savehook_new_data[res] = savehook_new_data[self.exepath]
+        gobject.baseobject.resetgameinternal(_origin, res)
+        _icon = getExeIcon(res, cache=True)
 
-            self.setWindowIcon(_icon)
-            self.editpath.setText(res)
-            self.exepath = res
+        self.setWindowIcon(_icon)
+        self.editpath.setText(res)
+        self.exepath = res
 
     def __init__(self, parent, exepath) -> None:
         super().__init__(parent)

@@ -892,6 +892,13 @@ class MAINUI:
             else:
                 return ret[0]
 
+    def resetgameinternal(self, fr, to):
+        _id = self.get_gameinternalid(fr)
+        self.sqlsavegameinfo.execute(
+            "UPDATE gameinternalid SET gamepath = ? WHERE (gameinternalid = ?)",
+            (to, _id),
+        )
+
     def traceplaytime(self, k, start, end, new):
 
         gameinternalid = self.get_gameinternalid(k)
