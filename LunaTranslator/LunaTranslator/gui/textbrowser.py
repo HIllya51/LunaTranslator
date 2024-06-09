@@ -318,7 +318,6 @@ class Textbrowser(QLabel):
 
         if len(tag) > 0:
             self.addtag(tag)
-
         self.showyinyingtext(b1, b2, color)
 
     def getcurrpointer(self):
@@ -444,9 +443,6 @@ class Textbrowser(QLabel):
         self.textbrowser.setTextCursor(self.textcursor)
 
         idx = 0
-        guesswidth = []
-        guesslinehead = None
-        wwww = self.width()
         heigth, __, _ = self.getfh(False)
         for word in x:
             idx += 1
@@ -454,8 +450,7 @@ class Textbrowser(QLabel):
             tl1 = self.textbrowser.cursorRect(self.textcursor).topLeft()
 
             tl4 = self.textbrowser.cursorRect(self.textcursor).bottomRight()
-            if guesslinehead is None:
-                guesslinehead = tl1.x()
+
             if True:
                 self.textcursor.setPosition(pos + l)
                 self.textbrowser.setTextCursor(self.textcursor)
@@ -484,21 +479,28 @@ class Textbrowser(QLabel):
                             ql.setStyleSheet("background-color: rgba(0,0,0,0.01);")
                             self.searchmasklabels_clicked.append(ql)
                         if tl1.y() != tl3.y():
-                            if len(guesswidth) == 0:
-                                gw = 30
-                            else:
-                                gw = sum(guesswidth) / len(guesswidth)
-                            guesswidth1 = gw * len(word["orig"])
-                            tailx = wwww - guesslinehead
+                            for __i in range(len(word["orig"])):
+                                self.textcursor.setPosition(pos + __i)
+                                self.textbrowser.setTextCursor(self.textcursor)
+                                _tl = self.textbrowser.cursorRect(
+                                    self.textcursor
+                                ).topLeft()
+                                if _tl.y() != tl1.y():
+                                    break
+                            self.textcursor.setPosition(pos + l)
+                            self.textbrowser.setTextCursor(self.textcursor)
+                            __fm = self.getfh(False, getfm=True)
+                            w1 = __fm.size(0, word["orig"][:__i]).width()
+                            w2 = __fm.size(0, word["orig"][__i:]).width()
+
                             pos1 = (
                                 tl1.x() + 1,
                                 tl1.y(),
-                                tailx - tl1.x() - 2,
+                                w1 - 2,
                                 int(heigth),
                             )
-                            xx = int(guesswidth1 - (tailx - tl1.x()))
-                            guesslinehead = None
-                            pos2 = tl3.x() + 1 - xx, tl3.y(), xx - 2, int(heigth)
+                            pos2 = tl3.x() + 1 - w2, tl3.y(), w2 - 2, int(heigth)
+
                             if (
                                 globalconfig["usesearchword"]
                                 or globalconfig["usecopyword"]
@@ -540,9 +542,6 @@ class Textbrowser(QLabel):
                             labeli += 2
                         else:
 
-                            guesswidth += [(tl2.x() - tl1.x()) / len(word["orig"])] * (
-                                len(word["orig"])
-                            )
                             pos1 = (
                                 tl1.x() + 1,
                                 tl1.y(),
@@ -568,16 +567,13 @@ class Textbrowser(QLabel):
                                 self.searchmasklabels[labeli].show()
                             labeli += 1
 
-                else:
-                    if tl1.y() != tl3.y():
-                        guesslinehead = None
                 tl1 = tl3
                 tl4 = tl2
 
                 pos += l
 
     def randomcolor(self, word):
-        if word.get('isdeli',False):
+        if word.get("isdeli", False):
             return None
         c = QColor("white")
         if "cixing" in word:
@@ -589,7 +585,7 @@ class Textbrowser(QLabel):
                 pass
         return (c.red(), c.green(), c.blue(), globalconfig["showcixing_touming"] / 100)
 
-    def getfh(self, half, origin=True):
+    def getfh(self, half, origin=True, getfm=False):
 
         font = QFont()
         font.setBold(globalconfig["showbold"])
@@ -604,7 +600,8 @@ class Textbrowser(QLabel):
         else:
             font.setPointSizeF((globalconfig["fontsize"]))
         fm = QFontMetricsF(font)
-
+        if getfm:
+            return fm
         return fm.height(), fm.ascent(), font
 
     def addtag(self, x):
