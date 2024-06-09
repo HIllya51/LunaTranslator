@@ -98,21 +98,6 @@ class PriorityQueue:
 searchvndbqueue = PriorityQueue()
 
 
-def checkinfo(gamepath):
-    return (savehook_new_data[gamepath]["infopath"] is None) or (
-        (savehook_new_data[gamepath]["infopath"][:4].lower() != "http")
-        and os.path.exists(savehook_new_data[gamepath]["infopath"]) == False
-    )
-
-
-def checkvid(gamepath):
-
-    return checkinfo(gamepath) or (
-        (len(savehook_new_data[gamepath]["webtags"]) == 0)
-        and (len(savehook_new_data[gamepath]["developers"]) == 0)
-    )
-
-
 def guessmaybetitle(gamepath):
 
     __t = []
@@ -145,8 +130,6 @@ def guessmaybetitle(gamepath):
 
 
 targetmod = {}
-for k in globalconfig["metadata"]:
-    targetmod[k] = importlib.import_module(f"myutils.metadata.{k}").searcher(k)
 
 
 def trysearchforid(gamepath, searchargs: list):
@@ -181,8 +164,8 @@ def trysearchfordata(gamepath, arg):
     try:
         data = targetmod[key].searchfordata(vid)
     except:
+        print_exc()
         data = {}
-    infopath = data.get("infopath", None)
     title = data.get("title", None)
     namemap = data.get("namemap", None)
     developers = data.get("developers", [])
@@ -194,10 +177,16 @@ def trysearchfordata(gamepath, arg):
             continue
         if _ not in savehook_new_data[gamepath]["imagepath_all"]:
             savehook_new_data[gamepath]["imagepath_all"].append(_)
-    if title and (not savehook_new_data[gamepath]["istitlesetted"]):
-        savehook_new_data[gamepath]["title"] = title
-    if infopath:
-        savehook_new_data[gamepath]["infopath"] = infopath
+    if title:
+        if not savehook_new_data[gamepath]["istitlesetted"]:
+            savehook_new_data[gamepath]["title"] = title
+        _vis = globalconfig["metadata"][key]["name"]
+        _url = targetmod[key].refmainpage(vid)
+        _urls = [_[1] for _ in savehook_new_data[gamepath]["relationlinks"]]
+        if _url not in _urls:
+            savehook_new_data[gamepath]["relationlinks"].append(
+                (_vis, targetmod[key].refmainpage(vid))
+            )
     if namemap:
         savehook_new_data[gamepath]["namemap"] = namemap
     if len(webtags):
@@ -228,9 +217,6 @@ def everymethodsthread():
             print_exc()
 
 
-threading.Thread(target=everymethodsthread).start()
-
-
 def gamdidchangedtask(key, idname, gamepath):
     vid = savehook_new_data[gamepath][idname]
     if vid == "":
@@ -256,8 +242,8 @@ def titlechangedtask(gamepath, title):
 
 
 def checkifnewgame(targetlist, gamepath, title=None):
-    isnew = gamepath in targetlist
-    if not isnew:
+    isnew = gamepath not in targetlist
+    if isnew:
         targetlist.insert(0, gamepath)
     if gamepath not in savehook_new_data:
         savehook_new_data[gamepath] = getdefaultsavehook(gamepath, title)
@@ -368,9 +354,11 @@ class wavmp3player:
         return durationms
 
 
-def selectdebugfile(path):
-
+def selectdebugfile(path: str, ismypost=False):
+    if ismypost:
+        path = f"./userconfig/posts/{path}.py"
     p = os.path.abspath((path))
+    os.makedirs(os.path.dirname(p), exist_ok=True)
 
     if os.path.exists(p) == False:
         with open(p, "w", encoding="utf8") as ff:
@@ -385,7 +373,7 @@ class TS(basetrans):
         return content
 """
                 )
-            elif path == "./userconfig/mypost.py":
+            elif path == "./userconfig/mypost.py" or ismypost:
                 ff.write(
                     """
 def POSTSOLVE(line): 
@@ -740,3 +728,10 @@ class LRUCache:
         if not _:
             self.put(key)
         return _
+
+
+for k in globalconfig["metadata"]:
+    targetmod[k] = importlib.import_module(f"metadata.{k}").searcher(k)
+
+
+threading.Thread(target=everymethodsthread).start()

@@ -357,7 +357,7 @@ def POSTSOLVE(line):
     try:
         if "pname" in dir(gobject.baseobject.textsource):
             exepath = gobject.baseobject.textsource.pname
-            if savehook_new_data[exepath]["use_saved_text_process"]:
+            if not savehook_new_data[exepath]["textproc_follow_default"]:
                 useranklist = savehook_new_data[exepath]["save_text_process_info"][
                     "rank"
                 ]
@@ -398,7 +398,7 @@ def POSTSOLVE(line):
         if usedpostprocessconfig[postitem]["use"]:
             try:
                 _f = functions[postitem]
-                                
+
                 sig = inspect.signature(_f)
                 np = len(sig.parameters)
                 if np == 1:

@@ -38,7 +38,17 @@
             "downloadtasks": [],
             "useproxy": true,
             "target": "bgmsid",
-            "idtype": 0
+            "idtype": 0,
+            "args": {
+                "access-token": ""
+            }
+        },
+        "fanza": {
+            "name": "FanzaGames",
+            "downloadtasks": [],
+            "useproxy": true,
+            "target": "fanzaid",
+            "idtype": 1
         }
     },
     "relationlinks": [
@@ -171,8 +181,10 @@
         500,
         500
     ],
+    "codepage_index": 0,
+    "removeuseless": false,
     "vispolicy": 0,
-    "currvislistuid" : null,
+    "currvislistuid": null,
     "multiregion": false,
     "rememberocrregions": false,
     "ocrregions": [],

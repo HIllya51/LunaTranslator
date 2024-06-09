@@ -1,7 +1,11 @@
-from myutils.metadata.abstract import common
+from metadata.abstract import common
+from gui.inputdialog import autoinitdialog, autoinitdialog_items
 
 
 class searcher(common):
+    def querysettingwindow(self, parent):
+        items = autoinitdialog_items(self.config_all)
+        autoinitdialog(parent, self.name, 800, items)
 
     def getidbytitle(self, title):
 
@@ -36,7 +40,8 @@ class searcher(common):
             "accept": "application/json",
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
         }
-
+        if self.config["access-token"].strip() != "":
+            headers["Authorization"] = ("Bearer " + self.config["access-token"],)
         response = self.proxysession.get(
             f"https://api.bgm.tv/v0/subjects/{sid}", headers=headers
         )
@@ -59,7 +64,6 @@ class searcher(common):
         return {
             # "namemap": namemap,
             "title": response["name_cn"],
-            # "infopath": parsehtmlmethod(vndbdowloadinfo(vid)),
             "imagepath_all": [imagepath],
             "webtags": vndbtags,
             "developers": developers,

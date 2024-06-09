@@ -83,6 +83,21 @@ EmbedCallback = CFUNCTYPE(None, c_wchar_p, ThreadParam)
 
 
 class texthook(basetext):
+    @property
+    def config(self):
+        if savehook_new_data[self.pname]["hooksetting_follow_default"]:
+            return globalconfig
+        else:
+
+            class __shitdict(dict):
+                def __getitem__(self, key):
+                    if key in self:
+                        return super().__getitem__(key)
+                    else:
+                        return globalconfig[key]
+
+            return __shitdict(savehook_new_data[self.pname]["hooksetting_private"])
+
     def __init__(
         self, pids, hwnd, pname, autostarthookcode=None, needinserthookcode=None
     ):
@@ -90,6 +105,9 @@ class texthook(basetext):
             autostarthookcode = []
         if needinserthookcode is None:
             needinserthookcode = []
+        self.pname = pname
+        self.pids = pids
+        self.hwnd = hwnd
         self.keepref = []
         self.newline = Queue()
         self.newline_delaywait = Queue()
@@ -102,15 +120,12 @@ class texthook(basetext):
         self.selectinghook = None
         self.selectedhook = []
         self.selectedhookidx = []
-        self.allow_set_text_name = globalconfig["allow_set_text_name"]
+        self.allow_set_text_name = self.config["allow_set_text_name"]
 
-        self.pids = pids
         self.connectedpids = []
-        self.pname = pname
-        self.hwnd = hwnd
         self.runonce_line = ""
         self.autostarthookcode = [self.deserial(__) for __ in autostarthookcode]
-        self.isremoveuseless = savehook_new_data[self.pname]["removeuseless"] and len(
+        self.isremoveuseless = self.config["removeuseless"] and len(
             self.autostarthookcode
         )
         self.needinserthookcode = needinserthookcode
@@ -221,7 +236,7 @@ class texthook(basetext):
 
         injectpids = []
         for pid in self.pids:
-            if globalconfig["use_yapi"]:
+            if self.config["use_yapi"]:
                 self.Luna_Inject(pid, os.path.abspath("./files/plugins/LunaHook"))
             else:
                 if self.Luna_CreatePipeAndCheck(pid):
@@ -347,16 +362,16 @@ class texthook(basetext):
 
     def setsettings(self):
         self.Luna_Settings(
-            globalconfig["textthreaddelay"],
-            globalconfig["direct_filterrepeat"],
+            self.config["textthreaddelay"],
+            self.config["direct_filterrepeat"],
             self.codepage(),
-            globalconfig["maxBufferSize"],
-            globalconfig["maxHistorySize"],
+            self.config["maxBufferSize"],
+            self.config["maxHistorySize"],
         )
 
     def codepage(self):
         try:
-            cpi = savehook_new_data[self.pname]["codepage_index"]
+            cpi = self.config["codepage_index"]
             cp = static_data["codepage_real"][cpi]
         except:
             cp = 932
@@ -427,7 +442,7 @@ class texthook(basetext):
     @threader
     def delaycollectallselectedoutput(self):
         while True:
-            time.sleep(globalconfig["textthreaddelay"] / 1000)
+            time.sleep(self.config["textthreaddelay"] / 1000)
             if self.newline_delaywait.empty():
                 continue
 
@@ -444,7 +459,7 @@ class texthook(basetext):
 
     def handle_output(self, hc, hn, tp, output):
 
-        if globalconfig["filter_chaos_code"] and checkchaos(output):
+        if self.config["filter_chaos_code"] and checkchaos(output):
             return False
         key = (hc, hn.decode("utf8"), tp)
 

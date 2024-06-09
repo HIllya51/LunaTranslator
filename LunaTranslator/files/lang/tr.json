@@ -176,7 +176,6 @@
     "記号": "Simbol",
     "选择文件": "Dosya Seç",
     "缩放时禁用窗口大小调整": "Ulaştırırken pencere ölçüsünü değiştirmeyi etkinleştir",
-    "删除选中行": "Seçili satır sil",
     "图标": "İşaretçi",
     "指示詞": "Deixis",
     "動詞": "Verbs",
@@ -626,7 +625,6 @@
     "片假名": "KatakanaKCharselect unicode block name",
     "罗马音": "Romanik sesi",
     "日语注音方案": "Japon fonetik taslağı",
-    "保存当前游戏的文本处理流程": "Mektup işleme sürecini şu oyun için kaydet",
     "使用保存的文本处理流程": "Kaydedilen metin işleme sürecini kullanılıyor",
     "Sakura大模型": "Sakura Büyük Modeli",
     "Magpie路径": "Magpie Yolu",
@@ -831,5 +829,8 @@
     "显示的项目": "Gösterilen öğeler",
     "首位的": "İlk yer",
     "指定的": "Tasarlanmış",
-    "设为显示的项目": "Gösterilen Proje olarak ayarlayın"
+    "设为显示的项目": "Gösterilen Proje olarak ayarlayın",
+    "跟随默认": "Öntanımlı takip et",
+    "删除行": "Satırları Sil",
+    "使用": "uygulama"
 }

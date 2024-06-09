@@ -42,7 +42,6 @@
     "自动朗读": "Automatic reading",
     "缩放时禁用窗口大小调整": "Disable window resizing when zooming",
     "导出sqlite文件为json文件": "Export sqlite file as json file",
-    "删除选中行": "Delete Selected Row",
     "图标": "Icon",
     "游戏失去焦点时窗口隐藏": "The window is hidden when the game loses focus",
     "指示詞": "Deictic word",
@@ -626,7 +625,6 @@
     "片假名": "Katakana",
     "罗马音": "Romanic sound",
     "日语注音方案": "Japanese phonetic scheme",
-    "保存当前游戏的文本处理流程": "Save the text processing process for the current game",
     "使用保存的文本处理流程": "Using a saved text processing process",
     "Sakura大模型": "Sakura Large Model",
     "Magpie路径": "Magpie Path",
@@ -831,5 +829,8 @@
     "显示的项目": "Displayed items",
     "首位的": "First place",
     "指定的": "Designated",
-    "设为显示的项目": "Set as Displayed Project"
+    "设为显示的项目": "Set as Displayed Project",
+    "跟随默认": "Follow default",
+    "删除行": "Delete Rows",
+    "使用": "apply"
 }

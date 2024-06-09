@@ -170,7 +170,6 @@
     "記号": "Simbolo",
     "选择文件": "Seleziona file",
     "缩放时禁用窗口大小调整": "Disabilita il ridimensionamento delle finestre durante lo zoom",
-    "删除选中行": "Elimina righe selezionate",
     "图标": "icona",
     "指示詞": "Parole dimostrative",
     "動詞": "Verbi",
@@ -626,7 +625,6 @@
     "片假名": "Katakana",
     "罗马音": "Suono romanico",
     "日语注音方案": "Schema fonetico giapponese",
-    "保存当前游戏的文本处理流程": "Salva il processo di elaborazione del testo per il gioco corrente",
     "使用保存的文本处理流程": "Utilizzo di un processo di elaborazione del testo salvato",
     "Sakura大模型": "Modello Sakura Large",
     "Magpie路径": "Percorso magpie",
@@ -831,5 +829,8 @@
     "显示的项目": "Articoli visualizzati",
     "首位的": "Primo posto",
     "指定的": "Designato",
-    "设为显示的项目": "Imposta come progetto visualizzato"
+    "设为显示的项目": "Imposta come progetto visualizzato",
+    "跟随默认": "Segui default",
+    "删除行": "Elimina righe",
+    "使用": "applicare"
 }

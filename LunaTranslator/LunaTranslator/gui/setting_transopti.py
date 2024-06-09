@@ -1,7 +1,5 @@
 from qtsymbols import *
-import functools, copy, os
-from traceback import print_exc
-import gobject
+import functools
 from myutils.post import POSTSOLVE
 from myutils.utils import (
     selectdebugfile,
@@ -13,8 +11,6 @@ from myutils.config import (
     postprocessconfig,
     static_data,
     _TRL,
-    savehook_new_data,
-    _TR,
 )
 from gui.codeacceptdialog import codeacceptdialog
 from gui.usefulwidget import (
@@ -30,40 +26,6 @@ from gui.inputdialog import (
     autoinitdialog,
     autoinitdialog_items,
 )
-
-
-def savegameprocesstext():
-    try:
-        try:
-            with open("./userconfig/mypost.py", "r", encoding="utf8") as ff:
-                _mypost = ff.read()
-            os.makedirs("./userconfig/posts", exist_ok=True)
-            with open(
-                "./userconfig/posts/{}.py".format(gobject.baseobject.textsource.uuname),
-                "w",
-                encoding="utf8",
-            ) as ff:
-                ff.write(_mypost)
-        except:
-            _mypost = None
-        ranklist = []
-        postargs = {}
-        for postitem in globalconfig["postprocess_rank"]:
-            if postitem not in postprocessconfig:
-                continue
-            if postprocessconfig[postitem]["use"]:
-                ranklist.append(postitem)
-                postargs[postitem] = copy.deepcopy(postprocessconfig[postitem])
-        exepath = gobject.baseobject.textsource.pname
-        savehook_new_data[exepath]["save_text_process_info"] = {
-            "postprocessconfig": postargs,
-            "rank": ranklist,
-            "mypost": gobject.baseobject.textsource.uuname,
-        }
-        if savehook_new_data[exepath]["use_saved_text_process"] == False:
-            savehook_new_data[exepath]["use_saved_text_process"] = True
-    except:
-        print_exc()
 
 
 def delaysetcomparetext(self, s):
@@ -234,24 +196,7 @@ def setTab7_lazy(self, basel):
     def ___(lay):
         vboxw, vbox = getvboxwidget()
         lay.addWidget(vboxw)
-        _w = makescrollgrid(grids, vbox, True, savelist, savelay)
-        _w.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
-
-        def showmenu(p: QPoint):
-
-            try:
-                gobject.baseobject.textsource.pname  # 检查是否为texthook
-
-                menu = QMenu(_w)
-                save = QAction(_TR("保存当前游戏的文本处理流程"))
-                menu.addAction(save)
-                action = menu.exec(_w.cursor().pos())
-                if action == save:
-                    savegameprocesstext()
-            except:
-                pass
-
-        _w.customContextMenuRequested.connect(showmenu)
+        makescrollgrid(grids, vbox, True, savelist, savelay)
 
         vbox.addWidget(getcomparelayout(self))
 

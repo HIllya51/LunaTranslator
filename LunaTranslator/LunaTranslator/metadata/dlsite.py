@@ -2,7 +2,7 @@ import requests, re
 from myutils.utils import simplehtmlparser
 
 
-from myutils.metadata.abstract import common
+from metadata.abstract import common
 
 
 class searcher(common):
@@ -115,7 +115,6 @@ class searcher(common):
         return {
             # "namemap": namemap,
             "title": title,
-            # "infopath": parsehtmlmethod(vndbdowloadinfo(vid)),
             "imagepath_all": [self.dispatchdownloadtask(_) for _ in imags1 + imags2],
             "webtags": tags,
             "developers": [devp],

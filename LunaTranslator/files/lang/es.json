@@ -176,7 +176,6 @@
     "記号": "Marca",
     "选择文件": "Seleccionar archivo",
     "缩放时禁用窗口大小调整": "Desactivar el ajuste de tamaño de la ventana al ampliar",
-    "删除选中行": "Eliminar la línea seleccionada",
     "图标": "Iconos",
     "指示詞": "Instrucción",
     "動詞": "Verbos",
@@ -626,7 +625,6 @@
     "片假名": "Seudónimo de película",
     "罗马音": "Acento Romano",
     "日语注音方案": "Programa de fonética japonesa",
-    "保存当前游戏的文本处理流程": "Guardar el proceso de procesamiento de texto del juego actual",
     "使用保存的文本处理流程": "Usar el proceso de procesamiento de texto guardado",
     "Sakura大模型": "Gran modelo Sakura",
     "Magpie路径": "Ruta magpie",
@@ -831,5 +829,8 @@
     "显示的项目": "Los proyectos mostrados",
     "首位的": "Primero",
     "指定的": "Designado",
-    "设为显示的项目": "Artículos configurados para mostrar"
+    "设为显示的项目": "Artículos configurados para mostrar",
+    "跟随默认": "Sigue el predeterminado",
+    "删除行": "Eliminar filas",
+    "使用": "Uso"
 }

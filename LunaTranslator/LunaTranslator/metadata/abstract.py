@@ -18,6 +18,21 @@ class common:
         return None
 
     @property
+    def config(self):
+        return self.config_all["args"]
+
+    @property
+    def config_all(self):
+        try:
+            return globalconfig["metadata"][self.typename]
+        except:
+            return {}
+
+    @property
+    def name(self):
+        return self.config_all.get("name", self.typename)
+
+    @property
     def proxy(self):
         return getproxy(("metadata", self.typename))
 

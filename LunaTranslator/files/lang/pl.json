@@ -176,7 +176,6 @@
     "記号": "Symbol",
     "选择文件": "Wybierz plik",
     "缩放时禁用窗口大小调整": "Wyłącz zmianę rozmiaru okna podczas powiększania",
-    "删除选中行": "Usuń zaznaczone wiersze",
     "图标": "Ikona",
     "指示詞": "Słowa demonstracyjne",
     "動詞": "Czasowniki",
@@ -626,7 +625,6 @@
     "片假名": "KatakanaName",
     "罗马音": "Dźwięk romański",
     "日语注音方案": "Japoński schemat fonetyczny",
-    "保存当前游戏的文本处理流程": "Zapisz proces przetwarzania tekstu dla bieżącej gry",
     "使用保存的文本处理流程": "Korzystanie z zapisanego procesu przetwarzania tekstu",
     "Sakura大模型": "Duży model Sakura",
     "Magpie路径": "Ścieżka dla Sraków",
@@ -831,5 +829,8 @@
     "显示的项目": "Wyświetlane elementy",
     "首位的": "Pierwsze miejsce",
     "指定的": "Wyznaczone",
-    "设为显示的项目": "Ustaw jako wyświetlany projekt"
+    "设为显示的项目": "Ustaw jako wyświetlany projekt",
+    "跟随默认": "Postępuj zgodnie z domyślnym",
+    "删除行": "Usuń wiersze",
+    "使用": "stosować"
 }

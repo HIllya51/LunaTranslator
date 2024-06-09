@@ -892,22 +892,31 @@ class threebuttons(QWidget):
     btn2clicked = pyqtSignal()
     btn3clicked = pyqtSignal()
 
-    def __init__(self, btns=3):
+    def __init__(self, btns=3, texts=None):
         super().__init__()
         layout = QHBoxLayout()
         layout.setContentsMargins(0, 0, 0, 0)
         self.setLayout(layout)
         button = QPushButton(self)
-        button.setText(_TR("添加行"))
+        if texts:
+            button.setText(texts[0])
+        else:
+            button.setText(_TR("添加行"))
         button.clicked.connect(self.btn1clicked)
         button2 = QPushButton(self)
-        button2.setText(_TR("删除选中行"))
+        if texts:
+            button2.setText(texts[1])
+        else:
+            button2.setText(_TR("删除行"))
         button2.clicked.connect(self.btn2clicked)
         layout.addWidget(button)
         layout.addWidget(button2)
         if btns == 3:
             button3 = QPushButton(self)
-            button3.setText(_TR("立即应用"))
+            if texts:
+                button3.setText(texts[2])
+            else:
+                button3.setText(_TR("立即应用"))
             button3.clicked.connect(self.btn3clicked)
             layout.addWidget(button3)
 

@@ -2,7 +2,14 @@ from qtsymbols import *
 import functools, os, json
 import windows, gobject
 from myutils.utils import makehtml, getfilemd5
-from myutils.config import globalconfig, _TR, _TRL, savehook_new_data, savehook_new_list
+from myutils.config import (
+    globalconfig,
+    _TR,
+    _TRL,
+    savehook_new_data,
+    savehook_new_list,
+    static_data,
+)
 from gui.pretransfile import sqlite2json2
 from gui.codeacceptdialog import codeacceptdialog
 from gui.setting_textinput_ocr import getocrgrid
@@ -74,6 +81,22 @@ def gethookgrid(self):
         ],
         [],
         [
+            ("代码页", 5),
+            (
+                D_getsimplecombobox(
+                    _TRL(static_data["codepage_display"]),
+                    globalconfig,
+                    "codepage_index",
+                    lambda x: gobject.baseobject.textsource.setsettings(),
+                ),
+                8,
+            ),
+        ],
+        [
+            ("移除非选定hook", 5),
+            (D_getsimpleswitch(globalconfig, "removeuseless"), 1),
+        ],
+        [
             ("过滤反复刷新的句子", 5),
             (D_getsimpleswitch(globalconfig, "direct_filterrepeat"), 1),
         ],
@@ -116,7 +139,6 @@ def gethookgrid(self):
                 3,
             ),
         ],
-        [],
         [
             ("过滤包含乱码的文本行", 5),
             (D_getsimpleswitch(globalconfig, "filter_chaos_code"), 1),
@@ -131,7 +153,6 @@ def gethookgrid(self):
                 1,
             ),
         ],
-        [],
         [("区分人名和文本", 5), D_getsimpleswitch(globalconfig, "allow_set_text_name")],
         [("使用YAPI注入", 5), D_getsimpleswitch(globalconfig, "use_yapi")],
     ]

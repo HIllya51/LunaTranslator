@@ -1,10 +1,9 @@
-import time, requests, re, os
-from myutils.config import globalconfig, tryreadconfig, safesave
-from threading import Thread
+import requests, re, os
+from myutils.config import tryreadconfig, safesave
 import gzip, json
 import shutil
 
-from myutils.metadata.abstract import common
+from metadata.abstract import common
 
 
 def safegetvndbjson(proxy, url, json, getter):
@@ -216,39 +215,6 @@ def getvntagsbyid(proxy, vid):
     return tags
 
 
-import re
-
-
-def parsehtmlmethod(infopath):
-    with open(infopath, "r", encoding="utf8") as ff:
-        text = ff.read()
-    ##隐藏横向滚动
-    text = text.replace("<body>", '<body style="overflow-x: hidden;">')
-    ##删除header
-    text = re.sub("<header>([\\s\\S]*?)</header>", "", text)
-    text = re.sub("<footer>([\\s\\S]*?)</footer>", "", text)
-    text = re.sub('<article class="vnreleases"([\\s\\S]*?)</article>', "", text)
-    text = re.sub('<article class="vnstaff"([\\s\\S]*?)</article>', "", text)
-    text = re.sub('<article id="stats"([\\s\\S]*?)</article>', "", text)
-
-    text = re.sub("<nav>([\\s\\S]*?)</nav>", "", text)
-    text = re.sub('<p class="itemmsg">([\\s\\S]*?)</p>', "", text)
-    text = re.sub('<div id="vntags">([\\s\\S]*?)</div>', "", text)
-    text = re.sub('<div id="tagops">([\\s\\S]*?)</div>', "", text)
-    resavepath = infopath + "parsed.html"
-
-    if globalconfig["languageuse"] == 0:
-        text = re.sub(
-            '<a href="(.*?)" lang="ja-Latn" title="(.*?)">(.*?)</a>',
-            '<a href="\\1" lang="ja-Latn" title="\\3">\\2</a>',
-            text,
-        )
-
-    with open(resavepath, "w", encoding="utf8") as ff:
-        ff.write(text)
-
-    return resavepath
-
 
 def gettagfromhtml(path):
     if path and os.path.exists(path):
@@ -302,11 +268,6 @@ class searcher(common):
         return {
             "namemap": namemap,
             "title": title,
-            "infopath": parsehtmlmethod(
-                self.dispatchdownloadtask(
-                    self.refmainpage(_vid), ishtml=True, delay=False
-                )
-            ),
             "imagepath_all": __,
             "webtags": vndbtags,
             "developers": developers,

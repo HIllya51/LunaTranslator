@@ -10,6 +10,7 @@ from myutils.config import (
     savegametaged,
     _TR,
     _TRL,
+    postprocessconfig,
     globalconfig,
     static_data,
 )
@@ -20,9 +21,16 @@ from myutils.utils import (
     str2rgba,
     gamdidchangedtask,
     titlechangedtask,
+    selectdebugfile,
     targetmod,
 )
-from gui.inputdialog import noundictconfigdialog1, autoinitdialog
+from gui.codeacceptdialog import codeacceptdialog
+from gui.inputdialog import (
+    noundictconfigdialog1,
+    autoinitdialog,
+    autoinitdialog_items,
+    postconfigdialog,
+)
 from gui.specialwidget import (
     ScrollFlow,
     chartwidget,
@@ -47,6 +55,7 @@ from gui.usefulwidget import (
     makesubtab_lazy,
     tabadd_lazy,
     getsimpleswitch,
+    threebuttons,
     getspinbox,
     selectcolor,
     listediter,
@@ -407,20 +416,8 @@ class browserdialog(saveposwindow):
         self.tagswidget.addTags(items)
 
     def startupnavi(self, exepath):
-        for idx in range(1, 100):
-            if idx == 1:
-                if exepath:
-                    hasvndb = bool(
-                        savehook_new_data[exepath]["infopath"]
-                        and os.path.exists(savehook_new_data[exepath]["infopath"])
-                    )
-                    if hasvndb:
-                        navitarget = self.parsehtml(
-                            savehook_new_data[exepath]["infopath"]
-                        )
-                        break
-            elif idx == 2:
-
+        for idx in range(2, 100):
+            if idx == 2:
                 if exepath:
                     if len(savehook_new_data[exepath]["relationlinks"]):
                         navitarget = savehook_new_data[exepath]["relationlinks"][-1][1]
@@ -568,6 +565,67 @@ def calculate_centered_rect(original_rect: QRect, size: QSize) -> QRect:
     return new_rect
 
 
+def maybehavebutton(self, game, post):
+    if post == "_11":
+        savehook_new_data[game]["save_text_process_info"]["mypost"] = str(
+            uuid.uuid4()
+        ).replace("-", "_")
+        return getcolorbutton(
+            globalconfig,
+            "",
+            callback=functools.partial(
+                selectdebugfile,
+                savehook_new_data[game]["save_text_process_info"]["mypost"],
+                ismypost=True,
+            ),
+            icon="fa.gear",
+            constcolor="#FF69B4",
+        )
+    else:
+        if post not in postprocessconfig:
+            return
+        if post == "_remove_chaos":
+            return getcolorbutton(
+                globalconfig,
+                "",
+                icon="fa.gear",
+                constcolor="#FF69B4",
+                callback=lambda: codeacceptdialog(self),
+            )
+        elif "args" in postprocessconfig[post]:
+            if isinstance(list(postprocessconfig[post]["args"].values())[0], dict):
+                callback = functools.partial(
+                    postconfigdialog,
+                    self,
+                    savehook_new_data[game]["save_text_process_info"][
+                        "postprocessconfig"
+                    ][post]["args"],
+                    postprocessconfig[post]["name"],
+                )
+            else:
+                items = autoinitdialog_items(
+                    savehook_new_data[game]["save_text_process_info"][
+                        "postprocessconfig"
+                    ][post]
+                )
+                callback = functools.partial(
+                    autoinitdialog,
+                    self,
+                    postprocessconfig[post]["name"],
+                    600,
+                    items,
+                )
+            return getcolorbutton(
+                globalconfig,
+                "",
+                callback=callback,
+                icon="fa.gear",
+                constcolor="#FF69B4",
+            )
+        else:
+            return None
+
+
 class dialog_setting_game_internal(QWidget):
     def selectexe(self):
         f = QFileDialog.getOpenFileName(directory=self.exepath)
@@ -626,30 +684,47 @@ class dialog_setting_game_internal(QWidget):
             functools.partial(savehook_new_data[exepath].__setitem__, "title")
         )
         titleedit.returnPressed.connect(_titlechange)
-        formLayout.addRow(_TR("标题"), titleedit)
+
+        formLayout.addRow(
+            _TR("标题"),
+            getboxlayout(
+                [
+                    titleedit,
+                    getcolorbutton(
+                        "",
+                        "",
+                        _titlechange,
+                        icon="fa.search",
+                        constcolor="#FF69B4",
+                    ),
+                ]
+            ),
+        )
         methodtab, do = makesubtab_lazy(
             _TRL(
                 [
                     "启动",
                     "HOOK",
+                    "文本处理",
                     "画廊",
                     "标签",
                     "元数据",
                     "统计",
-                    "预翻译",
                     "语音",
+                    "预翻译",
                     "存档备份",
                 ]
             ),
             [
                 functools.partial(self.doaddtab, self.starttab, exepath),
                 functools.partial(self.doaddtab, self.gethooktab, exepath),
+                functools.partial(self.doaddtab, self.gettextproc, exepath),
                 functools.partial(self.doaddtab, self.fengmiantab, exepath),
                 functools.partial(self.doaddtab, self.getlabelsetting, exepath),
                 functools.partial(self.doaddtab, self.metadataorigin, exepath),
                 functools.partial(self.doaddtab, self.getstatistic, exepath),
-                functools.partial(self.doaddtab, self.getpretranstab, exepath),
                 functools.partial(self.doaddtab, self.getttssetting, exepath),
+                functools.partial(self.doaddtab, self.getpretranstab, exepath),
                 functools.partial(self.doaddtab, self.getbackup, exepath),
             ],
             delay=True,
@@ -690,30 +765,41 @@ class dialog_setting_game_internal(QWidget):
             vndbid.returnPressed.connect(
                 functools.partial(gamdidchangedtask, key, idname, exepath)
             )
+            _vbox_internal = [
+                vndbid,
+                getcolorbutton(
+                    "",
+                    "",
+                    functools.partial(self.openrefmainpage, key, idname, exepath),
+                    icon="fa.chrome",
+                    constcolor="#FF69B4",
+                ),
+                getcolorbutton(
+                    "",
+                    "",
+                    functools.partial(gamdidchangedtask, key, idname, exepath),
+                    icon="fa.search",
+                    constcolor="#FF69B4",
+                ),
+            ]
 
+            try:
+                __settting = targetmod[key].querysettingwindow
+                _vbox_internal.insert(
+                    1,
+                    getcolorbutton(
+                        "",
+                        "",
+                        functools.partial(__settting, self),
+                        icon="fa.gear",
+                        constcolor="#FF69B4",
+                    ),
+                )
+            except:
+                pass
             formLayout.addRow(
                 key,
-                getboxlayout(
-                    [
-                        vndbid,
-                        getcolorbutton(
-                            "",
-                            "",
-                            functools.partial(
-                                self.openrefmainpage, key, idname, exepath
-                            ),
-                            icon="fa.chrome",
-                            constcolor="#FF69B4",
-                        ),
-                        getcolorbutton(
-                            "",
-                            "",
-                            functools.partial(gamdidchangedtask, key, idname, exepath),
-                            icon="fa.search",
-                            constcolor="#FF69B4",
-                        ),
-                    ]
-                ),
+                getboxlayout(_vbox_internal),
             )
         return _w
 
@@ -1068,24 +1154,171 @@ class dialog_setting_game_internal(QWidget):
             )
         return _w
 
+    def gettextproc(self, exepath):
+        _w = QWidget()
+
+        formLayout = QFormLayout()
+        _w.setLayout(formLayout)
+        __extra = QWidget()
+
+        def __function(_):
+            __extra.setEnabled(not _)
+
+        formLayout.addRow(
+            _TR("跟随默认"),
+            getsimpleswitch(
+                savehook_new_data[exepath],
+                "textproc_follow_default",
+                callback=__function,
+            ),
+        )
+        __extra.setEnabled(not savehook_new_data[exepath]["textproc_follow_default"])
+        vbox = QVBoxLayout()
+        vbox.setContentsMargins(0, 0, 0, 0)
+        __extra.setLayout(vbox)
+        formLayout.addWidget(__extra)
+
+        model = QStandardItemModel()
+        model.setHorizontalHeaderLabels(_TRL(["使用", "预处理方法", "设置"]))
+
+        table = QTableView()
+
+        table.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
+        table.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
+        table.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
+        table.setSelectionMode((QAbstractItemView.SelectionMode.SingleSelection))
+        table.setWordWrap(False)
+        table.setModel(model)
+
+        table.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
+        table.customContextMenuRequested.connect(self.__privatetextproc_showmenu)
+        self.__textprocinternaltable = table
+        self.__textprocinternalmodel = model
+        self.__privatetextproc_exe = exepath
+        for row, k in enumerate(
+            savehook_new_data[exepath]["save_text_process_info"]["rank"]
+        ):  # 2
+            self.__checkaddnewmethod(row, k)
+        vbox.addWidget(table)
+        buttons = threebuttons(btns=2, texts=_TRL(["添加行", "删除行"]))
+        buttons.btn1clicked.connect(self.__privatetextproc_btn1)
+        buttons.btn2clicked.connect(self.__privatetextproc_btn2)
+        vbox.addWidget(buttons)
+        return _w
+
+    def __privatetextproc_showmenu(self, p):
+        r = self.__textprocinternaltable.currentIndex().row()
+        if r < 0:
+            return
+        menu = QMenu(self.__textprocinternaltable)
+        remove = QAction(_TR("删除"))
+        up = QAction(_TR("上移"))
+        down = QAction(_TR("下移"))
+        menu.addAction(remove)
+        menu.addAction(up)
+        menu.addAction(down)
+        action = menu.exec(self.__textprocinternaltable.cursor().pos())
+
+        if action == remove:
+            self.__privatetextproc_btn2()
+        elif action == up:
+            self.__privatetextproc_moverank(-1)
+        elif action == down:
+            self.__privatetextproc_moverank(1)
+
+    def __privatetextproc_moverank(self, dy):
+        __row = self.__textprocinternaltable.currentIndex().row()
+
+        __list = savehook_new_data[self.__privatetextproc_exe][
+            "save_text_process_info"
+        ]["rank"]
+        game = __list[__row]
+        idx1 = __list.index(game)
+        idx2 = (idx1 + dy) % len(__list)
+        __list.insert(idx2, __list.pop(idx1))
+        self.__textprocinternalmodel.removeRow(idx1)
+        self.__checkaddnewmethod(idx2, game)
+        self.__textprocinternaltable.setCurrentIndex(
+            self.__textprocinternalmodel.index(__row, 0)
+        )
+
+    def __checkaddnewmethod(self, row, _internal):
+        self.__textprocinternalmodel.insertRow(
+            row,
+            [
+                QStandardItem(),
+                QStandardItem(postprocessconfig[_internal]["name"]),
+                QStandardItem(),
+            ],
+        )
+        __dict = savehook_new_data[self.__privatetextproc_exe][
+            "save_text_process_info"
+        ]["postprocessconfig"]
+        if _internal not in __dict:
+            __dict[_internal] = postprocessconfig[_internal]
+            __dict[_internal]["use"] = True
+        btn = maybehavebutton(self, self.__privatetextproc_exe, _internal)
+
+        self.__textprocinternaltable.setIndexWidget(
+            self.__textprocinternalmodel.index(row, 0),
+            getsimpleswitch(__dict[_internal], "use"),
+        )
+        if btn:
+            self.__textprocinternaltable.setIndexWidget(
+                self.__textprocinternalmodel.index(row, 2),
+                btn,
+            )
+
+    def __privatetextproc_btn2(self):
+        row = self.__textprocinternaltable.currentIndex().row()
+        if row < 0:
+            return
+        self.__textprocinternalmodel.removeRow(row)
+        _dict = savehook_new_data[self.__privatetextproc_exe]["save_text_process_info"]
+        post = _dict["rank"][row]
+        _dict["rank"].pop(row)
+        if post in _dict["postprocessconfig"]:
+            _dict["postprocessconfig"].pop(post)
+
+    def __privatetextproc_btn1(self):
+        __viss = [
+            postprocessconfig[_internal]["name"] for _internal in postprocessconfig
+        ]
+
+        def __callback(d):
+            __ = list(postprocessconfig.keys())[d["k"]]
+            __list = savehook_new_data[self.__privatetextproc_exe][
+                "save_text_process_info"
+            ]["rank"]
+            if __ in __list:
+                return
+            __list.insert(0, __)
+            self.__checkaddnewmethod(0, __)
+
+        __d = {"k": 0}
+        autoinitdialog(
+            self,
+            _TR("预处理方法"),
+            400,
+            [
+                {
+                    "type": "combo",
+                    "name": _TR("预处理方法"),
+                    "d": __d,
+                    "k": "k",
+                    "list": __viss,
+                },
+                {
+                    "type": "okcancel",
+                    "callback": functools.partial(__callback, __d),
+                },
+            ],
+        )
+
     def gethooktab(self, exepath):
         _w = QWidget()
         formLayout = QFormLayout()
         _w.setLayout(formLayout)
-        formLayout.addRow(
-            _TR("代码页"),
-            getsimplecombobox(
-                _TRL(static_data["codepage_display"]),
-                savehook_new_data[exepath],
-                "codepage_index",
-                lambda x: gobject.baseobject.textsource.setsettings(),
-            ),
-        )
-
-        formLayout.addRow(
-            _TR("移除非选定hook"),
-            getsimpleswitch(savehook_new_data[exepath], "removeuseless"),
-        )
 
         formLayout.addRow(
             _TR("特殊码"),
@@ -1100,14 +1333,120 @@ class dialog_setting_game_internal(QWidget):
             _TR("插入特殊码延迟(ms)"),
             getspinbox(0, 1000000, savehook_new_data[exepath], "inserthooktimeout"),
         )
-        if (
-            savehook_new_data[exepath]["use_saved_text_process"]
-            or "save_text_process_info" in savehook_new_data[exepath]
-        ):
-            formLayout.addRow(
-                _TR("使用保存的文本处理流程"),
-                getsimpleswitch(savehook_new_data[exepath], "use_saved_text_process"),
-            )
+        __extraw = QWidget()
+
+        def __function(_):
+            __extraw.setEnabled(not _)
+            try:
+                gobject.baseobject.textsource.setsettings()
+            except:
+                pass
+
+        formLayout.addRow(
+            _TR("跟随默认"),
+            getsimpleswitch(
+                savehook_new_data[exepath],
+                "hooksetting_follow_default",
+                callback=__function,
+            ),
+        )
+        __extraw.setEnabled(
+            not savehook_new_data[exepath]["hooksetting_follow_default"]
+        )
+
+        for k in [
+            "codepage_index",
+            "removeuseless",
+            "direct_filterrepeat",
+            "textthreaddelay",
+            "maxBufferSize",
+            "maxHistorySize",
+            "filter_chaos_code",
+            "allow_set_text_name",
+            "use_yapi",
+        ]:
+            if k not in savehook_new_data[exepath]["hooksetting_private"]:
+                savehook_new_data[exepath]["hooksetting_private"][k] = globalconfig[k]
+        formLayout.addWidget(__extraw)
+        formLayout2 = QFormLayout()
+        formLayout2.setContentsMargins(0, 0, 0, 0)
+        __extraw.setLayout(formLayout2)
+        formLayout2.addRow(
+            _TR("代码页"),
+            getsimplecombobox(
+                _TRL(static_data["codepage_display"]),
+                savehook_new_data[exepath]["hooksetting_private"],
+                "codepage_index",
+                lambda x: gobject.baseobject.textsource.setsettings(),
+            ),
+        )
+        formLayout2.addRow(
+            _TR("过滤反复刷新的句子"),
+            getsimpleswitch(
+                savehook_new_data[exepath]["hooksetting_private"],
+                "direct_filterrepeat",
+                callback=lambda x: gobject.baseobject.textsource.setsettings(),
+            ),
+        )
+
+        formLayout2.addRow(
+            _TR("移除非选定hook"),
+            getsimpleswitch(
+                savehook_new_data[exepath]["hooksetting_private"], "removeuseless"
+            ),
+        )
+        formLayout2.addRow(
+            _TR("刷新延迟(ms)"),
+            getspinbox(
+                0,
+                10000,
+                savehook_new_data[exepath]["hooksetting_private"],
+                "textthreaddelay",
+                callback=lambda x: gobject.baseobject.textsource.setsettings(),
+            ),
+        )
+        formLayout2.addRow(
+            _TR("最大缓冲区长度"),
+            getspinbox(
+                0,
+                1000000,
+                savehook_new_data[exepath]["hooksetting_private"],
+                "maxBufferSize",
+                callback=lambda x: gobject.baseobject.textsource.setsettings(),
+            ),
+        )
+        formLayout2.addRow(
+            _TR("最大缓存文本长度"),
+            getspinbox(
+                0,
+                1000000000,
+                savehook_new_data[exepath]["hooksetting_private"],
+                "maxHistorySize",
+                callback=lambda x: gobject.baseobject.textsource.setsettings(),
+            ),
+        )
+        formLayout2.addRow(
+            _TR("过滤包含乱码的文本行"),
+            getsimpleswitch(
+                savehook_new_data[exepath]["hooksetting_private"],
+                "filter_chaos_code",
+            ),
+        )
+        formLayout2.addRow(
+            _TR("区分人名和文本"),
+            getsimpleswitch(
+                savehook_new_data[exepath]["hooksetting_private"],
+                "allow_set_text_name",
+            ),
+        )
+        formLayout2.addRow(
+            _TR("使用YAPI注入"),
+            getsimpleswitch(
+                savehook_new_data[exepath]["hooksetting_private"],
+                "use_yapi",
+            ),
+        )
+
         return _w
 
 
@@ -2091,18 +2430,20 @@ class pixwrapper(QWidget):
         self.visidx()
 
     def visidx(self):
-        if self.k and len(self.pixmaps) == 0:
+        if len(self.pixmaps) == 0:
+            if not self.k:
+                return
             pixmap = getExeIcon(self.k, False, cache=True)
             pixmap.setDevicePixelRatio(self.devicePixelRatioF())
             self.pixview.setPixmap(self.scalepix(pixmap))
-        elif self.pixmapi < len(self.pixmaps):
-            pixmap = self.pixmaps[self.pixmapi]
-
-            savehook_new_data[self.k]["currentvisimage"] = pixmap
-            pixmap = QPixmap.fromImage(QImage(pixmap))
+        else:
+            self.pixmapi = min(len(self.pixmaps) - 1, self.pixmapi)
+            pixmap_ = self.pixmaps[self.pixmapi]
+            pixmap = QPixmap.fromImage(QImage(pixmap_))
             if pixmap is None or pixmap.isNull():
                 self.pixmaps.pop(self.pixmapi)
                 return self.visidx()
+            savehook_new_data[self.k]["currentvisimage"] = pixmap_
             pixmap.setDevicePixelRatio(self.devicePixelRatioF())
             self.pixview.setPixmap(self.scalepix(pixmap))
 

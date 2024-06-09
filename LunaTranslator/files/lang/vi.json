@@ -176,7 +176,6 @@
     "記号": "Đánh dấu",
     "选择文件": "Chọn tập tin",
     "缩放时禁用窗口大小调整": "Tắt thay đổi kích cỡ cửa sổ khi phóng to",
-    "删除选中行": "Xoá dòng đã chọn",
     "图标": "Biểu tượng",
     "指示詞": "Từ chỉ dẫn",
     "動詞": "Động từ",
@@ -626,7 +625,6 @@
     "片假名": "Katakana",
     "罗马音": "Tiếng La Mã",
     "日语注音方案": "Chương trình chú thích tiếng Nhật",
-    "保存当前游戏的文本处理流程": "Lưu luồng xử lý văn bản của trò chơi hiện tại",
     "使用保存的文本处理流程": "Sử dụng quy trình xử lý văn bản đã lưu",
     "Sakura大模型": "Sakura Lớn Mô hình",
     "Magpie路径": "Đường Magpie",
@@ -831,5 +829,8 @@
     "显示的项目": "Mục hiển thị",
     "首位的": "Đầu tiên",
     "指定的": "Đã xác định",
-    "设为显示的项目": "Mục được đặt làm Hiển thị"
+    "设为显示的项目": "Mục được đặt làm Hiển thị",
+    "跟随默认": "Theo mặc định",
+    "删除行": "Xoá dòng",
+    "使用": "Sử dụng"
 }

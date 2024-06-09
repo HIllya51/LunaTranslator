@@ -1,5 +1,5 @@
 import json
-import os, time
+import os, time, uuid
 from traceback import print_exc
 
 
@@ -60,6 +60,14 @@ ocrsetting = tryreadconfig("ocrsetting.json")
 
 def getdefaultsavehook(gamepath, title=None):
     default = {
+        "hooksetting_follow_default": True,
+        "hooksetting_private": {},  # 显示时再加载，缺省用global中的键
+        "textproc_follow_default": True,
+        "save_text_process_info": {
+            "postprocessconfig": {},
+            "rank": [],
+            # "mypost":
+        },
         "localeswitcher": 0,
         "onloadautochangemode2": 0,
         "onloadautoswitchsrclang": 0,
@@ -74,8 +82,6 @@ def getdefaultsavehook(gamepath, title=None):
         "hook": [],
         "inserthooktimeout": 0,
         "needinserthookcode": [],
-        "removeuseless": False,
-        "codepage_index": 0,
         # "allow_tts_auto_names": "",#->v4
         "allow_tts_auto_names_v4": [],
         "tts_repair": False,
@@ -101,14 +107,16 @@ def getdefaultsavehook(gamepath, title=None):
         #
         "vid": 0,
         "bgmsid": 0,
-        "dlsiteid": 'RJ',
+        "dlsiteid": "RJ/VJXXXX",
+        "fanzaid": "",
+
         "title": "",
         # "imagepath": None,  # 封面->imagepath_all[0]
         # "imagepath_much2": [],  # 截图->imagepath_all[1:]
         "imagepath_all": [],
         "developers": [],
         "webtags": [],  # 标签
-        "infopath": None,  # 离线存储的主页
+        # "infopath": None,  # 离线存储的主页
     }
     if title and len(title):
         default["title"] = title  # metadata
