@@ -166,7 +166,7 @@ def trysearchfordata(gamepath, key, vid):
         data = targetmod[key].searchfordata(vid)
     except:
         print_exc()
-        data = {}
+        return False
     title = data.get("title", None)
     namemap = data.get("namemap", None)
     developers = data.get("developers", [])
@@ -194,7 +194,7 @@ def trysearchfordata(gamepath, key, vid):
         savehook_new_data[gamepath]["webtags"] = webtags
     if len(developers):
         savehook_new_data[gamepath]["developers"] = developers
-
+    return True
 
 def everymethodsthread():
     while True:
@@ -208,8 +208,11 @@ def everymethodsthread():
 
             elif _type == 1:
                 key, vid = arg
-                trysearchfordata(gamepath, key, vid)
-                gobject.baseobject.translation_ui.displayglobaltooltip.emit(f"{key}: {vid} data loaded")
+                if trysearchfordata(gamepath, key, vid):
+                    gobject.baseobject.translation_ui.displayglobaltooltip.emit(f"{key}: {vid} data loaded")
+                else:
+                    gobject.baseobject.translation_ui.displayglobaltooltip.emit(f"{key}: {vid} load failed")
+
         except:
             print_exc()
 
