@@ -990,17 +990,14 @@ class dialog_setting_game_internal(QWidget):
         return lists
 
     def refresh(self):
-        self._timelabel.setText(
-            self.formattime(savehook_new_data[self.exepath]["statistic_playtime"])
-        )
+        __ = gobject.baseobject.querytraceplaytime_v4(self.exepath)
+        _cnt = sum([_[1] - _[0] for _ in __])
+        savehook_new_data[self.exepath]["statistic_playtime"] = _cnt
+        self._timelabel.setText(self.formattime(_cnt))
         self._wordlabel.setText(
             str(savehook_new_data[self.exepath]["statistic_wordcount"])
         )
-        self.chart.setdata(
-            self.split_range_into_days(
-                gobject.baseobject.querytraceplaytime_v4(self.exepath)
-            )
-        )
+        self.chart.setdata(self.split_range_into_days(__))
 
     def formattime(self, t, usingnotstart=True):
         t = int(t)
