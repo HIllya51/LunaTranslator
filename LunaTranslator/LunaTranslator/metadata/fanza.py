@@ -177,5 +177,5 @@ class searcher(common):
                 self.dispatchdownloadtask(_.replace("js-", "jp-")) for _ in imags2
             ],
             "webtags": tags,
-            "developers": devp,
+            "developers": [devp],
         }
