@@ -115,7 +115,10 @@ class ItemWidget(QWidget):
         #     self.itemw - self.imgw
         # ) // 2  # globalconfig['dialog_savegame_layout']['margin']
         margin = globalconfig["dialog_savegame_layout"]["margin"]
-        textH = globalconfig["dialog_savegame_layout"]["textH"]
+        if globalconfig["showgametitle"]:
+            textH = globalconfig["dialog_savegame_layout"]["textH"]
+        else:
+            textH = 0
         self.imgw = self.itemw - 2 * margin
         self.imgh = self.itemh - textH - 2 * margin
         #
