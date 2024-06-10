@@ -1,4 +1,3 @@
-from PyQt5.QtGui import QMouseEvent
 from qtsymbols import *
 import os, functools, uuid, threading
 from datetime import datetime, timedelta
