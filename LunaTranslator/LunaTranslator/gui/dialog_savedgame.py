@@ -829,7 +829,6 @@ class dialog_setting_game_internal(QWidget):
         w = wfunct(exe)
         layout.addWidget(w)
 
-
     def starttab(self, exepath):
         _w = QWidget()
         formLayout = QFormLayout()
@@ -1120,9 +1119,10 @@ class dialog_setting_game_internal(QWidget):
 
     def gettextproc(self, exepath):
         _w = QWidget()
-
+        _vbox = QVBoxLayout()
         formLayout = QFormLayout()
-        _w.setLayout(formLayout)
+        _w.setLayout(_vbox)
+        _vbox.addLayout(formLayout)
         __extra = QWidget()
 
         def __function(_):
@@ -1140,7 +1140,7 @@ class dialog_setting_game_internal(QWidget):
         vbox = QVBoxLayout()
         vbox.setContentsMargins(0, 0, 0, 0)
         __extra.setLayout(vbox)
-        formLayout.addWidget(__extra)
+        _vbox.addWidget(__extra)
 
         model = QStandardItemModel()
         model.setHorizontalHeaderLabels(_TRL(["使用", "预处理方法", "设置"]))
@@ -1282,8 +1282,10 @@ class dialog_setting_game_internal(QWidget):
     def gethooktab(self, exepath):
         _w = QWidget()
         formLayout = QFormLayout()
-        _w.setLayout(formLayout)
-
+        _vbox = QVBoxLayout()
+        _vbox.setAlignment(Qt.AlignmentFlag.AlignTop)
+        _w.setLayout(_vbox)
+        _vbox.addLayout(formLayout)
         formLayout.addRow(
             _TR("特殊码"),
             listediterline(
@@ -1331,7 +1333,7 @@ class dialog_setting_game_internal(QWidget):
         ]:
             if k not in savehook_new_data[exepath]["hooksetting_private"]:
                 savehook_new_data[exepath]["hooksetting_private"][k] = globalconfig[k]
-        formLayout.addWidget(__extraw)
+        _vbox.addWidget(__extraw)
         formLayout2 = QFormLayout()
         formLayout2.setContentsMargins(0, 0, 0, 0)
         __extraw.setLayout(formLayout2)
