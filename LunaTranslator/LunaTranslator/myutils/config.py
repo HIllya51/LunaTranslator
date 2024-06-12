@@ -95,7 +95,7 @@ def getdefaultsavehook(gamepath, title=None):
         # "vndbtags": [],#->webtags
         "usertags": [],
         # "traceplaytime_v2": [],  # [[start,end]]->db.traceplaytime_v4，这个东西增加到太快了，有点膨胀
-        "autosavesavedata": "",
+        # "autosavesavedata": "",
         # 判断是否为自定义元数据，避免覆写
         # "isimagepathusersetted": False,
         # "isimagepathusersetted_much": False,

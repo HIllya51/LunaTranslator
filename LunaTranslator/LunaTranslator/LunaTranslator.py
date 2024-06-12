@@ -11,7 +11,7 @@ from myutils.config import (
     static_data,
     tryreadconfig,
 )
-import zipfile, sqlite3
+import sqlite3
 from myutils.utils import (
     minmaxmoveobservefunc,
     parsemayberegexreplace,
@@ -719,37 +719,12 @@ class MAINUI:
                 else:
                     pids = self.textsource.pids
                     if sum([int(pid_running(pid)) for pid in pids]) == 0:
-                        self.safebackupsavedata(
-                            self.textsource.pname,
-                            self.textsource.basename + "_" + self.textsource.md5,
-                        )
                         self.textsource = None
 
             except:
 
                 print_exc()
 
-    @threader
-    def safebackupsavedata(self, exe, signame):
-        path = savehook_new_data[exe]["autosavesavedata"]
-        if not os.path.exists(path):
-            return
-        data_head = time.strftime("%Y-%m-%d-%H-%M-%S.zip", time.localtime())
-        savedirbase = globalconfig["backupsavedatato"]
-        if os.path.exists(savedirbase) == False:
-            savedirbase = "./cache/backup"
-        savedir = os.path.join(savedirbase, signame)
-        os.makedirs(savedir, exist_ok=True)
-
-        def zip_directory(directory_path, output_path):
-            with zipfile.ZipFile(output_path, "w", zipfile.ZIP_DEFLATED) as zipf:
-                for root, _, files in os.walk(directory_path):
-                    for file in files:
-                        file_path = os.path.join(root, file)
-                        relative_path = os.path.relpath(file_path, directory_path)
-                        zipf.write(file_path, relative_path)
-
-        zip_directory(path, savedir + "/" + data_head)
 
     def autohookmonitorthread(self):
         while self.isrunning:

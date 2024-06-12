@@ -719,7 +719,6 @@ class dialog_setting_game_internal(QWidget):
                     "统计",
                     "语音",
                     "预翻译",
-                    "存档备份",
                 ]
             ),
             [
@@ -732,7 +731,6 @@ class dialog_setting_game_internal(QWidget):
                 functools.partial(self.doaddtab, self.getstatistic, exepath),
                 functools.partial(self.doaddtab, self.getttssetting, exepath),
                 functools.partial(self.doaddtab, self.getpretranstab, exepath),
-                functools.partial(self.doaddtab, self.getbackup, exepath),
             ],
             delay=True,
         )
@@ -831,44 +829,6 @@ class dialog_setting_game_internal(QWidget):
         w = wfunct(exe)
         layout.addWidget(w)
 
-    def getbackup(self, exepath):
-        _w = QWidget()
-        formLayout = QFormLayout()
-        _w.setLayout(formLayout)
-
-        formLayout.addRow(
-            _TR("路径"),
-            getsimplepatheditor(
-                savehook_new_data[exepath]["autosavesavedata"],
-                False,
-                True,
-                None,
-                lambda _: savehook_new_data[exepath].__setitem__(
-                    "autosavesavedata", os.path.normpath(_)
-                ),
-                True,
-            ),
-        )
-
-        formLayout.addRow(
-            _TR("备份到"),
-            getsimplepatheditor(
-                (
-                    globalconfig["backupsavedatato"]
-                    if os.path.exists(globalconfig["backupsavedatato"])
-                    else os.path.abspath("./cache/backup")
-                ),
-                False,
-                True,
-                None,
-                lambda _: savehook_new_data[exepath].__setitem__(
-                    "backupsavedatato", os.path.normpath(_)
-                ),
-                True,
-            ),
-        )
-
-        return _w
 
     def starttab(self, exepath):
         _w = QWidget()
