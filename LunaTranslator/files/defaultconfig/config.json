@@ -188,7 +188,6 @@
     "multiregion": false,
     "rememberocrregions": false,
     "ocrregions": [],
-    "textboxreadonly": true,
     "ocr_stable_sim": 0,
     "ocr_diff_sim": 0.95,
     "ocr_text_diff": 3,
@@ -1677,7 +1676,7 @@
             "use": false,
             "type": "offline",
             "color": "blue",
-            "name": "OrtSp"
+            "name": "MT5"
         },
         "sakura": {
             "use": false,

@@ -57,16 +57,6 @@ def _xingw():
             ),
         ],
         [
-            ("选择文本窗口中文本框只读", 6),
-            D_getsimpleswitch(
-                globalconfig,
-                "textboxreadonly",
-                callback=lambda x: gobject.baseobject.hookselectdialog.textOutput.setReadOnly(
-                    x
-                ),
-            ),
-        ],
-        [
             ("可选取模式", 6),
             D_getsimpleswitch(
                 globalconfig,

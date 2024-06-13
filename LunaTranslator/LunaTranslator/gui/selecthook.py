@@ -672,7 +672,7 @@ class hookselect(closeashidewindow):
 
         self.textOutput = QPlainTextEdit()
         self.textOutput.setUndoRedoEnabled(False)
-        self.textOutput.setReadOnly(globalconfig["textboxreadonly"])
+        self.textOutput.setReadOnly(True)
 
         self.sysOutput = QPlainTextEdit()
         self.sysOutput.setUndoRedoEnabled(False)
