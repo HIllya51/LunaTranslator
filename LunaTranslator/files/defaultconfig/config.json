@@ -1712,7 +1712,6 @@
     "magpiepath": "",
     "minifollow": false,
     "movefollow": false,
-    "focusfollow": false,
     "focusnotop": false,
     "autostarthook": true,
     "minlength": 0,

@@ -474,13 +474,6 @@ def minmaxmoveobservefunc(self):
 
             _focusp = windows.GetWindowThreadProcessId(hwnd)
             if event == windows.EVENT_SYSTEM_FOREGROUND:
-                if globalconfig["focusfollow"]:
-                    if _focusp == os.getpid():
-                        pass
-                    elif _focusp in gobject.baseobject.textsource.pids:
-                        self.hookfollowsignal.emit(3, (hwnd,))
-                    else:
-                        self.hookfollowsignal.emit(4, (0, 0))
                 if globalconfig["keepontop"] and globalconfig["focusnotop"]:
                     if _focusp == os.getpid():
                         pass

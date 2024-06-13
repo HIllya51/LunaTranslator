@@ -22,10 +22,6 @@ def _xingw():
             (D_getsimpleswitch(globalconfig, "minifollow"), 1),
         ],
         [
-            ("游戏失去焦点时窗口隐藏", 6),
-            (D_getsimpleswitch(globalconfig, "focusfollow"), 1),
-        ],
-        [
             ("游戏失去焦点时取消置顶", 6),
             (D_getsimpleswitch(globalconfig, "focusnotop"), 1),
         ],
