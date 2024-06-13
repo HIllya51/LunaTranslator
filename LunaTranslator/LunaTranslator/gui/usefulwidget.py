@@ -134,15 +134,12 @@ class saveposwindow(QMainWindow):
 
     def resizeEvent(self, a0) -> None:
         self.__checked_savepos()
-        super().resizeEvent(a0)
 
     def moveEvent(self, a0) -> None:
         self.__checked_savepos()
-        super().moveEvent(a0)
 
     def closeEvent(self, event: QCloseEvent):
         self.__checked_savepos()
-        super().closeEvent(event)
 
 
 class closeashidewindow(saveposwindow):

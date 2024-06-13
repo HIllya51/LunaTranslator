@@ -201,17 +201,30 @@ class BorderedLabel(QLabel):
 class Textbrowser(QLabel):
     contentsChanged = pyqtSignal(int, int)
 
+    def __makeborder(self, size: QSize):
+        _padding_resize = 5
+        _padding_move = 5
+        _padding = _padding_resize + _padding_move
+        self.masklabel_right.move(self.width() - _padding, 0)
+        self.masklabel_bottom.move(0, 0 + size.height() - _padding)
+        self.masklabel_left.resize(_padding, size.height())
+        self.masklabel_right.resize(_padding, size.height())
+        self.masklabel_bottom.resize(size.width(), _padding)
+
     def move(self, x, y):
         super().move(x, y)
         self.textbrowser.move(x, y)
-
         self.atback2.move(x, y)
         self.toplabel2.move(x, y)
 
-    def resizeEvent(self, event):
+        self.__makeborder(self.size())
+
+    def resizeEvent(self, event: QResizeEvent):
         self.atback2.resize(event.size())
         self.toplabel2.resize(event.size())
         self.masklabel.resize(event.size())
+
+        self.__makeborder(event.size())
 
     def contentchangedfunction(self):
         sz = self.textbrowser.document().size().toSize()
@@ -251,6 +264,12 @@ class Textbrowser(QLabel):
         )
         self.masklabel = QLabel(self.textbrowser)
         self.masklabel.setMouseTracking(True)
+        self.masklabel_left = QLabel(self.textbrowser)
+        self.masklabel_left.setMouseTracking(True)
+        self.masklabel_right = QLabel(self.textbrowser)
+        self.masklabel_right.setMouseTracking(True)
+        self.masklabel_bottom = QLabel(self.textbrowser)
+        self.masklabel_bottom.setMouseTracking(True)
 
         self.savetaglabels = []
         self.searchmasklabels_clicked = []
