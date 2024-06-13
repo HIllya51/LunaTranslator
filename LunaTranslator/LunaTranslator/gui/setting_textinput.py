@@ -73,7 +73,7 @@ def gethookgrid(self):
                 D_getcolorbutton(
                     globalconfig,
                     "",
-                    functools.partial(dialog_savedgame_integrated, self),
+                    lambda: dialog_savedgame_integrated(self),
                     icon="fa.gamepad",
                     constcolor="#FF69B4",
                 ),
