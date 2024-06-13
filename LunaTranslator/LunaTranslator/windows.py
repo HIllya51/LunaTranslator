@@ -992,3 +992,8 @@ _MapViewOfFile.restype = c_void_p
 
 def MapViewOfFile(hfmap, acc, high, low, size):
     return _MapViewOfFile(hfmap, acc, high, low, size)
+
+
+IsZoomed = _user32.IsZoomed
+IsZoomed.argtypes = (HWND,)
+IsZoomed.restype = BOOL

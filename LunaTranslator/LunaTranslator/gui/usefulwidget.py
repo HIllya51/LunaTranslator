@@ -25,6 +25,7 @@ class FocusCombo(QComboBox):
         else:
             return super().wheelEvent(e)
 
+
 class FocusSpin(QSpinBox):
     def __init__(self, parent: QWidget = None) -> None:
         super().__init__(parent)
@@ -123,20 +124,25 @@ class saveposwindow(QMainWindow):
             dic[key][1] = min(max(dic[key][1], 0), d.size().height() - dic[key][3])
             self.setGeometry(*dic[key])
 
+    def __checked_savepos(self):
+        if not self.dic:
+            return
+        if windows.IsZoomed(int(self.winId())) != 0:
+            return
+        # self.isMaximized()会在event结束后才被设置，不符合预期。
+        self.dic[self.key] = list(self.geometry().getRect())
+
     def resizeEvent(self, a0) -> None:
-        if self.dic:
-            if self.isMaximized() == False:
-                self.dic[self.key] = list(self.geometry().getRect())
+        self.__checked_savepos()
+        super().resizeEvent(a0)
 
     def moveEvent(self, a0) -> None:
-        if self.dic:
-            if self.isMaximized() == False:
-                self.dic[self.key] = list(self.geometry().getRect())
+        self.__checked_savepos()
+        super().moveEvent(a0)
 
     def closeEvent(self, event: QCloseEvent):
-        if self.dic:
-            if self.isMaximized() == False:
-                self.dic[self.key] = list(self.geometry().getRect())
+        self.__checked_savepos()
+        super().closeEvent(event)
 
 
 class closeashidewindow(saveposwindow):
