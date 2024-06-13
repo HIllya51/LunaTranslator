@@ -6,6 +6,33 @@ from myutils.wrapper import Singleton_close
 from gui.usefulwidget import saveposwindow
 
 
+class pixlabel(QLabel):
+    def __init__(self):
+        super().__init__()
+        self.pix = None
+
+    def setpix(self, pix):
+        self.pix = pix
+        self.setPixmap(
+            self.pix.scaled(
+                self.size(),
+                Qt.AspectRatioMode.KeepAspectRatio,
+                Qt.TransformationMode.SmoothTransformation,
+            )
+        )
+
+    def resizeEvent(self, a0):
+        if self.pix:
+            self.setPixmap(
+                self.pix.scaled(
+                    self.size(),
+                    Qt.AspectRatioMode.KeepAspectRatio,
+                    Qt.TransformationMode.SmoothTransformation,
+                )
+            )
+        return super().resizeEvent(a0)
+
+
 @Singleton_close
 class showocrimage(saveposwindow):
     setimage = pyqtSignal(list)
@@ -20,9 +47,9 @@ class showocrimage(saveposwindow):
         super().__init__(parent, globalconfig, "showocrgeo")
         self.setWindowIcon(qtawesome.icon("fa.picture-o"))
         self.setWindowTitle(_TR("查看处理效果"))
-        self.originlabel = QLabel(self)
+        self.originlabel = pixlabel()
         qw = QWidget()
-        self.solvedlabel = QLabel(self)
+        self.solvedlabel = pixlabel()
         self.lay2 = QHBoxLayout()
         button = QPushButton(
             icon=qtawesome.icon("fa.rotate-right", color=globalconfig["buttoncolor"])
@@ -46,28 +73,6 @@ class showocrimage(saveposwindow):
         img = imagesolve(self.originimage)
         self.setimagefunction([self.originimage, img])
 
-    def showimg(self):
-
-        self.originlabel.setPixmap(
-            self.img1.scaled(
-                self.originlabel.size(),
-                Qt.AspectRatioMode.KeepAspectRatio,
-                Qt.TransformationMode.SmoothTransformation,
-            )
-        )
-        self.solvedlabel.setPixmap(
-            self.img2.scaled(
-                self.solvedlabel.size(),
-                Qt.AspectRatioMode.KeepAspectRatio,
-                Qt.TransformationMode.SmoothTransformation,
-            )
-        )
-
-    def resizeEvent(self, a0) -> None:
-        if self.img1 is not None:
-            self.showimg()
-        return super().resizeEvent(a0)
-
     def setimagefunction(self, image):
         originimage, solved = image
         self.originimage = originimage
@@ -75,4 +80,5 @@ class showocrimage(saveposwindow):
         self.img2 = QPixmap.fromImage(solved)
         self.img1.setDevicePixelRatio(self.devicePixelRatioF())
         self.img2.setDevicePixelRatio(self.devicePixelRatioF())
-        self.showimg()
+        self.originlabel.setpix(self.img1)
+        self.solvedlabel.setpix(self.img2)
