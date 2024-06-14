@@ -135,7 +135,7 @@ class AnkiWindow(QWidget):
             if globalconfig["ankiconnect"]["ocrcroped"]:
                 self.asyncocr(img)
 
-        rangeselct_function(self, ocroncefunction, False, False)
+        rangeselct_function(ocroncefunction, False, False)
 
     def __init__(self) -> None:
         super().__init__()

@@ -114,7 +114,7 @@ class rangeadjust(Mainw):
 
 
 class rangeselct(QMainWindow):
-    def __init__(self, parent):
+    def __init__(self, parent=None):
 
         super(rangeselct, self).__init__(parent)
         self.setWindowFlags(
@@ -225,10 +225,11 @@ class rangeselct(QMainWindow):
 screen_shot_ui = None
 
 
-def rangeselct_function(parent, callback, clickrelease, startauto):
+def rangeselct_function(callback, clickrelease, startauto):
     global screen_shot_ui
     if screen_shot_ui is None:
-        screen_shot_ui = rangeselct(parent)
+        screen_shot_ui = rangeselct()
+        # 可能是由于使用win32移动窗口，导致父翻译show/hide影响到他
     screen_shot_ui.show()
     screen_shot_ui.reset()
     screen_shot_ui.callback = callback

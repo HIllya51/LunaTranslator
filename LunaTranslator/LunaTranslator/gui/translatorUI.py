@@ -348,7 +348,7 @@ class QUnFrameWindow(resizableframeless):
             text = ocr_run(img)
             gobject.baseobject.textgetmethod(text, False)
 
-        rangeselct_function(self, ocroncefunction, False, False)
+        rangeselct_function(ocroncefunction, False, False)
 
     @threader
     def simulate_key_enter(self):
@@ -900,7 +900,7 @@ class QUnFrameWindow(resizableframeless):
             return
         self.showhidestate = False
 
-        rangeselct_function(self, self.afterrange, auto, auto)
+        rangeselct_function(self.afterrange, auto, auto)
 
     def afterrange(self, rect):
         gobject.baseobject.textsource.newrangeadjustor()
