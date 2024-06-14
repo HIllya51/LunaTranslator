@@ -791,5 +791,12 @@
     "设为显示的项目": "Imposta come progetto visualizzato",
     "跟随默认": "Segui default",
     "删除行": "Elimina righe",
-    "使用": "applicare"
+    "使用": "applicare",
+    "过滤指定字数的文本": "Filtra testo con numero di parole specificato",
+    "最小字数": "Numero minimo di parole",
+    "最大字数": "Numero massimo di parole",
+    "过滤指定行数的文本": "Filtra testo con un numero specificato di righe",
+    "最小行数": "Numero minimo di righe",
+    "最大行数": "Numero massimo di righe",
+    "超过时截断而非过滤": "Truncare invece di filtrare quando superato"
 }

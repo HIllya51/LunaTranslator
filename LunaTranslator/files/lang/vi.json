@@ -791,5 +791,12 @@
     "设为显示的项目": "Mục được đặt làm Hiển thị",
     "跟随默认": "Theo mặc định",
     "删除行": "Xoá dòng",
-    "使用": "Sử dụng"
+    "使用": "Sử dụng",
+    "过滤指定字数的文本": "Lọc văn bản xác định số lượng từ",
+    "最小字数": "Số từ tối thiểu",
+    "最大字数": "Số từ tối đa",
+    "过滤指定行数的文本": "Lọc văn bản xác định số dòng",
+    "最小行数": "Số dòng tối thiểu",
+    "最大行数": "Số dòng tối đa",
+    "超过时截断而非过滤": "Cắt ngắn thay vì lọc khi vượt quá"
 }

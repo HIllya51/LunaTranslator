@@ -27,6 +27,64 @@
         "use": false,
         "name": "去除花括号{}"
     },
+    "length_threshold": {
+        "use": false,
+        "name": "过滤指定字数的文本",
+        "args": {
+            "minzishu": 1,
+            "maxzishu": 99999,
+            "cut": false
+        },
+        "argstype": {
+            "minzishu": {
+                "name": "最小字数",
+                "type": "intspin",
+                "min": 0,
+                "max": 99999999,
+                "step": 1
+            },
+            "maxzishu": {
+                "name": "最大字数",
+                "type": "intspin",
+                "min": 0,
+                "max": 99999999,
+                "step": 1
+            },
+            "cut": {
+                "name": "超过时截断而非过滤",
+                "type": "switch"
+            }
+        }
+    },
+    "lines_threshold": {
+        "use": false,
+        "name": "过滤指定行数的文本",
+        "args": {
+            "minzishu": 1,
+            "maxzishu": 99999,
+            "cut": false
+        },
+        "argstype": {
+            "minzishu": {
+                "name": "最小行数",
+                "type": "intspin",
+                "min": 0,
+                "max": 99999999,
+                "step": 1
+            },
+            "maxzishu": {
+                "name": "最大行数",
+                "type": "intspin",
+                "min": 0,
+                "max": 99999999,
+                "step": 1
+            },
+            "cut": {
+                "name": "超过时截断而非过滤",
+                "type": "switch"
+            }
+        }
+    },
     "_2": {
         "use": false,
         "name": "去除重复字符_AAAABBBBCCCC->ABC",

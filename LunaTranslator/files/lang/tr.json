@@ -791,5 +791,12 @@
     "设为显示的项目": "Gösterilen Proje olarak ayarlayın",
     "跟随默认": "Öntanımlı takip et",
     "删除行": "Satırları Sil",
-    "使用": "uygulama"
+    "使用": "uygulama",
+    "过滤指定字数的文本": "Belirtilen kelime sayısıyla metin sil",
+    "最小字数": "Minimal kelime sayısı",
+    "最大字数": "Maksimum kelime sayısı",
+    "过滤指定行数的文本": "Belirtilen bir sayı hatlarla metin sil",
+    "最小行数": "En az satır sayısı",
+    "最大行数": "Azamik satır sayısı",
+    "超过时截断而非过滤": "Üstünde filtrelemek yerine küçük"
 }

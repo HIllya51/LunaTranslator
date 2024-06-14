@@ -306,6 +306,23 @@ def _remove_not_in_ja_bracket(line):
     return line
 
 
+def length_threshold(line, args):
+    if len(line) > args["maxzishu"] or len(line) < args["minzishu"]:
+        if args["cut"]:
+            return line[: args["maxzishu"]]
+        return ""
+    return line
+
+
+def lines_threshold(line, args):
+    sps = line.split("\n")
+    if len(sps) > args["maxzishu"] or len(sps) < args["minzishu"]:
+        if args["cut"]:
+            return "\n".join(sps[: args["maxzishu"]])
+        return ""
+    return line
+
+
 from myutils.utils import checkchaos
 
 
@@ -349,6 +366,8 @@ def POSTSOLVE(line):
         "_remove_chaos": _remove_chaos,
         "_remove_not_in_ja_bracket": _remove_not_in_ja_bracket,
         "dedump": dedump,
+        "length_threshold": length_threshold,
+        "lines_threshold": lines_threshold,
     }
     useranklist = globalconfig["postprocess_rank"]
     usedpostprocessconfig = postprocessconfig

@@ -791,5 +791,12 @@
     "设为显示的项目": "Les éléments à afficher",
     "跟随默认": "Suivre par défaut",
     "删除行": "Supprimer une ligne",
-    "使用": "Utilisation"
+    "使用": "Utilisation",
+    "过滤指定字数的文本": "Filtrer le texte pour le nombre de mots spécifié",
+    "最小字数": "Nombre minimum de mots",
+    "最大字数": "Nombre maximal de mots",
+    "过滤指定行数的文本": "Filtrer le texte pour le nombre de lignes spécifié",
+    "最小行数": "Nombre minimum de lignes",
+    "最大行数": "Nombre maximal de lignes",
+    "超过时截断而非过滤": "Troncation au - delà du temps plutôt que filtrage"
 }

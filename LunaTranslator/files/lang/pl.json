@@ -791,5 +791,12 @@
     "设为显示的项目": "Ustaw jako wyświetlany projekt",
     "跟随默认": "Postępuj zgodnie z domyślnym",
     "删除行": "Usuń wiersze",
-    "使用": "stosować"
+    "使用": "stosować",
+    "过滤指定字数的文本": "Filtruj tekst z określoną liczbą słów",
+    "最小字数": "Minimalna liczba słów",
+    "最大字数": "Maksymalna liczba słów",
+    "过滤指定行数的文本": "Filtruj tekst z określoną liczbą wierszy",
+    "最小行数": "Minimalna liczba wierszy",
+    "最大行数": "Maksymalna liczba wierszy",
+    "超过时截断而非过滤": "Przycięcie zamiast filtrowania po przekroczeniu"
 }

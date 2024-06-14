@@ -791,5 +791,12 @@
     "设为显示的项目": "Artículos configurados para mostrar",
     "跟随默认": "Sigue el predeterminado",
     "删除行": "Eliminar filas",
-    "使用": "Uso"
+    "使用": "Uso",
+    "过滤指定字数的文本": "Filtrar el texto del número de palabras especificado",
+    "最小字数": "Número mínimo de palabras",
+    "最大字数": "Número máximo de palabras",
+    "过滤指定行数的文本": "Filtrar el texto del número de líneas especificadas",
+    "最小行数": "Número mínimo de líneas",
+    "最大行数": "Número máximo de líneas",
+    "超过时截断而非过滤": "Cortar en lugar de filtrar cuando se supera el tiempo"
 }

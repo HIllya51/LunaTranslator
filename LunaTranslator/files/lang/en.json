@@ -791,5 +791,12 @@
     "设为显示的项目": "Set as Displayed Project",
     "跟随默认": "Follow default",
     "删除行": "Delete Rows",
-    "使用": "apply"
+    "使用": "apply",
+    "过滤指定字数的文本": "Filter text with specified word count",
+    "最小字数": "Minimum word count",
+    "最大字数": "Maximum word count",
+    "过滤指定行数的文本": "Filter text with a specified number of lines",
+    "最小行数": "Minimum number of rows",
+    "最大行数": "Maximum number of rows",
+    "超过时截断而非过滤": "Truncate instead of filtering when exceeded"
 }
