@@ -841,7 +841,7 @@ class dialog_setting_game_internal(QWidget):
         else:
             _methods = ["Locale-Emulator", "Locale_Remulator", "Ntleas"]
         if b == 6 and savehook_new_data[exepath]["localeswitcher"] == 0:
-            savehook_new_data[exepath]["localeswitcher"] = 2
+            savehook_new_data[exepath]["localeswitcher"] = 1
         formLayout.addRow(
             _TR("转区启动"),
             getboxlayout(

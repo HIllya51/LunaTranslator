@@ -453,7 +453,7 @@ class texthook(basetext):
                 collector.sort(key=lambda xx: self.selectedhook.index(xx[0]))
             except:
                 pass
-            collector = [_[1] for _ in collector]
+            collector = "\n".join([_[1] for _ in collector])
             self.newline.put(collector)
             self.runonce_line = collector
 

@@ -137,10 +137,7 @@ class basetext:
             try:
                 t = self.gettextthread()
                 if t and globalconfig["autorun"]:
-                    if type(t) == tuple:
-                        self.textgetmethod(*t)
-                    else:
-                        self.textgetmethod(t)
+                    self.textgetmethod(t)
             except:
                 print_exc()
 

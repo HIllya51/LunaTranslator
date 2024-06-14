@@ -162,44 +162,39 @@ class MAINUI:
 
         returnandembedcallback = lambda: embedcallback("") if embedcallback else ""
 
-        if type(text) == str:
-            if text.startswith("<notrans>"):
-                self.translation_ui.displayres.emit(
-                    dict(
-                        color=globalconfig["rawtextcolor"],
-                        res=text[len("<notrans>") :],
-                        onlytrans=onlytrans,
-                        clear=True,
-                    )
+        if text.startswith("<notrans>"):
+            self.translation_ui.displayres.emit(
+                dict(
+                    color=globalconfig["rawtextcolor"],
+                    res=text[len("<notrans>") :],
+                    onlytrans=onlytrans,
+                    clear=True,
                 )
-                self.currenttext = text
-                self.currenttranslate = text
-                self.currentread = text
-                return
-            else:
-                msgs = [
-                    ("<msg_info_not_refresh>", globalconfig["rawtextcolor"], False),
-                    ("<msg_info_refresh>", globalconfig["rawtextcolor"], True),
-                    ("<msg_error_not_refresh>", "red", False),
-                    ("<msg_error_refresh>", "red", True),
-                ]
-                for msg, color, refresh in msgs:
-                    if text.startswith(msg):
-                        self.translation_ui.displaystatus.emit(
-                            text[len(msg) :], color, refresh, False
-                        )
-                        return
-            if text == "" or len(text) > 100000:
-                return returnandembedcallback()
+            )
+            self.currenttext = text
+            self.currenttranslate = text
+            self.currentread = text
+            return
+        else:
+            msgs = [
+                ("<msg_info_not_refresh>", globalconfig["rawtextcolor"], False),
+                ("<msg_info_refresh>", globalconfig["rawtextcolor"], True),
+                ("<msg_error_not_refresh>", "red", False),
+                ("<msg_error_refresh>", "red", True),
+            ]
+            for msg, color, refresh in msgs:
+                if text.startswith(msg):
+                    self.translation_ui.displaystatus.emit(
+                        text[len(msg) :], color, refresh, False
+                    )
+                    return
+        if text == "" or len(text) > 100000:
+            return returnandembedcallback()
         if onlytrans == False:
             self.currentsignature = time.time()
         try:
-            if type(text) == list:
-                origin = "\n".join(text)
-                text = "\n".join([self._POSTSOLVE(_) for _ in text])
-            else:
-                origin = text
-                text = self._POSTSOLVE(text)
+            origin = text
+            text = self._POSTSOLVE(text)
         except Exception as e:
             msg = str(type(e))[8:-2] + " " + str(e).replace("\n", "").replace("\r", "")
             self.translation_ui.displaystatus.emit(msg, "red", True, True)
@@ -725,7 +720,6 @@ class MAINUI:
 
                 print_exc()
 
-
     def autohookmonitorthread(self):
         while self.isrunning:
             self.onwindowloadautohook()
@@ -895,6 +889,7 @@ class MAINUI:
             __t = time.time()
             time.sleep(1)
             _t = time.time()
+
             def isok(name_):
                 savehook_new_data[name_]["statistic_playtime"] += _t - __t
                 if self.__currentexe == name_:
