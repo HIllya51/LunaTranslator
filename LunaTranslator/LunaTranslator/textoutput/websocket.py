@@ -44,7 +44,7 @@ class websocketserver:
                 key = line.split(":")[1].strip()
                 break
         value = f"{key}258EAFA5-E914-47DA-95CA-C5AB0DC85B11".encode("utf-8")
-        hashed = base64encode(hashlib.sha1(value).digest()).strip().lower().decode()
+        hashed = base64encode(hashlib.sha1(value).digest()).strip().decode()
         # 构造握手响应
         response = "HTTP/1.1 101 Switching Protocols\r\n"
         response += "Upgrade: websocket\r\n"
