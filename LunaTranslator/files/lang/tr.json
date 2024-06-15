@@ -798,5 +798,6 @@
     "最小行数": "En az satır sayısı",
     "最大行数": "Azamik satır sayısı",
     "超过时截断而非过滤": "Üstünde filtrelemek yerine küçük",
-    "兼容接口": "Kompatibil arayüz"
+    "兼容接口": "Kompatibil arayüz",
+    "调试浏览器": "Hata ayıklama tarayıcısı"
 }

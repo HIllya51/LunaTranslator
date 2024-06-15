@@ -798,5 +798,6 @@
     "最小行数": "Nombre minimum de lignes",
     "最大行数": "Nombre maximal de lignes",
     "超过时截断而非过滤": "Troncation au - delà du temps plutôt que filtrage",
-    "兼容接口": "Interface compatible"
+    "兼容接口": "Interface compatible",
+    "调试浏览器": "Déboguer le Navigateur"
 }

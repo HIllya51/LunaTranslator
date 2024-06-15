@@ -798,5 +798,6 @@
     "最小行数": "Minimalna liczba wierszy",
     "最大行数": "Maksymalna liczba wierszy",
     "超过时截断而非过滤": "Przycięcie zamiast filtrowania po przekroczeniu",
-    "兼容接口": "Kompatybilny interfejs"
+    "兼容接口": "Kompatybilny interfejs",
+    "调试浏览器": "Debugowanie przeglądarki"
 }

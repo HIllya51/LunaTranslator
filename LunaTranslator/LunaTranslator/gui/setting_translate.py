@@ -226,11 +226,13 @@ def setTabTwo_lazy(self, basel):
     online_reg_grid = [[("若有多个api key，用|将每个key连接后填入，即可轮流使用", -1)]]
     pretransgrid = [
         [
-            ("预翻译采用模糊匹配", 8),
+            ("预翻译采用模糊匹配", 6),
             (D_getsimpleswitch(globalconfig, "premtsimiuse"), 1),
             "",
-            ("模糊匹配_相似度_%", 8),
-            (D_getspinbox(0, 100, globalconfig, "premtsimi2"), 3),
+            "",
+            "",
+            ("模糊匹配_相似度_%", 6),
+            (D_getspinbox(0, 100, globalconfig, "premtsimi2"), 4),
         ],
         [
             (functools.partial(createbtnexport, self), 12),
@@ -284,12 +286,12 @@ def setTabTwo_lazy(self, basel):
     gridlayoutwidget, do = makegrid(grids, delay=True)
     vl.addWidget(gridlayoutwidget)
     tab, dotab = makesubtab_lazy(
-        _TRL(["在线翻译", "develop", "注册在线翻译", "离线翻译", "预翻译"]),
+        _TRL(["在线翻译", "注册在线翻译", "离线翻译", "调试浏览器", "预翻译"]),
         [
             functools.partial(makescrollgrid, onlinegrid),
-            functools.partial(makescrollgrid, developgrid),
             functools.partial(makescrollgrid, online_reg_grid),
             functools.partial(makescrollgrid, offlinegrid),
+            functools.partial(makescrollgrid, developgrid),
             functools.partial(makescrollgrid, pretransgrid),
         ],
         delay=True,

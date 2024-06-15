@@ -798,5 +798,6 @@
     "最小行数": "Minimum number of rows",
     "最大行数": "Maximum number of rows",
     "超过时截断而非过滤": "Truncate instead of filtering when exceeded",
-    "兼容接口": "Compatible interface"
+    "兼容接口": "Compatible interface",
+    "调试浏览器": "Debugging browser"
 }

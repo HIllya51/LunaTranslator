@@ -798,5 +798,6 @@
     "最小行数": "Số dòng tối thiểu",
     "最大行数": "Số dòng tối đa",
     "超过时截断而非过滤": "Cắt ngắn thay vì lọc khi vượt quá",
-    "兼容接口": "Giao diện tương thích"
+    "兼容接口": "Giao diện tương thích",
+    "调试浏览器": "Gỡ lỗi trình duyệt"
 }

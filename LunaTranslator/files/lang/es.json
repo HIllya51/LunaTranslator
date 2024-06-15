@@ -798,5 +798,6 @@
     "最小行数": "Número mínimo de líneas",
     "最大行数": "Número máximo de líneas",
     "超过时截断而非过滤": "Cortar en lugar de filtrar cuando se supera el tiempo",
-    "兼容接口": "Interfaz compatible"
+    "兼容接口": "Interfaz compatible",
+    "调试浏览器": "Depurar el navegador"
 }
