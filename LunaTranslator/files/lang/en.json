@@ -645,7 +645,6 @@
     "流式输出": "Streaming output",
     "内嵌安全性检查": "Embedded security check",
     "正则匹配": "Regular matching",
-    "非官方": "Unofficial",
     "离线": "off-line",
     "导出翻译补丁": "Export translation patches",
     "语音修正": "Voice correction",
@@ -798,5 +797,6 @@
     "过滤指定行数的文本": "Filter text with a specified number of lines",
     "最小行数": "Minimum number of rows",
     "最大行数": "Maximum number of rows",
-    "超过时截断而非过滤": "Truncate instead of filtering when exceeded"
+    "超过时截断而非过滤": "Truncate instead of filtering when exceeded",
+    "兼容接口": "Compatible interface"
 }

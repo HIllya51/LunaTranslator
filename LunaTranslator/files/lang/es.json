@@ -645,7 +645,6 @@
     "流式输出": "Salida de flujo",
     "内嵌安全性检查": "Inspección de Seguridad incorporada",
     "正则匹配": "Coincidencia regular",
-    "非官方": "No oficial",
     "离线": "Fuera de línea",
     "导出翻译补丁": "Exportar parches de traducción",
     "语音修正": "Corrección de voz",
@@ -798,5 +797,6 @@
     "过滤指定行数的文本": "Filtrar el texto del número de líneas especificadas",
     "最小行数": "Número mínimo de líneas",
     "最大行数": "Número máximo de líneas",
-    "超过时截断而非过滤": "Cortar en lugar de filtrar cuando se supera el tiempo"
+    "超过时截断而非过滤": "Cortar en lugar de filtrar cuando se supera el tiempo",
+    "兼容接口": "Interfaz compatible"
 }

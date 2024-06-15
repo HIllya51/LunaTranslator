@@ -645,7 +645,6 @@
     "流式输出": "Aktarma çıkışı",
     "内嵌安全性检查": "İçeri giriş güvenlik kontrolü",
     "正则匹配": "Normal eşleşme",
-    "非官方": "Resmi olmayan",
     "离线": "off line",
     "导出翻译补丁": "Çeviri örneklerini dışarı aktar",
     "语音修正": "Ses düzeltmesi",
@@ -798,5 +797,6 @@
     "过滤指定行数的文本": "Belirtilen bir sayı hatlarla metin sil",
     "最小行数": "En az satır sayısı",
     "最大行数": "Azamik satır sayısı",
-    "超过时截断而非过滤": "Üstünde filtrelemek yerine küçük"
+    "超过时截断而非过滤": "Üstünde filtrelemek yerine küçük",
+    "兼容接口": "Kompatibil arayüz"
 }

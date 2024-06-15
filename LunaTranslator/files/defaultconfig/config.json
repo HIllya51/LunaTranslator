@@ -1649,7 +1649,7 @@
             "type": "api",
             "use": false,
             "color": "blue",
-            "name": "ChatGPT_非官方",
+            "name": "ChatGPT_兼容接口",
             "is_gpt_like": true
         },
         "hanshant": {
@@ -1689,7 +1689,7 @@
             "use": false,
             "type": "offline",
             "color": "blue",
-            "name": "ChatGPT_离线",
+            "name": "ChatGPT_兼容接口",
             "is_gpt_like": true
         },
         "TGW": {
