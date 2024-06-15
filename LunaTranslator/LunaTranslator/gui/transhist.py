@@ -26,22 +26,20 @@ class transhist(closeashidewindow):
     def setupUi(self):
         self.setWindowIcon(qtawesome.icon("fa.rotate-left"))
 
-        def gettb(_type):
-            textOutput = QPlainTextEdit()
-            textOutput.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
-            textOutput.customContextMenuRequested.connect(
-                functools.partial(self.showmenu, textOutput, _type)
-            )
-            textOutput.setUndoRedoEnabled(False)
-            textOutput.setReadOnly(True)
-            return textOutput
+        textOutput = QPlainTextEdit()
+        textOutput.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
+        textOutput.customContextMenuRequested.connect(
+            functools.partial(self.showmenu, textOutput)
+        )
+        textOutput.setUndoRedoEnabled(False)
+        textOutput.setReadOnly(True)
 
-        self.textOutput = gettb(1)
+        self.textOutput = textOutput
         self.setCentralWidget(self.textOutput)
 
         self.hiding = True
 
-    def showmenu(self, tb, flag, p):
+    def showmenu(self, tb, p):
         menu = QMenu(self)
         qingkong = QAction(_TR("清空"))
         baocun = QAction(_TR("保存"))
@@ -53,10 +51,10 @@ class transhist(closeashidewindow):
         menu.addAction(baocun)
         if len(self.textOutput.textCursor().selectedText()):
             menu.addAction(copy)
-        if flag == 1:
-            menu.addAction(hideshowraw)
-            menu.addAction(hideshowapi)
-            menu.addAction(hidetime)
+        menu.addSeparator()
+        menu.addAction(hideshowraw)
+        menu.addAction(hideshowapi)
+        menu.addAction(hidetime)
 
         action = menu.exec(QCursor.pos())
         if action == qingkong:

@@ -714,7 +714,6 @@ class dialog_setting_game_internal(QWidget):
                     "HOOK",
                     "语言",
                     "文本处理",
-                    "画廊",
                     "标签",
                     "元数据",
                     "统计",
@@ -727,7 +726,6 @@ class dialog_setting_game_internal(QWidget):
                 functools.partial(self.doaddtab, self.gethooktab, exepath),
                 functools.partial(self.doaddtab, self.getlangtab, exepath),
                 functools.partial(self.doaddtab, self.gettextproc, exepath),
-                functools.partial(self.doaddtab, self.fengmiantab, exepath),
                 functools.partial(self.doaddtab, self.getlabelsetting, exepath),
                 functools.partial(self.doaddtab, self.metadataorigin, exepath),
                 functools.partial(self.doaddtab, self.getstatistic, exepath),
@@ -810,22 +808,6 @@ class dialog_setting_game_internal(QWidget):
             )
         return _w
 
-    def fengmiantab(self, exepath):
-        _w = QWidget()
-        formLayout = QFormLayout()
-        _w.setLayout(formLayout)
-
-        formLayout.addRow(
-            _TR("画廊"),
-            getsimplepatheditor(
-                reflist=savehook_new_data[exepath]["imagepath_all"],
-                multi=True,
-                isdir=False,
-                name=_TR("画廊"),
-                header=_TR("画廊"),
-            ),
-        )
-        return _w
 
     def doaddtab(self, wfunct, exe, layout):
         w = wfunct(exe)
@@ -1915,9 +1897,9 @@ class dialog_savedgame_new(QWidget):
     def showmenu(self, p):
         menu = QMenu(self)
         startgame = QAction(_TR("开始游戏"))
-        gamesetting = QAction(_TR("游戏设置"))
         delgame = QAction(_TR("删除游戏"))
         opendir = QAction(_TR("打开目录"))
+        gamesetting = QAction(_TR("游戏设置"))
         addgame = QAction(_TR("添加游戏"))
         batchadd = QAction(_TR("批量添加"))
         othersetting = QAction(_TR("其他设置"))
@@ -1926,10 +1908,10 @@ class dialog_savedgame_new(QWidget):
             exists = os.path.exists(self.currentfocuspath)
             if exists:
                 menu.addAction(startgame)
-            menu.addAction(gamesetting)
             menu.addAction(delgame)
             if exists:
                 menu.addAction(opendir)
+            menu.addAction(gamesetting)
         else:
             menu.addAction(addgame)
             menu.addAction(batchadd)
@@ -2551,6 +2533,7 @@ class dialog_savedgame_v3(QWidget):
         addtolist = QAction(_TR("添加到列表"))
         setimage = QAction(_TR("设为封面"))
         deleteimage = QAction(_TR("删除图片"))
+        hualang = QAction(_TR("画廊"))
         exists = os.path.exists(self.currentfocuspath)
         if exists:
             menu.addAction(startgame)
@@ -2559,13 +2542,25 @@ class dialog_savedgame_v3(QWidget):
             menu.addAction(opendir)
         menu.addAction(addtolist)
         if ispixmenu:
+            menu.addSeparator()
             menu.addAction(setimage)
             menu.addAction(deleteimage)
+            menu.addAction(hualang)
         action = menu.exec(QCursor.pos())
         if action == startgame:
             startgamecheck(self, self.currentfocuspath)
         elif action == delgame:
             self.clicked2()
+        elif action == hualang:
+            listediter(
+                self,
+                _TR("画廊"),
+                _TR("画廊"),
+                savehook_new_data[self.currentfocuspath]["imagepath_all"],
+                closecallback=lambda: self.pixview.setpix(self.currentfocuspath),
+                ispathsedit=True,
+            )
+
         elif action == deleteimage:
             self.pixview.removecurrent()
         elif action == opendir:
@@ -2794,7 +2789,6 @@ class dialog_savedgame_v3(QWidget):
 
         self.reallist[tagid] = []
         _btn = QPushButton(title)
-        _btn.customContextMenuRequested
         _btn.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
 
         _btn.customContextMenuRequested.connect(
