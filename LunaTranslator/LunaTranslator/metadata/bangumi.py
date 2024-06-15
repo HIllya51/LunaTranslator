@@ -63,7 +63,7 @@ class searcher(common):
                 break
         return {
             # "namemap": namemap,
-            "title": response["name_cn"],
+            "title": response["name"],
             "imagepath_all": [imagepath],
             "webtags": vndbtags,
             "developers": developers,
