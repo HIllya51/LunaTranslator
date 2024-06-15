@@ -41,7 +41,7 @@ class searcher(common):
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
         }
         if self.config["access-token"].strip() != "":
-            headers["Authorization"] = ("Bearer " + self.config["access-token"],)
+            headers["Authorization"] = "Bearer " + self.config["access-token"]
         response = self.proxysession.get(
             f"https://api.bgm.tv/v0/subjects/{sid}", headers=headers
         )
