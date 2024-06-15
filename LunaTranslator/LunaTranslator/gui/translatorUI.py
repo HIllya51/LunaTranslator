@@ -726,6 +726,7 @@ class QUnFrameWindow(resizableframeless):
                 border: 0px;%s;
                 font: 100 10pt;
             }
+            QPushButton:focus {outline: 0px;}
             """ % (
                 bottomr3,
                 (
