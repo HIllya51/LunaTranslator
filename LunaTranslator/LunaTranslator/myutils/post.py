@@ -2,12 +2,11 @@ import re, codecs, inspect
 from traceback import print_exc
 from collections import Counter
 import importlib, gobject
-from myutils.utils import getfilemd5, LRUCache
+from myutils.utils import getfilemd5, LRUCache, getlangsrc
 from myutils.config import (
     postprocessconfig,
     globalconfig,
     savehook_new_data,
-    getlangsrc,
 )
 
 lrucache = LRUCache(0)
@@ -374,7 +373,7 @@ def POSTSOLVE(line):
     usemypostpath = "./userconfig/mypost.py"
     usemodule = "mypost"
     try:
-        if "pname" in dir(gobject.baseobject.textsource):
+        if gobject.baseobject.textsource and ("pname" in dir(gobject.baseobject.textsource)):
             exepath = gobject.baseobject.textsource.pname
             if not savehook_new_data[exepath]["textproc_follow_default"]:
                 useranklist = savehook_new_data[exepath]["save_text_process_info"][

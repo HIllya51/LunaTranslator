@@ -1,17 +1,16 @@
 import os
-from myutils.config import globalconfig, _TR, getlangsrc
+from myutils.utils import getlangsrc
+from myutils.config import globalconfig, _TR
 from ocrengines.baseocrclass import baseocr
 from ctypes import (
     CDLL,
     c_char_p,
-    create_string_buffer,
     c_size_t,
     c_void_p,
     c_int32,
     POINTER,
     Structure,
     pointer,
-    cast,
     c_char_p,
 )
 import os

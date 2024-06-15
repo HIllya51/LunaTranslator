@@ -441,21 +441,26 @@ class texthook(basetext):
 
     @threader
     def delaycollectallselectedoutput(self):
+        collector = []
         while True:
-            time.sleep(self.config["textthreaddelay"] / 1000)
-            if self.newline_delaywait.empty():
+
+            _data, tms = self.newline_delaywait.get()
+            collector.append(_data)
+            now = time.time()
+            time.sleep(min(now - tms, self.config["textthreaddelay"])/1000)
+            if not self.newline_delaywait.empty():
                 continue
 
-            collector = []
-            while self.newline_delaywait.empty() == False:
-                collector.append(self.newline_delaywait.get())
             try:
                 collector.sort(key=lambda xx: self.selectedhook.index(xx[0]))
             except:
                 pass
-            collector = "\n".join([_[1] for _ in collector])
-            self.newline.put(collector)
-            self.runonce_line = collector
+            _collector = "\n".join([_[1] for _ in collector])
+            self.newline.put(_collector)
+            self.runonce_line = _collector
+            collector.clear()
+            
+                
 
     def handle_output(self, hc, hn, tp, output):
 
@@ -471,7 +476,7 @@ class texthook(basetext):
                 self.runonce_line = output
         else:
             if key in self.selectedhook:
-                self.newline_delaywait.put((key, output))
+                self.newline_delaywait.put(((key, output), time.time()))
         if key == self.selectinghook:
             gobject.baseobject.hookselectdialog.getnewsentencesignal.emit(output)
 

@@ -14,7 +14,7 @@ from gui.usefulwidget import (
     getsimpleswitch,
     textbrowappendandmovetoend,
     FocusSpin,
-    FocusCombo
+    FocusCombo,
 )
 
 
@@ -860,19 +860,18 @@ class hookselect(closeashidewindow):
 
     def accept(self, key, select):
         try:
-
+            hc, hn, tp = key
             if key in gobject.baseobject.textsource.selectedhook:
                 gobject.baseobject.textsource.selectedhook.remove(key)
 
             if select:
                 gobject.baseobject.textsource.selectedhook.append(key)
 
-                if key[-2][:8] == "UserHook":
+                if hn[:8] == "UserHook":
                     needinserthookcode = savehook_new_data[
                         gobject.baseobject.textsource.pname
                     ]["needinserthookcode"]
-                    needinserthookcode = list(set(needinserthookcode + [key[-1]]))
-
+                    needinserthookcode = list(set(needinserthookcode + [hc]))
                     savehook_new_data[gobject.baseobject.textsource.pname].update(
                         {"needinserthookcode": needinserthookcode}
                     )

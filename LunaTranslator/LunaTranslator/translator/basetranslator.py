@@ -1,15 +1,13 @@
 from traceback import print_exc
 from queue import Queue
-
-from myutils.config import globalconfig, translatorsetting, getlangtgt
 from threading import Thread
 import time, types
 import zhconv, gobject
 import sqlite3, os
-from myutils.commonbase import commonbase
 import functools
-from myutils.utils import stringfyerror, autosql, PriorityQueue
-from myutils.commonbase import ArgsEmptyExc
+from myutils.config import globalconfig, translatorsetting
+from myutils.utils import stringfyerror, autosql, PriorityQueue, getlangtgt
+from myutils.commonbase import ArgsEmptyExc, commonbase
 
 
 class TimeOut(Exception):

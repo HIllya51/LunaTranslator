@@ -697,19 +697,6 @@ class MAINUI:
                                         needinserthookcode=needinserthookcode,
                                     )
 
-                                onloadautoswitchsrclang = savehook_new_data[name_][
-                                    "onloadautoswitchsrclang"
-                                ]
-                                if onloadautoswitchsrclang > 0:
-                                    try:
-                                        self.settin_ui.srclangswitcher.setCurrentIndex(
-                                            onloadautoswitchsrclang - 1
-                                        )
-                                    except:
-                                        globalconfig["srclang3"] = (
-                                            onloadautoswitchsrclang - 1
-                                        )
-                                break
 
                 else:
                     pids = self.textsource.pids

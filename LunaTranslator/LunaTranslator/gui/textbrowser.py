@@ -509,8 +509,8 @@ class Textbrowser(QLabel):
                             self.textcursor.setPosition(pos + l)
                             self.textbrowser.setTextCursor(self.textcursor)
                             __fm = self.getfh(False, getfm=True)
-                            w1 = __fm.size(0, word["orig"][:__i]).width()
-                            w2 = __fm.size(0, word["orig"][__i:]).width()
+                            w1 = int(__fm.size(0, word["orig"][:__i]).width())
+                            w2 = int(__fm.size(0, word["orig"][__i:]).width())
 
                             pos1 = (
                                 tl1.x() + 1,

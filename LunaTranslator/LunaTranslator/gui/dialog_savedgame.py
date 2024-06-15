@@ -712,6 +712,7 @@ class dialog_setting_game_internal(QWidget):
                 [
                     "启动",
                     "HOOK",
+                    "语言",
                     "文本处理",
                     "画廊",
                     "标签",
@@ -724,6 +725,7 @@ class dialog_setting_game_internal(QWidget):
             [
                 functools.partial(self.doaddtab, self.starttab, exepath),
                 functools.partial(self.doaddtab, self.gethooktab, exepath),
+                functools.partial(self.doaddtab, self.getlangtab, exepath),
                 functools.partial(self.doaddtab, self.gettextproc, exepath),
                 functools.partial(self.doaddtab, self.fengmiantab, exepath),
                 functools.partial(self.doaddtab, self.getlabelsetting, exepath),
@@ -872,16 +874,6 @@ class dialog_setting_game_internal(QWidget):
                 "onloadautochangemode2",
             ),
         )
-
-        formLayout.addRow(
-            _TR("自动切换源语言"),
-            getsimplecombobox(
-                _TRL(["不切换"]) + _TRL(static_data["language_list_translator"]),
-                savehook_new_data[exepath],
-                "onloadautoswitchsrclang",
-            ),
-        )
-
         return _w
 
     def getstatistic(self, exepath):
@@ -1278,6 +1270,54 @@ class dialog_setting_game_internal(QWidget):
                 },
             ],
         )
+
+    def getlangtab(self, exepath):
+        _w = QWidget()
+        formLayout = QFormLayout()
+        _vbox = QVBoxLayout()
+        _vbox.setAlignment(Qt.AlignmentFlag.AlignTop)
+        _w.setLayout(_vbox)
+        _vbox.addLayout(formLayout)
+
+        __extraw = QWidget()
+
+        formLayout.addRow(
+            _TR("跟随默认"),
+            getsimpleswitch(
+                savehook_new_data[exepath],
+                "lang_follow_default",
+                callback=lambda _: __extraw.setEnabled(not _),
+            ),
+        )
+        __extraw.setEnabled(not savehook_new_data[exepath]["lang_follow_default"])
+        savehook_new_data[exepath]["private_tgtlang"] = savehook_new_data[exepath].get(
+            "private_tgtlang", globalconfig["tgtlang3"]
+        )
+        savehook_new_data[exepath]["private_srclang"] = savehook_new_data[exepath].get(
+            "private_srclang", globalconfig["srclang3"]
+        )
+
+        _vbox.addWidget(__extraw)
+        formLayout2 = QFormLayout()
+        formLayout2.setContentsMargins(0, 0, 0, 0)
+        __extraw.setLayout(formLayout2)
+        formLayout2.addRow(
+            _TR("源语言"),
+            getsimplecombobox(
+                _TRL(static_data["language_list_translator"]),
+                savehook_new_data[exepath],
+                "private_srclang",
+            ),
+        )
+        formLayout2.addRow(
+            _TR("目标语言"),
+            getsimplecombobox(
+                _TRL(static_data["language_list_translator"]),
+                savehook_new_data[exepath],
+                "private_tgtlang",
+            ),
+        )
+        return _w
 
     def gethooktab(self, exepath):
         _w = QWidget()

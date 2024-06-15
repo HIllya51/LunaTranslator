@@ -24,6 +24,35 @@ import re, heapq, winsharedutils
 from myutils.wrapper import tryprint
 
 
+def __internal__getlang(k1, k2):
+    try:
+        for _ in (0,):
+
+            if not gobject.baseobject.textsource:
+                break
+            if "pname" not in dir(gobject.baseobject.textsource):
+                break
+            exepath = gobject.baseobject.textsource.pname
+            if savehook_new_data[exepath]["lang_follow_default"]:
+                break
+
+            return static_data["language_list_translator_inner"][
+                savehook_new_data[exepath][k1]
+            ]
+    except:
+        pass
+    return static_data["language_list_translator_inner"][globalconfig[k2]]
+
+
+def getlangsrc():
+    return __internal__getlang("private_srclang", "srclang3")
+
+
+def getlangtgt():
+
+    return __internal__getlang("private_tgtlang", "tgtlang3")
+
+
 def findenclose(text, tag):
     i = 0
     tags = f"<{tag}"
@@ -196,6 +225,7 @@ def trysearchfordata(gamepath, key, vid):
         savehook_new_data[gamepath]["developers"] = developers
     return True
 
+
 def everymethodsthread():
     while True:
         _ = searchvndbqueue.get()
@@ -204,14 +234,20 @@ def everymethodsthread():
             if _type == 0:
                 infoid = trysearchforid(gamepath, arg)
                 key, vid = infoid
-                gobject.baseobject.translation_ui.displayglobaltooltip.emit(f"{key}: found {vid}")
+                gobject.baseobject.translation_ui.displayglobaltooltip.emit(
+                    f"{key}: found {vid}"
+                )
 
             elif _type == 1:
                 key, vid = arg
                 if trysearchfordata(gamepath, key, vid):
-                    gobject.baseobject.translation_ui.displayglobaltooltip.emit(f"{key}: {vid} data loaded")
+                    gobject.baseobject.translation_ui.displayglobaltooltip.emit(
+                        f"{key}: {vid} data loaded"
+                    )
                 else:
-                    gobject.baseobject.translation_ui.displayglobaltooltip.emit(f"{key}: {vid} load failed")
+                    gobject.baseobject.translation_ui.displayglobaltooltip.emit(
+                        f"{key}: {vid} load failed"
+                    )
 
         except:
             print_exc()

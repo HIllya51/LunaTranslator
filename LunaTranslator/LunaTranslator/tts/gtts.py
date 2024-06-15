@@ -598,7 +598,7 @@ class gTTSError(Exception):
 
 from tts.basettsclass import TTSbase
 
-from myutils.config import getlangsrc
+from myutils.utils import getlangsrc
 
 
 class TTS(TTSbase):

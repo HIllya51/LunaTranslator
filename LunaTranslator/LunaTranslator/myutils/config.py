@@ -66,11 +66,14 @@ def getdefaultsavehook(gamepath, title=None):
         "save_text_process_info": {
             "postprocessconfig": {},
             "rank": [],
-            # "mypost":
+            # "mypost":# 设置时再加载
         },
+        "lang_follow_default": True,
+        #"private_srclang": 0,# 显示时再加载，缺省用global中的键
+        #"private_tgtlang": 0,
+
         "localeswitcher": 0,
         "onloadautochangemode2": 0,
-        "onloadautoswitchsrclang": 0,
         "needinserthookcode": [],
         "embedablehook": [],
         "statistic_playtime": 0,
@@ -221,14 +224,6 @@ for key in ___:
 def getlanguse():
     global language, languageshow
     return static_data["language_list_translator_inner"][language]
-
-
-def getlangsrc():
-    return static_data["language_list_translator_inner"][globalconfig["srclang3"]]
-
-
-def getlangtgt():
-    return static_data["language_list_translator_inner"][globalconfig["tgtlang3"]]
 
 
 def setlanguage():

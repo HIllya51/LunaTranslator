@@ -1,5 +1,6 @@
 from myutils.proxy import getproxy
-from myutils.config import getlangtgt, _TR, static_data, getlangsrc
+from myutils.utils import getlangtgt, getlangsrc
+from myutils.config import _TR, static_data
 from myutils.wrapper import stripwrapper
 import requests
 

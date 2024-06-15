@@ -1,4 +1,4 @@
-from myutils.config import getlangsrc
+from myutils.utils import getlangsrc
 import requests
 from urllib.parse import quote
 import re, os
