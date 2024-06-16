@@ -95,8 +95,7 @@ class TS(basetrans):
             line = res.json()["candidates"][0]["content"]["parts"][0]["text"]
             yield line
         except:
-            print(res)
-            raise Exception("Error")
+            raise Exception(res.text)
         self.context.append({"role": "user", "parts": [{"text": query}]})
         self.context.append({"role": "model", "parts": [{"text": line}]})
 
