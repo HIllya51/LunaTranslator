@@ -21,7 +21,7 @@ class Method(scalebase):
             )
             while windows.FindWindow("Magpie_Hotkey", None) == 0:
                 time.sleep(0.5)
-        if globalconfig["hookmagpie"]:
+        if True:
             pid = windows.GetWindowThreadProcessId(
                 windows.FindWindow("Magpie_Hotkey", None)
             )

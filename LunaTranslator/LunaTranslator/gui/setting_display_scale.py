@@ -50,11 +50,8 @@ def makescalew(self, lay):
                 ),
                 1,
             ),
-        ],
-        [
-            ("Hook Magpie进程使其不会退出缩放", 4),
-            D_getsimpleswitch(globalconfig, "hookmagpie"),
-        ],
+            ("", 10),
+        ]
     ]
 
     innermagpie = [
