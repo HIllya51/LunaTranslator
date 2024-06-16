@@ -202,12 +202,6 @@ copycheck(
 )
 copycheck(
     os.path.join(
-        py37Path, "Lib/site-packages/PyQt5/Qt5/plugins/platforms/qoffscreen.dll"
-    ),
-    os.path.join(runtime, "PyQt5/Qt5/plugins/platforms"),
-)
-copycheck(
-    os.path.join(
         py37Path, "Lib/site-packages/PyQt5/Qt5/plugins/platforms/qwindows.dll"
     ),
     os.path.join(runtime, "PyQt5/Qt5/plugins/platforms"),
