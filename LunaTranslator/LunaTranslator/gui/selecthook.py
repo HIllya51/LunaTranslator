@@ -210,9 +210,9 @@ class searchhookparam(QDialog):
         layout1 = QHBoxLayout()
         layout1.addWidget(QLabel(_TR("代码页")))
         self.codepagesave = {
-            "spcp": savehook_new_data[gobject.baseobject.textsource.pname][
-                "codepage_index"
-            ]
+            "spcp": savehook_new_data[gobject.baseobject.textsource.pname].get(
+                "codepage_index", globalconfig["codepage_index"]
+            )
         }
         layout1.addWidget(
             getsimplecombobox(
