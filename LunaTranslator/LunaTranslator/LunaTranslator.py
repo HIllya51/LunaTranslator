@@ -1045,7 +1045,7 @@ class MAINUI:
         while True:
             # 会触发两次
             windows.WaitForSingleObject(sema, windows.INFINITE)
-            if globalconfig["darklight"] == 2:
+            if globalconfig["darklight2"] == 0:
                 self.__commonstylebase.setstylesheetsignal.emit()
             windows.WaitForSingleObject(sema, windows.INFINITE)
 
