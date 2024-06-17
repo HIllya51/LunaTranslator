@@ -864,6 +864,21 @@ class QWebWrap(abstractwebview):
         t.timeout.emit()
         t.start()
 
+    def parsehtml(self, html):
+        if nowisdark():
+            html = (
+                html
+                + """
+    <style>
+        body 
+        { 
+            background-color: rgb(44,44,44);
+            color: white; 
+        }
+    </style>"""
+            )
+        return html
+
     def set_zoom(self, zoom):
         self.internal_zoom = zoom
         self.internal.setZoomFactor(zoom)
