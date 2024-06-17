@@ -674,6 +674,9 @@ class abstractwebview(QWidget):
 <style>
 @media (prefers-color-scheme: dark) 
 {
+    :root {
+        color-scheme: dark;
+    }
     body 
     { 
         background-color: rgb(44,44,44);
