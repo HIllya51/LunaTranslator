@@ -1,5 +1,5 @@
 from qtsymbols import *
-import os, platform, functools, threading, time, inspect
+import os, platform, functools, threading, time
 from traceback import print_exc
 import windows, qtawesome, winsharedutils
 from webviewpy import (
@@ -10,6 +10,7 @@ from webviewpy import (
 from winsharedutils import HTMLBrowser
 from myutils.config import _TR, globalconfig
 from myutils.wrapper import Singleton, Singleton_close
+from myutils.utils import nowisdark
 
 
 class FocusCombo(QComboBox):
@@ -667,7 +668,21 @@ class abstractwebview(QWidget):
     html_limit = 2 * 1024 * 1024
 
     def parsehtml(self, html):
-        return html
+        return (
+            html
+            + """
+<style>
+@media (prefers-color-scheme: dark) 
+{
+    body 
+    { 
+        background-color: rgb(44,44,44);
+        color: white; 
+    }
+}
+</style>
+"""
+        )
 
     def set_zoom(self, zoom):
         pass
@@ -780,6 +795,18 @@ class mshtmlWidget(abstractwebview):
         self.browser.set_html(html)
 
     def parsehtml(self, html):
+        if nowisdark():
+            html = (
+                html
+                + """
+    <style>
+        body 
+        { 
+            background-color: rgb(44,44,44);
+            color: white; 
+        }
+    </style>"""
+            )
         html = """<html><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8" /></head><body style=" font-family:'{}'">{}</body></html>""".format(
             QFontDatabase.systemFont(QFontDatabase.GeneralFont).family(), html
         )
