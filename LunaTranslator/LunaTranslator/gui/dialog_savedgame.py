@@ -808,7 +808,6 @@ class dialog_setting_game_internal(QWidget):
             )
         return _w
 
-
     def doaddtab(self, wfunct, exe, layout):
         w = wfunct(exe)
         layout.addWidget(w)
@@ -1053,8 +1052,7 @@ class dialog_setting_game_internal(QWidget):
                         "",
                         callback=lambda x: noundictconfigdialog1(
                             self,
-                            savehook_new_data[exepath],
-                            "tts_repair_regex",
+                            savehook_new_data[exepath]["tts_repair_regex"],
                             "语音修正",
                             ["正则", "原文", "替换"],
                         ),

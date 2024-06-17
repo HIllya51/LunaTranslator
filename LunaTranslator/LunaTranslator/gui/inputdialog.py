@@ -13,7 +13,7 @@ from gui.usefulwidget import (
     getsimplepatheditor,
     FocusSpin,
     FocusDoubleSpin,
-    FocusCombo
+    FocusCombo,
 )
 
 
@@ -28,12 +28,12 @@ class noundictconfigdialog1(QDialog):
             self.model.index(row, 0), getsimpleswitch(item, "regex")
         )
 
-    def __init__(self, parent, configdict, configkey, title, label) -> None:
+    def __init__(self, parent, reflist, title, label) -> None:
         super().__init__(parent, Qt.WindowType.WindowCloseButtonHint)
 
         self.setWindowTitle(_TR(title))
         # self.setWindowModality(Qt.ApplicationModal)
-
+        self.reflist = reflist
         formLayout = QVBoxLayout(self)  # 配置layout
 
         self.model = QStandardItemModel()
@@ -48,7 +48,7 @@ class noundictconfigdialog1(QDialog):
         )
 
         self.table = table
-        for row, item in enumerate(configdict[configkey]):
+        for row, item in enumerate(reflist):
             self.newline(row, item)
 
         search = QHBoxLayout()
@@ -76,22 +76,18 @@ class noundictconfigdialog1(QDialog):
         button = threebuttons()
 
         def clicked1():
-            self.configdict[configkey].insert(
-                0, {"key": "", "value": "", "regex": False}
-            )
-            self.newline(0, self.configdict[configkey][0])
+            self.reflist.insert(0, {"key": "", "value": "", "regex": False})
+            self.newline(0, self.reflist[0])
 
         button.btn1clicked.connect(clicked1)
 
         def clicked2():
             self.model.removeRow(table.currentIndex().row())
-            self.configdict[configkey].pop(table.currentIndex().row())
+            self.reflist.pop(table.currentIndex().row())
 
         button.btn2clicked.connect(clicked2)
         button.btn3clicked.connect(self.apply)
         self.button = button
-        self.configdict = configdict
-        self.configkey = configkey
         formLayout.addWidget(table)
         formLayout.addLayout(search)
         formLayout.addWidget(button)
@@ -100,18 +96,18 @@ class noundictconfigdialog1(QDialog):
 
     def apply(self):
         rows = self.model.rowCount()
-        rowoffset = 0
         dedump = set()
+        needremoves = []
         for row in range(rows):
             k, v = self.model.item(row, 1).text(), self.model.item(row, 2).text()
             if k == "" or k in dedump:
-                self.configdict[self.configkey].pop(row - rowoffset)
-                rowoffset += 1
+                needremoves.append(row)
                 continue
-            self.configdict[self.configkey][row - rowoffset].update(
-                {"key": k, "value": v}
-            )
+            self.reflist[row].update({"key": k, "value": v})
             dedump.add(k)
+        for row in reversed(needremoves):
+            self.model.removeRow(row)
+            self.reflist.pop(row)
 
     def closeEvent(self, a0: QCloseEvent) -> None:
         self.button.setFocus()

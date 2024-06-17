@@ -164,8 +164,7 @@ def setTab5lz(self):
                 "",
                 callback=lambda x: noundictconfigdialog1(
                     self,
-                    globalconfig["ttscommon"],
-                    "tts_repair_regex",
+                    globalconfig["ttscommon"]["tts_repair_regex"],
                     "语音修正",
                     ["正则", "原文", "替换"],
                 ),
