@@ -9,7 +9,6 @@ from gui.usefulwidget import (
     D_getspinbox,
     D_getcolorbutton,
     getcolorbutton,
-    D_getsimpleswitch,
     selectcolor,
 )
 
@@ -316,9 +315,9 @@ def uisetting(self):
             ("明暗", 4),
             (
                 D_getsimplecombobox(
-                    _TRL(["明亮", "黑暗", "跟随系统"]),
+                    _TRL(["跟随系统", "明亮", "黑暗"]),
                     globalconfig,
-                    "darklight",
+                    "darklight2",
                     lambda _: gobject.baseobject.setcommonstylesheet(),
                 ),
                 5,

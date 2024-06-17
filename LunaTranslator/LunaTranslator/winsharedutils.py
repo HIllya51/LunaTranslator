@@ -20,6 +20,7 @@ from ctypes import (
     c_double,
     c_char,
     CFUNCTYPE,
+    c_long,
 )
 from ctypes.wintypes import WORD, HANDLE, HWND, LONG, DWORD, RECT, BYTE
 from windows import WINDOWPLACEMENT
@@ -409,6 +410,9 @@ get_ZoomFactor.argtypes = (c_void_p,)
 get_ZoomFactor.restype = c_double
 put_ZoomFactor = utilsdll.put_ZoomFactor
 put_ZoomFactor.argtypes = c_void_p, c_double
+put_PreferredColorScheme = utilsdll.put_PreferredColorScheme
+put_PreferredColorScheme.argtypes = c_void_p, c_int
+put_PreferredColorScheme.restype = c_long
 
 clipboard_callback = utilsdll.clipboard_callback
 clipboard_callback.argtypes = (c_void_p,)

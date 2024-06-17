@@ -683,6 +683,11 @@ class WebivewWidget(abstractwebview):
             self.__token,
         )
 
+    def get_controller(self):
+        return self.webview.get_native_handle(
+            webview_native_handle_kind_t.WEBVIEW_NATIVE_HANDLE_KIND_BROWSER_CONTROLLER
+        )
+
     def __init__(self, parent=None, debug=False) -> None:
         super().__init__(parent)
         declare_library_path(
@@ -700,25 +705,31 @@ class WebivewWidget(abstractwebview):
             self.on_ZoomFactorChanged.emit
         )
         self.__token = winsharedutils.add_ZoomFactorChanged(
-            self.webview.get_native_handle(
-                webview_native_handle_kind_t.WEBVIEW_NATIVE_HANDLE_KIND_BROWSER_CONTROLLER
-            ),
-            zoomfunc,
+            self.get_controller(), zoomfunc
         )
         self.keepref = [zoomfunc]
         self.webview.bind("__on_load", self._on_load)
         self.webview.init("""window.__on_load(window.location.href)""")
 
+        self.__darkstate = None
+        t = QTimer(self)
+        t.setInterval(100)
+        t.timeout.connect(self.__darkstatechecker)
+        t.timeout.emit()
+        t.start()
+
+    def __darkstatechecker(self):
+        dl = globalconfig["darklight2"]
+        if dl == self.__darkstate:
+            return
+        self.__darkstate = dl
+        winsharedutils.put_PreferredColorScheme(self.get_controller(), dl)
+
     def set_zoom(self, zoom):
         self.put_ZoomFactor(zoom)
 
     def put_ZoomFactor(self, zoom):
-        winsharedutils.put_ZoomFactor(
-            self.webview.get_native_handle(
-                webview_native_handle_kind_t.WEBVIEW_NATIVE_HANDLE_KIND_BROWSER_CONTROLLER
-            ),
-            zoom,
-        )
+        winsharedutils.put_ZoomFactor(self.get_controller(), zoom)
 
     def _on_load(self, href):
         self.on_load.emit(href)

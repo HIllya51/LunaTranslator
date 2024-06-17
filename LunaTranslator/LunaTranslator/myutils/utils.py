@@ -84,12 +84,12 @@ def simplehtmlparser(text, tag, sign):
 
 
 def nowisdark():
-    dl = globalconfig["darklight"]
-    if dl == 0:
+    dl = globalconfig["darklight2"]
+    if dl == 1:
         dark = False
-    elif dl == 1:
-        dark = True
     elif dl == 2:
+        dark = True
+    elif dl == 0:
         dark = winsharedutils.isDark()
     return dark
 

@@ -7,10 +7,27 @@
 #include <wrl/implements.h>
 using namespace Microsoft::WRL;
 #include <WebView2.h>
+#define CHECK_FAILURE(x) \
+    if (FAILED((x)))     \
+        return x;
 
-DECLARE void *add_ZoomFactorChanged(void *m_host, void (*signal)(double))
+DECLARE HRESULT put_PreferredColorScheme(void *m_host, COREWEBVIEW2_PREFERRED_COLOR_SCHEME scheme)
 {
 
+    wil::com_ptr<ICoreWebView2Controller> m_controller(reinterpret_cast<ICoreWebView2Controller *>(m_host));
+    wil::com_ptr<ICoreWebView2> coreWebView2;
+    CHECK_FAILURE(m_controller->get_CoreWebView2(&coreWebView2));
+    auto webView2_13 = coreWebView2.try_query<ICoreWebView2_13>();
+    if (webView2_13)
+    {
+        wil::com_ptr<ICoreWebView2Profile> profile;
+        CHECK_FAILURE(webView2_13->get_Profile(&profile));
+        CHECK_FAILURE(profile->put_PreferredColorScheme(scheme));
+    }
+    return S_FALSE;
+}
+DECLARE void *add_ZoomFactorChanged(void *m_host, void (*signal)(double))
+{
     EventRegistrationToken *m_zoomFactorChangedToken = new EventRegistrationToken;
     // Register a handler for the ZoomFactorChanged event.
     // This handler just announces the new level of zoom on the window's title bar.
