@@ -4,7 +4,6 @@
     "小学馆": "Phòng nhỏ",
     "灵格斯词典": "Từ điển Lingus",
     "查词": "Tra từ",
-    "重新翻译": "Dịch lại",
     "自动翻译": "Dịch tự động",
     "打开设置": "Mở Cài đặt",
     "复制到剪贴板": "Sao chép vào bảng nháp",
@@ -797,5 +796,6 @@
     "最大行数": "Số dòng tối đa",
     "超过时截断而非过滤": "Cắt ngắn thay vì lọc khi vượt quá",
     "兼容接口": "Giao diện tương thích",
-    "调试浏览器": "Gỡ lỗi trình duyệt"
+    "调试浏览器": "Gỡ lỗi trình duyệt",
+    "手动翻译": "Dịch thủ công"
 }

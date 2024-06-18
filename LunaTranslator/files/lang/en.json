@@ -132,7 +132,6 @@
     "备注": "remarks",
     "路径": "route",
     "双线性": "Bilinear",
-    "重新翻译": "Retranslation",
     "选取OCR范围": "Select OCR Range",
     "选择文本": "Select Text",
     "开始游戏": "Start the game",
@@ -797,5 +796,6 @@
     "最大行数": "Maximum number of rows",
     "超过时截断而非过滤": "Truncate instead of filtering when exceeded",
     "兼容接口": "Compatible interface",
-    "调试浏览器": "Debugging browser"
+    "调试浏览器": "Debugging browser",
+    "手动翻译": "Manual translation"
 }

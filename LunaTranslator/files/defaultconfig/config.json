@@ -334,7 +334,7 @@
         "buttons": {
             "retrans": {
                 "use": true,
-                "tip": "重新翻译",
+                "tip": "手动翻译",
                 "icon": "fa.rotate-right",
                 "align": 0
             },
@@ -613,7 +613,7 @@
         "all": {
             "_1": {
                 "use": false,
-                "name": "重新翻译",
+                "name": "手动翻译",
                 "keystring": ""
             },
             "_2": {

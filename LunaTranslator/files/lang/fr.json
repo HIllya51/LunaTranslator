@@ -4,7 +4,6 @@
     "小学馆": "École primaire",
     "灵格斯词典": "Dictionnaire linggs",
     "查词": "Recherche de mots",
-    "重新翻译": "Nouvelle traduction",
     "自动翻译": "Traduction automatique",
     "打开设置": "Ouvrir les paramètres",
     "复制到剪贴板": "Copier dans le presse - papiers",
@@ -797,5 +796,6 @@
     "最大行数": "Nombre maximal de lignes",
     "超过时截断而非过滤": "Troncation au - delà du temps plutôt que filtrage",
     "兼容接口": "Interface compatible",
-    "调试浏览器": "Déboguer le Navigateur"
+    "调试浏览器": "Déboguer le Navigateur",
+    "手动翻译": "Traduction manuelle"
 }

@@ -4,7 +4,6 @@
     "小学馆": "İlkokul salonu",
     "灵格斯词典": "Linger Sözlük",
     "查词": "Kelime arama",
-    "重新翻译": "Dönüştürme",
     "自动翻译": "Otomatik çeviri",
     "打开设置": "Ayarları Aç",
     "复制到剪贴板": "clipboard'a kopyalayın",
@@ -797,5 +796,6 @@
     "最大行数": "Azamik satır sayısı",
     "超过时截断而非过滤": "Üstünde filtrelemek yerine küçük",
     "兼容接口": "Kompatibil arayüz",
-    "调试浏览器": "Hata ayıklama tarayıcısı"
+    "调试浏览器": "Hata ayıklama tarayıcısı",
+    "手动翻译": "Elle çevirim"
 }

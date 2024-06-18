@@ -4,7 +4,6 @@
     "小学馆": "Sala della scuola elementare",
     "灵格斯词典": "Dizionario lingo",
     "查词": "Cerca parole",
-    "重新翻译": "Traslazione",
     "自动翻译": "Traduzione automatica",
     "打开设置": "Apri impostazioni",
     "复制到剪贴板": "copia negli appunti",
@@ -797,5 +796,6 @@
     "最大行数": "Numero massimo di righe",
     "超过时截断而非过滤": "Truncare invece di filtrare quando superato",
     "兼容接口": "Interfaccia compatibile",
-    "调试浏览器": "Browser di debug"
+    "调试浏览器": "Browser di debug",
+    "手动翻译": "Traduzione manuale"
 }

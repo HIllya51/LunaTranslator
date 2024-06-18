@@ -4,7 +4,6 @@
     "小学馆": "Pabellón de la escuela primaria",
     "灵格斯词典": "Diccionario Lingus",
     "查词": "Buscar palabras",
-    "重新翻译": "Retranslación",
     "自动翻译": "Traducción automática",
     "打开设置": "Abrir configuración",
     "复制到剪贴板": "Copiar al portapapeles",
@@ -797,5 +796,6 @@
     "最大行数": "Número máximo de líneas",
     "超过时截断而非过滤": "Cortar en lugar de filtrar cuando se supera el tiempo",
     "兼容接口": "Interfaz compatible",
-    "调试浏览器": "Depurar el navegador"
+    "调试浏览器": "Depurar el navegador",
+    "手动翻译": "Traducción manual"
 }
