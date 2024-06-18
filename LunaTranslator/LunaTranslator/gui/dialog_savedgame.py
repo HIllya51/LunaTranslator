@@ -1074,6 +1074,20 @@ class dialog_setting_game_internal(QWidget):
 
         for showname, key, filt in [
             ("json翻译文件", "gamejsonfile", "*.json"),
+        ]:
+            if isinstance(savehook_new_data[exepath][key], str):
+                savehook_new_data[exepath][key] = [savehook_new_data[exepath][key]]
+            formLayout.addRow(
+                _TR(showname),
+                listediterline(
+                    showname,
+                    showname,
+                    savehook_new_data[exepath][key],
+                    ispathsedit=dict(filter1=filt),
+                ),
+            )
+
+        for showname, key, filt in [
             ("sqlite翻译记录", "gamesqlitefile", "*.sqlite"),
         ]:
             formLayout.addRow(
@@ -2556,7 +2570,7 @@ class dialog_savedgame_v3(QWidget):
                 _TR("画廊"),
                 savehook_new_data[self.currentfocuspath]["imagepath_all"],
                 closecallback=lambda: self.pixview.setpix(self.currentfocuspath),
-                ispathsedit=True,
+                ispathsedit=dict(),
             )
 
         elif action == deleteimage:

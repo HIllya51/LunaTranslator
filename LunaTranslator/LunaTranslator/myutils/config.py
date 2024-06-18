@@ -92,7 +92,7 @@ def getdefaultsavehook(gamepath, title=None):
         "hooktypeasname": {},
         "use_saved_text_process": False,
         # "searchnoresulttime": 0,
-        "gamejsonfile": "",
+        "gamejsonfile": [],#之前是"",后面改成[]
         "gamesqlitefile": "",
         "relationlinks": [],
         # "vndbtags": [],#->webtags

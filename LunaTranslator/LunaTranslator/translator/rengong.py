@@ -16,16 +16,19 @@ class TS(basetrans):
                         with open(pp, "r", encoding="utf8") as f:
                             self.jsons.append(json.load(f))
             if p1:
-                if os.path.exists(p1):
-                    with open(p1, "r", encoding="utf8") as f:
-                        self.jsons.append(json.load(f))
+                for pp in p1:
+                    if os.path.exists(pp):
+                        with open(pp, "r", encoding="utf8") as f:
+                            self.jsons.append(json.load(f))
             self.paths = (p1, p)
 
     def unsafegetcurrentgameconfig(self):
         try:
             _path = gobject.baseobject.textsource.pname
             _path = savehook_new_data[_path]["gamejsonfile"]
-            return _path
+            if isinstance(_path, str):
+                _path = [_path]
+            return tuple(_path)
         except:
             return None
 

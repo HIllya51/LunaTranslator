@@ -1204,7 +1204,7 @@ class listediter(QDialog):
         self.hcmodel.insertRow(target, [QStandardItem(text)])
 
     def __init__(
-        self, p, title, header, lst, closecallback=None, ispathsedit=False
+        self, p, title, header, lst, closecallback=None, ispathsedit=None
     ) -> None:
         super().__init__(p)
         self.lst = lst
@@ -1277,8 +1277,8 @@ class listediter(QDialog):
                 "",
                 multi=False,
                 edit=None,
-                isdir=self.ispathsedit["isdir"],
-                filter1=self.ispathsedit["filter1"],
+                isdir=self.ispathsedit.get("isdir",False),
+                filter1=self.ispathsedit.get("filter1",'*.*'),
                 callback=self.__cb,
             )
         else:
@@ -1288,7 +1288,7 @@ class listediter(QDialog):
 class listediterline(QLineEdit):
     clicked = pyqtSignal()
 
-    def __init__(self, name, header, reflist, ispathsedit=False):
+    def __init__(self, name, header, reflist, ispathsedit=None):
         super().__init__()
         self.setReadOnly(True)
         self.reflist = reflist
