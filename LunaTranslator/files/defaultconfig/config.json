@@ -15,8 +15,126 @@
     "read_translator": 0,
     "disappear_delay": 5,
     "network": 1,
+    "webview_textbrowser": false,
     "imagewrapmode": 0,
     "primitivtemetaorigin": "vid",
+    "rendertext_using": "textbrowser",
+    "rendertext_using_internal": {
+        "webview": "faguang",
+        "textbrowser": "faguang"
+    },
+    "rendertext": {
+        "webview": {
+            "normal": {
+                "name": "普通字体"
+            },
+            "faguang": {
+                "name": "发光字体",
+                "args": {
+                    "fillcolor": "#eeeeee",
+                    "shadowforce": 5
+                },
+                "argstype": {
+                    "fillcolor": {
+                        "name": "填充颜色",
+                        "type": "colorselect"
+                    },
+                    "shadowforce": {
+                        "name": "发光亮度",
+                        "type": "intspin",
+                        "min": 1,
+                        "max": 100,
+                        "step": 1
+                    }
+                }
+            }
+        },
+        "textbrowser": {
+            "normal": {
+                "name": "普通字体"
+            },
+            "miaobian0": {
+                "name": "描边字体_1",
+                "args": {
+                    "fillcolor": "#eeeeee",
+                    "width": 1
+                },
+                "argstype": {
+                    "fillcolor": {
+                        "name": "填充颜色",
+                        "type": "colorselect"
+                    },
+                    "width": {
+                        "name": "描边宽度",
+                        "type": "spin",
+                        "min": 0.1,
+                        "max": 100,
+                        "step": 0.1
+                    }
+                }
+            },
+            "miaobian1": {
+                "name": "描边字体_2",
+                "args": {
+                    "fillcolor": "#eeeeee",
+                    "width": 3
+                },
+                "argstype": {
+                    "fillcolor": {
+                        "name": "填充颜色",
+                        "type": "colorselect"
+                    },
+                    "width": {
+                        "name": "描边宽度",
+                        "type": "spin",
+                        "min": 0.1,
+                        "max": 100,
+                        "step": 0.1
+                    }
+                }
+            },
+            "miaobian2": {
+                "name": "描边字体_3",
+                "args": {
+                    "fillcolor": "#eeeeee",
+                    "width": 3
+                },
+                "argstype": {
+                    "fillcolor": {
+                        "name": "填充颜色",
+                        "type": "colorselect"
+                    },
+                    "width": {
+                        "name": "描边宽度",
+                        "type": "spin",
+                        "min": 0.1,
+                        "max": 100,
+                        "step": 0.1
+                    }
+                }
+            },
+            "faguang": {
+                "name": "发光字体",
+                "args": {
+                    "fillcolor": "#eeeeee",
+                    "shadowforce": 5
+                },
+                "argstype": {
+                    "fillcolor": {
+                        "name": "填充颜色",
+                        "type": "colorselect"
+                    },
+                    "shadowforce": {
+                        "name": "发光亮度",
+                        "type": "intspin",
+                        "min": 1,
+                        "max": 100,
+                        "step": 1
+                    }
+                }
+            }
+        }
+    },
     "metadata": {
         "vndb": {
             "name": "vndb",
@@ -202,10 +320,6 @@
     "extra_space": 0,
     "fonttype": "Arial",
     "fonttype2": "Arial",
-    "miaobianwidth2": 3,
-    "miaobianwidth": 1,
-    "miaobiancolor": "#eeeeee",
-    "zitiyangshi2": 5,
     "hira_vis_type": 0,
     "iskongxin": true,
     "isshowrawtext": true,
@@ -563,8 +677,6 @@
     "showShadow": false,
     "shadowcolor": "blue",
     "ocr_hori_extend": true,
-    "shadowforce": 5,
-    "traceoffset": 2,
     "showcixing_touming": 30,
     "cixingcolor": {
         "形容詞": "aliceblue",

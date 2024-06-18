@@ -11,7 +11,7 @@ include_directories(${CMAKE_CURRENT_LIST_DIR}/wil/include)
 include_directories(${CMAKE_CURRENT_LIST_DIR}/miniaudio)
 include_directories(${CMAKE_CURRENT_LIST_DIR}/tinymp3)
 
-include_directories(${CMAKE_CURRENT_LIST_DIR}/webview2/Microsoft.Web.WebView2.1.0.2478.35/build/native/include)
+include_directories(${CMAKE_CURRENT_LIST_DIR}/webview2/Microsoft.Web.WebView2.1.0.2535.41/build/native/include)
 
 if(${CMAKE_SIZEOF_VOID_P} EQUAL 4)
     set(LTLPlatform "Win32")

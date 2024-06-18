@@ -88,7 +88,6 @@
     "OCR范围框颜色": "Colore casella intervallo OCR",
     "OCR范围框宽度": "Larghezza casella intervallo OCR",
     "普通字体": "Carattere normale",
-    "空心字体": "Carattere bianco",
     "描边字体": "Carattere tratto",
     "显示设置": "Impostazioni di visualizzazione",
     "不透明度": "Opacità",
@@ -99,11 +98,9 @@
     "翻译器字体类型": "Tipo di carattere del traduttore",
     "设置界面字体类型": "Imposta tipo di carattere dell'interfaccia",
     "字体大小": "dimensione del carattere",
-    "特殊字体样式填充颜色": "Colore speciale di riempimento stile carattere",
     "字体样式": "Stile carattere",
     "加粗字体": "Carattere grassetto",
     "居中显示": "Centra la visualizzazione",
-    "空心线宽": "Larghezza della linea vuota",
     "描边宽度": "Larghezza tratto",
     "游戏最小化时窗口隐藏": "Nascondi finestra quando il gioco è minimizzato",
     "游戏窗口移动时同步移动": "Sincronizza il movimento quando la finestra di gioco si muove",
@@ -710,10 +707,8 @@
     "讯飞OCR": "OCR IFlytek",
     "发光字体": "Carattere luminoso",
     "发光亮度": "luminanza",
-    "投影距离": "Distanza di proiezione",
     "最大缓冲区长度": "Lunghezza massima del buffer",
     "最大缓存文本长度": "Lunghezza massima del testo memorizzato nella cache",
-    "投影": "proiezione",
     "半径": "raggio",
     "圆角": "filetto",
     "立即应用": "Applica ora",
@@ -797,5 +792,6 @@
     "超过时截断而非过滤": "Truncare invece di filtrare quando superato",
     "兼容接口": "Interfaccia compatibile",
     "调试浏览器": "Browser di debug",
-    "手动翻译": "Traduzione manuale"
+    "手动翻译": "Traduzione manuale",
+    "显示引擎": "Motore di visualizzazione"
 }

@@ -17,7 +17,7 @@ from gui.dialog_savedgame import browserdialog, dialog_savedgame_integrated
 
 
 class QUnFrameWindow(resizableframeless):
-    displayglobaltooltip= pyqtSignal(str)
+    displayglobaltooltip = pyqtSignal(str)
     displayres = pyqtSignal(dict)
     displayraw1 = pyqtSignal(dict)
     displaystatus = pyqtSignal(str, str, bool, bool)
@@ -99,7 +99,7 @@ class QUnFrameWindow(resizableframeless):
         except:
             print_exc()
 
-    def showraw(self, kwargs):  # hira,res,color,onlytrans):
+    def showraw(self, kwargs):  # res,color,onlytrans):
         text = kwargs.get("text")
         color = kwargs.get("color")
         onlytrans = kwargs.get("onlytrans")
@@ -113,13 +113,7 @@ class QUnFrameWindow(resizableframeless):
         else:
             _res = text
         if globalconfig["isshowrawtext"]:
-            hira = (
-                globalconfig["isshowhira"]
-                or globalconfig["usesearchword"]
-                or globalconfig["usecopyword"]
-                or globalconfig["show_fenci"]
-            )
-            self.showline(clear=clear, text=_res, hira=hira, color=color)
+            self.showline(clear=clear, text=_res, isshowrawtext=True, color=color)
         else:
             self.showline(clear=clear)
 
@@ -157,97 +151,44 @@ class QUnFrameWindow(resizableframeless):
         clear = kwargs.get("clear", True)
         origin = kwargs.get("origin", True)
         text = kwargs.get("text", None)
-        color = kwargs.get("color", None)
-        hira = kwargs.get("hira", False)
+        color = kwargs.get("color", 'black')
+        isshowrawtext = kwargs.get("isshowrawtext", False)
         iter_context = kwargs.get("iter_context", None)
 
         if clear:
             self.translate_text.clear()
-            self.saveiterclasspointer.clear()
         if text is None:
             return
         text = self.cleartext(text)
-        if hira:
-            hira = self.parsehira(text)
-        else:
-            hira = []
-        self.translate_text.setnextfont(origin)
 
-        if globalconfig["showatcenter"]:
-            self.translate_text.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        else:
-            self.translate_text.setAlignment(Qt.AlignmentFlag.AlignLeft)
+        atcenter = globalconfig["showatcenter"]
 
         if iter_context:
             _, iter_context_class = iter_context
-
-            if iter_context_class not in self.saveiterclasspointer:
-                self.translate_text.append(" ", hira, origin)
-                self.saveiterclasspointer[iter_context_class] = {
-                    "currtext": "",
-                    "curr": self.translate_text.getcurrpointer(),
-                    "start": self.translate_text.getcurrpointer(),
-                }
-
-            currbefore = self.saveiterclasspointer[iter_context_class]["curr"]
-            currlen = len(self.saveiterclasspointer[iter_context_class]["currtext"])
-            if len(text) < currlen:
-                self.translate_text.deletebetween(
-                    self.saveiterclasspointer[iter_context_class]["start"] + len(text),
-                    self.saveiterclasspointer[iter_context_class]["curr"],
-                )
-            else:
-                newtext = text[currlen:]
-                self.translate_text.insertatpointer(
-                    self.saveiterclasspointer[iter_context_class]["start"] + currlen,
-                    newtext,
-                )
-
-            self.saveiterclasspointer[iter_context_class]["currtext"] = text
-            currcurrent = self.translate_text.getcurrpointer()
-            self.saveiterclasspointer[iter_context_class]["curr"] = currcurrent
-            currchange = currcurrent - currbefore
-            for klass in self.saveiterclasspointer:
-                if klass == iter_context_class:
-                    continue
-                if self.saveiterclasspointer[klass]["curr"] > currbefore:
-                    self.saveiterclasspointer[klass]["curr"] += currchange
-                    self.saveiterclasspointer[klass]["start"] += currchange
-
-            self.translate_text.showyinyingtext2(
-                color,
-                iter_context_class,
-                self.saveiterclasspointer[iter_context_class]["start"],
-                text,
+            self.translate_text.iter_append(
+                iter_context_class, origin, atcenter, text, color
             )
-
         else:
+            hira = []
+            isshowhira = isshow_fenci = isfenciclick = False
+            if isshowrawtext:
+                isshowhira = globalconfig["isshowhira"]
+                isshow_fenci = globalconfig["show_fenci"]
+                isfenciclick = (
+                    globalconfig["usesearchword"] or globalconfig["usecopyword"]
+                )
+                needhira = isshow_fenci or isshowhira or isfenciclick
+                if needhira:
+                    hira = self.parsehira(text)
+
             self.translate_text.append(
-                text, hira if globalconfig["isshowhira"] else [], color
+                origin,
+                atcenter,
+                text,
+                hira,
+                (isshowhira, isshow_fenci, isfenciclick),
+                color,
             )
-
-        if hira:
-
-            @threader
-            def callback(word, append):
-                if globalconfig["usewordorigin"] == False:
-                    word = word["orig"]
-                else:
-                    word = word.get("origorig", word["orig"])
-
-                if globalconfig["usecopyword"]:
-                    if append:
-                        winsharedutils.clipboard_set(
-                            winsharedutils.clipboard_get() + word
-                        )
-                    else:
-                        winsharedutils.clipboard_set(word)
-                if globalconfig["usesearchword"]:
-                    gobject.baseobject.searchwordW.getnewsentencesignal.emit(
-                        word, append
-                    )
-
-            self.translate_text.addsearchwordmask(hira, text, callback)
 
         if globalconfig["autodisappear"]:
             flag = (globalconfig["showintab"] and self.isMinimized()) or (
@@ -591,13 +532,14 @@ class QUnFrameWindow(resizableframeless):
         self.buttons = {}
         self.showbuttons = []
         self.stylebuttons = {}
-        self.saveiterclasspointer = {}
-    def displayglobaltooltip_f(self,string):
+
+    def displayglobaltooltip_f(self, string):
         QToolTip.showText(
-                    QCursor.pos(),
-                    string,
-                    gobject.baseobject.translation_ui,
-                )
+            QCursor.pos(),
+            string,
+            gobject.baseobject.translation_ui,
+        )
+
     def initsignals(self):
         self.hidesignal.connect(self.hide_)
         self.displayglobaltooltip.connect(self.displayglobaltooltip_f)
@@ -644,7 +586,6 @@ class QUnFrameWindow(resizableframeless):
         self._TitleLabel = QLabel(self)
         self.addbuttons()
         self.translate_text = Textbrowser(self)
-
         self.translate_text.contentsChanged.connect(self.textAreaChanged)
 
     def createborderradiusstring(self, r, merge, top=False):
@@ -695,7 +636,7 @@ class QUnFrameWindow(resizableframeless):
         )
 
         self.translate_text.setStyleSheet(
-            "border-width: 0;%s;background-color: %s"
+            "Textbrowser{border-width: 0;%s;background-color: %s}"
             % (
                 topr,
                 str2rgba(
@@ -879,21 +820,17 @@ class QUnFrameWindow(resizableframeless):
         globalconfig["locktools"] = not globalconfig["locktools"]
         self.refreshtoolicon()
 
-    def textAreaChanged(self, w, h):
+    def textAreaChanged(self, size: QSize):
 
         if globalconfig["fixedheight"]:
             return
         if self.translate_text.cleared:
             return
-        newHeight = h
+        newHeight = size.height() + self.translate_text._padding
         width = self.width()
         self.resize(
             width,
-            int(
-                max(0, -globalconfig["extra_space"])
-                + newHeight
-                + globalconfig["buttonsize"] * 1.5
-            ),
+            int(newHeight + globalconfig["buttonsize"] * 1.5),
         )
 
     def clickRange(self, auto):

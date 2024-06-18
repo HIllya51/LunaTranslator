@@ -1,4 +1,4 @@
-mswebview2_version = "1.0.2478.35"
+mswebview2_version = "1.0.2535.41"
 
 import os, subprocess
 

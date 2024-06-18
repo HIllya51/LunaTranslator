@@ -88,7 +88,6 @@
     "OCR范围框颜色": "OCR Aralık Kutusu Rengi",
     "OCR范围框宽度": "OCR menzili kutu genişliği",
     "普通字体": "Normal yazıtipi",
-    "空心字体": "Beyaz yazıtipi",
     "描边字体": "Sıçrama yazıtipi",
     "显示设置": "Gösterim ayarları",
     "不透明度": "Opacity",
@@ -99,11 +98,9 @@
     "翻译器字体类型": "Çevirme yazıtipi türü",
     "设置界面字体类型": "Arayüz yazıtipini ayarla",
     "字体大小": "Yazıtipi boyutu",
-    "特殊字体样式填充颜色": "Özel yazı tipi tarzı doldurma rengi",
     "字体样式": "Yazıtipi stili",
     "加粗字体": "Kalın yazıtipi",
     "居中显示": "Orta gösterim",
-    "空心线宽": "Yavaş çizgi ağırlığı",
     "描边宽度": "stroke-method",
     "显示显示原文按钮": "Metin düğmesini göster",
     "显示复制原文按钮": "Orijinal Kopyalama düğmesini göster",
@@ -710,10 +707,8 @@
     "讯飞OCR": "IFlytek OCR",
     "发光字体": "Açık yazıtipi",
     "发光亮度": "ışık",
-    "投影距离": "Projeksyon mesafesi",
     "最大缓冲区长度": "Azamik buffer uzunluğu",
     "最大缓存文本长度": "Maximum cached text length",
-    "投影": "projection",
     "半径": "radius",
     "圆角": "fillet",
     "立即应用": "şimdi uygulayın",
@@ -797,5 +792,6 @@
     "超过时截断而非过滤": "Üstünde filtrelemek yerine küçük",
     "兼容接口": "Kompatibil arayüz",
     "调试浏览器": "Hata ayıklama tarayıcısı",
-    "手动翻译": "Elle çevirim"
+    "手动翻译": "Elle çevirim",
+    "显示引擎": "Gösterim Motoru"
 }

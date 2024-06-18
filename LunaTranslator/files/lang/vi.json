@@ -88,7 +88,6 @@
     "OCR范围框颜色": "Màu hộp dải OCR",
     "OCR范围框宽度": "Chiều rộng khung dải OCR",
     "普通字体": "Phông thường",
-    "空心字体": "Phông rỗng",
     "描边字体": "Phông viền",
     "显示设置": "Thiết lập hiển thị",
     "不透明度": "Độ mờ",
@@ -99,11 +98,9 @@
     "翻译器字体类型": "Kiểu phông chữ Translator",
     "设置界面字体类型": "Đặt kiểu phông giao diện",
     "字体大小": "Cỡ phông chữ",
-    "特殊字体样式填充颜色": "Màu tô kiểu phông chữ đặc biệt",
     "字体样式": "Kiểu phông chữ",
     "加粗字体": "Phông đậm",
     "居中显示": "Hiện ở giữa",
-    "空心线宽": "Chiều rộng đường rỗng",
     "描边宽度": "Chiều rộng viền",
     "显示显示原文按钮": "Hiển thị nút hiển thị gốc",
     "显示复制原文按钮": "Hiển thị nút sao chép gốc",
@@ -710,10 +707,8 @@
     "讯飞OCR": "Máy bay OCR",
     "发光字体": "Phông phát sáng",
     "发光亮度": "Độ sáng phát sáng",
-    "投影距离": "Khoảng cách chiếu",
     "最大缓冲区长度": "Chiều dài bộ đệm tối đa",
     "最大缓存文本长度": "Độ dài văn bản bộ nhớ cache tối đa",
-    "投影": "Chiếu",
     "半径": "Bán kính",
     "圆角": "Góc tròn",
     "立即应用": "Áp dụng ngay",
@@ -797,5 +792,6 @@
     "超过时截断而非过滤": "Cắt ngắn thay vì lọc khi vượt quá",
     "兼容接口": "Giao diện tương thích",
     "调试浏览器": "Gỡ lỗi trình duyệt",
-    "手动翻译": "Dịch thủ công"
+    "手动翻译": "Dịch thủ công",
+    "显示引擎": "Công cụ hiển thị"
 }

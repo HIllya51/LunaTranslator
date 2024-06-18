@@ -88,7 +88,6 @@
     "OCR范围框颜色": "Couleur de la boîte de plage ocr",
     "OCR范围框宽度": "Largeur de la boîte de plage ocr",
     "普通字体": "Police normale",
-    "空心字体": "Polices vides",
     "描边字体": "Police de bord",
     "显示设置": "Paramètres d 'affichage",
     "不透明度": "Opacité",
@@ -99,11 +98,9 @@
     "翻译器字体类型": "Type de police du traducteur",
     "设置界面字体类型": "Définir le type de police de l'interface",
     "字体大小": "Taille de la police",
-    "特殊字体样式填充颜色": "Couleurs de remplissage de style de police spécial",
     "字体样式": "Style de police",
     "加粗字体": "Police en gras",
     "居中显示": "Affichage Central",
-    "空心线宽": "Poids de ligne creux",
     "描边宽度": "Largeur de la bordure",
     "显示显示原文按钮": "Afficher le bouton afficher le texte original",
     "显示复制原文按钮": "Afficher le bouton copier le texte original",
@@ -710,10 +707,8 @@
     "讯飞OCR": "OCR volant",
     "发光字体": "Polices lumineuses",
     "发光亮度": "Luminosité lumineuse",
-    "投影距离": "Distance de projection",
     "最大缓冲区长度": "Longueur maximale du tampon",
     "最大缓存文本长度": "Longueur maximale du texte mis en cache",
-    "投影": "Projection",
     "半径": "Rayon",
     "圆角": "Coins arrondis",
     "立即应用": "Appliquer maintenant",
@@ -797,5 +792,6 @@
     "超过时截断而非过滤": "Troncation au - delà du temps plutôt que filtrage",
     "兼容接口": "Interface compatible",
     "调试浏览器": "Déboguer le Navigateur",
-    "手动翻译": "Traduction manuelle"
+    "手动翻译": "Traduction manuelle",
+    "显示引擎": "Moteur d'affichage"
 }

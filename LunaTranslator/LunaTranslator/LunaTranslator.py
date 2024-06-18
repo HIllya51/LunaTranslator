@@ -908,8 +908,29 @@ class MAINUI:
                         self.__currentexe = None
             except:
                 print_exc()
+    @threader
+    def clickwordcallback(self,word, append):
+        if globalconfig["usewordorigin"] == False:
+            word = word["orig"]
+        else:
+            word = word.get("origorig", word["orig"])
 
+        if globalconfig["usecopyword"]:
+            if append:
+                winsharedutils.clipboard_set(
+                    winsharedutils.clipboard_get() + word
+                )
+            else:
+                winsharedutils.clipboard_set(word)
+        if globalconfig["usesearchword"]:
+            self.searchwordW.getnewsentencesignal.emit(
+                word, append
+            )
     def setshowintab_checked(self, widget):
+        try:
+            self.translation_ui
+        except:
+            return
         if widget == self.translation_ui:
             winsharedutils.showintab(int(widget.winId()), globalconfig["showintab"])
             return

@@ -88,7 +88,6 @@
     "OCR范围框颜色": "Kolor pola zakresu OCR",
     "OCR范围框宽度": "Szerokość pola zakresu OCR",
     "普通字体": "Normalna czcionka",
-    "空心字体": "Biała czcionka",
     "描边字体": "Czcionka kresu",
     "显示设置": "Ustawienia wyświetlania",
     "不透明度": "Nieprzezroczystość",
@@ -99,11 +98,9 @@
     "翻译器字体类型": "Typ czcionki tłumacza",
     "设置界面字体类型": "Ustaw typ czcionki interfejsu",
     "字体大小": "rozmiar czcionki",
-    "特殊字体样式填充颜色": "Kolor wypełnienia specjalnego stylu czcionki",
     "字体样式": "Styl czcionki",
     "加粗字体": "Pogrubiona czcionka",
     "居中显示": "Środkowy wyświetlacz",
-    "空心线宽": "Szerokość linii pustej",
     "描边宽度": "Szerokość skoku",
     "显示显示原文按钮": "Pokaż przycisk Pokaż oryginalny",
     "显示复制原文按钮": "Pokaż przycisk Kopiuj oryginał",
@@ -710,10 +707,8 @@
     "讯飞OCR": "OCR IFlytek",
     "发光字体": "Jasna czcionka",
     "发光亮度": "luminancja",
-    "投影距离": "Odległość projekcji",
     "最大缓冲区长度": "Maksymalna długość bufora",
     "最大缓存文本长度": "Maksymalna długość buforowanego tekstu",
-    "投影": "projekcja",
     "半径": "promień",
     "圆角": "filet",
     "立即应用": "aplikuj teraz",
@@ -797,5 +792,6 @@
     "超过时截断而非过滤": "Przycięcie zamiast filtrowania po przekroczeniu",
     "兼容接口": "Kompatybilny interfejs",
     "调试浏览器": "Debugowanie przeglądarki",
-    "手动翻译": "Tłumaczenie ręczne"
+    "手动翻译": "Tłumaczenie ręczne",
+    "显示引擎": "Silnik wyświetlania"
 }

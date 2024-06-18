@@ -30,6 +30,7 @@ class FocusCombo(QComboBox):
 class FocusFontCombo(QFontComboBox, FocusCombo):
     pass
 
+
 class FocusSpin(QSpinBox):
     def __init__(self, parent: QWidget = None) -> None:
         super().__init__(parent)
@@ -423,7 +424,8 @@ def callbackwrap(d, k, call, _):
 
 
 def comboboxcallbackwrap(internallist, d, k, call, _):
-    d[k] = internallist[_]
+    _ = internallist[_]
+    d[k] = _
     if call:
         try:
             call(_)
@@ -670,7 +672,53 @@ class abstractwebview(QWidget):
     on_ZoomFactorChanged = pyqtSignal(float)
     html_limit = 2 * 1024 * 1024
 
-    def parsehtml(self, html):
+    # 必须的接口
+    def _setHtml(self, html):
+        pass
+
+    def navigate(self, url):
+        pass
+
+    #
+    def _parsehtml(self, html):
+        return self._parsehtml_dark_auto(html)
+
+    def set_zoom(self, zoom):
+        pass
+
+    def set_transparent_background(self):
+        pass
+
+    def clear(self):
+        self.navigate("about:blank")
+
+    def setHtml(self, html):
+        html = self._parsehtml(html)
+        if len(html) < self.html_limit:
+            self._setHtml(html)
+        else:
+            os.makedirs("cache/temp", exist_ok=True)
+            lastcachehtml = os.path.abspath("cache/temp/" + str(time.time()) + ".html")
+            with open(lastcachehtml, "w", encoding="utf8") as ff:
+                ff.write(html)
+            self.navigate(lastcachehtml)
+
+    def _parsehtml_dark(self, html):
+        if nowisdark():
+            html = (
+                html
+                + """
+    <style>
+        body 
+        { 
+            background-color: rgb(44,44,44);
+            color: white; 
+        }
+    </style>"""
+            )
+        return html
+
+    def _parsehtml_dark_auto(self, html):
         return (
             html
             + """
@@ -689,9 +737,6 @@ class abstractwebview(QWidget):
 </style>
 """
         )
-
-    def set_zoom(self, zoom):
-        pass
 
 
 class WebivewWidget(abstractwebview):
@@ -766,8 +811,55 @@ class WebivewWidget(abstractwebview):
             size = getscaledrect(a0.size())
             windows.MoveWindow(hwnd, 0, 0, size[0], size[1], True)
 
-    def setHtml(self, html):
+    def _setHtml(self, html):
         self.webview.set_html(html)
+
+    def set_transparent_background(self):
+        winsharedutils.set_transparent_background(self.get_controller())
+
+
+class QWebWrap(abstractwebview):
+
+    def __init__(self) -> None:
+        super().__init__()
+        from PyQt5.QtWebEngineWidgets import QWebEngineView
+
+        self.internal = QWebEngineView(self)
+        self.internal.page().urlChanged.connect(
+            lambda qurl: self.on_load.emit(qurl.url())
+        )
+        self.internal_zoom = 1
+        t = QTimer(self)
+        t.setInterval(100)
+        t.timeout.connect(self.__getzoomfactor)
+        t.timeout.emit()
+        t.start()
+
+    def set_zoom(self, zoom):
+        self.internal_zoom = zoom
+        self.internal.setZoomFactor(zoom)
+
+    def __getzoomfactor(self):
+        z = self.internal.zoomFactor()
+        if z != self.internal_zoom:
+            self.internal_zoom = z
+            self.on_ZoomFactorChanged.emit(z)
+
+    def navigate(self, url: str):
+        from PyQt5.QtCore import QUrl
+
+        if not url.lower().startswith("http"):
+            url = url.replace("\\", "/")
+        self.internal.load(QUrl(url))
+
+    def _setHtml(self, html):
+        self.internal.setHtml(html)
+
+    def resizeEvent(self, a0: QResizeEvent) -> None:
+        self.internal.resize(a0.size())
+
+    def _parsehtml(self, html):
+        return self._parsehtml_dark(html)
 
 
 class mshtmlWidget(abstractwebview):
@@ -797,22 +889,11 @@ class mshtmlWidget(abstractwebview):
         size = getscaledrect(a0.size())
         self.browser.resize(0, 0, size[0], size[1])
 
-    def setHtml(self, html):
+    def _setHtml(self, html):
         self.browser.set_html(html)
 
-    def parsehtml(self, html):
-        if nowisdark():
-            html = (
-                html
-                + """
-    <style>
-        body 
-        { 
-            background-color: rgb(44,44,44);
-            color: white; 
-        }
-    </style>"""
-            )
+    def _parsehtml(self, html):
+        html = self._parsehtml_dark(html)
         html = """<html><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8" /></head><body style=" font-family:'{}'">{}</body></html>""".format(
             QFontDatabase.systemFont(QFontDatabase.GeneralFont).family(), html
         )
@@ -850,68 +931,12 @@ def D_getsimplekeyseq(dic, key, callback=None):
     return lambda: getsimplekeyseq(dic, key, callback)
 
 
-class QWebWrap(abstractwebview):
-
-    def __init__(self) -> None:
-        super().__init__()
-        from PyQt5.QtWebEngineWidgets import QWebEngineView
-
-        self.internal = QWebEngineView(self)
-        self.internal.page().urlChanged.connect(
-            lambda qurl: self.on_load.emit(qurl.url())
-        )
-        self.internal_zoom = 1
-        t = QTimer(self)
-        t.setInterval(100)
-        t.timeout.connect(self.__getzoomfactor)
-        t.timeout.emit()
-        t.start()
-
-    def parsehtml(self, html):
-        if nowisdark():
-            html = (
-                html
-                + """
-    <style>
-        body 
-        { 
-            background-color: rgb(44,44,44);
-            color: white; 
-        }
-    </style>"""
-            )
-        return html
-
-    def set_zoom(self, zoom):
-        self.internal_zoom = zoom
-        self.internal.setZoomFactor(zoom)
-
-    def __getzoomfactor(self):
-        z = self.internal.zoomFactor()
-        if z != self.internal_zoom:
-            self.internal_zoom = z
-            self.on_ZoomFactorChanged.emit(z)
-
-    def navigate(self, url: str):
-        from PyQt5.QtCore import QUrl
-
-        if not url.lower().startswith("http"):
-            url = url.replace("\\", "/")
-        self.internal.load(QUrl(url))
-
-    def setHtml(self, html):
-        self.internal.setHtml(html)
-
-    def resizeEvent(self, a0: QResizeEvent) -> None:
-        self.internal.resize(a0.size())
-
-
 class auto_select_webview(QWidget):
     on_load = pyqtSignal(str)
     on_ZoomFactorChanged = pyqtSignal(float)
 
     def clear(self):
-        self.navigate("about:blank")
+        self.internal.clear()
 
     def navigate(self, url):
         self._maybecreate()
@@ -921,15 +946,7 @@ class auto_select_webview(QWidget):
     def setHtml(self, html):
         self._maybecreate()
         self.internal.set_zoom(self.internalsavedzoom)
-        html = self.internal.parsehtml(html)
-        if len(html) < self.internal.html_limit:
-            self.internal.setHtml(html)
-        else:
-            os.makedirs("cache/temp", exist_ok=True)
-            lastcachehtml = os.path.abspath("cache/temp/" + str(time.time()) + ".html")
-            with open(lastcachehtml, "w", encoding="utf8") as ff:
-                ff.write(html)
-            self.internal.navigate(lastcachehtml)
+        self.internal.setHtml(html)
 
     def set_zoom(self, zoom):
         self.internalsavedzoom = zoom
@@ -1078,9 +1095,14 @@ def automakegrid(grid: QGridLayout, lis, save=False, savelist=None):
                 col = maxl - nowc
             else:
                 col = -maxl // cols
+            do = None
             if callable(wid):
                 wid = wid()
+                if isinstance(wid, tuple):
+                    wid, do = wid
             grid.addWidget(wid, nowr, nowc, 1, col)
+            if do:
+                do()
             if save:
                 ll.append(wid)
             nowc += cols
@@ -1280,8 +1302,8 @@ class listediter(QDialog):
                 "",
                 multi=False,
                 edit=None,
-                isdir=self.ispathsedit.get("isdir",False),
-                filter1=self.ispathsedit.get("filter1",'*.*'),
+                isdir=self.ispathsedit.get("isdir", False),
+                filter1=self.ispathsedit.get("filter1", "*.*"),
                 callback=self.__cb,
             )
         else:

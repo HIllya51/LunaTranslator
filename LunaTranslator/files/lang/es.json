@@ -88,7 +88,6 @@
     "OCR范围框颜色": "Color del cuadro de rango OCR",
     "OCR范围框宽度": "Ancho del marco de rango OCR",
     "普通字体": "Fuente normal",
-    "空心字体": "Fuente hueca",
     "描边字体": "Fuente de dibujo",
     "显示设置": "Configuración de la pantalla",
     "不透明度": "Opacidad",
@@ -99,11 +98,9 @@
     "翻译器字体类型": "Tipo de fuente del traductor",
     "设置界面字体类型": "Establecer el tipo de letra de la interfaz",
     "字体大小": "Tamaño de la fuente",
-    "特殊字体样式填充颜色": "Color de relleno de estilo de fuente especial",
     "字体样式": "Estilo de fuente",
     "加粗字体": "Negrita",
     "居中显示": "Mostrar en el Centro",
-    "空心线宽": "Ancho de línea hueco",
     "描边宽度": "Ancho de dibujo",
     "显示显示原文按钮": "Mostrar el botón mostrar texto original",
     "显示复制原文按钮": "Muestra el botón Copiar texto original",
@@ -710,10 +707,8 @@
     "讯飞OCR": "IFLYTEK OCR",
     "发光字体": "Fuente luminosa",
     "发光亮度": "Brillo luminoso",
-    "投影距离": "Distancia de proyección",
     "最大缓冲区长度": "Longitud máxima de la zona de amortiguación",
     "最大缓存文本长度": "Longitud máxima del texto en caché",
-    "投影": "Proyección",
     "半径": "Radio",
     "圆角": "Redondeado",
     "立即应用": "Aplicar de inmediato",
@@ -797,5 +792,6 @@
     "超过时截断而非过滤": "Cortar en lugar de filtrar cuando se supera el tiempo",
     "兼容接口": "Interfaz compatible",
     "调试浏览器": "Depurar el navegador",
-    "手动翻译": "Traducción manual"
+    "手动翻译": "Traducción manual",
+    "显示引擎": "Motor de visualización"
 }

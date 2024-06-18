@@ -11,6 +11,17 @@ using namespace Microsoft::WRL;
     if (FAILED((x)))     \
         return x;
 
+DECLARE void set_transparent_background(void* m_host){
+    COREWEBVIEW2_COLOR color;
+    ZeroMemory(&color,sizeof(color));
+    wil::com_ptr<ICoreWebView2Controller> m_controller(reinterpret_cast<ICoreWebView2Controller *>(m_host));
+    wil::com_ptr<ICoreWebView2Controller2> coreWebView2 =
+                m_controller.try_query<ICoreWebView2Controller2>();
+    if(coreWebView2){
+        coreWebView2->put_DefaultBackgroundColor(color);
+    }
+}
+
 DECLARE HRESULT put_PreferredColorScheme(void *m_host, COREWEBVIEW2_PREFERRED_COLOR_SCHEME scheme)
 {
 

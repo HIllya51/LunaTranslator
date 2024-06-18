@@ -413,6 +413,9 @@ put_ZoomFactor.argtypes = c_void_p, c_double
 put_PreferredColorScheme = utilsdll.put_PreferredColorScheme
 put_PreferredColorScheme.argtypes = c_void_p, c_int
 put_PreferredColorScheme.restype = c_long
+set_transparent_background = utilsdll.set_transparent_background
+set_transparent_background.argtypes = (c_void_p,)
+
 
 clipboard_callback = utilsdll.clipboard_callback
 clipboard_callback.argtypes = (c_void_p,)

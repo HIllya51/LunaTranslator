@@ -1,17 +1,22 @@
 from qtsymbols import *
 import functools
-import gobject
-from myutils.config import globalconfig, _TRL
+import gobject, os
+from myutils.config import globalconfig, _TRL, _TR
 from gui.inputdialog import multicolorset
 from gui.usefulwidget import (
     D_getsimplecombobox,
+    getsimplecombobox,
     getsimpleswitch,
     D_getspinbox,
     getspinbox,
     D_getcolorbutton,
+    getcolorbutton,
     D_getsimpleswitch,
     selectcolor,
-    FocusFontCombo
+    FocusFontCombo,
+    FocusCombo,
+    FocusDoubleSpin,
+    FocusSpin,
 )
 
 
@@ -67,6 +72,115 @@ def createfenciwitch(self):
     return self.show_fenciswitch
 
 
+def createinternalfontsettings(self, group, _type):
+    globalconfig["rendertext_using_internal"][group] = _type
+    __internal = globalconfig["rendertext"][group][_type]
+    dd = __internal.get("args", {})
+    lay: QFormLayout = self.goodfontsettingsWidget.layout()
+    while lay.count() > 2:
+        item = lay.takeAt(2)
+        if not item:
+            break
+        w = item.widget()
+        lay.removeWidget(w)
+        w.deleteLater()
+    for key in dd:
+        line = __internal["argstype"][key]
+        name = line["name"]
+        _type = line["type"]
+        if _type == "colorselect":
+            lineW = getcolorbutton(
+                dd,
+                key,
+                transparent=False,
+                callback=functools.partial(
+                    lambda dd, key, _: selectcolor(
+                        self, dd, key, self.miaobian_color_button
+                    ),
+                    dd,
+                    key,
+                ),
+                name="miaobian_color_button",
+                parent=self,
+            )
+        elif _type == "spin":
+            lineW = FocusDoubleSpin()
+            lineW.setMinimum(line.get("min", 0))
+            lineW.setMaximum(line.get("max", 100))
+            lineW.setSingleStep(line.get("step", 0.1))
+            lineW.setValue(dd[key])
+            lineW.valueChanged.connect(functools.partial(dd.__setitem__, key))
+
+        elif _type == "intspin":
+            lineW = FocusSpin()
+            lineW.setMinimum(line.get("min", 0))
+            lineW.setMaximum(line.get("max", 100))
+            lineW.setSingleStep(line.get("step", 1))
+            lineW.setValue(dd[key])
+            lineW.valueChanged.connect(functools.partial(dd.__setitem__, key))
+        lay.addRow(
+            name,
+            lineW,
+        )
+
+
+def resetgroudswitchcallback(self, group):
+
+    try:
+        self.goodfontgroupswitch.currentIndexChanged.disconnect()
+    except:
+        pass
+    _ = []
+    for k in globalconfig["rendertext"][group]:
+        if not os.path.exists(f"LunaTranslator/rendertext/internal/{group}/{k}.py"):
+            _.append(k)
+    for k in _:
+        globalconfig["rendertext"][group].pop(k)
+
+    if (
+        globalconfig["rendertext_using_internal"][group]
+        not in globalconfig["rendertext"][group]
+    ):
+        globalconfig["rendertext_using_internal"][group] = list(
+            globalconfig["rendertext"][group].keys()
+        )[0]
+    self.goodfontgroupswitch.clear()
+    self.goodfontgroupswitch.addItems(
+        _TRL(
+            [
+                globalconfig["rendertext"][group][x]["name"]
+                for x in globalconfig["rendertext"][group]
+            ]
+        )
+    )
+    self.goodfontgroupswitch.setCurrentIndex(-1)
+    self.goodfontgroupswitch.currentIndexChanged.connect(
+        lambda idx: createinternalfontsettings(
+            self, group, list(globalconfig["rendertext"][group].keys())[idx]
+        )
+    )
+    self.goodfontgroupswitch.setCurrentIndex(
+        list(globalconfig["rendertext"][group].keys()).index(
+            globalconfig["rendertext_using_internal"][group]
+        )
+    )
+
+
+def firsttime(self):
+
+    self.goodfontgroupswitch = FocusCombo()
+    self.goodfontsettingsformlayout.addRow(_TR("字体样式"), self.goodfontgroupswitch)
+    resetgroudswitchcallback(self, globalconfig["rendertext_using"])
+
+
+def creategoodfontwid(self):
+
+    self.goodfontsettingsWidget = QGroupBox()
+    self.goodfontsettingsformlayout = QFormLayout()
+    self.goodfontsettingsWidget.setLayout(self.goodfontsettingsformlayout)
+    return self.goodfontsettingsWidget, functools.partial(firsttime, self)
+
+
 def xianshigrid(self):
 
     textgrid = [
@@ -93,71 +207,21 @@ def xianshigrid(self):
             ("加粗字体", 5),
             D_getsimpleswitch(globalconfig, "showbold"),
         ],
+        [],
         [
-            "",
-        ],
-        [
-            ("字体样式", 3),
+            ("显示引擎", 3),
             (
                 D_getsimplecombobox(
-                    _TRL(
-                        [
-                            "普通字体",
-                            "空心字体",
-                            "描边字体",
-                            "描边字体_2",
-                            "描边字体_2_投影",
-                            "发光字体",
-                        ]
-                    ),
+                    _TRL(list(globalconfig["rendertext"].keys())),
                     globalconfig,
-                    "zitiyangshi2",
+                    "rendertext_using",
+                    internallist=list(globalconfig["rendertext"].keys()),
+                    callback=functools.partial(resetgroudswitchcallback, self),
                 ),
                 6,
             ),
         ],
-        [
-            ("特殊字体样式填充颜色", 5),
-            D_getcolorbutton(
-                globalconfig,
-                "miaobiancolor",
-                transparent=False,
-                callback=lambda: selectcolor(
-                    self, globalconfig, "miaobiancolor", self.miaobian_color_button
-                ),
-                name="miaobian_color_button",
-                parent=self,
-            ),
-        ],
-        [
-            ("空心线宽", 3),
-            (
-                D_getspinbox(
-                    0.1, 100, globalconfig, "miaobianwidth", double=True, step=0.1
-                ),
-                3,
-            ),
-            "",
-            ("描边宽度", 3),
-            (
-                D_getspinbox(
-                    0.1, 100, globalconfig, "miaobianwidth2", double=True, step=0.1
-                ),
-                3,
-            ),
-        ],
-        [
-            ("发光亮度", 3),
-            (D_getspinbox(1, 100, globalconfig, "shadowforce"), 3),
-            "",
-            ("投影距离", 3),
-            (
-                D_getspinbox(
-                    0.1, 100, globalconfig, "traceoffset", double=True, step=0.1
-                ),
-                3,
-            ),
-        ],
+        [(functools.partial(creategoodfontwid, self), 0)],
         [],
         [
             ("显示原文", 5),

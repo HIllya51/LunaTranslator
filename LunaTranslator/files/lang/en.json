@@ -94,7 +94,6 @@
     "替换": "replace",
     "補助記号": "Subsidy mark",
     "繁体中文": "Traditional Chinese",
-    "空心线宽": "Void lineweight",
     "删除游戏": "Delete Game",
     "和源窗口相同": "Same as source window",
     "自定义python处理": "Customized python processing",
@@ -138,7 +137,6 @@
     "翻译结果繁简体显示": "Display of translation results in simplified and complex form",
     "显示设置": "Display Settings",
     "显示/隐藏原文": "Show/hide original text",
-    "空心字体": "White Font",
     "设置界面字体类型": "Set interface font type",
     "小牛api": "Maverick api",
     "HOOK设置": "HOOK Settings",
@@ -152,7 +150,6 @@
     "感動詞": "Moving words",
     "字数统计": "word count",
     "描边字体": "Stroke font",
-    "特殊字体样式填充颜色": "Special Font Style Fill Color",
     "字体缩小（可长按）": "Reduce font size (long press is allowed)",
     "不透明度": "Opacity",
     "形容詞": "Adjective",
@@ -710,10 +707,8 @@
     "讯飞OCR": "IFlytek OCR",
     "发光字体": "Luminous font",
     "发光亮度": "luminance",
-    "投影距离": "Projection distance",
     "最大缓冲区长度": "Maximum buffer length",
     "最大缓存文本长度": "Maximum cached text length",
-    "投影": "projection",
     "半径": "radius",
     "圆角": "fillet",
     "立即应用": "apply now",
@@ -797,5 +792,6 @@
     "超过时截断而非过滤": "Truncate instead of filtering when exceeded",
     "兼容接口": "Compatible interface",
     "调试浏览器": "Debugging browser",
-    "手动翻译": "Manual translation"
+    "手动翻译": "Manual translation",
+    "显示引擎": "Display Engine"
 }

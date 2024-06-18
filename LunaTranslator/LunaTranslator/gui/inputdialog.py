@@ -249,9 +249,7 @@ class autoinitdialog(QDialog):
                 )
                 lineW.rejected.connect(self.close)
                 lineW.accepted.connect(
-                    functools.partial(
-                        save, None if "callback" not in line else line["callback"]
-                    )
+                    functools.partial(save, line.get("callback", None))
                 )
 
                 lineW.button(QDialogButtonBox.StandardButton.Ok).setText(_TR("确定"))
@@ -281,17 +279,17 @@ class autoinitdialog(QDialog):
                 regist.append([dd, key, lineW.isChecked])
             elif line["type"] == "spin":
                 lineW = FocusDoubleSpin()
-                lineW.setMinimum(0 if "min" not in line else line["min"])
-                lineW.setMaximum(100 if "max" not in line else line["max"])
-                lineW.setSingleStep(0.1 if "step" not in line else line["step"])
+                lineW.setMinimum(line.get("min", 0))
+                lineW.setMaximum(line.get("max", 100))
+                lineW.setSingleStep(line.get("step", 0.1))
                 lineW.setValue(dd[key])
                 lineW.valueChanged.connect(functools.partial(dd.__setitem__, key))
 
             elif line["type"] == "intspin":
                 lineW = FocusSpin()
-                lineW.setMinimum(0 if "min" not in line else line["min"])
-                lineW.setMaximum(100 if "max" not in line else line["max"])
-                lineW.setSingleStep(1 if "step" not in line else line["step"])
+                lineW.setMinimum(line.get("min", 0))
+                lineW.setMaximum(line.get("max", 100))
+                lineW.setSingleStep(line.get("step", 1))
                 lineW.setValue(dd[key])
                 lineW.valueChanged.connect(functools.partial(dd.__setitem__, key))
             if "name" in line:
