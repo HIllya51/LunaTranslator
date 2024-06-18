@@ -718,7 +718,7 @@
 			"prompt(文本起始)": "将这段文本直接翻译成中文，不要进行任何额外的格式修改，这里是你需要翻译的文本：",
 			"negative_prompt(不懂可以不写)": "",
 			"stop(自定义停止符，多个用逗号隔开)": "",
-			"max_tokens(单次生成上限)": 200,
+			"max_tokens": 200,
 			"instruction_template(需要按照模型模板选择)": "",
 			"mode": "instruct",
 			"temperature": 0.6,
@@ -762,7 +762,7 @@
 				"max": 32,
 				"step": 1
 			},
-			"max_tokens(单次生成上限)": {
+			"max_tokens": {
 				"type": "intspin",
 				"min": 1,
 				"max": 2048,
