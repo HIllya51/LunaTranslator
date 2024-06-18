@@ -27,6 +27,9 @@ class FocusCombo(QComboBox):
             return super().wheelEvent(e)
 
 
+class FocusFontCombo(QFontComboBox, FocusCombo):
+    pass
+
 class FocusSpin(QSpinBox):
     def __init__(self, parent: QWidget = None) -> None:
         super().__init__(parent)

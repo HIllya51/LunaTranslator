@@ -25,7 +25,8 @@ from gui.usefulwidget import (
     D_getsimpleswitch,
     makesubtab_lazy,
     makescrollgrid,
-    FocusCombo
+    FocusCombo,
+    FocusFontCombo
 )
 
 
@@ -269,7 +270,7 @@ def exportchspatch(self):
 
 def creategamefont_comboBox():
 
-    gamefont_comboBox = QFontComboBox()
+    gamefont_comboBox = FocusFontCombo()
 
     def callback(x):
         globalconfig["embedded"].__setitem__("changefont_font", x)

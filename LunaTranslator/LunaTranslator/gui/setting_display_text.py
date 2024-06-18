@@ -11,6 +11,7 @@ from gui.usefulwidget import (
     D_getcolorbutton,
     D_getsimpleswitch,
     selectcolor,
+    FocusFontCombo
 )
 
 
@@ -38,7 +39,7 @@ def __changeuibuttonstate(self, x):
 
 
 def createtextfontcom(key):
-    font_comboBox = QFontComboBox()
+    font_comboBox = FocusFontCombo()
     font_comboBox.currentTextChanged.connect(lambda x: globalconfig.__setitem__(key, x))
     font_comboBox.setCurrentFont(QFont(globalconfig[key]))
     return font_comboBox

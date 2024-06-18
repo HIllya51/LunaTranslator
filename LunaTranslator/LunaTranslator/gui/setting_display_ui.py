@@ -10,6 +10,7 @@ from gui.usefulwidget import (
     D_getcolorbutton,
     getcolorbutton,
     selectcolor,
+    FocusFontCombo
 )
 
 
@@ -82,7 +83,7 @@ def createhorizontal_slider_tool_label(self):
 
 def createfontcombo():
 
-    sfont_comboBox = QFontComboBox()
+    sfont_comboBox = FocusFontCombo()
 
     def callback(x):
         globalconfig.__setitem__("settingfonttype", x)
