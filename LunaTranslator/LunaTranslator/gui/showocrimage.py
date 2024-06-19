@@ -11,26 +11,32 @@ class pixlabel(QLabel):
         super().__init__()
         self.pix = None
 
-    def setpix(self, pix):
-        self.pix = pix
-        self.setPixmap(
-            self.pix.scaled(
-                self.size(),
-                Qt.AspectRatioMode.KeepAspectRatio,
-                Qt.TransformationMode.SmoothTransformation,
-            )
-        )
+    def paintEvent(self, a0) -> None:
 
-    def resizeEvent(self, a0):
         if self.pix:
-            self.setPixmap(
+            painter = QPainter(self)
+            painter.setRenderHint(QPainter.RenderHint.Antialiasing)
+            pix = QPixmap(self.size() * self.devicePixelRatioF())
+            pix.fill(Qt.GlobalColor.transparent)
+            paintpix = QPainter(pix)
+            paintpix.drawPixmap(
+                0,
+                0,
                 self.pix.scaled(
-                    self.size(),
+                    self.size() * self.devicePixelRatioF(),
                     Qt.AspectRatioMode.KeepAspectRatio,
                     Qt.TransformationMode.SmoothTransformation,
-                )
+                ),
             )
-        return super().resizeEvent(a0)
+            paintpix.end()
+            painter.drawPixmap(0, 0, pix)
+
+        return super().paintEvent(a0)
+
+    def setpix(self, pix):
+        pix.setDevicePixelRatio(self.devicePixelRatioF())
+        self.pix = pix
+        self.update()
 
 
 @Singleton_close
@@ -78,7 +84,5 @@ class showocrimage(saveposwindow):
         self.originimage = originimage
         self.img1 = QPixmap.fromImage(originimage)
         self.img2 = QPixmap.fromImage(solved)
-        self.img1.setDevicePixelRatio(self.devicePixelRatioF())
-        self.img2.setDevicePixelRatio(self.devicePixelRatioF())
         self.originlabel.setpix(self.img1)
         self.solvedlabel.setpix(self.img2)
