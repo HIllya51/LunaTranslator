@@ -589,6 +589,7 @@ class QUnFrameWindow(resizableframeless):
         self.translate_text.contentsChanged.connect(self.textAreaChanged)
         t = QTimer(self)
         t.setInterval(100)
+        self._isentered = False
         t.timeout.connect(self.__betterenterevent)
         t.start()
 
@@ -868,7 +869,8 @@ class QUnFrameWindow(resizableframeless):
         self.set_color_transparency()
 
     def __betterenterevent(self):
-        if self.geometry().contains(QCursor.pos()):
+        if (not self._isentered) and self.geometry().contains(QCursor.pos()):
+            self._isentered = True
             self.enterfunction()
 
     @threader
@@ -877,6 +879,7 @@ class QUnFrameWindow(resizableframeless):
         self.enter_sig = enter_sig
         while self.geometry().contains(QCursor.pos()):
             time.sleep(0.1)
+        self._isentered = False
         time.sleep(delay)
         if self.enter_sig != enter_sig:
             return
