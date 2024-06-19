@@ -759,7 +759,7 @@ class WebivewWidget(abstractwebview):
             webview_native_handle_kind_t.WEBVIEW_NATIVE_HANDLE_KIND_BROWSER_CONTROLLER
         )
 
-    def __init__(self, parent=None, debug=False) -> None:
+    def __init__(self, parent=None, debug=True) -> None:
         super().__init__(parent)
         declare_library_path(
             os.path.abspath(
@@ -1005,7 +1005,7 @@ class auto_select_webview(QWidget):
             if self.contex == 0:
                 browser = mshtmlWidget()
             elif self.contex == 1:
-                browser = WebivewWidget(debug=True)
+                browser = WebivewWidget()
             elif self.contex == 2:
                 browser = QWebWrap()
         except:
