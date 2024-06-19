@@ -77,8 +77,9 @@ class TextBrowser(QWidget, dataget):
             f"""
             document.write(`<style>
             body{{
-                overflow:hidden;
+                overflow-y:hidden;
                 margin: 0;
+                #word-break: break-all;
             }}
             {extra}
             </style>`);
@@ -139,12 +140,12 @@ class TextBrowser(QWidget, dataget):
         return __.gen_html(configs, text, fm, fs, bold, atcenter, color)
 
     def _webview_append(self, _id, origin, atcenter, text, tag, flags, color):
-
+        text = text.replace("\n", "<br>").replace("\\", "\\\\")
         if len(tag):
             isshowhira, isshow_fenci, isfenciclick = flags
             fm, fskana, bold = self._getfontinfo_kana()
             kanacolor = self._getkanacolor()
-            text = ""
+            text = "<ruby>"
             for word in tag:
                 color1 = self._randomcolor(word, ignorealpha=True)
                 if isshow_fenci and color1:
@@ -155,7 +156,14 @@ class TextBrowser(QWidget, dataget):
                     click = f'''onclick="calllunaclickedword('{quote(json.dumps(word))}')"'''
                 else:
                     click = ""
-                text += f"""<div {style} {click}>""" + word["orig"] + "</div>"
+                if word["orig"] == "\n":
+                    text = text + "</ruby><br><ruby>"
+                    continue
+                text += (
+                    f"""<div {style} {click}>"""
+                    + word["orig"].replace("\\", "\\\\")
+                    + "</div>"
+                )
                 if (word["orig"] != word["hira"]) and isshowhira:
                     text += (
                         f"<rt>"
@@ -164,13 +172,11 @@ class TextBrowser(QWidget, dataget):
                     )
                 else:
                     text += "<rt></rt>"
-
-            text = f"<ruby>" + text + "</ruby>"
+            text = text + "</ruby>"
 
         fm, fs, bold = self._getfontinfo(origin)
         text = self.gen_html(text, fm, fs, bold, atcenter, color)
-
-        self.testeval(f"document.getElementById(`{_id}`).innerHTML+=`{text}`")
+        self.testeval(f"document.getElementById(`{_id}`).innerHTML=`{text}`")
         self.internalheighchange()
 
     def clear(self):

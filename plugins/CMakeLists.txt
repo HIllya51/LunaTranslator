@@ -27,8 +27,8 @@ include(libs/libs.cmake)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_SOURCE_DIR}/version)
 include(generate_product_version)
 
-set(VERSION_MAJOR 3)
-set(VERSION_MINOR 7)
+set(VERSION_MAJOR 5)
+set(VERSION_MINOR 0)
 set(VERSION_PATCH 0)
 
 add_library(pch pch.cpp)

@@ -272,6 +272,7 @@ class resizableframeless(saveposwindow):
                 self.height() - self._padding,
                 self.height() + 1,
             ]
+        super().resizeEvent(e)
 
     def mousePressEvent(self, event: QMouseEvent):
         # 重写鼠标点击的事件
