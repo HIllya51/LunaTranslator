@@ -130,7 +130,7 @@ class TextBrowser(QWidget, dataget):
     def calllunaclickedword(self, packedwordinfo):
         gobject.baseobject.clickwordcallback(json.loads(unquote(packedwordinfo)), False)
 
-    def gen_html(self, text, fm, fs, bold, atcenter, color):
+    def gen_html(self, *args):
         currenttype = globalconfig["rendertext_using_internal"]["webview"]
         configs = globalconfig["rendertext"]["webview"][currenttype].get("args", {})
         try:
@@ -140,7 +140,7 @@ class TextBrowser(QWidget, dataget):
                 globalconfig["rendertext"]["webview"].keys()
             )[0]
             __ = importlib.import_module(f"rendertext.internal.webview.{currenttype}")
-        return __.gen_html(configs, text, fm, fs, bold, atcenter, color)
+        return __.gen_html(configs, *args)
 
     def _webview_append(self, _id, origin, atcenter, text, tag, flags, color):
         text = text.replace("\n", "<br>").replace("\\", "\\\\")
@@ -170,7 +170,15 @@ class TextBrowser(QWidget, dataget):
                 if (word["orig"] != word["hira"]) and isshowhira:
                     text += (
                         f"<rt>"
-                        + self.gen_html(word["hira"], fm, fskana, bold, True, kanacolor)
+                        + self.gen_html(
+                            word["hira"],
+                            fm,
+                            fskana,
+                            bold,
+                            True,
+                            kanacolor,
+                            globalconfig["extra_space"],
+                        )
                         + "</rt>"
                     )
                 else:
@@ -178,13 +186,9 @@ class TextBrowser(QWidget, dataget):
             text = text + "</ruby>"
 
         fm, fs, bold = self._getfontinfo(origin)
-        text = self.gen_html(text, fm, fs, bold, atcenter, color)
-        _id_wrap = f"luna_{uuid.uuid4()}"
-        text = f"""<div id="{_id_wrap}">{text}</div><style>
-        #{_id_wrap}{{
-            margin-bottom:{globalconfig["extra_space"]}px
-        }}
-        </style>"""
+        text = self.gen_html(
+            text, fm, fs, bold, atcenter, color, globalconfig["extra_space"]
+        )
         self.testeval(f"document.getElementById(`{_id}`).innerHTML=`{text}`")
         self.internalheighchange()
 
