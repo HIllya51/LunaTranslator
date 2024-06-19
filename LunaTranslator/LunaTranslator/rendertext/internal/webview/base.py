@@ -41,7 +41,9 @@ class base:
         self.webview.bind(name, func)
 
     def measureH(self, font_family, font_size):
-        font = QFont(font_family, font_size)
+        font = QFont()
+        font.setFamily(font_family)
+        font.setPointSizeF(font_size)
         fmetrics = QFontMetrics(font)
 
         return fmetrics.height()
