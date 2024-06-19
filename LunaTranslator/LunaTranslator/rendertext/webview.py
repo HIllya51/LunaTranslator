@@ -96,7 +96,7 @@ class TextBrowser(QWidget, dataget):
         )
 
     def internalheighchange(self):
-        self.testeval(
+        self.webivewwidget.webview.eval(
             f'calllunaheightchange(document.getElementById("{self.rootdivid}").offsetHeight)'
         )
 
@@ -132,64 +132,87 @@ class TextBrowser(QWidget, dataget):
 
     def gen_html(self, *args):
         currenttype = globalconfig["rendertext_using_internal"]["webview"]
-        configs = globalconfig["rendertext"]["webview"][currenttype].get("args", {})
         try:
             __ = importlib.import_module(f"rendertext.internal.webview.{currenttype}")
         except:
+            from traceback import print_exc
+
+            print_exc()
             globalconfig["rendertext_using_internal"]["webview"] = currenttype = list(
                 globalconfig["rendertext"]["webview"].keys()
             )[0]
             __ = importlib.import_module(f"rendertext.internal.webview.{currenttype}")
-        return __.gen_html(configs, *args)
+        return __.TextLine(currenttype, self.webivewwidget.webview, self).gen_html__(
+            *args
+        )
 
     def _webview_append(self, _id, origin, atcenter, text, tag, flags, color):
         text = text.replace("\n", "<br>").replace("\\", "\\\\")
+
+        fmori, fsori, boldori = self._getfontinfo(origin)
+        fmkana, fskana, boldkana = self._getfontinfo_kana()
+        kanacolor = self._getkanacolor()
         if len(tag):
+            rb, rb2 = "<ruby>", "</ruby>"
             isshowhira, isshow_fenci, isfenciclick = flags
-            fm, fskana, bold = self._getfontinfo_kana()
-            kanacolor = self._getkanacolor()
             if isshowhira:
-                rb, rb2, rt, rt2 = "<ruby>", "</ruby>", "<rt>", "</rt>"
+                rt, rt2 = "<rt>", "</rt>"
             else:
-                rb, rb2, rt, rt2 = "<ruby>", "</ruby>", "", ""
+                rt, rt2 = "", ""
             text = rb
             for word in tag:
-                color1 = self._randomcolor(word, ignorealpha=True)
-                if isshow_fenci and color1:
-                    style = f' style="color: {color1};" '
-                else:
-                    style = ""
+                if word["orig"] == "\n":
+                    text = text + rb2 + "<br>" + rb
+                    continue
                 if isfenciclick:
                     click = f'''onclick="calllunaclickedword('{quote(json.dumps(word))}')"'''
                 else:
                     click = ""
-                if word["orig"] == "\n":
-                    text = text + rb2 + "<br>" + rb
-                    continue
-                text += (
-                    f"""<div {style} {click}>"""
-                    + word["orig"].replace("\\", "\\\\")
-                    + "</div>"
+                _maskid = f"luna_{uuid.uuid4()}"
+                textori = word["orig"].replace("\\", "\\\\")
+                textori = self.gen_html(
+                    textori,
+                    fmori,
+                    fsori,
+                    boldori,
+                    atcenter,
+                    color,
+                    globalconfig["extra_space"],
                 )
+                text += f"""<div {click} id="{_maskid}">""" + textori + "</div>"
+                if isshow_fenci:
+                    color1 = self._randomcolor(word)
+                    _style = f"""
+                    <style>#{_maskid}{{
+                    background-color: {color1};
+                    }}</style>"""
+                    text += _style
                 if (word["orig"] != word["hira"]) and isshowhira:
                     inner = self.gen_html(
-                        word["hira"],
-                        fm,
+                        word["hira"].replace("\\", "\\\\"),
+                        fmkana,
                         fskana,
-                        bold,
+                        boldkana,
                         True,
                         kanacolor,
-                        globalconfig["extra_space"],
+                        0,
                     )
                 else:
                     inner = ""
                 text += rt + inner + rt2
             text = text + rb2
-
-        fm, fs, bold = self._getfontinfo(origin)
-        text = self.gen_html(
-            text, fm, fs, bold, atcenter, color, globalconfig["extra_space"]
-        )
+            if atcenter:
+                text = f'<div style="text-align: center;">{text}</div>'
+        else:
+            text = self.gen_html(
+                text,
+                fmori,
+                fsori,
+                boldori,
+                atcenter,
+                color,
+                globalconfig["extra_space"],
+            )
         self.testeval(f"document.getElementById(`{_id}`).innerHTML=`{text}`")
         self.internalheighchange()
 

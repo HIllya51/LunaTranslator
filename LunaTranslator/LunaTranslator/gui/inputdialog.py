@@ -328,7 +328,7 @@ class multicolorset(QDialog):
         self.resize(QSize(300, 10))
         formLayout = QFormLayout(self)  # 配置layout
         _hori = QHBoxLayout()
-        l = QLabel(_TR("透明度"))
+        l = QLabel(_TR("不透明度"))
         _hori.addWidget(l)
         _s = FocusSpin()
         _s.setValue(globalconfig["showcixing_touming"])

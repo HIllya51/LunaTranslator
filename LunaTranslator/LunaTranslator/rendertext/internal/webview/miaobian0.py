@@ -8,10 +8,11 @@ class TextLine(base):
         _id = self.getuid()
 
         style = f"""#{_id}{{
-            {self.fontinfo}
-            color:{data.color}; 
+             {self.fontinfo}
+            color:{self.config["fillcolor"]}; 
             {self.align}
             {self.line_height}
+            -webkit-text-stroke: {self.config['width']}px {data.color};
         }}
         """
         return self.makedivstyle(_id, text, style)

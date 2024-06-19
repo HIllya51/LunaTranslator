@@ -705,8 +705,6 @@
     "百度OCR": "Số lượng OCR",
     "飞书OCR": "Sách bay OCR",
     "讯飞OCR": "Máy bay OCR",
-    "发光字体": "Phông phát sáng",
-    "发光亮度": "Độ sáng phát sáng",
     "最大缓冲区长度": "Chiều dài bộ đệm tối đa",
     "最大缓存文本长度": "Độ dài văn bản bộ nhớ cache tối đa",
     "半径": "Bán kính",
@@ -793,5 +791,6 @@
     "兼容接口": "Giao diện tương thích",
     "调试浏览器": "Gỡ lỗi trình duyệt",
     "手动翻译": "Dịch thủ công",
-    "显示引擎": "Công cụ hiển thị"
+    "显示引擎": "Công cụ hiển thị",
+    "阴影字体": "Phông bóng"
 }

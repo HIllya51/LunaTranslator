@@ -17,13 +17,11 @@ class dataget:
                 pass
         return (c.red(), c.green(), c.blue(), globalconfig["showcixing_touming"] / 100)
 
-    def _randomcolor(self, word, ignorealpha=False):
+    def _randomcolor(self, word):
         color = self._randomcolor_1(word)
         if not color:
             return None
         r, g, b, a = color
-        if ignorealpha:
-            a = 1
         return f"rgba({r}, {g}, {b}, {a})"
 
     def _getfontinfo(self, origin):

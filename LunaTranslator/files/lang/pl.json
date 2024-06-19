@@ -705,8 +705,6 @@
     "百度OCR": "OCR Baidu",
     "飞书OCR": "OCR Feishu",
     "讯飞OCR": "OCR IFlytek",
-    "发光字体": "Jasna czcionka",
-    "发光亮度": "luminancja",
     "最大缓冲区长度": "Maksymalna długość bufora",
     "最大缓存文本长度": "Maksymalna długość buforowanego tekstu",
     "半径": "promień",
@@ -793,5 +791,6 @@
     "兼容接口": "Kompatybilny interfejs",
     "调试浏览器": "Debugowanie przeglądarki",
     "手动翻译": "Tłumaczenie ręczne",
-    "显示引擎": "Silnik wyświetlania"
+    "显示引擎": "Silnik wyświetlania",
+    "阴影字体": "Czcionka cienia"
 }

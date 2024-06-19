@@ -705,8 +705,6 @@
     "百度OCR": "Baidu OCR",
     "飞书OCR": "Feishu OCR",
     "讯飞OCR": "IFlytek OCR",
-    "发光字体": "Luminous font",
-    "发光亮度": "luminance",
     "最大缓冲区长度": "Maximum buffer length",
     "最大缓存文本长度": "Maximum cached text length",
     "半径": "radius",
@@ -793,5 +791,6 @@
     "兼容接口": "Compatible interface",
     "调试浏览器": "Debugging browser",
     "手动翻译": "Manual translation",
-    "显示引擎": "Display Engine"
+    "显示引擎": "Display Engine",
+    "阴影字体": "Shadow font"
 }

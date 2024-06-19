@@ -705,8 +705,6 @@
     "百度OCR": "Baidu ocr",
     "飞书OCR": "Livre volant ocr",
     "讯飞OCR": "OCR volant",
-    "发光字体": "Polices lumineuses",
-    "发光亮度": "Luminosité lumineuse",
     "最大缓冲区长度": "Longueur maximale du tampon",
     "最大缓存文本长度": "Longueur maximale du texte mis en cache",
     "半径": "Rayon",
@@ -793,5 +791,6 @@
     "兼容接口": "Interface compatible",
     "调试浏览器": "Déboguer le Navigateur",
     "手动翻译": "Traduction manuelle",
-    "显示引擎": "Moteur d'affichage"
+    "显示引擎": "Moteur d'affichage",
+    "阴影字体": "Shadow font"
 }

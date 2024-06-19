@@ -705,8 +705,6 @@
     "百度OCR": "Baidu OCR",
     "飞书OCR": "Feishu OCR",
     "讯飞OCR": "IFlytek OCR",
-    "发光字体": "Açık yazıtipi",
-    "发光亮度": "ışık",
     "最大缓冲区长度": "Azamik buffer uzunluğu",
     "最大缓存文本长度": "Maximum cached text length",
     "半径": "radius",
@@ -793,5 +791,6 @@
     "兼容接口": "Kompatibil arayüz",
     "调试浏览器": "Hata ayıklama tarayıcısı",
     "手动翻译": "Elle çevirim",
-    "显示引擎": "Gösterim Motoru"
+    "显示引擎": "Gösterim Motoru",
+    "阴影字体": "Gölge yazıtipi"
 }

@@ -9,5 +9,7 @@ class TextLine(TextLabel_0):
     def setShadow(self):
         font = self.font()
         self.setShadow_internal(
-            self.basecolor, font.pointSizeF(), self.config["shadowforce"]
+            self.basecolor,
+            font.pointSizeF() * self.config["shadowR"],
+            self.config["shadowforce"],
         )
