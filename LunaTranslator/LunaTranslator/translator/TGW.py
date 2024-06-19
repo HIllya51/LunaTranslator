@@ -79,6 +79,8 @@ class TS(basetrans):
             messages = self.make_messages(text, **kwargs)
             payload = {
                 "messages": messages,
+                "max_tokens": self.config["max_tokens(单次生成上限)"],
+                "negative_prompt": self.config["negative_prompt(不懂可以不写)"],
                 "temperature": self.config["temperature"],
                 "stop": stop,
                 "stream": False,
@@ -122,6 +124,8 @@ class TS(basetrans):
         messages = self.make_messages(text, **kwargs)
         payload = {
             "messages": messages,
+            "max_tokens": self.config["max_tokens(单次生成上限)"],
+            "negative_prompt": self.config["negative_prompt(不懂可以不写)"],
             "temperature": self.config["temperature"],
             "stop": stop,
             "stream": True,
