@@ -151,7 +151,7 @@ class QUnFrameWindow(resizableframeless):
         clear = kwargs.get("clear", True)
         origin = kwargs.get("origin", True)
         text = kwargs.get("text", None)
-        color = kwargs.get("color", 'black')
+        color = kwargs.get("color", "black")
         isshowrawtext = kwargs.get("isshowrawtext", False)
         iter_context = kwargs.get("iter_context", None)
 
@@ -222,15 +222,13 @@ class QUnFrameWindow(resizableframeless):
 
         if flag:
             self.show_()
-            self.enterfunction()
         else:
             self.hide_()
 
     def leftclicktray(self, reason):
         # 鼠标左键点击
         if reason == QSystemTrayIcon.Trigger:
-            self.show_()
-            self.enterfunction()
+            self.showhideui()
 
     def refreshtoolicon(self):
         iconstate = {
@@ -589,6 +587,10 @@ class QUnFrameWindow(resizableframeless):
         self.addbuttons()
         self.translate_text = Textbrowser(self)
         self.translate_text.contentsChanged.connect(self.textAreaChanged)
+        t = QTimer(self)
+        t.setInterval(100)
+        t.timeout.connect(self.__betterenterevent)
+        t.start()
 
     def createborderradiusstring(self, r, merge, top=False):
         if merge:
@@ -865,14 +867,15 @@ class QUnFrameWindow(resizableframeless):
         self._TitleLabel.hide()
         self.set_color_transparency()
 
-    def enterEvent(self, QEvent):
-        self.enterfunction()
+    def __betterenterevent(self):
+        if self.geometry().contains(QCursor.pos()):
+            self.enterfunction()
 
     @threader
     def dodelayhide(self, delay):
         enter_sig = time.time()
         self.enter_sig = enter_sig
-        while self.underMouse():
+        while self.geometry().contains(QCursor.pos()):
             time.sleep(0.1)
         time.sleep(delay)
         if self.enter_sig != enter_sig:

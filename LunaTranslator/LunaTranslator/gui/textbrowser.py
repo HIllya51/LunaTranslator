@@ -6,7 +6,7 @@ import importlib
 class Textbrowser(QLabel):
     contentsChanged = pyqtSignal(QSize)
 
-    _padding = 10
+    _padding = 5
 
     def __makeborder(self, size: QSize):
         _padding = self._padding
