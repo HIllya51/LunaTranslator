@@ -60,7 +60,7 @@
                 "name": "描边字体_1",
                 "args": {
                     "fillcolor": "#eeeeee",
-                    "width": 3
+                    "width": 1
                 },
                 "argstype": {
                     "fillcolor": {
