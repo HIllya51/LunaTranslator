@@ -317,6 +317,10 @@ class resizableframeless(saveposwindow):
             self._move_drag = True
             self.move_DragPosition = gpos - self.pos()
 
+    def leaveEvent(self, a0) -> None:
+        self.setCursor(Qt.CursorShape.ArrowCursor)
+        return super().leaveEvent(a0)
+
     def mouseMoveEvent(self, event):
         # 判断鼠标位置切换鼠标手势
 
