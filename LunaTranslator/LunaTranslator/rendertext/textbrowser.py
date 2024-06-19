@@ -52,7 +52,6 @@ class TextBrowser(QWidget, dataget):
     def contentchangedfunction(self):
         sz = self.textbrowser.document().size().toSize()
         self.textbrowser.resize(self.width(), sz.height())
-        self.resize(self.width(), sz.height())
         self.contentsChanged.emit(QSize(sz.width(), sz.height()))
 
     def resizeEvent(self, event: QResizeEvent):
