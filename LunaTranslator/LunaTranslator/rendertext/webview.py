@@ -91,7 +91,9 @@ class TextBrowser(QWidget, dataget):
         pass
 
     def calllunaheightchange(self, h):
-        self.contentsChanged.emit(QSize(self.width(), h))
+        self.contentsChanged.emit(
+            QSize(self.width(), h * self.webivewwidget.get_ZoomFactor())
+        )
 
     def internalheighchange(self):
         self.testeval(

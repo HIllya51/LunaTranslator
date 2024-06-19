@@ -795,6 +795,9 @@ class WebivewWidget(abstractwebview):
     def set_zoom(self, zoom):
         self.put_ZoomFactor(zoom)
 
+    def get_ZoomFactor(self):
+        return winsharedutils.get_ZoomFactor(self.get_controller())
+
     def put_ZoomFactor(self, zoom):
         winsharedutils.put_ZoomFactor(self.get_controller(), zoom)
 
