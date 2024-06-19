@@ -42,6 +42,7 @@ class TextBrowser(QWidget, dataget):
     def __init__(self, parent) -> None:
         super().__init__(parent)
         self.webivewwidget = WebivewWidget(self)
+        self.webivewwidget.navigate("about:blank")
         self.webivewwidget.set_transparent_background()
         self.webivewwidget.webview.bind("calllunaclickedword", self.calllunaclickedword)
         self.webivewwidget.webview.bind(
