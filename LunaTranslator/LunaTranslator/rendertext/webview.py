@@ -133,7 +133,9 @@ class TextBrowser(QWidget, dataget):
     def gen_html(self, *args):
         currenttype = globalconfig["rendertext_using_internal"]["webview"]
         try:
-            __ = importlib.import_module(f"rendertext.internal.webview.{currenttype}")
+            __ = importlib.import_module(
+                f"rendertext.internal.webview.{currenttype}"
+            ).TextLine
         except:
             from traceback import print_exc
 
@@ -141,10 +143,10 @@ class TextBrowser(QWidget, dataget):
             globalconfig["rendertext_using_internal"]["webview"] = currenttype = list(
                 globalconfig["rendertext"]["webview"].keys()
             )[0]
-            __ = importlib.import_module(f"rendertext.internal.webview.{currenttype}")
-        return __.TextLine(currenttype, self.webivewwidget.webview, self).gen_html__(
-            *args
-        )
+            __ = importlib.import_module(
+                f"rendertext.internal.webview.{currenttype}"
+            ).TextLine
+        return __(currenttype, self.webivewwidget.webview, self).gen_html__(*args)
 
     def _webview_append(self, _id, origin, atcenter, text, tag, flags, color):
         text = text.replace("\n", "<br>").replace("\\", "\\\\")
