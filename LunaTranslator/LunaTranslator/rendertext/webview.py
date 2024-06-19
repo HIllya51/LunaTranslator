@@ -179,6 +179,12 @@ class TextBrowser(QWidget, dataget):
 
         fm, fs, bold = self._getfontinfo(origin)
         text = self.gen_html(text, fm, fs, bold, atcenter, color)
+        _id_wrap = f"luna_{uuid.uuid4()}"
+        text = f"""<div id="{_id_wrap}">{text}</div><style>
+        #{_id_wrap}{{
+            margin-bottom:{globalconfig["extra_space"]}px
+        }}
+        </style>"""
         self.testeval(f"document.getElementById(`{_id}`).innerHTML=`{text}`")
         self.internalheighchange()
 
