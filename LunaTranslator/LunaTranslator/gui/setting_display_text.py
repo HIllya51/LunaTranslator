@@ -212,10 +212,10 @@ def xianshigrid(self):
             ("显示引擎", 3),
             (
                 D_getsimplecombobox(
-                    _TRL(list(globalconfig["rendertext"].keys())),
+                    ["Webview2", "Qt"],
                     globalconfig,
                     "rendertext_using",
-                    internallist=list(globalconfig["rendertext"].keys()),
+                    internallist=["webview", "textbrowser"],
                     callback=functools.partial(resetgroudswitchcallback, self),
                 ),
                 6,

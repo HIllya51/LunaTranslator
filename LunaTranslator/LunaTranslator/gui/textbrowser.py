@@ -1,6 +1,8 @@
 from qtsymbols import *
-from myutils.config import globalconfig
+from myutils.config import globalconfig, _TR
 import importlib
+from webviewpy import webview_exception
+from gui.usefulwidget import getQMessageBox
 
 
 class Textbrowser(QLabel):
@@ -33,8 +35,17 @@ class Textbrowser(QLabel):
         tb = importlib.import_module(
             f'rendertext.{globalconfig["rendertext_using"]}'
         ).TextBrowser
+        try:
+            self.textbrowser = tb(self)
+        except webview_exception:
+            getQMessageBox(
+                None,
+                _TR("错误"),
+                "can't find Webview2 runtime!",
+            )
+            tb = importlib.import_module(f"rendertext.textbrowser").TextBrowser
+            self.textbrowser = tb(self)
 
-        self.textbrowser = tb(self)
         self.textbrowser.setMouseTracking(True)
         self.textbrowser.contentsChanged.connect(self._contentsChanged)
 
