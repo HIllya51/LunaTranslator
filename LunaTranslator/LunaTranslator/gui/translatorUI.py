@@ -222,13 +222,15 @@ class QUnFrameWindow(resizableframeless):
 
         if flag:
             self.show_()
+            self.enterfunction()
         else:
             self.hide_()
 
     def leftclicktray(self, reason):
         # 鼠标左键点击
         if reason == QSystemTrayIcon.Trigger:
-            self.showhideui()
+            self.show_()
+            self.enterfunction()
 
     def refreshtoolicon(self):
         iconstate = {
