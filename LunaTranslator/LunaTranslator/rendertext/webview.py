@@ -12,7 +12,7 @@ testsavejs = False
 # example
 def extrastyle(rootdivid):
     with open(
-        r"C:\Users\11737\Pictures\asutoraea\yande.re 289904 astralair_no_shiroki_towa favorite game_cg miko shida_kazuhiro yuuki_(astralair_no_shiroki_towa).png",
+        r"example.png",
         "rb",
     ) as ff:
         b64 = base64.b64encode(ff.read()).decode("utf-8")
@@ -20,6 +20,7 @@ def extrastyle(rootdivid):
     extra = f"""#{rootdivid}::before
         {{
             background-image: url('data:image/jpeg;base64,{b64}') ;
+            background-size: 100% auto;
             opacity: 0.5;
             content: '';
             position: absolute;
