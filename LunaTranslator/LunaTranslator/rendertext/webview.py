@@ -148,7 +148,11 @@ class TextBrowser(QWidget, dataget):
             isshowhira, isshow_fenci, isfenciclick = flags
             fm, fskana, bold = self._getfontinfo_kana()
             kanacolor = self._getkanacolor()
-            text = "<ruby>"
+            if isshowhira:
+                rb, rb2, rt, rt2 = "<ruby>", "</ruby>", "<rt>", "</rt>"
+            else:
+                rb, rb2, rt, rt2 = "<ruby>", "</ruby>", "", ""
+            text = rb
             for word in tag:
                 color1 = self._randomcolor(word, ignorealpha=True)
                 if isshow_fenci and color1:
@@ -160,7 +164,7 @@ class TextBrowser(QWidget, dataget):
                 else:
                     click = ""
                 if word["orig"] == "\n":
-                    text = text + "</ruby><br><ruby>"
+                    text = text + rb2 + "<br>" + rb
                     continue
                 text += (
                     f"""<div {style} {click}>"""
@@ -168,22 +172,19 @@ class TextBrowser(QWidget, dataget):
                     + "</div>"
                 )
                 if (word["orig"] != word["hira"]) and isshowhira:
-                    text += (
-                        f"<rt>"
-                        + self.gen_html(
-                            word["hira"],
-                            fm,
-                            fskana,
-                            bold,
-                            True,
-                            kanacolor,
-                            globalconfig["extra_space"],
-                        )
-                        + "</rt>"
+                    inner = self.gen_html(
+                        word["hira"],
+                        fm,
+                        fskana,
+                        bold,
+                        True,
+                        kanacolor,
+                        globalconfig["extra_space"],
                     )
                 else:
-                    text += "<rt></rt>"
-            text = text + "</ruby>"
+                    inner = ""
+                text += rt + inner + rt2
+            text = text + rb2
 
         fm, fs, bold = self._getfontinfo(origin)
         text = self.gen_html(

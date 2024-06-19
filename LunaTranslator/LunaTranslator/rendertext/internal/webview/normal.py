@@ -13,7 +13,7 @@ def gen_html(configs, text, fm, fs, bold, atcenter, color, extra_space):
         color:{color};
         {bold}
         {align}
-        line-height: calc(1.5em + {extra_space}px);
+        line-height: calc(1.2em + {extra_space}px);
     }}</style>"""
 
     return style + f'<div id="{_id}">{text}</div>'
