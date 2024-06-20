@@ -11,7 +11,7 @@ from gui.inputdialog import autoinitdialog, autoinitdialog_items
 from gui.usefulwidget import (
     D_getspinbox,
     getspinbox,
-    D_getcolorbutton,
+    D_getcolorbutton,D_getIconButton,
     D_getsimpleswitch,
     selectcolor,
     makegrid,
@@ -44,9 +44,7 @@ def initsome11(self, l, label=None):
         if fanyi in translatorsetting:
 
             items = autoinitdialog_items(translatorsetting[fanyi])
-            last = D_getcolorbutton(
-                globalconfig,
-                "",
+            last = D_getIconButton( 
                 callback=functools.partial(
                     autoinitdialog,
                     self,
@@ -54,16 +52,12 @@ def initsome11(self, l, label=None):
                     800,
                     items,
                 ),
-                icon="fa.gear",
-                constcolor="#FF69B4",
+                icon="fa.gear", 
             )
         elif fanyi == "selfbuild":
-            last = D_getcolorbutton(
-                globalconfig,
-                "",
+            last = D_getIconButton( 
                 callback=lambda: selectdebugfile("./userconfig/selfbuild.py"),
-                icon="fa.gear",
-                constcolor="#FF69B4",
+                icon="fa.gear", 
             )
         else:
             last = ""
@@ -255,14 +249,11 @@ def setTabTwo_lazy(self, basel):
         [
             ("Chromium_路径", 8),
             (
-                D_getcolorbutton(
-                    globalconfig,
-                    "",
+                D_getIconButton( 
                     callback=functools.partial(
                         autoinitdialog, self, "Chromium_路径", 800, _items
                     ),
-                    icon="fa.gear",
-                    constcolor="#FF69B4",
+                    icon="fa.gear", 
                 )
             ),
         ],

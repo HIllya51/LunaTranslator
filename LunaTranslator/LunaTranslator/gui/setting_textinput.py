@@ -18,7 +18,8 @@ from gui.inputdialog import regexedit
 from gui.usefulwidget import (
     D_getsimplecombobox,
     D_getspinbox,
-    D_getcolorbutton,
+    D_getIconButton,
+    getIconButton,
     makegrid,
     yuitsu_switch,
     getvboxwidget,
@@ -26,8 +27,22 @@ from gui.usefulwidget import (
     makesubtab_lazy,
     makescrollgrid,
     FocusCombo,
-    FocusFontCombo
+    FocusFontCombo,
 )
+
+
+def __create(self):
+    self.selectbutton = getIconButton(
+        gobject.baseobject.createattachprocess, icon="fa.gear"
+    )
+    return self.selectbutton
+
+
+def __create2(self):
+    self.selecthookbutton = getIconButton(
+        lambda: gobject.baseobject.hookselectdialog.showsignal.emit(), icon="fa.gear"
+    )
+    return self.selecthookbutton
 
 
 def gethookgrid(self):
@@ -40,28 +55,12 @@ def gethookgrid(self):
         [],
         [
             ("选择游戏", 5),
-            D_getcolorbutton(
-                globalconfig,
-                "",
-                gobject.baseobject.createattachprocess,
-                name="selectbutton",
-                parent=self,
-                icon="fa.gear",
-                constcolor="#FF69B4",
-            ),
+            functools.partial(__create, self),
             ("", 5),
         ],
         [
             ("选择文本", 5),
-            D_getcolorbutton(
-                globalconfig,
-                "",
-                lambda: gobject.baseobject.hookselectdialog.showsignal.emit(),
-                name="selecthookbutton",
-                parent=self,
-                icon="fa.gear",
-                constcolor="#FF69B4",
-            ),
+            functools.partial(__create2, self),
         ],
         [],
         [
@@ -71,92 +70,101 @@ def gethookgrid(self):
         [
             ("已保存游戏", 5),
             (
-                D_getcolorbutton(
-                    globalconfig,
-                    "",
+                D_getIconButton(
                     lambda: dialog_savedgame_integrated(self),
                     icon="fa.gamepad",
-                    constcolor="#FF69B4",
                 ),
                 1,
             ),
         ],
         [],
         [
-            ("代码页", 5),
             (
-                D_getsimplecombobox(
-                    _TRL(static_data["codepage_display"]),
-                    globalconfig,
-                    "codepage_index",
-                    lambda x: gobject.baseobject.textsource.setsettings(),
+                dict(
+                    title="默认设置",
+                    type="grid",
+                    grid=(
+                        [
+                            "代码页",
+                            (
+                                D_getsimplecombobox(
+                                    _TRL(static_data["codepage_display"]),
+                                    globalconfig,
+                                    "codepage_index",
+                                    lambda x: gobject.baseobject.textsource.setsettings(),
+                                ),
+                                4,
+                            ),
+                        ],
+                        [
+                            "移除非选定hook",
+                            D_getsimpleswitch(globalconfig, "removeuseless"),
+                        ],
+                        [
+                            "过滤反复刷新的句子",
+                            D_getsimpleswitch(globalconfig, "direct_filterrepeat"),
+                        ],
+                        [
+                            "刷新延迟(ms)",
+                            (
+                                D_getspinbox(
+                                    0,
+                                    10000,
+                                    globalconfig,
+                                    "textthreaddelay",
+                                    callback=lambda x: gobject.baseobject.textsource.setsettings(),
+                                ),
+                                2,
+                            ),
+                        ],
+                        [
+                            "最大缓冲区长度",
+                            (
+                                D_getspinbox(
+                                    0,
+                                    1000000,
+                                    globalconfig,
+                                    "maxBufferSize",
+                                    callback=lambda x: gobject.baseobject.textsource.setsettings(),
+                                ),
+                                2,
+                            ),
+                        ],
+                        [
+                            "最大缓存文本长度",
+                            (
+                                D_getspinbox(
+                                    0,
+                                    1000000000,
+                                    globalconfig,
+                                    "maxHistorySize",
+                                    callback=lambda x: gobject.baseobject.textsource.setsettings(),
+                                ),
+                                2,
+                            ),
+                        ],
+                        [
+                            "过滤包含乱码的文本行",
+                            D_getsimpleswitch(globalconfig, "filter_chaos_code"),
+                            D_getIconButton(
+                                icon="fa.gear",
+                                callback=lambda: codeacceptdialog(self),
+                            ),
+                        ],
+                        [
+                            "区分人名和文本",
+                            D_getsimpleswitch(globalconfig, "allow_set_text_name"),
+                        ],
+                        [
+                            "使用YAPI注入",
+                            D_getsimpleswitch(globalconfig, "use_yapi"),
+                        ],
+                    ),
                 ),
-                8,
-            ),
+                0,
+                "group",
+            )
         ],
-        [
-            ("移除非选定hook", 5),
-            (D_getsimpleswitch(globalconfig, "removeuseless"), 1),
-        ],
-        [
-            ("过滤反复刷新的句子", 5),
-            (D_getsimpleswitch(globalconfig, "direct_filterrepeat"), 1),
-        ],
-        [
-            ("刷新延迟(ms)", 5),
-            (
-                D_getspinbox(
-                    0,
-                    10000,
-                    globalconfig,
-                    "textthreaddelay",
-                    callback=lambda x: gobject.baseobject.textsource.setsettings(),
-                ),
-                3,
-            ),
-        ],
-        [
-            ("最大缓冲区长度", 5),
-            (
-                D_getspinbox(
-                    0,
-                    1000000,
-                    globalconfig,
-                    "maxBufferSize",
-                    callback=lambda x: gobject.baseobject.textsource.setsettings(),
-                ),
-                3,
-            ),
-        ],
-        [
-            ("最大缓存文本长度", 5),
-            (
-                D_getspinbox(
-                    0,
-                    1000000000,
-                    globalconfig,
-                    "maxHistorySize",
-                    callback=lambda x: gobject.baseobject.textsource.setsettings(),
-                ),
-                3,
-            ),
-        ],
-        [
-            ("过滤包含乱码的文本行", 5),
-            (D_getsimpleswitch(globalconfig, "filter_chaos_code"), 1),
-            (
-                D_getcolorbutton(
-                    globalconfig,
-                    "",
-                    icon="fa.gear",
-                    constcolor="#FF69B4",
-                    callback=lambda: codeacceptdialog(self),
-                ),
-                1,
-            ),
-        ],
-        [("区分人名和文本", 5), D_getsimpleswitch(globalconfig, "allow_set_text_name")],
-        [("使用YAPI注入", 5), D_getsimpleswitch(globalconfig, "use_yapi")],
     ]
 
     return grids
@@ -288,12 +296,9 @@ def gethookembedgrid(self):
     grids = [
         [
             ("导出翻译补丁", 5),
-            D_getcolorbutton(
-                globalconfig,
-                "",
+            D_getIconButton(
                 callback=lambda x: exportchspatch(self),
                 icon="fa.gear",
-                constcolor="#FF69B4",
             ),
         ],
         [],
@@ -379,14 +384,11 @@ def gethookembedgrid(self):
         [
             ("内嵌安全性检查", 5),
             D_getsimpleswitch(globalconfig["embedded"], "safecheck_use"),
-            D_getcolorbutton(
-                globalconfig,
-                "",
+            D_getIconButton(
                 callback=lambda x: regexedit(
                     self, globalconfig["embedded"]["safecheckregexs"]
                 ),
                 icon="fa.gear",
-                constcolor="#FF69B4",
             ),
         ],
     ]
@@ -409,40 +411,58 @@ def getTabclip(self):
 def outputgrid(self):
 
     grids = [
-        [("自动输出提取的文本", 15)],
+        ["自动输出提取的文本"],
         [],
-        [("剪贴板", 0)],
         [
-            "",
-            ("输出到剪贴板", 5),
-            (D_getsimpleswitch(globalconfig["textoutputer"]["clipboard"], "use"), 1),
-        ],
-        [("WebSocket", -1)],
-        [
-            "",
-            ("输出到WebSocket", 5),
             (
-                D_getsimpleswitch(
-                    globalconfig["textoutputer"]["websocket"],
-                    "use",
-                    callback=lambda _: gobject.baseobject.startoutputer_re("websocket"),
+                dict(
+                    title="剪贴板",
+                    grid=(
+                        [
+                            "自动输出",
+                            D_getsimpleswitch(
+                                globalconfig["textoutputer"]["clipboard"], "use"
+                            ),
+                        ],
+                    ),
                 ),
-                1,
-            ),
+                0,
+                "group",
+            )
         ],
+        [],
         [
-            "",
-            ("端口号", 5),
             (
-                D_getspinbox(
-                    0,
-                    65535,
-                    globalconfig["textoutputer"]["websocket"],
-                    "port",
-                    callback=lambda _: gobject.baseobject.startoutputer_re("websocket"),
+                dict(
+                    title="WebSocket",
+                    grid=(
+                        [
+                            "自动输出",
+                            D_getsimpleswitch(
+                                globalconfig["textoutputer"]["websocket"],
+                                "use",
+                                callback=lambda _: gobject.baseobject.startoutputer_re(
+                                    "websocket"
+                                ),
+                            ),
+                        ],
+                        [
+                            "端口号",
+                            D_getspinbox(
+                                0,
+                                65535,
+                                globalconfig["textoutputer"]["websocket"],
+                                "port",
+                                callback=lambda _: gobject.baseobject.startoutputer_re(
+                                    "websocket"
+                                ),
+                            ),
+                        ],
+                    ),
                 ),
-                3,
-            ),
+                0,
+                "group",
+            )
         ],
     ]
     return grids

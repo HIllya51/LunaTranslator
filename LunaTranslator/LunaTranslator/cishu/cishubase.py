@@ -41,6 +41,8 @@ class cishubase:
 
             if res and len(res):
                 callback(res)
+            else:
+                callback(None)
         except:
             pass
 

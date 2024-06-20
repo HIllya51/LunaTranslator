@@ -2,7 +2,7 @@ from qtsymbols import *
 import functools
 import gobject
 from myutils.config import globalconfig, _TRL
-from gui.setting_display_buttons  import createbuttonwidget
+from gui.setting_display_buttons import createbuttonwidget
 from gui.setting_display_text import xianshigrid
 from gui.setting_display_ui import uisetting
 from gui.setting_display_scale import makescalew
@@ -18,51 +18,89 @@ def _xingw():
 
     xingweigrid = [
         [
-            ("游戏最小化时窗口隐藏", 6),
-            (D_getsimpleswitch(globalconfig, "minifollow"), 1),
+            (
+                dict(
+                    title="伴随游戏窗口",
+                    grid=(
+                        [
+                            "游戏最小化时窗口隐藏",
+                            D_getsimpleswitch(globalconfig, "minifollow"),
+                        ],
+                        [
+                            "游戏失去焦点时取消置顶",
+                            D_getsimpleswitch(globalconfig, "focusnotop"),
+                        ],
+                        [
+                            "游戏窗口移动时同步移动",
+                            D_getsimpleswitch(globalconfig, "movefollow"),
+                        ],
+                    ),
+                ),
+                0,
+                "group",
+            )
         ],
         [
-            ("游戏失去焦点时取消置顶", 6),
-            (D_getsimpleswitch(globalconfig, "focusnotop"), 1),
+            (
+                dict(
+                    title="窗口尺寸",
+                    grid=(
+                        [
+                            "自动延展",
+                            D_getsimpleswitch(globalconfig, "auto_expand"),
+                        ],
+                        [
+                            "自动收缩",
+                            D_getsimpleswitch(globalconfig, "auto_shrink"),
+                        ],
+                    ),
+                ),
+                0,
+                "group",
+            )
         ],
         [
-            ("游戏窗口移动时同步移动", 6),
-            (D_getsimpleswitch(globalconfig, "movefollow"), 1),
-        ],
-        [
-            ("固定窗口尺寸", 6),
-            D_getsimpleswitch(globalconfig, "fixedheight"),
-        ],
-        [
-            ("自动隐藏窗口", 6),
-            (D_getsimpleswitch(globalconfig, "autodisappear"), 1),
-            "",
-            ("隐藏延迟(s)", 3),
-            (D_getspinbox(1, 100, globalconfig, "disappear_delay"), 2),
-        ],
-        [
-            ("任务栏中显示_翻译窗口", 6),
-            D_getsimpleswitch(
-                globalconfig,
-                "showintab",
-                callback=lambda _: gobject.baseobject.setshowintab(),
-            ),
-        ],
-        [
-            ("任务栏中显示_其他", 6),
-            D_getsimpleswitch(
-                globalconfig,
-                "showintab_sub",
-                callback=lambda _: gobject.baseobject.setshowintab(),
-            ),
-        ],
-        [
-            ("可选取模式", 6),
-            D_getsimpleswitch(
-                globalconfig,
-                "selectable",
-                callback=lambda x: gobject.baseobject.translation_ui.translate_text.setselectable(),
-            ),
+            (
+                dict(
+                    title="其他",
+                    grid=(
+                        [
+                            "自动隐藏窗口",
+                            D_getsimpleswitch(globalconfig, "autodisappear"),
+                        ],
+                        [
+                            "隐藏延迟(s)",
+                            D_getspinbox(1, 100, globalconfig, "disappear_delay"),
+                        ],
+                        [
+                            "任务栏中显示_翻译窗口",
+                            D_getsimpleswitch(
+                                globalconfig,
+                                "showintab",
+                                callback=lambda _: gobject.baseobject.setshowintab(),
+                            ),
+                        ],
+                        [
+                            "任务栏中显示_其他",
+                            D_getsimpleswitch(
+                                globalconfig,
+                                "showintab_sub",
+                                callback=lambda _: gobject.baseobject.setshowintab(),
+                            ),
+                        ],
+                        [
+                            "可选取模式",
+                            D_getsimpleswitch(
+                                globalconfig,
+                                "selectable",
+                                callback=lambda x: gobject.baseobject.translation_ui.translate_text.setselectable(),
+                            ),
+                        ],
+                    ),
+                ),
+                0,
+                "group",
+            )
         ],
     ]
     return xingweigrid

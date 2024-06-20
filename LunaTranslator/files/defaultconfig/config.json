@@ -186,7 +186,7 @@
                 "args": {
                     "fillcolor": "#eeeeee",
                     "shadowforce": 5,
-                    "shadowR":1
+                    "shadowR": 1
                 },
                 "argstype": {
                     "fillcolor": {
@@ -286,6 +286,7 @@
     "requestinterval": 1,
     "keepontop": true,
     "buttonsize": 20,
+    "buttonsize2": 18,
     "language_setted_2.4.5": false,
     "postprocess_rank": [],
     "transoptimi": {
@@ -297,7 +298,8 @@
         "arabic_reshaper": false
     },
     "uselongtermcache": false,
-    "fixedheight": false,
+    "auto_expand": true,
+    "auto_shrink": true,
     "showintab": true,
     "showintab_sub": true,
     "remove_useless_hook": false,
@@ -313,6 +315,12 @@
         500,
         1200,
         200
+    ],
+    "geo_extrahtml": [
+        100,
+        100,
+        1000,
+        300
     ],
     "hist_geo": [
         100,
@@ -462,6 +470,8 @@
     "accept_use_unicode_end": 65535,
     "premtsimiuse": false,
     "buttoncolor": "#001f9f",
+    "buttoncolor2": "#FF69B4",
+    "buttoncolor3": "#afafaf",
     "premtsimi2": 100,
     "ocrrangecolor": "#000000",
     "ocrrangewidth": 2,

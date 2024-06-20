@@ -129,7 +129,7 @@ class TS(basetrans):
             return "".join(
                 [
                     "".join([__["tgt"] for __ in _])
-                    for _ in response.json()["translateResult"]
+                    for _ in response.json().get("translateResult", [])
                 ]
             )
         except:

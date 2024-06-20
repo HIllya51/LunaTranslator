@@ -69,9 +69,8 @@ def getdefaultsavehook(gamepath, title=None):
             # "mypost":# 设置时再加载
         },
         "lang_follow_default": True,
-        #"private_srclang": 0,# 显示时再加载，缺省用global中的键
-        #"private_tgtlang": 0,
-
+        # "private_srclang": 0,# 显示时再加载，缺省用global中的键
+        # "private_tgtlang": 0,
         "localeswitcher": 0,
         "onloadautochangemode2": 0,
         "needinserthookcode": [],
@@ -92,7 +91,7 @@ def getdefaultsavehook(gamepath, title=None):
         "hooktypeasname": {},
         "use_saved_text_process": False,
         # "searchnoresulttime": 0,
-        "gamejsonfile": [],#之前是"",后面改成[]
+        "gamejsonfile": [],  # 之前是"",后面改成[]
         "gamesqlitefile": "",
         "relationlinks": [],
         # "vndbtags": [],#->webtags
@@ -112,7 +111,6 @@ def getdefaultsavehook(gamepath, title=None):
         "bgmsid": 0,
         "dlsiteid": "RJ/VJXXXX",
         "fanzaid": "",
-
         "title": "",
         # "imagepath": None,  # 封面->imagepath_all[0]
         # "imagepath_much2": [],  # 截图->imagepath_all[1:]
@@ -219,6 +217,17 @@ for key in globalconfig["toolbutton"]["rank2"]:
         ___.append(key)
 for key in ___:
     globalconfig["toolbutton"]["rank2"].remove(key)
+
+
+for group in ["webview", "textbrowser"]:
+
+    if (
+        globalconfig["rendertext_using_internal"][group]
+        not in static_data["textrender"][group]
+    ):
+        globalconfig["rendertext_using_internal"][group] = static_data["textrender"][
+            group
+        ][0]
 
 
 def getlanguse():

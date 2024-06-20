@@ -44,14 +44,15 @@ from gui.usefulwidget import (
     getsimplepatheditor,
     getboxlayout,
     getlineedit,
-    MySwitch,
+    MySwitch2,
     auto_select_webview,
     Prompt_dialog,
     getsimplecombobox,
     D_getsimpleswitch,
     getspinbox,
+    getIconButton,
+    D_getIconButton,
     getcolorbutton,
-    D_getcolorbutton,
     makesubtab_lazy,
     tabadd_lazy,
     getsimpleswitch,
@@ -301,13 +302,8 @@ class tagitem(QWidget):
         lb.clicked.connect(functools.partial(self.labelclicked.emit, key))
         tagLayout.addWidget(lb)
         if removeable:
-            button = getcolorbutton(
-                None,
-                None,
-                functools.partial(self.removesignal.emit, key),  # self.removeTag(tag),
-                icon="fa.times",
-                constcolor="#FF69B4",
-                sizefixed=True,
+            button = getIconButton(
+                functools.partial(self.removesignal.emit, key), icon="fa.times"
             )
             tagLayout.addWidget(button)
 
@@ -498,24 +494,10 @@ class browserdialog(saveposwindow):
         hlay = QHBoxLayout()
         hlay.addWidget(self.tagswidget)
 
+        hlay.addWidget(getIconButton(self.likelink, icon="fa.heart"))
         hlay.addWidget(
-            getcolorbutton(
-                "",
-                "",
-                self.likelink,
-                icon="fa.heart",
-                constcolor="#FF69B4",
-                sizefixed=True,
-            )
-        )
-        hlay.addWidget(
-            getcolorbutton(
-                "",
-                "",
-                lambda: self.urlclicked((None, None, self.current)),
-                icon="fa.repeat",
-                constcolor="#FF69B4",
-                sizefixed=True,
+            getIconButton(
+                lambda: self.urlclicked((None, None, self.current)), icon="fa.repeat"
             )
         )
         _topw = QWidget()
@@ -573,27 +555,20 @@ def maybehavebutton(self, game, post):
         savehook_new_data[game]["save_text_process_info"]["mypost"] = str(
             uuid.uuid4()
         ).replace("-", "_")
-        return getcolorbutton(
-            globalconfig,
-            "",
+        return getIconButton(
             callback=functools.partial(
                 selectdebugfile,
                 savehook_new_data[game]["save_text_process_info"]["mypost"],
                 ismypost=True,
             ),
             icon="fa.gear",
-            constcolor="#FF69B4",
         )
     else:
         if post not in postprocessconfig:
             return
         if post == "_remove_chaos":
-            return getcolorbutton(
-                globalconfig,
-                "",
-                icon="fa.gear",
-                constcolor="#FF69B4",
-                callback=lambda: codeacceptdialog(self),
+            return getIconButton(
+                icon="fa.gear", callback=lambda: codeacceptdialog(self)
             )
         elif "args" in postprocessconfig[post]:
             if isinstance(list(postprocessconfig[post]["args"].values())[0], dict):
@@ -618,13 +593,7 @@ def maybehavebutton(self, game, post):
                     600,
                     items,
                 )
-            return getcolorbutton(
-                globalconfig,
-                "",
-                callback=callback,
-                icon="fa.gear",
-                constcolor="#FF69B4",
-            )
+            return getIconButton(callback=callback, icon="fa.gear")
         else:
             return None
 
@@ -663,19 +632,10 @@ class dialog_setting_game_internal(QWidget):
             getboxlayout(
                 [
                     self.editpath,
-                    getcolorbutton(
-                        "",
-                        "",
-                        functools.partial(self.selectexe),
-                        icon="fa.gear",
-                        constcolor="#FF69B4",
-                    ),
-                    getcolorbutton(
-                        "",
-                        "",
+                    getIconButton(functools.partial(self.selectexe), icon="fa.gear"),
+                    getIconButton(
                         lambda: browserdialog(gobject.baseobject.settin_ui, exepath),
                         icon="fa.book",
-                        constcolor="#FF69B4",
                     ),
                 ]
             ),
@@ -697,13 +657,7 @@ class dialog_setting_game_internal(QWidget):
             getboxlayout(
                 [
                     titleedit,
-                    getcolorbutton(
-                        "",
-                        "",
-                        _titlechange,
-                        icon="fa.search",
-                        constcolor="#FF69B4",
-                    ),
+                    getIconButton(_titlechange, icon="fa.search"),
                 ]
             ),
         )
@@ -772,19 +726,13 @@ class dialog_setting_game_internal(QWidget):
             )
             _vbox_internal = [
                 vndbid,
-                getcolorbutton(
-                    "",
-                    "",
+                getIconButton(
                     functools.partial(self.openrefmainpage, key, idname, exepath),
                     icon="fa.chrome",
-                    constcolor="#FF69B4",
                 ),
-                getcolorbutton(
-                    "",
-                    "",
+                getIconButton(
                     functools.partial(gamdidchangedtask, key, idname, exepath),
                     icon="fa.search",
-                    constcolor="#FF69B4",
                 ),
             ]
 
@@ -792,13 +740,7 @@ class dialog_setting_game_internal(QWidget):
                 __settting = targetmod[key].querysettingwindow
                 _vbox_internal.insert(
                     1,
-                    getcolorbutton(
-                        "",
-                        "",
-                        functools.partial(__settting, self),
-                        icon="fa.gear",
-                        constcolor="#FF69B4",
-                    ),
+                    getIconButton(functools.partial(__settting, self), icon="fa.gear"),
                 )
             except:
                 pass
@@ -1047,9 +989,7 @@ class dialog_setting_game_internal(QWidget):
                 [
                     QLabel(_TR("语音修正")),
                     getsimpleswitch(savehook_new_data[exepath], "tts_repair"),
-                    getcolorbutton(
-                        globalconfig,
-                        "",
+                    getIconButton(
                         callback=lambda x: noundictconfigdialog1(
                             self,
                             savehook_new_data[exepath]["tts_repair_regex"],
@@ -1057,7 +997,6 @@ class dialog_setting_game_internal(QWidget):
                             ["正则", "原文", "替换"],
                         ),
                         icon="fa.gear",
-                        constcolor="#FF69B4",
                     ),
                 ]
             )
@@ -1775,16 +1714,9 @@ class dialog_savedgame_integrated(saveposwindow):
 
         self.internallayout.addWidget(QWidget())
         self.setCentralWidget(w)
-        colors = ["#7f7f7f", "#7f7f7f", "#FF69B4", "#FF69B4"]
-        self.layout1btn = MySwitch(
-            self, icons=["fa.th", "fa.th"], size=20, colors=colors
-        )
-        self.layout2btn = MySwitch(
-            self, icons=["fa.th-list", "fa.th-list"], size=20, colors=colors
-        )
-        self.layout3btn = MySwitch(
-            self, icons=["fa.list", "fa.list"], size=20, colors=colors
-        )
+        self.layout1btn = MySwitch2(self, icons=["fa.th", "fa.th"], size=20)
+        self.layout2btn = MySwitch2(self, icons=["fa.th-list", "fa.th-list"], size=20)
+        self.layout3btn = MySwitch2(self, icons=["fa.list", "fa.list"], size=20)
         self.layout1btn.clicked.connect(functools.partial(self.selectlayout, 0))
         self.layout2btn.clicked.connect(functools.partial(self.selectlayout, 1))
         self.layout3btn.clicked.connect(functools.partial(self.selectlayout, 2))
@@ -1974,9 +1906,7 @@ class dialog_savedgame_new(QWidget):
             self.tagswidget.lineEdit.setCurrentText(_)
 
         layout.addWidget(
-            getcolorbutton(
-                "",
-                "",
+            getIconButton(
                 lambda _: listediter(
                     parent,
                     _TR("标签集"),
@@ -1985,7 +1915,6 @@ class dialog_savedgame_new(QWidget):
                     closecallback=refreshcombo,
                 ),
                 icon="fa.gear",
-                constcolor="#FF69B4",
             ),
         )
 
@@ -2259,12 +2188,8 @@ class dialog_savedgame_lagacy(QWidget):
 
         self.table.setIndexWidget(
             self.model.index(row, 2),
-            D_getcolorbutton(
-                "",
-                "",
-                functools.partial(self.showsettingdialog, k),
-                icon="fa.gear",
-                constcolor="#FF69B4",
+            D_getIconButton(
+                functools.partial(self.showsettingdialog, k), icon="fa.gear"
             ),
         )
 

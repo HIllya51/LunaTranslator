@@ -3,7 +3,7 @@ from myutils.config import globalconfig, _TRL, static_data, getlanguse
 from gui.usefulwidget import (
     D_getsimplecombobox,
     getsimplecombobox,
-    D_getcolorbutton,
+    D_getIconButton,
     makescrollgrid,
 )
 
@@ -35,7 +35,7 @@ def setTablanglz(self):
         ],
         [],
         [
-            ("本软件显示语言(重启生效)", 5),
+            ("软件显示语言_重启生效", 5),
             (
                 D_getsimplecombobox(
                     (static_data["language_list_show"]), globalconfig, "languageuse"
@@ -43,14 +43,11 @@ def setTablanglz(self):
                 5,
             ),
             (
-                D_getcolorbutton(
-                    globalconfig,
-                    "",
+                D_getIconButton(
                     callback=lambda: os.startfile(
                         os.path.abspath("./files/lang/{}.json".format(getlanguse()))
                     ),
                     icon="fa.gear",
-                    constcolor="#FF69B4",
                 ),
                 1,
             ),

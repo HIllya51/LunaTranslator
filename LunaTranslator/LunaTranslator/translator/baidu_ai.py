@@ -86,6 +86,8 @@ class TS(basetrans):
             if len(text) == 0 or text[:5] != b"data:":
                 continue
             js = json.loads(text[5:].decode("utf8"))
+            if js["data"] is None:
+                continue
             event = js["data"]["event"]
             if event == "Translating":
                 trans = "\n".join([_["dst"] for _ in js["data"]["list"]])

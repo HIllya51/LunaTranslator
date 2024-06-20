@@ -7,7 +7,7 @@ from gui.usefulwidget import (
     D_getsimplecombobox,
     D_getspinbox,
     makescrollgrid,
-    D_getcolorbutton,
+    D_getIconButton,
     yuitsu_switch,
     FocusCombo,
     D_getsimpleswitch,
@@ -65,9 +65,7 @@ def getttsgrid(self):
         if "args" in globalconfig["reader"][name]:
             items = autoinitdialog_items(globalconfig["reader"][name])
             items[-1]["callback"] = gobject.baseobject.startreader
-            _3 = D_getcolorbutton(
-                globalconfig,
-                "",
+            _3 = D_getIconButton( 
                 callback=functools.partial(
                     autoinitdialog,
                     self,
@@ -75,8 +73,7 @@ def getttsgrid(self):
                     800,
                     items,
                 ),
-                icon="fa.gear",
-                constcolor="#FF69B4",
+                icon="fa.gear", 
             )
 
         else:
@@ -116,61 +113,95 @@ def getttsgrid(self):
 
 
 def setTab5lz(self):
-
-    grids = getttsgrid(self)
+    grids = []
     grids += [
-        [],
-        [("选择声音", 6), (functools.partial(createvoicecombo, self), 15)],
         [
-            ("语速:(-10~10)", 6),
-            (D_getspinbox(-10, 10, globalconfig["ttscommon"], "rate"), 3),
-        ],
-        [
-            ("音量:(0~100)", 6),
-            (D_getspinbox(0, 100, globalconfig["ttscommon"], "volume"), 3),
-        ],
-        [("自动朗读", 6), (D_getsimpleswitch(globalconfig, "autoread"), 1)],
-        [("不被打断", 6), (D_getsimpleswitch(globalconfig, "ttsnointerrupt"), 1)],
-        [
-            ("朗读原文", 6),
-            (D_getsimpleswitch(globalconfig, "read_raw"), 1),
-            "",
-            "",
-            ("朗读翻译", 6),
-            (D_getsimpleswitch(globalconfig, "read_trans"), 1),
-        ],
-        [
-            ("朗读的翻译", 6),
             (
-                D_getsimplecombobox(
-                    _TRL(
-                        [
-                            globalconfig["fanyi"][x]["name"]
-                            for x in globalconfig["fanyi"]
-                        ]
-                    ),
-                    globalconfig,
-                    "read_translator",
-                ),
-                15,
-            ),
+                dict(title="引擎", type="grid", grid=getttsgrid(self)),
+                0,
+                "group",
+            )
         ],
-        [],
         [
-            ("语音修正", 6),
-            D_getsimpleswitch(globalconfig["ttscommon"], "tts_repair"),
-            D_getcolorbutton(
-                globalconfig,
-                "",
-                callback=lambda x: noundictconfigdialog1(
-                    self,
-                    globalconfig["ttscommon"]["tts_repair_regex"],
-                    "语音修正",
-                    ["正则", "原文", "替换"],
+            (
+                dict(
+                    title="声音",
+                    type="grid",
+                    grid=[
+                        [
+                            "选择声音",
+                            (functools.partial(createvoicecombo, self), 4),
+                        ],
+                        [
+                            "语速:(-10~10)",
+                            D_getspinbox(-10, 10, globalconfig["ttscommon"], "rate"),
+                        ],
+                        [
+                            "音量:(0~100)",
+                            D_getspinbox(0, 100, globalconfig["ttscommon"], "volume"),
+                        ],
+                    ],
                 ),
-                icon="fa.gear",
-                constcolor="#FF69B4",
-            ),
+                0,
+                "group",
+            )
+        ],
+        [
+            (
+                dict(
+                    title="行为",
+                    type="grid",
+                    grid=[
+                        [
+                            "自动朗读",
+                            D_getsimpleswitch(globalconfig, "autoread"),
+                        ],
+                        [
+                            "不被打断",
+                            D_getsimpleswitch(globalconfig, "ttsnointerrupt"),
+                        ],
+                        [
+                            "朗读原文",
+                            D_getsimpleswitch(globalconfig, "read_raw"),
+                        ],
+                        [
+                            "朗读翻译",
+                            D_getsimpleswitch(globalconfig, "read_trans"),
+                        ],
+                        [
+                            "朗读的翻译",
+                            (
+                                D_getsimplecombobox(
+                                    _TRL(
+                                        [
+                                            globalconfig["fanyi"][x]["name"]
+                                            for x in globalconfig["fanyi"]
+                                        ]
+                                    ),
+                                    globalconfig,
+                                    "read_translator",
+                                ),
+                                4,
+                            ),
+                        ],
+                        [
+                            "语音修正",
+                            D_getsimpleswitch(globalconfig["ttscommon"], "tts_repair"),
+                            D_getIconButton( 
+                                callback=lambda x: noundictconfigdialog1(
+                                    self,
+                                    globalconfig["ttscommon"]["tts_repair_regex"],
+                                    "语音修正",
+                                    ["正则", "原文", "替换"],
+                                ),
+                                icon="fa.gear", 
+                            ),
+                        ],
+                    ],
+                ),
+                0,
+                "group",
+            )
         ],
     ]
     return grids

@@ -4,7 +4,7 @@ from myutils.config import globalconfig
 from rendertext.somefunctions import dataget
 import gobject, functools, importlib
 from traceback import print_exc
-from rendertext.internal.textbrowser.base import base
+from rendertext.textbrowser_imp.base import base
 
 
 class Qlabel_c(QLabel):
@@ -109,17 +109,10 @@ class TextBrowser(QWidget, dataget):
 
     def resets1(self):
         self.currenttype = globalconfig["rendertext_using_internal"]["textbrowser"]
-        try:
-            __ = importlib.import_module(
-                f"rendertext.internal.textbrowser.{self.currenttype}"
-            )
-        except:
-            self.currenttype = globalconfig["rendertext_using_internal"][
-                "textbrowser"
-            ] = list(globalconfig["rendertext"]["textbrowser"].keys())[0]
-            __ = importlib.import_module(
-                f"rendertext.internal.textbrowser.{self.currenttype}"
-            )
+        __ = importlib.import_module(
+            f"rendertext.textbrowser_imp.{self.currenttype}"
+        )
+
         self.currentclass = functools.partial(__.TextLine, self.currenttype)
 
     def resets(self):

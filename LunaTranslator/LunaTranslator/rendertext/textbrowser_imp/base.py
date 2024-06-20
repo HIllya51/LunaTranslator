@@ -1,17 +1,6 @@
 from qtsymbols import *
 from myutils.config import globalconfig
 
-
-class QGraphicsDropShadowEffect_multi(QGraphicsDropShadowEffect):
-    def __init__(self, x) -> None:
-        self.x = x
-        super().__init__()
-
-    def draw(self, painter) -> None:
-        for i in range(self.x):
-            super().draw(painter)
-
-
 class base(QLabel):
     def paintText(self, painter: QPainter):
         raise Exception
@@ -89,18 +78,6 @@ class base(QLabel):
 
     def clearShadow(self):
         self.setGraphicsEffect(None)
-
-    def setShadow_internal(self, colorshadow, width=1, deepth=1, trace=False):
-
-        shadow2 = QGraphicsDropShadowEffect_multi(deepth)
-        if trace:
-            shadow2.setBlurRadius(width)
-            shadow2.setOffset(QPointF(width, width))
-        else:
-            shadow2.setBlurRadius(width)
-            shadow2.setOffset(0)
-        shadow2.setColor(QColor(colorshadow))
-        self.setGraphicsEffect(shadow2)
 
     def text(self):
         return self._m_text

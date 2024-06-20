@@ -348,7 +348,8 @@ class MAINUI:
                 return
 
         res = self.solveaftertrans(res, optimization_params)
-
+        if len(res) == 0:
+            return
         if onlytrans == False:
             if globalconfig["read_trans"] and (
                 list(globalconfig["fanyi"].keys())[globalconfig["read_translator"]]
@@ -697,7 +698,6 @@ class MAINUI:
                                         needinserthookcode=needinserthookcode,
                                     )
 
-
                 else:
                     pids = self.textsource.pids
                     if sum([int(pid_running(pid)) for pid in pids]) == 0:
@@ -908,8 +908,9 @@ class MAINUI:
                         self.__currentexe = None
             except:
                 print_exc()
+
     @threader
-    def clickwordcallback(self,word, append):
+    def clickwordcallback(self, word, append):
         if globalconfig["usewordorigin"] == False:
             word = word["orig"]
         else:
@@ -917,15 +918,12 @@ class MAINUI:
 
         if globalconfig["usecopyword"]:
             if append:
-                winsharedutils.clipboard_set(
-                    winsharedutils.clipboard_get() + word
-                )
+                winsharedutils.clipboard_set(winsharedutils.clipboard_get() + word)
             else:
                 winsharedutils.clipboard_set(word)
         if globalconfig["usesearchword"]:
-            self.searchwordW.getnewsentencesignal.emit(
-                word, append
-            )
+            self.searchwordW.getnewsentencesignal.emit(word, append)
+
     def setshowintab_checked(self, widget):
         try:
             self.translation_ui

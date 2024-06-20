@@ -16,6 +16,14 @@ from gui.edittext import edittrans
 from gui.dialog_savedgame import browserdialog, dialog_savedgame_integrated
 
 
+def contrastcolor(color):
+    color = QColor(globalconfig["buttoncolor"])
+    r, g, b, a = color.getRgb()
+
+    r, g, b = [hex((_ + 128) % 256)[2:] for _ in (r, g, b)]
+    return f"#{r}{g}{b}"
+
+
 class QUnFrameWindow(resizableframeless):
     displayglobaltooltip = pyqtSignal(str)
     displayres = pyqtSignal(dict)
@@ -248,13 +256,14 @@ class QUnFrameWindow(resizableframeless):
             "bindwindow": self.isbindedwindow,
             "keepontop": globalconfig["keepontop"],
         }
-        onstatecolor = "#FF69B4"
 
         self._TitleLabel.setFixedHeight(int(globalconfig["buttonsize"] * 1.5))
         for name in self.buttons:
             if name in colorstate:
                 color = (
-                    onstatecolor if colorstate[name] else globalconfig["buttoncolor"]
+                    contrastcolor(globalconfig["buttoncolor"])
+                    if colorstate[name]
+                    else globalconfig["buttoncolor"]
                 )
             else:
                 color = globalconfig["buttoncolor"]
@@ -431,7 +440,6 @@ class QUnFrameWindow(resizableframeless):
         windows.SetForegroundWindow(int(self.winId()))
 
     def aftershowdosomething(self):
-        self.showline(clear=True, text=_TR("欢迎使用"), origin=False)
 
         windows.SetForegroundWindow(int(self.winId()))
         self.refreshtoolicon()
@@ -584,6 +592,7 @@ class QUnFrameWindow(resizableframeless):
         self.initvalues()
         self.initsignals()
         self._TitleLabel = QLabel(self)
+        self._TitleLabel.setMouseTracking(True)
         self.addbuttons()
         self.translate_text = Textbrowser(self)
         self.translate_text.contentsChanged.connect(self.textAreaChanged)
@@ -827,16 +836,19 @@ class QUnFrameWindow(resizableframeless):
 
     def textAreaChanged(self, size: QSize):
 
-        if globalconfig["fixedheight"]:
-            return
         if self.translate_text.cleared:
             return
-        newHeight = size.height() + self.translate_text._padding
-        width = self.width()
-        self.resize(
-            width,
-            int(newHeight + globalconfig["buttonsize"] * 1.5),
+        if not (globalconfig["auto_expand"] or globalconfig["auto_shrink"]):
+            return
+        newHeight = (
+            size.height()
+            + self.translate_text._padding
+            + int(globalconfig["buttonsize"] * 1.5)
         )
+        if (newHeight > self.height() and globalconfig["auto_expand"]) or (
+            newHeight < self.height() and globalconfig["auto_shrink"]
+        ):
+            self.resize(self.width(), newHeight)
 
     def clickRange(self, auto):
         if globalconfig["sourcestatus2"]["ocr"]["use"] == False:

@@ -3,11 +3,10 @@ import gobject
 from myutils.config import globalconfig, _TRL
 from gui.inputdialog import autoinitdialog, autoinitdialog_items
 from gui.usefulwidget import (
-    D_getcolorbutton,
     yuitsu_switch,
     makescrollgrid,
     D_getsimpleswitch,
-    D_getsimplecombobox,
+    D_getIconButton,
 )
 
 
@@ -29,9 +28,7 @@ def gethiragrid(self):
         if "args" in globalconfig["hirasetting"][name]:
             items = autoinitdialog_items(globalconfig["hirasetting"][name])
             items[-1]["callback"] = gobject.baseobject.starthira
-            _3 = D_getcolorbutton(
-                globalconfig,
-                "",
+            _3 = D_getIconButton(
                 callback=functools.partial(
                     autoinitdialog,
                     self,
@@ -40,7 +37,6 @@ def gethiragrid(self):
                     items,
                 ),
                 icon="fa.gear",
-                constcolor="#FF69B4",
             )
 
         else:
@@ -81,48 +77,16 @@ def gethiragrid(self):
 
 def setTabcishu_l(self):
 
-    grids = (
+    grids = [
         [
-            [("分词&假名分析器", -1)],
-            [
-                ("日语注音方案", 6),
-                (
-                    D_getsimplecombobox(
-                        _TRL(["平假名", "片假名", "罗马音"]),
-                        globalconfig,
-                        "hira_vis_type",
-                    ),
-                    5,
-                ),
-            ],
-        ]
-        + gethiragrid(self)
-        + [
-            [],
-            [],
-            [
-                ("点击单词查词", 6),
-                (D_getsimpleswitch(globalconfig, "usesearchword"), 1),
-                D_getcolorbutton(
-                    globalconfig,
-                    "",
-                    callback=lambda: gobject.baseobject.searchwordW.showsignal.emit(),
-                    icon="fa.search",
-                    constcolor="#FF69B4",
-                ),
-                "",
-                ("点击单词复制", 6),
-                (D_getsimpleswitch(globalconfig, "usecopyword"), 1),
-            ],
-            [
-                ("使用原型查询", 6),
-                (D_getsimpleswitch(globalconfig, "usewordorigin"), 1),
-            ],
-            [],
-            [("辞书", -1)],
-        ]
-    )
-
+            (
+                dict(title="分词器", type="grid", grid=gethiragrid(self)),
+                0,
+                "group",
+            )
+        ],
+    ]
+    cishugrid = []
     line = []
     i = 0
     for cishu in globalconfig["cishu"]:
@@ -141,9 +105,7 @@ def setTabcishu_l(self):
                 "use",
                 callback=functools.partial(gobject.baseobject.startxiaoxueguan, cishu),
             ),
-            D_getcolorbutton(
-                globalconfig,
-                "",
+            D_getIconButton(
                 callback=functools.partial(
                     autoinitdialog,
                     self,
@@ -152,16 +114,34 @@ def setTabcishu_l(self):
                     items,
                 ),
                 icon="fa.gear",
-                constcolor="#FF69B4",
             ),
         ]
 
         if i % 3 == 2:
-            grids.append(line)
+            cishugrid.append(line)
             line = []
         else:
             line += [""]
         i += 1
     if len(line):
-        grids.append(line)
+        cishugrid.append(line)
+    grids += [
+        [],
+        [
+            "查词",
+            D_getIconButton(
+                callback=lambda: gobject.baseobject.searchwordW.showsignal.emit(),
+                icon="fa.search",
+            ),
+            ("",4)
+        ],
+        [],
+        [
+            (
+                dict(title="辞书", type="grid", grid=cishugrid),
+                0,
+                "group",
+            )
+        ],
+    ]
     return grids

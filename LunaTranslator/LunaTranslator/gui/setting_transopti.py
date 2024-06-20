@@ -13,9 +13,9 @@ from myutils.config import (
     _TRL,
 )
 from gui.codeacceptdialog import codeacceptdialog
-from gui.usefulwidget import (
-    getcolorbutton,
-    D_getcolorbutton,
+from gui.usefulwidget import ( 
+    D_getIconButton,
+    getIconButton,
     D_getsimpleswitch,
     makescrollgrid,
     getvboxwidget,
@@ -42,12 +42,9 @@ def getcomparelayout(self):
     layout = QHBoxLayout()
     fromtext = QPlainTextEdit()
     totext = QPlainTextEdit()
-    solvebutton = getcolorbutton(
-        globalconfig,
-        "",
+    solvebutton = getIconButton( 
         callback=lambda: totext.setPlainText(POSTSOLVE(fromtext.toPlainText())),
-        icon="fa.chevron-right",
-        constcolor="#FF69B4",
+        icon="fa.chevron-right", 
     )
 
     layout.addWidget(fromtext)
@@ -100,22 +97,16 @@ def setTab7_lazy(self, basel):
 
     for i, post in enumerate(sortlist):
         if post == "_11":
-            config = D_getcolorbutton(
-                globalconfig,
-                "",
+            config = D_getIconButton( 
                 callback=lambda: selectdebugfile("./userconfig/mypost.py"),
-                icon="fa.gear",
-                constcolor="#FF69B4",
+                icon="fa.gear", 
             )
         else:
             if post not in postprocessconfig:
                 continue
             if post == "_remove_chaos":
-                config = D_getcolorbutton(
-                    globalconfig,
-                    "",
-                    icon="fa.gear",
-                    constcolor="#FF69B4",
+                config = D_getIconButton( 
+                    icon="fa.gear", 
                     callback=lambda: codeacceptdialog(self),
                 )
             elif "args" in postprocessconfig[post]:
@@ -135,29 +126,20 @@ def setTab7_lazy(self, basel):
                         600,
                         items,
                     )
-                config = D_getcolorbutton(
-                    globalconfig,
-                    "",
+                config = D_getIconButton( 
                     callback=callback,
-                    icon="fa.gear",
-                    constcolor="#FF69B4",
+                    icon="fa.gear", 
                 )
             else:
                 config = ""
 
-        button_up = D_getcolorbutton(
-            globalconfig,
-            "",
+        button_up = D_getIconButton( 
             callback=functools.partial(changerank, post, True),
-            icon="fa.arrow-up",
-            constcolor="#FF69B4",
+            icon="fa.arrow-up", 
         )
-        button_down = D_getcolorbutton(
-            globalconfig,
-            "",
+        button_down = D_getIconButton( 
             callback=functools.partial(changerank, post, False),
-            icon="fa.arrow-down",
-            constcolor="#FF69B4",
+            icon="fa.arrow-down", 
         )
 
         l = [
@@ -178,17 +160,14 @@ def setTab7_lazy(self, basel):
             )
             setting = loadpostsettingwindowmethod(name)
 
-            def __(_f, _1, _2):
+            def __(_f, _1):
                 return _f(_1)
 
             if setting:
                 grids2[-1].append(
-                    D_getcolorbutton(
-                        globalconfig,
-                        "",
+                    D_getIconButton( 
                         callback=functools.partial(__, setting, self),
-                        icon="fa.gear",
-                        constcolor="#FF69B4",
+                        icon="fa.gear", 
                     )
                 )
     grids2 += [[("", 12)]]

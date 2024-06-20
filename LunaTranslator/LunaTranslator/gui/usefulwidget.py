@@ -176,20 +176,174 @@ class closeashidewindow(saveposwindow):
         super().closeEvent(event)
 
 
-class MySwitch(QPushButton):
-    def __init__(
-        self, parent=None, sign=True, enable=True, icons=None, size=25, colors=None
-    ):
+class MySwitch(QWidget):
+    clicked = pyqtSignal(bool)
+
+    def sizeHint(self):
+        return QSize(
+            int(1.62 * globalconfig["buttonsize2"]), globalconfig["buttonsize2"]
+        )
+
+    def __init__(self, parent=None, sign=True, enable=True):
+        super().__init__(parent)
+        self.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
+        self.checked = sign
+        self.setCursor(Qt.CursorShape.PointingHandCursor)
+        self.animation = QVariantAnimation()
+        self.animation.setDuration(80)
+        self.animation.setStartValue(0)
+        self.animation.setEndValue(20)
+        self.__currv = 0
+        if sign:
+            self.__currv = 20
+        self.animation.valueChanged.connect(self.update11)
+        self.animation.finished.connect(self.onAnimationFinished)
+        self.enable = enable
+
+    def setEnabled(self, enable):
+        self.enable = enable
+        self.update()
+
+    def isEnabled(self):
+        return self.enable
+
+    def isChecked(self):
+        return self.checked
+
+    def setChecked(self, check):
+        if check == self.checked:
+            return
+        self.checked = check
+        self.animation.setDirection(
+            QVariantAnimation.Direction.Forward
+            if self.checked
+            else QVariantAnimation.Direction.Backward
+        )
+        self.animation.start()
+
+    def update11(self):
+        self.__currv = self.animation.currentValue()
+        self.update()
+
+    def paintEvent(self, event):
+        painter = QPainter(self)
+        painter.setRenderHint(QPainter.RenderHint.Antialiasing)
+        painter.setPen(Qt.PenStyle.NoPen)
+
+        __ = QColor(
+            [globalconfig["buttoncolor3"], globalconfig["buttoncolor2"]][self.checked]
+        )
+        if not self.enable:
+            __ = QColor(
+                max(0, (__.red() - 64)),
+                max(
+                    0,
+                    (__.green() - 64),
+                ),
+                max(0, (__.blue() - 64)),
+            )
+        painter.setBrush(__)
+        bigw = self.size().width() - self.sizeHint().width()
+        bigh = self.size().height() - self.sizeHint().height()
+        x = bigw // 2
+        y = bigh // 2
+        painter.drawRoundedRect(
+            QRect(x, y, self.sizeHint().width(), self.sizeHint().height()),
+            self.sizeHint().height() // 2,
+            self.sizeHint().height() // 2,
+        )
+
+        offset = int(
+            self.__currv * (self.sizeHint().width() - self.sizeHint().height()) / 20
+        )
+        painter.setBrush(QColor(255, 255, 255))
+        painter.drawEllipse(
+            QPoint(
+                x + self.sizeHint().height() // 2 + offset,
+                y + self.sizeHint().height() // 2,
+            ),
+            self.sizeHint().height() * 0.35,
+            self.sizeHint().height() * 0.35,
+        )
+
+    def mouseReleaseEvent(self, event) -> None:
+        if not self.enable:
+            return
+        if event.button() == Qt.MouseButton.LeftButton:
+            self.checked = not self.checked
+            self.clicked.emit(self.checked)
+            self.animation.setDirection(
+                QVariantAnimation.Direction.Forward
+                if self.checked
+                else QVariantAnimation.Direction.Backward
+            )
+            self.animation.start()
+
+    def onAnimationFinished(self):
+        pass
+
+
+class IconButton(QWidget):
+    clicked = pyqtSignal()
+
+    def sizeHint(self):
+        return QSize(
+            int(1.42 * globalconfig["buttonsize2"]),
+            int(1.42 * globalconfig["buttonsize2"]),
+        )
+
+    def __init__(self, icon, enable=True, qicon=None, parent=None):
+        super().__init__(parent)
+        self.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
+        self.enable = enable
+        self._icon = icon
+        self._qicon = qicon
+
+    def setEnabled(self, enable):
+        self.enable = enable
+        self.update()
+
+    def isEnabled(self):
+        return self.enable
+
+    def paintEvent(self, event):
+        painter = QPainter(self)
+        painter.setRenderHint(QPainter.RenderHint.Antialiasing)
+        painter.setPen(Qt.PenStyle.NoPen)
+        if self._qicon:
+            icon = self._qicon
+
+        else:
+
+            __ = QColor(globalconfig["buttoncolor2"])
+            if not self.enable:
+                __ = QColor(
+                    max(0, (__.red() - 64)),
+                    max(
+                        0,
+                        (__.green() - 64),
+                    ),
+                    max(0, (__.blue() - 64)),
+                )
+            icon: QIcon = qtawesome.icon(self._icon, color=__)
+        bigw = self.size().width() - self.sizeHint().width()
+        bigh = self.size().height() - self.sizeHint().height()
+        x = bigw // 2
+        y = bigh // 2
+        painter.drawPixmap(x, y, icon.pixmap(self.sizeHint()))
+
+    def mouseReleaseEvent(self, event) -> None:
+        if not self.enable:
+            return
+        if event.button() == Qt.MouseButton.LeftButton:
+            self.clicked.emit()
+
+
+class MySwitch2(QPushButton):
+    def __init__(self, parent=None, sign=True, enable=True, icons=None, size=25):
         self.status1 = 0
         self.status2 = 0
-        if colors is None:
-            colors = [
-                "#7f7f7f",
-                "#afafaf",
-                "#FFa9d4",
-                "#FF69B4",
-            ]
-        self.colors = colors
+
         if icons is None:
             icons = ["fa.times", "fa.check"]
         self.icons = icons
@@ -209,25 +363,37 @@ class MySwitch(QPushButton):
         self.setCheckable(True)
         self.setChecked(sign)
 
-    def setChecked(self, a0):
-        super().setChecked(a0)
-        self.status1 = a0
+    def __seticon(self):
+
+        __ = QColor(
+            [globalconfig["buttoncolor3"], globalconfig["buttoncolor2"]][self.status1]
+        )
+        if not self.status2:
+            __ = QColor(
+                max(0, (__.red() - 64)),
+                max(
+                    0,
+                    (__.green() - 64),
+                ),
+                max(0, (__.blue() - 64)),
+            )
+        color = __
         self.setIcon(
             qtawesome.icon(
                 self.icons[self.status1],
-                color=self.colors[self.status1 * 2 + self.status2],
+                color=color,
             )
         )
+
+    def setChecked(self, a0):
+        super().setChecked(a0)
+        self.status1 = a0
+        self.__seticon()
 
     def setEnabled(self, a0):
         super().setEnabled(a0)
         self.status2 = a0
-        self.setIcon(
-            qtawesome.icon(
-                self.icons[self.status1],
-                color=self.colors[self.status1 * 2 + self.status2],
-            )
-        )
+        self.__seticon()
 
 
 class resizableframeless(saveposwindow):
@@ -236,84 +402,103 @@ class resizableframeless(saveposwindow):
         self.setMouseTracking(True)
 
         self._padding = 5
-        # 设置鼠标跟踪判断扳机默认值
+        self.resetflags()
+
+    def resetflags(self):
         self._move_drag = False
-        self._corner_drag = False
+        self._corner_drag_youxia = False
         self._bottom_drag = False
-        self._lcorner_drag = False
+        self._top_drag = False
+        self._corner_drag_zuoxia = False
         self._right_drag = False
         self._left_drag = False
+        self._corner_drag_zuoshang = False
+        self._corner_drag_youshang = False
 
     def resizeEvent(self, e):
 
         if self._move_drag == False:
             self._right_rect = [
                 self.width() - self._padding,
-                self.width() + 1,
-                0,
+                self.width() + self._padding,
+                self._padding,
                 self.height() - self._padding,
             ]
-            self._left_rect = [-1, self._padding, 0, self.height() - self._padding]
+            self._left_rect = [
+                -self._padding,
+                self._padding,
+                self._padding,
+                self.height() - self._padding,
+            ]
             self._bottom_rect = [
                 self._padding,
                 self.width() - self._padding,
                 self.height() - self._padding,
-                self.height() + 1,
+                self.height() + self._padding,
             ]
-            self._corner_rect = [
+            self._top_rect = [
+                self._padding,
                 self.width() - self._padding,
-                self.width() + 1,
-                self.height() - self._padding,
-                self.height() + 1,
+                -self._padding,
+                self._padding,
             ]
-            self._lcorner_rect = [
-                -1,
+            self._corner_youxia = [
+                self.width() - self._padding,
+                self.width() + self._padding,
+                self.height() - self._padding,
+                self.height() + self._padding,
+            ]
+            self._corner_zuoxia = [
+                -self._padding,
                 self._padding,
                 self.height() - self._padding,
-                self.height() + 1,
+                self.height() + self._padding,
+            ]
+
+            self._corner_youshang = [
+                self.width() - self._padding,
+                self.width() + self._padding,
+                -self._padding,
+                self._padding,
+            ]
+
+            self._corner_zuoshang = [
+                -self._padding,
+                self._padding,
+                -self._padding,
+                self._padding,
             ]
         super().resizeEvent(e)
 
     def mousePressEvent(self, event: QMouseEvent):
-        # 重写鼠标点击的事件
         if isqt5:
             gpos = event.globalPos()
         else:
             gpos = event.globalPosition().toPoint()
-        if (event.button() == Qt.MouseButton.LeftButton) and (
-            isinrect(event.pos(), self._corner_rect)
-        ):
-            # 鼠标左键点击右下角边界区域
-            self._corner_drag = True
-        elif (event.button() == Qt.MouseButton.LeftButton) and (
-            isinrect(event.pos(), self._right_rect)
-        ):
-            # 鼠标左键点击右侧边界区域
+        if event.button() != Qt.MouseButton.LeftButton:
+            return
+        self.startxp = gpos - self.pos()
+        self.starty = gpos.y()
+        self.startx = gpos.x()
+        self.starth = self.height()
+        self.startw = self.width()
+        if isinrect(event.pos(), self._corner_youxia):
+            self._corner_drag_youxia = True
+        elif isinrect(event.pos(), self._right_rect):
             self._right_drag = True
-        elif (event.button() == Qt.MouseButton.LeftButton) and (
-            isinrect(event.pos(), self._left_rect)
-        ):
-            # 鼠标左键点击右侧边界区域
+        elif isinrect(event.pos(), self._left_rect):
             self._left_drag = True
-            self.startxp = gpos - self.pos()
-            self.startx = gpos.x()
-            self.startw = self.width()
-        elif (event.button() == Qt.MouseButton.LeftButton) and (
-            isinrect(event.pos(), self._bottom_rect)
-        ):
-            # 鼠标左键点击下侧边界区域
+        elif isinrect(event.pos(), self._top_rect):
+            self._top_drag = True
+        elif isinrect(event.pos(), self._bottom_rect):
             self._bottom_drag = True
-        elif (event.button() == Qt.MouseButton.LeftButton) and (
-            isinrect(event.pos(), self._lcorner_rect)
-        ):
-            # 鼠标左键点击下侧边界区域
-            self._lcorner_drag = True
-            self.startxp = gpos - self.pos()
-            self.startx = gpos.x()
-            self.startw = self.width()
-        # and (event.y() < self._TitleLabel.height()):
-        elif event.button() == Qt.MouseButton.LeftButton:
-            # 鼠标左键点击标题栏区域
+        elif isinrect(event.pos(), self._corner_zuoxia):
+            self._corner_drag_zuoxia = True
+        elif isinrect(event.pos(), self._corner_youshang):
+            self._corner_drag_youshang = True
+        elif isinrect(event.pos(), self._corner_zuoshang):
+            self._corner_drag_zuoshang = True
+        else:
             self._move_drag = True
             self.move_DragPosition = gpos - self.pos()
 
@@ -322,65 +507,78 @@ class resizableframeless(saveposwindow):
         return super().leaveEvent(a0)
 
     def mouseMoveEvent(self, event):
-        # 判断鼠标位置切换鼠标手势
 
         pos = event.pos()
         if isqt5:
             gpos = event.globalPos()
         else:
             gpos = event.globalPosition().toPoint()
-        if self._move_drag == False:
-            if isinrect(pos, self._corner_rect):
-                self.setCursor(Qt.CursorShape.SizeFDiagCursor)
-            elif isinrect(pos, self._lcorner_rect):
-                self.setCursor(Qt.CursorShape.SizeBDiagCursor)
-            elif isinrect(pos, self._bottom_rect):
-                self.setCursor(Qt.CursorShape.SizeVerCursor)
-            elif isinrect(pos, self._right_rect):
-                self.setCursor(Qt.CursorShape.SizeHorCursor)
-            elif isinrect(pos, self._left_rect):
-                self.setCursor(Qt.CursorShape.SizeHorCursor)
-            else:
-                self.setCursor(Qt.CursorShape.ArrowCursor)
-        if Qt.MouseButton.LeftButton and self._right_drag:
 
-            # 右侧调整窗口宽度
+        if isinrect(pos, self._corner_youxia):
+            self.setCursor(Qt.CursorShape.SizeFDiagCursor)
+        elif isinrect(pos, self._corner_zuoshang):
+            self.setCursor(Qt.CursorShape.SizeFDiagCursor)
+        elif isinrect(pos, self._corner_zuoxia):
+            self.setCursor(Qt.CursorShape.SizeBDiagCursor)
+        elif isinrect(pos, self._corner_youshang):
+            self.setCursor(Qt.CursorShape.SizeBDiagCursor)
+        elif isinrect(pos, self._bottom_rect):
+            self.setCursor(Qt.CursorShape.SizeVerCursor)
+        elif isinrect(pos, self._top_rect):
+            self.setCursor(Qt.CursorShape.SizeVerCursor)
+        elif isinrect(pos, self._right_rect):
+            self.setCursor(Qt.CursorShape.SizeHorCursor)
+        elif isinrect(pos, self._left_rect):
+            self.setCursor(Qt.CursorShape.SizeHorCursor)
+        else:
+            self.setCursor(Qt.CursorShape.ArrowCursor)
+        if self._right_drag:
             self.resize(pos.x(), self.height())
-        elif Qt.MouseButton.LeftButton and self._left_drag:
-            # 右侧调整窗口宽度
+        elif self._corner_drag_youshang:
+            self.setGeometry(
+                self.x(),
+                (gpos - self.startxp).y(),
+                pos.x(),
+                self.starth - (gpos.y() - self.starty),
+            )
+        elif self._corner_drag_zuoshang:
+            self.setGeometry(
+                (gpos - self.startxp).x(),
+                (gpos - self.startxp).y(),
+                self.startw - (gpos.x() - self.startx),
+                self.starth - (gpos.y() - self.starty),
+            )
+
+        elif self._left_drag:
             self.setGeometry(
                 (gpos - self.startxp).x(),
                 self.y(),
                 self.startw - (gpos.x() - self.startx),
                 self.height(),
             )
-            # self.resize(pos.x(), self.height())
-        elif Qt.MouseButton.LeftButton and self._bottom_drag:
-            # 下侧调整窗口高度
+        elif self._bottom_drag:
             self.resize(self.width(), event.pos().y())
-        elif Qt.MouseButton.LeftButton and self._lcorner_drag:
-            # 下侧调整窗口高度
+        elif self._top_drag:
+            self.setGeometry(
+                self.x(),
+                (gpos - self.startxp).y(),
+                self.width(),
+                self.starth - (gpos.y() - self.starty),
+            )
+        elif self._corner_drag_zuoxia:
             self.setGeometry(
                 (gpos - self.startxp).x(),
                 self.y(),
                 self.startw - (gpos.x() - self.startx),
                 event.pos().y(),
             )
-        elif Qt.MouseButton.LeftButton and self._corner_drag:
-            # 右下角同时调整高度和宽度
+        elif self._corner_drag_youxia:
             self.resize(pos.x(), pos.y())
-        elif Qt.MouseButton.LeftButton and self._move_drag:
-            # 标题栏拖放窗口位置
+        elif self._move_drag:
             self.move(gpos - self.move_DragPosition)
 
     def mouseReleaseEvent(self, QMouseEvent):
-        # 鼠标释放后，各扳机复位
-        self._move_drag = False
-        self._corner_drag = False
-        self._bottom_drag = False
-        self._lcorner_drag = False
-        self._right_drag = False
-        self._left_drag = False
+        self.resetflags()
 
 
 class Prompt_dialog(QDialog):
@@ -491,6 +689,20 @@ def D_getspinbox(mini, maxi, d, key, double=False, step=1, callback=None, dec=1)
     return lambda: getspinbox(mini, maxi, d, key, double, step, callback, dec)
 
 
+def getIconButton(callback=None, icon="fa.paint-brush", enable=True, qicon=None):
+
+    b = IconButton(icon, enable, qicon)
+
+    if callback:
+        b.clicked.connect(callback)
+
+    return b
+
+
+def D_getIconButton(callback=None, icon="fa.paint-brush", enable=True, qicon=None):
+    return lambda: getIconButton(callback, icon, enable, qicon)
+
+
 def getcolorbutton(
     d,
     key,
@@ -509,9 +721,10 @@ def getcolorbutton(
     b = QPushButton()
     b.setIcon(qicon)
     b.setEnabled(enable)
-    b.setIconSize(QSize(20, 20))
+    sz = int(1.42 * globalconfig["buttonsize2"])
+    b.setIconSize(QSize(sz, sz))
     if sizefixed:
-        b.setFixedSize(QSize(20, 20))
+        b.setFixedSize(QSize(sz, sz))
     if transparent:
         b.setStyleSheet(
             """background-color: rgba(255, 255, 255, 0);
@@ -1058,6 +1271,50 @@ def tabadd_lazy(tab, title, getrealwidgetfunction):
     tab.addTab(q, title)
 
 
+def makegroupingrid(args):
+    lis = args.get("grid")
+    title = args.get("title", None)
+    _type = args.get("type", "form")
+    group = QGroupBox()
+    if title:
+        group.setTitle(_TR(title))
+    if _type == "grid":
+        grid = QGridLayout()
+        group.setLayout(grid)
+        automakegrid(grid, lis)
+    elif _type == "form":
+        lay = QFormLayout()
+        group.setLayout(lay)
+        for line in lis:
+            name, wid = line
+            if isinstance(wid, tuple) or isinstance(wid, list):
+                hb = QHBoxLayout()
+                hb.setContentsMargins(0, 0, 0, 0)
+                needstretch = False
+                for w in wid:
+                    if callable(w):
+                        w = w()
+                    if w.sizePolicy().horizontalPolicy() == QSizePolicy.Policy.Fixed:
+                        needstretch = True
+                    hb.addWidget(w)
+                if needstretch:
+                    hb.insertStretch(0)
+                    hb.addStretch()
+                wid = hb
+            else:
+                if callable(wid):
+                    wid = wid()
+                if wid.sizePolicy().horizontalPolicy() == QSizePolicy.Policy.Fixed:
+                    hb = QHBoxLayout()
+                    hb.setContentsMargins(0, 0, 0, 0)
+                    hb.addStretch(1)
+                    hb.addWidget(wid)
+                    hb.addStretch(1)
+                    wid = hb
+            lay.addRow(_TR(name), wid)
+    return group
+
+
 def automakegrid(grid: QGridLayout, lis, save=False, savelist=None):
 
     maxl = 0
@@ -1097,6 +1354,8 @@ def automakegrid(grid: QGridLayout, lis, save=False, savelist=None):
                     wid = QLabel((wid))
                     if arg == "link":
                         wid.setOpenExternalLinks(True)
+                elif arg == "group":
+                    wid = makegroupingrid(wid)
             if cols > 0:
                 col = cols
             elif cols == 0:
@@ -1389,7 +1648,7 @@ def getsimplepatheditor(
         e = QLineEdit(text)
         e.setReadOnly(True)
         if useiconbutton:
-            bu = getcolorbutton("", "", None, icon="fa.gear", constcolor="#FF69B4")
+            bu = getIconButton(icon="fa.gear")
         else:
             bu = QPushButton(_TR("选择" + ("文件夹" if isdir else "文件")))
         bu.clicked.connect(

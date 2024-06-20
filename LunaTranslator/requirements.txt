@@ -2,6 +2,6 @@
 
 PyQt5==5.15.10
 PyQt5-Qt5==5.15.2
-webviewpy==1.2.1
+webviewpy==1.3.0
 pefile
 tinycss2

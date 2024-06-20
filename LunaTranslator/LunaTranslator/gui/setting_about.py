@@ -157,7 +157,7 @@ def setTab_aboutlazy(self, basel):
         [(functools.partial(createversionlabel, self), 10)],
         [(functools.partial(createdownloadprogress, self), 10)],
         [],
-        [("网络请求", -1)],
+        [("网络请求_重启生效", -1)],
         [(D_getsimplecombobox(["winhttp", "libcurl"], globalconfig, "network"), 5)],
         [("网页显示", -1)],
         [

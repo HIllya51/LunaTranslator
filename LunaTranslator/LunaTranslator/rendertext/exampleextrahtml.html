@@ -1,0 +1,27 @@
+
+<script>alert("welcome")</script>
+<style>
+    #luna_root_div::before {
+        background-image: url("./luna.png");
+        opacity: 0.6;
+        background-size: 100% auto;
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: -1;
+    }
+    @media (prefers-color-scheme: dark) 
+    {
+        :root {
+            color-scheme: dark;
+        }
+        body 
+        { 
+            background-color: rgb(44,44,44);
+            color: white; 
+        }
+    }
+</style>

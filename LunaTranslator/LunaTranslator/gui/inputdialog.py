@@ -277,6 +277,11 @@ class autoinitdialog(QDialog):
             elif line["type"] == "switch":
                 lineW = MySwitch(sign=dd[key])
                 regist.append([dd, key, lineW.isChecked])
+                _ = QHBoxLayout()
+                _.addStretch()
+                _.addWidget(lineW)
+                _.addStretch()
+                lineW = _
             elif line["type"] == "spin":
                 lineW = FocusDoubleSpin()
                 lineW.setMinimum(line.get("min", 0))

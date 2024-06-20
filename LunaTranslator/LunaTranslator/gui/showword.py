@@ -21,8 +21,8 @@ from gui.usefulwidget import (
     listediterline,
     getsimpleswitch,
     getsimplekeyseq,
-    getcolorbutton,
     makesubtab_lazy,
+    getIconButton,
     tabadd_lazy,
 )
 
@@ -502,14 +502,11 @@ class AnkiWindow(QWidget):
                                     self.audiopath,
                                     recordbtn1,
                                     soundbutton,
-                                    getcolorbutton(
-                                        "",
-                                        "",
+                                    getIconButton(
                                         functools.partial(
                                             self.selecfile, self.audiopath
                                         ),
                                         icon="fa.gear",
-                                        constcolor="#FF69B4",
                                     ),
                                 ]
                             ),
@@ -519,14 +516,11 @@ class AnkiWindow(QWidget):
                                     self.audiopath_sentence,
                                     recordbtn2,
                                     soundbutton2,
-                                    getcolorbutton(
-                                        "",
-                                        "",
+                                    getIconButton(
                                         functools.partial(
                                             self.selecfile, self.audiopath_sentence
                                         ),
                                         icon="fa.gear",
-                                        constcolor="#FF69B4",
                                     ),
                                 ]
                             ),
@@ -535,14 +529,11 @@ class AnkiWindow(QWidget):
                                     QLabel(_TR("截图")),
                                     self.editpath,
                                     cropbutton,
-                                    getcolorbutton(
-                                        "",
-                                        "",
+                                    getIconButton(
                                         functools.partial(
                                             self.selecfile, self.editpath
                                         ),
                                         icon="fa.gear",
-                                        constcolor="#FF69B4",
                                     ),
                                 ]
                             ),
@@ -737,7 +728,8 @@ class searchwordW(closeashidewindow):
     def showresfun(self, timestamp, k, res):
         if self.current != timestamp:
             return
-        self.cache_results[k] = res
+        if res is None:
+            self.cache_results[k] = res
 
         thisp = globalconfig["cishu"][k]["args"]["priority"]
         idx = 0
@@ -783,7 +775,9 @@ class searchwordW(closeashidewindow):
         soundbutton.clicked.connect(self.langdu)
         self.searchlayout.addWidget(soundbutton)
 
-        ankiconnect = statusbutton(icons=["fa.adn"], colors=["", "#FF69B4"])
+        ankiconnect = statusbutton(
+            icons=["fa.adn"], colors=["", globalconfig["buttoncolor2"]]
+        )
         ankiconnect.statuschanged2.connect(self.onceaddankiwindow)
         self.searchlayout.addWidget(ankiconnect)
 

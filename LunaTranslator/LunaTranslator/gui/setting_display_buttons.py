@@ -5,8 +5,8 @@ from myutils.config import globalconfig, _TR, _TRL
 from myutils.wrapper import Singleton
 from gui.usefulwidget import (
     D_getsimplecombobox,
-    D_getcolorbutton,
-    getcolorbutton,
+    D_getIconButton,
+    getIconButton,
     makescrollgrid,
     D_getsimpleswitch,
 )
@@ -29,9 +29,7 @@ class dialog_selecticon(QDialog):
         self.setLayout(layout)
         for i, name in enumerate(js):
             layout.addWidget(
-                getcolorbutton(
-                    "",
-                    "",
+                getIconButton( 
                     functools.partial(self.selectcallback, "fa." + name),
                     qicon=qtawesome.icon(
                         "fa." + name, color=globalconfig["buttoncolor"]
@@ -89,23 +87,17 @@ def createbuttonwidget(self, lay):
 
     for i, k in enumerate(sortlist):
 
-        button_up = D_getcolorbutton(
-            globalconfig,
-            "",
+        button_up = D_getIconButton(
             callback=functools.partial(
                 changerank, k, True, sortlist, savelist, savelay
             ),
             icon="fa.arrow-up",
-            constcolor="#FF69B4",
         )
-        button_down = D_getcolorbutton(
-            globalconfig,
-            "",
+        button_down = D_getIconButton(
             callback=functools.partial(
                 changerank, k, False, sortlist, savelist, savelay
             ),
             icon="fa.arrow-down",
-            constcolor="#FF69B4",
         )
 
         l = [
@@ -123,9 +115,7 @@ def createbuttonwidget(self, lay):
                 callback=doadjust,
                 fixedsize=True,
             ),
-            D_getcolorbutton(
-                "",
-                "",
+            D_getIconButton(
                 functools.partial(
                     dialog_selecticon,
                     self,
@@ -140,9 +130,7 @@ def createbuttonwidget(self, lay):
         ]
         if "icon2" in globalconfig["toolbutton"]["buttons"][k]:
             l.append(
-                D_getcolorbutton(
-                    "",
-                    "",
+                D_getIconButton(
                     functools.partial(
                         dialog_selecticon,
                         self,

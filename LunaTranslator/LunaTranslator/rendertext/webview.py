@@ -1,36 +1,12 @@
 from PyQt5.QtWidgets import QWidget
 from qtsymbols import *
 from rendertext.somefunctions import dataget
-import gobject, uuid, json, importlib, base64, os
-from urllib.parse import quote, unquote
+import gobject, uuid, json, os
+from urllib.parse import quote
 from myutils.config import globalconfig
 from gui.usefulwidget import WebivewWidget
 
 testsavejs = False
-
-
-# example
-def extrastyle(rootdivid):
-    with open(
-        r"example.png",
-        "rb",
-    ) as ff:
-        b64 = base64.b64encode(ff.read()).decode("utf-8")
-
-    extra = f"""#{rootdivid}::before
-        {{
-            background-image: url('data:image/jpeg;base64,{b64}') ;
-            background-size: 100% auto;
-            opacity: 0.5;
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            z-index: -1;
-        }}"""
-    return extra
 
 
 class TextBrowser(QWidget, dataget):
@@ -40,65 +16,76 @@ class TextBrowser(QWidget, dataget):
         self.webivewwidget.resize(event.size().width(), event.size().height())
 
     def __init__(self, parent) -> None:
+        gobject.refwebview = self
         super().__init__(parent)
         self.webivewwidget = WebivewWidget(self)
-        self.webivewwidget.navigate("about:blank")
+        self.webivewwidget.navigate(
+            os.path.abspath(r"LunaTranslator\rendertext\webview.html")
+        )
         self.webivewwidget.set_transparent_background()
         self.webivewwidget.webview.bind("calllunaclickedword", self.calllunaclickedword)
         self.webivewwidget.webview.bind(
             "calllunaheightchange", self.calllunaheightchange
         )
-        self.rootdivid = f"luna_{uuid.uuid4()}"
         self.saveiterclasspointer = {}
-        self.testeval(
-            f"""
-            document.write(`<div id="{self.rootdivid}"></div>`);
-        """
-        )
-        self.setglobalstyle(self.rootdivid)
+        self.isfirst = True
 
-    def testeval(self, js):
-        js += ";\n"
-        if testsavejs:
-            with open("1.js", "a", encoding="utf8") as ff:
-                ff.write(js)
+    def showEvent(self, e):
+        if not self.isfirst:
+            return
+
+        self.isfirst = False
+        if os.path.exists("userconfig/extrahtml.html"):
+            with open("userconfig/extrahtml.html", "r", encoding="utf8") as ff:
+                self.set_extra_html(ff.read())
+
+    def debugeval(self, js):
+        # print(js)
         self.webivewwidget.webview.eval(js)
 
-    def setglobalstyle(self, rootdivid):
+    # js api
 
-        if 0:
-            extra = extrastyle(rootdivid)
-        else:
-            if os.path.exists("userconfig/extrastyle.py"):
-                extrastyle = importlib.import_module("extrastyle").extrastyle
-                extra = extrastyle(rootdivid)
-            else:
-                extra = ""
-        self.testeval(
-            f"""
-            document.write(`<style>
-            body{{
-                overflow-y:hidden;
-                margin: 0;
-                #word-break: break-all;
-            }}
-            {extra}
-            </style>`);
-        """
+    def create_div_line_id(self, _id):
+        self.debugeval(f'create_div_line_id("{_id}");')
+
+    def clear_all(self):
+        self.debugeval(f"clear_all()")
+
+    def set_extra_html(self, html):
+        html = quote(html)
+        self.debugeval(f'set_extra_html("{html}")')
+
+    def create_internal_text(self, style, styleargs, _id, text, args):
+        text = quote(text)
+        args = quote(json.dumps(args))
+        styleargs = quote(json.dumps(styleargs))
+        self.debugeval(
+            f'create_internal_text("{style}","{styleargs}","{_id}","{text}","{args}");'
         )
 
-    def setselectable(self, b):
-        pass
+    def create_internal_rubytext(self, style, styleargs, _id, tag, args):
+        tag = quote(json.dumps(tag))
+        args = quote(json.dumps(args))
+        styleargs = quote(json.dumps(styleargs))
+        self.debugeval(
+            f'create_internal_rubytext("{style}","{styleargs}","{_id}","{tag}","{args}");'
+        )
+
+    # js api end
+    # native api
 
     def calllunaheightchange(self, h):
         self.contentsChanged.emit(
             QSize(self.width(), int(h * self.webivewwidget.get_ZoomFactor()))
         )
 
-    def internalheighchange(self):
-        self.webivewwidget.webview.eval(
-            f'calllunaheightchange(document.getElementById("{self.rootdivid}").offsetHeight)'
-        )
+    def calllunaclickedword(self, packedwordinfo):
+        gobject.baseobject.clickwordcallback(packedwordinfo, False)
+
+    # native api end
+
+    def setselectable(self, b):
+        pass
 
     def iter_append(self, iter_context_class, origin, atcenter, text, color, cleared):
 
@@ -109,17 +96,10 @@ class TextBrowser(QWidget, dataget):
         _id = self.saveiterclasspointer[iter_context_class]
         self._webview_append(_id, origin, atcenter, text, [], [], color)
 
-        self.internalheighchange()
-
     def createtextlineid(self):
 
         _id = f"luna_{uuid.uuid4()}"
-        ptext = f'<div id="{_id}"></div>'
-        self.testeval(
-            f"""
-            document.getElementById("{self.rootdivid}").innerHTML+=`{ptext}`;
-        """
-        )
+        self.create_div_line_id(_id)
         return _id
 
     def append(self, origin, atcenter, text, tag, flags, color, cleared):
@@ -127,102 +107,56 @@ class TextBrowser(QWidget, dataget):
         _id = self.createtextlineid()
         self._webview_append(_id, origin, atcenter, text, tag, flags, color)
 
-    def calllunaclickedword(self, packedwordinfo):
-        gobject.baseobject.clickwordcallback(json.loads(unquote(packedwordinfo)), False)
+    def measureH(self, font_family, font_size):
+        font = QFont()
+        font.setFamily(font_family)
+        font.setPointSizeF(font_size)
+        fmetrics = QFontMetrics(font)
 
-    def gen_html(self, *args):
-        currenttype = globalconfig["rendertext_using_internal"]["webview"]
-        try:
-            __ = importlib.import_module(
-                f"rendertext.internal.webview.{currenttype}"
-            ).TextLine
-        except:
-            from traceback import print_exc
-
-            print_exc()
-            globalconfig["rendertext_using_internal"]["webview"] = currenttype = list(
-                globalconfig["rendertext"]["webview"].keys()
-            )[0]
-            __ = importlib.import_module(
-                f"rendertext.internal.webview.{currenttype}"
-            ).TextLine
-        return __(currenttype, self.webivewwidget.webview, self).gen_html__(*args)
+        return fmetrics.height()
 
     def _webview_append(self, _id, origin, atcenter, text, tag, flags, color):
-        text = text.replace("\n", "<br>").replace("\\", "\\\\")
 
         fmori, fsori, boldori = self._getfontinfo(origin)
         fmkana, fskana, boldkana = self._getfontinfo_kana()
         kanacolor = self._getkanacolor()
+        line_height = self.measureH(fmori, fsori) + globalconfig["extra_space"]
+        style = globalconfig["rendertext_using_internal"]["webview"]
+        styleargs = globalconfig["rendertext"]["webview"][style].get("args", {})
         if len(tag):
-            rb, rb2 = "<ruby>", "</ruby>"
             isshowhira, isshow_fenci, isfenciclick = flags
-            if isshowhira:
-                rt, rt2 = "<rt>", "</rt>"
-            else:
-                rt, rt2 = "", ""
-            text = rb
-            for word in tag:
-                if word["orig"] == "\n":
-                    text = text + rb2 + "<br>" + rb
-                    continue
-                if isfenciclick:
-                    click = f'''onclick="calllunaclickedword('{quote(json.dumps(word))}')"'''
-                else:
-                    click = ""
-                _maskid = f"luna_{uuid.uuid4()}"
-                textori = word["orig"].replace("\\", "\\\\")
-                textori = self.gen_html(
-                    textori,
-                    fmori,
-                    fsori,
-                    boldori,
-                    atcenter,
-                    color,
-                    globalconfig["extra_space"],
-                )
-                text += f"""<div {click} id="{_maskid}">""" + textori + "</div>"
-                if isshow_fenci:
+            if isshow_fenci:
+                for word in tag:
                     color1 = self._randomcolor(word)
-                    _style = f"""
-                    <style>#{_maskid}{{
-                    background-color: {color1};
-                    }}</style>"""
-                    text += _style
-                if (word["orig"] != word["hira"]) and isshowhira:
-                    inner = self.gen_html(
-                        word["hira"].replace("\\", "\\\\"),
-                        fmkana,
-                        fskana,
-                        boldkana,
-                        True,
-                        kanacolor,
-                        0,
-                    )
-                else:
-                    inner = ""
-                text += rt + inner + rt2
-            text = text + rb2
-            if atcenter:
-                text = f'<div style="text-align: center;">{text}</div>'
-        else:
-            text = self.gen_html(
-                text,
-                fmori,
-                fsori,
-                boldori,
-                atcenter,
-                color,
-                globalconfig["extra_space"],
+                    word["color"] = color1
+            args = dict(
+                atcenter=atcenter,
+                fmori=fmori,
+                fsori=fsori,
+                boldori=boldori,
+                color=color,
+                fmkana=fmkana,
+                fskana=fskana,
+                boldkana=boldkana,
+                kanacolor=kanacolor,
+                isshowhira=isshowhira,
+                isshow_fenci=isshow_fenci,
+                isfenciclick=isfenciclick,
+                line_height=line_height,
             )
-        self.testeval(f"document.getElementById(`{_id}`).innerHTML=`{text}`")
-        self.internalheighchange()
+            self.create_internal_rubytext(style, styleargs, _id, tag, args)
+        else:
+            args = dict(
+                atcenter=atcenter,
+                fm=fmori,
+                fs=fsori,
+                bold=boldori,
+                color=color,
+                line_height=line_height,
+            )
+            self.create_internal_text(style, styleargs, _id, text, args)
 
     def clear(self):
 
-        self.testeval(
-            f"""
-            document.getElementById("{self.rootdivid}").innerHTML="";
-        """
-        )
+        self.clear_all()
         self.saveiterclasspointer.clear()

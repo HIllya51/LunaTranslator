@@ -1673,5 +1673,21 @@
         "audio_sentence",
         "rubytext",
         "explain"
-    ]
+    ],
+    "textrender": {
+        "textbrowser": [
+            "normal",
+            "yinying",
+            "miaobian0",
+            "miaobian1",
+            "miaobian2"
+        ],
+        "webview": [
+            "normal",
+            "yinying",
+            "miaobian0",
+            "miaobian1",
+            "miaobian2"
+        ]
+    }
 }

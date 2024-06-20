@@ -1,14 +1,17 @@
 from qtsymbols import *
 import functools
 import gobject, os
-from myutils.config import globalconfig, _TRL, _TR
+from myutils.config import globalconfig, _TRL, _TR, static_data
 from gui.inputdialog import multicolorset
+from myutils.wrapper import tryprint
 from gui.usefulwidget import (
     D_getsimplecombobox,
-    getsimplecombobox,
+    Singleton_close,
+    saveposwindow,
     getsimpleswitch,
     D_getspinbox,
     getspinbox,
+    D_getIconButton,
     D_getcolorbutton,
     getcolorbutton,
     D_getsimpleswitch,
@@ -72,7 +75,50 @@ def createfenciwitch(self):
     return self.show_fenciswitch
 
 
+@Singleton_close
+class extrahtml(saveposwindow):
+    def tryload(self):
+
+        use = "userconfig/extrahtml.html"
+        if os.path.exists(use) == False:
+            use = r"LunaTranslator\rendertext\exampleextrahtml.html"
+        with open(use, "r", encoding="utf8") as ff:
+            self.vistext.setPlainText(ff.read())
+
+    @tryprint
+    def applyhtml(self, _):
+
+        gobject.refwebview.set_extra_html(self.vistext.toPlainText())
+
+    def savehtml(self):
+        os.makedirs("userconfig", exist_ok=True)
+        with open("userconfig/extrahtml.html", "w", encoding="utf8") as ff:
+            ff.write(self.vistext.toPlainText())
+
+    def __init__(self, parent) -> None:
+        super().__init__(parent, globalconfig, "geo_extrahtml")
+        self.setWindowTitle(_TR("额外的html"))
+
+        self.btn_save = QPushButton(_TR("保存"))
+        self.btn_save.clicked.connect(self.savehtml)
+        self.btn_apply = QPushButton(_TR("测试"))
+        self.btn_apply.clicked.connect(self.applyhtml)
+        self.vistext = QPlainTextEdit()
+        lay = QVBoxLayout()
+        hl = QHBoxLayout()
+        hl.addWidget(self.btn_save)
+        hl.addWidget(self.btn_apply)
+        lay.addWidget(self.vistext)
+        lay.addLayout(hl)
+        w = QWidget()
+        w.setLayout(lay)
+        self.setCentralWidget(w)
+        self.tryload()
+        self.show()
+
+
 def createinternalfontsettings(self, group, _type):
+
     globalconfig["rendertext_using_internal"][group] = _type
     __internal = globalconfig["rendertext"][group][_type]
     dd = __internal.get("args", {})
@@ -84,6 +130,7 @@ def createinternalfontsettings(self, group, _type):
         w = item.widget()
         lay.removeWidget(w)
         w.deleteLater()
+
     for key in dd:
         line = __internal["argstype"][key]
         name = line["name"]
@@ -122,6 +169,10 @@ def createinternalfontsettings(self, group, _type):
             name,
             lineW,
         )
+    if group == "webview":
+        _btn = QPushButton(_TR("额外的html"))
+        lay.addWidget(_btn)
+        _btn.clicked.connect(lambda: extrahtml(self))
 
 
 def resetgroudswitchcallback(self, group):
@@ -130,37 +181,24 @@ def resetgroudswitchcallback(self, group):
         self.goodfontgroupswitch.currentIndexChanged.disconnect()
     except:
         pass
-    _ = []
-    for k in globalconfig["rendertext"][group]:
-        if not os.path.exists(f"LunaTranslator/rendertext/internal/{group}/{k}.py"):
-            _.append(k)
-    for k in _:
-        globalconfig["rendertext"][group].pop(k)
 
-    if (
-        globalconfig["rendertext_using_internal"][group]
-        not in globalconfig["rendertext"][group]
-    ):
-        globalconfig["rendertext_using_internal"][group] = list(
-            globalconfig["rendertext"][group].keys()
-        )[0]
     self.goodfontgroupswitch.clear()
     self.goodfontgroupswitch.addItems(
         _TRL(
             [
                 globalconfig["rendertext"][group][x]["name"]
-                for x in globalconfig["rendertext"][group]
+                for x in static_data["textrender"][group]
             ]
         )
     )
     self.goodfontgroupswitch.setCurrentIndex(-1)
     self.goodfontgroupswitch.currentIndexChanged.connect(
         lambda idx: createinternalfontsettings(
-            self, group, list(globalconfig["rendertext"][group].keys())[idx]
+            self, group, static_data["textrender"][group][idx]
         )
     )
     self.goodfontgroupswitch.setCurrentIndex(
-        list(globalconfig["rendertext"][group].keys()).index(
+        static_data["textrender"][group].index(
             globalconfig["rendertext_using_internal"][group]
         )
     )
@@ -185,112 +223,196 @@ def xianshigrid(self):
 
     textgrid = [
         [
-            ("原文字体", 3),
-            (functools.partial(createtextfontcom, "fonttype"), 6),
-            ("", 5),
-        ],
-        [
-            ("译文字体", 3),
-            (functools.partial(createtextfontcom, "fonttype2"), 6),
-        ],
-        [
-            ("字体大小", 3),
-            (functools.partial(createfontsizespin, self), 3),
-            "",
-            ("额外的行间距", 3),
-            (D_getspinbox(-100, 100, globalconfig, "extra_space"), 3),
-        ],
-        [
-            ("居中显示", 5),
-            D_getsimpleswitch(globalconfig, "showatcenter"),
-            "",
-            ("加粗字体", 5),
-            D_getsimpleswitch(globalconfig, "showbold"),
-        ],
-        [],
-        [
-            ("显示引擎", 3),
             (
-                D_getsimplecombobox(
-                    ["Webview2", "Qt"],
-                    globalconfig,
-                    "rendertext_using",
-                    internallist=["webview", "textbrowser"],
-                    callback=functools.partial(resetgroudswitchcallback, self),
+                dict(
+                    title="样式",
+                    type="grid",
+                    grid=(
+                        [
+                            ("原文字体", 3),
+                            (functools.partial(createtextfontcom, "fonttype"), 6),
+                        ],
+                        [
+                            ("译文字体", 3),
+                            (functools.partial(createtextfontcom, "fonttype2"), 6),
+                        ],
+                        [
+                            ("原文颜色", 3),
+                            D_getcolorbutton(
+                                globalconfig,
+                                "rawtextcolor",
+                                callback=lambda: selectcolor(
+                                    self,
+                                    globalconfig,
+                                    "rawtextcolor",
+                                    self.original_color_button,
+                                ),
+                                name="original_color_button",
+                                parent=self,
+                            ),
+                        ],
+                        [
+                            ("字体大小", 3),
+                            (functools.partial(createfontsizespin, self), 3),
+                            "",
+                            ("额外的行间距", 3),
+                            (D_getspinbox(-100, 100, globalconfig, "extra_space"), 3),
+                        ],
+                        [
+                            ("居中显示", 3),
+                            D_getsimpleswitch(globalconfig, "showatcenter"),
+                            ("", 3),
+                            ("加粗字体", 3),
+                            D_getsimpleswitch(globalconfig, "showbold"),
+                        ],
+                    ),
                 ),
-                6,
-            ),
-        ],
-        [(functools.partial(creategoodfontwid, self), 0)],
-        [],
-        [
-            ("显示原文", 5),
-            functools.partial(createshoworiginswitch, self),
-            "",
-            ("显示翻译", 5),
-            (D_getsimpleswitch(globalconfig, "showfanyi"), 1),
+                0,
+                "group",
+            )
         ],
         [
-            ("原文颜色", 5),
-            D_getcolorbutton(
-                globalconfig,
-                "rawtextcolor",
-                callback=lambda: selectcolor(
-                    self, globalconfig, "rawtextcolor", self.original_color_button
-                ),
-                name="original_color_button",
-                parent=self,
-            ),
-            "",
-            ("显示翻译器名称", 5),
-            (D_getsimpleswitch(globalconfig, "showfanyisource"), 1),
-        ],
-        [
-            ("最长显示字数", 3),
-            (D_getspinbox(0, 1000000, globalconfig, "maxoriginlength"), 3),
-        ],
-        [],
-        [
-            ("显示日语注音", 5),
-            functools.partial(createhiraswitch, self),
-        ],
-        [
-            ("注音颜色", 5),
-            D_getcolorbutton(
-                globalconfig,
-                "jiamingcolor",
-                callback=lambda: selectcolor(
-                    self, globalconfig, "jiamingcolor", self.jiamingcolor_b
-                ),
-                name="jiamingcolor_b",
-                parent=self,
-            ),
-            "",
-            ("注音字体缩放", 3),
             (
-                D_getspinbox(
-                    0.05, 1, globalconfig, "kanarate", double=True, step=0.05, dec=2
+                dict(
+                    type="grid",
+                    grid=(
+                        [
+                            ("显示引擎_重启生效", 3),
+                            (
+                                D_getsimplecombobox(
+                                    ["Webview2", "Qt"],
+                                    globalconfig,
+                                    "rendertext_using",
+                                    internallist=["webview", "textbrowser"],
+                                    callback=functools.partial(
+                                        resetgroudswitchcallback, self
+                                    ),
+                                ),
+                                6,
+                            ),
+                        ],
+                        [(functools.partial(creategoodfontwid, self), 0)],
+                    ),
                 ),
-                3,
-            ),
+                0,
+                "group",
+            )
         ],
         [
-            ("语法加亮", 5),
-            functools.partial(createfenciwitch, self),
-            "",
-            ("词性颜色(需要Mecab)", 5),
-            D_getcolorbutton(
-                globalconfig,
-                "",
-                callback=lambda: multicolorset(self),
-                icon="fa.gear",
-                constcolor="#FF69B4",
-            ),
+            (
+                dict(
+                    title="注音",
+                    type="grid",
+                    grid=(
+                        [
+                            ("显示", 5),
+                            functools.partial(createhiraswitch, self),
+                            "",
+                            ("颜色", 5),
+                            D_getcolorbutton(
+                                globalconfig,
+                                "jiamingcolor",
+                                callback=lambda: selectcolor(
+                                    self,
+                                    globalconfig,
+                                    "jiamingcolor",
+                                    self.jiamingcolor_b,
+                                ),
+                                name="jiamingcolor_b",
+                                parent=self,
+                            ),
+                        ],
+                        [
+                            ("字体缩放", 5),
+                            D_getspinbox(
+                                0.05,
+                                1,
+                                globalconfig,
+                                "kanarate",
+                                double=True,
+                                step=0.05,
+                                dec=2,
+                            ),
+                            "",
+                            ("日语注音方案", 5),
+                            D_getsimplecombobox(
+                                _TRL(["平假名", "片假名", "罗马音"]),
+                                globalconfig,
+                                "hira_vis_type",
+                            ),
+                        ],
+                    ),
+                ),
+                0,
+                "group",
+            )
         ],
-        [],
         [
-            ("收到翻译结果时才刷新", 5),
-            D_getsimpleswitch(globalconfig, "refresh_on_get_trans"),
+            (
+                dict(
+                    title="分词",
+                    type="grid",
+                    grid=(
+                        [
+                            ("语法加亮", 5),
+                            functools.partial(createfenciwitch, self),
+                            "",
+                            ("词性颜色(需要Mecab)", 5),
+                            D_getIconButton(
+                                callback=lambda: multicolorset(self), icon="fa.gear"
+                            ),
+                        ],
+                        [
+                            ("点击单词查词", 5),
+                            (D_getsimpleswitch(globalconfig, "usesearchword"), 1),
+                            "",
+                            ("点击单词复制", 5),
+                            (D_getsimpleswitch(globalconfig, "usecopyword"), 1),
+                        ],
+                        [
+                            ("使用原型查询", 5),
+                            (D_getsimpleswitch(globalconfig, "usewordorigin"), 1),
+                        ],
+                    ),
+                ),
+                0,
+                "group",
+            )
+        ],
+        [
+            (
+                dict(
+                    title="显示行为",
+                    type="grid",
+                    grid=(
+                        [
+                            ("显示原文", 5),
+                            functools.partial(createshoworiginswitch, self),
+                            "",
+                            ("显示翻译", 5),
+                            (D_getsimpleswitch(globalconfig, "showfanyi"), 1),
+                        ],
+                        [
+                            ("显示翻译器名称", 5),
+                            (D_getsimpleswitch(globalconfig, "showfanyisource"), 1),
+                            "",
+                            ("最长显示字数", 5),
+                            (
+                                D_getspinbox(
+                                    0, 1000000, globalconfig, "maxoriginlength"
+                                ),
+                                3,
+                            ),
+                        ],
+                        [
+                            ("收到翻译结果时才刷新", 5),
+                            D_getsimpleswitch(globalconfig, "refresh_on_get_trans"),
+                        ],
+                    ),
+                ),
+                0,
+                "group",
+            )
         ],
     ]
     return textgrid
