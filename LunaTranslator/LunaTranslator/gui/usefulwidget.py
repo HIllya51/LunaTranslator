@@ -179,6 +179,9 @@ class closeashidewindow(saveposwindow):
 class MySwitch(QWidget):
     clicked = pyqtSignal(bool)
 
+    def click(self):
+        self.setChecked(not self.checked)
+
     def sizeHint(self):
         return QSize(
             int(1.62 * globalconfig["buttonsize2"]), globalconfig["buttonsize2"]
