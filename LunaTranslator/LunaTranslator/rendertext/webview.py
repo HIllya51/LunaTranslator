@@ -33,6 +33,7 @@ class TextBrowser(QWidget, dataget):
     def showEvent(self, e):
         if not self.isfirst:
             return
+        self.isfirst = False
         self.__loadextra(0)
         self.webivewwidget.on_load.connect(self.__loadextra)
 
