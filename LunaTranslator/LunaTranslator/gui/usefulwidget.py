@@ -1097,7 +1097,6 @@ class QWebWrap(abstractwebview):
             self.on_ZoomFactorChanged.emit(z)
 
     def navigate(self, url: str):
-        from PyQt5.QtCore import QUrl
 
         if not url.lower().startswith("http"):
             url = url.replace("\\", "/")

@@ -5,6 +5,7 @@ import gobject, uuid, json, os
 from urllib.parse import quote
 from myutils.config import globalconfig
 from gui.usefulwidget import WebivewWidget, QWebWrap
+from myutils.utils import checkportavailable
 
 testsavejs = False
 
@@ -19,13 +20,23 @@ class TextBrowser(QWidget, dataget):
         gobject.refwebview = self
         super().__init__(parent)
         if globalconfig["rendertext_using"] == "QWebEngine":
+            DEBUG_PORT = 5588
+            for i in range(100):
+                if checkportavailable(DEBUG_PORT):
+                    break
+                DEBUG_PORT += 1
+            self.DEBUG_URL = "http://127.0.0.1:%s" % DEBUG_PORT
+            os.environ["QTWEBENGINE_REMOTE_DEBUGGING"] = str(DEBUG_PORT)
             self.webivewwidget = QWebWrap(self)
+            self.webivewwidget.on_load.connect(self.__loadextra)
+            self.webivewwidget.internal.setContextMenuPolicy(
+                Qt.ContextMenuPolicy.CustomContextMenu
+            )
+            self.webivewwidget.internal.customContextMenuRequested.connect(self._qwmenu)
         else:
+            # webview2当会执行alert之类的弹窗js时，若qt窗口不可视，会卡住
             self.webivewwidget = WebivewWidget(self)
 
-        if isinstance(self.webivewwidget, QWebWrap):
-            # webview2当会执行alert之类的弹窗js时，若qt窗口不可视，会卡住
-            self.webivewwidget.on_load.connect(self.__loadextra)
         self.webivewwidget.navigate(
             os.path.abspath(r"LunaTranslator\rendertext\webview.html")
         )
@@ -34,6 +45,29 @@ class TextBrowser(QWidget, dataget):
         self.webivewwidget.bind("calllunaheightchange", self.calllunaheightchange)
         self.saveiterclasspointer = {}
         self.isfirst = True
+
+    def _qwmenu(self, pos):
+        web_menu = QMenu()
+        inspect = QAction("inspect")
+        web_menu.addAction(inspect)
+        action = web_menu.exec_(self.webivewwidget.mapToGlobal(pos))
+        if action == inspect:
+            from PyQt5.QtWebEngineWidgets import QWebEngineView
+
+            self.inspector = QWebEngineView()
+
+            def __(_):
+                self.webivewwidget.internal.setContextMenuPolicy(
+                    Qt.ContextMenuPolicy.CustomContextMenu
+                )
+
+            self.inspector.closeEvent = __
+            self.inspector.load(QUrl(self.DEBUG_URL))
+            self.webivewwidget.internal.page().setDevToolsPage(self.inspector.page())
+            self.inspector.show()
+            self.webivewwidget.internal.setContextMenuPolicy(
+                Qt.ContextMenuPolicy.DefaultContextMenu
+            )
 
     def showEvent(self, e):
         if not self.isfirst:
