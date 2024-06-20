@@ -729,7 +729,8 @@ class searchwordW(closeashidewindow):
         if self.current != timestamp:
             return
         if res is None:
-            self.cache_results[k] = res
+            return
+        self.cache_results[k] = res
 
         thisp = globalconfig["cishu"][k]["args"]["priority"]
         idx = 0

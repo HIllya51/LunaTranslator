@@ -907,6 +907,15 @@ class abstractwebview(QWidget):
     def set_zoom(self, zoom):
         pass
 
+    def get_zoom(self):
+        return 1
+
+    def bind(self, fname, func):
+        pass
+
+    def eval(self, js, retsaver=None):
+        pass
+
     def set_transparent_background(self):
         pass
 
@@ -970,6 +979,12 @@ class WebivewWidget(abstractwebview):
             self.__token,
         )
 
+    def bind(self, fname, func):
+        self.webview.bind(fname, func)
+
+    def eval(self, js):
+        self.webview.eval(js)
+
     def get_controller(self):
         return self.webview.get_native_handle(
             webview_native_handle_kind_t.WEBVIEW_NATIVE_HANDLE_KIND_BROWSER_CONTROLLER
@@ -1013,13 +1028,10 @@ class WebivewWidget(abstractwebview):
         winsharedutils.put_PreferredColorScheme(self.get_controller(), dl)
 
     def set_zoom(self, zoom):
-        self.put_ZoomFactor(zoom)
-
-    def get_ZoomFactor(self):
-        return winsharedutils.get_ZoomFactor(self.get_controller())
-
-    def put_ZoomFactor(self, zoom):
         winsharedutils.put_ZoomFactor(self.get_controller(), zoom)
+
+    def get_zoom(self):
+        return winsharedutils.get_ZoomFactor(self.get_controller())
 
     def _on_load(self, href):
         self.on_load.emit(href)
@@ -1044,14 +1056,15 @@ class WebivewWidget(abstractwebview):
 
 class QWebWrap(abstractwebview):
 
-    def __init__(self) -> None:
-        super().__init__()
+    def __init__(self, p=None) -> None:
+        super().__init__(p)
         from PyQt5.QtWebEngineWidgets import QWebEngineView
 
         self.internal = QWebEngineView(self)
-        self.internal.page().urlChanged.connect(
-            lambda qurl: self.on_load.emit(qurl.url())
-        )
+        # self.internal.page().urlChanged.connect(
+        #     lambda qurl: self.on_load.emit(qurl.url())
+        # )
+        self.internal.loadFinished.connect(self._loadFinish)
         self.internal_zoom = 1
         t = QTimer(self)
         t.setInterval(100)
@@ -1059,9 +1072,23 @@ class QWebWrap(abstractwebview):
         t.timeout.emit()
         t.start()
 
+    def _loadFinish(self):
+        self.on_load.emit(self.internal.url().url())
+
+    def eval(self, js, retsaver=None):
+        if not retsaver:
+            retsaver = lambda _: 1
+        self.internal.page().runJavaScript(js, retsaver)
+
+    def set_transparent_background(self):
+        self.internal.page().setBackgroundColor(Qt.GlobalColor.transparent)
+
     def set_zoom(self, zoom):
         self.internal_zoom = zoom
         self.internal.setZoomFactor(zoom)
+
+    def get_zoom(self):
+        return self.internal.zoomFactor()
 
     def __getzoomfactor(self):
         z = self.internal.zoomFactor()

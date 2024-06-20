@@ -29,3 +29,9 @@ def dopathexists(file):
 def overridepathexists():
     # win7上，如果假如没有D盘，然后os.path.exists("D:/...")，就会弹窗说不存在D盘
     os.path.exists = dopathexists
+
+
+def testuseqwebengine():
+    return os.path.exists(
+        "./LunaTranslator/runtime/PyQt5/Qt5/bin/Qt5WebEngineCore.dll"
+    ) or (len(sys.argv) and sys.argv[-1] == "test")

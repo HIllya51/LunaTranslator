@@ -176,7 +176,8 @@ def createinternalfontsettings(self, group, _type):
 
 
 def resetgroudswitchcallback(self, group):
-
+    if group == "QWebEngine":
+        group = "webview"
     try:
         self.goodfontgroupswitch.currentIndexChanged.disconnect()
     except:
@@ -220,7 +221,11 @@ def creategoodfontwid(self):
 
 
 def xianshigrid(self):
-
+    visengine = ["Webview2", "Qt"]
+    visengine_internal = ["webview", "textbrowser"]
+    if gobject.testuseqwebengine():
+        visengine.append("QWebEngine")
+        visengine_internal.append("QWebEngine")
     textgrid = [
         [
             (
@@ -280,10 +285,10 @@ def xianshigrid(self):
                             ("显示引擎_重启生效", 3),
                             (
                                 D_getsimplecombobox(
-                                    ["Webview2", "Qt"],
+                                    visengine,
                                     globalconfig,
                                     "rendertext_using",
-                                    internallist=["webview", "textbrowser"],
+                                    internallist=visengine_internal,
                                     callback=functools.partial(
                                         resetgroudswitchcallback, self
                                     ),

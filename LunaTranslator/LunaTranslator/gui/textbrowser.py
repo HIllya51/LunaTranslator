@@ -32,9 +32,10 @@ class Textbrowser(QLabel):
         self.contentsChanged.emit(QSize(size.width(), size.height()))
 
     def loadinternal(self):
-        tb = importlib.import_module(
-            f'rendertext.{globalconfig["rendertext_using"]}'
-        ).TextBrowser
+        __ = globalconfig["rendertext_using"]
+        if __ == "QWebEngine":
+            __ = "webview"
+        tb = importlib.import_module(f"rendertext.{__}").TextBrowser
         try:
             self.textbrowser = tb(self)
         except webview_exception:

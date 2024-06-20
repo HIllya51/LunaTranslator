@@ -1,6 +1,6 @@
 from qtsymbols import *
 import platform, functools, sys, os
-import winsharedutils
+import winsharedutils, gobject
 from myutils.config import globalconfig, _TR, static_data, _TRL
 from myutils.wrapper import threader
 from myutils.utils import makehtml, getimageformatlist
@@ -141,7 +141,7 @@ def createimageview(self):
 
 def setTab_aboutlazy(self, basel):
     webviews = ["IEFrame", "WebView2"]
-    if os.path.exists("./LunaTranslator/runtime/PyQt5/Qt5/bin/Qt5WebEngineCore.dll"):
+    if gobject.testuseqwebengine():
         webviews.append("QWebEngine")
     grid2 = [
         [

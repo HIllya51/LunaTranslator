@@ -4,7 +4,7 @@ from rendertext.somefunctions import dataget
 import gobject, uuid, json, os
 from urllib.parse import quote
 from myutils.config import globalconfig
-from gui.usefulwidget import WebivewWidget
+from gui.usefulwidget import WebivewWidget, QWebWrap
 
 testsavejs = False
 
@@ -18,20 +18,27 @@ class TextBrowser(QWidget, dataget):
     def __init__(self, parent) -> None:
         gobject.refwebview = self
         super().__init__(parent)
-        self.webivewwidget = WebivewWidget(self)
+        if globalconfig["rendertext_using"] == "QWebEngine":
+            self.webivewwidget = QWebWrap(self)
+        else:
+            self.webivewwidget = WebivewWidget(self)
+
+        if isinstance(self.webivewwidget, QWebWrap):
+            # webview2当会执行alert之类的弹窗js时，若qt窗口不可视，会卡住
+            self.webivewwidget.on_load.connect(self.__loadextra)
         self.webivewwidget.navigate(
             os.path.abspath(r"LunaTranslator\rendertext\webview.html")
         )
         self.webivewwidget.set_transparent_background()
-        self.webivewwidget.webview.bind("calllunaclickedword", self.calllunaclickedword)
-        self.webivewwidget.webview.bind(
-            "calllunaheightchange", self.calllunaheightchange
-        )
+        self.webivewwidget.bind("calllunaclickedword", self.calllunaclickedword)
+        self.webivewwidget.bind("calllunaheightchange", self.calllunaheightchange)
         self.saveiterclasspointer = {}
         self.isfirst = True
 
     def showEvent(self, e):
         if not self.isfirst:
+            return
+        if not isinstance(self.webivewwidget, WebivewWidget):
             return
         self.isfirst = False
         self.__loadextra(0)
@@ -44,7 +51,7 @@ class TextBrowser(QWidget, dataget):
 
     def debugeval(self, js):
         # print(js)
-        self.webivewwidget.webview.eval(js)
+        self.webivewwidget.eval(js)
 
     # js api
 
@@ -65,6 +72,18 @@ class TextBrowser(QWidget, dataget):
         self.debugeval(
             f'create_internal_text("{style}","{styleargs}","{_id}","{text}","{args}");'
         )
+        self._qweb_proactive_queryheigh()
+
+    def _qweb_proactive_queryheigh(self):
+        if not isinstance(self.webivewwidget, QWebWrap):
+            return
+
+        def __xxx(h):
+            self.calllunaheightchange(h)
+
+        self.webivewwidget.eval(
+            'document.getElementById("luna_root_div").offsetHeight', __xxx
+        )
 
     def create_internal_rubytext(self, style, styleargs, _id, tag, args):
         tag = quote(json.dumps(tag))
@@ -74,12 +93,14 @@ class TextBrowser(QWidget, dataget):
             f'create_internal_rubytext("{style}","{styleargs}","{_id}","{tag}","{args}");'
         )
 
+        self._qweb_proactive_queryheigh()
+
     # js api end
     # native api
 
     def calllunaheightchange(self, h):
         self.contentsChanged.emit(
-            QSize(self.width(), int(h * self.webivewwidget.get_ZoomFactor()))
+            QSize(self.width(), int(h * self.webivewwidget.get_zoom()))
         )
 
     def calllunaclickedword(self, packedwordinfo):
