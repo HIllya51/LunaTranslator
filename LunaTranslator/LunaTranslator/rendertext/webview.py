@@ -33,8 +33,10 @@ class TextBrowser(QWidget, dataget):
     def showEvent(self, e):
         if not self.isfirst:
             return
+        self.__loadextra(0)
+        self.webivewwidget.on_load.connect(self.__loadextra)
 
-        self.isfirst = False
+    def __loadextra(self, _):
         if os.path.exists("userconfig/extrahtml.html"):
             with open("userconfig/extrahtml.html", "r", encoding="utf8") as ff:
                 self.set_extra_html(ff.read())
