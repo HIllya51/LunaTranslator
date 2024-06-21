@@ -16,14 +16,6 @@ from gui.edittext import edittrans
 from gui.dialog_savedgame import browserdialog, dialog_savedgame_integrated
 
 
-def contrastcolor(color):
-    color = QColor(globalconfig["buttoncolor"])
-    r, g, b, a = color.getRgb()
-
-    r, g, b = [hex((_ + 128) % 256)[2:] for _ in (r, g, b)]
-    return f"#{r}{g}{b}"
-
-
 class QUnFrameWindow(resizableframeless):
     displayglobaltooltip = pyqtSignal(str)
     displayres = pyqtSignal(dict)
@@ -261,7 +253,7 @@ class QUnFrameWindow(resizableframeless):
         for name in self.buttons:
             if name in colorstate:
                 color = (
-                    contrastcolor(globalconfig["buttoncolor"])
+                    globalconfig["buttoncolor_1"]
                     if colorstate[name]
                     else globalconfig["buttoncolor"]
                 )
@@ -579,7 +571,7 @@ class QUnFrameWindow(resizableframeless):
             None,
             flags=Qt.WindowType.FramelessWindowHint
             | Qt.WindowType.WindowMinimizeButtonHint,
-            poslist=globalconfig["transuigeo"]
+            poslist=globalconfig["transuigeo"],
         )  # 设置为顶级窗口，无边框
         icon = getExeIcon(sys.argv[0])  #'./LunaTranslator.exe')# QIcon()
         # icon.addPixmap(QPixmap('./files/luna.png'), QIcon.Normal, QIcon.On)

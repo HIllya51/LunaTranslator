@@ -318,7 +318,19 @@ def uisetting(self):
                                                 name="buttoncolorbutton",
                                                 parent=self,
                                             ),
-                                            "",
+                                            D_getcolorbutton(
+                                                globalconfig,
+                                                "buttoncolor_1",
+                                                callback=lambda: selectcolor(
+                                                    self,
+                                                    globalconfig,
+                                                    "buttoncolor_1",
+                                                    self.buttoncolorbutton_1,
+                                                    callback=lambda: gobject.baseobject.translation_ui.refreshtooliconsignal.emit(),
+                                                ),
+                                                name="buttoncolorbutton_1",
+                                                parent=self,
+                                            ),
                                             "",
                                             ("工具按钮大小", 4),
                                             (
