@@ -14,7 +14,7 @@ from gui.usefulwidget import (
 
 @Singleton
 class dialog_selecticon(QDialog):
-    def __init__(self, parent, dict, key, _nouse_for_click_arg) -> None:
+    def __init__(self, parent, dict, key) -> None:
 
         super().__init__(parent, Qt.WindowType.WindowCloseButtonHint)
         self.dict = dict

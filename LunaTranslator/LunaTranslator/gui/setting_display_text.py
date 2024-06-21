@@ -188,15 +188,8 @@ def resetgroudswitchcallback(self, group):
 
     goodfontgroupswitch = FocusCombo()
 
-    if group == "textbrowser" or group == "QWebEngine":
-        self.goodfontsettingsformlayout.addRow(
-            _TR("可选取模式"),
-            getsimpleswitch(
-                globalconfig,
-                "selectable",
-                callback=lambda x: gobject.baseobject.translation_ui.translate_text.textbrowser.setselectable(),
-            ),
-        )
+    # if group == "textbrowser" or group == "QWebEngine":
+
     if group == "webview" or group == "QWebEngine":
         _btn = QPushButton(_TR("额外的html"))
         self.goodfontsettingsformlayout.addRow(_btn)
@@ -431,6 +424,16 @@ def xianshigrid(self):
                         [
                             ("收到翻译结果时才刷新", 5),
                             D_getsimpleswitch(globalconfig, "refresh_on_get_trans"),
+                        ],
+                        [
+                            ("可选取的", 5),
+                            D_getsimpleswitch(
+                                globalconfig,
+                                "selectable",
+                                callback=lambda x: gobject.baseobject.translation_ui.refreshtoolicon(),
+                                parent=self,
+                                name="selectable_btn",
+                            ),
                         ],
                     ),
                 ),

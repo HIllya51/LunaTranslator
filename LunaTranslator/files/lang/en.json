@@ -683,7 +683,6 @@
     "收藏": "collection",
     "名称": "name",
     "网址": "Website",
-    "可选取模式": "Selectable modes",
     "百度OCR": "Baidu OCR",
     "飞书OCR": "Feishu OCR",
     "讯飞OCR": "IFlytek OCR",
@@ -808,5 +807,6 @@
     "阴影强度": "Shadow intensity",
     "阴影半径": "Shadow radius",
     "字体倍率": "Font magnification",
-    "固定值": "Fixed value"
+    "固定值": "Fixed value",
+    "可选取的": "Selectable"
 }

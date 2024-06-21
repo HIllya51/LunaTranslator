@@ -683,7 +683,6 @@
     "收藏": "Bộ sưu tập",
     "名称": "Tên",
     "网址": "Trang chủ",
-    "可选取模式": "Chế độ chọn",
     "百度OCR": "Số lượng OCR",
     "飞书OCR": "Sách bay OCR",
     "讯飞OCR": "Máy bay OCR",
@@ -808,5 +807,6 @@
     "阴影强度": "Cường độ bóng",
     "阴影半径": "Bán kính bóng",
     "字体倍率": "Độ phóng đại phông chữ",
-    "固定值": "Giá trị cố định"
+    "固定值": "Giá trị cố định",
+    "可选取的": "Chọn"
 }

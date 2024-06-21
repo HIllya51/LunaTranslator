@@ -102,8 +102,6 @@ class TextBrowser(QWidget, dataget):
         self.iteryinyinglabelsave = {}
         self.saveiterclasspointer = {}
         self.resets1()
-        
-        self.setselectable()
 
     def resets1(self):
         self.currenttype = globalconfig["rendertext_using_internal"]["textbrowser"]
@@ -154,8 +152,8 @@ class TextBrowser(QWidget, dataget):
             labels[1] = 0
         self.iteryinyinglabelsave.clear()
 
-    def setselectable(self):
-        self.masklabel.setHidden(globalconfig["selectable"])
+    def setselectable(self, b):
+        self.masklabel.setHidden(b)
 
     def _createqfont(self, origin):
 

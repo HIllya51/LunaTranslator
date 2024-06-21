@@ -583,6 +583,7 @@
             "open_relative_link",
             "open_game_setting",
             "ocr_once",
+            "selectable",
             "minmize",
             "quit"
         ],
@@ -806,6 +807,12 @@
                 "use": true,
                 "tip": "窗口置顶",
                 "icon": "fa.neuter",
+                "align": 0
+            },
+            "selectable": {
+                "use": false,
+                "tip": "可选取模式",
+                "icon": "fa.i-cursor",
                 "align": 0
             }
         }

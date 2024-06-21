@@ -683,7 +683,6 @@
     "收藏": "Collections",
     "名称": "Le nom",
     "网址": "Adresse Web",
-    "可选取模式": "Mode sélectionnable",
     "百度OCR": "Baidu ocr",
     "飞书OCR": "Livre volant ocr",
     "讯飞OCR": "OCR volant",
@@ -808,5 +807,6 @@
     "阴影强度": "Intensité de l'ombre",
     "阴影半径": "Rayon d'ombre",
     "字体倍率": "Multiplication des polices",
-    "固定值": "Valeur fixe"
+    "固定值": "Valeur fixe",
+    "可选取的": "Sélectionnable"
 }

@@ -683,7 +683,6 @@
     "收藏": "koleksiyon",
     "名称": "isim",
     "网址": "Web sitesi",
-    "可选取模式": "Seçilebilir modlar",
     "百度OCR": "Baidu OCR",
     "飞书OCR": "Feishu OCR",
     "讯飞OCR": "IFlytek OCR",
@@ -808,5 +807,6 @@
     "阴影强度": "Gölge şiddeti",
     "阴影半径": "Gölge Yardımcısı",
     "字体倍率": "Yazıtipi büyütmesi",
-    "固定值": "Tam değer"
+    "固定值": "Tam değer",
+    "可选取的": "Seçilebilir"
 }

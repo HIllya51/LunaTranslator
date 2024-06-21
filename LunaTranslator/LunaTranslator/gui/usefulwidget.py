@@ -980,12 +980,7 @@ class abstractwebview(QWidget):
 class WebivewWidget(abstractwebview):
 
     def __del__(self):
-        winsharedutils.remove_ZoomFactorChanged(
-            self.webview.get_native_handle(
-                webview_native_handle_kind_t.WEBVIEW_NATIVE_HANDLE_KIND_BROWSER_CONTROLLER
-            ),
-            self.__token,
-        )
+        winsharedutils.remove_ZoomFactorChanged(self.get_controller(), self.__token)
 
     def bind(self, fname, func):
         self.webview.bind(fname, func)
@@ -1070,14 +1065,16 @@ class QWebWrap(abstractwebview):
             from PyQt5.QtWebEngineWidgets import QWebEngineView
         else:
             from PyQt6.QtWebEngineWidgets import QWebEngineView
-        if 'QTWEBENGINE_REMOTE_DEBUGGING' not in os.environ:
+        if "QTWEBENGINE_REMOTE_DEBUGGING" not in os.environ:
             DEBUG_PORT = 5588
             for i in range(100):
                 if checkportavailable(DEBUG_PORT):
                     break
                 DEBUG_PORT += 1
             os.environ["QTWEBENGINE_REMOTE_DEBUGGING"] = str(DEBUG_PORT)
-        self.DEBUG_URL = "http://127.0.0.1:%s" % os.environ["QTWEBENGINE_REMOTE_DEBUGGING"]
+        self.DEBUG_URL = (
+            "http://127.0.0.1:%s" % os.environ["QTWEBENGINE_REMOTE_DEBUGGING"]
+        )
         self.internal = QWebEngineView(self)
         self.internal.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
         self.internal.customContextMenuRequested.connect(self._qwmenu)

@@ -16,8 +16,8 @@ class TextBrowser(QWidget, dataget):
         self.webivewwidget.resize(event.size())
         self.masklabel.resize(event.size())
 
-    def setselectable(self):
-        self.masklabel.setHidden(globalconfig["selectable"])
+    def setselectable(self, b):
+        self.masklabel.setHidden(b)
 
     def __init__(self, parent) -> None:
         super().__init__(parent)
@@ -39,7 +39,6 @@ class TextBrowser(QWidget, dataget):
         self.saveiterclasspointer = {}
         self.isfirst = True
         self._qweb_query_word()
-        self.setselectable()
 
     def showEvent(self, e):
         if not self.isfirst:

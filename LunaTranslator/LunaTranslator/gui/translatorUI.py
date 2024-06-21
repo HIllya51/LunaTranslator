@@ -244,6 +244,7 @@ class QUnFrameWindow(resizableframeless):
             "mousetransbutton": self.mousetransparent,
             "backtransbutton": self.backtransparent,
             "locktoolsbutton": globalconfig["locktools"],
+            "selectable": globalconfig["selectable"],
             "hideocrrange": self.showhidestate,
             "bindwindow": self.isbindedwindow,
             "keepontop": globalconfig["keepontop"],
@@ -400,6 +401,7 @@ class QUnFrameWindow(resizableframeless):
             ("ocr_once", self.ocr_once_signal.emit),
             ("minmize", self.hide_),
             ("quit", self.close),
+            ("selectable", self.setselectable),
         )
         _type = {"quit": 2}
 
@@ -534,11 +536,7 @@ class QUnFrameWindow(resizableframeless):
         self.stylebuttons = {}
 
     def displayglobaltooltip_f(self, string):
-        QToolTip.showText(
-            QCursor.pos(),
-            string,
-            gobject.baseobject.translation_ui,
-        )
+        QToolTip.showText(QCursor.pos(), string, self)
 
     def initsignals(self):
         self.hidesignal.connect(self.hide_)
@@ -587,11 +585,21 @@ class QUnFrameWindow(resizableframeless):
         self.addbuttons()
         self.translate_text = Textbrowser(self)
         self.translate_text.contentsChanged.connect(self.textAreaChanged)
+        self.translate_text.textbrowser.setselectable(globalconfig["selectable"])
         t = QTimer(self)
         t.setInterval(100)
         self._isentered = False
         t.timeout.connect(self.__betterenterevent)
         t.start()
+
+    def setselectable(self):
+
+        try:
+            gobject.baseobject.settin_ui.selectable_btn.click()
+        except:
+            globalconfig["selectable"] = not globalconfig["selectable"]
+            self.translate_text.textbrowser.setselectable(globalconfig["selectable"])
+            self.refreshtoolicon()
 
     def createborderradiusstring(self, r, merge, top=False):
         if merge:
@@ -815,7 +823,7 @@ class QUnFrameWindow(resizableframeless):
             gobject.baseobject.settin_ui.show_original_switch.click()
         except:
             globalconfig["isshowrawtext"] = not globalconfig["isshowrawtext"]
-            gobject.baseobject.translation_ui.refreshtoolicon()
+            self.refreshtoolicon()
 
     def changeTranslateMode(self):
         globalconfig["autorun"] = not globalconfig["autorun"]
