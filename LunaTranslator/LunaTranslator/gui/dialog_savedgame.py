@@ -1044,10 +1044,8 @@ class dialog_setting_game_internal(QWidget):
 
     def gettextproc(self, exepath):
         _w = QWidget()
-        _vbox = QVBoxLayout()
         formLayout = QFormLayout()
-        _w.setLayout(_vbox)
-        _vbox.addLayout(formLayout)
+        _w.setLayout(formLayout)
         __extra = QWidget()
 
         def __function(_):
@@ -1065,7 +1063,7 @@ class dialog_setting_game_internal(QWidget):
         vbox = QVBoxLayout()
         vbox.setContentsMargins(0, 0, 0, 0)
         __extra.setLayout(vbox)
-        _vbox.addWidget(__extra)
+        formLayout.addRow(__extra)
 
         model = QStandardItemModel()
         model.setHorizontalHeaderLabels(_TRL(["使用", "预处理方法", "设置"]))
@@ -1207,11 +1205,7 @@ class dialog_setting_game_internal(QWidget):
     def getlangtab(self, exepath):
         _w = QWidget()
         formLayout = QFormLayout()
-        _vbox = QVBoxLayout()
-        _vbox.setAlignment(Qt.AlignmentFlag.AlignTop)
-        _w.setLayout(_vbox)
-        _vbox.addLayout(formLayout)
-
+        _w.setLayout(formLayout)
         __extraw = QWidget()
 
         formLayout.addRow(
@@ -1230,7 +1224,7 @@ class dialog_setting_game_internal(QWidget):
             "private_srclang", globalconfig["srclang3"]
         )
 
-        _vbox.addWidget(__extraw)
+        formLayout.addRow(__extraw)
         formLayout2 = QFormLayout()
         formLayout2.setContentsMargins(0, 0, 0, 0)
         __extraw.setLayout(formLayout2)
@@ -1255,10 +1249,7 @@ class dialog_setting_game_internal(QWidget):
     def gethooktab(self, exepath):
         _w = QWidget()
         formLayout = QFormLayout()
-        _vbox = QVBoxLayout()
-        _vbox.setAlignment(Qt.AlignmentFlag.AlignTop)
-        _w.setLayout(_vbox)
-        _vbox.addLayout(formLayout)
+        _w.setLayout(formLayout)
         formLayout.addRow(
             _TR("特殊码"),
             listediterline(
@@ -1306,7 +1297,7 @@ class dialog_setting_game_internal(QWidget):
         ]:
             if k not in savehook_new_data[exepath]["hooksetting_private"]:
                 savehook_new_data[exepath]["hooksetting_private"][k] = globalconfig[k]
-        _vbox.addWidget(__extraw)
+        formLayout.addRow(__extraw)
         formLayout2 = QFormLayout()
         formLayout2.setContentsMargins(0, 0, 0, 0)
         __extraw.setLayout(formLayout2)
@@ -1703,7 +1694,7 @@ class dialog_savedgame_integrated(saveposwindow):
             parent,
             flags=Qt.WindowType.WindowMinMaxButtonsHint
             | Qt.WindowType.WindowCloseButtonHint,
-            poslist=globalconfig["savegamedialoggeo"]
+            poslist=globalconfig["savegamedialoggeo"],
         )
         self.setWindowTitle(_TR("游戏管理"))
 

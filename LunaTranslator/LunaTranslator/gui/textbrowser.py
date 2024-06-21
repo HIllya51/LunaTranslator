@@ -64,10 +64,6 @@ class Textbrowser(QLabel):
         self.masklabel_bottom = QLabel(self)
         self.masklabel_bottom.setMouseTracking(True)
         # self.masklabel_bottom.setStyleSheet('background-color:red')
-        self.setselectable()
-
-    def setselectable(self):
-        self.textbrowser.setselectable(globalconfig["selectable"])
 
     def iter_append(self, iter_context_class, origin, atcenter, text, color):
         cleared = self.cleared

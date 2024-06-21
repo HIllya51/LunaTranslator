@@ -16,7 +16,6 @@ class TextBrowser(QWidget, dataget):
         self.webivewwidget.resize(event.size().width(), event.size().height())
 
     def __init__(self, parent) -> None:
-        gobject.refwebview = self
         super().__init__(parent)
         if globalconfig["rendertext_using"] == "QWebEngine":
             DEBUG_PORT = 5588
@@ -186,9 +185,6 @@ class TextBrowser(QWidget, dataget):
         gobject.baseobject.clickwordcallback(wordinfo, False)
 
     # native api end
-
-    def setselectable(self, b):
-        pass
 
     def iter_append(self, iter_context_class, origin, atcenter, text, color, cleared):
 

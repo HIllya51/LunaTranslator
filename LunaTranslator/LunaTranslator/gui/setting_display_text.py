@@ -14,6 +14,7 @@ from gui.usefulwidget import (
     D_getIconButton,
     D_getcolorbutton,
     getcolorbutton,
+    getboxlayout,
     D_getsimpleswitch,
     selectcolor,
     FocusFontCombo,
@@ -87,8 +88,9 @@ class extrahtml(saveposwindow):
 
     @tryprint
     def applyhtml(self, _):
-
-        gobject.refwebview.set_extra_html(self.vistext.toPlainText())
+        gobject.baseobject.translation_ui.translate_text.textbrowser.set_extra_html(
+            self.vistext.toPlainText()
+        )
 
     def savehtml(self):
         os.makedirs("userconfig", exist_ok=True)
@@ -117,19 +119,30 @@ class extrahtml(saveposwindow):
         self.show()
 
 
-def createinternalfontsettings(self, group, _type):
+def clearlayout(ll: QLayout):
+    while ll.count():
+        item = ll.takeAt(0)
+        if not item:
+            continue
+        ll.removeItem(item)
+        w = item.widget()
+        if w:
+            w.deleteLater()
+            continue
+        l = item.layout()
+        if l:
+            clearlayout(l)
+            l.deleteLater()
+            continue
+
+
+def createinternalfontsettings(self, forml, group, _type):
 
     globalconfig["rendertext_using_internal"][group] = _type
     __internal = globalconfig["rendertext"][group][_type]
     dd = __internal.get("args", {})
-    lay: QFormLayout = self.goodfontsettingsWidget.layout()
-    while lay.count() > 2:
-        item = lay.takeAt(2)
-        if not item:
-            break
-        w = item.widget()
-        lay.removeWidget(w)
-        w.deleteLater()
+
+    clearlayout(forml)
 
     for key in dd:
         line = __internal["argstype"][key]
@@ -165,26 +178,40 @@ def createinternalfontsettings(self, group, _type):
             lineW.setSingleStep(line.get("step", 1))
             lineW.setValue(dd[key])
             lineW.valueChanged.connect(functools.partial(dd.__setitem__, key))
-        lay.addRow(
+        forml.addRow(
             name,
             lineW,
         )
-    if group == "webview":
-        _btn = QPushButton(_TR("额外的html"))
-        lay.addWidget(_btn)
-        _btn.clicked.connect(lambda: extrahtml(self))
 
 
 def resetgroudswitchcallback(self, group):
+    clearlayout(self.goodfontsettingsformlayout)
+
     if group == "QWebEngine":
         group = "webview"
-    try:
-        self.goodfontgroupswitch.currentIndexChanged.disconnect()
-    except:
-        pass
 
-    self.goodfontgroupswitch.clear()
-    self.goodfontgroupswitch.addItems(
+    goodfontgroupswitch = FocusCombo()
+
+    if group == "webview":
+        _btn = QPushButton(_TR("额外的html"))
+        self.goodfontsettingsformlayout.addRow(_btn)
+        _btn.clicked.connect(lambda: extrahtml(self))
+    elif group == "textbrowser":
+        self.goodfontsettingsformlayout.addRow(
+            _TR("可选取模式"),
+            getsimpleswitch(
+                globalconfig,
+                "selectable",
+                callback=lambda x: gobject.baseobject.translation_ui.translate_text.textbrowser.setselectable(),
+            ),
+        )
+    __form = QFormLayout()
+    __form.addRow(_TR("字体样式"), goodfontgroupswitch)
+    self.goodfontsettingsformlayout.addRow(__form)
+    forml = QFormLayout()
+    __form.addRow(forml)
+
+    goodfontgroupswitch.addItems(
         _TRL(
             [
                 globalconfig["rendertext"][group][x]["name"]
@@ -192,24 +219,16 @@ def resetgroudswitchcallback(self, group):
             ]
         )
     )
-    self.goodfontgroupswitch.setCurrentIndex(-1)
-    self.goodfontgroupswitch.currentIndexChanged.connect(
+    goodfontgroupswitch.currentIndexChanged.connect(
         lambda idx: createinternalfontsettings(
-            self, group, static_data["textrender"][group][idx]
+            self, forml, group, static_data["textrender"][group][idx]
         )
     )
-    self.goodfontgroupswitch.setCurrentIndex(
+    goodfontgroupswitch.setCurrentIndex(
         static_data["textrender"][group].index(
             globalconfig["rendertext_using_internal"][group]
         )
     )
-
-
-def firsttime(self):
-
-    self.goodfontgroupswitch = FocusCombo()
-    self.goodfontsettingsformlayout.addRow(_TR("字体样式"), self.goodfontgroupswitch)
-    resetgroudswitchcallback(self, globalconfig["rendertext_using"])
 
 
 def creategoodfontwid(self):
@@ -217,7 +236,9 @@ def creategoodfontwid(self):
     self.goodfontsettingsWidget = QGroupBox()
     self.goodfontsettingsformlayout = QFormLayout()
     self.goodfontsettingsWidget.setLayout(self.goodfontsettingsformlayout)
-    return self.goodfontsettingsWidget, functools.partial(firsttime, self)
+    return self.goodfontsettingsWidget, lambda: resetgroudswitchcallback(
+        self, globalconfig["rendertext_using"]
+    )
 
 
 def xianshigrid(self):

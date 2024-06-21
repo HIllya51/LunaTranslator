@@ -88,14 +88,6 @@ def _xingw():
                                 callback=lambda _: gobject.baseobject.setshowintab(),
                             ),
                         ],
-                        [
-                            "可选取模式",
-                            D_getsimpleswitch(
-                                globalconfig,
-                                "selectable",
-                                callback=lambda x: gobject.baseobject.translation_ui.translate_text.setselectable(),
-                            ),
-                        ],
                     ),
                 ),
                 0,

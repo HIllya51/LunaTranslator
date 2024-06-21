@@ -58,9 +58,6 @@ class TextBrowser(QWidget, dataget):
         self.toplabel2.resize(event.size())
         self.masklabel.resize(event.size())
 
-    def setselectable(self, b):
-        self.masklabel.setHidden(b)
-
     def __init__(self, parent) -> None:
         super().__init__(parent)
         self.atback2 = QLabel(self)
@@ -105,6 +102,8 @@ class TextBrowser(QWidget, dataget):
         self.iteryinyinglabelsave = {}
         self.saveiterclasspointer = {}
         self.resets1()
+        
+        self.setselectable()
 
     def resets1(self):
         self.currenttype = globalconfig["rendertext_using_internal"]["textbrowser"]
@@ -155,8 +154,8 @@ class TextBrowser(QWidget, dataget):
             labels[1] = 0
         self.iteryinyinglabelsave.clear()
 
-    def setselectable(self, b):
-        self.masklabel.setHidden(b)
+    def setselectable(self):
+        self.masklabel.setHidden(globalconfig["selectable"])
 
     def _createqfont(self, origin):
 
