@@ -186,16 +186,9 @@ def createinternalfontsettings(self, forml, group, _type):
 def resetgroudswitchcallback(self, group):
     clearlayout(self.goodfontsettingsformlayout)
 
-    if group == "QWebEngine":
-        group = "webview"
-
     goodfontgroupswitch = FocusCombo()
 
-    if group == "webview":
-        _btn = QPushButton(_TR("额外的html"))
-        self.goodfontsettingsformlayout.addRow(_btn)
-        _btn.clicked.connect(lambda: extrahtml(self))
-    elif group == "textbrowser":
+    if group == "textbrowser" or group == "QWebEngine":
         self.goodfontsettingsformlayout.addRow(
             _TR("可选取模式"),
             getsimpleswitch(
@@ -204,6 +197,12 @@ def resetgroudswitchcallback(self, group):
                 callback=lambda x: gobject.baseobject.translation_ui.translate_text.textbrowser.setselectable(),
             ),
         )
+    if group == "webview" or group == "QWebEngine":
+        _btn = QPushButton(_TR("额外的html"))
+        self.goodfontsettingsformlayout.addRow(_btn)
+        _btn.clicked.connect(lambda: extrahtml(self))
+    if group == "QWebEngine":
+        group = "webview"
     __form = QFormLayout()
     __form.addRow(_TR("字体样式"), goodfontgroupswitch)
     self.goodfontsettingsformlayout.addRow(__form)

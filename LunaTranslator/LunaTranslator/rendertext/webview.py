@@ -13,7 +13,11 @@ class TextBrowser(QWidget, dataget):
     contentsChanged = pyqtSignal(QSize)
 
     def resizeEvent(self, event: QResizeEvent):
-        self.webivewwidget.resize(event.size().width(), event.size().height())
+        self.webivewwidget.resize(event.size())
+        self.masklabel.resize(event.size())
+
+    def setselectable(self):
+        self.masklabel.setHidden(globalconfig["selectable"])
 
     def __init__(self, parent) -> None:
         super().__init__(parent)
@@ -24,6 +28,8 @@ class TextBrowser(QWidget, dataget):
             # webview2当会执行alert之类的弹窗js时，若qt窗口不可视，会卡住
             self.webivewwidget = WebivewWidget(self)
 
+        self.masklabel = QLabel(self.webivewwidget)
+        self.masklabel.setMouseTracking(True)
         self.webivewwidget.navigate(
             os.path.abspath(r"LunaTranslator\rendertext\webview.html")
         )
@@ -33,6 +39,7 @@ class TextBrowser(QWidget, dataget):
         self.saveiterclasspointer = {}
         self.isfirst = True
         self._qweb_query_word()
+        self.setselectable()
 
     def showEvent(self, e):
         if not self.isfirst:
