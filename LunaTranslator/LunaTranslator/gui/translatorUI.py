@@ -241,8 +241,8 @@ class QUnFrameWindow(resizableframeless):
         colorstate = {
             "automodebutton": globalconfig["autorun"],
             "showraw": globalconfig["isshowrawtext"],
-            "mousetransbutton": self.mousetransparent,
-            "backtransbutton": self.backtransparent,
+            "mousetransbutton": globalconfig["mousetransparent"],
+            "backtransbutton": globalconfig["backtransparent"],
             "locktoolsbutton": globalconfig["locktools"],
             "selectable": globalconfig["selectable"],
             "hideocrrange": self.showhidestate,
@@ -527,9 +527,7 @@ class QUnFrameWindow(resizableframeless):
         self.isontop = True
         self.showhidestate = False
         self.processismuteed = False
-        self.mousetransparent = False
         self.thistimenotsetop = False
-        self.backtransparent = False
         self.isbindedwindow = False
         self.buttons = {}
         self.showbuttons = []
@@ -654,7 +652,7 @@ class QUnFrameWindow(resizableframeless):
                 topr,
                 str2rgba(
                     globalconfig["backcolor"],
-                    globalconfig["transparent"] * (not self.backtransparent),
+                    globalconfig["transparent"] * (not globalconfig["backtransparent"]),
                 ),
             )
         )
@@ -743,11 +741,11 @@ class QUnFrameWindow(resizableframeless):
 
     def changemousetransparentstate(self, idx):
         if idx == 0:
-            self.mousetransparent = not self.mousetransparent
+            globalconfig["mousetransparent"] = not globalconfig["mousetransparent"]
 
             def _checkplace():
                 hwnd = int(int(self.winId()))
-                while self.mousetransparent:
+                while globalconfig["mousetransparent"]:
                     cursor_pos = self.mapFromGlobal(QCursor.pos())
 
                     if isinrect(
@@ -794,11 +792,11 @@ class QUnFrameWindow(resizableframeless):
                     & ~windows.WS_EX_TRANSPARENT,
                 )
 
-            if self.mousetransparent:
+            if globalconfig["mousetransparent"]:
                 # globalconfig['locktools']=True #锁定，否则无法恢复。
                 threading.Thread(target=_checkplace).start()
         elif idx == 1:
-            self.backtransparent = not self.backtransparent
+            globalconfig["backtransparent"] = not globalconfig["backtransparent"]
             self.set_color_transparency()
         self.refreshtoolicon()
 
@@ -880,7 +878,7 @@ class QUnFrameWindow(resizableframeless):
         self.set_color_transparency()
 
     def checkisentered(self):
-        if self.mousetransparent:
+        if globalconfig["mousetransparent"]:
             return self._TitleLabel.geometry().contains(
                 self.mapFromGlobal(QCursor.pos())
             )

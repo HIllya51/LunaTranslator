@@ -817,6 +817,8 @@
             }
         }
     },
+    "mousetransparent": false,
+    "backtransparent": false,
     "showtranexception": true,
     "refresh_on_get_trans": false,
     "languageuse": 0,
