@@ -1,7 +1,7 @@
 from qtsymbols import *
 import os, platform, functools, threading, time
 from traceback import print_exc
-import windows, qtawesome, winsharedutils
+import windows, qtawesome, winsharedutils, gobject
 from webviewpy import (
     webview_native_handle_kind_t,
     Webview,
@@ -10,7 +10,7 @@ from webviewpy import (
 from winsharedutils import HTMLBrowser
 from myutils.config import _TR, globalconfig
 from myutils.wrapper import Singleton, Singleton_close
-from myutils.utils import nowisdark
+from myutils.utils import nowisdark, checkportavailable
 
 
 class FocusCombo(QComboBox):
@@ -1070,10 +1070,17 @@ class QWebWrap(abstractwebview):
             from PyQt5.QtWebEngineWidgets import QWebEngineView
         else:
             from PyQt6.QtWebEngineWidgets import QWebEngineView
+        if 'QTWEBENGINE_REMOTE_DEBUGGING' not in os.environ:
+            DEBUG_PORT = 5588
+            for i in range(100):
+                if checkportavailable(DEBUG_PORT):
+                    break
+                DEBUG_PORT += 1
+            os.environ["QTWEBENGINE_REMOTE_DEBUGGING"] = str(DEBUG_PORT)
+        self.DEBUG_URL = "http://127.0.0.1:%s" % os.environ["QTWEBENGINE_REMOTE_DEBUGGING"]
         self.internal = QWebEngineView(self)
-        # self.internal.page().urlChanged.connect(
-        #     lambda qurl: self.on_load.emit(qurl.url())
-        # )
+        self.internal.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
+        self.internal.customContextMenuRequested.connect(self._qwmenu)
         self.internal.loadFinished.connect(self._loadFinish)
         self.internal_zoom = 1
         t = QTimer(self)
@@ -1081,6 +1088,50 @@ class QWebWrap(abstractwebview):
         t.timeout.connect(self.__getzoomfactor)
         t.timeout.emit()
         t.start()
+
+    def _qwmenu(self, pos):
+
+        if isqt5:
+            from PyQt5.QtWebEngineWidgets import QWebEnginePage, QWebEngineView
+
+            web_menu = self.internal.page().createStandardContextMenu()
+        else:
+            from PyQt6.QtWebEngineWidgets import QWebEngineView
+            from PyQt6.QtWebEngineCore import QWebEnginePage
+
+            web_menu = self.internal.createStandardContextMenu()
+        loadinspector = QAction("Inspect")
+        if (
+            self.internal.page().action(QWebEnginePage.WebAction.InspectElement)
+            not in web_menu.actions()
+        ):
+            web_menu.addAction(loadinspector)
+        action = web_menu.exec(self.internal.mapToGlobal(pos))
+
+        if action == loadinspector:
+
+            class QMW(saveposwindow):
+                def closeEvent(_self, e):
+                    self.internal.page().setDevToolsPage(None)
+                    super(QMW, _self).closeEvent(e)
+
+                def __init__(_self) -> None:
+                    super().__init__(
+                        gobject.baseobject.settin_ui,
+                        poslist=globalconfig["qwebinspectgeo"],
+                    )
+                    _self.setWindowTitle("Inspect")
+                    _self.internal = QWebEngineView(_self)
+                    _self.setCentralWidget(_self.internal)
+                    _self.internal.load(QUrl(self.DEBUG_URL))
+                    self.internal.page().setDevToolsPage(_self.internal.page())
+                    self.internal.page().triggerAction(
+                        QWebEnginePage.WebAction.InspectElement
+                    )
+
+                    _self.show()
+
+            QMW()
 
     def _loadFinish(self):
         self.on_load.emit(self.internal.url().url())

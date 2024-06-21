@@ -18,20 +18,8 @@ class TextBrowser(QWidget, dataget):
     def __init__(self, parent) -> None:
         super().__init__(parent)
         if globalconfig["rendertext_using"] == "QWebEngine":
-            DEBUG_PORT = 5588
-            for i in range(100):
-                if checkportavailable(DEBUG_PORT):
-                    break
-                DEBUG_PORT += 1
-            self.DEBUG_URL = "http://127.0.0.1:%s" % DEBUG_PORT
-            os.environ["QTWEBENGINE_REMOTE_DEBUGGING"] = str(DEBUG_PORT)
             self.webivewwidget = QWebWrap(self)
             self.webivewwidget.on_load.connect(self.__loadextra)
-            self.webivewwidget.internal.setContextMenuPolicy(
-                Qt.ContextMenuPolicy.CustomContextMenu
-            )
-            self.webivewwidget.internal.customContextMenuRequested.connect(self._qwmenu)
-
         else:
             # webview2当会执行alert之类的弹窗js时，若qt窗口不可视，会卡住
             self.webivewwidget = WebivewWidget(self)
@@ -45,54 +33,6 @@ class TextBrowser(QWidget, dataget):
         self.saveiterclasspointer = {}
         self.isfirst = True
         self._qweb_query_word()
-
-    def _qwmenu(self, pos):
-
-        if isqt5:
-            from PyQt5.QtWebEngineWidgets import QWebEnginePage, QWebEngineView
-
-            web_menu = self.webivewwidget.internal.page().createStandardContextMenu()
-        else:
-            from PyQt6.QtWebEngineWidgets import QWebEngineView
-            from PyQt6.QtWebEngineCore import QWebEnginePage
-
-            web_menu = self.webivewwidget.internal.createStandardContextMenu()
-        loadinspector = QAction("Inspect")
-        if (
-            self.webivewwidget.internal.page().action(
-                QWebEnginePage.WebAction.InspectElement
-            )
-            not in web_menu.actions()
-        ):
-            web_menu.addAction(loadinspector)
-        action = web_menu.exec(self.webivewwidget.mapToGlobal(pos))
-
-        if action == loadinspector:
-
-            class QMW(saveposwindow):
-                def closeEvent(_self, e):
-                    self.webivewwidget.internal.page().setDevToolsPage(None)
-                    super(QMW, _self).closeEvent(e)
-
-                def __init__(_self) -> None:
-                    super().__init__(
-                        gobject.baseobject.settin_ui,
-                        poslist=globalconfig["qwebinspectgeo"],
-                    )
-                    _self.setWindowTitle("Inspect")
-                    _self.internal = QWebEngineView(_self)
-                    _self.setCentralWidget(_self.internal)
-                    _self.internal.load(QUrl(self.DEBUG_URL))
-                    self.webivewwidget.internal.page().setDevToolsPage(
-                        _self.internal.page()
-                    )
-                    self.webivewwidget.internal.page().triggerAction(
-                        QWebEnginePage.WebAction.InspectElement
-                    )
-
-                    _self.show()
-
-            QMW()
 
     def showEvent(self, e):
         if not self.isfirst:
