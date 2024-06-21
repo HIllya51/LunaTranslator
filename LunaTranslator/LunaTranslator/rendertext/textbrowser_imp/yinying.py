@@ -13,20 +13,6 @@ class QGraphicsDropShadowEffect_multi(QGraphicsDropShadowEffect):
 
 
 class TextLine(TextLabel_0):
-    def moveoffset(self):
-        font = self.font()
-        fontOutLineWidth = (
-            font.pointSizeF() * self.config["shadowR"] + self.config["shadowR_ex"]
-        )
-        return fontOutLineWidth, fontOutLineWidth
-
-    def extraWH(self):
-        font = self.font()
-        fontOutLineWidth = (
-            font.pointSizeF() * self.config["shadowR"] + self.config["shadowR_ex"]
-        )
-        fontOutLineWidth *= 2
-        return fontOutLineWidth, fontOutLineWidth
 
     def usingcolor(self):
         return QColor(self.config["fillcolor"])
