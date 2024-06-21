@@ -332,20 +332,19 @@ class MAINUI:
 
         returnandembedcallback = lambda x: embedcallback(x) if embedcallback else ""
 
-        if type(res) == str:
-            if res.startswith("<msg_translator>"):
-                if currentsignature == self.currentsignature:
-                    self.translation_ui.displaystatus.emit(
-                        globalconfig["fanyi"][classname]["name"]
-                        + " "
-                        + res[len("<msg_translator>") :],
-                        "red",
-                        onlytrans,
-                        False,
-                    )
-                if len(self.usefultranslators) == 0:
-                    returnandembedcallback("")
-                return
+        if res.startswith("<msg_translator>"):
+            if currentsignature == self.currentsignature:
+                self.translation_ui.displaystatus.emit(
+                    globalconfig["fanyi"][classname]["name"]
+                    + " "
+                    + res[len("<msg_translator>") :],
+                    "red",
+                    onlytrans,
+                    False,
+                )
+            if len(self.usefultranslators) == 0:
+                returnandembedcallback("")
+            return
 
         res = self.solveaftertrans(res, optimization_params)
         if len(res) == 0:

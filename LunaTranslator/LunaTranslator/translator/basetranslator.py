@@ -280,16 +280,20 @@ class basetrans(commonbase):
         if succ:
             __callback("", 2)
 
-    def __callback(self, collectiterres, callback, embedcallback, _, is_iter_res):
+    def __callback(self, collectiterres, callback, embedcallback, ares, is_iter_res):
         if self.needzhconv:
-            _ = zhconv.convert(_, "zh-tw")
-        if _ == "\0":  # 清除前面的输出
+            ares = zhconv.convert(ares, "zh-tw")
+        if ares == "\0":  # 清除前面的输出
             collectiterres.clear()
             pass
         else:
-            collectiterres.append(_)
-        if all([_ is not None for _ in collectiterres]):
-            callback("".join(collectiterres), embedcallback, is_iter_res)
+            collectiterres.append(ares)
+        __ = ""
+        for ares in collectiterres:
+            if ares is None:
+                continue
+            __ += ares
+        callback(__, embedcallback, is_iter_res)
 
     def reinitandtrans(self, contentraw, contentsolved, is_auto_run):
         if self.needreinit or self.initok == False:
