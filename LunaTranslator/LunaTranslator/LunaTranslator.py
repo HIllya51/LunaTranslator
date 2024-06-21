@@ -701,6 +701,7 @@ class MAINUI:
                     pids = self.textsource.pids
                     if sum([int(pid_running(pid)) for pid in pids]) == 0:
                         self.textsource = None
+                        self.translation_ui.thistimenotsetop = False
 
             except:
 
