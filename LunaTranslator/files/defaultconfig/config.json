@@ -811,7 +811,7 @@
             },
             "selectable": {
                 "use": false,
-                "tip": "可选取模式",
+                "tip": "可选取的",
                 "icon": "fa.i-cursor",
                 "align": 0
             }
