@@ -33,7 +33,8 @@
                 "args": {
                     "fillcolor": "#eeeeee",
                     "shadowforce": 5,
-                    "shadowR": 0.4
+                    "shadowR": 0.1,
+                    "shadowR_ex": 3
                 },
                 "argstype": {
                     "fillcolor": {
@@ -48,10 +49,17 @@
                         "step": 1
                     },
                     "shadowR": {
-                        "name": "阴影半径_倍率",
+                        "name": "阴影半径_字体倍率",
                         "type": "spin",
-                        "min": 0.1,
+                        "min": 0,
                         "max": 10,
+                        "step": 0.01
+                    },
+                    "shadowR_ex": {
+                        "name": "阴影半径_固定值",
+                        "type": "spin",
+                        "min": 0,
+                        "max": 100,
                         "step": 0.1
                     }
                 }
@@ -70,7 +78,7 @@
                     "width": {
                         "name": "描边宽度",
                         "type": "spin",
-                        "min": 0.1,
+                        "min": 0,
                         "max": 100,
                         "step": 0.1
                     }
@@ -80,6 +88,7 @@
                 "name": "描边字体_2",
                 "args": {
                     "fillcolor": "#eeeeee",
+                    "width_rate": 0.1,
                     "width": 3
                 },
                 "argstype": {
@@ -88,11 +97,18 @@
                         "type": "colorselect"
                     },
                     "width": {
-                        "name": "描边宽度",
+                        "name": "描边宽度_固定值",
                         "type": "spin",
-                        "min": 0.1,
+                        "min": 0,
                         "max": 100,
                         "step": 0.1
+                    },
+                    "width_rate": {
+                        "name": "描边宽度_字体倍率",
+                        "type": "spin",
+                        "min": 0,
+                        "max": 10,
+                        "step": 0.01
                     }
                 }
             },
@@ -100,6 +116,7 @@
                 "name": "描边字体_3",
                 "args": {
                     "fillcolor": "#eeeeee",
+                    "width_rate": 0.1,
                     "width": 3
                 },
                 "argstype": {
@@ -108,11 +125,18 @@
                         "type": "colorselect"
                     },
                     "width": {
-                        "name": "描边宽度",
+                        "name": "描边宽度_固定值",
                         "type": "spin",
-                        "min": 0.1,
+                        "min": 0,
                         "max": 100,
                         "step": 0.1
+                    },
+                    "width_rate": {
+                        "name": "描边宽度_字体倍率",
+                        "type": "spin",
+                        "min": 0,
+                        "max": 10,
+                        "step": 0.01
                     }
                 }
             }
@@ -145,6 +169,7 @@
                 "name": "描边字体_2",
                 "args": {
                     "fillcolor": "#eeeeee",
+                    "width_rate": 0.1,
                     "width": 3
                 },
                 "argstype": {
@@ -153,11 +178,18 @@
                         "type": "colorselect"
                     },
                     "width": {
-                        "name": "描边宽度",
+                        "name": "描边宽度_固定值",
                         "type": "spin",
-                        "min": 0.1,
+                        "min": 0,
                         "max": 100,
                         "step": 0.1
+                    },
+                    "width_rate": {
+                        "name": "描边宽度_字体倍率",
+                        "type": "spin",
+                        "min": 0,
+                        "max": 10,
+                        "step": 0.01
                     }
                 }
             },
@@ -165,6 +197,7 @@
                 "name": "描边字体_3",
                 "args": {
                     "fillcolor": "#eeeeee",
+                    "width_rate": 0.1,
                     "width": 3
                 },
                 "argstype": {
@@ -173,11 +206,18 @@
                         "type": "colorselect"
                     },
                     "width": {
-                        "name": "描边宽度",
+                        "name": "描边宽度_固定值",
                         "type": "spin",
-                        "min": 0.1,
+                        "min": 0,
                         "max": 100,
                         "step": 0.1
+                    },
+                    "width_rate": {
+                        "name": "描边宽度_字体倍率",
+                        "type": "spin",
+                        "min": 0,
+                        "max": 10,
+                        "step": 0.01
                     }
                 }
             },
@@ -186,7 +226,8 @@
                 "args": {
                     "fillcolor": "#eeeeee",
                     "shadowforce": 5,
-                    "shadowR": 1
+                    "shadowR": 1,
+                    "shadowR_ex": 3
                 },
                 "argstype": {
                     "fillcolor": {
@@ -201,10 +242,17 @@
                         "step": 1
                     },
                     "shadowR": {
-                        "name": "阴影半径_倍率",
+                        "name": "阴影半径_字体倍率",
                         "type": "spin",
-                        "min": 0.1,
+                        "min": 0,
                         "max": 10,
+                        "step": 0.01
+                    },
+                    "shadowR_ex": {
+                        "name": "阴影半径_固定值",
+                        "type": "spin",
+                        "min": 0,
+                        "max": 100,
                         "step": 0.1
                     }
                 }

@@ -14,7 +14,6 @@ from gui.usefulwidget import (
     D_getIconButton,
     D_getcolorbutton,
     getcolorbutton,
-    getboxlayout,
     D_getsimpleswitch,
     selectcolor,
     FocusFontCombo,
@@ -179,7 +178,7 @@ def createinternalfontsettings(self, forml, group, _type):
             lineW.setValue(dd[key])
             lineW.valueChanged.connect(functools.partial(dd.__setitem__, key))
         forml.addRow(
-            name,
+            _TR(name),
             lineW,
         )
 

@@ -59,7 +59,7 @@
 
         let ntimes = ""
         for (let i = 0; i < styleargs.shadowforce; i++) {
-            ntimes += `0px 0px ${args.fontSize * styleargs.shadowR}px ${args.color}`
+            ntimes += `0px 0px ${args.fontSize * styleargs.shadowR + styleargs.shadowR_ex}px ${args.color}`
             if (i == styleargs.shadowforce - 1)
                 ntimes += ";"
             else
@@ -93,7 +93,7 @@
         let style = document.createElement('style')
         style.innerHTML = `
         #${_id} .stroken{
-    -webkit-text-stroke: ${styleargs.width}px ${c1};
+    -webkit-text-stroke: ${args.fontSize * styleargs.width_rate + styleargs.width}px ${c1};
     position: relative;
   }
   #${_id} .stroken::after {
@@ -207,7 +207,7 @@
 
                 if (isshow_fenci || isfenciclick) {
                     let div = document.createElement('div')
-                    div.style.display='inline-block'
+                    div.style.display = 'inline-block'
                     div.id = _simpleuid()
                     let style = document.createElement('style')
                     if (isshow_fenci)
