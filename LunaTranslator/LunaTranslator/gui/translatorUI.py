@@ -253,9 +253,9 @@ class QUnFrameWindow(resizableframeless):
         for name in self.buttons:
             if name in colorstate:
                 color = (
-                    globalconfig["buttoncolor"]
+                    globalconfig["buttoncolor_1"]
                     if colorstate[name]
-                    else globalconfig["buttoncolor_1"]
+                    else globalconfig["buttoncolor"]
                 )
             else:
                 color = globalconfig["buttoncolor"]
