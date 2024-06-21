@@ -182,6 +182,7 @@ class MySwitch(QWidget):
 
     def click(self):
         self.setChecked(not self.checked)
+        self.clicked.emit(self.checked)
 
     def sizeHint(self):
         return QSize(
