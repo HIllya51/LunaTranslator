@@ -735,25 +735,26 @@ class searchwordW(closeashidewindow):
     def showresfun(self, timestamp, k, res):
         if self.current != timestamp:
             return
-        if res is None:
+        if not res:
+            self.thisps.pop(k)
             return
         self.cache_results[k] = res
 
-        thisp = globalconfig["cishu"][k]["args"]["priority"]
+        thisp = self.thisps[k]
         idx = 0
         for kk in self.tabks:
-            if globalconfig["cishu"][kk]["args"]["priority"] >= thisp:
+            if self.thisps[kk] >= thisp:
                 idx += 1
         self.tabks.insert(idx, k)
         self.tab.insertTab(idx, _TR(globalconfig["cishu"][k]["name"]))
 
-        if thisp >= self.thismaxp:
+        if not self.hasclicked:
             self.tab.setCurrentIndex(0)
             self.tab.tabBarClicked.emit(0)
-            self.thismaxp += 1
+            self.hasclicked = True
 
     def tabclicked(self, idx):
-        self.thismaxp += 1
+        self.hasclicked = True
         try:
             html = self.cache_results[self.tabks[idx]]
         except:
@@ -762,7 +763,8 @@ class searchwordW(closeashidewindow):
 
     def setupUi(self):
         self.setWindowIcon(qtawesome.icon("fa.search"))
-        self.thismaxp = 0
+        self.thisps = {}
+        self.hasclicked = False
         self.showtabsignal.connect(self.showresfun)
 
         ww = QWidget(self)
@@ -880,11 +882,12 @@ class searchwordW(closeashidewindow):
         self.tabks.clear()
         self.textOutput.clear()
         self.cache_results.clear()
-        self.thismaxp = 0
+
+        self.thisps.clear()
+        self.hasclicked = False
         for k, cishu in gobject.baseobject.cishus.items():
-            self.thismaxp = max(
-                self.thismaxp, globalconfig["cishu"][k]["args"]["priority"]
-            )
+            self.thisps[k] = cishu.config["priority"]
+        for k, cishu in gobject.baseobject.cishus.items():
             cishu.safesearch(
                 sentence, functools.partial(self.showtabsignal.emit, current, k)
             )

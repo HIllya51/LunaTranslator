@@ -38,7 +38,7 @@ class cishubase:
             except:
                 print_exc()
                 self.needinit = True
-
+                res = None
             if res and len(res):
                 callback(res)
             else:

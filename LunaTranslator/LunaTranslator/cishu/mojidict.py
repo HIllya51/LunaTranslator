@@ -619,7 +619,6 @@ class mojidict(cishubase):
             pass
         try:
             result += mojizonghe(self,word)
-            result += "<br>"
         except:
             pass
         return result
