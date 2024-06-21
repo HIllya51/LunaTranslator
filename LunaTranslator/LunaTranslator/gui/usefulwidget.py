@@ -120,13 +120,26 @@ class saveposwindow(QMainWindow):
             super().__init__(parent, flags=flags)
         else:
             super().__init__(parent)
-        d = QApplication.primaryScreen()
+
         self.poslist = poslist
         if self.poslist:
-            poslist[2] = max(0, min(poslist[2], d.size().width()))
-            poslist[3] = max(0, min(poslist[3], d.size().height()))
-            poslist[0] = min(max(poslist[0], 0), d.size().width() - poslist[2])
-            poslist[1] = min(max(poslist[1], 0), d.size().height() - poslist[3])
+            contains = False
+            usescreen = QApplication.primaryScreen()
+            for screen in QApplication.screens():
+                if not screen.geometry().contains(QPoint(poslist[0], poslist[1])):
+                    continue
+                contains = True
+                usescreen = screen
+                break
+            poslist[2] = max(0, min(poslist[2], usescreen.size().width()))
+            poslist[3] = max(0, min(poslist[3], usescreen.size().height()))
+            if not contains:
+                poslist[0] = min(
+                    max(poslist[0], 0), usescreen.size().width() - poslist[2]
+                )
+                poslist[1] = min(
+                    max(poslist[1], 0), usescreen.size().height() - poslist[3]
+                )
             self.setGeometry(*poslist)
 
     def __checked_savepos(self):

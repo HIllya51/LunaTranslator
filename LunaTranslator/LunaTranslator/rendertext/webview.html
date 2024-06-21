@@ -201,13 +201,13 @@
             ele.style.textAlign = "center"
         let tags = _splittags(tag)
         tags.forEach(tag => {
-            let ruby = document.createElement('ruby')
+            let mayberuby = []
             tag.forEach(word => {
                 let eleori = regist_style_imp[style](styleargs, word.orig, { atcenter: true, fontFamily: fmori, fontSize: fsori, bold: boldori, color: color, lineHeight: line_height })
 
-
                 if (isshow_fenci || isfenciclick) {
                     let div = document.createElement('div')
+                    div.style.display='inline-block'
                     div.id = _simpleuid()
                     let style = document.createElement('style')
                     if (isshow_fenci)
@@ -228,9 +228,9 @@
                     div.appendChild(style)
                     div.appendChild(eleori)
 
-                    ruby.appendChild(div)
+                    mayberuby.push(div)
                 } else
-                    ruby.appendChild(eleori)
+                    mayberuby.push(div)
                 if (isshowhira) {
                     let rt = document.createElement('rt')
 
@@ -238,10 +238,22 @@
                         rt.appendChild(regist_style_imp[style](styleargs, word.hira, { atcenter: true, fontFamily: fmkana, fontSize: fskana, bold: boldkana, color: kanacolor, lineHeight: 0 }))
 
                     }
-                    ruby.appendChild(rt)
+                    mayberuby.push(rt)
                 }
             })
-            ele.appendChild(ruby)
+            if (isshowhira) {
+
+                let ruby = document.createElement('ruby')
+                mayberuby.forEach(e => {
+                    ruby.appendChild(e)
+                });
+                ele.appendChild(ruby)
+            }
+            else {
+                mayberuby.forEach(e => {
+                    ele.appendChild(e)
+                });
+            }
             ele.appendChild(document.createElement('br'))
         })
         safe_calllunaheightchange(document.getElementById(rootdivid).offsetHeight)
