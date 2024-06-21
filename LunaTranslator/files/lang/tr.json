@@ -803,5 +803,10 @@
     "按钮大小": "Düğme ölçüsi",
     "软件显示语言": "Yazılım Gösterim Dili",
     "重启生效": "Yeniden başlatma etkisi oluyor",
-    "不支持的游戏？": "Desteklenmeyen oyunlar mı?"
+    "不支持的游戏？": "Desteklenmeyen oyunlar mı?",
+    "填充颜色": "doldurum rengi",
+    "阴影强度": "Gölge şiddeti",
+    "阴影半径": "Gölge Yardımcısı",
+    "字体倍率": "Yazıtipi büyütmesi",
+    "固定值": "Tam değer"
 }

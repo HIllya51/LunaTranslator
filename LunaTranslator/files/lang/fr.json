@@ -803,5 +803,10 @@
     "按钮大小": "Taille du bouton",
     "软件显示语言": "Langue d'affichage du logiciel",
     "重启生效": "Redémarrage effectif",
-    "不支持的游戏？": "Un jeu non supporté?"
+    "不支持的游戏？": "Un jeu non supporté?",
+    "填充颜色": "Couleur de remplissage",
+    "阴影强度": "Intensité de l'ombre",
+    "阴影半径": "Rayon d'ombre",
+    "字体倍率": "Multiplication des polices",
+    "固定值": "Valeur fixe"
 }

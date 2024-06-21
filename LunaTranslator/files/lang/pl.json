@@ -803,5 +803,10 @@
     "按钮大小": "Rozmiar przycisku",
     "软件显示语言": "Język wyświetlania oprogramowania",
     "重启生效": "Ponowne uruchomienie wchodzi w życie",
-    "不支持的游戏？": "Niewspierane gry?"
+    "不支持的游戏？": "Niewspierane gry?",
+    "填充颜色": "kolor wypełnienia",
+    "阴影强度": "Intensywność cienia",
+    "阴影半径": "Promień cienia",
+    "字体倍率": "Powiększenie czcionki",
+    "固定值": "Wartość stała"
 }

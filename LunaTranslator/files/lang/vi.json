@@ -803,5 +803,10 @@
     "按钮大小": "Kích thước nút",
     "软件显示语言": "Ngôn ngữ hiển thị phần mềm",
     "重启生效": "Khởi động lại có hiệu lực",
-    "不支持的游戏？": "Trò chơi không được hỗ trợ?"
+    "不支持的游戏？": "Trò chơi không được hỗ trợ?",
+    "填充颜色": "Màu tô",
+    "阴影强度": "Cường độ bóng",
+    "阴影半径": "Bán kính bóng",
+    "字体倍率": "Độ phóng đại phông chữ",
+    "固定值": "Giá trị cố định"
 }

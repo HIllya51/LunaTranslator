@@ -803,5 +803,10 @@
     "按钮大小": "Button size",
     "软件显示语言": "Software Display Language",
     "重启生效": "Restart takes effect",
-    "不支持的游戏？": "Unsupported games?"
+    "不支持的游戏？": "Unsupported games?",
+    "填充颜色": "fill color",
+    "阴影强度": "Shadow intensity",
+    "阴影半径": "Shadow radius",
+    "字体倍率": "Font magnification",
+    "固定值": "Fixed value"
 }

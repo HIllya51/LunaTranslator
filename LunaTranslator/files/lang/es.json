@@ -803,5 +803,10 @@
     "按钮大小": "Tamaño del botón",
     "软件显示语言": "Lenguaje de visualización de software",
     "重启生效": "El reinicio entra en vigor",
-    "不支持的游戏？": "¿Juegos no soportados?"
+    "不支持的游戏？": "¿Juegos no soportados?",
+    "填充颜色": "Color de relleno",
+    "阴影强度": "Intensidad de la sombra",
+    "阴影半径": "Radio de sombra",
+    "字体倍率": "Multiplicación de fuentes",
+    "固定值": "Valor fijo"
 }
