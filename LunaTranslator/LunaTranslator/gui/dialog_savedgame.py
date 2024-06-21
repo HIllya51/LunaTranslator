@@ -479,7 +479,7 @@ class browserdialog(saveposwindow):
         self.startupsettitle(exepath)
 
     def __init__(self, parent, exepath=None) -> None:
-        super().__init__(parent, globalconfig, "browserwidget")
+        super().__init__(parent, poslist=globalconfig["browserwidget"])
         if exepath:
             self.setWindowIcon(getExeIcon(exepath, cache=True))
         self.browser = auto_select_webview(self)
@@ -1703,8 +1703,7 @@ class dialog_savedgame_integrated(saveposwindow):
             parent,
             flags=Qt.WindowType.WindowMinMaxButtonsHint
             | Qt.WindowType.WindowCloseButtonHint,
-            dic=globalconfig,
-            key="savegamedialoggeo",
+            poslist=globalconfig["savegamedialoggeo"]
         )
         self.setWindowTitle(_TR("游戏管理"))
 

@@ -16,7 +16,7 @@ class edittext(saveposwindow):
         super().closeEvent(e)
 
     def __init__(self, parent, cached):
-        super().__init__(parent, globalconfig, "edit_geo")
+        super().__init__(parent, poslist=globalconfig["edit_geo"])
         self.setupUi()
 
         # self.setWindowFlags(self.windowFlags()&~Qt.WindowMinimizeButtonHint)

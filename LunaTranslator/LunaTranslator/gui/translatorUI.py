@@ -579,8 +579,7 @@ class QUnFrameWindow(resizableframeless):
             None,
             flags=Qt.WindowType.FramelessWindowHint
             | Qt.WindowType.WindowMinimizeButtonHint,
-            dic=globalconfig,
-            key="transuigeo",
+            poslist=globalconfig["transuigeo"]
         )  # 设置为顶级窗口，无边框
         icon = getExeIcon(sys.argv[0])  #'./LunaTranslator.exe')# QIcon()
         # icon.addPixmap(QPixmap('./files/luna.png'), QIcon.Normal, QIcon.On)

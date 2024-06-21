@@ -96,7 +96,7 @@ class extrahtml(saveposwindow):
             ff.write(self.vistext.toPlainText())
 
     def __init__(self, parent) -> None:
-        super().__init__(parent, globalconfig, "geo_extrahtml")
+        super().__init__(parent, poslist=globalconfig["geo_extrahtml"])
         self.setWindowTitle(_TR("额外的html"))
 
         self.btn_save = QPushButton(_TR("保存"))

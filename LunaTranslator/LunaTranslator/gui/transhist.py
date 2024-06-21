@@ -12,7 +12,7 @@ class transhist(closeashidewindow):
     getnewtranssignal = pyqtSignal(str, str)
 
     def __init__(self, parent):
-        super(transhist, self).__init__(parent, globalconfig, "hist_geo")
+        super(transhist, self).__init__(parent, globalconfig["hist_geo"])
         self.setupUi()
         # self.setWindowFlags(self.windowFlags()&~Qt.WindowMinimizeButtonHint)
         self.getnewsentencesignal.connect(self.getnewsentence)

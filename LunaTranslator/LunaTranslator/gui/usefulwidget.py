@@ -115,27 +115,28 @@ def makerect(_):
 
 
 class saveposwindow(QMainWindow):
-    def __init__(self, parent, dic=None, key=None, flags=None) -> None:
+    def __init__(self, parent, poslist=None, flags=None) -> None:
         if flags:
             super().__init__(parent, flags=flags)
         else:
             super().__init__(parent)
         d = QApplication.primaryScreen()
-        self.dic, self.key = dic, key
-        if self.dic:
-            dic[key][2] = max(0, min(dic[key][2], d.size().width()))
-            dic[key][3] = max(0, min(dic[key][3], d.size().height()))
-            dic[key][0] = min(max(dic[key][0], 0), d.size().width() - dic[key][2])
-            dic[key][1] = min(max(dic[key][1], 0), d.size().height() - dic[key][3])
-            self.setGeometry(*dic[key])
+        self.poslist = poslist
+        if self.poslist:
+            poslist[2] = max(0, min(poslist[2], d.size().width()))
+            poslist[3] = max(0, min(poslist[3], d.size().height()))
+            poslist[0] = min(max(poslist[0], 0), d.size().width() - poslist[2])
+            poslist[1] = min(max(poslist[1], 0), d.size().height() - poslist[3])
+            self.setGeometry(*poslist)
 
     def __checked_savepos(self):
-        if not self.dic:
+        if not self.poslist:
             return
         if windows.IsZoomed(int(self.winId())) != 0:
             return
         # self.isMaximized()会在event结束后才被设置，不符合预期。
-        self.dic[self.key] = list(self.geometry().getRect())
+        for i, _ in enumerate(self.geometry().getRect()):
+            self.poslist[i] = _
 
     def resizeEvent(self, a0) -> None:
         self.__checked_savepos()
@@ -151,8 +152,8 @@ class closeashidewindow(saveposwindow):
     showsignal = pyqtSignal()
     realshowhide = pyqtSignal(bool)
 
-    def __init__(self, parent, dic=None, key=None) -> None:
-        super().__init__(parent, dic, key)
+    def __init__(self, parent, poslist=None) -> None:
+        super().__init__(parent, poslist)
         self.showsignal.connect(self.showfunction)
         self.realshowhide.connect(self.realshowhidefunction)
 
@@ -400,8 +401,8 @@ class MySwitch2(QPushButton):
 
 
 class resizableframeless(saveposwindow):
-    def __init__(self, parent, flags, dic, key) -> None:
-        super().__init__(parent, dic, key, flags)
+    def __init__(self, parent, flags, poslist) -> None:
+        super().__init__(parent, poslist, flags)
         self.setMouseTracking(True)
 
         self._padding = 5
@@ -1166,7 +1167,7 @@ class CustomKeySequenceEdit(QKeySequenceEdit):
 
 
 def getsimplekeyseq(dic, key, callback=None):
-    key1 = CustomKeySequenceEdit(QKeySequence(dic[key]))
+    key1 = CustomKeySequenceEdit(QKeySequence(poslist))
 
     def __(_d, _k, cb, s):
         _d[_k] = s

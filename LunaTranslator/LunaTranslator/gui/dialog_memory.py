@@ -24,8 +24,7 @@ class dialog_memory(saveposwindow):
             parent,
             flags=Qt.WindowType.WindowCloseButtonHint
             | Qt.WindowType.WindowMinMaxButtonsHint,
-            dic=globalconfig,
-            key="memorydialoggeo",
+            poslist=globalconfig["memorydialoggeo"],
         )
         self.setWindowTitle(_TR("备忘录"))
         self.gamemd5 = gamemd5

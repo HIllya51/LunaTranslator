@@ -373,7 +373,7 @@ class hookselect(closeashidewindow):
     update_item_new_line = pyqtSignal(tuple, str)
 
     def __init__(self, parent):
-        super(hookselect, self).__init__(parent, globalconfig, "selecthookgeo")
+        super(hookselect, self).__init__(parent, globalconfig["selecthookgeo"])
         self.setupUi()
         self.changeprocessclearsignal.connect(self.changeprocessclear)
         self.removehooksignal.connect(self.removehook)

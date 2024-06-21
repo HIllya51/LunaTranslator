@@ -310,6 +310,12 @@
     "maxHistorySize": 1000000,
     "yuanjiao_r": 0,
     "yuanjiao_merge": true,
+    "qwebinspectgeo": [
+        100,
+        100,
+        800,
+        400
+    ],
     "transuigeo": [
         500,
         500,

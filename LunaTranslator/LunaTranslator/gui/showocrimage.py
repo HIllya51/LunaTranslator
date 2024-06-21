@@ -50,7 +50,7 @@ class showocrimage(saveposwindow):
     def __init__(self, parent, cached):
         self.img1 = None
         self.originimage = None
-        super().__init__(parent, globalconfig, "showocrgeo")
+        super().__init__(parent, poslist=globalconfig["showocrgeo"])
         self.setWindowIcon(qtawesome.icon("fa.picture-o"))
         self.setWindowTitle(_TR("查看处理效果"))
         self.originlabel = pixlabel()

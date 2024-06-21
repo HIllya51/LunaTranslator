@@ -41,7 +41,7 @@ class AttachProcessDialog(saveposwindow):
         super().closeEvent(e)
 
     def __init__(self, parent, callback, hookselectdialog=None):
-        super().__init__(parent, globalconfig, "attachprocessgeo")
+        super().__init__(parent, poslist=globalconfig["attachprocessgeo"])
         self.setcurrentpidpnamesignal.connect(self.selectwindowcallback)
 
         self.iconcache = {}

@@ -72,7 +72,7 @@ class Setting(closeashidewindow):
     showandsolvesig = pyqtSignal(str)
 
     def __init__(self, parent):
-        super(Setting, self).__init__(parent, globalconfig, "setting_geo_2")
+        super(Setting, self).__init__(parent, globalconfig["setting_geo_2"])
         self.setWindowIcon(qtawesome.icon("fa.gear"))
         self.mp3player = wavmp3player()
         self.mp3playsignal.connect(self.mp3player.mp3playfunction)

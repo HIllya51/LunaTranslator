@@ -724,7 +724,7 @@ class searchwordW(closeashidewindow):
     showtabsignal = pyqtSignal(float, str, str)
 
     def __init__(self, parent):
-        super(searchwordW, self).__init__(parent, globalconfig, "sw_geo")
+        super(searchwordW, self).__init__(parent, globalconfig["sw_geo"])
         # self.setWindowFlags(self.windowFlags()&~Qt.WindowMinimizeButtonHint)
         self.getnewsentencesignal.connect(self.getnewsentence)
 
