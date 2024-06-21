@@ -1167,7 +1167,7 @@ class CustomKeySequenceEdit(QKeySequenceEdit):
 
 
 def getsimplekeyseq(dic, key, callback=None):
-    key1 = CustomKeySequenceEdit(QKeySequence(poslist))
+    key1 = CustomKeySequenceEdit(QKeySequence(dic[key]))
 
     def __(_d, _k, cb, s):
         _d[_k] = s
