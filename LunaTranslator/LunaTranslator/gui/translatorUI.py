@@ -871,16 +871,27 @@ class QUnFrameWindow(resizableframeless):
         self._TitleLabel.hide()
         self.set_color_transparency()
 
+    def checkisentered(self):
+        if self.mousetransparent:
+            return self._TitleLabel.geometry().contains(
+                self.mapFromGlobal(QCursor.pos())
+            )
+        else:
+            return self.geometry().contains(QCursor.pos())
+
     def __betterenterevent(self):
-        if (not self._isentered) and self.geometry().contains(QCursor.pos()):
-            self._isentered = True
-            self.enterfunction()
+        if self._isentered:
+            return
+        if not self.checkisentered():
+            return
+        self._isentered = True
+        self.enterfunction()
 
     @threader
     def dodelayhide(self, delay):
         enter_sig = time.time()
         self.enter_sig = enter_sig
-        while self.geometry().contains(QCursor.pos()):
+        while self.checkisentered():
             time.sleep(0.1)
         self._isentered = False
         time.sleep(delay)
