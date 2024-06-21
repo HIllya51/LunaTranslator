@@ -22,12 +22,14 @@
         if (!_call)
             _call = console.log;
         _call(h)
+        window.__resolve_h = h
     }
     function safe_calllunaclickedword(word) {
         let _call = window.calllunaclickedword;
         if (!_call)
             _call = console.log;
         _call(word)
+        window.__resolve_word = word
     }
 </script>
 <script>
@@ -242,6 +244,7 @@
             ele.appendChild(ruby)
             ele.appendChild(document.createElement('br'))
         })
+        safe_calllunaheightchange(document.getElementById(rootdivid).offsetHeight)
 
     }
     function _clear_all() {

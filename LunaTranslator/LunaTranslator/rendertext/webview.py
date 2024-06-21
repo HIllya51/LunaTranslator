@@ -1,7 +1,7 @@
 from PyQt5.QtWidgets import QWidget
 from qtsymbols import *
 from rendertext.somefunctions import dataget
-import gobject, uuid, json, os
+import gobject, uuid, json, os, functools
 from urllib.parse import quote
 from myutils.config import globalconfig
 from gui.usefulwidget import WebivewWidget, QWebWrap, saveposwindow
@@ -46,6 +46,7 @@ class TextBrowser(QWidget, dataget):
         self.webivewwidget.bind("calllunaheightchange", self.calllunaheightchange)
         self.saveiterclasspointer = {}
         self.isfirst = True
+        self._qweb_query_word()
 
     def _qwmenu(self, pos):
         from PyQt5.QtWebEngineWidgets import QWebEnginePage, QWebEngineView
@@ -71,7 +72,7 @@ class TextBrowser(QWidget, dataget):
                 def __init__(_self) -> None:
                     super().__init__(
                         gobject.baseobject.settin_ui,
-                        poslist=globalconfig["qwebinspectgeo"]
+                        poslist=globalconfig["qwebinspectgeo"],
                     )
                     _self.setWindowTitle("Inspect")
                     _self.internal = QWebEngineView(_self)
@@ -125,18 +126,7 @@ class TextBrowser(QWidget, dataget):
         self.debugeval(
             f'create_internal_text("{style}","{styleargs}","{_id}","{text}","{args}");'
         )
-        self._qweb_proactive_queryheigh()
-
-    def _qweb_proactive_queryheigh(self):
-        if not isinstance(self.webivewwidget, QWebWrap):
-            return
-
-        def __xxx(h):
-            self.calllunaheightchange(h)
-
-        self.webivewwidget.eval(
-            'document.getElementById("luna_root_div").offsetHeight', __xxx
-        )
+        self._qweb_query_h()
 
     def create_internal_rubytext(self, style, styleargs, _id, tag, args):
         tag = quote(json.dumps(tag))
@@ -146,18 +136,48 @@ class TextBrowser(QWidget, dataget):
             f'create_internal_rubytext("{style}","{styleargs}","{_id}","{tag}","{args}");'
         )
 
-        self._qweb_proactive_queryheigh()
+        self._qweb_query_h()
 
     # js api end
     # native api
+    def _qweb_query_value_callback(self, name, callback):
+
+        def __receiver(callback, value):
+            if not value:
+                return
+            self.webivewwidget.eval(f"{name}=null")
+            callback(value)
+
+        self.webivewwidget.eval(name, functools.partial(__receiver, callback))
+
+    def _qweb_query_h(self):
+        if not isinstance(self.webivewwidget, QWebWrap):
+            return
+        self._qweb_query_value_callback("window.__resolve_h", self.calllunaheightchange)
+
+    def _qweb_query_word(self):
+        if not isinstance(self.webivewwidget, QWebWrap):
+            return
+        t = QTimer(self)
+        t.setInterval(100)
+
+        def __intervaledqueryword():
+
+            self._qweb_query_value_callback(
+                "window.__resolve_word", self.calllunaclickedword
+            )
+
+        t.timeout.connect(__intervaledqueryword)
+        t.timeout.emit()
+        t.start()
 
     def calllunaheightchange(self, h):
         self.contentsChanged.emit(
             QSize(self.width(), int(h * self.webivewwidget.get_zoom()))
         )
 
-    def calllunaclickedword(self, packedwordinfo):
-        gobject.baseobject.clickwordcallback(packedwordinfo, False)
+    def calllunaclickedword(self, wordinfo):
+        gobject.baseobject.clickwordcallback(wordinfo, False)
 
     # native api end
 
