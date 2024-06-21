@@ -611,7 +611,6 @@
     "去除重复字符": "Usuń duplikaty znaków",
     "游戏内叠加层": "Warstwa nakładki w grze",
     "内联效果参数": "Parametry efektu liniowego",
-    "获取最新提取器核心&错误反馈&游戏支持": "Uzyskaj najnowszą informację zwrotną o błędach ekstraktora i wsparcie gry",
     "外部缩放软件": "Oprogramowanie do skalowania zewnętrznego",
     "保持非重复字符": "Zachowaj niepowtarzające się znaki",
     "多重区域模式": "Tryb wielu regionów",
@@ -803,5 +802,6 @@
     "按钮颜色": "Kolor przycisku",
     "按钮大小": "Rozmiar przycisku",
     "软件显示语言": "Język wyświetlania oprogramowania",
-    "重启生效": "Ponowne uruchomienie wchodzi w życie"
+    "重启生效": "Ponowne uruchomienie wchodzi w życie",
+    "不支持的游戏？": "Niewspierane gry?"
 }

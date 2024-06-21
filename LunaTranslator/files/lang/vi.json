@@ -611,7 +611,6 @@
     "去除重复字符": "Loại bỏ các ký tự trùng lặp",
     "游戏内叠加层": "Lớp phủ trong trò chơi",
     "内联效果参数": "Tham số hiệu ứng nội tuyến",
-    "获取最新提取器核心&错误反馈&游戏支持": "Nhận lõi Extractor mới nhất&Phản hồi lỗi&Hỗ trợ trò chơi",
     "外部缩放软件": "Phần mềm Zoom ngoài",
     "保持非重复字符": "Giữ các ký tự không trùng lặp",
     "多重区域模式": "Chế độ đa vùng",
@@ -803,5 +802,6 @@
     "按钮颜色": "Màu nút",
     "按钮大小": "Kích thước nút",
     "软件显示语言": "Ngôn ngữ hiển thị phần mềm",
-    "重启生效": "Khởi động lại có hiệu lực"
+    "重启生效": "Khởi động lại có hiệu lực",
+    "不支持的游戏？": "Trò chơi không được hỗ trợ?"
 }

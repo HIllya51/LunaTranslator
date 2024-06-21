@@ -611,7 +611,6 @@
     "去除重复字符": "Eliminar caracteres duplicados",
     "游戏内叠加层": "Capa superpuesta en el juego",
     "内联效果参数": "Parámetros de efecto en línea",
-    "获取最新提取器核心&错误反馈&游戏支持": "Obtener el último núcleo del extractor & comentarios erróneos & soporte del juego",
     "外部缩放软件": "Software de zoom externo",
     "保持非重复字符": "Mantener caracteres no repetitivos",
     "多重区域模式": "Modelo multiregional",
@@ -803,5 +802,6 @@
     "按钮颜色": "Color del botón",
     "按钮大小": "Tamaño del botón",
     "软件显示语言": "Lenguaje de visualización de software",
-    "重启生效": "El reinicio entra en vigor"
+    "重启生效": "El reinicio entra en vigor",
+    "不支持的游戏？": "¿Juegos no soportados?"
 }

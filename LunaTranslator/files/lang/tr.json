@@ -611,7 +611,6 @@
     "去除重复字符": "Çift karakterleri sil",
     "游戏内叠加层": "Oyun üzerindeki katı",
     "内联效果参数": "İçeri etkisi parametreleri",
-    "获取最新提取器核心&错误反馈&游戏支持": "Son ekstraktör çekirdek&hata geri veri&oyunu desteğini alın",
     "外部缩放软件": "Dışarı skalama yazılımı",
     "保持非重复字符": "Tekrarlamayan karakterleri tut",
     "多重区域模式": "Çok bölge modu",
@@ -803,5 +802,6 @@
     "按钮颜色": "Düğme rengi",
     "按钮大小": "Düğme ölçüsi",
     "软件显示语言": "Yazılım Gösterim Dili",
-    "重启生效": "Yeniden başlatma etkisi oluyor"
+    "重启生效": "Yeniden başlatma etkisi oluyor",
+    "不支持的游戏？": "Desteklenmeyen oyunlar mı?"
 }

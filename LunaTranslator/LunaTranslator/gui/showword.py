@@ -712,6 +712,13 @@ class CustomTabBar(QTabBar):
         return self.savesizehint
 
 
+class QLineEdit1(QLineEdit):
+    def mousePressEvent(self, a0: qtawesome.QMouseEvent) -> None:
+        # 点击浏览器后，无法重新获取焦点。
+        windows.SetFocus(int(self.winId()))
+        return super().mousePressEvent(a0)
+
+
 class searchwordW(closeashidewindow):
     getnewsentencesignal = pyqtSignal(str, bool)
     showtabsignal = pyqtSignal(float, str, str)
@@ -764,7 +771,7 @@ class searchwordW(closeashidewindow):
         ww.setLayout(self.vboxlayout)
         self.searchlayout = QHBoxLayout()
         self.vboxlayout.addLayout(self.searchlayout)
-        self.searchtext = QLineEdit()
+        self.searchtext = QLineEdit1()
         self.searchtext.textChanged.connect(self.ankiwindow.reset)
         self.searchlayout.addWidget(self.searchtext)
         searchbutton = QPushButton(qtawesome.icon("fa.search"), "")  # _TR("搜索"))

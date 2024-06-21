@@ -611,7 +611,6 @@
     "去除重复字符": "Supprimer les caractères dupliqués",
     "游戏内叠加层": "Couches superposées dans le jeu",
     "内联效果参数": "Paramètres d'effet inline",
-    "获取最新提取器核心&错误反馈&游戏支持": "Obtenez le dernier extractor Core & BUG Feedback & Game support",
     "外部缩放软件": "Logiciel de zoom externe",
     "保持非重复字符": "Garder les caractères non répétitifs",
     "多重区域模式": "Mode Multi - zones",
@@ -803,5 +802,6 @@
     "按钮颜色": "Couleur du bouton",
     "按钮大小": "Taille du bouton",
     "软件显示语言": "Langue d'affichage du logiciel",
-    "重启生效": "Redémarrage effectif"
+    "重启生效": "Redémarrage effectif",
+    "不支持的游戏？": "Un jeu non supporté?"
 }

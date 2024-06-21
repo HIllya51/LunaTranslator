@@ -611,7 +611,6 @@
     "去除重复字符": "Remove duplicate characters",
     "游戏内叠加层": "In-game overlay layer",
     "内联效果参数": "Inline effect parameters",
-    "获取最新提取器核心&错误反馈&游戏支持": "Get the latest extractor core&error feedback&game support",
     "外部缩放软件": "External scaling software",
     "保持非重复字符": "Keep non repeating characters",
     "多重区域模式": "Multi region mode",
@@ -803,5 +802,6 @@
     "按钮颜色": "Button color",
     "按钮大小": "Button size",
     "软件显示语言": "Software Display Language",
-    "重启生效": "Restart takes effect"
+    "重启生效": "Restart takes effect",
+    "不支持的游戏？": "Unsupported games?"
 }

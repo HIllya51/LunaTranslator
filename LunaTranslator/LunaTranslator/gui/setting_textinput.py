@@ -49,8 +49,14 @@ def gethookgrid(self):
 
     grids = [
         [
-            ("获取最新提取器核心&错误反馈&游戏支持", 8),
-            (makehtml("https://github.com/HIllya51/LunaHook"), 8, "link"),
+            (
+                makehtml(
+                    "https://github.com/HIllya51/LunaHook/issues/new?assignees=&labels=enhancement&projects=&template=01_game_request.yaml",
+                    show=_TR("不支持的游戏？"),
+                ),
+                0,
+                "link",
+            ),
         ],
         [],
         [
