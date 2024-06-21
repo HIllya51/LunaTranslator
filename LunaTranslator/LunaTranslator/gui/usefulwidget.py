@@ -266,8 +266,8 @@ class MySwitch(QWidget):
                 x + self.sizeHint().height() // 2 + offset,
                 y + self.sizeHint().height() // 2,
             ),
-            self.sizeHint().height() * 0.35,
-            self.sizeHint().height() * 0.35,
+            int(self.sizeHint().height() * 0.35),
+            int(self.sizeHint().height() * 0.35),
         )
 
     def mouseReleaseEvent(self, event) -> None:
@@ -475,12 +475,9 @@ class resizableframeless(saveposwindow):
         super().resizeEvent(e)
 
     def mousePressEvent(self, event: QMouseEvent):
-        if isqt5:
-            gpos = event.globalPos()
-        else:
-            gpos = event.globalPosition().toPoint()
         if event.button() != Qt.MouseButton.LeftButton:
             return
+        gpos = QCursor.pos()
         self.startxp = gpos - self.pos()
         self.starty = gpos.y()
         self.startx = gpos.x()
@@ -513,11 +510,7 @@ class resizableframeless(saveposwindow):
     def mouseMoveEvent(self, event):
 
         pos = event.pos()
-        if isqt5:
-            gpos = event.globalPos()
-        else:
-            gpos = event.globalPosition().toPoint()
-
+        gpos = QCursor.pos()
         if isinrect(pos, self._corner_youxia):
             self.setCursor(Qt.CursorShape.SizeFDiagCursor)
         elif isinrect(pos, self._corner_zuoshang):
@@ -1059,8 +1052,10 @@ class QWebWrap(abstractwebview):
 
     def __init__(self, p=None) -> None:
         super().__init__(p)
-        from PyQt5.QtWebEngineWidgets import QWebEngineView
-
+        if isqt5:
+            from PyQt5.QtWebEngineWidgets import QWebEngineView
+        else:
+            from PyQt6.QtWebEngineWidgets import QWebEngineView
         self.internal = QWebEngineView(self)
         # self.internal.page().urlChanged.connect(
         #     lambda qurl: self.on_load.emit(qurl.url())

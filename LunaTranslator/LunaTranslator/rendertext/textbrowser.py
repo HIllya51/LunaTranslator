@@ -1,4 +1,3 @@
-from PyQt5.QtWidgets import QWidget
 from qtsymbols import *
 from myutils.config import globalconfig
 from rendertext.somefunctions import dataget
@@ -263,11 +262,7 @@ class TextBrowser(QWidget, dataget):
         for i in range(self.blockcount, self.textbrowser.document().blockCount()):
             b = self.textbrowser.document().findBlockByNumber(i)
             tf = b.blockFormat()
-            if isqt5:
-                lht = QTextBlockFormat.LineHeightTypes.LineDistanceHeight
-            else:
-                lht = 4
-            tf.setLineHeight(fh, lht)
+            tf.setLineHeight(fh, LineHeightTypes.LineDistanceHeight)
             self.textcursor.setPosition(b.position())
             self.textcursor.setBlockFormat(tf)
             self.textbrowser.setTextCursor(self.textcursor)
@@ -552,11 +547,7 @@ class TextBrowser(QWidget, dataget):
             b = self.textbrowser.document().findBlockByNumber(i)
 
             tf = b.blockFormat()
-            if isqt5:
-                lht = QTextBlockFormat.LineHeightTypes.FixedHeight
-            else:
-                lht = 2
-            tf.setLineHeight(fasall + fha, lht)
+            tf.setLineHeight(fasall + fha, LineHeightTypes.FixedHeight)
             self.textcursor.setPosition(b.position())
             self.textcursor.setBlockFormat(tf)
             self.textbrowser.setTextCursor(self.textcursor)

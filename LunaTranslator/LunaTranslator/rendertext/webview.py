@@ -1,4 +1,3 @@
-from PyQt5.QtWidgets import QWidget
 from qtsymbols import *
 from rendertext.somefunctions import dataget
 import gobject, uuid, json, os, functools
@@ -49,10 +48,17 @@ class TextBrowser(QWidget, dataget):
         self._qweb_query_word()
 
     def _qwmenu(self, pos):
-        from PyQt5.QtWebEngineWidgets import QWebEnginePage, QWebEngineView
 
+        if isqt5:
+            from PyQt5.QtWebEngineWidgets import QWebEnginePage, QWebEngineView
+
+            web_menu = self.webivewwidget.internal.page().createStandardContextMenu()
+        else:
+            from PyQt6.QtWebEngineWidgets import QWebEngineView
+            from PyQt6.QtWebEngineCore import QWebEnginePage
+
+            web_menu = self.webivewwidget.internal.createStandardContextMenu()
         loadinspector = QAction("Inspect")
-        web_menu = self.webivewwidget.internal.page().createStandardContextMenu()
         if (
             self.webivewwidget.internal.page().action(
                 QWebEnginePage.WebAction.InspectElement
@@ -60,7 +66,7 @@ class TextBrowser(QWidget, dataget):
             not in web_menu.actions()
         ):
             web_menu.addAction(loadinspector)
-        action = web_menu.exec_(self.webivewwidget.mapToGlobal(pos))
+        action = web_menu.exec(self.webivewwidget.mapToGlobal(pos))
 
         if action == loadinspector:
 

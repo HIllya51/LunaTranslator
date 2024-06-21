@@ -4,6 +4,9 @@ try:
     from PyQt5.QtGui import QIconEngine,QIntValidator,QStandardItem,QStandardItemModel,QImageWriter,QIcon,QTextCharFormat,QTextBlockFormat,QResizeEvent,QTextCursor,QFontMetricsF,QMouseEvent,QImage,QPainter,QRegion,QCloseEvent,QFontDatabase,QKeySequence,QPixmap,QCursor,QColor,QFont,QPen,QPainterPath,QBrush,QFontMetrics,QShowEvent,QWheelEvent,QPaintEvent
     from PyQt5.QtCore import QObject,pyqtSignal,Qt,QSize,QByteArray,QBuffer,QPointF,QPoint,QRect,QEvent,QModelIndex,QTimer,QRectF,QVariantAnimation,QUrl
     isqt5 = True
+    class LineHeightTypes:
+        LineDistanceHeight=QTextBlockFormat.LineHeightTypes.LineDistanceHeight
+        FixedHeight=QTextBlockFormat.LineHeightTypes.FixedHeight
 except:
     #from traceback import print_exc
     #print_exc()
@@ -12,3 +15,7 @@ except:
     from PyQt6.QtGui import QIconEngine,QIntValidator,QAction,QStandardItem,QStandardItemModel,QImageWriter,QIcon,QTextCharFormat,QTextBlockFormat,QResizeEvent,QTextCursor,QFontMetricsF,QMouseEvent,QImage,QPainter,QRegion,QCloseEvent,QFontDatabase,QKeySequence,QPixmap,QCursor,QColor,QFont,QPen,QPainterPath,QBrush,QFontMetrics,QShowEvent,QWheelEvent,QPaintEvent
     from PyQt6.QtCore import QObject,pyqtSignal,Qt,QSize,QByteArray,QBuffer,QPointF,QPoint,QRect,QEvent,QModelIndex,QTimer,QRectF,QVariantAnimation,QUrl
     isqt5 = False
+
+    class LineHeightTypes:
+        LineDistanceHeight=QTextBlockFormat.LineHeightTypes.LineDistanceHeight.value
+        FixedHeight=QTextBlockFormat.LineHeightTypes.FixedHeight.value
