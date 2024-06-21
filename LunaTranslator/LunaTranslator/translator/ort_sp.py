@@ -256,13 +256,16 @@ class TS(basetrans):
         return output_ids_py
 
     def translate(self, content):
-        delimiters = ['.','。','\n',':','：','?','？','!','！','……','「','」']
-        content_split = [i for i in re.split('(['+''.join(delimiters)+'])', content) if i]
+        delimiters = ['.','。','\n',':','：','?','？','!','！','…','「','」',]
+        raw_split = [i.strip() for i in re.split('(['+''.join(delimiters)+'])', content)]
+        content_split = [i for i in raw_split if i]
         translated_list = []
         i = 0
         while i < len(content_split):
             sentence = content_split[i]
-            if i+1 < len(content_split):
+            while i + 1 < len(content_split):
+                if content_split[i+1] not in delimiters:
+                    break
                 i += 1
                 sentence += content_split[i]
             input_ids_py = self.encode_as_ids(sentence)
