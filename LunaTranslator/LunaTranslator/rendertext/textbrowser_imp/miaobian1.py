@@ -26,6 +26,7 @@ class TextLine(base):
         return _
 
     def paintText(self, painter: QPainter):
+
         self.m_outLineColor, self.m_contentColor = self.colorpair()
         text = self.text()
         font = self.font()
@@ -33,16 +34,8 @@ class TextLine(base):
             self.config["width"] + font.pointSizeF() * self.config["width_rate"]
         )
 
+        pix = QPixmap(self.size())
         font_m = QFontMetrics(font)
-        path = QPainterPath()
-        for i in range(1 + int(10 * self.config["trace"])):
-            path.addText(
-                fontOutLineWidth + i / 10,
-                fontOutLineWidth + i / 10 + font_m.ascent(),
-                font,
-                text,
-            )
-
         pen = QPen(
             self.m_outLineColor,
             fontOutLineWidth,
@@ -50,8 +43,31 @@ class TextLine(base):
             Qt.PenCapStyle.RoundCap,
             Qt.PenJoinStyle.RoundJoin,
         )
+        path = QPainterPath()
+        path.addText(
+            fontOutLineWidth,
+            fontOutLineWidth + font_m.ascent(),
+            font,
+            text,
+        )
+        pix.fill(Qt.GlobalColor.transparent)
+        pixpainter = QPainter(pix)
+        pixpainter.setRenderHint(QPainter.RenderHint.Antialiasing)
+        pixpainter.strokePath(path, pen)
+        pixpainter.end()
+        painter.setRenderHint(QPainter.RenderHint.SmoothPixmapTransform)
+        for i in range(1 + int(10 * self.config["trace"])):
 
-        painter.strokePath(path, pen)
+            painter.drawPixmap(
+                QRectF(
+                    i / 10,
+                    i / 10,
+                    pix.width(),
+                    pix.height(),
+                ),
+                pix,
+                QRectF(0, 0, pix.width(), pix.height()),
+            )
         path = QPainterPath()
         path.addText(
             fontOutLineWidth,
