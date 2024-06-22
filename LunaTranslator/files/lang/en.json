@@ -544,8 +544,6 @@
     "通用文字识别 API": "Universal Text Recognition API",
     "有道图片翻译": "Translation of Youdao Pictures",
     "图片翻译 API": "Image Translation API",
-    "取消内嵌翻译": "Cancel embedded translation",
-    "使用内嵌翻译": "Using embedded translation",
     "内嵌翻译": "Embedded translation",
     "隐藏不存在的游戏": "Hide games that do not exist",
     "宽度": "width",
@@ -810,5 +808,6 @@
     "固定值": "Fixed value",
     "可选取的": "Selectable",
     "投影距离": "Projection distance",
-    "反转颜色": "invert colors"
+    "反转颜色": "invert colors",
+    "内嵌": "Embedded"
 }

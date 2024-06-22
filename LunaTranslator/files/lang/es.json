@@ -544,8 +544,6 @@
     "通用文字识别 API": "API universal de reconocimiento de texto",
     "有道图片翻译": "Traducción de imágenes de youdao",
     "图片翻译 API": "API de traducción de imágenes",
-    "取消内嵌翻译": "Cancelar la traducción incorporada",
-    "使用内嵌翻译": "Usar traducción incorporada",
     "内嵌翻译": "Traducción incorporada",
     "隐藏不存在的游戏": "Ocultar juegos que no existen",
     "宽度": "Ancho",
@@ -810,5 +808,6 @@
     "固定值": "Valor fijo",
     "可选取的": "Seleccionable",
     "投影距离": "Distancia de proyección",
-    "反转颜色": "Invertir color"
+    "反转颜色": "Invertir color",
+    "内嵌": "Incrustación"
 }

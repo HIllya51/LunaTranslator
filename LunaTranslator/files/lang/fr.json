@@ -544,8 +544,6 @@
     "通用文字识别 API": "API de reconnaissance de texte universelle",
     "有道图片翻译": "Traduction d'images",
     "图片翻译 API": "API de traduction d'images",
-    "取消内嵌翻译": "Annuler la traduction intégrée",
-    "使用内嵌翻译": "Utiliser la traduction intégrée",
     "内嵌翻译": "Traduction intégrée",
     "隐藏不存在的游戏": "Cacher les jeux qui n'existent pas",
     "宽度": "Largeur",
@@ -810,5 +808,6 @@
     "固定值": "Valeur fixe",
     "可选取的": "Sélectionnable",
     "投影距离": "Distance de projection",
-    "反转颜色": "Inverser les couleurs"
+    "反转颜色": "Inverser les couleurs",
+    "内嵌": "Intégré"
 }

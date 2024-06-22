@@ -131,7 +131,7 @@ class texthook(basetext):
         self.needinserthookcode = needinserthookcode
         self.removedaddress = []
 
-        gobject.baseobject.hookselectdialog.changeprocessclearsignal.emit()
+        gobject.baseobject.hookselectdialog.changeprocessclearsignal.emit(self.config)
         if (
             len(autostarthookcode) == 0
             and len(savehook_new_data[self.pname]["embedablehook"]) == 0

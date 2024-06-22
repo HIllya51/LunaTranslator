@@ -193,6 +193,11 @@ class closeashidewindow(saveposwindow):
 class MySwitch(QWidget):
     clicked = pyqtSignal(bool)
 
+    def event(self, a0: QEvent) -> bool:
+        if a0.type() == QEvent.Type.MouseButtonDblClick:
+            return True
+        return super().event(a0)
+
     def click(self):
         self.setChecked(not self.checked)
         self.clicked.emit(self.checked)

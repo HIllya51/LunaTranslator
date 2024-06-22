@@ -544,8 +544,6 @@
     "通用文字识别 API": "API nhận dạng văn bản chung",
     "有道图片翻译": "Có hình dịch",
     "图片翻译 API": "Hình ảnh dịch API",
-    "取消内嵌翻译": "Hủy dịch nội tuyến",
-    "使用内嵌翻译": "Sử dụng Inline Translation",
     "内嵌翻译": "Dịch nội tuyến",
     "隐藏不存在的游戏": "Ẩn các trò chơi không tồn tại",
     "宽度": "Chiều rộng",
@@ -810,5 +808,6 @@
     "固定值": "Giá trị cố định",
     "可选取的": "Chọn",
     "投影距离": "Khoảng cách chiếu",
-    "反转颜色": "Đảo ngược màu"
+    "反转颜色": "Đảo ngược màu",
+    "内嵌": "Nội tuyến"
 }
