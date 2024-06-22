@@ -2,9 +2,8 @@ from qtsymbols import *
 from rendertext.somefunctions import dataget
 import gobject, uuid, json, os, functools
 from urllib.parse import quote
-from myutils.config import globalconfig
-from gui.usefulwidget import WebivewWidget, QWebWrap, saveposwindow
-from myutils.utils import checkportavailable
+from myutils.config import globalconfig, static_data
+from gui.usefulwidget import WebivewWidget, QWebWrap
 
 testsavejs = False
 
@@ -160,13 +159,23 @@ class TextBrowser(QWidget, dataget):
 
         return fmetrics.height()
 
+    def _getstylevalid(self):
+        currenttype = globalconfig["rendertext_using_internal"]["webview"]
+        if currenttype not in static_data["textrender"]["webview"]:
+            currenttype = static_data["textrender"]["webview"][0]
+            globalconfig["rendertext_using_internal"]["webview"] = static_data[
+                "textrender"
+            ]["webview"][0]
+        return currenttype
+
     def _webview_append(self, _id, origin, atcenter, text, tag, flags, color):
 
         fmori, fsori, boldori = self._getfontinfo(origin)
         fmkana, fskana, boldkana = self._getfontinfo_kana()
         kanacolor = self._getkanacolor()
         line_height = self.measureH(fmori, fsori) + globalconfig["extra_space"]
-        style = globalconfig["rendertext_using_internal"]["webview"]
+        style = self._getstylevalid()
+
         styleargs = globalconfig["rendertext"]["webview"][style].get("args", {})
         if len(tag):
             isshowhira, isshow_fenci, isfenciclick = flags

@@ -14,8 +14,9 @@
         margin-bottom: 0;
         /* word-break: break-all; */
     }
+
     body::-webkit-scrollbar {
-	    display: none;
+        display: none;
     }
 </style>
 <script>
@@ -88,7 +89,13 @@
         ele.appendChild(style)
         return ele
     }
-    function miaobian12_common(styleargs, text, args, c1, c2) {
+    function miaobian12_common(styleargs, text, args) {
+        let c2 = args.color
+        let c1 = styleargs.fillcolor
+        if (styleargs.reverse) {
+            c2 = styleargs.fillcolor
+            c1 = args.color
+        }
         let ele = document.createElement('div')
         let _id = _simpleuid()
         ele.id = _id
@@ -124,24 +131,11 @@
         return ele
 
     }
-    function miaobian2_create_internal(styleargs, text, args) {
-
-        let c1 = args.color
-        let c2 = styleargs.fillcolor
-        return miaobian12_common(styleargs, text, args, c1, c2)
-    }
-    function miaobian1_create_internal(styleargs, text, args) {
-
-        let c2 = args.color
-        let c1 = styleargs.fillcolor
-        return miaobian12_common(styleargs, text, args, c1, c2)
-    }
     regist_style_imp = {
         normal: normal_create_internal,
         yinying: yinying_create_internal,
         miaobian0: miaobian0_create_internal,
-        miaobian1: miaobian1_create_internal,
-        miaobian2: miaobian2_create_internal,
+        miaobian1: miaobian12_common,
     }
 </script>
 <script>

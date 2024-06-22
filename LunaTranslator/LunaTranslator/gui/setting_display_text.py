@@ -14,6 +14,7 @@ from gui.usefulwidget import (
     D_getIconButton,
     D_getcolorbutton,
     getcolorbutton,
+    MySwitch,
     D_getsimpleswitch,
     selectcolor,
     FocusFontCombo,
@@ -177,6 +178,9 @@ def createinternalfontsettings(self, forml, group, _type):
             lineW.setSingleStep(line.get("step", 1))
             lineW.setValue(dd[key])
             lineW.valueChanged.connect(functools.partial(dd.__setitem__, key))
+        elif _type == "switch":
+            lineW = MySwitch(sign=dd[key])
+            lineW.clicked.connect(functools.partial(dd.__setitem__, key))
         forml.addRow(
             _TR(name),
             lineW,

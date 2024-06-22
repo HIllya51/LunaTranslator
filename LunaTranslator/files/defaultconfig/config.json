@@ -89,37 +89,14 @@
                 "args": {
                     "fillcolor": "#eeeeee",
                     "width_rate": 0.1,
-                    "width": 3
+                    "width": 3,
+                    "reverse": true
                 },
                 "argstype": {
-                    "fillcolor": {
-                        "name": "填充颜色",
-                        "type": "colorselect"
+                    "reverse": {
+                        "name": "反转颜色",
+                        "type": "switch"
                     },
-                    "width": {
-                        "name": "描边宽度_固定值",
-                        "type": "spin",
-                        "min": 0,
-                        "max": 100,
-                        "step": 0.1
-                    },
-                    "width_rate": {
-                        "name": "描边宽度_字体倍率",
-                        "type": "spin",
-                        "min": 0,
-                        "max": 10,
-                        "step": 0.01
-                    }
-                }
-            },
-            "miaobian2": {
-                "name": "描边字体_3",
-                "args": {
-                    "fillcolor": "#eeeeee",
-                    "width_rate": 0.1,
-                    "width": 3
-                },
-                "argstype": {
                     "fillcolor": {
                         "name": "填充颜色",
                         "type": "colorselect"
@@ -171,45 +148,14 @@
                     "fillcolor": "#eeeeee",
                     "width_rate": 0.1,
                     "width": 3,
-                    "trace": 5
+                    "trace": 5,
+                    "reverse": true
                 },
                 "argstype": {
-                    "fillcolor": {
-                        "name": "填充颜色",
-                        "type": "colorselect"
+                    "reverse": {
+                        "name": "反转颜色",
+                        "type": "switch"
                     },
-                    "width": {
-                        "name": "描边宽度_固定值",
-                        "type": "spin",
-                        "min": 0,
-                        "max": 100,
-                        "step": 0.1
-                    },
-                    "width_rate": {
-                        "name": "描边宽度_字体倍率",
-                        "type": "spin",
-                        "min": 0,
-                        "max": 10,
-                        "step": 0.01
-                    },
-                    "trace": {
-                        "name": "投影距离",
-                        "type": "intspin",
-                        "min": 0,
-                        "max": 100,
-                        "step": 1
-                    }
-                }
-            },
-            "miaobian2": {
-                "name": "描边字体_3",
-                "args": {
-                    "fillcolor": "#eeeeee",
-                    "width_rate": 0.1,
-                    "width": 3,
-                    "trace": 5
-                },
-                "argstype": {
                     "fillcolor": {
                         "name": "填充颜色",
                         "type": "colorselect"

@@ -1,5 +1,5 @@
 from qtsymbols import *
-from myutils.config import globalconfig
+from myutils.config import globalconfig, static_data
 from rendertext.somefunctions import dataget
 import gobject, functools, importlib
 from traceback import print_exc
@@ -105,9 +105,13 @@ class TextBrowser(QWidget, dataget):
 
     def resets1(self):
         self.currenttype = globalconfig["rendertext_using_internal"]["textbrowser"]
-        __ = importlib.import_module(
-            f"rendertext.textbrowser_imp.{self.currenttype}"
-        )
+        if self.currenttype not in static_data["textrender"]["textbrowser"]:
+            self.currenttype = static_data["textrender"]["textbrowser"][0]
+            globalconfig["rendertext_using_internal"]["textbrowser"] = static_data[
+                "textrender"
+            ]["textbrowser"][0]
+
+        __ = importlib.import_module(f"rendertext.textbrowser_imp.{self.currenttype}")
 
         self.currentclass = functools.partial(__.TextLine, self.currenttype)
 

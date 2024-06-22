@@ -20,7 +20,10 @@ class TextLine(base):
         return (fontOutLineWidth, fontOutLineWidth)
 
     def colorpair(self):
-        return QColor(self.config["fillcolor"]), QColor(self.basecolor)
+        _ = QColor(self.config["fillcolor"]), QColor(self.basecolor)
+        if self.config["reverse"]:
+            _ = reversed(_)
+        return _
 
     def paintText(self, painter: QPainter):
         self.m_outLineColor, self.m_contentColor = self.colorpair()
