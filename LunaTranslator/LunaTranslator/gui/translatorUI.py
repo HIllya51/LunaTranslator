@@ -524,7 +524,6 @@ class QUnFrameWindow(resizableframeless):
         self.fullscreenmanager = None
         self.fullscreenmethod = None
         self._isTracking = False
-        self.isontop = True
         self.showhidestate = False
         self.processismuteed = False
         self.thistimenotsetop = False
@@ -572,7 +571,7 @@ class QUnFrameWindow(resizableframeless):
         icon = getExeIcon(sys.argv[0])  #'./LunaTranslator.exe')# QIcon()
         # icon.addPixmap(QPixmap('./files/luna.png'), QIcon.Normal, QIcon.On)
         self.setWindowIcon(icon)
-
+        self.firstshow = True
         self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
         self.setAttribute(Qt.WidgetAttribute.WA_ShowWithoutActivating, True)
         self.setWindowTitle("LunaTranslator")
@@ -589,6 +588,12 @@ class QUnFrameWindow(resizableframeless):
         self._isentered = False
         t.timeout.connect(self.__betterenterevent)
         t.start()
+
+    def showEvent(self, e):
+        if not self.firstshow:
+            return
+        self.firstshow = False
+        self.mousetransparent_check()
 
     def setselectable(self):
 
@@ -739,62 +744,58 @@ class QUnFrameWindow(resizableframeless):
             print_exc()
         self.fullscreenmanager_busy = False
 
-    def changemousetransparentstate(self, idx):
-        if idx == 0:
-            globalconfig["mousetransparent"] = not globalconfig["mousetransparent"]
+    @threader
+    def mousetransparent_check(self):
+        hwnd = int(int(self.winId()))
+        while globalconfig["mousetransparent"]:
+            cursor_pos = self.mapFromGlobal(QCursor.pos())
+            if isinrect(
+                cursor_pos,
+                [
+                    self._TitleLabel.x(),
+                    self._TitleLabel.x() + self._TitleLabel.width(),
+                    self._TitleLabel.y(),
+                    self._TitleLabel.y() + self._TitleLabel.height(),
+                ],
+            ):
 
-            def _checkplace():
-                hwnd = int(int(self.winId()))
-                while globalconfig["mousetransparent"]:
-                    cursor_pos = self.mapFromGlobal(QCursor.pos())
-
-                    if isinrect(
-                        cursor_pos,
-                        [
-                            self._TitleLabel.x(),
-                            self._TitleLabel.x() + self._TitleLabel.width(),
-                            self._TitleLabel.y(),
-                            self._TitleLabel.y() + self._TitleLabel.height(),
-                        ],
-                    ):
-
-                        windows.SetWindowLong(
-                            int(self.winId()),
-                            windows.GWL_EXSTYLE,
-                            windows.GetWindowLong(hwnd, windows.GWL_EXSTYLE)
-                            & ~windows.WS_EX_TRANSPARENT,
-                        )
-                    else:
-                        windows.SetWindowLong(
-                            int(self.winId()),
-                            windows.GWL_EXSTYLE,
-                            windows.GetWindowLong(hwnd, windows.GWL_EXSTYLE)
-                            | windows.WS_EX_TRANSPARENT,
-                        )
-                    if isinrect(
-                        cursor_pos,
-                        [
-                            self._TitleLabel.x(),
-                            self._TitleLabel.x() + self._TitleLabel.width(),
-                            self._TitleLabel.y(),
-                            self._TitleLabel.y()
-                            + self._TitleLabel.height()
-                            + self._padding,
-                        ],
-                    ):
-                        self.entersignal.emit()
-                    time.sleep(0.1)
-                # 结束时取消穿透(可能以快捷键终止)
                 windows.SetWindowLong(
-                    int(self.winId()),
+                    hwnd,
                     windows.GWL_EXSTYLE,
                     windows.GetWindowLong(hwnd, windows.GWL_EXSTYLE)
                     & ~windows.WS_EX_TRANSPARENT,
                 )
+            else:
+                windows.SetWindowLong(
+                    hwnd,
+                    windows.GWL_EXSTYLE,
+                    windows.GetWindowLong(hwnd, windows.GWL_EXSTYLE)
+                    | windows.WS_EX_TRANSPARENT,
+                )
+            if isinrect(
+                cursor_pos,
+                [
+                    self._TitleLabel.x(),
+                    self._TitleLabel.x() + self._TitleLabel.width(),
+                    self._TitleLabel.y(),
+                    self._TitleLabel.y() + self._TitleLabel.height() + self._padding,
+                ],
+            ):
+                self.entersignal.emit()
+            time.sleep(0.1)
+        # 结束时取消穿透(可能以快捷键终止)
+        windows.SetWindowLong(
+            hwnd,
+            windows.GWL_EXSTYLE,
+            windows.GetWindowLong(hwnd, windows.GWL_EXSTYLE)
+            & ~windows.WS_EX_TRANSPARENT,
+        )
 
-            if globalconfig["mousetransparent"]:
-                # globalconfig['locktools']=True #锁定，否则无法恢复。
-                threading.Thread(target=_checkplace).start()
+    def changemousetransparentstate(self, idx):
+        if idx == 0:
+            globalconfig["mousetransparent"] = not globalconfig["mousetransparent"]
+
+            self.mousetransparent_check()
         elif idx == 1:
             globalconfig["backtransparent"] = not globalconfig["backtransparent"]
             self.set_color_transparency()
