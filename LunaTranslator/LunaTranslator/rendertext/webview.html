@@ -147,7 +147,7 @@
         miaobian0: miaobian0_create_internal,
         miaobian1: miaobian12_common,
     }
-    function dispatch_text_style(style, styleargs, text, args) {
+    function dispatch_text_style_line(style, styleargs, text, args) {
         let ele = regist_style_imp[style](styleargs, text, args);
         let begin = 0; let begin1 = "";
         let end = text.length - 1; let end1 = "";
@@ -155,7 +155,6 @@
         for (; (end >= 0) && (text[end] == ' '); end--) { end1 += "&nbsp;"; }
         if ((end == (text.length - 1)) && (begin == 0))
             return ele
-
         let wrap = document.createElement('div')
         if (args.atcenter) {
             wrap.style.textAlign = "center"
@@ -181,6 +180,23 @@
             wrap.appendChild(__1)
         }
 
+        return wrap
+    }
+    function dispatch_text_style_inlineblock(style, styleargs, text, args) {
+        let l = dispatch_text_style_line(style, styleargs, text, args)
+        let div = document.createElement('div')
+        div.style.display = 'inline-block'
+        div.appendChild(l)
+        return div
+    }
+    function dispatch_text_style(style, styleargs, text, args) {
+        if (!text.includes('\n'))
+            return dispatch_text_style_line(style, styleargs, text, args)
+        let lines = text.split('\n')
+        let wrap = document.createElement('div')
+        lines.forEach(line => {
+            wrap.appendChild(dispatch_text_style_line(style, styleargs, text, args))
+        })
         return wrap
     }
 </script>
@@ -246,7 +262,8 @@
         tags.forEach(tag => {
             let mayberuby = []
             tag.forEach(word => {
-                let eleori = dispatch_text_style(style, styleargs, word.orig, { atcenter: true, fontFamily: fmori, fontSize: fsori, bold: boldori, color: color, lineHeight: line_height })
+                let eleori = dispatch_text_style_inlineblock(style, styleargs, word.orig, { atcenter: true, fontFamily: fmori, fontSize: fsori, bold: boldori, color: color, lineHeight: line_height })
+
                 if (word.orig.trim().length == 0) {
                     if (isshowhira) {
                         let rt = document.createElement('rt')
@@ -265,7 +282,6 @@
                         style.innerHTML += `#${div.id} {
   background-color: ${word.color};
 }`
-                    console.log(`${word.color}`)
                     if (isfenciclick) {
                         div.setAttribute('word', JSON.stringify(word))
                         div.addEventListener('click', function (e) {
@@ -281,32 +297,36 @@
                     div.appendChild(eleori)
 
                     mayberuby.push(div)
-                } else
+                } else {
                     mayberuby.push(eleori)
+                }
                 if (isshowhira) {
                     let rt = document.createElement('rt')
 
                     if ((word.orig != word.hira)) {
-                        rt.appendChild(dispatch_text_style(style, styleargs, word.hira, { atcenter: true, fontFamily: fmkana, fontSize: fskana, bold: boldkana, color: kanacolor, lineHeight: 0 }))
+                        rt.appendChild(dispatch_text_style_inlineblock(style, styleargs, word.hira, { atcenter: true, fontFamily: fmkana, fontSize: fskana, bold: boldkana, color: kanacolor, lineHeight: 0 }))
 
                     }
                     mayberuby.push(rt)
                 }
             })
+            let div = document.createElement('div')
             if (isshowhira) {
 
                 let ruby = document.createElement('ruby')
                 mayberuby.forEach(e => {
                     ruby.appendChild(e)
                 });
-                ele.appendChild(ruby)
-                ele.appendChild(document.createElement('br'))
+                div.appendChild(ruby)
+                ele.appendChild(div)
             }
             else {
+
                 mayberuby.forEach(e => {
-                    ele.appendChild(e)
+                    div.appendChild(e)
                 });
             }
+            ele.appendChild(div)
         })
         safe_calllunaheightchange(document.getElementById(rootdivid).offsetHeight)
 
