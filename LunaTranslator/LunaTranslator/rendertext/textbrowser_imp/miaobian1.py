@@ -16,7 +16,8 @@ class TextLine(base):
             self.config["width"] + font.pointSizeF() * self.config["width_rate"]
         )
         fontOutLineWidth *= 2
-        return fontOutLineWidth, fontOutLineWidth
+        fontOutLineWidth += self.config["trace"]
+        return (fontOutLineWidth, fontOutLineWidth)
 
     def colorpair(self):
         return QColor(self.config["fillcolor"]), QColor(self.basecolor)
@@ -31,12 +32,13 @@ class TextLine(base):
 
         font_m = QFontMetrics(font)
         path = QPainterPath()
-        path.addText(
-            fontOutLineWidth,
-            fontOutLineWidth + font_m.ascent(),
-            font,
-            text,
-        )
+        for i in range(self.config["trace"]):
+            path.addText(
+                fontOutLineWidth + i,
+                fontOutLineWidth + i + font_m.ascent(),
+                font,
+                text,
+            )
 
         pen = QPen(
             self.m_outLineColor,
@@ -47,4 +49,12 @@ class TextLine(base):
         )
 
         painter.strokePath(path, pen)
+        path = QPainterPath()
+        path.addText(
+            fontOutLineWidth,
+            fontOutLineWidth + font_m.ascent(),
+            font,
+            text,
+        )
+
         painter.fillPath(path, QBrush(self.m_contentColor))

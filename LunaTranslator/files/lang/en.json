@@ -808,5 +808,6 @@
     "阴影半径": "Shadow radius",
     "字体倍率": "Font magnification",
     "固定值": "Fixed value",
-    "可选取的": "Selectable"
+    "可选取的": "Selectable",
+    "投影距离": "Projection distance"
 }

@@ -231,6 +231,9 @@ def creategoodfontwid(self):
         self, globalconfig["rendertext_using"]
     )
 
+def __changeselectablestate(self, x):
+    gobject.baseobject.translation_ui.refreshtoolicon()
+    gobject.baseobject.translation_ui.translate_text.textbrowser.setselectable(x)
 
 def xianshigrid(self):
     visengine = ["Webview2", "Qt"]
@@ -430,7 +433,7 @@ def xianshigrid(self):
                             D_getsimpleswitch(
                                 globalconfig,
                                 "selectable",
-                                callback=lambda x: gobject.baseobject.translation_ui.refreshtoolicon(),
+                                callback=functools.partial(__changeselectablestate,self),
                                 parent=self,
                                 name="selectable_btn",
                             ),
