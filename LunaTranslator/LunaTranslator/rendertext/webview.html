@@ -195,7 +195,7 @@
         let lines = text.split('\n')
         let wrap = document.createElement('div')
         lines.forEach(line => {
-            wrap.appendChild(dispatch_text_style_line(style, styleargs, text, args))
+            wrap.appendChild(dispatch_text_style_line(style, styleargs, line, args))
         })
         return wrap
     }
