@@ -55,8 +55,13 @@ def changeHorizontal_tool(self):
     except:
         pass
     #
+    gobject.baseobject.translation_ui.enterfunction()
     gobject.baseobject.translation_ui.set_color_transparency()
 
+def toolcolorchange():
+    gobject.baseobject.translation_ui.refreshtooliconsignal.emit()
+    gobject.baseobject.translation_ui.enterfunction()
+    gobject.baseobject.translation_ui.set_color_transparency()
 
 def createhorizontal_slider_tool(self):
 
@@ -297,7 +302,7 @@ def uisetting(self):
                                                     globalconfig,
                                                     "backcolor_tool",
                                                     self.back_color_button_tool,
-                                                    callback=gobject.baseobject.translation_ui.set_color_transparency,
+                                                    callback=toolcolorchange,
                                                 ),
                                                 name="back_color_button_tool",
                                                 parent=self,
@@ -313,7 +318,7 @@ def uisetting(self):
                                                     globalconfig,
                                                     "buttoncolor",
                                                     self.buttoncolorbutton,
-                                                    callback=lambda: gobject.baseobject.translation_ui.refreshtooliconsignal.emit(),
+                                                    callback=toolcolorchange,
                                                 ),
                                                 name="buttoncolorbutton",
                                                 parent=self,
@@ -326,7 +331,7 @@ def uisetting(self):
                                                     globalconfig,
                                                     "buttoncolor_1",
                                                     self.buttoncolorbutton_1,
-                                                    callback=lambda: gobject.baseobject.translation_ui.refreshtooliconsignal.emit(),
+                                                    callback=toolcolorchange,
                                                 ),
                                                 name="buttoncolorbutton_1",
                                                 parent=self,
@@ -339,9 +344,20 @@ def uisetting(self):
                                                     100,
                                                     globalconfig,
                                                     "buttonsize",
-                                                    callback=lambda _: gobject.baseobject.translation_ui.refreshtooliconsignal.emit(),
+                                                    callback=lambda _: toolcolorchange(),
                                                 ),
                                                 2,
+                                            ),
+                                        ],
+                                        [
+                                            ("隐藏延迟(s)", 4),
+                                            D_getspinbox(
+                                                0,
+                                                100,
+                                                globalconfig,
+                                                "disappear_delay_tool",
+                                                step=0.1,
+                                                double=True,
                                             ),
                                         ],
                                     ),

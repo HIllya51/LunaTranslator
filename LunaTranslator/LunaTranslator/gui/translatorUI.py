@@ -33,7 +33,6 @@ class QUnFrameWindow(resizableframeless):
     refreshtooliconsignal = pyqtSignal()
     hidesignal = pyqtSignal()
     muteprocessignal = pyqtSignal()
-    entersignal = pyqtSignal()
     ocr_once_signal = pyqtSignal()
 
     def hookfollowsignalsolve(self, code, other):
@@ -539,7 +538,6 @@ class QUnFrameWindow(resizableframeless):
         self.hidesignal.connect(self.hide_)
         self.displayglobaltooltip.connect(self.displayglobaltooltip_f)
         self.ocr_once_signal.connect(self.ocr_once_function)
-        self.entersignal.connect(self.enterfunction)
         self.displaystatus.connect(self.showstatus)
         self.showhideuisignal.connect(self.showhideui)
         self.hookfollowsignal.connect(self.hookfollowsignalsolve)
@@ -594,6 +592,9 @@ class QUnFrameWindow(resizableframeless):
             return
         self.firstshow = False
         self.mousetransparent_check()
+
+        # 有个莫名其妙的加载时间
+        self.enterfunction(2 + globalconfig["disappear_delay_tool"])
 
     def setselectable(self):
 
@@ -772,16 +773,6 @@ class QUnFrameWindow(resizableframeless):
                     windows.GetWindowLong(hwnd, windows.GWL_EXSTYLE)
                     | windows.WS_EX_TRANSPARENT,
                 )
-            if isinrect(
-                cursor_pos,
-                [
-                    self._TitleLabel.x(),
-                    self._TitleLabel.x() + self._TitleLabel.width(),
-                    self._TitleLabel.y(),
-                    self._TitleLabel.y() + self._TitleLabel.height() + self._padding,
-                ],
-            ):
-                self.entersignal.emit()
             time.sleep(0.1)
         # 结束时取消穿透(可能以快捷键终止)
         windows.SetWindowLong(
@@ -901,6 +892,8 @@ class QUnFrameWindow(resizableframeless):
         while self.checkisentered():
             time.sleep(0.1)
         self._isentered = False
+        if delay is None:
+            delay = globalconfig["disappear_delay_tool"]
         time.sleep(delay)
         if self.enter_sig != enter_sig:
             return
@@ -908,8 +901,7 @@ class QUnFrameWindow(resizableframeless):
             return
         self.toolbarhidedelaysignal.emit()
 
-    def enterfunction(self, delay=0.5):
-
+    def enterfunction(self, delay=None):
         for button in self.showbuttons:
             button.show()
         self._TitleLabel.show()

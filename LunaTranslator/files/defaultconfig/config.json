@@ -817,6 +817,7 @@
             }
         }
     },
+    "disappear_delay_tool": 1,
     "mousetransparent": false,
     "backtransparent": false,
     "showtranexception": true,

@@ -47,7 +47,7 @@ class dialog_selecticon(QDialog):
 
 
 def doadjust(_):
-    gobject.baseobject.translation_ui.enterfunction(delay=3)
+    gobject.baseobject.translation_ui.enterfunction()
     gobject.baseobject.translation_ui.adjustbuttons()
 
 
