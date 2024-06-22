@@ -1114,7 +1114,7 @@ class QWebWrap(abstractwebview):
 
                 def __init__(_self) -> None:
                     super().__init__(
-                        gobject.baseobject.settin_ui,
+                        gobject.baseobject.commonstylebase,
                         poslist=globalconfig["qwebinspectgeo"],
                     )
                     _self.setWindowTitle("Inspect")

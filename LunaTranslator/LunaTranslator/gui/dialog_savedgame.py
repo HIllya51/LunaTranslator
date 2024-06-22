@@ -634,7 +634,7 @@ class dialog_setting_game_internal(QWidget):
                     self.editpath,
                     getIconButton(functools.partial(self.selectexe), icon="fa.gear"),
                     getIconButton(
-                        lambda: browserdialog(gobject.baseobject.settin_ui, exepath),
+                        lambda: browserdialog(gobject.baseobject.commonstylebase, exepath),
                         icon="fa.book",
                     ),
                 ]

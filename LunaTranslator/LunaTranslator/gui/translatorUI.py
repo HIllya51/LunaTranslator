@@ -320,7 +320,7 @@ class QUnFrameWindow(resizableframeless):
                 lambda: winsharedutils.clipboard_set(gobject.baseobject.currenttext),
             ),
             ("edit", gobject.baseobject.createedittextui),
-            ("edittrans", lambda: edittrans(gobject.baseobject.settin_ui)),
+            ("edittrans", lambda: edittrans(gobject.baseobject.commonstylebase)),
             ("showraw", self.changeshowhideraw),
             ("history", lambda: gobject.baseobject.transhis.showsignal.emit()),
             (
@@ -341,7 +341,7 @@ class QUnFrameWindow(resizableframeless):
             ("locktoolsbutton", self.changetoolslockstate),
             (
                 "gamepad_new",
-                lambda: dialog_savedgame_integrated(gobject.baseobject.settin_ui),
+                lambda: dialog_savedgame_integrated(gobject.baseobject.commonstylebase),
             ),
             (
                 "selectgame",
@@ -360,7 +360,7 @@ class QUnFrameWindow(resizableframeless):
             (
                 "memory",
                 lambda: dialog_memory(
-                    gobject.baseobject.settin_ui, gobject.baseobject.currentmd5
+                    gobject.baseobject.commonstylebase, gobject.baseobject.currentmd5
                 ),
             ),
             (
@@ -389,7 +389,7 @@ class QUnFrameWindow(resizableframeless):
             (
                 "open_relative_link",
                 lambda: browserdialog(
-                    gobject.baseobject.settin_ui,
+                    gobject.baseobject.commonstylebase,
                     trypass(lambda: gobject.baseobject.textsource.pname)(),
                 ),
             ),
@@ -545,7 +545,7 @@ class QUnFrameWindow(resizableframeless):
         self.displayraw1.connect(self.showraw)
         self.refreshtooliconsignal.connect(self.refreshtoolicon)
         self.showsavegame_signal.connect(
-            lambda: dialog_savedgame_integrated(gobject.baseobject.settin_ui)
+            lambda: dialog_savedgame_integrated(gobject.baseobject.commonstylebase)
         )
         self.clickRange_signal.connect(self.clickRange)
         self.showhide_signal.connect(self.showhideocrrange)

@@ -473,6 +473,10 @@ class MAINUI:
     def starttextsource(self, use=None, checked=True):
         self.translation_ui.showhidestate = False
         self.translation_ui.refreshtooliconsignal.emit()
+        
+        for button in self.translation_ui.showbuttons:
+            button.show()
+        self.translation_ui.set_color_transparency()
         try:
             self.settin_ui.selectbutton.setEnabled(
                 globalconfig["sourcestatus2"]["texthook"]["use"]
@@ -635,7 +639,7 @@ class MAINUI:
 
     def createedittextui(self):
         try:
-            self.edittextui = edittext(self.settin_ui, self.edittextui_cached)
+            self.edittextui = edittext(self.commonstylebase, self.edittextui_cached)
             if self.edittextui:
                 self.edittextui.show()
         except:
@@ -652,7 +656,7 @@ class MAINUI:
     def createattachprocess(self):
         try:
             self.AttachProcessDialog = AttachProcessDialog(
-                self.settin_ui, self.selectprocess, self.hookselectdialog
+                self.commonstylebase, self.selectprocess, self.hookselectdialog
             )
             if self.AttachProcessDialog:
                 self.AttachProcessDialog.show()
@@ -955,7 +959,7 @@ class MAINUI:
 
     def inittray(self):
 
-        trayMenu = QMenu(self.settin_ui)
+        trayMenu = QMenu(self.commonstylebase)
         showAction = QAction(
             _TR("&显示"),
             trayMenu,
@@ -965,7 +969,7 @@ class MAINUI:
             qtawesome.icon("fa.gear"),
             _TR("&设置"),
             trayMenu,
-            triggered=lambda: self.settin_ui.showsignal.emit(),
+            triggered=lambda: self.commonstylebase.showsignal.emit(),
         )
         quitAction = QAction(
             qtawesome.icon("fa.times"),
@@ -1028,7 +1032,7 @@ class MAINUI:
             + (globalconfig["settingfonttype"])
             + "' ;  }"
         )
-        self.__commonstylebase.setStyleSheet(style)
+        self.commonstylebase.setStyleSheet(style)
 
     def loadui(self):
         self.installeventfillter()
@@ -1043,13 +1047,13 @@ class MAINUI:
         self.startxiaoxueguan()
         self.starthira()
         self.startoutputer()
-        self.__commonstylebase = commonstylebase(self.translation_ui)
+        self.commonstylebase = commonstylebase(self.translation_ui)
         self.setcommonstylesheet()
-        self.settin_ui = Setting(self.__commonstylebase)
-        self.transhis = transhist(self.settin_ui)
+        self.settin_ui = Setting(self.commonstylebase)
+        self.transhis = transhist(self.commonstylebase)
         self.startreader()
-        self.searchwordW = searchwordW(self.settin_ui)
-        self.hookselectdialog = hookselect(self.settin_ui)
+        self.searchwordW = searchwordW(self.commonstylebase)
+        self.hookselectdialog = hookselect(self.commonstylebase)
         self.starttextsource()
         threading.Thread(target=self.autocheckhwndexists).start()
         threading.Thread(target=self.autohookmonitorthread).start()
@@ -1067,7 +1071,7 @@ class MAINUI:
             # 会触发两次
             windows.WaitForSingleObject(sema, windows.INFINITE)
             if globalconfig["darklight2"] == 0:
-                self.__commonstylebase.setstylesheetsignal.emit()
+                self.commonstylebase.setstylesheetsignal.emit()
             windows.WaitForSingleObject(sema, windows.INFINITE)
 
     def installeventfillter(self):
