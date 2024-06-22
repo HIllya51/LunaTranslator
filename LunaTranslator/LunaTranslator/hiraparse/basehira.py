@@ -30,6 +30,17 @@ class basehira:
     def proxy(self):
         return getproxy(("cishu", self.typename))
 
+    def splitspace(self, word: str):
+        start = ""
+        end = ""
+        while word.startswith(" "):
+            start += " "
+            word = word[1:]
+        while word.endswith(" "):
+            end += " "
+            word = word[:-1]
+        return start, word, end
+
     def parseparse(self, text):
         hira = []
         try:
@@ -41,6 +52,22 @@ class basehira:
             except Exception as e:
                 self.needinit = True
                 raise e
+            __parsekonge = []
+            for word in hira:
+                ori = word["orig"]
+                start, w, end = self.splitspace(ori)
+                if len(start) == 0 and len(end) == 0:
+                    __parsekonge.append(word)
+                    continue
+                word["orig"] = w
+                word["hira"] = self.splitspace(word["hira"])[1]
+
+                if len(start):
+                    __parsekonge.append({"orig": start, "hira": start})
+                __parsekonge.append(word)
+                if len(end):
+                    __parsekonge.append({"orig": end, "hira": end})
+            hira = __parsekonge
             for _1 in range(len(hira)):
                 _ = len(hira) - 1 - _1
                 if globalconfig["hira_vis_type"] == 0:

@@ -413,7 +413,7 @@ class TextBrowser(QWidget, dataget):
                 tl3 = self.textbrowser.cursorRect(self.textcursor).topLeft()
                 color = self._randomcolor(word)
                 if color:
-                    if word["orig"] not in ["\n", " ", ""]:
+                    if len(word["orig"].strip()):
                         if labeli >= len(self.searchmasklabels) - 1:
                             ql = QLabel(self.atback2)
                             ql.setMouseTracking(True)

@@ -113,13 +113,14 @@
         }
   #${_id} .nostroken {
     color: ${c2};
+    z-index: 2;
   }`
         for (let i = 0; i < 1 + styleargs.trace * 10; i++) {
             style.innerHTML += `#${_id} .stroken${i}{
     color: ${c1};
     -webkit-text-stroke: ${args.fontSize * styleargs.width_rate + styleargs.width}px ${c1};
     position: relative;
-  z-index: -1;
+  z-index: 1;
   left: ${(i + 1) / 10}px;
   top: ${(i + 1) / 10}px;
   user-select: none;
@@ -179,6 +180,7 @@
             commoninit_font_align_height(__1, args)
             wrap.appendChild(__1)
         }
+
         return wrap
     }
 </script>
@@ -245,7 +247,15 @@
             let mayberuby = []
             tag.forEach(word => {
                 let eleori = dispatch_text_style(style, styleargs, word.orig, { atcenter: true, fontFamily: fmori, fontSize: fsori, bold: boldori, color: color, lineHeight: line_height })
-
+                if (word.orig.trim().length == 0) {
+                    if (isshowhira) {
+                        let rt = document.createElement('rt')
+                        rt.appendChild(eleori)
+                        eleori = rt
+                    }
+                    mayberuby.push(eleori)
+                    return
+                }
                 if (isshow_fenci || isfenciclick) {
                     let div = document.createElement('div')
                     div.style.display = 'inline-block'
@@ -255,6 +265,7 @@
                         style.innerHTML += `#${div.id} {
   background-color: ${word.color};
 }`
+                    console.log(`${word.color}`)
                     if (isfenciclick) {
                         div.setAttribute('word', JSON.stringify(word))
                         div.addEventListener('click', function (e) {
@@ -271,7 +282,7 @@
 
                     mayberuby.push(div)
                 } else
-                    mayberuby.push(div)
+                    mayberuby.push(eleori)
                 if (isshowhira) {
                     let rt = document.createElement('rt')
 
@@ -289,13 +300,13 @@
                     ruby.appendChild(e)
                 });
                 ele.appendChild(ruby)
+                ele.appendChild(document.createElement('br'))
             }
             else {
                 mayberuby.forEach(e => {
                     ele.appendChild(e)
                 });
             }
-            ele.appendChild(document.createElement('br'))
         })
         safe_calllunaheightchange(document.getElementById(rootdivid).offsetHeight)
 
