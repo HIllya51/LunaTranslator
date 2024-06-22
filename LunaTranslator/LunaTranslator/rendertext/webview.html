@@ -129,7 +129,7 @@
         p.classList.add('nostroken')
         ele.appendChild(p)
 
-        for (let i = 0; i < styleargs.trace * 10; i++) {
+        for (let i = 0; i < 1 + styleargs.trace * 10; i++) {
             let p = document.createElement('div')
             p.innerText = text;
             p.classList.add(`stroken${i}`)
