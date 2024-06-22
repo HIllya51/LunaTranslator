@@ -50,6 +50,7 @@
     }
     function normal_create_internal(styleargs, text, args) {
         let ele = document.createElement('div')
+
         ele.innerText = text
         ele.style.color = args.color
         commoninit_font_align_height(ele, args)
@@ -145,6 +146,41 @@
         miaobian0: miaobian0_create_internal,
         miaobian1: miaobian12_common,
     }
+    function dispatch_text_style(style, styleargs, text, args) {
+        let ele = regist_style_imp[style](styleargs, text, args);
+        let begin = 0; let begin1 = "";
+        let end = text.length - 1; let end1 = "";
+        for (; (begin < text.length) && (text[begin] == ' '); begin++) { begin1 += "&nbsp;" }
+        for (; (end >= 0) && (text[end] == ' '); end--) { end1 += "&nbsp;"; }
+        if ((end == (text.length - 1)) && (begin == 0))
+            return ele
+
+        let wrap = document.createElement('div')
+        if (args.atcenter) {
+            wrap.style.textAlign = "center"
+        }
+        if (begin != 0) {
+            let __1 = document.createElement('div')
+            __1.innerHTML = begin1
+            __1.style.display = 'inline-block'
+
+            commoninit_font_align_height(__1, args)
+            wrap.appendChild(__1)
+        }
+        let _ww = document.createElement('div')
+        _ww.appendChild(ele)
+        _ww.style.display = 'inline-block'
+        wrap.appendChild(_ww)
+        if ((end != -1) && (end != (text.length - 1))) {
+            //全是空格
+            let __1 = document.createElement('div')
+            __1.innerHTML = end1
+            __1.style.display = 'inline-block'
+            commoninit_font_align_height(__1, args)
+            wrap.appendChild(__1)
+        }
+        return wrap
+    }
 </script>
 <script>
     function _create_div_line_id(_id) {
@@ -156,7 +192,7 @@
         let args = JSON.parse(decodeURIComponent(argsjson))
         let styleargs = JSON.parse(decodeURIComponent(styleargsjson))
         let text = decodeURIComponent(textu)
-        let innerele = regist_style_imp[style](styleargs, text, { atcenter: args.atcenter, fontFamily: args.fm, fontSize: args.fs, bold: args.bold, color: args.color, lineHeight: args.line_height })
+        let innerele = dispatch_text_style(style, styleargs, text, { atcenter: args.atcenter, fontFamily: args.fm, fontSize: args.fs, bold: args.bold, color: args.color, lineHeight: args.line_height })
         let ele = document.getElementById(_id)
         ele.innerHTML = ''
         ele.appendChild(innerele)
@@ -208,7 +244,7 @@
         tags.forEach(tag => {
             let mayberuby = []
             tag.forEach(word => {
-                let eleori = regist_style_imp[style](styleargs, word.orig, { atcenter: true, fontFamily: fmori, fontSize: fsori, bold: boldori, color: color, lineHeight: line_height })
+                let eleori = dispatch_text_style(style, styleargs, word.orig, { atcenter: true, fontFamily: fmori, fontSize: fsori, bold: boldori, color: color, lineHeight: line_height })
 
                 if (isshow_fenci || isfenciclick) {
                     let div = document.createElement('div')
@@ -240,7 +276,7 @@
                     let rt = document.createElement('rt')
 
                     if ((word.orig != word.hira)) {
-                        rt.appendChild(regist_style_imp[style](styleargs, word.hira, { atcenter: true, fontFamily: fmkana, fontSize: fskana, bold: boldkana, color: kanacolor, lineHeight: 0 }))
+                        rt.appendChild(dispatch_text_style(style, styleargs, word.hira, { atcenter: true, fontFamily: fmkana, fontSize: fskana, bold: boldkana, color: kanacolor, lineHeight: 0 }))
 
                     }
                     mayberuby.push(rt)
