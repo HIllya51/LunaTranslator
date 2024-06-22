@@ -85,7 +85,7 @@ class gptcommon(basetrans):
             # optional
             max_tokens=self.config["max_tokens"],
             n=1,
-            stop=None,
+            # stop=None,
             top_p=self.config["top_p"],
             temperature=temperature,
             frequency_penalty=self.config["frequency_penalty"],
@@ -106,7 +106,8 @@ class gptcommon(basetrans):
                     continue
                 try:
                     json_data = json.loads(response_data[6:])
-                    if json_data["choices"][0]["finish_reason"]:
+                    rs = json_data["choices"][0]["finish_reason"]
+                    if rs and rs != "null":
                         break
                     msg = json_data["choices"][0]["delta"]["content"]
                     yield msg
