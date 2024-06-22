@@ -35,10 +35,10 @@ class TextLine(base):
 
         font_m = QFontMetrics(font)
         path = QPainterPath()
-        for i in range(self.config["trace"]):
+        for i in range(1 + int(10 * self.config["trace"])):
             path.addText(
-                fontOutLineWidth + i,
-                fontOutLineWidth + i + font_m.ascent(),
+                fontOutLineWidth + i / 10,
+                fontOutLineWidth + i / 10 + font_m.ascent(),
                 font,
                 text,
             )

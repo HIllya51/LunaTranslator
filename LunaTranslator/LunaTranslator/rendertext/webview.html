@@ -102,32 +102,39 @@
         commoninit_font_align_height(ele, args)
         let style = document.createElement('style')
         style.innerHTML = `
-        #${_id} .stroken{
+         #${_id}{
+    display: grid;
+    }
+        #${_id} div{ 
+  margin: 0;
+  grid-column: 1;
+  grid-row: 1;
+        }
+  #${_id} .nostroken {
+    color: ${c2};
+  }`
+        for (let i = 0; i < 1 + styleargs.trace * 10; i++) {
+            style.innerHTML += `#${_id} .stroken${i}{
     -webkit-text-stroke: ${args.fontSize * styleargs.width_rate + styleargs.width}px ${c1};
     position: relative;
-  }
-  #${_id} .stroken::after {
-    content: attr(content1);
-    color: ${c2};
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 0;
-    -webkit-text-stroke-width: 0;
+  z-index: -1;
+  left: ${(i + i) / 10}px;
+  top: ${(i + i) / 10}px;
+  user-select: none;
   }`
-
-        ele.appendChild(style)
-        let sps = text.split('\n')
-        for (let i = 0; i < sps.length; i++) {
-            let div = document.createElement('div')
-
-            div.innerText = sps[i]
-
-            div.setAttribute('content1', sps[i])
-            div.classList.add('stroken')
-            ele.appendChild(div)
         }
+        ele.appendChild(style)
+        let p = document.createElement('div')
+        p.innerText = text;
+        p.classList.add('nostroken')
+        ele.appendChild(p)
 
+        for (let i = 0; i < styleargs.trace * 10; i++) {
+            let p = document.createElement('div')
+            p.innerText = text;
+            p.classList.add(`stroken${i}`)
+            ele.appendChild(p)
+        }
         return ele
 
     }

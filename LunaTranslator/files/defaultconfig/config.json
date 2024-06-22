@@ -90,6 +90,7 @@
                     "fillcolor": "#eeeeee",
                     "width_rate": 0.1,
                     "width": 3,
+                    "trace": 0,
                     "reverse": true
                 },
                 "argstype": {
@@ -114,6 +115,13 @@
                         "min": 0,
                         "max": 10,
                         "step": 0.01
+                    },
+                    "trace": {
+                        "name": "投影距离",
+                        "type": "spin",
+                        "min": 0,
+                        "max": 100,
+                        "step": 0.1
                     }
                 }
             }
@@ -148,7 +156,7 @@
                     "fillcolor": "#eeeeee",
                     "width_rate": 0.1,
                     "width": 3,
-                    "trace": 5,
+                    "trace": 0,
                     "reverse": true
                 },
                 "argstype": {
@@ -176,10 +184,10 @@
                     },
                     "trace": {
                         "name": "投影距离",
-                        "type": "intspin",
+                        "type": "spin",
                         "min": 0,
                         "max": 100,
-                        "step": 1
+                        "step": 0.1
                     }
                 }
             },
