@@ -154,13 +154,14 @@ class MAINUI:
         self, text, is_auto_run=True, embedcallback=None, onlytrans=False
     ):
         with self.solvegottextlock:
-            return self.textgetmethod_1(text, is_auto_run, embedcallback, onlytrans)
+            self.textgetmethod_1(text, is_auto_run, embedcallback, onlytrans)
 
     def textgetmethod_1(
         self, text, is_auto_run=True, embedcallback=None, onlytrans=False
     ):
 
-        returnandembedcallback = lambda: embedcallback("") if embedcallback else ""
+        safe_embedcallback = embedcallback if embedcallback else lambda _: 1
+        safe_embedcallback_none = functools.partial(safe_embedcallback, "")
 
         if text.startswith("<notrans>"):
             self.translation_ui.displayres.emit(
@@ -189,7 +190,7 @@ class MAINUI:
                     )
                     return
         if text == "" or len(text) > 100000:
-            return returnandembedcallback()
+            return safe_embedcallback_none()
         if onlytrans == False:
             self.currentsignature = time.time()
         try:
@@ -208,7 +209,7 @@ class MAINUI:
                 > (max(globalconfig["maxoriginlength"], globalconfig["maxlength"]))
             )
         ):
-            return returnandembedcallback()
+            return safe_embedcallback_none()
 
         try:
             self.textsource.sqlqueueput(
@@ -248,10 +249,11 @@ class MAINUI:
             len(text_solved) < globalconfig["minlength"]
             or len(text_solved) > globalconfig["maxlength"]
         ):
-            return returnandembedcallback()
+            return safe_embedcallback_none()
 
         self.premtalready = ["premt"]
         self.usefultranslators = list(self.translators.keys())
+        no_available_translator = True
         if "premt" in self.translators:
             try:
                 res = self.translators["premt"].translate(text_solved)
@@ -261,6 +263,7 @@ class MAINUI:
                         _colork = k
                     else:
                         _colork = "premt"
+                    no_available_translator = False
                     self.GetTranslationCallback(
                         onlytrans,
                         _colork,
@@ -289,6 +292,7 @@ class MAINUI:
             # print(keys,usenum,self.lasttranslatorindex)
             for engine in keys:
                 if engine not in self.premtalready:
+                    no_available_translator = False
                     self.translators[engine].gettask(
                         (
                             partial(
@@ -311,6 +315,8 @@ class MAINUI:
                 self.lasttranslatorindex += 1
                 if thistimeusednum >= usenum:
                     break
+        if no_available_translator:
+            safe_embedcallback_none()
 
     def GetTranslationCallback(
         self,
@@ -330,8 +336,8 @@ class MAINUI:
         if embedcallback is None and currentsignature != self.currentsignature:
             return
 
-        returnandembedcallback = lambda x: embedcallback(x) if embedcallback else ""
-
+        safe_embedcallback = embedcallback if embedcallback else lambda _: 1
+        safe_embedcallback_none = functools.partial(safe_embedcallback, "")
         if res.startswith("<msg_translator>"):
             if currentsignature == self.currentsignature:
                 self.translation_ui.displaystatus.emit(
@@ -343,7 +349,7 @@ class MAINUI:
                     False,
                 )
             if len(self.usefultranslators) == 0:
-                returnandembedcallback("")
+                safe_embedcallback_none()
             return
 
         res = self.solveaftertrans(res, optimization_params)
@@ -388,7 +394,7 @@ class MAINUI:
                 globalconfig["embedded"]["as_fast_as_posible"]
                 or classname == globalconfig["embedded"]["translator_2"]
             ):
-                return returnandembedcallback(
+                return safe_embedcallback(
                     kanjitrans(zhconv.convert(res, "zh-tw"))
                     if globalconfig["embedded"]["trans_kanji"]
                     else res
@@ -473,7 +479,7 @@ class MAINUI:
     def starttextsource(self, use=None, checked=True):
         self.translation_ui.showhidestate = False
         self.translation_ui.refreshtooliconsignal.emit()
-        
+
         for button in self.translation_ui.showbuttons:
             button.show()
         self.translation_ui.set_color_transparency()
