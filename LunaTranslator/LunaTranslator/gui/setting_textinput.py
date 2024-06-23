@@ -301,97 +301,79 @@ def creategamefont_comboBox():
 def gethookembedgrid(self):
     grids = [
         [
-            ("导出翻译补丁", 5),
+            "导出翻译补丁",
             D_getIconButton(
-                callback=lambda x: exportchspatch(self),
+                callback=lambda: exportchspatch(self),
                 icon="fa.gear",
             ),
+            "",
+            "",
         ],
         [],
         [
-            ("保留原文", 5),
-            (
-                D_getsimpleswitch(
-                    globalconfig["embedded"],
-                    "keeprawtext",
-                    callback=lambda _: gobject.baseobject.textsource.flashembedsettings(),
-                ),
-                1,
+            "保留原文",
+            D_getsimpleswitch(
+                globalconfig["embedded"],
+                "keeprawtext",
+                callback=lambda _: gobject.baseobject.textsource.flashembedsettings(),
             ),
         ],
         [
-            ("翻译等待时间(s)", 5),
+            "翻译等待时间(s)",
             "",
-            (
-                D_getspinbox(
-                    0,
-                    30,
-                    globalconfig["embedded"],
-                    "timeout_translate",
-                    double=True,
-                    step=0.1,
-                    callback=lambda x: gobject.baseobject.textsource.flashembedsettings(),
-                ),
-                3,
+            D_getspinbox(
+                0,
+                30,
+                globalconfig["embedded"],
+                "timeout_translate",
+                double=True,
+                step=0.1,
+                callback=lambda x: gobject.baseobject.textsource.flashembedsettings(),
             ),
         ],
         [
-            ("使用最快翻译而非指定翻译器", 5),
-            (D_getsimpleswitch(globalconfig["embedded"], "as_fast_as_posible"), 1),
+            "使用最快翻译而非指定翻译器",
+            D_getsimpleswitch(globalconfig["embedded"], "as_fast_as_posible"),
         ],
         [
-            ("内嵌的翻译器", 5),
+            "内嵌的翻译器",
             "",
-            (
-                D_getsimplecombobox(
-                    _TRL(
-                        [
-                            globalconfig["fanyi"][x]["name"]
-                            for x in globalconfig["fanyi"]
-                        ]
-                    ),
-                    globalconfig["embedded"],
-                    "translator_2",
-                    internallist=list(globalconfig["fanyi"]),
-                ),
-                5,
+            D_getsimplecombobox(
+                _TRL([globalconfig["fanyi"][x]["name"] for x in globalconfig["fanyi"]]),
+                globalconfig["embedded"],
+                "translator_2",
+                internallist=list(globalconfig["fanyi"]),
             ),
         ],
         [
-            ("将汉字转换成繁体/日式汉字", 5),
-            (D_getsimpleswitch(globalconfig["embedded"], "trans_kanji"), 1),
+            "将汉字转换成繁体/日式汉字",
+            D_getsimpleswitch(globalconfig["embedded"], "trans_kanji"),
         ],
         [
-            ("在重叠显示的字间插入空格", 5),
+            "在重叠显示的字间插入空格",
             "",
-            (
-                D_getsimplecombobox(
-                    _TRL(["不插入空格", "每个字后插入空格", "仅在无法编码的字后插入"]),
-                    globalconfig["embedded"],
-                    "insertspace_policy",
-                    callback=lambda _: gobject.baseobject.textsource.flashembedsettings(),
-                ),
-                5,
+            D_getsimplecombobox(
+                _TRL(["不插入空格", "每个字后插入空格", "仅在无法编码的字后插入"]),
+                globalconfig["embedded"],
+                "insertspace_policy",
+                callback=lambda _: gobject.baseobject.textsource.flashembedsettings(),
             ),
         ],
         [
-            ("修改游戏字体", 5),
-            (
-                D_getsimpleswitch(
-                    globalconfig["embedded"],
-                    "changefont",
-                    callback=lambda _: gobject.baseobject.textsource.flashembedsettings(),
-                ),
-                1,
+            "修改游戏字体",
+            D_getsimpleswitch(
+                globalconfig["embedded"],
+                "changefont",
+                callback=lambda _: gobject.baseobject.textsource.flashembedsettings(),
             ),
-            (creategamefont_comboBox, 5),
+            creategamefont_comboBox,
         ],
         [],
         [
-            ("内嵌安全性检查", 5),
+            "内嵌安全性检查",
             D_getsimpleswitch(globalconfig["embedded"], "safecheck_use"),
             D_getIconButton(
-                callback=lambda x: regexedit(
+                callback=lambda: regexedit(
                     self, globalconfig["embedded"]["safecheckregexs"]
                 ),
                 icon="fa.gear",
@@ -406,9 +388,10 @@ def getTabclip(self):
 
     grids = [
         [
-            ("排除复制自翻译器的文本", 3),
+            "排除复制自翻译器的文本", 
             D_getsimpleswitch(globalconfig, "excule_from_self"),
-            ("", 3),
+            "",
+            ""
         ]
     ]
     return grids

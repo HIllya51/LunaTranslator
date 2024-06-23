@@ -316,8 +316,6 @@
         "arabic_reshaper": false
     },
     "uselongtermcache": false,
-    "auto_expand": true,
-    "auto_shrink": true,
     "showintab": true,
     "showintab_sub": true,
     "remove_useless_hook": false,
@@ -784,11 +782,18 @@
                 "tip": "可选取的",
                 "icon": "fa.i-cursor",
                 "align": 0
+            },
+            "searchwordW": {
+                "use": false,
+                "tip": "查词",
+                "icon": "fa.search",
+                "align": 0
             }
         }
     },
     "disappear_delay_tool": 1,
     "mousetransparent": false,
+    "adaptive_height": true,
     "backtransparent": false,
     "showtranexception": true,
     "refresh_on_get_trans": false,
@@ -1378,7 +1383,7 @@
         },
         "mdict": {
             "use": false,
-            "name": "mdict",
+            "name": "MDict",
             "args": {
                 "paths": [],
                 "distance": 0,
@@ -1941,7 +1946,6 @@
     "ZoomFactor": 1,
     "realtime_edit_target": "realtime_edit",
     "magpiepath": "",
-    "minifollow": false,
     "movefollow": false,
     "focusnotop": false,
     "autostarthook": true,

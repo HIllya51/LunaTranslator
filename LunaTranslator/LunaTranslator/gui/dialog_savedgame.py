@@ -44,7 +44,7 @@ from gui.usefulwidget import (
     getsimplepatheditor,
     getboxlayout,
     getlineedit,
-    MySwitch2,
+    MySwitch,
     auto_select_webview,
     Prompt_dialog,
     getsimplecombobox,
@@ -990,7 +990,7 @@ class dialog_setting_game_internal(QWidget):
                     QLabel(_TR("语音修正")),
                     getsimpleswitch(savehook_new_data[exepath], "tts_repair"),
                     getIconButton(
-                        callback=lambda x: noundictconfigdialog1(
+                        callback=lambda : noundictconfigdialog1(
                             self,
                             savehook_new_data[exepath]["tts_repair_regex"],
                             "语音修正",
@@ -1704,9 +1704,9 @@ class dialog_savedgame_integrated(saveposwindow):
 
         self.internallayout.addWidget(QWidget())
         self.setCentralWidget(w)
-        self.layout1btn = MySwitch2(self, icons=["fa.th", "fa.th"], size=20)
-        self.layout2btn = MySwitch2(self, icons=["fa.th-list", "fa.th-list"], size=20)
-        self.layout3btn = MySwitch2(self, icons=["fa.list", "fa.list"], size=20)
+        self.layout1btn = MySwitch(self, icon="fa.th", )
+        self.layout2btn = MySwitch(self, icon="fa.th-list", )
+        self.layout3btn = MySwitch(self, icon="fa.list" ,  )
         self.layout1btn.clicked.connect(functools.partial(self.selectlayout, 0))
         self.layout2btn.clicked.connect(functools.partial(self.selectlayout, 1))
         self.layout3btn.clicked.connect(functools.partial(self.selectlayout, 2))

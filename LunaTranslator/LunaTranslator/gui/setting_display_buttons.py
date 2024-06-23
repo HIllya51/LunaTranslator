@@ -29,7 +29,7 @@ class dialog_selecticon(QDialog):
         self.setLayout(layout)
         for i, name in enumerate(js):
             layout.addWidget(
-                getIconButton( 
+                getIconButton(
                     functools.partial(self.selectcallback, "fa." + name),
                     qicon=qtawesome.icon(
                         "fa." + name, color=globalconfig["buttoncolor"]

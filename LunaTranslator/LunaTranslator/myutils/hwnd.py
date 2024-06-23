@@ -8,7 +8,7 @@ from myutils.wrapper import threader
 
 
 @threader
-def grabwindow(app, callback=None):
+def grabwindow(app="PNG", callback=None):
     if callback:
         fnamebase = "cache/temp"
     else:

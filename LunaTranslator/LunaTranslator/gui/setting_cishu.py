@@ -6,8 +6,10 @@ from gui.usefulwidget import (
     yuitsu_switch,
     makescrollgrid,
     D_getsimpleswitch,
+    getsimplecombobox,
     D_getIconButton,
 )
+from gui.setting_display_text import on_not_find_qweb
 
 
 def setTabcishu(self, basel):
@@ -43,24 +45,21 @@ def gethiragrid(self):
             _3 = ""
 
         line += [
-            ((globalconfig["hirasetting"][name]["name"]), 6),
-            (
-                D_getsimpleswitch(
-                    globalconfig["hirasetting"][name],
-                    "use",
-                    name=name,
-                    parent=self,
-                    callback=functools.partial(
-                        yuitsu_switch,
-                        self,
-                        globalconfig["hirasetting"],
-                        "hiraswitchs",
-                        name,
-                        gobject.baseobject.starthira,
-                    ),
-                    pair="hiraswitchs",
+            globalconfig["hirasetting"][name]["name"],
+            D_getsimpleswitch(
+                globalconfig["hirasetting"][name],
+                "use",
+                name=name,
+                parent=self,
+                callback=functools.partial(
+                    yuitsu_switch,
+                    self,
+                    globalconfig["hirasetting"],
+                    "hiraswitchs",
+                    name,
+                    gobject.baseobject.starthira,
                 ),
-                1,
+                pair="hiraswitchs",
             ),
             _3,
         ]
@@ -73,6 +72,27 @@ def gethiragrid(self):
     if len(line):
         grids.append(line)
     return grids
+
+
+def _checkmaybefailed(self, idx):
+    if idx == 2 and not gobject.testuseqwebengine():
+        self.seletengeinecombo_1.setCurrentIndex(self.seletengeinecombo_1.lastindex)
+        on_not_find_qweb(self)
+        return
+    self.seletengeinecombo_1.lastindex = self.seletengeinecombo_1.currentIndex()
+
+
+def _createseletengeinecombo_1(self):
+
+    webviews = ["MSHTML", "WebView2", "QWebEngine"]
+    self.seletengeinecombo_1 = getsimplecombobox(
+        webviews,
+        globalconfig,
+        "usewebview",
+        callback=functools.partial(_checkmaybefailed, self),
+    )
+    self.seletengeinecombo_1.lastindex = self.seletengeinecombo_1.currentIndex()
+    return self.seletengeinecombo_1
 
 
 def setTabcishu_l(self):
@@ -99,7 +119,7 @@ def setTabcishu_l(self):
             gobject.baseobject.startxiaoxueguan, cishu
         )
         line += [
-            (globalconfig["cishu"][cishu]["name"], 6),
+            globalconfig["cishu"][cishu]["name"],
             D_getsimpleswitch(
                 globalconfig["cishu"][cishu],
                 "use",
@@ -126,19 +146,24 @@ def setTabcishu_l(self):
     if len(line):
         cishugrid.append(line)
     grids += [
-        [],
-        [
-            "查词",
-            D_getIconButton(
-                callback=lambda: gobject.baseobject.searchwordW.showsignal.emit(),
-                icon="fa.search",
-            ),
-            ("",4)
-        ],
-        [],
         [
             (
                 dict(title="辞书", type="grid", grid=cishugrid),
+                0,
+                "group",
+            )
+        ],
+        [
+            (
+                dict(
+                    title="显示",
+                    grid=[
+                        [
+                            "网页显示",
+                            functools.partial(_createseletengeinecombo_1, self),
+                        ]
+                    ],
+                ),
                 0,
                 "group",
             )

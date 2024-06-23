@@ -4,7 +4,7 @@ import gobject, windows, winsharedutils
 from myutils.config import globalconfig, _TR
 from myutils.winsyshotkey import SystemHotkey, registerException
 from myutils.hwnd import grabwindow
-from myutils.utils import getimageformat, parsekeystringtomodvkcode, unsupportkey
+from myutils.utils import parsekeystringtomodvkcode, unsupportkey
 from gui.usefulwidget import (
     D_getsimpleswitch,
     D_getsimplekeyseq,
@@ -55,7 +55,7 @@ def registrhotkeys(self):
         "_18": lambda: gobject.baseobject.settin_ui.fontbigsmallsignal.emit(1),
         "_19": lambda: gobject.baseobject.settin_ui.fontbigsmallsignal.emit(-1),
         "_20": gobject.baseobject.translation_ui.fullsgame_signal.emit,
-        "_21": lambda: grabwindow(getimageformat()),
+        "_21": grabwindow,
         "_22": gobject.baseobject.translation_ui.muteprocessignal.emit,
         "_23": lambda: gobject.baseobject.translation_ui.clickRange_signal.emit(True),
         "_25": lambda: windows.SendMessage(
@@ -83,13 +83,12 @@ def setTab_quick_lazy(self):
 
     grids = [
         [
-            (("是否使用快捷键"), 4),
+            "是否使用快捷键",
             D_getsimpleswitch(
                 globalconfig["quick_setting"],
                 "use",
                 callback=functools.partial(__enable, self),
             ),
-            ((""), 8),
         ]
     ]
     for name in globalconfig["quick_setting"]["all"]:
@@ -98,23 +97,21 @@ def setTab_quick_lazy(self):
 
         grids.append(
             [
-                ((globalconfig["quick_setting"]["all"][name]["name"]), 4),
+                globalconfig["quick_setting"]["all"][name]["name"],
                 D_getsimpleswitch(
                     globalconfig["quick_setting"]["all"][name],
                     "use",
                     callback=functools.partial(fanyiselect, self, name),
                 ),
-                (
-                    D_getsimplekeyseq(
-                        globalconfig["quick_setting"]["all"][name],
-                        "keystring",
-                        functools.partial(regist_or_not_key, self, name),
-                    ),
-                    2,
+                D_getsimplekeyseq(
+                    globalconfig["quick_setting"]["all"][name],
+                    "keystring",
+                    functools.partial(regist_or_not_key, self, name),
                 ),
-                (functools.partial(delaycreatereferlabels, self, name), 4),
+                (functools.partial(delaycreatereferlabels, self, name), -1),
             ]
         )
+    grids.append([("", 40)])
     return grids
 
 

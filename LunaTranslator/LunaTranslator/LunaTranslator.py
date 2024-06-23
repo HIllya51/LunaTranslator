@@ -57,6 +57,7 @@ class commonstylebase(QWidget):
 class MAINUI:
     def __init__(self) -> None:
         super().__init__()
+        self.update_avalable = False
         self.lasttranslatorindex = 0
         self.translators = {}
         self.cishus = {}
@@ -80,6 +81,7 @@ class MAINUI:
         self.edittextui_cached = None
         self.edittextui_sync = True
         self.sqlsavegameinfo = None
+        self.notifyonce = set()
 
     @property
     def textsource(self):
@@ -975,7 +977,7 @@ class MAINUI:
             qtawesome.icon("fa.gear"),
             _TR("&设置"),
             trayMenu,
-            triggered=lambda: self.commonstylebase.showsignal.emit(),
+            triggered=lambda: self.settin_ui.showsignal.emit(),
         )
         quitAction = QAction(
             qtawesome.icon("fa.times"),
@@ -995,6 +997,15 @@ class MAINUI:
         self.tray.activated.connect(self.translation_ui.leftclicktray)
         self.tray.show()
         self.tray.setContextMenu(trayMenu)
+
+    def showtraymessage(self, title, message):
+        self.tray.showMessage(_TR(title), _TR(message), QSystemTrayIcon.MessageIcon())
+
+    def showneedrestart(self, title, _):
+        if title in self.notifyonce:
+            return
+        self.notifyonce.add(title)
+        self.showtraymessage(title, "这一设置将会在下一次打开软件时生效")
 
     def destroytray(self):
         self.tray.hide()

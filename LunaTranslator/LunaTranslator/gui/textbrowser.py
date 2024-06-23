@@ -35,15 +35,23 @@ class Textbrowser(QLabel):
         __ = globalconfig["rendertext_using"]
         if __ == "QWebEngine":
             __ = "webview"
-        tb = importlib.import_module(f"rendertext.{__}").TextBrowser
         try:
+            tb = importlib.import_module(f"rendertext.{__}").TextBrowser
             self.textbrowser = tb(self)
-        except webview_exception:
-            getQMessageBox(
-                None,
-                _TR("错误"),
-                "can't find Webview2 runtime!",
-            )
+        except Exception as e:
+            if isinstance(e, webview_exception):
+                getQMessageBox(
+                    None,
+                    _TR("错误"),
+                    "can't find Webview2 runtime!",
+                )
+            elif isinstance(e, ImportError) or isinstance(e, ModuleNotFoundError):
+                getQMessageBox(
+                    None,
+                    _TR("错误"),
+                    "can't find QWebEngine!",
+                )
+            globalconfig["rendertext_using"] = "textbrowser"
             tb = importlib.import_module(f"rendertext.textbrowser").TextBrowser
             self.textbrowser = tb(self)
 
@@ -64,7 +72,6 @@ class Textbrowser(QLabel):
         self.masklabel_bottom = QLabel(self)
         self.masklabel_bottom.setMouseTracking(True)
         # self.masklabel_bottom.setStyleSheet('background-color:red')
-
 
     def iter_append(self, iter_context_class, origin, atcenter, text, color):
         cleared = self.cleared

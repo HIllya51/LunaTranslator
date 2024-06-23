@@ -94,18 +94,6 @@ def nowisdark():
     return dark
 
 
-def getimageformatlist():
-    _ = [_.data().decode() for _ in QImageWriter.supportedImageFormats()]
-    if globalconfig["imageformat"] == -1 or globalconfig["imageformat"] >= len(_):
-        globalconfig["imageformat"] = _.index("png")
-    return _
-
-
-def getimageformat():
-
-    return getimageformatlist()[globalconfig["imageformat"]]
-
-
 class PriorityQueue:
     def __init__(self):
         self._heap = []
@@ -536,13 +524,7 @@ def minmaxmoveobservefunc(self):
                 return
 
             rect = windows.GetWindowRect(hwnd)
-            if event == windows.EVENT_SYSTEM_MINIMIZEEND:
-                if globalconfig["minifollow"]:
-                    self.hookfollowsignal.emit(3, (hwnd,))
-            elif event == windows.EVENT_SYSTEM_MINIMIZESTART:
-                if globalconfig["minifollow"]:
-                    self.hookfollowsignal.emit(4, (0, 0))
-            elif event == windows.EVENT_SYSTEM_MOVESIZESTART:  #
+            if event == windows.EVENT_SYSTEM_MOVESIZESTART:  #
                 self.lastpos = rect
             elif event == windows.EVENT_SYSTEM_MOVESIZEEND:  #
                 if globalconfig["movefollow"]:
@@ -563,7 +545,6 @@ def minmaxmoveobservefunc(self):
 
     eventpairs = (
         (windows.EVENT_SYSTEM_MOVESIZESTART, windows.EVENT_SYSTEM_MOVESIZEEND),
-        (windows.EVENT_SYSTEM_MINIMIZESTART, windows.EVENT_SYSTEM_MINIMIZEEND),
         (windows.EVENT_SYSTEM_FOREGROUND, windows.EVENT_SYSTEM_FOREGROUND),
     )
 

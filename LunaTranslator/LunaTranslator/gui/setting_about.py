@@ -1,52 +1,169 @@
 from qtsymbols import *
-import platform, functools, sys, os
-import winsharedutils, gobject
+import platform, functools, sys
+import winsharedutils, queue
 from myutils.config import globalconfig, _TR, static_data, _TRL
-from myutils.wrapper import threader
-from myutils.utils import makehtml, getimageformatlist
-from myutils.githubupdate import updatemethod, getvesionmethod
+from myutils.wrapper import threader, tryprint
+from myutils.utils import makehtml
+import requests, time
+import shutil, gobject
+from myutils.proxy import getproxy
+from traceback import print_exc
+import zipfile, os
+import subprocess
 from gui.usefulwidget import (
     D_getsimpleswitch,
-    D_getsimplecombobox,
-    getsimplecombobox,
     makescrollgrid,
     makesubtab_lazy,
 )
-from gui.setting_display_text import on_not_find_qweb
+
+versionchecktask = queue.Queue()
+
+
+def getvesionmethod():
+    try:
+        headers = {
+            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
+            "Accept-Language": "zh-CN,zh;q=0.9",
+            "Cache-Control": "max-age=0",
+            "Proxy-Connection": "keep-alive",
+            "Upgrade-Insecure-Requests": "1",
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36",
+        }
+        res = requests.get(
+            "https://api.github.com/repos/HIllya51/LunaTranslator/releases/latest",
+            headers=headers,
+            verify=False,
+            proxies=getproxy(("github", "versioncheck")),
+        ).json()
+        # print(res)
+        _version = res["tag_name"]
+        return _version
+    except:
+        print_exc()
+        return None
+
+
+def doupdate():
+    if not gobject.baseobject.update_avalable:
+        return
+    if platform.architecture()[0] == "64bit":
+        bit = ""
+        _6432 = "64"
+    elif platform.architecture()[0] == "32bit":
+        bit = "_x86"
+        _6432 = "32"
+    os.makedirs("./cache", exist_ok=True)
+    shutil.copy(rf".\files\plugins\shareddllproxy{_6432}.exe", rf".\cache\Updater.exe")
+    subprocess.Popen(rf".\cache\Updater.exe update .\cache\update\LunaTranslator{bit}")
+
+
+def updatemethod_checkalready(size, savep):
+    if not os.path.exists(savep):
+        return False
+    stats = os.stat(savep)
+    if stats.st_size != size:
+        return False
+    return True
+
+
+@tryprint
+def updatemethod(_version, self):
+
+    check_interrupt = lambda: not (
+        globalconfig["autoupdate"] and versionchecktask.empty()
+    )
+    if platform.architecture()[0] == "64bit":
+        bit = ""
+    elif platform.architecture()[0] == "32bit":
+        bit = "_x86"
+    else:
+        raise Exception
+    url = "https://github.com/HIllya51/LunaTranslator/releases/download/{}/LunaTranslator{}.zip".format(
+        _version, bit
+    )
+
+    savep = "./cache/update/LunaTranslator{}.zip".format(bit)
+
+    os.makedirs("./cache/update", exist_ok=True)
+
+    r2 = requests.get(
+        url, stream=True, verify=False, proxies=getproxy(("github", "download"))
+    )
+    size = int(r2.headers["Content-Length"])
+    if check_interrupt():
+        return
+    if updatemethod_checkalready(size, savep):
+        return savep
+    with open(savep, "wb") as file:
+        sess = requests.session()
+        r = sess.get(
+            url, stream=True, verify=False, proxies=getproxy(("github", "download"))
+        )
+        file_size = 0
+        for i in r.iter_content(chunk_size=1024):
+            if check_interrupt():
+                return
+            if not i:
+                continue
+            file.write(i)
+            thislen = len(i)
+            file_size += thislen
+
+            prg = int(10000 * file_size / size)
+            prg100 = prg / 100
+            sz = int(1000 * (int(size / 1024) / 1024)) / 1000
+            self.progresssignal.emit(
+                "总大小{} MB 进度 {:0.2f}% ".format(sz, prg100), prg
+            )
+
+    if check_interrupt():
+        return
+    if updatemethod_checkalready(size, savep):
+        return savep
+
+
+def uncompress(self, savep):
+    self.progresssignal.emit("正在解压……", 10000)
+    os.makedirs("./cache/update", exist_ok=True)
+    if os.path.exists("./cache/update/LunaTranslator"):
+        shutil.rmtree("./cache/update/LunaTranslator")
+    with zipfile.ZipFile(savep) as zipf:
+        zipf.extractall("./cache/update")
 
 
 @threader
-def getversion(self):
-    version = winsharedutils.queryversion(sys.argv[0])
-    if version is None:
-        self.versiontextsignal.emit("unknown")
-        return
-    versionstring = f"v{version[0]}.{version[1]}.{version[2]}"
-    self.versiontextsignal.emit(
-        ("当前版本") + ":" + versionstring + "  " + ("最新版本") + ":" + ("获取中")
-    )  # ,'',url,url))
-    _version = getvesionmethod()
+def versioncheckthread(self):
+    versionchecktask.put(True)
+    while True:
+        x = versionchecktask.get()
+        gobject.baseobject.update_avalable = False
+        self.progresssignal.emit("……", 0)
+        if not x:
+            continue
+        self.versiontextsignal.emit(_TR("获取中"))  # ,'',url,url))
+        _version = getvesionmethod()
 
-    if _version is None:
-        sversion = _TR("获取失败")
-    else:
-        sversion = _version
-    self.versiontextsignal.emit(
-        (
-            "{}:{}  {}  {}:{}".format(
-                _TR("当前版本"),
-                versionstring,
-                platform.architecture()[0],
-                _TR("最新版本"),
-                sversion,
-            )
+        if _version is None:
+            sversion = _TR("获取失败")
+        else:
+            sversion = _version
+        self.versiontextsignal.emit(sversion)
+        version = winsharedutils.queryversion(sys.argv[0])
+        need = (
+            version
+            and _version
+            and version < tuple(int(_) for _ in _version[1:].split("."))
         )
-    )
-    if _version is not None and version < tuple(
-        int(_) for _ in _version[1:].split(".")
-    ):
-        if globalconfig["autoupdate"]:
-            updatemethod(_version, self.progresssignal.emit)
+        if not (need and globalconfig["autoupdate"]):
+            continue
+        savep = updatemethod(_version, self)
+        if not savep:
+            self.progresssignal.emit("自动更新失败，请手动更新", 0)
+            continue
+
+        uncompress(self, savep)
+        gobject.baseobject.update_avalable = True
+        self.progresssignal.emit("准备完毕，等待更新", 10000)
 
 
 def updateprogress(self, text, val):
@@ -75,6 +192,17 @@ def createdownloadprogress(self):
     return self.downloadprogress
 
 
+def wraplink(text: str):
+    link = "https://github.com/HIllya51/LunaTranslator/releases"
+    if text.startswith("v"):
+
+        link = f"https://github.com/HIllya51/LunaTranslator/releases/tag/{text}"
+    return makehtml(
+        link,
+        show=text,
+    )
+
+
 def createversionlabel(self):
 
     self.versionlabel = QLabel()
@@ -83,7 +211,11 @@ def createversionlabel(self):
         Qt.TextInteractionFlag.LinksAccessibleByMouse
     )
     try:
-        self.versionlabel.setText(self.versionlabel_cache)
+        self.versionlabel.setText(
+            wraplink(
+                self.versionlabel_cache,
+            )
+        )
     except:
         pass
     return self.versionlabel
@@ -91,9 +223,22 @@ def createversionlabel(self):
 
 def versionlabelmaybesettext(self, x):
     try:
-        self.versionlabel.setText(x)
+        self.versionlabel.setText(wraplink(x))
     except:
         self.versionlabel_cache = x
+
+
+def solvelinkitems(grid, source):
+    name = source["name"]
+    link = source["link"]
+
+    if link[-8:] == "releases":
+        __ = False
+    elif link[-1] == "/":
+        __ = False
+    else:
+        __ = True
+    grid.append([(_TR(name), 1, ""), (makehtml(link, __), 2, "link")])
 
 
 def resourcegrid(self, l):
@@ -104,24 +249,24 @@ def resourcegrid(self, l):
         sources = sourcetype["sources"]
         grid = []
         for source in sources:
-            name = source["name"]
-            link = source["link"]
-            if type(link) == list:
-                for i, _link in enumerate(link):
-                    grid.append(
-                        [
-                            (_TR(name) if i == 0 else "", 1, ""),
-                            (makehtml(_link, True), 2, "link"),
-                        ]
-                    )
-            else:
-                if link[-8:] == "releases":
-                    __ = False
-                elif link[-1] == "/":
-                    __ = False
-                else:
-                    __ = True
-                grid.append([(_TR(name), 1, ""), (makehtml(link, __), 2, "link")])
+            _type = source.get("type", "link")
+            if _type == "link":
+                solvelinkitems(grid, source)
+            elif _type == "group":
+                __grid = []
+                for link in source["links"]:
+                    solvelinkitems(__grid, link)
+                grid.append(
+                    [
+                        (
+                            dict(
+                                title=source.get("name", None), type="grid", grid=__grid
+                            ),
+                            0,
+                            "group",
+                        )
+                    ]
+                )
         makewidgetsfunctions.append(functools.partial(makescrollgrid, grid))
     tab, dotab = makesubtab_lazy(_TRL(titles), makewidgetsfunctions, delay=True)
     l.addWidget(tab)
@@ -142,112 +287,91 @@ def createimageview(self):
     return lb
 
 
-def _checkmaybefailed(self, idx):
-    if idx == 2 and not gobject.testuseqwebengine():
-        self.seletengeinecombo_1.setCurrentIndex(self.seletengeinecombo_1.lastindex)
-        on_not_find_qweb(self)
-        return
-    self.seletengeinecombo_1.lastindex = self.seletengeinecombo_1.currentIndex()
-
-
-def _createseletengeinecombo_1(self):
-
-    webviews = ["MSHTML", "WebView2", "QWebEngine"]
-    self.seletengeinecombo_1 = getsimplecombobox(
-        webviews,
-        globalconfig,
-        "usewebview",
-        callback=functools.partial(_checkmaybefailed, self),
-    )
-    self.seletengeinecombo_1.lastindex = self.seletengeinecombo_1.currentIndex()
-    return self.seletengeinecombo_1
-
-
 def setTab_aboutlazy(self, basel):
 
+    resourcegrid(self, basel)
+
+
+def setTab_update(self, basel):
+    version = winsharedutils.queryversion(sys.argv[0])
+    if version is None:
+        versionstring = "unknown"
+    else:
+        versionstring = (
+            f"v{version[0]}.{version[1]}.{version[2]}  {platform.architecture()[0]}"
+        )
     grid2 = [
         [
-            ("自动下载更新(需要连接github)", 5),
-            (
-                D_getsimpleswitch(
-                    globalconfig, "autoupdate", callback=lambda x: getversion(self)
-                ),
-                1,
+            "自动更新",
+            D_getsimpleswitch(
+                globalconfig, "autoupdate", callback=versionchecktask.put
             ),
-            ("", 10),
         ],
-        [(functools.partial(createversionlabel, self), 10)],
-        [(functools.partial(createdownloadprogress, self), 10)],
-        [],
-        [("网络请求_重启生效", -1)],
-        [(D_getsimplecombobox(["winhttp", "libcurl"], globalconfig, "network"), 5)],
-        [("网页显示", -1)],
         [
-            (
-                functools.partial(_createseletengeinecombo_1, self),
-                5,
-            )
+            "当前版本",
+            versionstring,
         ],
-        [("截图保存格式", -1)],
-        [(D_getsimplecombobox(getimageformatlist(), globalconfig, "imageformat"), 5)],
+        [
+            "最新版本",
+            functools.partial(createversionlabel, self),
+        ],
+        [functools.partial(createdownloadprogress, self)],
     ]
 
     shuominggrid = [
-        [
-            "项目网站",
-            (makehtml("https://github.com/HIllya51/LunaTranslator"), 3, "link"),
-        ],
+        ["项目网站", makehtml("https://github.com/HIllya51/LunaTranslator")],
         [
             "问题反馈",
-            (makehtml("https://github.com/HIllya51/LunaTranslator/issues"), 3, "link"),
+            makehtml("https://github.com/HIllya51/LunaTranslator/issues"),
         ],
         [
             "使用说明",
-            (
-                makehtml("https://hillya51.github.io/LunaTranslator_tutorial/#/zh/"),
-                3,
-                "link",
-            ),
+            makehtml("https://hillya51.github.io/LunaTranslator_tutorial/#/zh/"),
         ],
     ]
     if globalconfig["languageuse"] == 0:
         shuominggrid += [
+            [],
             [
                 "交流群",
-                (makehtml("https://qm.qq.com/q/qE32v9NYBO", show=912525396), 3, "link"),
+                makehtml("https://qm.qq.com/q/qE32v9NYBO", show=912525396),
             ],
             [],
-            [("如果你感觉该软件对你有帮助，欢迎微信扫码赞助，谢谢~", -1)],
+            ["如果你感觉该软件对你有帮助，欢迎微信扫码赞助，谢谢~"],
         ]
 
-        shuominggrid += [[(functools.partial(createimageview, self), -1)]]
+        shuominggrid += [[functools.partial(createimageview, self)]]
     else:
         shuominggrid += [
             [],
             [
+                "If you feel that the software is helpful to you, ",
+            ],
+            [
+                'welcome to become my <a href="https://patreon.com/HIllya51">sponsor. Thank you ~ ',
+            ],
+        ]
+    makescrollgrid(
+        [
+            [
                 (
-                    "If you feel that the software is helpful to you, ",
-                    4,
-                    "link",
+                    dict(
+                        Stretch=False,
+                        grid=grid2,
+                    ),
+                    0,
+                    "group",
                 )
             ],
             [
                 (
-                    'welcome to become my <a href="https://patreon.com/HIllya51">sponsor. Thank you ~ ',
-                    4,
-                    "link",
+                    dict(
+                        grid=shuominggrid,
+                    ),
+                    0,
+                    "group",
                 )
             ],
-        ]
-
-    tab, dotab = makesubtab_lazy(
-        _TRL(["相关说明", "其他设置", "资源下载"]),
-        [
-            functools.partial(makescrollgrid, shuominggrid),
-            functools.partial(makescrollgrid, grid2),
-            functools.partial(resourcegrid, self),
         ],
-        delay=True,
+        basel,
     )
-    basel.addWidget(tab)
-    dotab()

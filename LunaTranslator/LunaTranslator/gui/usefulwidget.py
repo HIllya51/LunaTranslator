@@ -9,7 +9,7 @@ from webviewpy import (
 )
 from winsharedutils import HTMLBrowser
 from myutils.config import _TR, globalconfig
-from myutils.wrapper import Singleton, Singleton_close
+from myutils.wrapper import Singleton, Singleton_close, tryprint
 from myutils.utils import nowisdark, checkportavailable
 
 
@@ -190,13 +190,19 @@ class closeashidewindow(saveposwindow):
         super().closeEvent(event)
 
 
-class MySwitch(QWidget):
-    clicked = pyqtSignal(bool)
+class commonsolveevent(QWidget):
 
     def event(self, a0: QEvent) -> bool:
         if a0.type() == QEvent.Type.MouseButtonDblClick:
             return True
+        elif a0.type() == QEvent.Type.EnabledChange:
+            self.setEnabled(not self.isEnabled())
+            return True
         return super().event(a0)
+
+
+class MySwitch(commonsolveevent):
+    clicked = pyqtSignal(bool)
 
     def click(self):
         self.setChecked(not self.checked)
@@ -207,18 +213,21 @@ class MySwitch(QWidget):
             int(1.62 * globalconfig["buttonsize2"]), globalconfig["buttonsize2"]
         )
 
-    def __init__(self, parent=None, sign=True, enable=True):
+    def __init__(self, parent=None, sign=True, enable=True, icon=None):
         super().__init__(parent)
         self.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
         self.checked = sign
         self.setCursor(Qt.CursorShape.PointingHandCursor)
+
+        self.__currv = 0
+        if sign:
+            self.__currv = 20
+        self.icon = icon
+
         self.animation = QVariantAnimation()
         self.animation.setDuration(80)
         self.animation.setStartValue(0)
         self.animation.setEndValue(20)
-        self.__currv = 0
-        if sign:
-            self.__currv = 20
         self.animation.valueChanged.connect(self.update11)
         self.animation.finished.connect(self.onAnimationFinished)
         self.enable = enable
@@ -237,6 +246,19 @@ class MySwitch(QWidget):
         if check == self.checked:
             return
         self.checked = check
+        self.runanimeorshowicon()
+
+    def update11(self):
+        self.__currv = self.animation.currentValue()
+        self.update()
+
+    def runanimeorshowicon(self):
+        if self.icon:
+            self.update()
+        else:
+            self.runanime()
+
+    def runanime(self):
         self.animation.setDirection(
             QVariantAnimation.Direction.Forward
             if self.checked
@@ -244,14 +266,7 @@ class MySwitch(QWidget):
         )
         self.animation.start()
 
-    def update11(self):
-        self.__currv = self.animation.currentValue()
-        self.update()
-
-    def paintEvent(self, event):
-        painter = QPainter(self)
-        painter.setRenderHint(QPainter.RenderHint.Antialiasing)
-        painter.setPen(Qt.PenStyle.NoPen)
+    def getcurrentcolor(self):
 
         __ = QColor(
             [globalconfig["buttoncolor3"], globalconfig["buttoncolor2"]][self.checked]
@@ -265,7 +280,11 @@ class MySwitch(QWidget):
                 ),
                 max(0, (__.blue() - 64)),
             )
-        painter.setBrush(__)
+        return __
+
+    def paintanime(self, painter: QPainter):
+
+        painter.setBrush(self.getcurrentcolor())
         bigw = self.size().width() - self.sizeHint().width()
         bigh = self.size().height() - self.sizeHint().height()
         x = bigw // 2
@@ -289,24 +308,37 @@ class MySwitch(QWidget):
             int(self.sizeHint().height() * 0.35),
         )
 
+    def painticon(self, painter: QPainter):
+
+        icon: QIcon = qtawesome.icon(self.icon, color=self.getcurrentcolor())
+        bigw = self.size().width() - self.sizeHint().width()
+        bigh = self.size().height() - self.sizeHint().height()
+        x = bigw // 2
+        y = bigh // 2
+        painter.drawPixmap(x, y, icon.pixmap(self.sizeHint()))
+
+    def paintEvent(self, event):
+        painter = QPainter(self)
+        painter.setRenderHint(QPainter.RenderHint.Antialiasing)
+        painter.setPen(Qt.PenStyle.NoPen)
+        if self.icon:
+            self.painticon(painter)
+        else:
+            self.paintanime(painter)
+
     def mouseReleaseEvent(self, event) -> None:
         if not self.enable:
             return
         if event.button() == Qt.MouseButton.LeftButton:
             self.checked = not self.checked
             self.clicked.emit(self.checked)
-            self.animation.setDirection(
-                QVariantAnimation.Direction.Forward
-                if self.checked
-                else QVariantAnimation.Direction.Backward
-            )
-            self.animation.start()
+            self.runanimeorshowicon()
 
     def onAnimationFinished(self):
         pass
 
 
-class IconButton(QWidget):
+class IconButton(commonsolveevent):
     clicked = pyqtSignal()
 
     def sizeHint(self):
@@ -318,6 +350,7 @@ class IconButton(QWidget):
     def __init__(self, icon, enable=True, qicon=None, parent=None):
         super().__init__(parent)
         self.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
+        self.setCursor(Qt.CursorShape.PointingHandCursor)
         self.enable = enable
         self._icon = icon
         self._qicon = qicon
@@ -360,63 +393,6 @@ class IconButton(QWidget):
             return
         if event.button() == Qt.MouseButton.LeftButton:
             self.clicked.emit()
-
-
-class MySwitch2(QPushButton):
-    def __init__(self, parent=None, sign=True, enable=True, icons=None, size=25):
-        self.status1 = 0
-        self.status2 = 0
-
-        if icons is None:
-            icons = ["fa.times", "fa.check"]
-        self.icons = icons
-
-        super().__init__(parent)
-
-        self.setStyleSheet(
-            """background-color: rgba(255, 255, 255, 0);
-          color: black;
-          border: 0px;
-          font: 100 10pt;"""
-        )
-
-        self.clicked.connect(self.setChecked)
-        self.setIconSize(QSize(size, size))
-        self.setEnabled(enable)
-        self.setCheckable(True)
-        self.setChecked(sign)
-
-    def __seticon(self):
-
-        __ = QColor(
-            [globalconfig["buttoncolor3"], globalconfig["buttoncolor2"]][self.status1]
-        )
-        if not self.status2:
-            __ = QColor(
-                max(0, (__.red() - 64)),
-                max(
-                    0,
-                    (__.green() - 64),
-                ),
-                max(0, (__.blue() - 64)),
-            )
-        color = __
-        self.setIcon(
-            qtawesome.icon(
-                self.icons[self.status1],
-                color=color,
-            )
-        )
-
-    def setChecked(self, a0):
-        super().setChecked(a0)
-        self.status1 = a0
-        self.__seticon()
-
-    def setEnabled(self, a0):
-        super().setEnabled(a0)
-        self.status2 = a0
-        self.__seticon()
 
 
 class resizableframeless(saveposwindow):
@@ -635,6 +611,7 @@ class Prompt_dialog(QDialog):
 
 def callbackwrap(d, k, call, _):
     d[k] = _
+
     if call:
         try:
             call(_)
@@ -645,6 +622,7 @@ def callbackwrap(d, k, call, _):
 def comboboxcallbackwrap(internallist, d, k, call, _):
     _ = internallist[_]
     d[k] = _
+
     if call:
         try:
             call(_)
@@ -850,6 +828,8 @@ def getboxlayout(
         for w in widgets:
             if callable(w):
                 w = w()
+            elif isinstance(w, str):
+                w = QLabel(_TR(w))
             if isinstance(w, QWidget):
                 cp_layout.addWidget(w)
             elif isinstance(w, QLayout):
@@ -1168,6 +1148,7 @@ class QWebWrap(abstractwebview):
     def _setHtml(self, html):
         self.internal.setHtml(html)
 
+    @tryprint
     def resizeEvent(self, a0: QResizeEvent) -> None:
         self.internal.resize(a0.size())
 
@@ -1363,25 +1344,20 @@ def tabadd_lazy(tab, title, getrealwidgetfunction):
     tab.addTab(q, title)
 
 
-def makegroupingrid(args):
-    lis = args.get("grid")
-    title = args.get("title", None)
-    _type = args.get("type", "form")
-    group = QGroupBox()
-    if title:
-        group.setTitle(_TR(title))
-    if _type == "grid":
-        grid = QGridLayout()
-        group.setLayout(grid)
-        automakegrid(grid, lis)
-    elif _type == "form":
-        lay = QFormLayout()
-        group.setLayout(lay)
-        for line in lis:
+def makeforms(lay: QFormLayout, lis, args):
+    Stretch = args.get("Stretch", True)
+    for line in lis:
+        if len(line) == 0:
+            lay.addRow(QLabel())
+            continue
+        elif len(line) == 1:
+            name, wid = None, line[0]
+        else:
             name, wid = line
-            if isinstance(wid, tuple) or isinstance(wid, list):
-                hb = QHBoxLayout()
-                hb.setContentsMargins(0, 0, 0, 0)
+        if isinstance(wid, tuple) or isinstance(wid, list):
+            hb = QHBoxLayout()
+            hb.setContentsMargins(0, 0, 0, 0)
+            if Stretch:
                 needstretch = False
                 for w in wid:
                     if callable(w):
@@ -1392,18 +1368,57 @@ def makegroupingrid(args):
                 if needstretch:
                     hb.insertStretch(0)
                     hb.addStretch()
+            wid = hb
+        else:
+            if callable(wid):
+                wid = wid()
+            elif isinstance(wid, str):
+                wid = QLabel(wid)
+                wid.setOpenExternalLinks(True)
+            if (
+                Stretch
+                and wid.sizePolicy().horizontalPolicy() == QSizePolicy.Policy.Fixed
+            ):
+                hb = QHBoxLayout()
+                hb.setContentsMargins(0, 0, 0, 0)
+                hb.addStretch()
+                hb.addWidget(wid)
+                hb.addStretch()
                 wid = hb
-            else:
-                if callable(wid):
-                    wid = wid()
-                if wid.sizePolicy().horizontalPolicy() == QSizePolicy.Policy.Fixed:
-                    hb = QHBoxLayout()
-                    hb.setContentsMargins(0, 0, 0, 0)
-                    hb.addStretch(1)
-                    hb.addWidget(wid)
-                    hb.addStretch(1)
-                    wid = hb
+        if name:
             lay.addRow(_TR(name), wid)
+        else:
+            lay.addRow(wid)
+
+
+def makegroupingrid(args):
+    lis = args.get("grid")
+    title = args.get("title", None)
+    _type = args.get("type", "form")
+    parent = args.get("parent", None)
+    groupname = args.get("name", None)
+    enable = args.get("enable", True)
+    group = QGroupBox()
+
+    if not enable:
+        group.setEnabled(False)
+    if groupname and parent:
+        setattr(parent, groupname, group)
+    if title:
+        group.setTitle(_TR(title))
+    else:
+        group.setStyleSheet(
+            "QGroupBox{ margin-top:0px;} QGroupBox:title {margin-top: 0px;}"
+        )
+
+    if _type == "grid":
+        grid = QGridLayout()
+        group.setLayout(grid)
+        automakegrid(grid, lis)
+    elif _type == "form":
+        lay = QFormLayout()
+        group.setLayout(lay)
+        makeforms(lay, lis, args)
     return group
 
 
@@ -1493,7 +1508,7 @@ def makegrid(grid=None, save=False, savelist=None, savelay=None, delay=False):
     return gridlayoutwidget, __do
 
 
-def makescroll(widget):
+def makescroll():
     scroll = QScrollArea()
     # scroll.setHorizontalScrollBarPolicy(1)
     scroll.setStyleSheet("""QScrollArea{background-color:transparent;border:0px}""")
@@ -1503,7 +1518,7 @@ def makescroll(widget):
 
 def makescrollgrid(grid, lay, save=False, savelist=None, savelay=None):
     wid, do = makegrid(grid, save, savelist, savelay, delay=True)
-    swid = makescroll(wid)
+    swid = makescroll()
     lay.addWidget(swid)
     swid.setWidget(wid)
     do()

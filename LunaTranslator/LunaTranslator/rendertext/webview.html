@@ -41,6 +41,7 @@
         return 'luna' + Math.random().toString(36).substr(2, 9);
     }
     function commoninit_font_align_height(ele, args) {
+        //字体使用pt，高度/距离使用px
         if (args.lineHeight > 0)
             ele.style.lineHeight = args.lineHeight + 'px'
         ele.style.fontFamily = args.fontFamily

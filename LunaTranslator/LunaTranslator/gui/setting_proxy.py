@@ -1,5 +1,5 @@
 from qtsymbols import *
-import os, functools
+import os, functools, gobject
 from myutils.config import _TR, _TRL, globalconfig
 from myutils.utils import splittranslatortypes
 from gui.usefulwidget import (
@@ -8,6 +8,7 @@ from gui.usefulwidget import (
     makesubtab_lazy,
     getvboxwidget,
     makescrollgrid,
+    D_getsimplecombobox,
 )
 
 
@@ -26,15 +27,14 @@ def getall(l, item="fanyi", name=None):
         i += 1
 
         line += [
-            (globalconfig[item][fanyi].get("name", fanyi), 6),
+            globalconfig[item][fanyi].get("name", fanyi),
             D_getsimpleswitch(globalconfig[item][fanyi], "useproxy", default=True),
-            "",
         ]
         if i % 3 == 0:
             grids.append(line)
             line = []
         else:
-            line += []
+            line += [""]
     if len(line):
         grids.append(line)
     return grids
@@ -71,7 +71,7 @@ def getnotofflines(key):
     return __
 
 
-def setTab_proxy_lazy(self, basel):
+def makeproxytab(self, basel):
 
     grid1 = [
         [("使用代理", 5), (D_getsimpleswitch(globalconfig, "useproxy"), 1), ("", 10)],
@@ -105,7 +105,7 @@ def setTab_proxy_lazy(self, basel):
     meta = getall(
         l=list(globalconfig["metadata"].keys()),
         item="metadata",
-        name="./LunaTranslator/myutils/metadata/%s.py",
+        name="./LunaTranslator/metadata/%s.py",
     )
     readers = getall(
         l=getnotofflines("reader"),
@@ -126,6 +126,7 @@ def setTab_proxy_lazy(self, basel):
         l=list(globalconfig["github"].keys()),
         item="github",
     )
+
     vw, vl = getvboxwidget()
     basel.addWidget(vw)
     gridlayoutwidget, do = makegrid(grid1, delay=True)
@@ -157,6 +158,42 @@ def setTab_proxy_lazy(self, basel):
     )
     vl.addWidget(tab)
     do()
+    dotab()
+
+
+def setTab_proxy_lazy(self, basel):
+    tab, dotab = makesubtab_lazy(
+        _TRL(
+            [
+                "代理设置",
+                "网络请求",
+            ]
+        ),
+        [
+            functools.partial(makeproxytab, self),
+            functools.partial(
+                makescrollgrid,
+                [
+                    [
+                        "网络请求",
+                        (
+                            D_getsimplecombobox(
+                                ["winhttp", "libcurl"],
+                                globalconfig,
+                                "network",
+                                callback=functools.partial(
+                                    gobject.baseobject.showneedrestart, "网络请求"
+                                ),
+                            ),
+                            5,
+                        ),
+                    ],
+                ],
+            ),
+        ],
+        delay=True,
+    )
+    basel.addWidget(tab)
     dotab()
 
 

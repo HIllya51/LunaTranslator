@@ -1,8 +1,8 @@
 from qtsymbols import *
 import functools, platform
-import gobject, os
+import gobject, os, zipfile, shutil
 from myutils.config import globalconfig, _TRL, _TR, static_data
-from gui.inputdialog import multicolorset
+from gui.inputdialog import multicolorset, autoinitdialog
 from myutils.wrapper import tryprint
 from gui.usefulwidget import (
     D_getsimplecombobox,
@@ -43,8 +43,7 @@ def createfontsizespin(self):
 def __changeuibuttonstate(self, x):
     gobject.baseobject.translation_ui.refreshtoolicon()
     try:
-        self.show_hira_switch.setEnabled(x)
-        self.show_fenciswitch.setEnabled(x)
+        self.fenyinsettings.setEnabled(x)
     except:
         pass
 
@@ -54,28 +53,6 @@ def createtextfontcom(key):
     font_comboBox.currentTextChanged.connect(lambda x: globalconfig.__setitem__(key, x))
     font_comboBox.setCurrentFont(QFont(globalconfig[key]))
     return font_comboBox
-
-
-def createshoworiginswitch(self):
-    self.show_original_switch = getsimpleswitch(
-        globalconfig, "isshowrawtext", callback=lambda x: __changeuibuttonstate(self, x)
-    )
-    return self.show_original_switch
-
-
-def createhiraswitch(self):
-
-    self.show_hira_switch = getsimpleswitch(
-        globalconfig, "isshowhira", enable=globalconfig["isshowrawtext"]
-    )
-    return self.show_hira_switch
-
-
-def createfenciwitch(self):
-    self.show_fenciswitch = getsimpleswitch(
-        globalconfig, "show_fenci", enable=globalconfig["isshowrawtext"]
-    )
-    return self.show_fenciswitch
 
 
 @Singleton_close
@@ -189,14 +166,70 @@ def createinternalfontsettings(self, forml, group, _type):
         )
 
 
+def copytree(src, dst, copy_function=shutil.copy2):
+    names = os.listdir(src)
+
+    os.makedirs(dst, exist_ok=True)
+    for name in names:
+
+        srcname = os.path.join(src, name)
+        dstname = os.path.join(dst, name)
+        try:
+            if os.path.isdir(srcname):
+                copytree(srcname, dstname, copy_function)
+            else:
+                copy_function(srcname, dstname)
+        except:
+            pass
+
+
+def doinstallqweb(self, dd, base):
+    if not dd["k"].endswith(base):
+        getQMessageBox(self, "错误", f"请选择_{base}")
+        return
+    with zipfile.ZipFile(dd["k"]) as zipf:
+        target = "cache/temp/QWebEngine"
+        os.makedirs(target, exist_ok=True)
+        zipf.extractall(target)
+        bit = ["x86", "x64"][platform.architecture()[0] == "64bit"]
+        copytree(f"{target}/{bit}/PyQt5", "LunaTranslator/runtime/PyQt5")
+
+    gobject.baseobject.showtraymessage("", "安装成功")
+
+
+def installqwebdialog(self, link):
+    dd = {"k": ""}
+    base = link.split("/")[-1]
+    autoinitdialog(
+        self,
+        "安装_QWebEngine",
+        800,
+        [
+            {
+                "type": "file",
+                "name": "路径",
+                "d": dd,
+                "k": "k",
+                "dir": False,
+                "filter": base,
+            },
+            {
+                "type": "okcancel",
+                "callback": functools.partial(doinstallqweb, self, dd, base),
+            },
+        ],
+    )
+
+
 def on_not_find_qweb(self):
     def _okcallback():
 
-        links = [
+        link = [
             "https://github.com/HIllya51/RESOURCES/releases/download/softwares/QWebEngine_x86.zip",
             "https://github.com/HIllya51/RESOURCES/releases/download/softwares/QWebEngine_x64.zip",
         ][platform.architecture()[0] == "64bit"]
-        os.startfile(links)
+        os.startfile(link)
+        installqwebdialog(self, link)
 
     getQMessageBox(
         self,
@@ -208,15 +241,23 @@ def on_not_find_qweb(self):
     )
 
 
-def resetgroudswitchcallback(self, group):
+def resetgroudswitchcallback(self, _2, group):
+
+    if group == "QWebEngine" and not gobject.testuseqwebengine():
+        self.seletengeinecombo.blockSignals(True)
+        visengine_internal = ["textbrowser", "webview", "QWebEngine"]
+        globalconfig["rendertext_using"] = visengine_internal[
+            self.seletengeinecombo.lastindex
+        ]
+        self.seletengeinecombo.setCurrentIndex(self.seletengeinecombo.lastindex)
+        self.seletengeinecombo.blockSignals(False)
+        on_not_find_qweb(self)
+        return
+    if _2:
+        gobject.baseobject.showneedrestart("显示引擎", 0)
     clearlayout(self.goodfontsettingsformlayout)
 
     goodfontgroupswitch = FocusCombo()
-
-    if group == "QWebEngine" and not gobject.testuseqwebengine():
-        self.seletengeinecombo.setCurrentIndex(self.seletengeinecombo.lastindex)
-        on_not_find_qweb(self)
-        return
     self.seletengeinecombo.lastindex = self.seletengeinecombo.currentIndex()
     if group == "webview" or group == "QWebEngine":
         _btn = QPushButton(_TR("额外的html"))
@@ -253,16 +294,13 @@ def resetgroudswitchcallback(self, group):
 def creategoodfontwid(self):
 
     self.goodfontsettingsWidget = QGroupBox()
+    self.goodfontsettingsWidget.setStyleSheet(
+        "QGroupBox{ margin-top:0px;} QGroupBox:title {margin-top: 0px;}"
+    )
     self.goodfontsettingsformlayout = QFormLayout()
     self.goodfontsettingsWidget.setLayout(self.goodfontsettingsformlayout)
-    return self.goodfontsettingsWidget, lambda: resetgroudswitchcallback(
-        self, globalconfig["rendertext_using"]
-    )
-
-
-def __changeselectablestate(self, x):
-    gobject.baseobject.translation_ui.refreshtoolicon()
-    gobject.baseobject.translation_ui.translate_text.textbrowser.setselectable(x)
+    resetgroudswitchcallback(self, False, globalconfig["rendertext_using"])
+    return self.goodfontsettingsWidget
 
 
 def _createseletengeinecombo(self):
@@ -274,18 +312,188 @@ def _createseletengeinecombo(self):
         globalconfig,
         "rendertext_using",
         internallist=visengine_internal,
-        callback=functools.partial(resetgroudswitchcallback, self),
+        callback=functools.partial(resetgroudswitchcallback, self, True),
     )
     self.seletengeinecombo.lastindex = self.seletengeinecombo.currentIndex()
     return self.seletengeinecombo
 
 
-def xianshigrid(self):
+def __changeselectablestate(self, x):
+    gobject.baseobject.translation_ui.refreshtoolicon()
+    gobject.baseobject.translation_ui.translate_text.textbrowser.setselectable(x)
+
+
+def xianshigrid_text(self):
     textgrid = [
         [
             (
                 dict(
-                    title="样式",
+                    title="文本",
+                    type="grid",
+                    grid=(
+                        [
+                            "可选取的",
+                            D_getsimpleswitch(
+                                globalconfig,
+                                "selectable",
+                                callback=functools.partial(
+                                    __changeselectablestate, self
+                                ),
+                                parent=self,
+                                name="selectable_btn",
+                            ),
+                        ],
+                        [
+                            "显示原文",
+                            D_getsimpleswitch(
+                                globalconfig,
+                                "isshowrawtext",
+                                callback=lambda x: __changeuibuttonstate(self, x),
+                                name="show_original_switch",
+                                parent=self,
+                            ),
+                            "",
+                            "最长显示字数",
+                            D_getspinbox(0, 1000000, globalconfig, "maxoriginlength"),
+                            "",
+                        ],
+                        [
+                            "显示翻译",
+                            D_getsimpleswitch(globalconfig, "showfanyi"),
+                            "",
+                            ("显示翻译器名称"),
+                            D_getsimpleswitch(globalconfig, "showfanyisource"),
+                            "",
+                        ],
+                        [
+                            "收到翻译时才刷新",
+                            D_getsimpleswitch(globalconfig, "refresh_on_get_trans"),
+                            "",
+                            "显示错误信息",
+                            D_getsimpleswitch(globalconfig, "showtranexception"),
+                            "",
+                        ],
+                    ),
+                ),
+                0,
+                "group",
+            )
+        ],
+        [
+            (
+                dict(
+                    title="分词",
+                    type="grid",
+                    parent=self,
+                    name="fenyinsettings",
+                    enable=globalconfig["isshowrawtext"],
+                    grid=(
+                        [
+                            (
+                                dict(
+                                    title="注音",
+                                    type="grid",
+                                    grid=(
+                                        [
+                                            ("显示"),
+                                            D_getsimpleswitch(
+                                                globalconfig,
+                                                "isshowhira",
+                                            ),
+                                            "",
+                                            ("颜色"),
+                                            D_getcolorbutton(
+                                                globalconfig,
+                                                "jiamingcolor",
+                                                callback=lambda: selectcolor(
+                                                    self,
+                                                    globalconfig,
+                                                    "jiamingcolor",
+                                                    self.jiamingcolor_b,
+                                                ),
+                                                name="jiamingcolor_b",
+                                                parent=self,
+                                            ),
+                                            "",
+                                        ],
+                                        [
+                                            "字体缩放",
+                                            D_getspinbox(
+                                                0.05,
+                                                1,
+                                                globalconfig,
+                                                "kanarate",
+                                                double=True,
+                                                step=0.05,
+                                                dec=2,
+                                            ),
+                                            "",
+                                            "日语注音方案",
+                                            D_getsimplecombobox(
+                                                _TRL(
+                                                    [
+                                                        "平假名",
+                                                        "片假名",
+                                                        "罗马音",
+                                                    ]
+                                                ),
+                                                globalconfig,
+                                                "hira_vis_type",
+                                            ),
+                                        ],
+                                    ),
+                                ),
+                                0,
+                                "group",
+                            )
+                        ],
+                        [
+                            ("语法加亮"),
+                            D_getsimpleswitch(globalconfig, "show_fenci"),
+                            "",
+                            ("词性颜色_需要Mecab"),
+                            D_getIconButton(
+                                callback=lambda: multicolorset(self),
+                                icon="fa.gear",
+                            ),
+                            "",
+                        ],
+                        [
+                            ("点击单词查词"),
+                            (
+                                D_getsimpleswitch(globalconfig, "usesearchword"),
+                                1,
+                            ),
+                            "",
+                            ("点击单词复制"),
+                            (
+                                D_getsimpleswitch(globalconfig, "usecopyword"),
+                                1,
+                            ),
+                        ],
+                        [
+                            ("使用原型查询"),
+                            (
+                                D_getsimpleswitch(globalconfig, "usewordorigin"),
+                                1,
+                            ),
+                        ],
+                    ),
+                ),
+                0,
+                "group",
+            )
+        ],
+    ]
+    return textgrid
+
+
+def xianshigrid_style(self):
+    textgrid = [
+        [
+            (
+                dict(
+                    title="字体",
                     type="grid",
                     grid=(
                         [
@@ -334,144 +542,13 @@ def xianshigrid(self):
         [
             (
                 dict(
-                    type="grid",
+                    title="样式",
                     grid=(
                         [
-                            ("显示引擎_重启生效", 3),
-                            (
-                                functools.partial(_createseletengeinecombo, self),
-                                6,
-                            ),
+                            "显示引擎",
+                            functools.partial(_createseletengeinecombo, self),
                         ],
-                        [(functools.partial(creategoodfontwid, self), 0)],
-                    ),
-                ),
-                0,
-                "group",
-            )
-        ],
-        [
-            (
-                dict(
-                    title="注音",
-                    type="grid",
-                    grid=(
-                        [
-                            ("显示", 5),
-                            functools.partial(createhiraswitch, self),
-                            "",
-                            ("颜色", 5),
-                            D_getcolorbutton(
-                                globalconfig,
-                                "jiamingcolor",
-                                callback=lambda: selectcolor(
-                                    self,
-                                    globalconfig,
-                                    "jiamingcolor",
-                                    self.jiamingcolor_b,
-                                ),
-                                name="jiamingcolor_b",
-                                parent=self,
-                            ),
-                        ],
-                        [
-                            ("字体缩放", 5),
-                            D_getspinbox(
-                                0.05,
-                                1,
-                                globalconfig,
-                                "kanarate",
-                                double=True,
-                                step=0.05,
-                                dec=2,
-                            ),
-                            "",
-                            ("日语注音方案", 5),
-                            D_getsimplecombobox(
-                                _TRL(["平假名", "片假名", "罗马音"]),
-                                globalconfig,
-                                "hira_vis_type",
-                            ),
-                        ],
-                    ),
-                ),
-                0,
-                "group",
-            )
-        ],
-        [
-            (
-                dict(
-                    title="分词",
-                    type="grid",
-                    grid=(
-                        [
-                            ("语法加亮", 5),
-                            functools.partial(createfenciwitch, self),
-                            "",
-                            ("词性颜色(需要Mecab)", 5),
-                            D_getIconButton(
-                                callback=lambda: multicolorset(self), icon="fa.gear"
-                            ),
-                        ],
-                        [
-                            ("点击单词查词", 5),
-                            (D_getsimpleswitch(globalconfig, "usesearchword"), 1),
-                            "",
-                            ("点击单词复制", 5),
-                            (D_getsimpleswitch(globalconfig, "usecopyword"), 1),
-                        ],
-                        [
-                            ("使用原型查询", 5),
-                            (D_getsimpleswitch(globalconfig, "usewordorigin"), 1),
-                        ],
-                    ),
-                ),
-                0,
-                "group",
-            )
-        ],
-        [
-            (
-                dict(
-                    title="显示行为",
-                    type="grid",
-                    grid=(
-                        [
-                            ("显示原文", 5),
-                            functools.partial(createshoworiginswitch, self),
-                            "",
-                            ("显示翻译", 5),
-                            (D_getsimpleswitch(globalconfig, "showfanyi"), 1),
-                        ],
-                        [
-                            ("显示翻译器名称", 5),
-                            (D_getsimpleswitch(globalconfig, "showfanyisource"), 1),
-                            "",
-                            ("最长显示字数", 5),
-                            (
-                                D_getspinbox(
-                                    0, 1000000, globalconfig, "maxoriginlength"
-                                ),
-                                3,
-                            ),
-                        ],
-                        [
-                            ("收到翻译结果时才刷新", 5),
-                            D_getsimpleswitch(globalconfig, "refresh_on_get_trans"),
-                        ],
-                        [
-                            ("可选取的", 5),
-                            D_getsimpleswitch(
-                                globalconfig,
-                                "selectable",
-                                callback=functools.partial(
-                                    __changeselectablestate, self
-                                ),
-                                parent=self,
-                                name="selectable_btn",
-                            ),
-                        ],
+                        [functools.partial(creategoodfontwid, self)],
                     ),
                 ),
                 0,

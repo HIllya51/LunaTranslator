@@ -35,7 +35,7 @@ def makescalew(self, lay):
             ("Magpie_路径", 4),
             (
                 D_getIconButton(
-                    callback=lambda x: getsomepath1(
+                    callback=lambda : getsomepath1(
                         self,
                         "Magpie_路径",
                         globalconfig,

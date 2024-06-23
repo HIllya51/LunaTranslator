@@ -6,8 +6,9 @@ from myutils.wrapper import threader, trypass
 from myutils.config import globalconfig, saveallconfig, _TR, static_data
 from myutils.subproc import endsubprocs
 from myutils.ocrutil import ocr_run, imageCut
-from myutils.utils import loadpostsettingwindowmethod, getimageformat, str2rgba
+from myutils.utils import loadpostsettingwindowmethod, str2rgba
 from myutils.hwnd import mouseselectwindow, grabwindow, getExeIcon
+from gui.setting_about import doupdate
 from gui.dialog_memory import dialog_memory
 from gui.textbrowser import Textbrowser
 from gui.rangeselect import rangeselct_function
@@ -38,19 +39,7 @@ class QUnFrameWindow(resizableframeless):
     def hookfollowsignalsolve(self, code, other):
         if self._move_drag:
             return
-        if code == 3:
-            self.show_()
-            try:
-                _h = windows.GetForegroundWindow()
-                _fpid = windows.GetWindowThreadProcessId(_h)
-                _hpid = windows.GetWindowThreadProcessId(other[0])
-                if _fpid != _hpid:
-                    windows.SetForegroundWindow(other[0])
-            except:
-                pass
-        elif code == 4:
-            self.hide_()
-        elif code == 5:
+        if code == 5:
             # print(self.pos())
             # self.move(self.pos() + self._endPos)z
             try:
@@ -188,7 +177,6 @@ class QUnFrameWindow(resizableframeless):
                 (isshowhira, isshow_fenci, isfenciclick),
                 color,
             )
-
         if globalconfig["autodisappear"]:
             flag = (globalconfig["showintab"] and self.isMinimized()) or (
                 not globalconfig["showintab"] and self.isHidden()
@@ -301,6 +289,16 @@ class QUnFrameWindow(resizableframeless):
             windows.keybd_event(13, 0, 0, 0)
         windows.keybd_event(13, 0, windows.KEYEVENTF_KEYUP, 0)
 
+    def btnsetontopfunction(self):
+        try:
+
+            gobject.baseobject.settin_ui.keepontopbutton.click()
+        except:
+            globalconfig["keepontop"] = not globalconfig["keepontop"]
+
+            self.refreshtoolicon()
+            self.setontopthread()
+
     def addbuttons(self):
         def simulate_key_ctrl():
             windows.SetForegroundWindow(gobject.baseobject.textsource.hwnd)
@@ -354,8 +352,9 @@ class QUnFrameWindow(resizableframeless):
             ("selectocrrange", lambda: self.clickRange(False)),
             ("hideocrrange", self.showhideocrrange),
             ("bindwindow", self.bindcropwindow_signal.emit),
+            ("searchwordW", lambda: gobject.baseobject.searchwordW.showsignal.emit()),
             ("fullscreen", self._fullsgame),
-            ("grabwindow", lambda: grabwindow(getimageformat())),
+            ("grabwindow", grabwindow),
             ("muteprocess", self.muteprocessfuntion),
             (
                 "memory",
@@ -363,15 +362,7 @@ class QUnFrameWindow(resizableframeless):
                     gobject.baseobject.commonstylebase, gobject.baseobject.currentmd5
                 ),
             ),
-            (
-                "keepontop",
-                lambda: globalconfig.__setitem__(
-                    "keepontop", not globalconfig["keepontop"]
-                )
-                is None
-                and self.refreshtoolicon() is None
-                and self.setontopthread(),
-            ),
+            ("keepontop", self.btnsetontopfunction),
             (
                 "simulate_key_ctrl",
                 lambda: threading.Thread(target=simulate_key_ctrl).start(),
@@ -437,7 +428,6 @@ class QUnFrameWindow(resizableframeless):
         windows.SetForegroundWindow(int(self.winId()))
         self.refreshtoolicon()
         self.setontopthread()
-        self.autohidedelaythread()
 
     def canceltop(self):
         windows.SetWindowPos(
@@ -515,8 +505,6 @@ class QUnFrameWindow(resizableframeless):
             winsharedutils.setAeroEffect(int(self.winId()))
 
     def initvalues(self):
-        self.lastrefreshtime = time.time()
-        self.autohidestart = False
         self.enter_sig = 0
         self.fullscreenmanager_busy = False
         self.isletgamefullscreened = False
@@ -784,9 +772,12 @@ class QUnFrameWindow(resizableframeless):
 
     def changemousetransparentstate(self, idx):
         if idx == 0:
-            globalconfig["mousetransparent"] = not globalconfig["mousetransparent"]
 
-            self.mousetransparent_check()
+            try:
+                gobject.baseobject.settin_ui.mousetransbutton.click()
+            except:
+                globalconfig["mousetransparent"] = not globalconfig["mousetransparent"]
+                self.mousetransparent_check()
         elif idx == 1:
             globalconfig["backtransparent"] = not globalconfig["backtransparent"]
             self.set_color_transparency()
@@ -820,24 +811,24 @@ class QUnFrameWindow(resizableframeless):
         self.refreshtoolicon()
 
     def changetoolslockstate(self):
-        globalconfig["locktools"] = not globalconfig["locktools"]
-        self.refreshtoolicon()
+        try:
+            gobject.baseobject.settin_ui.locktoolsbutton.click()
+        except:
+            globalconfig["locktools"] = not globalconfig["locktools"]
+            self.refreshtoolicon()
 
     def textAreaChanged(self, size: QSize):
 
         if self.translate_text.cleared:
             return
-        if not (globalconfig["auto_expand"] or globalconfig["auto_shrink"]):
+        if not globalconfig["adaptive_height"]:
             return
         newHeight = (
             size.height()
             + self.translate_text._padding
             + int(globalconfig["buttonsize"] * 1.5)
         )
-        if (newHeight > self.height() and globalconfig["auto_expand"]) or (
-            newHeight < self.height() and globalconfig["auto_shrink"]
-        ):
-            self.resize(self.width(), newHeight)
+        self.resize(self.width(), newHeight)
 
     def clickRange(self, auto):
         if globalconfig["sourcestatus2"]["ocr"]["use"] == False:
@@ -870,7 +861,14 @@ class QUnFrameWindow(resizableframeless):
         self.set_color_transparency()
 
     def checkisentered(self):
-        if globalconfig["mousetransparent"]:
+        onlychecktitle = globalconfig["mousetransparent"]
+        hwnd = windows.GetForegroundWindow()
+        hwndpid = windows.GetWindowThreadProcessId(hwnd)
+        ismyprocbutnotmainuiforeground = hwndpid == os.getpid() and hwnd != int(
+            self.winId()
+        )
+        onlychecktitle = onlychecktitle or ismyprocbutnotmainuiforeground
+        if onlychecktitle:
             return self._TitleLabel.geometry().contains(
                 self.mapFromGlobal(QCursor.pos())
             )
@@ -1031,4 +1029,5 @@ class QUnFrameWindow(resizableframeless):
         endsubprocs()
         self.tryremoveuseless()
         gobject.baseobject.destroytray()
+        doupdate()
         os._exit(0)

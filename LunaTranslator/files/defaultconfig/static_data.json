@@ -684,11 +684,17 @@
             "sources": [
                 {
                     "name": "J北京7",
-                    "link": "https://github.com/HIllya51/RESOURCES/releases/download/offline_translator/JBeijing7.zip"
-                },
-                {
-                    "name": "J北京7_用户词典",
-                    "link": "https://github.com/HIllya51/RESOURCES/releases/download/offline_translator/JBeijing7UserDict.zip"
+                    "type": "group",
+                    "links": [
+                        {
+                            "name": "J北京7",
+                            "link": "https://github.com/HIllya51/RESOURCES/releases/download/offline_translator/JBeijing7.zip"
+                        },
+                        {
+                            "name": "用户词典",
+                            "link": "https://github.com/HIllya51/RESOURCES/releases/download/offline_translator/JBeijing7UserDict.zip"
+                        }
+                    ]
                 },
                 {
                     "name": "金山快译",
@@ -703,41 +709,69 @@
                     "link": "https://github.com/chaihahaha/OrtMT5/releases/tag/v0.1.0"
                 },
                 {
+                    "name": "Sugoi",
+                    "link": "https://github.com/HIllya51/RESOURCES/releases/download/softwares/Sugoi_Translator_V8.7z"
+                },
+                {
                     "name": "Sakura大模型",
                     "link": "https://github.com/SakuraLLM/Sakura-13B-Galgame"
                 },
                 {
-                    "name": "TGW",
-                    "link": "https://github.com/oobabooga/text-generation-webui"
+                    "name": "TGW懒人包",
+                    "link": "https://pan.baidu.com/s/1fe7iiHIAtoXW80Twsrv8Nw?pwd=pato"
                 }
             ]
         },
         {
-            "name": "OCR语言包",
+            "name": "OCR",
             "sources": [
                 {
-                    "name": "日语",
-                    "link": "https://github.com/HIllya51/RESOURCES/releases/download/ocr_models/ja.zip"
+                    "name": "本地OCR_语言包",
+                    "type": "group",
+                    "links": [
+                        {
+                            "name": "日语",
+                            "link": "https://github.com/HIllya51/RESOURCES/releases/download/ocr_models/ja.zip"
+                        },
+                        {
+                            "name": "英文",
+                            "link": "https://github.com/HIllya51/RESOURCES/releases/download/ocr_models/en.zip"
+                        },
+                        {
+                            "name": "简体中文",
+                            "link": "https://github.com/HIllya51/RESOURCES/releases/download/ocr_models/zh.zip"
+                        },
+                        {
+                            "name": "繁体中文",
+                            "link": "https://github.com/HIllya51/RESOURCES/releases/download/ocr_models/cht.zip"
+                        },
+                        {
+                            "name": "韩语",
+                            "link": "https://github.com/HIllya51/RESOURCES/releases/download/ocr_models/ko.zip"
+                        },
+                        {
+                            "name": "俄语",
+                            "link": "https://github.com/HIllya51/RESOURCES/releases/download/ocr_models/ru.zip"
+                        }
+                    ]
                 },
                 {
-                    "name": "英文",
-                    "link": "https://github.com/HIllya51/RESOURCES/releases/download/ocr_models/en.zip"
-                },
-                {
-                    "name": "简体中文",
-                    "link": "https://github.com/HIllya51/RESOURCES/releases/download/ocr_models/zh.zip"
-                },
-                {
-                    "name": "繁体中文",
-                    "link": "https://github.com/HIllya51/RESOURCES/releases/download/ocr_models/cht.zip"
-                },
-                {
-                    "name": "韩语",
-                    "link": "https://github.com/HIllya51/RESOURCES/releases/download/ocr_models/ko.zip"
-                },
-                {
-                    "name": "俄语",
-                    "link": "https://github.com/HIllya51/RESOURCES/releases/download/ocr_models/ru.zip"
+                    "name": "mangaocr",
+                    "type": "group",
+                    "links": [
+                        {
+                            "name": "项目仓库",
+                            "link": "https://github.com/kha-white/manga-ocr"
+                        },
+                        {
+                            "name": "整合包_CPU",
+                            "link": "https://github.com/HIllya51/RESOURCES/releases/download/softwares/manga-ocr_cpu_v0.1.11.zip"
+                        },
+                        {
+                            "name": "整合包_GPU",
+                            "link": "https://github.com/HIllya51/RESOURCES/releases/download/softwares/manga-ocr_gpu_v0.1.11.7z"
+                        }
+                    ]
                 }
             ]
         },
@@ -746,11 +780,17 @@
             "sources": [
                 {
                     "name": "MeCab",
-                    "link": "https://github.com/HIllya51/RESOURCES/releases/download/dictionary/Mecab.zip"
-                },
-                {
-                    "name": "MeCab_Unidic_latest",
-                    "link": "https://clrd.ninjal.ac.jp/unidic/"
+                    "type": "group",
+                    "links": [
+                        {
+                            "name": "MeCab",
+                            "link": "https://github.com/HIllya51/RESOURCES/releases/download/dictionary/Mecab.zip"
+                        },
+                        {
+                            "name": "Unidic",
+                            "link": "https://clrd.ninjal.ac.jp/unidic/"
+                        }
+                    ]
                 },
                 {
                     "name": "小学馆",
@@ -769,12 +809,18 @@
                     "link": "https://github.com/HIllya51/RESOURCES/releases/download/dictionary/Lingoes.zip"
                 },
                 {
-                    "name": "mdict",
-                    "link": "https://forum.freemdict.com/"
-                },
-                {
-                    "name": "mdict",
-                    "link": "https://search.freemdict.com/"
+                    "name": "MDict",
+                    "type": "group",
+                    "links": [
+                        {
+                            "name": "论坛",
+                            "link": "https://forum.freemdict.com/"
+                        },
+                        {
+                            "name": "freemdict",
+                            "link": "https://search.freemdict.com/"
+                        }
+                    ]
                 }
             ]
         },
@@ -782,136 +828,154 @@
             "name": "语音合成",
             "sources": [
                 {
-                    "name": "NeoSpeech Misaki",
-                    "link": "https://github.com/HIllya51/RESOURCES/releases/download/speech_synthesis_packages/NeoSpeech.Japanese.Misaki.zip"
-                },
-                {
-                    "name": "NeoSpeech Show",
-                    "link": "https://github.com/HIllya51/RESOURCES/releases/download/speech_synthesis_packages/https://github.com/HIllya51/RESOURCES/releases/download/speech_synthesis_packages/NeoSpeech.TTS.NeoSpeech.Japanese.Show_v3.10.0.0.zip.zip"
+                    "name": "NeoSpeech",
+                    "type": "group",
+                    "links": [
+                        {
+                            "name": "Misaki",
+                            "link": "https://github.com/HIllya51/RESOURCES/releases/download/speech_synthesis_packages/NeoSpeech.Japanese.Misaki.zip"
+                        },
+                        {
+                            "name": "Show",
+                            "link": "https://github.com/HIllya51/RESOURCES/releases/download/speech_synthesis_packages/NeoSpeech.TTS.NeoSpeech.Japanese.Show_v3.10.0.0.zip"
+                        }
+                    ]
                 },
                 {
                     "name": "VOICEVOX",
                     "link": "https://github.com/VOICEVOX/voicevox/releases"
                 },
                 {
+                    "name": "vits-simple-api",
+                    "type": "group",
+                    "links": [
+                        {
+                            "name": "Github仓库",
+                            "link": "https://github.com/Artrajz/vits-simple-api/releases"
+                        },
+                        {
+                            "name": "整合包_CPU",
+                            "link": "https://github.com/raindrop213/LunaTranslator-re/releases/download/v0.0.1/vits-simple-api-windows-cpu-v0.6.9_vits-uma-genshin-honkai.rar"
+                        },
+                        {
+                            "name": "整合包_GPU",
+                            "link": "https://github.com/raindrop213/LunaTranslator-re/releases/download/v0.0.1/vits-simple-api-windows-gpu-v0.6.9_vits-uma-genshin-honkai.7z"
+                        }
+                    ]
+                },
+                {
                     "name": "VoiceRoid+_東北ずん子/东北俊子",
                     "link": "https://github.com/HIllya51/RESOURCES/releases/download/voiceroid_plus/VOICEROID+zunko.7z"
                 },
                 {
-                    "name": "VoiceRoid2_SFE_結月ゆかり/结月缘",
-                    "link": "https://github.com/HIllya51/RESOURCES/releases/download/speech_synthesis_packages/Yukari2.zip"
-                },
-                {
-                    "name": "VoiceRoid2_結月ゆかり/结月缘",
-                    "link": "https://github.com/HIllya51/RESOURCES/releases/download/speech_synthesis_packages/VOICEROID2_Yuzuki_Yukari.zip"
-                },
-                {
-                    "name": "VoiceRoid2_紲星あかり/绁星灯",
-                    "link": "https://github.com/HIllya51/RESOURCES/releases/download/speech_synthesis_packages/VOICEROID2_Kizuna_Akari.zip"
-                },
-                {
-                    "name": "VoiceRoid2_琴葉 茜・葵",
-                    "link": "https://github.com/HIllya51/RESOURCES/releases/download/speech_synthesis_packages/VOICEROID2_Kotonoha_Akane_Aoi.zip"
-                },
-                {
-                    "name": "VoiceRoid2_伊織弓鶴",
-                    "link": "https://github.com/HIllya51/RESOURCES/releases/download/speech_synthesis_packages/VOICEROID2_Iori_Yuzuru.zip"
-                },
-                {
-                    "name": "VoiceRoid2_ついなちゃん",
-                    "link": "https://github.com/HIllya51/RESOURCES/releases/download/speech_synthesis_packages/VOICEROID2_tsuina-chan_dl_e.zip"
-                },
-                {
-                    "name": "VoiceRoid2_東北イタコ/东北伊达子",
-                    "link": "https://github.com/HIllya51/RESOURCES/releases/download/speech_synthesis_packages/VOICEROID2_Tohoku_Itako.zip"
-                },
-                {
-                    "name": "VoiceRoid2_附加音源_結月ゆかり",
-                    "link": "https://github.com/HIllya51/RESOURCES/releases/download/install_free_voice_packages/yukari_emo_44.zip"
-                },
-                {
-                    "name": "VoiceRoid2_附加音源_紲星あかり",
-                    "link": "https://github.com/HIllya51/RESOURCES/releases/download/install_free_voice_packages/akari_44.zip"
-                },
-                {
-                    "name": "VoiceRoid2_附加音源_東北きりたん",
-                    "link": "https://github.com/HIllya51/RESOURCES/releases/download/install_free_voice_packages/kiritan_44.zip"
-                },
-                {
-                    "name": "VoiceRoid2_附加音源_東北イタコ",
-                    "link": "https://github.com/HIllya51/RESOURCES/releases/download/install_free_voice_packages/itako_emo_44.zip"
-                },
-                {
-                    "name": "VoiceRoid2_附加音源_東北ずん子",
-                    "link": "https://github.com/HIllya51/RESOURCES/releases/download/install_free_voice_packages/zunko_44.zip"
-                },
-                {
-                    "name": "VoiceRoid2_附加音源_伊織弓鶴",
-                    "link": "https://github.com/HIllya51/RESOURCES/releases/download/install_free_voice_packages/yuzuru_emo_44.zip"
-                },
-                {
-                    "name": "VoiceRoid2_附加音源_ついなちゃん",
-                    "link": "https://github.com/HIllya51/RESOURCES/releases/download/install_free_voice_packages/tsuina_44.zip"
-                },
-                {
-                    "name": "VoiceRoid2_附加音源_ついなちゃん（関西弁）",
-                    "link": "https://github.com/HIllya51/RESOURCES/releases/download/install_free_voice_packages/tsuina_west_44.zip"
-                },
-                {
-                    "name": "VoiceRoid2_附加音源_琴葉茜",
-                    "link": "https://github.com/HIllya51/RESOURCES/releases/download/install_free_voice_packages/akane_west_emo_44.zip"
-                },
-                {
-                    "name": "VoiceRoid2_附加音源_琴葉葵",
-                    "link": "https://github.com/HIllya51/RESOURCES/releases/download/install_free_voice_packages/aoi_emo_44.zip"
-                },
-                {
-                    "name": "VoiceRoid2_附加音源_水奈瀬コウ",
-                    "link": "https://github.com/HIllya51/RESOURCES/releases/download/install_free_voice_packages/kou_44.zip"
-                },
-                {
-                    "name": "VoiceRoid2_附加音源_桜乃そら",
-                    "link": "https://github.com/HIllya51/RESOURCES/releases/download/install_free_voice_packages/sora_44.zip"
-                },
-                {
-                    "name": "VoiceRoid2_附加音源_民安ともえ",
-                    "link": "https://github.com/HIllya51/RESOURCES/releases/download/install_free_voice_packages/tamiyasu_44.zip"
-                },
-                {
-                    "name": "VoiceRoid2_附加音源_月読アイ",
-                    "link": "https://github.com/HIllya51/RESOURCES/releases/download/install_free_voice_packages/ai_44.zip"
-                },
-                {
-                    "name": "VoiceRoid2_附加音源_月読ショウタ",
-                    "link": "https://github.com/HIllya51/RESOURCES/releases/download/install_free_voice_packages/shouta_44.zip"
-                },
-                {
-                    "name": "VoiceRoid2_附加音源_京町セイカ",
-                    "link": "https://github.com/HIllya51/RESOURCES/releases/download/install_free_voice_packages/seika_44.zip"
-                },
-                {
-                    "name": "VoiceRoid2_附加音源_音街ウナ",
-                    "link": "https://github.com/HIllya51/RESOURCES/releases/download/install_free_voice_packages/una_44.zip"
-                },
-                {
-                    "name": "VoiceRoid2_附加音源_鷹の爪吉田",
-                    "link": "https://github.com/HIllya51/RESOURCES/releases/download/install_free_voice_packages/yoshidakun_44.zip"
-                },
-                {
-                    "name": "VoiceRoid2_附加音源_ギャラ子",
-                    "link": "https://github.com/HIllya51/RESOURCES/releases/download/install_free_voice_packages/galaco_44.zip"
-                },
-                {
-                    "name": "vits-simple-api",
-                    "link": "https://github.com/Artrajz/vits-simple-api/releases"
-                },
-                {
-                    "name": "vits-simple-api_CPU",
-                    "link": "https://github.com/raindrop213/LunaTranslator-re/releases/download/v0.0.1/vits-simple-api-windows-cpu-v0.6.9_vits-uma-genshin-honkai.rar"
-                },
-                {
-                    "name": "vits-simple-api_GPU",
-                    "link": "https://github.com/raindrop213/LunaTranslator-re/releases/download/v0.0.1/vits-simple-api-windows-gpu-v0.6.9_vits-uma-genshin-honkai.7z"
+                    "name": "VoiceRoid2",
+                    "type": "group",
+                    "links": [
+                        {
+                            "name": "SFE_結月ゆかり/结月缘",
+                            "link": "https://github.com/HIllya51/RESOURCES/releases/download/speech_synthesis_packages/Yukari2.zip"
+                        },
+                        {
+                            "name": "結月ゆかり/结月缘",
+                            "link": "https://github.com/HIllya51/RESOURCES/releases/download/speech_synthesis_packages/VOICEROID2_Yuzuki_Yukari.zip"
+                        },
+                        {
+                            "name": "紲星あかり/绁星灯",
+                            "link": "https://github.com/HIllya51/RESOURCES/releases/download/speech_synthesis_packages/VOICEROID2_Kizuna_Akari.zip"
+                        },
+                        {
+                            "name": "琴葉 茜・葵",
+                            "link": "https://github.com/HIllya51/RESOURCES/releases/download/speech_synthesis_packages/VOICEROID2_Kotonoha_Akane_Aoi.zip"
+                        },
+                        {
+                            "name": "伊織弓鶴",
+                            "link": "https://github.com/HIllya51/RESOURCES/releases/download/speech_synthesis_packages/VOICEROID2_Iori_Yuzuru.zip"
+                        },
+                        {
+                            "name": "ついなちゃん",
+                            "link": "https://github.com/HIllya51/RESOURCES/releases/download/speech_synthesis_packages/VOICEROID2_tsuina-chan_dl_e.zip"
+                        },
+                        {
+                            "name": "東北イタコ/东北伊达子",
+                            "link": "https://github.com/HIllya51/RESOURCES/releases/download/speech_synthesis_packages/VOICEROID2_Tohoku_Itako.zip"
+                        },
+                        {
+                            "name": "附加音源_結月ゆかり",
+                            "link": "https://github.com/HIllya51/RESOURCES/releases/download/install_free_voice_packages/yukari_emo_44.zip"
+                        },
+                        {
+                            "name": "附加音源_紲星あかり",
+                            "link": "https://github.com/HIllya51/RESOURCES/releases/download/install_free_voice_packages/akari_44.zip"
+                        },
+                        {
+                            "name": "附加音源_東北きりたん",
+                            "link": "https://github.com/HIllya51/RESOURCES/releases/download/install_free_voice_packages/kiritan_44.zip"
+                        },
+                        {
+                            "name": "附加音源_東北イタコ",
+                            "link": "https://github.com/HIllya51/RESOURCES/releases/download/install_free_voice_packages/itako_emo_44.zip"
+                        },
+                        {
+                            "name": "附加音源_東北ずん子",
+                            "link": "https://github.com/HIllya51/RESOURCES/releases/download/install_free_voice_packages/zunko_44.zip"
+                        },
+                        {
+                            "name": "附加音源_伊織弓鶴",
+                            "link": "https://github.com/HIllya51/RESOURCES/releases/download/install_free_voice_packages/yuzuru_emo_44.zip"
+                        },
+                        {
+                            "name": "附加音源_ついなちゃん",
+                            "link": "https://github.com/HIllya51/RESOURCES/releases/download/install_free_voice_packages/tsuina_44.zip"
+                        },
+                        {
+                            "name": "附加音源_ついなちゃん（関西弁）",
+                            "link": "https://github.com/HIllya51/RESOURCES/releases/download/install_free_voice_packages/tsuina_west_44.zip"
+                        },
+                        {
+                            "name": "附加音源_琴葉茜",
+                            "link": "https://github.com/HIllya51/RESOURCES/releases/download/install_free_voice_packages/akane_west_emo_44.zip"
+                        },
+                        {
+                            "name": "附加音源_琴葉葵",
+                            "link": "https://github.com/HIllya51/RESOURCES/releases/download/install_free_voice_packages/aoi_emo_44.zip"
+                        },
+                        {
+                            "name": "附加音源_水奈瀬コウ",
+                            "link": "https://github.com/HIllya51/RESOURCES/releases/download/install_free_voice_packages/kou_44.zip"
+                        },
+                        {
+                            "name": "附加音源_桜乃そら",
+                            "link": "https://github.com/HIllya51/RESOURCES/releases/download/install_free_voice_packages/sora_44.zip"
+                        },
+                        {
+                            "name": "附加音源_民安ともえ",
+                            "link": "https://github.com/HIllya51/RESOURCES/releases/download/install_free_voice_packages/tamiyasu_44.zip"
+                        },
+                        {
+                            "name": "附加音源_月読アイ",
+                            "link": "https://github.com/HIllya51/RESOURCES/releases/download/install_free_voice_packages/ai_44.zip"
+                        },
+                        {
+                            "name": "附加音源_月読ショウタ",
+                            "link": "https://github.com/HIllya51/RESOURCES/releases/download/install_free_voice_packages/shouta_44.zip"
+                        },
+                        {
+                            "name": "附加音源_京町セイカ",
+                            "link": "https://github.com/HIllya51/RESOURCES/releases/download/install_free_voice_packages/seika_44.zip"
+                        },
+                        {
+                            "name": "附加音源_音街ウナ",
+                            "link": "https://github.com/HIllya51/RESOURCES/releases/download/install_free_voice_packages/una_44.zip"
+                        },
+                        {
+                            "name": "附加音源_鷹の爪吉田",
+                            "link": "https://github.com/HIllya51/RESOURCES/releases/download/install_free_voice_packages/yoshidakun_44.zip"
+                        },
+                        {
+                            "name": "附加音源_ギャラ子",
+                            "link": "https://github.com/HIllya51/RESOURCES/releases/download/install_free_voice_packages/galaco_44.zip"
+                        }
+                    ]
                 }
             ]
         },
@@ -924,7 +988,7 @@
                 },
                 {
                     "name": "Locale_Remulator",
-                    "link": "https://github.com/InWILL/Locale_Remulator/releases"
+                    "link": "https://github.com/InWILL/Locale_Remulator/releases/download/v1.5.3-beta.1/Locale_Remulator.1.5.3-beta.1.zip"
                 },
                 {
                     "name": "Ntleas",
@@ -937,19 +1001,31 @@
             "sources": [
                 {
                     "name": "Magpie",
-                    "link": "https://github.com/Blinue/Magpie/releases"
+                    "type": "group",
+                    "links": [
+                        {
+                            "name": "Github仓库",
+                            "link": "https://github.com/Blinue/Magpie/releases"
+                        },
+                        {
+                            "name": "win7适配版",
+                            "link": "https://github.com/HIllya51/Magpie9_win7/releases"
+                        }
+                    ]
                 },
                 {
-                    "name": "Magpie9_win7适配版",
-                    "link": "https://github.com/HIllya51/Magpie9_win7/releases"
-                },
-                {
-                    "name": "QWebEngine x86",
-                    "link": "https://github.com/HIllya51/RESOURCES/releases/download/softwares/QWebEngine_x86.zip"
-                },
-                {
-                    "name": "QWebEngine x64",
-                    "link": "https://github.com/HIllya51/RESOURCES/releases/download/softwares/QWebEngine_x64.zip"
+                    "name": "QWebEngine",
+                    "type": "group",
+                    "links": [
+                        {
+                            "name": "x86",
+                            "link": "https://github.com/HIllya51/RESOURCES/releases/download/softwares/QWebEngine_x86.zip"
+                        },
+                        {
+                            "name": "x64",
+                            "link": "https://github.com/HIllya51/RESOURCES/releases/download/softwares/QWebEngine_x64.zip"
+                        }
+                    ]
                 }
             ]
         }

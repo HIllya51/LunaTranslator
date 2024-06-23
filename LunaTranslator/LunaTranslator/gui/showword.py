@@ -5,7 +5,7 @@ from traceback import print_exc
 import qtawesome, requests, gobject, windows
 import myutils.ankiconnect as anki
 from myutils.hwnd import grabwindow
-from myutils.utils import getimageformat, parsekeystringtomodvkcode, unsupportkey
+from myutils.utils import parsekeystringtomodvkcode, unsupportkey
 from myutils.config import globalconfig, _TR, static_data
 from myutils.subproc import subproc_w
 from myutils.wrapper import threader
@@ -17,6 +17,7 @@ from gui.usefulwidget import (
     auto_select_webview,
     getboxlayout,
     getspinbox,
+    getsimplecombobox,
     getlineedit,
     listediterline,
     getsimpleswitch,
@@ -26,6 +27,17 @@ from gui.usefulwidget import (
     tabadd_lazy,
 )
 
+
+def getimageformatlist():
+    _ = [_.data().decode() for _ in QImageWriter.supportedImageFormats()]
+    if globalconfig["imageformat"] == -1 or globalconfig["imageformat"] >= len(_):
+        globalconfig["imageformat"] = _.index("png")
+    return _
+
+
+def getimageformat():
+
+    return getimageformatlist()[globalconfig["imageformat"]]
 
 class loopbackrecorder:
     def __init__(self):
@@ -374,6 +386,10 @@ class AnkiWindow(QWidget):
             getsimpleswitch(globalconfig["ankiconnect"], "autocrop"),
         )
         layout.addRow(
+            _TR("截图保存格式"),
+            getsimplecombobox(getimageformatlist(), globalconfig, "imageformat"),
+        )
+        layout.addRow(
             _TR("例句中加粗单词"),
             getsimpleswitch(globalconfig["ankiconnect"], "boldword"),
         )
@@ -608,7 +624,7 @@ class AnkiWindow(QWidget):
             if globalconfig["ankiconnect"]["addsuccautoclose"]:
                 self.parent().parent().parent().close()
             else:
-                QToolTip.showText(QCursor.pos(), _TR("添加_成功"), self)
+                QToolTip.showText(QCursor.pos(), _TR("添加成功"), self)
         except requests.NetWorkException:
             getQMessageBox(self, _TR("错误"), _TR("无法连接到anki"))
         except anki.AnkiException as e:

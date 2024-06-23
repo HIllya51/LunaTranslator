@@ -1,5 +1,6 @@
 from qtsymbols import *
 import functools, importlib
+from traceback import print_exc
 import qtawesome
 from myutils.config import globalconfig, _TR, _TRL
 from myutils.utils import makehtml
@@ -200,7 +201,10 @@ class autoinitdialog(QDialog):
                 l[0][l[1]] = l[2]()
             self.close()
             if callback:
-                callback()
+                try:
+                    callback()
+                except:
+                    print_exc()
 
         def __getv(l):
             return l
@@ -403,9 +407,6 @@ class postconfigdialog_(QDialog):
         formLayout = QVBoxLayout(self)  # 配置layout
 
         key = list(configdict.keys())[0]
-        lb = QLabel(self)
-        lb.setText(_TR(key))
-        formLayout.addWidget(lb)
 
         model = QStandardItemModel(len(configdict[key]), 1, self)
         row = 0

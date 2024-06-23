@@ -3,6 +3,7 @@ from rendertext.somefunctions import dataget
 import gobject, uuid, json, os, functools
 from urllib.parse import quote
 from myutils.config import globalconfig, static_data
+from myutils.wrapper import tryprint
 from gui.usefulwidget import WebivewWidget, QWebWrap
 
 testsavejs = False
@@ -11,6 +12,7 @@ testsavejs = False
 class TextBrowser(QWidget, dataget):
     contentsChanged = pyqtSignal(QSize)
 
+    @tryprint
     def resizeEvent(self, event: QResizeEvent):
         self.webivewwidget.resize(event.size())
         self.masklabel.resize(event.size())
@@ -39,6 +41,7 @@ class TextBrowser(QWidget, dataget):
         self.isfirst = True
         self._qweb_query_word()
 
+    @tryprint
     def showEvent(self, e):
         if not self.isfirst:
             return

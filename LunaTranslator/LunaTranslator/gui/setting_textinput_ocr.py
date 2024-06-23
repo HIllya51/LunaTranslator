@@ -50,24 +50,21 @@ def getocrgrid(self):
             _3 = ""
 
         line += [
-            ((globalconfig["ocr"][name]["name"]), 6),
-            (
-                D_getsimpleswitch(
-                    globalconfig["ocr"][name],
-                    "use",
-                    name=name,
-                    parent=self,
-                    callback=functools.partial(
-                        yuitsu_switch,
-                        self,
-                        globalconfig["ocr"],
-                        "ocrswitchs",
-                        name,
-                        None,
-                    ),
-                    pair="ocrswitchs",
+            globalconfig["ocr"][name]["name"],
+            D_getsimpleswitch(
+                globalconfig["ocr"][name],
+                "use",
+                name=name,
+                parent=self,
+                callback=functools.partial(
+                    yuitsu_switch,
+                    self,
+                    globalconfig["ocr"],
+                    "ocrswitchs",
+                    name,
+                    None,
                 ),
-                1,
+                pair="ocrswitchs",
             ),
             _3,
         ]
@@ -95,7 +92,7 @@ def getocrgrid(self):
             )
         ],
         [],
-        [("竖向识别"), D_getsimpleswitch(globalconfig, "verticalocr"), ("", 4)],
+        ["竖向识别", D_getsimpleswitch(globalconfig, "verticalocr"), ("", 4)],
         [],
         [
             (

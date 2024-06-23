@@ -65,7 +65,7 @@ def getttsgrid(self):
         if "args" in globalconfig["reader"][name]:
             items = autoinitdialog_items(globalconfig["reader"][name])
             items[-1]["callback"] = gobject.baseobject.startreader
-            _3 = D_getIconButton( 
+            _3 = D_getIconButton(
                 callback=functools.partial(
                     autoinitdialog,
                     self,
@@ -73,31 +73,28 @@ def getttsgrid(self):
                     800,
                     items,
                 ),
-                icon="fa.gear", 
+                icon="fa.gear",
             )
 
         else:
             _3 = ""
 
         line += [
-            ((globalconfig["reader"][name]["name"]), 6),
-            (
-                D_getsimpleswitch(
-                    globalconfig["reader"][name],
-                    "use",
-                    name=name,
-                    parent=self,
-                    callback=functools.partial(
-                        yuitsu_switch,
-                        self,
-                        globalconfig["reader"],
-                        "ttswitchs",
-                        name,
-                        gobject.baseobject.startreader,
-                    ),
-                    pair="ttswitchs",
+            globalconfig["reader"][name]["name"],
+            D_getsimpleswitch(
+                globalconfig["reader"][name],
+                "use",
+                name=name,
+                parent=self,
+                callback=functools.partial(
+                    yuitsu_switch,
+                    self,
+                    globalconfig["reader"],
+                    "ttswitchs",
+                    name,
+                    gobject.baseobject.startreader,
                 ),
-                1,
+                pair="ttswitchs",
             ),
             _3,
         ]
@@ -187,14 +184,14 @@ def setTab5lz(self):
                         [
                             "语音修正",
                             D_getsimpleswitch(globalconfig["ttscommon"], "tts_repair"),
-                            D_getIconButton( 
-                                callback=lambda x: noundictconfigdialog1(
+                            D_getIconButton(
+                                callback=lambda : noundictconfigdialog1(
                                     self,
                                     globalconfig["ttscommon"]["tts_repair_regex"],
                                     "语音修正",
                                     ["正则", "原文", "替换"],
                                 ),
-                                icon="fa.gear", 
+                                icon="fa.gear",
                             ),
                         ],
                     ],
