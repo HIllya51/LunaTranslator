@@ -8,9 +8,12 @@ from myutils.githubupdate import updatemethod, getvesionmethod
 from gui.usefulwidget import (
     D_getsimpleswitch,
     D_getsimplecombobox,
+    getsimplecombobox,
     makescrollgrid,
     makesubtab_lazy,
 )
+from gui.setting_display_text import on_not_find_qweb
+
 
 @threader
 def getversion(self):
@@ -139,10 +142,29 @@ def createimageview(self):
     return lb
 
 
+def _checkmaybefailed(self, idx):
+    if idx == 2 and not gobject.testuseqwebengine():
+        self.seletengeinecombo_1.setCurrentIndex(self.seletengeinecombo_1.lastindex)
+        on_not_find_qweb(self)
+        return
+    self.seletengeinecombo_1.lastindex = self.seletengeinecombo_1.currentIndex()
+
+
+def _createseletengeinecombo_1(self):
+
+    webviews = ["MSHTML", "WebView2", "QWebEngine"]
+    self.seletengeinecombo_1 = getsimplecombobox(
+        webviews,
+        globalconfig,
+        "usewebview",
+        callback=functools.partial(_checkmaybefailed, self),
+    )
+    self.seletengeinecombo_1.lastindex = self.seletengeinecombo_1.currentIndex()
+    return self.seletengeinecombo_1
+
+
 def setTab_aboutlazy(self, basel):
-    webviews = ["IEFrame", "WebView2"]
-    if gobject.testuseqwebengine():
-        webviews.append("QWebEngine")
+
     grid2 = [
         [
             ("自动下载更新(需要连接github)", 5),
@@ -162,11 +184,7 @@ def setTab_aboutlazy(self, basel):
         [("网页显示", -1)],
         [
             (
-                D_getsimplecombobox(
-                    webviews,
-                    globalconfig,
-                    "usewebview",
-                ),
+                functools.partial(_createseletengeinecombo_1, self),
                 5,
             )
         ],

@@ -1,13 +1,15 @@
 from qtsymbols import *
-import functools
+import functools, platform
 import gobject, os
 from myutils.config import globalconfig, _TRL, _TR, static_data
 from gui.inputdialog import multicolorset
 from myutils.wrapper import tryprint
 from gui.usefulwidget import (
     D_getsimplecombobox,
+    getsimplecombobox,
     Singleton_close,
     saveposwindow,
+    getQMessageBox,
     getsimpleswitch,
     D_getspinbox,
     getspinbox,
@@ -187,13 +189,35 @@ def createinternalfontsettings(self, forml, group, _type):
         )
 
 
+def on_not_find_qweb(self):
+    def _okcallback():
+
+        links = [
+            "https://github.com/HIllya51/RESOURCES/releases/download/softwares/QWebEngine_x86.zip",
+            "https://github.com/HIllya51/RESOURCES/releases/download/softwares/QWebEngine_x64.zip",
+        ][platform.architecture()[0] == "64bit"]
+        os.startfile(links)
+
+    getQMessageBox(
+        self,
+        _TR("错误"),
+        "未找到QWebEngine，点击确定前往下载QWebEngine",
+        True,
+        True,
+        okcallback=_okcallback,
+    )
+
+
 def resetgroudswitchcallback(self, group):
     clearlayout(self.goodfontsettingsformlayout)
 
     goodfontgroupswitch = FocusCombo()
 
-    # if group == "textbrowser" or group == "QWebEngine":
-
+    if group == "QWebEngine" and not gobject.testuseqwebengine():
+        self.seletengeinecombo.setCurrentIndex(self.seletengeinecombo.lastindex)
+        on_not_find_qweb(self)
+        return
+    self.seletengeinecombo.lastindex = self.seletengeinecombo.currentIndex()
     if group == "webview" or group == "QWebEngine":
         _btn = QPushButton(_TR("额外的html"))
         self.goodfontsettingsformlayout.addRow(_btn)
@@ -235,16 +259,28 @@ def creategoodfontwid(self):
         self, globalconfig["rendertext_using"]
     )
 
+
 def __changeselectablestate(self, x):
     gobject.baseobject.translation_ui.refreshtoolicon()
     gobject.baseobject.translation_ui.translate_text.textbrowser.setselectable(x)
 
+
+def _createseletengeinecombo(self):
+
+    visengine = ["Qt", "Webview2", "QWebEngine"]
+    visengine_internal = ["textbrowser", "webview", "QWebEngine"]
+    self.seletengeinecombo = getsimplecombobox(
+        visengine,
+        globalconfig,
+        "rendertext_using",
+        internallist=visengine_internal,
+        callback=functools.partial(resetgroudswitchcallback, self),
+    )
+    self.seletengeinecombo.lastindex = self.seletengeinecombo.currentIndex()
+    return self.seletengeinecombo
+
+
 def xianshigrid(self):
-    visengine = ["Webview2", "Qt"]
-    visengine_internal = ["webview", "textbrowser"]
-    if gobject.testuseqwebengine():
-        visengine.append("QWebEngine")
-        visengine_internal.append("QWebEngine")
     textgrid = [
         [
             (
@@ -303,15 +339,7 @@ def xianshigrid(self):
                         [
                             ("显示引擎_重启生效", 3),
                             (
-                                D_getsimplecombobox(
-                                    visengine,
-                                    globalconfig,
-                                    "rendertext_using",
-                                    internallist=visengine_internal,
-                                    callback=functools.partial(
-                                        resetgroudswitchcallback, self
-                                    ),
-                                ),
+                                functools.partial(_createseletengeinecombo, self),
                                 6,
                             ),
                         ],
@@ -437,7 +465,9 @@ def xianshigrid(self):
                             D_getsimpleswitch(
                                 globalconfig,
                                 "selectable",
-                                callback=functools.partial(__changeselectablestate,self),
+                                callback=functools.partial(
+                                    __changeselectablestate, self
+                                ),
                                 parent=self,
                                 name="selectable_btn",
                             ),

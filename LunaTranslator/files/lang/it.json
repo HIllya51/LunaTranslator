@@ -809,5 +809,6 @@
     "可选取的": "Selezionabile",
     "投影距离": "Distanza di proiezione",
     "反转颜色": "inverti colori",
-    "内嵌": "Incorporato"
+    "内嵌": "Incorporato",
+    "未找到QWebEngine，点击确定前往下载QWebEngine": "QWebEngine non trovato, fare clic su OK per scaricare QWebEngine"
 }

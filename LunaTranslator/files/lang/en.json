@@ -809,5 +809,6 @@
     "可选取的": "Selectable",
     "投影距离": "Projection distance",
     "反转颜色": "invert colors",
-    "内嵌": "Embedded"
+    "内嵌": "Embedded",
+    "未找到QWebEngine，点击确定前往下载QWebEngine": "QWebEngine not found, click OK to download QWebEngine"
 }
