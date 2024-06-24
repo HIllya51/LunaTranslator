@@ -123,7 +123,7 @@ for _d, _, _fs in os.walk("./LunaTranslator"):
 for dependency in all_dependencies:
     if dependency.startswith("./"):
         continue
-    if not dependency.startswitch(py37Path):
+    if not dependency.startswith(py37Path):
         continue
     print(dependency)
     end = dependency[len(py37Path) + 1 :]
