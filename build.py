@@ -288,4 +288,4 @@ if __name__ == "__main__":
     subprocess.run(f"{py37Path} -m pip install --upgrade pip")
     subprocess.run(f"{py37Path} -m pip install -r requirements.txt")
 
-    subprocess.run(f'{py37Path} retrieval.py {int(arch == "x86")}')
+    subprocess.run(f'{py37Path} retrieval.py')

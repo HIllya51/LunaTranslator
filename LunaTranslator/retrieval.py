@@ -4,7 +4,7 @@ import sys
 
 pyversion = platform.python_version()
 pyversion2 = "".join(pyversion.split(".")[:2])
-x86 = int(sys.argv[1]) if len(sys.argv) > 1 else 0
+x86 = platform.architecture()[0] == "32bit"
 if x86:
     downlevel = r"C:\Windows\SysWOW64\downlevel"
 
