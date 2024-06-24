@@ -258,6 +258,7 @@ if __name__ == "__main__":
             print("version=" + versionstring)
             exit()
     arch = sys.argv[1]
+    version = sys.argv[2]
     isdebug = len(sys.argv) > 2 and int(sys.argv[2])
     os.chdir(rootDir)
     os.system("git submodule update --init --recursive")
@@ -279,13 +280,13 @@ if __name__ == "__main__":
     os.chdir(rootDir)
 
     if arch == "x86":
-        py37Path = "C:\\hostedtoolcache\\windows\\Python\\3.7.9\\x86\\python.exe"
+        py37Path = f"C:\\hostedtoolcache\\windows\\Python\\{version}\\x86\\python.exe"
     else:
-        py37Path = "C:\\hostedtoolcache\\windows\\Python\\3.7.9\\x64\\python.exe"
+        py37Path = f"C:\\hostedtoolcache\\windows\\Python\\{version}\\x64\\python.exe"
 
     os.chdir(rootDir + "\\LunaTranslator")
 
     subprocess.run(f"{py37Path} -m pip install --upgrade pip")
     subprocess.run(f"{py37Path} -m pip install -r requirements.txt")
 
-    subprocess.run(f'{py37Path} retrieval.py')
+    subprocess.run(f"{py37Path} retrieval.py")

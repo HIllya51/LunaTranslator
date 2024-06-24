@@ -23,10 +23,10 @@ jobs:
         uses: GuillaumeFalourd/setup-windows10-sdk-action@v2
         with:
           sdk-version: 22621
-      - name: Install Python 3.7.9
+      - name: Install Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.7.9'
+          python-version: '3.8.10'
           architecture: ${{ matrix.architecture }}
       
       - name: Install Python 3.11
@@ -36,7 +36,7 @@ jobs:
           
       - name: Run build script
         run: |
-          python build.py ${{ matrix.architecture }}
+          python build.py ${{ matrix.architecture }} 3.8.10
       - uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.fname }}

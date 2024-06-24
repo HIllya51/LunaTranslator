@@ -1,4 +1,4 @@
-#python3.7.9
+#python3.8.10
 
 PyQt5==5.15.10
 PyQt5-Qt5==5.15.2
