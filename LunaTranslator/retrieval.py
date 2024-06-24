@@ -1,5 +1,6 @@
 import modulefinder, shutil, os, sys, pefile
 import builtins, platform
+import sys
 
 pyversion = platform.python_version()
 pyversion2 = "".join(pyversion.split(".")[:2])
@@ -12,11 +13,7 @@ if x86:
     launch = r"..\plugins\builds\_x86"
     baddll = "DLL64"
     gooddll = "DLL32"
-    py37Path = f"C:\\hostedtoolcache\\windows\\Python\\{pyversion}\\x86\\python.exe"
-    py37Pathlocal = (
-        os.environ["LOCALAPPDATA"]
-        + rf"\Programs\Python\Python{pyversion2}-32\python.exe"
-    )
+
     webviewappendix = r"Lib\site-packages\webviewpy\platform\win32\x86\webview.dll"
 else:
     baddll = "DLL32"
@@ -26,14 +23,10 @@ else:
     targetdir = r"..\build\LunaTranslator"
     downlevel = r"C:\Windows\system32\downlevel"
 
-    py37Path = f"C:\\hostedtoolcache\\windows\\Python\\{pyversion}\\x64\\python.exe"
-    py37Pathlocal = (
-        os.environ["LOCALAPPDATA"] + rf"\Programs\Python\Python{pyversion2}\python.exe"
-    )
     webviewappendix = r"Lib\site-packages\webviewpy\platform\win32\x64\webview.dll"
-if os.path.exists(py37Path) == False:
-    py37Path = py37Pathlocal
-py37Path = os.path.dirname(py37Path)
+
+py37Path = sys.executable
+print(py37Path)
 py37Pathwebview = os.path.join(py37Path, webviewappendix)
 
 
