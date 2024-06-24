@@ -1,6 +1,8 @@
 import modulefinder, shutil, os, sys, pefile
-import builtins
+import builtins, platform
 
+pyversion = platform.python_version()
+pyversion2 = "".join(pyversion.split(".")[:2])
 x86 = int(sys.argv[1]) if len(sys.argv) > 1 else 0
 if x86:
     downlevel = r"C:\Windows\SysWOW64\downlevel"
@@ -10,9 +12,10 @@ if x86:
     launch = r"..\plugins\builds\_x86"
     baddll = "DLL64"
     gooddll = "DLL32"
-    py37Path = "C:\\hostedtoolcache\\windows\\Python\\3.7.9\\x86\\python.exe"
+    py37Path = f"C:\\hostedtoolcache\\windows\\Python\\{pyversion}\\x86\\python.exe"
     py37Pathlocal = (
-        os.environ["LOCALAPPDATA"] + r"\Programs\Python\Python37-32\python.exe"
+        os.environ["LOCALAPPDATA"]
+        + rf"\Programs\Python\Python{pyversion2}-32\python.exe"
     )
     webviewappendix = r"Lib\site-packages\webviewpy\platform\win32\x86\webview.dll"
 else:
@@ -23,8 +26,10 @@ else:
     targetdir = r"..\build\LunaTranslator"
     downlevel = r"C:\Windows\system32\downlevel"
 
-    py37Path = "C:\\hostedtoolcache\\windows\\Python\\3.7.9\\x64\\python.exe"
-    py37Pathlocal = os.environ["LOCALAPPDATA"] + r"\Programs\Python\Python37\python.exe"
+    py37Path = f"C:\\hostedtoolcache\\windows\\Python\\{pyversion}\\x64\\python.exe"
+    py37Pathlocal = (
+        os.environ["LOCALAPPDATA"] + rf"\Programs\Python\Python{pyversion2}\python.exe"
+    )
     webviewappendix = r"Lib\site-packages\webviewpy\platform\win32\x64\webview.dll"
 if os.path.exists(py37Path) == False:
     py37Path = py37Pathlocal
@@ -125,6 +130,8 @@ for _d, _, _fs in os.walk("./LunaTranslator"):
 for dependency in all_dependencies:
     if dependency.startswith("./"):
         continue
+    if not dependency.startswitch(py37Path):
+        continue
     print(dependency)
     end = dependency[len(py37Path) + 1 :]
     if end.lower().startswith("lib"):
@@ -138,11 +145,11 @@ for dependency in all_dependencies:
     copycheck(dependency, tgtreal)
 
 
-with open(os.path.join(runtime, "python37._pth"), "w") as ff:
+with open(os.path.join(runtime, f"python{pyversion2}._pth"), "w") as ff:
     ff.write(".\n..")
 
 copycheck(os.path.join(py37Path, "python3.dll"), runtime)
-copycheck(os.path.join(py37Path, "python37.dll"), runtime)
+copycheck(os.path.join(py37Path, f"python{pyversion2}.dll"), runtime)
 copycheck(os.path.join(py37Path, "Dlls/sqlite3.dll"), runtime)
 
 copycheck(os.path.join(py37Path, "Lib/encodings"), runtime)
