@@ -1049,6 +1049,10 @@ class MAINUI:
             + (globalconfig["settingfonttype"])
             + "' ;  }"
         )
+        style += f"""
+        QListWidget {{
+                font:{globalconfig["settingfontsize"] + 4}pt  {globalconfig["settingfonttype"]};  }}
+            """
         self.commonstylebase.setStyleSheet(style)
 
     def loadui(self):

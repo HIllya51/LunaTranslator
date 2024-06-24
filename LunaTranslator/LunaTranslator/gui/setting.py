@@ -137,14 +137,9 @@ class Setting(closeashidewindow):
         )
         self.setCentralWidget(self.tab_widget)
         do()
-        self.tab_widget.setStyleSheet(
-            f"""QListWidget {{
-                font:{globalconfig["settingfontsize"] + 2}pt  {globalconfig["settingfonttype"]};  }}
-            """
-        )
         width = 0
         fn = QFont()
-        fn.setPointSizeF(globalconfig["settingfontsize"] + 2)
+        fn.setPointSizeF(globalconfig["settingfontsize"] + 4)
         fn.setFamily(globalconfig["settingfonttype"])
         fm = QFontMetrics(fn)
         for title in self.tab_widget.titles:
