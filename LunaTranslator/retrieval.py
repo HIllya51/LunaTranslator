@@ -25,7 +25,7 @@ else:
 
     webviewappendix = r"Lib\site-packages\webviewpy\platform\win32\x64\webview.dll"
 
-py37Path = sys.executable
+py37Path = os.path.dirname(sys.executable)
 print(py37Path)
 py37Pathwebview = os.path.join(py37Path, webviewappendix)
 
