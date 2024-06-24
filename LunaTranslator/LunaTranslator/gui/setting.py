@@ -144,7 +144,7 @@ class Setting(closeashidewindow):
         )
         width = 0
         fn = QFont()
-        fn.setPointSize(globalconfig["settingfontsize"] + 2)
+        fn.setPointSizeF(globalconfig["settingfontsize"] + 2)
         fn.setFamily(globalconfig["settingfonttype"])
         fm = QFontMetrics(fn)
         for title in self.tab_widget.titles:
