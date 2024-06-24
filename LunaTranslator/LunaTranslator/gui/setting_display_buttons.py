@@ -47,8 +47,8 @@ class dialog_selecticon(QDialog):
 
 
 def doadjust(_):
-    gobject.baseobject.translation_ui.enterfunction()
     gobject.baseobject.translation_ui.adjustbuttons()
+    gobject.baseobject.translation_ui.enterfunction()
 
 
 def changerank(item, up, sortlist, savelist, savelay):
