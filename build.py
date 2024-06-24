@@ -259,7 +259,6 @@ if __name__ == "__main__":
             exit()
     arch = sys.argv[1]
     version = sys.argv[2]
-    isdebug = len(sys.argv) > 2 and int(sys.argv[2])
     os.chdir(rootDir)
     os.system("git submodule update --init --recursive")
     os.makedirs("temp", exist_ok=True)
