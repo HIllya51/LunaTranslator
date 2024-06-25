@@ -1897,7 +1897,7 @@ class dialog_savedgame_new(QWidget):
 
         layout.addWidget(
             getIconButton(
-                lambda _: listediter(
+                lambda : listediter(
                     parent,
                     _TR("标签集"),
                     _TR("标签"),
