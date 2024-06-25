@@ -1620,7 +1620,7 @@ class listediter(QDialog):
                 QHeaderView.ResizeMode.ResizeToContents
             )
             table.horizontalHeader().setStretchLastSection(True)
-            if ispathsedit:
+            if not (ispathsedit is None):
                 table.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
             table.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
             table.setSelectionMode((QAbstractItemView.SelectionMode.SingleSelection))
@@ -1671,7 +1671,9 @@ class listediter(QDialog):
 
     def click1(self):
 
-        if self.ispathsedit:
+        if self.ispathsedit is None:
+            self.hcmodel.insertRow(0, [QStandardItem("")])
+        else:
             openfiledirectory(
                 "",
                 multi=False,
@@ -1680,8 +1682,6 @@ class listediter(QDialog):
                 filter1=self.ispathsedit.get("filter1", "*.*"),
                 callback=self.__cb,
             )
-        else:
-            self.hcmodel.insertRow(0, [QStandardItem("")])
 
 
 class listediterline(QLineEdit):
