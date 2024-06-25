@@ -1,7 +1,7 @@
-import modulefinder, shutil, os, sys, pefile
+import modulefinder, shutil, os, sys
 import builtins, platform
 import sys
-
+from importanalysis import importanalysis
 pyversion = platform.python_version()
 pyversion2 = "".join(pyversion.split(".")[:2])
 x86 = platform.architecture()[0] == "32bit"
@@ -222,31 +222,15 @@ for f in collect:
     if f.endswith(".pyc") or f.endswith("Thumbs.db"):
         os.remove(f)
     elif f.endswith(".exe") or f.endswith(".pyd") or f.endswith(".dll"):
-
-        try:
-            pe = pefile.PE(f)
-            import_table = pe.DIRECTORY_ENTRY_IMPORT
-            imports = []
-            for entry in import_table:
-                if entry.dll.decode("utf-8").lower().startswith("api"):
-                    imports.append(entry.dll.decode("utf-8"))
-            pe.close()
-        except:
-            continue
         if f.endswith("Magpie.Core.exe"):
             continue
-        if f.endswith("QtWidgets.pyd"):
-            imports += [
-                "api-ms-win-crt-runtime-l1-1-0.dll",
-                "api-ms-win-crt-heap-l1-1-0.dll",
-            ]
-            # pefile好像有bug，仅对于QtWidgets.pyd这个文件，只能读取到导入了Qt5Widgets.dll
+        imports=importanalysis(f)
         print(f, imports)
         if len(imports) == 0:
             continue
         with open(f, "rb") as ff:
             bs = bytearray(ff.read())
-        for _dll in imports:
+        for _dll,offset in imports:
             if _dll.lower().startswith("api-ms-win-core"):
                 # 其实对于api-ms-win-core-winrt-XXX实际上是到ComBase.dll之类的，不过此项目中不包含这些
                 _target = "kernel32.dll"
@@ -254,9 +238,8 @@ for f in collect:
                 _target = "ucrtbase.dll"
             _dll = _dll.encode()
             _target = _target.encode()
-            idx = bs.find(_dll)
             # print(len(bs))
-            bs[idx : idx + len(_dll)] = _target + b"\0" * (len(_dll) - len(_target))
+            bs[offset : offset + len(_dll)] = _target + b"\0" * (len(_dll) - len(_target))
             # print(len(bs))
         with open(f, "wb") as ff:
             ff.write(bs)
