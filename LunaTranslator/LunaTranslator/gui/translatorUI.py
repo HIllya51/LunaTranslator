@@ -577,6 +577,7 @@ class QUnFrameWindow(resizableframeless):
 
     def showEvent(self, e):
         if not self.firstshow:
+            self.enterfunction()
             return
         self.firstshow = False
         self.mousetransparent_check()
