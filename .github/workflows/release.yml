@@ -23,7 +23,7 @@ jobs:
       - name: Install Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.8.10'
+          python-version: '3.7.9'
           architecture: ${{ matrix.architecture }}
       - name: Install Python 3.11
         uses: actions/setup-python@v5
@@ -32,7 +32,7 @@ jobs:
           
       - name: Run build script
         run: |
-          python build.py ${{ matrix.architecture }} 3.8.10
+          python build.py ${{ matrix.architecture }} 3.7.9
       - uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.fname }}

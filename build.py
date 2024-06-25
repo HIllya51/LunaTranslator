@@ -290,4 +290,5 @@ if __name__ == "__main__":
     # 3.8之后会莫名其妙引用这个b东西，然后这个b东西会把一堆没用的东西导入进来
     shutil.rmtree(os.path.join(os.path.dirname(py37Path), "Lib\\test"))
     shutil.rmtree(os.path.join(os.path.dirname(py37Path), "Lib\\unittest"))
+    # 放弃，3.8需要安装KB2533623才能运行，3.7用不着。
     subprocess.run(f"{py37Path} retrieval.py")
