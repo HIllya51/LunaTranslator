@@ -446,8 +446,11 @@ class texthook(basetext):
 
             _data, tms = self.newline_delaywait.get()
             collector.append(_data)
-            now = time.time()
-            time.sleep(min(now - tms, self.config["textthreaddelay"])/1000)
+            targettime = tms + self.config["textthreaddelay"]
+            sleepdur = targettime - time.time()
+            sleepdur = max(0, sleepdur)
+            sleepdur /= 1000
+            time.sleep(sleepdur)
             if not self.newline_delaywait.empty():
                 continue
 
