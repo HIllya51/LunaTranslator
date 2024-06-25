@@ -236,6 +236,8 @@ for f in collect:
                 _target = "kernel32.dll"
             elif _dll.lower().startswith("api-ms-win-crt"):
                 _target = "ucrtbase.dll"
+            else:
+                continue
             _dll = _dll.encode()
             _target = _target.encode()
             # print(len(bs))
