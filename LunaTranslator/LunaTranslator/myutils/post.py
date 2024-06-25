@@ -373,22 +373,24 @@ def POSTSOLVE(line):
     usemypostpath = "./userconfig/mypost.py"
     usemodule = "mypost"
     try:
-        if gobject.baseobject.textsource and ("pname" in dir(gobject.baseobject.textsource)):
-            exepath = gobject.baseobject.textsource.pname
-            if not savehook_new_data[exepath]["textproc_follow_default"]:
-                useranklist = savehook_new_data[exepath]["save_text_process_info"][
+        if gobject.baseobject.textsource:
+            gameuid = gobject.baseobject.textsource.gameuid
+            if gameuid and not savehook_new_data[gameuid]["textproc_follow_default"]:
+                useranklist = savehook_new_data[gameuid]["save_text_process_info"][
                     "rank"
                 ]
-                usedpostprocessconfig = savehook_new_data[exepath][
+                usedpostprocessconfig = savehook_new_data[gameuid][
                     "save_text_process_info"
                 ]["postprocessconfig"]
-                if savehook_new_data[exepath]["save_text_process_info"]["mypost"]:
+                if savehook_new_data[gameuid]["save_text_process_info"].get(
+                    "mypost", None
+                ):
                     usemodule = (
                         "posts."
-                        + savehook_new_data[exepath]["save_text_process_info"]["mypost"]
+                        + savehook_new_data[gameuid]["save_text_process_info"]["mypost"]
                     )
                     usemypostpath = "./userconfig/posts/{}.py".format(
-                        savehook_new_data[exepath]["save_text_process_info"]["mypost"]
+                        savehook_new_data[gameuid]["save_text_process_info"]["mypost"]
                     )
     except:
         print_exc()

@@ -52,8 +52,10 @@ def doupdate():
     elif platform.architecture()[0] == "32bit":
         bit = "_x86"
         _6432 = "32"
-    os.makedirs("./cache", exist_ok=True)
-    shutil.copy(rf".\files\plugins\shareddllproxy{_6432}.exe", rf".\cache\Updater.exe")
+    shutil.copy(
+        rf".\files\plugins\shareddllproxy{_6432}.exe",
+        gobject.getcachedir("Updater.exe"),
+    )
     subprocess.Popen(rf".\cache\Updater.exe update .\cache\update\LunaTranslator{bit}")
 
 
@@ -82,9 +84,7 @@ def updatemethod(_version, self):
         _version, bit
     )
 
-    savep = "./cache/update/LunaTranslator{}.zip".format(bit)
-
-    os.makedirs("./cache/update", exist_ok=True)
+    savep = gobject.getcachedir("update/LunaTranslator{}.zip".format(bit))
 
     r2 = requests.get(
         url, stream=True, verify=False, proxies=getproxy(("github", "download"))
@@ -124,11 +124,9 @@ def updatemethod(_version, self):
 
 def uncompress(self, savep):
     self.progresssignal.emit("正在解压……", 10000)
-    os.makedirs("./cache/update", exist_ok=True)
-    if os.path.exists("./cache/update/LunaTranslator"):
-        shutil.rmtree("./cache/update/LunaTranslator")
+    shutil.rmtree(gobject.getcachedir("update/LunaTranslator"))
     with zipfile.ZipFile(savep) as zipf:
-        zipf.extractall("./cache/update")
+        zipf.extractall(gobject.getcachedir("update"))
 
 
 @threader

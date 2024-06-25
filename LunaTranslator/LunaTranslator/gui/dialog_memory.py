@@ -1,5 +1,5 @@
 from qtsymbols import *
-import os
+import os, gobject
 from myutils.config import _TR, globalconfig
 from myutils.wrapper import Singleton_close
 from gui.usefulwidget import saveposwindow
@@ -30,8 +30,7 @@ class dialog_memory(saveposwindow):
         self.gamemd5 = gamemd5
         formLayout = QVBoxLayout()  #
         self.showtext = QTextEdit()
-        os.makedirs("./userconfig/memory", exist_ok=True)
-        self.rwpath = "./userconfig/memory/{}.html".format(gamemd5)
+        self.rwpath = gobject.getuserconfigdir("memory/{}.html".format(gamemd5))
         try:
             with open(self.rwpath, "r", encoding="utf8") as ff:
                 text = ff.read()

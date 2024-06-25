@@ -1,7 +1,7 @@
 import requests, re, os
 from myutils.config import tryreadconfig, safesave
 import gzip, json
-import shutil
+import shutil, gobject
 
 from metadata.abstract import common
 
@@ -156,14 +156,12 @@ def safedownload(proxy):
             "https://dl.vndb.org/dump/vndb-tags-latest.json.gz",
             proxies=proxy,
         )
-        os.makedirs("cache/temp", exist_ok=True)
-        with open("cache/temp/vndb-tags-latest.json.gz", "wb") as ff:
+        jsongz = gobject.gettempdir("vndb-tags-latest.json.gz")
+        jsonfile = gobject.gettempdir("vndb-tags-latest.json")
+        with open(jsongz, "wb") as ff:
             ff.write(resp.content)
-        decompress_gzip_file(
-            "cache/temp/vndb-tags-latest.json.gz",
-            "cache/temp/vndb-tags-latest.json",
-        )
-        with open("cache/temp/vndb-tags-latest.json", "r", encoding="utf8") as ff:
+        decompress_gzip_file(jsongz, jsonfile)
+        with open(jsonfile, "r", encoding="utf8") as ff:
             js = json.load(ff)
         newjs = {}
         for item in js:
@@ -215,18 +213,6 @@ def getvntagsbyid(proxy, vid):
     return tags
 
 
-
-def gettagfromhtml(path):
-    if path and os.path.exists(path):
-        with open(path, "r", encoding="utf8") as ff:
-            html = ff.read()
-        find = re.search('<div id="vntags">([\\s\\S]*?)</div>', html)
-        if find:
-            html = find.groups()[0]
-            return [_[1] for _ in re.findall("<a(.*?)>(.*?)</a>", html)]
-    return []
-
-
 class searcher(common):
 
     def refmainpage(self, _id):
@@ -238,8 +224,27 @@ class searcher(common):
             return int(vid[1:])
         return None
 
+    def gettagfromhtml(self, _vid):
+
+        headers = {
+            "sec-ch-ua": '"Microsoft Edge";v="113", "Chromium";v="113", "Not-A.Brand";v="24"',
+            "Referer": "https://vndb.org/",
+            "sec-ch-ua-mobile": "?0",
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36 Edg/113.0.1774.42",
+            "sec-ch-ua-platform": '"Windows"',
+        }
+        try:
+            html = self.proxysession.get(self.refmainpage(_vid), headers=headers).text
+        except:
+            return []
+        find = re.search('<div id="vntags">([\\s\\S]*?)</div>', html)
+        if find:
+            html = find.groups()[0]
+            return [_[1] for _ in re.findall("<a(.*?)>(.*?)</a>", html)]
+        else:
+            return []
+
     def searchfordata(self, _vid):
-        os.makedirs("./cache/vndb", exist_ok=True)
         vid = "v{}".format(_vid)
         img = getimgbyid(self.proxy, vid)
         title = gettitlebyid(self.proxy, vid)
@@ -247,11 +252,7 @@ class searcher(common):
         vndbtags = []  # getvntagsbyid(self.proxy, vid) #这个东西谜之慢
         if len(vndbtags) == 0:
             # 没代理时下不动那个tag的json
-            vndbtags = gettagfromhtml(
-                self.dispatchdownloadtask(
-                    self.refmainpage(_vid), ishtml=True, delay=False
-                )
-            )
+            vndbtags = self.gettagfromhtml(_vid)
         developers = getdevelopersbyid(self.proxy, vid)
         try:
             imagepath_much2 = [

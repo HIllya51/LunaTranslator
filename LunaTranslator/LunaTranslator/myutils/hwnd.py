@@ -10,21 +10,19 @@ from myutils.wrapper import threader
 @threader
 def grabwindow(app="PNG", callback=None):
     if callback:
-        fnamebase = "cache/temp"
+        fname = gobject.gettempdir(time.strftime("%Y-%m-%d-%H-%M-%S", time.localtime()))
     else:
-        fnamebase = "cache/screenshot/{}".format(0)
+        dirname = "0"
+
         try:
             if gobject.baseobject.textsource.md5 != "0":
-                fnamebase = "cache/screenshot/{}".format(
-                    gobject.baseobject.textsource.basename
-                )
+                dirname = gobject.baseobject.textsource.basename
         except:
             pass
-    if os.path.exists(fnamebase) == False:
-        os.mkdir(fnamebase)
-    fname = "{}/{}".format(
-        fnamebase, time.strftime("%Y-%m-%d-%H-%M-%S", time.localtime())
-    )
+        fname = gobject.getcachedir(
+            f"screenshot/{dirname}/"
+            + time.strftime("%Y-%m-%d-%H-%M-%S", time.localtime()),
+        )
 
     hwnd = windows.FindWindow(
         "Window_Magpie_967EB565-6F73-4E94-AE53-00CC42592A22", None
@@ -154,8 +152,9 @@ def getExeIcon(name, icon=True, cache=False):
             name = exepath
     data = winsharedutils.extracticon2data(name)
     if cache:
-        os.makedirs("./cache/icon", exist_ok=True)
-        fn = "./cache/icon/{}.bmp".format(hashlib.md5(name.encode("utf8")).hexdigest())
+        fn = gobject.getcachedir(
+            "icon/{}.bmp".format(hashlib.md5(name.encode("utf8")).hexdigest())
+        )
     if data:
         pixmap = QPixmap()
         pixmap.loadFromData(data)

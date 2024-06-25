@@ -1,4 +1,4 @@
-import os, uuid
+import os, uuid, gobject
 from myutils.config import _TR, ocrsetting
 from ocrengines.baseocrclass import baseocr
 from myutils.subproc import subproc_w
@@ -24,8 +24,7 @@ class OCR(baseocr):
         if os.path.exists(path) == False:
             raise Exception(_TR("路径不存在"))
 
-        os.makedirs("cache/temp", exist_ok=True)
-        fname = "cache/temp/" + str(uuid.uuid4()) + ".png"
+        fname = gobject.gettempdir(str(uuid.uuid4()) + ".png")
         with open(fname, "wb") as ff:
             ff.write(imagebinary)
         imgfile = os.path.abspath(fname)

@@ -474,7 +474,6 @@ class delayloadvbox(QWidget):
         self.lock = threading.Lock()
         self.nowvisregion = QRect()
 
-
     def resizeEvent(self, e: QResizeEvent):
 
         if e.oldSize().width() != e.size().width():
@@ -483,6 +482,7 @@ class delayloadvbox(QWidget):
                     if isinstance(w, QWidget):
                         w.resize(self.width(), w.height())
         return super().resizeEvent(e)
+
     def _dovisinternal(self, procevent, region: QRect):
         if region.isEmpty():
             return
@@ -544,6 +544,12 @@ class delayloadvbox(QWidget):
             # setFixedHeight会导致上面的闪烁
         self._dovisinternal(False, self.nowvisregion)
 
+    def torank1(self, i):
+        with self.lock:
+            self.internal_widgets.insert(0, self.internal_widgets.pop(i))
+            self.internal_itemH.insert(0, self.internal_itemH.pop(i))
+        self._dovisinternal(False, self.nowvisregion)
+
     def insertw(self, i, wf, height):
         refresh = True
         with self.lock:
@@ -596,6 +602,9 @@ class shrinkableitem(QWidget):
 
     def insertw(self, i, wf, height):
         self.items.insertw(i, wf, height)
+
+    def torank1(self, i):
+        self.items.torank1(i)
 
     def popw(self, i):
         return self.items.popw(i)

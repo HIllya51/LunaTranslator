@@ -45,19 +45,24 @@ class common:
         Thread(target=self.__autodownloadimage).start()
 
     def __autodownloadimage(self):
+        def tryremove(pair):
+            try:
+                globalconfig["metadata"][self.typename]["downloadtasks"].remove(
+                    list(pair)
+                )
+            except:
+                pass
+
         while True:
-            url, save = self.__tasks.get()
+            pair = self.__tasks.get()
+            url, save = pair
             if os.path.exists(save):
+                tryremove(pair)
                 continue
             if self.__realdodownload(url, save):
-                try:
-                    globalconfig["metadata"][self.typename]["downloadtasks"].remove(
-                        (url, save)
-                    )
-                except:
-                    pass
+                tryremove(pair)
             else:
-                self.__tasks.put((url, save))
+                self.__tasks.put(pair)
             time.sleep(1)
 
     def __realdodownload(self, url, save):
@@ -73,36 +78,27 @@ class common:
         }
         try:
             _content = self.proxysession.get(url, headers=headers).content
+            os.makedirs(os.path.dirname(save), exist_ok=True)
             with open(save, "wb") as ff:
                 ff.write(_content)
             return True
         except:
             return False
 
-    def dispatchdownloadtask(self, url, ishtml=False, delay=True):
+    def dispatchdownloadtask(self, url):
         __routine = f"cache/metadata/{self.typename}"
         if self.typename == "vndb":
             __routine = "cache/vndb"
-        os.makedirs(__routine, exist_ok=True)
-        if ishtml:
-            __ = ".html"
+
+        if "." in url[5:]:
+            __ = url[url.rfind(".") :]
         else:
-            if "." in url[5:]:
-                __ = url[url.rfind(".") :]
-            else:
-                __ = ".jpg"
+            __ = ".jpg"
         savepath = f"{__routine}/{self.b64string(url)}{__}"
-        if delay:
-            globalconfig["metadata"][self.typename]["downloadtasks"].append(
-                (url, savepath)
-            )
-            self.__tasks.put((url, savepath))
-            return savepath
-        else:
-            if self.__realdodownload(url, savepath):
-                return savepath
-            else:
-                return None
+
+        globalconfig["metadata"][self.typename]["downloadtasks"].append((url, savepath))
+        self.__tasks.put((url, savepath))
+        return savepath
 
     def b64string(self, a):
         return hashlib.md5(a.encode("utf8")).hexdigest()

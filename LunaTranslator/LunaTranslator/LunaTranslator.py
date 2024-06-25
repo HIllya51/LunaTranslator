@@ -6,6 +6,8 @@ from myutils.config import (
     globalconfig,
     _TR,
     savehook_new_list,
+    uid2gamepath,
+    gamepath2uid,
     savehook_new_data,
     setlanguage,
     static_data,
@@ -407,7 +409,9 @@ class MAINUI:
         try:
             time.sleep(globalconfig["textthreaddelay"] / 1000)
             name = self.textsource.currentname
-            names = savehook_new_data[self.textsource.pname]["allow_tts_auto_names_v4"]
+            names = savehook_new_data[self.textsource.gameuid][
+                "allow_tts_auto_names_v4"
+            ]
             needpass = False
             if name in names:
                 needpass = True
@@ -438,7 +442,7 @@ class MAINUI:
                 text = self.ttsrepair(self.currentread, globalconfig["ttscommon"])
                 try:
                     text = self.ttsrepair(
-                        text, savehook_new_data[self.textsource.pname]
+                        text, savehook_new_data[self.textsource.gameuid]
                     )
                 except:
                     pass
@@ -476,7 +480,8 @@ class MAINUI:
         pids, pexe, hwnd = selectedp
         checkifnewgame(savehook_new_list, pexe, windows.GetWindowText(hwnd))
         if globalconfig["sourcestatus2"]["texthook"]["use"]:
-            self.textsource = texthook(pids, hwnd, pexe)
+            self.textsource = texthook(pids, hwnd, pexe, gamepath2uid[pexe])
+            self.textsource.start()
 
     def starttextsource(self, use=None, checked=True):
         self.translation_ui.showhidestate = False
@@ -683,7 +688,11 @@ class MAINUI:
                     hwnd = windows.GetForegroundWindow()
                     pid = windows.GetWindowThreadProcessId(hwnd)
                     name_ = getpidexe(pid)
-                    if name_ and name_ in savehook_new_list:
+                    if (
+                        name_
+                        and name_ in gamepath2uid
+                        and gamepath2uid[name_] in savehook_new_list
+                    ):
                         lps = ListProcess(False)
                         for pids, _exe in lps:
                             if _exe == name_:
@@ -692,23 +701,26 @@ class MAINUI:
                                 self.textsource = None
                                 if globalconfig["sourcestatus2"]["texthook"]["use"]:
                                     if globalconfig["startgamenototop"] == False:
-                                        idx = savehook_new_list.index(name_)
+                                        idx = savehook_new_list.index(
+                                            gamepath2uid[name_]
+                                        )
                                         savehook_new_list.insert(
                                             0, savehook_new_list.pop(idx)
                                         )
-                                    needinserthookcode = savehook_new_data[name_][
-                                        "needinserthookcode"
-                                    ]
+                                    needinserthookcode = savehook_new_data[
+                                        gamepath2uid[name_]
+                                    ]["needinserthookcode"]
                                     self.textsource = texthook(
                                         pids,
                                         hwnd,
                                         name_,
-                                        autostarthookcode=savehook_new_data[name_][
-                                            "hook"
-                                        ],
+                                        gamepath2uid[name_],
+                                        autostarthookcode=savehook_new_data[
+                                            gamepath2uid[name_]
+                                        ]["hook"],
                                         needinserthookcode=needinserthookcode,
                                     )
-
+                                    self.textsource.start()
                 else:
                     pids = self.textsource.pids
                     if sum([int(pid_running(pid)) for pid in pids]) == 0:
@@ -778,9 +790,10 @@ class MAINUI:
         )
 
     def createsavegamedb(self):
-        os.makedirs("userconfig", exist_ok=True)
         self.sqlsavegameinfo = sqlite3.connect(
-            "userconfig/savegame.db", check_same_thread=False, isolation_level=None
+            gobject.getuserconfigdir("savegame.db"),
+            check_same_thread=False,
+            isolation_level=None,
         )
         try:
             self.sqlsavegameinfo.execute(
@@ -843,21 +856,22 @@ class MAINUI:
         savehook_new_data[k].pop("imagepath")
         savehook_new_data[k].pop("imagepath_much2")
 
-    def querytraceplaytime_v4(self, k):
-        gameinternalid = self.get_gameinternalid(k)
+    def querytraceplaytime_v4(self, gameuid):
+        gameinternalid = self.get_gameinternalid(uid2gamepath[gameuid])
         return self.sqlsavegameinfo.execute(
             "SELECT timestart,timestop FROM traceplaytime_v4 WHERE gameinternalid = ?",
             (gameinternalid,),
         ).fetchall()
 
-    def get_gameinternalid(self, k):
+    def get_gameinternalid(self, gamepath):
         while True:
             ret = self.sqlsavegameinfo.execute(
-                "SELECT gameinternalid FROM gameinternalid WHERE gamepath = ?", (k,)
+                "SELECT gameinternalid FROM gameinternalid WHERE gamepath = ?",
+                (gamepath,),
             ).fetchone()
             if ret is None:
                 self.sqlsavegameinfo.execute(
-                    "INSERT INTO gameinternalid VALUES(NULL,?)", (k,)
+                    "INSERT INTO gameinternalid VALUES(NULL,?)", (gamepath,)
                 )
             else:
                 return ret[0]
@@ -869,9 +883,9 @@ class MAINUI:
             (to, _id),
         )
 
-    def traceplaytime(self, k, start, end, new):
+    def traceplaytime(self, gamepath, start, end, new):
 
-        gameinternalid = self.get_gameinternalid(k)
+        gameinternalid = self.get_gameinternalid(gamepath)
         if new:
             self.sqlsavegameinfo.execute(
                 "INSERT INTO traceplaytime_v4 VALUES(NULL,?,?,?)",
@@ -891,16 +905,21 @@ class MAINUI:
             time.sleep(1)
             _t = time.time()
 
-            def isok(name_):
-                savehook_new_data[name_]["statistic_playtime"] += _t - __t
+            def isok(gameuid):
+                savehook_new_data[gameuid]["statistic_playtime"] += _t - __t
                 if self.__currentexe == name_:
-                    self.traceplaytime(name_, self.__statistictime - 1, _t, False)
+                    self.traceplaytime(
+                        uid2gamepath[gameuid], self.__statistictime - 1, _t, False
+                    )
 
                 else:
                     self.__statistictime = time.time()
                     self.__currentexe = name_
                     self.traceplaytime(
-                        name_, self.__statistictime - 1, self.__statistictime, True
+                        uid2gamepath[gameuid],
+                        self.__statistictime - 1,
+                        self.__statistictime,
+                        True,
                     )
 
             try:
@@ -911,13 +930,17 @@ class MAINUI:
                     if len(self.textsource.pids) == 0:
                         raise Exception()
                     if _pid in self.textsource.pids or _pid == os.getpid():
-                        isok(self.textsource.pname)
+                        isok(self.textsource.gameuid)
                     else:
                         self.__currentexe = None
                 except:
                     name_ = getpidexe(_pid)
-                    if name_ and name_ in savehook_new_list:
-                        isok(name_)
+                    if (
+                        name_
+                        and name_ in gamepath2uid
+                        and gamepath2uid[name_] in savehook_new_list
+                    ):
+                        isok(gamepath2uid[name_])
                     else:
                         self.__currentexe = None
             except:

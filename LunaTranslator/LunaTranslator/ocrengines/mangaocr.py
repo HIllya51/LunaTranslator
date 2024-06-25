@@ -1,15 +1,12 @@
 import requests
 from ocrengines.baseocrclass import baseocr
-import os, uuid
-from myutils.ocrutil import binary2qimage
-
+import os, uuid, gobject
 
 class OCR(baseocr):
 
     def ocr(self, imagebinary):
 
-        os.makedirs("cache/temp", exist_ok=True)
-        fname = "cache/temp/" + str(uuid.uuid4()) + ".png"
+        fname = gobject.gettempdir(str(uuid.uuid4()) + ".png")
         with open(fname, "wb") as ff:
             ff.write(imagebinary)
         self.checkempty(["Port"])

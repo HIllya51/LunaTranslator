@@ -7,6 +7,7 @@ from myutils.config import (
     _TR,
     _TRL,
     savehook_new_data,
+    uid2gamepath,
     savehook_new_list,
     static_data,
 )
@@ -176,7 +177,7 @@ def gethookgrid(self):
     return grids
 
 
-def doexportchspatch(exe, realgame):
+def doexportchspatch(exe, gameuid):
 
     b = windows.GetBinaryType(exe)
     is64 = b == 6
@@ -199,10 +200,10 @@ def doexportchspatch(exe, realgame):
     embedconfig = {
         "translation_file": "translation.json",
         "target_exe": os.path.basename(exe),
-        "target_exe2": os.path.basename(realgame),
+        "target_exe2": os.path.basename(exe),
         "startup_argument": None,
         "inject_timeout": 1000,
-        "embedhook": savehook_new_data[realgame]["embedablehook"],
+        "embedhook": savehook_new_data[gameuid]["embedablehook"],
         "embedsettings": {
             "font": (
                 globalconfig["embedded"]["changefont_font"]
@@ -219,7 +220,7 @@ def doexportchspatch(exe, realgame):
         ff.write(json.dumps(embedconfig, ensure_ascii=False, indent=4))
 
 
-def getunknowgameexe(self):
+def selectgameuid(self):
 
     dialog = QDialog(self, Qt.WindowType.WindowCloseButtonHint)  # 自定义一个dialog
     dialog.setWindowTitle(_TR("选择游戏"))
@@ -245,10 +246,10 @@ def getunknowgameexe(self):
 
 
 def exportchspatch(self):
-    realgame = getunknowgameexe(self)
-    if realgame is None:
+    gameuid = selectgameuid(self)
+    if gameuid is None:
         return
-    exe = realgame
+    exe = uid2gamepath[gameuid]
     if exe.lower().endswith(".exe") == False:
         f = QFileDialog.getOpenFileName(
             self, caption=_TR("选择EXE文件"), filter="*.exe"
@@ -257,16 +258,15 @@ def exportchspatch(self):
         if exe == "":
             return
         exe = os.path.normpath(exe)
-    doexportchspatch(exe, realgame)
+    doexportchspatch(exe, gameuid)
     md5 = getfilemd5(exe)
     name = os.path.basename(exe).replace("." + os.path.basename(exe).split(".")[-1], "")
-    os.makedirs("./translation_record", exist_ok=True)
-    sqlfname_all = "./translation_record/" + name + "_" + md5 + ".sqlite"
+    sqlfname_all = gobject.gettranslationrecorddir(name + "_" + md5 + ".sqlite")
     if os.path.exists(sqlfname_all) == False:
         f = QFileDialog.getOpenFileName(
             self,
             caption=_TR("选择预翻译文件"),
-            directory="./translation_record/",
+            directory="translation_record",
             filter="*.sqlite",
         )
         sqlfname_all = f[0]
@@ -388,10 +388,10 @@ def getTabclip(self):
 
     grids = [
         [
-            "排除复制自翻译器的文本", 
+            "排除复制自翻译器的文本",
             D_getsimpleswitch(globalconfig, "excule_from_self"),
             "",
-            ""
+            "",
         ]
     ]
     return grids

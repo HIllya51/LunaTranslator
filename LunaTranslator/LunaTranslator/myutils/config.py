@@ -4,22 +4,23 @@ from traceback import print_exc
 
 
 def tryreadconfig(path, default=None):
+    path = os.path.join("userconfig", path)
+    if not os.path.exists(path):
+        path += ".tmp"
+    dfret = default if default else {}
+    if not os.path.exists(path):
+        return dfret
     try:
-        path = os.path.join("./userconfig/", path)
-        if os.path.exists(path) == False:
-            path += ".tmp"
-        if os.path.exists(path):
-            with open(path, "r", encoding="utf-8") as ff:
-                x = json.load(ff)
-        else:
-            x = default if default else {}
+        with open(path, "r", encoding="utf-8") as ff:
+            x = json.load(ff)
+
         return x
     except:
-        return {}
+        return dfret
 
 
 def tryreadconfig2(path):
-    path = os.path.join("./files/defaultconfig/", path)
+    path = os.path.join("files/defaultconfig", path)
     with open(path, "r", encoding="utf-8") as ff:
         x = json.load(ff)
     return x
@@ -41,25 +42,67 @@ magpie_config = tryreadconfig("magpie_config.json")
 postprocessconfig = tryreadconfig("postprocessconfig.json")
 noundictconfig = tryreadconfig("noundictconfig.json")
 transerrorfixdictconfig = tryreadconfig("transerrorfixdictconfig.json")
-_savehook = tryreadconfig("savehook_new_1.39.4.json", default=[[], {}])
-try:
+_savehook = tryreadconfig("savegamedata_5.3.1.json")
+if _savehook:
+    # 新版
+    # savehook_new_list: [uid,...]
+    # savehook_new_data:{uid:dict,...}
+    # savegametaged:[ None, {'games':[uid,...],'title':str,'opened':bool,'uid':str},...]
+    # gamepath2uid:{gamepath:uid}
     savehook_new_list = _savehook[0]
     savehook_new_data = _savehook[1]
-except:
-    savehook_new_list = []
-    savehook_new_data = {}
-
-try:
     savegametaged = _savehook[2]
-except:
-    savegametaged = [None]
+    gamepath2uid = _savehook[3]
+else:
 
+    _savehook = tryreadconfig("savehook_new_1.39.4.json", default=[[], {}])
+    
+    # savehook_new_list: [gamepath,...]
+    # savehook_new_data:{gamepath:dict,...}
+    # savegametaged: 可能没有该项 [ None, {'games':[gamepath,...],'title':str,'opened':bool,'uid':str},...]
+    try:
+        savehook_new_list = _savehook[0]
+        savehook_new_data = _savehook[1]
+    except:
+        savehook_new_list = []
+        savehook_new_data = {}
+
+    try:
+        savegametaged = _savehook[2]
+    except:
+        savegametaged = [None]
+
+    # 将savehook_new_data转换为新的格式
+    gamepath2uid = {}
+    __savehook_new_data = {}
+    for k in savehook_new_data:
+        uid = f"{time.time()}_{uuid.uuid4()}"
+
+        __savehook_new_data[uid] = savehook_new_data[k]
+        __savehook_new_data[uid].update(gamepath=k)
+        gamepath2uid[k] = uid
+    savehook_new_data = __savehook_new_data
+
+    # 将global游戏表和自定义子列表都转换成新格式
+    def parselist(ls):
+        for i in range(len(ls)):
+            ori = ls[i]
+            if ori not in gamepath2uid:
+                continue
+            ls[i] = gamepath2uid[ori]
+
+    parselist(savehook_new_list)
+    for sub in savegametaged:
+        if sub is None:
+            continue
+        parselist(sub["games"])
 translatorsetting = tryreadconfig("translatorsetting.json")
 ocrsetting = tryreadconfig("ocrsetting.json")
 
 
 def getdefaultsavehook(gamepath, title=None):
     default = {
+        # "gamepath": gamepath,
         "hooksetting_follow_default": True,
         "hooksetting_private": {},  # 显示时再加载，缺省用global中的键
         "textproc_follow_default": True,
@@ -71,6 +114,8 @@ def getdefaultsavehook(gamepath, title=None):
         "lang_follow_default": True,
         # "private_srclang": 0,# 显示时再加载，缺省用global中的键
         # "private_tgtlang": 0,
+        "follow_default_ankisettings": True,
+        # "anki_DeckName":str
         "localeswitcher": 0,
         "onloadautochangemode2": 0,
         "needinserthookcode": [],
@@ -132,19 +177,31 @@ def getdefaultsavehook(gamepath, title=None):
 
 
 _dfsavehook = getdefaultsavehook("")
-for game in savehook_new_data:
+for uid in savehook_new_data:
     if (
-        ("allow_tts_auto_names_v4" not in savehook_new_data[game])
-        and ("allow_tts_auto_names" in savehook_new_data[game])
-        and len(savehook_new_data[game]["allow_tts_auto_names"])
+        ("allow_tts_auto_names_v4" not in savehook_new_data[uid])
+        and ("allow_tts_auto_names" in savehook_new_data[uid])
+        and len(savehook_new_data[uid]["allow_tts_auto_names"])
     ):
-        savehook_new_data[game]["allow_tts_auto_names_v4"] = savehook_new_data[game][
+        savehook_new_data[uid]["allow_tts_auto_names_v4"] = savehook_new_data[uid][
             "allow_tts_auto_names"
         ].split("|")
 
     for k in _dfsavehook:
-        if k not in savehook_new_data[game]:
-            savehook_new_data[game][k] = _dfsavehook[k]
+        if k not in savehook_new_data[uid]:
+            savehook_new_data[uid][k] = _dfsavehook[k]
+
+
+class __uid2gamepath:
+    def __setitem__(self, uid, value):
+
+        savehook_new_data[uid]["gamepath"] = value
+
+    def __getitem__(self, uid):
+        return savehook_new_data.get(uid, {}).get("gamepath", None)
+
+
+uid2gamepath = __uid2gamepath()
 
 
 def syncconfig(config1, default, drop=False, deep=0, skipdict=False):
@@ -367,8 +424,8 @@ def saveallconfig():
     safesave("./userconfig/ocrerrorfix.json", ocrerrorfix)
     safesave("./userconfig/ocrsetting.json", ocrsetting)
     safesave(
-        "./userconfig/savehook_new_1.39.4.json",
-        [savehook_new_list, savehook_new_data, savegametaged],
+        "./userconfig/savegamedata_5.3.1.json",
+        [savehook_new_list, savehook_new_data, savegametaged, gamepath2uid],
     )
     safesave(
         "./files/lang/{}.json".format(getlanguse()),

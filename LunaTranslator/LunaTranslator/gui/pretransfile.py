@@ -95,7 +95,7 @@ def sqlite2json2(self, sqlitefile, targetjson=None, existsmerge=False):
             for k in existsjs:
                 if k not in js_format2 or js_format2[k] == "":
                     js_format2[k] = existsjs[k]
-
+        os.makedirs(os.path.dirname(target), exist_ok=True)
         with open(target, "w", encoding="utf8") as ff:
             ff.write(
                 json.dumps(js_format2, ensure_ascii=False, sort_keys=False, indent=4)
@@ -109,8 +109,7 @@ def sqlite2json2(self, sqlitefile, targetjson=None, existsmerge=False):
 
 
 def sqlite2json(self):
-    os.makedirs("./translation_record", exist_ok=True)
-    f = QFileDialog.getOpenFileName(directory="./translation_record", filter="*.sqlite")
+    f = QFileDialog.getOpenFileName(directory="translation_record", filter="*.sqlite")
     if f[0] == "":
         return
 

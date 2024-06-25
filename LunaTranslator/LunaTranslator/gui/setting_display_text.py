@@ -72,8 +72,9 @@ class extrahtml(saveposwindow):
         )
 
     def savehtml(self):
-        os.makedirs("userconfig", exist_ok=True)
-        with open("userconfig/extrahtml.html", "w", encoding="utf8") as ff:
+        with open(
+            gobject.getuserconfigdir("extrahtml.html"), "w", encoding="utf8"
+        ) as ff:
             ff.write(self.vistext.toPlainText())
 
     def __init__(self, parent) -> None:
@@ -188,8 +189,7 @@ def doinstallqweb(self, dd, base):
         getQMessageBox(self, "错误", f"请选择_{base}")
         return
     with zipfile.ZipFile(dd["k"]) as zipf:
-        target = "cache/temp/QWebEngine"
-        os.makedirs(target, exist_ok=True)
+        target = gobject.gettempdir("QWebEngine/")
         zipf.extractall(target)
         bit = ["x86", "x64"][platform.architecture()[0] == "64bit"]
         copytree(f"{target}/{bit}/PyQt5", "LunaTranslator/runtime/PyQt5")

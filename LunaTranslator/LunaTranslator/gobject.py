@@ -15,6 +15,30 @@ def GetDllpath(_, base=None):
         return os.path.join(base, _[isbit64])
 
 
+def getcachedir(name, basedir="cache"):
+
+    fd = os.path.dirname(name)
+    fn = os.path.basename(name)
+    fn1 = os.path.abspath(basedir)
+    fn1 = os.path.join(fn1, fd)
+    os.makedirs(fn1, exist_ok=True)
+    fn1 = os.path.join(fn1, fn)
+    return fn1
+
+
+def getuserconfigdir(name):
+    return getcachedir(name, "userconfig")
+
+
+def gettranslationrecorddir(name):
+    return getcachedir(name, "translation_record")
+
+
+def gettempdir(filename):
+    tgt = getcachedir(os.path.join(f"temp{os.getpid()}", filename))
+    return tgt
+
+
 def dopathexists(file):
     if not file:
         return False

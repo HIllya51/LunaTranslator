@@ -6,8 +6,8 @@ class Process:
 
     def process_before(self, s):
 
-        exepath = gobject.baseobject.textsource.pname
-        namemap = savehook_new_data[exepath]["namemap"]
+        gameuid = gobject.baseobject.textsource.gameuid
+        namemap = savehook_new_data[gameuid]["namemap"]
         bettermap = {}
         for k, v in namemap.items():
             for sp in ["・", " "]:

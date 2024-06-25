@@ -6,7 +6,7 @@
 	},
 	"DeepLX": {
 		"args": {
-			"api": "https://api.deeplx.org/translate"
+			"api": ""
 		}
 	},
 	"baiduapi": {

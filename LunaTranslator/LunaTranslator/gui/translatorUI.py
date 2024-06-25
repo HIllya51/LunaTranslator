@@ -3,11 +3,11 @@ import time, functools, threading, os, sys, importlib, shutil
 from traceback import print_exc
 import windows, qtawesome, gobject, winsharedutils
 from myutils.wrapper import threader, trypass
-from myutils.config import globalconfig, saveallconfig, _TR, static_data
+from myutils.config import globalconfig, saveallconfig, _TR, static_data, gamepath2uid
 from myutils.subproc import endsubprocs
 from myutils.ocrutil import ocr_run, imageCut
 from myutils.utils import loadpostsettingwindowmethod, str2rgba
-from myutils.hwnd import mouseselectwindow, grabwindow, getExeIcon
+from myutils.hwnd import mouseselectwindow, grabwindow, getExeIcon, getpidexe
 from gui.setting_about import doupdate
 from gui.dialog_memory import dialog_memory
 from gui.textbrowser import Textbrowser
@@ -381,7 +381,7 @@ class QUnFrameWindow(resizableframeless):
                 "open_relative_link",
                 lambda: browserdialog(
                     gobject.baseobject.commonstylebase,
-                    trypass(lambda: gobject.baseobject.textsource.pname)(),
+                    trypass(lambda: gobject.baseobject.textsource.gameuid)(),
                 ),
             ),
             (
@@ -797,6 +797,9 @@ class QUnFrameWindow(resizableframeless):
         gobject.baseobject.textsource.hwnd = hwnd if pid != _pid else None
         if not globalconfig["sourcestatus2"]["texthook"]["use"]:
             gobject.baseobject.textsource.pids = [pid] if pid != _pid else None
+            gameuid = gamepath2uid.get(getpidexe(pid), None)
+            if gameuid:
+                gobject.baseobject.textsource.gameuid = gameuid
         self.isbindedwindow = pid != _pid
         self.refreshtoolicon()
 
@@ -1007,7 +1010,7 @@ class QUnFrameWindow(resizableframeless):
     def tryremoveuseless(self):
 
         try:
-            shutil.rmtree("./cache/temp")
+            shutil.rmtree(gobject.gettempdir(''))
         except:
             pass
         try:

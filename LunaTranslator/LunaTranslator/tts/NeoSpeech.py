@@ -2,7 +2,7 @@ import time
 import os
 import windows
 from tts.basettsclass import TTSbase
-import ctypes, subprocess
+import ctypes, subprocess, gobject
 from myutils.subproc import subproc_w, autoproc
 from ctypes import cast, POINTER, c_char, c_int32
 
@@ -69,8 +69,7 @@ class TTS(TTSbase):
         return self.mapx[(hk, idx)]
 
     def getvoicelist(self):
-        os.makedirs("cache/temp", exist_ok=True)
-        cachefname = os.path.abspath("cache/temp/{}.txt".format(time.time()))
+        cachefname = gobject.gettempdir(f"{time.time()}.txt")
         exe = os.path.abspath("./files/plugins/shareddllproxy32.exe")
         subprocess.run('"{}"  neospeechlist "{}"'.format(exe, cachefname))
 

@@ -109,10 +109,12 @@ class basetrans(commonbase):
 
         if self.transtype != "pre":
             try:
-                os.makedirs("./translation_record/cache", exist_ok=True)
+
                 self.sqlwrite2 = autosql(
                     sqlite3.connect(
-                        "./translation_record/cache/{}.sqlite".format(self.typename),
+                        gobject.gettranslationrecorddir(
+                            "cache/{}.sqlite".format(self.typename)
+                        ),
                         check_same_thread=False,
                         isolation_level=None,
                     )

@@ -6,7 +6,7 @@ import qtawesome, requests, gobject, windows
 import myutils.ankiconnect as anki
 from myutils.hwnd import grabwindow
 from myutils.utils import parsekeystringtomodvkcode, unsupportkey
-from myutils.config import globalconfig, _TR, static_data
+from myutils.config import globalconfig, _TR, static_data, savehook_new_data
 from myutils.subproc import subproc_w
 from myutils.wrapper import threader
 from myutils.ocrutil import imageCut, ocr_run
@@ -39,12 +39,10 @@ def getimageformat():
 
     return getimageformatlist()[globalconfig["imageformat"]]
 
+
 class loopbackrecorder:
     def __init__(self):
-        os.makedirs("cache/temp", exist_ok=True)
-        self.file = os.path.abspath(
-            os.path.join("cache/temp", str(time.time()) + ".wav")
-        )
+        self.file = gobject.gettempdir(str(time.time()) + ".wav")
         try:
             self.waitsignal = str(time.time())
             self.engine = subproc_w(
@@ -112,8 +110,7 @@ class AnkiWindow(QWidget):
     refreshhtml = pyqtSignal()
 
     def callbacktts(self, edit, data):
-        fname = "cache/temp/" + str(uuid.uuid4()) + ".mp3"
-        os.makedirs("cache/temp", exist_ok=True)
+        fname = gobject.gettempdir(str(uuid.uuid4()) + ".mp3")
         with open(fname, "wb") as ff:
             ff.write(data)
         edit.setText(os.path.abspath(fname))
@@ -140,8 +137,7 @@ class AnkiWindow(QWidget):
             img = imageCut(
                 0, rect[0][0], rect[0][1], rect[1][0], rect[1][1], False, True
             )
-            fname = "cache/temp/" + str(uuid.uuid4()) + "." + getimageformat()
-            os.makedirs("cache/temp", exist_ok=True)
+            fname = gobject.gettempdir(str(uuid.uuid4()) + "." + getimageformat())
             img.save(fname)
             self.editpath.setText(os.path.abspath(fname))
             if globalconfig["ankiconnect"]["ocrcroped"]:
@@ -337,12 +333,17 @@ class AnkiWindow(QWidget):
         model_htmlfront = self.fronttext.toPlainText()
         model_htmlback = self.backtext.toPlainText()
         model_css = self.csstext.toPlainText()
-        os.makedirs("userconfig/anki", exist_ok=True)
-        with open("userconfig/anki/back.html", "w", encoding="utf8") as ff:
+        with open(
+            gobject.getuserconfigdir("anki/back.html"), "w", encoding="utf8"
+        ) as ff:
             ff.write(model_htmlback)
-        with open("userconfig/anki/front.html", "w", encoding="utf8") as ff:
+        with open(
+            gobject.getuserconfigdir("anki/front.html"), "w", encoding="utf8"
+        ) as ff:
             ff.write(model_htmlfront)
-        with open("userconfig/anki/style.css", "w", encoding="utf8") as ff:
+        with open(
+            gobject.getuserconfigdir("anki/style.css"), "w", encoding="utf8"
+        ) as ff:
             ff.write(model_css)
 
     def creatsetdtab(self, baselay):
@@ -431,14 +432,34 @@ class AnkiWindow(QWidget):
 
     @threader
     def simulate_key(self, i):
-        if not globalconfig["ankiconnect"]["simulate_key"][i]["use"]:
+        def __internal__keystring(i):
+            try:
+                for _ in (0,):
+
+                    if not gobject.baseobject.textsource:
+                        break
+
+                    gameuid = gobject.baseobject.textsource.gameuid
+                    if not gameuid:
+                        break
+                    if savehook_new_data[gameuid]["follow_default_ankisettings"]:
+                        break
+                    if not savehook_new_data[gameuid][f"anki_simulate_key_{i}_use"]:
+                        return None
+                    return savehook_new_data[gameuid][
+                        f"anki_simulate_key_{i}_keystring"
+                    ]
+            except:
+                pass
+            return globalconfig["ankiconnect"]["simulate_key"][i]["keystring"]
+
+        keystring = __internal__keystring(i)
+        if not keystring:
             return
         windows.SetForegroundWindow(gobject.baseobject.textsource.hwnd)
         time.sleep(0.1)
         try:
-            modes, vkcode = parsekeystringtomodvkcode(
-                globalconfig["ankiconnect"]["simulate_key"][i]["keystring"], modes=True
-            )
+            modes, vkcode = parsekeystringtomodvkcode(keystring, modes=True)
         except unsupportkey as e:
             print("不支持的键")
             return
@@ -593,7 +614,9 @@ class AnkiWindow(QWidget):
             or pix.height() > self.viewimagelabel.height()
         ):
             pix = pix.scaled(
-                self.viewimagelabel.size() * rate, Qt.AspectRatioMode.KeepAspectRatio
+                self.viewimagelabel.size() * rate,
+                Qt.AspectRatioMode.KeepAspectRatio,
+                Qt.TransformationMode.SmoothTransformation,
             )
         self.viewimagelabel.setPixmap(pix)
 
@@ -650,11 +673,30 @@ class AnkiWindow(QWidget):
         return model_htmlfront, model_htmlback, model_css
 
     def addanki(self):
+
+        def __internal__DeckName():
+            try:
+                for _ in (0,):
+
+                    if not gobject.baseobject.textsource:
+                        break
+
+                    gameuid = gobject.baseobject.textsource.gameuid
+                    if not gameuid:
+                        break
+                    if savehook_new_data[gameuid]["follow_default_ankisettings"]:
+                        break
+
+                    return savehook_new_data[gameuid]["anki_DeckName"]
+            except:
+                pass
+            return globalconfig["ankiconnect"]["DeckName"]
+
         autoUpdateModel = globalconfig["ankiconnect"]["autoUpdateModel"]
         allowDuplicate = globalconfig["ankiconnect"]["allowDuplicate"]
         anki.global_port = globalconfig["ankiconnect"]["port"]
         ModelName = globalconfig["ankiconnect"]["ModelName5"]
-        DeckName = globalconfig["ankiconnect"]["DeckName"]
+        DeckName = __internal__DeckName()
         model_htmlfront, model_htmlback, model_css = self.tryloadankitemplates()
         tags = globalconfig["ankiconnect"]["tags"]
         anki.Deck.create(DeckName)

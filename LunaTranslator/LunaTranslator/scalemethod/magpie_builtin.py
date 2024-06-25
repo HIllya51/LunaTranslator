@@ -1,6 +1,6 @@
 from scalemethod.base import scalebase
 import os, json
-import windows
+import windows, gobject
 from myutils.config import globalconfig, magpie_config
 from myutils.subproc import subproc_w
 from myutils.wrapper import threader
@@ -25,8 +25,7 @@ class Method(scalebase):
 
     def init(self):
         self.statuslistener()
-        os.makedirs("cache/temp", exist_ok=True)
-        self.jspath = os.path.abspath("cache/temp/magpie.config.json")
+        self.jspath = gobject.gettempdir("magpie.config.json")
         self.engine = subproc_w(
             './files/plugins/Magpie/Magpie.Core.exe "{}"'.format(self.jspath),
             cwd="./files/plugins/Magpie/",

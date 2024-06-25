@@ -3,7 +3,7 @@ import os, time
 from traceback import print_exc
 import codecs, hashlib
 import os, time
-import socket, gobject
+import socket, gobject, uuid
 import ctypes, importlib
 import time
 import ctypes.wintypes
@@ -15,7 +15,8 @@ from myutils.config import (
     static_data,
     getlanguse,
     savehook_new_data,
-    _TR,
+    uid2gamepath,
+    gamepath2uid,
     getdefaultsavehook,
 )
 from ctypes import c_float, pointer, c_void_p
@@ -30,14 +31,15 @@ def __internal__getlang(k1, k2):
 
             if not gobject.baseobject.textsource:
                 break
-            if "pname" not in dir(gobject.baseobject.textsource):
+
+            gameuid = gobject.baseobject.textsource.gameuid
+            if not gameuid:
                 break
-            exepath = gobject.baseobject.textsource.pname
-            if savehook_new_data[exepath]["lang_follow_default"]:
+            if savehook_new_data[gameuid]["lang_follow_default"]:
                 break
 
             return static_data["language_list_translator_inner"][
-                savehook_new_data[exepath][k1]
+                savehook_new_data[gameuid][k1]
             ]
     except:
         pass
@@ -116,16 +118,18 @@ class PriorityQueue:
 searchvndbqueue = PriorityQueue()
 
 
-def guessmaybetitle(gamepath):
+def guessmaybetitle(gamepath, title):
 
     __t = []
 
     print(gamepath)
     for _ in [
-        savehook_new_data[gamepath]["title"],
+        title,
         os.path.basename(os.path.dirname(gamepath)),
         os.path.basename(gamepath)[:-4],
     ]:
+        if not title:
+            continue
         _ = _.replace("(同人ゲーム)", "").replace("(18禁ゲーム)", "")
         _ = re.sub(r"\[RJ(.*?)\]", "", _)
         _ = re.sub(r"\[\d{4}-?\d{2}\-?\d{2}\]", "", _)
@@ -150,7 +154,7 @@ def guessmaybetitle(gamepath):
 targetmod = {}
 
 
-def trysearchforid(gamepath, searchargs: list):
+def trysearchforid(gameuid, searchargs: list):
     infoid = None
     primitivtemetaorigin = globalconfig["primitivtemetaorigin"]
     __ = list(targetmod.keys())
@@ -168,17 +172,17 @@ def trysearchforid(gamepath, searchargs: list):
         if not vid:
             continue
         idname = globalconfig["metadata"][key]["target"]
-        savehook_new_data[gamepath][idname] = vid
+        savehook_new_data[gameuid][idname] = vid
         if infoid is None or key == primitivtemetaorigin:
             infoid = key, vid
             if key == primitivtemetaorigin:
                 break
     if infoid:
-        searchvndbqueue.put((1, gamepath, infoid))
+        searchvndbqueue.put((1, gameuid, infoid))
         return infoid
 
 
-def trysearchfordata(gamepath, key, vid):
+def trysearchfordata(gameuid, key, vid):
     try:
         data = targetmod[key].searchfordata(vid)
     except:
@@ -193,34 +197,34 @@ def trysearchfordata(gamepath, key, vid):
     for _ in imagepath_all:
         if _ is None:
             continue
-        if _ not in savehook_new_data[gamepath]["imagepath_all"]:
-            savehook_new_data[gamepath]["imagepath_all"].append(_)
+        if _ not in savehook_new_data[gameuid]["imagepath_all"]:
+            savehook_new_data[gameuid]["imagepath_all"].append(_)
     if title:
-        if not savehook_new_data[gamepath]["istitlesetted"]:
-            savehook_new_data[gamepath]["title"] = title
+        if not savehook_new_data[gameuid]["istitlesetted"]:
+            savehook_new_data[gameuid]["title"] = title
         _vis = globalconfig["metadata"][key]["name"]
         _url = targetmod[key].refmainpage(vid)
-        _urls = [_[1] for _ in savehook_new_data[gamepath]["relationlinks"]]
+        _urls = [_[1] for _ in savehook_new_data[gameuid]["relationlinks"]]
         if _url not in _urls:
-            savehook_new_data[gamepath]["relationlinks"].append(
+            savehook_new_data[gameuid]["relationlinks"].append(
                 (_vis, targetmod[key].refmainpage(vid))
             )
     if namemap:
-        savehook_new_data[gamepath]["namemap"] = namemap
+        savehook_new_data[gameuid]["namemap"] = namemap
     if len(webtags):
-        savehook_new_data[gamepath]["webtags"] = webtags
+        savehook_new_data[gameuid]["webtags"] = webtags
     if len(developers):
-        savehook_new_data[gamepath]["developers"] = developers
+        savehook_new_data[gameuid]["developers"] = developers
     return True
 
 
 def everymethodsthread():
     while True:
         _ = searchvndbqueue.get()
-        _type, gamepath, arg = _
+        _type, gameuid, arg = _
         try:
             if _type == 0:
-                infoid = trysearchforid(gamepath, arg)
+                infoid = trysearchforid(gameuid, arg)
                 key, vid = infoid
                 gobject.baseobject.translation_ui.displayglobaltooltip.emit(
                     f"{key}: found {vid}"
@@ -228,7 +232,7 @@ def everymethodsthread():
 
             elif _type == 1:
                 key, vid = arg
-                if trysearchfordata(gamepath, key, vid):
+                if trysearchfordata(gameuid, key, vid):
                     gobject.baseobject.translation_ui.displayglobaltooltip.emit(
                         f"{key}: {vid} data loaded"
                     )
@@ -241,8 +245,8 @@ def everymethodsthread():
             print_exc()
 
 
-def gamdidchangedtask(key, idname, gamepath):
-    vid = savehook_new_data[gamepath][idname]
+def gamdidchangedtask(key, idname, gameuid):
+    vid = savehook_new_data[gameuid][idname]
     if vid == "":
         return
     else:
@@ -253,26 +257,34 @@ def gamdidchangedtask(key, idname, gamepath):
                 except:
                     print(vid)
                     return
-            savehook_new_data[gamepath][idname] = vid
-            searchvndbqueue.put((1, gamepath, (key, vid)), 1)
+            savehook_new_data[gameuid][idname] = vid
+            searchvndbqueue.put((1, gameuid, (key, vid)), 1)
         except:
             print_exc()
 
 
-def titlechangedtask(gamepath, title):
-    savehook_new_data[gamepath]["title"] = title
-    savehook_new_data[gamepath]["istitlesetted"] = True
-    searchvndbqueue.put((0, gamepath, [title]), 1)
+def titlechangedtask(gameuid, title):
+    savehook_new_data[gameuid]["title"] = title
+    savehook_new_data[gameuid]["istitlesetted"] = True
+    searchvndbqueue.put((0, gameuid, [title]), 1)
 
 
 def checkifnewgame(targetlist, gamepath, title=None):
-    isnew = gamepath not in targetlist
+    if gamepath not in gamepath2uid:
+        uid = f"{time.time()}_{uuid.uuid4()}"
+        gamepath2uid[gamepath] = uid
+        savehook_new_data[uid] = getdefaultsavehook(gamepath, title)
+
+        uid2gamepath[uid] = gamepath
+        searchvndbqueue.put((0, uid, [title] + guessmaybetitle(gamepath, title)))
+    else:
+        uid = gamepath2uid[gamepath]
+    isnew = uid not in targetlist
     if isnew:
-        targetlist.insert(0, gamepath)
-    if gamepath not in savehook_new_data:
-        savehook_new_data[gamepath] = getdefaultsavehook(gamepath, title)
-        searchvndbqueue.put((0, gamepath, [title] + guessmaybetitle(gamepath)))
-    return isnew
+        targetlist.insert(0, uid)
+        return uid
+    else:
+        return None
 
 
 kanjichs2ja = str.maketrans(static_data["kanjichs2ja"])

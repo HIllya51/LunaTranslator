@@ -920,8 +920,7 @@ class abstractwebview(QWidget):
         if len(html) < self.html_limit:
             self._setHtml(html)
         else:
-            os.makedirs("cache/temp", exist_ok=True)
-            lastcachehtml = os.path.abspath("cache/temp/" + str(time.time()) + ".html")
+            lastcachehtml = gobject.gettempdir(str(time.time()) + ".html")
             with open(lastcachehtml, "w", encoding="utf8") as ff:
                 ff.write(html)
             self.navigate(lastcachehtml)
@@ -1665,9 +1664,9 @@ class listediter(QDialog):
         if self.closecallback:
             self.closecallback()
 
-    def __cb(self, path):
-
-        self.hcmodel.insertRow(0, [QStandardItem(path)])
+    def __cb(self, paths):
+        for path in paths:
+            self.hcmodel.insertRow(0, [QStandardItem(path)])
 
     def click1(self):
 
@@ -1676,7 +1675,7 @@ class listediter(QDialog):
         else:
             openfiledirectory(
                 "",
-                multi=False,
+                multi=True,
                 edit=None,
                 isdir=self.ispathsedit.get("isdir", False),
                 filter1=self.ispathsedit.get("filter1", "*.*"),

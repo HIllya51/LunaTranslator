@@ -10,7 +10,7 @@ class TS(basetrans):
         return x  # {"zh":"ZH","ja":"JA","en":"EN","es":"ES","fr":"FR","ru":"RU"}
 
     def translate(self, query):
-
+        self.checkempty(["api"])
         payload = {
             "text": query,
             "source_lang": self.srclang,

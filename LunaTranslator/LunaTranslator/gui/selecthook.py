@@ -74,8 +74,7 @@ class QButtonGroup_switch_widegt(QWidget):
 
 
 def listprocessm():
-    os.makedirs("cache/temp", exist_ok=True)
-    cachefname = os.path.abspath("cache/temp/{}.txt".format(time.time()))
+    cachefname = gobject.gettempdir("{}.txt".format(time.time()))
     arch = "64" if gobject.baseobject.textsource.is64bit else "32"
     exe = os.path.abspath("./files/plugins/shareddllproxy{}.exe".format(arch))
     pid = " ".join([str(_) for _ in gobject.baseobject.textsource.pids])
@@ -211,7 +210,7 @@ class searchhookparam(QDialog):
         layout1 = QHBoxLayout()
         layout1.addWidget(QLabel(_TR("代码页")))
         self.codepagesave = {
-            "spcp": savehook_new_data[gobject.baseobject.textsource.pname].get(
+            "spcp": savehook_new_data[gobject.baseobject.textsource.gameuid].get(
                 "codepage_index", globalconfig["codepage_index"]
             )
         }
@@ -513,7 +512,7 @@ class hookselect(closeashidewindow):
                 gobject.baseobject.textsource.hooktypecollecter,
                 key,
                 callback=functools.partial(
-                    savehook_new_data[gobject.baseobject.textsource.pname][
+                    savehook_new_data[gobject.baseobject.textsource.gameuid][
                         "hooktypeasname"
                     ].__setitem__,
                     json.dumps(gobject.baseobject.textsource.serialkey(key)),
@@ -537,10 +536,10 @@ class hookselect(closeashidewindow):
 
             if hn[:8] == "UserHook":
                 needinserthookcode = savehook_new_data[
-                    gobject.baseobject.textsource.pname
+                    gobject.baseobject.textsource.gameuid
                 ]["needinserthookcode"]
                 needinserthookcode = list(set(needinserthookcode + [hc]))
-                savehook_new_data[gobject.baseobject.textsource.pname].update(
+                savehook_new_data[gobject.baseobject.textsource.gameuid].update(
                     {"needinserthookcode": needinserthookcode}
                 )
             else:
@@ -552,19 +551,19 @@ class hookselect(closeashidewindow):
         gobject.baseobject.textsource.useembed(tp.addr, tp.ctx, tp.ctx2, _)
         _use = self._check_tp_using(key)
         if _use:
-            savehook_new_data[gobject.baseobject.textsource.pname][
+            savehook_new_data[gobject.baseobject.textsource.gameuid][
                 "embedablehook"
             ].append([hc, tp.addr, tp.ctx, tp.ctx2])
         else:
             save = []
-            for _ in savehook_new_data[gobject.baseobject.textsource.pname][
+            for _ in savehook_new_data[gobject.baseobject.textsource.gameuid][
                 "embedablehook"
             ]:
                 hc, ad, c1, c2 = _
                 if (hc, 0, c1, c2) == (hc, 0, tp.ctx, tp.ctx2):
                     save.append(_)
             for _ in save:
-                savehook_new_data[gobject.baseobject.textsource.pname][
+                savehook_new_data[gobject.baseobject.textsource.gameuid][
                     "embedablehook"
                 ].remove(_)
 
@@ -710,7 +709,7 @@ class hookselect(closeashidewindow):
 
     def opengamesetting(self):
         try:
-            dialog_setting_game(self, gobject.baseobject.textsource.pname, True)
+            dialog_setting_game(self, gobject.baseobject.textsource.gameuid, True)
         except:
             print_exc()
 
@@ -865,16 +864,16 @@ class hookselect(closeashidewindow):
 
                 if hn[:8] == "UserHook":
                     needinserthookcode = savehook_new_data[
-                        gobject.baseobject.textsource.pname
+                        gobject.baseobject.textsource.gameuid
                     ]["needinserthookcode"]
                     needinserthookcode = list(set(needinserthookcode + [hc]))
-                    savehook_new_data[gobject.baseobject.textsource.pname].update(
+                    savehook_new_data[gobject.baseobject.textsource.gameuid].update(
                         {"needinserthookcode": needinserthookcode}
                     )
             else:
                 pass
 
-            savehook_new_data[gobject.baseobject.textsource.pname].update(
+            savehook_new_data[gobject.baseobject.textsource.gameuid].update(
                 {"hook": gobject.baseobject.textsource.serialselectedhook()}
             )
         except:

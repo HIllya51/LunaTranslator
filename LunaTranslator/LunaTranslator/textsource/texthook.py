@@ -10,6 +10,8 @@ from textsource.textsourcebase import basetext
 from myutils.utils import checkchaos
 from myutils.hwnd import injectdll
 from myutils.wrapper import threader
+from myutils.utils import getfilemd5
+
 from ctypes import (
     CDLL,
     CFUNCTYPE,
@@ -85,7 +87,7 @@ EmbedCallback = CFUNCTYPE(None, c_wchar_p, ThreadParam)
 class texthook(basetext):
     @property
     def config(self):
-        if savehook_new_data[self.pname]["hooksetting_follow_default"]:
+        if savehook_new_data[self.gameuid]["hooksetting_follow_default"]:
             return globalconfig
         else:
 
@@ -96,22 +98,24 @@ class texthook(basetext):
                     else:
                         return globalconfig[key]
 
-            return __shitdict(savehook_new_data[self.pname]["hooksetting_private"])
+            return __shitdict(savehook_new_data[self.gameuid]["hooksetting_private"])
 
     def __init__(
-        self, pids, hwnd, pname, autostarthookcode=None, needinserthookcode=None
+        self,
+        pids,
+        hwnd,
+        gamepath,
+        gameuid,
+        autostarthookcode=None,
+        needinserthookcode=None,
     ):
         if autostarthookcode is None:
             autostarthookcode = []
         if needinserthookcode is None:
             needinserthookcode = []
-        self.pname = pname
-        self.pids = pids
-        self.hwnd = hwnd
         self.keepref = []
         self.newline = Queue()
         self.newline_delaywait = Queue()
-        self.is64bit = Is64bit(pids[0])
         self.hookdatacollecter = OrderedDict()
         self.hooktypecollecter = OrderedDict()
         self.currentname = None
@@ -119,30 +123,41 @@ class texthook(basetext):
         self.forward = []
         self.selectinghook = None
         self.selectedhook = []
+        self.showonce = False
         self.selectedhookidx = []
-        self.allow_set_text_name = self.config["allow_set_text_name"]
 
         self.connectedpids = []
         self.runonce_line = ""
         self.autostarthookcode = [self.deserial(__) for __ in autostarthookcode]
-        self.isremoveuseless = self.config["removeuseless"] and len(
-            self.autostarthookcode
-        )
+
         self.needinserthookcode = needinserthookcode
         self.removedaddress = []
 
+        super(texthook, self).__init__(*self.checkmd5prefix(gamepath))
+        self.gamepath = gamepath
+        self.gameuid = gameuid
+        self.pids = pids
+        self.is64bit = Is64bit(pids[0])
+        self.hwnd = hwnd
         gobject.baseobject.hookselectdialog.changeprocessclearsignal.emit(self.config)
+        self.allow_set_text_name = self.config["allow_set_text_name"]
+        self.isremoveuseless = self.config["removeuseless"] and len(
+            self.autostarthookcode
+        )
         if (
             len(autostarthookcode) == 0
-            and len(savehook_new_data[self.pname]["embedablehook"]) == 0
+            and len(savehook_new_data[self.gameuid]["embedablehook"]) == 0
         ):
             gobject.baseobject.hookselectdialog.realshowhide.emit(True)
-
         self.delaycollectallselectedoutput()
-
-        super(texthook, self).__init__(*self.checkmd5prefix(pname))
         self.declare()
-        self.start()
+
+    def checkmd5prefix(self, gamepath):
+        md5 = getfilemd5(gamepath)
+        name = os.path.basename(gamepath).replace(
+            "." + os.path.basename(gamepath).split(".")[-1], ""
+        )
+        return md5, name
 
     def declare(self):
         LunaHost = CDLL(
@@ -254,14 +269,24 @@ class texthook(basetext):
 
     def onprocconnect(self, pid):
         self.connectedpids.append(pid)
-        time.sleep(savehook_new_data[self.pname]["inserthooktimeout"] / 1000)
+        time.sleep(savehook_new_data[self.gameuid]["inserthooktimeout"] / 1000)
         for hookcode in self.needinserthookcode:
             self.Luna_InsertHookCode(pid, hookcode)
         self.showgamename()
         self.flashembedsettings(pid)
 
+    def showgamename(self):
+        if self.showonce:
+            return
+        self.showonce = False
+        gobject.baseobject.textgetmethod(
+            "<msg_info_refresh>" + savehook_new_data[self.gameuid]["title"]
+        )
+
     def newhookinsert(self, addr, hcode):
-        for _hc, _addr, _ctx1, _ctx2 in savehook_new_data[self.pname]["embedablehook"]:
+        for _hc, _addr, _ctx1, _ctx2 in savehook_new_data[self.gameuid][
+            "embedablehook"
+        ]:
             if hcode == _hc:
                 self.useembed(addr, _ctx1, _ctx2, True)
 
@@ -339,8 +364,8 @@ class texthook(basetext):
         self.hookdatacollecter[key] = []
         self.hooktypecollecter[key] = 0
         if self.allow_set_text_name:
-            for jskey in savehook_new_data[self.pname]["hooktypeasname"]:
-                if savehook_new_data[self.pname]["hooktypeasname"][jskey] == 0:
+            for jskey in savehook_new_data[self.gameuid]["hooktypeasname"]:
+                if savehook_new_data[self.gameuid]["hooktypeasname"][jskey] == 0:
                     continue
                 if self.match_compatibility(self.deserial(json.loads(jskey)), key):
                     self.hooktypecollecter[key] = 1
@@ -396,7 +421,7 @@ class texthook(basetext):
         usestruct.searchTime = 30000
         usestruct.maxRecords = 100000
         usestruct.codepage = self.codepage()
-        usestruct.boundaryModule = os.path.basename(self.pname)
+        usestruct.boundaryModule = os.path.basename(self.gamepath)
         usestruct.jittype = 0
         return usestruct
 
@@ -462,8 +487,6 @@ class texthook(basetext):
             self.newline.put(_collector)
             self.runonce_line = _collector
             collector.clear()
-            
-                
 
     def handle_output(self, hc, hn, tp, output):
 

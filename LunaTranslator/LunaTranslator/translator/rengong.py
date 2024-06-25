@@ -24,8 +24,8 @@ class TS(basetrans):
 
     def unsafegetcurrentgameconfig(self):
         try:
-            _path = gobject.baseobject.textsource.pname
-            _path = savehook_new_data[_path]["gamejsonfile"]
+            gameuid = gobject.baseobject.textsource.gameuid
+            _path = savehook_new_data[gameuid]["gamejsonfile"]
             if isinstance(_path, str):
                 _path = [_path]
             return tuple(_path)
