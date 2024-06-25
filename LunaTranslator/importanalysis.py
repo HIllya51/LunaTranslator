@@ -155,6 +155,7 @@ MEM_COMMIT = 0x00001000
 MEM_DECOMMIT = 0x00004000
 PAGE_READWRITE = 0x04
 IMAGE_NT_OPTIONAL_HDR32_MAGIC = 0x10B
+IMAGE_NT_OPTIONAL_HDR64_MAGIC = 0x20B
 IMAGE_DIRECTORY_ENTRY_IMPORT = 1
 
 
@@ -181,6 +182,8 @@ def Rva2Offset(rva, psh, pnt, IMAGE_NT_HEADERS):
             break
         pSeh += sizeof(IMAGE_SECTION_HEADER)
     pSeh = cast(pSeh, POINTER(IMAGE_SECTION_HEADER)).contents
+    if pSeh.VirtualAddress == 0 or pSeh.PointerToRawData == 0:
+        return -1
     return rva - pSeh.VirtualAddress + pSeh.PointerToRawData
 
 
@@ -200,6 +203,10 @@ def importanalysis(fname):
     if magic != IMAGE_NT_OPTIONAL_HDR32_MAGIC:
         ntheaders = cast(ntheaders_addr, POINTER(IMAGE_NT_HEADERS64)).contents
         IMAGE_NT_HEADERS = IMAGE_NT_HEADERS64
+        magic = ntheaders.OptionalHeader.Magic
+        if magic != IMAGE_NT_OPTIONAL_HDR64_MAGIC:
+            # 无效的文件
+            return []
     pSech = (
         ntheaders_addr
         + sizeof(DWORD)
@@ -223,6 +230,9 @@ def importanalysis(fname):
         offset = Rva2Offset(
             pImportDescriptor_data.Name, pSech, ntheaders_addr, IMAGE_NT_HEADERS
         )
+        if offset == -1:
+            # python3.dll，无导入
+            return []
         name = virtualpointer + offset
         collect.append((cast(name, c_char_p).value.decode(), offset))
         pImportDescriptor += sizeof(IMAGE_IMPORT_DESCRIPTOR)

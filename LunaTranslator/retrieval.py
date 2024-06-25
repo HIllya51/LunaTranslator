@@ -2,6 +2,7 @@ import modulefinder, shutil, os, sys
 import builtins, platform
 import sys
 from importanalysis import importanalysis
+
 pyversion = platform.python_version()
 pyversion2 = "".join(pyversion.split(".")[:2])
 x86 = platform.architecture()[0] == "32bit"
@@ -28,16 +29,6 @@ else:
 py37Path = os.path.dirname(sys.executable)
 print(py37Path)
 py37Pathwebview = os.path.join(py37Path, webviewappendix)
-
-
-def get_import_table(file_path):
-    pe = pefile.PE(file_path)
-    import_dlls = []
-    if hasattr(pe, "DIRECTORY_ENTRY_IMPORT"):
-        for entry in pe.DIRECTORY_ENTRY_IMPORT:
-            dll_name = entry.dll.decode("utf-8")
-            import_dlls.append(dll_name)
-    return import_dlls
 
 
 def get_dependencies(filename):
@@ -224,13 +215,14 @@ for f in collect:
     elif f.endswith(".exe") or f.endswith(".pyd") or f.endswith(".dll"):
         if f.endswith("Magpie.Core.exe"):
             continue
-        imports=importanalysis(f)
+        print(f)
+        imports = importanalysis(f)
         print(f, imports)
         if len(imports) == 0:
             continue
         with open(f, "rb") as ff:
             bs = bytearray(ff.read())
-        for _dll,offset in imports:
+        for _dll, offset in imports:
             if _dll.lower().startswith("api-ms-win-core"):
                 # 其实对于api-ms-win-core-winrt-XXX实际上是到ComBase.dll之类的，不过此项目中不包含这些
                 _target = "kernel32.dll"
@@ -241,7 +233,9 @@ for f in collect:
             _dll = _dll.encode()
             _target = _target.encode()
             # print(len(bs))
-            bs[offset : offset + len(_dll)] = _target + b"\0" * (len(_dll) - len(_target))
+            bs[offset : offset + len(_dll)] = _target + b"\0" * (
+                len(_dll) - len(_target)
+            )
             # print(len(bs))
         with open(f, "wb") as ff:
             ff.write(bs)
