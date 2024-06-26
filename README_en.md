@@ -6,7 +6,7 @@
     <a href="https://github.com/HIllya51/LunaTranslator/stargazers"><img src="https://img.shields.io/github/stars/HIllya51/LunaTranslator?color=ccf"></a>
 </p>
  
-## [简体中文](README.md) | [Русский язык](README_ru.md) |  English | [Other Language Support](otherlang.md) 
+## [简体中文](README.md) | [Русский язык](README_ru.md) |  English | [Other Language](otherlang.md) 
 
 > **A galgame translator**
 
