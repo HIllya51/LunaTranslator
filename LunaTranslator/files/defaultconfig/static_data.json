@@ -10,10 +10,6 @@
                 "name": "QDarkStyleSheet"
             },
             {
-                "file": "BreezeStyleSheets/dark.py",
-                "name": "BreezeStyleSheets"
-            },
-            {
                 "file": "QTWin11/dark.py",
                 "name": "QTWin11"
             },
@@ -34,10 +30,6 @@
             {
                 "file": "QDarkStyleSheet/light.py",
                 "name": "QDarkStyleSheet"
-            },
-            {
-                "file": "BreezeStyleSheets/light.py",
-                "name": "BreezeStyleSheets"
             },
             {
                 "file": "QTWin11/light.py",
