@@ -871,7 +871,7 @@ class MDict(object):
         """
         extract attributes from <Dict attr="value" ... >
         """
-        taglist = re.findall(b'(\w+)="(.*?)"', header, re.DOTALL)
+        taglist = re.findall(rb'(\w+)="(.*?)"', header, re.DOTALL)
         tagdict = {}
         for key, value in taglist:
             tagdict[key] = _unescape_entities(value)
@@ -1399,8 +1399,8 @@ class MDX(MDict):
 
     def _substitute_stylesheet(self, txt):
         # substitute stylesheet definition
-        txt_list = re.split("`\d+`", txt)
-        txt_tag = re.findall("`\d+`", txt)
+        txt_list = re.split(r"`\d+`", txt)
+        txt_tag = re.findall(r"`\d+`", txt)
         txt_styled = txt_list[0]
         for j, p in enumerate(txt_list[1:]):
             style = self._stylesheet[txt_tag[j][1:-1]]
@@ -1778,8 +1778,8 @@ class IndexBuilder(object):
 
     def _replace_stylesheet(self, txt):
         # substitute stylesheet definition
-        txt_list = re.split("`\d+`", txt)
-        txt_tag = re.findall("`\d+`", txt)
+        txt_list = re.split(r"`\d+`", txt)
+        txt_tag = re.findall(r"`\d+`", txt)
         txt_styled = txt_list[0]
         for j, p in enumerate(txt_list[1:]):
             style = self._stylesheet[txt_tag[j][1:-1]]
