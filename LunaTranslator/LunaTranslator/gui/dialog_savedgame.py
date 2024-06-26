@@ -2414,10 +2414,12 @@ class pixwrapper(QWidget):
         self.k = None
         self.pixmapi = 0
         self.pixview.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.current = None
 
     def tolastnext(self, dx):
         if len(self.pixmaps) == 0:
             return
+
         self.pixmapi = (self.pixmapi + dx) % len(self.pixmaps)
         self.visidx()
 
@@ -2433,7 +2435,10 @@ class pixwrapper(QWidget):
     def resizeEvent(self, e: QResizeEvent):
         self.pixview.resize(e.size().width(), e.size().height())
         self.pathview.resize(e.size().width(), self.pathview.height())
-        self.visidx()
+        if self.current is None:
+            self.visidx()
+        else:
+            self.scalepix(self.current)
 
     def visidx(self):
         if len(self.pixmaps) == 0:
@@ -2441,7 +2446,7 @@ class pixwrapper(QWidget):
                 return
             pixmap = getExeIcon(uid2gamepath[self.k], False, cache=True)
             pixmap.setDevicePixelRatio(self.devicePixelRatioF())
-            self.pixview.setPixmap(self.scalepix(pixmap))
+            self.scalepix(pixmap)
         else:
             self.pixmapi = min(len(self.pixmaps) - 1, self.pixmapi)
             pixmap_ = self.pixmaps[self.pixmapi]
@@ -2452,7 +2457,8 @@ class pixwrapper(QWidget):
             self.pathview.setText(pixmap_)
             savehook_new_data[self.k]["currentvisimage"] = pixmap_
             pixmap.setDevicePixelRatio(self.devicePixelRatioF())
-            self.pixview.setPixmap(self.scalepix(pixmap))
+            self.current = pixmap
+            self.scalepix(pixmap)
 
     def removecurrent(self):
         if len(self.pixmaps):
@@ -2482,7 +2488,7 @@ class pixwrapper(QWidget):
             Qt.AspectRatioMode.KeepAspectRatio,
             Qt.TransformationMode.SmoothTransformation,
         )
-        return pix
+        self.pixview.setPixmap(pix)
 
 
 class dialog_savedgame_v3(QWidget):
