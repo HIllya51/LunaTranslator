@@ -152,7 +152,10 @@ def checkthemesettingvisandapply_1(self, _dark):
                 self.btnthemedark.hide()
             else:
                 self.btnthemedark.show()
-                self.btnthemedark.clicked.disconnect()
+                try:
+                    self.btnthemedark.clicked.disconnect()
+                except:
+                    pass
                 self.btnthemedark.clicked.connect(self.darksetting)
         else:
 
@@ -162,7 +165,10 @@ def checkthemesettingvisandapply_1(self, _dark):
                 self.btnthemelight.hide()
             else:
                 self.btnthemelight.show()
-                self.btnthemelight.clicked.disconnect()
+                try:
+                    self.btnthemelight.clicked.disconnect()
+                except:
+                    pass
                 self.btnthemelight.clicked.connect(self.lightsetting)
 
     except:
@@ -177,7 +183,10 @@ def createbtnthemelight(self):
         if not self.lightsetting:
             self.btnthemelight.hide()
         else:
-            self.btnthemelight.clicked.disconnect()
+            try:
+                self.btnthemelight.clicked.disconnect()
+            except:
+                pass
             self.btnthemelight.clicked.connect(self.lightsetting)
     except:
         pass
@@ -194,7 +203,10 @@ def createbtnthemedark(self):
         if not self.darksetting:
             self.btnthemedark.hide()
         else:
-            self.btnthemedark.clicked.disconnect()
+            try:
+                self.btnthemedark.clicked.disconnect()
+            except:
+                pass
             self.btnthemedark.clicked.connect(self.darksetting)
     except:
         pass
