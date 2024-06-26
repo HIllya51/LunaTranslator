@@ -311,8 +311,7 @@ class lazyscrollflow(ScrollArea):
 
     def directshow(self):
         QApplication.processEvents()
-        if len(self.internalwid.visibleRegion().rects()):
-            self.doshowlazywidget(True, self.internalwid.visibleRegion().rects()[0])
+        self.doshowlazywidget(True, self.internalwid.visibleRegion().boundingRect())
 
     def __init__(self):
         super().__init__()
@@ -624,11 +623,11 @@ class stackedlist(ScrollArea):
 
     def directshow(self):
         QApplication.processEvents()
-        self.doshowlazywidget(True, self.internal.visibleRegion().rects()[0])
+        self.doshowlazywidget(True, self.internal.visibleRegion().boundingRect())
 
     def resizeEvent(self, e: QResizeEvent):
         try:
-            self.doshowlazywidget(False, self.internal.visibleRegion().rects()[0])
+            self.doshowlazywidget(False, self.internal.visibleRegion().boundingRect())
         except:
             pass
         return super().resizeEvent(e)

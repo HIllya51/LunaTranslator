@@ -375,6 +375,8 @@ class hookselect(closeashidewindow):
     def __init__(self, parent):
         super(hookselect, self).__init__(parent, globalconfig["selecthookgeo"])
         self.setupUi()
+        self.save = []
+        self.hidesearchhookbuttons()
         self.changeprocessclearsignal.connect(self.changeprocessclear)
         self.removehooksignal.connect(self.removehook)
         self.addnewhooksignal.connect(self.addnewhook)
