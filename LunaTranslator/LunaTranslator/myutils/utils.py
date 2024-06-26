@@ -367,6 +367,8 @@ class wavmp3player:
 
     def _playsoundWin(self, binary, volume):
         try:
+            if self.lastfile:
+                winsharedutils.PlayAudioInMem_Stop(self.lastfile[0], self.lastfile[1])
             duration = c_float()
             device = c_void_p()
             decoder = c_void_p()
@@ -380,8 +382,6 @@ class wavmp3player:
             )
             if succ != 0:
                 return 0
-            if self.lastfile:
-                winsharedutils.PlayAudioInMem_Stop(self.lastfile[0], self.lastfile[1])
             self.lastfile = decoder, device
             durationms = duration.value * 1000
         except:
