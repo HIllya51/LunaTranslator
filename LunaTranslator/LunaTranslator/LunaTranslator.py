@@ -906,8 +906,11 @@ class MAINUI:
             _t = time.time()
 
             def isok(gameuid):
-                savehook_new_data[gameuid]["statistic_playtime"] += _t - __t
-                if self.__currentexe == name_:
+                # 可能开着程序进行虚拟机暂停，导致一下子多了很多时间。不过测试vbox上应该没问题
+                maybevmpaused = (_t - __t) > 60
+                if not maybevmpaused:
+                    savehook_new_data[gameuid]["statistic_playtime"] += _t - __t
+                if (not maybevmpaused) and (self.__currentexe == name_):
                     self.traceplaytime(
                         uid2gamepath[gameuid], self.__statistictime - 1, _t, False
                     )
