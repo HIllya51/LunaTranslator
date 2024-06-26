@@ -201,6 +201,18 @@ class commonsolveevent(QWidget):
         return super().event(a0)
 
 
+def disablecolor(__: QColor):
+    __ = QColor(
+        max(0, (__.red() - 64)),
+        max(
+            0,
+            (__.green() - 64),
+        ),
+        max(0, (__.blue() - 64)),
+    )
+    return __
+
+
 class MySwitch(commonsolveevent):
     clicked = pyqtSignal(bool)
 
@@ -272,14 +284,7 @@ class MySwitch(commonsolveevent):
             [globalconfig["buttoncolor3"], globalconfig["buttoncolor2"]][self.checked]
         )
         if not self.enable:
-            __ = QColor(
-                max(0, (__.red() - 64)),
-                max(
-                    0,
-                    (__.green() - 64),
-                ),
-                max(0, (__.blue() - 64)),
-            )
+            __ = disablecolor(__)
         return __
 
     def paintanime(self, painter: QPainter):
@@ -373,14 +378,7 @@ class IconButton(commonsolveevent):
 
             __ = QColor(globalconfig["buttoncolor2"])
             if not self.enable:
-                __ = QColor(
-                    max(0, (__.red() - 64)),
-                    max(
-                        0,
-                        (__.green() - 64),
-                    ),
-                    max(0, (__.blue() - 64)),
-                )
+                __ = disablecolor(__)
             icon: QIcon = qtawesome.icon(self._icon, color=__)
         bigw = self.size().width() - self.sizeHint().width()
         bigh = self.size().height() - self.sizeHint().height()
@@ -856,31 +854,6 @@ def getvboxwidget():
     return getboxlayout([], lc=QVBoxLayout, margin0=True, makewidget=True, both=True)
 
 
-def textbrowappendandmovetoend(textOutput, sentence, addspace=True):
-    scrollbar = textOutput.verticalScrollBar()
-    atBottom = (
-        scrollbar.value() + 3 > scrollbar.maximum()
-        or scrollbar.value() / scrollbar.maximum() > 0.975
-    )
-    cursor = QTextCursor(textOutput.document())
-    cursor.movePosition(QTextCursor.MoveOperation.End)
-    cursor.insertText(
-        (("" if textOutput.document().isEmpty() else "\n") if addspace else "")
-        + sentence
-    )
-    if atBottom:
-        scrollbar.setValue(scrollbar.maximum())
-
-
-def getscaledrect(size: QSize):
-    rate = QApplication.instance().devicePixelRatio()
-    rect = (
-        int(rate * size.width()),
-        int(rate * (size.height())),
-    )
-    return rect
-
-
 class abstractwebview(QWidget):
     on_load = pyqtSignal(str)
     on_ZoomFactorChanged = pyqtSignal(float)
@@ -1031,8 +1004,8 @@ class WebivewWidget(abstractwebview):
             hwnd = self.webview.get_native_handle(
                 webview_native_handle_kind_t.WEBVIEW_NATIVE_HANDLE_KIND_UI_WIDGET
             )
-            size = getscaledrect(a0.size())
-            windows.MoveWindow(hwnd, 0, 0, size[0], size[1], True)
+            size = a0.size() * self.devicePixelRatioF()
+            windows.MoveWindow(hwnd, 0, 0, size.width(), size.height(), True)
 
     def _setHtml(self, html):
         self.webview.set_html(html)
@@ -1179,8 +1152,8 @@ class mshtmlWidget(abstractwebview):
         self.browser.navigate(url)
 
     def resizeEvent(self, a0: QResizeEvent) -> None:
-        size = getscaledrect(a0.size())
-        self.browser.resize(0, 0, size[0], size[1])
+        size = a0.size() * self.devicePixelRatioF()
+        self.browser.resize(0, 0, size.width(), size.height())
 
     def _setHtml(self, html):
         self.browser.set_html(html)

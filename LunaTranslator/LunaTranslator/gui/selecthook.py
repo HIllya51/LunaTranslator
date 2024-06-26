@@ -13,7 +13,6 @@ from gui.usefulwidget import (
     getsimplecombobox,
     MySwitch,
     getsimpleswitch,
-    textbrowappendandmovetoend,
     FocusSpin,
     FocusCombo,
 )
@@ -891,15 +890,32 @@ class hookselect(closeashidewindow):
         except:
             print_exc()
 
+    def textbrowappendandmovetoend(self, textOutput, sentence, addspace=True):
+        scrollbar = textOutput.verticalScrollBar()
+        atBottom = (
+            scrollbar.value() + 3 > scrollbar.maximum()
+            or scrollbar.value() / scrollbar.maximum() > 0.975
+        )
+        cursor = QTextCursor(textOutput.document())
+        cursor.movePosition(QTextCursor.MoveOperation.End)
+        cursor.insertText(
+            (("" if textOutput.document().isEmpty() else "\n") if addspace else "")
+            + sentence
+        )
+        if atBottom:
+            scrollbar.setValue(scrollbar.maximum())
+
     def sysmessage(self, sentence):
 
-        textbrowappendandmovetoend(self.sysOutput, get_time_stamp() + " " + sentence)
+        self.textbrowappendandmovetoend(
+            self.sysOutput, get_time_stamp() + " " + sentence
+        )
 
     def getnewsentence(self, sentence):
         if self.at1 == 2:
             return
 
-        textbrowappendandmovetoend(self.textOutput, sentence)
+        self.textbrowappendandmovetoend(self.textOutput, sentence)
 
     def ViewThread2(self, index: QModelIndex):
         self.tabwidget.setCurrentIndex(0)
