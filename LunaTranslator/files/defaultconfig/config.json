@@ -517,6 +517,8 @@
         "onselectcolor1": "#007fff",
         "onfilenoexistscolor1": "#acacac",
         "transparent": 25,
+        "transparentselect": 25,
+        "transparentnotexits": 25,
         "listitemheight": 40,
         "listitemwidth": 300
     },

@@ -91,7 +91,7 @@ class ItemWidget(QWidget):
     def click(self):
         try:
             self.bottommask.setStyleSheet(
-                f'background-color: {str2rgba(globalconfig["dialog_savegame_layout"]["onselectcolor1"],globalconfig["dialog_savegame_layout"]["transparent"])};'
+                f'background-color: {str2rgba(globalconfig["dialog_savegame_layout"]["onselectcolor1"],globalconfig["dialog_savegame_layout"]["transparentselect"])};'
             )
 
             if self != ItemWidget.globallashfocus:
@@ -163,7 +163,14 @@ class ItemWidget(QWidget):
                 os.path.exists(uid2gamepath[gameuid])
             ]
         ]
-        c = str2rgba(c, globalconfig["dialog_savegame_layout"]["transparent"])
+        c = str2rgba(
+            c,
+            globalconfig["dialog_savegame_layout"][
+                ("transparentnotexits", "transparent")[
+                    os.path.exists(uid2gamepath[gameuid])
+                ]
+            ],
+        )
         self.maskshowfileexists.setStyleSheet(f"background-color:{c};")
 
 
@@ -1546,13 +1553,13 @@ class dialog_syssetting(QDialog):
                     getspinbox(0, 1000, globalconfig["dialog_savegame_layout"], key),
                 )
 
-        for key, name in [
-            ("backcolor1", "颜色"),
-            ("onselectcolor1", "选中时颜色"),
-            ("onfilenoexistscolor1", "游戏不存在时颜色"),
+        for key, key2, name in [
+            ("backcolor1", "transparent", "颜色"),
+            ("onselectcolor1", "transparentselect", "选中时颜色"),
+            ("onfilenoexistscolor1", "transparentnotexits", "游戏不存在时颜色"),
         ]:
             formLayout.addRow(
-                (_TR(name)),
+                _TR(name),
                 getcolorbutton(
                     globalconfig["dialog_savegame_layout"],
                     key,
@@ -1569,10 +1576,10 @@ class dialog_syssetting(QDialog):
                     parent=self,
                 ),
             )
-        formLayout.addRow(
-            (_TR("不透明度")),
-            getspinbox(0, 100, globalconfig["dialog_savegame_layout"], "transparent"),
-        )
+            formLayout.addRow(
+                _TR(name) + _TR("不透明度"),
+                getspinbox(0, 100, globalconfig["dialog_savegame_layout"], key2),
+            )
         if type_ == 1:
             formLayout.addRow(
                 _TR("缩放"),
@@ -2394,9 +2401,8 @@ class clickitem(QWidget):
     def click(self):
         try:
             self.bottommask.setStyleSheet(
-                f'background-color: {str2rgba(globalconfig["dialog_savegame_layout"]["onselectcolor1"],globalconfig["dialog_savegame_layout"]["transparent"])};'
+                f'background-color: {str2rgba(globalconfig["dialog_savegame_layout"]["onselectcolor1"],globalconfig["dialog_savegame_layout"]["transparentselect"])};'
             )
-
             if self != clickitem.globallashfocus:
                 clickitem.clearfocus()
             clickitem.globallashfocus = self
@@ -2429,7 +2435,14 @@ class clickitem(QWidget):
         c = globalconfig["dialog_savegame_layout"][
             ("onfilenoexistscolor1", "backcolor1")[os.path.exists(uid2gamepath[uid])]
         ]
-        c = str2rgba(c, globalconfig["dialog_savegame_layout"]["transparent"])
+        c = str2rgba(
+            c,
+            globalconfig["dialog_savegame_layout"][
+                ("transparentnotexits", "transparent")[
+                    os.path.exists(uid2gamepath[uid])
+                ]
+            ],
+        )
         self.maskshowfileexists.setStyleSheet(f"background-color:{c};")
         self.bottommask = QLabel(self)
         self.bottommask.setStyleSheet("background-color: rgba(255,255,255, 0);")
