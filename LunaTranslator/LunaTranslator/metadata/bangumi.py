@@ -93,9 +93,9 @@ class bgmsettings(QDialog):
                 json={
                     "type": 4,
                     # "rate": 10,
-                    "comment": "string",
-                    "private": True,
-                    "tags": ["string"],
+                    # "comment": "string",
+                    # "private": True,
+                    # "tags": ["string"],
                 },
                 proxies=self._ref.proxy,
             )
@@ -111,9 +111,9 @@ class bgmsettings(QDialog):
                 json={
                     "type": 4,
                     # "rate": 10,
-                    "comment": "string",
-                    "private": True,
-                    "tags": ["string"],
+                    # "comment": "string",
+                    # "private": True,
+                    # "tags": ["string"],
                 },
                 proxies=self._ref.proxy,
             )
