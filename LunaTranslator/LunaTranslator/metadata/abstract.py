@@ -82,9 +82,7 @@ class common:
         while True:
             pair = self.__tasks_downloadimg.get()
             url, save = pair
-            if os.path.exists(save):
-                self.__safe_remove_task("downloadtasks", pair)
-                continue
+
             remove = True
             try:
                 self.__do_download_img(url, save)
@@ -99,6 +97,8 @@ class common:
 
     def __do_download_img(self, url, save):
         print(url, save)
+        if os.path.exists(save):
+            return
         headers = {
             "sec-ch-ua": '"Microsoft Edge";v="113", "Chromium";v="113", "Not-A.Brand";v="24"',
             "Referer": "https://vndb.org/",

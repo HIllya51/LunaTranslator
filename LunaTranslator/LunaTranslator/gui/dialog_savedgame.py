@@ -1,5 +1,5 @@
 from qtsymbols import *
-import os, functools, uuid, threading
+import os, functools, uuid, threading, hashlib
 from datetime import datetime, timedelta
 from traceback import print_exc
 import windows, gobject, winsharedutils
@@ -1695,17 +1695,52 @@ def opendirforgameuid(gameuid):
         os.startfile(f)
 
 
-def _getpixfunction(kk):
+def __b64string(a: str):
+    return hashlib.md5(a.encode("utf8")).hexdigest()
+
+
+def __scaletosize(_pix: QPixmap, tgt):
+
+    if min(_pix.width(), _pix.height()) > 400:
+
+        if _pix.height() < 400:
+            sz = QSize(_pix.width() * 400 // _pix.height(), 400)
+        else:
+            sz = QSize(400, _pix.height() * 400 // _pix.width())
+        _pix = _pix.scaled(
+            sz,
+            Qt.AspectRatioMode.KeepAspectRatio,
+            Qt.TransformationMode.SmoothTransformation,
+        )
+    _pix.save(tgt)
+
+
+def _getpixfunction(kk, small=False):
     if (
         savehook_new_data[kk]["currentmainimage"]
         in savehook_new_data[kk]["imagepath_all"]
     ):
-        _pix = QPixmap(savehook_new_data[kk]["currentmainimage"])
+        src = savehook_new_data[kk]["currentmainimage"]
+        if small:
+            src2 = gobject.getcachedir(f"icon2/{__b64string(src)}.jpg")
+            _pix = QPixmap(src2)
+            if _pix and not _pix.isNull():
+                return _pix
+        _pix = QPixmap(src)
         if _pix and not _pix.isNull():
+            if small:
+                __scaletosize(_pix, src2)
             return _pix
     for _ in savehook_new_data[kk]["imagepath_all"]:
+        if small:
+            src2 = gobject.getcachedir(f"icon2/{__b64string(_)}.jpg")
+            _pix = QPixmap(src2)
+            if _pix and not _pix.isNull():
+                return _pix
         _pix = QPixmap(_)
         if _pix and not _pix.isNull():
+            if small:
+                __scaletosize(_pix, src2)
             return _pix
     _pix = getExeIcon(uid2gamepath[kk], False, cache=True)
     return _pix
@@ -2408,7 +2443,9 @@ class clickitem(QWidget):
         _.setFixedSize(QSize(size, size))
         _.setScaledContents(True)
         _.setStyleSheet("background-color: rgba(255,255,255, 0);")
-        icon = getExeIcon(uid2gamepath[uid], icon=False, cache=True)
+        icon = _getpixfunction(
+            uid, small=True
+        )  # getExeIcon(uid2gamepath[uid], icon=False, cache=True)
         icon.setDevicePixelRatio(self.devicePixelRatioF())
         _.setPixmap(icon)
         self.lay.addWidget(_)
@@ -2481,8 +2518,7 @@ class pixwrapper(QWidget):
             if not self.k:
                 return
             pixmap = getExeIcon(uid2gamepath[self.k], False, cache=True)
-            pixmap.setDevicePixelRatio(self.devicePixelRatioF())
-            self.scalepix(pixmap)
+            pixmap_ = None
         else:
             self.pixmapi = min(len(self.pixmaps) - 1, self.pixmapi)
             pixmap_ = self.pixmaps[self.pixmapi]
@@ -2490,14 +2526,14 @@ class pixwrapper(QWidget):
             if pixmap is None or pixmap.isNull():
                 self.pixmaps.pop(self.pixmapi)
                 return self.visidx()
-            self.pathview.setText(pixmap_)
-            savehook_new_data[self.k]["currentvisimage"] = pixmap_
-            pixmap.setDevicePixelRatio(self.devicePixelRatioF())
-            self.current = pixmap
-            self.scalepix(pixmap)
+        self.pathview.setText(pixmap_)
+        savehook_new_data[self.k]["currentvisimage"] = pixmap_
+        pixmap.setDevicePixelRatio(self.devicePixelRatioF())
+        self.current = pixmap
+        self.scalepix(pixmap)
 
     def removecurrent(self):
-        if len(self.pixmaps):
+        if self.pixmapi < len(self.pixmaps):
 
             path = self.pixmaps[self.pixmapi]
             self.rflist.pop(self.rflist.index(path))
@@ -2674,8 +2710,7 @@ class dialog_savedgame_v3(QWidget):
             self.addtolist()
         elif action == setimage:
             curr = savehook_new_data[self.currentfocusuid]["currentvisimage"]
-            if curr and os.path.exists(curr):
-                savehook_new_data[self.currentfocusuid]["currentmainimage"] = curr
+            savehook_new_data[self.currentfocusuid]["currentmainimage"] = curr
 
     def addtolistcallback(self, uid, gameuid):
 
