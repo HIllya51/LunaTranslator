@@ -497,7 +497,6 @@ class delayloadvbox(QWidget):
                 if isinstance(self.internal_widgets[i], QWidget):
                     self.internal_widgets[i].move(0, ystart - ydiff)
                     continue
-
                 if not has_intersection((ystart, yend), visrange):
                     continue
 
@@ -587,6 +586,7 @@ class shrinkableitem(QWidget):
         self.items.setVisible(opened)
 
     def _dovisinternal(self, procevent, region: QRect):
+        region.setY(region.y()- self.items.y())
         self.items._dovisinternal(procevent, region)
 
     def Revert(self):
@@ -655,7 +655,10 @@ class stackedlist(ScrollArea):
 
     def doshowlazywidget(self, procevent, region: QRect):
         for i in range(self.len()):
+            y = region.y()
+            region.setY(y - self.w(i).y())
             self.w(i)._dovisinternal(procevent, region)
+            region.setY(y)
 
     def insertw(self, i, w: shrinkableitem):
         self.lay.insertWidget(i, w)
