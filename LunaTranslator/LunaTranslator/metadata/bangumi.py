@@ -127,7 +127,7 @@ class bgmsettings(QDialog):
         super().__init__(parent, Qt.WindowType.WindowCloseButtonHint)
         self._ref = _ref
         self.resize(QSize(800, 10))
-        self.setWindowTitle("vndb")
+        self.setWindowTitle(self._ref.config_all["name"])
         fl = QFormLayout(self)
         fl.addRow("access-token", getlineedit(_ref.config, "access-token"))
         btn = QPushButton(_TR("上传游戏"))
