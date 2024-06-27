@@ -287,7 +287,7 @@ class vndbsettings(QDialog):
             self._ref.proxy, "GET", "authinfo", headers=self.headers
         )["id"]
 
-    def querylist(self, needtitle):
+    def querylist(self):
 
         userid = self.userid
         pagei = 1
@@ -295,9 +295,7 @@ class vndbsettings(QDialog):
         while True:
             json_data = {
                 "user": userid,
-                "fields": (
-                    "id, vn.title,vn.titles.title,vn.titles.main" if needtitle else "id"
-                ),
+                "fields": ("id, vn.title,vn.titles.title,vn.titles.main"),
                 "sort": "vote",
                 "results": 100,
                 "page": pagei,
@@ -323,7 +321,7 @@ class vndbsettings(QDialog):
             collect[vid] = gameuid
 
         for item in collectresults:
-            title = item["name"]
+            title = gettitlefromjs(item["vn"])
             vid = int(item["id"][1:])
             if vid in thislistvids:
                 continue
@@ -338,7 +336,7 @@ class vndbsettings(QDialog):
 
     def getalistname_upload(self, uid):
         reflist = getreflist(uid)
-        vids = [int(item["id"][1:]) for item in self.querylist(False)]
+        vids = [int(item["id"][1:]) for item in self.querylist()]
 
         for gameuid in reflist:
             vid = savehook_new_data[gameuid][self._ref.idname]
