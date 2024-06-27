@@ -4,6 +4,7 @@ from threading import Thread
 from myutils.commonbase import proxysession
 from myutils.config import globalconfig, savehook_new_data
 from traceback import print_exc
+from network.requests_common import NetWorkException
 
 
 class common:
@@ -60,8 +61,22 @@ class common:
         while True:
             pair = self.__tasks_searchfordata.get()
             gameuid, vid = pair
-            self.__do_searchfordata_1(gameuid, vid)
-            self.__safe_remove_task("searchfordatatasks", pair)
+            remove = True
+            try:
+                self.__do_searchfordata(gameuid, vid)
+                vis = f"{self.config_all['name']}: {vid} data loaded success"
+            except NetWorkException:
+                remove = False
+                vis = f"{self.config_all['name']}: {vid} network error, retry later"
+            except:
+                print_exc()
+                vis = f"{self.config_all['name']}: {vid} load failed"
+            if remove:
+
+                self.__safe_remove_task("searchfordatatasks", pair)
+            else:
+                self.__tasks_searchfordata.put((gameuid, vid))
+            gobject.baseobject.translation_ui.displayglobaltooltip.emit(vis)
 
     def __tasks_downloadimg_thread(self):
         while True:
@@ -69,16 +84,19 @@ class common:
             url, save = pair
             if os.path.exists(save):
                 self.__safe_remove_task("downloadtasks", pair)
-
                 continue
-            if self.__do_download_img(url, save):
+            try:
+                self.__do_download_img(url, save)
+            except NetWorkException:
+                remove = False
+            else:
+                print_exc()
+            if remove:
                 self.__safe_remove_task("downloadtasks", pair)
             else:
                 self.__tasks_downloadimg.put(pair)
 
     def __do_download_img(self, url, save):
-        if os.path.exists(save):
-            return True
         print(url, save)
         headers = {
             "sec-ch-ua": '"Microsoft Edge";v="113", "Chromium";v="113", "Not-A.Brand";v="24"',
@@ -87,14 +105,11 @@ class common:
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36 Edg/113.0.1774.42",
             "sec-ch-ua-platform": '"Windows"',
         }
-        try:
-            _content = self.proxysession.get(url, headers=headers).content
-            os.makedirs(os.path.dirname(save), exist_ok=True)
-            with open(save, "wb") as ff:
-                ff.write(_content)
-            return True
-        except:
-            return False
+
+        _content = self.proxysession.get(url, headers=headers).content
+        os.makedirs(os.path.dirname(save), exist_ok=True)
+        with open(save, "wb") as ff:
+            ff.write(_content)
 
     def dispatchdownloadtask(self, url):
         __routine = f"cache/metadata/{self.typename}"
@@ -111,20 +126,12 @@ class common:
         self.__tasks_downloadimg.put((url, savepath))
         return savepath
 
-    def __b64string(self, a):
+    def __b64string(self, a: str):
         return hashlib.md5(a.encode("utf8")).hexdigest()
 
-    def __safe_searchfordata(self, vid):
-        try:
-            return self.searchfordata(vid)
-        except:
-            print_exc()
-            return None
-
     def __do_searchfordata(self, gameuid, vid):
-        data = self.__safe_searchfordata(vid)
-        if not data:
-            return None
+
+        data = self.searchfordata(vid)
         title = data.get("title", None)
         namemap = data.get("namemap", None)
         developers = data.get("developers", [])
@@ -152,15 +159,8 @@ class common:
             savehook_new_data[gameuid]["developers"] = developers
         return True
 
-    def __do_searchfordata_1(self, gameuid, vid):
-
-        succ = self.__do_searchfordata(gameuid, vid)
-        if succ:
-            vis = f"{self.config_all['name']}: {vid} data loaded"
-        else:
-            vis = f"{self.config_all['name']}: {vid} load failed"
-        gobject.baseobject.translation_ui.displayglobaltooltip.emit(vis)
-
     def dispatchsearchfordata(self, gameuid, vid):
-        globalconfig["metadata"][self.typename]["searchfordatatasks"].append((gameuid, vid))
+        globalconfig["metadata"][self.typename]["searchfordatatasks"].append(
+            (gameuid, vid)
+        )
         self.__tasks_searchfordata.put((gameuid, vid))

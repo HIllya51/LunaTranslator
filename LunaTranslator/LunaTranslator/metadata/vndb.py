@@ -1,14 +1,8 @@
 import requests, re
-from myutils.config import (
-    tryreadconfig,
-    safesave,
-    savegametaged,
-    _TR,
-    savehook_new_data,
-)
+from myutils.config import savegametaged, _TR, savehook_new_data
 from myutils.utils import initanewitem, gamdidchangedtask
-import gzip, json, functools
-import shutil, gobject, time
+import functools
+import time
 from qtsymbols import *
 from gui.inputdialog import autoinitdialog
 from metadata.abstract import common
@@ -19,18 +13,13 @@ from myutils.wrapper import Singleton_close
 
 def saferequestvndb(proxy, method, url, json=None, headers=None):
     print(method, url, json)
-    try:
-        resp = requests.request(
-            method,
-            "https://api.vndb.org/kana/" + url,
-            headers=headers,
-            json=json,
-            proxies=proxy,
-        )
-    except:
-        time.sleep(3)
-        print("retry network error")
-        return saferequestvndb(proxy, method, url, json, headers)
+    resp = requests.request(
+        method,
+        "https://api.vndb.org/kana/" + url,
+        headers=headers,
+        json=json,
+        proxies=proxy,
+    )
     if resp.status_code == 429:
         time.sleep(3)
         print("retry 429")
@@ -151,77 +140,6 @@ def getcharnamemapbyid(proxy, vid):
     except:
         pass
     return namemap
-
-
-def decompress_gzip_file(gzip_file, output_file):
-    with gzip.open(gzip_file, "rb") as f_in:
-        with open(output_file, "wb") as f_out:
-            shutil.copyfileobj(f_in, f_out)
-
-
-def safedownload(proxy):
-    try:
-        resp = requests.get(
-            "https://dl.vndb.org/dump/vndb-tags-latest.json.gz",
-            proxies=proxy,
-        )
-        jsongz = gobject.gettempdir("vndb-tags-latest.json.gz")
-        jsonfile = gobject.gettempdir("vndb-tags-latest.json")
-        with open(jsongz, "wb") as ff:
-            ff.write(resp.content)
-        decompress_gzip_file(jsongz, jsonfile)
-        with open(jsonfile, "r", encoding="utf8") as ff:
-            js = json.load(ff)
-        newjs = {}
-        for item in js:
-            gid = "g" + str(item["id"])
-            name = item["name"]
-            newjs[gid] = name
-        return newjs
-    except:
-        from traceback import print_exc
-
-        print_exc()
-        return None
-
-
-def getvntagsbyid(proxy, vid):
-
-    js = safegetvndbjson(
-        "vn",
-        {
-            "filters": [
-                "id",
-                "=",
-                vid,
-            ],
-            "fields": "tags.rating",
-        },
-    )
-    if not js:
-        return
-    res = js["results"][0]["tags"]
-    if not res:
-        return
-    tags = []
-    vndbtagdata = tryreadconfig("vndbtagdata.json")
-    changed = False
-    try:
-        for r in res:
-            tag = r["id"]
-            if tag not in vndbtagdata and not changed:
-                js = safedownload(proxy)
-                if js:
-                    vndbtagdata.update(js)
-                changed = True
-            if tag not in vndbtagdata:
-                continue
-            tags.append(vndbtagdata[r["id"]])
-    except:
-        pass
-    if changed:
-        safesave("./userconfig/vndbtagdata.json", vndbtagdata)
-    return tags
 
 
 @Singleton_close
@@ -407,10 +325,9 @@ class searcher(common):
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36 Edg/113.0.1774.42",
             "sec-ch-ua-platform": '"Windows"',
         }
-        try:
-            html = self.proxysession.get(self.refmainpage(_vid), headers=headers).text
-        except:
-            return []
+
+        html = self.proxysession.get(self.refmainpage(_vid), headers=headers).text
+
         find = re.search('<div id="vntags">([\\s\\S]*?)</div>', html)
         if find:
             html = find.groups()[0]
@@ -424,10 +341,7 @@ class searcher(common):
 
         title = infos["title"]
         namemap = getcharnamemapbyid(self.proxy, vid)
-        vndbtags = []  # getvntagsbyid(self.proxy, vid) #这个东西谜之慢
-        if len(vndbtags) == 0:
-            # 没代理时下不动那个tag的json
-            vndbtags = self.gettagfromhtml(_vid)
+        vndbtags = self.gettagfromhtml(_vid)
         developers = infos["dev"]
 
         img = [self.dispatchdownloadtask(_) for _ in infos["imgs"]]
