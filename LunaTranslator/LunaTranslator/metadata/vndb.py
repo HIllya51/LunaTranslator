@@ -232,7 +232,7 @@ class vndbsettings(QDialog):
             if vid in collect:
                 gameuid = collect[vid]
             else:
-                gameuid = initanewitem(f"bgm_{vid}_{time.time()}", title)
+                gameuid = initanewitem(f"vndb_{vid}_{time.time()}", title)
                 savehook_new_data[gameuid][self._ref.idname] = vid
                 gamdidchangedtask(self._ref.typename, self._ref.idname, gameuid)
             reflist.insert(0, gameuid)
