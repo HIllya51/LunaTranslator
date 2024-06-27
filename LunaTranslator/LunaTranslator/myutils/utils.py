@@ -84,6 +84,19 @@ def simplehtmlparser(text, tag, sign):
     return inner
 
 
+def simplehtmlparser_all(text, tag, sign):
+    inners = []
+    while True:
+        idx = text.find(sign)
+        if idx == -1:
+            break
+        text = text[idx:]
+        inner = findenclose(text, tag)
+        inners.append(inner.replace("\n", ""))
+        text = text[len(inners) :]
+    return inners
+
+
 def nowisdark():
     dl = globalconfig["darklight2"]
     if dl == 1:
@@ -206,7 +219,7 @@ def idtypecheck(key, idname, gameuid, vid):
         return
 
     try:
-        if globalconfig["metadata"][key]["idtype"] == 0:
+        if globalconfig["metadata"][key].get("idtype", 1) == 0:
             try:
                 vid = int(vid)
             except:

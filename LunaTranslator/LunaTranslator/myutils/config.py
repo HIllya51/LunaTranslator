@@ -156,6 +156,7 @@ def getdefaultsavehook(gamepath, title=None):
         "bgmsid": 0,
         "dlsiteid": "RJ/VJXXXX",
         "fanzaid": "",
+        "steamid": 0,
         "title": "",
         # "imagepath": None,  # 封面->imagepath_all[0]
         # "imagepath_much2": [],  # 截图->imagepath_all[1:]

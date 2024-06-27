@@ -246,8 +246,7 @@
             "downloadtasks": [],
             "searchfordatatasks": [],
             "useproxy": true,
-            "target": "dlsiteid",
-            "idtype": 1
+            "target": "dlsiteid"
         },
         "bangumi": {
             "name": "bangumi",
@@ -265,8 +264,18 @@
             "downloadtasks": [],
             "searchfordatatasks": [],
             "useproxy": true,
-            "target": "fanzaid",
-            "idtype": 1
+            "target": "fanzaid"
+        },
+        "steam": {
+            "name": "steam",
+            "downloadtasks": [],
+            "searchfordatatasks": [],
+            "useproxy": true,
+            "target": "steamid",
+            "args": {
+                "userid": "",
+                "steamLoginSecure": ""
+            }
         }
     },
     "relationlinks": [

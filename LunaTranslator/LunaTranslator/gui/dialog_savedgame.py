@@ -718,7 +718,7 @@ class dialog_setting_game_internal(QWidget):
         for key in globalconfig["metadata"]:
             idname = globalconfig["metadata"][key]["target"]
             vndbid = QLineEdit(str(savehook_new_data[gameuid][idname]))
-            if globalconfig["metadata"][key]["idtype"] == 0:
+            if globalconfig["metadata"][key].get("idtype", 1) == 0:
                 vndbid.setValidator(QIntValidator())
             vndbid.setSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Fixed)
 
@@ -2880,10 +2880,17 @@ class dialog_savedgame_v3(QWidget):
         elif action == editname or action == addlist:
             _dia = Prompt_dialog(
                 self,
-                _TR("添加列表"),
+                _TR("修改名称" if action == editname else "添加列表"),
                 "",
                 [
-                    [_TR("名称"), ""],
+                    [
+                        _TR("名称"),
+                        (
+                            savegametaged[calculatetagidx(tagid)]["title"]
+                            if action == editname
+                            else ""
+                        ),
+                    ],
                 ],
             )
 
