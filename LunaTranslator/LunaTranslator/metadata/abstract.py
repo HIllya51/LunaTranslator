@@ -85,6 +85,7 @@ class common:
             if os.path.exists(save):
                 self.__safe_remove_task("downloadtasks", pair)
                 continue
+            remove = True
             try:
                 self.__do_download_img(url, save)
             except NetWorkException:
