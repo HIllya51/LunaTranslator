@@ -2799,7 +2799,7 @@ class dialog_savedgame_v3(QWidget):
         self.simplebutton(
             "其他设置", False, lambda: dialog_syssetting(self, type_=2), False
         )
-
+        isfirst = True
         for i, tag in enumerate(savegametaged):
             # None
             # {
@@ -2810,7 +2810,7 @@ class dialog_savedgame_v3(QWidget):
                 title = "GLOBAL"
                 lst = savehook_new_list
                 tagid = None
-                opened = True
+                opened = globalconfig["global_list_opened"]
             else:
                 lst = tag["games"]
                 title = tag["title"]
@@ -2825,11 +2825,14 @@ class dialog_savedgame_v3(QWidget):
                 ):
                     continue
                 self.reallist[tagid].append(k)
+                if opened and isfirst and (rowreal == 0):
+                    vis = True
+                    isfirst = False
+                else:
+                    vis = False
                 group0.insertw(
                     rowreal,
-                    functools.partial(
-                        self.delayitemcreater, k, i == 0 and rowreal == 0, tagid
-                    ),
+                    functools.partial(self.delayitemcreater, k, vis, tagid),
                     1 + globalconfig["dialog_savegame_layout"]["listitemheight"],
                 )
 
@@ -2933,10 +2936,11 @@ class dialog_savedgame_v3(QWidget):
     def _revertoepn(self, tagid):
         item = savegametaged[calculatetagidx(tagid)]
         if item is None:
-            return
-        savegametaged[calculatetagidx(tagid)]["opened"] = not savegametaged[
-            calculatetagidx(tagid)
-        ]["opened"]
+            globalconfig["global_list_opened"] = not globalconfig["global_list_opened"]
+        else:
+            savegametaged[calculatetagidx(tagid)]["opened"] = not savegametaged[
+                calculatetagidx(tagid)
+            ]["opened"]
 
     def moverank(self, dx):
         uid = self.currentfocusuid

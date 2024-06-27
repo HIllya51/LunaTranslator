@@ -11,6 +11,7 @@
     "WindowBackdrop": 0,
     "WindowEffect": 0,
     "read_raw": true,
+    "global_list_opened": true,
     "read_trans": false,
     "read_translator": 0,
     "disappear_delay": 5,
