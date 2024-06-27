@@ -459,11 +459,14 @@ class lazyscrollflow(ScrollArea):
             return new_height
 
 
-def has_intersection(range1, range2):
-    A1, B1 = range1
-    C1, D1 = range2
+def has_intersection(interval1, interval2):
+    start = max(interval1[0], interval2[0])
+    end = min(interval1[1], interval2[1])
 
-    return A1 <= C1 <= B1 or A1 <= D1 <= B1 or C1 <= A1 <= D1 or C1 <= B1 <= D1
+    if start <= end:
+        return True
+    else:
+        return None
 
 
 class delayloadvbox(QWidget):
@@ -506,6 +509,7 @@ class delayloadvbox(QWidget):
                     continue
                 self.internal_widgets[i] = None
                 needdos.append((i, widfunc, ystart - ydiff, h))
+
         for i, widfunc, ystart, h in needdos:
             try:
                 with self.lock:
@@ -572,8 +576,8 @@ class delayloadvbox(QWidget):
 
 
 class shrinkableitem(QWidget):
-    def __init__(self, shrinker: QPushButton, opened):
-        super().__init__()
+    def __init__(self, p, shrinker: QPushButton, opened):
+        super().__init__(p)
         self.lay = QVBoxLayout()
         # self.setSizePolicy(QSizePolicy.Policy.Expanding,QSizePolicy.Policy.Fixed)
         self.setLayout(self.lay)
@@ -585,13 +589,26 @@ class shrinkableitem(QWidget):
         self.lay.addWidget(self.btn)
         self.lay.addWidget(self.items)
         self.items.setVisible(opened)
+        self._ref_p_stackedlist = p
+
+    def visheight(self):
+        hh = self.btn.height()
+        if self.items.isVisible():
+            hh += self.items.height()
+        return hh
 
     def _dovisinternal(self, procevent, region: QRect):
-        region.setY(region.y()- self.items.y())
-        self.items._dovisinternal(procevent, region)
+        if not self.items.isVisible():
+            return
+
+        region.setY(region.y() - self.btn.height())
+        # region.setHeight(region.height() - self.btn.height())
+        # 按理说应该减的，但不知道其他哪里写错了，下面少几十个像素的高度，就这样吧。
+        self.items._dovisinternal(procevent, QRect(region))
 
     def Revert(self):
         self.items.setVisible(not self.items.isVisible())
+        self._ref_p_stackedlist.doshowlazywidget(True)
 
     def settitle(self, text):
         self.btn.setText(text)
@@ -635,10 +652,12 @@ class stackedlist(ScrollArea):
 
     def __init__(self):
         super().__init__()
-        self.setStyleSheet("""QWidget#shit{background-color:transparent;}QScrollArea{background-color:transparent;border:0px}""")
+        self.setStyleSheet(
+            """QWidget#shit{background-color:transparent;}QScrollArea{background-color:transparent;border:0px}"""
+        )
         self.setWidgetResizable(True)
         internal = QWidget()
-        internal.setObjectName('shit')
+        internal.setObjectName("shit")
         self.setWidget(internal)
         self.lay = QVBoxLayout()
         self.lay.setAlignment(Qt.AlignmentFlag.AlignTop)
@@ -654,13 +673,17 @@ class stackedlist(ScrollArea):
         self.setWidget(internal)
         self.internal = internal
         self.scrolled.connect(lambda _: self.doshowlazywidget(True, _))
+        self.saveregion = QRect()
 
-    def doshowlazywidget(self, procevent, region: QRect):
+    def doshowlazywidget(self, procevent, region: QRect = None):
+        if region:
+            self.saveregion = QRect(region)
+        else:
+            region = QRect(self.saveregion)
         for i in range(self.len()):
-            y = region.y()
-            region.setY(y - self.w(i).y())
-            self.w(i)._dovisinternal(procevent, region)
-            region.setY(y)
+            self.w(i)._dovisinternal(procevent, QRect(region))
+            region.setY(region.y() - self.w(i).visheight())
+            region.setHeight(region.height() - self.w(i).visheight())
 
     def insertw(self, i, w: shrinkableitem):
         self.lay.insertWidget(i, w)

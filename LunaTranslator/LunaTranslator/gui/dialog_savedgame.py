@@ -2816,7 +2816,7 @@ class dialog_savedgame_v3(QWidget):
                 title = tag["title"]
                 tagid = tag["uid"]
                 opened = tag.get("opened", True)
-            group0 = self.createtaglist(title, tagid, opened)
+            group0 = self.createtaglist(self.stack, title, tagid, opened)
             self.stack.insertw(i, group0)
             rowreal = 0
             for row, k in enumerate(lst):
@@ -2919,16 +2919,24 @@ class dialog_savedgame_v3(QWidget):
             self.stack.popw(i)
             self.reallist.pop(tagid)
 
-    def createtaglist(self, title, tagid, opened):
+    def createtaglist(self, p, title, tagid, opened):
 
         self.reallist[tagid] = []
         _btn = QPushButton(title)
         _btn.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
-
+        _btn.clicked.connect(functools.partial(self._revertoepn, tagid))
         _btn.customContextMenuRequested.connect(
             functools.partial(self.tagbuttonmenu, tagid)
         )
-        return shrinkableitem(_btn, opened)
+        return shrinkableitem(p, _btn, opened)
+
+    def _revertoepn(self, tagid):
+        item = savegametaged[calculatetagidx(tagid)]
+        if item is None:
+            return
+        savegametaged[calculatetagidx(tagid)]["opened"] = not savegametaged[
+            calculatetagidx(tagid)
+        ]["opened"]
 
     def moverank(self, dx):
         uid = self.currentfocusuid
